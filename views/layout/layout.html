@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+{% block html_head %}
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title>{% block html_title %}{% endblock %} {{ config.app.title }}</title>
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  {% if env  == 'development' %}
+  <link rel="stylesheet" href="/css/crowi.css">
+  {% else %}
+  <link rel="stylesheet" href="/css/crowi.min.css">
+  {% endif %}
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <link href='http://fonts.googleapis.com/css?family=Maven+Pro:400,700' rel='stylesheet' type='text/css'>
+  {% if env  == 'development' %}
+  <script src="/js/crowi.js"></script>
+  {% else %}
+  <script src="/js/crowi.min.js"></script>
+  {% endif %}
+</head>
+{% endblock %}
+
+{% block html_body %}
+<body class="crowi main-container {% block html_base_css %}{% endblock %}">
+<div id="fb-root"></div>
+<script>
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '{{ facebook.appId }}', // App ID
+      //channelUrl : '//WWW.YOUR_DOMAIN.COM/channel.html', // Channel File
+      status     : true, // check login status
+      cookie     : true, // enable cookies to allow the server to access the session
+      xfbml      : true  // parse XFBML
+    });
+  };
+
+  (function(d){
+     var js, id = 'facebook-jssdk'; if (d.getElementById(id)) {return;}
+     js = d.createElement('script'); js.id = id; js.async = true;
+     js.src = "//connect.facebook.net/en_US/all.js";
+     d.getElementsByTagName('head')[0].appendChild(js);
+   }(document));
+</script>
+
+{% block layout_head_nav %}
+<nav class="crowi-header navbar navbar-default" role="navigation">
+  <div class="navbar-header">
+    <a class="navbar-brand" href="/">{% block title %}{{ config.app.title }}{% endblock %}</a>
+  </div>
+
+  <div class="collapse navbar-collapse">
+  </div><!-- /.navbar-collapse -->
+</nav>
+{% include '../modal/widget_today_memo.html' %}
+{% endblock  %} {# layout_head_nav #}
+
+<div class="container-fluid">
+  <div class="row">
+
+{% block layout_sidebar %}
+<aside class="sidebar col-md-3">
+    <div class="side-content">
+    {% block side_header %}
+    {% endblock %}
+
+    {% block side_content %}
+    {% endblock %}
+
+    {% block side_footer %}
+    {% endblock %}
+    </div>
+  </aside>
+</div>
+{% endblock %} {# layout_sidebar #}
+
+{% block layout_main %}
+<div id="main" class="main col-md-9" ng-controller="WikiPageController">
+  <article>
+  {% block content_head %}
+    <header>
+    <h2>-</h2>
+    <p>-</p>
+    </header>
+  {% endblock %}
+
+  {% block content_main %}
+  //
+  {% endblock content_main %}
+
+  {% block content_footer %}
+    <footer>
+    <h3>-</h3>
+    <p>-</p>
+    </footer>
+  {% endblock content_footer %}
+  </article>
+</div>
+{% endblock %} {# layout_main #}
+
+
+
+{% block footer %}
+{% endblock %}
+
+  </div> {# /.row #}
+</div> {# /.container-fluid #}
+
+{% block body_end %}
+{% endblock %}
+
+</body>
+{% endblock %}
+
+</html>
+
+
+

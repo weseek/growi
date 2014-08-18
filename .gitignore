@@ -1,0 +1,5 @@
+config/default.js
+node_modules/
+bower_components/
+public/js/*
+public/css/*

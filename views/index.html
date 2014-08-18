@@ -1,0 +1,15 @@
+{% extends 'layout/2column.html' %}
+
+{% block content_head %}
+<header>
+  <h2>Index</h2>
+</header>
+{% endblock %}
+
+{% block content_main %}
+
+  {% for page in pages %}
+    <a href="/{{ page.path }}">{{ page.path }} ({{page.updatedAt|date('Y-m-d H:i:s O')}})</a><br />
+  {% endfor %}
+
+{% endblock %}

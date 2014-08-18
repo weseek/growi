@@ -1,0 +1,37 @@
+{% extends '../layout/2column.html' %}
+
+{% block html_title %}Wiki管理 · {{ path }}{% endblock %}
+
+{% block content_head %}
+<header id="page-header">
+  <h1 class="title" id="">Wiki管理</h1>
+</header>
+{% endblock %}
+
+{% block content_main %}
+<div class="content-main">
+  <div class="row">
+    <div class="col-md-3">
+      <ul class="nav nav-pills nav-stacked">
+        <li class="active"><a href="/admin"><i class="fa fa-cube"></i> Wiki管理トップ</a></li>
+        <li><a href="/admin/users"><i class="fa fa-users"></i> ユーザー管理</a></li>
+      </ul>
+    </div>
+    <div class="col-md-9">
+      <p>
+      この画面はWiki管理者のみがアクセスできる画面です。<br>
+      「ユーザー管理」から「管理者にする」ボタンを使ってユーザーをWiki管理者に任命することができます。
+      </p>
+    </div>
+  </div>
+
+</div>
+{% endblock content_main %}
+
+{% block content_footer %}
+{% endblock content_footer %}
+
+{% block footer %}
+{% endblock footer %}
+
+

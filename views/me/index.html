@@ -1,0 +1,362 @@
+{% extends '../layout/2column.html' %}
+
+{% block html_title %}ユーザー設定 · {{ path }}{% endblock %}
+
+{% block content_head %}
+<header  id="page-header">
+  <h1 class="title" id="">ユーザー設定</h1>
+</header>
+{% endblock %}
+
+{% block content_main %}
+<div class="content-main">
+
+  <ul class="nav nav-tabs">
+    <li class="active"><a href="/me"><i class="fa fa-gears"></i> ユーザー情報</a></li>
+    <li><a href="/me/password"><i class="fa fa-key"></i> パスワード設定</a></li>
+  </ul>
+
+  <div class="tab-content">
+
+  {% set smessage = req.flash('successMessage') %}
+  {% if smessage.length %}
+  <div class="alert alert-success">
+    {{ smessage }}
+  </div>
+  {% endif %}
+
+  {% set wmessage = req.flash('warningMessage') %}
+  {% if wmessage.length %}
+  <div class="alert alert-danger">
+    {{ wmessage }}
+  </div>
+  {% endif %}
+
+  {% if req.form.errors.length > 0 %}
+  <div class="alert alert-danger">
+    <ul>
+    {% for error in req.form.errors %}
+      <li>{{ error }}</li>
+    {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+
+  <div class="form-box">
+    <form action="/me" method="post" class="form-horizontal" role="form">
+      <fieldset>
+        <legend>ユーザーの基本情報</legend>
+      <div class="form-group">
+        <label for="userForm[name]" class="col-sm-2 control-label">名前</label>
+        <div class="col-sm-4">
+          <input class="form-control" type="text" name="userForm[name]" value="{{ user.name }}" required>
+        </div>
+      </div>
+      <div class="form-group {% if not user.email %}has-error{% endif %}">
+        <label for="userForm[email]" class="col-sm-2 control-label">メールアドレス</label>
+        <div class="col-sm-4">
+          <input class="form-control" type="email" name="userForm[email]" value="{{ user.email }}" required>
+        </div>
+        <div class="col-sm-offset-2 col-sm-10">
+          {# ↓ そのうちこのコードは削除する #}
+          {% if not user.email %}
+          <p class="help-block help-danger">
+          メールアドレスは登録必須項目です。<br>
+          (以前のバージョンのWikiで作成されたユーザー情報の場合、メールアドレスが登録されていません)<br>
+          更新ボタンを押して新規登録してください。
+          </p>
+          {% endif %}
+
+          {% if config.security && config.security.registrationWhiteList.length %}
+          <p class="help-block">
+          この Wiki では以下のメールアドレスのみ登録可能です。
+          <ul>
+            {% for em in config.security.registrationWhiteList %}
+            <li><code>{{ em }}</code></li>
+            {% endfor %}
+          </ul>
+          </p>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+          <button type="submit" class="btn btn-primary">更新</button>
+        </div>
+      </div>
+    </fieldset>
+    </form>
+  </div>
+
+  <div class="form-box">
+    <fieldset>
+      <legend>プロフィール画像の設定</legend>
+        <div class="form-group">
+          <div id="pictureUploadFormMessage"></div>
+          <label for="" class="col-sm-3 control-label">
+            現在の画像
+          </label>
+          <div class="col-sm-9">
+            <p>
+            <img src="{{ user|picture }}" width="64" id="settingUserPicture"><br>
+            </p>
+            <p>
+            {% if user.image %}
+            <form action="/me/picture/delete" method="post" class="form-horizontal" role="form" onsubmit="return window.confirm('削除してよろしいですか？');">
+              <button type="submit" class="btn btn-danger">画像を削除</button>
+            </form>
+            {% elseif user.fbId %}
+            プロフィール画像はFacebookから自動的に設定されています。
+            {% endif %}
+            </p>
+          </div>
+        </div> {# /.form-group# #}
+
+        <div class="form-group">
+          <label for="" class="col-sm-3 control-label">
+            新しい画像をアップロード
+          </label>
+          <div class="col-sm-9">
+            <form action="/_api/me/picture/upload" id="pictureUploadForm" method="post" class="form-horizontal" role="form" enctype="multipart/form-data">
+              <input name="userPicture" type="file" accept="image/*">
+              <div id="pictureUploadFormProgress">
+              </div>
+            </form>
+          </div>
+        </div>
+      </fieldset>
+    </div>
+    <script>
+    $(function()
+    {
+      $("#pictureUploadForm input[name=userPicture]").on('change', function(){
+        var $form = $('#pictureUploadForm');
+        var fd = new FormData($form[0]);
+        if ($(this).val() == '') {
+          return false;
+        }
+
+        $('#pictureUploadFormProgress').html('<img src="/images/loading_s.gif"> アップロード中...');
+        $.ajax($form.attr("action"), {
+          type: 'post',
+          processData: false,
+          contentType: false,
+          data: fd,
+          dataType: 'json',
+          success: function(data){
+            if (data.status) {
+              $('#settingUserPicture').attr('src', data.url + '?time=' + (new Date()));
+              $('#pictureUploadFormMessage')
+                .addClass('alert alert-success')
+                .html('変更しました');
+            } else {
+              $('#pictureUploadFormMessage')
+                .addClass('alert alert-danger')
+                .html('変更中にエラーが発生しました。');
+            }
+            $('#pictureUploadFormProgress').html('');
+          }
+        });
+        return false;
+      });
+    });
+    </script>
+
+  <div class="row">
+    <div class="col-sm-6"> {# Facebook Connect #}
+
+      <div class="form-box">
+        <form action="/me/auth/facebook" method="post" class="form-horizontal" role="form" id="auth-connect-facebook">
+          <fieldset>
+            <legend><i class="fa fa-facebook-square"></i> Facebook設定</legend>
+
+          {% if user.userId %}
+
+          <div class="form-group">
+            <div class="col-sm-12">
+              <p>
+                <a href="//www.facebook.com/{{ user.userId }}"><img src="//graph.facebook.com/{{ user.userId }}/picture?size=square" width="32"> </a>
+                <input type="submit" name="disconnectFacebook" class="btn btn-default" value="接続を解除">
+              </p>
+              <p class="help-block">
+              接続を解除すると、Facebookを利用してのログインができなくなります。<br>
+              解除後はメールアドレスとパスワードでログインすることができます。
+              </p>
+            </div>
+          </div>
+
+          {% else %}
+
+          <div class="form-group">
+            <div class="col-sm-12">
+              <div class="text-center">
+                <input type="hidden" class="form-control" name="fbId">
+                <button type="submit" id="btn-connect-facebook" class="btn btn-facebook">Facebookコネクト</button>
+                <script>
+                  $('#btn-connect-facebook').click(function(e)
+                  {
+                    var afterLogin = function(response) {
+                      if (response.status !== 'connected') {
+                        // TODO
+                      } else {
+                        var authR = response.authResponse;
+                        $('#auth-connect-facebook input[name="fbId"]').val(authR.userID);
+                        $('#auth-connect-facebook').submit();
+                      }
+                    };
+                    FB.getLoginStatus(function(response) {
+                      if (response.status === 'connected') {
+                        afterLogin(response);
+                      } else {
+                        FB.login(function(response) {
+                          afterLogin(response);
+                        }, {scope: 'email'});
+                      }
+                    });
+
+                    return false;
+                  });
+                </script>
+              </div>
+              <p class="help-block">
+              Facebookコネクトをすると、Facebookでログイン可能になります。<br>
+              メールアドレスとパスワードでのログインは引き続きご利用いただけます。
+              </p>
+            </div>
+          </div>
+
+          {% endif %}
+          </div>
+        </fieldset>
+        </form>
+    </div> {# /Facebook Connect #}
+
+    <div class="col-sm-6"> {# Google Connect #}
+
+      <div class="form-box">
+        <form action="/me/auth/google" method="post" class="form-horizontal" role="form">
+          <fieldset>
+            <legend><i class="fa fa-google-plus-square"></i> Google設定</legend>
+
+            {% set wmessage = req.flash('warningMessage.auth.google') %}
+            {% if wmessage.length %}
+            <div class="alert alert-danger">
+              {{ wmessage }}
+            </div>
+            {% endif %}
+
+            <div class="form-group">
+            {% if user.googleId %}
+
+            <div class="col-sm-12">
+              <p>
+                接続されています
+
+                <input type="submit" name="disconnectGoogle" class="btn btn-default" value="接続を解除">
+              </p>
+              <p class="help-block">
+              接続を解除すると、Googleでログインができなくなります。<br>
+              解除後はメールアドレスとパスワードでログインすることができます。
+              </p>
+            </div>
+
+            {% else %}
+
+            <div class="col-sm-12">
+              <div class="text-center">
+                <input type="submit" name="connectGoogle" class="btn btn-google" value="Googleコネクト">
+              </div>
+              <p class="help-block">
+              Googleコネクトをすると、Googleアカウントでログイン可能になります。<br>
+              </p>
+              {% if config.security && config.security.registrationWhiteList.length %}
+              <p class="help-block">
+              この Wiki では、登録可能なメールアドレスが限定されているため、コネクト可能なGoogleアカウントは、以下のメールアドレスの発行できるGoogle Appsアカウントに限られます。
+              </p>
+              <ul>
+                {% for em in config.security.registrationWhiteList %}
+                <li><code>{{ em }}</code></li>
+                {% endfor %}
+              </ul>
+              {% endif %}
+            </div>
+
+            {% endif %}
+          </div>
+        </fieldset>
+      </form>
+    </div> {# /Google Connect #}
+  </div>
+
+  {#
+  <div class="form-box">
+    <form action="/me/username" method="post" class="form-horizontal" role="form">
+      <fieldset>
+        <legend>プロフィール画像の設定</legend>
+      <div class="form-group">
+        <label for="" class="col-sm-2 control-label">
+          画像の設定
+        </label>
+        <div class="col-sm-6">
+          <p>
+            <img src="//graph.facebook.com/{{ user.userId }}/picture?size=square" width="32"><br>
+          </p>
+          <p>
+            <button class="btn btn-danger">画像を削除</button>
+          </p>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+          <input name="" type="file">
+          <button type="submit" class="btn btn-primary">新しい画像をアップロード</button>
+        </div>
+      </div>
+      </div>
+    </fieldset>
+    </form>
+  </div>
+  #}
+
+  </div> {# end of .tab-contents #}
+
+  {#
+  <div class="form-box">
+    <form action="/me/username" method="post" class="form-horizontal" role="form">
+      <fieldset>
+        <legend>ユーザーID (ユーザー名) の変更</legend>
+      <div class="form-group">
+        <label for="userNameForm[username]" class="col-sm-2 control-label">ユーザーID</label>
+        <div class="col-sm-4">
+          <input class="form-control" type="text" name="userNameForm[username]" value="{{ user.username }}" required>
+          <p class="help-block">すべてのマイページの</p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+          <p class="alert alert-warning">
+          ユーザーIDを変更すると、<code>/user/{{ user.username }}</code> 以下のページがすべて <code>/user/新しいユーザーID</code> の下に移動されます。<br>
+          また、これまでのページにリダイレクトは設定されず、この操作の取り消しもできません。<br>
+          実行には十分に注意をしてください。
+          </p>
+          <button type="submit" class="btn btn-warning">ユーザーIDの変更を実行する</button>
+        </div>
+      </div>
+    </fieldset>
+    </form>
+  </div>
+  #}
+
+  </div>
+</div>
+{% endblock content_main %}
+
+{% block content_footer %}
+{% endblock content_footer %}
+
+{% block footer %}
+{% endblock footer %}
+

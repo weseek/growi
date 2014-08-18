@@ -1,0 +1,256 @@
+{% extends 'layout/single-nologin.html' %}
+
+{% block html_title %}Login · {% endblock %}
+
+{% block content_main %}
+
+<h1 class="login-page" href="/">{% block title %}{{ config.app.title }}{% endblock %}</h1>
+
+<div class="login-dialog-container flip-container col-md-5">
+
+<div class="login-dialog flipper {% if req.query.register or req.body.registerForm or googleId %}to-flip{% endif %}" id="login-dialog">
+
+  <div class="login-dialog-inner front">
+    <h2>ログイン</h2>
+
+    <div id="login-form-errors">
+      {% set message = req.flash('warningMessage') %}
+      {% if message.length %}
+      <div class="alert alert-danger">
+        {{ message }}
+      </div>
+      {% endif %}
+
+      {% if req.form.errors.length > 0 %}
+      <div class="alert alert-danger">
+        <ul>
+        {% for error in req.form.errors %}
+          <li>{{ error }}</li>
+        {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+    </div>
+    <form role="form" action="/login" method="post">
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
+        <input type="text" class="form-control" placeholder="E-mail" name="loginForm[email]">
+      </div>
+
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-key"></i></span>
+        <input type="password" class="form-control" placeholder="Password" name="loginForm[password]">
+      </div>
+
+      <input type="submit" class="btn btn-primary btn-lg btn-block" value="Login">
+    </form>
+
+    <hr>
+
+    <div class="row">
+      <div class="col-md-6">
+        <p>Google でログイン</p>
+        <form role="form" action="/login/google" method="get">
+          <button type="submit" class="btn btn-block btn-google"><i class="fa fa-google-plus-square"></i> Login</button>
+        </form>
+      </div>
+      <div class="col-md-6">
+        <p>Facebook でログイン</p>
+        <form role="form">
+          <button type="button" id="btn-login-facebook" class="btn btn-block btn-facebook"><i class="fa fa-facebook-square"></i> Login</button>
+        </form>
+      </div>
+    </div>
+
+    {% if config.security.registrationMode != 'Closed' %}
+    <p class="bottom-text"><a href="#register" onclick="$('#login-dialog').addClass('to-flip'); return false;"><i class="fa fa-pencil"></i> 新規登録はこちら</a></p>
+    {% endif %}
+  </div>
+
+  {% if config.security.registrationMode != 'Closed' %}
+  <div class="register-dialog-inner back">
+
+    <h2>新規登録</h2>
+
+    {% if config.security.registrationMode != 'Closed' %}
+    <p class="alert alert-warning">
+    この Wiki への新規登録は制限されています。<br>
+    利用を開始するには、新規登録後、管理者による承認が必要です。
+    </p>
+    {% endif %}
+
+    {% if googleId %}
+    <div class="google-info">
+      <code>{{ email }}</code> この Google アカウントで登録します<br>
+      ユーザーID、名前、パスワードを決めて登録を継続してください。
+    </div>
+    {% endif %}
+
+    <div id="register-form-errors">
+      {% set message = req.flash('registerWarningMessage') %}
+      {% if message.length %}
+      <div class="alert alert-danger">
+        {% for msg in message %}
+        {{ msg }}<br>
+        {% endfor  %}
+      </div>
+      {% endif %}
+
+      {% if req.form.errors.length > 0 %}
+      <div class="alert alert-danger">
+        <ul>
+        {% for error in req.form.errors %}
+          <li>{{ error }}</li>
+        {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+    </div>
+
+    <form role="form" method="post" action="/register" id="register-form">
+      <input type="hidden" class="form-control" name="registerForm[fbId]" value="{{ req.body.registerForm.fbId }}">
+      <input type="hidden" class="form-control" name="registerForm[googleId]" value="{{ googleId|default(req.body.registerForm.googleId) }}">
+
+      <label>ユーザーID</label>
+      <div class="input-group" id="input-group-username">
+        <span class="input-group-addon"><strong>@</strong></span>
+        <input type="text" class="form-control" placeholder="記入例: taroyama" name="registerForm[username]" value="{{ req.body.registerForm.username }}" required>
+      </div>
+      <p class="help-block">
+      <span id="help-block-username" class="text-danger"></span>
+      ユーザーIDは、ユーザーページのURLなどに利用されます。半角英数字と一部の記号のみ利用できます。
+      </p>
+
+      <label>名前</label>
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-user"></i></span>
+        <input type="text" class="form-control" placeholder="記入例: 山田 太郎" name="registerForm[name]" value="{{ req.body.registerForm.name }}" required>
+      </div>
+
+      <label >メールアドレス</label>
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
+        <input type="email" class="form-control" placeholder="E-mail" name="registerForm[email]" value="{{ googleEmail|default(req.body.registerForm.email) }}" required>
+      </div>
+      {% if config.security && config.security.registrationWhiteList.length %}
+      <p class="help-block">
+      この Wiki では以下のメールアドレスのみ登録可能です。
+      </p>
+      <ul>
+        {% for em in config.security.registrationWhiteList %}
+        <li><code>{{ em }}</code></li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+
+      <label>パスワード</label>
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-key"></i></span>
+        <input type="password" class="form-control" placeholder="Password" name="registerForm[password]" required>
+      </div>
+      <p class="help-block">
+      パスワードは6文字以上の半角英数字または記号
+      </p>
+
+      <input type="submit" class="btn btn-primary btn-lg btn-block" value="新規登録">
+    </form>
+
+    <hr>
+
+    <div class="row">
+      <div class="col-md-6">
+        <p>Google で登録</p>
+        <form role="form" method="post" action="/register/google">
+          <button type="submit" class="btn btn-block btn-google"><i class="fa fa-google-plus-square"></i> Login</button>
+        </form>
+      </div>
+      <div class="col-md-6">
+        <p>Facebook で登録</p>
+        <form role="form">
+          <button type="button" id="btn-register-facebook" class="btn btn-block btn-facebook"><i class="fa fa-facebook-square"></i> Login</button>
+        </form>
+      </div>
+    </div>
+
+    <p class="bottom-text"><a href="#login" onclick="$('#login-dialog').removeClass('to-flip'); return false;"><i class="fa fa-sign-out"></i> ログインはこちら</a></p>
+  </div>
+  {% endif %} {# if registrationMode == Closed #}
+
+</div>
+
+</div>
+
+{#
+<div class="login-footer">
+  <p>&copy; {{ now|date('Y') }} {{ config.app.title }}. <a href="" data-target="#helpModal" data-toggle="modal"><i class="fa fa-question-circle"></i> ヘルプ</a></p>
+</div>
+#}
+
+<script>
+$(function() {
+  $('#btn-login-facebook').click(function(e)
+  {
+    var afterLogin = function(response) {
+      if (response.status !== 'connected') {
+        $('#login-form-errors').html('<p class="alert alert-danger">Facebookでのログインに失敗しました。</p>');
+      } else {
+        location.href = '/login/facebook';
+      }
+    };
+    FB.getLoginStatus(function(response) {
+      if (response.status === 'connected') {
+        afterLogin(response);
+      } else {
+        FB.login(function(response) {
+          afterLogin(response);
+        }, {scope: 'email'});
+      }
+    });
+  });
+
+  $('#register-form input[name="registerForm[username]"]').change(function(e) {
+    var username = $(this).val();
+    $('#input-group-username').removeClass('has-error');
+    $('#help-block-username').html("");
+
+    $.getJSON('/_api/check_username', {username: username}, function(json) {
+      if (!json.valid) {
+        $('#help-block-username').html('<i class="fa fa-warning"></i>このユーザーIDは利用できません。<br>');
+        $('#input-group-username').addClass('has-error');
+      }
+    });
+  });
+
+  $('#btn-register-facebook').click(function(e)
+  {
+    var afterLogin = function(response) {
+      if (response.status !== 'connected') {
+        $('#register-form-errors').html('<p class="alert alert-danger">Facebookでのログインに失敗しました。</p>');
+
+      } else {
+        var authR = response.authResponse;
+        $('#register-form input[name="registerForm[fbId]"]').val(authR.userID);
+        FB.api('/me?fields=name,username,email', function(res) {
+          $('#register-form input[name="registerForm[name]"]').val(res.name);
+          $('#register-form input[name="registerForm[username]"]').val(res.username || '');
+          $('#register-form input[name="registerForm[email]"]').val(res.email);
+
+          $('#register-form .facebook-info').remove();
+          $('#register-form').prepend('<div class="facebook-info"><img src="//graph.facebook.com/' + res.id + '/picture?size=square" width="25"> <i class="fa fa-facebook-square"></i> ' + res.name + 'さんとして登録します</div>');
+        });
+      }
+    };
+    FB.getLoginStatus(function(response) {
+      if (response.status === 'connected') {
+        afterLogin(response);
+      } else {
+        FB.login(function(response) {
+          afterLogin(response);
+        }, {scope: 'email'});
+      }
+    });
+  });
+});
+</script>
+
+{% endblock %}

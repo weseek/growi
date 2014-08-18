@@ -1,0 +1,121 @@
+//@import "../../node_modules/reveal.js/css/theme/template/theme";
+
+.reveal {
+  font-size: 32px;
+  section * {
+    font-family: "Lucida Grande", "Hiragino Kaku Gothic Pro W3", Meiryo, san-serif;
+  }
+
+  section {
+    text-align: left;
+
+    &.only.present {
+      top: -25%;
+      h1, h2, h3, h4, h5, h6 {
+        font-size: 2.5em;
+      }
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      margin-bottom: 1em;
+      font-weight: bold;
+      line-height: 1.2em;
+      text-transform: none;
+      text-align: left;
+      text-shadow: none;
+    }
+
+    p, ul li, ol li {
+      line-height: 1.3em;
+    }
+
+    p {
+      margin-top: .5em;
+    }
+
+    ul {
+      margin-top: .2em;
+      margin-bottom: .1em;
+      li {
+        margin-bottom: .2em;
+      }
+    }
+
+    h1:first-child {
+      font-size: 2.2em;
+    }
+    h2:first-child {
+      font-size: 1.8em;
+    }
+    h3, h4, h5, h6 {
+      &:first-child {
+        font-size: 1.5em;
+      }
+    }
+
+    // {{{ table (copied from bootstrap .table
+    table {
+      width: 100%;
+      margin-bottom: 1em;
+
+      border-collapse: collapse;
+      tr, td, th {
+        border-collapse: collapse;
+      }
+
+      // Cells
+      > thead,
+      > tbody,
+      > tfoot {
+        > tr {
+          > th,
+          > td {
+            padding: 1em;
+            vertical-align: top;
+            border-top: 1px solid #999;
+          }
+        }
+      }
+      // Bottom align for column headings
+      > thead > tr > th {
+        vertical-align: bottom;
+        border-bottom: 2px solid #888;
+      }
+      // Remove top border from thead by default
+      > caption + thead,
+      > colgroup + thead,
+      > thead:first-child {
+        > tr:first-child {
+          > th,
+          > td {
+            border-top: 0;
+          }
+        }
+      }
+      // Account for multiple tbody instances
+      > tbody + tbody {
+        border-top: 2px solid #888;
+      }
+
+      // .table-bordered
+      border: 1px solid #999;
+      > thead,
+      > tbody,
+      > tfoot {
+        > tr {
+          > th,
+          > td {
+            border: 1px solid #999;
+          }
+        }
+      }
+      > thead > tr {
+        > th,
+        > td {
+          border-bottom-width: 2px;
+        }
+      }
+    }
+
+  }
+}

@@ -1,0 +1,164 @@
+{% extends '../layout/2column.html' %}
+
+{% block html_title %}ユーザー管理 · {% endblock %}
+
+{% block content_head %}
+<header id="page-header">
+  <h1 class="title" id="">ユーザー管理</h1>
+</header>
+{% endblock %}
+
+{% block content_main %}
+<div class="content-main">
+  {% set smessage = req.flash('successMessage') %}
+  {% if smessage.length %}
+  <div class="alert alert-success">
+    {{ smessage }}
+  </div>
+  {% endif %}
+
+  {% set emessage = req.flash('errorMessage') %}
+  {% if emessage.length %}
+  <div class="alert alert-danger">
+    {{ emessage }}
+  </div>
+  {% endif %}
+
+  <div class="row">
+    <div class="col-md-3">
+      <ul class="nav nav-pills nav-stacked">
+        <li><a href="/admin"><i class="fa fa-cube"></i> Wiki管理トップ</a></li>
+        <li class="active"><a href="/admin/users"><i class="fa fa-users"></i> ユーザー管理</a></li>
+      </ul>
+    </div>
+    <div class="col-md-9">
+      <table class="table table-hover table-striped table-bordered">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>ユーザーID</th>
+            <th>名前</th>
+            <th>メールアドレス</th>
+            <th>作成日</th>
+            <th>最終ログイン</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for sUser in users %}
+          <tr>
+            <td>
+              <img src="{{ sUser|picture }}" class="picture picture-rounded" />
+              <span class="label {{ css.userStatus(sUser) }}">
+                {{ consts.userStatus[sUser.status] }}
+              </span><br>
+              {% if sUser.admin %}
+              <span class="label label-primary">
+                Admin
+              </span>
+              {% endif %}
+            </td>
+            <td>
+              <strong>{{ sUser.username }}</strong>
+            </td>
+            <td>{{ sUser.name }}</td>
+            <td>{{ sUser.email }}</td>
+            <td>{{ sUser.createdAt|date('Y-m-d') }}</td>
+            <td>{{ sUser.lastLoginAt }}</td>
+            <td>
+              <div class="btn-group admin-user-menu">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                  編集
+                  <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li class="dropdown-header">編集メニュー</li>
+                  <li>
+                    <a href="">編集</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li class="dropdown-header">ステータス</li>
+                  <li class="dropdown-button">
+                  {% if sUser.status == 1 %}
+                  <form action="/admin/user/{{ sUser._id.toString() }}/activate" method="post">
+                    <button type="submit" class="btn btn-block btn-info">承認する</button>
+                  </form>
+                  {% endif  %}
+                  {% if sUser.status == 2 %}
+                  <form action="/admin/user/{{ sUser._id.toString() }}/suspend" method="post">
+                    <button type="submit" class="btn btn-block btn-warning">アカウント停止</button>
+                  </form>
+                  {% endif  %}
+                  {% if sUser.status == 3 %}
+                  <form action="/admin/user/{{ sUser._id.toString() }}/activate" method="post">
+                    <button type="submit" class="btn btn-block btn-default">元に戻す</button>
+                  </form>
+                  </li>
+                  <li class="dropdown-button">
+                  <form action="/admin/user/{{ sUser._id.toString() }}/suspend" method="post">
+                    <button type="submit" class="btn btn-block btn-danger">完全に削除する</button>
+                  </form>
+                  {% endif  %}
+
+                  {% if sUser.status == 2 %} {# activated な人だけこのメニューを表示 #}
+                  <li class="divider"></li>
+                  <li class="dropdown-header">管理者メニュー</li>
+
+                  <li class="dropdown-button">
+                    {% if sUser.admin %}
+                      {% if sUser.username != user.username %}
+                      <form action="/admin/user/{{ sUser._id.toString() }}/removeFromAdmin" method="post">
+                        <button type="submit" class="btn btn-block btn-danger">管理者からはずす</button>
+                      </form>
+                      {% else %}
+                      <p class="alert alert-danger">自分自身を管理者から外すことはできません</p>
+                      {% endif %}
+                    {% else %}
+                      <form action="/admin/user/{{ sUser._id.toString() }}/makeAdmin" method="post">
+                        <button type="submit" class="btn btn-block btn-danger">管理者にする</button>
+                      </form>
+                    {% endif %}
+                  </li>
+                  {% endif %}
+                </ul>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <ul class="pagination">
+
+        <li {% if pager.currentPage == 1 %}class="disabled"{% endif %}>
+          <a href="/admin/users?page={{ pager.previous|default(1) }}">&laquo;</a>
+        </li>
+        {% if pager.previousDots %}
+        <li><a href="#">...</a></li>
+        {% endif  %}
+        {% for page in pager.pages %}
+        <li {% if pager.currentPage == page %}class="active"{% endif %}>
+          <a href="/admin/users?page={{ page }}">{{ page }}</a>
+        </li>
+        {% endfor %}
+        {% if pager.nextDots %}
+        <li><a href="#">...</a></li>
+        {% endif  %}
+        <li {% if pager.currentPage == pager.pageCount %}class="disabled"{% endif %}>
+          <a href="/admin/users?page={{ pager.next|default(pager.pageCount) }}">&raquo;</a>
+        </li>
+      </ul>
+
+    </div>
+  </div>
+</div>
+{% endblock content_main %}
+
+{% block content_footer %}
+{% endblock content_footer %}
+
+{% block footer %}
+{% endblock footer %}
+
+
+

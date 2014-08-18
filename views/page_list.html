@@ -1,0 +1,81 @@
+{% extends 'layout/2column.html' %}
+
+{% block content_head %}
+  <header>
+  <h1 class="title" id="revision-path">{{ path }}</h1>
+  </header>
+{% endblock %}
+
+{% block content_main %}
+<div class="content-main">
+
+<ul class="nav nav-tabs">
+    <li class="active"><a href="#view-list" data-toggle="tab">リスト表示</a></li>
+    <li><a href="#view-timeline" data-toggle="tab">タイムライン表示</a></li>
+</ul>
+
+<h2>ページ一覧</h2>
+  <div class="tab-content">
+    {# list view #}
+    <div class="active wiki tab-pane fade in" id="view-list">
+      {% for page in pages %}
+        <a href="{{ page.path }}">{{ page.path }}</a>
+
+        {% if !page.isPublic() %}
+          <i class="fa fa-lock"></i>
+        {% endif %}
+        <br />
+      {% endfor %}
+
+        <ul class="pagination">
+          {% if pager.prev != null %}
+            <li class="prev"><a href="{{ path }}?offset={{ pager.prev }}&limit={{ pager.limit }}"><i class="fa fa-arrow-left"></i> Prev</a></li>
+          {% endif %}
+          {# この条件は無いな.. #}
+          {% if pages.length > 0 %}
+            <li class="next"><a href="{{ path }}?offset={{ pager.next }}&limit={{ pager.limit }}">Next <i class="fa fa-arrow-right"></i></a></li>
+          {% endif %}
+        </ul>
+    </div>
+
+    {# timeline view #}
+    <div class="tab-pane" id="view-timeline">
+      {% for page in pages %}
+      <div class="timeline-body" id="id-{{ page.id }}">
+        <h3 class="revision-path"><a href="{{ page.path }}">{{ page.path }}</a></h3>
+        <div class="revision-body" data-format="{{ page.revision.format }}"><pre></pre></div>
+        <pre class="hide raw-text-original">{{ page.revision.body }}</pre>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    $(function(){
+        $('#view-timeline .timeline-body').each(function()
+        {
+          var id = $(this).attr('id');
+          //var format = $(this).children('.body').data('format');
+          var format = 'text';
+          var contentId = '#' + id + ' .raw-text-original';
+          var revisionBody = '#' + id + ' .revision-body';
+          var revisionPath = '#' + id + ' .revision-path';
+          var renderer = new Crowi.renderer(contentId, format, revisionBody);
+          renderer.render();
+        });
+        //$('.tooltip .tabs').tabs();
+    });
+  </script>
+
+</div> {# /.content-main #}
+
+
+{% endblock %}
+
+
+{% block content_footer %}
+<footer>
+
+</footer>
+{% endblock %}
+

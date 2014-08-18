@@ -1,0 +1,28 @@
+
+<div class="modal fade" id="createMemo">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form role="form" class="form-inline" id="createMemoForm">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">新規メモを作成</h4>
+      </div>
+      <div class="modal-body">
+        <p><a href="{{ user_page_root(user) }}/メモ/{{ now|datetz('Y/m/d') }}/"><i class="fa fa-list-ul"></i> 今日のメモ一覧を見る</a></p>
+
+          <div class="input-group">
+            <span class="input-group-addon">{{ user_page_root(user) }}/メモ/{{ now|datetz('Y/m/d') }}/</span>
+            <input type="text" class="form-control" id="memoName" name="memoName" placeholder="メモ名を入力">
+          </div>
+          <input type="hidden" class="form-control" name="memoNamePrefix" value="{{ user_page_root(user) }}/メモ/{{ now|datetz('Y/m/d') }}/">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
+        <input type="submit" class="btn btn-primary" id="createMemoSubmit" value="作成">
+      </div>
+
+      </form>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

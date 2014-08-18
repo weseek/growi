@@ -1,0 +1,191 @@
+
+pre.body {
+  border: solid 1px #ccc;
+  background: #f0f0f0;
+}
+div.body {
+  padding: 10px;
+}
+
+.revision-toc {
+  float: right;
+  font-size: .9em;
+  border: solid 1px #aaa;
+  border-radius: 5px;
+  max-width: 250px;
+
+  .revision-toc-head {
+    display: inline-block;
+    float: right;
+    border-left: solid 1px #aaa;
+    border-bottom: solid 1px #aaa;
+    border-radius: 0 5px;
+    padding: 3px 11px;
+    font-weight: bold;
+    background: #f0f0f0;
+    margin-left: 5px;
+    margin-bottom: 5px;
+
+    &.collapsed {
+      border: none;
+      margin: 0;
+    }
+  }
+  .revision-toc-content {
+    padding: 10px;
+
+    > ul {
+      margin: 4px 4px 4px 15px;
+      padding: 5px;
+    }
+  }
+}
+
+.revision-head {
+
+  .revision-head-link {
+    display: none;
+    font-size: 15px;
+    padding-top: 8px;
+    padding-left: 10px;
+  }
+  &:hover .revision-head-link {
+    display: inline-block;
+  }
+}
+
+.wiki {
+  line-height: 1.6em;
+
+  h1, h2, h3, h4, h5, h6 {
+    margin-top: 1.6em;
+    margin-bottom: .8em;
+
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+
+  h1 {
+    font-size: 2.2em;
+    font-weight: bold;
+  }
+  h2 {
+    font-size: 1.8em;
+    font-weight: bold;
+  }
+  h3 {
+    font-size: 1.6em;
+    font-weight: bold;
+  }
+  h4 {
+    font-size: 1.4em;
+    font-weight: normal;
+  }
+  h5 {
+    font-size: 1.2em;
+    font-weight: normal;
+  }
+
+  p {
+    font-weight: normal;
+    margin-bottom: 9px;
+  }
+  blockquote {
+    font-size: 12px;
+  }
+
+  img {
+    margin: 5px;
+    box-shadow: 0 0 12px 0px #999;
+    border: solid 1px #999;
+  }
+
+  ul, ol {
+    padding-left: 18px;
+  }
+
+  // {{{ table (copied from bootstrap .table
+  table {
+    width: 100%;
+    margin-bottom: $line-height-computed;
+    // Cells
+    > thead,
+    > tbody,
+    > tfoot {
+      > tr {
+        > th,
+        > td {
+          padding: $table-cell-padding;
+          line-height: $line-height-base;
+          vertical-align: top;
+          border-top: 1px solid $table-border-color;
+        }
+      }
+    }
+    // Bottom align for column headings
+    > thead > tr > th {
+      vertical-align: bottom;
+      border-bottom: 2px solid $table-border-color;
+    }
+    // Remove top border from thead by default
+    > caption + thead,
+    > colgroup + thead,
+    > thead:first-child {
+      > tr:first-child {
+        > th,
+        > td {
+          border-top: 0;
+        }
+      }
+    }
+    // Account for multiple tbody instances
+    > tbody + tbody {
+      border-top: 2px solid $table-border-color;
+    }
+
+    // Nesting
+    table {
+      background-color: $body-bg;
+    }
+
+    // .table-bordered
+    border: 1px solid $table-border-color;
+    > thead,
+    > tbody,
+    > tfoot {
+      > tr {
+        > th,
+        > td {
+          border: 1px solid $table-border-color;
+        }
+      }
+    }
+    > thead > tr {
+      > th,
+      > td {
+        border-bottom-width: 2px;
+      }
+    }
+  }
+  // }}}
+}
+
+
+@media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) { // {{{ tablet size
+  .crowi.main-container .main .wiki {
+  }
+} // }}}
+
+@media (max-width: $screen-xs-max) { // {{{ iPhone size
+  .crowi.main-container .main .wiki {
+  }
+} // }}}
+
+@media (max-width: $screen-sm-max) { // {{{ tablet and iphone size
+  .crowi.main-container .main .wiki {
+    img {
+      max-width: 100%;
+    }
+  }
+}

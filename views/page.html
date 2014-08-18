@@ -1,0 +1,327 @@
+{% extends 'layout/2column.html' %}
+
+{% block html_title %}{{ path|path2name }} · {{ path }}{% endblock %}
+
+{% block content_head %}
+  <header data-spy="affix" data-offset-top="80" id="page-header">
+    <p class="stopper"><a href="#" data-affix-disable="#page-header"><i class="fa fa-chevron-up"></i></a></p>
+
+    <h1 class="title" id="revision-path">{{ path }}</h1>
+  </header>
+{% endblock %}
+
+{% block content_main %}
+<div class="content-main">
+
+  {% if not page %}
+    <h2>ページを作成する</h2>
+
+    {% include '_form.html' %}
+
+  {% else %}
+
+  <ul class="nav nav-tabs hidden-print">
+
+    <li class=" {% if not req.body.pageForm %}active{% endif %}" data-toggle="tooltip" {# data-title="あなたの 確認待ち です" title="" data-placement="bottom" data-trigger="manual" data-tooltip-stay #}>
+      <a href="#revision-body" data-toggle="tab">
+      <i class="fa fa-magic"></i>
+      {#
+        <img src="//graph.facebook.com/588883490/picture?size=square" width="16"> <i class="fa fa-arrow-right"></i> <img src="//graph.facebook.com/588883490/picture?size=square" width="16">
+        <span class="label label-danger" style=""> 承認待ち</span>
+      #}
+      </a>
+    </li>
+
+    <li><a href="#raw-text" data-toggle="tab"><i class="fa fa-font"></i> テキスト表示</a></li>
+    <li {% if req.body.pageForm %}class="active"{% endif %}><a href="#edit-form" data-toggle="tab"><i class="fa fa-pencil-square-o"></i> 編集</a></li>
+
+    <li class="dropdown pull-right">
+      <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+        <i class="fa fa-wrench"></i> <span class="caret"></span>
+      </a>
+      <ul class="dropdown-menu">
+       <li><a href="#" data-target="#renamePage" data-toggle="modal"><i class="fa fa-share"></i> 移動</a></li>
+       <li><a href="?presentation=1" class="toggle-presentation"><i class="fa fa-arrows-alt"></i> プレゼンモード (beta)</a></li>
+      </ul>
+    </li>
+
+  </ul>
+
+  {% include 'modal/widget_rename.html' %}
+
+
+  <div class="tab-content wiki-content">
+  {% if req.query.renamed %}
+  <div class="alert alert-info">
+    <strong>移動しました: </strong> このページは <code>{{ req.query.renamed }}</code> から移動しました。
+  </div>
+  {% endif %}
+  {% if not page.isLatestRevision() %}
+  <div class="alert alert-warning">
+    <strong>注意: </strong> これは現在の版ではありません。
+  </div>
+  {% endif %}
+
+{#
+  <div class="panel panel-default">
+    <div class="panel-heading">承認待ち</div>
+    <div class="panel-body">
+      ほげほげ
+    </div>
+  </div>
+#}
+
+    {# formatted text #}
+    <div class="tab-pane {% if not req.body.pageForm %}active{% endif %}" id="revision-body">
+      <div class="revision-toc" id="revision-toc">
+        <a data-toggle="collapse" data-parent="#revision-toc" href="#revision-toc-content" class="revision-toc-head collapsed">目次</a>
+
+      </div>
+    {% if revision.format == 'text' %}
+      <div class="wiki {{ revision.format }}" id="revision-body-content"><pre class="" id=""></pre></div>
+    {% else  %}
+      <div class="wiki {{ revision.format }}" id="revision-body-content"></div>
+    {% endif  %}
+    </div>
+
+    {# raw text #}
+    <div class="tab-pane" id="raw-text">
+      <pre id="raw-text-original">{{ revision.body }}</pre>
+    </div>
+
+    {# edit form #}
+    <div class="tab-pane {% if req.body.pageForm %}active{% endif %}" id="edit-form">
+      {% include '_form.html' %}
+    </div>
+  </div>
+  <script type="text/javascript">
+    $(function(){
+        var renderer = new Crowi.renderer('#raw-text-original', '{{ revision.format }}');
+        renderer.render();
+        Crowi.correctHeaders('#revision-body-content');
+        Crowi.revisionToc('#revision-body-content', '#revision-toc');
+
+        $('#edit-form').submit(function()
+        {
+          //console.log('save');
+          //return false;
+        });
+
+        var topMargin = $('#page-header').outerHeight() + 20;
+        $('#page-header').on('affixed.bs.affix', function(e) {
+          $('.content-main').css({'padding-top': topMargin});
+        });
+        $('#page-header').on('affixed-top.bs.affix', function(e) {
+          $('.content-main').css({'padding-top': 0});
+        });
+        $('[data-affix-disable]').on('click', function(e) {
+          $elm = $($(this).data('affix-disable'));
+          $elm.removeClass('affix')
+            .addClass('affix-top')
+            .removeAttr('data-spy');
+          $('.content-main').css({'padding-top': 0});
+
+          return false;
+        });
+    });
+  </script>
+  {% endif %}
+</div>
+
+{% endblock %}
+
+{% block content_footer %}
+<footer>
+  {% if not page %}
+  {% else %}
+  <p class="meta">
+  Path: <span id="pagePath">{{ page.path }}</span><br />
+  Revision: {{ revision._id.toString() }}<br />
+  {% if author %}
+  Last Updated User: <a href="/user/{{ author.username }}">{{ author.name }}</a><br />
+  {% endif %}
+  Created: {{ page.createdAt|datetz('Y-m-d H:i:s') }}<br />
+  Updated: {{ page.updatedAt|datetz('Y-m-d H:i:s') }}<br />
+  </p>
+  {% endif %}
+</footer>
+
+{% endblock %}
+
+{% block side_header %}
+<div class="page-meta">
+  <div class="row">
+    <div class="col-md-3 creator-picture">
+      <img src="{{ user|picture }}" class="picture picture-lg picture-rounded"><br>
+    </div>
+    <div class="col-md-9">
+      <p class="creator">
+        {{ user.name }}
+      </p>
+      <p class="created-at">
+        作成日: {{ page.createdAt|datetz('Y/m/d H:i:s') }}<br>
+        最終更新: {{ page.updatedAt|datetz('Y/m/d H:i:s') }} <a href="/user/{{ author.username }}"><img src="{{ author|picture }}" class="picture picture-xs picture-rounded" alt="{{ author.name }}"></a>
+      </p>
+    </div>
+  </div>
+
+  <div class="like-box">
+    <dl class="dl-horizontal">
+      <dt>
+        <i class="fa fa-star"></i> お気に入り
+      </dt>
+      <dd>
+        <button class="btn btn-default btn-sm btn-bookmark" id="bookmarkButton"><i class="fa fa-star-o"></i></button>
+      </dd>
+
+      <dt>
+        <i class="fa fa-thumbs-o-up"></i> いいね!
+      </dt>
+      <dd>
+        <p class="liker-count">
+        {{ page.liker.length }}
+        </p>
+        <p class="liker-list">
+          {% for liker in page.liker %}
+            <a href="{{ user_page_root(liker) }}" title="{{ liker.name }}"><img alt="{{ liker.name }}" src="{{ liker|picture }}" class="picture picture-xs picture-rounded"></a>
+          {% endfor %}
+          {% if page.liker.length > 10 %}
+            (...)
+          {% endif %}
+        </p>
+        {% if page.isLiked(user) %}
+          <button data-liked="1" class="btn btn-default btn-sm active" id="pageLikeButton"><i class="fa fa-thumbs-up"></i> いいね！！！</button>
+        {% else %}
+          <button data-liked="0" class="btn btn-default btn-sm" id="pageLikeButton"><i class="fa fa-thumbs-o-up"></i> いいね！！！</button>
+        {% endif %}
+      </dd>
+
+      <dt><i class="fa fa-eye"></i> 見た人</dt>
+      <dd>
+        <p class="seen-user-count">
+          {{ page.seenUsers.length }}
+        </p>
+        <p class="seen-user-list">
+          {% for seenUser in page.seenUsers %}
+          <a href="{{ user_page_root(seenUser) }}" title="{{ seenUser.name }}"><img alt="{{ seenUser.name }}" src="{{ seenUser|picture }}" class="picture picture-xs picture-rounded"></a>
+          {% endfor %}
+          {% if page.seenUsers.length > 10 %}
+            (...)
+          {% endif %}
+        </p>
+      </dd>
+    </dl>
+  </div>
+<script>
+$(function() {
+  $.get('/_api/page/{{ page._id.toString() }}/bookmark', function(data) {
+    if (data.bookmarked) {
+      $('#bookmarkButton')
+        .removeClass('btn-default')
+        .addClass('btn-warning active bookmarked');
+      $('#bookmarkButton i')
+        .removeClass('fa-star-o')
+        .addClass('fa-star');
+    }
+  });
+
+  $('#bookmarkButton').click(function() {
+    var pageId = {{page._id|json|safe}};
+    $.post('/_api/page/{{ page._id.toString() }}/bookmark', function(data) {
+      console.log(data);
+    });
+  });
+  $('#pageLikeButton').click(function() {
+    var pageId = {{page._id|json|safe}};
+    $.post('/_api/page/{{ page._id.toString() }}/like', function(data) {
+      console.log(data);
+    });
+  });
+});
+</script>
+</div>
+{% endblock %} {# side_header #}
+
+{% block side_content %}
+
+  <h3><i class="fa fa-link"></i> 共有</h3>
+  <ul class="fitted-list">
+    <li data-toggle="tooltip" data-placement="bottom" title="共有用リンク" class="input-group">
+      <span class="input-group-addon">共有用</span>
+      <input class="copy-link form-control" type="text" value="{{ config.app.title }} {{ path }}  {{ baseUrl }}/_r/{{ page._id.toString() }}">
+    </li>
+    <li data-toggle="tooltip" data-placement="bottom" title="Wiki記法" class="input-group">
+      <span class="input-group-addon">Wikiタグ</span>
+      <input class="copy-link form-control" type="text" value="&lt;{{ path }}&gt;">
+    </li>
+    <li data-toggle="tooltip" data-placement="bottom" title="Markdown形式のリンク" class="input-group">
+      <span class="input-group-addon">Markdown</span>
+      <input class="copy-link form-control" type="text" value="[{{ path }}]({{ baseUrl }}/_r/{{ revision._id.toString() }})">
+    </li>
+  </ul>
+
+  <h3><i class="fa fa-history"></i> History</h3>
+  {% if not page %}
+  {% else %}
+  <ul class="revision-history">
+    {% for t in tree %}
+    <li>
+      <a href="?revision={{ t._id.toString() }}">
+        <img src="{{ t.author|picture }}" class="picture picture-rounded">
+        {% if t.author %}{{ t.author.username }}{% else %}-{% endif %}<br>{{ t.createdAt|datetz('Y-m-d H:i:s') }}
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+{% endblock %}
+
+{% block footer %}
+<div id="notifPageEdited" class="fk-hide fk-notif fk-notif-danger"><i class="fa fa-exclamation-triangle"></i> <span class="edited-user"></span>さんがこのページを編集しました。 <a href="javascript:location.reload();"><i class="fa fa-angle-double-right"></i> 最新版を読み込む</a></div>
+<div id="notifPageEditing" class="fk-hide fk-notif fk-notif-warning"><i class="fa fa-exclamation-triangle"></i> 他の人がこのページの編集を開始しました。</div>
+
+<script>
+  $(function() {
+    var me = {{ user|json|safe }};
+    var socket = io.connect('{{ baseUrl }}');
+    socket.on('page edited', function (data) {
+      if (data.user._id != me._id
+        && data.page.path == {{ page.path|json|safe }}) {
+        $('#notifPageEdited').removeClass('fk-hide').css({bottom: 0});
+        $('#notifPageEdited .edited-user').html(data.user.name);
+      }
+    });
+  });
+</script>
+{% endblock %}
+
+{% block body_end %}
+  {% parent %}
+
+  <div id="presentation-layer" class="fullscreen-layer">
+    <div id="presentation-container"></div>
+  </div>
+  <script>
+    $(function() {
+      var presentaionInitialized = false
+        , $b = $('body');
+
+      $(document).on('click', '.toggle-presentation', function(e) {
+        var $a = $(this);
+
+        e.preventDefault();
+        $b.toggleClass('overlay-on');
+
+        if (!presentaionInitialized) {
+          presentaionInitialized = true;
+
+          $('<iframe />').attr({
+            src: $a.attr('href')
+          }).appendTo($('#presentation-container'));
+        }
+      }).on('click', '.fullscreen-layer', function() {
+        $b.toggleClass('overlay-on');
+      });
+    });
+  </script>
+{% endblock %}
