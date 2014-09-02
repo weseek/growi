@@ -149,6 +149,8 @@
 {% endblock %}
 
 {% block side_header %}
+
+{% if page %} {# {{{ if page #}
 <div class="page-meta">
   <div class="row">
     <div class="col-md-3 creator-picture">
@@ -240,6 +242,7 @@ $(function() {
 });
 </script>
 </div>
+{% endif %} {# if page }}} #}
 {% endblock %} {# side_header #}
 
 {% block side_content %}
@@ -248,7 +251,7 @@ $(function() {
   <ul class="fitted-list">
     <li data-toggle="tooltip" data-placement="bottom" title="共有用リンク" class="input-group">
       <span class="input-group-addon">共有用</span>
-      <input class="copy-link form-control" type="text" value="{{ config.app.title }} {{ path }}  {{ baseUrl }}/_r/{{ page._id.toString() }}">
+      <input class="copy-link form-control" type="text" value="{{ config.crowi['app:title'] }} {{ path }}  {{ baseUrl }}/_r/{{ page._id.toString() }}">
     </li>
     <li data-toggle="tooltip" data-placement="bottom" title="Wiki記法" class="input-group">
       <span class="input-group-addon">Wikiタグ</span>

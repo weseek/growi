@@ -5,6 +5,7 @@ module.exports = function(app) {
     , models = app.set('models')
     , Page = models.Page
     , User = models.User
+    , Config = models.Config
 
     , MAX_PAGE_LIST = 5
     , actions = {};
@@ -64,6 +65,20 @@ module.exports = function(app) {
 
   actions.index = function(req, res) {
     return res.render('admin/index');
+  };
+
+  actions.app = {};
+  actions.app.index = function(req, res) {
+    var settingForm;
+    settingForm = Config.setupCofigFormData('crowi', req.config);
+
+    debug('settingForm', settingForm);
+    return res.render('admin/app', {
+      settingForm: settingForm,
+    });
+  };
+
+  actions.app.settingUpdate = function(req, res) {
   };
 
   actions.user = {};
@@ -139,6 +154,23 @@ module.exports = function(app) {
       });
     });
   };
+
+  actions.api = {};
+  actions.api.appSetting = function(req, res) {
+    var form = req.body.settingForm;
+
+    debug("posted form", req.form);
+    debug("posted form", form);
+    if (req.form.isValid) {
+      Config.updateNamespaceByArray('crowi', form, function(err, config) {
+        Config.updateConfigCache('crowi', config)
+        return res.json({status: true});
+      });
+    } else {
+      return res.json({status: false, message: req.form.errors.join('\n')});
+    }
+  };
+
 
   return actions;
 };

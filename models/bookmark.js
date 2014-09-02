@@ -1,4 +1,4 @@
-module.exports = function(models) {
+module.exports = function(app, models) {
   var mongoose = require('mongoose')
     , debug = require('debug')('crowi:models:bookmark')
     , ObjectId = mongoose.Schema.Types.ObjectId
@@ -9,7 +9,6 @@ module.exports = function(models) {
     user: { type: ObjectId, ref: 'User', index: true },
     createdAt: { type: Date, default: Date.now() }
   });
-
 
   // bookmark チェック用
   bookmarkSchema.statics.findByPageIdAndUser = function(pageId, user, callback) {

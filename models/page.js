@@ -1,4 +1,4 @@
-module.exports = function(models) {
+module.exports = function(app, models) {
   var mongoose = require('mongoose')
     , debug = require('debug')('crowi:models:page')
     , ObjectId = mongoose.Schema.Types.ObjectId
@@ -28,13 +28,13 @@ module.exports = function(models) {
   }
 
   pageSchema = new mongoose.Schema({
-    path: { type: String, required: true },
+    path: { type: String, required: true, index: true },
     revision: { type: ObjectId, ref: 'Revision' },
-    redirectTo: String,
-    grant: { type: Number, default: GRANT_PUBLIC },
+    redirectTo: { type: String, index: true },
+    grant: { type: Number, default: GRANT_PUBLIC, index: true },
     grantedUsers: [{ type: ObjectId, ref: 'User' }],
-    liker: [{ type: ObjectId, ref: 'User' }],
-    seenUsers: [{ type: ObjectId, ref: 'User' }],
+    liker: [{ type: ObjectId, ref: 'User', index: true }],
+    seenUsers: [{ type: ObjectId, ref: 'User', index: true }],
     createdAt: { type: Date, default: Date.now },
     updatedAt: Date
   });
@@ -189,17 +189,19 @@ module.exports = function(models) {
       /^\/\-\/.*/,
       /^\/_r\/.*/,
       /.+\/edit$/,
-      /^\/(register|login|logout|admin|me|files|trash|paste|comments)/,
+      /^\/(register|login|logout|admin|me|files|trash|paste|comments).+/,
     ];
 
-    forbiddenPages.forEach(function(pi) {
-      var page = forbiddenPages[pi];
-      if (name.match(page)) {
-        return false;
+    var isCreatable = true;
+    forbiddenPages.forEach(function(page) {
+      var pageNameReg = new RegExp(page);
+      if (name.match(pageNameReg)) {
+        isCreatable = false;
+        return ;
       }
     });
 
-    return true;
+    return isCreatable;
   };
 
   pageSchema.statics.updateRevision = function(pageId, revisionId, cb) {

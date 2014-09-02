@@ -114,9 +114,13 @@ module.exports = function(app) {
         return res.redirect('/');
       }
 
-      pageData.seen(req.user, function(err, data) {
-        return renderPage(data, req, res);
-      });
+      if (pageData) {
+        pageData.seen(req.user, function(err, data) {
+          return renderPage(data, req, res);
+        });
+      } else {
+          return renderPage(null, req, res);
+      }
     });
   };
 

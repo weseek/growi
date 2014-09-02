@@ -1,0 +1,29 @@
+{
+  "name": "Crowi",
+  "description": "The simple & powerful Wiki.",
+  "keywords": [
+    "wiki",
+    "communication"
+  ],
+  "website": "https://crowi.wiki/",
+  "repository": "https://github.com/crocos/crowi",
+  "logo": "http://crowi.wiki/images/logo/128x128.png",
+  "success_url": "/",
+  "scripts": {
+    "postdeploy": "grunt"
+  },
+  "env": {
+    "NODE_ENV": "production",
+    "SECRET_TOKEN": {
+      "description": "A secret key for verifying the integrity of signed cookies.",
+      "generator": "secret"
+    },
+    "WEB_CONCURRENCY": {
+      "description": "The number of processes to run.",
+      "value": "5"
+    }
+  },
+  "addons": [
+    "mongohq:free"
+  ]
+}

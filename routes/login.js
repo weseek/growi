@@ -4,7 +4,7 @@ module.exports = function(app) {
   var googleapis = require('googleapis')
     , debug = require('debug')('crowi:routes:login')
     , models = app.set('models')
-    , config = require('config')
+    , config = app.set('config')
     , Page = models.Page
     , User = models.User
     , Revision = models.Revision
@@ -119,7 +119,7 @@ module.exports = function(app) {
     }
 
     // config で closed ならさよなら
-    if (config.security.registrationMode == 'Closed') {
+    if (config.crowi['security:registrationMode'] == 'Closed') {
       return res.redirect('/');
     }
 

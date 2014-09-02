@@ -1,18 +1,24 @@
 module.exports = function(app) {
   var middleware = require('../lib/middlewares')
-    , form = require('../form')
-    , page = require('./page')(app)
-    , login = require('./login')(app)
-    , logout = require('./logout')(app)
-    , me = require('./me')(app)
-    , admin = require('./admin')(app)
-    , user = require('./user')(app);
+    , form      = require('../form')
+    , page      = require('./page')(app)
+    , login     = require('./login')(app)
+    , logout    = require('./logout')(app)
+    , me        = require('./me')(app)
+    , admin     = require('./admin')(app)
+    , installer = require('./installer')(app)
+    , user      = require('./user')(app);
 
   app.get('/'                        , middleware.loginRequired() , page.pageListShow);
-  app.get('/login'                   , login.login);
-  app.post('/login'                  , form.login                 , login.login);
-  app.post('/register'               , form.register              , login.register);
-  app.get('/register'                , login.register);
+
+  app.get('/installer'               , middleware.applicationNotInstalled() , installer.index);
+  app.post('/installer/createAdmin'  , middleware.applicationNotInstalled() , form.register , installer.createAdmin);
+  //app.post('/installer/user'         , middleware.applicationNotInstalled() , installer.createFirstUser);
+
+  app.get('/login'                   , middleware.applicationInstalled()    , login.login);
+  app.post('/login'                  , form.login                           , login.login);
+  app.post('/register'               , form.register                        , login.register);
+  app.get('/register'                , middleware.applicationInstalled()    , login.register);
   app.post('/register/google'        , login.registerGoogle);
   app.get('/google/callback'         , login.googleCallback);
   app.get('/login/google'            , login.loginGoogle);
@@ -20,6 +26,14 @@ module.exports = function(app) {
   app.get('/logout'                  , logout.logout);
 
   app.get('/admin'                      , middleware.loginRequired() , middleware.adminRequired() , admin.index);
+  app.get('/admin/app'                  , middleware.loginRequired() , middleware.adminRequired() , admin.app.index);
+  app.post('/_api/admin/settings/app'   , middleware.loginRequired() , middleware.adminRequired() , form.admin.app, admin.api.appSetting);
+  app.post('/_api/admin/settings/sec'   , middleware.loginRequired() , middleware.adminRequired() , form.admin.sec, admin.api.appSetting);
+  app.post('/_api/admin/settings/aws'   , middleware.loginRequired() , middleware.adminRequired() , form.admin.aws, admin.api.appSetting);
+  app.post('/_api/admin/settings/google', middleware.loginRequired() , middleware.adminRequired() , form.admin.google, admin.api.appSetting);
+  app.post('/_api/admin/settings/fb'    , middleware.loginRequired() , middleware.adminRequired() , form.admin.fb
+  , admin.api.appSetting);
+
   app.get('/admin/users'                , middleware.loginRequired() , middleware.adminRequired() , admin.user.index);
   app.post('/admin/user/:id/makeAdmin'  , middleware.loginRequired() , middleware.adminRequired() , admin.user.makeAdmin);
   app.post('/admin/user/:id/removeFromAdmin', middleware.loginRequired() , middleware.adminRequired() , admin.user.removeFromAdmin);

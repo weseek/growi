@@ -1,5 +1,9 @@
-Crowi - The Simple and Powerful Communication Tool Based on Wiki
+Crowi - The Simple & Powerful Communication Tool Based on Wiki
 ================================================================
+
+
+[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
+
 
 Crowi is:
 
@@ -7,6 +11,7 @@ Crowi is:
 * Markdown supported,
 * Useful timeline list view,
 * Fast.
+
 
 Install
 ---------
@@ -17,11 +22,8 @@ Install dependencies and build CSS and JavaScript:
     $ bower install
     $ grunt
 
-Configuration:
-
-    $ cp config/default.js.dist config/default.js
-
 More info are [here](doc/index.md).
+
 
 Dependencies
 -------------
@@ -31,6 +33,16 @@ Dependencies
 * Amazon S3
 * Facebook Application (optional)
 * Google Project (optional)
+
+
+Start Up on Local
+-------------------
+
+Crowi is designed setting up to Heroku or some PaaS, but you can start up Crowi with ENV parameter on your local.
+
+```
+$ MONGOLAB_URI=mongodb://username:password@localhost/crowi node app.js
+```
 
 License
 ---------

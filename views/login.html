@@ -4,7 +4,14 @@
 
 {% block content_main %}
 
-<h1 class="login-page" href="/">{% block title %}{{ config.app.title }}{% endblock %}</h1>
+<h1 class="login-page">
+  {% if config.crowi['app:title'] == 'Crowi' %}
+    <img src="/logo/135x32.png" alt="Crowi">
+  {% else %}
+    {{ config.crowi['app:title'] }}<br>
+    <img src="/logo/100x11_w.png" alt="powered by Crowi">
+  {% endif %}
+</h1>
 
 <div class="login-dialog-container flip-container col-md-5">
 
@@ -72,7 +79,7 @@
 
     <h2>新規登録</h2>
 
-    {% if config.security.registrationMode != 'Closed' %}
+    {% if config.security.registrationMode == 'Restricted' %}
     <p class="alert alert-warning">
     この Wiki への新規登録は制限されています。<br>
     利用を開始するには、新規登録後、管理者による承認が必要です。
@@ -132,12 +139,12 @@
         <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
         <input type="email" class="form-control" placeholder="E-mail" name="registerForm[email]" value="{{ googleEmail|default(req.body.registerForm.email) }}" required>
       </div>
-      {% if config.security && config.security.registrationWhiteList.length %}
+      {% if config.crowi['security:registrationWhiteList] && config.crowi['security:registrationWhiteList].length %}
       <p class="help-block">
       この Wiki では以下のメールアドレスのみ登録可能です。
       </p>
       <ul>
-        {% for em in config.security.registrationWhiteList %}
+        {% for em in config.crowi['security:registrationWhiteList'] %}
         <li><code>{{ em }}</code></li>
         {% endfor %}
       </ul>

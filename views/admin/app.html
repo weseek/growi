@@ -1,0 +1,269 @@
+{% extends '../layout/2column.html' %}
+
+{% block html_title %}アプリ設定 · {% endblock %}
+
+{% block content_head %}
+<header id="page-header">
+  <h1 class="title" id="">アプリ設定</h1>
+</header>
+{% endblock %}
+
+{% block content_main %}
+<div class="content-main">
+  {% set smessage = req.flash('successMessage') %}
+  {% if smessage.length %}
+  <div class="alert alert-success">
+    {{ smessage }}
+  </div>
+  {% endif %}
+
+  {% set emessage = req.flash('errorMessage') %}
+  {% if emessage.length %}
+  <div class="alert alert-danger">
+    {{ emessage }}
+  </div>
+  {% endif %}
+
+  <div class="row">
+    <div class="col-md-3">
+      <ul class="nav nav-pills nav-stacked">
+        <li><a href="/admin"><i class="fa fa-cube"></i> Wiki管理トップ</a></li>
+        <li class="active"><a href="/admin/app"><i class="fa fa-gears"></i> アプリ設定</a></li>
+        <li><a href="/admin/users"><i class="fa fa-users"></i> ユーザー管理</a></li>
+      </ul>
+    </div>
+    <div class="col-md-9">
+
+      <form action="/_api/admin/settings/app" method="post" class="form-horizontal" id="appSettingForm" role="form">
+      <fieldset>
+        <legend>アプリ設定</legend>
+        <div class="form-group">
+          <label for="settingForm[app:title]" class="col-xs-3 control-label">Wikiの名前</label>
+          <div class="col-xs-6">
+            <input class="form-control" type="text" name="settingForm[app:title]" value="{{ settingForm['app:title'] }}">
+
+            <p class="help-block">ヘッダーやHTMLタイトルに使用されるWikiの名前を変更できます。</p>
+            </p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="settingForm[app:confidential]" class="col-xs-3 control-label">コンフィデンシャル表示</label>
+          <div class="col-xs-6">
+            <input class="form-control" type="text" name="settingForm[app:confidential]" value="{{ settingForm['app:confidential'] }}" placeholder="例: 社外秘">
+            <p class="help-block">ここに入力した内容は、ヘッダー等に表示されます。</p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-xs-offset-3 col-xs-6">
+            <button type="submit" class="btn btn-primary">更新</button>
+          </div>
+        </div>
+      </fieldset>
+      </form>
+
+      <form action="/_api/admin/settings/sec" method="post" class="form-horizontal" id="secSettingForm" role="form">
+      <fieldset>
+      <legend>セキュリティ設定</legend>
+
+        <div class="form-group">
+          <label for="settingForm[security:registrationMode]" class="col-xs-3 control-label">公開設定</label>
+          <div class="col-xs-6">
+            <select class="form-control" name="settingForm[security:registrationMode]" value="{{ settingForm['security:registrationMode'] }}">
+              <option value="Open">公開 (だれでも登録可能)</option>
+              <option value="Resricted">制限 (登録完了には管理者の承認が必要)</option>
+              {# <option value="Closed">非公開 (登録には管理者による招待が必要)</option> #}
+            </select>
+            <p class="help-block">ここに入力した内容は、ヘッダー等に表示されます。</p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="settingForm[security:registrationWhiteList]" class="col-xs-3 control-label">登録許可メールアドレスの<br>ホワイトリスト</label>
+          <div class="col-xs-6">
+            <textarea class="form-control" type="textarea" name="settingForm[security:registrationWhiteList]" placeholder="例: @crowi.wiki">{{ settingForm['security:registrationWhiteList']|join('\n') }}</textarea>
+            <p class="help-block">登録可能なメールアドレスを制限することができます。例えば、会社で使う場合、<code>@crowi.wiki</code> などと記載すると、その会社のメールアドレスを持っている人のみ登録可能になります。<br>
+            1行に1メールアドレス入力してください。</p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-xs-offset-3 col-xs-6">
+            <button type="submit" class="btn btn-primary">更新</button>
+          </div>
+        </div>
+
+      </fieldset>
+      </form>
+
+      <form action="/_api/admin/settings/aws" method="post" class="form-horizontal" id="awsSettingForm" role="form">
+      <fieldset>
+      <legend>AWS設定</legend>
+        <p class="well">S3 にアクセスするための設定を行います。AWS の設定を完了させると、ファイルアップロード機能、プロフィール写真機能などが有効になります。<br>
+          <br>
+
+          <span class="text-danger"><i class="fa fa-warning"></i> この設定を途中で変更すると、これまでにアップロードしたファイル等へのアクセスができなくなりますのでご注意下さい。</span>
+        </p>
+
+        <div class="form-group">
+          <label for="settingForm[app.region]" class="col-xs-3 control-label">リージョン</label>
+          <div class="col-xs-6">
+            <input class="form-control" type="text" name="settingForm[aws:region]" placeholder="例: ap-northeast-1" value="{{ settingForm['aws:region'] }}">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="settingForm[aws:bucket]" class="col-xs-3 control-label">バケット名</label>
+          <div class="col-xs-6">
+            <input class="form-control" type="text" name="settingForm[aws:bucket]" placeholder="例: crowi"  value="{{ settingForm['aws:bucket'] }}">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="settingForm[aws:accessKeyId]" class="col-xs-3 control-label">Access Key ID</label>
+          <div class="col-xs-6">
+            <input class="form-control" type="text" name="settingForm[aws:accessKeyId]" value="{{ settingForm['aws:accessKeyId'] }}">
+          </div>
+
+        </div>
+
+        <div class="form-group">
+          <label for="settingForm[aws:secretAccessKey]" class="col-xs-3 control-label">Secret Access Key</label>
+          <div class="col-xs-6">
+            <input class="form-control" type="text" name="settingForm[aws:secretAccessKey]" value="{{ settingForm['aws:secretAccessKey'] }}">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-xs-offset-3 col-xs-6">
+            <button type="submit" class="btn btn-primary">更新</button>
+          </div>
+        </div>
+
+      </fieldset>
+      </form>
+
+      <form action="/_api/admin/settings/google" method="post" class="form-horizontal" id="googleSettingForm" role="form">
+      <fieldset>
+      <legend>Google 設定</legend>
+        <p class="well">Google プロジェクトの設定をすると、Google アカウントにコネクトして登録やログインが可能になります。</p>
+
+        <div class="form-group">
+          <label for="settingForm[google:clientId]" class="col-xs-3 control-label">Client ID</label>
+          <div class="col-xs-6">
+            <input class="form-control" type="text" name="settingForm[google:clientId]" value="{{ settingForm['google:clientId'] }}">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="settingForm[google:clientSecret]" class="col-xs-3 control-label">Client Secret</label>
+          <div class="col-xs-6">
+            <input class="form-control" type="text" name="settingForm[google:clientSecret]" value="{{ settingForm['google:clientSecret'] }}">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-xs-offset-3 col-xs-6">
+            <button type="submit" class="btn btn-primary">更新</button>
+          </div>
+        </div>
+
+      </fieldset>
+      </form>
+
+      <form action="/_api/admin/settings/fb" method="post" class="form-horizontal" id="fbSettingForm" role="form">
+      <fieldset>
+      <legend>Facebook 設定</legend>
+        <p class="well">Facebook アプリケーションの設定をすると、Facebook にコネクトして登録やログインが可能になります。</p>
+
+        <div class="form-group">
+          <label for="settingForm[facebook:appId]" class="col-xs-3 control-label">facebook ID</label>
+          <div class="col-xs-6">
+            <input class="form-control" type="text" name="settingForm[facebook:appId]" value="{{ settingForm['facebook:appId'] }}">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="settingForm[facebook:secret]" class="col-xs-3 control-label">Secret</label>
+          <div class="col-xs-6">
+            <input class="form-control" type="text" name="settingForm[facebook:secret]" value="{{ settingForm['facebook:secret'] }}">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-xs-offset-3 col-xs-6">
+            <button type="submit" class="btn btn-primary">更新</button>
+          </div>
+        </div>
+
+      </fieldset>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    $(function()
+    {
+      $('#appSettingForm, #secSettingForm, #awsSettingForm, #googleSettingForm, #fbSettingForm').each(function() {
+        $(this).submit(function()
+        {
+          function showMessage(formId, msg, status) {
+            $('#' + formId + ' .alert').remove();
+
+            if (!status) {
+              status = 'success';
+            }
+            var $message = $('<p class="alert"></p>');
+            $message.addClass('alert-' + status);
+            $message.html(msg.replace('\n', '<br>'));
+            $message.insertAfter('#' + formId + ' legend');
+
+            if (status == 'success') {
+              setTimeout(function()
+              {
+                $message.fadeOut({
+                  complete: function() {
+                    $message.remove();
+                  }
+                });
+              }, 5000);
+            }
+          }
+
+          var $form = $(this);
+          var $id = $form.attr('id');
+          var $button = $('button', this);
+          $button.attr('disabled', 'disabled');
+          var jqxhr = $.post($form.attr('action'), $form.serialize(), function(data)
+            {
+              console.log(data);
+              if (data.status) {
+                showMessage($id, '更新しました');
+              } else {
+                showMessage($id, data.message, 'danger');
+              }
+            })
+            .fail(function() {
+              showMessage($id, 'エラーが発生しました', 'danger');
+            })
+            .always(function() {
+              $button.removeAttr('disabled');
+          });
+          return false;
+        });
+      });
+
+    });
+  </script>
+
+</div>
+{% endblock content_main %}
+
+{% block content_footer %}
+{% endblock content_footer %}
+
+{% block footer %}
+{% endblock footer %}
+
+
