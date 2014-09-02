@@ -139,7 +139,7 @@
         <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
         <input type="email" class="form-control" placeholder="E-mail" name="registerForm[email]" value="{{ googleEmail|default(req.body.registerForm.email) }}" required>
       </div>
-      {% if config.crowi['security:registrationWhiteList] && config.crowi['security:registrationWhiteList].length %}
+      {% if config.crowi['security:registrationWhiteList'] && config.crowi['security:registrationWhiteList'].length %}
       <p class="help-block">
       この Wiki では以下のメールアドレスのみ登録可能です。
       </p>
