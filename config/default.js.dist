@@ -3,9 +3,6 @@
  */
 
 module.exports = {
-  server: {
-    port: 3000
-  },
   app: {
     title: 'Crocos Wiki'
   },
@@ -20,12 +17,6 @@ module.exports = {
     region: 'ap-northeast-1',
     accessKeyId: '',
     secretAccessKey: ''
-  },
-  mongodb: {
-    host: 'localhost',
-    dbname: 'crowi',
-    user: '',
-    password: ''
   },
   searcher: {
     url: 'https:// ...' // crocos-wikis

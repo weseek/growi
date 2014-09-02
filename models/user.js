@@ -1,9 +1,9 @@
-module.exports = function(models) {
+module.exports = function(app, models) {
   var mongoose = require('mongoose')
     , mongoosePaginate = require('mongoose-paginate')
     , debug = require('debug')('crowi:models:user')
     , crypto = require('crypto')
-    , config = require('config')
+    , config = app.set('config')
     , ObjectId = mongoose.Schema.Types.ObjectId
 
     , STATUS_REGISTERED = 1
@@ -32,19 +32,19 @@ module.exports = function(models) {
 
   function decideUserStatusOnRegistration () {
     // status decided depends on registrationMode
-    switch (config.security.registrationMode) {
+    switch (config.crowi['security.registrationMode']) {
       case 'Open':
         return STATUS_ACTIVE;
       case 'Restricted':
         return STATUS_REGISTERED;
       default:
-        return STATUS_REGISTERED; // どっちにすんのがいいんだろうな
+        return STATUS_ACTIVE; // どっちにすんのがいいんだろうな
     }
   }
 
   function generatePassword (password) {
     var hasher = crypto.createHash('sha256');
-    hasher.update(config.security.passwordSeed + password);
+    hasher.update(process.env.PASSWORD_SEED + password);
 
     return hasher.digest('hex');
   }
@@ -198,7 +198,7 @@ module.exports = function(models) {
   };
 
   userSchema.statics.isEmailValid = function(email, callback) {
-    return config.security.registrationWhiteList.some(function(allowedEmail) {
+    return config.crowi['security.registrationWhiteList'].some(function(allowedEmail) {
       var re = new RegExp(allowedEmail + '$');
 
       return re.test(email);

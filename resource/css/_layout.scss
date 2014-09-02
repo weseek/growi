@@ -374,7 +374,19 @@
 } // }}}
 
 .crowi.single.nologin { // {{{
-  background: lighten($crowiHeaderBackground, 15%);
+  //background: lighten($crowiHeaderBackground, 15%);
+  background: $crowiHeaderBackground;
+
+  .installer-header {
+    margin-top: 100px;
+    text-align: center;
+
+    h1 {
+      margin: 40px 0 40px;
+      color: #fff;
+      font-size: 1.6em;
+    }
+  }
 
   .main {
     margin: 0;

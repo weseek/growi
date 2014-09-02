@@ -1,4 +1,4 @@
-module.exports = function(models) {
+module.exports = function(app, models) {
   var mongoose = require('mongoose')
     , ObjectId = mongoose.Schema.Types.ObjectId
     , revisionSchema;

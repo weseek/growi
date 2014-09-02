@@ -68,11 +68,11 @@
           </p>
           {% endif %}
 
-          {% if config.security && config.security.registrationWhiteList.length %}
+          {% if config.crowi['security.registrationWhiteList'] && config.crowi['security.registrationWhiteList'].length %}
           <p class="help-block">
           この Wiki では以下のメールアドレスのみ登録可能です。
           <ul>
-            {% for em in config.security.registrationWhiteList %}
+            {% for em in config.crowi['security.registrationWhiteList'] %}
             <li><code>{{ em }}</code></li>
             {% endfor %}
           </ul>
@@ -271,12 +271,12 @@
               <p class="help-block">
               Googleコネクトをすると、Googleアカウントでログイン可能になります。<br>
               </p>
-              {% if config.security && config.security.registrationWhiteList.length %}
+              {% if config.crowi['security.registrationWhiteList'] && config.crowi['security.registrationWhiteList'].length %}
               <p class="help-block">
               この Wiki では、登録可能なメールアドレスが限定されているため、コネクト可能なGoogleアカウントは、以下のメールアドレスの発行できるGoogle Appsアカウントに限られます。
               </p>
               <ul>
-                {% for em in config.security.registrationWhiteList %}
+                {% for em in config.crowi['security.registrationWhiteList'] %}
                 <li><code>{{ em }}</code></li>
                 {% endfor %}
               </ul>
@@ -289,36 +289,6 @@
       </form>
     </div> {# /Google Connect #}
   </div>
-
-  {#
-  <div class="form-box">
-    <form action="/me/username" method="post" class="form-horizontal" role="form">
-      <fieldset>
-        <legend>プロフィール画像の設定</legend>
-      <div class="form-group">
-        <label for="" class="col-sm-2 control-label">
-          画像の設定
-        </label>
-        <div class="col-sm-6">
-          <p>
-            <img src="//graph.facebook.com/{{ user.userId }}/picture?size=square" width="32"><br>
-          </p>
-          <p>
-            <button class="btn btn-danger">画像を削除</button>
-          </p>
-        </div>
-      </div>
-      <div class="form-group">
-        <div class="col-sm-offset-2 col-sm-10">
-          <input name="" type="file">
-          <button type="submit" class="btn btn-primary">新しい画像をアップロード</button>
-        </div>
-      </div>
-      </div>
-    </fieldset>
-    </form>
-  </div>
-  #}
 
   </div> {# end of .tab-contents #}
 
