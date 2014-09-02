@@ -11,7 +11,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/crocos/crocos-wiki.git"
+    "url": "https://github.com/crowi/crowi.git"
   },
   "engines": {
     "node": "0.10.x",
@@ -59,6 +59,6 @@
     "NODE_ENV": "production"
   },
   "bugs": {
-    "url": "https://github.com/crocos/crocos-wiki/issues"
+    "url": "https://github.com/crowi/crowi/issues"
   }
 }
