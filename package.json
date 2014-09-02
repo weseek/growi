@@ -1,7 +1,7 @@
 {
   "name": "crowi",
   "version": "1.0.3",
-  "description": "Crocos' Wiki implementation in node.js",
+  "description": "The simple & powerful Wiki",
   "tags": [
     "wiki"
   ],
