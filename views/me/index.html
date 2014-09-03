@@ -165,6 +165,7 @@
     </script>
 
   <div class="row">
+    {% if facebookLoginEnabled() %}
     <div class="col-sm-6"> {# Facebook Connect #}
 
       <div class="form-box">
@@ -233,6 +234,9 @@
         </form>
     </div> {# /Facebook Connect #}
 
+    {% endif %}
+    {% if googleLoginEnabled() %}
+
     <div class="col-sm-6"> {# Google Connect #}
 
       <div class="form-box">
@@ -288,6 +292,8 @@
         </fieldset>
       </form>
     </div> {# /Google Connect #}
+    {% endif %}
+
   </div>
 
   </div> {# end of .tab-contents #}

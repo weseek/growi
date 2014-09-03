@@ -55,18 +55,22 @@
     <hr>
 
     <div class="row">
+      {% if googleLoginEnabled() %}
       <div class="col-md-6">
         <p>Google でログイン</p>
         <form role="form" action="/login/google" method="get">
           <button type="submit" class="btn btn-block btn-google"><i class="fa fa-google-plus-square"></i> Login</button>
         </form>
       </div>
+      {% endif %}
+      {% if facebookLoginEnabled() %}
       <div class="col-md-6">
         <p>Facebook でログイン</p>
         <form role="form">
           <button type="button" id="btn-login-facebook" class="btn btn-block btn-facebook"><i class="fa fa-facebook-square"></i> Login</button>
         </form>
       </div>
+      {% endif %}
     </div>
 
     {% if config.security.registrationMode != 'Closed' %}
@@ -165,18 +169,22 @@
     <hr>
 
     <div class="row">
+      {% if googleLoginEnabled() %}
       <div class="col-md-6">
         <p>Google で登録</p>
         <form role="form" method="post" action="/register/google">
           <button type="submit" class="btn btn-block btn-google"><i class="fa fa-google-plus-square"></i> Login</button>
         </form>
       </div>
+      {% endif %}
+      {% if facebookLoginEnabled() %}
       <div class="col-md-6">
         <p>Facebook で登録</p>
         <form role="form">
           <button type="button" id="btn-register-facebook" class="btn btn-block btn-facebook"><i class="fa fa-facebook-square"></i> Login</button>
         </form>
       </div>
+      {% endif %}
     </div>
 
     <p class="bottom-text"><a href="#login" onclick="$('#login-dialog').removeClass('to-flip'); return false;"><i class="fa fa-sign-out"></i> ログインはこちら</a></p>

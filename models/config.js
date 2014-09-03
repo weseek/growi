@@ -135,7 +135,6 @@ module.exports = function(app) {
           config[el.ns][el.key] = JSON.parse(el.value);
         });
 
-        debug("config data", config);
         return callback(null, config);
       });
   };
