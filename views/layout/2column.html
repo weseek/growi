@@ -21,18 +21,6 @@
     {% include '../widget/searcher.html' %}
 
     <ul class="nav navbar-nav navbar-right">
-      <li class="aside-shown">
-        <a href="" class="layout-control to-show" id="toggle-sidebar-to-show"><i class="fa fa-caret-left"></i> サイドバー表示</a>
-        <script>
-          {# TODO 整理する #}
-          $('#toggle-sidebar-to-show').click(function(e) {
-            $('.main-container').removeClass('aside-hidden');
-            $.cookie('aside-hidden', 0, { expires: 30, path: '/' });
-
-            return false;
-          });
-        </script>
-      </li>
 
       {% if user and user.admin %}
       <li id="">
@@ -96,12 +84,20 @@
 
 {% block layout_sidebar %}
 
-<a href="" class="layout-control to-hide" id="toggle-sidebar-to-hide"><i class="fa fa-chevron-right"></i> <span class="hide-on-affix-top"></span></a>
+<a href="" class="layout-control" id="toggle-sidebar"><i class="fa fa-chevron-right"></i> <span class="hide-on-affix-top"></span></a>
 <script>
-  $('#toggle-sidebar-to-hide').click(function(e) {
-    $('.main-container').addClass('aside-hidden');
-    $.cookie('aside-hidden', 1, { expires: 30, path: '/' });
-    return false;
+  $(function() {
+    $('#toggle-sidebar').click(function(e) {
+      var $mainContainer = $('.main-container');
+      if ($mainContainer.hasClass('aside-hidden')) {
+        $('.main-container').removeClass('aside-hidden');
+        $.cookie('aside-hidden', 0, { expires: 30, path: '/' });
+      } else {
+        $mainContainer.addClass('aside-hidden');
+        $.cookie('aside-hidden', 1, { expires: 30, path: '/' });
+      }
+      return false;
+    });
   });
 </script>
 <aside class="sidebar col-md-3 hidden-xs hidden-sm hidden-print">

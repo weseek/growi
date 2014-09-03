@@ -55,12 +55,9 @@
         }
       }
 
-      .layout-control.to-show {
-        display: none;
-      }
     } // }}}
 
-    .layout-control.to-hide { // {{{
+    .layout-control { // {{{
       transition: .3s ease;
       -webkit-transition: .3s ease;
       position: fixed;
@@ -82,6 +79,7 @@
         color: darken($link-color, 25%);
         background: darken($crowiAsideBackground, 10%);
         text-decoration: none;
+        cursor: pointer;
       }
     } // }}}
 
@@ -326,10 +324,7 @@
   } // }}}
 
   &.main-container.aside-hidden { // {{{
-    .crowi-header .layout-control.to-show {
-      display: block;
-    }
-    .layout-control.to-hide {
+    .layout-control {
       right: 0;
       i {
         transform: rotate(180deg);
