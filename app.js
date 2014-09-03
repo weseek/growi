@@ -93,13 +93,19 @@ async.series([
         },
       });
 
-      if (config.crowi['facebook:appId']) {
-        app.use(facebook.middleware({
+      next();
+    });
+
+    app.use(function(req, res, next) {
+      var config = app.set('config');
+      if (config.crowi['facebook:appId'] && config.crowi['facebook:secret']) {
+        return facebook.middleware({
           appId: config.crowi['facebook:appId'],
           secret: config.crowi['facebook:secret']
-        }));
+        })(req, res, next);
+      } else {
+        return next();
       }
-      next();
     });
 
     // register swig function
