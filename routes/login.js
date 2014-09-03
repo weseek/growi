@@ -60,10 +60,11 @@ module.exports = function(app) {
   };
 
   actions.loginGoogle = function(req, res) {
+    var googleAuth = require('../lib/googleAuth')(app);
     var code = req.session.googleAuthCode || null;
 
     if (!code) {
-      require('../lib/googleAuth').createAuthUrl(req, function(err, redirectUrl) {
+      googleAuth.createAuthUrl(req, function(err, redirectUrl) {
         if (err) {
           // TODO
         }
@@ -72,15 +73,15 @@ module.exports = function(app) {
         return res.redirect(redirectUrl);
       });
     } else {
-      require('../lib/googleAuth').handleCallback(req, function(err, tokenInfo) {
-        console.log('handleCallback', err, tokenInfo);
+      googleAuth.handleCallback(req, function(err, tokenInfo) {
+        debug('handleCallback', err, tokenInfo);
         if (err) {
           return loginFailure(req, res);
         }
 
         var googleId = tokenInfo.user_id;
         User.findUserByGoogleId(googleId, function(err, userData) {
-          console.log('findUserByGoogleId', err, userData);
+          debug('findUserByGoogleId', err, userData);
           if (!userData) {
             return loginFailure(req, res);
           }
@@ -100,7 +101,7 @@ module.exports = function(app) {
       }
 
       User.findUserByFacebookId(fbId, function(err, userData) {
-        console.log('on login findUserByFacebookId', err, userData);
+        debug('on login findUserByFacebookId', err, userData);
         if (userData) {
           return loginSuccess(req, res, userData);
         } else {
@@ -112,6 +113,7 @@ module.exports = function(app) {
 
   actions.register = function(req, res) {
     var registerForm = req.body.registerForm || {};
+    var googleAuth = require('../lib/googleAuth')(app);
 
     // ログイン済みならさようなら
     if (req.user) {
@@ -175,9 +177,9 @@ module.exports = function(app) {
       // google callback を受ける可能性もある
       var code = req.session.googleAuthCode || null;
 
-      console.log('register. if code', code);
+      debug('register. if code', code);
       if (code) {
-        require('../lib/googleAuth').handleCallback(req, function(err, tokenInfo) {
+        googleAuth.handleCallback(req, function(err, tokenInfo) {
           if (err) {
             req.flash('registerWarningMessage', 'Googleコネクト中にエラーが発生しました。');
             return res.redirect('/login?register=1'); // TODO Handling
@@ -203,7 +205,8 @@ module.exports = function(app) {
   };
 
   actions.registerGoogle = function(req, res) {
-    require('../lib/googleAuth').createAuthUrl(req, function(err, redirectUrl) {
+    var googleAuth = require('../lib/googleAuth')(app);
+    googleAuth.createAuthUrl(req, function(err, redirectUrl) {
       if (err) {
         // TODO
       }

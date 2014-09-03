@@ -164,6 +164,8 @@ module.exports = function(app) {
   };
 
   actions.authGoogle = function(req, res) {
+    var googleAuth = require('../lib/googleAuth')(app);
+
     var userData = req.user;
 
     var toDisconnect = req.body.disconnectGoogle ? true : false;
@@ -175,7 +177,7 @@ module.exports = function(app) {
         return res.redirect('/me');
       });
     } else if (toConnect) {
-      require('../lib/googleAuth').createAuthUrl(req, function(err, redirectUrl) {
+      googleAuth.createAuthUrl(req, function(err, redirectUrl) {
         if (err) {
           // TODO
         }
@@ -189,9 +191,10 @@ module.exports = function(app) {
   };
 
   actions.authGoogleCallback = function(req, res) {
+    var googleAuth = require('../lib/googleAuth')(app);
     var userData = req.user;
 
-    require('../lib/googleAuth').handleCallback(req, function(err, tokenInfo) {
+    googleAuth.handleCallback(req, function(err, tokenInfo) {
       if (err) {
         req.flash('warningMessage.auth.google', err.message); // FIXME: show library error message directly
         return res.redirect('/me'); // TODO Handling

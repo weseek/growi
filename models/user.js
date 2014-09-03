@@ -198,11 +198,14 @@ module.exports = function(app, models) {
   };
 
   userSchema.statics.isEmailValid = function(email, callback) {
-    return config.crowi['security.registrationWhiteList'].some(function(allowedEmail) {
-      var re = new RegExp(allowedEmail + '$');
+    if (Array.isArray(config.crowi['security.registrationWhiteList'])) {
+      return config.crowi['security.registrationWhiteList'].some(function(allowedEmail) {
+        var re = new RegExp(allowedEmail + '$');
+        return re.test(email);
+      });
+    }
 
-      return re.test(email);
-    });
+    return true;
   };
 
   userSchema.statics.findUsers = function(options, callback) {
