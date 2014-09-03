@@ -12,7 +12,7 @@ module.exports = function(app) {
   actions.api = api;
 
   api.uploadPicture = function (req, res) {
-    var fileUploader = require('../lib/fileUploader');
+    var fileUploader = require('../lib/fileUploader')(app);
     var tmpFile = req.files.userPicture || null;
     if (!tmpFile) {
       return res.json({
