@@ -35,7 +35,7 @@ var mongoUri = process.env.MONGOLAB_URI
 
 mongo.connect(mongoUri);
 
-app.set('port', process.env.SERVER_PORT || 3000);
+app.set('port', process.env.PORT || 3000);
 app.engine('html', cons.swig);
 app.set('view cache', false);
 app.set('view engine', 'html');
