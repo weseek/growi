@@ -41,10 +41,11 @@
     "grunt-contrib-uglify": "~0.2.2",
     "grunt-contrib-watch": "~0.5.3",
     "grunt-sass": "~0.13.1",
-    "reveal.js": "~2.6.2"
+    "reveal.js": "~2.6.2",
+    "grunt-cli": "~0.1.13",
+    "bower": "~1.3.9"
   },
-  "devDependencies": {
-  },
+  "devDependencies": {},
   "license": [
     {
       "type": "MIT",
@@ -53,7 +54,7 @@
   ],
   "scripts": {
     "start": "node app.js",
-    "postinstall": "bower cache clean && bower install && grunt"
+    "postinstall": "./node_modules/bower/bin/bower cache clean && ./node_modules/bower/bin/bower install && ./node_modules/grunt-cli/bin/grunt"
   },
   "env": {
     "NODE_ENV": "production"
