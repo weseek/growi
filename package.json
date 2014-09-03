@@ -53,7 +53,7 @@
   ],
   "scripts": {
     "start": "node app.js",
-    "postinstall": "bower install && grunt build"
+    "postinstall": "bower cache clean && bower install && grunt"
   },
   "env": {
     "NODE_ENV": "production"
