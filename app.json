@@ -7,7 +7,6 @@
   ],
   "website": "https://crowi.wiki/",
   "repository": "https://github.com/crowi/crowi",
-  "logo": "http://crowi.wiki/images/logo/128x128.png",
   "success_url": "/",
   "scripts": {
     "postdeploy": "grunt"

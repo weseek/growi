@@ -41,7 +41,7 @@ module.exports = function(app) {
     var originalConfig = app.set('config');
     var newNSConfig = originalConfig[ns] || {};
     Object.keys(config).forEach(function (key) {
-      if (config[key] || config[key] == '') {
+      if (config[key] || config[key] === '') {
         newNSConfig[key] = config[key];
       }
     });
@@ -67,7 +67,7 @@ module.exports = function(app) {
   configSchema.statics.setupCofigFormData = function(ns, config)
   {
     var defaultConfig;
-    if (ns == 'crowi') {
+    if (ns === 'crowi') {
       defaultConfig  = getArrayForInstalling();
     }
     Object.keys(config[ns]).forEach(function (key) {
