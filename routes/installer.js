@@ -23,9 +23,11 @@ module.exports = function(app) {
 
       User.createUserByEmailAndPassword(name, username, email, password, function(err, userData) {
         if (err) {
+          req.form.errors.push('管理ユーザーの作成に失敗しました。' + err.message);
           // TODO
-          return ;
+          return res.render('installer');
         }
+
         userData.makeAdmin(function(err, userData) {
           Config.applicationInstall(function(err, configs) {
             if (err) {

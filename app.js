@@ -36,6 +36,8 @@ var mongoUri = process.env.MONGOLAB_URI
 mongo.connect(mongoUri);
 
 app.set('port', process.env.PORT || 3000);
+app.use(express.static(__dirname + '/public'));
+app.use(express.logger());
 app.engine('html', cons.swig);
 app.set('view cache', false);
 app.set('view engine', 'html');
@@ -48,7 +50,6 @@ app.use(express.session({
   secret: process.env.SECRET_TOKEN || 'this is default session secret',
 }));
 app.use(flash());
-app.use(express.static(__dirname + '/public'));
 
 config = require('./models/config')(app);
 
