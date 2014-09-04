@@ -136,7 +136,7 @@ async.series([
         res.render('500', { error: err });
       });
 
-      server = http.createServer(app).listen(app.get('port'), '127.0.0.1', function(){
+      server = http.createServer(app).listen(app.get('port'), function(){
         console.log("[" + app.get('env') + "] Express server listening on port " + app.get('port'));
       });
     }
