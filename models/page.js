@@ -189,7 +189,7 @@ module.exports = function(app, models) {
       /^\/\-\/.*/,
       /^\/_r\/.*/,
       /.+\/edit$/,
-      /^\/(register|login|logout|admin|me|files|trash|paste|comments).+/,
+      /^\/(installer|register|login|logout|admin|me|files|trash|paste|comments).+/,
     ];
 
     var isCreatable = true;

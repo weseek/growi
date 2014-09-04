@@ -59,6 +59,8 @@ module.exports = function(app) {
         return callback(new Error('Application already installed'), null);
       }
       Config.updateNamespaceByArray('crowi', getArrayForInstalling(), function(err, configs) {
+
+        Config.updateConfigCache('crowi', configs);
         return callback(err, configs);
       });
     });
