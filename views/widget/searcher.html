@@ -1,4 +1,4 @@
-{% if config.crowi['searcher.url'] %}
+{% if config.crowi['searcher:url'] %}
 
 <form id="headerSearch" class="navbar-form navbar-left form-inline" role="search">
   <div class="form-group">
@@ -10,7 +10,7 @@
       function Searcher () {
       };
       Searcher.prototype = {
-        baseUrl: "{{ config.crowi['searcher.url'] }}",
+        baseUrl: "{{ config.crowi['searcher:url'] }}",
         currentQuery: "",
         searchData: [],
         setData: function (data) {
