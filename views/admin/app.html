@@ -68,7 +68,25 @@
       <legend>セキュリティ設定</legend>
 
         <div class="form-group">
-          <label for="settingForm[security:registrationMode]" class="col-xs-3 control-label">公開設定</label>
+          <label for="settingForm[security:registrationMode]" class="col-xs-3 control-label">Basic認証</label>
+          <div class="col-xs-3">
+            <label for="">ID</label>
+            <input class="form-control" type="text" name="settingForm[security:basicName]"   value="{{ settingForm['security:basicName']|default('') }}">
+          </div>
+          <div class="col-xs-3">
+            <label for="">パスワード</label>
+            <input class="form-control" type="text" name="settingForm[security:basicSecret]" value="{{ settingForm['security:basicSecret']|default('') }}">
+          </div>
+          <div class="col-xs-offset-3 col-xs-9">
+            <p class="help-block">
+              Basic認証を設定すると、ページ全体に共通の認証がかかります。<br>
+              IDとパスワードは暗号化されずに送信されるのでご注意下さい。<br>
+            </p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="settingForm[security:registrationMode]" class="col-xs-3 control-label">登録の制限</label>
           <div class="col-xs-6">
             <select class="form-control" name="settingForm[security:registrationMode]" value="{{ settingForm['security:registrationMode'] }}">
               <option value="Open">公開 (だれでも登録可能)</option>
@@ -81,7 +99,7 @@
 
         <div class="form-group">
           <label for="settingForm[security:registrationWhiteList]" class="col-xs-3 control-label">登録許可メールアドレスの<br>ホワイトリスト</label>
-          <div class="col-xs-6">
+          <div class="col-xs-8">
             <textarea class="form-control" type="textarea" name="settingForm[security:registrationWhiteList]" placeholder="例: @crowi.wiki">{{ settingForm['security:registrationWhiteList']|join('\n') }}</textarea>
             <p class="help-block">登録可能なメールアドレスを制限することができます。例えば、会社で使う場合、<code>@crowi.wiki</code> などと記載すると、その会社のメールアドレスを持っている人のみ登録可能になります。<br>
             1行に1メールアドレス入力してください。</p>
