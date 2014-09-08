@@ -51,18 +51,20 @@ app.use(express.session({
 }));
 app.use(flash());
 
-config = require('./models/config')(app);
+configModel = require('./models/config')(app);
 
 async.series([
   function (next) {
-    config.getConfigArray(function(err, doc) {
+    configModel.getConfigArray(function(err, doc) {
       app.set('config', doc);
 
       return next();
     });
   }, function (next) {
+    var config = app.set('config');
+
     models = require('./models')(app);
-    models.Config = config;
+    models.Config = configModel;
 
     // configure application
     app.use(function(req, res, next) {
@@ -95,6 +97,16 @@ async.series([
       });
 
       next();
+    });
+
+    app.use(function(req, res, next) {
+      if (config.crowi['security:basicName'] && config.crowi['security:basicSecret']) {
+        return express.basicAuth(
+          config.crowi['security:basicName'],
+          config.crowi['security:basicSecret'])(req, res, next);
+      } else {
+        next();
+      }
     });
 
     app.use(function(req, res, next) {
