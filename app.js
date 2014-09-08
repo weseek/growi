@@ -93,6 +93,7 @@ async.series([
         consts: {
           pageGrants: models.Page.getGrantLabels(),
           userStatus: models.User.getUserStatusLabels(),
+          registrationMode: models.Config.getRegistrationModeLabels(),
         },
       });
 

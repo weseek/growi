@@ -89,9 +89,9 @@
           <label for="settingForm[security:registrationMode]" class="col-xs-3 control-label">登録の制限</label>
           <div class="col-xs-6">
             <select class="form-control" name="settingForm[security:registrationMode]" value="{{ settingForm['security:registrationMode'] }}">
-              <option value="Open">公開 (だれでも登録可能)</option>
-              <option value="Resricted">制限 (登録完了には管理者の承認が必要)</option>
-              {# <option value="Closed">非公開 (登録には管理者による招待が必要)</option> #}
+              {% for modeValue, modeLabel in consts.registrationMode %}
+              <option value="{{ modeValue }}" {% if modeValue == settingForm['security:registrationMode'] %}selected{% endif %} >{{ modeLabel }}</option>
+              {% endfor %}
             </select>
             <p class="help-block">ここに入力した内容は、ヘッダー等に表示されます。</p>
           </div>
