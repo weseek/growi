@@ -43,7 +43,8 @@
     "grunt-sass": "~0.14.1",
     "reveal.js": "~2.6.2",
     "grunt-cli": "~0.1.13",
-    "bower": "~1.3.9"
+    "bower": "~1.3.9",
+    "cli": "~0.6.4"
   },
   "devDependencies": {},
   "license": [
