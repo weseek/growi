@@ -38,6 +38,23 @@ module.exports = function(app) {
     return res.redirect(nextAction);
   };
 
+  actions.error = function(req, res) {
+    var reason = req.params.reason
+      , reasonMessage = ''
+      ;
+
+    if (reason === 'suspended') {
+      reasonMessage = 'このアカウントは停止されています。';
+    } else if (reason === 'registered') {
+      reasonMessage = '管理者の承認をお待ちください。';
+    } else {
+    }
+
+    return res.render('login/error', {
+      reasonMessage: reasonMessage
+    });
+  };
+
   actions.login = function(req, res) {
     var loginForm = req.body.loginForm;
 
