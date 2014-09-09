@@ -51,6 +51,7 @@ module.exports = function(app) {
     }
 
     return res.render('login/error', {
+      reason: reason,
       reasonMessage: reasonMessage
     });
   };
