@@ -31,11 +31,14 @@ module.exports = function(app, models) {
   userSchema.plugin(mongoosePaginate);
 
   function decideUserStatusOnRegistration () {
+    var Config = models.Config;
+
     // status decided depends on registrationMode
     switch (config.crowi['security:registrationMode']) {
-      case 'Open':
+      case Config.SECURITY_REGISTRATION_MODE_OPEN:
         return STATUS_ACTIVE;
-      case 'Restricted':
+      case Config.SECURITY_REGISTRATION_MODE_RESTRICTED:
+      case Config.SECURITY_REGISTRATION_MODE_CLOSED: // 一応
         return STATUS_REGISTERED;
       default:
         return STATUS_ACTIVE; // どっちにすんのがいいんだろうな
