@@ -16,7 +16,7 @@
     "SECRET_TOKEN": {
       "description": "A secret key for verifying the integrity of signed cookies.",
       "generator": "secret"
-    }
+    },
     "PASSWORD_SEED": {
       "description": "A password seed is used by password hash generator. ",
       "generator": "secret"
