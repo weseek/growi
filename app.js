@@ -16,6 +16,7 @@ var express  = require('express')
   , middleware = require('./lib/middlewares')
   , time     = require('time')
   , async    = require('async')
+  , nodemailer = require("nodemailer")
   , models
   , config
   , server
