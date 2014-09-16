@@ -16,7 +16,6 @@ var express  = require('express')
   , middleware = require('./lib/middlewares')
   , time     = require('time')
   , async    = require('async')
-  , nodemailer = require("nodemailer")
   , models
   , config
   , server
@@ -97,6 +96,8 @@ async.series([
           registrationMode: models.Config.getRegistrationModeLabels(),
         },
       });
+
+      app.set('mailer', require('./lib/mailer')(app));
 
       next();
     });
