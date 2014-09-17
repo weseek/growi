@@ -1,6 +1,6 @@
 {
   "name": "crowi",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Crocos' Wiki implementation in node.js",
   "authors": [
     "Sotaro KARASAWA <sotarok@crocos.co.jp>",
