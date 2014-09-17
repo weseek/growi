@@ -90,6 +90,7 @@ module.exports = function(app) {
       if (config[ns][key]) {
         defaultConfig[key] = config[ns][key];
       }
+
     });
     return defaultConfig;
   };
@@ -151,6 +152,7 @@ module.exports = function(app) {
           config[el.ns][el.key] = JSON.parse(el.value);
         });
 
+        debug('Config loaded', config);
         return callback(null, config);
       });
   };

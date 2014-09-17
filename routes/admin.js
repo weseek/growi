@@ -157,9 +157,10 @@ module.exports = function(app) {
 
   actions.api = {};
   actions.api.appSetting = function(req, res) {
-    var form = req.body.settingForm;
+    var form = req.form.settingForm;
 
     if (req.form.isValid) {
+      debug('form content', form);
       Config.updateNamespaceByArray('crowi', form, function(err, config) {
         Config.updateConfigCache('crowi', config)
         return res.json({status: true});

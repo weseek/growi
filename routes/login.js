@@ -130,7 +130,7 @@ module.exports = function(app) {
   };
 
   actions.register = function(req, res) {
-    var registerForm = req.body.registerForm || {};
+    var registerForm = req.form.registerForm || {};
     var googleAuth = require('../lib/googleAuth')(app);
 
     // ログイン済みならさようなら
