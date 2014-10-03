@@ -115,6 +115,50 @@
       </fieldset>
       </form>
 
+      <form action="/_api/admin/settings/mail" method="post" class="form-horizontal" id="mailSettingForm" role="form">
+      <fieldset>
+      <legend>メールの設定</legend>
+      <p class="well">SMTPの設定がされている場合、それが利用されます。SMTP設定がなく、AWSの設定がある場合、SESでの送信を試みます。<br>どちらの設定もない場合、メールは送信されません。</p>
+
+        <div class="form-group">
+          <label for="settingForm[mail.from]" class="col-xs-3 control-label">Fromアドレス</label>
+          <div class="col-xs-6">
+            <input class="form-control" type="text" name="settingForm[mail:from]" placeholder="例: mail@crowi.wiki" value="{{ settingForm['mail:from'] }}">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-xs-3 control-label">SMTP設定</label>
+          <div class="col-xs-4">
+            <label for="">ホスト</label>
+            <input class="form-control" type="text" name="settingForm[mail:smtpHost]"   value="{{ settingForm['mail:smtpHost']|default('') }}">
+          </div>
+          <div class="col-xs-2">
+            <label for="">ポート</label>
+            <input class="form-control" type="text" name="settingForm[mail:smtpPort]" value="{{ settingForm['mail:smtpPort']|default('') }}">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-xs-3 col-xs-offset-3">
+            <label for="">ユーザー</label>
+            <input class="form-control" type="text" name="settingForm[mail:smtpUser]"   value="{{ settingForm['mail:smtpUser']|default('') }}">
+          </div>
+          <div class="col-xs-3">
+            <label for="">パスワード</label>
+            <input class="form-control" type="password" name="settingForm[mail:smtpPassword]" value="{{ settingForm['mail:smtpPassword']|default('') }}">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-xs-offset-3 col-xs-6">
+            <button type="submit" class="btn btn-primary">更新</button>
+          </div>
+        </div>
+
+      </fieldset>
+      </form>
+
       <form action="/_api/admin/settings/aws" method="post" class="form-horizontal" id="awsSettingForm" role="form">
       <fieldset>
       <legend>AWS設定</legend>
@@ -223,7 +267,7 @@
   <script>
     $(function()
     {
-      $('#appSettingForm, #secSettingForm, #awsSettingForm, #googleSettingForm, #fbSettingForm').each(function() {
+      $('#appSettingForm, #secSettingForm, #mailSettingForm, #awsSettingForm, #googleSettingForm, #fbSettingForm').each(function() {
         $(this).submit(function()
         {
           function showMessage(formId, msg, status) {

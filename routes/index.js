@@ -30,6 +30,7 @@ module.exports = function(app) {
   app.get('/admin/app'                  , middleware.loginRequired(app) , middleware.adminRequired() , admin.app.index);
   app.post('/_api/admin/settings/app'   , middleware.loginRequired(app) , middleware.adminRequired() , form.admin.app, admin.api.appSetting);
   app.post('/_api/admin/settings/sec'   , middleware.loginRequired(app) , middleware.adminRequired() , form.admin.sec, admin.api.appSetting);
+  app.post('/_api/admin/settings/mail'  , middleware.loginRequired(app) , middleware.adminRequired() , form.admin.mail, admin.api.appSetting);
   app.post('/_api/admin/settings/aws'   , middleware.loginRequired(app) , middleware.adminRequired() , form.admin.aws, admin.api.appSetting);
   app.post('/_api/admin/settings/google', middleware.loginRequired(app) , middleware.adminRequired() , form.admin.google, admin.api.appSetting);
   app.post('/_api/admin/settings/fb'    , middleware.loginRequired(app) , middleware.adminRequired() , form.admin.fb

@@ -30,6 +30,12 @@ module.exports = function(app) {
       'aws:accessKeyId'     : '',
       'aws:secretAccessKey' : '',
 
+      'mail:from'         : '',
+      'mail:smtpHost'     : '',
+      'mail:smtpPort'     : '',
+      'mail:smtpUser'     : '',
+      'mail:smtpPassword' : '',
+
       'searcher:url': '',
 
       'google:clientId'     : '',

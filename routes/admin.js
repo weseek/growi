@@ -161,14 +161,57 @@ module.exports = function(app) {
 
     if (req.form.isValid) {
       debug('form content', form);
-      Config.updateNamespaceByArray('crowi', form, function(err, config) {
-        Config.updateConfigCache('crowi', config)
-        return res.json({status: true});
-      });
+
+      // mail setting ならここで validation
+      if (form['mail:from']) {
+        validateMailSetting(req, form, function(err, data) {
+          if (err) {
+            req.form.errors.push('SMTPを利用したテストメール送信に失敗しました。設定をみなおしてください。');
+            return res.json({status: false, message: req.form.errors.join('\n')});
+          }
+
+          return saveSetting(req, res, form);
+        });
+      } else {
+        return saveSetting(req, res, form);
+      }
     } else {
       return res.json({status: false, message: req.form.errors.join('\n')});
     }
   };
+
+  function saveSetting(req, res, form)
+  {
+    Config.updateNamespaceByArray('crowi', form, function(err, config) {
+      Config.updateConfigCache('crowi', config)
+      return res.json({status: true});
+    });
+  }
+
+  function validateMailSetting(req, form, callback)
+  {
+    var mailer = app.set('mailer');
+    var option = {
+      host: form['mail:smtpHost'],
+      port: form['mail:smtpPort'],
+      auth: {
+        user: form['mail:smtpUser'],
+        pass: form['mail:smtpPassword'],
+      }
+    };
+    if (option.port === 465) {
+      option.secure = true;
+    }
+
+    var smtpClient = mailer.createSmtpClient(option);
+    debug('mailer setup for validate SMTP setting', smtpClient);
+
+    smtpClient.sendMail({
+      to: req.user.email,
+      subject: 'Wiki管理設定のアップデートによるメール通知',
+      text: 'このメールのWikiSMTPメール送信設定のアップデートにより送信されています。'
+    }, callback);
+  }
 
 
   return actions;

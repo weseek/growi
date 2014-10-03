@@ -8,6 +8,7 @@ exports.me = {
 exports.admin = {
   app: require('./admin/app'),
   sec: require('./admin/sec'),
+  mail: require('./admin/mail'),
   aws: require('./admin/aws'),
   google: require('./admin/google'),
   fb: require('./admin/fb'),
