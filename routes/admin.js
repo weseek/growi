@@ -203,7 +203,7 @@ module.exports = function(app) {
       option.secure = true;
     }
 
-    var smtpClient = mailer.createSmtpClient(option);
+    var smtpClient = mailer.createSMTPClient(option);
     debug('mailer setup for validate SMTP setting', smtpClient);
 
     smtpClient.sendMail({
