@@ -19,8 +19,9 @@ var express  = require('express')
   , models
   , config
   , server
+  , sessionConfig
+  , RedisStore
   ;
-
 
 time.tzset('Asia/Tokyo');
 
@@ -35,6 +36,19 @@ var mongoUri = process.env.MONGOLAB_URI
 
 mongo.connect(mongoUri);
 
+sessionConfig = {
+  rolling: true,
+  secret: process.env.SECRET_TOKEN || 'this is default session secret'
+};
+
+if (process.env.REDIS_URL) {
+  RedisStore = require('connect-redis')(express);
+  sessionConfig.store = new RedisStore({
+    prefix: 'crowi:sess:',
+    url: process.env.REDIS_URL
+  });
+}
+
 app.set('port', process.env.PORT || 3000);
 app.use(express.static(__dirname + '/public'));
 app.use(express.logger());
@@ -45,10 +59,7 @@ app.set('views', __dirname + '/views');
 app.use(express.methodOverride());
 app.use(express.bodyParser());
 app.use(express.cookieParser());
-app.use(express.session({
-  rolling: true,
-  secret: process.env.SECRET_TOKEN || 'this is default session secret',
-}));
+app.use(express.session(sessionConfig));
 app.use(flash());
 
 configModel = require('./models/config')(app);
