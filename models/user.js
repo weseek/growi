@@ -10,6 +10,7 @@ module.exports = function(app, models) {
     , STATUS_ACTIVE     = 2
     , STATUS_SUSPENDED  = 3
     , STATUS_DELETED    = 4
+    , STATUS_INVITED    = 5
 
     , PAGE_ITEMS        = 20
 
@@ -20,8 +21,8 @@ module.exports = function(app, models) {
     fbId: String, // userId
     image: String,
     googleId: String,
-    name: { type: String, required: true },
-    username: { type: String, required: true },
+    name: { type: String },
+    username: { type: String },
     email: { type: String, required: true },
     password: String,
     status: { type: Number, required: true, default: STATUS_ACTIVE },
@@ -196,6 +197,7 @@ module.exports = function(app, models) {
     userStatus[STATUS_ACTIVE] = 'Active';
     userStatus[STATUS_SUSPENDED] = 'Suspended';
     userStatus[STATUS_DELETED] = 'Deleted';
+    userStatus[STATUS_INVITED] = '招待済み';
 
     return userStatus;
   };
@@ -331,6 +333,7 @@ module.exports = function(app, models) {
   userSchema.statics.STATUS_ACTIVE = STATUS_ACTIVE;
   userSchema.statics.STATUS_SUSPENDED = STATUS_SUSPENDED;
   userSchema.statics.STATUS_DELETED = STATUS_DELETED;
+  userSchema.statics.STATUS_INVITED = STATUS_INVITED;
 
   models.User = mongoose.model('User', userSchema);
 
