@@ -37,10 +37,13 @@ module.exports = function(app) {
   , admin.api.appSetting);
 
   app.get('/admin/users'                , middleware.loginRequired(app) , middleware.adminRequired() , admin.user.index);
+  app.post('/admin/user/invite'         , form.admin.userInvite ,  middleware.loginRequired(app) , middleware.adminRequired() , admin.user.invite);
   app.post('/admin/user/:id/makeAdmin'  , middleware.loginRequired(app) , middleware.adminRequired() , admin.user.makeAdmin);
   app.post('/admin/user/:id/removeFromAdmin', middleware.loginRequired(app) , middleware.adminRequired() , admin.user.removeFromAdmin);
   app.post('/admin/user/:id/activate'   , middleware.loginRequired(app) , middleware.adminRequired() , admin.user.activate);
   app.post('/admin/user/:id/suspend'    , middleware.loginRequired(app) , middleware.adminRequired() , admin.user.suspend);
+  app.post('/admin/user/:id/remove'     , middleware.loginRequired(app) , middleware.adminRequired() , admin.user.remove);
+  app.post('/admin/user/:id/removeCompletely' , middleware.loginRequired(app) , middleware.adminRequired() , admin.user.removeCompletely);
 
   app.get('/me'                      , middleware.loginRequired(app) , me.index);
   app.get('/me/password'             , middleware.loginRequired(app) , me.password);

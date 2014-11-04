@@ -3,6 +3,7 @@ module.exports = function(app, models) {
     , mongoosePaginate = require('mongoose-paginate')
     , debug = require('debug')('crowi:models:user')
     , crypto = require('crypto')
+    , async = require('async')
     , config = app.set('config')
     , ObjectId = mongoose.Schema.Types.ObjectId
 
@@ -287,6 +288,102 @@ module.exports = function(app, models) {
         return callback(true, {});
       });
     });
+  };
+
+  userSchema.statics.removeCompletelyById = function(id, callback) {
+    var User = this;
+    User.findById(id, function (err, userData) {
+      if (!userData) {
+        return callback(err, null);
+      }
+
+      debug('Removing user:', userData);
+      // 物理削除可能なのは、招待中ユーザーのみ
+      // 利用を一度開始したユーザーは論理削除のみ可能
+      if (userData.status !== STATUS_INVITED) {
+        return callback(new Error('Cannot remove completely the user whoes status is not INVITED'), null);
+      }
+
+      userData.remove(function(err) {
+        if (err) {
+          return callback(err, null);
+        }
+
+        return callback(null, 1);
+      });
+    });
+  };
+
+  userSchema.statics.createUsersByInvitation = function(emailList, toSendEmail, callback) {
+    var User = this
+      , createdUserList = [];
+
+    if (!Array.isArray(emailList)) {
+      debug('emailList is not array');
+    }
+
+    async.each(
+      emailList,
+      function(email, next) {
+        var newUser = new User()
+          ,password;
+
+        email = email.trim();
+
+        // email check
+        // TODO: 削除済みはチェック対象から外そう〜
+        User.findOne({email: email}, function (err, userData) {
+          if (userData) {
+            createdUserList.push({
+              email: email,
+              password: null,
+              user: null,
+            });
+
+            return next();
+          }
+
+          password = Math.random().toString(36).slice(-16);
+
+          newUser.email = email;
+          newUser.setPassword(password);
+          newUser.createdAt = Date.now();
+          newUser.status = STATUS_INVITED;
+
+          newUser.save(function(err, userData) {
+            if (err) {
+              createdUserList.push({
+                email: email,
+                password: null,
+                user: null,
+              });
+              debug('save failed!! ', email);
+            } else {
+              createdUserList.push({
+                email: email,
+                password: password,
+                user: userData,
+              });
+              debug('saved!', email);
+            }
+
+            next();
+          });
+        });
+      },
+      function(err) {
+        if (err) {
+          debug('error occured while iterate email list');
+        }
+
+        if (toSendEmail) {
+          debug('send Email here');
+        }
+
+        debug("createdUserList!!! ", createdUserList);
+        return callback(null, createdUserList);
+      }
+    );
   };
 
   userSchema.statics.createUserByEmailAndPassword = function(name, username, email, password, callback) {

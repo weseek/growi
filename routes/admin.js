@@ -94,6 +94,24 @@ module.exports = function(app) {
     });
   };
 
+  actions.user.invite = function(req, res) {
+    var form = req.form.inviteForm;
+    var toSendEmail = form.sendEmail || false;
+    if (req.form.isValid) {
+      User.createUsersByInvitation(form.emailList.split('\n'), toSendEmail, function(err, userList) {
+        if (err) {
+          req.flash('errorMessage', req.form.errors.join('\n'));
+        } else {
+          req.flash('createdUser', userList);
+        }
+        return res.redirect('/admin/users');
+      });
+    } else {
+      req.flash('errorMessage', req.form.errors.join('\n'));
+      return res.redirect('/admin/users');
+    }
+  };
+
   actions.user.makeAdmin = function(req, res) {
     var id = req.params.id;
     User.findById(id, function(err, userData) {
@@ -152,6 +170,26 @@ module.exports = function(app) {
         }
         return res.redirect('/admin/users');
       });
+    });
+  };
+
+  actions.user.remove= function(req, res) {
+    // 未実装
+    return res.redirect('/admin/users');
+  };
+
+  actions.user.removeCompletely = function(req, res) {
+    // ユーザーの物理削除
+    var id = req.params.id;
+
+    User.removeCompletelyById(id, function(err, removed) {
+      if (err) {
+        debug('Error while removing user.', err, id);
+        req.flash('errorMessage', '完全な削除に失敗しました。');
+      } else {
+        req.flash('successMessage', '削除しました');
+      }
+      return res.redirect('/admin/users');
     });
   };
 
