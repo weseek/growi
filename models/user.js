@@ -6,6 +6,7 @@ module.exports = function(app, models) {
     , async = require('async')
     , config = app.set('config')
     , ObjectId = mongoose.Schema.Types.ObjectId
+    , mailer = app.set('mailer')
 
     , STATUS_REGISTERED = 1
     , STATUS_ACTIVE     = 2
@@ -377,10 +378,35 @@ module.exports = function(app, models) {
         }
 
         if (toSendEmail) {
-          debug('send Email here');
+          // TODO: メール送信部分のロジックをサービス化する
+          async.each(
+            createdUserList,
+            function(user, next) {
+              mailer.send({
+                  to: user.email,
+                  subject: 'Invitation to ' + config.crowi['app:title'],
+                  text: 'Hi, ' + user.email + '\n\n'
+                    + 'You are invited to our Wiki, you can log in with following account:\n\n'
+                    + 'Email: ' + user.email + '\n'
+                    + 'Password: ' + user.password
+                    + '\n (This password was auto generated. Update required at the first time you logging in)\n'
+                    + '\n'
+                    + 'We are waiting for you!\n'
+                    + config.crowi['app:url']
+                },
+                function (err, s) {
+                  debug('completed to send email: ', err, s);
+                  next();
+                }
+              );
+            },
+            function(err) {
+              debug('Sending invitation email completed.', err);
+            }
+          );
         }
 
-        debug("createdUserList!!! ", createdUserList);
+        debug('createdUserList!!! ', createdUserList);
         return callback(null, createdUserList);
       }
     );

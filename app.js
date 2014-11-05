@@ -74,6 +74,8 @@ async.series([
   }, function (next) {
     var config = app.set('config');
 
+    app.set('mailer', require('./lib/mailer')(app));
+
     models = require('./models')(app);
     models.Config = configModel;
 
@@ -92,7 +94,7 @@ async.series([
       req.session.cookie.expires = new Date(Date.now() + days);
       req.session.cookie.maxAge = days;
 
-      req.baseUrl = (req.headers['x-forwarded-proto'] == 'https' ? 'https' : req.protocol) + "://" + req.get('host');
+      config.crowi['app:url'] = req.baseUrl = (req.headers['x-forwarded-proto'] == 'https' ? 'https' : req.protocol) + "://" + req.get('host');
       res.locals({
         req: req,
         baseUrl: req.baseUrl,
@@ -107,8 +109,6 @@ async.series([
           registrationMode: models.Config.getRegistrationModeLabels(),
         },
       });
-
-      app.set('mailer', require('./lib/mailer')(app));
 
       next();
     });
