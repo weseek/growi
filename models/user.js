@@ -334,6 +334,7 @@ module.exports = function(app, models) {
         // email check
         // TODO: 削除済みはチェック対象から外そう〜
         User.findOne({email: email}, function (err, userData) {
+          // The user is exists
           if (userData) {
             createdUserList.push({
               email: email,
@@ -382,6 +383,10 @@ module.exports = function(app, models) {
           async.each(
             createdUserList,
             function(user, next) {
+              if (user.password === null) {
+                next();
+              }
+
               mailer.send({
                   to: user.email,
                   subject: 'Invitation to ' + config.crowi['app:title'],
