@@ -247,7 +247,7 @@ module.exports = function(app) {
     smtpClient.sendMail({
       to: req.user.email,
       subject: 'Wiki管理設定のアップデートによるメール通知',
-      text: 'このメールのWikiSMTPメール送信設定のアップデートにより送信されています。'
+      text: 'このメールは、WikiのSMTP設定のアップデートにより送信されています。'
     }, callback);
   }
 

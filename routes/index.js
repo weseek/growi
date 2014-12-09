@@ -17,6 +17,8 @@ module.exports = function(app) {
 
   app.get('/login/error/:reason'     , login.error);
   app.get('/login'                   , middleware.applicationInstalled()    , login.login);
+  app.get('/login/invited'           , login.invited);
+  app.post('/login/activateInvited'  , form.invited                         , login.invited);
   app.post('/login'                  , form.login                           , login.login);
   app.post('/register'               , form.register                        , login.register);
   app.get('/register'                , middleware.applicationInstalled()    , login.register);

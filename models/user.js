@@ -130,6 +130,15 @@ module.exports = function(app, models) {
     return this.updateGoogleId(null, callback);
   };
 
+  userSchema.methods.activateInvitedUser = function(username, name, password, callback) {
+    this.setPassword(password);
+    this.name = name;
+    this.username = username;
+    this.status = STATUS_ACTIVE;
+    this.save(function(err, userData) {
+      return callback(err, userData);
+    });
+  };
 
   userSchema.methods.removeFromAdmin = function(callback) {
     debug('Remove from admin', this);
@@ -262,6 +271,18 @@ module.exports = function(app, models) {
     var hashedPassword = generatePassword(password);
     this.findOne({email: email, password: hashedPassword}, function (err, userData) {
       callback(err, userData);
+    });
+  };
+
+  userSchema.statics.isRegisterableUsername = function(username, callback) {
+    var User = this;
+    var usernameUsable = true;
+
+    this.findOne({username: username}, function (err, userData) {
+      if (userData) {
+        usernameUsable = false;
+      }
+      return callback(usernameUsable);
     });
   };
 
