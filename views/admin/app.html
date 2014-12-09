@@ -89,9 +89,9 @@
           <label for="settingForm[security:registrationMode]" class="col-xs-3 control-label">登録の制限</label>
           <div class="col-xs-6">
             <select class="form-control" name="settingForm[security:registrationMode]" value="{{ settingForm['security:registrationMode'] }}">
-              <option value="Open">公開 (だれでも登録可能)</option>
-              <option value="Resricted">制限 (登録完了には管理者の承認が必要)</option>
-              {# <option value="Closed">非公開 (登録には管理者による招待が必要)</option> #}
+              {% for modeValue, modeLabel in consts.registrationMode %}
+              <option value="{{ modeValue }}" {% if modeValue == settingForm['security:registrationMode'] %}selected{% endif %} >{{ modeLabel }}</option>
+              {% endfor %}
             </select>
             <p class="help-block">ここに入力した内容は、ヘッダー等に表示されます。</p>
           </div>
@@ -100,9 +100,53 @@
         <div class="form-group">
           <label for="settingForm[security:registrationWhiteList]" class="col-xs-3 control-label">登録許可メールアドレスの<br>ホワイトリスト</label>
           <div class="col-xs-8">
-            <textarea class="form-control" type="textarea" name="settingForm[security:registrationWhiteList]" placeholder="例: @crowi.wiki">{{ settingForm['security:registrationWhiteList']|join('\n') }}</textarea>
+            <textarea class="form-control" type="textarea" name="settingForm[security:registrationWhiteList]" placeholder="例: @crowi.wiki">{{ settingForm['security:registrationWhiteList']|join('&#13')|raw }}</textarea>
             <p class="help-block">登録可能なメールアドレスを制限することができます。例えば、会社で使う場合、<code>@crowi.wiki</code> などと記載すると、その会社のメールアドレスを持っている人のみ登録可能になります。<br>
             1行に1メールアドレス入力してください。</p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-xs-offset-3 col-xs-6">
+            <button type="submit" class="btn btn-primary">更新</button>
+          </div>
+        </div>
+
+      </fieldset>
+      </form>
+
+      <form action="/_api/admin/settings/mail" method="post" class="form-horizontal" id="mailSettingForm" role="form">
+      <fieldset>
+      <legend>メールの設定</legend>
+      <p class="well">SMTPの設定がされている場合、それが利用されます。SMTP設定がなく、AWSの設定がある場合、SESでの送信を試みます。<br>どちらの設定もない場合、メールは送信されません。</p>
+
+        <div class="form-group">
+          <label for="settingForm[mail.from]" class="col-xs-3 control-label">Fromアドレス</label>
+          <div class="col-xs-6">
+            <input class="form-control" type="text" name="settingForm[mail:from]" placeholder="例: mail@crowi.wiki" value="{{ settingForm['mail:from'] }}">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-xs-3 control-label">SMTP設定</label>
+          <div class="col-xs-4">
+            <label for="">ホスト</label>
+            <input class="form-control" type="text" name="settingForm[mail:smtpHost]"   value="{{ settingForm['mail:smtpHost']|default('') }}">
+          </div>
+          <div class="col-xs-2">
+            <label for="">ポート</label>
+            <input class="form-control" type="text" name="settingForm[mail:smtpPort]" value="{{ settingForm['mail:smtpPort']|default('') }}">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-xs-3 col-xs-offset-3">
+            <label for="">ユーザー</label>
+            <input class="form-control" type="text" name="settingForm[mail:smtpUser]"   value="{{ settingForm['mail:smtpUser']|default('') }}">
+          </div>
+          <div class="col-xs-3">
+            <label for="">パスワード</label>
+            <input class="form-control" type="password" name="settingForm[mail:smtpPassword]" value="{{ settingForm['mail:smtpPassword']|default('') }}">
           </div>
         </div>
 
@@ -118,7 +162,8 @@
       <form action="/_api/admin/settings/aws" method="post" class="form-horizontal" id="awsSettingForm" role="form">
       <fieldset>
       <legend>AWS設定</legend>
-        <p class="well">S3 にアクセスするための設定を行います。AWS の設定を完了させると、ファイルアップロード機能、プロフィール写真機能などが有効になります。<br>
+        <p class="well">AWS にアクセスするための設定を行います。AWS の設定を完了させると、ファイルアップロード機能、プロフィール写真機能などが有効になります。<br>
+        また、SMTP の設定が無い場合、SES を利用したメール送信が行われます。FromメールアドレスのVerify、プロダクション利用設定をする必要があります。<br>
           <br>
 
           <span class="text-danger"><i class="fa fa-warning"></i> この設定を途中で変更すると、これまでにアップロードしたファイル等へのアクセスができなくなりますのでご注意下さい。</span>
@@ -223,7 +268,7 @@
   <script>
     $(function()
     {
-      $('#appSettingForm, #secSettingForm, #awsSettingForm, #googleSettingForm, #fbSettingForm').each(function() {
+      $('#appSettingForm, #secSettingForm, #mailSettingForm, #awsSettingForm, #googleSettingForm, #fbSettingForm').each(function() {
         $(this).submit(function()
         {
           function showMessage(formId, msg, status) {

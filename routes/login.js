@@ -38,6 +38,24 @@ module.exports = function(app) {
     return res.redirect(nextAction);
   };
 
+  actions.error = function(req, res) {
+    var reason = req.params.reason
+      , reasonMessage = ''
+      ;
+
+    if (reason === 'suspended') {
+      reasonMessage = 'このアカウントは停止されています。';
+    } else if (reason === 'registered') {
+      reasonMessage = '管理者の承認をお待ちください。';
+    } else {
+    }
+
+    return res.render('login/error', {
+      reason: reason,
+      reasonMessage: reasonMessage
+    });
+  };
+
   actions.login = function(req, res) {
     var loginForm = req.body.loginForm;
 
@@ -112,7 +130,7 @@ module.exports = function(app) {
   };
 
   actions.register = function(req, res) {
-    var registerForm = req.body.registerForm || {};
+    var registerForm = req.form.registerForm || {};
     var googleAuth = require('../lib/googleAuth')(app);
 
     // ログイン済みならさようなら
@@ -214,6 +232,44 @@ module.exports = function(app) {
       req.session.googleCallbackAction = '/register';
       return res.redirect(redirectUrl);
     });
+  };
+
+  actions.invited = function(req, res) {
+    if (!req.user) {
+      return res.redirect('/login');
+    }
+
+    if (req.method == 'POST' && req.form.isValid) {
+      var user = req.user;
+      var invitedForm = req.form.invitedForm || {};
+      var username = invitedForm.username;
+      var name = invitedForm.name;
+      var password = invitedForm.password;
+
+      User.isRegisterableUsername(username, function(creatable) {
+        if (creatable) {
+          user.activateInvitedUser(username, name, password, function(err, data) {
+            if (err) {
+              req.flash('warningMessage', 'アクティベートに失敗しました。');
+              return res.render('invited');
+            } else {
+              return res.redirect('/');
+            }
+          });
+        } else {
+          req.flash('warningMessage', '利用できないユーザーIDです。');
+          debug('username', username);
+          return res.render('invited');
+        }
+      });
+    } else {
+      return res.render('invited', {
+      });
+    }
+  };
+
+  actions.updateInvitedUser = function(req, res) {
+    return res.redirect('/');
   };
 
   return actions;

@@ -68,11 +68,11 @@
           </p>
           {% endif %}
 
-          {% if config.crowi['security.registrationWhiteList'] && config.crowi['security.registrationWhiteList'].length %}
+          {% if config.crowi['security:registrationWhiteList'] && config.crowi['security:registrationWhiteList'].length %}
           <p class="help-block">
           この Wiki では以下のメールアドレスのみ登録可能です。
           <ul>
-            {% for em in config.crowi['security.registrationWhiteList'] %}
+            {% for em in config.crowi['security:registrationWhiteList'] %}
             <li><code>{{ em }}</code></li>
             {% endfor %}
           </ul>
@@ -275,12 +275,12 @@
               <p class="help-block">
               Googleコネクトをすると、Googleアカウントでログイン可能になります。<br>
               </p>
-              {% if config.crowi['security.registrationWhiteList'] && config.crowi['security.registrationWhiteList'].length %}
+              {% if config.crowi['security:registrationWhiteList'] && config.crowi['security:registrationWhiteList'].length %}
               <p class="help-block">
               この Wiki では、登録可能なメールアドレスが限定されているため、コネクト可能なGoogleアカウントは、以下のメールアドレスの発行できるGoogle Appsアカウントに限られます。
               </p>
               <ul>
-                {% for em in config.crowi['security.registrationWhiteList'] %}
+                {% for em in config.crowi['security:registrationWhiteList'] %}
                 <li><code>{{ em }}</code></li>
                 {% endfor %}
               </ul>

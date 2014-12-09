@@ -94,6 +94,24 @@ module.exports = function(app) {
     });
   };
 
+  actions.user.invite = function(req, res) {
+    var form = req.form.inviteForm;
+    var toSendEmail = form.sendEmail || false;
+    if (req.form.isValid) {
+      User.createUsersByInvitation(form.emailList.split('\n'), toSendEmail, function(err, userList) {
+        if (err) {
+          req.flash('errorMessage', req.form.errors.join('\n'));
+        } else {
+          req.flash('createdUser', userList);
+        }
+        return res.redirect('/admin/users');
+      });
+    } else {
+      req.flash('errorMessage', req.form.errors.join('\n'));
+      return res.redirect('/admin/users');
+    }
+  };
+
   actions.user.makeAdmin = function(req, res) {
     var id = req.params.id;
     User.findById(id, function(err, userData) {
@@ -155,19 +173,83 @@ module.exports = function(app) {
     });
   };
 
+  actions.user.remove= function(req, res) {
+    // 未実装
+    return res.redirect('/admin/users');
+  };
+
+  actions.user.removeCompletely = function(req, res) {
+    // ユーザーの物理削除
+    var id = req.params.id;
+
+    User.removeCompletelyById(id, function(err, removed) {
+      if (err) {
+        debug('Error while removing user.', err, id);
+        req.flash('errorMessage', '完全な削除に失敗しました。');
+      } else {
+        req.flash('successMessage', '削除しました');
+      }
+      return res.redirect('/admin/users');
+    });
+  };
+
   actions.api = {};
   actions.api.appSetting = function(req, res) {
-    var form = req.body.settingForm;
+    var form = req.form.settingForm;
 
     if (req.form.isValid) {
-      Config.updateNamespaceByArray('crowi', form, function(err, config) {
-        Config.updateConfigCache('crowi', config)
-        return res.json({status: true});
-      });
+      debug('form content', form);
+
+      // mail setting ならここで validation
+      if (form['mail:from']) {
+        validateMailSetting(req, form, function(err, data) {
+          if (err) {
+            req.form.errors.push('SMTPを利用したテストメール送信に失敗しました。設定をみなおしてください。');
+            return res.json({status: false, message: req.form.errors.join('\n')});
+          }
+
+          return saveSetting(req, res, form);
+        });
+      } else {
+        return saveSetting(req, res, form);
+      }
     } else {
       return res.json({status: false, message: req.form.errors.join('\n')});
     }
   };
+
+  function saveSetting(req, res, form)
+  {
+    Config.updateNamespaceByArray('crowi', form, function(err, config) {
+      Config.updateConfigCache('crowi', config)
+      return res.json({status: true});
+    });
+  }
+
+  function validateMailSetting(req, form, callback)
+  {
+    var mailer = app.set('mailer');
+    var option = {
+      host: form['mail:smtpHost'],
+      port: form['mail:smtpPort'],
+      auth: {
+        user: form['mail:smtpUser'],
+        pass: form['mail:smtpPassword'],
+      }
+    };
+    if (option.port === 465) {
+      option.secure = true;
+    }
+
+    var smtpClient = mailer.createSMTPClient(option);
+    debug('mailer setup for validate SMTP setting', smtpClient);
+
+    smtpClient.sendMail({
+      to: req.user.email,
+      subject: 'Wiki管理設定のアップデートによるメール通知',
+      text: 'このメールは、WikiのSMTP設定のアップデートにより送信されています。'
+    }, callback);
+  }
 
 
   return actions;

@@ -32,7 +32,54 @@
         <li class="active"><a href="/admin/users"><i class="fa fa-users"></i> ユーザー管理</a></li>
       </ul>
     </div>
+
     <div class="col-md-9">
+      <p>
+        <button  data-toggle="collapse" class="btn btn-default" href="#inviteUserForm">新規ユーザーの招待</button>
+      </p>
+      <form role="form" action="/admin/user/invite" method="post">
+        <div id="inviteUserForm" class="collapse">
+          <div class="form-group">
+            <label for="inviteForm[emailList]">メールアドレス (複数行入力で複数人招待可能)</label>
+            <textarea class="form-control" name="inviteForm[emailList]" placeholder="例: user@crowi.wiki"></textarea>
+          </div>
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" name="inviteForm[sendEmail]" checked> 招待をメールで送信
+            </label>
+          </div>
+          <button type="submit" class="btn btn-primary">招待する</button>
+        </div>
+      </form>
+
+      {% set createdUser = req.flash('createdUser') %}
+      {% if createdUser.length %}
+      <div class="modal fade in" id="createdUserModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              <h4 class="modal-title">ユーザーを招待しました</h4>
+            </div>
+
+            <div class="modal-body">
+              <p>
+                作成したユーザーは仮パスワードが設定されています。<br>
+                仮パスワードはこの画面を閉じると二度と表示できませんのでご注意ください。<span class="text-danger">招待メールを送っていない場合、この画面で必ず仮パスワードをコピーし、招待者へ連絡してください。</span>
+              </p>
+
+              <pre>{% for cUser in createdUser %}{% if cUser.user %}{{ cUser.email }} {{ cUser.password }}<br>{% else %}{{ cUser.email }} 作成失敗<br>{% endif %}{% endfor %}</pre>
+            </div>
+
+          </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+      </div><!-- /.modal -->
+      <script>$(function() { $('#createdUserModal').modal('show'); });</script>
+      {% endif %}
+
+      <h2>ユーザー一覧</h2>
+
       <table class="table table-hover table-striped table-bordered">
         <thead>
           <tr>
@@ -96,10 +143,18 @@
                   </form>
                   </li>
                   <li class="dropdown-button">
-                  <form action="/admin/user/{{ sUser._id.toString() }}/suspend" method="post">
-                    <button type="submit" class="btn btn-block btn-danger">完全に削除する</button>
+                  {# label は同じだけど、こっちは論理削除 #}
+                  <form action="/admin/user/{{ sUser._id.toString() }}/remove" method="post">
+                    <button type="submit" class="btn btn-block btn-danger">削除する</button>
                   </form>
                   {% endif  %}
+                  {% if sUser.status == 5 %}
+                  {# label は同じだけど、こっちは物理削除 #}
+                  <form action="/admin/user/{{ sUser._id.toString() }}/removeCompletely" method="post">
+                    <button type="submit" class="btn btn-block btn-danger">削除する</button>
+                  </form>
+                  {% endif  %}
+                  </li>
 
                   {% if sUser.status == 2 %} {# activated な人だけこのメニューを表示 #}
                   <li class="divider"></li>
@@ -116,7 +171,7 @@
                       {% endif %}
                     {% else %}
                       <form action="/admin/user/{{ sUser._id.toString() }}/makeAdmin" method="post">
-                        <button type="submit" class="btn btn-block btn-danger">管理者にする</button>
+                        <button type="submit" class="btn btn-block btn-primary">管理者にする</button>
                       </form>
                     {% endif %}
                   </li>

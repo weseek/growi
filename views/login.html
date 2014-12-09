@@ -73,17 +73,17 @@
       {% endif %}
     </div>
 
-    {% if config.security.registrationMode != 'Closed' %}
+    {% if config.crowi['security:registrationMode'] != 'Closed' %}
     <p class="bottom-text"><a href="#register" onclick="$('#login-dialog').addClass('to-flip'); return false;"><i class="fa fa-pencil"></i> 新規登録はこちら</a></p>
     {% endif %}
   </div>
 
-  {% if config.security.registrationMode != 'Closed' %}
+  {% if config.crowi['security:registrationMode'] != 'Closed' %}
   <div class="register-dialog-inner back">
 
     <h2>新規登録</h2>
 
-    {% if config.security.registrationMode == 'Restricted' %}
+    {% if config.crowi['security:registrationMode'] == 'Restricted' %}
     <p class="alert alert-warning">
     この Wiki への新規登録は制限されています。<br>
     利用を開始するには、新規登録後、管理者による承認が必要です。

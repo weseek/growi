@@ -12,6 +12,14 @@ textarea.form-body-height {
   height: 300px;
 }
 
+input::-webkit-input-placeholder {
+  color: #ccc;
+}
+input:-moz-placeholder {
+  color: #ccc;
+}
+
+
 .form-maximized {
   position: absolute;
   background: #fff;
