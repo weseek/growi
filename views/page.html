@@ -90,7 +90,7 @@
     </div>
 
     {# edit form #}
-    <div class="tab-pane {% if req.body.pageForm %}active{% endif %}" id="edit-form">
+    <div class="edit-form tab-pane {% if req.body.pageForm %}active{% endif %}" id="edit-form">
       {% include '_form.html' %}
     </div>
   </div>
@@ -100,6 +100,13 @@
         renderer.render();
         Crowi.correctHeaders('#revision-body-content');
         Crowi.revisionToc('#revision-body-content', '#revision-toc');
+
+        $('a[data-toggle="tab"][href="#edit-form"]').on('show.bs.tab', function() {
+          $('.content-main').addClass('on-edit');
+        });
+        $('a[data-toggle="tab"][href="#edit-form"]').on('hide.bs.tab', function() {
+          $('.content-main').removeClass('on-edit');
+        });
 
         $('#edit-form').submit(function()
         {
@@ -112,15 +119,18 @@
           $('.content-main').css({'padding-top': topMargin});
         });
         $('#page-header').on('affixed-top.bs.affix', function(e) {
-          $('.content-main').css({'padding-top': 0});
+          if (!$('.content-main').hasClass('on-edit')) {
+            $('.content-main').css({'padding-top': 0});
+          }
         });
         $('[data-affix-disable]').on('click', function(e) {
           $elm = $($(this).data('affix-disable'));
           $elm.removeClass('affix')
             .addClass('affix-top')
             .removeAttr('data-spy');
-          $('.content-main').css({'padding-top': 0});
-
+          if (!$('.content-main').hasClass('on-edit')) {
+            $('.content-main').css({'padding-top': 0});
+          }
           return false;
         });
     });

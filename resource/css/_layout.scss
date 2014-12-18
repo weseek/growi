@@ -354,10 +354,66 @@
   .wiki-content {
   }
 
-  .tab-content {
-    margin-top: 30px;
-    .form-box {
+  .content-main {
+    .tab-content {
       margin-top: 30px;
+    }
+  }
+  // on-edit
+  .content-main.on-edit {
+    position: fixed;
+    z-index: 1060;
+    background: #fff;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    padding: 16px;
+
+    .nav {
+      margin-top: 8px;
+      max-height: 8%;
+    }
+
+    .tab-content {
+      margin-top: 1%;
+      height: 83%;
+
+      .edit-form {
+        height: 100%;
+        .row {
+          height: 100%;
+          .col-md-6 {
+            height: 100%;
+
+            form {
+              height: 100%;
+              textarea {
+                height: 100%;
+              }
+            }
+
+            .preview-body {
+              height: 100%;
+              padding-top: 5px;
+              padding-bottom: 5px;
+              overflow: scroll;
+            }
+          }
+        }
+      }
+    }
+
+    .form-group.form-submit-group {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      left: 0;
+      padding: 8px;
+      max-height: 8%;
+      background: rgba(255,255,255,.8);
+      border-top: solid 1px #ccc;
+      margin-bottom: 0;
     }
   }
 }
