@@ -3,10 +3,13 @@ module.exports = function(app) {
 
   var googleapis = require('googleapis')
     , debug = require('debug')('crowi:routes:login')
+    , async    = require('async')
     , models = app.set('models')
     , config = app.set('config')
+    , mailer = app.set('mailer')
     , Page = models.Page
     , User = models.User
+    , Config = models.Config
     , Revision = models.Revision
     , actions = {};
 
@@ -139,7 +142,7 @@ module.exports = function(app) {
     }
 
     // config で closed ならさよなら
-    if (config.crowi['security:registrationMode'] == 'Closed') {
+    if (config.crowi['security:registrationMode'] == Config.SECURITY_REGISTRATION_MODE_CLOSED) {
       return res.redirect('/');
     }
 
@@ -179,6 +182,38 @@ module.exports = function(app) {
             req.flash('registerWarningMessage', 'ユーザー登録に失敗しました。');
             return res.redirect('/login?register=1');
           } else {
+
+            // 作成後、承認が必要なモードなら、管理者に通知する
+            if (config.crowi['security:registrationMode'] === Config.SECURITY_REGISTRATION_MODE_RESTRICTED) {
+              // TODO send mail
+              User.findAdmins(function(err, admins) {
+                async.each(
+                  admins,
+                  function(adminUser, next) {
+                    mailer.send({
+                        to: adminUser.email,
+                        subject: '[' + config.crowi['app:title'] + ':admin] A New User Created and Waiting for Activation',
+                        template: 'admin/userWaitingActivation.txt',
+                        vars: {
+                          createdUser: userData,
+                          adminUser: adminUser,
+                          url: config.crowi['app:url'],
+                          appTitle: config.crowi['app:title'],
+                        }
+                      },
+                      function (err, s) {
+                        debug('completed to send email: ', err, s);
+                        next();
+                      }
+                    );
+                  },
+                  function(err) {
+                    debug('Sending invitation email completed.', err);
+                  }
+                );
+              });
+            }
+
             if (facebookId || googleId) {
               userData.updateGoogleIdAndFacebookId(googleId, facebookId, function(err, userData) {
                 if (err) { // TODO

@@ -236,6 +236,15 @@ module.exports = function(app, models) {
 
   };
 
+  userSchema.statics.findAdmins = function(callback) {
+    var User = this;
+    this.find({admin: true})
+      .exec(function(err, admins) {
+        debug('Admins: ', admins);
+        callback(err, admins);
+      });
+  };
+
   userSchema.statics.findUsersWithPagination = function(options, callback) {
     var sort = options.sort || {status: 1, username: 1, createdAt: 1};
 
