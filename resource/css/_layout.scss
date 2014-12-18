@@ -70,7 +70,7 @@
       border-right: none;
       background: $crowiAsideBackground;
       border-radius: 5px 0 0 5px;
-      z-index: 1055;
+      z-index: 1051;
       font-size: .8em;
 
       color: darken($link-color, 15%);
@@ -186,7 +186,7 @@
             list-style: none;
 
             a {
-              color: darken($link-color, 50%);
+              color: #666;
               padding: 3px 5px 3px 40px;
               display: block;
 
@@ -246,11 +246,8 @@
           left: 0;
           padding: 5px 20px;
           z-index: 1041;
-          background: #fff;
+          background: rgba(255, 255, 255, .9);
           box-shadow: 0 0px 2px #999;
-
-          transition: .5s ease;
-          -webkit-transition: .5s ease;
 
           h1 {
             font-size: 1.8em;

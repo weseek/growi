@@ -32,6 +32,7 @@ div.body {
     }
   }
   .revision-toc-content {
+    background: #fcfcfc;
     padding: 10px;
 
     > ul {
@@ -56,6 +57,7 @@ div.body {
 
 .wiki {
   line-height: 1.6em;
+  font-size: 15px;
 
   h1, h2, h3, h4, h5, h6 {
     margin-top: 1.6em;
@@ -67,23 +69,28 @@ div.body {
   }
 
   h1 {
-    font-size: 2.2em;
+    padding-bottom: 0.3em;
+    font-size: 2.3em;
     font-weight: bold;
+    border-bottom: solid 1px #ccc;
   }
   h2 {
+    padding-bottom: 0.3em;
     font-size: 1.8em;
+    line-height: 1.225;
     font-weight: bold;
+    border-bottom: 1px solid #eee;
   }
   h3 {
-    font-size: 1.6em;
+    font-size: 1.5em;
     font-weight: bold;
   }
   h4 {
-    font-size: 1.4em;
+    font-size: 1.3em;
     font-weight: normal;
   }
   h5 {
-    font-size: 1.2em;
+    font-size: 1.1em;
     font-weight: normal;
   }
 
@@ -92,7 +99,12 @@ div.body {
     margin-bottom: 9px;
   }
   blockquote {
-    font-size: 12px;
+    font-size: .9em;
+  }
+
+  pre {
+    line-height: 1.4em;
+    font-size: .9em;
   }
 
   img {
@@ -102,7 +114,20 @@ div.body {
   }
 
   ul, ol {
-    padding-left: 18px;
+    padding-left: 30px;
+
+    li {
+      line-height: 1.8em;
+
+      p {
+        margin-top: 10px;
+        margin-bottom: 0;
+
+        &:first-child {
+          margin-top: 0;
+        }
+      }
+    }
   }
 
   // {{{ table (copied from bootstrap .table
