@@ -7,7 +7,7 @@
   &.main-container { // {{{
 
     .crowi-header { // {{{
-      z-index: 1050;
+      z-index: 1040;
       background: $crowiHeaderBackground;
       height: $crowiHeaderHeight;
       border-radius: 0;
@@ -70,7 +70,7 @@
       border-right: none;
       background: $crowiAsideBackground;
       border-radius: 5px 0 0 5px;
-      z-index: 1051;
+      z-index: 1039;
       font-size: .8em;
 
       color: darken($link-color, 15%);
@@ -85,7 +85,7 @@
 
 
     aside.sidebar { // {{{
-      z-index: 1040;
+      z-index: 1030;
       position: fixed;
       padding: 65px 0 0 0;
       margin-bottom: $crowiFooterHeight;
@@ -245,7 +245,7 @@
           top: 0;
           left: 0;
           padding: 5px 20px;
-          z-index: 1041;
+          z-index: 1039;
           background: rgba(255, 255, 255, .9);
           box-shadow: 0 0px 2px #999;
 
@@ -342,12 +342,12 @@
   } // }}}
 
   // override bootstrap modals
-  .modal-backdrop {
-    z-index: 1052;
-  }
-  .modal {
-    z-index: 1055;
-  }
+  //.modal-backdrop {
+  //  z-index: 1052;
+  //}
+  //.modal {
+  //  z-index: 1055;
+  //}
 } // }}}
 
 .crowi.main-container .main {
