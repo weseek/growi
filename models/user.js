@@ -236,6 +236,15 @@ module.exports = function(app, models) {
 
   };
 
+  userSchema.statics.findAdmins = function(callback) {
+    var User = this;
+    this.find({admin: true})
+      .exec(function(err, admins) {
+        debug('Admins: ', admins);
+        callback(err, admins);
+      });
+  };
+
   userSchema.statics.findUsersWithPagination = function(options, callback) {
     var sort = options.sort || {status: 1, username: 1, createdAt: 1};
 
@@ -405,20 +414,19 @@ module.exports = function(app, models) {
             createdUserList,
             function(user, next) {
               if (user.password === null) {
-                next();
+                return next();
               }
 
               mailer.send({
                   to: user.email,
                   subject: 'Invitation to ' + config.crowi['app:title'],
-                  text: 'Hi, ' + user.email + '\n\n'
-                    + 'You are invited to our Wiki, you can log in with following account:\n\n'
-                    + 'Email: ' + user.email + '\n'
-                    + 'Password: ' + user.password
-                    + '\n (This password was auto generated. Update required at the first time you logging in)\n'
-                    + '\n'
-                    + 'We are waiting for you!\n'
-                    + config.crowi['app:url']
+                  template: 'admin/userInvitation.txt',
+                  vars: {
+                    email: user.email,
+                    password: user.password,
+                    url: config.crowi['app:url'],
+                    appTitle: config.crowi['app:title'],
+                  }
                 },
                 function (err, s) {
                   debug('completed to send email: ', err, s);
