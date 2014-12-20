@@ -51,7 +51,6 @@
 
   {% include 'modal/widget_rename.html' %}
 
-
   <div class="tab-content wiki-content">
   {% if req.query.renamed %}
   <div class="alert alert-info">
@@ -118,7 +117,6 @@
 
         //data-spy="affix" data-offset-top="80"
         var headerHeight = $('#page-header').outerHeight(true);
-        console.log(headerHeight);
         $('.header-wrap').css({height: headerHeight + 'px'});
         $('#page-header').affix({
           offset: {
@@ -240,13 +238,11 @@ $(function() {
   $('#bookmarkButton').click(function() {
     var pageId = {{page._id|json|safe}};
     $.post('/_api/page/{{ page._id.toString() }}/bookmark', function(data) {
-      console.log(data);
     });
   });
   $('#pageLikeButton').click(function() {
     var pageId = {{page._id|json|safe}};
     $.post('/_api/page/{{ page._id.toString() }}/like', function(data) {
-      console.log(data);
     });
   });
 });

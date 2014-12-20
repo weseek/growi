@@ -44,23 +44,6 @@
       }
     }, 1000);
 
-    function maximizeFormBox()
-    {
-      $('#form-box').addClass('form-maximized');
-      $('#form-body').height($(window).height() - 150 + 'px');
-    }
-    function minimizeFormBox()
-    {
-      $('#form-box').removeClass('form-maximized');
-      $('#form-body').height('300px');
-    }
-    $('#form-box-full').toggle(function()
-    {
-      maximizeFormBox();
-    }, function() {
-      minimizeFormBox();
-    });
-
     // tabs handle
     $('textarea#form-body').on('keydown', function(event){
       var self  = $(this)
