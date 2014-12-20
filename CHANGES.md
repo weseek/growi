@@ -13,6 +13,7 @@ CHANGES
 * Feature: User delete (admin).
 * Improve: Wiki style improved.
 * Improve: Update favicon (high resolution).
+* Fix: Affix header handling.
 * Library Update: Bootstrap 3.3.1, Fontawesome 4.2.0, async 0.9.0,
 
 ## 1.0.4
