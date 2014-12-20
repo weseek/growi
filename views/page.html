@@ -13,12 +13,20 @@
 {% endblock %}
 
 {% block content_main %}
-<div class="content-main">
+<div class="content-main {% if not page %}on-edit{% endif %}">
 
   {% if not page %}
-    <h2>ページを作成する</h2>
-
+  <ul class="nav nav-tabs hidden-print">
+    <li><a>ページ作成: {{ path|path2name }}</a></li>
+    <li class="dropdown pull-right">
+      <a href="/"><i class="fa fa-times"></i> キャンセル</a>
+    </li>
+  </ul>
+  <div class="tab-content">
+    <div class="edit-form">
     {% include '_form.html' %}
+    </div>
+  </div>
 
   {% else %}
 
