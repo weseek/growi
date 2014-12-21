@@ -23,6 +23,7 @@
     }
   },
   "addons": [
-    "mongohq"
+    "mongohq",
+    "redistogo"
   ]
 }

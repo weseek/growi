@@ -7,7 +7,7 @@
   &.main-container { // {{{
 
     .crowi-header { // {{{
-      z-index: 1050;
+      z-index: 1040;
       background: $crowiHeaderBackground;
       height: $crowiHeaderHeight;
       border-radius: 0;
@@ -70,7 +70,7 @@
       border-right: none;
       background: $crowiAsideBackground;
       border-radius: 5px 0 0 5px;
-      z-index: 1055;
+      z-index: 1039;
       font-size: .8em;
 
       color: darken($link-color, 15%);
@@ -85,7 +85,7 @@
 
 
     aside.sidebar { // {{{
-      z-index: 1040;
+      z-index: 1030;
       position: fixed;
       padding: 65px 0 0 0;
       margin-bottom: $crowiFooterHeight;
@@ -186,7 +186,7 @@
             list-style: none;
 
             a {
-              color: darken($link-color, 50%);
+              color: #666;
               padding: 3px 5px 3px 40px;
               display: block;
 
@@ -245,12 +245,9 @@
           top: 0;
           left: 0;
           padding: 5px 20px;
-          z-index: 1041;
-          background: #fff;
+          z-index: 1039;
+          background: rgba(255, 255, 255, .9);
           box-shadow: 0 0px 2px #999;
-
-          transition: .5s ease;
-          -webkit-transition: .5s ease;
 
           h1 {
             font-size: 1.8em;
@@ -271,9 +268,11 @@
           }
         }
       }
+
       &.col-md-12 article header.affix {
         width: 100%;
       }
+
 
       article header h1 {
         margin-top: 0;
@@ -345,22 +344,78 @@
   } // }}}
 
   // override bootstrap modals
-  .modal-backdrop {
-    z-index: 1052;
-  }
-  .modal {
-    z-index: 1055;
-  }
+  //.modal-backdrop {
+  //  z-index: 1052;
+  //}
+  //.modal {
+  //  z-index: 1055;
+  //}
 } // }}}
 
 .crowi.main-container .main {
   .wiki-content {
   }
 
-  .tab-content {
-    margin-top: 30px;
-    .form-box {
+  .content-main {
+    .tab-content {
       margin-top: 30px;
+    }
+  }
+  // on-edit
+  .content-main.on-edit {
+    position: fixed;
+    z-index: 1060;
+    background: #fff;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    padding: 16px;
+
+    .nav {
+      margin-top: 8px;
+      max-height: 8%;
+    }
+
+    .tab-content {
+      margin-top: 1%;
+      height: 83%;
+
+      .edit-form {
+        height: 100%;
+        .row {
+          height: 100%;
+          .col-md-6 {
+            height: 100%;
+
+            form {
+              height: 100%;
+              textarea {
+                height: 100%;
+              }
+            }
+
+            .preview-body {
+              height: 100%;
+              padding-top: 5px;
+              padding-bottom: 5px;
+              overflow: scroll;
+            }
+          }
+        }
+      }
+    }
+
+    .form-group.form-submit-group {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      left: 0;
+      padding: 8px;
+      max-height: 8%;
+      background: rgba(255,255,255,.8);
+      border-top: solid 1px #ccc;
+      margin-bottom: 0;
     }
   }
 }

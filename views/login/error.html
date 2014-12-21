@@ -1,0 +1,56 @@
+{% extends '../layout/single-nologin.html' %}
+
+{% block html_title %}Error · {% endblock %}
+
+{% block content_main %}
+
+<h1 class="login-page">
+  {% if config.crowi['app:title'] == 'Crowi' %}
+    <img src="/logo/135x32.png" alt="Crowi">
+  {% else %}
+    {{ config.crowi['app:title'] }}<br>
+    <img src="/logo/100x11_w.png" alt="powered by Crowi">
+  {% endif %}
+</h1>
+
+<div class="login-dialog-container flip-container col-md-5">
+
+<div class="login-dialog" id="login-dialog">
+
+  <div class="login-dialog-inner front">
+    {% if reason === 'registered'%}
+
+      <h2>登録完了</h2>
+
+      <p class="text-center">
+        <i class="fa fa-smile-o fa-3x"></i>
+      </p>
+      <hr>
+      <div class="alert alert-info text-center">
+        {{ reasonMessage }}
+      </div>
+
+    {% else %}
+
+      <h2>ログインエラー</h2>
+
+      <p class="text-center">
+        <i class="fa fa-meh-o fa-3x"></i>
+      </p>
+      <hr>
+      {% if reasonMessage != '' %}
+      <div class="alert alert-danger text-center">
+        {{ reasonMessage }}
+      </div>
+      {% endif %}
+
+    {% endif %}
+
+  </div>
+
+</div>
+
+</div>
+
+{% endblock %}
+

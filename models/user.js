@@ -3,13 +3,16 @@ module.exports = function(app, models) {
     , mongoosePaginate = require('mongoose-paginate')
     , debug = require('debug')('crowi:models:user')
     , crypto = require('crypto')
+    , async = require('async')
     , config = app.set('config')
     , ObjectId = mongoose.Schema.Types.ObjectId
+    , mailer = app.set('mailer')
 
     , STATUS_REGISTERED = 1
     , STATUS_ACTIVE     = 2
     , STATUS_SUSPENDED  = 3
     , STATUS_DELETED    = 4
+    , STATUS_INVITED    = 5
 
     , PAGE_ITEMS        = 20
 
@@ -20,8 +23,8 @@ module.exports = function(app, models) {
     fbId: String, // userId
     image: String,
     googleId: String,
-    name: { type: String, required: true },
-    username: { type: String, required: true },
+    name: { type: String },
+    username: { type: String },
     email: { type: String, required: true },
     password: String,
     status: { type: Number, required: true, default: STATUS_ACTIVE },
@@ -31,11 +34,14 @@ module.exports = function(app, models) {
   userSchema.plugin(mongoosePaginate);
 
   function decideUserStatusOnRegistration () {
+    var Config = models.Config;
+
     // status decided depends on registrationMode
-    switch (config.crowi['security.registrationMode']) {
-      case 'Open':
+    switch (config.crowi['security:registrationMode']) {
+      case Config.SECURITY_REGISTRATION_MODE_OPEN:
         return STATUS_ACTIVE;
-      case 'Restricted':
+      case Config.SECURITY_REGISTRATION_MODE_RESTRICTED:
+      case Config.SECURITY_REGISTRATION_MODE_CLOSED: // 一応
         return STATUS_REGISTERED;
       default:
         return STATUS_ACTIVE; // どっちにすんのがいいんだろうな
@@ -124,6 +130,15 @@ module.exports = function(app, models) {
     return this.updateGoogleId(null, callback);
   };
 
+  userSchema.methods.activateInvitedUser = function(username, name, password, callback) {
+    this.setPassword(password);
+    this.name = name;
+    this.username = username;
+    this.status = STATUS_ACTIVE;
+    this.save(function(err, userData) {
+      return callback(err, userData);
+    });
+  };
 
   userSchema.methods.removeFromAdmin = function(callback) {
     debug('Remove from admin', this);
@@ -193,12 +208,14 @@ module.exports = function(app, models) {
     userStatus[STATUS_ACTIVE] = 'Active';
     userStatus[STATUS_SUSPENDED] = 'Suspended';
     userStatus[STATUS_DELETED] = 'Deleted';
+    userStatus[STATUS_INVITED] = '招待済み';
 
     return userStatus;
   };
 
   userSchema.statics.isEmailValid = function(email, callback) {
-    if (Array.isArray(config.crowi['security:registrationWhiteList'])) {
+    var whitelist = config.crowi['security:registrationWhiteList'];
+    if (Array.isArray(whitelist) && whitelist.length > 0) {
       return config.crowi['security:registrationWhiteList'].some(function(allowedEmail) {
         var re = new RegExp(allowedEmail + '$');
         return re.test(email);
@@ -218,6 +235,15 @@ module.exports = function(app, models) {
         callback(err, userData);
       });
 
+  };
+
+  userSchema.statics.findAdmins = function(callback) {
+    var User = this;
+    this.find({admin: true})
+      .exec(function(err, admins) {
+        debug('Admins: ', admins);
+        callback(err, admins);
+      });
   };
 
   userSchema.statics.findUsersWithPagination = function(options, callback) {
@@ -258,6 +284,18 @@ module.exports = function(app, models) {
     });
   };
 
+  userSchema.statics.isRegisterableUsername = function(username, callback) {
+    var User = this;
+    var usernameUsable = true;
+
+    this.findOne({username: username}, function (err, userData) {
+      if (userData) {
+        usernameUsable = false;
+      }
+      return callback(usernameUsable);
+    });
+  };
+
   userSchema.statics.isRegisterable = function(email, username, callback) {
     var User = this;
     var emailUsable = true;
@@ -282,6 +320,131 @@ module.exports = function(app, models) {
         return callback(true, {});
       });
     });
+  };
+
+  userSchema.statics.removeCompletelyById = function(id, callback) {
+    var User = this;
+    User.findById(id, function (err, userData) {
+      if (!userData) {
+        return callback(err, null);
+      }
+
+      debug('Removing user:', userData);
+      // 物理削除可能なのは、招待中ユーザーのみ
+      // 利用を一度開始したユーザーは論理削除のみ可能
+      if (userData.status !== STATUS_INVITED) {
+        return callback(new Error('Cannot remove completely the user whoes status is not INVITED'), null);
+      }
+
+      userData.remove(function(err) {
+        if (err) {
+          return callback(err, null);
+        }
+
+        return callback(null, 1);
+      });
+    });
+  };
+
+  userSchema.statics.createUsersByInvitation = function(emailList, toSendEmail, callback) {
+    var User = this
+      , createdUserList = [];
+
+    if (!Array.isArray(emailList)) {
+      debug('emailList is not array');
+    }
+
+    async.each(
+      emailList,
+      function(email, next) {
+        var newUser = new User()
+          ,password;
+
+        email = email.trim();
+
+        // email check
+        // TODO: 削除済みはチェック対象から外そう〜
+        User.findOne({email: email}, function (err, userData) {
+          // The user is exists
+          if (userData) {
+            createdUserList.push({
+              email: email,
+              password: null,
+              user: null,
+            });
+
+            return next();
+          }
+
+          password = Math.random().toString(36).slice(-16);
+
+          newUser.email = email;
+          newUser.setPassword(password);
+          newUser.createdAt = Date.now();
+          newUser.status = STATUS_INVITED;
+
+          newUser.save(function(err, userData) {
+            if (err) {
+              createdUserList.push({
+                email: email,
+                password: null,
+                user: null,
+              });
+              debug('save failed!! ', email);
+            } else {
+              createdUserList.push({
+                email: email,
+                password: password,
+                user: userData,
+              });
+              debug('saved!', email);
+            }
+
+            next();
+          });
+        });
+      },
+      function(err) {
+        if (err) {
+          debug('error occured while iterate email list');
+        }
+
+        if (toSendEmail) {
+          // TODO: メール送信部分のロジックをサービス化する
+          async.each(
+            createdUserList,
+            function(user, next) {
+              if (user.password === null) {
+                return next();
+              }
+
+              mailer.send({
+                  to: user.email,
+                  subject: 'Invitation to ' + config.crowi['app:title'],
+                  template: 'admin/userInvitation.txt',
+                  vars: {
+                    email: user.email,
+                    password: user.password,
+                    url: config.crowi['app:url'],
+                    appTitle: config.crowi['app:title'],
+                  }
+                },
+                function (err, s) {
+                  debug('completed to send email: ', err, s);
+                  next();
+                }
+              );
+            },
+            function(err) {
+              debug('Sending invitation email completed.', err);
+            }
+          );
+        }
+
+        debug('createdUserList!!! ', createdUserList);
+        return callback(null, createdUserList);
+      }
+    );
   };
 
   userSchema.statics.createUserByEmailAndPassword = function(name, username, email, password, callback) {
@@ -328,6 +491,7 @@ module.exports = function(app, models) {
   userSchema.statics.STATUS_ACTIVE = STATUS_ACTIVE;
   userSchema.statics.STATUS_SUSPENDED = STATUS_SUSPENDED;
   userSchema.statics.STATUS_DELETED = STATUS_DELETED;
+  userSchema.statics.STATUS_INVITED = STATUS_INVITED;
 
   models.User = mongoose.model('User', userSchema);
 

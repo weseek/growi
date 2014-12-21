@@ -29,6 +29,13 @@
         </a>
       </li>
       {% endif %}
+      {#
+      <li id="">
+        <a href="#" id="createPage">
+          <i class="fa fa-plus"> 新規</i>
+        </a>
+      </li>
+      #}
       {% if user %}
       {#
       <li id="" class="notif">
@@ -84,7 +91,7 @@
 
 {% block layout_sidebar %}
 
-<a href="" class="layout-control" id="toggle-sidebar"><i class="fa fa-chevron-right"></i> <span class="hide-on-affix-top"></span></a>
+<a href="" class=" hidden-xs hidden-sm layout-control" id="toggle-sidebar"><i class="fa fa-chevron-right"></i> <span class="hide-on-affix-top"></span></a>
 <script>
   $(function() {
     $('#toggle-sidebar').click(function(e) {

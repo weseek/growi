@@ -4,6 +4,10 @@ module.exports = function(app) {
     , ObjectId = mongoose.Schema.Types.ObjectId
     , configSchema
     , Config
+
+    , SECURITY_REGISTRATION_MODE_OPEN = 'Open'
+    , SECURITY_REGISTRATION_MODE_RESTRICTED = 'Resricted'
+    , SECURITY_REGISTRATION_MODE_CLOSED = 'Closed'
   ;
 
   configSchema = new mongoose.Schema({
@@ -26,6 +30,12 @@ module.exports = function(app) {
       'aws:accessKeyId'     : '',
       'aws:secretAccessKey' : '',
 
+      'mail:from'         : '',
+      'mail:smtpHost'     : '',
+      'mail:smtpPort'     : '',
+      'mail:smtpUser'     : '',
+      'mail:smtpPassword' : '',
+
       'searcher:url': '',
 
       'google:clientId'     : '',
@@ -35,6 +45,16 @@ module.exports = function(app) {
       'facebook:secret' : '',
     };
   }
+
+  configSchema.statics.getRegistrationModeLabels = function()
+  {
+    var labels = {};
+    labels[SECURITY_REGISTRATION_MODE_OPEN]       = '公開 (だれでも登録可能)';
+    labels[SECURITY_REGISTRATION_MODE_RESTRICTED] = '制限 (登録完了には管理者の承認が必要)';
+    labels[SECURITY_REGISTRATION_MODE_CLOSED]     = '非公開 (登録には管理者による招待が必要)';
+
+    return labels;
+  };
 
   configSchema.statics.updateConfigCache = function(ns, config)
   {
@@ -145,6 +165,10 @@ module.exports = function(app) {
 
 
   Config = mongoose.model('Config', configSchema);
+  Config.SECURITY_REGISTRATION_MODE_OPEN       = SECURITY_REGISTRATION_MODE_OPEN;
+  Config.SECURITY_REGISTRATION_MODE_RESTRICTED = SECURITY_REGISTRATION_MODE_RESTRICTED;
+  Config.SECURITY_REGISTRATION_MODE_CLOSED     = SECURITY_REGISTRATION_MODE_CLOSED;
+
 
   return Config;
 };

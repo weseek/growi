@@ -16,16 +16,19 @@ var express  = require('express')
   , middleware = require('./lib/middlewares')
   , time     = require('time')
   , async    = require('async')
+  , session  = require('express-session')
   , models
   , config
   , server
+  , sessionConfig
+  , RedisStore
   ;
-
 
 time.tzset('Asia/Tokyo');
 
 var app = express();
 var env = app.get('env');
+var days = (1000*3600*24*30);
 
 // mongoUri = mongodb://user:password@host/dbname
 var mongoUri = process.env.MONGOLAB_URI
@@ -34,6 +37,34 @@ var mongoUri = process.env.MONGOLAB_URI
   || 'mongodb://localhost/crowi';
 
 mongo.connect(mongoUri);
+
+sessionConfig = {
+  rolling: true,
+  secret: process.env.SECRET_TOKEN || 'this is default session secret',
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    maxAge: days,
+  },
+};
+var redisUrl = process.env.REDISTOGO_URL
+  || process.env.REDIS_URL
+  || null;
+
+if (redisUrl) {
+  var ru   = require("url").parse(redisUrl);
+  var redis = require("redis");
+  var redisClient = redis.createClient(ru.port, ru.hostname);
+  if (ru.auth) {
+    redisClient.auth(ru.auth.split(":")[1]);
+  }
+
+  RedisStore = require('connect-redis')(session);
+  sessionConfig.store = new RedisStore({
+    prefix: 'crowi:sess:',
+    client: redisClient,
+  });
+}
 
 app.set('port', process.env.PORT || 3000);
 app.use(express.static(__dirname + '/public'));
@@ -45,10 +76,7 @@ app.set('views', __dirname + '/views');
 app.use(express.methodOverride());
 app.use(express.bodyParser());
 app.use(express.cookieParser());
-app.use(express.session({
-  rolling: true,
-  secret: process.env.SECRET_TOKEN || 'this is default session secret',
-}));
+app.use(session(sessionConfig));
 app.use(flash());
 
 configModel = require('./models/config')(app);
@@ -63,13 +91,14 @@ async.series([
   }, function (next) {
     var config = app.set('config');
 
+    app.set('mailer', require('./lib/mailer')(app));
+
     models = require('./models')(app);
     models.Config = configModel;
 
     // configure application
     app.use(function(req, res, next) {
-      var days = (1000*3600*24*30)
-        , now = new Date()
+      var now = new Date()
         , fbparams = {}
         , config = app.set('config');
 
@@ -78,10 +107,7 @@ async.series([
 
       req.config = config;
 
-      req.session.cookie.expires = new Date(Date.now() + days);
-      req.session.cookie.maxAge = days;
-
-      req.baseUrl = (req.headers['x-forwarded-proto'] == 'https' ? 'https' : req.protocol) + "://" + req.get('host');
+      config.crowi['app:url'] = req.baseUrl = (req.headers['x-forwarded-proto'] == 'https' ? 'https' : req.protocol) + "://" + req.get('host');
       res.locals({
         req: req,
         baseUrl: req.baseUrl,
@@ -93,6 +119,7 @@ async.series([
         consts: {
           pageGrants: models.Page.getGrantLabels(),
           userStatus: models.User.getUserStatusLabels(),
+          registrationMode: models.Config.getRegistrationModeLabels(),
         },
       });
 

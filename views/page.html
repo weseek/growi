@@ -3,20 +3,30 @@
 {% block html_title %}{{ path|path2name }} · {{ path }}{% endblock %}
 
 {% block content_head %}
-  <header data-spy="affix" data-offset-top="80" id="page-header">
+<div class="header-wrap">
+  <header id="page-header">
     <p class="stopper"><a href="#" data-affix-disable="#page-header"><i class="fa fa-chevron-up"></i></a></p>
 
     <h1 class="title" id="revision-path">{{ path }}</h1>
   </header>
+</div>
 {% endblock %}
 
 {% block content_main %}
-<div class="content-main">
+<div class="content-main {% if not page %}on-edit{% endif %}">
 
   {% if not page %}
-    <h2>ページを作成する</h2>
-
+  <ul class="nav nav-tabs hidden-print">
+    <li><a>ページ作成: {{ path|path2name }}</a></li>
+    <li class="dropdown pull-right">
+      <a href="/"><i class="fa fa-times"></i> キャンセル</a>
+    </li>
+  </ul>
+  <div class="tab-content">
+    <div class="edit-form">
     {% include '_form.html' %}
+    </div>
+  </div>
 
   {% else %}
 
@@ -48,7 +58,6 @@
   </ul>
 
   {% include 'modal/widget_rename.html' %}
-
 
   <div class="tab-content wiki-content">
   {% if req.query.renamed %}
@@ -90,7 +99,7 @@
     </div>
 
     {# edit form #}
-    <div class="tab-pane {% if req.body.pageForm %}active{% endif %}" id="edit-form">
+    <div class="edit-form tab-pane {% if req.body.pageForm %}active{% endif %}" id="edit-form">
       {% include '_form.html' %}
     </div>
   </div>
@@ -101,26 +110,33 @@
         Crowi.correctHeaders('#revision-body-content');
         Crowi.revisionToc('#revision-body-content', '#revision-toc');
 
+        $('a[data-toggle="tab"][href="#edit-form"]').on('show.bs.tab', function() {
+          $('.content-main').addClass('on-edit');
+        });
+        $('a[data-toggle="tab"][href="#edit-form"]').on('hide.bs.tab', function() {
+          $('.content-main').removeClass('on-edit');
+        });
+
         $('#edit-form').submit(function()
         {
           //console.log('save');
           //return false;
         });
 
-        var topMargin = $('#page-header').outerHeight() + 20;
-        $('#page-header').on('affixed.bs.affix', function(e) {
-          $('.content-main').css({'padding-top': topMargin});
-        });
-        $('#page-header').on('affixed-top.bs.affix', function(e) {
-          $('.content-main').css({'padding-top': 0});
+        //data-spy="affix" data-offset-top="80"
+        var headerHeight = $('#page-header').outerHeight(true);
+        $('.header-wrap').css({height: headerHeight + 'px'});
+        $('#page-header').affix({
+          offset: {
+            top: function() {
+              return headerHeight + 74; // (54 header + 20 padding-top)
+            }
+          }
         });
         $('[data-affix-disable]').on('click', function(e) {
           $elm = $($(this).data('affix-disable'));
-          $elm.removeClass('affix')
-            .addClass('affix-top')
-            .removeAttr('data-spy');
-          $('.content-main').css({'padding-top': 0});
-
+          $(window).off('.affix');
+          $elm.removeData('affix').removeClass('affix affix-top affix-bottom');
           return false;
         });
     });
@@ -230,13 +246,11 @@ $(function() {
   $('#bookmarkButton').click(function() {
     var pageId = {{page._id|json|safe}};
     $.post('/_api/page/{{ page._id.toString() }}/bookmark', function(data) {
-      console.log(data);
     });
   });
   $('#pageLikeButton').click(function() {
     var pageId = {{page._id|json|safe}};
     $.post('/_api/page/{{ page._id.toString() }}/like', function(data) {
-      console.log(data);
     });
   });
 });

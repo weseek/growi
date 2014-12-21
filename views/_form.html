@@ -8,87 +8,65 @@
   </ul>
 </div>
 {% endif %}
-<div id="form-box">
-    <div class="row">
-      <div class="col-md-8">
-        <a href="javascript:;" id="form-box-full">最大化切り換え</a>
-        <form action="{{ path }}/edit" method="post" class="">
-          <div class="form-group">
-            <textarea name="pageForm[body]" class="form-control form-body-height" id="form-body">{% if pageForm.body %}{{ pageForm.body }}{% elseif not revision.body %}# {{ path|path2name }}{% else %}{{ revision.body }}{% endif %}</textarea>
-          </div>
-          <input type="hidden" name="pageForm[format]" value="markdown" id="form-format">
-          <input type="hidden" name="pageForm[currentRevision]" value="{{ pageForm.currentRevision|default(revision._id.toString()) }}">
-          <div class="form-group form-inline">
-            <select name="pageForm[grant]" class="form-control">
-              {% for grantId, grantLabel in consts.pageGrants %}
-              <option value="{{ grantId }}" {% if (pageForm.grant && grantId == pageForm.grant) || (page.grant == grantId ) %}selected{% endif %}>{{ grantLabel }}</option>
-              {% endfor %}
-            </select>
+<div id="form-box" class="row">
+  <div class="col-md-6">
+    <form action="{{ path }}/edit" method="post" class="">
+      <textarea name="pageForm[body]" class="form-control form-body-height" id="form-body">{% if pageForm.body %}{{ pageForm.body }}{% elseif not revision.body %}# {{ path|path2name }}{% else %}{{ revision.body }}{% endif %}</textarea>
 
-            <input type="submit" class="btn btn-primary" id="edit-form-submit" value="ページを更新" />
-          </div>
-        </form>
+      <input type="hidden" name="pageForm[format]" value="markdown" id="form-format">
+      <input type="hidden" name="pageForm[currentRevision]" value="{{ pageForm.currentRevision|default(revision._id.toString()) }}">
+      <div class="form-submit-group form-group form-inline">
+        <select name="pageForm[grant]" class="form-control">
+          {% for grantId, grantLabel in consts.pageGrants %}
+          <option value="{{ grantId }}" {% if (pageForm.grant && grantId == pageForm.grant) || (page.grant == grantId ) %}selected{% endif %}>{{ grantLabel }}</option>
+          {% endfor %}
+        </select>
+
+        <input type="submit" class="btn btn-primary" id="edit-form-submit" value="ページを更新" />
       </div>
-      <div class="col-md-4">
-        <div id="preview-body" class="wiki preview-body">
-        </div>
-      </div>
+    </form>
+  </div>
+  <div class="col-md-6">
+    <div id="preview-body" class="wiki preview-body">
     </div>
-    <script type="text/javascript">
-    $(function() {
-      // preview watch
-      var prevContent = "";
-      var watchTimer = setInterval(function() {
-        $('#preview-body').height($('#form-body').height() + 'px');
-        var content = $('#form-body').val();
-        if (prevContent != content) {
-          var renderer = new Crowi.renderer('#form-body', $('#form-format').val(), '#preview-body');
-          renderer.render();
+  </div>
+  <script type="text/javascript">
+  $(function() {
+    // preview watch
+    var prevContent = "";
+    var watchTimer = setInterval(function() {
+      var content = $('#form-body').val();
+      if (prevContent != content) {
+        var renderer = new Crowi.renderer('#form-body', $('#form-format').val(), '#preview-body');
+        renderer.render();
 
-          prevContent = content;
-        }
-      }, 1000);
-
-      function maximizeFormBox()
-      {
-        $('#form-box').addClass('form-maximized');
-        $('#form-body').height($(window).height() - 150 + 'px');
+        prevContent = content;
       }
-      function minimizeFormBox()
-      {
-        $('#form-box').removeClass('form-maximized');
-        $('#form-body').height('300px');
+    }, 1000);
+
+    // tabs handle
+    $('textarea#form-body').on('keydown', function(event){
+      var self  = $(this)
+          start = this.selectionStart,
+          end   = this.selectionEnd
+          val   = self.val();
+
+      if (event.keyCode === 9) {
+        // tab
+        event.preventDefault();
+        self.val(
+          val.substring(0, start)
+          + '    '
+          + val.substring(end, val.length)
+        );
+        this.selectionStart = start + 4;
+        this.selectionEnd   = start + 4;
+      } else if (event.keyCode === 27) {
+        // escape
+        self.blur();
       }
-      $('#form-box-full').toggle(function()
-      {
-        maximizeFormBox();
-      }, function() {
-        minimizeFormBox();
-      });
-
-      // tabs handle
-      $('textarea#form-body').on('keydown', function(event){
-        var self  = $(this)
-            start = this.selectionStart,
-            end   = this.selectionEnd
-            val   = self.val();
-
-        if (event.keyCode === 9) {
-          // tab
-          event.preventDefault();
-          self.val(
-            val.substring(0, start)
-            + '    '
-            + val.substring(end, val.length)
-          );
-          this.selectionStart = start + 4;
-          this.selectionEnd   = start + 4;
-        } else if (event.keyCode === 27) {
-          // escape
-          self.blur();
-        }
-      });
     });
+  });
 
-    </script>
+  </script>
 </div>

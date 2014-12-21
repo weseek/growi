@@ -59,7 +59,7 @@ License
 
 > The MIT License (MIT)
 >
-> Copyright (c) 2013 Sotaro KARASAWA <sotarok@crocos.co.jp>
+> Copyright (c) 2013 Sotaro KARASAWA <sotaro.k@gmail.com>
 >
 > Permission is hereby granted, free of charge, to any person obtaining a copy
 > of this software and associated documentation files (the "Software"), to deal

@@ -3,10 +3,13 @@ module.exports = function(app) {
 
   var googleapis = require('googleapis')
     , debug = require('debug')('crowi:routes:login')
+    , async    = require('async')
     , models = app.set('models')
     , config = app.set('config')
+    , mailer = app.set('mailer')
     , Page = models.Page
     , User = models.User
+    , Config = models.Config
     , Revision = models.Revision
     , actions = {};
 
@@ -36,6 +39,24 @@ module.exports = function(app) {
     req.session.googleAuthCode = req.query.code || '';
 
     return res.redirect(nextAction);
+  };
+
+  actions.error = function(req, res) {
+    var reason = req.params.reason
+      , reasonMessage = ''
+      ;
+
+    if (reason === 'suspended') {
+      reasonMessage = 'このアカウントは停止されています。';
+    } else if (reason === 'registered') {
+      reasonMessage = '管理者の承認をお待ちください。';
+    } else {
+    }
+
+    return res.render('login/error', {
+      reason: reason,
+      reasonMessage: reasonMessage
+    });
   };
 
   actions.login = function(req, res) {
@@ -121,7 +142,7 @@ module.exports = function(app) {
     }
 
     // config で closed ならさよなら
-    if (config.crowi['security:registrationMode'] == 'Closed') {
+    if (config.crowi['security:registrationMode'] == Config.SECURITY_REGISTRATION_MODE_CLOSED) {
       return res.redirect('/');
     }
 
@@ -161,6 +182,38 @@ module.exports = function(app) {
             req.flash('registerWarningMessage', 'ユーザー登録に失敗しました。');
             return res.redirect('/login?register=1');
           } else {
+
+            // 作成後、承認が必要なモードなら、管理者に通知する
+            if (config.crowi['security:registrationMode'] === Config.SECURITY_REGISTRATION_MODE_RESTRICTED) {
+              // TODO send mail
+              User.findAdmins(function(err, admins) {
+                async.each(
+                  admins,
+                  function(adminUser, next) {
+                    mailer.send({
+                        to: adminUser.email,
+                        subject: '[' + config.crowi['app:title'] + ':admin] A New User Created and Waiting for Activation',
+                        template: 'admin/userWaitingActivation.txt',
+                        vars: {
+                          createdUser: userData,
+                          adminUser: adminUser,
+                          url: config.crowi['app:url'],
+                          appTitle: config.crowi['app:title'],
+                        }
+                      },
+                      function (err, s) {
+                        debug('completed to send email: ', err, s);
+                        next();
+                      }
+                    );
+                  },
+                  function(err) {
+                    debug('Sending invitation email completed.', err);
+                  }
+                );
+              });
+            }
+
             if (facebookId || googleId) {
               userData.updateGoogleIdAndFacebookId(googleId, facebookId, function(err, userData) {
                 if (err) { // TODO
@@ -214,6 +267,44 @@ module.exports = function(app) {
       req.session.googleCallbackAction = '/register';
       return res.redirect(redirectUrl);
     });
+  };
+
+  actions.invited = function(req, res) {
+    if (!req.user) {
+      return res.redirect('/login');
+    }
+
+    if (req.method == 'POST' && req.form.isValid) {
+      var user = req.user;
+      var invitedForm = req.form.invitedForm || {};
+      var username = invitedForm.username;
+      var name = invitedForm.name;
+      var password = invitedForm.password;
+
+      User.isRegisterableUsername(username, function(creatable) {
+        if (creatable) {
+          user.activateInvitedUser(username, name, password, function(err, data) {
+            if (err) {
+              req.flash('warningMessage', 'アクティベートに失敗しました。');
+              return res.render('invited');
+            } else {
+              return res.redirect('/');
+            }
+          });
+        } else {
+          req.flash('warningMessage', '利用できないユーザーIDです。');
+          debug('username', username);
+          return res.render('invited');
+        }
+      });
+    } else {
+      return res.render('invited', {
+      });
+    }
+  };
+
+  actions.updateInvitedUser = function(req, res) {
+    return res.redirect('/');
   };
 
   return actions;
