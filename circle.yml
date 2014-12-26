@@ -1,0 +1,13 @@
+deployment:
+  demo:
+    branch: master
+    heroku:
+      appname: crowi-demo
+  dev:
+    branch: master
+    heroku:
+      appname: crowi-dev
+  strk:
+    branch: master
+    heroku:
+      appname: strk-wiki
