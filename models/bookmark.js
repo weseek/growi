@@ -4,6 +4,7 @@ module.exports = function(app, models) {
     , ObjectId = mongoose.Schema.Types.ObjectId
     , bookmarkSchema;
 
+
   bookmarkSchema = new mongoose.Schema({
     page: { type: ObjectId, ref: 'Page', index: true },
     user: { type: ObjectId, ref: 'User', index: true },
