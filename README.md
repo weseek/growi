@@ -18,9 +18,7 @@ Install
 
 Install dependencies and build CSS and JavaScript:
 
-    $ npm install .
-    $ bower install
-    $ grunt
+    $ npm install
 
 More info are [here](doc/index.md).
 
@@ -28,8 +26,9 @@ More info are [here](doc/index.md).
 Dependencies
 -------------
 
-* Node.js
+* Node.js (0.10.x)
 * MongoDB
+* Redis (optional)
 * Amazon S3
 * Facebook Application (optional)
 * Google Project (optional)
@@ -50,6 +49,7 @@ $ PASSWORD_SEED=somesecretstring MONGOHQ_URL=mongodb://username:password@localho
 * `PORT`: Server port. default: `3000`.
 * `NODE_ENV`: `production` OR `development`.
 * `MONGO_URI`: URI to connect MongoDB. This parameter is also by `MONGOHQ_URL` OR `MONGOLAB_URI`.
+* `REDIS_URL`: URI to connect Redis (to session store). This parameter is also by `REDISTOGO_URL`.
 * `PASSWORD_SEED`: A password seed is used by password hash generator.
 * `SECRET_TOKEN`: A secret key for verifying the integrity of signed cookies.
 
