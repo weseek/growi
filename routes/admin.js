@@ -221,7 +221,7 @@ module.exports = function(app) {
   function saveSetting(req, res, form)
   {
     Config.updateNamespaceByArray('crowi', form, function(err, config) {
-      Config.updateConfigCache('crowi', config)
+      Config.updateConfigCache('crowi', config);
       return res.json({status: true});
     });
   }
