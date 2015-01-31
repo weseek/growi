@@ -4,7 +4,7 @@ var form = require('express-form')
   , field = form.field;
 
 module.exports = form(
-  field('settingForm[fb:appId]').trim().is(/^\d+$/),
-  field('settingForm[fb:seret]').trim().is(/^[\da-z]+$/)
+  field('settingForm[facebook:appId]').trim().is(/^\d+$/),
+  field('settingForm[facebook:secret]').trim().is(/^[\da-z]+$/)
 );
 
