@@ -62,9 +62,9 @@ module.exports = function(grunt) {
           // socket.io
           'node_modules/socket.io-client/dist/socket.io.js',
           // markd
-          'node_modules/marked/lib/marked.js',
+          'bower_components/marked/lib/marked.js',
           // jquery.cookie
-          'node_modules/jquery.cookie/jquery.cookie.js',
+          'bower_components/jquery.cookie/jquery.cookie.js',
           // crowi
           'resource/js/crowi.js'
         ],

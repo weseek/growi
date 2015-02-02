@@ -37,8 +37,6 @@
     "grunt-contrib-uglify": "~0.2.2",
     "grunt-contrib-watch": "~0.5.3",
     "grunt-sass": "~0.14.1",
-    "jquery.cookie": "~1.4.1",
-    "marked": "=0.2.9",
     "mongoose": "=3.8.14",
     "mongoose-paginate": "~3.1.0",
     "nodemailer": "~1.2.2",
