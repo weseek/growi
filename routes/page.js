@@ -188,7 +188,7 @@ module.exports = function(app) {
       return res.redirect(d.path);
     };
 
-    Page.findPageById(id, req.user, function(err, pageData) {
+    Page.findPageById(id, function(err, pageData) {
       if (pageData) {
         if (pageData.grant == Page.GRANT_RESTRICTED && !pageData.isGrantedFor(req.user)) {
           return Page.pushToGrantedUsers(pageData, req.user, cb);
@@ -219,7 +219,7 @@ module.exports = function(app) {
 
   api.bookmark = function(req, res){
     var id = req.params.id;
-    Page.findPageById(id, req.user, function(err, pageData) {
+    Page.findPageByIdAndGrantedUser(id, req.user, function(err, pageData) {
       if (pageData) {
         Bookmark.add(pageData, req.user, function(err, data) {
           return res.json({status: true});
@@ -235,7 +235,7 @@ module.exports = function(app) {
    */
   api.like = function(req, res){
     var id = req.params.id;
-    Page.findPageById(id, req.user, function(err, pageData) {
+    Page.findPageByIdAndGrantedUser(id, req.user, function(err, pageData) {
       if (pageData) {
         pageData.like(req.user, function(err, data) {
           return res.json({status: true});
@@ -252,7 +252,7 @@ module.exports = function(app) {
   api.unlike = function(req, res){
     var id = req.params.id;
 
-    Page.findPageById(id, req.user, function(err, pageData) {
+    Page.findPageByIdAndGrantedUser(id, req.user, function(err, pageData) {
       if (pageData) {
         pageData.unlike(req.user, function(err, data) {
           return res.json({status: true});
