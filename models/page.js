@@ -221,19 +221,31 @@ module.exports = function(app, models) {
       });
   };
 
-  pageSchema.statics.findPageById = function(id, userData, cb) {
+  pageSchema.statics.findPageById = function(id, cb) {
     var Page = this;
 
-    this.findOne({_id: id}, function(err, pageData) {
+    Page.findOne({_id: id}, function(err, pageData) {
       if (pageData === null) {
         return cb(new Error('Page Not Found'), null);
       }
 
-      if (!pageData.isGrantedFor(userData)) {
+      return populatePageData(pageData, null, cb);
+    });
+  };
+
+  pageSchema.statics.findPageByIdAndGrantedUser = function(id, userData, cb) {
+    var Page = this;
+
+    Page.findPageById(id, function(err, pageData) {
+      if (pageData === null) {
+        return cb(new Error('Page Not Found'), null);
+      }
+
+      if (userData && !pageData.isGrantedFor(userData)) {
         return cb(PAGE_GRANT_ERROR, null);
       }
 
-      return populatePageData(pageData, null, cb);
+      return cb(null,pageData);
     });
   };
 
