@@ -11,19 +11,9 @@
 
   <meta name="viewport" content="width=device-width,initial-scale=1">
 
-  {% if env  == 'development' %}
-  <link rel="stylesheet" href="/css/crowi.css">
-  {% else %}
-  <link rel="stylesheet" href="/css/crowi.min.css">
-  {% endif %}
-
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <link rel="stylesheet" href="/css/crowi{% if env  == 'production' %}.min{% endif %}.css">
+  <script src="/js/crowi{% if env  == 'production' %}.min{% endif %}.js"></script>
   <link href='//fonts.googleapis.com/css?family=Maven+Pro:400,700' rel='stylesheet' type='text/css'>
-  {% if env  == 'development' %}
-  <script src="/js/crowi.js"></script>
-  {% else %}
-  <script src="/js/crowi.min.js"></script>
-  {% endif %}
 </head>
 {% endblock %}
 

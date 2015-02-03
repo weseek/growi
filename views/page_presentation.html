@@ -6,10 +6,10 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/reveal.js/2.5/css/reveal.min.css">
-    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/reveal.js/2.5/css/theme/solarized.css">
+
     <link rel="stylesheet" type="text/css" href="/css/crowi-reveal.css">
-    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/reveal.js/2.5/lib/css/zenburn.css">
+    <link rel="stylesheet" type="text/css" href="/bower_components/reveal.js/lib/css/zenburn.css">
+
     <title>{{ path|path2name }} | {{ path }}</title>
   </head>
   <body>
@@ -17,7 +17,7 @@
       <div class="slides">
         <section data-markdown data-separator="^\n\n\n">
           <script type="text/template">
-{{ revision.body|presentation }}
+{{ revision.body|presentation|safe }}
 
 
 
@@ -27,38 +27,26 @@
       </div>
     </div>
 
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/reveal.js/2.5/lib/js/head.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/reveal.js/2.5/js/reveal.min.js"></script>
+    <script src="/js/crowi-reveal.js"></script>
     <script>
-
-      // Full list of configuration options available here:
-      // https://github.com/hakimel/reveal.js#configuration
       Reveal.initialize({
         controls: true,
         progress: true,
         history: true,
-        center: false,
-
-        theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
-        transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
-
-        // Parallax scrolling
-        // parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
-        // parallaxBackgroundSize: '2100px 900px',
+        center: true,
+        transition: 'slide',
 
         // Optional libraries used to extend on reveal.js
         dependencies: [
-          { src: '//cdnjs.cloudflare.com/ajax/libs/reveal.js/2.5/lib/js/classList.js', condition: function() { return !document.body.classList; } },
-          { src: '//cdnjs.cloudflare.com/ajax/libs/reveal.js/2.5/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-          { src: '//cdnjs.cloudflare.com/ajax/libs/reveal.js/2.5/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-          { src: '//cdnjs.cloudflare.com/ajax/libs/reveal.js/2.5/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
-          { src: '//cdnjs.cloudflare.com/ajax/libs/reveal.js/2.5/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
-          { src: '//cdnjs.cloudflare.com/ajax/libs/reveal.js/2.5/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+          { src: '/bower_components/reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: '/bower_components/reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: '/bower_components/reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: '/bower_components/reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+          { src: '/bower_components/reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+          { src: '/bower_components/reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
         ]
       });
 
-      //
       Reveal.addEventListener('ready', function(event) {
         // event.currentSlide, event.indexh, event.indexv
         $('.reveal section').each(function(e) {
