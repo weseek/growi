@@ -57,7 +57,7 @@
   ],
   "scripts": {
     "start": "node app.js",
-    "postinstall": "./node_modules/bower/bin/bower cache clean && ./node_modules/bower/bin/bower install && ./node_modules/grunt-cli/bin/grunt"
+    "postinstall": "./node_modules/.bin/bower cache clean && ./node_modules/.bin/bower install && ./node_modules/.bin/grunt"
   },
   "env": {
     "NODE_ENV": "production"
