@@ -88,7 +88,7 @@ module.exports = function(grunt) {
       options: {
         jshintrc: true
       },
-      all: ['Gruntfile.js', 'lib/**/*.js', 'models/**/*.js', 'routes/**/*.js', 'form/**/*.js', 'resource/js/**/*.js']
+      all: paths.scripts
     },
     watch: {
       css: {
