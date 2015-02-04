@@ -1,6 +1,11 @@
 CHANGES
 ========
 
+## 1.1.1
+
+* Fix: Error on accessing restricted page.
+* Fix: JS Error when section title includes colon.
+* Fix: Typo on Facebook setting page (Facebook setting is now available).
 
 ## 1.1.0
 
