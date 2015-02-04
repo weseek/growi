@@ -40,7 +40,7 @@ Crowi.correctHeaders = function(contentId) {
   var $content = $(contentId || '#revision-body-content');
   var i = 0;
   $('h1,h2,h3,h4,h5,h6', $content).each(function(idx, elm) {
-    var id = 'head' + i++ + '-' + $(this).text().replace(/\/|\(|\)|\s|\?|\!|\.|\+|\*|\-|\=|\#|\~|\&|\^/g, '');
+    var id = 'head' + i++ + '-' + $(this).text().replace(/;|:|\/|\(|\)|\s|\?|\!|\.|\+|\*|\-|\=|\#|\~|\&|\^/g, '');
     $(this).attr('id', id);
     $(this).addClass('revision-head');
     $(this).append('<span class="revision-head-link"><a href="#' + id +'"><i class="fa fa-link"></i></a></span>');
