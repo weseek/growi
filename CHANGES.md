@@ -6,6 +6,7 @@ CHANGES
 * Fix: Error on accessing restricted page.
 * Fix: JS Error when section title includes colon.
 * Fix: Typo on Facebook setting page (Facebook setting is now available).
+* Fix and Feature: Add creator property to Page Object and show creator info in sidebar instead of last update user.
 
 ## 1.1.0
 
