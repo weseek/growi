@@ -17,11 +17,16 @@ module.exports = function(app, models) {
 
     pageData.latestRevision = pageData.revision;
     pageData.populate([
+      {path: 'creator', model: 'User'},
       {path: 'revision', model: 'Revision'},
       {path: 'liker', options: { limit: 11 }},
       {path: 'seenUsers', options: { limit: 11 }},
     ], function (err, pageData) {
       models.Page.populate(pageData, {path: 'revision.author', model: 'User'}, function(err, pageData) {
+        // v1.1.1 以前では creator が存在しなかったため、なかったら revision.author をつっこんでおく
+        if (undefined === pageData.creator) {
+          pageData.creator = pageData.revision.author;
+        }
         return callback(err, pageData);
       });
     });
@@ -33,6 +38,7 @@ module.exports = function(app, models) {
     redirectTo: { type: String, index: true },
     grant: { type: Number, default: GRANT_PUBLIC, index: true },
     grantedUsers: [{ type: ObjectId, ref: 'User' }],
+    creator: { type: ObjectId, ref: 'User', index: true },
     liker: [{ type: ObjectId, ref: 'User', index: true }],
     seenUsers: [{ type: ObjectId, ref: 'User', index: true }],
     createdAt: { type: Date, default: Date.now },
@@ -365,6 +371,7 @@ module.exports = function(app, models) {
 
       var newPage = new Page();
       newPage.path = path;
+      newPage.creaator = user;
       newPage.createdAt = Date.now();
       newPage.updatedAt = Date.now();
       newPage.redirectTo = redirectTo;

@@ -170,11 +170,11 @@
 <div class="page-meta">
   <div class="row">
     <div class="col-md-3 creator-picture">
-      <img src="{{ author|picture }}" class="picture picture-lg picture-rounded"><br>
+      <img src="{{ page.creator|picture }}" class="picture picture-lg picture-rounded"><br>
     </div>
     <div class="col-md-9">
       <p class="creator">
-        {{ author.name }}
+        {{ page.creator.name }}
       </p>
       <p class="created-at">
         作成日: {{ page.createdAt|datetz('Y/m/d H:i:s') }}<br>
