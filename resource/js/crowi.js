@@ -95,60 +95,41 @@ Crowi.revisionToc = function(contentId, tocId) {
 
 
 Crowi.escape = function(s) {
-  s = s.replace(/&/g, '&amp;');
-  s = s.replace(/</g, '&lt;');
-  s = s.replace(/>/g, '&gt;');
-  s = s.replace(/"/g, '&quot;');
+  s = s.replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    ;
   return s;
 };
 Crowi.unescape = function(s) {
-  s = s.replace(/&nbsp;/g, ' ');
-  s = s.replace(/&amp;/g, '&');
-  s = s.replace(/&lt;(?!\?)/g, '<');
-  s = s.replace(/([^\?])&gt;/g, '$1>');
-  s = s.replace(/&quot;/g, '"');
+  s = s.replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    ;
   return s;
 };
 
-Crowi.getRendererType = function(format) {
-  if (!Crowi.rendererType[format]) {
-    throw new Error('no such renderer');
-  }
-
-  return new Crowi.rendererType[format]();
+Crowi.getRendererType = function() {
+  return new Crowi.rendererType.markdown();
 };
 
 Crowi.rendererType = {};
-Crowi.rendererType.text = function(){};
 Crowi.rendererType.markdown = function(){};
-Crowi.rendererType.text.prototype = {
-  render: function($content) {
-    var $revisionHtml = this.$revisionBody.children('pre');
-    this.$content = $content;
-    $revisionHtml.html(this.$content.html());
-    this.expandImage();
-    this.link();
-  },
-  link: function () {
-    this.$revisionBody.html(this.$revisionBody.html().replace(/\s(https?:\/\/[\S]+)/g, ' <a href="$1">$1</a>'));
-  },
-  expandImage: function () {
-    this.$revisionBody.html(this.$revisionBody.html().replace(/\s(https?:\/\/[\S]+\.(jpg|jpeg|gif|png))/g, ' <img src="$1" class="auto-expanded-image" />'));
-  }
-};
 Crowi.rendererType.markdown.prototype = {
-  render: function($content) {
+  render: function(contentText) {
     marked.setOptions({
       gfm: true,
       highlight: function (code, lang, callback) {
-        callback(null, code);
-        // あとで
-        //highlight: function (code, lang, callback) {
-        //  pygmentize({ lang: lang, format: 'html' }, code, function (err, result) {
-        //    if (err) return callback(err);
-        //    callback(null, result.toString());
-        //  });
-        //},
+        var result;
+        if (lang) {
+          result = hljs.highlight(lang, code);
+        } else {
+          result = hljs.highlightAuto(code);
+        }
+        callback(null, result.value);
       },
       tables: true,
       breaks: true,
@@ -159,7 +140,7 @@ Crowi.rendererType.markdown.prototype = {
       langPrefix: 'lang-'
     });
 
-    var contentHtml = Crowi.unescape(Crowi.escape($content.val()) || $content.html());
+    var contentHtml = Crowi.unescape(contentText);
     contentHtml = this.expandImage(contentHtml);
     contentHtml = this.link(contentHtml);
 
@@ -170,7 +151,6 @@ Crowi.rendererType.markdown.prototype = {
         throw err;
       }
       $body.html(content);
-      //console.log(content);
     });
   },
   link: function (content) {
@@ -184,18 +164,18 @@ Crowi.rendererType.markdown.prototype = {
   }
 };
 
-Crowi.renderer = function (contentId, format, revisionBody) {
-  var $revisionBody = revisionBody || '#revision-body-content';
+Crowi.renderer = function (contentText, revisionBody) {
+  var $revisionBody = revisionBody || $('#revision-body-content');
 
-  this.$content = $(contentId);
-  this.$revisionBody = $($revisionBody);
-  this.format = format;
-  this.renderer = Crowi.getRendererType(format);
+  this.contentText = contentText;
+  this.$revisionBody = $revisionBody;
+  this.format = 'markdown'; // とりあえず
+  this.renderer = Crowi.getRendererType();
   this.renderer.$revisionBody = this.$revisionBody;
 };
 Crowi.renderer.prototype = {
   render: function() {
-    this.renderer.render(this.$content);
+    this.renderer.render(this.contentText);
   }
 };
 

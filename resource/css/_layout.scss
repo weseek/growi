@@ -361,6 +361,24 @@
       margin-top: 30px;
     }
   }
+
+  .content-main .timeline-body { // {{{ timeline
+     .revision-path {
+       margin-top: 1.6em;
+       margin-bottom: 0;
+       border: solid 2px #ddd;
+       border-bottom: none;
+       padding: 16px;
+       background: #ddd;
+     }
+     .revision-body {
+       font-size: 14px;
+       border: solid 2px #ddd;
+       padding: 16px;
+       background: #fdfdfd;
+     }
+  } // }}}
+
   // on-edit
   .content-main.on-edit {
     position: fixed;

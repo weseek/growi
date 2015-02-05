@@ -42,7 +42,6 @@
       </a>
     </li>
 
-    <li><a href="#raw-text" data-toggle="tab"><i class="fa fa-font"></i> テキスト表示</a></li>
     <li {% if req.body.pageForm %}class="active"{% endif %}><a href="#edit-form" data-toggle="tab"><i class="fa fa-pencil-square-o"></i> 編集</a></li>
 
     <li class="dropdown pull-right">
@@ -79,6 +78,7 @@
     </div>
   </div>
 #}
+    <script type="text/template" id="raw-text-original">{{ revision.body }}</script>
 
     {# formatted text #}
     <div class="tab-pane {% if not req.body.pageForm %}active{% endif %}" id="revision-body">
@@ -86,16 +86,12 @@
         <a data-toggle="collapse" data-parent="#revision-toc" href="#revision-toc-content" class="revision-toc-head collapsed">目次</a>
 
       </div>
-    {% if revision.format == 'text' %}
-      <div class="wiki {{ revision.format }}" id="revision-body-content"><pre class="" id=""></pre></div>
-    {% else  %}
       <div class="wiki {{ revision.format }}" id="revision-body-content"></div>
-    {% endif  %}
     </div>
 
     {# raw text #}
     <div class="tab-pane" id="raw-text">
-      <pre id="raw-text-original">{{ revision.body }}</pre>
+      <pre id="">{{ revision.body }}</pre>
     </div>
 
     {# edit form #}
@@ -105,7 +101,7 @@
   </div>
   <script type="text/javascript">
     $(function(){
-        var renderer = new Crowi.renderer('#raw-text-original', '{{ revision.format }}');
+        var renderer = new Crowi.renderer($('#raw-text-original').html());
         renderer.render();
         Crowi.correctHeaders('#revision-body-content');
         Crowi.revisionToc('#revision-body-content', '#revision-toc');

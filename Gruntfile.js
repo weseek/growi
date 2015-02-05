@@ -37,7 +37,7 @@ module.exports = function(grunt) {
           ]
         },
         files: {
-          '<%= dirs.cssDest %>/<%= pkg.name %>.css': '<%= dirs.css %>/<%= pkg.name %>.scss',
+          '<%= dirs.cssDest %>/<%= pkg.name %>-main.css': '<%= dirs.css %>/<%= pkg.name %>.scss',
           '<%= dirs.cssDest %>/<%= pkg.name %>-reveal.css': '<%= dirs.css %>/<%= pkg.name %>-reveal.scss'
         }
       },
@@ -51,7 +51,7 @@ module.exports = function(grunt) {
           ]
         },
         files: {
-          '<%= dirs.cssDest %>/<%= pkg.name %>.min.css': '<%= dirs.css %>/<%= pkg.name %>.scss',
+          '<%= dirs.cssDest %>/<%= pkg.name %>-main.min.css': '<%= dirs.css %>/<%= pkg.name %>.scss',
           '<%= dirs.cssDest %>/<%= pkg.name %>-reveal.min.css': '<%= dirs.css %>/<%= pkg.name %>-reveal.scss'
         }
       }
@@ -59,12 +59,21 @@ module.exports = function(grunt) {
     concat: {
       dist: {
         files: {
+          '<%= dirs.cssDest %>/<%= pkg.name %>.css': [
+            'bower_components/highlightjs/styles/default.css',
+            '<%= dirs.cssDest %>/<%= pkg.name %>-main.css',
+          ],
+          '<%= dirs.cssDest %>/<%= pkg.name %>.min.css': [
+            'bower_components/highlightjs/styles/default.css', // TODO minimize
+            '<%= dirs.cssDest %>/<%= pkg.name %>-main.min.css',
+          ],
           '<%= dirs.jsDest %>/<%= pkg.name %>.js': [
             'bower_components/jquery/dist/jquery.js',
             'bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.js',
             'node_modules/socket.io-client/dist/socket.io.js',
             'bower_components/marked/lib/marked.js',
             'bower_components/jquery.cookie/jquery.cookie.js',
+            'bower_components/highlightjs/highlight.pack.js',
             'resource/js/crowi.js'
           ],
           '<%= dirs.jsDest %>/<%= pkg.name %>-reveal.js': [
@@ -116,6 +125,6 @@ module.exports = function(grunt) {
 
   // grunt watch dev
   grunt.registerTask('default', ['sass', 'concat', 'uglify']);
-  grunt.registerTask('dev', ['jshint', 'sass:dev', 'concat']);
+  grunt.registerTask('dev', ['sass:dev', 'concat', 'jshint']);
 
 };
