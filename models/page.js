@@ -371,7 +371,7 @@ module.exports = function(app, models) {
 
       var newPage = new Page();
       newPage.path = path;
-      newPage.creaator = user;
+      newPage.creator = user;
       newPage.createdAt = Date.now();
       newPage.updatedAt = Date.now();
       newPage.redirectTo = redirectTo;
