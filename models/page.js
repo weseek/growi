@@ -10,25 +10,21 @@ module.exports = function(app, models) {
     , pageSchema;
 
   function populatePageData(pageData, revisionId, callback) {
-    debug('pageData', pageData.revision);
     if (revisionId) {
       pageData.revision = revisionId;
     }
 
     pageData.latestRevision = pageData.revision;
+    pageData.likerCount = pageData.liker.length || 0;
+    pageData.seenUsersCount = pageData.seenUsers.length || 0;
+
     pageData.populate([
       {path: 'creator', model: 'User'},
       {path: 'revision', model: 'Revision'},
       {path: 'liker', options: { limit: 11 }},
       {path: 'seenUsers', options: { limit: 11 }},
     ], function (err, pageData) {
-      models.Page.populate(pageData, {path: 'revision.author', model: 'User'}, function(err, pageData) {
-        // v1.1.1 以前では creator が存在しなかったため、なかったら revision.author をつっこんでおく
-        if (undefined === pageData.creator) {
-          pageData.creator = pageData.revision.author;
-        }
-        return callback(err, pageData);
-      });
+      models.Page.populate(pageData, {path: 'revision.author', model: 'User'}, callback);
     });
   }
 

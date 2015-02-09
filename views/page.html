@@ -165,12 +165,13 @@
 {% if page %} {# {{{ if page #}
 <div class="page-meta">
   <div class="row">
+    {# default(author) としているのは、v1.1.1 以前に page.creator データが入ってないから。暫定として最新更新ユーザーを表示しちゃう。 #}
     <div class="col-md-3 creator-picture">
-      <img src="{{ page.creator|picture }}" class="picture picture-lg picture-rounded"><br>
+      <img src="{{ page.creator|default(author)|picture }}" class="picture picture-lg picture-rounded"><br>
     </div>
     <div class="col-md-9">
       <p class="creator">
-        {{ page.creator.name }}
+        {{ page.creator.name|default(author.name) }}
       </p>
       <p class="created-at">
         作成日: {{ page.createdAt|datetz('Y/m/d H:i:s') }}<br>
