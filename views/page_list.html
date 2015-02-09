@@ -43,9 +43,10 @@
       {% for page in pages %}
       <div class="timeline-body" id="id-{{ page.id }}">
         <h3 class="revision-path"><a href="{{ page.path }}">{{ page.path }}</a></h3>
-        <div class="revision-body" data-format="{{ page.revision.format }}"><pre></pre></div>
-        <pre class="hide raw-text-original">{{ page.revision.body }}</pre>
+        <div class="revision-body wiki"></div>
+        <script type="text/template">{{ page.revision.body }}</script>
       </div>
+      <hr>
       {% endfor %}
     </div>
   </div>
@@ -55,12 +56,10 @@
         $('#view-timeline .timeline-body').each(function()
         {
           var id = $(this).attr('id');
-          //var format = $(this).children('.body').data('format');
-          var format = 'text';
-          var contentId = '#' + id + ' .raw-text-original';
+          var contentId = '#' + id + ' > script';
           var revisionBody = '#' + id + ' .revision-body';
           var revisionPath = '#' + id + ' .revision-path';
-          var renderer = new Crowi.renderer(contentId, format, revisionBody);
+          var renderer = new Crowi.renderer($(contentId).html(), $(revisionBody));
           renderer.render();
         });
         //$('.tooltip .tabs').tabs();

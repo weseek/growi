@@ -10,20 +10,21 @@ module.exports = function(app, models) {
     , pageSchema;
 
   function populatePageData(pageData, revisionId, callback) {
-    debug('pageData', pageData.revision);
     if (revisionId) {
       pageData.revision = revisionId;
     }
 
     pageData.latestRevision = pageData.revision;
+    pageData.likerCount = pageData.liker.length || 0;
+    pageData.seenUsersCount = pageData.seenUsers.length || 0;
+
     pageData.populate([
+      {path: 'creator', model: 'User'},
       {path: 'revision', model: 'Revision'},
       {path: 'liker', options: { limit: 11 }},
       {path: 'seenUsers', options: { limit: 11 }},
     ], function (err, pageData) {
-      models.Page.populate(pageData, {path: 'revision.author', model: 'User'}, function(err, pageData) {
-        return callback(err, pageData);
-      });
+      models.Page.populate(pageData, {path: 'revision.author', model: 'User'}, callback);
     });
   }
 
@@ -33,6 +34,7 @@ module.exports = function(app, models) {
     redirectTo: { type: String, index: true },
     grant: { type: Number, default: GRANT_PUBLIC, index: true },
     grantedUsers: [{ type: ObjectId, ref: 'User' }],
+    creator: { type: ObjectId, ref: 'User', index: true },
     liker: [{ type: ObjectId, ref: 'User', index: true }],
     seenUsers: [{ type: ObjectId, ref: 'User', index: true }],
     createdAt: { type: Date, default: Date.now },
@@ -221,19 +223,31 @@ module.exports = function(app, models) {
       });
   };
 
-  pageSchema.statics.findPageById = function(id, userData, cb) {
+  pageSchema.statics.findPageById = function(id, cb) {
     var Page = this;
 
-    this.findOne({_id: id}, function(err, pageData) {
+    Page.findOne({_id: id}, function(err, pageData) {
       if (pageData === null) {
         return cb(new Error('Page Not Found'), null);
       }
 
-      if (!pageData.isGrantedFor(userData)) {
+      return populatePageData(pageData, null, cb);
+    });
+  };
+
+  pageSchema.statics.findPageByIdAndGrantedUser = function(id, userData, cb) {
+    var Page = this;
+
+    Page.findPageById(id, function(err, pageData) {
+      if (pageData === null) {
+        return cb(new Error('Page Not Found'), null);
+      }
+
+      if (userData && !pageData.isGrantedFor(userData)) {
         return cb(PAGE_GRANT_ERROR, null);
       }
 
-      return populatePageData(pageData, null, cb);
+      return cb(null,pageData);
     });
   };
 
@@ -353,6 +367,7 @@ module.exports = function(app, models) {
 
       var newPage = new Page();
       newPage.path = path;
+      newPage.creator = user;
       newPage.createdAt = Date.now();
       newPage.updatedAt = Date.now();
       newPage.redirectTo = redirectTo;

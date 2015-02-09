@@ -60,7 +60,7 @@
       #}
       <li id="login-user">
         <a href="/user/{{ user.username }}" id="link-mypage">
-          <img src="{{ user|picture }}" class="picture picture-rounded" width="25" /> マイページ
+          <img src="{{ user|picture }}" class="picture picture-rounded" width="25" /> {{ user.name }}
         </a>
       </li>
       <li class="dropdown">
@@ -132,9 +132,7 @@
 
 <script>
   $(function() {
-    console.log($.cookie('aside-hidden'));
     if ($.cookie('aside-hidden') == 1) {
-      console.log("add aside-hidden");
       $('.main-container').addClass('aside-hidden');
     }
   });

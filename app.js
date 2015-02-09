@@ -19,6 +19,7 @@ var express  = require('express')
   , session  = require('express-session')
   , models
   , config
+  , configModel
   , server
   , sessionConfig
   , RedisStore
@@ -31,10 +32,11 @@ var env = app.get('env');
 var days = (1000*3600*24*30);
 
 // mongoUri = mongodb://user:password@host/dbname
-var mongoUri = process.env.MONGOLAB_URI
-  || process.env.MONGOHQ_URL
-  || process.env.MONGO_URI
-  || 'mongodb://localhost/crowi';
+var mongoUri = process.env.MONGOLAB_URI ||
+  process.env.MONGOHQ_URL ||
+  process.env.MONGO_URI ||
+  'mongodb://localhost/crowi'
+  ;
 
 mongo.connect(mongoUri);
 
@@ -47,16 +49,16 @@ sessionConfig = {
     maxAge: days,
   },
 };
-var redisUrl = process.env.REDISTOGO_URL
-  || process.env.REDIS_URL
-  || null;
+var redisUrl = process.env.REDISTOGO_URL ||
+  process.env.REDIS_URL ||
+  null;
 
 if (redisUrl) {
-  var ru   = require("url").parse(redisUrl);
-  var redis = require("redis");
+  var ru   = require('url').parse(redisUrl);
+  var redis = require('redis');
   var redisClient = redis.createClient(ru.port, ru.hostname);
   if (ru.auth) {
-    redisClient.auth(ru.auth.split(":")[1]);
+    redisClient.auth(ru.auth.split(':')[1]);
   }
 
   RedisStore = require('connect-redis')(session);
@@ -89,7 +91,10 @@ async.series([
       return next();
     });
   }, function (next) {
-    var config = app.set('config');
+    var config = app.set('config')
+      , tzoffset
+      ;
+
 
     app.set('mailer', require('./lib/mailer')(app));
 
@@ -107,7 +112,7 @@ async.series([
 
       req.config = config;
 
-      config.crowi['app:url'] = req.baseUrl = (req.headers['x-forwarded-proto'] == 'https' ? 'https' : req.protocol) + "://" + req.get('host');
+      config.crowi['app:url'] = req.baseUrl = (req.headers['x-forwarded-proto'] == 'https' ? 'https' : req.protocol) + '://' + req.get('host');
       res.locals({
         req: req,
         baseUrl: req.baseUrl,
@@ -164,7 +169,7 @@ async.series([
       app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 
       server = http.createServer(app).listen(app.get('port'), function(){
-        console.log("[" + app.get('env') + "] Express server listening on port " + app.get('port'));
+        console.log('[' + app.get('env') + '] Express server listening on port ' + app.get('port'));
       });
     }
 
@@ -176,7 +181,7 @@ async.series([
       });
 
       server = http.createServer(app).listen(app.get('port'), function(){
-        console.log("[" + app.get('env') + "] Express server listening on port " + app.get('port'));
+        console.log('[' + app.get('env') + '] Express server listening on port ' + app.get('port'));
       });
     }
 

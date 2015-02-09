@@ -37,12 +37,12 @@
     var watchTimer = setInterval(function() {
       var content = $('#form-body').val();
       if (prevContent != content) {
-        var renderer = new Crowi.renderer('#form-body', $('#form-format').val(), '#preview-body');
+        var renderer = new Crowi.renderer($('#form-body').val(), $('#preview-body'));
         renderer.render();
 
         prevContent = content;
       }
-    }, 1000);
+    }, 500);
 
     // tabs handle
     $('textarea#form-body').on('keydown', function(event){

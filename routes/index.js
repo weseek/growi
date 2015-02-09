@@ -56,7 +56,8 @@ module.exports = function(app) {
   app.post('/me/auth/google'         , middleware.loginRequired(app) , me.authGoogle);
   app.get('/me/auth/google/callback' , middleware.loginRequired(app) , me.authGoogleCallback);
 
-  app.get('/_r/:id'                  , middleware.loginRequired(app) , page.api.redirector);
+  app.get('/:id([0-9a-z]{24})'       , middleware.loginRequired(app) , page.api.redirector);
+  app.get('/_r/:id([0-9a-z]{24})'    , middleware.loginRequired(app) , page.api.redirector); // alias
   app.get('/_api/check_username'     , user.api.checkUsername);
   app.post('/_api/me/picture/upload' , middleware.loginRequired(app) , me.api.uploadPicture);
   app.get('/_api/user/bookmarks'     , middleware.loginRequired(app) , user.api.bookmarks);
