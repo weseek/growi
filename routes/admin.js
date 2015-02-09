@@ -83,7 +83,7 @@ module.exports = function(app) {
 
   actions.user = {};
   actions.user.index = function(req, res) {
-    var page = parseInt(req.query.page) || 0;
+    var page = parseInt(req.query.page) || 1;
 
     User.findUsersWithPagination({page: page}, function(err, users, pageCount, itemCount) {
       var pager = createPager(page, pageCount, itemCount, MAX_PAGE_LIST);
