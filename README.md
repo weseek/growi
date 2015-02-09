@@ -40,7 +40,7 @@ Start Up on Local
 Crowi is designed setting up to Heroku or some PaaS, but you can start up Crowi with ENV parameter on your local.
 
 ```
-$ PASSWORD_SEED=somesecretstring MONGOHQ_URL=mongodb://username:password@localhost/crowi node app.js
+$ PASSWORD_SEED=somesecretstring MONGO_URI=mongodb://username:password@localhost/crowi node app.js
 ```
 
 ### Environment
