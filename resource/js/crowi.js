@@ -98,6 +98,7 @@ Crowi.escape = function(s) {
   s = s.replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
+    .replace(/'/g, '&#39;')
     .replace(/"/g, '&quot;')
     ;
   return s;
@@ -107,6 +108,7 @@ Crowi.unescape = function(s) {
     .replace(/&amp;/g, '&')
     .replace(/&lt;/g, '<')
     .replace(/&gt;/g, '>')
+    .replace(/&#39;/g, '\'')
     .replace(/&quot;/g, '"')
     ;
   return s;
