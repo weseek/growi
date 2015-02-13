@@ -128,10 +128,12 @@ Crowi.rendererType.markdown.prototype = {
         var result;
         if (lang) {
           result = hljs.highlight(lang, code);
+          return callback(null, result.value);
         } else {
-          result = hljs.highlightAuto(code);
+          //result = hljs.highlightAuto(code);
+          //callback(null, result.value);
+          return callback(null, code);
         }
-        callback(null, result.value);
       },
       tables: true,
       breaks: true,
