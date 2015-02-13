@@ -125,15 +125,20 @@ Crowi.rendererType.markdown.prototype = {
     marked.setOptions({
       gfm: true,
       highlight: function (code, lang, callback) {
-        var result;
+        var result, hl;
         if (lang) {
-          result = hljs.highlight(lang, code);
-          return callback(null, result.value);
+          try {
+            hl = hljs.highlight(lang, code);
+            result = hl.value;
+          } catch (e) {
+            result = code;
+          }
         } else {
           //result = hljs.highlightAuto(code);
           //callback(null, result.value);
-          return callback(null, code);
+          result = code;
         }
+        return callback(null, result);
       },
       tables: true,
       breaks: true,
