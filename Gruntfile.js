@@ -60,11 +60,11 @@ module.exports = function(grunt) {
       dist: {
         files: {
           '<%= dirs.cssDest %>/<%= pkg.name %>.css': [
-            'bower_components/highlightjs/styles/default.css',
+            'bower_components/highlightjs/styles/tomorrow-night.css',
             '<%= dirs.cssDest %>/<%= pkg.name %>-main.css',
           ],
           '<%= dirs.cssDest %>/<%= pkg.name %>.min.css': [
-            'bower_components/highlightjs/styles/default.css', // TODO minimize
+            'bower_components/highlightjs/styles/tomorrow-night.css', // TODO minimize
             '<%= dirs.cssDest %>/<%= pkg.name %>-main.min.css',
           ],
           '<%= dirs.jsDest %>/<%= pkg.name %>.js': [
