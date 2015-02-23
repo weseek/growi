@@ -18,7 +18,7 @@
       <div class="form-submit-group form-group form-inline">
         <select name="pageForm[grant]" class="form-control">
           {% for grantId, grantLabel in consts.pageGrants %}
-          <option value="{{ grantId }}" {% if (pageForm.grant && grantId == pageForm.grant) || (page.grant == grantId ) %}selected{% endif %}>{{ grantLabel }}</option>
+          <option value="{{ grantId }}" {% if pageForm.grant|default(page.grant) == grantId %}selected{% endif %}>{{ grantLabel }}</option>
           {% endfor %}
         </select>
 

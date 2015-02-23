@@ -6,17 +6,23 @@
  */
 
 var express  = require('express')
+  , bodyParser = require('body-parser')
+  , multer   = require('multer')
+  , morgan   = require('morgan')
+  , cookieParser = require('cookie-parser')
+  , methodOverride = require('method-override')
+  , errorHandler = require('errorhandler')
   , cons     = require('consolidate')
   , swig     = require('swig')
   , flash    = require('connect-flash')
   , http     = require('http')
   , facebook = require('facebook-node-sdk')
   , mongo    = require('mongoose')
-  , socketio = require('socket.io')
   , middleware = require('./lib/util/middlewares')
   , time     = require('time')
   , async    = require('async')
   , session  = require('express-session')
+  , debug    = require('debug')('crowi:appjs')
   , models
   , config
   , configModel
@@ -70,14 +76,15 @@ if (redisUrl) {
 
 app.set('port', process.env.PORT || 3000);
 app.use(express.static(__dirname + '/public'));
-app.use(express.logger());
 app.engine('html', cons.swig);
 app.set('view cache', false);
 app.set('view engine', 'html');
 app.set('views', __dirname + '/lib/views');
-app.use(express.methodOverride());
-app.use(express.bodyParser());
-app.use(express.cookieParser());
+app.use(methodOverride());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(cookieParser());
+app.use(multer());
 app.use(session(sessionConfig));
 app.use(flash());
 
@@ -105,6 +112,7 @@ async.series([
     app.use(function(req, res, next) {
       var now = new Date()
         , fbparams = {}
+        , baseUrl
         , config = app.set('config');
 
       tzoffset = -(config.crowi['app:timezone'] || 9) * 60; // for datez
@@ -112,21 +120,20 @@ async.series([
 
       req.config = config;
 
-      config.crowi['app:url'] = req.baseUrl = (req.headers['x-forwarded-proto'] == 'https' ? 'https' : req.protocol) + '://' + req.get('host');
-      res.locals({
-        req: req,
-        baseUrl: req.baseUrl,
-        config: config,
-        env: app.get('env'),
-        now: now,
-        tzoffset: tzoffset,
-        facebook: {appId: config.crowi['facebook:appId'] || ''},
-        consts: {
+      config.crowi['app:url'] = baseUrl = (req.headers['x-forwarded-proto'] == 'https' ? 'https' : req.protocol) + '://' + req.get('host');
+
+      res.locals.req      = req;
+      res.locals.baseUrl  = baseUrl;
+      res.locals.config   = config;
+      res.locals.env      = app.get('env');
+      res.locals.now      = now;
+      res.locals.tzoffset = tzoffset;
+      res.locals.facebook = {appId: config.crowi['facebook:appId'] || ''};
+      res.locals.consts   = {
           pageGrants: models.Page.getGrantLabels(),
           userStatus: models.User.getUserStatusLabels(),
           registrationMode: models.Config.getRegistrationModeLabels(),
-        },
-      });
+      };
 
       next();
     });
@@ -159,14 +166,13 @@ async.series([
 
     app.use(middleware.loginChecker(app, models));
 
-    app.use(app.router);
-
     next();
   }, function(next) {
 
     if (env == 'development') {
       swig.setDefaults({ cache: false });
-      app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
+      app.use(errorHandler({ dumpExceptions: true, showStack: true }));
+      app.use(morgan('dev'));
 
       server = http.createServer(app).listen(app.get('port'), function(){
         console.log('[' + app.get('env') + '] Express server listening on port ' + app.get('port'));
@@ -175,6 +181,7 @@ async.series([
 
     if (env == 'production') {
       var oneYear = 31557600000;
+      app.use(morgan('combined'));
       app.use(function (err, req, res, next) {
         res.status(500);
         res.render('500', { error: err });
@@ -185,12 +192,13 @@ async.series([
       });
     }
 
-    var io = socketio.listen(server);
+    require('./lib/routes')(app);
+
+    var io = require('socket.io')(server);
     io.sockets.on('connection', function (socket) {
     });
 
     app.set('io', io);
-    require('./lib/routes')(app);
 
     next();
   }

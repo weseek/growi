@@ -71,7 +71,7 @@ module.exports = function(grunt) {
           '<%= dirs.jsDest %>/<%= pkg.name %>.js': [
             'bower_components/jquery/dist/jquery.js',
             'bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.js',
-            'node_modules/socket.io-client/dist/socket.io.js',
+            'node_modules/socket.io-client/socket.io.js',
             'bower_components/marked/lib/marked.js',
             'bower_components/jquery.cookie/jquery.cookie.js',
             'bower_components/highlightjs/highlight.pack.js',
