@@ -85,7 +85,7 @@ configModel = require('./lib/models/config')(app);
 
 async.series([
   function (next) {
-    configModel.getConfigArray(function(err, doc) {
+    configModel.loadAllConfig(function(err, doc) {
       app.set('config', doc);
 
       return next();
