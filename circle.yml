@@ -1,10 +1,14 @@
+machine:
+  timezone: JST
+  services:
+    - mongodb
 deployment:
   demo:
     branch: master
     heroku:
       appname: crowi-demo
   dev:
-    branch: master
+    branch: /(master|wip-v.*)/
     heroku:
       appname: crowi-dev
   strk:
