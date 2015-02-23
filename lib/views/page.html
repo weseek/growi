@@ -297,7 +297,7 @@ $(function() {
 <script>
   $(function() {
     var me = {{ user|json|safe }};
-    var socket = io.connect('{{ baseUrl }}');
+    var socket = io();
     socket.on('page edited', function (data) {
       if (data.user._id != me._id
         && data.page.path == {{ page.path|json|safe }}) {

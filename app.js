@@ -18,7 +18,6 @@ var express  = require('express')
   , http     = require('http')
   , facebook = require('facebook-node-sdk')
   , mongo    = require('mongoose')
-  , socketio = require('socket.io')
   , middleware = require('./lib/util/middlewares')
   , time     = require('time')
   , async    = require('async')
@@ -193,12 +192,13 @@ async.series([
       });
     }
 
-    var io = socketio.listen(server);
+    require('./lib/routes')(app);
+
+    var io = require('socket.io')(server);
     io.sockets.on('connection', function (socket) {
     });
 
     app.set('io', io);
-    require('./lib/routes')(app);
 
     next();
   }
