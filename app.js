@@ -81,8 +81,8 @@ app.set('view cache', false);
 app.set('view engine', 'html');
 app.set('views', __dirname + '/lib/views');
 app.use(methodOverride());
-app.use(bodyParser.urlencoded({ extended: true }))
-app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(multer());
 app.use(session(sessionConfig));
