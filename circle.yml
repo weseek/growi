@@ -1,7 +1,9 @@
 machine:
-  timezone: JST
+  timezone: UTC
   services:
     - mongodb
+  environment:
+    MONGO_URI: mongodb://127.0.0.1/crowi_test
 deployment:
   demo:
     branch: master
