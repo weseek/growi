@@ -1,0 +1,19 @@
+machine:
+  timezone: UTC
+  services:
+    - mongodb
+  environment:
+    MONGO_URI: mongodb://127.0.0.1/crowi_test
+deployment:
+  demo:
+    branch: master
+    heroku:
+      appname: crowi-demo
+  dev:
+    branch: /(master|wip-v.*)/
+    heroku:
+      appname: crowi-dev
+  strk:
+    branch: master
+    heroku:
+      appname: strk-wiki

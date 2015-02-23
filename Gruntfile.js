@@ -1,11 +1,12 @@
 /*
- * @package RMW
+ * @package Crowi
  */
 
 module.exports = function(grunt) {
 
   var paths = {
-        scripts: ['Gruntfile.js', 'app.js', 'lib/**/*.js', 'models/**/*.js', 'routes/**/*.js', 'form/**/*.js', 'resource/js/**/*.js'],
+        scripts: ['Gruntfile.js', 'app.js', 'lib/**/*.js', 'resource/js/**/*.js'],
+        tests: ['test/**/*.test.js'],
         styles: ['resource/css/*.scss'],
         all: []
       };
@@ -99,6 +100,18 @@ module.exports = function(grunt) {
       },
       all: paths.scripts
     },
+    mochaTest: {
+      all: {
+        src: ['test/**/*.test.js'],
+        options: {
+          globals: ['chai'],
+          require: ['test/bootstrap.js'],
+          timeout: 3000,
+          quiet: false,
+          clearRequireCache: true,
+        },
+      }
+    },
     watch: {
       css: {
         files: paths.styles,
@@ -107,6 +120,10 @@ module.exports = function(grunt) {
       dev: {
         files: paths.all,
         tasks: ['dev'],
+      },
+      test: {
+        files: paths.all,
+        tasks: ['test'],
       },
       default: {
         files: paths.all,
@@ -121,10 +138,11 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-sass');
-
+  grunt.loadNpmTasks('grunt-mocha-test');
 
   // grunt watch dev
   grunt.registerTask('default', ['sass', 'concat', 'uglify']);
   grunt.registerTask('dev', ['sass:dev', 'concat', 'jshint']);
+  grunt.registerTask('test', ['mochaTest']);
 
 };
