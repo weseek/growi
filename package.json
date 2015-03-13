@@ -78,8 +78,8 @@
   ],
   "scripts": {
     "start": "node app.js",
-    "test": "./node_modules/.bin/grunt test",
-    "postinstall": "./node_modules/.bin/bower cache clean && ./node_modules/.bin/bower install && ./node_modules/.bin/grunt"
+    "test": "grunt test",
+    "postinstall": "bower cache clean && bower install && grunt"
   },
   "env": {
     "NODE_ENV": "production"
