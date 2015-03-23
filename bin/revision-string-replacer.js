@@ -38,18 +38,18 @@ cli.main(function(args, options)
   mongo.connect(mongoUri);
 
   // あー config 読み込み＆model読み込み周りを app.js から切り離さないといけないにゃぁ
-  configModel = require('../models/config')(app);
+  configModel = require('../lib/models/config')(app);
 
   async.series([
     function (next) {
-      configModel.getConfigArray(function(err, doc) {
+      configModel.loadAllConfig(function(err, doc) {
 
         return next();
       });
     }, function (next) {
       var config = app.set('config');
 
-      models = require('../models')(app);
+      models = require('../lib/models')(app);
       models.Config = configModel;
 
       return next();
