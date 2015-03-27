@@ -22,6 +22,7 @@ var express  = require('express')
   , time     = require('time')
   , async    = require('async')
   , session  = require('express-session')
+  , basicAuth = require('basic-auth-connect')
   , debug    = require('debug')('crowi:appjs')
   , models
   , config
@@ -140,7 +141,7 @@ async.series([
 
     app.use(function(req, res, next) {
       if (config.crowi['security:basicName'] && config.crowi['security:basicSecret']) {
-        return express.basicAuth(
+        return basicAuth(
           config.crowi['security:basicName'],
           config.crowi['security:basicSecret'])(req, res, next);
       } else {
