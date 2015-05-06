@@ -1,6 +1,16 @@
 CHANGES
 ========
 
+## 1.1.2
+
+* Feature: Add one-click button to create today's memo on  header (Thanks @fivestar).
+* Fix: Fixize version of dependent libraries. (Thanks @shinnya)
+* Fix: Google Project OAuth is working now (Thanks @yudoufu).
+* Fix: Disabled auto-highlight because of the slow of the language detection.
+* Change: Now `.` included `username` are allowed.
+* Remove documentation from this repository. See [GitHub Wiki](https://github.com/crowi/crowi/wiki) instead. (Thanks @shinnya)
+* And some fixes. (Thank you: @suzuki @yudoufu @fivestar @shinnya)
+
 ## 1.1.1
 
 * Fix: Error on accessing restricted page.

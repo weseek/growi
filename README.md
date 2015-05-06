@@ -22,7 +22,7 @@ Install dependencies and build CSS and JavaScript:
 
     $ npm install
 
-More info are [here](doc/index.md).
+More info are [here](https://github.com/crowi/crowi/wiki/Install-and-Configuration).
 
 
 Dependencies
