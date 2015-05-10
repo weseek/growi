@@ -109,6 +109,7 @@ module.exports = function(grunt) {
           timeout: 3000,
           quiet: false,
           clearRequireCache: true,
+          reporter: 'dot',
         },
       }
     },
