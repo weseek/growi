@@ -1,6 +1,11 @@
 CHANGES
 ========
 
+## 1.1.3
+
+* Fix: Error occured on editting when the path includes multibyte string. (Thanks @shinnya)
+* Added .gigignore to keep tmp/googlecache dir
+
 ## 1.1.2
 
 * Feature: Add one-click button to create today's memo on  header (Thanks @fivestar).
