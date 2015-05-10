@@ -8,10 +8,9 @@ chai.use(sinonChai);
 
 describe('Page', function () {
   var conn
-    , app = new express()
-    , models = proxyquire(MODEL_DIR, {mongoose: mongoose})(app)
-    , Page = proxyquire(MODEL_DIR + '/page.js', {mongoose: mongoose})(app, models)
-    , User = proxyquire(MODEL_DIR + '/user.js', {mongoose: mongoose})(app, models)
+    , crowi = new (require(ROOT_DIR + '/lib/crowi'))(ROOT_DIR, process.env)
+    , Page = proxyquire(MODEL_DIR + '/page.js', {mongoose: mongoose})(crowi)
+    , User = proxyquire(MODEL_DIR + '/user.js', {mongoose: mongoose})(crowi)
     ;
 
   if (!mongoUri) {
