@@ -3,6 +3,7 @@
 var express = require('express')
   , async = require('async')
   , mongoose= require('mongoose')
+  , ROOT_DIR = __dirname + '/..'
   , MODEL_DIR = __dirname + '/../lib/models'
   , mongoUri
   , testDBUtil
@@ -39,5 +40,6 @@ testDBUtil = {
 global.express = express;
 global.mongoose = mongoose;
 global.mongoUri = mongoUri;
+global.ROOT_DIR = ROOT_DIR;
 global.MODEL_DIR = MODEL_DIR;
 global.testDBUtil = testDBUtil;

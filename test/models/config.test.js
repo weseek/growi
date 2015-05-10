@@ -8,8 +8,8 @@ chai.use(sinonChai);
 
 describe('Config model test', function () {
   var conn
-    , app = new express()
-    , Config = proxyquire(MODEL_DIR + '/config.js', {mongoose: mongoose})(app)
+    , crowi = new (require(ROOT_DIR + '/lib/crowi'))(ROOT_DIR, process.env)
+    , Config = proxyquire(MODEL_DIR + '/config.js', {mongoose: mongoose})(crowi)
     ;
 
   before(function (done) {
