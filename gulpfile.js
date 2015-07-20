@@ -3,7 +3,7 @@
 var gulp   = require('gulp');
 var sass   = require('gulp-sass');
 var cssmin = require('gulp-cssmin');
-var mocha  = require('gulp-mocha');
+var mocha  = require('gulp-spawn-mocha');
 var concat = require('gulp-concat');
 var rename = require('gulp-rename');
 var uglify = require('gulp-uglify');
@@ -50,8 +50,8 @@ var js = {
   ],
   revealDist: dirs.jsDist + '/crowi-reveal.js',
   clientWatch: ['resource/js/**/*.js'],
-  watch: ['test/**/*.test.js','Gruntfile.js', 'app.js', 'lib/**/*.js'],
-  lint: ['Gruntfile.js', 'app.js', 'lib/**/*.js'],
+  watch: ['test/**/*.test.js', 'app.js', 'lib/**/*.js'],
+  lint: ['app.js', 'lib/**/*.js'],
   tests: tests.watch,
 };
 
@@ -92,9 +92,9 @@ gulp.task('jshint', function() {
 gulp.task('test', function() {
   return gulp.src(js.tests)
     .pipe(mocha({
-      require: [__dirname + '/test/bootstrap.js'], // 絶対pathじゃないとだめとかなにこのplugin
+      r: 'test/bootstrap.js',
       globals: ['chai'],
-      reporter: 'dot',
+      R: 'dot',
     }));
 });
 
