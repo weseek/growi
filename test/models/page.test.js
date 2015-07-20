@@ -59,9 +59,8 @@ describe('Page', function () {
   });
 
   after(function (done) {
-    testDBUtil.cleanUpDb(conn, 'Page', function(err, doc) {
-      conn.close();
-      done();
+    return testDBUtil.cleanUpDb(conn, 'Page', function(err, doc) {
+      return conn.close(done);
     });
   });
 
