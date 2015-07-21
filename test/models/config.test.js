@@ -38,9 +38,8 @@ describe('Config model test', function () {
 
   after(function (done) {
     if (mongoUri) {
-      testDBUtil.cleanUpDb(conn, 'Config', function(err, doc) {
-        conn.close();
-        done();
+      return testDBUtil.cleanUpDb(conn, 'Config', function(err, doc) {
+        return conn.close(done);
       });
     }
   });
