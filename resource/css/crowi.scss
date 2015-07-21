@@ -1,15 +1,12 @@
 // import crowi variable
-@import 'variables';
+@import 'utilities';
 
 // import bootstrap
 @import 'bootstrap';
 
 @import 'font-awesome';
 
-@import 'mixins';
-
 // crowi component
-@import 'mixins';
 @import 'layout';
 @import 'form';
 @import 'wiki';

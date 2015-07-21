@@ -1,6 +1,11 @@
 CHANGES
 ========
 
+## 1.2.0
+
+* Re-writed application structure.
+* Add unit test for page model. (Thank you: @shinnya)
+
 ## 1.1.3
 
 * Fix: Error occured on editting when the path includes multibyte string. (Thanks @shinnya)
