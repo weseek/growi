@@ -79,11 +79,21 @@
     var attachmentOption = {
       uploadUrl: '/_api/attachment/page/' + pageId,
       extraParams: {},
-      dataProcessor: function(data) {
-        console.log(data);
-      }
+      progressText: 'Uploading file...',
+      urlText: "\n![file]({filename})\n",
+      onFileUploadResponse: function(res) {
+        console.log("onUploadedFile", res);
+
+        return true;
+      },
     };
     $('textarea#form-body').inlineattachment(attachmentOption);
+    $('textarea#form-body').on('dragenter dragover', function() {
+        $(this).addClass('dragover');
+      });
+    $('textarea#form-body').on('drop dragleave dragend', function() {
+        $(this).removeClass('dragover');
+      });
   });
 
 
