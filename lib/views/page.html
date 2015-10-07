@@ -13,7 +13,7 @@
 {% endblock %}
 
 {% block content_main %}
-<div class="content-main {% if not page %}on-edit{% endif %}">
+<div id="content-main" class="content-main {% if not page %}on-edit{% endif %}" data-page-id="{% if page %}{{ page._id.toString() }}{% endif %}">
 
   {% if not page %}
   <ul class="nav nav-tabs hidden-print">

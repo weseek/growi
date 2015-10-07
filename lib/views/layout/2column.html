@@ -141,7 +141,7 @@
 {% endblock %} {# layout_sidebar #}
 
 {% block layout_main %}
-<div id="main" class="main col-md-9 {% if page %}{{ css.grant(page) }}{% endif %}" ng-controller="WikiPageController">
+<div id="main" class="main col-md-9 {% if page %}{{ css.grant(page) }}{% endif %}">
   {% if page && page.grant != 1 %}
   <p class="page-grant">
     <i class="fa fa-lock"></i> {{ consts.pageGrants[page.grant] }} (このページの閲覧は制限されています)

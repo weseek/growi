@@ -15,22 +15,31 @@
     <input type="hidden" name="pageForm[format]" value="markdown" id="form-format">
     <input type="hidden" name="pageForm[currentRevision]" value="{{ pageForm.currentRevision|default(revision._id.toString()) }}">
     <div class="form-submit-group form-group form-inline">
-      <select name="pageForm[grant]" class="form-control">
-        {% for grantId, grantLabel in consts.pageGrants %}
-        <option value="{{ grantId }}" {% if pageForm.grant|default(page.grant) == grantId %}selected{% endif %}>{{ grantLabel }}</option>
-        {% endfor %}
-      </select>
+      {#<button class="btn btn-default">
+        <i class="fa fa-file-text"></i>
+        ファイルを追加 ...
+      </button>#}
 
-      <input type="submit" class="btn btn-primary" id="edit-form-submit" value="ページを更新" />
+      <div class="pull-right">
+        <select name="pageForm[grant]" class="form-control">
+          {% for grantId, grantLabel in consts.pageGrants %}
+          <option value="{{ grantId }}" {% if pageForm.grant|default(page.grant) == grantId %}selected{% endif %}>{{ grantLabel }}</option>
+          {% endfor %}
+        </select>
+        <input type="submit" class="btn btn-primary" id="edit-form-submit" value="ページを更新" />
+      </div>
     </div>
   </form>
   <div class="col-md-6">
     <div id="preview-body" class="wiki preview-body">
     </div>
   </div>
+  <div class="file-module hidden">
+  </div>
   <script type="text/javascript">
   $(function() {
     // preview watch
+    var originalContent = $('#form-body').val();
     var prevContent = "";
     var watchTimer = setInterval(function() {
       var content = $('#form-body').val();
@@ -64,7 +73,19 @@
         self.blur();
       }
     });
+
+    var pageId = $('#content-main').data('page-id') || 0;
+    console.log("pageId", pageId);
+    var attachmentOption = {
+      uploadUrl: '/_api/attachment/page/' + pageId,
+      extraParams: {},
+      dataProcessor: function(data) {
+        console.log(data);
+      }
+    };
+    $('textarea#form-body').inlineattachment(attachmentOption);
   });
+
 
   </script>
 </div>
