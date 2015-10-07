@@ -388,16 +388,24 @@
     left: 0;
     height: 100%;
     width: 100%;
-    padding: 16px;
 
     .nav {
       margin-top: 8px;
-      max-height: 8%;
+      height: 40px;
     }
 
     .tab-content {
-      margin-top: 1%;
-      height: 83%;
+      .alert-info {
+        display: none;
+      }
+
+      top: 48px;
+      bottom: 58px;
+      padding: 0 12px;
+      position: absolute;
+      left: 0;
+      right: 0;
+      margin-top: 4px;
 
       .edit-form {
         height: 100%;
@@ -405,19 +413,43 @@
           height: 100%;
           .col-md-6 {
             height: 100%;
-
-            form {
-              height: 100%;
-              textarea {
-                height: 100%;
-              }
+          }
+          form {
+            padding: 0;
+            border-right: solid 1px #ccc;
+            &::after {
+              position: absolute;
+              top: 0;
+              right: 15px;
+              font-size: 10px;
+              font-weight: 700;
+              color: #959595;
+              text-transform: uppercase;
+              letter-spacing: 1px;
+              content: "Input Content ...";
             }
+          }
+          textarea {
+            height: 100%;
+            padding-top: 18px;
+            border: none;
+            box-shadow: none;
+          }
+          .preview-body {
+            height: 100%;
+            padding-top: 18px;
+            overflow: scroll;
 
-            .preview-body {
-              height: 100%;
-              padding-top: 5px;
-              padding-bottom: 5px;
-              overflow: scroll;
+            &::after {
+              position: absolute;
+              top: 0;
+              right: 15px;
+              font-size: 10px;
+              font-weight: 700;
+              color: #959595;
+              text-transform: uppercase;
+              letter-spacing: 1px;
+              content: "Preview";
             }
           }
         }
@@ -430,7 +462,7 @@
       width: 100%;
       left: 0;
       padding: 8px;
-      max-height: 8%;
+      height: 50px;
       background: rgba(255,255,255,.8);
       border-top: solid 1px #ccc;
       margin-bottom: 0;
