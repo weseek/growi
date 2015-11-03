@@ -3,6 +3,7 @@ var chai = require('chai')
   , sinon = require('sinon')
   , sinonChai = require('sinon-chai')
   , proxyquire = require('proxyquire')
+  , Promise = require('bluebird')
   ;
 chai.use(sinonChai);
 
@@ -28,7 +29,10 @@ describe('Config model test', function () {
           {ns: 'plugin', key: 'other:config', value: JSON.stringify('this is data')},
         ];
 
-        testDBUtil.generateFixture(conn, 'Config', fixture, done);
+        testDBUtil.generateFixture(conn, 'Config', fixture)
+        .then(function(configs) {
+          done();
+        });
       });
     }
   });
@@ -38,9 +42,10 @@ describe('Config model test', function () {
 
   after(function (done) {
     if (mongoUri) {
-      return testDBUtil.cleanUpDb(conn, 'Config', function(err, doc) {
-        return conn.close(done);
-      });
+      testDBUtil.cleanUpDb(conn, 'Config')
+        .then(function() {
+          return conn.close(done);
+        });
     }
   });
 

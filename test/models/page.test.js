@@ -3,6 +3,7 @@ var chai = require('chai')
   , sinon = require('sinon')
   , sinonChai = require('sinon-chai')
   , proxyquire = require('proxyquire')
+  , Promise = require('bluebird')
   ;
 chai.use(sinonChai);
 
@@ -23,45 +24,79 @@ describe('Page', function () {
         done();
       }
 
-      Page = conn.model('Page');
-      User = conn.model('User');
+      var Page = conn.model('Page'),
+        User = conn.model('User');
 
-      var fixture = [
-        {
-          path: '/user/anonymous/memo',
-          grant: Page.GRANT_RESTRICTED,
-          grantedUsers: []
-        },
-        {
-          path: '/grant/public',
-          grant: Page.GRANT_PUBLIC
-        },
-        {
-          path: '/grant/restricted',
-          grant: Page.GRANT_RESTRICTED
-        },
-        {
-          path: '/grant/specified',
-          grant: Page.GRANT_SPECIFIED
-        },
-        {
-          path: '/grant/owner',
-          grant: Page.GRANT_OWNER
-        }
-      ];
-      var userFixture = [
-        {userId: 'anonymous', email: 'anonymous@gmail.com'}
-      ];
+      new Promise(function(resolve, reject) {
+        testDBUtil.cleanUpDb(conn, 'Page')
+          .then(function() {
+            return testDBUtil.cleanUpDb(conn, 'User')
+          })
+          .then(resolve);
+      }).then(function() {
+        var userFixture = [
+          {name: 'Anon 0', username: 'anonymous0', email: 'anonymous0@example.com'},
+          {name: 'Anon 1', username: 'anonymous1', email: 'anonymous1@example.com'}
+        ];
 
-      testDBUtil.generateFixture(conn, 'Page', fixture, function() {});
-      testDBUtil.generateFixture(conn, 'User', userFixture, done);
+        return new Promise(function(resolve, reject) {
+          testDBUtil.generateFixture(conn, 'User', userFixture)
+          .then(function(users) {
+            resolve(users);
+          });
+        });
+      }).then(function(testUsers) {
+        var testUser0 = testUsers[0];
+
+        var fixture = [
+          {
+            path: '/user/anonymous/memo',
+            grant: Page.GRANT_RESTRICTED,
+            grantedUsers: [testUser0],
+            creator: testUser0
+          },
+          {
+            path: '/grant/public',
+            grant: Page.GRANT_PUBLIC,
+            grantedUsers: [testUser0],
+            creator: testUser0
+          },
+          {
+            path: '/grant/restricted',
+            grant: Page.GRANT_RESTRICTED,
+            grantedUsers: [testUser0],
+            creator: testUser0
+          },
+          {
+            path: '/grant/specified',
+            grant: Page.GRANT_SPECIFIED,
+            grantedUsers: [testUser0],
+            creator: testUser0
+          },
+          {
+            path: '/grant/owner',
+            grant: Page.GRANT_OWNER,
+            grantedUsers: [testUser0],
+            creator: testUser0
+          }
+        ];
+
+        testDBUtil.generateFixture(conn, 'Page', fixture)
+        .then(function(pages) {
+          done();
+        });
+      });
+
+
     });
   });
 
   after(function (done) {
-    return testDBUtil.cleanUpDb(conn, 'Page', function(err, doc) {
-      return conn.close(done);
-    });
+    testDBUtil.cleanUpDb(conn, 'Page')
+      .then(function() {
+        return testDBUtil.cleanUpDb(conn, 'User')
+      })
+      .then(done);
   });
 
   describe('.isPublic', function () {
@@ -88,31 +123,38 @@ describe('Page', function () {
     });
   });
 
-  describe('.isGrantedFor', function() {
-    context('with a granted user', function() {
+  describe('.isCreator', function() {
+    context('with creator', function() {
       it('should return true', function(done) {
-        User.find({userId: 'anonymous'}, function(err, user) {
+        User.findOne({email: 'anonymous0@example.com'}, function(err, user) {
           if (err) { done(err); }
 
           Page.findOne({path: '/user/anonymous/memo'}, function(err, page) {
-            if (err) { done(err); }
-
-            page.grantedUsers.push(user.id);
-
-            page.save(function(err, newPage) {
-              if (err) { done(err); }
-
-              expect(newPage.isGrantedFor(user)).to.be.equal(true);
-              done();
-            });
-          });
+            expect(page.isCreator(user)).to.be.equal(true);
+            done();
+          })
         });
       });
     });
 
-    context('with a public page', function() {
+    context('with non-creator', function() {
+      it('should return false', function(done) {
+        User.findOne({email: 'anonymous1@example.com'}, function(err, user) {
+          if (err) { done(err); }
+
+          Page.findOne({path: '/user/anonymous/memo'}, function(err, page) {
+            expect(page.isCreator(user)).to.be.equal(false);
+            done();
+          })
+        });
+      });
+    });
+  });
+
+  describe('.isGrantedFor', function() {
+    context('with a granted user', function() {
       it('should return true', function(done) {
-        User.find({userId: 'anonymous'}, function(err, user) {
+        User.findOne({email: 'anonymous0@example.com'}, function(err, user) {
           if (err) { done(err); }
 
           Page.findOne({path: '/user/anonymous/memo'}, function(err, page) {
@@ -125,9 +167,24 @@ describe('Page', function () {
       });
     });
 
+    context('with a public page', function() {
+      it('should return true', function(done) {
+        User.findOne({email: 'anonymous1@example.com'}, function(err, user) {
+          if (err) { done(err); }
+
+          Page.findOne({path: '/grant/public'}, function(err, page) {
+            if (err) { done(err); }
+
+            expect(page.isGrantedFor(user)).to.be.equal(true);
+            done();
+          });
+        });
+      });
+    });
+
     context('with a restricted page and an user who has no grant', function() {
       it('should return false', function(done) {
-        User.find({userId: 'anonymous'}, function(err, user) {
+        User.findOne({email: 'anonymous1@example.com'}, function(err, user) {
           if (err) { done(err); }
 
           Page.findOne({path: '/grant/restricted'}, function(err, page) {

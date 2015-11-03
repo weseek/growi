@@ -436,7 +436,8 @@
             box-shadow: none;
 
             &.dragover {
-              border: dashed 10px #ccc;
+              border: dashed 6px #ccc;
+              padding: 12px 6px 0px;
             }
           }
           .preview-body {

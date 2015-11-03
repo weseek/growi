@@ -5,6 +5,7 @@ var express = require('express')
   , mongoose= require('mongoose')
   , ROOT_DIR = __dirname + '/..'
   , MODEL_DIR = __dirname + '/../lib/models'
+  , Promise = require('bluebird')
   , mongoUri
   , testDBUtil
   ;
@@ -13,27 +14,49 @@ mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || process.env.MO
 
 
 testDBUtil = {
-  generateFixture: function (conn, model, fixture, cb) {
+  generateFixture: function (conn, model, fixture) {
     var m = conn.model(model);
-    async.each(fixture, function(data, next) {
-      var newDoc = new m;
 
-      Object.keys(data).forEach(function(k) {
-        newDoc[k] = data[k];
+    return new Promise(function(resolve, reject) {
+      var createdModels = [];
+      fixture.reduce(function(promise, entity) {
+        return promise.then(function() {
+          var newDoc = new m;
+
+          Object.keys(entity).forEach(function(k) {
+            newDoc[k] = entity[k];
+          });
+
+          return new Promise(function(r, rj) {
+            newDoc.save(function(err, data) {
+              createdModels.push(data);
+              return r();
+            });
+          });
+        });
+      }, Promise.resolve()).then(function() {
+        resolve(createdModels);
       });
-      newDoc.save(next);
-
-    }, function(err) {
-      cb();
     });
   },
-  cleanUpDb: function (conn, model, cb) {
-    if (!model) {
-      return cb(null, null);
-    }
-
-    var m = conn.model(model);
-    m.remove({}, cb);
+  cleanUpDb: function (conn, models) {
+    return new Promise(function(resolve, reject) {
+      if (Array.isArray(models)) {
+        models.reduce(function(promise, model) {
+          return promise.then(function() {
+            var m = conn.model(model);
+            return new Promise(function(r, rj) {
+              m.remove({}, r);
+            });
+          });
+        }, Promise.resolve()).then(function() {
+          resolve();
+        });
+      } else {
+        var m = conn.model(models);
+        m.remove({}, resolve);
+      }
+    });
   },
 };
 
