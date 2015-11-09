@@ -2,51 +2,31 @@ var chai = require('chai')
   , expect = chai.expect
   , sinon = require('sinon')
   , sinonChai = require('sinon-chai')
-  , proxyquire = require('proxyquire')
   , Promise = require('bluebird')
+  , utils = require('../utils.js')
   ;
 chai.use(sinonChai);
 
 describe('Config model test', function () {
-  var conn
-    , crowi = new (require(ROOT_DIR + '/lib/crowi'))(ROOT_DIR, process.env)
-    , Config = proxyquire(MODEL_DIR + '/config.js', {mongoose: mongoose})(crowi)
-    ;
+  var Page = utils.models.Page,
+    Config = utils.models.Config,
+    User   = utils.models.User,
+    conn = utils.mongoose.connection;
 
   before(function (done) {
-    if (mongoUri) {
-      // 基本的に mongoUri がセットされてたら、そのURIにはつながる前提
-      conn = mongoose.createConnection(mongoUri, function(err) {
-        if (err) {
-          done(); // ここで skip したいなあ
-        }
+    var fixture = [
+      {ns: 'crowi', key: 'test:test', value: JSON.stringify('crowi test value')},
+      {ns: 'crowi', key: 'test:test2', value: JSON.stringify(11111)},
+      {ns: 'crowi', key: 'test:test3', value: JSON.stringify([1, 2, 3, 4, 5])},
+      {ns: 'plugin', key: 'other:config', value: JSON.stringify('this is data')},
+    ];
 
-        Config = conn.model('Config');
-        var fixture = [
-          {ns: 'crowi', key: 'test:test', value: JSON.stringify('crowi test value')},
-          {ns: 'crowi', key: 'test:test2', value: JSON.stringify(11111)},
-          {ns: 'crowi', key: 'test:test3', value: JSON.stringify([1, 2, 3, 4, 5])},
-          {ns: 'plugin', key: 'other:config', value: JSON.stringify('this is data')},
-        ];
-
-        testDBUtil.generateFixture(conn, 'Config', fixture)
-        .then(function(configs) {
-          done();
-        });
-      });
-    }
-  });
-
-  beforeEach(function () {
-  });
-
-  after(function (done) {
-    if (mongoUri) {
-      testDBUtil.cleanUpDb(conn, 'Config')
-        .then(function() {
-          return conn.close(done);
-        });
-    }
+    testDBUtil.generateFixture(conn, 'Config', fixture)
+    .then(function(configs) {
+      done();
+    }).catch(function() {
+      done(new Error('Skip this test.'));
+    });
   });
 
   describe('.CONSTANTS', function () {

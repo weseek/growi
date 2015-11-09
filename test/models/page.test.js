@@ -2,101 +2,65 @@ var chai = require('chai')
   , expect = chai.expect
   , sinon = require('sinon')
   , sinonChai = require('sinon-chai')
-  , proxyquire = require('proxyquire')
   , Promise = require('bluebird')
+  , utils = require('../utils.js')
   ;
 chai.use(sinonChai);
 
 describe('Page', function () {
-  var conn
-    , crowi = new (require(ROOT_DIR + '/lib/crowi'))(ROOT_DIR, process.env)
-    , Page = proxyquire(MODEL_DIR + '/page.js', {mongoose: mongoose})(crowi)
-    , User = proxyquire(MODEL_DIR + '/user.js', {mongoose: mongoose})(crowi)
-    ;
-
-  if (!mongoUri) {
-    return;
-  }
+  var Page = utils.models.Page,
+    User   = utils.models.User,
+    conn   = utils.mongoose.connection;
 
   before(function (done) {
-    conn = mongoose.createConnection(mongoUri, function(err) {
-      if (err) {
+    Promise.resolve().then(function() {
+      var userFixture = [
+        {name: 'Anon 0', username: 'anonymous0', email: 'anonymous0@example.com'},
+        {name: 'Anon 1', username: 'anonymous1', email: 'anonymous1@example.com'}
+      ];
+
+      return testDBUtil.generateFixture(conn, 'User', userFixture);
+    }).then(function(testUsers) {
+      var testUser0 = testUsers[0];
+
+      var fixture = [
+        {
+          path: '/user/anonymous/memo',
+          grant: Page.GRANT_RESTRICTED,
+          grantedUsers: [testUser0],
+          creator: testUser0
+        },
+        {
+          path: '/grant/public',
+          grant: Page.GRANT_PUBLIC,
+          grantedUsers: [testUser0],
+          creator: testUser0
+        },
+        {
+          path: '/grant/restricted',
+          grant: Page.GRANT_RESTRICTED,
+          grantedUsers: [testUser0],
+          creator: testUser0
+        },
+        {
+          path: '/grant/specified',
+          grant: Page.GRANT_SPECIFIED,
+          grantedUsers: [testUser0],
+          creator: testUser0
+        },
+        {
+          path: '/grant/owner',
+          grant: Page.GRANT_OWNER,
+          grantedUsers: [testUser0],
+          creator: testUser0
+        }
+      ];
+
+      testDBUtil.generateFixture(conn, 'Page', fixture)
+      .then(function(pages) {
         done();
-      }
-
-      var Page = conn.model('Page'),
-        User = conn.model('User');
-
-      new Promise(function(resolve, reject) {
-        testDBUtil.cleanUpDb(conn, 'Page')
-          .then(function() {
-            return testDBUtil.cleanUpDb(conn, 'User')
-          })
-          .then(resolve);
-      }).then(function() {
-        var userFixture = [
-          {name: 'Anon 0', username: 'anonymous0', email: 'anonymous0@example.com'},
-          {name: 'Anon 1', username: 'anonymous1', email: 'anonymous1@example.com'}
-        ];
-
-        return new Promise(function(resolve, reject) {
-          testDBUtil.generateFixture(conn, 'User', userFixture)
-          .then(function(users) {
-            resolve(users);
-          });
-        });
-      }).then(function(testUsers) {
-        var testUser0 = testUsers[0];
-
-        var fixture = [
-          {
-            path: '/user/anonymous/memo',
-            grant: Page.GRANT_RESTRICTED,
-            grantedUsers: [testUser0],
-            creator: testUser0
-          },
-          {
-            path: '/grant/public',
-            grant: Page.GRANT_PUBLIC,
-            grantedUsers: [testUser0],
-            creator: testUser0
-          },
-          {
-            path: '/grant/restricted',
-            grant: Page.GRANT_RESTRICTED,
-            grantedUsers: [testUser0],
-            creator: testUser0
-          },
-          {
-            path: '/grant/specified',
-            grant: Page.GRANT_SPECIFIED,
-            grantedUsers: [testUser0],
-            creator: testUser0
-          },
-          {
-            path: '/grant/owner',
-            grant: Page.GRANT_OWNER,
-            grantedUsers: [testUser0],
-            creator: testUser0
-          }
-        ];
-
-        testDBUtil.generateFixture(conn, 'Page', fixture)
-        .then(function(pages) {
-          done();
-        });
       });
-
-
     });
-  });
-
-  after(function (done) {
-    testDBUtil.cleanUpDb(conn, 'Page')
-      .then(function() {
-        return testDBUtil.cleanUpDb(conn, 'User')
-      })
-      .then(done);
   });
 
   describe('.isPublic', function () {
