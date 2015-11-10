@@ -43,17 +43,13 @@ describe('Test for Crowi application context', function () {
       // set
       var p = crowi.setupDatabase()
       expect(p).to.instanceof(Promise);
-      if (mongoUri) {
-        p.then(function() {
-          expect(mongoose.connection.readyState).to.equals(1);
-          done();
-        });
-      } else {
-        p.catch(function() {
-          expect(mongoose.connection.readyState).to.equals(1);
-          done();
-        });
-      }
+      p.then(function() {
+        expect(mongoose.connection.readyState).to.equals(1);
+        done();
+      }).catch(function() {
+        expect(mongoose.connection.readyState).to.equals(1);
+        done();
+      });
     });
   });
 });

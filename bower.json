@@ -25,6 +25,7 @@
     "marked": "~0.3.3",
     "reveal.js": "~3.0.0",
     "jquery": "~2.1.3",
-    "highlightjs": "~8.4.0"
+    "highlightjs": "~8.4.0",
+    "inline-attachment": "~2.0.1"
   }
 }

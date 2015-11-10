@@ -13,7 +13,7 @@
 {% endblock %}
 
 {% block content_main %}
-<div class="content-main {% if not page %}on-edit{% endif %}">
+<div id="content-main" class="content-main {% if not page %}on-edit{% endif %}" data-page-id="{% if page %}{{ page._id.toString() }}{% endif %}">
 
   {% if not page %}
   <ul class="nav nav-tabs hidden-print">
@@ -143,6 +143,34 @@
 {% endblock %}
 
 {% block content_footer %}
+
+<div class="page-attachments">
+  <p>Attachments</p>
+  <ul>
+  </ul>
+</div>
+<script>
+  (function() {
+    var pageId = $('#content-main').data('page-id');
+    var $pageAttachmentList = $('.page-attachments ul');
+    if (pageId) {
+      $.get('/_api/attachment/page/' + pageId, function(res) {
+        var attachments = res.data.attachments;
+        var urlBase = res.data.fileBaseUrl;
+        if (attachments.length > 0) {
+          $.each(attachments, function(i, file) {
+            console.log(file);
+            $pageAttachmentList.append(
+            '<li><a href="' + urlBase + file.filePath + '">' + (file.originalName || file.fileName) + '</a> <span class="label label-default">' + file.fileFormat + '</span></li>'
+            );
+          })
+        } else {
+          $('.page-attachments').remove();
+        }
+      });
+    }
+  })();
+</script>
 <footer>
   {% if not page %}
   {% else %}

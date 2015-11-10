@@ -305,6 +305,21 @@
       }
     }
 
+    .page-attachments {
+      background: #f0f0f0;
+      padding: 10px;
+      font-size: 0.9em;
+      color: #888;
+      margin: 10px 0;
+      border-radius: 5px;
+      p {
+        font-weight: bold;
+      }
+
+      ul {
+      }
+    }
+
     .footer { // {{{
       position: fixed;
       width: 100%;
@@ -388,16 +403,24 @@
     left: 0;
     height: 100%;
     width: 100%;
-    padding: 16px;
 
     .nav {
       margin-top: 8px;
-      max-height: 8%;
+      height: 40px;
     }
 
     .tab-content {
-      margin-top: 1%;
-      height: 83%;
+      .alert-info {
+        display: none;
+      }
+
+      top: 48px;
+      bottom: 58px;
+      padding: 0 12px;
+      position: absolute;
+      left: 0;
+      right: 0;
+      margin-top: 4px;
 
       .edit-form {
         height: 100%;
@@ -405,19 +428,48 @@
           height: 100%;
           .col-md-6 {
             height: 100%;
-
-            form {
-              height: 100%;
-              textarea {
-                height: 100%;
-              }
+          }
+          form {
+            padding: 0;
+            border-right: solid 1px #ccc;
+            &::after {
+              position: absolute;
+              top: 0;
+              right: 15px;
+              font-size: 10px;
+              font-weight: 700;
+              color: #959595;
+              text-transform: uppercase;
+              letter-spacing: 1px;
+              content: "Input Content ...";
             }
+          }
+          textarea {
+            height: 100%;
+            padding-top: 18px;
+            border: none;
+            box-shadow: none;
 
-            .preview-body {
-              height: 100%;
-              padding-top: 5px;
-              padding-bottom: 5px;
-              overflow: scroll;
+            &.dragover {
+              border: dashed 6px #ccc;
+              padding: 12px 6px 0px;
+            }
+          }
+          .preview-body {
+            height: 100%;
+            padding-top: 18px;
+            overflow: scroll;
+
+            &::after {
+              position: absolute;
+              top: 0;
+              right: 15px;
+              font-size: 10px;
+              font-weight: 700;
+              color: #959595;
+              text-transform: uppercase;
+              letter-spacing: 1px;
+              content: "Preview";
             }
           }
         }
@@ -425,12 +477,14 @@
     }
 
     .form-group.form-submit-group {
+
       position: fixed;
+      z-index: 1054;
       bottom: 0;
       width: 100%;
       left: 0;
       padding: 8px;
-      max-height: 8%;
+      height: 50px;
       background: rgba(255,255,255,.8);
       border-top: solid 1px #ccc;
       margin-bottom: 0;
@@ -524,6 +578,18 @@
 
 } // }}}
 
+@media (max-width: $screen-sm-max) { // {{{ less than tablet size
+
+  .content-main.on-edit {
+    .form-group.form-submit-group {
+      select.form-control {
+        display: inline-block;
+        width: auto;
+      }
+    }
+  }
+
+} // }}}
 
 @media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) { // {{{ tablet size
   .crowi.main-container { // {{{
