@@ -75,11 +75,9 @@
     });
 
     var unbindInlineAttachment = function($form) {
-      console.log('unbind inlineattach.');
       $form.unbind('.inlineattach');
     };
     var bindInlineAttachment = function($form, attachmentOption) {
-      console.log('bind inline with options:', attachmentOption);
       var $this = $form;
       var editor = createEditorInstance($form);
       var inlineattach = new inlineAttachment(attachmentOption, editor);
@@ -128,7 +126,6 @@
 
       attachmentOption.onFileUploadResponse = function(res) {
         var result = JSON.parse(res.response);
-        console.log("onFileUploadResponse", result);
 
         if (result.status && result.pageCreated) {
           var page = result.page,
