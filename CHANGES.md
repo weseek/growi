@@ -7,6 +7,7 @@ CHANGES
 * Improve: Design on full-screen editor.
 * Fix: Library version (mongoose-paginator is now fixed its version).
 * Add unit test for user model.
+* Library Update: node.js 4.2.x, npm 3.3.x and so far.
 
 ## 1.2.0
 

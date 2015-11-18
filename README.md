@@ -28,7 +28,7 @@ More info are [here](https://github.com/crowi/crowi/wiki/Install-and-Configurati
 Dependencies
 -------------
 
-* Node.js (0.10.x)
+* Node.js (4.2.x)
 * MongoDB
 * Redis (optional)
 * Amazon S3

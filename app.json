@@ -8,9 +8,6 @@
   "website": "https://crowi.wiki/",
   "repository": "https://github.com/crowi/crowi",
   "success_url": "/",
-  "scripts": {
-    "postdeploy": "grunt"
-  },
   "env": {
     "NODE_ENV": "production",
     "SECRET_TOKEN": {
