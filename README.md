@@ -5,6 +5,7 @@ Crowi - The Simple & Powerful Communication Tool Based on Wiki
 [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
 
 [![Circle CI](https://circleci.com/gh/crowi/crowi.svg?style=svg)](https://circleci.com/gh/crowi/crowi)
+[![Join the chat at https://gitter.im/crowi/general](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/crowi/general)
 
 
 Crowi is:
