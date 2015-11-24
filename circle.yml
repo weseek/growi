@@ -17,3 +17,6 @@ deployment:
     branch: master
     heroku:
       appname: strk-wiki
+notify:
+  webhooks:
+    - url: https://webhooks.gitter.im/e/5848cac5788c0579f521
