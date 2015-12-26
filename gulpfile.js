@@ -51,6 +51,10 @@ var js = {
     'bower_components/reveal.js/js/reveal.js'
   ],
   revealDist: dirs.jsDist + '/crowi-reveal.js',
+  formSrc: [
+    'resource/js/crowi-form.js'
+  ],
+  formDist: dirs.jsDist + '/crowi-form.js',
   clientWatch: ['resource/js/**/*.js'],
   watch: ['test/**/*.test.js', 'app.js', 'lib/**/*.js'],
   lint: ['app.js', 'lib/**/*.js'],
@@ -68,6 +72,10 @@ gulp.task('js:concat', function() {
     .pipe(concat('crowi-reveal.js'))
     .pipe(gulp.dest(dirs.jsDist));
 
+  gulp.src(js.formSrc)
+    .pipe(concat('crowi-form.js'))
+    .pipe(gulp.dest(dirs.jsDist));
+
   return gulp.src(js.src)
     .pipe(concat('crowi.js'))
     .pipe(gulp.dest(dirs.jsDist));
@@ -75,6 +83,11 @@ gulp.task('js:concat', function() {
 
 gulp.task('js:min', ['js:concat'], function() {
   gulp.src(js.revealDist)
+    .pipe(uglify())
+    .pipe(rename({suffix: '.min'}))
+    .pipe(gulp.dest(dirs.jsDist));
+
+  gulp.src(js.formDist)
     .pipe(uglify())
     .pipe(rename({suffix: '.min'}))
     .pipe(gulp.dest(dirs.jsDist));
@@ -140,4 +153,3 @@ gulp.task('watch', function() {
 gulp.task('css', ['css:sass', 'css:concat',]);
 gulp.task('default', ['css:min', 'js:min',]);
 gulp.task('dev', ['css:concat', 'js:concat','jshint', 'test']);
-
