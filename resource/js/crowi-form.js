@@ -170,7 +170,8 @@ $(function() {
   };
 
   var handleSpaceKey = function(event) {
-    if (event.shiftKey && event.altKey) {
+    // keybind: alt + shift + space
+    if (!(event.shiftKey && event.altKey)) {
       return;
     }
     var currentLine = getCurrentLine(event);
