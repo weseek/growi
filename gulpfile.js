@@ -41,6 +41,7 @@ var js = {
     'node_modules/socket.io-client/socket.io.js',
     'bower_components/marked/lib/marked.js',
     'bower_components/jquery.cookie/jquery.cookie.js',
+    'bower_components/jquery-selection/src/jquery.selection.js',
     'bower_components/highlightjs/highlight.pack.js',
     'resource/js/crowi.js'
   ],
