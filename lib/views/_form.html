@@ -9,7 +9,7 @@
 </div>
 {% endif %}
 <div id="form-box" class="row">
-  <form action="{{ path }}/edit" id="page-form" method="post" class="col-md-6">
+  <form action="{{ path }}/edit" id="page-form" method="post" class="col-md-6 {% if config.crowi['app:uploadable'] %}uploadable{% endif %}">
     <textarea name="pageForm[body]" class="form-control form-body-height" id="form-body">{% if pageForm.body %}{{ pageForm.body }}{% elseif not revision.body %}# {{ path|path2name }}{% else %}{{ revision.body }}{% endif %}</textarea>
 
     <input type="hidden" name="pageForm[format]" value="markdown" id="form-format">

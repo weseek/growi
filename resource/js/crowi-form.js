@@ -250,7 +250,7 @@ $(function() {
     };
   };
 
-  var $inputForm = $('textarea#form-body');
+  var $inputForm = $('form.uploadable textarea#form-body');
   if ($inputForm.length > 0) {
     var pageId = $('#content-main').data('page-id') || 0;
     var attachmentOption = {
@@ -281,12 +281,12 @@ $(function() {
     };
 
     bindInlineAttachment($inputForm, attachmentOption);
-  }
 
-  $('textarea#form-body').on('dragenter dragover', function() {
-    $(this).addClass('dragover');
-  });
-  $('textarea#form-body').on('drop dragleave dragend', function() {
-    $(this).removeClass('dragover');
-  });
+    $('textarea#form-body').on('dragenter dragover', function() {
+      $(this).addClass('dragover');
+    });
+    $('textarea#form-body').on('drop dragleave dragend', function() {
+      $(this).removeClass('dragover');
+    });
+  }
 });
