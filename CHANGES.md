@@ -4,6 +4,7 @@ CHANGES
 ## 1.3.0
 
 * Feature: Image uploader.
+* Feature: Textarea editor (Thank you: @suzuki #38).
 * Improve: Design on full-screen editor.
 * Fix: Library version (mongoose-paginator is now fixed its version).
 * Add unit test for user model.
