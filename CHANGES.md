@@ -5,6 +5,7 @@ CHANGES
 
 * Feature: Image uploader.
 * Feature: Textarea editor (Thank you: @suzuki #38).
+* Feature: Register API Token for user and added `pages.get` api (Experimental).
 * Improve: Design on full-screen editor.
 * Fix: Library version (mongoose-paginator is now fixed its version).
 * Add unit test for user model.
