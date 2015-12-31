@@ -159,7 +159,6 @@
         var urlBase = res.data.fileBaseUrl;
         if (attachments.length > 0) {
           $.each(attachments, function(i, file) {
-            console.log(file);
             $pageAttachmentList.append(
             '<li><a href="' + urlBase + file.filePath + '">' + (file.originalName || file.fileName) + '</a> <span class="label label-default">' + file.fileFormat + '</span></li>'
             );

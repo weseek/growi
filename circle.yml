@@ -5,15 +5,11 @@ machine:
   environment:
     MONGO_URI: mongodb://127.0.0.1/crowi_test
 deployment:
-  demo:
-    branch: master
-    heroku:
-      appname: crowi-demo
   dev:
     branch: /(master|wip-v.*)/
     heroku:
       appname: crowi-dev
-  strk:
-    branch: master
-    heroku:
-      appname: strk-wiki
+notify:
+  webhooks:
+    - url: https://webhooks.gitter.im/e/5a035388e3274b621d20
+
