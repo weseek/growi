@@ -1,0 +1,83 @@
+{% extends '../layout/2column.html' %}
+
+
+{% block html_title %}APIの設定 · {{ path }}{% endblock %}
+
+{% block content_head %}
+<header  id="page-header">
+  <h1 class="title" id="">ユーザー設定</h1>
+</header>
+{% endblock %}
+
+{% block content_main %}
+<div class="content-main">
+
+  <ul class="nav nav-tabs">
+    <li><a href="/me"><i class="fa fa-gears"></i> ユーザー情報</a></li>
+    <li><a href="/me/password"><i class="fa fa-key"></i> パスワード設定</a></li>
+    <li class="active"><a href="/me/apiToken"><i class="fa fa-rocket"></i> API設定</a></li>
+  </ul>
+
+  <div class="tab-content">
+
+  {% set message = req.flash('successMessage') %}
+  {% if message.length %}
+  <div class="alert alert-success">
+    {{ message }}
+  </div>
+  {% endif %}
+
+  {% if req.form.errors.length > 0 %}
+  <div class="alert alert-danger">
+    <ul>
+    {% for error in req.form.errors %}
+      <li>{{ error }}</li>
+    {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  <div id="form-box">
+
+    <form action="/me/apiToken" method="post" class="form-horizontal" role="form">
+    <fieldset>
+      <legend>API Token 設定</legend>
+      <div class="form-group {% if not user.password %}has-error{% endif %}">
+        <label for="" class="col-xs-2 control-label">現在のAPI Token</label>
+        <div class="col-xs-6">
+          {% if user.apiToken %}
+            <input class="form-control" type="text" value="{{ user.apiToken }}">
+          {% else %}
+          <p class="form-control-static">
+            API Token が設定されていません。更新するボタンから発行してください。
+          </p>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-xs-offset-2 col-xs-10">
+
+          <p class="alert alert-warning">
+          API Token を更新すると、自動的に新しい Token が生成されます。<br>
+          現在の Token を利用している処理は動かなくなります。
+          </p>
+
+          <button type="submit" value="1" name="apiTokenForm[confirm]" class="btn btn-primary">API Tokenを更新する</button>
+        </div>
+      </div>
+
+    </fieldset>
+    </form>
+  </div>
+
+
+  </div>
+</div>
+{% endblock content_main %}
+
+{% block content_footer %}
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
