@@ -3,7 +3,14 @@
 /* Author: Sotaro KARASAWA <sotarok@crocos.co.jp>
 */
 
+var hljs = require('highlight.js');
+var marked = require('marked');
 var Crowi = {};
+
+if (!window) {
+  window = {};
+}
+window.Crowi = Crowi;
 
 Crowi.createErrorView = function(msg) {
   $('#main').prepend($('<p class="alert-message error">' + msg + '</p>'));

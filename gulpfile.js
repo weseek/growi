@@ -8,6 +8,8 @@ var concat = require('gulp-concat');
 var rename = require('gulp-rename');
 var uglify = require('gulp-uglify');
 var jshint = require('gulp-jshint');
+var source = require('vinyl-source-stream');
+var browserify = require('browserify');
 
 var stylish = require('jshint-stylish');
 
@@ -33,17 +35,17 @@ var css = {
 };
 
 var js = {
+  browserify: [
+    'resource/js/crowi.js', // => crowi-bundled.js
+  ],
   src: [
     'node_modules/jquery/dist/jquery.js',
     'bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.js',
     'bower_components/inline-attachment/src/inline-attachment.js',
-    'bower_components/inline-attachment/src/jquery.inline-attachment.js',
     'node_modules/socket.io-client/socket.io.js',
-    'node_modules/marked/lib/marked.js',
     'node_modules/jquery.cookie/jquery.cookie.js',
     'bower_components/jquery-selection/src/jquery.selection.js',
-    'bower_components/highlightjs/highlight.pack.js',
-    'resource/js/crowi.js'
+    dirs.jsDist + '/crowi-bundled.js',
   ],
   dist: dirs.jsDist + '/crowi.js',
   revealSrc: [
@@ -68,7 +70,14 @@ var cssIncludePaths = [
   'bower_components/reveal.js/css'
 ];
 
-gulp.task('js:concat', function() {
+gulp.task('js:browserify', function() {
+  return browserify({entries: js.browserify})
+    .bundle()
+    .pipe(source('crowi-bundled.js'))
+    .pipe(gulp.dest(dirs.jsDist));
+});
+
+gulp.task('js:concat', ['js:browserify'], function() {
   gulp.src(js.revealSrc)
     .pipe(concat('crowi-reveal.js'))
     .pipe(gulp.dest(dirs.jsDist));
@@ -126,7 +135,7 @@ gulp.task('css:sass', function() {
 });
 
 gulp.task('css:concat', ['css:sass'], function() {
-  return gulp.src([css.main, 'bower_components/highlightjs/styles/tomorrow-night.css'])
+  return gulp.src([css.main, 'node_modules/highlight.js/styles/tomorrow-night.css'])
     .pipe(concat('crowi.css'))
     .pipe(gulp.dest(dirs.cssDist))
 });
