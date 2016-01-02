@@ -34,7 +34,7 @@ var css = {
 
 var js = {
   src: [
-    'bower_components/jquery/dist/jquery.js',
+    'node_modules/jquery/dist/jquery.js',
     'bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.js',
     'bower_components/inline-attachment/src/inline-attachment.js',
     'bower_components/inline-attachment/src/jquery.inline-attachment.js',
