@@ -20,7 +20,6 @@
   ],
   "dependencies": {
     "bootstrap-sass-official": "~3.3.1",
-    "reveal.js": "~3.0.0",
     "inline-attachment": "~2.0.1",
     "jquery-selection": "~1.0.1"
   }

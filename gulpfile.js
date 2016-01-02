@@ -31,13 +31,16 @@ var css = {
   src: dirs.cssSrc + '/' + pkg.name + '.scss',
   main: dirs.cssDist + '/crowi-main.css',
   dist: dirs.cssDist + '/crowi.css',
+  revealSrc: dirs.cssSrc + '/' + pkg.name + '-reveal.scss',
+  revealDist: dirs.cssDist + '/crowi-reveal.css',
   watch: ['resource/css/*.scss'],
 };
 
 var js = {
-  browserify: [
-    'resource/js/crowi.js', // => crowi-bundled.js
-  ],
+  browserify: {
+    crowi: 'resource/js/crowi.js', // => crowi-bundled.js
+    crowiPresentation: 'resource/js/crowi-presentation.js', // => crowi-presentation.js
+  },
   src: [
     'node_modules/jquery/dist/jquery.js',
     'bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.js',
@@ -49,9 +52,9 @@ var js = {
   ],
   dist: dirs.jsDist + '/crowi.js',
   revealSrc: [
-    'bower_components/reveal.js/lib/js/head.min.js',
-    'bower_components/reveal.js/lib/js/html5shiv.js',
-    'bower_components/reveal.js/js/reveal.js'
+    'node_modules/reveal.js/lib/js/head.min.js',
+    'node_modules/reveal.js/lib/js/html5shiv.js',
+    dirs.jsDist + '/crowi-presentation.js',
   ],
   revealDist: dirs.jsDist + '/crowi-reveal.js',
   formSrc: [
@@ -67,11 +70,16 @@ var js = {
 var cssIncludePaths = [
   'bower_components/bootstrap-sass-official/assets/stylesheets',
   'node_modules/font-awesome/scss',
-  'bower_components/reveal.js/css'
+  'node_modules/reveal.js/css'
 ];
 
 gulp.task('js:browserify', function() {
-  return browserify({entries: js.browserify})
+  browserify({entries: js.browserify.crowiPresentation})
+    .bundle()
+    .pipe(source('crowi-presentation.js'))
+    .pipe(gulp.dest(dirs.jsDist));
+
+  return browserify({entries: js.browserify.crowi})
     .bundle()
     .pipe(source('crowi-bundled.js'))
     .pipe(gulp.dest(dirs.jsDist));
@@ -124,13 +132,21 @@ gulp.task('test', function() {
 });
 
 gulp.task('css:sass', function() {
+  gulp.src(css.revealSrc) // reveal
+    .pipe(sass({
+        outputStyle: 'nesed',
+        sourceComments: 'map',
+        includePaths: cssIncludePaths
+    }).on('error', sass.logError))
+    .pipe(gulp.dest(dirs.cssDist));
+
   return gulp.src(css.src)
     .pipe(sass({
         outputStyle: 'nesed',
         sourceComments: 'map',
         includePaths: cssIncludePaths
     }).on('error', sass.logError))
-    .pipe(rename({suffix: '-main'}))
+    .pipe(rename({suffix: '-main'})) // create -main.css to prepare concating with highlight.js's css
     .pipe(gulp.dest(dirs.cssDist));
 });
 
@@ -141,6 +157,11 @@ gulp.task('css:concat', ['css:sass'], function() {
 });
 
 gulp.task('css:min', ['css:concat'], function() {
+  gulp.src(css.revealDist)
+    .pipe(cssmin())
+    .pipe(rename({suffix: '.min'}))
+    .pipe(gulp.dest(dirs.cssDist));
+
   return gulp.src(css.dist)
     .pipe(cssmin())
     .pipe(rename({suffix: '.min'}))
