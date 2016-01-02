@@ -64,7 +64,7 @@ var js = {
 
 var cssIncludePaths = [
   'bower_components/bootstrap-sass-official/assets/stylesheets',
-  'bower_components/fontawesome/scss',
+  'node_modules/font-awesome/scss',
   'bower_components/reveal.js/css'
 ];
 

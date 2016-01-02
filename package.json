@@ -45,6 +45,7 @@
     "express-form": "~0.12.0",
     "express-session": "~1.12.0",
     "facebook-node-sdk": "=0.1.10",
+    "font-awesome": "~4.5.0",
     "googleapis": "=0.4.7",
     "gulp": "~3.9.0",
     "gulp-concat": "~2.6.0",
