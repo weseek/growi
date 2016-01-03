@@ -58,6 +58,7 @@
     "gulp-uglify": "~1.4.2",
     "gulp-watch": "~4.3.5",
     "highlight.js": "~9.0.0",
+    "inline-attachment": "git+https://github.com/Rovak/InlineAttachment.git#2.0.2",
     "jquery": "~2.1.4",
     "jquery.cookie": "~1.4.1",
     "jshint-stylish": "~2.1.0",
@@ -89,6 +90,7 @@
   "scripts": {
     "start": "node app.js",
     "test": "gulp test",
+    "build": "gulp",
     "postinstall": "bower cache clean && bower install && gulp"
   },
   "env": {

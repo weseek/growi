@@ -44,7 +44,7 @@ var js = {
   src: [
     'node_modules/jquery/dist/jquery.js',
     'bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.js',
-    'bower_components/inline-attachment/src/inline-attachment.js',
+    'node_modules/inline-attachment/src/inline-attachment.js',
     'node_modules/socket.io-client/socket.io.js',
     'node_modules/jquery.cookie/jquery.cookie.js',
     'resource/thirdparty-js/jquery.selection.js',
