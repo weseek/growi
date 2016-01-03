@@ -47,7 +47,7 @@ var js = {
     'bower_components/inline-attachment/src/inline-attachment.js',
     'node_modules/socket.io-client/socket.io.js',
     'node_modules/jquery.cookie/jquery.cookie.js',
-    'bower_components/jquery-selection/src/jquery.selection.js',
+    'resource/thirdparty-js/jquery.selection.js',
     dirs.jsDist + '/crowi-bundled.js',
   ],
   dist: dirs.jsDist + '/crowi.js',
