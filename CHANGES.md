@@ -6,6 +6,7 @@ CHANGES
 * Fix: Logic of checking uploadable was broken.
 * Fix: Creatable page name (Thank you: @riaf #42, Reported #33).
 * Fix: Warning on uploading with create page.
+* Fix: Error on uploading user profile image.
 
 ## 1.3.0
 
