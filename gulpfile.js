@@ -43,7 +43,7 @@ var js = {
   },
   src: [
     'node_modules/jquery/dist/jquery.js',
-    'bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.js',
+    'node_modules/bootstrap-sass/assets/javascripts/bootstrap.js',
     'node_modules/inline-attachment/src/inline-attachment.js',
     'node_modules/socket.io-client/socket.io.js',
     'node_modules/jquery.cookie/jquery.cookie.js',
@@ -68,7 +68,7 @@ var js = {
 };
 
 var cssIncludePaths = [
-  'bower_components/bootstrap-sass-official/assets/stylesheets',
+  'node_modules/bootstrap-sass/assets/stylesheets',
   'node_modules/font-awesome/scss',
   'node_modules/reveal.js/css'
 ];
