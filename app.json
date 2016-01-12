@@ -20,7 +20,7 @@
     }
   },
   "addons": [
-    "mongohq",
+    "mongolab",
     "redistogo"
   ]
 }
