@@ -1,0 +1,17 @@
+{
+  "mappings": {
+    "page": {
+      "_all":       { "enabled": false  },
+      "properties": {
+        "path":    { "type": "string", "analyzer": "kuromoji" },
+        "body":    { "type": "string", "analyzer": "kuromoji" },
+        "creator": { "type": "string" },
+        "lastUpdateUser": { "type": "string" },
+        "likeCount": { "type": "integer" },
+        "bookmarkCount": { "type": "integer" },
+        "updated": { "type": "date" },
+        "is_public": { "type": "boolean" }
+      }
+    }
+  }
+}
