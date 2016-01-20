@@ -8,7 +8,7 @@
 var crowi = new (require('./lib/crowi'))(__dirname, process.env);
 
 crowi.init()
-  .then(function(app) {
-    crowi.start(app);
+  .then(function() {
+    return crowi.start();
   }).catch(crowi.exitOnError);
 
