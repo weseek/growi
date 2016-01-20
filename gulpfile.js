@@ -8,6 +8,8 @@ var concat = require('gulp-concat');
 var rename = require('gulp-rename');
 var uglify = require('gulp-uglify');
 var jshint = require('gulp-jshint');
+var source = require('vinyl-source-stream');
+var browserify = require('browserify');
 
 var stylish = require('jshint-stylish');
 
@@ -29,27 +31,30 @@ var css = {
   src: dirs.cssSrc + '/' + pkg.name + '.scss',
   main: dirs.cssDist + '/crowi-main.css',
   dist: dirs.cssDist + '/crowi.css',
+  revealSrc: dirs.cssSrc + '/' + pkg.name + '-reveal.scss',
+  revealDist: dirs.cssDist + '/crowi-reveal.css',
   watch: ['resource/css/*.scss'],
 };
 
 var js = {
+  browserify: {
+    crowi: 'resource/js/crowi.js', // => crowi-bundled.js
+    crowiPresentation: 'resource/js/crowi-presentation.js', // => crowi-presentation.js
+  },
   src: [
-    'bower_components/jquery/dist/jquery.js',
-    'bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.js',
-    'bower_components/inline-attachment/src/inline-attachment.js',
-    'bower_components/inline-attachment/src/jquery.inline-attachment.js',
+    'node_modules/jquery/dist/jquery.js',
+    'node_modules/bootstrap-sass/assets/javascripts/bootstrap.js',
+    'node_modules/inline-attachment/src/inline-attachment.js',
     'node_modules/socket.io-client/socket.io.js',
-    'bower_components/marked/lib/marked.js',
-    'bower_components/jquery.cookie/jquery.cookie.js',
-    'bower_components/jquery-selection/src/jquery.selection.js',
-    'bower_components/highlightjs/highlight.pack.js',
-    'resource/js/crowi.js'
+    'node_modules/jquery.cookie/jquery.cookie.js',
+    'resource/thirdparty-js/jquery.selection.js',
+    dirs.jsDist + '/crowi-bundled.js',
   ],
   dist: dirs.jsDist + '/crowi.js',
   revealSrc: [
-    'bower_components/reveal.js/lib/js/head.min.js',
-    'bower_components/reveal.js/lib/js/html5shiv.js',
-    'bower_components/reveal.js/js/reveal.js'
+    'node_modules/reveal.js/lib/js/head.min.js',
+    'node_modules/reveal.js/lib/js/html5shiv.js',
+    dirs.jsDist + '/crowi-presentation.js',
   ],
   revealDist: dirs.jsDist + '/crowi-reveal.js',
   formSrc: [
@@ -63,12 +68,24 @@ var js = {
 };
 
 var cssIncludePaths = [
-  'bower_components/bootstrap-sass-official/assets/stylesheets',
-  'bower_components/fontawesome/scss',
-  'bower_components/reveal.js/css'
+  'node_modules/bootstrap-sass/assets/stylesheets',
+  'node_modules/font-awesome/scss',
+  'node_modules/reveal.js/css'
 ];
 
-gulp.task('js:concat', function() {
+gulp.task('js:browserify', function() {
+  browserify({entries: js.browserify.crowiPresentation})
+    .bundle()
+    .pipe(source('crowi-presentation.js'))
+    .pipe(gulp.dest(dirs.jsDist));
+
+  return browserify({entries: js.browserify.crowi})
+    .bundle()
+    .pipe(source('crowi-bundled.js'))
+    .pipe(gulp.dest(dirs.jsDist));
+});
+
+gulp.task('js:concat', ['js:browserify'], function() {
   gulp.src(js.revealSrc)
     .pipe(concat('crowi-reveal.js'))
     .pipe(gulp.dest(dirs.jsDist));
@@ -115,23 +132,36 @@ gulp.task('test', function() {
 });
 
 gulp.task('css:sass', function() {
+  gulp.src(css.revealSrc) // reveal
+    .pipe(sass({
+        outputStyle: 'nesed',
+        sourceComments: 'map',
+        includePaths: cssIncludePaths
+    }).on('error', sass.logError))
+    .pipe(gulp.dest(dirs.cssDist));
+
   return gulp.src(css.src)
     .pipe(sass({
         outputStyle: 'nesed',
         sourceComments: 'map',
         includePaths: cssIncludePaths
     }).on('error', sass.logError))
-    .pipe(rename({suffix: '-main'}))
+    .pipe(rename({suffix: '-main'})) // create -main.css to prepare concating with highlight.js's css
     .pipe(gulp.dest(dirs.cssDist));
 });
 
 gulp.task('css:concat', ['css:sass'], function() {
-  return gulp.src([css.main, 'bower_components/highlightjs/styles/tomorrow-night.css'])
+  return gulp.src([css.main, 'node_modules/highlight.js/styles/tomorrow-night.css'])
     .pipe(concat('crowi.css'))
     .pipe(gulp.dest(dirs.cssDist))
 });
 
 gulp.task('css:min', ['css:concat'], function() {
+  gulp.src(css.revealDist)
+    .pipe(cssmin())
+    .pipe(rename({suffix: '.min'}))
+    .pipe(gulp.dest(dirs.cssDist));
+
   return gulp.src(css.dist)
     .pipe(cssmin())
     .pipe(rename({suffix: '.min'}))
