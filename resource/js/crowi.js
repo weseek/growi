@@ -195,7 +195,27 @@ Crowi.renderer.prototype = {
   }
 };
 
+// original: middleware.swigFilter
+Crowi.userPicture = function (user) {
+  if (!user) {
+    return '/images/userpicture.png';
+  }
+
+  if (user.image && user.image != '/images/userpicture.png') {
+    return user.image;
+  } else if (user.fbId) {
+    return '//graph.facebook.com/' + user.fbId + '/picture?size=square';
+  } else {
+    return '/images/userpicture.png';
+  }
+};
+
+
 $(function() {
+  var pageId = $('#content-main').data('page-id');
+  var revisionId = $('#content-main').data('page-revision-id');
+  var currentUser = $('#content-main').data('current-user');
+
   Crowi.linkPath();
 
   $('[data-toggle="tooltip"]').tooltip();
@@ -248,5 +268,107 @@ $(function() {
     return false;
   });
 
+
+  if (pageId) {
+
+    // omg
+    function createCommentHTML(revision, creator, comment, commentedAt) {
+      var $comment = $('<div>');
+      var $commentImage = $('<img class="picture picture-rounded">')
+        .attr('src', Crowi.userPicture(creator));
+      var $commentCreator = $('<span class="page-comment-creator">')
+        .text(creator.username);
+
+      var $commentRevision = $('<a class="page-comment-revision label">')
+        .attr('href', '?revision=' + revision)
+        .text(revision.substr(0,8));
+      if (revision !== revisionId) {
+        $commentRevision.addClass('label-default');
+      } else {
+        $commentRevision.addClass('label-primary');
+      }
+
+      var $commentMeta = $('<div class="page-comment-meta">')
+        .text(' commented at ' + commentedAt + ' ')
+        .prepend($commentCreator)
+        .append($commentRevision);
+      var $commentBody = $('<div class="page-comment-body wiki">');
+      var renderer = new Crowi.renderer(comment, $commentBody);
+        renderer.render();
+
+      var $commentMain = $('<div class="page-comment-main">')
+        .append($commentMeta)
+        .append($commentBody);
+
+      $comment.addClass('page-comment');
+      if (creator._id === currentUser) {
+        $comment.addClass('page-comment-me');
+      }
+      if (revision !== revisionId) {
+        $comment.addClass('page-comment-old');
+      }
+      $comment
+        .append($commentImage)
+        .append($commentMain)
+
+      return $comment;
+    }
+
+    // get comments
+    var $pageCommentList = $('.page-comments-list');
+    $.get('/_api/comments.get', {page_id: pageId}, function(res) {
+      if (res.ok) {
+        var comments = res.comments;
+        $.each(comments, function(i, comment) {
+          $pageCommentList.append(createCommentHTML(comment.revision, comment.creator, comment.comment, comment.createdAt));
+        });
+      }
+    }).fail(function(data) {
+      // console.log(data);
+    });
+
+    // post comment event
+    $('#page-comment-form').on('submit', function() {
+      $.post('/_api/comments.post', $(this).serialize(), function(data) {
+        if (data.ok) {
+          var comment = data.comment;
+
+          $pageCommentList.prepend(createCommentHTML(comment.revision, comment.creator, comment.comment, comment.createdAt));
+          $('#comment-form-comment').val('');
+          $('#comment-form-message').text('');
+          $('#comment-write-tab').tab('show');
+        } else {
+          $('#comment-form-message').text(data.error);
+        }
+      }).fail(function(data) {
+        if (data.status !== 200) {
+          $('#comment-form-message').text(data.statusText);
+        }
+      });
+
+      return false;
+    });
+
+    $('#comment-preview-tab').on('shown.bs.tab', function(e) {
+      var commentPreviewRenderer = new Crowi.renderer($('#comment-form-comment').val(), $('#comment-preview'));
+      commentPreviewRenderer.render();
+    });
+
+    // attachment
+    var $pageAttachmentList = $('.page-attachments ul');
+    $.get('/_api/attachment/page/' + pageId, function(res) {
+      var attachments = res.data.attachments;
+      var urlBase = res.data.fileBaseUrl;
+      if (attachments.length > 0) {
+        $.each(attachments, function(i, file) {
+          $pageAttachmentList.append(
+          '<li><a href="' + urlBase + file.filePath + '">' + (file.originalName || file.fileName) + '</a> <span class="label label-default">' + file.fileFormat + '</span></li>'
+          );
+        })
+      } else {
+        $('.page-attachments').remove();
+      }
+    });
+  }
 });
 

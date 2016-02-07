@@ -13,7 +13,11 @@
 {% endblock %}
 
 {% block content_main %}
-<div id="content-main" class="content-main {% if not page %}on-edit{% endif %}" data-page-id="{% if page %}{{ page._id.toString() }}{% endif %}">
+<div id="content-main" class="content-main {% if not page %}on-edit{% endif %}"
+  data-page-id="{% if page %}{{ page._id.toString() }}{% endif %}"
+  data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
+  data-page-revision-id="{% if revision %}{{ revision._id.toString() }}{% endif %}"
+  >
 
   {% if not page %}
   <ul class="nav nav-tabs hidden-print">
@@ -144,46 +148,43 @@
 
 {% block content_footer %}
 
+<div class="page-comments">
+  <form class="form" id="page-comment-form">
+    <img src="{{ user|picture }}" class="picture picture-rounded">
+    <div class="comment-form">
+      <ul class="nav nav-tabs">
+        <li class="active"><a id="comment-write-tab" href="#comment-write" role="tab" data-toggle="tab">Write</a></li>
+        <li><a id="comment-preview-tab" href="#comment-preview" role="tab" data-toggle="tab">Preview</a></li>
+
+      </ul>
+      <div class="comment-form-main">
+        <div class="tab-content">
+          <div role="tabpanel" class="comment-write tab-pane active" id="comment-write">
+            <textarea class="comment-form-comment form-control" id="comment-form-comment" name="commentForm[comment]"></textarea>
+          </div>
+          <div role="tabpanel" class="comment-preview tab-pane wiki" id="comment-preview">
+          </div>
+
+        </div>
+        <div class="comment-submit">
+          <input type="hidden" name="commentForm[page_id]" value="{{ page._id.toString() }}">
+          <input type="hidden" name="commentForm[revision_id]" value="{{ revision._id.toString() }}">
+          <span class="text-danger" id="comment-form-message"></span>
+          <input type="submit" value="Comment" class="btn btn-primary form-inline">
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <div class="page-comments-list" id="page-comments-list">
+  </div>
+</div>
+
 <div class="page-attachments">
   <p>Attachments</p>
   <ul>
   </ul>
 </div>
-<script>
-  (function() {
-    var pageId = $('#content-main').data('page-id');
-    var $pageAttachmentList = $('.page-attachments ul');
-    if (pageId) {
-      $.get('/_api/attachment/page/' + pageId, function(res) {
-        var attachments = res.data.attachments;
-        var urlBase = res.data.fileBaseUrl;
-        if (attachments.length > 0) {
-          $.each(attachments, function(i, file) {
-            $pageAttachmentList.append(
-            '<li><a href="' + urlBase + file.filePath + '">' + (file.originalName || file.fileName) + '</a> <span class="label label-default">' + file.fileFormat + '</span></li>'
-            );
-          })
-        } else {
-          $('.page-attachments').remove();
-        }
-      });
-    }
-  })();
-</script>
-<footer>
-  {% if not page %}
-  {% else %}
-  <p class="meta">
-  Path: <span id="pagePath">{{ page.path }}</span><br />
-  Revision: {{ revision._id.toString() }}<br />
-  {% if author %}
-  Last Updated User: <a href="/user/{{ author.username }}">{{ author.name }}</a><br />
-  {% endif %}
-  Created: {{ page.createdAt|datetz('Y-m-d H:i:s') }}<br />
-  Updated: {{ page.updatedAt|datetz('Y-m-d H:i:s') }}<br />
-  </p>
-  {% endif %}
-</footer>
 
 {% endblock %}
 
