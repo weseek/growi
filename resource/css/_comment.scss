@@ -1,9 +1,11 @@
 .page-comments {
   margin: 30px 0 0 0;
-  padding: 20px 8px 8px 8px;
+  padding: 20px 0px 8px 0px;
   border-top: solid 1px #ccc;
 
-  form {
+  .page-comment-form {
+    margin-top: 16px;
+
     .picture {
       float: left;
       width: 32px;

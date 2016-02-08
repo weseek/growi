@@ -148,8 +148,11 @@
 
 {% block content_footer %}
 
+
 <div class="page-comments">
-  <form class="form" id="page-comment-form">
+  <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#page-comment-form" aria-expanded="false" aria-controls=""><i class="fa fa-comment"></i> Comment</button>
+
+  <form class="form page-comment-form collapse" id="page-comment-form">
     <img src="{{ user|picture }}" class="picture picture-rounded">
     <div class="comment-form">
       <ul class="nav nav-tabs">
