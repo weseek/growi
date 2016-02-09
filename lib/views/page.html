@@ -148,6 +148,10 @@
 
 {% block content_footer %}
 
+<p class="meta">
+  Path: <span id="pagePath">{{ page.path }}</span><br />
+  Last updated at {{ page.updatedAt|datetz('Y-m-d H:i:s') }} by <img src="{{ page.creator|default(author)|picture }}" class="picture picture-rounded"> {{ page.creator.name|default(author.name) }}
+</p>
 
 <div class="page-comments">
   <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#page-comment-form" aria-expanded="false" aria-controls=""><i class="fa fa-comment"></i> Comment</button>
