@@ -391,6 +391,54 @@ $(function() {
         $('.page-attachments').remove();
       }
     });
+
+    // bookmark
+    var $bookmarkButton = $('#bookmark-button');
+    $.get('/_api/bookmarks.get', {page_id: pageId}, function(res) {
+      if (res.ok) {
+        if (res.bookmark) {
+          MarkBookmarked();
+        }
+      }
+    });
+
+    $bookmarkButton.click(function() {
+      var bookmarked = $bookmarkButton.data('bookmarked');
+      console.log('isBookmarked', bookmarked);
+      if (!bookmarked) {
+        $.post('/_api/bookmarks.add', {page_id: pageId}, function(res) {
+          console.log(res);
+          if (res.ok && res.bookmark) {
+            MarkBookmarked();
+          }
+        });
+      } else {
+        $.post('/_api/bookmarks.remove', {page_id: pageId}, function(res) {
+          console.log(res);
+          if (res.ok) {
+            MarkUnBookmarked();
+          }
+        });
+      }
+
+      return false;
+    });
+
+    function MarkBookmarked()
+    {
+      $('i', $bookmarkButton)
+        .removeClass('fa-star-o')
+        .addClass('fa-star');
+      $bookmarkButton.data('bookmarked', 1);
+    }
+
+    function MarkUnBookmarked()
+    {
+      $('i', $bookmarkButton)
+        .removeClass('fa-star')
+        .addClass('fa-star-o');
+      $bookmarkButton.data('bookmarked', 0);
+    }
   }
 });
 

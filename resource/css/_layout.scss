@@ -142,13 +142,6 @@
               text-align: right;
             }
           }
-
-          .btn-bookmark {
-            color: #e6b422;
-            &.bookmarked {
-              color: #fff;
-            }
-          }
         }
 
         .liker-list, .contributor-list, .seen-user-list {
@@ -248,15 +241,27 @@
       }
 
 
-      article header h1 {
-        margin-top: 0;
 
-        a:last-child {
-          color: #D1E2E4;
-          opacity: .7;
+      article header { // not affixed
+        .bookmark-link {
+          float: right;
+          color: #e6b422;
+          font-size: 2em;
+          &.bookmarked {
+            //color: #fff;
+          }
+        }
 
-          &:hover {
-            color: inherit;
+        h1 {
+          margin-top: 0;
+
+          a:last-child {
+            color: #D1E2E4;
+            opacity: .7;
+
+            &:hover {
+              color: inherit;
+            }
           }
         }
       }
@@ -624,6 +629,9 @@
   .crowi.main-container { // {{{
     .main {
       article header {
+        .bookmark-link {
+          font-size: 1.3em;
+        }
         h1 {
           font-size: 1.4em;
           margin-bottom: 0;
@@ -642,6 +650,9 @@
     .main {
       padding: 10px;
       article header {
+        .bookmark-link {
+          font-size: 1em;
+        }
         h1 {
           font-size: 1.1em;
         }

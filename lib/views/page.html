@@ -7,6 +7,10 @@
   <header id="page-header">
     <p class="stopper"><a href="#" data-affix-disable="#page-header"><i class="fa fa-chevron-up"></i></a></p>
 
+
+    {% if page %}
+      <a href="#" title="Bookmark" class="bookmark-link" id="bookmark-button" data-bookmarked="0"><i class="fa fa-star-o"></i></a>
+    {% endif %}
     <h1 class="title" id="revision-path">{{ path }}</h1>
   </header>
 </div>
@@ -218,13 +222,6 @@
   <div class="like-box">
     <dl class="dl-horizontal">
       <dt>
-        <i class="fa fa-star"></i> お気に入り
-      </dt>
-      <dd>
-        <button class="btn btn-default btn-sm btn-bookmark" id="bookmarkButton"><i class="fa fa-star-o"></i></button>
-      </dd>
-
-      <dt>
         <i class="fa fa-thumbs-o-up"></i> いいね!
       </dt>
       <dd>
@@ -264,22 +261,6 @@
   </div>
 <script>
 $(function() {
-  $.get('/_api/page/{{ page._id.toString() }}/bookmark', function(data) {
-    if (data.bookmarked) {
-      $('#bookmarkButton')
-        .removeClass('btn-default')
-        .addClass('btn-warning active bookmarked');
-      $('#bookmarkButton i')
-        .removeClass('fa-star-o')
-        .addClass('fa-star');
-    }
-  });
-
-  $('#bookmarkButton').click(function() {
-    var pageId = {{page._id|json|safe}};
-    $.post('/_api/page/{{ page._id.toString() }}/bookmark', function(data) {
-    });
-  });
   $('#pageLikeButton').click(function() {
     var pageId = {{page._id|json|safe}};
     $.post('/_api/page/{{ page._id.toString() }}/like', function(data) {
