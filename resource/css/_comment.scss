@@ -1,35 +1,16 @@
 .page-comments {
   margin: 8px 0 0 0;
-  padding: 20px 0px 8px 0px;
 
   .page-comment-form {
     margin-top: 16px;
 
-    .picture {
-      float: left;
-      width: 32px;
-      height: 32px;
-    }
-
-    .nav {
-      background: #f0f0f0;
-      border-top: solid 1px #ccc;
-      border-right: solid 1px #ccc;
-      padding: 2px 0 0 7px;
-      border-left: solid 1px #ccc;
-    }
-
     .comment-form {
-      margin-left: 40px;
     }
 
     .comment-form-main {
-      padding: 8px;
-      border: solid 1px #ccc;
-      border-top: none;
 
       .comment-form-comment {
-        height: 120px;
+        height: 60px;
       }
 
       .comment-submit {
@@ -42,56 +23,44 @@
   .page-comments-list {
     .page-comment {
       margin-top: 8px;
+      padding-top: 8px;
+      border-top: solid 1px #ccc;
 
       .picture {
         float: left;
-        width: 32px;
-        height: 32px;
+        width: 24px;
+        height: 24px;
       }
 
+
       .page-comment-main {
-        border: solid 1px #ccc;
         margin-left: 40px;
 
-        .page-comment-meta {
-          float: right;
-          background: #f0f0f0;
-          padding: 4px 8px;
-          font-size: .9em;
-          border-bottom-left-radius: 5px;
-
-          .page-comment-creator {
-            font-weight: bold;
-          }
+        .page-comment-creator {
+          font-weight: bold;
         }
-
+        .page-comment-meta {
+          color: #aaa;
+          font-size: .9em;
+        }
         .page-comment-body {
-          padding: 8px;
-          font-size: 14px;
-
-          h1, h2, h3, h4, h5 {
-            &:first-child {
-              padding-top: 16px;
-            }
-          }
-          p:last-child {
-            margin-bottom: 0;
-          }
+          padding: 8px 0;
         }
       }
     }
 
     .page-comment.page-comment-me {
-      .picture {
-        float: right;
-      }
+      //color: lighten($crowiHeaderBackground, 65%);
+      color: $crowiHeaderBackground;
       .page-comment-main {
-        border: solid 1px lighten($crowiHeaderBackground, 50%);
-        margin-right: 40px;
-        margin-left: 0px;
+
+        .page-comment-body,
+        .page-comment-creator,
+        .page-comment-meta {
+        }
 
         .page-comment-meta {
-          background: lighten($crowiHeaderBackground, 65%);
+          //background: lighten($crowiHeaderBackground, 65%);
         }
       }
     }

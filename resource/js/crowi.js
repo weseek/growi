@@ -276,7 +276,7 @@ $(function() {
       var $comment = $('<div>');
       var $commentImage = $('<img class="picture picture-rounded">')
         .attr('src', Crowi.userPicture(creator));
-      var $commentCreator = $('<span class="page-comment-creator">')
+      var $commentCreator = $('<div class="page-comment-creator">')
         .text(creator.username);
 
       var $commentRevision = $('<a class="page-comment-revision label">')
@@ -289,16 +289,15 @@ $(function() {
       }
 
       var $commentMeta = $('<div class="page-comment-meta">')
-        .text(' commented at ' + commentedAt + ' ')
-        .prepend($commentCreator)
-        .append($commentRevision);
-      var $commentBody = $('<div class="page-comment-body wiki">');
-      var renderer = new Crowi.renderer(comment, $commentBody);
-        renderer.render();
+        .text(commentedAt);
+        //.append($commentRevision);
+      var $commentBody = $('<div class="page-comment-body">')
+        .html(comment.replace(/\n/, '<br>'));
 
       var $commentMain = $('<div class="page-comment-main">')
+        .append($commentCreator)
+        .append($commentBody)
         .append($commentMeta)
-        .append($commentBody);
 
       $comment.addClass('page-comment');
       if (creator._id === currentUser) {
@@ -309,7 +308,7 @@ $(function() {
       }
       $comment
         .append($commentImage)
-        .append($commentMain)
+        .append($commentMain);
 
       return $comment;
     }
@@ -336,7 +335,6 @@ $(function() {
           $pageCommentList.prepend(createCommentHTML(comment.revision, comment.creator, comment.comment, comment.createdAt));
           $('#comment-form-comment').val('');
           $('#comment-form-message').text('');
-          $('#comment-write-tab').tab('show');
         } else {
           $('#comment-form-message').text(data.error);
         }
@@ -347,11 +345,6 @@ $(function() {
       });
 
       return false;
-    });
-
-    $('#comment-preview-tab').on('shown.bs.tab', function(e) {
-      var commentPreviewRenderer = new Crowi.renderer($('#comment-form-comment').val(), $('#comment-preview'));
-      commentPreviewRenderer.render();
     });
 
     // attachment

@@ -48,6 +48,7 @@
 
     <li {% if req.body.pageForm %}class="active"{% endif %}><a href="#edit-form" data-toggle="tab"><i class="fa fa-pencil-square-o"></i> 編集</a></li>
 
+
     <li class="dropdown pull-right">
       <a class="dropdown-toggle" data-toggle="dropdown" href="#">
         <i class="fa fa-wrench"></i> <span class="caret"></span>
@@ -57,7 +58,9 @@
        <li><a href="?presentation=1" class="toggle-presentation"><i class="fa fa-arrows-alt"></i> プレゼンモード (beta)</a></li>
       </ul>
     </li>
-
+    {% if page %}
+    <li class="pull-right"><a href="#revision-history" data-toggle="tab"><i class="fa fa-history"></i> History</a></li>
+    {% endif %}
   </ul>
 
   {% include 'modal/widget_rename.html' %}
@@ -102,6 +105,35 @@
     <div class="edit-form tab-pane {% if req.body.pageForm %}active{% endif %}" id="edit-form">
       {% include '_form.html' %}
     </div>
+
+    {# raw revision history #}
+    <div class="tab-pane revision-history" id="revision-history">
+      <h1><i class="fa fa-history"></i> History</h1>
+      {% if not page %}
+      {% else %}
+      <div class="revision-history-list">
+        {% for t in tree %}
+        <div class="revision-hisory-outer">
+          <img src="{{ t.author|picture }}" class="picture picture-rounded">
+          <div class="revision-history-main">
+            <div class="revision-history-author">
+              <strong>{% if t.author %}{{ t.author.username }}{% else %}-{% endif %}</strong>
+            </div>
+            <div class="revision-history-comment">
+            </div>
+            <div class="revision-history-meta">
+              {{ t.createdAt|datetz('Y-m-d H:i:s') }}
+              <br>
+              <a href="?revision={{ t._id.toString() }}"><i class="fa fa-history"></i> このバージョンを見る</a>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+    </div>
+
   </div>
   <script type="text/javascript">
     $(function(){
@@ -153,40 +185,6 @@
   Last updated at {{ page.updatedAt|datetz('Y-m-d H:i:s') }} by <img src="{{ page.creator|default(author)|picture }}" class="picture picture-rounded"> {{ page.creator.name|default(author.name) }}
 </p>
 
-<div class="page-comments">
-  <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#page-comment-form" aria-expanded="false" aria-controls=""><i class="fa fa-comment"></i> Comment</button>
-
-  <form class="form page-comment-form collapse" id="page-comment-form">
-    <img src="{{ user|picture }}" class="picture picture-rounded">
-    <div class="comment-form">
-      <ul class="nav nav-tabs">
-        <li class="active"><a id="comment-write-tab" href="#comment-write" role="tab" data-toggle="tab">Write</a></li>
-        <li><a id="comment-preview-tab" href="#comment-preview" role="tab" data-toggle="tab">Preview</a></li>
-
-      </ul>
-      <div class="comment-form-main">
-        <div class="tab-content">
-          <div role="tabpanel" class="comment-write tab-pane active" id="comment-write">
-            <textarea class="comment-form-comment form-control" id="comment-form-comment" name="commentForm[comment]"></textarea>
-          </div>
-          <div role="tabpanel" class="comment-preview tab-pane wiki" id="comment-preview">
-          </div>
-
-        </div>
-        <div class="comment-submit">
-          <input type="hidden" name="commentForm[page_id]" value="{{ page._id.toString() }}">
-          <input type="hidden" name="commentForm[revision_id]" value="{{ revision._id.toString() }}">
-          <span class="text-danger" id="comment-form-message"></span>
-          <input type="submit" value="Comment" class="btn btn-primary form-inline">
-        </div>
-      </div>
-    </div>
-  </form>
-
-  <div class="page-comments-list" id="page-comments-list">
-  </div>
-</div>
-
 <div class="page-attachments">
   <p>Attachments</p>
   <ul>
@@ -230,6 +228,11 @@
       <dd>
         <p class="liker-count">
         {{ page.liker.length }}
+          {% if page.isLiked(user) %}
+            <button data-liked="1" class="btn btn-default btn-sm active" id="pageLikeButton"><i class="fa fa-thumbs-up"></i> いいね！</button>
+          {% else %}
+            <button data-liked="0" class="btn btn-default btn-sm" id="pageLikeButton"><i class="fa fa-thumbs-o-up"></i> いいね！</button>
+          {% endif %}
         </p>
         <p class="liker-list">
           {% for liker in page.liker %}
@@ -239,11 +242,6 @@
             (...)
           {% endif %}
         </p>
-        {% if page.isLiked(user) %}
-          <button data-liked="1" class="btn btn-default btn-sm active" id="pageLikeButton"><i class="fa fa-thumbs-up"></i> いいね！！！</button>
-        {% else %}
-          <button data-liked="0" class="btn btn-default btn-sm" id="pageLikeButton"><i class="fa fa-thumbs-o-up"></i> いいね！！！</button>
-        {% endif %}
       </dd>
 
       <dt><i class="fa fa-eye"></i> 見た人</dt>
@@ -293,15 +291,11 @@ $(function() {
 
 {% block side_content %}
 
-  <h3><i class="fa fa-link"></i> 共有</h3>
+  <h3><i class="fa fa-link"></i> Share</h3>
   <ul class="fitted-list">
     <li data-toggle="tooltip" data-placement="bottom" title="共有用リンク" class="input-group">
       <span class="input-group-addon">共有用</span>
       <input class="copy-link form-control" type="text" value="{{ config.crowi['app:title'] }} {{ path }}  {{ baseUrl }}/_r/{{ page._id.toString() }}">
-    </li>
-    <li data-toggle="tooltip" data-placement="bottom" title="Wiki記法" class="input-group">
-      <span class="input-group-addon">Wikiタグ</span>
-      <input class="copy-link form-control" type="text" value="&lt;{{ path }}&gt;">
     </li>
     <li data-toggle="tooltip" data-placement="bottom" title="Markdown形式のリンク" class="input-group">
       <span class="input-group-addon">Markdown</span>
@@ -309,20 +303,29 @@ $(function() {
     </li>
   </ul>
 
-  <h3><i class="fa fa-history"></i> History</h3>
-  {% if not page %}
-  {% else %}
-  <ul class="revision-history">
-    {% for t in tree %}
-    <li>
-      <a href="?revision={{ t._id.toString() }}">
-        <img src="{{ t.author|picture }}" class="picture picture-rounded">
-        {% if t.author %}{{ t.author.username }}{% else %}-{% endif %}<br>{{ t.createdAt|datetz('Y-m-d H:i:s') }}
-      </a>
-    </li>
-    {% endfor %}
-  </ul>
-  {% endif %}
+  <h3><i class="fa fa-comment"></i> Comments</h3>
+  <div class="page-comments">
+    <form class="form page-comment-form" id="page-comment-form">
+      <div class="comment-form">
+        <div class="comment-form-main">
+          <div class="comment-write" id="comment-write">
+            <textarea class="comment-form-comment form-control" id="comment-form-comment" name="commentForm[comment]"></textarea>
+          </div>
+          <div class="comment-submit">
+            <input type="hidden" name="commentForm[page_id]" value="{{ page._id.toString() }}">
+            <input type="hidden" name="commentForm[revision_id]" value="{{ revision._id.toString() }}">
+            <span class="text-danger" id="comment-form-message"></span>
+            <input type="submit" value="Comment" class="btn btn-primary btn-sm form-inline">
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <div class="page-comments-list" id="page-comments-list">
+    </div>
+  </div>
+
+
 {% endblock %}
 
 {% block footer %}
