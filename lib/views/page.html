@@ -17,6 +17,7 @@
   data-page-id="{% if page %}{{ page._id.toString() }}{% endif %}"
   data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
   data-page-revision-id="{% if revision %}{{ revision._id.toString() }}{% endif %}"
+  data-page-revision-created="{% if revision %}{{ revision.createdAt|datetz('U') }}{% endif %}"
   >
 
   {% if not page %}
@@ -322,6 +323,15 @@ $(function() {
     </form>
 
     <div class="page-comments-list" id="page-comments-list">
+      <div class="page-comments-list-newer collapse" id="page-comments-list-newer"></div>
+
+      <a class="page-comments-list-toggle-newer text-center" data-toggle="collapse" href="#page-comments-list-newer"><i class="fa fa-angle-double-up"></i> Comments for Newer Revision <i class="fa fa-angle-double-up"></i></a>
+
+      <div class="page-comments-list-current" id="page-comments-list-current"></div>
+
+      <a class="page-comments-list-toggle-older text-center" data-toggle="collapse" href="#page-comments-list-older"><i class="fa fa-angle-double-down"></i> Comments for Older Revision <i class="fa fa-angle-double-down"></i></a>
+
+      <div class="page-comments-list-older collapse in" id="page-comments-list-older"></div>
     </div>
   </div>
 

@@ -214,6 +214,7 @@ Crowi.userPicture = function (user) {
 $(function() {
   var pageId = $('#content-main').data('page-id');
   var revisionId = $('#content-main').data('page-revision-id');
+  var revisionCreatedAt = $('#content-main').data('page-revision-created');
   var currentUser = $('#content-main').data('current-user');
 
   Crowi.linkPath();
@@ -289,10 +290,11 @@ $(function() {
       }
 
       var $commentMeta = $('<div class="page-comment-meta">')
-        .text(commentedAt);
-        //.append($commentRevision);
+        .text(commentedAt + ' ')
+        .append($commentRevision);
+
       var $commentBody = $('<div class="page-comment-body">')
-        .html(comment.replace(/\n/, '<br>'));
+        .html(comment.replace(/(\r\n|\r|\n)/g, '<br>'));
 
       var $commentMain = $('<div class="page-comment-main">')
         .append($commentCreator)
@@ -315,15 +317,44 @@ $(function() {
 
     // get comments
     var $pageCommentList = $('.page-comments-list');
+    var $pageCommentListNewer =   $('#page-comments-list-newer');
+    var $pageCommentListCurrent = $('#page-comments-list-current');
+    var $pageCommentListOlder =   $('#page-comments-list-older');
+    var hasNewer = false;
+    var hasOlder = false;
     $.get('/_api/comments.get', {page_id: pageId}, function(res) {
       if (res.ok) {
         var comments = res.comments;
         $.each(comments, function(i, comment) {
-          $pageCommentList.append(createCommentHTML(comment.revision, comment.creator, comment.comment, comment.createdAt));
+          var commentContent = createCommentHTML(comment.revision, comment.creator, comment.comment, comment.createdAt);
+          if (comment.revision == revisionId) {
+            $pageCommentListCurrent.append(commentContent);
+          } else {
+            if (Date.parse(comment.createdAt)/1000 > revisionCreatedAt) {
+              $pageCommentListNewer.append(commentContent);
+              hasNewer = true;
+            } else {
+              $pageCommentListOlder.append(commentContent);
+              hasOlder = true;
+            }
+          }
         });
       }
     }).fail(function(data) {
+
       // console.log(data);
+    }).always(function() {
+      //$pageCommentList.append($pageCommentListNewer)
+      //  .append($pageCommentListCurrent)
+      //  .append($pageCommentListOlder);
+
+      if (!hasNewer) {
+        $('.page-comments-list-toggle-newer').hide();
+      }
+      if (!hasOlder) {
+        $pageCommentListOlder.addClass('collapse');
+        $('.page-comments-list-toggle-older').hide();
+      }
     });
 
     // post comment event
