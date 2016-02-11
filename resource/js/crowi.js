@@ -342,12 +342,7 @@ $(function() {
       }
     }).fail(function(data) {
 
-      // console.log(data);
     }).always(function() {
-      //$pageCommentList.append($pageCommentListNewer)
-      //  .append($pageCommentListCurrent)
-      //  .append($pageCommentListOlder);
-
       if (!hasNewer) {
         $('.page-comments-list-toggle-newer').hide();
       }
@@ -359,7 +354,10 @@ $(function() {
 
     // post comment event
     $('#page-comment-form').on('submit', function() {
+      $button = $('#commenf-form-button');
+      $button.attr('disabled', 'disabled');
       $.post('/_api/comments.post', $(this).serialize(), function(data) {
+        $button.removeAttr('disabled');
         if (data.ok) {
           var comment = data.comment;
 
