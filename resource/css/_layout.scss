@@ -1,5 +1,5 @@
 .crowi { // {{{
-  font-family: 'Maven Pro', 'Helvetica Neue', 'Hiragino Kaku Gothic Pro', 'Meiryo', sans-serif;
+  font-family: 'Open Sans', 'Helvetica Neue', 'Hiragino Kaku Gothic Pro', 'Meiryo', sans-serif;
   h1, h2, h3, h4, h5, h6 {
     font-weight: 500;
   }
@@ -168,6 +168,7 @@
 
       .side-content {
         margin-bottom: $crowiFooterHeight + $crowiHeaderHeight;
+        color: #666;
         padding: 15px;
 
         h3 {
@@ -177,33 +178,6 @@
         a {
           color: #ccc;
           &:hover { color: #aaa;}
-        }
-
-        ul.revision-history {
-          padding: 0;
-          li {
-            position: relative;
-            list-style: none;
-
-            a {
-              color: #666;
-              padding: 3px 5px 3px 40px;
-              display: block;
-
-              &:hover {
-                background: darken($crowiAsideBackground, 10%);
-                text-decoration: none;
-                color: darken($link-color, 35%);
-              }
-            }
-
-          }
-
-          .picture {
-            position: absolute;
-            left: 5px;
-            top: 12px;
-          }
         }
 
         ul.fitted-list {
@@ -289,6 +263,15 @@
 
     } // }}}
 
+    .page-list {
+      .page-list-link {
+      }
+      .page-list-meta {
+        font-size: .9em;
+        color: #999;
+      }
+    }
+
     .main.grant-restricted,
     .main.grant-specified,
     .main.grant-owner {
@@ -306,12 +289,6 @@
     }
 
     .page-attachments {
-      background: #f0f0f0;
-      padding: 10px;
-      font-size: 0.9em;
-      color: #888;
-      margin: 10px 0;
-      border-radius: 5px;
       p {
         font-weight: bold;
       }
@@ -374,24 +351,76 @@
   .content-main {
     .tab-content {
       margin-top: 30px;
+
+      .revision-history {
+        h1 {
+          padding-bottom: 0.3em;
+          font-size: 2.3em;
+          font-weight: bold;
+          border-bottom: solid 1px #ccc;
+        }
+
+
+        .revision-history-list {
+          .revision-hisory-outer {
+            margin-top: 8px;
+
+            .picture {
+              float: left;
+              width: 32px;
+              height: 32px;
+            }
+
+            .revision-history-main {
+              margin-left: 40px;
+
+              .revision-history-author {
+              }
+              .revision-history-comment {
+              }
+              .revision-history-meta {
+              }
+            }
+          }
+
+          li {
+            position: relative;
+            list-style: none;
+
+            a {
+              color: #666;
+              padding: 3px 5px 3px 40px;
+              display: block;
+
+              &:hover {
+                background: darken($crowiAsideBackground, 10%);
+                text-decoration: none;
+                color: darken($link-color, 35%);
+              }
+            }
+
+          }
+        }
+
+      }
     }
   }
 
   .content-main .timeline-body { // {{{ timeline
-     .revision-path {
-       margin-top: 1.6em;
-       margin-bottom: 0;
-       border: solid 2px #ddd;
-       border-bottom: none;
-       padding: 16px;
-       background: #ddd;
-     }
-     .revision-body {
-       font-size: 14px;
-       border: solid 2px #ddd;
-       padding: 16px;
-       background: #fdfdfd;
-     }
+    .revision-path {
+      margin-top: 1.6em;
+      margin-bottom: 0;
+      border: solid 2px #ddd;
+      border-bottom: none;
+      padding: 16px;
+      background: #ddd;
+    }
+    .revision-body {
+      font-size: 14px;
+      border: solid 2px #ddd;
+      padding: 16px;
+      background: #fdfdfd;
+    }
   } // }}}
 
   // on-edit
@@ -672,8 +701,8 @@
       }
 
       .meta {
-        border-top: solid 1px #999;
-        margin-top: 20px;
+        border-top: solid 1px #ccc;
+        margin-top: 32px;
         color: #666;
       }
 

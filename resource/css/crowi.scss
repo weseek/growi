@@ -11,6 +11,7 @@
 @import 'form';
 @import 'wiki';
 @import 'admin';
+@import 'comment';
 
 
 ul {
@@ -19,12 +20,19 @@ ul {
 
 
 .meta {
+
+  margin-top: 32px;
+  padding: 16px;
+  color: #666;
+  border-top: solid 1px #ccc;
   background: #f0f0f0;
-  padding: 10px;
-  font-size: 0.9em;
+  font-size: 0.95em;
   color: #888;
-  margin-top: 10px;
-  border-radius: 5px;
+
+  .picture {
+    width: 16px;
+    height: 16px;
+  }
 }
 
 .help-block {

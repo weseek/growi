@@ -1,0 +1,90 @@
+.crowi.main-container aside.sidebar .side-content {
+
+.page-comments {
+  margin: 8px 0 0 0;
+
+  .page-comment-form {
+    margin-top: 16px;
+
+    .comment-form {
+    }
+
+    .comment-form-main {
+
+      .comment-form-comment {
+        height: 60px;
+      }
+
+      .comment-submit {
+        margin-top: 8px;
+        text-align: right;
+      }
+    }
+  }
+
+  .page-comments-list {
+    .page-comments-list-toggle-newer,
+    .page-comments-list-toggle-older {
+      text-align: center;
+      display: block;
+      margin: 8px;
+      font-size: .9em;
+      color: #999;
+    }
+    .page-comment {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: solid 1px #ccc;
+
+      .picture {
+        float: left;
+        width: 24px;
+        height: 24px;
+      }
+
+
+      .page-comment-main {
+        margin-left: 40px;
+
+        .page-comment-creator {
+          font-weight: bold;
+        }
+        .page-comment-meta {
+          color: #aaa;
+          font-size: .9em;
+        }
+        .page-comment-body {
+          padding: 8px 0;
+        }
+      }
+    }
+
+    .page-comment.page-comment-me {
+      //color: lighten($crowiHeaderBackground, 65%);
+      color: $crowiHeaderBackground;
+      .page-comment-main {
+
+        .page-comment-body,
+        .page-comment-creator,
+        .page-comment-meta {
+        }
+
+        .page-comment-meta {
+          //background: lighten($crowiHeaderBackground, 65%);
+        }
+      }
+    }
+
+    .page-comment.page-comment-old {
+      opacity: .7;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+}
+
+
+
+} // .crowi.main-container aside.sidebar .side-content

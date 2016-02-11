@@ -13,7 +13,12 @@
 {% endblock %}
 
 {% block content_main %}
-<div id="content-main" class="content-main {% if not page %}on-edit{% endif %}" data-page-id="{% if page %}{{ page._id.toString() }}{% endif %}">
+<div id="content-main" class="content-main {% if not page %}on-edit{% endif %}"
+  data-page-id="{% if page %}{{ page._id.toString() }}{% endif %}"
+  data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
+  data-page-revision-id="{% if revision %}{{ revision._id.toString() }}{% endif %}"
+  data-page-revision-created="{% if revision %}{{ revision.createdAt|datetz('U') }}{% endif %}"
+  >
 
   {% if not page %}
   <ul class="nav nav-tabs hidden-print">
@@ -44,6 +49,7 @@
 
     <li {% if req.body.pageForm %}class="active"{% endif %}><a href="#edit-form" data-toggle="tab"><i class="fa fa-pencil-square-o"></i> 編集</a></li>
 
+
     <li class="dropdown pull-right">
       <a class="dropdown-toggle" data-toggle="dropdown" href="#">
         <i class="fa fa-wrench"></i> <span class="caret"></span>
@@ -53,7 +59,9 @@
        <li><a href="?presentation=1" class="toggle-presentation"><i class="fa fa-arrows-alt"></i> プレゼンモード (beta)</a></li>
       </ul>
     </li>
-
+    {% if page %}
+    <li class="pull-right"><a href="#revision-history" data-toggle="tab"><i class="fa fa-history"></i> History</a></li>
+    {% endif %}
   </ul>
 
   {% include 'modal/widget_rename.html' %}
@@ -98,6 +106,35 @@
     <div class="edit-form tab-pane {% if req.body.pageForm %}active{% endif %}" id="edit-form">
       {% include '_form.html' %}
     </div>
+
+    {# raw revision history #}
+    <div class="tab-pane revision-history" id="revision-history">
+      <h1><i class="fa fa-history"></i> History</h1>
+      {% if not page %}
+      {% else %}
+      <div class="revision-history-list">
+        {% for t in tree %}
+        <div class="revision-hisory-outer">
+          <img src="{{ t.author|picture }}" class="picture picture-rounded">
+          <div class="revision-history-main">
+            <div class="revision-history-author">
+              <strong>{% if t.author %}{{ t.author.username }}{% else %}-{% endif %}</strong>
+            </div>
+            <div class="revision-history-comment">
+            </div>
+            <div class="revision-history-meta">
+              {{ t.createdAt|datetz('Y-m-d H:i:s') }}
+              <br>
+              <a href="?revision={{ t._id.toString() }}"><i class="fa fa-history"></i> このバージョンを見る</a>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+    </div>
+
   </div>
   <script type="text/javascript">
     $(function(){
@@ -144,46 +181,17 @@
 
 {% block content_footer %}
 
-<div class="page-attachments">
+
+<div class="page-attachments meta">
   <p>Attachments</p>
   <ul>
   </ul>
 </div>
-<script>
-  (function() {
-    var pageId = $('#content-main').data('page-id');
-    var $pageAttachmentList = $('.page-attachments ul');
-    if (pageId) {
-      $.get('/_api/attachment/page/' + pageId, function(res) {
-        var attachments = res.data.attachments;
-        var urlBase = res.data.fileBaseUrl;
-        if (attachments.length > 0) {
-          $.each(attachments, function(i, file) {
-            $pageAttachmentList.append(
-            '<li><a href="' + urlBase + file.filePath + '">' + (file.originalName || file.fileName) + '</a> <span class="label label-default">' + file.fileFormat + '</span></li>'
-            );
-          })
-        } else {
-          $('.page-attachments').remove();
-        }
-      });
-    }
-  })();
-</script>
-<footer>
-  {% if not page %}
-  {% else %}
-  <p class="meta">
+
+<p class="meta">
   Path: <span id="pagePath">{{ page.path }}</span><br />
-  Revision: {{ revision._id.toString() }}<br />
-  {% if author %}
-  Last Updated User: <a href="/user/{{ author.username }}">{{ author.name }}</a><br />
-  {% endif %}
-  Created: {{ page.createdAt|datetz('Y-m-d H:i:s') }}<br />
-  Updated: {{ page.updatedAt|datetz('Y-m-d H:i:s') }}<br />
-  </p>
-  {% endif %}
-</footer>
+  Last updated at {{ page.updatedAt|datetz('Y-m-d H:i:s') }} by <img src="{{ page.creator|default(author)|picture }}" class="picture picture-rounded"> {{ page.creator.name|default(author.name) }}
+</p>
 
 {% endblock %}
 
@@ -222,6 +230,11 @@
       <dd>
         <p class="liker-count">
         {{ page.liker.length }}
+          {% if page.isLiked(user) %}
+            <button data-liked="1" class="btn btn-default btn-sm active" id="pageLikeButton"><i class="fa fa-thumbs-up"></i> いいね！</button>
+          {% else %}
+            <button data-liked="0" class="btn btn-default btn-sm" id="pageLikeButton"><i class="fa fa-thumbs-o-up"></i> いいね！</button>
+          {% endif %}
         </p>
         <p class="liker-list">
           {% for liker in page.liker %}
@@ -231,11 +244,6 @@
             (...)
           {% endif %}
         </p>
-        {% if page.isLiked(user) %}
-          <button data-liked="1" class="btn btn-default btn-sm active" id="pageLikeButton"><i class="fa fa-thumbs-up"></i> いいね！！！</button>
-        {% else %}
-          <button data-liked="0" class="btn btn-default btn-sm" id="pageLikeButton"><i class="fa fa-thumbs-o-up"></i> いいね！！！</button>
-        {% endif %}
       </dd>
 
       <dt><i class="fa fa-eye"></i> 見た人</dt>
@@ -285,15 +293,11 @@ $(function() {
 
 {% block side_content %}
 
-  <h3><i class="fa fa-link"></i> 共有</h3>
+  <h3><i class="fa fa-link"></i> Share</h3>
   <ul class="fitted-list">
     <li data-toggle="tooltip" data-placement="bottom" title="共有用リンク" class="input-group">
       <span class="input-group-addon">共有用</span>
       <input class="copy-link form-control" type="text" value="{{ config.crowi['app:title'] }} {{ path }}  {{ baseUrl }}/_r/{{ page._id.toString() }}">
-    </li>
-    <li data-toggle="tooltip" data-placement="bottom" title="Wiki記法" class="input-group">
-      <span class="input-group-addon">Wikiタグ</span>
-      <input class="copy-link form-control" type="text" value="&lt;{{ path }}&gt;">
     </li>
     <li data-toggle="tooltip" data-placement="bottom" title="Markdown形式のリンク" class="input-group">
       <span class="input-group-addon">Markdown</span>
@@ -301,20 +305,38 @@ $(function() {
     </li>
   </ul>
 
-  <h3><i class="fa fa-history"></i> History</h3>
-  {% if not page %}
-  {% else %}
-  <ul class="revision-history">
-    {% for t in tree %}
-    <li>
-      <a href="?revision={{ t._id.toString() }}">
-        <img src="{{ t.author|picture }}" class="picture picture-rounded">
-        {% if t.author %}{{ t.author.username }}{% else %}-{% endif %}<br>{{ t.createdAt|datetz('Y-m-d H:i:s') }}
-      </a>
-    </li>
-    {% endfor %}
-  </ul>
-  {% endif %}
+  <h3><i class="fa fa-comment"></i> Comments</h3>
+  <div class="page-comments">
+    <form class="form page-comment-form" id="page-comment-form">
+      <div class="comment-form">
+        <div class="comment-form-main">
+          <div class="comment-write" id="comment-write">
+            <textarea class="comment-form-comment form-control" id="comment-form-comment" name="commentForm[comment]"></textarea>
+          </div>
+          <div class="comment-submit">
+            <input type="hidden" name="commentForm[page_id]" value="{{ page._id.toString() }}">
+            <input type="hidden" name="commentForm[revision_id]" value="{{ revision._id.toString() }}">
+            <span class="text-danger" id="comment-form-message"></span>
+            <input type="submit" id="commenf-form-button" value="Comment" class="btn btn-primary btn-sm form-inline">
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <div class="page-comments-list" id="page-comments-list">
+      <div class="page-comments-list-newer collapse" id="page-comments-list-newer"></div>
+
+      <a class="page-comments-list-toggle-newer text-center" data-toggle="collapse" href="#page-comments-list-newer"><i class="fa fa-angle-double-up"></i> Comments for Newer Revision <i class="fa fa-angle-double-up"></i></a>
+
+      <div class="page-comments-list-current" id="page-comments-list-current"></div>
+
+      <a class="page-comments-list-toggle-older text-center" data-toggle="collapse" href="#page-comments-list-older"><i class="fa fa-angle-double-down"></i> Comments for Older Revision <i class="fa fa-angle-double-down"></i></a>
+
+      <div class="page-comments-list-older collapse in" id="page-comments-list-older"></div>
+    </div>
+  </div>
+
+
 {% endblock %}
 
 {% block footer %}

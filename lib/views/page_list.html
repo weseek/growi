@@ -17,13 +17,20 @@
 <h2>ページ一覧</h2>
   <div class="tab-content">
     {# list view #}
-    <div class="active wiki tab-pane fade in" id="view-list">
+    <div class="active page-list wiki tab-pane fade in" id="view-list">
       {% for page in pages %}
-        <a href="{{ page.path }}">{{ page.path }}</a>
+        <a class="page-list-link" href="{{ page.path }}">{{ page.path }}</a>
 
-        {% if !page.isPublic() %}
-          <i class="fa fa-lock"></i>
-        {% endif %}
+        <span class="page-list-meta">
+          {% if page.commentCount > 0 %}
+            <i class="fa fa-comment"></i>{{ page.commentCount }}
+          {% endif  %}
+
+          {% if !page.isPublic() %}
+            <i class="fa fa-lock"></i>
+          {% endif %}
+        </span>
+
         <br />
       {% endfor %}
 
