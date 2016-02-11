@@ -181,16 +181,17 @@
 
 {% block content_footer %}
 
-<p class="meta">
-  Path: <span id="pagePath">{{ page.path }}</span><br />
-  Last updated at {{ page.updatedAt|datetz('Y-m-d H:i:s') }} by <img src="{{ page.creator|default(author)|picture }}" class="picture picture-rounded"> {{ page.creator.name|default(author.name) }}
-</p>
 
-<div class="page-attachments">
+<div class="page-attachments meta">
   <p>Attachments</p>
   <ul>
   </ul>
 </div>
+
+<p class="meta">
+  Path: <span id="pagePath">{{ page.path }}</span><br />
+  Last updated at {{ page.updatedAt|datetz('Y-m-d H:i:s') }} by <img src="{{ page.creator|default(author)|picture }}" class="picture picture-rounded"> {{ page.creator.name|default(author.name) }}
+</p>
 
 {% endblock %}
 
