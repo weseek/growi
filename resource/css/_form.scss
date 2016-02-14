@@ -1,11 +1,130 @@
+.crowi.main-container .main .content-main.on-edit { // {{{ Edit Form of Page
+  position: fixed;
+  z-index: 1060;
+  background: #fff;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+
+  .nav {
+    margin-top: 8px;
+    height: 40px;
+  }
+
+  .portal-form,
+  .tab-content {
+    top: 48px;
+    bottom: 58px;
+    padding: 0 12px;
+    position: absolute;
+    z-index: 1061;
+    left: 0;
+    right: 0;
+    margin-top: 4px;
+
+    .alert-info {
+      display: none;
+    }
+
+    .edit-form { // {{{
+      height: 100%;
+      .row {
+        height: 100%;
+        .col-md-6 {
+          height: 100%;
+        }
+        form {
+          padding: 0;
+          border-right: solid 1px #ccc;
+          &::after {
+            position: absolute;
+            top: 0;
+            right: 15px;
+            font-size: 10px;
+            font-weight: 700;
+            color: #959595;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            content: "Input Content ...";
+          }
+        }
+        textarea {
+          height: 100%;
+          padding-top: 18px;
+          border: none;
+          box-shadow: none;
+
+          &.dragover {
+            border: dashed 6px #ccc;
+            padding: 12px 6px 0px;
+          }
+        }
+        .preview-body {
+          height: 100%;
+          padding-top: 18px;
+          overflow: scroll;
+
+          &::after {
+            position: absolute;
+            top: 0;
+            right: 15px;
+            font-size: 10px;
+            font-weight: 700;
+            color: #959595;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            content: "Preview";
+          }
+        }
+      }
+    }
+
+  } // }}}
+
+  .form-group.form-submit-group {
+
+    position: fixed;
+    z-index: 1054;
+    bottom: 0;
+    width: 100%;
+    left: 0;
+    padding: 8px;
+    height: 50px;
+    background: rgba(255,255,255,.8);
+    border-top: solid 1px #ccc;
+    margin-bottom: 0;
+  }
+} // }}}
+
+.crowi.main-container .main .page-list.content-main { // {{{ Edit Form of Page List
+  .portal-form-header,
+  .portal-form {
+    display: none;
+  }
+}
+.crowi.main-container .main .page-list.content-main.on-edit { // {{{ Edit Form of Page List
+  .nav {
+    display: none;
+  }
+  .tab-content {
+    display: none;
+  }
+  .portal-form-header,
+  .portal-form {
+    display: block;
+  }
+
+  .portal-form-header {
+    height: 48px;
+    padding: 14px;
+    border-bottom: solid 1px #ccc;
+  }
+} // }}}
 
 textarea {
   font-family: menlo, monaco, consolas, monospace;
   line-height: 1.1em;
-}
-
-textarea.form-body-height {
-  height: 300px;
 }
 
 input::-webkit-input-placeholder {
@@ -14,3 +133,16 @@ input::-webkit-input-placeholder {
 input:-moz-placeholder {
   color: #ccc;
 }
+
+@media (max-width: $screen-sm-max) { // {{{ less than tablet size
+
+  .content-main.on-edit {
+    .form-group.form-submit-group {
+      select.form-control {
+        display: inline-block;
+        width: auto;
+      }
+    }
+  }
+
+} // }}}

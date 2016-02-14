@@ -22,10 +22,14 @@ Crowi.linkPath = function(revisionPath) {
   if (!$title.get(0)) {
     return;
   }
+  var realPath = $title.text().trim();
+  if (realPath.substr(-1, 1) == '/') {
+    realPath = realPath.substr(0, realPath.length - 1);
+  }
 
   var path = '';
   var pathHtml = '';
-  var splittedPath = $title.html().split(/\//);
+  var splittedPath = realPath.split(/\//);
   splittedPath.shift();
   splittedPath.forEach(function(sub) {
     path += '/';
@@ -269,6 +273,13 @@ $(function() {
     return false;
   });
 
+  $('#create-portal-button').on('click', function(e) {
+    $('.content-main').addClass('on-edit');
+  });
+  $('#portal-form-close').on('click', function(e) {
+    $('.content-main').removeClass('on-edit');
+  });
+
 
   if (pageId) {
 
@@ -404,17 +415,14 @@ $(function() {
 
     $bookmarkButton.click(function() {
       var bookmarked = $bookmarkButton.data('bookmarked');
-      console.log('isBookmarked', bookmarked);
       if (!bookmarked) {
         $.post('/_api/bookmarks.add', {page_id: pageId}, function(res) {
-          console.log(res);
           if (res.ok && res.bookmark) {
             MarkBookmarked();
           }
         });
       } else {
         $.post('/_api/bookmarks.remove', {page_id: pageId}, function(res) {
-          console.log(res);
           if (res.ok) {
             MarkUnBookmarked();
           }

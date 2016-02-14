@@ -1,65 +1,143 @@
 {% extends 'layout/2column.html' %}
 
+{% block html_title %}{{ path|path2name }} · {{ path }}{% endblock %}
+
 {% block content_head %}
+
+{% block content_head_before %}
+{% endblock %}
+
   <header>
-  <h1 class="title" id="revision-path">{{ path }}</h1>
+  <h1 class="title" id="revision-path">
+    {{ path }}
+  </h1>
   </header>
 {% endblock %}
 
+{% block content_head_after %}
+{% endblock %}
+
 {% block content_main %}
-<div class="content-main">
+
+{% block content_main_before %}
+{% endblock %}
+
+<div class="page-list content-main {% if req.body.pageForm %}on-edit{% endif %}"
+  data-page-portal="{% if page %}{{ page.isPortal() }}1{% else %}0{% endif %}"
+  data-page-id="{% if page %}{{ page._id.toString() }}{% endif %}"
+  data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
+  data-page-revision-id="{% if revision %}{{ revision._id.toString() }}{% endif %}"
+  data-page-revision-created="{% if revision %}{{ revision.createdAt|datetz('U') }}{% endif %}"
+  >
+
+<div class="portal">
+{% if page %}
+  <div class="">
+    {{ page.revision.body }}
+  </div>
+{% else %}
+  <div class="portal-form-header">
+    Create Portal: <strong>{{ path }}</strong>
+    <p class="pull-right ">
+      <a href="#" id="portal-form-close"><i class="fa fa-times"></i></a>
+    </p>
+  </div>
+  <div class="portal-form">
+    <div class="edit-form">
+      {% include '_form.html' %}
+    </div>
+  </div>
+{% endif %}
+</div>
 
 <ul class="nav nav-tabs">
     <li class="active"><a href="#view-list" data-toggle="tab">リスト表示</a></li>
     <li><a href="#view-timeline" data-toggle="tab">タイムライン表示</a></li>
 </ul>
 
-<h2>ページ一覧</h2>
-  <div class="tab-content">
-    {# list view #}
-    <div class="active page-list wiki tab-pane fade in" id="view-list">
-      {% for page in pages %}
-        <a class="page-list-link" href="{{ page.path }}">{{ page.path }}</a>
+<div class="tab-content">
+  {% if pages.length == 0 %}
+  There are no pages under <strong>{{ path }}</strong>.
 
-        <span class="page-list-meta">
-          {% if page.commentCount > 0 %}
-            <i class="fa fa-comment"></i>{{ page.commentCount }}
-          {% endif  %}
+  <h3>Next Actions</h3>
 
-          {% if !page.isPublic() %}
-            <i class="fa fa-lock"></i>
-          {% endif %}
-        </span>
+  <ul>
+    <li>Create portal page?
+      <ul>
+        <li>Great! To create the portal of <strong>{{ path }}</strong>, click "Create Portal" button.</li>
+      </ul>
+    </li>
+    <li>Create the under page directly?
+      <ul>
+        <li>Nice. To create the page under <strong>{{ path }}</strong> directly, type the page name on your browser.</li>
+      </ul>
+    </li>
+  </ul>
+  {% endif  %}
 
-        <br />
-      {% endfor %}
+  {# list view #}
+  <div class="active tab-pane fade page-list-container in" id="view-list">
+    <ul class="page-list-ul">
+    {% for page in pages %}
+    <li class="page-list-li">
+      <img src="{{ page.revision.author|picture }}" class="picture picture-rounded">
 
-        <ul class="pagination">
-          {% if pager.prev != null %}
-            <li class="prev"><a href="{{ path }}?offset={{ pager.prev }}&limit={{ pager.limit }}"><i class="fa fa-arrow-left"></i> Prev</a></li>
-          {% endif %}
-          {# この条件は無いな.. #}
-          {% if pages.length > 0 %}
-            <li class="next"><a href="{{ path }}?offset={{ pager.next }}&limit={{ pager.limit }}">Next <i class="fa fa-arrow-right"></i></a></li>
-          {% endif %}
-        </ul>
-    </div>
+      <a class="page-list-link" href="{{ page.path }}"
+        data-path="{{ page.path }}"
+        data-short-path="{{ page.path|path2name }}">{{ page.path }}</a>
 
-    {# timeline view #}
-    <div class="tab-pane" id="view-timeline">
-      {% for page in pages %}
-      <div class="timeline-body" id="id-{{ page.id }}">
-        <h3 class="revision-path"><a href="{{ page.path }}">{{ page.path }}</a></h3>
-        <div class="revision-body wiki"></div>
-        <script type="text/template">{{ page.revision.body }}</script>
-      </div>
-      <hr>
-      {% endfor %}
-    </div>
+      <span class="page-list-meta">
+        {% if page.isPortal() %}
+          <span class="label label-info">PORTAL</span>
+        {% endif  %}
+
+
+        {% if page.commentCount > 0 %}
+          <i class="fa fa-comment"></i>{{ page.commentCount }}
+        {% endif  %}
+
+        {% if !page.isPublic() %}
+          <i class="fa fa-lock"></i>
+        {% endif %}
+      </span>
+    </li>
+    {% endfor %}
+    </ul>
+
+      <ul class="pagination">
+        {% if pager.prev != null %}
+          <li class="prev"><a href="{{ path }}?offset={{ pager.prev }}&limit={{ pager.limit }}"><i class="fa fa-arrow-left"></i> Prev</a></li>
+        {% endif %}
+        {# この条件は無いな.. #}
+        {% if pages.length > 0 %}
+          <li class="next"><a href="{{ path }}?offset={{ pager.next }}&limit={{ pager.limit }}">Next <i class="fa fa-arrow-right"></i></a></li>
+        {% endif %}
+      </ul>
   </div>
+
+  {# timeline view #}
+  <div class="tab-pane" id="view-timeline">
+    {% for page in pages %}
+    <div class="timeline-body" id="id-{{ page.id }}">
+      <h3 class="revision-path"><a href="{{ page.path }}">{{ page.path }}</a></h3>
+      <div class="revision-body wiki"></div>
+      <script type="text/template">{{ page.revision.body }}</script>
+    </div>
+    <hr>
+    {% endfor %}
+  </div>
+</div>
 
   <script type="text/javascript">
     $(function(){
+        $('#view-list .page-list-link').each(function() {
+          var $link = $(this);
+          var text = $link.text();
+          var path = $link.data('path');
+          var shortPath = $link.data('short-path');
+
+          $link.html(path.replace(shortPath, '<strong>' + shortPath + '</strong>'));
+        });
         $('#view-timeline .timeline-body').each(function()
         {
           var id = $(this).attr('id');
@@ -75,6 +153,8 @@
 
 </div> {# /.content-main #}
 
+{% block content_main_after %}
+{% endblock %}
 
 {% endblock %}
 
@@ -85,3 +165,19 @@
 </footer>
 {% endblock %}
 
+
+{% block side_header %}
+
+{% if not page %}
+<div class="portal-side">
+  <div class="portal-form-button">
+    <button class="btn btn-primary" id="create-portal-button">Create Portal</button>
+    <p class="help-block"><a href="#" data-target="#help-portal" data-toggle="modal"><i class="fa fa-question-circle"></i> What is Portal?</a></p>
+  </div>
+
+</div>
+{% endif %}
+
+{% endblock %} {# side_header #}
+
+{% include 'modal/widget_what_is_portal.html' %}

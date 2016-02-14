@@ -29,7 +29,7 @@
 {% block content_main_before %}
 {% endblock %}
 
-<div id="content-main" class="content-main {% if not page %}on-edit{% endif %}"
+<div id="content-main" class="content-main {% if not page or req.body.pageForm %}on-edit{% endif %}"
   data-page-id="{% if page %}{{ page._id.toString() }}{% endif %}"
   data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
   data-page-revision-id="{% if revision %}{{ revision._id.toString() }}{% endif %}"
@@ -38,7 +38,7 @@
 
   {% if not page %}
   <ul class="nav nav-tabs hidden-print">
-    <li><a>ページ作成: {{ path|path2name }}</a></li>
+    <li><a>Create: {{ path }}</a></li>
     <li class="dropdown pull-right">
       <a href="/"><i class="fa fa-times"></i> キャンセル</a>
     </li>
