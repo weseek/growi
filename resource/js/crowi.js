@@ -356,7 +356,7 @@ $(function() {
     $('#page-comment-form').on('submit', function() {
       $button = $('#commenf-form-button');
       $button.attr('disabled', 'disabled');
-      $.post('/_api/comments.post', $(this).serialize(), function(data) {
+      $.post('/_api/comments.add', $(this).serialize(), function(data) {
         $button.removeAttr('disabled');
         if (data.ok) {
           var comment = data.comment;

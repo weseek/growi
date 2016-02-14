@@ -12,7 +12,6 @@
   <form action="{{ path }}/edit" id="page-form" method="post" class="col-md-6 {% if isUploadable() %}uploadable{% endif %}">
     <textarea name="pageForm[body]" class="form-control form-body-height" id="form-body">{% if pageForm.body %}{{ pageForm.body }}{% elseif not revision.body %}# {{ path|path2name }}{% else %}{{ revision.body }}{% endif %}</textarea>
 
-    <input type="hidden" name="pageForm[format]" value="markdown" id="form-format">
     <input type="hidden" name="pageForm[currentRevision]" value="{{ pageForm.currentRevision|default(revision._id.toString()) }}">
     <div class="form-submit-group form-group form-inline">
       {#<button class="btn btn-default">
