@@ -104,9 +104,8 @@
   }
 }
 .crowi.main-container .main .page-list.content-main.on-edit { // {{{ Edit Form of Page List
-  .nav {
-    display: none;
-  }
+  .wiki,
+  .nav,
   .tab-content {
     display: none;
   }

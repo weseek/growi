@@ -23,7 +23,7 @@
 {% endblock %}
 
 <div class="page-list content-main {% if req.body.pageForm %}on-edit{% endif %}"
-  data-page-portal="{% if page %}{{ page.isPortal() }}1{% else %}0{% endif %}"
+  data-page-portal="{% if page and page.isPortal() %}1{% else %}0{% endif %}"
   data-page-id="{% if page %}{{ page._id.toString() }}{% endif %}"
   data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
   data-page-revision-id="{% if revision %}{{ revision._id.toString() }}{% endif %}"
@@ -32,10 +32,18 @@
 
 <div class="portal">
 {% if page %}
-  <div class="">
-    {{ page.revision.body }}
+  <div class="wiki" id="revision-body-content">
   </div>
-{% else %}
+  <script type="text/template" id="raw-text-original">{{ page.revision.body }}</script>
+  <script type="text/javascript">
+    $(function(){
+        var renderer = new Crowi.renderer($('#raw-text-original').html());
+        renderer.render();
+        Crowi.correctHeaders('#revision-body-content');
+    });
+  </script>
+{% endif %}
+
   <div class="portal-form-header">
     Create Portal: <strong>{{ path }}</strong>
     <p class="pull-right ">
@@ -47,7 +55,6 @@
       {% include '_form.html' %}
     </div>
   </div>
-{% endif %}
 </div>
 
 <ul class="nav nav-tabs">
