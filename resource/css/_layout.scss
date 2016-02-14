@@ -18,6 +18,10 @@
 
       .navbar-brand {
         font-weight: bold;
+        img {
+          display: inline;
+          margin-right: 8px;
+        }
       }
       .navbar-collapse {
         background: $crowiHeaderBackground;
