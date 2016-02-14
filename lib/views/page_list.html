@@ -7,11 +7,24 @@
 {% block content_head_before %}
 {% endblock %}
 
-  <header>
-  <h1 class="title" id="revision-path">
-    {{ path }}
-  </h1>
+<div class="header-wrap">
+  <header class="portal-header {% if page %}has-page{% endif %}">
+    {% if page %}
+      <a href="#" title="Bookmark" class="bookmark-link" id="bookmark-button" data-bookmarked="0"><i class="fa fa-star-o"></i></a>
+    {% endif %}
+
+    <h1 class="title" id="revision-path">
+      {{ path }}
+    </h1>
+
+    {% if page %}
+      <p class="portal-label">
+      PORTAL
+      </p>
+    {% endif %}
   </header>
+</div>
+
 {% endblock %}
 
 {% block content_head_after %}
@@ -23,6 +36,7 @@
 {% endblock %}
 
 <div class="page-list content-main {% if req.body.pageForm %}on-edit{% endif %}"
+  id="content-main"
   data-page-portal="{% if page and page.isPortal() %}1{% else %}0{% endif %}"
   data-page-id="{% if page %}{{ page._id.toString() }}{% endif %}"
   data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
@@ -183,6 +197,8 @@
   </div>
 
 </div>
+{% else %}
+  {% include 'widget/page_side_header.html' %}
 {% endif %}
 
 {% endblock %} {# side_header #}

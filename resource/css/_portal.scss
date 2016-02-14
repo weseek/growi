@@ -1,6 +1,25 @@
+.portal-header {
+  &.has-page {
+    border-bottom: solid 3px #5bc0de; // TODO: is this color defined as variable?
+  }
+
+  .portal-label {
+    background: #5bc0de;
+    float: right;
+    font-weight: bold;
+    padding: 2px 4px;
+    font-size: .8em;
+    color: #fff;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+  }
+}
+
 .portal {
-  margin-bottom: 16px;
-  padding-bottom: 16px;
+  .wiki {
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+  }
 
   .portal-form {
 
