@@ -220,6 +220,7 @@ $(function() {
   var revisionId = $('#content-main').data('page-revision-id');
   var revisionCreatedAt = $('#content-main').data('page-revision-created');
   var currentUser = $('#content-main').data('current-user');
+  var isSeen = $('#content-main').data('page-is-seen');
 
   Crowi.linkPath();
 
@@ -447,6 +448,16 @@ $(function() {
         .addClass('fa-star-o');
       $bookmarkButton.data('bookmarked', 0);
     }
+  }
+
+  if (!isSeen) {
+    $.post('/_api/pages.seen', {page_id: pageId}, function(res) {
+      // ignore unless response has error
+      console.log(pageId, res);
+      if (res.ok && res.seenUser) {
+        $('#content-main').data('page-is-seen', 1);
+      }
+    });
   }
 });
 
