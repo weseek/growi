@@ -11,17 +11,16 @@
   <header class="portal-header {% if page %}has-page{% endif %}">
     {% if page %}
       <a href="#" title="Bookmark" class="bookmark-link" id="bookmark-button" data-bookmarked="0"><i class="fa fa-star-o"></i></a>
+      {% if page.isPortal() %}
+        <p class="portal-label">
+        PORTAL
+        </p>
+      {% endif %}
     {% endif %}
 
     <h1 class="title" id="revision-path">
       {{ path }}
     </h1>
-
-    {% if page %}
-      <p class="portal-label">
-      PORTAL
-      </p>
-    {% endif %}
   </header>
 </div>
 
