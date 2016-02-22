@@ -11,7 +11,7 @@
       </p>
       <p class="created-at">
         作成日: {{ page.createdAt|datetz('Y/m/d H:i:s') }}<br>
-        最終更新: {{ page.updatedAt|datetz('Y/m/d H:i:s') }} <a href="/user/{{ author.username }}"><img src="{{ author|picture }}" class="picture picture-xs picture-rounded" alt="{{ author.name }}"></a>
+        最終更新: {{ page.updatedAt|datetz('Y/m/d H:i:s') }} <a href="/user/{{ page.revision.author.username }}"><img src="{{ page.revision.author|picture }}" class="picture picture-xs picture-rounded" alt="{{ page.revision.author.name }}"></a>
       </p>
     </div>
   </div>
