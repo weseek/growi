@@ -23,20 +23,18 @@
       </dt>
       <dd>
         <p class="liker-count">
-        {{ page.liker.length }}
-          {% if page.isLiked(user) %}
-            <button data-liked="1" class="btn btn-default btn-sm active" id="pageLikeButton"><i class="fa fa-thumbs-up"></i> いいね！</button>
-          {% else %}
-            <button data-liked="0" class="btn btn-default btn-sm" id="pageLikeButton"><i class="fa fa-thumbs-o-up"></i> いいね！</button>
-          {% endif %}
+        <span id="like-count">{{ page.liker.length }}</span>
+        <button data-liked="{% if page.isLiked(user) %}1{% else %}0{% endif %}" class="btn btn-default btn-sm" id="like-button"><i class="fa fa-thumbs-o-up"></i> いいね！</button>
         </p>
         <p class="liker-list">
+        {#
           {% for liker in page.liker %}
             <a href="{{ user_page_root(liker) }}" title="{{ liker.name }}"><img alt="{{ liker.name }}" src="{{ liker|picture }}" class="picture picture-xs picture-rounded"></a>
           {% endfor %}
           {% if page.liker.length > 10 %}
             (...)
           {% endif %}
+          #}
         </p>
       </dd>
 
@@ -46,24 +44,17 @@
           {{ page.seenUsers.length }}
         </p>
         <p class="seen-user-list">
+        {#
           {% for seenUser in page.seenUsers %}
           <a href="{{ user_page_root(seenUser) }}" title="{{ seenUser.name }}"><img alt="{{ seenUser.name }}" src="{{ seenUser|picture }}" class="picture picture-xs picture-rounded"></a>
           {% endfor %}
           {% if page.seenUsers.length > 10 %}
             (...)
           {% endif %}
+        #}
         </p>
       </dd>
     </dl>
   </div>
-<script>
-$(function() {
-  $('#pageLikeButton').click(function() {
-    var pageId = {{page._id|json|safe}};
-    $.post('/_api/page/{{ page._id.toString() }}/like', function(data) {
-    });
-  });
-});
-</script>
 </div>
 {% endif %} {# if page }}} #}

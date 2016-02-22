@@ -448,16 +448,52 @@ $(function() {
         .addClass('fa-star-o');
       $bookmarkButton.data('bookmarked', 0);
     }
-  }
 
-  if (!isSeen) {
-    $.post('/_api/pages.seen', {page_id: pageId}, function(res) {
-      // ignore unless response has error
-      console.log(pageId, res);
-      if (res.ok && res.seenUser) {
-        $('#content-main').data('page-is-seen', 1);
+    // Like
+    var $likeButton = $('#like-button');
+    var $likeCount = $('#like-count');
+    $likeButton.click(function() {
+      var liked = $likeButton.data('liked');
+      if (!liked) {
+        $.post('/_api/likes.add', {page_id: pageId}, function(res) {
+          if (res.ok) {
+            MarkLiked();
+          }
+        });
+      } else {
+        $.post('/_api/likes.remove', {page_id: pageId}, function(res) {
+          if (res.ok) {
+            MarkUnLiked();
+          }
+        });
       }
+
+      return false;
     });
+
+    function MarkLiked()
+    {
+      $likeButton.addClass('active');
+      $likeButton.data('liked', 1);
+      $likeCount.text(parseInt($likeCount.text()) + 1);
+    }
+
+    function MarkUnLiked()
+    {
+      $likeButton.removeClass('active');
+      $likeButton.data('liked', 0);
+      $likeCount.text(parseInt($likeCount.text()) - 1);
+    }
+
+    if (!isSeen) {
+      $.post('/_api/pages.seen', {page_id: pageId}, function(res) {
+        // ignore unless response has error
+        console.log(pageId, res);
+        if (res.ok && res.seenUser) {
+          $('#content-main').data('page-is-seen', 1);
+        }
+      });
+    }
   }
 });
 
