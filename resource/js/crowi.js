@@ -227,6 +227,14 @@ $(function() {
   $('[data-toggle="tooltip"]').tooltip();
   $('[data-tooltip-stay]').tooltip('show');
 
+  $('a[data-toggle="tab"][href="#edit-form"]').on('show.bs.tab', function() {
+    $('.content-main').addClass('on-edit');
+  });
+  $('a[data-toggle="tab"][href="#edit-form"]').on('hide.bs.tab', function() {
+    $('.content-main').removeClass('on-edit');
+  });
+
+
   $('.copy-link').on('click', function () {
     $(this).select();
   });

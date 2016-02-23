@@ -160,13 +160,6 @@
         Crowi.correctHeaders('#revision-body-content');
         Crowi.revisionToc('#revision-body-content', '#revision-toc');
 
-        $('a[data-toggle="tab"][href="#edit-form"]').on('show.bs.tab', function() {
-          $('.content-main').addClass('on-edit');
-        });
-        $('a[data-toggle="tab"][href="#edit-form"]').on('hide.bs.tab', function() {
-          $('.content-main').removeClass('on-edit');
-        });
-
         $('#edit-form').submit(function()
         {
           //console.log('save');

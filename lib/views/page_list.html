@@ -11,11 +11,6 @@
   <header class="portal-header {% if page %}has-page{% endif %}">
     {% if page %}
       <a href="#" title="Bookmark" class="bookmark-link" id="bookmark-button" data-bookmarked="0"><i class="fa fa-star-o"></i></a>
-      {% if page.isPortal() %}
-        <p class="portal-label">
-        PORTAL
-        </p>
-      {% endif %}
     {% endif %}
 
     <h1 class="title" id="revision-path">
@@ -46,16 +41,47 @@
 
 <div class="portal">
 {% if page %}
-  <div class="wiki" id="revision-body-content">
+
+  <ul class="nav nav-tabs hidden-print">
+    <li class=" {% if not req.body.pageForm %}active{% endif %}">
+      {% if page.isPortal() %}
+      <a href="#revision-body" data-toggle="tab">
+        <i class="fa fa-magic"></i>
+        <span class="portal-label">PORTAL</span>
+      </a>
+      {% endif %}
+    </li>
+    <li {% if req.body.pageForm %}class="active"{% endif %}><a href="#edit-form" data-toggle="tab"><i class="fa fa-pencil-square-o"></i> 編集</a></li>
+
+
+    {#
+    <li class="dropdown pull-right">
+      <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+        <i class="fa fa-wrench"></i> <span class="caret"></span>
+      </a>
+      <ul class="dropdown-menu">
+       <li><a href="#" data-target="#" data-toggle="modal"><i class="fa fa-share"></i> 移動</a></li>
+      </ul>
+    </li>
+    #}
+  </ul>
+
+  <div class="tab-content wiki-content">
+    <div class="wiki tab-pane" id="revision-body-content">
+    </div>
+    <script type="text/template" id="raw-text-original">{{ page.revision.body }}</script>
+    <script type="text/javascript">
+      $(function(){
+          var renderer = new Crowi.renderer($('#raw-text-original').html());
+          renderer.render();
+          Crowi.correctHeaders('#revision-body-content');
+      });
+    </script>
+
+
+    // .. edit ............. html 構造の整理が必要
   </div>
-  <script type="text/template" id="raw-text-original">{{ page.revision.body }}</script>
-  <script type="text/javascript">
-    $(function(){
-        var renderer = new Crowi.renderer($('#raw-text-original').html());
-        renderer.render();
-        Crowi.correctHeaders('#revision-body-content');
-    });
-  </script>
+
 {% endif %}
 
   <div class="portal-form-header">
