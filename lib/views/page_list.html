@@ -40,8 +40,8 @@
   >
 
 <div class="portal">
-{% if page %}
 
+  {% if page %} {# portal tab #}
   <ul class="nav nav-tabs hidden-print">
     <li class=" {% if not req.body.pageForm %}active{% endif %}">
       {% if page.isPortal() %}
@@ -66,9 +66,13 @@
     #}
   </ul>
 
+  {% endif %} {# portal tab #}
+
+  {% if page %} {# portal tab #}
   <div class="tab-content wiki-content">
     <div class="wiki tab-pane" id="revision-body-content">
     </div>
+
     <script type="text/template" id="raw-text-original">{{ page.revision.body }}</script>
     <script type="text/javascript">
       $(function(){
@@ -77,24 +81,21 @@
           Crowi.correctHeaders('#revision-body-content');
       });
     </script>
-
-
-    // .. edit ............. html 構造の整理が必要
-  </div>
-
-{% endif %}
-
-  <div class="portal-form-header">
-    Create Portal: <strong>{{ path }}</strong>
-    <p class="pull-right ">
-      <a href="#" id="portal-form-close"><i class="fa fa-times"></i></a>
-    </p>
-  </div>
-  <div class="portal-form">
-    <div class="edit-form">
-      {% include '_form.html' %}
+    <div class="tab-pane portal-edit" id="edit-form">
+      <div class="portal-form-header">
+        Create Portal: <strong>{{ path }}</strong>
+        <p class="pull-right ">
+          <a href="#" id="portal-form-close"><i class="fa fa-times"></i></a>
+        </p>
+      </div>
+      <div class="portal-form">
+        <div class="edit-form">
+          {% include '_form.html' %}
+        </div>
+      </div>
     </div>
   </div>
+  {% endif %} {# portal tab #}
 </div>
 
 <ul class="nav nav-tabs">
