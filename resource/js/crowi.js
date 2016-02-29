@@ -380,11 +380,10 @@ $(function() {
     var $pageAttachmentList = $('.page-attachments ul');
     $.get('/_api/attachment/page/' + pageId, function(res) {
       var attachments = res.data.attachments;
-      var urlBase = res.data.fileBaseUrl;
       if (attachments.length > 0) {
         $.each(attachments, function(i, file) {
           $pageAttachmentList.append(
-          '<li><a href="' + urlBase + file.filePath + '">' + (file.originalName || file.fileName) + '</a> <span class="label label-default">' + file.fileFormat + '</span></li>'
+          '<li><a href="' + file.fileUrl + '">' + (file.originalName || file.fileName) + '</a> <span class="label label-default">' + file.fileFormat + '</span></li>'
           );
         })
       } else {
