@@ -283,10 +283,15 @@ $(function() {
   });
 
   $('#create-portal-button').on('click', function(e) {
+    $('.portal').removeClass('hide');
     $('.content-main').addClass('on-edit');
+    $('.portal a[data-toggle="tab"][href="#edit-form"]').tab('show');
   });
   $('#portal-form-close').on('click', function(e) {
+    $('.portal').addClass('hide');
     $('.content-main').removeClass('on-edit');
+
+    return false;
   });
 
 

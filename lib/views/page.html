@@ -114,11 +114,6 @@
       <div class="wiki {{ revision.format }}" id="revision-body-content"></div>
     </div>
 
-    {# raw text #}
-    <div class="tab-pane" id="raw-text">
-      <pre id="">{{ revision.body }}</pre>
-    </div>
-
     {# edit form #}
     <div class="edit-form tab-pane {% if req.body.pageForm %}active{% endif %}" id="edit-form">
       {% include '_form.html' %}

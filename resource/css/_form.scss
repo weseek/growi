@@ -12,7 +12,6 @@
     height: 40px;
   }
 
-  .portal-form,
   .tab-content {
     top: 48px;
     bottom: 58px;
@@ -98,15 +97,16 @@
 } // }}}
 
 .crowi.main-container .main .page-list.content-main { // {{{ Edit Form of Page List
-  .portal-form-header,
-  .portal-form {
+  .close-button {
     display: none;
   }
 }
 .crowi.main-container .main .page-list.content-main.on-edit { // {{{ Edit Form of Page List
-  .wiki,
-  .nav,
-  .tab-content {
+  .close-button {
+    display: block;
+  }
+
+  .page-list-container {
     display: none;
   }
   .portal-form-header,
@@ -115,8 +115,8 @@
   }
 
   .portal-form-header {
-    height: 48px;
-    padding: 14px;
+    height: 16px;
+    padding: 8px;
     border-bottom: solid 1px #ccc;
   }
 } // }}}

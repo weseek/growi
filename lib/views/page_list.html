@@ -11,8 +11,8 @@
   <header class="portal-header {% if page %}has-page{% endif %}">
     {% if page %}
       <a href="#" title="Bookmark" class="bookmark-link" id="bookmark-button" data-bookmarked="0"><i class="fa fa-star-o"></i></a>
-    {% endif %}
 
+    {% endif %}
     <h1 class="title" id="revision-path">
       {{ path }}
     </h1>
@@ -39,38 +39,33 @@
   data-page-is-seen="{% if page and page.isSeenUser(user) %}1{% else %}0{% endif %}"
   >
 
-<div class="portal">
+<div class="portal {% if not page %}hide{% endif %}">
 
-  {% if page %} {# portal tab #}
   <ul class="nav nav-tabs hidden-print">
+   {# portal tab #}
     <li class=" {% if not req.body.pageForm %}active{% endif %}">
-      {% if page.isPortal() %}
-      <a href="#revision-body" data-toggle="tab">
+      {% if page %}
+      <a href="#revision-body-content" data-toggle="tab">
         <i class="fa fa-magic"></i>
-        <span class="portal-label">PORTAL</span>
+        PORTAL
       </a>
+      {% else %}
+      <a>Create Portal: {{ path }}</a>
       {% endif %}
     </li>
     <li {% if req.body.pageForm %}class="active"{% endif %}><a href="#edit-form" data-toggle="tab"><i class="fa fa-pencil-square-o"></i> 編集</a></li>
 
-
-    {#
-    <li class="dropdown pull-right">
-      <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-        <i class="fa fa-wrench"></i> <span class="caret"></span>
+    {% if not page %}
+    <li class="pull-right close-button">
+      <a href="#" id="portal-form-close">
+        <i class="fa fa-times"></i>
       </a>
-      <ul class="dropdown-menu">
-       <li><a href="#" data-target="#" data-toggle="modal"><i class="fa fa-share"></i> 移動</a></li>
-      </ul>
     </li>
-    #}
+    {% endif %}
   </ul>
 
-  {% endif %} {# portal tab #}
-
-  {% if page %} {# portal tab #}
-  <div class="tab-content wiki-content">
-    <div class="wiki tab-pane" id="revision-body-content">
+  <div class="tab-content">
+    <div class="wiki tab-pane {% if not req.body.pageForm %}active{% endif %}" id="revision-body-content">
     </div>
 
     <script type="text/template" id="raw-text-original">{{ page.revision.body }}</script>
@@ -81,98 +76,89 @@
           Crowi.correctHeaders('#revision-body-content');
       });
     </script>
-    <div class="tab-pane portal-edit" id="edit-form">
-      <div class="portal-form-header">
-        Create Portal: <strong>{{ path }}</strong>
-        <p class="pull-right ">
-          <a href="#" id="portal-form-close"><i class="fa fa-times"></i></a>
-        </p>
-      </div>
-      <div class="portal-form">
-        <div class="edit-form">
-          {% include '_form.html' %}
-        </div>
-      </div>
+    <div class="tab-pane edit-form portal-form {% if req.body.pageForm %}active{% endif %}" id="edit-form">
+      {% include '_form.html' with {forceGrant: 1} %}
     </div>
   </div>
-  {% endif %} {# portal tab #}
-</div>
+</div> {# /.portal #}
 
-<ul class="nav nav-tabs">
-    <li class="active"><a href="#view-list" data-toggle="tab">リスト表示</a></li>
-    <li><a href="#view-timeline" data-toggle="tab">タイムライン表示</a></li>
-</ul>
-
-<div class="tab-content">
-  {% if pages.length == 0 %}
-  There are no pages under <strong>{{ path }}</strong>.
-
-  <h3>Next Actions</h3>
-
-  <ul>
-    <li>Create portal page?
-      <ul>
-        <li>Great! To create the portal of <strong>{{ path }}</strong>, click "Create Portal" button.</li>
-      </ul>
-    </li>
-    <li>Create the under page directly?
-      <ul>
-        <li>Nice. To create the page under <strong>{{ path }}</strong> directly, type the page name on your browser.</li>
-      </ul>
-    </li>
+<div class="page-list-container">
+  <ul class="nav nav-tabs">
+      <li class="active"><a href="#view-list" data-toggle="tab">リスト表示</a></li>
+      <li><a href="#view-timeline" data-toggle="tab">タイムライン表示</a></li>
   </ul>
-  {% endif  %}
 
-  {# list view #}
-  <div class="active tab-pane fade page-list-container in" id="view-list">
-    <ul class="page-list-ul">
-    {% for page in pages %}
-    <li class="page-list-li">
-      <img src="{{ page.revision.author|picture }}" class="picture picture-rounded">
+  <div class="tab-content">
+    {% if pages.length == 0 %}
+    There are no pages under <strong>{{ path }}</strong>.
 
-      <a class="page-list-link" href="{{ page.path }}"
-        data-path="{{ page.path }}"
-        data-short-path="{{ page.path|path2name }}">{{ page.path }}</a>
+    <h3>Next Actions</h3>
 
-      <span class="page-list-meta">
-        {% if page.isPortal() %}
-          <span class="label label-info">PORTAL</span>
-        {% endif  %}
-
-
-        {% if page.commentCount > 0 %}
-          <i class="fa fa-comment"></i>{{ page.commentCount }}
-        {% endif  %}
-
-        {% if !page.isPublic() %}
-          <i class="fa fa-lock"></i>
-        {% endif %}
-      </span>
-    </li>
-    {% endfor %}
+    <ul>
+      <li>Create portal page?
+        <ul>
+          <li>Great! To create the portal of <strong>{{ path }}</strong>, click "Create Portal" button.</li>
+        </ul>
+      </li>
+      <li>Create the under page directly?
+        <ul>
+          <li>Nice. To create the page under <strong>{{ path }}</strong> directly, type the page name on your browser.</li>
+        </ul>
+      </li>
     </ul>
+    {% endif  %}
 
-      <ul class="pagination">
-        {% if pager.prev != null %}
-          <li class="prev"><a href="{{ path }}?offset={{ pager.prev }}&limit={{ pager.limit }}"><i class="fa fa-arrow-left"></i> Prev</a></li>
-        {% endif %}
-        {# この条件は無いな.. #}
-        {% if pages.length > 0 %}
-          <li class="next"><a href="{{ path }}?offset={{ pager.next }}&limit={{ pager.limit }}">Next <i class="fa fa-arrow-right"></i></a></li>
-        {% endif %}
+    {# list view #}
+    <div class="active tab-pane fade page-list-container in" id="view-list">
+      <ul class="page-list-ul">
+      {% for page in pages %}
+      <li class="page-list-li">
+        <img src="{{ page.revision.author|picture }}" class="picture picture-rounded">
+
+        <a class="page-list-link" href="{{ page.path }}"
+          data-path="{{ page.path }}"
+          data-short-path="{{ page.path|path2name }}">{{ page.path }}</a>
+
+        <span class="page-list-meta">
+          {% if page.isPortal() %}
+            <span class="label label-info">PORTAL</span>
+          {% endif  %}
+
+
+          {% if page.commentCount > 0 %}
+            <i class="fa fa-comment"></i>{{ page.commentCount }}
+          {% endif  %}
+
+          {% if !page.isPublic() %}
+            <i class="fa fa-lock"></i>
+          {% endif %}
+        </span>
+      </li>
+      {% endfor %}
       </ul>
-  </div>
 
-  {# timeline view #}
-  <div class="tab-pane" id="view-timeline">
-    {% for page in pages %}
-    <div class="timeline-body" id="id-{{ page.id }}">
-      <h3 class="revision-path"><a href="{{ page.path }}">{{ page.path }}</a></h3>
-      <div class="revision-body wiki"></div>
-      <script type="text/template">{{ page.revision.body }}</script>
+        <ul class="pagination">
+          {% if pager.prev != null %}
+            <li class="prev"><a href="{{ path }}?offset={{ pager.prev }}&limit={{ pager.limit }}"><i class="fa fa-arrow-left"></i> Prev</a></li>
+          {% endif %}
+          {# この条件は無いな.. #}
+          {% if pages.length > 0 %}
+            <li class="next"><a href="{{ path }}?offset={{ pager.next }}&limit={{ pager.limit }}">Next <i class="fa fa-arrow-right"></i></a></li>
+          {% endif %}
+        </ul>
     </div>
-    <hr>
-    {% endfor %}
+
+    {# timeline view #}
+    <div class="tab-pane" id="view-timeline">
+      {% for page in pages %}
+      <div class="timeline-body" id="id-{{ page.id }}">
+        <h3 class="revision-path"><a href="{{ page.path }}">{{ page.path }}</a></h3>
+        <div class="revision-body wiki"></div>
+        <script type="text/template">{{ page.revision.body }}</script>
+      </div>
+      <hr>
+      {% endfor %}
+    </div>
   </div>
 </div>
 
