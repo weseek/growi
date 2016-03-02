@@ -138,11 +138,10 @@
       </ul>
 
         <ul class="pagination">
-          {% if pager.prev != null %}
+          {% if pager.prev !== null %}
             <li class="prev"><a href="{{ path }}?offset={{ pager.prev }}&limit={{ pager.limit }}"><i class="fa fa-arrow-left"></i> Prev</a></li>
           {% endif %}
-          {# この条件は無いな.. #}
-          {% if pages.length > 0 %}
+          {% if pager.next %}
             <li class="next"><a href="{{ path }}?offset={{ pager.next }}&limit={{ pager.limit }}">Next <i class="fa fa-arrow-right"></i></a></li>
           {% endif %}
         </ul>
