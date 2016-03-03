@@ -4,4 +4,14 @@
 {% endblock %}
 
 {% block content_main_before %}
+<div class="user-page-content row">
+  <div class="user-bookmark-list col-md-6">
+    <h2><i class="fa fa-star"></i> Bookmarks</h2>
+    {% include 'widget/page_list.html' with { pages: bookmarkList } %}
+  </div>
+  <div class="user-created-list col-md-6">
+    <i class="fa fa-star"></i> Created
+    {% include 'widget/page_list.html' with { pages: createdList } %}
+  </div>
+</div>
 {% endblock %}
