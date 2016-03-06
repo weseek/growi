@@ -44,13 +44,19 @@
 
       <div class="tab-pane user-bookmark-list page-list active" id="user-bookmark-list">
         <div class="page-list-container">
-        {% include 'widget/page_list.html' with { pages: bookmarkList } %}
+          {% if bookmarkList.length == 0 %}
+          No bookmarks yet.
+          {% endif %}
+          {% include 'widget/page_list.html' with { pages: bookmarkList } %}
         </div>
       </div>
 
       <div class="tab-pane user-created-list page-list" id="user-created-list">
         <div class="page-list-container">
-        {% include 'widget/page_list.html' with { pages: createdList } %}
+          {% if createdList.length == 0 %}
+          No created pages yet.
+          {% endif %}
+          {% include 'widget/page_list.html' with { pages: createdList } %}
         </div>
       </div>
     </div>
