@@ -47,6 +47,8 @@ models.Page   = require(MODEL_DIR + '/page.js')(crowi);
 models.User   = require(MODEL_DIR + '/user.js')(crowi);
 models.Config = require(MODEL_DIR + '/config.js')(crowi);
 
+crowi.models = models;
+
 module.exports = {
   models: models,
   mongoose: mongoose,
