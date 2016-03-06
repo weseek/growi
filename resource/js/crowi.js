@@ -483,6 +483,23 @@ $(function() {
 
       return false;
     });
+    var $likerList = $("#liker-list");
+    var likers = $likerList.data('likers');
+    if (likers && likers.length > 0) {
+      // FIXME: user data cache
+      $.get('/_api/users.list', {user_ids: likers}, function(res) {
+        // ignore unless response has error
+        if (res.ok) {
+          AddToLikers(res.users);
+        }
+      });
+    }
+
+    function AddToLikers (users) {
+      $.each(users, function(i, user) {
+        $likerList.append(CreateUserLinkWithPicture(user));
+      });
+    }
 
     function MarkLiked()
     {
@@ -501,10 +518,41 @@ $(function() {
     if (!isSeen) {
       $.post('/_api/pages.seen', {page_id: pageId}, function(res) {
         // ignore unless response has error
-        console.log(pageId, res);
         if (res.ok && res.seenUser) {
           $('#content-main').data('page-is-seen', 1);
         }
+      });
+    }
+
+    var $seenUserList = $("#seen-user-list");
+    var seenUsers = $seenUserList.data('seen-users');
+    if (seenUsers && seenUsers.length > 0) {
+      // FIXME: user data cache
+      $.get('/_api/users.list', {user_ids: seenUsers}, function(res) {
+        // ignore unless response has error
+        if (res.ok) {
+          AddToSeenUser(res.users);
+        }
+      });
+    }
+
+    function CreateUserLinkWithPicture (user) {
+      var $userHtml = $('<a>');
+      $userHtml.data('user-id', user._id);
+      $userHtml.attr('href', '/user/' + user.username);
+      $userHtml.attr('title', user.name);
+
+      var $userPicture = $('<img class="picture picture-xs picture-rounded">');
+      $userPicture.attr('alt', user.name);
+      $userPicture.attr('src',  Crowi.userPicture(user));
+
+      $userHtml.append($userPicture);
+      return $userHtml;
+    }
+
+    function AddToSeenUser (users) {
+      $.each(users, function(i, user) {
+        $seenUserList.append(CreateUserLinkWithPicture(user));
       });
     }
   }

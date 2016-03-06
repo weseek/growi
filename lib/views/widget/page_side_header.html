@@ -24,17 +24,12 @@
       <dd>
         <p class="liker-count">
         <span id="like-count">{{ page.liker.length }}</span>
-        <button data-liked="{% if page.isLiked(user) %}1{% else %}0{% endif %}" class="btn btn-default btn-sm" id="like-button"><i class="fa fa-thumbs-o-up"></i> いいね！</button>
+        <button
+          data-liked="{% if page.isLiked(user) %}1{% else %}0{% endif %}"
+          class="btn btn-default btn-sm {% if page.isLiked(user) %}active{% endif %}"
+          id="like-button"><i class="fa fa-thumbs-o-up"></i> いいね！</button>
         </p>
-        <p class="liker-list">
-        {#
-          {% for liker in page.liker %}
-            <a href="{{ user_page_root(liker) }}" title="{{ liker.name }}"><img alt="{{ liker.name }}" src="{{ liker|picture }}" class="picture picture-xs picture-rounded"></a>
-          {% endfor %}
-          {% if page.liker.length > 10 %}
-            (...)
-          {% endif %}
-          #}
+        <p id="liker-list" class="liker-list" data-likers="{{ page.liker|default([])|join(',') }}">
         </p>
       </dd>
 
@@ -43,7 +38,7 @@
         <p class="seen-user-count">
           {{ page.seenUsers.length }}
         </p>
-        <p class="seen-user-list">
+        <p id="seen-user-list" class="seen-user-list" data-seen-users="{{ page.seenUsers|default([])|join(',') }}">
         {#
           {% for seenUser in page.seenUsers %}
           <a href="{{ user_page_root(seenUser) }}" title="{{ seenUser.name }}"><img alt="{{ seenUser.name }}" src="{{ seenUser|picture }}" class="picture picture-xs picture-rounded"></a>
