@@ -46,8 +46,12 @@
         <div class="page-list-container">
           {% if bookmarkList.length == 0 %}
           No bookmarks yet.
+          {% else %}
+            {% include 'widget/page_list.html' with { pages: bookmarkList } %}
+            <div class="user-page-list-additional-link">
+              <a href="/user/{{ pageUser.username }}/bookmarks"><i class="fa fa-angle-double-right"></i> See bookmarks</a>
+            </div>
           {% endif %}
-          {% include 'widget/page_list.html' with { pages: bookmarkList } %}
         </div>
       </div>
 
@@ -55,8 +59,12 @@
         <div class="page-list-container">
           {% if createdList.length == 0 %}
           No created pages yet.
+          {% else %}
+            {% include 'widget/page_list.html' with { pages: createdList } %}
+            <div class="user-page-list-additional-link">
+              <a href="/user/{{ pageUser.username }}/recent-created"><i class="fa fa-angle-double-right"></i> See created pages</a>
+            </div>
           {% endif %}
-          {% include 'widget/page_list.html' with { pages: createdList } %}
         </div>
       </div>
     </div>
