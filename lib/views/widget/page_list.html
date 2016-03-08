@@ -1,5 +1,12 @@
 <ul class="page-list-ul">
-{% for page in pages %}
+{% for data in pages %}
+
+{% if pagePropertyName %}
+  {% set page = data[pagePropertyName] %}
+{% else %}
+  {% set page = data %}
+{% endif %}
+
 <li class="page-list-li">
   <img src="{{ page.revision.author|picture }}" class="picture picture-rounded">
 

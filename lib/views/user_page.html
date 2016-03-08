@@ -47,7 +47,7 @@
           {% if bookmarkList.length == 0 %}
           No bookmarks yet.
           {% else %}
-            {% include 'widget/page_list.html' with { pages: bookmarkList } %}
+            {% include 'widget/page_list.html' with { pages: bookmarkList, pagePropertyName: 'page' } %}
             <div class="user-page-list-additional-link">
               <a href="/user/{{ pageUser.username }}/bookmarks"><i class="fa fa-angle-double-right"></i> See bookmarks</a>
             </div>
