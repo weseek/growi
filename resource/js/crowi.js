@@ -301,7 +301,7 @@ $(function() {
     var path = $link.data('path');
     var shortPath = $link.data('short-path');
 
-    $link.html(path.replace(new RegExp(shortPath + '$'), '<strong>' + shortPath + '</strong>'));
+    $link.html(path.replace(new RegExp(shortPath + '/?$'), '<strong>' + shortPath + '</strong>'));
   });
 
 
