@@ -17,7 +17,7 @@
 {% block content_main %}
 <div id="content-main" class="content-main page-list" >
   <div class="page-list-container" id="bookamrk-list">
-    {% include '../widget/page_list.html' with { pages: bookmarks, pagePropertyName: 'page' } %}
+    {% include '../widget/page_list.html' with { pages: bookmarks, pagePropertyName: 'page', pager: pager } %}
   </div>
 </div>
 {% endblock %}
