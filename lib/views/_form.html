@@ -22,7 +22,7 @@
 
       <div class="pull-right form-inline">
         {% if forceGrant %}
-        <input type="hidden" name="pageForm[grant]" value="forceGrant">
+        <input type="hidden" name="pageForm[grant]" value="{{ forceGrant }}">
         {% else %}
         <select name="pageForm[grant]" class="form-control">
           {% for grantId, grantLabel in consts.pageGrants %}
