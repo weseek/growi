@@ -8,41 +8,46 @@
       </div>
 
       <div class="modal-body">
-        <h4>基本的な機能</h4>
+        <h4>Portal とは</h4>
         <br>
         <ul>
-          <li>表示される画面には、「一覧ページ」と「ページ」の2種類があります</li>
-          <li>スラッシュ <code>/</code> で終わるページは、その階層の一覧ページとなります。</li>
-          <li>ページでの変更はすべて記録されています。サイドバーには、変更の履歴が一覧となっていて、クリックするとそのページの過去の状態を見ることができます。</li>
+          <li>すべての、スラッシュ <code>/</code> で終わるページは、その階層の一覧ページとなります。</li>
+          <li>Portal 機能を使うと、その一覧ページに対して、任意の編集コンテンツを配置することができるようになります (つまり、一般的なページと同様に、編集したコンテンツを作成でき、その内容は常にページ一覧の上部に表示されるようになります)</li>
         </ul>
         <br>
 
-        <h4>編集のコツ</h4>
+        <hr>
+
+        <h4>想定される使われ方</h4>
         <br>
         <p>
-        文章の <strong>構造</strong> を意識しましょう。本を書くように、内容と文脈を整理してセクション・サブセクション...と構造的に書くと、わかりやすく他人に伝わりやすいページがになります。
+        例えば、以下のようなページの階層があったとします。
         </p>
-        <br>
+        <ul>
+          <li><code>/projects</code>
+            <ul>
+              <li><code>/projects/homepage-renewal</code>
+                <ul>
+                  <li><code>/projects/homepage-renewal/...</code></li>
+                </ul>
+              </li>
+              <li><code>/projects/...</code></li>
+            </ul>
+          </li>
+        </ul>
 
-        <h4>記法</h4>
-        <br>
-        <div class="wiki">
-        <pre># セクション</pre>
-        <h1>セクション</h1>
-        </div>
-        <hr>
+        <p>
+        こういったケースでは、<code>/projects/homepage-renewal</code> には homepage-renewal プロジェクトについてのイントロや各ページへのリンク、関係者の紹介など、homepage-renewal に関する情報を掲載しておきたいと思うはずです。
+        </p>
+        <p>
+        Poral機能を使うと、こうしたときに、<code>/projects/homepage-renewal/</code> この <strong>"一覧ページ" を、ページ化することができ、そこに、通常のページと同じように Markdown で編集したコンテンツを配置することができるようになります</strong>。
+        </p>
 
-        <div class="wiki">
-        <pre>## サブセクション</pre>
-        <h2>サブセクション</h2>
-        </div>
-        <hr>
+        <p>
+        まさにそのプロジェクトのポータルページを用意したい場合などに活用してください。
+        </p>
 
-        <div class="wiki">
-        <pre>### サブサブセクション</pre>
-        <h3>サブサブセクション</h3>
         </div>
-        <hr>
 
       </div>
 
