@@ -129,14 +129,6 @@
 
   <script type="text/javascript">
     $(function(){
-        $('#view-list .page-list-link').each(function() {
-          var $link = $(this);
-          var text = $link.text();
-          var path = $link.data('path');
-          var shortPath = $link.data('short-path');
-
-          $link.html(path.replace(shortPath, '<strong>' + shortPath + '</strong>'));
-        });
         $('#view-timeline .timeline-body').each(function()
         {
           var id = $(this).attr('id');

@@ -294,6 +294,16 @@ $(function() {
     return false;
   });
 
+  // list-link
+  $('.page-list-link').each(function() {
+    var $link = $(this);
+    var text = $link.text();
+    var path = $link.data('path');
+    var shortPath = $link.data('short-path');
+
+    $link.html(path.replace(shortPath, '<strong>' + shortPath + '</strong>'));
+  });
+
 
   if (pageId) {
 
