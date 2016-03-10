@@ -19,7 +19,10 @@
             </div>
             <div class="form-group">
               <label for="newPageName">移動先のページ名</label><br>
-              <input type="text" class="form-control" name="newPageName" id="newPageName" value="{{ page.path }}">
+              <div class="input-group">
+                <span class="input-group-addon">{{ config.crowi['app:url'] }}</span>
+                <input type="text" class="form-control" name="newPageName" id="newPageName" value="{{ page.path }}">
+              </div>
             </div>
             <div class="checkbox">
                <label>

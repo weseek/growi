@@ -4,7 +4,10 @@
 <nav class="crowi-header navbar navbar-default" role="navigation">
   <!-- Brand and toggle get grouped for better mobile display -->
   <div class="navbar-header">
-    <a class="navbar-brand" href="/">{% block title %}{{ config.crowi['app:title'] }}{% endblock %}</a>
+    <a class="navbar-brand" href="/">
+      <img alt="Crowi" src="/logo/32x32.png" width="16">
+      {% block title %}{{ config.crowi['app:title'] }}{% endblock %}
+    </a>
   </div>
 
   <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbarCollapse">
@@ -124,7 +127,7 @@
   <div id="footer-container" class="footer">
     <footer class="">
     <p>
-    <a href="" data-target="#helpModal" data-toggle="modal"><i class="fa fa-question-circle"> ヘルプ</i></a>
+    <a href="" data-target="#help-modal" data-toggle="modal"><i class="fa fa-question-circle"> ヘルプ</i></a>
     &copy; {{ now|date('Y') }} {{ config.crowi['app:title'] }} <img src="/logo/100x11_g.png" alt="powered by Crowi"> </p>
     </footer>
   </div>
@@ -141,7 +144,7 @@
 {% endblock %} {# layout_sidebar #}
 
 {% block layout_main %}
-<div id="main" class="main col-md-9 {% if page %}{{ css.grant(page) }}{% endif %}">
+<div id="main" class="main col-md-9 {% if page %}{{ css.grant(page) }}{% endif %} {% block main_css_class %}{% endblock %}">
   {% if page && page.grant != 1 %}
   <p class="page-grant">
     <i class="fa fa-lock"></i> {{ consts.pageGrants[page.grant] }} (このページの閲覧は制限されています)
@@ -149,10 +152,6 @@
   {% endif %}
   <article>
   {% block content_head %}
-    <header>
-    <h2>-</h2>
-    <p>-</p>
-    </header>
   {% endblock %}
 
   {% block content_main %}
@@ -160,10 +159,6 @@
   {% endblock content_main %}
 
   {% block content_footer %}
-    <footer>
-    <h3>-</h3>
-    <p>-</p>
-    </footer>
   {% endblock %}
   </article>
 </div>
