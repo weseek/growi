@@ -27,6 +27,10 @@ Install dependencies and build CSS and JavaScript:
 
 More info are [here](https://github.com/crowi/crowi/wiki/Install-and-Configuration).
 
+### WARNING
+
+Don't use `master` branch because it is unstable but use released tag version expect when you want to contribute the project.
+
 
 Dependencies
 -------------
@@ -34,7 +38,7 @@ Dependencies
 * Node.js (4.2.x)
 * MongoDB
 * Redis (optional)
-* Amazon S3
+* Amazon S3 (optional)
 * Facebook Application (optional)
 * Google Project (optional)
 
