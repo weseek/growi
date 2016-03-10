@@ -21,12 +21,12 @@
               <label for="newPageName">移動先のページ名</label><br>
               <div class="input-group">
                 <span class="input-group-addon">{{ config.crowi['app:url'] }}</span>
-                <input type="text" class="form-control" name="newPageName" id="newPageName" value="{{ page.path }}">
+                <input type="text" class="form-control" name="new_path" id="newPageName" value="{{ page.path }}">
               </div>
             </div>
             <div class="checkbox">
                <label>
-                 <input name="createRedirectPage" value="1"  type="checkbox"> リダイレクトページを作成
+                 <input name="create_redirect" value="1"  type="checkbox"> リダイレクトページを作成
                </label>
                <p class="help-block">チェックを入れると、<code>{{ page.path }}</code>にアクセスされた際に自動的に新しいページにジャンプします。</p>
             </div>
@@ -40,8 +40,10 @@
         </div>
         <div class="modal-footer">
           <p><small class="pull-left" id="newPageNameCheck"></small></p>
-          <input type="hidden" name="previousRevision" value="{{ page.revision._id.toString() }}">
-          <input type="submit" class="btn btn-primary" value="実行">
+          <input type="hidden" name="path" value="{{ page.path }}">
+          <input type="hidden" name="page_id" value="{{ page._id.toString() }}">
+          <input type="hidden" name="revision_id" value="{{ page.revision._id.toString() }}">
+          <input type="submit" class="btn btn-primary" value="Rename!">
         </div>
 
       </form>
