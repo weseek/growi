@@ -43,9 +43,12 @@ after('Close database connection', function (done) {
 });
 
 
-models.Page   = require(MODEL_DIR + '/page.js')(crowi);
-models.User   = require(MODEL_DIR + '/user.js')(crowi);
-models.Config = require(MODEL_DIR + '/config.js')(crowi);
+models.Page     = require(MODEL_DIR + '/page.js')(crowi);
+models.User     = require(MODEL_DIR + '/user.js')(crowi);
+models.Config   = require(MODEL_DIR + '/config.js')(crowi);
+models.Revision = require(MODEL_DIR + '/revision.js')(crowi);
+
+crowi.models = models;
 
 module.exports = {
   models: models,

@@ -22,10 +22,14 @@ Crowi.linkPath = function(revisionPath) {
   if (!$title.get(0)) {
     return;
   }
+  var realPath = $title.text().trim();
+  if (realPath.substr(-1, 1) == '/') {
+    realPath = realPath.substr(0, realPath.length - 1);
+  }
 
   var path = '';
   var pathHtml = '';
-  var splittedPath = $title.html().split(/\//);
+  var splittedPath = realPath.split(/\//);
   splittedPath.shift();
   splittedPath.forEach(function(sub) {
     path += '/';
@@ -216,11 +220,20 @@ $(function() {
   var revisionId = $('#content-main').data('page-revision-id');
   var revisionCreatedAt = $('#content-main').data('page-revision-created');
   var currentUser = $('#content-main').data('current-user');
+  var isSeen = $('#content-main').data('page-is-seen');
 
   Crowi.linkPath();
 
   $('[data-toggle="tooltip"]').tooltip();
   $('[data-tooltip-stay]').tooltip('show');
+
+  $('a[data-toggle="tab"][href="#edit-form"]').on('show.bs.tab', function() {
+    $('.content-main').addClass('on-edit');
+  });
+  $('a[data-toggle="tab"][href="#edit-form"]').on('hide.bs.tab', function() {
+    $('.content-main').removeClass('on-edit');
+  });
+
 
   $('.copy-link').on('click', function () {
     $(this).select();
@@ -267,6 +280,28 @@ $(function() {
     });
 
     return false;
+  });
+
+  $('#create-portal-button').on('click', function(e) {
+    $('.portal').removeClass('hide');
+    $('.content-main').addClass('on-edit');
+    $('.portal a[data-toggle="tab"][href="#edit-form"]').tab('show');
+  });
+  $('#portal-form-close').on('click', function(e) {
+    $('.portal').addClass('hide');
+    $('.content-main').removeClass('on-edit');
+
+    return false;
+  });
+
+  // list-link
+  $('.page-list-link').each(function() {
+    var $link = $(this);
+    var text = $link.text();
+    var path = $link.data('path');
+    var shortPath = $link.data('short-path');
+
+    $link.html(path.replace(new RegExp(shortPath + '(/)?$'), '<strong>' + shortPath + '$1</strong>'));
   });
 
 
@@ -356,7 +391,7 @@ $(function() {
     $('#page-comment-form').on('submit', function() {
       $button = $('#commenf-form-button');
       $button.attr('disabled', 'disabled');
-      $.post('/_api/comments.post', $(this).serialize(), function(data) {
+      $.post('/_api/comments.add', $(this).serialize(), function(data) {
         $button.removeAttr('disabled');
         if (data.ok) {
           var comment = data.comment;
@@ -391,6 +426,145 @@ $(function() {
         $('.page-attachments').remove();
       }
     });
+
+    // bookmark
+    var $bookmarkButton = $('#bookmark-button');
+    $.get('/_api/bookmarks.get', {page_id: pageId}, function(res) {
+      if (res.ok) {
+        if (res.bookmark) {
+          MarkBookmarked();
+        }
+      }
+    });
+
+    $bookmarkButton.click(function() {
+      var bookmarked = $bookmarkButton.data('bookmarked');
+      if (!bookmarked) {
+        $.post('/_api/bookmarks.add', {page_id: pageId}, function(res) {
+          if (res.ok && res.bookmark) {
+            MarkBookmarked();
+          }
+        });
+      } else {
+        $.post('/_api/bookmarks.remove', {page_id: pageId}, function(res) {
+          if (res.ok) {
+            MarkUnBookmarked();
+          }
+        });
+      }
+
+      return false;
+    });
+
+    function MarkBookmarked()
+    {
+      $('i', $bookmarkButton)
+        .removeClass('fa-star-o')
+        .addClass('fa-star');
+      $bookmarkButton.data('bookmarked', 1);
+    }
+
+    function MarkUnBookmarked()
+    {
+      $('i', $bookmarkButton)
+        .removeClass('fa-star')
+        .addClass('fa-star-o');
+      $bookmarkButton.data('bookmarked', 0);
+    }
+
+    // Like
+    var $likeButton = $('#like-button');
+    var $likeCount = $('#like-count');
+    $likeButton.click(function() {
+      var liked = $likeButton.data('liked');
+      if (!liked) {
+        $.post('/_api/likes.add', {page_id: pageId}, function(res) {
+          if (res.ok) {
+            MarkLiked();
+          }
+        });
+      } else {
+        $.post('/_api/likes.remove', {page_id: pageId}, function(res) {
+          if (res.ok) {
+            MarkUnLiked();
+          }
+        });
+      }
+
+      return false;
+    });
+    var $likerList = $("#liker-list");
+    var likers = $likerList.data('likers');
+    if (likers && likers.length > 0) {
+      // FIXME: user data cache
+      $.get('/_api/users.list', {user_ids: likers}, function(res) {
+        // ignore unless response has error
+        if (res.ok) {
+          AddToLikers(res.users);
+        }
+      });
+    }
+
+    function AddToLikers (users) {
+      $.each(users, function(i, user) {
+        $likerList.append(CreateUserLinkWithPicture(user));
+      });
+    }
+
+    function MarkLiked()
+    {
+      $likeButton.addClass('active');
+      $likeButton.data('liked', 1);
+      $likeCount.text(parseInt($likeCount.text()) + 1);
+    }
+
+    function MarkUnLiked()
+    {
+      $likeButton.removeClass('active');
+      $likeButton.data('liked', 0);
+      $likeCount.text(parseInt($likeCount.text()) - 1);
+    }
+
+    if (!isSeen) {
+      $.post('/_api/pages.seen', {page_id: pageId}, function(res) {
+        // ignore unless response has error
+        if (res.ok && res.seenUser) {
+          $('#content-main').data('page-is-seen', 1);
+        }
+      });
+    }
+
+    var $seenUserList = $("#seen-user-list");
+    var seenUsers = $seenUserList.data('seen-users');
+    if (seenUsers && seenUsers.length > 0) {
+      // FIXME: user data cache
+      $.get('/_api/users.list', {user_ids: seenUsers}, function(res) {
+        // ignore unless response has error
+        if (res.ok) {
+          AddToSeenUser(res.users);
+        }
+      });
+    }
+
+    function CreateUserLinkWithPicture (user) {
+      var $userHtml = $('<a>');
+      $userHtml.data('user-id', user._id);
+      $userHtml.attr('href', '/user/' + user.username);
+      $userHtml.attr('title', user.name);
+
+      var $userPicture = $('<img class="picture picture-xs picture-rounded">');
+      $userPicture.attr('alt', user.name);
+      $userPicture.attr('src',  Crowi.userPicture(user));
+
+      $userHtml.append($userPicture);
+      return $userHtml;
+    }
+
+    function AddToSeenUser (users) {
+      $.each(users, function(i, user) {
+        $seenUserList.append(CreateUserLinkWithPicture(user));
+      });
+    }
   }
 });
 

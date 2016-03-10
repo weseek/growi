@@ -1,0 +1,55 @@
+{% if page %} {# {{{ if page #}
+<div class="page-meta">
+  <div class="row">
+    {# default(author) としているのは、v1.1.1 以前に page.creator データが入ってないから。暫定として最新更新ユーザーを表示しちゃう。 #}
+    <div class="col-md-3 creator-picture">
+      <img src="{{ page.creator|default(author)|picture }}" class="picture picture-lg picture-rounded"><br>
+    </div>
+    <div class="col-md-9">
+      <p class="creator">
+        {{ page.creator.name|default(author.name) }}
+      </p>
+      <p class="created-at">
+        作成日: {{ page.createdAt|datetz('Y/m/d H:i:s') }}<br>
+        最終更新: {{ page.updatedAt|datetz('Y/m/d H:i:s') }} <a href="/user/{{ page.revision.author.username }}"><img src="{{ page.revision.author|picture }}" class="picture picture-xs picture-rounded" alt="{{ page.revision.author.name }}"></a>
+      </p>
+    </div>
+  </div>
+
+  <div class="like-box">
+    <dl class="dl-horizontal">
+      <dt>
+        <i class="fa fa-thumbs-o-up"></i> いいね!
+      </dt>
+      <dd>
+        <p class="liker-count">
+        <span id="like-count">{{ page.liker.length }}</span>
+        <button
+          data-liked="{% if page.isLiked(user) %}1{% else %}0{% endif %}"
+          class="btn btn-default btn-sm {% if page.isLiked(user) %}active{% endif %}"
+          id="like-button"><i class="fa fa-thumbs-o-up"></i> いいね！</button>
+        </p>
+        <p id="liker-list" class="liker-list" data-likers="{{ page.liker|default([])|join(',') }}">
+        </p>
+      </dd>
+
+      <dt><i class="fa fa-eye"></i> 見た人</dt>
+      <dd>
+        <p class="seen-user-count">
+          {{ page.seenUsers.length }}
+        </p>
+        <p id="seen-user-list" class="seen-user-list" data-seen-users="{{ page.seenUsers|default([])|join(',') }}">
+        {#
+          {% for seenUser in page.seenUsers %}
+          <a href="{{ user_page_root(seenUser) }}" title="{{ seenUser.name }}"><img alt="{{ seenUser.name }}" src="{{ seenUser|picture }}" class="picture picture-xs picture-rounded"></a>
+          {% endfor %}
+          {% if page.seenUsers.length > 10 %}
+            (...)
+          {% endif %}
+        #}
+        </p>
+      </dd>
+    </dl>
+  </div>
+</div>
+{% endif %} {# if page }}} #}
