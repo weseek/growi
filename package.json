@@ -34,7 +34,7 @@
     "bluebird": "~3.0.5",
     "body-parser": "~1.14.1",
     "bootstrap-sass": "~3.3.6",
-    "botkit": "0.0.8",
+    "botkit": "git+https://github.com/sotarok/botkit.git#fix-undefined-function-callapiwithouttoken",
     "browserify": "~12.0.1",
     "cli": "~0.6.0",
     "connect-flash": "~0.1.1",
