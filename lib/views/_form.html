@@ -9,7 +9,7 @@
 </div>
 {% endif %}
 <div id="form-box" class="row">
-  <form action="/_/edit" id="page-form" method="post" class="col-md-6 {% if isUploadable() %}uploadable{% endif %}">
+  <form action="/_/edit" id="page-form" method="post" class="col-md-6 {% if isUploadable() %}uploadable{% endif %} page-form">
     <textarea name="pageForm[body]" class="form-control" id="form-body">{% if pageForm.body %}{{ pageForm.body }}{% elseif not page.revision.body %}# {{ path|path2name }}{% else %}{{ page.revision.body }}{% endif %}</textarea>
 
     <input type="hidden" name="pageForm[path]" value="{{ path }}">
@@ -20,7 +20,17 @@
         ファイルを追加 ...
       </button>#}
 
-      <div class="pull-right form-inline">
+      <div class="pull-right form-inline page-form-setting">
+        <span class="input-group extended-setting">
+          <span class="input-group-addon">
+            <label>
+              <i class="fa fa-slack"></i>
+              <input class="" type="checkbox" name="pageForm[notify][slack][on]" value="1">
+            </label>
+          </span>
+          <input class="form-control" type="text" name="pageForm[notify][slack][channel]" value="{{ page.extented.slack|default('') }}" placeholder="#slack-channel-name">
+        </span>
+
         {% if forceGrant %}
         <input type="hidden" name="pageForm[grant]" value="{{ forceGrant }}">
         {% else %}
