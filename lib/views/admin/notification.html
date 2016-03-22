@@ -84,6 +84,58 @@
         </a>
         {% endif %}
       </div>
+
+      <hr>
+
+      <h4>Default Notification Settings for Patterns</h4>
+
+      <table class="table table-bordered">
+        <thead>
+          <th>Pattern</th>
+          <th>Channel</th>
+          <th>Operation</th>
+        </thead>
+        <tbody>
+          <form id="slackNotificationForm">
+          <tr>
+            <td>
+              <input class="form-control" type="text" name="pathPattern" value="" placeholder="e.g. /projects/xxx/MTG/*">
+              <p class="help-block">
+                Path name of wiki. Pattern expression with <code>*</code> can be used.
+              </p>
+            </td>
+            <td>
+              <input class="form-control form-inline" type="text" name="channel" value="" placeholder="e.g. project-xxx">
+              <p class="help-block">
+                Slack channel name. Without <code>#</code>.
+              </p>
+            </td>
+            <td>
+              <input type="submit" value="Add" class="btn btn-primary">
+            </td>
+          </tr>
+          </form>
+
+          {% for notif in notifs %}
+          <tr>
+            <td>
+              {{ notif.pattern }}
+            </td>
+            <td>
+              {{ notif.channel }}
+            </td>
+            <td>
+              <form>
+                <input type="hidden" name="id" value="">
+                <input type="submit" value="Delete" class="btn btn-default">
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+
       {% endif %}
 
       {% if not hasSlackConfig %}
