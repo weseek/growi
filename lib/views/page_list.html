@@ -14,7 +14,7 @@
 
     {% endif %}
     <h1 class="title" id="revision-path">
-      {{ path }}
+      {{ path|insertSpaceToEachSlashes }}
     </h1>
   </header>
 </div>
@@ -67,8 +67,7 @@
   </ul>
 
   <div class="tab-content">
-    <div class="wiki tab-pane {% if not req.body.pageForm %}active{% endif %}" id="revision-body-content">
-    </div>
+    <div class="wiki tab-pane {% if not req.body.pageForm %}active{% endif %}" id="revision-body-content">{{ page.revision.body|nl2br|safe }}</div>
 
     <script type="text/template" id="raw-text-original">{{ page.revision.body }}</script>
     <script type="text/javascript">
