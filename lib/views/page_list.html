@@ -160,7 +160,7 @@
 
 {% block side_header %}
 
-{% if not page %}
+{% if not page and not isUserPageList(path) %}
 <div class="portal-side">
   <div class="portal-form-button">
     <button class="btn btn-primary" id="create-portal-button">Create Portal</button>
