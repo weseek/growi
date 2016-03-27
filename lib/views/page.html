@@ -216,6 +216,13 @@
 <div id="notifPageEdited" class="fk-hide fk-notif fk-notif-danger"><i class="fa fa-exclamation-triangle"></i> <span class="edited-user"></span>さんがこのページを編集しました。 <a href="javascript:location.reload();"><i class="fa fa-angle-double-right"></i> 最新版を読み込む</a></div>
 <div id="notifPageEditing" class="fk-hide fk-notif fk-notif-warning"><i class="fa fa-exclamation-triangle"></i> 他の人がこのページの編集を開始しました。</div>
 
+<div id="portal-warning-for-page" class="portal-warning-for-page alert alert-danger alert-dismissible" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+
+  <strong>Warning!</strong> /user/hoge のページが存在します。このページをポータル化するには、/ に移動し、「ページを移動」させてください。<br>
+/ とは別に ポータル を作成する場合、このまま編集を続けて作成してください。
+</div>
+
 <script>
   $(function() {
     var me = {{ user|json|safe }};

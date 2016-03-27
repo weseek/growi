@@ -287,6 +287,16 @@ $(function() {
     $('.portal').removeClass('hide');
     $('.content-main').addClass('on-edit');
     $('.portal a[data-toggle="tab"][href="#edit-form"]').tab('show');
+
+    var path = $('.content-main').data('path');
+    if (path != '/' && $('.content-main').data('page-id') == '') {
+      var upperPage = path.substr(0, path.length - 1);
+      $.get('/_api/pages.get', {path: upperPage}, function(res) {
+        if (res.ok && res.page) {
+          $('#portal-warning-modal').modal('show');
+        }
+      });
+    }
   });
   $('#portal-form-close').on('click', function(e) {
     $('.portal').addClass('hide');

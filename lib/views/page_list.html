@@ -31,6 +31,8 @@
 
 <div class="page-list content-main {% if req.body.pageForm %}on-edit{% endif %}"
   id="content-main"
+  data-path="{{ path }}"
+  data-path-shortname="{{ path|path2name }}"
   data-page-portal="{% if page and page.isPortal() %}1{% else %}0{% endif %}"
   data-page-id="{% if page %}{{ page._id.toString() }}{% endif %}"
   data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
@@ -174,3 +176,30 @@
 
 {% endblock %} {# side_header #}
 
+{% block body_end %}
+<div class="modal fade portal-warning-modal" id="portal-warning-modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">ポータルに関するヒント</h4>
+      </div>
+      <div class="modal-body alert alert-danger">
+
+        <strong>Warning!</strong><br>
+
+        <p>既に <strong><a href="{{ path|removeLastSlash }}">{{ path|removeLastSlash }}</a></strong> のページが存在します。</p>
+
+        <p>
+          <a href="{{ path|removeLastSlash }}">{{ path|removeLastSlash }}</a> をポータル化するには、
+          <a href="{{ path|removeLastSlash }}">{{ path|removeLastSlash }}</a> に移動し、「ページを移動」させてください。<br>
+          <a href="{{ path|removeLastSlash }}">{{ path|removeLastSlash }}</a> とは別に、このページ(<code>{{ path }}</code>)にポータルを作成する場合、このまま編集を続けて作成してください。
+        </p>
+
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+{% endblock %} {# body_end #}
