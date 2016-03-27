@@ -7,7 +7,7 @@
 {% if pageUser %}
 
 <div class="header-wrap">
-  <h1 class="title" id="revision-path">{{ path }}</h1>
+  <h1 class="title" id="revision-path">{{ path|insertSpaceToEachSlashes }}</h1>
   <div class="user-page-header">
   {% if page %}
     <a href="#" title="Bookmark" class="bookmark-link" id="bookmark-button" data-bookmarked="0"><i class="fa fa-star-o"></i></a>
