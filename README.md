@@ -61,6 +61,7 @@ $ PASSWORD_SEED=somesecretstring MONGO_URI=mongodb://username:password@localhost
 * `REDIS_URL`: URI to connect Redis (to session store). This parameter is also by `REDISTOGO_URL`.
 * `PASSWORD_SEED`: A password seed is used by password hash generator.
 * `SECRET_TOKEN`: A secret key for verifying the integrity of signed cookies.
+* `FILE_UPLOAD`: `aws` (default), `local`, `none`
 
 
 License
