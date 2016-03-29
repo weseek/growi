@@ -10,6 +10,7 @@ module.exports = function(crowi) {
     , config = crowi.getConfig()
     , lib = {}
     , getAwsConfig = function() {
+        var config = crowi.getConfig();
         return {
           accessKeyId: config.crowi['aws:accessKeyId'],
           secretAccessKey: config.crowi['aws:secretAccessKey'],
@@ -26,7 +27,7 @@ module.exports = function(crowi) {
   };
 
   lib.uploadFile = function(filePath, contentType, fileStream, options) {
-    var awsConfig = lib.getAwsConfig();
+    var awsConfig = getAwsConfig();
     if (!Config.isUploadable(config)) {
       return new Promise.reject(new Error('AWS is not configured.'));
     }
@@ -56,7 +57,7 @@ module.exports = function(crowi) {
   };
 
   lib.generateUrl = function(filePath) {
-    var awsConfig = lib.getAwsConfig()
+    var awsConfig = getAwsConfig()
       , url = 'https://' + awsConfig.bucket +'.s3.amazonaws.com/' + filePath;
 
     return url;
