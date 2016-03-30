@@ -19,10 +19,13 @@ Crowi.createErrorView = function(msg) {
 Crowi.linkPath = function(revisionPath) {
   var $revisionPath = revisionPath || '#revision-path';
   var $title = $($revisionPath);
-  if (!$title.get(0)) {
-    return;
+  var pathData = $('#content-main').data('path');
+
+  if (!pathData) {
+    return ;
   }
-  var realPath = $title.text().trim();
+
+  var realPath = pathData.trim();
   if (realPath.substr(-1, 1) == '/') {
     realPath = realPath.substr(0, realPath.length - 1);
   }
@@ -287,6 +290,16 @@ $(function() {
     $('.portal').removeClass('hide');
     $('.content-main').addClass('on-edit');
     $('.portal a[data-toggle="tab"][href="#edit-form"]').tab('show');
+
+    var path = $('.content-main').data('path');
+    if (path != '/' && $('.content-main').data('page-id') == '') {
+      var upperPage = path.substr(0, path.length - 1);
+      $.get('/_api/pages.get', {path: upperPage}, function(res) {
+        if (res.ok && res.page) {
+          $('#portal-warning-modal').modal('show');
+        }
+      });
+    }
   });
   $('#portal-form-close').on('click', function(e) {
     $('.portal').addClass('hide');
@@ -416,11 +429,10 @@ $(function() {
     var $pageAttachmentList = $('.page-attachments ul');
     $.get('/_api/attachment/page/' + pageId, function(res) {
       var attachments = res.data.attachments;
-      var urlBase = res.data.fileBaseUrl;
       if (attachments.length > 0) {
         $.each(attachments, function(i, file) {
           $pageAttachmentList.append(
-          '<li><a href="' + urlBase + file.filePath + '">' + (file.originalName || file.fileName) + '</a> <span class="label label-default">' + file.fileFormat + '</span></li>'
+          '<li><a href="' + file.fileUrl + '">' + (file.originalName || file.fileName) + '</a> <span class="label label-default">' + file.fileFormat + '</span></li>'
           );
         })
       } else {
@@ -537,7 +549,7 @@ $(function() {
 
     var $seenUserList = $("#seen-user-list");
     var seenUsers = $seenUserList.data('seen-users');
-    if (seenUsers && seenUsers.length > 0) {
+    if (seenUsers && seenUsers.length > 0 && seenUsers.length <= 10) {
       // FIXME: user data cache
       $.get('/_api/users.list', {user_ids: seenUsers}, function(res) {
         // ignore unless response has error

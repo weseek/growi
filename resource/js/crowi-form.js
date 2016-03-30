@@ -270,7 +270,7 @@ $(function() {
             pageId = page._id;
 
         $('#content-main').data('page-id', page._id);
-        $('#page-form [name="pageForm[currentRevision]"]').val(page.revision)
+        $('#page-form [name="pageForm[currentRevision]"]').val(page.revision._id)
 
         unbindInlineAttachment($inputForm);
 
