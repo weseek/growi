@@ -19,8 +19,13 @@ Crowi.createErrorView = function(msg) {
 Crowi.linkPath = function(revisionPath) {
   var $revisionPath = revisionPath || '#revision-path';
   var $title = $($revisionPath);
+  var pathData = $('#content-main').data('path');
 
-  var realPath = $('#content-main').data('path').trim();
+  if (!pathData) {
+    return ;
+  }
+
+  var realPath = pathData.trim();
   if (realPath.substr(-1, 1) == '/') {
     realPath = realPath.substr(0, realPath.length - 1);
   }
