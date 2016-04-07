@@ -212,6 +212,29 @@ $(function() {
     }
   });
 
+  var handlePasteEvent = function(event) {
+    var currentLine = getCurrentLine(event);
+    var $target = $(event.target);
+    var pasteText = event.clipboardData.getData('text');
+
+    var match = currentLine.text.match(/^(\s*(?:>|\-|\+|\*|\d+\.) (?:\[(?:x| )\] )?)/);
+    if (match) {
+      if (pasteText.match(/(?:\r\n|\r|\n)/)) {
+        pasteText = pasteText.replace(/(\r\n|\r|\n)/g, "$1" + match[1]);
+      }
+    }
+
+    $target.selection('insert', {text: pasteText, mode: 'after'});
+
+    var newPos = currentLine.end + pasteText.length;
+    $target.selection('setPos', {start: newPos, end: newPos});
+  };
+
+  document.getElementById('form-body').addEventListener('paste', function(event) {
+    event.preventDefault();
+    handlePasteEvent(event);
+  });
+
   var unbindInlineAttachment = function($form) {
     $form.unbind('.inlineattach');
   };
