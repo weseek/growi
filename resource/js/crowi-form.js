@@ -220,7 +220,7 @@ $(function() {
     var match = currentLine.text.match(/^(\s*(?:>|\-|\+|\*|\d+\.) (?:\[(?:x| )\] )?)/);
     if (match) {
       if (pasteText.match(/\n/)) {
-        pasteText = pasteText.replace(/(\n)/, "$1" + match[1]); // + ' ');
+        pasteText = pasteText.replace(/(\n)/g, "$1" + match[1]); // + ' ');
       }
     }
 
