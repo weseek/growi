@@ -219,8 +219,8 @@ $(function() {
 
     var match = currentLine.text.match(/^(\s*(?:>|\-|\+|\*|\d+\.) (?:\[(?:x| )\] )?)/);
     if (match) {
-      if (pasteText.match(/\n/)) {
-        pasteText = pasteText.replace(/(\n)/g, "$1" + match[1]); // + ' ');
+      if (pasteText.match(/(?:\r\n|\r|\n)/)) {
+        pasteText = pasteText.replace(/(\r\n|\r|\n)/g, "$1" + match[1]);
       }
     }
 
