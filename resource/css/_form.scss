@@ -1,4 +1,6 @@
 .crowi.main-container .main .content-main.on-edit { // {{{ Edit Form of Page
+  padding: 0;
+
   position: fixed;
   z-index: 1060;
   background: #fff;
@@ -97,6 +99,7 @@
 } // }}}
 
 .crowi.main-container .main .page-list.content-main { // {{{ Edit Form of Page List
+
   .close-button {
     display: none;
   }

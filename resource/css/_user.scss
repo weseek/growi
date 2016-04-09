@@ -1,9 +1,7 @@
 .crowi.main-container {
   .main.user-page { // {{{ .main of layout related
-    padding: 0;
 
     .header-wrap {
-      padding: 20px;
 
       h1 {
         margin: 0;
@@ -57,12 +55,6 @@
         padding: 16px 0 8px;
       }
 
-    }
-    .content-main {
-      padding: 20px;
-      &.on-edit {
-        padding: 0;
-      }
     }
   } // }}}
 }
