@@ -61,6 +61,18 @@
 
     } // }}}
 
+    .main {
+      padding: 0; // cancel bootstrap padding
+
+      .header-wrap {
+        padding: 16px 16px 0 16px;
+      }
+
+      .content-main {
+        padding: 16px;
+      }
+    }
+
     .layout-control { // {{{
       transition: .3s ease;
       -webkit-transition: .3s ease;
@@ -249,7 +261,6 @@
     .main {
       article header {
         border-bottom: solid 1px #666;
-        margin-bottom: 20px;
         h1 {
           font-size: 2em;
           color: #000;
