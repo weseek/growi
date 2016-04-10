@@ -41,7 +41,7 @@
   data-page-is-seen="{% if page and page.isSeenUser(user) %}1{% else %}0{% endif %}"
   >
 
-<div class="portal {% if not page %}hide{% endif %}">
+<div class="portal {% if not page or req.query.offset > 0 %}hide{% endif %}">
 
   <ul class="nav nav-tabs hidden-print">
    {# portal tab #}
