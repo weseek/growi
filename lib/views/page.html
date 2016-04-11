@@ -165,11 +165,11 @@
 
         //data-spy="affix" data-offset-top="80"
         var headerHeight = $('#page-header').outerHeight(true);
-        $('.header-wrap').css({height: headerHeight + 'px'});
+        $('.header-wrap').css({height: (headerHeight + 16) + 'px'});
         $('#page-header').affix({
           offset: {
             top: function() {
-              return headerHeight + 74; // (54 header + 20 padding-top)
+              return headerHeight + 86; // (54 header + 16 header padding-top + 16 content padding-top)
             }
           }
         });
