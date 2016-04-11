@@ -214,6 +214,10 @@ $(function() {
 
   var handlePasteEvent = function(event) {
     var currentLine = getCurrentLine(event);
+
+    if (!currentLine) {
+      return false;
+    }
     var $target = $(event.target);
     var pasteText = event.clipboardData.getData('text');
 
@@ -228,11 +232,14 @@ $(function() {
 
     var newPos = currentLine.end + pasteText.length;
     $target.selection('setPos', {start: newPos, end: newPos});
+
+    return true;
   };
 
   document.getElementById('form-body').addEventListener('paste', function(event) {
-    event.preventDefault();
-    handlePasteEvent(event);
+    if (handlePasteEvent(event)) {
+      event.preventDefault();
+    }
   });
 
   var unbindInlineAttachment = function($form) {
