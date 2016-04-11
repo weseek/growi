@@ -128,7 +128,7 @@ $(function() {
         var indent = listMarkMatch[1];
         var num = parseInt(listMarkMatch[2]);
         if (num !== 1) {
-          listMark = listMark.return(/\s*\d+/, indent + (num +1));
+          listMark = listMark.replace(/\s*\d+/, indent + (num +1));
         }
       }
       $target.selection('insert', {text: "\n" + listMark, mode: 'before'});
