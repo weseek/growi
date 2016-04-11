@@ -128,7 +128,7 @@ $(function() {
         var indent = listMarkMatch[1];
         var num = parseInt(listMarkMatch[2]);
         if (num !== 1) {
-          listMark = listMark.return(/\s*\d+/, indent + (num +1));
+          listMark = listMark.replace(/\s*\d+/, indent + (num +1));
         }
       }
       $target.selection('insert', {text: "\n" + listMark, mode: 'before'});
@@ -214,6 +214,10 @@ $(function() {
 
   var handlePasteEvent = function(event) {
     var currentLine = getCurrentLine(event);
+
+    if (!currentLine) {
+      return false;
+    }
     var $target = $(event.target);
     var pasteText = event.clipboardData.getData('text');
 
@@ -228,11 +232,14 @@ $(function() {
 
     var newPos = currentLine.end + pasteText.length;
     $target.selection('setPos', {start: newPos, end: newPos});
+
+    return true;
   };
 
   document.getElementById('form-body').addEventListener('paste', function(event) {
-    event.preventDefault();
-    handlePasteEvent(event);
+    if (handlePasteEvent(event)) {
+      event.preventDefault();
+    }
   });
 
   var unbindInlineAttachment = function($form) {
