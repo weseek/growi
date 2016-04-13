@@ -549,7 +549,8 @@ $(function() {
 
     var $seenUserList = $("#seen-user-list");
     var seenUsers = $seenUserList.data('seen-users');
-    if (seenUsers && seenUsers.length > 0 && seenUsers.length <= 10) {
+    var seenUsersArray = seenUsers.split(',');
+    if (seenUsers && seenUsersArray.length > 0 && seenUsersArray.length <= 10) {
       // FIXME: user data cache
       $.get('/_api/users.list', {user_ids: seenUsers}, function(res) {
         // ignore unless response has error
