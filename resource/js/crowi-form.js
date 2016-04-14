@@ -1,8 +1,41 @@
 $(function() {
-  // preview watch
+
+
   $('[data-toggle="popover"]').popover();
+
+  // preview watch
   var originalContent = $('#form-body').val();
   var prevContent = "";
+  var watchTimer = setInterval(function() {
+    var content = $('#form-body').val();
+    if (prevContent != content) {
+      var renderer = new Crowi.renderer($('#form-body').val(), $('#preview-body'));
+      renderer.render();
+
+      prevContent = content;
+    }
+  }, 500);
+
+  // edit detection
+  var isFormChanged = false;
+  $(window).on('beforeunload', function(e) {
+    if (isFormChanged) {
+      return '編集中の内容があります。内容を破棄してページを移動しますか?';
+    }
+  });
+  $('#form-body').on('keyup change', function(e) {
+    var content = $('#form-body').val();
+    if (originalContent != content) {
+      isFormChanged = true;
+    } else {
+      isFormChanged = false;
+    }
+  });
+  $('#page-form').on('submit', function(e) {
+    // avoid message
+    isFormChanged = false;
+  });
+
   var watchTimer = setInterval(function() {
     var content = $('#form-body').val();
     if (prevContent != content) {
