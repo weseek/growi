@@ -151,6 +151,21 @@
 
   </div>
   {% endif %}
+
+<div id="notifPageEdited" class="fk-notif fk-notif-danger"><i class="fa fa-exclamation-triangle"></i> <span class="edited-user"></span>さんがこのページを編集しました。 <a href="javascript:location.reload();"><i class="fa fa-angle-double-right"></i> 最新版を読み込む</a></div>
+<script>
+  $(function() {
+    var me = {{ user|json|safe }};
+    var socket = io();
+    socket.on('page edited', function (data) {
+      if (data.user._id != me._id
+        && data.page.path == {{ page.path|json|safe }}) {
+        $('#notifPageEdited').show();
+        $('#notifPageEdited .edited-user').html(data.user.name);
+      }
+    });
+  });
+</script>
 </div>
 
 {% block content_main_after %}
@@ -184,23 +199,6 @@
 {% endblock %}
 
 {% block footer %}
-<div id="notifPageEdited" class="fk-hide fk-notif fk-notif-danger"><i class="fa fa-exclamation-triangle"></i> <span class="edited-user"></span>さんがこのページを編集しました。 <a href="javascript:location.reload();"><i class="fa fa-angle-double-right"></i> 最新版を読み込む</a></div>
-<div id="notifPageEditing" class="fk-hide fk-notif fk-notif-warning"><i class="fa fa-exclamation-triangle"></i> 他の人がこのページの編集を開始しました。</div>
-
-
-<script>
-  $(function() {
-    var me = {{ user|json|safe }};
-    var socket = io();
-    socket.on('page edited', function (data) {
-      if (data.user._id != me._id
-        && data.page.path == {{ page.path|json|safe }}) {
-        $('#notifPageEdited').removeClass('fk-hide').css({bottom: 0});
-        $('#notifPageEdited .edited-user').html(data.user.name);
-      }
-    });
-  });
-</script>
 {% endblock %}
 
 {% block body_end %}
