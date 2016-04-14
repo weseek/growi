@@ -1,11 +1,13 @@
-{% extends '../layout/2column.html' %}
+{% extends '../layout/admin.html' %}
 
 {% block html_title %}通知設定 · {{ path }}{% endblock %}
 
 {% block content_head %}
-<header id="page-header">
-  <h1 class="title" id="">通知設定</h1>
-</header>
+<div class="header-wrap">
+  <header id="page-header">
+    <h1 class="title" id="">通知設定</h1>
+  </header>
+</div>
 {% endblock %}
 
 {% block content_main %}
@@ -95,7 +97,7 @@
           <th>Channel</th>
           <th>Operation</th>
         </thead>
-        <tbody>
+        <tbody class="admin-notif-list">
           <form id="slackNotificationForm">
           <tr>
             <td>
@@ -116,17 +118,17 @@
           </tr>
           </form>
 
-          {% for notif in notifs %}
-          <tr>
+          {% for notif in settings %}
+          <tr class="admin-notif-row" data-updatepost-id="{{ notif._id.toString() }}">
             <td>
-              {{ notif.pattern }}
+              {{ notif.pathPattern }}
             </td>
             <td>
               {{ notif.channel }}
             </td>
             <td>
-              <form>
-                <input type="hidden" name="id" value="">
+              <form class="admin-remove-updatepost">
+                <input type="hidden" name="id" value="{{ notif._id.toString() }}">
                 <input type="submit" value="Delete" class="btn btn-default">
               </form>
             </td>
@@ -171,9 +173,6 @@
 
 {% block content_footer %}
 {% endblock content_footer %}
-
-{% block footer %}
-{% endblock footer %}
 
 
 
