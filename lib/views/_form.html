@@ -28,7 +28,9 @@
               <input class="" type="checkbox" name="pageForm[notify][slack][on]" value="1">
             </label>
           </span>
-          <input class="form-control" type="text" name="pageForm[notify][slack][channel]" value="{{ page.extented.slack|default('') }}" placeholder="#slack-channel-name">
+          <input class="form-control" type="text" name="pageForm[notify][slack][channel]" value="{{ page.extented.slack|default('') }}" placeholder="slack-channel-name"
+            data-toggle="popover" title="Popover title" data-content="カンマ区切りで複数チャンネルに通知することができます。チャンネル名は保存され、次回以降デフォルトでチェックは外れた状態になっています。通知するにはチェックを入れてください。" data-trigger="focus" data-placement="top"
+          >
         </span>
 
         {% if forceGrant %}

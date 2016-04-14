@@ -1,5 +1,6 @@
 $(function() {
   // preview watch
+  $('[data-toggle="popover"]').popover();
   var originalContent = $('#form-body').val();
   var prevContent = "";
   var watchTimer = setInterval(function() {
