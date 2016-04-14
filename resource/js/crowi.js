@@ -19,8 +19,13 @@ Crowi.createErrorView = function(msg) {
 Crowi.linkPath = function(revisionPath) {
   var $revisionPath = revisionPath || '#revision-path';
   var $title = $($revisionPath);
+  var pathData = $('#content-main').data('path');
 
-  var realPath = $('#content-main').data('path').trim();
+  if (!pathData) {
+    return ;
+  }
+
+  var realPath = pathData.trim();
   if (realPath.substr(-1, 1) == '/') {
     realPath = realPath.substr(0, realPath.length - 1);
   }
@@ -316,6 +321,35 @@ $(function() {
 
   if (pageId) {
 
+    // if page exists
+    var $rawTextOriginal = $('#raw-text-original');
+    if ($rawTextOriginal.length > 0) {
+      var renderer = new Crowi.renderer($('#raw-text-original').html());
+      renderer.render();
+      Crowi.correctHeaders('#revision-body-content');
+      Crowi.revisionToc('#revision-body-content', '#revision-toc');
+    }
+
+    // header
+    var $header = $('#page-header');
+    if ($header.length > 0) {
+      var headerHeight = $header.outerHeight(true);
+      $('.header-wrap').css({height: (headerHeight + 16) + 'px'});
+      $header.affix({
+        offset: {
+          top: function() {
+            return headerHeight + 86; // (54 header + 16 header padding-top + 16 content padding-top)
+          }
+        }
+      });
+      $('[data-affix-disable]').on('click', function(e) {
+        $elm = $($(this).data('affix-disable'));
+        $(window).off('.affix');
+        $elm.removeData('affix').removeClass('affix affix-top affix-bottom');
+        return false;
+      });
+    }
+
     // omg
     function createCommentHTML(revision, creator, comment, commentedAt) {
       var $comment = $('<div>');
@@ -424,11 +458,10 @@ $(function() {
     var $pageAttachmentList = $('.page-attachments ul');
     $.get('/_api/attachment/page/' + pageId, function(res) {
       var attachments = res.data.attachments;
-      var urlBase = res.data.fileBaseUrl;
       if (attachments.length > 0) {
         $.each(attachments, function(i, file) {
           $pageAttachmentList.append(
-          '<li><a href="' + urlBase + file.filePath + '">' + (file.originalName || file.fileName) + '</a> <span class="label label-default">' + file.fileFormat + '</span></li>'
+          '<li><a href="' + file.fileUrl + '">' + (file.originalName || file.fileName) + '</a> <span class="label label-default">' + file.fileFormat + '</span></li>'
           );
         })
       } else {
@@ -545,7 +578,8 @@ $(function() {
 
     var $seenUserList = $("#seen-user-list");
     var seenUsers = $seenUserList.data('seen-users');
-    if (seenUsers && seenUsers.length > 0 && seenUsers.length <= 10) {
+    var seenUsersArray = seenUsers.split(',');
+    if (seenUsers && seenUsersArray.length > 0 && seenUsersArray.length <= 10) {
       // FIXME: user data cache
       $.get('/_api/users.list', {user_ids: seenUsers}, function(res) {
         // ignore unless response has error
