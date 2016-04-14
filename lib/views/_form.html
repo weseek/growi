@@ -21,6 +21,7 @@
       </button>#}
 
       <div class="pull-right form-inline page-form-setting">
+        {% if slackConfigured() %}
         <span class="input-group extended-setting">
           <span class="input-group-addon">
             <label>
@@ -29,9 +30,14 @@
             </label>
           </span>
           <input class="form-control" type="text" name="pageForm[notify][slack][channel]" value="{{ page.extented.slack|default('') }}" placeholder="slack-channel-name"
-            data-toggle="popover" title="Popover title" data-content="カンマ区切りで複数チャンネルに通知することができます。チャンネル名は保存され、次回以降デフォルトでチェックは外れた状態になっています。通知するにはチェックを入れてください。" data-trigger="focus" data-placement="top"
+            data-toggle="popover"
+            title="Slack通知"
+            data-content="通知するにはチェックを入れてください。カンマ区切りで複数チャンネルに通知することができます。"
+            data-trigger="focus"
+            data-placement="top"
           >
         </span>
+        {% endif %}
 
         {% if forceGrant %}
         <input type="hidden" name="pageForm[grant]" value="{{ forceGrant }}">
