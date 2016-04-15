@@ -1,5 +1,17 @@
 $(function() {
 
+  // show/hide
+  $('a[data-toggle="tab"][href="#edit-form"]').on('show.bs.tab', function() {
+    $('.content-main').addClass('on-edit');
+
+    var pathData = $('#content-main').data('path');
+    $.get('/_api/pages.updatePost', {path: pathData}, function(res) {
+      console.log(res);
+    });
+  });
+  $('a[data-toggle="tab"][href="#edit-form"]').on('hide.bs.tab', function() {
+    $('.content-main').removeClass('on-edit');
+  });
 
   $('[data-toggle="popover"]').popover();
 
@@ -35,16 +47,6 @@ $(function() {
     // avoid message
     isFormChanged = false;
   });
-
-  var watchTimer = setInterval(function() {
-    var content = $('#form-body').val();
-    if (prevContent != content) {
-      var renderer = new Crowi.renderer($('#form-body').val(), $('#preview-body'));
-      renderer.render();
-
-      prevContent = content;
-    }
-  }, 500);
 
   var getCurrentLine = function(event) {
     var $target = $(event.target);
