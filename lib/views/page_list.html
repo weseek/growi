@@ -13,8 +13,14 @@
       <a href="#" title="Bookmark" class="bookmark-link" id="bookmark-button" data-bookmarked="0"><i class="fa fa-star-o"></i></a>
 
     {% endif %}
-    <h1 class="title" id="revision-path">
-      {{ path|insertSpaceToEachSlashes }}
+    <h1 class="title">
+      <span class="" id="revision-path">{{ path|insertSpaceToEachSlashes }}</span>
+      <div class="form-group search-input-group">
+        <div class="input-group">
+          <input type="text" class="search-listpage-input form-control input-sm">
+          <div class="input-group-addon"><i class="fa fa-search"></i></div>
+        </div>
+      </div>
     </h1>
   </header>
 </div>
