@@ -219,6 +219,23 @@ Crowi.userPicture = function (user) {
 };
 
 
+CrowiSearcher = function(path, $el) {
+  this.$el = $el;
+  this.path = path;
+  this.searchResult = {};
+};
+CrowiSearcher.prototype.querySearch = function(keyword, option) {
+};
+CrowiSearcher.prototype.search = function(keyword) {
+  var option = {};
+  this.querySearch(keyword, option);
+  this.$el.html(this.render());
+};
+CrowiSearcher.prototype.render = function() {
+  return $('<div>');
+};
+
+
 $(function() {
   var pageId = $('#content-main').data('page-id');
   var revisionId = $('#content-main').data('page-revision-id');
@@ -683,4 +700,6 @@ $(function() {
       }
     });
   }
+
+  // for search
 });
