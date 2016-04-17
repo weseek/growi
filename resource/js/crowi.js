@@ -1,9 +1,10 @@
 /* jshint browser: true, jquery: true */
-/* global FB, marked, JsDiff */
+/* global FB, marked */
 /* Author: Sotaro KARASAWA <sotarok@crocos.co.jp>
 */
 
 var hljs = require('highlight.js');
+var jsdiff = require('diff');
 var marked = require('marked');
 var Crowi = {};
 
@@ -661,7 +662,7 @@ $(function() {
 
           $diffDisplay.text('');
 
-          var diff = JsDiff.diffLines(previousText, currentText);
+          var diff = jsdiff.diffLines(previousText, currentText);
           diff.forEach(function(part) {
             var color = part.added ? 'green' : part.removed ? 'red' : 'grey';
             var $span = $('<span>');
