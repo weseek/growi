@@ -140,6 +140,10 @@
               {{ t.createdAt|datetz('Y-m-d H:i:s') }}
               <br>
               <a href="?revision={{ t._id.toString() }}"><i class="fa fa-history"></i> このバージョンを見る</a>
+              <a class="diff-view" data-revision-id="{{ t._id.toString() }}">
+                <i id="diff-icon-{{ t._id.toString() }}" class="fa fa-arrow-circle-right"></i> 差分を見る
+              </a>
+              <pre class="fk-hide" id="diff-display-{{ t._id.toString()}}"></pre>
             </div>
           </div>
         </div>

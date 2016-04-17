@@ -47,6 +47,7 @@ var js = {
     'node_modules/inline-attachment/src/inline-attachment.js',
     'node_modules/socket.io-client/socket.io.js',
     'node_modules/jquery.cookie/jquery.cookie.js',
+    'node_modules/diff/dist/diff.js',
     'resource/thirdparty-js/jquery.selection.js',
     dirs.jsDist + '/crowi-bundled.js',
   ],
