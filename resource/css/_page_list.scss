@@ -29,18 +29,26 @@
       list-style: none;
       line-height: 1.8em;
 
-      .picture {
-        width: 16px;
-        height: 16px;
-        margin-right: 4px;
+      .picture-outer {
+        float: left;
+
+        .picture {
+          width: 16px;
+          height: 16px;
+          margin-right: 4px;
+        }
       }
 
-      .page-list-link {
-        font-size: 1.1em;
-        color: #666;
+      .page-link-outer {
+        padding-left: 20px;
 
-        strong {
-          color: #333;
+        .page-list-link {
+          font-size: 1.1em;
+          color: #666;
+
+          strong {
+            color: #333;
+          }
         }
       }
     }
