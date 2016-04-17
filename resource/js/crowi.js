@@ -677,9 +677,10 @@ $(function() {
     });
 
     // default open
-    var diffViews = $('.diff-view');
-    if (diffViews.length > 0) for (var i = 0; i < 2; i++) {
-      diffViews[i].click();
-    }
+    $('.diff-view').each(function(i, diffView) {
+      if (i < 2) {
+        $(diffView).click();
+      }
+    });
   }
 });
