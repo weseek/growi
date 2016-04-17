@@ -224,7 +224,7 @@ $(function() {
   var revisionCreatedAt = $('#content-main').data('page-revision-created');
   var currentUser = $('#content-main').data('current-user');
   var isSeen = $('#content-main').data('page-is-seen');
-  var pagePath= $('#content-main').data('page-path');
+  var pagePath= $('#content-main').data('path');
 
   Crowi.linkPath();
 

@@ -20,7 +20,7 @@
         ファイルを追加 ...
       </button>#}
 
-      <div class="pull-right form-inline page-form-setting">
+      <div class="pull-right form-inline page-form-setting" id="page-form-setting" data-slack-configured="{{ slackConfigured() }}">
         {% if slackConfigured() %}
         <span class="input-group extended-setting">
           <span class="input-group-addon">
@@ -30,6 +30,7 @@
             </label>
           </span>
           <input class="form-control" type="text" name="pageForm[notify][slack][channel]" value="{{ page.extented.slack|default('') }}" placeholder="slack-channel-name"
+            id="page-form-slack-channel"
             data-toggle="popover"
             title="Slack通知"
             data-content="通知するにはチェックを入れてください。カンマ区切りで複数チャンネルに通知することができます。"

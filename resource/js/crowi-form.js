@@ -1,14 +1,40 @@
 $(function() {
+  var pageId = $('#content-main').data('page-id');
+  var pagePath= $('#content-main').data('path');
 
   // show/hide
+  function FetchPagesUpdatePostAndInsert(path) {
+    $.get('/_api/pages.updatePost', {path: path}, function(res) {
+      if (res.ok) {
+        var $slackChannels = $('#page-form-slack-channel');
+        $slackChannels.val(res.updatePost.join(','));
+      }
+    });
+  }
+
+  var slackConfigured = $('#page-form-setting').data('slack-configured');
+
+  // for new page
+  if (!pageId) {
+    if (slackConfigured) {
+      FetchPagesUpdatePostAndInsert(pagePath);
+    }
+  }
+
   $('a[data-toggle="tab"][href="#edit-form"]').on('show.bs.tab', function() {
     $('.content-main').addClass('on-edit');
 
-    var pathData = $('#content-main').data('path');
-    $.get('/_api/pages.updatePost', {path: pathData}, function(res) {
-      console.log(res);
-    });
+    if (slackConfigured) {
+      var $slackChannels = $('#page-form-slack-channel');
+      var slackChannels = $slackChannels.val();
+      // if slackChannels is empty, then fetch default (admin setting)
+      // if not empty, it means someone specified this setting for the page.
+      if (slackChannels === '') {
+        FetchPagesUpdatePostAndInsert(pagePath);
+      }
+    }
   });
+
   $('a[data-toggle="tab"][href="#edit-form"]').on('hide.bs.tab', function() {
     $('.content-main').removeClass('on-edit');
   });
