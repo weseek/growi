@@ -1,11 +1,11 @@
 .crowi.main-container {
+  // padding controll of .header-wrap and .content-main are moved to _layout and _form
 
   .main { // {{{ .main of layout related
     transition: .5s ease;
     -webkit-transition: .5s ease;
     background: #fff;
 
-    padding: 20px;
     article {
       background: #fff;
     }
@@ -65,6 +65,7 @@
       h1 {
         font-size: 28px;
         margin-top: 0;
+        margin-bottom: 0;
 
         a:last-child {
           color: #D1E2E4;
@@ -89,7 +90,7 @@
   .main.grant-specified,
   .main.grant-owner {
     background: #333;
-    padding: 20px 10px;
+    padding: 16px;
 
     .page-grant {
       color: #ccc;
@@ -97,7 +98,6 @@
 
     article {
       border-radius: 5px;
-      padding: 20px;
     }
   }
   // }}}
