@@ -678,7 +678,7 @@ $(function() {
 
     // default open
     var diffViews = $('.diff-view');
-    for (var i = 0; i < 2; i++) {
+    if (diffViews.length > 0) for (var i = 0; i < 2; i++) {
       diffViews[i].click();
     }
   }
