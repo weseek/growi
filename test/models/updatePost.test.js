@@ -28,7 +28,7 @@ describe('UpdatePost', function () {
 
   describe('.getRegExpByPattern', function () {
     context('with a pattern', function() {
-      it('should return true', function(done) {
+      it('should return right regexp', function(done) {
         expect(UpdatePost.getRegExpByPattern('/*')).to.deep.equal(/^\/.*/);
         expect(UpdatePost.getRegExpByPattern('/user/*/日報*')).to.deep.equal(/^\/user\/.*\/日報.*/);
         expect(UpdatePost.getRegExpByPattern('/project/hoge/*')).to.deep.equal(/^\/project\/hoge\/.*/);
