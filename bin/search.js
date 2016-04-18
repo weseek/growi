@@ -1,21 +1,34 @@
 
 var program = require('commander')
   , debug = require('debug')('debug:console:search-util')
-  , crowi = new (require('../lib/crowi'))(__dirname, process.env)
+  , crowi = new (require('../lib/crowi'))(__dirname + '/../', process.env)
   ;
 
 crowi.init()
   .then(function(app) {
-    var search = require('../lib/util/search')(crowi);
-
     program
       .version(crowi.version);
 
     program
-      .command('create-index [name]')
+      .command('create-index')
       .action(function (cmd, env) {
+        var search = crowi.getSearcher();
 
         search.buildIndex()
+          .then(function(data) {
+            console.log(data);
+          })
+          .catch(function(err) {
+            console.log("Error", err);
+          });
+      });
+
+    program
+      .command('add-pages')
+      .action(function (cmd, env) {
+        var search = crowi.getSearcher();
+
+        search.addAllPages()
           .then(function(data) {
             console.log(data);
           })
@@ -39,6 +52,7 @@ crowi.init()
       });
 
     program.parse(process.argv);
+
   }).catch(crowi.exitOnError);
 
 
@@ -47,30 +61,3 @@ crowi.init()
 //  .command('list', 'list packages installed', {isDefault: true})
 
 
-/*
-crowi.init()
-  .then(function(app) {
-    var search = require('./lib/util/search')(crowi);
-
-    search.buildIndex()
-      .then(function(data) {
-        console.log(data);
-      })
-      .catch(function(err) {
-        console.log("Error", err);
-      });
-  }).catch(crowi.exitOnError);
-
-cli.parse({
-    seed:      [false, 'Password seed', 'string', ''],
-    password:  [false, 'Password raw string', 'string'],
-});
-
-cli.main(function(args, options)
-{
-  console.log("args", args);
-  console.log("options", options);
-
-  this.output();
-});
-*/
