@@ -225,18 +225,12 @@ $(function() {
   var revisionCreatedAt = $('#content-main').data('page-revision-created');
   var currentUser = $('#content-main').data('current-user');
   var isSeen = $('#content-main').data('page-is-seen');
+  var pagePath= $('#content-main').data('path');
 
   Crowi.linkPath();
 
   $('[data-toggle="tooltip"]').tooltip();
   $('[data-tooltip-stay]').tooltip('show');
-
-  $('a[data-toggle="tab"][href="#edit-form"]').on('show.bs.tab', function() {
-    $('.content-main').addClass('on-edit');
-  });
-  $('a[data-toggle="tab"][href="#edit-form"]').on('hide.bs.tab', function() {
-    $('.content-main').removeClass('on-edit');
-  });
 
 
   $('.copy-link').on('click', function () {

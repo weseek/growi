@@ -1,4 +1,46 @@
 $(function() {
+  var pageId = $('#content-main').data('page-id');
+  var pagePath= $('#content-main').data('path');
+
+  // show/hide
+  function FetchPagesUpdatePostAndInsert(path) {
+    $.get('/_api/pages.updatePost', {path: path}, function(res) {
+      if (res.ok) {
+        var $slackChannels = $('#page-form-slack-channel');
+        $slackChannels.val(res.updatePost.join(','));
+      }
+    });
+  }
+
+  var slackConfigured = $('#page-form-setting').data('slack-configured');
+
+  // for new page
+  if (!pageId) {
+    if (slackConfigured) {
+      FetchPagesUpdatePostAndInsert(pagePath);
+    }
+  }
+
+  $('a[data-toggle="tab"][href="#edit-form"]').on('show.bs.tab', function() {
+    $('.content-main').addClass('on-edit');
+
+    if (slackConfigured) {
+      var $slackChannels = $('#page-form-slack-channel');
+      var slackChannels = $slackChannels.val();
+      // if slackChannels is empty, then fetch default (admin setting)
+      // if not empty, it means someone specified this setting for the page.
+      if (slackChannels === '') {
+        FetchPagesUpdatePostAndInsert(pagePath);
+      }
+    }
+  });
+
+  $('a[data-toggle="tab"][href="#edit-form"]').on('hide.bs.tab', function() {
+    $('.content-main').removeClass('on-edit');
+  });
+
+  $('[data-toggle="popover"]').popover();
+
   // preview watch
   var originalContent = $('#form-body').val();
   var prevContent = "";
@@ -11,6 +53,26 @@ $(function() {
       prevContent = content;
     }
   }, 500);
+
+  // edit detection
+  var isFormChanged = false;
+  $(window).on('beforeunload', function(e) {
+    if (isFormChanged) {
+      return '編集中の内容があります。内容を破棄してページを移動しますか?';
+    }
+  });
+  $('#form-body').on('keyup change', function(e) {
+    var content = $('#form-body').val();
+    if (originalContent != content) {
+      isFormChanged = true;
+    } else {
+      isFormChanged = false;
+    }
+  });
+  $('#page-form').on('submit', function(e) {
+    // avoid message
+    isFormChanged = false;
+  });
 
   var getCurrentLine = function(event) {
     var $target = $(event.target);

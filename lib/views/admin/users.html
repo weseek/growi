@@ -1,4 +1,4 @@
-{% extends '../layout/2column.html' %}
+{% extends '../layout/admin.html' %}
 
 {% block html_title %}ユーザー管理 · {% endblock %}
 
@@ -31,6 +31,7 @@
       <ul class="nav nav-pills nav-stacked">
         <li><a href="/admin"><i class="fa fa-cube"></i> Wiki管理トップ</a></li>
         <li><a href="/admin/app"><i class="fa fa-gears"></i> アプリ設定</a></li>
+        <li><a href="/admin/notification"><i class="fa fa-bell"></i> 通知設定</a></li>
         <li class="active"><a href="/admin/users"><i class="fa fa-users"></i> ユーザー管理</a></li>
       </ul>
     </div>
@@ -214,9 +215,5 @@
 
 {% block content_footer %}
 {% endblock content_footer %}
-
-{% block footer %}
-{% endblock footer %}
-
 
 
