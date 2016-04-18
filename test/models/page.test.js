@@ -52,8 +52,14 @@ describe('Page', function () {
           path: '/grant/owner',
           grant: Page.GRANT_OWNER,
           grantedUsers: [testUser0],
-          creator: testUser0
-        }
+          creator: testUser0,
+        },
+        {
+          path: '/page/for/extended',
+          grant: Page.GRANT_PUBLIC,
+          creator: testUser0,
+          extended: {hoge: 1}
+        },
       ];
 
       testDBUtil.generateFixture(conn, 'Page', fixture)
@@ -161,4 +167,31 @@ describe('Page', function () {
       });
     });
   });
+
+  describe('Extended field', function () {
+    context('Slack Channel.', function() {
+      it('should be empty', function(done) {
+        Page.findOne({path: '/page/for/extended'}, function(err, page) {
+          expect(page.extended.hoge).to.be.equal(1);
+          expect(page.getSlackChannel()).to.be.equal('');
+          done();
+        })
+      });
+
+      it('set slack channel and should get it and should keep hoge ', function(done) {
+        Page.findOne({path: '/page/for/extended'}, function(err, page) {
+          page.updateSlackChannel('slack-channel1')
+          .then(function(data) {
+            Page.findOne({path: '/page/for/extended'}, function(err, page) {
+              expect(page.extended.hoge).to.be.equal(1);
+              expect(page.getSlackChannel()).to.be.equal('slack-channel1');
+              done();
+            });
+          })
+        });
+      });
+
+    });
+  });
+
 });

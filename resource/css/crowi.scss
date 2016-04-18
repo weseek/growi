@@ -258,16 +258,15 @@ input.searching {
   }
 }
 
-.fk-hide {
-  display: none;
-}
-
 // notification
 .fk-notif {
+  display: none;
+
+  bottom: 0;
+  left: 0;
   width: 100%;
   position: fixed;
-  bottom: -80px;
-  z-index: 8;
+  z-index: 1029;
   padding: 10px;
   box-shadow: -1px 0 3px 0px #666;
   font-weight: bold;
@@ -290,6 +289,10 @@ input.searching {
     background: #fcf8e3;
     color: #8a6d3b;
   }
+}
+.on-edit .fk-notif {
+  bottom: 50px;
+  z-index: 1061;
 }
 
 // external-services

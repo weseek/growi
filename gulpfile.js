@@ -62,6 +62,10 @@ var js = {
     'resource/js/crowi-form.js'
   ],
   formDist: dirs.jsDist + '/crowi-form.js',
+  adminSrc: [
+    'resource/js/crowi-admin.js'
+  ],
+  adminDist: dirs.jsDist + '/crowi-admin.js',
   clientWatch: ['resource/js/**/*.js'],
   watch: ['test/**/*.test.js', 'app.js', 'lib/**/*.js'],
   lint: ['app.js', 'lib/**/*.js'],
@@ -91,6 +95,10 @@ gulp.task('js:concat', ['js:browserify'], function() {
     .pipe(concat('crowi-reveal.js'))
     .pipe(gulp.dest(dirs.jsDist));
 
+  gulp.src(js.adminSrc)
+    .pipe(concat('crowi-admin.js'))
+    .pipe(gulp.dest(dirs.jsDist));
+
   gulp.src(js.formSrc)
     .pipe(concat('crowi-form.js'))
     .pipe(gulp.dest(dirs.jsDist));
@@ -107,6 +115,11 @@ gulp.task('js:min', ['js:concat'], function() {
     .pipe(gulp.dest(dirs.jsDist));
 
   gulp.src(js.formDist)
+    .pipe(uglify())
+    .pipe(rename({suffix: '.min'}))
+    .pipe(gulp.dest(dirs.jsDist));
+
+  gulp.src(js.adminDist)
     .pipe(uglify())
     .pipe(rename({suffix: '.min'}))
     .pipe(gulp.dest(dirs.jsDist));
