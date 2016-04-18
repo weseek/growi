@@ -1,12 +1,12 @@
 
 var program = require('commander')
   , debug = require('debug')('debug:console:search-util')
-  , crowi = new (require('./lib/crowi'))(__dirname, process.env)
+  , crowi = new (require('../lib/crowi'))(__dirname, process.env)
   ;
 
 crowi.init()
   .then(function(app) {
-    var search = require('./lib/util/search')(crowi);
+    var search = require('../lib/util/search')(crowi);
 
     program
       .version(crowi.version);

@@ -15,11 +15,12 @@
     {% endif %}
     <h1 class="title">
       <span class="" id="revision-path">{{ path|insertSpaceToEachSlashes }}</span>
-      <div class="form-group search-input-group">
-        <div class="input-group">
-          <input type="text" class="search-listpage-input form-control input-sm" data-path="{{ path }}">
-          <div class="input-group-addon"><i class="fa fa-search"></i></div>
-        </div>
+      <div class="form-group form-group-sm has-feedback search-input-group" data-toggle="tooltip" data-placement="bottom" title="{{ path }} 以下から検索">
+        <label class="control-label sr-only" for="inputSuccess5">Search</label>
+        <input
+        type="text" class="search-listpage-input form-control" data-path="{{ path }}"
+        >
+        <i class="form-control-feedback search-listpage-icon fa fa-search"></i>
       </div>
     </h1>
   </header>
