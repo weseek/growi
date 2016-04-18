@@ -1,0 +1,46 @@
+<ul class="page-list-ul">
+{% for data in pages %}
+
+{% if pagePropertyName %}
+  {% set page = data[pagePropertyName] %}
+{% else %}
+  {% set page = data %}
+{% endif %}
+
+<li class="page-list-li">
+  <div class="picture-outer">
+    <img src="{{ page.revision.author|picture }}" class="picture picture-rounded">
+  </div>
+  <div class="page-link-outer">
+    <a class="page-list-link" href="{{ page.path }}"
+      data-path="{{ page.path }}"
+      data-short-path="{{ page.path|path2name }}">{{ page.path }}</a>
+
+    <span class="page-list-meta">
+      {% if page.isPortal() %}
+        <span class="label label-info">PORTAL</span>
+      {% endif  %}
+
+      {% if page.commentCount > 0 %}
+        <i class="fa fa-comment"></i>{{ page.commentCount }}
+      {% endif  %}
+
+      {% if !page.isPublic() %}
+        <i class="fa fa-lock"></i>
+      {% endif %}
+    </span>
+  </div>
+</li>
+{% endfor %}
+</ul>
+
+{% if pager %}
+<ul class="pagination">
+  {% if pager.prev !== null %}
+    <li class="prev"><a href="{{ path }}?offset={{ pager.prev }}"><i class="fa fa-arrow-left"></i> Prev</a></li>
+  {% endif %}
+  {% if pager.next %}
+    <li class="next"><a href="{{ path }}?offset={{ pager.next }}">Next <i class="fa fa-arrow-right"></i></a></li>
+  {% endif %}
+</ul>
+{% endif %}

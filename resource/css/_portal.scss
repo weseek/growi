@@ -1,0 +1,36 @@
+.portal-header {
+}
+
+.portal-label {
+  background: #5bc0de;
+  //float: right;
+  font-weight: bold;
+  padding: 2px 4px;
+  //margin: 1em 8px 0;
+  font-size: .8em;
+  color: #fff;
+  border-radius: 4px;
+}
+
+.portal {
+  .wiki {
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+  }
+
+  .portal-form {
+
+  }
+
+} // .portal
+
+.portal-side {
+  .portal-form-button {
+    text-align: center;
+  }
+} // .portal-side
+
+
+.portal-warning-modal {
+  z-index: 1062;
+}

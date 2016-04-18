@@ -3,21 +3,45 @@
 {% block html_title %}{{ path|path2name }} · {{ path }}{% endblock %}
 
 {% block content_head %}
+
+{% block content_head_before %}
+{% endblock %}
+
 <div class="header-wrap">
   <header id="page-header">
     <p class="stopper"><a href="#" data-affix-disable="#page-header"><i class="fa fa-chevron-up"></i></a></p>
 
-    <h1 class="title" id="revision-path">{{ path }}</h1>
+
+    {% if page %}
+      <a href="#" title="Bookmark" class="bookmark-link" id="bookmark-button" data-bookmarked="0"><i class="fa fa-star-o"></i></a>
+    {% endif %}
+    <h1 class="title" id="revision-path">{{ path|insertSpaceToEachSlashes }}</h1>
   </header>
 </div>
+
+{% block content_head_after %}
+{% endblock %}
+
 {% endblock %}
 
 {% block content_main %}
-<div id="content-main" class="content-main {% if not page %}on-edit{% endif %}" data-page-id="{% if page %}{{ page._id.toString() }}{% endif %}">
+
+{% block content_main_before %}
+{% endblock %}
+
+<div id="content-main" class="content-main {% if not page or req.body.pageForm %}on-edit{% endif %}"
+  data-path="{{ path }}"
+  data-path-shortname="{{ path|path2name }}"
+  data-page-id="{% if page %}{{ page._id.toString() }}{% endif %}"
+  data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
+  data-page-revision-id="{% if revision %}{{ revision._id.toString() }}{% endif %}"
+  data-page-revision-created="{% if revision %}{{ revision.createdAt|datetz('U') }}{% endif %}"
+  data-page-is-seen="{% if page and page.isSeenUser(user) %}1{% else %}0{% endif %}"
+  >
 
   {% if not page %}
   <ul class="nav nav-tabs hidden-print">
-    <li><a>ページ作成: {{ path|path2name }}</a></li>
+    <li><a>Create: {{ path }}</a></li>
     <li class="dropdown pull-right">
       <a href="/"><i class="fa fa-times"></i> キャンセル</a>
     </li>
@@ -44,6 +68,7 @@
 
     <li {% if req.body.pageForm %}class="active"{% endif %}><a href="#edit-form" data-toggle="tab"><i class="fa fa-pencil-square-o"></i> 編集</a></li>
 
+
     <li class="dropdown pull-right">
       <a class="dropdown-toggle" data-toggle="dropdown" href="#">
         <i class="fa fa-wrench"></i> <span class="caret"></span>
@@ -53,7 +78,9 @@
        <li><a href="?presentation=1" class="toggle-presentation"><i class="fa fa-arrows-alt"></i> プレゼンモード (beta)</a></li>
       </ul>
     </li>
-
+    {% if page %}
+    <li class="pull-right"><a href="#revision-history" data-toggle="tab"><i class="fa fa-history"></i> History</a></li>
+    {% endif %}
   </ul>
 
   {% include 'modal/widget_rename.html' %}
@@ -89,237 +116,81 @@
       <div class="wiki {{ revision.format }}" id="revision-body-content"></div>
     </div>
 
-    {# raw text #}
-    <div class="tab-pane" id="raw-text">
-      <pre id="">{{ revision.body }}</pre>
-    </div>
-
     {# edit form #}
     <div class="edit-form tab-pane {% if req.body.pageForm %}active{% endif %}" id="edit-form">
       {% include '_form.html' %}
     </div>
+
+    {# raw revision history #}
+    <div class="tab-pane revision-history" id="revision-history">
+      <h1><i class="fa fa-history"></i> History</h1>
+      {% if not page %}
+      {% else %}
+      <div class="revision-history-list">
+        {% for t in tree %}
+        <div class="revision-hisory-outer">
+          <img src="{{ t.author|picture }}" class="picture picture-rounded">
+          <div class="revision-history-main">
+            <div class="revision-history-author">
+              <strong>{% if t.author %}{{ t.author.username }}{% else %}-{% endif %}</strong>
+            </div>
+            <div class="revision-history-comment">
+            </div>
+            <div class="revision-history-meta">
+              {{ t.createdAt|datetz('Y-m-d H:i:s') }}
+              <br>
+              <a href="?revision={{ t._id.toString() }}"><i class="fa fa-history"></i> このバージョンを見る</a>
+              <a class="diff-view" data-revision-id="{{ t._id.toString() }}">
+                <i id="diff-icon-{{ t._id.toString() }}" class="fa fa-arrow-circle-right"></i> 差分を見る
+              </a>
+              <pre class="fk-hide" id="diff-display-{{ t._id.toString()}}"></pre>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+    </div>
+
   </div>
-  <script type="text/javascript">
-    $(function(){
-        var renderer = new Crowi.renderer($('#raw-text-original').html());
-        renderer.render();
-        Crowi.correctHeaders('#revision-body-content');
-        Crowi.revisionToc('#revision-body-content', '#revision-toc');
-
-        $('a[data-toggle="tab"][href="#edit-form"]').on('show.bs.tab', function() {
-          $('.content-main').addClass('on-edit');
-        });
-        $('a[data-toggle="tab"][href="#edit-form"]').on('hide.bs.tab', function() {
-          $('.content-main').removeClass('on-edit');
-        });
-
-        $('#edit-form').submit(function()
-        {
-          //console.log('save');
-          //return false;
-        });
-
-        //data-spy="affix" data-offset-top="80"
-        var headerHeight = $('#page-header').outerHeight(true);
-        $('.header-wrap').css({height: headerHeight + 'px'});
-        $('#page-header').affix({
-          offset: {
-            top: function() {
-              return headerHeight + 74; // (54 header + 20 padding-top)
-            }
-          }
-        });
-        $('[data-affix-disable]').on('click', function(e) {
-          $elm = $($(this).data('affix-disable'));
-          $(window).off('.affix');
-          $elm.removeData('affix').removeClass('affix affix-top affix-bottom');
-          return false;
-        });
-    });
-  </script>
   {% endif %}
 </div>
+
+{% block content_main_after %}
+{% endblock %}
 
 {% endblock %}
 
 {% block content_footer %}
 
-<div class="page-attachments">
+
+<div class="page-attachments meta">
   <p>Attachments</p>
   <ul>
   </ul>
 </div>
-<script>
-  (function() {
-    var pageId = $('#content-main').data('page-id');
-    var $pageAttachmentList = $('.page-attachments ul');
-    if (pageId) {
-      $.get('/_api/attachment/page/' + pageId, function(res) {
-        var attachments = res.data.attachments;
-        var urlBase = res.data.fileBaseUrl;
-        if (attachments.length > 0) {
-          $.each(attachments, function(i, file) {
-            $pageAttachmentList.append(
-            '<li><a href="' + urlBase + file.filePath + '">' + (file.originalName || file.fileName) + '</a> <span class="label label-default">' + file.fileFormat + '</span></li>'
-            );
-          })
-        } else {
-          $('.page-attachments').remove();
-        }
-      });
-    }
-  })();
-</script>
-<footer>
-  {% if not page %}
-  {% else %}
-  <p class="meta">
-  Path: <span id="pagePath">{{ page.path }}</span><br />
-  Revision: {{ revision._id.toString() }}<br />
-  {% if author %}
-  Last Updated User: <a href="/user/{{ author.username }}">{{ author.name }}</a><br />
-  {% endif %}
-  Created: {{ page.createdAt|datetz('Y-m-d H:i:s') }}<br />
-  Updated: {{ page.updatedAt|datetz('Y-m-d H:i:s') }}<br />
-  </p>
-  {% endif %}
-</footer>
+
+<p class="meta">
+  Path: <span id="pagePath">{{ page.path }}</span><br>
+  Last updated at {{ page.revision.createdAt|datetz('Y-m-d H:i:s') }} by <img src="{{ page.revision.author|picture }}" class="picture picture-rounded"> {{ page.revision.author.name }}<br>
+  Created at {{ page.createdAt|datetz('Y-m-d H:i:s') }} by <img src="{{ page.creator|default(page.creator)|picture }}" class="picture picture-rounded"> {{ page.creator.name }}<br>
+</p>
 
 {% endblock %}
 
 {% block side_header %}
-
-{% if page %} {# {{{ if page #}
-<div class="page-meta">
-  <div class="row">
-    {# default(author) としているのは、v1.1.1 以前に page.creator データが入ってないから。暫定として最新更新ユーザーを表示しちゃう。 #}
-    <div class="col-md-3 creator-picture">
-      <img src="{{ page.creator|default(author)|picture }}" class="picture picture-lg picture-rounded"><br>
-    </div>
-    <div class="col-md-9">
-      <p class="creator">
-        {{ page.creator.name|default(author.name) }}
-      </p>
-      <p class="created-at">
-        作成日: {{ page.createdAt|datetz('Y/m/d H:i:s') }}<br>
-        最終更新: {{ page.updatedAt|datetz('Y/m/d H:i:s') }} <a href="/user/{{ author.username }}"><img src="{{ author|picture }}" class="picture picture-xs picture-rounded" alt="{{ author.name }}"></a>
-      </p>
-    </div>
-  </div>
-
-  <div class="like-box">
-    <dl class="dl-horizontal">
-      <dt>
-        <i class="fa fa-star"></i> お気に入り
-      </dt>
-      <dd>
-        <button class="btn btn-default btn-sm btn-bookmark" id="bookmarkButton"><i class="fa fa-star-o"></i></button>
-      </dd>
-
-      <dt>
-        <i class="fa fa-thumbs-o-up"></i> いいね!
-      </dt>
-      <dd>
-        <p class="liker-count">
-        {{ page.liker.length }}
-        </p>
-        <p class="liker-list">
-          {% for liker in page.liker %}
-            <a href="{{ user_page_root(liker) }}" title="{{ liker.name }}"><img alt="{{ liker.name }}" src="{{ liker|picture }}" class="picture picture-xs picture-rounded"></a>
-          {% endfor %}
-          {% if page.liker.length > 10 %}
-            (...)
-          {% endif %}
-        </p>
-        {% if page.isLiked(user) %}
-          <button data-liked="1" class="btn btn-default btn-sm active" id="pageLikeButton"><i class="fa fa-thumbs-up"></i> いいね！！！</button>
-        {% else %}
-          <button data-liked="0" class="btn btn-default btn-sm" id="pageLikeButton"><i class="fa fa-thumbs-o-up"></i> いいね！！！</button>
-        {% endif %}
-      </dd>
-
-      <dt><i class="fa fa-eye"></i> 見た人</dt>
-      <dd>
-        <p class="seen-user-count">
-          {{ page.seenUsers.length }}
-        </p>
-        <p class="seen-user-list">
-          {% for seenUser in page.seenUsers %}
-          <a href="{{ user_page_root(seenUser) }}" title="{{ seenUser.name }}"><img alt="{{ seenUser.name }}" src="{{ seenUser|picture }}" class="picture picture-xs picture-rounded"></a>
-          {% endfor %}
-          {% if page.seenUsers.length > 10 %}
-            (...)
-          {% endif %}
-        </p>
-      </dd>
-    </dl>
-  </div>
-<script>
-$(function() {
-  $.get('/_api/page/{{ page._id.toString() }}/bookmark', function(data) {
-    if (data.bookmarked) {
-      $('#bookmarkButton')
-        .removeClass('btn-default')
-        .addClass('btn-warning active bookmarked');
-      $('#bookmarkButton i')
-        .removeClass('fa-star-o')
-        .addClass('fa-star');
-    }
-  });
-
-  $('#bookmarkButton').click(function() {
-    var pageId = {{page._id|json|safe}};
-    $.post('/_api/page/{{ page._id.toString() }}/bookmark', function(data) {
-    });
-  });
-  $('#pageLikeButton').click(function() {
-    var pageId = {{page._id|json|safe}};
-    $.post('/_api/page/{{ page._id.toString() }}/like', function(data) {
-    });
-  });
-});
-</script>
-</div>
-{% endif %} {# if page }}} #}
+  {% include 'widget/page_side_header.html' %}
 {% endblock %} {# side_header #}
 
 {% block side_content %}
-
-  <h3><i class="fa fa-link"></i> 共有</h3>
-  <ul class="fitted-list">
-    <li data-toggle="tooltip" data-placement="bottom" title="共有用リンク" class="input-group">
-      <span class="input-group-addon">共有用</span>
-      <input class="copy-link form-control" type="text" value="{{ config.crowi['app:title'] }} {{ path }}  {{ baseUrl }}/_r/{{ page._id.toString() }}">
-    </li>
-    <li data-toggle="tooltip" data-placement="bottom" title="Wiki記法" class="input-group">
-      <span class="input-group-addon">Wikiタグ</span>
-      <input class="copy-link form-control" type="text" value="&lt;{{ path }}&gt;">
-    </li>
-    <li data-toggle="tooltip" data-placement="bottom" title="Markdown形式のリンク" class="input-group">
-      <span class="input-group-addon">Markdown</span>
-      <input class="copy-link form-control" type="text" value="[{{ path }}]({{ baseUrl }}/_r/{{ revision._id.toString() }})">
-    </li>
-  </ul>
-
-  <h3><i class="fa fa-history"></i> History</h3>
-  {% if not page %}
-  {% else %}
-  <ul class="revision-history">
-    {% for t in tree %}
-    <li>
-      <a href="?revision={{ t._id.toString() }}">
-        <img src="{{ t.author|picture }}" class="picture picture-rounded">
-        {% if t.author %}{{ t.author.username }}{% else %}-{% endif %}<br>{{ t.createdAt|datetz('Y-m-d H:i:s') }}
-      </a>
-    </li>
-    {% endfor %}
-  </ul>
-  {% endif %}
+  {% include 'widget/page_side_content.html' %}
 {% endblock %}
 
 {% block footer %}
 <div id="notifPageEdited" class="fk-hide fk-notif fk-notif-danger"><i class="fa fa-exclamation-triangle"></i> <span class="edited-user"></span>さんがこのページを編集しました。 <a href="javascript:location.reload();"><i class="fa fa-angle-double-right"></i> 最新版を読み込む</a></div>
 <div id="notifPageEditing" class="fk-hide fk-notif fk-notif-warning"><i class="fa fa-exclamation-triangle"></i> 他の人がこのページの編集を開始しました。</div>
+
 
 <script>
   $(function() {

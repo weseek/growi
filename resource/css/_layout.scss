@@ -1,5 +1,5 @@
 .crowi { // {{{
-  font-family: 'Maven Pro', 'Helvetica Neue', 'Hiragino Kaku Gothic Pro', 'Meiryo', sans-serif;
+  font-family: 'Open Sans', 'Helvetica Neue', 'Hiragino Kaku Gothic Pro', 'Meiryo', sans-serif;
   h1, h2, h3, h4, h5, h6 {
     font-weight: 500;
   }
@@ -18,6 +18,10 @@
 
       .navbar-brand {
         font-weight: bold;
+        img {
+          display: inline;
+          margin-right: 8px;
+        }
       }
       .navbar-collapse {
         background: $crowiHeaderBackground;
@@ -57,6 +61,18 @@
 
     } // }}}
 
+    .main {
+      padding: 0; // cancel bootstrap padding
+
+      .header-wrap {
+        padding: 16px 16px 0 16px;
+      }
+
+      .content-main {
+        padding: 16px;
+      }
+    }
+
     .layout-control { // {{{
       transition: .3s ease;
       -webkit-transition: .3s ease;
@@ -83,414 +99,18 @@
       }
     } // }}}
 
-
-    aside.sidebar { // {{{
-      z-index: 1030;
-      position: fixed;
-      padding: 65px 0 0 0;
-      margin-bottom: $crowiFooterHeight;
-      color: #333;
-      height: 100%;
-      right: 0;
-      top: 0;
-      overflow: auto;
-      border-left: solid 1px #ccc;
-      background: $crowiAsideBackground;
-
-      transition: .3s ease;
-      -webkit-transition: .3s ease;
-
-
-      .page-meta {
-        padding: 15px 15px 5px 15px;
-        color: #666;
+    .page-list {
+      .page-list-link {
+      }
+      .page-list-meta {
         font-size: .9em;
-        line-height: 1.4em;
-        border-bottom: solid 1px #ccc;
-
-        .creator-picture {
-          text-align: center;
-          img {
-            width: 48px;
-            height: 48px;
-            box-shadow: 0 0 2px #333;
-          }
-        }
-        .creator {
-          font-size: 1.3em;
-          font-weight: bold;
-        }
-        .created-at {
-        }
-
-        .like-box {
-          padding-bottom: 0;
-
-          .dl-horizontal {
-            margin-bottom: 0;
-
-            dt, dd {
-              border-top: solid 1px #ccc;
-              padding-top: 5px;
-              padding-bottom: 5px;
-            }
-            dt {
-              width: 80px;
-            }
-            dd {
-              margin-left: 90px;
-              text-align: right;
-            }
-          }
-
-          .btn-bookmark {
-            color: #e6b422;
-            &.bookmarked {
-              color: #fff;
-            }
-          }
-        }
-
-        .liker-list, .contributor-list, .seen-user-list {
-          .picture-rounded {
-            box-shadow: 0 0 2px #666;
-          }
-        }
-        .liker-count, .contributor-count, .seen-user-count {
-          font-size: 1.2em;
-          font-weight: bold;
-          margin-bottom: 5px;
-        }
-        .contributor-list, .seen-user-list {
-        }
-      }
-
-
-      .side-content {
-        margin-bottom: $crowiFooterHeight + $crowiHeaderHeight;
-        padding: 15px;
-
-        h3 {
-          font-size: 1.1em;
-        }
-
-        a {
-          color: #ccc;
-          &:hover { color: #aaa;}
-        }
-
-        ul.revision-history {
-          padding: 0;
-          li {
-            position: relative;
-            list-style: none;
-
-            a {
-              color: #666;
-              padding: 3px 5px 3px 40px;
-              display: block;
-
-              &:hover {
-                background: darken($crowiAsideBackground, 10%);
-                text-decoration: none;
-                color: darken($link-color, 35%);
-              }
-            }
-
-          }
-
-          .picture {
-            position: absolute;
-            left: 5px;
-            top: 12px;
-          }
-        }
-
-        ul.fitted-list {
-          padding-left: 0;
-          li {
-            margin-bottom: 2px;
-
-            .input-group-addon {
-              padding: 5px 6px;
-            }
-          }
-        }
-      }
-    } // }}}
-
-    .main { // {{{
-      transition: .5s ease;
-      -webkit-transition: .5s ease;
-      background: #fff;
-
-      padding: 20px;
-      //margin-left: 10px;
-      //padding: 10px;
-      //
-      article {
-        background: #fff;
-      }
-
-      article header {
-        background: #fff;
-        width: 100%;
-
-        p.stopper {
-          display: none;
-        }
-
-        &.affix {
-          width: 100%;
-          top: 0;
-          left: 0;
-          padding: 5px 20px;
-          z-index: 1039;
-          background: rgba(255, 255, 255, .9);
-          box-shadow: 0 0px 2px #999;
-
-          h1 {
-            font-size: 1.8em;
-          }
-
-          p.stopper {
-            display: block;
-            position: absolute;
-            bottom: -30px;
-            right: 10px;
-            background: #fff;
-            padding: 7px 14px;
-            margin: 0;
-            border: solid 1px #ccc;
-            border-top: none;
-            border-radius: 0 0 5px 5px;
-            font-size: .8em;
-          }
-        }
-      }
-
-      &.col-md-12 article header.affix {
-        width: 100%;
-      }
-
-
-      article header h1 {
-        margin-top: 0;
-
-        a:last-child {
-          color: #D1E2E4;
-          opacity: .7;
-
-          &:hover {
-            color: inherit;
-          }
-        }
-      }
-
-    } // }}}
-
-    .main.grant-restricted,
-    .main.grant-specified,
-    .main.grant-owner {
-      background: #333;
-      padding: 20px 10px;
-
-      .page-grant {
-        color: #ccc;
-      }
-
-      article {
-        border-radius: 5px;
-        padding: 20px;
+        color: #999;
       }
     }
 
-    .page-attachments {
-      background: #f0f0f0;
-      padding: 10px;
-      font-size: 0.9em;
-      color: #888;
-      margin: 10px 0;
-      border-radius: 5px;
-      p {
-        font-weight: bold;
-      }
-
-      ul {
-      }
-    }
-
-    .footer { // {{{
-      position: fixed;
-      width: 100%;
-      bottom: 0px;
-      height: 26px;
-      padding: 4px;
-      color: #444;
-      background: $crowiAsideBackground;
-      border-top-left-radius: 5px;
-      z-index: 1055;
-
-      a {
-        color: #666;
-      }
-    } // }}}
   } // }}}
-
-  &.main-container.aside-hidden { // {{{
-    .layout-control {
-      right: 0;
-      i {
-        transform: rotate(180deg);
-      }
-    }
-
-    aside.sidebar { // {{{
-      right: -25%;
-    } // }}}
-
-    .main { // {{{
-      width: 100%;
-
-      article header.affix {
-        width: 100%;
-      }
-    } // }}}
-  } // }}}
-
-  // override bootstrap modals
-  //.modal-backdrop {
-  //  z-index: 1052;
-  //}
-  //.modal {
-  //  z-index: 1055;
-  //}
 } // }}}
 
-.crowi.main-container .main {
-  .wiki-content {
-  }
-
-  .content-main {
-    .tab-content {
-      margin-top: 30px;
-    }
-  }
-
-  .content-main .timeline-body { // {{{ timeline
-     .revision-path {
-       margin-top: 1.6em;
-       margin-bottom: 0;
-       border: solid 2px #ddd;
-       border-bottom: none;
-       padding: 16px;
-       background: #ddd;
-     }
-     .revision-body {
-       font-size: 14px;
-       border: solid 2px #ddd;
-       padding: 16px;
-       background: #fdfdfd;
-     }
-  } // }}}
-
-  // on-edit
-  .content-main.on-edit {
-    position: fixed;
-    z-index: 1060;
-    background: #fff;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-
-    .nav {
-      margin-top: 8px;
-      height: 40px;
-    }
-
-    .tab-content {
-      .alert-info {
-        display: none;
-      }
-
-      top: 48px;
-      bottom: 58px;
-      padding: 0 12px;
-      position: absolute;
-      left: 0;
-      right: 0;
-      margin-top: 4px;
-
-      .edit-form {
-        height: 100%;
-        .row {
-          height: 100%;
-          .col-md-6 {
-            height: 100%;
-          }
-          form {
-            padding: 0;
-            border-right: solid 1px #ccc;
-            &::after {
-              position: absolute;
-              top: 0;
-              right: 15px;
-              font-size: 10px;
-              font-weight: 700;
-              color: #959595;
-              text-transform: uppercase;
-              letter-spacing: 1px;
-              content: "Input Content ...";
-            }
-          }
-          textarea {
-            height: 100%;
-            padding-top: 18px;
-            border: none;
-            box-shadow: none;
-
-            &.dragover {
-              border: dashed 6px #ccc;
-              padding: 12px 6px 0px;
-            }
-          }
-          .preview-body {
-            height: 100%;
-            padding-top: 18px;
-            overflow: scroll;
-
-            &::after {
-              position: absolute;
-              top: 0;
-              right: 15px;
-              font-size: 10px;
-              font-weight: 700;
-              color: #959595;
-              text-transform: uppercase;
-              letter-spacing: 1px;
-              content: "Preview";
-            }
-          }
-        }
-      }
-    }
-
-    .form-group.form-submit-group {
-
-      position: fixed;
-      z-index: 1054;
-      bottom: 0;
-      width: 100%;
-      left: 0;
-      padding: 8px;
-      height: 50px;
-      background: rgba(255,255,255,.8);
-      border-top: solid 1px #ccc;
-      margin-bottom: 0;
-    }
-  }
-}
 
 .crowi.single { // {{{
 } // }}}
@@ -578,23 +198,16 @@
 
 } // }}}
 
-@media (max-width: $screen-sm-max) { // {{{ less than tablet size
-
-  .content-main.on-edit {
-    .form-group.form-submit-group {
-      select.form-control {
-        display: inline-block;
-        width: auto;
-      }
-    }
-  }
-
+@media (max-width: $screen-sm-max) { // {{{
 } // }}}
 
 @media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) { // {{{ tablet size
   .crowi.main-container { // {{{
     .main {
       article header {
+        .bookmark-link {
+          font-size: 1.3em;
+        }
         h1 {
           font-size: 1.4em;
           margin-bottom: 0;
@@ -613,6 +226,9 @@
     .main {
       padding: 10px;
       article header {
+        .bookmark-link {
+          font-size: 1em;
+        }
         h1 {
           font-size: 1.1em;
         }
@@ -645,7 +261,6 @@
     .main {
       article header {
         border-bottom: solid 1px #666;
-        margin-bottom: 20px;
         h1 {
           font-size: 2em;
           color: #000;
@@ -672,8 +287,8 @@
       }
 
       .meta {
-        border-top: solid 1px #999;
-        margin-top: 20px;
+        border-top: solid 1px #ccc;
+        margin-top: 32px;
         color: #666;
       }
 

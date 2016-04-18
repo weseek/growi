@@ -23,11 +23,34 @@ describe('User', function () {
       });
 
       it('should be found by findUserByUsername', function(done) {
-        User.findUserByUsername('aoi', function (err, userData) {
-          expect(err).to.be.null;
+        User.findUserByUsername('aoi')
+        .then(function(userData) {
           expect(userData).to.instanceof(User);
           done();
         });
+      });
+    });
+  });
+
+  describe('User Utilities', function () {
+    context('Get username from path', function() {
+      it('found', function(done) {
+        var username = null;
+        username = User.getUsernameByPath('/user/sotarok');
+        expect(username).to.equal('sotarok');
+
+        username = User.getUsernameByPath('/user/some.user.name12/'); // with slash
+        expect(username).to.equal('some.user.name12');
+
+        done();
+      });
+
+      it('not found', function(done) {
+        var username = null;
+        username = User.getUsernameByPath('/the/page/is/not/related/to/user/page');
+        expect(username).to.be.null;
+
+        done();
       });
     });
   });

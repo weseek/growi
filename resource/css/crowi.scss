@@ -8,9 +8,15 @@
 
 // crowi component
 @import 'layout';
+@import 'page';
+@import 'page_list';
 @import 'form';
 @import 'wiki';
 @import 'admin';
+@import 'comment';
+@import 'user';
+@import 'portal';
+@import 'search';
 
 
 ul {
@@ -19,12 +25,19 @@ ul {
 
 
 .meta {
+
+  margin-top: 32px;
+  padding: 16px;
+  color: #666;
+  border-top: solid 1px #ccc;
   background: #f0f0f0;
-  padding: 10px;
-  font-size: 0.9em;
+  font-size: 0.95em;
   color: #888;
-  margin-top: 10px;
-  border-radius: 5px;
+
+  .picture {
+    width: 16px;
+    height: 16px;
+  }
 }
 
 .help-block {
@@ -48,12 +61,6 @@ footer, aside {
 
 .form-element {
   margin-bottom: 1em;
-}
-
-article {
-  header {
-    margin-bottom: 20px;
-  }
 }
 
 footer {
@@ -164,7 +171,7 @@ footer {
   }
   &.picture-rounded {
     border-radius: 50%;
-    box-shadow: 0 0 2px #ccc;
+    box-shadow: 0 0 2px rgba(0,0,0,.3);
   }
 }
 // components

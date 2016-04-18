@@ -128,7 +128,7 @@ $(function() {
         var indent = listMarkMatch[1];
         var num = parseInt(listMarkMatch[2]);
         if (num !== 1) {
-          listMark = listMark.return(/\s*\d+/, indent + (num +1));
+          listMark = listMark.replace(/\s*\d+/, indent + (num +1));
         }
       }
       $target.selection('insert', {text: "\n" + listMark, mode: 'before'});
@@ -212,6 +212,36 @@ $(function() {
     }
   });
 
+  var handlePasteEvent = function(event) {
+    var currentLine = getCurrentLine(event);
+
+    if (!currentLine) {
+      return false;
+    }
+    var $target = $(event.target);
+    var pasteText = event.clipboardData.getData('text');
+
+    var match = currentLine.text.match(/^(\s*(?:>|\-|\+|\*|\d+\.) (?:\[(?:x| )\] )?)/);
+    if (match) {
+      if (pasteText.match(/(?:\r\n|\r|\n)/)) {
+        pasteText = pasteText.replace(/(\r\n|\r|\n)/g, "$1" + match[1]);
+      }
+    }
+
+    $target.selection('insert', {text: pasteText, mode: 'after'});
+
+    var newPos = currentLine.end + pasteText.length;
+    $target.selection('setPos', {start: newPos, end: newPos});
+
+    return true;
+  };
+
+  document.getElementById('form-body').addEventListener('paste', function(event) {
+    if (handlePasteEvent(event)) {
+      event.preventDefault();
+    }
+  });
+
   var unbindInlineAttachment = function($form) {
     $form.unbind('.inlineattach');
   };
@@ -270,7 +300,7 @@ $(function() {
             pageId = page._id;
 
         $('#content-main').data('page-id', page._id);
-        $('#page-form [name="pageForm[currentRevision]"]').val(page.revision)
+        $('#page-form [name="pageForm[currentRevision]"]').val(page.revision._id)
 
         unbindInlineAttachment($inputForm);
 

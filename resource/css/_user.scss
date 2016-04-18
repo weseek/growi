@@ -1,0 +1,60 @@
+.crowi.main-container {
+  .main.user-page { // {{{ .main of layout related
+
+    .header-wrap {
+
+      h1 {
+        margin: 0;
+        font-size: 1.1em;
+      }
+
+      .user-page-header {
+        margin-bottom: 32px;
+
+        .bookmark-link {
+          float: right;
+          color: #e6b422;
+          font-size: 2em;
+          &.bookmarked {
+            //color: #fff;
+          }
+        }
+
+        .user-page-picture {
+          img {
+            height: 64px;
+            width: 64px;
+          }
+        }
+        .user-page-meta {
+          padding-left: 88px;
+          color: #999;
+
+          h2 {
+            font-size: 2.5em;
+            color: #666;
+          }
+
+          ul {
+            padding-left: 0;
+            li {
+              list-style: none;
+            }
+          }
+          .user-page-username {
+            font-weight: bold;
+          }
+          .user-page-email {
+          }
+          .user-page-introduction {
+          }
+        }
+      }
+
+      .user-page-content-tab {
+        padding: 16px 0 8px;
+      }
+
+    }
+  } // }}}
+}
