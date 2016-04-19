@@ -8,7 +8,20 @@
       <img alt="Crowi" src="/logo/32x32.png" width="16">
       {% block title %}{{ config.crowi['app:title'] }}{% endblock %}
     </a>
+  {% if searchConfigured() %}
+  <form class="navbar-form navbar-left search-top" role="search">
+    <div class="form-group input-group search-top-input-group">
+      <input type="text" id="search-top-input" class="search-top-input form-control" placeholder="Search ...">
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="button"><i class="search-top-icon fa fa-search"></i></button>
+      </span>
+    </div>
+  </form>
+  <div class="search-suggest" id="search-suggest">
   </div>
+  {% endif %}
+  </div>
+
 
   <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbarCollapse">
     <span class="sr-only">Toggle navigation</span>
@@ -18,10 +31,6 @@
   </button>
   <!-- Collect the nav links, forms, and other content for toggling -->
   <div class="collapse navbar-collapse" id="navbarCollapse">
-    <form id="headerSearch" class="navbar-form navbar-left form-inline" role="search" action="/_search">
-      <input id="searchQuery" name="q" type="text" class="form-control" placeholder="検索文字...">
-      <button type="submit" class="btn btn-default">検索</button>
-    </form>
 
     <ul class="nav navbar-nav navbar-right">
 
@@ -46,18 +55,18 @@
           <i class="fa fa-globe"></i> <span class="badge badge-danger">6</span>
         </a>
         <script>
-          $('#notif-opener').popover({
-            placement: 'bottom',
-            trigger: 'manual',
-            html: 'true',
-            content: function () {
-              return '<div></div>';
-            }
-          });
-          $('#notif-opener').click(function(e) {
-            $('#notif-opener').popover('show');
-            return false;
-          });
+$('#notif-opener').popover({
+  placement: 'bottom',
+  trigger: 'manual',
+  html: 'true',
+  content: function () {
+    return '<div></div>';
+  }
+});
+$('#notif-opener').click(function(e) {
+  $('#notif-opener').popover('show');
+  return false;
+});
         </script>
       </li>
       #}
@@ -97,19 +106,19 @@
 
 <a href="" class=" hidden-xs hidden-sm layout-control" id="toggle-sidebar"><i class="fa fa-chevron-right"></i> <span class="hide-on-affix-top"></span></a>
 <script>
-  $(function() {
-    $('#toggle-sidebar').click(function(e) {
-      var $mainContainer = $('.main-container');
-      if ($mainContainer.hasClass('aside-hidden')) {
-        $('.main-container').removeClass('aside-hidden');
-        $.cookie('aside-hidden', 0, { expires: 30, path: '/' });
-      } else {
-        $mainContainer.addClass('aside-hidden');
-        $.cookie('aside-hidden', 1, { expires: 30, path: '/' });
-      }
-      return false;
-    });
+$(function() {
+  $('#toggle-sidebar').click(function(e) {
+    var $mainContainer = $('.main-container');
+    if ($mainContainer.hasClass('aside-hidden')) {
+      $('.main-container').removeClass('aside-hidden');
+      $.cookie('aside-hidden', 0, { expires: 30, path: '/' });
+    } else {
+      $mainContainer.addClass('aside-hidden');
+      $.cookie('aside-hidden', 1, { expires: 30, path: '/' });
+    }
+    return false;
   });
+});
 </script>
 <aside class="sidebar col-md-3 hidden-xs hidden-sm hidden-print">
 
@@ -117,8 +126,8 @@
   {% endblock %}
 
   <div class="side-content">
-  {% block side_content %}
-  {% endblock %}
+    {% block side_content %}
+    {% endblock %}
   </div>
 
   {% block side_footer %}
@@ -126,20 +135,20 @@
 
   <div id="footer-container" class="footer">
     <footer class="">
-    <p>
-    <a href="" data-target="#help-modal" data-toggle="modal"><i class="fa fa-question-circle"> ヘルプ</i></a>
-    &copy; {{ now|date('Y') }} {{ config.crowi['app:title'] }} <img src="/logo/100x11_g.png" alt="powered by Crowi"> </p>
+      <p>
+      <a href="" data-target="#help-modal" data-toggle="modal"><i class="fa fa-question-circle"> ヘルプ</i></a>
+      &copy; {{ now|date('Y') }} {{ config.crowi['app:title'] }} <img src="/logo/100x11_g.png" alt="powered by Crowi"> </p>
     </footer>
   </div>
 </aside>
 {% include '../modal/widget_help.html' %}
 
 <script>
-  $(function() {
-    if ($.cookie('aside-hidden') == 1) {
-      $('.main-container').addClass('aside-hidden');
-    }
-  });
+$(function() {
+  if ($.cookie('aside-hidden') == 1) {
+    $('.main-container').addClass('aside-hidden');
+  }
+});
 </script>
 {% endblock %} {# layout_sidebar #}
 
@@ -147,19 +156,19 @@
 <div id="main" class="main col-md-9 {% if page %}{{ css.grant(page) }}{% endif %} {% block main_css_class %}{% endblock %}">
   {% if page && page.grant != 1 %}
   <p class="page-grant">
-    <i class="fa fa-lock"></i> {{ consts.pageGrants[page.grant] }} (このページの閲覧は制限されています)
+  <i class="fa fa-lock"></i> {{ consts.pageGrants[page.grant] }} (このページの閲覧は制限されています)
   </p>
   {% endif %}
   <article>
-  {% block content_head %}
-  {% endblock %}
+    {% block content_head %}
+    {% endblock %}
 
-  {% block content_main %}
-  //
-  {% endblock content_main %}
+    {% block content_main %}
+    //
+    {% endblock content_main %}
 
-  {% block content_footer %}
-  {% endblock %}
+    {% block content_footer %}
+    {% endblock %}
   </article>
 </div>
 

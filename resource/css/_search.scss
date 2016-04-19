@@ -13,3 +13,29 @@
 
 .search-listpage-input {
 }
+
+.search-top {
+  .search-top-input-group {
+    .search-top-input {
+    }
+    &:focus {
+      width: 400px;
+      transition: .3s ease;
+    }
+  }
+}
+
+.search-suggest {
+  // => dicided by JS
+  // top: 43px;
+  // left: 125px;
+  display: none;
+  position: fixed;
+  width: 500px;
+  background: #fff;
+  border: solid 1px #ccc;
+  box-shadow: 0 0 2px #ccc;
+  padding: 16px;
+
+}
+
