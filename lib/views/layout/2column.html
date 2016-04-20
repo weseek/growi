@@ -9,14 +9,14 @@
       {% block title %}{{ config.crowi['app:title'] }}{% endblock %}
     </a>
   {% if searchConfigured() %}
-  <form class="navbar-form navbar-left search-top" role="search">
+  <div class="navbar-form navbar-left search-top" role="search" id="search-top">
     <div class="form-group input-group search-top-input-group">
       <input type="text" id="search-top-input" class="search-top-input form-control" placeholder="Search ...">
       <span class="input-group-btn">
         <button class="btn btn-default" type="button"><i class="search-top-icon fa fa-search"></i></button>
       </span>
     </div>
-  </form>
+  </div>
   <div class="search-suggest" id="search-suggest">
   </div>
   {% endif %}
