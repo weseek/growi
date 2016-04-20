@@ -1,5 +1,6 @@
 
 var program = require('commander')
+  , sprintf = require('sprintf')
   , debug = require('debug')('debug:console:search-util')
   , crowi = new (require('../lib/crowi'))(__dirname + '/../', process.env)
   ;
@@ -18,9 +19,13 @@ crowi.init()
           .then(function(data) {
             console.log(data);
           })
+          .then(function() {
+            process.exit();
+          })
           .catch(function(err) {
             console.log("Error", err);
-          });
+
+          })
       });
 
     program
@@ -30,7 +35,13 @@ crowi.init()
 
         search.addAllPages()
           .then(function(data) {
-            console.log(data);
+            if (data.errors) {
+              console.error(data);
+              console.error('Failed to index.');
+            } else {
+              console.log('Data is successfully indexed.');
+            }
+            process.exit(0);
           })
           .catch(function(err) {
             console.log("Error", err);
@@ -38,16 +49,31 @@ crowi.init()
       });
 
     program
-      .command('rebuild-index [name]')
+      .command('rebuild-index')
       .action(function (cmd, env) {
+        var search = crowi.getSearcher();
 
-        search.rebuildIndex()
+        search.deleteIndex()
           .then(function(data) {
-            console.log('rebuildIndex:', data);
-            search.addAllPages();
+            if (!data.errors) {
+              console.log('Index deleted.');
+            }
+            return search.buildIndex();
+          })
+          .then(function(data) {
+            if (!data.errors) {
+              console.log('Index created.');
+            }
+            return search.addAllPages();
+          })
+          .then(function(data) {
+            if (!data.errors) {
+              console.log('Data is successfully indexed.');
+            }
+            process.exit(0);
           })
           .catch(function(err) {
-            debug('Error', err);
+            console.error('Error', err);
           });
       });
 
