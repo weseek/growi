@@ -137,6 +137,7 @@ Crowi.rendererType = {};
 Crowi.rendererType.markdown = function(){};
 Crowi.rendererType.markdown.prototype = {
   render: function(contentText) {
+
     marked.setOptions({
       gfm: true,
       highlight: function (code, lang, callback) {
@@ -165,6 +166,8 @@ Crowi.rendererType.markdown.prototype = {
     });
 
     var contentHtml = Crowi.unescape(contentText);
+    // TODO 前処理系のプラグイン化
+    contentHtml = this.preFormatMarkdown(contentHtml);
     contentHtml = this.expandImage(contentHtml);
     contentHtml = this.link(contentHtml);
 
@@ -176,6 +179,13 @@ Crowi.rendererType.markdown.prototype = {
       }
       $body.html(content);
     });
+  },
+  preFormatMarkdown: function(content){
+    var x = content
+      .replace(/^(#{1,})([^\s]+)?(.*)$/gm, '$1 $2$3') // spacer for section
+      .replace(/^(\s*)(\*|\-)([^\s]+)?(.*)$/gm, '$1$2 $3$4') // spacer for list
+      .replace(/>[\s]*\n>[\s]*\n/g, '> <br>\n> \n');
+    return x;
   },
   link: function (content) {
     return content
