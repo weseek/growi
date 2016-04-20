@@ -9,13 +9,13 @@
         <h4 class="modal-title">新規メモを作成</h4>
       </div>
       <div class="modal-body">
-        <p><a href="{{ user_page_root(user) }}/メモ/"><i class="fa fa-list-ul"></i> 自分のメモ一覧を見る</a></p>
+        <p><a href="{{ userPageRoot(user) }}/メモ/"><i class="fa fa-list-ul"></i> 自分のメモ一覧を見る</a></p>
 
           <div class="input-group">
-            <span class="input-group-addon">{{ user_page_root(user) }}/メモ/{{ now|datetz('Y/m/d') }}/</span>
+            <span class="input-group-addon">{{ userPageRoot(user) }}/メモ/{{ now|datetz('Y/m/d') }}/</span>
             <input type="text" class="form-control" id="memoName" name="memoName" placeholder="メモ名を入力">
           </div>
-          <input type="hidden" class="form-control" name="memoNamePrefix" value="{{ user_page_root(user) }}/メモ/{{ now|datetz('Y/m/d') }}/">
+          <input type="hidden" class="form-control" name="memoNamePrefix" value="{{ userPageRoot(user) }}/メモ/{{ now|datetz('Y/m/d') }}/">
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>

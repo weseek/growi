@@ -3,11 +3,13 @@
   <div class="row">
     {# default(author) としているのは、v1.1.1 以前に page.creator データが入ってないから。暫定として最新更新ユーザーを表示しちゃう。 #}
     <div class="col-md-3 creator-picture">
-      <img src="{{ page.creator|default(author)|picture }}" class="picture picture-lg picture-rounded"><br>
+      <a href="{{ userPageRoot(page.creator) }}">
+        <img src="{{ page.creator|default(author)|picture }}" class="picture picture-lg picture-rounded"><br>
+      </a>
     </div>
     <div class="col-md-9">
       <p class="creator">
-        {{ page.creator.name|default(author.name) }}
+        <a href="{{ userPageRoot(page.creator) }}">{{ page.creator.name|default(author.name) }}</a>
       </p>
       <p class="created-at">
         作成日: {{ page.createdAt|datetz('Y/m/d H:i:s') }}<br>
@@ -39,14 +41,6 @@
           {{ page.seenUsers.length }}
         </p>
         <p id="seen-user-list" class="seen-user-list" data-seen-users="{{ page.seenUsers|default([])|join(',') }}">
-        {#
-          {% for seenUser in page.seenUsers %}
-          <a href="{{ user_page_root(seenUser) }}" title="{{ seenUser.name }}"><img alt="{{ seenUser.name }}" src="{{ seenUser|picture }}" class="picture picture-xs picture-rounded"></a>
-          {% endfor %}
-          {% if page.seenUsers.length > 10 %}
-            (...)
-          {% endif %}
-        #}
         </p>
       </dd>
     </dl>
