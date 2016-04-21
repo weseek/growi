@@ -57,7 +57,7 @@
 
       {% set createdUser = req.flash('createdUser') %}
       {% if createdUser.length %}
-      <div class="modal fade in" id="createdUserModal">
+      <div class="modal modal-open" id="createdUserModal">
         <div class="modal-dialog">
           <div class="modal-content">
 
@@ -78,7 +78,6 @@
           </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
       </div><!-- /.modal -->
-      <script>$(function() { $('#createdUserModal').modal('show'); });</script>
       {% endif %}
 
       <h2>ユーザー一覧</h2>

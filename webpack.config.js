@@ -4,6 +4,10 @@ var webpack = require('webpack');
 module.exports = {
   entry: {
     app: './resource/js/app.js',
+    crowi: './resource/js/crowi.js',
+    presentation: './resource/js/crowi-presentation.js',
+    form: './resource/js/crowi-form.js',
+    admin: './resource/js/crowi-admin.js',
   },
   output: {
     path: path.join(__dirname + "/public/js"),
@@ -11,7 +15,7 @@ module.exports = {
   },
   resolve: {
     modulesDirectories: [
-      './node_modules',
+      './node_modules', './resource/thirdparty-js',
     ],
   },
   module: {
@@ -30,7 +34,8 @@ module.exports = {
     new webpack.ProvidePlugin({
       jQuery: "jquery",
       $: "jquery",
-      jquery: "jquery"
-    })
+      jqeury: "jquery",
+    }),
+    //new webpack.optimize.DedupePlugin(),
   ]
 };

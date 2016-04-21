@@ -12,13 +12,12 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
 
   <link rel="stylesheet" href="/css/crowi{% if env  == 'production' %}.min{% endif %}.css">
-  <script src="/js/crowi{% if env  == 'production' %}.min{% endif %}.js"></script>
   <link href='//fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
 </head>
 {% endblock %}
 
 {% block html_body %}
-<body class="crowi main-container {% block html_base_css %}{% endblock %}">
+<body class="crowi main-container {% block html_base_css %}{% endblock %}" data-me="{{ user._id.toString() }}">
 <div id="fb-root"></div>
 <script>
   window.fbAsyncInit = function() {
@@ -71,7 +70,7 @@
 {% endblock %} {# layout_sidebar #}
 
 {% block layout_main %}
-<div id="main" class="main col-md-9" ng-controller="WikiPageController">
+<div id="main" class="main col-md-9">
   <article>
   {% block content_head %}
     <header>
@@ -109,5 +108,6 @@
 {% endblock %}
 
 <script src="/js/app.js"></script>
+<script src="/js/crowi{% if env  == 'production' %}.min{% endif %}.js"></script>
 </html>
 

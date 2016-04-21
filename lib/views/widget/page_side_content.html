@@ -12,7 +12,7 @@
 
 <h3><i class="fa fa-comment"></i> Comments</h3>
 <div class="page-comments">
-  <form class="form page-comment-form" id="page-comment-form">
+  <form class="form page-comment-form" id="page-comment-form" onsubmit="return false;">
     <div class="comment-form">
       <div class="comment-form-main">
         <div class="comment-write" id="comment-write">
@@ -22,7 +22,7 @@
           <input type="hidden" name="commentForm[page_id]" value="{{ page._id.toString() }}">
           <input type="hidden" name="commentForm[revision_id]" value="{{ revision._id.toString() }}">
           <span class="text-danger" id="comment-form-message"></span>
-          <input type="submit" id="commenf-form-button" value="Comment" class="btn btn-primary btn-sm form-inline">
+          <input type="submit" id="comment-form-button" value="Comment" class="btn btn-primary btn-sm form-inline">
         </div>
       </div>
     </div>

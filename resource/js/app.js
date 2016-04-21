@@ -17,4 +17,9 @@ class Crowi extends React.Component {
   }
 }
 
-ReactDOM.render(<Hello />, document.getElementById('xxx'));
+var xxx = document.getElementById('xxx');
+if (xxx) {
+  $(function() {
+    ReactDOM.render(<Crowi />, xxx);
+  });
+}

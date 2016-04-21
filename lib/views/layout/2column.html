@@ -54,20 +54,6 @@
         <a href="" id="notif-opener">
           <i class="fa fa-globe"></i> <span class="badge badge-danger">6</span>
         </a>
-        <script>
-$('#notif-opener').popover({
-  placement: 'bottom',
-  trigger: 'manual',
-  html: 'true',
-  content: function () {
-    return '<div></div>';
-  }
-});
-$('#notif-opener').click(function(e) {
-  $('#notif-opener').popover('show');
-  return false;
-});
-        </script>
       </li>
       #}
       <li id="login-user">
@@ -105,21 +91,6 @@ $('#notif-opener').click(function(e) {
 {% block layout_sidebar %}
 
 <a href="" class=" hidden-xs hidden-sm layout-control" id="toggle-sidebar"><i class="fa fa-chevron-right"></i> <span class="hide-on-affix-top"></span></a>
-<script>
-$(function() {
-  $('#toggle-sidebar').click(function(e) {
-    var $mainContainer = $('.main-container');
-    if ($mainContainer.hasClass('aside-hidden')) {
-      $('.main-container').removeClass('aside-hidden');
-      $.cookie('aside-hidden', 0, { expires: 30, path: '/' });
-    } else {
-      $mainContainer.addClass('aside-hidden');
-      $.cookie('aside-hidden', 1, { expires: 30, path: '/' });
-    }
-    return false;
-  });
-});
-</script>
 <aside class="sidebar col-md-3 hidden-xs hidden-sm hidden-print">
 
   {% block side_header %}
@@ -143,13 +114,6 @@ $(function() {
 </aside>
 {% include '../modal/widget_help.html' %}
 
-<script>
-$(function() {
-  if ($.cookie('aside-hidden') == 1) {
-    $('.main-container').addClass('aside-hidden');
-  }
-});
-</script>
 {% endblock %} {# layout_sidebar #}
 
 {% block layout_main %}
