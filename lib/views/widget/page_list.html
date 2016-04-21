@@ -25,6 +25,10 @@
         <i class="fa fa-comment"></i>{{ page.commentCount }}
       {% endif  %}
 
+      {% if page.liker.length > 0 %}
+        <i class="fa fa-thumbs-up"></i>{{ page.liker.length }}
+      {% endif  %}
+
       {% if !page.isPublic() %}
         <i class="fa fa-lock"></i>
       {% endif %}
