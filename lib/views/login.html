@@ -74,7 +74,7 @@
     </div>
 
     {% if config.crowi['security:registrationMode'] != 'Closed' %}
-    <p class="bottom-text"><a href="#register"><i class="fa fa-pencil"></i> 新規登録はこちら</a></p>
+    <p class="bottom-text"><a href="#register" id="register"><i class="fa fa-pencil"></i> 新規登録はこちら</a></p>
     {% endif %}
   </div>
 
@@ -187,7 +187,7 @@
       {% endif %}
     </div>
 
-    <p class="bottom-text"><a href="#login"><i class="fa fa-sign-out"></i> ログインはこちら</a></p>
+    <p class="bottom-text"><a href="#login" id="login"><i class="fa fa-sign-out"></i> ログインはこちら</a></p>
   </div>
   {% endif %} {# if registrationMode == Closed #}
 

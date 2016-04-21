@@ -37,8 +37,16 @@ var css = {
 };
 
 var js = {
+  bundled: [
+    'node_modules/jquery/dist/jquery.js',
+    'node_modules/bootstrap-sass/assets/javascripts/bootstrap.js',
+    'node_modules/inline-attachment/src/inline-attachment.js',
+    'node_modules/jquery.cookie/jquery.cookie.js',
+    'resource/thirdparty-js/jquery.selection.js',
+  ],
   src:          dirs.jsSrc + '/app.js',
   dist:         dirs.jsDist + '/crowi.js',
+  bundled:      dirs.jsDist + '/bundled.js',
   admin:        dirs.jsDist + '/admin.js',
   form:         dirs.jsDist + '/form.js',
   presentation: dirs.jsDist + '/presentation.js',
@@ -55,8 +63,14 @@ var cssIncludePaths = [
   'node_modules/reveal.js/css'
 ];
 
+gulp.task('js:concat', function() {
+  return gulp.src(js.bundled)
+    .pipe(concat('bundled.js')) // jQuery
+    .pipe(gulp.dest(dirs.jsDist));
+});
+
 // move task for css and js to webpack over time.
-gulp.task('webpack', function() {
+gulp.task('webpack', ['js:concat'], function() {
   return gulp.src(js.src)
     .pipe(webpack(require('./webpack.config.js')))
     .pipe(gulp.dest(dirs.jsDist));
@@ -74,6 +88,11 @@ gulp.task('js:min', ['webpack'], function() {
     .pipe(gulp.dest(dirs.jsDist));
 
   gulp.src(js.admin)
+    .pipe(uglify())
+    .pipe(rename({suffix: '.min'}))
+    .pipe(gulp.dest(dirs.jsDist));
+
+  gulp.src(js.bundled)
     .pipe(uglify())
     .pipe(rename({suffix: '.min'}))
     .pipe(gulp.dest(dirs.jsDist));

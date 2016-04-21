@@ -2,9 +2,9 @@ $(function() {
   var pageId = $('#content-main').data('page-id');
   var pagePath= $('#content-main').data('path');
 
-  require('inline-attachment/src/inline-attachment');
-  require('jquery.selection');
-  require('bootstrap-sass');
+  //require('inline-attachment/src/inline-attachment');
+  //require('jquery.selection');
+  //require('bootstrap-sass');
 
   // show/hide
   function FetchPagesUpdatePostAndInsert(path) {
@@ -26,7 +26,6 @@ $(function() {
   }
 
   $('a[data-toggle="tab"][href="#edit-form"]').on('show.bs.tab', function() {
-    console.log('Event fiered');
     $('.content-main').addClass('on-edit');
 
     if (slackConfigured) {
