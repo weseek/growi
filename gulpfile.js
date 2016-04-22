@@ -45,7 +45,7 @@ var js = {
     'resource/thirdparty-js/jquery.selection.js',
   ],
   src:          dirs.jsSrc  + '/app.js',
-  bundled:      dirs.jsSrc  + '/bundled.js',
+  bundled:      dirs.jsDist + '/bundled.js',
   dist:         dirs.jsDist + '/crowi.js',
   admin:        dirs.jsDist + '/admin.js',
   form:         dirs.jsDist + '/form.js',
