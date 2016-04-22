@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 
 import HeaderSearchBox from './components/Header/SearchBox';
 
+/*
 class Crowi extends React.Component {
   constructor(props) {
     super(props);
@@ -16,10 +17,11 @@ class Crowi extends React.Component {
     );
   }
 }
+*/
 
-var xxx = document.getElementById('xxx');
-if (xxx) {
+var searchElement = document.getElementById('search-top');
+if (searchElement) {
   $(function() {
-    ReactDOM.render(<Crowi />, xxx);
+    ReactDOM.render(<HeaderSearchBox />, searchElement);
   });
 }

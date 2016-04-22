@@ -1,10 +1,18 @@
 import React from 'react';
 
-export class SearchBox extends React.Component {
+import SearchSuggest from './SearchSuggest';
+
+export default class extends React.Component {
 
   render() {
     return (
-      <h1>Hello</h1>
+      <div className="form-group input-group search-top-input-group">
+        <input type="text" id="search-top-input" className="search-top-input form-control" placeholder="Search ..." />
+        <span className="input-group-btn">
+          <button className="btn btn-default" type="button"><i className="search-top-icon fa fa-search"></i></button>
+        </span>
+        <SearchSuggest />
+      </div>
     );
   }
 }
