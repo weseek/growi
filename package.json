@@ -93,7 +93,7 @@
     "time": "~0.11.0",
     "vinyl-source-stream": "~1.1.0",
     "webpack": "~1.13.0",
-    "webpack-stream": "^3.1.0"
+    "webpack-stream": "~3.1.0"
   },
   "devDependencies": {
     "chai": "~1.10.0",
@@ -107,7 +107,7 @@
     "start": "node app.js",
     "test": "gulp test",
     "build": "gulp",
-    "jsbuild": "webpack",
+    "webpack": "webpack",
     "postinstall": "gulp"
   },
   "env": {

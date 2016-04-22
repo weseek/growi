@@ -37,16 +37,16 @@ var css = {
 };
 
 var js = {
-  bundled: [
+  bundledSrc: [
     'node_modules/jquery/dist/jquery.js',
     'node_modules/bootstrap-sass/assets/javascripts/bootstrap.js',
     'node_modules/inline-attachment/src/inline-attachment.js',
     'node_modules/jquery.cookie/jquery.cookie.js',
     'resource/thirdparty-js/jquery.selection.js',
   ],
-  src:          dirs.jsSrc + '/app.js',
+  src:          dirs.jsSrc  + '/app.js',
+  bundled:      dirs.jsSrc  + '/bundled.js',
   dist:         dirs.jsDist + '/crowi.js',
-  bundled:      dirs.jsDist + '/bundled.js',
   admin:        dirs.jsDist + '/admin.js',
   form:         dirs.jsDist + '/form.js',
   presentation: dirs.jsDist + '/presentation.js',
@@ -64,7 +64,7 @@ var cssIncludePaths = [
 ];
 
 gulp.task('js:concat', function() {
-  return gulp.src(js.bundled)
+  return gulp.src(js.bundledSrc)
     .pipe(concat('bundled.js')) // jQuery
     .pipe(gulp.dest(dirs.jsDist));
 });
