@@ -21,4 +21,6 @@ $(function() {
     });
     return false;
   });
+
+  $('#createdUserModal').modal('show');
 });
