@@ -1,6 +1,22 @@
 CHANGES
 ========
 
+## 1.4.0
+
+* Feature: Slack integration.
+* Feature: Page comment.
+* Feature: User page.
+* Feature: User bookmark page and created pages list.
+* Feature: Portal for list.
+* Feature: History diff (Thank you: @suzuki #65).
+* Feature: Image uploader for local server (Thank you: @riaf ).
+* Improve: List view styles.
+* Improve: Paste handler with `> ` line (Thank you: @suzuki #57).
+* Fix: Google Apps cliendId validation (Thank you: @suzutan #72).
+* Fix: Bug of detecting prefix of the path on list view.
+* And some fixes. (Thank you: @yuya-takeyama @takahashim)
+* Library Update: now Crowi doesn't depends on bower.
+
 ## 1.3.1
 
 * Fix: Logic of checking uploadable was broken.
