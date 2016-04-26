@@ -19,9 +19,13 @@ class Crowi extends React.Component {
 }
 */
 
-var searchElement = document.getElementById('search-top');
-if (searchElement) {
-  $(function() {
-    ReactDOM.render(<HeaderSearchBox />, searchElement);
-  });
-}
+var componentMappings = {
+  'search-top': <HeaderSearchBox />,
+};
+
+Object.keys(componentMappings).forEach((key) => {
+  var elem = document.getElementById(key);
+  if (elem) {
+    ReactDOM.render(componentMappings[key], elem);
+  }
+});

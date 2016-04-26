@@ -1,8 +1,14 @@
+// This is the root component for #search-top
+
 import React from 'react';
 
 import SearchSuggest from './SearchSuggest';
 
 export default class extends React.Component {
+
+  getInitialState() {
+    return {data: []};
+  }
 
   render() {
     return (
