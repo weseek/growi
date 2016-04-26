@@ -183,7 +183,6 @@ Crowi.rendererType.markdown.prototype = {
   preFormatMarkdown: function(content){
     var x = content
       .replace(/^(#{1,})([^\s]+)?(.*)$/gm, '$1 $2$3') // spacer for section
-      .replace(/^(\s*)(\*|\-)([^\s]+)?(.*)$/gm, '$1$2 $3$4') // spacer for list
       .replace(/>[\s]*\n>[\s]*\n/g, '> <br>\n> \n');
     return x;
   },
