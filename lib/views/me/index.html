@@ -3,9 +3,11 @@
 {% block html_title %}ユーザー設定 · {{ path }}{% endblock %}
 
 {% block content_head %}
-<header  id="page-header">
+<div class="header-wrap">
+  <header id="page-header">
   <h1 class="title" id="">ユーザー設定</h1>
-</header>
+  </header>
+</div>
 {% endblock %}
 
 {% block content_main %}
@@ -120,11 +122,16 @@
             新しい画像をアップロード
           </label>
           <div class="col-sm-9">
+            {% if isUploadable() %}
             <form action="/_api/me/picture/upload" id="pictureUploadForm" method="post" class="form-horizontal" role="form" enctype="multipart/form-data">
               <input name="userPicture" type="file" accept="image/*">
               <div id="pictureUploadFormProgress">
               </div>
             </form>
+            {% else %}
+            * 画像をアップロードをするための設定がされていません。<br>
+            * アップロードできるようにするには、AWS またはローカルアップロードの設定をしてください。<br>
+            {% endif %}
           </div>
         </div>
       </fieldset>
