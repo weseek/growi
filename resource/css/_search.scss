@@ -29,12 +29,12 @@
   // => dicided by JS
   // top: 43px;
   // left: 125px;
-  display: none;
+  //display: none;
   position: fixed;
   width: 500px;
   background: #fff;
   border: solid 1px #ccc;
-  box-shadow: 0 0 2px #ccc;
+  box-shadow: 0 0 1px rgba(0,0,0,.3);
   padding: 16px;
 
 }

@@ -2,23 +2,46 @@
 
 import React from 'react';
 
+import SearchForm from './SearchForm';
 import SearchSuggest from './SearchSuggest';
 
-export default class extends React.Component {
+export default class SearchBox extends React.Component {
 
-  getInitialState() {
-    return {data: []};
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      searchingKeyword: '',
+      suggestedPages: [],
+    }
+
+    this.search = this.search.bind(this);
+  }
+
+  search(data) {
+    console.log('search doing ... ', data);
+    //this.loadCommentsFromServer();
+    this.setState({
+      suggestedPages: [
+        { path: '/hoge/fuga ' + data.keyword, author: '@sotarok'},
+        { path: '/hoge/piyo', author: '@riaf'},
+      ]
+    });
   }
 
   render() {
     return (
-      <div className="form-group input-group search-top-input-group">
-        <input type="text" id="search-top-input" className="search-top-input form-control" placeholder="Search ..." />
-        <span className="input-group-btn">
-          <button className="btn btn-default" type="button"><i className="search-top-icon fa fa-search"></i></button>
-        </span>
-        <SearchSuggest />
+      <div className="search-box">
+        <SearchForm onSearchFormChanged={this.search} />
+        <SearchSuggest suggestedPages={this.state.suggestedPages} />
       </div>
     );
   }
 }
+
+SearchBox.propTypes = {
+  //pollInterval: React.PropTypes.number,
+};
+SearchBox.defaultProps = {
+  //pollInterval: 1000,
+};
