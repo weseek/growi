@@ -12,6 +12,14 @@
 
 {% block content_main %}
 <div class="content-main">
+  
+  {% set emessage = req.flash('errorMessage') %}
+  {% if emessage.length %}
+  <div class="alert alert-danger">
+    {{ emessage }}
+  </div>
+  {% endif %}
+
   <div class="row">
     <div class="col-md-3">
       <ul class="nav nav-pills nav-stacked">
