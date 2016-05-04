@@ -1,7 +1,8 @@
 
 var program = require('commander')
   , sprintf = require('sprintf')
-  , debug = require('debug')('debug:console:search-util')
+  , debug = require('debug')('crowi:console:search-util')
+  , colors = require('colors')
   , crowi = new (require('../lib/crowi'))(__dirname + '/../', process.env)
   ;
 
@@ -36,8 +37,17 @@ crowi.init()
         search.addAllPages()
           .then(function(data) {
             if (data.errors) {
-              console.error(data);
-              console.error('Failed to index.');
+              console.error(colors.red.underline('Failed to index all pages.'));
+              console.error("");
+              data.items.forEach(function(item, i) {
+                var index = item.index || null;
+                if (index && index.status != 200) {
+                  console.error(colors.red('Error item: id=%s'), index._id)
+                  console.error('error.type=%s, error.reason=%s', index.error.type, index.error.reason);
+                  console.error(index.error.caused_by);
+                }
+                //debug('Item', i, item);
+              });
             } else {
               console.log('Data is successfully indexed.');
             }
@@ -74,6 +84,32 @@ crowi.init()
           })
           .catch(function(err) {
             console.error('Error', err);
+          });
+      });
+
+    program
+      .command('search')
+      .action(function (cmd, env) {
+        var Page = crowi.model('Page');
+        var search = crowi.getSearcher();
+        var keyword = "";
+
+        debug(cmd, env);
+
+        search.searchKeyword(keyword, {})
+          .then(function(data) {
+            console.log(colors.green('Search result: %d of %d total.'), data.meta.results, data.meta.total);
+
+            return Page.findListByPageIds(data.data.map(function(p) { return p._id; }));
+          }).then(function(pages) {
+            pages.map(function(page) {
+              console.log(page.path);
+            });
+          })
+          .catch(function(err) {
+            console.error('Error', err);
+
+            process.exit(0);
           });
       });
 
