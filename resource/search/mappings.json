@@ -57,7 +57,6 @@
         "body": {
           "type" : "multi_field",
           "fields" : {
-            "raw": {"type" : "string", "index" : "not_analyzed"},
             "ja": {"type" : "string", "analyzer" : "kuromoji"},
             "en": {"type" : "string", "analyzer" : "english"}
           }
