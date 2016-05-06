@@ -92,19 +92,20 @@ crowi.init()
       .action(function (cmd, env) {
         var Page = crowi.model('Page');
         var search = crowi.getSearcher();
-        var keyword = "";
-
-        debug(cmd, env);
+        var keyword = cmd;
 
         search.searchKeyword(keyword, {})
           .then(function(data) {
-            console.log(colors.green('Search result: %d of %d total.'), data.meta.results, data.meta.total);
+            debug('result is', data);
+            console.log(colors.green('Search result: %d of %d total. (%d ms)'), data.meta.results, data.meta.total, data.meta.took);
 
-            return Page.findListByPageIds(data.data.map(function(p) { return p._id; }));
+            return Page.populatePageListToAnyObjects(data.data);
           }).then(function(pages) {
             pages.map(function(page) {
-              console.log(page.path);
+              console.log(page._score, page._id, page.path);
             });
+
+            process.exit(0);
           })
           .catch(function(err) {
             console.error('Error', err);

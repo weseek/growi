@@ -67,6 +67,9 @@
         "comment_count": {
           "type": "integer"
         },
+        "bookmark_count": {
+          "type": "integer"
+        },
         "like_count": {
           "type": "integer"
         },
