@@ -22,6 +22,13 @@ export default class SearchBox extends React.Component {
 
   search(data) {
     const keyword = data.keyword;
+    if (keyword === '') {
+      this.setState({
+        searchedPages: [],
+      });
+
+      return true;
+    }
 
     axios.get('/_api/search', {params: {q: keyword}})
     .then((res) => {
