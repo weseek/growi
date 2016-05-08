@@ -4,6 +4,7 @@ import React from 'react';
 
 import SearchForm from './SearchForm';
 import SearchSuggest from './SearchSuggest';
+import axios from 'axios'
 
 export default class SearchBox extends React.Component {
 
@@ -12,20 +13,27 @@ export default class SearchBox extends React.Component {
 
     this.state = {
       searchingKeyword: '',
-      suggestedPages: [],
+      searchedPages: [],
+      searchError: null,
     }
 
     this.search = this.search.bind(this);
   }
 
   search(data) {
-    console.log('search doing ... ', data);
-    //this.loadCommentsFromServer();
-    this.setState({
-      suggestedPages: [
-        { path: '/hoge/fuga ' + data.keyword, author: '@sotarok'},
-        { path: '/hoge/piyo', author: '@riaf'},
-      ]
+    const keyword = data.keyword;
+
+    axios.get('/_api/search', {params: {q: keyword}})
+    .then((res) => {
+      if (res.data.ok) {
+        this.setState({
+          searchedPages: res.data.data
+        });
+      }
+      // TODO error
+    })
+    .catch((res) => {
+      // TODO error
     });
   }
 
@@ -33,7 +41,7 @@ export default class SearchBox extends React.Component {
     return (
       <div className="search-box">
         <SearchForm onSearchFormChanged={this.search} />
-        <SearchSuggest suggestedPages={this.state.suggestedPages} />
+        <SearchSuggest searchedPages={this.state.searchedPages} />
       </div>
     );
   }

@@ -5,15 +5,13 @@ import ListView from '../PageList/ListView';
 export default class SearchSuggest extends React.Component {
 
   render() {
-    console.log('suggestedPages', this.props.suggestedPages);
-
-    if (this.props.suggestedPages.length < 1) {
+    if (this.props.searchedPages.length < 1) {
       return <div></div>;
     }
 
     return (
       <div className="search-suggest" id="search-suggest">
-        <ListView pages={this.props.suggestedPages} />
+        <ListView pages={this.props.searchedPages} />
       </div>
     );
   }
@@ -21,9 +19,9 @@ export default class SearchSuggest extends React.Component {
 }
 
 SearchSuggest.propTypes = {
-  suggestedPages: React.PropTypes.array.isRequired,
+  searchedPages: React.PropTypes.array.isRequired,
 };
 
 SearchSuggest.defaultProps = {
-  suggestedPages: [],
+  searchedPages: [],
 };

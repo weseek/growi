@@ -18,15 +18,20 @@ export default class SearchForm extends React.Component {
     setInterval(this.searchFieldTicker.bind(this), this.props.pollInterval);
   }
 
-  searchFieldTicker() {
+  search() {
     if (this.state.searchedKeyword != this.state.keyword) {
       this.props.onSearchFormChanged({keyword: this.state.keyword});
       this.setState({searchedKeyword: this.state.keyword});
     }
   }
 
+  searchFieldTicker() {
+    this.search();
+  }
+
   handleSubmit(event) {
     event.preventDefault();
+    this.search();
   }
 
   handleChange(event) {
@@ -45,7 +50,7 @@ export default class SearchForm extends React.Component {
           onChange={this.handleChange}
         />
         <span className="input-group-btn">
-          <button type="submit" className="btn btn-default" type="button">
+          <button type="submit" className="btn btn-default">
             <i className="search-top-icon fa fa-search"></i>
           </button>
         </span>
