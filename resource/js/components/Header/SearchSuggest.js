@@ -6,6 +6,13 @@ export default class SearchSuggest extends React.Component {
 
   render() {
     if (this.props.searchedPages.length < 1) {
+      if (this.props.searchingKeyword !== '') {
+        return (
+          <div className="search-suggest" id="search-suggest">
+            No results for "{this.props.searchingKeyword}".
+          </div>
+        );
+      }
       return <div></div>;
     }
 
@@ -20,8 +27,10 @@ export default class SearchSuggest extends React.Component {
 
 SearchSuggest.propTypes = {
   searchedPages: React.PropTypes.array.isRequired,
+  searchingKeyword: React.PropTypes.string.isRequired,
 };
 
 SearchSuggest.defaultProps = {
   searchedPages: [],
+  searchingKeyword: '',
 };

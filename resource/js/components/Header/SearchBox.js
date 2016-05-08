@@ -24,17 +24,23 @@ export default class SearchBox extends React.Component {
     const keyword = data.keyword;
     if (keyword === '') {
       this.setState({
+        searchingKeyword: '',
         searchedPages: [],
       });
 
       return true;
     }
 
+    this.setState({
+      searchingKeyword: keyword,
+    });
+
     axios.get('/_api/search', {params: {q: keyword}})
     .then((res) => {
       if (res.data.ok) {
         this.setState({
-          searchedPages: res.data.data
+          searchingKeyword: keyword,
+          searchedPages: res.data.data,
         });
       }
       // TODO error
@@ -48,7 +54,10 @@ export default class SearchBox extends React.Component {
     return (
       <div className="search-box">
         <SearchForm onSearchFormChanged={this.search} />
-        <SearchSuggest searchedPages={this.state.searchedPages} />
+        <SearchSuggest
+          searchingKeyword={this.state.searchingKeyword}
+          searchedPages={this.state.searchedPages}
+          />
       </div>
     );
   }
