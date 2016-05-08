@@ -42,10 +42,14 @@ export default class SearchForm extends React.Component {
   render() {
     return (
       <form
+        action="/_search"
         className="search-form form-group input-group search-top-input-group"
-        onSubmit={this.handleSubmit}
       >
-        <input type="text" className="search-top-input form-control" placeholder="Search ..."
+        <input
+          type="text"
+          className="search-top-input form-control"
+          placeholder="Search ..."
+          name="q"
           value={this.state.keyword}
           onChange={this.handleChange}
         />
