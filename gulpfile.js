@@ -11,6 +11,7 @@ var jshint = require('gulp-jshint');
 var source = require('vinyl-source-stream');
 var webpack = require('webpack-stream');
 
+var del     = require('del');
 var stylish = require('jshint-stylish');
 
 var pkg = require('./package.json');
@@ -45,12 +46,14 @@ var js = {
     'resource/thirdparty-js/jquery.selection.js',
   ],
   src:          dirs.jsSrc  + '/app.js',
+
   bundled:      dirs.jsDist + '/bundled.js',
   dist:         dirs.jsDist + '/crowi.js',
   admin:        dirs.jsDist + '/admin.js',
   form:         dirs.jsDist + '/form.js',
   presentation: dirs.jsDist + '/presentation.js',
   app:          dirs.jsDist + '/app.js',
+
   clientWatch: ['resource/js/**/*.js'],
   watch: ['test/**/*.test.js', 'app.js', 'lib/**/*.js'],
   lint: ['app.js', 'lib/**/*.js'],
@@ -63,7 +66,20 @@ var cssIncludePaths = [
   'node_modules/reveal.js/css'
 ];
 
-gulp.task('js:concat', function() {
+gulp.task('js:del', function() {
+  var fileList = [
+    js.dist,
+    js.bundled,
+    js.admin,
+    js.form,
+    js.presentation,
+    js.app,
+  ];
+  fileList = fileList.concat(fileList.map(function(fn){ return fn.replace(/\.js/, '.min.js');}));
+  return del(fileList);
+});
+
+gulp.task('js:concat', ['js:del'], function() {
   return gulp.src(js.bundledSrc)
     .pipe(concat('bundled.js')) // jQuery
     .pipe(gulp.dest(dirs.jsDist));
