@@ -25,31 +25,26 @@
   .page-list-ul {
     padding-left: 0;
 
-    .page-list-li {
+    > li {
       list-style: none;
       line-height: 1.8em;
 
-      .picture-outer {
-        float: left;
+      .picture {
+        width: 16px;
+        height: 16px;
+      }
 
-        .picture {
-          width: 16px;
-          height: 16px;
-          margin-right: 4px;
+      > a {
+        padding: 0 4px;
+        font-size: 1.1em;
+        color: #666;
+
+        strong {
+          color: #333;
         }
       }
 
-      .page-link-outer {
-        padding-left: 20px;
-
-        .page-list-link {
-          font-size: 1.1em;
-          color: #666;
-
-          strong {
-            color: #333;
-          }
-        }
+      > span.page-list-meta {
       }
     }
   }
