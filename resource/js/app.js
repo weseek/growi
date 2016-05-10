@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import  SearchBox  from './components/Header/SearchBox';
+import SearchBox  from './components/Header/SearchBox';
+import SearchPage  from './components/Search/SearchPage';
 
 /*
 class Crowi extends React.Component {
@@ -21,6 +22,7 @@ class Crowi extends React.Component {
 
 var componentMappings = {
   'search-top': <SearchBox />,
+  'search-page': <SearchPage />,
 };
 
 Object.keys(componentMappings).forEach((key) => {

@@ -1,26 +1,24 @@
 import React from 'react';
 
-// Header.SearchForm
+// Search.SearchForm
 export default class SearchForm extends React.Component {
 
   constructor(props) {
     super(props);
 
     this.state = {
-      keyword: '',
-      searchedKeyword: '',
+      keyword: this.props.keyword,
+      searchedKeyword: this.props.keyword,
     };
 
+    this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    this.ticker = null;
   }
 
   componentDidMount() {
-    this.ticker = setInterval(this.searchFieldTicker.bind(this), this.props.pollInterval);
   }
 
   componentWillUnmount() {
-    clearInterval(this.ticker);
   }
 
   search() {
@@ -30,8 +28,9 @@ export default class SearchForm extends React.Component {
     }
   }
 
-  searchFieldTicker() {
-    this.search();
+  handleSubmit(event) {
+    event.preventDefault();
+    this.search({keyword: this.state.keyword});
   }
 
   handleChange(event) {
@@ -41,23 +40,14 @@ export default class SearchForm extends React.Component {
 
   render() {
     return (
-      <form
-        action="/_search"
-        className="search-form form-group input-group search-top-input-group"
-      >
+      <form className="form" onSubmit={this.handleSubmit}>
         <input
           type="text"
-          className="search-top-input form-control"
-          placeholder="Search ..."
           name="q"
           value={this.state.keyword}
           onChange={this.handleChange}
-        />
-        <span className="input-group-btn">
-          <button type="submit" className="btn btn-default">
-            <i className="search-top-icon fa fa-search"></i>
-          </button>
-        </span>
+          className="form-control"
+          />
       </form>
     );
   }
@@ -65,8 +55,6 @@ export default class SearchForm extends React.Component {
 
 SearchForm.propTypes = {
   onSearchFormChanged: React.PropTypes.func.isRequired,
-  pollInterval: React.PropTypes.number,
 };
 SearchForm.defaultProps = {
-  pollInterval: 1000,
 };

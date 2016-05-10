@@ -1,4 +1,3 @@
-
 .search-listpage-icon {
   font-size: 16px;
   color: #999;
@@ -39,3 +38,33 @@
 
 }
 
+
+// search page
+#content-main {
+  position: relative;
+}
+.search-result {
+
+  .search-result-list {
+    nav {
+      &.affix {
+        top: 8px;
+        width: 25%;
+        padding-right: 30px;
+      }
+      .nav {
+
+        > li {
+          padding: 0px 8px;
+          &.active {
+            border-right: solid 3px #666;
+            background: #f0f0f0;
+          }
+        }
+      }
+    }
+  }
+
+  .search-result-content {
+  }
+}

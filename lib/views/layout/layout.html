@@ -18,7 +18,11 @@
 {% endblock %}
 
 {% block html_body %}
-<body class="crowi main-container {% block html_base_css %}{% endblock %}" data-me="{{ user._id.toString() }}">
+<body
+  class="crowi main-container {% block html_base_css %}{% endblock %}"
+  data-me="{{ user._id.toString() }}"
+ {% block html_base_attr %}{% endblock %}
+ >
 <div id="fb-root"></div>
 <script>
   window.fbAsyncInit = function() {
