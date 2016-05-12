@@ -93,30 +93,21 @@ gulp.task('webpack', ['js:concat'], function() {
 });
 
 gulp.task('js:min', ['webpack'], function() {
-  gulp.src(js.presentation)
-    .pipe(uglify())
-    .pipe(rename({suffix: '.min'}))
-    .pipe(gulp.dest(dirs.jsDist));
+  var fileList = [
+    js.dist,
+    js.bundled,
+    js.admin,
+    js.form,
+    js.presentation,
+    js.app,
+  ];
 
-  gulp.src(js.form)
-    .pipe(uglify())
-    .pipe(rename({suffix: '.min'}))
-    .pipe(gulp.dest(dirs.jsDist));
-
-  gulp.src(js.admin)
-    .pipe(uglify())
-    .pipe(rename({suffix: '.min'}))
-    .pipe(gulp.dest(dirs.jsDist));
-
-  gulp.src(js.bundled)
-    .pipe(uglify())
-    .pipe(rename({suffix: '.min'}))
-    .pipe(gulp.dest(dirs.jsDist));
-
-  return gulp.src(js.dist)
-    .pipe(uglify())
-    .pipe(rename({suffix: '.min'}))
-    .pipe(gulp.dest(dirs.jsDist));
+  fileList.forEach(function(jsfile) {
+    gulp.src(jsfile)
+      .pipe(uglify())
+      .pipe(rename({suffix: '.min'}))
+      .pipe(gulp.dest(dirs.jsDist));
+  });
 });
 
 gulp.task('jshint', function() {
