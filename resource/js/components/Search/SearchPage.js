@@ -34,7 +34,7 @@ export default class SearchPage extends React.Component {
 
     search.replace(/^\?/, '').split('&').forEach(function(element) {
       let queryParts = element.split('=');
-      query[queryParts[0]] = queryParts[1];
+      query[queryParts[0]] = decodeURIComponent(queryParts[1]).replace(/\+/g, ' ');
     });
 
     console.log(query);
