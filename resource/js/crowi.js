@@ -319,7 +319,12 @@ $(function() {
     var path = $link.data('path');
     var shortPath = $link.data('short-path');
 
-    $link.html(path.replace(new RegExp(shortPath + '(/)?$'), '<strong>' + shortPath + '$1</strong>'));
+    var escape = function(s) {
+      return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+    };
+    var pattern = escape(shortPath) + '(/)?$';
+
+    $link.html(path.replace(new RegExp(pattern), '<strong>' + shortPath + '$1</strong>'));
   });
 
 
