@@ -47,8 +47,7 @@ export default class SearchBox extends React.Component {
         });
       }
       // TODO error
-    })
-    .catch((res) => {
+    }).catch((res) => {
       // TODO error
       this.setState({
         searchError: res,

@@ -46,6 +46,7 @@ export default class SearchForm extends React.Component {
         className="search-form form-group input-group search-top-input-group"
       >
         <input
+          autocomplete="off"
           type="text"
           className="search-top-input form-control"
           placeholder="Search ..."

@@ -49,14 +49,18 @@
     nav {
       &.affix {
         top: 8px;
-        width: 25%;
+        width: 33.33333%;
         padding-right: 30px;
+        padding-bottom: 50px;
+        height: 100%;
+        overflow-y: scroll;
       }
       .nav {
 
         > li {
-          padding: 0px 8px;
+          padding: 0px 11px 0 8px;
           &.active {
+            padding: 0px 8px;
             border-right: solid 3px #666;
             background: #f0f0f0;
           }

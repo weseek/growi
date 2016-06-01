@@ -37,7 +37,6 @@ export default class SearchPage extends React.Component {
       query[queryParts[0]] = decodeURIComponent(queryParts[1]).replace(/\+/g, ' ');
     });
 
-    console.log(query);
     return query;
   }
 
@@ -83,7 +82,10 @@ export default class SearchPage extends React.Component {
           </header>
         </div>
 
-        <SearchResult pages={this.state.searchedPages} />
+        <SearchResult
+          pages={this.state.searchedPages}
+          searchingKeyword={this.state.searchingKeyword}
+          />
       </div>
     );
   }
