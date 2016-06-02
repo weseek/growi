@@ -11,18 +11,15 @@ export default class SearchResultList extends React.Component {
   }
 
   getHighlightBody(body) {
-    console.log('getHighlightBody', this.props.searchingKeyword);
-    console.log('getHighlightBody', this.props.searchingKeyword.split(' '));
+    let returnBody = body;
+
     this.props.searchingKeyword.split(' ').forEach((keyword) => {
-      console.log(keyword);
-      const keywordExp = new RegExp('(' + keyword + ')', 'g');
-      console.log(keywordExp);
-      console.log(body.repalce(keywordExp, 'hoge hoge'));
-      //body = body.repalce(keywordExp, '<span style="highlighted">$1</span>');
+      const keywordExp = new RegExp('(' + keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ')', 'g');
+      returnBody = returnBody.replace(keyword, '<span style="highlighted">$&</span>');
     });
 
     //console.log(this.props.searchingKeyword, body);
-    return body;
+    return returnBody;
   }
 
   render() {
