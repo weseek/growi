@@ -320,7 +320,7 @@ $(function() {
     var shortPath = $link.data('short-path');
 
     var escape = function(s) {
-      return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+      return (s + '').replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
     };
     var pattern = escape(shortPath) + '(/)?$';
 
