@@ -317,10 +317,10 @@ $(function() {
     var $link = $(this);
     var text = $link.text();
     var path = $link.data('path');
-    var shortPath = $link.data('short-path');
+    var shortPath = String($link.data('short-path'));
 
     var escape = function(s) {
-      return (s + '').replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+      return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
     };
     var pattern = escape(shortPath) + '(/)?$';
 
