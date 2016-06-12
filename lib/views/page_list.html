@@ -67,10 +67,7 @@
   </ul>
 
   <div class="tab-content">
-    <div class="wiki tab-pane {% if not req.body.pageForm %}active{% endif %}">
-      {% include '_revision_toc.html' %}
-      <div id="revision-body-content">{{ page.revision.body|nl2br|safe }}</div>
-    </div>
+    <div class="wiki tab-pane {% if not req.body.pageForm %}active{% endif %}" id="revision-body-content">{{ page.revision.body|nl2br|safe }}</div>
 
     <script type="text/template" id="raw-text-original">{{ page.revision.body }}</script>
     <script type="text/javascript">
