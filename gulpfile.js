@@ -9,8 +9,9 @@ var rename = require('gulp-rename');
 var uglify = require('gulp-uglify');
 var jshint = require('gulp-jshint');
 var source = require('vinyl-source-stream');
-var browserify = require('browserify');
+var webpack = require('webpack-stream');
 
+var del     = require('del');
 var stylish = require('jshint-stylish');
 
 var pkg = require('./package.json');
@@ -37,35 +38,22 @@ var css = {
 };
 
 var js = {
-  browserify: {
-    crowi: 'resource/js/crowi.js', // => crowi-bundled.js
-    crowiPresentation: 'resource/js/crowi-presentation.js', // => crowi-presentation.js
-  },
-  src: [
+  bundledSrc: [
     'node_modules/jquery/dist/jquery.js',
     'node_modules/bootstrap-sass/assets/javascripts/bootstrap.js',
     'node_modules/inline-attachment/src/inline-attachment.js',
-    'node_modules/socket.io-client/socket.io.js',
     'node_modules/jquery.cookie/jquery.cookie.js',
-    'node_modules/diff/dist/diff.js',
     'resource/thirdparty-js/jquery.selection.js',
-    dirs.jsDist + '/crowi-bundled.js',
   ],
-  dist: dirs.jsDist + '/crowi.js',
-  revealSrc: [
-    'node_modules/reveal.js/lib/js/head.min.js',
-    'node_modules/reveal.js/lib/js/html5shiv.js',
-    dirs.jsDist + '/crowi-presentation.js',
-  ],
-  revealDist: dirs.jsDist + '/crowi-reveal.js',
-  formSrc: [
-    'resource/js/crowi-form.js'
-  ],
-  formDist: dirs.jsDist + '/crowi-form.js',
-  adminSrc: [
-    'resource/js/crowi-admin.js'
-  ],
-  adminDist: dirs.jsDist + '/crowi-admin.js',
+  src:          dirs.jsSrc  + '/app.js',
+
+  bundled:      dirs.jsDist + '/bundled.js',
+  dist:         dirs.jsDist + '/crowi.js',
+  admin:        dirs.jsDist + '/admin.js',
+  form:         dirs.jsDist + '/form.js',
+  presentation: dirs.jsDist + '/presentation.js',
+  app:          dirs.jsDist + '/app.js',
+
   clientWatch: ['resource/js/**/*.js'],
   watch: ['test/**/*.test.js', 'app.js', 'lib/**/*.js'],
   lint: ['app.js', 'lib/**/*.js'],
@@ -78,56 +66,48 @@ var cssIncludePaths = [
   'node_modules/reveal.js/css'
 ];
 
-gulp.task('js:browserify', function() {
-  browserify({entries: js.browserify.crowiPresentation})
-    .bundle()
-    .pipe(source('crowi-presentation.js'))
-    .pipe(gulp.dest(dirs.jsDist));
+gulp.task('js:del', function() {
+  var fileList = [
+    js.dist,
+    js.bundled,
+    js.admin,
+    js.form,
+    js.presentation,
+    js.app,
+  ];
+  fileList = fileList.concat(fileList.map(function(fn){ return fn.replace(/\.js/, '.min.js');}));
+  return del(fileList);
+});
 
-  return browserify({entries: js.browserify.crowi})
-    .bundle()
-    .pipe(source('crowi-bundled.js'))
+gulp.task('js:concat', ['js:del'], function() {
+  return gulp.src(js.bundledSrc)
+    .pipe(concat('bundled.js')) // jQuery
     .pipe(gulp.dest(dirs.jsDist));
 });
 
-gulp.task('js:concat', ['js:browserify'], function() {
-  gulp.src(js.revealSrc)
-    .pipe(concat('crowi-reveal.js'))
-    .pipe(gulp.dest(dirs.jsDist));
-
-  gulp.src(js.adminSrc)
-    .pipe(concat('crowi-admin.js'))
-    .pipe(gulp.dest(dirs.jsDist));
-
-  gulp.src(js.formSrc)
-    .pipe(concat('crowi-form.js'))
-    .pipe(gulp.dest(dirs.jsDist));
-
+// move task for css and js to webpack over time.
+gulp.task('webpack', ['js:concat'], function() {
   return gulp.src(js.src)
-    .pipe(concat('crowi.js'))
+    .pipe(webpack(require('./webpack.config.js')))
     .pipe(gulp.dest(dirs.jsDist));
 });
 
-gulp.task('js:min', ['js:concat'], function() {
-  gulp.src(js.revealDist)
-    .pipe(uglify())
-    .pipe(rename({suffix: '.min'}))
-    .pipe(gulp.dest(dirs.jsDist));
+gulp.task('js:min', ['webpack'], function() {
+  var fileList = [
+    js.dist,
+    js.bundled,
+    js.admin,
+    js.form,
+    js.presentation,
+    js.app,
+  ];
 
-  gulp.src(js.formDist)
-    .pipe(uglify())
-    .pipe(rename({suffix: '.min'}))
-    .pipe(gulp.dest(dirs.jsDist));
-
-  gulp.src(js.adminDist)
-    .pipe(uglify())
-    .pipe(rename({suffix: '.min'}))
-    .pipe(gulp.dest(dirs.jsDist));
-
-  return gulp.src(js.dist)
-    .pipe(uglify())
-    .pipe(rename({suffix: '.min'}))
-    .pipe(gulp.dest(dirs.jsDist));
+  fileList.forEach(function(jsfile) {
+    gulp.src(jsfile)
+      .pipe(uglify())
+      .pipe(rename({suffix: '.min'}))
+      .pipe(gulp.dest(dirs.jsDist));
+  });
 });
 
 gulp.task('jshint', function() {
@@ -189,7 +169,7 @@ gulp.task('watch', function() {
 
   var cssWatcher = gulp.watch(css.watch, ['css:concat']);
   cssWatcher.on('change', watchLogger);
-  var jsWatcher = gulp.watch(js.clientWatch, ['js:concat']);
+  var jsWatcher = gulp.watch(js.clientWatch, ['webpack']);
   jsWatcher.on('change', watchLogger);
   var testWatcher = gulp.watch(js.watch, ['test']);
   testWatcher.on('change', watchLogger);
@@ -197,4 +177,4 @@ gulp.task('watch', function() {
 
 gulp.task('css', ['css:sass', 'css:concat',]);
 gulp.task('default', ['css:min', 'js:min',]);
-gulp.task('dev', ['css:concat', 'js:concat','jshint', 'test']);
+gulp.task('dev', ['css:concat', 'webpack', 'jshint', 'test']);

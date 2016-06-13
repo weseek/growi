@@ -37,6 +37,7 @@ Dependencies
 
 * Node.js (4.2.x)
 * MongoDB
+* Elasticsearch (optional)
 * Redis (optional)
 * Amazon S3 (optional)
 * Facebook Application (optional)
@@ -60,6 +61,7 @@ $ PASSWORD_SEED=somesecretstring MONGO_URI=mongodb://username:password@localhost
 * `NODE_ENV`: `production` OR `development`.
 * `MONGO_URI`: URI to connect MongoDB. This parameter is also by `MONGOHQ_URL` OR `MONGOLAB_URI`.
 * `REDIS_URL`: URI to connect Redis (to session store). This parameter is also by `REDISTOGO_URL`.
+* `ELASTICSEARCH_URI`: URI to connect Elasticearch.
 * `PASSWORD_SEED`: A password seed is used by password hash generator.
 * `SECRET_TOKEN`: A secret key for verifying the integrity of signed cookies.
 * `FILE_UPLOAD`: `aws` (default), `local`, `none`

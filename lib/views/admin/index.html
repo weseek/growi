@@ -12,7 +12,7 @@
 
 {% block content_main %}
 <div class="content-main">
-  
+
   {% set emessage = req.flash('errorMessage') %}
   {% if emessage.length %}
   <div class="alert alert-danger">
@@ -22,12 +22,7 @@
 
   <div class="row">
     <div class="col-md-3">
-      <ul class="nav nav-pills nav-stacked">
-        <li class="active"><a href="/admin"><i class="fa fa-cube"></i> Wiki管理トップ</a></li>
-        <li><a href="/admin/app"><i class="fa fa-gears"></i> アプリ設定</a></li>
-        <li><a href="/admin/notification"><i class="fa fa-bell"></i> 通知設定</a></li>
-        <li><a href="/admin/users"><i class="fa fa-users"></i> ユーザー管理</a></li>
-      </ul>
+      {% include './widget/menu.html' %}
     </div>
     <div class="col-md-9">
       <p>

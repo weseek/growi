@@ -74,7 +74,7 @@
     </div>
 
     {% if config.crowi['security:registrationMode'] != 'Closed' %}
-    <p class="bottom-text"><a href="#register" onclick="$('#login-dialog').addClass('to-flip'); return false;"><i class="fa fa-pencil"></i> 新規登録はこちら</a></p>
+    <p class="bottom-text"><a href="#register" id="register"><i class="fa fa-pencil"></i> 新規登録はこちら</a></p>
     {% endif %}
   </div>
 
@@ -187,7 +187,7 @@
       {% endif %}
     </div>
 
-    <p class="bottom-text"><a href="#login" onclick="$('#login-dialog').removeClass('to-flip'); return false;"><i class="fa fa-sign-out"></i> ログインはこちら</a></p>
+    <p class="bottom-text"><a href="#login" id="login"><i class="fa fa-sign-out"></i> ログインはこちら</a></p>
   </div>
   {% endif %} {# if registrationMode == Closed #}
 
@@ -200,72 +200,5 @@
   <p>&copy; {{ now|date('Y') }} {{ config.app.title }}. <a href="" data-target="#helpModal" data-toggle="modal"><i class="fa fa-question-circle"></i> ヘルプ</a></p>
 </div>
 #}
-
-<script>
-$(function() {
-  $('#btn-login-facebook').click(function(e)
-  {
-    var afterLogin = function(response) {
-      if (response.status !== 'connected') {
-        $('#login-form-errors').html('<p class="alert alert-danger">Facebookでのログインに失敗しました。</p>');
-      } else {
-        location.href = '/login/facebook';
-      }
-    };
-    FB.getLoginStatus(function(response) {
-      if (response.status === 'connected') {
-        afterLogin(response);
-      } else {
-        FB.login(function(response) {
-          afterLogin(response);
-        }, {scope: 'email'});
-      }
-    });
-  });
-
-  $('#register-form input[name="registerForm[username]"]').change(function(e) {
-    var username = $(this).val();
-    $('#input-group-username').removeClass('has-error');
-    $('#help-block-username').html("");
-
-    $.getJSON('/_api/check_username', {username: username}, function(json) {
-      if (!json.valid) {
-        $('#help-block-username').html('<i class="fa fa-warning"></i>このユーザーIDは利用できません。<br>');
-        $('#input-group-username').addClass('has-error');
-      }
-    });
-  });
-
-  $('#btn-register-facebook').click(function(e)
-  {
-    var afterLogin = function(response) {
-      if (response.status !== 'connected') {
-        $('#register-form-errors').html('<p class="alert alert-danger">Facebookでのログインに失敗しました。</p>');
-
-      } else {
-        var authR = response.authResponse;
-        $('#register-form input[name="registerForm[fbId]"]').val(authR.userID);
-        FB.api('/me?fields=name,username,email', function(res) {
-          $('#register-form input[name="registerForm[name]"]').val(res.name);
-          $('#register-form input[name="registerForm[username]"]').val(res.username || '');
-          $('#register-form input[name="registerForm[email]"]').val(res.email);
-
-          $('#register-form .facebook-info').remove();
-          $('#register-form').prepend('<div class="facebook-info"><img src="//graph.facebook.com/' + res.id + '/picture?size=square" width="25"> <i class="fa fa-facebook-square"></i> ' + res.name + 'さんとして登録します</div>');
-        });
-      }
-    };
-    FB.getLoginStatus(function(response) {
-      if (response.status === 'connected') {
-        afterLogin(response);
-      } else {
-        FB.login(function(response) {
-          afterLogin(response);
-        }, {scope: 'email'});
-      }
-    });
-  });
-});
-</script>
 
 {% endblock %}

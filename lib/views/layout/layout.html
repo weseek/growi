@@ -12,13 +12,17 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
 
   <link rel="stylesheet" href="/css/crowi{% if env  == 'production' %}.min{% endif %}.css">
-  <script src="/js/crowi{% if env  == 'production' %}.min{% endif %}.js"></script>
+  <script src="/js/bundled{% if env  == 'production' %}.min{% endif %}.js"></script>
   <link href='//fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
 </head>
 {% endblock %}
 
 {% block html_body %}
-<body class="crowi main-container {% block html_base_css %}{% endblock %}">
+<body
+  class="crowi main-container {% block html_base_css %}{% endblock %}"
+  data-me="{{ user._id.toString() }}"
+ {% block html_base_attr %}{% endblock %}
+ >
 <div id="fb-root"></div>
 <script>
   window.fbAsyncInit = function() {
@@ -41,11 +45,79 @@
 
 {% block layout_head_nav %}
 <nav class="crowi-header navbar navbar-default" role="navigation">
+  <!-- Brand and toggle get grouped for better mobile display -->
   <div class="navbar-header">
-    <a class="navbar-brand" href="/">{% block title %}{{ config.crowi['app.title']|default('Crowi') }}{% endblock %}</a>
+    <a class="navbar-brand" href="/">
+      <img alt="Crowi" src="/logo/32x32.png" width="16">
+      {% block title %}{{ config.crowi['app:title'] }}{% endblock %}
+    </a>
+  {% if searchConfigured() %}
+  <div class="navbar-form navbar-left search-top" role="search" id="search-top">
+  </div>
+  {% endif %}
   </div>
 
-  <div class="collapse navbar-collapse">
+
+  <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbarCollapse">
+    <span class="sr-only">Toggle navigation</span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <!-- Collect the nav links, forms, and other content for toggling -->
+  <div class="collapse navbar-collapse" id="navbarCollapse">
+
+    <ul class="nav navbar-nav navbar-right">
+
+      {% if user and user.admin %}
+      <li id="">
+        <a href="/admin" id="link-mypage">
+          <i class="fa fa-cube"></i> 管理
+        </a>
+      </li>
+      {% endif %}
+      {#
+      <li id="">
+        <a href="#" id="createPage">
+          <i class="fa fa-plus"> 新規</i>
+        </a>
+      </li>
+      #}
+      {% if user %}
+      {#
+      <li id="" class="notif">
+        <a href="" id="notif-opener">
+          <i class="fa fa-globe"></i> <span class="badge badge-danger">6</span>
+        </a>
+      </li>
+      #}
+      <li id="login-user">
+        <a href="/user/{{ user.username }}" id="link-mypage">
+          <img src="{{ user|picture }}" class="picture picture-rounded" width="25" /> {{ user.name }}
+        </a>
+      </li>
+      <li><a href="" title="今日のメモを作成" data-target="#createMemo" data-toggle="modal"><i class="fa fa-pencil"></i></a></li>
+      <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bars"></i> <label class="sr-only">メニュー</label></a>
+        <ul class="dropdown-menu">
+          <li><a href="" data-target="#createMemo" data-toggle="modal"><i class="fa fa-pencil"></i> 今日のメモを作成</a></li>
+          <li class="divider"></li>
+          <li><a href="/me"><i class="fa fa-gears"></i> ユーザー設定</a></li>
+          <li class="divider"></li>
+          <li><a href="/logout"><i class="fa fa-sign-out"></i> ログアウト</a></li>
+          {# <li><a href="#">今日の日報を作成</a></li> #}
+          {# <li class="divider"></li> #}
+          {# <li class="divider"></li> #}
+          {# <li><a href="#">ログアウト</a></li> #}
+        </ul>
+      </li>
+      {% else %}
+      <li id="login-user"><a href="/login" id="login"><i class="fa fa-user"></i> Login</a></li>
+      {% endif %}
+      {% if config.crowi['app:confidential'] && config.crowi['app:confidential'] != '' %}
+      <li class="confidential"><a href="#">{{ config.crowi['app:confidential'] }}</a></li>
+      {% endif %}
+    </ul>
   </div><!-- /.navbar-collapse -->
 </nav>
 {% include '../modal/widget_today_memo.html' %}
@@ -54,47 +126,11 @@
 <div class="container-fluid">
   <div class="row">
 
-{% block layout_sidebar %}
-<aside class="sidebar col-md-3">
-    <div class="side-content">
-    {% block side_header %}
-    {% endblock %}
+  {% block layout_sidebar %}
+  {% endblock %} {# layout_sidebar #}
 
-    {% block side_content %}
-    {% endblock %}
-
-    {% block side_footer %}
-    {% endblock %}
-    </div>
-  </aside>
-</div>
-{% endblock %} {# layout_sidebar #}
-
-{% block layout_main %}
-<div id="main" class="main col-md-9" ng-controller="WikiPageController">
-  <article>
-  {% block content_head %}
-    <header>
-    <h2>-</h2>
-    <p>-</p>
-    </header>
-  {% endblock %}
-
-  {% block content_main %}
-  //
-  {% endblock content_main %}
-
-  {% block content_footer %}
-    <footer>
-    <h3>-</h3>
-    <p>-</p>
-    </footer>
-  {% endblock content_footer %}
-  </article>
-</div>
-{% endblock %} {# layout_main #}
-
-
+  {% block layout_main %}
+  {% endblock %} {# layout_main #}
 
 {% block footer %}
 {% endblock %}
@@ -108,7 +144,7 @@
 </body>
 {% endblock %}
 
+<script src="/js/app{% if env  == 'production' %}.min{% endif %}.js"></script>
+<script src="/js/crowi{% if env  == 'production' %}.min{% endif %}.js"></script>
 </html>
-
-
 

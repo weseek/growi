@@ -28,12 +28,7 @@
 
   <div class="row">
     <div class="col-md-3">
-      <ul class="nav nav-pills nav-stacked">
-        <li><a href="/admin"><i class="fa fa-cube"></i> Wiki管理トップ</a></li>
-        <li><a href="/admin/app"><i class="fa fa-gears"></i> アプリ設定</a></li>
-        <li><a href="/admin/notification"><i class="fa fa-bell"></i> 通知設定</a></li>
-        <li class="active"><a href="/admin/users"><i class="fa fa-users"></i> ユーザー管理</a></li>
-      </ul>
+      {% include './widget/menu.html' with {current: 'user'} %}
     </div>
 
     <div class="col-md-9">
@@ -78,7 +73,6 @@
           </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
       </div><!-- /.modal -->
-      <script>$(function() { $('#createdUserModal').modal('show'); });</script>
       {% endif %}
 
       <h2>ユーザー一覧</h2>

@@ -1,0 +1,67 @@
+{% extends '../layout/admin.html' %}
+
+{% block html_title %}検索管理 · {{ path }}{% endblock %}
+
+{% block content_head %}
+<div class="header-wrap">
+  <header id="page-header">
+    <h1 class="title" id="">検索管理</h1>
+  </header>
+</div>
+{% endblock %}
+
+{% block content_main %}
+<div class="content-main">
+  <div class="row">
+    <div class="col-md-3">
+      {% include './widget/menu.html' with {current: 'search'} %}
+    </div>
+    <div class="col-md-9">
+
+      {% set smessage = req.flash('successMessage') %}
+      {% if smessage.length %}
+      <div class="alert alert-success">
+        {% for e in smessage %}
+          {{ e }}<br>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      {% set emessage = req.flash('errorMessage') %}
+      {% if emessage.length %}
+      <div class="alert alert-danger">
+        {% for e in emessage %}
+        {{ e }}<br>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <form action="/admin/search/build" method="post" class="form-horizontal" id="appSettingForm" role="form">
+      <fieldset>
+        <legend>Index Build</legend>
+        <div class="form-group">
+          <label for="" class="col-xs-3 control-label">Index Build</label>
+          <div class="col-xs-6">
+            <button type="submit" class="btn btn-primary">Build Now</button>
+            <p class="help-block">
+              Force rebuild index.<br>
+              Click "Build Now" to delete and create mapping file and add all pages.<br>
+              This may take a while.
+            </p>
+          </div>
+        </div>
+      </fieldset>
+      </form>
+
+    </div>
+  </div>
+
+</div>
+{% endblock content_main %}
+
+{% block content_footer %}
+{% endblock content_footer %}
+
+
+
+

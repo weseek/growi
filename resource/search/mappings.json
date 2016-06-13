@@ -1,0 +1,87 @@
+{
+  "settings": {
+    "analysis": {
+      "filter": {
+        "english_stop": {
+          "type":       "stop",
+          "stopwords":  "_english_"
+        },
+        "english_stemmer": {
+          "type":       "stemmer",
+          "language":   "english"
+        },
+        "english_possessive_stemmer": {
+          "type":       "stemmer",
+          "language":   "possessive_english"
+        }
+      },
+      "analyzer": {
+        "autocomplete": {
+          "tokenizer":  "keyword",
+          "filter": [
+            "lowercase",
+            "nGram"
+          ]
+        },
+        "english": {
+          "tokenizer":  "standard",
+          "filter": [
+            "english_possessive_stemmer",
+            "lowercase",
+            "english_stop",
+            "english_stemmer"
+          ]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "users": {
+      "properties" : {
+        "name": {
+          "type": "string",
+          "analyzer": "autocomplete"
+        }
+      }
+    },
+    "pages": {
+      "properties" : {
+        "path": {
+          "type" : "multi_field",
+          "fields" : {
+            "raw": {"type" : "string", "index" : "not_analyzed"},
+            "ja": {"type" : "string", "analyzer" : "kuromoji"},
+            "en": {"type" : "string", "analyzer" : "english"}
+          }
+        },
+        "body": {
+          "type" : "multi_field",
+          "fields" : {
+            "ja": {"type" : "string", "analyzer" : "kuromoji"},
+            "en": {"type" : "string", "analyzer" : "english"}
+          }
+        },
+        "username": {
+          "type": "string"
+        },
+        "comment_count": {
+          "type": "integer"
+        },
+        "bookmark_count": {
+          "type": "integer"
+        },
+        "like_count": {
+          "type": "integer"
+        },
+        "created_at": {
+          "type": "date",
+          "format": "dateOptionalTime"
+        },
+        "updated_at": {
+          "type": "date",
+          "format": "dateOptionalTime"
+        }
+      }
+    }
+  }
+}

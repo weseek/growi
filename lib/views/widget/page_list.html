@@ -7,24 +7,34 @@
   {% set page = data %}
 {% endif %}
 
-<li class="page-list-li">
+<li>
   <img src="{{ page.revision.author|picture }}" class="picture picture-rounded">
-
-  <a class="page-list-link" href="{{ page.path }}"
+  <a href="{{ page.path }}"
+    class="page-list-link"
     data-path="{{ page.path }}"
-    data-short-path="{{ page.path|path2name }}">{{ page.path }}</a>
-
+    data-short-path="{{ page.path|path2name }}">{{ page.path }}
+  </a>
   <span class="page-list-meta">
     {% if page.isPortal() %}
       <span class="label label-info">PORTAL</span>
     {% endif  %}
 
     {% if page.commentCount > 0 %}
+    <span>
       <i class="fa fa-comment"></i>{{ page.commentCount }}
+    </span>
+    {% endif  %}
+
+    {% if page.liker.length > 0 %}
+    <span>
+      <i class="fa fa-thumbs-up"></i>{{ page.liker.length }}
+    </span>
     {% endif  %}
 
     {% if !page.isPublic() %}
+    <span>
       <i class="fa fa-lock"></i>
+    </span>
     {% endif %}
   </span>
 </li>

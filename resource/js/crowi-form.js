@@ -2,6 +2,10 @@ $(function() {
   var pageId = $('#content-main').data('page-id');
   var pagePath= $('#content-main').data('path');
 
+  //require('inline-attachment/src/inline-attachment');
+  //require('jquery.selection');
+  //require('bootstrap-sass');
+
   // show/hide
   function FetchPagesUpdatePostAndInsert(path) {
     $.get('/_api/pages.updatePost', {path: path}, function(res) {
@@ -38,8 +42,6 @@ $(function() {
   $('a[data-toggle="tab"][href="#edit-form"]').on('hide.bs.tab', function() {
     $('.content-main').removeClass('on-edit');
   });
-
-  $('[data-toggle="popover"]').popover();
 
   // preview watch
   var originalContent = $('#form-body').val();

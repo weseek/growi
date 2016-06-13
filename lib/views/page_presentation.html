@@ -8,7 +8,7 @@
 
 
     <link rel="stylesheet" type="text/css" href="/css/crowi-reveal{% if env  == 'production' %}.min{% endif %}.css">
-    <link rel="stylesheet" type="text/css" href="/js/reveal.js/lib/css/zenburn.css">
+    <link rel="stylesheet" type="text/css" href="/js/reveal/lib/css/zenburn.css">
 
     <title>{{ path|path2name }} | {{ path }}</title>
   </head>
@@ -28,6 +28,6 @@
     </div>
 
     <script src="/js/crowi{% if env  == 'production' %}.min{% endif %}.js"></script>
-    <script src="/js/crowi-reveal{% if env  == 'production' %}.min{% endif %}.js"></script>
+    <script src="/js/presentation{% if env  == 'production' %}.min{% endif %}.js"></script>
   </body>
 </html>
