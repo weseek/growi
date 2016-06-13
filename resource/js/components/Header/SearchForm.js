@@ -12,7 +12,6 @@ export default class SearchForm extends React.Component {
     };
 
     this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
     this.ticker = null;
   }
 
@@ -35,11 +34,6 @@ export default class SearchForm extends React.Component {
     this.search();
   }
 
-  handleSubmit(event) {
-    event.preventDefault();
-    this.search();
-  }
-
   handleChange(event) {
     const keyword = event.target.value;
     this.setState({keyword});
@@ -50,7 +44,6 @@ export default class SearchForm extends React.Component {
       <form
         action="/_search"
         className="search-form form-group input-group search-top-input-group"
-        onSubmit={this.handleSubmit}
       >
         <input
           autocomplete="off"
