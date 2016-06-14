@@ -16,9 +16,13 @@ export default class SearchBox extends React.Component {
       searchedPages: [],
       searchError: null,
       searching: false,
+      focused: false,
     }
 
     this.search = this.search.bind(this);
+  }
+
+  focusToggle(focused) {
   }
 
   search(data) {
@@ -65,6 +69,7 @@ export default class SearchBox extends React.Component {
           searchedPages={this.state.searchedPages}
           searchError={this.state.searchError}
           searching={this.state.searching}
+          focused={this.state.focused}
           />
       </div>
     );

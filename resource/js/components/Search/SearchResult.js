@@ -11,7 +11,7 @@ export default class SearchResult extends React.Component {
     const listView = this.props.pages.map((page) => {
       const pageId = "#" + page._id;
       return (
-        <Page page={page} linkTo={pageId}>
+        <Page page={page} linkTo={pageId} key={page_.id}>
           <div className="page-list-option">
             <a href={page.path}><i className="fa fa-arrow-circle-right" /></a>
           </div>

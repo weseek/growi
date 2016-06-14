@@ -58,7 +58,8 @@ export default class PageBody extends React.Component {
       langPrefix: 'lang-'
     });
     console.log('parsing', 'いくぜ');
-    const parsed = marked(body);
+    //const parsed = marked(body);
+    const parsed = '<b>hoge</b>';
     console.log('parsed', parsed);
     } catch (e) { console.log(e); }
 
@@ -67,11 +68,13 @@ export default class PageBody extends React.Component {
 
   render() {
     console.log('Render!');
+    const parsedBody = this.getMarkupHTML();
+    console.log('parse completed', parsedBody);
 
     return (
       <div
         className="content"
-        dangerouslySetInnerHTML={this.getMarkupHTML()}
+        dangerouslySetInnerHTML={parsedBody}
         />
     );
   }

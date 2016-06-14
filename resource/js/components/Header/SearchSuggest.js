@@ -5,6 +5,10 @@ import ListView from '../PageList/ListView';
 export default class SearchSuggest extends React.Component {
 
   render() {
+    if (!this.props.focused) {
+      return <div></div>;
+    }
+
     if (this.props.searching) {
       return (
         <div className="search-suggest" id="search-suggest">
@@ -44,4 +48,5 @@ SearchSuggest.defaultProps = {
   searchingKeyword: '',
   searchError: null,
   searching: false,
+  focused: false,
 };

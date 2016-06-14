@@ -28,7 +28,7 @@ export default class SearchResultList extends React.Component {
       //console.log('resultList.page.path', page.path);
       //console.log('resultList.pageBody', pageBody);
       return (
-        <div id={page._id}>
+        <div id={page._id} key={page._id}>
           <h2>{page.path}</h2>
           <div>
             <PageBody page={page} pageBody={pageBody} />
