@@ -383,4 +383,37 @@ $(function() {
       $(this).removeClass('dragover');
     });
   }
+
+  var enableScrollSync = function() {
+    var getMaxScrollTop = function(dom) {
+      var rect = dom.getBoundingClientRect();
+
+      return dom.scrollHeight - rect.height;
+    };
+
+    var getScrollRate = function(dom) {
+      var maxScrollTop = getMaxScrollTop(dom);
+      var rate = dom.scrollTop / maxScrollTop;
+
+      return rate;
+    };
+
+    var getScrollTop = function(dom, rate) {
+      var maxScrollTop = getMaxScrollTop(dom);
+      var top = maxScrollTop * rate;
+
+      return top;
+    };
+
+    var editor = document.querySelector('#form-body');
+    var preview = document.querySelector('#preview-body');
+
+    editor.addEventListener('scroll', function(event) {
+      var rate = getScrollRate(this);
+      var top = getScrollTop(preview, rate);
+
+      preview.scrollTop = top;
+    });
+  };
+  enableScrollSync();
 });
