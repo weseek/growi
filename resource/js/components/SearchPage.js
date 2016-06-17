@@ -1,10 +1,9 @@
 // This is the root component for #search-page
 
 import React from 'react';
-
+import axios from 'axios'
 import SearchForm from './SearchPage/SearchForm';
 import SearchResult from './SearchPage/SearchResult';
-import axios from 'axios'
 
 export default class SearchPage extends React.Component {
 
@@ -19,6 +18,7 @@ export default class SearchPage extends React.Component {
     }
 
     this.search = this.search.bind(this);
+    this.changeURL = this.changeURL.bind(this);
   }
 
   componentDidMount() {
@@ -38,6 +38,12 @@ export default class SearchPage extends React.Component {
     });
 
     return query;
+  }
+
+  changeURL(keyword) {
+    if (window.history && window.history.pushState ){
+      window.history.pushState(state, 'hoge', 'x');
+    }
   }
 
   search(data) {
@@ -63,6 +69,8 @@ export default class SearchPage extends React.Component {
           searchedPages: res.data.data,
         });
       }
+
+      this.changeURL(keyword);
       // TODO error
     })
     .catch((res) => {

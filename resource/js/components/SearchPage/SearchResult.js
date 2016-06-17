@@ -11,7 +11,7 @@ export default class SearchResult extends React.Component {
     const listView = this.props.pages.map((page) => {
       const pageId = "#" + page._id;
       return (
-        <Page page={page} linkTo={pageId} key={page_.id}>
+        <Page page={page} linkTo={pageId} key={page._id}>
           <div className="page-list-option">
             <a href={page.path}><i className="fa fa-arrow-circle-right" /></a>
           </div>
@@ -21,6 +21,7 @@ export default class SearchResult extends React.Component {
 
     return (
       <div className="content-main" id="content-main">
+        <span>Search {this.props.searchingKeyword}</span>
         <div className="search-result row" id="search-result">
           <div className="col-md-4 page-list search-result-list" id="search-result-list">
             <nav data-spy="affix"  data-offset-top="120">

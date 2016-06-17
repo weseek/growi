@@ -40,7 +40,7 @@ export default class SearchForm extends React.Component {
 
   render() {
     return (
-      <form className="form" onSubmit={this.handleSubmit}>
+      <form className="form form-group input-group" onSubmit={this.handleSubmit}>
         <input
           type="text"
           name="q"
@@ -48,6 +48,11 @@ export default class SearchForm extends React.Component {
           onChange={this.handleChange}
           className="form-control"
           />
+          <span className="input-group-btn">
+            <button type="submit" className="btn btn-default">
+              <i className="search-top-icon fa fa-search"></i>
+            </button>
+          </span>
       </form>
     );
   }
