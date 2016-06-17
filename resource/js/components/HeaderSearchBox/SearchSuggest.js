@@ -17,6 +17,14 @@ export default class SearchSuggest extends React.Component {
       );
     }
 
+    if (this.props.searchError !== null) {
+      return (
+        <div className="search-suggest" id="search-suggest">
+          <i className="searcing fa fa-warning"></i> Error on searching.
+        </div>
+      );
+    }
+
     if (this.props.searchedPages.length < 1) {
       if (this.props.searchingKeyword !== '') {
         return (

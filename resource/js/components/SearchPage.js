@@ -2,8 +2,8 @@
 
 import React from 'react';
 
-import SearchForm from './SearchForm';
-import SearchResult from './SearchResult';
+import SearchForm from './SearchPage/SearchForm';
+import SearchResult from './SearchPage/SearchResult';
 import axios from 'axios'
 
 export default class SearchPage extends React.Component {
