@@ -4,11 +4,6 @@ machine:
     - mongodb
   environment:
     MONGO_URI: mongodb://127.0.0.1/crowi_test
-deployment:
-  dev:
-    branch: /(master|wip-v.*)/
-    heroku:
-      appname: crowi-dev
 notify:
   webhooks:
     - url: https://webhooks.gitter.im/e/5a035388e3274b621d20
