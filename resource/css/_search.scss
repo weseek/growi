@@ -70,6 +70,10 @@
   }
 
   .search-result-content {
+    .search-result-meta {
+      margin-bottom: 16px;
+      font-weight: bold;
+    }
     .search-result-page {
       > h2 {
         font-size: 20px;

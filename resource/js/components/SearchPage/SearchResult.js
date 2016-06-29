@@ -34,6 +34,7 @@ export default class SearchResult extends React.Component {
             </nav>
           </div>
           <div className="col-md-8 search-result-content" id="search-result-content">
+            <div className="search-result-meta">Found {this.props.searchResultMeta.total} pages with "{this.props.searchingKeyword}"</div>
             <SearchResultList
               pages={this.props.pages}
               searchingKeyword={this.props.searchingKeyword}
