@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 
 import HeaderSearchBox  from './components/HeaderSearchBox';
 import SearchPage  from './components/SearchPage';
+//import ListPageSearch  from './components/ListPageSearch';
 
 /*
 class Crowi extends React.Component {
