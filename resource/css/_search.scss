@@ -70,5 +70,20 @@
   }
 
   .search-result-content {
+    .search-result-page {
+      > h2 {
+        font-size: 20px;
+      }
+      &:first-child > h2 {
+        margin-top: 0;
+      }
+
+      .wiki {
+        border: solid 1px #ccc;
+        padding: 16px;
+        border-radius: 3px;
+        font-size: 13px;
+      }
+    }
   }
 }

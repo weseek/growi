@@ -19,9 +19,12 @@ export default class SearchResult extends React.Component {
       );
     });
 
+    /*
+    UI あとで考える
+    <span className="search-result-meta">Found: {this.props.searchResultMeta.total} pages with "{this.props.searchingKeyword}"</span>
+    */
     return (
       <div className="content-main" id="content-main">
-        <span>Search {this.props.searchingKeyword}</span>
         <div className="search-result row" id="search-result">
           <div className="col-md-4 page-list search-result-list" id="search-result-list">
             <nav data-spy="affix"  data-offset-top="120">
@@ -49,5 +52,6 @@ SearchResult.propTypes = {
 SearchResult.defaultProps = {
   searchedPages: [],
   searchingKeyword: '',
+  searchResultMeta: {},
 };
 

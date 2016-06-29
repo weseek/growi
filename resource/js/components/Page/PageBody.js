@@ -16,12 +16,12 @@ export default class PageBody extends React.Component {
       body = this.props.page.revision.body;
     }
 
-    let parsed = '<b>hoge</b>';
+    let parsed = '<b>...</b>';
     try {
       // TODO
       marked.setOptions({
         gfm: true,
-        highlight: (code, lang, callback) => {
+        highlight: function (code, lang) {
           let result, hl;
           if (lang) {
             try {
@@ -33,7 +33,7 @@ export default class PageBody extends React.Component {
           } else {
             result = code;
           }
-          return callback(null, result);
+          return result;
         },
         tables: true,
         breaks: true,

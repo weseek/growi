@@ -14,6 +14,7 @@ export default class SearchPage extends React.Component {
       location: location,
       searchingKeyword: this.props.query.q || '',
       searchedPages: [],
+      searchResultMeta: {},
       searchError: null,
     }
 
@@ -41,8 +42,12 @@ export default class SearchPage extends React.Component {
   }
 
   changeURL(keyword) {
-    if (window.history && window.history.pushState ){
-      window.history.pushState(state, 'hoge', 'x');
+    // TODO 整理する
+    if (location && location.hash) {
+      location.hash = '';
+    }
+    if (window.history && window.history.pushState){
+      history.pushState('', '', `/_search?q=${keyword}`);
     }
   }
 
@@ -67,6 +72,7 @@ export default class SearchPage extends React.Component {
         this.setState({
           searchingKeyword: keyword,
           searchedPages: res.data.data,
+          searchResultMeta: res.data.meta,
         });
       }
 
@@ -93,6 +99,7 @@ export default class SearchPage extends React.Component {
         <SearchResult
           pages={this.state.searchedPages}
           searchingKeyword={this.state.searchingKeyword}
+          searchResultMeta={this.state.searchResultMeta}
           />
       </div>
     );
