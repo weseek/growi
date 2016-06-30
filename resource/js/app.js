@@ -3,11 +3,12 @@ import ReactDOM from 'react-dom';
 
 import HeaderSearchBox  from './components/HeaderSearchBox';
 import SearchPage  from './components/SearchPage';
-//import ListPageSearch  from './components/ListPageSearch';
+import PageListSearch  from './components/PageListSearch';
 
 const componentMappings = {
   'search-top': <HeaderSearchBox />,
   'search-page': <SearchPage />,
+  'page-list-search': <PageListSearch />,
 };
 
 Object.keys(componentMappings).forEach((key) => {
