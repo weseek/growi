@@ -15,12 +15,6 @@ export default class SearchForm extends React.Component {
     this.handleChange = this.handleChange.bind(this);
   }
 
-  componentDidMount() {
-  }
-
-  componentWillUnmount() {
-  }
-
   search() {
     if (this.state.searchedKeyword != this.state.keyword) {
       this.props.onSearchFormChanged({keyword: this.state.keyword});
