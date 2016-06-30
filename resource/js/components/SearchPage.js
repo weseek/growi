@@ -41,18 +41,20 @@ export default class SearchPage extends React.Component {
     return query;
   }
 
-  changeURL(keyword) {
+  changeURL(keyword, refreshHash) {
+    let hash = location.hash || '';
     // TODO 整理する
-    if (location && location.hash) {
-      location.hash = '';
+    if (refreshHash) {
+        hash = '';
     }
     if (window.history && window.history.pushState){
-      history.pushState('', '', `/_search?q=${keyword}`);
+      window.history.pushState('', `Search - ${keyword}`, `/_search?q=${keyword}${hash}`);
     }
   }
 
   search(data) {
     const keyword = data.keyword;
+    const lastSearchedKeyword = this.state.searhingKeyword;
     if (keyword === '') {
       this.setState({
         searchingKeyword: '',
@@ -76,7 +78,9 @@ export default class SearchPage extends React.Component {
         });
       }
 
-      this.changeURL(keyword);
+
+      // if lastSearchedKeyword is empty, refresh hash
+      this.changeURL(keyword, lastSearchedKeyword !== undefined);
       // TODO error
     })
     .catch((res) => {

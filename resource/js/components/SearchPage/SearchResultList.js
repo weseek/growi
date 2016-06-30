@@ -25,8 +25,6 @@ export default class SearchResultList extends React.Component {
   render() {
     const resultList = this.props.pages.map((page) => {
       const pageBody = this.getHighlightBody(page.revision.body);
-      //console.log('resultList.page.path', page.path);
-      //console.log('resultList.pageBody', pageBody);
       return (
         <div id={page._id} key={page._id} className="search-result-page">
           <h2><a href={page.path}>{page.path}</a></h2>
