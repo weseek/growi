@@ -33,7 +33,7 @@ var config = {
   plugins: []
 };
 
-if (process.env && process.env.NODE_ENV == 'production') {
+if (process.env && process.env.NODE_ENV !== 'development') {
   config.plugins = [
     new webpack.DefinePlugin({
       'process.env':{

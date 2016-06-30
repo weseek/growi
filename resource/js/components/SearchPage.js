@@ -13,6 +13,7 @@ export default class SearchPage extends React.Component {
     this.state = {
       location: location,
       searchingKeyword: this.props.query.q || '',
+      searchedKeyword: '',
       searchedPages: [],
       searchResultMeta: {},
       searchError: null,
@@ -23,9 +24,9 @@ export default class SearchPage extends React.Component {
   }
 
   componentDidMount() {
-    if (this.state.searchingKeyword !== '')  {
-      this.search({keyword: this.state.searchingKeyword});
-      this.setState({searchedKeyword: this.state.keyword});
+    const keyword = this.state.searchingKeyword;
+    if (keyword !== '')  {
+      this.search({keyword});
     }
   }
 
@@ -41,13 +42,14 @@ export default class SearchPage extends React.Component {
     return query;
   }
 
-  changeURL(keyword) {
+  changeURL(keyword, refreshHash) {
+    let hash = location.hash || '';
     // TODO 整理する
-    if (location && location.hash) {
-      location.hash = '';
+    if (refreshHash || this.state.searchedKeyword !== '') {
+        hash = '';
     }
     if (window.history && window.history.pushState){
-      history.pushState('', '', `/_search?q=${keyword}`);
+      window.history.pushState('', `Search - ${keyword}`, `/_search?q=${keyword}${hash}`);
     }
   }
 
@@ -69,14 +71,16 @@ export default class SearchPage extends React.Component {
     axios.get('/_api/search', {params: {q: keyword}})
     .then((res) => {
       if (res.data.ok) {
+        this.changeURL(keyword);
+
         this.setState({
-          searchingKeyword: keyword,
+          searchedKeyword: keyword,
           searchedPages: res.data.data,
           searchResultMeta: res.data.meta,
         });
       }
 
-      this.changeURL(keyword);
+
       // TODO error
     })
     .catch((res) => {
