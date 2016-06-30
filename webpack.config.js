@@ -1,7 +1,7 @@
 var path = require('path');
 var webpack = require('webpack');
 
-module.exports = {
+var config = {
   entry: {
     app: './resource/js/app.js',
     crowi: './resource/js/crowi.js',
@@ -30,17 +30,21 @@ module.exports = {
       }
     ]
   },
-  plugins: [
-    new webpack.DefinePlugin({
-      "process.env": {
-        NODE_ENV: JSON.stringify("production")
-      }
-    })
-    //new webpack.ProvidePlugin({
-    //  jQuery: "jquery",
-    //  $: "jquery",
-    //  jqeury: "jquery",
-    //}),
-    //new webpack.optimize.DedupePlugin(),
-  ]
+  plugins: []
 };
+
+if (process.env && process.env.NODE_ENV == 'production') {
+  config.plugins = [
+    new webpack.DefinePlugin({
+      'process.env':{
+        'NODE_ENV': JSON.stringify('production')
+      }
+    }),
+    new webpack.optimize.UglifyJsPlugin({
+      compress:{
+        warnings: false
+      }
+    }),
+  ];
+}
+module.exports = config;

@@ -12,7 +12,8 @@ export default class SearchForm extends React.Component {
     };
 
     this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleFocus = this.handleFocus.bind(this);
+    this.handleBlur = this.handleBlur.bind(this);
     this.ticker = null;
   }
 
@@ -35,9 +36,12 @@ export default class SearchForm extends React.Component {
     this.search();
   }
 
-  handleSubmit(event) {
-    event.preventDefault();
-    this.search();
+  handleFocus(event) {
+    this.props.isShown(true);
+  }
+
+  handleBlur(event) {
+    //this.props.isShown(false);
   }
 
   handleChange(event) {
@@ -50,7 +54,6 @@ export default class SearchForm extends React.Component {
       <form
         action="/_search"
         className="search-form form-group input-group search-top-input-group"
-        onSubmit={this.handleSubmit}
       >
         <input
           autocomplete="off"
@@ -59,6 +62,8 @@ export default class SearchForm extends React.Component {
           placeholder="Search ..."
           name="q"
           value={this.state.keyword}
+          onFocus={this.handleFocus}
+          onBlur={this.handleBlur}
           onChange={this.handleChange}
         />
         <span className="input-group-btn">
@@ -73,6 +78,7 @@ export default class SearchForm extends React.Component {
 
 SearchForm.propTypes = {
   onSearchFormChanged: React.PropTypes.func.isRequired,
+  isShown: React.PropTypes.func.isRequired,
   pollInterval: React.PropTypes.number,
 };
 SearchForm.defaultProps = {

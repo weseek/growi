@@ -15,7 +15,6 @@
     {% endif %}
     <h1 class="title">
       <span class="" id="revision-path">{{ path|insertSpaceToEachSlashes }}</span>
-      {#
       {% if searchConfigured() && path != '/' %}
       <div class="form-group form-group-sm has-feedback search-input-group" data-toggle="tooltip" data-placement="bottom" title="{{ path }} 以下から検索">
         <label class="control-label sr-only" for="inputSuccess5">Search</label>
@@ -25,7 +24,6 @@
         <i class="form-control-feedback search-listpage-icon fa fa-search"></i>
       </div>
       {% endif %}
-      #}
     </h1>
   </header>
 </div>

@@ -1,10 +1,9 @@
 // This is the root component for #search-page
 
 import React from 'react';
-
-import SearchForm from './SearchForm';
-import SearchResult from './SearchResult';
 import axios from 'axios'
+import SearchForm from './SearchPage/SearchForm';
+import SearchResult from './SearchPage/SearchResult';
 
 export default class SearchPage extends React.Component {
 
@@ -15,10 +14,12 @@ export default class SearchPage extends React.Component {
       location: location,
       searchingKeyword: this.props.query.q || '',
       searchedPages: [],
+      searchResultMeta: {},
       searchError: null,
     }
 
     this.search = this.search.bind(this);
+    this.changeURL = this.changeURL.bind(this);
   }
 
   componentDidMount() {
@@ -38,6 +39,16 @@ export default class SearchPage extends React.Component {
     });
 
     return query;
+  }
+
+  changeURL(keyword) {
+    // TODO 整理する
+    if (location && location.hash) {
+      location.hash = '';
+    }
+    if (window.history && window.history.pushState){
+      history.pushState('', '', `/_search?q=${keyword}`);
+    }
   }
 
   search(data) {
@@ -61,8 +72,11 @@ export default class SearchPage extends React.Component {
         this.setState({
           searchingKeyword: keyword,
           searchedPages: res.data.data,
+          searchResultMeta: res.data.meta,
         });
       }
+
+      this.changeURL(keyword);
       // TODO error
     })
     .catch((res) => {
@@ -85,6 +99,7 @@ export default class SearchPage extends React.Component {
         <SearchResult
           pages={this.state.searchedPages}
           searchingKeyword={this.state.searchingKeyword}
+          searchResultMeta={this.state.searchResultMeta}
           />
       </div>
     );

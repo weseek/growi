@@ -11,7 +11,7 @@ export default class SearchResult extends React.Component {
     const listView = this.props.pages.map((page) => {
       const pageId = "#" + page._id;
       return (
-        <Page page={page} linkTo={pageId}>
+        <Page page={page} linkTo={pageId} key={page._id}>
           <div className="page-list-option">
             <a href={page.path}><i className="fa fa-arrow-circle-right" /></a>
           </div>
@@ -19,6 +19,10 @@ export default class SearchResult extends React.Component {
       );
     });
 
+    /*
+    UI あとで考える
+    <span className="search-result-meta">Found: {this.props.searchResultMeta.total} pages with "{this.props.searchingKeyword}"</span>
+    */
     return (
       <div className="content-main" id="content-main">
         <div className="search-result row" id="search-result">
@@ -30,6 +34,7 @@ export default class SearchResult extends React.Component {
             </nav>
           </div>
           <div className="col-md-8 search-result-content" id="search-result-content">
+            <div className="search-result-meta">Found {this.props.searchResultMeta.total} pages with "{this.props.searchingKeyword}"</div>
             <SearchResultList
               pages={this.props.pages}
               searchingKeyword={this.props.searchingKeyword}
@@ -48,5 +53,6 @@ SearchResult.propTypes = {
 SearchResult.defaultProps = {
   searchedPages: [],
   searchingKeyword: '',
+  searchResultMeta: {},
 };
 

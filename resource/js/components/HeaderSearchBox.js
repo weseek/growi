@@ -2,8 +2,8 @@
 
 import React from 'react';
 
-import SearchForm from './SearchForm';
-import SearchSuggest from './SearchSuggest';
+import SearchForm from './HeaderSearchBox/SearchForm';
+import SearchSuggest from './HeaderSearchBox/SearchSuggest';
 import axios from 'axios'
 
 export default class SearchBox extends React.Component {
@@ -16,9 +16,15 @@ export default class SearchBox extends React.Component {
       searchedPages: [],
       searchError: null,
       searching: false,
+      focused: false,
     }
 
     this.search = this.search.bind(this);
+    this.isShown = this.isShown.bind(this);
+  }
+
+  isShown(focused) {
+    this.setState({focused: !!focused});
   }
 
   search(data) {
@@ -44,6 +50,12 @@ export default class SearchBox extends React.Component {
           searchingKeyword: keyword,
           searchedPages: res.data.data,
           searching: false,
+          searchError: null,
+        });
+      } else {
+        this.setState({
+          searchError: res,
+          searching: false,
         });
       }
       // TODO error
@@ -59,12 +71,16 @@ export default class SearchBox extends React.Component {
   render() {
     return (
       <div className="search-box">
-        <SearchForm onSearchFormChanged={this.search} />
+        <SearchForm
+          onSearchFormChanged={this.search}
+          isShown={this.isShown}
+          />
         <SearchSuggest
           searchingKeyword={this.state.searchingKeyword}
           searchedPages={this.state.searchedPages}
           searchError={this.state.searchError}
           searching={this.state.searching}
+          focused={this.state.focused}
           />
       </div>
     );
