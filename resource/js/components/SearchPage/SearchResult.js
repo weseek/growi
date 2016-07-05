@@ -6,12 +6,42 @@ import SearchResultList from './SearchResultList';
 // Search.SearchResult
 export default class SearchResult extends React.Component {
 
+  isNotSearchedYet() {
+    return !this.props.searchResultMeta.took;
+  }
+
+  isNotFound() {
+    return this.props.searchingKeyword !== '' && this.props.pages.length === 0;
+  }
+
   render() {
+    const excludePathString = this.props.tree;
+
+    if (this.isNotSearchedYet()) {
+      return <div />;
+    }
+
+    if (this.isNotFound()) {
+      let under = '';
+      if (this.props.tree !== '') {
+        under = ` under "${this.props.tree}"`;
+      }
+      return (
+        <div className="content-main">
+            <i className="fa fa-meh-o" /> No page found with "{this.props.searchingKeyword}"{under}
+        </div>
+      );
+
+    }
 
     const listView = this.props.pages.map((page) => {
       const pageId = "#" + page._id;
       return (
-        <Page page={page} linkTo={pageId} key={page._id}>
+        <Page page={page}
+          linkTo={pageId}
+          key={page._id}
+          excludePathString={excludePathString}
+          >
           <div className="page-list-option">
             <a href={page.path}><i className="fa fa-arrow-circle-right" /></a>
           </div>
@@ -24,7 +54,7 @@ export default class SearchResult extends React.Component {
     <span className="search-result-meta">Found: {this.props.searchResultMeta.total} pages with "{this.props.searchingKeyword}"</span>
     */
     return (
-      <div className="content-main" id="content-main">
+      <div className="content-main">
         <div className="search-result row" id="search-result">
           <div className="col-md-4 page-list search-result-list" id="search-result-list">
             <nav data-spy="affix"  data-offset-top="120">
@@ -47,11 +77,14 @@ export default class SearchResult extends React.Component {
 }
 
 SearchResult.propTypes = {
-  searchedPages: React.PropTypes.array.isRequired,
+  tree: React.PropTypes.string.isRequired,
+  pages: React.PropTypes.array.isRequired,
   searchingKeyword: React.PropTypes.string.isRequired,
+  searchResultMeta: React.PropTypes.object.isRequired,
 };
 SearchResult.defaultProps = {
-  searchedPages: [],
+  tree: '',
+  pages: [],
   searchingKeyword: '',
   searchResultMeta: {},
 };

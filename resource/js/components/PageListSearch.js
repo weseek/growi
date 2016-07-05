@@ -2,6 +2,7 @@
 
 import React from 'react';
 import axios from 'axios'
+import SearchResult from './SearchPage/SearchResult';
 
 export default class PageListSearch extends React.Component {
 
@@ -9,28 +10,50 @@ export default class PageListSearch extends React.Component {
     super(props);
 
     this.state = {
-      keyword: '',
+      location: location,
+      tree: $('#search-listpage-input').data('path'),
+      searchingKeyword: this.props.query.q || '',
+      searchedKeyword: '',
+      searchedPages: [],
+      searchResultMeta: {},
+      searchError: null,
     }
 
-    //this.changeURL = this.changeURL.bind(this);
+    this.changeURL = this.changeURL.bind(this);
     this.search = this.search.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    this.ticker = null;
   }
 
   componentDidMount() {
-    // This is temporary data bind
-    this.ticker = setInterval(this.pageListObserver.bind(this), 1000);
+    const $pageListSearchForm = $('#search-listpage-input');
+
+    // search after page initialized
+    if (this.state.searchingKeyword !== '') {
+      const keyword = this.state.searchingKeyword;
+      $pageListSearchForm.val(keyword);
+      this.search({keyword});
+    }
+
+    // This is temporary data bind ... (out of component)
+    $('#search-listpage-form').on('submit', () => {
+      const keyword = $pageListSearchForm.val();
+      console.log('submit with', keyword);
+      if (keyword != this.state.searchingKeyword)  {
+        this.search({keyword});
+      }
+
+      return false;
+    });
+
+    $('#search-listpage-clear').on('click', () => {
+      $pageListSearchForm.val('');
+      this.search({keyword: ''});
+
+      return false;
+    });
   }
 
   componentWillUnmount() {
-    clearInterval(this.ticker);
-  }
-
-  pageListObserver() {
-    let value = $('#page-list-search-form').val();
-    this.setState({keyword: value});
-    this.search();
   }
 
   static getQueryByLocation(location) {
@@ -48,44 +71,58 @@ export default class PageListSearch extends React.Component {
   handleChange(event) {
     // this is not fired now because of force-data-bound by jQuery
     const keyword = event.target.value;
-    this.setState({keyword});
+    this.setState({searchedKeyword: keyword});
     console.log('Changed');
   }
 
+  stopSearching() {
+    $('#content-main').show();
+    $('#search-listpage-clear').hide();
+    $('.main-container').removeClass('aside-hidden');
+  }
+
+  startSearching() {
+    $('#content-main').hide();
+    $('#search-listpage-clear').show();
+    $('.main-container').addClass('aside-hidden');
+  }
+
   changeURL(keyword, refreshHash) {
+    const tree = this.state.tree;
     let hash = location.hash || '';
     // TODO 整理する
     if (refreshHash || this.state.searchedKeyword !== '') {
         hash = '';
     }
     if (window.history && window.history.pushState){
-      window.history.pushState('', `Search - ${keyword}`, `/_search?q=${keyword}${hash}`);
+      window.history.pushState('', `Search - ${keyword}`, `${tree}?q=${keyword}${hash}`);
     }
   }
 
-  search() {
-    const keyword = this.state.keyword;
+  search(data) {
+    const keyword = data.keyword || '';
+    const tree = this.state.tree;
+    console.log('search with', keyword, tree);
 
-    console.log('Search with', keyword);
-    return true ;
-
+    this.changeURL(keyword);
     if (keyword === '') {
+      this.stopSearching();
       this.setState({
         searchingKeyword: '',
         searchedPages: [],
+        searchResultMeta: {},
       });
 
       return true;
     }
 
+    this.startSearching();
     this.setState({
       searchingKeyword: keyword,
     });
-
-    axios.get('/_api/search', {params: {q: keyword}})
+    axios.get('/_api/search', {params: {q: keyword, tree: tree}})
     .then((res) => {
       if (res.data.ok) {
-        this.changeURL(keyword);
 
         this.setState({
           searchedKeyword: keyword,
@@ -108,9 +145,15 @@ export default class PageListSearch extends React.Component {
         <input
           type="hidden"
           name="q"
-          value={this.state.keyword}
+          value={this.state.searchingKeyword}
           onChange={this.handleChange}
           className="form-control"
+          />
+        <SearchResult
+          tree={this.state.tree}
+          pages={this.state.searchedPages}
+          searchingKeyword={this.state.searchingKeyword}
+          searchResultMeta={this.state.searchResultMeta}
           />
       </div>
     );

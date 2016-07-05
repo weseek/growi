@@ -59,6 +59,7 @@ export default class SearchPage extends React.Component {
       this.setState({
         searchingKeyword: '',
         searchedPages: [],
+        searchResultMeta: {},
       });
 
       return true;

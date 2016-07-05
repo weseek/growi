@@ -26,8 +26,9 @@ export default class PagePath extends React.Component {
 
   render() {
     const page = this.props.page;
-    const shortPath = this.getShortPath(page.path);
-    const pathPrefix = page.path.replace(new RegExp(shortPath + '(/)?$'), '');
+    const pagePath = page.path.replace(this.props.excludePathString.replace(/^\//, ''), '');
+    const shortPath = this.getShortPath(pagePath);
+    const pathPrefix = pagePath.replace(new RegExp(shortPath + '(/)?$'), '');
 
     return (
       <span className="page-path">
@@ -43,4 +44,5 @@ PagePath.propTypes = {
 
 PagePath.defaultProps = {
   page: {},
+  excludePathString: '',
 };

@@ -18,7 +18,7 @@ export default class Page extends React.Component {
         {this.props.children}
         <UserPicture user={page.revision.author} />
         <a className="page-list-link" href={link}>
-          <PagePath page={page} />
+          <PagePath page={page} excludePathString={this.props.excludePathString} />
         </a>
         <PageListMeta page={page} />
       </li>
@@ -34,5 +34,6 @@ Page.propTypes = {
 Page.defaultProps = {
   page: {},
   linkTo: '',
+  excludePathString: '',
 };
 

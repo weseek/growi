@@ -2,24 +2,46 @@
   font-size: 16px;
   color: #999;
 }
+.search-listpage-clear {
+  display: none;
+  position: absolute;
+  font-size: 0.6em;
+  width: 22px;
+  height: 22px;
+  color: #ccc;
+  padding: 5px 5px 5px 42px;
+}
 
 .search-input-group {
   display: inline-block;
   margin-bottom: 0;
   width: 200px;
   vertical-align: bottom;
+
+  .search-listpage-submit-group {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    padding-left: 197px;
+    border-radius: 0;
+
+    > .btn {
+      padding: 6px 12px 7px;
+    }
+  }
 }
 
-.search-listpage-input {
-}
 
 .search-top {
   .search-top-input-group {
     .search-top-input {
+      &:focus {
+        width: 400px;
+        transition: .3s ease;
+      }
     }
-    &:focus {
-      width: 400px;
-      transition: .3s ease;
+    .btn {
+      padding: 6px 12px 7px;
     }
   }
 }
