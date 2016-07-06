@@ -3,13 +3,15 @@
   color: #999;
 }
 .search-listpage-clear {
+  z-index: 3;
   display: none;
   position: absolute;
   font-size: 0.6em;
   width: 22px;
   height: 22px;
   color: #ccc;
-  padding: 5px 5px 5px 42px;
+  padding: 8px;
+  right: 5px;
 }
 
 .search-input-group {
@@ -37,7 +39,6 @@
     .search-top-input {
       &:focus {
         width: 400px;
-        transition: .3s ease;
       }
     }
     .btn {
