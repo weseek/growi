@@ -5,11 +5,13 @@
 .search-listpage-clear {
   display: none;
   position: absolute;
+  right: 8px;
+  z-index: 10;
   font-size: 0.6em;
   width: 22px;
   height: 22px;
   color: #ccc;
-  padding: 5px 5px 5px 42px;
+  padding: 8px;
 }
 
 .search-input-group {
@@ -35,13 +37,21 @@
 .search-top {
   .search-top-input-group {
     .search-top-input {
-      &:focus {
-        width: 400px;
-        transition: .3s ease;
-      }
+      width: 400px;
     }
     .btn {
       padding: 6px 12px 7px;
+      margin-left: -3px;
+    }
+
+    .search-top-clear {
+      position: absolute;
+      right: 40px;
+      z-index: 10;
+      width: 22px;
+      height: 22px;
+      color: #ccc;
+      padding: 8px;
     }
   }
 }
