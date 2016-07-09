@@ -471,7 +471,7 @@ $(function() {
         }
       });
       $('[data-affix-disable]').on('click', function(e) {
-        $elm = $($(this).data('affix-disable'));
+        var $elm = $($(this).data('affix-disable'));
         $(window).off('.affix');
         $elm.removeData('affix').removeClass('affix affix-top affix-bottom');
         return false;
