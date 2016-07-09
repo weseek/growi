@@ -37,7 +37,6 @@ export default class PageListSearch extends React.Component {
     // This is temporary data bind ... (out of component)
     $('#search-listpage-form').on('submit', () => {
       const keyword = $pageListSearchForm.val();
-      console.log('submit with', keyword);
       if (keyword != this.state.searchingKeyword)  {
         this.search({keyword});
       }
@@ -72,7 +71,7 @@ export default class PageListSearch extends React.Component {
     // this is not fired now because of force-data-bound by jQuery
     const keyword = event.target.value;
     this.setState({searchedKeyword: keyword});
-    console.log('Changed');
+    //console.log('Changed');
   }
 
   stopSearching() {
@@ -102,7 +101,6 @@ export default class PageListSearch extends React.Component {
   search(data) {
     const keyword = data.keyword || '';
     const tree = this.state.tree;
-    console.log('search with', keyword, tree);
 
     this.changeURL(keyword);
     if (keyword === '') {

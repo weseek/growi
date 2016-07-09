@@ -2,6 +2,11 @@
 
 {% block html_title %}{{ path|path2name }} · {{ path }}{% endblock %}
 
+{% block html_base_attr %}
+  data-spy="scroll"
+  data-target="#search-result-list"
+{% endblock %}
+
 {% block content_head %}
 
 {% block content_head_before %}
