@@ -14,8 +14,25 @@ export default class SearchResult extends React.Component {
     return this.props.searchingKeyword !== '' && this.props.pages.length === 0;
   }
 
+  isError() {
+    if (this.props.searchError !== null) {
+      return true;
+    }
+    return false;
+  }
+
   render() {
     const excludePathString = this.props.tree;
+
+    console.log(this.props.searchError);
+    console.log(this.isError());
+    if (this.isError()) {
+      return (
+        <div className="content-main">
+          <i className="searcing fa fa-warning"></i> Error on searching.
+        </div>
+      );
+    }
 
     if (this.isNotSearchedYet()) {
       return <div />;
@@ -92,5 +109,6 @@ SearchResult.defaultProps = {
   pages: [],
   searchingKeyword: '',
   searchResultMeta: {},
+  searchError: null,
 };
 

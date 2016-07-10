@@ -109,6 +109,7 @@ export default class PageListSearch extends React.Component {
         searchingKeyword: '',
         searchedPages: [],
         searchResultMeta: {},
+        searchError: null,
       });
 
       return true;
@@ -127,12 +128,19 @@ export default class PageListSearch extends React.Component {
           searchedPages: res.data.data,
           searchResultMeta: res.data.meta,
         });
+      } else {
+        this.setState({
+          searchError: res.data,
+        });
       }
 
 
       // TODO error
     })
     .catch((res) => {
+      this.setState({
+        searchError: res.data,
+      });
       // TODO error
     });
   };
@@ -152,6 +160,7 @@ export default class PageListSearch extends React.Component {
           pages={this.state.searchedPages}
           searchingKeyword={this.state.searchingKeyword}
           searchResultMeta={this.state.searchResultMeta}
+          searchError={this.state.searchError}
           />
       </div>
     );
