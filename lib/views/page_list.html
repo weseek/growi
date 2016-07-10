@@ -2,6 +2,11 @@
 
 {% block html_title %}{{ path|path2name }} · {{ path }}{% endblock %}
 
+{% block html_base_attr %}
+  data-spy="scroll"
+  data-target="#search-result-list"
+{% endblock %}
+
 {% block content_head %}
 
 {% block content_head_before %}
@@ -15,17 +20,17 @@
     {% endif %}
     <h1 class="title">
       <span class="" id="revision-path">{{ path|insertSpaceToEachSlashes }}</span>
-      {#
       {% if searchConfigured() && path != '/' %}
-      <div class="form-group form-group-sm has-feedback search-input-group" data-toggle="tooltip" data-placement="bottom" title="{{ path }} 以下から検索">
-        <label class="control-label sr-only" for="inputSuccess5">Search</label>
-        <input
-        type="text" class="search-listpage-input form-control" data-path="{{ path }}"
-        >
-        <i class="form-control-feedback search-listpage-icon fa fa-search"></i>
-      </div>
+      <form class="input-group search-input-group hidden-xs hidden-sm" data-toggle="tooltip" data-placement="bottom" title="{{ path }} 以下から検索" id="search-listpage-form">
+        <input type="text" class="search-listpage-input form-control" data-path="{{ path }}" id="search-listpage-input">
+        <span class="input-group-btn search-listpage-submit-group">
+          <button type="submit" class="btn btn-default" id="search-listpage-submit">
+            <i class="fa fa-search"></i>
+          </button>
+        </span>
+        <a class="search-listpage-clear" id="search-listpage-clear"><i class="fa fa-times-circle"></i></a>
+      </form>
       {% endif %}
-      #}
     </h1>
   </header>
 </div>
@@ -36,6 +41,15 @@
 
 {% block content_main_before %}
 {% endblock %}
+
+{# page-list-search should be fully managed by react.js,
+ # but now the header and page list content is rendered separately by the server,
+ # so now bind the values through the hidden fields.
+ #}
+{% if searchConfigured() && path != '/' %}
+<div id="page-list-search">
+</div>
+{% endif %}
 
 <div class="page-list content-main {% if req.body.pageForm %}on-edit{% endif %}"
   id="content-main"

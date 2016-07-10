@@ -14,6 +14,7 @@ export default class SearchForm extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleFocus = this.handleFocus.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
+    this.clearForm = this.clearForm.bind(this);
     this.ticker = null;
   }
 
@@ -30,6 +31,20 @@ export default class SearchForm extends React.Component {
       this.props.onSearchFormChanged({keyword: this.state.keyword});
       this.setState({searchedKeyword: this.state.keyword});
     }
+  }
+
+  getFormClearComponent() {
+    if (this.state.keyword !== '') {
+      return <a className="search-top-clear" onClick={this.clearForm}><i className="fa fa-times-circle" /></a>;
+
+    } else {
+      return '';
+    }
+  }
+
+  clearForm() {
+    this.setState({keyword: ''});
+    this.search();
   }
 
   searchFieldTicker() {
@@ -50,6 +65,8 @@ export default class SearchForm extends React.Component {
   }
 
   render() {
+    const formClear = this.getFormClearComponent();
+
     return (
       <form
         action="/_search"
@@ -59,7 +76,7 @@ export default class SearchForm extends React.Component {
           autocomplete="off"
           type="text"
           className="search-top-input form-control"
-          placeholder="Search ..."
+          placeholder="Search ... Page Title (Path) and Content"
           name="q"
           value={this.state.keyword}
           onFocus={this.handleFocus}
@@ -71,6 +88,7 @@ export default class SearchForm extends React.Component {
             <i className="search-top-icon fa fa-search"></i>
           </button>
         </span>
+        {formClear}
       </form>
     );
   }

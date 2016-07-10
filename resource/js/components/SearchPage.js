@@ -59,6 +59,8 @@ export default class SearchPage extends React.Component {
       this.setState({
         searchingKeyword: '',
         searchedPages: [],
+        searchResultMeta: {},
+        searchError: null,
       });
 
       return true;
@@ -78,13 +80,19 @@ export default class SearchPage extends React.Component {
           searchedPages: res.data.data,
           searchResultMeta: res.data.meta,
         });
+      } else {
+        this.setState({
+          searchError: res.data,
+        });
       }
-
 
       // TODO error
     })
     .catch((res) => {
       // TODO error
+      this.setState({
+        searchError: res.data,
+      });
     });
   };
 
@@ -116,5 +124,6 @@ SearchPage.propTypes = {
 SearchPage.defaultProps = {
   //pollInterval: 1000,
   query: SearchPage.getQueryByLocation(location || {}),
+  searchError: null,
 };
 
