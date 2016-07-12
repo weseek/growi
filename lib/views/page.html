@@ -76,6 +76,8 @@
       <ul class="dropdown-menu">
        <li><a href="#" data-target="#renamePage" data-toggle="modal"><i class="fa fa-share"></i> 移動</a></li>
        <li><a href="?presentation=1" class="toggle-presentation"><i class="fa fa-arrows-alt"></i> プレゼンモード (beta)</a></li>
+       <li class="divider"></li>
+       <li class=""><a href="#" data-target="#deletePage" data-toggle="modal"><i class="fa fa-remove text-danger"></i> 削除</a></li>
       </ul>
     </li>
     {% if page %}
@@ -84,6 +86,7 @@
   </ul>
 
   {% include 'modal/widget_rename.html' %}
+  {% include 'modal/widget_delete.html' %}
 
   <div class="tab-content wiki-content">
   {% if req.query.renamed %}
