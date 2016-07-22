@@ -62,7 +62,7 @@ describe('Page', function () {
         },
       ];
 
-      testDBUtil.generateFixture(conn, 'Page', fixture)
+      return testDBUtil.generateFixture(conn, 'Page', fixture)
       .then(function(pages) {
         done();
       });
@@ -91,6 +91,43 @@ describe('Page', function () {
         });
       });
     });
+  });
+
+  describe('.isCreatableName', function() {
+
+    expect(Page.isCreatableName('/hoge')).to.be.true;
+
+    // edge cases
+    expect(Page.isCreatableName('/me')).to.be.false;
+    expect(Page.isCreatableName('/me/')).to.be.false;
+    expect(Page.isCreatableName('/me/x')).to.be.false;
+    expect(Page.isCreatableName('/meeting')).to.be.true;
+    expect(Page.isCreatableName('/meeting/x')).to.be.true;
+
+    // under score
+    expect(Page.isCreatableName('/_')).to.be.false;
+    expect(Page.isCreatableName('/_r/x')).to.be.false;
+    expect(Page.isCreatableName('/_api')).to.be.false;
+    expect(Page.isCreatableName('/_apix')).to.be.false;
+    expect(Page.isCreatableName('/_api/x')).to.be.false;
+
+    expect(Page.isCreatableName('/hoge/xx.md')).to.be.false;
+
+
+    var forbidden = ['installer', 'register', 'login', 'logout', 'admin', 'files', 'trash', 'paste', 'comments'];
+    for (var i = 0; i < forbidden.length ; i++) {
+      var pn = forbidden[i];
+      expect(Page.isCreatableName('/' + pn + '')).to.be.false;
+      expect(Page.isCreatableName('/' + pn + '/')).to.be.false;
+      expect(Page.isCreatableName('/' + pn + '/abc')).to.be.false;
+    }
+
+    var forbidden = ['bookmarks', 'comments', 'activities', 'pages', 'recent-create', 'recent-edit'];
+    for (var i = 0; i < forbidden.length ; i++) {
+      var pn = forbidden[i];
+      expect(Page.isCreatableName('/user/aoi/' + pn)).to.be.false;
+      expect(Page.isCreatableName('/user/aoi/x/' + pn)).to.be.true;
+    }
   });
 
   describe('.isCreator', function() {
