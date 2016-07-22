@@ -56,6 +56,15 @@
 
   <ul class="nav nav-tabs hidden-print">
 
+  {% if page.isDeleted() %}
+    <li class="">
+      <a href="#revision-body" data-toggle="tab">
+        <i class="fa fa-trash-o" aria-hidden="true"></i> This page is in the trash.
+      </a>
+    </li>
+  {% endif %}
+
+  {% if not page.isDeleted() %}
     <li class=" {% if not req.body.pageForm %}active{% endif %}" data-toggle="tooltip" {# data-title="あなたの 確認待ち です" title="" data-placement="bottom" data-trigger="manual" data-tooltip-stay #}>
       <a href="#revision-body" data-toggle="tab">
       <i class="fa fa-magic"></i>
@@ -83,13 +92,15 @@
     {% if page %}
     <li class="pull-right"><a href="#revision-history" data-toggle="tab"><i class="fa fa-history"></i> History</a></li>
     {% endif %}
+
+  {% endif %}
   </ul>
 
   {% include 'modal/widget_rename.html' %}
   {% include 'modal/widget_delete.html' %}
 
   <div class="tab-content wiki-content">
-  {% if req.query.renamed %}
+  {% if req.query.renamed and not page.isDeleted() %}
   <div class="alert alert-info">
     <strong>移動しました: </strong> このページは <code>{{ req.query.renamed }}</code> から移動しました。
   </div>
@@ -120,8 +131,10 @@
     </div>
 
     {# edit form #}
+    {% if not page.isDeleted() %}
     <div class="edit-form tab-pane {% if req.body.pageForm %}active{% endif %}" id="edit-form">
       {% include '_form.html' %}
+    {% endif %}
     </div>
 
     {# raw revision history #}
