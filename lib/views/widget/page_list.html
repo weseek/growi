@@ -31,6 +31,12 @@
     </span>
     {% endif  %}
 
+    {% if page.seenUsers.length >= config.seener_threshold %}
+    <span>
+      <i class="fa fa-eye">{{ page.seenUsers.length }}</i>
+    </span>
+    {% endif  %}
+
     {% if !page.isPublic() %}
     <span>
       <i class="fa fa-lock"></i>

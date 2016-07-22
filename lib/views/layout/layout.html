@@ -49,7 +49,7 @@
   <div class="navbar-header">
     <a class="navbar-brand" href="/">
       <img alt="Crowi" src="/logo/32x32.png" width="16">
-      {% block title %}{{ config.crowi['app:title'] }}{% endblock %}
+      {% block title %}{{ config.crowi['app:title']|default('Crowi') }}{% endblock %}
     </a>
   {% if searchConfigured() %}
   <div class="navbar-form navbar-left search-top visible-lg visible-md" role="search" id="search-top">
@@ -147,4 +147,3 @@
 <script src="/js/app{% if env  == 'production' %}.min{% endif %}.js"></script>
 <script src="/js/crowi{% if env  == 'production' %}.min{% endif %}.js"></script>
 </html>
-
