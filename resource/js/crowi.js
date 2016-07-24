@@ -726,16 +726,18 @@ $(function() {
     }
 
     var $seenUserList = $("#seen-user-list");
-    var seenUsers = $seenUserList.data('seen-users');
-    var seenUsersArray = seenUsers.split(',');
-    if (seenUsers && seenUsersArray.length > 0 && seenUsersArray.length <= 10) {
-      // FIXME: user data cache
-      $.get('/_api/users.list', {user_ids: seenUsers}, function(res) {
-        // ignore unless response has error
-        if (res.ok) {
-          AddToSeenUser(res.users);
-        }
-      });
+    if ($seenUserList && $seenUserList.length > 0) {
+      var seenUsers = $seenUserList.data('seen-users');
+      var seenUsersArray = seenUsers.split(',');
+      if (seenUsers && seenUsersArray.length > 0 && seenUsersArray.length <= 10) {
+        // FIXME: user data cache
+        $.get('/_api/users.list', {user_ids: seenUsers}, function(res) {
+          // ignore unless response has error
+          if (res.ok) {
+            AddToSeenUser(res.users);
+          }
+        });
+      }
     }
 
     function CreateUserLinkWithPicture (user) {

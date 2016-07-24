@@ -20,7 +20,7 @@
     {% endif %}
     <h1 class="title">
       <span class="" id="revision-path">{{ path|insertSpaceToEachSlashes }}</span>
-      {% if searchConfigured() && path != '/' %}
+      {% if searchConfigured() && path != '/' && !isTrashPage() %}
       <form class="input-group search-input-group hidden-xs hidden-sm" data-toggle="tooltip" data-placement="bottom" title="{{ path }} 以下から検索" id="search-listpage-form">
         <input type="text" class="search-listpage-input form-control" data-path="{{ path }}" id="search-listpage-input">
         <span class="input-group-btn search-listpage-submit-group">
@@ -46,7 +46,7 @@
  # but now the header and page list content is rendered separately by the server,
  # so now bind the values through the hidden fields.
  #}
-{% if searchConfigured() && path != '/' %}
+{% if searchConfigured() && path != '/' && !isTrashPage() %}
 <div id="page-list-search">
 </div>
 {% endif %}
@@ -163,7 +163,7 @@
 
 {% block side_header %}
 
-{% if not page and not isUserPageList(path) %}
+{% if not page and not isUserPageList(path) and !isTrashPage() %}
 <div class="portal-side">
   <div class="portal-form-button">
     <button class="btn btn-primary" id="create-portal-button">Create Portal</button>
