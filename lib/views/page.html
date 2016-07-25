@@ -63,7 +63,15 @@
 
   {% if page.isDeleted() %}
   <div class="alert alert-danger">
-    <i class="fa fa-trash-o" aria-hidden="true"></i> This page is in the trash.
+    <form role="form" class="pull-right" id="revert-delete-page-form" onsubmit="return false;">
+      <input type="hidden" name="path" value="{{ page.path }}">
+      <input type="hidden" name="page_id" value="{{ page._id.toString() }}">
+      <input type="submit" class="btn btn-danger btn-inverse btn-sm" value="Put Back!">
+    </form>
+    <p>
+      <i class="fa fa-trash-o" aria-hidden="true"></i>
+      This page is in the trash.<br>
+    </p>
   </div>
   {% endif %}
 
