@@ -21,6 +21,7 @@
   {% else %}
   {# trash/* #}
   <header id="page-header">
+    <a href="#" title="Bookmark" class="bookmark-link" id="bookmark-button" data-bookmarked="0"><i class="fa fa-star-o"></i></a>
     <h1 class="title">{{ path|insertSpaceToEachSlashes }}</h1>
   </header>
   {% endif %}
@@ -71,6 +72,9 @@
     <p>
       <i class="fa fa-trash-o" aria-hidden="true"></i>
       This page is in the trash.<br>
+    </p>
+    <p>
+    Deleted by <img src="{{ page.lastUpdateUser|picture }}" class="picture picture-sm picture-rounded"> {{ page.lastUpdateUser.name }} at {{ page.updatedAt|datetz('Y-m-d H:i:s') }}
     </p>
   </div>
   {% endif %}
@@ -202,7 +206,13 @@
 
 <p class="meta">
   Path: <span id="pagePath">{{ page.path }}</span><br>
-  Last updated at {{ page.revision.createdAt|datetz('Y-m-d H:i:s') }} by <img src="{{ page.revision.author|picture }}" class="picture picture-rounded"> {{ page.revision.author.name }}<br>
+  {# for BC #}
+  {% if page.lastUpdateUser %}
+    Last updated at {{ page.updatedAt|datetz('Y-m-d H:i:s') }} by <img src="{{ page.lastUpdateUser|picture }}" class="picture picture-rounded"> {{ page.lastUpdateUser.name }}<br>
+  {% else %}
+    Last updated at {{ page.revision.createdAt|datetz('Y-m-d H:i:s') }} by <img src="{{ page.revision.author|picture }}" class="picture picture-rounded"> {{ page.revision.author.name }}<br>
+  {% endif %}
+  {# /for BC #}
   Created at {{ page.createdAt|datetz('Y-m-d H:i:s') }} by <img src="{{ page.creator|default(page.creator)|picture }}" class="picture picture-rounded"> {{ page.creator.name }}<br>
 </p>
 
