@@ -1,0 +1,36 @@
+  <div class="modal fade" id="unportalize">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+      <form role="form" id="unportalize-form" onsubmit="return false;">
+
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">ポータル化を解除する</h4>
+        </div>
+        <div class="modal-body">
+          <ul>
+           <li>このポータル化を解除し、通常のページに戻します。</li>
+          </ul>
+            <div class="form-group">
+              <p>
+                <label for="">このページ</label><br><code>{{ page.path }}</code>
+              </p>
+              <p>
+                <label for="">解除後のページ</label><br><code>{{ page.path|replace('(\/)$', '') }}</code>
+              </p>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <p><small class="pull-left" id="newPageNameCheck"></small></p>
+          <input type="hidden" name="path" value="{{ page.path }}">
+          <input type="hidden" class="form-control" name="new_path" id="newPageName" value="{{ page.path|replace('(\/)$', '') }}">
+          <input type="hidden" name="page_id" value="{{ page._id.toString() }}">
+          <input type="hidden" name="revision_id" value="{{ page.revision._id.toString() }}">
+          <input type="submit" class="btn btn-primary" value="Unportalize!">
+        </div>
+
+      </form>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->

@@ -302,11 +302,11 @@ $(function() {
   $('#renamePage').on('shown.bs.modal', function (e) {
     $('#newPageName').focus();
   });
-  $('#renamePageForm').submit(function(e) {
+  $('#renamePageForm, #unportalize-form').submit(function(e) {
     $.ajax({
       type: 'POST',
       url: '/_api/pages.rename',
-      data: $('#renamePageForm').serialize(),
+      data: $(this).serialize(),
       dataType: 'json'
     }).done(function(res) {
       if (!res.ok) {
@@ -314,13 +314,12 @@ $(function() {
         $('#newPageNameCheck').addClass('alert-danger');
       } else {
         var page = res.page;
-        var path = $('#pagePath').html();
 
         $('#newPageNameCheck').removeClass('alert-danger');
         $('#newPageNameCheck').html('<img src="/images/loading_s.gif"> 移動しました。移動先にジャンプします。');
 
         setTimeout(function() {
-          top.location.href = page.path + '?renamed=' + path;
+          top.location.href = page.path + '?renamed=' + pagePath;
         }, 1000);
       }
     });

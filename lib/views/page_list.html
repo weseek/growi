@@ -85,8 +85,18 @@
         <i class="fa fa-times"></i>
       </a>
     </li>
+    {%  else %}
+    <li class="dropdown pull-right">
+      <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+        <i class="fa fa-wrench"></i> <span class="caret"></span>
+      </a>
+      <ul class="dropdown-menu">
+       <li><a href="#" data-target="#unportalize" data-toggle="modal"><i class="fa fa-share"></i> ポータル解除</a></li>
+      </ul>
+    </li>
     {% endif %}
   </ul>
+  {% include 'modal/widget_unportalize.html' %}
 
   <div class="tab-content">
     <div class="wiki tab-pane {% if not req.body.pageForm %}active{% endif %}" id="revision-body-content">{{ page.revision.body|nl2br|safe }}</div>
