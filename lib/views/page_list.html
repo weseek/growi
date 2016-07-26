@@ -20,7 +20,7 @@
     {% endif %}
     <h1 class="title">
       <span class="" id="revision-path">{{ path|insertSpaceToEachSlashes }}</span>
-      {% if searchConfigured() && path != '/' && !isTrashPage() %}
+      {% if searchConfigured() && !isTopPage() && !isTrashPage() %}
       <form class="input-group search-input-group hidden-xs hidden-sm" data-toggle="tooltip" data-placement="bottom" title="{{ path }} 以下から検索" id="search-listpage-form">
         <input type="text" class="search-listpage-input form-control" data-path="{{ path }}" id="search-listpage-input">
         <span class="input-group-btn search-listpage-submit-group">
@@ -46,7 +46,7 @@
  # but now the header and page list content is rendered separately by the server,
  # so now bind the values through the hidden fields.
  #}
-{% if searchConfigured() && path != '/' && !isTrashPage() %}
+{% if searchConfigured() && !isTopPage() && !isTrashPage() %}
 <div id="page-list-search">
 </div>
 {% endif %}
@@ -85,7 +85,7 @@
         <i class="fa fa-times"></i>
       </a>
     </li>
-    {%  else %}
+    {% else %}
     <li class="dropdown pull-right">
       <a class="dropdown-toggle" data-toggle="dropdown" href="#">
         <i class="fa fa-wrench"></i> <span class="caret"></span>
@@ -94,6 +94,7 @@
        <li><a href="#" data-target="#unportalize" data-toggle="modal"><i class="fa fa-share"></i> ポータル解除</a></li>
       </ul>
     </li>
+    <li class="pull-right"><a href="#revision-history" data-toggle="tab"><i class="fa fa-history"></i> History</a></li>
     {% endif %}
   </ul>
   {% include 'modal/widget_unportalize.html' %}
@@ -106,7 +107,38 @@
     <div class="tab-pane edit-form portal-form {% if req.body.pageForm %}active{% endif %}" id="edit-form">
       {% include '_form.html' with {forceGrant: 1} %}
     </div>
+
+    <div class="tab-pane revision-history" id="revision-history">
+      <h1><i class="fa fa-history"></i> History</h1>
+      {% if not page %}
+      {% else %}
+      <div class="revision-history-list">
+        {% for t in tree %}
+        <div class="revision-hisory-outer">
+          <img src="{{ t.author|picture }}" class="picture picture-rounded">
+          <div class="revision-history-main">
+            <div class="revision-history-author">
+              <strong>{% if t.author %}{{ t.author.username }}{% else %}-{% endif %}</strong>
+            </div>
+            <div class="revision-history-comment">
+            </div>
+            <div class="revision-history-meta">
+              {{ t.createdAt|datetz('Y-m-d H:i:s') }}
+              <br>
+              <a href="?revision={{ t._id.toString() }}"><i class="fa fa-history"></i> このバージョンを見る</a>
+              <a class="diff-view" data-revision-id="{{ t._id.toString() }}">
+                <i id="diff-icon-{{ t._id.toString() }}" class="fa fa-arrow-circle-right"></i> 差分を見る
+              </a>
+              <pre class="" id="diff-display-{{ t._id.toString()}}" style="display: none"></pre>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
   </div>
+
 </div> {# /.portal #}
 
 <div class="page-list-container">
