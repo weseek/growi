@@ -49,6 +49,7 @@
         <input type="password" class="form-control" placeholder="Password" name="loginForm[password]">
       </div>
 
+      <input type="hidden" name="_csrf" value="{{ _csrf() }}">
       <input type="submit" class="btn btn-primary btn-lg btn-block" value="Login">
     </form>
 
@@ -60,6 +61,7 @@
         <p>Google でログイン</p>
         <form role="form" action="/login/google" method="get">
           <button type="submit" class="btn btn-block btn-google"><i class="fa fa-google-plus-square"></i> Login</button>
+          <input type="hidden" name="_csrf" value="{{ _csrf() }}">
         </form>
       </div>
       {% endif %}
@@ -67,6 +69,7 @@
       <div class="col-md-6">
         <p>Facebook でログイン</p>
         <form role="form">
+          <input type="hidden" name="_csrf" value="{{ _csrf() }}">
           <button type="button" id="btn-login-facebook" class="btn btn-block btn-facebook"><i class="fa fa-facebook-square"></i> Login</button>
         </form>
       </div>
@@ -163,6 +166,7 @@
       パスワードは6文字以上の半角英数字または記号
       </p>
 
+      <input type="hidden" name="_csrf" value="{{ _csrf() }}">
       <input type="submit" class="btn btn-primary btn-lg btn-block" value="新規登録">
     </form>
 
@@ -173,6 +177,7 @@
       <div class="col-md-6">
         <p>Google で登録</p>
         <form role="form" method="post" action="/register/google">
+          <input type="hidden" name="_csrf" value="{{ _csrf() }}">
           <button type="submit" class="btn btn-block btn-google"><i class="fa fa-google-plus-square"></i> Login</button>
         </form>
       </div>

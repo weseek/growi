@@ -15,7 +15,7 @@
 <div class="header-wrap">
   <header class="portal-header {% if page %}has-page{% endif %}">
     {% if page %}
-      <a href="#" title="Bookmark" class="bookmark-link" id="bookmark-button" data-bookmarked="0"><i class="fa fa-star-o"></i></a>
+      <a href="#" title="Bookmark" class="bookmark-link" id="bookmark-button" data-csrftoken="{{ _csrf() }}" data-bookmarked="0"><i class="fa fa-star-o"></i></a>
 
     {% endif %}
     <h1 class="title">
@@ -100,7 +100,7 @@
   {% include 'modal/widget_unportalize.html' %}
 
   <div class="tab-content">
-  {% if not page.isLatestRevision() %}
+  {% if page and not page.isLatestRevision() %}
   <div class="alert alert-warning">
     <strong>注意: </strong> これは現在の版ではありません。 <i class="fa fa-magic"></i> <a href="{{ page.path }}">最新のポータルを表示</a>
   </div>

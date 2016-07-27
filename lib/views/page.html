@@ -14,14 +14,14 @@
 
 
     {% if page %}
-      <a href="#" title="Bookmark" class="bookmark-link" id="bookmark-button" data-bookmarked="0"><i class="fa fa-star-o"></i></a>
+    <a href="#" title="Bookmark" class="bookmark-link" id="bookmark-button" data-csrftoken="{{ _csrf() }}" data-bookmarked="0"><i class="fa fa-star-o"></i></a>
     {% endif %}
     <h1 class="title" id="revision-path">{{ path|insertSpaceToEachSlashes }}</h1>
   </header>
   {% else %}
   {# trash/* #}
   <header id="page-header">
-    <a href="#" title="Bookmark" class="bookmark-link" id="bookmark-button" data-bookmarked="0"><i class="fa fa-star-o"></i></a>
+    <a href="#" title="Bookmark" class="bookmark-link" id="bookmark-button" data-csrftoken="{{ _csrf() }}" data-bookmarked="0"><i class="fa fa-star-o"></i></a>
     <h1 class="title">{{ path|insertSpaceToEachSlashes }}</h1>
   </header>
   {% endif %}
@@ -65,6 +65,7 @@
   {% if page.isDeleted() %}
   <div class="alert alert-danger">
     <form role="form" class="pull-right" id="revert-delete-page-form" onsubmit="return false;">
+      <input type="hidden" name="_csrf" value="{{ _csrf() }}">
       <input type="hidden" name="path" value="{{ page.path }}">
       <input type="hidden" name="page_id" value="{{ page._id.toString() }}">
       <input type="submit" class="btn btn-danger btn-inverse btn-sm" value="Put Back!">
