@@ -100,6 +100,11 @@
   {% include 'modal/widget_unportalize.html' %}
 
   <div class="tab-content">
+  {% if not page.isLatestRevision() %}
+  <div class="alert alert-warning">
+    <strong>注意: </strong> これは現在の版ではありません。 <i class="fa fa-magic"></i> <a href="{{ page.path }}">最新のポータルを表示</a>
+  </div>
+  {% endif %}
     <div class="wiki tab-pane {% if not req.body.pageForm %}active{% endif %}" id="revision-body-content">{{ page.revision.body|nl2br|safe }}</div>
 
     <script type="text/template" id="raw-text-original">{{ page.revision.body }}</script>

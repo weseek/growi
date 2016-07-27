@@ -819,6 +819,11 @@ $(function() {
       } else {
         var revisionIds = revisionId + ',' + beforeRevisionId;
 
+        if ($diffDisplay.data('loaded')) {
+          $diffDisplay.slideToggle();
+          return true;
+        }
+
         $.ajax({
           type: 'GET',
           url: '/_api/revisions.list?revision_ids=' + revisionIds,
@@ -838,16 +843,19 @@ $(function() {
             $diffDisplay.append($span);
           });
 
+          $diffDisplay.data('loaded', 1);
           $diffDisplay.slideToggle();
         });
       }
     });
 
     // default open
-    $('.diff-view').each(function(i, diffView) {
-      if (i < 2) {
-        $(diffView).click();
-      }
+    $('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', function() {
+      $('.diff-view').each(function(i, diffView) {
+        if (i < 2) {
+          $(diffView).click();
+        }
+      });
     });
 
     // presentation
