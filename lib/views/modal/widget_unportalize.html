@@ -24,6 +24,11 @@
               <p>
                 <label for="">解除後のページ</label><br><code>{{ unportalizedPath }}</code>
               </p>
+              {% if isTopPage() %}
+              <p class="alert alert-info">
+              このポータルはトップページのポータルのため、特別なページに移動します。
+              </p>
+              {% endif %}
             </div>
         </div>
         <div class="modal-footer">
