@@ -13,7 +13,13 @@
       </p>
       <p class="created-at">
         作成日: {{ page.createdAt|datetz('Y/m/d H:i:s') }}<br>
-        最終更新: {{ page.updatedAt|datetz('Y/m/d H:i:s') }} <a href="/user/{{ page.revision.author.username }}"><img src="{{ page.revision.author|picture }}" class="picture picture-xs picture-rounded" alt="{{ page.revision.author.name }}"></a>
+
+        {% if page.lastUpdateUser %}
+          最終更新: {{ page.updatedAt|datetz('Y/m/d H:i:s') }} <a href="/user/{{ page.lastUpdateUser.username }}"><img src="{{ page.lastUpdateUser|picture }}" class="picture picture-xs picture-rounded" alt="{{ page.lastUpdateUser.name }}"></a>
+        {% else %}
+          {# for BC 1.5.x #}
+          最終更新: {{ page.updatedAt|datetz('Y/m/d H:i:s') }} <a href="/user/{{ page.revision.author.username }}"><img src="{{ page.revision.author|picture }}" class="picture picture-xs picture-rounded" alt="{{ page.revision.author.name }}"></a>
+        {% endif %}
       </p>
     </div>
   </div>

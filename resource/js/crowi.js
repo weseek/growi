@@ -298,14 +298,15 @@ $(function() {
     return false;
   });
 
+  // rename
   $('#renamePage').on('shown.bs.modal', function (e) {
     $('#newPageName').focus();
   });
-  $('#renamePageForm').submit(function(e) {
+  $('#renamePageForm, #unportalize-form').submit(function(e) {
     $.ajax({
       type: 'POST',
       url: '/_api/pages.rename',
-      data: $('#renamePageForm').serialize(),
+      data: $(this).serialize(),
       dataType: 'json'
     }).done(function(res) {
       if (!res.ok) {
@@ -313,14 +314,51 @@ $(function() {
         $('#newPageNameCheck').addClass('alert-danger');
       } else {
         var page = res.page;
-        var path = $('#pagePath').html();
 
         $('#newPageNameCheck').removeClass('alert-danger');
         $('#newPageNameCheck').html('<img src="/images/loading_s.gif"> 移動しました。移動先にジャンプします。');
 
         setTimeout(function() {
-          top.location.href = page.path + '?renamed=' + path;
+          top.location.href = page.path + '?renamed=' + pagePath;
         }, 1000);
+      }
+    });
+
+    return false;
+  });
+
+  // delete
+  $('#delete-page-form').submit(function(e) {
+    $.ajax({
+      type: 'POST',
+      url: '/_api/pages.remove',
+      data: $('#delete-page-form').serialize(),
+      dataType: 'json'
+    }).done(function(res) {
+      if (!res.ok) {
+        $('#delete-errors').html('<i class="fa fa-times-circle"></i> ' + res.error);
+        $('#delete-errors').addClass('alert-danger');
+      } else {
+        var page = res.page;
+        top.location.href = page.path;
+      }
+    });
+
+    return false;
+  });
+  $('#revert-delete-page-form').submit(function(e) {
+    $.ajax({
+      type: 'POST',
+      url: '/_api/pages.revertRemove',
+      data: $('#revert-delete-page-form').serialize(),
+      dataType: 'json'
+    }).done(function(res) {
+      if (!res.ok) {
+        $('#delete-errors').html('<i class="fa fa-times-circle"></i> ' + res.error);
+        $('#delete-errors').addClass('alert-danger');
+      } else {
+        var page = res.page;
+        top.location.href = page.path;
       }
     });
 
@@ -705,16 +743,18 @@ $(function() {
     }
 
     var $seenUserList = $("#seen-user-list");
-    var seenUsers = $seenUserList.data('seen-users');
-    var seenUsersArray = seenUsers.split(',');
-    if (seenUsers && seenUsersArray.length > 0 && seenUsersArray.length <= 10) {
-      // FIXME: user data cache
-      $.get('/_api/users.list', {user_ids: seenUsers}, function(res) {
-        // ignore unless response has error
-        if (res.ok) {
-          AddToSeenUser(res.users);
-        }
-      });
+    if ($seenUserList && $seenUserList.length > 0) {
+      var seenUsers = $seenUserList.data('seen-users');
+      var seenUsersArray = seenUsers.split(',');
+      if (seenUsers && seenUsersArray.length > 0 && seenUsersArray.length <= 10) {
+        // FIXME: user data cache
+        $.get('/_api/users.list', {user_ids: seenUsers}, function(res) {
+          // ignore unless response has error
+          if (res.ok) {
+            AddToSeenUser(res.users);
+          }
+        });
+      }
     }
 
     function CreateUserLinkWithPicture (user) {
@@ -779,6 +819,11 @@ $(function() {
       } else {
         var revisionIds = revisionId + ',' + beforeRevisionId;
 
+        if ($diffDisplay.data('loaded')) {
+          $diffDisplay.slideToggle();
+          return true;
+        }
+
         $.ajax({
           type: 'GET',
           url: '/_api/revisions.list?revision_ids=' + revisionIds,
@@ -798,16 +843,19 @@ $(function() {
             $diffDisplay.append($span);
           });
 
+          $diffDisplay.data('loaded', 1);
           $diffDisplay.slideToggle();
         });
       }
     });
 
     // default open
-    $('.diff-view').each(function(i, diffView) {
-      if (i < 2) {
-        $(diffView).click();
-      }
+    $('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', function() {
+      $('.diff-view').each(function(i, diffView) {
+        if (i < 2) {
+          $(diffView).click();
+        }
+      });
     });
 
     // presentation

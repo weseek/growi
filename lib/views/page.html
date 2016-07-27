@@ -8,6 +8,7 @@
 {% endblock %}
 
 <div class="header-wrap">
+  {% if not page.isDeleted() %}
   <header id="page-header">
     <p class="stopper"><a href="#" data-affix-disable="#page-header"><i class="fa fa-chevron-up"></i></a></p>
 
@@ -17,6 +18,13 @@
     {% endif %}
     <h1 class="title" id="revision-path">{{ path|insertSpaceToEachSlashes }}</h1>
   </header>
+  {% else %}
+  {# trash/* #}
+  <header id="page-header">
+    <a href="#" title="Bookmark" class="bookmark-link" id="bookmark-button" data-bookmarked="0"><i class="fa fa-star-o"></i></a>
+    <h1 class="title">{{ path|insertSpaceToEachSlashes }}</h1>
+  </header>
+  {% endif %}
 </div>
 
 {% block content_head_after %}
@@ -54,8 +62,25 @@
 
   {% else %}
 
-  <ul class="nav nav-tabs hidden-print">
+  {% if page.isDeleted() %}
+  <div class="alert alert-danger">
+    <form role="form" class="pull-right" id="revert-delete-page-form" onsubmit="return false;">
+      <input type="hidden" name="path" value="{{ page.path }}">
+      <input type="hidden" name="page_id" value="{{ page._id.toString() }}">
+      <input type="submit" class="btn btn-danger btn-inverse btn-sm" value="Put Back!">
+    </form>
+    <p>
+      <i class="fa fa-trash-o" aria-hidden="true"></i>
+      This page is in the trash.<br>
+    </p>
+    <p>
+    Deleted by <img src="{{ page.lastUpdateUser|picture }}" class="picture picture-sm picture-rounded"> {{ page.lastUpdateUser.name }} at {{ page.updatedAt|datetz('Y-m-d H:i:s') }}
+    </p>
+  </div>
+  {% endif %}
 
+  {% if not page.isDeleted() %}
+  <ul class="nav nav-tabs hidden-print">
     <li class=" {% if not req.body.pageForm %}active{% endif %}" data-toggle="tooltip" {# data-title="あなたの 確認待ち です" title="" data-placement="bottom" data-trigger="manual" data-tooltip-stay #}>
       <a href="#revision-body" data-toggle="tab">
       <i class="fa fa-magic"></i>
@@ -76,24 +101,28 @@
       <ul class="dropdown-menu">
        <li><a href="#" data-target="#renamePage" data-toggle="modal"><i class="fa fa-share"></i> 移動</a></li>
        <li><a href="?presentation=1" class="toggle-presentation"><i class="fa fa-arrows-alt"></i> プレゼンモード (beta)</a></li>
+       <li class="divider"></li>
+       <li class=""><a href="#" data-target="#deletePage" data-toggle="modal"><i class="fa fa-trash-o text-danger"></i> 削除</a></li>
       </ul>
     </li>
     {% if page %}
     <li class="pull-right"><a href="#revision-history" data-toggle="tab"><i class="fa fa-history"></i> History</a></li>
     {% endif %}
   </ul>
+  {% endif %}
 
   {% include 'modal/widget_rename.html' %}
+  {% include 'modal/widget_delete.html' %}
 
   <div class="tab-content wiki-content">
-  {% if req.query.renamed %}
+  {% if req.query.renamed and not page.isDeleted() %}
   <div class="alert alert-info">
     <strong>移動しました: </strong> このページは <code>{{ req.query.renamed }}</code> から移動しました。
   </div>
   {% endif %}
   {% if not page.isLatestRevision() %}
   <div class="alert alert-warning">
-    <strong>注意: </strong> これは現在の版ではありません。
+    <strong>注意: </strong> これは現在の版ではありません。 <i class="fa fa-magic"></i> <a href="{{ page.path }}">最新のページを表示</a>
   </div>
   {% endif %}
 
@@ -117,9 +146,11 @@
     </div>
 
     {# edit form #}
+    {% if not page.isDeleted() %}
     <div class="edit-form tab-pane {% if req.body.pageForm %}active{% endif %}" id="edit-form">
       {% include '_form.html' %}
     </div>
+    {% endif %}
 
     {# raw revision history #}
     <div class="tab-pane revision-history" id="revision-history">
@@ -175,18 +206,28 @@
 
 <p class="meta">
   Path: <span id="pagePath">{{ page.path }}</span><br>
-  Last updated at {{ page.revision.createdAt|datetz('Y-m-d H:i:s') }} by <img src="{{ page.revision.author|picture }}" class="picture picture-rounded"> {{ page.revision.author.name }}<br>
+  {# for BC #}
+  {% if page.lastUpdateUser %}
+    Last updated at {{ page.updatedAt|datetz('Y-m-d H:i:s') }} by <img src="{{ page.lastUpdateUser|picture }}" class="picture picture-rounded"> {{ page.lastUpdateUser.name }}<br>
+  {% else %}
+    Last updated at {{ page.revision.createdAt|datetz('Y-m-d H:i:s') }} by <img src="{{ page.revision.author|picture }}" class="picture picture-rounded"> {{ page.revision.author.name }}<br>
+  {% endif %}
+  {# /for BC #}
   Created at {{ page.createdAt|datetz('Y-m-d H:i:s') }} by <img src="{{ page.creator|default(page.creator)|picture }}" class="picture picture-rounded"> {{ page.creator.name }}<br>
 </p>
 
 {% endblock %}
 
 {% block side_header %}
-  {% include 'widget/page_side_header.html' %}
+  {% if not page.isDeleted() %}
+    {% include 'widget/page_side_header.html' %}
+  {% endif %}
 {% endblock %} {# side_header #}
 
 {% block side_content %}
-  {% include 'widget/page_side_content.html' %}
+  {% if not page.isDeleted() %}
+    {% include 'widget/page_side_content.html' %}
+  {% endif %}
 {% endblock %}
 
 {% block footer %}
