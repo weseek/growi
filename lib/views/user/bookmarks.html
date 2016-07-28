@@ -2,14 +2,14 @@
 
 {% block main_css_class %}bookmark-page{% endblock %}
 
-{% block html_title %}{{ user.name }}'s Bookmarks · {% endblock %}
+{% block html_title %}{{ pageUser.name }}'s Bookmarks · {% endblock %}
 
 {% block content_head %}
 <div class="header-wrap">
   <header id="page-header">
     <p class="stopper"><a href="#" data-affix-disable="#page-header"><i class="fa fa-chevron-up"></i></a></p>
 
-    <h1 class="title">{{ user.name }}'s Bookmarks</h1>
+    <h1 class="title">{{ pageUser.name }}'s Bookmarks</h1>
   </header>
 </div>
 {% endblock %}
