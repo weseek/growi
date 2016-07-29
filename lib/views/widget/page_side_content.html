@@ -2,11 +2,11 @@
 <ul class="fitted-list">
   <li data-toggle="tooltip" data-placement="bottom" title="共有用リンク" class="input-group">
     <span class="input-group-addon">共有用</span>
-    <input class="copy-link form-control" type="text" value="{{ config.crowi['app:title']|default('Crowi') }} {{ path }}  {{ baseUrl }}/{{ page._id.toString() }}">
+    <input readonly class="copy-link form-control" type="text" value="{{ config.crowi['app:title']|default('Crowi') }} {{ path }}  {{ baseUrl }}/{{ page._id.toString() }}">
   </li>
   <li data-toggle="tooltip" data-placement="bottom" title="Markdown形式のリンク" class="input-group">
     <span class="input-group-addon">Markdown</span>
-    <input class="copy-link form-control" type="text" value="[{{ path }}]({{ baseUrl }}/{{ page._id.toString() }})">
+    <input readonly class="copy-link form-control" type="text" value="[{{ path }}]({{ baseUrl }}/{{ page._id.toString() }})">
   </li>
 </ul>
 
