@@ -65,6 +65,7 @@
           </div>
         </div>
       </fieldset>
+      <input type="hidden" name="_csrf" value="{{ _csrf() }}">
       </form>
 
       {% if hasSlackConfig %}
@@ -108,6 +109,7 @@
               </p>
             </td>
             <td>
+              <input type="hidden" name="_csrf" value="{{ _csrf() }}">
               <input type="submit" value="Add" class="btn btn-primary">
             </td>
           </tr>
@@ -124,6 +126,7 @@
             <td>
               <form class="admin-remove-updatepost">
                 <input type="hidden" name="id" value="{{ notif._id.toString() }}">
+                <input type="hidden" name="_csrf" value="{{ _csrf() }}">
                 <input type="submit" value="Delete" class="btn btn-default">
               </form>
             </td>

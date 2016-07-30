@@ -31,7 +31,7 @@
     </span>
     {% endif  %}
 
-    {% if page.seenUsers.length >= config.seener_threshold %}
+    {% if viewConfig.seener_threshold and page.seenUsers.length >= viewConfig.seener_threshold %}
     <span>
       <i class="fa fa-eye"></i>{{ page.seenUsers.length }}
     </span>

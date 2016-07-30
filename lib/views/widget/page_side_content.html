@@ -2,7 +2,7 @@
 <ul class="fitted-list">
   <li data-toggle="tooltip" data-placement="bottom" title="共有用リンク" class="input-group">
     <span class="input-group-addon">共有用</span>
-    <input readonly class="copy-link form-control" type="text" value="{{ config.crowi['app:title'] }} {{ path }}  {{ baseUrl }}/{{ page._id.toString() }}">
+    <input readonly class="copy-link form-control" type="text" value="{{ config.crowi['app:title']|default('Crowi') }} {{ path }}  {{ baseUrl }}/{{ page._id.toString() }}">
   </li>
   <li data-toggle="tooltip" data-placement="bottom" title="Markdown形式のリンク" class="input-group">
     <span class="input-group-addon">Markdown</span>
@@ -19,6 +19,7 @@
           <textarea class="comment-form-comment form-control" id="comment-form-comment" name="commentForm[comment]"></textarea>
         </div>
         <div class="comment-submit">
+          <input type="hidden" name="_csrf" value="{{ _csrf() }}">
           <input type="hidden" name="commentForm[page_id]" value="{{ page._id.toString() }}">
           <input type="hidden" name="commentForm[revision_id]" value="{{ revision._id.toString() }}">
           <span class="text-danger" id="comment-form-message"></span>

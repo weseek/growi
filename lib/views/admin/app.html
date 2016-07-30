@@ -54,6 +54,7 @@
 
         <div class="form-group">
           <div class="col-xs-offset-3 col-xs-6">
+            <input type="hidden" name="_csrf" value="{{ _csrf() }}">
             <button type="submit" class="btn btn-primary">更新</button>
           </div>
         </div>
@@ -105,6 +106,7 @@
 
         <div class="form-group">
           <div class="col-xs-offset-3 col-xs-6">
+            <input type="hidden" name="_csrf" value="{{ _csrf() }}">
             <button type="submit" class="btn btn-primary">更新</button>
           </div>
         </div>
@@ -149,6 +151,7 @@
 
         <div class="form-group">
           <div class="col-xs-offset-3 col-xs-6">
+            <input type="hidden" name="_csrf" value="{{ _csrf() }}">
             <button type="submit" class="btn btn-primary">更新</button>
           </div>
         </div>
@@ -197,6 +200,7 @@
 
         <div class="form-group">
           <div class="col-xs-offset-3 col-xs-6">
+            <input type="hidden" name="_csrf" value="{{ _csrf() }}">
             <button type="submit" class="btn btn-primary">更新</button>
           </div>
         </div>
@@ -225,6 +229,7 @@
 
         <div class="form-group">
           <div class="col-xs-offset-3 col-xs-6">
+            <input type="hidden" name="_csrf" value="{{ _csrf() }}">
             <button type="submit" class="btn btn-primary">更新</button>
           </div>
         </div>
@@ -253,6 +258,7 @@
 
         <div class="form-group">
           <div class="col-xs-offset-3 col-xs-6">
+            <input type="hidden" name="_csrf" value="{{ _csrf() }}">
             <button type="submit" class="btn btn-primary">更新</button>
           </div>
         </div>
@@ -297,7 +303,6 @@
           $button.attr('disabled', 'disabled');
           var jqxhr = $.post($form.attr('action'), $form.serialize(), function(data)
             {
-              console.log(data);
               if (data.status) {
                 showMessage($id, '更新しました');
               } else {

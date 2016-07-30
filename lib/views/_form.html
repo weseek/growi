@@ -49,6 +49,7 @@
           {% endfor %}
         </select>
         {% endif %}
+        <input type="hidden" name="_csrf" value="{{ _csrf() }}">
         <input type="submit" class="btn btn-primary" id="edit-form-submit" value="ページを更新" />
       </div>
     </div>
