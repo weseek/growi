@@ -62,7 +62,7 @@ describe('Page', function () {
         },
       ];
 
-      testDBUtil.generateFixture(conn, 'Page', fixture)
+      return testDBUtil.generateFixture(conn, 'Page', fixture)
       .then(function(pages) {
         done();
       });
@@ -90,6 +90,68 @@ describe('Page', function () {
           });
         });
       });
+    });
+  });
+
+  describe('.getDeletedPageName', function() {
+    it('should return trash page name', function() {
+      expect(Page.getDeletedPageName('/hoge')).to.be.equal('/trash/hoge');
+      expect(Page.getDeletedPageName('hoge')).to.be.equal('/trash/hoge');
+    });
+  });
+  describe('.getRevertDeletedPageName', function() {
+    it('should return reverted trash page name', function() {
+      expect(Page.getRevertDeletedPageName('/hoge')).to.be.equal('/hoge');
+      expect(Page.getRevertDeletedPageName('/trash/hoge')).to.be.equal('/hoge');
+      expect(Page.getRevertDeletedPageName('/trash/hoge/trash')).to.be.equal('/hoge/trash');
+    });
+  });
+
+  describe('.isDeletableName', function() {
+    it('should decide deletable or not', function() {
+      expect(Page.isDeletableName('/hoge')).to.be.true;
+      expect(Page.isDeletableName('/user/xxx')).to.be.false;
+      expect(Page.isDeletableName('/user/xxx123')).to.be.false;
+      expect(Page.isDeletableName('/user/xxx/')).to.be.true;
+      expect(Page.isDeletableName('/user/xxx/hoge')).to.be.true;
+    });
+  });
+
+  describe('.isCreatableName', function() {
+    it('should decide creatable or not', function() {
+      expect(Page.isCreatableName('/hoge')).to.be.true;
+
+      // edge cases
+      expect(Page.isCreatableName('/me')).to.be.false;
+      expect(Page.isCreatableName('/me/')).to.be.false;
+      expect(Page.isCreatableName('/me/x')).to.be.false;
+      expect(Page.isCreatableName('/meeting')).to.be.true;
+      expect(Page.isCreatableName('/meeting/x')).to.be.true;
+
+      // under score
+      expect(Page.isCreatableName('/_')).to.be.false;
+      expect(Page.isCreatableName('/_r/x')).to.be.false;
+      expect(Page.isCreatableName('/_api')).to.be.false;
+      expect(Page.isCreatableName('/_apix')).to.be.false;
+      expect(Page.isCreatableName('/_api/x')).to.be.false;
+
+      expect(Page.isCreatableName('/hoge/xx.md')).to.be.false;
+
+
+      var forbidden = ['installer', 'register', 'login', 'logout', 'admin', 'files', 'trash', 'paste', 'comments'];
+      for (var i = 0; i < forbidden.length ; i++) {
+        var pn = forbidden[i];
+        expect(Page.isCreatableName('/' + pn + '')).to.be.false;
+        expect(Page.isCreatableName('/' + pn + '/')).to.be.false;
+        expect(Page.isCreatableName('/' + pn + '/abc')).to.be.false;
+      }
+
+      var forbidden = ['bookmarks', 'comments', 'activities', 'pages', 'recent-create', 'recent-edit'];
+      for (var i = 0; i < forbidden.length ; i++) {
+        var pn = forbidden[i];
+        expect(Page.isCreatableName('/user/aoi/' + pn)).to.be.false;
+        expect(Page.isCreatableName('/user/aoi/x/' + pn)).to.be.true;
+      }
     });
   });
 

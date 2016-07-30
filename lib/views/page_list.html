@@ -15,12 +15,12 @@
 <div class="header-wrap">
   <header class="portal-header {% if page %}has-page{% endif %}">
     {% if page %}
-      <a href="#" title="Bookmark" class="bookmark-link" id="bookmark-button" data-bookmarked="0"><i class="fa fa-star-o"></i></a>
+      <a href="#" title="Bookmark" class="bookmark-link" id="bookmark-button" data-csrftoken="{{ _csrf() }}" data-bookmarked="0"><i class="fa fa-star-o"></i></a>
 
     {% endif %}
     <h1 class="title">
       <span class="" id="revision-path">{{ path|insertSpaceToEachSlashes }}</span>
-      {% if searchConfigured() && path != '/' %}
+      {% if searchConfigured() && !isTopPage() && !isTrashPage() %}
       <form class="input-group search-input-group hidden-xs hidden-sm" data-toggle="tooltip" data-placement="bottom" title="{{ path }} 以下から検索" id="search-listpage-form">
         <input type="text" class="search-listpage-input form-control" data-path="{{ path }}" id="search-listpage-input">
         <span class="input-group-btn search-listpage-submit-group">
@@ -46,7 +46,7 @@
  # but now the header and page list content is rendered separately by the server,
  # so now bind the values through the hidden fields.
  #}
-{% if searchConfigured() && path != '/' %}
+{% if searchConfigured() && !isTopPage() && !isTrashPage() %}
 <div id="page-list-search">
 </div>
 {% endif %}
@@ -85,10 +85,26 @@
         <i class="fa fa-times"></i>
       </a>
     </li>
+    {% else %}
+    <li class="dropdown pull-right">
+      <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+        <i class="fa fa-wrench"></i> <span class="caret"></span>
+      </a>
+      <ul class="dropdown-menu">
+       <li><a href="#" data-target="#unportalize" data-toggle="modal"><i class="fa fa-share"></i> ポータル解除</a></li>
+      </ul>
+    </li>
+    <li class="pull-right"><a href="#revision-history" data-toggle="tab"><i class="fa fa-history"></i> History</a></li>
     {% endif %}
   </ul>
+  {% include 'modal/widget_unportalize.html' %}
 
   <div class="tab-content">
+  {% if page and not page.isLatestRevision() %}
+  <div class="alert alert-warning">
+    <strong>注意: </strong> これは現在の版ではありません。 <i class="fa fa-magic"></i> <a href="{{ page.path }}">最新のポータルを表示</a>
+  </div>
+  {% endif %}
     <div class="wiki tab-pane {% if not req.body.pageForm %}active{% endif %}" id="revision-body-content">{{ page.revision.body|nl2br|safe }}</div>
 
     <script type="text/template" id="raw-text-original">{{ page.revision.body }}</script>
@@ -96,7 +112,38 @@
     <div class="tab-pane edit-form portal-form {% if req.body.pageForm %}active{% endif %}" id="edit-form">
       {% include '_form.html' with {forceGrant: 1} %}
     </div>
+
+    <div class="tab-pane revision-history" id="revision-history">
+      <h1><i class="fa fa-history"></i> History</h1>
+      {% if not page %}
+      {% else %}
+      <div class="revision-history-list">
+        {% for t in tree %}
+        <div class="revision-hisory-outer">
+          <img src="{{ t.author|picture }}" class="picture picture-rounded">
+          <div class="revision-history-main">
+            <div class="revision-history-author">
+              <strong>{% if t.author %}{{ t.author.username }}{% else %}-{% endif %}</strong>
+            </div>
+            <div class="revision-history-comment">
+            </div>
+            <div class="revision-history-meta">
+              {{ t.createdAt|datetz('Y-m-d H:i:s') }}
+              <br>
+              <a href="?revision={{ t._id.toString() }}"><i class="fa fa-history"></i> このバージョンを見る</a>
+              <a class="diff-view" data-revision-id="{{ t._id.toString() }}">
+                <i id="diff-icon-{{ t._id.toString() }}" class="fa fa-arrow-circle-right"></i> 差分を見る
+              </a>
+              <pre class="" id="diff-display-{{ t._id.toString()}}" style="display: none"></pre>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
   </div>
+
 </div> {# /.portal #}
 
 <div class="page-list-container">
@@ -127,7 +174,7 @@
 
     {# list view #}
     <div class="active tab-pane fade page-list-container in" id="view-list">
-      {% include 'widget/page_list.html' with { pages: pages, pager: pager, config: config } %}
+      {% include 'widget/page_list.html' with { pages: pages, pager: pager, viewConfig: viewConfig } %}
     </div>
 
     {# timeline view #}
@@ -163,7 +210,7 @@
 
 {% block side_header %}
 
-{% if not page and not isUserPageList(path) %}
+{% if not page and not isUserPageList(path) and !isTrashPage() %}
 <div class="portal-side">
   <div class="portal-form-button">
     <button class="btn btn-primary" id="create-portal-button">Create Portal</button>
