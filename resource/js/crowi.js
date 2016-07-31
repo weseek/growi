@@ -2,9 +2,7 @@
 /* Author: Sotaro KARASAWA <sotarok@crocos.co.jp>
 */
 
-var hljs = require('highlight.js');
 var jsdiff = require('diff');
-var marked = require('marked');
 var io = require('socket.io-client');
 
 //require('bootstrap-sass');
@@ -133,89 +131,6 @@ Crowi.unescape = function(s) {
   return s;
 };
 
-Crowi.getRendererType = function() {
-  return new Crowi.rendererType.markdown();
-};
-
-Crowi.rendererType = {};
-Crowi.rendererType.markdown = function(){};
-Crowi.rendererType.markdown.prototype = {
-  render: function(contentText) {
-
-    marked.setOptions({
-      gfm: true,
-      highlight: function (code, lang, callback) {
-        var result, hl;
-        if (lang) {
-          try {
-            hl = hljs.highlight(lang, code);
-            result = hl.value;
-          } catch (e) {
-            result = code;
-          }
-        } else {
-          //result = hljs.highlightAuto(code);
-          //callback(null, result.value);
-          result = code;
-        }
-        return callback(null, result);
-      },
-      tables: true,
-      breaks: true,
-      pedantic: false,
-      sanitize: false,
-      smartLists: true,
-      smartypants: false,
-      langPrefix: 'lang-'
-    });
-
-    var contentHtml = Crowi.unescape(contentText);
-    // TODO 前処理系のプラグイン化
-    contentHtml = this.preFormatMarkdown(contentHtml);
-    contentHtml = this.expandImage(contentHtml);
-    contentHtml = this.link(contentHtml);
-
-    var $body = this.$revisionBody;
-    // Using async version of marked
-    marked(contentHtml, {}, function (err, content) {
-      if (err) {
-        throw err;
-      }
-      $body.html(content);
-    });
-  },
-  preFormatMarkdown: function(content){
-    var x = content
-      .replace(/^(#{1,})([^\s]+)?(.*)$/gm, '$1 $2$3') // spacer for section
-      .replace(/>[\s]*\n>[\s]*\n/g, '> <br>\n> \n');
-    return x;
-  },
-  link: function (content) {
-    return content
-      //.replace(/\s(https?:\/\/[\S]+)/g, ' <a href="$1">$1</a>') // リンク
-      .replace(/\s<((\/[^>]+?){2,})>/g, ' <a href="$1">$1</a>') // ページ間リンク: <> でかこまれてて / から始まり、 / が2個以上
-      ;
-  },
-  expandImage: function (content) {
-    return content.replace(/\s(https?:\/\/[\S]+\.(jpg|jpeg|gif|png))/g, ' <a href="$1"><img src="$1" class="auto-expanded-image"></a>');
-  }
-};
-
-Crowi.renderer = function (contentText, revisionBody) {
-  var $revisionBody = revisionBody || $('#revision-body-content');
-
-  this.contentText = contentText;
-  this.$revisionBody = $revisionBody;
-  this.format = 'markdown'; // とりあえず
-  this.renderer = Crowi.getRendererType();
-  this.renderer.$revisionBody = this.$revisionBody;
-};
-Crowi.renderer.prototype = {
-  render: function() {
-    this.renderer.render(this.contentText);
-  }
-};
-
 // original: middleware.swigFilter
 Crowi.userPicture = function (user) {
   if (!user) {
@@ -254,23 +169,6 @@ Crowi.modifyScrollTop = function() {
 
   window.scrollTo(0, (window.scrollY - pageHeaderRect.height - offset));
 }
-
-
-//CrowiSearcher = function(path, $el) {
-//  this.$el = $el;
-//  this.path = path;
-//  this.searchResult = {};
-//};
-//CrowiSearcher.prototype.querySearch = function(keyword, option) {
-//};
-//CrowiSearcher.prototype.search = function(keyword) {
-//  var option = {};
-//  this.querySearch(keyword, option);
-//  this.$el.html(this.render());
-//};
-//CrowiSearcher.prototype.render = function() {
-//  return $('<div>');
-//};
 
 
 $(function() {
@@ -433,8 +331,10 @@ $(function() {
     var contentId = '#' + id + ' > script';
     var revisionBody = '#' + id + ' .revision-body';
     var revisionPath = '#' + id + ' .revision-path';
-    var renderer = new Crowi.renderer($(contentId).html(), $(revisionBody));
-    renderer.render();
+
+    var markdown = Crowi.unescape($(contentId).html());
+    var parsedHTML = crowiRenderer.render(markdown);
+    $(revisionBody).html(parsedHTML);
   });
 
   // login
@@ -514,8 +414,10 @@ $(function() {
     // if page exists
     var $rawTextOriginal = $('#raw-text-original');
     if ($rawTextOriginal.length > 0) {
-      var renderer = new Crowi.renderer($('#raw-text-original').html());
-      renderer.render();
+      var markdown = Crowi.unescape($('#raw-text-original').html());
+      var parsedHTML = crowiRenderer.render(markdown);
+      $('#revision-body-content').html(parsedHTML);
+
       Crowi.correctHeaders('#revision-body-content');
       Crowi.revisionToc('#revision-body-content', '#revision-toc');
     }

@@ -49,8 +49,8 @@ $(function() {
   var watchTimer = setInterval(function() {
     var content = $('#form-body').val();
     if (prevContent != content) {
-      var renderer = new Crowi.renderer($('#form-body').val(), $('#preview-body'));
-      renderer.render();
+      var parsedHTML = crowiRenderer.render(content);
+      $('#preview-body').html(parsedHTML);
 
       prevContent = content;
     }
