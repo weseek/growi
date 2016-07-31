@@ -917,8 +917,16 @@ $(function() {
     });
   } // end if pageId
 
-  // for search
-  //
+  // hash handling
+  $('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', function() {
+    window.history.pushState('', 'History', '#revision-history');
+  });
+  $('a[data-toggle="tab"][href="#edit-form"]').on('show.bs.tab', function() {
+    window.history.pushState('', 'Edit', '#edit-form');
+  });
+  $('a[data-toggle="tab"][href="#revision-body"]').on('show.bs.tab', function() {
+    window.history.pushState('', '',  location.href.replace(location.hash, ''));
+  });
 });
 
 Crowi.findHashFromUrl = function(url)
@@ -933,7 +941,7 @@ Crowi.findHashFromUrl = function(url)
 
 Crowi.unhighlightSelectedSection = function(hash)
 {
-  if (!hash || hash == "" || !hash.match(/^head.+/)) {
+  if (!hash || hash == "" || !hash.match(/^#head.+/)) {
     // とりあえず head* だけ (検索結果ページで副作用出た
     return true;
   }
@@ -942,7 +950,7 @@ Crowi.unhighlightSelectedSection = function(hash)
 
 Crowi.highlightSelectedSection = function(hash)
 {
-  if (!hash || hash == "" || !hash.match(/^head.+/)) {
+  if (!hash || hash == "" || !hash.match(/^#head.+/)) {
     // とりあえず head* だけ (検索結果ページで副作用出た
     return true;
   }
@@ -952,10 +960,33 @@ Crowi.highlightSelectedSection = function(hash)
 window.addEventListener('load', function(e) {
   Crowi.highlightSelectedSection(location.hash);
   Crowi.modifyScrollTop();
+
+  // hash on page
+  if (location.hash) {
+    if (location.hash == '#edit-form') {
+      $('a[data-toggle="tab"][href="#edit-form"]').tab('show');
+    }
+    if (location.hash == '#revision-history') {
+      $('a[data-toggle="tab"][href="#revision-history"]').tab('show');
+    }
+  }
 });
 
 window.addEventListener('hashchange', function(e) {
   Crowi.unhighlightSelectedSection(Crowi.findHashFromUrl(e.oldURL));
   Crowi.highlightSelectedSection(Crowi.findHashFromUrl(e.newURL));
   Crowi.modifyScrollTop();
+
+  // hash on page
+  if (location.hash) {
+    if (location.hash == '#edit-form') {
+      $('a[data-toggle="tab"][href="#edit-form"]').tab('show');
+    }
+    if (location.hash == '#revision-history') {
+      $('a[data-toggle="tab"][href="#revision-history"]').tab('show');
+    }
+  }
+  if (location.hash == '' || location.hash.match(/^#head.+/)) {
+    $('a[data-toggle="tab"][href="#revision-body"]').tab('show');
+  }
 });
