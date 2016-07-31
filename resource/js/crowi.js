@@ -921,9 +921,39 @@ $(function() {
   //
 });
 
+Crowi.findHashFromUrl = function(url)
+{
+  var match;
+  if (match = url.match(/#(.+)$/)) {
+    return '#' + match[1];
+  }
+
+  return "";
+}
+
+Crowi.unhighlightSelectedSection = function(hash)
+{
+  if (!hash || hash == "") {
+    return true;
+  }
+  $(hash).removeClass('highlighted');
+}
+
+Crowi.highlightSelectedSection = function(hash)
+{
+  if (!hash || hash == "") {
+    return true;
+  }
+  $(hash).addClass('highlighted');
+}
+
 window.addEventListener('load', function(e) {
+  Crowi.highlightSelectedSection(location.hash);
   Crowi.modifyScrollTop();
 });
+
 window.addEventListener('hashchange', function(e) {
+  Crowi.unhighlightSelectedSection(Crowi.findHashFromUrl(e.oldURL));
+  Crowi.highlightSelectedSection(Crowi.findHashFromUrl(e.newURL));
   Crowi.modifyScrollTop();
 });

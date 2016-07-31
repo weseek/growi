@@ -131,10 +131,12 @@ div.body {
     }
   }
 
-  em.highlighted {
-    padding: 2px;
-    margin: 0 -2px;
-    font-weight: bold;
+  .highlighted {
+    &em {
+      padding: 2px;
+      margin: 0 -2px;
+      font-weight: bold;
+    }
     font-style: normal;
     color: #333;
     background-color: rgba(255,255,140,0.5);
