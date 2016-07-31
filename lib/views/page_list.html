@@ -154,22 +154,27 @@
 
   <div class="tab-content">
     {% if pages.length == 0 %}
-    There are no pages under <strong>{{ path }}</strong>.
 
-    <h3>Next Actions</h3>
+      {% if isTrashPage() %}
+      No deleted pages.
+      {% else %}
+      There are no pages under <strong>{{ path }}</strong>.
 
-    <ul>
-      <li>Create portal page?
-        <ul>
-          <li>Great! To create the portal of <strong>{{ path }}</strong>, click "Create Portal" button.</li>
-        </ul>
-      </li>
-      <li>Create the under page directly?
-        <ul>
-          <li>Nice. To create the page under <strong>{{ path }}</strong> directly, type the page name on your browser.</li>
-        </ul>
-      </li>
-    </ul>
+      <h3>Next Actions</h3>
+
+      <ul>
+        <li>Create portal page?
+          <ul>
+            <li>Great! To create the portal of <strong>{{ path }}</strong>, click "Create Portal" button.</li>
+          </ul>
+        </li>
+        <li>Create the under page directly?
+          <ul>
+            <li>Nice. To create the page under <strong>{{ path }}</strong> directly, type the page name on your browser.</li>
+          </ul>
+        </li>
+      </ul>
+      {% endif %}
     {% endif  %}
 
     {# list view #}
