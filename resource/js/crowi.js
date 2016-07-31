@@ -933,7 +933,8 @@ Crowi.findHashFromUrl = function(url)
 
 Crowi.unhighlightSelectedSection = function(hash)
 {
-  if (!hash || hash == "") {
+  if (!hash || hash == "" || !hash.match(/^head.+/)) {
+    // とりあえず head* だけ (検索結果ページで副作用出た
     return true;
   }
   $(hash).removeClass('highlighted');
@@ -941,7 +942,8 @@ Crowi.unhighlightSelectedSection = function(hash)
 
 Crowi.highlightSelectedSection = function(hash)
 {
-  if (!hash || hash == "") {
+  if (!hash || hash == "" || !hash.match(/^head.+/)) {
+    // とりあえず head* だけ (検索結果ページで副作用出た
     return true;
   }
   $(hash).addClass('highlighted');
