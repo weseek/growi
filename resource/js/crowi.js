@@ -231,6 +231,30 @@ Crowi.userPicture = function (user) {
   }
 };
 
+Crowi.modifyScrollTop = function() {
+  var offset = 10;
+
+  var hash = window.location.hash;
+  if (hash === "") {
+    return;
+  }
+
+  var pageHeader = document.querySelector('#page-header');
+  var pageHeaderRect = pageHeader.getBoundingClientRect();
+
+  var sectionHeader = document.querySelector(hash);
+  if (sectionHeader === null) {
+    return;
+  }
+
+  var sectionHeaderRect = sectionHeader.getBoundingClientRect();
+  if (sectionHeaderRect.top >= pageHeaderRect.bottom) {
+    return;
+  }
+
+  window.scrollTo(0, (window.scrollY - pageHeaderRect.height - offset));
+}
+
 
 //CrowiSearcher = function(path, $el) {
 //  this.$el = $el;
@@ -895,4 +919,41 @@ $(function() {
 
   // for search
   //
+});
+
+Crowi.findHashFromUrl = function(url)
+{
+  var match;
+  if (match = url.match(/#(.+)$/)) {
+    return '#' + match[1];
+  }
+
+  return "";
+}
+
+Crowi.unhighlightSelectedSection = function(hash)
+{
+  if (!hash || hash == "") {
+    return true;
+  }
+  $(hash).removeClass('highlighted');
+}
+
+Crowi.highlightSelectedSection = function(hash)
+{
+  if (!hash || hash == "") {
+    return true;
+  }
+  $(hash).addClass('highlighted');
+}
+
+window.addEventListener('load', function(e) {
+  Crowi.highlightSelectedSection(location.hash);
+  Crowi.modifyScrollTop();
+});
+
+window.addEventListener('hashchange', function(e) {
+  Crowi.unhighlightSelectedSection(Crowi.findHashFromUrl(e.oldURL));
+  Crowi.highlightSelectedSection(Crowi.findHashFromUrl(e.newURL));
+  Crowi.modifyScrollTop();
 });
