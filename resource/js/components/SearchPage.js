@@ -1,7 +1,6 @@
 // This is the root component for #search-page
 
 import React from 'react';
-import axios from 'axios'
 import Crowi from '../util/Crowi';
 import SearchForm from './SearchPage/SearchForm';
 import SearchResult from './SearchPage/SearchResult';
