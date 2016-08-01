@@ -2,6 +2,7 @@
 
 import React from 'react';
 import axios from 'axios'
+import Crowi from '../util/Crowi';
 import SearchForm from './SearchPage/SearchForm';
 import SearchResult from './SearchPage/SearchResult';
 
@@ -9,6 +10,8 @@ export default class SearchPage extends React.Component {
 
   constructor(props) {
     super(props);
+
+    this.crowi = window.crowi; // FIXME
 
     this.state = {
       location: location,
@@ -70,28 +73,19 @@ export default class SearchPage extends React.Component {
       searchingKeyword: keyword,
     });
 
-    axios.get('/_api/search', {params: {q: keyword}})
-    .then((res) => {
-      if (res.data.ok) {
-        this.changeURL(keyword);
+    this.crowi.apiGet('/search', {q: keyword})
+    .then(res => {
+      this.changeURL(keyword);
 
-        this.setState({
-          searchedKeyword: keyword,
-          searchedPages: res.data.data,
-          searchResultMeta: res.data.meta,
-        });
-      } else {
-        this.setState({
-          searchError: res.data,
-        });
-      }
-
-      // TODO error
-    })
-    .catch((res) => {
+      this.setState({
+        searchedKeyword: keyword,
+        searchedPages: res.data,
+        searchResultMeta: res.meta,
+      });
+    }).catch(err => {
       // TODO error
       this.setState({
-        searchError: res.data,
+        searchError: err,
       });
     });
   };
