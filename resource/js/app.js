@@ -15,6 +15,7 @@ if (!window) {
 // FIXME
 const crowi = new Crowi({/* context */}, window);
 window.crowi = crowi;
+crowi.fetchUsers();
 
 const crowiRenderer = new CrowiRenderer();
 window.crowiRenderer = crowiRenderer;

@@ -10,10 +10,72 @@ export default class Crowi {
 
     this.location = window.location || {};
     this.document = window.document || {};
+    this.localStorage = window.localStorage || {};
 
+    this.fetchUsers = this.fetchUsers.bind(this);
     this.apiGet = this.apiGet.bind(this);
     this.apiPost = this.apiPost.bind(this);
     this.apiRequest = this.apiRequest.bind(this);
+
+    this.users = [];
+    this.userByName = {};
+
+    this.recoverData();
+  }
+
+  recoverData() {
+    const keys = [
+      'userByName',
+      'users',
+    ];
+
+    keys.forEach(key => {
+      if (this.localStorage[key]) {
+        try {
+          this[key] = JSON.parse(this.localStorage[key]);
+        } catch (e) {
+          this.localStorage.removeItem(key);
+        }
+      }
+    });
+  }
+
+  fetchUsers () {
+    const interval = 1000*60*10; // 5min
+    const currentTime = new Date();
+    if (!this.localStorage.lastFetched) {
+      this.localStorage.lastFetched = new Date();
+    }
+    if (interval > currentTime - new Date(this.localStorage.lastFetched)) {
+      return ;
+    }
+
+    this.apiGet('/users.list', {})
+    .then(data => {
+      this.users = data.users;
+      this.localStorage.users = JSON.stringify(data.users);
+
+      let userByName = {};
+      for (let i = 0; i < data.users.length; i++) {
+        const user = data.users[i];
+        userByName[user.username] = user;
+      }
+      this.userByName = userByName;
+      this.localStorage.userByName = JSON.stringify(userByName);
+
+      this.localStorage.lastFetched = new Date();
+      //console.log('userByName', this.localStorage.userByName);
+    }).catch(err => {
+      // ignore errors
+    });
+  }
+
+  findUser(username) {
+    if (this.userByName && this.userByName[username]) {
+      return this.userByName[username];
+    }
+
+    return null;
   }
 
   apiGet(path, params) {
