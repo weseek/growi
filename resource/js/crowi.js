@@ -155,6 +155,9 @@ Crowi.modifyScrollTop = function() {
   }
 
   var pageHeader = document.querySelector('#page-header');
+  if (!pageHeader) {
+    return;
+  }
   var pageHeaderRect = pageHeader.getBoundingClientRect();
 
   var sectionHeader = document.querySelector(hash);
