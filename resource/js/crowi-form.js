@@ -16,6 +16,11 @@ $(function() {
     });
   }
 
+  //
+  if (pagePath.match(/(20\d{4}|20\d{6}|20\d{2}_\d{1,2}|20\d{2}_\d{1,2}_\d{1,2})/)) {
+    $('#page-warning-modal').modal('show');
+  }
+
   var slackConfigured = $('#page-form-setting').data('slack-configured');
 
   // for new page
