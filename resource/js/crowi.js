@@ -207,8 +207,6 @@ $(function() {
 
 
   $('#create-page').on('shown.bs.modal', function (e) {
-    var padding = $('#create-page-under-tree .page-name-addons').outerWidth() + 15;
-    $('#create-page-under-tree .form-control').css({paddingLeft: padding});
 
     var input2Width = $('#create-page-today .page-today-input2').outerWidth();
     var newWidth = input2Width
