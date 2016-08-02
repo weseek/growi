@@ -910,6 +910,38 @@ window.addEventListener('load', function(e) {
       $('a[data-toggle="tab"][href="#revision-history"]').tab('show');
     }
   }
+
+  if (crowi.users || crowi.users.length == 0) {
+    var totalUsers = crowi.users.length;
+    var $listLiker = $('.page-list-liker');
+    $listLiker.each(function(i, liker) {
+      var count = $(liker).data('count') || 0;
+      if (count/totalUsers > 0.05) {
+        $(liker).addClass('popular-page-high');
+        // 5%
+      } else if (count/totalUsers > 0.02) {
+        $(liker).addClass('popular-page-mid');
+        // 2%
+      } else if (count/totalUsers > 0.005) {
+        $(liker).addClass('popular-page-low');
+        // 0.5%
+      }
+    });
+    var $listSeer = $('.page-list-seer');
+    $listSeer.each(function(i, seer) {
+      var count = $(seer).data('count') || 0;
+      if (count/totalUsers > 0.10) {
+        // 10%
+        $(seer).addClass('popular-page-high');
+      } else if (count/totalUsers > 0.05) {
+        // 5%
+        $(seer).addClass('popular-page-mid');
+      } else if (count/totalUsers > 0.02) {
+        // 2%
+        $(seer).addClass('popular-page-low');
+      }
+    });
+  }
 });
 
 window.addEventListener('hashchange', function(e) {

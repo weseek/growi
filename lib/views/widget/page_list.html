@@ -26,14 +26,14 @@
     {% endif  %}
 
     {% if page.liker.length > 0 %}
-    <span>
+    <span class="page-list-liker" data-count="{{ page.liker.length }}">
       <i class="fa fa-thumbs-up"></i>{{ page.liker.length }}
     </span>
     {% endif  %}
 
     {% if viewConfig.seener_threshold and page.seenUsers.length >= viewConfig.seener_threshold %}
-    <span>
-      <i class="fa fa-eye"></i>{{ page.seenUsers.length }}
+    <span class="page-list-seer" data-count="{{ page.seenUsers.length }}">
+      <i class="fa fa-check-square"></i>{{ page.seenUsers.length }}
     </span>
     {% endif  %}
 
