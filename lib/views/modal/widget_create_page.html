@@ -1,0 +1,66 @@
+<div class="modal create-page" id="create-page">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Create Page</h4>
+      </div>
+
+      <div class="modal-body">
+
+        <form class="form-horizontal" id="create-page-today" role="form">
+          <fieldset>
+            <div class="col-xs-12">
+              <h4>今日の◯◯</h4>
+            </div>
+            <div class="col-xs-10">
+              <span class="page-today-prefix">{{ userPageRoot(user) }}/</span>
+              <input type="text" data-prefix="{{ userPageRoot(user) }}/" class="page-today-input1 form-control" value="メモ" id="" name="">
+              <span class="page-today-suffix">/{{ now|datetz('Y/m/d') }}/</span>
+              <input type="text" data-prefix="/{{ now|datetz('Y/m/d') }}/" class="page-today-input2 form-control" id="page-today-input2" name="" placeholder="ページ名を入力(空欄OK)">
+            </div>
+            <div class="col-xs-2">
+              <button type="submit" class="btn btn-primary">作成</button>
+            </div>
+          </fieldset>
+        </form>
+        <hr>
+
+        {% if !isTopPage() %}
+        <form class="form-horizontal" id="create-page-under-tree" role="form">
+          <fieldset>
+            <div class="col-xs-12">
+              <h4><code>{{ parentPath(path) }}</code>以下に作成</h4>
+            </div>
+            <div class="col-xs-10">
+              <span class="page-name-addons">{{ parentPath(path) }}</span>
+              <input type="text" data-prefix="{{ parentPath(path) }}" class="page-name-input form-control " id="" name="" placeholder="ページ名を入力">
+            </div>
+            <div class="col-xs-2">
+              <button type="submit" class="btn btn-primary">作成</button>
+            </div>
+          </fieldset>
+        </form>
+        <hr>
+        {% endif  %}
+
+        <form class="form-horizontal" id="create-page-form" role="form">
+          <fieldset>
+            <div class="col-xs-12">
+            </div>
+            <div class="col-xs-10">
+              <input type="text" class="form-control" name="" placeholder="ページ名を入力">
+            </div>
+            <div class="col-xs-2">
+              <button type="submit" class="btn btn-primary">作成</button>
+            </div>
+          </fieldset>
+        </form>
+
+      </div><!-- /.modal-body -->
+
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+

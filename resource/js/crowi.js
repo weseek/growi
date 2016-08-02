@@ -205,18 +205,55 @@ $(function() {
     $(this).select();
   });
 
-  $('#createMemo').on('shown.bs.modal', function (e) {
-    $('#memoName').focus();
+
+  $('#create-page').on('shown.bs.modal', function (e) {
+    var padding = $('#create-page-under-tree .page-name-addons').outerWidth() + 15;
+    $('#create-page-under-tree .form-control').css({paddingLeft: padding});
+
+    var input2Width = $('#create-page-today .page-today-input2').outerWidth();
+    var newWidth = input2Width
+      - $('#create-page-today .page-today-prefix').outerWidth()
+      - $('#create-page-today .page-today-input1').outerWidth()
+      - $('#create-page-today .page-today-suffix').outerWidth()
+      - 10
+      ;
+    $('#create-page-today .form-control.page-today-input2').css({width: newWidth}).focus();
+
   });
-  $('#createMemoForm').submit(function(e)
-  {
-    var prefix = $('[name=memoNamePrefix]', this).val();
-    var name = $('[name=memoName]', this).val();
+  $('#create-page-form').submit(function(e) {
+    var name = $('input', this).val();
+    if (name === '') {
+      name = '/';
+    }
+    if (!name.match(/^\//)) {
+      name = '/' + name;
+    }
+    top.location.href = name;
+    return false;
+  });
+
+  $('#create-page-today').submit(function(e) {
+    var prefix1 = $('input.page-today-input1', this).data('prefix');
+    var input1 = $('input.page-today-input1', this).val();
+    var prefix2 = $('input.page-today-input2', this).data('prefix');
+    var input2 = $('input.page-today-input2', this).val();
+    if (input1 === '') {
+      prefix1 = 'メモ';
+    }
+    if (input2 === '') {
+      prefix2 = prefix2.slice(0, -1);
+    }
+    top.location.href = prefix1 + input1 + prefix2 + input2;
+    return false;
+  });
+
+  $('#create-page-under-tree').submit(function(e) {
+    var prefix = $('input', this).data('prefix');
+    var name = $('input', this).val();
     if (name === '') {
       prefix = prefix.slice(0, -1);
     }
     top.location.href = prefix + name;
-
     return false;
   });
 

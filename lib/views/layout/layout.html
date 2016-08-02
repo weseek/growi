@@ -91,16 +91,19 @@
         </a>
       </li>
       #}
+      <li id="" class="dropdown">
+        <button class="btn btn-default create-page-button" data-target="#create-page" data-toggle="modal">
+          <i class="fa fa-pencil"></i> 作成
+        </button>
+      </li>
       <li id="login-user">
         <a href="/user/{{ user.username }}" id="link-mypage">
           <img src="{{ user|picture }}" class="picture picture-rounded" width="25" /> {{ user.name }}
         </a>
       </li>
-      <li><a href="" title="今日のメモを作成" data-target="#createMemo" data-toggle="modal"><i class="fa fa-pencil"></i></a></li>
       <li class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bars"></i> <label class="sr-only">メニュー</label></a>
         <ul class="dropdown-menu">
-          <li><a href="" data-target="#createMemo" data-toggle="modal"><i class="fa fa-pencil"></i> 今日のメモを作成</a></li>
           <li class="divider"></li>
           <li><a href="/me"><i class="fa fa-gears"></i> ユーザー設定</a></li>
           <li class="divider"></li>
@@ -122,7 +125,7 @@
     </ul>
   </div><!-- /.navbar-collapse -->
 </nav>
-{% include '../modal/widget_today_memo.html' %}
+{% include '../modal/widget_create_page.html' %}
 {% endblock  %} {# layout_head_nav #}
 
 <div class="container-fluid">

@@ -27,6 +27,10 @@
         background: $crowiHeaderBackground;
       }
 
+      > div > .navbar-nav li button {
+        margin: 10px;
+      }
+
       > div > a ,
       > div > ul > li > a {
         color: #ccc;

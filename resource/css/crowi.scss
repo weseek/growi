@@ -94,6 +94,39 @@ footer {
   }
 }
 
+.modal.create-page {
+  .modal-body {
+    h3, h4 {
+      margin-bottom: 10px;
+    }
+
+    form {
+      .page-name-addons {
+        position: absolute;
+        top: 7px;
+        left: 27px;
+      }
+      .page-today-prefix {
+        display: inline-block;
+      }
+      .page-today-input1 {
+        width: 60px;
+        padding-left: 2px;
+        padding-right: 2px;
+        display: inline-block;
+      }
+      .page-today-suffix {
+        display: inline-block;
+      }
+      .page-today-input2 {
+        width: 100%;
+        display: inline-block;
+      }
+    }
+  }
+}
+
+
 // {{{ add badge variation
 .badge-default {
   @include label-variant($label-default-bg);
