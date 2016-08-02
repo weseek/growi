@@ -6,6 +6,7 @@ import Linker        from './PreProcessor/Linker';
 import ImageExpander from './PreProcessor/ImageExpander';
 
 import Tsv2Table from './LangProcessor/Tsv2Table';
+import Template from './LangProcessor/Template';
 
 export default class CrowiRenderer {
 
@@ -20,6 +21,7 @@ export default class CrowiRenderer {
     this.langProcessors = {
       'tsv2table': new Tsv2Table(),
       'tsv2table-h': new Tsv2Table({header: true}),
+      'template': new Template(),
     };
 
     this.parseMarkdown = this.parseMarkdown.bind(this);
@@ -39,11 +41,13 @@ export default class CrowiRenderer {
   codeRenderer(code, lang, escaped) {
     let result = '', hl;
 
-    if (lang && this.langProcessors[lang]) {
-      return this.langProcessors[lang].process(code);
-    }
 
     if (lang) {
+      const langPattern = lang.split(':')[0];
+      if (this.langProcessors[langPattern]) {
+        return this.langProcessors[langPattern].process(code, lang);
+      }
+
       try {
         hl = hljs.highlight(lang, code);
         result = hl.value;

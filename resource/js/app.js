@@ -13,7 +13,7 @@ if (!window) {
   window = {};
 }
 // FIXME
-const crowi = new Crowi({/* context */}, window);
+const crowi = new Crowi({me: $('#content-main').data('current-username')}, window);
 window.crowi = crowi;
 crowi.fetchUsers();
 

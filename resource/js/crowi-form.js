@@ -16,15 +16,20 @@ $(function() {
     });
   }
 
-  //
-  if (pagePath.match(/(20\d{4}|20\d{6}|20\d{2}_\d{1,2}|20\d{2}_\d{1,2}_\d{1,2})/)) {
-    $('#page-warning-modal').modal('show');
+  // restore draft
+  var draft = crowi.findDraft(pagePath);
+  if (draft) {
+    $('#form-body').val(draft);
   }
 
   var slackConfigured = $('#page-form-setting').data('slack-configured');
 
   // for new page
   if (!pageId) {
+    if (!pageId && pagePath.match(/(20\d{4}|20\d{6}|20\d{2}_\d{1,2}|20\d{2}_\d{1,2}_\d{1,2})/)) {
+      $('#page-warning-modal').modal('show');
+    }
+
     if (slackConfigured) {
       FetchPagesUpdatePostAndInsert(pagePath);
     }
@@ -56,6 +61,8 @@ $(function() {
     if (prevContent != content) {
       var parsedHTML = crowiRenderer.render(content);
       $('#preview-body').html(parsedHTML);
+
+      crowi.saveDraft(pagePath, content);
 
       prevContent = content;
     }

@@ -19,14 +19,20 @@ export default class Crowi {
 
     this.users = [];
     this.userByName = {};
+    this.draft = {};
 
     this.recoverData();
+  }
+
+  getContext() {
+    return context;
   }
 
   recoverData() {
     const keys = [
       'userByName',
       'users',
+      'draft',
     ];
 
     keys.forEach(key => {
@@ -68,6 +74,24 @@ export default class Crowi {
     }).catch(err => {
       // ignore errors
     });
+  }
+
+  clearDraft(path) {
+    this.draft[path] = null;
+    this.localStorage.draft = JSON.stringify(this.draft);
+  }
+
+  saveDraft(path, body) {
+    this.draft[path] = body;
+    this.localStorage.draft = JSON.stringify(this.draft);
+  }
+
+  findDraft(path) {
+    if (this.draft && this.draft[path]) {
+      return this.draft[path];
+    }
+
+    return null;
   }
 
   findUser(username) {

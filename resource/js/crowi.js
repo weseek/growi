@@ -456,6 +456,16 @@ $(function() {
       var parsedHTML = crowiRenderer.render(markdown);
       $('#revision-body-content').html(parsedHTML);
 
+
+      $('.template-create-button').on('click', function() {
+        var path = $(this).data('path');
+        var templateId = $(this).data('template');
+        var template = $('#' + templateId).html();
+
+        crowi.saveDraft(path, template);
+        top.location.href = path;
+      });
+
       Crowi.correctHeaders('#revision-body-content');
       Crowi.revisionToc('#revision-body-content', '#revision-toc');
     }
