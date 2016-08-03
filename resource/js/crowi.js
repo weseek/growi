@@ -249,12 +249,11 @@ $(function() {
   });
 
   $('#create-page-under-tree').submit(function(e) {
-    var prefix = $('input', this).data('prefix');
     var name = $('input', this).val();
-    if (name === '') {
-      prefix = prefix.slice(0, -1);
+    if (!name.match(/^\//)) {
+      name = '/' + name;
     }
-    top.location.href = prefix + name;
+    top.location.href = name;
     return false;
   });
 

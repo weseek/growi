@@ -86,6 +86,7 @@ $(function() {
   $('#page-form').on('submit', function(e) {
     // avoid message
     isFormChanged = false;
+    crowi.clearDraft(pagePath);
   });
 
   var getCurrentLine = function(event) {
