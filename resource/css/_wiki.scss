@@ -114,6 +114,15 @@ div.body {
     max-width: 100%;
   }
 
+  img.emoji {
+    width: 0.95em;
+    margin: 1px;
+    border: none;
+    box-shadow: none;
+    vertical-align: middle;
+    display: inline;
+  }
+
   ul, ol {
     padding-left: 30px;
 
