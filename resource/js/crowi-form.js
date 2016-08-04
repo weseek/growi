@@ -19,7 +19,7 @@ $(function() {
   // restore draft
   var draft = crowi.findDraft(pagePath);
   if (draft) {
-    $('#form-body').val(draft);
+    // TODO
   }
 
   var slackConfigured = $('#page-form-setting').data('slack-configured');
@@ -55,15 +55,21 @@ $(function() {
 
   // preview watch
   var originalContent = $('#form-body').val();
-  var prevContent = "";
+  var prevContent = originalContent;
+
+  function renderPreview() {
+    var content = $('#form-body').val();
+    var parsedHTML = crowiRenderer.render(content);
+    $('#preview-body').html(parsedHTML);
+  }
+
+  // for initialize preview
+  renderPreview();
   var watchTimer = setInterval(function() {
     var content = $('#form-body').val();
     if (prevContent != content) {
-      var parsedHTML = crowiRenderer.render(content);
-      $('#preview-body').html(parsedHTML);
 
-      crowi.saveDraft(pagePath, content);
-
+      renderPreview();
       prevContent = content;
     }
   }, 500);
@@ -79,8 +85,10 @@ $(function() {
     var content = $('#form-body').val();
     if (originalContent != content) {
       isFormChanged = true;
+      crowi.saveDraft(pagePath, content);
     } else {
       isFormChanged = false;
+      crowi.clearDraft(pagePath);
     }
   });
   $('#page-form').on('submit', function(e) {
