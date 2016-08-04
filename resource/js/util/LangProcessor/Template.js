@@ -24,30 +24,41 @@ export default class Template {
   }
 
   getUser() {
-    return '/user/sotarok';
+    // FIXME
+    const username = window.crowi.me || null;
+
+    if (!username) {
+      return '';
+    }
+
+    return `/user/${username}`;
   }
 
-  getPageName(pageNameTemplate) {
-    let pageName = pageNameTemplate;
+  parseTemplateString(templateString) {
+    let parsed = templateString;
 
     Object.keys(this.templatePattern).forEach(key => {
-      const matcher = new RegExp(`{${key}}`, 'g');
-      if (pageName.match(matcher)) {
+      const k = key .replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const matcher = new RegExp(`{${k}}`, 'g');
+      if (parsed.match(matcher)) {
         const replacer = this.templatePattern[key]();
-        pageName = pageName.replace(matcher, replacer);
+        parsed = parsed.replace(matcher, replacer);
       }
     });
 
-    return pageName;
+    return parsed;
   }
 
   process(code, lang) {
     const templateId = new Date().getTime().toString(16) + Math.floor(1000 * Math.random()).toString(16);
     let pageName = lang;
     if (lang.match(':')) {
-      pageName = this.getPageName(lang.split(':')[1]);
+      pageName = this.parseTemplateString(lang.split(':')[1]);
     }
-    return `<button class="template-create-button btn btn-primary" data-template="${templateId}" data-path="${pageName}">${pageName} のページを作成する</button>
-      <pre><code id="${templateId}" class="lang-${lang}">${code}\n</code></pre>\n`;
+    //code = this.parseTemplateString(code);
+    return `
+    <div class="page-template-builder">
+    <button class="template-create-button btn btn-default" data-template="${templateId}" data-path="${pageName}"><i class="fa fa-pencil"></i> ${pageName}</button>
+      <pre><code id="${templateId}" class="lang-${lang}">${code}\n</code></pre></div>\n`;
   }
 }

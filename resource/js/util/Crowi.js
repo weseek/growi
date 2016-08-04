@@ -17,6 +17,9 @@ export default class Crowi {
     this.apiPost = this.apiPost.bind(this);
     this.apiRequest = this.apiRequest.bind(this);
 
+    // FIXME
+    this.me = context.me;
+
     this.users = [];
     this.userByName = {};
     this.draft = {};

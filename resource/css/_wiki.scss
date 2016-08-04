@@ -140,6 +140,16 @@ div.body {
     }
   }
 
+  .page-template-builder {
+    position: relative;
+
+    .template-create-button {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+    }
+  }
+
   .highlighted {
     &em {
       padding: 2px;

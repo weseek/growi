@@ -16,12 +16,6 @@ $(function() {
     });
   }
 
-  // restore draft
-  var draft = crowi.findDraft(pagePath);
-  if (draft) {
-    // TODO
-  }
-
   var slackConfigured = $('#page-form-setting').data('slack-configured');
 
   // for new page
@@ -55,6 +49,16 @@ $(function() {
 
   // preview watch
   var originalContent = $('#form-body').val();
+
+  // restore draft
+  // とりあえず、originalContent がない場合のみ復元する。(それ以外の場合は後で考える)
+  var draft = crowi.findDraft(pagePath);
+  var originalRevision = $('#page-form [name="pageForm[currentRevision]"]').val();
+  if (!originalRevision && draft) {
+    // TODO
+    $('#form-body').val(draft)
+  }
+
   var prevContent = originalContent;
 
   function renderPreview() {
