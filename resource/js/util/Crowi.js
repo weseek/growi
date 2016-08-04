@@ -49,10 +49,7 @@ export default class Crowi {
   fetchUsers () {
     const interval = 1000*60*10; // 5min
     const currentTime = new Date();
-    if (!this.localStorage.lastFetched) {
-      this.localStorage.lastFetched = new Date();
-    }
-    if (interval > currentTime - new Date(this.localStorage.lastFetched)) {
+    if (!this.localStorage.lastFetched && interval > currentTime - new Date(this.localStorage.lastFetched)) {
       return ;
     }
 
@@ -70,14 +67,14 @@ export default class Crowi {
       this.localStorage.userByName = JSON.stringify(userByName);
 
       this.localStorage.lastFetched = new Date();
-      //console.log('userByName', this.localStorage.userByName);
     }).catch(err => {
+      this.localStorage.removeItem('lastFetched');
       // ignore errors
     });
   }
 
   clearDraft(path) {
-    this.draft[path] = null;
+    delete this.draft[path];
     this.localStorage.draft = JSON.stringify(this.draft);
   }
 
@@ -118,11 +115,11 @@ export default class Crowi {
           resolve(res.data);
         } else {
           // FIXME?
-          throw new Error(res.data);
+          reject(new Error(res.data));
         }
       }).catch(res => {
           // FIXME?
-        throw new Error(res);
+        reject(new Error('Error'));
       });
     });
   }
