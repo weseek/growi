@@ -55,7 +55,7 @@ export default class Template {
     if (lang.match(':')) {
       pageName = this.parseTemplateString(lang.split(':')[1]);
     }
-    //code = this.parseTemplateString(code);
+    code = this.parseTemplateString(code);
     return `
     <div class="page-template-builder">
     <button class="template-create-button btn btn-default" data-template="${templateId}" data-path="${pageName}"><i class="fa fa-pencil"></i> ${pageName}</button>
