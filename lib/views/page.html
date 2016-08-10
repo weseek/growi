@@ -202,6 +202,7 @@
 {% block content_footer %}
 
 
+{% if page %}
 <div class="page-attachments meta">
   <p>Attachments</p>
   <ul>
@@ -219,6 +220,7 @@
   {# /for BC #}
   Created at {{ page.createdAt|datetz('Y-m-d H:i:s') }} by <img src="{{ page.creator|default(page.creator)|picture }}" class="picture picture-rounded"> {{ page.creator.name }}<br>
 </p>
+{% endif %}
 
 {% endblock %}
 
@@ -243,4 +245,5 @@
   <div id="presentation-layer" class="fullscreen-layer">
     <div id="presentation-container"></div>
   </div>
+  {% include 'modal/widget_page_name_warning.html' %}
 {% endblock %}
