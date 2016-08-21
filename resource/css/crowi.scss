@@ -271,10 +271,6 @@ footer {
 // buttons
 .btn-primary {
 }
-$btn-facebook-color: #4c66a4;
-.btn-facebook {
-  @include button-variant(lighten($btn-facebook-color, 50%), $btn-facebook-color, darken($btn-facebook-color, 20%));
-}
 $btn-google-color: rgb(204,89,71);
 .btn-google {
   @include button-variant(lighten($btn-google-color, 50%), $btn-google-color, darken($btn-google-color, 20%));

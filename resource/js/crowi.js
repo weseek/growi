@@ -139,8 +139,6 @@ Crowi.userPicture = function (user) {
 
   if (user.image && user.image != '/images/userpicture.png') {
     return user.image;
-  } else if (user.fbId) {
-    return '//graph.facebook.com/' + user.fbId + '/picture?size=square';
   } else {
     return '/images/userpicture.png';
   }
@@ -383,25 +381,6 @@ $(function() {
     $('#login-dialog').removeClass('to-flip');
     return false;
   });
-  $('#btn-login-facebook').click(function(e)
-  {
-    var afterLogin = function(response) {
-      if (response.status !== 'connected') {
-        $('#login-form-errors').html('<p class="alert alert-danger">Facebookでのログインに失敗しました。</p>');
-      } else {
-        location.href = '/login/facebook';
-      }
-    };
-    FB.getLoginStatus(function(response) {
-      if (response.status === 'connected') {
-        afterLogin(response);
-      } else {
-        FB.login(function(response) {
-          afterLogin(response);
-        }, {scope: 'email'});
-      }
-    });
-  });
 
   $('#register-form input[name="registerForm[username]"]').change(function(e) {
     var username = $(this).val();
@@ -412,36 +391,6 @@ $(function() {
       if (!json.valid) {
         $('#help-block-username').html('<i class="fa fa-warning"></i>このユーザーIDは利用できません。<br>');
         $('#input-group-username').addClass('has-error');
-      }
-    });
-  });
-
-  $('#btn-register-facebook').click(function(e)
-  {
-    var afterLogin = function(response) {
-      if (response.status !== 'connected') {
-        $('#register-form-errors').html('<p class="alert alert-danger">Facebookでのログインに失敗しました。</p>');
-
-      } else {
-        var authR = response.authResponse;
-        $('#register-form input[name="registerForm[fbId]"]').val(authR.userID);
-        FB.api('/me?fields=name,username,email', function(res) {
-          $('#register-form input[name="registerForm[name]"]').val(res.name);
-          $('#register-form input[name="registerForm[username]"]').val(res.username || '');
-          $('#register-form input[name="registerForm[email]"]').val(res.email);
-
-          $('#register-form .facebook-info').remove();
-          $('#register-form').prepend('<div class="facebook-info"><img src="//graph.facebook.com/' + res.id + '/picture?size=square" width="25"> <i class="fa fa-facebook-square"></i> ' + res.name + 'さんとして登録します</div>');
-        });
-      }
-    };
-    FB.getLoginStatus(function(response) {
-      if (response.status === 'connected') {
-        afterLogin(response);
-      } else {
-        FB.login(function(response) {
-          afterLogin(response);
-        }, {scope: 'email'});
       }
     });
   });

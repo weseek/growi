@@ -65,15 +65,6 @@
         </form>
       </div>
       {% endif %}
-      {% if facebookLoginEnabled() %}
-      <div class="col-md-6">
-        <p>Facebook でログイン</p>
-        <form role="form">
-          <input type="hidden" name="_csrf" value="{{ _csrf() }}">
-          <button type="button" id="btn-login-facebook" class="btn btn-block btn-facebook"><i class="fa fa-facebook-square"></i> Login</button>
-        </form>
-      </div>
-      {% endif %}
     </div>
 
     {% if config.crowi['security:registrationMode'] != 'Closed' %}
@@ -122,7 +113,6 @@
     </div>
 
     <form role="form" method="post" action="/register" id="register-form">
-      <input type="hidden" class="form-control" name="registerForm[fbId]" value="{{ req.body.registerForm.fbId }}">
       <input type="hidden" class="form-control" name="registerForm[googleId]" value="{{ googleId|default(req.body.registerForm.googleId) }}">
 
       <label>ユーザーID</label>
@@ -179,14 +169,6 @@
         <form role="form" method="post" action="/register/google">
           <input type="hidden" name="_csrf" value="{{ _csrf() }}">
           <button type="submit" class="btn btn-block btn-google"><i class="fa fa-google-plus-square"></i> Login</button>
-        </form>
-      </div>
-      {% endif %}
-      {% if facebookLoginEnabled() %}
-      <div class="col-md-6">
-        <p>Facebook で登録</p>
-        <form role="form">
-          <button type="button" id="btn-register-facebook" class="btn btn-block btn-facebook"><i class="fa fa-facebook-square"></i> Login</button>
         </form>
       </div>
       {% endif %}
