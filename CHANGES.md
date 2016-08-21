@@ -13,6 +13,7 @@ CHANGES
 * Improve: Page list icons and colors for popular pages.
 * Improve: New page dialog.
 * Fix: Couldn't create some page name like `/meeting` (Thank you @kazsw #100).
+* Removed Feature: Facebook login feature is now removed.
 * And some fixes. (Thank you @suzuki @xcezx)
 
 ## 1.4.0
