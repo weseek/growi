@@ -97,7 +97,6 @@
     <li class="pull-right"><a href="#revision-history" data-toggle="tab"><i class="fa fa-history"></i> History</a></li>
     {% endif %}
   </ul>
-  {% include 'modal/widget_unportalize.html' %}
 
   <div class="tab-content">
   {% if page and not page.isLatestRevision() %}
@@ -202,7 +201,6 @@
 
 
 </div> {# /.content-main #}
-{% include 'modal/widget_what_is_portal.html' %}
 
 {% block content_main_after %}
 {% endblock %}
@@ -234,6 +232,10 @@
 {% endblock %} {# side_header #}
 
 {% block body_end %}
+<div id="crowi-modals">
+  {% include 'modal/what_is_portal.html' %}
+  {% include 'modal/unportalize.html' %}
+</div>
 <div class="modal fade portal-warning-modal" id="portal-warning-modal">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -257,6 +259,5 @@
       </div>
     </div>
   </div>
-</div>
 </div>
 {% endblock %} {# body_end #}

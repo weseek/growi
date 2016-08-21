@@ -115,9 +115,6 @@
   </ul>
   {% endif %}
 
-  {% include 'modal/widget_rename.html' %}
-  {% include 'modal/widget_delete.html' %}
-
   <div class="tab-content wiki-content">
   {% if req.query.renamed and not page.isDeleted() %}
   <div class="alert alert-info">
@@ -242,8 +239,13 @@
 {% block body_end %}
   {% parent %}
 
-  <div id="presentation-layer" class="fullscreen-layer">
-    <div id="presentation-container"></div>
-  </div>
-  {% include 'modal/widget_page_name_warning.html' %}
+<div id="presentation-layer" class="fullscreen-layer">
+  <div id="presentation-container"></div>
+</div>
+
+<div id="crowi-modals">
+  {% include 'modal/rename.html' %}
+  {% include 'modal/delete.html' %}
+  {% include 'modal/page_name_warning.html' %}
+</div>
 {% endblock %}
