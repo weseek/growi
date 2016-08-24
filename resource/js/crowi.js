@@ -219,17 +219,6 @@ $(function() {
     $('#create-page-today .form-control.page-today-input2').css({width: newWidth}).focus();
 
   });
-  $('#create-page-form').submit(function(e) {
-    var name = $('input', this).val();
-    if (name === '') {
-      name = '/';
-    }
-    if (!name.match(/^\//)) {
-      name = '/' + name;
-    }
-    top.location.href = name;
-    return false;
-  });
 
   $('#create-page-today').submit(function(e) {
     var prefix1 = $('input.page-today-input1', this).data('prefix');
@@ -250,6 +239,9 @@ $(function() {
     var name = $('input', this).val();
     if (!name.match(/^\//)) {
       name = '/' + name;
+    }
+    if (name.match(/.+\/$/)) {
+      name = name.substr(0, name.length - 1);
     }
     top.location.href = name;
     return false;
