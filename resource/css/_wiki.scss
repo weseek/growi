@@ -100,7 +100,7 @@ div.body {
   pre {
     line-height: 1.4em;
     font-size: .9em;
-    border: solid 1px #333;
+    border: none;
     background: #444;
     color: #f0f0f0;
     font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
@@ -139,6 +139,21 @@ div.body {
       }
     }
   }
+
+  .wiki-code {
+    position: relative;
+
+    cite {
+      position: absolute;
+      top: 0;
+      right: 0;
+      padding: 0 4px;
+      background: #ccc;
+      color: #333;
+      font-size: .8em;
+
+    }
+  };
 
   .page-template-builder {
     position: relative;

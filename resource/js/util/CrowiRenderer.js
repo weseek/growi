@@ -44,15 +44,16 @@ export default class CrowiRenderer {
   codeRenderer(code, lang, escaped) {
     let result = '', hl;
 
-
     if (lang) {
-      const langPattern = lang.split(':')[0];
+      const langAndFn = lang.split(':');
+      const langPattern = langAndFn[0];
+      const langFn = langAndFn[1] || null;
       if (this.langProcessors[langPattern]) {
         return this.langProcessors[langPattern].process(code, lang);
       }
 
       try {
-        hl = hljs.highlight(lang, code);
+        hl = hljs.highlight(langPattern, code);
         result = hl.value;
         escaped = true;
       } catch (e) {
@@ -60,11 +61,16 @@ export default class CrowiRenderer {
       }
 
       result = (escape ? result : Crowi.escape(result, true));
-      return `<pre><code class="lang-${lang}">${result}\n</code></pre>\n`;
+
+      let citeTag = '';
+      if (langFn) {
+        citeTag = `<cite>${langFn}</cite>`;
+      }
+      return `<pre class="wiki-code wiki-lang">${citeTag}<code class="lang-${lang}">${result}\n</code></pre>\n`;
     }
 
     // no lang specified
-    return `<pre><code>${Crowi.escape(code, true)}\n</code></pre>`;
+    return `<pre class="wiki-code"><code>${Crowi.escape(code, true)}\n</code></pre>`;
 
   }
 
@@ -86,6 +92,18 @@ export default class CrowiRenderer {
         smartypants: false,
         renderer: markedRenderer,
       });
+
+      // override
+      marked.Lexer.lex = function(src, options) {
+        var lexer = new marked.Lexer(options);
+
+        // this is maybe not an official way
+        if (lexer.rules) {
+          lexer.rules.fences = /^ *(`{3,}|~{3,})[ \.]*([^\r\n]+)? *\n([\s\S]*?)\s*\1 *(?:\n+|$)/;
+        }
+
+        return lexer.lex(src);
+      };
 
       parsed = marked(markdown);
     } catch (e) { console.log(e, e.stack); }
