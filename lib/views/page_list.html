@@ -186,7 +186,7 @@
     </div>
 
     {# timeline view #}
-    <div class="tab-pane" id="view-timeline">
+    <div class="tab-pane" id="view-timeline" data-shown=0>
       {% for page in pages %}
       <div class="timeline-body" id="id-{{ page.id }}">
         <h3 class="revision-path"><a href="{{ page.path }}">{{ page.path }}</a></h3>

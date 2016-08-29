@@ -353,16 +353,24 @@ $(function() {
   });
 
   // for list page
-  $('#view-timeline .timeline-body').each(function()
-  {
-    var id = $(this).attr('id');
-    var contentId = '#' + id + ' > script';
-    var revisionBody = '#' + id + ' .revision-body';
-    var revisionPath = '#' + id + ' .revision-path';
+  $('a[data-toggle="tab"][href="#view-timeline"]').on('show.bs.tab', function() {
+    var isShown = $('#view-timeline').data('shown');
+    if (isShown == 0) {
+      $('#view-timeline .timeline-body').each(function()
+      {
+        var id = $(this).attr('id');
+        var contentId = '#' + id + ' > script';
+        var revisionBody = '#' + id + ' .revision-body';
+        var revisionPath = '#' + id + ' .revision-path';
 
-    var markdown = Crowi.unescape($(contentId).html());
-    var parsedHTML = crowiRenderer.render(markdown);
-    $(revisionBody).html(parsedHTML);
+        var markdown = Crowi.unescape($(contentId).html());
+        var parsedHTML = crowiRenderer.render(markdown);
+        $(revisionBody).html(parsedHTML);
+      });
+
+      $('#view-timeline').data('shown', 1);
+      console.log('data-shown set as 1');
+    }
   });
 
   // login
