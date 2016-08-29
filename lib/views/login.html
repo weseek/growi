@@ -86,6 +86,11 @@
 
     {% if googleId %}
     <div class="google-info alert alert-info">
+      {% if googleImage %}
+      <p class="text-center">
+        <img src="{{ googleImage }}" class="picture picture-rounded picture-lg">
+      </p>
+      {% endif %}
       <code>{{ googleEmail }}</code> この Google アカウントで登録します<br>
       ユーザーID、名前、パスワードを決めて登録を継続してください。
     </div>
@@ -128,7 +133,7 @@
       <label>名前</label>
       <div class="input-group">
         <span class="input-group-addon"><i class="fa fa-user"></i></span>
-        <input type="text" class="form-control" placeholder="記入例: 山田 太郎" name="registerForm[name]" value="{{ req.body.registerForm.name }}" required>
+        <input type="text" class="form-control" placeholder="記入例: 山田 太郎" name="registerForm[name]" value="{{ googleName|default(req.body.registerForm.name) }}" required>
       </div>
 
       <label >メールアドレス</label>
@@ -156,6 +161,9 @@
       パスワードは6文字以上の半角英数字または記号
       </p>
 
+      {% if googleImage %}
+        <input type="hidden" name="registerForm[googleImage]" value="{{ googleImage }}">
+      {% endif  %}
       <input type="hidden" name="_csrf" value="{{ _csrf() }}">
       <input type="submit" class="btn btn-primary btn-lg btn-block" value="新規登録">
     </form>
@@ -181,11 +189,5 @@
 </div>
 
 </div>
-
-{#
-<div class="login-footer">
-  <p>&copy; {{ now|date('Y') }} {{ config.app.title }}. <a href="" data-target="#helpModal" data-toggle="modal"><i class="fa fa-question-circle"></i> ヘルプ</a></p>
-</div>
-#}
 
 {% endblock %}
