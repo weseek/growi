@@ -15,7 +15,7 @@
 <div class="header-wrap">
   <header class="portal-header {% if page %}has-page{% endif %}">
     {% if page %}
-      <a href="#" title="Bookmark" class="bookmark-link" id="bookmark-button" data-csrftoken="{{ _csrf() }}" data-bookmarked="0"><i class="fa fa-star-o"></i></a>
+      <a href="#" title="Bookmark" class="bookmark-link" id="bookmark-button" data-csrftoken="{{ csrf() }}" data-bookmarked="0"><i class="fa fa-star-o"></i></a>
 
     {% endif %}
     <h1 class="title">

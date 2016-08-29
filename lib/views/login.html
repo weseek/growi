@@ -49,7 +49,7 @@
         <input type="password" class="form-control" placeholder="Password" name="loginForm[password]">
       </div>
 
-      <input type="hidden" name="_csrf" value="{{ _csrf() }}">
+      <input type="hidden" name="_csrf" value="{{ csrf() }}">
       <input type="submit" class="btn btn-primary btn-lg btn-block" value="Login">
     </form>
 
@@ -61,7 +61,7 @@
         <p>Google でログイン</p>
         <form role="form" action="/login/google" method="get">
           <button type="submit" class="btn btn-block btn-google"><i class="fa fa-google-plus-square"></i> Login</button>
-          <input type="hidden" name="_csrf" value="{{ _csrf() }}">
+          <input type="hidden" name="_csrf" value="{{ csrf() }}">
         </form>
       </div>
       {% endif %}
@@ -164,7 +164,7 @@
       {% if googleImage %}
         <input type="hidden" name="registerForm[googleImage]" value="{{ googleImage }}">
       {% endif  %}
-      <input type="hidden" name="_csrf" value="{{ _csrf() }}">
+      <input type="hidden" name="_csrf" value="{{ csrf() }}">
       <input type="submit" class="btn btn-primary btn-lg btn-block" value="新規登録">
     </form>
 
@@ -175,7 +175,7 @@
       <div class="col-md-6">
         <p>Google で登録</p>
         <form role="form" method="post" action="/register/google">
-          <input type="hidden" name="_csrf" value="{{ _csrf() }}">
+          <input type="hidden" name="_csrf" value="{{ csrf() }}">
           <button type="submit" class="btn btn-block btn-google"><i class="fa fa-google-plus-square"></i> Login</button>
         </form>
       </div>
