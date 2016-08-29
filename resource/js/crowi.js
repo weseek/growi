@@ -366,10 +366,18 @@ $(function() {
         var markdown = Crowi.unescape($(contentId).html());
         var parsedHTML = crowiRenderer.render(markdown);
         $(revisionBody).html(parsedHTML);
+
+        $('.template-create-button', revisionBody).on('click', function() {
+          var path = $(this).data('path');
+          var templateId = $(this).data('template');
+          var template = $('#' + templateId).html();
+
+          crowi.saveDraft(path, template);
+          top.location.href = path;
+        });
       });
 
       $('#view-timeline').data('shown', 1);
-      console.log('data-shown set as 1');
     }
   });
 
