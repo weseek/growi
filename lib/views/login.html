@@ -15,7 +15,7 @@
 
 <div class="login-dialog-container flip-container col-md-5">
 
-<div class="login-dialog flipper {% if req.query.register or req.body.registerForm or googleId %}to-flip{% endif %}" id="login-dialog">
+<div class="login-dialog flipper {% if req.query.register or req.body.registerForm or isRegistering or googleId %}to-flip{% endif %}" id="login-dialog">
 
   <div class="login-dialog-inner front">
     <h2>ログイン</h2>
