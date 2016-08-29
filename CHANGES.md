@@ -10,7 +10,8 @@ CHANGES
 * Feature: TSV parser for code block.
 * Feature: Page teamplte builder.
 * Feature: Preview scroll sync.
-* Improve: Page list icons and colors for popular pages.
+* Improve: Page header highlighting.
+* Improve: Changed icons and colors of for popular pages on page list.
 * Improve: New page dialog.
 * Fix: Couldn't create some page name like `/meeting` (Thank you @kazsw #100).
 * Removed Feature: Facebook login feature is now removed.
