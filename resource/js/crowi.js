@@ -346,7 +346,8 @@ $(function() {
     var escape = function(s) {
       return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
     };
-    var pattern = escape(shortPath) + '(/)?$';
+    path = Crowi.escape(path);
+    var pattern = escape(Crowi.escape(shortPath)) + '(/)?$';
 
     $link.html(path.replace(new RegExp(pattern), '<strong>' + shortPath + '$1</strong>'));
   });
