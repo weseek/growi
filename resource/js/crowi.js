@@ -39,15 +39,15 @@ Crowi.linkPath = function(revisionPath) {
   splittedPath.shift();
   splittedPath.forEach(function(sub) {
     path += '/';
-    pathHtml += ' <a href="' + path + '">/</a> ';
+    pathHtml += ' <a href="' + Crowi.escape(path) + '">/</a> ';
     if (sub) {
       path += sub;
-      pathHtml += '<a href="' + path + '">' + sub + '</a>';
+      pathHtml += '<a href="' + Crowi.escape(path) + '">' + Crowi.escape(sub) + '</a>';
     }
   });
   if (path.substr(-1, 1) != '/') {
     path += '/';
-    pathHtml += ' <a href="' + path + '" class="last-path">/</a>';
+    pathHtml += ' <a href="' + Crowi.escape(path) + '" class="last-path">/</a>';
   }
   $title.html(pathHtml);
 };
@@ -163,12 +163,18 @@ Crowi.modifyScrollTop = function() {
     return;
   }
 
-  var sectionHeaderRect = sectionHeader.getBoundingClientRect();
-  if (sectionHeaderRect.top >= pageHeaderRect.bottom) {
-    return;
+  var timeout = 0;
+  if (window.scrollY === 0) {
+    timeout = 200;
   }
+  setTimeout(function() {
+    var sectionHeaderRect = sectionHeader.getBoundingClientRect();
+    if (sectionHeaderRect.top >= pageHeaderRect.bottom) {
+      return;
+    }
 
-  window.scrollTo(0, (window.scrollY - pageHeaderRect.height - offset));
+    window.scrollTo(0, (window.scrollY - pageHeaderRect.height - offset));
+  }, timeout);
 }
 
 
@@ -865,9 +871,6 @@ Crowi.highlightSelectedSection = function(hash)
 }
 
 window.addEventListener('load', function(e) {
-  Crowi.highlightSelectedSection(location.hash);
-  Crowi.modifyScrollTop();
-
   // hash on page
   if (location.hash) {
     if (location.hash == '#edit-form') {
@@ -909,6 +912,9 @@ window.addEventListener('load', function(e) {
       }
     });
   }
+
+  Crowi.highlightSelectedSection(location.hash);
+  Crowi.modifyScrollTop();
 });
 
 window.addEventListener('hashchange', function(e) {
