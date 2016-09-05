@@ -15,7 +15,7 @@
 <div class="header-wrap">
   <header class="portal-header {% if page %}has-page{% endif %}">
     {% if page %}
-      <a href="#" title="Bookmark" class="bookmark-link" id="bookmark-button" data-csrftoken="{{ _csrf() }}" data-bookmarked="0"><i class="fa fa-star-o"></i></a>
+      <a href="#" title="Bookmark" class="bookmark-link" id="bookmark-button" data-csrftoken="{{ csrf() }}" data-bookmarked="0"><i class="fa fa-star-o"></i></a>
 
     {% endif %}
     <h1 class="title">
@@ -58,6 +58,7 @@
   data-page-portal="{% if page and page.isPortal() %}1{% else %}0{% endif %}"
   data-page-id="{% if page %}{{ page._id.toString() }}{% endif %}"
   data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
+  data-current-username="{% if user %}{{ user.username }}{% endif %}"
   data-page-revision-id="{% if revision %}{{ revision._id.toString() }}{% endif %}"
   data-page-revision-created="{% if revision %}{{ revision.createdAt|datetz('U') }}{% endif %}"
   data-page-is-seen="{% if page and page.isSeenUser(user) %}1{% else %}0{% endif %}"
@@ -69,7 +70,7 @@
    {# portal tab #}
     <li class=" {% if not req.body.pageForm %}active{% endif %}">
       {% if page %}
-      <a href="#revision-body-content" data-toggle="tab">
+      <a href="#revision-body" data-toggle="tab">
         <i class="fa fa-magic"></i>
         PORTAL
       </a>
@@ -97,7 +98,6 @@
     <li class="pull-right"><a href="#revision-history" data-toggle="tab"><i class="fa fa-history"></i> History</a></li>
     {% endif %}
   </ul>
-  {% include 'modal/widget_unportalize.html' %}
 
   <div class="tab-content">
   {% if page and not page.isLatestRevision() %}
@@ -105,7 +105,11 @@
     <strong>注意: </strong> これは現在の版ではありません。 <i class="fa fa-magic"></i> <a href="{{ page.path }}">最新のポータルを表示</a>
   </div>
   {% endif %}
-    <div class="wiki tab-pane {% if not req.body.pageForm %}active{% endif %}" id="revision-body-content">{{ page.revision.body|nl2br|safe }}</div>
+    <div class="tab-pane {% if not req.body.pageForm %}active{% endif %}" id="revision-body">
+      <div class="wiki" id="revision-body-content">
+        <i class="fa fa-spinner fa-pulse fa-fw"></i>
+      </div>
+    </div>
 
     <script type="text/template" id="raw-text-original">{{ page.revision.body }}</script>
 
@@ -183,7 +187,7 @@
     </div>
 
     {# timeline view #}
-    <div class="tab-pane" id="view-timeline">
+    <div class="tab-pane" id="view-timeline" data-shown=0>
       {% for page in pages %}
       <div class="timeline-body" id="id-{{ page.id }}">
         <h3 class="revision-path"><a href="{{ page.path }}">{{ page.path }}</a></h3>
@@ -198,7 +202,6 @@
 
 
 </div> {# /.content-main #}
-{% include 'modal/widget_what_is_portal.html' %}
 
 {% block content_main_after %}
 {% endblock %}
@@ -230,6 +233,10 @@
 {% endblock %} {# side_header #}
 
 {% block body_end %}
+<div id="crowi-modals">
+  {% include 'modal/what_is_portal.html' %}
+  {% include 'modal/unportalize.html' %}
+</div>
 <div class="modal fade portal-warning-modal" id="portal-warning-modal">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -253,6 +260,5 @@
       </div>
     </div>
   </div>
-</div>
 </div>
 {% endblock %} {# body_end #}

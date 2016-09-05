@@ -54,7 +54,7 @@
 
         <div class="form-group">
           <div class="col-xs-offset-3 col-xs-6">
-            <input type="hidden" name="_csrf" value="{{ _csrf() }}">
+            <input type="hidden" name="_csrf" value="{{ csrf() }}">
             <button type="submit" class="btn btn-primary">更新</button>
           </div>
         </div>
@@ -106,7 +106,7 @@
 
         <div class="form-group">
           <div class="col-xs-offset-3 col-xs-6">
-            <input type="hidden" name="_csrf" value="{{ _csrf() }}">
+            <input type="hidden" name="_csrf" value="{{ csrf() }}">
             <button type="submit" class="btn btn-primary">更新</button>
           </div>
         </div>
@@ -151,7 +151,7 @@
 
         <div class="form-group">
           <div class="col-xs-offset-3 col-xs-6">
-            <input type="hidden" name="_csrf" value="{{ _csrf() }}">
+            <input type="hidden" name="_csrf" value="{{ csrf() }}">
             <button type="submit" class="btn btn-primary">更新</button>
           </div>
         </div>
@@ -200,7 +200,7 @@
 
         <div class="form-group">
           <div class="col-xs-offset-3 col-xs-6">
-            <input type="hidden" name="_csrf" value="{{ _csrf() }}">
+            <input type="hidden" name="_csrf" value="{{ csrf() }}">
             <button type="submit" class="btn btn-primary">更新</button>
           </div>
         </div>
@@ -229,7 +229,7 @@
 
         <div class="form-group">
           <div class="col-xs-offset-3 col-xs-6">
-            <input type="hidden" name="_csrf" value="{{ _csrf() }}">
+            <input type="hidden" name="_csrf" value="{{ csrf() }}">
             <button type="submit" class="btn btn-primary">更新</button>
           </div>
         </div>
@@ -237,41 +237,13 @@
       </fieldset>
       </form>
 
-      <form action="/_api/admin/settings/fb" method="post" class="form-horizontal" id="fbSettingForm" role="form">
-      <fieldset>
-      <legend>Facebook 設定</legend>
-        <p class="well">Facebook アプリケーションの設定をすると、Facebook にコネクトして登録やログインが可能になります。</p>
-
-        <div class="form-group">
-          <label for="settingForm[facebook:appId]" class="col-xs-3 control-label">facebook ID</label>
-          <div class="col-xs-6">
-            <input class="form-control" type="text" name="settingForm[facebook:appId]" value="{{ settingForm['facebook:appId'] }}">
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="settingForm[facebook:secret]" class="col-xs-3 control-label">Secret</label>
-          <div class="col-xs-6">
-            <input class="form-control" type="text" name="settingForm[facebook:secret]" value="{{ settingForm['facebook:secret'] }}">
-          </div>
-        </div>
-
-        <div class="form-group">
-          <div class="col-xs-offset-3 col-xs-6">
-            <input type="hidden" name="_csrf" value="{{ _csrf() }}">
-            <button type="submit" class="btn btn-primary">更新</button>
-          </div>
-        </div>
-
-      </fieldset>
-      </form>
     </div>
   </div>
 
   <script>
     $(function()
     {
-      $('#appSettingForm, #secSettingForm, #mailSettingForm, #awsSettingForm, #googleSettingForm, #fbSettingForm').each(function() {
+      $('#appSettingForm, #secSettingForm, #mailSettingForm, #awsSettingForm, #googleSettingForm').each(function() {
         $(this).submit(function()
         {
           function showMessage(formId, msg, status) {

@@ -110,8 +110,6 @@
             <form action="/me/picture/delete" method="post" class="form-horizontal" role="form" onsubmit="return window.confirm('削除してよろしいですか？');">
               <button type="submit" class="btn btn-danger">画像を削除</button>
             </form>
-            {% elseif user.fbId %}
-            プロフィール画像はFacebookから自動的に設定されています。
             {% endif %}
             </p>
           </div>
@@ -173,76 +171,6 @@
     </script>
 
   <div class="row">
-    {% if facebookLoginEnabled() %}
-    <div class="col-sm-6"> {# Facebook Connect #}
-
-      <div class="form-box">
-        <form action="/me/auth/facebook" method="post" class="form-horizontal" role="form" id="auth-connect-facebook">
-          <fieldset>
-            <legend><i class="fa fa-facebook-square"></i> Facebook設定</legend>
-
-          {% if user.userId %}
-
-          <div class="form-group">
-            <div class="col-sm-12">
-              <p>
-                <a href="//www.facebook.com/{{ user.userId }}"><img src="//graph.facebook.com/{{ user.userId }}/picture?size=square" width="32"> </a>
-                <input type="submit" name="disconnectFacebook" class="btn btn-default" value="接続を解除">
-              </p>
-              <p class="help-block">
-              接続を解除すると、Facebookを利用してのログインができなくなります。<br>
-              解除後はメールアドレスとパスワードでログインすることができます。
-              </p>
-            </div>
-          </div>
-
-          {% else %}
-
-          <div class="form-group">
-            <div class="col-sm-12">
-              <div class="text-center">
-                <input type="hidden" class="form-control" name="fbId">
-                <button type="submit" id="btn-connect-facebook" class="btn btn-facebook">Facebookコネクト</button>
-                <script>
-                  $('#btn-connect-facebook').click(function(e)
-                  {
-                    var afterLogin = function(response) {
-                      if (response.status !== 'connected') {
-                        // TODO
-                      } else {
-                        var authR = response.authResponse;
-                        $('#auth-connect-facebook input[name="fbId"]').val(authR.userID);
-                        $('#auth-connect-facebook').submit();
-                      }
-                    };
-                    FB.getLoginStatus(function(response) {
-                      if (response.status === 'connected') {
-                        afterLogin(response);
-                      } else {
-                        FB.login(function(response) {
-                          afterLogin(response);
-                        }, {scope: 'email'});
-                      }
-                    });
-
-                    return false;
-                  });
-                </script>
-              </div>
-              <p class="help-block">
-              Facebookコネクトをすると、Facebookでログイン可能になります。<br>
-              メールアドレスとパスワードでのログインは引き続きご利用いただけます。
-              </p>
-            </div>
-          </div>
-
-          {% endif %}
-          </div>
-        </fieldset>
-        </form>
-    </div> {# /Facebook Connect #}
-
-    {% endif %}
     {% if googleLoginEnabled() %}
 
     <div class="col-sm-6"> {# Google Connect #}

@@ -23,25 +23,6 @@
   data-me="{{ user._id.toString() }}"
  {% block html_base_attr %}{% endblock %}
  >
-<div id="fb-root"></div>
-<script>
-  window.fbAsyncInit = function() {
-    FB.init({
-      appId      : '{{ facebook.appId }}', // App ID
-      //channelUrl : '//WWW.YOUR_DOMAIN.COM/channel.html', // Channel File
-      status     : true, // check login status
-      cookie     : true, // enable cookies to allow the server to access the session
-      xfbml      : true  // parse XFBML
-    });
-  };
-
-  (function(d){
-     var js, id = 'facebook-jssdk'; if (d.getElementById(id)) {return;}
-     js = d.createElement('script'); js.id = id; js.async = true;
-     js.src = "//connect.facebook.net/en_US/all.js";
-     d.getElementsByTagName('head')[0].appendChild(js);
-   }(document));
-</script>
 
 {% block layout_head_nav %}
 <nav class="crowi-header navbar navbar-default" role="navigation">
@@ -91,17 +72,19 @@
         </a>
       </li>
       #}
+      <li id="" class="dropdown">
+        <button class="btn btn-default create-page-button" data-target="#create-page" data-toggle="modal">
+          <i class="fa fa-pencil"></i> 作成
+        </button>
+      </li>
       <li id="login-user">
         <a href="/user/{{ user.username }}" id="link-mypage">
           <img src="{{ user|picture }}" class="picture picture-rounded" width="25" /> {{ user.name }}
         </a>
       </li>
-      <li><a href="" title="今日のメモを作成" data-target="#createMemo" data-toggle="modal"><i class="fa fa-pencil"></i></a></li>
       <li class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bars"></i> <label class="sr-only">メニュー</label></a>
         <ul class="dropdown-menu">
-          <li><a href="" data-target="#createMemo" data-toggle="modal"><i class="fa fa-pencil"></i> 今日のメモを作成</a></li>
-          <li class="divider"></li>
           <li><a href="/me"><i class="fa fa-gears"></i> ユーザー設定</a></li>
           <li class="divider"></li>
           <li><a href="/trash/"><i class="fa fa-trash-o"></i> 削除済みページ</a></li>
@@ -122,7 +105,7 @@
     </ul>
   </div><!-- /.navbar-collapse -->
 </nav>
-{% include '../modal/widget_today_memo.html' %}
+{% include '../modal/create_page.html' %}
 {% endblock  %} {# layout_head_nav #}
 
 <div class="container-fluid">
@@ -143,9 +126,10 @@
 {% block body_end %}
 {% endblock %}
 
+{% include '../modal/help.html' %}
 </body>
 {% endblock %}
 
-<script src="/js/app{% if env  == 'production' %}.min{% endif %}.js"></script>
 <script src="/js/crowi{% if env  == 'production' %}.min{% endif %}.js"></script>
+<script src="/js/app{% if env  == 'production' %}.min{% endif %}.js"></script>
 </html>

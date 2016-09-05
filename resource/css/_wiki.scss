@@ -100,7 +100,7 @@ div.body {
   pre {
     line-height: 1.4em;
     font-size: .9em;
-    border: solid 1px #333;
+    border: none;
     background: #444;
     color: #f0f0f0;
     font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
@@ -112,6 +112,15 @@ div.body {
     box-shadow: 0 0 5px 0px rgba(0,0,0,.2);
     border: solid 1px #ccc;
     max-width: 100%;
+  }
+
+  img.emoji {
+    width: 0.95em;
+    margin: 1px;
+    border: none;
+    box-shadow: none;
+    vertical-align: middle;
+    display: inline;
   }
 
   ul, ol {
@@ -128,6 +137,31 @@ div.body {
           margin-top: 0;
         }
       }
+    }
+  }
+
+  .wiki-code {
+    position: relative;
+
+    cite {
+      position: absolute;
+      top: 0;
+      right: 0;
+      padding: 0 4px;
+      background: #ccc;
+      color: #333;
+      font-size: .8em;
+
+    }
+  };
+
+  .page-template-builder {
+    position: relative;
+
+    .template-create-button {
+      position: absolute;
+      top: 8px;
+      right: 8px;
     }
   }
 

@@ -20,6 +20,10 @@ $(function() {
 
   // for new page
   if (!pageId) {
+    if (!pageId && pagePath.match(/(20\d{4}|20\d{6}|20\d{2}_\d{1,2}|20\d{2}_\d{1,2}_\d{1,2})/)) {
+      $('#page-warning-modal').modal('show');
+    }
+
     if (slackConfigured) {
       FetchPagesUpdatePostAndInsert(pagePath);
     }
@@ -45,13 +49,31 @@ $(function() {
 
   // preview watch
   var originalContent = $('#form-body').val();
-  var prevContent = "";
+
+  // restore draft
+  // とりあえず、originalContent がない場合のみ復元する。(それ以外の場合は後で考える)
+  var draft = crowi.findDraft(pagePath);
+  var originalRevision = $('#page-form [name="pageForm[currentRevision]"]').val();
+  if (!originalRevision && draft) {
+    // TODO
+    $('#form-body').val(draft)
+  }
+
+  var prevContent = originalContent;
+
+  function renderPreview() {
+    var content = $('#form-body').val();
+    var parsedHTML = crowiRenderer.render(content);
+    $('#preview-body').html(parsedHTML);
+  }
+
+  // for initialize preview
+  renderPreview();
   var watchTimer = setInterval(function() {
     var content = $('#form-body').val();
     if (prevContent != content) {
-      var renderer = new Crowi.renderer($('#form-body').val(), $('#preview-body'));
-      renderer.render();
 
+      renderPreview();
       prevContent = content;
     }
   }, 500);
@@ -67,13 +89,16 @@ $(function() {
     var content = $('#form-body').val();
     if (originalContent != content) {
       isFormChanged = true;
+      crowi.saveDraft(pagePath, content);
     } else {
       isFormChanged = false;
+      crowi.clearDraft(pagePath);
     }
   });
   $('#page-form').on('submit', function(e) {
     // avoid message
     isFormChanged = false;
+    crowi.clearDraft(pagePath);
   });
 
   var getCurrentLine = function(event) {
