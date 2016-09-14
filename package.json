@@ -24,8 +24,8 @@
     "url": "https://github.com/crowi/crowi.git"
   },
   "engines": {
-    "node": "4.2.x",
-    "npm": "3.3.x"
+    "node": "4.x",
+    "npm": "3.x"
   },
   "dependencies": {
     "async": "~1.5.0",
