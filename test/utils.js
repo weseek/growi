@@ -2,6 +2,7 @@
 
 var mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || process.env.MONGO_URI || null
   , mongoose= require('mongoose')
+  , fs = require('fs')
   , models = {}
   , crowi = new (require(ROOT_DIR + '/lib/crowi'))(ROOT_DIR, process.env)
   ;
@@ -42,12 +43,17 @@ after('Close database connection', function (done) {
   return done();
 });
 
-
-models.Page     = require(MODEL_DIR + '/page.js')(crowi);
-models.User     = require(MODEL_DIR + '/user.js')(crowi);
-models.Config   = require(MODEL_DIR + '/config.js')(crowi);
-models.Revision = require(MODEL_DIR + '/revision.js')(crowi);
-models.UpdatePost = require(MODEL_DIR + '/updatePost.js')(crowi);
+// Setup Models
+fs.readdirSync(MODEL_DIR).forEach(function(file) {
+  if (file.match(/^(\w+)\.js$/)) {
+    var name = RegExp.$1;
+    if (name === 'index') {
+      return;
+    }
+    var modelName = name.charAt(0).toUpperCase() + name.slice(1);
+    models[modelName] = require(MODEL_DIR + '/' + file)(crowi);
+  }
+});
 
 crowi.models = models;
 
