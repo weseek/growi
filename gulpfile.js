@@ -77,7 +77,7 @@ gulp.task('js:del', function() {
       return false
     }
     return dirs.jsDist + '/' + fn;
-  }).filter((v) => v);
+  }).filter(function(v) { return v; });
 
   return del(fileList);
 });
