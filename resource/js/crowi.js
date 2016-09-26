@@ -2,9 +2,7 @@
 /* Author: Sotaro KARASAWA <sotarok@crocos.co.jp>
 */
 
-var hljs = require('highlight.js');
 var jsdiff = require('diff');
-var marked = require('marked');
 var io = require('socket.io-client');
 
 //require('bootstrap-sass');
@@ -41,15 +39,15 @@ Crowi.linkPath = function(revisionPath) {
   splittedPath.shift();
   splittedPath.forEach(function(sub) {
     path += '/';
-    pathHtml += ' <a href="' + path + '">/</a> ';
+    pathHtml += ' <a href="' + Crowi.escape(path) + '">/</a> ';
     if (sub) {
       path += sub;
-      pathHtml += '<a href="' + path + '">' + sub + '</a>';
+      pathHtml += '<a href="' + Crowi.escape(path) + '">' + Crowi.escape(sub) + '</a>';
     }
   });
   if (path.substr(-1, 1) != '/') {
     path += '/';
-    pathHtml += ' <a href="' + path + '" class="last-path">/</a>';
+    pathHtml += ' <a href="' + Crowi.escape(path) + '" class="last-path">/</a>';
   }
   $title.html(pathHtml);
 };
@@ -133,89 +131,6 @@ Crowi.unescape = function(s) {
   return s;
 };
 
-Crowi.getRendererType = function() {
-  return new Crowi.rendererType.markdown();
-};
-
-Crowi.rendererType = {};
-Crowi.rendererType.markdown = function(){};
-Crowi.rendererType.markdown.prototype = {
-  render: function(contentText) {
-
-    marked.setOptions({
-      gfm: true,
-      highlight: function (code, lang, callback) {
-        var result, hl;
-        if (lang) {
-          try {
-            hl = hljs.highlight(lang, code);
-            result = hl.value;
-          } catch (e) {
-            result = code;
-          }
-        } else {
-          //result = hljs.highlightAuto(code);
-          //callback(null, result.value);
-          result = code;
-        }
-        return callback(null, result);
-      },
-      tables: true,
-      breaks: true,
-      pedantic: false,
-      sanitize: false,
-      smartLists: true,
-      smartypants: false,
-      langPrefix: 'lang-'
-    });
-
-    var contentHtml = Crowi.unescape(contentText);
-    // TODO 前処理系のプラグイン化
-    contentHtml = this.preFormatMarkdown(contentHtml);
-    contentHtml = this.expandImage(contentHtml);
-    contentHtml = this.link(contentHtml);
-
-    var $body = this.$revisionBody;
-    // Using async version of marked
-    marked(contentHtml, {}, function (err, content) {
-      if (err) {
-        throw err;
-      }
-      $body.html(content);
-    });
-  },
-  preFormatMarkdown: function(content){
-    var x = content
-      .replace(/^(#{1,})([^\s]+)?(.*)$/gm, '$1 $2$3') // spacer for section
-      .replace(/>[\s]*\n>[\s]*\n/g, '> <br>\n> \n');
-    return x;
-  },
-  link: function (content) {
-    return content
-      //.replace(/\s(https?:\/\/[\S]+)/g, ' <a href="$1">$1</a>') // リンク
-      .replace(/\s<((\/[^>]+?){2,})>/g, ' <a href="$1">$1</a>') // ページ間リンク: <> でかこまれてて / から始まり、 / が2個以上
-      ;
-  },
-  expandImage: function (content) {
-    return content.replace(/\s(https?:\/\/[\S]+\.(jpg|jpeg|gif|png))/g, ' <a href="$1"><img src="$1" class="auto-expanded-image"></a>');
-  }
-};
-
-Crowi.renderer = function (contentText, revisionBody) {
-  var $revisionBody = revisionBody || $('#revision-body-content');
-
-  this.contentText = contentText;
-  this.$revisionBody = $revisionBody;
-  this.format = 'markdown'; // とりあえず
-  this.renderer = Crowi.getRendererType();
-  this.renderer.$revisionBody = this.$revisionBody;
-};
-Crowi.renderer.prototype = {
-  render: function() {
-    this.renderer.render(this.contentText);
-  }
-};
-
 // original: middleware.swigFilter
 Crowi.userPicture = function (user) {
   if (!user) {
@@ -224,8 +139,6 @@ Crowi.userPicture = function (user) {
 
   if (user.image && user.image != '/images/userpicture.png') {
     return user.image;
-  } else if (user.fbId) {
-    return '//graph.facebook.com/' + user.fbId + '/picture?size=square';
   } else {
     return '/images/userpicture.png';
   }
@@ -240,6 +153,9 @@ Crowi.modifyScrollTop = function() {
   }
 
   var pageHeader = document.querySelector('#page-header');
+  if (!pageHeader) {
+    return;
+  }
   var pageHeaderRect = pageHeader.getBoundingClientRect();
 
   var sectionHeader = document.querySelector(hash);
@@ -247,30 +163,19 @@ Crowi.modifyScrollTop = function() {
     return;
   }
 
-  var sectionHeaderRect = sectionHeader.getBoundingClientRect();
-  if (sectionHeaderRect.top >= pageHeaderRect.bottom) {
-    return;
+  var timeout = 0;
+  if (window.scrollY === 0) {
+    timeout = 200;
   }
+  setTimeout(function() {
+    var sectionHeaderRect = sectionHeader.getBoundingClientRect();
+    if (sectionHeaderRect.top >= pageHeaderRect.bottom) {
+      return;
+    }
 
-  window.scrollTo(0, (window.scrollY - pageHeaderRect.height - offset));
+    window.scrollTo(0, (window.scrollY - pageHeaderRect.height - offset));
+  }, timeout);
 }
-
-
-//CrowiSearcher = function(path, $el) {
-//  this.$el = $el;
-//  this.path = path;
-//  this.searchResult = {};
-//};
-//CrowiSearcher.prototype.querySearch = function(keyword, option) {
-//};
-//CrowiSearcher.prototype.search = function(keyword) {
-//  var option = {};
-//  this.querySearch(keyword, option);
-//  this.$el.html(this.render());
-//};
-//CrowiSearcher.prototype.render = function() {
-//  return $('<div>');
-//};
 
 
 $(function() {
@@ -307,18 +212,44 @@ $(function() {
     $(this).select();
   });
 
-  $('#createMemo').on('shown.bs.modal', function (e) {
-    $('#memoName').focus();
-  });
-  $('#createMemoForm').submit(function(e)
-  {
-    var prefix = $('[name=memoNamePrefix]', this).val();
-    var name = $('[name=memoName]', this).val();
-    if (name === '') {
-      prefix = prefix.slice(0, -1);
-    }
-    top.location.href = prefix + name;
 
+  $('#create-page').on('shown.bs.modal', function (e) {
+
+    var input2Width = $('#create-page-today .page-today-input2').outerWidth();
+    var newWidth = input2Width
+      - $('#create-page-today .page-today-prefix').outerWidth()
+      - $('#create-page-today .page-today-input1').outerWidth()
+      - $('#create-page-today .page-today-suffix').outerWidth()
+      - 10
+      ;
+    $('#create-page-today .form-control.page-today-input2').css({width: newWidth}).focus();
+
+  });
+
+  $('#create-page-today').submit(function(e) {
+    var prefix1 = $('input.page-today-input1', this).data('prefix');
+    var input1 = $('input.page-today-input1', this).val();
+    var prefix2 = $('input.page-today-input2', this).data('prefix');
+    var input2 = $('input.page-today-input2', this).val();
+    if (input1 === '') {
+      prefix1 = 'メモ';
+    }
+    if (input2 === '') {
+      prefix2 = prefix2.slice(0, -1);
+    }
+    top.location.href = prefix1 + input1 + prefix2 + input2;
+    return false;
+  });
+
+  $('#create-page-under-tree').submit(function(e) {
+    var name = $('input', this).val();
+    if (!name.match(/^\//)) {
+      name = '/' + name;
+    }
+    if (name.match(/.+\/$/)) {
+      name = name.substr(0, name.length - 1);
+    }
+    top.location.href = name;
     return false;
   });
 
@@ -421,20 +352,39 @@ $(function() {
     var escape = function(s) {
       return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
     };
-    var pattern = escape(shortPath) + '(/)?$';
+    path = Crowi.escape(path);
+    var pattern = escape(Crowi.escape(shortPath)) + '(/)?$';
 
     $link.html(path.replace(new RegExp(pattern), '<strong>' + shortPath + '$1</strong>'));
   });
 
   // for list page
-  $('#view-timeline .timeline-body').each(function()
-  {
-    var id = $(this).attr('id');
-    var contentId = '#' + id + ' > script';
-    var revisionBody = '#' + id + ' .revision-body';
-    var revisionPath = '#' + id + ' .revision-path';
-    var renderer = new Crowi.renderer($(contentId).html(), $(revisionBody));
-    renderer.render();
+  $('a[data-toggle="tab"][href="#view-timeline"]').on('show.bs.tab', function() {
+    var isShown = $('#view-timeline').data('shown');
+    if (isShown == 0) {
+      $('#view-timeline .timeline-body').each(function()
+      {
+        var id = $(this).attr('id');
+        var contentId = '#' + id + ' > script';
+        var revisionBody = '#' + id + ' .revision-body';
+        var revisionPath = '#' + id + ' .revision-path';
+
+        var markdown = Crowi.unescape($(contentId).html());
+        var parsedHTML = crowiRenderer.render(markdown);
+        $(revisionBody).html(parsedHTML);
+
+        $('.template-create-button', revisionBody).on('click', function() {
+          var path = $(this).data('path');
+          var templateId = $(this).data('template');
+          var template = $('#' + templateId).html();
+
+          crowi.saveDraft(path, template);
+          top.location.href = path;
+        });
+      });
+
+      $('#view-timeline').data('shown', 1);
+    }
   });
 
   // login
@@ -445,25 +395,6 @@ $(function() {
   $('#login').on('click', function() {
     $('#login-dialog').removeClass('to-flip');
     return false;
-  });
-  $('#btn-login-facebook').click(function(e)
-  {
-    var afterLogin = function(response) {
-      if (response.status !== 'connected') {
-        $('#login-form-errors').html('<p class="alert alert-danger">Facebookでのログインに失敗しました。</p>');
-      } else {
-        location.href = '/login/facebook';
-      }
-    };
-    FB.getLoginStatus(function(response) {
-      if (response.status === 'connected') {
-        afterLogin(response);
-      } else {
-        FB.login(function(response) {
-          afterLogin(response);
-        }, {scope: 'email'});
-      }
-    });
   });
 
   $('#register-form input[name="registerForm[username]"]').change(function(e) {
@@ -479,43 +410,25 @@ $(function() {
     });
   });
 
-  $('#btn-register-facebook').click(function(e)
-  {
-    var afterLogin = function(response) {
-      if (response.status !== 'connected') {
-        $('#register-form-errors').html('<p class="alert alert-danger">Facebookでのログインに失敗しました。</p>');
-
-      } else {
-        var authR = response.authResponse;
-        $('#register-form input[name="registerForm[fbId]"]').val(authR.userID);
-        FB.api('/me?fields=name,username,email', function(res) {
-          $('#register-form input[name="registerForm[name]"]').val(res.name);
-          $('#register-form input[name="registerForm[username]"]').val(res.username || '');
-          $('#register-form input[name="registerForm[email]"]').val(res.email);
-
-          $('#register-form .facebook-info').remove();
-          $('#register-form').prepend('<div class="facebook-info"><img src="//graph.facebook.com/' + res.id + '/picture?size=square" width="25"> <i class="fa fa-facebook-square"></i> ' + res.name + 'さんとして登録します</div>');
-        });
-      }
-    };
-    FB.getLoginStatus(function(response) {
-      if (response.status === 'connected') {
-        afterLogin(response);
-      } else {
-        FB.login(function(response) {
-          afterLogin(response);
-        }, {scope: 'email'});
-      }
-    });
-  });
-
   if (pageId) {
 
     // if page exists
     var $rawTextOriginal = $('#raw-text-original');
     if ($rawTextOriginal.length > 0) {
-      var renderer = new Crowi.renderer($('#raw-text-original').html());
-      renderer.render();
+      var markdown = Crowi.unescape($('#raw-text-original').html());
+      var parsedHTML = crowiRenderer.render(markdown);
+      $('#revision-body-content').html(parsedHTML);
+
+
+      $('.template-create-button').on('click', function() {
+        var path = $(this).data('path');
+        var templateId = $(this).data('template');
+        var template = $('#' + templateId).html();
+
+        crowi.saveDraft(path, template);
+        top.location.href = path;
+      });
+
       Crowi.correctHeaders('#revision-body-content');
       Crowi.revisionToc('#revision-body-content', '#revision-toc');
     }
@@ -958,9 +871,6 @@ Crowi.highlightSelectedSection = function(hash)
 }
 
 window.addEventListener('load', function(e) {
-  Crowi.highlightSelectedSection(location.hash);
-  Crowi.modifyScrollTop();
-
   // hash on page
   if (location.hash) {
     if (location.hash == '#edit-form') {
@@ -970,6 +880,41 @@ window.addEventListener('load', function(e) {
       $('a[data-toggle="tab"][href="#revision-history"]').tab('show');
     }
   }
+
+  if (crowi.users || crowi.users.length == 0) {
+    var totalUsers = crowi.users.length;
+    var $listLiker = $('.page-list-liker');
+    $listLiker.each(function(i, liker) {
+      var count = $(liker).data('count') || 0;
+      if (count/totalUsers > 0.05) {
+        $(liker).addClass('popular-page-high');
+        // 5%
+      } else if (count/totalUsers > 0.02) {
+        $(liker).addClass('popular-page-mid');
+        // 2%
+      } else if (count/totalUsers > 0.005) {
+        $(liker).addClass('popular-page-low');
+        // 0.5%
+      }
+    });
+    var $listSeer = $('.page-list-seer');
+    $listSeer.each(function(i, seer) {
+      var count = $(seer).data('count') || 0;
+      if (count/totalUsers > 0.10) {
+        // 10%
+        $(seer).addClass('popular-page-high');
+      } else if (count/totalUsers > 0.05) {
+        // 5%
+        $(seer).addClass('popular-page-mid');
+      } else if (count/totalUsers > 0.02) {
+        // 2%
+        $(seer).addClass('popular-page-low');
+      }
+    });
+  }
+
+  Crowi.highlightSelectedSection(location.hash);
+  Crowi.modifyScrollTop();
 });
 
 window.addEventListener('hashchange', function(e) {

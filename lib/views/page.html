@@ -14,14 +14,14 @@
 
 
     {% if page %}
-    <a href="#" title="Bookmark" class="bookmark-link" id="bookmark-button" data-csrftoken="{{ _csrf() }}" data-bookmarked="0"><i class="fa fa-star-o"></i></a>
+    <a href="#" title="Bookmark" class="bookmark-link" id="bookmark-button" data-csrftoken="{{ csrf() }}" data-bookmarked="0"><i class="fa fa-star-o"></i></a>
     {% endif %}
     <h1 class="title" id="revision-path">{{ path|insertSpaceToEachSlashes }}</h1>
   </header>
   {% else %}
   {# trash/* #}
   <header id="page-header">
-    <a href="#" title="Bookmark" class="bookmark-link" id="bookmark-button" data-csrftoken="{{ _csrf() }}" data-bookmarked="0"><i class="fa fa-star-o"></i></a>
+    <a href="#" title="Bookmark" class="bookmark-link" id="bookmark-button" data-csrftoken="{{ csrf() }}" data-bookmarked="0"><i class="fa fa-star-o"></i></a>
     <h1 class="title">{{ path|insertSpaceToEachSlashes }}</h1>
   </header>
   {% endif %}
@@ -42,6 +42,7 @@
   data-path-shortname="{{ path|path2name }}"
   data-page-id="{% if page %}{{ page._id.toString() }}{% endif %}"
   data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
+  data-current-username="{% if user %}{{ user.username }}{% endif %}"
   data-page-revision-id="{% if revision %}{{ revision._id.toString() }}{% endif %}"
   data-page-revision-created="{% if revision %}{{ revision.createdAt|datetz('U') }}{% endif %}"
   data-page-is-seen="{% if page and page.isSeenUser(user) %}1{% else %}0{% endif %}"
@@ -51,7 +52,7 @@
   <ul class="nav nav-tabs hidden-print">
     <li><a>Create: {{ path }}</a></li>
     <li class="dropdown pull-right">
-      <a href="/"><i class="fa fa-times"></i> キャンセル</a>
+      <a href="#" onclick="history.back();"><i class="fa fa-times"></i> キャンセル</a>
     </li>
   </ul>
   <div class="tab-content">
@@ -65,7 +66,7 @@
   {% if page.isDeleted() %}
   <div class="alert alert-danger">
     <form role="form" class="pull-right" id="revert-delete-page-form" onsubmit="return false;">
-      <input type="hidden" name="_csrf" value="{{ _csrf() }}">
+      <input type="hidden" name="_csrf" value="{{ csrf() }}">
       <input type="hidden" name="path" value="{{ page.path }}">
       <input type="hidden" name="page_id" value="{{ page._id.toString() }}">
       <input type="submit" class="btn btn-danger btn-inverse btn-sm" value="Put Back!">
@@ -86,7 +87,6 @@
       <a href="#revision-body" data-toggle="tab">
       <i class="fa fa-magic"></i>
       {#
-        <img src="//graph.facebook.com/588883490/picture?size=square" width="16"> <i class="fa fa-arrow-right"></i> <img src="//graph.facebook.com/588883490/picture?size=square" width="16">
         <span class="label label-danger" style=""> 承認待ち</span>
       #}
       </a>
@@ -113,9 +113,6 @@
     {% endif %}
   </ul>
   {% endif %}
-
-  {% include 'modal/widget_rename.html' %}
-  {% include 'modal/widget_delete.html' %}
 
   <div class="tab-content wiki-content">
   {% if req.query.renamed and not page.isDeleted() %}
@@ -145,7 +142,7 @@
         <a data-toggle="collapse" data-parent="#revision-toc" href="#revision-toc-content" class="revision-toc-head collapsed">目次</a>
 
       </div>
-      <div class="wiki {{ revision.format }}" id="revision-body-content"></div>
+      <div class="wiki" id="revision-body-content"></div>
     </div>
 
     {# edit form #}
@@ -201,6 +198,7 @@
 {% block content_footer %}
 
 
+{% if page %}
 <div class="page-attachments meta">
   <p>Attachments</p>
   <ul>
@@ -218,6 +216,7 @@
   {# /for BC #}
   Created at {{ page.createdAt|datetz('Y-m-d H:i:s') }} by <img src="{{ page.creator|default(page.creator)|picture }}" class="picture picture-rounded"> {{ page.creator.name }}<br>
 </p>
+{% endif %}
 
 {% endblock %}
 
@@ -239,7 +238,13 @@
 {% block body_end %}
   {% parent %}
 
-  <div id="presentation-layer" class="fullscreen-layer">
-    <div id="presentation-container"></div>
-  </div>
+<div id="presentation-layer" class="fullscreen-layer">
+  <div id="presentation-container"></div>
+</div>
+
+<div id="crowi-modals">
+  {% include 'modal/rename.html' %}
+  {% include 'modal/delete.html' %}
+  {% include 'modal/page_name_warning.html' %}
+</div>
 {% endblock %}

@@ -24,8 +24,8 @@ export default class SearchResult extends React.Component {
   render() {
     const excludePathString = this.props.tree;
 
-    console.log(this.props.searchError);
-    console.log(this.isError());
+    //console.log(this.props.searchError);
+    //console.log(this.isError());
     if (this.isError()) {
       return (
         <div className="content-main">

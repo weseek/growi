@@ -24,7 +24,6 @@
     </footer>
   </div>
 </aside>
-{% include '../modal/widget_help.html' %}
 
 {% endblock %} {# layout_sidebar #}
 
@@ -32,7 +31,13 @@
 <div id="main" class="main col-md-9 {% if page %}{{ css.grant(page) }}{% endif %} {% block main_css_class %}{% endblock %}">
   {% if page && page.grant != 1 %}
   <p class="page-grant">
-  <i class="fa fa-lock"></i> {{ consts.pageGrants[page.grant] }} (このページの閲覧は制限されています)
+    <i class="fa fa-lock"></i> {{ consts.pageGrants[page.grant] }} (このページの閲覧は制限されています)
+  </p>
+  {% endif %}
+  {% if page && page.grant == 2 %}
+  <p class="alert alert-info">
+    このページの共有用URL
+    <input type="text" class="copy-link form-control" value="{{ baseUrl }}/{{ page._id.toString() }}" readonly>
   </p>
   {% endif %}
   <article>

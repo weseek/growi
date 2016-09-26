@@ -11,6 +11,8 @@ export default class SearchBox extends React.Component {
   constructor(props) {
     super(props);
 
+    this.crowi = window.crowi; // FIXME
+
     this.state = {
       searchingKeyword: '',
       searchedPages: [],
@@ -43,26 +45,17 @@ export default class SearchBox extends React.Component {
       searching: true,
     });
 
-    axios.get('/_api/search', {params: {q: keyword}})
-    .then((res) => {
-      if (res.data.ok) {
-        this.setState({
-          searchingKeyword: keyword,
-          searchedPages: res.data.data,
-          searching: false,
-          searchError: null,
-        });
-      } else {
-        this.setState({
-          searchError: res,
-          searching: false,
-        });
-      }
-      // TODO error
-    }).catch((res) => {
-      // TODO error
+    this.crowi.apiGet('/search', {q: keyword})
+    .then(res => {
       this.setState({
-        searchError: res,
+        searchingKeyword: keyword,
+        searchedPages: res.data,
+        searching: false,
+        searchError: null,
+      });
+    }).catch(err => {
+      this.setState({
+        searchError: err,
         searching: false,
       });
     });

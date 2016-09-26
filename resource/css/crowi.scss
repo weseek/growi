@@ -83,7 +83,11 @@ footer {
   }
 }
 
+.modal-backdrop {
+  z-index: 1060;
+}
 .modal {
+  z-index: 1061;
   p {
     font-size: 1em;
   }
@@ -93,6 +97,56 @@ footer {
     margin: 0;
   }
 }
+.modal-body.alert {
+  margin-bottom: 0;
+  border-radius: 0;
+}
+
+.modal.create-page {
+  .modal-body {
+    h3, h4 {
+      margin-bottom: 10px;
+    }
+
+    form {
+      .page-name-addons {
+        position: absolute;
+        top: 7px;
+        left: 27px;
+      }
+      .page-today-prefix {
+        display: inline-block;
+      }
+      .page-today-input1 {
+        width: 60px;
+        padding-left: 2px;
+        padding-right: 2px;
+        display: inline-block;
+      }
+      .page-today-suffix {
+        display: inline-block;
+      }
+      .page-today-input2 {
+        width: 100%;
+        display: inline-block;
+      }
+    }
+  }
+}
+
+.popular-page-high {
+  color: #e80000;
+  font-size: 1.1em;
+  font-weight: bold;
+}
+.popular-page-mid {
+  color: #e47800;
+  font-weight: bold;
+}
+.popular-page-low {
+  color: #ab7c7c;
+}
+
 
 // {{{ add badge variation
 .badge-default {
@@ -152,8 +206,8 @@ footer {
 
   // size list
   &.picture-lg {
-    width: 32px;
-    height: 32px;
+    width: 48px;
+    height: 48px;
   }
   &.picture-sm {
     width: 16px;
@@ -216,10 +270,6 @@ footer {
 
 // buttons
 .btn-primary {
-}
-$btn-facebook-color: #4c66a4;
-.btn-facebook {
-  @include button-variant(lighten($btn-facebook-color, 50%), $btn-facebook-color, darken($btn-facebook-color, 20%));
 }
 $btn-google-color: rgb(204,89,71);
 .btn-google {
