@@ -97,6 +97,16 @@ div.body {
     font-size: .9em;
   }
 
+  a {
+    text-decoration: underline;
+    color: lighten($brand-primary, 10%);
+
+    &:hover {
+      text-decoration: none;
+      color: lighten($brand-primary, 20%);
+    }
+  }
+
   pre {
     line-height: 1.4em;
     font-size: .9em;
