@@ -33,5 +33,3 @@ Object.keys(componentMappings).forEach((key) => {
     ReactDOM.render(componentMappings[key], elem);
   }
 });
-
-

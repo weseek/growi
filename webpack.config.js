@@ -1,17 +1,19 @@
 var path = require('path');
 var webpack = require('webpack');
 
+var ManifestPlugin = require('webpack-manifest-plugin');
+
 var config = {
   entry: {
-    app: './resource/js/app.js',
-    crowi: './resource/js/crowi.js',
+    app:          './resource/js/app.js',
+    crowi:        './resource/js/crowi.js',
     presentation: './resource/js/crowi-presentation.js',
-    form: './resource/js/crowi-form.js',
-    admin: './resource/js/crowi-admin.js',
+    form:         './resource/js/crowi-form.js',
+    admin:        './resource/js/crowi-admin.js',
   },
   output: {
     path: path.join(__dirname + "/public/js"),
-    filename: "[name].js"
+    filename: "[name].[hash].js"
   },
   resolve: {
     modulesDirectories: [
@@ -47,4 +49,7 @@ if (process.env && process.env.NODE_ENV !== 'development') {
     }),
   ];
 }
+
+config.plugins.push(new ManifestPlugin());
+
 module.exports = config;
