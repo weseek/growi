@@ -128,6 +128,9 @@ describe('Page', function () {
       expect(Page.isCreatableName('/meeting')).to.be.true;
       expect(Page.isCreatableName('/meeting/x')).to.be.true;
 
+      // end with "edit"
+      expect(Page.isCreatableName('/meeting/edit')).to.be.false;
+
       // under score
       expect(Page.isCreatableName('/_')).to.be.false;
       expect(Page.isCreatableName('/_r/x')).to.be.false;
@@ -136,6 +139,12 @@ describe('Page', function () {
       expect(Page.isCreatableName('/_api/x')).to.be.false;
 
       expect(Page.isCreatableName('/hoge/xx.md')).to.be.false;
+
+      // start with https?
+      expect(Page.isCreatableName('/http://demo.crowi.wiki/user/sotarok/hoge')).to.be.false;
+      expect(Page.isCreatableName('/https://demo.crowi.wiki/user/sotarok/hoge')).to.be.false;
+      expect(Page.isCreatableName('http://demo.crowi.wiki/user/sotarok/hoge')).to.be.false;
+      expect(Page.isCreatableName('https://demo.crowi.wiki/user/sotarok/hoge')).to.be.false;
 
 
       var forbidden = ['installer', 'register', 'login', 'logout', 'admin', 'files', 'trash', 'paste', 'comments'];
