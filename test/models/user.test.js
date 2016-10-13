@@ -29,6 +29,18 @@ describe('User', function () {
           done();
         });
       });
+
+      it('should be found by findUsersByPartOfEmail', function(done) {
+
+        User.findUsersByPartOfEmail('ao', {})
+        .then(function(userData) {
+          expect(userData).to.be.array;
+          expect(userData[0]).to.instanceof(User);
+          expect(userData[0].email).to.equal('aoi@example.com');
+          done();
+        });
+
+      });
     });
   });
 
