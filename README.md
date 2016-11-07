@@ -4,7 +4,7 @@ Crowi - The Simple & Powerful Communication Tool Based on Wiki
 ================================================================
 
 
-[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/crowi/crowi/tree/v1.5.0)
+[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/crowi/crowi/tree/v1.5.1)
 
 [![Circle CI](https://circleci.com/gh/crowi/crowi.svg?style=svg)](https://circleci.com/gh/crowi/crowi)
 [![Join the chat at https://gitter.im/crowi/general](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/crowi/general)
@@ -35,7 +35,7 @@ Don't use `master` branch because it is unstable but use released tag version ex
 Dependencies
 -------------
 
-* Node.js (4.2.x)
+* Node.js (4.x)
 * MongoDB
 * Elasticsearch (optional)
 * Redis (optional)
