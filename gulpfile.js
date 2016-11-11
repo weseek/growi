@@ -8,7 +8,6 @@ var cssmin = require('gulp-cssmin');
 var mocha  = require('gulp-spawn-mocha');
 var concat = require('gulp-concat');
 var rename = require('gulp-rename');
-var uglify = require('gulp-uglify');
 var jshint = require('gulp-jshint');
 var source = require('vinyl-source-stream');
 var webpack = require('webpack-stream');
@@ -95,19 +94,6 @@ gulp.task('webpack', ['js:concat'], function() {
     .pipe(gulp.dest(dirs.jsDist));
 });
 
-gulp.task('js:min', ['webpack'], function() {
-  var fileList = [
-    js.bundled,
-  ];
-
-  fileList.forEach(function(jsfile) {
-    gulp.src(jsfile)
-      .pipe(uglify())
-      .pipe(rename({suffix: '.min'}))
-      .pipe(gulp.dest(dirs.jsDist));
-  });
-});
-
 gulp.task('jshint', function() {
   return gulp.src(js.lint)
     .pipe(jshint())
@@ -174,5 +160,5 @@ gulp.task('watch', function() {
 });
 
 gulp.task('css', ['css:sass', 'css:concat',]);
-gulp.task('default', ['css:min', 'js:min',]);
+gulp.task('default', ['css:min', 'webpack', ]);
 gulp.task('dev', ['css:concat', 'webpack', 'jshint', 'test']);

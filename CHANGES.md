@@ -1,9 +1,15 @@
 CHANGES
 ========
 
-## 1.5.1
+## 1.5.2
 
 *
+
+## 1.5.1
+
+* Fix: Broken corwi.min.js (thank you @Bakudankun #135)
+* Fix: Use id permalink instead of the page path on notify to Slack.
+* And some fixes and updates. (Thank you: @kzbandai @chuganzy)
 
 ## 1.5.0
 

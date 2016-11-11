@@ -881,7 +881,7 @@ window.addEventListener('load', function(e) {
     }
   }
 
-  if (crowi.users || crowi.users.length == 0) {
+  if (crowi && crowi.users || crowi.users.length == 0) {
     var totalUsers = crowi.users.length;
     var $listLiker = $('.page-list-liker');
     $listLiker.each(function(i, liker) {
