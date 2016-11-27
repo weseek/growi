@@ -1,11 +1,11 @@
 {% extends '../layout/2column.html' %}
 
-{% block html_title %}ユーザー設定 · {{ path }}{% endblock %}
+{% block html_title %}{{ t('User Settings') }} · {{ path }}{% endblock %}
 
 {% block content_head %}
 <div class="header-wrap">
   <header id="page-header">
-    <h1 class="title" id="">ユーザー設定</h1>
+    <h1 class="title" id="">{{ t('User Settings') }}</h1>
   </header>
 </div>
 {% endblock %}
@@ -14,9 +14,9 @@
 <div class="content-main">
 
   <ul class="nav nav-tabs">
-    <li class="active"><a href="/me"><i class="fa fa-gears"></i> ユーザー情報</a></li>
-    <li><a href="/me/password"><i class="fa fa-key"></i> パスワード設定</a></li>
-    <li><a href="/me/apiToken"><i class="fa fa-rocket"></i> API設定</a></li>
+    <li class="active"><a href="/me"><i class="fa fa-gears"></i> {{ t('User Infomation') }}</a></li>
+    <li><a href="/me/password"><i class="fa fa-key"></i> {{ t('Password Setting') }}</a></li>
+    <li><a href="/me/apiToken"><i class="fa fa-rocket"></i> {{ t('API Setting') }}</a></li>
   </ul>
 
   <div class="tab-content">
@@ -49,15 +49,15 @@
   <div class="form-box">
     <form action="/me" method="post" class="form-horizontal" role="form">
       <fieldset>
-        <legend>ユーザーの基本情報</legend>
+        <legend>{{ t('User Basic Infomation') }}</legend>
       <div class="form-group">
-        <label for="userForm[name]" class="col-sm-2 control-label">名前</label>
+        <label for="userForm[name]" class="col-sm-2 control-label">{{ t('Name') }}</label>
         <div class="col-sm-4">
           <input class="form-control" type="text" name="userForm[name]" value="{{ user.name }}" required>
         </div>
       </div>
       <div class="form-group {% if not user.email %}has-error{% endif %}">
-        <label for="userForm[email]" class="col-sm-2 control-label">メールアドレス</label>
+        <label for="userForm[email]" class="col-sm-2 control-label">{{ t('Email') }}</label>
         <div class="col-sm-4">
           <input class="form-control" type="email" name="userForm[email]" value="{{ user.email }}" required>
         </div>
@@ -73,7 +73,7 @@
 
           {% if config.crowi['security:registrationWhiteList'] && config.crowi['security:registrationWhiteList'].length %}
           <p class="help-block">
-          この Wiki では以下のメールアドレスのみ登録可能です。
+            {{ t('In this wiki, only the following e-mail address can be registered.') }}
           <ul>
             {% for em in config.crowi['security:registrationWhiteList'] %}
             <li><code>{{ em }}</code></li>
@@ -86,7 +86,7 @@
 
       <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
-          <button type="submit" class="btn btn-primary">更新</button>
+          <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
         </div>
       </div>
     </fieldset>
@@ -95,11 +95,11 @@
 
   <div class="form-box">
     <fieldset>
-      <legend>プロフィール画像の設定</legend>
+      <legend>{{ t('Profile Image Setting') }}</legend>
         <div class="form-group">
           <div id="pictureUploadFormMessage"></div>
           <label for="" class="col-sm-3 control-label">
-            現在の画像
+            {{ t('Current Image') }}
           </label>
           <div class="col-sm-9">
             <p>
@@ -107,8 +107,8 @@
             </p>
             <p>
             {% if user.image %}
-            <form action="/me/picture/delete" method="post" class="form-horizontal" role="form" onsubmit="return window.confirm('削除してよろしいですか？');">
-              <button type="submit" class="btn btn-danger">画像を削除</button>
+            <form action="/me/picture/delete" method="post" class="form-horizontal" role="form" onsubmit="return window.confirm('{{ t('Are you sure to delete?') }}');">
+              <button type="submit" class="btn btn-danger">{{ t('Delete Image') }}</button>
             </form>
             {% endif %}
             </p>
@@ -117,7 +117,7 @@
 
         <div class="form-group">
           <label for="" class="col-sm-3 control-label">
-            新しい画像をアップロード
+            {{ t('Upload new image') }}
           </label>
           <div class="col-sm-9">
             {% if isUploadable() %}
@@ -178,7 +178,7 @@
       <div class="form-box">
         <form action="/me/auth/google" method="post" class="form-horizontal" role="form">
           <fieldset>
-            <legend><i class="fa fa-google-plus-square"></i> Google設定</legend>
+            <legend><i class="fa fa-google-plus-square"></i> {{ t('Google Setting') }}</legend>
 
             {% set wmessage = req.flash('warningMessage.auth.google') %}
             {% if wmessage.length %}
@@ -192,13 +192,13 @@
 
             <div class="col-sm-12">
               <p>
-                接続されています
+                {{ t('Connected') }}
 
-                <input type="submit" name="disconnectGoogle" class="btn btn-default" value="接続を解除">
+                <input type="submit" name="disconnectGoogle" class="btn btn-default" value="{{ t('Disconnect') }}">
               </p>
               <p class="help-block">
-              接続を解除すると、Googleでログインができなくなります。<br>
-              解除後はメールアドレスとパスワードでログインすることができます。
+                {{ t('If disconnet Google, you can not login by Google Authentication.') }}<br>
+                {{ t('After disconnect, you can login using email and password.') }}
               </p>
             </div>
 
@@ -209,11 +209,12 @@
                 <input type="submit" name="connectGoogle" class="btn btn-google" value="Googleコネクト">
               </div>
               <p class="help-block">
-              Googleコネクトをすると、Googleアカウントでログイン可能になります。<br>
+                {{ t('With Google Connect, you can sign in with your Google Account.') }}<br>
               </p>
               {% if config.crowi['security:registrationWhiteList'] && config.crowi['security:registrationWhiteList'].length %}
               <p class="help-block">
-              この Wiki では、登録可能なメールアドレスが限定されているため、コネクト可能なGoogleアカウントは、以下のメールアドレスの発行できるGoogle Appsアカウントに限られます。
+                {{ t('In this wiki, the registrable mail address is limited.') }}
+                {{ t('Only Google Apps accounts with the following email addresses are connectable Google accounts:') }}
               </p>
               <ul>
                 {% for em in config.crowi['security:registrationWhiteList'] %}
@@ -271,4 +272,3 @@
 
 {% block footer %}
 {% endblock footer %}
-

@@ -45,12 +45,12 @@
         {% else %}
         <select name="pageForm[grant]" class="form-control">
           {% for grantId, grantLabel in consts.pageGrants %}
-          <option value="{{ grantId }}" {% if pageForm.grant|default(page.grant) == grantId %}selected{% endif %}>{{ grantLabel }}</option>
+          <option value="{{ grantId }}" {% if pageForm.grant|default(page.grant) == grantId %}selected{% endif %}>{{ t(grantLabel) }}</option>
           {% endfor %}
         </select>
         {% endif %}
         <input type="hidden" name="_csrf" value="{{ csrf() }}">
-        <input type="submit" class="btn btn-primary" id="edit-form-submit" value="ページを更新" />
+        <input type="submit" class="btn btn-primary" id="edit-form-submit" value="{{ t('Update Page') }}" />
       </div>
     </div>
   </form>
