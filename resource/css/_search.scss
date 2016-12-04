@@ -127,11 +127,14 @@
   }
 }
 
+// Extra small devices Phones (<768px)
 @media (max-width: $screen-xs-max) {
   .search-top {
     margin-top: 4px 0 0 0;
     padding: 0;
     border-style: none !important;
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
 
     .search-top-input-group {
       .search-top-input {
