@@ -161,3 +161,38 @@
     }
   }
 }
+
+// Small devices Tablets (≥768px)
+@media (max-width: $screen-sm-max) {
+  .search-top {
+    margin-top: 4px 0 0 0;
+    padding: 0;
+    border-style: none !important;
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+
+    .search-top-input-group {
+      .search-top-input {
+        width: 240px;
+      }
+      .btn {
+        margin-left: -38px;
+        z-index: 10;
+      }
+    }
+  }
+
+  .search-result {
+    .search-result-content {
+      .search-result-page {
+        .wiki {
+          h1, h2, h3, h4, h5, h6 {
+            font-size: medium;
+          }
+          height: 250px;
+          overflow: scroll;
+        }
+      }
+    }
+  }
+}
