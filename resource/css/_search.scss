@@ -137,7 +137,7 @@
     -webkit-box-shadow: none !important;
 
     .search-form {
-      width: 100%;
+      width: 76%;
     }
 
     .search-top-input-group {
@@ -145,7 +145,6 @@
         width: 100%;
       }
       .btn {
-        margin-left: -38px;
         z-index: 10;
       }
     }
@@ -170,7 +169,9 @@
 @media (max-width: $screen-xs-max) {
   .search-top {
     .search-form {
-      width: 24%;
+      min-width: 40%;
+      max-width: 50%;
+      width: 50%;
     }
     .search-box {
       .search-suggest {
