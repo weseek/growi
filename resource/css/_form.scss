@@ -99,7 +99,7 @@
     width: 100%;
     left: 0;
     padding: 8px;
-    height: 50px;
+    min-height: 50px;
     background: rgba(255,255,255,.8);
     border-top: solid 1px #ccc;
     margin-bottom: 0;
@@ -150,9 +150,15 @@ input:-moz-placeholder {
     .form-group.form-submit-group {
       select.form-control {
         display: inline-block;
-        width: auto;
+        max-width: 50%;
       }
     }
   }
 
+} // }}}
+
+@media (max-width: $screen-xs-max) { // {{{ less than smartphone size
+  #edit-form-submit {
+    float: right;
+  }
 } // }}}
