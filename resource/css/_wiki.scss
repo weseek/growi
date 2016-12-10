@@ -99,11 +99,11 @@ div.body {
 
   a {
     text-decoration: underline;
-    color: lighten($brand-primary, 10%);
+    color: #38ad9e;
 
     &:hover {
       text-decoration: none;
-      color: lighten($brand-primary, 20%);
+      color: darken(#38ad9e, 10%);
     }
   }
 
