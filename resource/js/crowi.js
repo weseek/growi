@@ -215,12 +215,12 @@ $(function() {
 
   $('#create-page').on('shown.bs.modal', function (e) {
 
-    var input2Width = $('#create-page-today .page-today-input2').outerWidth();
+    var input2Width = $('#create-page-today .col-xs-10').outerWidth();
     var newWidth = input2Width
       - $('#create-page-today .page-today-prefix').outerWidth()
       - $('#create-page-today .page-today-input1').outerWidth()
       - $('#create-page-today .page-today-suffix').outerWidth()
-      - 10
+      - 40
       ;
     $('#create-page-today .form-control.page-today-input2').css({width: newWidth}).focus();
 

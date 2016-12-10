@@ -78,7 +78,7 @@ export default class SearchResult extends React.Component {
     return (
       <div className="content-main">
         <div className="search-result row" id="search-result">
-          <div className="col-md-4 page-list search-result-list" id="search-result-list">
+          <div className="col-md-4 hidden-xs hidden-sm page-list search-result-list" id="search-result-list">
             <nav data-spy="affix" data-offset-top="120">
               <ul className="page-list-ul nav">
                 {listView}
@@ -111,4 +111,3 @@ SearchResult.defaultProps = {
   searchResultMeta: {},
   searchError: null,
 };
-

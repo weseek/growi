@@ -1,5 +1,7 @@
 'use strict';
 
+var fs = require('fs');
+
 var gulp   = require('gulp');
 var sass   = require('gulp-sass');
 var cssmin = require('gulp-cssmin');
@@ -48,10 +50,10 @@ var js = {
 
   bundled:      dirs.jsDist + '/bundled.js',
   dist:         dirs.jsDist + '/crowi.js',
+  app:          dirs.jsDist + '/app.js',
   admin:        dirs.jsDist + '/admin.js',
   form:         dirs.jsDist + '/form.js',
   presentation: dirs.jsDist + '/presentation.js',
-  app:          dirs.jsDist + '/app.js',
 
   clientWatch: ['resource/js/**/*.js'],
   watch: ['test/**/*.test.js', 'app.js', 'lib/**/*.js'],
@@ -66,15 +68,16 @@ var cssIncludePaths = [
 ];
 
 gulp.task('js:del', function() {
-  var fileList = [
-    js.dist,
-    js.bundled,
-    js.admin,
-    js.form,
-    js.presentation,
-    js.app,
-  ];
-  fileList = fileList.concat(fileList.map(function(fn){ return fn.replace(/\.js/, '.min.js');}));
+  var fileList = [];
+
+  var actualFiles = fs.readdirSync(dirs.jsDist);
+  fileList = actualFiles.map(function(fn){
+    if (!fn.match(/.js(on)?$/)) {
+      return false
+    }
+    return dirs.jsDist + '/' + fn;
+  }).filter(function(v) { return v; });
+
   return del(fileList);
 });
 
