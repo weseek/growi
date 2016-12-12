@@ -54,11 +54,29 @@
 
     article header { // not affixed
       .bookmark-link {
-        float: right;
         color: #e6b422;
         font-size: 2em;
         &.bookmarked {
           //color: #fff;
+        }
+      }
+
+      .flex-title-line {
+        display: -webkit-flex;
+        display: flex;
+        -webkit-align-items: center;
+        align-items:         center;
+
+        .flex-item-title {
+          -webkit-flex-basis: auto;
+          flex-basis: auto;
+          margin-right: auto;
+        }
+        .flex-item-action {
+          -webkit-flex-basis: 2em;
+          flex-basis: 2em;
+          text-align: center;
+          padding: 0 2px;
         }
       }
 
@@ -298,4 +316,3 @@
   }
 
 } // }}}
-

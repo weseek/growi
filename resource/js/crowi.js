@@ -619,7 +619,7 @@ $(function() {
     }
 
     // Like
-    var $likeButton = $('#like-button');
+    var $likeButton = $('.like-button');
     var $likeCount = $('#like-count');
     $likeButton.click(function() {
       var liked = $likeButton.data('liked');
