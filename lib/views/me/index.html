@@ -82,6 +82,15 @@
           </p>
           {% endif %}
         </div>
+        <div class="form-group {% if not user.language %}has-error{% endif %}">
+          <label for="userForm[language]" class="col-sm-2 control-label">{{ t('Language') }}</label>
+          <div class="col-sm-4 radio">
+            <label><input type="radio" name="userForm[language]" value="en" {% if user.language == "en" %}checked="checked"{% endif %}>{{ t('English') }}</label>
+            <label><input type="radio" name="userForm[language]" value="ja" {% if user.language == "ja" %}checked="checked"{% endif %}>{{ t('Japanese') }}</label>
+          </div>
+          <div class="col-sm-offset-2 col-sm-10">
+          </div>
+        </div>
       </div>
 
       <div class="form-group">
