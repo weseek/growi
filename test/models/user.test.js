@@ -15,7 +15,7 @@ describe('User', function () {
   describe('Create and Find.', function () {
     context('The user', function() {
       it('should created', function(done) {
-        User.createUserByEmailAndPassword('Aoi Miyazaki', 'aoi', 'aoi@example.com', 'hogefuga11', function (err, userData) {
+        User.createUserByEmailAndPassword('Aoi Miyazaki', 'aoi', 'aoi@example.com', 'hogefuga11', 'en', function (err, userData) {
           expect(err).to.be.null;
           expect(userData).to.instanceof(User);
           done();
