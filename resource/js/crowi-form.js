@@ -355,9 +355,9 @@ $(function() {
     }
 
     //$target.selection('insert', {text: pasteText, mode: 'after'});
-    insertText(currentLine.start, currentLine.end, pasteText);
+    insertText(currentLine.caret, currentLine.caret, pasteText, 'replace');
 
-    var newPos = currentLine.end + pasteText.length;
+    var newPos = currentLine.caret + pasteText.length;
     $target.selection('setPos', {start: newPos, end: newPos});
 
     return true;
