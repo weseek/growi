@@ -76,6 +76,62 @@
       </div><!-- /.modal -->
       {% endif %}
 
+      {# FIXME とりあえずクソ実装。React化はやくしたいなー(チラッチラッ #}
+      <div class="modal fade" id="admin-password-reset-modal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              <h4 class="modal-title">パスワードを新規発行しますか?</h4>
+            </div>
+
+            <div class="modal-body">
+              <p>
+              新規発行したパスワードはこの画面を閉じると二度と表示できませんのでご注意ください。<br>
+              <span class="text-danger">新規発行したパスワードを、対象ユーザーへ連絡してください。</span>
+              </p>
+              <p>
+              Reset user: <code id="admin-password-reset-user"></code>
+              </p>
+
+              <form method="post" id="admin-users-reset-password">
+                <input type="hidden" name="user_id" value="">
+                <input type="hidden" name="_csrf" value="{{ csrf() }}">
+                <button type="submit" value="" class="btn btn-primary">
+                  実行
+                </button>
+              </form>
+
+            </div>
+
+          </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+      </div>
+      <div class="modal fade" id="admin-password-reset-modal-done">
+        <div class="modal-dialog">
+          <div class="modal-content">
+
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              <h4 class="modal-title">Password reset!</h4>
+            </div>
+
+            <div class="modal-body">
+              <p class="alert alert-danger">Let the user know the new password below and strongly recommend to change another one immediately. </p>
+              <p>
+              Reset user: <code id="admin-password-reset-done-user"></code>
+              </p>
+              <p>
+              New passwrod: <code id="admin-password-reset-done-password"></code>
+              </p>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-primary" data-dismiss="modal">OK</button>
+            </div>
+          </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+      </div>
+
       <h2>ユーザー一覧</h2>
 
       <table class="table table-hover table-striped table-bordered">
@@ -121,6 +177,16 @@
                   <li class="dropdown-header">編集メニュー</li>
                   <li>
                     <a href="">編集</a>
+
+                  </li>
+                  <li class="dropdown-button">
+                    <a href="#"
+                      data-user-id="{{ sUser._id.toString() }}"
+                      data-user-email="{{ sUser.email }}"
+                      data-target="#admin-password-reset-modal"
+                      data-toggle="modal" class="btn btn-block btn-default">
+                      パスワードの再発行
+                    </a>
                   </li>
                   <li class="divider"></li>
                   <li class="dropdown-header">ステータス</li>
@@ -132,6 +198,7 @@
                   </form>
                   {% endif  %}
                   {% if sUser.status == 2 %}
+
                   <form action="/admin/user/{{ sUser._id.toString() }}/suspend" method="post">
                     <input type="hidden" name="_csrf" value="{{ csrf() }}">
                     <button type="submit" class="btn btn-block btn-warning">アカウント停止</button>
