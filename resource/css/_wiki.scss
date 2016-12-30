@@ -8,6 +8,7 @@ div.body {
   border: solid 1px #aaa;
   border-radius: 5px;
   max-width: 250px;
+  overflow: hidden;
 
   .revision-toc-head {
     display: inline-block;
