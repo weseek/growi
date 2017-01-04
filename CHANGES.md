@@ -1,6 +1,9 @@
 CHANGES
 ========
 
+## 1.5.3
+
+
 ## 1.5.2
 
 * Fix: Edit button on smartphone.
