@@ -409,11 +409,14 @@ $(function() {
 
   var $inputForm = $('form.uploadable textarea#form-body');
   if ($inputForm.length > 0) {
+    var csrfToken = $('form.uploadable input#edit-form-csrf').val();
     var pageId = $('#content-main').data('page-id') || 0;
     var attachmentOption = {
-      uploadUrl: '/_api/attachment/page/' + pageId,
+      uploadUrl: '/_api/attachments.add',
       extraParams: {
-        path: location.pathname
+        path: location.pathname,
+        page_id: pageId,
+        _csrf: csrfToken
       },
       progressText: '(Uploading file...)',
       urlText: "\n![file]({filename})\n"
@@ -421,8 +424,9 @@ $(function() {
 
     attachmentOption.onFileUploadResponse = function(res) {
       var result = JSON.parse(res.response);
+      console.log(result);
 
-      if (result.status && result.pageCreated) {
+      if (result.ok && result.pageCreated) {
         var page = result.page,
             pageId = page._id;
 
@@ -431,7 +435,7 @@ $(function() {
 
         unbindInlineAttachment($inputForm);
 
-        attachmentOption.uploadUrl = '/_api/attachment/page/' + pageId,
+        attachmentOption.extraParams.page_id = pageId;
         bindInlineAttachment($inputForm, attachmentOption);
       }
       return true;
