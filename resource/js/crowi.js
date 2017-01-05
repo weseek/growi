@@ -559,8 +559,12 @@ $(function() {
 
     // attachment
     var $pageAttachmentList = $('.page-attachments ul');
-    $.get('/_api/attachment/page/' + pageId, function(res) {
-      var attachments = res.data.attachments;
+    $.get('/_api/attachments.list', {page_id: pageId}, function(res) {
+      if (!res.ok) {
+        return ;
+      }
+
+      var attachments = res.attachments;
       if (attachments.length > 0) {
         $.each(attachments, function(i, file) {
           $pageAttachmentList.append(
