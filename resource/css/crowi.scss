@@ -109,6 +109,22 @@ footer {
     }
 
     form {
+
+      input.form-control {
+        border: none;
+        box-shadow: none;
+        border-bottom: dotted 1px #444;
+        border-radius: 0;
+        padding: 6px;
+        height: 34px;
+        font-weight: bold;
+        background: #f0f0f0;
+
+        &:focus {
+          background: #ddd;
+        }
+      }
+
       .page-name-addons {
         position: absolute;
         top: 7px;

@@ -12,7 +12,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
 
   <link rel="stylesheet" href="/css/crowi{% if env  == 'production' %}.min{% endif %}.css">
-  <script src="/js/bundled.js"></script>
+
+  <script src="{{ assets('/js/bundled.js') }}"></script>
   <link href='//fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
 </head>
 {% endblock %}
@@ -30,10 +31,10 @@
   <div class="navbar-header">
     <a class="navbar-brand" href="/">
       <img alt="Crowi" src="/logo/32x32.png" width="16">
-      {% block title %}{{ config.crowi['app:title']|default('Crowi') }}{% endblock %}
+      <span class="hidden-xs">{% block title %}{{ config.crowi['app:title']|default('Crowi') }}{% endblock %}</span>
     </a>
   {% if searchConfigured() %}
-  <div class="navbar-form navbar-left search-top visible-lg visible-md" role="search" id="search-top">
+  <div class="navbar-form navbar-left search-top" role="search" id="search-top">
   </div>
   {% endif %}
   </div>
@@ -130,6 +131,6 @@
 </body>
 {% endblock %}
 
-<script src="/js/crowi.js"></script>
-<script src="/js/app.js"></script>
+<script src="{{ assets('/js/crowi.js') }}"></script>
+<script src="{{ assets('/js/app.js') }}"></script>
 </html>

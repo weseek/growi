@@ -101,6 +101,39 @@ $(function() {
     crowi.clearDraft(pagePath);
   });
 
+  // This is a temporary implementation until porting to React.
+  var insertText = function(start, end, newText, mode) {
+    var editor = document.querySelector('#form-body');
+    mode = mode || 'after';
+
+    switch (mode) {
+    case 'before':
+      editor.setSelectionRange(start, start);
+      break;
+    case 'replace':
+      editor.setSelectionRange(start, end);
+      break;
+    case 'after':
+    default:
+      editor.setSelectionRange(end, end);
+    }
+
+    editor.focus();
+
+    var inserted = false;
+    try {
+      // Chrome, Safari
+      inserted = document.execCommand('insertText', false, newText);
+    } catch (e) {
+      inserted = false;
+    }
+
+    if (!inserted) {
+      // Firefox
+      editor.value = editor.value.substr(0, start) + newText + editor.value.substr(end);
+    }
+  };
+
   var getCurrentLine = function(event) {
     var $target = $(event.target);
 
@@ -220,7 +253,8 @@ $(function() {
           listMark = listMark.replace(/\s*\d+/, indent + (num +1));
         }
       }
-      $target.selection('insert', {text: "\n" + listMark, mode: 'before'});
+      //$target.selection('insert', {text: "\n" + listMark, mode: 'before'});
+      insertText(currentLine.start, currentLine.end, "\n" + listMark, 'after');
     } else if (currentLine.text.match(/^(\s*(?:-|\+|\*|\d+\.) )/)) {
       // remove list
       $target.selection('setPos', {start: currentLine.start, end: currentLine.end});
@@ -241,10 +275,12 @@ $(function() {
       }
       var prevLine = getPrevLine(event);
       if (!prevLine || (!currentLine.text.match(/---/) && !prevLine.text.match(/\|/g))) {
-        $target.selection('insert', {text: "\n" + row.join(' --- ') + "\n" + row.join('  '), mode: 'before'});
+        //$target.selection('insert', {text: "\n" + row.join(' --- ') + "\n" + row.join('  '), mode: 'before'});
+        insertText(currentLine.start, currentLine.end, "\n" + row.join(' --- ') + "\n" + row.join('  '), 'after');
         $target.selection('setPos', {start: currentLine.caret + 6 * row.length - 1, end: currentLine.caret + 6 * row.length - 1});
       } else {
-        $target.selection('insert', {text: "\n" + row.join('  '), mode: 'before'});
+        //$target.selection('insert', {text: "\n" + row.join('  '), mode: 'before'});
+        insertText(currentLine.start, currentLine.end, "\n" + row.join('  '), 'after');
         $target.selection('setPos', {start: currentLine.caret + 3, end: currentLine.caret + 3});
       }
     }
@@ -275,7 +311,8 @@ $(function() {
       var checkMark = (match[3] == ' ') ? 'x' : ' ';
       var replaceTo = match[1] + match[2] + ' [' + checkMark + '] ' + match[4];
       $target.selection('setPos', {start: currentLine.start, end: currentLine.end});
-      $target.selection('replace', {text: replaceTo, mode: 'keep'});
+      //$target.selection('replace', {text: replaceTo, mode: 'keep'});
+      insertText(currentLine.start, currentLine.end, replaceTo, 'replace');
       $target.selection('setPos', {start: currentLine.caret, end: currentLine.caret});
       $target.trigger('input');
     }
@@ -317,9 +354,10 @@ $(function() {
       }
     }
 
-    $target.selection('insert', {text: pasteText, mode: 'after'});
+    //$target.selection('insert', {text: pasteText, mode: 'after'});
+    insertText(currentLine.caret, currentLine.caret, pasteText, 'replace');
 
-    var newPos = currentLine.end + pasteText.length;
+    var newPos = currentLine.caret + pasteText.length;
     $target.selection('setPos', {start: newPos, end: newPos});
 
     return true;

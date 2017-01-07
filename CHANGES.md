@@ -1,6 +1,17 @@
 CHANGES
 ========
 
+## 1.5.2
+
+* Fix: Edit button on smartphone.
+* Fix: Avoid timeout on rebuilding search index.
+* Improve: Search screen on smartphone.
+* Improve: New page dialog.
+* Improve: Update link color.
+* Add node version for CI.
+* Changed assets loader.
+* And some fixes. (Thank you @suzuki @kdmsnr @crow-misia)
+
 ## 1.5.1
 
 * Fix: Broken corwi.min.js (thank you @Bakudankun #135)

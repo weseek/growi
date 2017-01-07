@@ -8,6 +8,7 @@ div.body {
   border: solid 1px #aaa;
   border-radius: 5px;
   max-width: 250px;
+  overflow: hidden;
 
   .revision-toc-head {
     display: inline-block;
@@ -95,6 +96,16 @@ div.body {
   }
   blockquote {
     font-size: .9em;
+  }
+
+  a {
+    text-decoration: underline;
+    color: #38ad9e;
+
+    &:hover {
+      text-decoration: none;
+      color: darken(#38ad9e, 10%);
+    }
   }
 
   pre {

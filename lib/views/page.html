@@ -13,10 +13,21 @@
     <p class="stopper"><a href="#" data-affix-disable="#page-header"><i class="fa fa-chevron-up"></i></a></p>
 
 
-    {% if page %}
-    <a href="#" title="Bookmark" class="bookmark-link" id="bookmark-button" data-csrftoken="{{ csrf() }}" data-bookmarked="0"><i class="fa fa-star-o"></i></a>
+    <div class="flex-title-line">
+      <h1 class="title flex-item-title" id="revision-path">{{ path|insertSpaceToEachSlashes }}</h1>
+      {% if page %}
+      <div class="flex-item-action">
+        <a href="#" title="Bookmark" class="bookmark-link" id="bookmark-button" data-csrftoken="{{ csrf() }}" data-bookmarked="0"><i class="fa fa-star-o"></i></a>
+      </div>
+      <div class="flex-item-action visible-xs visible-sm">
+        <button
+            data-csrftoken="{{ csrf() }}"
+            data-liked="{% if page.isLiked(user) %}1{% else %}0{% endif %}"
+            class="like-button btn btn-default btn-sm {% if page.isLiked(user) %}active{% endif %}"
+        ><i class="fa fa-thumbs-o-up"></i></button>
+      </div>
+    </div>
     {% endif %}
-    <h1 class="title" id="revision-path">{{ path|insertSpaceToEachSlashes }}</h1>
   </header>
   {% else %}
   {# trash/* #}
