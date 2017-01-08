@@ -50,6 +50,11 @@
         <p id="seen-user-list" class="seen-user-list" data-seen-users="{{ page.seenUsers|default([])|join(',') }}">
         </p>
       </dd>
+
+      <dt><i class="fa fa-paw"></i> 見た人</dt>
+      <dd>
+        <div id="seen-user-list-react" data-seen-users="{{ page.seenUsers|default([])|join(',') }}"></div>
+      </dd>
     </dl>
   </div>
 </div>
