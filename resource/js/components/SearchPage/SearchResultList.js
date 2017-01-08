@@ -14,6 +14,9 @@ export default class SearchResultList extends React.Component {
     let returnBody = body;
 
     this.props.searchingKeyword.split(' ').forEach((keyword) => {
+      if (keyword === '') {
+        return;
+      }
       const k = keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
       const keywordExp = new RegExp(`(${k}(?!(.*?\]|.*?\\)|.*?"|.*?>)))`, 'ig');
       returnBody = returnBody.replace(keywordExp, '<em class="highlighted">$&</em>');
