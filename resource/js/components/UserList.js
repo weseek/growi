@@ -7,7 +7,7 @@ export default class UserList extends React.Component {
     const users = this.props.users.map((user) => {
       return (
         <a data-user-id={user._id} href={'/user/' + user.username} title={user.name}>
-          <UserPicture user={user} />
+          <UserPicture user={user} size="xs" />
         </a>
       );
     });

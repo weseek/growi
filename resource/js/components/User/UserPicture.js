@@ -13,6 +13,15 @@ export default class UserPicture extends React.Component {
     }
   }
 
+  getClassName() {
+    let className = ['picture', 'picture-rounded'];
+    if (this.props.size) {
+      className.push('picture-' + this.props.size);
+    }
+
+    return className.join(' ');
+  }
+
   render() {
     const user = this.props.user;
 
@@ -20,7 +29,7 @@ export default class UserPicture extends React.Component {
       <img
         src={this.getUserPicture(user)}
         alt={user.username}
-        className="picture picture-rounded"
+        className={this.getClassName()}
         />
     );
   }
@@ -28,8 +37,10 @@ export default class UserPicture extends React.Component {
 
 UserPicture.propTypes = {
   user: React.PropTypes.object.isRequired,
+  size: React.PropTypes.string,
 };
 
 UserPicture.defaultProps = {
   user: {},
+  size: null,
 };
