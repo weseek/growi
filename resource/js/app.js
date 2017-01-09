@@ -26,7 +26,7 @@ const componentMappings = {
   'search-page': <SearchPage />,
   'page-list-search': <PageListSearch />,
   //'page-comment': <PageComment />,
-  'seen-user-list-react': <SeenUserList />,
+  'seen-user-list': <SeenUserList />,
 };
 
 Object.keys(componentMappings).forEach((key) => {
