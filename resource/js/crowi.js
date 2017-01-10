@@ -577,52 +577,6 @@ $(function() {
       }
     });
 
-    // bookmark
-    var $bookmarkButton = $('#bookmark-button');
-    $.get('/_api/bookmarks.get', {page_id: pageId}, function(res) {
-      if (res.ok) {
-        if (res.bookmark) {
-          MarkBookmarked();
-        }
-      }
-    });
-
-    $bookmarkButton.click(function() {
-      var bookmarked = $bookmarkButton.data('bookmarked');
-      var token = $bookmarkButton.data('csrftoken');
-      if (!bookmarked) {
-        $.post('/_api/bookmarks.add', {_csrf: token, page_id: pageId}, function(res) {
-          if (res.ok && res.bookmark) {
-            MarkBookmarked();
-          }
-        });
-      } else {
-        $.post('/_api/bookmarks.remove', {_csrf: token, page_id: pageId}, function(res) {
-          if (res.ok) {
-            MarkUnBookmarked();
-          }
-        });
-      }
-
-      return false;
-    });
-
-    function MarkBookmarked()
-    {
-      $('i', $bookmarkButton)
-        .removeClass('fa-star-o')
-        .addClass('fa-star');
-      $bookmarkButton.data('bookmarked', 1);
-    }
-
-    function MarkUnBookmarked()
-    {
-      $('i', $bookmarkButton)
-        .removeClass('fa-star')
-        .addClass('fa-star-o');
-      $bookmarkButton.data('bookmarked', 0);
-    }
-
     // Like
     var $likeButton = $('.like-button');
     var $likeCount = $('#like-count');
