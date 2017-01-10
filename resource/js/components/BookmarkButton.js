@@ -19,7 +19,7 @@ export default class BookmarkButton extends React.Component {
     // FIXME(property?)
     this.setState({
       pageId: $('#content-main').data('page-id'),
-      token: $('#bookmark-button-react').data('csrftoken'),
+      token: $('#bookmark-button').data('csrftoken'),
     });
   }
 
