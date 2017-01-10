@@ -9,6 +9,7 @@ import SearchPage       from './components/SearchPage';
 import PageListSearch   from './components/PageListSearch';
 import PageHistory      from './components/PageHistory';
 import SeenUserList     from './components/SeenUserList';
+import BookmarkButton   from './components/BookmarkButton';
 //import PageComment  from './components/PageComment';
 
 if (!window) {
@@ -36,6 +37,7 @@ const componentMappings = {
   //'revision-history': <PageHistory pageId={pageId} />,
   //'page-comment': <PageComment />,
   'seen-user-list': <SeenUserList />,
+  'bookmark-button-react': <BookmarkButton />,
 };
 
 Object.keys(componentMappings).forEach((key) => {
