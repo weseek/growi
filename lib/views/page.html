@@ -32,8 +32,12 @@
   {% else %}
   {# trash/* #}
   <header id="page-header">
-    <a href="#" title="Bookmark" class="bookmark-link" id="bookmark-button" data-csrftoken="{{ csrf() }}" data-bookmarked="0"><i class="fa fa-star-o"></i></a>
-    <h1 class="title">{{ path|insertSpaceToEachSlashes }}</h1>
+    <div class="flex-title-line">
+      <h1 class="title flex-item-title">{{ path|insertSpaceToEachSlashes }}</h1>
+      <div class="flex-item-action">
+        <a href="#" title="Bookmark" class="bookmark-link" id="bookmark-button" data-csrftoken="{{ csrf() }}" data-bookmarked="0"><i class="fa fa-star-o"></i></a>
+      </div>
+    </div>
   </header>
   {% endif %}
 </div>
