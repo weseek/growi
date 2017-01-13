@@ -1,6 +1,15 @@
 CHANGES
 ========
 
+## 1.5.3
+
+* Added node-shrinkwrap.json
+* Fix: Undo behavior after pasting (#151).
+* Feature: Password reset for admin.
+* Feature: Implement some APIs.
+* Improve: Likes on smartphone.
+* And some fixes. (Thank you @suzuki @okonomi)
+
 ## 1.5.2
 
 * Fix: Edit button on smartphone.
