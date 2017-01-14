@@ -28,6 +28,7 @@ export default class SeenUserList extends React.Component {
   }
 
   getSeenUserIds() {
+    // FIXME: Consider another way to bind values.
     const $seenUserList = $("#seen-user-list");
     if ($seenUserList.length > 0) {
       const seenUsers = $seenUserList.data('seen-users');
