@@ -1,6 +1,5 @@
 import React from 'react';
 import UserList from './UserList';
-import $ from 'jquery';
 
 export default class SeenUserList extends React.Component {
 
