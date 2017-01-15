@@ -1,5 +1,5 @@
 import React from 'react';
-import UserPicture from './User/UserPicture';
+import UserPicture from '../User/UserPicture';
 
 export default class UserList extends React.Component {
 

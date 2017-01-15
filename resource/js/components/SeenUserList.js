@@ -1,5 +1,5 @@
 import React from 'react';
-import UserList from './UserList';
+import UserList from './SeenUserList/UserList';
 
 export default class SeenUserList extends React.Component {
 
