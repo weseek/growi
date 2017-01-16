@@ -44,11 +44,7 @@
 
       <dt><i class="fa fa-paw"></i> {{ t('Viewer') }}</dt>
       <dd>
-        <p class="seen-user-count">
-          {{ page.seenUsers.length }}
-        </p>
-        <p id="seen-user-list" class="seen-user-list" data-seen-users="{{ page.seenUsers|default([])|join(',') }}">
-        </p>
+        <div id="seen-user-list" data-seen-users="{{ page.seenUsers|default([])|join(',') }}"></div>
       </dd>
     </dl>
   </div>

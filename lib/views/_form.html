@@ -49,7 +49,7 @@
           {% endfor %}
         </select>
         {% endif %}
-        <input type="hidden" name="_csrf" value="{{ csrf() }}">
+        <input type="hidden" id="edit-form-csrf" name="_csrf" value="{{ csrf() }}">
         <input type="submit" class="btn btn-primary" id="edit-form-submit" value="{{ t('Update Page') }}" />
       </div>
     </div>

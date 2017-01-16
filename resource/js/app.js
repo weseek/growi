@@ -8,6 +8,7 @@ import HeaderSearchBox  from './components/HeaderSearchBox';
 import SearchPage  from './components/SearchPage';
 import PageListSearch  from './components/PageListSearch';
 //import PageComment  from './components/PageComment';
+import SeenUserList from './components/SeenUserList';
 
 if (!window) {
   window = {};
@@ -25,6 +26,7 @@ const componentMappings = {
   'search-page': <SearchPage />,
   'page-list-search': <PageListSearch />,
   //'page-comment': <PageComment />,
+  'seen-user-list': <SeenUserList />,
 };
 
 Object.keys(componentMappings).forEach((key) => {

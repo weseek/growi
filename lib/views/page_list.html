@@ -14,24 +14,34 @@
 
 <div class="header-wrap">
   <header class="portal-header {% if page %}has-page{% endif %}">
-    {% if page %}
-      <a href="#" title="Bookmark" class="bookmark-link" id="bookmark-button" data-csrftoken="{{ csrf() }}" data-bookmarked="0"><i class="fa fa-star-o"></i></a>
-
-    {% endif %}
-    <h1 class="title">
-      <span class="" id="revision-path">{{ path|insertSpaceToEachSlashes }}</span>
-      {% if searchConfigured() && !isTopPage() && !isTrashPage() %}
-      <form class="input-group search-input-group hidden-xs hidden-sm" data-toggle="tooltip" data-placement="bottom" title="{{ path }} 以下から検索" id="search-listpage-form">
-        <input type="text" class="search-listpage-input form-control" data-path="{{ path }}" id="search-listpage-input">
-        <span class="input-group-btn search-listpage-submit-group">
-          <button type="submit" class="btn btn-default" id="search-listpage-submit">
-            <i class="fa fa-search"></i>
-          </button>
-        </span>
-        <a class="search-listpage-clear" id="search-listpage-clear"><i class="fa fa-times-circle"></i></a>
-      </form>
+    <div class="flex-title-line">
+      <h1 class="title flex-item-title">
+        <span id="revision-path">{{ path|insertSpaceToEachSlashes }}</span>
+        {% if searchConfigured() && !isTopPage() && !isTrashPage() %}
+        <form class="input-group search-input-group hidden-xs hidden-sm" data-toggle="tooltip" data-placement="bottom" title="{{ path }} 以下から検索" id="search-listpage-form">
+          <input type="text" class="search-listpage-input form-control" data-path="{{ path }}" id="search-listpage-input">
+          <span class="input-group-btn search-listpage-submit-group">
+            <button type="submit" class="btn btn-default" id="search-listpage-submit">
+              <i class="fa fa-search"></i>
+            </button>
+          </span>
+          <a class="search-listpage-clear" id="search-listpage-clear"><i class="fa fa-times-circle"></i></a>
+        </form>
+        {% endif %}
+      </h1>
+      {% if page %}
+      <div class="flex-item-action">
+        <a href="#" title="Bookmark" class="bookmark-link" id="bookmark-button" data-csrftoken="{{ csrf() }}" data-bookmarked="0"><i class="fa fa-star-o"></i></a>
+      </div>
+      <div class="flex-item-action visible-xs visible-sm">
+        <button
+            data-csrftoken="{{ csrf() }}"
+            data-liked="{% if page.isLiked(user) %}1{% else %}0{% endif %}"
+            class="like-button btn btn-default btn-sm {% if page.isLiked(user) %}active{% endif %}"
+        ><i class="fa fa-thumbs-o-up"></i></button>
+      </div>
       {% endif %}
-    </h1>
+    </div>
   </header>
 </div>
 
