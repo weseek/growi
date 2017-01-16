@@ -685,21 +685,6 @@ $(function() {
       });
     }
 
-    var $seenUserList = $("#seen-user-list");
-    if ($seenUserList && $seenUserList.length > 0) {
-      var seenUsers = $seenUserList.data('seen-users');
-      var seenUsersArray = seenUsers.split(',');
-      if (seenUsers && seenUsersArray.length > 0 && seenUsersArray.length <= 10) {
-        // FIXME: user data cache
-        $.get('/_api/users.list', {user_ids: seenUsers}, function(res) {
-          // ignore unless response has error
-          if (res.ok) {
-            AddToSeenUser(res.users);
-          }
-        });
-      }
-    }
-
     function CreateUserLinkWithPicture (user) {
       var $userHtml = $('<a>');
       $userHtml.data('user-id', user._id);
@@ -712,12 +697,6 @@ $(function() {
 
       $userHtml.append($userPicture);
       return $userHtml;
-    }
-
-    function AddToSeenUser (users) {
-      $.each(users, function(i, user) {
-        $seenUserList.append(CreateUserLinkWithPicture(user));
-      });
     }
 
     // History Diff
