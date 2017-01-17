@@ -15,6 +15,7 @@ export default class SeenUserList extends React.Component {
 
   componentDidMount() {
     const seenUserIds = this.getSeenUserIds();
+
     if (seenUserIds.length > 0) {
       // FIXME: user data cache
       this.crowi.apiGet('/users.list', {user_ids: seenUserIds.join(',')})
@@ -41,12 +42,12 @@ export default class SeenUserList extends React.Component {
 
   render() {
     return (
-      <p className="seen-user-list">
+      <div className="seen-user-list">
         <p className="seen-user-count">
           {this.state.seenUsers.length}
         </p>
         <UserList users={this.state.seenUsers} />
-      </p>
+      </div>
     );
   }
 }
