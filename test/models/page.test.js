@@ -2,7 +2,6 @@ var chai = require('chai')
   , expect = chai.expect
   , sinon = require('sinon')
   , sinonChai = require('sinon-chai')
-  , Promise = require('bluebird')
   , utils = require('../utils.js')
   ;
 chai.use(sinonChai);

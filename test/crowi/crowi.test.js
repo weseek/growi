@@ -5,7 +5,6 @@ var chai = require('chai')
   , proxyquire = require('proxyquire')
 
   , path = require('path')
-  , Promise = require('bluebird')
   ;
 chai.use(sinonChai);
 
