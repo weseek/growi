@@ -35,7 +35,7 @@ Don't use `master` branch because it is unstable but use released tag version ex
 Dependencies
 -------------
 
-* Node.js (4.x)
+* Node.js (6.x)
 * MongoDB
 * Elasticsearch (optional)
 * Redis (optional)
