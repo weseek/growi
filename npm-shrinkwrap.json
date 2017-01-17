@@ -1,6 +1,6 @@
 {
   "name": "crowi",
-  "version": "1.5.3",
+  "version": "1.6.0",
   "dependencies": {
     "abbrev": {
       "version": "1.0.9",
@@ -2452,9 +2452,9 @@
       "resolved": "https://registry.npmjs.org/gulp-rename/-/gulp-rename-1.2.2.tgz"
     },
     "gulp-sass": {
-      "version": "3.0.0",
-      "from": "gulp-sass@>=3.0.0 <3.1.0",
-      "resolved": "https://registry.npmjs.org/gulp-sass/-/gulp-sass-3.0.0.tgz"
+      "version": "3.1.0",
+      "from": "gulp-sass@3.1.0",
+      "resolved": "https://registry.npmjs.org/gulp-sass/-/gulp-sass-3.1.0.tgz"
     },
     "gulp-spawn-mocha": {
       "version": "2.2.2",
