@@ -942,11 +942,6 @@
       "from": "block-stream@*",
       "resolved": "https://registry.npmjs.org/block-stream/-/block-stream-0.0.9.tgz"
     },
-    "bluebird": {
-      "version": "3.0.6",
-      "from": "bluebird@>=3.0.5 <3.1.0",
-      "resolved": "https://registry.npmjs.org/bluebird/-/bluebird-3.0.6.tgz"
-    },
     "body-parser": {
       "version": "1.14.2",
       "from": "body-parser@>=1.14.1 <1.15.0",
