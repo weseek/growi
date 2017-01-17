@@ -254,7 +254,10 @@ $(function() {
         }
       }
       //$target.selection('insert', {text: "\n" + listMark, mode: 'before'});
-      insertText(currentLine.start, currentLine.end, "\n" + listMark, 'after');
+      var pos = $target.selection('getPos');
+      insertText(pos.start, pos.start, "\n" + listMark, 'replace');
+      var newPosition = pos.start + ("\n" + listMark).length;
+      $target.selection('setPos', {start: newPosition, end: newPosition});
     } else if (currentLine.text.match(/^(\s*(?:-|\+|\*|\d+\.) )/)) {
       // remove list
       $target.selection('setPos', {start: currentLine.start, end: currentLine.end});
@@ -276,11 +279,13 @@ $(function() {
       var prevLine = getPrevLine(event);
       if (!prevLine || (!currentLine.text.match(/---/) && !prevLine.text.match(/\|/g))) {
         //$target.selection('insert', {text: "\n" + row.join(' --- ') + "\n" + row.join('  '), mode: 'before'});
-        insertText(currentLine.start, currentLine.end, "\n" + row.join(' --- ') + "\n" + row.join('  '), 'after');
+        var pos = $target.selection('getPos');
+        insertText(pos.start, pos.start, "\n" + row.join(' --- ') + "\n" + row.join('  '), 'after');
         $target.selection('setPos', {start: currentLine.caret + 6 * row.length - 1, end: currentLine.caret + 6 * row.length - 1});
       } else {
         //$target.selection('insert', {text: "\n" + row.join('  '), mode: 'before'});
-        insertText(currentLine.start, currentLine.end, "\n" + row.join('  '), 'after');
+        var pos = $target.selection('getPos');
+        insertText(pos.start, pos.end, "\n" + row.join('  '), 'after');
         $target.selection('setPos', {start: currentLine.caret + 3, end: currentLine.caret + 3});
       }
     }
