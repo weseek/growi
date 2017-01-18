@@ -7,6 +7,7 @@ var mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || process.en
   , crowi = new (require(ROOT_DIR + '/lib/crowi'))(ROOT_DIR, process.env)
   ;
 
+mongoose.Promise = global.Promise;
 
 before('Create database connection and clean up', function (done) {
   if (!mongoUri) {
