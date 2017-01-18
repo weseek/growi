@@ -5,9 +5,9 @@ machine:
   environment:
     MONGO_URI: mongodb://127.0.0.1/crowi_test
   node:
-      version: 4.6.2
+      version: 6.9.4
   post:
-    - npm install -g npm@3
+    - npm install -g npm@4
 notify:
   webhooks:
     - url: https://webhooks.gitter.im/e/5a035388e3274b621d20

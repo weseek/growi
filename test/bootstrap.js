@@ -1,10 +1,8 @@
 'use strict';
 
 var express = require('express')
-  , async = require('async')
   , ROOT_DIR = __dirname + '/..'
   , MODEL_DIR = __dirname + '/../lib/models'
-  , Promise = require('bluebird')
   , testDBUtil
   ;
 
