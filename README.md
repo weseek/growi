@@ -30,6 +30,7 @@ More info are [here](https://github.com/crowi/crowi/wiki/Install-and-Configurati
 ### WARNING
 
 Don't use `master` branch because it is unstable but use released tag version expect when you want to contribute the project.
+`master` branch is prepared for v1.6. See [here](https://github.com/crowi/crowi/wiki/Roadmaps-v1.6) to know further info.
 
 
 Dependencies
