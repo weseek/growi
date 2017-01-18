@@ -132,23 +132,23 @@
       {% if not page %}
       {% else %}
       <div class="revision-history-list">
-        {% for t in tree %}
+        {% for tr in tree %}
         <div class="revision-hisory-outer">
-          <img src="{{ t.author|picture }}" class="picture picture-rounded">
+          <img src="{{ tr.author|picture }}" class="picture picture-rounded">
           <div class="revision-history-main">
             <div class="revision-history-author">
-              <strong>{% if t.author %}{{ t.author.username }}{% else %}-{% endif %}</strong>
+              <strong>{% if tr.author %}{{ tr.author.username }}{% else %}-{% endif %}</strong>
             </div>
             <div class="revision-history-comment">
             </div>
             <div class="revision-history-meta">
-              {{ t.createdAt|datetz('Y-m-d H:i:s') }}
+              {{ tr.createdAt|datetz('Y-m-d H:i:s') }}
               <br>
-              <a href="?revision={{ t._id.toString() }}"><i class="fa fa-history"></i> {{ t('View this version') }}</a>
-              <a class="diff-view" data-revision-id="{{ t._id.toString() }}">
-                <i id="diff-icon-{{ t._id.toString() }}" class="fa fa-arrow-circle-right"></i> {{ t('View diff') }}
+              <a href="?revision={{ tr._id.toString() }}"><i class="fa fa-history"></i> {{ t('View this version') }}</a>
+              <a class="diff-view" data-revision-id="{{ tr._id.toString() }}">
+                <i id="diff-icon-{{ tr._id.toString() }}" class="fa fa-arrow-circle-right"></i> {{ t('View diff') }}
               </a>
-              <pre class="" id="diff-display-{{ t._id.toString()}}" style="display: none"></pre>
+              <pre class="" id="diff-display-{{ tr._id.toString()}}" style="display: none"></pre>
             </div>
           </div>
         </div>
