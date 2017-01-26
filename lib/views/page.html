@@ -137,7 +137,7 @@
   {% endif %}
   {% if not page.isLatestRevision() %}
   <div class="alert alert-warning">
-    <strong>{{ t('Warning') }}: </strong> {{ t('This is not the current version.') }} <i class="fa fa-magic"></i> <a href="{{ page.path }}">{{ t('Show latest page') }}</a>
+    <strong>{{ t('Warning') }}: </strong> {{ t('page.notice.version') }} <i class="fa fa-magic"></i> <a href="{{ page.path }}">{{ t('Show latest') }}</a>
   </div>
   {% endif %}
 
@@ -202,7 +202,7 @@
   </div>
   {% endif %}
 
-  <div id="notifPageEdited" class="fk-notif fk-notif-danger"><i class="fa fa-exclamation-triangle"></i> <span class="edited-user"></span> {{ t('was edited this page') }} <a href="javascript:location.reload();"><i class="fa fa-angle-double-right"></i> {{ t('Read latest page') }}</a></div>
+  <div id="notifPageEdited" class="fk-notif fk-notif-danger"><i class="fa fa-exclamation-triangle"></i> <span class="edited-user"></span> {{ t('was edited this page') }} <a href="javascript:location.reload();"><i class="fa fa-angle-double-right"></i> {{ t('Load latest') }}</a></div>
 </div>
 
 {% block content_main_after %}

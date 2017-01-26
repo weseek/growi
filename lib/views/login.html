@@ -79,8 +79,8 @@
 
     {% if config.crowi['security:registrationMode'] == 'Restricted' %}
     <p class="alert alert-warning">
-      {{ t('New registration to this wiki is restricted') }}<br>
-      {{ t('In order to start using it, approval by the administrator is necessary after new registration') }}
+      {{ t('page_register.notice.restricted') }}<br>
+      {{ t('page_register.notice.restricted_defail') }}
     </p>
     {% endif %}
 
@@ -91,8 +91,8 @@
         <img src="{{ googleImage }}" class="picture picture-rounded picture-lg">
       </p>
       {% endif %}
-      <code>{{ googleEmail }}</code> {{ t('Register with this Google Account') }}<br>
-      {{ t('Please decide user ID, name and password and continue registration') }}
+      <code>{{ googleEmail }}</code> {{ t('page_register with this Google Account') }}<br>
+      {{ t('page_register.notice.google_account_continue') }}
     </div>
     {% endif %}
 
@@ -143,7 +143,7 @@
       </div>
       {% if config.crowi['security:registrationWhiteList'] && config.crowi['security:registrationWhiteList'].length %}
       <p class="help-block">
-        {{ t('In this wiki, only the following e-mail address can be registered.') }}
+        {{ t('page_register.form_help.email') }}
       </p>
       <ul>
         {% for em in config.crowi['security:registrationWhiteList'] %}
@@ -158,7 +158,7 @@
         <input type="password" class="form-control" placeholder="Password" name="registerForm[password]" required>
       </div>
       <p class="help-block">
-        {{ t('Password format') }}
+        {{ t('page_register.form_help.password') }}
       </p>
 
       {% if googleImage %}
@@ -173,7 +173,7 @@
     <div class="row">
       {% if googleLoginEnabled() %}
       <div class="col-md-6">
-        <p>{{ t('Register by Google Account') }}</p>
+        <p>{{ t('page_register by Google Account') }}</p>
         <form role="form" method="post" action="/register/google">
           <input type="hidden" name="_csrf" value="{{ csrf() }}">
           <button type="submit" class="btn btn-block btn-google"><i class="fa fa-google-plus-square"></i> {{ t('Login') }}</button>

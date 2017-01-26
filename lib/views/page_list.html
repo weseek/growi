@@ -112,7 +112,7 @@
   <div class="tab-content">
   {% if page and not page.isLatestRevision() %}
   <div class="alert alert-warning">
-    <strong>{{ t('Warning') }}: </strong> {{ t('"This is not the current version.') }} <i class="fa fa-magic"></i> <a href="{{ page.path }}">最新のポータルを表示</a>
+    <strong>{{ t('Warning') }}: </strong> {{ t('page.notice.version') }} <i class="fa fa-magic"></i> <a href="{{ page.path }}">最新のポータルを表示</a>
   </div>
   {% endif %}
     <div class="tab-pane {% if not req.body.pageForm %}active{% endif %}" id="revision-body">
