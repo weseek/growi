@@ -1465,6 +1465,23 @@
       "from": "diff@>=2.2.2 <2.3.0",
       "resolved": "https://registry.npmjs.org/diff/-/diff-2.2.3.tgz"
     },
+    "diff2html": {
+      "version": "2.0.12",
+      "from": "diff2html@>=2.0.12 <3.0.0",
+      "resolved": "https://registry.npmjs.org/diff2html/-/diff2html-2.0.12.tgz",
+      "dependencies": {
+        "diff": {
+          "version": "3.2.0",
+          "from": "diff@>=3.2.0 <4.0.0",
+          "resolved": "https://registry.npmjs.org/diff/-/diff-3.2.0.tgz"
+        },
+        "whatwg-fetch": {
+          "version": "2.0.2",
+          "from": "whatwg-fetch@>=2.0.1 <3.0.0",
+          "resolved": "https://registry.npmjs.org/whatwg-fetch/-/whatwg-fetch-2.0.2.tgz"
+        }
+      }
+    },
     "dom-serializer": {
       "version": "0.1.0",
       "from": "dom-serializer@>=0.0.0 <1.0.0",

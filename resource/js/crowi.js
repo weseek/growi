@@ -3,6 +3,7 @@
 */
 
 var jsdiff = require('diff');
+var diff2html = require('diff2html').Diff2Html;
 var io = require('socket.io-client');
 
 //require('bootstrap-sass');
@@ -758,14 +759,8 @@ $(function() {
 
           $diffDisplay.text('');
 
-          var diff = jsdiff.diffLines(previousText, currentText);
-          diff.forEach(function(part) {
-            var color = part.added ? 'green' : part.removed ? 'red' : 'grey';
-            var $span = $('<span>');
-            $span.css('color', color);
-            $span.text(part.value);
-            $diffDisplay.append($span);
-          });
+          var patch = jsdiff.createPatch($('#revision-path').text(), previousText, currentText);
+          $diffDisplay.html(diff2html.getPrettyHtml(patch));
 
           $diffDisplay.data('loaded', 1);
           $diffDisplay.slideToggle();
