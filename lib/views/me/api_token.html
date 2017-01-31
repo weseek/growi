@@ -51,8 +51,7 @@
             <input class="form-control" type="text" value="{{ user.apiToken }}">
           {% else %}
           <p class="form-control-static">
-            {{ t('API Token is not set.') }}
-            {{ t('Please issue with update button') }}
+            {{ t('page_me_apitoken.notice.apitoken_issued') }}
           </p>
           {% endif %}
         </div>
@@ -62,11 +61,11 @@
         <div class="col-xs-offset-3 col-xs-10">
 
           <p class="alert alert-warning">
-            {{ t('Updating the API Token automatically creates a new Token') }}<br>
-            {{ t('Processing using the current Token will not work') }}
+            {{ t('page_me_apitoken.notice.update_token1') }}<br>
+            {{ t('page_me_apitoken.notice.update_token2') }}
           </p>
 
-          <button type="submit" value="1" name="apiTokenForm[confirm]" class="btn btn-primary">{{ t('API Token Update') }}</button>
+          <button type="submit" value="1" name="apiTokenForm[confirm]" class="btn btn-primary">{{ t('Update API Token') }}</button>
         </div>
       </div>
 

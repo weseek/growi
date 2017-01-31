@@ -127,7 +127,7 @@
       </div>
       <p class="help-block">
       <span id="help-block-username" class="text-danger"></span>
-      {{ t('User ID description') }}
+      {{ t('page_register.form_help.user_id') }}
       </p>
 
       <label>{{ t('Name') }}</label>
@@ -173,7 +173,7 @@
     <div class="row">
       {% if googleLoginEnabled() %}
       <div class="col-md-6">
-        <p>{{ t('page_register by Google Account') }}</p>
+        <p>{{ t('Register by Google Account') }}</p>
         <form role="form" method="post" action="/register/google">
           <input type="hidden" name="_csrf" value="{{ csrf() }}">
           <button type="submit" class="btn btn-block btn-google"><i class="fa fa-google-plus-square"></i> {{ t('Login') }}</button>

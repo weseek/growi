@@ -25,18 +25,6 @@
   "Example": "Example",
   "Taro Yamada": "Taro Yamada",
 
-  "page_register": {
-    "notice": {
-      "restricted": "New registration to this wiki is restricted.",
-      "restricted_defail": "In order to start using it, approval by the administrator is necessary after new registration.",
-      "google_account_continue": "Please decide user ID, name and password and continue registration."
-    },
-    "form_help": {
-      "email": "In this wiki, only the following e-mail address can be registered.",
-      "password": "Please enter at least 6 letters, numbers, alphanumeric characters, symbols etc for password."
-    }
-  },
-
   "List View": "List",
   "Timeline View": "Timeline",
   "Presentation Mode": "Presentation Mode",
@@ -44,7 +32,7 @@
   "Created": "Created",
   "Last updated": "Updated",
 
-  "For share": "For share",
+  "Share": "Share",
   "Share Link": "Share Link",
   "Markdown Link": "Markdown Link",
 
@@ -69,8 +57,59 @@
   "Google Setting": "Google Setting",
   "Connected": "Connected",
   "Disconnect": "Disconnect",
-  "If disconnet Google, you can not login by Google Authentication.": "If disconnet Google, you can not login by Google Authentication.",
-  "After disconnect, you can login using email and password.": "After disconnect, you can login using email and password.",
+
+  "Create today's": "Create today's ...",
+  "Memo": "memo",
+  "Input page name": "Input page name",
+  "Input page name empty ok": "Input page name (empty ok)",
+  "New Page": "New Page",
+  "Create under": "Create below: <code>%s</code>",
+
+  "Table of Contents": "Table of Contents",
+
+  "Public": "Public",
+  "Only who know the link": "Only who know the link",
+  "Specified users": "Specified users",
+  "Only me": "Only me",
+  "Share link of this page": "Share link of this page",
+
+  "Show latest": "Show latest",
+  "Load latest": "Load latest",
+  "was edited this page": "was edited this page.",
+
+  "Deleted Pages": "Deleted Pages",
+  "Logout": "Logout",
+
+  "page_register": {
+    "notice": {
+      "restricted": "New registration to this wiki is restricted.",
+      "restricted_defail": "In order to start using it, approval by the administrator is necessary after new registration.",
+      "google_account_continue": "Please decide user ID, name and password and continue registration."
+    },
+    "form_help": {
+      "email": "In this wiki, only the following e-mail address can be registered.",
+      "password": "Please enter at least 6 letters, numbers, alphanumeric characters, symbols etc for password.",
+      "user_id": "The user ID is used for the URL of the user page etc. Only half-width alphanumeric characters and some symbols can be used."
+    }
+  },
+
+  "page_me": {
+    "form_help": {
+      "google_connect1": "With Google Connect, you can sign in with your Google Account.",
+      "google_connect2": "Only Google Apps accounts with the following email addresses are connectable Google accounts:",
+      "google_disconnect1": "If disconnet Google, you can not login by Google Authentication.",
+      "google_disconnect2": "After disconnect, you can login using email and password."
+    }
+  },
+  "page_me_apitoken": {
+    "notice": {
+      "apitoken_issued": "API Token is not issued.",
+      "update_token1": "With updating, the new API Token will be generated.",
+      "update_token2": "You have to update the processes using the current API Token."
+    },
+    "form_help": {
+    }
+  },
 
   "Password": "Password",
   "Password Setting": "Password Setting",
@@ -82,46 +121,42 @@
   "Please set a password": "Please set a password",
   "You can login email and password": "You can login <code>%s</code> and password",
 
-  "With Google Connect, you can sign in with your Google Account.": "With Google Connect, you can sign in with your Google Account.",
-  "In this wiki, the registrable mail address is limited.": "In this wiki, the registrable mail address is limited.",
-  "Only Google Apps accounts with the following email addresses are connectable Google accounts:": "Only Google Apps accounts with the following email addresses are connectable Google accounts:",
-  "User ID description": "The user ID is used for the URL of the user page etc. Only half-width alphanumeric characters and some symbols can be used.",
-  "In this wiki, only the following e-mail address can be registered.": "In this wiki, only the following e-mail address can be registered.",
-
-
   "API Setting": "API Setting",
   "API Token Setting": "API Token Setting",
   "Current API Token": "Current API Token",
-  "API Token is not set.": "API Token is not set.",
-  "Updating the API Token automatically creates a new Token": "Updating the API Token automatically creates a new Token.",
-  "Processing using the current Token will not work": "Processing using the current Token will not work.",
-  "Please issue with update button": "Please issue with update button",
-  "API Token Update": "API Token Update",
+  "Update API Token": "Update API Token",
 
-  "Deleted Pages": "Deleted Pages",
-  "Logout": "Logout",
+  "page_page": {
+      "notice": {
+          "version": "This is not the current version.",
+          "moved": "This page was moved from <code>%s</code>",
+          "restricted": "Access to this page is restricted"
+      }
+  },
 
-  "Create today's ...": "Create today's ...",
-  "Memo": "memo",
-  "Input page name": "Input page name",
-  "Input page name empty ok": "Input page name (empty ok)",
-  "New Page": "New Page",
-  "Create below": "Create below: <code>%s</code>",
+  "Rename page": "Rename page",
+  "New page name": "New page name",
+  "Current page name": "Current page name",
+  "Redirect": "Redirect",
+  "modal_rename": {
+    "help": {
+      "redirect": "Redirect to the new page if someone access <code>%s</code>"
+    }
+  },
 
-  "Table of Contents": "Table of Contents",
-
-  "This page was moved from": "This page was moved from <code>%s</code>",
-
-  "Public": "Public",
-  "Only who know the link": "Only who know the link",
-  "Specified users": "Specified users",
-  "Only me": "Only me",
-  "Browsing of this page is restricted": "Browsing of this page is restricted",
-  "Share link of this page": "Share link of this page",
-
-  "Show latest": "Show latest",
-  "Load latest": "Load latest",
-  "was edited this page": "was edited this page.",
-
-  "page.notice.version": "This is not the current version."
+  "modal_help": {
+      "basic": {
+          "title": "基本的な機能",
+          "body1": "表示される画面には、「一覧ページ」と「ページ」の2種類があります",
+          "body2": "スラッシュ <code>/</code> で終わるページは、その階層の一覧ページとなります。",
+          "body3": "ページでの変更はすべて記録されています。History からそのページの過去の状態を見ることができます。"
+      },
+      "tips": {
+          "title": "編集のコツ",
+          "body1": "文章の <strong>構造</strong> を意識しましょう。本を書くように、内容と文脈を整理してセクション・サブセクション...と構造的に書くと、わかりやすく他人に伝わりやすいページがになります。"
+      },
+      "markdown": {
+          "title": "記法"
+      }
+  }
 }

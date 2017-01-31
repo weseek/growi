@@ -132,12 +132,12 @@
   <div class="tab-content wiki-content">
   {% if req.query.renamed and not page.isDeleted() %}
   <div class="alert alert-info">
-    <strong>{{ t('Moved') }}: </strong> {{ t('This page was moved from', req.query.renamed) }}
+    <strong>{{ t('Moved') }}: </strong> {{ t('page_page.notice.moved', req.query.renamed) }}
   </div>
   {% endif %}
   {% if not page.isLatestRevision() %}
   <div class="alert alert-warning">
-    <strong>{{ t('Warning') }}: </strong> {{ t('page.notice.version') }} <i class="fa fa-magic"></i> <a href="{{ page.path }}">{{ t('Show latest') }}</a>
+    <strong>{{ t('Warning') }}: </strong> {{ t('page_page.notice.version') }} <i class="fa fa-magic"></i> <a href="{{ page.path }}">{{ t('Show latest') }}</a>
   </div>
   {% endif %}
 

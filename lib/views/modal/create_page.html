@@ -12,7 +12,7 @@
         <form class="form-horizontal" id="create-page-today" role="form">
           <fieldset>
             <div class="col-xs-12">
-              <h4>{{ t("Create today's ...") }}</h4>
+              <h4>{{ t("Create today's") }}</h4>
             </div>
             <div class="col-xs-10">
               <span class="page-today-prefix">{{ userPageRoot(user) }}/</span>
@@ -31,7 +31,7 @@
         <form class="form-horizontal" id="create-page-under-tree" role="form">
           <fieldset>
             <div class="col-xs-12">
-              <h4>{{ t('Create below', parentPath(path)) }}</h4>
+              <h4>{{ t('Create under', parentPath(path)) }}</h4>
             </div>
             <div class="col-xs-10">
               <input type="text" value="{{ parentPath(path) }}" class="page-name-input form-control " placeholder="{{ t('Input page name') }}" required>

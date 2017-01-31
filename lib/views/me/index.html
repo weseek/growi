@@ -62,18 +62,9 @@
           <input class="form-control" type="email" name="userForm[email]" value="{{ user.email }}" required>
         </div>
         <div class="col-sm-offset-2 col-sm-10">
-          {# ↓ そのうちこのコードは削除する #}
-          {% if not user.email %}
-          <p class="help-block help-danger">
-          メールアドレスは登録必須項目です。<br>
-          (以前のバージョンのWikiで作成されたユーザー情報の場合、メールアドレスが登録されていません)<br>
-          更新ボタンを押して新規登録してください。
-          </p>
-          {% endif %}
-
           {% if config.crowi['security:registrationWhiteList'] && config.crowi['security:registrationWhiteList'].length %}
           <p class="help-block">
-            {{ t('In this wiki, only the following e-mail address can be registered.') }}
+            {{ t('page_register.form_help.email') }}
           <ul>
             {% for em in config.crowi['security:registrationWhiteList'] %}
             <li><code>{{ em }}</code></li>
@@ -206,8 +197,8 @@
                 <input type="submit" name="disconnectGoogle" class="btn btn-default" value="{{ t('Disconnect') }}">
               </p>
               <p class="help-block">
-                {{ t('If disconnet Google, you can not login by Google Authentication.') }}<br>
-                {{ t('After disconnect, you can login using email and password.') }}
+                {{ t('page_me.form_help.google_disconnect1') }}<br>
+                {{ t('page_me.form_help.google_disconnect2') }}
               </p>
             </div>
 
@@ -218,12 +209,12 @@
                 <input type="submit" name="connectGoogle" class="btn btn-google" value="Googleコネクト">
               </div>
               <p class="help-block">
-                {{ t('With Google Connect, you can sign in with your Google Account.') }}<br>
+                {{ t('page_me.form_help.google_connect1') }}<br>
               </p>
               {% if config.crowi['security:registrationWhiteList'] && config.crowi['security:registrationWhiteList'].length %}
               <p class="help-block">
-                {{ t('In this wiki, the registrable mail address is limited.') }}
-                {{ t('Only Google Apps accounts with the following email addresses are connectable Google accounts:') }}
+                {{ t('page_register.form_help.email') }}<br>
+                {{ t('page_me.form_help.google_connect2') }}
               </p>
               <ul>
                 {% for em in config.crowi['security:registrationWhiteList'] %}

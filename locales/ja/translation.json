@@ -25,18 +25,6 @@
   "Example": "例",
   "Taro Yamada": "山田 太郎",
 
-  "page_register": {
-    "notice": {
-       "restricted": "この Wiki への新規登録は制限されています。",
-       "restricted_defail": "利用を開始するには、新規登録後、管理者による承認が必要です。",
-       "google_account_continue": "ユーザーID、名前、パスワードを決めて登録を継続してください。"
-    },
-    "form_help": {
-      "email": "この Wiki では以下のメールアドレスのみ登録可能です。",
-      "password": "パスワードには、6文字以上の半角英数字または記号等を設定してください。"
-    }
-  },
-
   "List View": "リスト表示",
   "Timeline View": "タイムライン表示",
   "Presentation Mode": "プレゼンモード",
@@ -44,7 +32,7 @@
   "Created": "作成日",
   "Last updated": "最終更新",
 
-  "For share": "共有用",
+  "Share": "共有",
   "Share Link": "共有用リンク",
   "Markdown Link": "Markdown形式のリンク",
 
@@ -69,12 +57,59 @@
   "Google Setting": "Google設定",
   "Connected": "接続されています",
   "Disconnect": "接続を解除",
-  "If disconnet Google, you can not login by Google Authentication.": "接続を解除すると、Googleでログインができなくなります。",
-  "After disconnect, you can login using email and password.": "解除後はメールアドレスとパスワードでログインすることができます。",
-  "With Google Connect, you can sign in with your Google Account.": "Googleコネクトをすると、Googleアカウントでログイン可能になります。",
-  "Only Google Apps accounts with the following email addresses are connectable Google accounts:": "コネクト可能なGoogleアカウントは、以下のメールアドレスの発行できるGoogle Appsアカウントに限られます。",
-  "User ID description": "ユーザーIDは、ユーザーページのURLなどに利用されます。半角英数字と一部の記号のみ利用できます。",
-  "In this wiki, only the following e-mail address can be registered.": "この Wiki では以下のメールアドレスのみ登録可能です。",
+
+  "Create today's": "今日の◯◯を作成",
+  "Memo": "メモ",
+  "Input page name": "ページ名を入力",
+  "Input page name empty ok": "ページ名を入力(空欄OK)",
+  "New Page": "新規ページ",
+  "Create under": "<code>%s</code>以下に作成",
+
+  "Table of Contents": "目次",
+
+  "Public": "公開",
+  "Only who know the link": "リンクを知っている人のみ",
+  "Specified users": "特定ユーザーのみ",
+  "Only me": "自分のみ",
+  "Share link of this page": "このページの共有用URL",
+
+  "Show latest": "最新のページを表示",
+  "Load latest": "最新版を読み込む",
+  "was edited this page": "さんがこのページを編集しました。",
+
+  "Deleted Pages": "削除済みページ",
+  "Logout": "ログアウト",
+
+  "page_register": {
+    "notice": {
+       "restricted": "この Wiki への新規登録は制限されています。",
+       "restricted_defail": "利用を開始するには、新規登録後、管理者による承認が必要です。",
+       "google_account_continue": "ユーザーID、名前、パスワードを決めて登録を継続してください。"
+    },
+    "form_help": {
+      "email": "この Wiki では以下のメールアドレスのみ登録可能です。",
+      "password": "パスワードには、6文字以上の半角英数字または記号等を設定してください。",
+      "user_id": "ユーザーIDは、ユーザーページのURLなどに利用されます。半角英数字と一部の記号のみ利用できます。"
+    }
+  },
+
+  "page_me": {
+    "form_help": {
+      "google_connect1": "Googleコネクトをすると、Googleアカウントでログイン可能になります。",
+      "google_connect2": "コネクト可能なGoogleアカウントは、以下のメールアドレスの発行できるGoogle Appsアカウントに限られます。",
+      "google_disconnect1": "接続を解除すると、Googleでログインができなくなります。",
+      "google_disconnect2": "解除後はメールアドレスとパスワードでログインすることができます。"
+    }
+  },
+  "page_me_apitoken": {
+    "notice": {
+      "apitoken_issued": "API Token が設定されていません。",
+      "update_token1": "API Token を更新すると、自動的に新しい Token が生成されます。",
+      "update_token2": "現在の Token を利用している処理は動かなくなります。"
+    },
+    "form_help": {
+    }
+  },
 
   "Password": "パスワード",
   "Password Setting": "パスワード設定",
@@ -89,36 +124,39 @@
   "API Setting": "API設定",
   "API Token Setting": "API Token設定",
   "Current API Token": "現在のAPI Token",
-  "API Token is not set.": "API Token が設定されていません。",
-  "Updating the API Token automatically creates a new Token": "API Token を更新すると、自動的に新しい Token が生成されます。",
-  "Processing using the current Token will not work": "現在の Token を利用している処理は動かなくなります。",
-  "Please issue with update button": "Please issue with update button",
-  "API Token Update": "API Tokenを更新",
+  "Update API Token": "API Tokenを更新",
 
-  "Deleted Pages": "削除済みページ",
-  "Logout": "ログアウト",
+  "page_page": {
+      "notice": {
+          "version": "これは現在の版ではありません。",
+          "moved": "このページは <code>%s</code> から移動しました。",
+          "restricted": "このページの閲覧は制限されています"
+      }
+  },
 
-  "Create today's ...": "今日の◯◯を作成",
-  "Memo": "メモ",
-  "Input page name": "ページ名を入力",
-  "Input page name empty ok": "ページ名を入力(空欄OK)",
-  "New Page": "新規ページ",
-  "Create below": "<code>%s</code>以下に作成",
+  "Rename page": "ページを移動する",
+  "New page name": "移動先のページ名",
+  "Current page name": "現在のページ名",
+  "Redirect": "リダイレクトする",
+  "modal_rename": {
+    "help": {
+      "redirect": "チェックを入れると、<code>%s</code>にアクセスされた際に自動的に新しいページにジャンプします。"
+    }
+  },
 
-  "Table of Contents": "目次",
-
-  "This page was moved from": "このページは <code>%s</code> から移動しました。",
-
-  "Public": "公開",
-  "Only who know the link": "リンクを知っている人のみ",
-  "Specified users": "特定ユーザーのみ",
-  "Only me": "自分のみ",
-  "Browsing of this page is restricted": "このページの閲覧は制限されています",
-  "Share link of this page": "このページの共有用URL",
-
-  "Show latest": "最新のページを表示",
-  "Load latest": "最新版を読み込む",
-  "was edited this page": "さんがこのページを編集しました。",
-
-  "page.notice.version": "これは現在の版ではありません。"
+  "modal_help": {
+      "basic": {
+          "title": "基本的な機能",
+          "body1": "表示される画面には、「一覧ページ」と「ページ」の2種類があります",
+          "body2": "スラッシュ <code>/</code> で終わるページは、その階層の一覧ページとなります。",
+          "body3": "ページでの変更はすべて記録されています。History からそのページの過去の状態を見ることができます。"
+      },
+      "tips": {
+          "title": "編集のコツ",
+          "body1": "文章の <strong>構造</strong> を意識しましょう。本を書くように、内容と文脈を整理してセクション・サブセクション...と構造的に書くと、わかりやすく他人に伝わりやすいページがになります。"
+      },
+      "markdown": {
+          "title": "記法"
+      }
+  }
 }
