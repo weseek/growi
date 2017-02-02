@@ -1,7 +1,7 @@
 {% extends '../layout/2column.html' %}
 
 
-{% block html_title %}{{ t('API Setting') }} · {{ path }}{% endblock %}
+{% block html_title %}{{ t('API Settings') }} · {{ path }}{% endblock %}
 
 {% block content_head %}
 <div class="header-wrap">
@@ -15,9 +15,9 @@
 <div class="content-main">
 
   <ul class="nav nav-tabs">
-    <li><a href="/me"><i class="fa fa-gears"></i> {{ t('User Infomation') }}</a></li>
+    <li><a href="/me"><i class="fa fa-gears"></i> {{ t('User Information') }}</a></li>
     <li><a href="/me/password"><i class="fa fa-key"></i> {{ t('Password Setting') }}</a></li>
-    <li class="active"><a href="/me/apiToken"><i class="fa fa-rocket"></i> {{ t('API Setting') }}</a></li>
+    <li class="active"><a href="/me/apiToken"><i class="fa fa-rocket"></i> {{ t('API Settings') }}</a></li>
   </ul>
 
   <div class="tab-content">
@@ -43,7 +43,7 @@
 
     <form action="/me/apiToken" method="post" class="form-horizontal" role="form">
     <fieldset>
-      <legend>{{ t('API Token Setting') }}</legend>
+      <legend>{{ t('API Token Settings') }}</legend>
       <div class="form-group {% if not user.password %}has-error{% endif %}">
         <label for="" class="col-xs-3 control-label">{{ t('Current API Token') }}</label>
         <div class="col-xs-6">

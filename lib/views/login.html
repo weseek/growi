@@ -75,7 +75,7 @@
   {% if config.crowi['security:registrationMode'] != 'Closed' %}
   <div class="register-dialog-inner back">
 
-    <h2>{{ t('Registration') }}</h2>
+    <h2>{{ t('Sign up') }}</h2>
 
     {% if config.crowi['security:registrationMode'] == 'Restricted' %}
     <p class="alert alert-warning">
@@ -165,7 +165,7 @@
         <input type="hidden" name="registerForm[googleImage]" value="{{ googleImage }}">
       {% endif  %}
       <input type="hidden" name="_csrf" value="{{ csrf() }}">
-      <input type="submit" class="btn btn-primary btn-lg btn-block" value="{{ t('Registration') }}">
+      <input type="submit" class="btn btn-primary btn-lg btn-block" value="{{ t('Sign up') }}">
     </form>
 
     <hr>
@@ -173,7 +173,7 @@
     <div class="row">
       {% if googleLoginEnabled() %}
       <div class="col-md-6">
-        <p>{{ t('Register by Google Account') }}</p>
+        <p>{{ t('Sign up with Google Account') }}</p>
         <form role="form" method="post" action="/register/google">
           <input type="hidden" name="_csrf" value="{{ csrf() }}">
           <button type="submit" class="btn btn-block btn-google"><i class="fa fa-google-plus-square"></i> {{ t('Login') }}</button>

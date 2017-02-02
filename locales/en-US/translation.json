@@ -5,7 +5,7 @@
   "Move": "Move",
   "Moved": "Moved",
   "Like!": "Like!",
-  "Viewer": "Viewer",
+  "Seen by": "Seen by",
   "Cancel": "Cancel",
   "Create": "Create",
   "Admin": "Admin",
@@ -18,12 +18,12 @@
   "Sign in": "Sign in",
   "Sign up is here": "Sign up",
   "Sign in is here": "Sign in",
-  "Registration": "Registration",
-  "Register by Google Account": "Register by Google Account",
-  "Sign in by Google Account": "Sign in by Google Account",
-  "Register with this Google Account": "Register with this Google Account",
+  "Sign up": "Sign up",
+  "Sign up with Google Account": "Sign up with Google Account",
+  "Sign in with Google Account": "Sign in with Google Account",
+  "Sign up with this Google Account": "Sign up with this Google Account",
   "Example": "Example",
-  "Taro Yamada": "Taro Yamada",
+  "Taro Yamada": "James Bond",
 
   "List View": "List",
   "Timeline View": "Timeline",
@@ -43,17 +43,17 @@
 
   "User ID": "User ID",
   "User Settings": "User Settings",
-  "User Infomation": "User Infomation",
-  "User Basic Infomation": "User Basic Infomation",
+  "User Information": "User Information",
+  "Basic Info": "Basic Info",
   "Name": "Name",
   "Email": "Email",
   "Language": "Language",
   "English": "English",
   "Japanese": "Japanese",
-  "Profile Image Setting": "Profile Image Setting",
+  "Set Profile Image": "Set Profile Image",
   "Current Image": "Current Image",
   "Delete Image": "Delete Image",
-  "Are you sure to delete?": "Are you sure to delete?",
+  "Delete this image?": "Delete this image?",
   "Updated": "Updated",
   "Upload new image": "Upload new image",
   "Google Setting": "Google Setting",
@@ -63,35 +63,35 @@
   "Create today's": "Create today's ...",
   "Memo": "memo",
   "Input page name": "Input page name",
-  "Input page name empty ok": "Input page name (empty ok)",
+  "Input page name (optional)": "Input page name (optional)",
   "New Page": "New Page",
   "Create under": "Create page under: <code>%s</code>",
 
   "Table of Contents": "Table of Contents",
 
   "Public": "Public",
-  "Only who know the link": "Only who know the link",
-  "Specified users": "Specified users",
-  "Only me": "Only me",
-  "Share link of this page": "Share link of this page",
+  "Anyone with the link": "Anyone with the link",
+  "Specified users only": "Specified users only",
+  "Just me": "Just me",
+  "Shareable link": "Shareable link",
 
   "Show latest": "Show latest",
   "Load latest": "Load latest",
-  "was edited this page": "was edited this page.",
+  "edited this page": "edited this page.",
 
   "Deleted Pages": "Deleted Pages",
-  "Logout": "Logout",
+  "Sign out": "Logout",
 
   "page_register": {
     "notice": {
-      "restricted": "New registration to this wiki is restricted.",
-      "restricted_defail": "In order to start using it, approval by the administrator is necessary after new registration.",
-      "google_account_continue": "Please decide user ID, name and password and continue registration."
+      "restricted": "Admin approval required.",
+      "restricted_defail": "Once the admin approves your sign up, you'll be able to access this wiki.",
+      "google_account_continue": "Enter your user ID, name and password to continue."
     },
     "form_help": {
-      "email": "In this wiki, only the following e-mail address can be registered.",
-      "password": "Please enter at least 6 letters, numbers, alphanumeric characters, symbols etc for password.",
-      "user_id": "The user ID is used for the URL of the user page etc. Only half-width alphanumeric characters and some symbols can be used."
+      "email": "You must have email address which listed below to sign up to this wiki.",
+      "password": "Your password must be at least 6 characters long.",
+      "user_id": "The URL of pages you create will contain your User ID. Your User ID can consist of letters, numbers, and some symbols."
     }
   },
 
@@ -99,32 +99,32 @@
     "form_help": {
       "google_connect1": "With Google Connect, you can sign in with your Google Account.",
       "google_connect2": "Only Google Apps accounts with the following email addresses are connectable Google accounts:",
-      "google_disconnect1": "If disconnet Google, you can not login by Google Authentication.",
-      "google_disconnect2": "After disconnect, you can login using email and password."
+      "google_disconnect1": "If you disconnect your Google account, you will be unable to sign in using Google Authentication",
+      "google_disconnect2": "After disconnecting your Google account, you can sign in normally using your email and password"
     }
   },
   "page_me_apitoken": {
     "notice": {
       "apitoken_issued": "API Token is not issued.",
-      "update_token1": "With updating, the new API Token will be generated.",
-      "update_token2": "You have to update the processes using the current API Token."
+      "update_token1": "You can update to generate a new API Token.",
+      "update_token2": "You will need to update the API Token in any existing processes."
     },
     "form_help": {
     }
   },
 
   "Password": "Password",
-  "Password Setting": "Password Setting",
+  "Password Settings": "Password Settings",
   "Set new Password": "Set new Password",
   "Update Password": "Update Password",
   "Current password": "Current password",
   "New password": "New password",
   "for check": "for check",
   "Please set a password": "Please set a password",
-  "You can login email and password": "You can login <code>%s</code> and password",
+  "You can sign in with email and password": "You can sign in with <code>%s</code> and password",
 
-  "API Setting": "API Setting",
-  "API Token Setting": "API Token Setting",
+  "API Settings": "API Settings",
+  "API Token Settings": "API Token Settings",
   "Current API Token": "Current API Token",
   "Update API Token": "Update API Token",
 
@@ -142,23 +142,23 @@
   "Redirect": "Redirect",
   "modal_rename": {
     "help": {
-      "redirect": "Redirect to the new page if someone access <code>%s</code>"
+      "redirect": "Redirect to new page if someone accesses <code>%s</code>"
     }
   },
 
   "modal_help": {
       "basic": {
-          "title": "基本的な機能",
-          "body1": "表示される画面には、「一覧ページ」と「ページ」の2種類があります",
-          "body2": "スラッシュ <code>/</code> で終わるページは、その階層の一覧ページとなります。",
-          "body3": "ページでの変更はすべて記録されています。History からそのページの過去の状態を見ることができます。"
+          "title": "Basics",
+          "body1": "There are 2 types of pages: List pages (showing lists of links to other pages) and normal pages.",
+          "body2": "Pages that end with a slash / are List pages for anything following the slash.",
+          "body3": "You can view older versions of a page from the History tab. Any changes made will be stored here."
       },
       "tips": {
-          "title": "編集のコツ",
-          "body1": "文章の <strong>構造</strong> を意識しましょう。本を書くように、内容と文脈を整理してセクション・サブセクション...と構造的に書くと、わかりやすく他人に伝わりやすいページがになります。"
+          "title": "Quick Tips on Editing",
+          "body1": "Use sections and subsections to make it easier for your friends to read your pages."
       },
       "markdown": {
-          "title": "記法"
+          "title": "Markdown Rules"
       }
   }
 }

@@ -36,7 +36,7 @@
   {% endif %}
   {% if page && page.grant == 2 %}
   <p class="alert alert-info">
-    {{ t('Share link of this page') }}
+    {{ t('Shareable Link') }}
     <input type="text" class="copy-link form-control" value="{{ baseUrl }}/{{ page._id.toString() }}" readonly>
   </p>
   {% endif %}
