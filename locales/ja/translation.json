@@ -121,7 +121,7 @@
   "Update Password": "パスワードを更新",
   "Current password": "現在のパスワード",
   "New password": "新しいパスワード",
-  "for check": "(確認用)",
+  "Re-enter new password": "(確認用)",
   "Please set a password": "パスワードを設定してください",
   "You can sign in with email and password": "<code>%s</code> と設定されたパスワードの組み合わせでログイン可能になります。",
 
