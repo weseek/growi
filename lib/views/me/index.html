@@ -1,11 +1,11 @@
 {% extends '../layout/2column.html' %}
 
-{% block html_title %}ユーザー設定 · {{ path }}{% endblock %}
+{% block html_title %}{{ t('User Settings') }} · {{ path }}{% endblock %}
 
 {% block content_head %}
 <div class="header-wrap">
   <header id="page-header">
-    <h1 class="title" id="">ユーザー設定</h1>
+    <h1 class="title" id="">{{ t('User Settings') }}</h1>
   </header>
 </div>
 {% endblock %}
@@ -14,9 +14,9 @@
 <div class="content-main">
 
   <ul class="nav nav-tabs">
-    <li class="active"><a href="/me"><i class="fa fa-gears"></i> ユーザー情報</a></li>
-    <li><a href="/me/password"><i class="fa fa-key"></i> パスワード設定</a></li>
-    <li><a href="/me/apiToken"><i class="fa fa-rocket"></i> API設定</a></li>
+    <li class="active"><a href="/me"><i class="fa fa-gears"></i> {{ t('User Information') }}</a></li>
+    <li><a href="/me/password"><i class="fa fa-key"></i> {{ t('Password Settings') }}</a></li>
+    <li><a href="/me/apiToken"><i class="fa fa-rocket"></i> {{ t('API Settings') }}</a></li>
   </ul>
 
   <div class="tab-content">
@@ -49,31 +49,22 @@
   <div class="form-box">
     <form action="/me" method="post" class="form-horizontal" role="form">
       <fieldset>
-        <legend>ユーザーの基本情報</legend>
+        <legend>{{ t('Basic Info') }}</legend>
       <div class="form-group">
-        <label for="userForm[name]" class="col-sm-2 control-label">名前</label>
+        <label for="userForm[name]" class="col-sm-2 control-label">{{ t('Name') }}</label>
         <div class="col-sm-4">
           <input class="form-control" type="text" name="userForm[name]" value="{{ user.name }}" required>
         </div>
       </div>
       <div class="form-group {% if not user.email %}has-error{% endif %}">
-        <label for="userForm[email]" class="col-sm-2 control-label">メールアドレス</label>
+        <label for="userForm[email]" class="col-sm-2 control-label">{{ t('Email') }}</label>
         <div class="col-sm-4">
           <input class="form-control" type="email" name="userForm[email]" value="{{ user.email }}" required>
         </div>
         <div class="col-sm-offset-2 col-sm-10">
-          {# ↓ そのうちこのコードは削除する #}
-          {% if not user.email %}
-          <p class="help-block help-danger">
-          メールアドレスは登録必須項目です。<br>
-          (以前のバージョンのWikiで作成されたユーザー情報の場合、メールアドレスが登録されていません)<br>
-          更新ボタンを押して新規登録してください。
-          </p>
-          {% endif %}
-
           {% if config.crowi['security:registrationWhiteList'] && config.crowi['security:registrationWhiteList'].length %}
           <p class="help-block">
-          この Wiki では以下のメールアドレスのみ登録可能です。
+            {{ t('page_register.form_help.email') }}
           <ul>
             {% for em in config.crowi['security:registrationWhiteList'] %}
             <li><code>{{ em }}</code></li>
@@ -82,11 +73,20 @@
           </p>
           {% endif %}
         </div>
+        <div class="form-group {% if not user.lang %}has-error{% endif %}">
+          <label for="userForm[lang]" class="col-sm-2 control-label">{{ t('Language') }}</label>
+          <div class="col-sm-4 radio">
+            <label><input type="radio" name="userForm[lang]" value="{{ consts.language.LANG_EN_US }}" {% if user.lang == consts.language.LANG_EN_US %}checked="checked"{% endif %}>{{ t('English') }}</label>
+            <label><input type="radio" name="userForm[lang]" value="{{ consts.language.LANG_JA }}" {% if user.lang == consts.language.LANG_JA %}checked="checked"{% endif %}>{{ t('Japanese') }}</label>
+          </div>
+          <div class="col-sm-offset-2 col-sm-10">
+          </div>
+        </div>
       </div>
 
       <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
-          <button type="submit" class="btn btn-primary">更新</button>
+          <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
         </div>
       </div>
     </fieldset>
@@ -95,11 +95,11 @@
 
   <div class="form-box">
     <fieldset>
-      <legend>プロフィール画像の設定</legend>
+      <legend>{{ t('Set Profile Image') }}</legend>
         <div class="form-group">
           <div id="pictureUploadFormMessage"></div>
           <label for="" class="col-sm-3 control-label">
-            現在の画像
+            {{ t('Current Image') }}
           </label>
           <div class="col-sm-9">
             <p>
@@ -107,8 +107,8 @@
             </p>
             <p>
             {% if user.image %}
-            <form action="/me/picture/delete" method="post" class="form-horizontal" role="form" onsubmit="return window.confirm('削除してよろしいですか？');">
-              <button type="submit" class="btn btn-danger">画像を削除</button>
+            <form action="/me/picture/delete" method="post" class="form-horizontal" role="form" onsubmit="return window.confirm('{{ t('Delete this image?') }}');">
+              <button type="submit" class="btn btn-danger">{{ t('Delete Image') }}</button>
             </form>
             {% endif %}
             </p>
@@ -117,7 +117,7 @@
 
         <div class="form-group">
           <label for="" class="col-sm-3 control-label">
-            新しい画像をアップロード
+            {{ t('Upload new image') }}
           </label>
           <div class="col-sm-9">
             {% if isUploadable() %}
@@ -127,8 +127,8 @@
               </div>
             </form>
             {% else %}
-            * 画像をアップロードをするための設定がされていません。<br>
-            * アップロードできるようにするには、AWS またはローカルアップロードの設定をしてください。<br>
+            * {{ t('page_me.form_help.profile_image1') }}<br>
+            * {{ t('page_me.form_help.profile_image2') }}<br>
             {% endif %}
           </div>
         </div>
@@ -178,7 +178,7 @@
       <div class="form-box">
         <form action="/me/auth/google" method="post" class="form-horizontal" role="form">
           <fieldset>
-            <legend><i class="fa fa-google-plus-square"></i> Google設定</legend>
+            <legend><i class="fa fa-google-plus-square"></i> {{ t('Google Setting') }}</legend>
 
             {% set wmessage = req.flash('warningMessage.auth.google') %}
             {% if wmessage.length %}
@@ -192,13 +192,13 @@
 
             <div class="col-sm-12">
               <p>
-                接続されています
+                {{ t('Connected') }}
 
-                <input type="submit" name="disconnectGoogle" class="btn btn-default" value="接続を解除">
+                <input type="submit" name="disconnectGoogle" class="btn btn-default" value="{{ t('Disconnect') }}">
               </p>
               <p class="help-block">
-              接続を解除すると、Googleでログインができなくなります。<br>
-              解除後はメールアドレスとパスワードでログインすることができます。
+                {{ t('page_me.form_help.google_disconnect1') }}<br>
+                {{ t('page_me.form_help.google_disconnect2') }}
               </p>
             </div>
 
@@ -209,11 +209,12 @@
                 <input type="submit" name="connectGoogle" class="btn btn-google" value="Googleコネクト">
               </div>
               <p class="help-block">
-              Googleコネクトをすると、Googleアカウントでログイン可能になります。<br>
+                {{ t('page_me.form_help.google_connect1') }}<br>
               </p>
               {% if config.crowi['security:registrationWhiteList'] && config.crowi['security:registrationWhiteList'].length %}
               <p class="help-block">
-              この Wiki では、登録可能なメールアドレスが限定されているため、コネクト可能なGoogleアカウントは、以下のメールアドレスの発行できるGoogle Appsアカウントに限られます。
+                {{ t('page_register.form_help.email') }}<br>
+                {{ t('page_me.form_help.google_connect2') }}
               </p>
               <ul>
                 {% for em in config.crowi['security:registrationWhiteList'] %}
@@ -271,4 +272,3 @@
 
 {% block footer %}
 {% endblock footer %}
-

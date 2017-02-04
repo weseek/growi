@@ -19,7 +19,7 @@
   <div id="footer-container" class="footer">
     <footer class="">
       <p>
-      <a href="" data-target="#help-modal" data-toggle="modal"><i class="fa fa-question-circle"> ヘルプ</i></a>
+      <a href="" data-target="#help-modal" data-toggle="modal"><i class="fa fa-question-circle"></i> {{ t('Help') }}</a>
       &copy; {{ now|date('Y') }} {{ config.crowi['app:title']|default('Crowi') }} <img src="/logo/100x11_g.png" alt="powered by Crowi"> </p>
     </footer>
   </div>
@@ -31,12 +31,12 @@
 <div id="main" class="main col-md-9 {% if page %}{{ css.grant(page) }}{% endif %} {% block main_css_class %}{% endblock %}">
   {% if page && page.grant != 1 %}
   <p class="page-grant">
-    <i class="fa fa-lock"></i> {{ consts.pageGrants[page.grant] }} (このページの閲覧は制限されています)
+    <i class="fa fa-lock"></i> {{ consts.pageGrants[page.grant] }} ({{ t('Browsing of this page is restricted') }})
   </p>
   {% endif %}
   {% if page && page.grant == 2 %}
   <p class="alert alert-info">
-    このページの共有用URL
+    {{ t('Shareable Link') }}
     <input type="text" class="copy-link form-control" value="{{ baseUrl }}/{{ page._id.toString() }}" readonly>
   </p>
   {% endif %}

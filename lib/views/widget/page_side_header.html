@@ -12,13 +12,13 @@
         <a href="{{ userPageRoot(page.creator) }}">{{ page.creator.name|default(author.name) }}</a>
       </p>
       <p class="created-at">
-        作成日: {{ page.createdAt|datetz('Y/m/d H:i:s') }}<br>
+        {{ t('Created') }}: {{ page.createdAt|datetz('Y/m/d H:i:s') }}<br>
 
         {% if page.lastUpdateUser %}
-          最終更新: {{ page.updatedAt|datetz('Y/m/d H:i:s') }} <a href="/user/{{ page.lastUpdateUser.username }}"><img src="{{ page.lastUpdateUser|picture }}" class="picture picture-xs picture-rounded" alt="{{ page.lastUpdateUser.name }}"></a>
+          {{ t('Last updated') }}: {{ page.updatedAt|datetz('Y/m/d H:i:s') }} <a href="/user/{{ page.lastUpdateUser.username }}"><img src="{{ page.lastUpdateUser|picture }}" class="picture picture-xs picture-rounded" alt="{{ page.lastUpdateUser.name }}"></a>
         {% else %}
           {# for BC 1.5.x #}
-          最終更新: {{ page.updatedAt|datetz('Y/m/d H:i:s') }} <a href="/user/{{ page.revision.author.username }}"><img src="{{ page.revision.author|picture }}" class="picture picture-xs picture-rounded" alt="{{ page.revision.author.name }}"></a>
+          {{ t('Last updated') }}: {{ page.updatedAt|datetz('Y/m/d H:i:s') }} <a href="/user/{{ page.revision.author.username }}"><img src="{{ page.revision.author|picture }}" class="picture picture-xs picture-rounded" alt="{{ page.revision.author.name }}"></a>
         {% endif %}
       </p>
     </div>
@@ -27,7 +27,7 @@
   <div class="like-box">
     <dl class="dl-horizontal">
       <dt>
-        <i class="fa fa-thumbs-o-up"></i> いいね!
+        <i class="fa fa-thumbs-o-up"></i> {{ t('Like!') }}
       </dt>
       <dd>
         <p class="liker-count">
@@ -36,13 +36,13 @@
           data-csrftoken="{{ csrf() }}"
           data-liked="{% if page.isLiked(user) %}1{% else %}0{% endif %}"
           class="like-button btn btn-default btn-sm {% if page.isLiked(user) %}active{% endif %}"
-          ><i class="fa fa-thumbs-o-up"></i> いいね！</button>
+          ><i class="fa fa-thumbs-o-up"></i> {{ t('Like!') }}</button>
         </p>
         <p id="liker-list" class="liker-list" data-likers="{{ page.liker|default([])|join(',') }}">
         </p>
       </dd>
 
-      <dt><i class="fa fa-paw"></i> 見た人</dt>
+      <dt><i class="fa fa-paw"></i> {{ t('Seen by') }}</dt>
       <dd>
         <div id="seen-user-list" data-seen-users="{{ page.seenUsers|default([])|join(',') }}"></div>
       </dd>

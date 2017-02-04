@@ -6,19 +6,15 @@
 
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title">ページを移動する</h4>
+          <h4 class="modal-title">{{ t('Rename page') }}</h4>
         </div>
         <div class="modal-body">
-          <ul>
-           <li>移動先にページが存在する場合は、移動できません。</li>
-           <li>過去の履歴も含めてすべて移動されます。</li>
-          </ul>
             <div class="form-group">
-              <label for="">このページ</label><br>
+              <label for="">{{ t('Current page name') }}</label><br>
               <code>{{ page.path }}</code>
             </div>
             <div class="form-group">
-              <label for="newPageName">移動先のページ名</label><br>
+              <label for="newPageName">{{ t('New page name') }}</label><br>
               <div class="input-group">
                 <span class="input-group-addon">{{ config.crowi['app:url'] }}</span>
                 <input type="text" class="form-control" name="new_path" id="newPageName" value="{{ page.path }}">
@@ -26,9 +22,10 @@
             </div>
             <div class="checkbox">
                <label>
-                 <input name="create_redirect" value="1"  type="checkbox"> リダイレクトページを作成
+                 <input name="create_redirect" value="1"  type="checkbox"> {{ t('Redirect') }}
                </label>
-               <p class="help-block">チェックを入れると、<code>{{ page.path }}</code>にアクセスされた際に自動的に新しいページにジャンプします。</p>
+               <p class="help-block"> {{ t('modal_rename.help.redirect', page.path) }}
+               </p>
             </div>
             {# <div class="checkbox"> #}
             {#    <label> #}

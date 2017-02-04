@@ -1,10 +1,10 @@
-<h3><i class="fa fa-link"></i> Share</h3>
+<h3><i class="fa fa-link"></i> {{ t('Share') }}</h3>
 <ul class="fitted-list">
-  <li data-toggle="tooltip" data-placement="bottom" title="共有用リンク" class="input-group">
-    <span class="input-group-addon">共有用</span>
+  <li class="input-group">
+    <span class="input-group-addon">{{ t('Share Link') }}</span>
     <input readonly class="copy-link form-control" type="text" value="{{ config.crowi['app:title']|default('Crowi') }} {{ path }}  {{ baseUrl }}/{{ page._id.toString() }}">
   </li>
-  <li data-toggle="tooltip" data-placement="bottom" title="Markdown形式のリンク" class="input-group">
+  <li class="input-group">
     <span class="input-group-addon">Markdown</span>
     <input readonly class="copy-link form-control" type="text" value="[{{ path }}]({{ baseUrl }}/{{ page._id.toString() }})">
   </li>
