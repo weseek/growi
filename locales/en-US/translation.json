@@ -97,6 +97,8 @@
 
   "page_me": {
     "form_help": {
+      "profile_image1": "Image upload settings not completed.",
+      "profile_image2": "Set up AWS or enable local uploads.",
       "google_connect1": "With Google Connect, you can sign in with your Google Account.",
       "google_connect2": "Only Google Apps accounts with the following email addresses are connectable Google accounts:",
       "google_disconnect1": "If you disconnect your Google account, you will be unable to sign in using Google Authentication",

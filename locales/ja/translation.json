@@ -97,6 +97,8 @@
 
   "page_me": {
     "form_help": {
+      "profile_image1": "画像をアップロードをするための設定がされていません。",
+      "profile_image2": "アップロードできるようにするには、AWS またはローカルアップロードの設定をしてください。",
       "google_connect1": "Googleコネクトをすると、Googleアカウントでログイン可能になります。",
       "google_connect2": "コネクト可能なGoogleアカウントは、以下のメールアドレスの発行できるGoogle Appsアカウントに限られます。",
       "google_disconnect1": "接続を解除すると、Googleでログインができなくなります。",
