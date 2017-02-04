@@ -738,16 +738,29 @@ $(function() {
         $diffIcon.addClass('fa-arrow-circle-right');
       }
 
-      if (beforeRevisionId === false) {
-        $diffDisplay.text('差分はありません');
+      if ($diffDisplay.data('loaded')) {
         $diffDisplay.slideToggle();
+        return true;
+      }
+
+      $diffDisplay.text('');
+
+      if (beforeRevisionId === false) {
+        var revisionIds = revisionId;
+
+        // For differences from blank pages, make it all green
+        $.ajax({
+          type: 'GET',
+          url: '/_api/revisions.list?revision_ids=' + revisionIds,
+          dataType: 'json'
+        }).done(function(res) {
+          var currentText = res[0].body;
+
+          var patch = jsdiff.createPatch($('#revision-path').text(), '', currentText);
+          $diffDisplay.html(diff2html.getPrettyHtml(patch));
+        });
       } else {
         var revisionIds = revisionId + ',' + beforeRevisionId;
-
-        if ($diffDisplay.data('loaded')) {
-          $diffDisplay.slideToggle();
-          return true;
-        }
 
         $.ajax({
           type: 'GET',
@@ -762,10 +775,10 @@ $(function() {
           var patch = jsdiff.createPatch($('#revision-path').text(), previousText, currentText);
           $diffDisplay.html(diff2html.getPrettyHtml(patch));
 
-          $diffDisplay.data('loaded', 1);
-          $diffDisplay.slideToggle();
         });
       }
+      $diffDisplay.data('loaded', 1);
+      $diffDisplay.slideToggle();
     });
 
     // default open
