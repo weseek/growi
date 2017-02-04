@@ -271,7 +271,9 @@ $(function() {
         var page = res.page;
 
         $('#newPageNameCheck').removeClass('alert-danger');
-        $('#newPageNameCheck').html('<img src="/images/loading_s.gif"> 移動しました。移動先にジャンプします。');
+        //$('#newPageNameCheck').html('<img src="/images/loading_s.gif"> 移動しました。移動先にジャンプします。');
+        // fix
+        $('#newPageNameCheck').html('<img src="/images/loading_s.gif"> Page moved! Redirecting to new page location.');
 
         setTimeout(function() {
           top.location.href = page.path + '?renamed=' + pagePath;
@@ -404,7 +406,7 @@ $(function() {
 
     $.getJSON('/_api/check_username', {username: username}, function(json) {
       if (!json.valid) {
-        $('#help-block-username').html('<i class="fa fa-warning"></i>このユーザーIDは利用できません。<br>');
+        $('#help-block-username').html('<i class="fa fa-warning"></i> This User ID is not available.<br>');
         $('#input-group-username').addClass('has-error');
       }
     });
