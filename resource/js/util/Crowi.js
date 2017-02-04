@@ -22,6 +22,7 @@ export default class Crowi {
 
     this.users = [];
     this.userByName = {};
+    this.userById   = {};
     this.draft = {};
 
     this.recoverData();
@@ -34,6 +35,7 @@ export default class Crowi {
   recoverData() {
     const keys = [
       'userByName',
+      'userById',
       'users',
       'draft',
     ];
@@ -50,7 +52,7 @@ export default class Crowi {
   }
 
   fetchUsers () {
-    const interval = 1000*60*10; // 5min
+    const interval = 1000*60*15; // 15min
     const currentTime = new Date();
     if (!this.localStorage.lastFetched && interval > currentTime - new Date(this.localStorage.lastFetched)) {
       return ;
@@ -62,12 +64,17 @@ export default class Crowi {
       this.localStorage.users = JSON.stringify(data.users);
 
       let userByName = {};
+      let userById = {};
       for (let i = 0; i < data.users.length; i++) {
         const user = data.users[i];
         userByName[user.username] = user;
+        userById[user._id] = user;
       }
       this.userByName = userByName;
       this.localStorage.userByName = JSON.stringify(userByName);
+
+      this.userById = userById;
+      this.localStorage.userById = JSON.stringify(userById);
 
       this.localStorage.lastFetched = new Date();
     }).catch(err => {
@@ -89,6 +96,14 @@ export default class Crowi {
   findDraft(path) {
     if (this.draft && this.draft[path]) {
       return this.draft[path];
+    }
+
+    return null;
+  }
+
+  findUserById(userId) {
+    if (this.userById && this.userById[userId]) {
+      return this.userById[userId];
     }
 
     return null;

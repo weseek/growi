@@ -5,10 +5,11 @@ import Crowi from './util/Crowi';
 import CrowiRenderer from './util/CrowiRenderer';
 
 import HeaderSearchBox  from './components/HeaderSearchBox';
-import SearchPage  from './components/SearchPage';
-import PageListSearch  from './components/PageListSearch';
+import SearchPage       from './components/SearchPage';
+import PageListSearch   from './components/PageListSearch';
+import PageHistory      from './components/PageHistory';
+import SeenUserList     from './components/SeenUserList';
 //import PageComment  from './components/PageComment';
-import SeenUserList from './components/SeenUserList';
 
 if (!window) {
   window = {};
@@ -21,10 +22,13 @@ crowi.fetchUsers();
 const crowiRenderer = new CrowiRenderer();
 window.crowiRenderer = crowiRenderer;
 
+const pageId = $('#content-main').data('page-id');
+
 const componentMappings = {
   'search-top': <HeaderSearchBox />,
   'search-page': <SearchPage />,
   'page-list-search': <PageListSearch />,
+  'revision-history': <PageHistory pageId={pageId} />,
   //'page-comment': <PageComment />,
   'seen-user-list': <SeenUserList />,
 };
