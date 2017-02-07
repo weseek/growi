@@ -277,22 +277,39 @@
     .revision-hisory-outer {
       margin-top: 8px;
 
-      .picture {
-        float: left;
-        width: 32px;
-        height: 32px;
-      }
-
       .revision-history-main {
-        margin-left: 40px;
+
+        .picture {
+          float: left;
+          width: 32px;
+          height: 32px;
+        }
 
         .revision-history-author {
+          margin-left: 40px;
           color: #666;
         }
         .revision-history-comment {
+          margin-left: 40px;
         }
         .revision-history-meta {
+          margin-left: 40px;
+
+          p {
+            margin-bottom: 8px;
+          }
+
+          a {
+            margin-right: 8px;
+          }
+          a:hover {
+            cursor: pointer;
+          }
         }
+
+      }
+      .revision-history-diff {
+        margin-left: 40px;
       }
     }
 

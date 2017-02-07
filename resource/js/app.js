@@ -28,7 +28,7 @@ const componentMappings = {
   'search-top': <HeaderSearchBox />,
   'search-page': <SearchPage />,
   'page-list-search': <PageListSearch />,
-  'revision-history': <PageHistory pageId={pageId} />,
+  //'revision-history': <PageHistory pageId={pageId} />,
   //'page-comment': <PageComment />,
   'seen-user-list': <SeenUserList />,
 };
@@ -38,4 +38,9 @@ Object.keys(componentMappings).forEach((key) => {
   if (elem) {
     ReactDOM.render(componentMappings[key], elem);
   }
+});
+
+// うわーもうー
+$('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', function() {
+  ReactDOM.render(<PageHistory pageId={pageId} />, document.getElementById('revision-history'));
 });

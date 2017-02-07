@@ -2,8 +2,6 @@
 /* Author: Sotaro KARASAWA <sotarok@crocos.co.jp>
 */
 
-var jsdiff = require('diff');
-var diff2html = require('diff2html').Diff2Html;
 var io = require('socket.io-client');
 
 //require('bootstrap-sass');
@@ -701,94 +699,6 @@ $(function() {
       $userHtml.append($userPicture);
       return $userHtml;
     }
-
-    // History Diff
-    var allRevisionIds = [];
-    $.each($('.diff-view'), function() {
-      allRevisionIds.push($(this).data('revisionId'));
-    });
-
-    $('.diff-view').on('click', function(e) {
-      e.preventDefault();
-
-      var getBeforeRevisionId = function(revisionId) {
-        var currentPos = $.inArray(revisionId, allRevisionIds);
-        if (currentPos < 0) {
-          return false;
-        }
-
-        var beforeRevisionId = allRevisionIds[currentPos + 1];
-        if (typeof beforeRevisionId === 'undefined') {
-          return false;
-        }
-
-        return beforeRevisionId;
-      };
-
-      var revisionId = $(this).data('revisionId');
-      var beforeRevisionId = getBeforeRevisionId(revisionId);
-      var $diffDisplay = $('#diff-display-' + revisionId);
-      var $diffIcon = $('#diff-icon-' + revisionId);
-
-      if ($diffIcon.hasClass('fa-arrow-circle-right')) {
-        $diffIcon.removeClass('fa-arrow-circle-right');
-        $diffIcon.addClass('fa-arrow-circle-down');
-      } else {
-        $diffIcon.removeClass('fa-arrow-circle-down');
-        $diffIcon.addClass('fa-arrow-circle-right');
-      }
-
-      if ($diffDisplay.data('loaded')) {
-        $diffDisplay.slideToggle();
-        return true;
-      }
-
-      $diffDisplay.text('');
-
-      if (beforeRevisionId === false) {
-        var revisionIds = revisionId;
-
-        // For differences from blank pages, make it all green
-        $.ajax({
-          type: 'GET',
-          url: '/_api/revisions.list?revision_ids=' + revisionIds,
-          dataType: 'json'
-        }).done(function(res) {
-          var currentText = res[0].body;
-
-          var patch = jsdiff.createPatch($('#revision-path').text(), '', currentText);
-          $diffDisplay.html(diff2html.getPrettyHtml(patch));
-        });
-      } else {
-        var revisionIds = revisionId + ',' + beforeRevisionId;
-
-        $.ajax({
-          type: 'GET',
-          url: '/_api/revisions.list?revision_ids=' + revisionIds,
-          dataType: 'json'
-        }).done(function(res) {
-          var currentText = res[0].body;
-          var previousText = res[1].body;
-
-          $diffDisplay.text('');
-
-          var patch = jsdiff.createPatch($('#revision-path').text(), previousText, currentText);
-          $diffDisplay.html(diff2html.getPrettyHtml(patch));
-
-        });
-      }
-      $diffDisplay.data('loaded', 1);
-      $diffDisplay.slideToggle();
-    });
-
-    // default open
-    $('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', function() {
-      $('.diff-view').each(function(i, diffView) {
-        if (i < 2) {
-          $(diffView).click();
-        }
-      });
-    });
 
     // presentation
     var presentaionInitialized = false

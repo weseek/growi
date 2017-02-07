@@ -1,33 +1,42 @@
 import React from 'react';
 
+import { createPatch } from 'diff';
+import { Diff2Html } from 'diff2html';
+
 export default class RevisionDiff extends React.Component {
 
   render() {
-    return (
-      <div className="revision-hisory-outer">
-        diff
-      </div>
-    );
+    const currentRevision = this.props.currentRevision,
+      previousRevision = this.props.previousRevision,
+      revisionDiffOpened = this.props.revisionDiffOpened;
+
+
+    let diffViewHTML = '';
+    if (currentRevision.body
+      && previousRevision.body
+      && revisionDiffOpened) {
+
+      let previousText = previousRevision.body;
+      if (currentRevision._id == previousRevision._id) {
+        previousText = '';
+      }
+
+      const patch = createPatch(
+        currentRevision.path,
+        previousText,
+        currentRevision.body
+      );
+
+      diffViewHTML = Diff2Html.getPrettyHtml(patch);
+    }
+
+    const diffView = {__html: diffViewHTML};
+    return <div className="revision-history-diff" dangerouslySetInnerHTML={diffView} />;
   }
-    /*
-        <img src="{{ tt.author|picture }}" class="picture picture-rounded">
-        <div class="revision-history-main">
-          <div class="revision-history-author">
-            <strong>{% if tt.author %}{{ tt.author.username }}{% else %}-{% endif %}</strong>
-          </div>
-          <div class="revision-history-comment">
-          </div>
-          <div class="revision-history-meta">
-            {{ tt.createdAt|datetz('Y-m-d H:i:s') }}
-            <br>
-            <a href="?revision={{ tt._id.toString() }}"><i class="fa fa-history"></i> {{ t('View this version') }}</a>
-            <a class="diff-view" data-revision-id="{{ tt._id.toString() }}">
-              <i id="diff-icon-{{ tt._id.toString() }}" class="fa fa-arrow-circle-right"></i> {{ t('View diff') }}
-            </a>
-            <div class="" id="diff-display-{{ tt._id.toString()}}" style="display: none"></div>
-          </div>
-        </div>
-        */
 }
 
-
+RevisionDiff.propTypes = {
+  currentRevision: React.PropTypes.object.isRequired,
+  previousRevision: React.PropTypes.object.isRequired,
+  revisionDiffOpened: React.PropTypes.bool.isRequired,
+}
