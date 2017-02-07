@@ -39,7 +39,6 @@ export default class PageHistory extends React.Component {
         }
 
         if (i === 0 || i === lastId) {
-          console.log('DEbug, diffopen', revision._id);
           diffOpened[revision._id] = true;
         } else {
           diffOpened[revision._id] = false;
@@ -67,7 +66,6 @@ export default class PageHistory extends React.Component {
   }
 
   getPreviousRevision(currentRevision) {
-    console.log('getPreviousRevision', currentRevision, this.state.revisions);
     let cursor = null;
     for (let revision of this.state.revisions) {
       if (cursor && cursor._id == currentRevision._id) {
