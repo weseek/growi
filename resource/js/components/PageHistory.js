@@ -8,8 +8,6 @@ export default class PageHistory extends React.Component {
   constructor(props) {
     super(props);
 
-    this.crowi = window.crowi; // FIXME
-
     this.state = {
       revisions: [],
       diffOpened: {},
@@ -26,14 +24,14 @@ export default class PageHistory extends React.Component {
       return ;
     }
 
-    this.crowi.apiGet('/revisions.ids', {page_id: pageId})
+    this.props.crowi.apiGet('/revisions.ids', {page_id: pageId})
     .then(res => {
 
       const rev = res.revisions;
       let diffOpened = {};
       const lastId = rev.length - 1;
       res.revisions.map((revision, i) => {
-        const user = this.crowi.findUserById(revision.author);
+        const user = this.props.crowi.findUserById(revision.author);
         if (user) {
           rev[i].author = user;
         }
@@ -101,7 +99,7 @@ export default class PageHistory extends React.Component {
       return ;
     }
 
-    this.crowi.apiGet('/revisions.get', {revision_id: revision._id})
+    this.props.crowi.apiGet('/revisions.get', {revision_id: revision._id})
     .then(res => {
       if (res.ok) {
         this.setState({
@@ -137,4 +135,5 @@ export default class PageHistory extends React.Component {
 
 PageHistory.propTypes = {
   pageId: React.PropTypes.string,
+  crowi: React.PropTypes.object.isRequired,
 };

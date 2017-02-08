@@ -42,5 +42,5 @@ Object.keys(componentMappings).forEach((key) => {
 
 // うわーもうー
 $('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', function() {
-  ReactDOM.render(<PageHistory pageId={pageId} />, document.getElementById('revision-history'));
+  ReactDOM.render(<PageHistory pageId={pageId} crowi={crowi} />, document.getElementById('revision-history'));
 });
