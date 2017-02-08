@@ -14,6 +14,10 @@ import SeenUserList     from './components/SeenUserList';
 if (!window) {
   window = {};
 }
+
+const mainContent = document.querySelector('#content-main');
+const pageId = mainContent.attributes['data-page-id'].value || null;
+
 // FIXME
 const crowi = new Crowi({me: $('#content-main').data('current-username')}, window);
 window.crowi = crowi;
@@ -21,8 +25,6 @@ crowi.fetchUsers();
 
 const crowiRenderer = new CrowiRenderer();
 window.crowiRenderer = crowiRenderer;
-
-const pageId = $('#content-main').data('page-id');
 
 const componentMappings = {
   'search-top': <HeaderSearchBox />,
