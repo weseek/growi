@@ -79,8 +79,7 @@ export default class PageHistory extends React.Component {
     return cursor;
   }
 
-  onDiffOpenClicked(revision)
-  {
+  onDiffOpenClicked(revision) {
     const diffOpened = this.state.diffOpened,
       revisionId = revision._id;
 
@@ -97,8 +96,7 @@ export default class PageHistory extends React.Component {
     this.fetchPageRevisionBody(this.getPreviousRevision(revision));
   }
 
-  fetchPageRevisionBody(revision)
-  {
+  fetchPageRevisionBody(revision) {
     if (revision.body) {
       return ;
     }

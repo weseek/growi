@@ -35,7 +35,7 @@ export default class Revision extends React.Component {
           <strong>{author.username}</strong>
         </div>
         <div className="revision-history-meta">
-         <p>
+          <p>
             <UserDate dateTime={revision.createdAt} />
           </p>
           <p>
