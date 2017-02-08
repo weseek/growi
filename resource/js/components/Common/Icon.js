@@ -15,10 +15,8 @@ export default class Icon extends React.Component {
   }
 }
 
+// TODO: support spin, size and so far
 Icon.propTypes = {
-  name: React.PropTypes.string,
-};
-Icon.defaultProps = {
-  name: null,
+  name: React.PropTypes.string.isRequired,
 };
 
