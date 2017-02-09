@@ -251,6 +251,12 @@ footer {
   border-radius: 3px;
 }
 
+// adjust
+// this is for diff2html. hide page name from diff view
+.d2h-file-header {
+  display: none;
+}
+
 // components
 .flip-container { // {{{
   perspective: 1000;

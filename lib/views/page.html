@@ -168,36 +168,11 @@
     {% endif %}
 
     {# raw revision history #}
+    {% if not page %}
+    {% else %}
     <div class="tab-pane revision-history" id="revision-history">
-      <h1><i class="fa fa-history"></i> History</h1>
-      {% if not page %}
-      {% else %}
-      <div class="revision-history-list">
-        {% for tt in tree %}
-        <div class="revision-hisory-outer">
-          <img src="{{ tt.author|picture }}" class="picture picture-rounded">
-          <div class="revision-history-main">
-            <div class="revision-history-author">
-              <strong>{% if tt.author %}{{ tt.author.username }}{% else %}-{% endif %}</strong>
-            </div>
-            <div class="revision-history-comment">
-            </div>
-            <div class="revision-history-meta">
-              {{ tt.createdAt|datetz('Y-m-d H:i:s') }}
-              <br>
-              <a href="?revision={{ tt._id.toString() }}"><i class="fa fa-history"></i> {{ t('View this version') }}</a>
-              <a class="diff-view" data-revision-id="{{ tt._id.toString() }}">
-                <i id="diff-icon-{{ tt._id.toString() }}" class="fa fa-arrow-circle-right"></i> {{ t('View diff') }}
-              </a>
-              <pre class="" id="diff-display-{{ tt._id.toString()}}" style="display: none"></pre>
-            </div>
-          </div>
-        </div>
-        {% endfor %}
-      </div>
-      {% endif %}
-
     </div>
+    {% endif %}
 
   </div>
   {% endif %}

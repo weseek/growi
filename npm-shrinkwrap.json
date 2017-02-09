@@ -1461,9 +1461,14 @@
       "resolved": "https://registry.npmjs.org/dicer/-/dicer-0.2.5.tgz"
     },
     "diff": {
-      "version": "2.2.3",
-      "from": "diff@>=2.2.2 <2.3.0",
-      "resolved": "https://registry.npmjs.org/diff/-/diff-2.2.3.tgz"
+      "version": "3.2.0",
+      "from": "diff@>=3.2.0 <3.3.0",
+      "resolved": "https://registry.npmjs.org/diff/-/diff-3.2.0.tgz"
+    },
+    "diff2html": {
+      "version": "2.0.12",
+      "from": "diff2html@>=2.0.12 <2.1.0",
+      "resolved": "https://registry.npmjs.org/diff2html/-/diff2html-2.0.12.tgz"
     },
     "dom-serializer": {
       "version": "0.1.0",
@@ -2752,6 +2757,18 @@
       "from": "hoek@>=2.0.0 <3.0.0",
       "resolved": "https://registry.npmjs.org/hoek/-/hoek-2.16.3.tgz"
     },
+    "hogan.js": {
+      "version": "3.0.2",
+      "from": "hogan.js@>=3.0.2 <4.0.0",
+      "resolved": "https://registry.npmjs.org/hogan.js/-/hogan.js-3.0.2.tgz",
+      "dependencies": {
+        "mkdirp": {
+          "version": "0.3.0",
+          "from": "mkdirp@0.3.0",
+          "resolved": "https://registry.npmjs.org/mkdirp/-/mkdirp-0.3.0.tgz"
+        }
+      }
+    },
     "home-or-tmp": {
       "version": "2.0.0",
       "from": "home-or-tmp@>=2.0.0 <3.0.0",
@@ -3103,6 +3120,11 @@
       "from": "istanbul@>=0.3.5 <0.4.0",
       "resolved": "https://registry.npmjs.org/istanbul/-/istanbul-0.3.22.tgz",
       "dependencies": {
+        "nopt": {
+          "version": "3.0.6",
+          "from": "nopt@>=3.0.0 <4.0.0",
+          "resolved": "https://registry.npmjs.org/nopt/-/nopt-3.0.6.tgz"
+        },
         "resolve": {
           "version": "1.1.7",
           "from": "resolve@>=1.1.0 <1.2.0",
@@ -4048,6 +4070,11 @@
           "version": "3.0.3",
           "from": "minimatch@>=3.0.2 <4.0.0",
           "resolved": "https://registry.npmjs.org/minimatch/-/minimatch-3.0.3.tgz"
+        },
+        "nopt": {
+          "version": "3.0.6",
+          "from": "nopt@>=2.0.0 <3.0.0||>=3.0.0 <4.0.0",
+          "resolved": "https://registry.npmjs.org/nopt/-/nopt-3.0.6.tgz"
         }
       }
     },
@@ -4173,9 +4200,9 @@
       "resolved": "https://registry.npmjs.org/nodemailer-wellknown/-/nodemailer-wellknown-0.1.10.tgz"
     },
     "nopt": {
-      "version": "3.0.6",
-      "from": "nopt@>=2.0.0 <3.0.0||>=3.0.0 <4.0.0",
-      "resolved": "https://registry.npmjs.org/nopt/-/nopt-3.0.6.tgz"
+      "version": "1.0.10",
+      "from": "nopt@1.0.10",
+      "resolved": "https://registry.npmjs.org/nopt/-/nopt-1.0.10.tgz"
     },
     "normalize-package-data": {
       "version": "2.3.5",
@@ -5838,7 +5865,7 @@
     },
     "whatwg-fetch": {
       "version": "2.0.2",
-      "from": "whatwg-fetch@>=0.10.0",
+      "from": "whatwg-fetch@>=2.0.1 <3.0.0",
       "resolved": "https://registry.npmjs.org/whatwg-fetch/-/whatwg-fetch-2.0.2.tgz"
     },
     "which": {
