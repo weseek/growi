@@ -43,7 +43,7 @@ export default class Revision extends React.Component {
               <Icon name="history" /> View this version
             </a>
             <a className="diff-view" onClick={this._onDiffOpenClicked}>
-              <Icon name="arrow-circle-right" /> View diff
+              <Icon name="level-down" /> View diff
             </a>
           </p>
         </div>
