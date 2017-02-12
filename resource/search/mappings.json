@@ -49,9 +49,14 @@
       "properties" : {
         "path": {
           "type": "string",
-          "copy_to": ["path_ja", "path_en"],
+          "copy_to": ["path_raw", "path_ja", "path_en"],
           "include_in_all": false,
           "index": "not_analyzed"
+        },
+        "path_raw": {
+          "type": "string",
+          "analyzer": "standard",
+          "include_in_all": false
         },
         "path_ja": {
           "type": "string",
@@ -65,9 +70,14 @@
         },
         "body": {
           "type": "string",
-          "copy_to": ["body_ja", "body_en"],
+          "copy_to": ["body_raw", "body_ja", "body_en"],
           "include_in_all": false,
           "index": "not_analyzed"
+        },
+        "body_raw": {
+          "type": "string",
+          "analyzer": "standard",
+          "include_in_all": false
         },
         "body_ja": {
           "type": "string",
