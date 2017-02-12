@@ -16,7 +16,10 @@ if (!window) {
 }
 
 const mainContent = document.querySelector('#content-main');
-const pageId = mainContent.attributes['data-page-id'].value || null;
+let pageId = null;
+if (mainContent !== null) {
+  pageId = mainContent.attributes['data-page-id'].value;
+}
 
 // FIXME
 const crowi = new Crowi({me: $('#content-main').data('current-username')}, window);
