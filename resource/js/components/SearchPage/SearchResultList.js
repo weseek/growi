@@ -14,7 +14,12 @@ export default class SearchResultList extends React.Component {
     let returnBody = body;
 
     this.props.searchingKeyword.split(' ').forEach((keyword) => {
-      const k = keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      if (keyword === '') {
+        return;
+      }
+      const k = keyword
+            .replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+            .replace(/(^"|"$)/g, ''); // for phrase (quoted) keyword
       const keywordExp = new RegExp(`(${k}(?!(.*?\]|.*?\\)|.*?"|.*?>)))`, 'ig');
       returnBody = returnBody.replace(keywordExp, '<em class="highlighted">$&</em>');
     });
@@ -53,4 +58,3 @@ SearchResultList.defaultProps = {
   pages: [],
   searchingKeyword: '',
 };
-
