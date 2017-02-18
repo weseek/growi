@@ -118,7 +118,7 @@ export default class Crowi {
   }
 
   apiGet(path, params) {
-    return this.apiRequest('get', path, params);
+    return this.apiRequest('get', path, {params});
   }
 
   apiPost(path, params) {
@@ -127,7 +127,7 @@ export default class Crowi {
 
   apiRequest(method, path, params) {
     return new Promise((resolve, reject) => {
-      axios[method](`/_api${path}`, {params})
+      axios[method](`/_api${path}`, params)
       .then(res => {
         if (res.data.ok) {
           resolve(res.data);
