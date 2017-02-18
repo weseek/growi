@@ -23,11 +23,10 @@ export default class BookmarkButton extends React.Component {
   }
 
   componentDidMount() {
-    $.get('/_api/bookmarks.get', {page_id: this.props.pageId}, (res) => {
-      if (res.ok) {
-        if (res.bookmark) {
-          this.markBookmarked();
-        }
+    this.props.crowi.apiGet('/bookmarks.get', {page_id: this.props.pageId})
+    .then(res => {
+      if (res.bookmark) {
+        this.markBookmarked();
       }
     });
   }
@@ -74,4 +73,5 @@ export default class BookmarkButton extends React.Component {
 
 BookmarkButton.propTypes = {
   pageId: React.PropTypes.string,
+  crowi: React.PropTypes.object.isRequired,
 };

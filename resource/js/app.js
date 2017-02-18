@@ -37,7 +37,7 @@ const componentMappings = {
   //'revision-history': <PageHistory pageId={pageId} />,
   //'page-comment': <PageComment />,
   'seen-user-list': <SeenUserList />,
-  'bookmark-button': <BookmarkButton pageId={pageId} />,
+  'bookmark-button': <BookmarkButton pageId={pageId} crowi={crowi} />,
 };
 
 Object.keys(componentMappings).forEach((key) => {
