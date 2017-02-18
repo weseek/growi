@@ -9,7 +9,6 @@ export default class BookmarkButton extends React.Component {
 
     this.state = {
       bookmarked: false,
-      pageId: null,
       token: null,
     };
 
@@ -19,13 +18,12 @@ export default class BookmarkButton extends React.Component {
   componentWillMount() {
     // FIXME(property?)
     this.setState({
-      pageId: $('#content-main').data('page-id'),
       token: $('#bookmark-button').data('csrftoken'),
     });
   }
 
   componentDidMount() {
-    $.get('/_api/bookmarks.get', {page_id: this.state.pageId}, (res) => {
+    $.get('/_api/bookmarks.get', {page_id: this.props.pageId}, (res) => {
       if (res.ok) {
         if (res.bookmark) {
           this.markBookmarked();
@@ -38,7 +36,7 @@ export default class BookmarkButton extends React.Component {
     event.preventDefault();
 
     const token = this.state.token;
-    const pageId = this.state.pageId;
+    const pageId = this.props.pageId;
 
     if (!this.state.bookmarked) {
       $.post('/_api/bookmarks.add', {_csrf: token, page_id: pageId}, (res) => {
@@ -73,3 +71,7 @@ export default class BookmarkButton extends React.Component {
     );
   }
 }
+
+BookmarkButton.propTypes = {
+  pageId: React.PropTypes.string,
+};
