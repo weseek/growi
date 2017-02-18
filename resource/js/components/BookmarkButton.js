@@ -1,5 +1,7 @@
 import React from 'react';
 
+import Icon from './Common/Icon'
+
 export default class BookmarkButton extends React.Component {
 
   constructor(props) {
@@ -62,10 +64,12 @@ export default class BookmarkButton extends React.Component {
   }
 
   render() {
-    const className = this.state.bookmarked ? 'fa fa-star' : 'fa fa-star-o';
+    const iconName = this.state.bookmarked ? 'star' : 'star-o';
 
     return (
-      <a href="#" title="Bookmark" className="bookmark-link" onClick={this.handleClick}><i className={className}></i></a>
+      <a href="#" title="Bookmark" className="bookmark-link" onClick={this.handleClick}>
+        <Icon name={iconName} />
+      </a>
     );
   }
 }
