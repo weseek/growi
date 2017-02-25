@@ -1,0 +1,19 @@
+{
+  "name": "crowi-plugin-pukiwiki-like-linker",
+  "version": "1.0.0",
+  "description": "The Crowi Plugin to add PukiwikiLikeLinker",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yuki-takei/crowi-plugin-pukiwiki-like-linker.git"
+  },
+  "author": "Yuki Takei <yuki@weseek.co.jp>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yuki-takei/crowi-plugin-pukiwiki-like-linker/issues"
+  },
+  "homepage": "https://github.com/yuki-takei/crowi-plugin-pukiwiki-like-linker#readme"
+}
