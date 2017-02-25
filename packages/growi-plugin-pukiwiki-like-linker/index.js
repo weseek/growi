@@ -1,1 +1,1 @@
-export { default as PukiwikiLikeLinker } from 'resource/js/util/PreProcessor/PukiwikiLikeLinker';
+export { default as PukiwikiLikeLinker } from './resource/js/util/PreProcessor/PukiwikiLikeLinker';
