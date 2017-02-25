@@ -110,6 +110,7 @@
     "start": "node app.js",
     "test": "gulp test",
     "build": "gulp",
+    "install-plugin": "npm -prefix ./plugin install -- ",
     "webpack": "webpack",
     "webpack:plugin": "webpack --config webpack.plugin.config.js",
     "postinstall": "gulp"
