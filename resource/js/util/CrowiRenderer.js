@@ -21,12 +21,6 @@ export default class CrowiRenderer {
       new Emoji(),
     ];
 
-    var isEnablePlugin = true;  // TODO configurable
-    if (isEnablePlugin) {
-      var crowiPlugin = window.crowiPlugin;
-      this.preProcessors = this.preProcessors.concat(crowiPlugin.getAllPreProcessors());
-    }
-
     this.langProcessors = {
       'tsv': new Tsv2Table(),
       'tsv-h': new Tsv2Table({header: true}),

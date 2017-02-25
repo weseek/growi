@@ -21,6 +21,12 @@ crowi.fetchUsers();
 const crowiRenderer = new CrowiRenderer();
 window.crowiRenderer = crowiRenderer;
 
+var isEnablePlugin = true;  // TODO configurable
+if (isEnablePlugin) {
+  var crowiPlugin = window.crowiPlugin;   // FIXME
+  crowiPlugin.pluginPreProcessors(crowi, crowiRenderer);
+}
+  
 const componentMappings = {
   'search-top': <HeaderSearchBox />,
   'search-page': <SearchPage />,
