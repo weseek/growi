@@ -111,6 +111,7 @@
     "test": "gulp test",
     "build": "gulp",
     "webpack": "webpack",
+    "webpack:plugin": "webpack --config webpack.plugin.config.js",
     "postinstall": "gulp"
   },
   "env": {
