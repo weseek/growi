@@ -1,6 +1,6 @@
 var path = require('path');
 
-export default class PukiwikiLikeLinker {
+export class PukiwikiLikeLinker {
   process(markdown) {
 
     return markdown
