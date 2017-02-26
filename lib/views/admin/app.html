@@ -248,11 +248,11 @@
             <div class="btn-group btn-toggle" data-toggle="buttons">
               <label class="btn {% if settingForm['plugin:isEnabledPlugins'] %}btn-primary active{% else %}btn-default{% endif %}">
                 <input name="settingForm[plugin:isEnabledPlugins]" value="true" type="radio"
-                    {% if 'true' == settingForm['plugin:isEnabledPlugins'] %}checked{% endif %}> 有効
+                    {% if true === settingForm['plugin:isEnabledPlugins'] %}checked{% endif %}> 有効
               </label>
               <label class="btn {% if !settingForm['plugin:isEnabledPlugins'] %}btn-primary active{% else %}btn-default{% endif %}">
                 <input name="settingForm[plugin:isEnabledPlugins]" value="false" type="radio"
-                    {% if 'false' != settingForm['plugin:isEnabledPlugins'] %}checked{% endif %}> 無効
+                    {% if !settingForm['plugin:isEnabledPlugins'] %}checked{% endif %}> 無効
               </label>
             </div>
           </div>
