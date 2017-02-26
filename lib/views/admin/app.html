@@ -243,16 +243,16 @@
         <p class="well">プラグインの読み込みを有効にします。</p>
 
         <div class="form-group">
-          <label for="settingForm[plugin:isEnablePlugin]" class="col-xs-3 control-label">プラグインを読み込む</label>
+          <label for="settingForm[plugin:isEnabledPlugins]" class="col-xs-3 control-label">プラグインを読み込む</label>
           <div class="col-xs-6">
             <div class="btn-group btn-toggle" data-toggle="buttons">
-              <label class="btn {% if settingForm['plugin:isEnablePlugin'] %}btn-primary active{% else %}btn-default{% endif %}">
-                <input name="settingForm[plugin:isEnablePlugin]" value="true" type="radio"
-                    {% if 'true' == settingForm['plugin:isEnablePlugin'] %}checked{% endif %}> 有効
+              <label class="btn {% if settingForm['plugin:isEnabledPlugins'] %}btn-primary active{% else %}btn-default{% endif %}">
+                <input name="settingForm[plugin:isEnabledPlugins]" value="true" type="radio"
+                    {% if 'true' == settingForm['plugin:isEnabledPlugins'] %}checked{% endif %}> 有効
               </label>
-              <label class="btn {% if !settingForm['plugin:isEnablePlugin'] %}btn-primary active{% else %}btn-default{% endif %}">
-                <input name="settingForm[plugin:isEnablePlugin]" value="false" type="radio"
-                    {% if 'false' != settingForm['plugin:isEnablePlugin'] %}checked{% endif %}> 無効
+              <label class="btn {% if !settingForm['plugin:isEnabledPlugins'] %}btn-primary active{% else %}btn-default{% endif %}">
+                <input name="settingForm[plugin:isEnabledPlugins]" value="false" type="radio"
+                    {% if 'false' != settingForm['plugin:isEnabledPlugins'] %}checked{% endif %}> 無効
               </label>
             </div>
           </div>
