@@ -31,6 +31,21 @@ More info are [here](https://github.com/crowi/crowi/wiki/Install-and-Configurati
 
 Don't use `master` branch because it is unstable but use released tag version expect when you want to contribute the project.
 
+Install Plugins
+----------------
+
+Install plugins from github:
+
+    $ npm run install-plugin https://github.com/sopmeone/crowi-plugin-something.git
+
+Build plugins:
+
+    $ npm run webpack:plugin
+    
+### CAUTION
+
+Plugins are DISABLED in default settings.  
+Change it on admin page.
 
 Dependencies
 -------------
