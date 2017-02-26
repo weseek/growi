@@ -21,9 +21,10 @@ crowi.fetchUsers();
 const crowiRenderer = new CrowiRenderer();
 window.crowiRenderer = crowiRenderer;
 
-var isEnablePlugin = true;  // TODO configurable
-if (isEnablePlugin) {
-  var crowiPlugin = window.crowiPlugin;   // FIXME
+// FIXME
+var isEnabledPlugins = $('body').data('plugin-enabled');
+if (isEnabledPlugins) {
+  var crowiPlugin = window.crowiPlugin;
   crowiPlugin.pluginPreProcessors(crowi, crowiRenderer);
 }
   

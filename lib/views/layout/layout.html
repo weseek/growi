@@ -22,6 +22,7 @@
 <body
   class="crowi main-container {% block html_base_css %}{% endblock %}"
   data-me="{{ user._id.toString() }}"
+  data-plugin-enabled="{{ config.crowi['plugin:isEnabledPlugins'] }}"
  {% block html_base_attr %}{% endblock %}
  >
 
@@ -131,7 +132,9 @@
 </body>
 {% endblock %}
 
+{% if config.crowi['plugin:isEnabledPlugins'] %}
 <script src="{{ assets('/js/plugin.js') }}"></script>
+{% endif %}
 <script src="{{ assets('/js/crowi.js') }}"></script>
 <script src="{{ assets('/js/app.js') }}"></script>
 </html>
