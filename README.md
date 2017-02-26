@@ -71,6 +71,12 @@ Install plugins from github:
 
     $ npm run install-plugin https://github.com/sopmeone/crowi-plugin-something.git
 
+Modify `plugin/plugin.js`:
+
+    const plugins = [
+      require('crowi-plugin-something')
+    ]
+
 Build plugins:
 
     $ npm run webpack:plugin
