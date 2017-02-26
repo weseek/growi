@@ -48,7 +48,7 @@ Install
 
    ```
    const plugins = [
-     // require('crowi-plugin-pukiwiki-like-linker')
+     require('crowi-plugin-pukiwiki-like-linker')
    ]
    ```
 
