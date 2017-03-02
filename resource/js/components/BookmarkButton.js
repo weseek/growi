@@ -9,17 +9,9 @@ export default class BookmarkButton extends React.Component {
 
     this.state = {
       bookmarked: false,
-      token: null,
     };
 
     this.handleClick = this.handleClick.bind(this);
-  }
-
-  componentWillMount() {
-    // FIXME(property?)
-    this.setState({
-      token: $('#bookmark-button').data('csrftoken'),
-    });
   }
 
   componentDidMount() {
@@ -34,7 +26,7 @@ export default class BookmarkButton extends React.Component {
   handleClick(event) {
     event.preventDefault();
 
-    const token = this.state.token;
+    const token = this.props.csrfToken;
     const pageId = this.props.pageId;
 
     if (!this.state.bookmarked) {
@@ -72,4 +64,5 @@ export default class BookmarkButton extends React.Component {
 BookmarkButton.propTypes = {
   pageId: React.PropTypes.string,
   crowi: React.PropTypes.object.isRequired,
+  csrfToken: React.PropTypes.string.isRequired,
 };
