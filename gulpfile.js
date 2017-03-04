@@ -91,7 +91,9 @@ gulp.task('js:concat', ['js:del'], function() {
 // move task for css and js to webpack over time.
 gulp.task('webpack', ['js:concat'], function() {
   return gulp.src(js.src)
-    .pipe(webpackStream(require('./webpack.config.js'), webpack))
+    .pipe(webpackStream(
+      require('./webpack.config.js'),
+      webpack))   // pass webpack2 to webpack-stream
     .pipe(gulp.dest(dirs.jsDist));
 });
 
