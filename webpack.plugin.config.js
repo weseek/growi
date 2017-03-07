@@ -1,18 +1,19 @@
 var path = require('path');
 var webpack = require('webpack');
+var UglifyJsPlugin = require('webpack/lib/optimize/UglifyJsPlugin');
 
 var ManifestPlugin = require('webpack-manifest-plugin');
 
 var config = {
   entry: {
-    plugin: './plugin/plugin.js',
+    plugin: './resource/js/plugin.js',
   },
   output: {
     path: path.join(__dirname + "/public/js"),
     filename: "[name].[hash].js"
   },
   resolve: {
-    modulesDirectories: [
+    modules: [
       './node_modules', './plugin/node_modules',
     ],
   },
@@ -20,10 +21,10 @@ var config = {
     loaders: [
       {
         test: /.jsx?$/,
-        loader: 'babel-loader',
-        query: {
-          presets: ['es2015', 'react']
-        }
+        exclude: /node_modules/,
+        use: [{
+          loader: 'babel-loader',
+        }]
       }
     ]
   },
@@ -37,7 +38,7 @@ if (process.env && process.env.NODE_ENV !== 'development') {
         'NODE_ENV': JSON.stringify('production')
       }
     }),
-    new webpack.optimize.UglifyJsPlugin({
+    new UglifyJsPlugin({
       compress:{
         warnings: false
       }

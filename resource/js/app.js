@@ -33,7 +33,7 @@ window.crowiRenderer = crowiRenderer;
 var isEnabledPlugins = $('body').data('plugin-enabled');
 if (isEnabledPlugins) {
   var crowiPlugin = window.crowiPlugin;
-  crowiPlugin.pluginPreProcessors(crowi, crowiRenderer);
+  crowiPlugin.installAll(crowi, crowiRenderer);
 }
   
 const componentMappings = {
