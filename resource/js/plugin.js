@@ -4,13 +4,7 @@ const plugins = {
   //   entries: [
   //     require('crowi-plugin-X/lib/client-entry')
   //   ]
-  // }
-  'crowi-plugin-lsx': {
-    meta: require('crowi-plugin-lsx'),
-    entries: [
-      require('crowi-plugin-lsx/lib/client-entry')
-    ]
-  }
+  // },
 }
 
 export default class CrowiPlugin {
@@ -31,7 +25,6 @@ export default class CrowiPlugin {
       // v1 is deprecated
 
       // v2
-      console.log(meta);
       if (2 === meta.pluginSchemaVersion) {
         entries.forEach((entry) => {
           entry(crowi, crowiRenderer);
