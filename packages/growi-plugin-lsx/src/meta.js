@@ -1,4 +1,4 @@
-export const meta = {
+export default {
   pluginSchemaVersion: 2,
   serverEntries: [],
   clientEntries: [
