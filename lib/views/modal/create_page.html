@@ -4,7 +4,7 @@
 
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title">New Page</h4>
+        <h4 class="modal-title">{{ t('New Page') }}</h4>
       </div>
 
       <div class="modal-body">
@@ -12,16 +12,16 @@
         <form class="form-horizontal" id="create-page-today" role="form">
           <fieldset>
             <div class="col-xs-12">
-              <h4>今日の◯◯を作成</h4>
+              <h4>{{ t("Create today's") }}</h4>
             </div>
             <div class="col-xs-10">
               <span class="page-today-prefix">{{ userPageRoot(user) }}/</span>
-              <input type="text" data-prefix="{{ userPageRoot(user) }}/" class="page-today-input1 form-control" value="メモ" id="" name="">
+              <input type="text" data-prefix="{{ userPageRoot(user) }}/" class="page-today-input1 form-control" value="{{ t('Memo') }}" id="" name="">
               <span class="page-today-suffix">/{{ now|datetz('Y/m/d') }}/</span>
-              <input type="text" data-prefix="/{{ now|datetz('Y/m/d') }}/" class="page-today-input2 form-control" id="page-today-input2" name="" placeholder="ページ名を入力(空欄OK)">
+              <input type="text" data-prefix="/{{ now|datetz('Y/m/d') }}/" class="page-today-input2 form-control" id="page-today-input2" name="" placeholder="{{ t('Input page name (optional)') }}">
             </div>
             <div class="col-xs-2">
-              <button type="submit" class="btn btn-primary">作成</button>
+              <button type="submit" class="btn btn-primary">{{ t('Create') }}</button>
             </div>
           </fieldset>
         </form>
@@ -31,13 +31,13 @@
         <form class="form-horizontal" id="create-page-under-tree" role="form">
           <fieldset>
             <div class="col-xs-12">
-              <h4><code>{{ parentPath(path) }}</code>以下に作成</h4>
+              <h4>{{ t('Create under', parentPath(path)) }}</h4>
             </div>
             <div class="col-xs-10">
-              <input type="text" value="{{ parentPath(path) }}" class="page-name-input form-control " placeholder="ページ名を入力" required>
+              <input type="text" value="{{ parentPath(path) }}" class="page-name-input form-control " placeholder="{{ t('Input page name') }}" required>
             </div>
             <div class="col-xs-2">
-              <button type="submit" class="btn btn-primary">作成</button>
+              <button type="submit" class="btn btn-primary">{{ t('Create') }}</button>
             </div>
           </fieldset>
         </form>
@@ -49,4 +49,3 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-

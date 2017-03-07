@@ -5,7 +5,6 @@ module.exports = function(crowi) {
 
   var aws = require('aws-sdk')
     , debug = require('debug')('crowi:lib:fileUploaderAws')
-    , Promise = require('bluebird')
     , Config = crowi.model('Config')
     , config = crowi.getConfig()
     , lib = {}
@@ -29,7 +28,7 @@ module.exports = function(crowi) {
   lib.uploadFile = function(filePath, contentType, fileStream, options) {
     var awsConfig = getAwsConfig();
     if (!Config.isUploadable(config)) {
-      return new Promise.reject(new Error('AWS is not configured.'));
+      return Promise.reject(new Error('AWS is not configured.'));
     }
 
     aws.config.update({

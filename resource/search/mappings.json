@@ -40,46 +40,80 @@
       "properties" : {
         "name": {
           "type": "string",
-          "analyzer": "autocomplete"
+          "analyzer": "autocomplete",
+          "include_in_all": false
         }
       }
     },
     "pages": {
       "properties" : {
         "path": {
-          "type" : "multi_field",
-          "fields" : {
-            "raw": {"type" : "string", "index" : "not_analyzed"},
-            "ja": {"type" : "string", "analyzer" : "kuromoji"},
-            "en": {"type" : "string", "analyzer" : "english"}
-          }
+          "type": "string",
+          "copy_to": ["path_raw", "path_ja", "path_en"],
+          "include_in_all": false,
+          "index": "not_analyzed"
+        },
+        "path_raw": {
+          "type": "string",
+          "analyzer": "standard",
+          "include_in_all": false
+        },
+        "path_ja": {
+          "type": "string",
+          "analyzer": "kuromoji",
+          "include_in_all": false
+        },
+        "path_en": {
+          "type": "string",
+          "analyzer": "english",
+          "include_in_all": false
         },
         "body": {
-          "type" : "multi_field",
-          "fields" : {
-            "ja": {"type" : "string", "analyzer" : "kuromoji"},
-            "en": {"type" : "string", "analyzer" : "english"}
-          }
+          "type": "string",
+          "copy_to": ["body_raw", "body_ja", "body_en"],
+          "include_in_all": false,
+          "index": "not_analyzed"
+        },
+        "body_raw": {
+          "type": "string",
+          "analyzer": "standard",
+          "include_in_all": false
+        },
+        "body_ja": {
+          "type": "string",
+          "analyzer": "kuromoji",
+          "include_in_all": false
+        },
+        "body_en": {
+          "type": "string",
+          "analyzer": "english",
+          "include_in_all": false
         },
         "username": {
-          "type": "string"
+          "type": "string",
+          "include_in_all": false
         },
         "comment_count": {
-          "type": "integer"
+          "type": "integer",
+          "include_in_all": false
         },
         "bookmark_count": {
-          "type": "integer"
+          "type": "integer",
+          "include_in_all": false
         },
         "like_count": {
-          "type": "integer"
+          "type": "integer",
+          "include_in_all": false
         },
         "created_at": {
           "type": "date",
-          "format": "dateOptionalTime"
+          "format": "dateOptionalTime",
+          "include_in_all": false
         },
         "updated_at": {
           "type": "date",
-          "format": "dateOptionalTime"
+          "format": "dateOptionalTime",
+          "include_in_all": false
         }
       }
     }

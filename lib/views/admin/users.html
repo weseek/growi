@@ -256,26 +256,7 @@
         </tbody>
       </table>
 
-      <ul class="pagination">
-
-        <li {% if pager.currentPage == 1 %}class="disabled"{% endif %}>
-          <a href="/admin/users?page={{ pager.previous|default(1) }}">&laquo;</a>
-        </li>
-        {% if pager.previousDots %}
-        <li><a href="#">...</a></li>
-        {% endif  %}
-        {% for page in pager.pages %}
-        <li {% if pager.currentPage == page %}class="active"{% endif %}>
-          <a href="/admin/users?page={{ page }}">{{ page }}</a>
-        </li>
-        {% endfor %}
-        {% if pager.nextDots %}
-        <li><a href="#">...</a></li>
-        {% endif  %}
-        <li {% if pager.currentPage == pager.pageCount %}class="disabled"{% endif %}>
-          <a href="/admin/users?page={{ pager.next|default(pager.pageCount) }}">&raquo;</a>
-        </li>
-      </ul>
+      {% include '../widget/pager.html' with {path: "/admin/users", pager: pager} %}
 
     </div>
   </div>

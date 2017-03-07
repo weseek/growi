@@ -129,7 +129,11 @@ gulp.task('css:sass', function() {
 });
 
 gulp.task('css:concat', ['css:sass'], function() {
-  return gulp.src([css.main, 'node_modules/highlight.js/styles/tomorrow-night.css'])
+  return gulp.src([
+      css.main,
+      'node_modules/highlight.js/styles/tomorrow-night.css',
+      'node_modules/diff2html/dist/diff2html.css',
+    ])
     .pipe(concat('crowi.css'))
     .pipe(gulp.dest(dirs.cssDist))
 });
