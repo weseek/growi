@@ -1,0 +1,36 @@
+# Logs
+logs
+*.log
+npm-debug.log.*
+
+# OS generated files #
+.DS_Store
+.Trash-*
+ehthumbs.db
+Icon?
+Thumbs.db
+
+# Node Files #
+/node_modules/
+/bower_components/
+npm-debug.log
+/npm-debug.log.*
+
+# Dist #
+/dist
+/lib
+/public/__build__/
+/src/*/__build__/
+/__build__/**
+/public/dist/
+/src/*/dist/
+/.awcache
+.webpack.json
+/compiled/
+
+# Doc #
+/doc/
+
+# IDE #
+.idea
+.vscode
