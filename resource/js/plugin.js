@@ -1,10 +1,17 @@
-const plugins = [
-  // require('crowi-plugin-...'),
-]
-
-const pluginEntries = [
-  // require('crowi-plugin-.../lib/client-entry'),
-];
+const plugins = {
+  // 'crowi-plugin-X': {
+  //   meta: require('crowi-plugin-X'),
+  //   entries: [
+  //     require('crowi-plugin-X/lib/client-entry')
+  //   ]
+  // }
+  'crowi-plugin-lsx': {
+    meta: require('crowi-plugin-lsx'),
+    entries: [
+      require('crowi-plugin-lsx/lib/client-entry')
+    ]
+  }
+}
 
 export default class CrowiPlugin {
 
@@ -17,9 +24,20 @@ export default class CrowiPlugin {
    * @memberof CrowiPlugin
    */
   installAll(crowi, crowiRenderer) {
-    pluginEntries.forEach((entry) => {
-      entry(crowi, crowiRenderer);
-    });
+    for (let pluginName of Object.keys(plugins)) {
+      let meta = plugins[pluginName].meta;
+      let entries = plugins[pluginName].entries;
+
+      // v1 is deprecated
+
+      // v2
+      console.log(meta);
+      if (2 === meta.pluginSchemaVersion) {
+        entries.forEach((entry) => {
+          entry(crowi, crowiRenderer);
+        });
+      }
+    }
   }
 
 }
