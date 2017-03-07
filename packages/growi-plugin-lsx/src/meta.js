@@ -1,6 +1,8 @@
 export default {
   pluginSchemaVersion: 2,
-  serverEntries: [],
+  serverEntries: [
+    './server-entry.js'
+  ],
   clientEntries: [
     './client-entry.js'
   ]
