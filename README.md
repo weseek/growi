@@ -32,7 +32,6 @@ More info are [here](https://github.com/crowi/crowi/wiki/Install-and-Configurati
 Don't use `master` branch because it is unstable but use released tag version expect when you want to contribute the project.
 `master` branch is prepared for v1.6. See [here](https://github.com/crowi/crowi/wiki/Roadmaps-v1.6) to know further info.
 
-
 Dependencies
 -------------
 
@@ -66,6 +65,29 @@ $ PASSWORD_SEED=somesecretstring MONGO_URI=mongodb://username:password@localhost
 * `SECRET_TOKEN`: A secret key for verifying the integrity of signed cookies.
 * `FILE_UPLOAD`: `aws` (default), `local`, `none`
 
+(Opt.) Install Plugins
+-----------------------
+
+Install plugins from github:
+
+    $ npm run install-plugin https://github.com/sopmeone/crowi-plugin-something.git
+
+Modify `plugin/plugin.js`:
+
+    const plugins = [
+      require('crowi-plugin-something')
+    ]
+
+Build plugins:
+
+    $ npm run webpack:plugin
+    
+After above process, rebooting Crowi is required.
+
+### CAUTION
+
+Plugins are DISABLED in default settings.  
+Change it on admin page.
 
 License
 ---------
