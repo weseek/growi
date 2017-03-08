@@ -1,0 +1,166 @@
+{
+  "Help": "Help",
+  "Edit": "Edit",
+  "Delete": "Delete",
+  "Move": "Move",
+  "Moved": "Moved",
+  "Like!": "Like!",
+  "Seen by": "Seen by",
+  "Cancel": "Cancel",
+  "Create": "Create",
+  "Admin": "Admin",
+  "New": "New",
+
+  "Update": "Update",
+  "Update Page": "Update Page",
+  "Warning": "Warning",
+
+  "Sign in": "Sign in",
+  "Sign up is here": "Sign up",
+  "Sign in is here": "Sign in",
+  "Sign up": "Sign up",
+  "Sign up with Google Account": "Sign up with Google Account",
+  "Sign in with Google Account": "Sign in with Google Account",
+  "Sign up with this Google Account": "Sign up with this Google Account",
+  "Example": "Example",
+  "Taro Yamada": "James Bond",
+
+  "List View": "List",
+  "Timeline View": "Timeline",
+  "Presentation Mode": "Presentation Mode",
+
+  "Created": "Created",
+  "Last updated": "Updated",
+
+  "Share": "Share",
+  "Share Link": "Share Link",
+  "Markdown Link": "Markdown Link",
+
+  "Unportalize": "Unportalize",
+
+  "View this version": "View this version",
+  "View diff": "View diff",
+
+  "User ID": "User ID",
+  "User Settings": "User Settings",
+  "User Information": "User Information",
+  "Basic Info": "Basic Info",
+  "Name": "Name",
+  "Email": "Email",
+  "Language": "Language",
+  "English": "English",
+  "Japanese": "Japanese",
+  "Set Profile Image": "Set Profile Image",
+  "Current Image": "Current Image",
+  "Delete Image": "Delete Image",
+  "Delete this image?": "Delete this image?",
+  "Updated": "Updated",
+  "Upload new image": "Upload new image",
+  "Google Setting": "Google Setting",
+  "Connected": "Connected",
+  "Disconnect": "Disconnect",
+
+  "Create today's": "Create today's ...",
+  "Memo": "memo",
+  "Input page name": "Input page name",
+  "Input page name (optional)": "Input page name (optional)",
+  "New Page": "New Page",
+  "Create under": "Create page under: <code>%s</code>",
+
+  "Table of Contents": "Table of Contents",
+
+  "Public": "Public",
+  "Anyone with the link": "Anyone with the link",
+  "Specified users only": "Specified users only",
+  "Just me": "Just me",
+  "Shareable link": "Shareable link",
+
+  "Show latest": "Show latest",
+  "Load latest": "Load latest",
+  "edited this page": "edited this page.",
+
+  "Deleted Pages": "Deleted Pages",
+  "Sign out": "Logout",
+
+  "page_register": {
+    "notice": {
+      "restricted": "Admin approval required.",
+      "restricted_defail": "Once the admin approves your sign up, you'll be able to access this wiki.",
+      "google_account_continue": "Enter your user ID, name and password to continue."
+    },
+    "form_help": {
+      "email": "You must have email address which listed below to sign up to this wiki.",
+      "password": "Your password must be at least 6 characters long.",
+      "user_id": "The URL of pages you create will contain your User ID. Your User ID can consist of letters, numbers, and some symbols."
+    }
+  },
+
+  "page_me": {
+    "form_help": {
+      "profile_image1": "Image upload settings not completed.",
+      "profile_image2": "Set up AWS or enable local uploads.",
+      "google_connect1": "With Google Connect, you can sign in with your Google Account.",
+      "google_connect2": "Only Google Apps accounts with the following email addresses are connectable Google accounts:",
+      "google_disconnect1": "If you disconnect your Google account, you will be unable to sign in using Google Authentication",
+      "google_disconnect2": "After disconnecting your Google account, you can sign in normally using your email and password"
+    }
+  },
+  "page_me_apitoken": {
+    "notice": {
+      "apitoken_issued": "API Token is not issued.",
+      "update_token1": "You can update to generate a new API Token.",
+      "update_token2": "You will need to update the API Token in any existing processes."
+    },
+    "form_help": {
+    }
+  },
+
+  "Password": "Password",
+  "Password Settings": "Password Settings",
+  "Set new Password": "Set new Password",
+  "Update Password": "Update Password",
+  "Current password": "Current password",
+  "New password": "New password",
+  "Re-enter new password": "Re-enter new password",
+  "Please set a password": "Please set a password",
+  "You can sign in with email and password": "You can sign in with <code>%s</code> and password",
+
+  "API Settings": "API Settings",
+  "API Token Settings": "API Token Settings",
+  "Current API Token": "Current API Token",
+  "Update API Token": "Update API Token",
+
+  "page_page": {
+      "notice": {
+          "version": "This is not the current version.",
+          "moved": "This page was moved from <code>%s</code>",
+          "restricted": "Access to this page is restricted"
+      }
+  },
+
+  "Rename page": "Rename page",
+  "New page name": "New page name",
+  "Current page name": "Current page name",
+  "Redirect": "Redirect",
+  "modal_rename": {
+    "help": {
+      "redirect": "Redirect to new page if someone accesses <code>%s</code>"
+    }
+  },
+
+  "modal_help": {
+      "basic": {
+          "title": "Basics",
+          "body1": "There are 2 types of pages: List pages (showing lists of links to other pages) and normal pages.",
+          "body2": "Pages that end with a slash / are List pages for anything following the slash.",
+          "body3": "You can view older versions of a page from the History tab. Any changes made will be stored here."
+      },
+      "tips": {
+          "title": "Quick Tips on Editing",
+          "body1": "Use sections and subsections to make it easier for your friends to read your pages."
+      },
+      "markdown": {
+          "title": "Markdown Rules"
+      }
+  }
+}

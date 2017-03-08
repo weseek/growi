@@ -67,7 +67,7 @@
   <ul class="nav nav-tabs hidden-print">
     <li><a>Create: {{ path }}</a></li>
     <li class="dropdown pull-right">
-      <a href="#" onclick="history.back();"><i class="fa fa-times"></i> キャンセル</a>
+      <a href="#" onclick="history.back();"><i class="fa fa-times"></i> {{ t('Cancel') }}</a>
     </li>
   </ul>
   <div class="tab-content">
@@ -107,7 +107,7 @@
       </a>
     </li>
 
-    <li {% if req.body.pageForm %}class="active"{% endif %}><a href="#edit-form" data-toggle="tab"><i class="fa fa-pencil-square-o"></i> Edit</a></li>
+    <li {% if req.body.pageForm %}class="active"{% endif %}><a href="#edit-form" data-toggle="tab"><i class="fa fa-pencil-square-o"></i> {{ t('Edit') }}</a></li>
 
 
     <li class="dropdown pull-right">
@@ -115,11 +115,11 @@
         <i class="fa fa-wrench"></i> <span class="caret"></span>
       </a>
       <ul class="dropdown-menu">
-       <li><a href="#" data-target="#renamePage" data-toggle="modal"><i class="fa fa-share"></i> 移動</a></li>
-       <li><a href="?presentation=1" class="toggle-presentation"><i class="fa fa-arrows-alt"></i> プレゼンモード (beta)</a></li>
+       <li><a href="#" data-target="#renamePage" data-toggle="modal"><i class="fa fa-share"></i> {{ t('Move') }}</a></li>
+       <li><a href="?presentation=1" class="toggle-presentation"><i class="fa fa-arrows-alt"></i> {{ t('Presentation Mode') }} (beta)</a></li>
        {% if isDeletablePage() %}
        <li class="divider"></li>
-       <li class=""><a href="#" data-target="#deletePage" data-toggle="modal"><i class="fa fa-trash-o text-danger"></i> 削除</a></li>
+       <li class=""><a href="#" data-target="#deletePage" data-toggle="modal"><i class="fa fa-trash-o text-danger"></i> {{ t('Delete') }}</a></li>
        {% endif %}
       </ul>
     </li>
@@ -132,12 +132,12 @@
   <div class="tab-content wiki-content">
   {% if req.query.renamed and not page.isDeleted() %}
   <div class="alert alert-info">
-    <strong>移動しました: </strong> このページは <code>{{ req.query.renamed }}</code> から移動しました。
+    <strong>{{ t('Moved') }}: </strong> {{ t('page_page.notice.moved', req.query.renamed) }}
   </div>
   {% endif %}
   {% if not page.isLatestRevision() %}
   <div class="alert alert-warning">
-    <strong>注意: </strong> これは現在の版ではありません。 <i class="fa fa-magic"></i> <a href="{{ page.path }}">最新のページを表示</a>
+    <strong>{{ t('Warning') }}: </strong> {{ t('page_page.notice.version') }} <i class="fa fa-magic"></i> <a href="{{ page.path }}">{{ t('Show latest') }}</a>
   </div>
   {% endif %}
 
@@ -154,7 +154,7 @@
     {# formatted text #}
     <div class="tab-pane {% if not req.body.pageForm %}active{% endif %}" id="revision-body">
       <div class="revision-toc" id="revision-toc">
-        <a data-toggle="collapse" data-parent="#revision-toc" href="#revision-toc-content" class="revision-toc-head collapsed">目次</a>
+        <a data-toggle="collapse" data-parent="#revision-toc" href="#revision-toc-content" class="revision-toc-head collapsed">{{ t('Table of Contents') }}</a>
 
       </div>
       <div class="wiki" id="revision-body-content"></div>
@@ -168,41 +168,16 @@
     {% endif %}
 
     {# raw revision history #}
+    {% if not page %}
+    {% else %}
     <div class="tab-pane revision-history" id="revision-history">
-      <h1><i class="fa fa-history"></i> History</h1>
-      {% if not page %}
-      {% else %}
-      <div class="revision-history-list">
-        {% for t in tree %}
-        <div class="revision-hisory-outer">
-          <img src="{{ t.author|picture }}" class="picture picture-rounded">
-          <div class="revision-history-main">
-            <div class="revision-history-author">
-              <strong>{% if t.author %}{{ t.author.username }}{% else %}-{% endif %}</strong>
-            </div>
-            <div class="revision-history-comment">
-            </div>
-            <div class="revision-history-meta">
-              {{ t.createdAt|datetz('Y-m-d H:i:s') }}
-              <br>
-              <a href="?revision={{ t._id.toString() }}"><i class="fa fa-history"></i> このバージョンを見る</a>
-              <a class="diff-view" data-revision-id="{{ t._id.toString() }}">
-                <i id="diff-icon-{{ t._id.toString() }}" class="fa fa-arrow-circle-right"></i> 差分を見る
-              </a>
-              <pre class="" id="diff-display-{{ t._id.toString()}}" style="display: none"></pre>
-            </div>
-          </div>
-        </div>
-        {% endfor %}
-      </div>
-      {% endif %}
-
     </div>
+    {% endif %}
 
   </div>
   {% endif %}
 
-<div id="notifPageEdited" class="fk-notif fk-notif-danger"><i class="fa fa-exclamation-triangle"></i> <span class="edited-user"></span>さんがこのページを編集しました。 <a href="javascript:location.reload();"><i class="fa fa-angle-double-right"></i> 最新版を読み込む</a></div>
+  <div id="notifPageEdited" class="fk-notif fk-notif-danger"><i class="fa fa-exclamation-triangle"></i> <span class="edited-user"></span> {{ t('edited this page') }} <a href="javascript:location.reload();"><i class="fa fa-angle-double-right"></i> {{ t('Load latest') }}</a></div>
 </div>
 
 {% block content_main_after %}

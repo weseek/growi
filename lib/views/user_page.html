@@ -36,9 +36,11 @@
       <li>
         <a href="#user-created-list" data-toggle="tab"><i class="fa fa-pencil"></i> Recent Created</a>
       </li>
+      {% if user._id.toString() == pageUser._id.toString() %}
       <li>
-        <a href="/me"><i class="fa fa-gears"></i> Setting</a>
+        <a href="/me"><i class="fa fa-gears"></i> Settings</a>
       </li>
+      {% endif %}
     </ul>
     <div class="user-page-content-tab tab-content">
 

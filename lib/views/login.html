@@ -1,6 +1,6 @@
 {% extends 'layout/single-nologin.html' %}
 
-{% block html_title %}Login · {% endblock %}
+{% block html_title %}{{ t('Sign in') }} · {% endblock %}
 
 {% block content_main %}
 
@@ -18,7 +18,7 @@
 <div class="login-dialog flipper {% if req.query.register or req.body.registerForm or isRegistering or googleId %}to-flip{% endif %}" id="login-dialog">
 
   <div class="login-dialog-inner front">
-    <h2>ログイン</h2>
+    <h2>{{ t('Sign in') }}</h2>
 
     <div id="login-form-errors">
       {% set message = req.flash('warningMessage') %}
@@ -50,17 +50,17 @@
       </div>
 
       <input type="hidden" name="_csrf" value="{{ csrf() }}">
-      <input type="submit" class="btn btn-primary btn-lg btn-block" value="Login">
+      <input type="submit" class="btn btn-primary btn-lg btn-block" value="{{ t('Sign in') }}">
     </form>
 
     <hr>
 
     <div class="row">
       {% if googleLoginEnabled() %}
-      <div class="col-md-6">
-        <p>Google でログイン</p>
+      <div class="col-md-8">
+        <p>{{ t('Sign in by Google Account') }}</p>
         <form role="form" action="/login/google" method="get">
-          <button type="submit" class="btn btn-block btn-google"><i class="fa fa-google-plus-square"></i> Login</button>
+          <button type="submit" class="btn btn-block btn-google"><i class="fa fa-google-plus-square"></i> {{ t('Sign in') }}</button>
           <input type="hidden" name="_csrf" value="{{ csrf() }}">
         </form>
       </div>
@@ -68,19 +68,19 @@
     </div>
 
     {% if config.crowi['security:registrationMode'] != 'Closed' %}
-    <p class="bottom-text"><a href="#register" id="register"><i class="fa fa-pencil"></i> 新規登録はこちら</a></p>
+    <p class="bottom-text"><a href="#register" id="register"><i class="fa fa-pencil"></i> {{ t('Sign up is here') }}</a></p>
     {% endif %}
   </div>
 
   {% if config.crowi['security:registrationMode'] != 'Closed' %}
   <div class="register-dialog-inner back">
 
-    <h2>新規登録</h2>
+    <h2>{{ t('Sign up') }}</h2>
 
     {% if config.crowi['security:registrationMode'] == 'Restricted' %}
     <p class="alert alert-warning">
-    この Wiki への新規登録は制限されています。<br>
-    利用を開始するには、新規登録後、管理者による承認が必要です。
+      {{ t('page_register.notice.restricted') }}<br>
+      {{ t('page_register.notice.restricted_defail') }}
     </p>
     {% endif %}
 
@@ -91,8 +91,8 @@
         <img src="{{ googleImage }}" class="picture picture-rounded picture-lg">
       </p>
       {% endif %}
-      <code>{{ googleEmail }}</code> この Google アカウントで登録します<br>
-      ユーザーID、名前、パスワードを決めて登録を継続してください。
+      <code>{{ googleEmail }}</code> {{ t('page_register with this Google Account') }}<br>
+      {{ t('page_register.notice.google_account_continue') }}
     </div>
     {% endif %}
 
@@ -120,30 +120,30 @@
     <form role="form" method="post" action="/register" id="register-form">
       <input type="hidden" class="form-control" name="registerForm[googleId]" value="{{ googleId|default(req.body.registerForm.googleId) }}">
 
-      <label>ユーザーID</label>
+      <label>{{ t('User ID') }}</label>
       <div class="input-group" id="input-group-username">
         <span class="input-group-addon"><strong>@</strong></span>
-        <input type="text" class="form-control" placeholder="記入例: taroyama" name="registerForm[username]" value="{{ req.body.registerForm.username }}" required>
+        <input type="text" class="form-control" placeholder="{{ t('Example') }}: taroyama" name="registerForm[username]" value="{{ req.body.registerForm.username }}" required>
       </div>
       <p class="help-block">
       <span id="help-block-username" class="text-danger"></span>
-      ユーザーIDは、ユーザーページのURLなどに利用されます。半角英数字と一部の記号のみ利用できます。
+      {{ t('page_register.form_help.user_id') }}
       </p>
 
-      <label>名前</label>
+      <label>{{ t('Name') }}</label>
       <div class="input-group">
         <span class="input-group-addon"><i class="fa fa-user"></i></span>
-        <input type="text" class="form-control" placeholder="記入例: 山田 太郎" name="registerForm[name]" value="{{ googleName|default(req.body.registerForm.name) }}" required>
+        <input type="text" class="form-control" placeholder="{{ t('Example') }}: {{ t('Taro Yamada') }}" name="registerForm[name]" value="{{ googleName|default(req.body.registerForm.name) }}" required>
       </div>
 
-      <label >メールアドレス</label>
+      <label>{{ t('Email') }}</label>
       <div class="input-group">
         <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
         <input type="email" class="form-control" placeholder="E-mail" name="registerForm[email]" value="{{ googleEmail|default(req.body.registerForm.email) }}" required>
       </div>
       {% if config.crowi['security:registrationWhiteList'] && config.crowi['security:registrationWhiteList'].length %}
       <p class="help-block">
-      この Wiki では以下のメールアドレスのみ登録可能です。
+        {{ t('page_register.form_help.email') }}
       </p>
       <ul>
         {% for em in config.crowi['security:registrationWhiteList'] %}
@@ -152,20 +152,20 @@
       </ul>
       {% endif %}
 
-      <label>パスワード</label>
+      <label>{{ t('Password') }}</label>
       <div class="input-group">
         <span class="input-group-addon"><i class="fa fa-key"></i></span>
         <input type="password" class="form-control" placeholder="Password" name="registerForm[password]" required>
       </div>
       <p class="help-block">
-      パスワードは6文字以上の半角英数字または記号
+        {{ t('page_register.form_help.password') }}
       </p>
 
       {% if googleImage %}
         <input type="hidden" name="registerForm[googleImage]" value="{{ googleImage }}">
       {% endif  %}
       <input type="hidden" name="_csrf" value="{{ csrf() }}">
-      <input type="submit" class="btn btn-primary btn-lg btn-block" value="新規登録">
+      <input type="submit" class="btn btn-primary btn-lg btn-block" value="{{ t('Sign up') }}">
     </form>
 
     <hr>
@@ -173,16 +173,16 @@
     <div class="row">
       {% if googleLoginEnabled() %}
       <div class="col-md-6">
-        <p>Google で登録</p>
+        <p>{{ t('Sign up with Google Account') }}</p>
         <form role="form" method="post" action="/register/google">
           <input type="hidden" name="_csrf" value="{{ csrf() }}">
-          <button type="submit" class="btn btn-block btn-google"><i class="fa fa-google-plus-square"></i> Login</button>
+          <button type="submit" class="btn btn-block btn-google"><i class="fa fa-google-plus-square"></i> {{ t('Login') }}</button>
         </form>
       </div>
       {% endif %}
     </div>
 
-    <p class="bottom-text"><a href="#login" id="login"><i class="fa fa-sign-out"></i> ログインはこちら</a></p>
+    <p class="bottom-text"><a href="#login" id="login"><i class="fa fa-sign-out"></i> {{ t('Sign in is here') }}</a></p>
   </div>
   {% endif %} {# if registrationMode == Closed #}
 
