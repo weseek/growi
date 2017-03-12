@@ -13,19 +13,27 @@ class Lsx {
 
     // TODO try-catch
 
-    // create {Key: Value} Objects
-    const splittedArgs = args.split(',');
+    // initialize
+    let lsxPrefix = args || currentPath;
     let lsxOptions = {};
-    splittedArgs.forEach((arg) => {
-      // see https://regex101.com/r/pYHcOM/1
-      const match = arg.match(/([^=]+)=?(.+)?/);
-      const value = match[2] || true;
-      lsxOptions[match[1]] = value;
-    });
 
-    // determine prefix
-    // 'prefix=foo' pattern or the first argument
-    const lsxPrefix = lsxOptions.prefix || splittedArgs[0];
+    // if args is a String like 'key1=value1, key2=value2, ...'
+    const splittedArgs = args.split(',');
+    if (splittedArgs.length > 1) {
+      splittedArgs.forEach((arg) => {
+        arg = arg.trim();
+
+        // see https://regex101.com/r/pYHcOM/1
+        const match = arg.match(/([^=]+)=?(.+)?/);
+        const value = match[2] || true;
+        lsxOptions[match[1]] = value;
+      });
+
+      // determine prefix
+      // 'prefix=foo' pattern or the first argument
+      lsxPrefix = lsxOptions.prefix || splittedArgs[0];
+    }
+
     // resolve path
     const pagePath = path.resolve(currentPath, lsxPrefix);
     const queryOptions = {}

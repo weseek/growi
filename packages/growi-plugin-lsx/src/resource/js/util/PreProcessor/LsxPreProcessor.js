@@ -33,21 +33,24 @@ export class LsxPreProcessor {
     // get and replace
     crowi.apiGet('/plugins/lsx', {currentPath: currentPath, args: lsxArgs})
       .then((res) => {
-        // get original content
-        const orgContent = this.crowiForJquery.getRevisionBodyContent();
-
-        // create pattern from escaped html
-        const tempHtmlRegexp = new RegExp(this.regexpEscape(tempHtml), 'g');
-
-        let replacedContent;
         if (res.ok) {
-          replacedContent = orgContent.replace(tempHtmlRegexp, res.html)
+          return res.html;
         }
         else {
-          const errorHtml = this.createErrorHtml(tagExpression, res.error);
-          replacedContent = orgContent.replace(tempHtmlRegexp, errorHtml)
+          return Promise.reject({message: res.error});
         }
-
+      })
+      .catch((reason) => {
+        return this.createErrorHtml(tagExpression, reason);
+      })
+      // finally replace contents
+      .then((html) => {
+        // create pattern from escaped html
+        const tempHtmlRegexp = new RegExp(this.regexpEscape(tempHtml), 'g');
+        // create replaced content
+        const orgContent = this.crowiForJquery.getRevisionBodyContent();
+        const replacedContent = orgContent.replace(tempHtmlRegexp, html);
+        // replace Element.html()
         this.crowiForJquery.replaceRevisionBodyContent(replacedContent);
       });
   }
@@ -57,9 +60,9 @@ export class LsxPreProcessor {
         + `<span class="lsx-blink">${tagExpression}</span>`;
   }
 
-  createErrorHtml(tagExpression, error) {
+  createErrorHtml(tagExpression, message) {
     return `<i class="fa fa-exclamation-triangle fa-fw"></i>`
-        + `${tagExpression} (-> <small>${error}</small>)`;
+        + `${tagExpression} (-> <small>${message}</small>)`;
   }
 
   regexpEscape(s) {
