@@ -1,4 +1,5 @@
-const stringReplaceAsync = require('string-replace-async');
+import { LsxCache } from '../LsxCache';
+import { LsxLoadingContext } from '../LsxLoadingContext';
 
 // TODO change to PostProcessor
 export class LsxPreProcessor {
@@ -15,57 +16,46 @@ export class LsxPreProcessor {
     return markdown
       // see: https://regex101.com/r/NQq3s9/2
       .replace(/\$lsx\((.*)\)/g, (all, group1) => {
+        const tagExpression = all;
+        const lsxArgs = group1;
 
-        const storedItem = sessionStorage.getItem(all);
-        if (storedItem) {
-          return storedItem;
+        // get cache container obj from sessionStorage
+        let lsxCache = sessionStorage.getItem('lsx-cache');
+        if (lsxCache) {
+          lsxCache = Object.create(LsxCache, lsxCache);
+          const cache = lsxCache.getItem(tagExpression);
+          // check cache exists
+          if (cache) {
+            return cache;
+          }
         }
 
-        const tempHtml = this.createLoadingHtml(all);
+        const renderId = 'lsx-' + this.createRandomStr(8);
 
-        this.replaceLater(tempHtml, currentPath, all, group1);
+        // store contexts
+        let contexts = JSON.parse(sessionStorage.getItem('lsx-loading-contexts')) || {};
+        contexts[renderId] = new LsxLoadingContext(tagExpression, currentPath, lsxArgs);
+        sessionStorage.setItem('lsx-loading-contexts', JSON.stringify(contexts));
 
-        return tempHtml;
+        return this.createReactTargetDom(renderId, tagExpression);
       });
   }
 
-  replaceLater(tempHtml, currentPath, tagExpression, lsxArgs) {
-    // get and replace
-    crowi.apiGet('/plugins/lsx', {currentPath: currentPath, args: lsxArgs})
-      .then((res) => {
-        if (res.ok) {
-          return res.html;
-        }
-        else {
-          return Promise.reject({message: res.error});
-        }
-      })
-      .catch((reason) => {
-        return this.createErrorHtml(tagExpression, reason);
-      })
-      // finally replace contents
-      .then((html) => {
-        // create pattern from escaped html
-        const tempHtmlRegexp = new RegExp(this.regexpEscape(tempHtml), 'g');
-        // create replaced content
-        const orgContent = this.crowiForJquery.getRevisionBodyContent();
-        const replacedContent = orgContent.replace(tempHtmlRegexp, html);
-        // replace Element.html()
-        this.crowiForJquery.replaceRevisionBodyContent(replacedContent);
-      });
+  createReactTargetDom(renderId, tagExpression) {
+    return `<div id="${renderId}" />`;
   }
 
-  createLoadingHtml(tagExpression) {
-    return `<i class="fa fa-spinner fa-pulse fa-fw"></i>`
-        + `<span class="lsx-blink">${tagExpression}</span>`;
+  /**
+   * @see http://qiita.com/ryounagaoka/items/4736c225bdd86a74d59c
+   * @param {number} length
+   * @return random strings
+   */
+  createRandomStr(length) {
+    const bag = "abcdefghijklmnopqrstuvwxyz0123456789";
+    let generated = "";
+    for (var i = 0; i < length; i++) {
+      generated += bag[Math.floor(Math.random() * bag.length)];
+    }
+    return generated;
   }
-
-  createErrorHtml(tagExpression, message) {
-    return `<i class="fa fa-exclamation-triangle fa-fw"></i>`
-        + `${tagExpression} (-> <small>${message}</small>)`;
-  }
-
-  regexpEscape(s) {
-    return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-  };
 }
