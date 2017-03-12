@@ -1,7 +1,7 @@
-const debug = require('debug')('crowi-plugin:lsx:util:lsx');
+const debug = require('debug')('crowi-plugin:lsx:util:LsxPageListRenderer');
 const path = require('path');
 
-class Lsx {
+class LsxPageListRenderer {
 
   constructor(crowi, app) {
     this.crowi = crowi;
@@ -61,4 +61,4 @@ class Lsx {
 
 }
 
-module.exports = Lsx;
+module.exports = LsxPageListRenderer;
