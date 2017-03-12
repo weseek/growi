@@ -3,6 +3,11 @@
  */
 class BasicInterceptor {
 
+  constructor(crowi, app) {
+    this.crowi = crowi;
+    this.app = app;
+  }
+
   /**
    * getter for id
    */
