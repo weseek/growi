@@ -5,6 +5,7 @@ export default (crowi, crowiRenderer) => {
   require('./resource/css/index.css');
 
   // add preprocessor
-  crowiRenderer.preProcessors = crowiRenderer.preProcessors.concat(
-        crowiRenderer.preProcessors, [new LsxPreProcessor()]);
+  crowiRenderer.preProcessors = crowiRenderer.preProcessors.concat([
+    new LsxPreProcessor(crowi),
+  ]);
 }

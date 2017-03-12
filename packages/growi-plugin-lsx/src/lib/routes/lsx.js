@@ -3,19 +3,20 @@ module.exports = (crowi, app) => {
     , path = require('path')
     , Lsx = require('../util/Lsx')
     , lsx = new Lsx(crowi, app)
+    , ApiResponse = crowi.require('../util/apiResponse')
     , actions = {};
 
   actions.renderHtml = (req, res) => {
     var currentPath = req.query.currentPath;
     var args = req.query.args;
 
-    lsx.renderHtml
+    lsx.renderHtml(req.user, currentPath, args)
       .then((html) => {
-        res.send(html);
+        return res.json(ApiResponse.success({html}));
       })
       .catch((err) => {
         debug('Error on rendering lsx.renderHtml', err);
-        res.send(err);
+        return res.json(ApiResponse.error(err));
       });
   }
 
