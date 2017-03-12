@@ -3,6 +3,7 @@
  */
 
 import axios from 'axios'
+import InterceptorManager from '../../../lib/util/interceptorManager';
 
 export default class Crowi {
   constructor(context, window) {
@@ -16,6 +17,8 @@ export default class Crowi {
     this.apiGet = this.apiGet.bind(this);
     this.apiPost = this.apiPost.bind(this);
     this.apiRequest = this.apiRequest.bind(this);
+
+    this.interceptorManager = new InterceptorManager();
 
     // FIXME
     this.me = context.me;
