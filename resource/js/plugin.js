@@ -11,10 +11,10 @@ export default class CrowiPlugin {
 
   /**
    * process plugin entry
-   * 
+   *
    * @param {Crowi} crowi
    * @param {CrowiRenderer} crowiRenderer
-   * 
+   *
    * @memberof CrowiPlugin
    */
   installAll(crowi, crowiRenderer) {
