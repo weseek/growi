@@ -21,7 +21,9 @@
     line-height: 1.6em;
     font-size: 15px;
   }
+}
 
+.page-list, .content-main {
   .page-list-ul {
     padding-left: 0;
 
@@ -51,6 +53,8 @@
       }
 
       > span.page-list-meta {
+        font-size: .9em;
+        color: #999;
       }
     }
   }
