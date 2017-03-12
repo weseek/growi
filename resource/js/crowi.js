@@ -745,6 +745,14 @@ $(function() {
   });
 });
 
+Crowi.getRevisionBodyContent = function() {
+  return $('#revision-body-content').html();
+}
+
+Crowi.replaceRevisionBodyContent = function(html) {
+  $('#revision-body-content').html(html);
+}
+
 Crowi.findHashFromUrl = function(url)
 {
   var match;

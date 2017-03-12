@@ -28,6 +28,13 @@ export default class Crowi {
     this.recoverData();
   }
 
+  /**
+   * @return {Object} window.Crowi (/resource/js/crowi.js)
+   */
+  getCrowiForJquery() {
+    return window.Crowi;
+  }
+
   getContext() {
     return context;
   }

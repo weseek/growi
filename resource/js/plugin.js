@@ -12,8 +12,8 @@ export default class CrowiPlugin {
   /**
    * process plugin entry
    *
-   * @param {Crowi} crowi
-   * @param {CrowiRenderer} crowiRenderer
+   * @param {Crowi} crowi Crowi context class
+   * @param {CrowiRenderer} crowiRenderer CrowiRenderer
    *
    * @memberof CrowiPlugin
    */
