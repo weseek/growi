@@ -25,7 +25,15 @@ var config = {
         use: [{
           loader: 'babel-loader',
         }]
-      }
+      },
+      {
+        test: /\.css$/,
+        use: ['to-string-loader', 'css-loader'],
+      },
+      {
+        test: /\.scss$/,
+        use: ['to-string-loader', 'css-loader', 'sass-loader'],
+      },
     ]
   },
   plugins: []
