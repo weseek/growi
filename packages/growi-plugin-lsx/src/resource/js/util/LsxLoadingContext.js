@@ -3,14 +3,16 @@
  */
 export class LsxLoadingContext {
 
+  currentPagePath;
   tagExpression;
-  currentPath;
+  fromPagePath;
   lsxArgs;
 
-  constructor(tagExpression, currentPath, lsxArgs) {
-    this.tagExpression = tagExpression;
-    this.currentPath = currentPath;
-    this.lsxArgs = lsxArgs;
+  constructor(obj) {
+    this.currentPagePath = obj.currentPagePath;
+    this.tagExpression = obj.tagExpression;
+    this.fromPagePath = obj.fromPagePath;
+    this.lsxArgs = obj.lsxArgs;
   }
 
 }

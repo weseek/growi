@@ -1,7 +1,7 @@
 import { LsxCache } from '../LsxCache';
 import { LsxLoadingContext } from '../LsxLoadingContext';
 
-// TODO change to PostProcessor
+// TODO change to PreInterceptor
 export class LsxPreProcessor {
 
   constructor(crowi) {
@@ -11,7 +11,9 @@ export class LsxPreProcessor {
 
   process(markdown) {
     // get current path from window.location
-    let currentPath = window.location.pathname;
+    const currentPagePath = window.location.pathname;
+    // TODO retrieve from args for interceptor
+    const fromPagePath = currentPagePath;
 
     return markdown
       // see: https://regex101.com/r/NQq3s9/2
@@ -34,7 +36,7 @@ export class LsxPreProcessor {
 
         // store contexts
         let contexts = JSON.parse(sessionStorage.getItem('lsx-loading-contexts')) || {};
-        contexts[renderId] = new LsxLoadingContext(tagExpression, currentPath, lsxArgs);
+        contexts[renderId] = new LsxLoadingContext({currentPagePath, tagExpression, fromPagePath, lsxArgs});
         sessionStorage.setItem('lsx-loading-contexts', JSON.stringify(contexts));
 
         return this.createReactTargetDom(renderId, tagExpression);

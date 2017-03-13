@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import BasicInterceptor from '../../../../lib/util/BasicInterceptor';
 
 import { Lsx } from '../../components/Lsx';
+import { LsxLoadingContext } from '../LsxLoadingContext';
 
 /**
  * The interceptor for lsx
@@ -22,7 +23,10 @@ export class LsxPostRenderInterceptor extends BasicInterceptor {
    * @inheritdoc
    */
   isInterceptWhen(contextName) {
-    return contextName === 'postRenderPreview';
+    return (
+      contextName === 'postRender' ||
+      contextName === 'postRenderPreview'
+    );
   }
 
   /**
@@ -35,13 +39,15 @@ export class LsxPostRenderInterceptor extends BasicInterceptor {
       const elem = document.getElementById(renderId);
 
       if (elem) {
-        const context = contexts[renderId];
-        const props = Object.assign(context, {crowi: this.crowi});
+        const context = new LsxLoadingContext(contexts[renderId]);
 
         // render
         ReactDOM.render(
           <Lsx crowi={this.crowi}
-              tagExpression={context.tagExpression} currentPath={context.currentPath} lsxArgs={context.lsxArgs} />,
+              currentPagePath={context.currentPagePath}
+              tagExpression={context.tagExpression}
+              fromPagePath={context.fromPagePath}
+              lsxArgs={context.lsxArgs} />,
           elem
         );
       }

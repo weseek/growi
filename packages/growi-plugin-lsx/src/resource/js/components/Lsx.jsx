@@ -14,7 +14,10 @@ export class Lsx extends React.Component {
   }
 
   componentDidMount() {
-    this.props.crowi.apiGet('/plugins/lsx', {currentPath: this.props.currentPath, args: this.props.lsxArgs})
+    const fromPagePath = this.props.fromPagePath;
+    const args = this.props.lsxArgs;
+
+    this.props.crowi.apiGet('/plugins/lsx', {fromPagePath, args})
       .then((res) => {
         if (res.ok) {
           this.setState({ html: res.html });
@@ -40,15 +43,15 @@ export class Lsx extends React.Component {
     if (this.state.isLoading) {
       return (
         <div>
-          <i class="fa fa-spinner fa-pulse fa-fw"></i>
-          <span class="lsx-blink">{this.props.tagExpression}</span>
+          <i className="fa fa-spinner fa-pulse fa-fw"></i>
+          <span className="lsx-blink">{this.props.tagExpression}</span>
         </div>
       );
     }
     if (this.isError) {
       return (
         <div>
-          <i class="fa fa-exclamation-triangle fa-fw"></i>
+          <i className="fa fa-exclamation-triangle fa-fw"></i>
           {this.props.tagExpression} (-> <small>{this.state.message})</small>
         </div>
       )
@@ -62,7 +65,8 @@ export class Lsx extends React.Component {
 
 Lsx.propTypes = {
   crowi: React.PropTypes.object.isRequired,
+  currentPagePath: React.PropTypes.string,
   tagExpression: React.PropTypes.string.isRequired,
-  currentPath: React.PropTypes.string.isRequired,
+  fromPagePath: React.PropTypes.string.isRequired,
   lsxArgs: React.PropTypes.string.isRequired,
 };

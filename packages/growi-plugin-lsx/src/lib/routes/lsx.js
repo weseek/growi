@@ -7,10 +7,7 @@ module.exports = (crowi, app) => {
     , actions = {};
 
   actions.renderHtml = (req, res) => {
-    var currentPath = req.query.currentPath;
-    var args = req.query.args;
-
-    lsx.renderHtml(req.user, currentPath, args)
+    lsx.renderHtml(req.user, req.query.fromPagePath, req.query.args)
       .then((html) => {
         return res.json(ApiResponse.success({html}));
       })

@@ -8,13 +8,13 @@ class LsxPageListRenderer {
     this.app = app;
   }
 
-  renderHtml(user, currentPath, args) {
-    debug(`rendering html for currentPath='${currentPath}', args='${args}'`);
+  renderHtml(user, fromPagePath, args) {
+    debug(`rendering html for fromPagePath='${fromPagePath}', args='${args}'`);
 
     // TODO try-catch
 
     // initialize
-    let lsxPrefix = args || currentPath;
+    let lsxPrefix = args || fromPagePath;
     let lsxOptions = {};
 
     // if args is a String like 'key1=value1, key2=value2, ...'
@@ -35,7 +35,7 @@ class LsxPageListRenderer {
     }
 
     // resolve path
-    const pagePath = path.resolve(currentPath, lsxPrefix);
+    const pagePath = path.resolve(fromPath, lsxPrefix);
     const queryOptions = {}
 
     // find pages
