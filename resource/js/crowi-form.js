@@ -64,9 +64,10 @@ $(function() {
   function renderPreview() {
     var content = $('#form-body').val();
     var parsedHTML = crowiRenderer.render(content);
-    $('#preview-body').html(parsedHTML);
 
-    crowi.interceptorManager.process('postRenderPreview');
+    $('#preview-body').html(parsedHTML)
+      .promise()
+      .done(crowi.interceptorManager.process('postRenderPreview'));
   }
 
   // for initialize preview
