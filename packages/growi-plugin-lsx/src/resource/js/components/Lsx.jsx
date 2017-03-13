@@ -14,8 +14,19 @@ export class Lsx extends React.Component {
   }
 
   componentDidMount() {
-    const fromPagePath = this.props.fromPagePath;
-    const args = this.props.lsxArgs;
+    if (this.props.lsxCache) {
+      this.setState({
+        isLoading: false,
+        html: this.props.lsxCache.html,
+        isError: this.props.lsxCache.isError,
+        errorMessage: this.props.lsxCache.errorMessage,
+      });
+      return;
+    }
+
+    const lsxContext = this.props.lsxContext;
+    const fromPagePath = lsxContext.fromPagePath;
+    const args = lsxContext.lsxArgs;
 
     this.props.crowi.apiGet('/plugins/lsx', {fromPagePath, args})
       .then((res) => {
@@ -40,19 +51,21 @@ export class Lsx extends React.Component {
   }
 
   render() {
+    const lsxContext = this.props.lsxContext;
+
     if (this.state.isLoading) {
       return (
         <div>
           <i className="fa fa-spinner fa-pulse fa-fw"></i>
-          <span className="lsx-blink">{this.props.tagExpression}</span>
+          <span className="lsx-blink">{lsxContext.tagExpression}</span>
         </div>
       );
     }
-    if (this.isError) {
+    if (this.state.isError) {
       return (
         <div>
           <i className="fa fa-exclamation-triangle fa-fw"></i>
-          {this.props.tagExpression} (-> <small>{this.state.message})</small>
+          {lsxContext.tagExpression} (-> <small>{this.state.message})</small>
         </div>
       )
     }
@@ -65,8 +78,7 @@ export class Lsx extends React.Component {
 
 Lsx.propTypes = {
   crowi: React.PropTypes.object.isRequired,
-  currentPagePath: React.PropTypes.string,
-  tagExpression: React.PropTypes.string.isRequired,
-  fromPagePath: React.PropTypes.string.isRequired,
-  lsxArgs: React.PropTypes.string.isRequired,
+
+  lsxContext: React.PropTypes.instanceOf(LsxContext).isRequired,
+  lsxCache: React.PropTypes.instanceOf(LsxCache),
 };

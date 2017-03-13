@@ -34,33 +34,40 @@ export class LsxPostRenderInterceptor extends BasicInterceptor {
   process(contextName, ...args) {
     const context = Object.assign(args[0]);   // clone
 
-    let contexts = JSON.parse(sessionStorage.getItem('lsx-loading-contexts')) || {};
+    let lsxCacheMap = JSON.parse(sessionStorage.getItem('lsx-cache')) || {};
 
-    let keysToBeRemoved = [];
-
-    // forEach keys of contexts
+    // forEach keys of lsxContextMap
     Object.keys(context.lsxContextMap).forEach((renderId) => {
       const elem = document.getElementById(renderId);
 
       if (elem) {
-        // get LsxContext
-        const lsxContext = context.lsxContextMap[renderId];
-        // render
-        this.renderReactDOM(lsxContext, elem);
+        // get LsxContext instance from context
+        let lsxContext = context.lsxContextMap[renderId];
+
+        // get cache container obj from sessionStorage
+        const cacheKey = lsxContext.generateCacheKey();
+
+        // check cache exists
+        if (lsxCacheMap[cacheKey]) {
+          // render with cache
+          this.renderReactDOM(lsxContext, lsxCacheMap[cacheKey], elem);
+        }
+        else {
+          // render without cache
+          this.renderReactDOM(lsxContext, false, elem);
+        }
+
       }
     });
 
     return Promise.resolve();
   }
 
-  renderReactDOM(lsxContext, elem) {
+  renderReactDOM(lsxContext, lsxCache, elem) {
     ReactDOM.render(
-      <Lsx crowi={this.crowi}
-          currentPagePath={lsxContext.currentPagePath}
-          tagExpression={lsxContext.tagExpression}
-          fromPagePath={lsxContext.fromPagePath}
-          lsxArgs={lsxContext.lsxArgs} />,
+      <Lsx crowi={this.crowi} lsxContext={lsxContext} lsxCache={lsxCache} />,
       elem
     );
   }
+
 }

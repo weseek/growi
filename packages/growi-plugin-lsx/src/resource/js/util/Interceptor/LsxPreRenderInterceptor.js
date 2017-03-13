@@ -55,17 +55,6 @@ export class LsxPreRenderInterceptor extends BasicInterceptor {
       lsxContext.fromPagePath = fromPagePath;
       lsxContext.lsxArgs = lsxArgs;
 
-      // get cache container obj from sessionStorage
-      // let lsxCache = JSON.parse(sessionStorage.getItem('lsx-cache'));
-      // if (lsxCache) {
-      //   lsxCache = Object.create(LsxCache, lsxCache);
-      //   const cache = lsxCache.getItem(tagExpression);
-      //   // check cache exists
-      //   if (cache) {
-      //     return cache;
-      //   }
-      // }
-
       const renderId = 'lsx-' + this.createRandomStr(8);
       lsxContext.renderId = renderId;
 
