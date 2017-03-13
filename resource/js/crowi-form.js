@@ -72,7 +72,8 @@ $(function() {
     crowi.interceptorManager.process('preRenderPreview', context)   // process with the context
       // render HTML with jQuery
       .then(() => {
-        return $('#preview-body').html(context.parsedHTML).promise();
+        $('#preview-body').html(context.parsedHTML);
+        Promise.resolve($('#preview-body'));
       })
       // process interceptors for post rendering
       .then((bodyElement) => {

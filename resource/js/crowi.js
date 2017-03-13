@@ -426,10 +426,8 @@ $(function() {
       crowi.interceptorManager.process('preRender', context)   // process with the context
         // render HTML with jQuery
         .then(() => {
-          return $('#revision-body-content').html(context.parsedHTML).promise();
-        })
-        // process interceptors for post rendering
-        .then((bodyElement) => {
+          $('#revision-body-content').html(context.parsedHTML);
+
           $('.template-create-button').on('click', function() {
             var path = $(this).data('path');
             var templateId = $(this).data('template');
@@ -442,6 +440,10 @@ $(function() {
           Crowi.correctHeaders('#revision-body-content');
           Crowi.revisionToc('#revision-body-content', '#revision-toc');
 
+          Promise.resolve($('#revision-body-content'));
+        })
+        // process interceptors for post rendering
+        .then((bodyElement) => {
           context = Object.assign(context, {bodyElement})
           return crowi.interceptorManager.process('postRender', context);
         });
