@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 
 import BasicInterceptor from '../../../../lib/util/BasicInterceptor';
 
+import { Lsx } from '../../components/Lsx';
+
 /**
  * The interceptor for lsx
  *
@@ -27,14 +29,23 @@ export class LsxPostRenderInterceptor extends BasicInterceptor {
    * @inheritdoc
    */
   process(contextName, ...args) {
-    const elem = document.getElementById('lsx-1234');
+    let contexts = JSON.parse(sessionStorage.getItem('lsx-loading-contexts')) || {};
+    // forEach keys of contexts
+    Object.keys(contexts).forEach((renderId) => {
+      const elem = document.getElementById(renderId);
 
-    if (elem) {
-      ReactDOM.render(
-        <h1>Hello, world!</h1>,
-        elem
-      );
-    }
+      if (elem) {
+        const context = contexts[renderId];
+        const props = Object.assign(context, {crowi: this.crowi});
+
+        // render
+        ReactDOM.render(
+          <Lsx crowi={this.crowi}
+              tagExpression={context.tagExpression} currentPath={context.currentPath} lsxArgs={context.lsxArgs} />,
+          elem
+        );
+      }
+    });
 
     return Promise.resolve();
   }
