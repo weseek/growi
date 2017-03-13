@@ -418,22 +418,35 @@ $(function() {
     if ($rawTextOriginal.length > 0) {
       var markdown = Crowi.unescape($('#raw-text-original').html());
       var parsedHTML = crowiRenderer.render(markdown);
-      $('#revision-body-content').html(parsedHTML)
-        .promise()
-        .done(crowi.interceptorManager.process('postRender'));
+
+      // create context object
+      var context = {markdown, parsedHTML, currentPagePath: location.pathname};
+
+      // process interceptors for pre rendering
+      crowi.interceptorManager.process('preRender', context)   // process with the context
+        // render HTML with jQuery
+        .then(() => {
+          return $('#revision-body-content').html(context.parsedHTML).promise();
+        })
+        // process interceptors for post rendering
+        .then((bodyElement) => {
+          $('.template-create-button').on('click', function() {
+            var path = $(this).data('path');
+            var templateId = $(this).data('template');
+            var template = $('#' + templateId).html();
+
+            crowi.saveDraft(path, template);
+            top.location.href = path;
+          });
+
+          Crowi.correctHeaders('#revision-body-content');
+          Crowi.revisionToc('#revision-body-content', '#revision-toc');
+
+          context = Object.assign(context, {bodyElement})
+          return crowi.interceptorManager.process('postRender', context);
+        });
 
 
-      $('.template-create-button').on('click', function() {
-        var path = $(this).data('path');
-        var templateId = $(this).data('template');
-        var template = $('#' + templateId).html();
-
-        crowi.saveDraft(path, template);
-        top.location.href = path;
-      });
-
-      Crowi.correctHeaders('#revision-body-content');
-      Crowi.revisionToc('#revision-body-content', '#revision-toc');
     }
 
     // header
