@@ -1,7 +1,7 @@
 module.exports = (crowi, app) => {
   var debug = require('debug')('crowi-plugin:lsx:routes:lsx')
     , path = require('path')
-    , LsxPageListRenderer = require('../util/Lsx')
+    , LsxPageListRenderer = require('../util/LsxPageListRenderer')
     , lsx = new LsxPageListRenderer(crowi, app)
     , ApiResponse = crowi.require('../util/apiResponse')
     , actions = {};

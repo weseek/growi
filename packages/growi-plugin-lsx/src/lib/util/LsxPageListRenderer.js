@@ -35,7 +35,7 @@ class LsxPageListRenderer {
     }
 
     // resolve path
-    const pagePath = path.resolve(fromPath, lsxPrefix);
+    const pagePath = path.resolve(fromPagePath, lsxPrefix);
     const queryOptions = {}
 
     // find pages

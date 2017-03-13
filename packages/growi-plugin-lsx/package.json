@@ -8,8 +8,11 @@
   ],
   "scripts": {
     "build": "NODE_ENV=production babel src --out-dir lib --source-maps inline",
+    "clean": "npm cache clean && npm run rimraf -- lib",
     "postbuild": "ncp 'src/resource/css' lib/resource/css",
+    "prebuild": "npm run clean",
     "watch": "babel src --out-dir lib --watch --source-maps inline",
+    "rimraf": "rimraf",
     "test": "mocha --compilers js:babel-register test/*.js"
   },
   "repository": {
@@ -35,6 +38,7 @@
     "babel-preset-react": "^6.23.0",
     "babel-register": "^6.23.0",
     "ncp": "^2.0.0",
-    "power-assert": "^1.4.2"
+    "power-assert": "^1.4.2",
+    "rimraf": "^2.6.1"
   }
 }
