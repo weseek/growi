@@ -19,10 +19,10 @@ export class LsxPreProcessor {
       // see: https://regex101.com/r/NQq3s9/2
       .replace(/\$lsx\((.*)\)/g, (all, group1) => {
         const tagExpression = all;
-        const lsxArgs = group1;
+        const lsxArgs = group1.trim();
 
         // get cache container obj from sessionStorage
-        let lsxCache = sessionStorage.getItem('lsx-cache');
+        let lsxCache = JSON.parse(sessionStorage.getItem('lsx-cache'));
         if (lsxCache) {
           lsxCache = Object.create(LsxCache, lsxCache);
           const cache = lsxCache.getItem(tagExpression);
