@@ -4,13 +4,12 @@ import ReactDOM from 'react-dom';
 import BasicInterceptor from '../../../../lib/util/BasicInterceptor';
 
 import { Lsx } from '../../components/Lsx';
-import { LsxLoadingContext } from '../LsxLoadingContext';
+import { LsxContext } from '../LsxContext';
 
 /**
  * The interceptor for lsx
  *
- *  replace lsx tag to HTML codes
- *  when contextName is 'postRenderPreview' and '...' <- TODO
+ *  render React DOM
  */
 export class LsxPostRenderInterceptor extends BasicInterceptor {
 
@@ -33,37 +32,34 @@ export class LsxPostRenderInterceptor extends BasicInterceptor {
    * @inheritdoc
    */
   process(contextName, ...args) {
+    const context = Object.assign(args[0]);   // clone
+
     let contexts = JSON.parse(sessionStorage.getItem('lsx-loading-contexts')) || {};
 
     let keysToBeRemoved = [];
 
     // forEach keys of contexts
-    Object.keys(contexts).forEach((key) => {
-      const elem = document.getElementById(key);
+    Object.keys(context.lsxContextMap).forEach((renderId) => {
+      const elem = document.getElementById(renderId);
 
       if (elem) {
-        const contextObj = contexts[key]
-        // remove from context regardless of rendering success or failure
-        delete contexts[key];
+        // get LsxContext
+        const lsxContext = context.lsxContextMap[renderId];
         // render
-        this.renderReactDOM(contextObj, elem);
+        this.renderReactDOM(lsxContext, elem);
       }
     });
-
-    // store contexts to sessionStorage
-    sessionStorage.setItem('lsx-loading-contexts', JSON.stringify(contexts));
 
     return Promise.resolve();
   }
 
-  renderReactDOM(contextObj, elem) {
-    const context = new LsxLoadingContext(contextObj);
+  renderReactDOM(lsxContext, elem) {
     ReactDOM.render(
       <Lsx crowi={this.crowi}
-          currentPagePath={context.currentPagePath}
-          tagExpression={context.tagExpression}
-          fromPagePath={context.fromPagePath}
-          lsxArgs={context.lsxArgs} />,
+          currentPagePath={lsxContext.currentPagePath}
+          tagExpression={lsxContext.tagExpression}
+          fromPagePath={lsxContext.fromPagePath}
+          lsxArgs={lsxContext.lsxArgs} />,
       elem
     );
   }
