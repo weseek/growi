@@ -60,9 +60,9 @@ export class Lsx extends React.Component {
   }
 }
 
-PageHistory.propTypes = {
+Lsx.propTypes = {
   crowi: React.PropTypes.object.isRequired,
   tagExpression: React.PropTypes.string.isRequired,
   currentPath: React.PropTypes.string.isRequired,
-  lsxArgs: React.PropTypes.object.isRequired,
+  lsxArgs: React.PropTypes.string.isRequired,
 };
