@@ -418,7 +418,9 @@ $(function() {
     if ($rawTextOriginal.length > 0) {
       var markdown = Crowi.unescape($('#raw-text-original').html());
       var parsedHTML = crowiRenderer.render(markdown);
-      $('#revision-body-content').html(parsedHTML);
+      $('#revision-body-content').html(parsedHTML)
+        .promise()
+        .done(crowi.interceptorManager.process('postRender'));
 
 
       $('.template-create-button').on('click', function() {
