@@ -142,12 +142,11 @@ export default class Crowi {
         if (res.data.ok) {
           resolve(res.data);
         } else {
-          // FIXME?
           reject(new Error(res.data));
         }
-      }).catch(res => {
-          // FIXME?
-        reject(new Error('Error'));
+      })
+      .catch(res => {
+        reject(res);
       });
     });
   }
