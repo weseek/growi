@@ -1,5 +1,8 @@
 import React from 'react';
 
+import { LsxContext } from '../util/LsxContext';
+import { LsxCacheHelper } from '../util/LsxCacheHelper';
+
 export class Lsx extends React.Component {
 
   constructor(props) {
@@ -14,14 +17,15 @@ export class Lsx extends React.Component {
   }
 
   componentDidMount() {
-    if (this.props.lsxCache) {
+    // check cache exists
+    if (this.props.lsxStateCache) {
       this.setState({
         isLoading: false,
-        html: this.props.lsxCache.html,
-        isError: this.props.lsxCache.isError,
-        errorMessage: this.props.lsxCache.errorMessage,
+        html: this.props.lsxStateCache.html,
+        isError: this.props.lsxStateCache.isError,
+        errorMessage: this.props.lsxStateCache.errorMessage,
       });
-      return;
+      return;   // go to render()
     }
 
     const lsxContext = this.props.lsxContext;
@@ -38,11 +42,18 @@ export class Lsx extends React.Component {
         }
       })
       .catch(error => {
-        this.setState({ isError: true, errorMessage: error });
+        console.error(error);
+        const errorMessage = error.response.data.error.message;
+        console.error(errorMessage);
+        this.setState({ isError: true, errorMessage: errorMessage });
       })
       // finally
       .then(() => {
         this.setState({ isLoading: false });
+
+        // store to sessionStorage
+        const cacheKey = LsxCacheHelper.generateCacheKeyFromContext(lsxContext);
+        LsxCacheHelper.cacheState(cacheKey, this.state);
       })
   }
 
@@ -55,7 +66,7 @@ export class Lsx extends React.Component {
 
     if (this.state.isLoading) {
       return (
-        <div>
+        <div className="text-muted">
           <i className="fa fa-spinner fa-pulse fa-fw"></i>
           <span className="lsx-blink">{lsxContext.tagExpression}</span>
         </div>
@@ -63,9 +74,9 @@ export class Lsx extends React.Component {
     }
     if (this.state.isError) {
       return (
-        <div>
+        <div className="text-warning">
           <i className="fa fa-exclamation-triangle fa-fw"></i>
-          {lsxContext.tagExpression} (-> <small>{this.state.message})</small>
+          {lsxContext.tagExpression} (-> <small>{this.state.errorMessage})</small>
         </div>
       )
     }
@@ -80,5 +91,5 @@ Lsx.propTypes = {
   crowi: React.PropTypes.object.isRequired,
 
   lsxContext: React.PropTypes.instanceOf(LsxContext).isRequired,
-  lsxCache: React.PropTypes.instanceOf(LsxCache),
+  lsxStateCache: React.PropTypes.object,
 };

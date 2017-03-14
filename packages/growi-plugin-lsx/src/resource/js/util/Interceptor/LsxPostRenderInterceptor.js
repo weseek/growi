@@ -5,6 +5,7 @@ import BasicInterceptor from '../../../../lib/util/BasicInterceptor';
 
 import { Lsx } from '../../components/Lsx';
 import { LsxContext } from '../LsxContext';
+import { LsxCacheHelper } from '../LsxCacheHelper';
 
 /**
  * The interceptor for lsx
@@ -34,8 +35,6 @@ export class LsxPostRenderInterceptor extends BasicInterceptor {
   process(contextName, ...args) {
     const context = Object.assign(args[0]);   // clone
 
-    let lsxCacheMap = JSON.parse(sessionStorage.getItem('lsx-cache')) || {};
-
     // forEach keys of lsxContextMap
     Object.keys(context.lsxContextMap).forEach((renderId) => {
       const elem = document.getElementById(renderId);
@@ -44,17 +43,16 @@ export class LsxPostRenderInterceptor extends BasicInterceptor {
         // get LsxContext instance from context
         let lsxContext = context.lsxContextMap[renderId];
 
-        // get cache container obj from sessionStorage
-        const cacheKey = lsxContext.generateCacheKey();
-
         // check cache exists
-        if (lsxCacheMap[cacheKey]) {
+        const cacheKey = LsxCacheHelper.generateCacheKeyFromContext(lsxContext);
+        const lsxStateCache = LsxCacheHelper.getStateCache(cacheKey);
+        if (lsxStateCache) {
           // render with cache
-          this.renderReactDOM(lsxContext, lsxCacheMap[cacheKey], elem);
+          this.renderReactDOM(lsxContext, lsxStateCache, elem);
         }
         else {
           // render without cache
-          this.renderReactDOM(lsxContext, false, elem);
+          this.renderReactDOM(lsxContext, undefined, elem);
         }
 
       }
@@ -63,9 +61,9 @@ export class LsxPostRenderInterceptor extends BasicInterceptor {
     return Promise.resolve();
   }
 
-  renderReactDOM(lsxContext, lsxCache, elem) {
+  renderReactDOM(lsxContext, lsxStateCache, elem) {
     ReactDOM.render(
-      <Lsx crowi={this.crowi} lsxContext={lsxContext} lsxCache={lsxCache} />,
+      <Lsx crowi={this.crowi} lsxContext={lsxContext} lsxStateCache={lsxStateCache} />,
       elem
     );
   }

@@ -43,8 +43,8 @@ export class LsxPreRenderInterceptor extends BasicInterceptor {
     // TODO retrieve from args for interceptor
     const fromPagePath = currentPagePath;
 
-    // see: https://regex101.com/r/NQq3s9/2
-    context.parsedHTML = parsedHTML.replace(/\$lsx\((.*)\)/g, (all, group1) => {
+    // see: https://regex101.com/r/NQq3s9/3
+    context.parsedHTML = parsedHTML.replace(/\$lsx\((.*?)\)/g, (all, group1) => {
       const tagExpression = all;
       const lsxArgs = group1.trim();
 
@@ -56,19 +56,18 @@ export class LsxPreRenderInterceptor extends BasicInterceptor {
       lsxContext.lsxArgs = lsxArgs;
 
       const renderId = 'lsx-' + this.createRandomStr(8);
-      lsxContext.renderId = renderId;
 
       context.lsxContextMap[renderId] = lsxContext;
 
       // return replace strings
-      return this.createReactTargetDom(renderId, tagExpression);
+      return this.createReactTargetDom(renderId);
     });
 
     // resolve
     return Promise.resolve(context);
   }
 
-  createReactTargetDom(renderId, tagExpression) {
+  createReactTargetDom(renderId) {
     return `<div id="${renderId}" />`;
   }
 
