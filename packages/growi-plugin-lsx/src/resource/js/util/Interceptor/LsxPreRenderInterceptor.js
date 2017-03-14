@@ -5,6 +5,7 @@ import BasicInterceptor from '../../../../lib/util/BasicInterceptor';
 
 import { Lsx } from '../../components/Lsx';
 import { LsxContext } from '../LsxContext';
+import { LsxCacheHelper } from '../LsxCacheHelper';
 
 /**
  * The interceptor for lsx
@@ -37,6 +38,8 @@ export class LsxPreRenderInterceptor extends BasicInterceptor {
     const markdown = context.markdown;
     const parsedHTML = context.parsedHTML;
     const currentPagePath = context.currentPagePath;
+
+    this.initializeCache(contextName);
 
     context.lsxContextMap = {};
 
@@ -72,7 +75,23 @@ export class LsxPreRenderInterceptor extends BasicInterceptor {
   }
 
   /**
+   * initialize cache
+   *  when contextName is 'preRender'         -> clear cache
+   *  when contextName is 'preRenderPreview'  -> doesn't clear cache
+   *
+   * @param {string} contextName
+   *
+   * @memberOf LsxPreRenderInterceptor
+   */
+  initializeCache(contextName) {
+    if (contextName === 'preRender') {
+      LsxCacheHelper.clearAllStateCaches();
+    }
+  }
+
+  /**
    * @see http://qiita.com/ryounagaoka/items/4736c225bdd86a74d59c
+   *
    * @param {number} length
    * @return random strings
    */

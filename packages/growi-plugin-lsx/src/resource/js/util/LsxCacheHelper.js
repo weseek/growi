@@ -11,7 +11,7 @@ export class LsxCacheHelper {
    * stringify and save obj
    *
    * @static
-   * @param {any} cacheObj
+   * @param {object} cacheObj
    *
    * @memberOf LsxCacheHelper
    */
@@ -23,7 +23,7 @@ export class LsxCacheHelper {
    * generate cache key for storing to storage
    *
    * @static
-   * @param {any} lsxContext
+   * @param {LsxContext} lsxContext
    * @returns
    *
    * @memberOf LsxCacheHelper
@@ -36,7 +36,7 @@ export class LsxCacheHelper {
    *
    *
    * @static
-   * @param {any} key
+   * @param {string} key
    * @returns
    *
    * @memberOf LsxCacheHelper
@@ -50,8 +50,8 @@ export class LsxCacheHelper {
    * store state object of React Component with specified key
    *
    * @static
-   * @param {any} key
-   * @param {any} lsxState state object of React Component
+   * @param {string} key
+   * @param {object} lsxState state object of React Component
    *
    * @memberOf LsxCacheHelper
    */
@@ -60,5 +60,16 @@ export class LsxCacheHelper {
     cacheObj[key] = lsxState;
 
     LsxCacheHelper.saveToSessionStorage(cacheObj);
+  }
+
+  /**
+   * clear all state caches
+   *
+   * @static
+   *
+   * @memberOf LsxCacheHelper
+   */
+  static clearAllStateCaches() {
+    LsxCacheHelper.saveToSessionStorage({});
   }
 }
