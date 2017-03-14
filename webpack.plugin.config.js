@@ -18,7 +18,7 @@ var config = {
     ],
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /.jsx?$/,
         exclude: /node_modules/,
@@ -28,11 +28,11 @@ var config = {
       },
       {
         test: /\.css$/,
-        use: ['to-string-loader', 'css-loader'],
+        use: ['style-loader', 'css-loader'],
       },
       {
         test: /\.scss$/,
-        use: ['to-string-loader', 'css-loader', 'sass-loader'],
+        use: ['style-loader', 'css-loader', 'sass-loader'],
       },
     ]
   },

@@ -105,6 +105,7 @@
     "sass-loader": "^6.0.3",
     "sinon": "~1.14.0",
     "sinon-chai": "~2.7.0",
+    "style-loader": "^0.13.2",
     "to-string-loader": "^1.1.5",
     "webpack": "~2.2.1",
     "webpack-manifest-plugin": "~1.1.0",
