@@ -1,5 +1,7 @@
 import React from 'react';
 
+import styles from '../../css/index.css';
+
 import { LsxContext } from '../util/LsxContext';
 import { LsxCacheHelper } from '../util/LsxCacheHelper';
 
@@ -68,7 +70,7 @@ export class Lsx extends React.Component {
       return (
         <div className="text-muted">
           <i className="fa fa-spinner fa-pulse fa-fw"></i>
-          <span className="lsx-blink">{lsxContext.tagExpression}</span>
+          <span className={styles.lsxBlink}>{lsxContext.tagExpression}</span>
         </div>
       );
     }
