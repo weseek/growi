@@ -27,7 +27,8 @@ module.exports = function (options) {
       'legacy-form':          './resource/js/legacy/crowi-form',
       'legacy-admin':         './resource/js/legacy/crowi-admin',
       'legacy-presentation':  './resource/js/legacy/crowi-presentation',
-      'plugin':               './resource/js/plugin.js',
+      'plugin':               './resource/js/plugin',
+      'style':                './resource/styles',
     },
     resolve: {
       extensions: ['.js', '.json'],

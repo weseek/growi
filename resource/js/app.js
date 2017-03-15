@@ -35,7 +35,7 @@ if (isEnabledPlugins) {
   var crowiPlugin = window.crowiPlugin;
   crowiPlugin.installAll(crowi, crowiRenderer);
 }
-  
+
 const componentMappings = {
   'search-top': <HeaderSearchBox />,
   'search-page': <SearchPage />,
