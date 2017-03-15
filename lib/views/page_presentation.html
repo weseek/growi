@@ -12,8 +12,13 @@
 
     {% if env === 'development' %}
       <script src="/js/dll/vendor.dll.js"></script>
+      <script src="{{ webpack_asset('commons').js }}"></script>
+      <script src="{{ webpack_asset('style').js }}"></script>
+    {% else %}
+      <script src="{{ webpack_asset('commons').js }}" async defer></script>
     {% endif %}
-    <script src="{{ webpack_asset('commons').js }}"></script>
+
+    <script src="{{ webpack_asset('presentation').js }}" defer></script>
 
     <title>{{ path|path2name }} | {{ path }}</title>
   </head>
@@ -32,6 +37,5 @@
       </div>
     </div>
 
-    <script src="{{ webpack_asset('presentation').js }}"></script>
   </body>
 </html>

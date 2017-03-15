@@ -24,18 +24,14 @@
 
   {% if env === 'development' %}
     <script src="/js/dll/vendor.dll.js"></script>
-  {% endif %}
-
-  <script src="{{ webpack_asset('commons').js }}"></script>
-
-  {% if env === 'development' %}
+    <script src="{{ webpack_asset('commons').js }}"></script>
     <script src="{{ webpack_asset('style').js }}"></script>
   {% else %}
-    <link rel="stylesheet" href="/css/style.css">
+    <script src="{{ webpack_asset('commons').js }}" async defer></script>
   {% endif %}
 
   {% if config.crowi['plugin:isEnabledPlugins'] %}
-    <script src="{{ webpack_asset('plugin').js }}" defer></script>
+    <script src="{{ webpack_asset('plugin').js }}" async defer></script>
   {% endif %}
   <script src="{{ webpack_asset('legacy').js }}" defer></script>
   <script src="{{ webpack_asset('app').js }}" defer></script>
