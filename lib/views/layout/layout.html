@@ -24,7 +24,7 @@
 
   {% if env === 'development' %}
     <script src="{{ webpack_asset('style').js }}"></script>
-    <!--<script src="{{ webpack_asset('dev').js }}" async></script>-->
+    <script src="{{ webpack_asset('dev').js }}" async></script>
     <script src="/js/dll/vendor.dll.js" defer></script>
   {% endif %}
 
