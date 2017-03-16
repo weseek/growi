@@ -11,13 +11,12 @@
     <link rel="stylesheet" type="text/css" href="/js/reveal/lib/css/zenburn.css">
 
     {% if env === 'development' %}
-      <script src="/js/dll/vendor.dll.js"></script>
-      <script src="{{ webpack_asset('commons').js }}"></script>
       <script src="{{ webpack_asset('style').js }}"></script>
-    {% else %}
-      <script src="{{ webpack_asset('commons').js }}" async defer></script>
+      <!--<script src="{{ webpack_asset('dev').js }}" async></script>-->
+      <script src="/js/dll/vendor.dll.js" defer></script>
     {% endif %}
 
+    <script src="{{ webpack_asset('commons').js }}" defer></script>
     <script src="{{ webpack_asset('presentation').js }}" defer></script>
 
     <title>{{ path|path2name }} | {{ path }}</title>

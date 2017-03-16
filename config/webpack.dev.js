@@ -29,6 +29,9 @@ const HMR = helpers.hasProcessFlag('hot');
 module.exports = function (options) {
   return webpackMerge(commonConfig({ env: ENV }), {
     devtool: 'cheap-module-source-map',
+    entry: {
+      dev: './resource/js/dev',
+    },
     output: {
       path: helpers.root('public/js'),
       publicPath: "/js/",
@@ -54,6 +57,7 @@ module.exports = function (options) {
       ],
     },
     plugins: [
+
       new DllBundlesPlugin({
         bundles: {
           vendor: [

@@ -128,6 +128,10 @@
     "clean": "npm cache clean && npm run rimraf -- dist dll",
     "nodemon": "nodemon",
     "rimraf": "rimraf",
+    "server:dev": "nodemon --watch lib --watch public/js app.js",
+    "server": "npm run server:dev",
+    "start:dev": "npm run server",
+    "start": "npm run server:prod",
     "test": "",
     "webpack": "webpack",
     "webpack:plugin": "webpack --config webpack.plugin.config.js"
