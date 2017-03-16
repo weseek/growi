@@ -73,6 +73,10 @@ module.exports = function (options) {
           plugins: [],
         })
       }),
+
+      new webpack.HotModuleReplacementPlugin(),
+      new webpack.NoErrorsPlugin(),
+
     ]
   });
 }
