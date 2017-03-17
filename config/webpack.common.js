@@ -1,3 +1,7 @@
+/**
+ * @author: Yuki Takei <yuki@weseek.co.jp>
+ */
+
 const webpack = require('webpack');
 const helpers = require('./helpers');
 
@@ -54,6 +58,7 @@ module.exports = function (options) {
       ]
     },
     plugins: [
+
       new AssetsPlugin({
         path: helpers.root('public/js'),
         filename: 'webpack-assets.json',

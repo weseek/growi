@@ -1,3 +1,7 @@
+/**
+ * @author: Yuki Takei <yuki@weseek.co.jp>
+ */
+
 const webpack = require('webpack');
 const helpers = require('./helpers');
 const webpackMerge = require('webpack-merge');
