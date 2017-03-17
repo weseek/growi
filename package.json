@@ -132,7 +132,7 @@
     "server:dev:watch": "supervisor --watch lib -- app.js",
     "server:dev": "node app.js",
     "server:prod": "node app.js",
-    "start:dev": "concurrently --kill-others \"npm run build:dev:watch -- --autorefresh\" \"npm run server:dev:watch -- --autorefresh\"",
+    "start:dev": "concurrently --kill-others \"npm run build:dev:watch\" \"npm run server:dev:watch -- --autorefresh\"",
     "start": "npm run server:prod",
     "test": "",
     "webpack": "webpack",
