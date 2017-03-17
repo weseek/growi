@@ -19,7 +19,7 @@ const DllBundlesPlugin = require('webpack-dll-bundles-plugin').DllBundlesPlugin;
 const ENV = process.env.ENV = process.env.NODE_ENV = 'development';
 const HOST = process.env.HOST || '0.0.0.0';
 const PORT = process.env.PORT || 3000;
-const HMR = helpers.hasProcessFlag('hot');
+const AUTOREFRESH = helpers.hasProcessFlag('autorefresh');
 
 /*
  * Webpack configuration
@@ -30,7 +30,9 @@ module.exports = function (options) {
   return webpackMerge(commonConfig({ env: ENV }), {
     devtool: 'cheap-module-source-map',
     entry: {
-      dev: './resource/js/dev',
+      dev: AUTOREFRESH ?
+        ['./resource/js/dev', 'reload/lib/reload-client']:
+        ['./resource/js/dev'],
     },
     output: {
       path: helpers.root('public/js'),
@@ -74,7 +76,6 @@ module.exports = function (options) {
         })
       }),
 
-      new webpack.HotModuleReplacementPlugin(),
       new webpack.NoEmitOnErrorsPlugin(),
 
     ]
