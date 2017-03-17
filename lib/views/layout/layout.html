@@ -23,11 +23,11 @@
   <link rel="icon" type="image/png" href="/android-chrome-192x192.png" sizes="192x192">
 
   {% if env === 'development' %}
-    <script src="{{ webpack_asset('style').js }}"></script>
     <script src="{{ webpack_asset('dev').js }}" async></script>
     <script src="/js/dll/vendor.dll.js" defer></script>
   {% endif %}
 
+  <script src="{{ webpack_asset('style').js }}"></script>
   <script src="{{ webpack_asset('commons').js }}" defer></script>
   {% if config.crowi['plugin:isEnabledPlugins'] %}
     <script src="{{ webpack_asset('plugin').js }}" defer></script>
