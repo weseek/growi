@@ -26,28 +26,21 @@ module.exports = function (env) {
     devtool: 'source-map',
     output: {
       path: helpers.root('public/js'),
+      publicPath: '/js/',
       filename: '[name].[chunkhash].bundle.js',
       sourceMapFilename: '[name].[chunkhash].bundle.map',
       chunkFilename: '[id].[chunkhash].chunk.js'
     },
     module: {
       rules: [
-        /*
-         * to string and css loader support for *.css files (from Angular components)
-         * Returns file content as string
-         */
         {
           test: /\.css$/,
-          use: ['to-string-loader', 'css-loader'],
+          use: ['style-loader', 'css-loader'],
           include: [helpers.root('resource')]
         },
-        /*
-         * to string and sass loader support for *.scss files (from Angular components)
-         * Returns compiled css content as string
-         */
         {
           test: /\.scss$/,
-          use: ['to-string-loader', 'css-loader', 'sass-loader'],
+          use: ['style-loader', 'css-loader', 'sass-loader'],
           include: [helpers.root('resource')]
         },
       ]
