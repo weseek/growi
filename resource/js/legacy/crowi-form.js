@@ -2,9 +2,9 @@ $(function() {
   var pageId = $('#content-main').data('page-id');
   var pagePath= $('#content-main').data('path');
 
-  //require('inline-attachment/src/inline-attachment');
-  //require('jquery.selection');
-  //require('bootstrap-sass');
+  require('bootstrap-sass');
+  require('inline-attachment/src/inline-attachment');
+  require('./thirdparty-js/jquery.selection');
 
   // show/hide
   function FetchPagesUpdatePostAndInsert(path) {

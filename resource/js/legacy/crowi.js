@@ -4,8 +4,8 @@
 
 var io = require('socket.io-client');
 
-//require('bootstrap-sass');
-//require('jquery.cookie');
+require('bootstrap-sass');
+require('jquery.cookie');
 
 var Crowi = {};
 

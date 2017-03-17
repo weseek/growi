@@ -1,0 +1,18 @@
+{
+  "jquery": {
+    "bundle": "vendor",
+    "version": "2.1.4"
+  },
+  "jquery.cookie": {
+    "bundle": "vendor",
+    "version": "1.4.1"
+  },
+  "react": {
+    "bundle": "vendor",
+    "version": "15.0.2"
+  },
+  "react-dom": {
+    "bundle": "vendor",
+    "version": "15.0.2"
+  }
+}
