@@ -9,11 +9,6 @@ const AssetsPlugin = require('assets-webpack-plugin');
 const CommonsChunkPlugin = require('webpack/lib/optimize/CommonsChunkPlugin');
 
 /*
- * Webpack Constants
- */
-const HMR = helpers.hasProcessFlag('hot');
-
-/*
  * Webpack configuration
  *
  * See: http://webpack.github.io/docs/configuration.html#cli
@@ -42,10 +37,6 @@ module.exports = function (options) {
           use: [{
             loader: 'babel-loader?cacheDirectory',
           }]
-        },
-        {
-          test: /\.json$/,
-          use: 'json-loader',
         },
         /*
          * File loader for supporting images, for example, in CSS files.
