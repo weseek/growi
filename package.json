@@ -132,9 +132,10 @@
     "prestart": "npm run build:prod",
     "rimraf": "rimraf",
     "server:watch": "supervisor --watch lib -- app.js",
+    "server:prod": "node app.js --production",
     "server": "node app.js",
     "watch": "concurrently --kill-others \"npm run build:dev:withoutclean -- --watch\" \"npm run server:watch -- --autorefresh\"",
-    "start": "npm run server",
+    "start": "npm run server:prod",
     "test": "",
     "webpack": "webpack",
     "webpack:plugin": "webpack --config webpack.plugin.config.js"
