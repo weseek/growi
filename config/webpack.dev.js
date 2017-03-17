@@ -30,7 +30,8 @@ module.exports = function (options) {
   return webpackMerge(commonConfig({ env: ENV }), {
     devtool: 'cheap-module-source-map',
     output: {
-      path: helpers.root('dist'),
+      path: helpers.root('public/js'),
+      publicPath: "/js/",
       filename: '[name].bundle.js',
       sourceMapFilename: '[file].map',
     },
@@ -39,7 +40,18 @@ module.exports = function (options) {
       modules: [helpers.root('src'), helpers.root('node_modules')],
     },
     module: {
-      rules: [],
+      rules: [
+        {
+          test: /\.css$/,
+          use: ['style-loader', 'css-loader'],
+          include: [helpers.root('resource')]
+        },
+        {
+          test: /\.scss$/,
+          use: ['style-loader', 'css-loader', 'sass-loader'],
+          include: [helpers.root('resource')]
+        },
+      ],
     },
     plugins: [
       new DllBundlesPlugin({
@@ -51,7 +63,7 @@ module.exports = function (options) {
             'jquery.cookie',
           ],
         },
-        dllDir: helpers.root('dll'),
+        dllDir: helpers.root('public/js/dll'),
         webpackConfig: webpackMergeDll(commonConfig({env: ENV}), {
           devtool: 'cheap-module-source-map',
           plugins: [],

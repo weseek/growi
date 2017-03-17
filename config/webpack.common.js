@@ -39,7 +39,7 @@ module.exports = function (options) {
           test: /.jsx?$/,
           exclude: /node_modules/,
           use: [{
-            loader: 'babel-loader',
+            loader: 'babel-loader?cacheDirectory',
           }]
         },
         {
@@ -63,7 +63,7 @@ module.exports = function (options) {
     },
     plugins: [
       new AssetsPlugin({
-        path: helpers.root('dist'),
+        path: helpers.root('public/js'),
         filename: 'webpack-assets.json',
         prettyPrint: true,
       }),

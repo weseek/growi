@@ -24,7 +24,11 @@
 
   <link rel="stylesheet" href="/css/crowi{% if env  == 'production' %}.min{% endif %}.css">
 
-  <script src="{{ assets('/js/bundled.js') }}"></script>
+  {% if env === 'development' %}
+    <script src="/js/dll/vendor.dll.js"></script>
+  {% endif %}
+  <script src="{{ webpack_asset('commons').js }}"></script>
+
   <link href='//fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
   <!-- Font Awesome -->
   <link href='//cdn.jsdelivr.net/fontawesome/4.7.0/css/font-awesome.min.css' rel='stylesheet' type='text/css'>
@@ -146,8 +150,8 @@
 {% endblock %}
 
 {% if config.crowi['plugin:isEnabledPlugins'] %}
-<script src="{{ assets('/js/plugin.js') }}"></script>
+<script src="{{ webpack_asset('plugin').js }}"></script>
 {% endif %}
-<script src="{{ assets('/js/crowi.js') }}"></script>
-<script src="{{ assets('/js/app.js') }}"></script>
+<script src="{{ webpack_asset('legacy').js }}"></script>
+<script src="{{ webpack_asset('app').js }}"></script>
 </html>
