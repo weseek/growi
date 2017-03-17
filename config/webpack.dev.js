@@ -75,7 +75,7 @@ module.exports = function (options) {
       }),
 
       new webpack.HotModuleReplacementPlugin(),
-      new webpack.NoErrorsPlugin(),
+      new webpack.NoEmitOnErrorsPlugin(),
 
     ]
   });
