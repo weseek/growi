@@ -34,7 +34,7 @@ module.exports = function (options) {
     },
     output: {
       path: helpers.root('public/js'),
-      publicPath: "/js/",
+      publicPath: '/js/',
       filename: '[name].bundle.js',
       sourceMapFilename: '[file].map',
     },
