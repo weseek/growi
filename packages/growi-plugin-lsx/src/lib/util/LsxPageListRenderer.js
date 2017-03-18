@@ -1,5 +1,5 @@
 const debug = require('debug')('crowi-plugin:lsx:util:LsxPageListRenderer');
-const path = require('path');
+const url = require('url');
 
 class LsxPageListRenderer {
 
@@ -34,8 +34,8 @@ class LsxPageListRenderer {
       lsxPrefix = lsxOptions.prefix || splittedArgs[0];
     }
 
-    // resolve path
-    const pagePath = path.resolve(fromPagePath, lsxPrefix);
+    // resolve url
+    const pagePath = url.resolve(fromPagePath, lsxPrefix);
     const queryOptions = {}
 
     // find pages
