@@ -42,6 +42,18 @@ module.exports = function (options) {
             loader: 'babel-loader?cacheDirectory',
           }]
         },
+        {
+          test: /\.css$/,
+          use: ['style-loader', 'css-loader'],
+          // comment out 'include' spec for crowi-plugins
+          // include: [helpers.root('resource')]
+        },
+        {
+          test: /\.scss$/,
+          use: ['style-loader', 'css-loader', 'sass-loader'],
+          // comment out 'include' spec for crowi-plugins
+          // include: [helpers.root('resource')]
+        },
         /*
          * File loader for supporting images, for example, in CSS files.
          */

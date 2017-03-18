@@ -104,8 +104,10 @@
     "concurrently": "^3.4.0",
     "copy-webpack-plugin": "^4.0.0",
     "css-loader": "^0.27.1",
+    "easy-livereload": "^1.2.0",
     "express-webpack-assets": "0.0.2",
     "mocha": "~2.2.0",
+    "node-dev": "^3.1.3",
     "optimize-js-plugin": "0.0.4",
     "proxyquire": "~1.4.0",
     "reload": "^1.1.1",
@@ -122,7 +124,7 @@
   },
   "license": "MIT",
   "scripts": {
-    "build:dev:withoutclean": "webpack --config config/webpack.dev.js --progress --profile",
+    "build:dev:watch": "npm run build:dev -- --watch",
     "build:dev": "npm run clean:public && npm run build:dev:withoutclean",
     "build:prod": "npm run clean:public && webpack --config config/webpack.prod.js  --progress --profile --bail",
     "build": "npm run build:dev",
@@ -131,14 +133,12 @@
     "clean": "npm cache clean && npm run rimraf -- public/js dll",
     "prestart": "npm run build:prod",
     "rimraf": "rimraf",
-    "server:watch": "supervisor --watch lib -- app.js",
+    "server:watch": "node-dev app.js",
     "server:prod": "node app.js --production",
     "server": "node app.js",
-    "watch": "concurrently --kill-others \"npm run build:dev:withoutclean -- --watch\" \"npm run server:watch -- --autorefresh\"",
     "start": "npm run server:prod",
     "test": "",
-    "webpack": "webpack",
-    "webpack:plugin": "webpack --config webpack.plugin.config.js"
+    "webpack": "webpack"
   },
   "bugs": {
     "url": "https://github.com/crowi/crowi/issues"

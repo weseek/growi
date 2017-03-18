@@ -16,6 +16,7 @@ const AssetsPlugin = require('assets-webpack-plugin');
 const CommonsChunkPlugin = require('webpack/lib/optimize/CommonsChunkPlugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const DllBundlesPlugin = require('webpack-dll-bundles-plugin').DllBundlesPlugin;
+const LiveReloadPlugin = require('webpack-livereload-plugin');
 
 /*
  * Webpack Constants
@@ -34,9 +35,10 @@ module.exports = function (options) {
   return webpackMerge(commonConfig({ env: ENV }), {
     devtool: 'cheap-module-source-map',
     entry: {
-      dev: WATCH ?
-        ['./resource/js/dev', 'reload/lib/reload-client']:
-        ['./resource/js/dev'],
+      // dev: WATCH ?
+      //   ['./resource/js/dev', 'reload/lib/reload-client']:
+      //   ['./resource/js/dev'],
+      dev: './resource/js/dev',
     },
     output: {
       path: helpers.root('public/js'),
@@ -50,16 +52,6 @@ module.exports = function (options) {
     },
     module: {
       rules: [
-        {
-          test: /\.css$/,
-          use: ['style-loader', 'css-loader'],
-          include: [helpers.root('resource')]
-        },
-        {
-          test: /\.scss$/,
-          use: ['style-loader', 'css-loader', 'sass-loader'],
-          include: [helpers.root('resource')]
-        },
       ],
     },
     plugins: [
@@ -79,6 +71,8 @@ module.exports = function (options) {
           plugins: [],
         })
       }),
+
+      new LiveReloadPlugin(),
 
       new webpack.NoEmitOnErrorsPlugin(),
 

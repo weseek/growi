@@ -33,16 +33,6 @@ module.exports = function (env) {
     },
     module: {
       rules: [
-        {
-          test: /\.css$/,
-          use: ['style-loader', 'css-loader'],
-          include: [helpers.root('resource')]
-        },
-        {
-          test: /\.scss$/,
-          use: ['style-loader', 'css-loader', 'sass-loader'],
-          include: [helpers.root('resource')]
-        },
       ]
     },
     plugins: [
