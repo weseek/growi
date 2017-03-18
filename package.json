@@ -125,7 +125,7 @@
   "license": "MIT",
   "scripts": {
     "build:dev:watch": "npm run build:dev -- --watch",
-    "build:dev": "npm run clean:public && npm run build:dev:withoutclean",
+    "build:dev": "npm run clean:public && webpack --config config/webpack.dev.js  --progress --profile",
     "build:prod": "npm run clean:public && webpack --config config/webpack.prod.js  --progress --profile --bail",
     "build": "npm run build:dev",
     "clean:public": "npm run rimraf -- public/js",
