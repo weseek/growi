@@ -7,9 +7,9 @@
     "lib"
   ],
   "scripts": {
-    "build": "NODE_ENV=production babel src --out-dir lib --source-maps inline",
+    "build": "babel src --out-dir lib --source-maps inline",
     "clean": "npm cache clean && npm run rimraf -- lib",
-    "postbuild": "ncp 'src/resource/css' lib/resource/css",
+    "postbuild": "ncp src/resource/css lib/resource/css",
     "prebuild": "npm run clean",
     "watch": "babel src --out-dir lib --watch --source-maps inline",
     "rimraf": "rimraf",
