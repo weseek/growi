@@ -4,50 +4,50 @@
 
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title">ヘルプ</h4>
+        <h4 class="modal-title">{{ t('Help') }}</h4>
       </div>
       <div class="modal-body">
-        <h4>基本的な機能</h4>
+        <h4>{{ t('modal_help.basic.title') }}</h4>
         <br>
         <ul>
-          <li>表示される画面には、「一覧ページ」と「ページ」の2種類があります</li>
-          <li>スラッシュ <code>/</code> で終わるページは、その階層の一覧ページとなります。</li>
-          <li>ページでの変更はすべて記録されています。サイドバーには、変更の履歴が一覧となっていて、クリックするとそのページの過去の状態を見ることができます。</li>
+          <li>{{ t('modal_help.basic.body1') }}</li>
+          <li>{{ t('modal_help.basic.body2') }}</li>
+          <li>{{ t('modal_help.basic.body3') }}</li>
         </ul>
         <br>
 
-        <h4>編集のコツ</h4>
+        <h4>{{ t('modal_help.tips.title') }}</h4>
         <br>
         <p>
-        文章の <strong>構造</strong> を意識しましょう。本を書くように、内容と文脈を整理してセクション・サブセクション...と構造的に書くと、わかりやすく他人に伝わりやすいページがになります。
+        {{ t('modal_help.tips.body1') }}
         </p>
         <br>
 
-        <h4>記法</h4>
+        <h4>{{ t('modal_help.markdown.title') }}</h4>
         <br>
         <div class="wiki">
-        <pre># セクション</pre>
-        <h1>セクション</h1>
+        <pre># Section</pre>
+        <h1>Section</h1>
         </div>
         <hr>
 
         <div class="wiki">
-        <pre>## サブセクション</pre>
-        <h2>サブセクション</h2>
+        <pre>## Sub section</pre>
+        <h2>Sub Section</h2>
         </div>
         <hr>
 
         <div class="wiki">
-        <pre>### サブサブセクション</pre>
-        <h3>サブサブセクション</h3>
+        <pre>### Sub sub section</pre>
+        <h3>Sub Sub Section</h3>
         </div>
         <hr>
 
         <div class="wiki">
-        <pre>* このようにアスタリスクと半角スペースを先頭に書くと、
-* 箇条書きのリストにになります
-    * タブキーを押すと半角スペース4つが挿入され、インデントされます
-    * インデントはリストにも反映されます</pre>
+        <pre>- このようにハイフンと半角スペースを先頭に書くと、
+- 箇条書きのリストにになります
+    - タブキーを押すと半角スペース4つが挿入され、インデントされます
+    - インデントはリストにも反映されます</pre>
           <ul>
             <li>リスト記法はこのように</li>
             <li>箇条書きになります

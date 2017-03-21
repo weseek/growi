@@ -5,7 +5,6 @@ var chai = require('chai')
   , proxyquire = require('proxyquire')
 
   , path = require('path')
-  , Promise = require('bluebird')
   ;
 chai.use(sinonChai);
 
@@ -38,6 +37,9 @@ describe('Test for Crowi application context', function () {
   });
 
   describe('.setupDatabase', function() {
+    before(function() {
+      mongoose.disconnect(); // avoid error of Trying to open unclosed connection
+    });
     it('setup completed', function(done) {
       var crowi = new Crowi(path.normalize(__dirname + '/../../'), process.env);
       // set

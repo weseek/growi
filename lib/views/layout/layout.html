@@ -11,6 +11,17 @@
 
   <meta name="viewport" content="width=device-width,initial-scale=1">
 
+  <meta name="apple-mobile-web-app-title" content="{{ config.crowi['app:title']|default('Crowi') }}">
+
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="apple-touch-icon"                 href="/apple-touch-icon.png">
+  <link rel="apple-touch-icon" sizes="72x72"   href="/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-180x180.png">
+  <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="/android-chrome-192x192.png" sizes="192x192">
+
   <link rel="stylesheet" href="/css/crowi{% if env  == 'production' %}.min{% endif %}.css">
 
   <script src="{{ assets('/js/bundled.js') }}"></script>
@@ -54,7 +65,7 @@
       {% if user and user.admin %}
       <li id="">
         <a href="/admin" id="link-mypage">
-          <i class="fa fa-cube"></i> 管理
+          <i class="fa fa-cube"></i> {{ t('Admin') }}
         </a>
       </li>
       {% endif %}
@@ -75,7 +86,7 @@
       #}
       <li id="" class="dropdown">
         <button class="btn btn-default create-page-button" data-target="#create-page" data-toggle="modal">
-          <i class="fa fa-pencil"></i> 作成
+          <i class="fa fa-pencil"></i> {{ t('New') }}
         </button>
       </li>
       <li id="login-user">
@@ -86,11 +97,11 @@
       <li class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bars"></i> <label class="sr-only">メニュー</label></a>
         <ul class="dropdown-menu">
-          <li><a href="/me"><i class="fa fa-gears"></i> ユーザー設定</a></li>
+          <li><a href="/me"><i class="fa fa-gears"></i> {{ t('User Settings') }}</a></li>
           <li class="divider"></li>
-          <li><a href="/trash/"><i class="fa fa-trash-o"></i> 削除済みページ</a></li>
+          <li><a href="/trash/"><i class="fa fa-trash-o"></i> {{ t('Deleted Pages') }}</a></li>
           <li class="divider"></li>
-          <li><a href="/logout"><i class="fa fa-sign-out"></i> ログアウト</a></li>
+          <li><a href="/logout"><i class="fa fa-sign-out"></i> {{ t('Sign out') }}</a></li>
           {# <li><a href="#">今日の日報を作成</a></li> #}
           {# <li class="divider"></li> #}
           {# <li class="divider"></li> #}

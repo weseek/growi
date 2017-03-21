@@ -7,7 +7,6 @@ module.exports = function(crowi) {
     , fs = require('fs')
     , path = require('path')
     , mkdir = require('mkdirp')
-    , Promise = require('bluebird')
     , Config = crowi.model('Config')
     , config = crowi.getConfig()
     , lib = {}

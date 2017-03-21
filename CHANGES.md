@@ -1,6 +1,24 @@
 CHANGES
 ========
 
+## 1.6.0
+
+- I18N
+- Improved diff view
+- - Minus search
+- - Supports Elasticsearch 5.x
+- Special thank you for the great pull requests: @b4b4r07 @kaz @hasete2 @okonomi
+- And also special thanks for the translation: @Hidsm
+
+## 1.5.3
+
+* Added node-shrinkwrap.json
+* Fix: Undo behavior after pasting (#151).
+* Feature: Password reset for admin.
+* Feature: Implement some APIs.
+* Improve: Likes on smartphone.
+* And some fixes. (Thank you @suzuki @okonomi)
+
 ## 1.5.2
 
 * Fix: Edit button on smartphone.

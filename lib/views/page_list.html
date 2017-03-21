@@ -14,24 +14,34 @@
 
 <div class="header-wrap">
   <header class="portal-header {% if page %}has-page{% endif %}">
-    {% if page %}
-      <a href="#" title="Bookmark" class="bookmark-link" id="bookmark-button" data-csrftoken="{{ csrf() }}" data-bookmarked="0"><i class="fa fa-star-o"></i></a>
-
-    {% endif %}
-    <h1 class="title">
-      <span class="" id="revision-path">{{ path|insertSpaceToEachSlashes }}</span>
-      {% if searchConfigured() && !isTopPage() && !isTrashPage() %}
-      <form class="input-group search-input-group hidden-xs hidden-sm" data-toggle="tooltip" data-placement="bottom" title="{{ path }} 以下から検索" id="search-listpage-form">
-        <input type="text" class="search-listpage-input form-control" data-path="{{ path }}" id="search-listpage-input">
-        <span class="input-group-btn search-listpage-submit-group">
-          <button type="submit" class="btn btn-default" id="search-listpage-submit">
-            <i class="fa fa-search"></i>
-          </button>
-        </span>
-        <a class="search-listpage-clear" id="search-listpage-clear"><i class="fa fa-times-circle"></i></a>
-      </form>
+    <div class="flex-title-line">
+      <h1 class="title flex-item-title">
+        <span id="revision-path">{{ path|insertSpaceToEachSlashes }}</span>
+        {% if searchConfigured() && !isTopPage() && !isTrashPage() %}
+        <form class="input-group search-input-group hidden-xs hidden-sm" data-toggle="tooltip" data-placement="bottom" title="{{ path }} 以下から検索" id="search-listpage-form">
+          <input type="text" class="search-listpage-input form-control" data-path="{{ path }}" id="search-listpage-input">
+          <span class="input-group-btn search-listpage-submit-group">
+            <button type="submit" class="btn btn-default" id="search-listpage-submit">
+              <i class="fa fa-search"></i>
+            </button>
+          </span>
+          <a class="search-listpage-clear" id="search-listpage-clear"><i class="fa fa-times-circle"></i></a>
+        </form>
+        {% endif %}
+      </h1>
+      {% if page %}
+      <div class="flex-item-action">
+        <a href="#" title="Bookmark" class="bookmark-link" id="bookmark-button" data-csrftoken="{{ csrf() }}" data-bookmarked="0"><i class="fa fa-star-o"></i></a>
+      </div>
+      <div class="flex-item-action visible-xs visible-sm">
+        <button
+            data-csrftoken="{{ csrf() }}"
+            data-liked="{% if page.isLiked(user) %}1{% else %}0{% endif %}"
+            class="like-button btn btn-default btn-sm {% if page.isLiked(user) %}active{% endif %}"
+        ><i class="fa fa-thumbs-o-up"></i></button>
+      </div>
       {% endif %}
-    </h1>
+    </div>
   </header>
 </div>
 
@@ -78,7 +88,7 @@
       <a>Create Portal: {{ path }}</a>
       {% endif %}
     </li>
-    <li {% if req.body.pageForm %}class="active"{% endif %}><a href="#edit-form" data-toggle="tab"><i class="fa fa-pencil-square-o"></i> 編集</a></li>
+    <li {% if req.body.pageForm %}class="active"{% endif %}><a href="#edit-form" data-toggle="tab"><i class="fa fa-pencil-square-o"></i> {{ t('Edit') }}</a></li>
 
     {% if not page %}
     <li class="pull-right close-button">
@@ -92,7 +102,7 @@
         <i class="fa fa-wrench"></i> <span class="caret"></span>
       </a>
       <ul class="dropdown-menu">
-       <li><a href="#" data-target="#unportalize" data-toggle="modal"><i class="fa fa-share"></i> ポータル解除</a></li>
+        <li><a href="#" data-target="#unportalize" data-toggle="modal"><i class="fa fa-share"></i> {{ t('Unportalize') }}</a></li>
       </ul>
     </li>
     <li class="pull-right"><a href="#revision-history" data-toggle="tab"><i class="fa fa-history"></i> History</a></li>
@@ -102,7 +112,7 @@
   <div class="tab-content">
   {% if page and not page.isLatestRevision() %}
   <div class="alert alert-warning">
-    <strong>注意: </strong> これは現在の版ではありません。 <i class="fa fa-magic"></i> <a href="{{ page.path }}">最新のポータルを表示</a>
+    <strong>{{ t('Warning') }}: </strong> {{ t('page.notice.version') }} <i class="fa fa-magic"></i> <a href="{{ page.path }}">最新のポータルを表示</a>
   </div>
   {% endif %}
     <div class="tab-pane {% if not req.body.pageForm %}active{% endif %}" id="revision-body">
@@ -122,23 +132,23 @@
       {% if not page %}
       {% else %}
       <div class="revision-history-list">
-        {% for t in tree %}
+        {% for tr in tree %}
         <div class="revision-hisory-outer">
-          <img src="{{ t.author|picture }}" class="picture picture-rounded">
+          <img src="{{ tr.author|picture }}" class="picture picture-rounded">
           <div class="revision-history-main">
             <div class="revision-history-author">
-              <strong>{% if t.author %}{{ t.author.username }}{% else %}-{% endif %}</strong>
+              <strong>{% if tr.author %}{{ tr.author.username }}{% else %}-{% endif %}</strong>
             </div>
             <div class="revision-history-comment">
             </div>
             <div class="revision-history-meta">
-              {{ t.createdAt|datetz('Y-m-d H:i:s') }}
+              {{ tr.createdAt|datetz('Y-m-d H:i:s') }}
               <br>
-              <a href="?revision={{ t._id.toString() }}"><i class="fa fa-history"></i> このバージョンを見る</a>
-              <a class="diff-view" data-revision-id="{{ t._id.toString() }}">
-                <i id="diff-icon-{{ t._id.toString() }}" class="fa fa-arrow-circle-right"></i> 差分を見る
+              <a href="?revision={{ tr._id.toString() }}"><i class="fa fa-history"></i> {{ t('View this version') }}</a>
+              <a class="diff-view" data-revision-id="{{ tr._id.toString() }}">
+                <i id="diff-icon-{{ tr._id.toString() }}" class="fa fa-arrow-circle-right"></i> {{ t('View diff') }}
               </a>
-              <pre class="" id="diff-display-{{ t._id.toString()}}" style="display: none"></pre>
+              <div class="" id="diff-display-{{ tr._id.toString()}}" style="display: none"></div>
             </div>
           </div>
         </div>
@@ -152,8 +162,8 @@
 
 <div class="page-list-container">
   <ul class="nav nav-tabs">
-      <li class="active"><a href="#view-list" data-toggle="tab">リスト表示</a></li>
-      <li><a href="#view-timeline" data-toggle="tab">タイムライン表示</a></li>
+      <li class="active"><a href="#view-list" data-toggle="tab">{{ t('List View') }}</a></li>
+      <li><a href="#view-timeline" data-toggle="tab">{{ t('Timeline View') }}</a></li>
   </ul>
 
   <div class="tab-content">
