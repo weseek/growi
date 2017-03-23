@@ -1,9 +1,11 @@
+const path = require('path');
+
 export default {
   pluginSchemaVersion: 2,
   serverEntries: [
-    './server-entry.js'
+    path.join(__dirname, 'server-entry.js')
   ],
   clientEntries: [
-    './client-entry.js'
+    path.join(__dirname, 'client-entry.js')
   ]
 }
