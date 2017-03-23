@@ -17,15 +17,9 @@ npm-debug.log
 /npm-debug.log.*
 
 # Dist #
-/dist
-/lib
-/public/js/
-/public/css/
-/public/uploads/
-/public/__build__/
+/public/
 /src/*/__build__/
 /__build__/**
-/public/dist/
 /src/*/dist/
 /.awcache
 .webpack.json

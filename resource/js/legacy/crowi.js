@@ -4,8 +4,8 @@
 
 var io = require('socket.io-client');
 
-//require('bootstrap-sass');
-//require('jquery.cookie');
+require('bootstrap-sass');
+require('jquery.cookie');
 
 var Crowi = {};
 
@@ -740,7 +740,7 @@ $(function() {
 
     //
     var me = $('body').data('me');
-    var socket = io();
+    var socket = io('localhost', {forceNew: true});
     socket.on('page edited', function (data) {
       if (data.user._id != me
         && data.page.path == pagePath) {

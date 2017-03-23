@@ -22,9 +22,20 @@
   <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
   <link rel="icon" type="image/png" href="/android-chrome-192x192.png" sizes="192x192">
 
-  <link rel="stylesheet" href="/css/crowi{% if env  == 'production' %}.min{% endif %}.css">
+  {% if env === 'development' %}
+    <script src="{{ webpack_asset('dev').js }}" async></script>
+    <script src="/js/dll/vendor.dll.js" defer></script>
+  {% endif %}
 
-  <script src="{{ assets('/js/bundled.js') }}"></script>
+  <script src="{{ webpack_asset('style').js }}"></script>
+  <script src="{{ webpack_asset('commons').js }}" defer></script>
+  {% if config.crowi['plugin:isEnabledPlugins'] %}
+    <script src="{{ webpack_asset('plugin').js }}" defer></script>
+  {% endif %}
+  <script src="{{ webpack_asset('legacy').js }}" defer></script>
+  <script src="{{ webpack_asset('app').js }}" defer></script>
+
+  <!-- Google Fonts -->
   <link href='//fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
   <!-- Font Awesome -->
   <link href='//cdn.jsdelivr.net/fontawesome/4.7.0/css/font-awesome.min.css' rel='stylesheet' type='text/css'>
@@ -145,9 +156,4 @@
 </body>
 {% endblock %}
 
-{% if config.crowi['plugin:isEnabledPlugins'] %}
-<script src="{{ assets('/js/plugin.js') }}"></script>
-{% endif %}
-<script src="{{ assets('/js/crowi.js') }}"></script>
-<script src="{{ assets('/js/app.js') }}"></script>
 </html>

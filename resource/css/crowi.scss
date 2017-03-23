@@ -2,7 +2,8 @@
 @import 'utilities';
 
 // import bootstrap
-@import 'bootstrap';
+$bootstrap-sass-asset-helper: true;
+@import "~bootstrap-sass/assets/stylesheets/bootstrap";
 
 // crowi component
 @import 'layout';

@@ -10,7 +10,14 @@
     <link rel="stylesheet" type="text/css" href="/css/crowi-reveal{% if env  == 'production' %}.min{% endif %}.css">
     <link rel="stylesheet" type="text/css" href="/js/reveal/lib/css/zenburn.css">
 
-    <script src="{{ assets('/js/bundled.js') }}"></script>
+    {% if env === 'development' %}
+      <script src="{{ webpack_asset('style').js }}"></script>
+      <!--<script src="{{ webpack_asset('dev').js }}" async></script>-->
+      <script src="/js/dll/vendor.dll.js" defer></script>
+    {% endif %}
+
+    <script src="{{ webpack_asset('commons').js }}" defer></script>
+    <script src="{{ webpack_asset('presentation').js }}" defer></script>
 
     <title>{{ path|path2name }} | {{ path }}</title>
   </head>
@@ -29,6 +36,5 @@
       </div>
     </div>
 
-    <script src="{{ assets('/js/presentation.js') }}"></script>
   </body>
 </html>
