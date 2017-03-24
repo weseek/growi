@@ -1,5 +1,3 @@
-import { definitions } from './plugins/plugin-definitions';
-
 export default class CrowiPlugin {
 
   /**
@@ -11,6 +9,17 @@ export default class CrowiPlugin {
    * @memberof CrowiPlugin
    */
   installAll(crowi, crowiRenderer) {
+    // import plugin definitions
+    let definitions = [];
+    try {
+      definitions = require('../../tmp/plugins/plugin-definitions');
+    }
+    catch(e) {
+      // TODO show warning
+      // do nothing
+      return;
+    }
+
     definitions.forEach((definition) => {
       const meta = definition.meta;
       const entries = definition.entries;

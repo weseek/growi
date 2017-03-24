@@ -2,7 +2,7 @@
  * !! don't commit this file !!
  * !!      just revert       !!
  */
-export const definitions = [
+module.exports = [
   {% for definition in definitions %}{
     name: '{{ definition.name }}',
     meta: require('{{ definition.name }}'),
