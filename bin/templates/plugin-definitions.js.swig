@@ -1,6 +1,9 @@
+/*
+ * !! don't commit this file !!
+ * !!      just revert       !!
+ */
 export const definitions = [
-  {% for definition in definitions %}
-  {
+  {% for definition in definitions %}{
     name: '{{ definition.name }}',
     meta: require('{{ definition.name }}'),
     entries: [
@@ -10,4 +13,5 @@ export const definitions = [
     ]
   },
   {% endfor %}
+
 ]
