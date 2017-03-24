@@ -24,8 +24,6 @@ npm-debug.log
 /.awcache
 .webpack.json
 /compiled/
-# Crowi Plugin Detection #
-/resource/js/plugins/*
 
 # Doc #
 /doc/
