@@ -394,7 +394,7 @@ $(function() {
         }
         // 画像以外
         else {
-          attachmentOption.urlText = "\n:paperclip: <a href=\"{filename}\">"+e.originalEvent.dataTransfer.files[0].name+"</a>\n";
+          attachmentOption.urlText = "\n:pig:<a href=\"{filename}\">"+e.originalEvent.dataTransfer.files[0].name+"</a>\n";
           var otherFileInlineattach = new inlineAttachment(attachmentOption, editor);
           otherFileInlineattach.onDrop(e.originalEvent);
 
