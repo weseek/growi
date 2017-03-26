@@ -388,7 +388,17 @@ $(function() {
       'drop.inlineattach': function(e) {
         e.stopPropagation();
         e.preventDefault();
-        inlineattach.onDrop(e.originalEvent);
+        // 画像
+        if ( ['image/jpeg','image/png','image/jpg','image/gif'].indexOf(e.originalEvent.dataTransfer.items[0].type) >= 0 ) {
+          inlineattach.onDrop(e.originalEvent);
+        }
+        // 画像以外
+        else {
+          attachmentOption.urlText = "\n:paperclip: <a href=\"{filename}\">"+e.originalEvent.dataTransfer.files[0].name+"</a>\n";
+          var otherFileInlineattach = new inlineAttachment(attachmentOption, editor);
+          otherFileInlineattach.onDrop(e.originalEvent);
+
+        }
       },
       'dragenter.inlineattach dragover.inlineattach': function(e) {
         e.stopPropagation();
@@ -424,7 +434,8 @@ $(function() {
         _csrf: csrfToken
       },
       progressText: '(Uploading file...)',
-      urlText: "\n![file]({filename})\n"
+      urlText: "\n![file]({filename})\n",
+      allowedTypes: '*'
     };
 
     attachmentOption.onFileUploadResponse = function(res) {
