@@ -9,7 +9,6 @@ const commonConfig = require('./webpack.common.js'); // the settings that are co
 /**
  * Webpack Plugins
  */
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const IgnorePlugin = require('webpack/lib/IgnorePlugin');
 const UglifyJsPlugin = require('webpack/lib/optimize/UglifyJsPlugin');
 const OptimizeJsPlugin = require('optimize-js-plugin');
