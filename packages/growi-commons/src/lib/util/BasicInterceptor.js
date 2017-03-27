@@ -1,7 +1,7 @@
 /**
  * Basic Interceptor class
  */
-class BasicInterceptor {
+export class BasicInterceptor {
 
   /**
    * getter for id
@@ -43,5 +43,3 @@ class BasicInterceptor {
   }
 
 }
-
-module.exports = BasicInterceptor;
