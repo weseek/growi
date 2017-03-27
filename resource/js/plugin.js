@@ -1,12 +1,3 @@
-const plugins = {
-  // 'crowi-plugin-X': {
-  //   meta: require('crowi-plugin-X'),
-  //   entries: [
-  //     require('crowi-plugin-X/lib/client-entry')
-  //   ]
-  // },
-}
-
 export default class CrowiPlugin {
 
   /**
@@ -18,9 +9,20 @@ export default class CrowiPlugin {
    * @memberof CrowiPlugin
    */
   installAll(crowi, crowiRenderer) {
-    for (let pluginName of Object.keys(plugins)) {
-      let meta = plugins[pluginName].meta;
-      let entries = plugins[pluginName].entries;
+    // import plugin definitions
+    let definitions = [];
+    try {
+      definitions = require('../../tmp/plugins/plugin-definitions');
+    }
+    catch(e) {
+      // TODO show warning
+      // do nothing
+      return;
+    }
+
+    definitions.forEach((definition) => {
+      const meta = definition.meta;
+      const entries = definition.entries;
 
       // v1 is deprecated
 
@@ -30,7 +32,7 @@ export default class CrowiPlugin {
           entry(crowi, crowiRenderer);
         });
       }
-    }
+    });
   }
 
 }

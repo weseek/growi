@@ -16,7 +16,6 @@ const AssetsPlugin = require('assets-webpack-plugin');
 const CommonsChunkPlugin = require('webpack/lib/optimize/CommonsChunkPlugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const DllBundlesPlugin = require('webpack-dll-bundles-plugin').DllBundlesPlugin;
-const LiveReloadPlugin = require('webpack-livereload-plugin');
 
 /*
  * Webpack Constants
@@ -71,8 +70,6 @@ module.exports = function (options) {
           plugins: [],
         })
       }),
-
-      new LiveReloadPlugin(),
 
       new webpack.NoEmitOnErrorsPlugin(),
 
