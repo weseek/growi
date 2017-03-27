@@ -79,7 +79,7 @@ module.exports = function (options) {
 
       new CommonsChunkPlugin({
         name: 'commons',
-        chunks: ['app', 'legacy', 'legacy-form', 'legacy-admin', 'style'],
+        chunks: ['app', 'legacy', 'legacy-form', 'legacy-admin'],
         minChunks: module => /node_modules/.test(module.resource),
       }),
       new CommonsChunkPlugin({
