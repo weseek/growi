@@ -79,8 +79,16 @@ module.exports = function (options) {
 
       new CommonsChunkPlugin({
         name: 'commons',
-        chunks: ['app', 'legacy', 'legacy-form', 'legacy-admin', 'legacy-presentation'],
+        chunks: ['app', 'legacy', 'legacy-form', 'legacy-admin', 'style'],
         minChunks: module => /node_modules/.test(module.resource),
+      }),
+      new CommonsChunkPlugin({
+        name: 'commons',
+        chunks: ['commons', 'legacy-presentation'],
+      }),
+      new CommonsChunkPlugin({
+        name: 'commons',
+        chunks: ['commons', 'plugin'],
       }),
 
       new webpack.ProvidePlugin({

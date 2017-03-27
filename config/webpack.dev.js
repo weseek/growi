@@ -34,9 +34,6 @@ module.exports = function (options) {
   return webpackMerge(commonConfig({ env: ENV }), {
     devtool: 'cheap-module-source-map',
     entry: {
-      // dev: WATCH ?
-      //   ['./resource/js/dev', 'reload/lib/reload-client']:
-      //   ['./resource/js/dev'],
       dev: './resource/js/dev',
     },
     output: {
