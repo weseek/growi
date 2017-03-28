@@ -1,6 +1,6 @@
 {
   "name": "crowi-pluginkit",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "The Crowi Plugin Kit to develop plugins",
   "main": "lib/index.js",
   "files": [
@@ -16,14 +16,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/yuki-takei/crowi-pluginkit.git"
+    "url": "https://github.com/weseek/crowi-pluginkit.git"
   },
   "author": "Yuki Takei <yuki@weseek.co.jp>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/yuki-takei/crowi-pluginkit/issues"
+    "url": "https://github.com/weseek/crowi-pluginkit/issues"
   },
-  "homepage": "https://github.com/yuki-takei/crowi-pluginkit#readme",
+  "homepage": "https://github.com/weseek/crowi-pluginkit#readme",
   "dependencies": {
   },
   "devDependencies": {
