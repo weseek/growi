@@ -1,8 +1,7 @@
 ![Crowi](http://res.cloudinary.com/hrscywv4p/image/upload/c_limit,f_auto,h_900,q_80,w_1200/v1/199673/https_www_filepicker_io_api_file_VpYEP32ZQyCZ85u6XCXo_zskpra.png)
 
-Crowi - The Simple & Powerful Communication Tool Based on Wiki
-================================================================
-
+crowi-plus
+===========
 
 [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/crowi/crowi/tree/v1.6.0)
 
@@ -10,84 +9,47 @@ Crowi - The Simple & Powerful Communication Tool Based on Wiki
 [![Join the chat at https://gitter.im/crowi/general](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/crowi/general)
 
 
-Crowi is:
+crowi-plus is the fork of [Crowi](https://github.com/crowi/crowi), has been enhanced with the following points:
 
-* Easy to edit and share,
-* Markdown supported,
-* Useful timeline list view,
-* Fast.
+* Pluggable
+  * Find plugins from [npm](https://www.npmjs.com/browse/keyword/crowi-plugin) or [github](https://github.com/search?q=topic%3Acrowi-plugin)!
+* Faster
+  * Optimize client-side code chunks by Webpack
+  * Using CDN
+* Added miscellaneous features
+* Developer-friendly
+  * Less compile time
+  * LiveReload separately available by server/client code change
+  * Exclude Environment-dependency (confirmed to be developable on Win/Mac/Linux)
+  
 
+Quick Start for Production
+---------------------------
 
-Install
----------
-
-Install dependencies and build CSS and JavaScript:
-
-    $ npm install
+(TBD)
 
 More info are [here](https://github.com/crowi/crowi/wiki/Install-and-Configuration).
 
-### WARNING
-
-Don't use `master` branch because it is unstable but use released tag version expect when you want to contribute the project.
-`master` branch is prepared for v1.6. See [here](https://github.com/crowi/crowi/wiki/Roadmaps-v1.6) to know further info.
-
-Dependencies
--------------
-
-* Node.js (6.x)
-* MongoDB
-* Elasticsearch (optional) ([Doc is here](https://github.com/crowi/crowi/wiki/Configure-Search-Functions))
-* Redis (optional)
-* Amazon S3 (optional)
-* Google Project (optional)
-* Slack App (optional)
-
-
-Start Up on Local
--------------------
-
-Crowi is designed setting up to Heroku or some PaaS, but you can start up Crowi with ENV parameter on your local.
-
-```
-$ PASSWORD_SEED=somesecretstring MONGO_URI=mongodb://username:password@localhost/crowi node app.js
-```
-
-### Environment
-
-
-* `PORT`: Server port. default: `3000`.
-* `NODE_ENV`: `production` OR `development`.
-* `MONGO_URI`: URI to connect MongoDB. This parameter is also by `MONGOHQ_URL` OR `MONGOLAB_URI`.
-* `REDIS_URL`: URI to connect Redis (to session store). This parameter is also by `REDISTOGO_URL`.
-* `ELASTICSEARCH_URI`: URI to connect Elasticearch.
-* `PASSWORD_SEED`: A password seed is used by password hash generator.
-* `SECRET_TOKEN`: A secret key for verifying the integrity of signed cookies.
-* `FILE_UPLOAD`: `aws` (default), `local`, `none`
-
-(Opt.) Install Plugins
------------------------
-
-Install plugins from github:
-
-    $ npm run install-plugin https://github.com/sopmeone/crowi-plugin-something.git
-
-Modify `plugin/plugin.js`:
-
-    const plugins = [
-      require('crowi-plugin-something')
-    ]
-
-Build plugins:
-
-    $ npm run webpack:plugin
-    
-After above process, rebooting Crowi is required.
-
 ### CAUTION
 
-Plugins are DISABLED in default settings.  
+**Plugins are DISABLED in default settings.**  
 Change it on admin page.
+
+
+Startup for Developers
+-----------------------
+
+## Requirements
+
+(TBD)
+
+## Start development
+
+(TBD)
+
+## LiveReload
+
+(TBD)
 
 License
 ---------
