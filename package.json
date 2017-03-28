@@ -31,10 +31,10 @@
     "prebuild:prod": "npm run generate-plugin-definitions-source",
     "prestart": "npm run build:prod",
     "rimraf": "rimraf",
-    "server:dev": "npm run server:watch",
-    "server:watch": "node-dev app.js",
+    "server:dev:watch": "node-dev app.js",
+    "server:dev": "node app.js",
     "server:prod": "node app.js --production",
-    "server": "npm run server:dev",
+    "server": "npm run server:dev:watch",
     "start": "npm run server:prod",
     "test": "",
     "webpack": "webpack"
