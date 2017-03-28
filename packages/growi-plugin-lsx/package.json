@@ -1,6 +1,6 @@
 {
   "name": "crowi-plugin-lsx",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "The Crowi Plugin to add lsx tag",
   "main": "lib/index.js",
   "files": [
@@ -17,16 +17,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/yuki-takei/crowi-plugin-lsx.git"
+    "url": "https://github.com/weseek/crowi-plugin-lsx.git"
   },
   "author": "Yuki Takei <yuki@weseek.co.jp>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/yuki-takei/crowi-plugin-lsx/issues"
+    "url": "https://github.com/weseek/crowi-plugin-lsx/issues"
   },
-  "homepage": "https://github.com/yuki-takei/crowi-plugin-lsx#readme",
+  "homepage": "https://github.com/weseek/crowi-plugin-lsx#readme",
   "dependencies": {
-    "crowi-pluginkit": "^1.0.1",
+    "crowi-pluginkit": "^1.0.3",
     "react": "^15.4.2",
     "react-dom": "^15.4.2"
   },
