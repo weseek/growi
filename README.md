@@ -39,15 +39,15 @@ Change it on admin page.
 Startup for Developers
 -----------------------
 
-## Requirements
+### Requirements
 
 (TBD)
 
-## Start development
+### Start development
 
 (TBD)
 
-## LiveReload
+### LiveReload
 
 (TBD)
 
