@@ -16,7 +16,15 @@ test:
       code: |
         yarn global add npm@4
 
-    - npm-install
+    - script:
+      name: install assets-webpack-plugin
+      code: |
+        npm install assets-webpack-plugin
+
+    - script:
+      name: install dependencies
+      code: |
+        yarn install
 
     - script:
       name: print dependencies
