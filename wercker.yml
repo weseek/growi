@@ -1,8 +1,10 @@
 box: node:6.10
 
+services:
+  - mongo
+
+
 test:
-  services:
-    - mongo
   steps:
     - script:
       name: set yarn cache-folder
@@ -21,7 +23,13 @@ test:
       code: |
         npm list --depth=0
 
+    - script:
+      name: set MONGO_URI
+      code: |
+        export MONGO_URI=${MONGO_PORT_27017_TCP_ADDR}/crowi_test
+
     - npm-test
+
 
 build-prod:
   steps:
@@ -41,6 +49,7 @@ build-prod:
       name: npm run build:prod
       code: |
         npm run build:prod
+
 
 build-dev:
   steps:
