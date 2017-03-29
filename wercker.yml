@@ -1,4 +1,4 @@
-box: node:6.10-slim
+box: node:6.10
 
 test:
   steps:
