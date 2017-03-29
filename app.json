@@ -1,12 +1,11 @@
 {
-  "name": "Crowi",
-  "description": "The simple & powerful Wiki",
+  "name": "crowi-plus",
+  "description": "Enhanced Crowi",
   "keywords": [
     "wiki",
     "communication"
   ],
-  "website": "https://crowi.wiki/",
-  "repository": "https://github.com/crowi/crowi",
+  "repository": "https://github.com/weseek/crowi-plus",
   "success_url": "/",
   "env": {
     "NODE_ENV": "production",
