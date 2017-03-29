@@ -1,6 +1,8 @@
 box: node:6.10
 
 test:
+  services:
+    - mongo
   steps:
     - script:
       name: set yarn cache-folder
@@ -24,7 +26,6 @@ test:
         npm test
 
 build-prod:
-  steps:
   steps:
     - script:
       name: set yarn cache-folder
