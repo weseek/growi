@@ -24,12 +24,11 @@ test:
       code: yarn list --depth=0
 
     - script:
-      name: set MONGO_URI
+      name: npm test
       code: |
         export MONGO_URI=mongodb://$MONGO_PORT_27017_TCP_ADDR/crowi_test
         echo MONGO_URI=$MONGO_URI
-
-    - npm-test
+        npm test
 
 
 build-prod:
