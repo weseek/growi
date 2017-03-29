@@ -1,7 +1,7 @@
 box: node:6.10
 
 services:
-  - mongo
+  - mongo:3.4
 
 
 test:
@@ -22,11 +22,6 @@ test:
       name: print dependencies
       code: |
         npm list --depth=0
-
-    - script:
-      name: set MONGO_URI
-      code: |
-        export MONGO_URI=${MONGO_PORT_27017_TCP_ADDR}/crowi_test
 
     - npm-test
 
