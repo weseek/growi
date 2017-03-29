@@ -18,6 +18,38 @@ test:
         HOME=$YARN_CACHE yarn
 
     - script:
+      name: print dependencies
+      code: |
+        yarn list depth=0
+
+    - script:
       name: test
       code: |
         npm test
+
+build-prod:
+  steps:
+    - script:
+      name: install yarn
+      code: |
+        npm install -g yarn
+
+    - script:
+      name: set yarn cache
+      code: |
+        export YARN_CACHE=$WERCKER_CACHE_DIR/yarn
+
+    - script:
+      name: install dependencies
+      code: |
+        HOME=$YARN_CACHE yarn
+
+    - script:
+      name: print dependencies
+      code: |
+        yarn list depth=0
+
+    - script:
+      name: build:prod
+      code: |
+        npm run build:prod
