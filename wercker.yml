@@ -14,9 +14,9 @@ test:
       name: install dependencies
       code: |
         yarn global add npm@4
-        # install assets-webpack-plugin with npm
-        # because yarn couldn't find package from the "npm" registry
-        npm install assets-webpack-plugin
+        # add assets-webpack-plugin individually
+        # because `yarn install` couldn't find package from the "npm" registry
+        yarn add assets-webpack-plugin
         yarn install
 
     - script:
@@ -27,7 +27,7 @@ test:
       name: npm test
       code: |
         export MONGO_URI=mongodb://$MONGO_PORT_27017_TCP_ADDR/crowi_test
-        echo MONGO_URI=$MONGO_URI
+        echo "export MONGO_URI=$MONGO_URI"
         npm test
 
 
@@ -41,10 +41,10 @@ build-prod:
       name: install dependencies
       code: |
         yarn global add npm@4
-        # install assets-webpack-plugin with npm
-        # because yarn couldn't find package from the "npm" registry
-        npm install assets-webpack-plugin
-        yarn install --production
+        # add assets-webpack-plugin individually
+        # because `yarn install` couldn't find package from the "npm" registry
+        yarn add assets-webpack-plugin
+        yarn install
 
     - script:
       name: print dependencies
@@ -66,9 +66,9 @@ build-dev:
       name: install dependencies
       code: |
         yarn global add npm@4
-        # install assets-webpack-plugin with npm
-        # because yarn couldn't find package from the "npm" registry
-        npm install assets-webpack-plugin
+        # add assets-webpack-plugin individually
+        # because `yarn install` couldn't find package from the "npm" registry
+        yarn add assets-webpack-plugin
         yarn install
 
     - script:
