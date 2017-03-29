@@ -11,6 +11,7 @@ test:
       name: install dependencies
       code: |
         yarn global add npm@4
+        npm config delete _auth
         yarn install --prefer-offline
 
     - script:
