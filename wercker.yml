@@ -3,15 +3,20 @@ box: node:6.10
 test:
   steps:
     - script:
+      name: set yarn cache-folder
+      code: |
+        yarn config set cache-folder $WERCKER_CACHE_DIR/yarn
+
+    - script:
       name: install dependencies
       code: |
-        npm install -g npm@4
+        yarn global add npm@4
         npm install
 
     - script:
       name: print dependencies
       code: |
-        npm ls --depth=0
+        npm list --depth=0
 
     - script:
       name: npm test
@@ -20,16 +25,22 @@ test:
 
 build-prod:
   steps:
+  steps:
+    - script:
+      name: set yarn cache-folder
+      code: |
+        yarn config set cache-folder $WERCKER_CACHE_DIR/yarn
+
     - script:
       name: install dependencies
       code: |
-        npm install -g npm@4
+        yarn global add npm@4
         npm install
 
     - script:
       name: print dependencies
       code: |
-        npm ls --depth=0
+        npm list --depth=0
 
     - script:
       name: npm run build:prod
