@@ -3,10 +3,9 @@
 crowi-plus
 ===========
 
-[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/crowi/crowi/tree/v1.6.0)
+[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/weseek/crowi-plus/tree/v1.0.0-RC)
 
 [![Circle CI](https://circleci.com/gh/crowi/crowi.svg?style=svg)](https://circleci.com/gh/crowi/crowi)
-[![Join the chat at https://gitter.im/crowi/general](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/crowi/general)
 
 
 crowi-plus is the fork of [Crowi](https://github.com/crowi/crowi), has been enhanced with the following points:
@@ -50,6 +49,12 @@ Startup for Developers
 ### LiveReload
 
 (TBD)
+
+
+Other Relational Documents
+---------------------------
+
+see [github wiki pages](https://github.com/weseek/crowi-plus/wiki)
 
 License
 ---------
