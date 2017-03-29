@@ -8,31 +8,26 @@ test:
   steps:
     - script:
       name: set yarn cache-folder
-      code: |
-        yarn config set cache-folder $WERCKER_CACHE_DIR/yarn
-
-    - script:
-      name: install npm@4
-      code: |
-        yarn global add npm@4
-
-    - script:
-      name: install assets-webpack-plugin
-      code: |
-        npm install assets-webpack-plugin
+      code: yarn config set cache-folder $WERCKER_CACHE_DIR/yarn
 
     - script:
       name: install dependencies
       code: |
+        yarn global add npm@4
+        # install assets-webpack-plugin with npm
+        # because yarn couldn't find package from the "npm" registry
+        npm install assets-webpack-plugin
         yarn install
 
     - script:
       name: print dependencies
-      code: |
-        npm list --depth=0
+      code: yarn list --depth=0
 
     - script:
-      code: env
+      name: set MONGO_URI
+      code: |
+        export MONGO_URI=mongodb://$MONGO_PORT_27017_TCP_ADDR/crowi_test
+        echo MONGO_URI=$MONGO_URI
 
     - npm-test
 
@@ -41,15 +36,20 @@ build-prod:
   steps:
     - script:
       name: set yarn cache-folder
-      code: |
-        yarn config set cache-folder $WERCKER_CACHE_DIR/yarn
+      code: yarn config set cache-folder $WERCKER_CACHE_DIR/yarn
 
     - script:
-      name: install npm@4
+      name: install dependencies
       code: |
         yarn global add npm@4
+        # install assets-webpack-plugin with npm
+        # because yarn couldn't find package from the "npm" registry
+        npm install assets-webpack-plugin
+        yarn install --production
 
-    - npm-install --production
+    - script:
+      name: print dependencies
+      code: yarn list --depth=0
 
     - script:
       name: npm run build:prod
@@ -61,15 +61,20 @@ build-dev:
   steps:
     - script:
       name: set yarn cache-folder
-      code: |
-        yarn config set cache-folder $WERCKER_CACHE_DIR/yarn
+      code: yarn config set cache-folder $WERCKER_CACHE_DIR/yarn
 
     - script:
-      name: install npm@4
+      name: install dependencies
       code: |
         yarn global add npm@4
+        # install assets-webpack-plugin with npm
+        # because yarn couldn't find package from the "npm" registry
+        npm install assets-webpack-plugin
+        yarn install
 
-    - npm-install
+    - script:
+      name: print dependencies
+      code: yarn list --depth=0
 
     - script:
       name: npm run build:dev
