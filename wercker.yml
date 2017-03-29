@@ -1,0 +1,23 @@
+box: node:6.10-slim
+
+test:
+  steps:
+    - script:
+      name: install yarn
+      code: |
+        npm install -g yarn
+
+    - script:
+      name: set yarn cache
+      code: |
+        export YARN_CACHE=$WERCKER_CACHE_DIR/yarn
+
+    - script:
+      name: install dependencies
+      code: |
+        HOME=$YARN_CACHE yarn
+
+    - script:
+      name: test
+      code: |
+        npm test
