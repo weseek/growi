@@ -1,5 +1,7 @@
 'use strict';
 
+process.env.NODE_ENV = 'test';
+
 var express = require('express')
   , ROOT_DIR = __dirname + '/..'
   , MODEL_DIR = __dirname + '/../lib/models'

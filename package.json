@@ -36,7 +36,7 @@
     "server:prod": "node app.js --production",
     "server": "npm run server:dev:watch",
     "start": "npm run server:prod",
-    "test": "",
+    "test": "mocha -r test/bootstrap.js test/**/*.js",
     "webpack": "webpack"
   },
   "dependencies": {
