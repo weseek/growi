@@ -1,6 +1,7 @@
 {% extends '2column.html' %}
 
-{% block footer %}
-  <script src="{{ webpack_asset('legacy-admin').js }}"></script>
-{% endblock footer %}
+{% block html_head %}
+  {% parent %}
+  <script src="{{ webpack_asset('legacy-admin').js }}" defer></script>
+{% endblock %}
 
