@@ -1,6 +1,6 @@
 {
   "name": "crowi-plus",
-  "version": "1.0.0-RC",
+  "version": "1.0.0-RC2",
   "description": "Enhanced Crowi",
   "tags": [
     "wiki",
@@ -51,7 +51,7 @@
     "body-parser": "~1.14.1",
     "bootstrap-sass": "~3.3.6",
     "botkit": "~0.1.1",
-    "cli": "~0.6.0",
+    "cli": "~1.0.1",
     "colors": "^1.1.2",
     "commander": "~2.9.0",
     "connect-flash": "~0.1.1",
