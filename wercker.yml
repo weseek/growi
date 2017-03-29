@@ -3,19 +3,15 @@ box: node:6.10-slim
 test:
   steps:
     - script:
-      name: install yarn
+      name: set yarn cache-folder
       code: |
-        npm install -g yarn
-
-    - script:
-      name: set yarn cache
-      code: |
-        export YARN_CACHE=$WERCKER_CACHE_DIR/yarn
+        yarn config set cache-folder $WERCKER_CACHE_DIR/yarn
 
     - script:
       name: install dependencies
       code: |
-        HOME=$YARN_CACHE yarn
+        yarn global add npm@4
+        yarn install --prefer-offline
 
     - script:
       name: print dependencies
@@ -23,26 +19,22 @@ test:
         yarn list depth=0
 
     - script:
-      name: test
+      name: npm test
       code: |
         npm test
 
 build-prod:
   steps:
     - script:
-      name: install yarn
+      name: set yarn cache-folder
       code: |
-        npm install -g yarn
-
-    - script:
-      name: set yarn cache
-      code: |
-        export YARN_CACHE=$WERCKER_CACHE_DIR/yarn
+        yarn config set cache-folder $WERCKER_CACHE_DIR/yarn
 
     - script:
       name: install dependencies
       code: |
-        HOME=$YARN_CACHE yarn
+        yarn global add npm@4
+        yarn install --prefer-offline
 
     - script:
       name: print dependencies
@@ -50,6 +42,6 @@ build-prod:
         yarn list depth=0
 
     - script:
-      name: build:prod
+      name: npm run build:prod
       code: |
         npm run build:prod
