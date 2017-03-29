@@ -3,11 +3,6 @@ box: node:6.10-slim
 test:
   steps:
     - script:
-      name: git configuration
-      code: |
-        git config http.sslVerify false
-
-    - script:
       name: set yarn cache-folder
       code: |
         yarn config set cache-folder $WERCKER_CACHE_DIR/yarn
@@ -30,11 +25,6 @@ test:
 
 build-prod:
   steps:
-    - script:
-      name: git configuration
-      code: |
-        git config http.sslVerify false
-
     - script:
       name: set yarn cache-folder
       code: |
