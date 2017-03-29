@@ -10,20 +10,18 @@ test:
         yarn config set cache-folder $WERCKER_CACHE_DIR/yarn
 
     - script:
-      name: install dependencies
+      name: install npm@4
       code: |
         yarn global add npm@4
-        npm-install
+
+    - npm-install
 
     - script:
       name: print dependencies
       code: |
         npm list --depth=0
 
-    - script:
-      name: npm test
-      code: |
-        npm test
+    - npm-test
 
 build-prod:
   steps:
@@ -33,17 +31,32 @@ build-prod:
         yarn config set cache-folder $WERCKER_CACHE_DIR/yarn
 
     - script:
-      name: install dependencies
+      name: install npm@4
       code: |
         yarn global add npm@4
-        npm-install
 
-    - script:
-      name: print dependencies
-      code: |
-        npm list --depth=0
+    - npm-install --production
 
     - script:
       name: npm run build:prod
       code: |
         npm run build:prod
+
+build-dev:
+  steps:
+    - script:
+      name: set yarn cache-folder
+      code: |
+        yarn config set cache-folder $WERCKER_CACHE_DIR/yarn
+
+    - script:
+      name: install npm@4
+      code: |
+        yarn global add npm@4
+
+    - npm-install
+
+    - script:
+      name: npm run build:dev
+      code: |
+        npm run build:dev
