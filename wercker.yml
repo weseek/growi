@@ -23,6 +23,9 @@ test:
       code: |
         npm list --depth=0
 
+    - script:
+      code: env
+
     - npm-test
 
 
