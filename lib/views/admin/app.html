@@ -316,7 +316,7 @@
               showMessage($id, 'エラーが発生しました', 'danger');
             })
             .always(function() {
-              $button.removeAttr('disabled');
+              $button.prop('disabled', false);
           });
           return false;
         });
