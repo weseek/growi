@@ -186,6 +186,14 @@ $(function() {
   var pagePath= $('#content-main').data('path');
   var isEnabledLineBreaks = $('#content-main').data('linebreaks-enabled');
 
+  // generate options obj
+  var rendererOptions = {
+    // see: https://www.npmjs.com/package/marked
+    marked: {
+      breaks: isEnabledLineBreaks
+    }
+  };
+
   Crowi.linkPath();
 
   $('[data-toggle="popover"]').popover();
@@ -372,7 +380,7 @@ $(function() {
         var revisionPath = '#' + id + ' .revision-path';
 
         var markdown = Crowi.unescape($(contentId).html());
-        var parsedHTML = crowiRenderer.render(markdown);
+        var parsedHTML = crowiRenderer.render(markdown, rendererOptions);
         $(revisionBody).html(parsedHTML);
 
         $('.template-create-button', revisionBody).on('click', function() {
@@ -418,15 +426,6 @@ $(function() {
     var $rawTextOriginal = $('#raw-text-original');
     if ($rawTextOriginal.length > 0) {
       var markdown = Crowi.unescape($('#raw-text-original').html());
-
-      // generate options obj
-      var rendererOptions = {
-        // see: https://www.npmjs.com/package/marked
-        marked: {
-          breaks: isEnabledLineBreaks
-        },
-      }
-
       var parsedHTML = crowiRenderer.render(markdown, rendererOptions);
 
       // create context object
