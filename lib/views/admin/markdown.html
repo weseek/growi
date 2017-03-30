@@ -38,14 +38,14 @@
 
       <form action="/admin/markdown/lineBreaksSetting" method="post" class="form-horizontal" id="markdownSettingForm" role="form">
       <fieldset>
-      <legend>Markdown設定</legend>
+        <legend>Markdown設定</legend>
         <p class="well">Markdownレンダリングの設定を変更できます。</p>
 
         <div class="form-group">
-          <label for="markdownSetting[markdown:isEnabledLinebreaks]" class="col-xs-3 control-label">
+          <label for="markdownSetting[markdown:isEnabledLinebreaks]" class="col-xs-4 control-label">
             Line Break を有効にする
           </label>
-          <div class="col-xs-6">
+          <div class="col-xs-5">
             <div class="btn-group btn-toggle" data-toggle="buttons">
               <label class="btn {% if markdownSetting['markdown:isEnabledLinebreaks'] %}btn-primary active{% else %}btn-default{% endif %}">
                 <input name="markdownSetting[markdown:isEnabledLinebreaks]" value="true" type="radio"
@@ -56,17 +56,35 @@
                     {% if !markdownSetting['markdown:isEnabledLinebreaks'] %}checked{% endif %}> 無効
               </label>
             </div>
-            <p class="help-block">プレーンテキスト中の改行を、HTML内で&lt;br&gt;として扱います</p>
+            <p class="help-block">ページテキスト中の改行を、HTML内で&lt;br&gt;として扱います</p>
           </div>
         </div>
 
         <div class="form-group">
-          <div class="col-xs-offset-3 col-xs-6">
+          <label for="markdownSetting[markdown:isEnabledLinebreaksInComments]" class="col-xs-4 control-label">
+            (TBD)<br>コメント欄で Line Break を有効にする
+          </label>
+          <div class="col-xs-5">
+            <div class="btn-group btn-toggle" data-toggle="buttons">
+              <label class="btn {% if markdownSetting['markdown:isEnabledLinebreaksInComments'] %}btn-primary active{% else %}btn-default{% endif %}">
+                <input name="markdownSetting[markdown:isEnabledLinebreaksInComments]" value="true" type="radio"
+                    {% if true === markdownSetting['markdown:isEnabledLinebreaksInComments'] %}checked{% endif %}> 有効
+              </label>
+              <label class="btn {% if !markdownSetting['markdown:isEnabledLinebreaksInComments'] %}btn-primary active{% else %}btn-default{% endif %}">
+                <input name="markdownSetting[markdown:isEnabledLinebreaksInComments]" value="false" type="radio"
+                    {% if !markdownSetting['markdown:isEnabledLinebreaksInComments'] %}checked{% endif %}> 無効
+              </label>
+            </div>
+            <p class="help-block">コメント中の改行を、HTML内で&lt;br&gt;として扱います<br>(TBD: コメント欄の Markdown 化は未だ実装されていません)</p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-xs-offset-4 col-xs-5">
             <input type="hidden" name="_csrf" value="{{ csrf() }}">
             <button type="submit" class="btn btn-primary">更新</button>
           </div>
         </div>
-
       </fieldset>
       </form>
 
