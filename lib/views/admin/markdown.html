@@ -1,0 +1,83 @@
+{% extends '../layout/admin.html' %}
+
+{% block html_title %}Markdown設定 · {{ path }}{% endblock %}
+
+{% block content_head %}
+<div class="header-wrap">
+  <header id="page-header">
+    <h1 class="title" id="">Markdown設定</h1>
+  </header>
+</div>
+{% endblock %}
+
+{% block content_main %}
+<div class="content-main">
+  <div class="row">
+    <div class="col-md-3">
+      {% include './widget/menu.html' with {current: 'markdown'} %}
+    </div>
+    <div class="col-md-9">
+
+      {% set smessage = req.flash('successMessage') %}
+      {% if smessage.length %}
+      <div class="alert alert-success">
+        {% for e in smessage %}
+          {{ e }}<br>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      {% set emessage = req.flash('errorMessage') %}
+      {% if emessage.length %}
+      <div class="alert alert-danger">
+        {% for e in emessage %}
+        {{ e }}<br>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <form action="/admin/markdown/lineBreaksSetting" method="post" class="form-horizontal" id="markdownSettingForm" role="form">
+      <fieldset>
+      <legend>Markdown設定</legend>
+        <p class="well">Markdownレンダリングの設定を変更できます。</p>
+
+        <div class="form-group">
+          <label for="markdownSetting[isEnabledLinebreaks]" class="col-xs-3 control-label">
+            Line Break を有効にする
+          </label>
+          <div class="col-xs-6">
+            <div class="btn-group btn-toggle" data-toggle="buttons">
+              <label class="btn {% if markdownSetting['isEnabledLinebreaks'] %}btn-primary active{% else %}btn-default{% endif %}">
+                <input name="markdownSetting[isEnabledLinebreaks]" value="true" type="radio"
+                    {% if true === markdownSetting['isEnabledLinebreaks'] %}checked{% endif %}> 有効
+              </label>
+              <label class="btn {% if !markdownSetting['isEnabledLinebreaks'] %}btn-primary active{% else %}btn-default{% endif %}">
+                <input name="markdownSetting[isEnabledLinebreaks]" value="false" type="radio"
+                    {% if !markdownSetting['isEnabledLinebreaks'] %}checked{% endif %}> 無効
+              </label>
+            </div>
+            <p class="help-block">プレーンテキスト中の改行を、HTML内で&lt;br&gt;として扱います</p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-xs-offset-3 col-xs-6">
+            <input type="hidden" name="_csrf" value="{{ csrf() }}">
+            <button type="submit" class="btn btn-primary">更新</button>
+          </div>
+        </div>
+
+      </fieldset>
+      </form>
+
+    </div>
+  </div>
+
+</div>
+{% endblock content_main %}
+
+{% block content_footer %}
+{% endblock content_footer %}
+
+
+
