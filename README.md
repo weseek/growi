@@ -9,7 +9,7 @@ crowi-plus
 [![dependencies status](https://david-dm.org/weseek/crowi-plus.svg)](https://david-dm.org/weseek/crowi-plus)
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
 
-crowi-plus is the fork of [Crowi](https://github.com/crowi/crowi), has been enhanced with the following points:
+This is **crowi-plus** that is the fork of [Crowi](https://github.com/crowi/crowi), is [perfectly compatible with official](https://github.com/weseek/crowi-plus/wiki/Question-and-Answers#does-crowi-plus-have-compatibility-with-official-crowi), and has been enhanced with the following points:
 
 * Pluggable
   * Find plugins from [npm](https://www.npmjs.com/browse/keyword/crowi-plugin) or [github](https://github.com/search?q=topic%3Acrowi-plugin)!
@@ -25,59 +25,77 @@ crowi-plus is the fork of [Crowi](https://github.com/crowi/crowi), has been enha
   * LiveReload separately available by server/client code change
   * Exclude Environment-dependency (confirmed to be developable on Win/Mac/Linux)
   
-
 Quick Start for Production
----------------------------
+===========================
 
 (TBD)
 
 More info are [here](https://github.com/crowi/crowi/wiki/Install-and-Configuration).
 
 
-Startup for Developers
------------------------
+Getting Started to Develop
+==========================
 
-### Requirements
+## Dependencies
+What you need to run this app:
+* `node` and `npm` (`brew install node`)
+* following environment is confirmed to work
 
-- node >= 6.x
-- npm >= 4.x
-- yarn >= 0.21.x
+    ```bash
+    $ node -v
+    v6.10.0
+    
+    $ npm -v
+    4.5.0
+    
+    $ yarn --version
+    0.21.3
+    ```
 
-#### Confirmed to work
+## Build and Running the app
+* `clone` this repository
+* `npm install` to install all dependencies or `yarn`
+* `npm run build` to build client app
+* `npm run server` to start the dev server in another tab
 
+After you have installed all dependencies and build client you can now run the app. Run `npm run server` to start a local server using `node-dev` which will watch server-side codes and reload for you. The port will be displayed to you as `http://0.0.0.0:3000`.
+
+### build and run server
 ```bash
-$ node -v
-v6.10.0
-$ npm -v
-4.5.0
-$ yarn --version
-0.21.3
-```
-
-### Start development
-
-```bash
-# Install Dependencies
-yarn
-# Build client-side codes
+# development
 npm run build
-# Run development server and watch server-side codes
 npm run server
+# production
+npm run build:prod
+npm run server:prod
 ```
 
-#### Incremental client-side Building
+## Other commands
 
-Run following in another process:
-
+### build client app
 ```bash
-$ npm run build:dev:watch
+# development
+npm run build:dev
+# production (jit)
+npm run build:prod
 ```
 
+### watch client-side codes and incremental build
+```bash
+npm run build:dev:watch
+```
 
-Other Relational Documents
----------------------------
+### run unit tests
+```bash
+npm test
+```
 
-see [github wiki pages](https://github.com/weseek/crowi-plus/wiki)
+Documents
+----------
+
+* [github wiki pages](https://github.com/weseek/crowi-plus/wiki)
+  * [Question and Answers](https://github.com/weseek/crowi-plus/wiki/Question-and-Answers)
+
 
 License
 ---------
