@@ -42,18 +42,18 @@
         <p class="well">Markdownレンダリングの設定を変更できます。</p>
 
         <div class="form-group">
-          <label for="markdownSetting[isEnabledLinebreaks]" class="col-xs-3 control-label">
+          <label for="markdownSetting[markdown:isEnabledLinebreaks]" class="col-xs-3 control-label">
             Line Break を有効にする
           </label>
           <div class="col-xs-6">
             <div class="btn-group btn-toggle" data-toggle="buttons">
-              <label class="btn {% if markdownSetting['isEnabledLinebreaks'] %}btn-primary active{% else %}btn-default{% endif %}">
-                <input name="markdownSetting[isEnabledLinebreaks]" value="true" type="radio"
-                    {% if true === markdownSetting['isEnabledLinebreaks'] %}checked{% endif %}> 有効
+              <label class="btn {% if markdownSetting['markdown:isEnabledLinebreaks'] %}btn-primary active{% else %}btn-default{% endif %}">
+                <input name="markdownSetting[markdown:isEnabledLinebreaks]" value="true" type="radio"
+                    {% if true === markdownSetting['markdown:isEnabledLinebreaks'] %}checked{% endif %}> 有効
               </label>
-              <label class="btn {% if !markdownSetting['isEnabledLinebreaks'] %}btn-primary active{% else %}btn-default{% endif %}">
-                <input name="markdownSetting[isEnabledLinebreaks]" value="false" type="radio"
-                    {% if !markdownSetting['isEnabledLinebreaks'] %}checked{% endif %}> 無効
+              <label class="btn {% if !markdownSetting['markdown:isEnabledLinebreaks'] %}btn-primary active{% else %}btn-default{% endif %}">
+                <input name="markdownSetting[markdown:isEnabledLinebreaks]" value="false" type="radio"
+                    {% if !markdownSetting['markdown:isEnabledLinebreaks'] %}checked{% endif %}> 無効
               </label>
             </div>
             <p class="help-block">プレーンテキスト中の改行を、HTML内で&lt;br&gt;として扱います</p>
