@@ -16,6 +16,9 @@ crowi-plus is the fork of [Crowi](https://github.com/crowi/crowi), has been enha
 * Faster
   * Optimize client-side code chunks by Webpack
   * Using CDN
+* Secure
+  * Upgrade jQuery to 3.x
+  * Upgrade other insecure libs
 * Added miscellaneous features
 * Developer-friendly
   * Less compile time
