@@ -54,6 +54,7 @@ What you need to run this app:
 
 ## Build and Running the app
 * `clone` this repository
+* `npm install -g npm@4` to install required global dependencies
 * `npm install` to install all dependencies or `yarn`
 * `npm run build` to build client app
 * `npm run server` to start the dev server in another tab
