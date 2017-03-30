@@ -32,6 +32,20 @@ Quick Start for Production
 
 More info are [here](https://github.com/crowi/crowi/wiki/Install-and-Configuration).
 
+Install plugins
+================
+
+* Stop server if running
+* `npm install --save` to install plugin or `yarn add`
+  * **Don't forget `--save` option if you use npm** or crowi-plus doesn't detect plugins
+* `npm start` to build client app and start server
+
+## Example
+
+```bash
+yarn add crowi-plugin-lsx
+npm start
+```
 
 Getting Started to Develop
 ==========================
