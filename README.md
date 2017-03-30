@@ -33,26 +33,45 @@ Quick Start for Production
 
 More info are [here](https://github.com/crowi/crowi/wiki/Install-and-Configuration).
 
-### CAUTION
-
-**Plugins are DISABLED in default settings.**  
-Change it on admin page.
-
 
 Startup for Developers
 -----------------------
 
 ### Requirements
 
-(TBD)
+- node >= 6.x
+- npm >= 4.x
+- yarn >= 0.21.x
+
+#### Confirmed to work
+
+```bash
+$ node -v
+v6.10.0
+$ npm -v
+4.5.0
+$ yarn --version
+0.21.3
+```
 
 ### Start development
 
-(TBD)
+```bash
+# Install Dependencies
+yarn
+# Build client-side codes
+npm run build
+# Run development server and watch server-side codes
+npm run server
+```
 
-### LiveReload
+#### Incremental client-side Building
 
-(TBD)
+Run following in another process:
+
+```bash
+$ npm run build:dev:watch
+```
 
 
 Other Relational Documents
