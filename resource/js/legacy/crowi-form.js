@@ -1,6 +1,15 @@
 $(function() {
   var pageId = $('#content-main').data('page-id');
   var pagePath= $('#content-main').data('path');
+  var isEnabledLineBreaks = $('#content-main').data('linebreaks-enabled');
+
+  // generate options obj
+  var rendererOptions = {
+    // see: https://www.npmjs.com/package/marked
+    marked: {
+      breaks: isEnabledLineBreaks
+    }
+  };
 
   require('bootstrap-sass');
   require('inline-attachment/src/inline-attachment');
@@ -63,7 +72,7 @@ $(function() {
 
   function renderPreview() {
     var markdown = $('#form-body').val();
-    var parsedHTML = crowiRenderer.render(markdown);
+    var parsedHTML = crowiRenderer.render(markdown, rendererOptions);
 
     // create context object
     var context = {markdown, parsedHTML, currentPagePath: location.pathname};

@@ -74,15 +74,15 @@ export default class CrowiRenderer {
 
   }
 
-  parseMarkdown(markdown) {
+  parseMarkdown(markdown, markedOpts) {
     let parsed = '';
 
     const markedRenderer = new marked.Renderer();
     markedRenderer.code = this.codeRenderer;
 
     try {
-      // TODO
-      marked.setOptions({
+      // concat
+      let concatMarkedOpts = Object.assign({
         gfm: true,
         tables: true,
         breaks: true,
@@ -91,7 +91,9 @@ export default class CrowiRenderer {
         smartLists: true,
         smartypants: false,
         renderer: markedRenderer,
-      });
+      }, markedOpts);
+
+      marked.setOptions(concatMarkedOpts);
 
       // override
       marked.Lexer.lex = function(src, options) {
@@ -111,11 +113,26 @@ export default class CrowiRenderer {
     return parsed;
   }
 
-  render(markdown) {
+  /**
+   * render
+   *
+   * @param {string} markdown
+   * @param {object} options
+   *  ex:
+   *  ```
+   *    {
+   *      marked: {...} // marked options
+   *    }
+   *  ```
+   * @returns
+   *
+   * @memberOf CrowiRenderer
+   */
+  render(markdown, rendererOptions) {
     let html = '';
 
     markdown = this.preProcess(markdown);
-    html = this.parseMarkdown(markdown);
+    html = this.parseMarkdown(markdown, rendererOptions.marked || {});
 
     return html;
   }
