@@ -184,6 +184,7 @@ $(function() {
   var currentUser = $('#content-main').data('current-user');
   var isSeen = $('#content-main').data('page-is-seen');
   var pagePath= $('#content-main').data('path');
+  var isEnabledLineBreaks = $('#content-main').data('linebreaks-enabled');
 
   Crowi.linkPath();
 
@@ -417,7 +418,16 @@ $(function() {
     var $rawTextOriginal = $('#raw-text-original');
     if ($rawTextOriginal.length > 0) {
       var markdown = Crowi.unescape($('#raw-text-original').html());
-      var parsedHTML = crowiRenderer.render(markdown);
+
+      // generate options obj
+      var rendererOptions = {
+        // see: https://www.npmjs.com/package/marked
+        marked: {
+          breaks: isEnabledLineBreaks
+        },
+      }
+
+      var parsedHTML = crowiRenderer.render(markdown, rendererOptions);
 
       // create context object
       var context = {markdown, parsedHTML, currentPagePath: location.pathname};
