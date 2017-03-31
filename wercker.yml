@@ -81,7 +81,7 @@ build-dev:
         npm run build:dev
 
 
-create-branch-for-release: # would be run on release branch
+prepare-to-release: # would be run on release branch
   steps:
     - script:
       name: bump version
@@ -104,7 +104,7 @@ create-branch-for-release: # would be run on release branch
         git push -u origin HEAD:tmp/release-$RELEASE_VERSION
 
 
-release-to-github: # would be run on temporary release branch
+release:
   steps:
     - script:
       name: get version
@@ -112,6 +112,9 @@ release-to-github: # would be run on temporary release branch
         export RELEASE_VERSION=`npm run version --silent`
         echo "export RELEASE_VERSION=$RELEASE_VERSION"
 
+
+release-to-github: # would be run on temporary release branch
+  steps:
     - github-create-release:
       token: $GITHUB_TOKEN
       tag: v$RELEASE_VERSION
