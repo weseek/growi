@@ -1,7 +1,11 @@
 {
   "name": "crowi-plugin-lsx",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "The Crowi Plugin to add lsx tag",
+  "keywords": [
+    "crowi-plus",
+    "crowi-plugin"
+  ],
   "main": "lib/index.js",
   "files": [
     "lib"
@@ -13,7 +17,7 @@
     "prebuild": "npm run clean",
     "watch": "babel src --out-dir lib --watch --source-maps inline",
     "rimraf": "rimraf",
-    "test": "mocha --compilers js:babel-register test/*.js"
+    "test": ""
   },
   "repository": {
     "type": "git",
