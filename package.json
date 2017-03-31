@@ -30,7 +30,7 @@
     "prebuild:dev": "npm run generate-plugin-definitions-source",
     "prebuild:prod": "npm run generate-plugin-definitions-source",
     "prestart": "npm run build:prod",
-    "server:dev:watch": "node-dev app.js",
+    "server:dev:watch": "node-dev app.js --watch",
     "server:dev": "node app.js",
     "server:prod": "node app.js --production",
     "server": "npm run server:dev:watch",
