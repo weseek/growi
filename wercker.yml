@@ -81,7 +81,7 @@ build-dev:
         npm run build:dev
 
 
-deploy-to-github: # would be run on release branch
+release-to-github: # would be run on release branch
   steps:
     - script:
       name: set yarn cache-folder
