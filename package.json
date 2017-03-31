@@ -36,6 +36,7 @@
     "server": "npm run server:dev:watch",
     "start": "npm run server:prod",
     "test": "mocha -r test/bootstrap.js test/**/*.js",
+    "version": "node -p require('./package.json').version",
     "webpack": "webpack"
   },
   "dependencies": {
