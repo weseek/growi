@@ -107,8 +107,8 @@ release-to-github: # would be run on release branch
     - script:
       name: push to github
       code: |
+        GITHUB_ORIGIN=https://yuki-takei:$GITHUB_TOKEN@$WERCKER_GIT_DOMAIN/$WERCKER_GIT_OWNER/$WERCKER_GIT_REPOSITORY.git
         git remote rm origin
-        GITHUB_ORIGIN=`git remote get-url origin | sed "s/github.com/yuki-takei:$GITHUB_TOKEN@github.com/"`
         git remote add origin $GITHUB_ORIGIN
         git push
 
