@@ -83,15 +83,15 @@ build-dev:
 
 release-to-github: # would be run on release branch
   steps:
-    - script:
-      name: set yarn cache-folder
-      code: yarn config set cache-folder $WERCKER_CACHE_DIR/yarn
+    # - script:
+    #   name: set yarn cache-folder
+    #   code: yarn config set cache-folder $WERCKER_CACHE_DIR/yarn
 
-    - script:
-      name: install dependencies
-      code: |
-        yarn global add npm@4
-        yarn install --production
+    # - script:
+    #   name: install dependencies
+    #   code: |
+    #     yarn global add npm@4
+    #     yarn install --production
 
     - script:
       name: bump version
@@ -99,6 +99,8 @@ release-to-github: # would be run on release branch
         git config --global user.name "wercker"
         git config --global user.email "info@weseek.co.jp"
         npm version patch
+        echo "npm run version --silent"
+        npm run version --silent
         export RELEASE_VERSION=`npm run version --silent`
         echo "export RELEASE_VERSION=$RELEASE_VERSION"
 
