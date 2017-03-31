@@ -2,9 +2,21 @@
   "name": "crowi-plugin-pukiwiki-like-linker",
   "version": "1.0.0",
   "description": "The Crowi Plugin to add PukiwikiLikeLinker",
-  "main": "index.js",
+  "keywords": [
+    "crowi-plus",
+    "crowi-plugin"
+  ],
+  "main": "lib/index.js",
+  "files": [
+    "lib"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "babel src --out-dir lib --source-maps inline",
+    "clean": "npm cache clean && npm run rimraf -- lib",
+    "prebuild": "npm run clean",
+    "watch": "babel src --out-dir lib --watch --source-maps inline",
+    "rimraf": "rimraf",
+    "test": ""
   },
   "repository": {
     "type": "git",
@@ -15,5 +27,18 @@
   "bugs": {
     "url": "https://github.com/yuki-takei/crowi-plugin-pukiwiki-like-linker/issues"
   },
-  "homepage": "https://github.com/yuki-takei/crowi-plugin-pukiwiki-like-linker#readme"
+  "homepage": "https://github.com/yuki-takei/crowi-plugin-pukiwiki-like-linker#readme",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "babel-cli": "^6.23.0",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-plugin-transform-class-properties": "^6.23.0",
+    "babel-preset-es2015": "^6.22.0",
+    "babel-preset-power-assert": "^1.0.0",
+    "babel-preset-react": "^6.23.0",
+    "babel-register": "^6.23.0",
+    "power-assert": "^1.4.2",
+    "rimraf": "^2.6.1"
+  }
 }

@@ -41,15 +41,7 @@ Install
 1. install plugin
 
     ```
-    $ npm run install-plugin https://github.com/yuki-takei/crowi-plugin-pukiwiki-like-linker.git
+    $ npm install --save crowi-plugin-pukiwiki-like-linker
     ```
 
-1. modify `${CROWI_INSTALLED_DIR}/plugin/plugin.js`
-
-   ```
-   const plugins = [
-     require('crowi-plugin-pukiwiki-like-linker')
-   ]
-   ```
-
-1. build plugin (see official documents)
+1. build client app (see official documents)
