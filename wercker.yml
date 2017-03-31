@@ -91,9 +91,6 @@ release-to-github: # would be run on release branch
       name: install dependencies
       code: |
         yarn global add npm@4
-        # add assets-webpack-plugin individually
-        # because `yarn install` couldn't find package from the "npm" registry
-        yarn add assets-webpack-plugin
         yarn install --production
 
     - script:
