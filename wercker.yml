@@ -99,7 +99,8 @@ release-to-github: # would be run on release branch
         git config --global user.name "wercker"
         git config --global user.email "info@weseek.co.jp"
         npm version patch
-        RELEASE_VERSION=`npm run version --silent`
+        export RELEASE_VERSION=`npm run version --silent`
+        echo "export RELEASE_VERSION=$RELEASE_VERSION"
 
     - github-create-release:
       token: $GITHUB_TOKEN
