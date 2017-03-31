@@ -56,9 +56,7 @@ module.exports = function (options) {
         bundles: {
           vendor: [
             'react',
-            'react-dom',
-            'jquery',
-            'jquery.cookie',
+            'react-dom'
           ],
         },
         dllDir: helpers.root('public/js/dll'),

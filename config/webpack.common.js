@@ -29,6 +29,11 @@ module.exports = function (options) {
       'plugin':               './resource/js/plugin',
       'style':                './resource/styles',
     },
+    externals: {
+      // require("jquery") is external and available
+      //  on the global var jQuery
+      "jquery": "jQuery"
+    },
     resolve: {
       extensions: ['.js', '.json'],
       modules: [helpers.root('src'), helpers.root('node_modules')],
