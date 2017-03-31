@@ -44,7 +44,7 @@ build-prod:
         # add assets-webpack-plugin individually
         # because `yarn install` couldn't find package from the "npm" registry
         yarn add assets-webpack-plugin
-        yarn install
+        yarn install --production
 
     - script:
       name: print dependencies
@@ -79,3 +79,29 @@ build-dev:
       name: npm run build:dev
       code: |
         npm run build:dev
+
+
+deploy-to-github: # would be run on release branch
+  steps:
+    - script:
+      name: set yarn cache-folder
+      code: yarn config set cache-folder $WERCKER_CACHE_DIR/yarn
+
+    - script:
+      name: install dependencies
+      code: |
+        yarn global add npm@4
+        # add assets-webpack-plugin individually
+        # because `yarn install` couldn't find package from the "npm" registry
+        yarn add assets-webpack-plugin
+        yarn install --production
+
+    - script:
+      name: bump version
+      code: |
+        npm version patch
+        RELEASE_VERSION=`npm run version --silent`
+
+    - github-create-release:
+      token: $GITHUB_TOKEN
+      tag: $RELEASE_VERSION
