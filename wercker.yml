@@ -96,14 +96,22 @@ release-to-github: # would be run on release branch
     - script:
       name: bump version
       code: |
+        # npm version to bump version
         git config --global user.name "wercker"
         git config --global user.email "info@weseek.co.jp"
         npm version patch
-        echo "npm run version --silent"
-        npm run version --silent
+        # export $RELEASE_VERSION
         export RELEASE_VERSION=`npm run version --silent`
         echo "export RELEASE_VERSION=$RELEASE_VERSION"
 
+    - script:
+      name: push to github
+      code: |
+        git remote rm origin
+        GITHUB_ORIGIN=`git remote get-url origin | sed "s/github.com/yuki-takei:$GITHUB_TOKEN@github.com/"`
+        git remote add origin $GITHUB_ORIGIN
+        git push
+
     - github-create-release:
       token: $GITHUB_TOKEN
-      tag: $RELEASE_VERSION
+      tag: v$RELEASE_VERSION
