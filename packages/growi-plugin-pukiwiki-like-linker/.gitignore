@@ -18,12 +18,12 @@ npm-debug.log
 
 # Dist #
 /dist
+/lib
 /public/__build__/
 /src/*/__build__/
 /__build__/**
 /public/dist/
 /src/*/dist/
-/dist/**
 /.awcache
 .webpack.json
 /compiled/
