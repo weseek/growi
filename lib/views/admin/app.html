@@ -272,77 +272,73 @@
   </div>
 
   <script>
-    $(function()
-    {
-      $('#appSettingForm, #secSettingForm, #mailSettingForm, #awsSettingForm, #googleSettingForm, #pluginSettingForm').each(function() {
-        $(this).submit(function()
-        {
-          function showMessage(formId, msg, status) {
-            $('#' + formId + ' .alert').remove();
+    $('#appSettingForm, #secSettingForm, #mailSettingForm, #awsSettingForm, #googleSettingForm, #pluginSettingForm').each(function() {
+      $(this).submit(function()
+      {
+        function showMessage(formId, msg, status) {
+          $('#' + formId + ' .alert').remove();
 
-            if (!status) {
-              status = 'success';
-            }
-            var $message = $('<p class="alert"></p>');
-            $message.addClass('alert-' + status);
-            $message.html(msg.replace('\n', '<br>'));
-            $message.insertAfter('#' + formId + ' legend');
-
-            if (status == 'success') {
-              setTimeout(function()
-              {
-                $message.fadeOut({
-                  complete: function() {
-                    $message.remove();
-                  }
-                });
-              }, 5000);
-            }
+          if (!status) {
+            status = 'success';
           }
+          var $message = $('<p class="alert"></p>');
+          $message.addClass('alert-' + status);
+          $message.html(msg.replace('\n', '<br>'));
+          $message.insertAfter('#' + formId + ' legend');
 
-          var $form = $(this);
-          var $id = $form.attr('id');
-          var $button = $('button', this);
-          $button.attr('disabled', 'disabled');
-          var jqxhr = $.post($form.attr('action'), $form.serialize(), function(data)
+          if (status == 'success') {
+            setTimeout(function()
             {
-              if (data.status) {
-                showMessage($id, '更新しました');
-              } else {
-                showMessage($id, data.message, 'danger');
-              }
-            })
-            .fail(function() {
-              showMessage($id, 'エラーが発生しました', 'danger');
-            })
-            .always(function() {
-              $button.prop('disabled', false);
-          });
-          return false;
+              $message.fadeOut({
+                complete: function() {
+                  $message.remove();
+                }
+              });
+            }, 5000);
+          }
+        }
+
+        var $form = $(this);
+        var $id = $form.attr('id');
+        var $button = $('button', this);
+        $button.attr('disabled', 'disabled');
+        var jqxhr = $.post($form.attr('action'), $form.serialize(), function(data)
+          {
+            if (data.status) {
+              showMessage($id, '更新しました');
+            } else {
+              showMessage($id, data.message, 'danger');
+            }
+          })
+          .fail(function() {
+            showMessage($id, 'エラーが発生しました', 'danger');
+          })
+          .always(function() {
+            $button.prop('disabled', false);
         });
+        return false;
       });
+    });
 
-      // Bootstrap 3 Toggle Switch Snippet
-      // http://www.bootply.com/92189
-      $('.btn-toggle').click(function() {
-        $(this).find('.btn').toggleClass('active');
+    // Bootstrap 3 Toggle Switch Snippet
+    // http://www.bootply.com/92189
+    $('.btn-toggle').click(function() {
+      $(this).find('.btn').toggleClass('active');
 
-        if ($(this).find('.btn-primary').length>0) {
-          $(this).find('.btn').toggleClass('btn-primary');
-        }
-        if ($(this).find('.btn-danger').length>0) {
-          $(this).find('.btn').toggleClass('btn-danger');
-        }
-        if ($(this).find('.btn-success').length>0) {
-          $(this).find('.btn').toggleClass('btn-success');
-        }
-        if ($(this).find('.btn-info').length>0) {
-          $(this).find('.btn').toggleClass('btn-info');
-        }
+      if ($(this).find('.btn-primary').length>0) {
+        $(this).find('.btn').toggleClass('btn-primary');
+      }
+      if ($(this).find('.btn-danger').length>0) {
+        $(this).find('.btn').toggleClass('btn-danger');
+      }
+      if ($(this).find('.btn-success').length>0) {
+        $(this).find('.btn').toggleClass('btn-success');
+      }
+      if ($(this).find('.btn-info').length>0) {
+        $(this).find('.btn').toggleClass('btn-info');
+      }
 
-        $(this).find('.btn').toggleClass('btn-default');
-      });
-
+      $(this).find('.btn').toggleClass('btn-default');
     });
   </script>
 
