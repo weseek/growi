@@ -96,6 +96,8 @@ release-to-github: # would be run on release branch
     - script:
       name: bump version
       code: |
+        git config --global user.name "wercker"
+        git config --global user.email "info@weseek.co.jp"
         npm version patch
         RELEASE_VERSION=`npm run version --silent`
 
