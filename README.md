@@ -20,7 +20,7 @@ This is **crowi-plus** that is the fork of [Crowi](https://github.com/crowi/crow
 * Secure
   * Upgrade jQuery to 3.x
   * Upgrade other insecure libs
-* Added miscellaneous features
+* [Added miscellaneous features](https://github.com/weseek/crowi-plus/wiki/Additional-Features)
 * Developer-friendly
   * Less compile time
   * LiveReload separately available by server/client code change
