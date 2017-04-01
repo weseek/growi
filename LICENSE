@@ -1,6 +1,6 @@
 The MIT License (MIT)
 
-Copyright (c) 2013 Sotaro KARASAWA <sotaro.k@gmail.com>
+Copyright (c) 2017 Yuki Takei <yuki@weseek.co.jp>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,3 +19,8 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
+
+----
+
+This software is copied and modified from https://github.com/crowi/crowi,
+released under the MIT license, Copyright (c) 2013 Sotaro KARASAWA <sotaro.k@gmail.com>

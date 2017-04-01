@@ -5,7 +5,8 @@ CHANGES
 
 * Feature: Plugin mechanism
 * Improvement: Exclude Environment-dependency
-* Support: abolish gulp
+* Improvement: Enhanced linker
+* Support: Add Dockerfile
+* Support: Abolish gulp
 * Support: LiveReload
-* Support: update libs
-
+* Support: Update libs
