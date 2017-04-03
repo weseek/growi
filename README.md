@@ -33,24 +33,46 @@ Quick Start for Production
 Using docker-compose
 ---------------------
 
+```bash
+git clone https://github.com/weseek/crowi-plus-docker-compose.git crowi-plus
+cd crowi-plus
+docker-compose up
+```
+
+see also https://github.com/weseek/crowi-plus-docker-compose
+
+Using Heroku
+------------
+
 (TBD)
 
-More info are [here](https://github.com/crowi/crowi/wiki/Install-and-Configuration).
+On-premise
+----------
 
-Install plugins
-================
+```bash
+git clone https://github.com/weseek/crowi-plus.git
+cd crowi-plus
+yarn
+MONGO_URI=mongodb://example.com/crowi npm start
+```
+
+### Install plugins
 
 * Stop server if running
 * `npm install --save` to install plugin or `yarn add`
   * **Don't forget `--save` option if you use npm** or crowi-plus doesn't detect plugins
 * `npm start` to build client app and start server
 
-## Example
+#### Example
 
 ```bash
 yarn add crowi-plugin-lsx
 npm start
 ```
+
+## Other documents
+
+More info are [here](https://github.com/crowi/crowi/wiki/Install-and-Configuration).
 
 Getting Started to Develop
 ==========================
