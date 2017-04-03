@@ -24,4 +24,5 @@ RUN apk add --no-cache --virtual .build-deps git \
     && apk del .build-deps
 
 VOLUME /data
+EXPOSE 3000
 CMD ["npm", "run", "server:prod"]
