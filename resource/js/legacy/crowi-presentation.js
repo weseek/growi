@@ -1,5 +1,7 @@
 var Reveal = require('reveal.js');
 
+require("reveal.js/css/reveal.css");
+require("reveal.js/css/theme/black.css");
 require('reveal.js/lib/js/head.min.js');
 require('reveal.js/lib/js/html5shiv.js');
 
@@ -16,15 +18,24 @@ Reveal.initialize({
   transition: 'slide',
 
   // Optional libraries used to extend on reveal.js
-  dependencies: [
-    { src: '/js/reveal/lib/js/classList.js', condition: function() { return !document.body.classList; } },
-    { src: '/js/reveal/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-    { src: '/js/reveal/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-    { src: '/js/reveal/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
-    { src: '/js/reveal/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
-    { src: '/js/reveal/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
-  ]
+  // dependencies: [
+  //   { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+  //   { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+  //   { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+  //   { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+  //   { src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+  //   { src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+  // ]
 });
+
+require.ensure([], () => {
+  require('reveal.js/lib/js/classList.js');
+  require('reveal.js/plugin/markdown/marked.js');
+  require('reveal.js/plugin/markdown/markdown.js');
+  require('reveal.js/plugin/highlight/highlight.js');
+  require('reveal.js/plugin/zoom-js/zoom.js');
+  require('reveal.js/plugin/notes/notes.js');
+})
 
 Reveal.addEventListener('ready', function(event) {
   // event.currentSlide, event.indexh, event.indexv
