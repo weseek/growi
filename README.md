@@ -21,6 +21,7 @@ This is **crowi-plus** that is the fork of [Crowi](https://github.com/crowi/crow
   * Upgrade jQuery to 3.x
   * Upgrade other insecure libs
 * [Docker Ready](https://hub.docker.com/r/weseek/crowi-plus/)
+* [Docker Compose Ready](https://github.com/weseek/crowi-plus-docker-compose)
 * [Added miscellaneous features](https://github.com/weseek/crowi-plus/wiki/Additional-Features)
 * Developer-friendly
   * Less compile time
