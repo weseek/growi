@@ -26,6 +26,7 @@
     "clean:public": "rimraf -- public/js",
     "clean:dll": "rimraf -- dll",
     "clean": "npm cache clean && npm run rimraf -- public/js dll",
+    "mkdirp": "mkdirp",
     "plugin:def": "node bin/generate-plugin-definitions-source.js",
     "prebuild:dev": "npm run plugin:def",
     "prebuild:prod": "npm run plugin:def",
