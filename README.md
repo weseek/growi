@@ -133,8 +133,8 @@ npm run build:dev:watch
 npm test
 ```
 
-Documents
-----------
+Documentation
+--------------
 
 * [github wiki pages](https://github.com/weseek/crowi-plus/wiki)
   * [Question and Answers](https://github.com/weseek/crowi-plus/wiki/Question-and-Answers)
