@@ -749,7 +749,7 @@ $(function() {
 
     //
     var me = $('body').data('me');
-    var socket = io('localhost', {forceNew: true});
+    var socket = io();
     socket.on('page edited', function (data) {
       if (data.user._id != me
         && data.page.path == pagePath) {
