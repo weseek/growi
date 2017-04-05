@@ -10,7 +10,7 @@
     <script src="//cdn.jsdelivr.net/jquery/3.2.1/jquery.min.js"></script>
 
     {% if env === 'development' %}
-      <script src="/js/dll/vendor.dll.js"></script>
+      <script src="/dll/vendor.dll.js"></script>
       <script src="{{ webpack_asset('dev').js }}" async></script>
     {% endif %}
 
