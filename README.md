@@ -44,7 +44,7 @@ cd crowi-plus
 docker-compose up
 ```
 
-see also https://github.com/weseek/crowi-plus-docker-compose
+see also [weseek/crowi-plus-docker-compose](https://github.com/weseek/crowi-plus-docker-compose)
 
 Using Heroku
 ------------
