@@ -12,7 +12,6 @@ crowi-plus
 
 [![wercker status](https://app.wercker.com/status/39cdc49d067d65c39cb35d52ceae6dc1/s/master "wercker status")](https://app.wercker.com/project/byKey/39cdc49d067d65c39cb35d52ceae6dc1)
 [![dependencies status](https://david-dm.org/weseek/crowi-plus.svg)](https://david-dm.org/weseek/crowi-plus)
-[![docker build automated](https://img.shields.io/docker/automated/jrottenberg/ffmpeg.svg)](https://hub.docker.com/r/weseek/crowi-plus/)
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
 
 This is **crowi-plus** that is the fork of [Crowi](https://github.com/crowi/crowi), is [perfectly compatible with official](https://github.com/weseek/crowi-plus/wiki/Question-and-Answers#does-crowi-plus-have-compatibility-with-official-crowi), and has been enhanced with the following points:
