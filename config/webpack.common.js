@@ -102,6 +102,9 @@ module.exports = function (options) {
         $: "jquery",
       }),
 
+      // omit moment/locale/*.js
+      new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /ja/),
+
     ]
   };
 }
