@@ -141,7 +141,7 @@ Documentation
 --------------
 
 * [github wiki pages](https://github.com/weseek/crowi-plus/wiki)
-  * [Question and Answers](https://github.com/weseek/crowi-plus/wiki/Question-and-Answers)
+  * [Questions and Answers](https://github.com/weseek/crowi-plus/wiki/Questions-and-Answers)
 
 
 License
