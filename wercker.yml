@@ -107,20 +107,15 @@ trigger-crowi-plus-docker:
   steps:
     - script:
       name: trigger crowi-plus-docker release pipeline
-      code: |-  # strip linebreak
-        curl -X POST
-          -H "Content-Type: application/json"
-          -H "Authorization: Bearer $WERCKER_TOKEN"
-          https://app.wercker.com/api/v3/runs
-          -d
-            '{
-              "pipelineId": "$TARGET_PIPELINE_ID",
-              "sourceRunId": "$WERCKER_RUN_ID",
-              "branch": "release",
-              "envVars": [
-                {
-                  "key": "RELEASE_VERSION",
-                  "value": "$RELEASE_VERSION"
-                }
-              ]
-            }'
+      code: |
+        curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $WERCKER_TOKEN" https://app.wercker.com/api/v3/runs -d '{
+          "pipelineId": "$TARGET_PIPELINE_ID",
+          "sourceRunId": "$WERCKER_RUN_ID",
+          "branch": "release",
+          "envVars": [
+            {
+              "key": "RELEASE_VERSION",
+              "value": "$RELEASE_VERSION"
+            }
+          ]
+        }'
