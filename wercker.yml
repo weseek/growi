@@ -105,8 +105,8 @@ release: # would be run on release branch
         # npm version to bump version
         npm version patch
         # get version
-        RELEASE_VERSION=`npm run version --silent`
-        echo "RELEASE_VERSION=$RELEASE_VERSION"
+        export RELEASE_VERSION=`npm run version --silent`
+        echo "export RELEASE_VERSION=$RELEASE_VERSION"
 
     - script:
       name: commit and push
@@ -128,8 +128,7 @@ release: # would be run on release branch
 
     - script:
       name: trigger crowi-plus-docker release pipeline
-      code: |
-        sh ./bin/wercker/trigger-crowi-plus-docker.sh
+      code: sh ./bin/wercker/trigger-crowi-plus-docker.sh
 
   after-steps:
     - slack-notifier:
