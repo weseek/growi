@@ -75,14 +75,20 @@ build-dev:
 release: # would be run on release branch
   steps:
     - script:
+      name: install jq
+      code: |
+        apt-get update
+        apt-get install -y jq
+
+    - script:
       name: bump version
       code: |
         sh ./bin/wercker/init-git.sh
         # npm version to bump version
         npm version patch
         # get version
-        export RELEASE_VERSION=`npm run version --silent`
-        echo "export RELEASE_VERSION=$RELEASE_VERSION"
+        RELEASE_VERSION=`npm run version --silent`
+        echo "RELEASE_VERSION=$RELEASE_VERSION"
 
     - script:
       name: commit and push
@@ -102,15 +108,7 @@ release: # would be run on release branch
       code: |
         git push --delete origin $TMP_RELEASE_BRANCH
 
-
-trigger-crowi-plus-docker:
-  steps:
-    - script:
-      name: install jq
-      code: |
-        apt-get update
-        apt-get install -y jq
-
     - script:
       name: trigger crowi-plus-docker release pipeline
-      code: sh ./bin/wercker/trigger-crowi-plus-docker.sh
+      code: |
+        sh ./bin/wercker/trigger-crowi-plus-docker.sh
