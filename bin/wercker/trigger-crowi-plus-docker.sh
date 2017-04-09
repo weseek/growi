@@ -13,7 +13,7 @@
 RESPONSE=`curl -X POST \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $WERCKER_TOKEN" \
-  https://app.wercker.com/api/v3/runs -d '{ \
+  https://app.wercker.com/api/v3/runs -d { \
     "pipelineId": "$TARGET_PIPELINE_ID", \
     "branch": "release", \
     "envVars": [ \
@@ -22,7 +22,7 @@ RESPONSE=`curl -X POST \
         "value": "$RELEASE_VERSION" \
       } \
     ] \
-  }'
+  }
 `
 
 echo $RESPONSE | jq .
