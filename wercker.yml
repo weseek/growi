@@ -106,5 +106,11 @@ release: # would be run on release branch
 trigger-crowi-plus-docker:
   steps:
     - script:
+      name: install jq
+      code: |
+        apt-get update
+        apt-get install -y jq
+
+    - script:
       name: trigger crowi-plus-docker release pipeline
       code: sh ./bin/wercker/trigger-crowi-plus-docker.sh
