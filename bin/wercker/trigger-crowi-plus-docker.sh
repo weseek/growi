@@ -10,6 +10,19 @@
 #   - $CROWI_PLUS_DOCKER_PIPELINE_ID
 #   - $RELEASE_VERSION
 #
+DATA=`echo '{ \
+    "pipelineId": "'$CROWI_PLUS_DOCKER_PIPELINE_ID'", \
+    "branch": "release", \
+    "envVars": [ \
+      { \
+        "key": "RELEASE_VERSION", \
+        "value": "'$RELEASE_VERSION'" \
+      } \
+    ] \
+  }' \
+`
+echo $DATA
+
 RESPONSE=`curl -X POST \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $WERCKER_TOKEN" \

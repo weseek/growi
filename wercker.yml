@@ -27,6 +27,10 @@ test:
         echo "export MONGO_URI=$MONGO_URI"
         npm test
 
+    - wantedly/pretty-slack-notify:
+      webhook_url: $SLACK_WEBHOOK_URL
+      notify_on: "failed"
+
 
 build-prod:
   steps:
@@ -48,6 +52,10 @@ build-prod:
       name: npm run build:prod
       code: |
         npm run build:prod
+
+    - wantedly/pretty-slack-notify:
+      webhook_url: $SLACK_WEBHOOK_URL
+      notify_on: "failed"
 
 
 build-dev:
@@ -71,14 +79,15 @@ build-dev:
       code: |
         npm run build:dev
 
+    - wantedly/pretty-slack-notify:
+      webhook_url: $SLACK_WEBHOOK_URL
+      notify_on: "failed"
+
 
 release: # would be run on release branch
   steps:
-    - script:
-      name: install jq
-      code: |
-        apt-get update
-        apt-get install -y jq
+    - install-packages:
+      packages: jq ruby
 
     - script:
       name: bump version
@@ -112,3 +121,7 @@ release: # would be run on release branch
       name: trigger crowi-plus-docker release pipeline
       code: |
         sh ./bin/wercker/trigger-crowi-plus-docker.sh
+
+    - wantedly/pretty-slack-notify:
+      webhook_url: $SLACK_WEBHOOK_URL
+      passwd_message: :anchor: crowi-plus v$RELEASE_VERSION has been released!
