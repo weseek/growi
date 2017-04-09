@@ -6,18 +6,18 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-
-    <link rel="stylesheet" type="text/css" href="/css/crowi-reveal{% if env  == 'production' %}.min{% endif %}.css">
-    <link rel="stylesheet" type="text/css" href="/js/reveal/lib/css/zenburn.css">
+    <!-- jQuery -->
+    <script src="//cdn.jsdelivr.net/jquery/3.2.1/jquery.min.js"></script>
 
     {% if env === 'development' %}
-      <script src="{{ webpack_asset('style').js }}"></script>
-      <!--<script src="{{ webpack_asset('dev').js }}" async></script>-->
-      <script src="/js/dll/vendor.dll.js" defer></script>
+      <script src="/dll/vendor.dll.js"></script>
+      <script src="{{ webpack_asset('dev').js }}" async></script>
     {% endif %}
 
+    <script src="{{ webpack_asset('style').js }}"></script>
+    <script src="{{ webpack_asset('style-presentation').js }}"></script>
     <script src="{{ webpack_asset('commons').js }}" defer></script>
-    <script src="{{ webpack_asset('presentation').js }}" defer></script>
+    <script src="{{ webpack_asset('legacy-presentation').js }}" defer></script>
 
     <title>{{ path|path2name }} | {{ path }}</title>
   </head>

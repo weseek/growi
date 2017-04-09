@@ -223,7 +223,7 @@ $(function() {
 
   $('#create-page').on('shown.bs.modal', function (e) {
 
-    var input2Width = $('#create-page-today .col-xs-10').outerWidth();
+    var input2Width = $('#create-page-today .col-xs-10').outerWidth() - 1;
     var newWidth = input2Width
       - $('#create-page-today .page-today-prefix').outerWidth()
       - $('#create-page-today .page-today-input1').outerWidth()
@@ -749,7 +749,7 @@ $(function() {
 
     //
     var me = $('body').data('me');
-    var socket = io('localhost', {forceNew: true});
+    var socket = io();
     socket.on('page edited', function (data) {
       if (data.user._id != me
         && data.page.path == pagePath) {

@@ -22,12 +22,12 @@ module.exports = function (options) {
   return {
     entry: {
       'app':                  './resource/js/app',
-      'legacy':               './resource/js/legacy/crowi',
-      'legacy-form':          './resource/js/legacy/crowi-form',
+      'legacy':               ['./resource/js/legacy/crowi', './resource/js/legacy/crowi-form'],
       'legacy-admin':         './resource/js/legacy/crowi-admin',
       'legacy-presentation':  './resource/js/legacy/crowi-presentation',
       'plugin':               './resource/js/plugin',
       'style':                './resource/styles',
+      'style-presentation':   './resource/styles/presentation',
     },
     externals: {
       // require("jquery") is external and available
@@ -84,7 +84,7 @@ module.exports = function (options) {
 
       new CommonsChunkPlugin({
         name: 'commons',
-        chunks: ['app', 'legacy', 'legacy-form', 'legacy-admin'],
+        chunks: ['app', 'legacy', 'legacy-admin'],
         minChunks: module => /node_modules/.test(module.resource),
       }),
       new CommonsChunkPlugin({
@@ -100,6 +100,9 @@ module.exports = function (options) {
         jQuery: "jquery",
         $: "jquery",
       }),
+
+      // omit moment/locale/*.js
+      new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /ja/),
 
     ]
   };

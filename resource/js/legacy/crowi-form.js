@@ -1,4 +1,3 @@
-$(function() {
   var pageId = $('#content-main').data('page-id');
   var pagePath= $('#content-main').data('path');
   var isEnabledLineBreaks = $('#content-main').data('linebreaks-enabled');
@@ -56,6 +55,10 @@ $(function() {
     $('.content-main').removeClass('on-edit');
   });
 
+/**
+ * DOM ready
+ */
+$(function() {
   // preview watch
   var originalContent = $('#form-body').val();
 

@@ -3,6 +3,7 @@
  */
 
 const helpers = require('./helpers');
+const webpack = require('webpack');
 const webpackMerge = require('webpack-merge'); // used to merge webpack configs
 const commonConfig = require('./webpack.common.js'); // the settings that are common to prod and dev
 
@@ -35,6 +36,12 @@ module.exports = function (env) {
       ]
     },
     plugins: [
+
+      new webpack.DefinePlugin({
+        'process.env': {
+          NODE_ENV: JSON.stringify(ENV),
+        }
+      }),
 
       new OptimizeJsPlugin({
         sourceMap: false

@@ -6,16 +6,16 @@ $bootstrap-sass-asset-helper: true;
 @import "~bootstrap-sass/assets/stylesheets/bootstrap";
 
 // crowi component
-@import 'layout';
-@import 'page';
-@import 'page_list';
-@import 'form';
-@import 'wiki';
 @import 'admin';
 @import 'comment';
-@import 'user';
+@import 'form';
+@import 'layout';
+@import 'page_list';
+@import 'page';
 @import 'portal';
 @import 'search';
+@import 'user';
+@import 'wiki';
 
 
 ul {
@@ -102,6 +102,13 @@ footer {
 }
 
 .modal.create-page {
+
+  @media (min-width: 768px) {
+    .modal-dialog {
+      width: 750px;
+    }
+  }
+
   .modal-body {
     h3, h4 {
       margin-bottom: 10px;
@@ -142,7 +149,7 @@ footer {
         display: inline-block;
       }
       .page-today-input2 {
-        width: 100%;
+        // width: 100%;
         display: inline-block;
       }
     }

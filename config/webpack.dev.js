@@ -59,7 +59,7 @@ module.exports = function (options) {
             'react-dom'
           ],
         },
-        dllDir: helpers.root('public/js/dll'),
+        dllDir: helpers.root('public/dll'),
         webpackConfig: webpackMergeDll(commonConfig({env: ENV}), {
           devtool: 'cheap-module-source-map',
           plugins: [],
