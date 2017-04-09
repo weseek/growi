@@ -27,6 +27,13 @@ test:
         echo "export MONGO_URI=$MONGO_URI"
         npm test
 
+  after-steps:
+    - slack-notifier:
+      url: $SLACK_WEBHOOK_URL
+      channel: ci
+      username: wercker
+      notify_on: "failed"
+
 
 build-prod:
   steps:
@@ -48,6 +55,13 @@ build-prod:
       name: npm run build:prod
       code: |
         npm run build:prod
+
+  after-steps:
+    - slack-notifier:
+      url: $SLACK_WEBHOOK_URL
+      channel: ci
+      username: wercker
+      notify_on: "failed"
 
 
 build-dev:
@@ -71,9 +85,19 @@ build-dev:
       code: |
         npm run build:dev
 
+  after-steps:
+    - slack-notifier:
+      url: $SLACK_WEBHOOK_URL
+      channel: ci
+      username: wercker
+      notify_on: "failed"
+
 
 release: # would be run on release branch
   steps:
+    - install-packages:
+      packages: jq
+
     - script:
       name: bump version
       code: |
@@ -81,8 +105,8 @@ release: # would be run on release branch
         # npm version to bump version
         npm version patch
         # get version
-        RELEASE_VERSION=`npm run version --silent`
-        echo "RELEASE_VERSION=$RELEASE_VERSION"
+        export RELEASE_VERSION=`npm run version --silent`
+        echo "export RELEASE_VERSION=$RELEASE_VERSION"
 
     - script:
       name: commit and push
@@ -102,25 +126,14 @@ release: # would be run on release branch
       code: |
         git push --delete origin $TMP_RELEASE_BRANCH
 
-
-trigger-crowi-plus-docker:
-  steps:
     - script:
       name: trigger crowi-plus-docker release pipeline
-      code: |-  # strip linebreak
-        curl -X POST
-          -H "Content-Type: application/json"
-          -H "Authorization: Bearer $WERCKER_TOKEN"
-          https://app.wercker.com/api/v3/runs
-          -d
-            '{
-              "pipelineId": "$TARGET_PIPELINE_ID",
-              "sourceRunId": "$WERCKER_RUN_ID",
-              "branch": "release",
-              "envVars": [
-                {
-                  "key": "RELEASE_VERSION",
-                  "value": "$RELEASE_VERSION"
-                }
-              ]
-            }'
+      code: sh ./bin/wercker/trigger-crowi-plus-docker.sh
+
+  after-steps:
+    - slack-notifier:
+      url: $SLACK_WEBHOOK_URL
+      channel: ci
+      username: wercker
+      notify_on: "failed"
+
