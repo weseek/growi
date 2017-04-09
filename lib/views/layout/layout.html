@@ -32,7 +32,7 @@
 
   <script src="{{ webpack_asset('style').js }}"></script>
   <script src="{{ webpack_asset('commons').js }}" defer></script>
-  {% if config.crowi['plugin:isEnabledPlugins'] %}
+  {% if isEnabledPlugins() %}
     <script src="{{ webpack_asset('plugin').js }}" defer></script>
   {% endif %}
   <script src="{{ webpack_asset('legacy').js }}" defer></script>
@@ -51,7 +51,7 @@
 <body
   class="crowi main-container {% block html_base_css %}{% endblock %}"
   data-me="{{ user._id.toString() }}"
-  data-plugin-enabled="{{ config.crowi['plugin:isEnabledPlugins'] }}"
+  data-plugin-enabled="{{ isEnabledPlugins() }}"
  {% block html_base_attr %}{% endblock %}
  >
 
