@@ -109,6 +109,7 @@
     "sprintf": "~0.1.5",
     "style-loader": "^0.16.1",
     "swig": "~1.4.0",
+    "uglifycss": "^0.0.25",
     "webpack": "~2.3.1",
     "webpack-dll-bundles-plugin": "^1.0.0-beta.5",
     "webpack-merge": "~3.0.0"

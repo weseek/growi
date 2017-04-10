@@ -5575,6 +5575,10 @@ uglify-to-browserify@~1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/uglify-to-browserify/-/uglify-to-browserify-1.0.2.tgz#6e0924d6bda6b5afe349e39a6d632850a0f882b7"
 
+uglifycss@^0.0.25:
+  version "0.0.25"
+  resolved "https://registry.yarnpkg.com/uglifycss/-/uglifycss-0.0.25.tgz#bea72bf4979eacef13a302cf47b2d1af3f344197"
+
 uid-number@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/uid-number/-/uid-number-0.0.6.tgz#0ea10e8035e8eb5b8e4449f06da1c730663baa81"
