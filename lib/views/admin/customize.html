@@ -1,0 +1,114 @@
+{% extends '../layout/admin.html' %}
+
+{% block html_title %}カスタマイズ · {% endblock %}
+
+{% block content_head %}
+<div class="header-wrap">
+  <header id="page-header">
+    <h1 class="title" id="">カスタマイズ</h1>
+  </header>
+</div>
+{% endblock %}
+
+{% block content_main %}
+<div class="content-main">
+  {% set smessage = req.flash('successMessage') %}
+  {% if smessage.length %}
+  <div class="alert alert-success">
+    {{ smessage }}
+  </div>
+  {% endif %}
+
+  {% set emessage = req.flash('errorMessage') %}
+  {% if emessage.length %}
+  <div class="alert alert-danger">
+    {{ emessage }}
+  </div>
+  {% endif %}
+
+  <div class="row">
+    <div class="col-md-3">
+      {% include './widget/menu.html' with {current: 'customize'} %}
+    </div>
+    <div class="col-md-9">
+
+      <form action="/_api/admin/customize/css" method="post" class="form-horizontal" id="cutomcssSettingForm" role="form">
+      <fieldset>
+        <legend>カスタムCSS</legend>
+
+        <div class="form-group">
+          <div class="col-xs-12">
+            <textarea class="form-control" type="textarea" name="settingForm[customize:css]" rows="20">{{ settingForm['customize:css'] }}</textarea>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-xs-offset-5 col-xs-6">
+            <input type="hidden" name="_csrf" value="{{ csrf() }}">
+            <button type="submit" class="btn btn-primary">更新</button>
+          </div>
+        </div>
+
+      </fieldset>
+      </form>
+
+    </div>
+  </div>
+
+  <script>
+    $('#cutomcssSettingForm').each(function() {
+      $(this).submit(function()
+      {
+        function showMessage(formId, msg, status) {
+          $('#' + formId + ' .alert').remove();
+
+          if (!status) {
+            status = 'success';
+          }
+          var $message = $('<p class="alert"></p>');
+          $message.addClass('alert-' + status);
+          $message.html(msg.replace('\n', '<br>'));
+          $message.insertAfter('#' + formId + ' legend');
+
+          if (status == 'success') {
+            setTimeout(function()
+            {
+              $message.fadeOut({
+                complete: function() {
+                  $message.remove();
+                }
+              });
+            }, 5000);
+          }
+        }
+
+        var $form = $(this);
+        var $id = $form.attr('id');
+        var $button = $('button', this);
+        $button.attr('disabled', 'disabled');
+        var jqxhr = $.post($form.attr('action'), $form.serialize(), function(data)
+          {
+            if (data.status) {
+              showMessage($id, '更新しました');
+            } else {
+              showMessage($id, data.message, 'danger');
+            }
+          })
+          .fail(function() {
+            showMessage($id, 'エラーが発生しました', 'danger');
+          })
+          .always(function() {
+            $button.prop('disabled', false);
+        });
+        return false;
+      });
+    });
+
+  </script>
+
+</div>
+{% endblock content_main %}
+
+{% block content_footer %}
+{% endblock content_footer %}
+
