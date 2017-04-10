@@ -35,7 +35,9 @@
   {% if isEnabledPlugins() %}
     <script src="{{ webpack_asset('plugin').js }}" defer></script>
   {% endif %}
-  <script src="{{ webpack_asset('legacy').js }}" defer></script>
+  {% block html_head_loading_legacy %}
+    <script src="{{ webpack_asset('legacy').js }}" defer></script>
+  {% endblock %}
   <script src="{{ webpack_asset('app').js }}" defer></script>
 
   <!-- Google Fonts -->
