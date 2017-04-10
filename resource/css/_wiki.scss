@@ -108,6 +108,7 @@ div.body {
     }
   }
 
+/* ensure to disable in crowi-plus
   pre {
     line-height: 1.4em;
     font-size: .9em;
@@ -116,6 +117,10 @@ div.body {
     color: #f0f0f0;
     font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
     word-wrap: break-word;
+  }
+*/
+  pre {
+    border: none;
   }
 
   img {
@@ -151,6 +156,7 @@ div.body {
     }
   }
 
+/* ensure to disable in crowi-plus
   .wiki-code {
     position: relative;
 
@@ -165,6 +171,7 @@ div.body {
 
     }
   };
+*/
 
   .page-template-builder {
     position: relative;
