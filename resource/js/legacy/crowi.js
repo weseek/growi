@@ -429,7 +429,11 @@ $(function() {
       var parsedHTML = crowiRenderer.render(markdown, rendererOptions);
 
       // create context object
-      var context = {markdown, parsedHTML, currentPagePath: location.pathname};
+      var context = {
+        markdown,
+        parsedHTML,
+        currentPagePath: decodeURIComponent(location.pathname)
+      };
 
       // process interceptors for pre rendering
       crowi.interceptorManager.process('preRender', context)   // process with the context
