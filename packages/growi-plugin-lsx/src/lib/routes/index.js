@@ -7,5 +7,6 @@ module.exports = (crowi, app) => {
     , csrf      = middleware.csrfVerify(crowi, app)
     ;
 
-  app.get('/_api/plugins/lsx', accessTokenParser , loginRequired(crowi, app) , lsx.renderHtml);
+  // app.get('/_api/plugins/lsx', accessTokenParser , loginRequired(crowi, app) , lsx.renderHtml);
+  app.get('/_api/plugins/lsx', lsx.listPages);
 }
