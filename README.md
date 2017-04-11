@@ -5,10 +5,8 @@
 </p>
 
 
-crowi-plus
+crowi-plus [![Chat on Slack](https://crowi-plus-slackin.weseek.co.jp/badge.svg)](https://crowi-plus-slackin.weseek.co.jp/)
 ===========
-
-[Chat on Slack](https://crowi-plus.slack.com/)
 
 [![wercker status](https://app.wercker.com/status/39cdc49d067d65c39cb35d52ceae6dc1/s/master "wercker status")](https://app.wercker.com/project/byKey/39cdc49d067d65c39cb35d52ceae6dc1)
 [![dependencies status](https://david-dm.org/weseek/crowi-plus.svg)](https://david-dm.org/weseek/crowi-plus)
