@@ -9,12 +9,17 @@ export class Page extends React.Component {
   render() {
     const pageNode = this.props.pageNode;
     const page = pageNode.page;
+
     const childPages = pageNode.children.map((pageNode) => {
       return <Page pageNode={pageNode} options={this.props.options} />;
     });
+    const icon = (pageNode.children.length > 0) ?
+      <i className="fa fa-folder" aria-hidden="true"></i>:
+      <i className="fa fa-file-text-o" aria-hidden="true"></i>;
 
     return (
       <li className="page-list-li">
+        <small>{icon}</small>
         <a className="page-list-link" href={page.path}>
           <PagePath page={page}/>
         </a>

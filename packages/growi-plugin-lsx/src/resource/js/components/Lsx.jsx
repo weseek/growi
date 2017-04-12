@@ -163,7 +163,9 @@ export class Lsx extends React.Component {
     }
     // render tree
     else {
-      return <ListView nodeTree={this.state.nodeTree} options={lsxContext.options} />
+      return <ListView nodeTree={this.state.nodeTree}
+          options={lsxContext.options}
+          lsxContext={this.props.lsxContext} />
     }
   }
 }
