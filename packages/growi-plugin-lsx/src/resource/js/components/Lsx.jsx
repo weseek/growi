@@ -36,9 +36,7 @@ export class Lsx extends React.Component {
     const lsxContext = this.props.lsxContext;
     lsxContext.parse();
 
-    // ensure not to forward match to another page
-    // ex: ensure '/Java/' not to match to '/JavaScript'
-    let pagePath = this.addSlashOfEnd(lsxContext.pagePath);
+    let pagePath = lsxContext.pagePath;
 
     this.props.crowi.apiGet('/plugins/lsx', {pagePath, queryOptions: ''})
       .catch(error => {
@@ -67,27 +65,32 @@ export class Lsx extends React.Component {
   /**
    * generate tree structure
    *
-   * @param {string} pagePath
+   * @param {string} rootPagePath
    * @param {Page[]} pages Array of Page model
    *
    * @memberOf Lsx
    */
-  generatePageNodeTree(pagePath, pages) {
+  generatePageNodeTree(rootPagePath, pages) {
     let pathToNodeMap = {};
 
     pages.forEach((page) => {
-      // exclude pagePath itself
-      if (page.path === this.omitSlashOfEnd(pagePath)) {
+      // add slash ensure not to forward match to another page
+      // ex: '/Java/' not to match to '/JavaScript'
+      const pagePath = this.addSlashOfEnd(page.path);
+
+      // exclude rootPagePath itself
+      if (this.isEquals(pagePath, rootPagePath)) {
         return;
       }
 
-      const node = pathToNodeMap[page.path] || new PageNode();
+      const node = pathToNodeMap[pagePath] || new PageNode();
       node.page = page;
-      pathToNodeMap[page.path] = node;
+      pathToNodeMap[pagePath] = node;
 
       // get or create parent node
-      const parentPath = this.getParentPath(page.path);
-      if (parentPath !== this.omitSlashOfEnd(pagePath)) {
+      const parentPath = this.getParentPath(pagePath);
+      // associate to patent but exclude direct child of rootPagePath
+      if (!this.isEquals(parentPath, rootPagePath)) {
         let parentNode = pathToNodeMap[parentPath];
         if (parentNode === undefined) {
           parentNode = new PageNode();
@@ -108,10 +111,10 @@ export class Lsx extends React.Component {
   /**
    * return path that added slash to the end for specified path
    *
-   * @param {any} path
+   * @param {string} path
    * @returns
    *
-   * @memberOf Lsx
+   * @memberOf LsxContext
    */
   addSlashOfEnd(path) {
     let returnPath = path;
@@ -122,24 +125,22 @@ export class Lsx extends React.Component {
   }
 
   /**
-   * return path that omitted slash of the end from specified path
+   * addSlashOfEnd and compare whether path1 and path2 is the same
    *
-   * @param {any} path
+   * @param {string} path1
+   * @param {string} path2
    * @returns
    *
    * @memberOf Lsx
    */
-  omitSlashOfEnd(path) {
-    let returnPath = path;
-    if (path.match(/\/$/)) {
-      returnPath = path.substr(0, path.length -1);
-    }
-    return returnPath;
+  isEquals(path1, path2) {
+    return this.addSlashOfEnd(path1) === this.addSlashOfEnd(path2)
   }
 
   getParentPath(path) {
     const parent = urlgrey(path).parent();
-    return decodeURIComponent(parent.path());
+    return decodeURIComponent(this.addSlashOfEnd(parent.path()));
+
   }
 
   render() {
