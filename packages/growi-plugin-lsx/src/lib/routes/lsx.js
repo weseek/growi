@@ -1,40 +1,13 @@
 module.exports = (crowi, app) => {
   var debug = require('debug')('crowi-plugin:lsx:routes:lsx')
-    , path = require('path')
-    , url = require('url')
     , Page = crowi.model('Page')
     , ApiResponse = crowi.require('../util/apiResponse')
     , actions = {};
 
   actions.listPages = (req, res) => {
     let user = req.user;
-    let fromPagePath = req.query.fromPagePath;
-    let args = req.query.args;
-
-    // initialize
-    let lsxPrefix = args || fromPagePath;
-    let lsxOptions = {};
-
-    // if args is a String like 'key1=value1, key2=value2, ...'
-    const splittedArgs = args.split(',');
-    if (splittedArgs.length > 1) {
-      splittedArgs.forEach((arg) => {
-        arg = arg.trim();
-
-        // see https://regex101.com/r/pYHcOM/1
-        const match = arg.match(/([^=]+)=?(.+)?/);
-        const value = match[2] || true;
-        lsxOptions[match[1]] = value;
-      });
-
-      // determine prefix
-      // 'prefix=foo' pattern or the first argument
-      lsxPrefix = lsxOptions.prefix || splittedArgs[0];
-    }
-
-    // resolve url
-    const pagePath = url.resolve(fromPagePath, lsxPrefix);
-    const queryOptions = {}
+    let pagePath = req.query.pagePath;
+    let queryOptions = req.query.queryOptions;
 
     // find pages
     Page.generateQueryToListByStartWith(pagePath, user, queryOptions)

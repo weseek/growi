@@ -6,6 +6,7 @@ import styles from '../../css/index.css';
 import { LsxContext } from '../util/LsxContext';
 import { LsxCacheHelper } from '../util/LsxCacheHelper';
 import { PageNode } from './PageNode';
+import { ListView } from './PageList/ListView';
 
 export class Lsx extends React.Component {
 
@@ -15,7 +16,7 @@ export class Lsx extends React.Component {
     this.state = {
       isLoading: true,
       isError: false,
-      tree: undefined,
+      nodeTree: undefined,
       errorMessage: '',
     };
   }
@@ -25,7 +26,7 @@ export class Lsx extends React.Component {
     if (this.props.lsxStateCache) {
       this.setState({
         isLoading: false,
-        tree: this.props.lsxStateCache.tree,
+        nodeTree: this.props.lsxStateCache.nodeTree,
         isError: this.props.lsxStateCache.isError,
         errorMessage: this.props.lsxStateCache.errorMessage,
       });
@@ -33,18 +34,21 @@ export class Lsx extends React.Component {
     }
 
     const lsxContext = this.props.lsxContext;
-    let fromPagePath = this.addSlashOfEnd(lsxContext.fromPagePath);
-    const args = lsxContext.lsxArgs;
+    lsxContext.parse();
 
-    this.props.crowi.apiGet('/plugins/lsx', {fromPagePath, args})
+    // ensure not to forward match to another page
+    // ex: ensure '/Java/' not to match to '/JavaScript'
+    let pagePath = this.addSlashOfEnd(lsxContext.pagePath);
+
+    this.props.crowi.apiGet('/plugins/lsx', {pagePath, queryOptions: ''})
       .catch(error => {
         const errorMessage = error.response.data.error.message;
         this.setState({ isError: true, errorMessage: errorMessage });
       })
       .then((res) => {
         if (res.ok) {
-          const tree = this.generatePageNodeTree(fromPagePath, res.pages);
-          this.setState({ tree });
+          const nodeTree = this.generatePageNodeTree(pagePath, res.pages);
+          this.setState({ nodeTree });
         }
         else {
           return Promise.reject(res.error);
@@ -63,40 +67,40 @@ export class Lsx extends React.Component {
   /**
    * generate tree structure
    *
-   * @param {string} fromPagePath
+   * @param {string} pagePath
    * @param {Page[]} pages Array of Page model
    *
    * @memberOf Lsx
    */
-  generatePageNodeTree(fromPagePath, pages) {
+  generatePageNodeTree(pagePath, pages) {
     let pathToNodeMap = {};
 
     pages.forEach((page) => {
-      // exclude fromPagePath
-      if (page.path === this.omitSlashOfEnd(fromPagePath)) {
+      // exclude pagePath itself
+      if (page.path === this.omitSlashOfEnd(pagePath)) {
         return;
       }
 
-      const node = new PageNode(page.path, page);
+      const node = pathToNodeMap[page.path] || new PageNode();
+      node.page = page;
       pathToNodeMap[page.path] = node;
 
       // get or create parent node
       const parentPath = this.getParentPath(page.path);
-      let parentNode = pathToNodeMap[parentPath];
-      if (parentNode === undefined) {
-        parentNode = new PageNode(parentPath);
-        pathToNodeMap[parentPath] = parentNode;
+      if (parentPath !== this.omitSlashOfEnd(pagePath)) {
+        let parentNode = pathToNodeMap[parentPath];
+        if (parentNode === undefined) {
+          parentNode = new PageNode();
+          pathToNodeMap[parentPath] = parentNode;
+        }
+        // associate to patent
+        parentNode.children.push(node);
       }
-      // associate to patent
-      parentNode.children.push(node);
     });
-
-    // remove fromPagePath
-    delete pathToNodeMap[this.omitSlashOfEnd(fromPagePath)];
 
     // return root objects
     return Object.values(pathToNodeMap).filter((node) => {
-      const parentPath = this.getParentPath(node.path);
+      const parentPath = this.getParentPath(node.page.path);
       return !(parentPath in pathToNodeMap);
     });
   }
@@ -138,10 +142,6 @@ export class Lsx extends React.Component {
     return decodeURIComponent(parent.path());
   }
 
-  getInnerHTMLObj() {
-    return { __html: this.state.html };
-  }
-
   render() {
     const lsxContext = this.props.lsxContext;
 
@@ -163,11 +163,7 @@ export class Lsx extends React.Component {
     }
     // render tree
     else {
-      let list = [];
-      this.state.tree.forEach((node) => {
-        list.push(<li>{node.path}</li>);
-      });
-      return <ul>{list}</ul>
+      return <ListView nodeTree={this.state.nodeTree} options={lsxContext.options} />
     }
   }
 }
