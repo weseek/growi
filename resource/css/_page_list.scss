@@ -25,10 +25,9 @@
 
 .page-list, .content-main {
   .page-list-ul {
-    padding-left: 0;
+    padding-left: 1rem;
 
     > li {
-      list-style: none;
       line-height: 1.8em;
 
       .page-list-option {
@@ -55,6 +54,14 @@
       > span.page-list-meta {
         font-size: .9em;
         color: #999;
+      }
+    }
+
+    // override .page-list-ul
+    &.page-list-ul-flat {
+      padding-left: 0;
+      > li {
+        list-style: none;
       }
     }
   }

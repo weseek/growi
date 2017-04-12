@@ -11,7 +11,7 @@ export default class ListView extends React.Component {
 
     return (
       <div className="page-list">
-        <ul className="page-list-ul">
+        <ul className="page-list-ul page-list-ul-flat">
         {listView}
         </ul>
       </div>
