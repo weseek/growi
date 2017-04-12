@@ -1,9 +1,11 @@
 import React from 'react';
+import urlgrey from 'urlgrey';
 
 import styles from '../../css/index.css';
 
 import { LsxContext } from '../util/LsxContext';
 import { LsxCacheHelper } from '../util/LsxCacheHelper';
+import { PageNode } from './PageNode';
 
 export class Lsx extends React.Component {
 
@@ -12,8 +14,8 @@ export class Lsx extends React.Component {
 
     this.state = {
       isLoading: true,
-      html: '',
       isError: false,
+      tree: undefined,
       errorMessage: '',
     };
   }
@@ -23,7 +25,7 @@ export class Lsx extends React.Component {
     if (this.props.lsxStateCache) {
       this.setState({
         isLoading: false,
-        html: this.props.lsxStateCache.html,
+        tree: this.props.lsxStateCache.tree,
         isError: this.props.lsxStateCache.isError,
         errorMessage: this.props.lsxStateCache.errorMessage,
       });
@@ -31,23 +33,22 @@ export class Lsx extends React.Component {
     }
 
     const lsxContext = this.props.lsxContext;
-    const fromPagePath = lsxContext.fromPagePath;
+    let fromPagePath = this.addSlashOfEnd(lsxContext.fromPagePath);
     const args = lsxContext.lsxArgs;
 
     this.props.crowi.apiGet('/plugins/lsx', {fromPagePath, args})
+      .catch(error => {
+        const errorMessage = error.response.data.error.message;
+        this.setState({ isError: true, errorMessage: errorMessage });
+      })
       .then((res) => {
         if (res.ok) {
-          this.setState({ html: res.html });
+          const tree = this.generatePageNodeTree(fromPagePath, res.pages);
+          this.setState({ tree });
         }
         else {
           return Promise.reject(res.error);
         }
-      })
-      .catch(error => {
-        console.error(error);
-        const errorMessage = error.response.data.error.message;
-        console.error(errorMessage);
-        this.setState({ isError: true, errorMessage: errorMessage });
       })
       // finally
       .then(() => {
@@ -57,6 +58,84 @@ export class Lsx extends React.Component {
         const cacheKey = LsxCacheHelper.generateCacheKeyFromContext(lsxContext);
         LsxCacheHelper.cacheState(cacheKey, this.state);
       })
+  }
+
+  /**
+   * generate tree structure
+   *
+   * @param {string} fromPagePath
+   * @param {Page[]} pages Array of Page model
+   *
+   * @memberOf Lsx
+   */
+  generatePageNodeTree(fromPagePath, pages) {
+    let pathToNodeMap = {};
+
+    pages.forEach((page) => {
+      // exclude fromPagePath
+      if (page.path === this.omitSlashOfEnd(fromPagePath)) {
+        return;
+      }
+
+      const node = new PageNode(page.path, page);
+      pathToNodeMap[page.path] = node;
+
+      // get or create parent node
+      const parentPath = this.getParentPath(page.path);
+      let parentNode = pathToNodeMap[parentPath];
+      if (parentNode === undefined) {
+        parentNode = new PageNode(parentPath);
+        pathToNodeMap[parentPath] = parentNode;
+      }
+      // associate to patent
+      parentNode.children.push(node);
+    });
+
+    // remove fromPagePath
+    delete pathToNodeMap[this.omitSlashOfEnd(fromPagePath)];
+
+    // return root objects
+    return Object.values(pathToNodeMap).filter((node) => {
+      const parentPath = this.getParentPath(node.path);
+      return !(parentPath in pathToNodeMap);
+    });
+  }
+
+  /**
+   * return path that added slash to the end for specified path
+   *
+   * @param {any} path
+   * @returns
+   *
+   * @memberOf Lsx
+   */
+  addSlashOfEnd(path) {
+    let returnPath = path;
+    if (!path.match(/\/$/)) {
+      returnPath += '/';
+    }
+    return returnPath;
+  }
+
+  /**
+   * return path that omitted slash of the end from specified path
+   *
+   * @param {any} path
+   * @returns
+   *
+   * @memberOf Lsx
+   */
+  omitSlashOfEnd(path) {
+    let returnPath = path;
+    if (path.match(/\/$/)) {
+      returnPath = path.substr(0, path.length -1);
+    }
+    return returnPath;
+  }
+
+  getParentPath(path) {
+    const parent = urlgrey(path).parent();
+    return decodeURIComponent(parent.path());
   }
 
   getInnerHTMLObj() {
@@ -82,9 +161,13 @@ export class Lsx extends React.Component {
         </div>
       )
     }
+    // render tree
     else {
-      const innerHtml = this.getInnerHTMLObj();
-      return <div dangerouslySetInnerHTML={innerHtml} />
+      let list = [];
+      this.state.tree.forEach((node) => {
+        list.push(<li>{node.path}</li>);
+      });
+      return <ul>{list}</ul>
     }
   }
 }
