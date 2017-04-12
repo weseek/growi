@@ -19,7 +19,7 @@ export class Page extends React.Component {
           <PagePath page={page}/>
         </a>
         <PageListMeta page={page} />
-        <ul>{childPages}</ul>
+        <ul className="page-list-ul">{childPages}</ul>
       </li>
     );
   }
