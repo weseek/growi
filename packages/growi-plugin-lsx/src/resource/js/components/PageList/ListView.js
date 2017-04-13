@@ -10,7 +10,7 @@ export class ListView extends React.Component {
 
   render() {
     const listView = this.props.nodeTree.map((pageNode) => {
-      return <Page pageNode={pageNode} options={this.props.options} />;
+      return <Page key={pageNode.page.path} pageNode={pageNode} options={this.props.options} />;
     });
 
     // no contents

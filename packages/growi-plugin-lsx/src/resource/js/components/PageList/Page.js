@@ -12,7 +12,7 @@ export class Page extends React.Component {
     const page = pageNode.page;
 
     const childPages = pageNode.children.map((pageNode) => {
-      return <Page pageNode={pageNode} options={this.props.options} />;
+      return <Page key={pageNode.page.path} pageNode={pageNode} options={this.props.options} />;
     });
     const icon = (pageNode.children.length > 0) ?
       <i className="fa fa-folder" aria-hidden="true"></i>:
