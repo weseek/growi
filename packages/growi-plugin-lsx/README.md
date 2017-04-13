@@ -15,9 +15,9 @@ Install
 TODO
 ----
 
-- [ ] ensure to be `hierarchy=off` as default
+- [x] ensure to be `hierarchy=off` as default
 - [ ] impl `hierarchy` option
-- [ ] impl `depth` option
+- [x] impl `depth` option
 - [ ] impl `num` option
 - [ ] impl `sort` option
 - [ ] impl `reverse` option
