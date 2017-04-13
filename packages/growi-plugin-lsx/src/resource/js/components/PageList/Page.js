@@ -87,6 +87,18 @@ export class Page extends React.Component {
     return icon;
   }
 
+  /**
+   * return path that omitted slash of the end for specified path
+   *
+   * @param {string} path
+   * @returns
+   *
+   * @memberOf LsxContext
+   */
+  omitSlashOfEnd(path) {
+    return path.replace((/\/$/), '');
+  }
+
   render() {
     if (!this.state.isVisible) {
       return <div></div>;
@@ -95,9 +107,10 @@ export class Page extends React.Component {
     const pageNode = this.props.pageNode;
 
     // create PagePath element
-    const pagePathNode = (this.state.isLinkable) ?
-      <a className="page-list-link" href={pageNode.pagePath}><PagePath pagePath={pageNode.pagePath}/></a>:
-      <PagePath pagePath={pageNode.pagePath} />;
+    let pagePathNode = <PagePath pagePath={pageNode.pagePath} />;
+    if (this.state.isLinkable) {
+      pagePathNode = <a className="page-list-link" href={this.omitSlashOfEnd(pageNode.pagePath)}>{pagePathNode}</a>;
+    }
 
     // create PageListMeta element
     const pageListMeta = (this.state.isExists) ? <PageListMeta page={pageNode.page} /> : '';
