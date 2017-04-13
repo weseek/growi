@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import { Page } from './Page';
 import { PageNode } from '../PageNode';
@@ -33,7 +34,7 @@ export class ListView extends React.Component {
 }
 
 ListView.propTypes = {
-  nodeTree: React.PropTypes.arrayOf(PageNode).isRequired,
-  options: React.PropTypes.object.isRequired,
-  lsxContext: React.PropTypes.instanceOf(LsxContext).isRequired,
+  nodeTree: PropTypes.arrayOf(PropTypes.instanceOf(PageNode)).isRequired,
+  options: PropTypes.object.isRequired,
+  lsxContext: PropTypes.instanceOf(LsxContext).isRequired,
 };

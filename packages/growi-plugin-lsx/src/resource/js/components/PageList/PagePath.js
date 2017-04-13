@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 export class PagePath extends React.Component {
 
@@ -40,7 +41,7 @@ export class PagePath extends React.Component {
 }
 
 PagePath.propTypes = {
-  page: React.PropTypes.object.isRequired,
+  page: PropTypes.object.isRequired,
 };
 
 PagePath.defaultProps = {

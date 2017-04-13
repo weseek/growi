@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import { PageListMeta } from './PageListMeta';
 import { PagePath } from './PagePath';
@@ -31,6 +32,6 @@ export class Page extends React.Component {
 }
 
 Page.propTypes = {
-  pageNode: React.PropTypes.instanceOf(PageNode).isRequired,
-  options: React.PropTypes.object.isRequired,
+  pageNode: PropTypes.instanceOf(PageNode).isRequired,
+  options: PropTypes.object.isRequired,
 };
