@@ -11,7 +11,7 @@ export class ListView extends React.Component {
   render() {
     const listView = this.props.nodeTree.map((pageNode) => {
       return (
-        <Page key={pageNode.page.path} depth={1}
+        <Page key={pageNode.pagePath} depth={1}
           pageNode={pageNode}
           lsxContext={this.props.lsxContext}
         />

@@ -83,7 +83,7 @@ export class Lsx extends React.Component {
         return;
       }
 
-      const node = pathToNodeMap[pagePath] || new PageNode();
+      const node = pathToNodeMap[pagePath] || new PageNode(pagePath);
       node.page = page;
       pathToNodeMap[pagePath] = node;
 
@@ -93,7 +93,7 @@ export class Lsx extends React.Component {
       if (!this.isEquals(parentPath, rootPagePath)) {
         let parentNode = pathToNodeMap[parentPath];
         if (parentNode === undefined) {
-          parentNode = new PageNode();
+          parentNode = new PageNode(parentPath);
           pathToNodeMap[parentPath] = parentNode;
         }
         // associate to patent
@@ -102,10 +102,16 @@ export class Lsx extends React.Component {
     });
 
     // return root objects
-    return Object.values(pathToNodeMap).filter((node) => {
-      const parentPath = this.getParentPath(node.page.path);
-      return !(parentPath in pathToNodeMap);
+    let rootNodes = [];
+    Object.keys(pathToNodeMap).forEach((pagePath) => {
+      const parentPath = this.getParentPath(pagePath);
+      // pick up what parent doesn't exist
+      if (!(parentPath in pathToNodeMap)) {
+        rootNodes.push(pathToNodeMap[pagePath]);
+      }
     });
+
+    return rootNodes;
   }
 
   /**

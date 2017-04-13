@@ -12,29 +12,81 @@ export class Page extends React.Component {
     super(props);
 
     this.state = {
-      isVisible: true,
-      isLinkable: true,
+      isExists: false,
+      isVisible: false,
+      isLinkable: false,
+      hasChildren: false,
     };
   }
 
   componentDidMount() {
+    const pageNode = this.props.pageNode;
+
+    if (pageNode.page !== undefined) {
+      this.setState({isExists: true});
+    }
+    if (pageNode.children.length > 0) {
+      this.setState({hasChildren: true});
+    }
+
     // process depth option
     const optDepth = this.props.lsxContext.getOptDepth();
-    if (optDepth !== undefined) {
+    if (optDepth === undefined) {
+      this.setState({isVisible: true});
+      this.setState({isLinkable: true});
+    }
+    else {
       const depth = this.props.depth;
-      const decGens = this.props.pageNode.getDecendantsGenerationsNum();
+      const decGens = pageNode.getDecendantsGenerationsNum();
 
       // debug
-      // console.log(this.props.pageNode.page.path, {depth, decGens, 'optDepth.start': optDepth.start, 'optDepth.end': optDepth.end});
+      // console.log(pageNode.pagePath, {depth, decGens, 'optDepth.start': optDepth.start, 'optDepth.end': optDepth.end});
 
       if (optDepth.end !== undefined) {
         const isVisible = (optDepth.end > 0) ? (depth <= optDepth.end) : (decGens <= optDepth.end);
         this.setState({isVisible});
       }
 
-      const isLinkable = (optDepth.start > 0) ? (optDepth.start <= depth) : (optDepth.start <= decGens);
-      this.setState({isLinkable});
+      if (this.state.isExists) {
+        const isLinkable = (optDepth.start > 0) ? (optDepth.start <= depth) : (optDepth.start <= decGens);
+        this.setState({isLinkable});
+      }
     }
+  }
+
+  getChildPageElement() {
+    const pageNode = this.props.pageNode;
+
+    let element = '';
+
+    // create child pages elements
+    if (this.state.hasChildren) {
+      const pages = pageNode.children.map((pageNode) => {
+        return (
+          <Page key={pageNode.pagePath} depth={this.props.depth + 1}
+            pageNode={pageNode}
+            lsxContext={this.props.lsxContext}
+          />
+        );
+      });
+
+      element = <ul className="page-list-ul">{pages}</ul>;
+    }
+
+    return element
+  }
+
+  getIconElement() {
+    const pageNode = this.props.pageNode;
+
+    let icon = <i className="fa fa-folder-o" aria-hidden="true"></i>;
+    if (this.state.isExists) {
+      icon = (pageNode.children.length > 0) ?
+        <i className="fa fa-folder" aria-hidden="true"></i>:
+        <i className="fa fa-file-text-o" aria-hidden="true"></i>;
+    }
+
+    return icon;
   }
 
   render() {
@@ -43,27 +95,19 @@ export class Page extends React.Component {
     }
 
     const pageNode = this.props.pageNode;
-    const page = pageNode.page;
 
-    const childPages = pageNode.children.map((pageNode) => {
-      return (
-        <Page key={pageNode.page.path} depth={this.props.depth + 1}
-          pageNode={pageNode}
-          lsxContext={this.props.lsxContext}
-        />
-      );
-    });
-    const icon = (pageNode.children.length > 0) ?
-      <i className="fa fa-folder" aria-hidden="true"></i>:
-      <i className="fa fa-file-text-o" aria-hidden="true"></i>;
+    // create PagePath element
     const pagePathNode = (this.state.isLinkable) ?
-      <a className="page-list-link" href={page.path}><PagePath page={page}/></a>:
-      <PagePath page={page}/>;
+      <a className="page-list-link" href={pageNode.pagePath}><PagePath pagePath={pageNode.pagePath}/></a>:
+      <PagePath pagePath={pageNode.pagePath} />;
+
+    // create PageListMeta element
+    const pageListMeta = (this.state.isExists) ? <PageListMeta page={pageNode.page} /> : '';
 
     return (
       <li className="page-list-li">
-        <small>{icon}</small> {pagePathNode} <PageListMeta page={page} />
-        <ul className="page-list-ul">{childPages}</ul>
+        <small>{this.getIconElement()}</small> {pagePathNode} {pageListMeta}
+        {this.getChildPageElement()}
       </li>
     );
   }

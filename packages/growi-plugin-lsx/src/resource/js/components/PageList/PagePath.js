@@ -26,8 +26,7 @@ export class PagePath extends React.Component {
   }
 
   render() {
-    const page = this.props.page;
-    const pagePath = page.path.replace(this.props.excludePathString.replace(/^\//, ''), '');
+    const pagePath = this.props.pagePath.replace(this.props.excludePathString.replace(/^\//, ''), '');
     const shortPath = this.getShortPath(pagePath);
     const shortPathEscaped = shortPath.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
     const pathPrefix = pagePath.replace(new RegExp(shortPathEscaped + '(/)?$'), '');
@@ -41,10 +40,9 @@ export class PagePath extends React.Component {
 }
 
 PagePath.propTypes = {
-  page: PropTypes.object.isRequired,
+  pagePath: PropTypes.string.isRequired,
 };
 
 PagePath.defaultProps = {
-  page: {},
   excludePathString: '',
 };
