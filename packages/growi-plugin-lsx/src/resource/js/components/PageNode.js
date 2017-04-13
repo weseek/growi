@@ -21,10 +21,10 @@ export class PageNode {
    */
   getDecendantsGenerationsNum() {
     if (this.children.length == 0) {
-      return 0;
+      return -1;
     }
 
-    return -1 + Math.max.apply(null, this.children.map((child) => {
+    return -1 + Math.min.apply(null, this.children.map((child) => {
       return child.getDecendantsGenerationsNum();
     }))
   }
