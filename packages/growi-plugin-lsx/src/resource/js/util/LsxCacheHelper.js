@@ -1,3 +1,5 @@
+import { PageNode } from '../components/PageNode';
+
 export class LsxCacheHelper {
 
   /**
@@ -42,8 +44,17 @@ export class LsxCacheHelper {
    * @memberOf LsxCacheHelper
    */
   static getStateCache(key) {
-    let cacheObj = LsxCacheHelper.retrieveFromSessionStorage();
-    return cacheObj[key];
+    const cacheObj = LsxCacheHelper.retrieveFromSessionStorage();
+    const stateCache = cacheObj[key];
+
+    if (stateCache !== undefined) {
+      // instanciate PageNode
+      stateCache.nodeTree = stateCache.nodeTree.map((obj) => {
+        return PageNode.instanciateFrom(obj);
+      })
+    }
+
+    return stateCache;
   }
 
   /**

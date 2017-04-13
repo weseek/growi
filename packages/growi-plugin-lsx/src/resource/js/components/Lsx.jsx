@@ -22,6 +22,9 @@ export class Lsx extends React.Component {
   }
 
   componentDidMount() {
+    const lsxContext = this.props.lsxContext;
+    lsxContext.parse();
+
     // check cache exists
     if (this.props.lsxStateCache) {
       this.setState({
@@ -32,9 +35,6 @@ export class Lsx extends React.Component {
       });
       return;   // go to render()
     }
-
-    const lsxContext = this.props.lsxContext;
-    lsxContext.parse();
 
     let pagePath = lsxContext.pagePath;
 

@@ -30,4 +30,16 @@ export class PageNode {
       return child.getDecendantsGenerationsNum();
     }))
   }
+
+  static instanciateFrom(obj) {
+    let pageNode = new PageNode(obj.pagePath);
+    pageNode.page = obj.page;
+
+    // instanciate recursively
+    pageNode.children = obj.children.map((childObj) => {
+      return PageNode.instanciateFrom(childObj);
+    })
+
+    return pageNode
+  }
 }
