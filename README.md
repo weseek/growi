@@ -1,7 +1,7 @@
 ![Crowi](http://res.cloudinary.com/hrscywv4p/image/upload/c_limit,f_auto,h_900,q_80,w_1200/v1/199673/https_www_filepicker_io_api_file_VpYEP32ZQyCZ85u6XCXo_zskpra.png)
 
 <p align="center">
-  <a href="https://heroku.com/deploy?template=https://github.com/weseek/crowi-plus/tree/v1.0.1"><img src="https://www.herokucdn.com/deploy/button.png"></a>
+  <a href="https://heroku.com/deploy?template=https://github.com/weseek/crowi-plus/tree/v1.0.2"><img src="https://www.herokucdn.com/deploy/button.png"></a>
 </p>
 
 
