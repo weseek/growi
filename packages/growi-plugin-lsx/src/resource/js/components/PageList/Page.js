@@ -13,7 +13,7 @@ export class Page extends React.Component {
 
     this.state = {
       isVisible: true,
-      isLinkable: false,
+      isLinkable: true,
     };
   }
 
@@ -24,12 +24,16 @@ export class Page extends React.Component {
       const depth = this.props.depth;
       const decGens = this.props.pageNode.getDecendantsGenerationsNum();
 
-      // console.log(this.props.pageNode.page.path, `depth=${depth}`, `optDepth.end=${optDepth.end}`);
+      // debug
+      // console.log(this.props.pageNode.page.path, {depth, decGens, 'optDepth.start': optDepth.start, 'optDepth.end': optDepth.end});
 
       if (optDepth.end !== undefined) {
         const isVisible = (optDepth.end > 0) ? (depth <= optDepth.end) : (decGens <= optDepth.end);
         this.setState({isVisible});
       }
+
+      const isLinkable = (optDepth.start > 0) ? (optDepth.start <= depth) : (optDepth.start <= decGens);
+      this.setState({isLinkable});
     }
   }
 
@@ -52,14 +56,13 @@ export class Page extends React.Component {
     const icon = (pageNode.children.length > 0) ?
       <i className="fa fa-folder" aria-hidden="true"></i>:
       <i className="fa fa-file-text-o" aria-hidden="true"></i>;
+    const pagePathNode = (this.state.isLinkable) ?
+      <a className="page-list-link" href={page.path}><PagePath page={page}/></a>:
+      <PagePath page={page}/>;
 
     return (
       <li className="page-list-li">
-        <small>{icon}</small>
-        <a className="page-list-link" href={page.path}>
-          <PagePath page={page}/>
-        </a>
-        <PageListMeta page={page} />
+        <small>{icon}</small> {pagePathNode} <PageListMeta page={page} />
         <ul className="page-list-ul">{childPages}</ul>
       </li>
     );
