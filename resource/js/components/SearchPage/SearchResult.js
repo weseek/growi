@@ -80,7 +80,7 @@ export default class SearchResult extends React.Component {
         <div className="search-result row" id="search-result">
           <div className="col-md-4 hidden-xs hidden-sm page-list search-result-list" id="search-result-list">
             <nav data-spy="affix" data-offset-top="120">
-              <ul className="page-list-ul nav">
+              <ul className="page-list-ul page-list-ul-flat nav">
                 {listView}
               </ul>
             </nav>

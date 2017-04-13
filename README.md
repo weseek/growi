@@ -1,14 +1,12 @@
 ![Crowi](http://res.cloudinary.com/hrscywv4p/image/upload/c_limit,f_auto,h_900,q_80,w_1200/v1/199673/https_www_filepicker_io_api_file_VpYEP32ZQyCZ85u6XCXo_zskpra.png)
 
 <p align="center">
-  <a href="https://heroku.com/deploy?template=https://github.com/weseek/crowi-plus/tree/v1.0.1"><img src="https://www.herokucdn.com/deploy/button.png"></a>
+  <a href="https://heroku.com/deploy?template=https://github.com/weseek/crowi-plus/tree/v1.0.2"><img src="https://www.herokucdn.com/deploy/button.png"></a>
 </p>
 
 
-crowi-plus
+crowi-plus [![Chat on Slack](https://crowi-plus-slackin.weseek.co.jp/badge.svg)](https://crowi-plus-slackin.weseek.co.jp/)
 ===========
-
-[Chat on Slack](https://crowi-plus.slack.com/)
 
 [![wercker status](https://app.wercker.com/status/39cdc49d067d65c39cb35d52ceae6dc1/s/master "wercker status")](https://app.wercker.com/project/byKey/39cdc49d067d65c39cb35d52ceae6dc1)
 [![dependencies status](https://david-dm.org/weseek/crowi-plus.svg)](https://david-dm.org/weseek/crowi-plus)

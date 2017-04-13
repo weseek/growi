@@ -30,6 +30,7 @@
     > li {
       list-style: none;
       line-height: 1.8em;
+      color: #666;
 
       .page-list-option {
         float: right;
@@ -45,7 +46,7 @@
         display: inline;
         padding: 0 4px;
         font-size: 1.1em;
-        color: #666;
+        color: inherit;
 
         strong {
           color: #333;
@@ -56,6 +57,16 @@
         font-size: .9em;
         color: #999;
       }
+    }
+
+    // after second level indent
+    .page-list-ul {
+      padding-left: 1rem;
+    }
+
+    // override .page-list-ul
+    &.page-list-ul-flat {
+      padding-left: 0;
     }
   }
 }
