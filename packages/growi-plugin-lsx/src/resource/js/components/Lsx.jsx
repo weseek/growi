@@ -146,7 +146,6 @@ export class Lsx extends React.Component {
   getParentPath(path) {
     const parent = urlgrey(path).parent();
     return decodeURIComponent(this.addSlashOfEnd(parent.path()));
-
   }
 
   render() {

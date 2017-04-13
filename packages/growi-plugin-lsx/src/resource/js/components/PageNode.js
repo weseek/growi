@@ -10,7 +10,7 @@ export class PageNode {
   }
 
   /**
-   * return generations num of decendants
+   * calculate generations number of decendants
    *
    * ex:
    *  /foo          -2

@@ -46,7 +46,7 @@ export class LsxPostRenderInterceptor extends BasicInterceptor {
         // check cache exists
         const cacheKey = LsxCacheHelper.generateCacheKeyFromContext(lsxContext);
         const lsxStateCache = LsxCacheHelper.getStateCache(cacheKey);
-        if (lsxStateCache) {
+        if (lsxStateCache !== undefined) {
           // render with cache
           this.renderReactDOM(lsxContext, lsxStateCache, elem);
         }
