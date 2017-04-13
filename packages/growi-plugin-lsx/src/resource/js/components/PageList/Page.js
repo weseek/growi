@@ -47,10 +47,8 @@ export class Page extends React.Component {
         this.setState({isVisible});
       }
 
-      if (this.state.isExists) {
-        const isLinkable = (optDepth.start > 0) ? (optDepth.start <= depth) : (optDepth.start <= decGens);
-        this.setState({isLinkable});
-      }
+      const isLinkable = (optDepth.start > 0) ? (optDepth.start <= depth) : (optDepth.start <= decGens);
+      this.setState({isLinkable});
     }
   }
 
