@@ -82,4 +82,48 @@ export class LsxContext {
     return returnPath;
   }
 
+  getOptDepth() {
+    if (this.options.depth == undefined) {
+      return undefined;
+    }
+    return this.parseNum(this.options.depth)
+  }
+
+  parseNum(str) {
+    if (str == undefined) {
+      return undefined;
+    }
+
+    // see: https://regex101.com/r/w4KCwC/3
+    const match = str.match(/^(-?[0-9]+)(([:+]{1})(-?[0-9]+)?)?$/);
+    if (!match) {
+      return undefined;
+    }
+
+    // determine start
+    let start;
+    let end;
+
+    // has operator
+    if (match[2] != undefined) {
+      start = +match[1];
+      const operator = match[2]
+
+      // determine end
+      if (operator === ':') {
+        end = +match[4] || -1;  // set last(-1) if undefined
+      }
+      else if (operator === '+') {
+        end = +match[4] || 0;   // plus zero if undefined
+        end += start;
+      }
+    }
+    // don't have operator
+    else {
+      start = 1;
+      end = +match[1];
+    }
+
+    return { start, end };
+  }
 }

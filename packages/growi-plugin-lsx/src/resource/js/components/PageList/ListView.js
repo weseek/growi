@@ -10,7 +10,12 @@ export class ListView extends React.Component {
 
   render() {
     const listView = this.props.nodeTree.map((pageNode) => {
-      return <Page key={pageNode.page.path} pageNode={pageNode} options={this.props.options} />;
+      return (
+        <Page key={pageNode.page.path} depth={1}
+          pageNode={pageNode}
+          lsxContext={this.props.lsxContext}
+        />
+      );
     });
 
     // no contents
@@ -35,6 +40,5 @@ export class ListView extends React.Component {
 
 ListView.propTypes = {
   nodeTree: PropTypes.arrayOf(PropTypes.instanceOf(PageNode)).isRequired,
-  options: PropTypes.object.isRequired,
   lsxContext: PropTypes.instanceOf(LsxContext).isRequired,
 };

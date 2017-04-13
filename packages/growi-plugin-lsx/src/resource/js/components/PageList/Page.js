@@ -1,18 +1,53 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { LsxContext } from '../../util/LsxContext';
 import { PageListMeta } from './PageListMeta';
 import { PagePath } from './PagePath';
 import { PageNode } from '../PageNode';
 
 export class Page extends React.Component {
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      isVisible: true,
+      isLinkable: false,
+    };
+  }
+
+  componentDidMount() {
+    // depth option
+    const optDepth = this.props.lsxContext.getOptDepth();
+    if (optDepth !== undefined) {
+      const depth = this.props.depth;
+      const decGens = this.props.pageNode.getDecendantsGenerationsNum();
+
+      // console.log(this.props.pageNode.page.path, `depth=${depth}`, `optDepth.end=${optDepth.end}`);
+
+      if (optDepth.end !== undefined) {
+        const isVisible = (optDepth.end > 0) ? (depth <= optDepth.end) : (decGens <= optDepth.end);
+        this.setState({isVisible});
+      }
+    }
+  }
+
   render() {
+    if (!this.state.isVisible) {
+      return <div></div>;
+    }
+
     const pageNode = this.props.pageNode;
     const page = pageNode.page;
 
     const childPages = pageNode.children.map((pageNode) => {
-      return <Page key={pageNode.page.path} pageNode={pageNode} options={this.props.options} />;
+      return (
+        <Page key={pageNode.page.path} depth={this.props.depth + 1}
+          pageNode={pageNode}
+          lsxContext={this.props.lsxContext}
+        />
+      );
     });
     const icon = (pageNode.children.length > 0) ?
       <i className="fa fa-folder" aria-hidden="true"></i>:
@@ -33,5 +68,6 @@ export class Page extends React.Component {
 
 Page.propTypes = {
   pageNode: PropTypes.instanceOf(PageNode).isRequired,
-  options: PropTypes.object.isRequired,
+  lsxContext: PropTypes.instanceOf(LsxContext).isRequired,
+  depth: PropTypes.number,
 };
