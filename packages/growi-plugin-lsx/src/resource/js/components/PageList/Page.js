@@ -18,7 +18,7 @@ export class Page extends React.Component {
   }
 
   componentDidMount() {
-    // depth option
+    // process depth option
     const optDepth = this.props.lsxContext.getOptDepth();
     if (optDepth !== undefined) {
       const depth = this.props.depth;

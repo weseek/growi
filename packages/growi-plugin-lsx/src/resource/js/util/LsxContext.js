@@ -105,9 +105,9 @@ export class LsxContext {
     let end;
 
     // has operator
-    if (match[2] != undefined) {
+    if (match[3] != undefined) {
       start = +match[1];
-      const operator = match[2]
+      const operator = match[3];
 
       // determine end
       if (operator === ':') {
