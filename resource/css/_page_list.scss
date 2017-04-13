@@ -29,7 +29,8 @@
 
     > li {
       list-style: none;
-      line-height: 1.8em;
+      line-height: 1.4em;
+      font-size: 1.7rem;
       color: #666;
 
       .page-list-option {
@@ -45,7 +46,6 @@
       > a {
         display: inline;
         padding: 0 4px;
-        font-size: 1.1em;
         color: inherit;
 
         strong {
@@ -56,12 +56,16 @@
       > span.page-list-meta {
         font-size: .9em;
         color: #999;
+
+        >span {
+          margin-right: .3rem;
+        }
       }
     }
 
     // after second level indent
     .page-list-ul {
-      padding-left: 1rem;
+      padding-left: 2rem;
     }
 
     // override .page-list-ul
