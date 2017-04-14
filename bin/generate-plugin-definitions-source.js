@@ -14,8 +14,24 @@ const OUT = helpers.root('tmp/plugins/plugin-definitions.js');
 const PluginUtils = require('../lib/plugins/plugin-utils');
 const pluginUtils = new PluginUtils();
 
+// list plugin names
+let pluginNames = pluginUtils.listPluginNames(helpers.root());
+if (process.env.NODE_ENV === 'development'
+    && process.env.PLUGIN_NAMES_TOBE_LOADED !== undefined
+    && process.env.PLUGIN_NAMES_TOBE_LOADED.length > 0) {
+
+  pluginNamesDev = process.env.PLUGIN_NAMES_TOBE_LOADED.split(',');
+
+  // merge and remove duplicates
+  if (pluginNamesDev.length > 0) {
+    pluginNames = pluginNames.concat(pluginNamesDev);
+    pluginNames = Array.from(new Set(pluginNames));
+  }
+}
+
+
 // get definitions
-const definitions = pluginUtils.listPluginNames(helpers.root())
+const definitions = pluginNames
   .map((name) => {
     return pluginUtils.generatePluginDefinition(name, true);
   })
