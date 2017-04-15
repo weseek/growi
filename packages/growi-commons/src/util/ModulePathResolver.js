@@ -1,5 +1,4 @@
 import * as path from 'path';
-import * as appRoot from 'app-root-path';
 
 /**
  * Resolve path tools
@@ -7,7 +6,8 @@ import * as appRoot from 'app-root-path';
 export class ModulePathResolver {
 
   relativeFromRoot(modulePath) {
-    return path.relative(appRoot.path, modulePath)
+    const appRoot = path.dirname(require.main.filename)
+    return path.relative(appRoot, modulePath)
   }
 
 }
