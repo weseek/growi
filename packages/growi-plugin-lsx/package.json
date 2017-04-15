@@ -13,8 +13,9 @@
   "scripts": {
     "build": "babel src --out-dir lib --source-maps inline",
     "clean": "npm cache clean && npm run rimraf -- lib",
-    "postbuild": "ncp src/resource/css lib/resource/css",
-    "prebuild": "npm run clean",
+    "resources": "mkdirp lib/resource/css && ncp src/resource/css lib/resource/css",
+    "prebuild": "npm run clean && npm run resources",
+    "prewatch": "npm run clean && npm run resources",
     "watch": "babel src --out-dir lib --watch --source-maps inline",
     "rimraf": "rimraf",
     "test": ""
@@ -30,7 +31,7 @@
   },
   "homepage": "https://github.com/weseek/crowi-plugin-lsx#readme",
   "dependencies": {
-    "crowi-pluginkit": "^1.0.3",
+    "crowi-pluginkit": "^1.1.0",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "url": "^0.11.0"
@@ -43,6 +44,7 @@
     "babel-preset-power-assert": "^1.0.0",
     "babel-preset-react": "^6.23.0",
     "babel-register": "^6.23.0",
+    "mkdirp": "^0.5.1",
     "ncp": "^2.0.0",
     "power-assert": "^1.4.2",
     "rimraf": "^2.6.1"
