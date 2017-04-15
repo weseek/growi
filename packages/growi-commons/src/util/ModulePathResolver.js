@@ -7,7 +7,7 @@ import * as appRoot from 'app-root-path';
 export class ModulePathResolver {
 
   relativeFromRoot(modulePath) {
-    return path.relative(appRoot.path, path.join(__dirname, modulePath))
+    return path.relative(appRoot.path, modulePath)
   }
 
 }

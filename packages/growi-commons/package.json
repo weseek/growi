@@ -1,6 +1,6 @@
 {
   "name": "crowi-pluginkit",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "The Crowi Plugin Kit to develop plugins",
   "main": "lib/index.js",
   "files": [
