@@ -60,7 +60,7 @@ export class LsxContext {
     //   when `fromPagePath`=/hoge and `specifiedPath`=undefined,
     //        `pagePath` to be /hoge
     this.pagePath = (specifiedPath !== undefined) ?
-        url.resolve(this.addSlashOfEnd(this.fromPagePath), specifiedPath):
+        decodeURIComponent(url.resolve(this.addSlashOfEnd(this.fromPagePath), specifiedPath)):
         this.fromPagePath;
 
     this.isParsed = true;

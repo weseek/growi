@@ -33,7 +33,7 @@
     "crowi-pluginkit": "^1.0.3",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
-    "urlgrey": "^0.4.4"
+    "url": "^0.11.0"
   },
   "devDependencies": {
     "babel-cli": "^6.23.0",

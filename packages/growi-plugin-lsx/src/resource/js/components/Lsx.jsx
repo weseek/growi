@@ -1,5 +1,5 @@
 import React from 'react';
-import urlgrey from 'urlgrey';
+import * as url from 'url';
 
 import styles from '../../css/index.css';
 
@@ -144,8 +144,7 @@ export class Lsx extends React.Component {
   }
 
   getParentPath(path) {
-    const parent = urlgrey(path).parent();
-    return decodeURIComponent(this.addSlashOfEnd(parent.path()));
+    return this.addSlashOfEnd(decodeURIComponent(url.resolve(path, '../')));
   }
 
   render() {
