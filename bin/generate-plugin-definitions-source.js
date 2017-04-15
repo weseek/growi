@@ -4,7 +4,7 @@
  * @author Yuki Takei <yuki@weseek.co.jp>
  */
 const fs = require('graceful-fs');
-const slash = require('slash');
+const normalize = require('normalize-path');
 const swig = require('swig');
 const helpers = require('../config/helpers');
 
@@ -14,8 +14,10 @@ const OUT = helpers.root('tmp/plugins/plugin-definitions.js');
 const PluginUtils = require('../lib/plugins/plugin-utils');
 const pluginUtils = new PluginUtils();
 
+
 // list plugin names
 let pluginNames = pluginUtils.listPluginNames(helpers.root());
+// add from PLUGIN_NAMES_TOBE_LOADED when development
 if (process.env.NODE_ENV === 'development'
     && process.env.PLUGIN_NAMES_TOBE_LOADED !== undefined
     && process.env.PLUGIN_NAMES_TOBE_LOADED.length > 0) {
@@ -38,7 +40,7 @@ const definitions = pluginNames
   .map((definition) => {
     // convert backslash to slash
     definition.entries = definition.entries.map((entryPath) => {
-      return slash(entryPath);
+      return normalize(entryPath);
     });
     return definition;
   });

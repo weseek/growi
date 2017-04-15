@@ -97,6 +97,7 @@
     "node-sass": "^4.5.0",
     "nodemailer": "~2.7.0",
     "nodemailer-ses-transport": "~1.5.0",
+    "normalize-path": "^2.1.1",
     "optimize-js-plugin": "0.0.4",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
@@ -104,7 +105,6 @@
     "reveal.js": "~3.4.0",
     "rimraf": "^2.6.1",
     "sass-loader": "^6.0.3",
-    "slash": "^1.0.0",
     "socket.io": "~1.7.0",
     "socket.io-client": "~1.7.0",
     "sprintf": "~0.1.5",
@@ -118,6 +118,7 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "concurrently": "^3.4.0",
+    "crowi-pluginkit": "^1.1.0",
     "easy-livereload": "^1.2.0",
     "mocha": "^3.2.0",
     "node-dev": "^3.1.3",
