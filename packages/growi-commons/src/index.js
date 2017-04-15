@@ -1,1 +1,2 @@
-export * from './lib/util/BasicInterceptor';
+export * from './util/BasicInterceptor';
+export * from './util/ModulePathResolver';

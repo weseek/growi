@@ -1,6 +1,6 @@
 {
   "name": "crowi-pluginkit",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "The Crowi Plugin Kit to develop plugins",
   "main": "lib/index.js",
   "files": [
@@ -10,6 +10,7 @@
     "build": "babel src --out-dir lib --source-maps inline",
     "clean": "npm cache clean && npm run rimraf -- lib",
     "prebuild": "npm run clean",
+    "prewatch": "npm run clean",
     "watch": "babel src --out-dir lib --watch --source-maps inline",
     "rimraf": "rimraf",
     "test": "mocha --compilers js:babel-register test/*.js"
@@ -25,6 +26,7 @@
   },
   "homepage": "https://github.com/weseek/crowi-pluginkit#readme",
   "dependencies": {
+    "app-root-path": "^2.0.1"
   },
   "devDependencies": {
     "babel-cli": "^6.23.0",
