@@ -3,11 +3,11 @@
  */
 
 import axios from 'axios'
-import InterceptorManager from '../../../lib/util/interceptorManager';
+import InterceptorManager from '../../../lib/util/interceptor-manager';
 import {
   DetachCodeBlockInterceptor,
   RestoreCodeBlockInterceptor,
-} from './Interceptor/DetachCodeBlock';
+} from './interceptor/detach-code-blocks';
 
 export default class Crowi {
   constructor(context, window) {

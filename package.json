@@ -26,6 +26,7 @@
     "clean:js": "rimraf -- public/js",
     "clean:dll": "rimraf -- public/dll",
     "clean": "npm run clean:js && npm run clean:dll",
+    "heroku-postbuild": "sh bin/heroku/install-plugins.sh && npm run build:prod",
     "mkdirp": "mkdirp",
     "plugin:def": "node bin/generate-plugin-definitions-source.js",
     "prebuild:dev": "env-cmd config/env.dev.js npm run plugin:def",

@@ -440,7 +440,7 @@ $(function() {
         })
         .then(() => crowi.interceptorManager.process('postPreProcess', context))
         .then(() => {
-          var parsedHTML = crowiRenderer.parseMarkdown(context.markdown, rendererOptions);
+          var parsedHTML = crowiRenderer.render(context.markdown, rendererOptions);
           context.parsedHTML = parsedHTML;
           Promise.resolve(context);
         })
