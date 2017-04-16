@@ -12,7 +12,7 @@ crowi-plus [![Chat on Slack](https://crowi-plus-slackin.weseek.co.jp/badge.svg)]
 [![dependencies status](https://david-dm.org/weseek/crowi-plus.svg)](https://david-dm.org/weseek/crowi-plus)
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
 
-This is **crowi-plus** that is the fork of [Crowi](https://github.com/crowi/crowi), is [perfectly compatible with official](https://github.com/weseek/crowi-plus/wiki/Question-and-Answers#does-crowi-plus-have-compatibility-with-official-crowi), and has been enhanced with the following points:
+This is **crowi-plus** that is the fork of [Crowi](https://github.com/crowi/crowi), is [perfectly compatible with official](https://github.com/weseek/crowi-plus/wiki/Questions-and-Answers#does-crowi-plus-have-compatibility-with-official-crowi), and has been enhanced with the following points:
 
 * Pluggable
   * Find plugins from [npm](https://www.npmjs.com/browse/keyword/crowi-plugin) or [github](https://github.com/search?q=topic%3Acrowi-plugin)!
@@ -33,6 +33,12 @@ This is **crowi-plus** that is the fork of [Crowi](https://github.com/crowi/crow
 Quick Start for Production
 ===========================
 
+Using Heroku
+------------
+
+1. go to https://heroku.com/deploy
+1. input INSTALL_PLUGINS to install plugins
+
 Using docker-compose
 ---------------------
 
@@ -44,13 +50,16 @@ docker-compose up
 
 see also [weseek/crowi-plus-docker-compose](https://github.com/weseek/crowi-plus-docker-compose)
 
-Using Heroku
-------------
-
-(TBD)
-
 On-premise
 ----------
+
+## Dependencies
+
+- node 6.x (DON'T USE 7.x)
+- npm 4.x
+- yarn
+
+### Start
 
 ```bash
 git clone https://github.com/weseek/crowi-plus.git
@@ -81,8 +90,11 @@ Getting Started to Develop
 ==========================
 
 ## Dependencies
-What you need to run this app:
-* `node` and `npm` (`brew install node`)
+
+- node 6.x (DON'T USE 7.x)
+- npm 4.x
+- yarn
+
 * following environment is confirmed to work
 
     ```bash
