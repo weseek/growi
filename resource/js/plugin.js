@@ -24,14 +24,14 @@ export default class CrowiPlugin {
       const meta = definition.meta;
 
       switch (meta.pluginSchemaVersion) {
-      // v1 is deprecated
-      case 1:
-        break;
-      // v2 or above
-      default:
-        definition.entries.forEach((entry) => {
-          entry(crowi, crowiRenderer);
-        });
+        // v1 is deprecated
+        case 1:
+          break;
+        // v2 or above
+        default:
+          definition.entries.forEach((entry) => {
+            entry(crowi, crowiRenderer);
+          });
       }
     });
 
