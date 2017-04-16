@@ -75,17 +75,25 @@ $(function() {
 
   function renderPreview() {
     var markdown = $('#form-body').val();
-    var parsedHTML = crowiRenderer.render(markdown, rendererOptions);
 
     // create context object
     var context = {
       markdown,
-      parsedHTML,
       currentPagePath: decodeURIComponent(location.pathname)
     };
 
-    // process interceptors for pre rendering
-    crowi.interceptorManager.process('preRenderPreview', context)   // process with the context
+    crowi.interceptorManager.process('preRenderPreview', context)
+      .then(() => crowi.interceptorManager.process('prePreProcess', context))
+      .then(() => {
+        context.markdown = crowiRenderer.preProcess(context.markdown);
+      })
+      .then(() => crowi.interceptorManager.process('postPreProcess', context))
+      .then(() => {
+        var parsedHTML = crowiRenderer.render(context.markdown, rendererOptions);
+        context['parsedHTML'] = parsedHTML;
+      })
+      .then(() => crowi.interceptorManager.process('postRenderPreview', context))
+      .then(() => crowi.interceptorManager.process('preRenderPreviewHtml', context))
       // render HTML with jQuery
       .then(() => {
         $('#preview-body').html(context.parsedHTML);
@@ -94,7 +102,7 @@ $(function() {
       // process interceptors for post rendering
       .then((bodyElement) => {
         context = Object.assign(context, {bodyElement})
-        return crowi.interceptorManager.process('postRenderPreview', context);
+        return crowi.interceptorManager.process('postRenderPreviewHtml', context);
       });
   }
 

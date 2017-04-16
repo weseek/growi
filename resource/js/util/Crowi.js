@@ -4,6 +4,10 @@
 
 import axios from 'axios'
 import InterceptorManager from '../../../lib/util/interceptorManager';
+import {
+  DetachCodeBlockInterceptor,
+  RestoreCodeBlockInterceptor,
+} from './Interceptor/DetachCodeBlock';
 
 export default class Crowi {
   constructor(context, window) {
@@ -19,6 +23,10 @@ export default class Crowi {
     this.apiRequest = this.apiRequest.bind(this);
 
     this.interceptorManager = new InterceptorManager();
+    this.interceptorManager.addInterceptors([
+      new DetachCodeBlockInterceptor(this),
+      new RestoreCodeBlockInterceptor(this),
+    ]);
 
     // FIXME
     this.me = context.me;
