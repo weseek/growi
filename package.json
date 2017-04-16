@@ -110,7 +110,6 @@
     "sass-loader": "^6.0.3",
     "socket.io": "~1.7.0",
     "socket.io-client": "~1.7.0",
-    "sprintf": "~0.1.5",
     "style-loader": "^0.16.1",
     "swig": "~1.4.0",
     "uglifycss": "^0.0.25",
