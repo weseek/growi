@@ -89,6 +89,7 @@
     "inline-attachment": "git+https://github.com/Rovak/InlineAttachment.git#2.0.3",
     "jquery.cookie": "~1.4.1",
     "marked": "~0.3.6",
+    "md5": "^2.2.1",
     "method-override": "~2.3.1",
     "mkdirp": "~0.5.1",
     "moment": "^2.18.0",
