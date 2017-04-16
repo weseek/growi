@@ -96,30 +96,34 @@
   <div class="form-box">
     <form action="/me/imagetype" method="post" class="form" role="form">
       <fieldset>
+
         <legend>{{ t('Set Profile Image') }}</legend>
-        <div class="form-group col-sm-offset-1 col-sm-4">
+
+        <div class="form-group col-sm-offset-1 col-sm-3">
           <div class="radio">
             <h4>
               <input type="radio" name="imagetypeForm[isGravaterEnabled]" value="true" {% if user.isGravaterEnabled %}checked="checked"{% endif %}>
               <img src="https://www.gravatar.com/avatar/00000000000000000000000000000000?s=24" /> Gravater
             </h4>
           </div>
+
+          <img src="{{ user|gravater }}" width="64">
         </div><!-- /.col-sm* -->
-        <div class="form-group col-sm-4">
+
+        <div class="form-group col-sm-8">
           <div class="radio">
             <h4>
               <input type="radio" name="imagetypeForm[isGravaterEnabled]" value="false" {% if !user.isGravaterEnabled  %}checked="checked"{% endif %}>{{ t('Upload Image') }}
             </h4>
           </div>
-
           <div class="form-group">
             <div id="pictureUploadFormMessage"></div>
-            <label for="" class="col-sm-6 control-label">
+            <label for="" class="col-sm-4 control-label">
               {{ t('Current Image') }}
             </label>
-            <div class="col-sm-6">
+            <div class="col-sm-8">
               <p>
-              <img src="{{ user|picture }}" width="64" id="settingUserPicture"><br>
+              <img src="{{ user|uploadedpicture }}" width="64" id="settingUserPicture"><br>
               </p>
               <p>
               {% if user.image %}
@@ -132,10 +136,10 @@
           </div><!-- /.form-group -->
 
           <div class="form-group">
-            <label for="" class="col-sm-6 control-label">
+            <label for="" class="col-sm-4 control-label">
               {{ t('Upload new image') }}
             </label>
-            <div class="col-sm-6">
+            <div class="col-sm-8">
               {% if isUploadable() %}
               <form action="/_api/me/picture/upload" id="pictureUploadForm" method="post" class="form-horizontal" role="form" enctype="multipart/form-data">
                 <input name="userPicture" type="file" accept="image/*">
