@@ -33,6 +33,12 @@ This is **crowi-plus** that is the fork of [Crowi](https://github.com/crowi/crow
 Quick Start for Production
 ===========================
 
+Using Heroku
+------------
+
+1. go to https://heroku.com/deploy
+1. input INSTALL_PLUGINS to install plugins
+
 Using docker-compose
 ---------------------
 
@@ -43,11 +49,6 @@ docker-compose up
 ```
 
 see also [weseek/crowi-plus-docker-compose](https://github.com/weseek/crowi-plus-docker-compose)
-
-Using Heroku
-------------
-
-(TBD)
 
 On-premise
 ----------
