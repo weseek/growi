@@ -1,1 +1,1 @@
-web: node app.js
+web: npm run server:prod:container
