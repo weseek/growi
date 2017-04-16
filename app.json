@@ -19,7 +19,8 @@
     },
     "INSTALL_PLUGINS": {
       "description": "Comma-separated list of plugin package names to install.",
-      "value": "crowi-plugin-lsx"
+      "value": "crowi-plugin-lsx",
+      "required": false
     }
   },
   "addons": [
