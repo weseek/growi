@@ -53,6 +53,14 @@ see also [weseek/crowi-plus-docker-compose](https://github.com/weseek/crowi-plus
 On-premise
 ----------
 
+## Dependencies
+
+- node 6.x (DON'T USE 7.x)
+- npm 4.x
+- yarn
+
+### Start
+
 ```bash
 git clone https://github.com/weseek/crowi-plus.git
 cd crowi-plus
@@ -82,8 +90,11 @@ Getting Started to Develop
 ==========================
 
 ## Dependencies
-What you need to run this app:
-* `node` and `npm` (`brew install node`)
+
+- node 6.x (DON'T USE 7.x)
+- npm 4.x
+- yarn
+
 * following environment is confirmed to work
 
     ```bash
