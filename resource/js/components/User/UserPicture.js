@@ -5,9 +5,9 @@ import md5 from 'md5';
 export default class UserPicture extends React.Component {
 
   getUserPicture(user) {
-    // gravater
-    if (user.isGravaterEnabled === true) {
-      console.log(user.username + ": isGravaterEnabled true");
+    // gravatar
+    if (user.isGravatarEnabled === true) {
+      console.log(user.username + ": isGravatarEnabled true");
       return this.generateGravatarSrc(user);
     }
     // uploaded image
