@@ -131,7 +131,6 @@ export default class CrowiRenderer {
   render(markdown, rendererOptions) {
     let html = '';
 
-    markdown = this.preProcess(markdown);
     html = this.parseMarkdown(markdown, rendererOptions.marked || {});
 
     return html;

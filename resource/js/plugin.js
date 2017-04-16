@@ -22,17 +22,19 @@ export default class CrowiPlugin {
 
     definitions.forEach((definition) => {
       const meta = definition.meta;
-      const entries = definition.entries;
 
-      // v1 is deprecated
-
-      // v2
-      if (2 === meta.pluginSchemaVersion) {
-        entries.forEach((entry) => {
-          entry(crowi, crowiRenderer);
-        });
+      switch (meta.pluginSchemaVersion) {
+        // v1 is deprecated
+        case 1:
+          break;
+        // v2 or above
+        default:
+          definition.entries.forEach((entry) => {
+            entry(crowi, crowiRenderer);
+          });
       }
     });
+
   }
 
 }

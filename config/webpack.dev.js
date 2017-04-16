@@ -2,6 +2,7 @@
  * @author: Yuki Takei <yuki@weseek.co.jp>
  */
 
+const path = require('path');
 const webpack = require('webpack');
 const helpers = require('./helpers');
 const webpackMerge = require('webpack-merge');
@@ -44,7 +45,7 @@ module.exports = function (options) {
     },
     resolve: {
       extensions: ['.js', '.json'],
-      modules: [helpers.root('src'), helpers.root('node_modules')],
+      modules: [helpers.root('src'), helpers.root('node_modules'), path.join(process.env.HOME, '.node_modules')],
     },
     module: {
       rules: [
