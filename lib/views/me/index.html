@@ -100,7 +100,7 @@
         <div class="form-group col-sm-offset-1 col-sm-4">
           <div class="radio">
             <h4>
-              <input type="radio" name="userForm[isGravaterEnabled]" value="true" {% if user.isGravaterEnabled %}checked="checked"{% endif %}>
+              <input type="radio" name="imagetypeForm[isGravaterEnabled]" value="true" {% if user.isGravaterEnabled %}checked="checked"{% endif %}>
               <img src="https://www.gravatar.com/avatar/00000000000000000000000000000000?s=24" /> Gravater
             </h4>
           </div>
@@ -108,7 +108,7 @@
         <div class="form-group col-sm-4">
           <div class="radio">
             <h4>
-              <input type="radio" name="userForm[isGravaterEnabled]" value="false" {% if !user.isGravaterEnabled  %}checked="checked"{% endif %}>{{ t('Upload Image') }}
+              <input type="radio" name="imagetypeForm[isGravaterEnabled]" value="false" {% if !user.isGravaterEnabled  %}checked="checked"{% endif %}>{{ t('Upload Image') }}
             </h4>
           </div>
 
