@@ -25,8 +25,8 @@ export class LsxPreRenderInterceptor extends BasicInterceptor {
    */
   isInterceptWhen(contextName) {
     return (
-      contextName === 'preRender' ||
-      contextName === 'preRenderPreview'
+      contextName === 'preRenderHtml' ||
+      contextName === 'preRenderPreviewHtml'
     );
   }
 
@@ -38,7 +38,6 @@ export class LsxPreRenderInterceptor extends BasicInterceptor {
     const markdown = context.markdown;
     const parsedHTML = context.parsedHTML;
     const currentPagePath = context.currentPagePath;
-
     this.initializeCache(contextName);
 
     context.lsxContextMap = {};

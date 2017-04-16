@@ -24,8 +24,8 @@ export class LsxPostRenderInterceptor extends BasicInterceptor {
    */
   isInterceptWhen(contextName) {
     return (
-      contextName === 'postRender' ||
-      contextName === 'postRenderPreview'
+      contextName === 'postRenderHtml' ||
+      contextName === 'postRenderPreviewHtml'
     );
   }
 
