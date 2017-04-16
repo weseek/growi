@@ -426,17 +426,26 @@ $(function() {
     var $rawTextOriginal = $('#raw-text-original');
     if ($rawTextOriginal.length > 0) {
       var markdown = Crowi.unescape($('#raw-text-original').html());
-      var parsedHTML = crowiRenderer.render(markdown, rendererOptions);
 
       // create context object
       var context = {
         markdown,
-        parsedHTML,
         currentPagePath: decodeURIComponent(location.pathname)
       };
 
-      // process interceptors for pre rendering
-      crowi.interceptorManager.process('preRender', context)   // process with the context
+      crowi.interceptorManager.process('preRender', context)
+        .then(() => crowi.interceptorManager.process('prePreProcess', context))
+        .then(() => {
+          context.markdown = crowiRenderer.preProcess(context.markdown);
+        })
+        .then(() => crowi.interceptorManager.process('postPreProcess', context))
+        .then(() => {
+          var parsedHTML = crowiRenderer.parseMarkdown(context.markdown, rendererOptions);
+          context.parsedHTML = parsedHTML;
+          Promise.resolve(context);
+        })
+        .then(() => crowi.interceptorManager.process('postRender', context))
+        .then(() => crowi.interceptorManager.process('preRenderHtml', context))
         // render HTML with jQuery
         .then(() => {
           $('#revision-body-content').html(context.parsedHTML);
@@ -458,7 +467,7 @@ $(function() {
         // process interceptors for post rendering
         .then((bodyElement) => {
           context = Object.assign(context, {bodyElement})
-          return crowi.interceptorManager.process('postRender', context);
+          return crowi.interceptorManager.process('postRenderHtml', context);
         });
 
 
