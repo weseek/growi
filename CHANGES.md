@@ -3,12 +3,12 @@ CHANGES
 
 ## 1.0.5
 
-* Feature: Use Gravatar for profile image
+* Feature: Ensure to use Gravatar for profile image
 
 ## 1.0.4
 
 * Improvement: Detach code blocks before preProcess
-* Support: Deploy to Heroku with INSTALL_PLUGINS env
+* Support: Ensure to deploy to Heroku with INSTALL_PLUGINS env
 * Support: Ensure to load plugins easily when development
 
 ## 1.0.3
