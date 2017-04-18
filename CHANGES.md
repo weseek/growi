@@ -1,6 +1,11 @@
 CHANGES
 ========
 
+## 1.0.6
+
+* Fix: https access to Gravatar
+* Fix: server watching crash with `Error: read ECONNRESET` on Google Chrome
+
 ## 1.0.5
 
 * Feature: Ensure to use Gravatar for profile image
