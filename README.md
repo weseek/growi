@@ -197,6 +197,8 @@ License
 
 [crowi]: https://github.com/crowi/crowi
 [crowi-plus]: https://github.com/weseek/crowi-plus
+[issues]: https://github.com/weseek/crowi-plus/issues
+[pulls]: https://github.com/weseek/crowi-plus/pulls
 [dockerhub]: https://hub.docker.com/r/weseek/crowi-plus
 [docker-compose]: https://github.com/weseek/crowi-plus-docker-compose
 [slackin]: https://crowi-plus-slackin.weseek.co.jp/
