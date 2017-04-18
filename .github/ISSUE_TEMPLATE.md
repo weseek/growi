@@ -6,8 +6,9 @@ Environment
 - [npm] y.y.y
 - [browser] z.z.z
 
-How to reproduce?
-------------------
+
+How to reproduce? (再現手順)
+---------------------------
 
 1. process 1
 
@@ -18,8 +19,9 @@ How to reproduce?
 1. process 2
 1. process 3
 
-What's happen?
----------------
+
+What's happen? (症状)
+---------------------
 
 - symptom
 
@@ -27,11 +29,13 @@ What's happen?
 Stack Trace
 ```
 
-What is the expected result?
------------------------------
+
+What is the expected result? (期待される動作)
+-------------------------------------------
 
 - 
 - 
+
 
 Note
 ----
