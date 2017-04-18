@@ -34,3 +34,4 @@ If you have something to ask or want to discuss, [join to our Slack team][slacki
 
 [issues]: https://github.com/weseek/crowi-plus/issues
 [pulls]: https://github.com/weseek/crowi-plus/pulls
+[slackin]: https://crowi-plus-slackin.weseek.co.jp/
