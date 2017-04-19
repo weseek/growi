@@ -1,4 +1,5 @@
 import React from 'react';
+import ClipboardButton from 'react-clipboard.js';
 
 export default class PagePath extends React.Component {
 
@@ -61,6 +62,9 @@ export default class PagePath extends React.Component {
           <a href="/">/</a>
         </span>
         {afterElements}
+        <ClipboardButton className="btn btn-default" data-clipboard-text={this.props.pagePath}>
+          <i className="fa fa-clone"></i>
+        </ClipboardButton>
       </span>
     );
   }
