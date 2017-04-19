@@ -7,12 +7,21 @@ export default class PagePath extends React.Component {
 
     this.state = {
       pages: [],
+      isListPage: false,
     };
   }
 
   componentWillMount() {
+    // whether list page or not
+    const isListPage = this.props.pagePath.match(/\/$/);
+    this.setState({ isListPage });
+
+    // generate pages obj
     let splitted = this.props.pagePath.split(/\//);
     splitted.shift();   // omit first element with shift()
+    if (splitted[splitted.length-1] === '') {
+      splitted.pop();   // omit last element with unshift()
+    }
 
     let pages = [];
     let parentPath = '/';
@@ -29,15 +38,19 @@ export default class PagePath extends React.Component {
 
   render() {
     const pageLength = this.state.pages.length;
+
     const afterElements = [];
     this.state.pages.forEach((page, index) => {
+      const isLastElement = (index == pageLength-1);
+
+      // add elements
       afterElements.push(
         <span key={page.pagePath} className="path-segment">
           <a href={page.pagePath}>{page.pageName}</a>
         </span>);
       afterElements.push(
         <span key={page.pagePath+'/'} className="separator">
-          <a href={page.pagePath+'/'} className={(index==pageLength-1) ? 'last-path' : ''}>/</a>
+          <a href={page.pagePath+'/'} className={(isLastElement && !this.state.isListPage) ? 'last-path' : ''}>/</a>
         </span>
       );
     });
