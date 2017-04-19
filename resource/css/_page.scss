@@ -88,7 +88,12 @@
         margin-top: 0;
         margin-bottom: 0;
 
-        a:last-child {
+        // add spaces before and after separator
+        .separator::before, .separator::after {
+          content: " ";
+        }
+
+        a.last-path {
           color: #D1E2E4;
           opacity: .4;
 
