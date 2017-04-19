@@ -2,63 +2,57 @@ import React from 'react';
 
 export default class PagePath extends React.Component {
 
-  // Original Crowi.linkPath
-  /*
-  Crowi.linkPath = function(revisionPath) {
-    var $revisionPath = revisionPath || '#revision-path';
-    var $title = $($revisionPath);
-    var pathData = $('#content-main').data('path');
+  constructor(props) {
+    super(props);
 
-    if (!pathData) {
-      return ;
-    }
+    this.state = {
+      pages: [],
+    };
+  }
 
-    var realPath = pathData.trim();
-    if (realPath.substr(-1, 1) == '/') {
-      realPath = realPath.substr(0, realPath.length - 1);
-    }
+  componentWillMount() {
+    let splitted = this.props.pagePath.split(/\//);
+    splitted.shift();   // omit first element with shift()
 
-    var path = '';
-    var pathHtml = '';
-    var splittedPath = realPath.split(/\//);
-    splittedPath.shift();
-    splittedPath.forEach(function(sub) {
-      path += '/';
-      pathHtml += ' <a href="' + path + '">/</a> ';
-      if (sub) {
-        path += sub;
-        pathHtml += '<a href="' + path + '">' + sub + '</a>';
-      }
+    let pages = [];
+    let parentPath = '/';
+    splitted.forEach((pageName) => {
+      pages.push({
+        pagePath: parentPath + pageName,
+        pageName: pageName,
+      });
+      parentPath += pageName + '/';
     });
-    if (path.substr(-1, 1) != '/') {
-      path += '/';
-      pathHtml += ' <a href="' + path + '" class="last-path">/</a>';
-    }
-    $title.html(pathHtml);
-  };
-  */
 
-  linkPath(path) {
-    return path;
+    this.setState({ pages });
   }
 
   render() {
-    const page = this.props.page;
-    const shortPath = this.getShortPath(page.path);
-    const pathPrefix = page.path.replace(new RegExp(shortPath + '(/)?$'), '');
+    const pageLength = this.state.pages.length;
+    const afterElements = [];
+    this.state.pages.forEach((page, index) => {
+      afterElements.push(
+        <span key={page.pagePath} className="path-segment">
+          <a href={page.pagePath}>{page.pageName}</a>
+        </span>);
+      afterElements.push(
+        <span key={page.pagePath+'/'} className="separator">
+          <a href={page.pagePath+'/'} className={(index==pageLength-1) ? 'last-path' : ''}>/</a>
+        </span>
+      );
+    });
 
     return (
       <span className="page-path">
-        {pathPrefix}<strong>{shortPath}</strong>
+        <span className="separator">
+          <a href="/">/</a>
+        </span>
+        {afterElements}
       </span>
     );
   }
 }
 
 PagePath.propTypes = {
-  page: React.PropTypes.object.isRequired,
-};
-
-PagePath.defaultProps = {
-  page: {},
+  pagePath: React.PropTypes.string.isRequired,
 };
