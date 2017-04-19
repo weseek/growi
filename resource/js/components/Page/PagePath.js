@@ -37,6 +37,10 @@ export default class PagePath extends React.Component {
     this.setState({ pages });
   }
 
+  showTooltip() {
+    // TODO implements
+  }
+
   render() {
     const pageLength = this.state.pages.length;
 
@@ -62,8 +66,9 @@ export default class PagePath extends React.Component {
           <a href="/">/</a>
         </span>
         {afterElements}
-        <ClipboardButton className="btn btn-default" data-clipboard-text={this.props.pagePath}>
-          <i className="fa fa-clone"></i>
+        <ClipboardButton className="btn btn-default"
+            data-clipboard-text={this.props.pagePath} onSuccess={this.showTooltip}>
+          <i className="fa fa-clone text-muted"></i>
         </ClipboardButton>
       </span>
     );
