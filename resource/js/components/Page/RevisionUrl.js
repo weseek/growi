@@ -16,7 +16,7 @@ export default class RevisionUrl extends React.Component {
       <span>
         {this.props.url}
         <CopyButton buttonId="btnCopyRevisionUrl" text={text}
-            buttonClassName="btn btn-default" iconClassName="fa fa-clone text-muted" />
+            buttonClassName="btn btn-default" iconClassName="fa fa-link text-muted" />
       </span>
     );
   }
