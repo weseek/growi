@@ -45,6 +45,15 @@ export default class RevisionPath extends React.Component {
   }
 
   render() {
+    // define style
+    const rootStyle = {
+      marginRight: "0.2em",
+    }
+    const separatorStyle = {
+      marginLeft: "0.2em",
+      marginRight: "0.2em",
+    }
+
     const pageLength = this.state.pages.length;
 
     const afterElements = [];
@@ -57,24 +66,20 @@ export default class RevisionPath extends React.Component {
           <a href={page.pagePath}>{page.pageName}</a>
         </span>);
       afterElements.push(
-        <span key={page.pagePath+'/'} className="separator">
+        <span key={page.pagePath+'/'} className="separator" style={separatorStyle}>
           <a href={page.pagePath+'/'} className={(isLastElement && !this.state.isListPage) ? 'last-path' : ''}>/</a>
         </span>
       );
     });
 
-    const buttonStyle = {
-      fontSize: '1.5rem'
-    }
-
     return (
-      <span className="page-path">
-        <span className="separator">
+      <span>
+        <span className="separator" style={rootStyle}>
           <a href="/">/</a>
         </span>
         {afterElements}
         <CopyButton buttonId="btnCopyRevisionPath" text={this.props.pagePath}
-            buttonClassName="btn btn-default" buttonStyle={buttonStyle} iconClassName="fa fa-clone text-muted" />
+            buttonClassName="btn btn-default" iconClassName="fa fa-clone text-muted" />
       </span>
     );
   }

@@ -11,12 +11,16 @@ export default class RevisionUrl extends React.Component {
   }
 
   render() {
+    const buttonStyle = {
+      fontSize: "1em"
+    }
+
     const text = this.props.pagePath + '\n' + this.props.url;
     return (
       <span>
         {this.props.url}
         <CopyButton buttonId="btnCopyRevisionUrl" text={text}
-            buttonClassName="btn btn-default" iconClassName="fa fa-link text-muted" />
+            buttonClassName="btn btn-default" buttonStyle={buttonStyle} iconClassName="fa fa-link text-muted" />
       </span>
     );
   }

@@ -18,20 +18,25 @@ export default class CopyButton extends React.Component {
   }
 
   render() {
-    let style = Object.assign({
-      fontSize: "inherit",
-      padding: "2px",
+    const containerStyle = {
+      verticalAlign: "top"
+    }
+    const style = Object.assign({
+      fontSize: "0.8em",
+      padding: "0 2px",
       border: 'none'
     }, this.props.buttonStyle);
 
     return (
-      <ClipboardButton className={this.props.buttonClassName}
-          button-id={this.props.buttonId} button-data-toggle="tooltip" button-title="copied!" button-data-placement="bottom" button-data-trigger="manual"
-          button-style={style}
-          data-clipboard-text={this.props.text} onSuccess={this.showToolTip}>
+      <span className="btn-copy-container" style={containerStyle}>
+        <ClipboardButton className={this.props.buttonClassName}
+            button-id={this.props.buttonId} button-data-toggle="tooltip" button-title="copied!" button-data-placement="bottom" button-data-trigger="manual"
+            button-style={style}
+            data-clipboard-text={this.props.text} onSuccess={this.showToolTip}>
 
-        <i className={this.props.iconClassName}></i>
-      </ClipboardButton>
+          <i className={this.props.iconClassName}></i>
+        </ClipboardButton>
+      </span>
     );
   }
 }

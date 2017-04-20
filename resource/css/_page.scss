@@ -89,9 +89,8 @@
         margin-top: 0;
         margin-bottom: 0;
 
-        // add spaces before and after separator
-        .separator::before, .separator::after {
-          content: " ";
+        .btn-copy-container {
+          font-size: 0.8em;
         }
 
         a.last-path {
