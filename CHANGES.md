@@ -1,6 +1,34 @@
 CHANGES
 ========
 
+## 1.0.6
+
+* Fix: https access to Gravatar
+* Fix: server watching crash with `Error: read ECONNRESET` on Google Chrome
+
+## 1.0.5
+
+* Feature: Ensure to use Gravatar for profile image
+
+## 1.0.4
+
+* Improvement: Detach code blocks before preProcess
+* Support: Ensure to deploy to Heroku with INSTALL_PLUGINS env
+* Support: Ensure to load plugins easily when development
+
+## 1.0.3
+
+* Improvement: Adjust styles
+
+## 1.0.2
+
+* Improvement: For lsx 
+
+## 1.0.1
+
+* Feature: Custom CSS
+* Support: Notify build failure to Slask
+
 ## 1.0.0
 
 * Feature: Plugin mechanism

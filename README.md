@@ -5,14 +5,14 @@
 </p>
 
 
-crowi-plus [![Chat on Slack](https://crowi-plus-slackin.weseek.co.jp/badge.svg)](https://crowi-plus-slackin.weseek.co.jp/)
+crowi-plus [![Chat on Slack](https://crowi-plus-slackin.weseek.co.jp/badge.svg)][slackin]
 ===========
 
 [![wercker status](https://app.wercker.com/status/39cdc49d067d65c39cb35d52ceae6dc1/s/master "wercker status")](https://app.wercker.com/project/byKey/39cdc49d067d65c39cb35d52ceae6dc1)
 [![dependencies status](https://david-dm.org/weseek/crowi-plus.svg)](https://david-dm.org/weseek/crowi-plus)
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
 
-This is **crowi-plus** that is the fork of [Crowi](https://github.com/crowi/crowi), is [perfectly compatible with official](https://github.com/weseek/crowi-plus/wiki/Questions-and-Answers#does-crowi-plus-have-compatibility-with-official-crowi), and has been enhanced with the following points:
+This is **crowi-plus** that is the fork of [Crowi][crowi], is [perfectly compatible with official](https://github.com/weseek/crowi-plus/wiki/Questions-and-Answers#does-crowi-plus-have-compatibility-with-official-crowi), and has been enhanced with the following points:
 
 * Pluggable
   * Find plugins from [npm](https://www.npmjs.com/browse/keyword/crowi-plugin) or [github](https://github.com/search?q=topic%3Acrowi-plugin)!
@@ -22,8 +22,8 @@ This is **crowi-plus** that is the fork of [Crowi](https://github.com/crowi/crow
 * Secure
   * Upgrade jQuery to 3.x
   * Upgrade other insecure libs
-* [Docker Ready](https://hub.docker.com/r/weseek/crowi-plus/)
-* [Docker Compose Ready](https://github.com/weseek/crowi-plus-docker-compose)
+* [Docker Ready][dockerhub]
+* [Docker Compose Ready][docker-compose]
 * [Added miscellaneous features](https://github.com/weseek/crowi-plus/wiki/Additional-Features)
 * Developer-friendly
   * Less compile time
@@ -48,7 +48,7 @@ cd crowi-plus
 docker-compose up
 ```
 
-see also [weseek/crowi-plus-docker-compose](https://github.com/weseek/crowi-plus-docker-compose)
+see also [weseek/crowi-plus-docker-compose][docker-compose]
 
 On-premise
 ----------
@@ -148,14 +148,57 @@ npm test
 ```
 
 Documentation
---------------
+==============
 
 * [github wiki pages](https://github.com/weseek/crowi-plus/wiki)
   * [Questions and Answers](https://github.com/weseek/crowi-plus/wiki/Questions-and-Answers)
 
 
-License
+Contributing
+============
+
+Found a Bug?
+-------------
+
+If you find a bug in the source code, you can help us by
+[submitting an issue][issues] to our [GitHub Repository][crowi-plus]. Even better, you can
+[submit a Pull Request][pulls] with a fix.
+
+Missing a Feature?
+-------------------
+
+You can *request* a new feature by [submitting an issue][issues] to our GitHub
+Repository. If you would like to *implement* a new feature, please submit an issue with
+a proposal for your work first, to be sure that we can use it.
+Please consider what kind of change it is:
+
+* For a **Major Feature**, first open an issue and outline your proposal so that it can be
+discussed. This will also allow us to better coordinate our efforts, prevent duplication of work,
+and help you to craft the change so that it is successfully accepted into the project.
+* **Small Features** can be crafted and directly [submitted as a Pull Request][pulls].
+
+Language
 ---------
+
+Write issues and PRs in Engulish or Japanese.
+
+Discussion
+-----------
+
+If you have something to ask or want to discuss, [join to our Slack team][slackin] and talk about anything, anytime.
+
+
+License
+=======
 
 * The MIT License (MIT)
 * See LICENSE file.
+
+
+[crowi]: https://github.com/crowi/crowi
+[crowi-plus]: https://github.com/weseek/crowi-plus
+[issues]: https://github.com/weseek/crowi-plus/issues
+[pulls]: https://github.com/weseek/crowi-plus/pulls
+[dockerhub]: https://hub.docker.com/r/weseek/crowi-plus
+[docker-compose]: https://github.com/weseek/crowi-plus-docker-compose
+[slackin]: https://crowi-plus-slackin.weseek.co.jp/

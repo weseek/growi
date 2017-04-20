@@ -7,7 +7,6 @@ export default class UserPicture extends React.Component {
   getUserPicture(user) {
     // gravatar
     if (user.isGravatarEnabled === true) {
-      console.log(user.username + ": isGravatarEnabled true");
       return this.generateGravatarSrc(user);
     }
     // uploaded image
@@ -21,7 +20,7 @@ export default class UserPicture extends React.Component {
 
   generateGravatarSrc(user) {
     const hash = md5(user.email.trim().toLowerCase());
-    return `http://www.gravatar.com/avatar/${hash}`;
+    return `https://www.gravatar.com/avatar/${hash}`;
   }
 
   getClassName() {

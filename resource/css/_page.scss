@@ -65,6 +65,7 @@
       }
 
       .flex-title-line {
+        line-height: 1;
         display: -webkit-flex;
         display: flex;
         -webkit-align-items: center;
@@ -88,7 +89,11 @@
         margin-top: 0;
         margin-bottom: 0;
 
-        a:last-child {
+        .btn-copy-container {
+          font-size: 0.8em;
+        }
+
+        a.last-path {
           color: #D1E2E4;
           opacity: .4;
 
@@ -96,6 +101,12 @@
             color: inherit;
           }
         }
+
+      }
+
+      .url-line {
+        color: #999;
+        font-size: 1rem;
       }
     }
 
