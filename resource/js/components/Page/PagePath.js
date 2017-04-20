@@ -37,8 +37,11 @@ export default class PagePath extends React.Component {
     this.setState({ pages });
   }
 
-  showTooltip() {
-    // TODO implements
+  showToolTip() {
+    $('#btnCopy').tooltip('show');
+    setTimeout(() => {
+      $('#btnCopy').tooltip('hide');
+    }, 1000);
   }
 
   render() {
@@ -67,7 +70,10 @@ export default class PagePath extends React.Component {
         </span>
         {afterElements}
         <ClipboardButton className="btn btn-default"
-            data-clipboard-text={this.props.pagePath} onSuccess={this.showTooltip}>
+            button-id="btnCopy" button-data-toggle="tooltip" button-title="copied!" button-data-placement="bottom" button-data-trigger="manual"
+            data-clipboard-text={this.props.pagePath} onSuccess={this.showToolTip}>
+
+
           <i className="fa fa-clone text-muted"></i>
         </ClipboardButton>
       </span>
