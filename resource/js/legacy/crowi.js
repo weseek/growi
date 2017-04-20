@@ -18,39 +18,6 @@ Crowi.createErrorView = function(msg) {
   $('#main').prepend($('<p class="alert-message error">' + msg + '</p>'));
 };
 
-Crowi.linkPath = function(revisionPath) {
-  var $revisionPath = revisionPath || '#revision-path';
-  var $title = $($revisionPath);
-  var pathData = $('#content-main').data('path');
-
-  if (!pathData) {
-    return ;
-  }
-
-  var realPath = pathData.trim();
-  if (realPath.substr(-1, 1) == '/') {
-    realPath = realPath.substr(0, realPath.length - 1);
-  }
-
-  var path = '';
-  var pathHtml = '';
-  var splittedPath = realPath.split(/\//);
-  splittedPath.shift();
-  splittedPath.forEach(function(sub) {
-    path += '/';
-    pathHtml += ' <a href="' + Crowi.escape(path) + '">/</a> ';
-    if (sub) {
-      path += sub;
-      pathHtml += '<a href="' + Crowi.escape(path) + '">' + Crowi.escape(sub) + '</a>';
-    }
-  });
-  if (path.substr(-1, 1) != '/') {
-    path += '/';
-    pathHtml += ' <a href="' + Crowi.escape(path) + '" class="last-path">/</a>';
-  }
-  $title.html(pathHtml);
-};
-
 Crowi.correctHeaders = function(contentId) {
   // h1 ~ h6 の id 名を補正する
   var $content = $(contentId || '#revision-body-content');
@@ -193,8 +160,6 @@ $(function() {
       breaks: isEnabledLineBreaks
     }
   };
-
-  Crowi.linkPath();
 
   $('[data-toggle="popover"]').popover();
   $('[data-toggle="tooltip"]').tooltip();
