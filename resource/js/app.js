@@ -9,6 +9,8 @@ import SearchPage       from './components/SearchPage';
 import PageListSearch   from './components/PageListSearch';
 import PageHistory      from './components/PageHistory';
 import SeenUserList     from './components/SeenUserList';
+import RevisionPath     from './components/Page/RevisionPath';
+import RevisionUrl      from './components/Page/RevisionUrl';
 //import PageComment  from './components/PageComment';
 
 if (!window) {
@@ -17,8 +19,10 @@ if (!window) {
 
 const mainContent = document.querySelector('#content-main');
 let pageId = null;
+let pagePath;
 if (mainContent !== null) {
   pageId = mainContent.attributes['data-page-id'].value;
+  pagePath = mainContent.attributes['data-path'].value;
 }
 
 // FIXME
@@ -43,6 +47,8 @@ const componentMappings = {
   //'revision-history': <PageHistory pageId={pageId} />,
   //'page-comment': <PageComment />,
   'seen-user-list': <SeenUserList />,
+  'revision-path': <RevisionPath pagePath={pagePath} />,
+  'revision-url': <RevisionUrl pagePath={pagePath} url={location.href} />,
 };
 
 Object.keys(componentMappings).forEach((key) => {

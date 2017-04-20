@@ -1,6 +1,6 @@
 {
   "name": "crowi-plus",
-  "version": "1.0.5-RC",
+  "version": "1.0.6-RC",
   "description": "Enhanced Crowi",
   "tags": [
     "wiki",
@@ -103,6 +103,7 @@
     "normalize-path": "^2.1.1",
     "optimize-js-plugin": "0.0.4",
     "react": "^15.4.2",
+    "react-clipboard.js": "^1.0.1",
     "react-dom": "^15.4.2",
     "redis": "^2.7.1",
     "reveal.js": "~3.4.0",

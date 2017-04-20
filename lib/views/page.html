@@ -14,7 +14,7 @@
 
 
     <div class="flex-title-line">
-      <h1 class="title flex-item-title" id="revision-path">{{ path|insertSpaceToEachSlashes }}</h1>
+      <h1 class="title flex-item-title" id="revision-path"></h1>
       {% if page %}
       <div class="flex-item-action">
         <a href="#" title="Bookmark" class="bookmark-link" id="bookmark-button" data-csrftoken="{{ csrf() }}" data-bookmarked="0"><i class="fa fa-star-o"></i></a>
@@ -28,12 +28,14 @@
       </div>
       {% endif %}
     </div>
+
+    <div id="revision-url" class="url-line"></div>
   </header>
   {% else %}
   {# trash/* #}
   <header id="page-header">
     <div class="flex-title-line">
-      <h1 class="title flex-item-title">{{ path|insertSpaceToEachSlashes }}</h1>
+      <h1 class="title flex-item-title"></h1>
       <div class="flex-item-action">
         <a href="#" title="Bookmark" class="bookmark-link" id="bookmark-button" data-csrftoken="{{ csrf() }}" data-bookmarked="0"><i class="fa fa-star-o"></i></a>
       </div>

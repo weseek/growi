@@ -16,15 +16,15 @@
   <header class="portal-header {% if page %}has-page{% endif %}">
     <div class="flex-title-line">
       <h1 class="title flex-item-title">
-        <span id="revision-path">{{ path|insertSpaceToEachSlashes }}</span>
+        <span id="revision-path"></span>
         {% if searchConfigured() && !isTopPage() && !isTrashPage() %}
         <form class="input-group search-input-group hidden-xs hidden-sm" data-toggle="tooltip" data-placement="bottom" title="{{ path }} 以下から検索" id="search-listpage-form">
-          <input type="text" class="search-listpage-input form-control" data-path="{{ path }}" id="search-listpage-input">
-          <span class="input-group-btn search-listpage-submit-group">
-            <button type="submit" class="btn btn-default" id="search-listpage-submit">
-              <i class="fa fa-search"></i>
-            </button>
-          </span>
+          <div class="input-group">
+            <input id="#search-listpage-input" type="text" class="form-control" data-path="{{ path }}" placeholder="Search for...">
+            <span class="input-group-btn">
+              <button class="btn btn-default"><i class="fa fa-search"></i></button>
+            </span>
+          </div><!-- /input-group -->
           <a class="search-listpage-clear" id="search-listpage-clear"><i class="fa fa-times-circle"></i></a>
         </form>
         {% endif %}
