@@ -1,7 +1,7 @@
 import React from 'react';
 import CopyButton from '../CopyButton';
 
-export default class PagePath extends React.Component {
+export default class RevisionPath extends React.Component {
 
   constructor(props) {
     super(props);
@@ -63,18 +63,23 @@ export default class PagePath extends React.Component {
       );
     });
 
+    const buttonStyle = {
+      fontSize: '1.5rem'
+    }
+
     return (
       <span className="page-path">
         <span className="separator">
           <a href="/">/</a>
         </span>
         {afterElements}
-        <CopyButton buttonClassName="btn btn-default" text={this.props.pagePath} iconClassName="fa fa-clone text-muted" />
+        <CopyButton buttonId="btnCopyRevisionPath" text={this.props.pagePath}
+            buttonClassName="btn btn-default" buttonStyle={buttonStyle} iconClassName="fa fa-clone text-muted" />
       </span>
     );
   }
 }
 
-PagePath.propTypes = {
+RevisionPath.propTypes = {
   pagePath: React.PropTypes.string.isRequired,
 };

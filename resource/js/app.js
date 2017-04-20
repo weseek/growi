@@ -9,7 +9,8 @@ import SearchPage       from './components/SearchPage';
 import PageListSearch   from './components/PageListSearch';
 import PageHistory      from './components/PageHistory';
 import SeenUserList     from './components/SeenUserList';
-import PagePath         from './components/Page/PagePath';
+import RevisionPath     from './components/Page/RevisionPath';
+import RevisionUrl      from './components/Page/RevisionUrl';
 //import PageComment  from './components/PageComment';
 
 if (!window) {
@@ -46,7 +47,8 @@ const componentMappings = {
   //'revision-history': <PageHistory pageId={pageId} />,
   //'page-comment': <PageComment />,
   'seen-user-list': <SeenUserList />,
-  'revision-path': <PagePath pagePath={pagePath} />,
+  'revision-path': <RevisionPath pagePath={pagePath} />,
+  'revision-url': <RevisionUrl pagePath={pagePath} url={location.href} />,
 };
 
 Object.keys(componentMappings).forEach((key) => {
