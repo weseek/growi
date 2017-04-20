@@ -1,5 +1,5 @@
 import React from 'react';
-import ClipboardButton from 'react-clipboard.js';
+import CopyButton from '../CopyButton';
 
 export default class PagePath extends React.Component {
 
@@ -69,13 +69,7 @@ export default class PagePath extends React.Component {
           <a href="/">/</a>
         </span>
         {afterElements}
-        <ClipboardButton className="btn btn-default"
-            button-id="btnCopy" button-data-toggle="tooltip" button-title="copied!" button-data-placement="bottom" button-data-trigger="manual"
-            data-clipboard-text={this.props.pagePath} onSuccess={this.showToolTip}>
-
-
-          <i className="fa fa-clone text-muted"></i>
-        </ClipboardButton>
+        <CopyButton buttonClassName="btn btn-default" text={this.props.pagePath} iconClassName="fa fa-clone text-muted" />
       </span>
     );
   }
