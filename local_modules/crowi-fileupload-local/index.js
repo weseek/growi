@@ -54,6 +54,10 @@ module.exports = function(crowi) {
     return path.join('/uploads', filePath);
   };
 
+  lib.findDeliveryFile = function (attachment) {
+    return Promise.resolve(lib.generateUrl(attachment.filePath));
+  };
+
   return lib;
 };
 

@@ -62,6 +62,46 @@ module.exports = function(crowi) {
     return url;
   };
 
+  lib.findDeliveryFile = function (attachment) {
+    var cacheFile = lib.createCacheFileName(attachment);
+
+    return new Promise((resolve, reject) => {
+      if (!lib.shouldUpdateCacheFile(cacheFile)) {
+        return resolve(cacheFile);
+      }
+
+      var fs = require('fs');
+      var loader = require('https');
+
+      var fileStream = fs.createWriteStream(cacheFile);
+      debug('Load attachement file into local cache file', attachment.fileUrl, cacheFile);
+      var request = loader.get(attachment.fileUrl, function(response) {
+        response.pipe(fileStream, { end: false });
+        response.on('end', () => {
+          fileStream.end();
+          resolve(cacheFile);
+        });
+      });
+    });
+  };
+
+  // private
+  lib.createCacheFileName = function(attachment) {
+    return crowi.cacheDir + '/attachment-' + attachment._id;
+  };
+
+  // private
+  lib.shouldUpdateCacheFile = function(filePath) {
+    var fs = require('fs');
+    var stats = fs.statSync(filePath);
+
+    if (!stats.isFile()) {
+      debug('Cache file found. Load from cache.');
+      return true;
+    }
+
+    return false;
+  };
   return lib;
 };
 
