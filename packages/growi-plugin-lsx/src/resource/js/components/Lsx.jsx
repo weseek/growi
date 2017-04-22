@@ -21,7 +21,7 @@ export class Lsx extends React.Component {
     };
   }
 
-  componentDidMount() {
+  componentWillMount() {
     const lsxContext = this.props.lsxContext;
     lsxContext.parse();
 

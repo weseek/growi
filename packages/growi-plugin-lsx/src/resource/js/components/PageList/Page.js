@@ -19,7 +19,7 @@ export class Page extends React.Component {
     };
   }
 
-  componentDidMount() {
+  componentWillMount() {
     const pageNode = this.props.pageNode;
 
     if (pageNode.page !== undefined) {
