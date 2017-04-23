@@ -75,15 +75,15 @@ export class LsxPreRenderInterceptor extends BasicInterceptor {
 
   /**
    * initialize cache
-   *  when contextName is 'preRender'         -> clear cache
-   *  when contextName is 'preRenderPreview'  -> doesn't clear cache
+   *  when contextName is 'preRenderHtml'         -> clear cache
+   *  when contextName is 'preRenderPreviewHtml'  -> doesn't clear cache
    *
    * @param {string} contextName
    *
    * @memberOf LsxPreRenderInterceptor
    */
   initializeCache(contextName) {
-    if (contextName === 'preRender') {
+    if (contextName === 'preRenderHtml') {
       LsxCacheHelper.clearAllStateCaches();
     }
   }
