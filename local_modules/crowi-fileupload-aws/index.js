@@ -74,8 +74,9 @@ module.exports = function(crowi) {
       var loader = require('https');
 
       var fileStream = fs.createWriteStream(cacheFile);
-      debug('Load attachement file into local cache file', attachment.fileUrl, cacheFile);
-      var request = loader.get(attachment.fileUrl, function(response) {
+      var fileUrl = lib.generateUrl(attachement.filePath);
+      debug('Load attachement file into local cache file', fileUrl, cacheFile);
+      var request = loader.get(fileUrl, function(response) {
         response.pipe(fileStream, { end: false });
         response.on('end', () => {
           fileStream.end();
