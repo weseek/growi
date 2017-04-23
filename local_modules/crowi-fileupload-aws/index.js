@@ -66,6 +66,7 @@ module.exports = function(crowi) {
     var cacheFile = lib.createCacheFileName(attachment);
 
     return new Promise((resolve, reject) => {
+      debug('find delivery file', cacheFile);
       if (!lib.shouldUpdateCacheFile(cacheFile)) {
         return resolve(cacheFile);
       }
@@ -74,7 +75,7 @@ module.exports = function(crowi) {
       var loader = require('https');
 
       var fileStream = fs.createWriteStream(cacheFile);
-      var fileUrl = lib.generateUrl(attachement.filePath);
+      var fileUrl = lib.generateUrl(attachment.filePath);
       debug('Load attachement file into local cache file', fileUrl, cacheFile);
       var request = loader.get(fileUrl, function(response) {
         response.pipe(fileStream, { end: false });
@@ -94,15 +95,28 @@ module.exports = function(crowi) {
   // private
   lib.shouldUpdateCacheFile = function(filePath) {
     var fs = require('fs');
-    var stats = fs.statSync(filePath);
 
-    if (!stats.isFile()) {
-      debug('Cache file found. Load from cache.');
+    try {
+      var stats = fs.statSync(filePath);
+
+      if (!stats.isFile()) {
+        debug('Cache file not found or the file is not a regular fil.');
+        return true;
+      }
+
+      if (stats.size <= 0) {
+        debug('Cache file found but the size is 0');
+        return true;
+      }
+    } catch (e) {
+      // no such file or directory
+      debug('Stats error', e);
       return true;
     }
 
     return false;
   };
+
   return lib;
 };
 
