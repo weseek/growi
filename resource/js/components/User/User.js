@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import UserPicture from './UserPicture';
 
@@ -19,7 +20,7 @@ export default class User extends React.Component {
 }
 
 User.propTypes = {
-  user: React.PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired,
 };
 
 User.defaultProps = {

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import UserDate     from '../Common/UserDate';
 import Icon         from '../Common/Icon';
@@ -53,7 +54,7 @@ export default class Revision extends React.Component {
 }
 
 Revision.propTypes = {
-  revision: React.PropTypes.object,
-  onDiffOpenClicked: React.PropTypes.func.isRequired,
+  revision: PropTypes.object,
+  onDiffOpenClicked: PropTypes.func.isRequired,
 }
 

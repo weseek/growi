@@ -30,9 +30,10 @@ const crowiRenderer = new CrowiRenderer();
 window.crowiRenderer = crowiRenderer;
 
 const componentMappings = {
-  'search-top': <HeaderSearchBox />,
-  'search-page': <SearchPage />,
-  'page-list-search': <PageListSearch />,
+  'search-top': <HeaderSearchBox crowi={crowi} />,
+  'search-page': <SearchPage crowi={crowi} />,
+  'page-list-search': <PageListSearch crowi={crowi} />,
+
   //'revision-history': <PageHistory pageId={pageId} />,
   //'page-comment': <PageComment />,
   'seen-user-list': <SeenUserList />,

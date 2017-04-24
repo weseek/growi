@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import Page from './Page';
 
@@ -6,7 +7,7 @@ export default class ListView extends React.Component {
 
   render() {
     const listView = this.props.pages.map((page) => {
-      return <Page page={page} />;
+      return <Page page={page} key={"page-list:list-view:" + page._id} />;
     });
 
     return (
@@ -20,7 +21,7 @@ export default class ListView extends React.Component {
 }
 
 ListView.propTypes = {
-  pages: React.PropTypes.array.isRequired,
+  pages: PropTypes.array.isRequired,
 };
 
 ListView.defaultProps = {

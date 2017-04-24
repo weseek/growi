@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 export default class Icon extends React.Component {
 
@@ -17,6 +18,6 @@ export default class Icon extends React.Component {
 
 // TODO: support spin, size and so far
 Icon.propTypes = {
-  name: React.PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
 };
 

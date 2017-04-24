@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import Revision     from './Revision';
 import RevisionDiff from './RevisionDiff';
@@ -47,8 +48,8 @@ export default class PageRevisionList extends React.Component {
 }
 
 PageRevisionList.propTypes = {
-  revisions: React.PropTypes.array,
-  diffOpened: React.PropTypes.object,
-  onDiffOpenClicked: React.PropTypes.func.isRequired,
+  revisions: PropTypes.array,
+  diffOpened: PropTypes.object,
+  onDiffOpenClicked: PropTypes.func.isRequired,
 }
 
