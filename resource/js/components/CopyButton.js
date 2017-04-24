@@ -19,12 +19,12 @@ export default class CopyButton extends React.Component {
 
   render() {
     const containerStyle = {
-      verticalAlign: "top"
     }
     const style = Object.assign({
       fontSize: "0.8em",
       padding: "0 2px",
-      border: 'none'
+      border: 'none',
+      verticalAlign: 'text-top',
     }, this.props.buttonStyle);
 
     return (
