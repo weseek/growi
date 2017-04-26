@@ -8,6 +8,7 @@ import HeaderSearchBox  from './components/HeaderSearchBox';
 import SearchPage       from './components/SearchPage';
 import PageListSearch   from './components/PageListSearch';
 import PageHistory      from './components/PageHistory';
+import PageAttachment   from './components/PageAttachment';
 import SeenUserList     from './components/SeenUserList';
 //import PageComment  from './components/PageComment';
 
@@ -22,7 +23,10 @@ if (mainContent !== null) {
 }
 
 // FIXME
-const crowi = new Crowi({me: $('#content-main').data('current-username')}, window);
+const crowi = new Crowi({
+  me: $('#content-main').data('current-username'),
+  csrfToken: $('#content-main').data('csrftoken'),
+}, window);
 window.crowi = crowi;
 crowi.fetchUsers();
 
@@ -33,6 +37,7 @@ const componentMappings = {
   'search-top': <HeaderSearchBox crowi={crowi} />,
   'search-page': <SearchPage crowi={crowi} />,
   'page-list-search': <PageListSearch crowi={crowi} />,
+  'page-attachment': <PageAttachment pageId={pageId} crowi={crowi} />,
 
   //'revision-history': <PageHistory pageId={pageId} />,
   //'page-comment': <PageComment />,
