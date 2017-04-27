@@ -1,8 +1,14 @@
 CHANGES
 ========
 
+## 1.0.7
+
+* Feature: Keyboard navigation for search box
+* Improvement: Intelligent Search
+
 ## 1.0.6
 
+* Feature: Copy button that copies page path to clipboard
 * Fix: https access to Gravatar
 * Fix: server watching crash with `Error: read ECONNRESET` on Google Chrome
 
