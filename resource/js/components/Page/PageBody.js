@@ -15,7 +15,7 @@ export default class PageBody extends React.Component {
       body = this.props.page.revision.body;
     }
 
-    return { __html: this.crowiRenderer.render(body) };
+    return { __html: this.crowiRenderer.render(body, this.props.rendererOptions) };
   }
 
   render() {
@@ -33,10 +33,12 @@ export default class PageBody extends React.Component {
 PageBody.propTypes = {
   page: React.PropTypes.object.isRequired,
   pageBody: React.PropTypes.string,
+  rendererOptions: React.PropTypes.object
 };
 
 PageBody.defaultProps = {
   page: {},
   pageBody: '',
+  rendererOptions: {},
 };
 
