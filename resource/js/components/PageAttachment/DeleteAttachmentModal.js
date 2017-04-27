@@ -47,6 +47,16 @@ export default class DeleteAttachmentModal extends React.Component {
     delete props.onAttachmentDeleteClickedConfirm;
     delete props.attachmentToDelete;
     delete props.inUse;
+    delete props.deleting;
+    delete props.deleteError;
+
+    let deletingIndicator = '';
+    if (this.props.deleting) {
+      deletingIndicator = <Icon name="spinner" spin />;
+    }
+    if (this.props.deleteError) {
+      deletingIndicator = <p>{this.props.deleteError}</p>;
+    }
 
     let renderAttachment = this.renderByFileFormat(attachment);
 
@@ -59,7 +69,10 @@ export default class DeleteAttachmentModal extends React.Component {
           {renderAttachment}
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={this._onDeleteConfirm} bsStyle="danger">Delete!</Button>
+          {deletingIndicator}
+          <Button onClick={this._onDeleteConfirm} bsStyle="danger"
+            disabled={this.props.deleting}
+            >Delete!</Button>
         </Modal.Footer>
       </Modal>
     );

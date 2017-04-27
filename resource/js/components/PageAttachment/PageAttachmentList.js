@@ -14,7 +14,7 @@ export default class PageAttachmentList extends React.Component {
         <Attachment
           key={"page:attachment:" + attachment._id}
           attachment={attachment}
-          inUse={this.props.inUse[attachment._id] || true}
+          inUse={this.props.inUse[attachment._id] || false}
           onAttachmentDeleteClicked={this.props.onAttachmentDeleteClicked}
          />
       );

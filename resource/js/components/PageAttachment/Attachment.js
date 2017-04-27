@@ -30,7 +30,7 @@ export default class Attachment extends React.Component {
 
     let fileInUse = '';
     if (this.props.inUse) {
-      fileInUse = <span className="label label-info">Using</span>;
+      fileInUse = <span className="attachment-in-use label label-info">In Use</span>;
     }
 
     return (
@@ -42,7 +42,7 @@ export default class Attachment extends React.Component {
 
           {fileInUse}
 
-          <a className="attachment-delete" onClick={this._onAttachmentDeleteClicked}><Icon name="trash-o" /></a>
+          <a className="text-danger attachment-delete" onClick={this._onAttachmentDeleteClicked}><Icon name="trash-o" /></a>
       </li>
     );
   }

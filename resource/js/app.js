@@ -18,8 +18,13 @@ if (!window) {
 
 const mainContent = document.querySelector('#content-main');
 let pageId = null;
+let pageContent = null;
 if (mainContent !== null) {
   pageId = mainContent.attributes['data-page-id'].value;
+  const rawText = document.getElementById('raw-text-original');
+  if (rawText) {
+    pageContent = rawText.innerHTML;
+  }
 }
 
 // FIXME
@@ -37,7 +42,7 @@ const componentMappings = {
   'search-top': <HeaderSearchBox crowi={crowi} />,
   'search-page': <SearchPage crowi={crowi} />,
   'page-list-search': <PageListSearch crowi={crowi} />,
-  'page-attachment': <PageAttachment pageId={pageId} crowi={crowi} />,
+  'page-attachment': <PageAttachment pageId={pageId} pageContent={pageContent} crowi={crowi} />,
 
   //'revision-history': <PageHistory pageId={pageId} />,
   //'page-comment': <PageComment />,

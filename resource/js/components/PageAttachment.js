@@ -12,6 +12,8 @@ export default class PageAttachment extends React.Component {
       attachments: [],
       inUse: {},
       attachmentToDelete: null,
+      deleting: false,
+      deleteError: '',
     };
 
     this.onAttachmentDeleteClicked = this.onAttachmentDeleteClicked.bind(this);
@@ -30,32 +32,35 @@ export default class PageAttachment extends React.Component {
       const attachments = res.attachments;
       let inUse = {};
 
-      for (let attachment in attachments.length) {
-        inUse[attachment._id] = this.checkIfFileInUse(attachment);;
+      for (const attachment of attachments) {
+        inUse[attachment._id] = this.checkIfFileInUse(attachment);
       }
 
       this.setState({
         attachments: attachments,
         inUse: inUse,
       });
-      console.log(attachments);
     });
   }
 
   checkIfFileInUse(attachment) {
-    // todo
-    return true;
+    if (this.props.pageContent.match(attachment.url)) {
+      return true;
+    }
+    return false;
   }
 
   onAttachmentDeleteClicked(attachment) {
     this.setState({
-      attachmentToDelete: attachment
+      attachmentToDelete: attachment,
     });
   }
 
   onAttachmentDeleteClickedConfirm(attachment) {
     const attachmentId = attachment._id;
-    console.log('Do Delete!!', attachmentId);
+    this.setState({
+      deleting: true,
+    });
 
     this.props.crowi.apiPost('/attachments.remove', {attachment_id: attachmentId})
     .then(res => {
@@ -64,9 +69,13 @@ export default class PageAttachment extends React.Component {
           return at._id != attachmentId;
         }),
         attachmentToDelete: null,
+        deleting: false,
       });
     }).catch(err => {
-      console.log('error', err);
+      this.setState({
+        deleteError: 'Something went wrong.',
+        deleting: false,
+      });
     });
   }
 
@@ -95,6 +104,8 @@ export default class PageAttachment extends React.Component {
 
           attachmentToDelete={attachmentToDelete}
           inUse={deleteInUse}
+          deleting={this.state.deleting}
+          deleteError={this.state.deleteError}
           onAttachmentDeleteClickedConfirm={this.onAttachmentDeleteClickedConfirm}
         />
       </div>
