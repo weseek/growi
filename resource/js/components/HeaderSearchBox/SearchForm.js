@@ -18,6 +18,7 @@ export default class SearchForm extends React.Component {
     this.crowi = window.crowi; // FIXME
 
     this.state = {
+      input: '',
       keyword: '',
       searchedKeyword: '',
       pages: [],
@@ -28,6 +29,8 @@ export default class SearchForm extends React.Component {
     this.clearForm = this.clearForm.bind(this);
     this.getFormClearComponent = this.getFormClearComponent.bind(this);
     this.renderMenuItemChildren = this.renderMenuItemChildren.bind(this);
+    this.onInputChange = this.onInputChange.bind(this);
+    this.onChange = this.onChange.bind(this);
   }
 
   componentDidMount() {
@@ -60,7 +63,7 @@ export default class SearchForm extends React.Component {
   }
 
   getFormClearComponent() {
-    let isHidden = (this.state.keyword.length === 0);
+    let isHidden = (this.state.input.length === 0);
 
     return isHidden ? <span></span> : (
       <a className="btn btn-link search-top-clear" onClick={this.clearForm} hidden={isHidden}>
@@ -72,6 +75,16 @@ export default class SearchForm extends React.Component {
   clearForm() {
     this._typeahead.getInstance().clear();
     this.setState({keyword: ''});
+  }
+
+  onInputChange(text) {
+    this.setState({input: text});
+  }
+
+  onChange(options) {
+    const page = options[0];  // should be single page selected
+    // navigate to page
+    window.location = page.path;
   }
 
   renderMenuItemChildren(option, props, index) {
@@ -105,6 +118,8 @@ export default class SearchForm extends React.Component {
               placeholder="Search ... Page Title (Path) and Content"
               submitFormOnEnter={true}
               onSearch={this.search}
+              onInputChange={this.onInputChange}
+              onChange={this.onChange}
               renderMenuItemChildren={this.renderMenuItemChildren}
             />
             {formClear}
