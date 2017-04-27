@@ -29,13 +29,23 @@ export default class SearchResultList extends React.Component {
   }
 
   render() {
+    var isEnabledLineBreaks = $('#content-main').data('linebreaks-enabled');
+
+    // generate options obj
+    var rendererOptions = {
+      // see: https://www.npmjs.com/package/marked
+      marked: {
+        breaks: isEnabledLineBreaks
+      }
+    };
+
     const resultList = this.props.pages.map((page) => {
       const pageBody = this.getHighlightBody(page.revision.body);
       return (
         <div id={page._id} key={page._id} className="search-result-page">
           <h2><a href={page.path}>{page.path}</a></h2>
           <div className="wiki">
-            <PageBody className="hige" page={page} pageBody={pageBody} />
+            <PageBody className="hige" page={page} pageBody={pageBody} rendererOptions={rendererOptions} />
           </div>
         </div>
       );

@@ -29,6 +29,26 @@
       この画面はWiki管理者のみがアクセスできる画面です。<br>
       「ユーザー管理」から「管理者にする」ボタンを使ってユーザーをWiki管理者に任命することができます。
       </p>
+
+      <h3>システム情報</h3>
+      <table class="table table-bordered">
+        <tr>
+          <th class="col-sm-4">crowi-plus</th>
+          <td>{{ crowiVersion() }}</td>
+        </tr>
+        <tr>
+          <th>node.js</th>
+          <td>{{ nodeVersion() }}</td>
+        </tr>
+        <tr>
+          <th>npm</th>
+          <td>{{ npmVersion() }}</td>
+        </tr>
+        <tr>
+          <th>yarn</th>
+          <td>{{ yarnVersion() }}</td>
+        </tr>
+      </table>
     </div>
   </div>
 
