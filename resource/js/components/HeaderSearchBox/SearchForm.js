@@ -1,7 +1,11 @@
 import React from 'react';
-import { FormGroup, FormControl, DropdownButton, MenuItem, Button, Checkbox, InputGroup } from 'react-bootstrap';
+import { FormGroup, Button, InputGroup } from 'react-bootstrap';
 
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
+
+import UserPicture from '../User/UserPicture';
+import PageListMeta from '../PageList/PageListMeta';
+import PagePath from '../PageList/PagePath';
 
 // Header.SearchForm
 export default class SearchForm extends React.Component {
@@ -17,6 +21,7 @@ export default class SearchForm extends React.Component {
     this.search = this.search.bind(this);
     this.clearForm = this.clearForm.bind(this);
     this.getFormClearComponent = this.getFormClearComponent.bind(this);
+    this.renderMenuItemChildren = this.renderMenuItemChildren.bind(this);
   }
 
   componentDidMount() {
@@ -49,7 +54,21 @@ export default class SearchForm extends React.Component {
     this.setState({keyword: ''});
   }
 
+  renderMenuItemChildren(option, props, index) {
+    const page = option;
+    return (
+      <span>
+        <UserPicture user={page.revision.author} />
+        <PagePath page={page} />
+        <PageListMeta page={page} />
+      </span>
+    );
+  }
+
   render() {
+    const options = this.props.searchedPages;
+
+    const emptyLabel = (this.props.searchError !== null) ? 'Error on searching.' : 'No matches found.';
     const formClear = this.getFormClearComponent();
 
     return (
@@ -62,9 +81,13 @@ export default class SearchForm extends React.Component {
             <AsyncTypeahead
               ref={ref => this._typeahead = ref}
               name="q"
+              labelKey="path"
+              options={options}
               placeholder="Search ... Page Title (Path) and Content"
+              emptyLabel={emptyLabel}
               submitFormOnEnter={true}
               onSearch={this.search}
+              renderMenuItemChildren={this.renderMenuItemChildren}
             />
             {formClear}
             <InputGroup.Button>
@@ -83,4 +106,9 @@ export default class SearchForm extends React.Component {
 
 SearchForm.propTypes = {
   onSearchFormChanged: React.PropTypes.func.isRequired,
+  searchedPages: React.PropTypes.array.isRequired,
+};
+
+SearchForm.defaultProps = {
+  searchError: null
 };

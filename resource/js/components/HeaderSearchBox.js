@@ -61,6 +61,8 @@ export default class SearchBox extends React.Component {
       <div className="search-box">
         <SearchForm
           onSearchFormChanged={this.search}
+          searchedPages={this.state.searchedPages}
+          searchError={this.state.searchError}
           />
         {/* omit since using react-bootstrap-typeahead in SearchForm
         <SearchSuggest
