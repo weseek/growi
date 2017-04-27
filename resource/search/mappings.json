@@ -15,6 +15,14 @@
           "language":   "possessive_english"
         }
       },
+      "tokenizer": {
+        "ngram_tokenizer": {
+          "type": "ngram",
+          "min_gram": 2,
+          "max_gram": 3,
+          "token_chars": ["letter", "digit"]
+        }
+      },
       "analyzer": {
         "autocomplete": {
           "tokenizer":  "keyword",
@@ -24,7 +32,7 @@
           ]
         },
         "english": {
-          "tokenizer":  "standard",
+          "tokenizer":  "ngram_tokenizer",
           "filter": [
             "english_possessive_stemmer",
             "lowercase",
