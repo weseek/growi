@@ -22,11 +22,6 @@ export default class SearchBox extends React.Component {
     }
 
     this.search = this.search.bind(this);
-    this.isShown = this.isShown.bind(this);
-  }
-
-  isShown(focused) {
-    this.setState({focused: !!focused});
   }
 
   search(data) {
@@ -66,8 +61,8 @@ export default class SearchBox extends React.Component {
       <div className="search-box">
         <SearchForm
           onSearchFormChanged={this.search}
-          isShown={this.isShown}
           />
+        {/* omit since using react-bootstrap-typeahead in SearchForm
         <SearchSuggest
           searchingKeyword={this.state.searchingKeyword}
           searchedPages={this.state.searchedPages}
@@ -75,6 +70,7 @@ export default class SearchBox extends React.Component {
           searching={this.state.searching}
           focused={this.state.focused}
           />
+        */}
       </div>
     );
   }

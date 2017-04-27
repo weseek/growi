@@ -1,4 +1,7 @@
 import React from 'react';
+import { FormGroup, FormControl, DropdownButton, MenuItem, Button, Checkbox, InputGroup } from 'react-bootstrap';
+
+import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 
 // Header.SearchForm
 export default class SearchForm extends React.Component {
@@ -11,57 +14,39 @@ export default class SearchForm extends React.Component {
       searchedKeyword: '',
     };
 
-    this.handleChange = this.handleChange.bind(this);
-    this.handleFocus = this.handleFocus.bind(this);
-    this.handleBlur = this.handleBlur.bind(this);
+    this.search = this.search.bind(this);
     this.clearForm = this.clearForm.bind(this);
-    this.ticker = null;
+    this.getFormClearComponent = this.getFormClearComponent.bind(this);
   }
 
   componentDidMount() {
-    this.ticker = setInterval(this.searchFieldTicker.bind(this), this.props.pollInterval);
   }
 
   componentWillUnmount() {
-    clearInterval(this.ticker);
   }
 
-  search() {
-    if (this.state.searchedKeyword != this.state.keyword) {
-      this.props.onSearchFormChanged({keyword: this.state.keyword});
-      this.setState({searchedKeyword: this.state.keyword});
+  search(keyword) {
+    this.setState({keyword});
+
+    if (this.state.searchedKeyword != keyword) {
+      this.props.onSearchFormChanged({keyword});
+      this.setState({searchedKeyword: keyword});
     }
   }
 
   getFormClearComponent() {
-    let isHidden = (this.state.keyword === '');
-    return (
-      <a className="search-top-clear" onClick={this.clearForm} hidden={isHidden}>
+    let isHidden = (this.state.keyword.length === 0);
+
+    return isHidden ? <span></span> : (
+      <a className="btn btn-link search-top-clear" onClick={this.clearForm} hidden={isHidden}>
         <i className="fa fa-times-circle" />
       </a>
     );
   }
 
   clearForm() {
+    this._typeahead.getInstance().clear();
     this.setState({keyword: ''});
-    this.search();
-  }
-
-  searchFieldTicker() {
-    this.search();
-  }
-
-  handleFocus(event) {
-    this.props.isShown(true);
-  }
-
-  handleBlur(event) {
-    //this.props.isShown(false);
-  }
-
-  handleChange(event) {
-    const keyword = event.target.value;
-    this.setState({keyword});
   }
 
   render() {
@@ -72,36 +57,30 @@ export default class SearchForm extends React.Component {
         action="/_search"
         className="search-form form-group input-group search-top-input-group"
       >
-        <div className="input-group">
-          <input
-            autocomplete="off"
-            type="text"
-            className="search-top-input form-control"
-            placeholder="Search ... Page Title (Path) and Content"
-            name="q"
-            value={this.state.keyword}
-            onFocus={this.handleFocus}
-            onBlur={this.handleBlur}
-            onChange={this.handleChange}
-          />
-          {formClear}
-          <span className="input-group-btn">
-            <button type="submit" className="btn btn-default">
-              <i className="search-top-icon fa fa-search"></i>
-            </button>
-          </span>
-        </div>// /.input-group
+        <FormGroup>
+          <InputGroup>
+            <AsyncTypeahead
+              ref={ref => this._typeahead = ref}
+              name="q"
+              placeholder="Search ... Page Title (Path) and Content"
+              submitFormOnEnter={true}
+              onSearch={this.search}
+            />
+            {formClear}
+            <InputGroup.Button>
+              <Button type="submit">
+                <i className="search-top-icon fa fa-search"></i>
+              </Button >
+            </InputGroup.Button>
+          </InputGroup>
+        </FormGroup>
 
       </form>
+
     );
   }
 }
 
 SearchForm.propTypes = {
   onSearchFormChanged: React.PropTypes.func.isRequired,
-  isShown: React.PropTypes.func.isRequired,
-  pollInterval: React.PropTypes.number,
-};
-SearchForm.defaultProps = {
-  pollInterval: 1000,
 };

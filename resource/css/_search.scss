@@ -23,10 +23,12 @@
   vertical-align: bottom;
 }
 
-
 .search-top {
   .search-top-input-group {
-    .search-top-input {
+
+    // using react-bootstrap-typeahead
+    // see: https://github.com/ericgio/react-bootstrap-typeahead
+    .bootstrap-typeahead-input input {
       width: 400px;
     }
 
@@ -36,8 +38,9 @@
       z-index: 10;
       width: 22px;
       height: 22px;
+      top: 7px;
       color: #ccc;
-      padding: 8px;
+      padding: 0;
     }
   }
 }
