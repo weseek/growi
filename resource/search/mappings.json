@@ -31,8 +31,12 @@
             "nGram"
           ]
         },
+        "japanese": {
+          "tokenizer": "kuromoji_tokenizer",
+          "char_filter" : ["icu_normalizer"]
+        },
         "english": {
-          "tokenizer":  "ngram_tokenizer",
+          "tokenizer": "ngram_tokenizer",
           "filter": [
             "english_possessive_stemmer",
             "lowercase",
@@ -65,7 +69,7 @@
         },
         "path_ja": {
           "type": "text",
-          "analyzer": "kuromoji"
+          "analyzer": "japanese"
         },
         "path_en": {
           "type": "text",
@@ -82,7 +86,7 @@
         },
         "body_ja": {
           "type": "text",
-          "analyzer": "kuromoji"
+          "analyzer": "japanese"
         },
         "body_en": {
           "type": "text",
