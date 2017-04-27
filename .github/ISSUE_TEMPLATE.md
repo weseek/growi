@@ -2,8 +2,8 @@ Environment
 ------------
 
 - [OS]
-- [node.js] x.x.x
-- [npm] y.y.y
+- [crowi-plus] x.x.x
+- [node.js] y.y.y
 - [browser] z.z.z
 
 
