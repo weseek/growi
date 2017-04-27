@@ -47,9 +47,11 @@ const componentMappings = {
   //'revision-history': <PageHistory pageId={pageId} />,
   //'page-comment': <PageComment />,
   'seen-user-list': <SeenUserList />,
-  'revision-path': <RevisionPath pagePath={pagePath} />,
-  'revision-url': <RevisionUrl pagePath={pagePath} url={location.href} />,
 };
+if (pagePath) {
+  componentMappings['revision-path'] = <RevisionPath pagePath={pagePath} />;
+  componentMappings['revision-url'] = <RevisionUrl pagePath={pagePath} url={location.href} />;
+}
 
 Object.keys(componentMappings).forEach((key) => {
   const elem = document.getElementById(key);
