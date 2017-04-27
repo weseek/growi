@@ -34,12 +34,12 @@ export default class SearchForm extends React.Component {
   }
 
   getFormClearComponent() {
-    if (this.state.keyword !== '') {
-      return <a className="search-top-clear" onClick={this.clearForm}><i className="fa fa-times-circle" /></a>;
-
-    } else {
-      return '';
-    }
+    let isHidden = (this.state.keyword === '');
+    return (
+      <a className="search-top-clear" onClick={this.clearForm} hidden={isHidden}>
+        <i className="fa fa-times-circle" />
+      </a>
+    );
   }
 
   clearForm() {
@@ -72,23 +72,26 @@ export default class SearchForm extends React.Component {
         action="/_search"
         className="search-form form-group input-group search-top-input-group"
       >
-        <input
-          autocomplete="off"
-          type="text"
-          className="search-top-input form-control"
-          placeholder="Search ... Page Title (Path) and Content"
-          name="q"
-          value={this.state.keyword}
-          onFocus={this.handleFocus}
-          onBlur={this.handleBlur}
-          onChange={this.handleChange}
-        />
-        <span className="input-group-btn">
-          <button type="submit" className="btn btn-default">
-            <i className="search-top-icon fa fa-search"></i>
-          </button>
-        </span>
-        {formClear}
+        <div className="input-group">
+          <input
+            autocomplete="off"
+            type="text"
+            className="search-top-input form-control"
+            placeholder="Search ... Page Title (Path) and Content"
+            name="q"
+            value={this.state.keyword}
+            onFocus={this.handleFocus}
+            onBlur={this.handleBlur}
+            onChange={this.handleChange}
+          />
+          {formClear}
+          <span className="input-group-btn">
+            <button type="submit" className="btn btn-default">
+              <i className="search-top-icon fa fa-search"></i>
+            </button>
+          </span>
+        </div>// /.input-group
+
       </form>
     );
   }
