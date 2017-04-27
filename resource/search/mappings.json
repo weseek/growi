@@ -15,6 +15,14 @@
           "language":   "possessive_english"
         }
       },
+      "tokenizer": {
+        "ngram_tokenizer": {
+          "type": "ngram",
+          "min_gram": 2,
+          "max_gram": 3,
+          "token_chars": ["letter", "digit"]
+        }
+      },
       "analyzer": {
         "autocomplete": {
           "tokenizer":  "keyword",
@@ -23,8 +31,12 @@
             "nGram"
           ]
         },
+        "japanese": {
+          "tokenizer": "kuromoji_tokenizer",
+          "char_filter" : ["icu_normalizer"]
+        },
         "english": {
-          "tokenizer":  "standard",
+          "tokenizer": "ngram_tokenizer",
           "filter": [
             "english_possessive_stemmer",
             "lowercase",
@@ -39,81 +51,66 @@
     "users": {
       "properties" : {
         "name": {
-          "type": "string",
-          "analyzer": "autocomplete",
-          "include_in_all": false
+          "type": "text",
+          "analyzer": "autocomplete"
         }
       }
     },
     "pages": {
       "properties" : {
         "path": {
-          "type": "string",
+          "type": "text",
           "copy_to": ["path_raw", "path_ja", "path_en"],
-          "include_in_all": false,
-          "index": "not_analyzed"
+          "index": "false"
         },
         "path_raw": {
-          "type": "string",
-          "analyzer": "standard",
-          "include_in_all": false
+          "type": "text",
+          "analyzer": "standard"
         },
         "path_ja": {
-          "type": "string",
-          "analyzer": "kuromoji",
-          "include_in_all": false
+          "type": "text",
+          "analyzer": "japanese"
         },
         "path_en": {
-          "type": "string",
-          "analyzer": "english",
-          "include_in_all": false
+          "type": "text",
+          "analyzer": "english"
         },
         "body": {
-          "type": "string",
+          "type": "text",
           "copy_to": ["body_raw", "body_ja", "body_en"],
-          "include_in_all": false,
-          "index": "not_analyzed"
+          "index": "false"
         },
         "body_raw": {
-          "type": "string",
-          "analyzer": "standard",
-          "include_in_all": false
+          "type": "text",
+          "analyzer": "standard"
         },
         "body_ja": {
-          "type": "string",
-          "analyzer": "kuromoji",
-          "include_in_all": false
+          "type": "text",
+          "analyzer": "japanese"
         },
         "body_en": {
-          "type": "string",
-          "analyzer": "english",
-          "include_in_all": false
+          "type": "text",
+          "analyzer": "english"
         },
         "username": {
-          "type": "string",
-          "include_in_all": false
+          "type": "text"
         },
         "comment_count": {
-          "type": "integer",
-          "include_in_all": false
+          "type": "integer"
         },
         "bookmark_count": {
-          "type": "integer",
-          "include_in_all": false
+          "type": "integer"
         },
         "like_count": {
-          "type": "integer",
-          "include_in_all": false
+          "type": "integer"
         },
         "created_at": {
           "type": "date",
-          "format": "dateOptionalTime",
-          "include_in_all": false
+          "format": "dateOptionalTime"
         },
         "updated_at": {
           "type": "date",
-          "format": "dateOptionalTime",
-          "include_in_all": false
+          "format": "dateOptionalTime"
         }
       }
     }

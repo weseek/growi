@@ -1,4 +1,13 @@
 import React from 'react';
+import { FormGroup, Button, InputGroup } from 'react-bootstrap';
+
+import { AsyncTypeahead } from 'react-bootstrap-typeahead';
+
+import axios from 'axios'
+
+import UserPicture from '../User/UserPicture';
+import PageListMeta from '../PageList/PageListMeta';
+import PagePath from '../PageList/PagePath';
 
 // Header.SearchForm
 export default class SearchForm extends React.Component {
@@ -6,65 +15,91 @@ export default class SearchForm extends React.Component {
   constructor(props) {
     super(props);
 
+    this.crowi = window.crowi; // FIXME
+
     this.state = {
+      input: '',
       keyword: '',
       searchedKeyword: '',
+      pages: [],
+      searchError: null,
     };
 
-    this.handleChange = this.handleChange.bind(this);
-    this.handleFocus = this.handleFocus.bind(this);
-    this.handleBlur = this.handleBlur.bind(this);
+    this.search = this.search.bind(this);
     this.clearForm = this.clearForm.bind(this);
-    this.ticker = null;
+    this.getFormClearComponent = this.getFormClearComponent.bind(this);
+    this.renderMenuItemChildren = this.renderMenuItemChildren.bind(this);
+    this.onInputChange = this.onInputChange.bind(this);
+    this.onChange = this.onChange.bind(this);
   }
 
   componentDidMount() {
-    this.ticker = setInterval(this.searchFieldTicker.bind(this), this.props.pollInterval);
   }
 
   componentWillUnmount() {
-    clearInterval(this.ticker);
   }
 
-  search() {
-    if (this.state.searchedKeyword != this.state.keyword) {
-      this.props.onSearchFormChanged({keyword: this.state.keyword});
-      this.setState({searchedKeyword: this.state.keyword});
+  search(keyword) {
+
+    if (keyword === '') {
+      this.setState({
+        keyword: '',
+        searchedKeyword: '',
+      });
+      return;
     }
+
+    this.crowi.apiGet('/search', {q: keyword})
+      .then(res => {
+        this.setState({
+          keyword: '',
+          pages: res.data,
+        });
+      }).catch(err => {
+        this.setState({
+          searchError: err
+        });
+      });
   }
 
   getFormClearComponent() {
-    if (this.state.keyword !== '') {
-      return <a className="search-top-clear" onClick={this.clearForm}><i className="fa fa-times-circle" /></a>;
+    let isHidden = (this.state.input.length === 0);
 
-    } else {
-      return '';
-    }
+    return isHidden ? <span></span> : (
+      <a className="btn btn-link search-top-clear" onClick={this.clearForm} hidden={isHidden}>
+        <i className="fa fa-times-circle" />
+      </a>
+    );
   }
 
   clearForm() {
+    this._typeahead.getInstance().clear();
     this.setState({keyword: ''});
-    this.search();
   }
 
-  searchFieldTicker() {
-    this.search();
+  onInputChange(text) {
+    this.setState({input: text});
   }
 
-  handleFocus(event) {
-    this.props.isShown(true);
+  onChange(options) {
+    const page = options[0];  // should be single page selected
+    // navigate to page
+    window.location = page.path;
   }
 
-  handleBlur(event) {
-    //this.props.isShown(false);
-  }
-
-  handleChange(event) {
-    const keyword = event.target.value;
-    this.setState({keyword});
+  renderMenuItemChildren(option, props, index) {
+    const page = option;
+    return (
+      <span>
+        <UserPicture user={page.revision.author} />
+        <PagePath page={page} />
+        <PageListMeta page={page} />
+      </span>
+    );
   }
 
   render() {
+    const emptyLabel = (this.state.searchError !== null) ? 'Error on searching.' : 'No matches found.';
     const formClear = this.getFormClearComponent();
 
     return (
@@ -72,33 +107,38 @@ export default class SearchForm extends React.Component {
         action="/_search"
         className="search-form form-group input-group search-top-input-group"
       >
-        <input
-          autocomplete="off"
-          type="text"
-          className="search-top-input form-control"
-          placeholder="Search ... Page Title (Path) and Content"
-          name="q"
-          value={this.state.keyword}
-          onFocus={this.handleFocus}
-          onBlur={this.handleBlur}
-          onChange={this.handleChange}
-        />
-        <span className="input-group-btn">
-          <button type="submit" className="btn btn-default">
-            <i className="search-top-icon fa fa-search"></i>
-          </button>
-        </span>
-        {formClear}
+        <FormGroup>
+          <InputGroup>
+            <AsyncTypeahead
+              ref={ref => this._typeahead = ref}
+              name="q"
+              labelKey="path"
+              minLength={2}
+              options={this.state.pages}
+              placeholder="Search ... Page Title (Path) and Content"
+              submitFormOnEnter={true}
+              onSearch={this.search}
+              onInputChange={this.onInputChange}
+              onChange={this.onChange}
+              renderMenuItemChildren={this.renderMenuItemChildren}
+            />
+            {formClear}
+            <InputGroup.Button>
+              <Button type="submit">
+                <i className="search-top-icon fa fa-search"></i>
+              </Button >
+            </InputGroup.Button>
+          </InputGroup>
+        </FormGroup>
+
       </form>
+
     );
   }
 }
 
 SearchForm.propTypes = {
-  onSearchFormChanged: React.PropTypes.func.isRequired,
-  isShown: React.PropTypes.func.isRequired,
-  pollInterval: React.PropTypes.number,
 };
+
 SearchForm.defaultProps = {
-  pollInterval: 1000,
 };
