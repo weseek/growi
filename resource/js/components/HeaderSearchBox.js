@@ -3,67 +3,18 @@
 import React from 'react';
 
 import SearchForm from './HeaderSearchBox/SearchForm';
-import SearchSuggest from './HeaderSearchBox/SearchSuggest';
-import axios from 'axios'
+// import SearchSuggest from './HeaderSearchBox/SearchSuggest'; // omit since using react-bootstrap-typeahead in SearchForm
 
 export default class SearchBox extends React.Component {
 
   constructor(props) {
     super(props);
-
-    this.crowi = window.crowi; // FIXME
-
-    this.state = {
-      searchingKeyword: '',
-      searchedPages: [],
-      searchError: null,
-      searching: false,
-      focused: false,
-    }
-
-    this.search = this.search.bind(this);
-  }
-
-  search(data) {
-    const keyword = data.keyword;
-    if (keyword === '') {
-      this.setState({
-        searchingKeyword: '',
-        searchedPages: [],
-      });
-
-      return true;
-    }
-
-    this.setState({
-      searchingKeyword: keyword,
-      searching: true,
-    });
-
-    this.crowi.apiGet('/search', {q: keyword})
-    .then(res => {
-      this.setState({
-        searchingKeyword: keyword,
-        searchedPages: res.data,
-        searching: false,
-        searchError: null,
-      });
-    }).catch(err => {
-      this.setState({
-        searchError: err,
-        searching: false,
-      });
-    });
   }
 
   render() {
     return (
       <div className="search-box">
-        <SearchForm
-          onSearchFormChanged={this.search}
-          searchedPages={this.state.searchedPages}
-          searchError={this.state.searchError}
-          />
+        <SearchForm />
         {/* omit since using react-bootstrap-typeahead in SearchForm
         <SearchSuggest
           searchingKeyword={this.state.searchingKeyword}

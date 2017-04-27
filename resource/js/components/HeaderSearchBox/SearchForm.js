@@ -3,6 +3,8 @@ import { FormGroup, Button, InputGroup } from 'react-bootstrap';
 
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 
+import axios from 'axios'
+
 import UserPicture from '../User/UserPicture';
 import PageListMeta from '../PageList/PageListMeta';
 import PagePath from '../PageList/PagePath';
@@ -13,9 +15,13 @@ export default class SearchForm extends React.Component {
   constructor(props) {
     super(props);
 
+    this.crowi = window.crowi; // FIXME
+
     this.state = {
       keyword: '',
       searchedKeyword: '',
+      pages: [],
+      searchError: null,
     };
 
     this.search = this.search.bind(this);
@@ -31,12 +37,26 @@ export default class SearchForm extends React.Component {
   }
 
   search(keyword) {
-    this.setState({keyword});
 
-    if (this.state.searchedKeyword != keyword) {
-      this.props.onSearchFormChanged({keyword});
-      this.setState({searchedKeyword: keyword});
+    if (keyword === '') {
+      this.setState({
+        keyword: '',
+        searchedKeyword: '',
+      });
+      return;
     }
+
+    this.crowi.apiGet('/search', {q: keyword})
+      .then(res => {
+        this.setState({
+          keyword: '',
+          pages: res.data,
+        });
+      }).catch(err => {
+        this.setState({
+          searchError: err
+        });
+      });
   }
 
   getFormClearComponent() {
@@ -66,9 +86,7 @@ export default class SearchForm extends React.Component {
   }
 
   render() {
-    const options = this.props.searchedPages;
-
-    const emptyLabel = (this.props.searchError !== null) ? 'Error on searching.' : 'No matches found.';
+    const emptyLabel = (this.state.searchError !== null) ? 'Error on searching.' : 'No matches found.';
     const formClear = this.getFormClearComponent();
 
     return (
@@ -82,9 +100,9 @@ export default class SearchForm extends React.Component {
               ref={ref => this._typeahead = ref}
               name="q"
               labelKey="path"
-              options={options}
+              minLength={2}
+              options={this.state.pages}
               placeholder="Search ... Page Title (Path) and Content"
-              emptyLabel={emptyLabel}
               submitFormOnEnter={true}
               onSearch={this.search}
               renderMenuItemChildren={this.renderMenuItemChildren}
@@ -105,10 +123,7 @@ export default class SearchForm extends React.Component {
 }
 
 SearchForm.propTypes = {
-  onSearchFormChanged: React.PropTypes.func.isRequired,
-  searchedPages: React.PropTypes.array.isRequired,
 };
 
 SearchForm.defaultProps = {
-  searchError: null
 };
