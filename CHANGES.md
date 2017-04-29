@@ -1,6 +1,12 @@
 CHANGES
 ========
 
+## 1.0.8
+
+* Feature: Ensure to delete page completely
+* Feature: Ensure to delete redirect page
+* Fix: https access to Gravatar (this time for sure)
+
 ## 1.0.7
 
 * Feature: Keyboard navigation for search box
