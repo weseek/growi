@@ -9,13 +9,10 @@
           <h4 class="modal-title"><i class="fa fa-trash-o"></i> Delete Page</h4>
         </div>
         <div class="modal-body">
-          <ul>
-            <li>This page will be moved to the <a href="/trash/">trash</a>.</li>
-          </ul>
-            <div class="form-group">
-              <label for="">This page:</label><br>
-              <code>{{ page.path }}</code>
-            </div>
+          <div class="form-group">
+            <label for="">Deleting page:</label><br>
+            <code>{{ page.path }}</code>
+          </div>
         </div>
         <div class="modal-footer">
           <p><small class="pull-left" id="delete-errors"></small></p>
@@ -23,7 +20,10 @@
           <input type="hidden" name="path" value="{{ page.path }}">
           <input type="hidden" name="page_id" value="{{ page._id.toString() }}">
           <input type="hidden" name="revision_id" value="{{ page.revision._id.toString() }}">
-          <input type="submit" class="btn btn-danger" value="Delete!">
+          <label class="checkbox-inline text-danger">
+            <input type="checkbox" name="completely">completely
+          </label>
+          <button type="submit" class="btn btn-danger delete-button">Delete</button>
         </div>
 
       </form>
