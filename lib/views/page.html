@@ -82,20 +82,37 @@
   {% else %}
 
   {% if page.isDeleted() %}
-  <div class="alert alert-danger">
-    <form role="form" class="pull-right" id="revert-delete-page-form" onsubmit="return false;">
-      <input type="hidden" name="_csrf" value="{{ csrf() }}">
-      <input type="hidden" name="path" value="{{ page.path }}">
-      <input type="hidden" name="page_id" value="{{ page._id.toString() }}">
-      <input type="submit" class="btn btn-danger btn-inverse btn-sm" value="Put Back!">
-    </form>
-    <p>
+  <div class="alert alert-danger alert-trash">
+    <div>
+      <ul class="list-inline pull-right">
+        <li>
+          <form role="form" id="revert-delete-page-form" onsubmit="return false;">
+            <input type="hidden" name="_csrf" value="{{ csrf() }}">
+            <input type="hidden" name="path" value="{{ page.path }}">
+            <input type="hidden" name="page_id" value="{{ page._id.toString() }}">
+            <button type="submit" class="btn btn-success btn-sm">
+              <i class="fa fa-undo" aria-hidden="true"></i>
+              Put Back
+            </button>
+          </form>
+        </li>
+        <li>
+          <form role="form" id="delete-page-form" onsubmit="return false;">
+            <input type="hidden" name="_csrf" value="{{ csrf() }}">
+            <input type="hidden" name="path" value="{{ page.path }}">
+            <input type="hidden" name="page_id" value="{{ page._id.toString() }}">
+            <input type="hidden" name="completely" value="true">
+            <button type="submit" class="btn btn-danger btn-sm">
+              <i class="fa fa-times-circle" aria-hidden="true"></i>
+              Delete Completely
+            </button>
+          </form>
+        </li>
+      </ul>{# /.pull-right #}
       <i class="fa fa-trash-o" aria-hidden="true"></i>
       This page is in the trash.<br>
-    </p>
-    <p>
-    Deleted by <img src="{{ page.lastUpdateUser|picture }}" class="picture picture-sm picture-rounded"> {{ page.lastUpdateUser.name }} at {{ page.updatedAt|datetz('Y-m-d H:i:s') }}
-    </p>
+      Deleted by <img src="{{ page.lastUpdateUser|picture }}" class="picture picture-sm picture-rounded"> {{ page.lastUpdateUser.name }} at {{ page.updatedAt|datetz('Y-m-d H:i:s') }}
+    </div>
   </div>
   {% endif %}
 
@@ -134,10 +151,37 @@
 
   <div class="tab-content wiki-content">
   {% if req.query.renamed and not page.isDeleted() %}
-  <div class="alert alert-info">
-    <strong>{{ t('Moved') }}: </strong> {{ t('page_page.notice.moved', req.query.renamed) }}
+  <div class="alert alert-info alert-moved">
+    <span>
+      <strong>{{ t('Moved') }}: </strong> {{ t('page_page.notice.moved', req.query.renamed) }}
+    </span>
   </div>
   {% endif %}
+  {% if req.query.redirectFrom and not page.isDeleted() %}
+  <div class="alert alert-info alert-moved">
+    <div>
+      <form role="form" id="unlink-page-form" onsubmit="return false;">
+        <input type="hidden" name="_csrf" value="{{ csrf() }}">
+        <input type="hidden" name="path" value="{{ page.path }}">
+        <input type="hidden" name="page_id" value="{{ page._id.toString() }}">
+        <button type="submit" class="btn btn-default btn-sm pull-right">
+          <i class="fa fa-unlink" aria-hidden="true"></i>
+          Unlink
+        </button>
+      </form>
+      <span>
+        <strong>{{ t('Moved') }}: </strong> {{ t('page_page.notice.moved', req.query.redirectFrom) }}
+      </span>
+    </div>
+  </div>
+  {% endif %}
+  {% if req.query.unlinked %}
+  <div class="alert alert-info">
+    <strong>{{ t('Unlinked') }}: </strong> {{ t('page_page.notice.unlinked') }}
+  </div>
+  {% endif %}
+
+
   {% if not page.isLatestRevision() %}
   <div class="alert alert-warning">
     <strong>{{ t('Warning') }}: </strong> {{ t('page_page.notice.version') }} <i class="fa fa-magic"></i> <a href="{{ page.path }}">{{ t('Show latest') }}</a>
