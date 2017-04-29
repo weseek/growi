@@ -306,7 +306,7 @@ $(function() {
         $('#delete-errors').addClass('alert-danger');
       } else {
         var page = res.page;
-        top.location.href = page.path;
+        top.location.href = page.path + '?unlinked=true';
       }
     });
 
