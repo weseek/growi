@@ -100,6 +100,22 @@
       .tab-content {
         margin-top: 30px;
       }
+
+      // alert component settings for trash page and moved page
+      // see: https://jsfiddle.net/me420sky/2/
+      .alert-trash, .alert-moved {
+        padding: 10px 15px;
+
+        span {
+          line-height: 25px;
+        }
+
+        >div:after {
+          clear: both;
+          content: '';
+          display: table;
+        }
+      }
     }
   } // }}}
 
