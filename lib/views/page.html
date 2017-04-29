@@ -150,6 +150,13 @@
   <div class="tab-content wiki-content">
   {% if req.query.renamed and not page.isDeleted() %}
   <div class="alert alert-info alert-moved">
+    <span>
+      <strong>{{ t('Moved') }}: </strong> {{ t('page_page.notice.moved', req.query.renamed) }}
+    </span>
+  </div>
+  {% endif %}
+  {% if req.query.redirectFrom and not page.isDeleted() %}
+  <div class="alert alert-info alert-moved">
     <div>
       <form role="form" id="unlink-page-form" onsubmit="return false;">
         <input type="hidden" name="_csrf" value="{{ csrf() }}">
@@ -161,11 +168,18 @@
         </button>
       </form>
       <span>
-        <strong>{{ t('Moved') }}: </strong> {{ t('page_page.notice.moved', req.query.renamed) }}
+        <strong>{{ t('Moved') }}: </strong> {{ t('page_page.notice.moved', req.query.redirectFrom) }}
       </span>
     </div>
   </div>
   {% endif %}
+  {% if req.query.unlinked %}
+  <div class="alert alert-info">
+    <strong>{{ t('Unlinked') }}: </strong> {{ t('page_page.notice.unlinked') }}
+  </div>
+  {% endif %}
+
+
   {% if not page.isLatestRevision() %}
   <div class="alert alert-warning">
     <strong>{{ t('Warning') }}: </strong> {{ t('page_page.notice.version') }} <i class="fa fa-magic"></i> <a href="{{ page.path }}">{{ t('Show latest') }}</a>
