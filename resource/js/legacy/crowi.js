@@ -231,6 +231,12 @@ $(function() {
     $('#newPageName').focus();
   });
   $('#renamePageForm, #unportalize-form').submit(function(e) {
+    // create name-value map
+    let nameValueMap = {};
+    $(this).serializeArray().forEach((obj) => {
+      nameValueMap[obj.name] = obj.value;
+    })
+
     $.ajax({
       type: 'POST',
       url: '/_api/pages.rename',
@@ -238,8 +244,12 @@ $(function() {
       dataType: 'json'
     }).done(function(res) {
       if (!res.ok) {
+        // if already exists
         $('#newPageNameCheck').html('<i class="fa fa-times-circle"></i> ' + res.error);
         $('#newPageNameCheck').addClass('alert-danger');
+        $('#linkToNewPage').html(`
+          <i class="fa fa-fw fa-arrow-right"></i><a href="${nameValueMap.new_path}">${nameValueMap.new_path}</a>
+        `);
       } else {
         var page = res.page;
 
