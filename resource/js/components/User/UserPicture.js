@@ -10,11 +10,8 @@ export default class UserPicture extends React.Component {
       return this.generateGravatarSrc(user);
     }
     // uploaded image
-    else if (user.image && user.image != '/images/userpicture.png') {
-      return user.image;
-    }
     else {
-      return '/images/userpicture.png';
+      return user.image || '/images/userpicture.png';
     }
   }
 
