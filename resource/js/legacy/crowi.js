@@ -103,11 +103,7 @@ Crowi.userPicture = function (user) {
     return '/images/userpicture.png';
   }
 
-  if (user.image && user.image != '/images/userpicture.png') {
-    return user.image;
-  } else {
-    return '/images/userpicture.png';
-  }
+  return user.image || '/images/userpicture.png';
 };
 
 Crowi.modifyScrollTop = function() {
