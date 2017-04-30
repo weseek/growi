@@ -425,7 +425,8 @@ $(function() {
         _csrf: csrfToken
       },
       progressText: '(Uploading file...)',
-      urlText: "\n![file]({filename})\n"
+      urlText: "![file]({filename})\n",
+      allowedTypes: '*'
     };
 
     attachmentOption.onFileUploadResponse = function(res) {
