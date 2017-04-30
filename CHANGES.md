@@ -1,6 +1,11 @@
 CHANGES
 ========
 
+## 1.0.9
+
+* Feature: Delete user
+* Feature: Upload other than images
+
 ## 1.0.8
 
 * Feature: Ensure to delete page completely
