@@ -429,9 +429,16 @@ $(function() {
       allowedTypes: '*'
     };
 
+    attachmentOption.onFileReceived = function(file) {
+      // if not image
+      if (!file.type.match(/^image\/.+$/)) {
+        // modify urlText with 'a' tag
+        this.settings.urlText = `<a href="{filename}">${file.name}</a>\n`;
+      }
+    }
+
     attachmentOption.onFileUploadResponse = function(res) {
       var result = JSON.parse(res.response);
-      console.log(result);
 
       if (result.ok && result.pageCreated) {
         var page = result.page,
