@@ -1,6 +1,17 @@
 CHANGES
 ========
 
+## 1.6.1
+
+- Feature: Attachment remove.
+- Feature: Attachment redirector (and proxy).
+- Fix: Not render Emoji in code block.
+- API Changes:
+    - Changed `attachments.add`
+    - Add `attachments.remove`
+- Library Update: Now using webpack2, React.js 15.5
+- And some bug fixes, internal fixes. (Thank you @yuki-takei)
+
 ## 1.6.0
 
 - I18N
