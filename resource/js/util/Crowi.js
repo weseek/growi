@@ -7,6 +7,7 @@ import axios from 'axios'
 export default class Crowi {
   constructor(context, window) {
     this.context = context;
+    this.csrfToken = context.csrfToken;
 
     this.location = window.location || {};
     this.document = window.document || {};
@@ -118,22 +119,27 @@ export default class Crowi {
   }
 
   apiGet(path, params) {
-    return this.apiRequest('get', path, params);
+    return this.apiRequest('get', path, {params: params});
   }
 
   apiPost(path, params) {
+    if (!params._csrf) {
+      params._csrf = this.csrfToken;
+    }
+
     return this.apiRequest('post', path, params);
   }
 
   apiRequest(method, path, params) {
+
     return new Promise((resolve, reject) => {
-      axios[method](`/_api${path}`, {params})
+      axios[method](`/_api${path}`, params)
       .then(res => {
         if (res.data.ok) {
           resolve(res.data);
         } else {
           // FIXME?
-          reject(new Error(res.data));
+          reject(new Error(res.error));
         }
       }).catch(res => {
           // FIXME?
