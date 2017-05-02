@@ -119,6 +119,18 @@ export default class Crowi {
     return null;
   }
 
+  findUserByIds(userIds) {
+    let users = [];
+    for (let userId of userIds) {
+      let user = this.findUserById(userId);
+      if (user) {
+        users.push(user);
+      }
+    }
+
+    return users;
+  }
+
   findUser(username) {
     if (this.userByName && this.userByName[username]) {
       return this.userByName[username];
