@@ -3,9 +3,10 @@ CHANGES
 
 ## 1.6.1
 
-- Feature: Attachment remove.
+- Feature: Attachment remove #205
 - Feature: Attachment redirector (and proxy).
-- Fix: Not render Emoji in code block.
+- Fix: Not render Emoji in code block #202
+- Fix: Order of parsing access token order
 - API Changes:
     - Changed `attachments.add`
     - Add `attachments.remove`
