@@ -601,13 +601,10 @@ $(function() {
     var $likerList = $("#liker-list");
     var likers = $likerList.data('likers');
     if (likers && likers.length > 0) {
-      // FIXME: user data cache
-      $.get('/_api/users.list', {user_ids: likers}, function(res) {
-        // ignore unless response has error
-        if (res.ok) {
-          AddToLikers(res.users);
-        }
-      });
+      var users = crowi.findUserByIds(likers.split(','));
+      if (users) {
+        AddToLikers(users);
+      }
     }
 
     function AddToLikers (users) {
