@@ -43,7 +43,7 @@ export default class Crowi {
   }
 
   recoverData() {
-  const keys = [
+    const keys = [
       'userByName',
       'userById',
       'users',
