@@ -320,6 +320,24 @@ $(function() {
 
     return false;
   });
+  $('#unlink-page-form').submit(function(e) {
+    $.ajax({
+      type: 'POST',
+      url: '/_api/pages.unlink',
+      data: $('#unlink-page-form').serialize(),
+      dataType: 'json'
+    }).done(function(res) {
+      if (!res.ok) {
+        $('#delete-errors').html('<i class="fa fa-times-circle"></i> ' + res.error);
+        $('#delete-errors').addClass('alert-danger');
+      } else {
+        var page = res.page;
+        top.location.href = page.path + '?unlinked=true';
+      }
+    });
+
+    return false;
+  });
 
   $('#create-portal-button').on('click', function(e) {
     $('.portal').removeClass('hide');
