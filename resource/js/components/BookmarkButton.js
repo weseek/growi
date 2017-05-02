@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import Icon from './Common/Icon'
 
@@ -62,7 +63,6 @@ export default class BookmarkButton extends React.Component {
 }
 
 BookmarkButton.propTypes = {
-  pageId: React.PropTypes.string,
-  crowi: React.PropTypes.object.isRequired,
-  csrfToken: React.PropTypes.string.isRequired,
+  pageId: PropTypes.string,
+  crowi: PropTypes.object.isRequired,
 };
