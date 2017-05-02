@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import { createPatch } from 'diff';
 import { Diff2Html } from 'diff2html';
@@ -36,7 +37,7 @@ export default class RevisionDiff extends React.Component {
 }
 
 RevisionDiff.propTypes = {
-  currentRevision: React.PropTypes.object.isRequired,
-  previousRevision: React.PropTypes.object.isRequired,
-  revisionDiffOpened: React.PropTypes.bool.isRequired,
+  currentRevision: PropTypes.object.isRequired,
+  previousRevision: PropTypes.object.isRequired,
+  revisionDiffOpened: PropTypes.bool.isRequired,
 }

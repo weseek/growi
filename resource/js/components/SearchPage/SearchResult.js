@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import Page from '../PageList/Page';
 import SearchResultList from './SearchResultList';
@@ -99,10 +100,10 @@ export default class SearchResult extends React.Component {
 }
 
 SearchResult.propTypes = {
-  tree: React.PropTypes.string.isRequired,
-  pages: React.PropTypes.array.isRequired,
-  searchingKeyword: React.PropTypes.string.isRequired,
-  searchResultMeta: React.PropTypes.object.isRequired,
+  tree: PropTypes.string.isRequired,
+  pages: PropTypes.array.isRequired,
+  searchingKeyword: PropTypes.string.isRequired,
+  searchResultMeta: PropTypes.object.isRequired,
 };
 SearchResult.defaultProps = {
   tree: '',

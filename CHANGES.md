@@ -1,6 +1,15 @@
 CHANGES
 ========
 
+## 1.6.0
+
+- I18N
+- Improved diff view
+- - Minus search
+- - Supports Elasticsearch 5.x
+- Special thank you for the great pull requests: @b4b4r07 @kaz @hasete2 @okonomi
+- And also special thanks for the translation: @Hidsm
+
 ## 1.5.3
 
 * Added node-shrinkwrap.json

@@ -61,6 +61,7 @@
   data-page-revision-id="{% if revision %}{{ revision._id.toString() }}{% endif %}"
   data-page-revision-created="{% if revision %}{{ revision.createdAt|datetz('U') }}{% endif %}"
   data-page-is-seen="{% if page and page.isSeenUser(user) %}1{% else %}0{% endif %}"
+  data-csrftoken="{{ csrf() }}"
   >
 
   {% if not page %}
@@ -189,13 +190,10 @@
 
 
 {% if page %}
-<div class="page-attachments meta">
-  <p>Attachments</p>
-  <ul>
-  </ul>
+<div class="page-attachments meta" id="page-attachment">
 </div>
 
-<p class="meta">
+<p class="page-meta meta">
   Path: <span id="pagePath">{{ page.path }}</span><br>
   {# for BC #}
   {% if page.lastUpdateUser %}

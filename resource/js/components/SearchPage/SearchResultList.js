@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import PageBody from '../Page/PageBody.js';
 
@@ -50,8 +51,8 @@ export default class SearchResultList extends React.Component {
 }
 
 SearchResultList.propTypes = {
-  pages: React.PropTypes.array.isRequired,
-  searchingKeyword: React.PropTypes.string.isRequired,
+  pages: PropTypes.array.isRequired,
+  searchingKeyword: PropTypes.string.isRequired,
 };
 
 SearchResultList.defaultProps = {

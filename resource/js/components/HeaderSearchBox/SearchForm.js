@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 // Header.SearchForm
 export default class SearchForm extends React.Component {
@@ -73,7 +74,7 @@ export default class SearchForm extends React.Component {
         className="search-form form-group input-group search-top-input-group"
       >
         <input
-          autocomplete="off"
+          autoComplete="off"
           type="text"
           className="search-top-input form-control"
           placeholder="Search ... Page Title (Path) and Content"
@@ -95,9 +96,9 @@ export default class SearchForm extends React.Component {
 }
 
 SearchForm.propTypes = {
-  onSearchFormChanged: React.PropTypes.func.isRequired,
-  isShown: React.PropTypes.func.isRequired,
-  pollInterval: React.PropTypes.number,
+  onSearchFormChanged: PropTypes.func.isRequired,
+  isShown: PropTypes.func.isRequired,
+  pollInterval: PropTypes.number,
 };
 SearchForm.defaultProps = {
   pollInterval: 1000,

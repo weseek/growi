@@ -12,7 +12,7 @@ module.exports = function(crowi) {
     , lib = {}
     , basePath = path.join(crowi.publicDir, 'uploads'); // TODO: to configurable
 
-  lib.deleteFile = function(filePath) {
+  lib.deleteFile = function(fileId, filePath) {
     debug('File deletion: ' + filePath);
     return new Promise(function(resolve, reject) {
       fs.unlink(path.join(basePath, filePath), function(err) {
@@ -52,6 +52,10 @@ module.exports = function(crowi) {
 
   lib.generateUrl = function(filePath) {
     return path.join('/uploads', filePath);
+  };
+
+  lib.findDeliveryFile = function (fileId, filePath) {
+    return Promise.resolve(lib.generateUrl(filePath));
   };
 
   return lib;

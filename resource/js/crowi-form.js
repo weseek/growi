@@ -82,7 +82,8 @@ $(function() {
   var isFormChanged = false;
   $(window).on('beforeunload', function(e) {
     if (isFormChanged) {
-      return '編集中の内容があります。内容を破棄してページを移動しますか?';
+      // TODO i18n
+      return 'You haven\'t finished your comment yet. Do you want to leave without finishing?';
     }
   });
   $('#form-body').on('keyup change', function(e) {

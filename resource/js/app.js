@@ -8,6 +8,7 @@ import HeaderSearchBox  from './components/HeaderSearchBox';
 import SearchPage       from './components/SearchPage';
 import PageListSearch   from './components/PageListSearch';
 import PageHistory      from './components/PageHistory';
+import PageAttachment   from './components/PageAttachment';
 import SeenUserList     from './components/SeenUserList';
 import BookmarkButton   from './components/BookmarkButton';
 //import PageComment  from './components/PageComment';
@@ -18,12 +19,20 @@ if (!window) {
 
 const mainContent = document.querySelector('#content-main');
 let pageId = null;
+let pageContent = null;
 if (mainContent !== null) {
   pageId = mainContent.attributes['data-page-id'].value;
+  const rawText = document.getElementById('raw-text-original');
+  if (rawText) {
+    pageContent = rawText.innerHTML;
+  }
 }
 
 // FIXME
-const crowi = new Crowi({me: $('#content-main').data('current-username')}, window);
+const crowi = new Crowi({
+  me: $('#content-main').data('current-username'),
+  csrfToken: $('#content-main').data('csrftoken'),
+}, window);
 window.crowi = crowi;
 crowi.fetchUsers();
 
@@ -31,9 +40,11 @@ const crowiRenderer = new CrowiRenderer();
 window.crowiRenderer = crowiRenderer;
 
 const componentMappings = {
-  'search-top': <HeaderSearchBox />,
-  'search-page': <SearchPage />,
-  'page-list-search': <PageListSearch />,
+  'search-top': <HeaderSearchBox crowi={crowi} />,
+  'search-page': <SearchPage crowi={crowi} />,
+  'page-list-search': <PageListSearch crowi={crowi} />,
+  'page-attachment': <PageAttachment pageId={pageId} pageContent={pageContent} crowi={crowi} />,
+
   //'revision-history': <PageHistory pageId={pageId} />,
   //'page-comment': <PageComment />,
   'seen-user-list': <SeenUserList />,

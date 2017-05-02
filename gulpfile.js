@@ -10,7 +10,8 @@ var concat = require('gulp-concat');
 var rename = require('gulp-rename');
 var jshint = require('gulp-jshint');
 var source = require('vinyl-source-stream');
-var webpack = require('webpack-stream');
+var webpack = require('webpack');
+var webpackStream = require('webpack-stream');
 
 var del     = require('del');
 var stylish = require('jshint-stylish');
@@ -90,7 +91,9 @@ gulp.task('js:concat', ['js:del'], function() {
 // move task for css and js to webpack over time.
 gulp.task('webpack', ['js:concat'], function() {
   return gulp.src(js.src)
-    .pipe(webpack(require('./webpack.config.js')))
+    .pipe(webpackStream(
+      require('./webpack.config.js'),
+      webpack))   // pass webpack2 to webpack-stream
     .pipe(gulp.dest(dirs.jsDist));
 });
 
