@@ -6,8 +6,6 @@ export default class SeenUserList extends React.Component {
   constructor(props) {
     super(props);
 
-    this.crowi = window.crowi; // FIXME
-
     this.state = {
       seenUsers: [],
     };
@@ -18,12 +16,7 @@ export default class SeenUserList extends React.Component {
 
     if (seenUserIds.length > 0) {
       // FIXME: user data cache
-      this.crowi.apiGet('/users.list', {user_ids: seenUserIds.join(',')})
-      .then(res => {
-        this.setState({seenUsers: res.users});
-      }).catch(err => {
-        // do nothing
-      });
+      this.setState({seenUsers: this.props.crowi.findUserByIds(seenUserIds)});
     }
   }
 
