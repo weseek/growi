@@ -48,7 +48,7 @@ const componentMappings = {
 
   //'revision-history': <PageHistory pageId={pageId} />,
   //'page-comment': <PageComment />,
-  'seen-user-list': <SeenUserList />,
+  'seen-user-list': <SeenUserList pageId={pageId} crowi={crowi} />,
   'bookmark-button': <BookmarkButton pageId={pageId} crowi={crowi} />,
 };
 
