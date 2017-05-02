@@ -1,17 +1,15 @@
 // This is the root component for #search-top
 
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import SearchForm from './HeaderSearchBox/SearchForm';
 import SearchSuggest from './HeaderSearchBox/SearchSuggest';
-import axios from 'axios'
 
 export default class SearchBox extends React.Component {
 
   constructor(props) {
     super(props);
-
-    this.crowi = window.crowi; // FIXME
 
     this.state = {
       searchingKeyword: '',
@@ -45,7 +43,7 @@ export default class SearchBox extends React.Component {
       searching: true,
     });
 
-    this.crowi.apiGet('/search', {q: keyword})
+    this.props.crowi.apiGet('/search', {q: keyword})
     .then(res => {
       this.setState({
         searchingKeyword: keyword,
@@ -81,7 +79,7 @@ export default class SearchBox extends React.Component {
 }
 
 SearchBox.propTypes = {
-  //pollInterval: React.PropTypes.number,
+  //pollInterval: PropTypes.number,
 };
 SearchBox.defaultProps = {
   //pollInterval: 1000,

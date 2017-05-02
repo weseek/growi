@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import ListView from '../PageList/ListView';
 
@@ -46,9 +47,9 @@ export default class SearchSuggest extends React.Component {
 }
 
 SearchSuggest.propTypes = {
-  searchedPages: React.PropTypes.array.isRequired,
-  searchingKeyword: React.PropTypes.string.isRequired,
-  searching: React.PropTypes.bool.isRequired,
+  searchedPages: PropTypes.array.isRequired,
+  searchingKeyword: PropTypes.string.isRequired,
+  searching: PropTypes.bool.isRequired,
 };
 
 SearchSuggest.defaultProps = {

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import moment from 'moment';
 
@@ -21,9 +22,9 @@ export default class UserDate extends React.Component {
 }
 
 UserDate.propTypes = {
-  dateTime: React.PropTypes.string.isRequired,
-  format: React.PropTypes.string,
-  className: React.PropTypes.string,
+  dateTime: PropTypes.string.isRequired,
+  format: PropTypes.string,
+  className: PropTypes.string,
 };
 
 UserDate.defaultProps = {

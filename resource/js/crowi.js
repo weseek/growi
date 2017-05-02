@@ -558,25 +558,6 @@ $(function() {
       return false;
     });
 
-    // attachment
-    var $pageAttachmentList = $('.page-attachments ul');
-    $.get('/_api/attachments.list', {page_id: pageId}, function(res) {
-      if (!res.ok) {
-        return ;
-      }
-
-      var attachments = res.attachments;
-      if (attachments.length > 0) {
-        $.each(attachments, function(i, file) {
-          $pageAttachmentList.append(
-          '<li><a href="' + file.fileUrl + '">' + (file.originalName || file.fileName) + '</a> <span class="label label-default">' + file.fileFormat + '</span></li>'
-          );
-        })
-      } else {
-        $('.page-attachments').remove();
-      }
-    });
-
     // bookmark
     var $bookmarkButton = $('#bookmark-button');
     $.get('/_api/bookmarks.get', {page_id: pageId}, function(res) {
