@@ -7,6 +7,7 @@ CHANGES
 - Feature: Attachment redirector (and proxy).
 - Fix: Not render Emoji in code block #202
 - Fix: Order of parsing access token order
+- Changes: Page name with spaces around `/` is now not creatable
 - API Changes:
     - Changed `attachments.add`
     - Add `attachments.remove`
