@@ -145,6 +145,7 @@ describe('Page', function () {
       expect(Page.isCreatableName('http://demo.crowi.wiki/user/sotarok/hoge')).to.be.false;
       expect(Page.isCreatableName('https://demo.crowi.wiki/user/sotarok/hoge')).to.be.false;
 
+      expect(Page.isCreatableName('/ the / path / with / space')).to.be.false;
 
       var forbidden = ['installer', 'register', 'login', 'logout', 'admin', 'files', 'trash', 'paste', 'comments'];
       for (var i = 0; i < forbidden.length ; i++) {
@@ -261,6 +262,20 @@ describe('Page', function () {
         });
       });
 
+    });
+  });
+
+  describe('Normalize path', function () {
+    context('Normalize', function() {
+      it('should start with slash', function(done) {
+        expect(Page.normalizePath('hoge/fuga')).to.equal('/hoge/fuga');
+        done();
+      });
+
+      it('should trim spaces of slash', function(done) {
+        expect(Page.normalizePath('/ hoge / fuga')).to.equal('/hoge/fuga');
+        done();
+      });
     });
   });
 

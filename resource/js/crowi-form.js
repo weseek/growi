@@ -425,12 +425,31 @@ $(function() {
         _csrf: csrfToken
       },
       progressText: '(Uploading file...)',
-      urlText: "\n![file]({filename})\n"
+      jsonFieldName: 'url',
     };
+
+    // if files upload is set
+    var config = crowi.getConfig();
+    if (config.upload.file) {
+      attachmentOption.allowedTypes = '*';
+    }
+
+    attachmentOption.remoteFilename = function(file) {
+      return file.name;
+    };
+
+    attachmentOption.onFileReceived = function(file) {
+      // if not image
+      if (!file.type.match(/^image\/.+$/)) {
+        // modify urlText with 'a' tag
+        this.settings.urlText = `[${file.name}]({filename})\n`;
+      } else {
+        this.settings.urlText = `![${file.name}]({filename})\n`;
+      }
+    }
 
     attachmentOption.onFileUploadResponse = function(res) {
       var result = JSON.parse(res.response);
-      console.log(result);
 
       if (result.ok && result.pageCreated) {
         var page = result.page,

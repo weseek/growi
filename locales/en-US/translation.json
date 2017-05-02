@@ -4,6 +4,7 @@
   "Delete": "Delete",
   "Move": "Move",
   "Moved": "Moved",
+  "Unlinked": "Unlinked",
   "Like!": "Like!",
   "Seen by": "Seen by",
   "Cancel": "Cancel",
@@ -134,7 +135,14 @@
       "notice": {
           "version": "This is not the current version.",
           "moved": "This page was moved from <code>%s</code>",
+          "unlinked": "Redirect pages to this page have been deleted.",
           "restricted": "Access to this page is restricted"
+      }
+  },
+
+  "page_edit": {
+      "notice": {
+          "conflict": "Couldn't save the changes you made because someone else was editing this page. Please re-edit the affected section after reloading the page."
       }
   },
 

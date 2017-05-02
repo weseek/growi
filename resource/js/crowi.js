@@ -320,6 +320,24 @@ $(function() {
 
     return false;
   });
+  $('#unlink-page-form').submit(function(e) {
+    $.ajax({
+      type: 'POST',
+      url: '/_api/pages.unlink',
+      data: $('#unlink-page-form').serialize(),
+      dataType: 'json'
+    }).done(function(res) {
+      if (!res.ok) {
+        $('#delete-errors').html('<i class="fa fa-times-circle"></i> ' + res.error);
+        $('#delete-errors').addClass('alert-danger');
+      } else {
+        var page = res.page;
+        top.location.href = page.path + '?unlinked=true';
+      }
+    });
+
+    return false;
+  });
 
   $('#create-portal-button').on('click', function(e) {
     $('.portal').removeClass('hide');
@@ -557,52 +575,6 @@ $(function() {
 
       return false;
     });
-
-    // bookmark
-    var $bookmarkButton = $('#bookmark-button');
-    $.get('/_api/bookmarks.get', {page_id: pageId}, function(res) {
-      if (res.ok) {
-        if (res.bookmark) {
-          MarkBookmarked();
-        }
-      }
-    });
-
-    $bookmarkButton.click(function() {
-      var bookmarked = $bookmarkButton.data('bookmarked');
-      var token = $bookmarkButton.data('csrftoken');
-      if (!bookmarked) {
-        $.post('/_api/bookmarks.add', {_csrf: token, page_id: pageId}, function(res) {
-          if (res.ok && res.bookmark) {
-            MarkBookmarked();
-          }
-        });
-      } else {
-        $.post('/_api/bookmarks.remove', {_csrf: token, page_id: pageId}, function(res) {
-          if (res.ok) {
-            MarkUnBookmarked();
-          }
-        });
-      }
-
-      return false;
-    });
-
-    function MarkBookmarked()
-    {
-      $('i', $bookmarkButton)
-        .removeClass('fa-star-o')
-        .addClass('fa-star');
-      $bookmarkButton.data('bookmarked', 1);
-    }
-
-    function MarkUnBookmarked()
-    {
-      $('i', $bookmarkButton)
-        .removeClass('fa-star')
-        .addClass('fa-star-o');
-      $bookmarkButton.data('bookmarked', 0);
-    }
 
     // Like
     var $likeButton = $('.like-button');
