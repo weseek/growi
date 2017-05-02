@@ -33,6 +33,7 @@ const crowi = new Crowi({
   csrfToken: $('#content-main').data('csrftoken'),
 }, window);
 window.crowi = crowi;
+crowi.setConfig(JSON.parse(document.getElementById('crowi-context-hydrate').textContent || '{}'));
 crowi.fetchUsers();
 
 const crowiRenderer = new CrowiRenderer();

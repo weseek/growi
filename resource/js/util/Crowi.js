@@ -7,6 +7,7 @@ import axios from 'axios'
 export default class Crowi {
   constructor(context, window) {
     this.context = context;
+    this.config = {};
     this.csrfToken = context.csrfToken;
 
     this.location = window.location || {};
@@ -31,6 +32,14 @@ export default class Crowi {
 
   getContext() {
     return context;
+  }
+
+  setConfig(config) {
+    this.config = config;
+  }
+
+  getConfig() {
+    return this.config;
   }
 
   recoverData() {

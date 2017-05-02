@@ -2,6 +2,13 @@
 .page-attachments {
   .attachment-in-use {
     margin: 0 0 0 4px;
+    padding: 1px 5px;
+  }
+
+  .attachment-filetype {
+    margin: 0 0 0 4px;
+    padding: 1px 5px;
+    font-weight: normal;
   }
 
   .attachment-delete {

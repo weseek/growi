@@ -33,12 +33,16 @@ export default class Attachment extends React.Component {
       fileInUse = <span className="attachment-in-use label label-info">In Use</span>;
     }
 
+    const fileType = <span className="attachment-filetype label label-default">{attachment.fileFormat}</span>;
+
     return (
       <li>
           <User user={attachment.creator} />
           <Icon name={formatIcon} />
 
           <a href={attachment.url}> {attachment.originalName}</a>
+
+          {fileType}
 
           {fileInUse}
 
