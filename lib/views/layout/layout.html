@@ -142,6 +142,10 @@
 </body>
 {% endblock %}
 
+<script type="application/json" id="crowi-context-hydrate">
+{{ local_config|json|safe }}
+</script>
+
 <script src="{{ assets('/js/crowi.js') }}"></script>
 <script src="{{ assets('/js/app.js') }}"></script>
 </html>
