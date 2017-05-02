@@ -31,7 +31,7 @@
       </h1>
       {% if page %}
       <div class="flex-item-action">
-        <a href="#" title="Bookmark" class="bookmark-link" id="bookmark-button" data-csrftoken="{{ csrf() }}" data-bookmarked="0"><i class="fa fa-star-o"></i></a>
+        <span id="bookmark-button" data-csrftoken="{{ csrf() }}"></span>
       </div>
       <div class="flex-item-action visible-xs visible-sm">
         <button

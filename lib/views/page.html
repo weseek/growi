@@ -17,7 +17,11 @@
       <h1 class="title flex-item-title" id="revision-path">{{ path|insertSpaceToEachSlashes }}</h1>
       {% if page %}
       <div class="flex-item-action">
-        <a href="#" title="Bookmark" class="bookmark-link" id="bookmark-button" data-csrftoken="{{ csrf() }}" data-bookmarked="0"><i class="fa fa-star-o"></i></a>
+        <span id="bookmark-button">
+          <p class="bookmark-link">
+            <i class="fa fa-star-o"></i>
+          </p>
+        </span>
       </div>
       <div class="flex-item-action visible-xs visible-sm">
         <button
@@ -35,7 +39,11 @@
     <div class="flex-title-line">
       <h1 class="title flex-item-title">{{ path|insertSpaceToEachSlashes }}</h1>
       <div class="flex-item-action">
-        <a href="#" title="Bookmark" class="bookmark-link" id="bookmark-button" data-csrftoken="{{ csrf() }}" data-bookmarked="0"><i class="fa fa-star-o"></i></a>
+        <span id="bookmark-button">
+          <p class="bookmark-link">
+            <i class="fa fa-star-o"></i>
+          </a>
+        </span>
       </div>
     </div>
   </header>
