@@ -27,16 +27,15 @@ export default class BookmarkButton extends React.Component {
   handleClick(event) {
     event.preventDefault();
 
-    const token = this.props.csrfToken;
     const pageId = this.props.pageId;
 
     if (!this.state.bookmarked) {
-      this.props.crowi.apiPost('/bookmarks.add', {_csrf: token, page_id: pageId})
+      this.props.crowi.apiPost('/bookmarks.add', {page_id: pageId})
       .then(res => {
         this.markBookmarked();
       });
     } else {
-      this.props.crowi.apiPost('/bookmarks.remove', {_csrf: token, page_id: pageId})
+      this.props.crowi.apiPost('/bookmarks.remove', {page_id: pageId})
       .then(res => {
         this.markUnBookmarked();
       });
