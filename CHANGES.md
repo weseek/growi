@@ -3,16 +3,18 @@ CHANGES
 
 ## 1.6.1
 
-- Feature: Attachment remove #205
-- Feature: Attachment redirector (and proxy).
-- Fix: Not render Emoji in code block #202
-- Fix: Order of parsing access token order
-- Changes: Page name with spaces around `/` is now not creatable
+- Feature: Non-image file uploads and its settings,
+- Feature: Attachment remove #205,
+- Feature: Attachment redirector (and proxy),
+- Feature: Delete page completely and delete redirect,
+- Fix: Not render Emoji in code block #202,
+- Fix: Order of parsing access token order,
+- Changes: Page name with spaces around `/` is now not creatable,
 - API Changes:
     - Changed `attachments.add`
     - Add `attachments.remove`
-- Library Update: Now using webpack2, React.js 15.5
-- And some bug fixes, internal fixes. (Thank you @yuki-takei)
+- Library Update: Now using webpack2, React.js 15.5,
+- And some refactorings, bug fixes, internal fixes. (Thank you @yuki-takei, @okonomi)
 
 ## 1.6.0
 
