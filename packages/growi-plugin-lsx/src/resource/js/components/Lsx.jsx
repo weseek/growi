@@ -38,7 +38,7 @@ export class Lsx extends React.Component {
 
     let pagePath = lsxContext.pagePath;
 
-    this.props.crowi.apiGet('/plugins/lsx', {pagePath, queryOptions: ''})
+    this.props.crowi.apiGet('/plugins/lsx', {pagePath, queryOptions: lsxContext.options})
       .catch(error => {
         const errorMessage = error.response.data.error.message;
         this.setState({ isError: true, errorMessage: errorMessage });
