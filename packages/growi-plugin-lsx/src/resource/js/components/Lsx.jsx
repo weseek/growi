@@ -36,7 +36,9 @@ export class Lsx extends React.Component {
       return;   // go to render()
     }
 
-    let pagePath = lsxContext.pagePath;
+    // add slash ensure not to forward match to another page
+    // ex: '/Java/' not to match to '/JavaScript'
+    let pagePath = this.addSlashOfEnd(lsxContext.pagePath);
 
     this.props.crowi.apiGet('/plugins/lsx', {pagePath, queryOptions: lsxContext.options})
       .catch(error => {
