@@ -40,7 +40,7 @@ export class Lsx extends React.Component {
     // ex: '/Java/' not to match to '/JavaScript'
     let pagePath = this.addSlashOfEnd(lsxContext.pagePath);
 
-    this.props.crowi.apiGet('/plugins/lsx', {pagePath, queryOptions: lsxContext.options})
+    this.props.crowi.apiGet('/plugins/lsx', {pagePath, options: lsxContext.options})
       .catch(error => {
         const errorMessage = error.response.data.error.message;
         this.setState({ isError: true, errorMessage: errorMessage });
