@@ -104,13 +104,18 @@ export class Lsx extends React.Component {
     // return root objects
     let rootNodes = [];
     Object.keys(pathToNodeMap).forEach((pagePath) => {
+      // exclude '/'
+      if (pagePath === '/') {
+        return;
+      }
+
       const parentPath = this.getParentPath(pagePath);
+
       // pick up what parent doesn't exist
-      if (!(parentPath in pathToNodeMap)) {
+      if ((parentPath === '/') || !(parentPath in pathToNodeMap)) {
         rootNodes.push(pathToNodeMap[pagePath]);
       }
     });
-
     return rootNodes;
   }
 
