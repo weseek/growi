@@ -75,16 +75,9 @@ export class Page extends React.Component {
   }
 
   getIconElement() {
-    const pageNode = this.props.pageNode;
-
-    let icon = <i className="fa fa-folder-o" aria-hidden="true"></i>;
-    if (this.state.isExists) {
-      icon = (pageNode.children.length > 0) ?
-        <i className="fa fa-folder" aria-hidden="true"></i>:
-        <i className="fa fa-file-text-o" aria-hidden="true"></i>;
-    }
-
-    return icon;
+    return (this.state.isExists)
+        ? <i className="fa fa-file-text" aria-hidden="true"></i>
+        : <i className="fa fa-file-o" aria-hidden="true"></i>;
   }
 
   /**
