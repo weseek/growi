@@ -41,10 +41,6 @@ export class Lsx extends React.Component {
     let pagePath = this.addSlashOfEnd(lsxContext.pagePath);
 
     this.props.crowi.apiGet('/plugins/lsx', {pagePath, options: lsxContext.options})
-      .catch(error => {
-        const errorMessage = error.response.data.error.message;
-        this.setState({ isError: true, errorMessage: errorMessage });
-      })
       .then((res) => {
         if (res.ok) {
           const nodeTree = this.generatePageNodeTree(pagePath, res.pages);
@@ -53,6 +49,9 @@ export class Lsx extends React.Component {
         else {
           return Promise.reject(res.error);
         }
+      })
+      .catch((error) => {
+        this.setState({ isError: true, errorMessage: error.message });
       })
       // finally
       .then(() => {
@@ -169,7 +168,7 @@ export class Lsx extends React.Component {
       return (
         <div className="text-warning">
           <i className="fa fa-exclamation-triangle fa-fw"></i>
-          {lsxContext.tagExpression} (-> <small>{this.state.errorMessage})</small>
+          {lsxContext.tagExpression} (-> <small>{this.state.errorMessage}</small>)
         </div>
       )
     }
