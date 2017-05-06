@@ -150,7 +150,7 @@ export default class Crowi {
         if (res.data.ok) {
           resolve(res.data);
         } else {
-          reject(new Error(res.data));
+          reject(new Error(res.data.error));
         }
       })
       .catch(res => {
