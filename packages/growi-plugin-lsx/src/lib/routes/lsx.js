@@ -3,11 +3,34 @@ const OptionParser = require('../util/option-parser');
 
 class Lsx {
 
-  static addDepthCondition(query, optionDepth) {
+  /**
+   * add depth condition that limit fetched pages
+   *
+   * @static
+   * @param {any} query
+   * @param {any} pagePath
+   * @param {any} optionsDepth
+   * @returns
+   *
+   * @memberOf Lsx
+   */
+  static addDepthCondition(query, pagePath, optionsDepth) {
+    const range = OptionParser.parseRange(optionsDepth);
+    const start = range.start;
+    const end = range.end;
+
+    if (start < 1 || end < 1) {
+      throw new Error(`specified depth is [${start}:${end}] : start and end are must be larger than 1`);
+    }
+
+    // count slash
+    const slashNum = pagePath.split('/').length - 1;
+    const depthStart = slashNum;            // start is not affect to fetch page
+    const depthEnd = slashNum + end - 1;
+
     return query.and({
-      // TODO implement
-      // path: new RegExp('...')
-    })
+      path: new RegExp(`^(\\/[^\\/]*){${depthStart},${depthEnd}}$`)
+    });
   }
 
 }
@@ -26,9 +49,14 @@ module.exports = (crowi, app) => {
     let query = Page.generateQueryToListByStartWith(pagePath, user, {})
       .populate('revision', '-body');  // exclude body
 
-    // depth
-    if (options.depth !== undefined) {
-      query = Lsx.addDepthCondition(query, options.depth);
+    try {
+      // depth
+      if (options.depth !== undefined) {
+        query = Lsx.addDepthCondition(query, pagePath, options.depth);
+      }
+    }
+    catch (error) {
+      return res.json(ApiResponse.error(error.message));
     }
 
     query.exec()
