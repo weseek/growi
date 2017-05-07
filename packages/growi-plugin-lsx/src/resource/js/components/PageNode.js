@@ -21,6 +21,9 @@ export class PageNode {
    *
    * @memberOf PageNode
    */
+  /*
+   * commented out because it became unnecessary -- 2017.05.18 Yuki Takei
+   *
   getDecendantsGenerationsNum() {
     if (this.children.length == 0) {
       return -1;
@@ -30,6 +33,7 @@ export class PageNode {
       return child.getDecendantsGenerationsNum();
     }))
   }
+  */
 
   static instanciateFrom(obj) {
     let pageNode = new PageNode(obj.pagePath);

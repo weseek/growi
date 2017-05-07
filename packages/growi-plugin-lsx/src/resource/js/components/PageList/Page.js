@@ -13,7 +13,6 @@ export class Page extends React.Component {
 
     this.state = {
       isExists: false,
-      isVisible: false,
       isLinkable: false,
       hasChildren: false,
     };
@@ -32,22 +31,15 @@ export class Page extends React.Component {
     // process depth option
     const optDepth = this.props.lsxContext.getOptDepth();
     if (optDepth === undefined) {
-      this.setState({isVisible: true});
       this.setState({isLinkable: true});
     }
     else {
       const depth = this.props.depth;
-      const decGens = pageNode.getDecendantsGenerationsNum();
 
       // debug
       // console.log(pageNode.pagePath, {depth, decGens, 'optDepth.start': optDepth.start, 'optDepth.end': optDepth.end});
 
-      if (optDepth.end !== undefined) {
-        const isVisible = (optDepth.end > 0) ? (depth <= optDepth.end) : (decGens <= optDepth.end);
-        this.setState({isVisible});
-      }
-
-      const isLinkable = (optDepth.start > 0) ? (optDepth.start <= depth) : (optDepth.start <= decGens);
+      const isLinkable = optDepth.start <= depth;
       this.setState({isLinkable});
     }
   }
@@ -93,10 +85,6 @@ export class Page extends React.Component {
   }
 
   render() {
-    if (!this.state.isVisible) {
-      return <div></div>;
-    }
-
     const pageNode = this.props.pageNode;
 
     // create PagePath element
