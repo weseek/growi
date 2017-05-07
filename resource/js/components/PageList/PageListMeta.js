@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 export default class PageListMeta extends React.Component {
 
@@ -42,7 +43,7 @@ export default class PageListMeta extends React.Component {
 }
 
 PageListMeta.propTypes = {
-  page: React.PropTypes.object.isRequired,
+  page: PropTypes.object.isRequired,
 };
 
 PageListMeta.defaultProps = {

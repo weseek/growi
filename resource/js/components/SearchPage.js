@@ -1,7 +1,8 @@
 // This is the root component for #search-page
 
 import React from 'react';
-import Crowi from '../util/Crowi';
+import PropTypes from 'prop-types';
+
 import SearchForm from './SearchPage/SearchForm';
 import SearchResult from './SearchPage/SearchResult';
 
@@ -9,8 +10,6 @@ export default class SearchPage extends React.Component {
 
   constructor(props) {
     super(props);
-
-    this.crowi = window.crowi; // FIXME
 
     this.state = {
       location: location,
@@ -72,7 +71,7 @@ export default class SearchPage extends React.Component {
       searchingKeyword: keyword,
     });
 
-    this.crowi.apiGet('/search', {q: keyword})
+    this.props.crowi.apiGet('/search', {q: keyword})
     .then(res => {
       this.changeURL(keyword);
 
@@ -112,7 +111,7 @@ export default class SearchPage extends React.Component {
 }
 
 SearchPage.propTypes = {
-  query: React.PropTypes.object,
+  query: PropTypes.object,
 };
 SearchPage.defaultProps = {
   //pollInterval: 1000,

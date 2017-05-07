@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import Icon from './Common/Icon';
 import PageRevisionList from './PageHistory/PageRevisionList';
@@ -134,6 +135,6 @@ export default class PageHistory extends React.Component {
 }
 
 PageHistory.propTypes = {
-  pageId: React.PropTypes.string,
-  crowi: React.PropTypes.object.isRequired,
+  pageId: PropTypes.string,
+  crowi: PropTypes.object.isRequired,
 };

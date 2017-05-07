@@ -1,0 +1,30 @@
+
+.page-attachments {
+  .attachment-in-use {
+    margin: 0 0 0 4px;
+    padding: 1px 5px;
+  }
+
+  .attachment-filetype {
+    margin: 0 0 0 4px;
+    padding: 1px 5px;
+    font-weight: normal;
+  }
+
+  .attachment-delete {
+    cursor: pointer;
+    margin: 0 0 0 4px;
+  }
+
+}
+
+.attachment-delete-modal {
+
+  .attachment-delete-image {
+    text-align: center;
+
+    img {
+      max-width: 100%;
+    }
+  }
+}

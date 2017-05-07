@@ -17,7 +17,11 @@
       <h1 class="title flex-item-title" id="revision-path"></h1>
       {% if page %}
       <div class="flex-item-action">
-        <a href="#" title="Bookmark" class="bookmark-link" id="bookmark-button" data-csrftoken="{{ csrf() }}" data-bookmarked="0"><i class="fa fa-star-o"></i></a>
+        <span id="bookmark-button">
+          <p class="bookmark-link">
+            <i class="fa fa-star-o"></i>
+          </p>
+        </span>
       </div>
       <div class="flex-item-action visible-xs visible-sm">
         <button
@@ -37,7 +41,11 @@
     <div class="flex-title-line">
       <h1 class="title flex-item-title"></h1>
       <div class="flex-item-action">
-        <a href="#" title="Bookmark" class="bookmark-link" id="bookmark-button" data-csrftoken="{{ csrf() }}" data-bookmarked="0"><i class="fa fa-star-o"></i></a>
+        <span id="bookmark-button">
+          <p class="bookmark-link">
+            <i class="fa fa-star-o"></i>
+          </a>
+        </span>
       </div>
     </div>
   </header>
@@ -64,6 +72,7 @@
   data-page-revision-created="{% if revision %}{{ revision.createdAt|datetz('U') }}{% endif %}"
   data-page-is-seen="{% if page and page.isSeenUser(user) %}1{% else %}0{% endif %}"
   data-linebreaks-enabled="{{ isEnabledLinebreaks() }}"
+  data-csrftoken="{{ csrf() }}"
   >
 
   {% if not page %}
@@ -90,7 +99,7 @@
             <input type="hidden" name="_csrf" value="{{ csrf() }}">
             <input type="hidden" name="path" value="{{ page.path }}">
             <input type="hidden" name="page_id" value="{{ page._id.toString() }}">
-            <button type="submit" class="btn btn-success btn-sm">
+            <button type="submit" class="btn btn-default btn-sm">
               <i class="fa fa-undo" aria-hidden="true"></i>
               Put Back
             </button>
@@ -236,13 +245,10 @@
 
 
 {% if page %}
-<div class="page-attachments meta">
-  <p>Attachments</p>
-  <ul>
-  </ul>
+<div class="page-attachments meta" id="page-attachment">
 </div>
 
-<p class="meta">
+<p class="page-meta meta">
   Path: <span id="pagePath">{{ page.path }}</span><br>
   {# for BC #}
   {% if page.lastUpdateUser %}

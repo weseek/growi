@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import UserPicture from '../User/UserPicture';
 
 export default class UserList extends React.Component {
@@ -34,7 +36,7 @@ export default class UserList extends React.Component {
 }
 
 UserList.propTypes = {
-  users: React.PropTypes.array,
+  users: PropTypes.array,
 };
 
 UserList.defaultProps = {
