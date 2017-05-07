@@ -8,6 +8,7 @@ import axios from 'axios'
 import UserPicture from '../User/UserPicture';
 import PageListMeta from '../PageList/PageListMeta';
 import PagePath from '../PageList/PagePath';
+import PropTypes from 'prop-types';
 
 // Header.SearchForm
 export default class SearchForm extends React.Component {

@@ -141,6 +141,12 @@
       }
   },
 
+  "page_edit": {
+      "notice": {
+          "conflict": "Couldn't save the changes you made because someone else was editing this page. Please re-edit the affected section after reloading the page."
+      }
+  },
+
   "Rename page": "Rename page",
   "New page name": "New page name",
   "Current page name": "Current page name",

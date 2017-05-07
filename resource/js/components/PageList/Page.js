@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import UserPicture from '../User/UserPicture';
 import PageListMeta from './PageListMeta';
@@ -27,8 +28,8 @@ export default class Page extends React.Component {
 }
 
 Page.propTypes = {
-  page: React.PropTypes.object.isRequired,
-  linkTo: React.PropTypes.string,
+  page: PropTypes.object.isRequired,
+  linkTo: PropTypes.string,
 };
 
 Page.defaultProps = {

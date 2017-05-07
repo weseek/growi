@@ -1,7 +1,8 @@
 // This is the root component for #page-list-search
 
 import React from 'react';
-import axios from 'axios'
+import PropTypes from 'prop-types';
+
 import SearchResult from './SearchPage/SearchResult';
 
 export default class PageListSearch extends React.Component {
@@ -119,29 +120,18 @@ export default class PageListSearch extends React.Component {
     this.setState({
       searchingKeyword: keyword,
     });
-    axios.get('/_api/search', {params: {q: keyword, tree: tree}})
+
+    this.props.crowi.apiGet('/search', {q: keyword, tree: tree})
     .then((res) => {
-      if (res.data.ok) {
-
-        this.setState({
-          searchedKeyword: keyword,
-          searchedPages: res.data.data,
-          searchResultMeta: res.data.meta,
-        });
-      } else {
-        this.setState({
-          searchError: res.data,
-        });
-      }
-
-
-      // TODO error
-    })
-    .catch((res) => {
       this.setState({
-        searchError: res.data,
+        searchedKeyword: keyword,
+        searchedPages: res.data,
+        searchResultMeta: res.meta,
       });
-      // TODO error
+    }).catch(err => {
+      this.setState({
+        searchError: err,
+      });
     });
   };
 
@@ -168,7 +158,7 @@ export default class PageListSearch extends React.Component {
 }
 
 PageListSearch.propTypes = {
-  query: React.PropTypes.object,
+  query: PropTypes.object,
 };
 PageListSearch.defaultProps = {
   //pollInterval: 1000,

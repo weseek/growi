@@ -12,6 +12,8 @@ import {
 export default class Crowi {
   constructor(context, window) {
     this.context = context;
+    this.config = {};
+    this.csrfToken = context.csrfToken;
 
     this.location = window.location || {};
     this.document = window.document || {};
@@ -50,6 +52,14 @@ export default class Crowi {
     return context;
   }
 
+  setConfig(config) {
+    this.config = config;
+  }
+
+  getConfig() {
+    return this.config;
+  }
+
   recoverData() {
     const keys = [
       'userByName',
@@ -72,7 +82,7 @@ export default class Crowi {
   fetchUsers () {
     const interval = 1000*60*15; // 15min
     const currentTime = new Date();
-    if (!this.localStorage.lastFetched && interval > currentTime - new Date(this.localStorage.lastFetched)) {
+    if (this.localStorage.lastFetched && interval > currentTime - new Date(this.localStorage.lastFetched)) {
       return ;
     }
 
@@ -127,6 +137,18 @@ export default class Crowi {
     return null;
   }
 
+  findUserByIds(userIds) {
+    let users = [];
+    for (let userId of userIds) {
+      let user = this.findUserById(userId);
+      if (user) {
+        users.push(user);
+      }
+    }
+
+    return users;
+  }
+
   findUser(username) {
     if (this.userByName && this.userByName[username]) {
       return this.userByName[username];
@@ -136,21 +158,26 @@ export default class Crowi {
   }
 
   apiGet(path, params) {
-    return this.apiRequest('get', path, params);
+    return this.apiRequest('get', path, {params: params});
   }
 
   apiPost(path, params) {
+    if (!params._csrf) {
+      params._csrf = this.csrfToken;
+    }
+
     return this.apiRequest('post', path, params);
   }
 
   apiRequest(method, path, params) {
+
     return new Promise((resolve, reject) => {
-      axios[method](`/_api${path}`, {params})
+      axios[method](`/_api${path}`, params)
       .then(res => {
         if (res.data.ok) {
           resolve(res.data);
         } else {
-          reject(new Error(res.data));
+          reject(new Error(res.data.error));
         }
       })
       .catch(res => {

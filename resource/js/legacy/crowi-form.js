@@ -121,7 +121,8 @@ $(function() {
   var isFormChanged = false;
   $(window).on('beforeunload', function(e) {
     if (isFormChanged) {
-      return '編集中の内容があります。内容を破棄してページを移動しますか?';
+      // TODO i18n
+      return 'You haven\'t finished your comment yet. Do you want to leave without finishing?';
     }
   });
   $('#form-body').on('keyup change', function(e) {
@@ -463,8 +464,17 @@ $(function() {
         _csrf: csrfToken
       },
       progressText: '(Uploading file...)',
-      urlText: "![file]({filename})\n",
-      allowedTypes: '*'
+      jsonFieldName: 'url',
+    };
+
+    // if files upload is set
+    var config = crowi.getConfig();
+    if (config.upload.file) {
+      attachmentOption.allowedTypes = '*';
+    }
+
+    attachmentOption.remoteFilename = function(file) {
+      return file.name;
     };
 
     attachmentOption.onFileReceived = function(file) {
@@ -472,6 +482,9 @@ $(function() {
       if (!file.type.match(/^image\/.+$/)) {
         // modify urlText with 'a' tag
         this.settings.urlText = `<a href="{filename}">${file.name}</a>\n`;
+        this.settings.urlText = `[${file.name}]({filename})\n`;
+      } else {
+        this.settings.urlText = `![${file.name}]({filename})\n`;
       }
     }
 
