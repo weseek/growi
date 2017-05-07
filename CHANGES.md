@@ -1,6 +1,10 @@
 CHANGES
 ========
 
+## 1.1.0
+
+* Support: merge official Crowi v1.6.1
+
 ## 1.0.9
 
 * Feature: Delete user
