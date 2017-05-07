@@ -24,7 +24,7 @@ TODO
 - [x] ensure to be `hierarchy=off` as default
 - [ ] impl `hierarchy` option
 - [x] impl `depth` option
-- [ ] impl `num` option
+- [x] impl `num` option
 - [ ] impl `sort` option
 - [ ] impl `reverse` option
 - [ ] impl `except` option
