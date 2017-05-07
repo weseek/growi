@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 export default class PageBody extends React.Component {
 
@@ -31,9 +32,9 @@ export default class PageBody extends React.Component {
 }
 
 PageBody.propTypes = {
-  page: React.PropTypes.object.isRequired,
-  pageBody: React.PropTypes.string,
-  rendererOptions: React.PropTypes.object
+  page: PropTypes.object.isRequired,
+  pageBody: PropTypes.string,
+  rendererOptions: React.PropTypes.object,
 };
 
 PageBody.defaultProps = {

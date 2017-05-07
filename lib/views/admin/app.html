@@ -54,6 +54,26 @@
 
         <div class="form-group">
           <div class="col-xs-offset-3 col-xs-6">
+            <input type="checkbox" name="settingForm[app:fileUpload]" value="1"
+              {% if settingForm['app:fileUpload'] %}
+              checked
+              {% endif %}
+              {% if not isUploadable() %}
+              disabled="disabled"
+              {% else %}
+              {% endif %}
+              >
+              <label for="settingForm[app:fileUpload]" class="">画像以外のファイルアップロードを許可</label>
+
+              <p class="help-block">
+                ファイルアップロードの設定を有効にしている場合にのみ、選択可能です。<br>
+                許可をしている場合、画像以外のファイルをページに添付可能になります。
+              </p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-xs-offset-3 col-xs-6">
             <input type="hidden" name="_csrf" value="{{ csrf() }}">
             <button type="submit" class="btn btn-primary">更新</button>
           </div>

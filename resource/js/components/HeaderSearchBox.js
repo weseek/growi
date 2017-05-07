@@ -30,7 +30,7 @@ export default class SearchBox extends React.Component {
 }
 
 SearchBox.propTypes = {
-  //pollInterval: React.PropTypes.number,
+  //pollInterval: PropTypes.number,
 };
 SearchBox.defaultProps = {
   //pollInterval: 1000,
