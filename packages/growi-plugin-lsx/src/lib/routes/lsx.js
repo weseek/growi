@@ -33,6 +33,32 @@ class Lsx {
     });
   }
 
+  /**
+   * add num condition that limit fetched pages
+   *
+   * @static
+   * @param {any} query
+   * @param {any} pagePath
+   * @param {any} optionsDepth
+   * @returns
+   *
+   * @memberOf Lsx
+   */
+  static addNumCondition(query, pagePath, optionsNum) {
+    const range = OptionParser.parseRange(optionsNum);
+    const start = range.start;
+    const end = range.end;
+
+    if (start < 1 || end < 1) {
+      throw new Error(`specified num is [${start}:${end}] : start and end are must be larger than 1`);
+    }
+
+    const skip = start - 1;
+    const limit = end - skip;
+
+    return query.skip(skip).limit(limit);
+  }
+
 }
 
 module.exports = (crowi, app) => {
@@ -53,6 +79,10 @@ module.exports = (crowi, app) => {
       // depth
       if (options.depth !== undefined) {
         query = Lsx.addDepthCondition(query, pagePath, options.depth);
+      }
+      // num
+      if (options.num !== undefined) {
+        query = Lsx.addNumCondition(query, pagePath, options.num);
       }
     }
     catch (error) {
