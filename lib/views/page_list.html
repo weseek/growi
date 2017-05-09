@@ -14,6 +14,7 @@
 
 <div class="header-wrap">
   <header class="portal-header {% if page %}has-page{% endif %}">
+
     <div class="flex-title-line">
       <h1 class="title flex-item-title">
         <span id="revision-path"></span>
@@ -29,6 +30,7 @@
         </form>
         {% endif %}
       </h1>
+
       {% if page %}
       <div class="flex-item-action">
         <span id="bookmark-button" data-csrftoken="{{ csrf() }}"></span>
@@ -42,6 +44,9 @@
       </div>
       {% endif %}
     </div>
+
+    <div id="revision-url" class="url-line"></div>
+
   </header>
 </div>
 

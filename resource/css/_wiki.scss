@@ -52,8 +52,8 @@ div.body {
 }
 
 .wiki {
-  line-height: 1.6em;
-  font-size: 15px;
+  line-height: 1.8em;
+  font-size: 14px;
 
   h1, h2, h3, h4, h5, h6 {
     margin-top: 1.6em;
@@ -66,36 +66,38 @@ div.body {
 
   h1 {
     padding-bottom: 0.3em;
-    font-size: 2.3em;
-    font-weight: bold;
+    font-size: 1.8em;
     border-bottom: solid 1px #ccc;
   }
   h2 {
-    padding-bottom: 0.3em;
-    font-size: 1.8em;
+    padding-bottom: 0.5em;
+    font-size: 1.4em;
     line-height: 1.225;
     font-weight: bold;
     border-bottom: 1px solid #eee;
   }
   h3 {
-    font-size: 1.5em;
+    font-size: 1.2em;
     font-weight: bold;
   }
   h4 {
-    font-size: 1.3em;
+    font-size: 1.1em;
     font-weight: normal;
   }
   h5 {
-    font-size: 1.1em;
+    font-size: 1.05em;
     font-weight: normal;
   }
 
   p {
     font-weight: normal;
-    margin-bottom: 9px;
+    margin: 20px 0;
   }
   blockquote {
     font-size: .9em;
+    margin: 0 0 30px 0;
+    padding: 0 20px;
+    color: darken(gray, 10%);
   }
 
   a {
@@ -141,18 +143,15 @@ div.body {
 
   ul, ol {
     padding-left: 30px;
+    margin: 20px 0;
 
     li {
+      margin: 10px 0;
       line-height: 1.8em;
+    }
 
-      p {
-        margin-top: 10px;
-        margin-bottom: 0;
-
-        &:first-child {
-          margin-top: 0;
-        }
-      }
+    ul, ol {
+      margin: 0;
     }
   }
 
