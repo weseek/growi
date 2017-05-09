@@ -3,6 +3,7 @@ CHANGES
 
 ## 1.1.1
 
+* Feature: Save with Ctrl+S
 * Imprv: Brushup fonts and styles
 
 ## 1.1.0
