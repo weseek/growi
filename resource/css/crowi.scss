@@ -11,6 +11,9 @@ $bootstrap-sass-asset-helper: true;
 @import '~react-bootstrap-typeahead/css/Token';
 @import '~react-bootstrap-typeahead/css/Typeahead';
 
+// import toastr styles
+@import '~toastr/build/toastr';
+
 // crowi component
 @import 'admin';
 @import 'attachments';
