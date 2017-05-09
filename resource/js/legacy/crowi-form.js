@@ -13,6 +13,7 @@
   require('bootstrap-sass');
   require('inline-attachment/src/inline-attachment');
   require('./thirdparty-js/jquery.selection');
+  const toastr = require('toastr');
 
   // show/hide
   function FetchPagesUpdatePostAndInsert(path) {
@@ -363,6 +364,53 @@ $(function() {
     }
   };
 
+  /**
+   * event handler when 'Ctrl-S' pressed
+   */
+  var handleSKey = function(event) {
+    if (!event.ctrlKey) {
+      return;
+    }
+
+    event.preventDefault();
+
+    let data = {
+      page_id: pageId,
+      body: $('#form-body').val(),
+    }
+
+    crowi.apiPost('/pages.update', data)
+      .then((res) => {
+        let page = res.page;
+        toastr.success(undefined, 'Saved successful', {
+          closeButton: true,
+          progressBar: true,
+          newestOnTop: false,
+          showDuration: "100",
+          hideDuration: "100",
+          timeOut: "1200",
+          extendedTimeOut: "150",
+        });
+
+        // update currentRevision input
+        $('#page-form [name="pageForm[currentRevision]"]').val(page.revision._id);
+
+        // TODO update $('#revision-body-content')
+      })
+      .catch((error) => {
+        console.error(error);
+        toastr.error(error.message, 'Error occured on saveing', {
+          closeButton: true,
+          progressBar: true,
+          newestOnTop: false,
+          showDuration: "100",
+          hideDuration: "100",
+          timeOut: "3000",
+        });
+      });
+
+  }
+
   // markdown helper inspired by 'esarea'.
   // see: https://github.com/fukayatsu/esarea
   $('textarea#form-body').on('keydown', function(event) {
@@ -378,6 +426,9 @@ $(function() {
         break;
       case 32:
         handleSpaceKey(event);
+        break;
+      case 83:
+        handleSKey(event);
         break;
       default:
     }
