@@ -1,9 +1,13 @@
 CHANGES
 ========
 
+## 1.1.1
+
+* Imprv: Brushup fonts and styles
+
 ## 1.1.0
 
-* Support: merge official Crowi v1.6.1
+* Support: Merge official Crowi v1.6.1
 
 ## 1.0.9
 
