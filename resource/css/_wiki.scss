@@ -53,7 +53,7 @@ div.body {
 
 .wiki {
   line-height: 1.8em;
-  font-size: 14px;
+  font-size: 15px;
 
   h1, h2, h3, h4, h5, h6 {
     margin-top: 1.6em;
@@ -65,6 +65,7 @@ div.body {
   }
 
   h1 {
+    margin-top: 2em;
     padding-bottom: 0.3em;
     font-size: 1.8em;
     border-bottom: solid 1px #ccc;
@@ -91,7 +92,7 @@ div.body {
 
   p {
     font-weight: normal;
-    margin: 20px 0;
+    margin: 15px 0;
   }
   blockquote {
     font-size: .9em;
@@ -146,7 +147,7 @@ div.body {
     margin: 20px 0;
 
     li {
-      margin: 10px 0;
+      margin: 5px 0;
       line-height: 1.8em;
     }
 
