@@ -25,9 +25,11 @@
 
 .page-list, .content-main {
   .page-list-ul {
+    margin: 0;
     padding-left: 0;
 
     > li {
+      margin: 0;
       list-style: none;
       color: #666;
 

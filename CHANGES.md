@@ -1,6 +1,11 @@
 CHANGES
 ========
 
+## 1.1.2
+
+* Imprv: Brushup fonts and styles
+* Fix: Ensure to specity revision id when saving with Ctrl+S
+
 ## 1.1.1
 
 * Feature: Save with Ctrl+S

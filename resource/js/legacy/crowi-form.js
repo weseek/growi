@@ -374,8 +374,12 @@ $(function() {
 
     event.preventDefault();
 
+    const revisionInput = $('#page-form [name="pageForm[currentRevision]"]');
+
+    // generate data to post
     let data = {
       page_id: pageId,
+      revision_id: revisionInput.val(),
       body: $('#form-body').val(),
     }
 
@@ -393,7 +397,7 @@ $(function() {
         });
 
         // update currentRevision input
-        $('#page-form [name="pageForm[currentRevision]"]').val(page.revision._id);
+        revisionInput.val(page.revision._id);
 
         // TODO update $('#revision-body-content')
       })
