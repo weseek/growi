@@ -1,0 +1,24 @@
+<ul class="authors visible-md visible-lg">
+  <li>
+    <div class="creator-picture">
+      <a href="{{ userPageRoot(page.creator) }}">
+        <img src="{{ page.creator|default(author)|picture }}" class="picture picture-rounded"><br>
+      </a>
+    </div>
+    <div class="">
+      <div>Created by <a href="{{ userPageRoot(page.creator) }}">{{ page.creator.name|default(author.name) }}</a></div>
+      <div class="text-muted">{{ page.createdAt|datetz('Y/m/d H:i:s') }}</div>
+    </div>
+  </li>
+  <li>
+    <div class="creator-picture">
+      <a href="{{ userPageRoot(page.lastUpdateUser) }}">
+        <img src="{{ page.lastUpdateUser|default(author)|picture }}" class="picture picture-rounded"><br>
+      </a>
+    </div>
+    <div class="">
+      <div>Updated by <a href="{{ userPageRoot(page.lastUpdateUser) }}">{{ page.lastUpdateUser.name|default(author.name) }}</a></div>
+      <div class="text-muted">{{ page.updatedAt|datetz('Y/m/d H:i:s') }}</div>
+    </div>
+  </li>
+</ul>

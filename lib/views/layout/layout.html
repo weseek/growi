@@ -55,7 +55,7 @@
 
 {% block html_body %}
 <body
-  class="crowi main-container {% block html_base_css %}{% endblock %}"
+  class="crowi main-container {% block html_base_css %}{% endblock %} {% if 'crowi-plus' === layoutType() %}crowi-plus{% endif %}"
   data-me="{{ user._id.toString() }}"
   data-plugin-enabled="{{ isEnabledPlugins() }}"
  {% block html_base_attr %}{% endblock %}
