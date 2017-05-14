@@ -61,3 +61,11 @@
   {% endblock %}
 
 {% endblock %} {# /content_head #}
+
+
+
+{% block content_main_after %}
+  {% if not page.isDeleted() %}
+    {% include 'widget/comments.html' %}
+  {% endif %}
+{% endblock %}

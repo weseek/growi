@@ -1,33 +1,38 @@
-<h3><i class="fa fa-comment"></i> Comments</h3>
-<div class="page-comments">
+<div class="page-comments-row row">
 
-  <div class="page-comments-list" id="page-comments-list">
-    <div class="page-comments-list-newer collapse" id="page-comments-list-newer"></div>
+  <div class="page-comments col-md-12">
 
-    <a class="page-comments-list-toggle-newer text-center" data-toggle="collapse" href="#page-comments-list-newer"><i class="fa fa-angle-double-up"></i> Comments for Newer Revision <i class="fa fa-angle-double-up"></i></a>
+    <h4><i class="fa fa-comments"></i> Comments</h4>
 
-    <div class="page-comments-list-current" id="page-comments-list-current"></div>
+    <div class="page-comments-list" id="page-comments-list">
+      <div class="page-comments-list-newer collapse" id="page-comments-list-newer"></div>
 
-    <a class="page-comments-list-toggle-older text-center" data-toggle="collapse" href="#page-comments-list-older"><i class="fa fa-angle-double-down"></i> Comments for Older Revision <i class="fa fa-angle-double-down"></i></a>
+      <a class="page-comments-list-toggle-newer text-center" data-toggle="collapse" href="#page-comments-list-newer"><i class="fa fa-angle-double-up"></i> Comments for Newer Revision <i class="fa fa-angle-double-up"></i></a>
 
-    <div class="page-comments-list-older collapse in" id="page-comments-list-older"></div>
-  </div>
+      <div class="page-comments-list-current" id="page-comments-list-current"></div>
 
-  <form class="form page-comment-form" id="page-comment-form" onsubmit="return false;">
-    <div class="comment-form">
-      <div class="comment-form-main">
-        <div class="comment-write" id="comment-write">
-          <textarea class="comment-form-comment form-control" id="comment-form-comment" name="commentForm[comment]"></textarea>
-        </div>
-        <div class="comment-submit">
-          <input type="hidden" name="_csrf" value="{{ csrf() }}">
-          <input type="hidden" name="commentForm[page_id]" value="{{ page._id.toString() }}">
-          <input type="hidden" name="commentForm[revision_id]" value="{{ revision._id.toString() }}">
-          <span class="text-danger" id="comment-form-message"></span>
-          <input type="submit" id="comment-form-button" value="Comment" class="btn btn-primary btn-sm form-inline">
+      <a class="page-comments-list-toggle-older text-center" data-toggle="collapse" href="#page-comments-list-older"><i class="fa fa-angle-double-down"></i> Comments for Older Revision <i class="fa fa-angle-double-down"></i></a>
+
+      <div class="page-comments-list-older collapse in" id="page-comments-list-older"></div>
+    </div>
+
+    <form class="form page-comment-form" id="page-comment-form" onsubmit="return false;">
+      <div class="comment-form">
+        <div class="comment-form-main">
+          <div class="comment-write" id="comment-write">
+            <textarea class="comment-form-comment form-control" id="comment-form-comment" name="commentForm[comment]"></textarea>
+          </div>
+          <div class="comment-submit">
+            <input type="hidden" name="_csrf" value="{{ csrf() }}">
+            <input type="hidden" name="commentForm[page_id]" value="{{ page._id.toString() }}">
+            <input type="hidden" name="commentForm[revision_id]" value="{{ revision._id.toString() }}">
+            <span class="text-danger" id="comment-form-message"></span>
+            <input type="submit" id="comment-form-button" value="Comment" class="btn btn-primary btn-sm form-inline">
+          </div>
         </div>
       </div>
-    </div>
-  </form>
+    </form>
+
+  </div>
 
 </div>
