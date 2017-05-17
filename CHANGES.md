@@ -1,6 +1,10 @@
 CHANGES
 ========
 
+## 1.1.3
+
+* Improvement: Use POSIX-style paths (bollowed crowi/crowi#219 by @Tomasom)
+
 ## 1.1.2
 
 * Imprv: Brushup fonts and styles

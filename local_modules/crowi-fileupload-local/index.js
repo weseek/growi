@@ -10,12 +10,12 @@ module.exports = function(crowi) {
     , Config = crowi.model('Config')
     , config = crowi.getConfig()
     , lib = {}
-    , basePath = path.join(crowi.publicDir, 'uploads'); // TODO: to configurable
+    , basePath = path.posix.join(crowi.publicDir, 'uploads'); // TODO: to configurable
 
   lib.deleteFile = function(fileId, filePath) {
     debug('File deletion: ' + filePath);
     return new Promise(function(resolve, reject) {
-      fs.unlink(path.join(basePath, filePath), function(err) {
+      fs.unlink(path.posix.join(basePath, filePath), function(err) {
         if (err) {
           debug(err);
           return reject(err);
@@ -29,8 +29,8 @@ module.exports = function(crowi) {
   lib.uploadFile = function(filePath, contentType, fileStream, options) {
     debug('File uploading: ' + filePath);
     return new Promise(function(resolve, reject) {
-      var localFilePath = path.join(basePath, filePath)
-        , dirpath = path.dirname(localFilePath);
+      var localFilePath = path.posix.join(basePath, filePath)
+        , dirpath = path.posix.dirname(localFilePath);
 
       mkdir(dirpath, function(err) {
         if (err) {
@@ -51,7 +51,7 @@ module.exports = function(crowi) {
   };
 
   lib.generateUrl = function(filePath) {
-    return path.join('/uploads', filePath);
+    return path.posix.join('/uploads', filePath);
   };
 
   lib.findDeliveryFile = function (fileId, filePath) {
