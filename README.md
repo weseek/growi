@@ -102,10 +102,10 @@ Getting Started to Develop
     v6.10.0
     
     $ npm -v
-    4.5.0
+    4.6.1
     
     $ yarn --version
-    0.21.3
+    0.24.5
     ```
 
 ## Build and Running the app
