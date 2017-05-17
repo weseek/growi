@@ -102,6 +102,8 @@ release: # would be run on release branch
       name: bump version
       code: |
         sh ./bin/wercker/init-git.sh
+        # git reset
+        git reset --hard
         # npm version to bump version
         npm version patch
         # get version
