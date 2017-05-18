@@ -1,0 +1,29 @@
+.crowi-plus.main-container  {
+
+  .page-comments-row {
+    margin: 30px 16px;
+  }
+
+  .page-comments {
+    border-top: 3px solid #f0f0f0;
+  }
+
+  .page-comment {
+    position: relative;
+    // ユーザーアイコン
+    .picture.picture-rounded{
+      position: absolute;
+      top: 1em;
+    }
+
+    // コメントセクション
+    .page-comment-main{
+      margin-left: 2.5em;
+      margin-bottom: 1em;
+    }
+  }
+  // コメント入力フォーム
+  .comment-write{
+    margin-bottom: 1em;
+  }
+}
