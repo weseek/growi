@@ -1,0 +1,17 @@
+.crowi-plus .revision-toc {
+
+  /*
+   * TODO スタイル調整
+   */
+
+  // reset official styles
+  float: none;
+  border: none;
+  border-radius: 0;
+  max-width: none;
+  overflow: auto;
+
+  .revision-toc-content {
+    background: #ffcccc;  // TODO スタイル調整
+  }
+}
