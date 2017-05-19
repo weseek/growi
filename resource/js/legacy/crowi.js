@@ -34,7 +34,7 @@ Crowi.revisionToc = function(contentId, tocId) {
   var $content = $(contentId || '#revision-body-content');
   var $tocId = $(tocId || '#revision-toc');
 
-  var $tocContent = $('<div id="revision-toc-content" class="revision-toc-content collapse"></div>');
+  var $tocContent = $('<div id="revision-toc-content" class="revision-toc-content collapse in"></div>');
   $tocId.append($tocContent);
 
   $('h1', $content).each(function(idx, elm) {
