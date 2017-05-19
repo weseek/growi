@@ -18,16 +18,21 @@
 
     <form class="form page-comment-form" id="page-comment-form" onsubmit="return false;">
       <div class="comment-form">
+        <div class="comment-form-user">
+            <img src="{{ user|picture }}" class="picture picture-rounded" width="25" alt="{{ user.name }}" title="{{ user.name }}" />
+        </div>
         <div class="comment-form-main">
           <div class="comment-write" id="comment-write">
-            <textarea class="comment-form-comment form-control" id="comment-form-comment" name="commentForm[comment]"></textarea>
+            <textarea class="comment-form-comment form-control" id="comment-form-comment" name="commentForm[comment]" rows="10" placeholder="コメントを入力してください。"></textarea>
           </div>
           <div class="comment-submit">
             <input type="hidden" name="_csrf" value="{{ csrf() }}">
             <input type="hidden" name="commentForm[page_id]" value="{{ page._id.toString() }}">
             <input type="hidden" name="commentForm[revision_id]" value="{{ revision._id.toString() }}">
-            <span class="text-danger" id="comment-form-message"></span>
-            <input type="submit" id="comment-form-button" value="Comment" class="btn btn-primary btn-sm form-inline">
+            <p class="text-danger" id="comment-form-message"></p>
+            <button type="submit" id="comment-form-button" class="btn btn-primary form-inline">
+              <i class="fa fa-comment comment-ico" aria-hidden="true"></i>Comment
+            </button>
           </div>
         </div>
       </div>
