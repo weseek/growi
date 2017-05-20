@@ -64,7 +64,7 @@ const componentMappings = {
 };
 if (pagePath) {
   componentMappings['revision-path'] = <RevisionPath pagePath={pagePath} />;
-  componentMappings['revision-url'] = <RevisionUrl pagePath={pagePath} url={location.href} />;
+  componentMappings['revision-url'] = <RevisionUrl pageId={pageId} pagePath={pagePath} />;
 }
 
 Object.keys(componentMappings).forEach((key) => {
