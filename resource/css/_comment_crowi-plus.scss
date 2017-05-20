@@ -6,24 +6,96 @@
   }
 
   .page-comments {
+    border-top: 3px solid #f0f0f0;
+    h4 {
+      margin-bottom: 1em;
+    }
   }
 
   .page-comment {
+    position: relative;
+    
+    // ユーザーアイコン
+    .picture.picture-rounded{
+      position: absolute;
+      top: 1em;
+      width: 3em;
+      height: 3em;
+    }
+
+    // コメントセクション
+    .page-comment-main{
+      background: #f5f5f5;
+      padding: 1em;
+      position: relative;
+      margin-left: 4.5em;
+      margin-bottom: 1em;
+      border-radius: 3px;
+      &:before{
+        border: 2em solid transparent;
+        border-right-color:#f5f5f5;
+        border-left-width: 0;
+        left: -1em;
+        content: "";
+        display: block;
+        top: 0.5em;
+        position: absolute;
+        width: 0;
+      }
+    }
+
+    // コメント本文
+    .page-comment-body{
+      margin-bottom: 0.5em;
+    }
+    
+    // ユーザー名
+    .page-comment-creator{
+      margin-bottom: 0.5em;
+    }
+  }
+
+  .comment-form{
     position: relative;
     // ユーザーアイコン
     .picture.picture-rounded{
       position: absolute;
       top: 1em;
+      width: 3em;
+      height: 3em;
     }
 
-    // コメントセクション
-    .page-comment-main{
-      margin-left: 2.5em;
+    // コメントフォームセクション
+    .comment-form-main{
+      margin-left: 4.5em;
       margin-bottom: 1em;
+      background: #f5f5f5;
+      padding: 1em;
+      position: relative;
+      border-radius: 3px;
+      &:before{
+        border: 2em solid transparent;
+        border-right-color:#f5f5f5;
+        border-left-width: 0;
+        left: -1em;
+        content: "";
+        display: block;
+        top: 0.5em;
+        position: absolute;
+        width: 0;
+      }
     }
-  }
-  // コメント入力フォーム
-  .comment-write{
-    margin-bottom: 1em;
+    
+    // コメントの吹き出しアイコン 
+    .comment-ico{
+      font-size: 1.2em;
+      margin-right: 0.3em; 
+      opacity: 0.6;
+    }
+
+    // コメント入力フォーム
+    .comment-write{
+      margin-bottom: 0.5em;
+    }
   }
 }

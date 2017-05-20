@@ -3,7 +3,7 @@
 */
 
 var io = require('socket.io-client');
-
+var moment = require("moment");
 require('bootstrap-sass');
 require('jquery.cookie');
 
@@ -500,7 +500,8 @@ $(function() {
       }
 
       var $commentMeta = $('<div class="page-comment-meta">')
-        .text(commentedAt + ' ')
+        //日付変換
+        .text(moment(commentedAt).format('YYYY/MM/DD HH:mm:ss') + ' ')
         .append($commentRevision);
 
       var $commentBody = $('<div class="page-comment-body">')
