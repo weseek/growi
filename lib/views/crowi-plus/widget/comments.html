@@ -29,10 +29,13 @@
             <input type="hidden" name="_csrf" value="{{ csrf() }}">
             <input type="hidden" name="commentForm[page_id]" value="{{ page._id.toString() }}">
             <input type="hidden" name="commentForm[revision_id]" value="{{ revision._id.toString() }}">
-            <p class="text-danger" id="comment-form-message"></p>
-            <button type="submit" id="comment-form-button" class="btn btn-primary form-inline">
-              <i class="fa fa-comment comment-ico" aria-hidden="true"></i>Comment
-            </button>
+            <div class="pull-right">
+              <span class="text-danger" id="comment-form-message"></span>
+              <button type="submit" id="comment-form-button" class="btn btn-primary form-inline">
+                <i class="fa fa-comment comment-ico" aria-hidden="true"></i>Comment
+              </button>
+            </div>
+            <div class="clearfix"></div>
           </div>
         </div>
       </div>
