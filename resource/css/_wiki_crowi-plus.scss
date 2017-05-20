@@ -1,0 +1,19 @@
+.crowi-plus .revision-toc {
+
+  // reset official styles
+  float: none;
+  border: none;
+  border-radius: 0;
+  max-width: none;
+  overflow: auto;
+
+  .revision-toc-content {
+    margin-top: 50px;
+    background: none;
+  }
+
+  // affix
+  &.affix {
+    top: 30px;
+  }
+}
