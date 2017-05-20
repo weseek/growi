@@ -1,9 +1,5 @@
 .crowi-plus .revision-toc {
 
-  /*
-   * TODO スタイル調整
-   */
-
   // reset official styles
   float: none;
   border: none;
@@ -12,6 +8,12 @@
   overflow: auto;
 
   .revision-toc-content {
-    background: #ffcccc;  // TODO スタイル調整
+    margin-top: 50px;
+    background: none;
+  }
+
+  // affix
+  &.affix {
+    top: 30px;
   }
 }

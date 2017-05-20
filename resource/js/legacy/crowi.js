@@ -74,6 +74,14 @@ Crowi.revisionToc = function(contentId, tocId) {
       });
     });
   });
+
+  // set affix when crowi-plus
+  var config = crowi.getConfig();
+  if ('crowi-plus' === config.layoutType) {
+    $tocId.affix({
+      offset: 100
+    });
+  }
 };
 
 
