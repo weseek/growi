@@ -14,9 +14,9 @@
 
   .page-comment {
     position: relative;
-    
+
     // ユーザーアイコン
-    .picture.picture-rounded{
+    .picture.picture-rounded {
       position: absolute;
       top: 1em;
       width: 3em;
@@ -24,14 +24,14 @@
     }
 
     // コメントセクション
-    .page-comment-main{
+    .page-comment-main {
       background: #f5f5f5;
       padding: 1em;
       position: relative;
       margin-left: 4.5em;
       margin-bottom: 1em;
       border-radius: 3px;
-      &:before{
+      &:before {
         border: 2em solid transparent;
         border-right-color:#f5f5f5;
         border-left-width: 0;
@@ -45,20 +45,20 @@
     }
 
     // コメント本文
-    .page-comment-body{
+    .page-comment-body {
       margin-bottom: 0.5em;
     }
-    
+
     // ユーザー名
-    .page-comment-creator{
+    .page-comment-creator {
       margin-bottom: 0.5em;
     }
   }
 
-  .comment-form{
+  .comment-form {
     position: relative;
     // ユーザーアイコン
-    .picture.picture-rounded{
+    .picture.picture-rounded {
       position: absolute;
       top: 1em;
       width: 3em;
@@ -66,14 +66,14 @@
     }
 
     // コメントフォームセクション
-    .comment-form-main{
+    .comment-form-main {
       margin-left: 4.5em;
       margin-bottom: 1em;
       background: #f5f5f5;
       padding: 1em;
       position: relative;
       border-radius: 3px;
-      &:before{
+      &:before {
         border: 2em solid transparent;
         border-right-color:#f5f5f5;
         border-left-width: 0;
@@ -85,16 +85,16 @@
         width: 0;
       }
     }
-    
-    // コメントの吹き出しアイコン 
-    .comment-ico{
+
+    // コメントの吹き出しアイコン
+    .comment-ico {
       font-size: 1.2em;
-      margin-right: 0.3em; 
+      margin-right: 0.3em;
       opacity: 0.6;
     }
 
     // コメント入力フォーム
-    .comment-write{
+    .comment-write {
       margin-bottom: 0.5em;
     }
   }
