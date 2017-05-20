@@ -15,8 +15,11 @@ export default class RevisionUrl extends React.Component {
       fontSize: "1em"
     }
 
-    const url = `${location.origin}/${this.props.pageId}`;
+    const url = (this.props.pageId === '')
+        ? decodeURIComponent(location.href)
+        : `${location.origin}/${this.props.pageId}`;
     const copiedText = this.props.pagePath + '\n' + url;
+
     return (
       <span>
         {url}
