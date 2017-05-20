@@ -45,6 +45,40 @@
     </div>
     <div class="col-md-9">
 
+      <form action="/_api/admin/customize/layout" method="post" class="form-horizontal" id="cutomlayoutSettingForm" role="form">
+      <fieldset>
+        <legend>レイアウト</legend>
+
+        <div class="form-group">
+          <div class="col-xs-6">
+            <h4>
+              <input type="radio" name="settingForm[customize:layout]" value="crowi"
+                  {% if !settingForm['customize:layout'] || 'crowi' === settingForm['customize:layout'] %}checked="checked"{% endif %}>
+              Official Crowi Classic Layout
+            </h4>
+            <a href="http://placehold.it"><img src="http://placehold.it/350x150"></a>
+          </div>
+          <div class="col-xs-6">
+            <h4>
+              <input type="radio" name="settingForm[customize:layout]" value="crowi-plus"
+                  {% if 'crowi-plus' === settingForm['customize:layout'] %}checked="checked"{% endif %}>
+              crowi-plus Enhanced Layout
+            </h4>
+            <a href="http://placehold.it"><img src="http://placehold.it/350x150"></a>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-xs-offset-5 col-xs-6">
+            <input type="hidden" name="_csrf" value="{{ csrf() }}">
+            <button type="submit" class="btn btn-primary">更新</button>
+          </div>
+        </div>
+
+      </fieldset>
+      </form>
+
+
       <form action="/_api/admin/customize/css" method="post" class="form-horizontal" id="cutomcssSettingForm" role="form">
       <fieldset>
         <legend>カスタムCSS</legend>
@@ -80,7 +114,7 @@
   </div>
 
   <script>
-    $('#cutomcssSettingForm').each(function() {
+    $('#cutomcssSettingForm, #cutomlayoutSettingForm').each(function() {
       $(this).submit(function()
       {
         function showMessage(formId, msg, status) {

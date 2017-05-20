@@ -1,0 +1,36 @@
+.crowi-plus.main-container {
+  .flex-title-line {
+
+    // the container of h1
+    div:first-child {
+      margin-right: auto;
+    }
+
+    ul.authors {
+      margin: 0;
+
+      li {
+        display: flex;
+        list-style: none;
+        font-size: 12px;
+
+        .creator-picture {
+          width: 24px;
+          height: 24px;
+          margin-right: 10px;
+        }
+      }
+
+      li:first-child {
+        margin-bottom: 10px;
+      }
+    }
+  }
+
+  // hide authors from affix
+  .main #page-header.affix {
+    .authors {
+      display: none !important;
+    }
+  }
+}

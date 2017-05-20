@@ -1,0 +1,43 @@
+{% extends 'base/page_list_nosidebar.html' %}
+
+
+{% block content_head %}
+
+  {% block content_head_before %}
+  {% endblock %}
+
+  {% include 'widget/header.html' %}
+
+  {% block content_head_after %}
+  {% endblock %}
+
+{% endblock %} {# /content_head #}
+
+
+{% block content_main %}
+  <div class="row">
+
+    <div class="col-md-10">
+
+      {% parent %}
+
+      {# force remove #revision-toc from #content_main of parent #}
+      <script>
+        $('#revision-toc').remove();
+      </script>
+
+    </div> {# /.col-md-10 #}
+
+    {# relocate #revision-toc #}
+    <div class="col-md-2 visible-lg visible-md">
+      <div id="revision-toc" class="revision-toc"></div>
+    </div> {# /.col-md-2 #}
+
+  </div>
+{% endblock %}
+
+{% block content_main_after %}
+  {% if not page.isDeleted() %}
+    {% include 'widget/comments.html' %}
+  {% endif %}
+{% endblock %}

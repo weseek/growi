@@ -3,7 +3,7 @@
 */
 
 var io = require('socket.io-client');
-
+var moment = require("moment");
 require('bootstrap-sass');
 require('jquery.cookie');
 
@@ -34,7 +34,7 @@ Crowi.revisionToc = function(contentId, tocId) {
   var $content = $(contentId || '#revision-body-content');
   var $tocId = $(tocId || '#revision-toc');
 
-  var $tocContent = $('<div id="revision-toc-content" class="revision-toc-content collapse"></div>');
+  var $tocContent = $('<div id="revision-toc-content" class="revision-toc-content collapse in"></div>');
   $tocId.append($tocContent);
 
   $('h1', $content).each(function(idx, elm) {
@@ -74,6 +74,14 @@ Crowi.revisionToc = function(contentId, tocId) {
       });
     });
   });
+
+  // set affix when crowi-plus
+  var config = crowi.getConfig();
+  if ('crowi-plus' === config.layoutType) {
+    $tocId.affix({
+      offset: 100
+    });
+  }
 };
 
 
@@ -500,7 +508,8 @@ $(function() {
       }
 
       var $commentMeta = $('<div class="page-comment-meta">')
-        .text(commentedAt + ' ')
+        //日付変換
+        .text(moment(commentedAt).format('YYYY/MM/DD HH:mm:ss') + ' ')
         .append($commentRevision);
 
       var $commentBody = $('<div class="page-comment-body">')

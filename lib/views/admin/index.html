@@ -49,6 +49,26 @@
           <td>{{ yarnVersion() }}</td>
         </tr>
       </table>
+
+      <h3>インストールされているプラグイン一覧</h3>
+      <table class="table table-bordered">
+        <th class="text-center">
+          パッケージ名
+        </th>
+        <th class="text-center">
+          指定バージョン
+        </th>
+        <th class="text-center">
+          インストールされているバージョン
+        </th>
+        {% for pluginName in Object.keys(plugins) %}
+        <tr>
+          <td>{{ pluginName }}</td>
+          <td class="text-center">{{ plugins[pluginName] }}</td>
+          <td class="text-center">(TBD)</td>
+        </tr>
+        {% endfor %}
+      </table>
     </div>
   </div>
 
