@@ -17,7 +17,7 @@
 {% block content_main %}
   <div class="row">
 
-    <div class="col-md-10">
+    <div class="col-lg-10 col-md-9">
 
       {% parent %}
 
@@ -26,12 +26,12 @@
         $('#revision-toc').remove();
       </script>
 
-    </div> {# /.col-md-10 #}
+    </div> {# /.col- #}
 
     {# relocate #revision-toc #}
-    <div class="col-md-2 visible-lg visible-md">
+    <div class="col-lg-2 col-md-3 visible-lg visible-md">
       <div id="revision-toc" class="revision-toc"></div>
-    </div> {# /.col-md-2 #}
+    </div> {# /.col- #}
 
   </div>
 {% endblock %}
