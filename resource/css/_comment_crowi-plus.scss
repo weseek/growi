@@ -31,13 +31,13 @@
       margin-bottom: 1em;
       border-radius: 3px;
       &:before {
-        border: 2em solid transparent;
+        border: 1em solid transparent;
         border-right-color:#f5f5f5;
         border-left-width: 0;
         left: -1em;
         content: "";
         display: block;
-        top: 0.5em;
+        top: 1.5em;
         position: absolute;
         width: 0;
       }
