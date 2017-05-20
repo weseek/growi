@@ -100,7 +100,9 @@ export default class SearchForm extends React.Component {
   }
 
   render() {
-    const emptyLabel = (this.state.searchError !== null) ? 'Error on searching.' : 'No matches found.';
+    const emptyLabel = (this.state.searchError !== null)
+        ? 'Error on searching.'
+        : 'No matches found on title... Hit [Enter] key so that search on contents.';
     const formClear = this.getFormClearComponent();
 
     return (
@@ -116,7 +118,9 @@ export default class SearchForm extends React.Component {
               labelKey="path"
               minLength={2}
               options={this.state.pages}
-              placeholder="Search ... Page Title (Path) and Content"
+              placeholder="Search ..."
+              emptyLabel={emptyLabel}
+              align='left'
               submitFormOnEnter={true}
               onSearch={this.search}
               onInputChange={this.onInputChange}
