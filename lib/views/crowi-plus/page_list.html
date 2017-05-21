@@ -37,7 +37,7 @@
 {% endblock %}
 
 {% block content_main_after %}
-  {% if not page.isDeleted() %}
+  {% if page and not page.isDeleted() %}
     {% include 'widget/comments.html' %}
   {% endif %}
 {% endblock %}
