@@ -16,6 +16,7 @@
       <div class="page-comments-list-older collapse in" id="page-comments-list-older"></div>
     </div>
 
+    {% if page and not page.isDeleted() %}
     <form class="form page-comment-form" id="page-comment-form" onsubmit="return false;">
       <div class="comment-form">
         <div class="comment-form-user">
@@ -40,6 +41,7 @@
         </div>
       </div>
     </form>
+    {% endif %}
 
   </div>
 

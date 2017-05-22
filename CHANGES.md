@@ -1,6 +1,11 @@
 CHANGES
 ========
 
+## 1.1.5
+
+* Fix: crowi-plus Enhanced Layout
+* Support: Merge official Crowi v1.6.1 master branch [573144b]
+
 ## 1.1.4
 
 * Feature: Ensure to select layout type from Admin Page
