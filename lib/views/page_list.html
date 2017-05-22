@@ -78,6 +78,7 @@
   data-page-revision-created="{% if revision %}{{ revision.createdAt|datetz('U') }}{% endif %}"
   data-page-is-seen="{% if page and page.isSeenUser(user) %}1{% else %}0{% endif %}"
   data-linebreaks-enabled="{{ isEnabledLinebreaks() }}"
+  data-csrftoken="{{ csrf() }}"
   >
 
 <div class="portal {% if not page or req.query.offset > 0 %}hide{% endif %}">
