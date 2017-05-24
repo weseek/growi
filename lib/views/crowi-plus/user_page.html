@@ -10,24 +10,26 @@
 
 
 {% block content_main %}
-  <div class="row">
+  <div class="container-fluid">
+    <div class="row">
 
-    <div class="col-lg-10 col-md-9">
+      <div class="col-lg-10 col-md-9">
 
-      {% parent %}
+        {% parent %}
 
-      {# force remove #revision-toc from #content_main of parent #}
-      <script>
-        $('#revision-toc').remove();
-      </script>
+        {# force remove #revision-toc from #content_main of parent #}
+        <script>
+          $('#revision-toc').remove();
+        </script>
 
-    </div> {# /.col- #}
+      </div> {# /.col- #}
 
-    {# relocate #revision-toc #}
-    <div class="col-lg-2 col-md-3 visible-lg visible-md">
-      <div id="revision-toc" class="revision-toc" data-spy="affix" data-offset-top="310"></div>
-    </div> {# /.col- #}
+      {# relocate #revision-toc #}
+      <div class="col-lg-2 col-md-3 visible-lg visible-md">
+        <div id="revision-toc" class="revision-toc" data-spy="affix" data-offset-top="310"></div>
+      </div> {# /.col- #}
 
+    </div>
   </div>
 {% endblock %}
 
