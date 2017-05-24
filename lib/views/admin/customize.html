@@ -24,7 +24,7 @@
 {% endblock %}
 
 {% block content_main %}
-<div class="content-main">
+<div class="content-main admin-customize">
   {% set smessage = req.flash('successMessage') %}
   {% if smessage.length %}
   <div class="alert alert-success">
@@ -56,7 +56,9 @@
                   {% if !settingForm['customize:layout'] || 'crowi' === settingForm['customize:layout'] %}checked="checked"{% endif %}>
               Official Crowi Classic Layout
             </h4>
-            <a href="http://placehold.it"><img src="http://placehold.it/350x150"></a>
+            <a href="/images/admin/customize/layout-classic.gif" class="ss-container">
+              <img src="/images/admin/customize/layout-classic-thumb.gif" width="240px">
+            </a>
           </div>
           <div class="col-xs-6">
             <h4>
@@ -64,7 +66,9 @@
                   {% if 'crowi-plus' === settingForm['customize:layout'] %}checked="checked"{% endif %}>
               crowi-plus Enhanced Layout
             </h4>
-            <a href="http://placehold.it"><img src="http://placehold.it/350x150"></a>
+            <a href="/images/admin/customize/layout-crowi-plus.gif" class="ss-container">
+              <img src="/images/admin/customize/layout-crowi-plus-thumb.gif" width="240px">
+            </a>
           </div>
         </div>
 
