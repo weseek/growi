@@ -1,16 +1,11 @@
-{% extends 'base/page_nosidebar.html' %}
+{% extends 'base/user_page_nosidebar.html' %}
 
+{% block main_css_class %}
+  {% parent %}
+{% endblock %}
 
 {% block content_head %}
-
-  {% block content_head_before %}
-  {% endblock %}
-
-  {% include 'widget/header.html' %}
-
-  {% block content_head_after %}
-  {% endblock %}
-
+  {% parent %}
 {% endblock %} {# /content_head #}
 
 
@@ -31,7 +26,7 @@
 
       {# relocate #revision-toc #}
       <div class="col-lg-2 col-md-3 visible-lg visible-md">
-        <div id="revision-toc" class="revision-toc" data-spy="affix" data-offset-top="100"></div>
+        <div id="revision-toc" class="revision-toc" data-spy="affix" data-offset-top="310"></div>
       </div> {# /.col- #}
 
     </div>

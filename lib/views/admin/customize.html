@@ -24,7 +24,7 @@
 {% endblock %}
 
 {% block content_main %}
-<div class="content-main">
+<div class="content-main admin-customize">
   {% set smessage = req.flash('successMessage') %}
   {% if smessage.length %}
   <div class="alert alert-success">
@@ -56,15 +56,34 @@
                   {% if !settingForm['customize:layout'] || 'crowi' === settingForm['customize:layout'] %}checked="checked"{% endif %}>
               Official Crowi Classic Layout
             </h4>
-            <a href="http://placehold.it"><img src="http://placehold.it/350x150"></a>
+            <a href="/images/admin/customize/layout-classic.gif" class="ss-container">
+              <img src="/images/admin/customize/layout-classic-thumb.gif" width="240px">
+            </a>
+            <ul>
+              <li>Functional</li>
+              <ul>
+                <li>Collapsible Sidebar</li>
+                <li>Show and post comments in Sidebar</li>
+                <li>Collapsible Table-of-contents</li>
+              </ul>
+            </ul>
           </div>
           <div class="col-xs-6">
             <h4>
               <input type="radio" name="settingForm[customize:layout]" value="crowi-plus"
                   {% if 'crowi-plus' === settingForm['customize:layout'] %}checked="checked"{% endif %}>
-              crowi-plus Enhanced Layout
+              crowi-plus Enhanced Layout <small class="text-success">(Recommended)</small>
             </h4>
-            <a href="http://placehold.it"><img src="http://placehold.it/350x150"></a>
+            <a href="/images/admin/customize/layout-crowi-plus.gif" class="ss-container">
+              <img src="/images/admin/customize/layout-crowi-plus-thumb.gif" width="240px">
+            </a>
+            <ul>
+              <li>Simple and Clear</li>
+              <ul>
+                <li>Show and post comments from the bottom of the page</li>
+                <li>Affix Table-of-contents</li>
+              </ul>
+            </ul>
           </div>
         </div>
 

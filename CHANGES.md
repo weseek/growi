@@ -1,6 +1,10 @@
 CHANGES
 ========
 
+## 1.1.6
+
+* Fix: crowi-plus Enhanced Layout
+
 ## 1.1.5
 
 * Fix: crowi-plus Enhanced Layout
