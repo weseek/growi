@@ -1,6 +1,11 @@
 CHANGES
 ========
 
+## 1.1.7
+
+* Feature: Add option to allow guest users to browse
+* Fix: crowi-plus Enhanced Layout
+
 ## 1.1.6
 
 * Fix: crowi-plus Enhanced Layout
