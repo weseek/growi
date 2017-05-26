@@ -10,11 +10,13 @@
       </div>
       {% if page %}
       <div class="flex-item-action">
+        {% if user %}
         <span id="bookmark-button">
           <p class="bookmark-link">
             <i class="fa fa-star-o"></i>
           </p>
         </span>
+        {% endif %}
       </div>
       <div class="flex-item-action visible-xs visible-sm">
         <button
@@ -52,7 +54,7 @@
 
       {% if not page and not isUserPageList(path) and !isTrashPage() %}
       <div class="portal-form-button">
-        <button class="btn btn-primary" id="create-portal-button">Create Portal</button>
+        <button class="btn btn-primary" id="create-portal-button" {% if not user %}disabled{% endif %}>Create Portal</button>
         <p class="help-block"><a href="#" data-target="#help-portal" data-toggle="modal"><i class="fa fa-question-circle"></i> What is Portal?</a></p>
       </div>
       {% endif %}
