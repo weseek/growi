@@ -104,6 +104,17 @@
         </div>
 
         <div class="form-group">
+          <label for="settingForm[security:restrictGuestMode]" class="col-xs-3 control-label">ゲストユーザーのアクセス</label>
+          <div class="col-xs-6">
+            <select class="form-control" name="settingForm[security:restrictGuestMode]" value="{{ settingForm['security:restrictGuestMode'] }}">
+              {% for modeValue, modeLabel in consts.restrictGuestMode %}
+              <option value="{{ modeValue }}" {% if modeValue == settingForm['security:restrictGuestMode'] %}selected{% endif %} >{{ modeLabel }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
           <label for="settingForm[security:registrationMode]" class="col-xs-3 control-label">登録の制限</label>
           <div class="col-xs-6">
             <select class="form-control" name="settingForm[security:registrationMode]" value="{{ settingForm['security:registrationMode'] }}">
