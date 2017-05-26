@@ -15,17 +15,20 @@
       <h1 class="title flex-item-title" id="revision-path"></h1>
       {% if page %}
       <div class="flex-item-action">
+        {% if user %}
         <span id="bookmark-button">
           <p class="bookmark-link">
             <i class="fa fa-star-o"></i>
           </p>
         </span>
+        {% endif %}
       </div>
       <div class="flex-item-action visible-xs visible-sm">
         <button
             data-csrftoken="{{ csrf() }}"
             data-liked="{% if page.isLiked(user) %}1{% else %}0{% endif %}"
             class="like-button btn btn-default btn-sm {% if page.isLiked(user) %}active{% endif %}"
+            {% if not user %}disabled{% endif %}
         ><i class="fa fa-thumbs-o-up"></i></button>
       </div>
       {% endif %}
