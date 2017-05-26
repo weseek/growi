@@ -76,6 +76,7 @@
   {% if page.isDeleted() %}
   <div class="alert alert-danger alert-trash">
     <div>
+      {% if user %}
       <ul class="list-inline pull-right">
         <li>
           <form role="form" id="revert-delete-page-form" onsubmit="return false;">
@@ -101,6 +102,8 @@
           </form>
         </li>
       </ul>{# /.pull-right #}
+      {% endif %}
+
       <i class="fa fa-trash-o" aria-hidden="true"></i>
       This page is in the trash.<br>
       Deleted by <img src="{{ page.lastUpdateUser|picture }}" class="picture picture-sm picture-rounded"> {{ page.lastUpdateUser.name }} at {{ page.updatedAt|datetz('Y-m-d H:i:s') }}
