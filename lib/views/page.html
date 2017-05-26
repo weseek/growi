@@ -8,26 +8,27 @@
 {% endblock %}
 
 <div class="header-wrap">
-  {% if not page.isDeleted() %}
   <header id="page-header">
     <p class="stopper"><a href="#" data-affix-disable="#page-header"><i class="fa fa-chevron-up"></i></a></p>
-
 
     <div class="flex-title-line">
       <h1 class="title flex-item-title" id="revision-path"></h1>
       {% if page %}
       <div class="flex-item-action">
+        {% if user %}
         <span id="bookmark-button">
           <p class="bookmark-link">
             <i class="fa fa-star-o"></i>
           </p>
         </span>
+        {% endif %}
       </div>
       <div class="flex-item-action visible-xs visible-sm">
         <button
             data-csrftoken="{{ csrf() }}"
             data-liked="{% if page.isLiked(user) %}1{% else %}0{% endif %}"
             class="like-button btn btn-default btn-sm {% if page.isLiked(user) %}active{% endif %}"
+            {% if not user %}disabled{% endif %}
         ><i class="fa fa-thumbs-o-up"></i></button>
       </div>
       {% endif %}
@@ -35,21 +36,6 @@
 
     <div id="revision-url" class="url-line"></div>
   </header>
-  {% else %}
-  {# trash/* #}
-  <header id="page-header">
-    <div class="flex-title-line">
-      <h1 class="title flex-item-title"></h1>
-      <div class="flex-item-action">
-        <span id="bookmark-button">
-          <p class="bookmark-link">
-            <i class="fa fa-star-o"></i>
-          </a>
-        </span>
-      </div>
-    </div>
-  </header>
-  {% endif %}
 </div>
 
 {% block content_head_after %}
@@ -93,6 +79,7 @@
   {% if page.isDeleted() %}
   <div class="alert alert-danger alert-trash">
     <div>
+      {% if user %}
       <ul class="list-inline pull-right">
         <li>
           <form role="form" id="revert-delete-page-form" onsubmit="return false;">
@@ -118,6 +105,8 @@
           </form>
         </li>
       </ul>{# /.pull-right #}
+      {% endif %}
+
       <i class="fa fa-trash-o" aria-hidden="true"></i>
       This page is in the trash.<br>
       Deleted by <img src="{{ page.lastUpdateUser|picture }}" class="picture picture-sm picture-rounded"> {{ page.lastUpdateUser.name }} at {{ page.updatedAt|datetz('Y-m-d H:i:s') }}
@@ -136,11 +125,15 @@
       </a>
     </li>
 
-    <li {% if req.body.pageForm %}class="active"{% endif %}><a href="#edit-form" data-toggle="tab"><i class="fa fa-pencil-square-o"></i> {{ t('Edit') }}</a></li>
+    <li {% if req.body.pageForm %}class="active"{% endif %}>
+      <a {% if user %}href="#edit-form" data-toggle="tab"{% endif %} class="edit-button {% if not user %}edit-button-disabled{% endif %}">
+        <i class="fa fa-pencil-square-o"></i> {{ t('Edit') }}
+      </a>
+    </li>
 
 
     <li class="dropdown pull-right">
-      <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+      <a class="dropdown-toggle {% if not user %}dropdown-disabled{% endif %}" {% if user %}data-toggle="dropdown" href="#"{% endif %}>
         <i class="fa fa-wrench"></i> <span class="caret"></span>
       </a>
       <ul class="dropdown-menu">
@@ -169,6 +162,7 @@
   {% if req.query.redirectFrom and not page.isDeleted() %}
   <div class="alert alert-info alert-moved">
     <div>
+      {% if user %}
       <form role="form" id="unlink-page-form" onsubmit="return false;">
         <input type="hidden" name="_csrf" value="{{ csrf() }}">
         <input type="hidden" name="path" value="{{ page.path }}">
@@ -178,6 +172,7 @@
           Unlink
         </button>
       </form>
+      {% endif %}
       <span>
         <strong>{{ t('Moved') }}: </strong> {{ t('page_page.notice.moved', req.query.redirectFrom) }}
       </span>

@@ -16,6 +16,12 @@ export default class BookmarkButton extends React.Component {
   }
 
   componentDidMount() {
+    // if guest user
+    if (this.props.crowi.me === "") {
+      // do nothing
+      return;
+    }
+
     this.props.crowi.apiGet('/bookmarks.get', {page_id: this.props.pageId})
     .then(res => {
       if (res.bookmark) {
@@ -51,6 +57,11 @@ export default class BookmarkButton extends React.Component {
   }
 
   render() {
+    // if guest user
+    if (this.props.crowi.me === "") {
+      return <div></div>;
+    }
+
     const iconName = this.state.bookmarked ? 'star' : 'star-o';
 
     return (

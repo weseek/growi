@@ -237,6 +237,13 @@ footer {
     }
   }
 }
+.dropdown-disabled {
+  cursor: not-allowed;
+}
+
+.edit-button.edit-button-disabled {
+  cursor: not-allowed;
+}
 
 // user picture
 .picture {

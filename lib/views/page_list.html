@@ -33,13 +33,16 @@
 
       {% if page %}
       <div class="flex-item-action">
+        {% if user %}
         <span id="bookmark-button" data-csrftoken="{{ csrf() }}"></span>
+        {% endif %}
       </div>
       <div class="flex-item-action visible-xs visible-sm">
         <button
             data-csrftoken="{{ csrf() }}"
             data-liked="{% if page.isLiked(user) %}1{% else %}0{% endif %}"
             class="like-button btn btn-default btn-sm {% if page.isLiked(user) %}active{% endif %}"
+            {% if not user %}disabled{% endif %}
         ><i class="fa fa-thumbs-o-up"></i></button>
       </div>
       {% endif %}
@@ -95,7 +98,11 @@
       <a>Create Portal: {{ path }}</a>
       {% endif %}
     </li>
-    <li {% if req.body.pageForm %}class="active"{% endif %}><a href="#edit-form" data-toggle="tab"><i class="fa fa-pencil-square-o"></i> {{ t('Edit') }}</a></li>
+    <li {% if req.body.pageForm %}class="active"{% endif %}>
+      <a {% if user %}href="#edit-form" data-toggle="tab"{% endif %} class="edit-button {% if not user %}edit-button-disabled{% endif %}">
+        <i class="fa fa-pencil-square-o"></i> {{ t('Edit') }}
+      </a>
+    </li>
 
     {% if not page %}
     <li class="pull-right close-button">
@@ -105,7 +112,7 @@
     </li>
     {% else %}
     <li class="dropdown pull-right">
-      <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+      <a class="dropdown-toggle {% if not user %}dropdown-disabled{% endif %}" {% if user %}data-toggle="dropdown" href="#"{% endif %}>
         <i class="fa fa-wrench"></i> <span class="caret"></span>
       </a>
       <ul class="dropdown-menu">
