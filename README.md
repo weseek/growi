@@ -25,6 +25,7 @@ This is **crowi-plus** that is the fork of [Crowi][crowi], is [perfectly compati
 * [Docker Ready][dockerhub]
 * [Docker Compose Ready][docker-compose]
   * [Multiple sites example](https://github.com/weseek/crowi-plus-docker-compose/tree/master/examples/multi-app)
+  * [HTTPS(with Let's Encrypt) proxy integration example](https://github.com/weseek/crowi-plus-docker-compose/tree/master/examples/https-portal)
 * [Added miscellaneous features](https://github.com/weseek/crowi-plus/wiki/Additional-Features)
 * Developer-friendly
   * Less compile time
