@@ -19,16 +19,38 @@
   </p>
   {% endif %}
   <article>
-    {% block content_head %}
-      {% parent %}
-    {% endblock %}
+    <div class="container-fluid">
+      <div class="row">
 
-    {% block content_main_before %}
-    {% endblock %}
+        <div class="col-lg-10 col-md-9">
 
-    {% block content_main %}
-      {% parent %}
-    {% endblock content_main %}
+          {#
+           # ensure to insert 'content_head' block to col-xx-xx
+           #
+           #   Because this block has content like 'Bookmarks' or 'Recent Created' whose height changes dynamically,
+           #   setting of 'revision-toc' (affix) is hindered.
+           #}
+
+          {% block content_head %}
+            {% parent %}
+          {% endblock %}
+
+          {% block content_main_before %}
+          {% endblock %}
+
+          {% block content_main %}
+            {% parent %}
+          {% endblock content_main %}
+
+        </div> {# /.col- #}
+
+        {# relocate #revision-toc #}
+        <div class="col-lg-2 col-md-3 visible-lg visible-md">
+          <div id="revision-toc" class="revision-toc" data-spy="affix" data-offset-top="50"></div>
+        </div> {# /.col- #}
+
+      </div>
+    </div>
 
     {% block content_main_after %}
     {% endblock %}

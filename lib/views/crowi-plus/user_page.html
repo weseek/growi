@@ -11,27 +11,12 @@
 
 
 {% block content_main %}
-  <div class="container-fluid">
-    <div class="row">
+  {% parent %}
 
-      <div class="col-lg-10 col-md-9">
-
-        {% parent %}
-
-        {# force remove #revision-toc from #content_main of parent #}
-        <script>
-          $('#revision-toc').remove();
-        </script>
-
-      </div> {# /.col- #}
-
-      {# relocate #revision-toc #}
-      <div class="col-lg-2 col-md-3 visible-lg visible-md">
-        <div id="revision-toc" class="revision-toc" data-spy="affix" data-offset-top="310"></div>
-      </div> {# /.col- #}
-
-    </div>
-  </div>
+  {# force remove #revision-toc from #content_main of parent #}
+  <script>
+    $('#revision-toc').remove();
+  </script>
 {% endblock %}
 
 {% block content_main_after %}
