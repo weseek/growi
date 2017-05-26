@@ -162,6 +162,7 @@
   {% if req.query.redirectFrom and not page.isDeleted() %}
   <div class="alert alert-info alert-moved">
     <div>
+      {% if user %}
       <form role="form" id="unlink-page-form" onsubmit="return false;">
         <input type="hidden" name="_csrf" value="{{ csrf() }}">
         <input type="hidden" name="path" value="{{ page.path }}">
@@ -171,6 +172,7 @@
           Unlink
         </button>
       </form>
+      {% endif %}
       <span>
         <strong>{{ t('Moved') }}: </strong> {{ t('page_page.notice.moved', req.query.redirectFrom) }}
       </span>
