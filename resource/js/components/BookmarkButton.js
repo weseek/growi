@@ -51,6 +51,11 @@ export default class BookmarkButton extends React.Component {
   }
 
   render() {
+    // if guest user
+    if (this.props.crowi.me === "") {
+      return <div></div>;
+    }
+
     const iconName = this.state.bookmarked ? 'star' : 'star-o';
 
     return (
