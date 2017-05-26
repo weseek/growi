@@ -1,0 +1,20 @@
+.crowi-plus.main-container {
+  .main-crowi-plus-customized.user-page {
+
+    .header-wrap {
+      padding: 16px 0 0 0;
+    }
+
+    .revision-toc {
+      .revision-toc-content {
+        margin-top: 25px;
+        background: none;
+      }
+
+      &.affix {
+        top: 10px;
+      }
+    }
+
+  }
+}

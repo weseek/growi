@@ -24,6 +24,7 @@ This is **crowi-plus** that is the fork of [Crowi][crowi], is [perfectly compati
   * Upgrade other insecure libs
 * [Docker Ready][dockerhub]
 * [Docker Compose Ready][docker-compose]
+  * [Multiple sites example](https://github.com/weseek/crowi-plus-docker-compose/tree/master/examples/multi-app)
 * [Added miscellaneous features](https://github.com/weseek/crowi-plus/wiki/Additional-Features)
 * Developer-friendly
   * Less compile time

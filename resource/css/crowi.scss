@@ -29,6 +29,7 @@ $bootstrap-sass-asset-helper: true;
 @import 'portal';
 @import 'search';
 @import 'user';
+@import 'user_crowi-plus';
 @import 'wiki';
 @import 'wiki_crowi-plus';
 
@@ -235,6 +236,13 @@ footer {
       padding: 5px 20px;
     }
   }
+}
+.dropdown-disabled {
+  cursor: not-allowed;
+}
+
+.edit-button.edit-button-disabled {
+  cursor: not-allowed;
 }
 
 // user picture

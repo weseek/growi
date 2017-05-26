@@ -16,14 +16,14 @@
     <div class="comment-form">
       <div class="comment-form-main">
         <div class="comment-write" id="comment-write">
-          <textarea class="comment-form-comment form-control" id="comment-form-comment" name="commentForm[comment]"></textarea>
+          <textarea class="comment-form-comment form-control" id="comment-form-comment" name="commentForm[comment]" {% if not user %}disabled{% endif %}></textarea>
         </div>
         <div class="comment-submit">
           <input type="hidden" name="_csrf" value="{{ csrf() }}">
           <input type="hidden" name="commentForm[page_id]" value="{{ page._id.toString() }}">
           <input type="hidden" name="commentForm[revision_id]" value="{{ revision._id.toString() }}">
           <span class="text-danger" id="comment-form-message"></span>
-          <input type="submit" id="comment-form-button" value="Comment" class="btn btn-primary btn-sm form-inline">
+          <input type="submit" id="comment-form-button" value="Comment" class="btn btn-primary btn-sm form-inline" {% if not user %}disabled{% endif %}>
         </div>
       </div>
     </div>

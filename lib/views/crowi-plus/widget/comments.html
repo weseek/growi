@@ -24,7 +24,8 @@
         </div>
         <div class="comment-form-main">
           <div class="comment-write" id="comment-write">
-            <textarea class="comment-form-comment form-control" id="comment-form-comment" name="commentForm[comment]" rows="10" placeholder="コメントを入力してください。"></textarea>
+            <textarea class="comment-form-comment form-control" id="comment-form-comment" name="commentForm[comment]"
+                rows="10" placeholder="Write comments here..." {% if not user %}disabled{% endif %}></textarea>
           </div>
           <div class="comment-submit">
             <input type="hidden" name="_csrf" value="{{ csrf() }}">
@@ -32,8 +33,8 @@
             <input type="hidden" name="commentForm[revision_id]" value="{{ revision._id.toString() }}">
             <div class="pull-right">
               <span class="text-danger" id="comment-form-message"></span>
-              <button type="submit" id="comment-form-button" class="btn btn-primary form-inline">
-                <i class="fa fa-comment comment-ico" aria-hidden="true"></i>Comment
+              <button type="submit" id="comment-form-button" class="btn btn-primary form-inline" {% if not user %}disabled{% endif %}>
+                Comment
               </button>
             </div>
             <div class="clearfix"></div>
