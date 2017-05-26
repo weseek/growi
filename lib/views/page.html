@@ -8,10 +8,8 @@
 {% endblock %}
 
 <div class="header-wrap">
-  {% if not page.isDeleted() %}
   <header id="page-header">
     <p class="stopper"><a href="#" data-affix-disable="#page-header"><i class="fa fa-chevron-up"></i></a></p>
-
 
     <div class="flex-title-line">
       <h1 class="title flex-item-title" id="revision-path"></h1>
@@ -35,21 +33,6 @@
 
     <div id="revision-url" class="url-line"></div>
   </header>
-  {% else %}
-  {# trash/* #}
-  <header id="page-header">
-    <div class="flex-title-line">
-      <h1 class="title flex-item-title"></h1>
-      <div class="flex-item-action">
-        <span id="bookmark-button">
-          <p class="bookmark-link">
-            <i class="fa fa-star-o"></i>
-          </a>
-        </span>
-      </div>
-    </div>
-  </header>
-  {% endif %}
 </div>
 
 {% block content_head_after %}
