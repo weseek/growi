@@ -16,6 +16,7 @@ export default class PageAttachmentList extends React.Component {
           attachment={attachment}
           inUse={this.props.inUse[attachment._id] || false}
           onAttachmentDeleteClicked={this.props.onAttachmentDeleteClicked}
+          isUserLoggedIn={this.props.isUserLoggedIn}
          />
       );
     });

@@ -79,24 +79,23 @@ export default class PageAttachment extends React.Component {
     });
   }
 
+  isUserLoggedIn() {
+    return this.props.crowi.me !== '';
+  }
+
   render() {
-    const attachmentToDelete = this.state.attachmentToDelete;
-    let deleteModalClose = () => this.setState({ attachmentToDelete: null });
-    let showModal = attachmentToDelete !== null;
+    let deleteAttachmentModal = '';
+    if (this.isUserLoggedIn()) {
+      const attachmentToDelete = this.state.attachmentToDelete;
+      let deleteModalClose = () => this.setState({ attachmentToDelete: null });
+      let showModal = attachmentToDelete !== null;
 
-    let deleteInUse = null;
-    if (attachmentToDelete !== null) {
-      deleteInUse = this.state.inUse[attachmentToDelete._id] || false;
-    }
+      let deleteInUse = null;
+      if (attachmentToDelete !== null) {
+        deleteInUse = this.state.inUse[attachmentToDelete._id] || false;
+      }
 
-    return (
-      <div>
-        <p>Attachments</p>
-        <PageAttachmentList
-          attachments={this.state.attachments}
-          inUse={this.state.inUse}
-          onAttachmentDeleteClicked={this.onAttachmentDeleteClicked}
-        />
+      deleteAttachmentModal = (
         <DeleteAttachmentModal
           show={showModal}
           animation={false}
@@ -108,6 +107,21 @@ export default class PageAttachment extends React.Component {
           deleteError={this.state.deleteError}
           onAttachmentDeleteClickedConfirm={this.onAttachmentDeleteClickedConfirm}
         />
+      );
+    }
+
+
+    return (
+      <div>
+        <p>Attachments</p>
+        <PageAttachmentList
+          attachments={this.state.attachments}
+          inUse={this.state.inUse}
+          onAttachmentDeleteClicked={this.onAttachmentDeleteClicked}
+          isUserLoggedIn={this.isUserLoggedIn()}
+        />
+
+        {deleteAttachmentModal}
       </div>
     );
   }
