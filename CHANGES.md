@@ -5,6 +5,7 @@ CHANGES
 
 * Fix: Depth of dropdown-menu when '.on-edit'
 * Fix: Error occured on saveing with Ctrl+S
+* Fix: Guest users browsing
 
 ## 1.1.7
 
