@@ -12,6 +12,10 @@
   .nav {
     margin-top: 8px;
     height: 40px;
+
+    .dropdown-menu {
+      z-index: 1060;
+    }
   }
 
   .tab-content {

@@ -17,7 +17,7 @@ export default class BookmarkButton extends React.Component {
 
   componentDidMount() {
     // if guest user
-    if (this.props.crowi.me === "") {
+    if (!this.isUserLoggedIn()) {
       // do nothing
       return;
     }
@@ -56,9 +56,13 @@ export default class BookmarkButton extends React.Component {
     this.setState({bookmarked: false});
   }
 
+  isUserLoggedIn() {
+    return this.props.crowi.me !== '';
+  }
+
   render() {
     // if guest user
-    if (this.props.crowi.me === "") {
+    if (!this.isUserLoggedIn()) {
       return <div></div>;
     }
 

@@ -377,15 +377,33 @@ $(function() {
     const revisionInput = $('#page-form [name="pageForm[currentRevision]"]');
 
     // generate data to post
-    let data = {
-      page_id: pageId,
-      revision_id: revisionInput.val(),
-      body: $('#form-body').val(),
+    const body = $('#form-body').val();
+    let endpoint;
+    let data;
+
+    // update
+    if (pageId) {
+      endpoint = '/pages.update';
+      data = {
+        page_id: pageId,
+        revision_id: revisionInput.val(),
+        body: body,
+      };
+    }
+    // create
+    else {
+      endpoint = '/pages.create';
+      data = {
+        path: pagePath,
+        body: body,
+      };
     }
 
-    crowi.apiPost('/pages.update', data)
+    crowi.apiPost(endpoint, data)
       .then((res) => {
         let page = res.page;
+        pageId = page._id
+
         toastr.success(undefined, 'Saved successful', {
           closeButton: true,
           progressBar: true,
@@ -412,7 +430,6 @@ $(function() {
           timeOut: "3000",
         });
       });
-
   }
 
   // markdown helper inspired by 'esarea'.

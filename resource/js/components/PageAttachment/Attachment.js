@@ -35,6 +35,10 @@ export default class Attachment extends React.Component {
 
     const fileType = <span className="attachment-filetype label label-default">{attachment.fileFormat}</span>;
 
+    const btnTrash = (this.props.isUserLoggedIn)
+        ? <a className="text-danger attachment-delete" onClick={this._onAttachmentDeleteClicked}><Icon name="trash-o" /></a>
+        : '';
+
     return (
       <li>
           <User user={attachment.creator} />
@@ -46,7 +50,7 @@ export default class Attachment extends React.Component {
 
           {fileInUse}
 
-          <a className="text-danger attachment-delete" onClick={this._onAttachmentDeleteClicked}><Icon name="trash-o" /></a>
+          {btnTrash}
       </li>
     );
   }
@@ -56,6 +60,7 @@ Attachment.propTypes = {
   attachment: PropTypes.object.isRequired,
   inUse: PropTypes.bool.isRequired,
   onAttachmentDeleteClicked: PropTypes.func.isRequired,
+  isUserLoggedIn: PropTypes.bool.isRequired,
 };
 
 Attachment.defaultProps = {
