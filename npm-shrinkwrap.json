@@ -5184,6 +5184,18 @@
       "from": "pkg-dir@>=1.0.0 <2.0.0",
       "resolved": "https://registry.npmjs.org/pkg-dir/-/pkg-dir-1.0.0.tgz"
     },
+    "plantuml-encoder": {
+      "version": "1.2.4",
+      "from": "plantuml-encoder@latest",
+      "resolved": "https://registry.npmjs.org/plantuml-encoder/-/plantuml-encoder-1.2.4.tgz",
+      "dependencies": {
+        "pako": {
+          "version": "1.0.3",
+          "from": "pako@1.0.3",
+          "resolved": "https://registry.npmjs.org/pako/-/pako-1.0.3.tgz"
+        }
+      }
+    },
     "plur": {
       "version": "2.1.2",
       "from": "plur@>=2.1.0 <3.0.0",
@@ -6360,6 +6372,11 @@
       "version": "2.1.0",
       "from": "utf8@2.1.0",
       "resolved": "https://registry.npmjs.org/utf8/-/utf8-2.1.0.tgz"
+    },
+    "utf8-bytes": {
+      "version": "0.0.1",
+      "from": "utf8-bytes@0.0.1",
+      "resolved": "https://registry.npmjs.org/utf8-bytes/-/utf8-bytes-0.0.1.tgz"
     },
     "util": {
       "version": "0.10.3",
