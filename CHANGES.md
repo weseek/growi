@@ -1,6 +1,10 @@
 CHANGES
 ========
 
+## 1.1.8
+
+* Fix: Error occured on saveing with Ctrl+S
+
 ## 1.1.7
 
 * Feature: Add option to allow guest users to browse
