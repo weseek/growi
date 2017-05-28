@@ -1,6 +1,11 @@
 CHANGES
 ========
 
+## 1.1.9
+
+* Improvement: Ensure to generate indices of Elasticsearch when installed
+* Fix: Specify the version of Bonsai Elasticsearch on Heroku
+
 ## 1.1.8
 
 * Fix: Depth of dropdown-menu when '.on-edit'
