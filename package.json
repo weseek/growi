@@ -91,6 +91,7 @@
     "multer": "~1.2.1",
     "nodemailer": "~2.7.0",
     "nodemailer-ses-transport": "~1.5.0",
+    "plantuml-encoder": "~1.2.4",
     "react": "~15.5.0",
     "react-bootstrap": "~0.30.10",
     "react-dom": "~15.5.0",
