@@ -26,6 +26,11 @@
   "addons": [
     "mongolab",
     "redistogo",
-    "bonsai"
+    {
+      "plan": "bonsai",
+      "options": {
+        "version": "5.1"
+      }
+    }
   ]
 }
