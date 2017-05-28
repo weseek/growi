@@ -3,6 +3,7 @@ CHANGES
 
 ## 1.1.8
 
+* Fix: Depth of dropdown-menu when '.on-edit'
 * Fix: Error occured on saveing with Ctrl+S
 
 ## 1.1.7
