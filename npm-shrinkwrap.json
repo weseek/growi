@@ -3672,8 +3672,8 @@
     },
     "inline-attachment": {
       "version": "2.0.3",
-      "from": "git+https://github.com/Rovak/InlineAttachment.git#2.0.3",
-      "resolved": "git+https://github.com/Rovak/InlineAttachment.git#3aeb84a42976e88eaa030ed94f1cfd11b018b134"
+      "from": "inline-attachment@>=2.0.3 <2.1.0",
+      "resolved": "https://registry.npmjs.org/inline-attachment/-/inline-attachment-2.0.3.tgz"
     },
     "interpret": {
       "version": "1.0.3",
