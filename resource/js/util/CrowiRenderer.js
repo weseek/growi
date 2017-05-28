@@ -9,25 +9,28 @@ import Emoji         from './PostProcessor/Emoji';
 
 import Tsv2Table from './LangProcessor/Tsv2Table';
 import Template from './LangProcessor/Template';
+import PlantUML from './LangProcessor/PlantUML';
 
 export default class CrowiRenderer {
 
 
-  constructor(plugins) {
+  constructor(crowi) {
+    this.crowi = crowi;
 
     this.preProcessors = [
-      new MarkdownFixer(),
-      new Linker(),
-      new ImageExpander(),
+      new MarkdownFixer(crowi),
+      new Linker(crowi),
+      new ImageExpander(crowi),
     ];
     this.postProcessors = [
-      new Emoji(),
+      new Emoji(crowi),
     ];
 
     this.langProcessors = {
-      'tsv': new Tsv2Table(),
-      'tsv-h': new Tsv2Table({header: true}),
-      'template': new Template(),
+      'tsv': new Tsv2Table(crowi),
+      'tsv-h': new Tsv2Table(crowi, {header: true}),
+      'template': new Template(crowi),
+      'plantuml': new PlantUML(crowi),
     };
 
     this.parseMarkdown = this.parseMarkdown.bind(this);
