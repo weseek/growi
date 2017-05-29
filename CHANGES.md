@@ -4,6 +4,7 @@ CHANGES
 ## 1.1.10
 
 * Fix: .search-box is broken on sm/xs screen
+* Support: Browsable with IE11 (Experimental)
 
 ## 1.1.9
 
