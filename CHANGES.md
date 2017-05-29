@@ -1,6 +1,10 @@
 CHANGES
 ========
 
+## 1.1.10
+
+* Fix: .search-box is broken on sm/xs screen
+
 ## 1.1.9
 
 * Improvement: Ensure to generate indices of Elasticsearch when installed
