@@ -38,9 +38,8 @@ Quick Start for Production
 Using Heroku
 ------------
 
-1. go to https://heroku.com/deploy
-1. input INSTALL_PLUGINS to install plugins
-1. Upgrade Bonsai ( -> 5.x.x )
+1. Go to https://heroku.com/deploy
+1. (Optional) Input INSTALL_PLUGINS to install plugins
 
 Using docker-compose
 ---------------------
