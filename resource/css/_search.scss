@@ -27,13 +27,6 @@
 
 .search-top {
   .search-top-input-group {
-
-    // using react-bootstrap-typeahead
-    // see: https://github.com/ericgio/react-bootstrap-typeahead
-    .bootstrap-typeahead-input input {
-      width: 400px;
-    }
-
     .search-top-clear {
       position: absolute;
       right: 40px;
@@ -126,26 +119,13 @@
 }
 
 // Smartphone and Tablet
-@media (max-width: $screen-sm-max) {
+@media (max-width: $screen-xs-max) {
   .search-top {
     margin-top: 4px 0 0 0;
     padding: 0;
     border-style: none !important;
     box-shadow: none !important;
     -webkit-box-shadow: none !important;
-
-    .search-form {
-      width: 76%;
-    }
-
-    .search-top-input-group {
-      .search-top-input {
-        width: 100%;
-      }
-      .btn {
-        z-index: 10;
-      }
-    }
   }
 
   .search-result {
@@ -163,15 +143,30 @@
   }
 }
 
-// Smartphone
-@media (max-width: $screen-xs-max) {
-  .search-top {
-    .search-form {
-      min-width: 40%;
-      max-width: 50%;
-      width: 50%;
+.search-top .search-form {
+  @media (min-width: $screen-sm-max) {
+    // using react-bootstrap-typeahead
+    // see: https://github.com/ericgio/react-bootstrap-typeahead
+    .bootstrap-typeahead-input input {
+      width: 500px;
     }
-    .search-box {
+  }
+  @media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
+    background-color: #0f0;
+    // using react-bootstrap-typeahead
+    // see: https://github.com/ericgio/react-bootstrap-typeahead
+    .bootstrap-typeahead-input input {
+      width: 270px;
     }
+  }
+  @media (min-width: $screen-xs-min) and (max-width: $screen-xs-max) {
+    width: 70%;
+  }
+  @media (min-width: $screen-xs-min*2/3) and (max-width: $screen-xs-min) {
+    width: 58%;
+  }
+  @media (max-width: $screen-xs-min*2/3) {
+    width: 40%;
+    min-width: 120px;
   }
 }
