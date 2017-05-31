@@ -2,4 +2,21 @@
   .main-crowi-plus-customized .content-main {
     padding: 0;
   }
+
+  .system-version {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    opacity: .6;
+
+    a {
+      margin-left: .5em;
+    }
+  }
+
+  @media (max-width: $screen-sm-max) {
+    .system-version {
+      display: none;
+    }
+  }
 }
