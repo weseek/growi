@@ -40,6 +40,7 @@ Using Heroku
 
 1. go to https://heroku.com/deploy
 1. input INSTALL_PLUGINS to install plugins
+1. Upgrade Bonsai ( -> 5.x.x )
 
 Using docker-compose
 ---------------------
