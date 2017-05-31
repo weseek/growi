@@ -3,7 +3,9 @@
 <p align="center">
   <a href="https://heroku.com/deploy"><img src="https://www.herokucdn.com/deploy/button.png"></a>
 </p>
-
+<p align="center">
+  <a href="https://demo.crowi-plus.org">Demo Site</a>
+</p>
 
 crowi-plus [![Chat on Slack](https://crowi-plus-slackin.weseek.co.jp/badge.svg)][slackin]
 ===========
