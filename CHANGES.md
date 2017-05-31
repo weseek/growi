@@ -4,6 +4,7 @@ CHANGES
 ## 1.1.11
 
 * Fix: omit comment form from page_list (crowi-plus Enhanced Layout)
+* Fix: .search-box is broken on sm/xs screen
 
 ## 1.1.10
 
