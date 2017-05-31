@@ -13,14 +13,8 @@
       border-radius: 0;
       border: none;
       margin-bottom: 0;
-      display: flex;
 
       box-shadow: 0 3px 10px 0px rgba(0,0,0,.3);
-
-      .navbar-header {
-        flex-grow: 1;
-        display: flex;
-      }
 
       .navbar-brand {
         font-weight: bold;
@@ -59,7 +53,7 @@
       }
 
       .navbar-toggle {
-        margin-left: 15px;
+        position: absolute;
         top: 0;
         right: 0;
       }

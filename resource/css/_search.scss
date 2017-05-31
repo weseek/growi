@@ -26,45 +26,7 @@
 }
 
 .search-top {
-  flex-grow: 1;
-  display: flex;
-
-  %flexgrow {
-    flex-grow: 1;
-    display: flex;
-  }
-
-  // set flex-grow
-  .search-box {
-    @extend %flexgrow;
-    .form-group {
-      @extend %flexgrow;
-    }
-    .input-group {
-      @extend %flexgrow;
-    }
-  }
-
   .search-top-input-group {
-
-    // using react-bootstrap-typeahead
-    // see: https://github.com/ericgio/react-bootstrap-typeahead
-    .bootstrap-typeahead {
-      @extend %flexgrow;
-      max-width: 480px;
-
-      .bootstrap-typeahead-input {
-        @extend %flexgrow;
-        input {
-          @extend %flexgrow;
-        }
-      }
-
-    }
-    .input-group-btn {
-      flex-basis: 39px;
-    }
-
     .search-top-clear {
       position: absolute;
       right: 40px;
@@ -157,10 +119,10 @@
 }
 
 // Smartphone and Tablet
-@media (max-width: $screen-sm-max) {
+@media (max-width: $screen-xs-max) {
   .search-top {
+    margin-top: 4px 0 0 0;
     padding: 0;
-    margin-right: 0;
     border-style: none !important;
     box-shadow: none !important;
     -webkit-box-shadow: none !important;
@@ -181,13 +143,30 @@
   }
 }
 
-// Smartphone
-@media (max-width: $screen-xs-max) {
-  .search-top {
-    .search-top-input-group {
-      .btn {
-        z-index: 10;
-      }
+.search-top .search-form {
+  @media (min-width: $screen-sm-max) {
+    // using react-bootstrap-typeahead
+    // see: https://github.com/ericgio/react-bootstrap-typeahead
+    .bootstrap-typeahead-input input {
+      width: 500px;
     }
+  }
+  @media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
+    background-color: #0f0;
+    // using react-bootstrap-typeahead
+    // see: https://github.com/ericgio/react-bootstrap-typeahead
+    .bootstrap-typeahead-input input {
+      width: 270px;
+    }
+  }
+  @media (min-width: $screen-xs-min) and (max-width: $screen-xs-max) {
+    width: 70%;
+  }
+  @media (min-width: $screen-xs-min*2/3) and (max-width: $screen-xs-min) {
+    width: 58%;
+  }
+  @media (max-width: $screen-xs-min*2/3) {
+    width: 40%;
+    min-width: 120px;
   }
 }

@@ -3,7 +3,9 @@
 <p align="center">
   <a href="https://heroku.com/deploy"><img src="https://www.herokucdn.com/deploy/button.png"></a>
 </p>
-
+<p align="center">
+  <a href="https://demo.crowi-plus.org">Demo Site</a>
+</p>
 
 crowi-plus [![Chat on Slack](https://crowi-plus-slackin.weseek.co.jp/badge.svg)][slackin]
 ===========
@@ -27,6 +29,7 @@ This is **crowi-plus** that is the fork of [Crowi][crowi], is [perfectly compati
   * [Multiple sites example](https://github.com/weseek/crowi-plus-docker-compose/tree/master/examples/multi-app)
   * [HTTPS(with Let's Encrypt) proxy integration example](https://github.com/weseek/crowi-plus-docker-compose/tree/master/examples/https-portal)
 * [Added miscellaneous features](https://github.com/weseek/crowi-plus/wiki/Additional-Features)
+* Support for IE11 (Experimental)
 * Developer-friendly
   * Less compile time
   * LiveReload separately available by server/client code change
@@ -38,8 +41,8 @@ Quick Start for Production
 Using Heroku
 ------------
 
-1. go to https://heroku.com/deploy
-1. input INSTALL_PLUGINS to install plugins
+1. Go to https://heroku.com/deploy
+1. (Optional) Input INSTALL_PLUGINS to install plugins
 
 Using docker-compose
 ---------------------
