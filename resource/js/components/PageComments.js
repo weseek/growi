@@ -14,18 +14,18 @@ export default class PageComments extends React.Component {
       olderComments: [],
     };
 
-    this.fetchPageComments = this.fetchPageComments.bind(this);
+    this.init = this.init.bind(this);
   }
 
   componentWillMount() {
     const pageId = this.props.pageId;
 
     if (pageId) {
-      this.fetchPageComments();
+      this.init();
     }
   }
 
-  fetchPageComments() {
+  init() {
     if (!this.props.pageId) {
       return ;
     }
@@ -79,7 +79,6 @@ export default class PageComments extends React.Component {
   }
 
   render() {
-    // TODO impl elements
     let currentElements = this.generateCommentElements(this.state.currentComments);
     let newerElements = this.generateCommentElements(this.state.newerComments);
     let olderElements = this.generateCommentElements(this.state.olderComments);
