@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import Comment from './PageComment/Comment';
+
 export default class PageComments extends React.Component {
 
   constructor(props) {
@@ -59,17 +61,24 @@ export default class PageComments extends React.Component {
 
   }
 
+  /**
+   * generate Elements of Comment
+   *
+   * @param {any} comments Array of Comment Model Obj
+   *
+   * @memberOf PageComments
+   */
+  generateCommentElements(comments) {
+    return comments.map((comment) => {
+      return <Comment comment={comment} currentUserId={this.props.crowi.me} />
+    });
+  }
+
   render() {
     // TODO impl elements
-    let currentElements = this.state.currentComments.map((comment) => {
-      return <p>{comment.comment}</p>
-    });
-    let newerElements = this.state.newerComments.map((comment) => {
-      return <p>{comment.comment}</p>
-    });
-    let olderElements = this.state.olderComments.map((comment) => {
-      return <p>{comment.comment}</p>
-    });
+    let currentElements = this.generateCommentElements(this.state.currentComments);
+    let newerElements = this.generateCommentElements(this.state.newerComments);
+    let olderElements = this.generateCommentElements(this.state.olderComments);
 
     let toggleNewer = (newerElements.length === 0)
       ? <div></div>
