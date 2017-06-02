@@ -5,6 +5,14 @@ import moment from 'moment/src/moment';
 
 import UserPicture from '../User/UserPicture';
 
+/**
+ *
+ * @author Yuki Takei <yuki@weseek.co.jp>
+ *
+ * @export
+ * @class Comment
+ * @extends {React.Component}
+ */
 export default class Comment extends React.Component {
 
   constructor(props) {

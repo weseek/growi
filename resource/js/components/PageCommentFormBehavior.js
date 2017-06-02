@@ -8,6 +8,8 @@ import PageComments from './PageComments';
  *
  * This is transplanted from legacy/crowi.js -- 2017.06.03 Yuki Takei
  *
+ * @author Yuki Takei <yuki@weseek.co.jp>
+ *
  * @export
  * @class PageCommentFormBehavior
  * @extends {React.Component}

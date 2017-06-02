@@ -3,6 +3,15 @@ import PropTypes from 'prop-types';
 
 import Comment from './PageComment/Comment';
 
+/**
+ * Load data of comments and render the list of <Comment />
+ *
+ * @author Yuki Takei <yuki@weseek.co.jp>
+ *
+ * @export
+ * @class PageComments
+ * @extends {React.Component}
+ */
 export default class PageComments extends React.Component {
 
   constructor(props) {
