@@ -71,20 +71,31 @@ export default class PageComments extends React.Component {
       return <p>{comment.comment}</p>
     });
 
+    let toggleNewer = (newerElements.length === 0)
+      ? <div></div>
+      : (
+        <a className="page-comments-list-toggle-newer text-center" data-toggle="collapse" href="#page-comments-list-newer">
+          <i className="fa fa-angle-double-up"></i> Comments for Newer Revision <i className="fa fa-angle-double-up"></i>
+        </a>
+      )
+    let toggleOlder = (olderElements.length === 0)
+      ? <div></div>
+      : (
+        <a className="page-comments-list-toggle-older text-center" data-toggle="collapse" href="#page-comments-list-older">
+          <i className="fa fa-angle-double-down"></i> Comments for Older Revision <i className="fa fa-angle-double-down"></i>
+        </a>
+      )
+
     return (
       <div>
         <div className="page-comments-list-newer collapse" id="page-comments-list-newer">
           {newerElements}
         </div>
-        <a className="page-comments-list-toggle-newer text-center" data-toggle="collapse" href="#page-comments-list-newer">
-          <i className="fa fa-angle-double-up"></i> Comments for Newer Revision <i className="fa fa-angle-double-up"></i>
-        </a>
+        {toggleNewer}
         <div className="page-comments-list-current" id="page-comments-list-current">
           {currentElements}
         </div>
-        <a className="page-comments-list-toggle-older text-center" data-toggle="collapse" href="#page-comments-list-older">
-          <i className="fa fa-angle-double-down"></i> Comments for Older Revision <i className="fa fa-angle-double-down"></i>
-        </a>
+        {toggleOlder}
         <div className="page-comments-list-older collapse in" id="page-comments-list-older">
           {olderElements}
         </div>
