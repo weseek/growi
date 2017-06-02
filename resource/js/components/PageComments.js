@@ -70,7 +70,11 @@ export default class PageComments extends React.Component {
    */
   generateCommentElements(comments) {
     return comments.map((comment) => {
-      return <Comment comment={comment} currentUserId={this.props.crowi.me} />
+      return (
+        <Comment key={comment._id} comment={comment}
+          currentUserId={this.props.crowi.me}
+          currentRevisionId={this.props.revisionId} />
+      );
     });
   }
 

@@ -10,17 +10,28 @@ export default class Comment extends React.Component {
   constructor(props) {
     super(props);
 
+    this.isCurrentUserIsAuthor = this.isCurrentUserIsAuthor.bind(this);
+    this.isCurrentRevision = this.isCurrentRevision.bind(this);
     this.getRootClassName = this.getRootClassName.bind(this);
   }
 
+  isCurrentUserIsAuthor() {
+    return this.props.comment.creator._id === this.props.currentUserId;
+  }
+
+  isCurrentRevision() {
+    return this.props.comment.revision === this.props.currentRevisionId;
+  }
+
   getRootClassName() {
-    let className = "page-comment"
+    return "page-comment "
+        + (this.isCurrentUserIsAuthor() ? 'page-comment-me' : '')
+        + (this.isCurrentRevision() ? '': 'page-comment-old');
+  }
 
-    if (this.props.comment.creator._id === this.props.currentUserId) {
-      className += ' page-comment-me'
-    }
-
-    return className;
+  getRevisionLabelClassName() {
+    return 'page-comment-revision label '
+        + (this.isCurrentRevision() ? 'label-primary' : 'label-default');
   }
 
   render() {
@@ -31,6 +42,7 @@ export default class Comment extends React.Component {
     const commentDate = moment(comment.createdAt).format('YYYY/MM/DD HH:mm:ss');
     const revHref = `?revision=${comment.revision}`;
     const revFirst8Letters = comment.revision.substr(0,8);
+    const revisionLavelClassName = this.getRevisionLabelClassName();
 
     return (
       <div className={rootClassName}>
@@ -40,7 +52,7 @@ export default class Comment extends React.Component {
           <div className="page-comment-body">{comment.comment.replace(/(\r\n|\r|\n)/g, '<br>')}</div>
           <div className="page-comment-meta">
             {commentDate}&nbsp;
-            <a className="page-comment-revision label label-primary" href={revHref}>{revFirst8Letters}</a>
+            <a className={revisionLavelClassName} href={revHref}>{revFirst8Letters}</a>
           </div>
         </div>
       </div>
@@ -50,5 +62,6 @@ export default class Comment extends React.Component {
 
 Comment.propTypes = {
   comment: PropTypes.object.isRequired,
+  currentRevisionId: PropTypes.string.isRequired,
   currentUserId: PropTypes.string.isRequired,
 };
