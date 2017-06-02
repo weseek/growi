@@ -9,6 +9,7 @@ import SearchPage       from './components/SearchPage';
 import PageListSearch   from './components/PageListSearch';
 import PageHistory      from './components/PageHistory';
 import PageComments     from './components/PageComments';
+import PageCommentFormBehavior from './components/PageCommentFormBehavior';
 import PageAttachment   from './components/PageAttachment';
 import SeenUserList     from './components/SeenUserList';
 import RevisionPath     from './components/Page/RevisionPath';
@@ -55,6 +56,11 @@ if (isEnabledPlugins) {
   crowiPlugin.installAll(crowi, crowiRenderer);
 }
 
+/**
+ * define components
+ *  key: id of element
+ *  value: React Element
+ */
 const componentMappings = {
   'search-top': <HeaderSearchBox crowi={crowi} />,
   'search-page': <SearchPage crowi={crowi} />,
@@ -66,17 +72,25 @@ const componentMappings = {
   'seen-user-list': <SeenUserList pageId={pageId} crowi={crowi} />,
   'bookmark-button': <BookmarkButton pageId={pageId} crowi={crowi} />,
 };
+// additional definitions if pagePath exists
 if (pagePath) {
   componentMappings['revision-path'] = <RevisionPath pagePath={pagePath} />;
   componentMappings['revision-url'] = <RevisionUrl pageId={pageId} pagePath={pagePath} />;
 }
 
+let componentInstances = {};
 Object.keys(componentMappings).forEach((key) => {
   const elem = document.getElementById(key);
   if (elem) {
-    ReactDOM.render(componentMappings[key], elem);
+    componentInstances[key] = ReactDOM.render(componentMappings[key], elem);
   }
 });
+
+// render components with refs to another component
+const elem = document.getElementById('page-comment-form-behavior');
+if (elem) {
+  ReactDOM.render(<PageCommentFormBehavior crowi={crowi} pageComments={componentInstances['page-comments-list']} />, elem);
+}
 
 // うわーもうー
 $('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', function() {

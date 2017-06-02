@@ -482,6 +482,10 @@ $(function() {
       });
     }
 
+    /*
+     * transplanted to React components -- 2017.06.02 Yuki Takei
+     *
+
     // omg
     function createCommentHTML(revision, creator, comment, commentedAt) {
       var $comment = $('<div>');
@@ -528,9 +532,6 @@ $(function() {
 
     // get comments
     var $pageCommentList = $('.page-comments-list');
-    /*
-     * transplanted to PageComments React component -- 2017.06.02 Yuki Takei
-     *
     var $pageCommentListNewer =   $('#page-comments-list-newer');
     var $pageCommentListCurrent = $('#page-comments-list-current');
     var $pageCommentListOlder =   $('#page-comments-list-older');
@@ -565,7 +566,6 @@ $(function() {
         $('.page-comments-list-toggle-older').hide();
       }
     });
-    */
 
     // post comment event
     $('#page-comment-form').on('submit', function() {
@@ -590,6 +590,8 @@ $(function() {
 
       return false;
     });
+
+    */
 
     // Like
     var $likeButton = $('.like-button');
