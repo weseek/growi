@@ -8,6 +8,7 @@ import HeaderSearchBox  from './components/HeaderSearchBox';
 import SearchPage       from './components/SearchPage';
 import PageListSearch   from './components/PageListSearch';
 import PageHistory      from './components/PageHistory';
+import PageComments     from './components/PageComments';
 import PageAttachment   from './components/PageAttachment';
 import SeenUserList     from './components/SeenUserList';
 import RevisionPath     from './components/Page/RevisionPath';
@@ -21,10 +22,14 @@ if (!window) {
 
 const mainContent = document.querySelector('#content-main');
 let pageId = null;
+let pageRevisionId = null;
+let pageRevisionCreatedAt = null;
 let pagePath;
 let pageContent = null;
 if (mainContent !== null) {
   pageId = mainContent.attributes['data-page-id'].value;
+  pageRevisionId = mainContent.attributes['data-page-revision-id'].value;
+  pageRevisionCreatedAt = +mainContent.attributes['data-page-revision-created'].value;
   pagePath = mainContent.attributes['data-path'].value;
   const rawText = document.getElementById('raw-text-original');
   if (rawText) {
@@ -55,6 +60,7 @@ const componentMappings = {
   'search-top': <HeaderSearchBox crowi={crowi} />,
   'search-page': <SearchPage crowi={crowi} />,
   'page-list-search': <PageListSearch crowi={crowi} />,
+  'page-comments-list': <PageComments pageId={pageId} revisionId={pageRevisionId} revisionCreatedAt= {pageRevisionCreatedAt} crowi={crowi} />,
   'page-attachment': <PageAttachment pageId={pageId} pageContent={pageContent} crowi={crowi} />,
 
   //'revision-history': <PageHistory pageId={pageId} />,

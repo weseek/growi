@@ -73,9 +73,21 @@ export default class PageComments extends React.Component {
 
     return (
       <div>
-        <div>{currentElements}</div>
-        <div>{newerElements}</div>
-        <div>{olderElements}</div>
+        <div className="page-comments-list-newer collapse" id="page-comments-list-newer">
+          {newerElements}
+        </div>
+        <a className="page-comments-list-toggle-newer text-center" data-toggle="collapse" href="#page-comments-list-newer">
+          <i className="fa fa-angle-double-up"></i> Comments for Newer Revision <i className="fa fa-angle-double-up"></i>
+        </a>
+        <div className="page-comments-list-current" id="page-comments-list-current">
+          {currentElements}
+        </div>
+        <a className="page-comments-list-toggle-older text-center" data-toggle="collapse" href="#page-comments-list-older">
+          <i className="fa fa-angle-double-down"></i> Comments for Older Revision <i className="fa fa-angle-double-down"></i>
+        </a>
+        <div className="page-comments-list-older collapse in" id="page-comments-list-older">
+          {olderElements}
+        </div>
       </div>
     );
   }

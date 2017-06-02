@@ -5,6 +5,7 @@
     <h4><i class="fa fa-comments"></i> Comments</h4>
 
     <div class="page-comments-list" id="page-comments-list">
+      {# transplanted to PageComments React component -- 2017.06.02 Yuki Takei
       <div class="page-comments-list-newer collapse" id="page-comments-list-newer"></div>
 
       <a class="page-comments-list-toggle-newer text-center" data-toggle="collapse" href="#page-comments-list-newer"><i class="fa fa-angle-double-up"></i> Comments for Newer Revision <i class="fa fa-angle-double-up"></i></a>
@@ -14,6 +15,7 @@
       <a class="page-comments-list-toggle-older text-center" data-toggle="collapse" href="#page-comments-list-older"><i class="fa fa-angle-double-down"></i> Comments for Older Revision <i class="fa fa-angle-double-down"></i></a>
 
       <div class="page-comments-list-older collapse in" id="page-comments-list-older"></div>
+      #}
     </div>
 
     {% if page and not page.isDeleted() %}
