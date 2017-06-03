@@ -18,12 +18,12 @@ export default class Comment extends React.Component {
   constructor(props) {
     super(props);
 
-    this.isCurrentUserIsAuthor = this.isCurrentUserIsAuthor.bind(this);
+    this.isCurrentUserIsAuthor = this.isCurrentUserEqualsToAuthor.bind(this);
     this.isCurrentRevision = this.isCurrentRevision.bind(this);
     this.getRootClassName = this.getRootClassName.bind(this);
   }
 
-  isCurrentUserIsAuthor() {
+  isCurrentUserEqualsToAuthor() {
     return this.props.comment.creator.username === this.props.currentUserId;
   }
 
@@ -33,7 +33,7 @@ export default class Comment extends React.Component {
 
   getRootClassName() {
     return "page-comment "
-        + (this.isCurrentUserIsAuthor() ? 'page-comment-me' : '')
+        + (this.isCurrentUserEqualsToAuthor() ? 'page-comment-me' : '')
         + (this.isCurrentRevision() ? '': 'page-comment-old');
   }
 
