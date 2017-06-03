@@ -1,6 +1,7 @@
 .crowi-plus.main-container  {
 
   %comment-section {
+    position: relative;
     background: #f5f5f5;
     padding: 1em;
     margin-left: 4.5em;
@@ -70,6 +71,17 @@
       * {
         vertical-align: 25%;
       }
+    }
+
+    .page-comment-control {
+      position: absolute;
+      display: none;    // default hidden
+      top: 0;
+      right: 0;
+    }
+    // show when hover
+    .page-comment-main:hover > .page-comment-control {
+      display: block;
     }
 
   }

@@ -238,10 +238,11 @@
         font-size: 1.1em;
       }
 
-      a {
-        color: #ccc;
-        &:hover { color: #aaa;}
-      }
+      // disabled in crowi-plus -- 2017.06.03 Yuki Takei
+      // a {
+      //   color: #ccc;
+      //   &:hover { color: #aaa;}
+      // }
 
       ul.fitted-list {
         padding-left: 0;

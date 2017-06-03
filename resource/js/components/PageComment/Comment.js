@@ -62,6 +62,9 @@ export default class Comment extends React.Component {
             {commentDate}&nbsp;
             <a className={revisionLavelClassName} href={revHref}>{revFirst8Letters}</a>
           </div>
+          <div className="page-comment-control">
+            <a className="btn btn-link"><i className="fa fa-trash-o"></i></a>
+          </div>
         </div>
       </div>
     );

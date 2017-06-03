@@ -43,11 +43,11 @@
       }
 
       .page-comment-creator {
-        margin-left: 40px;
         font-weight: bold;
       }
 
       .page-comment-main {
+        position: relative;
         margin-left: 40px;
 
         .page-comment-meta {
@@ -58,6 +58,20 @@
           padding: 8px 0;
           word-wrap: break-word;
         }
+        .page-comment-control {
+          position: absolute;
+          display: none;    // default hidden
+          top: 0;
+          right: 0;
+
+          a {
+            padding: 3px;
+          }
+        }
+      }
+      // show when hover
+      .page-comment-main:hover > .page-comment-control {
+        display: block;
       }
     }
 
