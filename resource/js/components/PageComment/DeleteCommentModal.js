@@ -41,6 +41,7 @@ export default class DeleteCommentModal extends React.Component {
           <p className="comment-body">{commentBody}</p>
         </Modal.Body>
         <Modal.Footer>
+          <span className="text-danger">{this.props.errorMessage}</span>&nbsp;
           <Button onClick={this.props.cancel}>Cancel</Button>
           <Button onClick={this.props.confirmedToDelete} className="btn-danger">Delete</Button>
         </Modal.Footer>
@@ -53,6 +54,7 @@ export default class DeleteCommentModal extends React.Component {
 DeleteCommentModal.propTypes = {
   isShown: PropTypes.bool.isRequired,
   comment: PropTypes.object,
+  errorMessage: PropTypes.string,
   cancel: PropTypes.func.isRequired,            // for cancel evnet handling
   confirmedToDelete: PropTypes.func.isRequired, // for confirmed event handling
 };
