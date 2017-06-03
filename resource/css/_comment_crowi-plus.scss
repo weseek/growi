@@ -79,11 +79,14 @@
       top: 0;
       right: 0;
     }
+
+  }
+
+  .page-comment-me {
     // show when hover
     .page-comment-main:hover > .page-comment-control {
       display: block;
     }
-
   }
 
   .page-comment-old {

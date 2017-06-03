@@ -69,10 +69,6 @@
           }
         }
       }
-      // show when hover
-      .page-comment-main:hover > .page-comment-control {
-        display: block;
-      }
     }
 
     .page-comment.page-comment-me {
@@ -88,6 +84,11 @@
         .page-comment-meta {
           //background: lighten($crowiHeaderBackground, 65%);
         }
+      }
+
+      // show controls when hover
+      .page-comment-main:hover > .page-comment-control {
+        display: block;
       }
     }
 
