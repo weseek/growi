@@ -482,6 +482,10 @@ $(function() {
       });
     }
 
+    /*
+     * transplanted to React components -- 2017.06.02 Yuki Takei
+     *
+
     // omg
     function createCommentHTML(revision, creator, comment, commentedAt) {
       var $comment = $('<div>');
@@ -586,6 +590,8 @@ $(function() {
 
       return false;
     });
+
+    */
 
     // Like
     var $likeButton = $('.like-button');
