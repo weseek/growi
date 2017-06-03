@@ -21,6 +21,8 @@ export default class Comment extends React.Component {
     this.isCurrentUserIsAuthor = this.isCurrentUserEqualsToAuthor.bind(this);
     this.isCurrentRevision = this.isCurrentRevision.bind(this);
     this.getRootClassName = this.getRootClassName.bind(this);
+    this.getRevisionLabelClassName = this.getRevisionLabelClassName.bind(this);
+    this.deleteBtnClickedHandler = this.deleteBtnClickedHandler.bind(this);
   }
 
   isCurrentUserEqualsToAuthor() {
@@ -40,6 +42,10 @@ export default class Comment extends React.Component {
   getRevisionLabelClassName() {
     return 'page-comment-revision label '
         + (this.isCurrentRevision() ? 'label-primary' : 'label-default');
+  }
+
+  deleteBtnClickedHandler() {
+    this.props.deleteBtnClicked(this.props.comment);
   }
 
   render() {
@@ -63,7 +69,9 @@ export default class Comment extends React.Component {
             <a className={revisionLavelClassName} href={revHref}>{revFirst8Letters}</a>
           </div>
           <div className="page-comment-control">
-            <a className="btn btn-link"><i className="fa fa-trash-o"></i></a>
+            <a className="btn btn-link" onClick={this.deleteBtnClickedHandler}>
+              <i className="fa fa-trash-o"></i>
+            </a>
           </div>
         </div>
       </div>
@@ -75,4 +83,5 @@ Comment.propTypes = {
   comment: PropTypes.object.isRequired,
   currentRevisionId: PropTypes.string.isRequired,
   currentUserId: PropTypes.string.isRequired,
+  deleteBtnClicked: PropTypes.func.isRequired,
 };

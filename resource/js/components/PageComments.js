@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import Comment from './PageComment/Comment';
+import DeleteCommentModal from './PageComment/DeleteCommentModal';
 
 /**
  * Load data of comments and render the list of <Comment />
@@ -21,9 +22,17 @@ export default class PageComments extends React.Component {
       currentComments: [],
       newerComments: [],
       olderComments: [],
+
+      // for deleting comment
+      commentToDelete: undefined,
+      isDeleteConfirmModalShown: false,
     };
 
     this.init = this.init.bind(this);
+    this.confirmToDeleteComment = this.confirmToDeleteComment.bind(this);
+    this.deleteComment = this.deleteComment.bind(this);
+    this.showDeleteConfirmModal = this.showDeleteConfirmModal.bind(this);
+    this.closeDeleteConfirmModal = this.closeDeleteConfirmModal.bind(this);
   }
 
   componentWillMount() {
@@ -70,6 +79,31 @@ export default class PageComments extends React.Component {
 
   }
 
+  confirmToDeleteComment(comment) {
+    this.setState({commentToDelete: comment});
+    this.showDeleteConfirmModal();
+  }
+
+  deleteComment() {
+    const comment = this.state.commentToDelete;
+
+    // TODO delete
+    console.log(comment);
+
+    this.closeDeleteConfirmModal();
+  }
+
+  showDeleteConfirmModal() {
+    this.setState({isDeleteConfirmModalShown: true});
+  }
+
+  closeDeleteConfirmModal() {
+    this.setState({
+      commentToDelete: undefined,
+      isDeleteConfirmModalShown: false,
+    });
+  }
+
   /**
    * generate Elements of Comment
    *
@@ -82,7 +116,8 @@ export default class PageComments extends React.Component {
       return (
         <Comment key={comment._id} comment={comment}
           currentUserId={this.props.crowi.me}
-          currentRevisionId={this.props.revisionId} />
+          currentRevisionId={this.props.revisionId}
+          deleteBtnClicked={this.confirmToDeleteComment} />
       );
     });
   }
@@ -120,6 +155,13 @@ export default class PageComments extends React.Component {
         <div className="page-comments-list-older collapse in" id="page-comments-list-older">
           {olderElements}
         </div>
+
+        <DeleteCommentModal
+          isShown={this.state.isDeleteConfirmModalShown}
+          comment={this.state.commentToDelete}
+          cancel={this.closeDeleteConfirmModal}
+          confirmedToDelete={this.deleteComment}
+        />
       </div>
     );
   }
