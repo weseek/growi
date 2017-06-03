@@ -56,15 +56,20 @@ export default class Comment extends React.Component {
     const rootClassName = this.getRootClassName();
     const commentDate = moment(comment.createdAt).format('YYYY/MM/DD HH:mm');
     const commentBody = ReactUtils.nl2br(comment.comment);
+    const creatorsPage = `/user/${creator.username}`;
     const revHref = `?revision=${comment.revision}`;
     const revFirst8Letters = comment.revision.substr(0,8);
     const revisionLavelClassName = this.getRevisionLabelClassName();
 
     return (
       <div className={rootClassName}>
-        <UserPicture user={creator} />
+        <a href={creatorsPage}>
+          <UserPicture user={creator} />
+        </a>
         <div className="page-comment-main">
-          <div className="page-comment-creator">{creator.username}</div>
+          <div className="page-comment-creator">
+            <a href={creatorsPage}>{creator.username}</a>
+          </div>
           <div className="page-comment-body">{commentBody}</div>
           <div className="page-comment-meta">
             {commentDate}&nbsp;
