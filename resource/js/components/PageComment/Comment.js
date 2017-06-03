@@ -24,7 +24,7 @@ export default class Comment extends React.Component {
   }
 
   isCurrentUserIsAuthor() {
-    return this.props.comment.creator._id === this.props.currentUserId;
+    return this.props.comment.creator.username === this.props.currentUserId;
   }
 
   isCurrentRevision() {
