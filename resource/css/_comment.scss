@@ -6,6 +6,10 @@
         padding: .5em;
         margin-top: .5em;
         border-radius: 4px;
+
+        // scrollable
+        overflow-y: auto;
+        max-height: 13em;
       }
     }
   }
