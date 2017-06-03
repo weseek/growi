@@ -47,7 +47,7 @@ export default class Comment extends React.Component {
     const creator = comment.creator;
 
     const rootClassName = this.getRootClassName();
-    const commentDate = moment(comment.createdAt).format('YYYY/MM/DD HH:mm:ss');
+    const commentDate = moment(comment.createdAt).format('YYYY/MM/DD HH:mm');
     const revHref = `?revision=${comment.revision}`;
     const revFirst8Letters = comment.revision.substr(0,8);
     const revisionLavelClassName = this.getRevisionLabelClassName();

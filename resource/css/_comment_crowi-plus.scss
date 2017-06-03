@@ -2,27 +2,26 @@
 
   %comment-section {
     background: #f5f5f5;
-      padding: 1em;
-      position: relative;
-      margin-left: 4.5em;
-      margin-bottom: 1em;
-      border-radius: 3px;
-      &:before {
-        border: 1em solid transparent;
-        border-right-color:#f5f5f5;
-        border-left-width: 0;
-        left: -1em;
-        content: "";
-        display: block;
-        top: 1.5em;
-        position: absolute;
-        width: 0;
-      }
+    padding: 1em;
+    margin-left: 4.5em;
+    margin-bottom: 1em;
+    border-radius: 3px;
+    &:before {
+      border: 1em solid transparent;
+      border-right-color:#f5f5f5;
+      border-left-width: 0;
+      left: 3.5em;
+      content: "";
+      display: block;
+      top: 1.5em;
+      position: absolute;
+      width: 0;
+    }
   }
 
   %picture-rounded {
-    position: absolute;
-    top: 1em;
+    float: left;
+    margin-top: 0.8em;
     width: 3em;
     height: 3em;
   }
@@ -41,6 +40,13 @@
   .page-comment {
     position: relative;
 
+    // ユーザー名
+    .page-comment-creator {
+      margin-top: -0.5em;
+      margin-bottom: 0.5em;
+      font-weight: bold;
+    }
+
     // ユーザーアイコン
     .picture.picture-rounded {
       @extend %picture-rounded;
@@ -56,9 +62,23 @@
       margin-bottom: 0.5em;
     }
 
-    // ユーザー名
-    .page-comment-creator {
-      margin-bottom: 0.5em;
+    .page-comment-meta {
+      color: #999;
+      font-size: .9em;
+      text-align: right;
+
+      * {
+        vertical-align: 25%;
+      }
+    }
+
+  }
+
+  .page-comment-old {
+    opacity: .7;
+
+    &:hover {
+      opacity: 1;
     }
   }
 
