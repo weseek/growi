@@ -17,7 +17,7 @@ export default class ReactUtils {
     var regex = /(\n)/g
     return text.split(regex).map(function (line) {
         if (line.match(regex)) {
-            return React.createElement('br')
+            return React.createElement('br', {key: Math.random().toString(10).substr(2, 10)})
         }
         else {
             return line;
