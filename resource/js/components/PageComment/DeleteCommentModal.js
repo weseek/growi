@@ -2,7 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { Button, Modal } from 'react-bootstrap';
+import moment from 'moment/src/moment';
 
+import ReactUtils from '../ReactUtils';
 import UserPicture from '../User/UserPicture';
 
 export default class DeleteCommentModal extends React.Component {
@@ -19,14 +21,22 @@ export default class DeleteCommentModal extends React.Component {
       return <div></div>
     }
 
+    const comment = this.props.comment;
+    const commentDate = moment(comment.createdAt).format('YYYY/MM/DD HH:mm');
+    let commentBody = comment.comment
+    if (commentBody.length > 200) { // omit
+      commentBody = commentBody.substr(0,200) + '...';
+    }
+    commentBody = ReactUtils.nl2br(commentBody);
+
     return (
-      <Modal show={this.props.isShown} onHide={this.props.cancel}>
+      <Modal show={this.props.isShown} onHide={this.props.cancel} className="page-comment-delete-modal">
         <Modal.Header closeButton>
           <Modal.Title>Delete comment?</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <h4>header</h4>
-          <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</p>
+          <UserPicture user={comment.creator} size="xs" /> <strong>{comment.creator.username}</strong> wrote on {commentDate}:
+          <p className="comment-body">{commentBody}</p>
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={this.props.cancel}>Cancel</Button>

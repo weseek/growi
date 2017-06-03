@@ -1,3 +1,16 @@
+.crowi.main-container {
+  .page-comment-delete-modal .modal-content {
+    .modal-body {
+      .comment-body {
+        background-color: #eee;
+        padding: .5em;
+        margin-top: .5em;
+        border-radius: 4px;
+      }
+    }
+  }
+}
+
 .crowi.main-container aside.sidebar .side-content {
 
 .page-comments {
@@ -101,7 +114,5 @@
     }
   }
 }
-
-
 
 } // .crowi.main-container aside.sidebar .side-content

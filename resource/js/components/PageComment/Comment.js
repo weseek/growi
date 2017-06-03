@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import moment from 'moment/src/moment';
 
+import ReactUtils from '../ReactUtils';
 import UserPicture from '../User/UserPicture';
 
 /**
@@ -54,6 +55,7 @@ export default class Comment extends React.Component {
 
     const rootClassName = this.getRootClassName();
     const commentDate = moment(comment.createdAt).format('YYYY/MM/DD HH:mm');
+    const commentBody = ReactUtils.nl2br(comment.comment);
     const revHref = `?revision=${comment.revision}`;
     const revFirst8Letters = comment.revision.substr(0,8);
     const revisionLavelClassName = this.getRevisionLabelClassName();
@@ -63,7 +65,7 @@ export default class Comment extends React.Component {
         <UserPicture user={creator} />
         <div className="page-comment-main">
           <div className="page-comment-creator">{creator.username}</div>
-          <div className="page-comment-body">{comment.comment.replace(/(\r\n|\r|\n)/g, '<br>')}</div>
+          <div className="page-comment-body">{commentBody}</div>
           <div className="page-comment-meta">
             {commentDate}&nbsp;
             <a className={revisionLavelClassName} href={revHref}>{revFirst8Letters}</a>
