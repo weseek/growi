@@ -1,6 +1,7 @@
 .crowi-plus.main-container  {
 
   %comment-section {
+    position: relative;
     background: #f5f5f5;
     padding: 1em;
     margin-left: 4.5em;
@@ -10,7 +11,7 @@
       border: 1em solid transparent;
       border-right-color:#f5f5f5;
       border-left-width: 0;
-      left: 3.5em;
+      left: -1em;
       content: "";
       display: block;
       top: 1.5em;
@@ -72,6 +73,18 @@
       }
     }
 
+    .page-comment-control {
+      position: absolute;
+      display: none;    // default hidden
+      top: 0;
+      right: 0;
+    }
+
+  }
+
+  // show when hover
+  .page-comment-main:hover > .page-comment-control {
+    display: block;
   }
 
   .page-comment-old {

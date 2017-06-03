@@ -1,3 +1,20 @@
+.crowi.main-container {
+  .page-comment-delete-modal .modal-content {
+    .modal-body {
+      .comment-body {
+        background-color: #eee;
+        padding: .5em;
+        margin-top: .5em;
+        border-radius: 4px;
+
+        // scrollable
+        overflow-y: auto;
+        max-height: 13em;
+      }
+    }
+  }
+}
+
 .crowi.main-container aside.sidebar .side-content {
 
 .page-comments {
@@ -43,11 +60,11 @@
       }
 
       .page-comment-creator {
-        margin-left: 40px;
         font-weight: bold;
       }
 
       .page-comment-main {
+        position: relative;
         margin-left: 40px;
 
         .page-comment-meta {
@@ -58,6 +75,21 @@
           padding: 8px 0;
           word-wrap: break-word;
         }
+        .page-comment-control {
+          position: absolute;
+          display: none;    // default hidden
+          top: 0;
+          right: 0;
+
+          a {
+            padding: 3px;
+          }
+        }
+      }
+
+      // show controls when hover
+      .page-comment-main:hover > .page-comment-control {
+        display: block;
       }
     }
 
@@ -75,6 +107,7 @@
           //background: lighten($crowiHeaderBackground, 65%);
         }
       }
+
     }
 
     .page-comment.page-comment-old {
@@ -86,7 +119,5 @@
     }
   }
 }
-
-
 
 } // .crowi.main-container aside.sidebar .side-content

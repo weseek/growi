@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import Comment from './PageComment/Comment';
+import DeleteCommentModal from './PageComment/DeleteCommentModal';
 
 /**
  * Load data of comments and render the list of <Comment />
@@ -18,12 +19,19 @@ export default class PageComments extends React.Component {
     super(props);
 
     this.state = {
-      currentComments: [],
-      newerComments: [],
-      olderComments: [],
+      comments: [],
+
+      // for deleting comment
+      commentToDelete: undefined,
+      isDeleteConfirmModalShown: false,
+      errorMessageForDeleting: undefined,
     };
 
     this.init = this.init.bind(this);
+    this.confirmToDeleteComment = this.confirmToDeleteComment.bind(this);
+    this.deleteComment = this.deleteComment.bind(this);
+    this.showDeleteConfirmModal = this.showDeleteConfirmModal.bind(this);
+    this.closeDeleteConfirmModal = this.closeDeleteConfirmModal.bind(this);
   }
 
   componentWillMount() {
@@ -40,34 +48,59 @@ export default class PageComments extends React.Component {
     }
 
     const pageId = this.props.pageId;
-    const revisionId = this.props.revisionId;
-    const revisionCreatedAt = this.props.revisionCreatedAt;
 
     this.props.crowi.apiGet('/comments.get', {page_id: pageId})
     .then(res => {
       if (res.ok) {
-        let currentComments = [];
-        let newerComments = [];
-        let olderComments = [];
-
-        // divide by revisionId and createdAt
-        res.comments.forEach((comment) => {
-          if (comment.revision == revisionId) {
-            currentComments.push(comment);
-          }
-          else if (Date.parse(comment.createdAt)/1000 > revisionCreatedAt) {
-            newerComments.push(comment);
-          }
-          else {
-            olderComments.push(comment);
-          }
-        });
-        this.setState({currentComments, newerComments, olderComments});
+        this.setState({comments: res.comments});
       }
     }).catch(err => {
 
     });
 
+  }
+
+  confirmToDeleteComment(comment) {
+    this.setState({commentToDelete: comment});
+    this.showDeleteConfirmModal();
+  }
+
+  deleteComment() {
+    const comment = this.state.commentToDelete;
+
+    this.props.crowi.apiPost('/comments.remove', {comment_id: comment._id})
+    .then(res => {
+      if (res.ok) {
+        this.findAndSplice(comment);
+      }
+      this.closeDeleteConfirmModal();
+    }).catch(err => {
+      this.setState({errorMessageForDeleting: err.message});
+    });
+  }
+
+  findAndSplice(comment) {
+    let comments = this.state.comments;
+
+    const index = comments.indexOf(comment);
+    if (index < 0) {
+      return;
+    }
+    comments.splice(index, 1);
+
+    this.setState({comments});
+  }
+
+  showDeleteConfirmModal() {
+    this.setState({isDeleteConfirmModalShown: true});
+  }
+
+  closeDeleteConfirmModal() {
+    this.setState({
+      commentToDelete: undefined,
+      isDeleteConfirmModalShown: false,
+      errorMessageForDeleting: undefined,
+    });
   }
 
   /**
@@ -82,15 +115,36 @@ export default class PageComments extends React.Component {
       return (
         <Comment key={comment._id} comment={comment}
           currentUserId={this.props.crowi.me}
-          currentRevisionId={this.props.revisionId} />
+          currentRevisionId={this.props.revisionId}
+          deleteBtnClicked={this.confirmToDeleteComment} />
       );
     });
   }
 
   render() {
-    let currentElements = this.generateCommentElements(this.state.currentComments);
-    let newerElements = this.generateCommentElements(this.state.newerComments);
-    let olderElements = this.generateCommentElements(this.state.olderComments);
+    let currentComments = [];
+    let newerComments = [];
+    let olderComments = [];
+
+    // divide by revisionId and createdAt
+    const revisionId = this.props.revisionId;
+    const revisionCreatedAt = this.props.revisionCreatedAt;
+    this.state.comments.forEach((comment) => {
+      if (comment.revision == revisionId) {
+        currentComments.push(comment);
+      }
+      else if (Date.parse(comment.createdAt)/1000 > revisionCreatedAt) {
+        newerComments.push(comment);
+      }
+      else {
+        olderComments.push(comment);
+      }
+    });
+
+    // generate elements
+    let currentElements = this.generateCommentElements(currentComments);
+    let newerElements = this.generateCommentElements(newerComments);
+    let olderElements = this.generateCommentElements(olderComments);
 
     let toggleNewer = (newerElements.length === 0)
       ? <div></div>
@@ -120,6 +174,14 @@ export default class PageComments extends React.Component {
         <div className="page-comments-list-older collapse in" id="page-comments-list-older">
           {olderElements}
         </div>
+
+        <DeleteCommentModal
+          isShown={this.state.isDeleteConfirmModalShown}
+          comment={this.state.commentToDelete}
+          errorMessage={this.state.errorMessageForDeleting}
+          cancel={this.closeDeleteConfirmModal}
+          confirmedToDelete={this.deleteComment}
+        />
       </div>
     );
   }
