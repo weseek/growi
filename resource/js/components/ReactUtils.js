@@ -16,12 +16,12 @@ export default class ReactUtils {
   static nl2br(text) {
     var regex = /(\n)/g
     return text.split(regex).map(function (line) {
-        if (line.match(regex)) {
-            return React.createElement('br', {key: Math.random().toString(10).substr(2, 10)})
-        }
-        else {
-            return line;
-        }
+      if (line.match(regex)) {
+        return React.createElement('br', {key: Math.random().toString(10).substr(2, 10)})
+      }
+      else {
+        return line;
+      }
     });
   }
 

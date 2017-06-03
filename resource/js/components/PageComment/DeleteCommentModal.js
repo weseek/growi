@@ -23,7 +23,9 @@ export default class DeleteCommentModal extends React.Component {
 
     const comment = this.props.comment;
     const commentDate = moment(comment.createdAt).format('YYYY/MM/DD HH:mm');
-    let commentBody = comment.comment
+
+    // generate body
+    let commentBody = comment.comment;
     if (commentBody.length > 200) { // omit
       commentBody = commentBody.substr(0,200) + '...';
     }
