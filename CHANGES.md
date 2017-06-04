@@ -1,6 +1,15 @@
 CHANGES
 ========
 
+## 1.6.2
+
+- Feature: Support PlantUML
+- Feature: Support MathJax
+- Fix: API authentication conflicts header of Basic Auth (#226 Thanks @Charo-IT)
+- Fix: Cannot bookmark Portal page
+- Fix: Highlight searched keyword on search result page
+- And some refactorings, bug fixes, internal fixes. (Thaon, @hideo54, @Tamason)
+
 ## 1.6.1
 
 - Feature: Non-image file uploads and its settings,
