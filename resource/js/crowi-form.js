@@ -63,8 +63,9 @@ $(function() {
 
   function renderPreview() {
     var content = $('#form-body').val();
-    var parsedHTML = crowiRenderer.render(content);
-    $('#preview-body').html(parsedHTML);
+    var previewBody = $('#preview-body');
+    var parsedHTML = crowiRenderer.render(content, previewBody.get(0));
+    previewBody.html(parsedHTML);
   }
 
   // for initialize preview
