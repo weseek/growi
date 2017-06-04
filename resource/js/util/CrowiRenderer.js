@@ -6,6 +6,7 @@ import Linker        from './PreProcessor/Linker';
 import ImageExpander from './PreProcessor/ImageExpander';
 
 import Emoji         from './PostProcessor/Emoji';
+import Mathjax       from './PostProcessor/Mathjax';
 
 import Tsv2Table from './LangProcessor/Tsv2Table';
 import Template from './LangProcessor/Template';
@@ -24,6 +25,7 @@ export default class CrowiRenderer {
     ];
     this.postProcessors = [
       new Emoji(crowi),
+      new Mathjax(crowi),
     ];
 
     this.langProcessors = {
@@ -37,22 +39,22 @@ export default class CrowiRenderer {
     this.codeRenderer = this.codeRenderer.bind(this);
   }
 
-  preProcess(markdown) {
+  preProcess(markdown, dom) {
     for (let i = 0; i < this.preProcessors.length; i++) {
       if (!this.preProcessors[i].process) {
         continue;
       }
-      markdown = this.preProcessors[i].process(markdown);
+      markdown = this.preProcessors[i].process(markdown, dom);
     }
     return markdown;
   }
 
-  postProcess(html) {
+  postProcess(html, dom) {
     for (let i = 0; i < this.postProcessors.length; i++) {
       if (!this.postProcessors[i].process) {
         continue;
       }
-      html = this.postProcessors[i].process(html);
+      html = this.postProcessors[i].process(html, dom);
     }
 
     return html;
@@ -91,7 +93,7 @@ export default class CrowiRenderer {
 
   }
 
-  parseMarkdown(markdown) {
+  parseMarkdown(markdown, dom) {
     let parsed = '';
 
     const markedRenderer = new marked.Renderer();
@@ -128,12 +130,12 @@ export default class CrowiRenderer {
     return parsed;
   }
 
-  render(markdown) {
+  render(markdown, dom) {
     let html = '';
 
-    markdown = this.preProcess(markdown);
-    html = this.parseMarkdown(markdown);
-    html = this.postProcess(html);
+    markdown = this.preProcess(markdown, dom);
+    html = this.parseMarkdown(markdown, dom);
+    html = this.postProcess(html, dom);
 
     return html;
   }

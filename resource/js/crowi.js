@@ -386,11 +386,12 @@ $(function() {
         var id = $(this).attr('id');
         var contentId = '#' + id + ' > script';
         var revisionBody = '#' + id + ' .revision-body';
+        var $revisionBody = $(revisionBody);
         var revisionPath = '#' + id + ' .revision-path';
 
         var markdown = Crowi.unescape($(contentId).html());
-        var parsedHTML = crowiRenderer.render(markdown);
-        $(revisionBody).html(parsedHTML);
+        var parsedHTML = crowiRenderer.render(markdown, $revisionBody.get(0));
+        $revisionBody.html(parsedHTML);
 
         $('.template-create-button', revisionBody).on('click', function() {
           var path = $(this).data('path');
@@ -435,8 +436,9 @@ $(function() {
     var $rawTextOriginal = $('#raw-text-original');
     if ($rawTextOriginal.length > 0) {
       var markdown = Crowi.unescape($('#raw-text-original').html());
-      var parsedHTML = crowiRenderer.render(markdown);
-      $('#revision-body-content').html(parsedHTML);
+      var revisionBody = $('#revision-body-content');
+      var parsedHTML = crowiRenderer.render(markdown, revisionBody.get(0));
+      revisionBody.html(parsedHTML);
 
 
       $('.template-create-button').on('click', function() {

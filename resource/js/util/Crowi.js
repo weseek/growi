@@ -10,6 +10,7 @@ export default class Crowi {
     this.config = {};
     this.csrfToken = context.csrfToken;
 
+    this.window = window;
     this.location = window.location || {};
     this.document = window.document || {};
     this.localStorage = window.localStorage || {};
