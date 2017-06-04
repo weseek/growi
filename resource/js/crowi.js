@@ -213,6 +213,11 @@ $(function() {
 
 
   $('#create-page').on('shown.bs.modal', function (e) {
+    // quick hack: replace from server side rendering "date" to client side "date"
+    var today = new Date();
+    var dateString = today.getFullYear() + '/' + (today.getMonth() + 1) + '/' + today.getDate();
+    $('#create-page-today .page-today-suffix').text('/' + dateString);
+    $('#create-page-today .page-today-input2').data('prefix', '/' + dateString + '/');
 
     var input2Width = $('#create-page-today .col-xs-10').outerWidth();
     var newWidth = input2Width
