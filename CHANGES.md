@@ -1,6 +1,10 @@
 CHANGES
 ========
 
+## 1.2.0
+
+* Support: Merge official Crowi v1.6.2
+
 ## 1.1.12
 
 * Feature: Remove Comment Button

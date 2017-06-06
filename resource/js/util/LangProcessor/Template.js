@@ -2,7 +2,7 @@ import moment from 'moment';
 
 export default class Template {
 
-  constructor() {
+  constructor(crowi) {
     this.templatePattern = {
       'year': this.getYear,
       'month': this.getMonth,

@@ -1,6 +1,6 @@
 {
   "name": "crowi-plus",
-  "version": "1.1.12-RC",
+  "version": "1.2.0-RC",
   "description": "Enhanced Crowi",
   "tags": [
     "wiki",
@@ -88,7 +88,8 @@
     "i18next-express-middleware": "~1.0.2",
     "i18next-node-fs-backend": "~0.1.3",
     "i18next-sprintf-postprocessor": "~0.2.2",
-    "inline-attachment": "git+https://github.com/Rovak/InlineAttachment.git#2.0.3",
+    "inline-attachment": "~2.0.3",
+    "jquery": "~2.1.4",
     "jquery.cookie": "~1.4.1",
     "marked": "~0.3.6",
     "md5": "^2.2.1",
@@ -104,6 +105,7 @@
     "nodemailer-ses-transport": "~1.5.0",
     "normalize-path": "^2.1.1",
     "optimize-js-plugin": "0.0.4",
+    "plantuml-encoder": "^1.2.4",
     "react": "^15.5.0",
     "react-bootstrap": "^0.31.0",
     "react-bootstrap-typeahead": "^1.3.0",

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import moment from 'moment/src/moment';
+import moment from 'moment';
 
 import ReactUtils from '../ReactUtils';
 import UserPicture from '../User/UserPicture';

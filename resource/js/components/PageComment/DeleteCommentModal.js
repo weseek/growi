@@ -2,12 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { Button, Modal } from 'react-bootstrap';
-import moment from 'moment/src/moment';
+import moment from 'moment';
 
 import ReactUtils from '../ReactUtils';
 import UserPicture from '../User/UserPicture';
 
 export default class DeleteCommentModal extends React.Component {
+
+  /*
+   * the threshold for omitting body
+   */
+  static get OMIT_BODY_THRES() { return 400 };
 
   constructor(props) {
     super(props);
@@ -26,8 +31,8 @@ export default class DeleteCommentModal extends React.Component {
 
     // generate body
     let commentBody = comment.comment;
-    if (commentBody.length > 200) { // omit
-      commentBody = commentBody.substr(0,200) + '...';
+    if (commentBody.length > DeleteCommentModal.OMIT_BODY_THRES) { // omit
+      commentBody = commentBody.substr(0, DeleteCommentModal.OMIT_BODY_THRES) + '...';
     }
     commentBody = ReactUtils.nl2br(commentBody);
 
