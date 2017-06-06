@@ -3,7 +3,7 @@ export default class Mathjax {
 
   constructor(crowi) {
     this.crowi = crowi;
-    this.defaultUrl = 'https//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?skipStartupTypeset=true';
+    this.defaultUrl = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?skipStartupTypeset=true';
 
     this.mathJaxConfigured = false;
 
