@@ -151,7 +151,7 @@ export default class CrowiRenderer {
     let html = '';
 
     html = this.parseMarkdown(markdown, dom, rendererOptions.marked || {});
-    html = this.postProcess(html);
+    html = this.postProcess(html, dom);
 
     return html;
   }
