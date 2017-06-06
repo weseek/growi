@@ -46,7 +46,7 @@ window.crowi = crowi;
 crowi.setConfig(JSON.parse(document.getElementById('crowi-context-hydrate').textContent || '{}'));
 crowi.fetchUsers();
 
-const crowiRenderer = new CrowiRenderer();
+const crowiRenderer = new CrowiRenderer(crowi);
 window.crowiRenderer = crowiRenderer;
 
 // FIXME

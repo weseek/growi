@@ -132,6 +132,10 @@ div.body {
     border: solid 1px #ccc;
     max-width: 100%;
   }
+  .noborder img, .img.noborder {
+    box-shadow: none;
+    border: none;
+  }
 
   img.emoji {
     width: 0.95em;

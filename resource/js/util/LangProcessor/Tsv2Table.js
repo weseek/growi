@@ -1,7 +1,7 @@
 
 export default class Tsv2Table {
 
-  constructor(option) {
+  constructor(crowi, option) {
     if (!option) {
       option = {};
     }

@@ -366,11 +366,12 @@ $(function() {
         var id = $(this).attr('id');
         var contentId = '#' + id + ' > script';
         var revisionBody = '#' + id + ' .revision-body';
+        var $revisionBody = $(revisionBody);
         var revisionPath = '#' + id + ' .revision-path';
 
         var markdown = Crowi.unescape($(contentId).html());
-        var parsedHTML = crowiRenderer.render(markdown, rendererOptions);
-        $(revisionBody).html(parsedHTML);
+        var parsedHTML = crowiRenderer.render(markdown, $revisionBody.get(0), rendererOptions);
+        $revisionBody.html(parsedHTML);
 
         $('.template-create-button', revisionBody).on('click', function() {
           var path = $(this).data('path');
@@ -415,21 +416,24 @@ $(function() {
     var $rawTextOriginal = $('#raw-text-original');
     if ($rawTextOriginal.length > 0) {
       var markdown = Crowi.unescape($('#raw-text-original').html());
+      var dom = $('#revision-body-content').get(0);
 
       // create context object
       var context = {
         markdown,
+        dom,
         currentPagePath: decodeURIComponent(location.pathname)
       };
 
       crowi.interceptorManager.process('preRender', context)
         .then(() => crowi.interceptorManager.process('prePreProcess', context))
         .then(() => {
-          context.markdown = crowiRenderer.preProcess(context.markdown);
+          context.markdown = crowiRenderer.preProcess(context.markdown, context.dom);
         })
         .then(() => crowi.interceptorManager.process('postPreProcess', context))
         .then(() => {
-          var parsedHTML = crowiRenderer.render(context.markdown, rendererOptions);
+          var revisionBody = $('#revision-body-content');
+          var parsedHTML = crowiRenderer.render(context.markdown, context.dom, rendererOptions);
           context.parsedHTML = parsedHTML;
           Promise.resolve(context);
         })

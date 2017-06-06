@@ -76,21 +76,23 @@ $(function() {
 
   function renderPreview() {
     var markdown = $('#form-body').val();
+    var dom = $('#preview-body');
 
     // create context object
     var context = {
       markdown,
+      dom,
       currentPagePath: decodeURIComponent(location.pathname)
     };
 
     crowi.interceptorManager.process('preRenderPreview', context)
       .then(() => crowi.interceptorManager.process('prePreProcess', context))
       .then(() => {
-        context.markdown = crowiRenderer.preProcess(context.markdown);
+        context.markdown = crowiRenderer.preProcess(context.markdown, context.dom);
       })
       .then(() => crowi.interceptorManager.process('postPreProcess', context))
       .then(() => {
-        var parsedHTML = crowiRenderer.render(context.markdown, rendererOptions);
+        var parsedHTML = crowiRenderer.render(context.markdown, context.dom, rendererOptions);
         context['parsedHTML'] = parsedHTML;
       })
       .then(() => crowi.interceptorManager.process('postRenderPreview', context))

@@ -6,50 +6,55 @@ import Linker        from './PreProcessor/Linker';
 import ImageExpander from './PreProcessor/ImageExpander';
 
 import Emoji         from './PostProcessor/Emoji';
+import Mathjax       from './PostProcessor/Mathjax';
 
 import Tsv2Table from './LangProcessor/Tsv2Table';
 import Template from './LangProcessor/Template';
+import PlantUML from './LangProcessor/PlantUML';
 
 export default class CrowiRenderer {
 
 
-  constructor(plugins) {
+  constructor(crowi) {
+    this.crowi = crowi;
 
     this.preProcessors = [
-      new MarkdownFixer(),
-      new Linker(),
-      new ImageExpander(),
+      new MarkdownFixer(crowi),
+      new Linker(crowi),
+      new ImageExpander(crowi),
     ];
     this.postProcessors = [
-      new Emoji(),
+      new Emoji(crowi),
+      new Mathjax(crowi),
     ];
 
     this.langProcessors = {
-      'tsv': new Tsv2Table(),
-      'tsv-h': new Tsv2Table({header: true}),
-      'template': new Template(),
+      'tsv': new Tsv2Table(crowi),
+      'tsv-h': new Tsv2Table(crowi, {header: true}),
+      'template': new Template(crowi),
+      'plantuml': new PlantUML(crowi),
     };
 
     this.parseMarkdown = this.parseMarkdown.bind(this);
     this.codeRenderer = this.codeRenderer.bind(this);
   }
 
-  preProcess(markdown) {
+  preProcess(markdown, dom) {
     for (let i = 0; i < this.preProcessors.length; i++) {
       if (!this.preProcessors[i].process) {
         continue;
       }
-      markdown = this.preProcessors[i].process(markdown);
+      markdown = this.preProcessors[i].process(markdown, dom);
     }
     return markdown;
   }
 
-  postProcess(html) {
+  postProcess(html, dom) {
     for (let i = 0; i < this.postProcessors.length; i++) {
       if (!this.postProcessors[i].process) {
         continue;
       }
-      html = this.postProcessors[i].process(html);
+      html = this.postProcessors[i].process(html, dom);
     }
 
     return html;
@@ -88,7 +93,7 @@ export default class CrowiRenderer {
 
   }
 
-  parseMarkdown(markdown, markedOpts) {
+  parseMarkdown(markdown, dom, markedOpts) {
     let parsed = '';
 
     const markedRenderer = new marked.Renderer();
@@ -142,10 +147,10 @@ export default class CrowiRenderer {
    *
    * @memberOf CrowiRenderer
    */
-  render(markdown, rendererOptions) {
+  render(markdown, dom, rendererOptions) {
     let html = '';
 
-    html = this.parseMarkdown(markdown, rendererOptions.marked || {});
+    html = this.parseMarkdown(markdown, dom, rendererOptions.marked || {});
     html = this.postProcess(html);
 
     return html;
