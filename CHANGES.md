@@ -1,6 +1,10 @@
 CHANGES
 ========
 
+## 1.2.1
+
+* Fix: buildIndex error occured when access to installer
+
 ## 1.2.0
 
 * Support: Merge official Crowi v1.6.2
