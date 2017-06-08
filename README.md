@@ -58,11 +58,19 @@ see also [weseek/crowi-plus-docker-compose][docker-compose]
 On-premise
 ----------
 
-## Dependencies
+### Dependencies
 
 - node 6.x (DON'T USE 7.x)
 - npm 4.x
 - yarn
+- MongoDB 3.x
+
+#### Optional Dependencies
+
+- Redix 3.x
+- ElasticSearch 5.x
+  - Japanese (kuromoji) Analysis plugin
+  - ICU Analysis Plugin
 
 ### Start
 
@@ -70,7 +78,16 @@ On-premise
 git clone https://github.com/weseek/crowi-plus.git
 cd crowi-plus
 yarn
-MONGO_URI=mongodb://example.com/crowi npm start
+MONGO_URI=mongodb://MONGO_HOST:MONGO_PORT/crowi npm start
+```
+
+If you use Redis and ElasticSearch, add environment variables before `npm start` like following:
+
+```
+export MONGO_URI=mongodb://MONGO_HOST:MONGO_PORT/crowi
+export REDIS_URL=redis://REDIS_HOST:REDIS_PORT/crowi
+export ELASTICSEARCH_URI=http://ELASTICSEARCH_HOST:ELASTICSEARCH_PORT/crowi
+npm start
 ```
 
 ### Install plugins
@@ -89,7 +106,7 @@ npm start
 
 ## Other documents
 
-More info are [here](https://github.com/crowi/crowi/wiki/Install-and-Configuration).
+More info are [here](https://github.com/crowi/crowi/wiki/Install-and-Configuration#env-parameters).
 
 Getting Started to Develop
 ==========================
