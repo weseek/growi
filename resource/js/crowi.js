@@ -218,7 +218,7 @@ $(function() {
     var month = ('0' + (today.getMonth() + 1)).slice(-2);
     var day = ('0' + today.getDate()).slice(-2);
     var dateString = today.getFullYear() + '/' + month + '/' + day;
-    $('#create-page-today .page-today-suffix').text('/' + dateString);
+    $('#create-page-today .page-today-suffix').text('/' + dateString + '/');
     $('#create-page-today .page-today-input2').data('prefix', '/' + dateString + '/');
 
     var input2Width = $('#create-page-today .col-xs-10').outerWidth();
@@ -226,7 +226,7 @@ $(function() {
       - $('#create-page-today .page-today-prefix').outerWidth()
       - $('#create-page-today .page-today-input1').outerWidth()
       - $('#create-page-today .page-today-suffix').outerWidth()
-      - 40
+      - 42
       ;
     $('#create-page-today .form-control.page-today-input2').css({width: newWidth}).focus();
 
