@@ -215,8 +215,10 @@ $(function() {
   $('#create-page').on('shown.bs.modal', function (e) {
     // quick hack: replace from server side rendering "date" to client side "date"
     var today = new Date();
-    var dateString = today.getFullYear() + '/' + (today.getMonth() + 1) + '/' + today.getDate();
-    $('#create-page-today .page-today-suffix').text('/' + dateString);
+    var month = ('0' + (today.getMonth() + 1)).slice(-2);
+    var day = ('0' + today.getDate()).slice(-2);
+    var dateString = today.getFullYear() + '/' + month + '/' + day;
+    $('#create-page-today .page-today-suffix').text('/' + dateString + '/');
     $('#create-page-today .page-today-input2').data('prefix', '/' + dateString + '/');
 
     var input2Width = $('#create-page-today .col-xs-10').outerWidth();
@@ -224,7 +226,7 @@ $(function() {
       - $('#create-page-today .page-today-prefix').outerWidth()
       - $('#create-page-today .page-today-input1').outerWidth()
       - $('#create-page-today .page-today-suffix').outerWidth()
-      - 40
+      - 42
       ;
     $('#create-page-today .form-control.page-today-input2').css({width: newWidth}).focus();
 
