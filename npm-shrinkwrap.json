@@ -1452,6 +1452,11 @@
       "from": "https://registry.npmjs.org/domutils/-/domutils-1.5.1.tgz",
       "resolved": "https://registry.npmjs.org/domutils/-/domutils-1.5.1.tgz"
     },
+    "dotenv": {
+      "version": "4.0.0",
+      "from": "dotenv@latest",
+      "resolved": "https://registry.npmjs.org/dotenv/-/dotenv-4.0.0.tgz"
+    },
     "double-ended-queue": {
       "version": "2.1.0-0",
       "from": "double-ended-queue@>=2.1.0-0 <3.0.0",

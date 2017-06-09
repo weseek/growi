@@ -52,6 +52,7 @@ Crowi is designed to be set up on Heroku or some PaaS, but you can also start up
 ```
 $ PASSWORD_SEED=somesecretstring MONGO_URI=mongodb://username:password@localhost/crowi node app.js
 ```
+or please write `.env`.
 
 ### Environment
 
@@ -65,6 +66,7 @@ $ PASSWORD_SEED=somesecretstring MONGO_URI=mongodb://username:password@localhost
 * `SECRET_TOKEN`: A secret key for verifying the integrity of signed cookies.
 * `FILE_UPLOAD`: `aws` (default), `local`, `none`
 
+see: [.env.sample](./.env.sample)
 
 License
 ---------
