@@ -202,7 +202,7 @@ and help you to craft the change so that it is successfully accepted into the pr
 Language
 ---------
 
-Write issues and PRs in Engulish or Japanese.
+Write issues and PRs in English or Japanese.
 
 Discussion
 -----------
