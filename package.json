@@ -111,7 +111,7 @@
     "react-clipboard.js": "^1.0.1",
     "react-dom": "^15.5.0",
     "redis": "^2.7.1",
-    "reveal.js": "~3.4.0",
+    "reveal.js": "^3.5.0",
     "rimraf": "^2.6.1",
     "sass-loader": "^6.0.3",
     "socket.io": "~1.7.0",
