@@ -115,13 +115,13 @@
     "sass-loader": "^6.0.3",
     "socket.io": "~1.7.0",
     "socket.io-client": "~1.7.0",
-    "style-loader": "^0.16.1",
+    "style-loader": "^0.18.2",
     "swig": "~1.4.0",
     "toastr": "^2.1.2",
-    "uglifycss": "^0.0.25",
-    "webpack": "~2.3.1",
+    "uglifycss": "^0.0.27",
+    "webpack": "~2.6.1",
     "webpack-dll-bundles-plugin": "^1.0.0-beta.5",
-    "webpack-merge": "~3.0.0"
+    "webpack-merge": "~4.1.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",
