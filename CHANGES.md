@@ -1,6 +1,12 @@
 CHANGES
 ========
 
+## 1.2.3
+
+* Improvement: Ensure to be enabled to use Presentation Mode even when not logged in
+* Improvement: Presentation Mode on IE11 (Experimental)
+* Fix: Broken Presentation Mode
+
 ## 1.2.2
 
 * Support: Merge official Crowi (master branch)

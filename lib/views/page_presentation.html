@@ -6,6 +6,17 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
+    <!-- polyfills for IE11 -->
+    <script>
+      var userAgent = window.navigator.userAgent.toLowerCase();
+      if (userAgent.indexOf('msie') != -1 || userAgent.indexOf('trident') != -1) {
+        var scriptElement = document.createElement('script');
+        scriptElement.src = 'https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.23.0/polyfill.min.js';
+        var headElement = document.getElementsByTagName('head')[0];
+        headElement.appendChild(scriptElement);
+      }
+    </script>
+
     <!-- jQuery -->
     <script src="//cdn.jsdelivr.net/jquery/3.2.1/jquery.min.js"></script>
 
@@ -20,6 +31,13 @@
     <script src="{{ webpack_asset('legacy-presentation').js }}" defer></script>
 
     <title>{{ path|path2name }} | {{ path }}</title>
+
+    <!-- Google Fonts -->
+    <link href='https://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
+
+    <style>
+      {{ customCss() }}
+    </style>
   </head>
   <body>
     <div class="reveal">
