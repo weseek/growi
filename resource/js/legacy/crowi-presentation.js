@@ -17,6 +17,9 @@ Reveal.initialize({
   center: true,
   transition: 'slide',
 
+  //// This specification method can't be used
+  ////   sice deleting symlink prevented `src` from being resolved -- 2017.06.15 Yuki Takei
+  //
   // Optional libraries used to extend on reveal.js
   // dependencies: [
   //   { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
@@ -35,6 +38,10 @@ require.ensure([], () => {
   require('reveal.js/plugin/highlight/highlight.js');
   require('reveal.js/plugin/zoom-js/zoom.js');
   require('reveal.js/plugin/notes/notes.js');
+
+  // fix https://github.com/weseek/crowi-plus/issues/96
+  Reveal.slide(0,0);
+  Reveal.sync();
 })
 
 Reveal.addEventListener('ready', function(event) {
