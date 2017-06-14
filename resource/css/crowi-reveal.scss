@@ -1,7 +1,10 @@
+// import crowi variable
+@import 'utilities';
+
 .reveal {
   font-size: 32px;
   section * {
-    font-family: "Lucida Grande", "Hiragino Kaku Gothic Pro W3", Meiryo, san-serif;
+    font-family: $font-family-sans-serif !important;
   }
 
   .slides > section {

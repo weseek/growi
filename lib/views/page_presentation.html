@@ -31,6 +31,13 @@
     <script src="{{ webpack_asset('legacy-presentation').js }}" defer></script>
 
     <title>{{ path|path2name }} | {{ path }}</title>
+
+    <!-- Google Fonts -->
+    <link href='https://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
+
+    <style>
+      {{ customCss() }}
+    </style>
   </head>
   <body>
     <div class="reveal">
