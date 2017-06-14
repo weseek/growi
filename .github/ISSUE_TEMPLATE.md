@@ -20,7 +20,7 @@ How to reproduce? (再現手順)
 1. process 3
 
 
-What's happen? (症状)
+What happens? (症状)
 ---------------------
 
 - symptom
