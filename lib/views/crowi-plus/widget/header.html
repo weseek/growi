@@ -18,12 +18,13 @@
         {% endif %}
       </div>
       <div class="flex-item-action visible-xs visible-sm">
+        {% if user %}
         <button
             data-csrftoken="{{ csrf() }}"
             data-liked="{% if page.isLiked(user) %}1{% else %}0{% endif %}"
             class="like-button btn btn-default btn-sm {% if page.isLiked(user) %}active{% endif %}"
-            {% if not user %}disabled{% endif %}
         ><i class="fa fa-thumbs-o-up"></i></button>
+        {% endif %}
       </div>
 
       <ul class="authors visible-md visible-lg">

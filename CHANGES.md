@@ -1,6 +1,10 @@
 CHANGES
 ========
 
+## 1.2.4
+
+* Fix: Internal Server Error has occurred when a guest user visited the page someone added "liked"
+
 ## 1.2.3
 
 * Improvement: Ensure to be enabled to use Presentation Mode even when not logged in

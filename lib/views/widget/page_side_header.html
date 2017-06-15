@@ -32,12 +32,13 @@
       <dd>
         <p class="liker-count">
         <span id="like-count">{{ page.liker.length }}</span>
+        {% if user %}
         <button
           data-csrftoken="{{ csrf() }}"
           data-liked="{% if page.isLiked(user) %}1{% else %}0{% endif %}"
           class="like-button btn btn-default btn-sm {% if page.isLiked(user) %}active{% endif %}"
-          {% if not user %}disabled{% endif %}
           ><i class="fa fa-thumbs-o-up"></i> {{ t('Like!') }}</button>
+        {% endif %}
         </p>
         <p id="liker-list" class="liker-list" data-likers="{{ page.liker|default([])|join(',') }}">
         </p>

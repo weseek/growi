@@ -24,12 +24,13 @@
         {% endif %}
       </div>
       <div class="flex-item-action visible-xs visible-sm">
+        {% if user %}
         <button
             data-csrftoken="{{ csrf() }}"
             data-liked="{% if page.isLiked(user) %}1{% else %}0{% endif %}"
             class="like-button btn btn-default btn-sm {% if page.isLiked(user) %}active{% endif %}"
-            {% if not user %}disabled{% endif %}
         ><i class="fa fa-thumbs-o-up"></i></button>
+        {% endif %}
       </div>
       {% endif %}
     </div>
@@ -146,8 +147,8 @@
     </li>
     {% if page %}
     <li class="pull-right"><a href="#revision-history" data-toggle="tab"><i class="fa fa-history"></i> History</a></li>
-    {% endif %}
     <li class="pull-right"><a href="?presentation=1" class="toggle-presentation"><i class="fa fa-film"></i> {{ t('Presentation Mode') }}</a></li>
+    {% endif %}
   </ul>
   {% endif %}
 
