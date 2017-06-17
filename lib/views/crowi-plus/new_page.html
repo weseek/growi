@@ -63,9 +63,11 @@
               </a>
             </li>
 
+            {% if user %}
             <li class="dropdown pull-right">
               <a href="#" onclick="history.back();"><i class="fa fa-times"></i> {{ t('Cancel') }}</a>
             </li>
+            {% endif %}
           </ul>
 
           <div class="tab-content wiki-content">
