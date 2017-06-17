@@ -213,7 +213,7 @@ $(function() {
     if (input2 === '') {
       prefix2 = prefix2.slice(0, -1);
     }
-    top.location.href = prefix1 + input1 + prefix2 + input2;
+    top.location.href = prefix1 + input1 + prefix2 + input2 + '#edit-form';
     return false;
   });
 
@@ -225,7 +225,7 @@ $(function() {
     if (name.match(/.+\/$/)) {
       name = name.substr(0, name.length - 1);
     }
-    top.location.href = name;
+    top.location.href = name + '#edit-form';
     return false;
   });
 

@@ -45,6 +45,52 @@
     </div>
     <div class="col-md-9">
 
+      <form action="/_api/admin/customize/behavior" method="post" class="form-horizontal" id="cutombehaviorSettingForm" role="form">
+      <fieldset>
+        <legend>挙動</legend>
+
+        <div class="form-group">
+          <div class="col-xs-6">
+            <h4>
+              <input type="radio" name="settingForm[customize:behavior]" value="crowi"
+                  {% if !settingForm['customize:behavior'] || 'crowi' === settingForm['customize:behavior'] %}checked="checked"{% endif %}>
+              Official Crowi Behavior
+            </h4>
+            <ul>
+              <li><code>/page</code> shows the page</li>
+              <li><code>/page/</code> shows the list of sub pages</li>
+              <ul>
+                <li>If portal is applied to <code>/page/</code> , the portal and the list of sub pages are shown</li>
+              </ul>
+              <li><code>/nonexistent_page</code> shows editing form</li>
+              <li><code>/nonexistent_page/</code> the list of sub pages</li>
+            </ul>
+          </div>
+          <div class="col-xs-6">
+            <h4>
+              <input type="radio" name="settingForm[customize:behavior]" value="crowi-plus"
+                  {% if 'crowi-plus' === settingForm['customize:behavior'] %}checked="checked"{% endif %}>
+              crowi-plus Simplified Behavior <small class="text-success">(Recommended)</small>
+            </h4>
+            <ul>
+              <li><code>/page</code> and <code>/page/</code> both shows the page</li>
+              <li><code>/nonexistent_page</code> shows editing form</li>
+              <li>All pages shows the list of sub pages</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-xs-offset-5 col-xs-6">
+            <input type="hidden" name="_csrf" value="{{ csrf() }}">
+            <button type="submit" class="btn btn-primary">更新</button>
+          </div>
+        </div>
+
+      </fieldset>
+      </form>
+
+
       <form action="/_api/admin/customize/layout" method="post" class="form-horizontal" id="cutomlayoutSettingForm" role="form">
       <fieldset>
         <legend>レイアウト</legend>
@@ -133,7 +179,7 @@
   </div>
 
   <script>
-    $('#cutomcssSettingForm, #cutomlayoutSettingForm').each(function() {
+    $('#cutomcssSettingForm, #cutomlayoutSettingForm, #cutombehaviorSettingForm').each(function() {
       $(this).submit(function()
       {
         function showMessage(formId, msg, status) {
