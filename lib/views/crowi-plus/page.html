@@ -17,7 +17,6 @@
 
 {% endblock %} {# /content_head #}
 
-
 {% block content_main %}
   <div class="container-fluid">
     <div class="row">
@@ -39,6 +38,13 @@
       </div> {# /.col- #}
 
     </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        {% include './widget/page_list_container.html' %}
+      </div>
+    </div>
+
   </div>
 {% endblock %}
 
