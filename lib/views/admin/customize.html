@@ -144,6 +144,44 @@
       </form>
 
 
+      <form action="/_api/admin/customize/features" method="post" class="form-horizontal" id="customfeaturesSettingForm" role="form">
+      <fieldset>
+      <legend>機能</legend>
+        <p class="well">機能の有効/無効を選択できます。</p>
+
+        <div class="form-group">
+          <label for="settingForm[customize:isEnabledTimeline]" class="col-xs-3 control-label">タイムライン表示機能</label>
+          <div class="col-xs-9">
+            <div class="btn-group btn-toggle" data-toggle="buttons">
+              <label class="btn {% if settingForm['customize:isEnabledTimeline'] %}btn-primary active{% else %}btn-default{% endif %}">
+                <input name="settingForm[customize:isEnabledTimeline]" value="true" type="radio"
+                    {% if true === settingForm['customize:isEnabledTimeline'] %}checked{% endif %}> 有効
+              </label>
+              <label class="btn {% if !settingForm['customize:isEnabledTimeline'] %}btn-primary active{% else %}btn-default{% endif %}">
+                <input name="settingForm[customize:isEnabledTimeline]" value="false" type="radio"
+                    {% if !settingForm['customize:isEnabledTimeline'] %}checked{% endif %}> 無効
+              </label>
+            </div>
+
+            <p class="help-block">
+              無効化することで、リストページの表示を高速化できます。<br>
+              配下ページが多い場合に効果があります。
+            </p>
+          </div>
+
+        </div>
+
+        <div class="form-group">
+          <div class="col-xs-offset-3 col-xs-6">
+            <input type="hidden" name="_csrf" value="{{ csrf() }}">
+            <button type="submit" class="btn btn-primary">更新</button>
+          </div>
+        </div>
+
+      </fieldset>
+      </form>
+
+
       <form action="/_api/admin/customize/css" method="post" class="form-horizontal" id="cutomcssSettingForm" role="form">
       <fieldset>
         <legend>カスタムCSS</legend>
@@ -179,7 +217,7 @@
   </div>
 
   <script>
-    $('#cutomcssSettingForm, #cutomlayoutSettingForm, #cutombehaviorSettingForm').each(function() {
+    $('#cutomcssSettingForm, #cutomlayoutSettingForm, #cutombehaviorSettingForm, #customfeaturesSettingForm').each(function() {
       $(this).submit(function()
       {
         function showMessage(formId, msg, status) {
@@ -250,6 +288,27 @@
       resize: function() {
         editor.setSize($(this).width(), $(this).height());
       }
+    });
+
+    // Bootstrap 3 Toggle Switch Snippet
+    // http://www.bootply.com/92189
+    $('.btn-toggle').click(function() {
+      $(this).find('.btn').toggleClass('active');
+
+      if ($(this).find('.btn-primary').length>0) {
+        $(this).find('.btn').toggleClass('btn-primary');
+      }
+      if ($(this).find('.btn-danger').length>0) {
+        $(this).find('.btn').toggleClass('btn-danger');
+      }
+      if ($(this).find('.btn-success').length>0) {
+        $(this).find('.btn').toggleClass('btn-success');
+      }
+      if ($(this).find('.btn-info').length>0) {
+        $(this).find('.btn').toggleClass('btn-info');
+      }
+
+      $(this).find('.btn').toggleClass('btn-default');
     });
   </script>
 

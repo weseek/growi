@@ -178,7 +178,9 @@
 <div class="page-list-container">
   <ul class="nav nav-tabs">
       <li class="active"><a href="#view-list" data-toggle="tab">{{ t('List View') }}</a></li>
+      {% if isEnabledTimeline() %}
       <li><a href="#view-timeline" data-toggle="tab">{{ t('Timeline View') }}</a></li>
+      {% endif %}
   </ul>
 
   <div class="tab-content">
@@ -212,6 +214,7 @@
     </div>
 
     {# timeline view #}
+    {% if isEnabledTimeline() %}
     <div class="tab-pane" id="view-timeline" data-shown=0>
       {% for page in pages %}
       <div class="timeline-body" id="id-{{ page.id }}">
@@ -222,6 +225,7 @@
       <hr>
       {% endfor %}
     </div>
+    {% endif %}
   </div>
 </div>
 
