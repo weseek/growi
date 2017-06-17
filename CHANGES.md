@@ -1,13 +1,21 @@
 CHANGES
 ========
 
+## 1.2.5
+
+* Feature: crowi-plus Simplified Behavior
+    * `/page` and `/page/` both shows the page
+    * `/nonexistent_page` shows editing form
+    * All pages shows the list of sub pages
+* Improvement: Ensure to be able to disable Timeline feature
+
 ## 1.2.4
 
 * Fix: Internal Server Error has occurred when a guest user visited the page someone added "liked"
 
 ## 1.2.3
 
-* Improvement: Ensure to be enabled to use Presentation Mode even when not logged in
+* Improvement: Ensure to be able to use Presentation Mode even when not logged in
 * Improvement: Presentation Mode on IE11 (Experimental)
 * Fix: Broken Presentation Mode
 
