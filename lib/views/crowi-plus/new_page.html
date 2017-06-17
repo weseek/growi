@@ -36,11 +36,12 @@
       <div class="col-lg-10 col-md-9">
 
         {% block content_main_before %}
+        <h2 class="text-muted">Page is not exists</h2>
         {% endblock %}
 
 
 
-        <div id="content-main" class="content-main"
+        <div id="content-main" class="content-main content-main-new-page page-list"
           data-path="{{ path }}"
           data-path-shortname="{{ path|path2name }}"
           data-page-id="{% if page %}{{ page._id.toString() }}{% endif %}"
@@ -52,8 +53,6 @@
           data-linebreaks-enabled="{{ isEnabledLinebreaks() }}"
           data-csrftoken="{{ csrf() }}"
           >
-
-          <h2 class="text-muted">Page is not exists</h2>
 
           <ul class="nav nav-tabs hidden-print">
             <li class="active"><a href="#revision-body" data-toggle="tab">{{ t('List View') }}</a></li>
