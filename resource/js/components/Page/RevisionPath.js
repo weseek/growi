@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import CopyButton from '../CopyButton';
 
 export default class RevisionPath extends React.Component {
@@ -9,6 +11,7 @@ export default class RevisionPath extends React.Component {
     this.state = {
       pages: [],
       isListPage: false,
+      isLinkToListPage: true,
     };
   }
 
@@ -16,6 +19,11 @@ export default class RevisionPath extends React.Component {
     // whether list page or not
     const isListPage = this.props.pagePath.match(/\/$/);
     this.setState({ isListPage });
+
+    // whether set link to '/'
+    const behaviorType = this.props.crowi.getConfig()['behaviorType'];
+    const isLinkToListPage = ('crowi-plus' !== behaviorType);
+    this.setState({ isLinkToListPage });
 
     // generate pages obj
     let splitted = this.props.pagePath.split(/\//);
@@ -44,6 +52,18 @@ export default class RevisionPath extends React.Component {
     }, 1000);
   }
 
+  generateLinkElementToListPage(pagePath, isLinkToListPage, isLastElement) {
+    if (isLinkToListPage) {
+      return <a href={pagePath+'/'} className={(isLastElement && !this.state.isListPage) ? 'last-path' : ''}>/</a>;
+    }
+    else if (!isLastElement) {
+      return <span className="text-primary">/</span>;
+    }
+    else {
+      return <span></span>
+    }
+  }
+
   render() {
     // define style
     const rootStyle = {
@@ -60,14 +80,16 @@ export default class RevisionPath extends React.Component {
     this.state.pages.forEach((page, index) => {
       const isLastElement = (index == pageLength-1);
 
-      // add elements
+      // add elements for page
       afterElements.push(
         <span key={page.pagePath} className="path-segment">
           <a href={page.pagePath}>{page.pageName}</a>
         </span>);
+
+      // add elements for '/'
       afterElements.push(
         <span key={page.pagePath+'/'} className="separator" style={separatorStyle}>
-          <a href={page.pagePath+'/'} className={(isLastElement && !this.state.isListPage) ? 'last-path' : ''}>/</a>
+          {this.generateLinkElementToListPage(page.pagePath, this.state.isLinkToListPage, isLastElement)}
         </span>
       );
     });
@@ -86,5 +108,6 @@ export default class RevisionPath extends React.Component {
 }
 
 RevisionPath.propTypes = {
-  pagePath: React.PropTypes.string.isRequired,
+  pagePath: PropTypes.string.isRequired,
+  crowi: PropTypes.object.isRequired,
 };

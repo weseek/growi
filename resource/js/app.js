@@ -74,7 +74,7 @@ const componentMappings = {
 };
 // additional definitions if pagePath exists
 if (pagePath) {
-  componentMappings['revision-path'] = <RevisionPath pagePath={pagePath} />;
+  componentMappings['revision-path'] = <RevisionPath pagePath={pagePath} crowi={crowi} />;
   componentMappings['revision-url'] = <RevisionUrl pageId={pageId} pagePath={pagePath} />;
 }
 
