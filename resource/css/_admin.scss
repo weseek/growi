@@ -1,3 +1,6 @@
+// import crowi variable
+@import 'utilities';
+
 .crowi { // {{{
 
   .admin-user-menu {
@@ -11,6 +14,20 @@
     .ss-container img {
       padding: .5em;
       background-color: #ddd;
+    }
+  }
+
+  // Toggle Twitter Bootstrap button class when active
+  // https://jsfiddle.net/ms040m01/3/
+  .btn-group.btn-toggle {
+    .btn.active[data-active-class="primary"] {
+      color: $btn-primary-color;
+      background-color: darken($btn-primary-bg, 10%);
+      border-color: $btn-primary-border;
+
+      &:hover {
+        background-color: darken($btn-primary-bg, 15%);
+      }
     }
   }
 

@@ -1,6 +1,11 @@
 CHANGES
 ========
 
+## 1.2.6
+
+* Fix: The problem that page_list widget doesn't show the picture of revision.author
+* Fix: Change implementation of Bootstrap3 toggle switch for admin pages
+
 ## 1.2.5
 
 * Feature: crowi-plus Simplified Behavior
