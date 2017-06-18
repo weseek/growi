@@ -47,11 +47,11 @@
           </label>
           <div class="col-xs-5">
             <div class="btn-group btn-toggle" data-toggle="buttons">
-              <label class="btn {% if markdownSetting['markdown:isEnabledLinebreaks'] %}btn-primary active{% else %}btn-default{% endif %}">
+              <label class="btn btn-default {% if markdownSetting['markdown:isEnabledLinebreaks'] %}active{% endif %}" data-active-class="primary">
                 <input name="markdownSetting[markdown:isEnabledLinebreaks]" value="true" type="radio"
                     {% if true === markdownSetting['markdown:isEnabledLinebreaks'] %}checked{% endif %}> 有効
               </label>
-              <label class="btn {% if !markdownSetting['markdown:isEnabledLinebreaks'] %}btn-primary active{% else %}btn-default{% endif %}">
+              <label class="btn btn-default {% if !markdownSetting['markdown:isEnabledLinebreaks'] %}active{% endif %}" data-active-class="primary">
                 <input name="markdownSetting[markdown:isEnabledLinebreaks]" value="false" type="radio"
                     {% if !markdownSetting['markdown:isEnabledLinebreaks'] %}checked{% endif %}> 無効
               </label>
@@ -66,11 +66,11 @@
           </label>
           <div class="col-xs-5">
             <div class="btn-group btn-toggle" data-toggle="buttons">
-              <label class="btn {% if markdownSetting['markdown:isEnabledLinebreaksInComments'] %}btn-primary active{% else %}btn-default{% endif %}">
+              <label class="btn btn-default {% if markdownSetting['markdown:isEnabledLinebreaksInComments'] %}active{% endif %}" data-active-class="primary">
                 <input name="markdownSetting[markdown:isEnabledLinebreaksInComments]" value="true" type="radio"
                     {% if true === markdownSetting['markdown:isEnabledLinebreaksInComments'] %}checked{% endif %}> 有効
               </label>
-              <label class="btn {% if !markdownSetting['markdown:isEnabledLinebreaksInComments'] %}btn-primary active{% else %}btn-default{% endif %}">
+              <label class="btn btn-default {% if !markdownSetting['markdown:isEnabledLinebreaksInComments'] %}active{% endif %}" data-active-class="primary">
                 <input name="markdownSetting[markdown:isEnabledLinebreaksInComments]" value="false" type="radio"
                     {% if !markdownSetting['markdown:isEnabledLinebreaksInComments'] %}checked{% endif %}> 無効
               </label>
@@ -90,29 +90,6 @@
 
     </div>
   </div>
-
-  <script>
-    // Bootstrap 3 Toggle Switch Snippet
-    // http://www.bootply.com/92189
-    $('.btn-toggle').click(function() {
-      $(this).find('.btn').toggleClass('active');
-
-      if ($(this).find('.btn-primary').length>0) {
-        $(this).find('.btn').toggleClass('btn-primary');
-      }
-      if ($(this).find('.btn-danger').length>0) {
-        $(this).find('.btn').toggleClass('btn-danger');
-      }
-      if ($(this).find('.btn-success').length>0) {
-        $(this).find('.btn').toggleClass('btn-success');
-      }
-      if ($(this).find('.btn-info').length>0) {
-        $(this).find('.btn').toggleClass('btn-info');
-      }
-
-      $(this).find('.btn').toggleClass('btn-default');
-    });
-  </script>
 
 </div>
 {% endblock content_main %}
