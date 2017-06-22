@@ -1,6 +1,10 @@
 CHANGES
 ========
 
+## 1.2.7
+
+* Fix: The problem that redirect doesn't work when using 'crowi-plus Simplified Behavior'
+
 ## 1.2.6
 
 * Fix: The problem that page_list widget doesn't show the picture of revision.author
