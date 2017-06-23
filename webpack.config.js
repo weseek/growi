@@ -11,6 +11,7 @@ var config = {
     presentation: './resource/js/crowi-presentation.js',
     form:         './resource/js/crowi-form.js',
     admin:        './resource/js/crowi-admin.js',
+    polyfill:     'babel-polyfill',
   },
   output: {
     path: path.join(__dirname + "/public/js"),
