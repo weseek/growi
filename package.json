@@ -32,7 +32,7 @@
     "prebuild:dev": "env-cmd config/env.dev.js npm run plugin:def",
     "prebuild:prod": "npm run plugin:def",
     "prestart": "npm run build:prod",
-    "server:dev:watch": "env-cmd config/env.dev.js node-dev app.js --watch",
+    "server:dev:watch": "env-cmd config/env.dev.js node-dev --respawn app.js --watch",
     "server:dev": "env-cmd config/env.dev.js node app.js",
     "server:prod": "node app.js --production | pino-clf common",
     "server": "npm run server:dev:watch",
