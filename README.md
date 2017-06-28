@@ -53,7 +53,7 @@ cd crowi-plus
 docker-compose up
 ```
 
-see also [weseek/crowi-plus-docker-compose][docker-compose]
+See also [weseek/crowi-plus-docker-compose][docker-compose]
 
 On-premise
 ----------
@@ -81,12 +81,31 @@ yarn
 MONGO_URI=mongodb://MONGO_HOST:MONGO_PORT/crowi npm start
 ```
 
-If you use Redis and ElasticSearch, add environment variables before `npm start` like following:
+`npm start` lauches the server after building the client.  
+
+If you launch crowi-plus with Redis and ElasticSearch, add environment variables before `npm start` like following:
 
 ```
 export MONGO_URI=mongodb://MONGO_HOST:MONGO_PORT/crowi
 export REDIS_URL=redis://REDIS_HOST:REDIS_PORT/crowi
 export ELASTICSEARCH_URI=http://ELASTICSEARCH_HOST:ELASTICSEARCH_PORT/crowi
+npm start
+```
+
+For more info, check [the official documents](https://github.com/crowi/crowi/wiki/Install-and-Configuration#env-parameters).
+
+#### Other commands
+
+|command|desc|
+|--|--|
+|`npm run build:prod`|Build the client|
+|`npm run server:prod`|Launch the server|
+
+### Upgrade
+
+```bash
+git pull
+yarn
 npm start
 ```
 
@@ -104,9 +123,6 @@ yarn add crowi-plugin-lsx
 npm start
 ```
 
-## Other documents
-
-More info are [here](https://github.com/crowi/crowi/wiki/Install-and-Configuration#env-parameters).
 
 Getting Started to Develop
 ==========================
@@ -139,35 +155,24 @@ Getting Started to Develop
 
 After you have installed all dependencies and build client you can now run the app. Run `npm run server` to start a local server using `node-dev` which will watch server-side codes and reload for you. The port will be displayed to you as `http://0.0.0.0:3000`.
 
-### build and run server
-```bash
-# development
-npm run build
-npm run server
-# production
-npm run build:prod
-npm run server:prod
-```
 
-## Other commands
+List of npm commands
+=====================
 
-### build client app
-```bash
-# development
-npm run build:dev
-# production
-npm run build:prod
-```
+e.g. `npm run build`
 
-### watch client-side codes and incremental build
-```bash
-npm run build:dev:watch
-```
+|command|desc|
+|--|--|
+|`build`|Same to `build:dev`|
+|`build:dev`|Build the client|
+|`build:dev:watch`|Watch and Re-build the client|
+|`build:prod`|Build the client for production|
+|`server`|Same to `server:dev:watch`|
+|`server:dev`|Launch the server|
+|`server:dev:watch`|Watch and Re-start the server|
+|`server:prod`|Launch the server for production|
+|`start`|run `build:prod` and `server:prod`|
 
-### run unit tests
-```bash
-npm test
-```
 
 Documentation
 ==============
