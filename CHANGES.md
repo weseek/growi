@@ -3,6 +3,7 @@ CHANGES
 
 ## 1.2.9
 
+* Improvement: Enabled to save with <kbd>⌘+S</kbd> on Mac
 * Improvement: Adopt the fastest logger 'pino'
 
 ## 1.2.8
