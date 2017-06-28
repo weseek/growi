@@ -20,6 +20,7 @@ This is **crowi-plus** that is the fork of [Crowi][crowi], is [perfectly compati
   * Find plugins from [npm](https://www.npmjs.com/browse/keyword/crowi-plugin) or [github](https://github.com/search?q=topic%3Acrowi-plugin)!
 * Faster
   * Optimize client-side code chunks by Webpack
+  * Adopt the fastest logger [pino](https://github.com/pinojs/pino)
   * Using CDN
 * Secure
   * Upgrade jQuery to 3.x

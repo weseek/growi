@@ -6,5 +6,12 @@ module.exports = {
   PLUGIN_NAMES_TOBE_LOADED: [
     // 'crowi-plugin-lsx',
     // 'crowi-plugin-pukiwiki-like-linker',
-  ]
+  ],
+  // filters for debug
+  DEBUG: [
+    // 'express:*',
+    // 'crowi:*',
+    // 'crowi:plugins:*',
+    // 'crowi:InterceptorManager',
+  ].join(),
 }
