@@ -1,6 +1,10 @@
 CHANGES
 ========
 
+## 1.2.9
+
+* Improvement: Adopt the fastest logger 'pino'
+
 ## 1.2.8
 
 * Fix: The problem that redirect doesn't work when using 'crowi-plus Simplified Behavior'
