@@ -5,6 +5,7 @@ CHANGES
 
 * Improvement: Enabled to save with <kbd>⌘+S</kbd> on Mac
 * Improvement: Adopt the fastest logger 'pino'
+* Fix: The problem that can't upload profile image
 
 ## 1.2.8
 
