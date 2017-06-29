@@ -127,9 +127,7 @@
               </p>
               <p>
               {% if user.image %}
-              <form action="/me/picture/delete" method="post" class="form-horizontal" role="form" onsubmit="return window.confirm('{{ t('Delete this image?') }}');">
-                <button type="submit" class="btn btn-danger">{{ t('Delete Image') }}</button>
-              </form>
+              <button id="pictureDeleteButton" class="btn btn-danger">{{ t('Delete Image') }}</button>
               {% endif %}
               </p>
             </div>
@@ -141,11 +139,9 @@
             </label>
             <div class="col-sm-8">
               {% if isUploadable() %}
-              <form action="/_api/me/picture/upload" id="pictureUploadForm" method="post" class="form-horizontal" role="form" enctype="multipart/form-data">
-                <input name="userPicture" type="file" accept="image/*">
-                <div id="pictureUploadFormProgress">
-                </div>
-              </form>
+              <input id="userPicture" name="userPicture" type="file" accept="image/*">
+              <div id="pictureUploadFormProgress">
+              </div>
               {% else %}
               * {{ t('page_me.form_help.profile_image1') }}<br>
               * {{ t('page_me.form_help.profile_image2') }}<br>
@@ -168,15 +164,15 @@
   <script>
   $(function()
   {
-    $("#pictureUploadForm input[name=userPicture]").on('change', function(){
-      var $form = $('#pictureUploadForm');
-      var fd = new FormData($form[0]);
+    $("#userPicture").on('change', function(){
       if ($(this).val() == '') {
         return false;
       }
+      var fd = new FormData();
+      fd.append(this.name, this.files[0]);
 
       $('#pictureUploadFormProgress').html('<img src="/images/loading_s.gif"> アップロード中...');
-      $.ajax($form.attr("action"), {
+      $.ajax('/_api/me/picture/upload', {
         type: 'post',
         processData: false,
         contentType: false,
@@ -196,6 +192,18 @@
           $('#pictureUploadFormProgress').html('');
         }
       });
+      return false;
+    });
+
+    $("#pictureDeleteButton").on('click', function(){
+      if (!window.confirm('{{ t('Delete this image?') }}')) {
+        return false;
+      }
+
+      $('<form/>', { action: '/me/picture/delete', method: 'post' })
+        .appendTo(document.body)
+        .submit();
+
       return false;
     });
   });
