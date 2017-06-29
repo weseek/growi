@@ -370,7 +370,7 @@ $(function() {
    * event handler when 'Ctrl-S' pressed
    */
   var handleSKey = function(event) {
-    if (!event.ctrlKey) {
+    if (!event.ctrlKey && !event.metaKey) {
       return;
     }
 

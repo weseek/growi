@@ -1,9 +1,17 @@
 CHANGES
 ========
 
-## 1.2.7
+## 1.2.9
+
+* Improvement: Enabled to save with <kbd>⌘+S</kbd> on Mac
+* Improvement: Adopt the fastest logger 'pino'
+* Fix: The problem that can't upload profile image
+
+## 1.2.8
 
 * Fix: The problem that redirect doesn't work when using 'crowi-plus Simplified Behavior'
+
+## 1.2.7 (Missing number)
 
 ## 1.2.6
 

@@ -91,78 +91,81 @@
   </div>
 
   <div class="form-box">
-    <form action="/me/imagetype" method="post" class="form" role="form">
-      <fieldset>
 
-        <legend>{{ t('Set Profile Image') }}</legend>
+    <!-- separeted form tag -->
+    <form action="/me/imagetype" id="formImageType" method="post" class="form" role="form"></form>
 
-        <div class="form-group col-sm-offset-1 col-sm-3">
-          <div class="radio">
-            <h4>
-              <input type="radio" name="imagetypeForm[isGravatarEnabled]" value="true" {% if user.isGravatarEnabled %}checked="checked"{% endif %}>
-              <img src="https://gravatar.com/avatar/00000000000000000000000000000000?s=24" /> Gravatar
-              <a href="https://gravatar.com/">
-                <small><i class="fa fa-external-link" aria-hidden="true"></i></small>
-              </a>
-            </h4>
-          </div>
+    <fieldset>
 
-          <img src="{{ user|gravatar }}" width="64">
-        </div><!-- /.col-sm* -->
+      <legend>{{ t('Set Profile Image') }}</legend>
 
-        <div class="form-group col-sm-8">
-          <div class="radio">
-            <h4>
-              <input type="radio" name="imagetypeForm[isGravatarEnabled]" value="false" {% if !user.isGravatarEnabled  %}checked="checked"{% endif %}>{{ t('Upload Image') }}
-            </h4>
-          </div>
-          <div class="form-group">
-            <div id="pictureUploadFormMessage"></div>
-            <label for="" class="col-sm-4 control-label">
-              {{ t('Current Image') }}
-            </label>
-            <div class="col-sm-8">
-              <p>
-              <img src="{{ user|uploadedpicture }}" width="64" id="settingUserPicture"><br>
-              </p>
-              <p>
-              {% if user.image %}
-              <form action="/me/picture/delete" method="post" class="form-horizontal" role="form" onsubmit="return window.confirm('{{ t('Delete this image?') }}');">
-                <button type="submit" class="btn btn-danger">{{ t('Delete Image') }}</button>
-              </form>
-              {% endif %}
-              </p>
-            </div>
-          </div><!-- /.form-group -->
-
-          <div class="form-group">
-            <label for="" class="col-sm-4 control-label">
-              {{ t('Upload new image') }}
-            </label>
-            <div class="col-sm-8">
-              {% if isUploadable() %}
-              <form action="/_api/me/picture/upload" id="pictureUploadForm" method="post" class="form-horizontal" role="form" enctype="multipart/form-data">
-                <input name="userPicture" type="file" accept="image/*">
-                <div id="pictureUploadFormProgress">
-                </div>
-              </form>
-              {% else %}
-              * {{ t('page_me.form_help.profile_image1') }}<br>
-              * {{ t('page_me.form_help.profile_image2') }}<br>
-              {% endif %}
-            </div>
-          </div><!-- /.form-group -->
-
-        </div><!-- /.col-sm- -->
-
-        <div class="form-group">
-          <div class="col-sm-offset-4 col-sm-6">
-            <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
-          </div>
+      <div class="form-group col-sm-offset-1 col-sm-3">
+        <div class="radio">
+          <h4>
+            <input type="radio" form="formImageType" name="imagetypeForm[isGravatarEnabled]" value="true" {% if user.isGravatarEnabled %}checked="checked"{% endif %}>
+            <img src="https://gravatar.com/avatar/00000000000000000000000000000000?s=24" /> Gravatar
+            <a href="https://gravatar.com/">
+              <small><i class="fa fa-external-link" aria-hidden="true"></i></small>
+            </a>
+          </h4>
         </div>
 
-      </fieldset>
-    </form>
+        <img src="{{ user|gravatar }}" width="64">
+      </div><!-- /.col-sm* -->
+
+      <div class="form-group col-sm-8">
+        <div class="radio">
+          <h4>
+            <input type="radio" form="formImageType" name="imagetypeForm[isGravatarEnabled]" value="false" {% if !user.isGravatarEnabled  %}checked="checked"{% endif %}>
+            {{ t('Upload Image') }}
+          </h4>
+        </div>
+        <div class="form-group">
+          <div id="pictureUploadFormMessage"></div>
+          <label for="" class="col-sm-4 control-label">
+            {{ t('Current Image') }}
+          </label>
+          <div class="col-sm-8">
+            <p>
+            <img src="{{ user|uploadedpicture }}" width="64" id="settingUserPicture"><br>
+            </p>
+            <p>
+            {% if user.image %}
+            <form action="/me/picture/delete" method="post" class="form-horizontal" role="form" onsubmit="return window.confirm('{{ t('Delete this image?') }}');">
+              <button type="submit" class="btn btn-danger">{{ t('Delete Image') }}</button>
+            </form>
+            {% endif %}
+            </p>
+          </div>
+        </div><!-- /.form-group -->
+
+        <div class="form-group">
+          <label for="" class="col-sm-4 control-label">
+            {{ t('Upload new image') }}
+          </label>
+          <div class="col-sm-8">
+            {% if isUploadable() %}
+            <form action="/_api/me/picture/upload" id="pictureUploadForm" method="post" class="form-horizontal" role="form" enctype="multipart/form-data">
+              <input name="userPicture" type="file" accept="image/*">
+              <div id="pictureUploadFormProgress">
+              </div>
+            </form>
+            {% else %}
+            * {{ t('page_me.form_help.profile_image1') }}<br>
+            * {{ t('page_me.form_help.profile_image2') }}<br>
+            {% endif %}
+          </div>
+        </div><!-- /.form-group -->
+
+      </div><!-- /.col-sm- -->
+
+      <div class="form-group">
+        <div class="col-sm-offset-4 col-sm-6">
+          <button type="submit" form="formImageType" class="btn btn-primary">{{ t('Update') }}</button>
+        </div>
+      </div>
+
+    </fieldset>
   </div><!-- /.form-box -->
 
   <script>
