@@ -91,7 +91,10 @@
   </div>
 
   <div class="form-box">
-    <form action="/me/imagetype" method="post" class="form" role="form">
+
+    <!-- separeted form tag -->
+    <form action="/me/imagetype" id="formImageType" method="post" class="form" role="form"></form>
+
       <fieldset>
 
         <legend>{{ t('Set Profile Image') }}</legend>
@@ -99,7 +102,7 @@
         <div class="form-group col-sm-offset-1 col-sm-3">
           <div class="radio">
             <h4>
-              <input type="radio" name="imagetypeForm[isGravatarEnabled]" value="true" {% if user.isGravatarEnabled %}checked="checked"{% endif %}>
+              <input type="radio" form="formImageType" name="imagetypeForm[isGravatarEnabled]" value="true" {% if user.isGravatarEnabled %}checked="checked"{% endif %}>
               <img src="https://gravatar.com/avatar/00000000000000000000000000000000?s=24" /> Gravatar
               <a href="https://gravatar.com/">
                 <small><i class="fa fa-external-link" aria-hidden="true"></i></small>
@@ -113,7 +116,8 @@
         <div class="form-group col-sm-8">
           <div class="radio">
             <h4>
-              <input type="radio" name="imagetypeForm[isGravatarEnabled]" value="false" {% if !user.isGravatarEnabled  %}checked="checked"{% endif %}>{{ t('Upload Image') }}
+              <input type="radio" form="formImageType" name="imagetypeForm[isGravatarEnabled]" value="false" {% if !user.isGravatarEnabled  %}checked="checked"{% endif %}>
+              {{ t('Upload Image') }}
             </h4>
           </div>
           <div class="form-group">
@@ -157,12 +161,11 @@
 
         <div class="form-group">
           <div class="col-sm-offset-4 col-sm-6">
-            <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
+            <button type="submit" form="formImageType" class="btn btn-primary">{{ t('Update') }}</button>
           </div>
         </div>
 
       </fieldset>
-    </form>
   </div><!-- /.form-box -->
 
   <script>
