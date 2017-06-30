@@ -59,7 +59,7 @@
   // detect mutations for #edit-form
   const targetSelector = '#edit-form';
   var mo = new MutationObserver(function(mutations){
-    // scroll when '#edit-form' activated
+    // initialize caret position when '#edit-form' activated
     if (mutations[0].target.classList.contains('active')) {
       initCaretPosition();
     }
