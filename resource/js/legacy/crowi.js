@@ -31,7 +31,7 @@ Crowi.correctHeaders = function(contentId) {
 };
 
 /**
- *
+ * append buttons to section headers
  */
 Crowi.appendEditSectionButtons = function(contentId, markdown) {
   const $content = $(contentId || '#revision-body-content');
@@ -47,13 +47,10 @@ Crowi.appendEditSectionButtons = function(contentId, markdown) {
       position = markdown.search(text);
     }
 
-    // get line number
-    const lineNumber = markdown.substr(0, position).split('\n').length;
-
     // add button
     $(this).append(`
       <span class="revision-head-edit-button">
-        <a href="#edit-form" onClick="Crowi.setScrollToLineAttrToFormBodyElem(${lineNumber})">
+        <a href="#edit-form" onClick="Crowi.setCaretPositionToFormBody(${position})">
           <i class="fa fa-edit"></i>
         </a>
       </span>
@@ -62,9 +59,13 @@ Crowi.appendEditSectionButtons = function(contentId, markdown) {
   });
 };
 
-Crowi.setScrollToLineAttrToFormBodyElem = function(lineNumber) {
-  console.log(lineNumber);
-  $('#form-body').data('scroll-to-line', lineNumber);
+/**
+ * set 'data-caret-position' attribute that will be processed in crowi-form.js
+ * @param {number} position
+ */
+Crowi.setCaretPositionToFormBody = function(position) {
+  const formBody = document.querySelector('#form-body');
+  formBody.setAttribute('data-caret-position', position);
 }
 
 
