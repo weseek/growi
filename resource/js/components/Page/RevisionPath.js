@@ -65,7 +65,7 @@ export default class RevisionPath extends React.Component {
   }
 
   render() {
-    // define style
+    // define styles
     const rootStyle = {
       marginRight: "0.2em",
     }
