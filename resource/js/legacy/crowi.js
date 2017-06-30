@@ -30,6 +30,45 @@ Crowi.correctHeaders = function(contentId) {
   });
 };
 
+/**
+ * append buttons to section headers
+ */
+Crowi.appendEditSectionButtons = function(contentId, markdown) {
+  const $content = $(contentId || '#revision-body-content');
+  $('h1,h2,h3,h4,h5,h6', $content).each(function(idx, elm) {
+    // get header text string
+    const text = $(this).text();
+
+    // search pos for '# ...'
+    // https://regex101.com/r/y5rpO5/1
+    const regexp = new RegExp(`[^\r\n]*#+[^\r\n]*${text}[^\r\n]*`);
+    let position = markdown.search(regexp);
+    if (position < 0) { // if not found, search text only
+      position = markdown.search(text);
+    }
+
+    // add button
+    $(this).append(`
+      <span class="revision-head-edit-button">
+        <a href="#edit-form" onClick="Crowi.setCaretPositionToFormBody(${position})">
+          <i class="fa fa-edit"></i>
+        </a>
+      </span>
+      `
+    );
+  });
+};
+
+/**
+ * set 'data-caret-position' attribute that will be processed in crowi-form.js
+ * @param {number} position
+ */
+Crowi.setCaretPositionToFormBody = function(position) {
+  const formBody = document.querySelector('#form-body');
+  formBody.setAttribute('data-caret-position', position);
+}
+
+
 Crowi.revisionToc = function(contentId, tocId) {
   var $content = $(contentId || '#revision-body-content');
   var $tocId = $(tocId || '#revision-toc');
@@ -460,6 +499,7 @@ $(function() {
           });
 
           Crowi.correctHeaders('#revision-body-content');
+          Crowi.appendEditSectionButtons('#revision-body-content', markdown);
           Crowi.revisionToc('#revision-body-content', '#revision-toc');
 
           Promise.resolve($('#revision-body-content'));

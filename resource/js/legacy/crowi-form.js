@@ -56,6 +56,45 @@
     $('.content-main').removeClass('on-edit');
   });
 
+  // detect mutations for #edit-form
+  const targetSelector = '#edit-form';
+  var mo = new MutationObserver(function(mutations){
+    // initialize caret position when '#edit-form' activated
+    if (mutations[0].target.classList.contains('active')) {
+      initCaretPosition();
+    }
+  });
+  mo.observe(
+    document.querySelector(targetSelector),
+    {
+      attributes: true,
+      attributeFilter: ['class'],
+    }
+  );
+
+  /**
+   * scroll the textarea named '#form-body' according to the attribute 'data-caret-position'
+   *  that is set in Crowi.setScrollPositionToFormBody
+   */
+  function initCaretPosition() {
+    const textarea = document.querySelector('#form-body');
+    const position = textarea.getAttribute('data-caret-position');
+
+    if (position !== null) {
+      // focus
+      textarea.blur();
+      textarea.focus();
+      // scroll to the bottom for a moment
+      textarea.scrollTop = textarea.scrollHeight;
+      // set caret to the target position
+      textarea.selectionStart = position;
+      textarea.selectionEnd = position;
+
+      // remove attribute
+      textarea.removeAttribute('data-caret-position');
+    }
+  }
+
 /**
  * DOM ready
  */

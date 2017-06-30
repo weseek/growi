@@ -25,9 +25,10 @@
         margin-bottom: 10px;
       }
     }
+
   }
 
-  // hide authors from affix
+  // hide authors in affix
   .main #page-header.affix {
     .authors {
       display: none !important;

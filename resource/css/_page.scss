@@ -108,6 +108,15 @@
         color: #999;
         font-size: 1rem;
       }
+
+      // hide .btn
+      .btn {
+        visibility: hidden;
+      }
+      // show .btn when hover
+      &:hover .btn {
+        visibility: unset;
+      }
     }
 
     .content-main {
