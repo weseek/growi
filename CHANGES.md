@@ -1,6 +1,10 @@
 CHANGES
 ========
 
+## 1.2.10
+
+* Fix: Revise `server:prod:container` script for backward compatibility
+
 ## 1.2.9
 
 * Improvement: Enabled to save with <kbd>⌘+S</kbd> on Mac
