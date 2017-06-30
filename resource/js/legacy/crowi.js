@@ -43,7 +43,7 @@ Crowi.appendEditSectionButtons = function(contentId, markdown) {
     // https://regex101.com/r/y5rpO5/1
     const regexp = new RegExp(`[^\r\n]*#+[^\r\n]*${text}[^\r\n]*`);
     let position = markdown.search(regexp);
-    if (position < 0) { // if not found, search text only
+    if (position < 0) { // if not found, search with header text only
       position = markdown.search(text);
     }
 
