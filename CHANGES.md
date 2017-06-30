@@ -1,6 +1,11 @@
 CHANGES
 ========
 
+## 1.2.11
+
+* Improvement: Enabled to open editing form from affix header
+* Improvement: Enabled to open editing form from each section headers
+
 ## 1.2.10
 
 * Fix: Revise `server:prod:container` script for backward compatibility
