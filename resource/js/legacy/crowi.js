@@ -30,6 +30,44 @@ Crowi.correctHeaders = function(contentId) {
   });
 };
 
+/**
+ *
+ */
+Crowi.appendEditSectionButtons = function(contentId, markdown) {
+  const $content = $(contentId || '#revision-body-content');
+  $('h1,h2,h3,h4,h5,h6', $content).each(function(idx, elm) {
+    // get header text string
+    const text = $(this).text();
+
+    // search pos for '# ...'
+    // https://regex101.com/r/y5rpO5/1
+    const regexp = new RegExp(`[^\r\n]*#+[^\r\n]*${text}[^\r\n]*`);
+    let position = markdown.search(regexp);
+    if (position < 0) { // if not found, search text only
+      position = markdown.search(text);
+    }
+
+    // get line number
+    const lineNumber = markdown.substr(0, position).split('\n').length;
+
+    // add button
+    $(this).append(`
+      <span class="revision-head-edit-button">
+        <a href="#edit-form" onClick="Crowi.setScrollToLineAttrToFormBodyElem(${lineNumber})">
+          <i class="fa fa-edit"></i>
+        </a>
+      </span>
+      `
+    );
+  });
+};
+
+Crowi.setScrollToLineAttrToFormBodyElem = function(lineNumber) {
+  console.log(lineNumber);
+  $('#form-body').data('scroll-to-line', lineNumber);
+}
+
+
 Crowi.revisionToc = function(contentId, tocId) {
   var $content = $(contentId || '#revision-body-content');
   var $tocId = $(tocId || '#revision-toc');
@@ -460,6 +498,7 @@ $(function() {
           });
 
           Crowi.correctHeaders('#revision-body-content');
+          Crowi.appendEditSectionButtons('#revision-body-content', markdown);
           Crowi.revisionToc('#revision-body-content', '#revision-toc');
 
           Promise.resolve($('#revision-body-content'));

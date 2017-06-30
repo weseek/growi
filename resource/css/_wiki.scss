@@ -40,15 +40,19 @@ div.body {
 
 .revision-head {
 
-  .revision-head-link {
-    display: none;
+  .revision-head-link,
+  .revision-head-edit-button {
+    visibility: hidden;
     font-size: 0.6em;
     padding-top: 4px;
     padding-left: 10px;
   }
-  &:hover .revision-head-link {
-    display: inline-block;
+  &:hover .revision-head-link,
+  &:hover .revision-head-edit-button {
+    visibility: unset;
   }
+
+
 }
 
 .wiki {

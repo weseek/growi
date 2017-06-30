@@ -56,6 +56,24 @@
     $('.content-main').removeClass('on-edit');
   });
 
+  // detect mutations for #edit-form
+  var mo = new MutationObserver(function(mutationRecords){
+    console.log(mutationRecords);
+
+    const formBody = $('#form-body');
+    const scrollToLine = formBody.data('scroll-to-line');
+
+    if (scrollToLine !== undefined) {
+      console.log(`scroll to ${scrollToLine}`)
+      const lineHeight = parseInt(formBody.css('line-height'));
+      const scrollTopAmount = scrollToLine * lineHeight;
+      formBody.scrollTop(scrollTopAmount);
+    }
+    // reset 'scroll-to-line'
+    formBody.removeData('scroll-to-line');
+  });
+  mo.observe(document.querySelector('#edit-form'), {attributes: true});
+
 /**
  * DOM ready
  */
