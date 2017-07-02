@@ -150,7 +150,7 @@
         <p class="well">機能の有効/無効を選択できます。</p>
 
         <div class="form-group">
-          <label for="settingForm[customize:isEnabledTimeline]" class="col-xs-3 control-label">タイムライン表示機能</label>
+          <label for="settingForm[customize:isEnabledTimeline]" class="col-xs-3 control-label">タイムライン機能</label>
           <div class="col-xs-9">
             <div class="btn-group btn-toggle" data-toggle="buttons">
               <label class="btn btn-default {% if settingForm['customize:isEnabledTimeline'] %}active{% endif %}" data-active-class="primary">
@@ -164,11 +164,34 @@
             </div>
 
             <p class="help-block">
-              無効化することで、リストページの表示を高速化できます。<br>
-              配下ページが多い場合に効果があります。
+              配下ページのタイムラインを表示できます。
+            </p>
+            <p class="help-block">
+              配下ページが多い場合はページロード時のパフォーマンスが落ちます。<br>
+              無効化することでリストページの表示を高速化できます。
             </p>
           </div>
+        </div>
 
+        <div class="form-group">
+          <label for="settingForm[customize:isSavedStatesOfTabChanges]" class="col-xs-3 control-label">タブ変更をブラウザ履歴に保存</label>
+          <div class="col-xs-9">
+            <div class="btn-group btn-toggle" data-toggle="buttons">
+              <label class="btn btn-default {% if settingForm['customize:isSavedStatesOfTabChanges'] %}active{% endif %}" data-active-class="primary">
+                <input name="settingForm[customize:isSavedStatesOfTabChanges]" value="true" type="radio"
+                    {% if true === settingForm['customize:isSavedStatesOfTabChanges'] %}checked{% endif %}> 有効
+              </label>
+              <label class="btn btn-default {% if !settingForm['customize:isSavedStatesOfTabChanges'] %}active{% endif %}" data-active-class="primary">
+                <input name="settingForm[customize:isSavedStatesOfTabChanges]" value="false" type="radio"
+                    {% if !settingForm['customize:isSavedStatesOfTabChanges'] %}checked{% endif %}> 無効
+              </label>
+            </div>
+
+            <p class="help-block">
+              編集タブやヒストリータブ等の切り替えをブラウザ履歴に保存し、ブラウザバック操作の対象にします。<br>
+              無効化することで、ページ遷移のみをブラウザバック操作の対象にすることができます。
+            </p>
+          </div>
         </div>
 
         <div class="form-group">

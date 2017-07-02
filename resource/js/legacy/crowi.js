@@ -180,6 +180,8 @@ Crowi.modifyScrollTop = function() {
 
 
 $(function() {
+  var config = JSON.parse(document.getElementById('crowi-context-hydrate').textContent || '{}');
+
   var pageId = $('#content-main').data('page-id');
   var revisionId = $('#content-main').data('page-revision-id');
   var revisionCreatedAt = $('#content-main').data('page-revision-created');
@@ -187,6 +189,7 @@ $(function() {
   var isSeen = $('#content-main').data('page-is-seen');
   var pagePath= $('#content-main').data('path');
   var isEnabledLineBreaks = $('#content-main').data('linebreaks-enabled');
+  var isSavedStatesOfTabChanges = config['isSavedStatesOfTabChanges'];
 
   // generate options obj
   var rendererOptions = {
@@ -752,15 +755,17 @@ $(function() {
   } // end if pageId
 
   // hash handling
-  $('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', function() {
-    window.history.pushState('', 'History', '#revision-history');
-  });
-  $('a[data-toggle="tab"][href="#edit-form"]').on('show.bs.tab', function() {
-    window.history.pushState('', 'Edit', '#edit-form');
-  });
-  $('a[data-toggle="tab"][href="#revision-body"]').on('show.bs.tab', function() {
-    window.history.pushState('', '',  location.href.replace(location.hash, ''));
-  });
+  if (isSavedStatesOfTabChanges) {
+    $('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', function() {
+      window.history.pushState('', 'History', '#revision-history');
+    });
+    $('a[data-toggle="tab"][href="#edit-form"]').on('show.bs.tab', function() {
+      window.history.pushState('', 'Edit', '#edit-form');
+    });
+    $('a[data-toggle="tab"][href="#revision-body"]').on('show.bs.tab', function() {
+      window.history.pushState('', '',  location.href.replace(location.hash, ''));
+    });
+  }
 });
 
 Crowi.getRevisionBodyContent = function() {

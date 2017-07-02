@@ -1,0 +1,102 @@
+{% extends 'layout/2column.html' %}
+
+{% block content_head %}
+
+  {% block content_head_before %}
+  {% endblock %}
+
+  <div class="header-wrap">
+    <header id="page-header">
+      <p class="stopper"><a href="#" data-affix-disable="#page-header"><i class="fa fa-chevron-up"></i></a></p>
+
+      <div class="flex-title-line">
+        <div>
+          <h1 class="title flex-item-title" id="revision-path"></h1>
+          <div id="revision-url" class="url-line"></div>
+        </div>
+      </div>
+
+    </header>
+  </div>
+
+  {% block content_head_after %}
+  {% endblock %}
+
+{% endblock %} {# /content_head #}
+
+{% block content_main %}
+
+{% block content_main_before %}
+  <h2 class="message-not-found text-muted">
+    <i class="fa fa-info-circle" aria-hidden="true"></i>
+    Page is not found
+  </h2>
+{% endblock %}
+
+<div id="content-main" class="content-main content-main-not-found page-list"
+  data-path="{{ path }}"
+  data-path-shortname="{{ path|path2name }}"
+  data-page-id="{% if page %}{{ page._id.toString() }}{% endif %}"
+  data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
+  data-current-username="{% if user %}{{ user.username }}{% endif %}"
+  data-page-revision-id="{% if revision %}{{ revision._id.toString() }}{% endif %}"
+  data-page-revision-created="{% if revision %}{{ revision.createdAt|datetz('U') }}{% endif %}"
+  data-page-is-seen="{% if page and page.isSeenUser(user) %}1{% else %}0{% endif %}"
+  data-linebreaks-enabled="{{ isEnabledLinebreaks() }}"
+  data-csrftoken="{{ csrf() }}"
+  >
+
+  <ul class="nav nav-tabs hidden-print">
+    <li class="active"><a href="#revision-body" data-toggle="tab">{{ t('List View') }}</a></li>
+
+    <li>
+      <a {% if user %}href="#edit-form" data-toggle="tab"{% endif %} class="edit-button {% if not user %}edit-button-disabled{% endif %}">
+        <i class="fa fa-pencil-square-o"></i> {{ t('Create') }}
+      </a>
+    </li>
+
+    {% if user %}
+    <li class="dropdown pull-right">
+      <a href="#" onclick="history.back();"><i class="fa fa-times"></i> {{ t('Cancel') }}</a>
+    </li>
+    {% endif %}
+  </ul>
+
+  <div class="tab-content wiki-content">
+    {% if req.query.renamed %}
+    <div class="alert alert-info alert-moved">
+      <span>
+        <strong>{{ t('Moved') }}: </strong> {{ t('page_page.notice.moved', req.query.renamed) }}
+      </span>
+    </div>
+    {% endif %}
+    {% if req.query.unlinked %}
+    <div class="alert alert-info">
+      <strong>{{ t('Unlinked') }}: </strong> {{ t('page_page.notice.unlinked') }}
+    </div>
+    {% endif %}
+
+    {# list view #}
+    <div class="active tab-pane page-list-container" id="revision-body">
+      {% if pages.length == 0 %}
+        There are no pages under <strong>{{ path }}</strong>.
+      {% endif  %}
+
+      {% include 'widget/page_list.html' with { pages: pages, pager: pager, viewConfig: viewConfig } %}
+    </div>
+
+    {# edit view #}
+    <div class="edit-form tab-pane {% if req.body.pageForm %}active{% endif %}" id="edit-form">
+      {% include '_form.html' %}
+    </div>
+
+  </div>
+</div>
+
+{% block content_main_after %}
+{% endblock %}
+
+{% endblock %}
+
+{% block content_footer %}
+{% endblock %}

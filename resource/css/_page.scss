@@ -109,13 +109,12 @@
         font-size: 1rem;
       }
 
-      // hide .btn
-      .btn {
-        visibility: hidden;
+      // change button opacity
+      .btn.btn-muted {
+        opacity: 0.3;
       }
-      // show .btn when hover
-      &:hover .btn {
-        visibility: unset;
+      &:hover .btn.btn-muted {
+        opacity: unset;
       }
     }
 
@@ -373,3 +372,17 @@
   }
 
 } // }}}
+
+// for not_found.html
+.crowi.main-container {
+  .message-not-found {
+    margin-top: 10px;
+    margin-left: 16px;
+  }
+
+  .content-main.content-main-not-found {
+    .nav {
+      margin-top: 16px;
+    }
+  }
+}

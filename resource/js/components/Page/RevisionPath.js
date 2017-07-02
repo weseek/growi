@@ -107,8 +107,8 @@ export default class RevisionPath extends React.Component {
         </span>
         {afterElements}
         <CopyButton buttonId="btnCopyRevisionPath" text={this.props.pagePath}
-            buttonClassName="btn btn-default" iconClassName="fa fa-clone text-muted" />
-        <a href="#edit-form" className="btn btn-default" style={editButtonStyle}>
+            buttonClassName="btn btn-default btn-muted" iconClassName="fa fa-clone text-muted" />
+        <a href="#edit-form" className="btn btn-default btn-muted" style={editButtonStyle}>
           <i className="fa fa-edit text-muted"></i>
         </a>
       </span>
