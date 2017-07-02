@@ -373,11 +373,16 @@
 
 } // }}}
 
-.crowi.main-container .content-main.content-main-not-found {
+// for not_found.html
+.crowi.main-container {
   .message-not-found {
     margin-top: 10px;
+    margin-left: 16px;
   }
-  .nav {
-    margin-top: 30px;
+
+  .content-main.content-main-not-found {
+    .nav {
+      margin-top: 16px;
+    }
   }
 }
