@@ -766,6 +766,17 @@ $(function() {
       window.history.pushState('', '',  location.href.replace(location.hash, ''));
     });
   }
+  else {
+    $('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', function() {
+      window.history.replaceState('', 'History', '#revision-history');
+    });
+    $('a[data-toggle="tab"][href="#edit-form"]').on('show.bs.tab', function() {
+      window.history.replaceState('', 'Edit', '#edit-form');
+    });
+    $('a[data-toggle="tab"][href="#revision-body"]').on('show.bs.tab', function() {
+      window.history.replaceState('', '',  location.href.replace(location.hash, ''));
+    });
+  }
 });
 
 Crowi.getRevisionBodyContent = function() {
