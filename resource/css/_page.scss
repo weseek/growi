@@ -109,13 +109,12 @@
         font-size: 1rem;
       }
 
-      // hide .btn
+      // change button opacity
       .btn {
-        visibility: hidden;
+        opacity: 0.3;
       }
-      // show .btn when hover
       &:hover .btn {
-        visibility: unset;
+        opacity: unset;
       }
     }
 
