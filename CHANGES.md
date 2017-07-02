@@ -1,14 +1,17 @@
 CHANGES
 ========
 
+## 1.2.14
+
+* Fix: Tabs(`a[data-toggle="tab"][href="#..."]`) push browser history twice
+* Fix: `a[href="#edit-form"]` still save history even when disabling pushing states option
+
 ## 1.2.13
-
-* Fix: The problem when disabling pushing states with History API when tabs changes 
-
-## 1.2.12
 
 * Improvement: Enabled to switch whether to push states with History API when tabs changes 
 * Fix: Layout of the Not Found page
+
+## 1.2.12 (Missing number)
 
 ## 1.2.11
 

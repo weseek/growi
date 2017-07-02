@@ -757,13 +757,17 @@ $(function() {
   // hash handling
   if (isSavedStatesOfTabChanges) {
     $('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', function() {
-      window.history.pushState('', 'History', '#revision-history');
+      window.location.hash = '#revision-history';
+      window.history.replaceState('', 'History', '#revision-history');
     });
     $('a[data-toggle="tab"][href="#edit-form"]').on('show.bs.tab', function() {
-      window.history.pushState('', 'Edit', '#edit-form');
+      window.location.hash = '#edit-form';
+      window.history.replaceState('', 'Edit', '#edit-form');
     });
     $('a[data-toggle="tab"][href="#revision-body"]').on('show.bs.tab', function() {
-      window.history.pushState('', '',  location.href.replace(location.hash, ''));
+      // couln't solve https://github.com/weseek/crowi-plus/issues/119 completely -- 2017.07.03 Yuki Takei
+      window.location.hash = '#';
+      window.history.replaceState('', '', location.href);
     });
   }
   else {
@@ -775,6 +779,10 @@ $(function() {
     });
     $('a[data-toggle="tab"][href="#revision-body"]').on('show.bs.tab', function() {
       window.history.replaceState('', '',  location.href.replace(location.hash, ''));
+    });
+    // replace all href="#edit-form" link behaviors
+    $(document).on('click', 'a[href="#edit-form"]', function() {
+      window.location.replace('#edit-form');
     });
   }
 });
