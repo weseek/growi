@@ -4,6 +4,7 @@ CHANGES
 ## 1.2.12
 
 * Improvement: Enabled to switch whether to push states with History API when tabs changes 
+* Fix: Layout of the Not Found page
 
 ## 1.2.11
 
