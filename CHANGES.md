@@ -1,6 +1,10 @@
 CHANGES
 ========
 
+## 1.2.12
+
+* Improvement: Enabled to disable to push states with History API when tabs changes 
+
 ## 1.2.11
 
 * Improvement: Enabled to open editing form from affix header
