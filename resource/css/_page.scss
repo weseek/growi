@@ -110,10 +110,10 @@
       }
 
       // change button opacity
-      .btn {
+      .btn.btn-muted {
         opacity: 0.3;
       }
-      &:hover .btn {
+      &:hover .btn.btn-muted {
         opacity: unset;
       }
     }
