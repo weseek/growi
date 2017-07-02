@@ -766,8 +766,8 @@ $(function() {
     });
     $('a[data-toggle="tab"][href="#revision-body"]').on('show.bs.tab', function() {
       // couln't solve https://github.com/weseek/crowi-plus/issues/119 completely -- 2017.07.03 Yuki Takei
-      window.location.hash = '';
-      window.history.replaceState('', '', location.href.replace(location.hash, ''));
+      window.location.hash = '#';
+      window.history.replaceState('', '', location.href);
     });
   }
   else {
