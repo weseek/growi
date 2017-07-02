@@ -1,6 +1,10 @@
 CHANGES
 ========
 
+## 1.2.13
+
+* Fix: The problem when disabling pushing states with History API when tabs changes 
+
 ## 1.2.12
 
 * Improvement: Enabled to switch whether to push states with History API when tabs changes 
