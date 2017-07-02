@@ -780,6 +780,10 @@ $(function() {
     $('a[data-toggle="tab"][href="#revision-body"]').on('show.bs.tab', function() {
       window.history.replaceState('', '',  location.href.replace(location.hash, ''));
     });
+    // replace all href="#edit-form" link behaviors
+    $(document).on('click', 'a[href="#edit-form"]', function() {
+      window.location.replace('#edit-form');
+    });
   }
 });
 
