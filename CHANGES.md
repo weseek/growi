@@ -1,6 +1,12 @@
 CHANGES
 ========
 
+## 1.2.15
+
+* Improvement: Optimize cache settings for express server
+* Improvement: Add a logo link to the affix header
+* Fix: Child pages under `/trash` are not shown when applying crowi-plus Simplified Behavior
+
 ## 1.2.14
 
 * Fix: Tabs(`a[data-toggle="tab"][href="#..."]`) push browser history twice
