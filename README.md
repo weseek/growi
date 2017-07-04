@@ -14,25 +14,30 @@ crowi-plus [![Chat on Slack](https://crowi-plus-slackin.weseek.co.jp/badge.svg)]
 [![dependencies status](https://david-dm.org/weseek/crowi-plus.svg)](https://david-dm.org/weseek/crowi-plus)
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
 
-This is **crowi-plus** that is the fork of [Crowi][crowi], is [perfectly compatible with official](https://github.com/weseek/crowi-plus/wiki/Questions-and-Answers#does-crowi-plus-have-compatibility-with-official-crowi), and has been enhanced with the following points:
 
-* Pluggable
+**crowi-plus** is a fork of [Crowi][crowi] that is [perfectly compatible with the official project](https://github.com/weseek/crowi-plus/wiki/Correspondence-table-with-official-version).
+
+
+Why crowi-plus?
+================
+
+* **Pluggable**
   * Find plugins from [npm](https://www.npmjs.com/browse/keyword/crowi-plugin) or [github](https://github.com/search?q=topic%3Acrowi-plugin)!
-* Faster
+* **Faster**
   * Optimize client-side code chunks by Webpack
   * Optimize cache settings for static assets
   * Adopt the fastest logger [pino](https://github.com/pinojs/pino)
   * Using CDN
-* Secure
+* **Secure**
   * Upgrade jQuery to 3.x
   * Upgrade other insecure libs
-* [Docker Ready][dockerhub]
-* [Docker Compose Ready][docker-compose]
+* **[Docker Ready][dockerhub]**
+* **[Docker Compose Ready][docker-compose]**
   * [Multiple sites example](https://github.com/weseek/crowi-plus-docker-compose/tree/master/examples/multi-app)
   * [HTTPS(with Let's Encrypt) proxy integration example](https://github.com/weseek/crowi-plus-docker-compose/tree/master/examples/https-portal)
-* [Added miscellaneous features](https://github.com/weseek/crowi-plus/wiki/Additional-Features)
+* **[Added miscellaneous features](https://github.com/weseek/crowi-plus/wiki/Additional-Features)**
 * Support for IE11 (Experimental)
-* Developer-friendly
+* **Developer-friendly**
   * Less compile time
   * LiveReload separately available by server/client code change
   * Exclude Environment-dependency (confirmed to be developable on Win/Mac/Linux)
