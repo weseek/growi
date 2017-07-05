@@ -1,6 +1,11 @@
 CHANGES
 ========
 
+## 1.2.16
+
+* Improvement: Condition for creating portal
+* Fix: Couldn't create new page after installation cleanly
+
 ## 1.2.15
 
 * Improvement: Optimize cache settings for express server

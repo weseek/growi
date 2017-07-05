@@ -56,7 +56,7 @@
       </ul>
       {% endif %}
 
-      {% if not page and ('crowi' === behaviorType()) and not isUserPageList(path) and !isTrashPage() %}
+      {% if not page and ('/' === path or 'crowi' === behaviorType()) and not isUserPageList(path) and !isTrashPage() %}
       <div class="portal-form-button">
         <button class="btn btn-primary" id="create-portal-button" {% if not user %}disabled{% endif %}>Create Portal</button>
         <p class="help-block"><a href="#" data-target="#help-portal" data-toggle="modal"><i class="fa fa-question-circle"></i> What is Portal?</a></p>

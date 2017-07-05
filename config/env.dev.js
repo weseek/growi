@@ -11,6 +11,7 @@ module.exports = {
   DEBUG: [
     // 'express:*',
     // 'crowi:*',
+    // 'crowi:routes:page',
     // 'crowi:plugins:*',
     // 'crowi:InterceptorManager',
   ].join(),
