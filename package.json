@@ -60,7 +60,7 @@
     "cli": "~1.0.1",
     "colors": "^1.1.2",
     "connect-flash": "~0.1.1",
-    "connect-redis": "~2.1.0",
+    "connect-redis": "^3.3.0",
     "cookie-parser": "^1.4.3",
     "copy-webpack-plugin": "^4.0.0",
     "crowi-pluginkit": "^1.1.0",
@@ -123,7 +123,7 @@
   },
   "devDependencies": {
     "chai": "^4.0.2",
-    "commander": "~2.9.0",
+    "commander": "^2.11.0",
     "easy-livereload": "^1.2.0",
     "mocha": "^3.2.0",
     "morgan": "^1.8.2",
