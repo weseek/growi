@@ -59,7 +59,6 @@
     "check-node-version": "^2.0.1",
     "cli": "~1.0.1",
     "colors": "^1.1.2",
-    "commander": "~2.9.0",
     "connect-flash": "~0.1.1",
     "connect-redis": "~2.1.0",
     "cookie-parser": "^1.4.3",
@@ -123,13 +122,12 @@
     "webpack-merge": "~4.1.0"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
-    "concurrently": "^3.4.0",
+    "chai": "^4.0.2",
+    "commander": "~2.9.0",
     "easy-livereload": "^1.2.0",
     "mocha": "^3.2.0",
     "morgan": "^1.8.2",
     "node-dev": "^3.1.3",
-    "proxyquire": "^1.7.11",
     "sinon": "^2.1.0",
     "sinon-chai": "^2.9.0"
   },
