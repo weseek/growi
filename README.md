@@ -12,6 +12,7 @@ crowi-plus [![Chat on Slack](https://crowi-plus-slackin.weseek.co.jp/badge.svg)]
 
 [![wercker status](https://app.wercker.com/status/39cdc49d067d65c39cb35d52ceae6dc1/s/master "wercker status")](https://app.wercker.com/project/byKey/39cdc49d067d65c39cb35d52ceae6dc1)
 [![dependencies status](https://david-dm.org/weseek/crowi-plus.svg)](https://david-dm.org/weseek/crowi-plus)
+[![devDependencies Status](https://david-dm.org/weseek/crowi-plus/dev-status.svg)](https://david-dm.org/weseek/crowi-plus?type=dev)
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
 
 
@@ -31,7 +32,7 @@ Why crowi-plus?
 * **Secure**
   * Upgrade jQuery to 3.x
   * Upgrade other insecure libs
-  * The official Crowi status is [![dependencies Status](https://david-dm.org/crowi/crowi/status.svg)](https://david-dm.org/crowi/crowi)
+  * The official Crowi status is [![dependencies Status](https://david-dm.org/crowi/crowi/status.svg)](https://david-dm.org/crowi/crowi) [![devDependencies Status](https://david-dm.org/crowi/crowi/dev-status.svg)](https://david-dm.org/crowi/crowi?type=dev)
 * **[Docker Ready][dockerhub]**
 * **[Docker Compose Ready][docker-compose]**
   * [Multiple sites example](https://github.com/weseek/crowi-plus-docker-compose/tree/master/examples/multi-app)
