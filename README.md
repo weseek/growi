@@ -29,6 +29,7 @@ Why crowi-plus?
   * Adopt the fastest logger [pino](https://github.com/pinojs/pino)
   * Using CDN
 * **Secure**
+  * The official Crowi status is [![dependencies Status](https://david-dm.org/crowi/crowi/status.svg)](https://david-dm.org/crowi/crowi)
   * Upgrade jQuery to 3.x
   * Upgrade other insecure libs
 * **[Docker Ready][dockerhub]**
