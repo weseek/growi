@@ -276,9 +276,9 @@ autoprefixer@^6.3.1:
     postcss "^5.2.16"
     postcss-value-parser "^3.2.3"
 
-aws-sdk@^2.2.36:
-  version "2.80.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.80.0.tgz#61ced747eb981609483aec53e8d654d3cc9d1435"
+aws-sdk@^2.2.36, aws-sdk@^2.80.0:
+  version "2.81.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.81.0.tgz#48979a3f00991fd43b870eeaea79ade101761e41"
   dependencies:
     buffer "4.9.1"
     crypto-browserify "1.0.9"
@@ -289,14 +289,6 @@ aws-sdk@^2.2.36:
     uuid "3.0.1"
     xml2js "0.4.17"
     xmlbuilder "4.2.1"
-
-aws-sdk@~2.2.26:
-  version "2.2.48"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.2.48.tgz#8e50899966554f6e5bd0e3e2955ebfd941ab7863"
-  dependencies:
-    sax "1.1.5"
-    xml2js "0.4.15"
-    xmlbuilder "2.6.2"
 
 aws-sign2@~0.6.0:
   version "0.6.0"
@@ -3517,10 +3509,6 @@ lodash@^4.0.0, lodash@^4.14.0, lodash@^4.17.2, lodash@^4.17.4, lodash@^4.2.0, lo
   version "4.17.4"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
 
-lodash@~3.5.0:
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-3.5.0.tgz#19bb3f4d51278f0b8c818ed145c74ecf9fe40e6d"
-
 lolex@^1.6.0:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/lolex/-/lolex-1.6.0.tgz#3a9a0283452a47d7439e72731b9e07d7386e49f6"
@@ -4709,8 +4697,8 @@ postcss@^5.0.10, postcss@^5.0.11, postcss@^5.0.12, postcss@^5.0.13, postcss@^5.0
     supports-color "^3.2.3"
 
 postcss@^6.0.1:
-  version "6.0.5"
-  resolved "https://registry.yarnpkg.com/postcss/-/postcss-6.0.5.tgz#efa34f745ca25bd3b3cbd15aa4e03112b8237f3c"
+  version "6.0.6"
+  resolved "https://registry.yarnpkg.com/postcss/-/postcss-6.0.6.tgz#bba4d58e884fc78c840d1539e10eddaabb8f73bd"
   dependencies:
     chalk "^2.0.1"
     source-map "^0.5.6"
@@ -5282,10 +5270,6 @@ sass-loader@^6.0.3:
     loader-utils "^1.0.1"
     lodash.tail "^4.1.1"
     pify "^3.0.0"
-
-sax@1.1.5:
-  version "1.1.5"
-  resolved "https://registry.yarnpkg.com/sax/-/sax-1.1.5.tgz#1da50a8d00cdecd59405659f5ff85349fe773743"
 
 sax@1.2.1:
   version "1.2.1"
@@ -6178,13 +6162,6 @@ ws@~2.3.1:
     safe-buffer "~5.0.1"
     ultron "~1.1.0"
 
-xml2js@0.4.15:
-  version "0.4.15"
-  resolved "https://registry.yarnpkg.com/xml2js/-/xml2js-0.4.15.tgz#95cd03ff2dd144ec28bc6273bf2b2890c581ad0c"
-  dependencies:
-    sax ">=0.6.0"
-    xmlbuilder ">=2.4.6"
-
 xml2js@0.4.17:
   version "0.4.17"
   resolved "https://registry.yarnpkg.com/xml2js/-/xml2js-0.4.17.tgz#17be93eaae3f3b779359c795b419705a8817e868"
@@ -6192,21 +6169,11 @@ xml2js@0.4.17:
     sax ">=0.6.0"
     xmlbuilder "^4.1.0"
 
-xmlbuilder@2.6.2:
-  version "2.6.2"
-  resolved "https://registry.yarnpkg.com/xmlbuilder/-/xmlbuilder-2.6.2.tgz#f916f6d10d45dc171b1be2e6e673fb6e0cc35d0a"
-  dependencies:
-    lodash "~3.5.0"
-
 xmlbuilder@4.2.1, xmlbuilder@^4.1.0:
   version "4.2.1"
   resolved "https://registry.yarnpkg.com/xmlbuilder/-/xmlbuilder-4.2.1.tgz#aa58a3041a066f90eaa16c2f5389ff19f3f461a5"
   dependencies:
     lodash "^4.0.0"
-
-xmlbuilder@>=2.4.6:
-  version "9.0.1"
-  resolved "https://registry.yarnpkg.com/xmlbuilder/-/xmlbuilder-9.0.1.tgz#91cd70897755363eba57c12ddeeab4a341a61f65"
 
 xmlhttprequest-ssl@1.5.3:
   version "1.5.3"
