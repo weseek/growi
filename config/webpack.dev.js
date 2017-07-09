@@ -12,10 +12,7 @@ const commonConfig = require('./webpack.common.js');
 /*
  * Webpack Plugins
  */
-// problem with copy-webpack-plugin
-const AssetsPlugin = require('assets-webpack-plugin');
 const CommonsChunkPlugin = require('webpack/lib/optimize/CommonsChunkPlugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
 const DllBundlesPlugin = require('webpack-dll-bundles-plugin').DllBundlesPlugin;
 
 /*
