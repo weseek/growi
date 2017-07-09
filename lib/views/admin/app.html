@@ -242,7 +242,21 @@
       <form action="/_api/admin/settings/google" method="post" class="form-horizontal" id="googleSettingForm" role="form">
       <fieldset>
       <legend>Google 設定</legend>
-        <p class="well">Google プロジェクトの設定をすると、Google アカウントにコネクトして登録やログインが可能になります。</p>
+        <p class="well">
+          Google Cloud Platform の <a href="https://console.cloud.google.com/apis/credentials">API Manager</a>
+          から OAuth2 Client ID を作成すると、Google アカウントにコネクトして登録やログインが可能になります。
+        </p>
+
+        <ol class="help-block">
+          <li><a href="https://console.cloud.google.com/apis/credentials">API Manager</a> へアクセス</li>
+          <li>プロジェクトを作成していない場合は作成してください</li>
+          <li>「認証情報を作成」-> OAuthクライアントID</li>
+          <ol>
+            <li>「ウェブアプリケーション」を選択</li>
+            <li>承認済みのリダイレクトURLに、 <code>https://${crowi.host}/google/callback</code> を入力<br>
+            (<code>${crowi.host}</code>は環境に合わせて変更してください)</li>
+          </ol>
+        </ol>
 
         <div class="form-group">
           <label for="settingForm[google:clientId]" class="col-xs-3 control-label">Client ID</label>
