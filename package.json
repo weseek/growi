@@ -55,7 +55,7 @@
     "basic-auth-connect": "~1.0.0",
     "body-parser": "^1.17.1",
     "bootstrap-sass": "~3.3.6",
-    "botkit": "~0.1.1",
+    "botkit": "~0.5.5",
     "check-node-version": "^2.0.1",
     "connect-flash": "~0.1.1",
     "connect-redis": "^3.3.0",
