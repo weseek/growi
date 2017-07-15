@@ -19,7 +19,7 @@
     <div class="col-md-9">
 
       <ul class="nav nav-tabs">
-        <li class="active"><a href="#slack" data-toggle="tab"><i class="fa fa-slack"></i> Slack</a></li>
+        <li class="active"><a href="#slack" data-toggle="tab"><i class="fa fa-slack"></i> Slack App</a></li>
       </ul>
 
       <br>
@@ -45,6 +45,16 @@
       <form action="/admin/notification/slackSetting" method="post" class="form-horizontal" id="appSettingForm" role="form">
       <fieldset>
         <legend>Slack App Configuration</legend>
+
+        <p class="well text-warning">
+          <i class="fa fa-warning"></i> NOT RECOMMENDED
+          <br><br>
+          This is the way that compatible to the official Crowi,<br>
+          but not recommended in crowi-plus because it is too complex.
+          <br><br>
+          Please use <a href="#">(TBD) Slack incomming web hook Configuration</a> instead.
+        </p>
+
         <div class="form-group">
           <label for="slackSetting[slack:clientId]" class="col-xs-3 control-label">clientId</label>
           <div class="col-xs-6">
@@ -72,12 +82,12 @@
       <div class="text-center">
         {% if hasSlackToken %}
         <p>Crowi and Slack is already <strong>connected</strong>. You can re-connect to refresh and overwirte the token with your Slack account.</p>
-        <a class="btn btn-default" href="{{ slackAuthUrl }}">
+        <a class="btn btn-default" href="{{ slackAuthUrl }}" target="_blank">
           <i class="fa fa-slack"></i> Reconnect to Slack
         </a>
         {% else %}
         <p>Slack clientId and clientSecret is configured. Now, you can connect with Slack.</p>
-        <a class="btn btn-primary" href="{{ slackAuthUrl }}">
+        <a class="btn btn-primary" href="{{ slackAuthUrl }}" target="_blank">
           <i class="fa fa-slack"></i> Connect to Slack
         </a>
         {% endif %}
@@ -138,29 +148,77 @@
 
       {% endif %}
 
-      {% if not hasSlackConfig %}
-      <h3>How to configure Slack app for Crowi</h3>
-      <p>
-      Register Crowi as a Slack application, the notification feature for Slack can be enabled.
-      </p>
-      <h4>1. Register Slack App</h4>
-      <p>
-      Create App from <a href="https://api.slack.com/applications/new">this link</a>, and fill the form out as below:
-      </p>
-      <dl class="dl-horizontal">
-        <dt>App Name</dt> <dd><code>Crowi</code> </dd>
-        <dt>Icon</dt> <dd>Upload this image as the icon (Free to download and use it) =&gt; <a href="https://github.com/crowi/crowi/tree/master/resource/logo">Crowi Logo</a></dd>
-        <dt>Short description</dt> <dd><code>Crowi's Slack Notification Integration</code> </dd>
-        <dt>Long description</dt> <dd><code>Crowi's Slack Notification Integration</code> </dd>
-      </dl>
-      <p>
-      and <strong>Save</strong> it.
-      </p>
+      {# {% if not hasSlackConfig %} #}
+      <hr>
+      <h3>How to configure Slack app</h3>
 
-      <h4>2. Get <code>clientId</code> and <code>clientSecret</code></h4>
-      <h4>3. After clientId and clientSecret set, click "Connect to Slack" button to start OAuth process.</h4>
-      <h4>4. Configure Slack on this notification setting screen</h4>
-      {% endif %}
+      <ol>
+        <li>
+          Register Slack App
+          <ol>
+            <li>
+              Create App from <a href="https://api.slack.com/applications/new">this link</a>, and fill the form out as below:
+              <dl class="dl-horizontal">
+                <dt>App Name</dt> <dd><code>crowi-plus</code> </dd>
+                <dt>Development Slack Team</dt> <dd>Select the team you want to notify to.</dd>
+              </dl>
+            </li>
+            <li><strong>Save</strong> it.</li>
+          </ol>
+        </li>
+        <li>
+          Get App Credentials
+          <ol>
+            <li>Go To "Basic Information" page and make a note "Client ID" and "Client Secret".</li>
+          </ol>
+        </li>
+        <li>
+          Set Redirect URLs
+          <ol>
+            <li>Go to "OAuth &amp; Permissions" page.</li>
+            <li>Add <code><script>document.write(location.origin);</script>/admin/notification/slackAuth</code> .</li>
+            <li>Don't forget to <strong>save</strong>.</li>
+          </ol>
+        </li>
+        <li>
+          Set Permission Scopes to the App
+          <ol>
+            <li>Go to "OAuth &amp; Permissions" page and add "Send messages as crowi-plus"(<code>chat:write:bot</code>).</li>
+            <li>Don't forget to <strong>save</strong>.</li>
+          </ol>
+        </li>
+        <li>
+          Create a bot user
+          <ol>
+            <li>Go to "Bot Users" page and add.</li>
+          </ol>
+        </li>
+        <li>
+          Install the app
+          <ol>
+            <li>Go to "Install App to Your Team" page and install.</li>
+          </ol>
+        </li>
+        <li>
+          (At Team) Approve the app
+          <ol>
+            <li>Go to the management Apps page for the team you installed the app and approve crowi-plus.</li>
+          </ol>
+        </li>
+        <li>
+          (At Team) Invite the bot to your team
+          <ol>
+            <li>Invite the user you created in <code>4. Add a bot user</code> to the channel you notify to.</li>
+          </ol>
+        </li>
+        <li>
+          (At crowi-plus) Input "clientId" and "clientSecret" and submit on this page.
+        </li>
+        <li>
+          (At crowi-plus) Click "Connect to Slack" button to start OAuth process.
+        </li>
+      </ol>
+      {# {% endif %} #}
 
 
 
