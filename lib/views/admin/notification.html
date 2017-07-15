@@ -82,6 +82,9 @@
       <div class="text-center">
         {% if hasSlackToken %}
         <p>Crowi and Slack is already <strong>connected</strong>. You can re-connect to refresh and overwirte the token with your Slack account.</p>
+        <a class="btn btn-warning" href="/admin/notification/slackSetting/disconnect">
+          <i class="fa fa-slack"></i> Disconnect from Slack
+        </a>
         <a class="btn btn-default" href="{{ slackAuthUrl }}" target="_blank">
           <i class="fa fa-slack"></i> Reconnect to Slack
         </a>
