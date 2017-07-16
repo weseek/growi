@@ -201,6 +201,7 @@
                   <input type="checkbox" name="slackIwhSetting[slack:isIncomingWebhookPrioritized]" value="1"
                     {% if slackSetting['slack:isIncomingWebhookPrioritized'] %}checked{% endif %}>
                   Prioritize Incoming Webhook than Slack App
+                  <p class="help-block">Check this option and crowi-plus use Incoming Webhooks even if Slack App settings are enabled.</p>
                 </div>
               </div>
 
@@ -228,7 +229,12 @@
                 <li>Add.</li>
               </ol>
             </li>
-
+            <li>
+              (At crowi-plus) Set Webhook URL
+              <ol>
+                <li>Input "Webhook URL" and submit on this page.</li>
+              </ol>
+            </li>
           </ol>
 
         </div><!-- /#slack-incoming-webhooks -->
