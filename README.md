@@ -33,17 +33,22 @@ Why crowi-plus?
   * Upgrade jQuery to 3.x
   * Upgrade other insecure libs
   * The official Crowi status is [![dependencies Status](https://david-dm.org/crowi/crowi/status.svg)](https://david-dm.org/crowi/crowi) [![devDependencies Status](https://david-dm.org/crowi/crowi/dev-status.svg)](https://david-dm.org/crowi/crowi?type=dev)
+* **Convenient**
+  * Easy to integrate with Slack using Incoming Webhooks
+  * [Added miscellaneous features](https://github.com/weseek/crowi-plus/wiki/Additional-Features)
 * **[Docker Ready][dockerhub]**
 * **[Docker Compose Ready][docker-compose]**
   * [Multiple sites example](https://github.com/weseek/crowi-plus-docker-compose/tree/master/examples/multi-app)
   * [HTTPS(with Let's Encrypt) proxy integration example](https://github.com/weseek/crowi-plus-docker-compose/tree/master/examples/https-portal)
-* **[Added miscellaneous features](https://github.com/weseek/crowi-plus/wiki/Additional-Features)**
 * Support for IE11 (Experimental)
 * **Developer-friendly**
   * Less compile time
   * LiveReload separately available by server/client code change
   * Exclude Environment-dependency (confirmed to be developable on Win/Mac/Linux)
-  
+
+Check it out all additional features from [**here**](https://github.com/weseek/crowi-plus/wiki/Additional-Features).
+
+
 Quick Start for Production
 ===========================
 
