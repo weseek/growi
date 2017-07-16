@@ -45,7 +45,10 @@ Why crowi-plus?
   * Less compile time
   * LiveReload separately available by server/client code change
   * Exclude Environment-dependency (confirmed to be developable on Win/Mac/Linux)
-  
+
+Check it out all additional features from [**here**](https://github.com/weseek/crowi-plus/wiki/Additional-Features).
+
+
 Quick Start for Production
 ===========================
 
