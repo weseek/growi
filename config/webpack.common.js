@@ -8,7 +8,6 @@ const helpers = require('./helpers');
 /*
  * Webpack Plugins
  */
-// problem with copy-webpack-plugin
 const AssetsPlugin = require('assets-webpack-plugin');
 const CommonsChunkPlugin = require('webpack/lib/optimize/CommonsChunkPlugin');
 

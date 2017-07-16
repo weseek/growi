@@ -5,7 +5,7 @@
  */
 const fs = require('graceful-fs');
 const normalize = require('normalize-path');
-const swig = require('swig');
+const swig = require('swig-templates');
 const helpers = require('../config/helpers');
 
 const TEMPLATE = helpers.root('bin/templates/plugin-definitions.js.swig');

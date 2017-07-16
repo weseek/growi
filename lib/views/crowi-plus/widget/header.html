@@ -1,7 +1,7 @@
 <div class="header-wrap">
   <header id="page-header">
     <div class="flex-title-line">
-      <div class="title-logo-container">
+      <div class="title-logo-container visible-lg visible-md">
         <a href="/">
           <img alt="Crowi" src="/logo/32x32_g.png" />
         </a>
@@ -13,20 +13,20 @@
       {% if page %}
       <div class="flex-item-action">
         {% if user %}
-        <span id="bookmark-button">
-          <p class="bookmark-link">
-            <i class="fa fa-star-o"></i>
-          </p>
-        </span>
-        {% endif %}
-      </div>
-      <div class="flex-item-action visible-xs visible-sm">
-        {% if user %}
         <button
             data-csrftoken="{{ csrf() }}"
             data-liked="{% if page.isLiked(user) %}1{% else %}0{% endif %}"
             class="like-button btn btn-default btn-sm {% if page.isLiked(user) %}active{% endif %}"
         ><i class="fa fa-thumbs-o-up"></i></button>
+        {% endif %}
+      </div>
+      <div class="flex-item-action">
+        {% if user %}
+        <span id="bookmark-button">
+          <p class="bookmark-link">
+            <i class="fa fa-star-o"></i>
+          </p>
+        </span>
         {% endif %}
       </div>
 

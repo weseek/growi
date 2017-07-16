@@ -1,6 +1,11 @@
 CHANGES
 ========
 
+## 2.0.0
+
+* Feature: Enabled to integrate with Slack using Incoming Webhooks
+* Support: Upgrade all outdated libs
+
 ## 1.2.16
 
 * Improvement: Condition for creating portal
