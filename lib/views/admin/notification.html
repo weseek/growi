@@ -142,7 +142,8 @@
             <li>
               Set Permission Scopes to the App
               <ol>
-                <li>Go to "OAuth &amp; Permissions" page and add "Send messages as crowi-plus"(<code>chat:write:bot</code>).</li>
+                <li>Go to "OAuth &amp; Permissions" page.</li>
+                <li>Add "Send messages as crowi-plus"(<code>chat:write:bot</code>).</li>
                 <li>Don't forget to <strong>save</strong>.</li>
               </ol>
             </li>
@@ -190,14 +191,14 @@
 
               <div class="form-group">
                 <label for="slackIwhSetting[slack:incomingWebhookUrl]" class="col-xs-3 control-label">Webhook URL</label>
-                <div class="col-xs-6">
+                <div class="col-xs-9">
                   <input class="form-control" type="text" name="slackIwhSetting[slack:incomingWebhookUrl]" value="{{ slackSetting['slack:incomingWebhookUrl'] }}">
                 </div>
               </div>
 
               <div class="form-group">
                 <label for="slackIwhSetting[slack:isIncomingWebhookPrioritized]" class="col-xs-3 control-label"></label>
-                <div class="col-xs-6">
+                <div class="col-xs-9">
                   <input type="checkbox" name="slackIwhSetting[slack:isIncomingWebhookPrioritized]" value="1"
                     {% if slackSetting['slack:isIncomingWebhookPrioritized'] %}checked{% endif %}>
                   Prioritize Incoming Webhook than Slack App
@@ -298,6 +299,15 @@
   </div>
 
   <script>
+    window.addEventListener('load', function(e) {
+      // hash on page
+      if (location.hash) {
+        if (location.hash == '#slack-incoming-webhooks') {
+          activateTab('slack-incoming-webhooks');
+        }
+      }
+    });
+
     function activateTab(tab){
       $('.nav-tabs a[href="#' + tab + '"]').tab('show');
     };
