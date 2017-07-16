@@ -84,7 +84,7 @@
             <input type="hidden" name="_csrf" value="{{ csrf() }}">
           </form>
 
-          {% if hasSlackConfig %}
+          {% if hasSlackAppConfig %}
           <div class="text-center">
             {% if hasSlackToken %}
             <p>Crowi and Slack is already <strong>connected</strong>. You can re-connect to refresh and overwirte the token with your Slack account.</p>
@@ -104,7 +104,7 @@
 
           {% endif %}
 
-          {# {% if not hasSlackConfig %} #}
+          {# {% if not hasSlackAppConfig %} #}
           <hr>
           <h3>
             <i class="fa fa-question-circle" aria-hidden="true"></i>
