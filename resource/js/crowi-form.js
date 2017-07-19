@@ -182,6 +182,12 @@ $(function() {
     var text = $target.val();
     var pos = $target.selection('getPos');
 
+    // When the user presses CTRL + TAB, it is a case to control the tab of the browser
+    // (for Firefox 54 on Windows)
+    if (event.ctrlKey === true) {
+      return;
+    }
+
     if (currentLine) {
       $target.selection('setPos', {start: currentLine.start, end: (currentLine.end - 1)});
     }
