@@ -1,6 +1,13 @@
 CHANGES
 ========
 
+## 1.6.3
+
+- Fix: Invalid MathJax setting
+- Updates: load ENV from `.env`
+- Improve: Use client date (Thanks @suzuki)
+- And some fixes. Thank you @okonomi.
+
 ## 1.6.2
 
 - Feature: Support PlantUML
