@@ -4010,9 +4010,9 @@
       "resolved": "https://registry.npmjs.org/hawk/-/hawk-3.1.3.tgz"
     },
     "highlight.js": {
-      "version": "9.9.0",
-      "from": "highlight.js@https://registry.npmjs.org/highlight.js/-/highlight.js-9.9.0.tgz",
-      "resolved": "https://registry.npmjs.org/highlight.js/-/highlight.js-9.9.0.tgz"
+      "version": "9.12.0",
+      "from": "highlight.js@9.12.0",
+      "resolved": "https://registry.npmjs.org/highlight.js/-/highlight.js-9.12.0.tgz"
     },
     "hmac-drbg": {
       "version": "1.0.1",
@@ -4121,9 +4121,9 @@
       }
     },
     "i18next": {
-      "version": "4.1.4",
-      "from": "i18next@https://registry.npmjs.org/i18next/-/i18next-4.1.4.tgz",
-      "resolved": "https://registry.npmjs.org/i18next/-/i18next-4.1.4.tgz"
+      "version": "8.4.3",
+      "from": "i18next@8.4.3",
+      "resolved": "https://registry.npmjs.org/i18next/-/i18next-8.4.3.tgz"
     },
     "i18next-express-middleware": {
       "version": "1.0.5",
@@ -4131,9 +4131,9 @@
       "resolved": "https://registry.npmjs.org/i18next-express-middleware/-/i18next-express-middleware-1.0.5.tgz"
     },
     "i18next-node-fs-backend": {
-      "version": "0.1.3",
-      "from": "i18next-node-fs-backend@https://registry.npmjs.org/i18next-node-fs-backend/-/i18next-node-fs-backend-0.1.3.tgz",
-      "resolved": "https://registry.npmjs.org/i18next-node-fs-backend/-/i18next-node-fs-backend-0.1.3.tgz",
+      "version": "1.0.0",
+      "from": "i18next-node-fs-backend@1.0.0",
+      "resolved": "https://registry.npmjs.org/i18next-node-fs-backend/-/i18next-node-fs-backend-1.0.0.tgz",
       "dependencies": {
         "esprima": {
           "version": "2.7.3",
@@ -4548,9 +4548,9 @@
       }
     },
     "jshint-stylish": {
-      "version": "2.1.0",
-      "from": "jshint-stylish@https://registry.npmjs.org/jshint-stylish/-/jshint-stylish-2.1.0.tgz",
-      "resolved": "https://registry.npmjs.org/jshint-stylish/-/jshint-stylish-2.1.0.tgz"
+      "version": "2.2.0",
+      "from": "jshint-stylish@2.2.0",
+      "resolved": "https://registry.npmjs.org/jshint-stylish/-/jshint-stylish-2.2.0.tgz"
     },
     "json-loader": {
       "version": "0.5.4",
@@ -5281,9 +5281,9 @@
       }
     },
     "moment": {
-      "version": "2.13.0",
-      "from": "moment@https://registry.npmjs.org/moment/-/moment-2.13.0.tgz",
-      "resolved": "https://registry.npmjs.org/moment/-/moment-2.13.0.tgz"
+      "version": "2.18.1",
+      "from": "moment@2.18.1",
+      "resolved": "https://registry.npmjs.org/moment/-/moment-2.18.1.tgz"
     },
     "mongodb": {
       "version": "2.2.22",
