@@ -150,7 +150,7 @@
           {% for sUser in users %}
           <tr>
             <td>
-              <img src="{{ sUser|picture }}" class="picture picture-rounded" />
+              <img src="{{ sUser|picture }}" class="picture picture-rounded" /><br>
               <span class="label {{ css.userStatus(sUser) }}">
                 {{ consts.userStatus[sUser.status] }}
               </span><br>
