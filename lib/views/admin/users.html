@@ -167,6 +167,12 @@
             <td>{{ sUser.email }}</td>
             <td>{{ sUser.createdAt|date('Y-m-d') }}</td>
             <td>{{ sUser.lastLoginAt|date('Y-m-d') }}</td>
+            <td>{{ sUser.createdAt|date('Y-m-d', sUser.createdAt.getTimezoneOffset()) }}</td>
+            <td>
+              {% if sUser.lastLoginAt %}
+                {{ sUser.lastLoginAt|date('Y-m-d H:i', sUser.createdAt.getTimezoneOffset()) }}
+              {% endif %}
+            </td>
             <td>
               <div class="btn-group admin-user-menu">
                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
