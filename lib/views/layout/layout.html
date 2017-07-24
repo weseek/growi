@@ -182,4 +182,10 @@
 {{ local_config|json|safe }}
 </script>
 
+{% block custom_script %}
+<script>
+  {{ customScript() }}
+</script>
+{% endblock %}
+
 </html>

@@ -134,16 +134,17 @@
 
       <h2>ユーザー一覧</h2>
 
-      <table class="table table-hover table-striped table-bordered">
+      <table class="table table-hover table-striped table-bordered table-user-list">
         <thead>
           <tr>
-            <th>#</th>
-            <th>ユーザーID</th>
+            <th width="100px">#</th>
+            <th>Status</th>
+            <th><code>username</code></th>
             <th>名前</th>
             <th>メールアドレス</th>
-            <th>作成日</th>
-            <th>最終ログイン</th>
-            <th>操作</th>
+            <th width="100px">作成日</th>
+            <th width="150px">最終ログイン</th>
+            <th width="90px">操作</th>
           </tr>
         </thead>
         <tbody>
@@ -151,25 +152,31 @@
           <tr>
             <td>
               <img src="{{ sUser|picture }}" class="picture picture-rounded" />
-              <span class="label {{ css.userStatus(sUser) }}">
-                {{ consts.userStatus[sUser.status] }}
-              </span><br>
               {% if sUser.admin %}
-              <span class="label label-primary">
+              <span class="label label-primary label-admin">
                 Admin
               </span>
               {% endif %}
+            </td>
+            <td>
+              <span class="label {{ css.userStatus(sUser) }}">
+                {{ consts.userStatus[sUser.status] }}
+              </span>
             </td>
             <td>
               <strong>{{ sUser.username }}</strong>
             </td>
             <td>{{ sUser.name }}</td>
             <td>{{ sUser.email }}</td>
-            <td>{{ sUser.createdAt|date('Y-m-d') }}</td>
-            <td>{{ sUser.lastLoginAt }}</td>
+            <td>{{ sUser.createdAt|date('Y-m-d', sUser.createdAt.getTimezoneOffset()) }}</td>
+            <td>
+              {% if sUser.lastLoginAt %}
+                {{ sUser.lastLoginAt|date('Y-m-d H:i', sUser.createdAt.getTimezoneOffset()) }}
+              {% endif %}
+            </td>
             <td>
               <div class="btn-group admin-user-menu">
-                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
                   編集
                   <span class="caret"></span>
                 </button>
