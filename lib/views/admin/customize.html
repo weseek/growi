@@ -209,7 +209,7 @@
       <fieldset>
         <legend>カスタムCSS</legend>
 
-        <p class="help-block">
+        <p class="well">
           システム全体に適用されるCSSを記述できます。<br>
           変更の反映はページの更新が必要です。
         </p>
@@ -241,9 +241,23 @@
       <fieldset>
         <legend>カスタムスクリプト</legend>
 
-        <p class="help-block">
+        <p class="well">
           システム全体に適用されるJavaScriptを記述できます。<br>
           変更の反映はページの更新が必要です。
+        </p>
+
+        <p class="help-block">
+          Available Placeholders:
+          <dl class="dl-horizontal">
+            <dt><code>crowi</code></dt>
+            <dd>Crowi context instance</dd>
+            <dt><code>Crowi</code></dt>
+            <dd>Crowi legacy instance (jQuery based)</dd>
+            <dt><code>crowiRenderer</code></dt>
+            <dd>Crowi Renderer instance</dd>
+            <dt><code>crowiPlugin</code></dt>
+            <dd>crowi-plus plugin manager instance</dd>
+          </dl>
         </p>
 
         <div class="form-group">
