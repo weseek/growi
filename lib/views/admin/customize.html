@@ -209,7 +209,7 @@
       <fieldset>
         <legend>カスタムCSS</legend>
 
-        <p class="help-block">
+        <p class="well">
           システム全体に適用されるCSSを記述できます。<br>
           変更の反映はページの更新が必要です。
         </p>
@@ -236,11 +236,57 @@
       </fieldset>
       </form>
 
+
+      <form action="/_api/admin/customize/script" method="post" class="form-horizontal" id="cutomscriptSettingForm" role="form">
+      <fieldset>
+        <legend>カスタムスクリプト</legend>
+
+        <p class="well">
+          システム全体に適用されるJavaScriptを記述できます。<br>
+          変更の反映はページの更新が必要です。
+        </p>
+
+        <p class="help-block">
+          Available Placeholders:
+          <dl class="dl-horizontal">
+            <dt><code>crowi</code></dt>
+            <dd>Crowi context instance</dd>
+            <dt><code>Crowi</code></dt>
+            <dd>Crowi legacy instance (jQuery based)</dd>
+            <dt><code>crowiRenderer</code></dt>
+            <dd>Crowi Renderer instance</dd>
+            <dt><code>crowiPlugin</code></dt>
+            <dd>crowi-plus plugin manager instance</dd>
+          </dl>
+        </p>
+
+        <div class="form-group">
+          <div class="col-xs-12">
+            <textarea id="taCustomScript" class="form-control" type="textarea" name="settingForm[customize:script]" rows="20">{{ settingForm['customize:script'] }}</textarea>
+          </div>
+          <div class="col-xs-12">
+            <p class="help-block text-right">
+              <i class="fa fa-fw fa-keyboard-o" aria-hidden="true"></i>
+              Ctrl+Space でコード補完
+            </p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-xs-offset-5 col-xs-6">
+            <input type="hidden" name="_csrf" value="{{ csrf() }}">
+            <button type="submit" class="btn btn-primary">更新</button>
+          </div>
+        </div>
+
+      </fieldset>
+      </form>
+
     </div>
   </div>
 
   <script>
-    $('#cutomcssSettingForm, #cutomlayoutSettingForm, #cutombehaviorSettingForm, #customfeaturesSettingForm').each(function() {
+    $('#cutomcssSettingForm, #cutomscriptSettingForm, #cutomlayoutSettingForm, #cutombehaviorSettingForm, #customfeaturesSettingForm').each(function() {
       $(this).submit(function()
       {
         function showMessage(formId, msg, status) {
@@ -291,9 +337,10 @@
   </script>
 
   <!-- CodeMirror -->
-  <script src="https://cdn.jsdelivr.net/g/codemirror@4.5.0(codemirror.min.js+addon/lint/css-lint.js+mode/css/css.js+addon/hint/css-hint.js+addon/hint/show-hint.js+addon/edit/matchbrackets.js+addon/edit/closebrackets.js),jquery.ui@1.11.4"></script>
+  <script src="https://cdn.jsdelivr.net/g/codemirror@4.5.0(codemirror.min.js+addon/lint/css-lint.js+addon/lint/javascript-lint.js+mode/css/css.js+mode/javascript/javascript.js+addon/hint/css-hint.js+addon/hint/javascript-hint.js+addon/hint/show-hint.js+addon/edit/matchbrackets.js+addon/edit/closebrackets.js),jquery.ui@1.11.4"></script>
   <script>
-    var editor = CodeMirror.fromTextArea(document.getElementById('taCustomCss'), {
+    // Configure for CSS editor
+    var editorCss = CodeMirror.fromTextArea(document.getElementById('taCustomCss'), {
       mode: "css",
       lineNumbers: true,
       tabSize: 2,
@@ -303,13 +350,34 @@
       autoCloseBrackets: true,
       extraKeys: {"Ctrl-Space": "autocomplete"},
     });
-    editor.on('change', function(cm, change) {
+    editorCss.on('change', function(cm, change) {
       cm.save();
     });
     // resizable with jquery.ui
-    $(editor.getWrapperElement()).resizable({
+    $(editorCss.getWrapperElement()).resizable({
       resize: function() {
-        editor.setSize($(this).width(), $(this).height());
+        editorCss.setSize($(this).width(), $(this).height());
+      }
+    });
+
+    // Configure for JavaScript editor
+    var editorScript = CodeMirror.fromTextArea(document.getElementById('taCustomScript'), {
+      mode: "javascript",
+      lineNumbers: true,
+      tabSize: 2,
+      indentUnit: 2,
+      theme: 'eclipse',
+      matchBrackets: true,
+      autoCloseBrackets: true,
+      extraKeys: {"Ctrl-Space": "autocomplete"},
+    });
+    editorScript.on('change', function(cm, change) {
+      cm.save();
+    });
+    // resizable with jquery.ui
+    $(editorScript.getWrapperElement()).resizable({
+      resize: function() {
+        editorScript.setSize($(this).width(), $(this).height());
       }
     });
 
