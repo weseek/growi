@@ -1,6 +1,13 @@
 CHANGES
 ========
 
+## 2.0.1
+
+* Feature: Custom Script
+* Improvement: Adjust layout and styles for admin pages
+* Improvement: Record and show last updated date in user list page
+* Fix: Ignore Ctrl+(Shift+)Tab when editing (cherry-pick from the official)
+
 ## 2.0.0
 
 * Feature: Enabled to integrate with Slack using Incoming Webhooks
