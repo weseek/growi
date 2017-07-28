@@ -1,6 +1,10 @@
 CHANGES
 ========
 
+## 2.0.2
+
+* Fix: File upload does not work when `FILE_UPLOAD=local` is set
+
 ## 2.0.1
 
 * Feature: Custom Script
