@@ -1,11 +1,13 @@
 CHANGES
 ========
 
-## 2.0.3
+## 2.0.4
 
 * Improvement: Adjust styles for CodeMirror
 * Fix: File upload does not work when `FILE_UPLOAD=local` is set  
     * Fixed in weseek/crowi-plus-docker
+
+## 2.0.3 (Missing number)
 
 ## 2.0.2 (Missing number)
 
