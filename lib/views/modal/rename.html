@@ -21,6 +21,13 @@
               </div>
             </div>
             <div class="checkbox">
+              <label>
+                <input name="move_recursively" value="1" type="checkbox" checked> {{ t('Move recursively') }}
+              </label>
+              <p class="help-block"> {{ t('modal_rename.help.recursive', page.path) }}
+              </p>
+            </div>
+            <div class="checkbox">
                <label>
                  <input name="create_redirect" value="1"  type="checkbox"> {{ t('Redirect') }}
                </label>
