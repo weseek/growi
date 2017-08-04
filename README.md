@@ -163,7 +163,8 @@ Getting Started to Develop
 ## Build and Running the app
 * `clone` this repository
 * `npm install -g npm@4` to install required global dependencies
-* `npm install` to install all dependencies or `yarn`
+* `yarn` to install all dependencies
+    * DON'T USE `npm install`
 * `npm run build` to build client app
 * `npm run server` to start the dev server in another tab
 
