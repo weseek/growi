@@ -1,6 +1,11 @@
 CHANGES
 ========
 
+## 2.0.6
+
+* Fix: check whether `$APP_DIR/public/uploads` exists before creating symlink
+    * Fixed in weseek/crowi-plus-docker
+
 ## 2.0.5
 
 * Improvement: Adjust styles for CodeMirror
