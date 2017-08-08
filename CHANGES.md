@@ -3,8 +3,7 @@ CHANGES
 
 ## 2.0.7
 
-* Improvement: Recursively option for move pages operation
-* Improvement: Recursively option for delete pages operation
+* Improvement: Add recursively option for Delete/Move/Putback operation
 * Improvement: Comment layout and sort order (crowi-plus Enhanced Layout)
 
 ## 2.0.6
