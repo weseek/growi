@@ -19,6 +19,7 @@ export default class PageComments extends React.Component {
     super(props);
 
     this.state = {
+      // desc order array
       comments: [],
 
       isLayoutTypeCrowiPlus: false,
@@ -54,7 +55,7 @@ export default class PageComments extends React.Component {
     const layoutType = this.props.crowi.getConfig()['layoutType'];
     this.setState({isLayoutTypeCrowiPlus: 'crowi-plus' === layoutType});
 
-    // get data
+    // get data (desc order array)
     this.props.crowi.apiGet('/comments.get', {page_id: pageId})
     .then(res => {
       if (res.ok) {
@@ -132,10 +133,16 @@ export default class PageComments extends React.Component {
     let newerComments = [];
     let olderComments = [];
 
+    let comments = this.state.comments;
+    if (this.state.isLayoutTypeCrowiPlus) {
+      // replace with asc order array
+      comments = comments.slice().reverse();  // non-destructive reverse
+    }
+
     // divide by revisionId and createdAt
     const revisionId = this.props.revisionId;
     const revisionCreatedAt = this.props.revisionCreatedAt;
-    this.state.comments.forEach((comment) => {
+    comments.forEach((comment) => {
       if (comment.revision == revisionId) {
         currentComments.push(comment);
       }
