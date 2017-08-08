@@ -21,6 +21,8 @@ export default class PageComments extends React.Component {
     this.state = {
       comments: [],
 
+      isLayoutTypeCrowiPlus: false,
+
       // for deleting comment
       commentToDelete: undefined,
       isDeleteConfirmModalShown: false,
@@ -49,6 +51,10 @@ export default class PageComments extends React.Component {
 
     const pageId = this.props.pageId;
 
+    const layoutType = this.props.crowi.getConfig()['layoutType'];
+    this.setState({isLayoutTypeCrowiPlus: 'crowi-plus' === layoutType});
+
+    // get data
     this.props.crowi.apiGet('/comments.get', {page_id: pageId})
     .then(res => {
       if (res.ok) {
@@ -142,38 +148,72 @@ export default class PageComments extends React.Component {
     });
 
     // generate elements
-    let currentElements = this.generateCommentElements(currentComments);
-    let newerElements = this.generateCommentElements(newerComments);
-    let olderElements = this.generateCommentElements(olderComments);
+    const currentElements = this.generateCommentElements(currentComments);
+    const newerElements = this.generateCommentElements(newerComments);
+    const olderElements = this.generateCommentElements(olderComments);
+    // generate blocks
+    const currentBlock = (
+      <div className="page-comments-list-current" id="page-comments-list-current">
+        {currentElements}
+      </div>
+    );
+    const newerBlock = (
+      <div className="page-comments-list-newer collapse" id="page-comments-list-newer">
+        {newerElements}
+      </div>
+    );
+    const olderBlock = (
+      <div className="page-comments-list-older collapse in" id="page-comments-list-older">
+        {olderElements}
+      </div>
+    );
 
-    let toggleNewer = (newerElements.length === 0)
+    // generate toggle elements
+    const iconForNewer = (this.state.isLayoutTypeCrowiPlus)
+      ? <i className="fa fa-angle-double-down"></i>
+      : <i className="fa fa-angle-double-up"></i>;
+    const toggleNewer = (newerElements.length === 0)
       ? <div></div>
       : (
         <a className="page-comments-list-toggle-newer text-center" data-toggle="collapse" href="#page-comments-list-newer">
-          <i className="fa fa-angle-double-up"></i> Comments for Newer Revision <i className="fa fa-angle-double-up"></i>
+          {iconForNewer} Comments for Newer Revision {iconForNewer}
         </a>
-      )
-    let toggleOlder = (olderElements.length === 0)
+      );
+    const iconForOlder = (this.state.isLayoutTypeCrowiPlus)
+      ? <i className="fa fa-angle-double-up"></i>
+      : <i className="fa fa-angle-double-down"></i>;
+    const toggleOlder = (olderElements.length === 0)
       ? <div></div>
       : (
         <a className="page-comments-list-toggle-older text-center" data-toggle="collapse" href="#page-comments-list-older">
-          <i className="fa fa-angle-double-down"></i> Comments for Older Revision <i className="fa fa-angle-double-down"></i>
+          {iconForOlder} Comments for Older Revision {iconForOlder}
         </a>
+      );
+
+    // layout blocks
+    const commentsElements = (this.state.isLayoutTypeCrowiPlus)
+      ? (
+        <div>
+          {olderBlock}
+          {toggleOlder}
+          {currentBlock}
+          {toggleNewer}
+          {newerBlock}
+        </div>
       )
+      : (
+        <div>
+          {newerBlock}
+          {toggleNewer}
+          {currentBlock}
+          {toggleOlder}
+          {olderBlock}
+        </div>
+      );
 
     return (
       <div>
-        <div className="page-comments-list-newer collapse" id="page-comments-list-newer">
-          {newerElements}
-        </div>
-        {toggleNewer}
-        <div className="page-comments-list-current" id="page-comments-list-current">
-          {currentElements}
-        </div>
-        {toggleOlder}
-        <div className="page-comments-list-older collapse in" id="page-comments-list-older">
-          {olderElements}
-        </div>
+        {commentsElements}
 
         <DeleteCommentModal
           isShown={this.state.isDeleteConfirmModalShown}
