@@ -63,7 +63,7 @@
     "crowi-pluginkit": "^1.1.0",
     "csrf": "~3.0.3",
     "css-loader": "^0.28.0",
-    "debug": "~2.6.0",
+    "debug": "^3.0.0",
     "diff": "^3.2.0",
     "diff2html": "^2.3.0",
     "elasticsearch": "^13.2.0",
