@@ -23,10 +23,15 @@
           <label class="checkbox-inline text-danger">
             <input type="checkbox" name="recursively" checked>recursively
           </label>
-          <label class="checkbox-inline text-danger">
-            <input type="checkbox" name="completely">completely
-          </label>
-          <button type="submit" class="btn btn-danger delete-button">Delete</button>
+          {% if page.isDeleted() %}
+            <input type="hidden" name="completely" value="true">
+            <button type="submit" class="btn btn-danger delete-button"><i class="fa fa-times-circle" aria-hidden="true"></i> Delete Completely</button>
+          {% else %}
+            <label class="checkbox-inline text-danger">
+              <input type="checkbox" name="completely">completely
+            </label>
+            <button type="submit" class="btn btn-danger delete-button">Delete</button>
+          {% endif %}
         </div>
 
       </form>

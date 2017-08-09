@@ -86,16 +86,7 @@
           <a href="#" class="btn btn-default btn-sm" data-target="#putBackPage" data-toggle="modal"><i class="fa fa-undo" aria-hidden="true"></i> Put Back</a>
         </li>
         <li>
-          <form role="form" id="delete-page-form" onsubmit="return false;">
-            <input type="hidden" name="_csrf" value="{{ csrf() }}">
-            <input type="hidden" name="path" value="{{ page.path }}">
-            <input type="hidden" name="page_id" value="{{ page._id.toString() }}">
-            <input type="hidden" name="completely" value="true">
-            <button type="submit" class="btn btn-danger btn-sm">
-              <i class="fa fa-times-circle" aria-hidden="true"></i>
-              Delete Completely
-            </button>
-          </form>
+          <a href="#" class="btn btn-danger btn-sm" data-target="#deletePage" data-toggle="modal"><i class="fa fa-times-circle" aria-hidden="true"></i> Delete Completely</a>
         </li>
       </ul>{# /.pull-right #}
       {% endif %}
