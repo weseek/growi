@@ -149,7 +149,7 @@ Getting Started to Develop
 ## Build and Running the app
 
 1. `clone` this repository
-1. `yarn add global npm@4` to install required global dependencies
+1. `yarn global add npm@4` to install required global dependencies
 1. `yarn` to install all dependencies
     * DON'T USE `npm install`
 1. `npm run build` to build client app
