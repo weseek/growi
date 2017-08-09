@@ -159,23 +159,6 @@ After you have installed all dependencies and build client you can now run the a
 
 For more info, read [Developers Guide](https://github.com/weseek/crowi-plus/wiki/Developers-Guide) on Wiki.
 
-List of npm commands
-=====================
-
-e.g. `npm run build`
-
-|command|desc|
-|--|--|
-|`build`|Same to `build:dev`|
-|`build:dev`|Build the client|
-|`build:dev:watch`|Watch and Re-build the client<br>This keeps webpack running and detects changes on file systems.|
-|`build:prod`|Build the client for production|
-|`server`|Same to `server:dev:watch`|
-|`server:dev`|Launch the server|
-|`server:dev:watch`|Watch and Re-start the server|
-|`server:prod`|Launch the server for production|
-|`start`|run `build:prod` and `server:prod`|
-
 
 Documentation
 ==============
