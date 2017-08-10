@@ -1,6 +1,11 @@
 {
   "presets": [
-    "es2015", "react"
+    ["env", {
+      "targets": {
+        "browsers": ["last 2 versions"]
+      }
+    }],
+    "react"
   ],
   "plugins": [
     "add-module-exports",
