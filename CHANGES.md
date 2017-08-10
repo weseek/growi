@@ -1,6 +1,11 @@
 CHANGES
 ========
 
+## 2.0.7
+
+* Improvement: Add recursively option for Delete/Move/Putback operation
+* Improvement: Comment layout and sort order (crowi-plus Enhanced Layout)
+
 ## 2.0.6
 
 * Fix: check whether `$APP_DIR/public/uploads` exists before creating symlink
@@ -9,7 +14,7 @@ CHANGES
 ## 2.0.5
 
 * Improvement: Adjust styles for CodeMirror
-* Fix: File upload does not work when `FILE_UPLOAD=local` is set  
+* Fix: File upload does not work when using crowi-plus-docker-compose and `FILE_UPLOAD=local` is set  
     * Fixed in weseek/crowi-plus-docker
 
 ## 2.0.2 - 2.0.4 (Missing number)

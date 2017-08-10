@@ -1,6 +1,6 @@
 {
   "name": "crowi-plus",
-  "version": "2.0.6-RC",
+  "version": "2.0.7-RC",
   "description": "Enhanced Crowi",
   "tags": [
     "wiki",
@@ -63,7 +63,7 @@
     "crowi-pluginkit": "^1.1.0",
     "csrf": "~3.0.3",
     "css-loader": "^0.28.0",
-    "debug": "~2.6.0",
+    "debug": "^3.0.0",
     "diff": "^3.2.0",
     "diff2html": "^2.3.0",
     "elasticsearch": "^13.2.0",
@@ -119,16 +119,16 @@
     "webpack-merge": "~4.1.0"
   },
   "devDependencies": {
-    "chai": "^4.0.2",
+    "chai": "^4.1.0",
     "cli": "~1.0.1",
     "colors": "^1.1.2",
     "commander": "^2.11.0",
     "easy-livereload": "^1.2.0",
-    "mocha": "^3.2.0",
+    "mocha": "^3.5.0",
     "morgan": "^1.8.2",
     "node-dev": "^3.1.3",
-    "sinon": "^2.1.0",
-    "sinon-chai": "^2.9.0"
+    "sinon": "^3.0.0",
+    "sinon-chai": "^2.12.0"
   },
   "engines": {
     "node": "6.x",

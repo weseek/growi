@@ -1,3 +1,6 @@
+// import crowi variable
+@import 'utilities';
+
 .crowi.main-container {
   .page-comment-delete-modal .modal-content {
     .modal-body {
@@ -40,14 +43,6 @@
   }
 
   .page-comments-list {
-    .page-comments-list-toggle-newer,
-    .page-comments-list-toggle-older {
-      text-align: center;
-      display: block;
-      margin: 8px;
-      font-size: .9em;
-      color: #999;
-    }
     .page-comment {
       margin-top: 8px;
       padding-top: 8px;
@@ -110,7 +105,28 @@
 
     }
 
-    .page-comment.page-comment-old {
+  }
+}
+
+} // .crowi.main-container aside.sidebar .side-content
+
+.crowi.main-container {
+  .page-comments {
+
+    .page-comments-list-toggle-newer,
+    .page-comments-list-toggle-older {
+      text-align: center;
+      display: block;
+      margin: 8px;
+      font-size: .9em;
+      color: #999;
+    }
+
+    // older comments
+    .page-comments-list-older .page-comment {
+    }
+    // newer comments
+    .page-comments-list-newer .page-comment {
       opacity: .7;
 
       &:hover {
@@ -119,5 +135,3 @@
     }
   }
 }
-
-} // .crowi.main-container aside.sidebar .side-content

@@ -79,6 +79,8 @@ On-premise
 - yarn
 - MongoDB 3.x
 
+See [confirmed versions](https://github.com/weseek/crowi-plus/wiki/Developers-Guide#versions-confirmed-to-work).
+
 #### Optional Dependencies
 
 - Redix 3.x
@@ -88,6 +90,8 @@ On-premise
 
 ### Start
 
+## Build and run the app
+
 ```bash
 git clone https://github.com/weseek/crowi-plus.git
 cd crowi-plus
@@ -95,7 +99,7 @@ yarn
 MONGO_URI=mongodb://MONGO_HOST:MONGO_PORT/crowi npm start
 ```
 
-`npm start` lauches the server after building the client.  
+**DON'T USE `npm install`**, use `yarn` instead.
 
 If you launch crowi-plus with Redis and ElasticSearch, add environment variables before `npm start` like following:
 
@@ -108,12 +112,13 @@ npm start
 
 For more info, check [the official documents](https://github.com/crowi/crowi/wiki/Install-and-Configuration#env-parameters).
 
-#### Other commands
+#### Command details
 
 |command|desc|
 |--|--|
 |`npm run build:prod`|Build the client|
 |`npm run server:prod`|Launch the server|
+|`npm start`|Invoke `npm run build:prod` and `npm run server:prod`|
 
 ### Upgrade
 
@@ -141,51 +146,18 @@ npm start
 Getting Started to Develop
 ==========================
 
-## Dependencies
-
-- node 6.x (DON'T USE 7.x)
-- npm 4.x
-- yarn
-
-* following environment is confirmed to work
-
-    ```bash
-    $ node -v
-    v6.10.0
-    
-    $ npm -v
-    4.6.1
-    
-    $ yarn --version
-    0.24.5
-    ```
-
 ## Build and Running the app
-* `clone` this repository
-* `npm install -g npm@4` to install required global dependencies
-* `npm install` to install all dependencies or `yarn`
-* `npm run build` to build client app
-* `npm run server` to start the dev server in another tab
+
+1. `clone` this repository
+1. `yarn global add npm@4` to install required global dependencies
+1. `yarn` to install all dependencies
+    * DON'T USE `npm install`
+1. `npm run build` to build client app
+1. `npm run server` to start the dev server in another tab
 
 After you have installed all dependencies and build client you can now run the app. Run `npm run server` to start a local server using `node-dev` which will watch server-side codes and reload for you. The port will be displayed to you as `http://0.0.0.0:3000`.
 
-
-List of npm commands
-=====================
-
-e.g. `npm run build`
-
-|command|desc|
-|--|--|
-|`build`|Same to `build:dev`|
-|`build:dev`|Build the client|
-|`build:dev:watch`|Watch and Re-build the client|
-|`build:prod`|Build the client for production|
-|`server`|Same to `server:dev:watch`|
-|`server:dev`|Launch the server|
-|`server:dev:watch`|Watch and Re-start the server|
-|`server:prod`|Launch the server for production|
-|`start`|run `build:prod` and `server:prod`|
+For more info, read [Developers Guide](https://github.com/weseek/crowi-plus/wiki/Developers-Guide) on Wiki.
 
 
 Documentation
@@ -193,7 +165,7 @@ Documentation
 
 * [github wiki pages](https://github.com/weseek/crowi-plus/wiki)
   * [Questions and Answers](https://github.com/weseek/crowi-plus/wiki/Questions-and-Answers)
-
+* [Developers Guide](https://github.com/weseek/crowi-plus/wiki/Developers-Guide)
 
 Contributing
 ============

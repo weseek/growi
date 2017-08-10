@@ -6,7 +6,7 @@
 
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title"><i class="fa fa-trash-o"></i> Delete Page</h4>
+          <h4 class="modal-title"><i class="fa fa-trash-o"></i> {{ t('modal_delete.label.Delete Page') }}</h4>
         </div>
         <div class="modal-body">
           <div class="form-group">
@@ -21,9 +21,17 @@
           <input type="hidden" name="page_id" value="{{ page._id.toString() }}">
           <input type="hidden" name="revision_id" value="{{ page.revision._id.toString() }}">
           <label class="checkbox-inline text-danger">
-            <input type="checkbox" name="completely">completely
+            <input type="checkbox" name="recursively">{{ t('modal_delete.label.recursively') }}
           </label>
-          <button type="submit" class="btn btn-danger delete-button">Delete</button>
+          {% if page.isDeleted() %}
+            <input type="hidden" name="completely" value="true">
+            <button type="submit" class="btn btn-danger delete-button"><i class="fa fa-times-circle" aria-hidden="true"></i> {{ t('Delete Completely') }}</button>
+          {% else %}
+            <label class="checkbox-inline text-danger">
+              <input type="checkbox" name="completely">{{ t('modal_delete.label.completely') }}
+            </label>
+            <button type="submit" class="btn btn-danger delete-button">Delete</button>
+          {% endif %}
         </div>
 
       </form>
