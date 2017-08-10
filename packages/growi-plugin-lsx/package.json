@@ -11,19 +11,16 @@
     "lib"
   ],
   "scripts": {
+    "build:watch": "npm run build -- --watch",
     "build": "babel src --out-dir lib --source-maps inline",
     "clean": "npm cache clean && npm run rimraf -- lib",
     "resources": "mkdirp lib/resource/css && ncp src/resource/css lib/resource/css",
     "prebuild": "npm run clean && npm run resources",
     "prewatch": "npm run clean && npm run resources",
-    "watch": "babel src --out-dir lib --watch --source-maps inline",
     "rimraf": "rimraf",
     "test": ""
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/weseek/crowi-plugin-lsx.git"
-  },
+  "repository": "https://github.com/weseek/crowi-plugin-lsx.git",
   "author": "Yuki Takei <yuki@weseek.co.jp>",
   "license": "MIT",
   "bugs": {
@@ -32,17 +29,17 @@
   "homepage": "https://github.com/weseek/crowi-plugin-lsx#readme",
   "dependencies": {
     "crowi-pluginkit": "^1.1.0",
-    "react": "^15.4.2",
-    "react-dom": "^15.4.2",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
     "url": "^0.11.0"
   },
   "devDependencies": {
-    "babel-cli": "^6.23.0",
+    "babel-cli": "^6.24.1",
     "babel-plugin-add-module-exports": "^0.2.1",
-    "babel-plugin-transform-class-properties": "^6.23.0",
-    "babel-preset-es2015": "^6.22.0",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-preset-env": "^1.4.0",
     "babel-preset-power-assert": "^1.0.0",
-    "babel-preset-react": "^6.23.0",
+    "babel-preset-react": "^6.24.1",
     "babel-register": "^6.23.0",
     "mkdirp": "^0.5.1",
     "ncp": "^2.0.0",
