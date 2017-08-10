@@ -1,6 +1,10 @@
 CHANGES
 ========
 
+## 2.0.8
+
+* 
+
 ## 2.0.7
 
 * Improvement: Add recursively option for Delete/Move/Putback operation
