@@ -83,10 +83,10 @@
       {% if user %}
       <ul class="list-inline pull-right">
         <li>
-          <a href="#" class="btn btn-default btn-sm" data-target="#putBackPage" data-toggle="modal"><i class="fa fa-undo" aria-hidden="true"></i> Put Back</a>
+          <a href="#" class="btn btn-default btn-sm" data-target="#putBackPage" data-toggle="modal"><i class="fa fa-undo" aria-hidden="true"></i> {{ t('Put Back') }}</a>
         </li>
         <li>
-          <a href="#" class="btn btn-danger btn-sm" data-target="#deletePage" data-toggle="modal"><i class="fa fa-times-circle" aria-hidden="true"></i> Delete Completely</a>
+          <a href="#" class="btn btn-danger btn-sm" data-target="#deletePage" data-toggle="modal"><i class="fa fa-times-circle" aria-hidden="true"></i> {{ t('Delete Completely') }}</a>
         </li>
       </ul>{# /.pull-right #}
       {% endif %}

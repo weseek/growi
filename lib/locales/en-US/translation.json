@@ -147,13 +147,35 @@
       }
   },
 
-  "Rename page": "Rename page",
-  "New page name": "New page name",
-  "Current page name": "Current page name",
-  "Redirect": "Redirect",
   "modal_rename": {
+    "label": {
+      "Rename page": "Rename page",
+      "New page name": "New page name",
+      "Current page name": "Current page name",
+      "Move recursively": "Move recursively",
+      "Redirect": "Redirect"
+    },
     "help": {
-      "redirect": "Redirect to new page if someone accesses <code>%s</code>"
+      "redirect": "Redirect to new page if someone accesses <code>%s</code>",
+      "recursive": "Rename children of under <code>%s</code> recursively"
+    }
+  },
+
+  "Put Back": "Put Back",
+  "Delete Completely": "Delete Completely",
+
+  "modal_delete": {
+    "label": {
+      "Delete Page": "Delete Page",
+      "recursively": "Process recursively",
+      "completely": "Delete completely"
+    }
+  },
+
+  "modal_putback": {
+    "label": {
+      "Put Back Page": "Put Back Page",
+      "recursively": "Process recursively"
     }
   },
 

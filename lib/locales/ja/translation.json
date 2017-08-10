@@ -146,16 +146,35 @@
       }
   },
 
-  "Rename page": "ページを移動する",
-  "New page name": "移動先のページ名",
-  "Current page name": "現在のページ名",
-  "Redirect": "リダイレクトする",
-  "Move recursively": "再帰的に移動する",
   "modal_rename": {
+    "label": {
+      "Rename page": "ページを移動する",
+      "New page name": "移動先のページ名",
+      "Current page name": "現在のページ名",
+      "Move recursively": "再帰的に移動",
+      "Redirect": "リダイレクトする"
+    },
     "help": {
-      "redirect": "チェックを入れると、<code>%s</code>にアクセスされた際に自動的に新しいページにジャンプします。",
-      "recursive": "チェックを入れると、<code>%s</code>配下のページも移動します。"
+      "redirect": "<code>%s</code> にアクセスされた際に自動的に新しいページにジャンプします",
+      "recursive": "<code>%s</code> 配下のページも移動します"
+    }
+  },
 
+  "Put Back": "元に戻す",
+  "Delete Completely": "完全削除",
+
+  "modal_delete": {
+    "label": {
+      "Delete Page": "ページを削除する",
+      "recursively": "全ての子ページも処理",
+      "completely": "完全削除"
+    }
+  },
+
+  "modal_putBack": {
+    "label": {
+      "Put Back Page": "ページを元に戻す",
+      "recursively": "全ての子ページも処理"
     }
   },
 
