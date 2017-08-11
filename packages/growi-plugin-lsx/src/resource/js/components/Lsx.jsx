@@ -76,7 +76,7 @@ export class Lsx extends React.Component {
 
     pages.forEach((page) => {
       // add slash ensure not to forward match to another page
-      // ex: '/Java/' not to match to '/JavaScript'
+      // e.g. '/Java/' not to match to '/JavaScript'
       const pagePath = this.addSlashOfEnd(page.path);
 
       // exclude rootPagePath itself
@@ -84,22 +84,9 @@ export class Lsx extends React.Component {
         return;
       }
 
-      const node = pathToNodeMap[pagePath] || new PageNode(pagePath);
+      const node = this.generatePageNode(pathToNodeMap, rootPagePath, pagePath);  // this will not be null
+      // set the Page substance
       node.page = page;
-      pathToNodeMap[pagePath] = node;
-
-      // get or create parent node
-      const parentPath = this.getParentPath(pagePath);
-      // associate to patent but exclude direct child of rootPagePath
-      if (!this.isEquals(parentPath, rootPagePath)) {
-        let parentNode = pathToNodeMap[parentPath];
-        if (parentNode === undefined) {
-          parentNode = new PageNode(parentPath);
-          pathToNodeMap[parentPath] = parentNode;
-        }
-        // associate to patent
-        parentNode.children.push(node);
-      }
     });
 
     // return root objects
@@ -118,6 +105,44 @@ export class Lsx extends React.Component {
       }
     });
     return rootNodes;
+  }
+
+  /**
+   * generate PageNode instances for target page and the ancestors
+   *
+   * @param {any} pathToNodeMap
+   * @param {any} rootPagePath
+   * @param {any} pagePath
+   * @returns
+   * @memberof Lsx
+   */
+  generatePageNode(pathToNodeMap, rootPagePath, pagePath) {
+    // exclude rootPagePath itself
+    if (this.isEquals(pagePath, rootPagePath)) {
+      return null;
+    }
+
+    // return when already registered
+    if (pathToNodeMap[pagePath] != null) {
+      return pathToNodeMap[pagePath];
+    }
+
+    // generate node
+    const node = new PageNode(pagePath);
+    pathToNodeMap[pagePath] = node;
+
+    /*
+     * process recursively for ancestors
+     */
+    // get or create parent node
+    const parentPath = this.getParentPath(pagePath);
+    let parentNode = this.generatePageNode(pathToNodeMap, rootPagePath, parentPath);
+    // associate to patent
+    if (parentNode != null) {
+      parentNode.children.push(node);
+    }
+
+    return node;
   }
 
   /**
