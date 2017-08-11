@@ -45,10 +45,10 @@ export class LsxPreRenderInterceptor extends BasicInterceptor {
     // TODO retrieve from args for interceptor
     const fromPagePath = currentPagePath;
 
-    // see: https://regex101.com/r/NQq3s9/3
-    context.parsedHTML = parsedHTML.replace(/\$lsx\((.*?)\)/g, (all, group1) => {
+    // see: https://regex101.com/r/NQq3s9/4
+    context.parsedHTML = parsedHTML.replace(/\$lsx\((?!.*(<br>|\$lsx))(.*)\)/g, (all, group1, group2) => {
       const tagExpression = all;
-      const lsxArgs = group1.trim();
+      const lsxArgs = group2.trim();
 
       // create contexts
       let lsxContext = new LsxContext();
