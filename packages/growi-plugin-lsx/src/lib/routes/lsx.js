@@ -72,8 +72,14 @@ module.exports = (crowi, app) => {
     let options = JSON.parse(req.query.options);
 
     // find pages
-    let query = Page.generateQueryToListByStartWith(pagePath, user, {})
-      .populate('revision', '-body');  // exclude body
+    let query = (Page.generateQueryToListWithDescendants != null)
+      ? Page.generateQueryToListWithDescendants(pagePath, user, {})     // defined above crowi-plus v2.0.8
+                                                                        //   1. `/` will be added to the end of `path`
+                                                                        //   2. the regex strings included in `path` will be escaped
+      : Page.generateQueryToListByStartWith(pagePath, user, {});        // for Backward compatibility (<= crowi-plus v2.0.7)
+
+    // exclude body
+    query = query.populate('revision', '-body');
 
     try {
       // depth
