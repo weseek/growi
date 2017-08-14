@@ -2,15 +2,15 @@
 # yarn lockfile v1
 
 
-"@ciscospark/common-timers@1.9.3":
-  version "1.9.3"
-  resolved "https://registry.yarnpkg.com/@ciscospark/common-timers/-/common-timers-1.9.3.tgz#602603d03c03a1b8e3db341c718a7f72c1e50a68"
+"@ciscospark/common-timers@1.1.11":
+  version "1.1.11"
+  resolved "https://registry.yarnpkg.com/@ciscospark/common-timers/-/common-timers-1.1.11.tgz#a30f6fccf2a151804b4a9c690b0500d19e2cc676"
   dependencies:
     envify "^3.4.1"
 
-"@ciscospark/common@1.9.3":
-  version "1.9.3"
-  resolved "https://registry.yarnpkg.com/@ciscospark/common/-/common-1.9.3.tgz#ca45511ebe934121b49d7b007b8e880abc42948e"
+"@ciscospark/common@1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@ciscospark/common/-/common-1.8.0.tgz#40d3bc4ab41eb0577b46fec5dfcf423f7d386e65"
   dependencies:
     babel-runtime "^6.23.0"
     backoff "^2.5.0"
@@ -19,11 +19,11 @@
     lodash "^4.17.4"
     urlsafe-base64 "^1.0.0"
 
-"@ciscospark/http-core@1.9.3":
-  version "1.9.3"
-  resolved "https://registry.yarnpkg.com/@ciscospark/http-core/-/http-core-1.9.3.tgz#175ac5183614e255dca01e58bf338bf7c9734501"
+"@ciscospark/http-core@1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@ciscospark/http-core/-/http-core-1.8.0.tgz#c43c4f2c4e6b2edc7ae11ff38ba137ff0d8b9c01"
   dependencies:
-    "@ciscospark/common" "1.9.3"
+    "@ciscospark/common" "1.8.0"
     babel-runtime "^6.23.0"
     envify "^3.4.1"
     file-type "^3.9.0"
@@ -35,35 +35,35 @@
     request "^2.81.0"
     xtend "^4.0.1"
 
-"@ciscospark/internal-plugin-feature@1.9.4":
-  version "1.9.4"
-  resolved "https://registry.yarnpkg.com/@ciscospark/internal-plugin-feature/-/internal-plugin-feature-1.9.4.tgz#f100f6dc6802d076ffd431a2ffe327d403ea7ff7"
+"@ciscospark/internal-plugin-feature@1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@ciscospark/internal-plugin-feature/-/internal-plugin-feature-1.8.0.tgz#f1cd494185f49681f6a5010e06248efc12a9ad09"
   dependencies:
-    "@ciscospark/internal-plugin-wdm" "1.9.4"
-    "@ciscospark/spark-core" "1.9.3"
+    "@ciscospark/internal-plugin-wdm" "1.8.0"
+    "@ciscospark/spark-core" "1.8.0"
     babel-runtime "^6.23.0"
     envify "^3.4.1"
     lodash "^4.17.4"
 
-"@ciscospark/internal-plugin-locus@1.9.4":
-  version "1.9.4"
-  resolved "https://registry.yarnpkg.com/@ciscospark/internal-plugin-locus/-/internal-plugin-locus-1.9.4.tgz#97f820b7746d575d8f5dfe66919ad6af5fe6c527"
+"@ciscospark/internal-plugin-locus@1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@ciscospark/internal-plugin-locus/-/internal-plugin-locus-1.8.0.tgz#91511455afad4c7327985ad314eab76cdc981eb9"
   dependencies:
-    "@ciscospark/internal-plugin-mercury" "1.9.4"
-    "@ciscospark/spark-core" "1.9.3"
+    "@ciscospark/internal-plugin-mercury" "1.8.0"
+    "@ciscospark/spark-core" "1.8.0"
     babel-runtime "^6.23.0"
     envify "^3.4.1"
     lodash "^4.17.4"
 
-"@ciscospark/internal-plugin-mercury@1.9.4":
-  version "1.9.4"
-  resolved "https://registry.yarnpkg.com/@ciscospark/internal-plugin-mercury/-/internal-plugin-mercury-1.9.4.tgz#9c8ee34807a2985e849902ad3d13c7a3cd83e6b1"
+"@ciscospark/internal-plugin-mercury@1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@ciscospark/internal-plugin-mercury/-/internal-plugin-mercury-1.8.0.tgz#27b91c2495df56157a3d4dfd9727be0fe2ef9075"
   dependencies:
-    "@ciscospark/common" "1.9.3"
-    "@ciscospark/common-timers" "1.9.3"
-    "@ciscospark/internal-plugin-feature" "1.9.4"
-    "@ciscospark/internal-plugin-wdm" "1.9.4"
-    "@ciscospark/spark-core" "1.9.3"
+    "@ciscospark/common" "1.8.0"
+    "@ciscospark/common-timers" "1.1.11"
+    "@ciscospark/internal-plugin-feature" "1.8.0"
+    "@ciscospark/internal-plugin-wdm" "1.8.0"
+    "@ciscospark/spark-core" "1.8.0"
     babel-runtime "^6.23.0"
     backoff "^2.5.0"
     envify "^3.4.1"
@@ -72,89 +72,89 @@
     uuid "^3.0.1"
     ws "^1.1.4"
 
-"@ciscospark/internal-plugin-metrics@1.9.4":
-  version "1.9.4"
-  resolved "https://registry.yarnpkg.com/@ciscospark/internal-plugin-metrics/-/internal-plugin-metrics-1.9.4.tgz#d93ec34751c6b956341cbe4ed8d15e1b8d3cb18c"
+"@ciscospark/internal-plugin-metrics@1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@ciscospark/internal-plugin-metrics/-/internal-plugin-metrics-1.8.0.tgz#63bb363183599d2e63c7129c2c72310b28177574"
   dependencies:
-    "@ciscospark/common" "1.9.3"
-    "@ciscospark/common-timers" "1.9.3"
-    "@ciscospark/internal-plugin-wdm" "1.9.4"
-    "@ciscospark/spark-core" "1.9.3"
+    "@ciscospark/common" "1.8.0"
+    "@ciscospark/common-timers" "1.1.11"
+    "@ciscospark/internal-plugin-wdm" "1.8.0"
+    "@ciscospark/spark-core" "1.8.0"
     babel-runtime "^6.23.0"
     envify "^3.4.1"
 
-"@ciscospark/internal-plugin-wdm@1.9.4":
-  version "1.9.4"
-  resolved "https://registry.yarnpkg.com/@ciscospark/internal-plugin-wdm/-/internal-plugin-wdm-1.9.4.tgz#59dda1d11f62b1182ad45b15ceac252e0e430417"
+"@ciscospark/internal-plugin-wdm@1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@ciscospark/internal-plugin-wdm/-/internal-plugin-wdm-1.8.0.tgz#050b6c3753827b94c8d64c7b0a31828793c1bb9e"
   dependencies:
-    "@ciscospark/common" "1.9.3"
-    "@ciscospark/common-timers" "1.9.3"
-    "@ciscospark/http-core" "1.9.3"
-    "@ciscospark/spark-core" "1.9.3"
+    "@ciscospark/common" "1.8.0"
+    "@ciscospark/common-timers" "1.1.11"
+    "@ciscospark/http-core" "1.8.0"
+    "@ciscospark/spark-core" "1.8.0"
     ampersand-collection "^2.0.0"
     ampersand-state "^5.0.2"
     babel-runtime "^6.23.0"
     envify "^3.4.1"
     lodash "^4.17.4"
 
-"@ciscospark/plugin-authorization-browser@1.9.4":
-  version "1.9.4"
-  resolved "https://registry.yarnpkg.com/@ciscospark/plugin-authorization-browser/-/plugin-authorization-browser-1.9.4.tgz#97af5dfff293f8993e46f4ae68a7b506d7e409b8"
+"@ciscospark/plugin-authorization-browser@1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@ciscospark/plugin-authorization-browser/-/plugin-authorization-browser-1.8.0.tgz#4c797aaeb2543aa7fb27ee122648250f3f235b9e"
   dependencies:
-    "@ciscospark/common" "1.9.3"
-    "@ciscospark/internal-plugin-wdm" "1.9.4"
-    "@ciscospark/spark-core" "1.9.3"
+    "@ciscospark/common" "1.8.0"
+    "@ciscospark/internal-plugin-wdm" "1.8.0"
+    "@ciscospark/spark-core" "1.8.0"
     babel-runtime "^6.23.0"
     envify "^3.4.1"
     lodash "^4.17.4"
     uuid "^3.0.1"
 
-"@ciscospark/plugin-authorization-node@1.9.4":
-  version "1.9.4"
-  resolved "https://registry.yarnpkg.com/@ciscospark/plugin-authorization-node/-/plugin-authorization-node-1.9.4.tgz#57a686a150da60fbe9bd005283e48781d08b468d"
+"@ciscospark/plugin-authorization-node@1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@ciscospark/plugin-authorization-node/-/plugin-authorization-node-1.8.0.tgz#bd92f1cb3f1fff4fd0652aa336f2d143ab923a0d"
   dependencies:
-    "@ciscospark/common" "1.9.3"
-    "@ciscospark/internal-plugin-wdm" "1.9.4"
-    "@ciscospark/spark-core" "1.9.3"
+    "@ciscospark/common" "1.8.0"
+    "@ciscospark/internal-plugin-wdm" "1.8.0"
+    "@ciscospark/spark-core" "1.8.0"
     babel-runtime "^6.23.0"
     envify "^3.4.1"
 
-"@ciscospark/plugin-authorization@1.9.4":
-  version "1.9.4"
-  resolved "https://registry.yarnpkg.com/@ciscospark/plugin-authorization/-/plugin-authorization-1.9.4.tgz#35560e342e6125a818588d7a60e019783fdc5faf"
+"@ciscospark/plugin-authorization@1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@ciscospark/plugin-authorization/-/plugin-authorization-1.8.0.tgz#a4154b358a426c34a8e35fa6107236de8eb82440"
   dependencies:
-    "@ciscospark/plugin-authorization-browser" "1.9.4"
-    "@ciscospark/plugin-authorization-node" "1.9.4"
+    "@ciscospark/plugin-authorization-browser" "1.8.0"
+    "@ciscospark/plugin-authorization-node" "1.8.0"
     envify "^3.4.1"
 
-"@ciscospark/plugin-logger@1.9.3":
-  version "1.9.3"
-  resolved "https://registry.yarnpkg.com/@ciscospark/plugin-logger/-/plugin-logger-1.9.3.tgz#8247c98b89abe164b264fffc9827ba7f0232f0fd"
+"@ciscospark/plugin-logger@1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@ciscospark/plugin-logger/-/plugin-logger-1.8.0.tgz#ea935118a9646082b7414ff10764bec807e7b6e7"
   dependencies:
-    "@ciscospark/common" "1.9.3"
-    "@ciscospark/spark-core" "1.9.3"
+    "@ciscospark/common" "1.8.0"
+    "@ciscospark/spark-core" "1.8.0"
     babel-runtime "^6.23.0"
     envify "^3.4.1"
     lodash "^4.17.4"
 
-"@ciscospark/plugin-people@1.9.3":
-  version "1.9.3"
-  resolved "https://registry.yarnpkg.com/@ciscospark/plugin-people/-/plugin-people-1.9.3.tgz#66084ff07d7eca048584826bbd4b35c4c9c2da5b"
+"@ciscospark/plugin-people@1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@ciscospark/plugin-people/-/plugin-people-1.8.0.tgz#168d3836766a4a3fbbca9572186aeb9d9cedc783"
   dependencies:
-    "@ciscospark/common" "1.9.3"
-    "@ciscospark/spark-core" "1.9.3"
+    "@ciscospark/common" "1.8.0"
+    "@ciscospark/spark-core" "1.8.0"
     babel-runtime "^6.23.0"
     envify "^3.4.1"
 
-"@ciscospark/plugin-phone@1.9.4":
-  version "1.9.4"
-  resolved "https://registry.yarnpkg.com/@ciscospark/plugin-phone/-/plugin-phone-1.9.4.tgz#fe5fb12c83e9a75de9a0e5e113c30eef392ad9a4"
+"@ciscospark/plugin-phone@1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@ciscospark/plugin-phone/-/plugin-phone-1.8.0.tgz#0ff2a7b9b310e712d59ba9d3e7157a76a50b87a3"
   dependencies:
-    "@ciscospark/common" "1.9.3"
-    "@ciscospark/internal-plugin-locus" "1.9.4"
-    "@ciscospark/internal-plugin-metrics" "1.9.4"
-    "@ciscospark/plugin-people" "1.9.3"
-    "@ciscospark/spark-core" "1.9.3"
+    "@ciscospark/common" "1.8.0"
+    "@ciscospark/internal-plugin-locus" "1.8.0"
+    "@ciscospark/internal-plugin-metrics" "1.8.0"
+    "@ciscospark/plugin-people" "1.8.0"
+    "@ciscospark/spark-core" "1.8.0"
     ampersand-state "^5.0.2"
     babel-runtime "^6.23.0"
     detectrtc "^1.3.4"
@@ -164,13 +164,13 @@
     uuid "^3.0.1"
     webrtc-adapter "3.2.0"
 
-"@ciscospark/spark-core@1.9.3":
-  version "1.9.3"
-  resolved "https://registry.yarnpkg.com/@ciscospark/spark-core/-/spark-core-1.9.3.tgz#df3cc11aafae593caf8e7330f6af507ea6fa0c80"
+"@ciscospark/spark-core@1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@ciscospark/spark-core/-/spark-core-1.8.0.tgz#ad78725d11cd6199460b4b2a926c532ffe38015e"
   dependencies:
-    "@ciscospark/common" "1.9.3"
-    "@ciscospark/common-timers" "1.9.3"
-    "@ciscospark/http-core" "1.9.3"
+    "@ciscospark/common" "1.8.0"
+    "@ciscospark/common-timers" "1.1.11"
+    "@ciscospark/http-core" "1.8.0"
     ampersand-collection "^2.0.0"
     ampersand-events "^2.0.2"
     ampersand-state "^5.0.2"
@@ -179,11 +179,11 @@
     lodash "^4.17.4"
     uuid "^3.0.1"
 
-"@ciscospark/storage-adapter-local-storage@1.9.3":
-  version "1.9.3"
-  resolved "https://registry.yarnpkg.com/@ciscospark/storage-adapter-local-storage/-/storage-adapter-local-storage-1.9.3.tgz#547b0e1b91041664239918093f226f09e9bd9671"
+"@ciscospark/storage-adapter-local-storage@1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@ciscospark/storage-adapter-local-storage/-/storage-adapter-local-storage-1.8.0.tgz#7af41291d712afcaea070c583add1b592011834c"
   dependencies:
-    "@ciscospark/spark-core" "1.9.3"
+    "@ciscospark/spark-core" "1.8.0"
     babel-runtime "^6.23.0"
     envify "^3.4.1"
 
@@ -371,6 +371,12 @@ array-back@^1.0.3, array-back@^1.0.4:
   dependencies:
     typical "^2.6.0"
 
+array-back@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/array-back/-/array-back-2.0.0.tgz#6877471d51ecc9c9bfa6136fb6c7d5fe69748022"
+  dependencies:
+    typical "^2.6.1"
+
 array-find-index@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/array-find-index/-/array-find-index-1.0.2.tgz#df010aa1287e164bbda6f9723b0a96a1ec4187a1"
@@ -497,8 +503,8 @@ autoprefixer@^6.3.1:
     postcss-value-parser "^3.2.3"
 
 aws-sdk@^2.2.36, aws-sdk@^2.80.0:
-  version "2.95.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.95.0.tgz#26e21db149443b1f063949dc87984f0d17700e6a"
+  version "2.96.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.96.0.tgz#b07c74bb82a59a280a56486cb689bd92098f0e24"
   dependencies:
     buffer "4.9.1"
     crypto-browserify "1.0.9"
@@ -1219,15 +1225,15 @@ botkit-studio-sdk@^1.0.2:
     request "^2.67.0"
 
 botkit@~0.5.5:
-  version "0.5.6"
-  resolved "https://registry.yarnpkg.com/botkit/-/botkit-0.5.6.tgz#95ea1e4fa4c77ce0182b40a07eadccb72171c1c5"
+  version "0.5.7"
+  resolved "https://registry.yarnpkg.com/botkit/-/botkit-0.5.7.tgz#e85281af622bcfdb9702fddcf032844a41084ec7"
   dependencies:
     async "^2.1.5"
     back "^1.0.1"
     body-parser "^1.17.1"
     botbuilder "^3.7.0"
     botkit-studio-sdk "^1.0.2"
-    ciscospark "^1.1.6"
+    ciscospark "1.8.0"
     clone "2.1.1"
     command-line-args "^4.0.2"
     crypto "0.0.3"
@@ -1411,12 +1417,12 @@ caniuse-api@^1.5.2:
     lodash.uniq "^4.5.0"
 
 caniuse-db@^1.0.30000529, caniuse-db@^1.0.30000634, caniuse-db@^1.0.30000639:
-  version "1.0.30000713"
-  resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30000713.tgz#ea01761840b5f148faf94ec5f34d0aa1d321966f"
+  version "1.0.30000715"
+  resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30000715.tgz#0b9b5c795950dfbaf301a8806bafe87f126da8ca"
 
 caniuse-lite@^1.0.30000712:
-  version "1.0.30000713"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000713.tgz#33957ecb4a2154a5d40a60d13d8bf1cfa0881a8a"
+  version "1.0.30000715"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000715.tgz#c327f5e6d907ebcec62cde598c3bf0dd793fb9a0"
 
 cardinal@^1.0.0:
   version "1.0.0"
@@ -1516,17 +1522,17 @@ cipher-base@^1.0.0, cipher-base@^1.0.1, cipher-base@^1.0.3:
     inherits "^2.0.1"
     safe-buffer "^5.0.1"
 
-ciscospark@^1.1.6:
-  version "1.9.4"
-  resolved "https://registry.yarnpkg.com/ciscospark/-/ciscospark-1.9.4.tgz#386497733e03b78218d86a928863ec928088c30e"
+ciscospark@1.8.0:
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/ciscospark/-/ciscospark-1.8.0.tgz#dec0a986d714d737cb221525972024c5cab4a26b"
   dependencies:
-    "@ciscospark/internal-plugin-wdm" "1.9.4"
-    "@ciscospark/plugin-authorization" "1.9.4"
-    "@ciscospark/plugin-logger" "1.9.3"
-    "@ciscospark/plugin-people" "1.9.3"
-    "@ciscospark/plugin-phone" "1.9.4"
-    "@ciscospark/spark-core" "1.9.3"
-    "@ciscospark/storage-adapter-local-storage" "1.9.3"
+    "@ciscospark/internal-plugin-wdm" "1.8.0"
+    "@ciscospark/plugin-authorization" "1.8.0"
+    "@ciscospark/plugin-logger" "1.8.0"
+    "@ciscospark/plugin-people" "1.8.0"
+    "@ciscospark/plugin-phone" "1.8.0"
+    "@ciscospark/spark-core" "1.8.0"
+    "@ciscospark/storage-adapter-local-storage" "1.8.0"
     babel-polyfill "^6.23.0"
     babel-runtime "^6.23.0"
     envify "^3.4.1"
@@ -1672,10 +1678,10 @@ combined-stream@^1.0.5, combined-stream@~1.0.5:
     delayed-stream "~1.0.0"
 
 command-line-args@^4.0.2:
-  version "4.0.6"
-  resolved "https://registry.yarnpkg.com/command-line-args/-/command-line-args-4.0.6.tgz#0ff87a1dd159890dcaeb2a005abdae71e55059fc"
+  version "4.0.7"
+  resolved "https://registry.yarnpkg.com/command-line-args/-/command-line-args-4.0.7.tgz#f8d1916ecb90e9e121eda6428e41300bfb64cc46"
   dependencies:
-    array-back "^1.0.4"
+    array-back "^2.0.0"
     find-replace "^1.0.3"
     typical "^2.6.1"
 
@@ -2211,8 +2217,8 @@ elasticsearch@^13.2.0:
     lodash.trimend "^4.5.1"
 
 electron-to-chromium@^1.2.7, electron-to-chromium@^1.3.17:
-  version "1.3.17"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.17.tgz#41c13457cc7166c5c15e767ae61d86a8cacdee5d"
+  version "1.3.18"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.18.tgz#3dcc99da3e6b665f6abbc71c28ad51a2cd731a9c"
 
 elliptic@^6.0.0:
   version "6.4.0"
@@ -2325,8 +2331,8 @@ error-ex@^1.2.0:
     is-arrayish "^0.2.1"
 
 es5-ext@^0.10.14, es5-ext@^0.10.9, es5-ext@~0.10.14:
-  version "0.10.26"
-  resolved "https://registry.yarnpkg.com/es5-ext/-/es5-ext-0.10.26.tgz#51b2128a531b70c4f6764093a73cbebb82186372"
+  version "0.10.27"
+  resolved "https://registry.yarnpkg.com/es5-ext/-/es5-ext-0.10.27.tgz#bf926b058c62b1cb5de1a887930673b6aa6d9a66"
   dependencies:
     es6-iterator "2"
     es6-symbol "~3.1"
@@ -5797,8 +5803,8 @@ sinon-chai@^2.12.0:
   resolved "https://registry.yarnpkg.com/sinon-chai/-/sinon-chai-2.12.0.tgz#da71e9642ef7b893ba3cf2af806396a00aa45927"
 
 sinon@^3.0.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/sinon/-/sinon-3.1.0.tgz#c2b6e58e178fe85afe24f0182828a0060e0df383"
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/sinon/-/sinon-3.2.0.tgz#8848a66ab6e8b80b5532e3824f59f83ea2628c77"
   dependencies:
     diff "^3.1.0"
     formatio "1.2.0"
@@ -6495,8 +6501,8 @@ webpack-sources@^1.0.1:
     source-map "~0.5.3"
 
 webpack@^3.1.0:
-  version "3.5.2"
-  resolved "https://registry.yarnpkg.com/webpack/-/webpack-3.5.2.tgz#a9601066e23af3c80f3bf9758fd794ca9778f251"
+  version "3.5.3"
+  resolved "https://registry.yarnpkg.com/webpack/-/webpack-3.5.3.tgz#e68653963bda146e212832c04a4d8041d2b4b8c8"
   dependencies:
     acorn "^5.0.0"
     acorn-dynamic-import "^2.0.0"

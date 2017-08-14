@@ -1,6 +1,12 @@
 CHANGES
 ========
 
+## 2.0.8
+
+* Fix: The problem that path including round bracket makes something bad
+* Fix: Recursively option processes also unexpedted pages
+* Fix: en-US translation
+
 ## 2.0.7
 
 * Improvement: Add recursively option for Delete/Move/Putback operation

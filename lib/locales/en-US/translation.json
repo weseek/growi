@@ -172,7 +172,7 @@
     }
   },
 
-  "modal_putback": {
+  "modal_putBack": {
     "label": {
       "Put Back Page": "Put Back Page",
       "recursively": "Process recursively"
