@@ -1,15 +1,25 @@
 Environment
 ------------
 
+### Host
+
 | item     | version |
 | ---      | --- |
-|OS        |x.y.z|
+|OS        ||
 |crowi-plus|x.y.z|
 |node.js   |x.y.z|
 |npm       |x.y.z|
-|browser   |x.y.z|
+|Using Docker|yes/no|
+|Using [crowi-plus-docker-compose][crowi-plus-docker-compose]|yes/no|
 
 *(Accessing https://{CROWI_HOST}/admin helps you to fill in above versions)*
+
+### Client
+
+| item     | version |
+| ---      | --- |
+|OS        ||
+|browser   |x.y.z|
 
 
 How to reproduce? (再現手順)
@@ -50,3 +60,6 @@ Note
 
 - 
 - 
+
+
+[crowi-plus-docker-compose]: https://github.com/weseek/crowi-plus-docker-compose
