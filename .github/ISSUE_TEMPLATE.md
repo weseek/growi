@@ -12,7 +12,10 @@ Environment
 |Using Docker|yes/no|
 |Using [crowi-plus-docker-compose][crowi-plus-docker-compose]|yes/no|
 
+[crowi-plus-docker-compose]: https://github.com/weseek/crowi-plus-docker-compose
+
 *(Accessing https://{CROWI_HOST}/admin helps you to fill in above versions)*
+
 
 ### Client
 
@@ -20,6 +23,7 @@ Environment
 | ---      | --- |
 |OS        ||
 |browser   |x.y.z|
+
 
 
 How to reproduce? (再現手順)
@@ -48,6 +52,7 @@ Stack Trace
 ```
 
 
+
 What is the expected result? (期待される動作)
 -------------------------------------------
 
@@ -55,11 +60,9 @@ What is the expected result? (期待される動作)
 - 
 
 
+
 Note
 ----
 
 - 
 - 
-
-
-[crowi-plus-docker-compose]: https://github.com/weseek/crowi-plus-docker-compose
