@@ -110,7 +110,7 @@ export ELASTICSEARCH_URI=http://ELASTICSEARCH_HOST:ELASTICSEARCH_PORT/crowi
 npm start
 ```
 
-For more info, check [the official documents](https://github.com/crowi/crowi/wiki/Install-and-Configuration#env-parameters).
+For more info, check [Developers Guide](https://github.com/weseek/crowi-plus/wiki/Developers-Guide) and [the official documents](https://github.com/crowi/crowi/wiki/Install-and-Configuration#env-parameters).
 
 #### Command details
 
