@@ -9,7 +9,9 @@ chai.use(sinonChai);
 describe('Page', function () {
   var Page = utils.models.Page,
     User   = utils.models.User,
-    conn   = utils.mongoose.connection;
+    conn   = utils.mongoose.connection,
+    createdPages,
+    createdUsers;
 
   before(function (done) {
     Promise.resolve().then(function() {
@@ -20,6 +22,7 @@ describe('Page', function () {
 
       return testDBUtil.generateFixture(conn, 'User', userFixture);
     }).then(function(testUsers) {
+      createdUsers = testUsers;
       var testUser0 = testUsers[0];
 
       var fixture = [
@@ -63,6 +66,7 @@ describe('Page', function () {
 
       return testDBUtil.generateFixture(conn, 'Page', fixture)
       .then(function(pages) {
+        createdPages = pages;
         done();
       });
     });
@@ -275,6 +279,42 @@ describe('Page', function () {
       it('should trim spaces of slash', function(done) {
         expect(Page.normalizePath('/ hoge / fuga')).to.equal('/hoge/fuga');
         done();
+      });
+    });
+  });
+
+  describe('.findPage', function () {
+    context('findPageById', () => {
+      it('should find page', function(done) {
+        const pageToFind = createdPages[0];
+        Page.findPageById(pageToFind._id)
+        .then(pageData => {
+          expect(pageData.path).to.equal(pageToFind.path);
+          done();
+        });
+      });
+    });
+
+    context('findPageByIdAndGrantedUser', function() {
+      it('should find page', function(done) {
+        const pageToFind = createdPages[0];
+        const grantedUser = createdUsers[0];
+        Page.findPageByIdAndGrantedUser(pageToFind._id, grantedUser)
+        .then(pageData => {
+          expect(pageData.path).to.equal(pageToFind.path);
+          done();
+        });
+      });
+
+      it('should error by grant', done => {
+        const pageToFind = createdPages[0];
+        const grantedUser = createdUsers[1];
+        Page.findPageByIdAndGrantedUser(pageToFind._id, grantedUser)
+        .then(pageData => {
+        }).catch(err => {
+          expect(err).to.instanceof(Error);
+          done();
+        });
       });
     });
   });
