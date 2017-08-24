@@ -59,6 +59,27 @@ class Lsx {
     return query.skip(skip).limit(limit);
   }
 
+  /**
+   * add reverse condition that sort pages
+   *
+   * @static
+   * @param {any} query
+   * @param {any} pagePath
+   * @param {any} optionsReverse
+   * @returns
+   *
+   * @memberOf Lsx
+   */
+  static addReverseCondition(query, pagePath, optionsReverse){
+    if (optionsReverse !== 'true' && optionsReverse !== 'false') {
+      throw new Error(`specified reverse is [' + ${optionsReverse} + '] : reverse are must be true or false`);
+    }
+    if(optionsReverse === 'true'){
+      return query.sort({path: -1});
+    }else{
+      return query.sort({path: 1});
+    }
+  }
 }
 
 module.exports = (crowi, app) => {
@@ -89,6 +110,10 @@ module.exports = (crowi, app) => {
       // num
       if (options.num !== undefined) {
         query = Lsx.addNumCondition(query, pagePath, options.num);
+      }
+      // reverse
+      if (options.reverse !== undefined) {
+        query = Lsx.addReverseCondition(query, pagePath, options.reverse);
       }
     }
     catch (error) {
