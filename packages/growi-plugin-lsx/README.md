@@ -36,7 +36,7 @@ TODO
 - [x] impl `depth` option
 - [x] impl `num` option
 - [ ] impl `sort` option
-- [ ] impl `reverse` option
+- [x] impl `reverse` option
 - [ ] impl `except` option
 - [ ] impl `filter` option
 
