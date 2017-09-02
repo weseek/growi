@@ -70,13 +70,14 @@ class Lsx {
    *
    * @memberOf Lsx
    */
-  static addReverseCondition(query, pagePath, optionsReverse){
+  static addReverseCondition(query, pagePath, optionsReverse) {
     if (optionsReverse !== 'true' && optionsReverse !== 'false') {
       throw new Error(`specified reverse is '${optionsReverse}' : reverse are must be 'true' or 'false'`);
     }
-    if(optionsReverse === 'true'){
+    if (optionsReverse === 'true') {
       return query.sort({path: -1});
-    }else{
+    }
+    else {
       return query.sort({path: 1});
     }
   }
