@@ -72,6 +72,8 @@ See also [weseek/crowi-plus-docker-compose][docker-compose]
 On-premise
 ----------
 
+[**Migration Guide from Official Crowi** is here](https://github.com/weseek/crowi-plus/wiki/Migration-Guide-from-Official-Crowi).
+
 ### Dependencies
 
 - node 6.x (DON'T USE 7.x)
@@ -165,7 +167,8 @@ Documentation
 
 * [github wiki pages](https://github.com/weseek/crowi-plus/wiki)
   * [Questions and Answers](https://github.com/weseek/crowi-plus/wiki/Questions-and-Answers)
-* [Developers Guide](https://github.com/weseek/crowi-plus/wiki/Developers-Guide)
+  * [Migration Guide from Official Crowi](https://github.com/weseek/crowi-plus/wiki/Migration-Guide-from-Official-Crowi)
+  * [Developers Guide](https://github.com/weseek/crowi-plus/wiki/Developers-Guide)
 
 Contributing
 ============
