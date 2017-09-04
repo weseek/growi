@@ -83,10 +83,11 @@ See [confirmed versions](https://github.com/weseek/crowi-plus/wiki/Developers-Gu
 
 #### Optional Dependencies
 
-- Redix 3.x
-- ElasticSearch 5.x
-  - Japanese (kuromoji) Analysis plugin
-  - ICU Analysis Plugin
+- Redis 3.x
+- ElasticSearch 5.x (needed when using Full-text search)
+  - **CAUTION: Following plugins are required**
+      - [Japanese (kuromoji) Analysis plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html)
+      - [ICU Analysis Plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-icu.html)
 
 ### Start
 
