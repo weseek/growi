@@ -3,9 +3,16 @@ import PropTypes from 'prop-types';
 
 import Page from '../PageList/Page';
 import SearchResultList from './SearchResultList';
+import SearchResultInput from './SearchResultInput';
 
 // Search.SearchResult
 export default class SearchResult extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      deletionMode : false,
+    }
+  }
 
   isNotSearchedYet() {
     return !this.props.searchResultMeta.took;
@@ -20,6 +27,30 @@ export default class SearchResult extends React.Component {
       return true;
     }
     return false;
+  }
+
+  componentWillMount() {
+    this.selectedCheckboxes = new Set();
+  }
+
+  toggleCheckbox(page) {
+    if (this.selectedCheckboxes.has(page)) {
+      this.selectedCheckboxes.delete(page);
+    } else {
+      this.selectedCheckboxes.add(page);
+    }
+  }
+
+  handleFormSubmit(formSubmitEvent) {
+    formSubmitEvent.preventDefault();
+
+    for (const checkbox of this.selectedCheckboxes) {
+      console.log(checkbox, 'is selected.');
+    }
+  }
+
+  handleDeletionModeChange() {
+    this.setState({deletionMode: !this.state.deletionMode});
   }
 
   render() {
@@ -52,6 +83,22 @@ export default class SearchResult extends React.Component {
 
     }
 
+    let deletionModeButtons = '';
+
+    if (this.state.deletionMode) {
+      deletionModeButtons =
+      <div className="btn-group">
+        <button type="button" className="btn btn-danger" data-target="#deletePages" data-toggle="modal"><i className="fa fa-trash-o"/> Delete</button>
+        <button type="button" className="btn btn-default" onClick={() => this.handleDeletionModeChange()}><i className="fa fa-undo"/> Cancel</button>
+      </div>
+    }
+    else {
+      deletionModeButtons =
+      <div className="btn-group">
+        <button type="button" className="btn btn-default" onClick={() => this.handleDeletionModeChange()}><i className="fa fa-trash-o"/> DeletionMode</button>
+      </div>
+    }
+
     const listView = this.props.pages.map((page) => {
       const pageId = "#" + page._id;
       return (
@@ -60,6 +107,10 @@ export default class SearchResult extends React.Component {
           key={page._id}
           excludePathString={excludePathString}
           >
+          <SearchResultInput
+            selectablePage={page}
+            deletionMode={this.state.deletionMode}
+            handleCheckboxChange={this.toggleCheckbox}/>
           <div className="page-list-option">
             <a href={page.path}><i className="fa fa-arrow-circle-right" /></a>
           </div>
@@ -81,6 +132,7 @@ export default class SearchResult extends React.Component {
         <div className="search-result row" id="search-result">
           <div className="col-md-4 hidden-xs hidden-sm page-list search-result-list" id="search-result-list">
             <nav data-spy="affix" data-offset-top="120">
+              {deletionModeButtons}
               <ul className="page-list-ul page-list-ul-flat nav">
                 {listView}
               </ul>
