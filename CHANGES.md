@@ -3,6 +3,8 @@ CHANGES
 
 ## 2.0.9
 
+* Fix: Server is down when a guest user accesses to someone's private pages
+
 ## 2.0.8
 
 * Fix: The problem that path including round bracket makes something bad
