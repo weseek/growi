@@ -11,7 +11,9 @@ export default class SearchResult extends React.Component {
     super(props);
     this.state = {
       deletionMode : false,
+      selectedPages : new Set(),
     }
+    this.toggleCheckbox = this.toggleCheckbox.bind(this);
   }
 
   isNotSearchedYet() {
@@ -29,23 +31,11 @@ export default class SearchResult extends React.Component {
     return false;
   }
 
-  componentWillMount() {
-    this.selectedCheckboxes = new Set();
-  }
-
   toggleCheckbox(page) {
-    if (this.selectedCheckboxes.has(page)) {
-      this.selectedCheckboxes.delete(page);
+    if (this.state.selectedPages.has(page)) {
+      this.state.selectedPages.delete(page);
     } else {
-      this.selectedCheckboxes.add(page);
-    }
-  }
-
-  handleFormSubmit(formSubmitEvent) {
-    formSubmitEvent.preventDefault();
-
-    for (const checkbox of this.selectedCheckboxes) {
-      console.log(checkbox, 'is selected.');
+      this.state.selectedPages.add(page);
     }
   }
 
@@ -108,7 +98,7 @@ export default class SearchResult extends React.Component {
           excludePathString={excludePathString}
           >
           <SearchResultInput
-            selectablePage={page}
+            page={page}
             deletionMode={this.state.deletionMode}
             handleCheckboxChange={this.toggleCheckbox}/>
           <div className="page-list-option">

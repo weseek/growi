@@ -7,10 +7,11 @@ export default class SearchResultInput extends React.Component {
     this.state = {
       isChecked: false,
     }
+    this.toggleCheckboxChange = this.toggleCheckboxChange.bind(this);
   }
 
   toggleCheckboxChange() {
-    const { handleCheckboxChange, selectablePage } = this.props;
+    const { handleCheckboxChange, page } = this.props;
 
     this.setState(({ isChecked }) => (
       {
@@ -18,12 +19,12 @@ export default class SearchResultInput extends React.Component {
       }
     ));
 
-    handleCheckboxChange(selectablePage);
+    this.props.handleCheckboxChange(page);
   }
 
   render() {
     let deletionMode = this.props.deletionMode;
-    let pageId = this.props.selectablePage.id;
+    let pageId = this.props.page.id;
     const { isChecked } = this.state;
 
     const checkBoxInput = deletionMode ? (
@@ -42,7 +43,7 @@ export default class SearchResultInput extends React.Component {
 }
 
 SearchResultInput.propTypes = {
-  selectablePage: PropTypes.object.isRequired,
+  page: PropTypes.object.isRequired,
   deletionMode: PropTypes.bool.isRequired,
   handleCheckboxChange: PropTypes.func.isRequired,
 };
