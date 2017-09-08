@@ -37,10 +37,33 @@ export default class SearchResult extends React.Component {
     } else {
       this.state.selectedPages.add(page);
     }
+    this.setState({selectedPages: this.state.selectedPages});
   }
 
   handleDeletionModeChange() {
     this.setState({deletionMode: !this.state.deletionMode});
+  }
+
+  handleFormSubmit() {
+      // delete
+      $('#delete-pages-form').submit(function(e) {
+        $.ajax({
+          type: 'POST',
+          url: '/_api/pages.remove',
+          data: $('#delete-pages-form').serialize(),
+          dataType: 'json'
+        }).done(function(res) {
+          if (!res.ok) {
+            $('#delete-errors').html('<i class="fa fa-times-circle"></i> ' + res.error);
+            $('#delete-errors').addClass('alert-danger');
+          } else {
+            var page = res.page;
+            top.location.href = page.path;
+          }
+        });
+
+        return false;
+      });
   }
 
   render() {
@@ -108,6 +131,12 @@ export default class SearchResult extends React.Component {
       );
     });
 
+    const selectedListView = Array.from(this.state.selectedPages).map((page) => {
+        return (
+          <li key={page._id}>{page.path}</li>
+        );
+    });
+
     // TODO あとでなんとかする
     setTimeout(() => {
       $('#search-result-list > nav').affix({ offset: { top: 120 }});
@@ -136,7 +165,39 @@ export default class SearchResult extends React.Component {
               />
           </div>
         </div>
-      </div>
+        <div id="crowi-modals">
+          <div className="modal" id="deletePages">
+            <div className="modal-dialog">
+              <div className="modal-content">
+              <form role="form" id="delete-pages-form" onSubmit="return false;">
+                <div className="modal-header">
+                  <button type="button" className="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                  <h4 className="modal-title"><i className="fa fa-trash-o"></i> Delete Pages</h4>
+                </div>
+                <div className="modal-body">
+                  <div className="form-group">
+                    <label htmlFor="">Deleting pages:</label>
+                    <ul>
+                      {selectedListView}
+                    </ul>
+                  </div>
+                </div>
+                <div className="modal-footer">
+                  <p><small className="pull-left" id="delete-errors"></small></p>
+                  <input type="hidden" name="_csrf" value="{{ csrf() }}"/>
+                  <input type="hidden" name="path" value="{{ page.path }}"/>
+                  <input type="hidden" name="page_id" value="{{ page._id.toString() }}"/>
+                  <input type="hidden" name="revision_id" value="{{ page.revision._id.toString() }}"/>
+                  <button type="submit" className="btn btn-danger delete-button" onClick={this.handleFormSubmit}>Delete</button>
+                </div>
+
+              </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>//content-main
     );
   }
 }
