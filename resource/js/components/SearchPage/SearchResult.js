@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import Page from '../PageList/Page';
 import SearchResultList from './SearchResultList';
 import SearchResultInput from './SearchResultInput';
+import DeletePageListModal from './DeletePageListModal';
 
 // Search.SearchResult
 export default class SearchResult extends React.Component {
@@ -12,8 +13,12 @@ export default class SearchResult extends React.Component {
     this.state = {
       deletionMode : false,
       selectedPages : new Set(),
+      isDeleteConfirmModalShown: false,
+      errorMessageForDeleting: undefined,
     }
     this.toggleCheckbox = this.toggleCheckbox.bind(this);
+    this.deleteSelectedPages = this.deleteSelectedPages.bind(this);
+    this.closeDeleteConfirmModal = this.closeDeleteConfirmModal.bind(this);
   }
 
   isNotSearchedYet() {
@@ -31,6 +36,12 @@ export default class SearchResult extends React.Component {
     return false;
   }
 
+  /**
+   * toggle checkbox and add (or delete from) selected pages list
+   *
+   * @param {any} page
+   * @memberof SearchResult
+   */
   toggleCheckbox(page) {
     if (this.state.selectedPages.has(page)) {
       this.state.selectedPages.delete(page);
@@ -40,30 +51,62 @@ export default class SearchResult extends React.Component {
     this.setState({selectedPages: this.state.selectedPages});
   }
 
+  /**
+   * change deletion mode
+   *
+   * @memberof SearchResult
+   */
   handleDeletionModeChange() {
+    this.state.selectedPages.clear();
     this.setState({deletionMode: !this.state.deletionMode});
   }
 
-  handleFormSubmit() {
-      // delete
-      $('#delete-pages-form').submit(function(e) {
-        $.ajax({
-          type: 'POST',
-          url: '/_api/pages.remove',
-          data: $('#delete-pages-form').serialize(),
-          dataType: 'json'
-        }).done(function(res) {
-          if (!res.ok) {
-            $('#delete-errors').html('<i class="fa fa-times-circle"></i> ' + res.error);
-            $('#delete-errors').addClass('alert-danger');
-          } else {
-            var page = res.page;
-            top.location.href = page.path;
-          }
-        });
-
-        return false;
+  /**
+   * delete selected pages
+   *
+   * @memberof SearchResult
+   */
+  deleteSelectedPages() {
+    let isDeleteComplete = true;
+    Array.from(this.state.selectedPages).map((page) => {
+      const pageId = page._id;
+      const revisionId = page.revision_id;
+      this.props.crowi.apiPost('/pages.remove',
+        {page_id: pageId, revision_id: page.revisionId})
+      .then(res => {
+        if (res.ok) {
+          this.state.selectedPages.delete(page);
+        }
+      }).catch(err => {
+        console.log(err.message);
+        isDeleteComplete = false;
+        this.setState({errorMessageForDeleting: err.message});
       });
+    });
+    if ( isDeleteComplete ) {
+      this.closeDeleteConfirmModal();
+    }
+  }
+
+  /**
+   * open confirm modal for page selection delete
+   *
+   * @memberof SearchResult
+   */
+  showDeleteConfirmModal() {
+    this.setState({isDeleteConfirmModalShown: true});
+  }
+
+  /**
+   * close confirm modal for page selection delete
+   *
+   * @memberof SearchResult
+   */
+  closeDeleteConfirmModal() {
+    this.setState({
+      isDeleteConfirmModalShown: false,
+      errorMessageForDeleting: undefined,
+    });
   }
 
   render() {
@@ -101,7 +144,7 @@ export default class SearchResult extends React.Component {
     if (this.state.deletionMode) {
       deletionModeButtons =
       <div className="btn-group">
-        <button type="button" className="btn btn-danger" data-target="#deletePages" data-toggle="modal"><i className="fa fa-trash-o"/> Delete</button>
+        <button type="button" className="btn btn-danger" onClick={() => this.showDeleteConfirmModal()}><i className="fa fa-trash-o"/> Delete</button>
         <button type="button" className="btn btn-default" onClick={() => this.handleDeletionModeChange()}><i className="fa fa-undo"/> Cancel</button>
       </div>
     }
@@ -120,10 +163,11 @@ export default class SearchResult extends React.Component {
           key={page._id}
           excludePathString={excludePathString}
           >
-          <SearchResultInput
-            page={page}
-            deletionMode={this.state.deletionMode}
-            handleCheckboxChange={this.toggleCheckbox}/>
+          { this.state.deletionMode &&
+            <SearchResultInput
+              page={page}
+              handleCheckboxChange={this.toggleCheckbox}/>
+          }
           <div className="page-list-option">
             <a href={page.path}><i className="fa fa-arrow-circle-right" /></a>
           </div>
@@ -131,7 +175,7 @@ export default class SearchResult extends React.Component {
       );
     });
 
-    const selectedListView = Array.from(this.state.selectedPages).map((page) => {
+    const selectedList = Array.from(this.state.selectedPages).map((page) => {
         return (
           <li key={page._id}>{page.path}</li>
         );
@@ -165,37 +209,13 @@ export default class SearchResult extends React.Component {
               />
           </div>
         </div>
-        <div id="crowi-modals">
-          <div className="modal" id="deletePages">
-            <div className="modal-dialog">
-              <div className="modal-content">
-              <form role="form" id="delete-pages-form" onSubmit="return false;">
-                <div className="modal-header">
-                  <button type="button" className="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                  <h4 className="modal-title"><i className="fa fa-trash-o"></i> Delete Pages</h4>
-                </div>
-                <div className="modal-body">
-                  <div className="form-group">
-                    <label htmlFor="">Deleting pages:</label>
-                    <ul>
-                      {selectedListView}
-                    </ul>
-                  </div>
-                </div>
-                <div className="modal-footer">
-                  <p><small className="pull-left" id="delete-errors"></small></p>
-                  <input type="hidden" name="_csrf" value="{{ csrf() }}"/>
-                  <input type="hidden" name="path" value="{{ page.path }}"/>
-                  <input type="hidden" name="page_id" value="{{ page._id.toString() }}"/>
-                  <input type="hidden" name="revision_id" value="{{ page.revision._id.toString() }}"/>
-                  <button type="submit" className="btn btn-danger delete-button" onClick={this.handleFormSubmit}>Delete</button>
-                </div>
-
-              </form>
-              </div>
-            </div>
-          </div>
-        </div>
+        <DeletePageListModal
+        isShown={this.state.isDeleteConfirmModalShown}
+        pages={Array.from(this.state.selectedPages)}
+        errorMessage={this.state.errorMessageForDeleting}
+        cancel={this.closeDeleteConfirmModal}
+        confirmedToDelete={this.deleteSelectedPages}
+        />
 
       </div>//content-main
     );
@@ -207,6 +227,7 @@ SearchResult.propTypes = {
   pages: PropTypes.array.isRequired,
   searchingKeyword: PropTypes.string.isRequired,
   searchResultMeta: PropTypes.object.isRequired,
+  crowi: PropTypes.object.isRequired,
 };
 SearchResult.defaultProps = {
   tree: '',

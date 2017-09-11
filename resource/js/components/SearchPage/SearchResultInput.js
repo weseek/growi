@@ -10,6 +10,12 @@ export default class SearchResultInput extends React.Component {
     this.toggleCheckboxChange = this.toggleCheckboxChange.bind(this);
   }
 
+  /**
+   * checkbox の選択切り替えを行い、
+   * 親コンポーネントに定義されたメソッドを呼び出します
+   *
+   * @memberof SearchResultInput
+   */
   toggleCheckboxChange() {
     const { handleCheckboxChange, page } = this.props;
 
@@ -23,27 +29,20 @@ export default class SearchResultInput extends React.Component {
   }
 
   render() {
-    let deletionMode = this.props.deletionMode;
     let pageId = this.props.page.id;
     const { isChecked } = this.state;
 
-    const checkBoxInput = deletionMode ? (
+    return (
       <input
         type="checkbox"
         value={pageId}
         checked={isChecked}
         onChange={this.toggleCheckboxChange} />
-    ) : null;
-    return (
-      <div>
-        {checkBoxInput}
-      </div>
     );
   }
 }
 
 SearchResultInput.propTypes = {
   page: PropTypes.object.isRequired,
-  deletionMode: PropTypes.bool.isRequired,
   handleCheckboxChange: PropTypes.func.isRequired,
 };
