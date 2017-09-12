@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 import Page from '../PageList/Page';
 import SearchResultList from './SearchResultList';
-import SearchResultInput from './SearchResultInput';
 import DeletePageListModal from './DeletePageListModal';
 
 // Search.SearchResult
@@ -16,7 +15,6 @@ export default class SearchResult extends React.Component {
       isDeleteConfirmModalShown: false,
       errorMessageForDeleting: undefined,
     }
-    this.toggleCheckbox = this.toggleCheckbox.bind(this);
     this.deleteSelectedPages = this.deleteSelectedPages.bind(this);
     this.closeDeleteConfirmModal = this.closeDeleteConfirmModal.bind(this);
   }
@@ -164,21 +162,17 @@ export default class SearchResult extends React.Component {
           excludePathString={excludePathString}
           >
           { this.state.deletionMode &&
-            <SearchResultInput
-              page={page}
-              handleCheckboxChange={this.toggleCheckbox}/>
-          }
+            <input
+              type="checkbox"
+              value={pageId}
+              checked={this.state.selectedPages.has(page)}
+              onClick={() => this.toggleCheckbox(page)} />
+            }
           <div className="page-list-option">
             <a href={page.path}><i className="fa fa-arrow-circle-right" /></a>
           </div>
         </Page>
       );
-    });
-
-    const selectedList = Array.from(this.state.selectedPages).map((page) => {
-        return (
-          <li key={page._id}>{page.path}</li>
-        );
     });
 
     // TODO あとでなんとかする
@@ -210,11 +204,11 @@ export default class SearchResult extends React.Component {
           </div>
         </div>
         <DeletePageListModal
-        isShown={this.state.isDeleteConfirmModalShown}
-        pages={Array.from(this.state.selectedPages)}
-        errorMessage={this.state.errorMessageForDeleting}
-        cancel={this.closeDeleteConfirmModal}
-        confirmedToDelete={this.deleteSelectedPages}
+          isShown={this.state.isDeleteConfirmModalShown}
+          pages={Array.from(this.state.selectedPages)}
+          errorMessage={this.state.errorMessageForDeleting}
+          cancel={this.closeDeleteConfirmModal}
+          confirmedToDelete={this.deleteSelectedPages}
         />
 
       </div>//content-main
