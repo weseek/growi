@@ -27,7 +27,7 @@
     "mongolab",
     "redistogo",
     {
-      "plan": "bonsai",
+      "plan": "bonsai:sandbox-10",
       "options": {
         "version": "5.1"
       }

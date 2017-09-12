@@ -72,6 +72,8 @@ See also [weseek/crowi-plus-docker-compose][docker-compose]
 On-premise
 ----------
 
+[**Migration Guide from Official Crowi** is here](https://github.com/weseek/crowi-plus/wiki/Migration-Guide-from-Official-Crowi).
+
 ### Dependencies
 
 - node 6.x (DON'T USE 7.x)
@@ -83,14 +85,15 @@ See [confirmed versions](https://github.com/weseek/crowi-plus/wiki/Developers-Gu
 
 #### Optional Dependencies
 
-- Redix 3.x
-- ElasticSearch 5.x
-  - Japanese (kuromoji) Analysis plugin
-  - ICU Analysis Plugin
+- Redis 3.x
+- ElasticSearch 5.x (needed when using Full-text search)
+  - **CAUTION: Following plugins are required**
+      - [Japanese (kuromoji) Analysis plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html)
+      - [ICU Analysis Plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-icu.html)
 
 ### Start
 
-## Build and run the app
+#### Build and run the app
 
 ```bash
 git clone https://github.com/weseek/crowi-plus.git
@@ -110,7 +113,7 @@ export ELASTICSEARCH_URI=http://ELASTICSEARCH_HOST:ELASTICSEARCH_PORT/crowi
 npm start
 ```
 
-For more info, check [the official documents](https://github.com/crowi/crowi/wiki/Install-and-Configuration#env-parameters).
+For more info, check [Developers Guide](https://github.com/weseek/crowi-plus/wiki/Developers-Guide) and [the official documents](https://github.com/crowi/crowi/wiki/Install-and-Configuration#env-parameters).
 
 #### Command details
 
@@ -146,16 +149,15 @@ npm start
 Getting Started to Develop
 ==========================
 
-## Build and Running the app
+## Build and Run the app
 
 1. `clone` this repository
 1. `yarn global add npm@4` to install required global dependencies
 1. `yarn` to install all dependencies
     * DON'T USE `npm install`
 1. `npm run build` to build client app
-1. `npm run server` to start the dev server in another tab
-
-After you have installed all dependencies and build client you can now run the app. Run `npm run server` to start a local server using `node-dev` which will watch server-side codes and reload for you. The port will be displayed to you as `http://0.0.0.0:3000`.
+1. `npm run server` to start the dev server
+1. Access to `http://0.0.0.0:3000`
 
 For more info, read [Developers Guide](https://github.com/weseek/crowi-plus/wiki/Developers-Guide) on Wiki.
 
@@ -165,7 +167,8 @@ Documentation
 
 * [github wiki pages](https://github.com/weseek/crowi-plus/wiki)
   * [Questions and Answers](https://github.com/weseek/crowi-plus/wiki/Questions-and-Answers)
-* [Developers Guide](https://github.com/weseek/crowi-plus/wiki/Developers-Guide)
+  * [Migration Guide from Official Crowi](https://github.com/weseek/crowi-plus/wiki/Migration-Guide-from-Official-Crowi)
+  * [Developers Guide](https://github.com/weseek/crowi-plus/wiki/Developers-Guide)
 
 Contributing
 ============

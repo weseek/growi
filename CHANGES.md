@@ -1,6 +1,12 @@
 CHANGES
 ========
 
+## 2.0.9
+
+* Fix: Server is down when a guest user accesses to someone's private pages
+* Support: Merge official Crowi (master branch)
+* Support: Upgrade outdated libs
+
 ## 2.0.8
 
 * Fix: The problem that path including round bracket makes something bad
