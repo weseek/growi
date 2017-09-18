@@ -84,7 +84,7 @@ describe('Page', () => {
     });
 
     ['restricted', 'specified', 'owner'].forEach(grant => {
-      context('with a ' + grant + ' page', function() {
+      context('with a ' + grant + ' page', () => {
         it('should return false', done => {
           Page.findOne({path: '/grant/' + grant}, (err, page) => {
             expect(err).to.be.null;
@@ -96,22 +96,22 @@ describe('Page', () => {
     });
   });
 
-  describe('.getDeletedPageName', function() {
-    it('should return trash page name', function() {
+  describe('.getDeletedPageName', () => {
+    it('should return trash page name', () => {
       expect(Page.getDeletedPageName('/hoge')).to.be.equal('/trash/hoge');
       expect(Page.getDeletedPageName('hoge')).to.be.equal('/trash/hoge');
     });
   });
-  describe('.getRevertDeletedPageName', function() {
-    it('should return reverted trash page name', function() {
+  describe('.getRevertDeletedPageName', () => {
+    it('should return reverted trash page name', () => {
       expect(Page.getRevertDeletedPageName('/hoge')).to.be.equal('/hoge');
       expect(Page.getRevertDeletedPageName('/trash/hoge')).to.be.equal('/hoge');
       expect(Page.getRevertDeletedPageName('/trash/hoge/trash')).to.be.equal('/hoge/trash');
     });
   });
 
-  describe('.isDeletableName', function() {
-    it('should decide deletable or not', function() {
+  describe('.isDeletableName', () => {
+    it('should decide deletable or not', () => {
       expect(Page.isDeletableName('/hoge')).to.be.true;
       expect(Page.isDeletableName('/user/xxx')).to.be.false;
       expect(Page.isDeletableName('/user/xxx123')).to.be.false;
@@ -120,8 +120,8 @@ describe('Page', () => {
     });
   });
 
-  describe('.isCreatableName', function() {
-    it('should decide creatable or not', function() {
+  describe('.isCreatableName', () => {
+    it('should decide creatable or not', () => {
       expect(Page.isCreatableName('/hoge')).to.be.true;
 
       // edge cases
@@ -168,8 +168,8 @@ describe('Page', () => {
     });
   });
 
-  describe('.isCreator', function() {
-    context('with creator', function() {
+  describe('.isCreator', () => {
+    context('with creator', () => {
       it('should return true', done => {
         User.findOne({email: 'anonymous0@example.com'}, (err, user) => {
           if (err) { done(err); }
@@ -182,7 +182,7 @@ describe('Page', () => {
       });
     });
 
-    context('with non-creator', function() {
+    context('with non-creator', () => {
       it('should return false', done => {
         User.findOne({email: 'anonymous1@example.com'}, (err, user) => {
           if (err) { done(err); }
@@ -196,8 +196,8 @@ describe('Page', () => {
     });
   });
 
-  describe('.isGrantedFor', function() {
-    context('with a granted user', function() {
+  describe('.isGrantedFor', () => {
+    context('with a granted user', () => {
       it('should return true', done => {
         User.findOne({email: 'anonymous0@example.com'}, (err, user) => {
           if (err) { done(err); }
@@ -212,7 +212,7 @@ describe('Page', () => {
       });
     });
 
-    context('with a public page', function() {
+    context('with a public page', () => {
       it('should return true', done => {
         User.findOne({email: 'anonymous1@example.com'}, (err, user) => {
           if (err) { done(err); }
@@ -227,7 +227,7 @@ describe('Page', () => {
       });
     });
 
-    context('with a restricted page and an user who has no grant', function() {
+    context('with a restricted page and an user who has no grant', () => {
       it('should return false', done => {
         User.findOne({email: 'anonymous1@example.com'}, (err, user) => {
           if (err) { done(err); }
@@ -270,7 +270,7 @@ describe('Page', () => {
   });
 
   describe('Normalize path', () => {
-    context('Normalize', function() {
+    context('Normalize', () => {
       it('should start with slash', done => {
         expect(Page.normalizePath('hoge/fuga')).to.equal('/hoge/fuga');
         done();
@@ -295,7 +295,7 @@ describe('Page', () => {
       });
     });
 
-    context('findPageByIdAndGrantedUser', function() {
+    context('findPageByIdAndGrantedUser', () => {
       it('should find page', done => {
         const pageToFind = createdPages[0];
         const grantedUser = createdUsers[0];
