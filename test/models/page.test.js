@@ -311,6 +311,7 @@ describe('Page', () => {
         const grantedUser = createdUsers[1];
         Page.findPageByIdAndGrantedUser(pageToFind._id, grantedUser)
         .then(pageData => {
+          done(new Error());
         }).catch(err => {
           expect(err).to.instanceof(Error);
           done();
