@@ -68,12 +68,15 @@ export default class SearchResult extends React.Component {
     let isDeleteComplete = true;
     Array.from(this.state.selectedPages).map((page) => {
       const pageId = page._id;
-      const revisionId = page.revision_id;
+      const revisionId = page.revision._id;
       this.props.crowi.apiPost('/pages.remove',
-        {page_id: pageId, revision_id: page.revisionId})
+        {page_id: pageId, revision_id: revisionId})
       .then(res => {
         if (res.ok) {
           this.state.selectedPages.delete(page);
+        }
+        else {
+          isDeleteComplete = false;
         }
       }).catch(err => {
         console.log(err.message);
@@ -81,6 +84,7 @@ export default class SearchResult extends React.Component {
         this.setState({errorMessageForDeleting: err.message});
       });
     });
+
     if ( isDeleteComplete ) {
       this.closeDeleteConfirmModal();
     }

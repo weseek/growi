@@ -65,11 +65,12 @@
 {% endblock %}
 
 {% block html_body %}
-<body
+<body id="main-container"
   class="crowi main-container {% block html_base_css %}{% endblock %} {% if 'crowi-plus' === layoutType() %}crowi-plus{% endif %}"
   data-me="{{ user._id.toString() }}"
   data-plugin-enabled="{{ isEnabledPlugins() }}"
  {% block html_base_attr %}{% endblock %}
+  data-csrftoken="{{ csrf() }}"
  >
 
 {% block layout_head_nav %}
