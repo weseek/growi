@@ -39,8 +39,8 @@ if (mainContent !== null) {
 
 // FIXME
 const crowi = new Crowi({
-  me: $('#main-container').data('current-username'),
-  csrfToken: $('#main-container').data('csrftoken'),
+  me: $('body').data('current-username'),
+  csrfToken: $('body').data('csrftoken'),
 }, window);
 window.crowi = crowi;
 crowi.setConfig(JSON.parse(document.getElementById('crowi-context-hydrate').textContent || '{}'));
