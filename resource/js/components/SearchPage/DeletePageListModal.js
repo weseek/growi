@@ -21,7 +21,7 @@ export default class DeletePageListModal extends React.Component {
   }
 
   render() {
-    if (this.props.pages === undefined) {
+    if (this.props.pages === undefined || this.props.pages.length == 0) {
       return <div></div>
     }
 

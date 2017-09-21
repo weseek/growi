@@ -46,6 +46,7 @@ export default class SearchResult extends React.Component {
     } else {
       this.state.selectedPages.add(page);
     }
+    this.setState({isDeleteConfirmModalShown: false});
     this.setState({selectedPages: this.state.selectedPages});
   }
 
@@ -86,7 +87,7 @@ export default class SearchResult extends React.Component {
     });
 
     if ( isDeleteComplete ) {
-      this.closeDeleteConfirmModal();
+      window.location.reload();
     }
   }
 
@@ -146,7 +147,7 @@ export default class SearchResult extends React.Component {
     if (this.state.deletionMode) {
       deletionModeButtons =
       <div className="btn-group">
-        <button type="button" className="btn btn-danger" onClick={() => this.showDeleteConfirmModal()}><i className="fa fa-trash-o"/> Delete</button>
+        <button type="button" className="btn btn-danger" onClick={() => this.showDeleteConfirmModal()} disabled={this.state.selectedPages.size == 0}><i className="fa fa-trash-o"/> Delete</button>
         <button type="button" className="btn btn-default" onClick={() => this.handleDeletionModeChange()}><i className="fa fa-undo"/> Cancel</button>
       </div>
     }
