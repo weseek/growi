@@ -151,6 +151,7 @@ export default class PageListSearch extends React.Component {
           searchingKeyword={this.state.searchingKeyword}
           searchResultMeta={this.state.searchResultMeta}
           searchError={this.state.searchError}
+          crowi={this.props.crowi}
           />
       </div>
     );
@@ -159,6 +160,7 @@ export default class PageListSearch extends React.Component {
 
 PageListSearch.propTypes = {
   query: PropTypes.object,
+  crowi: PropTypes.object.isRequired,
 };
 PageListSearch.defaultProps = {
   //pollInterval: 1000,
