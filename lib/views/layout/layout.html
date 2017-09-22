@@ -71,6 +71,7 @@
   data-plugin-enabled="{{ isEnabledPlugins() }}"
  {% block html_base_attr %}{% endblock %}
   data-csrftoken="{{ csrf() }}"
+  data-current-username="{% if user %}{{ user.username }}{% endif %}"
  >
 
 {% block layout_head_nav %}
