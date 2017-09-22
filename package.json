@@ -68,7 +68,7 @@
     "diff2html": "^2.3.0",
     "elasticsearch": "^13.2.0",
     "emojify.js": "^1.1.0",
-    "env-cmd": "^5.0.0",
+    "env-cmd": "^6.0.0",
     "escape-string-regexp": "^1.0.5",
     "express": "~4.15.2",
     "express-form": "~0.12.0",
