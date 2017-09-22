@@ -147,14 +147,16 @@ export default class SearchResult extends React.Component {
     if (this.state.deletionMode) {
       deletionModeButtons =
       <div className="btn-group">
-        <button type="button" className="btn btn-danger" onClick={() => this.showDeleteConfirmModal()} disabled={this.state.selectedPages.size == 0}><i className="fa fa-trash-o"/> Delete</button>
-        <button type="button" className="btn btn-default" onClick={() => this.handleDeletionModeChange()}><i className="fa fa-undo"/> Cancel</button>
+        <button type="button" className="btn btn-danger btn-xs" onClick={() => this.showDeleteConfirmModal()} disabled={this.state.selectedPages.size == 0}><i className="fa fa-trash-o"/> Delete</button>
+        <button type="button" className="btn btn-default btn-xs" onClick={() => this.handleDeletionModeChange()}><i className="fa fa-undo"/> Cancel</button>
       </div>
     }
     else {
       deletionModeButtons =
       <div className="btn-group">
-        <button type="button" className="btn btn-default" onClick={() => this.handleDeletionModeChange()}><i className="fa fa-trash-o"/> DeletionMode</button>
+        <button type="button" className="btn btn-default btn-xs" onClick={() => this.handleDeletionModeChange()}>
+          <i className="fa fa-toggle-off"/> DeletionMode
+        </button>
       </div>
     }
 
@@ -167,14 +169,13 @@ export default class SearchResult extends React.Component {
           excludePathString={excludePathString}
           >
           { this.state.deletionMode &&
-            <input
-              type="checkbox"
+            <input type="checkbox" className="search-result-list-delete-checkbox"
               value={pageId}
               checked={this.state.selectedPages.has(page)}
               onClick={() => this.toggleCheckbox(page)} />
             }
           <div className="page-list-option">
-            <a href={page.path}><i className="fa fa-arrow-circle-right" /></a>
+            <a href={page.path}><i className="fa fa-sign-in" /></a>
           </div>
         </Page>
       );
@@ -194,14 +195,17 @@ export default class SearchResult extends React.Component {
         <div className="search-result row" id="search-result">
           <div className="col-md-4 hidden-xs hidden-sm page-list search-result-list" id="search-result-list">
             <nav data-spy="affix" data-offset-top="120">
-              {deletionModeButtons}
+              <div className="pull-right">{deletionModeButtons}</div>
+              <div className="search-result-meta">
+                <i className="fa fa-lightbulb-o" /> Found {this.props.searchResultMeta.total} pages with "{this.props.searchingKeyword}"
+              </div>
+              <div className="clearfix"></div>
               <ul className="page-list-ul page-list-ul-flat nav">
                 {listView}
               </ul>
             </nav>
           </div>
           <div className="col-md-8 search-result-content" id="search-result-content">
-            <div className="search-result-meta"><i className="fa fa-lightbulb-o" /> Found {this.props.searchResultMeta.total} pages with "{this.props.searchingKeyword}"</div>
             <SearchResultList
               pages={this.props.pages}
               searchingKeyword={this.props.searchingKeyword}
