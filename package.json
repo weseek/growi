@@ -76,7 +76,7 @@
     "express-session": "~1.15.0",
     "express-webpack-assets": "^0.1.0",
     "file-loader": "^0.11.1",
-    "googleapis": "^21.3.0",
+    "googleapis": "^22.0.0",
     "graceful-fs": "^4.1.11",
     "highlight.js": "^9.10.0",
     "i18next": "^9.0.0",
