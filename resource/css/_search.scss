@@ -80,26 +80,31 @@
         overflow-y: scroll;
       }
       .nav {
-
         > li {
-          padding: 0px 11px 0 8px;
+          padding: 0px 10px 0 0;
           &.active {
-            padding: 0px 8px;
+            padding-right: 7px;
             border-right: solid 3px #666;
             background: #f0f0f0;
           }
         }
       }
     }
-  }
-
-  .search-result-content {
-    padding-bottom: 32px;
 
     .search-result-meta {
       margin-bottom: 16px;
       font-weight: bold;
     }
+
+    .search-result-list-delete-checkbox {
+      margin: 0 10px 0 0;
+      vertical-align: middle;
+    }
+  }
+
+  .search-result-content {
+    padding-bottom: 32px;
+
     .search-result-page {
       > h2 {
         font-size: 20px;

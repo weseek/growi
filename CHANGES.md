@@ -1,6 +1,11 @@
 CHANGES
 ========
 
+## 2.0.10
+
+* Feat: Selective batch deletion in search result page
+* Support: Upgrade outdated libs
+
 ## 2.0.9
 
 * Fix: Server is down when a guest user accesses to someone's private pages

@@ -68,7 +68,7 @@
     "diff2html": "^2.3.0",
     "elasticsearch": "^13.2.0",
     "emojify.js": "^1.1.0",
-    "env-cmd": "^5.0.0",
+    "env-cmd": "^6.0.0",
     "escape-string-regexp": "^1.0.5",
     "express": "~4.15.2",
     "express-form": "~0.12.0",
@@ -76,7 +76,7 @@
     "express-session": "~1.15.0",
     "express-webpack-assets": "^0.1.0",
     "file-loader": "^0.11.1",
-    "googleapis": "^21.3.0",
+    "googleapis": "^22.0.0",
     "graceful-fs": "^4.1.11",
     "highlight.js": "^9.10.0",
     "i18next": "^9.0.0",
@@ -135,7 +135,7 @@
   },
   "engines": {
     "node": "6.x",
-    "npm": "4.x"
+    "npm": "5.x"
   },
   "config": {
     "blanket": {
