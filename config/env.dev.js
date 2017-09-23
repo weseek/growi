@@ -11,6 +11,9 @@ module.exports = {
   // filters for debug
   DEBUG: [
     // 'express:*',
+    'crowi:routes:login',
+    'crowi:routes:login-passport',
+    'crowi:service:PassportService',
     // 'crowi:*',
     // 'crowi:routes:page',
     // 'crowi:plugins:*',
