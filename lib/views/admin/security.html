@@ -142,7 +142,8 @@
           </div>
       </form>
 
-      <form action="/_api/admin/security/google" method="post" class="form-horizontal" id="googleSetting" role="form">
+      <form action="/_api/admin/security/google" method="post" class="form-horizontal officialCrowiMechanism" id="googleSetting" role="form"
+          {% if true === settingForm['security:isEnabledPassport'] %}style="display: none;"{% endif %}>
         <fieldset>
           <h3>Google 設定</h3>
           <p class="well">
@@ -181,6 +182,17 @@
               <button type="submit" class="btn btn-primary">更新</button>
             </div>
           </div>
+
+        </fieldset>
+      </form>
+
+      <form action="/_api/admin/security/ldap" method="post" class="form-horizontal passportStrategy" id="ldapSetting" role="form"
+          {% if !settingForm['security:isEnabledPassport'] %}style="display: none;"{% endif %}>
+        <fieldset>
+          <h3>[Passport] LDAP Strategy</h3>
+          <p class="well">
+            (TBD)
+          </p>
 
         </fieldset>
       </form>
@@ -237,6 +249,21 @@
       });
     });
 
+    // event handling for isEnabledPassport radio buttons
+    $('input[name="settingForm[security:isEnabledPassport]"]:radio').change(function() {
+      const isEnabledPassport = ($(this).val() === "true");
+
+      console.log("isEnabledPassport", isEnabledPassport);
+
+      if (isEnabledPassport) {
+        $('form.officialCrowiMechanism').hide(400);
+        $('form.passportStrategy').show(400);
+      }
+      else {
+        $('form.officialCrowiMechanism').show(400);
+        $('form.passportStrategy').hide(400);
+      }
+    });
   </script>
 </div>
 {% endblock content_main %}
