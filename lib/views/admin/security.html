@@ -249,11 +249,9 @@
       });
     });
 
-    // event handling for isEnabledPassport radio buttons
+    // switch display according to on / off of radio buttons
     $('input[name="settingForm[security:isEnabledPassport]"]:radio').change(function() {
       const isEnabledPassport = ($(this).val() === "true");
-
-      console.log("isEnabledPassport", isEnabledPassport);
 
       if (isEnabledPassport) {
         $('form.officialCrowiMechanism').hide(400);
