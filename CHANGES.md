@@ -4,11 +4,9 @@ CHANGES
 ## 2.1.0
 
 * Feat: Adopt Passport the authentication middleware
-* Improvement: Ensure to be able to login with both of username or email
-
-## 2.0.10
-
 * Feat: Selective batch deletion in search result page
+* Improvement: Ensure to be able to login with both of username or email
+* Fix: The problem that couldn't update user data in /me
 * Support: Upgrade outdated libs
 
 ## 2.0.9
