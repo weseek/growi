@@ -21,10 +21,17 @@
     <h2>{{ t('Sign in') }}</h2>
 
     <div id="login-form-errors">
-      {% set message = req.flash('warningMessage') %}
-      {% if message.length %}
+      {% set success = req.flash('successMessage') %}
+      {% if success.length %}
+      <div class="alert alert-success">
+        {{ success }}
+      </div>
+      {% endif %}
+
+      {% set warn = req.flash('warningMessage') %}
+      {% if warn.length %}
       <div class="alert alert-danger">
-        {{ message }}
+        {{ warn }}
       </div>
       {% endif %}
 
