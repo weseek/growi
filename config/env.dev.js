@@ -1,6 +1,6 @@
 module.exports = {
   NODE_ENV: 'development',
-  // FILE_UPLOAD: 'local',
+  FILE_UPLOAD: 'local',
   // MATHJAX: 1,
   // REDIS_URL: 'redis://localhost:6379/crowi',
   // ELASTICSEARCH_URI: 'http://localhost:9200/crowi',
@@ -11,6 +11,11 @@ module.exports = {
   // filters for debug
   DEBUG: [
     // 'express:*',
+    // 'crowi:crowi',
+    'crowi:crowi:express-init',
+    // 'crowi:routes:login',
+    'crowi:routes:login-passport',
+    // 'crowi:service:PassportService',
     // 'crowi:*',
     // 'crowi:routes:page',
     // 'crowi:plugins:*',

@@ -1,6 +1,6 @@
 {
   "name": "crowi-plus",
-  "version": "2.0.10-RC",
+  "version": "2.1.0-RC",
   "description": "Enhanced Crowi",
   "tags": [
     "wiki",
@@ -98,6 +98,8 @@
     "nodemailer-ses-transport": "~1.5.0",
     "normalize-path": "^2.1.1",
     "optimize-js-plugin": "0.0.4",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
     "pino-clf": "^1.0.2",
     "plantuml-encoder": "^1.2.4",
     "react": "^15.5.0",

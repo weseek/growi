@@ -42,4 +42,10 @@
     font-family: $font-family-monospace;
   }
 
+  .passport-logo {
+    background: url("/images/admin/security/passport_logo.svg") center left no-repeat;
+    padding: 4px;
+    height: 32px;
+    background-color: black;
+  }
 } // }}}
