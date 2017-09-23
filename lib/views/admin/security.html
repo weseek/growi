@@ -100,6 +100,46 @@
         </fieldset>
       </form>
 
+      <form action="/_api/admin/security/mechanism" method="post" class="form-horizontal" id="mechanismSetting" role="form">
+        <fieldset>
+        <legend>認証機構設定</legend>
+          <div class="form-group">
+            <div class="col-xs-6">
+              <h4>
+                <input type="radio" name="settingForm[security:isEnabledPassport]" value="false"
+                    {% if !settingForm['security:isEnabledPassport'] %}checked="checked"{% endif %}>
+                Official Crowi authentication mechanism
+              </h4>
+              <ul>
+                <li>Username, E-mail and Password authentication</li>
+                <li>Google OAuth2 authentication</li>
+              </ul>
+            </div>
+            <div class="col-xs-6">
+              <h4>
+                <input type="radio" name="settingForm[security:isEnabledPassport]" value="true"
+                    {% if true === settingForm['security:isEnabledPassport'] %}checked="checked"{% endif %}>
+                <a href="http://passportjs.org/">Passport</a> authentication mechanism <small class="text-success">(Recommended)</small>
+              </h4>
+              <ul>
+                <li>Username, E-mail and Password authentication</li>
+                <li class="text-muted">(TBD) <del>LDAP authentication</del></li>
+                <li class="text-muted">(TBD) <del>Google OAuth2 authentication</del></li>
+                <li class="text-muted">(TBD) <del>Facebook OAuth2 authentication</del></li>
+                <li class="text-muted">(TBD) <del>Twitter OAuth authentication</del></li>
+                <li class="text-muted">(TBD) <del>Github OAuth2 authentication</del></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="col-xs-offset-5 col-xs-6">
+              <input type="hidden" name="_csrf" value="{{ csrf() }}">
+              <button type="submit" class="btn btn-primary">更新</button>
+            </div>
+          </div>
+      </form>
+
       <form action="/_api/admin/security/google" method="post" class="form-horizontal" id="googleSetting" role="form">
         <fieldset>
           <h3>Google 設定</h3>
@@ -147,7 +187,7 @@
   </div>
 
   <script>
-    $('#generalSetting, #googleSetting').each(function() {
+    $('#generalSetting, #googleSetting, #mechanismSetting').each(function() {
       $(this).submit(function()
       {
         function showMessage(formId, msg, status) {
