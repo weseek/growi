@@ -14,7 +14,7 @@
 <div class="content-main">
   <div class="row">
     <div class="col-md-3">
-      {% include './widget/menu.html' with {current: 'notification'} %}
+      {% include './widget/menu.html' with {current: 'security'} %}
     </div>
     <div class="col-md-9">
 
@@ -38,7 +38,7 @@
 
       <form action="/_api/admin/security/general" method="post" class="form-horizontal" id="generalSetting" role="form">
         <fieldset>
-        <legend>セキュリティ設定</legend>
+        <legend>基本設定</legend>
 
           <div class="form-group">
             <label for="settingForm[security:registrationMode]" class="col-xs-3 control-label">Basic認証</label>
@@ -102,7 +102,7 @@
 
       <form action="/_api/admin/security/google" method="post" class="form-horizontal" id="googleSetting" role="form">
         <fieldset>
-          <legend>Google 設定</legend>
+          <h3>Google 設定</h3>
           <p class="well">
             Google Cloud Platform の <a href="https://console.cloud.google.com/apis/credentials">API Manager</a>
             から OAuth2 Client ID を作成すると、Google アカウントにコネクトして登録やログインが可能になります。
