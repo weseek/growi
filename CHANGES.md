@@ -4,6 +4,7 @@ CHANGES
 ## 1.6.3
 
 - Fix: Invalid MathJax setting
+- Fix: Check e-mail duplication (#257)
 - Updates: load ENV from `.env`
 - Improve: Use client date (Thanks @suzuki)
 - And some fixes. Thank you @okonomi.
