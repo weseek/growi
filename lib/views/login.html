@@ -47,12 +47,19 @@
     </div>
     <form role="form" action="/login" method="post">
       <div class="input-group">
-        <span class="input-group-addon"><i class="fa fa-user"></i></span>
+        <span class="input-group-addon"><i class="fa fa-fw fa-user"></i></span>
         <input type="text" class="form-control" placeholder="Username or E-mail" name="loginForm[username]">
+        {% if isEnabledLdap() %}
+        <span class="input-group-addon">
+          <small class="text-primary">
+            <i class="fa fa-fw fa-check-circle"></i> LDAP
+          </small>
+        </span>
+        {% endif %}
       </div>
 
       <div class="input-group">
-        <span class="input-group-addon"><i class="fa fa-key"></i></span>
+        <span class="input-group-addon"><i class="fa fa-fw fa-key"></i></span>
         <input type="password" class="form-control" placeholder="Password" name="loginForm[password]">
       </div>
 
