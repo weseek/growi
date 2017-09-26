@@ -5,28 +5,64 @@
     <div class="form-group">
       <label for="passportSetting[passport-ldap:serverUrl]" class="col-xs-3 control-label">Server URL</label>
       <div class="col-xs-6">
-        <input class="form-control" type="text" name="passportSetting[passport-ldap:serverUrl]" value="{{ passportSetting['passport-ldap:serverUrl'] }}">
+        <input class="form-control" type="text"
+            name="passportSetting[passport-ldap:serverUrl]" value="{{ passportSetting['passport-ldap:serverUrl'] }}">
+        <p class="help-block">
+          <small>
+            The LDAP URL of the directory service in the format <code>ldap://host:port/DN</code> or <code>ldaps://host:port/DN</code>.<br>
+            Example: <code>ldaps://ldap.company.com/ou=people,dc=company,dc=com</code>
+          </small>
+        </p>
       </div>
     </div>
 
     <div class="form-group">
       <label for="passportSetting[passport-ldap:bindDN]" class="col-xs-3 control-label">Bind DN</label>
       <div class="col-xs-6">
-        <input class="form-control" type="text" name="passportSetting[passport-ldap:bindDN]" value="{{ passportSetting['passport-ldap:bindDN'] }}">
+        <input class="form-control" type="text"
+            name="passportSetting[passport-ldap:bindDN]" value="{{ passportSetting['passport-ldap:bindDN'] }}">
+        <p class="help-block">
+          <small>
+            The DN of the account that authenticates and queries the directory service
+          </small>
+        </p>
+        <p class="help-block">
+          <small>
+            The query used to bind with the directory service.<br>
+            Use <code>{% raw %}{{username}}{% endraw %}</code> to reference the username entered in the login page.<br>
+            Example: <code>uid={% raw %}{{username}}{% endraw %},dc=domain,dc=com</code><br>
+          </small>
+        </p>
       </div>
     </div>
 
     <div class="form-group">
       <label for="passportSetting[passport-ldap:bindDNPassword]" class="col-xs-3 control-label">Bind DN Password</label>
       <div class="col-xs-6">
-        <input class="form-control" type="text" name="passportSetting[passport-ldap:bindDNPassword]" value="{{ passportSetting['passport-ldap:bindDNPassword'] }}">
+        <input class="form-control" type="text"
+            name="passportSetting[passport-ldap:bindDNPassword]" value="{{ passportSetting['passport-ldap:bindDNPassword'] }}">
+        <p class="help-block">
+          <small>
+            The password that is entered in the login page will used.
+          </small>
+        </p>
       </div>
     </div>
 
     <div class="form-group">
       <label for="passportSetting[passport-ldap:searchFilter]" class="col-xs-3 control-label">Search Filter</label>
       <div class="col-xs-6">
-        <input class="form-control" type="text" name="passportSetting[passport-ldap:searchFilter]" value="{{ passportSetting['passport-ldap:searchFilter'] }}">
+        <input class="form-control" type="text" placeholder="(uid={% raw %}{{username}}{% endraw %})"
+            name="passportSetting[passport-ldap:searchFilter]" value="{{ passportSetting['passport-ldap:searchFilter'] }}">
+        <p class="help-block">
+          <small>
+            The query used to locate the authenticated user.<br>
+            Use <code>{% raw %}{{username}}{% endraw %}</code> to reference the username entered in the login page.<br>
+            If empty, the filter <code>(uid={% raw %}{{username}}{% endraw %})</code> is used.<br>
+            <br>
+            Example to match with 'uid' or 'mail': <code>(|(uid={% raw %}{{username}}{% endraw %})(mail={% raw %}{{username}}{% endraw %}))</code>
+          </small>
+        </p>
       </div>
     </div>
 
