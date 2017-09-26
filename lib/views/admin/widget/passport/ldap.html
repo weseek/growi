@@ -16,34 +16,56 @@
       </div>
     </div>
 
+    {% set isUserBind = passportSetting['passport-ldap:isUserBind'] %}
+    <div class="form-group">
+      <label for="passportSetting[passport-ldap:isUserBind]" class="col-xs-3 control-label">Binding Mode</label>
+      <div class="col-xs-6">
+        <div class="btn-group btn-toggle" data-toggle="buttons">
+          <label class="btn btn-default {% if !isUserBind %}active{% endif %}" data-active-class="primary">
+            <input name="passportSetting[passport-ldap:isUserBind]" value="false" type="radio"
+                {% if !isUserBind %}checked{% endif %}> Manager Bind
+          </label>
+          <label class="btn btn-default {% if isUserBind %}active{% endif %}" data-active-class="primary">
+            <input name="passportSetting[passport-ldap:isUserBind]" value="true" type="radio"
+                {% if isUserBind %}checked{% endif %}> User Bind
+          </label>
+        </div>
+      </div>
+    </div>
+
     <div class="form-group">
       <label for="passportSetting[passport-ldap:bindDN]" class="col-xs-3 control-label">Bind DN</label>
       <div class="col-xs-6">
         <input class="form-control" type="text"
             name="passportSetting[passport-ldap:bindDN]" value="{{ passportSetting['passport-ldap:bindDN'] }}">
-        <p class="help-block">
+        <p class="help-block passport-ldap-managerbind" {% if isUserBind %}style="display: none;"{% endif %}>
           <small>
             The DN of the account that authenticates and queries the directory service
           </small>
         </p>
-        <p class="help-block">
+        <p class="help-block passport-ldap-userbind" {% if !isUserBind %}style="display: none;"{% endif %}>
           <small>
             The query used to bind with the directory service.<br>
             Use <code>{% raw %}{{username}}{% endraw %}</code> to reference the username entered in the login page.<br>
             Example: <code>uid={% raw %}{{username}}{% endraw %},dc=domain,dc=com</code><br>
           </small>
         </p>
-      </div>
+        </div>
     </div>
 
     <div class="form-group">
       <label for="passportSetting[passport-ldap:bindDNPassword]" class="col-xs-3 control-label">Bind DN Password</label>
       <div class="col-xs-6">
-        <input class="form-control" type="text"
+        <input class="form-control passport-ldap-managerbind" type="text" {% if isUserBind %}style="display: none;"{% endif %}
             name="passportSetting[passport-ldap:bindDNPassword]" value="{{ passportSetting['passport-ldap:bindDNPassword'] }}">
-        <p class="help-block">
+        <p class="help-block passport-ldap-managerbind">
           <small>
-            The password that is entered in the login page will used.
+            The password for the Bind DN account.
+          </small>
+        </p>
+        <p class="help-block passport-ldap-userbind" {% if !isUserBind %}style="display: none;"{% endif %}>
+          <small>
+            The password that is entered in the login page will be used to bind.
           </small>
         </p>
       </div>
@@ -68,9 +90,31 @@
 
     <div class="form-group">
       <div class="col-xs-offset-3 col-xs-6">
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-default">(TBD) Test to bind</button>
+        <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
       </div>
     </div>
   </fieldset>
   <input type="hidden" name="_csrf" value="{{ csrf() }}">
 </form>
+
+<script>
+  function switchContents(isUserBind) {
+    if (isUserBind) {
+      $('input.passport-ldap-managerbind').hide();
+      $('.help-block.passport-ldap-managerbind').hide();
+      $('.help-block.passport-ldap-userbind').show();
+    }
+    else {
+      $('input.passport-ldap-managerbind').show();
+      $('.help-block.passport-ldap-managerbind').show();
+      $('.help-block.passport-ldap-userbind').hide();
+    }
+  }
+
+  // switch display according to on / off of radio buttons
+  $('input[name="passportSetting[passport-ldap:isUserBind]"]:radio').change(function() {
+    const isUserBind = ($(this).val() === "true");
+    switchContents(isUserBind);
+  });
+</script>
