@@ -2,95 +2,120 @@
   <fieldset>
     <legend>LDAP Configuration</legend>
 
+    {% set nameForIsLdapEnabled = "passportSetting[security:passport-ldap:isEnabled]" %}
+    {% set isLdapEnabled = passportSetting['security:passport-ldap:isEnabled'] %}
     <div class="form-group">
-      <label for="passportSetting[passport-ldap:serverUrl]" class="col-xs-3 control-label">Server URL</label>
-      <div class="col-xs-6">
-        <input class="form-control" type="text"
-            name="passportSetting[passport-ldap:serverUrl]" value="{{ passportSetting['passport-ldap:serverUrl'] }}">
-        <p class="help-block">
-          <small>
-            The LDAP URL of the directory service in the format <code>ldap://host:port/DN</code> or <code>ldaps://host:port/DN</code>.<br>
-            Example: <code>ldaps://ldap.company.com/ou=people,dc=company,dc=com</code>
-          </small>
-        </p>
-      </div>
-    </div>
-
-    {% set isUserBind = passportSetting['passport-ldap:isUserBind'] %}
-    <div class="form-group">
-      <label for="passportSetting[passport-ldap:isUserBind]" class="col-xs-3 control-label">Binding Mode</label>
+      <label for="{{nameForIsLdapEnabled}}" class="col-xs-3 control-label">Use LDAP</label>
       <div class="col-xs-6">
         <div class="btn-group btn-toggle" data-toggle="buttons">
-          <label class="btn btn-default {% if !isUserBind %}active{% endif %}" data-active-class="primary">
-            <input name="passportSetting[passport-ldap:isUserBind]" value="false" type="radio"
-                {% if !isUserBind %}checked{% endif %}> Manager Bind
+          <label class="btn btn-default {% if isLdapEnabled %}active{% endif %}" data-active-class="primary">
+            <input name="{{nameForIsLdapEnabled}}" value="true" type="radio"
+                {% if true === isLdapEnabled %}checked{% endif %}> Enable
           </label>
-          <label class="btn btn-default {% if isUserBind %}active{% endif %}" data-active-class="primary">
-            <input name="passportSetting[passport-ldap:isUserBind]" value="true" type="radio"
-                {% if isUserBind %}checked{% endif %}> User Bind
+          <label class="btn btn-default {% if !isLdapEnabled %}active{% endif %}" data-active-class="primary">
+            <input name="{{nameForIsLdapEnabled}}" value="false" type="radio"
+                {% if !isLdapEnabled %}checked{% endif %}> Disable
           </label>
         </div>
       </div>
     </div>
 
-    <div class="form-group">
-      <label for="passportSetting[passport-ldap:bindDN]" class="col-xs-3 control-label">Bind DN</label>
-      <div class="col-xs-6">
-        <input class="form-control" type="text"
-            name="passportSetting[passport-ldap:bindDN]" value="{{ passportSetting['passport-ldap:bindDN'] }}">
-        <p class="help-block passport-ldap-managerbind" {% if isUserBind %}style="display: none;"{% endif %}>
-          <small>
-            The DN of the account that authenticates and queries the directory service
-          </small>
-        </p>
-        <p class="help-block passport-ldap-userbind" {% if !isUserBind %}style="display: none;"{% endif %}>
-          <small>
-            The query used to bind with the directory service.<br>
-            Use <code>{% raw %}{{username}}{% endraw %}</code> to reference the username entered in the login page.<br>
-            Example: <code>uid={% raw %}{{username}}{% endraw %},dc=domain,dc=com</code><br>
-          </small>
-        </p>
+    <div class="passport-ldap-hide-when-disabled" {%if !isLdapEnabled %}style="display: none;"{% endif %}>
+
+      <div class="form-group">
+        <label for="passportSetting[security:passport-ldap:serverUrl]" class="col-xs-3 control-label">Server URL</label>
+        <div class="col-xs-6">
+          <input class="form-control" type="text"
+              name="passportSetting[security:passport-ldap:serverUrl]" value="{{ passportSetting['security:passport-ldap:serverUrl'] }}">
+          <p class="help-block">
+            <small>
+              The LDAP URL of the directory service in the format <code>ldap://host:port/DN</code> or <code>ldaps://host:port/DN</code>.<br>
+              Example: <code>ldaps://ldap.company.com/ou=people,dc=company,dc=com</code>
+            </small>
+          </p>
         </div>
-    </div>
-
-    <div class="form-group">
-      <label for="passportSetting[passport-ldap:bindDNPassword]" class="col-xs-3 control-label">Bind DN Password</label>
-      <div class="col-xs-6">
-        <input class="form-control passport-ldap-managerbind" type="text" {% if isUserBind %}style="display: none;"{% endif %}
-            name="passportSetting[passport-ldap:bindDNPassword]" value="{{ passportSetting['passport-ldap:bindDNPassword'] }}">
-        <p class="help-block passport-ldap-managerbind">
-          <small>
-            The password for the Bind DN account.
-          </small>
-        </p>
-        <p class="help-block passport-ldap-userbind" {% if !isUserBind %}style="display: none;"{% endif %}>
-          <small>
-            The password that is entered in the login page will be used to bind.
-          </small>
-        </p>
       </div>
-    </div>
 
-    <div class="form-group">
-      <label for="passportSetting[passport-ldap:searchFilter]" class="col-xs-3 control-label">Search Filter</label>
-      <div class="col-xs-6">
-        <input class="form-control" type="text" placeholder="(uid={% raw %}{{username}}{% endraw %})"
-            name="passportSetting[passport-ldap:searchFilter]" value="{{ passportSetting['passport-ldap:searchFilter'] }}">
-        <p class="help-block">
-          <small>
-            The query used to locate the authenticated user.<br>
-            Use <code>{% raw %}{{username}}{% endraw %}</code> to reference the username entered in the login page.<br>
-            If empty, the filter <code>(uid={% raw %}{{username}}{% endraw %})</code> is used.<br>
-            <br>
-            Example to match with 'uid' or 'mail': <code>(|(uid={% raw %}{{username}}{% endraw %})(mail={% raw %}{{username}}{% endraw %}))</code>
-          </small>
-        </p>
+      {% set nameForIsUserBind = "passportSetting[security:passport-ldap:isUserBind]" %}
+      {% set isUserBind = passportSetting['security:passport-ldap:isUserBind'] %}
+      <div class="form-group">
+        <label for="{{nameForIsUserBind}}" class="col-xs-3 control-label">Binding Mode</label>
+        <div class="col-xs-6">
+          <div class="btn-group btn-toggle" data-toggle="buttons">
+            <label class="btn btn-default {% if !isUserBind %}active{% endif %}" data-active-class="primary">
+              <input name="{{nameForIsUserBind}}" value="false" type="radio"
+                  {% if !isUserBind %}checked{% endif %}> Manager Bind
+            </label>
+            <label class="btn btn-default {% if isUserBind %}active{% endif %}" data-active-class="primary">
+              <input name="{{nameForIsUserBind}}" value="true" type="radio"
+                  {% if isUserBind %}checked{% endif %}> User Bind
+            </label>
+          </div>
+        </div>
       </div>
-    </div>
+
+      <div class="form-group">
+        <label for="passportSetting[security:passport-ldap:bindDN]" class="col-xs-3 control-label">Bind DN</label>
+        <div class="col-xs-6">
+          <input class="form-control" type="text"
+              name="passportSetting[security:passport-ldap:bindDN]" value="{{ passportSetting['security:passport-ldap:bindDN'] }}">
+          <p class="help-block passport-ldap-managerbind" {% if isUserBind %}style="display: none;"{% endif %}>
+            <small>
+              The DN of the account that authenticates and queries the directory service
+            </small>
+          </p>
+          <p class="help-block passport-ldap-userbind" {% if !isUserBind %}style="display: none;"{% endif %}>
+            <small>
+              The query used to bind with the directory service.<br>
+              Use <code>{% raw %}{{username}}{% endraw %}</code> to reference the username entered in the login page.<br>
+              Example: <code>uid={% raw %}{{username}}{% endraw %},dc=domain,dc=com</code><br>
+            </small>
+          </p>
+          </div>
+      </div>
+
+      <div class="form-group">
+        <label for="passportSetting[security:passport-ldap:bindDNPassword]" class="col-xs-3 control-label">Bind DN Password</label>
+        <div class="col-xs-6">
+          <input class="form-control passport-ldap-managerbind" type="text" {% if isUserBind %}style="display: none;"{% endif %}
+              name="passportSetting[security:passport-ldap:bindDNPassword]" value="{{ passportSetting['security:passport-ldap:bindDNPassword'] }}">
+          <p class="help-block passport-ldap-managerbind">
+            <small>
+              The password for the Bind DN account.
+            </small>
+          </p>
+          <p class="help-block passport-ldap-userbind" {% if !isUserBind %}style="display: none;"{% endif %}>
+            <small>
+              The password that is entered in the login page will be used to bind.
+            </small>
+          </p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="passportSetting[security:passport-ldap:searchFilter]" class="col-xs-3 control-label">Search Filter</label>
+        <div class="col-xs-6">
+          <input class="form-control" type="text" placeholder="(uid={% raw %}{{username}}{% endraw %})"
+              name="passportSetting[security:passport-ldap:searchFilter]" value="{{ passportSetting['security:passport-ldap:searchFilter'] }}">
+          <p class="help-block">
+            <small>
+              The query used to locate the authenticated user.<br>
+              Use <code>{% raw %}{{username}}{% endraw %}</code> to reference the username entered in the login page.<br>
+              If empty, the filter <code>(uid={% raw %}{{username}}{% endraw %})</code> is used.<br>
+              <br>
+              Example to match with 'uid' or 'mail': <code>(|(uid={% raw %}{{username}}{% endraw %})(mail={% raw %}{{username}}{% endraw %}))</code>
+            </small>
+          </p>
+        </div>
+      </div>
+
+    </div><!-- /.passport-ldap-configurations -->
 
     <div class="form-group">
       <div class="col-xs-offset-3 col-xs-6">
-        <button type="submit" class="btn btn-default">(TBD) Test to bind</button>
+        <button type="submit" class="btn btn-default passport-ldap-hide-when-disabled" {%if !isLdapEnabled %}style="display: none;"{% endif %}>
+          (TBD) Test to bind
+        </button>
         <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
       </div>
     </div>
@@ -99,7 +124,22 @@
 </form>
 
 <script>
-  function switchContents(isUserBind) {
+  // switch display according to on / off of radio buttons
+  $('input[name="{{nameForIsLdapEnabled}}"]:radio').change(function() {
+    const isEnabled = ($(this).val() === "true");
+
+    if (isEnabled) {
+      $('.passport-ldap-hide-when-disabled').show(400);
+    }
+    else {
+      $('.passport-ldap-hide-when-disabled').hide(400);
+    }
+  });
+
+  // switch display according to on / off of radio buttons
+  $('input[name="{{nameForIsUserBind}}"]:radio').change(function() {
+    const isUserBind = ($(this).val() === "true");
+
     if (isUserBind) {
       $('input.passport-ldap-managerbind').hide();
       $('.help-block.passport-ldap-managerbind').hide();
@@ -110,11 +150,5 @@
       $('.help-block.passport-ldap-managerbind').show();
       $('.help-block.passport-ldap-userbind').hide();
     }
-  }
-
-  // switch display according to on / off of radio buttons
-  $('input[name="passportSetting[passport-ldap:isUserBind]"]:radio').change(function() {
-    const isUserBind = ($(this).val() === "true");
-    switchContents(isUserBind);
   });
 </script>
