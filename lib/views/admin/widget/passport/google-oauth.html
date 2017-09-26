@@ -1,0 +1,82 @@
+<form action="" method="post" class="form-horizontal passportStrategy" id="googleOauthSetting" role="form">
+  <fieldset>
+    <legend>Google OAuth Configuration</legend>
+    <p class="well">(TBD)</p>
+  </fieldset>
+</form>
+
+{% if false %}
+<hr>
+<h4>
+  <i class="fa fa-question-circle" aria-hidden="true"></i>
+  <a href="#collapseHelpForApp" data-toggle="collapse">How to configure Slack App?</a>
+</h4>
+
+<ol id="collapseHelpForApp" class="collapse">
+  <li>
+    Register Slack App
+    <ol>
+      <li>
+        Create App from <a href="https://api.slack.com/applications/new">this link</a>, and fill the form out as below:
+        <dl class="dl-horizontal">
+          <dt>App Name</dt> <dd><code>crowi-plus</code> </dd>
+          <dt>Development Slack Team</dt> <dd>Select the team you want to notify to.</dd>
+        </dl>
+      </li>
+      <li><strong>Save</strong> it.</li>
+    </ol>
+  </li>
+  <li>
+    Get App Credentials
+    <ol>
+      <li>Go To "Basic Information" page and make a note "Client ID" and "Client Secret".</li>
+    </ol>
+  </li>
+  <li>
+    Set Redirect URLs
+    <ol>
+      <li>Go to "OAuth &amp; Permissions" page.</li>
+      <li>Add <code><script>document.write(location.origin);</script>/admin/notification/slackAuth</code> .</li>
+      <li>Don't forget to <strong>save</strong>.</li>
+    </ol>
+  </li>
+  <li>
+    Set Permission Scopes to the App
+    <ol>
+      <li>Go to "OAuth &amp; Permissions" page.</li>
+      <li>Add "Send messages as crowi-plus"(<code>chat:write:bot</code>).</li>
+      <li>Don't forget to <strong>save</strong>.</li>
+    </ol>
+  </li>
+  <li>
+    Create a bot user
+    <ol>
+      <li>Go to "Bot Users" page and add.</li>
+    </ol>
+  </li>
+  <li>
+    Install the app
+    <ol>
+      <li>Go to "Install App to Your Team" page and install.</li>
+    </ol>
+  </li>
+  <li>
+    (At Team) Approve the app
+    <ol>
+      <li>Go to the management Apps page for the team you installed the app and approve crowi-plus.</li>
+    </ol>
+  </li>
+  <li>
+    (At Team) Invite the bot to your team
+    <ol>
+      <li>Invite the user you created in <code>4. Add a bot user</code> to the channel you notify to.</li>
+    </ol>
+  </li>
+  <li>
+    (At crowi-plus) Input "clientId" and "clientSecret" and submit on this page.
+  </li>
+  <li>
+    (At crowi-plus) Click "Connect to Slack" button to start OAuth process.
+  </li>
+</ol>
+{% endif %}
