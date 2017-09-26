@@ -68,7 +68,7 @@
     "diff2html": "^2.3.0",
     "elasticsearch": "^13.2.0",
     "emojify.js": "^1.1.0",
-    "env-cmd": "^6.0.0",
+    "env-cmd": "^7.0.0",
     "escape-string-regexp": "^1.0.5",
     "express": "~4.15.2",
     "express-form": "~0.12.0",
@@ -131,8 +131,8 @@
     "mocha": "^3.5.0",
     "morgan": "^1.8.2",
     "node-dev": "^3.1.3",
-    "sinon": "^3.0.0",
-    "sinon-chai": "^2.12.0"
+    "sinon": "^4.0.0",
+    "sinon-chai": "^2.13.0"
   },
   "engines": {
     "node": "6.x",
