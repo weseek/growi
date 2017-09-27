@@ -214,7 +214,7 @@
 
         <div class="tab-content passport-settings" {% if !settingForm['security:isEnabledPassport'] %}style="display: none;"{% endif %}>
           <div id="passport-ldap" class="tab-pane active" role="tabpanel" >
-            {% include './widget/passport/ldap.html' %}
+            {% include './widget/passport/ldap.html' with { settingForm: settingForm } %}
           </div>
 
           <div id="passport-google-oauth" class="tab-pane" role="tabpanel">
