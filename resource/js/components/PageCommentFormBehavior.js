@@ -59,6 +59,6 @@ export default class PageCommentFormBehavior extends React.Component {
 }
 
 PageCommentFormBehavior.propTypes = {
-  pageComments: React.PropTypes.instanceOf(PageComments),
+  pageComments: PropTypes.instanceOf(PageComments),
   crowi: PropTypes.object.isRequired,
 };
