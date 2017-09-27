@@ -12,9 +12,11 @@ export default class SearchResult extends React.Component {
     this.state = {
       deletionMode : false,
       selectedPages : new Set(),
+      isDeleteCompletely: undefined,
       isDeleteConfirmModalShown: false,
       errorMessageForDeleting: undefined,
     }
+    this.toggleDeleteCompletely = this.toggleDeleteCompletely.bind(this);
     this.deleteSelectedPages = this.deleteSelectedPages.bind(this);
     this.closeDeleteConfirmModal = this.closeDeleteConfirmModal.bind(this);
   }
@@ -61,32 +63,43 @@ export default class SearchResult extends React.Component {
   }
 
   /**
+   * toggle check delete completely
+   *
+   * @memberof SearchResult
+   */
+  toggleDeleteCompletely() {
+    // request で completely が undefined でないと指定アリと見なされるため
+    this.setState({isDeleteCompletely: this.state.isDeleteCompletely? undefined : true});
+  }
+
+  /**
    * delete selected pages
    *
    * @memberof SearchResult
    */
   deleteSelectedPages() {
-    let isDeleteComplete = true;
+    let isDeleted = true;
+    let deleteCompletely = this.state.isDeleteCompletely;
     Array.from(this.state.selectedPages).map((page) => {
       const pageId = page._id;
       const revisionId = page.revision._id;
       this.props.crowi.apiPost('/pages.remove',
-        {page_id: pageId, revision_id: revisionId})
+        {page_id: pageId, revision_id: revisionId, completely: deleteCompletely})
       .then(res => {
         if (res.ok) {
           this.state.selectedPages.delete(page);
         }
         else {
-          isDeleteComplete = false;
+          isDeleted = false;
         }
       }).catch(err => {
         console.log(err.message);
-        isDeleteComplete = false;
+        isDeleted = false;
         this.setState({errorMessageForDeleting: err.message});
       });
     });
 
-    if ( isDeleteComplete ) {
+    if ( isDeleted ) {
       window.location.reload();
     }
   }
@@ -218,6 +231,7 @@ export default class SearchResult extends React.Component {
           errorMessage={this.state.errorMessageForDeleting}
           cancel={this.closeDeleteConfirmModal}
           confirmedToDelete={this.deleteSelectedPages}
+          toggleDeleteCompletely={this.toggleDeleteCompletely}
         />
 
       </div>//content-main
