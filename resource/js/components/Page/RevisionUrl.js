@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import CopyButton from '../CopyButton';
 
 export default class RevisionUrl extends React.Component {
@@ -31,6 +33,6 @@ export default class RevisionUrl extends React.Component {
 }
 
 RevisionUrl.propTypes = {
-  pageId: React.PropTypes.string.isRequired,
-  pagePath: React.PropTypes.string.isRequired,
+  pageId: PropTypes.string.isRequired,
+  pagePath: PropTypes.string.isRequired,
 };
