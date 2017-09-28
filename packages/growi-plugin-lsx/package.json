@@ -13,7 +13,7 @@
   "scripts": {
     "build:watch": "npm run build -- --watch",
     "build": "babel src --out-dir lib --source-maps inline",
-    "clean": "npm cache clean && npm run rimraf -- lib",
+    "clean": "npm cache verify && npm run rimraf -- lib",
     "resources": "mkdirp lib/resource/css && ncp src/resource/css lib/resource/css",
     "prebuild:watch": "npm run clean && npm run resources",
     "prebuild": "npm run clean && npm run resources",
@@ -29,8 +29,8 @@
   "homepage": "https://github.com/weseek/crowi-plugin-lsx#readme",
   "dependencies": {
     "crowi-pluginkit": "^1.1.0",
-    "react": "^15.6.1",
-    "react-dom": "^15.6.1",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0",
     "url": "^0.11.0"
   },
   "devDependencies": {

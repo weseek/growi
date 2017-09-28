@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import * as url from 'url';
 
 import styles from '../../css/index.css';
@@ -205,8 +207,8 @@ export class Lsx extends React.Component {
 }
 
 Lsx.propTypes = {
-  crowi: React.PropTypes.object.isRequired,
+  crowi: PropTypes.object.isRequired,
 
-  lsxContext: React.PropTypes.instanceOf(LsxContext).isRequired,
-  lsxStateCache: React.PropTypes.object,
+  lsxContext: PropTypes.instanceOf(LsxContext).isRequired,
+  lsxStateCache: PropTypes.object,
 };
