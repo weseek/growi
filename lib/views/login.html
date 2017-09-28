@@ -21,6 +21,13 @@
     <h2>{{ t('Sign in') }}</h2>
 
     <div id="login-form-errors">
+      {% if isLdapSetupFailed() %}
+      <div class="alert alert-warning">
+        LDAP is enabled but the configuration has something wrong.<br>
+        <small>(set the environment variables <code>DEBUG=crowi:service:PassportService</code> and get the logs)</small>
+      </div>
+      {% endif %}
+
       {% set success = req.flash('successMessage') %}
       {% if success.length %}
       <div class="alert alert-success">
@@ -49,7 +56,7 @@
       <div class="input-group">
         <span class="input-group-addon"><i class="fa fa-fw fa-user"></i></span>
         <input type="text" class="form-control" placeholder="Username or E-mail" name="loginForm[username]">
-        {% if isEnabledLdap() %}
+        {% if isLdapSetup() %}
         <span class="input-group-addon">
           <small class="text-primary">
             <i class="fa fa-fw fa-check-circle"></i> LDAP
