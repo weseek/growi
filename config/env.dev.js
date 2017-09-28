@@ -16,7 +16,7 @@ module.exports = {
     'crowi:crowi:express-init',
     // 'crowi:routes:login',
     'crowi:routes:login-passport',
-    // 'crowi:service:PassportService',
+    'crowi:service:PassportService',
     // 'crowi:*',
     // 'crowi:routes:page',
     // 'crowi:plugins:*',
