@@ -53,6 +53,33 @@ export default class SearchResult extends React.Component {
   }
 
   /**
+   * check and return is all pages selected for delete?
+   *
+   * @returns all pages selected (or not)
+   * @memberof SearchResult
+   */
+  isAllSelected() {
+    return this.state.selectedPages.size == this.props.pages.length;
+  }
+
+  /**
+   * handle checkbox clicking that all pages select for delete
+   *
+   * @memberof SearchResult
+   */
+  handleAllSelect() {
+    if (this.isAllSelected()) {
+      this.state.selectedPages.clear();
+    }
+    else {
+      this.state.selectedPages.clear();
+      this.props.pages.map((page) => {
+        this.state.selectedPages.add(page);
+      });
+    }
+    this.setState({selectedPages: this.state.selectedPages});
+  }
+  /**
    * change deletion mode
    *
    * @memberof SearchResult
@@ -156,12 +183,22 @@ export default class SearchResult extends React.Component {
     }
 
     let deletionModeButtons = '';
+    let allSelectCheck = '';
 
     if (this.state.deletionMode) {
       deletionModeButtons =
       <div className="btn-group">
         <button type="button" className="btn btn-danger btn-xs" onClick={() => this.showDeleteConfirmModal()} disabled={this.state.selectedPages.size == 0}><i className="fa fa-trash-o"/> Delete</button>
         <button type="button" className="btn btn-default btn-xs" onClick={() => this.handleDeletionModeChange()}><i className="fa fa-undo"/> Cancel</button>
+      </div>
+      allSelectCheck =
+      <div className="">
+        <input
+         type="checkbox"
+         onClick={() => this.handleAllSelect()}
+         checked={this.isAllSelected()}
+         label="Check All"/>
+        Check All
       </div>
     }
     else {
@@ -212,6 +249,7 @@ export default class SearchResult extends React.Component {
               <div className="search-result-meta">
                 <i className="fa fa-lightbulb-o" /> Found {this.props.searchResultMeta.total} pages with "{this.props.searchingKeyword}"
               </div>
+              <div className="pull-left">{allSelectCheck}</div>
               <div className="clearfix"></div>
               <ul className="page-list-ul page-list-ul-flat nav">
                 {listView}
