@@ -44,6 +44,7 @@
     "webpack": "webpack"
   },
   "dependencies": {
+    "8fold-marked": "^0.3.7",
     "assets-webpack-plugin": "~3.5.1",
     "async": "^2.3.0",
     "aws-sdk": "^2.80.0",
@@ -85,7 +86,6 @@
     "i18next-sprintf-postprocessor": "^0.2.2",
     "inline-attachment": "~2.0.3",
     "jquery.cookie": "~1.4.1",
-    "marked": "~0.3.6",
     "md5": "^2.2.1",
     "method-override": "^2.3.10",
     "mkdirp": "~0.5.1",
