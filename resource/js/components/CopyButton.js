@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import ClipboardButton from 'react-clipboard.js';
 
 export default class CopyButton extends React.Component {
@@ -42,11 +43,11 @@ export default class CopyButton extends React.Component {
 }
 
 CopyButton.propTypes = {
-  text: React.PropTypes.string.isRequired,
-  buttonId: React.PropTypes.string.isRequired,
-  buttonClassName: React.PropTypes.string.isRequired,
-  buttonStyle: React.PropTypes.object,
-  iconClassName: React.PropTypes.string.isRequired,
+  text: PropTypes.string.isRequired,
+  buttonId: PropTypes.string.isRequired,
+  buttonClassName: PropTypes.string.isRequired,
+  buttonStyle: PropTypes.object,
+  iconClassName: PropTypes.string.isRequired,
 };
 CopyButton.defaultProps = {
   buttonId: 'btnCopy',

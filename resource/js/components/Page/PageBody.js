@@ -59,7 +59,7 @@ PageBody.propTypes = {
   page: PropTypes.object.isRequired,
   highlightKeywords: PropTypes.string,
   pageBody: PropTypes.string,
-  rendererOptions: React.PropTypes.object,
+  rendererOptions: PropTypes.object,
 };
 
 PageBody.defaultProps = {

@@ -81,70 +81,6 @@
       </fieldset>
       </form>
 
-      <form action="/_api/admin/settings/sec" method="post" class="form-horizontal" id="secSettingForm" role="form">
-      <fieldset>
-      <legend>セキュリティ設定</legend>
-
-        <div class="form-group">
-          <label for="settingForm[security:registrationMode]" class="col-xs-3 control-label">Basic認証</label>
-          <div class="col-xs-3">
-            <label for="">ID</label>
-            <input class="form-control" type="text" name="settingForm[security:basicName]"   value="{{ settingForm['security:basicName']|default('') }}">
-          </div>
-          <div class="col-xs-3">
-            <label for="">パスワード</label>
-            <input class="form-control" type="text" name="settingForm[security:basicSecret]" value="{{ settingForm['security:basicSecret']|default('') }}">
-          </div>
-          <div class="col-xs-offset-3 col-xs-9">
-            <p class="help-block">
-              Basic認証を設定すると、ページ全体に共通の認証がかかります。<br>
-              IDとパスワードは暗号化されずに送信されるのでご注意下さい。<br>
-            </p>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="settingForm[security:restrictGuestMode]" class="col-xs-3 control-label">ゲストユーザーのアクセス</label>
-          <div class="col-xs-6">
-            <select class="form-control" name="settingForm[security:restrictGuestMode]" value="{{ settingForm['security:restrictGuestMode'] }}">
-              {% for modeValue, modeLabel in consts.restrictGuestMode %}
-              <option value="{{ modeValue }}" {% if modeValue == settingForm['security:restrictGuestMode'] %}selected{% endif %} >{{ modeLabel }}</option>
-              {% endfor %}
-            </select>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="settingForm[security:registrationMode]" class="col-xs-3 control-label">登録の制限</label>
-          <div class="col-xs-6">
-            <select class="form-control" name="settingForm[security:registrationMode]" value="{{ settingForm['security:registrationMode'] }}">
-              {% for modeValue, modeLabel in consts.registrationMode %}
-              <option value="{{ modeValue }}" {% if modeValue == settingForm['security:registrationMode'] %}selected{% endif %} >{{ modeLabel }}</option>
-              {% endfor %}
-            </select>
-            <p class="help-block">ここに入力した内容は、ヘッダー等に表示されます。</p>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="settingForm[security:registrationWhiteList]" class="col-xs-3 control-label">登録許可メールアドレスの<br>ホワイトリスト</label>
-          <div class="col-xs-8">
-            <textarea class="form-control" type="textarea" name="settingForm[security:registrationWhiteList]" placeholder="例: @crowi.wiki">{{ settingForm['security:registrationWhiteList']|join('&#13')|raw }}</textarea>
-            <p class="help-block">登録可能なメールアドレスを制限することができます。例えば、会社で使う場合、<code>@crowi.wiki</code> などと記載すると、その会社のメールアドレスを持っている人のみ登録可能になります。<br>
-            1行に1メールアドレス入力してください。</p>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <div class="col-xs-offset-3 col-xs-6">
-            <input type="hidden" name="_csrf" value="{{ csrf() }}">
-            <button type="submit" class="btn btn-primary">更新</button>
-          </div>
-        </div>
-
-      </fieldset>
-      </form>
-
       <form action="/_api/admin/settings/mail" method="post" class="form-horizontal" id="mailSettingForm" role="form">
       <fieldset>
       <legend>メールの設定</legend>
@@ -239,49 +175,6 @@
       </fieldset>
       </form>
 
-      <form action="/_api/admin/settings/google" method="post" class="form-horizontal" id="googleSettingForm" role="form">
-      <fieldset>
-      <legend>Google 設定</legend>
-        <p class="well">
-          Google Cloud Platform の <a href="https://console.cloud.google.com/apis/credentials">API Manager</a>
-          から OAuth2 Client ID を作成すると、Google アカウントにコネクトして登録やログインが可能になります。
-        </p>
-
-        <ol class="help-block">
-          <li><a href="https://console.cloud.google.com/apis/credentials">API Manager</a> へアクセス</li>
-          <li>プロジェクトを作成していない場合は作成してください</li>
-          <li>「認証情報を作成」-> OAuthクライアントID</li>
-          <ol>
-            <li>「ウェブアプリケーション」を選択</li>
-            <li>承認済みのリダイレクトURLに、 <code>https://${crowi.host}/google/callback</code> を入力<br>
-            (<code>${crowi.host}</code>は環境に合わせて変更してください)</li>
-          </ol>
-        </ol>
-
-        <div class="form-group">
-          <label for="settingForm[google:clientId]" class="col-xs-3 control-label">Client ID</label>
-          <div class="col-xs-6">
-            <input class="form-control" type="text" name="settingForm[google:clientId]" value="{{ settingForm['google:clientId'] }}">
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="settingForm[google:clientSecret]" class="col-xs-3 control-label">Client Secret</label>
-          <div class="col-xs-6">
-            <input class="form-control" type="text" name="settingForm[google:clientSecret]" value="{{ settingForm['google:clientSecret'] }}">
-          </div>
-        </div>
-
-        <div class="form-group">
-          <div class="col-xs-offset-3 col-xs-6">
-            <input type="hidden" name="_csrf" value="{{ csrf() }}">
-            <button type="submit" class="btn btn-primary">更新</button>
-          </div>
-        </div>
-
-      </fieldset>
-      </form>
-
       <form action="/_api/admin/settings/plugin" method="post" class="form-horizontal" id="pluginSettingForm" role="form">
       <fieldset>
       <legend>プラグイン設定</legend>
@@ -317,7 +210,7 @@
   </div>
 
   <script>
-    $('#appSettingForm, #secSettingForm, #mailSettingForm, #awsSettingForm, #googleSettingForm, #pluginSettingForm').each(function() {
+    $('#appSettingForm, #mailSettingForm, #awsSettingForm, #pluginSettingForm').each(function() {
       $(this).submit(function()
       {
         function showMessage(formId, msg, status) {

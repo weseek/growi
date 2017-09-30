@@ -1,4 +1,4 @@
-import marked from 'marked';
+import marked from '8fold-marked';
 import hljs from 'highlight.js';
 
 import MarkdownFixer from './PreProcessor/MarkdownFixer';
