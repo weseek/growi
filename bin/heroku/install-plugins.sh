@@ -3,5 +3,5 @@
 export IFS=","
 
 for plugin in $INSTALL_PLUGINS; do
-  npm install --save $plugin
+  yarn add $plugin
 done
