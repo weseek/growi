@@ -8,8 +8,6 @@
   "repository": "https://github.com/weseek/crowi-plus",
   "success_url": "/",
   "env": {
-    "NODE_ENV": "production",
-    "YARN_PRODUCTION": false,
     "SECRET_TOKEN": {
       "description": "A secret key for verifying the integrity of signed cookies.",
       "generator": "secret"
