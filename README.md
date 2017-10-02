@@ -134,8 +134,8 @@ npm start
 ### Install plugins
 
 * Stop server if running
-* `yarn add` to install plugins
-  * **DON'T USE `npm install`**
+* `yarn add` to install plugin or `npm install --save`
+  * **Don't forget `--save` option if you use npm** or crowi-plus doesn't detect plugins
 * `npm start` to build client app and start server
 
 #### Example
