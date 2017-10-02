@@ -77,7 +77,7 @@ On-premise
 ### Dependencies
 
 - node 6.x (DON'T USE 7.x)
-- npm 5.x
+- npm 4.x (DON'T USE 5.x)
 - yarn
 - MongoDB 3.x
 
@@ -134,8 +134,8 @@ npm start
 ### Install plugins
 
 * Stop server if running
-* `npm install --save` to install plugin or `yarn add`
-  * **Don't forget `--save` option if you use npm** or crowi-plus doesn't detect plugins
+* `yarn add` to install plugins
+  * **DON'T USE `npm install`**
 * `npm start` to build client app and start server
 
 #### Example
