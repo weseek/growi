@@ -192,13 +192,15 @@ export default class SearchResult extends React.Component {
         <button type="button" className="btn btn-default btn-xs" onClick={() => this.handleDeletionModeChange()}><i className="fa fa-undo"/> Cancel</button>
       </div>
       allSelectCheck =
-      <div className="">
-        <input
-         type="checkbox"
-         onClick={() => this.handleAllSelect()}
-         checked={this.isAllSelected()}
-         label="Check All"/>
-        Check All
+      <div class="form-check">
+        <label class="form-check-label">
+          <input
+            type="checkbox"
+            onClick={() => this.handleAllSelect()}
+            checked={this.isAllSelected()}
+            className="form-check-input"/>
+            &nbsp;Check All
+        </label>
       </div>
     }
     else {
@@ -245,11 +247,13 @@ export default class SearchResult extends React.Component {
         <div className="search-result row" id="search-result">
           <div className="col-md-4 hidden-xs hidden-sm page-list search-result-list" id="search-result-list">
             <nav data-spy="affix" data-offset-top="120">
-              <div className="pull-right">{deletionModeButtons}</div>
+              <div className="pull-right">
+                {deletionModeButtons}
+                {allSelectCheck}
+              </div>
               <div className="search-result-meta">
                 <i className="fa fa-lightbulb-o" /> Found {this.props.searchResultMeta.total} pages with "{this.props.searchingKeyword}"
               </div>
-              <div className="pull-left">{allSelectCheck}</div>
               <div className="clearfix"></div>
               <ul className="page-list-ul page-list-ul-flat nav">
                 {listView}
