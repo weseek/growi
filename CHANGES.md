@@ -1,6 +1,11 @@
 CHANGES
 ========
 
+## 2.1.1
+
+* Fix: The problem that React Modal doesn't work
+* Support: Lock some packages(react, react-dom, mongoose)
+
 ## 2.1.0
 
 * Feat: Adopt Passport the authentication middleware
