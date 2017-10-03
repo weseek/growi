@@ -192,13 +192,12 @@ export default class SearchResult extends React.Component {
         <button type="button" className="btn btn-default btn-xs" onClick={() => this.handleDeletionModeChange()}><i className="fa fa-undo"/> Cancel</button>
       </div>
       allSelectCheck =
-      <div class="form-check">
-        <label class="form-check-label">
+      <div>
+        <label>
           <input
             type="checkbox"
             onClick={() => this.handleAllSelect()}
-            checked={this.isAllSelected()}
-            className="form-check-input"/>
+            checked={this.isAllSelected()} />
             &nbsp;Check All
         </label>
       </div>
