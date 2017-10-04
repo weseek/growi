@@ -7,6 +7,7 @@ CHANGES
 - Fix: Check e-mail duplication (#257)
 - Updates: load ENV from `.env`
 - Improve: Use client date (Thanks @suzuki)
+- Improve: Slack module update and add link to post text
 - And some fixes. Thank you @okonomi.
 
 ## 1.6.2
