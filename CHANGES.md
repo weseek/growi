@@ -1,6 +1,12 @@
 CHANGES
 ========
 
+## 2.1.2
+
+* Improvement: Ensure to prevent suspending own account
+* Fix: Ensure to be able to use `.` for username when invited
+* Fix: monospace font for `<code></code>`
+
 ## 2.1.1
 
 * Fix: The problem that React Modal doesn't work
