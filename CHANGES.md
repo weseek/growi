@@ -8,7 +8,7 @@ CHANGES
 - Updates: load ENV from `.env`
 - Improve: Use client date (Thanks @suzuki)
 - Improve: Slack module update and add link to post text
-- And some fixes. Thank you @okonomi.
+- And some fixes. Thank you @okonomi @tkitsunai.
 
 ## 1.6.2
 
