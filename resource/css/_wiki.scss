@@ -1,3 +1,6 @@
+// import crowi variable
+@import 'utilities';
+
 div.body {
   padding: 10px;
 }
@@ -180,6 +183,10 @@ div.body {
     }
   };
 */
+
+  p code {  // only inline code blocks
+    font-family: $font-family-monospace-not-strictly;
+  }
 
   .page-template-builder {
     position: relative;
