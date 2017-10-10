@@ -312,6 +312,45 @@ $(function() {
     return false;
   });
 
+  // duplicate
+  $('#duplicatePage').on('shown.bs.modal', function (e) {
+    $('#newPageName').focus();
+  });
+  $('#duplicatePageForm, #unportalize-form').submit(function (e) {
+    // create name-value map
+    let nameValueMap = {};
+    $(this).serializeArray().forEach((obj) => {
+      nameValueMap[obj.name] = obj.value;
+    })
+
+    $.ajax({
+      type: 'POST',
+      url: '/_api/pages.duplicate',
+      data: $(this).serialize(),
+      dataType: 'json'
+    }).done(function (res) {
+      if (!res.ok) {
+        // if already exists
+        $('#newPageNameCheck').html('<i class="fa fa-times-circle"></i> ' + res.error);
+        $('#newPageNameCheck').addClass('alert-danger');
+        $('#linkToNewPage').html(`
+          <i class="fa fa-fw fa-arrow-right"></i><a href="${nameValueMap.new_path}">${nameValueMap.new_path}</a>
+        `);
+      } else {
+        var page = res.page;
+
+        $('#newPageNameCheck').removeClass('alert-danger');
+        $('#newPageNameCheck').html('<img src="/images/loading_s.gif"> Page duplicated! Redirecting to new page location.');
+
+        setTimeout(function () {
+          top.location.href = page.path + '?duplicated=' + pagePath;
+        }, 1000);
+      }
+    });
+
+    return false;
+  });
+
   // delete
   $('#delete-page-form').submit(function(e) {
     $.ajax({

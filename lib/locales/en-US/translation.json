@@ -2,6 +2,7 @@
   "Help": "Help",
   "Edit": "Edit",
   "Delete": "Delete",
+  "Duplicate": "Duplicate",
   "Move": "Move",
   "Moved": "Moved",
   "Unlinked": "Unlinked",
@@ -169,6 +170,14 @@
       "Delete Page": "Delete Page",
       "recursively": "Process recursively",
       "completely": "Delete completely"
+    }
+  },
+
+  "modal_duplicate": {
+    "label": {
+      "Duplicate page": "Duplicate page",
+      "New page name": "New page name",
+      "Current page name": "Current page name"
     }
   },
 
