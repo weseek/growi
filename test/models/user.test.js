@@ -33,7 +33,7 @@ describe('User', function () {
 
         User.findUsersByPartOfEmail('ao', {})
         .then(function(userData) {
-          expect(userData).to.be.a('array');
+          expect(userData).to.instanceof(Array);
           expect(userData[0]).to.instanceof(User);
           expect(userData[0].email).to.equal('aoi@example.com');
           done();

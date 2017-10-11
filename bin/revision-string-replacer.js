@@ -20,6 +20,9 @@ cli.main(function(args, options)
     , dry = options.dry
     ;
 
+  console.log('This scriprt is not working now. Should be fixed.');
+  cli.exit(1);
+
   if (!to || !from) {
     cli.error('"to" and "from" options are required.\n');
     cli.output(cli.getUsage());
