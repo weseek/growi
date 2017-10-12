@@ -63,7 +63,7 @@ build-prod:
         npm run build:prod:analyze
 
   after-steps:
-    -script:
+    - script:
       name: copy report to artifacts
       code: |
         cp -r report $WERCKER_REPORT_ARTIFACTS_DIR
@@ -103,7 +103,7 @@ build-dev:
         npm run build:dev:analyze
 
   after-steps:
-    -script:
+    - script:
       name: copy report to artifacts
       code: |
         cp -r report $WERCKER_REPORT_ARTIFACTS_DIR
