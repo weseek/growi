@@ -303,8 +303,8 @@ aws-sdk@^2.2.36:
     xmlbuilder "4.2.1"
 
 aws-sdk@^2.88.0:
-  version "2.131.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.131.0.tgz#5b213fa493ce36a88130b50bef0e9a0cb6cd9f72"
+  version "2.132.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.132.0.tgz#6ece84bf355a6626fc8ba24023809c08ca1ee372"
   dependencies:
     buffer "4.9.1"
     crypto-browserify "1.0.9"
@@ -6045,8 +6045,8 @@ webpack-sources@^1.0.1:
     source-map "~0.5.3"
 
 webpack@^3.1.0:
-  version "3.6.0"
-  resolved "https://registry.yarnpkg.com/webpack/-/webpack-3.6.0.tgz#a89a929fbee205d35a4fa2cc487be9cbec8898bc"
+  version "3.7.1"
+  resolved "https://registry.yarnpkg.com/webpack/-/webpack-3.7.1.tgz#6046b5c415ff7df7a0dc54c5b6b86098e8b952da"
   dependencies:
     acorn "^5.0.0"
     acorn-dynamic-import "^2.0.0"
