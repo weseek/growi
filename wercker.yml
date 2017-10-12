@@ -58,11 +58,16 @@ build-prod:
       code: yarn list --depth=0
 
     - script:
-      name: npm run build:prod
+      name: npm run build:prod:analyze
       code: |
-        npm run build:prod
+        npm run build:prod:analyze
 
   after-steps:
+    -script:
+      name: copy report to artifacts
+      code: |
+        cp -r report $WERCKER_REPORT_ARTIFACTS_DIR
+
     - slack-notifier:
       url: $SLACK_WEBHOOK_URL
       channel: ci
@@ -93,11 +98,16 @@ build-dev:
       code: yarn list --depth=0
 
     - script:
-      name: npm run build:dev
+      name: npm run build:dev:analyze
       code: |
-        npm run build:dev
+        npm run build:dev:analyze
 
   after-steps:
+    -script:
+      name: copy report to artifacts
+      code: |
+        cp -r report $WERCKER_REPORT_ARTIFACTS_DIR
+
     - slack-notifier:
       url: $SLACK_WEBHOOK_URL
       channel: ci
