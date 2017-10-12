@@ -1,3 +1,6 @@
+// import crowi variable
+@import 'utilities';
+
 div.body {
   padding: 10px;
 }
@@ -142,7 +145,7 @@ div.body {
   }
 
   img.emoji {
-    width: 0.95em;
+    width: 1.1em;
     margin: 1px;
     border: none;
     box-shadow: none;
@@ -180,6 +183,10 @@ div.body {
     }
   };
 */
+
+  p code {  // only inline code blocks
+    font-family: $font-family-monospace-not-strictly;
+  }
 
   .page-template-builder {
     position: relative;

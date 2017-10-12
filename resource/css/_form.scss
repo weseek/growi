@@ -1,3 +1,6 @@
+// import crowi variable
+@import 'utilities';
+
 .crowi.main-container .main .content-main.on-edit { // {{{ Edit Form of Page
   padding: 0;
 
@@ -137,7 +140,7 @@
 } // }}}
 
 textarea {
-  font-family: menlo, monaco, consolas, monospace;
+  font-family: $font-family-monospace-not-strictly;
   line-height: 1.1em;
 }
 

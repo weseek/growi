@@ -14,10 +14,12 @@ const commonConfig = require('./webpack.common.js');
  */
 const CommonsChunkPlugin = require('webpack/lib/optimize/CommonsChunkPlugin');
 const DllBundlesPlugin = require('webpack-dll-bundles-plugin').DllBundlesPlugin;
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 /*
  * Webpack Constants
  */
+const ANALYZE = process.env.ANALYZE;
 const ENV = process.env.ENV = process.env.NODE_ENV = 'development';
 const HOST = process.env.HOST || '0.0.0.0';
 const PORT = process.env.PORT || 3000;
@@ -64,6 +66,10 @@ module.exports = function (options) {
       }),
 
       new webpack.NoEmitOnErrorsPlugin(),
+
+      new BundleAnalyzerPlugin({
+        analyzerMode: ANALYZE ? 'server' : 'disabled',
+      }),
 
     ]
   });

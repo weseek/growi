@@ -3,7 +3,6 @@
 */
 
 var io = require('socket.io-client');
-var moment = require("moment");
 require('bootstrap-sass');
 require('jquery.cookie');
 
