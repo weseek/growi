@@ -12,7 +12,7 @@ Email: {{ createdUser.email }}
 ====
 
 Please do some action with following URL:
-{{ url }}/admin/user
+{{ url }}/admin/users
 
 
 --
