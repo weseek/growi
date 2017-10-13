@@ -1,6 +1,14 @@
 CHANGES
 ========
 
+## 2.2.1-RC
+
+* 
+
+## 2.2.0
+
+* Support: Merge official Crowi v1.6.3
+
 ## 2.1.2
 
 * Improvement: Ensure to prevent suspending own account

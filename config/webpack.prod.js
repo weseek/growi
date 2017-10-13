@@ -13,10 +13,12 @@ const commonConfig = require('./webpack.common.js'); // the settings that are co
 const CommonsChunkPlugin = require('webpack/lib/optimize/CommonsChunkPlugin');
 const UglifyJsPlugin = require('webpack/lib/optimize/UglifyJsPlugin');
 const OptimizeJsPlugin = require('optimize-js-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 /**
  * Webpack Constants
  */
+const ANALYZE = process.env.ANALYZE;
 const ENV = process.env.NODE_ENV = process.env.ENV = 'production';
 const HOST = process.env.HOST || 'localhost';
 const PORT = process.env.PORT || 3000;
@@ -83,6 +85,12 @@ module.exports = function (env) {
           join_vars: true,
           negate_iife: false // we need this for lazy v8
         },
+      }),
+
+      new BundleAnalyzerPlugin({
+        analyzerMode: ANALYZE ? 'static' : 'disabled',
+        reportFilename: helpers.root('report/bundle-analyzer.html'),
+        openAnalyzer: false,
       }),
 
     ],
