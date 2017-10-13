@@ -314,7 +314,7 @@ $(function() {
 
   // duplicate
   $('#duplicatePage').on('shown.bs.modal', function (e) {
-    $('#newPageName').focus();
+    $('#duplicatePageName').focus();
   });
   $('#duplicatePageForm, #unportalize-form').submit(function (e) {
     // create name-value map
@@ -331,16 +331,16 @@ $(function() {
     }).done(function (res) {
       if (!res.ok) {
         // if already exists
-        $('#newPageNameCheck').html('<i class="fa fa-times-circle"></i> ' + res.error);
-        $('#newPageNameCheck').addClass('alert-danger');
+        $('#duplicatePageNameCheck').html('<i class="fa fa-times-circle"></i> ' + res.error);
+        $('#duplicatePageNameCheck').addClass('alert-danger');
         $('#linkToNewPage').html(`
           <i class="fa fa-fw fa-arrow-right"></i><a href="${nameValueMap.new_path}">${nameValueMap.new_path}</a>
         `);
       } else {
         var page = res.page;
 
-        $('#newPageNameCheck').removeClass('alert-danger');
-        $('#newPageNameCheck').html('<img src="/images/loading_s.gif"> Page duplicated! Redirecting to new page location.');
+        $('#duplicatePageNameCheck').removeClass('alert-danger');
+        $('#duplicatePageNameCheck').html('<img src="/images/loading_s.gif"> Page duplicated! Redirecting to new page location.');
 
         setTimeout(function () {
           top.location.href = page.path + '?duplicated=' + pagePath;
