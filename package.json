@@ -107,11 +107,11 @@
     "passport-local": "^1.0.0",
     "pino-clf": "^1.0.2",
     "plantuml-encoder": "^1.2.4",
-    "react": "15.6.1",
-    "react-bootstrap": "^0.31.0",
+    "react": "^16.0.0",
+    "react-bootstrap": "^0.31.3",
     "react-bootstrap-typeahead": "^1.4.2",
     "react-clipboard.js": "^1.1.2",
-    "react-dom": "15.6.1",
+    "react-dom": "^16.0.0",
     "redis": "^2.7.1",
     "reveal.js": "^3.5.0",
     "rimraf": "^2.6.1",
@@ -142,7 +142,7 @@
   "engines": {
     "node": ">=6.11 <7",
     "npm": ">=4.6 <5",
-    "yarn": "~1.1.0"
+    "yarn": "^1.1.0"
   },
   "config": {
     "blanket": {
