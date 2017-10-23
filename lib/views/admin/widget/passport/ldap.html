@@ -167,7 +167,7 @@
     $(this).submit(function()
     {
       function showMessage(formId, msg, status) {
-        $('#' + formId + ' > .alert').remove();
+        $('#' + formId + ' .alert').remove();
 
         if (!status) {
           status = 'success';
