@@ -96,7 +96,7 @@
       <div class="form-group">
         <label for="settingForm[security:passport-ldap:searchFilter]" class="col-xs-3 control-label">Search Filter</label>
         <div class="col-xs-6">
-          <input class="form-control" type="text" placeholder="(uid={% raw %}{{username}}{% endraw %})"
+          <input class="form-control" type="text" placeholder="Default: (uid={% raw %}{{username}}{% endraw %})"
               name="settingForm[security:passport-ldap:searchFilter]" value="{{ settingForm['security:passport-ldap:searchFilter'] || '' }}">
           <p class="help-block">
             <small>
