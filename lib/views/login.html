@@ -37,9 +37,20 @@
 
       {% set warn = req.flash('warningMessage') %}
       {% if warn.length %}
-      <div class="alert alert-danger">
-        {{ warn }}
+      {% for w in warn %}
+      <div class="alert alert-warning">
+        {{ w }}
       </div>
+      {% endfor %}
+      {% endif %}
+
+      {% set error = req.flash('errorMessage') %}
+      {% if error.length %}
+      {% for e in error %}
+      <div class="alert alert-danger">
+        {{ e }}
+      </div>
+      {% endfor %}
       {% endif %}
 
       {% if req.form.errors.length > 0 %}
