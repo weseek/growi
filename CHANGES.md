@@ -1,9 +1,14 @@
 CHANGES
 ========
 
-## 2.2.1-RC
+## 2.2.2
+
+* 
+
+## 2.2.1
 
 * Feature: Duplicate page
+* Improve: Ensure that admin users can remove users waiting for approval
 * Fix: Modal doesn't work with React v16
 * Support: Upgrade React to 16
 * Support: Upgrade outdated libs
