@@ -1,6 +1,10 @@
 CHANGES
 ========
 
+## 2.2.2
+
+* 
+
 ## 2.2.1
 
 * Feature: Duplicate page
