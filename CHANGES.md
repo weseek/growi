@@ -3,7 +3,7 @@ CHANGES
 
 ## 2.2.2
 
-* 
+* Fix: Update `lastLoginAt` when login is success
 
 ## 2.2.1
 
