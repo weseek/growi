@@ -2,6 +2,7 @@
   "Help": "ヘルプ",
   "Edit": "編集",
   "Delete": "削除",
+  "Duplicate": "複製",
   "Move": "移動",
   "Moved": "移動しました",
   "Unlinked": "リダイレクト削除",
@@ -168,6 +169,14 @@
       "Delete Page": "ページを削除する",
       "recursively": "全ての子ページも処理",
       "completely": "完全削除"
+    }
+  },
+
+  "modal_duplicate": {
+    "label": {
+      "Duplicate page": "ページを複製する",
+      "New page name": "複製後のページ名",
+      "Current page name": "現在のページ名"
     }
   },
 

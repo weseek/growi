@@ -3,8 +3,6 @@ import { FormGroup, Button, InputGroup } from 'react-bootstrap';
 
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 
-import axios from 'axios'
-
 import UserPicture from '../User/UserPicture';
 import PageListMeta from '../PageList/PageListMeta';
 import PagePath from '../PageList/PagePath';
