@@ -110,6 +110,18 @@
         </div>
       </div>
 
+      <h4>Attribute Mapping</h4>
+
+      <p class="well well-sm">Specification of mappings when creating new users</p>
+
+      <div class="form-group">
+          <label for="settingForm[security:passport-ldap:attrMapUsername]" class="col-xs-3 control-label">username</label>
+          <div class="col-xs-6">
+            <input class="form-control" type="text" placeholder="Default: uid"
+                name="settingForm[security:passport-ldap:attrMapUsername]" value="{{ settingForm['security:passport-ldap:attrMapUsername'] || '' }}">
+          </div>
+        </div>
+
     </div><!-- /.passport-ldap-configurations -->
 
     <div class="form-group">
