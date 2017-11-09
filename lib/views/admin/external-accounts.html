@@ -5,7 +5,7 @@
 {% block content_head %}
 <div class="header-wrap">
   <header id="page-header">
-    <h1 class="title" id="">外部アカウント管理</h1>
+    <h1 class="title" id="">ユーザー管理/外部アカウント管理</h1>
   </header>
 </div>
 {% endblock %}
@@ -95,7 +95,7 @@
                 <ul class="dropdown-menu" role="menu">
                   <li class="dropdown-header">編集メニュー</li>
                   <li class="dropdown-button">
-                    <form action="/admin/external-accounts/{{ account.accountId }}/remove" method="post">
+                    <form action="/admin/users/external-accounts/{{ account.accountId }}/remove" method="post">
                       <input type="hidden" name="_csrf" value="{{ csrf() }}">
                       <button type="submit" class="btn btn-block btn-danger">削除する</button>
                     </form>
@@ -111,7 +111,7 @@
         </tbody>
       </table>
 
-      {% include '../widget/pager.html' with {path: "/admin/external-accounts", pager: pager} %}
+      {% include '../widget/pager.html' with {path: "/admin/users/external-accounts", pager: pager} %}
 
     </div>
   </div>

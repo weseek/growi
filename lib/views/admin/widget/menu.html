@@ -8,7 +8,7 @@
   <li class="{% if current == 'markdown'%}active{% endif %}"><a href="/admin/markdown"><i class="fa fa-pencil"></i> Markdown設定</a></li>
   <li class="{% if current == 'customize'%}active{% endif %}"><a href="/admin/customize"><i class="fa fa-object-group"></i> カスタマイズ</a></li>
   <li class="{% if current == 'notification'%}active{% endif %}"><a href="/admin/notification"><i class="fa fa-bell"></i> 通知設定</a></li>
-  <li class="{% if current == 'user'%}active{% endif %}"><a href="/admin/users"><i class="fa fa-users"></i> ユーザー管理</a></li>
+  <li class="{% if current == 'user' || current == 'external-account' %}active{% endif %}"><a href="/admin/users"><i class="fa fa-users"></i> ユーザー管理</a></li>
   {% if searchConfigured() %}
   <li class="{% if current == 'search'%}active{% endif %}"><a href="/admin/search"><i class="fa fa-search"></i> 検索管理</a></li>
   {% endif %}
