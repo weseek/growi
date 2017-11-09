@@ -15,18 +15,12 @@
 
   <ul class="nav nav-tabs">
     <li><a href="/me"><i class="fa fa-gears"></i> {{ t('User Information') }}</a></li>
-    <li><a href="/me/external-accounts"><i class="fa fa-user-plus"></i> {{ t('External Accounts') }}</a></li>
-    <li class="active"><a href="/me/password"><i class="fa fa-key"></i> {{ t('Password Settings') }}</a></li>
+    <li class="active"><a href="/me/external-accounts"><i class="fa fa-user-plus"></i> {{ t('External Accounts') }}</a></li>
+    <li><a href="/me/password"><i class="fa fa-key"></i> {{ t('Password Settings') }}</a></li>
     <li><a href="/me/apiToken"><i class="fa fa-rocket"></i> {{ t('API Settings') }}</a></li>
   </ul>
 
   <div class="tab-content">
-
-  {% if not user.password %}
-  <div class="alert alert-warning">
-    {{ t('Password is not set') }}
-  </div>
-  {% endif %}
 
   {% set message = req.flash('successMessage') %}
   {% if message.length %}
@@ -45,29 +39,48 @@
   </div>
   {% endif %}
 
-  {% if user.email %}
-  <p>
-    {{ t('You can sign in with email and password', user.email) }}
-  </p>
-  {% endif %}
+  <legend>{{ t('External Accounts') }}</legend>
+
+  <table class="table table-hover table-striped table-bordered table-user-list">
+    <thead>
+      <tr>
+        <th width="120px">Authentication Provider</th>
+        <th><code>accountId</code></th>
+        <th width="200px">{{ t('Created') }}</th>
+        <th width="150px">{{ t('Admin') }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for account in externalAccounts %}
+      <tr>
+        <td>{{ account.providerType }}</td>
+        <td>
+          <strong>{{ account.accountId }}</strong>
+        </td>
+        <td>{{ account.createdAt|date('Y-m-d', account.createdAt.getTimezoneOffset()) }}</td>
+        <td>
+          <div class="btn-group">
+
+            <form action="/me/external-accounts/disassociate" method="post">
+              <input type="hidden" name="_csrf" value="{{ csrf() }}">
+              <button type="submit" class="btn btn-sm btn-danger">
+                <i class="fa fa-unlink"></i>
+                {{ t('Diassociate') }}
+              </button>
+            </form>
+
+          </div>{# end of .btn-group #}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 
   <div id="form-box">
 
     <form action="/me/password" method="post" class="form-horizontal" role="form">
     <fieldset>
-      {% if user.password %}
-      <legend>{{ t('Update Password') }}</legend>
-      {% else %}
-      <legend>{{ t('Set new Password') }}</legend>
-      {% endif %}
-      {% if user.password %}
-      <div class="form-group">
-        <label for="mePassword[oldPassword]" class="col-xs-3 control-label">{{ t('Current password') }}</label>
-        <div class="col-xs-6">
-          <input class="form-control" type="password" name="mePassword[oldPassword]">
-        </div>
-      </div>
-      {% endif %}
+      <legend>{{ t('External Accounts') }}</legend>
       <div class="form-group {% if not user.password %}has-error{% endif %}">
         <label for="mePassword[newPassword]" class="col-xs-3 control-label">{{ t('New password') }}</label>
         <div class="col-xs-6">
@@ -82,7 +95,6 @@
           <p class="help-block">{{ t('page_register.form_help.password') }}</p>
         </div>
       </div>
-
 
       <div class="form-group">
         <div class="col-xs-offset-2 col-xs-10">
