@@ -71,7 +71,7 @@
     "debug": "^3.1.0",
     "diff": "^3.3.0",
     "diff2html": "^2.3.0",
-    "elasticsearch": "^13.2.0",
+    "elasticsearch": "^14.0.0",
     "emojify.js": "^1.1.0",
     "env-cmd": "^7.0.0",
     "escape-string-regexp": "^1.0.5",
