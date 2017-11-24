@@ -1899,9 +1899,9 @@ elliptic@^6.0.0:
     minimalistic-assert "^1.0.0"
     minimalistic-crypto-utils "^1.0.0"
 
-emojify.js@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/emojify.js/-/emojify.js-1.1.0.tgz#079fff223307c9007f570785e8e4935d5c398beb"
+emojione@^3.1.2:
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/emojione/-/emojione-3.1.2.tgz#991e30c80db4b1cf15eacb257620a7edce9c6ef4"
 
 emojis-list@^2.0.0:
   version "2.1.0"
