@@ -21,6 +21,7 @@ export default class SearchForm extends React.Component {
       keyword: '',
       searchedKeyword: '',
       pages: [],
+      isLoading: false,
       searchError: null,
     };
 
@@ -48,15 +49,20 @@ export default class SearchForm extends React.Component {
       return;
     }
 
+    this.setState({isLoading: true});
+
     this.crowi.apiGet('/search', {q: keyword})
       .then(res => {
         this.setState({
+          isLoading: false,
           keyword: '',
           pages: res.data,
         });
-      }).catch(err => {
+      })
+      .catch(err => {
         this.setState({
-          searchError: err
+          isLoading: false,
+          searchError: err,
         });
       });
   }
@@ -80,10 +86,13 @@ export default class SearchForm extends React.Component {
     this.setState({input: text});
   }
 
-  onChange(options) {
-    const page = options[0];  // should be single page selected
+  onChange(selected) {
+    const page = selected[0];  // should be single page selected
+
     // navigate to page
-    window.location = page.path;
+    if (page != null) {
+      window.location = page.path;
+    }
   }
 
   renderMenuItemChildren(option, props, index) {
@@ -112,7 +121,7 @@ export default class SearchForm extends React.Component {
           <InputGroup>
             <AsyncTypeahead
               ref={ref => this._typeahead = ref}
-              name="q"
+              isLoading={this.state.isLoading}
               labelKey="path"
               minLength={2}
               options={this.state.pages}
