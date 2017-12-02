@@ -22,6 +22,40 @@
 
   <div class="tab-content">
 
+  {#
+    # The case that there already exists a user whose username matches ID of the newly created LDAP user
+    # https://github.com/weseek/crowi-plus/issues/193
+    #}
+  {% set isDuplicatedUsernameExceptionOccured = req.flash('isDuplicatedUsernameExceptionOccured') %}
+  {% if isDuplicatedUsernameExceptionOccured != null %}
+  <div class="alert alert-warning">
+    <i class="fa fa-fw fa-info-circle"></i>
+    <strong>DuplicatedUsernameException occured</strong>
+    <p>
+      Your LDAP authentication was succeess, but a new user could not be created.
+      See the issue <a href="https://github.com/weseek/crowi-plus/issues/193">#193</a>.
+    </p>
+  </div>
+  {% endif %}
+
+  {% set error = req.flash('errorMessage') %}
+  {% if error.length %}
+  {% for e in error %}
+  <div class="alert alert-danger">
+    {{ e }}
+  </div>
+  {% endfor %}
+  {% endif %}
+
+  {% set warn = req.flash('warningMessage') %}
+  {% if warn.length %}
+  {% for w in warn %}
+  <div class="alert alert-warning">
+    {{ w }}
+  </div>
+  {% endfor %}
+  {% endif %}
+
   {% set message = req.flash('successMessage') %}
   {% if message.length %}
   <div class="alert alert-success">
@@ -29,85 +63,108 @@
   </div>
   {% endif %}
 
-  {% if req.form.errors.length > 0 %}
-  <div class="alert alert-danger">
-    <ul>
-    {% for error in req.form.errors %}
-      <li>{{ error }}</li>
-    {% endfor %}
-    </ul>
+
+
+  <legend style="line-height: 1.7em;">
+    <button class="btn btn-default btn-sm pull-right" data-target="#create-external-account" data-toggle="modal">
+      <i class="fa fa-plus-circle" aria-hidden="true"></i>
+      Add
+    </button>
+    {{ t('External Accounts') }}
+  </legend>
+
+  <div class="row">
+    <div class="col-md-12">
+      <table class="table table-hover table-striped table-bordered table-user-list">
+        <thead>
+          <tr>
+            <th width="120px">Authentication Provider</th>
+            <th>
+              <code>accountId</code>
+            </th>
+            <th width="200px">{{ t('Created') }}</th>
+            <th width="150px">{{ t('Admin') }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for account in externalAccounts %}
+          <tr>
+            <td>{{ account.providerType }}</td>
+            <td>
+              <strong>{{ account.accountId }}</strong>
+            </td>
+            <td>{{ account.createdAt|date('Y-m-d', account.createdAt.getTimezoneOffset()) }}</td>
+            <td>
+              <div class="btn-group">
+
+                <form action="/me/external-accounts/disassociate" method="post">
+                  <input type="hidden" name="_csrf" value="{{ csrf() }}">
+                  <button type="submit" class="btn btn-sm btn-danger">
+                    <i class="fa fa-unlink"></i>
+                    {{ t('Diassociate') }}
+                  </button>
+                </form>
+
+              </div>{# end of .btn-group #}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
   </div>
-  {% endif %}
 
-  <legend>{{ t('External Accounts') }}</legend>
+  {# modal #}
+  <style>
+    .modal.create-external-account .modal-dialog {
+      width: 750px;
+    }
+  </style>
+  <div class="modal create-external-account" id="create-external-account">
+    <div class="modal-dialog">
+      <div class="modal-content">
 
-  <table class="table table-hover table-striped table-bordered table-user-list">
-    <thead>
-      <tr>
-        <th width="120px">Authentication Provider</th>
-        <th><code>accountId</code></th>
-        <th width="200px">{{ t('Created') }}</th>
-        <th width="150px">{{ t('Admin') }}</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for account in externalAccounts %}
-      <tr>
-        <td>{{ account.providerType }}</td>
-        <td>
-          <strong>{{ account.accountId }}</strong>
-        </td>
-        <td>{{ account.createdAt|date('Y-m-d', account.createdAt.getTimezoneOffset()) }}</td>
-        <td>
-          <div class="btn-group">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">{{ t('Create External Account') }}</h4>
+        </div>
 
-            <form action="/me/external-accounts/disassociate" method="post">
-              <input type="hidden" name="_csrf" value="{{ csrf() }}">
-              <button type="submit" class="btn btn-sm btn-danger">
-                <i class="fa fa-unlink"></i>
-                {{ t('Diassociate') }}
-              </button>
+        <div class="modal-body">
+
+          <div id="form-box">
+            <form action="/me/external-accounts/associate" method="post" class="form-horizontal" role="form">
+            <fieldset>
+              <div class="form-group {% if not user.password %}has-error{% endif %}">
+                <label for="mePassword[newPassword]" class="col-xs-3 control-label">{{ t('New password') }}</label>
+                <div class="col-xs-6">
+                  <input class="form-control" type="password" name="mePassword[newPassword]">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="mePassword[newPasswordConfirm]" class="col-xs-3 control-label">{{ t('Re-enter new password') }}</label>
+                <div class="col-xs-6">
+                  <input class="form-control col-xs-4" type="password" name="mePassword[newPasswordConfirm]">
+
+                  <p class="help-block">{{ t('page_register.form_help.password') }}</p>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="col-xs-offset-2 col-xs-10">
+                  <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
+                </div>
+              </div>
+
+            </fieldset>
             </form>
+          </div>
 
-          </div>{# end of .btn-group #}
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+        </div><!-- /.modal-body -->
 
-  <div id="form-box">
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
 
-    <form action="/me/password" method="post" class="form-horizontal" role="form">
-    <fieldset>
-      <legend>{{ t('External Accounts') }}</legend>
-      <div class="form-group {% if not user.password %}has-error{% endif %}">
-        <label for="mePassword[newPassword]" class="col-xs-3 control-label">{{ t('New password') }}</label>
-        <div class="col-xs-6">
-          <input class="form-control" type="password" name="mePassword[newPassword]" required>
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="mePassword[newPasswordConfirm]" class="col-xs-3 control-label">{{ t('Re-enter new password') }}</label>
-        <div class="col-xs-6">
-          <input class="form-control col-xs-4" type="password" name="mePassword[newPasswordConfirm]" required>
-
-          <p class="help-block">{{ t('page_register.form_help.password') }}</p>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <div class="col-xs-offset-2 col-xs-10">
-          <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
-        </div>
-      </div>
-
-    </fieldset>
-    </form>
-  </div>
-
-
-  </div>
 </div>
 {% endblock content_main %}
 
