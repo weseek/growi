@@ -5,12 +5,6 @@
 $bootstrap-sass-asset-helper: true;
 @import "~bootstrap-sass/assets/stylesheets/bootstrap";
 
-// import react-bootstrap-typeahead styles
-@import '~react-bootstrap-typeahead/css/ClearButton';
-@import '~react-bootstrap-typeahead/css/Loader';
-@import '~react-bootstrap-typeahead/css/Token';
-@import '~react-bootstrap-typeahead/css/Typeahead';
-
 // import toastr styles
 @import '~toastr/build/toastr';
 
