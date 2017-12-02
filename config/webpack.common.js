@@ -102,9 +102,6 @@ module.exports = function (options) {
         hljs: "reveal.js/plugin/highlight/highlight",
       }),
 
-      // omit moment/locale/*.js
-      new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /ja/),
-
     ]
   };
 }

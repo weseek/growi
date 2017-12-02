@@ -1,4 +1,4 @@
-import moment from 'moment';
+import dateFnsFormat from 'date-fns/format';
 
 export default class Template {
 
@@ -12,15 +12,15 @@ export default class Template {
   }
 
   getYear() {
-    return moment().format('YYYY');
+    return dateFnsFormat(new Date(), 'YYYY');
   }
 
   getMonth() {
-    return moment().format('YYYY/MM');
+    return dateFnsFormat(new Date(), 'YYYY/MM');
   }
 
   getDate() {
-    return moment().format('YYYY/MM/DD');
+    return dateFnsFormat(new Date(), 'YYYY/MM/DD');
   }
 
   getUser() {
