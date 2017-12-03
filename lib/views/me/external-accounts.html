@@ -132,6 +132,7 @@
             <div id="passport-ldap" class="tab-pane active" role="tabpanel" >
               <div id="form-box">
                 <form id="formLdapAssociation" method="post" class="form-horizontal" role="form">
+                  <div class="alert-container"></div>
                   <fieldset>
                     <div class="form-group">
                       <label for="username" class="col-xs-3 control-label">{{ t('Username') }}</label>
@@ -197,12 +198,12 @@
        */
       function testAssociateLdap() {
         function showMessage(formId, msg, status) {
-          $('#' + formId + ' > .alert').remove();
+          $('#' + formId + ' .alert-container .alert').remove();
 
           var $message = $('<p class="alert"></p>');
           $message.addClass('alert-' + status);
           $message.html(msg.replace('\n', '<br>'));
-          $message.insertBefore('#' + formId);
+          $message.appendTo('#' + formId + '> .alert-container');
 
           if (status == 'success') {
             setTimeout(function()
