@@ -1,17 +1,18 @@
 CHANGES
 ========
 
+## 2.2.4-RC
+
 ## 2.2.3
 
 * Fix: The server responds anything when using passport
     * Degraded by 2.2.2 updates
+* Fix: Update `lastLoginAt` when login is success
 * Support: Replace moment with date-fns
 * Support: Upgrade react-bootstrap-typeahead
-
-## 2.2.2
-
 * Improvement: Replace emojify.js with emojione
-* Fix: Update `lastLoginAt` when login is success
+
+## 2.2.2 (Missing number)
 
 ## 2.2.1
 
