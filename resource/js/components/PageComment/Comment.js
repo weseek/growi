@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import moment from 'moment';
+import dateFnsFormat from 'date-fns/format';
 
 import ReactUtils from '../ReactUtils';
 import UserPicture from '../User/UserPicture';
@@ -53,7 +53,7 @@ export default class Comment extends React.Component {
     const creator = comment.creator;
 
     const rootClassName = this.getRootClassName();
-    const commentDate = moment(comment.createdAt).format('YYYY/MM/DD HH:mm');
+    const commentDate = dateFnsFormat(comment.createdAt, 'YYYY/MM/DD HH:mm');
     const commentBody = ReactUtils.nl2br(comment.comment);
     const creatorsPage = `/user/${creator.username}`;
     const revHref = `?revision=${comment.revision}`;
