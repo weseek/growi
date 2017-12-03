@@ -134,24 +134,22 @@
           <div id="form-box">
             <form action="/me/external-accounts/associate" method="post" class="form-horizontal" role="form">
             <fieldset>
-              <div class="form-group {% if not user.password %}has-error{% endif %}">
-                <label for="mePassword[newPassword]" class="col-xs-3 control-label">{{ t('New password') }}</label>
+              <div class="form-group">
+                <label for="username" class="col-xs-3 control-label">{{ t('Username') }}</label>
                 <div class="col-xs-6">
-                  <input class="form-control" type="password" name="mePassword[newPassword]">
+                  <input class="form-control" name="loginForm[username]">
                 </div>
               </div>
               <div class="form-group">
-                <label for="mePassword[newPasswordConfirm]" class="col-xs-3 control-label">{{ t('Re-enter new password') }}</label>
+                <label for="password" class="col-xs-3 control-label">{{ t('Password') }}</label>
                 <div class="col-xs-6">
-                  <input class="form-control col-xs-4" type="password" name="mePassword[newPasswordConfirm]">
-
-                  <p class="help-block">{{ t('page_register.form_help.password') }}</p>
+                  <input class="form-control col-xs-4" type="password" name="loginForm[password]">
                 </div>
               </div>
 
               <div class="form-group">
                 <div class="col-xs-offset-2 col-xs-10">
-                  <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
+                  <button type="submit" class="btn btn-primary">{{ t('Associate') }}</button>
                 </div>
               </div>
 
