@@ -79,18 +79,12 @@
               <strong>{{ account.accountId }}</strong>
             </td>
             <td>{{ account.createdAt|date('Y-m-d', account.createdAt.getTimezoneOffset()) }}</td>
-            <td>
-              <div class="btn-group">
-
-                <form action="/me/external-accounts/disassociate" method="post">
-                  <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                  <button type="submit" class="btn btn-sm btn-danger">
-                    <i class="fa fa-unlink"></i>
-                    {{ t('Diassociate') }}
-                  </button>
-                </form>
-
-              </div>{# end of .btn-group #}
+            <td class="text-center">
+              <button class="btn btn-default btn-sm btn-danger"
+                  data-toggle="modal" data-target="#diassociate-external-account" data-provider-type="{{ account.providerType }}" data-account-id="{{ account.accountId }}">
+                <i class="fa fa-unlink"></i>
+                {{ t('Diassociate') }}
+              </button>
             </td>
           </tr>
           {% endfor %}
@@ -247,6 +241,61 @@
       }
     </script>
 
+  </div><!-- /.modal -->
+
+  <div class="modal diassociate-external-account" id="diassociate-external-account">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">{{ t('Diassociate External Account') }}</h4>
+        </div>
+
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-12">
+              <p><b>
+                Are you sure to diassociate the
+                <span class="diassociate-provider-type"></span> account
+                <code class="diassociate-account-id"></code>?
+              </b></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <form action="/me/external-accounts/disassociate" method="post">
+            <input type="hidden" name="_csrf" value="{{ csrf() }}">
+            <input type="hidden" name="providerType">
+            <input type="hidden" name="accountId">
+            <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">
+              {{ t('Cancel') }}
+            </button>
+            <button type="submit" class="btn btn-sm btn-danger">
+              <i class="fa fa-unlink"></i>
+              {{ t('Diassociate') }}
+            </button>
+          </form>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+
+    <script>
+      $('#diassociate-external-account').on('show.bs.modal', function (event) {
+        var modal = $(this);
+        var button = $(event.relatedTarget); // Button that triggered the modal
+        // get data-*
+        var providerType = button.data('provider-type');
+        var accountId = button.data('account-id');
+        // set labels
+        modal.find('.diassociate-provider-type').text(providerType);
+        modal.find('.diassociate-account-id').text(accountId);
+        // set hidden inputs
+        modal.find('input:hidden[name="providerType"]').val(providerType);
+        modal.find('input:hidden[name="accountId"]').val(accountId);
+      })
+    </script>
   </div><!-- /.modal -->
 
 </div>
