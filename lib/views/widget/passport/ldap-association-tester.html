@@ -1,4 +1,4 @@
-<form id="formLdapAssociation" method="post" class="form-horizontal" role="form">
+<form id="formTestLdapCredentials" method="post" class="form-horizontal" role="form">
   <div class="alert-container"></div>
   <fieldset>
     <div class="form-group">
@@ -15,7 +15,7 @@
     </div>
 
     <div class="form-group">
-      <button type="button" class="btn btn-default col-xs-offset-5 col-xs-2" onclick="testAssociateLdap()">{{ t('Test') }}</button>
+      <button type="button" class="btn btn-default col-xs-offset-5 col-xs-2" onclick="testLdapCredentials()">{{ t('Test') }}</button>
     </div>
 
   </fieldset>
@@ -24,7 +24,7 @@
     /**
      * test association (ajax)
      */
-    function testAssociateLdap() {
+    function testLdapCredentials() {
       function showMessage(formId, msg, status) {
         $('#' + formId + ' .alert-container .alert').remove();
 
@@ -45,8 +45,8 @@
         }
       }
 
-      var $form = $('#formLdapAssociation');
-      var $action = '/_api/me/external-accounts/testAssociateLdap';
+      var $form = $('#formTestLdapCredentials');
+      var $action = '/_api/login/testLdap';
       var $id = $form.attr('id');
       var $button = $('button', this);
       $button.attr('disabled', 'disabled');
