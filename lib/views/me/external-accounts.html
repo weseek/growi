@@ -26,6 +26,7 @@
   {% if error.length %}
   {% for e in error %}
   <div class="alert alert-danger">
+    <b>Server Error occured:</b><br>
     {{ e }}
   </div>
   {% endfor %}
@@ -43,7 +44,7 @@
   {% set message = req.flash('successMessage') %}
   {% if message.length %}
   <div class="alert alert-success">
-    {{ message }}
+    <b>{{ message }}</b>
   </div>
   {% endif %}
 
@@ -154,7 +155,7 @@
                     <div class="form-group">
                       <div class="col-xs-12 text-right">
                         <button type="button" class="btn btn-default" onclick="testAssociateLdap()">{{ t('Test') }}</button>
-                        <button type="button" class="btn btn-primary" onclick="associateLdap()">{{ t('Save') }}</button>
+                        <button type="button" class="btn btn-primary" onclick="associateLdap()">{{ t('Add') }}</button>
                       </div>
                     </div>
 
@@ -187,6 +188,19 @@
     </div><!-- /.modal-dialog -->
 
     <script>
+      /**
+       * associate (submit the form)
+       */
+      function associateLdap() {
+        var $form = $('#formLdapAssociation');
+        var $action = '/me/external-accounts/associateLdap';
+        $form.attr('action', $action);
+        $form.submit();
+      }
+
+      /**
+       * test association (ajax)
+       */
       function testAssociateLdap() {
         function showMessage(formId, msg, status) {
           $('#' + formId + ' > .alert').remove();

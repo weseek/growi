@@ -12,6 +12,13 @@
 
 {% block content_main %}
 <div class="content-main">
+  {% set wmessage = req.flash('warningMessage') %}
+  {% if wmessage.length %}
+  <div class="alert alert-warning">
+    {{ wmessage }}
+  </div>
+  {% endif %}
+
   {% set smessage = req.flash('successMessage') %}
   {% if smessage.length %}
   <div class="alert alert-success">
