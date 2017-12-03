@@ -5,6 +5,8 @@ CHANGES
 
 * Fix: The server responds anything when using passport
     * Degraded by 2.2.2 updates
+* Support: Replace moment with date-fns
+* Support: Upgrade react-bootstrap-typeahead
 
 ## 2.2.2
 
