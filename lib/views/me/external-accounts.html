@@ -138,32 +138,14 @@
 
           <div class="tab-content passport-settings">
             <div id="passport-ldap" class="tab-pane active" role="tabpanel" >
-              <div id="form-box">
-                <form id="formLdapAssociation" method="post" class="form-horizontal" role="form">
-                  <div class="alert-container"></div>
-                  <fieldset>
-                    <div class="form-group">
-                      <label for="username" class="col-xs-3 control-label">{{ t('Username') }}</label>
-                      <div class="col-xs-6">
-                        <input class="form-control" name="loginForm[username]">
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="password" class="col-xs-3 control-label">{{ t('Password') }}</label>
-                      <div class="col-xs-6">
-                        <input class="form-control col-xs-4" type="password" name="loginForm[password]">
-                      </div>
-                    </div>
-
-                    <div class="form-group">
-                      <div class="col-xs-12 text-right">
-                        <button type="button" class="btn btn-default" onclick="testAssociateLdap()">{{ t('Test') }}</button>
-                        <button type="button" class="btn btn-primary" onclick="associateLdap()">{{ t('Add') }}</button>
-                      </div>
-                    </div>
-
-                  </fieldset>
-                </form>
+              <div id="formLdapAssociationContainer">
+                {% include '../widget/passport/ldap-association-tester.html' %}
+                <div class="clearfix">
+                  <button type="button" class="btn btn-primary pull-right" onclick="associateLdap()">
+                    <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                    {{ t('Add') }}
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -195,58 +177,10 @@
        * associate (submit the form)
        */
       function associateLdap() {
-        var $form = $('#formLdapAssociation');
+        var $form = $('#formLdapAssociationContainer > form');
         var $action = '/me/external-accounts/associateLdap';
         $form.attr('action', $action);
         $form.submit();
-      }
-
-      /**
-       * test association (ajax)
-       */
-      function testAssociateLdap() {
-        function showMessage(formId, msg, status) {
-          $('#' + formId + ' .alert-container .alert').remove();
-
-          var $message = $('<p class="alert"></p>');
-          $message.addClass('alert-' + status);
-          $message.html(msg.replace('\n', '<br>'));
-          $message.appendTo('#' + formId + '> .alert-container');
-
-          if (status == 'success') {
-            setTimeout(function()
-            {
-              $message.fadeOut({
-                complete: function() {
-                  $message.remove();
-                }
-              });
-            }, 5000);
-          }
-        }
-
-        var $form = $('#formLdapAssociation');
-        var $action = '/_api/me/external-accounts/testAssociateLdap';
-        var $id = $form.attr('id');
-        var $button = $('button', this);
-        $button.attr('disabled', 'disabled');
-
-        var jqxhr = $.post($action, $form.serialize(), function(data)
-          {
-            if (!data.status) {
-              showMessage($id, 'data.status not found', 'danger');
-            }
-            else {
-              showMessage($id, data.message, data.status);
-            }
-          })
-          .fail(function() {
-            showMessage($id, 'エラーが発生しました', 'danger');
-          })
-          .always(function() {
-            $button.prop('disabled', false);
-          });
-          return false;
       }
     </script>
 
