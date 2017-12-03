@@ -115,36 +115,124 @@
 
         <div class="modal-body">
 
-          <div id="form-box">
-            <form action="/me/external-accounts/associate" method="post" class="form-horizontal" role="form">
-            <fieldset>
-              <div class="form-group">
-                <label for="username" class="col-xs-3 control-label">{{ t('Username') }}</label>
-                <div class="col-xs-6">
-                  <input class="form-control" name="loginForm[username]">
-                </div>
-              </div>
-              <div class="form-group">
-                <label for="password" class="col-xs-3 control-label">{{ t('Password') }}</label>
-                <div class="col-xs-6">
-                  <input class="form-control col-xs-4" type="password" name="loginForm[password]">
-                </div>
-              </div>
+          <ul class="nav nav-tabs passport-settings" role="tablist">
+            <li class="active">
+              <a href="#passport-ldap" data-toggle="tab" role="tab"><i class="fa fa-sitemap"></i> LDAP</a>
+            </li>
+            <li>
+              <a href="#passport-google-oauth" data-toggle="tab" role="tab"><i class="fa fa-google"></i> Google OAuth</a>
+            </li>
+            <li>
+              <a href="#passport-facebook" data-toggle="tab" role="tab"><i class="fa fa-facebook"></i> Facebook</a>
+            </li>
+            <li>
+              <a href="#passport-twitter" data-toggle="tab" role="tab"><i class="fa fa-twitter"></i> Twitter</a>
+            </li>
+            <li>
+              <a href="#passport-github" data-toggle="tab" role="tab"><i class="fa fa-github"></i> Github</a>
+            </li>
+          </ul>
 
-              <div class="form-group">
-                <div class="col-xs-offset-2 col-xs-10">
-                  <button type="submit" class="btn btn-primary">{{ t('Associate') }}</button>
-                </div>
-              </div>
+          <div class="tab-content passport-settings">
+            <div id="passport-ldap" class="tab-pane active" role="tabpanel" >
+              <div id="form-box">
+                <form id="formLdapAssociation" method="post" class="form-horizontal" role="form">
+                  <fieldset>
+                    <div class="form-group">
+                      <label for="username" class="col-xs-3 control-label">{{ t('Username') }}</label>
+                      <div class="col-xs-6">
+                        <input class="form-control" name="loginForm[username]">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="password" class="col-xs-3 control-label">{{ t('Password') }}</label>
+                      <div class="col-xs-6">
+                        <input class="form-control col-xs-4" type="password" name="loginForm[password]">
+                      </div>
+                    </div>
 
-            </fieldset>
-            </form>
-          </div>
+                    <div class="form-group">
+                      <div class="col-xs-12 text-right">
+                        <button type="button" class="btn btn-default" onclick="testAssociateLdap()">{{ t('Test') }}</button>
+                        <button type="button" class="btn btn-primary" onclick="associateLdap()">{{ t('Save') }}</button>
+                      </div>
+                    </div>
+
+                  </fieldset>
+                </form>
+              </div>
+            </div>
+
+            <div id="passport-google-oauth" class="tab-pane" role="tabpanel">
+              (TBD)
+            </div>
+
+            <div id="passport-facebook" class="tab-pane" role="tabpanel">
+              (TBD)
+            </div>
+
+            <div id="passport-twitter" class="tab-pane" role="tabpanel">
+              (TBD)
+            </div>
+
+            <div id="passport-github" class="tab-pane" role="tabpanel">
+              (TBD)
+            </div>
+
+          </div><!-- /.tab-content -->
 
         </div><!-- /.modal-body -->
 
       </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
+
+    <script>
+      function testAssociateLdap() {
+        function showMessage(formId, msg, status) {
+          $('#' + formId + ' > .alert').remove();
+
+          var $message = $('<p class="alert"></p>');
+          $message.addClass('alert-' + status);
+          $message.html(msg.replace('\n', '<br>'));
+          $message.insertBefore('#' + formId);
+
+          if (status == 'success') {
+            setTimeout(function()
+            {
+              $message.fadeOut({
+                complete: function() {
+                  $message.remove();
+                }
+              });
+            }, 5000);
+          }
+        }
+
+        var $form = $('#formLdapAssociation');
+        var $action = '/_api/me/external-accounts/testAssociateLdap';
+        var $id = $form.attr('id');
+        var $button = $('button', this);
+        $button.attr('disabled', 'disabled');
+
+        var jqxhr = $.post($action, $form.serialize(), function(data)
+          {
+            if (!data.status) {
+              showMessage($id, 'data.status not found', 'danger');
+            }
+            else {
+              showMessage($id, data.message, data.status);
+            }
+          })
+          .fail(function() {
+            showMessage($id, 'エラーが発生しました', 'danger');
+          })
+          .always(function() {
+            $button.prop('disabled', false);
+          });
+          return false;
+      }
+    </script>
+
   </div><!-- /.modal -->
 
 </div>
