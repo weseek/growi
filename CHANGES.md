@@ -1,9 +1,10 @@
 CHANGES
 ========
 
-## 2.2.3-RC
+## 2.2.3
 
-* 
+* Fix: The server responds anything when using passport
+    * Degraded by 2.2.2 updates
 
 ## 2.2.2
 
