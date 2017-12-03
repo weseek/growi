@@ -150,7 +150,7 @@
         <legend>認証機構設定</legend>
 
         {% set isOfficialConfigurationVisible = !isEnabledPassport() %}
-        <div class="official-crowi-auth-settings">
+        <div class="official-crowi-auth-settings" {% if !isOfficialConfigurationVisible %}style="display: none;"{% endif %}>
           {% set isRestartingServerNeeded = isPassportLocalStrategySetup() %}
           <p class="alert alert-warning"
               {% if !isRestartingServerNeeded %}style="display: none;"{% endif %}>
