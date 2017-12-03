@@ -22,6 +22,14 @@
 
   <div class="tab-content">
 
+  {% set couldntDisassociateError = req.flash('couldntDisassociateError') %}
+  {% if couldntDisassociateError != null %}
+  <div class="alert alert-danger">
+    <b>Couldn't disassociate External Account</b><br>
+    You have not set a password and have only one External Account.
+  </div>
+  {% endif %}
+
   {% set error = req.flash('errorMessage') %}
   {% if error.length %}
   {% for e in error %}
