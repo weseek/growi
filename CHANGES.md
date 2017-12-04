@@ -3,6 +3,8 @@ CHANGES
 
 ## 2.2.4-RC
 
+* Feature: LDAP Authentication
+
 ## 2.2.3
 
 * Fix: The server responds anything when using passport
