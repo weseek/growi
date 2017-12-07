@@ -1,8 +1,10 @@
 CHANGES
 ========
 
-## 2.2.4-RC
+## 2.2.4
 
+* Fix: googleapis v23.0.0 lost the function `oauth2Client.setCredentials`
+    * Degraded by 2.2.2 updates
 * Fix: HeaderSearchBox didn't append 'q=' param when searching
     * Degraded by 2.2.3 updates
 
