@@ -3,6 +3,9 @@ CHANGES
 
 ## 2.2.4-RC
 
+* Fix: HeaderSearchBox didn't append 'q=' param when searching
+    * Degraded by 2.2.3 updates
+
 ## 2.2.3
 
 * Fix: The server responds anything when using passport
