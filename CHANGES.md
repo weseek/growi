@@ -14,6 +14,8 @@ CHANGES
 * Fix: HeaderSearchBox didn't append 'q=' param when searching
     * Degraded by 2.2.3 updates
 
+* Feature: LDAP Authentication
+
 ## 2.2.3
 
 * Fix: The server responds anything when using passport

@@ -21,6 +21,29 @@
     <h2>{{ t('Sign in') }}</h2>
 
     <div id="login-form-errors">
+      {% if isLdapSetupFailed() %}
+      <div class="alert alert-warning">
+        LDAP is enabled but the configuration has something wrong.<br>
+        <small>(set the environment variables <code>DEBUG=crowi:service:PassportService</code> and get the logs)</small>
+      </div>
+      {% endif %}
+
+      {#
+       # The case that there already exists a user whose username matches ID of the newly created LDAP user
+       # https://github.com/weseek/crowi-plus/issues/193
+       #}
+      {% set isDuplicatedUsernameExceptionOccured = req.flash('isDuplicatedUsernameExceptionOccured') %}
+      {% if isDuplicatedUsernameExceptionOccured != null %}
+      <div class="alert alert-warning">
+        <i class="fa fa-fw fa-info-circle"></i>
+        <strong>DuplicatedUsernameException occured</strong>
+        <p>
+          Your LDAP authentication was succeess, but a new user could not be created.
+          See the issue <a href="https://github.com/weseek/crowi-plus/issues/193">#193</a>.
+        </p>
+      </div>
+      {% endif %}
+
       {% set success = req.flash('successMessage') %}
       {% if success.length %}
       <div class="alert alert-success">
@@ -30,9 +53,20 @@
 
       {% set warn = req.flash('warningMessage') %}
       {% if warn.length %}
-      <div class="alert alert-danger">
-        {{ warn }}
+      {% for w in warn %}
+      <div class="alert alert-warning">
+        {{ w }}
       </div>
+      {% endfor %}
+      {% endif %}
+
+      {% set error = req.flash('errorMessage') %}
+      {% if error.length %}
+      {% for e in error %}
+      <div class="alert alert-danger">
+        {{ e }}
+      </div>
+      {% endfor %}
       {% endif %}
 
       {% if req.form.errors.length > 0 %}
@@ -47,12 +81,19 @@
     </div>
     <form role="form" action="/login" method="post">
       <div class="input-group">
-        <span class="input-group-addon"><i class="fa fa-user"></i></span>
+        <span class="input-group-addon"><i class="fa fa-fw fa-user"></i></span>
         <input type="text" class="form-control" placeholder="Username or E-mail" name="loginForm[username]">
+        {% if isLdapSetup() %}
+        <span class="input-group-addon">
+          <small class="text-primary">
+            <i class="fa fa-fw fa-check-circle"></i> LDAP
+          </small>
+        </span>
+        {% endif %}
       </div>
 
       <div class="input-group">
-        <span class="input-group-addon"><i class="fa fa-key"></i></span>
+        <span class="input-group-addon"><i class="fa fa-fw fa-key"></i></span>
         <input type="password" class="form-control" placeholder="Password" name="loginForm[password]">
       </div>
 
