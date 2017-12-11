@@ -1,8 +1,9 @@
 CHANGES
 ========
 
-## 2.3.0-RC
+## 2.3.0-RC3
 
+* Feature: LDAP Authentication
 * Fix: node versions couldn't be shown
 * Support: Upgrade libs
     * express-pino-logger
