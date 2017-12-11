@@ -78,7 +78,7 @@
     "escape-string-regexp": "^1.0.5",
     "express": "^4.16.1",
     "express-form": "~0.12.0",
-    "express-pino-logger": "^2.0.0",
+    "express-pino-logger": "^3.0.1",
     "express-session": "~1.15.0",
     "express-webpack-assets": "^0.1.0",
     "file-loader": "^1.1.0",

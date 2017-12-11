@@ -1,9 +1,11 @@
 CHANGES
 ========
 
-## 2.3.0
+## 2.3.0-RC
 
 * Fix: node versions couldn't be shown
+* Support: Upgrade libs
+    * express-pino-logger
 
 ## 2.2.4
 
