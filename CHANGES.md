@@ -1,6 +1,10 @@
 CHANGES
 ========
 
+## 2.3.0
+
+* Fix: node versions couldn't be shown
+
 ## 2.2.4
 
 * Fix: googleapis v23.0.0 lost the function `oauth2Client.setCredentials`
