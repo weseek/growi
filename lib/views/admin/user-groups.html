@@ -70,6 +70,43 @@
       </div><!-- /.modal -->
       {% endif %}
 
+      <div class="modal fade" id="admin-delete-user-group-modal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              <h4 class="modal-title"><code id="admin-delete-user-group-name"></code>グループを削除しますか?</h4>
+            </div>
+
+            <div class="modal-body">
+              <p>
+                グループの削除オペレーションを行うと元に戻すことはできませんのでご注意ください。
+              </p>
+              <p>
+                Related users:
+                <ul class="list-inline">
+                  {% for dGroupRelatedUser in userGroups %}
+                  <li class="list-inline-item badge badge-primary">{{dGroupRelatedUser.name}}</li>
+                  {% endfor %}
+                </ul>
+              </p>
+
+              <form method="post" id="admin-user-groups-delete">
+                <input type="hidden" name="user-group_id" value="">
+                <input type="hidden" name="_csrf" value="{{ csrf() }}">
+                <button type="submit" value="" class="btn btn-danger">
+                  実行
+                </button>
+              </form>
+
+            </div>
+
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+
       <h2>グループ一覧</h2>
 
       <table class="table table-hover table-striped table-bordered table-user-list">
@@ -77,6 +114,7 @@
           <tr>
             <th width="100px">#</th>
             <th>名前</th>
+            <th>ユーザ一覧</th>
             <th width="100px">作成日</th>
             <th width="90px">操作</th>
           </tr>
@@ -88,6 +126,11 @@
               <img src="{{ sGroup|picture }}" class="picture picture-rounded" />
             </td>
             <td>{{ sGroup.name }}</td>
+            <td><ul class="list-inline">
+              {% for user in userGroups %}
+              <li class="list-inline-item badge badge-primary">{{user.name}}</li>
+              {% endfor %}
+            </ul></td>
             <td>{{ sGroup.createdAt|date('Y-m-d', sGroup.createdAt.getTimezoneOffset()) }}</td>
             <td>
               <div class="btn-group admin-group-menu">
@@ -100,6 +143,18 @@
                   <li>
                     <a href="">編集</a>
                   </li>
+
+                  <li class="dropdown-button">
+                    <a href="#"
+                      data-user-group-id="{{ sGroup._id.toString() }}"
+                      data-user-group-name="{{ sGroup.name.toString() }}"
+                      data-related-users="{{ userGroups }}"
+                      data-target="#admin-delete-user-group-modal"
+                      data-toggle="modal" class="btn btn-block btn-danger">
+                      グループの削除
+                    </a>
+                  </li>
+
                 </ul>
               </div>
             </td>

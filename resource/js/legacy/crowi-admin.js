@@ -52,4 +52,31 @@ $(function() {
 
     return false;
   });
+
+  $('#admin-delete-user-group-modal').on('show.bs.modal', function (button) {
+    var data = $(button.relatedTarget);
+    var userGroupId = data.data('user-group-id');
+    var userGroupName = data.data('user-group-name');
+    var relatedUsers = data.data('related-users');
+
+    $('#admin-delete-user-group-name').text(userGroupName);
+    $('#admin-user-groups-delete input[name=user-group_id]').val(userGroupId);
+  });
+
+  $('form#admin-user-groups-delete').on('submit', function (e) {
+    $.post('/_api/admin/userGroups.delete', $(this).serialize(), function (res) {
+      if (res.ok) {
+        // TODO Fix
+        //location.reload();
+        $('#admin-delete-user-group-modal').modal('hide');
+        return;
+      }
+
+      // fixme
+      alert('Failed to reset password');
+    });
+
+    return false;
+  });
+
 });
