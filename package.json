@@ -125,7 +125,8 @@
     "uglifycss": "^0.0.27",
     "webpack": "^3.1.0",
     "webpack-bundle-analyzer": "^2.9.0",
-    "webpack-merge": "~4.1.0"
+    "webpack-merge": "~4.1.0",
+    "xss": "^0.3.5"
   },
   "devDependencies": {
     "chai": "^4.1.0",
