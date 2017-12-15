@@ -4,6 +4,7 @@ import hljs from 'highlight.js';
 import MarkdownFixer from './PreProcessor/MarkdownFixer';
 import Linker        from './PreProcessor/Linker';
 import ImageExpander from './PreProcessor/ImageExpander';
+import XssFilter from './PreProcessor/XssFilter';
 
 import Emoji         from './PostProcessor/Emoji';
 import Mathjax       from './PostProcessor/Mathjax';
@@ -22,6 +23,7 @@ export default class CrowiRenderer {
       new MarkdownFixer(crowi),
       new Linker(crowi),
       new ImageExpander(crowi),
+      new XssFilter(crowi),
     ];
     this.postProcessors = [
       new Emoji(crowi),
