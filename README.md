@@ -30,8 +30,8 @@ Why crowi-plus?
   * Adopt the fastest logger [pino](https://github.com/pinojs/pino)
   * Using CDN
 * **Secure**
-  * Upgrade jQuery to 3.x
-  * Upgrade other insecure libs
+  * Prevent XSS (Cross Site Scripting)
+  * Upgrade jQuery to 3.x and other insecure libs
   * The official Crowi status is [![dependencies Status](https://david-dm.org/crowi/crowi/status.svg)](https://david-dm.org/crowi/crowi) [![devDependencies Status](https://david-dm.org/crowi/crowi/dev-status.svg)](https://david-dm.org/crowi/crowi?type=dev)
 * **Convenient**
   * Support LDAP Authentication

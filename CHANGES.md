@@ -4,6 +4,7 @@ CHANGES
 ## 2.3.0-RC3
 
 * Feature: LDAP Authentication
+* Imprv: Prevent XSS
 * Fix: node versions couldn't be shown
 * Support: Upgrade libs
     * express-pino-logger
@@ -14,8 +15,6 @@ CHANGES
     * Degraded by 2.2.2 updates
 * Fix: HeaderSearchBox didn't append 'q=' param when searching
     * Degraded by 2.2.3 updates
-
-* Feature: LDAP Authentication
 
 ## 2.2.3
 
