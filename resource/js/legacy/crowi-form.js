@@ -451,7 +451,7 @@ $(function() {
         let page = res.page;
         pageId = page._id
 
-        toastr.success(undefined, 'Saved successful', {
+        toastr.success(undefined, 'Saved successfully', {
           closeButton: true,
           progressBar: true,
           newestOnTop: false,

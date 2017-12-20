@@ -26,21 +26,22 @@ Why crowi-plus?
   * Find plugins from [npm](https://www.npmjs.com/browse/keyword/crowi-plugin) or [github](https://github.com/search?q=topic%3Acrowi-plugin)!
 * **Faster**
   * Optimize client-side code chunks by Webpack
-  * Optimize cache settings for static assets
+  * Adopt [date-fns](https://github.com/date-fns/date-fns) and omit Moment.js
   * Adopt the fastest logger [pino](https://github.com/pinojs/pino)
   * Using CDN
 * **Secure**
-  * Upgrade jQuery to 3.x
-  * Upgrade other insecure libs
+  * Prevent XSS (Cross Site Scripting)
+  * Upgrade jQuery to 3.x and other insecure libs
   * The official Crowi status is [![dependencies Status](https://david-dm.org/crowi/crowi/status.svg)](https://david-dm.org/crowi/crowi) [![devDependencies Status](https://david-dm.org/crowi/crowi/dev-status.svg)](https://david-dm.org/crowi/crowi?type=dev)
 * **Convenient**
-  * Easy to integrate with Slack using Incoming Webhooks
-  * [Added miscellaneous features](https://github.com/weseek/crowi-plus/wiki/Additional-Features)
+  * Support LDAP Authentication
+  * Slack Incoming Webhooks Integration
+  * [Miscellaneous features](https://github.com/weseek/crowi-plus/wiki/Additional-Features)
 * **[Docker Ready][dockerhub]**
 * **[Docker Compose Ready][docker-compose]**
   * [Multiple sites example](https://github.com/weseek/crowi-plus-docker-compose/tree/master/examples/multi-app)
   * [HTTPS(with Let's Encrypt) proxy integration example](https://github.com/weseek/crowi-plus-docker-compose/tree/master/examples/https-portal)
-* Support for IE11 (Experimental)
+* Support IE11 (Experimental)
 * **Developer-friendly**
   * Less compile time
   * LiveReload separately available by server/client code change

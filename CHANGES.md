@@ -1,6 +1,14 @@
 CHANGES
 ========
 
+## 2.3.0
+
+* Feature: LDAP Authentication
+* Imprv: Prevent XSS
+* Fix: node versions couldn't be shown
+* Support: Upgrade libs
+    * express-pino-logger
+
 ## 2.2.4
 
 * Fix: googleapis v23.0.0 lost the function `oauth2Client.setCredentials`
