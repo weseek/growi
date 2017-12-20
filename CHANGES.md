@@ -1,7 +1,7 @@
 CHANGES
 ========
 
-## 2.3.0-RC3
+## 2.3.0
 
 * Feature: LDAP Authentication
 * Imprv: Prevent XSS
