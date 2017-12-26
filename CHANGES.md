@@ -1,6 +1,12 @@
 CHANGES
 ========
 
+## 2.3.1
+
+* Fix: Blockquote doesn't work
+    * Degraded by 2.3.0
+* Fix: Couldn't create user with first LDAP logging in
+
 ## 2.3.0
 
 * Feature: LDAP Authentication
