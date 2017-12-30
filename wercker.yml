@@ -1,4 +1,4 @@
-box: node:6.11
+box: node:6.12
 
 services:
   - mongo:3.4
