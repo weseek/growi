@@ -1,6 +1,10 @@
 CHANGES
 ========
 
+## 2.3.2
+
+* Improvement: Add LDAP group search options
+
 ## 2.3.1
 
 * Fix: Blockquote doesn't work
@@ -10,7 +14,7 @@ CHANGES
 ## 2.3.0
 
 * Feature: LDAP Authentication
-* Imprv: Prevent XSS
+* Improvement: Prevent XSS
 * Fix: node versions couldn't be shown
 * Support: Upgrade libs
     * express-pino-logger
