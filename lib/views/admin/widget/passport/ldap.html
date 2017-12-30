@@ -151,7 +151,9 @@
               The query used to filter for groups.<br>
               Use <code>{% raw %}{{dn}}{% endraw %}</code> to have it replaced of the found user object.<br>
               <br>
-              Example: <code>(&(cn=group1)(memberUid={% raw %}{{dn}}{% endraw %}))</code> hits the groups which has <code>cn=group1</code> and <code>memberUid</code> equals to the user's <code>uid</code> (when <code>Group DN Property</code> is not changed from the default value.)
+              Example: <code>(&(cn=group1)(memberUid={% raw %}{{dn}}{% endraw %}))</code> hits the groups
+              which has <code>cn=group1</code> and <code>memberUid</code> includes the user's <code>uid</code>
+              (when <code>Group DN Property</code> is not changed from the default value.)
             </small>
           </p>
         </div>
