@@ -110,17 +110,65 @@
         </div>
       </div>
 
-      <h4>Attribute Mapping</h4>
-
-      <p class="well well-sm">Specification of mappings when creating new users</p>
+      <h4>Attribute Mapping (Optional)</h4>
 
       <div class="form-group">
-          <label for="settingForm[security:passport-ldap:attrMapUsername]" class="col-xs-3 control-label">username</label>
-          <div class="col-xs-6">
-            <input class="form-control" type="text" placeholder="Default: uid"
-                name="settingForm[security:passport-ldap:attrMapUsername]" value="{{ settingForm['security:passport-ldap:attrMapUsername'] || '' }}">
-          </div>
+        <label for="settingForm[security:passport-ldap:attrMapUsername]" class="col-xs-3 control-label">username</label>
+        <div class="col-xs-6">
+          <input class="form-control" type="text" placeholder="Default: uid"
+              name="settingForm[security:passport-ldap:attrMapUsername]" value="{{ settingForm['security:passport-ldap:attrMapUsername'] || '' }}">
+          <p class="help-block">
+            <small>
+              Specification of mappings when creating new users
+            </small>
+          </p>
         </div>
+      </div>
+
+      <h4>Group Search Filter (Optional)</h4>
+
+      <div class="form-group">
+        <label for="settingForm[security:passport-ldap:groupSearchBase]" class="col-xs-3 control-label">Group Search Base DN</label>
+        <div class="col-xs-6">
+          <input class="form-control" type="text"
+              name="settingForm[security:passport-ldap:groupSearchBase]" value="{{ settingForm['security:passport-ldap:groupSearchBase'] || '' }}">
+          <p class="help-block">
+            <small>
+              The base DN from which to search for groups. If defined, also <code>Group Search Filter</code> must be defined for the search to work.<br>
+              Example: <code>ou=groups,dc=domain,dc=com</code><br>
+            </small>
+          </p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="settingForm[security:passport-ldap:groupSearchFilter]" class="col-xs-3 control-label">Group Search Filter</label>
+        <div class="col-xs-6">
+          <input class="form-control" type="text"
+              name="settingForm[security:passport-ldap:groupSearchFilter]" value="{{ settingForm['security:passport-ldap:groupSearchFilter'] || '' }}">
+          <p class="help-block">
+            <small>
+              The query used to filter for groups.<br>
+              Use <code>{% raw %}{{dn}}{% endraw %}</code> to have it replaced of the found user object.<br>
+              <br>
+              Example: <code>(&(cn=group1)(memberUid={% raw %}{{dn}}{% endraw %}))</code> hits the groups which has <code>cn=group1</code> and <code>memberUid</code> equals to the user's <code>uid</code> (when <code>Group DN Property</code> is not changed from the default value.)
+            </small>
+          </p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="settingForm[security:passport-ldap:groupSearchFilter]" class="col-xs-3 control-label">Group DN Property</label>
+        <div class="col-xs-6">
+          <input class="form-control" type="text" placeholder="Default: uid"
+              name="settingForm[security:passport-ldap:groupDnProperty]" value="{{ settingForm['security:passport-ldap:groupDnProperty'] || '' }}">
+          <p class="help-block">
+            <small>
+              The property of user object to use in <code>{% raw %}{{dn}}{% endraw %}</code> interpolation of <code>Group Search Filter</code>.
+            </small>
+          </p>
+        </div>
+      </div>
 
     </div><!-- /.passport-ldap-configurations -->
 
