@@ -1,6 +1,11 @@
 CHANGES
 ========
 
+## 2.3.3
+
+* Fix: The XSS Library escapes inline code blocks
+    * Degraded by 2.3.0
+
 ## 2.3.2
 
 * Improvement: Add LDAP group search options
