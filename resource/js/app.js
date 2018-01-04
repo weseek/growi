@@ -6,6 +6,7 @@ import CrowiRenderer from './util/CrowiRenderer';
 
 import HeaderSearchBox  from './components/HeaderSearchBox';
 import SearchPage       from './components/SearchPage';
+import PageEditor       from './components/PageEditor';
 import PageListSearch   from './components/PageListSearch';
 import PageHistory      from './components/PageHistory';
 import PageComments     from './components/PageComments';
@@ -64,6 +65,7 @@ if (isEnabledPlugins) {
 const componentMappings = {
   'search-top': <HeaderSearchBox crowi={crowi} />,
   'search-page': <SearchPage crowi={crowi} />,
+  'page-editor': <PageEditor crowi={crowi} />,
   'page-list-search': <PageListSearch crowi={crowi} />,
   'page-comments-list': <PageComments pageId={pageId} revisionId={pageRevisionId} revisionCreatedAt= {pageRevisionCreatedAt} crowi={crowi} />,
   'page-attachment': <PageAttachment pageId={pageId} pageContent={pageContent} crowi={crowi} />,
