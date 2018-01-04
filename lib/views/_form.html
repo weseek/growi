@@ -14,11 +14,11 @@
 </div>
 {% endif %}
 <div id="form-box" class="row">
-  <form action="/_/edit" id="page-form" method="post" class="col-md-6 {% if isUploadable() %}uploadable{% endif %} page-form">
+  <form action="/_/edit" id="page-form" method="post" class="{% if isUploadable() %}uploadable{% endif %} page-form">
 
-    <div id="page-editor"></div>
-    <textarea name="pageForm[body]" class="form-control" id="form-body">{% if pageForm.body %}{{ pageForm.body }}{% elseif not page.revision.body %}# {{ path|path2name }}{% else %}{{ page.revision.body }}{% endif %}</textarea>
+    <div id="page-editor">{% if pageForm.body %}{{ pageForm.body }}{% endif %}</div>
 
+    <input type="hidden" id="form-body" name="pageForm[body]" value="{% if pageForm.body %}{{ pageForm.body }}{% endif %}">
     <input type="hidden" name="pageForm[path]" value="{{ path }}">
     <input type="hidden" name="pageForm[currentRevision]" value="{{ pageForm.currentRevision|default(page.revision._id.toString()) }}">
     <div class="form-submit-group form-group form-inline">
@@ -61,10 +61,6 @@
       </div>
     </div>
   </form>
-  <div class="col-md-6 hidden-sm hidden-xs">
-    <div id="preview-body" class="wiki preview-body">
-    </div>
-  </div>
   <div class="file-module hidden">
   </div>
 </div>

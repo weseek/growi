@@ -10,9 +10,10 @@ export default class PageEditor extends React.Component {
     super(props);
 
     this.state = {
-      markdown: '',
-      html: '',
+      markdown: this.props.markdown,
     };
+    // initial preview
+    this.renderPreview();
 
     this.onMarkdownChanged = this.onMarkdownChanged.bind(this);
   }
@@ -60,6 +61,9 @@ export default class PageEditor extends React.Component {
       .then(() => crowi.interceptorManager.process('preRenderPreviewHtml', context))
       .then(() => {
         this.setState({html: context.parsedHTML});
+
+        // set html to the hidden input (for submitting to save)
+        $('#form-body').val(this.state.markdown);
       })
       // process interceptors for post rendering
       .then(() => crowi.interceptorManager.process('postRenderPreviewHtml', context));
@@ -69,8 +73,12 @@ export default class PageEditor extends React.Component {
   render() {
     return (
       <div>
-        <Editor value={this.state.markdown} onChange={this.onMarkdownChanged} />
-        <Preview html={this.state.html} inputRef={el => this.previewElement = el} />
+        <div className="col-md-6">
+          <Editor value={this.state.markdown} onChange={this.onMarkdownChanged} />
+        </div>
+        <div className="col-md-6 hidden-sm hidden-xs">
+          <Preview html={this.state.html} inputRef={el => this.previewElement = el} />
+        </div>
       </div>
     )
   }
@@ -78,4 +86,5 @@ export default class PageEditor extends React.Component {
 
 PageEditor.propTypes = {
   crowi: PropTypes.object.isRequired,
+  markdown: PropTypes.string,
 };
