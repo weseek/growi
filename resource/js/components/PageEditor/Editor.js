@@ -8,7 +8,7 @@ require('codemirror/addon/edit/matchbrackets');
 require('codemirror/addon/edit/matchtags');
 require('codemirror/addon/edit/closetag');
 require('codemirror/addon/edit/continuelist');
-require('codemirror/addon/edit/indentlist');
+// require('codemirror/addon/edit/indentlist');
 require('codemirror/addon/search/match-highlighter');
 require('codemirror/addon/scroll/annotatescrollbar');
 require('codemirror/mode/gfm/gfm');
