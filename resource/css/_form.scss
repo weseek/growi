@@ -63,6 +63,11 @@
 
   .page-editor-editor-container {
     border-right: 1px solid #ccc;
+
+    // override CodeMirror styles
+    .CodeMirror pre {
+      font-family: $font-family-monospace-not-strictly;
+    }
   }
   .page-editor-preview-container {
   }
@@ -74,7 +79,6 @@
   }
 
   .form-group.form-submit-group {
-
     position: fixed;
     z-index: 1054;
     bottom: 0;
