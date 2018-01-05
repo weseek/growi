@@ -1413,7 +1413,13 @@ code-point-at@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
 
-codemirror@^5.33.0:
+codemirror-markdown-list-autoindent@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/codemirror-markdown-list-autoindent/-/codemirror-markdown-list-autoindent-1.0.1.tgz#712ec4a9cc636f5070d40253f74fa353a56f0092"
+  dependencies:
+    codemirror "^5.x"
+
+codemirror@^5.33.0, codemirror@^5.x:
   version "5.33.0"
   resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.33.0.tgz#462ad9a6fe8d38b541a9536a3997e1ef93b40c6a"
 

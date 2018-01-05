@@ -2,9 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { UnControlled as CodeMirror } from 'react-codemirror2';
-require('codemirror/addon/display/autorefresh');
-require('codemirror/mode/gfm/gfm');
 require('codemirror/lib/codemirror.css');
+require('codemirror/addon/display/autorefresh');
+require('codemirror/addon/edit/matchtags');
+require('codemirror/addon/edit/closetag');
+require('codemirror/addon/edit/continuelist');
+require('codemirror/addon/edit/indentlist');
+require('codemirror/mode/gfm/gfm');
 
 export default class Editor extends React.Component {
 
@@ -24,7 +28,20 @@ export default class Editor extends React.Component {
         options={{
           mode: 'gfm',
           lineNumbers: true,
-          autoRefresh: true
+          tabSize: 4,
+          indentUnit: 4,
+          autoRefresh: true,
+          autoCloseTags: true,
+          matchTags: {bothTags: true},
+          lineWrapping: true,
+          // markdown mode options
+          highlightFormatting: true,
+          // continuelist, indentlist
+          extraKeys: {
+            "Enter": "newlineAndIndentContinueMarkdownList",
+            "Tab": "autoIndentMarkdownList",
+            "Shift-Tab": "autoUnindentMarkdownList"
+          }
         }}
         onChange={(editor, data, value) => {
           if (this.props.onChange != null) {
