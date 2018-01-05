@@ -66,8 +66,16 @@
     border-right: 1px solid #ccc;
 
     // override CodeMirror styles
-    .CodeMirror pre {
-      font-family: $font-family-monospace-not-strictly;
+    .CodeMirror {
+      pre {
+        font-family: $font-family-monospace-not-strictly;
+      }
+      .cm-matchhighlight {
+        background-color: cyan;
+      }
+      .CodeMirror-selection-highlight-scrollbar {
+        background-color: darkcyan;
+      }
     }
   }
   .page-editor-preview-container {

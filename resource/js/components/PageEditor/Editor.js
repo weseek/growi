@@ -9,6 +9,8 @@ require('codemirror/addon/edit/matchtags');
 require('codemirror/addon/edit/closetag');
 require('codemirror/addon/edit/continuelist');
 require('codemirror/addon/edit/indentlist');
+require('codemirror/addon/search/match-highlighter');
+require('codemirror/addon/scroll/annotatescrollbar');
 require('codemirror/mode/gfm/gfm');
 require('codemirror/theme/eclipse.css');
 
@@ -34,11 +36,13 @@ export default class Editor extends React.Component {
           lineNumbers: true,
           tabSize: 4,
           indentUnit: 4,
+          lineWrapping: true,
           autoRefresh: true,
           autoCloseTags: true,
           matchBrackets: true,
           matchTags: {bothTags: true},
-          lineWrapping: true,
+          // match-highlighter, matchesonscrollbar, annotatescrollbar options
+          highlightSelectionMatches: {annotateScrollbar: true},
           // markdown mode options
           highlightFormatting: true,
           // continuelist, indentlist
