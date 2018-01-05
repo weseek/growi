@@ -9,6 +9,8 @@ require('codemirror/addon/edit/closetag');
 require('codemirror/addon/edit/continuelist');
 require('codemirror/addon/edit/indentlist');
 require('codemirror/mode/gfm/gfm');
+require('codemirror/theme/eclipse.css');
+
 
 export default class Editor extends React.Component {
 
@@ -27,6 +29,7 @@ export default class Editor extends React.Component {
         autoFocus={true}
         options={{
           mode: 'gfm',
+          theme: 'eclipse',
           lineNumbers: true,
           tabSize: 4,
           indentUnit: 4,

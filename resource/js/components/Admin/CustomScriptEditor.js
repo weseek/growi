@@ -10,6 +10,7 @@ require('codemirror/addon/hint/show-hint');
 require('codemirror/addon/edit/matchbrackets');
 require('codemirror/addon/edit/closebrackets');
 require('codemirror/mode/javascript/javascript');
+require('codemirror/theme/eclipse.css');
 
 require('jquery-ui/ui/widgets/resizable');
 
