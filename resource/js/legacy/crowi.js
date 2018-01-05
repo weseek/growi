@@ -3,6 +3,7 @@
 */
 
 var io = require('socket.io-client');
+var entities = require("entities");
 require('bootstrap-sass');
 require('jquery.cookie');
 
@@ -112,27 +113,6 @@ Crowi.revisionToc = function(contentId, tocId) {
       });
     });
   });
-};
-
-
-Crowi.escape = function(s) {
-  s = s.replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/'/g, '&#39;')
-    .replace(/"/g, '&quot;')
-    ;
-  return s;
-};
-Crowi.unescape = function(s) {
-  s = s.replace(/&nbsp;/g, ' ')
-    .replace(/&amp;/g, '&')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&#39;/g, '\'')
-    .replace(/&quot;/g, '"')
-    ;
-  return s;
 };
 
 // original: middleware.swigFilter
@@ -437,8 +417,8 @@ $(function() {
     var escape = function(s) {
       return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
     };
-    path = Crowi.escape(path);
-    var pattern = escape(Crowi.escape(shortPath)) + '(/)?$';
+    path = entities.encodeHTML(path);
+    var pattern = escape(entities.encodeHTML(shortPath)) + '(/)?$';
 
     $link.html(path.replace(new RegExp(pattern), '<strong>' + shortPath + '$1</strong>'));
   });
@@ -455,7 +435,7 @@ $(function() {
         var $revisionBody = $(revisionBody);
         var revisionPath = '#' + id + ' .revision-path';
 
-        var markdown = Crowi.unescape($(contentId).html());
+        var markdown = entities.decodeHTML($(contentId).html());
         var parsedHTML = crowiRenderer.render(markdown, $revisionBody.get(0), rendererOptions);
         $revisionBody.html(parsedHTML);
 
@@ -501,7 +481,7 @@ $(function() {
     // if page exists
     var $rawTextOriginal = $('#raw-text-original');
     if ($rawTextOriginal.length > 0) {
-      var markdown = Crowi.unescape($('#raw-text-original').html());
+      var markdown = entities.decodeHTML($('#raw-text-original').html());
       var dom = $('#revision-body-content').get(0);
 
       // create context object
