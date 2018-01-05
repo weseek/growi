@@ -187,14 +187,13 @@ $(function() {
   var currentUser = $('#content-main').data('current-user');
   var isSeen = $('#content-main').data('page-is-seen');
   var pagePath= $('#content-main').data('path');
-  var isEnabledLineBreaks = $('#content-main').data('linebreaks-enabled');
   var isSavedStatesOfTabChanges = config['isSavedStatesOfTabChanges'];
 
   // generate options obj
   var rendererOptions = {
     // see: https://www.npmjs.com/package/marked
     marked: {
-      breaks: isEnabledLineBreaks
+      breaks: config.isEnabledLineBreaks
     }
   };
 

@@ -32,11 +32,13 @@ export default class PageEditor extends React.Component {
   }
 
   renderPreview() {
+    const config = this.props.crowi.config;
+
     // generate options obj
     const rendererOptions = {
       // see: https://www.npmjs.com/package/marked
       marked: {
-        breaks: false
+        breaks: config.isEnabledLineBreaks,
       }
     };
 
