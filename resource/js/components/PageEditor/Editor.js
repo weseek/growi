@@ -48,6 +48,11 @@ export default class Editor extends React.Component {
             "Shift-Tab": "autoUnindentMarkdownList"
           }
         }}
+        onScroll={(editor, data) => {
+          if (this.props.onScroll != null) {
+            this.props.onScroll(editor, data);
+          }
+        }}
         onChange={(editor, data, value) => {
           if (this.props.onChange != null) {
             this.props.onChange(value);
@@ -62,4 +67,5 @@ export default class Editor extends React.Component {
 Editor.propTypes = {
   value: PropTypes.string,
   onChange: PropTypes.func,
+  onScroll: PropTypes.func,
 };
