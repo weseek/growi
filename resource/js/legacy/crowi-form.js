@@ -99,6 +99,11 @@
  * DOM ready
  */
 $(function() {
+  /*
+   * DUPRECATED CODES
+   * using PageEditor React Component -- 2017.01.06 Yuki Takei
+   *
+
   // preview watch
   var originalContent = $('#form-body').val();
 
@@ -411,9 +416,6 @@ $(function() {
     }
   };
 
-  /**
-   * event handler when 'Ctrl-S' pressed
-   */
   var handleSKey = function(event) {
     if (!event.ctrlKey && !event.metaKey) {
       return;
@@ -667,4 +669,5 @@ $(function() {
     });
   };
   enableScrollSync();
+  */
 });
