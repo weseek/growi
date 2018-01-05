@@ -24,7 +24,6 @@
   .tab-content {
     top: 48px;
     bottom: 58px;
-    padding: 0 12px;
     position: absolute;
     z-index: 1051;
     left: 0;
@@ -35,68 +34,44 @@
       display: none;
     }
 
-    .edit-form { // {{{
+    // layout (height: 100%)
+    .edit-form {
       height: 100%;
-      > .row {
+      > form {
         height: 100%;
-        .col-md-6 {
+        > #page-editor {
           height: 100%;
-        }
-        form {
-          padding: 0;
-          border-right: solid 1px #ccc;
-          &::after {
-            position: absolute;
-            top: 0;
-            right: 15px;
-            font-size: 10px;
-            font-weight: 700;
-            color: #959595;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            content: "Input Content ...";
-          }
-        }
-        textarea {
-          height: 100%;
-          padding-top: 18px;
-          border: none;
-          box-shadow: none;
 
-          &.dragover {
-            border: dashed 6px #ccc;
-            padding: 12px 6px 0px;
-          }
-        }
-        .preview-body {
-          height: 100%;
-          padding-top: 18px;
-          overflow: scroll;
-
-          &::after {
-            position: absolute;
-            top: 0;
-            right: 15px;
-            font-size: 10px;
-            font-weight: 700;
-            color: #959595;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            content: "Preview";
-          }
-        }
-
-        .page-form-setting {
-          .extended-setting {
-            label {
-              margin-bottom: 0;
-            }
+          .row, .col-md-6, .col-sm-12,
+          .react-codemirror2, .CodeMirror, .CodeMirror-scroll,
+          .page-editor-preview-body
+          {
+            height: 100%;
           }
         }
       }
     }
+  }
 
-  } // }}}
+  .page-form-setting {
+    .extended-setting {
+      label {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  .page-editor-editor-container {
+    border-right: 1px solid #ccc;
+  }
+  .page-editor-preview-container {
+  }
+
+  .page-editor-preview-body {
+    padding-top: 18px;
+    padding-right: 15px;
+    overflow-y: scroll;
+  }
 
   .form-group.form-submit-group {
 
@@ -127,10 +102,6 @@
   .page-list-container {
     display: none;
   }
-  .portal-form-header,
-  .portal-form {
-    display: block;
-  }
 
   .portal-form-header {
     height: 16px;
@@ -138,18 +109,6 @@
     border-bottom: solid 1px #ccc;
   }
 } // }}}
-
-textarea {
-  font-family: $font-family-monospace-not-strictly;
-  line-height: 1.1em;
-}
-
-input::-webkit-input-placeholder {
-  color: #ccc;
-}
-input:-moz-placeholder {
-  color: #ccc;
-}
 
 @media (max-width: $screen-sm-max) { // {{{ less than tablet size
 

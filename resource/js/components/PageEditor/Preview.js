@@ -15,7 +15,7 @@ export default class Preview extends React.Component {
     return (
       <div
         ref={this.props.inputRef}
-        className="wiki preview-body" dangerouslySetInnerHTML={this.generateInnerHtml(this.props.html)}>
+        className="wiki page-editor-preview-body" dangerouslySetInnerHTML={this.generateInnerHtml(this.props.html)}>
       </div>
     )
   }

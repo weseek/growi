@@ -72,11 +72,11 @@ export default class PageEditor extends React.Component {
 
   render() {
     return (
-      <div>
-        <div className="col-md-6">
+      <div className="row">
+        <div className="col-md-6 col-sm-12 page-editor-editor-container">
           <Editor value={this.state.markdown} onChange={this.onMarkdownChanged} />
         </div>
-        <div className="col-md-6 hidden-sm hidden-xs">
+        <div className="col-md-6 hidden-sm hidden-xs page-editor-preview-container">
           <Preview html={this.state.html} inputRef={el => this.previewElement = el} />
         </div>
       </div>
