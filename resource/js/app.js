@@ -20,6 +20,8 @@ import BookmarkButton   from './components/BookmarkButton';
 import CustomCssEditor  from './components/Admin/CustomCssEditor';
 import CustomScriptEditor from './components/Admin/CustomScriptEditor';
 
+import * as entities from 'entities';
+
 
 if (!window) {
   window = {};
@@ -69,7 +71,7 @@ if (isEnabledPlugins) {
 const componentMappings = {
   'search-top': <HeaderSearchBox crowi={crowi} />,
   'search-page': <SearchPage crowi={crowi} />,
-  'page-editor': <PageEditor crowi={crowi} markdown={pageContent} />,
+  'page-editor': <PageEditor crowi={crowi} markdown={entities.decodeHTML(pageContent)} />,
   'page-list-search': <PageListSearch crowi={crowi} />,
   'page-comments-list': <PageComments pageId={pageId} revisionId={pageRevisionId} revisionCreatedAt= {pageRevisionCreatedAt} crowi={crowi} />,
   'page-attachment': <PageAttachment pageId={pageId} pageContent={pageContent} crowi={crowi} />,
