@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { UnControlled as CodeMirror } from 'react-codemirror2';
 require('codemirror/lib/codemirror.css');
 require('codemirror/addon/display/autorefresh');
+require('codemirror/addon/edit/matchbrackets');
 require('codemirror/addon/edit/matchtags');
 require('codemirror/addon/edit/closetag');
 require('codemirror/addon/edit/continuelist');
@@ -35,6 +36,7 @@ export default class Editor extends React.Component {
           indentUnit: 4,
           autoRefresh: true,
           autoCloseTags: true,
+          matchBrackets: true,
           matchTags: {bothTags: true},
           lineWrapping: true,
           // markdown mode options
