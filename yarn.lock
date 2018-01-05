@@ -3152,6 +3152,10 @@ jmespath@0.15.0:
   version "0.15.0"
   resolved "https://registry.yarnpkg.com/jmespath/-/jmespath-0.15.0.tgz#a3f222a9aae9f966f5d27c796510e28091764217"
 
+jquery-ui@^1.12.1:
+  version "1.12.1"
+  resolved "https://registry.yarnpkg.com/jquery-ui/-/jquery-ui-1.12.1.tgz#bcb4045c8dd0539c134bc1488cdd3e768a7a9e51"
+
 jquery.cookie@~1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/jquery.cookie/-/jquery.cookie-1.4.1.tgz#d63dce209eab691fe63316db08ca9e47e0f9385b"

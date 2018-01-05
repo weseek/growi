@@ -91,6 +91,7 @@
     "i18next-node-fs-backend": "^1.0.0",
     "i18next-sprintf-postprocessor": "^0.2.2",
     "inline-attachment": "~2.0.3",
+    "jquery-ui": "^1.12.1",
     "jquery.cookie": "~1.4.1",
     "md5": "^2.2.1",
     "method-override": "^2.3.10",

@@ -17,6 +17,10 @@ import RevisionPath     from './components/Page/RevisionPath';
 import RevisionUrl      from './components/Page/RevisionUrl';
 import BookmarkButton   from './components/BookmarkButton';
 
+import CustomCssEditor  from './components/Admin/CustomCssEditor';
+import CustomScriptEditor from './components/Admin/CustomScriptEditor';
+
+
 if (!window) {
   window = {};
 }
@@ -92,6 +96,28 @@ Object.keys(componentMappings).forEach((key) => {
 const elem = document.getElementById('page-comment-form-behavior');
 if (elem) {
   ReactDOM.render(<PageCommentFormBehavior crowi={crowi} pageComments={componentInstances['page-comments-list']} />, elem);
+}
+
+// render for admin
+const customCssEditorElem = document.getElementById('custom-css-editor');
+if (customCssEditorElem != null) {
+  // get input[type=hidden] element
+  const customCssInputElem = document.getElementById('inputCustomCss');
+
+  ReactDOM.render(
+    <CustomCssEditor inputElem={customCssInputElem} />,
+    customCssEditorElem
+  )
+}
+const customScriptEditorElem = document.getElementById('custom-script-editor');
+if (customScriptEditorElem != null) {
+  // get input[type=hidden] element
+  const customScriptInputElem = document.getElementById('inputCustomScript');
+
+  ReactDOM.render(
+    <CustomScriptEditor inputElem={customScriptInputElem} />,
+    customScriptEditorElem
+  )
 }
 
 // うわーもうー
