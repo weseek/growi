@@ -62,7 +62,6 @@
     "bootstrap-sass": "~3.3.6",
     "check-node-version": "^3.1.1",
     "codemirror": "^5.33.0",
-    "codemirror-markdown-list-autoindent": "^1.0.1",
     "connect-flash": "~0.1.1",
     "connect-redis": "^3.3.0",
     "cookie-parser": "^1.4.3",
