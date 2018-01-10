@@ -121,7 +121,7 @@ export default class SearchForm extends React.Component {
           <InputGroup>
             <AsyncTypeahead
               ref={ref => this._typeahead = ref}
-              name="q"
+              inputProps={{name: "q", autoComplete: "off"}}
               isLoading={this.state.isLoading}
               labelKey="path"
               minLength={2}
