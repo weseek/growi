@@ -2,10 +2,6 @@
 # yarn lockfile v1
 
 
-"8fold-marked@^0.3.7":
-  version "0.3.9"
-  resolved "https://registry.yarnpkg.com/8fold-marked/-/8fold-marked-0.3.9.tgz#bb89c645612f8ccfaffac1ca6e3c11f168c9cf59"
-
 "@slack/client@^3.14.0":
   version "3.15.0"
   resolved "https://registry.yarnpkg.com/@slack/client/-/client-3.15.0.tgz#796ee2b1182cd37fadbaeb37752121b2028a1704"
@@ -3675,7 +3671,7 @@ marked-terminal@^1.6.2:
     lodash.assign "^4.2.0"
     node-emoji "^1.4.1"
 
-marked@^0.3.6:
+marked@^0.3.12, marked@^0.3.6:
   version "0.3.12"
   resolved "https://registry.yarnpkg.com/marked/-/marked-0.3.12.tgz#7cf25ff2252632f3fe2406bde258e94eee927519"
 
