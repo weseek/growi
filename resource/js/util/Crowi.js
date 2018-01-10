@@ -19,6 +19,7 @@ export default class Crowi {
     this.location = window.location || {};
     this.document = window.document || {};
     this.localStorage = window.localStorage || {};
+    this.componentInstances = undefined;
 
     this.fetchUsers = this.fetchUsers.bind(this);
     this.apiGet = this.apiGet.bind(this);

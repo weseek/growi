@@ -24,13 +24,32 @@ export default class Editor extends React.Component {
     this.state = {
       value: this.props.value,
     };
+
+    this.getCodeMirror = this.getCodeMirror.bind(this);
+    // this.initCaretPosition = this.initCaretPosition.bind(this);
+  }
+
+  getCodeMirror() {
+    return this.refs.cm.editor;
+  }
+
+  /**
+   * initialize caret position of codemirror
+   * @param {string} value
+   */
+  initCaretPosition(position) {
+    const editor = this.getCodeMirror();
+    console.log(editor);
+    // editor.setCursor(0, position);
+    editor.focus();
+    editor.setCursor(3, 3);
   }
 
   render() {
     return (
       <CodeMirror
+        ref="cm"
         value={this.state.value}
-        autoFocus={true}
         options={{
           mode: 'gfm',
           theme: 'eclipse',

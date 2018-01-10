@@ -15,7 +15,17 @@ export default class PageEditor extends React.Component {
     // initial preview
     this.renderPreview();
 
+    this.initCaretPosition = this.initCaretPosition.bind(this);
     this.onMarkdownChanged = this.onMarkdownChanged.bind(this);
+  }
+
+  /**
+   * initialize caret position of editor
+   * @param {string} value
+   */
+  initCaretPosition(position) {
+    console.log(this.refs.editor);
+    this.refs.editor.initCaretPosition(position);
   }
 
   /**
@@ -76,7 +86,7 @@ export default class PageEditor extends React.Component {
     return (
       <div className="row">
         <div className="col-md-6 col-sm-12 page-editor-editor-container">
-          <Editor value={this.state.markdown} onChange={this.onMarkdownChanged} />
+          <Editor ref="editor" value={this.state.markdown} onChange={this.onMarkdownChanged} />
         </div>
         <div className="col-md-6 hidden-sm hidden-xs page-editor-preview-container">
           <Preview html={this.state.html} inputRef={el => this.previewElement = el} />

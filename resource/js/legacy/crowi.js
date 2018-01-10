@@ -50,7 +50,7 @@ Crowi.appendEditSectionButtons = function(contentId, markdown) {
     // add button
     $(this).append(`
       <span class="revision-head-edit-button">
-        <a href="#edit-form" onClick="Crowi.setCaretPositionToFormBody(${position})">
+        <a href="#edit-form" onClick="Crowi.setCaretPositionData(${position})">
           <i class="fa fa-edit"></i>
         </a>
       </span>
@@ -63,8 +63,8 @@ Crowi.appendEditSectionButtons = function(contentId, markdown) {
  * set 'data-caret-position' attribute that will be processed in crowi-form.js
  * @param {number} position
  */
-Crowi.setCaretPositionToFormBody = function(position) {
-  const formBody = document.querySelector('#form-body');
+Crowi.setCaretPositionData = function(position) {
+  const formBody = document.querySelector('#page-editor');
   formBody.setAttribute('data-caret-position', position);
 }
 

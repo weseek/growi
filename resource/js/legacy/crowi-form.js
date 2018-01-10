@@ -68,22 +68,17 @@
    *  that is set in Crowi.setScrollPositionToFormBody
    */
   function initCaretPosition() {
-    const textarea = document.querySelector('#form-body');
-    const position = textarea.getAttribute('data-caret-position');
+    const pageEditorDom = document.querySelector('#page-editor');
+    const position = pageEditorDom.getAttribute('data-caret-position');
 
-    if (position !== null) {
-      // focus
-      textarea.blur();
-      textarea.focus();
-      // scroll to the bottom for a moment
-      textarea.scrollTop = textarea.scrollHeight;
-      // set caret to the target position
-      textarea.selectionStart = position;
-      textarea.selectionEnd = position;
-
-      // remove attribute
-      textarea.removeAttribute('data-caret-position');
+    if (position == null) {
+      return;
     }
+
+    // get the PageEditor component instance
+    const pageEditor = crowi.componentInstances['page-editor']
+    // init position
+    pageEditor.initCaretPosition(position);
   }
 
 /**
