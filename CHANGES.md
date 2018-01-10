@@ -1,6 +1,10 @@
 CHANGES
 ========
 
+## 2.3.4-RC
+
+* 
+
 ## 2.3.3
 
 * Fix: The XSS Library escapes inline code blocks
