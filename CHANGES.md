@@ -5,6 +5,7 @@ CHANGES
 
 * Fix: The XSS Library escapes inline code blocks
     * Degraded by 2.3.0
+* Fix: NPE occurs on Elasticsearch when initial access
 
 ## 2.3.2
 
