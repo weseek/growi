@@ -3,7 +3,10 @@ CHANGES
 
 ## 2.3.4-RC
 
-* 
+* Support: Switch and upgrade libs
+    * 8fold-marked -> marked
+    * react-bootstrap
+    * etc..
 
 ## 2.3.3
 
