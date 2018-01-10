@@ -109,7 +109,7 @@
     "pino-clf": "^1.0.2",
     "plantuml-encoder": "^1.2.4",
     "react": "^16.0.0",
-    "react-bootstrap": "^0.31.3",
+    "react-bootstrap": "^0.32.0",
     "react-bootstrap-typeahead": "^2.0.2",
     "react-clipboard.js": "^1.1.2",
     "react-dom": "^16.0.0",
