@@ -26,23 +26,37 @@ export default class Editor extends React.Component {
     };
 
     this.getCodeMirror = this.getCodeMirror.bind(this);
-    // this.initCaretPosition = this.initCaretPosition.bind(this);
+    this.setCaretLine = this.setCaretLine.bind(this);
+    this.forceToFocus = this.forceToFocus.bind(this);
+  }
+
+  componentDidMount() {
+    // initialize caret line
+    this.setCaretLine(0);
   }
 
   getCodeMirror() {
     return this.refs.cm.editor;
   }
 
-  /**
-   * initialize caret position of codemirror
-   * @param {string} value
-   */
-  initCaretPosition(position) {
+  forceToFocus() {
     const editor = this.getCodeMirror();
-    console.log(editor);
-    // editor.setCursor(0, position);
-    editor.focus();
-    editor.setCursor(3, 3);
+    // use setInterval with reluctance -- 2018.01.11 Yuki Takei
+    const intervalId = setInterval(() => {
+      this.getCodeMirror().focus();
+      if (editor.hasFocus()) {
+        clearInterval(intervalId);
+      }
+    }, 100);
+  }
+
+  /**
+   * set caret position of codemirror
+   * @param {string} number
+   */
+  setCaretLine(line) {
+    const editor = this.getCodeMirror();
+    editor.setCursor({line: line-1});   // leave 'ch' field as null/undefined to indicate the end of line
   }
 
   render() {

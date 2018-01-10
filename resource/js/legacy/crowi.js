@@ -4,6 +4,7 @@
 
 var io = require('socket.io-client');
 var entities = require("entities");
+var getLineFromPos = require('get-line-from-pos');
 require('bootstrap-sass');
 require('jquery.cookie');
 
@@ -46,11 +47,12 @@ Crowi.appendEditSectionButtons = function(contentId, markdown) {
     if (position < 0) { // if not found, search with header text only
       position = markdown.search(text);
     }
+    const line = getLineFromPos(markdown, position);
 
     // add button
     $(this).append(`
       <span class="revision-head-edit-button">
-        <a href="#edit-form" onClick="Crowi.setCaretPositionData(${position})">
+        <a href="#edit-form" onClick="Crowi.setCaretLineData(${line})">
           <i class="fa fa-edit"></i>
         </a>
       </span>
@@ -60,14 +62,31 @@ Crowi.appendEditSectionButtons = function(contentId, markdown) {
 };
 
 /**
- * set 'data-caret-position' attribute that will be processed in crowi-form.js
- * @param {number} position
+ * set 'data-caret-line' attribute that will be processed when 'shown.bs.tab' event fired
+ * @param {number} line
  */
-Crowi.setCaretPositionData = function(position) {
-  const formBody = document.querySelector('#page-editor');
-  formBody.setAttribute('data-caret-position', position);
+Crowi.setCaretLineData = function(line) {
+  const pageEditorDom = document.querySelector('#page-editor');
+  pageEditorDom.setAttribute('data-caret-line', line);
 }
 
+/**
+ * invoked when 'shown.bs.tab' event fired
+ */
+Crowi.setCaretLineAndFocusToEditor = function() {
+  // get 'data-caret-line' attributes
+  const pageEditorDom = document.querySelector('#page-editor');
+  const line = pageEditorDom.getAttribute('data-caret-line');
+
+  if (line != null) {
+    crowi.setCaretLine(line);
+    // reset data-caret-line attribute
+    pageEditorDom.removeAttribute('data-caret-line');
+  }
+
+  // focus
+  crowi.focusToEditor();
+}
 
 Crowi.revisionToc = function(contentId, tocId) {
   var $content = $(contentId || '#revision-body-content');
@@ -802,6 +821,11 @@ $(function() {
       window.location.replace('#edit-form');
     });
   }
+
+  // focus to editor when 'shown.bs.tab' event fired
+  $('a[href="#edit-form"]').on('shown.bs.tab', function(e) {
+    Crowi.setCaretLineAndFocusToEditor();
+  });
 });
 
 Crowi.getRevisionBodyContent = function() {
@@ -885,6 +909,7 @@ window.addEventListener('load', function(e) {
 
   Crowi.highlightSelectedSection(location.hash);
   Crowi.modifyScrollTop();
+  Crowi.setCaretLineAndFocusToEditor();
 });
 
 window.addEventListener('hashchange', function(e) {

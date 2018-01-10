@@ -19,7 +19,7 @@ export default class Crowi {
     this.location = window.location || {};
     this.document = window.document || {};
     this.localStorage = window.localStorage || {};
-    this.componentInstances = undefined;
+    this.pageEditor = undefined;
 
     this.fetchUsers = this.fetchUsers.bind(this);
     this.apiGet = this.apiGet.bind(this);
@@ -60,6 +60,10 @@ export default class Crowi {
 
   getConfig() {
     return this.config;
+  }
+
+  setPageEditor(pageEditor) {
+    this.pageEditor = pageEditor;
   }
 
   recoverData() {
@@ -111,6 +115,14 @@ export default class Crowi {
       this.localStorage.removeItem('lastFetched');
       // ignore errors
     });
+  }
+
+  setCaretLine(line) {
+    this.pageEditor.setCaretLine(line);
+  }
+
+  focusToEditor() {
+    this.pageEditor.focusToEditor();
   }
 
   clearDraft(path) {

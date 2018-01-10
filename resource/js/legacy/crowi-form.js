@@ -47,40 +47,6 @@
     $('.content-main').removeClass('on-edit');
   });
 
-  // detect mutations for #edit-form
-  const targetSelector = '#edit-form';
-  var mo = new MutationObserver(function(mutations){
-    // initialize caret position when '#edit-form' activated
-    if (mutations[0].target.classList.contains('active')) {
-      initCaretPosition();
-    }
-  });
-  mo.observe(
-    document.querySelector(targetSelector),
-    {
-      attributes: true,
-      attributeFilter: ['class'],
-    }
-  );
-
-  /**
-   * scroll the textarea named '#form-body' according to the attribute 'data-caret-position'
-   *  that is set in Crowi.setScrollPositionToFormBody
-   */
-  function initCaretPosition() {
-    const pageEditorDom = document.querySelector('#page-editor');
-    const position = pageEditorDom.getAttribute('data-caret-position');
-
-    if (position == null) {
-      return;
-    }
-
-    // get the PageEditor component instance
-    const pageEditor = crowi.componentInstances['page-editor']
-    // init position
-    pageEditor.initCaretPosition(position);
-  }
-
 /**
  * DOM ready
  */

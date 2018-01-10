@@ -15,17 +15,21 @@ export default class PageEditor extends React.Component {
     // initial preview
     this.renderPreview();
 
-    this.initCaretPosition = this.initCaretPosition.bind(this);
+    this.setCaretLine = this.setCaretLine.bind(this);
+    this.focusToEditor = this.focusToEditor.bind(this);
     this.onMarkdownChanged = this.onMarkdownChanged.bind(this);
   }
 
+  focusToEditor() {
+    this.refs.editor.forceToFocus();
+  }
+
   /**
-   * initialize caret position of editor
-   * @param {string} value
+   * set caret position of editor
+   * @param {number} line
    */
-  initCaretPosition(position) {
-    console.log(this.refs.editor);
-    this.refs.editor.initCaretPosition(position);
+  setCaretLine(line) {
+    this.refs.editor.setCaretLine(line);
   }
 
   /**
