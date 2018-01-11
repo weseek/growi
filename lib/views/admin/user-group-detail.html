@@ -1,0 +1,143 @@
+{% extends '../layout/admin.html' %}
+
+{% block html_title %}グループ管理 · {% endblock %}
+
+{% block content_head %}
+<div class="header-wrap">
+  <header id="page-header">
+    <h1 class="title" id="">グループ管理(グループ詳細)</h1>
+  </header>
+</div>
+{% endblock %}
+
+{% block content_main %}
+<div class="content-main">
+  {% set smessage = req.flash('successMessage') %}
+  {% if smessage.length %}
+  <div class="alert alert-success">
+    {{ smessage }}
+  </div>
+  {% endif %}
+
+  {% set emessage = req.flash('errorMessage') %}
+  {% if emessage.length %}
+  <div class="alert alert-danger">
+    {{ emessage }}
+  </div>
+  {% endif %}
+
+  <div class="row">
+    <div class="col-md-3">
+      {% include './widget/menu.html' with {current: 'user-group'} %}
+    </div>
+
+    <div class="col-md-9">
+      <div class="modal fade" id="admin-add-user-group-relation-modal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              <h4 class="modal-title">
+                グループにユーザを追加します</h4>
+            </div>
+
+            <div class="modal-body">
+              <p>
+                ユーザ名を入力してください。
+              </p>
+              <form role="form" action="/admin/user-group-relation/create" method="post">
+                <p>
+                  Add related user:
+                  <input type="text" name="user_name">
+                </p>
+
+                <input type="hidden" name="user_group_id" value="{{userGroup.id}}">
+                <input type="hidden" name="_csrf" value="{{ csrf() }}">
+                <button type="submit" value="" class="btn btn-danger">
+                  実行
+                </button>
+              </form>
+
+            </div>
+
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+
+      <h2>ユーザー一覧</h2>
+
+      <table class="table table-hover table-striped table-bordered table-user-list">
+        <thead>
+          <tr>
+            <th width="100px">#</th>
+            <th>
+              <code>username</code>
+            </th>
+            <th>名前</th>
+            <th width="100px">作成日</th>
+            <th width="150px">最終ログイン</th>
+            <th width="90px">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for sRelation in userGroupRelations %}
+          {% set sUser = sRelation.relatedUser%}
+          <tr>
+            <td>
+              <img src="{{ sRelation.relatedUser|picture }}" class="picture picture-rounded" />
+            </td>
+            <td>
+              <strong>{{ sRelation.relatedUser.username }}</strong>
+            </td>
+            <td>{{ sRelation.relatedUser.name }}</td>
+            <td>{{ sRelation.relatedUser.createdAt|date('Y-m-d', sRelation.relatedUser.createdAt.getTimezoneOffset()) }}</td>
+            <td>
+              {% if sRelation.relatedUser.lastLoginAt %} {{ sRelation.relatedUser.lastLoginAt|date('Y-m-d H:i', sRelation.relatedUser.createdAt.getTimezoneOffset()) }} {% endif %}
+            </td>
+            <td>
+              <div class="btn-group admin-user-menu">
+                <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                  編集
+                  <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li class="dropdown-header">編集メニュー</li>
+                  <li>
+                    <a href="">編集</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li class="dropdown-button">
+                    <form action="/admin/user-group-relation/{{userGroup.name}}/remove-relation/{{ sRelation.relatedUser._id.toString() }}" method="post">
+                      <input type="hidden" name="_csrf" value="{{ csrf() }}">
+                      <button type="submit" class="btn btn-block btn-danger">グループから外す</button>
+                    </form>
+                  </li>
+                </ul>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+          <tr>
+            <td></td>
+            <td><button type="button" class="btn btn-primary" data-target="#admin-add-user-group-relation-modal" data-toggle="modal"><i class="fa fa-plus"></i></button></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- {% include '../widget/pager.html' with {path: "/admin/user-group-detail", pager: pager} %} -->
+
+    </div>
+  </div>
+</div>
+{% endblock content_main %}
+
+{% block content_footer %}
+{% endblock content_footer %}
+
+

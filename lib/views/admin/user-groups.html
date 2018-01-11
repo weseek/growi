@@ -80,19 +80,19 @@
 
             <div class="modal-body">
               <p>
-                グループの削除オペレーションを行うと元に戻すことはできませんのでご注意ください。
+                グループの削除を行うと元に戻すことはできませんのでご注意ください。
               </p>
               <p>
                 Related users:
                 <ul class="list-inline">
-                  {% for dGroupRelatedUser in userGroups %}
+                  {% for dGroupRelatedUser in relatedUsers %}
                   <li class="list-inline-item badge badge-primary">{{dGroupRelatedUser.name}}</li>
                   {% endfor %}
                 </ul>
               </p>
 
               <form method="post" id="admin-user-groups-delete">
-                <input type="hidden" name="user-group_id" value="">
+                <input type="hidden" name="user_group_id" value="">
                 <input type="hidden" name="_csrf" value="{{ csrf() }}">
                 <button type="submit" value="" class="btn btn-danger">
                   実行
@@ -127,8 +127,8 @@
             </td>
             <td>{{ sGroup.name }}</td>
             <td><ul class="list-inline">
-              {% for user in userGroups %}
-              <li class="list-inline-item badge badge-primary">{{user.name}}</li>
+              {% for relation in userGroupRelations.get(sGroup) %}
+              <li class="list-inline-item badge badge-primary">{{relation.relatedUser.name}}</li>
               {% endfor %}
             </ul></td>
             <td>{{ sGroup.createdAt|date('Y-m-d', sGroup.createdAt.getTimezoneOffset()) }}</td>
@@ -140,8 +140,10 @@
                 </button>
                 <ul class="dropdown-menu" role="menu">
                   <li class="dropdown-header">編集メニュー</li>
-                  <li>
-                    <a href="">編集</a>
+                  <li class="divider"></li>
+
+                  <li class="dropdown-button">
+                    <a href="/admin/user-group-detail/{{sGroup.name}}" class="btn btn-block btn-default">編集</a>
                   </li>
 
                   <li class="dropdown-button">

@@ -60,23 +60,18 @@ $(function() {
     var relatedUsers = data.data('related-users');
 
     $('#admin-delete-user-group-name').text(userGroupName);
-    $('#admin-user-groups-delete input[name=user-group_id]').val(userGroupId);
+    $('#admin-user-groups-delete input[name=user_group_id]').val(userGroupId);
   });
 
   $('form#admin-user-groups-delete').on('submit', function (e) {
-    $.post('/_api/admin/userGroups.delete', $(this).serialize(), function (res) {
-      if (res.ok) {
-        // TODO Fix
-        //location.reload();
-        $('#admin-delete-user-group-modal').modal('hide');
-        return;
-      }
+    $.post('/_api/admin/user-group.remove', $(this).serialize(), function (res) {});
+  });
 
-      // fixme
-      alert('Failed to reset password');
-    });
-
-    return false;
+  $('form#user-group-relation-create').on('submit', function (e) {
+    $.post('/admin/user-group-relation/create', $(this).serialize(), function (res) {
+      $('#admin-add-user-group-relation-modal').modal('hide');
+      return;
+     });
   });
 
 });
