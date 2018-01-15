@@ -32,6 +32,9 @@
     </div>
 
     <div class="col-md-9">
+          <a href="/admin/user-groups">
+            <i class="fa fa-arrow-left"></i> グループ一覧</a>
+
       <div class="modal fade" id="admin-add-user-group-relation-modal">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -45,18 +48,35 @@
               <p>
                 ユーザ名を入力してください。
               </p>
-              <form role="form" action="/admin/user-group-relation/create" method="post">
-                <p>
-                  Add related user:
-                  <input type="text" name="user_name">
-                </p>
-
+              <form class="form-inline" role="form" action="/admin/user-group-relation/create" method="post">
+                <div class="form-group">
+                  <label for="inputRelatedUserName">Add related user:</label>
+                  <input type="text" name="user_name" class="form-control input-sm" id="inputRelatedUserName" placeholder="username">
+                </div>
                 <input type="hidden" name="user_group_id" value="{{userGroup.id}}">
                 <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                <button type="submit" value="" class="btn btn-danger">
-                  実行
-                </button>
+                <button type="submit" class="btn btn-sm btn-danger">実行</button>
               </form>
+
+              {% if 0 < notRelatedusers.length %}
+              <hr>
+              <p>
+                ユーザ名を選択してください。
+              </p>
+
+              <ul class="list-inline">
+                {% for sUser in notRelatedusers %}
+                <li>
+                  <form role="form" action="/admin/user-group-relation/create" method="post">
+                    <!-- <input type="hidden" name="user_name" value="{{sUser.username}}"> -->
+                    <input type="hidden" name="user_group_id" value="{{userGroup.id}}">
+                    <input type="hidden" name="_csrf" value="{{ csrf() }}">
+                    <button type="submit" name="user_name" value="{{sUser.username}}" class="btn btn-xs btn-primary">{{sUser.username}}</button>
+                  </form>
+                </li>
+                {% endfor %}
+              </ul>
+              {% endif %}
 
             </div>
 
@@ -104,12 +124,9 @@
                 </button>
                 <ul class="dropdown-menu" role="menu">
                   <li class="dropdown-header">編集メニュー</li>
-                  <li>
-                    <a href="">編集</a>
-                  </li>
                   <li class="divider"></li>
                   <li class="dropdown-button">
-                    <form action="/admin/user-group-relation/{{userGroup.name}}/remove-relation/{{ sRelation.relatedUser._id.toString() }}" method="post">
+                    <form action="/admin/user-group-relation/{{userGroup.name}}/remove-relation/{{ sRelation._id.toString() }}" method="post">
                       <input type="hidden" name="_csrf" value="{{ csrf() }}">
                       <button type="submit" class="btn btn-block btn-danger">グループから外す</button>
                     </form>
@@ -119,6 +136,8 @@
             </td>
           </tr>
           {% endfor %}
+
+          {% if 0 < notRelatedusers.length %}
           <tr>
             <td></td>
             <td><button type="button" class="btn btn-primary" data-target="#admin-add-user-group-relation-modal" data-toggle="modal"><i class="fa fa-plus"></i></button></td>
@@ -127,6 +146,7 @@
             <td></td>
             <td></td>
           </tr>
+          {% endif %}
         </tbody>
       </table>
 

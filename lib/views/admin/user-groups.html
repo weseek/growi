@@ -82,14 +82,6 @@
               <p>
                 グループの削除を行うと元に戻すことはできませんのでご注意ください。
               </p>
-              <p>
-                Related users:
-                <ul class="list-inline">
-                  {% for dGroupRelatedUser in relatedUsers %}
-                  <li class="list-inline-item badge badge-primary">{{dGroupRelatedUser.name}}</li>
-                  {% endfor %}
-                </ul>
-              </p>
 
               <form method="post" id="admin-user-groups-delete">
                 <input type="hidden" name="user_group_id" value="">
@@ -128,29 +120,28 @@
             <td>{{ sGroup.name }}</td>
             <td><ul class="list-inline">
               {% for relation in userGroupRelations.get(sGroup) %}
-              <li class="list-inline-item badge badge-primary">{{relation.relatedUser.name}}</li>
+              <li class="list-inline-item badge badge-primary">{{relation.relatedUser.username}}</li>
               {% endfor %}
             </ul></td>
             <td>{{ sGroup.createdAt|date('Y-m-d', sGroup.createdAt.getTimezoneOffset()) }}</td>
             <td>
               <div class="btn-group admin-group-menu">
                 <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-                  編集
+                  操作
                   <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu" role="menu">
-                  <li class="dropdown-header">編集メニュー</li>
+                  <li class="dropdown-header">メニュー</li>
                   <li class="divider"></li>
 
                   <li class="dropdown-button">
-                    <a href="/admin/user-group-detail/{{sGroup.name}}" class="btn btn-block btn-default">編集</a>
+                    <a href="/admin/user-group-detail/{{sGroup.name}}" class="btn btn-block btn-default">詳細</a>
                   </li>
 
                   <li class="dropdown-button">
                     <a href="#"
                       data-user-group-id="{{ sGroup._id.toString() }}"
                       data-user-group-name="{{ sGroup.name.toString() }}"
-                      data-related-users="{{ userGroups }}"
                       data-target="#admin-delete-user-group-modal"
                       data-toggle="modal" class="btn btn-block btn-danger">
                       グループの削除

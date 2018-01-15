@@ -57,7 +57,6 @@ $(function() {
     var data = $(button.relatedTarget);
     var userGroupId = data.data('user-group-id');
     var userGroupName = data.data('user-group-name');
-    var relatedUsers = data.data('related-users');
 
     $('#admin-delete-user-group-name').text(userGroupName);
     $('#admin-user-groups-delete input[name=user_group_id]').val(userGroupId);
