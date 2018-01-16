@@ -31,7 +31,8 @@
     right: 0;
     margin-top: 4px;
 
-    .alert-info {
+    .alert-info.alert-moved,
+    .alert-info.alert-unlinked {
       display: none;
     }
 
