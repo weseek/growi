@@ -6,6 +6,7 @@ CHANGES
 * Support: Switch and upgrade libs
     * 8fold-marked -> marked
     * react-bootstrap
+    * googleapis
     * etc..
 
 ## 2.3.3

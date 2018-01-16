@@ -2657,9 +2657,9 @@ google-p12-pem@^0.1.0:
   dependencies:
     node-forge "^0.7.1"
 
-googleapis@^23.0.0:
-  version "23.0.0"
-  resolved "https://registry.yarnpkg.com/googleapis/-/googleapis-23.0.0.tgz#02cbe8c56d346e2e8fb0ef8aec52e722322c6fe7"
+googleapis@^24.0.0:
+  version "24.0.0"
+  resolved "https://registry.yarnpkg.com/googleapis/-/googleapis-24.0.0.tgz#ce662900708abf173d78396d4db5840f56644f72"
   dependencies:
     async "2.6.0"
     google-auth-library "0.12.0"
