@@ -15,9 +15,6 @@ require('codemirror/addon/scroll/annotatescrollbar');
 require('codemirror/mode/gfm/gfm');
 require('codemirror/theme/eclipse.css');
 
-require('../../../../local_modules/codemirror-markdown-list-autoindentlist');
-
-
 export default class Editor extends React.Component {
 
   constructor(props) {
@@ -96,7 +93,8 @@ export default class Editor extends React.Component {
           // continuelist, indentlist
           extraKeys: {
             "Enter": "newlineAndIndentContinueMarkdownList",
-            "Tab": "autoIndentMarkdownList",
+            "Tab": "indentMore",
+            "Shift-Tab": "indentLess",
           }
         }}
         onScroll={(editor, data) => {
