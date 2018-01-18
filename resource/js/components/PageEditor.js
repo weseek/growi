@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import * as toastr from 'toastr';
+
 import Editor from './PageEditor/Editor';
 import Preview from './PageEditor/Preview';
 
@@ -10,6 +12,7 @@ export default class PageEditor extends React.Component {
     super(props);
 
     this.state = {
+      revisionId: this.props.revisionId,
       markdown: this.props.markdown,
     };
     // initial preview
@@ -18,6 +21,7 @@ export default class PageEditor extends React.Component {
     this.setCaretLine = this.setCaretLine.bind(this);
     this.focusToEditor = this.focusToEditor.bind(this);
     this.onMarkdownChanged = this.onMarkdownChanged.bind(this);
+    this.onSave = this.onSave.bind(this);
   }
 
   focusToEditor() {
@@ -43,6 +47,64 @@ export default class PageEditor extends React.Component {
     });
 
     this.renderPreview();
+  }
+
+  /**
+   * the save event handler
+   */
+  onSave() {
+    let endpoint;
+    let data;
+
+    // update
+    if (this.props.pageId != null) {
+      endpoint = '/pages.update';
+      data = {
+        page_id: this.props.pageId,
+        revision_id: this.state.revisionId,
+        body: this.state.markdown,
+      };
+    }
+    // create
+    else {
+      endpoint = '/pages.create';
+      data = {
+        path: this.props.pagePath,
+        body: this.state.markdown,
+      };
+    }
+
+    this.props.crowi.apiPost(endpoint, data)
+      .then((res) => {
+        const page = res.page;
+
+        toastr.success(undefined, 'Saved successfully', {
+          closeButton: true,
+          progressBar: true,
+          newestOnTop: false,
+          showDuration: "100",
+          hideDuration: "100",
+          timeOut: "1200",
+          extendedTimeOut: "150",
+        });
+
+        // update states
+        this.setState({
+          revisionId: page.revision._id,
+          markdown: page.revision.body
+        })
+      })
+      .catch((error) => {
+        console.error(error);
+        toastr.error(error.message, 'Error occured on saveing', {
+          closeButton: true,
+          progressBar: true,
+          newestOnTop: false,
+          showDuration: "100",
+          hideDuration: "100",
+          timeOut: "3000",
+        });
+      });
   }
 
   renderPreview() {
@@ -90,7 +152,10 @@ export default class PageEditor extends React.Component {
     return (
       <div className="row">
         <div className="col-md-6 col-sm-12 page-editor-editor-container">
-          <Editor ref="editor" value={this.state.markdown} onChange={this.onMarkdownChanged} />
+          <Editor ref="editor" value={this.state.markdown}
+              onChange={this.onMarkdownChanged}
+              onSave={this.onSave}
+          />
         </div>
         <div className="col-md-6 hidden-sm hidden-xs page-editor-preview-container">
           <Preview html={this.state.html} inputRef={el => this.previewElement = el} />
@@ -102,5 +167,8 @@ export default class PageEditor extends React.Component {
 
 PageEditor.propTypes = {
   crowi: PropTypes.object.isRequired,
+  pageId: PropTypes.string,
+  revisionId: PropTypes.string,
+  pagePath: PropTypes.string,
   markdown: PropTypes.string,
 };

@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { UnControlled as CodeMirror } from 'react-codemirror2';
+import * as codemirror from 'codemirror';
+
+import { UnControlled as ReactCodeMirror } from 'react-codemirror2';
 require('codemirror/lib/codemirror.css');
 require('codemirror/addon/display/autorefresh');
 require('codemirror/addon/edit/matchbrackets');
@@ -28,11 +30,14 @@ export default class Editor extends React.Component {
     this.getCodeMirror = this.getCodeMirror.bind(this);
     this.setCaretLine = this.setCaretLine.bind(this);
     this.forceToFocus = this.forceToFocus.bind(this);
+    this.dispatchSave = this.dispatchSave.bind(this);
   }
 
   componentDidMount() {
     // initialize caret line
     this.setCaretLine(0);
+    // set save handler
+    codemirror.commands.save = this.dispatchSave;
   }
 
   getCodeMirror() {
@@ -59,9 +64,18 @@ export default class Editor extends React.Component {
     editor.setCursor({line: line-1});   // leave 'ch' field as null/undefined to indicate the end of line
   }
 
+  /**
+   * dispatch onSave event
+   */
+  dispatchSave() {
+    if (this.props.onSave != null) {
+      this.props.onSave();
+    }
+  }
+
   render() {
     return (
-      <CodeMirror
+      <ReactCodeMirror
         ref="cm"
         value={this.state.value}
         options={{
@@ -83,7 +97,6 @@ export default class Editor extends React.Component {
           extraKeys: {
             "Enter": "newlineAndIndentContinueMarkdownList",
             "Tab": "autoIndentMarkdownList",
-            "Shift-Tab": "autoUnindentMarkdownList"
           }
         }}
         onScroll={(editor, data) => {
@@ -106,4 +119,5 @@ Editor.propTypes = {
   value: PropTypes.string,
   onChange: PropTypes.func,
   onScroll: PropTypes.func,
+  onSave: PropTypes.func,
 };
