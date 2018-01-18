@@ -3,9 +3,12 @@ CHANGES
 
 ## 2.3.4-RC
 
+* Fix: DOMs that has `.alert-info` class don't be displayed
 * Support: Switch and upgrade libs
     * 8fold-marked -> marked
     * react-bootstrap
+    * googleapis
+    * mongoose
     * etc..
 
 ## 2.3.3
