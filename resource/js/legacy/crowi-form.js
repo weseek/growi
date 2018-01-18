@@ -4,7 +4,6 @@
   require('bootstrap-sass');
   require('inline-attachment/src/inline-attachment');
   require('./thirdparty-js/jquery.selection');
-  const toastr = require('toastr');
 
   // show/hide
   function FetchPagesUpdatePostAndInsert(path) {
