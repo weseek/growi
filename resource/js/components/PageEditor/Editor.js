@@ -99,7 +99,7 @@ export default class Editor extends React.Component {
         }}
         onScroll={(editor, data) => {
           if (this.props.onScroll != null) {
-            this.props.onScroll(editor, data);
+            this.props.onScroll(data);
           }
         }}
         onChange={(editor, data, value) => {

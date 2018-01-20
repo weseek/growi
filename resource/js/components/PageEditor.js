@@ -22,6 +22,9 @@ export default class PageEditor extends React.Component {
     this.focusToEditor = this.focusToEditor.bind(this);
     this.onMarkdownChanged = this.onMarkdownChanged.bind(this);
     this.onSave = this.onSave.bind(this);
+    this.onEditorScroll = this.onEditorScroll.bind(this);
+    this.getMaxScrollTop = this.getMaxScrollTop.bind(this);
+    this.getScrollTop = this.getScrollTop.bind(this);
   }
 
   focusToEditor() {
@@ -107,6 +110,35 @@ export default class PageEditor extends React.Component {
       });
   }
 
+  /**
+   * the scroll event handler from codemirror
+   * @param {any} data {left, top, width, height, clientWidth, clientHeight} object that represents the current scroll position, the size of the scrollable area, and the size of the visible area (minus scrollbars).
+   *    see https://codemirror.net/doc/manual.html#events
+   */
+  onEditorScroll(data) {
+    const rate = data.top / (data.height - data.clientHeight)
+    const top = this.getScrollTop(this.previewElement, rate);
+
+    this.previewElement.scrollTop = top;
+  }
+  /**
+   * transplanted from crowi-form.js -- 2018.01.21 Yuki Takei
+   * @param {*} dom
+   */
+  getMaxScrollTop(dom) {
+    var rect = dom.getBoundingClientRect();
+    return dom.scrollHeight - rect.height;
+  };
+  /**
+   * transplanted from crowi-form.js -- 2018.01.21 Yuki Takei
+   * @param {*} dom
+   */
+  getScrollTop(dom, rate) {
+    var maxScrollTop = this.getMaxScrollTop(dom);
+    var top = maxScrollTop * rate;
+    return top;
+  };
+
   renderPreview() {
     const config = this.props.crowi.config;
 
@@ -153,6 +185,7 @@ export default class PageEditor extends React.Component {
       <div className="row">
         <div className="col-md-6 col-sm-12 page-editor-editor-container">
           <Editor ref="editor" value={this.state.markdown}
+              onScroll={this.onEditorScroll}
               onChange={this.onMarkdownChanged}
               onSave={this.onSave}
           />
