@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import * as toastr from 'toastr';
+import {debounce} from 'throttle-debounce';
 
 import Editor from './PageEditor/Editor';
 import Preview from './PageEditor/Preview';
@@ -15,8 +16,6 @@ export default class PageEditor extends React.Component {
       revisionId: this.props.revisionId,
       markdown: this.props.markdown,
     };
-    // initial preview
-    this.renderPreview();
 
     this.setCaretLine = this.setCaretLine.bind(this);
     this.focusToEditor = this.focusToEditor.bind(this);
@@ -25,6 +24,18 @@ export default class PageEditor extends React.Component {
     this.onEditorScroll = this.onEditorScroll.bind(this);
     this.getMaxScrollTop = this.getMaxScrollTop.bind(this);
     this.getScrollTop = this.getScrollTop.bind(this);
+    this.saveDraft = this.saveDraft.bind(this);
+    this.clearDraft = this.clearDraft.bind(this);
+
+    // create debounced function
+    this.saveDraftWithDebounce = debounce(300, this.saveDraft);
+  }
+
+  componentWillMount() {
+    // restore draft
+    this.restoreDraft();
+    // initial preview
+    this.renderPreview();
   }
 
   focusToEditor() {
@@ -46,10 +57,11 @@ export default class PageEditor extends React.Component {
   onMarkdownChanged(value) {
     this.setState({
       markdown: value,
-      html: '',
     });
 
     this.renderPreview();
+
+    this.saveDraftWithDebounce()
   }
 
   /**
@@ -96,6 +108,9 @@ export default class PageEditor extends React.Component {
           revisionId: page.revision._id,
           markdown: page.revision.body
         })
+
+        // clear draft
+        this.clearDraft();
       })
       .catch((error) => {
         console.error(error);
@@ -138,6 +153,23 @@ export default class PageEditor extends React.Component {
     var top = maxScrollTop * rate;
     return top;
   };
+
+  restoreDraft() {
+    // restore draft when the first time to edit
+    const draft = this.props.crowi.findDraft(this.props.pagePath);
+    if (!this.props.revisionId && draft != null) {
+      this.setState({markdown: draft});
+    }
+  }
+  saveDraft() {
+    // only when the first time to edit
+    if (!this.state.revisionId) {
+      this.props.crowi.saveDraft(this.props.pagePath, this.state.markdown);
+    }
+  }
+  clearDraft() {
+    this.props.crowi.clearDraft(this.props.pagePath);
+  }
 
   renderPreview() {
     const config = this.props.crowi.config;
@@ -200,8 +232,8 @@ export default class PageEditor extends React.Component {
 
 PageEditor.propTypes = {
   crowi: PropTypes.object.isRequired,
+  markdown: PropTypes.string.isRequired,
   pageId: PropTypes.string,
   revisionId: PropTypes.string,
   pagePath: PropTypes.string,
-  markdown: PropTypes.string,
 };

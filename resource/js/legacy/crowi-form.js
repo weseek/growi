@@ -133,12 +133,13 @@ $(function() {
       crowi.clearDraft(pagePath);
     }
   });
+  */
   $('#page-form').on('submit', function(e) {
     // avoid message
-    isFormChanged = false;
+    // isFormChanged = false;
     crowi.clearDraft(pagePath);
   });
-
+  /*
   // This is a temporary implementation until porting to React.
   var insertText = function(start, end, newText, mode) {
     var editor = document.querySelector('#form-body');

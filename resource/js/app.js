@@ -32,7 +32,7 @@ let pageId = null;
 let pageRevisionId = null;
 let pageRevisionCreatedAt = null;
 let pagePath;
-let pageContent = null;
+let pageContent = '';
 if (mainContent !== null) {
   pageId = mainContent.attributes['data-page-id'].value;
   pageRevisionId = mainContent.attributes['data-page-revision-id'].value;

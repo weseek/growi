@@ -127,12 +127,12 @@ export default class Crowi {
 
   clearDraft(path) {
     delete this.draft[path];
-    this.localStorage.draft = JSON.stringify(this.draft);
+    this.localStorage.setItem('draft', JSON.stringify(this.draft));
   }
 
   saveDraft(path, body) {
     this.draft[path] = body;
-    this.localStorage.draft = JSON.stringify(this.draft);
+    this.localStorage.setItem('draft', JSON.stringify(this.draft));
   }
 
   findDraft(path) {
