@@ -63,6 +63,11 @@ if (isEnabledPlugins) {
   crowiPlugin.installAll(crowi, crowiRenderer);
 }
 
+// for PageEditor
+const onSaveSuccess = function(page) {
+  crowi.getCrowiForJquery().updateCurrentRevision(page.revision._id);
+}
+
 /**
  * define components
  *  key: id of element
@@ -71,7 +76,8 @@ if (isEnabledPlugins) {
 const componentMappings = {
   'search-top': <HeaderSearchBox crowi={crowi} />,
   'search-page': <SearchPage crowi={crowi} />,
-  'page-editor': <PageEditor crowi={crowi} pageId={pageId} revisionId={pageRevisionId} pagePath={pagePath} markdown={entities.decodeHTML(pageContent)} />,
+  'page-editor': <PageEditor crowi={crowi} pageId={pageId} revisionId={pageRevisionId} pagePath={pagePath} markdown={entities.decodeHTML(pageContent)}
+                              onSaveSuccess={onSaveSuccess}/>,
   'page-list-search': <PageListSearch crowi={crowi} />,
   'page-comments-list': <PageComments pageId={pageId} revisionId={pageRevisionId} revisionCreatedAt= {pageRevisionCreatedAt} crowi={crowi} />,
   'page-attachment': <PageAttachment pageId={pageId} pageContent={pageContent} crowi={crowi} />,

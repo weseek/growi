@@ -111,6 +111,9 @@ export default class PageEditor extends React.Component {
 
         // clear draft
         this.clearDraft();
+
+        // dispatch onSaveSuccess
+        this.dispatchSaveSuccess(page);
       })
       .catch((error) => {
         console.error(error);
@@ -169,6 +172,15 @@ export default class PageEditor extends React.Component {
   }
   clearDraft() {
     this.props.crowi.clearDraft(this.props.pagePath);
+  }
+
+  /**
+   * dispatch onSaveSuccess event
+   */
+  dispatchSaveSuccess(page) {
+    if (this.props.onSaveSuccess != null) {
+      this.props.onSaveSuccess(page);
+    }
   }
 
   renderPreview() {
@@ -236,4 +248,5 @@ PageEditor.propTypes = {
   pageId: PropTypes.string,
   revisionId: PropTypes.string,
   pagePath: PropTypes.string,
+  onSaveSuccess: PropTypes.func,
 };

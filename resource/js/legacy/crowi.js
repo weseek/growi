@@ -176,6 +176,9 @@ Crowi.modifyScrollTop = function() {
   }, timeout);
 }
 
+Crowi.updateCurrentRevision = function(revisionId) {
+  $('#page-form [name="pageForm[currentRevision]"]').val(revisionId);
+}
 
 $(function() {
   var config = JSON.parse(document.getElementById('crowi-context-hydrate').textContent || '{}');
