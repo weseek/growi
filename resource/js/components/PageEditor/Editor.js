@@ -161,7 +161,7 @@ export default class Editor extends React.Component {
         continue;
       }
       // partial match to shortname
-      if (maxLength <= results.length + results2.length) {
+      if (maxLength <= results.length) {
         continue;
       }
       else if (data.shortname.indexOf(term) > -1) {
@@ -169,7 +169,7 @@ export default class Editor extends React.Component {
         continue;
       }
       // partial match to aliases
-      if (maxLength <= results.length + results2.length + results.length) {
+      if (maxLength <= results.length + results2.length) {
         continue;
       }
       else if ((data.aliases != null) && (data.aliases.indexOf(term) > -1)) {
@@ -177,7 +177,7 @@ export default class Editor extends React.Component {
         continue;
       }
       // partial match to keywords
-      if (maxLength <= results.length + results2.length + results.length + results4.length) {
+      if (maxLength <= results.length + results2.length + results3.length) {
         continue;
       }
       else if ((data.keywords != null) && (data.keywords.indexOf(term) > -1)) {
