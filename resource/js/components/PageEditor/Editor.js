@@ -14,6 +14,7 @@ require('codemirror/addon/edit/closetag');
 require('codemirror/addon/edit/continuelist');
 require('codemirror/addon/hint/show-hint');
 require('codemirror/addon/hint/show-hint.css');
+require('codemirror/addon/search/searchcursor');
 require('codemirror/addon/search/match-highlighter');
 require('codemirror/addon/scroll/annotatescrollbar');
 require('codemirror/mode/gfm/gfm');
@@ -79,6 +80,9 @@ export default class Editor extends React.Component {
     editor.setCursor({line: line-1});   // leave 'ch' field as null/undefined to indicate the end of line
   }
 
+  /**
+   * try to find emoji terms and show hint
+   */
   autoCompleteEmoji() {
     const cm = this.getCodeMirror();
 
@@ -86,23 +90,31 @@ export default class Editor extends React.Component {
     cm.showHint({
       completeSingle: false,
       hint: () => {
-        let cur = cm.getCursor(), token = cm.getTokenAt(cur);
-        let start = token.start, end = cur.ch, word = token.string.slice(0, end - start);
-        let ch = cur.ch, line = cur.line;
-        let currentWord = token.string;
-        while (ch-- > -1) {
-          let t = cm.getTokenAt({ch, line}).string;
-          if (t === ':') {
-            const shortnames = this.searchEmojiShortnames(currentWord);
-            if (shortnames.length >= 1) {
-              return {
-                list: this.generateEmojiRenderer(shortnames),
-                from: codemirror.Pos(line, ch-1),
-                to: codemirror.Pos(line, end)
-              };
-            }
+        // see https://regex101.com/r/gy3i03/1
+        const pattern = /:[^:\s]+/
+
+        const currentPos = cm.getCursor();
+        // find previous ':shortname'
+        const sc = cm.getSearchCursor(pattern, currentPos, { multiline: false });
+        if (sc.findPrevious()) {
+          const isInputtingEmoji = (currentPos.line === sc.to().line && currentPos.ch === sc.to().ch);
+          // return if it isn't inputting emoji
+          if (!isInputtingEmoji) {
+            return;
           }
-          currentWord = t + currentWord;
+
+          const matched = cm.getDoc().getRange(sc.from(), sc.to());
+          const term = matched.replace(':', '');  // remove ':' in the head
+
+          // get a list of shortnames
+          const shortnames = this.searchEmojiShortnames(term);
+          if (shortnames.length >= 1) {
+            return {
+              list: this.generateEmojiRenderer(shortnames),
+              from: sc.from(),
+              to: sc.to(),
+            };
+          }
         }
       },
     });
