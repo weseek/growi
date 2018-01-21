@@ -86,35 +86,35 @@ export default class Editor extends React.Component {
   autoCompleteEmoji() {
     const cm = this.getCodeMirror();
 
+    // see https://regex101.com/r/gy3i03/1
+    const pattern = /:[^:\s]+/
+
+    const currentPos = cm.getCursor();
+    // find previous ':shortname'
+    const sc = cm.getSearchCursor(pattern, currentPos, { multiline: false });
+    if (sc.findPrevious()) {
+      const isInputtingEmoji = (currentPos.line === sc.to().line && currentPos.ch === sc.to().ch);
+      // return if it isn't inputting emoji
+      if (!isInputtingEmoji) {
+        return;
+      }
+    }
+
     // see https://codemirror.net/doc/manual.html#addon_show-hint
     cm.showHint({
       completeSingle: false,
       hint: () => {
-        // see https://regex101.com/r/gy3i03/1
-        const pattern = /:[^:\s]+/
+        const matched = cm.getDoc().getRange(sc.from(), sc.to());
+        const term = matched.replace(':', '');  // remove ':' in the head
 
-        const currentPos = cm.getCursor();
-        // find previous ':shortname'
-        const sc = cm.getSearchCursor(pattern, currentPos, { multiline: false });
-        if (sc.findPrevious()) {
-          const isInputtingEmoji = (currentPos.line === sc.to().line && currentPos.ch === sc.to().ch);
-          // return if it isn't inputting emoji
-          if (!isInputtingEmoji) {
-            return;
-          }
-
-          const matched = cm.getDoc().getRange(sc.from(), sc.to());
-          const term = matched.replace(':', '');  // remove ':' in the head
-
-          // get a list of shortnames
-          const shortnames = this.searchEmojiShortnames(term);
-          if (shortnames.length >= 1) {
-            return {
-              list: this.generateEmojiRenderer(shortnames),
-              from: sc.from(),
-              to: sc.to(),
-            };
-          }
+        // get a list of shortnames
+        const shortnames = this.searchEmojiShortnames(term);
+        if (shortnames.length >= 1) {
+          return {
+            list: this.generateEmojiRenderer(shortnames),
+            from: sc.from(),
+            to: sc.to(),
+          };
         }
       },
     });
