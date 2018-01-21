@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import emojione from 'emojione';
+import emojiStrategy from 'emojione/emoji_strategy.json';
 import * as codemirror from 'codemirror';
 
 import { UnControlled as ReactCodeMirror } from 'react-codemirror2';
@@ -26,11 +28,14 @@ export default class Editor extends React.Component {
       value: this.props.value,
     };
 
+    this.initEmojiImageMap = this.initEmojiImageMap.bind(this);
     this.getCodeMirror = this.getCodeMirror.bind(this);
     this.setCaretLine = this.setCaretLine.bind(this);
     this.forceToFocus = this.forceToFocus.bind(this);
     this.dispatchSave = this.dispatchSave.bind(this);
-    this.emojiComplete = this.emojiComplete.bind(this);
+    this.autoCompleteEmoji = this.autoCompleteEmoji.bind(this);
+
+    this.initEmojiImageMap()
   }
 
   componentDidMount() {
@@ -38,6 +43,16 @@ export default class Editor extends React.Component {
     this.setCaretLine(0);
     // set save handler
     codemirror.commands.save = this.dispatchSave;
+  }
+
+  initEmojiImageMap() {
+    this.emojiShortnameImageMap = {};
+    for (let unicode in emojiStrategy) {
+      const data = emojiStrategy[unicode];
+      const shortname = data.shortname;
+      // add image tag
+      this.emojiShortnameImageMap[shortname] = emojione.shortnameToImage(shortname);
+    }
   }
 
   getCodeMirror() {
@@ -64,18 +79,13 @@ export default class Editor extends React.Component {
     editor.setCursor({line: line-1});   // leave 'ch' field as null/undefined to indicate the end of line
   }
 
-  // sample data
-  getEmojiList() {
-    return ['apple:', 'abc:', 'axz:', 'bee:', 'beam:', 'bleach:']
-  }
-
-  emojiComplete() {
+  autoCompleteEmoji() {
     const cm = this.getCodeMirror();
 
+    // see https://codemirror.net/doc/manual.html#addon_show-hint
     cm.showHint({
       completeSingle: false,
       hint: () => {
-        const emojiList = this.getEmojiList();
         let cur = cm.getCursor(), token = cm.getTokenAt(cur);
         let start = token.start, end = cur.ch, word = token.string.slice(0, end - start);
         let ch = cur.ch, line = cur.line;
@@ -83,13 +93,11 @@ export default class Editor extends React.Component {
         while (ch-- > -1) {
           let t = cm.getTokenAt({ch, line}).string;
           if (t === ':') {
-            let filteredList = emojiList.filter((item) => {
-              return item.indexOf(currentWord) == 0 ? true : false
-            });
-            if (filteredList.length >= 1) {
+            const shortnames = this.searchEmojiShortnames(currentWord);
+            if (shortnames.length >= 1) {
               return {
-                list: filteredList,
-                from: codemirror.Pos(line, ch),
+                list: this.generateEmojiRenderer(shortnames),
+                from: codemirror.Pos(line, ch-1),
                 to: codemirror.Pos(line, end)
               };
             }
@@ -98,6 +106,58 @@ export default class Editor extends React.Component {
         }
       },
     });
+  }
+
+  /**
+   * see https://codemirror.net/doc/manual.html#addon_show-hint
+   * @param {any}
+   */
+  generateEmojiRenderer(emojiShortnames) {
+    return emojiShortnames.map((shortname) => {
+      return {
+        text: shortname,
+        render: (element) => {
+          element.innerHTML = `${this.emojiShortnameImageMap[shortname]} ${shortname}`;
+        }
+      }
+    });
+  }
+
+  /**
+   * transplanted from https://github.com/emojione/emojione/blob/master/examples/OTHER.md
+   * @param {string} term
+   * @returns {string[]} a list of shortname
+   */
+  searchEmojiShortnames(term) {
+    var results = [];
+    var results2 = [];
+    var results3 = [];
+    for (let unicode in emojiStrategy) {
+      const data = emojiStrategy[unicode];
+      if (data.shortname.indexOf(term) > -1) {
+        results.push(data.shortname);
+      }
+      else {
+        if((data.aliases != null) && (data.aliases.indexOf(term) > -1)) {
+          results2.push(data.shortname);
+        }
+        else if ((data.keywords != null) && (data.keywords.indexOf(term) > -1)) {
+          results3.push(data.shortname);
+        }
+      }
+    };
+
+    if (term.length >= 3) {
+        results.sort(function(a,b) { return (a.length > b.length); });
+        results2.sort(function(a,b) { return (a.length > b.length); });
+        results3.sort();
+    }
+    var newResults = results.concat(results2).concat(results3);
+
+    // limit 10
+    newResults = newResults.slice(0, 10);
+
+    return newResults;
   }
 
   /**
@@ -142,10 +202,12 @@ export default class Editor extends React.Component {
           }
         }}
         onChange={(editor, data, value) => {
-          this.emojiComplete(editor);
           if (this.props.onChange != null) {
             this.props.onChange(value);
           }
+
+          // Emoji AutoComplete
+          this.autoCompleteEmoji(editor);
         }}
       />
     )
