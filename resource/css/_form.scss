@@ -142,3 +142,9 @@
     float: right;
   }
 } // }}}
+
+// overwrite .CodeMirror-hints
+// FIXME: required because .content-main.on-edit has 'z-index:1050'
+.CodeMirror-hints {
+  z-index: 1060 !important;
+}

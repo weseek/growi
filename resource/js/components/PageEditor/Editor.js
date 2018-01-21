@@ -10,6 +10,8 @@ require('codemirror/addon/edit/matchbrackets');
 require('codemirror/addon/edit/matchtags');
 require('codemirror/addon/edit/closetag');
 require('codemirror/addon/edit/continuelist');
+require('codemirror/addon/hint/show-hint');
+require('codemirror/addon/hint/show-hint.css');
 require('codemirror/addon/search/match-highlighter');
 require('codemirror/addon/scroll/annotatescrollbar');
 require('codemirror/mode/gfm/gfm');
@@ -28,6 +30,7 @@ export default class Editor extends React.Component {
     this.setCaretLine = this.setCaretLine.bind(this);
     this.forceToFocus = this.forceToFocus.bind(this);
     this.dispatchSave = this.dispatchSave.bind(this);
+    this.emojiComplete = this.emojiComplete.bind(this);
   }
 
   componentDidMount() {
@@ -59,6 +62,42 @@ export default class Editor extends React.Component {
   setCaretLine(line) {
     const editor = this.getCodeMirror();
     editor.setCursor({line: line-1});   // leave 'ch' field as null/undefined to indicate the end of line
+  }
+
+  // sample data
+  getEmojiList() {
+    return ['apple:', 'abc:', 'axz:', 'bee:', 'beam:', 'bleach:']
+  }
+
+  emojiComplete() {
+    const cm = this.getCodeMirror();
+
+    cm.showHint({
+      completeSingle: false,
+      hint: () => {
+        const emojiList = this.getEmojiList();
+        let cur = cm.getCursor(), token = cm.getTokenAt(cur);
+        let start = token.start, end = cur.ch, word = token.string.slice(0, end - start);
+        let ch = cur.ch, line = cur.line;
+        let currentWord = token.string;
+        while (ch-- > -1) {
+          let t = cm.getTokenAt({ch, line}).string;
+          if (t === ':') {
+            let filteredList = emojiList.filter((item) => {
+              return item.indexOf(currentWord) == 0 ? true : false
+            });
+            if (filteredList.length >= 1) {
+              return {
+                list: filteredList,
+                from: codemirror.Pos(line, ch),
+                to: codemirror.Pos(line, end)
+              };
+            }
+          }
+          currentWord = t + currentWord;
+        }
+      },
+    });
   }
 
   /**
@@ -103,6 +142,7 @@ export default class Editor extends React.Component {
           }
         }}
         onChange={(editor, data, value) => {
+          this.emojiComplete(editor);
           if (this.props.onChange != null) {
             this.props.onChange(value);
           }
