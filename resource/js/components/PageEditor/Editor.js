@@ -141,33 +141,58 @@ export default class Editor extends React.Component {
    * @returns {string[]} a list of shortname
    */
   searchEmojiShortnames(term) {
+    const maxLength = 12;
+
     var results = [];
     var results2 = [];
     var results3 = [];
+    var results4 = [];
+    // TODO performance tune
+    // when total length of all results is less than `maxLength`
     for (let unicode in emojiStrategy) {
       const data = emojiStrategy[unicode];
-      if (data.shortname.indexOf(term) > -1) {
-        results.push(data.shortname);
+
+      // prefix match to shortname
+      if (maxLength <= results.length) {
+        break;
       }
-      else {
-        if((data.aliases != null) && (data.aliases.indexOf(term) > -1)) {
-          results2.push(data.shortname);
-        }
-        else if ((data.keywords != null) && (data.keywords.indexOf(term) > -1)) {
-          results3.push(data.shortname);
-        }
+      else if (data.shortname.indexOf(`:${term}`) > -1) {
+        results.push(data.shortname);
+        continue;
+      }
+      // partial match to shortname
+      if (maxLength <= results.length + results2.length) {
+        continue;
+      }
+      else if (data.shortname.indexOf(term) > -1) {
+        results2.push(data.shortname);
+        continue;
+      }
+      // partial match to aliases
+      if (maxLength <= results.length + results2.length + results.length) {
+        continue;
+      }
+      else if ((data.aliases != null) && (data.aliases.indexOf(term) > -1)) {
+        results3.push(data.shortname);
+        continue;
+      }
+      // partial match to keywords
+      if (maxLength <= results.length + results2.length + results.length + results4.length) {
+        continue;
+      }
+      else if ((data.keywords != null) && (data.keywords.indexOf(term) > -1)) {
+        results4.push(data.shortname);
       }
     };
 
     if (term.length >= 3) {
         results.sort(function(a,b) { return (a.length > b.length); });
         results2.sort(function(a,b) { return (a.length > b.length); });
-        results3.sort();
+        results3.sort(function(a,b) { return (a.length > b.length); });
+        results4.sort();
     }
-    var newResults = results.concat(results2).concat(results3);
-
-    // limit 10
-    newResults = newResults.slice(0, 10);
+    var newResults = results.concat(results2).concat(results3).concat(results4);
+    newResults = newResults.slice(0, maxLength);
 
     return newResults;
   }
