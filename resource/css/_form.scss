@@ -147,4 +147,8 @@
 // FIXME: required because .content-main.on-edit has 'z-index:1050'
 .CodeMirror-hints {
   z-index: 1060 !important;
+
+  img.emojione {
+    width: 1.4em;
+  }
 }
