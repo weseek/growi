@@ -103,6 +103,7 @@ export default class Editor extends React.Component {
     // see https://codemirror.net/doc/manual.html#addon_show-hint
     cm.showHint({
       completeSingle: false,
+      // closeOnUnfocus: false,  // for debug
       hint: () => {
         const matched = cm.getDoc().getRange(sc.from(), sc.to());
         const term = matched.replace(':', '');  // remove ':' in the head
@@ -128,8 +129,11 @@ export default class Editor extends React.Component {
     return emojiShortnames.map((shortname) => {
       return {
         text: shortname,
+        className: 'crowi-emoji-autocomplete',
         render: (element) => {
-          element.innerHTML = `${this.emojiShortnameImageMap[shortname]} ${shortname}`;
+          element.innerHTML =
+            `<div class="img-container">${this.emojiShortnameImageMap[shortname]}</div>` +
+            `<span class="shortname-container">${shortname}</span>`;
         }
       }
     });

@@ -144,11 +144,32 @@
 } // }}}
 
 // overwrite .CodeMirror-hints
-// FIXME: required because .content-main.on-edit has 'z-index:1050'
 .CodeMirror-hints {
+  // FIXME: required because .content-main.on-edit has 'z-index:1050'
   z-index: 1060 !important;
 
-  img.emojione {
-    width: 1.4em;
+  max-height: 30em !important;
+
+  .CodeMirror-hint.crowi-emoji-autocomplete {
+    font-family: $font-family-monospace-not-strictly;
+    line-height: 1.6em;
+
+    .img-container {
+      display: inline-block;
+      width: 30px;
+
+      img.emojione {
+        width: 1.6em;
+      }
+    }
   }
+  // active line
+  .CodeMirror-hint-active.crowi-emoji-autocomplete {
+    .img-container {
+      font-size: 15px;  // adjust to .wiki
+      padding-top: 0.3em;
+      padding-bottom: 0.3em;
+    }
+  }
+
 }
