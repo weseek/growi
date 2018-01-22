@@ -147,58 +147,45 @@ export default class Editor extends React.Component {
   searchEmojiShortnames(term) {
     const maxLength = 12;
 
-    var results = [];
-    var results2 = [];
-    var results3 = [];
-    var results4 = [];
+    let results1 = [], results2 = [], results3 = [], results4 = [];
+    const countLen1 = () => { results1.length; }
+    const countLen2 = () => { countLen1() + results2.length; }
+    const countLen3 = () => { countLen2() + results3.length; }
+    const countLen4 = () => { countLen3() + results4.length; }
     // TODO performance tune
     // when total length of all results is less than `maxLength`
     for (let unicode in emojiStrategy) {
       const data = emojiStrategy[unicode];
 
+      if (maxLength <= countLen1()) { break; }
       // prefix match to shortname
-      if (maxLength <= results.length) {
-        break;
-      }
       else if (data.shortname.indexOf(`:${term}`) > -1) {
-        results.push(data.shortname);
+        results1.push(data.shortname);
         continue;
       }
+      else if (maxLength <= countLen2()) { continue; }
       // partial match to shortname
-      if (maxLength <= results.length) {
-        continue;
-      }
       else if (data.shortname.indexOf(term) > -1) {
         results2.push(data.shortname);
         continue;
       }
-      // partial match to aliases
-      if (maxLength <= results.length + results2.length) {
-        continue;
-      }
-      else if ((data.aliases != null) && (data.aliases.indexOf(term) > -1)) {
+      else if (maxLength <= countLen3()) { continue; }
+      // partial match to elements of aliases
+      else if ((data.aliases != null) && data.aliases.find(elem => elem.indexOf(term) > -1)) {
         results3.push(data.shortname);
         continue;
       }
-      // partial match to keywords
-      if (maxLength <= results.length + results2.length + results3.length) {
-        continue;
-      }
-      else if ((data.keywords != null) && (data.keywords.indexOf(term) > -1)) {
+      else if (maxLength <= countLen4()) { continue; }
+      // partial match to elements of keywords
+      else if ((data.keywords != null) && data.keywords.find(elem => elem.indexOf(term) > -1)) {
         results4.push(data.shortname);
       }
     };
 
-    if (term.length >= 3) {
-        results.sort(function(a,b) { return (a.length > b.length); });
-        results2.sort(function(a,b) { return (a.length > b.length); });
-        results3.sort(function(a,b) { return (a.length > b.length); });
-        results4.sort();
-    }
-    var newResults = results.concat(results2).concat(results3).concat(results4);
-    newResults = newResults.slice(0, maxLength);
+    let results = results1.concat(results2).concat(results3).concat(results4);
+    results = results.slice(0, maxLength);
 
-    return newResults;
+    return results;
   }
 
   /**
