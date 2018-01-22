@@ -73,7 +73,7 @@ const componentMappings = {
   'seen-user-list': <SeenUserList pageId={pageId} crowi={crowi} />,
   'bookmark-button': <BookmarkButton pageId={pageId} crowi={crowi} />,
 
-  'page-name-inputter': <NewPageNameInputter crowi={crowi} />,
+  'page-name-inputter': <NewPageNameInputter crowi={crowi} keyword={pagePath} />,
 };
 // additional definitions if pagePath exists
 if (pagePath) {

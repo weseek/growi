@@ -1,99 +1,23 @@
+// This is the root component for #search-top
+
 import React from 'react';
 import { FormGroup, Button, InputGroup } from 'react-bootstrap';
 
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 
-import UserPicture from './User/UserPicture';
-import PageListMeta from './PageList/PageListMeta';
+import SearchForm from './HeaderSearchBox/SearchForm';
+// import SearchSuggest from './HeaderSearchBox/SearchSuggest'; // omit since using react-bootstrap-typeahead in SearchForm
+
 import PagePath from './PageList/PagePath';
+
 import PropTypes from 'prop-types';
 
-// Header.SearchForm
-export default class NewPageNameInputter extends React.Component {
+export default class NewPageNameInputter extends SearchForm {
 
   constructor(props) {
     super(props);
 
-    this.crowi = window.crowi; // FIXME
-
-    this.state = {
-      input: '',
-      keyword: '',
-      searchedKeyword: '',
-      pages: [],
-      isLoading: false,
-      searchError: null,
-    };
-
-    this.search = this.search.bind(this);
-    this.clearForm = this.clearForm.bind(this);
-    this.getFormClearComponent = this.getFormClearComponent.bind(this);
-    this.renderMenuItemChildren = this.renderMenuItemChildren.bind(this);
-    this.onInputChange = this.onInputChange.bind(this);
-  }
-
-  componentDidMount() {
-  }
-
-  componentWillUnmount() {
-  }
-
-  search(keyword) {
-
-    if (keyword === '') {
-      this.setState({
-        keyword: '',
-        searchedKeyword: '',
-      });
-      return;
-    }
-
-    this.setState({isLoading: true});
-
-    this.crowi.apiGet('/search', {q: keyword})
-      .then(res => {
-        this.setState({
-          isLoading: false,
-          keyword: '',
-          pages: res.data,
-        });
-      })
-      .catch(err => {
-        this.setState({
-          isLoading: false,
-          searchError: err,
-        });
-      });
-  }
-
-  getFormClearComponent() {
-    let isHidden = (this.state.input.length === 0);
-
-    return isHidden ? <span></span> : (
-      <a className="btn btn-link search-top-clear" onClick={this.clearForm} hidden={isHidden}>
-        <i className="fa fa-times-circle" />
-      </a>
-    );
-  }
-
-  clearForm() {
-    this._typeahead.getInstance().clear();
-    this.setState({keyword: ''});
-  }
-
-  onInputChange(text) {
-    this.setState({input: text});
-  }
-
-  renderMenuItemChildren(option, props, index) {
-    const page = option;
-    return (
-      <span>
-        <UserPicture user={page.revision.author} />
-        <PagePath page={page} />
-        <PageListMeta page={page} />
-      </span>
-    );
+    this.state.keyword = props.keyword
   }
 
   render() {
@@ -101,13 +25,13 @@ export default class NewPageNameInputter extends React.Component {
         ? 'Error on searching.'
         : 'No matches found on title...';
     const formClear = this.getFormClearComponent();
+    const keyword = "hoge";
 
     return (
       <form
         action="/_search"
-        className="search-form input-group"
+        className=""
       >
-        <InputGroup>
         <AsyncTypeahead
             ref={ref => this._typeahead = ref}
             inputProps={{name: "q", autoComplete: "off"}}
@@ -122,13 +46,11 @@ export default class NewPageNameInputter extends React.Component {
             onSearch={this.search}
             onInputChange={this.onInputChange}
             renderMenuItemChildren={this.renderMenuItemChildren}
+            caseSensitive={false}
+            keyword={keyword} // 検索キーワードを表示中のページの親ページにしたいがやり方不明。[TODO]
         />
         {formClear}
-        <input
-            type="hidden"
-            value={this.state.searchedKeyword}
-            required />
-        </InputGroup>
+        <span>page: {this.state.keyword}</span> {/* 検索キーワードを表示デバッグ用 */ }
 
       </form>
 
@@ -137,7 +59,8 @@ export default class NewPageNameInputter extends React.Component {
 }
 
 NewPageNameInputter.propTypes = {
+  keyword: PropTypes.string.isRequired,
 };
-
 NewPageNameInputter.defaultProps = {
+  keyword: "",
 };

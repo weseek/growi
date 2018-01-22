@@ -34,7 +34,7 @@
             </div>
             <div class="col-xs-10">
               {% if searchConfigured() %}
-              <div id="page-name-inputter"></div>
+              <div class="clearfix" id="page-name-inputter"></div>
               {% else %}
               <input type="text" value="{{ parentPath(path) }}" class="page-name-input form-control " placeholder="{{ t('Input page name') }}" required />
               {% endif %}
