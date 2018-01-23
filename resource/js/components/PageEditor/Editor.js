@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import emojione from 'emojione';
-import emojiStrategy from 'emojione/emoji_strategy.json';
 import * as codemirror from 'codemirror';
 
 import { UnControlled as ReactCodeMirror } from 'react-codemirror2';
@@ -87,6 +85,7 @@ export default class Editor extends React.Component {
       <ReactCodeMirror
         ref="cm"
         editorDidMount={(editor) => {
+          // add paste event handler
           editor.on('paste', pasteHelper.pasteHandler);
         }}
         value={this.state.value}

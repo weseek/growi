@@ -33,9 +33,7 @@ class PasteHelper {
     if (text.length == 0) { return; }
 
     const curPos = editor.getCursor();
-    // calc BOL (beginning of line)
-    const bol = { line: curPos.line, ch: 0 };
-
+    const bol = { line: curPos.line, ch: 0 }; // beginning of line
 
     // get strings from BOL(beginning of line) to current position
     const strFromBol = editor.getDoc().getRange(bol, curPos);
