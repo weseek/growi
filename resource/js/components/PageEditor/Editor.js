@@ -25,6 +25,9 @@ export default class Editor extends React.Component {
   constructor(props) {
     super(props);
 
+    // https://regex101.com/r/7BN2fR/2
+    this.indentAndMarkPattern = /^([ \t]*)(?:>|\-|\+|\*|\d+\.) /;
+
     this.state = {
       value: this.props.value,
     };
@@ -34,6 +37,8 @@ export default class Editor extends React.Component {
     this.setCaretLine = this.setCaretLine.bind(this);
     this.forceToFocus = this.forceToFocus.bind(this);
     this.dispatchSave = this.dispatchSave.bind(this);
+    this.pasteHandler = this.pasteHandler.bind(this);
+    this.pasteText = this.pasteText.bind(this);
     this.autoCompleteEmoji = this.autoCompleteEmoji.bind(this);
 
     this.initEmojiImageMap()
@@ -98,6 +103,9 @@ export default class Editor extends React.Component {
       if (!isInputtingEmoji) {
         return;
       }
+    }
+    else {
+      return;
     }
 
     // see https://codemirror.net/doc/manual.html#addon_show-hint
@@ -189,6 +197,74 @@ export default class Editor extends React.Component {
   }
 
   /**
+   * CodeMirror paste event handler
+   * see: https://codemirror.net/doc/manual.html#events
+   * @param {any} editor
+   * @param {any} event
+   */
+  pasteHandler(editor, event) {
+    if (event.clipboardData.types.includes('text/plain') > -1) {
+      this.pasteText(editor, event);
+    }
+  }
+  /**
+   * paste text
+   * @param {any} editor
+   * @param {any} event
+   */
+  pasteText(editor, event) {
+    // get data in clipboard
+    let text = event.clipboardData.getData('text/plain');
+
+    if (text.length == 0) { return; }
+
+    const curPos = editor.getCursor();
+    // calc BOL (beginning of line)
+    const bol = { line: curPos.line, ch: 0 };
+    // get strings from BOL(beginning of line) to current position
+    const strFromBol = editor.getDoc().getRange(bol, curPos);
+
+    const matched = strFromBol.match(this.indentAndMarkPattern);
+    // when match completely to pattern
+    // (this means the current position is the beginning of the list item)
+    if (matched && matched[0] == strFromBol) {
+      const adjusted = this.adjustPastedData(strFromBol, text);
+
+      // replace
+      if (adjusted != null) {
+        event.preventDefault();
+        this.getCodeMirror().getDoc().replaceRange(adjusted, bol, curPos);
+      }
+    }
+  }
+  /**
+   * return adjusted pasted data by indentAndMark
+   *
+   * @param {string} indentAndMark
+   * @param {string} text
+   * @returns adjusted pasted data
+   *      returns null when adjustment is not necessary
+   */
+  adjustPastedData(indentAndMark, text) {
+    let adjusted = null;
+
+    // e.g. '-item ...'
+    if (text.match(this.indentAndMarkPattern)) {
+      const indent = indentAndMark.match(this.indentAndMarkPattern)[1];
+
+      const lines = text.match(/[^\r\n]+/g);
+      const replacedLines = lines.map((line) => {
+        return indent + line;
+      })
+
+      adjusted = replacedLines.join('\n');
+    }
+
+    return adjusted;
+  }
+
+
+  /**
    * dispatch onSave event
    */
   dispatchSave() {
@@ -201,6 +277,9 @@ export default class Editor extends React.Component {
     return (
       <ReactCodeMirror
         ref="cm"
+        editorDidMount={(editor) => {
+          editor.on('paste', this.pasteHandler);
+        }}
         value={this.state.value}
         options={{
           mode: 'gfm',
