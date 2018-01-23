@@ -34,9 +34,9 @@ let pageRevisionCreatedAt = null;
 let pagePath;
 let pageContent = '';
 if (mainContent !== null) {
-  pageId = mainContent.attributes['data-page-id'].value;
-  pageRevisionId = mainContent.attributes['data-page-revision-id'].value;
-  pageRevisionCreatedAt = +mainContent.attributes['data-page-revision-created'].value;
+  pageId = mainContent.getAttribute('data-page-id');
+  pageRevisionId = mainContent.getAttribute('data-page-revision-id');
+  pageRevisionCreatedAt = +mainContent.getAttribute('data-page-revision-created');
   pagePath = mainContent.attributes['data-path'].value;
   const rawText = document.getElementById('raw-text-original');
   if (rawText) {

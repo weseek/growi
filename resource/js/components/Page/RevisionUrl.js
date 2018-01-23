@@ -17,7 +17,7 @@ export default class RevisionUrl extends React.Component {
       fontSize: "1em"
     }
 
-    const url = (this.props.pageId === '')
+    const url = (this.props.pageId == null)
         ? decodeURIComponent(location.href)
         : `${location.origin}/${this.props.pageId}`;
     const copiedText = this.props.pagePath + '\n' + url;
@@ -33,6 +33,6 @@ export default class RevisionUrl extends React.Component {
 }
 
 RevisionUrl.propTypes = {
-  pageId: PropTypes.string.isRequired,
+  pageId: PropTypes.string,
   pagePath: PropTypes.string.isRequired,
 };
