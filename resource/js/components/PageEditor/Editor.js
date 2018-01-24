@@ -162,7 +162,10 @@ export default class Editor extends React.Component {
 
     let accept = null;
     let className = 'dropzone';
-    if (this.props.isUploadable) {
+    if (!this.props.isUploadable) {
+      className += ' dropzone-unuploadable';
+    }
+    else {
       accept = 'image/*'
       className += ' dropzone-uploadable';
 

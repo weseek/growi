@@ -94,24 +94,40 @@
       // }
     }
     .dropzone {
+      @mixin insertFontAwesome($code) {
+        &:before {
+          margin-right: 0.2em;
+          font-family: FontAwesome;
+          content: $code;
+        }
+      }
+
       // unuploadable or rejected
       &.dropzone-unuploadable, &.dropzone-rejected {
         .dropzone-overlay {
-          background: rgba(0,0,0,0.5);
-          color: #333;
+          background: rgba(200,200,200,0.8);
+          color: #444;
+        }
+      }
+
+      // unuploadable
+      &.dropzone-unuploadable {
+        .dropzone-overlay {
+          // insert content
+          @include insertFontAwesome("\f06a ");  // fa-exclamation-circle
+          &:after {
+            content: "File uploading is disabled";
+          }
         }
       }
       // uploadable
       &.dropzone-uploadable {
-        &.dropzone-accepted .dropzone-overlay {
-          color: #ccc;
+        // accepted
+        &.dropzone-accepted:not(.dropzone-rejected) .dropzone-overlay {
+          color: #999;
           border: 4px dashed #ccc;
           // insert content
-          &:before {
-            content: "\f093";   // fa-upload
-            font-family: FontAwesome;
-            margin-right: 0.5em;
-          }
+          @include insertFontAwesome("\f093");  // fa-upload
           &:after {
             content: "Drop here to upload";
           }
@@ -119,25 +135,17 @@
         // file type mismatch
         &.dropzone-rejected:not(.dropzone-uploadablefile) .dropzone-overlay {
           // insert content
-          &:before {
-            content: "\f03e";   // fa-upload
-            font-family: FontAwesome;
-            margin-right: 0.5em;
-          }
+          @include insertFontAwesome("\f03e");  // fa-picture-o
           &:after {
-            content: "Only Image files are allowed";
+            content: "Only an image file is allowed";
           }
         }
         // multiple files
-        &.dropzone-rejected.dropzone-uploadablefile .dropzone-overlay {
+        &.dropzone-accepted.dropzone-rejected .dropzone-overlay {
           // insert content
-          &:before {
-            content: "\f071";   // fa-upload
-            font-family: FontAwesome;
-            margin-right: 0.5em;
-          }
+          @include insertFontAwesome("\f071");  // fa-fa-exclamation-triangle
           &:after {
-            content: "Only 1 file allowed";
+            content: "Only 1 file is allowed";
           }
         }
       }
