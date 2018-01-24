@@ -12,9 +12,12 @@ export default class PageEditor extends React.Component {
   constructor(props) {
     super(props);
 
+    const config = this.props.crowi.getConfig();
+    const isUploadable = config.upload.image || config.upload.file;
     this.state = {
       revisionId: this.props.revisionId,
       markdown: this.props.markdown,
+      isUploadable,
     };
 
     this.setCaretLine = this.setCaretLine.bind(this);
@@ -267,6 +270,7 @@ export default class PageEditor extends React.Component {
       <div className="row">
         <div className="col-md-6 col-sm-12 page-editor-editor-container">
           <Editor ref="editor" value={this.state.markdown}
+              isUploadable={this.state.isUploadable}
               onScroll={this.onEditorScroll}
               onChange={this.onMarkdownChanged}
               onSave={this.onSave}

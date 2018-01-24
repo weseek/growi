@@ -78,6 +78,28 @@
         background-color: darkcyan;
       }
     }
+
+    .dropzone-overlay {
+      // layout
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      // style
+      font-size: 2em;
+      margin: 0 15px;
+
+      > * {
+        pointer-events: none;
+      }
+    }
+    .dropzone-overlay-activated {
+      color: #ccc;
+      border: 4px dashed #999;
+    }
+    .dropzone-overlay-disabled {
+      background: rgba(0,0,0,0.5);
+      color: #333;
+    }
   }
   .page-editor-preview-container {
   }
