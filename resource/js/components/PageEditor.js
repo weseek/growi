@@ -150,7 +150,11 @@ export default class PageEditor extends React.Component {
           this.pageSavedHandler(res.page);
         }
       })
-      .catch(this.apiErrorHandler);
+      .catch(this.apiErrorHandler)
+      // finally
+      .then(() => {
+        this.refs.editor.terminateUploadingState();
+      });
   }
 
   /**

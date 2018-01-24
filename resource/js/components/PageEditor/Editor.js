@@ -35,6 +35,7 @@ export default class Editor extends React.Component {
     this.state = {
       value: this.props.value,
       dropzoneActive: false,
+      isUploading: false,
     };
 
     this.getCodeMirror = this.getCodeMirror.bind(this);
@@ -46,7 +47,7 @@ export default class Editor extends React.Component {
     this.onDragLeave = this.onDragLeave.bind(this);
     this.onDrop = this.onDrop.bind(this);
 
-    this.renderOverlayMessage = this.renderOverlayMessage.bind(this);
+    this.renderOverlay = this.renderOverlay.bind(this);
   }
 
   componentDidMount() {
@@ -78,6 +79,16 @@ export default class Editor extends React.Component {
   setCaretLine(line) {
     const editor = this.getCodeMirror();
     editor.setCursor({line: line-1});   // leave 'ch' field as null/undefined to indicate the end of line
+  }
+
+  /**
+   * remove overlay and set isUploading to false
+   */
+  terminateUploadingState() {
+    this.setState({
+      dropzoneActive: false,
+      isUploading: false,
+    });
   }
 
   /**
@@ -115,32 +126,26 @@ export default class Editor extends React.Component {
       return;
     }
 
-    this.setState({
-      dropzoneActive: true
-    });
+    this.setState({ dropzoneActive: true });
   }
 
   onDragLeave() {
-    this.setState({
-      dropzoneActive: false
-    });
+    this.setState({ dropzoneActive: false });
   }
 
   onDrop(accepted, rejected) {
-    // if (!this.props.isUploadable) {
-    //   return;
-    // }
+    // rejected
+    if (accepted.length != 1) { // length should be 0 or 1 because `multiple={false}` is set
+      this.setState({ dropzoneActive: false });
+      return;
+    }
 
-    // this.setState({
-    //   dropzoneActive: false
-    // });
-
-    // // TODO abort multi files
-
-    // this.dispatchUpload(files[0]);
+    const file = accepted[0];
+    this.dispatchUpload(file);
+    this.setState({ isUploading: true });
   }
 
-  renderOverlayMessage() {
+  renderOverlay() {
     const overlayStyle = {
       position: 'absolute',
       zIndex: 1060, // FIXME: required because .content-main.on-edit has 'z-index:1050'
@@ -151,7 +156,15 @@ export default class Editor extends React.Component {
     };
 
     return (
-      <div style={overlayStyle} className="dropzone-overlay"></div>
+      <div style={overlayStyle} className="dropzone-overlay">
+        {this.state.isUploading &&
+          <span className="dropzone-overlay-content">
+            <i className="fa fa-spinner fa-pulse fa-fw"></i>
+            <span className="sr-only">Uploading...</span>
+          </span>
+        }
+        {!this.state.isUploading && <span className="dropzone-overlay-content"></span>}
+      </div>
     );
   }
 
@@ -160,7 +173,7 @@ export default class Editor extends React.Component {
       height: '100%'
     }
 
-    let accept = null;
+    let accept = 'null';  // reject all
     let className = 'dropzone';
     if (!this.props.isUploadable) {
       className += ' dropzone-unuploadable';
@@ -171,8 +184,13 @@ export default class Editor extends React.Component {
 
       if (this.props.isUploadableFile) {
         className += ' dropzone-uploadablefile';
-        accept = '';
+        accept = '';  // allow all
       }
+    }
+
+    // uploading
+    if (this.state.isUploading) {
+      className += ' dropzone-uploading';
     }
 
     return (
@@ -188,7 +206,7 @@ export default class Editor extends React.Component {
         onDragLeave={this.onDragLeave}
         onDrop={this.onDrop}
       >
-        { this.state.dropzoneActive && this.renderOverlayMessage() }
+        { this.state.dropzoneActive && this.renderOverlay() }
 
         <ReactCodeMirror
           ref="cm"

@@ -80,19 +80,6 @@
     }
 
     // for Dropzone
-    .dropzone-overlay {
-      // layout
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      // style
-      font-size: 2em;
-      margin: 0 15px;
-
-      // > * {
-      //   pointer-events: none;
-      // }
-    }
     .dropzone {
       @mixin insertFontAwesome($code) {
         &:before {
@@ -102,17 +89,45 @@
         }
       }
 
+      // default layout and style
+      .dropzone-overlay {
+        // layout
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        // style
+        margin: 0 15px;
+      }
+      .dropzone-overlay-content {
+        font-size: 2em;
+        padding: 0.2em;
+        border-radius: 5px;
+      }
+
       // unuploadable or rejected
       &.dropzone-unuploadable, &.dropzone-rejected {
         .dropzone-overlay {
           background: rgba(200,200,200,0.8);
+        }
+        .dropzone-overlay-content {
+          color: #444;
+        }
+      }
+      // uploading
+      &.dropzone-uploading {
+        .dropzone-overlay {
+          background: rgba(255,255,255,0.5);
+        }
+        .dropzone-overlay-content {
+          padding: 0.3em;
+          background: rgba(200,200,200,0.5);
           color: #444;
         }
       }
 
       // unuploadable
       &.dropzone-unuploadable {
-        .dropzone-overlay {
+        .dropzone-overlay-content {
           // insert content
           @include insertFontAwesome("\f06a ");  // fa-exclamation-circle
           &:after {
@@ -123,17 +138,23 @@
       // uploadable
       &.dropzone-uploadable {
         // accepted
-        &.dropzone-accepted:not(.dropzone-rejected) .dropzone-overlay {
-          color: #999;
-          border: 4px dashed #ccc;
-          // insert content
-          @include insertFontAwesome("\f093");  // fa-upload
-          &:after {
-            content: "Drop here to upload";
+        &.dropzone-accepted:not(.dropzone-rejected) {
+          .dropzone-overlay {
+            border: 4px dashed #ccc;
+          }
+          .dropzone-overlay-content {
+            // insert content
+            @include insertFontAwesome("\f093");  // fa-upload
+            &:after {
+              content: "Drop here to upload";
+            }
+            // style
+            color: #666;
+            background: rgba(200,200,200,0.8);
           }
         }
         // file type mismatch
-        &.dropzone-rejected:not(.dropzone-uploadablefile) .dropzone-overlay {
+        &.dropzone-rejected:not(.dropzone-uploadablefile) .dropzone-overlay-content {
           // insert content
           @include insertFontAwesome("\f03e");  // fa-picture-o
           &:after {
@@ -141,7 +162,7 @@
           }
         }
         // multiple files
-        &.dropzone-accepted.dropzone-rejected .dropzone-overlay {
+        &.dropzone-accepted.dropzone-rejected .dropzone-overlay-content {
           // insert content
           @include insertFontAwesome("\f071");  // fa-fa-exclamation-triangle
           &:after {
