@@ -1,24 +1,13 @@
+import accepts from 'attr-accept'
+
 class PasteHelper {
 
   constructor() {
     // https://regex101.com/r/7BN2fR/3
     this.indentAndMarkPattern = /^([ \t]*)(?:>|\-|\+|\*|\d+\.) /;
 
-    this.pasteHandler = this.pasteHandler.bind(this);
     this.pasteText = this.pasteText.bind(this);
     this.adjustPastedData = this.adjustPastedData.bind(this);
-  }
-
-  /**
-   * CodeMirror paste event handler
-   * see: https://codemirror.net/doc/manual.html#events
-   * @param {any} editor An editor instance of CodeMirror
-   * @param {any} event
-   */
-  pasteHandler(editor, event) {
-    if (event.clipboardData.types.includes('text/plain') > -1) {
-      this.pasteText(editor, event);
-    }
   }
 
   /**
@@ -28,7 +17,7 @@ class PasteHelper {
    */
   pasteText(editor, event) {
     // get data in clipboard
-    let text = event.clipboardData.getData('text/plain');
+    const text = event.clipboardData.getData('text/plain');
 
     if (text.length == 0) { return; }
 
@@ -120,6 +109,29 @@ class PasteHelper {
     return isListful;
   }
 
+
+  // Firefox versions prior to 53 return a bogus MIME type for every file drag, so dragovers with
+  /**
+   * transplanted from react-dropzone
+   * @see https://github.com/react-dropzone/react-dropzone/blob/master/src/utils/index.js
+   *
+   * @param {*} file
+   * @param {*} accept
+   */
+  fileAccepted(file, accept) {
+    return file.type === 'application/x-moz-file' || accepts(file, accept)
+  }
+  /**
+   * transplanted from react-dropzone
+   * @see https://github.com/react-dropzone/react-dropzone/blob/master/src/utils/index.js
+   *
+   * @param {*} file
+   * @param {number} maxSize
+   * @param {number} minSize
+   */
+  fileMatchSize(file, maxSize, minSize) {
+    return file.size <= maxSize && file.size >= minSize
+  }
 }
 
 // singleton pattern

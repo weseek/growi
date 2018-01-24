@@ -43,6 +43,8 @@ export default class Editor extends React.Component {
     this.forceToFocus = this.forceToFocus.bind(this);
     this.dispatchSave = this.dispatchSave.bind(this);
 
+    this.onPaste = this.onPaste.bind(this);
+
     this.onDragEnterForCM = this.onDragEnterForCM.bind(this);
     this.onDragLeave = this.onDragLeave.bind(this);
     this.onDrop = this.onDrop.bind(this);
@@ -115,6 +117,40 @@ export default class Editor extends React.Component {
   dispatchUpload(files) {
     if (this.props.onUpload != null) {
       this.props.onUpload(files);
+    }
+  }
+
+  /**
+   * CodeMirror paste event handler
+   * see: https://codemirror.net/doc/manual.html#events
+   * @param {any} editor An editor instance of CodeMirror
+   * @param {any} event
+   */
+  onPaste(editor, event) {
+    const types = event.clipboardData.types;
+
+    // text
+    if (types.includes('text/plain')) {
+      pasteHelper.pasteText(editor, event);
+    }
+    // files
+    else if (types.includes('Files')) {
+      const dropzone = this.refs.dropzone;
+      const items = event.clipboardData.items || event.clipboardData.files || [];
+
+      // abort if length is not 1
+      if (items.length != 1) {
+        return;
+      }
+
+      const file = items[0].getAsFile();
+      // check type and size
+      if (pasteHelper.fileAccepted(file, dropzone.props.accept) &&
+          pasteHelper.fileMatchSize(file, dropzone.props.maxSize, dropzone.props.minSize)) {
+
+        this.dispatchUpload(file);
+        this.setState({ isUploading: true });
+      }
     }
   }
 
@@ -219,7 +255,7 @@ export default class Editor extends React.Component {
             ref="cm"
             editorDidMount={(editor) => {
               // add event handlers
-              editor.on('paste', pasteHelper.pasteHandler);
+              editor.on('paste', this.onPaste);
             }}
             value={this.state.value}
             options={{
@@ -265,7 +301,7 @@ export default class Editor extends React.Component {
           <i className="fa fa-paperclip" aria-hidden="true"></i>&nbsp;
           Attach files by dragging &amp; dropping,&nbsp;
           <span className="btn-link">selecting them</span>,&nbsp;
-          or (TBD) pasting from the clipboard.
+          or pasting from the clipboard.
         </button>
       </div>
     )
