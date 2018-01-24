@@ -27,6 +27,8 @@ export default class PageEditor extends React.Component {
     this.getScrollTop = this.getScrollTop.bind(this);
     this.saveDraft = this.saveDraft.bind(this);
     this.clearDraft = this.clearDraft.bind(this);
+    this.pageSavedHandler = this.pageSavedHandler.bind(this);
+    this.apiErrorHandler = this.apiErrorHandler.bind(this);
 
     // create debounced function
     this.saveDraftWithDebounce = debounce(300, this.saveDraft);
@@ -92,8 +94,7 @@ export default class PageEditor extends React.Component {
 
     this.props.crowi.apiPost(endpoint, data)
       .then((res) => {
-        const page = res.page;
-
+        // show toastr
         toastr.success(undefined, 'Saved successfully', {
           closeButton: true,
           progressBar: true,
@@ -104,37 +105,46 @@ export default class PageEditor extends React.Component {
           extendedTimeOut: "150",
         });
 
-        // update states
-        this.setState({
-          revisionId: page.revision._id,
-          markdown: page.revision.body
-        })
-
-        // clear draft
-        this.clearDraft();
-
-        // dispatch onSaveSuccess
-        this.dispatchSaveSuccess(page);
+        this.pageSavedHandler(res.page);
       })
-      .catch((error) => {
-        console.error(error);
-        toastr.error(error.message, 'Error occured on saveing', {
-          closeButton: true,
-          progressBar: true,
-          newestOnTop: false,
-          showDuration: "100",
-          hideDuration: "100",
-          timeOut: "3000",
-        });
-      });
+      .catch(this.apiErrorHandler)
   }
 
   /**
    * the upload event handler
    * @param {any} files
    */
-  onUpload(files) {
-    console.log(files);
+  onUpload(file) {
+    const endpoint = '/attachments.add';
+
+    // create a FromData instance
+    const formData = new FormData();
+    formData.append('_csrf', this.props.crowi.csrfToken);
+    formData.append('file', file);
+    formData.append('path', this.props.pagePath);
+    formData.append('page_id', this.props.pageId || 0);
+
+    // post
+    this.props.crowi.apiPost(endpoint, formData)
+      .then((res) => {
+        const url = res.url;
+        const attachment = res.attachment;
+        const fileName = attachment.originalName;
+
+        let insertText = `[${fileName}](${url})`;
+        // when image
+        if (attachment.fileFormat.startsWith('image/')) {
+          // modify to "![fileName](url)" syntax
+          insertText = '!' + insertText;
+        }
+        this.refs.editor.insertText(insertText);
+
+        // update page information if created
+        if (res.pageCreated) {
+          this.pageSavedHandler(res.page);
+        }
+      })
+      .catch(this.apiErrorHandler);
   }
 
   /**
@@ -183,13 +193,32 @@ export default class PageEditor extends React.Component {
     this.props.crowi.clearDraft(this.props.pagePath);
   }
 
-  /**
-   * dispatch onSaveSuccess event
-   */
-  dispatchSaveSuccess(page) {
+  pageSavedHandler(page) {
+    // update states
+    this.setState({
+      revisionId: page.revision._id,
+      markdown: page.revision.body
+    })
+
+    // clear draft
+    this.clearDraft();
+
+    // dispatch onSaveSuccess event
     if (this.props.onSaveSuccess != null) {
       this.props.onSaveSuccess(page);
     }
+  }
+
+  apiErrorHandler(error) {
+    console.error(error);
+    toastr.error(error.message, 'Error occured', {
+      closeButton: true,
+      progressBar: true,
+      newestOnTop: false,
+      showDuration: "100",
+      hideDuration: "100",
+      timeOut: "3000",
+    });
   }
 
   renderPreview() {

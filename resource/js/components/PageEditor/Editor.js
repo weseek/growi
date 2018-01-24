@@ -80,6 +80,15 @@ export default class Editor extends React.Component {
   }
 
   /**
+   * insert text
+   * @param {string} text
+   */
+  insertText(text) {
+    const editor = this.getCodeMirror();
+    editor.getDoc().replaceSelection(text);
+  }
+
+  /**
    * dispatch onSave event
    */
   dispatchSave() {
@@ -113,7 +122,10 @@ export default class Editor extends React.Component {
     this.setState({
       dropzoneActive: false
     });
-    this.dispatchUpload(files);
+
+    // TODO abort multi files
+
+    this.dispatchUpload(files[0]);
   }
 
   render() {
