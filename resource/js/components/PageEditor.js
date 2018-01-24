@@ -21,6 +21,7 @@ export default class PageEditor extends React.Component {
     this.focusToEditor = this.focusToEditor.bind(this);
     this.onMarkdownChanged = this.onMarkdownChanged.bind(this);
     this.onSave = this.onSave.bind(this);
+    this.onUpload = this.onUpload.bind(this);
     this.onEditorScroll = this.onEditorScroll.bind(this);
     this.getMaxScrollTop = this.getMaxScrollTop.bind(this);
     this.getScrollTop = this.getScrollTop.bind(this);
@@ -129,6 +130,14 @@ export default class PageEditor extends React.Component {
   }
 
   /**
+   * the upload event handler
+   * @param {any} files
+   */
+  onUpload(files) {
+    console.log(files);
+  }
+
+  /**
    * the scroll event handler from codemirror
    * @param {any} data {left, top, width, height, clientWidth, clientHeight} object that represents the current scroll position, the size of the scrollable area, and the size of the visible area (minus scrollbars).
    *    see https://codemirror.net/doc/manual.html#events
@@ -232,6 +241,7 @@ export default class PageEditor extends React.Component {
               onScroll={this.onEditorScroll}
               onChange={this.onMarkdownChanged}
               onSave={this.onSave}
+              onUpload={this.onUpload}
           />
         </div>
         <div className="col-md-6 hidden-sm hidden-xs page-editor-preview-container">

@@ -18,6 +18,8 @@ require('codemirror/addon/scroll/annotatescrollbar');
 require('codemirror/mode/gfm/gfm');
 require('codemirror/theme/eclipse.css');
 
+import Dropzone from 'react-dropzone';
+
 import pasteHelper from './PasteHelper';
 import emojiAutoCompleteHelper from './EmojiAutoCompleteHelper';
 
@@ -32,12 +34,18 @@ export default class Editor extends React.Component {
 
     this.state = {
       value: this.props.value,
+      dropzoneAccept: '',
+      dropzoneActive: false,
     };
 
     this.getCodeMirror = this.getCodeMirror.bind(this);
     this.setCaretLine = this.setCaretLine.bind(this);
     this.forceToFocus = this.forceToFocus.bind(this);
     this.dispatchSave = this.dispatchSave.bind(this);
+
+    this.onDragEnter = this.onDragEnter.bind(this);
+    this.onDragLeave = this.onDragLeave.bind(this);
+    this.onDrop = this.onDrop.bind(this);
   }
 
   componentDidMount() {
@@ -80,51 +88,106 @@ export default class Editor extends React.Component {
     }
   }
 
-  render() {
-    return (
-      <ReactCodeMirror
-        ref="cm"
-        editorDidMount={(editor) => {
-          // add paste event handler
-          editor.on('paste', pasteHelper.pasteHandler);
-        }}
-        value={this.state.value}
-        options={{
-          mode: 'gfm',
-          theme: 'eclipse',
-          lineNumbers: true,
-          tabSize: 4,
-          indentUnit: 4,
-          lineWrapping: true,
-          autoRefresh: true,
-          autoCloseTags: true,
-          matchBrackets: true,
-          matchTags: {bothTags: true},
-          // match-highlighter, matchesonscrollbar, annotatescrollbar options
-          highlightSelectionMatches: {annotateScrollbar: true},
-          // markdown mode options
-          highlightFormatting: true,
-          // continuelist, indentlist
-          extraKeys: {
-            "Enter": "newlineAndIndentContinueMarkdownList",
-            "Tab": "indentMore",
-            "Shift-Tab": "indentLess",
-          }
-        }}
-        onScroll={(editor, data) => {
-          if (this.props.onScroll != null) {
-            this.props.onScroll(data);
-          }
-        }}
-        onChange={(editor, data, value) => {
-          if (this.props.onChange != null) {
-            this.props.onChange(value);
-          }
+  /**
+   * dispatch onUpload event
+   */
+  dispatchUpload(files) {
+    if (this.props.onUpload != null) {
+      this.props.onUpload(files);
+    }
+  }
 
-          // Emoji AutoComplete
-          emojiAutoCompleteHelper.showHint(editor);
-        }}
-      />
+  onDragEnter() {
+    this.setState({
+      dropzoneActive: true
+    });
+  }
+
+  onDragLeave() {
+    this.setState({
+      dropzoneActive: false
+    });
+  }
+
+  onDrop(files) {
+    this.setState({
+      dropzoneActive: false
+    });
+    this.dispatchUpload(files);
+  }
+
+  render() {
+    const dropzoneStyle = {
+      height: '100%'
+    }
+
+    const overlayStyle = {
+      position: 'absolute',
+      zIndex: 1060,
+      top: 0,
+      right: 0,
+      bottom: 0,
+      left: 0,
+      padding: '2.5em 0',
+      background: 'rgba(0,0,0,0.5)',
+      textAlign: 'center',
+      color: '#fff'
+    };
+
+    return (
+      <Dropzone
+        disableClick
+        style={dropzoneStyle}
+        accept={this.state.accept}
+        onDragLeave={this.onDragLeave}
+        onDrop={this.onDrop}
+      >
+        { this.state.dropzoneActive && <div style={overlayStyle}>Drop files...</div> }
+        <ReactCodeMirror
+          ref="cm"
+          editorDidMount={(editor) => {
+            // add paste event handler
+            editor.on('paste', pasteHelper.pasteHandler);
+          }}
+          value={this.state.value}
+          options={{
+            mode: 'gfm',
+            theme: 'eclipse',
+            lineNumbers: true,
+            tabSize: 4,
+            indentUnit: 4,
+            lineWrapping: true,
+            autoRefresh: true,
+            autoCloseTags: true,
+            matchBrackets: true,
+            matchTags: {bothTags: true},
+            // match-highlighter, matchesonscrollbar, annotatescrollbar options
+            highlightSelectionMatches: {annotateScrollbar: true},
+            // markdown mode options
+            highlightFormatting: true,
+            // continuelist, indentlist
+            extraKeys: {
+              "Enter": "newlineAndIndentContinueMarkdownList",
+              "Tab": "indentMore",
+              "Shift-Tab": "indentLess",
+            }
+          }}
+          onScroll={(editor, data) => {
+            if (this.props.onScroll != null) {
+              this.props.onScroll(data);
+            }
+          }}
+          onChange={(editor, data, value) => {
+            if (this.props.onChange != null) {
+              this.props.onChange(value);
+            }
+
+            // Emoji AutoComplete
+            emojiAutoCompleteHelper.showHint(editor);
+          }}
+          onDragEnter={this.onDragEnter}
+        />
+      </Dropzone>
     )
   }
 
@@ -135,4 +198,5 @@ Editor.propTypes = {
   onChange: PropTypes.func,
   onScroll: PropTypes.func,
   onSave: PropTypes.func,
+  onUpload: PropTypes.func,
 };
