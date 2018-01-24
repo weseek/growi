@@ -169,8 +169,13 @@ export default class Editor extends React.Component {
   }
 
   render() {
-    const dropzoneStyle = {
-      height: '100%'
+    const flexContainer = {
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+    }
+    const expandHeight = {
+      height: '100%',
     }
 
     let accept = 'null';  // reject all
@@ -194,65 +199,75 @@ export default class Editor extends React.Component {
     }
 
     return (
-      <Dropzone
-        disableClick
-        disablePreview={true}
-        style={dropzoneStyle}
-        accept={accept}
-        className={className}
-        acceptClassName="dropzone-accepted"
-        rejectClassName="dropzone-rejected"
-        multiple={false}
-        onDragLeave={this.onDragLeave}
-        onDrop={this.onDrop}
-      >
-        { this.state.dropzoneActive && this.renderOverlay() }
+      <div style={flexContainer}>
+        <Dropzone
+          ref="dropzone"
+          disableClick
+          disablePreview={true}
+          style={expandHeight}
+          accept={accept}
+          className={className}
+          acceptClassName="dropzone-accepted"
+          rejectClassName="dropzone-rejected"
+          multiple={false}
+          onDragLeave={this.onDragLeave}
+          onDrop={this.onDrop}
+        >
+          { this.state.dropzoneActive && this.renderOverlay() }
 
-        <ReactCodeMirror
-          ref="cm"
-          editorDidMount={(editor) => {
-            // add event handlers
-            editor.on('paste', pasteHelper.pasteHandler);
-          }}
-          value={this.state.value}
-          options={{
-            mode: 'gfm',
-            theme: 'eclipse',
-            lineNumbers: true,
-            tabSize: 4,
-            indentUnit: 4,
-            lineWrapping: true,
-            autoRefresh: true,
-            autoCloseTags: true,
-            matchBrackets: true,
-            matchTags: {bothTags: true},
-            // match-highlighter, matchesonscrollbar, annotatescrollbar options
-            highlightSelectionMatches: {annotateScrollbar: true},
-            // markdown mode options
-            highlightFormatting: true,
-            // continuelist, indentlist
-            extraKeys: {
-              "Enter": "newlineAndIndentContinueMarkdownList",
-              "Tab": "indentMore",
-              "Shift-Tab": "indentLess",
-            }
-          }}
-          onScroll={(editor, data) => {
-            if (this.props.onScroll != null) {
-              this.props.onScroll(data);
-            }
-          }}
-          onChange={(editor, data, value) => {
-            if (this.props.onChange != null) {
-              this.props.onChange(value);
-            }
+          <ReactCodeMirror
+            ref="cm"
+            editorDidMount={(editor) => {
+              // add event handlers
+              editor.on('paste', pasteHelper.pasteHandler);
+            }}
+            value={this.state.value}
+            options={{
+              mode: 'gfm',
+              theme: 'eclipse',
+              lineNumbers: true,
+              tabSize: 4,
+              indentUnit: 4,
+              lineWrapping: true,
+              autoRefresh: true,
+              autoCloseTags: true,
+              matchBrackets: true,
+              matchTags: {bothTags: true},
+              // match-highlighter, matchesonscrollbar, annotatescrollbar options
+              highlightSelectionMatches: {annotateScrollbar: true},
+              // markdown mode options
+              highlightFormatting: true,
+              // continuelist, indentlist
+              extraKeys: {
+                "Enter": "newlineAndIndentContinueMarkdownList",
+                "Tab": "indentMore",
+                "Shift-Tab": "indentLess",
+              }
+            }}
+            onScroll={(editor, data) => {
+              if (this.props.onScroll != null) {
+                this.props.onScroll(data);
+              }
+            }}
+            onChange={(editor, data, value) => {
+              if (this.props.onChange != null) {
+                this.props.onChange(value);
+              }
 
-            // Emoji AutoComplete
-            emojiAutoCompleteHelper.showHint(editor);
-          }}
-          onDragEnter={this.onDragEnterForCM}
-        />
-      </Dropzone>
+              // Emoji AutoComplete
+              emojiAutoCompleteHelper.showHint(editor);
+            }}
+            onDragEnter={this.onDragEnterForCM}
+          />
+        </Dropzone>
+
+        <button type="button" className="btn btn-default btn-block btn-open-dropzone" onClick={() => {this.refs.dropzone.open()}}>
+          <i className="fa fa-paperclip" aria-hidden="true"></i>&nbsp;
+          Attach files by dragging &amp; dropping,&nbsp;
+          <span className="btn-link">selecting them</span>,&nbsp;
+          or (TBD) pasting from the clipboard.
+        </button>
+      </div>
     )
   }
 

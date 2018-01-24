@@ -172,6 +172,20 @@
       }
     } // end of.dropzone
 
+    .btn-open-dropzone {
+      font-size: small;
+      text-align: right;
+      padding-top: 3px;
+      padding-bottom: 0;
+      border: none;
+      border-radius: 0;
+      border-top: 1px dotted #ccc;
+      background-color: transparent;
+
+      &:active {
+        box-shadow: none;
+      }
+    }
   }
   .page-editor-preview-container {
   }
