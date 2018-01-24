@@ -79,6 +79,7 @@
       }
     }
 
+    // for Dropzone
     .dropzone-overlay {
       // layout
       display: flex;
@@ -88,18 +89,60 @@
       font-size: 2em;
       margin: 0 15px;
 
-      > * {
-        pointer-events: none;
+      // > * {
+      //   pointer-events: none;
+      // }
+    }
+    .dropzone {
+      // unuploadable or rejected
+      &.dropzone-unuploadable, &.dropzone-rejected {
+        .dropzone-overlay {
+          background: rgba(0,0,0,0.5);
+          color: #333;
+        }
       }
-    }
-    .dropzone-overlay-activated {
-      color: #ccc;
-      border: 4px dashed #999;
-    }
-    .dropzone-overlay-disabled {
-      background: rgba(0,0,0,0.5);
-      color: #333;
-    }
+      // uploadable
+      &.dropzone-uploadable {
+        &.dropzone-accepted .dropzone-overlay {
+          color: #ccc;
+          border: 4px dashed #ccc;
+          // insert content
+          &:before {
+            content: "\f093";   // fa-upload
+            font-family: FontAwesome;
+            margin-right: 0.5em;
+          }
+          &:after {
+            content: "Drop here to upload";
+          }
+        }
+        // file type mismatch
+        &.dropzone-rejected:not(.dropzone-uploadablefile) .dropzone-overlay {
+          // insert content
+          &:before {
+            content: "\f03e";   // fa-upload
+            font-family: FontAwesome;
+            margin-right: 0.5em;
+          }
+          &:after {
+            content: "Only Image files are allowed";
+          }
+        }
+        // multiple files
+        &.dropzone-rejected.dropzone-uploadablefile .dropzone-overlay {
+          // insert content
+          &:before {
+            content: "\f071";   // fa-upload
+            font-family: FontAwesome;
+            margin-right: 0.5em;
+          }
+          &:after {
+            content: "Only 1 file allowed";
+          }
+        }
+      }
+    } // end of.dropzone
+
   }
   .page-editor-preview-container {
   }

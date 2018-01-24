@@ -34,7 +34,6 @@ export default class Editor extends React.Component {
 
     this.state = {
       value: this.props.value,
-      dropzoneAccept: '',
       dropzoneActive: false,
     };
 
@@ -43,7 +42,7 @@ export default class Editor extends React.Component {
     this.forceToFocus = this.forceToFocus.bind(this);
     this.dispatchSave = this.dispatchSave.bind(this);
 
-    this.onDragEnter = this.onDragEnter.bind(this);
+    this.onDragEnterForCM = this.onDragEnterForCM.bind(this);
     this.onDragLeave = this.onDragLeave.bind(this);
     this.onDrop = this.onDrop.bind(this);
 
@@ -108,8 +107,13 @@ export default class Editor extends React.Component {
     }
   }
 
-  onDragEnter(event) {
-    console.log('dragenter', event);
+  onDragEnterForCM(editor, event) {
+    const dataTransfer = event.dataTransfer;
+
+    // do nothing if contents is not files
+    if (!dataTransfer.types.includes('Files')) {
+      return;
+    }
 
     this.setState({
       dropzoneActive: true
@@ -122,18 +126,18 @@ export default class Editor extends React.Component {
     });
   }
 
-  onDrop(files) {
-    if (!this.props.isUploadable) {
-      return;
-    }
+  onDrop(accepted, rejected) {
+    // if (!this.props.isUploadable) {
+    //   return;
+    // }
 
-    this.setState({
-      dropzoneActive: false
-    });
+    // this.setState({
+    //   dropzoneActive: false
+    // });
 
-    // TODO abort multi files
+    // // TODO abort multi files
 
-    this.dispatchUpload(files[0]);
+    // this.dispatchUpload(files[0]);
   }
 
   renderOverlayMessage() {
@@ -146,31 +150,8 @@ export default class Editor extends React.Component {
       left: 0,
     };
 
-    let overlayClassName;
-    let message;
-    if (this.props.isUploadable) {
-      overlayClassName = 'dropzone-overlay dropzone-overlay-activated';
-      message = (
-        <span>
-          <i className="fa fa-fw fa-upload" aria-hidden="true"></i>
-          Upload to drop here
-        </span>
-      );
-    }
-    else {
-      overlayClassName = 'dropzone-overlay dropzone-overlay-disabled';
-      message = (
-        <span>
-          <i className="fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>
-          Uploading is disabled
-        </span>
-      );
-    }
-
     return (
-      <div style={overlayStyle} className={overlayClassName}>
-        {message}
-      </div>
+      <div style={overlayStyle} className="dropzone-overlay"></div>
     );
   }
 
@@ -179,12 +160,28 @@ export default class Editor extends React.Component {
       height: '100%'
     }
 
+    let accept = null;
+    let className = 'dropzone';
+    if (this.props.isUploadable) {
+      accept = 'image/*'
+      className += ' dropzone-uploadable';
+
+      if (this.props.isUploadableFile) {
+        className += ' dropzone-uploadablefile';
+        accept = '';
+      }
+    }
+
     return (
       <Dropzone
         disableClick
+        disablePreview={true}
         style={dropzoneStyle}
-        accept={this.state.accept}
-        onDragEnter={this.onDragEnter}
+        accept={accept}
+        className={className}
+        acceptClassName="dropzone-accepted"
+        rejectClassName="dropzone-rejected"
+        multiple={false}
         onDragLeave={this.onDragLeave}
         onDrop={this.onDrop}
       >
@@ -232,7 +229,7 @@ export default class Editor extends React.Component {
             // Emoji AutoComplete
             emojiAutoCompleteHelper.showHint(editor);
           }}
-          // onDragEnter={this.onDragEnter}
+          onDragEnter={this.onDragEnterForCM}
         />
       </Dropzone>
     )
@@ -243,6 +240,7 @@ export default class Editor extends React.Component {
 Editor.propTypes = {
   value: PropTypes.string,
   isUploadable: PropTypes.bool,
+  isUploadableFile: PropTypes.bool,
   onChange: PropTypes.func,
   onScroll: PropTypes.func,
   onSave: PropTypes.func,
