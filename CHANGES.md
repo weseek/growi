@@ -1,14 +1,18 @@
 CHANGES
 ========
 
-## 2.3.4-RC
+## 2.3.4
 
+* Feature: Enhanced Editor by CodeMirror
+* Feature: Emoji AutoComplete
+* Feature: Add keyboard shortcuts
 * Fix: DOMs that has `.alert-info` class don't be displayed
 * Support: Switch and upgrade libs
     * 8fold-marked -> marked
     * react-bootstrap
     * googleapis
     * mongoose
+    * mongoose-unique-validator
     * etc..
 
 ## 2.3.3
