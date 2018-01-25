@@ -198,6 +198,11 @@ Crowi.handleKeyCHandler = (event) => {
   $('#create-page').modal();
 }
 
+Crowi.handleKeyCtrlSlashHandler = (event) => {
+  // show modal to create a page
+  $('#help-modal').modal('toggle');
+}
+
 $(function() {
   var config = JSON.parse(document.getElementById('crowi-context-hydrate').textContent || '{}');
 
@@ -966,6 +971,10 @@ window.addEventListener('keypress', (event) => {
       break;
     case 'c':
       Crowi.handleKeyCHandler(event);
+    case '/':
+      if (event.ctrlKey) {
+        Crowi.handleKeyCtrlSlashHandler(event);
+      }
     break;
   }
 });
