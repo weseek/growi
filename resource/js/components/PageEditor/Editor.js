@@ -49,6 +49,8 @@ export default class Editor extends React.Component {
     this.onDragLeave = this.onDragLeave.bind(this);
     this.onDrop = this.onDrop.bind(this);
 
+    this.getDropzoneAccept = this.getDropzoneAccept.bind(this);
+    this.getDropzoneClassName = this.getDropzoneClassName.bind(this);
     this.renderOverlay = this.renderOverlay.bind(this);
   }
 
@@ -181,6 +183,41 @@ export default class Editor extends React.Component {
     this.setState({ isUploading: true });
   }
 
+  getDropzoneAccept() {
+    let accept = 'null';    // reject all
+    if (this.props.isUploadable) {
+      if (!this.props.isUploadableFile) {
+        accept = 'image/*'  // image only
+      }
+      else {
+        accept = '';        // allow all
+      }
+    }
+
+    return accept;
+  }
+
+  getDropzoneClassName() {
+    let className = 'dropzone';
+    if (!this.props.isUploadable) {
+      className += ' dropzone-unuploadable';
+    }
+    else {
+      className += ' dropzone-uploadable';
+
+      if (this.props.isUploadableFile) {
+        className += ' dropzone-uploadablefile';
+      }
+    }
+
+    // uploading
+    if (this.state.isUploading) {
+      className += ' dropzone-uploading';
+    }
+
+    return className;
+  }
+
   renderOverlay() {
     const overlayStyle = {
       position: 'absolute',
@@ -214,26 +251,6 @@ export default class Editor extends React.Component {
       height: '100%',
     }
 
-    let accept = 'null';  // reject all
-    let className = 'dropzone';
-    if (!this.props.isUploadable) {
-      className += ' dropzone-unuploadable';
-    }
-    else {
-      accept = 'image/*'
-      className += ' dropzone-uploadable';
-
-      if (this.props.isUploadableFile) {
-        className += ' dropzone-uploadablefile';
-        accept = '';  // allow all
-      }
-    }
-
-    // uploading
-    if (this.state.isUploading) {
-      className += ' dropzone-uploading';
-    }
-
     return (
       <div style={flexContainer}>
         <Dropzone
@@ -241,8 +258,8 @@ export default class Editor extends React.Component {
           disableClick
           disablePreview={true}
           style={expandHeight}
-          accept={accept}
-          className={className}
+          accept={this.getDropzoneAccept()}
+          className={this.getDropzoneClassName()}
           acceptClassName="dropzone-accepted"
           rejectClassName="dropzone-rejected"
           multiple={false}
