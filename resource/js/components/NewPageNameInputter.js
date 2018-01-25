@@ -60,9 +60,12 @@ export default class NewPageNameInputter extends React.Component {
     this.setState({input: text});
   }
 
+  /**
+   * Initialize keyword
+   */
   restoreForm() {
     this._searchtypeahead._typeahead.getInstance().clear();
-    this._searchtypeahead._typeahead.getInstance().input = 'hoge';
+    this._searchtypeahead._typeahead.getInstance()._updateText(this.props.parentPageName);
   }
 
   renderMenuItemChildren(option, props, index) {
@@ -83,7 +86,7 @@ export default class NewPageNameInputter extends React.Component {
 
     return (
       <SearchTypeahead
-        ref={searchTypeahead => this._searchtypeahead = searchTypeahead}
+        ref={(searchTypeahead) => this._searchtypeahead = searchTypeahead}
         crowi={this.crowi}
         onSearchSuccess={this.onSearchSuccess}
         onSearchError={this.onSearchError}
@@ -99,5 +102,4 @@ NewPageNameInputter.propTypes = {
   parentPageName: PropTypes.string.isRequired,
 };
 NewPageNameInputter.defaultProps = {
-  parentPageName: "",
 };

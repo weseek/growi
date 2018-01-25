@@ -120,7 +120,6 @@ export default class SearchTypeahead extends React.Component {
         ? 'Error on searching.'
         : 'No matches found on title...';
     const restoreFormButton = this.getRestoreFormButton();
-    const keyword = "hoge";
 
     return (
       <form
@@ -128,12 +127,12 @@ export default class SearchTypeahead extends React.Component {
         className=""
         >
       <AsyncTypeahead
-        ref={typeahead => this._typeahead = typeahead}
+        ref={(typeahead) => this._typeahead = typeahead}
         inputProps={{name: "q", autoComplete: "off"}}
         isLoading={this.state.isLoading}
         labelKey="path"
         minLength={2}
-        options={this.state.pages}
+        options={this.state.pages} // 検索結果
         placeholder="Input page name"
         emptyLabel={this.emptyLabel ? this.emptyLabel : emptyLabel}
         align='left'
@@ -142,9 +141,11 @@ export default class SearchTypeahead extends React.Component {
         onInputChange={this.onInputChange}
         renderMenuItemChildren={this.renderMenuItemChildren}
         caseSensitive={false}
+        defaultSelected={[{path: this.props.keywordOnInit}]}
       />
       {restoreFormButton}
-      <span>keyword: {this.state.keyword}</span>
+      {/* [TODO] デバッグ用の表示。実装が完了したら削除する。 */}
+      <span>keyword: {this.state.keyword}, keywordOnInit: {this.props.keywordOnInit}</span>
       </form>
     );
   }

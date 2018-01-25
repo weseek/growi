@@ -241,6 +241,7 @@ $(function() {
       ;
     $('#page-name-inputter .form-control').focus(); // focus() を実行しないと placeholder が表示されない。
     $('#create-page-today .form-control.page-today-input2').css({width: newWidth}).focus();
+
   });
 
   $('#create-page-today').submit(function(e) {
