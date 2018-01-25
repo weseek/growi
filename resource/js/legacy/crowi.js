@@ -71,11 +71,19 @@ Crowi.setCaretLineData = function(line) {
 }
 
 /**
- * invoked when 'shown.bs.tab' event fired
+ * invoked when;
+ *
+ * 1. window loaded
+ * 2. 'shown.bs.tab' event fired
  */
 Crowi.setCaretLineAndFocusToEditor = function() {
   // get 'data-caret-line' attributes
   const pageEditorDom = document.querySelector('#page-editor');
+
+  if (pageEditorDom == null) {
+    return;
+  }
+
   const line = pageEditorDom.getAttribute('data-caret-line');
 
   if (line != null) {
