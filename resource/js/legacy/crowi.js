@@ -188,6 +188,16 @@ Crowi.updateCurrentRevision = function(revisionId) {
   $('#page-form [name="pageForm[currentRevision]"]').val(revisionId);
 }
 
+Crowi.handleKeyEHandler = (event) => {
+  // show editor
+  $('a[data-toggle="tab"][href="#edit-form"]').tab('show');
+}
+
+Crowi.handleKeyCHandler = (event) => {
+  // show modal to create a page
+  $('#create-page').modal();
+}
+
 $(function() {
   var config = JSON.parse(document.getElementById('crowi-context-hydrate').textContent || '{}');
 
@@ -921,6 +931,7 @@ window.addEventListener('load', function(e) {
   Crowi.highlightSelectedSection(location.hash);
   Crowi.modifyScrollTop();
   Crowi.setCaretLineAndFocusToEditor();
+  Crowi.setCaretLineAndFocusToEditor();
 });
 
 window.addEventListener('hashchange', function(e) {
@@ -939,5 +950,22 @@ window.addEventListener('hashchange', function(e) {
   }
   if (location.hash == '' || location.hash.match(/^#head.+/)) {
     $('a[data-toggle="tab"][href="#revision-body"]').tab('show');
+  }
+});
+
+window.addEventListener('keypress', (event) => {
+  // ignore when target dom is input
+  const inputPattern = /input|textinput|textarea/i;
+  if (event.target.tagName.match(inputPattern)) {
+    return;
+  }
+
+  switch (event.key) {
+    case 'e':
+      Crowi.handleKeyEHandler(event);
+      break;
+    case 'c':
+      Crowi.handleKeyCHandler(event);
+    break;
   }
 });
