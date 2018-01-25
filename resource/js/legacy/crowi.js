@@ -972,7 +972,7 @@ window.addEventListener('keypress', (event) => {
     case 'c':
       Crowi.handleKeyCHandler(event);
     case '/':
-      if (event.ctrlKey) {
+      if (event.ctrlKey || event.metaKey) {
         Crowi.handleKeyCtrlSlashHandler(event);
       }
     break;
