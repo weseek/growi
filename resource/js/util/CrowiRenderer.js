@@ -1,5 +1,6 @@
-import marked from '8fold-marked';
+import marked from 'marked';
 import hljs from 'highlight.js';
+import * as entities from 'entities';
 
 import MarkdownFixer from './PreProcessor/MarkdownFixer';
 import Linker        from './PreProcessor/Linker';
@@ -81,7 +82,7 @@ export default class CrowiRenderer {
         result = code;
       }
 
-      result = (escape ? result : Crowi.escape(result, true));
+      result = (escape ? result : entities.encodeHTML(result));
 
       let citeTag = '';
       if (langFn) {
@@ -91,7 +92,7 @@ export default class CrowiRenderer {
     }
 
     // no lang specified
-    return `<pre class="wiki-code"><code>${Crowi.escape(code, true)}\n</code></pre>`;
+    return `<pre class="wiki-code"><code>${entities.encodeHTML(code)}\n</code></pre>`;
 
   }
 

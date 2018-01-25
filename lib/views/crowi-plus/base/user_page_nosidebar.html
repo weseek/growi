@@ -66,12 +66,5 @@
 
 {% block footer %}
   {% parent %}
-  <div class="system-version">
-    <span>
-      <a href="https://github.com/weseek/crowi-plus">crowi-plus</a> {{ crowiVersion() }}
-    </span>
-    <span>
-      <a href="" data-target="#help-modal" data-toggle="modal"><i class="fa fa-question-circle"></i> {{ t('Help') }}</a>
-    </span>
-  </div>
+  {% include '../widget/system-version.html' %}
 {% endblock %}

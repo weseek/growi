@@ -22,6 +22,7 @@ $bootstrap-sass-asset-helper: true;
 @import 'page_crowi-plus';
 @import 'portal';
 @import 'search';
+@import 'shortcuts';
 @import 'user';
 @import 'user_crowi-plus';
 @import 'wiki';
@@ -116,7 +117,7 @@ footer {
 
 .modal.create-page {
 
-  @media (min-width: 768px) {
+  @media (min-width: $screen-sm-min) { // {{{ more than tablet size
     .modal-dialog {
       width: 750px;
     }

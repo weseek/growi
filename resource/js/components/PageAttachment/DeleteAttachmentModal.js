@@ -18,12 +18,12 @@ export default class DeleteAttachmentModal extends React.Component {
   renderByFileFormat(attachment) {
     if (attachment.fileFormat.match(/image\/.+/i)) {
       return (
-        <p className="attachment-delete-image">
-          <span>
+        <div className="attachment-delete-image">
+          <p>
             {attachment.originalName} uploaded by <User user={attachment.creator} username />
-          </span>
+          </p>
           <img src={attachment.url} />
-        </p>
+        </div>
       );
     }
 

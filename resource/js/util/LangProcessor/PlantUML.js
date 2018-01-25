@@ -1,5 +1,6 @@
 import plantuml from 'plantuml-encoder';
 import crypto from 'crypto';
+import * as entities from 'entities';
 
 export default class PlantUML {
 
@@ -17,7 +18,7 @@ export default class PlantUML {
   process(code, lang) {
     const config = crowi.getConfig();
     if (!config.env.PLANTUML_URI) {
-      return `<pre class="wiki-code"><code>${Crowi.escape(code, true)}\n</code></pre>`;
+      return `<pre class="wiki-code"><code>${entities.encodeHTML(code)}\n</code></pre>`;
     }
 
     let plantumlUri = config.env.PLANTUML_URI;

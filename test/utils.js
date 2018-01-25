@@ -14,7 +14,7 @@ before('Create database connection and clean up', function (done) {
     return done();
   }
 
-  mongoose.connect(mongoUri, { useMongoClient: true });
+  mongoose.connect(mongoUri);
 
   function clearDB() {
     for (var i in mongoose.connection.collections) {

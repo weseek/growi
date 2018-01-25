@@ -165,7 +165,7 @@ export default class PageComments extends React.Component {
       </div>
     );
     const newerBlock = (
-      <div className="page-comments-list-newer collapse" id="page-comments-list-newer">
+      <div className="page-comments-list-newer collapse in" id="page-comments-list-newer">
         {newerElements}
       </div>
     );
