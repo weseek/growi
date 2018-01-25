@@ -200,7 +200,7 @@ Crowi.handleKeyCHandler = (event) => {
 
 Crowi.handleKeyCtrlSlashHandler = (event) => {
   // show modal to create a page
-  $('#help-modal').modal('toggle');
+  $('#shortcuts-modal').modal('toggle');
 }
 
 $(function() {
