@@ -15,6 +15,11 @@ require('codemirror/addon/hint/show-hint.css');
 require('codemirror/addon/search/searchcursor');
 require('codemirror/addon/search/match-highlighter');
 require('codemirror/addon/scroll/annotatescrollbar');
+require('codemirror/addon/fold/foldcode');
+require('codemirror/addon/fold/foldgutter');
+require('codemirror/addon/fold/foldgutter.css');
+require('codemirror/addon/fold/markdown-fold');
+require('codemirror/addon/fold/brace-fold');
 require('codemirror/mode/gfm/gfm');
 require('codemirror/theme/eclipse.css');
 
@@ -286,6 +291,9 @@ export default class Editor extends React.Component {
               autoCloseTags: true,
               matchBrackets: true,
               matchTags: {bothTags: true},
+              // folding
+              foldGutter: true,
+              gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
               // match-highlighter, matchesonscrollbar, annotatescrollbar options
               highlightSelectionMatches: {annotateScrollbar: true},
               // markdown mode options
@@ -295,6 +303,7 @@ export default class Editor extends React.Component {
                 "Enter": "newlineAndIndentContinueMarkdownList",
                 "Tab": "indentMore",
                 "Shift-Tab": "indentLess",
+                "Ctrl-Q": (cm) => { cm.foldCode(cm.getCursor()) },
               }
             }}
             onScroll={(editor, data) => {
