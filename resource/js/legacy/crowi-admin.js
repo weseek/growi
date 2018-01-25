@@ -73,4 +73,36 @@ $(function() {
      });
   });
 
+
+  $("#pictureUploadForm input[name=userGroupPicture]").on('change', function () {
+    var $form = $('#pictureUploadForm');
+    var fd = new FormData($form[0]);
+    if ($(this).val() == '') {
+      return false;
+    }
+
+    $('#pictureUploadFormProgress').html('<img src="/images/loading_s.gif"> アップロード中...');
+    $.ajax($form.attr("action"), {
+      type: 'post',
+      processData: false,
+      contentType: false,
+      data: fd,
+      dataType: 'json',
+      success: function (data) {
+        if (data.status) {
+          $('#settingUserPicture').attr('src', data.url + '?time=' + (new Date()));
+          $('#pictureUploadFormMessage')
+            .addClass('alert alert-success')
+            .html('変更しました');
+        } else {
+          $('#pictureUploadFormMessage')
+            .addClass('alert alert-danger')
+            .html('変更中にエラーが発生しました。');
+        }
+        $('#pictureUploadFormProgress').html('');
+      }
+    });
+    return false;
+  });
+
 });
