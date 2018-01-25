@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import * as toastr from 'toastr';
-import {debounce} from 'throttle-debounce';
+import { throttle, debounce } from 'throttle-debounce';
 
 import Editor from './PageEditor/Editor';
 import Preview from './PageEditor/Preview';
@@ -36,8 +36,12 @@ export default class PageEditor extends React.Component {
     this.pageSavedHandler = this.pageSavedHandler.bind(this);
     this.apiErrorHandler = this.apiErrorHandler.bind(this);
 
-    // create debounced function
+    // create throttled function
+    this.renderWithDebounce = debounce(50, throttle(100, this.renderPreview));
     this.saveDraftWithDebounce = debounce(300, this.saveDraft);
+
+    // initial rendering
+    this.renderPreview(this.state.markdown);
   }
 
   componentWillMount() {
@@ -64,12 +68,7 @@ export default class PageEditor extends React.Component {
    * @param {string} value
    */
   onMarkdownChanged(value) {
-    this.setState({
-      markdown: value,
-    });
-
-    this.renderPreview();
-
+    this.renderWithDebounce(value);
     this.saveDraftWithDebounce()
   }
 
@@ -231,7 +230,7 @@ export default class PageEditor extends React.Component {
     });
   }
 
-  renderPreview() {
+  renderPreview(value) {
     const config = this.props.crowi.config;
 
     // generate options obj
@@ -244,7 +243,7 @@ export default class PageEditor extends React.Component {
 
     // render html
     var context = {
-      markdown: this.state.markdown,
+      markdown: value,
       dom: this.previewElement,
       currentPagePath: decodeURIComponent(location.pathname)
     };
@@ -262,7 +261,10 @@ export default class PageEditor extends React.Component {
       .then(() => crowi.interceptorManager.process('postRenderPreview', context))
       .then(() => crowi.interceptorManager.process('preRenderPreviewHtml', context))
       .then(() => {
-        this.setState({html: context.parsedHTML});
+        this.setState({
+          markdown: value,
+          html: context.parsedHTML,
+        });
 
         // set html to the hidden input (for submitting to save)
         $('#form-body').val(this.state.markdown);
