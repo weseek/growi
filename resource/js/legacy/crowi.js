@@ -3,6 +3,8 @@
 */
 
 var io = require('socket.io-client');
+var entities = require("entities");
+var getLineFromPos = require('get-line-from-pos');
 require('bootstrap-sass');
 require('jquery.cookie');
 
@@ -45,11 +47,12 @@ Crowi.appendEditSectionButtons = function(contentId, markdown) {
     if (position < 0) { // if not found, search with header text only
       position = markdown.search(text);
     }
+    const line = getLineFromPos(markdown, position);
 
     // add button
     $(this).append(`
       <span class="revision-head-edit-button">
-        <a href="#edit-form" onClick="Crowi.setCaretPositionToFormBody(${position})">
+        <a href="#edit-form" onClick="Crowi.setCaretLineData(${line})">
           <i class="fa fa-edit"></i>
         </a>
       </span>
@@ -59,14 +62,39 @@ Crowi.appendEditSectionButtons = function(contentId, markdown) {
 };
 
 /**
- * set 'data-caret-position' attribute that will be processed in crowi-form.js
- * @param {number} position
+ * set 'data-caret-line' attribute that will be processed when 'shown.bs.tab' event fired
+ * @param {number} line
  */
-Crowi.setCaretPositionToFormBody = function(position) {
-  const formBody = document.querySelector('#form-body');
-  formBody.setAttribute('data-caret-position', position);
+Crowi.setCaretLineData = function(line) {
+  const pageEditorDom = document.querySelector('#page-editor');
+  pageEditorDom.setAttribute('data-caret-line', line);
 }
 
+/**
+ * invoked when;
+ *
+ * 1. window loaded
+ * 2. 'shown.bs.tab' event fired
+ */
+Crowi.setCaretLineAndFocusToEditor = function() {
+  // get 'data-caret-line' attributes
+  const pageEditorDom = document.querySelector('#page-editor');
+
+  if (pageEditorDom == null) {
+    return;
+  }
+
+  const line = pageEditorDom.getAttribute('data-caret-line');
+
+  if (line != null) {
+    crowi.setCaretLine(line);
+    // reset data-caret-line attribute
+    pageEditorDom.removeAttribute('data-caret-line');
+  }
+
+  // focus
+  crowi.focusToEditor();
+}
 
 Crowi.revisionToc = function(contentId, tocId) {
   var $content = $(contentId || '#revision-body-content');
@@ -114,27 +142,6 @@ Crowi.revisionToc = function(contentId, tocId) {
   });
 };
 
-
-Crowi.escape = function(s) {
-  s = s.replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/'/g, '&#39;')
-    .replace(/"/g, '&quot;')
-    ;
-  return s;
-};
-Crowi.unescape = function(s) {
-  s = s.replace(/&nbsp;/g, ' ')
-    .replace(/&amp;/g, '&')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&#39;/g, '\'')
-    .replace(/&quot;/g, '"')
-    ;
-  return s;
-};
-
 // original: middleware.swigFilter
 Crowi.userPicture = function (user) {
   if (!user) {
@@ -177,6 +184,24 @@ Crowi.modifyScrollTop = function() {
   }, timeout);
 }
 
+Crowi.updateCurrentRevision = function(revisionId) {
+  $('#page-form [name="pageForm[currentRevision]"]').val(revisionId);
+}
+
+Crowi.handleKeyEHandler = (event) => {
+  // show editor
+  $('a[data-toggle="tab"][href="#edit-form"]').tab('show');
+}
+
+Crowi.handleKeyCHandler = (event) => {
+  // show modal to create a page
+  $('#create-page').modal();
+}
+
+Crowi.handleKeyCtrlSlashHandler = (event) => {
+  // show modal to create a page
+  $('#shortcuts-modal').modal('toggle');
+}
 
 $(function() {
   var config = JSON.parse(document.getElementById('crowi-context-hydrate').textContent || '{}');
@@ -187,14 +212,13 @@ $(function() {
   var currentUser = $('#content-main').data('current-user');
   var isSeen = $('#content-main').data('page-is-seen');
   var pagePath= $('#content-main').data('path');
-  var isEnabledLineBreaks = $('#content-main').data('linebreaks-enabled');
   var isSavedStatesOfTabChanges = config['isSavedStatesOfTabChanges'];
 
   // generate options obj
   var rendererOptions = {
     // see: https://www.npmjs.com/package/marked
     marked: {
-      breaks: isEnabledLineBreaks
+      breaks: config.isEnabledLineBreaks
     }
   };
 
@@ -438,8 +462,8 @@ $(function() {
     var escape = function(s) {
       return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
     };
-    path = Crowi.escape(path);
-    var pattern = escape(Crowi.escape(shortPath)) + '(/)?$';
+    path = entities.encodeHTML(path);
+    var pattern = escape(entities.encodeHTML(shortPath)) + '(/)?$';
 
     $link.html(path.replace(new RegExp(pattern), '<strong>' + shortPath + '$1</strong>'));
   });
@@ -456,7 +480,7 @@ $(function() {
         var $revisionBody = $(revisionBody);
         var revisionPath = '#' + id + ' .revision-path';
 
-        var markdown = Crowi.unescape($(contentId).html());
+        var markdown = entities.decodeHTML($(contentId).html());
         var parsedHTML = crowiRenderer.render(markdown, $revisionBody.get(0), rendererOptions);
         $revisionBody.html(parsedHTML);
 
@@ -502,7 +526,7 @@ $(function() {
     // if page exists
     var $rawTextOriginal = $('#raw-text-original');
     if ($rawTextOriginal.length > 0) {
-      var markdown = Crowi.unescape($('#raw-text-original').html());
+      var markdown = entities.decodeHTML($('#raw-text-original').html());
       var dom = $('#revision-body-content').get(0);
 
       // create context object
@@ -823,6 +847,11 @@ $(function() {
       window.location.replace('#edit-form');
     });
   }
+
+  // focus to editor when 'shown.bs.tab' event fired
+  $('a[href="#edit-form"]').on('shown.bs.tab', function(e) {
+    Crowi.setCaretLineAndFocusToEditor();
+  });
 });
 
 Crowi.getRevisionBodyContent = function() {
@@ -906,6 +935,8 @@ window.addEventListener('load', function(e) {
 
   Crowi.highlightSelectedSection(location.hash);
   Crowi.modifyScrollTop();
+  Crowi.setCaretLineAndFocusToEditor();
+  Crowi.setCaretLineAndFocusToEditor();
 });
 
 window.addEventListener('hashchange', function(e) {
@@ -924,5 +955,26 @@ window.addEventListener('hashchange', function(e) {
   }
   if (location.hash == '' || location.hash.match(/^#head.+/)) {
     $('a[data-toggle="tab"][href="#revision-body"]').tab('show');
+  }
+});
+
+window.addEventListener('keypress', (event) => {
+  // ignore when target dom is input
+  const inputPattern = /input|textinput|textarea/i;
+  if (event.target.tagName.match(inputPattern)) {
+    return;
+  }
+
+  switch (event.key) {
+    case 'e':
+      Crowi.handleKeyEHandler(event);
+      break;
+    case 'c':
+      Crowi.handleKeyCHandler(event);
+    case '/':
+      if (event.ctrlKey || event.metaKey) {
+        Crowi.handleKeyCtrlSlashHandler(event);
+      }
+    break;
   }
 });

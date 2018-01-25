@@ -3,20 +3,20 @@
     padding: 0;
   }
 
-  .system-version {
-    position: fixed;
-    right: 0;
-    bottom: 0;
-    opacity: .6;
-
-    > span {
-      margin-left: .5em;
-    }
-  }
-
   @media (max-width: $screen-sm-max) {
     .system-version {
       display: none;
     }
+  }
+}
+
+.system-version {
+  position: fixed;
+  right: 0.5em;
+  bottom: 0;
+  opacity: .6;
+
+  > span {
+    margin-left: .5em;
   }
 }

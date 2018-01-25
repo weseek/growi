@@ -6,6 +6,7 @@ import CrowiRenderer from './util/CrowiRenderer';
 
 import HeaderSearchBox  from './components/HeaderSearchBox';
 import SearchPage       from './components/SearchPage';
+import PageEditor       from './components/PageEditor';
 import PageListSearch   from './components/PageListSearch';
 import PageHistory      from './components/PageHistory';
 import PageComments     from './components/PageComments';
@@ -16,6 +17,12 @@ import RevisionPath     from './components/Page/RevisionPath';
 import RevisionUrl      from './components/Page/RevisionUrl';
 import BookmarkButton   from './components/BookmarkButton';
 
+import CustomCssEditor  from './components/Admin/CustomCssEditor';
+import CustomScriptEditor from './components/Admin/CustomScriptEditor';
+
+import * as entities from 'entities';
+
+
 if (!window) {
   window = {};
 }
@@ -25,11 +32,11 @@ let pageId = null;
 let pageRevisionId = null;
 let pageRevisionCreatedAt = null;
 let pagePath;
-let pageContent = null;
+let pageContent = '';
 if (mainContent !== null) {
-  pageId = mainContent.attributes['data-page-id'].value;
-  pageRevisionId = mainContent.attributes['data-page-revision-id'].value;
-  pageRevisionCreatedAt = +mainContent.attributes['data-page-revision-created'].value;
+  pageId = mainContent.getAttribute('data-page-id');
+  pageRevisionId = mainContent.getAttribute('data-page-revision-id');
+  pageRevisionCreatedAt = +mainContent.getAttribute('data-page-revision-created');
   pagePath = mainContent.attributes['data-path'].value;
   const rawText = document.getElementById('raw-text-original');
   if (rawText) {
@@ -56,6 +63,11 @@ if (isEnabledPlugins) {
   crowiPlugin.installAll(crowi, crowiRenderer);
 }
 
+// for PageEditor
+const onSaveSuccess = function(page) {
+  crowi.getCrowiForJquery().updateCurrentRevision(page.revision._id);
+}
+
 /**
  * define components
  *  key: id of element
@@ -64,6 +76,8 @@ if (isEnabledPlugins) {
 const componentMappings = {
   'search-top': <HeaderSearchBox crowi={crowi} />,
   'search-page': <SearchPage crowi={crowi} />,
+  'page-editor': <PageEditor crowi={crowi} pageId={pageId} revisionId={pageRevisionId} pagePath={pagePath} markdown={entities.decodeHTML(pageContent)}
+                              onSaveSuccess={onSaveSuccess}/>,
   'page-list-search': <PageListSearch crowi={crowi} />,
   'page-comments-list': <PageComments pageId={pageId} revisionId={pageRevisionId} revisionCreatedAt= {pageRevisionCreatedAt} crowi={crowi} />,
   'page-attachment': <PageAttachment pageId={pageId} pageContent={pageContent} crowi={crowi} />,
@@ -92,7 +106,32 @@ if (elem) {
   ReactDOM.render(<PageCommentFormBehavior crowi={crowi} pageComments={componentInstances['page-comments-list']} />, elem);
 }
 
+// render for admin
+const customCssEditorElem = document.getElementById('custom-css-editor');
+if (customCssEditorElem != null) {
+  // get input[type=hidden] element
+  const customCssInputElem = document.getElementById('inputCustomCss');
+
+  ReactDOM.render(
+    <CustomCssEditor inputElem={customCssInputElem} />,
+    customCssEditorElem
+  )
+}
+const customScriptEditorElem = document.getElementById('custom-script-editor');
+if (customScriptEditorElem != null) {
+  // get input[type=hidden] element
+  const customScriptInputElem = document.getElementById('inputCustomScript');
+
+  ReactDOM.render(
+    <CustomScriptEditor inputElem={customScriptInputElem} />,
+    customScriptEditorElem
+  )
+}
+
 // うわーもうー
 $('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', function() {
   ReactDOM.render(<PageHistory pageId={pageId} crowi={crowi} />, document.getElementById('revision-history'));
 });
+
+// set refs for pageEditor
+crowi.setPageEditor(componentInstances['page-editor']);

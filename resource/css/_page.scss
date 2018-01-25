@@ -267,7 +267,7 @@
 
   .footer { // {{{
     position: fixed;
-    width: 100%;
+    width: calc(25% - 18px);
     bottom: 0px;
     height: 26px;
     padding: 4px;
