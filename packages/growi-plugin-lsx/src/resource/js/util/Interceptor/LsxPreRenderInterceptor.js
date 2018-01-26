@@ -72,7 +72,7 @@ export class LsxPreRenderInterceptor extends BasicInterceptor {
   }
 
   createReactTargetDom(renderId) {
-    return `<div id="${renderId}" />`;
+    return `<div id="${renderId}"></div>`;
   }
 
   /**
