@@ -1,6 +1,11 @@
 CHANGES
 ========
 
+## 2.3.6-RC
+
+* Improvement: Remove unportalize button from crowi-plus layout
+* Fix: CSS for admin pages
+
 ## 2.3.5
 
 * Feature: Enhanced Editor by CodeMirror
