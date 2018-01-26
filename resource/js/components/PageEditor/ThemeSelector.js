@@ -35,7 +35,7 @@ export default class ThemeSelector extends React.Component {
     });
 
     return (
-      <FormGroup controlId="formControlsSelect">
+      <FormGroup controlId="formControlsSelect" bsClass="theme-selector">
         <ControlLabel>Theme:</ControlLabel>
         <FormControl componentClass="select" placeholder="select"
             onChange={this.onChange}
