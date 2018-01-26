@@ -7,6 +7,7 @@ import CrowiRenderer from './util/CrowiRenderer';
 import HeaderSearchBox  from './components/HeaderSearchBox';
 import SearchPage       from './components/SearchPage';
 import PageEditor       from './components/PageEditor';
+import ThemeSelector    from './components/PageEditor/ThemeSelector';
 import PageListSearch   from './components/PageListSearch';
 import PageHistory      from './components/PageHistory';
 import PageComments     from './components/PageComments';
@@ -76,8 +77,6 @@ const onSaveSuccess = function(page) {
 const componentMappings = {
   'search-top': <HeaderSearchBox crowi={crowi} />,
   'search-page': <SearchPage crowi={crowi} />,
-  'page-editor': <PageEditor crowi={crowi} pageId={pageId} revisionId={pageRevisionId} pagePath={pagePath} markdown={entities.decodeHTML(pageContent)}
-                              onSaveSuccess={onSaveSuccess}/>,
   'page-list-search': <PageListSearch crowi={crowi} />,
   'page-comments-list': <PageComments pageId={pageId} revisionId={pageRevisionId} revisionCreatedAt= {pageRevisionCreatedAt} crowi={crowi} />,
   'page-attachment': <PageAttachment pageId={pageId} pageContent={pageContent} crowi={crowi} />,
@@ -104,6 +103,27 @@ Object.keys(componentMappings).forEach((key) => {
 const elem = document.getElementById('page-comment-form-behavior');
 if (elem) {
   ReactDOM.render(<PageCommentFormBehavior crowi={crowi} pageComments={componentInstances['page-comments-list']} />, elem);
+}
+
+// render PageEditor
+let pageEditor = null;
+const pageEditorElem = document.getElementById('page-editor');
+if (pageEditorElem) {
+  pageEditor = ReactDOM.render(
+    <PageEditor crowi={crowi} pageId={pageId} revisionId={pageRevisionId} pagePath={pagePath}
+        markdown={entities.decodeHTML(pageContent)}
+        onSaveSuccess={onSaveSuccess} />,
+    pageEditorElem
+  );
+}
+const themeSelectorElem = document.getElementById('page-editor-theme-selector');
+if (themeSelectorElem) {
+  ReactDOM.render(
+    <ThemeSelector onChange={(value) => { // set onChange event handler
+      pageEditor.setEditorTheme(value);
+    }} />,
+    themeSelectorElem
+  );
 }
 
 // render for admin

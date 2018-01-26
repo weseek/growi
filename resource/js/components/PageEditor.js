@@ -61,6 +61,14 @@ export default class PageEditor extends React.Component {
   }
 
   /**
+   * set theme
+   * @param {string} theme name
+   */
+  setEditorTheme(name) {
+    this.refs.editor.setTheme(name);
+  }
+
+  /**
    * the change event handler for `markdown` state
    * @param {string} value
    */

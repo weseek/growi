@@ -21,7 +21,14 @@ require('codemirror/addon/fold/foldgutter.css');
 require('codemirror/addon/fold/markdown-fold');
 require('codemirror/addon/fold/brace-fold');
 require('codemirror/mode/gfm/gfm');
-require('codemirror/theme/eclipse.css');
+
+require('codemirror/theme/elegant.css');
+require('codemirror/theme/neo.css');
+require('codemirror/theme/mdn-like.css');
+require('codemirror/theme/material.css');
+require('codemirror/theme/monokai.css');
+require('codemirror/theme/twilight.css');
+
 
 import Dropzone from 'react-dropzone';
 
@@ -41,6 +48,7 @@ export default class Editor extends React.Component {
       value: this.props.value,
       dropzoneActive: false,
       isUploading: false,
+      theme: 'elegant',
     };
 
     this.getCodeMirror = this.getCodeMirror.bind(this);
@@ -88,6 +96,14 @@ export default class Editor extends React.Component {
   setCaretLine(line) {
     const editor = this.getCodeMirror();
     editor.setCursor({line: line-1});   // leave 'ch' field as null/undefined to indicate the end of line
+  }
+
+  /**
+   * set theme
+   * @param {string} theme name
+   */
+  setTheme(name) {
+    this.setState({ theme: name });
   }
 
   /**
@@ -256,6 +272,7 @@ export default class Editor extends React.Component {
       height: 'calc(100% - 20px)'
     }
 
+    const theme = this.state.theme;
     return (
       <div style={flexContainer}>
         <Dropzone
@@ -282,7 +299,7 @@ export default class Editor extends React.Component {
             value={this.state.value}
             options={{
               mode: 'gfm',
-              theme: 'eclipse',
+              theme: theme,
               lineNumbers: true,
               tabSize: 4,
               indentUnit: 4,
