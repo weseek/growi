@@ -239,7 +239,7 @@ $(function() {
       - $('#create-page-today .page-today-suffix').outerWidth()
       - 42
       ;
-    $('#page-name-inputter .form-control').focus(); // focus() を実行しないと placeholder が表示されない。
+    //$('#page-name-inputter .form-control').focus(); // focus() を実行しないと placeholder が表示されない。[TODO] jQuery から focus() を実行せずにフォーカスを当てる
     $('#create-page-today .form-control.page-today-input2').css({width: newWidth}).focus();
 
   });

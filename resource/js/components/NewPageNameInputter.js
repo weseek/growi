@@ -15,24 +15,17 @@ export default class NewPageNameInputter extends React.Component {
 
     super(props);
 
-    this.crowi = window.crowi; // FIXME
-
     this.state = {
       input: '',
       keyword: '',
-      searchedKeyword: '',
-      pages: [],
       isLoading: false,
       searchError: null,
     };
-
-    this.crowi = window.crowi; // FIXME
+    this.crowi = this.props.crowi;
 
     this.onSearchSuccess = this.onSearchSuccess.bind(this);
     this.onSearchError = this.onSearchError.bind(this);
-    this.restoreForm = this.restoreForm.bind(this);
-    this.renderMenuItemChildren = this.renderMenuItemChildren.bind(this);
-    this.onInputChange = this.onInputChange.bind(this);
+    this.getParentPageName = this.getParentPageName.bind(this);
   }
 
   componentDidMount() {
@@ -56,50 +49,39 @@ export default class NewPageNameInputter extends React.Component {
     });
   }
 
-  onInputChange(text) {
-    this.setState({input: text});
-  }
+  getParentPageName(path) {
+    if (path == '/') {
+      return path;
+    }
 
-  /**
-   * Initialize keyword
-   */
-  restoreForm() {
-    this._searchtypeahead._typeahead.getInstance().clear();
-    this._searchtypeahead._typeahead.getInstance()._updateText(this.props.parentPageName);
-  }
+    if (path.match(/.+\/$/)) {
+      return path;
+    }
 
-  renderMenuItemChildren(option, props, index) {
-    const page = option;
-    return (
-      <span>
-        <UserPicture user={page.revision.author} />
-        <PagePath page={page} />
-        <PageListMeta page={page} />
-      </span>
-    );
+    return path + '/';
   }
 
   render() {
     const emptyLabel = (this.state.searchError !== null)
-        ? 'Error on searching.'
-        : 'No matches found on title...';
+      ? 'Error on searching.'
+      : 'No matches found on title...';
 
     return (
       <SearchTypeahead
-        ref={(searchTypeahead) => this._searchtypeahead = searchTypeahead}
         crowi={this.crowi}
         onSearchSuccess={this.onSearchSuccess}
         onSearchError={this.onSearchError}
-        onResetButton={this.restoreForm}
         emptyLabel={emptyLabel}
-        keywordOnInit={this.props.parentPageName}
+        keywordOnInit={this.getParentPageName(this.props.parentPageName)}
       />
     );
   }
 }
 
 NewPageNameInputter.propTypes = {
+  crowi:          PropTypes.object.isRequired,
   parentPageName: PropTypes.string.isRequired,
 };
+
 NewPageNameInputter.defaultProps = {
 };

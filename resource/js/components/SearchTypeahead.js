@@ -1,5 +1,4 @@
 import React from 'react';
-import { FormGroup, Button, InputGroup } from 'react-bootstrap';
 
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 
@@ -14,8 +13,6 @@ export default class SearchTypeahead extends React.Component {
 
     super(props);
 
-    this.crowi = window.crowi; // FIXME
-
     this.state = {
       input: '',
       keyword: '',
@@ -24,19 +21,48 @@ export default class SearchTypeahead extends React.Component {
       isLoading: false,
       searchError: null,
     };
+    this.crowi = this.props.crowi;
+    this.emptyLabel = props.emptyLabel;
 
     this.search = this.search.bind(this);
     this.onInputChange = this.onInputChange.bind(this);
     this.onChange = this.onChange.bind(this);
     this.getRestoreFormButton = this.getRestoreFormButton.bind(this);
     this.renderMenuItemChildren = this.renderMenuItemChildren.bind(this);
-    this.emptyLabel = props.emptyLabel;
+    this.restoreInitialData = this.restoreInitialData.bind(this);
+    this.getTypeahead = this.getTypeahead.bind(this);
+    this.forceToFocus = this.forceToFocus.bind(this);
+  }
+
+  /**
+   * Get instance of AsyncTypeahead
+   */
+  getTypeahead() {
+    return this.refs.typeahead ? this.refs.typeahead.getInstance() : null;
   }
 
   componentDidMount() {
+    /*
+    this.forceToFocus(); // cf. It is needed for displaing placeholder.
+                         //     And cannot focus on if set autoFocus=true to AsyncTypeahead,
+                         //       also set to inputProps of AsyncTypeahead.
+    */
   }
 
   componentWillUnmount() {
+  }
+
+  /**
+   * force to focus
+   */
+  forceToFocus() {
+    const typeahead = this.getTypeahead();
+    const intervalId = setInterval(() => {
+      this.getTypeahead().focus();
+      if (typeahead.state.isFocused) {
+        clearInterval(intervalId);
+      }
+    }, 100);
   }
 
   search(keyword) {
@@ -57,7 +83,7 @@ export default class SearchTypeahead extends React.Component {
   }
 
   /**
-   * Occured when search is exit successfully
+   * Callback function which is occured when search is exit successfully
    * @param {*} pages
    */
   _onSearchSuccess(res) {
@@ -70,7 +96,7 @@ export default class SearchTypeahead extends React.Component {
   }
 
   /**
-   * Occured when search is exit abnormaly
+   * Callback function which is occured when search is exit abnormaly
    * @param {*} err
    */
   _onSearchError(err) {
@@ -79,16 +105,6 @@ export default class SearchTypeahead extends React.Component {
       searchError: err,
     });
     this.props.onSearchError(err);
-  }
-
-  getRestoreFormButton() {
-    let isHidden = (this.state.input.length === 0);
-
-    return isHidden ? <span></span> : (
-      <a className="btn btn-link search-top-clear" onClick={this.props.onResetButton} hidden={isHidden}>
-        <i className="fa fa-times-circle" />
-      </a>
-    );
   }
 
   onInputChange(text) {
@@ -115,10 +131,31 @@ export default class SearchTypeahead extends React.Component {
     );
   }
 
+  /**
+   * Initialize keyword
+   */
+  restoreInitialData() {
+    this.refs.typeahead.getInstance().clear();
+    this.refs.typeahead.getInstance()._updateText(this.props.keywordOnInit);
+  }
+
+  /**
+   * Get restore form button to initialize button
+   */
+  getRestoreFormButton() {
+    let isHidden = (this.state.input.length === 0);
+
+    return isHidden ? <span></span> : (
+      <a className="btn btn-link search-top-clear" onClick={this.restoreInitialData} hidden={isHidden}>
+        <i className="fa fa-times-circle" />
+      </a>
+    );
+  }
+
   render() {
     const emptyLabel = (this.state.searchError !== null)
-        ? 'Error on searching.'
-        : 'No matches found on title...';
+      ? 'Error on searching.'
+      : 'No matches found on title...';
     const restoreFormButton = this.getRestoreFormButton();
 
     return (
@@ -127,12 +164,12 @@ export default class SearchTypeahead extends React.Component {
         className=""
         >
       <AsyncTypeahead
-        ref={(typeahead) => this._typeahead = typeahead}
+        ref="typeahead"
         inputProps={{name: "q", autoComplete: "off"}}
         isLoading={this.state.isLoading}
         labelKey="path"
         minLength={2}
-        options={this.state.pages} // 検索結果
+        options={this.state.pages} // Search result (Some page names)
         placeholder="Input page name"
         emptyLabel={this.emptyLabel ? this.emptyLabel : emptyLabel}
         align='left'
@@ -145,21 +182,29 @@ export default class SearchTypeahead extends React.Component {
       />
       {restoreFormButton}
       {/* [TODO] デバッグ用の表示。実装が完了したら削除する。 */}
-      <span>keyword: {this.state.keyword}, keywordOnInit: {this.props.keywordOnInit}</span>
+      <span>keyword: {this.state.keyword}, keywordOnInit: {this.props.keywordOnInit}, typeahead.state.isFocused: {this.getTypeahead() ? this.refs.typeahead.state.isFocused : '-' }</span>
       </form>
     );
   }
 }
 
+/**
+ * Properties
+ */
 SearchTypeahead.propTypes = {
+  crowi:           PropTypes.object.isRequired,
   onSearchSuccess: PropTypes.func,
   onSearchError:   PropTypes.func,
-  onResetButton:   PropTypes.func,
-  restoreAction:   PropTypes.func,
   emptyLabel:      PropTypes.string,
   keywordOnInit:   PropTypes.string,
 };
 
+/**
+ * Properties
+ */
 SearchTypeahead.defaultProps = {
+  onSearchSuccess: {},
+  onSearchError:   {},
+  emptyLabel:      null,
   keywordOnInit:   "",
 };
