@@ -105,23 +105,31 @@ if (elem) {
   ReactDOM.render(<PageCommentFormBehavior crowi={crowi} pageComments={componentInstances['page-comments-list']} />, elem);
 }
 
-// render PageEditor
+/*
+ * PageEditor
+ */
 let pageEditor = null;
+// load editorTheme
+const editorTheme = crowi.loadEditorTheme();
+// render PageEditor
 const pageEditorElem = document.getElementById('page-editor');
 if (pageEditorElem) {
   pageEditor = ReactDOM.render(
     <PageEditor crowi={crowi} pageId={pageId} revisionId={pageRevisionId} pagePath={pagePath}
-        markdown={entities.decodeHTML(pageContent)}
+        markdown={entities.decodeHTML(pageContent)} editorTheme={editorTheme}
         onSaveSuccess={onSaveSuccess} />,
     pageEditorElem
   );
 }
+// render ThemeSelector
 const themeSelectorElem = document.getElementById('page-editor-theme-selector');
 if (themeSelectorElem) {
   ReactDOM.render(
-    <ThemeSelector onChange={(value) => { // set onChange event handler
-      pageEditor.setEditorTheme(value);
-    }} />,
+    <ThemeSelector value={editorTheme}
+        onChange={(value) => { // set onChange event handler
+          pageEditor.setEditorTheme(value);
+          crowi.saveEditorTheme(value);
+        }} />,
     themeSelectorElem
   );
 }

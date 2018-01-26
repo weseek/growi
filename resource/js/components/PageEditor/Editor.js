@@ -48,7 +48,6 @@ export default class Editor extends React.Component {
       value: this.props.value,
       dropzoneActive: false,
       isUploading: false,
-      theme: 'elegant',
     };
 
     this.getCodeMirror = this.getCodeMirror.bind(this);
@@ -96,14 +95,6 @@ export default class Editor extends React.Component {
   setCaretLine(line) {
     const editor = this.getCodeMirror();
     editor.setCursor({line: line-1});   // leave 'ch' field as null/undefined to indicate the end of line
-  }
-
-  /**
-   * set theme
-   * @param {string} theme name
-   */
-  setTheme(name) {
-    this.setState({ theme: name });
   }
 
   /**
@@ -272,7 +263,7 @@ export default class Editor extends React.Component {
       height: 'calc(100% - 20px)'
     }
 
-    const theme = this.state.theme;
+    const theme = this.props.theme || 'elegant';
     return (
       <div style={flexContainer}>
         <Dropzone
@@ -356,6 +347,7 @@ export default class Editor extends React.Component {
 
 Editor.propTypes = {
   value: PropTypes.string,
+  theme: PropTypes.string,
   isUploadable: PropTypes.bool,
   isUploadableFile: PropTypes.bool,
   onChange: PropTypes.func,

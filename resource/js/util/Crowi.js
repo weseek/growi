@@ -147,6 +147,14 @@ export default class Crowi {
     return null;
   }
 
+  saveEditorTheme(theme) {
+    this.localStorage.setItem('editorTheme', theme);
+  }
+
+  loadEditorTheme() {
+    return this.localStorage.getItem('editorTheme');
+  }
+
   findUserById(userId) {
     if (this.userById && this.userById[userId]) {
       return this.userById[userId];
