@@ -1,6 +1,6 @@
 {
   "name": "crowi-plus",
-  "version": "2.3.4-RC",
+  "version": "2.3.5-RC",
   "description": "Enhanced Crowi",
   "tags": [
     "wiki",
@@ -42,7 +42,7 @@
     "server:prod": "env-cmd config/env.prod.js node app.js --production | pino-clf common",
     "server": "npm run server:dev:watch",
     "start": "npm run server:prod",
-    "test": "mocha -r test/bootstrap.js test/**/*.js",
+    "test": "mocha --timeout 10000 -r test/bootstrap.js test/**/*.js",
     "version": "node -p \"require('./package.json').version\"",
     "webpack": "webpack"
   },
@@ -73,7 +73,6 @@
     "diff": "^3.3.0",
     "diff2html": "^2.3.0",
     "elasticsearch": "^14.0.0",
-    "emojione": "^3.1.2",
     "entities": "^1.1.1",
     "env-cmd": "^7.0.0",
     "escape-string-regexp": "^1.0.5",

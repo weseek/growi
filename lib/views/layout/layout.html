@@ -33,8 +33,8 @@
     }
   </script>
 
-  <!-- jQuery -->
-  <script src="https://cdn.jsdelivr.net/jquery/3.2.1/jquery.min.js"></script>
+  <!-- jQuery, emojione -->
+  <script src="https://cdn.jsdelivr.net/combine/npm/emojione@3.1.2,npm/jquery@3.3.1"></script>
 
   {% if env === 'development' %}
     <script src="/dll/vendor.dll.js"></script>
@@ -54,7 +54,9 @@
   <!-- Google Fonts -->
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
   <!-- Font Awesome -->
-  <link href='https://cdn.jsdelivr.net/fontawesome/4.7.0/css/font-awesome.min.css' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+  <!-- emojione -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/emojione@3.1.2/extras/css/emojione.min.css">
 
   {% block html_additional_headers %}{% endblock %}
 

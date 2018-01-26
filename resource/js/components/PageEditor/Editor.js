@@ -253,7 +253,7 @@ export default class Editor extends React.Component {
       flexDirection: 'column',
     }
     const expandHeight = {
-      height: '100%',
+      height: 'calc(100% - 20px)'
     }
 
     return (
@@ -323,7 +323,9 @@ export default class Editor extends React.Component {
           />
         </Dropzone>
 
-        <button type="button" className="btn btn-default btn-block btn-open-dropzone" onClick={() => {this.refs.dropzone.open()}}>
+        <button type="button" className="btn btn-default btn-block btn-open-dropzone"
+            onClick={() => {this.refs.dropzone.open()}}>
+
           <i className="fa fa-paperclip" aria-hidden="true"></i>&nbsp;
           Attach files by dragging &amp; dropping,&nbsp;
           <span className="btn-link">selecting them</span>,&nbsp;

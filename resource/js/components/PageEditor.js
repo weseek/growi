@@ -39,16 +39,13 @@ export default class PageEditor extends React.Component {
     // create throttled function
     this.renderWithDebounce = debounce(50, throttle(100, this.renderPreview));
     this.saveDraftWithDebounce = debounce(300, this.saveDraft);
-
-    // initial rendering
-    this.renderPreview(this.state.markdown);
   }
 
   componentWillMount() {
     // restore draft
     this.restoreDraft();
-    // initial preview
-    this.renderPreview();
+    // initial rendering
+    this.renderPreview(this.state.markdown);
   }
 
   focusToEditor() {
@@ -233,6 +230,8 @@ export default class PageEditor extends React.Component {
   renderPreview(value) {
     const config = this.props.crowi.config;
 
+    this.setState({ markdown: value });
+
     // generate options obj
     const rendererOptions = {
       // see: https://www.npmjs.com/package/marked
@@ -243,7 +242,7 @@ export default class PageEditor extends React.Component {
 
     // render html
     var context = {
-      markdown: value,
+      markdown: this.state.markdown,
       dom: this.previewElement,
       currentPagePath: decodeURIComponent(location.pathname)
     };
@@ -261,10 +260,7 @@ export default class PageEditor extends React.Component {
       .then(() => crowi.interceptorManager.process('postRenderPreview', context))
       .then(() => crowi.interceptorManager.process('preRenderPreviewHtml', context))
       .then(() => {
-        this.setState({
-          markdown: value,
-          html: context.parsedHTML,
-        });
+        this.setState({ html: context.parsedHTML });
 
         // set html to the hidden input (for submitting to save)
         $('#form-body').val(this.state.markdown);

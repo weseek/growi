@@ -11,6 +11,14 @@ describe('User', function () {
     User   = utils.models.User,
     conn   = utils.mongoose.connection;
 
+  // clear collection
+  before(done => {
+    conn.collection('users').remove()
+      .then(() => {
+        done();
+      });
+  });
+
   describe('Create and Find.', function () {
     context('The user', function() {
       it('should created', function(done) {
