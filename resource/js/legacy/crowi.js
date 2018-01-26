@@ -457,7 +457,12 @@ $(function() {
     var $link = $(this);
     var text = $link.text();
     var path = $link.data('path');
-    var shortPath = new String($link.data('short-path'));
+    var shortPath = String($link.data('short-path'));
+
+    if (path == null || shortPath == null) {
+      // continue
+      return;
+    }
 
     var escape = function(s) {
       return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
