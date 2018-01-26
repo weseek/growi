@@ -49,7 +49,7 @@ export class LsxPreRenderInterceptor extends BasicInterceptor {
     const pattern = /\$lsx(\((.*?)\)(?=\s|<br>|\$lsx))|\$lsx(\((.*)\)(?!\s|<br>|\$lsx))/g;
     context.parsedHTML = parsedHTML.replace(pattern, (all, group1, group2, group3, group4) => {
       const tagExpression = all;
-      let lsxArgs = group2 || group4;
+      let lsxArgs = group2 || group4 || '';
       lsxArgs = lsxArgs.trim();
 
       // create contexts

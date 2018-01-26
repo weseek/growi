@@ -47,7 +47,7 @@ export class LsxCacheHelper {
     const cacheObj = LsxCacheHelper.retrieveFromSessionStorage();
     const stateCache = cacheObj[key];
 
-    if (stateCache !== undefined) {
+    if (stateCache != null && stateCache.nodeTree != null) {
       // instanciate PageNode
       stateCache.nodeTree = stateCache.nodeTree.map((obj) => {
         return PageNode.instanciateFrom(obj);
