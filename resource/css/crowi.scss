@@ -463,3 +463,14 @@ input.searching {
     border: 0;
   }
 }
+
+.cmd-key.mac {
+  &:after {
+    content: '⌘';
+  }
+}
+.cmd-key.win {
+  &:after {
+    content: 'Ctrl';
+  }
+}

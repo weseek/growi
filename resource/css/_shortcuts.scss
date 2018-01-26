@@ -42,17 +42,6 @@
     text-align: center;
     color: #666;
 
-    &.cmd-key.mac {
-      &:after {
-        content: '⌘';
-      }
-    }
-    &.cmd-key.win {
-      &:after {
-        content: 'ctrl';
-      }
-    }
-
     &.key-longer {
       width: 64px;
     }
