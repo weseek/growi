@@ -260,10 +260,7 @@ export default class PageEditor extends React.Component {
       .then(() => crowi.interceptorManager.process('postRenderPreview', context))
       .then(() => crowi.interceptorManager.process('preRenderPreviewHtml', context))
       .then(() => {
-        this.setState({
-          markdown: context.markdown,
-          html: context.parsedHTML,
-        });
+        this.setState({ html: context.parsedHTML });
 
         // set html to the hidden input (for submitting to save)
         $('#form-body').val(this.state.markdown);
