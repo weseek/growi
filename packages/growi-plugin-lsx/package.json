@@ -13,7 +13,7 @@
   "scripts": {
     "build:watch": "npm run build -- --watch",
     "build": "babel src --out-dir lib --source-maps inline",
-    "clean": "npm cache verify && npm run rimraf -- lib",
+    "clean": "npm cache clean && npm run rimraf -- lib",
     "resources": "mkdirp lib/resource/css && ncp src/resource/css lib/resource/css",
     "prebuild:watch": "npm run clean && npm run resources",
     "prebuild": "npm run clean && npm run resources",
@@ -38,12 +38,17 @@
     "babel-plugin-add-module-exports": "^0.2.1",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-preset-env": "^1.4.0",
-    "babel-preset-power-assert": "^1.0.0",
+    "babel-preset-power-assert": "^2.0.0",
     "babel-preset-react": "^6.24.1",
     "babel-register": "^6.23.0",
     "mkdirp": "^0.5.1",
     "ncp": "^2.0.0",
     "power-assert": "^1.4.2",
     "rimraf": "^2.6.1"
+  },
+  "engines": {
+    "node": ">=6.11 <7",
+    "npm": ">=4.6 <5",
+    "yarn": "^1.1.0"
   }
 }
