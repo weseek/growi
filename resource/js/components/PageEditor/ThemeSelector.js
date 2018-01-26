@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
+import FormGroup from 'react-bootstrap/es/FormGroup';
+import FormControl from 'react-bootstrap/es/FormControl';
+import ControlLabel from 'react-bootstrap/es/ControlLabel';
 
 export default class ThemeSelector extends React.Component {
 
