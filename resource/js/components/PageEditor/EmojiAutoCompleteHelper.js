@@ -56,7 +56,6 @@ class EmojiAutoCompleteHelper {
     editor.showHint({
       completeSingle: false,
       // closeOnUnfocus: false,  // for debug
-      closeOnUnfocus: false,  // for debug
       hint: () => {
         const matched = editor.getDoc().getRange(sc.from(), sc.to());
         const term = matched.replace(':', '');  // remove ':' in the head
