@@ -197,6 +197,7 @@
     "editor": {
         "Indent": "インデント",
         "Outdent": "左インデント",
+        "Save Page": "保存",
         "Delete Line": "行削除"
     }
 }
