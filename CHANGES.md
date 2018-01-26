@@ -1,7 +1,7 @@
 CHANGES
 ========
 
-## 2.3.4
+## 2.3.5
 
 * Feature: Enhanced Editor by CodeMirror
 * Feature: Emoji AutoComplete
@@ -14,6 +14,8 @@ CHANGES
     * mongoose
     * mongoose-unique-validator
     * etc..
+
+## 2.3.4 (Missing number)
 
 ## 2.3.3
 
