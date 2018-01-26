@@ -1,5 +1,7 @@
 import React from 'react';
-import { FormGroup, Button, InputGroup } from 'react-bootstrap';
+import FormGroup from 'react-bootstrap/es/FormGroup';
+import Button from 'react-bootstrap/es/Button';
+import InputGroup from 'react-bootstrap/es/InputGroup';
 
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 

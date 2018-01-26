@@ -21,6 +21,7 @@ export default class PageEditor extends React.Component {
       markdown: this.props.markdown,
       isUploadable,
       isUploadableFile,
+      editorTheme: this.props.editorTheme,
     };
 
     this.setCaretLine = this.setCaretLine.bind(this);
@@ -58,6 +59,14 @@ export default class PageEditor extends React.Component {
    */
   setCaretLine(line) {
     this.refs.editor.setCaretLine(line);
+  }
+
+  /**
+   * set theme (used from the outside)
+   * @param {string} theme theme name
+   */
+  setEditorTheme(theme) {
+    this.setState({ editorTheme: theme });
   }
 
   /**
@@ -182,6 +191,9 @@ export default class PageEditor extends React.Component {
     return top;
   };
 
+  /*
+   * methods for draft
+   */
   restoreDraft() {
     // restore draft when the first time to edit
     const draft = this.props.crowi.findDraft(this.props.pagePath);
@@ -277,6 +289,7 @@ export default class PageEditor extends React.Component {
           <Editor ref="editor" value={this.state.markdown}
               isUploadable={this.state.isUploadable}
               isUploadableFile={this.state.isUploadableFile}
+              theme={this.state.editorTheme}
               onScroll={this.onEditorScroll}
               onChange={this.onMarkdownChanged}
               onSave={this.onSave}
@@ -298,4 +311,5 @@ PageEditor.propTypes = {
   revisionId: PropTypes.string,
   pagePath: PropTypes.string,
   onSaveSuccess: PropTypes.func,
+  editorTheme: PropTypes.string,
 };

@@ -1,5 +1,6 @@
 import React from 'react';
-import { Button, Modal } from 'react-bootstrap';
+import Button from 'react-bootstrap/es/Button';
+import Modal from 'react-bootstrap/es/Modal';
 
 import Icon from '../Common/Icon';
 import User from '../User/User';

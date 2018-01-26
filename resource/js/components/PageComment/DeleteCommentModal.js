@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Button, Modal } from 'react-bootstrap';
+import Button from 'react-bootstrap/es/Button';
+import Modal from 'react-bootstrap/es/Modal';
+
 import dateFnsFormat from 'date-fns/format';
 
 import ReactUtils from '../ReactUtils';

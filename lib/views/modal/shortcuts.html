@@ -42,6 +42,10 @@
                 <td><span class="key key-long">Shift</span> + <span class="key key-longer">Tab</span></td>
               </tr>
               <tr>
+                <th>{{ t('modal_shortcuts.editor.Save Page') }}:</th>
+                <td><span class="key cmd-key"></span> + <span class="key">S</span></td>
+              </tr>
+              <tr>
                 <th>{{ t('modal_shortcuts.editor.Delete Line') }}:</th>
                 <td><span class="key cmd-key"></span> + <span class="key">D</span></td>
               </tr>
@@ -57,15 +61,15 @@
   </div><!-- /.modal-dialog -->
 
   <script>
+    /*
+     * add classes to cmd-key by OS
+     */
     var platform = navigator.platform.toLowerCase();
     var isMac = (platform.indexOf('mac') > -1);
 
-    document.querySelectorAll('.cmd-key').forEach((element) => {
-      if (isMac) {
-        element.classList.add('mac');
-      }
-      else {
-        element.classList.add('win', 'key-longer');
+    document.querySelectorAll('#shortcuts-modal .cmd-key').forEach((element) => {
+      if (!isMac) {
+        element.classList.add('key-longer');
       }
     })
   </script>

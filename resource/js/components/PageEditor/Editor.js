@@ -21,7 +21,14 @@ require('codemirror/addon/fold/foldgutter.css');
 require('codemirror/addon/fold/markdown-fold');
 require('codemirror/addon/fold/brace-fold');
 require('codemirror/mode/gfm/gfm');
-require('codemirror/theme/eclipse.css');
+
+require('codemirror/theme/elegant.css');
+require('codemirror/theme/neo.css');
+require('codemirror/theme/mdn-like.css');
+require('codemirror/theme/material.css');
+require('codemirror/theme/monokai.css');
+require('codemirror/theme/twilight.css');
+
 
 import Dropzone from 'react-dropzone';
 
@@ -256,6 +263,7 @@ export default class Editor extends React.Component {
       height: 'calc(100% - 20px)'
     }
 
+    const theme = this.props.theme || 'elegant';
     return (
       <div style={flexContainer}>
         <Dropzone
@@ -282,7 +290,7 @@ export default class Editor extends React.Component {
             value={this.state.value}
             options={{
               mode: 'gfm',
-              theme: 'eclipse',
+              theme: theme,
               lineNumbers: true,
               tabSize: 4,
               indentUnit: 4,
@@ -339,6 +347,7 @@ export default class Editor extends React.Component {
 
 Editor.propTypes = {
   value: PropTypes.string,
+  theme: PropTypes.string,
   isUploadable: PropTypes.bool,
   isUploadableFile: PropTypes.bool,
   onChange: PropTypes.func,

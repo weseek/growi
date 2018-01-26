@@ -118,11 +118,15 @@ export default class Crowi {
   }
 
   setCaretLine(line) {
-    this.pageEditor.setCaretLine(line);
+    if (this.pageEditor != null) {
+      this.pageEditor.setCaretLine(line);
+    }
   }
 
   focusToEditor() {
-    this.pageEditor.focusToEditor();
+    if (this.pageEditor != null) {
+      this.pageEditor.focusToEditor();
+    }
   }
 
   clearDraft(path) {
@@ -141,6 +145,14 @@ export default class Crowi {
     }
 
     return null;
+  }
+
+  saveEditorTheme(theme) {
+    this.localStorage.setItem('editorTheme', theme);
+  }
+
+  loadEditorTheme() {
+    return this.localStorage.getItem('editorTheme');
   }
 
   findUserById(userId) {

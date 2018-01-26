@@ -200,6 +200,7 @@
           "title": "Editor shortcuts",
           "Indent": "Indent",
           "Outdent": "Outdent",
+          "Save Page": "Save Page",
           "Delete Line": "Delete Line"
       }
   }

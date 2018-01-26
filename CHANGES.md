@@ -1,11 +1,20 @@
 CHANGES
 ========
 
+## 2.3.6
+
+* Feature: Theme Selector for Editor
+* Improvement: Remove unportalize button from crowi-plus layout
+* Fix: CSS for admin pages
+* Support: Shrink the size of libraries to include
+
 ## 2.3.5
 
 * Feature: Enhanced Editor by CodeMirror
 * Feature: Emoji AutoComplete
 * Feature: Add keyboard shortcuts
+* Improvement: Attaching file with Dropzone.js
+* Improvement: Show shortcuts help with `Ctrl-/`
 * Fix: DOMs that has `.alert-info` class don't be displayed
 * Support: Switch and upgrade libs
     * 8fold-marked -> marked

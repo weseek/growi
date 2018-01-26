@@ -10,7 +10,7 @@
     }
   }
 
-  .content-main.admin-customize {
+  .admin-customize {
     .ss-container img {
       padding: .5em;
       background-color: #ddd;
@@ -40,7 +40,9 @@
     .CodeMirror pre {
       font-family: $font-family-monospace;
     }
+  }
 
+  .admin-security {
     .passport-logo {
       padding: 4px;
       height: 32px;
@@ -51,4 +53,5 @@
       min-height: 800px;
     }
   }
+  
 }
