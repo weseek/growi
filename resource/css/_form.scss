@@ -208,6 +208,12 @@
     border-top: solid 1px #ccc;
     margin-bottom: 0;
   }
+
+  #page-editor-theme-selector .theme-selector {
+    label {
+      margin-right: 0.5em;
+    }
+  }
 } // }}}
 
 .crowi.main-container .main .page-list.content-main { // {{{ Edit Form of Page List

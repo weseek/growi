@@ -3,6 +3,7 @@ CHANGES
 
 ## 2.3.6-RC
 
+* Feature: Theme Selector for Editor
 * Improvement: Remove unportalize button from crowi-plus layout
 * Fix: CSS for admin pages
 
@@ -11,6 +12,7 @@ CHANGES
 * Feature: Enhanced Editor by CodeMirror
 * Feature: Emoji AutoComplete
 * Feature: Add keyboard shortcuts
+* Improvement: Attaching file with Dropzone.js
 * Fix: DOMs that has `.alert-info` class don't be displayed
 * Support: Switch and upgrade libs
     * 8fold-marked -> marked
