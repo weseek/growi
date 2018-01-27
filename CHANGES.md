@@ -1,6 +1,8 @@
 CHANGES
 ========
 
+## 2.3.8-RC
+
 ## 2.3.7
 
 * Fix: Open popups when `Ctrl+C` pressed
