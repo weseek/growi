@@ -68,9 +68,12 @@
     var isMac = (platform.indexOf('mac') > -1);
 
     document.querySelectorAll('#shortcuts-modal .cmd-key').forEach((element) => {
-      if (!isMac) {
-        element.classList.add('key-longer');
+      if (isMac) {
+        element.classList.add('mac');
       }
-    })
+      else {
+        element.classList.add('win', 'key-longer');
+      }
+    });
   </script>
 </div><!-- /.modal -->
