@@ -453,7 +453,7 @@ $(function() {
   });
 
   /*
-   * wrap short path with <strong></strong> 
+   * wrap short path with <strong></strong>
    */
   $('.page-list-link').each(function() {
     var $link = $(this);
@@ -974,14 +974,19 @@ window.addEventListener('keypress', (event) => {
 
   switch (event.key) {
     case 'e':
-      Crowi.handleKeyEHandler(event);
+      if (!event.ctrlKey && !event.metaKey && !event.altKey && !event.shiftKey) {
+        Crowi.handleKeyEHandler(event);
+      }
       break;
     case 'c':
-      Crowi.handleKeyCHandler(event);
+      if (!event.ctrlKey && !event.metaKey && !event.altKey && !event.shiftKey) {
+        Crowi.handleKeyCHandler(event);
+      }
+      break;
     case '/':
       if (event.ctrlKey || event.metaKey) {
         Crowi.handleKeyCtrlSlashHandler(event);
       }
-    break;
+      break;
   }
 });

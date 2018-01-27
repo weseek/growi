@@ -1,6 +1,11 @@
 CHANGES
 ========
 
+## 2.3.7
+
+* Fix: Open popups when `Ctrl+C` pressed
+    * Introduced by 2.3.5
+
 ## 2.3.6
 
 * Feature: Theme Selector for Editor
