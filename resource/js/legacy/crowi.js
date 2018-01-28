@@ -966,9 +966,16 @@ window.addEventListener('hashchange', function(e) {
 });
 
 window.addEventListener('keypress', (event) => {
+  const target = event.target;
+
   // ignore when target dom is input
-  const inputPattern = /input|textinput|textarea/i;
-  if (event.target.tagName.match(inputPattern)) {
+  const inputPattern = /^input|textinput|textarea$/i;
+  if (target.tagName.match(inputPattern)) {
+    return;
+  }
+
+  // ignore when dom that has 'modal in' classes exists
+  if (document.getElementsByClassName('modal in').length > 0) {
     return;
   }
 
