@@ -86,7 +86,7 @@ $(function() {
       })
       .then(() => crowi.interceptorManager.process('postPreProcess', context))
       .then(() => {
-        var parsedHTML = crowiRenderer.render(context.markdown, context.dom, rendererOptions);
+        var parsedHTML = crowiRenderer.render(context.markdown, context.dom);
         context['parsedHTML'] = parsedHTML;
       })
       .then(() => crowi.interceptorManager.process('postRenderPreview', context))

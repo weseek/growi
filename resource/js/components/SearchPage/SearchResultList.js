@@ -12,14 +12,6 @@ export default class SearchResultList extends React.Component {
   render() {
     var isEnabledLineBreaks = $('#content-main').data('linebreaks-enabled');
 
-    // generate options obj
-    var rendererOptions = {
-      // see: https://www.npmjs.com/package/marked
-      marked: {
-        breaks: isEnabledLineBreaks
-      }
-    };
-
     const resultList = this.props.pages.map((page) => {
       const pageBody = page.revision.body;
       return (
@@ -31,7 +23,6 @@ export default class SearchResultList extends React.Component {
               page={page}
               pageBody={pageBody}
               highlightKeywords={this.props.searchingKeyword}
-              rendererOptions={rendererOptions}
             />
           </div>
         </div>

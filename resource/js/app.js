@@ -2,7 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import Crowi from './util/Crowi';
-import CrowiRenderer from './util/CrowiRenderer';
+// import CrowiRenderer from './util/CrowiRenderer';
+import GrowiRenderer from './util/GrowiRenderer';
 
 import HeaderSearchBox  from './components/HeaderSearchBox';
 import SearchPage       from './components/SearchPage';
@@ -54,7 +55,7 @@ window.crowi = crowi;
 crowi.setConfig(JSON.parse(document.getElementById('crowi-context-hydrate').textContent || '{}'));
 crowi.fetchUsers();
 
-const crowiRenderer = new CrowiRenderer(crowi);
+const crowiRenderer = new GrowiRenderer(crowi);
 window.crowiRenderer = crowiRenderer;
 
 // FIXME

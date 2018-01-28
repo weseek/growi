@@ -214,14 +214,6 @@ $(function() {
   var pagePath= $('#content-main').data('path');
   var isSavedStatesOfTabChanges = config['isSavedStatesOfTabChanges'];
 
-  // generate options obj
-  var rendererOptions = {
-    // see: https://www.npmjs.com/package/marked
-    marked: {
-      breaks: config.isEnabledLineBreaks
-    }
-  };
-
   $('[data-toggle="popover"]').popover();
   $('[data-toggle="tooltip"]').tooltip();
   $('[data-tooltip-stay]').tooltip('show');
@@ -488,7 +480,7 @@ $(function() {
         var revisionPath = '#' + id + ' .revision-path';
 
         var markdown = entities.decodeHTML($(contentId).html());
-        var parsedHTML = crowiRenderer.render(markdown, $revisionBody.get(0), rendererOptions);
+        var parsedHTML = crowiRenderer.render(markdown, $revisionBody.get(0));
         $revisionBody.html(parsedHTML);
 
         $('.template-create-button', revisionBody).on('click', function() {
@@ -551,7 +543,7 @@ $(function() {
         .then(() => crowi.interceptorManager.process('postPreProcess', context))
         .then(() => {
           var revisionBody = $('#revision-body-content');
-          var parsedHTML = crowiRenderer.render(context.markdown, context.dom, rendererOptions);
+          var parsedHTML = crowiRenderer.render(context.markdown, context.dom);
           context.parsedHTML = parsedHTML;
           Promise.resolve(context);
         })

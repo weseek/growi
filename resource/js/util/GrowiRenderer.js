@@ -1,9 +1,5 @@
-/**
- * DEPRECATED
- * replaced by GrowiRenderer -- 2018.01.29 Yuki Takei
- *
-import marked from 'marked';
-import hljs from 'highlight.js';
+import MarkdownIt from 'markdown-it';
+// import hljs from 'highlight.js';
 import * as entities from 'entities';
 
 import MarkdownFixer from './PreProcessor/MarkdownFixer';
@@ -18,13 +14,16 @@ import Tsv2Table from './LangProcessor/Tsv2Table';
 import Template from './LangProcessor/Template';
 import PlantUML from './LangProcessor/PlantUML';
 
-export default class CrowiRenderer {
+export default class GrowiRenderer {
+
 
   constructor(crowi) {
     this.crowi = crowi;
 
+    this.md = new MarkdownIt();
+    this.configure(this.crowi.getConfig());
+
     this.preProcessors = [
-      new MarkdownFixer(crowi),
       new Linker(crowi),
       new ImageExpander(crowi),
       new XssFilter(crowi),
@@ -41,8 +40,21 @@ export default class CrowiRenderer {
       'plantuml': new PlantUML(crowi),
     };
 
+    this.configure = this.configure.bind(this);
     this.parseMarkdown = this.parseMarkdown.bind(this);
     this.codeRenderer = this.codeRenderer.bind(this);
+  }
+
+  /**
+   * configure markdown-it
+   * @param {any} config
+   */
+  configure(config) {
+    this.md.set({
+      html: true,
+      linkify: true,
+      breaks: config.isEnabledLineBreaks,
+    });
   }
 
   preProcess(markdown, dom) {
@@ -69,30 +81,30 @@ export default class CrowiRenderer {
   codeRenderer(code, lang, escaped) {
     let result = '', hl;
 
-    if (lang) {
-      const langAndFn = lang.split(':');
-      const langPattern = langAndFn[0];
-      const langFn = langAndFn[1] || null;
-      if (this.langProcessors[langPattern]) {
-        return this.langProcessors[langPattern].process(code, lang);
-      }
+    // if (lang) {
+    //   const langAndFn = lang.split(':');
+    //   const langPattern = langAndFn[0];
+    //   const langFn = langAndFn[1] || null;
+    //   if (this.langProcessors[langPattern]) {
+    //     return this.langProcessors[langPattern].process(code, lang);
+    //   }
 
-      try {
-        hl = hljs.highlight(langPattern, code);
-        result = hl.value;
-        escaped = true;
-      } catch (e) {
-        result = code;
-      }
+    //   try {
+    //     hl = hljs.highlight(langPattern, code);
+    //     result = hl.value;
+    //     escaped = true;
+    //   } catch (e) {
+    //     result = code;
+    //   }
 
-      result = (escape ? result : entities.encodeHTML(result));
+    //   result = (escape ? result : entities.encodeHTML(result));
 
-      let citeTag = '';
-      if (langFn) {
-        citeTag = `<cite>${langFn}</cite>`;
-      }
-      return `<pre class="wiki-code wiki-lang">${citeTag}<code class="lang-${lang}">${result}\n</code></pre>\n`;
-    }
+    //   let citeTag = '';
+    //   if (langFn) {
+    //     citeTag = `<cite>${langFn}</cite>`;
+    //   }
+    //   return `<pre class="wiki-code wiki-lang">${citeTag}<code class="lang-${lang}">${result}\n</code></pre>\n`;
+    // }
 
     // no lang specified
     return `<pre class="wiki-code"><code>${entities.encodeHTML(code)}\n</code></pre>`;
@@ -102,6 +114,7 @@ export default class CrowiRenderer {
   parseMarkdown(markdown, dom, markedOpts) {
     let parsed = '';
 
+    /*
     const markedRenderer = new marked.Renderer();
     markedRenderer.code = this.codeRenderer;
 
@@ -134,30 +147,21 @@ export default class CrowiRenderer {
 
       parsed = marked(markdown);
     } catch (e) { console.log(e, e.stack); }
+    */
 
+    parsed = this.md.render(markdown);
     return parsed;
   }
-  */
 
   /**
    * render
    *
    * @param {string} markdown
-   * @param {object} options
-   *  ex:
-   *  ```
-   *    {
-   *      marked: {...} // marked options
-   *    }
-   *  ```
+   * @param {Element} dom
    * @returns
    *
    * @memberOf CrowiRenderer
    */
-  /*
-   DEPRECATED
-   replaced by GrowiRenderer -- 2018.01.29 Yuki Takei
-
   render(markdown, dom) {
     let html = '';
 
@@ -166,5 +170,4 @@ export default class CrowiRenderer {
 
     return html;
   }
-  */
 }

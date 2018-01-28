@@ -244,14 +244,6 @@ export default class PageEditor extends React.Component {
 
     this.setState({ markdown: value });
 
-    // generate options obj
-    const rendererOptions = {
-      // see: https://www.npmjs.com/package/marked
-      marked: {
-        breaks: config.isEnabledLineBreaks,
-      }
-    };
-
     // render html
     var context = {
       markdown: this.state.markdown,
@@ -266,7 +258,7 @@ export default class PageEditor extends React.Component {
       })
       .then(() => crowi.interceptorManager.process('postPreProcess', context))
       .then(() => {
-        var parsedHTML = crowiRenderer.render(context.markdown, context.dom, rendererOptions);
+        var parsedHTML = crowiRenderer.render(context.markdown, context.dom);
         context['parsedHTML'] = parsedHTML;
       })
       .then(() => crowi.interceptorManager.process('postRenderPreview', context))

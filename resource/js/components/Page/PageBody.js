@@ -34,7 +34,7 @@ export default class PageBody extends React.Component {
       body = this.props.page.revision.body;
     }
 
-    body = this.crowiRenderer.render(body, undefined, this.props.rendererOptions);
+    body = this.crowiRenderer.render(body, undefined);
 
     if (this.props.highlightKeywords) {
       body = this.getHighlightBody(body, this.props.highlightKeywords);
@@ -59,12 +59,10 @@ PageBody.propTypes = {
   page: PropTypes.object.isRequired,
   highlightKeywords: PropTypes.string,
   pageBody: PropTypes.string,
-  rendererOptions: PropTypes.object,
 };
 
 PageBody.defaultProps = {
   page: {},
   pageBody: '',
-  rendererOptions: {},
 };
 
