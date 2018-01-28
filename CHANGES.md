@@ -3,6 +3,9 @@ CHANGES
 
 ## 2.3.8-RC
 
+* Improvement: Prevent keyboard shortcuts when modal is opened
+* Improvement: PageHistory UI
+
 ## 2.3.7
 
 * Fix: Open popups when `Ctrl+C` pressed
