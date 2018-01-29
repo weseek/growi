@@ -34,6 +34,7 @@ require('codemirror/theme/twilight.css');
 import Dropzone from 'react-dropzone';
 
 import pasteHelper from './PasteHelper';
+import markdownListHelper from './MarkdownListHelper';
 import emojiAutoCompleteHelper from './EmojiAutoCompleteHelper';
 
 
@@ -318,7 +319,7 @@ export default class Editor extends React.Component {
               highlightFormatting: true,
               // continuelist, indentlist
               extraKeys: {
-                "Enter": "newlineAndIndentContinueMarkdownList",
+                "Enter": markdownListHelper.newlineAndIndentContinueMarkdownList,
                 "Tab": "indentMore",
                 "Shift-Tab": "indentLess",
                 "Ctrl-Q": (cm) => { cm.foldCode(cm.getCursor()) },
