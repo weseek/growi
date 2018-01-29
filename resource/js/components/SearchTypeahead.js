@@ -20,6 +20,7 @@ export default class SearchTypeahead extends React.Component {
       pages: [],
       isLoading: false,
       searchError: null,
+      isFocused: false,
     };
     this.crowi = this.props.crowi;
     this.emptyLabel = props.emptyLabel;
@@ -32,6 +33,8 @@ export default class SearchTypeahead extends React.Component {
     this.restoreInitialData = this.restoreInitialData.bind(this);
     this.getTypeahead = this.getTypeahead.bind(this);
     this.forceToFocus = this.forceToFocus.bind(this);
+    this.onInputBlur = this.onInputBlur.bind(this);
+    this.onInputFocus = this.onInputFocus.bind(this);
   }
 
   /**
@@ -42,11 +45,9 @@ export default class SearchTypeahead extends React.Component {
   }
 
   componentDidMount() {
-    /*
     this.forceToFocus(); // cf. It is needed for displaing placeholder.
                          //     And cannot focus on if set autoFocus=true to AsyncTypeahead,
                          //       also set to inputProps of AsyncTypeahead.
-    */
   }
 
   componentWillUnmount() {
@@ -59,10 +60,18 @@ export default class SearchTypeahead extends React.Component {
     const typeahead = this.getTypeahead();
     const intervalId = setInterval(() => {
       this.getTypeahead().focus();
-      if (typeahead.state.isFocused) {
+      if (this.state.isFocused) {
         clearInterval(intervalId);
       }
     }, 100);
+  }
+
+  onInputBlur() {
+    this.setState({isFocused: false});
+  }
+
+  onInputFocus() {
+    this.setState({isFocused: true});
   }
 
   search(keyword) {
@@ -78,15 +87,15 @@ export default class SearchTypeahead extends React.Component {
     this.setState({isLoading: true});
 
     this.crowi.apiGet('/search', {q: keyword})
-      .then(res => { this._onSearchSuccess(res) })
-      .catch(err => { this._onSearchError(err) });
+      .then(res => { this.onSearchSuccess(res) })
+      .catch(err => { this.onSearchError(err) });
   }
 
   /**
    * Callback function which is occured when search is exit successfully
    * @param {*} pages
    */
-  _onSearchSuccess(res) {
+  onSearchSuccess(res) {
     this.setState({
       isLoading: false,
       keyword: '',
@@ -99,7 +108,7 @@ export default class SearchTypeahead extends React.Component {
    * Callback function which is occured when search is exit abnormaly
    * @param {*} err
    */
-  _onSearchError(err) {
+  onSearchError(err) {
     this.setState({
       isLoading: false,
       searchError: err,
@@ -179,10 +188,10 @@ export default class SearchTypeahead extends React.Component {
         renderMenuItemChildren={this.renderMenuItemChildren}
         caseSensitive={false}
         defaultSelected={[{path: this.props.keywordOnInit}]}
+        onBlur={this.onInputBlur}
+        onFocus={this.onInputFocus}
       />
       {restoreFormButton}
-      {/* [TODO] デバッグ用の表示。実装が完了したら削除する。 */}
-      <span>keyword: {this.state.keyword}, keywordOnInit: {this.props.keywordOnInit}, typeahead.state.isFocused: {this.getTypeahead() ? this.refs.typeahead.state.isFocused : '-' }</span>
       </form>
     );
   }
