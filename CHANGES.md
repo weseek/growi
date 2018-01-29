@@ -3,7 +3,7 @@ CHANGES
 
 ## 2.3.9-RC
 
-* Fix: Close Shortcuts help with Ctrl-/, ESC key
+* Fix: Close Shortcuts help with `Ctrl-/`, ESC key
 
 ## 2.3.8
 
