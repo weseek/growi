@@ -7,7 +7,7 @@ import CrowiRenderer from './util/CrowiRenderer';
 import HeaderSearchBox  from './components/HeaderSearchBox';
 import SearchPage       from './components/SearchPage';
 import PageEditor       from './components/PageEditor';
-import ThemeSelector    from './components/PageEditor/ThemeSelector';
+import EditorOptionsSelector from './components/PageEditor/EditorOptionsSelector';
 import PageListSearch   from './components/PageListSearch';
 import PageHistory      from './components/PageHistory';
 import PageComments     from './components/PageComments';
@@ -117,30 +117,28 @@ if (elem) {
  * PageEditor
  */
 let pageEditor = null;
-// load editorTheme
-const editorTheme = crowi.loadEditorTheme();
 // render PageEditor
 const pageEditorElem = document.getElementById('page-editor');
 if (pageEditorElem) {
   pageEditor = ReactDOM.render(
     <PageEditor crowi={crowi} pageId={pageId} revisionId={pageRevisionId} pagePath={pagePath}
-        markdown={entities.decodeHTML(pageContent)} editorTheme={editorTheme}
+        markdown={entities.decodeHTML(pageContent)} editorOptions={crowi.editorOptions}
         onSaveSuccess={onSaveSuccess} />,
     pageEditorElem
   );
   // set refs for pageEditor
   crowi.setPageEditor(pageEditor);
 }
-// render ThemeSelector
-const themeSelectorElem = document.getElementById('page-editor-theme-selector');
-if (themeSelectorElem) {
+// render EditorOptionsSelector
+const editorOptionSelectorElem = document.getElementById('page-editor-options-selector');
+if (editorOptionSelectorElem) {
   ReactDOM.render(
-    <ThemeSelector value={editorTheme}
-        onChange={(value) => { // set onChange event handler
-          pageEditor.setEditorTheme(value);
-          crowi.saveEditorTheme(value);
+    <EditorOptionsSelector options={crowi.editorOptions}
+        onChange={(opts) => { // set onChange event handler
+          pageEditor.setEditorOptions(opts);
+          crowi.saveEditorOptions(opts);
         }} />,
-    themeSelectorElem
+    editorOptionSelectorElem
   );
 }
 
