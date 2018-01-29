@@ -128,6 +128,8 @@ if (pageEditorElem) {
         onSaveSuccess={onSaveSuccess} />,
     pageEditorElem
   );
+  // set refs for pageEditor
+  crowi.setPageEditor(pageEditor);
 }
 // render ThemeSelector
 const themeSelectorElem = document.getElementById('page-editor-theme-selector');
@@ -168,6 +170,3 @@ if (customScriptEditorElem != null) {
 $('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', function() {
   ReactDOM.render(<PageHistory pageId={pageId} crowi={crowi} />, document.getElementById('revision-history'));
 });
-
-// set refs for pageEditor
-crowi.setPageEditor(componentInstances['page-editor']);

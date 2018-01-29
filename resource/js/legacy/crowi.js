@@ -943,7 +943,6 @@ window.addEventListener('load', function(e) {
   Crowi.highlightSelectedSection(location.hash);
   Crowi.modifyScrollTop();
   Crowi.setCaretLineAndFocusToEditor();
-  Crowi.setCaretLineAndFocusToEditor();
 });
 
 window.addEventListener('hashchange', function(e) {
