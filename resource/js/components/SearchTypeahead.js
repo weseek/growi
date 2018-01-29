@@ -21,7 +21,6 @@ export default class SearchTypeahead extends React.Component {
       pages: [],
       isLoading: false,
       searchError: null,
-      isFocused: false,
     };
     this.crowi = this.props.crowi;
     this.emptyLabel = props.emptyLabel;
@@ -33,9 +32,6 @@ export default class SearchTypeahead extends React.Component {
     this.renderMenuItemChildren = this.renderMenuItemChildren.bind(this);
     this.restoreInitialData = this.restoreInitialData.bind(this);
     this.getTypeahead = this.getTypeahead.bind(this);
-    this.forceToFocus = this.forceToFocus.bind(this);
-    this.onInputBlur = this.onInputBlur.bind(this);
-    this.onInputFocus = this.onInputFocus.bind(this);
   }
 
   /**
@@ -46,34 +42,9 @@ export default class SearchTypeahead extends React.Component {
   }
 
   componentDidMount() {
-    this.forceToFocus(); // cf. It is needed for displaing placeholder.
-                         //     And cannot focus on if set autoFocus=true to AsyncTypeahead,
-                         //       also set to inputProps of AsyncTypeahead.
   }
 
   componentWillUnmount() {
-  }
-
-  /**
-   * force to focus
-   */
-  forceToFocus() {
-    const typeahead = this.getTypeahead();
-    if (typeahead == null) return;
-    const intervalId = setInterval(() => {
-      this.getTypeahead().focus();
-      if (this.state.isFocused) {
-        clearInterval(intervalId);
-      }
-    }, 100);
-  }
-
-  onInputBlur() {
-    this.setState({isFocused: false});
-  }
-
-  onInputFocus() {
-    this.setState({isFocused: true});
   }
 
   search(keyword) {
@@ -190,8 +161,6 @@ export default class SearchTypeahead extends React.Component {
           renderMenuItemChildren={this.renderMenuItemChildren}
           caseSensitive={false}
           defaultSelected={defaultSelected}
-          onBlur={this.onInputBlur}
-          onFocus={this.onInputFocus}
         />
         {restoreFormButton}
       </span>
