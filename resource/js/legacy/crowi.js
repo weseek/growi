@@ -902,6 +902,8 @@ window.addEventListener('load', function(e) {
   if (location.hash) {
     if (location.hash == '#edit-form') {
       $('a[data-toggle="tab"][href="#edit-form"]').tab('show');
+      // focus
+      Crowi.setCaretLineAndFocusToEditor();
     }
     if (location.hash == '#revision-history') {
       $('a[data-toggle="tab"][href="#revision-history"]').tab('show');
