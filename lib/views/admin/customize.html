@@ -216,7 +216,8 @@
 
         <div class="form-group">
           <div class="col-xs-12">
-            <textarea id="taCustomCss" class="form-control" type="textarea" name="settingForm[customize:css]" rows="20">{{ settingForm['customize:css'] }}</textarea>
+            <div id="custom-css-editor"></div>
+            <input type="hidden" id="inputCustomCss" name="settingForm[customize:css]" value="{{ settingForm['customize:css'] }}">
           </div>
           <div class="col-xs-12">
             <p class="help-block text-right">
@@ -262,7 +263,8 @@
 
         <div class="form-group">
           <div class="col-xs-12">
-            <textarea id="taCustomScript" class="form-control" type="textarea" name="settingForm[customize:script]" rows="20">{{ settingForm['customize:script'] }}</textarea>
+            <div id="custom-script-editor"></div>
+            <input type="hidden" id="inputCustomScript" name="settingForm[customize:script]" value="{{ settingForm['customize:script'] }}">
           </div>
           <div class="col-xs-12">
             <p class="help-block text-right">
@@ -332,53 +334,6 @@
         });
         return false;
       });
-    });
-
-  </script>
-
-  <!-- CodeMirror -->
-  <script src="https://cdn.jsdelivr.net/g/codemirror@4.5.0(codemirror.min.js+addon/lint/css-lint.js+addon/lint/javascript-lint.js+mode/css/css.js+mode/javascript/javascript.js+addon/hint/css-hint.js+addon/hint/javascript-hint.js+addon/hint/show-hint.js+addon/edit/matchbrackets.js+addon/edit/closebrackets.js),jquery.ui@1.11.4"></script>
-  <script>
-    // Configure for CSS editor
-    var editorCss = CodeMirror.fromTextArea(document.getElementById('taCustomCss'), {
-      mode: "css",
-      lineNumbers: true,
-      tabSize: 2,
-      indentUnit: 2,
-      theme: 'eclipse',
-      matchBrackets: true,
-      autoCloseBrackets: true,
-      extraKeys: {"Ctrl-Space": "autocomplete"},
-    });
-    editorCss.on('change', function(cm, change) {
-      cm.save();
-    });
-    // resizable with jquery.ui
-    $(editorCss.getWrapperElement()).resizable({
-      resize: function() {
-        editorCss.setSize($(this).width(), $(this).height());
-      }
-    });
-
-    // Configure for JavaScript editor
-    var editorScript = CodeMirror.fromTextArea(document.getElementById('taCustomScript'), {
-      mode: "javascript",
-      lineNumbers: true,
-      tabSize: 2,
-      indentUnit: 2,
-      theme: 'eclipse',
-      matchBrackets: true,
-      autoCloseBrackets: true,
-      extraKeys: {"Ctrl-Space": "autocomplete"},
-    });
-    editorScript.on('change', function(cm, change) {
-      cm.save();
-    });
-    // resizable with jquery.ui
-    $(editorScript.getWrapperElement()).resizable({
-      resize: function() {
-        editorScript.setSize($(this).width(), $(this).height());
-      }
     });
 
   </script>

@@ -12,6 +12,7 @@
   "Create": "Create",
   "Admin": "Admin",
   "New": "New",
+  "Shortcuts": "Shortcuts",
 
   "Update": "Update",
   "Update Page": "Update Page",
@@ -188,19 +189,19 @@
     }
   },
 
-  "modal_help": {
-      "basic": {
-          "title": "Basics",
-          "body1": "There are 2 types of pages: List pages (showing lists of links to other pages) and normal pages.",
-          "body2": "Pages that end with a slash / are List pages for anything following the slash.",
-          "body3": "You can view older versions of a page from the History tab. Any changes made will be stored here."
+  "modal_shortcuts": {
+      "global": {
+          "title": "Global shortcuts",
+          "Open/Close shortcut help": "Open/Close shortcut help",
+          "Edit Page": "Edit Page",
+          "Create Page": "Create Page"
       },
-      "tips": {
-          "title": "Quick Tips on Editing",
-          "body1": "Use sections and subsections to make it easier for your friends to read your pages."
-      },
-      "markdown": {
-          "title": "Markdown Rules"
+      "editor": {
+          "title": "Editor shortcuts",
+          "Indent": "Indent",
+          "Outdent": "Outdent",
+          "Save Page": "Save Page",
+          "Delete Line": "Delete Line"
       }
   }
 }

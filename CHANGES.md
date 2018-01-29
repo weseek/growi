@@ -1,12 +1,40 @@
 CHANGES
 ========
 
-## 2.3.4-RC
+## 2.3.8-RC
 
+* Improvement: Prevent keyboard shortcuts when modal is opened
+* Improvement: PageHistory UI
+
+## 2.3.7
+
+* Fix: Open popups when `Ctrl+C` pressed
+    * Introduced by 2.3.5
+
+## 2.3.6
+
+* Feature: Theme Selector for Editor
+* Improvement: Remove unportalize button from crowi-plus layout
+* Fix: CSS for admin pages
+* Support: Shrink the size of libraries to include
+
+## 2.3.5
+
+* Feature: Enhanced Editor by CodeMirror
+* Feature: Emoji AutoComplete
+* Feature: Add keyboard shortcuts
+* Improvement: Attaching file with Dropzone.js
+* Improvement: Show shortcuts help with `Ctrl-/`
+* Fix: DOMs that has `.alert-info` class don't be displayed
 * Support: Switch and upgrade libs
     * 8fold-marked -> marked
     * react-bootstrap
+    * googleapis
+    * mongoose
+    * mongoose-unique-validator
     * etc..
+
+## 2.3.4 (Missing number)
 
 ## 2.3.3
 

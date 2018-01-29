@@ -1,3 +1,4 @@
+import * as entities from 'entities';
 
 export default class Tsv2Table {
 
@@ -32,7 +33,7 @@ export default class Tsv2Table {
 
     //console.log('head', headLine);
     headers = this.splitColums(headLine).map(col => {
-      return `<th>${Crowi.escape(col)}</th>`;
+      return `<th>${entities.encodeHTML(col)}</th>`;
     });
 
     if (headers.length < option.cols) {
@@ -53,7 +54,7 @@ export default class Tsv2Table {
 
     rows = codeLines.map(row => {
       const cols = this.splitColums(row).map(col => {
-        return `<td>${Crowi.escape(col)}</td>`;
+        return `<td>${entities.encodeHTML(col)}</td>`;
       }).join('');
       return `<tr>${cols}</tr>`;
     });

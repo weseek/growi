@@ -6,6 +6,8 @@ import CrowiRenderer from './util/CrowiRenderer';
 
 import HeaderSearchBox  from './components/HeaderSearchBox';
 import SearchPage       from './components/SearchPage';
+import PageEditor       from './components/PageEditor';
+import ThemeSelector    from './components/PageEditor/ThemeSelector';
 import PageListSearch   from './components/PageListSearch';
 import PageHistory      from './components/PageHistory';
 import PageComments     from './components/PageComments';
@@ -18,6 +20,12 @@ import BookmarkButton   from './components/BookmarkButton';
 import NewPageNameInputter from './components/NewPageNameInputter';
 import SearchTypeahead  from './components/SearchTypeahead';
 
+import CustomCssEditor  from './components/Admin/CustomCssEditor';
+import CustomScriptEditor from './components/Admin/CustomScriptEditor';
+
+import * as entities from 'entities';
+
+
 if (!window) {
   window = {};
 }
@@ -27,11 +35,11 @@ let pageId = null;
 let pageRevisionId = null;
 let pageRevisionCreatedAt = null;
 let pagePath;
-let pageContent = null;
+let pageContent = '';
 if (mainContent !== null) {
-  pageId = mainContent.attributes['data-page-id'].value;
-  pageRevisionId = mainContent.attributes['data-page-revision-id'].value;
-  pageRevisionCreatedAt = +mainContent.attributes['data-page-revision-created'].value;
+  pageId = mainContent.getAttribute('data-page-id');
+  pageRevisionId = mainContent.getAttribute('data-page-revision-id');
+  pageRevisionCreatedAt = +mainContent.getAttribute('data-page-revision-created');
   pagePath = mainContent.attributes['data-path'].value;
   const rawText = document.getElementById('raw-text-original');
   if (rawText) {
@@ -56,6 +64,11 @@ var isEnabledPlugins = $('body').data('plugin-enabled');
 if (isEnabledPlugins) {
   var crowiPlugin = window.crowiPlugin;
   crowiPlugin.installAll(crowi, crowiRenderer);
+}
+
+// for PageEditor
+const onSaveSuccess = function(page) {
+  crowi.getCrowiForJquery().updateCurrentRevision(page.revision._id);
 }
 
 /**
@@ -97,7 +110,61 @@ if (elem) {
   ReactDOM.render(<PageCommentFormBehavior crowi={crowi} pageComments={componentInstances['page-comments-list']} />, elem);
 }
 
+/*
+ * PageEditor
+ */
+let pageEditor = null;
+// load editorTheme
+const editorTheme = crowi.loadEditorTheme();
+// render PageEditor
+const pageEditorElem = document.getElementById('page-editor');
+if (pageEditorElem) {
+  pageEditor = ReactDOM.render(
+    <PageEditor crowi={crowi} pageId={pageId} revisionId={pageRevisionId} pagePath={pagePath}
+        markdown={entities.decodeHTML(pageContent)} editorTheme={editorTheme}
+        onSaveSuccess={onSaveSuccess} />,
+    pageEditorElem
+  );
+}
+// render ThemeSelector
+const themeSelectorElem = document.getElementById('page-editor-theme-selector');
+if (themeSelectorElem) {
+  ReactDOM.render(
+    <ThemeSelector value={editorTheme}
+        onChange={(value) => { // set onChange event handler
+          pageEditor.setEditorTheme(value);
+          crowi.saveEditorTheme(value);
+        }} />,
+    themeSelectorElem
+  );
+}
+
+// render for admin
+const customCssEditorElem = document.getElementById('custom-css-editor');
+if (customCssEditorElem != null) {
+  // get input[type=hidden] element
+  const customCssInputElem = document.getElementById('inputCustomCss');
+
+  ReactDOM.render(
+    <CustomCssEditor inputElem={customCssInputElem} />,
+    customCssEditorElem
+  )
+}
+const customScriptEditorElem = document.getElementById('custom-script-editor');
+if (customScriptEditorElem != null) {
+  // get input[type=hidden] element
+  const customScriptInputElem = document.getElementById('inputCustomScript');
+
+  ReactDOM.render(
+    <CustomScriptEditor inputElem={customScriptInputElem} />,
+    customScriptEditorElem
+  )
+}
+
 // うわーもうー
 $('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', function() {
   ReactDOM.render(<PageHistory pageId={pageId} crowi={crowi} />, document.getElementById('revision-history'));
 });
+
+// set refs for pageEditor
+crowi.setPageEditor(componentInstances['page-editor']);

@@ -32,7 +32,8 @@ module.exports = function (options) {
     externals: {
       // require("jquery") is external and available
       //  on the global var jQuery
-      "jquery": "jQuery"
+      "jquery": "jQuery",
+      "emojione": "emojione",
     },
     resolve: {
       extensions: ['.js', '.json'],
@@ -100,6 +101,7 @@ module.exports = function (options) {
         jQuery: "jquery",
         $: "jquery",
         hljs: "reveal.js/plugin/highlight/highlight",
+        emojione: "emojione",
       }),
 
     ]

@@ -82,11 +82,7 @@ export default class PageHistory extends React.Component {
     const diffOpened = this.state.diffOpened,
       revisionId = revision._id;
 
-    if (diffOpened[revisionId]) {
-      return ;
-    }
-
-    diffOpened[revisionId] = true;
+    diffOpened[revisionId] = !(diffOpened[revisionId]);
     this.setState({
       diffOpened
     });
