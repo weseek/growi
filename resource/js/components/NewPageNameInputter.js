@@ -1,8 +1,6 @@
 import React from 'react';
 import { FormGroup, Button, InputGroup } from 'react-bootstrap';
 
-import { AsyncTypeahead } from 'react-bootstrap-typeahead';
-
 import UserPicture from './User/UserPicture';
 import PageListMeta from './PageList/PageListMeta';
 import PagePath from './PageList/PagePath';
@@ -67,21 +65,28 @@ export default class NewPageNameInputter extends React.Component {
       : 'No matches found on title...';
 
     return (
-      <SearchTypeahead
-        crowi={this.crowi}
-        onSearchSuccess={this.onSearchSuccess}
-        onSearchError={this.onSearchError}
-        emptyLabel={emptyLabel}
-        keywordOnInit={this.getParentPageName(this.props.parentPageName)}
-      />
+      <form
+        action="/_search"
+        className=""
+      >
+        <SearchTypeahead
+          crowi={this.crowi}
+          onSearchSuccess={this.onSearchSuccess}
+          onSearchError={this.onSearchError}
+          emptyLabel={emptyLabel}
+          placeholder="Input page name"
+          keywordOnInit={this.getParentPageName(this.props.parentPageName)}
+        />
+      </form>
     );
   }
 }
 
 NewPageNameInputter.propTypes = {
   crowi:          PropTypes.object.isRequired,
-  parentPageName: PropTypes.string.isRequired,
+  parentPageName: PropTypes.string,
 };
 
 NewPageNameInputter.defaultProps = {
+  parentPageName: '',
 };

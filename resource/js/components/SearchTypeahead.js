@@ -1,3 +1,4 @@
+import {noop} from 'lodash';
 import React from 'react';
 
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
@@ -58,6 +59,7 @@ export default class SearchTypeahead extends React.Component {
    */
   forceToFocus() {
     const typeahead = this.getTypeahead();
+    if (typeahead == null) return;
     const intervalId = setInterval(() => {
       this.getTypeahead().focus();
       if (this.state.isFocused) {
@@ -166,33 +168,37 @@ export default class SearchTypeahead extends React.Component {
       ? 'Error on searching.'
       : 'No matches found on title...';
     const restoreFormButton = this.getRestoreFormButton();
+    const defaultSelected = (this.props.keywordOnInit != "")
+      ? [{path: this.props.keywordOnInit}]
+      : [];
+    const {ref, inputProps, isLoading, labelKey, minLength, options, emptyLabel,
+           align, submitFormOnEnter, onSearch, onInputChange, renderMenuItemChildren,
+           caseSensitive, defaultSelected, onBlur, onFocus, keywordOnInit,
+           ...otherProps} = this.props;
 
     return (
-      <form
-        action="/_search"
-        className=""
-        >
-      <AsyncTypeahead
-        ref="typeahead"
-        inputProps={{name: "q", autoComplete: "off"}}
-        isLoading={this.state.isLoading}
-        labelKey="path"
-        minLength={2}
-        options={this.state.pages} // Search result (Some page names)
-        placeholder="Input page name"
-        emptyLabel={this.emptyLabel ? this.emptyLabel : emptyLabel}
-        align='left'
-        submitFormOnEnter={true}
-        onSearch={this.search}
-        onInputChange={this.onInputChange}
-        renderMenuItemChildren={this.renderMenuItemChildren}
-        caseSensitive={false}
-        defaultSelected={[{path: this.props.keywordOnInit}]}
-        onBlur={this.onInputBlur}
-        onFocus={this.onInputFocus}
-      />
-      {restoreFormButton}
-      </form>
+      <span>
+        <AsyncTypeahead
+          {...otherProps}
+          ref="typeahead"
+          inputProps={{name: "q", autoComplete: "off"}}
+          isLoading={this.state.isLoading}
+          labelKey="path"
+          minLength={2}
+          options={this.state.pages} // Search result (Some page names)
+          emptyLabel={this.emptyLabel ? this.emptyLabel : emptyLabel}
+          align='left'
+          submitFormOnEnter={true}
+          onSearch={this.search}
+          onInputChange={this.onInputChange}
+          renderMenuItemChildren={this.renderMenuItemChildren}
+          caseSensitive={false}
+          defaultSelected={defaultSelected}
+          onBlur={this.onInputBlur}
+          onFocus={this.onInputFocus}
+        />
+        {restoreFormButton}
+      </span>
     );
   }
 }
@@ -204,7 +210,10 @@ SearchTypeahead.propTypes = {
   crowi:           PropTypes.object.isRequired,
   onSearchSuccess: PropTypes.func,
   onSearchError:   PropTypes.func,
+  onChange:        PropTypes.func,
+  onInputChange:   PropTypes.func,
   emptyLabel:      PropTypes.string,
+  placeholder:     PropTypes.string,
   keywordOnInit:   PropTypes.string,
 };
 
@@ -212,8 +221,11 @@ SearchTypeahead.propTypes = {
  * Properties
  */
 SearchTypeahead.defaultProps = {
-  onSearchSuccess: {},
-  onSearchError:   {},
+  onSearchSuccess: noop,
+  onSearchError:   noop,
+  onChange:        noop,
+  onInputChange:   noop,
   emptyLabel:      null,
+  placeholder:     "",
   keywordOnInit:   "",
 };
