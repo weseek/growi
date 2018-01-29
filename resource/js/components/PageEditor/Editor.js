@@ -97,8 +97,8 @@ export default class Editor extends React.Component {
     const editor = this.getCodeMirror();
 
     // scroll to the bottom for a moment
-    const eol = editor.getDoc().lineCount() - 1;
-    editor.scrollIntoView(eol);
+    const lastLine = editor.getDoc().lastLine();
+    editor.scrollIntoView(lastLine);
 
     const linePosition = Math.max(0, line - 1);
     editor.scrollIntoView(linePosition);
