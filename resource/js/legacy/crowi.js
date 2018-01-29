@@ -189,11 +189,19 @@ Crowi.updateCurrentRevision = function(revisionId) {
 }
 
 Crowi.handleKeyEHandler = (event) => {
+  // ignore when dom that has 'modal in' classes exists
+  if (document.getElementsByClassName('modal in').length > 0) {
+    return;
+  }
   // show editor
   $('a[data-toggle="tab"][href="#edit-form"]').tab('show');
 }
 
 Crowi.handleKeyCHandler = (event) => {
+  // ignore when dom that has 'modal in' classes exists
+  if (document.getElementsByClassName('modal in').length > 0) {
+    return;
+  }
   // show modal to create a page
   $('#create-page').modal();
 }
@@ -972,11 +980,6 @@ window.addEventListener('keypress', (event) => {
   // ignore when target dom is input
   const inputPattern = /^input|textinput|textarea$/i;
   if (target.tagName.match(inputPattern)) {
-    return;
-  }
-
-  // ignore when dom that has 'modal in' classes exists
-  if (document.getElementsByClassName('modal in').length > 0) {
     return;
   }
 
