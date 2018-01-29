@@ -26,15 +26,15 @@ Why crowi-plus?
   * Find plugins from [npm](https://www.npmjs.com/browse/keyword/crowi-plugin) or [github](https://github.com/search?q=topic%3Acrowi-plugin)!
 * **Faster**
   * Optimize client-side code chunks by Webpack
-  * Adopt [date-fns](https://github.com/date-fns/date-fns) and omit Moment.js
-  * Adopt the fastest logger [pino](https://github.com/pinojs/pino)
+  * Optimize the performance when live preview
+  * Adopt faster libs([date-fns](https://github.com/date-fns/date-fns), [pino](https://github.com/pinojs/pino))
   * Using CDN
 * **Secure**
   * Prevent XSS (Cross Site Scripting)
   * Upgrade jQuery to 3.x and other insecure libs
   * The official Crowi status is [![dependencies Status](https://david-dm.org/crowi/crowi/status.svg)](https://david-dm.org/crowi/crowi) [![devDependencies Status](https://david-dm.org/crowi/crowi/dev-status.svg)](https://david-dm.org/crowi/crowi?type=dev)
 * **Convenient**
-  * Support LDAP Authentication
+  * Support Authentication with LDAP / Active Directory 
   * Slack Incoming Webhooks Integration
   * [Miscellaneous features](https://github.com/weseek/crowi-plus/wiki/Additional-Features)
 * **[Docker Ready][dockerhub]**
