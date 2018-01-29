@@ -1,6 +1,8 @@
 CHANGES
 ========
 
+## 2.3.9-RC
+
 ## 2.3.8
 
 * Feature: Suggest page path when creating pages
