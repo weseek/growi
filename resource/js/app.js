@@ -46,6 +46,7 @@ if (mainContent !== null) {
     pageContent = rawText.innerHTML;
   }
 }
+const isLoggedin = document.querySelector('.main-container.nologin') == null;
 
 // FIXME
 const crowi = new Crowi({
@@ -54,7 +55,9 @@ const crowi = new Crowi({
 }, window);
 window.crowi = crowi;
 crowi.setConfig(JSON.parse(document.getElementById('crowi-context-hydrate').textContent || '{}'));
-crowi.fetchUsers();
+if (isLoggedin) {
+  crowi.fetchUsers();
+}
 
 const crowiRenderer = new CrowiRenderer(crowi);
 window.crowiRenderer = crowiRenderer;
