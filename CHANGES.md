@@ -3,8 +3,13 @@ CHANGES
 
 ## 2.3.8-RC
 
+* Feature: Suggest page path when creating pages
 * Improvement: Prevent keyboard shortcuts when modal is opened
 * Improvement: PageHistory UI
+* Improvement: Ensure to scroll when edit button of section clicked
+* Support: Upgrade libs
+    * style-loader
+    * react-codemirror2
 
 ## 2.3.7
 
