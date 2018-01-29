@@ -94,7 +94,14 @@ export default class Editor extends React.Component {
    */
   setCaretLine(line) {
     const editor = this.getCodeMirror();
-    editor.setCursor({line: line-1});   // leave 'ch' field as null/undefined to indicate the end of line
+
+    // scroll to the bottom for a moment
+    const eol = editor.getDoc().lineCount() - 1;
+    editor.scrollIntoView(eol);
+
+    const linePosition = Math.max(0, line - 1);
+    editor.scrollIntoView(linePosition);
+    editor.setCursor({line: linePosition});   // leave 'ch' field as null/undefined to indicate the end of line
   }
 
   /**
