@@ -902,6 +902,8 @@ window.addEventListener('load', function(e) {
   if (location.hash) {
     if (location.hash == '#edit-form') {
       $('a[data-toggle="tab"][href="#edit-form"]').tab('show');
+      // focus
+      Crowi.setCaretLineAndFocusToEditor();
     }
     if (location.hash == '#revision-history') {
       $('a[data-toggle="tab"][href="#revision-history"]').tab('show');
@@ -943,7 +945,6 @@ window.addEventListener('load', function(e) {
   Crowi.highlightSelectedSection(location.hash);
   Crowi.modifyScrollTop();
   Crowi.setCaretLineAndFocusToEditor();
-  Crowi.setCaretLineAndFocusToEditor();
 });
 
 window.addEventListener('hashchange', function(e) {
@@ -966,9 +967,16 @@ window.addEventListener('hashchange', function(e) {
 });
 
 window.addEventListener('keypress', (event) => {
+  const target = event.target;
+
   // ignore when target dom is input
-  const inputPattern = /input|textinput|textarea/i;
-  if (event.target.tagName.match(inputPattern)) {
+  const inputPattern = /^input|textinput|textarea$/i;
+  if (target.tagName.match(inputPattern)) {
+    return;
+  }
+
+  // ignore when dom that has 'modal in' classes exists
+  if (document.getElementsByClassName('modal in').length > 0) {
     return;
   }
 

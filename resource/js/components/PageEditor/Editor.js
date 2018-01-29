@@ -14,6 +14,7 @@ require('codemirror/addon/hint/show-hint');
 require('codemirror/addon/hint/show-hint.css');
 require('codemirror/addon/search/searchcursor');
 require('codemirror/addon/search/match-highlighter');
+require('codemirror/addon/selection/active-line');
 require('codemirror/addon/scroll/annotatescrollbar');
 require('codemirror/addon/fold/foldcode');
 require('codemirror/addon/fold/foldgutter');
@@ -94,7 +95,14 @@ export default class Editor extends React.Component {
    */
   setCaretLine(line) {
     const editor = this.getCodeMirror();
-    editor.setCursor({line: line-1});   // leave 'ch' field as null/undefined to indicate the end of line
+
+    // scroll to the bottom for a moment
+    const eol = editor.getDoc().lineCount() - 1;
+    editor.scrollIntoView(eol);
+
+    const linePosition = Math.max(0, line - 1);
+    editor.scrollIntoView(linePosition);
+    editor.setCursor({line: linePosition});   // leave 'ch' field as null/undefined to indicate the end of line
   }
 
   /**
@@ -263,7 +271,8 @@ export default class Editor extends React.Component {
       height: 'calc(100% - 20px)'
     }
 
-    const theme = this.props.theme || 'elegant';
+    const theme = this.props.editorOptions.theme || 'elegant';
+    const styleActiveLine = this.props.editorOptions.styleActiveLine || undefined;
     return (
       <div style={flexContainer}>
         <Dropzone
@@ -291,6 +300,7 @@ export default class Editor extends React.Component {
             options={{
               mode: 'gfm',
               theme: theme,
+              styleActiveLine: styleActiveLine,
               lineNumbers: true,
               tabSize: 4,
               indentUnit: 4,
@@ -347,7 +357,7 @@ export default class Editor extends React.Component {
 
 Editor.propTypes = {
   value: PropTypes.string,
-  theme: PropTypes.string,
+  options: PropTypes.object,
   isUploadable: PropTypes.bool,
   isUploadableFile: PropTypes.bool,
   onChange: PropTypes.func,
@@ -355,3 +365,4 @@ Editor.propTypes = {
   onSave: PropTypes.func,
   onUpload: PropTypes.func,
 };
+

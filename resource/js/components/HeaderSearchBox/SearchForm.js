@@ -3,7 +3,7 @@ import FormGroup from 'react-bootstrap/es/FormGroup';
 import Button from 'react-bootstrap/es/Button';
 import InputGroup from 'react-bootstrap/es/InputGroup';
 
-import { AsyncTypeahead } from 'react-bootstrap-typeahead';
+import SearchTypeahead from '../SearchTypeahead';
 
 import UserPicture from '../User/UserPicture';
 import PageListMeta from '../PageList/PageListMeta';
@@ -19,19 +19,10 @@ export default class SearchForm extends React.Component {
     this.crowi = window.crowi; // FIXME
 
     this.state = {
-      input: '',
-      keyword: '',
-      searchedKeyword: '',
-      pages: [],
-      isLoading: false,
       searchError: null,
     };
 
-    this.search = this.search.bind(this);
-    this.clearForm = this.clearForm.bind(this);
-    this.getFormClearComponent = this.getFormClearComponent.bind(this);
-    this.renderMenuItemChildren = this.renderMenuItemChildren.bind(this);
-    this.onInputChange = this.onInputChange.bind(this);
+    this.onSearchError = this.onSearchError.bind(this);
     this.onChange = this.onChange.bind(this);
   }
 
@@ -41,51 +32,10 @@ export default class SearchForm extends React.Component {
   componentWillUnmount() {
   }
 
-  search(keyword) {
-
-    if (keyword === '') {
-      this.setState({
-        keyword: '',
-        searchedKeyword: '',
-      });
-      return;
-    }
-
-    this.setState({isLoading: true});
-
-    this.crowi.apiGet('/search', {q: keyword})
-      .then(res => {
-        this.setState({
-          isLoading: false,
-          keyword: '',
-          pages: res.data,
-        });
-      })
-      .catch(err => {
-        this.setState({
-          isLoading: false,
-          searchError: err,
-        });
-      });
-  }
-
-  getFormClearComponent() {
-    let isHidden = (this.state.input.length === 0);
-
-    return isHidden ? <span></span> : (
-      <a className="btn btn-link search-top-clear" onClick={this.clearForm} hidden={isHidden}>
-        <i className="fa fa-times-circle" />
-      </a>
-    );
-  }
-
-  clearForm() {
-    this._typeahead.getInstance().clear();
-    this.setState({keyword: ''});
-  }
-
-  onInputChange(text) {
-    this.setState({input: text});
+  onSearchError(err) {
+    this.setState({
+      searchError: err,
+    });
   }
 
   onChange(selected) {
@@ -97,22 +47,10 @@ export default class SearchForm extends React.Component {
     }
   }
 
-  renderMenuItemChildren(option, props, index) {
-    const page = option;
-    return (
-      <span>
-        <UserPicture user={page.revision.author} />
-        <PagePath page={page} />
-        <PageListMeta page={page} />
-      </span>
-    );
-  }
-
   render() {
     const emptyLabel = (this.state.searchError !== null)
         ? 'Error on searching.'
         : 'No matches found on title... Hit [Enter] key so that search on contents.';
-    const formClear = this.getFormClearComponent();
 
     return (
       <form
@@ -121,23 +59,12 @@ export default class SearchForm extends React.Component {
       >
         <FormGroup>
           <InputGroup>
-            <AsyncTypeahead
-              ref={ref => this._typeahead = ref}
-              inputProps={{name: "q", autoComplete: "off"}}
-              isLoading={this.state.isLoading}
-              labelKey="path"
-              minLength={2}
-              options={this.state.pages}
-              placeholder="Search ..."
-              emptyLabel={emptyLabel}
-              align='left'
-              submitFormOnEnter={true}
-              onSearch={this.search}
-              onInputChange={this.onInputChange}
+            <SearchTypeahead
+              crowi={this.crowi}
               onChange={this.onChange}
-              renderMenuItemChildren={this.renderMenuItemChildren}
+              emptyLabel={emptyLabel}
+              placeholder="Search ..."
             />
-            {formClear}
             <InputGroup.Button>
               <Button type="submit">
                 <i className="search-top-icon fa fa-search"></i>

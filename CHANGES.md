@@ -1,6 +1,17 @@
 CHANGES
 ========
 
+## 2.3.8
+
+* Feature: Suggest page path when creating pages
+* Improvement: Prevent keyboard shortcuts when modal is opened
+* Improvement: PageHistory UI
+* Improvement: Ensure to scroll when edit button of section clicked
+* Improvement: Enabled to toggle the style for active line
+* Support: Upgrade libs
+    * style-loader
+    * react-codemirror2
+
 ## 2.3.7
 
 * Fix: Open popups when `Ctrl+C` pressed

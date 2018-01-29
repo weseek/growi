@@ -39,6 +39,7 @@ export default class Crowi {
     this.userByName = {};
     this.userById   = {};
     this.draft = {};
+    this.editorOptions = {};
 
     this.recoverData();
   }
@@ -72,6 +73,7 @@ export default class Crowi {
       'userById',
       'users',
       'draft',
+      'editorOptions',
     ];
 
     keys.forEach(key => {
@@ -147,12 +149,8 @@ export default class Crowi {
     return null;
   }
 
-  saveEditorTheme(theme) {
-    this.localStorage.setItem('editorTheme', theme);
-  }
-
-  loadEditorTheme() {
-    return this.localStorage.getItem('editorTheme');
+  saveEditorOptions(options) {
+    this.localStorage.setItem('editorOptions', JSON.stringify(options));
   }
 
   findUserById(userId) {

@@ -130,21 +130,6 @@ footer {
 
     form {
 
-      input.form-control {
-        border: none;
-        box-shadow: none;
-        border-bottom: dotted 1px #444;
-        border-radius: 0;
-        padding: 6px;
-        height: 34px;
-        font-weight: bold;
-        background: #f0f0f0;
-
-        &:focus {
-          background: #ddd;
-        }
-      }
-
       .page-name-addons {
         position: absolute;
         top: 7px;
@@ -165,6 +150,13 @@ footer {
       .page-today-input2 {
         // width: 100%;
         display: inline-block;
+      }
+      #page-name-inputter input {
+        min-width: 300px; // Workaround to display placeholder.
+                          //   cf https://github.com/ericgio/react-bootstrap-typeahead/issues/256
+      }
+      .create-page-under-tree-label code {
+        font-family: $font-family-monospace-not-strictly;
       }
     }
   }
