@@ -17,6 +17,8 @@ import SeenUserList     from './components/SeenUserList';
 import RevisionPath     from './components/Page/RevisionPath';
 import RevisionUrl      from './components/Page/RevisionUrl';
 import BookmarkButton   from './components/BookmarkButton';
+import NewPageNameInputter from './components/NewPageNameInputter';
+import SearchTypeahead  from './components/SearchTypeahead';
 
 import CustomCssEditor  from './components/Admin/CustomCssEditor';
 import CustomScriptEditor from './components/Admin/CustomScriptEditor';
@@ -84,6 +86,9 @@ const componentMappings = {
   //'revision-history': <PageHistory pageId={pageId} />,
   'seen-user-list': <SeenUserList pageId={pageId} crowi={crowi} />,
   'bookmark-button': <BookmarkButton pageId={pageId} crowi={crowi} />,
+
+  'page-name-inputter': <NewPageNameInputter crowi={crowi} parentPageName={pagePath} />,
+
 };
 // additional definitions if pagePath exists
 if (pagePath) {
