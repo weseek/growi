@@ -14,14 +14,10 @@ export default class NewPageNameInputter extends React.Component {
     super(props);
 
     this.state = {
-      input: '',
-      keyword: '',
-      isLoading: false,
       searchError: null,
     };
     this.crowi = this.props.crowi;
 
-    this.onSearchSuccess = this.onSearchSuccess.bind(this);
     this.onSearchError = this.onSearchError.bind(this);
     this.getParentPageName = this.getParentPageName.bind(this);
   }
@@ -32,17 +28,8 @@ export default class NewPageNameInputter extends React.Component {
   componentWillUnmount() {
   }
 
-  onSearchSuccess(res) {
-    this.setState({
-      isLoading: false,
-      keyword: '',
-      pages: res.data,
-    });
-  }
-
   onSearchError(err) {
     this.setState({
-      isLoading: false,
       searchError: err,
     });
   }
@@ -71,7 +58,6 @@ export default class NewPageNameInputter extends React.Component {
       >
         <SearchTypeahead
           crowi={this.crowi}
-          onSearchSuccess={this.onSearchSuccess}
           onSearchError={this.onSearchError}
           emptyLabel={emptyLabel}
           placeholder="Input page name"

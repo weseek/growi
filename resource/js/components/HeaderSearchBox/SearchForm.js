@@ -19,16 +19,10 @@ export default class SearchForm extends React.Component {
     this.crowi = window.crowi; // FIXME
 
     this.state = {
-      input: '',
-      keyword: '',
-      pages: [],
-      isLoading: false,
       searchError: null,
     };
 
-    this.onSearchSuccess = this.onSearchSuccess.bind(this);
     this.onSearchError = this.onSearchError.bind(this);
-    this.onInputChange = this.onInputChange.bind(this);
     this.onChange = this.onChange.bind(this);
   }
 
@@ -38,23 +32,10 @@ export default class SearchForm extends React.Component {
   componentWillUnmount() {
   }
 
-  onSearchSuccess(res) {
-    this.setState({
-      isLoading: false,
-      keyword: '',
-      pages: res.data,
-    });
-  }
-
   onSearchError(err) {
     this.setState({
-      isLoading: false,
       searchError: err,
     });
-  }
-
-  onInputChange(text) {
-    this.setState({input: text});
   }
 
   onChange(selected) {
@@ -80,9 +61,6 @@ export default class SearchForm extends React.Component {
           <InputGroup>
             <SearchTypeahead
               crowi={this.crowi}
-              onSearchSuccess={this.onSearchSuccess}
-              onSearchError={this.onSearchError}
-              onInputChange={this.onInputChange}
               onChange={this.onChange}
               emptyLabel={emptyLabel}
               placeholder="Search ..."

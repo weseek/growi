@@ -103,7 +103,7 @@ export default class SearchTypeahead extends React.Component {
       keyword: '',
       pages: res.data,
     });
-    this.props.onSearchSuccess(res);
+    this.props.onSearchSuccess && this.props.onSearchSuccess(res);
   }
 
   /**
@@ -115,7 +115,7 @@ export default class SearchTypeahead extends React.Component {
       isLoading: false,
       searchError: err,
     });
-    this.props.onSearchError(err);
+    this.props.onSearchError && this.props.onSearchError(err);
   }
 
   onInputChange(text) {
@@ -207,7 +207,6 @@ SearchTypeahead.propTypes = {
   onSearchSuccess: PropTypes.func,
   onSearchError:   PropTypes.func,
   onChange:        PropTypes.func,
-  onInputChange:   PropTypes.func,
   emptyLabel:      PropTypes.string,
   placeholder:     PropTypes.string,
   keywordOnInit:   PropTypes.string,
@@ -220,7 +219,6 @@ SearchTypeahead.defaultProps = {
   onSearchSuccess: noop,
   onSearchError:   noop,
   onChange:        noop,
-  onInputChange:   noop,
   emptyLabel:      null,
   placeholder:     "",
   keywordOnInit:   "",
