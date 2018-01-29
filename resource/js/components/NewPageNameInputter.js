@@ -52,18 +52,13 @@ export default class NewPageNameInputter extends React.Component {
       : 'No matches found on title...';
 
     return (
-      <form
-        action="/_search"
-        className=""
-      >
-        <SearchTypeahead
-          crowi={this.crowi}
-          onSearchError={this.onSearchError}
-          emptyLabel={emptyLabel}
-          placeholder="Input page name"
-          keywordOnInit={this.getParentPageName(this.props.parentPageName)}
-        />
-      </form>
+      <SearchTypeahead
+        crowi={this.crowi}
+        onSearchError={this.onSearchError}
+        emptyLabel={emptyLabel}
+        placeholder="Input page name"
+        keywordOnInit={this.getParentPageName(this.props.parentPageName)}
+      />
     );
   }
 }
