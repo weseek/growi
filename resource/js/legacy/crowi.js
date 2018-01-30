@@ -197,6 +197,7 @@ Crowi.handleKeyEHandler = (event) => {
   }
   // show editor
   $('a[data-toggle="tab"][href="#edit-form"]').tab('show');
+  event.preventDefault();
 }
 
 Crowi.handleKeyCHandler = (event) => {
@@ -206,11 +207,13 @@ Crowi.handleKeyCHandler = (event) => {
   }
   // show modal to create a page
   $('#create-page').modal();
+  event.preventDefault();
 }
 
 Crowi.handleKeyCtrlSlashHandler = (event) => {
   // show modal to create a page
   $('#shortcuts-modal').modal('toggle');
+  event.preventDefault();
 }
 
 $(function() {
@@ -973,7 +976,7 @@ window.addEventListener('hashchange', function(e) {
   }
 });
 
-window.addEventListener('keypress', (event) => {
+window.addEventListener('keydown', (event) => {
   const target = event.target;
 
   // ignore when target dom is input
