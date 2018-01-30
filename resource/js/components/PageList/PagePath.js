@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import * as escapeStringRegexp from 'escape-string-regexp';
+import escapeStringRegexp from 'escape-string-regexp';
 
 export default class PagePath extends React.Component {
 
