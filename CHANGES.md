@@ -3,6 +3,7 @@ CHANGES
 
 ## 2.3.9-RC
 
+* Fix: `Ctrl-/` doesn't work on Chrome
 * Fix: Close Shortcuts help with `Ctrl-/`, ESC key
 * Fix: Jump to last line wrongly when `.revision-head-edit-button` clicked
 
