@@ -2,9 +2,10 @@
 /* Author: Sotaro KARASAWA <sotarok@crocos.co.jp>
 */
 
-var io = require('socket.io-client');
-var entities = require("entities");
-var getLineFromPos = require('get-line-from-pos');
+const io = require('socket.io-client');
+const entities = require("entities");
+const escapeStringRegexp = require('escape-string-regexp');
+const getLineFromPos = require('get-line-from-pos');
 require('bootstrap-sass');
 require('jquery.cookie');
 
@@ -474,11 +475,8 @@ $(function() {
       return;
     }
 
-    var escape = function(s) {
-      return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-    };
     path = entities.encodeHTML(path);
-    var pattern = escape(entities.encodeHTML(shortPath)) + '(/)?$';
+    var pattern = escapeStringRegexp(entities.encodeHTML(shortPath)) + '(/)?$';
 
     $link.html(path.replace(new RegExp(pattern), '<strong>' + shortPath + '$1</strong>'));
   });
