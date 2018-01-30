@@ -1,10 +1,22 @@
 CHANGES
 ========
 
-## 2.3.8-RC
+## 2.3.9-RC
 
+* Fix: `Ctrl-/` doesn't work on Chrome
+* Fix: Close Shortcuts help with `Ctrl-/`, ESC key
+* Fix: Jump to last line wrongly when `.revision-head-edit-button` clicked
+
+## 2.3.8
+
+* Feature: Suggest page path when creating pages
 * Improvement: Prevent keyboard shortcuts when modal is opened
 * Improvement: PageHistory UI
+* Improvement: Ensure to scroll when edit button of section clicked
+* Improvement: Enabled to toggle the style for active line
+* Support: Upgrade libs
+    * style-loader
+    * react-codemirror2
 
 ## 2.3.7
 

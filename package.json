@@ -1,6 +1,6 @@
 {
   "name": "crowi-plus",
-  "version": "2.3.8-RC",
+  "version": "2.3.9-RC",
   "description": "Enhanced Crowi",
   "tags": [
     "wiki",
@@ -114,7 +114,7 @@
     "react-bootstrap": "^0.32.0",
     "react-bootstrap-typeahead": "^2.0.2",
     "react-clipboard.js": "^1.1.2",
-    "react-codemirror2": "^3.0.7",
+    "react-codemirror2": "^4.0.0",
     "react-dom": "^16.0.0",
     "react-dropzone": "^4.2.7",
     "redis": "^2.7.1",

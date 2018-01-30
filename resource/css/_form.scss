@@ -209,9 +209,21 @@
     margin-bottom: 0;
   }
 
-  #page-editor-theme-selector .theme-selector {
+  #page-editor-options-selector {
     label {
       margin-right: 0.5em;
+    }
+
+    .btn.btn-style-active-line {
+      &:hover:not(.active), &:focus:not(.active) {
+        background-color: inherit;
+      }
+    }
+  }
+
+  @media (max-width: $screen-xs-max) { // {{{ less than smartphone size
+    #page-editor-options-selector {
+      display: none;
     }
   }
 } // }}}
