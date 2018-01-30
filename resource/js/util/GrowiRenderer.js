@@ -7,7 +7,7 @@ import Linker        from './PreProcessor/Linker';
 import ImageExpander from './PreProcessor/ImageExpander';
 import XssFilter     from './PreProcessor/XssFilter';
 
-import Emoji         from './PostProcessor/Emoji';
+import emoji         from 'markdown-it-emoji';
 import Mathjax       from './PostProcessor/Mathjax';
 
 import Tsv2Table from './LangProcessor/Tsv2Table';
@@ -22,6 +22,7 @@ export default class GrowiRenderer {
 
     this.md = new MarkdownIt();
     this.configure(this.crowi.getConfig());
+    this.configurePlugins(this.crowi.getConfig());
 
     this.preProcessors = [
       new Linker(crowi),
@@ -29,7 +30,6 @@ export default class GrowiRenderer {
       new XssFilter(crowi),
     ];
     this.postProcessors = [
-      new Emoji(crowi),
       new Mathjax(crowi),
     ];
 
@@ -55,6 +55,21 @@ export default class GrowiRenderer {
       linkify: true,
       breaks: config.isEnabledLineBreaks,
     });
+  }
+
+  /**
+   * configure markdown-it plugins
+   * @param {any} config
+   */
+  configurePlugins(config) {
+    this.md
+        .use(emoji);
+
+    // integrate markdown-it-emoji and emojione
+    this.md.renderer.rules.emoji = (token, idx) => {
+      const shortname = `:${token[idx].markup}:`;
+      return emojione.shortnameToImage(shortname);
+    };
   }
 
   preProcess(markdown, dom) {
