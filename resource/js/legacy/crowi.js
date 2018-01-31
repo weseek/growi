@@ -548,7 +548,7 @@ $(function() {
       crowi.interceptorManager.process('preRender', context)
         .then(() => crowi.interceptorManager.process('prePreProcess', context))
         .then(() => {
-          context.markdown = crowiRenderer.preProcess(context.markdown, context.dom);
+          context.markdown = crowiRenderer.preProcess(context.markdown);
         })
         .then(() => crowi.interceptorManager.process('postPreProcess', context))
         .then(() => {

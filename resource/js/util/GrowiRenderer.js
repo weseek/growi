@@ -75,12 +75,12 @@ export default class GrowiRenderer {
     };
   }
 
-  preProcess(markdown, dom) {
+  preProcess(markdown) {
     for (let i = 0; i < this.preProcessors.length; i++) {
       if (!this.preProcessors[i].process) {
         continue;
       }
-      markdown = this.preProcessors[i].process(markdown, dom);
+      markdown = this.preProcessors[i].process(markdown);
     }
     return markdown;
   }
