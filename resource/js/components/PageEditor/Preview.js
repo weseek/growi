@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { PreviewOptions } from './OptionsSelector';
 
 export default class Preview extends React.Component {
 
@@ -7,8 +8,15 @@ export default class Preview extends React.Component {
     super(props);
   }
 
+  componentDidMount() {
+    if (this.props.isMathJaxEnabled && this.props.renderMathJaxOnInit) {
+      this.renderMathJax();
+    }
+  }
+
   componentDidUpdate() {
-    if (this.props.isMathJaxEnabled) {
+    const opts = this.props.previewOptions;
+    if (this.props.isMathJaxEnabled && opts != null && opts.renderMathJaxInRealtime) {
       this.renderMathJax();
     }
   }
@@ -41,4 +49,6 @@ Preview.propTypes = {
   html: PropTypes.string,
   inputRef: PropTypes.func.isRequired,  // for getting div element
   isMathJaxEnabled: PropTypes.bool,
+  renderMathJaxOnInit: PropTypes.bool,
+  previewOptions: PropTypes.instanceOf(PreviewOptions),
 };

@@ -214,7 +214,7 @@
       margin-right: 0.5em;
     }
 
-    .btn.btn-style-active-line {
+    .btn-style-active-line, .btn-render-mathjax-in-realtime {
       &:hover:not(.active), &:focus:not(.active) {
         background-color: inherit;
       }

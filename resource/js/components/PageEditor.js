@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import * as toastr from 'toastr';
 import { throttle, debounce } from 'throttle-debounce';
 
-import { EditorOptions } from './PageEditor/OptionsSelector';
+import { EditorOptions, PreviewOptions } from './PageEditor/OptionsSelector';
 import Editor from './PageEditor/Editor';
 import Preview from './PageEditor/Preview';
 
@@ -25,6 +25,7 @@ export default class PageEditor extends React.Component {
       isUploadableFile,
       isMathJaxEnabled,
       editorOptions: this.props.editorOptions,
+      previewOptions: this.props.previewOptions,
     };
 
     this.setCaretLine = this.setCaretLine.bind(this);
@@ -70,6 +71,14 @@ export default class PageEditor extends React.Component {
    */
   setEditorOptions(editorOptions) {
     this.setState({ editorOptions });
+  }
+
+  /**
+   * set options (used from the outside)
+   * @param {object} previewOptions
+   */
+  setPreviewOptions(previewOptions) {
+    this.setState({ previewOptions });
   }
 
   /**
@@ -292,7 +301,12 @@ export default class PageEditor extends React.Component {
           />
         </div>
         <div className="col-md-6 hidden-sm hidden-xs page-editor-preview-container">
-          <Preview html={this.state.html} inputRef={el => this.previewElement = el} isMathJaxEnabled={this.state.isMathJaxEnabled} />
+          <Preview html={this.state.html}
+              inputRef={el => this.previewElement = el}
+              isMathJaxEnabled={this.state.isMathJaxEnabled}
+              renderMathJaxOnInit={false}
+              previewOptions={this.state.previewOptions}
+          />
         </div>
       </div>
     )
@@ -307,4 +321,5 @@ PageEditor.propTypes = {
   pagePath: PropTypes.string,
   onSaveSuccess: PropTypes.func,
   editorOptions: PropTypes.instanceOf(EditorOptions),
+  previewOptions: PropTypes.instanceOf(PreviewOptions),
 };

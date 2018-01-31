@@ -119,28 +119,33 @@ if (elem) {
  * PageEditor
  */
 let pageEditor = null;
+const editorOptions = new EditorOptions(crowi.editorOptions);
+const previewOptions = new PreviewOptions(crowi.previewOptions);
 // render PageEditor
 const pageEditorElem = document.getElementById('page-editor');
 if (pageEditorElem) {
-  const editorOptions = new EditorOptions(crowi.editorOptions);
   pageEditor = ReactDOM.render(
     <PageEditor crowi={crowi} pageId={pageId} revisionId={pageRevisionId} pagePath={pagePath}
-        markdown={entities.decodeHTML(pageContent)} editorOptions={editorOptions}
+        markdown={entities.decodeHTML(pageContent)}
+        editorOptions={editorOptions} previewOptions={previewOptions}
         onSaveSuccess={onSaveSuccess} />,
     pageEditorElem
   );
   // set refs for pageEditor
   crowi.setPageEditor(pageEditor);
 }
-// render EditorOptionsSelector
+// render OptionsSelector
 const pageEditorOptionsSelectorElem = document.getElementById('page-editor-options-selector');
 if (pageEditorOptionsSelectorElem) {
-  const editorOptions = new EditorOptions(crowi.editorOptions);
   ReactDOM.render(
-    <OptionsSelector editorOptions={editorOptions}
+    <OptionsSelector editorOptions={editorOptions} previewOptions={previewOptions}
         onChange={(newEditorOptions, newPreviewOptions) => { // set onChange event handler
+          // set options
           pageEditor.setEditorOptions(newEditorOptions);
+          pageEditor.setPreviewOptions(newPreviewOptions);
+          // save
           crowi.saveEditorOptions(newEditorOptions);
+          crowi.savePreviewOptions(newPreviewOptions);
         }} />,
     pageEditorOptionsSelectorElem
   );
