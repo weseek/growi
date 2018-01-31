@@ -8,6 +8,9 @@ import Tsv2Table from './LangProcessor/Tsv2Table';
 import Template from './LangProcessor/Template';
 import PlantUML from './LangProcessor/PlantUML';
 
+import EmojiConfigurer from './markdown-it/emoji';
+import MathJaxConfigurer from './markdown-it/mathjax';
+
 export default class GrowiRenderer {
 
 
@@ -21,6 +24,10 @@ export default class GrowiRenderer {
     this.postProcessors = [
     ];
 
+    this.markdownItConfigurers = [
+      new EmojiConfigurer(crowi),
+      new MathJaxConfigurer(crowi),
+    ];
     this.langProcessors = {
       'tsv': new Tsv2Table(crowi),
       'tsv-h': new Tsv2Table(crowi, {header: true}),
@@ -29,6 +36,7 @@ export default class GrowiRenderer {
     };
 
     this.configure = this.configure.bind(this);
+    this.configurePlugins = this.configurePlugins.bind(this);
     this.parseMarkdown = this.parseMarkdown.bind(this);
     this.codeRenderer = this.codeRenderer.bind(this);
 
@@ -55,15 +63,9 @@ export default class GrowiRenderer {
    * @param {any} config
    */
   configurePlugins(config) {
-    this.md
-        .use(require('markdown-it-emoji'))
-        .use(require('markdown-it-mathjax')());
-
-    // integrate markdown-it-emoji and emojione
-    this.md.renderer.rules.emoji = (token, idx) => {
-      const shortname = `:${token[idx].markup}:`;
-      return emojione.shortnameToImage(shortname);
-    };
+    this.markdownItConfigurers.forEach((configurer) => {
+      configurer.configure(this.md);
+    });
   }
 
   preProcess(markdown) {
