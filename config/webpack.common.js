@@ -100,7 +100,7 @@ module.exports = function (options) {
       new webpack.ProvidePlugin({
         jQuery: "jquery",
         $: "jquery",
-        hljs: "reveal.js/plugin/highlight/highlight",
+        hljs: "highlight",
         emojione: "emojione",
       }),
 

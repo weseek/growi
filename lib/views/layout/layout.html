@@ -33,8 +33,8 @@
     }
   </script>
 
-  <!-- jQuery, emojione -->
-  <script src="https://cdn.jsdelivr.net/combine/npm/emojione@3.1.2,npm/jquery@3.3.1"></script>
+  <!-- jQuery, emojione, highlight.js -->
+  <script src="https://cdn.jsdelivr.net/combine/npm/emojione@3.1.2,npm/jquery@3.3.1,npm/highlight.js@9.12.0"></script>
   {% if local_config.env.MATHJAX %}
     <!-- Mathjax -->
     <script type="text/x-mathjax-config" async>
@@ -72,6 +72,8 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
   <!-- emojione -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/emojione@3.1.2/extras/css/emojione.min.css">
+  <!-- highlight.js -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/github.css">
 
   {% block html_additional_headers %}{% endblock %}
 
