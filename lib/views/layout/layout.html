@@ -35,6 +35,21 @@
 
   <!-- jQuery, emojione -->
   <script src="https://cdn.jsdelivr.net/combine/npm/emojione@3.1.2,npm/jquery@3.3.1"></script>
+  {% if true %}
+    <!-- Mathjax -->
+    <script type="text/x-mathjax-config" async>
+      MathJax.Hub.Config({
+        skipStartupTypeset: true,
+        TeX: { equationNumbers: { autoNumber: "AMS" }},
+        extensions: ["tex2jax.js"],
+        jax: ["input/TeX", "output/SVG"],
+        tex2jax: {
+          processEscapes: true
+        }
+      });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js" async></script>
+  {% endif %}
 
   {% if env === 'development' %}
     <script src="/dll/vendor.dll.js"></script>

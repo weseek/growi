@@ -7,6 +7,13 @@ export default class Preview extends React.Component {
     super(props);
   }
 
+  componentDidUpdate() {
+    const MathJax = window.MathJax;
+    if (MathJax != null) {
+      MathJax.Hub.Queue(["Typeset", MathJax.Hub, this.element]);
+    }
+  }
+
   generateInnerHtml(html) {
     return {__html: html};
   }
@@ -14,7 +21,10 @@ export default class Preview extends React.Component {
   render() {
     return (
       <div
-        ref={this.props.inputRef}
+        ref={(elm) => {
+          this.element = elm;
+          this.props.inputRef(elm);
+        }}
         className="wiki page-editor-preview-body" dangerouslySetInnerHTML={this.generateInnerHtml(this.props.html)}>
       </div>
     )

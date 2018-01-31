@@ -7,9 +7,6 @@ import Linker        from './PreProcessor/Linker';
 import ImageExpander from './PreProcessor/ImageExpander';
 import XssFilter     from './PreProcessor/XssFilter';
 
-import emoji         from 'markdown-it-emoji';
-import Mathjax       from './PostProcessor/Mathjax';
-
 import Tsv2Table from './LangProcessor/Tsv2Table';
 import Template from './LangProcessor/Template';
 import PlantUML from './LangProcessor/PlantUML';
@@ -30,7 +27,6 @@ export default class GrowiRenderer {
       new XssFilter(crowi),
     ];
     this.postProcessors = [
-      new Mathjax(crowi),
     ];
 
     this.langProcessors = {
@@ -63,7 +59,8 @@ export default class GrowiRenderer {
    */
   configurePlugins(config) {
     this.md
-        .use(emoji);
+        .use(require('markdown-it-emoji'))
+        .use(require('markdown-it-mathjax')());
 
     // integrate markdown-it-emoji and emojione
     this.md.renderer.rules.emoji = (token, idx) => {

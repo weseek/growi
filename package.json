@@ -94,6 +94,7 @@
     "jquery.cookie": "~1.4.1",
     "markdown-it": "^8.4.0",
     "markdown-it-emoji": "^1.4.0",
+    "markdown-it-mathjax": "^2.0.0",
     "md5": "^2.2.1",
     "method-override": "^2.3.10",
     "mkdirp": "~0.5.1",
