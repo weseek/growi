@@ -6,13 +6,31 @@ import FormControl from 'react-bootstrap/es/FormControl';
 import ControlLabel from 'react-bootstrap/es/ControlLabel';
 import Button from 'react-bootstrap/es/Button';
 
+export class EditorOptions {
+  constructor(props) {
+    this.theme = 'elegant';
+    this.styleActiveLine = false;
+
+    Object.assign(this, props);
+  }
+}
+
+export class PreviewOptions {
+  constructor(props) {
+    this.renderMathJaxInRealtime = false;
+
+    Object.assign(this, props);
+  }
+}
+
 export default class EditorOptionsSelector extends React.Component {
 
   constructor(props) {
     super(props);
 
     this.state = {
-      options: this.props.options,
+      editorOptions: this.props.editorOptions || new EditorOptions(),
+      previewOptions: this.props.previewOptions || new PreviewOptions(),
     }
 
     this.availableThemes = [
@@ -28,23 +46,22 @@ export default class EditorOptionsSelector extends React.Component {
   }
 
   init() {
-    this.themeSelectorInputEl.value = this.state.options.theme || this.availableThemes[0];
+    this.themeSelectorInputEl.value = this.state.editorOptions.theme;
   }
 
   onChangeTheme() {
     const newValue = this.themeSelectorInputEl.value;
-    const newOpts = Object.assign(this.state.options, {theme: newValue});
-    this.setState({options: newOpts});
+    const newOpts = Object.assign(this.state.editorOptions, {theme: newValue});
+    this.setState({editorOptions: newOpts});
 
     // dispatch event
     this.dispatchOnChange();
   }
 
   onClickStyleActiveLine(event) {
-    const newValue = !this.state.options.styleActiveLine;
-    console.log(newValue);
-    const newOpts = Object.assign(this.state.options, {styleActiveLine: newValue});
-    this.setState({options: newOpts});
+    const newValue = !this.state.editorOptions.styleActiveLine;
+    const newOpts = Object.assign(this.state.editorOptions, {styleActiveLine: newValue});
+    this.setState({editorOptions: newOpts});
 
     // dispatch event
     this.dispatchOnChange();
@@ -52,7 +69,7 @@ export default class EditorOptionsSelector extends React.Component {
 
   dispatchOnChange() {
     if (this.props.onChange != null) {
-      this.props.onChange(this.state.options);
+      this.props.onChange(this.state.editorOptions, this.state.previewOptions);
     }
   }
 
@@ -76,7 +93,7 @@ export default class EditorOptionsSelector extends React.Component {
   }
 
   renderStyleActiveLineSelector() {
-    const bool = this.state.options.styleActiveLine || false;
+    const bool = this.state.editorOptions.styleActiveLine || false;
     return (
       <FormGroup controlId="formControlsSelect">
         <Button active={bool} className="btn-style-active-line"
@@ -94,6 +111,7 @@ export default class EditorOptionsSelector extends React.Component {
 }
 
 EditorOptionsSelector.propTypes = {
-  options: PropTypes.object,
+  editorOptions: PropTypes.instanceOf(EditorOptions),
+  previewOptions: PropTypes.instanceOf(PreviewOptions),
   onChange: PropTypes.func,
 };

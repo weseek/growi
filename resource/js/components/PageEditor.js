@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import * as toastr from 'toastr';
 import { throttle, debounce } from 'throttle-debounce';
 
+import { EditorOptions } from './PageEditor/EditorOptionsSelector';
 import Editor from './PageEditor/Editor';
 import Preview from './PageEditor/Preview';
 
@@ -305,5 +306,5 @@ PageEditor.propTypes = {
   revisionId: PropTypes.string,
   pagePath: PropTypes.string,
   onSaveSuccess: PropTypes.func,
-  editorOptions: PropTypes.object,
+  editorOptions: PropTypes.instanceOf(EditorOptions),
 };

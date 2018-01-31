@@ -9,6 +9,7 @@ import HeaderSearchBox  from './components/HeaderSearchBox';
 import SearchPage       from './components/SearchPage';
 import PageEditor       from './components/PageEditor';
 import EditorOptionsSelector from './components/PageEditor/EditorOptionsSelector';
+import { EditorOptions, PreviewOptions } from './components/PageEditor/EditorOptionsSelector';
 import PageListSearch   from './components/PageListSearch';
 import PageHistory      from './components/PageHistory';
 import PageComments     from './components/PageComments';
@@ -121,9 +122,10 @@ let pageEditor = null;
 // render PageEditor
 const pageEditorElem = document.getElementById('page-editor');
 if (pageEditorElem) {
+  const editorOptions = new EditorOptions(crowi.editorOptions);
   pageEditor = ReactDOM.render(
     <PageEditor crowi={crowi} pageId={pageId} revisionId={pageRevisionId} pagePath={pagePath}
-        markdown={entities.decodeHTML(pageContent)} editorOptions={crowi.editorOptions}
+        markdown={entities.decodeHTML(pageContent)} editorOptions={editorOptions}
         onSaveSuccess={onSaveSuccess} />,
     pageEditorElem
   );
@@ -133,11 +135,12 @@ if (pageEditorElem) {
 // render EditorOptionsSelector
 const editorOptionSelectorElem = document.getElementById('page-editor-options-selector');
 if (editorOptionSelectorElem) {
+  const editorOptions = new EditorOptions(crowi.editorOptions);
   ReactDOM.render(
-    <EditorOptionsSelector options={crowi.editorOptions}
-        onChange={(opts) => { // set onChange event handler
-          pageEditor.setEditorOptions(opts);
-          crowi.saveEditorOptions(opts);
+    <EditorOptionsSelector editorOptions={editorOptions}
+        onChange={(newEditorOptions, newPreviewOptions) => { // set onChange event handler
+          pageEditor.setEditorOptions(newEditorOptions);
+          crowi.saveEditorOptions(newEditorOptions);
         }} />,
     editorOptionSelectorElem
   );
