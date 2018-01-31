@@ -138,7 +138,8 @@ if (pageEditorElem) {
 const pageEditorOptionsSelectorElem = document.getElementById('page-editor-options-selector');
 if (pageEditorOptionsSelectorElem) {
   ReactDOM.render(
-    <OptionsSelector editorOptions={editorOptions} previewOptions={previewOptions}
+    <OptionsSelector crowi={crowi}
+        editorOptions={editorOptions} previewOptions={previewOptions}
         onChange={(newEditorOptions, newPreviewOptions) => { // set onChange event handler
           // set options
           pageEditor.setEditorOptions(newEditorOptions);

@@ -5,17 +5,22 @@ import FormGroup from 'react-bootstrap/es/FormGroup';
 import FormControl from 'react-bootstrap/es/FormControl';
 import ControlLabel from 'react-bootstrap/es/ControlLabel';
 import Button from 'react-bootstrap/es/Button';
-import DropdownButton from 'react-bootstrap/es/DropdownButton';
-import MenuItem from 'react-bootstrap/es/MenuItem';
+
+import OverlayTrigger  from 'react-bootstrap/es/OverlayTrigger';
+import Tooltip from 'react-bootstrap/es/Tooltip';
 
 export default class OptionsSelector extends React.Component {
 
   constructor(props) {
     super(props);
 
+    const config = this.props.crowi.getConfig();
+    const isMathJaxEnabled = !!config.env.MATHJAX;
+
     this.state = {
       editorOptions: this.props.editorOptions || new EditorOptions(),
       previewOptions: this.props.previewOptions || new PreviewOptions(),
+      isMathJaxEnabled,
     }
 
     this.availableThemes = [
@@ -62,6 +67,9 @@ export default class OptionsSelector extends React.Component {
     this.dispatchOnChange();
   }
 
+  /**
+   * dispatch onChange event
+   */
   dispatchOnChange() {
     if (this.props.onChange != null) {
       this.props.onChange(this.state.editorOptions, this.state.previewOptions);
@@ -100,13 +108,25 @@ export default class OptionsSelector extends React.Component {
   }
 
   renderRealtimeMathJaxSelector() {
-    const bool = this.state.previewOptions.renderMathJaxInRealtime;
+    if (!this.state.isMathJaxEnabled) {
+      return;
+    }
+
+    // tooltip
+    const tooltip = (
+      <Tooltip id="tooltip-realtime-mathjax-rendering">Realtime MathJax Rendering</Tooltip>
+    );
+
+    const isEnabled = this.state.isMathJaxEnabled;
+    const isActive = isEnabled && this.state.previewOptions.renderMathJaxInRealtime;
     return (
       <FormGroup controlId="formControlsSelect">
-        <Button active={bool} className="btn-render-mathjax-in-realtime"
-            onClick={this.onClickRenderMathJaxInRealtime}>
-          <i className="fa fa-superscript" aria-hidden="true"></i>
-        </Button>
+        <OverlayTrigger placement="top" overlay={tooltip}>
+          <Button active={isActive} className="btn-render-mathjax-in-realtime"
+              onClick={this.onClickRenderMathJaxInRealtime}>
+            <i className="fa fa-superscript" aria-hidden="true"></i>
+          </Button>
+        </OverlayTrigger>
       </FormGroup>
     )
   }
@@ -134,6 +154,7 @@ export class PreviewOptions {
 }
 
 OptionsSelector.propTypes = {
+  crowi: PropTypes.object.isRequired,
   editorOptions: PropTypes.instanceOf(EditorOptions),
   previewOptions: PropTypes.instanceOf(PreviewOptions),
   onChange: PropTypes.func,
