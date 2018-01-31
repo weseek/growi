@@ -23,7 +23,7 @@ export class PreviewOptions {
   }
 }
 
-export default class EditorOptionsSelector extends React.Component {
+export default class OptionsSelector extends React.Component {
 
   constructor(props) {
     super(props);
@@ -110,7 +110,7 @@ export default class EditorOptionsSelector extends React.Component {
   }
 }
 
-EditorOptionsSelector.propTypes = {
+OptionsSelector.propTypes = {
   editorOptions: PropTypes.instanceOf(EditorOptions),
   previewOptions: PropTypes.instanceOf(PreviewOptions),
   onChange: PropTypes.func,

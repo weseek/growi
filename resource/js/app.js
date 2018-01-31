@@ -8,8 +8,8 @@ import GrowiRenderer from './util/GrowiRenderer';
 import HeaderSearchBox  from './components/HeaderSearchBox';
 import SearchPage       from './components/SearchPage';
 import PageEditor       from './components/PageEditor';
-import EditorOptionsSelector from './components/PageEditor/EditorOptionsSelector';
-import { EditorOptions, PreviewOptions } from './components/PageEditor/EditorOptionsSelector';
+import OptionsSelector  from './components/PageEditor/OptionsSelector';
+import { EditorOptions, PreviewOptions } from './components/PageEditor/OptionsSelector';
 import PageListSearch   from './components/PageListSearch';
 import PageHistory      from './components/PageHistory';
 import PageComments     from './components/PageComments';
@@ -133,16 +133,16 @@ if (pageEditorElem) {
   crowi.setPageEditor(pageEditor);
 }
 // render EditorOptionsSelector
-const editorOptionSelectorElem = document.getElementById('page-editor-options-selector');
-if (editorOptionSelectorElem) {
+const pageEditorOptionsSelectorElem = document.getElementById('page-editor-options-selector');
+if (pageEditorOptionsSelectorElem) {
   const editorOptions = new EditorOptions(crowi.editorOptions);
   ReactDOM.render(
-    <EditorOptionsSelector editorOptions={editorOptions}
+    <OptionsSelector editorOptions={editorOptions}
         onChange={(newEditorOptions, newPreviewOptions) => { // set onChange event handler
           pageEditor.setEditorOptions(newEditorOptions);
           crowi.saveEditorOptions(newEditorOptions);
         }} />,
-    editorOptionSelectorElem
+    pageEditorOptionsSelectorElem
   );
 }
 
