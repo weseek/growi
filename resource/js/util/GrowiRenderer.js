@@ -2,9 +2,7 @@ import MarkdownIt from 'markdown-it';
 // import hljs from 'highlight.js';
 import * as entities from 'entities';
 
-import MarkdownFixer from './PreProcessor/MarkdownFixer';
 import Linker        from './PreProcessor/Linker';
-import ImageExpander from './PreProcessor/ImageExpander';
 import XssFilter     from './PreProcessor/XssFilter';
 
 import Tsv2Table from './LangProcessor/Tsv2Table';
@@ -23,7 +21,6 @@ export default class GrowiRenderer {
 
     this.preProcessors = [
       new Linker(crowi),
-      new ImageExpander(crowi),
       new XssFilter(crowi),
     ];
     this.postProcessors = [
