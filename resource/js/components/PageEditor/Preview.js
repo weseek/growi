@@ -8,6 +8,12 @@ export default class Preview extends React.Component {
   }
 
   componentDidUpdate() {
+    if (this.props.isMathJaxEnabled) {
+      this.renderMathJax();
+    }
+  }
+
+  renderMathJax() {
     const MathJax = window.MathJax;
     if (MathJax != null) {
       MathJax.Hub.Queue(["Typeset", MathJax.Hub, this.element]);
@@ -34,4 +40,5 @@ export default class Preview extends React.Component {
 Preview.propTypes = {
   html: PropTypes.string,
   inputRef: PropTypes.func.isRequired,  // for getting div element
+  isMathJaxEnabled: PropTypes.bool,
 };

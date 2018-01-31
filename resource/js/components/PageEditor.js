@@ -15,12 +15,14 @@ export default class PageEditor extends React.Component {
     const config = this.props.crowi.getConfig();
     const isUploadable = config.upload.image || config.upload.file;
     const isUploadableFile = config.upload.file;
+    const isMathJaxEnabled = !!config.env.MATHJAX;
 
     this.state = {
       revisionId: this.props.revisionId,
       markdown: this.props.markdown,
       isUploadable,
       isUploadableFile,
+      isMathJaxEnabled,
       editorOptions: this.props.editorOptions,
     };
 
@@ -289,7 +291,7 @@ export default class PageEditor extends React.Component {
           />
         </div>
         <div className="col-md-6 hidden-sm hidden-xs page-editor-preview-container">
-          <Preview html={this.state.html} inputRef={el => this.previewElement = el} />
+          <Preview html={this.state.html} inputRef={el => this.previewElement = el} isMathJaxEnabled={this.state.isMathJaxEnabled} />
         </div>
       </div>
     )
