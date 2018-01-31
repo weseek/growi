@@ -17,8 +17,10 @@
       }
     </script>
 
-    <!-- jQuery, emojione, highlight.js (expect to hit the cache) -->
-    <script src="https://cdn.jsdelivr.net/combine/npm/emojione@3.1.2,npm/jquery@3.3.1,npm/highlight.js@9.12.0"></script>
+    <!-- jQuery, emojione (expect to hit the cache) -->
+    <script src="https://cdn.jsdelivr.net/combine/npm/emojione@3.1.2,npm/jquery@3.3.1"></script>
+    <!-- highlight.js -->
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/highlight.min.js"></script>
 
     {% if env === 'development' %}
       <script src="/dll/vendor.dll.js"></script>

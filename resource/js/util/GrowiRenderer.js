@@ -14,10 +14,6 @@ export default class GrowiRenderer {
   constructor(crowi) {
     this.crowi = crowi;
 
-    this.md = new MarkdownIt();
-    this.configure(this.crowi.getConfig());
-    this.configurePlugins(this.crowi.getConfig());
-
     this.preProcessors = [
       new Linker(crowi),
       new XssFilter(crowi),
@@ -34,6 +30,11 @@ export default class GrowiRenderer {
 
     this.configure = this.configure.bind(this);
     this.parseMarkdown = this.parseMarkdown.bind(this);
+    this.codeRenderer = this.codeRenderer.bind(this);
+
+    this.md = new MarkdownIt();
+    this.configure(this.crowi.getConfig());
+    this.configurePlugins(this.crowi.getConfig());
   }
 
   /**
@@ -45,17 +46,7 @@ export default class GrowiRenderer {
       html: true,
       linkify: true,
       breaks: config.isEnabledLineBreaks,
-      highlight: (str, lang) => {
-        if (lang && hljs.getLanguage(lang)) {
-          try {
-            return '<pre class="hljs"><code>' +
-                    hljs.highlight(lang, str, true).value +
-                    '</code></pre>';
-          } catch (__) {}
-        }
-
-        return '<pre class="hljs"><code>' + this.md.utils.escapeHtml(str) + '</code></pre>';
-      },
+      highlight: this.codeRenderer,
     });
   }
 
@@ -94,6 +85,27 @@ export default class GrowiRenderer {
     }
 
     return html;
+  }
+
+  codeRenderer(code, langExt) {
+    let citeTag = '';
+    if (langExt) {
+      const langAndFn = langExt.split(':');
+      const lang = langAndFn[0];
+      const langFn = langAndFn[1] || null;
+
+      if (langFn) {
+        citeTag = `<cite>${langFn}</cite>`;
+      }
+
+      if (hljs.getLanguage(lang)) {
+        try {
+          return `<pre class="hljs">${citeTag}<code class="language-${lang}">${hljs.highlight(lang, code, true).value}</code></pre>`;
+        } catch (__) {}
+      }
+    }
+
+    return '';
   }
 
   parseMarkdown(markdown, dom, markedOpts) {
