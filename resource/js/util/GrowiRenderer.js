@@ -1,5 +1,4 @@
 import MarkdownIt from 'markdown-it';
-// import hljs from 'highlight.js';
 import * as entities from 'entities';
 
 import Linker        from './PreProcessor/Linker';
@@ -35,7 +34,6 @@ export default class GrowiRenderer {
 
     this.configure = this.configure.bind(this);
     this.parseMarkdown = this.parseMarkdown.bind(this);
-    this.codeRenderer = this.codeRenderer.bind(this);
   }
 
   /**
@@ -47,6 +45,17 @@ export default class GrowiRenderer {
       html: true,
       linkify: true,
       breaks: config.isEnabledLineBreaks,
+      highlight: (str, lang) => {
+        if (lang && hljs.getLanguage(lang)) {
+          try {
+            return '<pre class="hljs"><code>' +
+                    hljs.highlight(lang, str, true).value +
+                    '</code></pre>';
+          } catch (__) {}
+        }
+
+        return '<pre class="hljs"><code>' + this.md.utils.escapeHtml(str) + '</code></pre>';
+      },
     });
   }
 
@@ -87,77 +96,8 @@ export default class GrowiRenderer {
     return html;
   }
 
-  codeRenderer(code, lang, escaped) {
-    let result = '', hl;
-
-    // if (lang) {
-    //   const langAndFn = lang.split(':');
-    //   const langPattern = langAndFn[0];
-    //   const langFn = langAndFn[1] || null;
-    //   if (this.langProcessors[langPattern]) {
-    //     return this.langProcessors[langPattern].process(code, lang);
-    //   }
-
-    //   try {
-    //     hl = hljs.highlight(langPattern, code);
-    //     result = hl.value;
-    //     escaped = true;
-    //   } catch (e) {
-    //     result = code;
-    //   }
-
-    //   result = (escape ? result : entities.encodeHTML(result));
-
-    //   let citeTag = '';
-    //   if (langFn) {
-    //     citeTag = `<cite>${langFn}</cite>`;
-    //   }
-    //   return `<pre class="wiki-code wiki-lang">${citeTag}<code class="lang-${lang}">${result}\n</code></pre>\n`;
-    // }
-
-    // no lang specified
-    return `<pre class="wiki-code"><code>${entities.encodeHTML(code)}\n</code></pre>`;
-
-  }
-
   parseMarkdown(markdown, dom, markedOpts) {
     let parsed = '';
-
-    /*
-    const markedRenderer = new marked.Renderer();
-    markedRenderer.code = this.codeRenderer;
-
-    try {
-      // concat
-      let concatMarkedOpts = Object.assign({
-        gfm: true,
-        tables: true,
-        breaks: true,
-        pedantic: false,
-        sanitize: false,
-        smartLists: true,
-        smartypants: false,
-        renderer: markedRenderer,
-      }, markedOpts);
-
-      marked.setOptions(concatMarkedOpts);
-
-      // override
-      marked.Lexer.lex = function(src, options) {
-        var lexer = new marked.Lexer(options);
-
-        // this is maybe not an official way
-        if (lexer.rules) {
-          lexer.rules.fences = /^ *(`{3,}|~{3,})[ \.]*([^\r\n]+)? *\n([\s\S]*?)\s*\1 *(?:\n+|$)/;
-        }
-
-        return lexer.lex(src);
-      };
-
-      parsed = marked(markdown);
-    } catch (e) { console.log(e, e.stack); }
-    */
-
     parsed = this.md.render(markdown);
     return parsed;
   }
