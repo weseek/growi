@@ -88,17 +88,18 @@ export default class GrowiRenderer {
   }
 
   codeRenderer(code, langExt) {
-    let citeTag = '';
     if (langExt) {
       const langAndFn = langExt.split(':');
       const lang = langAndFn[0];
       const langFn = langAndFn[1] || null;
 
-      if (langFn) {
-        citeTag = `<cite>${langFn}</cite>`;
+      // process langProcessors
+      if (this.langProcessors[lang] != null) {
+        return this.langProcessors[lang].process(code, langExt);
       }
 
       if (hljs.getLanguage(lang)) {
+        let citeTag = (langFn) ? `<cite>${langFn}</cite>` : '';
         try {
           return `<pre class="hljs">${citeTag}<code class="language-${lang}">${hljs.highlight(lang, code, true).value}</code></pre>`;
         } catch (__) {}
