@@ -10,6 +10,7 @@ import Template from './LangProcessor/Template';
 import EmojiConfigurer from './markdown-it/emoji';
 import MathJaxConfigurer from './markdown-it/mathjax';
 import PlantUMLConfigurer from './markdown-it/plantuml';
+import TableConfigurer from './markdown-it/table';
 
 export default class GrowiRenderer {
 
@@ -28,6 +29,7 @@ export default class GrowiRenderer {
       new EmojiConfigurer(crowi),
       new MathJaxConfigurer(crowi),
       new PlantUMLConfigurer(crowi),
+      new TableConfigurer(crowi),
     ];
     this.langProcessors = {
       'template': new Template(crowi),
