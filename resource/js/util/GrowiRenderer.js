@@ -6,10 +6,10 @@ import CsvToTable    from './PreProcessor/CsvToTable';
 import XssFilter     from './PreProcessor/XssFilter';
 
 import Template from './LangProcessor/Template';
-import PlantUML from './LangProcessor/PlantUML';
 
 import EmojiConfigurer from './markdown-it/emoji';
 import MathJaxConfigurer from './markdown-it/mathjax';
+import PlantUMLConfigurer from './markdown-it/plantuml';
 
 export default class GrowiRenderer {
 
@@ -27,10 +27,10 @@ export default class GrowiRenderer {
     this.markdownItConfigurers = [
       new EmojiConfigurer(crowi),
       new MathJaxConfigurer(crowi),
+      new PlantUMLConfigurer(crowi),
     ];
     this.langProcessors = {
       'template': new Template(crowi),
-      'plantuml': new PlantUML(crowi),
     };
 
     this.configure = this.configure.bind(this);

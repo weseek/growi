@@ -135,14 +135,18 @@ div.body {
 
   img {
     margin: 5px 0;
+/* ensure to disable in crowi-plus system
     box-shadow: 0 0 5px 0px rgba(0,0,0,.2);
     border: solid 1px #ccc;
+*/
     max-width: 100%;
   }
+/* ensure to disable in crowi-plus system
   .noborder img, .img.noborder {
     box-shadow: none;
     border: none;
   }
+*/
 
   img.emojione {
     margin-top: -0.3em !important;
