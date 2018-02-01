@@ -7,6 +7,7 @@ import XssFilter     from './PreProcessor/XssFilter';
 
 import Template from './LangProcessor/Template';
 
+import CommonPluginsConfigurer from './markdown-it/common-plugins';
 import EmojiConfigurer from './markdown-it/emoji';
 import MathJaxConfigurer from './markdown-it/mathjax';
 import PlantUMLConfigurer from './markdown-it/plantuml';
@@ -26,6 +27,7 @@ export default class GrowiRenderer {
     this.postProcessors = [
     ];
     this.markdownItConfigurers = [
+      new CommonPluginsConfigurer(crowi),
       new EmojiConfigurer(crowi),
       new MathJaxConfigurer(crowi),
       new PlantUMLConfigurer(crowi),
