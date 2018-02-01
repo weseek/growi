@@ -2,9 +2,9 @@ import MarkdownIt from 'markdown-it';
 import * as entities from 'entities';
 
 import Linker        from './PreProcessor/Linker';
+import CsvToTable    from './PreProcessor/CsvToTable';
 import XssFilter     from './PreProcessor/XssFilter';
 
-import Tsv2Table from './LangProcessor/Tsv2Table';
 import Template from './LangProcessor/Template';
 import PlantUML from './LangProcessor/PlantUML';
 
@@ -19,18 +19,16 @@ export default class GrowiRenderer {
 
     this.preProcessors = [
       new Linker(crowi),
+      new CsvToTable(crowi),
       new XssFilter(crowi),
     ];
     this.postProcessors = [
     ];
-
     this.markdownItConfigurers = [
       new EmojiConfigurer(crowi),
       new MathJaxConfigurer(crowi),
     ];
     this.langProcessors = {
-      'tsv': new Tsv2Table(crowi),
-      'tsv-h': new Tsv2Table(crowi, {header: true}),
       'template': new Template(crowi),
       'plantuml': new PlantUML(crowi),
     };

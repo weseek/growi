@@ -68,6 +68,7 @@
     "crowi-pluginkit": "^1.1.0",
     "csrf": "~3.0.3",
     "css-loader": "^0.28.0",
+    "csv-to-markdown-table": "^0.4.0",
     "date-fns": "^1.29.0",
     "debug": "^3.1.0",
     "diff": "^3.3.0",
