@@ -226,6 +226,11 @@
 
       <!-- {% include '../widget/pager.html' with {path: "/admin/user-group-detail", pager: pager} %} -->
 
+      <legend>ページ一覧</legend>
+
+      {% if pageGroupRelations.length == 0 %}<p>グループが閲覧権限を保有するページはありません</p>{% endif %}
+      {% include '../widget/page_list.html' with { pages: pageGroupRelations, pagePropertyName: 'targetPage' } %}
+
     </div>
   </div>
 </div>
