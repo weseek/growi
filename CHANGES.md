@@ -3,9 +3,11 @@ CHANGES
 
 ## 2.3.9-RC
 
-* Feature: Render UML diagrams with public plantuml.com server
-* Feature: Render tables with CSV
-* Feature: Ensure to be able to switch whether rendering MathJax in realtime or not
+* Feature: Support Footnotes
+* Feature: Support Task lists
+* Feature: Support Table with CSV
+* Feature: Enable to render UML diagrams with public plantuml.com server
+* Feature: Enable to switch whether rendering MathJax in realtime or not
 * Improvement: Replace markdown parser with markdown-it
 * Fix: `Ctrl-/` doesn't work on Chrome
 * Fix: Close Shortcuts help with `Ctrl-/`, ESC key
