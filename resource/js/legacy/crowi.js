@@ -20,18 +20,6 @@ Crowi.createErrorView = function(msg) {
   $('#main').prepend($('<p class="alert-message error">' + msg + '</p>'));
 };
 
-Crowi.correctHeaders = function(contentId) {
-  // h1 ~ h6 の id 名を補正する
-  var $content = $(contentId || '#revision-body-content');
-  var i = 0;
-  $('h1,h2,h3,h4,h5,h6', $content).each(function(idx, elm) {
-    var id = 'head' + i++;
-    $(this).attr('id', id);
-    $(this).addClass('revision-head');
-    $(this).append('<span class="revision-head-link"><a href="#' + id +'"><i class="fa fa-link"></i></a></span>');
-  });
-};
-
 /**
  * append buttons to section headers
  */
@@ -98,52 +86,6 @@ Crowi.setCaretLineAndFocusToEditor = function() {
   crowi.focusToEditor();
 }
 
-Crowi.revisionToc = function(contentId, tocId) {
-  var $content = $(contentId || '#revision-body-content');
-  var $tocId = $(tocId || '#revision-toc');
-
-  var $tocContent = $('<div id="revision-toc-content" class="revision-toc-content collapse in"></div>');
-  $tocId.append($tocContent);
-
-  $('h1', $content).each(function(idx, elm) {
-    var id = $(this).attr('id');
-    var title = $(this).text();
-    var selector = '#' + id + ' ~ h2:not(#' + id + ' ~ h1 ~ h2)';
-
-    var $toc = $('<ul></ul>');
-    var $tocLi = $('<li><a href="#' + id +'">' + title + '</a></li>');
-
-
-    $tocContent.append($toc);
-    $toc.append($tocLi);
-
-    $(selector).each(function()
-    {
-      var id2 = $(this).attr('id');
-      var title2 = $(this).text();
-      var selector2 = '#' + id2 + ' ~ h3:not(#' + id2 + ' ~ h2 ~ h3)';
-
-      var $toc2 = $('<ul></ul>');
-      var $tocLi2 = $('<li><a href="#' + id2 +'">' + title2 + '</a></li>');
-
-      $tocLi.append($toc2);
-      $toc2.append($tocLi2);
-
-      $(selector2).each(function()
-      {
-        var id3 = $(this).attr('id');
-        var title3 = $(this).text();
-
-        var $toc3 = $('<ul></ul>');
-        var $tocLi3 = $('<li><a href="#' + id3 +'">' + title3 + '</a></li>');
-
-        $tocLi2.append($toc3);
-        $toc3.append($tocLi3);
-      });
-    });
-  });
-};
-
 // original: middleware.swigFilter
 Crowi.userPicture = function (user) {
   if (!user) {
@@ -167,7 +109,7 @@ Crowi.modifyScrollTop = function() {
   }
   var pageHeaderRect = pageHeader.getBoundingClientRect();
 
-  var sectionHeader = document.querySelector(hash);
+  var sectionHeader = Crowi.findSectionHeader(hash);
   if (sectionHeader === null) {
     return;
   }
@@ -572,9 +514,7 @@ $(function() {
             top.location.href = path;
           });
 
-          Crowi.correctHeaders('#revision-body-content');
           Crowi.appendEditSectionButtons('#revision-body-content', markdown);
-          Crowi.revisionToc('#revision-body-content', '#revision-toc');
 
           Promise.resolve($('#revision-body-content'));
         })
@@ -875,28 +815,43 @@ Crowi.findHashFromUrl = function(url)
 {
   var match;
   if (match = url.match(/#(.+)$/)) {
-    return '#' + match[1];
+    return `#${match[1]}`;
   }
 
   return "";
 }
 
+Crowi.findSectionHeader = function(hash) {
+  if (hash.length == 0) {
+    return;
+  }
+
+  // omit '#'
+  const id = hash.replace('#', '');
+  // don't use jQuery and document.querySelector
+  //  because hash may containe Base64 encoded strings
+  const elem = document.getElementById(id);
+  if (elem != null && elem.tagName.match(/h\d+/i)) {  // match h1, h2, h3...
+    return elem;
+  }
+
+  return null;
+}
+
 Crowi.unhighlightSelectedSection = function(hash)
 {
-  if (!hash || hash == "" || !hash.match(/^#head.+/)) {
-    // とりあえず head* だけ (検索結果ページで副作用出た
-    return true;
+  const elem = Crowi.findSectionHeader(hash);
+  if (elem != null) {
+    elem.classList.remove('highlighted');
   }
-  $(hash).removeClass('highlighted');
 }
 
 Crowi.highlightSelectedSection = function(hash)
 {
-  if (!hash || hash == "" || !hash.match(/^#head.+/)) {
-    // とりあえず head* だけ (検索結果ページで副作用出た
-    return true;
+  const elem = Crowi.findSectionHeader(hash);
+  if (elem != null) {
+    elem.classList.add('highlighted');
   }
-  $(hash).addClass('highlighted');
 }
 
 window.addEventListener('load', function(e) {
@@ -963,7 +918,7 @@ window.addEventListener('hashchange', function(e) {
       $('a[data-toggle="tab"][href="#revision-history"]').tab('show');
     }
   }
-  if (location.hash == '' || location.hash.match(/^#head.+/)) {
+  else {
     $('a[data-toggle="tab"][href="#revision-body"]').tab('show');
   }
 });

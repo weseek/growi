@@ -9,9 +9,12 @@ import Template from './LangProcessor/Template';
 
 import CommonPluginsConfigurer from './markdown-it/common-plugins';
 import EmojiConfigurer from './markdown-it/emoji';
+import HeaderLineNumberConfigurer from './markdown-it/header-line-number';
+import HeaderConfigurer from './markdown-it/header';
 import MathJaxConfigurer from './markdown-it/mathjax';
 import PlantUMLConfigurer from './markdown-it/plantuml';
 import TableConfigurer from './markdown-it/table';
+import TocAndAnchorConfigurer from './markdown-it/toc-and-anchor';
 
 export default class GrowiRenderer {
 
@@ -28,10 +31,13 @@ export default class GrowiRenderer {
     ];
     this.markdownItConfigurers = [
       new CommonPluginsConfigurer(crowi),
+      new TocAndAnchorConfigurer(crowi),
+      new HeaderConfigurer(crowi),
+      new HeaderLineNumberConfigurer(crowi),
+      new TableConfigurer(crowi),
       new EmojiConfigurer(crowi),
       new MathJaxConfigurer(crowi),
       new PlantUMLConfigurer(crowi),
-      new TableConfigurer(crowi),
     ];
     this.langProcessors = {
       'template': new Template(crowi),

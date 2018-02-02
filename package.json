@@ -96,6 +96,7 @@
     "markdown-it-emoji": "^1.4.0",
     "markdown-it-footnote": "^3.0.1",
     "markdown-it-mathjax": "^2.0.0",
+    "markdown-it-named-headers": "^0.0.4",
     "markdown-it-plantuml": "^0.3.1",
     "markdown-it-task-lists": "^2.1.0",
     "markdown-it-toc-and-anchor": "^4.1.2",
