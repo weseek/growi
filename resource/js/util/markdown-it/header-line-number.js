@@ -23,7 +23,7 @@ export default class HeaderLineNumberConfigurer {
   injectLineNumbers(tokens, idx, options, env, slf) {
     var line;
     if (tokens[idx].map && tokens[idx].level === 0) {
-      line = tokens[idx].map[0];
+      line = tokens[idx].map[0] + 1;    // add 1 to convert to line number
       tokens[idx].attrJoin('class', 'line');
       tokens[idx].attrSet('data-line', String(line));
     }

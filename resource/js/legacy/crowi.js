@@ -5,7 +5,6 @@
 const io = require('socket.io-client');
 const entities = require("entities");
 const escapeStringRegexp = require('escape-string-regexp');
-const getLineFromPos = require('get-line-from-pos');
 require('bootstrap-sass');
 require('jquery.cookie');
 
@@ -26,18 +25,7 @@ Crowi.createErrorView = function(msg) {
 Crowi.appendEditSectionButtons = function(contentId, markdown) {
   const $content = $(contentId || '#revision-body-content');
   $('h1,h2,h3,h4,h5,h6', $content).each(function(idx, elm) {
-    // get header text string
-    const text = $(this).text();
-    const escapedText = escapeStringRegexp(text);
-
-    // search pos for '# ...'
-    // https://regex101.com/r/y5rpO5/1
-    const regexp = new RegExp(`[^\r\n]*#+[^\r\n]*${escapedText}[^\r\n]*`);
-    let position = markdown.search(regexp);
-    if (position < 0) { // if not found, search with header text only
-      position = markdown.search(text);
-    }
-    const line = getLineFromPos(markdown, position);
+    const line = +elm.getAttribute('data-line');
 
     // add button
     $(this).append(`
