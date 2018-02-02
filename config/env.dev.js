@@ -12,7 +12,7 @@ module.exports = {
   DEBUG: [
     // 'express:*',
     // 'crowi:*',
-    // 'crowi:crowi',
+    'crowi:crowi',
     'crowi:crowi:dev',
     'crowi:crowi:express-init',
     'crowi:models:external-account',
