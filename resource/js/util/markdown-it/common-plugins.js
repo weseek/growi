@@ -9,7 +9,19 @@ export default class CommonPluginsConfigurer {
       .use(require('markdown-it-task-lists'), {
         enabled: true,
       })
+      .use(require('markdown-it-toc-and-anchor').default, {
+        anchorLinkBefore: false,
+        anchorLinkSymbol: '',
+        anchorLinkSymbolClassName: 'fa fa-link',
+        anchorClassName: 'revision-head-link',
+      })
       ;
+
+    md.set({
+      tocCallback: (tocMarkdown, tocArray, tocHtml) => {
+        // TODO impl
+      },
+    });
   }
 
 }
