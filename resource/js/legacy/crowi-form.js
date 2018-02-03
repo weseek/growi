@@ -82,11 +82,11 @@ $(function() {
     crowi.interceptorManager.process('preRenderPreview', context)
       .then(() => crowi.interceptorManager.process('prePreProcess', context))
       .then(() => {
-        context.markdown = crowiRenderer.preProcess(context.markdown, context.dom);
+        context.markdown = crowiRenderer.preProcess(context.markdown);
       })
       .then(() => crowi.interceptorManager.process('postPreProcess', context))
       .then(() => {
-        var parsedHTML = crowiRenderer.render(context.markdown, context.dom, rendererOptions);
+        var parsedHTML = crowiRenderer.render(context.markdown, context.dom);
         context['parsedHTML'] = parsedHTML;
       })
       .then(() => crowi.interceptorManager.process('postRenderPreview', context))

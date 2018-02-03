@@ -35,6 +35,27 @@
 
   <!-- jQuery, emojione -->
   <script src="https://cdn.jsdelivr.net/combine/npm/emojione@3.1.2,npm/jquery@3.3.1"></script>
+  <!-- highlight.js -->
+  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/highlight.min.js"></script>
+  {% if local_config.env.MATHJAX %}
+    <!-- Mathjax -->
+    <script type="text/x-mathjax-config" async>
+      MathJax.Hub.Config({
+        skipStartupTypeset: true,
+        TeX: { equationNumbers: { autoNumber: "AMS" }},
+        extensions: ["tex2jax.js"],
+        jax: ["input/TeX", "output/SVG"],
+        tex2jax: {
+          processEscapes: true
+        },
+        showMathMenu: false,
+        showMathMenuMSIE: false,
+        showProcessingMessages: false,
+        messageStyle: "none"
+      });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js" async></script>
+  {% endif %}
 
   {% if env === 'development' %}
     <script src="/dll/vendor.dll.js"></script>
@@ -57,6 +78,8 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
   <!-- emojione -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/emojione@3.1.2/extras/css/emojione.min.css">
+  <!-- highlight.js -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/github.css">
 
   {% block html_additional_headers %}{% endblock %}
 

@@ -4,6 +4,9 @@ import PropTypes from 'prop-types';
 import * as toastr from 'toastr';
 import { throttle, debounce } from 'throttle-debounce';
 
+import GrowiRenderer from '../util/GrowiRenderer';
+
+import { EditorOptions, PreviewOptions } from './PageEditor/OptionsSelector';
 import Editor from './PageEditor/Editor';
 import Preview from './PageEditor/Preview';
 
@@ -15,14 +18,19 @@ export default class PageEditor extends React.Component {
     const config = this.props.crowi.getConfig();
     const isUploadable = config.upload.image || config.upload.file;
     const isUploadableFile = config.upload.file;
+    const isMathJaxEnabled = !!config.env.MATHJAX;
 
     this.state = {
       revisionId: this.props.revisionId,
       markdown: this.props.markdown,
       isUploadable,
       isUploadableFile,
+      isMathJaxEnabled,
       editorOptions: this.props.editorOptions,
+      previewOptions: this.props.previewOptions,
     };
+
+    this.growiRenderer = new GrowiRenderer(this.props.crowi, this.props.crowiRenderer, {mode: 'editor'});
 
     this.setCaretLine = this.setCaretLine.bind(this);
     this.focusToEditor = this.focusToEditor.bind(this);
@@ -67,6 +75,14 @@ export default class PageEditor extends React.Component {
    */
   setEditorOptions(editorOptions) {
     this.setState({ editorOptions });
+  }
+
+  /**
+   * set options (used from the outside)
+   * @param {object} previewOptions
+   */
+  setPreviewOptions(previewOptions) {
+    this.setState({ previewOptions });
   }
 
   /**
@@ -244,14 +260,6 @@ export default class PageEditor extends React.Component {
 
     this.setState({ markdown: value });
 
-    // generate options obj
-    const rendererOptions = {
-      // see: https://www.npmjs.com/package/marked
-      marked: {
-        breaks: config.isEnabledLineBreaks,
-      }
-    };
-
     // render html
     var context = {
       markdown: this.state.markdown,
@@ -259,18 +267,24 @@ export default class PageEditor extends React.Component {
       currentPagePath: decodeURIComponent(location.pathname)
     };
 
-    this.props.crowi.interceptorManager.process('preRenderPreview', context)
-      .then(() => crowi.interceptorManager.process('prePreProcess', context))
+    const growiRenderer = this.growiRenderer;
+    const interceptorManager = this.props.crowi.interceptorManager;
+    interceptorManager.process('preRenderPreview', context)
+      .then(() => interceptorManager.process('prePreProcess', context))
       .then(() => {
-        context.markdown = crowiRenderer.preProcess(context.markdown, context.dom);
+        context.markdown = growiRenderer.preProcess(context.markdown);
       })
-      .then(() => crowi.interceptorManager.process('postPreProcess', context))
+      .then(() => interceptorManager.process('postPreProcess', context))
       .then(() => {
-        var parsedHTML = crowiRenderer.render(context.markdown, context.dom, rendererOptions);
+        var parsedHTML = growiRenderer.process(context.markdown);
         context['parsedHTML'] = parsedHTML;
       })
-      .then(() => crowi.interceptorManager.process('postRenderPreview', context))
-      .then(() => crowi.interceptorManager.process('preRenderPreviewHtml', context))
+      .then(() => interceptorManager.process('prePostProcess', context))
+      .then(() => {
+        context.parsedHTML = growiRenderer.postProcess(context.parsedHTML, context.dom);
+      })
+      .then(() => interceptorManager.process('postPostProcess', context))
+      .then(() => interceptorManager.process('preRenderPreviewHtml', context))
       .then(() => {
         this.setState({ html: context.parsedHTML });
 
@@ -278,7 +292,7 @@ export default class PageEditor extends React.Component {
         $('#form-body').val(this.state.markdown);
       })
       // process interceptors for post rendering
-      .then(() => crowi.interceptorManager.process('postRenderPreviewHtml', context));
+      .then(() => interceptorManager.process('postRenderPreviewHtml', context));
 
   }
 
@@ -297,7 +311,12 @@ export default class PageEditor extends React.Component {
           />
         </div>
         <div className="col-md-6 hidden-sm hidden-xs page-editor-preview-container">
-          <Preview html={this.state.html} inputRef={el => this.previewElement = el} />
+          <Preview html={this.state.html}
+              inputRef={el => this.previewElement = el}
+              isMathJaxEnabled={this.state.isMathJaxEnabled}
+              renderMathJaxOnInit={false}
+              previewOptions={this.state.previewOptions}
+          />
         </div>
       </div>
     )
@@ -306,10 +325,12 @@ export default class PageEditor extends React.Component {
 
 PageEditor.propTypes = {
   crowi: PropTypes.object.isRequired,
+  crowiRenderer: PropTypes.object.isRequired,
   markdown: PropTypes.string.isRequired,
   pageId: PropTypes.string,
   revisionId: PropTypes.string,
   pagePath: PropTypes.string,
   onSaveSuccess: PropTypes.func,
-  editorOptions: PropTypes.object,
+  editorOptions: PropTypes.instanceOf(EditorOptions),
+  previewOptions: PropTypes.instanceOf(PreviewOptions),
 };

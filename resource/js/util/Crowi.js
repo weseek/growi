@@ -4,10 +4,13 @@
 
 import axios from 'axios'
 import InterceptorManager from '../../../lib/util/interceptor-manager';
-import {
-  DetachCodeBlockInterceptor,
-  RestoreCodeBlockInterceptor,
-} from './interceptor/detach-code-blocks';
+
+//// disable Detach/Restore interceptors
+//// because markdown-it handles emoji and Linker in code blocks well -- 2018.02.01 Yuki Takei
+// import {
+//   DetachCodeBlockInterceptor,
+//   RestoreCodeBlockInterceptor,
+// } from './interceptor/detach-code-blocks';
 
 export default class Crowi {
   constructor(context, window) {
@@ -28,8 +31,10 @@ export default class Crowi {
 
     this.interceptorManager = new InterceptorManager();
     this.interceptorManager.addInterceptors([
-      new DetachCodeBlockInterceptor(this),
-      new RestoreCodeBlockInterceptor(this),
+      //// disable Detach/Restore interceptors
+      //// because markdown-it handles emoji and Linker in code blocks well -- 2018.02.01 Yuki Takei
+      // new DetachCodeBlockInterceptor(this),
+      // new RestoreCodeBlockInterceptor(this),
     ]);
 
     // FIXME
@@ -74,6 +79,7 @@ export default class Crowi {
       'users',
       'draft',
       'editorOptions',
+      'previewOptions',
     ];
 
     keys.forEach(key => {
@@ -151,6 +157,10 @@ export default class Crowi {
 
   saveEditorOptions(options) {
     this.localStorage.setItem('editorOptions', JSON.stringify(options));
+  }
+
+  savePreviewOptions(options) {
+    this.localStorage.setItem('previewOptions', JSON.stringify(options));
   }
 
   findUserById(userId) {
