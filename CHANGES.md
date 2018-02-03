@@ -1,7 +1,7 @@
 CHANGES
 ========
 
-## 2.3.9-RC
+## 2.4.0-RC
 
 * Feature: Support Footnotes
 * Feature: Support Task lists
