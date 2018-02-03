@@ -8,6 +8,7 @@ export default class RevisionBody extends React.Component {
   }
 
   componentDidMount() {
+    const MathJax = window.MathJax;
     if (MathJax != null && this.props.isMathJaxEnabled && this.props.renderMathJaxOnInit) {
       const intervalId = setInterval(() => {
         if (MathJax.isReady) {
@@ -19,18 +20,21 @@ export default class RevisionBody extends React.Component {
   }
 
   componentDidUpdate() {
+    const MathJax = window.MathJax;
     if (MathJax != null && this.props.isMathJaxEnabled && this.props.renderMathJaxInRealtime) {
       this.renderMathJax();
     }
   }
 
   componentWillReceiveProps(nextProps) {
+    const MathJax = window.MathJax;
     if (MathJax != null && this.props.isMathJaxEnabled && this.props.renderMathJaxOnInit) {
       this.renderMathJax();
     }
   }
 
   renderMathJax() {
+    const MathJax = window.MathJax;
     MathJax.Hub.Queue(["Typeset", MathJax.Hub, this.element]);
   }
 
