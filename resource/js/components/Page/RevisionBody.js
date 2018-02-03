@@ -8,22 +8,24 @@ export default class RevisionBody extends React.Component {
   }
 
   componentDidMount() {
-    if (this.props.isMathJaxEnabled && this.props.renderMathJaxOnInit) {
-      this.renderMathJax();
+    if (MathJax != null && this.props.isMathJaxEnabled && this.props.renderMathJaxOnInit) {
+      const intervalId = setInterval(() => {
+        if (MathJax.isReady) {
+          this.renderMathJax();
+          clearInterval(intervalId);
+        }
+      }, 100);
     }
   }
 
   componentDidUpdate() {
-    if (this.props.isMathJaxEnabled && this.props.renderMathJaxInRealtime) {
+    if (MathJax != null && this.props.isMathJaxEnabled && this.props.renderMathJaxInRealtime) {
       this.renderMathJax();
     }
   }
 
   renderMathJax() {
-    const MathJax = window.MathJax;
-    if (MathJax != null) {
-      MathJax.Hub.Queue(["Typeset", MathJax.Hub, this.element]);
-    }
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub, this.element]);
   }
 
   generateInnerHtml(html) {
