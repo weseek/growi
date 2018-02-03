@@ -1,68 +1,90 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import Preview from '../PageEditor/Preview';
+
 export default class PageBody extends React.Component {
 
   constructor(props) {
     super(props);
 
-    this.crowiRenderer = window.crowiRenderer; // FIXME
-    this.getMarkupHTML = this.getMarkupHTML.bind(this);
-    this.getHighlightBody = this.getHighlightBody.bind(this);
+    this.state = {};
+
+    this.renderHtml = this.renderHtml.bind(this);
+    // this.getHighlightBody = this.getHighlightBody.bind(this);
   }
 
-  getHighlightBody(body, keywords) {
-    let returnBody = body;
-
-    keywords.replace(/"/g, '').split(' ').forEach((keyword) => {
-      if (keyword === '') {
-        return;
-      }
-      const k = keyword
-            .replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
-            .replace(/(^"|"$)/g, ''); // for phrase (quoted) keyword
-      const keywordExp = new RegExp(`(${k}(?!(.*?")))`, 'ig');
-      returnBody = returnBody.replace(keywordExp, '<em class="highlighted">$&</em>');
-    });
-
-    return returnBody;
+  componentWillMount() {
+    this.renderHtml(this.props.markdown);
   }
+  // getHighlightBody(body, keywords) {
+  //   let returnBody = body;
 
-  getMarkupHTML() {
-    let body = this.props.pageBody;
-    if (body === '') {
-      body = this.props.page.revision.body;
-    }
+  //   keywords.replace(/"/g, '').split(' ').forEach((keyword) => {
+  //     if (keyword === '') {
+  //       return;
+  //     }
+  //     const k = keyword
+  //           .replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+  //           .replace(/(^"|"$)/g, ''); // for phrase (quoted) keyword
+  //     const keywordExp = new RegExp(`(${k}(?!(.*?")))`, 'ig');
+  //     returnBody = returnBody.replace(keywordExp, '<em class="highlighted">$&</em>');
+  //   });
 
-    body = this.crowiRenderer.render(body, undefined);
+  //   return returnBody;
+  // }
 
-    if (this.props.highlightKeywords) {
-      body = this.getHighlightBody(body, this.props.highlightKeywords);
-    }
+  renderHtml(markdown) {
+    var context = {
+      markdown,
+      dom: this.previewElement,
+      currentPagePath: this.props.pagePath,
+    };
 
-    return { __html: body };
+    const crowiRenderer = this.props.crowiRenderer;
+    const interceptorManager = this.props.crowi.interceptorManager;
+    interceptorManager.process('preRenderPreview', context)
+      .then(() => interceptorManager.process('prePreProcess', context))
+      .then(() => {
+        context.markdown = crowiRenderer.preProcess(context.markdown);
+      })
+      .then(() => interceptorManager.process('postPreProcess', context))
+      .then(() => {
+        var parsedHTML = crowiRenderer.process(context.markdown);
+        context['parsedHTML'] = parsedHTML;
+      })
+      .then(() => interceptorManager.process('prePostProcess', context))
+      .then(() => {
+        context.markdown = crowiRenderer.postProcess(context.parsedHTML, context.dom);
+      })
+      .then(() => interceptorManager.process('postPostProcess', context))
+      .then(() => interceptorManager.process('preRenderPreviewHtml', context))
+      .then(() => {
+        this.setState({ html: context.parsedHTML });
+      })
+      // process interceptors for post rendering
+      .then(() => interceptorManager.process('postRenderPreviewHtml', context));
+
   }
 
   render() {
-    let parsedBody = this.getMarkupHTML();
+    const config = this.props.crowi.getConfig();
+    const isMathJaxEnabled = !!config.env.MATHJAX;
 
     return (
-      <div
-        className="content"
-        dangerouslySetInnerHTML={parsedBody}
-        />
-    );
+      <Preview html={this.state.html}
+          inputRef={el => this.previewElement = el}
+          isMathJaxEnabled={isMathJaxEnabled}
+          renderMathJaxOnInit={true}
+      />
+    )
   }
 }
 
 PageBody.propTypes = {
-  page: PropTypes.object.isRequired,
+  crowi: PropTypes.object.isRequired,
+  crowiRenderer: PropTypes.object.isRequired,
+  markdown: PropTypes.string.isRequired,
+  pagePath: PropTypes.string.isRequired,
   highlightKeywords: PropTypes.string,
-  pageBody: PropTypes.string,
 };
-
-PageBody.defaultProps = {
-  page: {},
-  pageBody: '',
-};
-

@@ -19,10 +19,11 @@ export default class SearchResultList extends React.Component {
           <h2><a href={page.path}>{page.path}</a></h2>
           <div className="wiki">
             <PageBody
-              className="hige"
-              page={page}
-              pageBody={pageBody}
-              highlightKeywords={this.props.searchingKeyword}
+              crowi={this.props.crowi}
+              crowiRenderer={this.props.crowiRenderer}
+              markdown={pageBody}
+              pagePath={page.path}
+              // highlightKeywords={this.props.searchingKeyword}
             />
           </div>
         </div>
@@ -38,6 +39,8 @@ export default class SearchResultList extends React.Component {
 }
 
 SearchResultList.propTypes = {
+  crowi: PropTypes.object.isRequired,
+  crowiRenderer: PropTypes.object.isRequired,
   pages: PropTypes.array.isRequired,
   searchingKeyword: PropTypes.string.isRequired,
 };

@@ -261,6 +261,8 @@ export default class SearchResult extends React.Component {
           </div>
           <div className="col-md-8 search-result-content" id="search-result-content">
             <SearchResultList
+              crowi={this.props.crowi}
+              crowiRenderer={crowiRenderer}
               pages={this.props.pages}
               searchingKeyword={this.props.searchingKeyword}
               />
@@ -281,11 +283,11 @@ export default class SearchResult extends React.Component {
 }
 
 SearchResult.propTypes = {
+  crowi: PropTypes.object.isRequired,
   tree: PropTypes.string.isRequired,
   pages: PropTypes.array.isRequired,
   searchingKeyword: PropTypes.string.isRequired,
   searchResultMeta: PropTypes.object.isRequired,
-  crowi: PropTypes.object.isRequired,
 };
 SearchResult.defaultProps = {
   tree: '',
