@@ -426,7 +426,7 @@ $(function() {
     var isShown = $('#view-timeline').data('shown');
 
     if (growiRendererForTimeline == null) {
-      growiRendererForTimeline = new GrowiRenderer(crowi, {mode: 'timeline'});
+      growiRendererForTimeline = new GrowiRenderer(crowi, crowiRenderer, {mode: 'timeline'});
     }
 
     if (isShown == 0) {

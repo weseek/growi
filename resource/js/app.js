@@ -64,10 +64,10 @@ if (isLoggedin) {
   crowi.fetchUsers();
 }
 
-const crowiRenderer = new GrowiRenderer(crowi, {
+const crowiRenderer = new GrowiRenderer(crowi, null, {
   mode: 'page',
-  // set function for rendering Table Of Contents
-  renderToc: crowi.getCrowiForJquery().renderTocContent,
+  isAutoSetup: false,                                     // manually setup because plugins may configure it
+  renderToc: crowi.getCrowiForJquery().renderTocContent,  // function for rendering Table Of Contents
 });
 window.crowiRenderer = crowiRenderer;
 
@@ -78,6 +78,9 @@ if (isEnabledPlugins) {
   crowiPlugin.installAll(crowi, crowiRenderer);
 }
 
+// configure renderer
+crowiRenderer.setup(crowi.config);
+
 /**
  * define components
  *  key: id of element
@@ -85,7 +88,7 @@ if (isEnabledPlugins) {
  */
 const componentMappings = {
   'search-top': <HeaderSearchBox crowi={crowi} />,
-  'search-page': <SearchPage crowi={crowi} />,
+  'search-page': <SearchPage crowi={crowi} crowiRenderer={crowiRenderer} />,
   'page-list-search': <PageListSearch crowi={crowi} />,
 
   //'revision-history': <PageHistory pageId={pageId} />,
@@ -139,7 +142,8 @@ if (pageEditorElem) {
   }
 
   pageEditor = ReactDOM.render(
-    <PageEditor crowi={crowi} pageId={pageId} revisionId={pageRevisionId} pagePath={pagePath}
+    <PageEditor crowi={crowi} crowiRenderer={crowiRenderer}
+        pageId={pageId} revisionId={pageRevisionId} pagePath={pagePath}
         markdown={markdown}
         editorOptions={editorOptions} previewOptions={previewOptions}
         onSaveSuccess={onSaveSuccess} />,

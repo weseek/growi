@@ -30,7 +30,7 @@ export default class PageEditor extends React.Component {
       previewOptions: this.props.previewOptions,
     };
 
-    this.growiRenderer = new GrowiRenderer(this.props.crowi, {mode: 'editor'});
+    this.growiRenderer = new GrowiRenderer(this.props.crowi, this.props.crowiRenderer, {mode: 'editor'});
 
     this.setCaretLine = this.setCaretLine.bind(this);
     this.focusToEditor = this.focusToEditor.bind(this);
@@ -325,6 +325,7 @@ export default class PageEditor extends React.Component {
 
 PageEditor.propTypes = {
   crowi: PropTypes.object.isRequired,
+  crowiRenderer: PropTypes.object.isRequired,
   markdown: PropTypes.string.isRequired,
   pageId: PropTypes.string,
   revisionId: PropTypes.string,
