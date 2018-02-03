@@ -10,6 +10,7 @@ export default class Page extends React.Component {
 
     this.state = {};
 
+    this.appendEditSectionButtons = this.appendEditSectionButtons.bind(this);
     this.renderHtml = this.renderHtml.bind(this);
     // this.getHighlightBody = this.getHighlightBody.bind(this);
   }
@@ -33,6 +34,21 @@ export default class Page extends React.Component {
 
   //   return returnBody;
   // }
+
+  componentDidUpdate() {
+    this.appendEditSectionButtons();
+  }
+
+  /**
+   * Add edit section buttons to headers
+   * This invoke `appendEditSectionButtons` method of `legacy/crowi.js`
+   */
+  appendEditSectionButtons(parentElement) {
+    if (this.props.showHeadEditButton) {
+      const crowiForJquery = this.props.crowi.getCrowiForJquery();
+      crowiForJquery.appendEditSectionButtons(this.previewElement);
+    }
+  }
 
   renderHtml(markdown) {
     var context = {
@@ -86,5 +102,6 @@ Page.propTypes = {
   crowiRenderer: PropTypes.object.isRequired,
   markdown: PropTypes.string.isRequired,
   pagePath: PropTypes.string.isRequired,
+  showHeadEditButton: PropTypes.bool,
   highlightKeywords: PropTypes.string,
 };

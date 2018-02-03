@@ -27,9 +27,8 @@ Crowi.createErrorView = function(msg) {
 /**
  * append buttons to section headers
  */
-Crowi.appendEditSectionButtons = function(contentId, markdown) {
-  const $content = $(contentId || '#revision-body-content');
-  $('h1,h2,h3,h4,h5,h6', $content).each(function(idx, elm) {
+Crowi.appendEditSectionButtons = function(parentElement) {
+  $('h1,h2,h3,h4,h5,h6', parentElement).each(function(idx, elm) {
     const line = +elm.getAttribute('data-line');
 
     // add button
