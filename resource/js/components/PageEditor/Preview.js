@@ -18,11 +18,12 @@ export default class Preview extends React.Component {
     const renderMathJaxInRealtime = this.props.previewOptions.renderMathJaxInRealtime;
 
     return (
-      <div className="page-editor-preview-body">
-        <RevisionBody
+      <div className="page-editor-preview-body"
           ref={(elm) => {
             this.props.inputRef(elm);
-          }}
+          }}>
+
+        <RevisionBody
           {...this.props}
           renderMathJaxInRealtime={renderMathJaxInRealtime}
         />
