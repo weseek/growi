@@ -74,11 +74,6 @@ if (isEnabledPlugins) {
   crowiPlugin.installAll(crowi, crowiRenderer);
 }
 
-// for PageEditor
-const onSaveSuccess = function(page) {
-  crowi.getCrowiForJquery().updateCurrentRevision(page.revision._id);
-}
-
 /**
  * define components
  *  key: id of element
@@ -131,6 +126,14 @@ const previewOptions = new PreviewOptions(crowi.previewOptions);
 // render PageEditor
 const pageEditorElem = document.getElementById('page-editor');
 if (pageEditorElem) {
+  // create onSave event handler
+  const onSaveSuccess = function(page) {
+    // modify the revision id value to pass checking id when updating
+    crowi.getCrowiForJquery().updateCurrentRevision(page.revision._id);
+    // re-render Page component
+    componentInstances.page.setMarkdown(page.revision.body);
+  }
+
   pageEditor = ReactDOM.render(
     <PageEditor crowi={crowi} pageId={pageId} revisionId={pageRevisionId} pagePath={pagePath}
         markdown={markdown}

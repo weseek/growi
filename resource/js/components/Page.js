@@ -18,7 +18,6 @@ export default class Page extends React.Component {
   }
 
   componentWillMount() {
-    console.log('componentWillMount');
     this.renderHtml(this.props.markdown, this.props.highlightKeywords);
   }
 
@@ -27,8 +26,12 @@ export default class Page extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log('componentWillReceiveProps');
-    this.renderHtml(this.props.markdown, this.props.highlightKeywords);
+    this.renderHtml(nextProps.markdown, nextProps.highlightKeywords);
+  }
+
+  setMarkdown(markdown) {
+    this.setState({ markdown });
+    this.renderHtml(markdown, this.props.highlightKeywords);
   }
 
   /**
