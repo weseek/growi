@@ -62,7 +62,7 @@ export default class GrowiRenderer {
       switch (mode) {
         case 'page':
           configurers = configurers.concat([
-            new TocAndAnchorConfigurer(crowi),
+            new TocAndAnchorConfigurer(crowi, option.renderToc),
             new HeaderLineNumberConfigurer(crowi),
           ]);
           break;

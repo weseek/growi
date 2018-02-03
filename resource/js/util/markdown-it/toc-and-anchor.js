@@ -1,7 +1,8 @@
 export default class TocAndAnchorConfigurer {
 
-  constructor(crowi) {
+  constructor(crowi, renderToc) {
     this.crowi = crowi;
+    this.renderToc = renderToc;
   }
 
   configure(md) {
@@ -16,15 +17,14 @@ export default class TocAndAnchorConfigurer {
       })
       ;
 
-    md.set({
-      tocCallback: (tocMarkdown, tocArray, tocHtml) => {
-        // TODO impl
-        // $('#revision-toc').append(`
-        //   <div id="revision-toc-content" class="revision-toc-content collapse in">
-        //     ${tocHtml}
-        //   </div>`);
-      },
-    });
+    // set toc render function
+    if (this.renderToc != null) {
+      md.set({
+        tocCallback: (tocMarkdown, tocArray, tocHtml) => {
+          this.renderToc(tocHtml);
+        },
+      });
+    }
   }
 
   /**

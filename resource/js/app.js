@@ -64,7 +64,11 @@ if (isLoggedin) {
   crowi.fetchUsers();
 }
 
-const crowiRenderer = new GrowiRenderer(crowi, {mode: 'page'});
+const crowiRenderer = new GrowiRenderer(crowi, {
+  mode: 'page',
+  // set function for rendering Table Of Contents
+  renderToc: crowi.getCrowiForJquery().renderTocContent,
+});
 window.crowiRenderer = crowiRenderer;
 
 // FIXME

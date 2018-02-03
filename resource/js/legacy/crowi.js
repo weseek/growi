@@ -26,6 +26,14 @@ Crowi.createErrorView = function(msg) {
 };
 
 /**
+ * render Table Of Contents
+ * @param {string} tocHtml
+ */
+Crowi.renderTocContent = (tocHtml) => {
+  $('#revision-toc-content').html(tocHtml);
+}
+
+/**
  * append buttons to section headers
  */
 Crowi.appendEditSectionButtons = function(parentElement) {
