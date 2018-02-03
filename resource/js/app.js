@@ -87,10 +87,7 @@ const onSaveSuccess = function(page) {
 const componentMappings = {
   'search-top': <HeaderSearchBox crowi={crowi} />,
   'search-page': <SearchPage crowi={crowi} />,
-  'page': <Page crowi={crowi} crowiRenderer={crowiRenderer} markdown={markdown} pagePath={pagePath} showHeadEditButton={true} />,
   'page-list-search': <PageListSearch crowi={crowi} />,
-  'page-comments-list': <PageComments pageId={pageId} revisionId={pageRevisionId} revisionCreatedAt={pageRevisionCreatedAt} crowi={crowi} />,
-  'page-attachment': <PageAttachment pageId={pageId} pageContent={pageContent} crowi={crowi} />,
 
   //'revision-history': <PageHistory pageId={pageId} />,
   'seen-user-list': <SeenUserList pageId={pageId} crowi={crowi} />,
@@ -99,8 +96,13 @@ const componentMappings = {
   'page-name-inputter': <NewPageNameInputter crowi={crowi} parentPageName={pagePath} />,
 
 };
-// additional definitions if pagePath exists
+// additional definitions if data exists
+if (pageId) {
+  componentMappings['page-comments-list'] = <PageComments pageId={pageId} revisionId={pageRevisionId} revisionCreatedAt={pageRevisionCreatedAt} crowi={crowi} />;
+  componentMappings['page-attachment'] = <PageAttachment pageId={pageId} pageContent={pageContent} crowi={crowi} />;
+}
 if (pagePath) {
+  componentMappings['page'] = <Page crowi={crowi} crowiRenderer={crowiRenderer} markdown={markdown} pagePath={pagePath} showHeadEditButton={true} />;
   componentMappings['revision-path'] = <RevisionPath pagePath={pagePath} crowi={crowi} />;
   componentMappings['revision-url'] = <RevisionUrl pageId={pageId} pagePath={pagePath} />;
 }
