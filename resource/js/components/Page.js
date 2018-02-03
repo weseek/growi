@@ -8,35 +8,27 @@ export default class Page extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      html: '',
+    };
 
     this.appendEditSectionButtons = this.appendEditSectionButtons.bind(this);
     this.renderHtml = this.renderHtml.bind(this);
-    // this.getHighlightBody = this.getHighlightBody.bind(this);
+    this.getHighlightedBody = this.getHighlightedBody.bind(this);
   }
 
   componentWillMount() {
-    this.renderHtml(this.props.markdown);
+    console.log('componentWillMount');
+    this.renderHtml(this.props.markdown, this.props.highlightKeywords);
   }
-  // getHighlightBody(body, keywords) {
-  //   let returnBody = body;
-
-  //   keywords.replace(/"/g, '').split(' ').forEach((keyword) => {
-  //     if (keyword === '') {
-  //       return;
-  //     }
-  //     const k = keyword
-  //           .replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
-  //           .replace(/(^"|"$)/g, ''); // for phrase (quoted) keyword
-  //     const keywordExp = new RegExp(`(${k}(?!(.*?")))`, 'ig');
-  //     returnBody = returnBody.replace(keywordExp, '<em class="highlighted">$&</em>');
-  //   });
-
-  //   return returnBody;
-  // }
 
   componentDidUpdate() {
     this.appendEditSectionButtons();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    console.log('componentWillReceiveProps');
+    this.renderHtml(this.props.markdown, this.props.highlightKeywords);
   }
 
   /**
@@ -46,14 +38,36 @@ export default class Page extends React.Component {
   appendEditSectionButtons(parentElement) {
     if (this.props.showHeadEditButton) {
       const crowiForJquery = this.props.crowi.getCrowiForJquery();
-      crowiForJquery.appendEditSectionButtons(this.previewElement);
+      crowiForJquery.appendEditSectionButtons(this.revisionBodyElement);
     }
   }
 
-  renderHtml(markdown) {
+  /**
+   * transplanted from legacy code -- Yuki Takei
+   * @param {string} body html strings
+   * @param {string} keywords
+   */
+  getHighlightedBody(body, keywords) {
+    let returnBody = body;
+
+    keywords.replace(/"/g, '').split(' ').forEach((keyword) => {
+      if (keyword === '') {
+        return;
+      }
+      const k = keyword
+            .replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+            .replace(/(^"|"$)/g, ''); // for phrase (quoted) keyword
+      const keywordExp = new RegExp(`(${k}(?!(.*?")))`, 'ig');
+      returnBody = returnBody.replace(keywordExp, '<em class="highlighted">$&</em>');
+    });
+
+    return returnBody;
+  }
+
+  renderHtml(markdown, highlightKeywords) {
     var context = {
       markdown,
-      dom: this.previewElement,
+      dom: this.revisionBodyElement,
       currentPagePath: this.props.pagePath,
     };
 
@@ -72,6 +86,11 @@ export default class Page extends React.Component {
       .then(() => interceptorManager.process('prePostProcess', context))
       .then(() => {
         context.parsedHTML = crowiRenderer.postProcess(context.parsedHTML, context.dom);
+
+        // highlight
+        if (highlightKeywords != null) {
+          context.parsedHTML = this.getHighlightedBody(context.parsedHTML, highlightKeywords);
+        }
       })
       .then(() => interceptorManager.process('postPostProcess', context))
       .then(() => interceptorManager.process('preRenderPreviewHtml', context))
@@ -89,7 +108,7 @@ export default class Page extends React.Component {
 
     return (
       <RevisionBody html={this.state.html}
-          inputRef={el => this.previewElement = el}
+          inputRef={el => this.revisionBodyElement = el}
           isMathJaxEnabled={isMathJaxEnabled}
           renderMathJaxOnInit={true}
       />
