@@ -1,8 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { PreviewOptions } from './OptionsSelector';
 
-export default class Preview extends React.Component {
+// TODO refactor
+import { PreviewOptions } from '../PageEditor/OptionsSelector';
+
+export default class RevisionBody extends React.Component {
 
   constructor(props) {
     super(props);
@@ -15,8 +17,7 @@ export default class Preview extends React.Component {
   }
 
   componentDidUpdate() {
-    const opts = this.props.previewOptions;
-    if (this.props.isMathJaxEnabled && opts != null && opts.renderMathJaxInRealtime) {
+    if (this.props.isMathJaxEnabled && this.props.renderMathJaxInRealtime) {
       this.renderMathJax();
     }
   }
@@ -39,16 +40,20 @@ export default class Preview extends React.Component {
           this.element = elm;
           this.props.inputRef(elm);
         }}
-        className="wiki page-editor-preview-body" dangerouslySetInnerHTML={this.generateInnerHtml(this.props.html)}>
+        className="wiki" dangerouslySetInnerHTML={this.generateInnerHtml(this.props.html)}>
+        {/* TODO add .page-editor-preview-body when using from PageEditor */}
+        {/* className="wiki page-editor-preview-body" dangerouslySetInnerHTML={this.generateInnerHtml(this.props.html)}> */}
       </div>
     )
   }
 }
 
-Preview.propTypes = {
+RevisionBody.propTypes = {
   html: PropTypes.string,
   inputRef: PropTypes.func.isRequired,  // for getting div element
   isMathJaxEnabled: PropTypes.bool,
   renderMathJaxOnInit: PropTypes.bool,
-  previewOptions: PropTypes.instanceOf(PreviewOptions),
+  renderMathJaxInRealtime: PropTypes.bool,
+  // TODO inject previewOptions
+  // previewOptions: PropTypes.instanceOf(PreviewOptions),
 };

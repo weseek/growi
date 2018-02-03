@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Preview from '../PageEditor/Preview';
+import RevisionBody from './Page/RevisionBody';
 
-export default class PageBody extends React.Component {
+export default class Page extends React.Component {
 
   constructor(props) {
     super(props);
@@ -72,7 +72,7 @@ export default class PageBody extends React.Component {
     const isMathJaxEnabled = !!config.env.MATHJAX;
 
     return (
-      <Preview html={this.state.html}
+      <RevisionBody html={this.state.html}
           inputRef={el => this.previewElement = el}
           isMathJaxEnabled={isMathJaxEnabled}
           renderMathJaxOnInit={true}
@@ -81,7 +81,7 @@ export default class PageBody extends React.Component {
   }
 }
 
-PageBody.propTypes = {
+Page.propTypes = {
   crowi: PropTypes.object.isRequired,
   crowiRenderer: PropTypes.object.isRequired,
   markdown: PropTypes.string.isRequired,

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import PageBody from '../Page/PageBody.js';
+import Page from '../Page.js';
 
 export default class SearchResultList extends React.Component {
 
@@ -18,7 +18,7 @@ export default class SearchResultList extends React.Component {
         <div id={page._id} key={page._id} className="search-result-page">
           <h2><a href={page.path}>{page.path}</a></h2>
           <div className="wiki">
-            <PageBody
+            <Page
               crowi={this.props.crowi}
               crowiRenderer={this.props.crowiRenderer}
               markdown={pageBody}
