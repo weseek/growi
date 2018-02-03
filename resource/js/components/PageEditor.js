@@ -263,18 +263,23 @@ export default class PageEditor extends React.Component {
       currentPagePath: decodeURIComponent(location.pathname)
     };
 
-    this.props.crowi.interceptorManager.process('preRenderPreview', context)
-      .then(() => crowi.interceptorManager.process('prePreProcess', context))
+    const interceptorManager = this.props.crowi.interceptorManager;
+    interceptorManager.process('preRenderPreview', context)
+      .then(() => interceptorManager.process('prePreProcess', context))
       .then(() => {
         context.markdown = crowiRenderer.preProcess(context.markdown);
       })
-      .then(() => crowi.interceptorManager.process('postPreProcess', context))
+      .then(() => interceptorManager.process('postPreProcess', context))
       .then(() => {
-        var parsedHTML = crowiRenderer.render(context.markdown, context.dom);
+        var parsedHTML = crowiRenderer.process(context.markdown);
         context['parsedHTML'] = parsedHTML;
       })
-      .then(() => crowi.interceptorManager.process('postRenderPreview', context))
-      .then(() => crowi.interceptorManager.process('preRenderPreviewHtml', context))
+      .then(() => interceptorManager.process('prePostProcess', context))
+      .then(() => {
+        context.markdown = crowiRenderer.postProcess(context.parsedHTML, context.dom);
+      })
+      .then(() => interceptorManager.process('postPostProcess', context))
+      .then(() => interceptorManager.process('preRenderPreviewHtml', context))
       .then(() => {
         this.setState({ html: context.parsedHTML });
 
@@ -282,7 +287,7 @@ export default class PageEditor extends React.Component {
         $('#form-body').val(this.state.markdown);
       })
       // process interceptors for post rendering
-      .then(() => crowi.interceptorManager.process('postRenderPreviewHtml', context));
+      .then(() => interceptorManager.process('postRenderPreviewHtml', context));
 
   }
 

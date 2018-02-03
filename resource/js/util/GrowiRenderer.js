@@ -45,7 +45,7 @@ export default class GrowiRenderer {
 
     this.configure = this.configure.bind(this);
     this.configurePlugins = this.configurePlugins.bind(this);
-    this.parseMarkdown = this.parseMarkdown.bind(this);
+    this.process = this.process.bind(this);
     this.codeRenderer = this.codeRenderer.bind(this);
 
     this.md = new MarkdownIt();
@@ -86,6 +86,10 @@ export default class GrowiRenderer {
     return markdown;
   }
 
+  process(markdown) {
+    return this.md.render(markdown);
+  }
+
   postProcess(html, dom) {
     for (let i = 0; i < this.postProcessors.length; i++) {
       if (!this.postProcessors[i].process) {
@@ -119,27 +123,4 @@ export default class GrowiRenderer {
     return '';
   }
 
-  parseMarkdown(markdown, dom, markedOpts) {
-    let parsed = '';
-    parsed = this.md.render(markdown);
-    return parsed;
-  }
-
-  /**
-   * render
-   *
-   * @param {string} markdown
-   * @param {Element} dom
-   * @returns
-   *
-   * @memberOf CrowiRenderer
-   */
-  render(markdown, dom) {
-    let html = '';
-
-    html = this.parseMarkdown(markdown, dom);
-    html = this.postProcess(html, dom);
-
-    return html;
-  }
 }
