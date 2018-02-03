@@ -19,7 +19,7 @@ import TocAndAnchorConfigurer from './markdown-it/toc-and-anchor';
 export default class GrowiRenderer {
 
 
-  constructor(crowi) {
+  constructor(crowi, option) {
     this.crowi = crowi;
 
     this.preProcessors = [
@@ -29,32 +29,62 @@ export default class GrowiRenderer {
     ];
     this.postProcessors = [
     ];
-    this.markdownItConfigurers = [
-      new CommonPluginsConfigurer(crowi),
-      new TocAndAnchorConfigurer(crowi),
-      new HeaderConfigurer(crowi),
-      new HeaderLineNumberConfigurer(crowi),
-      new TableConfigurer(crowi),
-      new EmojiConfigurer(crowi),
-      new MathJaxConfigurer(crowi),
-      new PlantUMLConfigurer(crowi),
-    ];
+
     this.langProcessors = {
       'template': new Template(crowi),
     };
 
     this.configure = this.configure.bind(this);
-    this.configurePlugins = this.configurePlugins.bind(this);
+    this.configureMarkdownIt = this.configureMarkdownIt.bind(this);
     this.process = this.process.bind(this);
     this.codeRenderer = this.codeRenderer.bind(this);
 
     this.md = new MarkdownIt();
     this.configure(this.crowi.getConfig());
-    this.configurePlugins(this.crowi.getConfig());
+    this.configureMarkdownIt(option);
+
+  }
+
+  configureMarkdownIt(option) {
+    const crowi = this.crowi;
+
+    let configurers = [
+      new CommonPluginsConfigurer(crowi),
+      new HeaderConfigurer(crowi),
+      new TableConfigurer(crowi),
+      new EmojiConfigurer(crowi),
+      new MathJaxConfigurer(crowi),
+      new PlantUMLConfigurer(crowi),
+    ];
+
+    if (option != null) {
+      const mode = option.mode;
+      switch (mode) {
+        case 'page':
+          configurers = configurers.concat([
+            new TocAndAnchorConfigurer(crowi),
+            new HeaderLineNumberConfigurer(crowi),
+          ]);
+          break;
+        case 'editor':
+          configurers = configurers.concat([
+            new HeaderLineNumberConfigurer(crowi)
+          ]);
+          break;
+        case 'timeline':
+          break;
+        case 'searchresult':
+          break;
+      }
+    }
+
+    configurers.forEach((configurer) => {
+      configurer.configure(this.md);
+    });
   }
 
   /**
-   * configure markdown-it
+   * configure with crowi config
    * @param {any} config
    */
   configure(config) {
@@ -63,16 +93,6 @@ export default class GrowiRenderer {
       linkify: true,
       breaks: config.isEnabledLineBreaks,
       highlight: this.codeRenderer,
-    });
-  }
-
-  /**
-   * configure markdown-it plugins
-   * @param {any} config
-   */
-  configurePlugins(config) {
-    this.markdownItConfigurers.forEach((configurer) => {
-      configurer.configure(this.md);
     });
   }
 

@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import * as toastr from 'toastr';
 import { throttle, debounce } from 'throttle-debounce';
 
+import GrowiRenderer from '../util/GrowiRenderer';
+
 import { EditorOptions, PreviewOptions } from './PageEditor/OptionsSelector';
 import Editor from './PageEditor/Editor';
 import Preview from './PageEditor/Preview';
@@ -27,6 +29,8 @@ export default class PageEditor extends React.Component {
       editorOptions: this.props.editorOptions,
       previewOptions: this.props.previewOptions,
     };
+
+    this.growiRenderer = new GrowiRenderer(this.props.crowi, {mode: 'editor'});
 
     this.setCaretLine = this.setCaretLine.bind(this);
     this.focusToEditor = this.focusToEditor.bind(this);
@@ -263,20 +267,21 @@ export default class PageEditor extends React.Component {
       currentPagePath: decodeURIComponent(location.pathname)
     };
 
+    const growiRenderer = this.growiRenderer;
     const interceptorManager = this.props.crowi.interceptorManager;
     interceptorManager.process('preRenderPreview', context)
       .then(() => interceptorManager.process('prePreProcess', context))
       .then(() => {
-        context.markdown = crowiRenderer.preProcess(context.markdown);
+        context.markdown = growiRenderer.preProcess(context.markdown);
       })
       .then(() => interceptorManager.process('postPreProcess', context))
       .then(() => {
-        var parsedHTML = crowiRenderer.process(context.markdown);
+        var parsedHTML = growiRenderer.process(context.markdown);
         context['parsedHTML'] = parsedHTML;
       })
       .then(() => interceptorManager.process('prePostProcess', context))
       .then(() => {
-        context.parsedHTML = crowiRenderer.postProcess(context.parsedHTML, context.dom);
+        context.parsedHTML = growiRenderer.postProcess(context.parsedHTML, context.dom);
       })
       .then(() => interceptorManager.process('postPostProcess', context))
       .then(() => interceptorManager.process('preRenderPreviewHtml', context))

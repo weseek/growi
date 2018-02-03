@@ -5,6 +5,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import GrowiRenderer from '../util/GrowiRenderer';
 import Page from '../components/Page';
 
 const io = require('socket.io-client');
@@ -412,8 +413,14 @@ $(function() {
   });
 
   // for list page
+  let growiRendererForTimeline = null;
   $('a[data-toggle="tab"][href="#view-timeline"]').on('show.bs.tab', function() {
     var isShown = $('#view-timeline').data('shown');
+
+    if (growiRendererForTimeline == null) {
+      growiRendererForTimeline = new GrowiRenderer(crowi, {mode: 'timeline'});
+    }
+
     if (isShown == 0) {
       $('#view-timeline .timeline-body').each(function()
       {
@@ -425,7 +432,7 @@ $(function() {
         var pagePath = document.getElementById(id).getAttribute('data-page-path');
         var markdown = entities.decodeHTML($(contentId).html());
 
-        ReactDOM.render(<Page crowi={crowi} crowiRenderer={crowiRenderer} markdown={markdown} pagePath={pagePath} />, revisionBodyElem);
+        ReactDOM.render(<Page crowi={crowi} crowiRenderer={growiRendererForTimeline} markdown={markdown} pagePath={pagePath} />, revisionBodyElem);
       });
 
       $('#view-timeline').data('shown', 1);

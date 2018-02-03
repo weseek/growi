@@ -1,12 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import GrowiRenderer from '../../util/GrowiRenderer';
+
 import Page from '../Page.js';
 
 export default class SearchResultList extends React.Component {
 
   constructor(props) {
     super(props);
+
+    this.growiRenderer = new GrowiRenderer(this.props.crowi, {mode: 'searchresult'});
   }
 
   render() {
@@ -19,10 +23,10 @@ export default class SearchResultList extends React.Component {
           <h2><a href={page.path}>{page.path}</a></h2>
           <Page
             crowi={this.props.crowi}
-            crowiRenderer={this.props.crowiRenderer}
+            crowiRenderer={this.growiRenderer}
             markdown={pageBody}
             pagePath={page.path}
-            // highlightKeywords={this.props.searchingKeyword}
+            highlightKeywords={this.props.searchingKeyword}
           />
         </div>
       );
@@ -38,7 +42,6 @@ export default class SearchResultList extends React.Component {
 
 SearchResultList.propTypes = {
   crowi: PropTypes.object.isRequired,
-  crowiRenderer: PropTypes.object.isRequired,
   pages: PropTypes.array.isRequired,
   searchingKeyword: PropTypes.string.isRequired,
 };

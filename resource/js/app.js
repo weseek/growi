@@ -64,7 +64,7 @@ if (isLoggedin) {
   crowi.fetchUsers();
 }
 
-const crowiRenderer = new GrowiRenderer(crowi);
+const crowiRenderer = new GrowiRenderer(crowi, {mode: 'page'});
 window.crowiRenderer = crowiRenderer;
 
 // FIXME
@@ -87,7 +87,7 @@ const onSaveSuccess = function(page) {
 const componentMappings = {
   'search-top': <HeaderSearchBox crowi={crowi} />,
   'search-page': <SearchPage crowi={crowi} />,
-  'page': <Page crowi={crowi} crowiRenderer={crowiRenderer} markdown={markdown} pagePath={pagePath} />,
+  'page': <Page crowi={crowi} crowiRenderer={crowiRenderer} markdown={markdown} pagePath={pagePath} showHeadEditButton={true} />,
   'page-list-search': <PageListSearch crowi={crowi} />,
   'page-comments-list': <PageComments pageId={pageId} revisionId={pageRevisionId} revisionCreatedAt={pageRevisionCreatedAt} crowi={crowi} />,
   'page-attachment': <PageAttachment pageId={pageId} pageContent={pageContent} crowi={crowi} />,

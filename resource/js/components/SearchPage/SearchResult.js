@@ -262,7 +262,6 @@ export default class SearchResult extends React.Component {
           <div className="col-md-8 search-result-content" id="search-result-content">
             <SearchResultList
               crowi={this.props.crowi}
-              crowiRenderer={crowiRenderer}
               pages={this.props.pages}
               searchingKeyword={this.props.searchingKeyword}
               />
