@@ -89,7 +89,7 @@ const componentMappings = {
   'search-page': <SearchPage crowi={crowi} />,
   'page': <Page crowi={crowi} crowiRenderer={crowiRenderer} markdown={markdown} pagePath={pagePath} />,
   'page-list-search': <PageListSearch crowi={crowi} />,
-  'page-comments-list': <PageComments pageId={pageId} revisionId={pageRevisionId} revisionCreatedAt= {pageRevisionCreatedAt} crowi={crowi} />,
+  'page-comments-list': <PageComments pageId={pageId} revisionId={pageRevisionId} revisionCreatedAt={pageRevisionCreatedAt} crowi={crowi} />,
   'page-attachment': <PageAttachment pageId={pageId} pageContent={pageContent} crowi={crowi} />,
 
   //'revision-history': <PageHistory pageId={pageId} />,
