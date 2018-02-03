@@ -10,6 +10,7 @@ import SearchPage       from './components/SearchPage';
 import PageEditor       from './components/PageEditor';
 import OptionsSelector  from './components/PageEditor/OptionsSelector';
 import { EditorOptions, PreviewOptions } from './components/PageEditor/OptionsSelector';
+import Page             from './components/Page';
 import PageListSearch   from './components/PageListSearch';
 import PageHistory      from './components/PageHistory';
 import PageComments     from './components/PageComments';
@@ -38,6 +39,7 @@ let pageRevisionId = null;
 let pageRevisionCreatedAt = null;
 let pagePath;
 let pageContent = '';
+let markdown = '';
 if (mainContent !== null) {
   pageId = mainContent.getAttribute('data-page-id');
   pageRevisionId = mainContent.getAttribute('data-page-revision-id');
@@ -47,6 +49,7 @@ if (mainContent !== null) {
   if (rawText) {
     pageContent = rawText.innerHTML;
   }
+  markdown = entities.decodeHTML(pageContent);
 }
 const isLoggedin = document.querySelector('.main-container.nologin') == null;
 
@@ -84,6 +87,7 @@ const onSaveSuccess = function(page) {
 const componentMappings = {
   'search-top': <HeaderSearchBox crowi={crowi} />,
   'search-page': <SearchPage crowi={crowi} />,
+  'page': <Page crowi={crowi} crowiRenderer={crowiRenderer} markdown={markdown} pagePath={pagePath} />,
   'page-list-search': <PageListSearch crowi={crowi} />,
   'page-comments-list': <PageComments pageId={pageId} revisionId={pageRevisionId} revisionCreatedAt= {pageRevisionCreatedAt} crowi={crowi} />,
   'page-attachment': <PageAttachment pageId={pageId} pageContent={pageContent} crowi={crowi} />,
@@ -102,6 +106,7 @@ if (pagePath) {
 }
 
 let componentInstances = {};
+
 Object.keys(componentMappings).forEach((key) => {
   const elem = document.getElementById(key);
   if (elem) {
@@ -126,7 +131,7 @@ const pageEditorElem = document.getElementById('page-editor');
 if (pageEditorElem) {
   pageEditor = ReactDOM.render(
     <PageEditor crowi={crowi} pageId={pageId} revisionId={pageRevisionId} pagePath={pagePath}
-        markdown={entities.decodeHTML(pageContent)}
+        markdown={markdown}
         editorOptions={editorOptions} previewOptions={previewOptions}
         onSaveSuccess={onSaveSuccess} />,
     pageEditorElem

@@ -2,6 +2,11 @@
 /* Author: Sotaro KARASAWA <sotarok@crocos.co.jp>
 */
 
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+import Page from '../components/Page';
+
 const io = require('socket.io-client');
 const entities = require("entities");
 const escapeStringRegexp = require('escape-string-regexp');
@@ -416,21 +421,12 @@ $(function() {
         var id = $(this).attr('id');
         var contentId = '#' + id + ' > script';
         var revisionBody = '#' + id + ' .revision-body';
-        var $revisionBody = $(revisionBody);
+        var revisionBodyElem = document.querySelector(revisionBody);
         var revisionPath = '#' + id + ' .revision-path';
-
+        var pagePath = document.getElementById(id).getAttribute('data-page-path');
         var markdown = entities.decodeHTML($(contentId).html());
-        var parsedHTML = crowiRenderer.render(markdown, $revisionBody.get(0));
-        $revisionBody.html(parsedHTML);
 
-        $('.template-create-button', revisionBody).on('click', function() {
-          var path = $(this).data('path');
-          var templateId = $(this).data('template');
-          var template = $('#' + templateId).html();
-
-          crowi.saveDraft(path, template);
-          top.location.href = path;
-        });
+        ReactDOM.render(<Page crowi={crowi} crowiRenderer={crowiRenderer} markdown={markdown} pagePath={pagePath} />, revisionBodyElem);
       });
 
       $('#view-timeline').data('shown', 1);
@@ -461,6 +457,10 @@ $(function() {
   });
 
   if (pageId) {
+
+    /*
+     * transplanted to React components -- 2018.02.04 Yuki Takei
+     *
 
     // if page exists
     var $rawTextOriginal = $('#raw-text-original');
@@ -514,6 +514,7 @@ $(function() {
 
 
     }
+    */
 
     // header
     var $header = $('#page-header');

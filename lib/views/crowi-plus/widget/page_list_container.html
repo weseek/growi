@@ -25,7 +25,7 @@
     {% if isEnabledTimeline() %}
     <div class="tab-pane" id="view-timeline" data-shown=0>
       {% for page in pages %}
-      <div class="timeline-body" id="id-{{ page.id }}">
+      <div class="timeline-body" id="id-{{ page.id }}" data-page-path="{{ page.path }}">
         <h3 class="revision-path"><a href="{{ page.path }}">{{ page.path }}</a></h3>
         <div class="revision-body wiki"></div>
         <script type="text/template">{{ page.revision.body }}</script>

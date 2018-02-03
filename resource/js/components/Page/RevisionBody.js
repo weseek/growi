@@ -37,7 +37,9 @@ export default class RevisionBody extends React.Component {
       <div
         ref={(elm) => {
           this.element = elm;
-          this.props.inputRef(elm);
+          if (this.props.inputRef != null) {
+            this.props.inputRef(elm);
+          }
         }}
         className="wiki" dangerouslySetInnerHTML={this.generateInnerHtml(this.props.html)}>
       </div>
@@ -47,7 +49,7 @@ export default class RevisionBody extends React.Component {
 
 RevisionBody.propTypes = {
   html: PropTypes.string,
-  inputRef: PropTypes.func.isRequired,  // for getting div element
+  inputRef: PropTypes.func,  // for getting div element
   isMathJaxEnabled: PropTypes.bool,
   renderMathJaxOnInit: PropTypes.bool,
   renderMathJaxInRealtime: PropTypes.bool,
