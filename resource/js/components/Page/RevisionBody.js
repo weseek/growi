@@ -1,9 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-// TODO refactor
-import { PreviewOptions } from '../PageEditor/OptionsSelector';
-
 export default class RevisionBody extends React.Component {
 
   constructor(props) {
@@ -41,8 +38,6 @@ export default class RevisionBody extends React.Component {
           this.props.inputRef(elm);
         }}
         className="wiki" dangerouslySetInnerHTML={this.generateInnerHtml(this.props.html)}>
-        {/* TODO add .page-editor-preview-body when using from PageEditor */}
-        {/* className="wiki page-editor-preview-body" dangerouslySetInnerHTML={this.generateInnerHtml(this.props.html)}> */}
       </div>
     )
   }
@@ -54,6 +49,4 @@ RevisionBody.propTypes = {
   isMathJaxEnabled: PropTypes.bool,
   renderMathJaxOnInit: PropTypes.bool,
   renderMathJaxInRealtime: PropTypes.bool,
-  // TODO inject previewOptions
-  // previewOptions: PropTypes.instanceOf(PreviewOptions),
 };

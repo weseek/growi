@@ -17,15 +17,13 @@ export default class SearchResultList extends React.Component {
       return (
         <div id={page._id} key={page._id} className="search-result-page">
           <h2><a href={page.path}>{page.path}</a></h2>
-          <div className="wiki">
-            <Page
-              crowi={this.props.crowi}
-              crowiRenderer={this.props.crowiRenderer}
-              markdown={pageBody}
-              pagePath={page.path}
-              // highlightKeywords={this.props.searchingKeyword}
-            />
-          </div>
+          <Page
+            crowi={this.props.crowi}
+            crowiRenderer={this.props.crowiRenderer}
+            markdown={pageBody}
+            pagePath={page.path}
+            // highlightKeywords={this.props.searchingKeyword}
+          />
         </div>
       );
     });

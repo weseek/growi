@@ -4,10 +4,9 @@ import PropTypes from 'prop-types';
 import * as toastr from 'toastr';
 import { throttle, debounce } from 'throttle-debounce';
 
-import RevisionBody from './Page/RevisionBody';
-
 import { EditorOptions, PreviewOptions } from './PageEditor/OptionsSelector';
 import Editor from './PageEditor/Editor';
+import Preview from './PageEditor/Preview';
 
 export default class PageEditor extends React.Component {
 
@@ -307,11 +306,11 @@ export default class PageEditor extends React.Component {
           />
         </div>
         <div className="col-md-6 hidden-sm hidden-xs page-editor-preview-container">
-          <RevisionBody html={this.state.html}
+          <Preview html={this.state.html}
               inputRef={el => this.previewElement = el}
               isMathJaxEnabled={this.state.isMathJaxEnabled}
               renderMathJaxOnInit={false}
-              // previewOptions={this.state.previewOptions}
+              previewOptions={this.state.previewOptions}
           />
         </div>
       </div>
