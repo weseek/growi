@@ -19,7 +19,10 @@ export default class TocAndAnchorConfigurer {
     md.set({
       tocCallback: (tocMarkdown, tocArray, tocHtml) => {
         // TODO impl
-        // console.log(tocHtml);
+        // $('#revision-toc').append(`
+        //   <div id="revision-toc-content" class="revision-toc-content collapse in">
+        //     ${tocHtml}
+        //   </div>`);
       },
     });
   }
