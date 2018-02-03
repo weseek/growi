@@ -10,6 +10,7 @@ CHANGES
 * Feature: Enable to switch whether rendering MathJax in realtime or not
 * Improvement: Replace markdown parser with markdown-it
 * Improvement: Generate anchor of headers with header strings
+* Improvement: Update `#revision-body` tab contents after saving `Ctrl-/`
 * Fix: `Ctrl-/` doesn't work on Chrome
 * Fix: Close Shortcuts help with `Ctrl-/`, ESC key
 * Fix: Jump to last line wrongly when `.revision-head-edit-button` clicked
@@ -271,8 +272,8 @@ CHANGES
 
 ## 1.1.8
 
-* Fix: Depth of dropdown-menu when '.on-edit'
-* Fix: Error occured on saveing with Ctrl+S
+* Fix: Depth of dropdown-menu when `.on-edit`
+* Fix: Error occured on saveing with `Ctrl-S`
 * Fix: Guest users browsing
 
 ## 1.1.7
@@ -301,11 +302,11 @@ CHANGES
 ## 1.1.2
 
 * Imprv: Brushup fonts and styles
-* Fix: Ensure to specity revision id when saving with Ctrl+S
+* Fix: Ensure to specity revision id when saving with `Ctrl-S`
 
 ## 1.1.1
 
-* Feature: Save with Ctrl+S
+* Feature: Save with `Ctrl-S`
 * Imprv: Brushup fonts and styles
 
 ## 1.1.0

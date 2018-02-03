@@ -37,6 +37,8 @@ export default class Page extends React.Component {
   /**
    * Add edit section buttons to headers
    * This invoke `appendEditSectionButtons` method of `legacy/crowi.js`
+   *
+   * TODO: transplant `appendEditSectionButtons` to this class in the future
    */
   appendEditSectionButtons(parentElement) {
     if (this.props.showHeadEditButton) {
