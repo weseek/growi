@@ -71,7 +71,7 @@ export default class Page extends React.Component {
       })
       .then(() => interceptorManager.process('prePostProcess', context))
       .then(() => {
-        context.markdown = crowiRenderer.postProcess(context.parsedHTML, context.dom);
+        context.parsedHTML = crowiRenderer.postProcess(context.parsedHTML, context.dom);
       })
       .then(() => interceptorManager.process('postPostProcess', context))
       .then(() => interceptorManager.process('preRenderPreviewHtml', context))
