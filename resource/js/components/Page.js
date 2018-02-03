@@ -78,7 +78,7 @@ export default class Page extends React.Component {
 
     const crowiRenderer = this.props.crowiRenderer;
     const interceptorManager = this.props.crowi.interceptorManager;
-    interceptorManager.process('preRenderPreview', context)
+    interceptorManager.process('preRender', context)
       .then(() => interceptorManager.process('prePreProcess', context))
       .then(() => {
         context.markdown = crowiRenderer.preProcess(context.markdown);
@@ -98,12 +98,12 @@ export default class Page extends React.Component {
         }
       })
       .then(() => interceptorManager.process('postPostProcess', context))
-      .then(() => interceptorManager.process('preRenderPreviewHtml', context))
+      .then(() => interceptorManager.process('preRenderHtml', context))
       .then(() => {
         this.setState({ html: context.parsedHTML });
       })
       // process interceptors for post rendering
-      .then(() => interceptorManager.process('postRenderPreviewHtml', context));
+      .then(() => interceptorManager.process('postRenderHtml', context));
 
   }
 
