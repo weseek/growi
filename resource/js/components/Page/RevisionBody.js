@@ -24,6 +24,12 @@ export default class RevisionBody extends React.Component {
     }
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (MathJax != null && this.props.isMathJaxEnabled && this.props.renderMathJaxOnInit) {
+      this.renderMathJax();
+    }
+  }
+
   renderMathJax() {
     MathJax.Hub.Queue(["Typeset", MathJax.Hub, this.element]);
   }
