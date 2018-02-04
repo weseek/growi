@@ -1,35 +1,35 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { debounce } from 'throttle-debounce';
+
 export default class RevisionBody extends React.Component {
 
   constructor(props) {
     super(props);
+
+    // create debounced method for rendering MathJax
+    this.renderMathJaxWithDebounce = debounce(200, this.renderMathJax);
   }
 
   componentDidMount() {
     const MathJax = window.MathJax;
     if (MathJax != null && this.props.isMathJaxEnabled && this.props.renderMathJaxOnInit) {
-      const intervalId = setInterval(() => {
-        if (MathJax.isReady) {
-          this.renderMathJax();
-          clearInterval(intervalId);
-        }
-      }, 100);
+      this.renderMathJaxWithDebounce();
     }
   }
 
   componentDidUpdate() {
     const MathJax = window.MathJax;
     if (MathJax != null && this.props.isMathJaxEnabled && this.props.renderMathJaxInRealtime) {
-      this.renderMathJax();
+      this.renderMathJaxWithDebounce();
     }
   }
 
   componentWillReceiveProps(nextProps) {
     const MathJax = window.MathJax;
     if (MathJax != null && this.props.isMathJaxEnabled && this.props.renderMathJaxOnInit) {
-      this.renderMathJax();
+      this.renderMathJaxWithDebounce();
     }
   }
 
