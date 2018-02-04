@@ -10,7 +10,7 @@ CHANGES
 * Feature: Enable to switch whether rendering MathJax in realtime or not
 * Improvement: Replace markdown parser with markdown-it
 * Improvement: Generate anchor of headers with header strings
-* Improvement: Update `#revision-body` tab contents after saving `Ctrl-/`
+* Improvement: Update `#revision-body` tab contents after saving with `Ctrl-S`
 * Fix: `Ctrl-/` doesn't work on Chrome
 * Fix: Close Shortcuts help with `Ctrl-/`, ESC key
 * Fix: Jump to last line wrongly when `.revision-head-edit-button` clicked
