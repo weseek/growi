@@ -133,7 +133,7 @@
     "throttle-debounce": "^1.0.1",
     "toastr": "^2.1.2",
     "uglifycss": "^0.0.27",
-    "url-join": "^3.0.0",
+    "url-join": "^4.0.0",
     "webpack": "^3.1.0",
     "webpack-bundle-analyzer": "^2.9.0",
     "webpack-merge": "~4.1.0",
