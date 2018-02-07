@@ -54,6 +54,11 @@
           {% endfor %}
         </select>
         {% endif %}
+        <select name="pageForm[grantUserGroup]" class="form-control">
+          {% for userGroup in relatedUserGroups %}
+          <option value="{{ userGroup }}"></option>
+          {% endfor %}
+        </select>
         <input type="hidden" id="edit-form-csrf" name="_csrf" value="{{ csrf() }}">
         <input type="submit" class="btn btn-primary" id="edit-form-submit" value="{{ t('Update Page') }}" />
       </div>
