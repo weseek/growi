@@ -16,7 +16,7 @@ crowi-plus [![Chat on Slack](https://crowi-plus-slackin.weseek.co.jp/badge.svg)]
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
 
 
-**crowi-plus** is a fork of [Crowi][crowi] that is [perfectly compatible with the official project](https://github.com/weseek/crowi-plus/wiki/Correspondence-table-with-official-version).
+**crowi-plus** is a fork of [Crowi][crowi] which is [perfectly compatible with the official project](https://github.com/weseek/crowi-plus/wiki/Correspondence-table-with-official-version).
 
 
 Why crowi-plus?
