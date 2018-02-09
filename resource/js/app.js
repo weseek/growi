@@ -191,6 +191,16 @@ if (customScriptEditorElem != null) {
     customScriptEditorElem
   )
 }
+const customHtmlEditorElem = document.getElementById('custom-html-editor');
+if (customHtmlEditorElem != null) {
+  // get input[type=hidden] element
+  const customHtmlInputElem = document.getElementById('inputCustomHtml');
+
+  ReactDOM.render(
+    <CustomScriptEditor inputElem={customHtmlInputElem} />,
+    customHtmlEditorElem
+  )
+}
 
 // うわーもうー
 $('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', function() {
