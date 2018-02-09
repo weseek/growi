@@ -9,6 +9,7 @@ import GrowiRenderer from '../util/GrowiRenderer';
 import { EditorOptions, PreviewOptions } from './PageEditor/OptionsSelector';
 import Editor from './PageEditor/Editor';
 import Preview from './PageEditor/Preview';
+import scrollSyncHelper from './PageEditor/ScrollSyncHelper';
 
 export default class PageEditor extends React.Component {
 
@@ -38,14 +39,14 @@ export default class PageEditor extends React.Component {
     this.onSave = this.onSave.bind(this);
     this.onUpload = this.onUpload.bind(this);
     this.onEditorScroll = this.onEditorScroll.bind(this);
-    this.getMaxScrollTop = this.getMaxScrollTop.bind(this);
-    this.getScrollTop = this.getScrollTop.bind(this);
+    this.onEditorScrollCursorIntoView = this.onEditorScrollCursorIntoView.bind(this);
     this.saveDraft = this.saveDraft.bind(this);
     this.clearDraft = this.clearDraft.bind(this);
     this.pageSavedHandler = this.pageSavedHandler.bind(this);
     this.apiErrorHandler = this.apiErrorHandler.bind(this);
 
     // create throttled function
+    this.scrollPreviewByLineWithThrottle = throttle(30, this.scrollPreviewByLine);
     this.renderWithDebounce = debounce(50, throttle(100, this.renderPreview));
     this.saveDraftWithDebounce = debounce(300, this.saveDraft);
   }
@@ -181,30 +182,27 @@ export default class PageEditor extends React.Component {
   /**
    * the scroll event handler from codemirror
    * @param {any} data {left, top, width, height, clientWidth, clientHeight} object that represents the current scroll position, the size of the scrollable area, and the size of the visible area (minus scrollbars).
-   *    see https://codemirror.net/doc/manual.html#events
+   *                    And data.line is also available that is added by Editor component
+   * @see https://codemirror.net/doc/manual.html#events
    */
   onEditorScroll(data) {
-    const rate = data.top / (data.height - data.clientHeight)
-    const top = this.getScrollTop(this.previewElement, rate);
-
-    this.previewElement.scrollTop = top;
+    console.log('onEditorScroll');
+    this.scrollPreviewByLineWithThrottle(data.line);
   }
+
+  onEditorScrollCursorIntoView(line) {
+    console.log('onEditorScrollCursorIntoView');
+    this.scrollPreviewByLineWithThrottle(line);
+  }
+
   /**
-   * transplanted from crowi-form.js -- 2018.01.21 Yuki Takei
-   * @param {*} dom
+   * scroll Preview by the specified line
+   * @param {number} line
    */
-  getMaxScrollTop(dom) {
-    var rect = dom.getBoundingClientRect();
-    return dom.scrollHeight - rect.height;
-  };
-  /**
-   * transplanted from crowi-form.js -- 2018.01.21 Yuki Takei
-   * @param {*} dom
-   */
-  getScrollTop(dom, rate) {
-    var maxScrollTop = this.getMaxScrollTop(dom);
-    var top = maxScrollTop * rate;
-    return top;
+  scrollPreviewByLine(line) {
+    if (this.previewElement != null) {
+      scrollSyncHelper.scrollToRevealSourceLine(this.previewElement, line);
+    }
   };
 
   /*
@@ -305,6 +303,7 @@ export default class PageEditor extends React.Component {
               isUploadable={this.state.isUploadable}
               isUploadableFile={this.state.isUploadableFile}
               onScroll={this.onEditorScroll}
+              onScrollCursorIntoView={this.onEditorScrollCursorIntoView}
               onChange={this.onMarkdownChanged}
               onSave={this.onSave}
               onUpload={this.onUpload}

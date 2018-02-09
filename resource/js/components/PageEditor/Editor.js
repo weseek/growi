@@ -57,6 +57,7 @@ export default class Editor extends React.Component {
     this.forceToFocus = this.forceToFocus.bind(this);
     this.dispatchSave = this.dispatchSave.bind(this);
 
+    this.onScrollCursorIntoView = this.onScrollCursorIntoView.bind(this);
     this.onPaste = this.onPaste.bind(this);
 
     this.onDragEnterForCM = this.onDragEnterForCM.bind(this);
@@ -140,6 +141,13 @@ export default class Editor extends React.Component {
   dispatchUpload(files) {
     if (this.props.onUpload != null) {
       this.props.onUpload(files);
+    }
+  }
+
+  onScrollCursorIntoView(editor, event) {
+    if (this.props.onScrollCursorIntoView != null) {
+      const line = editor.getCursor().line;
+      this.props.onScrollCursorIntoView(line);
     }
   }
 
@@ -296,6 +304,7 @@ export default class Editor extends React.Component {
             editorDidMount={(editor) => {
               // add event handlers
               editor.on('paste', this.onPaste);
+              editor.on('scrollCursorIntoView', this.onScrollCursorIntoView);
             }}
             value={this.state.value}
             options={{
@@ -327,6 +336,9 @@ export default class Editor extends React.Component {
             }}
             onScroll={(editor, data) => {
               if (this.props.onScroll != null) {
+                // add line data
+                const line = editor.lineAtHeight(data.top, 'local');
+                data.line = line;
                 this.props.onScroll(data);
               }
             }}
@@ -363,6 +375,7 @@ Editor.propTypes = {
   isUploadableFile: PropTypes.bool,
   onChange: PropTypes.func,
   onScroll: PropTypes.func,
+  onScrollCursorIntoView: PropTypes.func,
   onSave: PropTypes.func,
   onUpload: PropTypes.func,
 };
