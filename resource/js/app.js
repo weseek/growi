@@ -191,10 +191,10 @@ if (customScriptEditorElem != null) {
     customScriptEditorElem
   )
 }
-const customHtmlEditorElem = document.getElementById('custom-html-editor');
+const customHtmlEditorElem = document.getElementById('custom-header-editor');
 if (customHtmlEditorElem != null) {
   // get input[type=hidden] element
-  const customHtmlInputElem = document.getElementById('inputCustomHtml');
+  const customHtmlInputElem = document.getElementById('inputCustomHeader');
 
   ReactDOM.render(
     <CustomScriptEditor inputElem={customHtmlInputElem} />,

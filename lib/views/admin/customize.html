@@ -284,9 +284,9 @@
       </fieldset>
       </form>
 
-      <form action="/_api/admin/customize/html" method="post" class="form-horizontal" id="cutomhtmlSettingForm" role="form">
+      <form action="/_api/admin/customize/header" method="post" class="form-horizontal" id="cutomheaderSettingForm" role="form">
       <fieldset>
-        <legend>カスタムHTML</legend>
+        <legend>カスタムヘッダー</legend>
 
         <p class="well">
           システム全体に適用されるHTMLを記述できます。<br>
@@ -309,8 +309,8 @@
 
         <div class="form-group">
           <div class="col-xs-12">
-            <div id="custom-html-editor"></div>
-            <input type="hidden" id="inputCustomHtml" name="settingForm[customize:script]" value="{{ settingForm['customize:script'] }}">
+            <div id="custom-header-editor"></div>
+            <input type="hidden" id="inputCustomHeader" name="settingForm[customize:script]" value="{{ settingForm['customize:script'] }}">
           </div>
           <div class="col-xs-12">
             <p class="help-block text-right">
@@ -333,7 +333,7 @@
   </div>
 
   <script>
-    $('#cutomcssSettingForm, #cutomscriptSettingForm, #cutomlayoutSettingForm, #cutombehaviorSettingForm, #customfeaturesSettingForm, #cutomhtmlSettingForm').each(function() {
+    $('#cutomcssSettingForm, #cutomscriptSettingForm, #cutomlayoutSettingForm, #cutombehaviorSettingForm, #customfeaturesSettingForm, #cutomheaderSettingForm').each(function() {
       $(this).submit(function()
       {
         function showMessage(formId, msg, status) {
