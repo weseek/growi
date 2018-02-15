@@ -1,6 +1,6 @@
 {
   "name": "crowi-plus",
-  "version": "2.3.8-RC",
+  "version": "2.3.9-RC",
   "description": "Enhanced Crowi",
   "tags": [
     "wiki",
@@ -83,7 +83,7 @@
     "express-webpack-assets": "^0.1.0",
     "file-loader": "^1.1.0",
     "get-line-from-pos": "^1.0.0",
-    "googleapis": "^25.0.0",
+    "googleapis": "^26.0.0",
     "graceful-fs": "^4.1.11",
     "highlight.js": "^9.10.0",
     "i18next": "^10.0.1",

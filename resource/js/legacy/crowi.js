@@ -2,9 +2,10 @@
 /* Author: Sotaro KARASAWA <sotarok@crocos.co.jp>
 */
 
-var io = require('socket.io-client');
-var entities = require("entities");
-var getLineFromPos = require('get-line-from-pos');
+const io = require('socket.io-client');
+const entities = require("entities");
+const escapeStringRegexp = require('escape-string-regexp');
+const getLineFromPos = require('get-line-from-pos');
 require('bootstrap-sass');
 require('jquery.cookie');
 
@@ -39,10 +40,11 @@ Crowi.appendEditSectionButtons = function(contentId, markdown) {
   $('h1,h2,h3,h4,h5,h6', $content).each(function(idx, elm) {
     // get header text string
     const text = $(this).text();
+    const escapedText = escapeStringRegexp(text);
 
     // search pos for '# ...'
     // https://regex101.com/r/y5rpO5/1
-    const regexp = new RegExp(`[^\r\n]*#+[^\r\n]*${text}[^\r\n]*`);
+    const regexp = new RegExp(`[^\r\n]*#+[^\r\n]*${escapedText}[^\r\n]*`);
     let position = markdown.search(regexp);
     if (position < 0) { // if not found, search with header text only
       position = markdown.search(text);
@@ -189,18 +191,29 @@ Crowi.updateCurrentRevision = function(revisionId) {
 }
 
 Crowi.handleKeyEHandler = (event) => {
+  // ignore when dom that has 'modal in' classes exists
+  if (document.getElementsByClassName('modal in').length > 0) {
+    return;
+  }
   // show editor
   $('a[data-toggle="tab"][href="#edit-form"]').tab('show');
+  event.preventDefault();
 }
 
 Crowi.handleKeyCHandler = (event) => {
+  // ignore when dom that has 'modal in' classes exists
+  if (document.getElementsByClassName('modal in').length > 0) {
+    return;
+  }
   // show modal to create a page
   $('#create-page').modal();
+  event.preventDefault();
 }
 
 Crowi.handleKeyCtrlSlashHandler = (event) => {
   // show modal to create a page
   $('#shortcuts-modal').modal('toggle');
+  event.preventDefault();
 }
 
 $(function() {
@@ -466,11 +479,8 @@ $(function() {
       return;
     }
 
-    var escape = function(s) {
-      return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-    };
     path = entities.encodeHTML(path);
-    var pattern = escape(entities.encodeHTML(shortPath)) + '(/)?$';
+    var pattern = escapeStringRegexp(entities.encodeHTML(shortPath)) + '(/)?$';
 
     $link.html(path.replace(new RegExp(pattern), '<strong>' + shortPath + '$1</strong>'));
   });
@@ -966,17 +976,12 @@ window.addEventListener('hashchange', function(e) {
   }
 });
 
-window.addEventListener('keypress', (event) => {
+window.addEventListener('keydown', (event) => {
   const target = event.target;
 
   // ignore when target dom is input
   const inputPattern = /^input|textinput|textarea$/i;
   if (target.tagName.match(inputPattern)) {
-    return;
-  }
-
-  // ignore when dom that has 'modal in' classes exists
-  if (document.getElementsByClassName('modal in').length > 0) {
     return;
   }
 

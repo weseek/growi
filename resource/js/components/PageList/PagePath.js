@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import escapeStringRegexp from 'escape-string-regexp';
+
 export default class PagePath extends React.Component {
 
   getShortPath(path) {
@@ -29,7 +31,7 @@ export default class PagePath extends React.Component {
     const page = this.props.page;
     const pagePath = page.path.replace(this.props.excludePathString.replace(/^\//, ''), '');
     const shortPath = this.getShortPath(pagePath);
-    const shortPathEscaped = shortPath.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+    const shortPathEscaped = escapeStringRegexp(shortPath);
     const pathPrefix = pagePath.replace(new RegExp(shortPathEscaped + '(/)?$'), '');
 
     return (
