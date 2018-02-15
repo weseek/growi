@@ -45,10 +45,13 @@ export default class PageEditor extends React.Component {
     this.pageSavedHandler = this.pageSavedHandler.bind(this);
     this.apiErrorHandler = this.apiErrorHandler.bind(this);
 
+    // for scrolling
+    this.lastScrolledDateWithCursor = null;
+
     // create throttled function
-    this.scrollPreviewByLineWithThrottle = throttle(30, this.scrollPreviewByLine);
+    this.scrollPreviewByLineWithThrottle = throttle(20, this.scrollPreviewByLine);
     this.renderWithDebounce = debounce(50, throttle(100, this.renderPreview));
-    this.saveDraftWithDebounce = debounce(300, this.saveDraft);
+    this.saveDraftWithDebounce = debounce(800, this.saveDraft);
   }
 
   componentWillMount() {
@@ -68,6 +71,7 @@ export default class PageEditor extends React.Component {
    */
   setCaretLine(line) {
     this.refs.editor.setCaretLine(line);
+    this.scrollPreviewByLine(line);
   }
 
   /**
@@ -186,12 +190,18 @@ export default class PageEditor extends React.Component {
    * @see https://codemirror.net/doc/manual.html#events
    */
   onEditorScroll(data) {
-    console.log('onEditorScroll');
+    // prevent scrolling
+    //   if the elapsed time from last scroll with cursor is shorter than 40ms
+    const now = new Date();
+    if (now - this.lastScrolledDateWithCursor < 40) {
+      return;
+    }
+
     this.scrollPreviewByLineWithThrottle(data.line);
   }
 
   onEditorScrollCursorIntoView(line) {
-    console.log('onEditorScrollCursorIntoView');
+    this.lastScrolledDateWithCursor = new Date();
     this.scrollPreviewByLineWithThrottle(line);
   }
 
@@ -200,9 +210,10 @@ export default class PageEditor extends React.Component {
    * @param {number} line
    */
   scrollPreviewByLine(line) {
-    if (this.previewElement != null) {
-      scrollSyncHelper.scrollToRevealSourceLine(this.previewElement, line);
+    if (this.previewElement == null) {
+      return;
     }
+    scrollSyncHelper.scrollToRevealSourceLine(this.previewElement, line);
   };
 
   /*
@@ -285,7 +296,6 @@ export default class PageEditor extends React.Component {
       .then(() => interceptorManager.process('preRenderPreviewHtml', context))
       .then(() => {
         this.setState({ html: context.parsedHTML });
-
         // set html to the hidden input (for submitting to save)
         $('#form-body').val(this.state.markdown);
       })

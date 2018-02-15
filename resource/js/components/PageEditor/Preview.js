@@ -20,6 +20,7 @@ export default class Preview extends React.Component {
     return (
       <div className="page-editor-preview-body"
           ref={(elm) => {
+            this.previewElement = elm;
             this.props.inputRef(elm);
           }}>
 

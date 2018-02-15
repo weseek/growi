@@ -56,7 +56,7 @@ class ScrollSyncHelper {
     const style = window.getComputedStyle(element, null);
     const paddingTop = +(style.paddingTop.replace('px', ''));
 
-		return -(paddingTop + element.clientHeight * 1 / 10);
+		return -(paddingTop + element.clientHeight * 1 / 5);
   }
 
   /**
