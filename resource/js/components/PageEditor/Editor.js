@@ -102,7 +102,7 @@ export default class Editor extends React.Component {
     const lastLine = editor.getDoc().lastLine();
     editor.scrollIntoView(lastLine);
 
-    const linePosition = Math.max(0, line - 1);
+    const linePosition = Math.max(0, line);
     editor.scrollIntoView(linePosition);
     editor.setCursor({line: linePosition});   // leave 'ch' field as null/undefined to indicate the end of line
   }
