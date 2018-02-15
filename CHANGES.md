@@ -11,9 +11,14 @@ CHANGES
 * Improvement: Replace markdown parser with markdown-it
 * Improvement: Generate anchor of headers with header strings
 * Improvement: Update `#revision-body` tab contents after saving with `Ctrl-S`
+
+## 2.3.9
+
 * Fix: `Ctrl-/` doesn't work on Chrome
 * Fix: Close Shortcuts help with `Ctrl-/`, ESC key
 * Fix: Jump to last line wrongly when `.revision-head-edit-button` clicked
+* Support: Upgrade libs
+    * googleapis
 
 ## 2.3.8
 
