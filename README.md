@@ -147,8 +147,23 @@ npm start
 ```
 
 
-How to getting started to develop
-==========================
+
+For more info, see [Developers Guide](https://github.com/weseek/crowi-plus/wiki/Developers-Guide) on Wiki.
+
+
+Documentation
+==============
+
+* [github wiki pages](https://github.com/weseek/crowi-plus/wiki)
+  * [Questions and Answers](https://github.com/weseek/crowi-plus/wiki/Questions-and-Answers)
+  * [Migration Guide from Official Crowi](https://github.com/weseek/crowi-plus/wiki/Migration-Guide-from-Official-Crowi)
+  * [Developers Guide](https://github.com/weseek/crowi-plus/wiki/Developers-Guide)
+
+Contribution
+============
+
+For development
+-------------
 
 ## Build and Run the app
 
@@ -159,20 +174,6 @@ How to getting started to develop
 1. `npm run build` to build client app
 1. `npm run server` to start the dev server
 1. Access `http://0.0.0.0:3000`
-
-For more info, see [Developers Guide](https://github.com/weseek/crowi-plus/wiki/Developers-Guide) on Wiki.
-
-
-Documents
-==============
-
-* [github wiki pages](https://github.com/weseek/crowi-plus/wiki)
-  * [Questions and Answers](https://github.com/weseek/crowi-plus/wiki/Questions-and-Answers)
-  * [Migration Guide from Official Crowi](https://github.com/weseek/crowi-plus/wiki/Migration-Guide-from-Official-Crowi)
-  * [Developers Guide](https://github.com/weseek/crowi-plus/wiki/Developers-Guide)
-
-Contribution
-============
 
 Found a Bug?
 -------------
