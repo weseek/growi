@@ -166,7 +166,7 @@ Contribution
 For development
 -------------
 
-## Build and Run the app
+### Build and Run the app
 
 1. `clone` this repository
 1. `yarn global add npm@4` to install required global dependencies
