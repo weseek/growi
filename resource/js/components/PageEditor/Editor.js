@@ -104,8 +104,8 @@ export default class Editor extends React.Component {
     const editor = this.getCodeMirror();
     const linePosition = Math.max(0, line);
 
-    this.setScrollTopByLine(linePosition);
     editor.setCursor({line: linePosition});   // leave 'ch' field as null/undefined to indicate the end of line
+    this.setScrollTopByLine(linePosition);
   }
 
   /**
