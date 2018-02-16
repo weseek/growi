@@ -13,10 +13,11 @@ crowi-plus [![Chat on Slack](https://crowi-plus-slackin.weseek.co.jp/badge.svg)]
 [![wercker status](https://app.wercker.com/status/39cdc49d067d65c39cb35d52ceae6dc1/s/master "wercker status")](https://app.wercker.com/project/byKey/39cdc49d067d65c39cb35d52ceae6dc1)
 [![dependencies status](https://david-dm.org/weseek/crowi-plus.svg)](https://david-dm.org/weseek/crowi-plus)
 [![devDependencies Status](https://david-dm.org/weseek/crowi-plus/dev-status.svg)](https://david-dm.org/weseek/crowi-plus?type=dev)
+[![docker pulls](https://img.shields.io/docker/pulls/weseek/crowi-plus.svg)](https://hub.docker.com/r/weseek/crowi-plus/)
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
 
 
-**crowi-plus** is a fork of [Crowi][crowi] which is [perfectly compatible with the official project](https://github.com/weseek/crowi-plus/wiki/Correspondence-table-with-official-version).
+**crowi-plus** is a fork of [Crowi][crowi] which is [perfectly compatible with the official project](https://github.com/weseek/crowi-plus/wiki/Correspondence-table-with-Crowi-version).
 
 
 Why crowi-plus?
