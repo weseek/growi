@@ -49,7 +49,8 @@ export default class PageEditor extends React.Component {
     this.lastScrolledDateWithCursor = null;
 
     // create throttled function
-    this.scrollPreviewByLineWithThrottle = throttle(20, this.scrollPreviewByLine);
+    this.scrollPreviewByEditorScrollWithThrottle = throttle(20, this.scrollPreviewByEditorScroll);
+    this.scrollPreviewByCursorMovingWithThrottle = throttle(20, this.scrollPreviewByCursorMoving);
     this.renderWithDebounce = debounce(50, throttle(100, this.renderPreview));
     this.saveDraftWithDebounce = debounce(800, this.saveDraft);
   }
@@ -197,23 +198,29 @@ export default class PageEditor extends React.Component {
       return;
     }
 
-    this.scrollPreviewByLineWithThrottle(data.line);
+    this.scrollPreviewByEditorScrollWithThrottle(data.line);
   }
 
   onEditorScrollCursorIntoView(line) {
     this.lastScrolledDateWithCursor = new Date();
-    this.scrollPreviewByLineWithThrottle(line);
+    this.scrollPreviewByCursorMovingWithThrottle(line);
   }
 
   /**
    * scroll Preview by the specified line
    * @param {number} line
    */
-  scrollPreviewByLine(line) {
+  scrollPreviewByEditorScroll(line) {
     if (this.previewElement == null) {
       return;
     }
     scrollSyncHelper.scrollToRevealSourceLine(this.previewElement, line);
+  };
+  scrollPreviewByCursorMoving(line) {
+    if (this.previewElement == null) {
+      return;
+    }
+    scrollSyncHelper.scrollToRevealOverflowingSourceLine(this.previewElement, line);
   };
 
   /*

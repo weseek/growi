@@ -51,12 +51,12 @@ class ScrollSyncHelper {
 		return { previous };
   }
 
-  getSourceRevealAddedOffset(element) {
+  getParentElementOffset(parentElement) {
     // get paddingTop
-    const style = window.getComputedStyle(element, null);
+    const style = window.getComputedStyle(parentElement, null);
     const paddingTop = +(style.paddingTop.replace('px', ''));
 
-		return -(paddingTop + element.clientHeight * 1 / 5);
+		return paddingTop + parentElement.getBoundingClientRect().top;
   }
 
   /**
@@ -78,7 +78,37 @@ class ScrollSyncHelper {
 			} else {
 				scrollTo = previous.element.getBoundingClientRect().top;
       }
-      element.scroll(0, element.scrollTop + scrollTo + this.getSourceRevealAddedOffset(element));
+
+      scrollTo -= this.getParentElementOffset(element);
+
+      element.scroll(0, element.scrollTop + scrollTo);
+		}
+  }
+
+  /**
+	 * Attempt to reveal the element that is overflowing from parent element.
+	 *
+   * @param {Element} element
+	 * @param {number} line
+	 */
+	scrollToRevealOverflowingSourceLine(element, line) {
+		const { previous, next } = this.getElementsForSourceLine(element, line);
+		// marker.update(previous && previous.element);
+		if (previous) {
+      const parentElementOffset = this.getParentElementOffset(element);
+      const prevElmTop = previous.element.getBoundingClientRect().top - parentElementOffset;
+      const prevElmBottom = previous.element.getBoundingClientRect().bottom - parentElementOffset;
+
+      if (prevElmTop < 0) {
+        // set the top of 'previous.element' to the top of 'element'
+        const scrollTo = element.scrollTop + prevElmTop;
+        element.scroll(0, scrollTo);
+      }
+      if (prevElmBottom > element.clientHeight) {
+        // set the bottom of 'previous.element' to the bottom of 'element'
+        const scrollTo = element.scrollTop + prevElmBottom - element.clientHeight + 20;
+        element.scroll(0, scrollTo);
+      }
 		}
   }
 
