@@ -40,6 +40,7 @@ export default class PageEditor extends React.Component {
     this.onUpload = this.onUpload.bind(this);
     this.onEditorScroll = this.onEditorScroll.bind(this);
     this.onEditorScrollCursorIntoView = this.onEditorScrollCursorIntoView.bind(this);
+    this.onPreviewScroll = this.onPreviewScroll.bind(this);
     this.saveDraft = this.saveDraft.bind(this);
     this.clearDraft = this.clearDraft.bind(this);
     this.pageSavedHandler = this.pageSavedHandler.bind(this);
@@ -49,8 +50,9 @@ export default class PageEditor extends React.Component {
     this.lastScrolledDateWithCursor = null;
 
     // create throttled function
-    this.scrollPreviewByEditorScrollWithThrottle = throttle(20, this.scrollPreviewByEditorScroll);
+    this.scrollPreviewByEditorLineWithThrottle = throttle(20, this.scrollPreviewByEditorLine);
     this.scrollPreviewByCursorMovingWithThrottle = throttle(20, this.scrollPreviewByCursorMoving);
+    this.scrollEditorByPreviewScrollWithThrottle = throttle(50, this.scrollEditorByPreviewScroll);
     this.renderWithDebounce = debounce(50, throttle(100, this.renderPreview));
     this.saveDraftWithDebounce = debounce(800, this.saveDraft);
   }
@@ -72,7 +74,7 @@ export default class PageEditor extends React.Component {
    */
   setCaretLine(line) {
     this.refs.editor.setCaretLine(line);
-    this.scrollPreviewByLine(line);
+    this.scrollPreviewByEditorLine(line);
   }
 
   /**
@@ -198,7 +200,7 @@ export default class PageEditor extends React.Component {
       return;
     }
 
-    this.scrollPreviewByEditorScrollWithThrottle(data.line);
+    this.scrollPreviewByEditorLineWithThrottle(data.line);
   }
 
   onEditorScrollCursorIntoView(line) {
@@ -207,21 +209,41 @@ export default class PageEditor extends React.Component {
   }
 
   /**
-   * scroll Preview by the specified line
+   * scroll Preview element by scroll event
    * @param {number} line
    */
-  scrollPreviewByEditorScroll(line) {
+  scrollPreviewByEditorLine(line) {
     if (this.previewElement == null) {
       return;
     }
-    scrollSyncHelper.scrollToRevealSourceLine(this.previewElement, line);
+    scrollSyncHelper.scrollPreview(this.previewElement, line);
   };
+
+  /**
+   * scroll Preview element by cursor moving
+   * @param {number} line
+   */
   scrollPreviewByCursorMoving(line) {
     if (this.previewElement == null) {
       return;
     }
-    scrollSyncHelper.scrollToRevealOverflowingSourceLine(this.previewElement, line);
+    scrollSyncHelper.scrollPreviewToRevealOverflowing(this.previewElement, line);
   };
+
+  /**
+   *
+   * @param {*} event
+   */
+  onPreviewScroll(offset) {
+    this.scrollEditorByPreviewScrollWithThrottle(offset);
+  }
+
+  scrollEditorByPreviewScroll(offset) {
+    if (this.previewElement == null) {
+      return;
+    }
+    scrollSyncHelper.scrollEditor(this.refs.editor, this.previewElement, offset);
+  }
 
   /*
    * methods for draft
@@ -332,6 +354,7 @@ export default class PageEditor extends React.Component {
               isMathJaxEnabled={this.state.isMathJaxEnabled}
               renderMathJaxOnInit={false}
               previewOptions={this.state.previewOptions}
+              onScroll={this.onPreviewScroll}
           />
         </div>
       </div>

@@ -54,6 +54,7 @@ export default class Editor extends React.Component {
 
     this.getCodeMirror = this.getCodeMirror.bind(this);
     this.setCaretLine = this.setCaretLine.bind(this);
+    this.setScrollTopByLine = this.setScrollTopByLine.bind(this);
     this.forceToFocus = this.forceToFocus.bind(this);
     this.dispatchSave = this.dispatchSave.bind(this);
 
@@ -97,14 +98,27 @@ export default class Editor extends React.Component {
    */
   setCaretLine(line) {
     const editor = this.getCodeMirror();
+    const linePosition = Math.max(0, line);
 
     // scroll to the bottom for a moment
     const lastLine = editor.getDoc().lastLine();
     editor.scrollIntoView(lastLine);
 
-    const linePosition = Math.max(0, line);
     editor.scrollIntoView(linePosition);
     editor.setCursor({line: linePosition});   // leave 'ch' field as null/undefined to indicate the end of line
+  }
+
+  /**
+   * scroll
+   * @param {number} line
+   */
+  setScrollTopByLine(line) {
+    console.log(line);
+
+    const editor = this.getCodeMirror();
+    const scrollInfo = editor.getScrollInfo();
+
+    editor.scrollIntoView(line);
   }
 
   /**

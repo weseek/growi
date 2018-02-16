@@ -9,6 +9,8 @@ class ScrollSyncHelper {
 	 */
 
   constructor() {
+    this.isSyncScrollToPreviewFired = false;
+    this.isSyncScrollToEditorFired = false;
   }
 
   getCodeLineElements(parentElement) {
@@ -51,6 +53,58 @@ class ScrollSyncHelper {
 		return { previous };
   }
 
+  /**
+	 * Find the html elements that are at a specific pixel offset on the page.
+	 *
+   * @param {Element} parentElement
+	 * @param {number} offset
+   *
+	 * @returns {{ previous: CodeLineElement, next?: CodeLineElement }}
+	 */
+	getLineElementsAtPageOffset(parentElement, offset) {
+		const lines = this.getCodeLineElements(parentElement);
+
+    const position = offset - parentElement.scrollTop + this.getParentElementOffset(parentElement);
+
+		let lo = -1;
+		let hi = lines.length - 1;
+		while (lo + 1 < hi) {
+			const mid = Math.floor((lo + hi) / 2);
+      const bounds = lines[mid].element.getBoundingClientRect();
+			if (bounds.top + bounds.height >= position) {
+				hi = mid;
+			} else {
+				lo = mid;
+			}
+    }
+
+		const hiElement = lines[hi];
+		if (hi >= 1 && hiElement.element.getBoundingClientRect().top > position) {
+			const loElement = lines[lo];
+			const bounds = loElement.element.getBoundingClientRect();
+			const previous = { element: loElement.element, line: loElement.line + (position - bounds.top) / (bounds.height) };
+			const next = { element: hiElement.element, line: hiElement.line, fractional: 0 };
+			return { previous, next };
+		}
+
+		const bounds = hiElement.element.getBoundingClientRect();
+    const previous = { element: hiElement.element, line: hiElement.line + (position - bounds.top) / (bounds.height) };
+		return { previous };
+  }
+
+  getEditorLineNumberForPageOffset(parentElement, offset) {
+    const { previous, next } = this.getLineElementsAtPageOffset(parentElement, offset);
+		if (previous) {
+			if (next) {
+        const betweenProgress = (offset - parentElement.scrollTop - previous.element.getBoundingClientRect().top) / (next.element.getBoundingClientRect().top - previous.element.getBoundingClientRect().top);
+				return previous.line + betweenProgress * (next.line - previous.line);
+			} else {
+				return previous.line;
+			}
+		}
+		return null;
+  }
+
   getParentElementOffset(parentElement) {
     // get paddingTop
     const style = window.getComputedStyle(parentElement, null);
@@ -60,13 +114,13 @@ class ScrollSyncHelper {
   }
 
   /**
-	 * Attempt to reveal the element for a source line in the editor.
+	 * Attempt to scroll preview element for a source line in the editor.
 	 *
-   * @param {Element} element
+   * @param {Element} previewElement
 	 * @param {number} line
 	 */
-	scrollToRevealSourceLine(element, line) {
-		const { previous, next } = this.getElementsForSourceLine(element, line);
+	scrollPreview(previewElement, line) {
+		const { previous, next } = this.getElementsForSourceLine(previewElement, line);
 		// marker.update(previous && previous.element);
 		if (previous) {
 			let scrollTo = 0;
@@ -79,42 +133,72 @@ class ScrollSyncHelper {
 				scrollTo = previous.element.getBoundingClientRect().top;
       }
 
-      scrollTo -= this.getParentElementOffset(element);
+      scrollTo -= this.getParentElementOffset(previewElement);
 
-      element.scroll(0, element.scrollTop + scrollTo);
+      // turn on the flag
+      this.isSyncScrollToPreviewFired = true;
+
+      previewElement.scroll(0, previewElement.scrollTop + scrollTo);
 		}
   }
 
   /**
-	 * Attempt to reveal the element that is overflowing from parent element.
+	 * Attempt to reveal the element that is overflowing from previewElement.
 	 *
-   * @param {Element} element
+   * @param {Element} previewElement
 	 * @param {number} line
 	 */
-	scrollToRevealOverflowingSourceLine(element, line) {
-		const { previous, next } = this.getElementsForSourceLine(element, line);
+  scrollPreviewToRevealOverflowing(previewElement, line) {
+    // turn off the flag
+    if (this.isSyncScrollToEditorFired) {
+      this.isSyncScrollToEditorFired = false;
+      return;
+    }
+
+		const { previous, next } = this.getElementsForSourceLine(previewElement, line);
 		// marker.update(previous && previous.element);
 		if (previous) {
-      const parentElementOffset = this.getParentElementOffset(element);
+      const parentElementOffset = this.getParentElementOffset(previewElement);
       const prevElmTop = previous.element.getBoundingClientRect().top - parentElementOffset;
       const prevElmBottom = previous.element.getBoundingClientRect().bottom - parentElementOffset;
 
+      let scrollTo = null;
       if (prevElmTop < 0) {
-        // set the top of 'previous.element' to the top of 'element'
-        const scrollTo = element.scrollTop + prevElmTop;
-        element.scroll(0, scrollTo);
+        // set the top of 'previous.element' to the top of 'previewElement'
+        scrollTo = previewElement.scrollTop + prevElmTop;
       }
-      if (prevElmBottom > element.clientHeight) {
-        // set the bottom of 'previous.element' to the bottom of 'element'
-        const scrollTo = element.scrollTop + prevElmBottom - element.clientHeight + 20;
-        element.scroll(0, scrollTo);
+      else if (prevElmBottom > previewElement.clientHeight) {
+        // set the bottom of 'previous.element' to the bottom of 'previewElement'
+        scrollTo = previewElement.scrollTop + prevElmBottom - previewElement.clientHeight + 20;
       }
+
+      if (scrollTo == null) {
+        return;
+      }
+
+      // turn on the flag
+      this.isSyncScrollToPreviewFired = true;
+
+      previewElement.scroll(0, scrollTo);
 		}
   }
 
+  scrollEditor(editor, previewElement, offset) {
+    // turn off the flag
+    if (this.isSyncScrollToPreviewFired) {
+      this.isSyncScrollToPreviewFired = false;
+      return;
+    }
+
+    let line = this.getEditorLineNumberForPageOffset(previewElement, offset);
+    line = Math.floor(line);
+
+    // turn on flag
+    this.isSyncScrollToEditorFired = true;
+    editor.setScrollTopByLine(line);
+  }
 }
 
 // singleton pattern
 const instance = new ScrollSyncHelper();
-Object.freeze(instance);
 export default instance;
