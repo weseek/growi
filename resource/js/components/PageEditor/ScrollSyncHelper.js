@@ -120,6 +120,12 @@ class ScrollSyncHelper {
 	 * @param {number} line
 	 */
 	scrollPreview(previewElement, line) {
+    // turn off the flag
+    if (this.isSyncScrollToEditorFired) {
+      this.isSyncScrollToEditorFired = false;
+      return;
+    }
+
 		const { previous, next } = this.getElementsForSourceLine(previewElement, line);
 		// marker.update(previous && previous.element);
 		if (previous) {
@@ -183,6 +189,13 @@ class ScrollSyncHelper {
 		}
   }
 
+  /**
+   * Attempt to scroll Editor component for the offset of the element in the Preview component.
+   *
+   * @param {Editor} editor
+   * @param {Element} previewElement
+   * @param {number} offset
+   */
   scrollEditor(editor, previewElement, offset) {
     // turn off the flag
     if (this.isSyncScrollToPreviewFired) {

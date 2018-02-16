@@ -100,11 +100,7 @@ export default class Editor extends React.Component {
     const editor = this.getCodeMirror();
     const linePosition = Math.max(0, line);
 
-    // scroll to the bottom for a moment
-    const lastLine = editor.getDoc().lastLine();
-    editor.scrollIntoView(lastLine);
-
-    editor.scrollIntoView(linePosition);
+    this.setScrollTopByLine(linePosition);
     editor.setCursor({line: linePosition});   // leave 'ch' field as null/undefined to indicate the end of line
   }
 
@@ -113,12 +109,10 @@ export default class Editor extends React.Component {
    * @param {number} line
    */
   setScrollTopByLine(line) {
-    console.log(line);
-
     const editor = this.getCodeMirror();
-    const scrollInfo = editor.getScrollInfo();
-
-    editor.scrollIntoView(line);
+    // get top position of the line
+    var top = editor.charCoords({line, ch: 0}, 'local').top;
+    editor.scrollTo(null, top);
   }
 
   /**

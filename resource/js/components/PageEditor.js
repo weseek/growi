@@ -52,7 +52,7 @@ export default class PageEditor extends React.Component {
     // create throttled function
     this.scrollPreviewByEditorLineWithThrottle = throttle(20, this.scrollPreviewByEditorLine);
     this.scrollPreviewByCursorMovingWithThrottle = throttle(20, this.scrollPreviewByCursorMoving);
-    this.scrollEditorByPreviewScrollWithThrottle = throttle(50, this.scrollEditorByPreviewScroll);
+    this.scrollEditorByPreviewScrollWithThrottle = throttle(20, this.scrollEditorByPreviewScroll);
     this.renderWithDebounce = debounce(50, throttle(100, this.renderPreview));
     this.saveDraftWithDebounce = debounce(800, this.saveDraft);
   }
