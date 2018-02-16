@@ -9,8 +9,6 @@ class ScrollSyncHelper {
 	 */
 
   constructor() {
-    this.isSyncScrollToPreviewFired = false;
-    this.isSyncScrollToEditorFired = false;
   }
 
   getCodeLineElements(parentElement) {
@@ -34,13 +32,13 @@ class ScrollSyncHelper {
 	 * If an exact match, returns a single element. If the line is between elements,
 	 * returns the element prior to and the element after the given line.
 	 *
-   * @param {Element} parentElement
+   * @param {Element} element
 	 * @param {number} targetLine
 	 *
 	 * @returns {{ previous: CodeLineElement, next?: CodeLineElement }}
 	 */
-	getElementsForSourceLine(parentElement, targetLine) {
-		const lines = this.getCodeLineElements(parentElement);
+	getElementsForSourceLine(element, targetLine) {
+		const lines = this.getCodeLineElements(element);
 		let previous = lines[0] || null;
 		for (const entry of lines) {
 			if (entry.line === targetLine) {
@@ -82,8 +80,11 @@ class ScrollSyncHelper {
 		if (hi >= 1 && hiElement.element.getBoundingClientRect().top > position) {
 			const loElement = lines[lo];
 			const bounds = loElement.element.getBoundingClientRect();
-			const previous = { element: loElement.element, line: loElement.line + (position - bounds.top) / (bounds.height) };
-			const next = { element: hiElement.element, line: hiElement.line, fractional: 0 };
+      let previous = { element: loElement.element, line: loElement.line };
+      if (bounds.height > 0) {
+        previous.line += (position - bounds.top) / (bounds.height);
+      }
+      const next = { element: hiElement.element, line: hiElement.line, fractional: 0 };
 			return { previous, next };
 		}
 
@@ -105,12 +106,17 @@ class ScrollSyncHelper {
 		return null;
   }
 
+  /**
+   * return the sum of the offset position of parent element and paddingTop
+   * @param {Element} parentElement
+   */
   getParentElementOffset(parentElement) {
+    const offsetY = parentElement.getBoundingClientRect().top;
     // get paddingTop
     const style = window.getComputedStyle(parentElement, null);
     const paddingTop = +(style.paddingTop.replace('px', ''));
 
-		return paddingTop + parentElement.getBoundingClientRect().top;
+		return offsetY + paddingTop;
   }
 
   /**
@@ -120,14 +126,7 @@ class ScrollSyncHelper {
 	 * @param {number} line
 	 */
 	scrollPreview(previewElement, line) {
-    // turn off the flag
-    if (this.isSyncScrollToEditorFired) {
-      this.isSyncScrollToEditorFired = false;
-      return;
-    }
-
 		const { previous, next } = this.getElementsForSourceLine(previewElement, line);
-		// marker.update(previous && previous.element);
 		if (previous) {
 			let scrollTo = 0;
 			if (next) {
@@ -141,9 +140,6 @@ class ScrollSyncHelper {
 
       scrollTo -= this.getParentElementOffset(previewElement);
 
-      // turn on the flag
-      this.isSyncScrollToPreviewFired = true;
-
       previewElement.scroll(0, previewElement.scrollTop + scrollTo);
 		}
   }
@@ -155,14 +151,7 @@ class ScrollSyncHelper {
 	 * @param {number} line
 	 */
   scrollPreviewToRevealOverflowing(previewElement, line) {
-    // turn off the flag
-    if (this.isSyncScrollToEditorFired) {
-      this.isSyncScrollToEditorFired = false;
-      return;
-    }
-
 		const { previous, next } = this.getElementsForSourceLine(previewElement, line);
-		// marker.update(previous && previous.element);
 		if (previous) {
       const parentElementOffset = this.getParentElementOffset(previewElement);
       const prevElmTop = previous.element.getBoundingClientRect().top - parentElementOffset;
@@ -182,9 +171,6 @@ class ScrollSyncHelper {
         return;
       }
 
-      // turn on the flag
-      this.isSyncScrollToPreviewFired = true;
-
       previewElement.scroll(0, scrollTo);
 		}
   }
@@ -197,17 +183,8 @@ class ScrollSyncHelper {
    * @param {number} offset
    */
   scrollEditor(editor, previewElement, offset) {
-    // turn off the flag
-    if (this.isSyncScrollToPreviewFired) {
-      this.isSyncScrollToPreviewFired = false;
-      return;
-    }
-
     let line = this.getEditorLineNumberForPageOffset(previewElement, offset);
     line = Math.floor(line);
-
-    // turn on flag
-    this.isSyncScrollToEditorFired = true;
     editor.setScrollTopByLine(line);
   }
 }

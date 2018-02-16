@@ -97,6 +97,10 @@ export default class Editor extends React.Component {
    * @param {string} number
    */
   setCaretLine(line) {
+    if (isNaN(line)) {
+      return;
+    }
+
     const editor = this.getCodeMirror();
     const linePosition = Math.max(0, line);
 
@@ -109,6 +113,10 @@ export default class Editor extends React.Component {
    * @param {number} line
    */
   setScrollTopByLine(line) {
+    if (isNaN(line)) {
+      return;
+    }
+
     const editor = this.getCodeMirror();
     // get top position of the line
     var top = editor.charCoords({line, ch: 0}, 'local').top;

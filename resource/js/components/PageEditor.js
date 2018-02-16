@@ -48,6 +48,8 @@ export default class PageEditor extends React.Component {
 
     // for scrolling
     this.lastScrolledDateWithCursor = null;
+    this.isOriginOfScrollSyncEditor = false;
+    this.isOriginOfScrollSyncEditor = false;
 
     // create throttled function
     this.scrollPreviewByEditorLineWithThrottle = throttle(20, this.scrollPreviewByEditorLine);
@@ -74,7 +76,7 @@ export default class PageEditor extends React.Component {
    */
   setCaretLine(line) {
     this.refs.editor.setCaretLine(line);
-    this.scrollPreviewByEditorLine(line);
+    scrollSyncHelper.scrollPreview(this.previewElement, line);
   }
 
   /**
@@ -203,7 +205,13 @@ export default class PageEditor extends React.Component {
     this.scrollPreviewByEditorLineWithThrottle(data.line);
   }
 
+  /**
+   * the scroll event handler from codemirror
+   * @param {number} line
+   * @see https://codemirror.net/doc/manual.html#events
+   */
   onEditorScrollCursorIntoView(line) {
+    // record date
     this.lastScrolledDateWithCursor = new Date();
     this.scrollPreviewByCursorMovingWithThrottle(line);
   }
@@ -216,6 +224,15 @@ export default class PageEditor extends React.Component {
     if (this.previewElement == null) {
       return;
     }
+
+    // prevent circular invocation
+    if (this.isOriginOfScrollSyncPreview) {
+      this.isOriginOfScrollSyncPreview = false; // turn off the flag
+      return;
+    }
+
+    // turn on the flag
+    this.isOriginOfScrollSyncEditor = true;
     scrollSyncHelper.scrollPreview(this.previewElement, line);
   };
 
@@ -227,6 +244,15 @@ export default class PageEditor extends React.Component {
     if (this.previewElement == null) {
       return;
     }
+
+    // prevent circular invocation
+    if (this.isOriginOfScrollSyncPreview) {
+      this.isOriginOfScrollSyncPreview = false; // turn off the flag
+      return;
+    }
+
+    // turn on the flag
+    this.isOriginOfScrollSyncEditor = true;
     scrollSyncHelper.scrollPreviewToRevealOverflowing(this.previewElement, line);
   };
 
@@ -242,6 +268,15 @@ export default class PageEditor extends React.Component {
     if (this.previewElement == null) {
       return;
     }
+
+    // prevent circular invocation
+    if (this.isOriginOfScrollSyncEditor) {
+      this.isOriginOfScrollSyncEditor = false;  // turn off the flag
+      return;
+    }
+
+    // turn on the flag
+    this.isOriginOfScrollSyncPreview = true;
     scrollSyncHelper.scrollEditor(this.refs.editor, this.previewElement, offset);
   }
 
