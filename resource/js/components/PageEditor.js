@@ -257,13 +257,17 @@ export default class PageEditor extends React.Component {
   };
 
   /**
-   *
-   * @param {*} event
+   * the scroll event handler from Preview component
+   * @param {number} offset
    */
   onPreviewScroll(offset) {
     this.scrollEditorByPreviewScrollWithThrottle(offset);
   }
 
+  /**
+   * scroll Editor component by scroll event of Preview component
+   * @param {number} offset
+   */
   scrollEditorByPreviewScroll(offset) {
     if (this.previewElement == null) {
       return;
