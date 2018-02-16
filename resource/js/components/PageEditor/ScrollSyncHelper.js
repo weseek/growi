@@ -191,4 +191,5 @@ class ScrollSyncHelper {
 
 // singleton pattern
 const instance = new ScrollSyncHelper();
+Object.freeze(instance);
 export default instance;
