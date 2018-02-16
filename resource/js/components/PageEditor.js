@@ -9,6 +9,7 @@ import GrowiRenderer from '../util/GrowiRenderer';
 import { EditorOptions, PreviewOptions } from './PageEditor/OptionsSelector';
 import Editor from './PageEditor/Editor';
 import Preview from './PageEditor/Preview';
+import scrollSyncHelper from './PageEditor/ScrollSyncHelper';
 
 export default class PageEditor extends React.Component {
 
@@ -38,16 +39,24 @@ export default class PageEditor extends React.Component {
     this.onSave = this.onSave.bind(this);
     this.onUpload = this.onUpload.bind(this);
     this.onEditorScroll = this.onEditorScroll.bind(this);
-    this.getMaxScrollTop = this.getMaxScrollTop.bind(this);
-    this.getScrollTop = this.getScrollTop.bind(this);
+    this.onEditorScrollCursorIntoView = this.onEditorScrollCursorIntoView.bind(this);
+    this.onPreviewScroll = this.onPreviewScroll.bind(this);
     this.saveDraft = this.saveDraft.bind(this);
     this.clearDraft = this.clearDraft.bind(this);
     this.pageSavedHandler = this.pageSavedHandler.bind(this);
     this.apiErrorHandler = this.apiErrorHandler.bind(this);
 
+    // for scrolling
+    this.lastScrolledDateWithCursor = null;
+    this.isOriginOfScrollSyncEditor = false;
+    this.isOriginOfScrollSyncEditor = false;
+
     // create throttled function
+    this.scrollPreviewByEditorLineWithThrottle = throttle(20, this.scrollPreviewByEditorLine);
+    this.scrollPreviewByCursorMovingWithThrottle = throttle(20, this.scrollPreviewByCursorMoving);
+    this.scrollEditorByPreviewScrollWithThrottle = throttle(20, this.scrollEditorByPreviewScroll);
     this.renderWithDebounce = debounce(50, throttle(100, this.renderPreview));
-    this.saveDraftWithDebounce = debounce(300, this.saveDraft);
+    this.saveDraftWithDebounce = debounce(800, this.saveDraft);
   }
 
   componentWillMount() {
@@ -67,6 +76,7 @@ export default class PageEditor extends React.Component {
    */
   setCaretLine(line) {
     this.refs.editor.setCaretLine(line);
+    scrollSyncHelper.scrollPreview(this.previewElement, line);
   }
 
   /**
@@ -181,31 +191,98 @@ export default class PageEditor extends React.Component {
   /**
    * the scroll event handler from codemirror
    * @param {any} data {left, top, width, height, clientWidth, clientHeight} object that represents the current scroll position, the size of the scrollable area, and the size of the visible area (minus scrollbars).
-   *    see https://codemirror.net/doc/manual.html#events
+   *                    And data.line is also available that is added by Editor component
+   * @see https://codemirror.net/doc/manual.html#events
    */
   onEditorScroll(data) {
-    const rate = data.top / (data.height - data.clientHeight)
-    const top = this.getScrollTop(this.previewElement, rate);
+    // prevent scrolling
+    //   if the elapsed time from last scroll with cursor is shorter than 40ms
+    const now = new Date();
+    if (now - this.lastScrolledDateWithCursor < 40) {
+      return;
+    }
 
-    this.previewElement.scrollTop = top;
+    this.scrollPreviewByEditorLineWithThrottle(data.line);
   }
+
   /**
-   * transplanted from crowi-form.js -- 2018.01.21 Yuki Takei
-   * @param {*} dom
+   * the scroll event handler from codemirror
+   * @param {number} line
+   * @see https://codemirror.net/doc/manual.html#events
    */
-  getMaxScrollTop(dom) {
-    var rect = dom.getBoundingClientRect();
-    return dom.scrollHeight - rect.height;
-  };
+  onEditorScrollCursorIntoView(line) {
+    // record date
+    this.lastScrolledDateWithCursor = new Date();
+    this.scrollPreviewByCursorMovingWithThrottle(line);
+  }
+
   /**
-   * transplanted from crowi-form.js -- 2018.01.21 Yuki Takei
-   * @param {*} dom
+   * scroll Preview element by scroll event
+   * @param {number} line
    */
-  getScrollTop(dom, rate) {
-    var maxScrollTop = this.getMaxScrollTop(dom);
-    var top = maxScrollTop * rate;
-    return top;
+  scrollPreviewByEditorLine(line) {
+    if (this.previewElement == null) {
+      return;
+    }
+
+    // prevent circular invocation
+    if (this.isOriginOfScrollSyncPreview) {
+      this.isOriginOfScrollSyncPreview = false; // turn off the flag
+      return;
+    }
+
+    // turn on the flag
+    this.isOriginOfScrollSyncEditor = true;
+    scrollSyncHelper.scrollPreview(this.previewElement, line);
   };
+
+  /**
+   * scroll Preview element by cursor moving
+   * @param {number} line
+   */
+  scrollPreviewByCursorMoving(line) {
+    if (this.previewElement == null) {
+      return;
+    }
+
+    // prevent circular invocation
+    if (this.isOriginOfScrollSyncPreview) {
+      this.isOriginOfScrollSyncPreview = false; // turn off the flag
+      return;
+    }
+
+    // turn on the flag
+    this.isOriginOfScrollSyncEditor = true;
+    scrollSyncHelper.scrollPreviewToRevealOverflowing(this.previewElement, line);
+  };
+
+  /**
+   * the scroll event handler from Preview component
+   * @param {number} offset
+   */
+  onPreviewScroll(offset) {
+    this.scrollEditorByPreviewScrollWithThrottle(offset);
+  }
+
+  /**
+   * scroll Editor component by scroll event of Preview component
+   * @param {number} offset
+   */
+  scrollEditorByPreviewScroll(offset) {
+    if (this.previewElement == null) {
+      return;
+    }
+
+    // prevent circular invocation
+    if (this.isOriginOfScrollSyncEditor) {
+      this.isOriginOfScrollSyncEditor = false;  // turn off the flag
+      return;
+    }
+
+    // turn on the flag
+    this.isOriginOfScrollSyncPreview = true;
+    scrollSyncHelper.scrollEditor(this.refs.editor, this.previewElement, offset);
+  }
 
   /*
    * methods for draft
@@ -287,7 +364,6 @@ export default class PageEditor extends React.Component {
       .then(() => interceptorManager.process('preRenderPreviewHtml', context))
       .then(() => {
         this.setState({ html: context.parsedHTML });
-
         // set html to the hidden input (for submitting to save)
         $('#form-body').val(this.state.markdown);
       })
@@ -305,6 +381,7 @@ export default class PageEditor extends React.Component {
               isUploadable={this.state.isUploadable}
               isUploadableFile={this.state.isUploadableFile}
               onScroll={this.onEditorScroll}
+              onScrollCursorIntoView={this.onEditorScrollCursorIntoView}
               onChange={this.onMarkdownChanged}
               onSave={this.onSave}
               onUpload={this.onUpload}
@@ -316,6 +393,7 @@ export default class PageEditor extends React.Component {
               isMathJaxEnabled={this.state.isMathJaxEnabled}
               renderMathJaxOnInit={false}
               previewOptions={this.state.previewOptions}
+              onScroll={this.onPreviewScroll}
           />
         </div>
       </div>

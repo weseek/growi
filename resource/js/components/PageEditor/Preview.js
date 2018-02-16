@@ -20,7 +20,13 @@ export default class Preview extends React.Component {
     return (
       <div className="page-editor-preview-body"
           ref={(elm) => {
+            this.previewElement = elm;
             this.props.inputRef(elm);
+          }}
+          onScroll={(event) => {
+            if (this.props.onScroll != null) {
+              this.props.onScroll(event.target.scrollTop);
+            }
           }}>
 
         <RevisionBody
@@ -38,4 +44,5 @@ Preview.propTypes = {
   isMathJaxEnabled: PropTypes.bool,
   renderMathJaxOnInit: PropTypes.bool,
   previewOptions: PropTypes.instanceOf(PreviewOptions),
+  onScroll: PropTypes.func,
 };
