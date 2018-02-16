@@ -17,15 +17,15 @@ crowi-plus [![Chat on Slack](https://crowi-plus-slackin.weseek.co.jp/badge.svg)]
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
 
 
-**crowi-plus** is a fork of [Crowi][crowi] that is [perfectly compatible with the official project](https://github.com/weseek/crowi-plus/wiki/Correspondence-table-with-official-version).
+**crowi-plus** is a fork of [Crowi][crowi] which is [perfectly compatible with the official project](https://github.com/weseek/crowi-plus/wiki/Correspondence-table-with-Crowi-version).
 
 
 Why crowi-plus?
 ================
 
 * **Pluggable**
-  * Find plugins from [npm](https://www.npmjs.com/browse/keyword/crowi-plugin) or [github](https://github.com/search?q=topic%3Acrowi-plugin)!
-* **Faster**
+  * You can find plugins from [npm](https://www.npmjs.com/browse/keyword/crowi-plugin) or [github](https://github.com/search?q=topic%3Acrowi-plugin)!
+* **Fast**
   * Optimize client-side code chunks by Webpack
   * Optimize the performance when live preview
   * Adopt faster libs([date-fns](https://github.com/date-fns/date-fns), [pino](https://github.com/pinojs/pino))
@@ -48,7 +48,7 @@ Why crowi-plus?
   * LiveReload separately available by server/client code change
   * Exclude Environment-dependency (confirmed to be developable on Win/Mac/Linux)
 
-Check it out all additional features from [**here**](https://github.com/weseek/crowi-plus/wiki/Additional-Features).
+Check out all additional features from [**here**](https://github.com/weseek/crowi-plus/wiki/Additional-Features).
 
 
 Quick Start for Production
@@ -93,7 +93,7 @@ See [confirmed versions](https://github.com/weseek/crowi-plus/wiki/Developers-Gu
       - [Japanese (kuromoji) Analysis plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html)
       - [ICU Analysis Plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-icu.html)
 
-### Start
+### How to start
 
 #### Build and run the app
 
@@ -104,7 +104,7 @@ yarn
 MONGO_URI=mongodb://MONGO_HOST:MONGO_PORT/crowi npm start
 ```
 
-**DON'T USE `npm install`**, use `yarn` instead.
+**DO NOT USE `npm install`**, use `yarn` instead.
 
 If you launch crowi-plus with Redis and ElasticSearch, add environment variables before `npm start` like following:
 
@@ -115,7 +115,7 @@ export ELASTICSEARCH_URI=http://ELASTICSEARCH_HOST:ELASTICSEARCH_PORT/crowi
 npm start
 ```
 
-For more info, check [Developers Guide](https://github.com/weseek/crowi-plus/wiki/Developers-Guide) and [the official documents](https://github.com/crowi/crowi/wiki/Install-and-Configuration#env-parameters).
+For more info, see [Developers Guide](https://github.com/weseek/crowi-plus/wiki/Developers-Guide) and [the official documents](https://github.com/crowi/crowi/wiki/Install-and-Configuration#env-parameters).
 
 #### Command details
 
@@ -125,7 +125,7 @@ For more info, check [Developers Guide](https://github.com/weseek/crowi-plus/wik
 |`npm run server:prod`|Launch the server|
 |`npm start`|Invoke `npm run build:prod` and `npm run server:prod`|
 
-### Upgrade
+### How to upgrade
 
 ```bash
 git pull
@@ -133,14 +133,14 @@ yarn
 npm start
 ```
 
-### Install plugins
+### How to install plugins
 
-* Stop server if running
+* Stop server if server is running
 * `yarn add` to install plugin or `npm install --save`
   * **Don't forget `--save` option if you use npm** or crowi-plus doesn't detect plugins
 * `npm start` to build client app and start server
 
-#### Example
+#### Examples
 
 ```bash
 yarn add crowi-plugin-lsx
@@ -148,20 +148,8 @@ npm start
 ```
 
 
-Getting Started to Develop
-==========================
 
-## Build and Run the app
-
-1. `clone` this repository
-1. `yarn global add npm@4` to install required global dependencies
-1. `yarn` to install all dependencies
-    * DON'T USE `npm install`
-1. `npm run build` to build client app
-1. `npm run server` to start the dev server
-1. Access to `http://0.0.0.0:3000`
-
-For more info, read [Developers Guide](https://github.com/weseek/crowi-plus/wiki/Developers-Guide) on Wiki.
+For more info, see [Developers Guide](https://github.com/weseek/crowi-plus/wiki/Developers-Guide) on Wiki.
 
 
 Documentation
@@ -172,13 +160,26 @@ Documentation
   * [Migration Guide from Official Crowi](https://github.com/weseek/crowi-plus/wiki/Migration-Guide-from-Official-Crowi)
   * [Developers Guide](https://github.com/weseek/crowi-plus/wiki/Developers-Guide)
 
-Contributing
+Contribution
 ============
+
+For development
+-------------
+
+### Build and Run the app
+
+1. `clone` this repository
+1. `yarn global add npm@4` to install required global dependencies
+1. `yarn` to install all dependencies
+    * DO NOT USE `npm install`
+1. `npm run build` to build client app
+1. `npm run server` to start the dev server
+1. Access `http://0.0.0.0:3000`
 
 Found a Bug?
 -------------
 
-If you find a bug in the source code, you can help us by
+If you found a bug in the source code, you can help us by
 [submitting an issue][issues] to our [GitHub Repository][crowi-plus]. Even better, you can
 [submit a Pull Request][pulls] with a fix.
 
@@ -186,24 +187,21 @@ Missing a Feature?
 -------------------
 
 You can *request* a new feature by [submitting an issue][issues] to our GitHub
-Repository. If you would like to *implement* a new feature, please submit an issue with
-a proposal for your work first, to be sure that we can use it.
-Please consider what kind of change it is:
+Repository. If you would like to *implement* a new feature, firstly please submit the issue with your proposal to make sure we can confirm it. Please clarify what kind of change you would like to propose.
 
-* For a **Major Feature**, first open an issue and outline your proposal so that it can be
-discussed. This will also allow us to better coordinate our efforts, prevent duplication of work,
-and help you to craft the change so that it is successfully accepted into the project.
-* **Small Features** can be crafted and directly [submitted as a Pull Request][pulls].
+* For a **Major Feature**, firstly open an issue and outline your proposal so it can be discussed. 
+It also allows us to coordinate better, prevent duplication of work and help you to create the change so it can be successfully accepted into the project.
+* **Small Features** can be created and directly [submitted as a Pull Request][pulls].
 
 Language
 ---------
 
-Write issues and PRs in English or Japanese.
+You can write issues and PRs in English or Japanese.
 
 Discussion
 -----------
 
-If you have something to ask or want to discuss, [join to our Slack team][slackin] and talk about anything, anytime.
+If you have questions or suggestions, you can [join our Slack team][slackin] and talk about anything, anytime.
 
 
 License
