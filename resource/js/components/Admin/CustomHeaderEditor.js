@@ -9,7 +9,7 @@ require('codemirror/addon/hint/javascript-hint');
 require('codemirror/addon/hint/show-hint');
 require('codemirror/addon/edit/matchbrackets');
 require('codemirror/addon/edit/closebrackets');
-require('codemirror/mode/javascript/javascript');
+require('codemirror/mode/htmlmixed/htmlmixed');
 require('codemirror/theme/eclipse.css');
 
 require('jquery-ui/ui/widgets/resizable');
@@ -29,7 +29,7 @@ export default class CustomHeaderEditor extends React.Component {
         value={value}
         autoFocus={true}
         options={{
-          mode: 'javascript',
+          mode: 'htmlmixed',
           lineNumbers: true,
           tabSize: 2,
           indentUnit: 2,
