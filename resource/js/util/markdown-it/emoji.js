@@ -1,3 +1,5 @@
+import emojiStrategy from '../emojione/emoji_strategy_shrinked.json';
+
 export default class EmojiConfigurer {
 
   constructor(crowi) {
@@ -5,7 +7,15 @@ export default class EmojiConfigurer {
   }
 
   configure(md) {
-    md.use(require('markdown-it-emoji'));
+    const emojiShortnameUnicodeMap = {};
+
+    for (let unicode in emojiStrategy) {
+      const data = emojiStrategy[unicode];
+      const shortname = data.shortname.replace(/\:/g, '');
+      emojiShortnameUnicodeMap[shortname] = String.fromCharCode(unicode);
+    }
+
+    md.use(require('markdown-it-emoji'), {defs: emojiShortnameUnicodeMap});
 
     // integrate markdown-it-emoji and emojione
     md.renderer.rules.emoji = (token, idx) => {

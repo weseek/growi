@@ -1,33 +1,23 @@
-import axios from 'axios';
+import emojiStrategy from '../../util/emojione/emoji_strategy_shrinked.json';
 
 class EmojiAutoCompleteHelper {
 
   constructor() {
-    this.emojiStrategy = {};
     this.emojiShortnameImageMap = {}
-
-    this.initEmojiImageMap()
-      .then(() => {
-        Object.freeze(this);  // freeze after initializing data
-      })
 
     this.initEmojiImageMap = this.initEmojiImageMap.bind(this);
     this.showHint = this.showHint.bind(this);
+
+    this.initEmojiImageMap()
   }
 
   initEmojiImageMap() {
-    const emojiStrategyUrl = 'https://cdn.jsdelivr.net/npm/emojione@3.1.2/emoji_strategy.json';
-
-    return axios.get(emojiStrategyUrl)
-      .then((res) => {
-        this.emojiStrategy = res.data;
-        for (let unicode in this.emojiStrategy) {
-          const data = this.emojiStrategy[unicode];
-          const shortname = data.shortname;
-          // add image tag
-          this.emojiShortnameImageMap[shortname] = emojione.shortnameToImage(shortname);
-        }
-      });
+    for (let unicode in emojiStrategy) {
+      const data = emojiStrategy[unicode];
+      const shortname = data.shortname;
+      // add image tag
+      this.emojiShortnameImageMap[shortname] = emojione.shortnameToImage(shortname);
+    }
   }
 
   /**
@@ -106,8 +96,8 @@ class EmojiAutoCompleteHelper {
     const countLen4 = () => { countLen3() + results4.length; }
     // TODO performance tune
     // when total length of all results is less than `maxLength`
-    for (let unicode in this.emojiStrategy) {
-      const data = this.emojiStrategy[unicode];
+    for (let unicode in emojiStrategy) {
+      const data = emojiStrategy[unicode];
 
       if (maxLength <= countLen1()) { break; }
       // prefix match to shortname
@@ -144,4 +134,5 @@ class EmojiAutoCompleteHelper {
 
 // singleton pattern
 const instance = new EmojiAutoCompleteHelper();
+Object.freeze(this);
 export default instance;
