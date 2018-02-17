@@ -10,6 +10,7 @@ CHANGES
 * Feature: Enable to switch whether rendering MathJax in realtime or not
 * Improvement: Replace markdown parser with markdown-it
 * Improvement: Generate anchor of headers with header strings
+* Improvement: Enhanced Scroll Sync on Markdown Editor/Preview
 * Improvement: Update `#revision-body` tab contents after saving with `Ctrl-S`
 
 ## 2.3.9
