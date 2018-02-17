@@ -12,6 +12,7 @@ CHANGES
 * Improvement: Generate anchor of headers with header strings
 * Improvement: Enhanced Scroll Sync on Markdown Editor/Preview
 * Improvement: Update `#revision-body` tab contents after saving with `Ctrl-S`
+* Fix: 500 Internal Server Error occures when basic-auth configuration is set
 
 ## 2.3.9
 
