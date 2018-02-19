@@ -86,6 +86,9 @@
   "Customize": "カスタマイズ",
   "Notification settings": "通知設定",
   "User management": "ユーザー管理",
+  "Basic settings": "基本設定",
+  "Basic authentication": "Basic認証",
+  "Password": "パスワード",
 
   "Public": "公開",
   "Anyone with the link": "リンクを知っている人のみ",
