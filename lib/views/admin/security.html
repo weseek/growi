@@ -59,7 +59,7 @@
           </div>
 
           <div class="form-group">
-            <label for="settingForm[security:restrictGuestMode]" class="col-xs-3 control-label">ゲストユーザーのアクセス</label>
+            <label for="settingForm[security:restrictGuestMode]" class="col-xs-3 control-label">{{ t('Guest users access') }}</label>
             <div class="col-xs-6">
               <select class="form-control" name="settingForm[security:restrictGuestMode]" value="{{ settingForm['security:restrictGuestMode'] }}">
                 {% for modeValue, modeLabel in consts.restrictGuestMode %}
@@ -70,14 +70,14 @@
           </div>
 
           <div class="form-group">
-            <label for="settingForm[security:registrationMode]" class="col-xs-3 control-label">登録の制限</label>
+            <label for="settingForm[security:registrationMode]" class="col-xs-3 control-label">{{ t('Register limitation') }}</label>
             <div class="col-xs-6">
               <select class="form-control" name="settingForm[security:registrationMode]" value="{{ settingForm['security:registrationMode'] }}">
                 {% for modeValue, modeLabel in consts.registrationMode %}
                 <option value="{{ modeValue }}" {% if modeValue == settingForm['security:registrationMode'] %}selected{% endif %} >{{ modeLabel }}</option>
                 {% endfor %}
               </select>
-              <p class="help-block">ここに入力した内容は、ヘッダー等に表示されます。</p>
+              <p class="help-block">{{ t('The contents entered here will be shown in the header etc') }}</p>
             </div>
           </div>
 
