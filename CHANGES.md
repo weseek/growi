@@ -1,7 +1,20 @@
 CHANGES
 ========
 
-## 2.3.9-RC
+## 2.4.0-RC2
+
+* Feature: Support Footnotes
+* Feature: Support Task lists
+* Feature: Support Table with CSV
+* Feature: Enable to render UML diagrams with public plantuml.com server
+* Feature: Enable to switch whether rendering MathJax in realtime or not
+* Improvement: Replace markdown parser with markdown-it
+* Improvement: Generate anchor of headers with header strings
+* Improvement: Enhanced Scroll Sync on Markdown Editor/Preview
+* Improvement: Update `#revision-body` tab contents after saving with `Ctrl-S`
+* Fix: 500 Internal Server Error occures when basic-auth configuration is set
+
+## 2.3.9
 
 * Fix: `Ctrl-/` doesn't work on Chrome
 * Fix: Close Shortcuts help with `Ctrl-/`, ESC key
@@ -266,8 +279,8 @@ CHANGES
 
 ## 1.1.8
 
-* Fix: Depth of dropdown-menu when '.on-edit'
-* Fix: Error occured on saveing with Ctrl+S
+* Fix: Depth of dropdown-menu when `.on-edit`
+* Fix: Error occured on saveing with `Ctrl-S`
 * Fix: Guest users browsing
 
 ## 1.1.7
@@ -296,11 +309,11 @@ CHANGES
 ## 1.1.2
 
 * Imprv: Brushup fonts and styles
-* Fix: Ensure to specity revision id when saving with Ctrl+S
+* Fix: Ensure to specity revision id when saving with `Ctrl-S`
 
 ## 1.1.1
 
-* Feature: Save with Ctrl+S
+* Feature: Save with `Ctrl-S`
 * Imprv: Brushup fonts and styles
 
 ## 1.1.0

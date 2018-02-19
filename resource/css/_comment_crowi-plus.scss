@@ -90,19 +90,26 @@
   .comment-form {
     position: relative;
     margin-top: 2em;
-    // ユーザーアイコン
+    // user icon
     .picture.picture-rounded {
       @extend %picture-rounded;
     }
 
-    // コメントフォームセクション
+    // seciton
     .comment-form-main {
       @extend %comment-section;
     }
 
-    // コメント入力フォーム
+    // textarea
     .comment-write {
       margin-bottom: 0.5em;
+    }
+    .comment-form-comment {
+      height: 80px;
+      &:focus, &:not(:invalid) {
+        transition: height 0.2s ease-out;
+        height: 180px;
+      }
     }
   }
 }

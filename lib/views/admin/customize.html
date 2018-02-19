@@ -248,8 +248,11 @@
         </p>
 
         <p class="help-block">
-          Available Placeholders:
+          Placeholders:<br>
+          (Available after <code>load</code> event)
           <dl class="dl-horizontal">
+            <dt><code>$</code></dt>
+            <dd>jQuery instance</dd>
             <dt><code>crowi</code></dt>
             <dd>Crowi context instance</dd>
             <dt><code>Crowi</code></dt>
@@ -259,6 +262,14 @@
             <dt><code>crowiPlugin</code></dt>
             <dd>crowi-plus plugin manager instance</dd>
           </dl>
+        </p>
+        <p class="help-block">
+          Examples:
+<pre><code>console.log($('.main-container'));
+
+window.addEventListener('load', (event) => {
+  console.log('config: ', crowi.config);
+});</code></pre>
         </p>
 
         <div class="form-group">

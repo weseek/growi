@@ -189,9 +189,9 @@
     <div class="tab-pane {% if not req.body.pageForm %}active{% endif %}" id="revision-body">
       <div class="revision-toc" id="revision-toc">
         <a data-toggle="collapse" data-parent="#revision-toc" href="#revision-toc-content" class="revision-toc-head">{{ t('Table of Contents') }}</a>
-
+        <div id="revision-toc-content" class="revision-toc-content collapse in"></div>
       </div>
-      <div class="wiki" id="revision-body-content"></div>
+      <div id="page"></div>
     </div>
 
     {# edit form #}

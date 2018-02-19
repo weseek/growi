@@ -2,12 +2,15 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import Crowi from './util/Crowi';
-import CrowiRenderer from './util/CrowiRenderer';
+// import CrowiRenderer from './util/CrowiRenderer';
+import GrowiRenderer from './util/GrowiRenderer';
 
 import HeaderSearchBox  from './components/HeaderSearchBox';
 import SearchPage       from './components/SearchPage';
 import PageEditor       from './components/PageEditor';
-import EditorOptionsSelector from './components/PageEditor/EditorOptionsSelector';
+import OptionsSelector  from './components/PageEditor/OptionsSelector';
+import { EditorOptions, PreviewOptions } from './components/PageEditor/OptionsSelector';
+import Page             from './components/Page';
 import PageListSearch   from './components/PageListSearch';
 import PageHistory      from './components/PageHistory';
 import PageComments     from './components/PageComments';
@@ -36,6 +39,7 @@ let pageRevisionId = null;
 let pageRevisionCreatedAt = null;
 let pagePath;
 let pageContent = '';
+let markdown = '';
 if (mainContent !== null) {
   pageId = mainContent.getAttribute('data-page-id');
   pageRevisionId = mainContent.getAttribute('data-page-revision-id');
@@ -45,6 +49,7 @@ if (mainContent !== null) {
   if (rawText) {
     pageContent = rawText.innerHTML;
   }
+  markdown = entities.decodeHTML(pageContent);
 }
 const isLoggedin = document.querySelector('.main-container.nologin') == null;
 
@@ -59,7 +64,11 @@ if (isLoggedin) {
   crowi.fetchUsers();
 }
 
-const crowiRenderer = new CrowiRenderer(crowi);
+const crowiRenderer = new GrowiRenderer(crowi, null, {
+  mode: 'page',
+  isAutoSetup: false,                                     // manually setup because plugins may configure it
+  renderToc: crowi.getCrowiForJquery().renderTocContent,  // function for rendering Table Of Contents
+});
 window.crowiRenderer = crowiRenderer;
 
 // FIXME
@@ -69,10 +78,8 @@ if (isEnabledPlugins) {
   crowiPlugin.installAll(crowi, crowiRenderer);
 }
 
-// for PageEditor
-const onSaveSuccess = function(page) {
-  crowi.getCrowiForJquery().updateCurrentRevision(page.revision._id);
-}
+// configure renderer
+crowiRenderer.setup(crowi.config);
 
 /**
  * define components
@@ -81,10 +88,8 @@ const onSaveSuccess = function(page) {
  */
 const componentMappings = {
   'search-top': <HeaderSearchBox crowi={crowi} />,
-  'search-page': <SearchPage crowi={crowi} />,
+  'search-page': <SearchPage crowi={crowi} crowiRenderer={crowiRenderer} />,
   'page-list-search': <PageListSearch crowi={crowi} />,
-  'page-comments-list': <PageComments pageId={pageId} revisionId={pageRevisionId} revisionCreatedAt= {pageRevisionCreatedAt} crowi={crowi} />,
-  'page-attachment': <PageAttachment pageId={pageId} pageContent={pageContent} crowi={crowi} />,
 
   //'revision-history': <PageHistory pageId={pageId} />,
   'seen-user-list': <SeenUserList pageId={pageId} crowi={crowi} />,
@@ -93,13 +98,19 @@ const componentMappings = {
   'page-name-inputter': <NewPageNameInputter crowi={crowi} parentPageName={pagePath} />,
 
 };
-// additional definitions if pagePath exists
+// additional definitions if data exists
+if (pageId) {
+  componentMappings['page-comments-list'] = <PageComments pageId={pageId} revisionId={pageRevisionId} revisionCreatedAt={pageRevisionCreatedAt} crowi={crowi} />;
+  componentMappings['page-attachment'] = <PageAttachment pageId={pageId} pageContent={pageContent} crowi={crowi} />;
+}
 if (pagePath) {
+  componentMappings['page'] = <Page crowi={crowi} crowiRenderer={crowiRenderer} markdown={markdown} pagePath={pagePath} showHeadEditButton={true} />;
   componentMappings['revision-path'] = <RevisionPath pagePath={pagePath} crowi={crowi} />;
   componentMappings['revision-url'] = <RevisionUrl pageId={pageId} pagePath={pagePath} />;
 }
 
 let componentInstances = {};
+
 Object.keys(componentMappings).forEach((key) => {
   const elem = document.getElementById(key);
   if (elem) {
@@ -117,28 +128,47 @@ if (elem) {
  * PageEditor
  */
 let pageEditor = null;
+const editorOptions = new EditorOptions(crowi.editorOptions);
+const previewOptions = new PreviewOptions(crowi.previewOptions);
 // render PageEditor
 const pageEditorElem = document.getElementById('page-editor');
 if (pageEditorElem) {
+  // create onSave event handler
+  const onSaveSuccess = function(page) {
+    // modify the revision id value to pass checking id when updating
+    crowi.getCrowiForJquery().updateCurrentRevision(page.revision._id);
+    // re-render Page component if exists
+    if (componentInstances.page != null) {
+      componentInstances.page.setMarkdown(page.revision.body);
+    }
+  }
+
   pageEditor = ReactDOM.render(
-    <PageEditor crowi={crowi} pageId={pageId} revisionId={pageRevisionId} pagePath={pagePath}
-        markdown={entities.decodeHTML(pageContent)} editorOptions={crowi.editorOptions}
+    <PageEditor crowi={crowi} crowiRenderer={crowiRenderer}
+        pageId={pageId} revisionId={pageRevisionId} pagePath={pagePath}
+        markdown={markdown}
+        editorOptions={editorOptions} previewOptions={previewOptions}
         onSaveSuccess={onSaveSuccess} />,
     pageEditorElem
   );
   // set refs for pageEditor
   crowi.setPageEditor(pageEditor);
 }
-// render EditorOptionsSelector
-const editorOptionSelectorElem = document.getElementById('page-editor-options-selector');
-if (editorOptionSelectorElem) {
+// render OptionsSelector
+const pageEditorOptionsSelectorElem = document.getElementById('page-editor-options-selector');
+if (pageEditorOptionsSelectorElem) {
   ReactDOM.render(
-    <EditorOptionsSelector options={crowi.editorOptions}
-        onChange={(opts) => { // set onChange event handler
-          pageEditor.setEditorOptions(opts);
-          crowi.saveEditorOptions(opts);
+    <OptionsSelector crowi={crowi}
+        editorOptions={editorOptions} previewOptions={previewOptions}
+        onChange={(newEditorOptions, newPreviewOptions) => { // set onChange event handler
+          // set options
+          pageEditor.setEditorOptions(newEditorOptions);
+          pageEditor.setPreviewOptions(newPreviewOptions);
+          // save
+          crowi.saveEditorOptions(newEditorOptions);
+          crowi.savePreviewOptions(newPreviewOptions);
         }} />,
-    editorOptionSelectorElem
+    pageEditorOptionsSelectorElem
   );
 }
 

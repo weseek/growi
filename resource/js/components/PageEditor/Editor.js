@@ -54,9 +54,11 @@ export default class Editor extends React.Component {
 
     this.getCodeMirror = this.getCodeMirror.bind(this);
     this.setCaretLine = this.setCaretLine.bind(this);
+    this.setScrollTopByLine = this.setScrollTopByLine.bind(this);
     this.forceToFocus = this.forceToFocus.bind(this);
     this.dispatchSave = this.dispatchSave.bind(this);
 
+    this.onScrollCursorIntoView = this.onScrollCursorIntoView.bind(this);
     this.onPaste = this.onPaste.bind(this);
 
     this.onDragEnterForCM = this.onDragEnterForCM.bind(this);
@@ -95,15 +97,30 @@ export default class Editor extends React.Component {
    * @param {string} number
    */
   setCaretLine(line) {
+    if (isNaN(line)) {
+      return;
+    }
+
     const editor = this.getCodeMirror();
+    const linePosition = Math.max(0, line);
 
-    // scroll to the bottom for a moment
-    const lastLine = editor.getDoc().lastLine();
-    editor.scrollIntoView(lastLine);
-
-    const linePosition = Math.max(0, line - 1);
-    editor.scrollIntoView(linePosition);
     editor.setCursor({line: linePosition});   // leave 'ch' field as null/undefined to indicate the end of line
+    this.setScrollTopByLine(linePosition);
+  }
+
+  /**
+   * scroll
+   * @param {number} line
+   */
+  setScrollTopByLine(line) {
+    if (isNaN(line)) {
+      return;
+    }
+
+    const editor = this.getCodeMirror();
+    // get top position of the line
+    var top = editor.charCoords({line, ch: 0}, 'local').top;
+    editor.scrollTo(null, top);
   }
 
   /**
@@ -140,6 +157,13 @@ export default class Editor extends React.Component {
   dispatchUpload(files) {
     if (this.props.onUpload != null) {
       this.props.onUpload(files);
+    }
+  }
+
+  onScrollCursorIntoView(editor, event) {
+    if (this.props.onScrollCursorIntoView != null) {
+      const line = editor.getCursor().line;
+      this.props.onScrollCursorIntoView(line);
     }
   }
 
@@ -296,6 +320,7 @@ export default class Editor extends React.Component {
             editorDidMount={(editor) => {
               // add event handlers
               editor.on('paste', this.onPaste);
+              editor.on('scrollCursorIntoView', this.onScrollCursorIntoView);
             }}
             value={this.state.value}
             options={{
@@ -327,6 +352,9 @@ export default class Editor extends React.Component {
             }}
             onScroll={(editor, data) => {
               if (this.props.onScroll != null) {
+                // add line data
+                const line = editor.lineAtHeight(data.top, 'local');
+                data.line = line;
                 this.props.onScroll(data);
               }
             }}
@@ -363,6 +391,7 @@ Editor.propTypes = {
   isUploadableFile: PropTypes.bool,
   onChange: PropTypes.func,
   onScroll: PropTypes.func,
+  onScrollCursorIntoView: PropTypes.func,
   onSave: PropTypes.func,
   onUpload: PropTypes.func,
 };

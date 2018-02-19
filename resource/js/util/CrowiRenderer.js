@@ -1,3 +1,7 @@
+/**
+ * DEPRECATED
+ * replaced by GrowiRenderer -- 2018.01.29 Yuki Takei
+ *
 import marked from 'marked';
 import hljs from 'highlight.js';
 import * as entities from 'entities';
@@ -15,7 +19,6 @@ import Template from './LangProcessor/Template';
 import PlantUML from './LangProcessor/PlantUML';
 
 export default class CrowiRenderer {
-
 
   constructor(crowi) {
     this.crowi = crowi;
@@ -134,6 +137,7 @@ export default class CrowiRenderer {
 
     return parsed;
   }
+  */
 
   /**
    * render
@@ -150,12 +154,17 @@ export default class CrowiRenderer {
    *
    * @memberOf CrowiRenderer
    */
-  render(markdown, dom, rendererOptions) {
+  /*
+   DEPRECATED
+   replaced by GrowiRenderer -- 2018.01.29 Yuki Takei
+
+  render(markdown, dom) {
     let html = '';
 
-    html = this.parseMarkdown(markdown, dom, rendererOptions.marked || {});
+    html = this.parseMarkdown(markdown, dom);
     html = this.postProcess(html, dom);
 
     return html;
   }
 }
+*/

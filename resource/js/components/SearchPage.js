@@ -101,10 +101,10 @@ export default class SearchPage extends React.Component {
         </div>
 
         <SearchResult
+          crowi={this.props.crowi} crowiRenderer={this.props.crowiRenderer}
           pages={this.state.searchedPages}
           searchingKeyword={this.state.searchingKeyword}
           searchResultMeta={this.state.searchResultMeta}
-          crowi={this.props.crowi}
           />
       </div>
     );
@@ -112,8 +112,9 @@ export default class SearchPage extends React.Component {
 }
 
 SearchPage.propTypes = {
-  query: PropTypes.object,
   crowi: PropTypes.object.isRequired,
+  crowiRenderer: PropTypes.object.isRequired,
+  query: PropTypes.object,
 };
 SearchPage.defaultProps = {
   //pollInterval: 1000,

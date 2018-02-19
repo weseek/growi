@@ -34,6 +34,7 @@ module.exports = function (options) {
       //  on the global var jQuery
       "jquery": "jQuery",
       "emojione": "emojione",
+      "hljs": "hljs",
     },
     resolve: {
       extensions: ['.js', '.json'],
@@ -97,11 +98,9 @@ module.exports = function (options) {
         chunks: ['commons', 'plugin'],
       }),
 
-      new webpack.ProvidePlugin({
+      new webpack.ProvidePlugin({ // refs externals
         jQuery: "jquery",
         $: "jquery",
-        hljs: "reveal.js/plugin/highlight/highlight",
-        emojione: "emojione",
       }),
 
     ]
