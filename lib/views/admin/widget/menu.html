@@ -2,9 +2,9 @@
   {% set current = 'index' %}
 {% endif  %}
 <ul class="nav nav-pills nav-stacked">
-  <li class="{% if current == 'index'%}active{% endif %}"><a href="/admin"><i class="fa fa-cube"></i> Wiki管理トップ</a></li>
-  <li class="{% if current == 'app'%}active{% endif %}"><a href="/admin/app"><i class="fa fa-gears"></i> アプリ設定</a></li>
-  <li class="{% if current == 'security'%}active{% endif %}"><a href="/admin/security"><i class="fa fa-shield"></i> セキュリティ設定</a></li>
+  <li class="{% if current == 'index'%}active{% endif %}"><a href="/admin"><i class="fa fa-cube"></i> {{ t('Management Wiki Home') }}</a></li>
+  <li class="{% if current == 'app'%}active{% endif %}"><a href="/admin/app"><i class="fa fa-gears"></i>{{ t('App settings') }}</a></li>
+  <li class="{% if current == 'security'%}active{% endif %}"><a href="/admin/security"><i class="fa fa-shield"></i> {{ t('Security settings') }}</a></li>
   <li class="{% if current == 'markdown'%}active{% endif %}"><a href="/admin/markdown"><i class="fa fa-pencil"></i> Markdown設定</a></li>
   <li class="{% if current == 'customize'%}active{% endif %}"><a href="/admin/customize"><i class="fa fa-object-group"></i> カスタマイズ</a></li>
   <li class="{% if current == 'notification'%}active{% endif %}"><a href="/admin/notification"><i class="fa fa-bell"></i> 通知設定</a></li>
