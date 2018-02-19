@@ -50,15 +50,17 @@
         {% else %}
         <select name="pageForm[grant]" class="form-control">
           {% for grantId, grantLabel in consts.pageGrants %}
-          <option value="{{ grantId }}" {% if pageForm.grant|default(page.grant) == grantId %}selected{% endif %}>{{ t(grantLabel) }}</option>
+          <option value="{{ grantId }}" {% if pageForm.grant|default(page.grant) == grantId %}selected{% endif %} {% if grantId == 5 && relatedUserGroups.length == 0 %}disabled{% endif %}>{{ t(grantLabel) }}</option>
           {% endfor %}
         </select>
         {% endif %}
-        <select name="pageForm[grantUserGroup]" class="form-control">
-          {% for userGroup in relatedUserGroups %}
-          <option value="{{ userGroup }}"></option>
+        {% if relatedUserGroups.length != 0 %}
+        <select name="pageForm[grantUserGroupId]" class="form-control">
+          {% for userGroupRelation in relatedUserGroups %}
+          <option value="{{ userGroupRelation.relatedGroup.id }}">{{ userGroupRelation.relatedGroup.name }}</option>
           {% endfor %}
         </select>
+        {% endif %}
         <input type="hidden" id="edit-form-csrf" name="_csrf" value="{{ csrf() }}">
         <input type="submit" class="btn btn-primary" id="edit-form-submit" value="{{ t('Update Page') }}" />
       </div>
