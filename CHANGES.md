@@ -1,7 +1,11 @@
 CHANGES
 ========
 
-## 2.4.1-RC
+## 2.4.2-RC
+
+* 
+
+## 2.4.1
 
 * Feature: Custom Header HTML
 * Improvement: Add highlight.js languages
@@ -12,6 +16,7 @@ CHANGES
     * Introduced by 2.4.0
 * Support: Upgrade libs
     * axios
+    * diff2html
 
 ## 2.4.0
 
