@@ -295,11 +295,42 @@ window.addEventListener('load', (event) => {
       </fieldset>
       </form>
 
+      <form action="/_api/admin/customize/header" method="post" class="form-horizontal" id="cutomheaderSettingForm" role="form">
+      <fieldset>
+        <legend>カスタムヘッダー</legend>
+
+        <p class="well">
+          システム全体に適用されるHTMLを記述できます。<br>
+          変更の反映はページの更新が必要です。
+        </p>
+
+        <div class="form-group">
+          <div class="col-xs-12">
+            <div id="custom-header-editor"></div>
+            <input type="hidden" id="inputCustomHeader" name="settingForm[customize:header]" value="{{ settingForm['customize:header'] }}">
+          </div>
+          <div class="col-xs-12">
+            <p class="help-block text-right">
+              <i class="fa fa-fw fa-keyboard-o" aria-hidden="true"></i>
+              Ctrl+Space でコード補完
+            </p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-xs-offset-5 col-xs-6">
+            <input type="hidden" name="_csrf" value="{{ csrf() }}">
+            <button type="submit" class="btn btn-primary">更新</button>
+          </div>
+        </div>
+
+      </fieldset>
+      </form>
     </div>
   </div>
 
   <script>
-    $('#cutomcssSettingForm, #cutomscriptSettingForm, #cutomlayoutSettingForm, #cutombehaviorSettingForm, #customfeaturesSettingForm').each(function() {
+    $('#cutomcssSettingForm, #cutomscriptSettingForm, #cutomlayoutSettingForm, #cutombehaviorSettingForm, #customfeaturesSettingForm, #cutomheaderSettingForm').each(function() {
       $(this).submit(function()
       {
         function showMessage(formId, msg, status) {
