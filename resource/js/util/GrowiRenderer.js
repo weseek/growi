@@ -152,11 +152,14 @@ export default class GrowiRenderer {
         return this.langProcessors[lang].process(code, langExt);
       }
 
+      const citeTag = (langFn) ? `<cite>${langFn}</cite>` : '';
       if (hljs.getLanguage(lang)) {
-        let citeTag = (langFn) ? `<cite>${langFn}</cite>` : '';
         try {
           return `<pre class="hljs">${citeTag}<code class="language-${lang}">${hljs.highlight(lang, code, true).value}</code></pre>`;
         } catch (__) {}
+      }
+      else {
+        return `<pre class="hljs">${citeTag}<code>${code}</code></pre>`;
       }
     }
 
