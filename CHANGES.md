@@ -4,8 +4,12 @@ CHANGES
 ## 2.4.1-RC
 
 * Feature: Custom Header HTML
+* Improvement: Add highlight.js languages
+    * dockerfile, go, gradle, json, less, scss, typescript, yaml
 * Fix: Couldn't connect to PLANTUML_URI
     * Introduced by 2.4.0
+* Support: Upgrade libs
+    * axios
 
 ## 2.4.0
 
