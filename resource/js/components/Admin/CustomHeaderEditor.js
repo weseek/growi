@@ -4,8 +4,6 @@ import PropTypes from 'prop-types';
 import { UnControlled as CodeMirror } from 'react-codemirror2';
 require('codemirror/lib/codemirror.css');
 require('codemirror/addon/display/autorefresh');
-require('codemirror/addon/lint/javascript-lint');
-require('codemirror/addon/hint/javascript-hint');
 require('codemirror/addon/hint/show-hint');
 require('codemirror/addon/edit/matchbrackets');
 require('codemirror/addon/edit/closebrackets');
