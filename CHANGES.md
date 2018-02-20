@@ -4,6 +4,8 @@ CHANGES
 ## 2.4.1-RC
 
 * Feature: Custom Header HTML
+* Fix: Couldn't connect to PLANTUML_URI
+    * Introduced by 2.4.0
 
 ## 2.4.0
 
