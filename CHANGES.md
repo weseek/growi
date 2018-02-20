@@ -3,7 +3,7 @@ CHANGES
 
 ## 2.4.1-RC
 
-* 
+* Feature: Custom Header HTML
 
 ## 2.4.0
 
