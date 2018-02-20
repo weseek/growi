@@ -1919,9 +1919,9 @@ dicer@0.2.5:
     readable-stream "1.1.x"
     streamsearch "0.1.2"
 
-diff2html@^2.3.0:
-  version "2.3.2"
-  resolved "https://registry.yarnpkg.com/diff2html/-/diff2html-2.3.2.tgz#1c5864266d437148bc66fdd66d4ad750102d7fed"
+diff2html@^2.3.3:
+  version "2.3.3"
+  resolved "https://registry.yarnpkg.com/diff2html/-/diff2html-2.3.3.tgz#31bb815881c975634c7f3907a5e789341e1560bc"
   dependencies:
     diff "^3.3.1"
     hogan.js "^3.0.2"
