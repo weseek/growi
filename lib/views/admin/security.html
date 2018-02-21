@@ -5,7 +5,7 @@
 {% block content_head %}
 <div class="header-wrap">
   <header id="page-header">
-    <h1 class="title" id="">カスタマイズ</h1>
+    <h1 class="title" id="">{{ t('Security settings') }}</h1>
   </header>
 </div>
 {% endblock %}
@@ -38,7 +38,7 @@
 
       <form action="/_api/admin/security/general" method="post" class="form-horizontal" id="generalSetting" role="form">
         <fieldset>
-        <legend>{{ t('Basic settings') }}</legend>
+        <legend>{{ t('Security settings') }}</legend>
 
           <div class="form-group">
             <label for="settingForm[security:registrationMode]" class="col-xs-3 control-label">{{ t('Basic authentication') }}</label>

@@ -71,8 +71,8 @@
   "Create under": "<code>%s</code>以下に作成",
   "Management Wiki": "Wiki管理",
   "System Information": "システム情報",
-  "Only Wiki administrator can see this page": "この画面はWiki管理者のみがアクセスできる画面です。",
-  "You can assign administrator from Assign administrator button in the User management page": "「ユーザー管理」から「管理者にする」ボタンを使ってユーザーをWiki管理者に任命することができます。",
+  "wiki_administrator": "この画面はWiki管理者のみがアクセスできる画面です。",
+  "assign_administrator": "「ユーザー管理」から「管理者にする」ボタンを使ってユーザーをWiki管理者に任命することができます。",
   "List of installed plugins": "インストールされているプラグイン一覧",
   "Package name": "パッケージ名",
   "Specified version": "指定バージョン",
@@ -100,6 +100,9 @@
   "The whitelist of registration permission E-mail address": "登録許可メールアドレスの<br>ホワイトリスト",
   "Selecting authentication mechanism": "認証機構選択",
 
+
+  
+ 
   "Show latest": "最新のページを表示",
   "Load latest": "最新版を読み込む",
   "edited this page": "さんがこのページを編集しました。",
