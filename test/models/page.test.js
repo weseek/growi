@@ -9,6 +9,8 @@ chai.use(sinonChai);
 describe('Page', () => {
   var Page = utils.models.Page,
     User   = utils.models.User,
+    PageGroupRelation = utils.models.PageGroupRelation,
+    UserGroupRelation = utils.models.UserGroupRelation,
     conn   = utils.mongoose.connection,
     createdPages,
     createdUsers;
