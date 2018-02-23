@@ -235,6 +235,39 @@
     "Package name": "パッケージ名",
     "Specified version": "指定バージョン",
     "Installed version": "インストールされているバージョン"
-  }
+  
+  
+  
+  },
 
+  "app_setting": { 
+    "Wiki name": "Wikiの名前",
+    "wiki_change": "ヘッダーやHTMLタイトルに使用されるWikiの名前を変更できます。",
+    "header_content": "ここに入力した内容は、ヘッダー等に表示されます。",
+    "Confidential name": "コンフィデンシャル表示",
+    "コンフィデンシャル表示": "Confidential name",  
+    "enable_files_except_image": "画像以外のファイルアップロードを許可",
+    "attach_enable": "許可をしている場合、画像以外のファイルをページに添付可能になります。",
+    "Reload": "更新",
+    "Mail settings": "メールの設定",
+    "SMTP_used": "SMTPの設定がされている場合、それが利用されます。",
+    "SMTP_but_AWS": "SMTP設定がなく、AWSの設定がある場合、SESでの送信を試みます。",
+    "neihter_of": "どちらの設定もない場合、メールは送信されません。",
+    "From e-mail address": "Fromアドレス",
+    "SMTP settings": "SMTP設定"   ,
+    "Host": "ホスト",
+    "Port": "ポート",
+    "User": "ユーザー",
+    "AWS settings": "AWS設定",
+    "AWS_access": "AWS にアクセスするための設定を行います。AWS の設定を完了させると、ファイルアップロード機能、プロフィール写真機能などが有効になります。",
+    "No_SMTP_setting": "また、SMTP の設定が無い場合、SES を利用したメール送信が行われます。FromメールアドレスのVerify、プロダクション利用設定をする必要があります。",
+    "change_setting": "この設定を途中で変更すると、これまでにアップロードしたファイル等へのアクセスができなくなりますのでご注意下さい。",
+    "region": "リージョン",
+    "packet name": "パケット名",
+    "Plugin settings": "プラグイン設定",
+    "Enable plugin loading": "プラグインの読み込みを有効にします。",
+    "valid": "有効",
+    "invalid": "無効"
+
+   }
 }
