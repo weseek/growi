@@ -1,11 +1,11 @@
 {% extends '../layout/admin.html' %}
 
-{% block html_title %}アプリ設定 · {% endblock %}
+{% block html_title %}{{ t('App settings') }} · {% endblock %}
 
 {% block content_head %}
 <div class="header-wrap">
   <header id="page-header">
-    <h1 class="title" id="">アプリ設定</h1>
+    <h1 class="title" id="">{{ t('App settings') }}</h1>
   </header>
 </div>
 {% endblock %}
@@ -34,21 +34,21 @@
 
       <form action="/_api/admin/settings/app" method="post" class="form-horizontal" id="appSettingForm" role="form">
       <fieldset>
-        <legend>アプリ設定</legend>
+        <legend>{{ t('App settings') }}</legend>
         <div class="form-group">
-          <label for="settingForm[app:title]" class="col-xs-3 control-label">Wikiの名前</label>
+          <label for="settingForm[app:title]" class="col-xs-3 control-label">{{ t('app_setting.Wiki name') }}</label>
           <div class="col-xs-6">
             <input class="form-control" type="text" name="settingForm[app:title]" value="{{ settingForm['app:title'] }}">
 
-            <p class="help-block">ヘッダーやHTMLタイトルに使用されるWikiの名前を変更できます。</p>
+            <p class="help-block">{{ t("app_setting.wiki_change") }}</p>
           </div>
         </div>
 
         <div class="form-group">
-          <label for="settingForm[app:confidential]" class="col-xs-3 control-label">コンフィデンシャル表示</label>
+          <label for="settingForm[app:confidential]" class="col-xs-3 control-label">{{ t('app_setting.Confidential name') }}</label>
           <div class="col-xs-6">
-            <input class="form-control" type="text" name="settingForm[app:confidential]" value="{{ settingForm['app:confidential'] }}" placeholder="例: 社外秘">
-            <p class="help-block">ここに入力した内容は、ヘッダー等に表示されます。</p>
+            <input class="form-control" type="text" name="settingForm[app:confidential]" value="{{ settingForm['app:confidential'] }}" placeholder="{{ t('app_setting. ex): internal use only') }}">
+            <p class="help-block">{{ t("app_setting.header_content") }}</p>
           </div>
         </div>
 
@@ -63,11 +63,11 @@
               {% else %}
               {% endif %}
               >
-              <label for="settingForm[app:fileUpload]" class="">画像以外のファイルアップロードを許可</label>
+              <label for="settingForm[app:fileUpload]" class="">{{ t("app_setting.enable_files_except_image") }}</label>
 
               <p class="help-block">
-                ファイルアップロードの設定を有効にしている場合にのみ、選択可能です。<br>
-                許可をしている場合、画像以外のファイルをページに添付可能になります。
+                {{ t("app_setting.enable_files_except_image") }}<br>
+                {{ t("app_setting.attach_enable") }}
               </p>
           </div>
         </div>
@@ -75,7 +75,7 @@
         <div class="form-group">
           <div class="col-xs-offset-3 col-xs-6">
             <input type="hidden" name="_csrf" value="{{ csrf() }}">
-            <button type="submit" class="btn btn-primary">更新</button>
+            <button type="submit" class="btn btn-primary">{{ t('app_setting.Reload') }}</button>
           </div>
         </div>
       </fieldset>
