@@ -69,14 +69,9 @@
   "Input page name (optional)": "ページ名を入力(空欄OK)",
   "New Page": "新規ページ",
   "Create under": "<code>%s</code>以下に作成",
-  "Management Wiki": "Wiki管理",
-  "System Information": "システム情報",
-  "wiki_administrator": "この画面はWiki管理者のみがアクセスできる画面です。",
-  "assign_administrator": "「ユーザー管理」から「管理者にする」ボタンを使ってユーザーをWiki管理者に任命することができます。",
-  "List of installed plugins": "インストールされているプラグイン一覧",
-  "Package name": "パッケージ名",
-  "Specified version": "指定バージョン",
-  "Installed version": "インストールされているバージョン",
+  
+  
+ 
   
   "Table of Contents": "目次",
   "Management Wiki Home": "Wiki管理トップ",
@@ -99,7 +94,6 @@
   "Shareable link": "このページの共有用URL",
   "The whitelist of registration permission E-mail address": "登録許可メールアドレスの<br>ホワイトリスト",
   "Selecting authentication mechanism": "認証機構選択",
-
 
   
  
@@ -153,6 +147,8 @@
   "Password is not set": "パスワードが設定されていません",
   "You can sign in with email and password": "<code>%s</code> と設定されたパスワードの組み合わせでログイン可能になります。",
 
+  "Security settings": "セキュリティ設定",
+
   "API Settings": "API設定",
   "API Token Settings": "API Token設定",
   "Current API Token": "現在のAPI Token",
@@ -172,6 +168,9 @@
           "conflict": "すでに他の人がこのページを編集していたため保存できませんでした。ページを再読み込み後、自分の編集箇所のみ再度編集してください。"
       }
   },
+
+
+  
 
   "modal_rename": {
     "label": {
@@ -225,5 +224,17 @@
         "Save Page": "保存",
         "Delete Line": "行削除"
     }
-}
+  },
+   
+  "admin_top": {
+    "Management Wiki": "Wiki管理",
+    "System Information": "システム情報",
+    "wiki_administrator": "この画面はWiki管理者のみがアクセスできる画面です。",
+    "assign_administrator": "「ユーザー管理」から「管理者にする」ボタンを使ってユーザーをWiki管理者に任命することができます。",
+    "List of installed plugins": "インストールされているプラグイン一覧",
+    "Package name": "パッケージ名",
+    "Specified version": "指定バージョン",
+    "Installed version": "インストールされているバージョン"
+  }
+
 }

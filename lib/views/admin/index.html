@@ -5,7 +5,7 @@
 {% block content_head %}
 <div class="header-wrap">
   <header id="page-header">
-    <h1 class="title" id=""> {{ t('Management Wiki') }}</h1>
+    <h1 class="title" id=""> {{ t('admin_top.Management Wiki') }}</h1>
   </header>
 </div>
 {% endblock %}
@@ -25,11 +25,11 @@
       {% include './widget/menu.html' %}
     </div>
     <div class="col-md-9">
-      <p> {{ t("wiki_administrator") }}<br>
-      {{ t("assign_administrator") }}
+      <p> {{ t("admin_top.wiki_administrator") }}<br>
+      {{ t("admin_top.assign_administrator") }}
       </p>
 
-      <h3>{{ t('System Information') }}</h3>
+      <h3>{{ t('admin_top.System Information') }}</h3>
       <table class="table table-bordered">
         <tr>
           <th class="col-sm-4">crowi-plus</th>
@@ -49,16 +49,16 @@
         </tr>
       </table>
 
-      <h3>{{ t('List of installed plugins') }}</h3>
+      <h3>{{ t('admin_top.List of installed plugins') }}</h3>
       <table class="table table-bordered">
         <th class="text-center">
-          {{ t('Package name') }}
+          {{ t('admin_top.Package name') }}
         </th>
         <th class="text-center">
-          {{ t('Specified version') }}
+          {{ t('admin_top.Specified version') }}
         </th>
         <th class="text-center">
-          {{ t('Installed version') }}
+          {{ t('admin_top.Installed version') }}
         </th>
         {% for pluginName in Object.keys(plugins) %}
         <tr>

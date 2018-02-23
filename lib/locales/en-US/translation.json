@@ -136,6 +136,9 @@
   "Current API Token": "Current API Token",
   "Update API Token": "Update API Token",
 
+  "Security settings": "Security settings",
+
+
   "page_page": {
       "notice": {
           "version": "This is not the current version.",
@@ -204,6 +207,20 @@
           "Outdent": "Outdent",
           "Save Page": "Save Page",
           "Delete Line": "Delete Line"
-      }
+
+              }
+  },
+            
+    "admin_top": { 
+    "Management Wiki": "Management Wiki",
+    "System Information": "System Information",
+    "wiki_administrator": "Only Wiki administrator can access this page",
+    "assign_administrator": "You can assign administrator from Assign administrator button in the User management page",
+    "List of installed plugins": "List of installed plugins",
+    "Package name": "Package name",
+    "Specified version": "Specified version",
+    "Installed version": "Installed version"
   }
+
 }
+ 
