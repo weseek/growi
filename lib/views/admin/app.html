@@ -84,7 +84,7 @@
       <form action="/_api/admin/settings/mail" method="post" class="form-horizontal" id="mailSettingForm" role="form">
       <fieldset>
       <legend>{{ t('app_setting.Mail settings') }}</legend>
-      <p class="well">SMTPの設定がされている場合、それが利用されます。SMTP設定がなく、AWSの設定がある場合、SESでの送信を試みます。<br>どちらの設定もない場合、メールは送信されません。</p>
+      <p class="well">{{ t("app_setting.SMTP_used") }}<br>どちらの設定もない場合、メールは送信されません。</p>
 
         <div class="form-group">
           <label for="settingForm[mail.from]" class="col-xs-3 control-label">Fromアドレス</label>
