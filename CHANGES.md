@@ -3,7 +3,7 @@ CHANGES
 
 ## 2.4.2-RC
 
-* 
+* Imprv: Ensure to set absolute url from root when attaching files when `FILE_UPLOAD=local`
 
 ## 2.4.1
 
