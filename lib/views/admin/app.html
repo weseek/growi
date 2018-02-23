@@ -100,7 +100,7 @@
             <input class="form-control" type="text" name="settingForm[mail:smtpHost]"   value="{{ settingForm['mail:smtpHost']|default('') }}">
           </div>
           <div class="col-xs-2">
-            <label for="">ポート</label>
+            <label for="">{{ t('app_setting.Port') }}</label>
             <input class="form-control" type="text" name="settingForm[mail:smtpPort]" value="{{ settingForm['mail:smtpPort']|default('') }}">
           </div>
         </div>
