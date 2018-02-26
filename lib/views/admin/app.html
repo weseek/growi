@@ -181,12 +181,12 @@
         <p class="well">{{ t('app_setting.Enable plugin loading') }}</p>
 
         <div class="form-group">
-          <label for="settingForm[plugin:isEnabledPlugins]" class="col-xs-3 control-label">プラグインを読み込む</label>
+          <label for="settingForm[plugin:isEnabledPlugins]" class="col-xs-3 control-label">{{ t('app_setting.Load plugins') }}</label>
           <div class="col-xs-6">
             <div class="btn-group btn-toggle" data-toggle="buttons">
               <label class="btn btn-default {% if settingForm['plugin:isEnabledPlugins'] %}active{% endif %}" data-active-class="primary">
                 <input name="settingForm[plugin:isEnabledPlugins]" value="true" type="radio"
-                    {% if true === settingForm['plugin:isEnabledPlugins'] %}checked{% endif %}> 有効
+                    {% if true === settingForm['plugin:isEnabledPlugins'] %}checked{% endif %}> {{ t('app_setting.valid') }}
               </label>
               <label class="btn btn-default {% if !settingForm['plugin:isEnabledPlugins'] %}active{% endif %}" data-active-class="primary">
                 <input name="settingForm[plugin:isEnabledPlugins]" value="false" type="radio"

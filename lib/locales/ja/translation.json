@@ -266,6 +266,7 @@
     "Packet name": "パケット名",
     "Plugin settings": "プラグイン設定",
     "Enable plugin loading": "プラグインの読み込みを有効にします。",
+    "Load plugins": "プラグインを読み込む",
     "valid": "有効",
     "invalid": "無効"
 
