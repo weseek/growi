@@ -190,7 +190,7 @@
               </label>
               <label class="btn btn-default {% if !settingForm['plugin:isEnabledPlugins'] %}active{% endif %}" data-active-class="primary">
                 <input name="settingForm[plugin:isEnabledPlugins]" value="false" type="radio"
-                    {% if !settingForm['plugin:isEnabledPlugins'] %}checked{% endif %}> 無効
+                    {% if !settingForm['plugin:isEnabledPlugins'] %}checked{% endif %}> {{ t('app_setting.invalid') }}
               </label>
             </div>
           </div>
