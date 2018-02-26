@@ -76,23 +76,24 @@
   "Table of Contents": "目次",
   "Management Wiki Home": "Wiki管理トップ",
   "App settings": "アプリ設定",
-  
+  "Security settings": "セキュリティ設定",
   "Markdown settings": "Markdown設定",
   "Customize": "カスタマイズ",
   "Notification settings": "通知設定",
   "User management": "ユーザー管理",
   "Basic settings": "基本設定",
-  
+  "Basic authentication": "Basic認証",
   "Password": "パスワード",
-  
-  
+  "Guest users access": "ゲストユーザーのアクセス",
+  "Register limitation": "登録の制限",
   "The contents entered here will be shown in the header etc": "ここに入力した内容は、ヘッダー等に表示されます。", 
   "Public": "公開",
   "Anyone with the link": "リンクを知っている人のみ",
   "Specified users": "特定ユーザーのみ",
   "Just me": "自分のみ",
   "Shareable link": "このページの共有用URL",
-
+  "The whitelist of registration permission E-mail address": "登録許可メールアドレスの<br>ホワイトリスト",
+  "Selecting authentication mechanism": "認証機構選択",
 
   
  
@@ -146,7 +147,7 @@
   "Password is not set": "パスワードが設定されていません",
   "You can sign in with email and password": "<code>%s</code> と設定されたパスワードの組み合わせでログイン可能になります。",
 
-  
+  "Security settings": "セキュリティ設定",
 
   "API Settings": "API設定",
   "API Token Settings": "API Token設定",
@@ -269,13 +270,5 @@
     "valid": "有効",
     "invalid": "無効"
 
-   },
-
-  "security_setting": { 
-    "Basic authentication": "Basic認証",
-    "Security settings": "セキュリティ設定",
-    "Guest users access": "ゲストユーザーのアクセス",
-    "Register limitation": "登録の制限",
-    "The whitelist of registration permission E-mail address": "登録許可メールアドレスの<br>ホワイトリスト",
-    "Selecting authentication mechanism": "認証機構選択",
-
+   }
+}
