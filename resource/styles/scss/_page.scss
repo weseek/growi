@@ -171,14 +171,14 @@
     z-index: 1030;
     position: fixed;
     padding: 65px 0 0 0;
-    margin-bottom: $crowiFooterHeight;
+    // margin-bottom: $crowiFooterHeight;
     color: #333;
     height: 100%;
     right: 0;
     top: 0;
     overflow: auto;
     border-left: solid 1px #ccc;
-    background: $crowiAsideBackground;
+    // background: $crowiAsideBackground;
 
     transition: .3s ease;
     -webkit-transition: .3s ease;
@@ -238,7 +238,7 @@
 
 
     .side-content {
-      margin-bottom: $crowiFooterHeight + $crowiHeaderHeight;
+      // margin-bottom: $crowiFooterHeight + $crowiHeaderHeight;
       color: #666;
       padding: 15px;
 
@@ -272,7 +272,7 @@
     height: 26px;
     padding: 4px;
     color: #444;
-    background: $crowiAsideBackground;
+    // background: $crowiAsideBackground;
     border-top-left-radius: 5px;
     z-index: 1055;
 
@@ -362,7 +362,7 @@
         display: block;
 
         &:hover {
-          background: darken($crowiAsideBackground, 10%);
+          // background: darken($crowiAsideBackground, 10%);
           text-decoration: none;
           color: darken($link-color, 35%);
         }

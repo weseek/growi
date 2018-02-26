@@ -1,1 +1,1 @@
-import '../css/crowi-reveal.scss';
+import './scss/crowi-reveal.scss';

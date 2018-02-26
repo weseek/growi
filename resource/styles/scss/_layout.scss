@@ -7,8 +7,8 @@
 
     .crowi-header { // {{{
       z-index: 1040;
-      background: $crowiHeaderBackground;
-      height: $crowiHeaderHeight;
+      // background: $crowiHeaderBackground;
+      // height: $crowiHeaderHeight;
       border-radius: 0;
       border: none;
       margin-bottom: 0;
@@ -23,7 +23,7 @@
         }
       }
       .navbar-collapse {
-        background: $crowiHeaderBackground;
+        // background: $crowiHeaderBackground;
       }
 
       > div > .navbar-nav li button {
@@ -88,7 +88,7 @@
       padding: 5px 8px;
       border: solid 1px #ccc;
       border-right: none;
-      background: $crowiAsideBackground;
+      // background: $crowiAsideBackground;
       border-radius: 5px 0 0 5px;
       z-index: 1039;
       font-size: .8em;
@@ -97,7 +97,7 @@
 
       &:hover {
         color: darken($link-color, 25%);
-        background: darken($crowiAsideBackground, 10%);
+        // background: darken($crowiAsideBackground, 10%);
         text-decoration: none;
         cursor: pointer;
       }
@@ -112,7 +112,7 @@
 
 .crowi.single.nologin { // {{{
   //background: lighten($crowiHeaderBackground, 15%);
-  background: $crowiHeaderBackground;
+  // background: $crowiHeaderBackground;
 
   .installer-header {
     margin-top: 100px;

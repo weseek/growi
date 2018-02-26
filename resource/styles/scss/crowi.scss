@@ -1,34 +1,27 @@
 // import crowi variable
-@import 'utilities';
-
-// import bootstrap
-$bootstrap-sass-asset-helper: true;
-@import "~bootstrap-sass/assets/stylesheets/bootstrap";
-
-// import toastr styles
-@import '~toastr/build/toastr';
+@import 'variables';
 
 // crowi component
-@import 'admin';
-@import 'attachments';
-@import 'comment';
-@import 'comment_crowi-plus';
-@import 'delete';
-@import 'form';
-@import 'layout';
-@import 'layout_crowi-plus';
-@import 'page_list';
-@import 'page';
-@import 'page_crowi-plus';
-@import 'portal';
-@import 'search';
-@import 'shortcuts';
-@import 'user';
-@import 'user_crowi-plus';
-@import 'wiki';
-@import 'wiki_crowi-plus';
+// @import 'admin';
+// @import 'attachments';
+// @import 'comment';
+// @import 'comment_crowi-plus';
+// @import 'delete';
+// @import 'form';
+// @import 'layout';
+// @import 'layout_crowi-plus';
+// @import 'page_list';
+// @import 'page';
+// @import 'page_crowi-plus';
+// @import 'portal';
+// @import 'search';
+// @import 'shortcuts';
+// @import 'user';
+// @import 'user_crowi-plus';
+// @import 'wiki';
+// @import 'wiki_crowi-plus';
 
-
+/*
 ul {
   padding-left: 18px;
 }
@@ -466,3 +459,4 @@ input.searching {
     content: 'Ctrl';
   }
 }
+*/
