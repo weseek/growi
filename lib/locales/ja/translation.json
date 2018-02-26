@@ -278,6 +278,11 @@
     "Guest users access": "ゲストユーザーのアクセス",
     "Register limitation": "登録の制限",
     "The whitelist of registration permission E-mail address": "登録許可メールアドレスの<br>ホワイトリスト",
-    "Selecting authentication mechanism": "認証機構選択"
+    "Selecting authentication mechanism": "認証機構選択",
+    "common_authentication": "Basic認証を設定すると、ページ全体に共通の認証がかかります。"
+    
+
+  }
+}
 
 
