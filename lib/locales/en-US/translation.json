@@ -253,8 +253,15 @@
     "valid": "Valid",
     "invalid": "Invalid"
 
+  },
+ "security_setting": { 
+    "Basic authentication": "Basic authentication",
+    "Security settings": "Security settings",
+    "Guest users access": "Guest users access",
+    "Register limitation": "Register limitation",
+    "The whitelist of registration permission E-mail address": "The whitelist of registration permission E-mail address",
+    "Selecting authentication mechanism": "Selecting authentication mechanism",
 
-  }
 
 }
  
