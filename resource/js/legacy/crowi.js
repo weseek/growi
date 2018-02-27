@@ -14,6 +14,8 @@ const escapeStringRegexp = require('escape-string-regexp');
 require('bootstrap-sass');
 require('jquery.cookie');
 
+require('./thirdparty-js/agile-admin');
+
 var Crowi = {};
 
 if (!window) {
