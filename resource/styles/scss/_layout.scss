@@ -5,6 +5,16 @@
 
   &.main-container { // {{{
 
+    // hide sidebar by agile-admin completely
+    &.content-wrapper {
+      .sidebar {
+        display: none;
+      }
+      #page-wrapper {
+        margin-left: 0;
+      }
+    }
+
     .crowi-header { // {{{
       z-index: 1040;
       // background: $crowiHeaderBackground;
@@ -93,10 +103,10 @@
       z-index: 1039;
       font-size: .8em;
 
-      color: darken($link-color, 15%);
+      // color: darken($link-color, 15%);
 
       &:hover {
-        color: darken($link-color, 25%);
+        // color: darken($link-color, 25%);
         // background: darken($crowiAsideBackground, 10%);
         text-decoration: none;
         cursor: pointer;

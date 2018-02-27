@@ -1,4 +1,7 @@
-// import crowi variable
+// import bootstrap variables
+@import "~bootstrap-sass/assets/stylesheets/bootstrap/variables";
+
+// import crowi variables
 @import 'variables';
 
 // crowi component
@@ -8,8 +11,8 @@
 // @import 'comment_crowi-plus';
 // @import 'delete';
 // @import 'form';
-// @import 'layout';
-// @import 'layout_crowi-plus';
+@import 'layout';
+@import 'layout_crowi-plus';
 // @import 'page_list';
 // @import 'page';
 // @import 'page_crowi-plus';
