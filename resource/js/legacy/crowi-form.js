@@ -2,7 +2,6 @@
   var pagePath= $('#content-main').data('path');
 
   require('bootstrap-sass');
-  require('./thirdparty-js/jquery.selection');
 
   // show/hide
   function FetchPagesUpdatePostAndInsert(path) {
