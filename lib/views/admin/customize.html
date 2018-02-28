@@ -149,7 +149,7 @@
           <div class="form-group">
             <div class="col-xs-3">
               <select class="form-control" id="number" name="number">
-                <option value="github" selected="selected">Github</option>
+                <option value="github">Github</option>
                 <option value="atom-one-dark">Atom One Dark</option>
                 <option value="atom-one-light">Atom One Light</option>
               </select>
@@ -358,7 +358,7 @@ window.addEventListener('load', (event) => {
   </div>
 
   <script>
-    $('#cutomcssSettingForm, #cutomscriptSettingForm, #cutomlayoutSettingForm, #cutombehaviorSettingForm, #customfeaturesSettingForm, #cutomheaderSettingForm').each(function() {
+    $('#cutomcssSettingForm, #cutomscriptSettingForm, #cutomlayoutSettingForm, #cutombehaviorSettingForm, #customfeaturesSettingForm, #cutomheaderSettingForm, #cutomhighlightSettingForm').each(function() {
       $(this).submit(function()
       {
         function showMessage(formId, msg, status) {
@@ -405,6 +405,8 @@ window.addEventListener('load', (event) => {
         return false;
       });
     });
+    // TODO 保存した highlight の値を selector に復元する
+    $('#cutomhighlightSettingForm select').val('github')
 
   </script>
 
