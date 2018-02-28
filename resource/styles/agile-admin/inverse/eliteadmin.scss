@@ -877,10 +877,10 @@ label{
 // --Topbar
 .logo b{
    /*background:$themecolor;*/
-   height: 60px;
+   height: 50px;
    display: inline-block;
    width:60px;
-   line-height:60px;
+   line-height:50px;
    text-align:center;
 
 }
@@ -925,8 +925,8 @@ label{
 .navbar-top-links > li > a{
     color:$white;
     padding: 0 14px;
-    line-height:60px;
-    min-height: 60px;
+    line-height:50px;
+    min-height: 50px;
     &:hover{
         background:rgba(0, 0, 0, 0.1)
     }
@@ -975,7 +975,7 @@ label{
 .navbar-header .navbar-toggle {
     float:none;
     padding:0 15px;
-    line-height:60px;
+    line-height:50px;
     border:0px;
     color:rgba(255, 255, 255, 0.5);
     margin:0px;
@@ -997,7 +997,7 @@ label{
 }
 .app-search a {
   position: absolute;
-  top: 20px;
+  top: 13px;
   right: 10px;
   color: $inverse;
 
@@ -1017,7 +1017,7 @@ label{
   width: 180px;
   display:inline-block;
   line-height:30px;
-  margin-top:15px;
+  margin-top:10px;
   border-radius:40px;
   transition:0.5s ease-out;
 }
