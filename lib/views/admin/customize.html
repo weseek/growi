@@ -148,7 +148,7 @@
           <legend>ハイライト設定</legend>
           <div class="form-group">
             <div class="col-xs-3">
-              <select class="form-control" id="number" name="number">
+              <select class="form-control" name="settingForm[customize:highlight]">
                 <option value="github">Github</option>
                 <option value="atom-one-dark">Atom One Dark</option>
                 <option value="atom-one-light">Atom One Light</option>
@@ -165,7 +165,6 @@
 
         </fieldset>
         </form>
-
 
       <form action="/_api/admin/customize/features" method="post" class="form-horizontal" id="customfeaturesSettingForm" role="form">
       <fieldset>
@@ -405,8 +404,8 @@ window.addEventListener('load', (event) => {
         return false;
       });
     });
-    // TODO 保存した highlight の値を selector に復元する
-    $('#cutomhighlightSettingForm select').val('github')
+    // 保存した highlight の値を selector に復元する
+    $('#cutomhighlightSettingForm select').val('{{ highlightType() }}');
 
   </script>
 
