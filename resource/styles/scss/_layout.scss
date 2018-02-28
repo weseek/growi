@@ -5,41 +5,6 @@
 
   &.main-container { // {{{
 
-    // hide sidebar by agile-admin completely
-    &.content-wrapper {
-      .sidebar {
-        display: none;
-      }
-      #page-wrapper {
-        margin-left: 0;
-      }
-    }
-
-    // logo
-    .top-left-part {
-      line-height: 0%;
-      a {
-        text-transform: none;
-      }
-    }
-    .logo {
-      svg.dark-logo, svg.dark-logo-text {
-        fill: white;
-      }
-      svg.light-logo, svg.light-logo-text {
-        fill: #4F5467;
-      }
-      svg.dark-logo, svg.light-logo {
-        padding: 12px;
-        width: 50px;
-        height: 50px;
-      }
-      svg.dark-logo-text, svg.light-logo-text {
-        width: 156px;
-        height: 50px;
-      }
-    }
-
     .crowi-header { // {{{
       z-index: 1040;
       // background: $crowiHeaderBackground;

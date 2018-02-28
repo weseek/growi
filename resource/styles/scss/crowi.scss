@@ -4,6 +4,8 @@
 // import crowi variables
 @import 'variables';
 
+@import 'override-agileadmin';
+
 // crowi component
 // @import 'admin';
 // @import 'attachments';
@@ -17,7 +19,7 @@
 // @import 'page';
 // @import 'page_crowi-plus';
 // @import 'portal';
-// @import 'search';
+@import 'search';
 // @import 'shortcuts';
 // @import 'user';
 // @import 'user_crowi-plus';
