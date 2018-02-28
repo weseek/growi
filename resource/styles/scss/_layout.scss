@@ -16,11 +16,29 @@
     }
 
     // logo
-    .logo svg {
-      padding: 12px;
-      width: 60px;
-      height: 60px;
-      fill: gray;
+    .top-left-part {
+      line-height: 0%;
+      a {
+        text-transform: none;
+      }
+    }
+    .logo {
+      svg.dark-logo, svg.dark-logo-text {
+        fill: white;
+      }
+      svg.light-logo, svg.light-logo-text {
+        fill: #4F5467;
+      }
+      svg.dark-logo, svg.light-logo {
+        padding: 12px;
+        width: 60px;
+        height: 60px;
+      }
+      svg.dark-logo-text, svg.light-logo-text {
+        padding-top: 9px;
+        width: 156px;
+        height: 60px;
+      }
     }
 
     .crowi-header { // {{{
