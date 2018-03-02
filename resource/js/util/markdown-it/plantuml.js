@@ -13,7 +13,7 @@ export default class PlantUMLConfigurer {
   }
 
   configure(md) {
-    md.use(require('markdown-it-plantuml'), 'name', {
+    md.use(require('markdown-it-plantuml'), {
       generateSource: this.generateSource,
     });
   }
