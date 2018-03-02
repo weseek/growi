@@ -107,7 +107,9 @@ export class RestoreCodeBlockInterceptor extends BasicInterceptor {
       // get context object from context
       let dcbContext = context.dcbContextMap[replaceId];
 
-      context.markdown = context.markdown.replace(dcbContext.substituteContent, dcbContext.content);
+      // replace it with content by using getter function so that the doller sign does not work
+      // see: https://github.com/weseek/crowi-plus/issues/285
+      context.markdown = context.markdown.replace(dcbContext.substituteContent, () => { return dcbContext.content; });
     });
 
     // resolve
