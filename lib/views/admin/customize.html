@@ -155,7 +155,7 @@
             <div class="btn-group btn-toggle" data-toggle="buttons">
               <label class="btn btn-default {% if settingForm['customize:isEnabledTimeline'] %}active{% endif %}" data-active-class="primary">
                 <input name="settingForm[customize:isEnabledTimeline]" value="true" type="radio"
-                    {% if true === settingForm['customize:isEnabledTimeline'] %}checked{% endif %}> 有効
+                    {% if true === settingForm['customize:isEnabledTimeline'] %}checked{% endif %}> {{ t('Valid') }}
               </label>
               <label class="btn btn-default {% if !settingForm['customize:isEnabledTimeline'] %}active{% endif %}" data-active-class="primary">
                 <input name="settingForm[customize:isEnabledTimeline]" value="false" type="radio"
