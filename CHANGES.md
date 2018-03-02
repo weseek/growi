@@ -1,7 +1,17 @@
 CHANGES
 ========
 
-## 2.4.1-RC
+## 2.4.2-RC
+
+* Improvement: Ensure to set absolute url from root when attaching files when `FILE_UPLOAD=local`
+* Fix: Inline code blocks that includes doller sign are broken
+* Fix: Comment count is not updated when a comment of the page is deleted
+* Improvement: i18n in `/admin` (WIP)
+* Support: Upgrade libs
+    * googleapis
+    * markdown-it-plantuml
+
+## 2.4.1
 
 * Feature: Custom Header HTML
 * Improvement: Add highlight.js languages
@@ -12,6 +22,7 @@ CHANGES
     * Introduced by 2.4.0
 * Support: Upgrade libs
     * axios
+    * diff2html
 
 ## 2.4.0
 
