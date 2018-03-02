@@ -44,16 +44,11 @@
       padding: 5px 8px;
       border: solid 1px #ccc;
       border-right: none;
-      // background: $crowiAsideBackground;
       border-radius: 5px 0 0 5px;
       z-index: 1039;
       font-size: .8em;
 
-      // color: darken($link-color, 15%);
-
       &:hover {
-        // color: darken($link-color, 25%);
-        // background: darken($crowiAsideBackground, 10%);
         text-decoration: none;
         cursor: pointer;
       }
@@ -67,9 +62,6 @@
 } // }}}
 
 .crowi.single.nologin { // {{{
-  //background: lighten($crowiHeaderBackground, 15%);
-  // background: $crowiHeaderBackground;
-
   .installer-header {
     margin-top: 100px;
     text-align: center;

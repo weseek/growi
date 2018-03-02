@@ -187,11 +187,11 @@ gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js
             <img src="{{ user|picture }}" class="img-circle" width="25" /> {{ user.name }}
           </a>
           <ul class="dropdown-menu">
-            <li><a href="/me"><i class="ti-home"></i>{{ t('Home') }}</a></li>
+            <li><a href="/me"><i class="fa-fw ti-home"></i>{{ t('Home') }}</a></li>
             <li role="separator" class="divider"></li>
-            <li><a href="/trash"><i class="ti-trash"></i>{{ t('Deleted Pages') }}</a></li>
+            <li><a href="/trash"><i class="fa-fw ti-trash"></i>{{ t('Deleted Pages') }}</a></li>
             <li role="separator" class="divider"></li>
-            <li><a href="/logout"><i class="ti-power-off"></i>{{ t('Sign out') }}</a></li>
+            <li><a href="/logout"><i class="fa-fw ti-power-off"></i>{{ t('Sign out') }}</a></li>
           </ul>
           <!-- /.dropdown-messages -->
         </li>
@@ -244,6 +244,14 @@ gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js
       <!-- /.row -->
 
       <div class="row">
+        {% block layout_sidebar %}
+        {% endblock %} {# layout_sidebar #}
+
+        {% block layout_main %}
+        {% endblock %} {# layout_main #}
+
+        {% block footer %}
+        {% endblock %}
       </div>
 
 
@@ -253,22 +261,6 @@ gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js
   </div><!-- /#page-wrapper -->
 
 </div><!-- /#wrapper -->
-
-
-<div class="container-fluid">
-  <div class="row">
-
-  {% block layout_sidebar %}
-  {% endblock %} {# layout_sidebar #}
-
-  {% block layout_main %}
-  {% endblock %} {# layout_main #}
-
-{% block footer %}
-{% endblock %}
-
-  </div> {# /.row #}
-</div> {# /.container-fluid #}
 
 {% block body_end %}
 {% endblock %}
