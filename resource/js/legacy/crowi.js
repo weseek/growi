@@ -2,7 +2,15 @@
 /* Author: Sotaro KARASAWA <sotarok@crocos.co.jp>
 */
 
-var io = require('socket.io-client');
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+import GrowiRenderer from '../util/GrowiRenderer';
+import Page from '../components/Page';
+
+const io = require('socket.io-client');
+const entities = require("entities");
+const escapeStringRegexp = require('escape-string-regexp');
 require('bootstrap-sass');
 require('jquery.cookie');
 
@@ -17,39 +25,25 @@ Crowi.createErrorView = function(msg) {
   $('#main').prepend($('<p class="alert-message error">' + msg + '</p>'));
 };
 
-Crowi.correctHeaders = function(contentId) {
-  // h1 ~ h6 の id 名を補正する
-  var $content = $(contentId || '#revision-body-content');
-  var i = 0;
-  $('h1,h2,h3,h4,h5,h6', $content).each(function(idx, elm) {
-    var id = 'head' + i++;
-    $(this).attr('id', id);
-    $(this).addClass('revision-head');
-    $(this).append('<span class="revision-head-link"><a href="#' + id +'"><i class="fa fa-link"></i></a></span>');
-  });
-};
+/**
+ * render Table Of Contents
+ * @param {string} tocHtml
+ */
+Crowi.renderTocContent = (tocHtml) => {
+  $('#revision-toc-content').html(tocHtml);
+}
 
 /**
  * append buttons to section headers
  */
-Crowi.appendEditSectionButtons = function(contentId, markdown) {
-  const $content = $(contentId || '#revision-body-content');
-  $('h1,h2,h3,h4,h5,h6', $content).each(function(idx, elm) {
-    // get header text string
-    const text = $(this).text();
-
-    // search pos for '# ...'
-    // https://regex101.com/r/y5rpO5/1
-    const regexp = new RegExp(`[^\r\n]*#+[^\r\n]*${text}[^\r\n]*`);
-    let position = markdown.search(regexp);
-    if (position < 0) { // if not found, search with header text only
-      position = markdown.search(text);
-    }
+Crowi.appendEditSectionButtons = function(parentElement) {
+  $('h1,h2,h3,h4,h5,h6', parentElement).each(function(idx, elm) {
+    const line = +elm.getAttribute('data-line');
 
     // add button
     $(this).append(`
       <span class="revision-head-edit-button">
-        <a href="#edit-form" onClick="Crowi.setCaretPositionToFormBody(${position})">
+        <a href="#edit-form" onClick="Crowi.setCaretLineData(${line})">
           <i class="fa fa-edit"></i>
         </a>
       </span>
@@ -59,81 +53,39 @@ Crowi.appendEditSectionButtons = function(contentId, markdown) {
 };
 
 /**
- * set 'data-caret-position' attribute that will be processed in crowi-form.js
- * @param {number} position
+ * set 'data-caret-line' attribute that will be processed when 'shown.bs.tab' event fired
+ * @param {number} line
  */
-Crowi.setCaretPositionToFormBody = function(position) {
-  const formBody = document.querySelector('#form-body');
-  formBody.setAttribute('data-caret-position', position);
+Crowi.setCaretLineData = function(line) {
+  const pageEditorDom = document.querySelector('#page-editor');
+  pageEditorDom.setAttribute('data-caret-line', line);
 }
 
+/**
+ * invoked when;
+ *
+ * 1. window loaded
+ * 2. 'shown.bs.tab' event fired
+ */
+Crowi.setCaretLineAndFocusToEditor = function() {
+  // get 'data-caret-line' attributes
+  const pageEditorDom = document.querySelector('#page-editor');
 
-Crowi.revisionToc = function(contentId, tocId) {
-  var $content = $(contentId || '#revision-body-content');
-  var $tocId = $(tocId || '#revision-toc');
+  if (pageEditorDom == null) {
+    return;
+  }
 
-  var $tocContent = $('<div id="revision-toc-content" class="revision-toc-content collapse in"></div>');
-  $tocId.append($tocContent);
+  const line = pageEditorDom.getAttribute('data-caret-line');
 
-  $('h1', $content).each(function(idx, elm) {
-    var id = $(this).attr('id');
-    var title = $(this).text();
-    var selector = '#' + id + ' ~ h2:not(#' + id + ' ~ h1 ~ h2)';
+  if (line != null) {
+    crowi.setCaretLine(line);
+    // reset data-caret-line attribute
+    pageEditorDom.removeAttribute('data-caret-line');
+  }
 
-    var $toc = $('<ul></ul>');
-    var $tocLi = $('<li><a href="#' + id +'">' + title + '</a></li>');
-
-
-    $tocContent.append($toc);
-    $toc.append($tocLi);
-
-    $(selector).each(function()
-    {
-      var id2 = $(this).attr('id');
-      var title2 = $(this).text();
-      var selector2 = '#' + id2 + ' ~ h3:not(#' + id2 + ' ~ h2 ~ h3)';
-
-      var $toc2 = $('<ul></ul>');
-      var $tocLi2 = $('<li><a href="#' + id2 +'">' + title2 + '</a></li>');
-
-      $tocLi.append($toc2);
-      $toc2.append($tocLi2);
-
-      $(selector2).each(function()
-      {
-        var id3 = $(this).attr('id');
-        var title3 = $(this).text();
-
-        var $toc3 = $('<ul></ul>');
-        var $tocLi3 = $('<li><a href="#' + id3 +'">' + title3 + '</a></li>');
-
-        $tocLi2.append($toc3);
-        $toc3.append($tocLi3);
-      });
-    });
-  });
-};
-
-
-Crowi.escape = function(s) {
-  s = s.replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/'/g, '&#39;')
-    .replace(/"/g, '&quot;')
-    ;
-  return s;
-};
-Crowi.unescape = function(s) {
-  s = s.replace(/&nbsp;/g, ' ')
-    .replace(/&amp;/g, '&')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&#39;/g, '\'')
-    .replace(/&quot;/g, '"')
-    ;
-  return s;
-};
+  // focus
+  crowi.focusToEditor();
+}
 
 // original: middleware.swigFilter
 Crowi.userPicture = function (user) {
@@ -158,7 +110,7 @@ Crowi.modifyScrollTop = function() {
   }
   var pageHeaderRect = pageHeader.getBoundingClientRect();
 
-  var sectionHeader = document.querySelector(hash);
+  var sectionHeader = Crowi.findSectionHeader(hash);
   if (sectionHeader === null) {
     return;
   }
@@ -177,6 +129,35 @@ Crowi.modifyScrollTop = function() {
   }, timeout);
 }
 
+Crowi.updateCurrentRevision = function(revisionId) {
+  $('#page-form [name="pageForm[currentRevision]"]').val(revisionId);
+}
+
+Crowi.handleKeyEHandler = (event) => {
+  // ignore when dom that has 'modal in' classes exists
+  if (document.getElementsByClassName('modal in').length > 0) {
+    return;
+  }
+  // show editor
+  $('a[data-toggle="tab"][href="#edit-form"]').tab('show');
+  event.preventDefault();
+}
+
+Crowi.handleKeyCHandler = (event) => {
+  // ignore when dom that has 'modal in' classes exists
+  if (document.getElementsByClassName('modal in').length > 0) {
+    return;
+  }
+  // show modal to create a page
+  $('#create-page').modal();
+  event.preventDefault();
+}
+
+Crowi.handleKeyCtrlSlashHandler = (event) => {
+  // show modal to create a page
+  $('#shortcuts-modal').modal('toggle');
+  event.preventDefault();
+}
 
 $(function() {
   var config = JSON.parse(document.getElementById('crowi-context-hydrate').textContent || '{}');
@@ -187,16 +168,7 @@ $(function() {
   var currentUser = $('#content-main').data('current-user');
   var isSeen = $('#content-main').data('page-is-seen');
   var pagePath= $('#content-main').data('path');
-  var isEnabledLineBreaks = $('#content-main').data('linebreaks-enabled');
   var isSavedStatesOfTabChanges = config['isSavedStatesOfTabChanges'];
-
-  // generate options obj
-  var rendererOptions = {
-    // see: https://www.npmjs.com/package/marked
-    marked: {
-      breaks: isEnabledLineBreaks
-    }
-  };
 
   $('[data-toggle="popover"]').popover();
   $('[data-toggle="tooltip"]').tooltip();
@@ -428,46 +400,47 @@ $(function() {
     return false;
   });
 
-  // list-link
+  /*
+   * wrap short path with <strong></strong>
+   */
   $('.page-list-link').each(function() {
     var $link = $(this);
     var text = $link.text();
     var path = $link.data('path');
-    var shortPath = new String($link.data('short-path'));
+    var shortPath = String($link.data('short-path')); // convert to string
 
-    var escape = function(s) {
-      return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-    };
-    path = Crowi.escape(path);
-    var pattern = escape(Crowi.escape(shortPath)) + '(/)?$';
+    if (path == null || shortPath == null) {
+      // continue
+      return;
+    }
+
+    path = entities.encodeHTML(path);
+    var pattern = escapeStringRegexp(entities.encodeHTML(shortPath)) + '(/)?$';
 
     $link.html(path.replace(new RegExp(pattern), '<strong>' + shortPath + '$1</strong>'));
   });
 
   // for list page
+  let growiRendererForTimeline = null;
   $('a[data-toggle="tab"][href="#view-timeline"]').on('show.bs.tab', function() {
     var isShown = $('#view-timeline').data('shown');
+
+    if (growiRendererForTimeline == null) {
+      growiRendererForTimeline = new GrowiRenderer(crowi, crowiRenderer, {mode: 'timeline'});
+    }
+
     if (isShown == 0) {
       $('#view-timeline .timeline-body').each(function()
       {
         var id = $(this).attr('id');
         var contentId = '#' + id + ' > script';
         var revisionBody = '#' + id + ' .revision-body';
-        var $revisionBody = $(revisionBody);
+        var revisionBodyElem = document.querySelector(revisionBody);
         var revisionPath = '#' + id + ' .revision-path';
+        var pagePath = document.getElementById(id).getAttribute('data-page-path');
+        var markdown = entities.decodeHTML($(contentId).html());
 
-        var markdown = Crowi.unescape($(contentId).html());
-        var parsedHTML = crowiRenderer.render(markdown, $revisionBody.get(0), rendererOptions);
-        $revisionBody.html(parsedHTML);
-
-        $('.template-create-button', revisionBody).on('click', function() {
-          var path = $(this).data('path');
-          var templateId = $(this).data('template');
-          var template = $('#' + templateId).html();
-
-          crowi.saveDraft(path, template);
-          top.location.href = path;
-        });
+        ReactDOM.render(<Page crowi={crowi} crowiRenderer={growiRendererForTimeline} markdown={markdown} pagePath={pagePath} />, revisionBodyElem);
       });
 
       $('#view-timeline').data('shown', 1);
@@ -499,10 +472,14 @@ $(function() {
 
   if (pageId) {
 
+    /*
+     * transplanted to React components -- 2018.02.04 Yuki Takei
+     *
+
     // if page exists
     var $rawTextOriginal = $('#raw-text-original');
     if ($rawTextOriginal.length > 0) {
-      var markdown = Crowi.unescape($('#raw-text-original').html());
+      var markdown = entities.decodeHTML($('#raw-text-original').html());
       var dom = $('#revision-body-content').get(0);
 
       // create context object
@@ -515,12 +492,12 @@ $(function() {
       crowi.interceptorManager.process('preRender', context)
         .then(() => crowi.interceptorManager.process('prePreProcess', context))
         .then(() => {
-          context.markdown = crowiRenderer.preProcess(context.markdown, context.dom);
+          context.markdown = crowiRenderer.preProcess(context.markdown);
         })
         .then(() => crowi.interceptorManager.process('postPreProcess', context))
         .then(() => {
           var revisionBody = $('#revision-body-content');
-          var parsedHTML = crowiRenderer.render(context.markdown, context.dom, rendererOptions);
+          var parsedHTML = crowiRenderer.render(context.markdown, context.dom);
           context.parsedHTML = parsedHTML;
           Promise.resolve(context);
         })
@@ -539,9 +516,7 @@ $(function() {
             top.location.href = path;
           });
 
-          Crowi.correctHeaders('#revision-body-content');
           Crowi.appendEditSectionButtons('#revision-body-content', markdown);
-          Crowi.revisionToc('#revision-body-content', '#revision-toc');
 
           Promise.resolve($('#revision-body-content'));
         })
@@ -553,6 +528,7 @@ $(function() {
 
 
     }
+    */
 
     // header
     var $header = $('#page-header');
@@ -823,6 +799,11 @@ $(function() {
       window.location.replace('#edit-form');
     });
   }
+
+  // focus to editor when 'shown.bs.tab' event fired
+  $('a[href="#edit-form"]').on('shown.bs.tab', function(e) {
+    Crowi.setCaretLineAndFocusToEditor();
+  });
 });
 
 Crowi.getRevisionBodyContent = function() {
@@ -837,28 +818,43 @@ Crowi.findHashFromUrl = function(url)
 {
   var match;
   if (match = url.match(/#(.+)$/)) {
-    return '#' + match[1];
+    return `#${match[1]}`;
   }
 
   return "";
 }
 
+Crowi.findSectionHeader = function(hash) {
+  if (hash.length == 0) {
+    return;
+  }
+
+  // omit '#'
+  const id = hash.replace('#', '');
+  // don't use jQuery and document.querySelector
+  //  because hash may containe Base64 encoded strings
+  const elem = document.getElementById(id);
+  if (elem != null && elem.tagName.match(/h\d+/i)) {  // match h1, h2, h3...
+    return elem;
+  }
+
+  return null;
+}
+
 Crowi.unhighlightSelectedSection = function(hash)
 {
-  if (!hash || hash == "" || !hash.match(/^#head.+/)) {
-    // とりあえず head* だけ (検索結果ページで副作用出た
-    return true;
+  const elem = Crowi.findSectionHeader(hash);
+  if (elem != null) {
+    elem.classList.remove('highlighted');
   }
-  $(hash).removeClass('highlighted');
 }
 
 Crowi.highlightSelectedSection = function(hash)
 {
-  if (!hash || hash == "" || !hash.match(/^#head.+/)) {
-    // とりあえず head* だけ (検索結果ページで副作用出た
-    return true;
+  const elem = Crowi.findSectionHeader(hash);
+  if (elem != null) {
+    elem.classList.add('highlighted');
   }
-  $(hash).addClass('highlighted');
 }
 
 window.addEventListener('load', function(e) {
@@ -866,6 +862,8 @@ window.addEventListener('load', function(e) {
   if (location.hash) {
     if (location.hash == '#edit-form') {
       $('a[data-toggle="tab"][href="#edit-form"]').tab('show');
+      // focus
+      Crowi.setCaretLineAndFocusToEditor();
     }
     if (location.hash == '#revision-history') {
       $('a[data-toggle="tab"][href="#revision-history"]').tab('show');
@@ -906,6 +904,7 @@ window.addEventListener('load', function(e) {
 
   Crowi.highlightSelectedSection(location.hash);
   Crowi.modifyScrollTop();
+  Crowi.setCaretLineAndFocusToEditor();
 });
 
 window.addEventListener('hashchange', function(e) {
@@ -922,7 +921,35 @@ window.addEventListener('hashchange', function(e) {
       $('a[data-toggle="tab"][href="#revision-history"]').tab('show');
     }
   }
-  if (location.hash == '' || location.hash.match(/^#head.+/)) {
+  else {
     $('a[data-toggle="tab"][href="#revision-body"]').tab('show');
+  }
+});
+
+window.addEventListener('keydown', (event) => {
+  const target = event.target;
+
+  // ignore when target dom is input
+  const inputPattern = /^input|textinput|textarea$/i;
+  if (target.tagName.match(inputPattern)) {
+    return;
+  }
+
+  switch (event.key) {
+    case 'e':
+      if (!event.ctrlKey && !event.metaKey && !event.altKey && !event.shiftKey) {
+        Crowi.handleKeyEHandler(event);
+      }
+      break;
+    case 'c':
+      if (!event.ctrlKey && !event.metaKey && !event.altKey && !event.shiftKey) {
+        Crowi.handleKeyCHandler(event);
+      }
+      break;
+    case '/':
+      if (event.ctrlKey || event.metaKey) {
+        Crowi.handleKeyCtrlSlashHandler(event);
+      }
+      break;
   }
 });

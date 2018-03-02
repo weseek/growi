@@ -1,3 +1,6 @@
+// import react-bootstrap-typeahead
+@import "~react-bootstrap-typeahead/css/Typeahead";
+
 @import "./page_list";
 
 .search-listpage-icon {
@@ -41,7 +44,7 @@
 
   // using react-bootstrap-typeahead
   // see: https://github.com/ericgio/react-bootstrap-typeahead
-  .bootstrap-typeahead-menu {
+  .rbt-menu {
     li a span {
       .picture {
         width: 14px;
@@ -63,6 +66,10 @@
         }
       }
     }
+  }
+  // hide loading icon
+  .rbt-aux {
+    display: none;
   }
 }
 
@@ -152,16 +159,16 @@
   @media (min-width: $screen-sm-max) {
     // using react-bootstrap-typeahead
     // see: https://github.com/ericgio/react-bootstrap-typeahead
-    .bootstrap-typeahead-input input {
-      width: 500px;
+    .rbt-input input {
+      width: 500px !important;
     }
   }
   @media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
     background-color: #0f0;
     // using react-bootstrap-typeahead
     // see: https://github.com/ericgio/react-bootstrap-typeahead
-    .bootstrap-typeahead-input input {
-      width: 270px;
+    .rbt-input input {
+      width: 270px !important;
     }
   }
   @media (min-width: $screen-xs-min) and (max-width: $screen-xs-max) {
@@ -175,3 +182,4 @@
     min-width: 120px;
   }
 }
+

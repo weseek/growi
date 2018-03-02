@@ -16,7 +16,7 @@ describe('Page', () => {
     createdUsers;
 
   before(done => {
-    Promise.resolve().then(() => {
+    conn.collection('pages').remove().then(() => {
       var userFixture = [
         {name: 'Anon 0', username: 'anonymous0', email: 'anonymous0@example.com'},
         {name: 'Anon 1', username: 'anonymous1', email: 'anonymous1@example.com'}
@@ -29,7 +29,7 @@ describe('Page', () => {
 
       var fixture = [
         {
-          path: '/user/anonymous/memo',
+          path: '/user/anonymous0/memo',
           grant: Page.GRANT_RESTRICTED,
           grantedUsers: [testUser0],
           creator: testUser0
@@ -176,7 +176,7 @@ describe('Page', () => {
         User.findOne({email: 'anonymous0@example.com'}, (err, user) => {
           if (err) { done(err); }
 
-          Page.findOne({path: '/user/anonymous/memo'}, (err, page) => {
+          Page.findOne({path: '/user/anonymous0/memo'}, (err, page) => {
             expect(page.isCreator(user)).to.be.equal(true);
             done();
           })
@@ -189,7 +189,7 @@ describe('Page', () => {
         User.findOne({email: 'anonymous1@example.com'}, (err, user) => {
           if (err) { done(err); }
 
-          Page.findOne({path: '/user/anonymous/memo'}, (err, page) => {
+          Page.findOne({path: '/user/anonymous0/memo'}, (err, page) => {
             expect(page.isCreator(user)).to.be.equal(false);
             done();
           })
@@ -204,7 +204,7 @@ describe('Page', () => {
         User.findOne({email: 'anonymous0@example.com'}, (err, user) => {
           if (err) { done(err); }
 
-          Page.findOne({path: '/user/anonymous/memo'}, (err, page) => {
+          Page.findOne({path: '/user/anonymous0/memo'}, (err, page) => {
             if (err) { done(err); }
 
             expect(page.isGrantedFor(user)).to.be.equal(true);

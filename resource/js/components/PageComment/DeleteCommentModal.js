@@ -1,8 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Button, Modal } from 'react-bootstrap';
-import moment from 'moment';
+import Button from 'react-bootstrap/es/Button';
+import Modal from 'react-bootstrap/es/Modal';
+
+import dateFnsFormat from 'date-fns/format';
 
 import ReactUtils from '../ReactUtils';
 import UserPicture from '../User/UserPicture';
@@ -27,7 +29,7 @@ export default class DeleteCommentModal extends React.Component {
     }
 
     const comment = this.props.comment;
-    const commentDate = moment(comment.createdAt).format('YYYY/MM/DD HH:mm');
+    const commentDate = dateFnsFormat(comment.createdAt, 'YYYY/MM/DD HH:mm');
 
     // generate body
     let commentBody = comment.comment;

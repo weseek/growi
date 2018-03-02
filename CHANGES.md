@@ -1,9 +1,127 @@
 CHANGES
 ========
 
-## 2.2.2
+## 2.4.2-RC
 
+* Improvement: Ensure to set absolute url from root when attaching files when `FILE_UPLOAD=local`
+
+## 2.4.1
+
+* Feature: Custom Header HTML
+* Improvement: Add highlight.js languages
+    * dockerfile, go, gradle, json, less, scss, typescript, yaml
+* Fix: Couldn't connect to PLANTUML_URI
+    * Introduced by 2.4.0
+* Fix: Couldn't render UML which includes CJK
+    * Introduced by 2.4.0
+* Support: Upgrade libs
+    * axios
+    * diff2html
+
+## 2.4.0
+
+* Feature: Support Footnotes
+* Feature: Support Task lists
+* Feature: Support Table with CSV
+* Feature: Enable to render UML diagrams with public plantuml.com server
+* Feature: Enable to switch whether rendering MathJax in realtime or not
+* Improvement: Replace markdown parser with markdown-it
+* Improvement: Generate anchor of headers with header strings
+* Improvement: Enhanced Scroll Sync on Markdown Editor/Preview
+* Improvement: Update `#revision-body` tab contents after saving with `Ctrl-S`
+* Fix: 500 Internal Server Error occures when basic-auth configuration is set
+
+## 2.3.9
+
+* Fix: `Ctrl-/` doesn't work on Chrome
+* Fix: Close Shortcuts help with `Ctrl-/`, ESC key
+* Fix: Jump to last line wrongly when `.revision-head-edit-button` clicked
+* Support: Upgrade libs
+    * googleapis
+
+## 2.3.8
+
+* Feature: Suggest page path when creating pages
+* Improvement: Prevent keyboard shortcuts when modal is opened
+* Improvement: PageHistory UI
+* Improvement: Ensure to scroll when edit button of section clicked
+* Improvement: Enabled to toggle the style for active line
+* Support: Upgrade libs
+    * style-loader
+    * react-codemirror2
+
+## 2.3.7
+
+* Fix: Open popups when `Ctrl+C` pressed
+    * Introduced by 2.3.5
+
+## 2.3.6
+
+* Feature: Theme Selector for Editor
+* Improvement: Remove unportalize button from crowi-plus layout
+* Fix: CSS for admin pages
+* Support: Shrink the size of libraries to include
+
+## 2.3.5
+
+* Feature: Enhanced Editor by CodeMirror
+* Feature: Emoji AutoComplete
+* Feature: Add keyboard shortcuts
+* Improvement: Attaching file with Dropzone.js
+* Improvement: Show shortcuts help with `Ctrl-/`
+* Fix: DOMs that has `.alert-info` class don't be displayed
+* Support: Switch and upgrade libs
+    * 8fold-marked -> marked
+    * react-bootstrap
+    * googleapis
+    * mongoose
+    * mongoose-unique-validator
+    * etc..
+
+## 2.3.4 (Missing number)
+
+## 2.3.3
+
+* Fix: The XSS Library escapes inline code blocks
+    * Degraded by 2.3.0
+* Fix: NPE occurs on Elasticsearch when initial access
+* Fix: Couldn't invite users(failed to create)
+
+## 2.3.2
+
+* Improvement: Add LDAP group search options
+
+## 2.3.1
+
+* Fix: Blockquote doesn't work
+    * Degraded by 2.3.0
+* Fix: Couldn't create user with first LDAP logging in
+
+## 2.3.0
+
+* Feature: LDAP Authentication
+* Improvement: Prevent XSS
+* Fix: node versions couldn't be shown
+* Support: Upgrade libs
+    * express-pino-logger
+
+## 2.2.4
+
+* Fix: googleapis v23.0.0 lost the function `oauth2Client.setCredentials`
+    * Degraded by 2.2.2 updates
+* Fix: HeaderSearchBox didn't append 'q=' param when searching
+    * Degraded by 2.2.3 updates
+
+## 2.2.3
+
+* Fix: The server responds anything when using passport
+    * Degraded by 2.2.2 updates
 * Fix: Update `lastLoginAt` when login is success
+* Support: Replace moment with date-fns
+* Support: Upgrade react-bootstrap-typeahead
+* Improvement: Replace emojify.js with emojione
+
+## 2.2.2 (Missing number)
 
 ## 2.2.1
 
@@ -178,8 +296,8 @@ CHANGES
 
 ## 1.1.8
 
-* Fix: Depth of dropdown-menu when '.on-edit'
-* Fix: Error occured on saveing with Ctrl+S
+* Fix: Depth of dropdown-menu when `.on-edit`
+* Fix: Error occured on saveing with `Ctrl-S`
 * Fix: Guest users browsing
 
 ## 1.1.7
@@ -208,11 +326,11 @@ CHANGES
 ## 1.1.2
 
 * Imprv: Brushup fonts and styles
-* Fix: Ensure to specity revision id when saving with Ctrl+S
+* Fix: Ensure to specity revision id when saving with `Ctrl-S`
 
 ## 1.1.1
 
-* Feature: Save with Ctrl+S
+* Feature: Save with `Ctrl-S`
 * Imprv: Brushup fonts and styles
 
 ## 1.1.0

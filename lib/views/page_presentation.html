@@ -6,6 +6,8 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
+    {{ customHeader() }}
+
     <!-- polyfills for IE11 -->
     <script>
       var userAgent = window.navigator.userAgent.toLowerCase();
@@ -17,8 +19,20 @@
       }
     </script>
 
-    <!-- jQuery -->
-    <script src="//cdn.jsdelivr.net/jquery/3.2.1/jquery.min.js"></script>
+    <!-- jQuery, emojione (expect to hit the cache) -->
+    <script src="https://cdn.jsdelivr.net/combine/npm/emojione@3.1.2,npm/jquery@3.3.1"></script>
+    <!-- highlight.js -->
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/combine/
+gh/highlightjs/cdn-release@9.12.0/build/languages/dockerfile.min.js,
+gh/highlightjs/cdn-release@9.12.0/build/languages/go.min.js,
+gh/highlightjs/cdn-release@9.12.0/build/languages/gradle.min.js,
+gh/highlightjs/cdn-release@9.12.0/build/languages/json.min.js,
+gh/highlightjs/cdn-release@9.12.0/build/languages/less.min.js,
+gh/highlightjs/cdn-release@9.12.0/build/languages/scss.min.js,
+gh/highlightjs/cdn-release@9.12.0/build/languages/typescript.min.js,
+gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js
+" defer></script>
 
     {% if env === 'development' %}
       <script src="/dll/vendor.dll.js"></script>
@@ -34,6 +48,8 @@
 
     <!-- Google Fonts -->
     <link href='https://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
+    <!-- highlight.js -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/github.css">
 
     <style>
       {{ customCss() }}

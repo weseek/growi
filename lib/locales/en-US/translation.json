@@ -12,6 +12,7 @@
   "Create": "Create",
   "Admin": "Admin",
   "New": "New",
+  "Shortcuts": "Shortcuts",
 
   "Update": "Update",
   "Update Page": "Update Page",
@@ -37,6 +38,8 @@
   "Share": "Share",
   "Share Link": "Share Link",
   "Markdown Link": "Markdown Link",
+
+  "Management Wiki": "Management Wiki",
 
   "Unportalize": "Unportalize",
 
@@ -126,13 +129,16 @@
   "Current password": "Current password",
   "New password": "New password",
   "Re-enter new password": "Re-enter new password",
-  "Please set a password": "Please set a password",
+  "Password is not set": "Password is not set",
   "You can sign in with email and password": "You can sign in with <code>%s</code> and password",
 
   "API Settings": "API Settings",
   "API Token Settings": "API Token Settings",
   "Current API Token": "Current API Token",
   "Update API Token": "Update API Token",
+
+  "Security settings": "Security settings",
+
 
   "page_page": {
       "notice": {
@@ -189,19 +195,66 @@
     }
   },
 
-  "modal_help": {
-      "basic": {
-          "title": "Basics",
-          "body1": "There are 2 types of pages: List pages (showing lists of links to other pages) and normal pages.",
-          "body2": "Pages that end with a slash / are List pages for anything following the slash.",
-          "body3": "You can view older versions of a page from the History tab. Any changes made will be stored here."
+  "modal_shortcuts": {
+      "global": {
+          "title": "Global shortcuts",
+          "Open/Close shortcut help": "Open/Close shortcut help",
+          "Edit Page": "Edit Page",
+          "Create Page": "Create Page"
       },
-      "tips": {
-          "title": "Quick Tips on Editing",
-          "body1": "Use sections and subsections to make it easier for your friends to read your pages."
-      },
-      "markdown": {
-          "title": "Markdown Rules"
-      }
+      "editor": {
+          "title": "Editor shortcuts",
+          "Indent": "Indent",
+          "Outdent": "Outdent",
+          "Save Page": "Save Page",
+          "Delete Line": "Delete Line"
+
+              }
+  },
+            
+  "admin_top": { 
+    "Management Wiki": "Management Wiki",
+    "System Information": "System Information",
+    "wiki_administrator": "Only Wiki administrator can access this page",
+    "assign_administrator": "You can assign administrator from Assign administrator button in the User management page",
+    "List of installed plugins": "List of installed plugins",
+    "Package name": "Package name",
+    "Specified version": "Specified version",
+    "Installed version": "Installed version"
+    
+  },
+
+  "app_setting": {
+    "Wiki name": "Wiki name",
+    "wiki_change": "You can change Wiki name which is used for header and HTML title.",
+    "header_content": "The contents entered here will be shown in the header etc.",
+    "Confidential name": "Confidential name",
+    "ex): internal use only":"ex): internal use only",
+    "enable_files_except_image": "Enable file upload other than image files.",
+    "attach_enable": "You can attach files other than image files if you enable this option.",
+    "Reload": "Reload",
+    "Mail settings": "Mail settings",
+    "SMTP_used": "If you have SMTP settings, it will be used.",
+    "SMTP_but_AWS": "If you do not have SMTP settings but AWS settings,  e-mails will be sent by SES.",
+    "neihter_of": "If you do not of neither of these, e-mails will not be sent.",
+    "From e-mail address": "From e-mail address",
+    "SMTP settings": "SMTP settings"  , 
+    "Host": "Host",
+    "Port": "Port",
+    "User": "User",
+    "AWS settings": "AWS settings",
+    "AWS_access": "This is for AWS settings. If you complete AWS settings, file upload function, progile picture function etc will be enabled.",
+    "No_SMTP_setting": "If you do not have SMTP settings, e-mails will be sent via SES. You need to verify from e-mail address and production settings.",
+    "change_setting": "Caution:if you change this setting not completed, you will not be able to access files you have uploaded so far.",
+    "region": "region",
+    "packet name": "packet name",
+    "Plugin settings": "Plugin settings",
+    "Enable plugin loading": "Enable plugin loading",
+    "valid": "valid",
+    "invalid": "invalid"
+
+
   }
+
 }
+ 

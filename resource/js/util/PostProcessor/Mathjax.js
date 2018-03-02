@@ -1,3 +1,7 @@
+/**
+ * DEPRECATED
+ * replaced by markdown-it-mathjax and rendering by PageEditor/Preview component -- 2018.01.30 Yuki Takei
+ *
 
 export default class Mathjax {
 
@@ -64,3 +68,4 @@ export default class Mathjax {
     return html;
   }
 }
+*/

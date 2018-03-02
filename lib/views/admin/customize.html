@@ -204,19 +204,56 @@
       </fieldset>
       </form>
 
+      <form action="/_api/admin/customize/header" method="post" class="form-horizontal" id="cutomheaderSettingForm" role="form">
+      <fieldset>
+        <legend>カスタムヘッダーHTML</legend>
+
+        <p class="well">
+          システム全体に適用される HTML を記述できます。<code>&lt;header&gt;</code> タグ内の他の <code>&lt;script&gt;</code> タグ読み込み前に展開されます。<br>
+          変更の反映はページの更新が必要です。
+        </p>
+
+        <p class="help-block">
+          Examples:
+          <pre><code>&lt;script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js" defer&gt;&lt;script&gt;</script></code></pre>
+        </p>
+
+        <div class="form-group">
+          <div class="col-xs-12">
+            <div id="custom-header-editor"></div>
+            <input type="hidden" id="inputCustomHeader" name="settingForm[customize:header]" value="{{ settingForm['customize:header'] }}">
+          </div>
+          <div class="col-xs-12">
+            <p class="help-block text-right">
+              <i class="fa fa-fw fa-keyboard-o" aria-hidden="true"></i>
+              Ctrl+Space でコード補完
+            </p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-xs-offset-5 col-xs-6">
+            <input type="hidden" name="_csrf" value="{{ csrf() }}">
+            <button type="submit" class="btn btn-primary">更新</button>
+          </div>
+        </div>
+
+      </fieldset>
+      </form>
 
       <form action="/_api/admin/customize/css" method="post" class="form-horizontal" id="cutomcssSettingForm" role="form">
       <fieldset>
-        <legend>カスタムCSS</legend>
+        <legend>カスタムヘッダーCSS</legend>
 
         <p class="well">
-          システム全体に適用されるCSSを記述できます。<br>
+          システム全体に適用されるCSSを記述できます。<code>&lt;header&gt;</code> タグ内に展開されます。<br>
           変更の反映はページの更新が必要です。
         </p>
 
         <div class="form-group">
           <div class="col-xs-12">
-            <textarea id="taCustomCss" class="form-control" type="textarea" name="settingForm[customize:css]" rows="20">{{ settingForm['customize:css'] }}</textarea>
+            <div id="custom-css-editor"></div>
+            <input type="hidden" id="inputCustomCss" name="settingForm[customize:css]" value="{{ settingForm['customize:css'] }}">
           </div>
           <div class="col-xs-12">
             <p class="help-block text-right">
@@ -242,13 +279,16 @@
         <legend>カスタムスクリプト</legend>
 
         <p class="well">
-          システム全体に適用されるJavaScriptを記述できます。<br>
+          システム全体に適用されるJavaScriptを記述できます。<code>&lt;body&gt;</code> タグ内の最後に展開されます。<br>
           変更の反映はページの更新が必要です。
         </p>
 
         <p class="help-block">
-          Available Placeholders:
+          Placeholders:<br>
+          (Available after <code>load</code> event)
           <dl class="dl-horizontal">
+            <dt><code>$</code></dt>
+            <dd>jQuery instance</dd>
             <dt><code>crowi</code></dt>
             <dd>Crowi context instance</dd>
             <dt><code>Crowi</code></dt>
@@ -259,10 +299,19 @@
             <dd>crowi-plus plugin manager instance</dd>
           </dl>
         </p>
+        <p class="help-block">
+          Examples:
+<pre><code>console.log($('.main-container'));
+
+window.addEventListener('load', (event) => {
+  console.log('config: ', crowi.config);
+});</code></pre>
+        </p>
 
         <div class="form-group">
           <div class="col-xs-12">
-            <textarea id="taCustomScript" class="form-control" type="textarea" name="settingForm[customize:script]" rows="20">{{ settingForm['customize:script'] }}</textarea>
+            <div id="custom-script-editor"></div>
+            <input type="hidden" id="inputCustomScript" name="settingForm[customize:script]" value="{{ settingForm['customize:script'] }}">
           </div>
           <div class="col-xs-12">
             <p class="help-block text-right">
@@ -286,7 +335,7 @@
   </div>
 
   <script>
-    $('#cutomcssSettingForm, #cutomscriptSettingForm, #cutomlayoutSettingForm, #cutombehaviorSettingForm, #customfeaturesSettingForm').each(function() {
+    $('#cutomcssSettingForm, #cutomscriptSettingForm, #cutomlayoutSettingForm, #cutombehaviorSettingForm, #customfeaturesSettingForm, #cutomheaderSettingForm').each(function() {
       $(this).submit(function()
       {
         function showMessage(formId, msg, status) {
@@ -332,53 +381,6 @@
         });
         return false;
       });
-    });
-
-  </script>
-
-  <!-- CodeMirror -->
-  <script src="https://cdn.jsdelivr.net/g/codemirror@4.5.0(codemirror.min.js+addon/lint/css-lint.js+addon/lint/javascript-lint.js+mode/css/css.js+mode/javascript/javascript.js+addon/hint/css-hint.js+addon/hint/javascript-hint.js+addon/hint/show-hint.js+addon/edit/matchbrackets.js+addon/edit/closebrackets.js),jquery.ui@1.11.4"></script>
-  <script>
-    // Configure for CSS editor
-    var editorCss = CodeMirror.fromTextArea(document.getElementById('taCustomCss'), {
-      mode: "css",
-      lineNumbers: true,
-      tabSize: 2,
-      indentUnit: 2,
-      theme: 'eclipse',
-      matchBrackets: true,
-      autoCloseBrackets: true,
-      extraKeys: {"Ctrl-Space": "autocomplete"},
-    });
-    editorCss.on('change', function(cm, change) {
-      cm.save();
-    });
-    // resizable with jquery.ui
-    $(editorCss.getWrapperElement()).resizable({
-      resize: function() {
-        editorCss.setSize($(this).width(), $(this).height());
-      }
-    });
-
-    // Configure for JavaScript editor
-    var editorScript = CodeMirror.fromTextArea(document.getElementById('taCustomScript'), {
-      mode: "javascript",
-      lineNumbers: true,
-      tabSize: 2,
-      indentUnit: 2,
-      theme: 'eclipse',
-      matchBrackets: true,
-      autoCloseBrackets: true,
-      extraKeys: {"Ctrl-Space": "autocomplete"},
-    });
-    editorScript.on('change', function(cm, change) {
-      cm.save();
-    });
-    // resizable with jquery.ui
-    $(editorScript.getWrapperElement()).resizable({
-      resize: function() {
-        editorScript.setSize($(this).width(), $(this).height());
-      }
     });
 
   </script>

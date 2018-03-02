@@ -17,7 +17,8 @@ export default class UserPicture extends React.Component {
   }
 
   generateGravatarSrc(user) {
-    const hash = md5(user.email.trim().toLowerCase());
+    const email = user.email || '';
+    const hash = md5(email.trim().toLowerCase());
     return `https://gravatar.com/avatar/${hash}`;
   }
 

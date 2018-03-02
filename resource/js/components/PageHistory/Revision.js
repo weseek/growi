@@ -29,6 +29,7 @@ export default class Revision extends React.Component {
       pic = <UserPicture user={author} />;
     }
 
+    const iconName = this.props.revisionDiffOpened ? 'caret-down' : 'caret-right';
     return (
       <div className="revision-history-main">
         {pic}
@@ -40,11 +41,11 @@ export default class Revision extends React.Component {
             <UserDate dateTime={revision.createdAt} />
           </p>
           <p>
-            <a href={"?revision=" + revision._id }>
-              <Icon name="history" /> View this version
-            </a>
             <a className="diff-view" onClick={this._onDiffOpenClicked}>
-              <Icon name="level-down" /> View diff
+              <Icon name={iconName} /> View diff
+            </a>
+            <a href={"?revision=" + revision._id }>
+              <Icon name="sign-in" /> Go to this version
             </a>
           </p>
         </div>
@@ -55,6 +56,7 @@ export default class Revision extends React.Component {
 
 Revision.propTypes = {
   revision: PropTypes.object,
+  revisionDiffOpened: PropTypes.bool.isRequired,
   onDiffOpenClicked: PropTypes.func.isRequired,
 }
 

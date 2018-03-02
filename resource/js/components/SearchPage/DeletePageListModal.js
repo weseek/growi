@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Button, Modal, Checkbox } from 'react-bootstrap';
-import moment from 'moment';
+import { Button } from 'react-bootstrap/es/Button';
+import { Modal } from 'react-bootstrap/es/Modal';
+import { Checkbox } from 'react-bootstrap/es/Checkbox';
 
 import ReactUtils from '../ReactUtils';
 

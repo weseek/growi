@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import moment from 'moment';
+import dateFnsFormat from 'date-fns/format';
 
 /**
  * UserDate
@@ -11,7 +11,7 @@ import moment from 'moment';
 export default class UserDate extends React.Component {
 
   render() {
-    const dt = moment(this.props.dateTime).format(this.props.format);
+    const dt = dateFnsFormat(this.props.dateTime, this.props.format);
 
     return (
       <span className={this.props.className}>

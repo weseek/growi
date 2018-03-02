@@ -1,15 +1,11 @@
-import emojify from 'emojify.js';
-
+/**
+ * DEPRECATED
+ * replaced by markdown-it-emoji -- 2018.01.30 Yuki Takei
+ *
 export default class Emoji {
 
-  constructor() {
-    // see https://github.com/Ranks/emojify.js/issues/123
-    emojify.setConfig({
-      img_dir: 'https://github.global.ssl.fastly.net/images/icons/emoji/',
-    });
-  }
-
   process(markdown) {
-    return emojify.replace(markdown);
+    return emojione.shortnameToImage(markdown);
   }
 }
+*/
