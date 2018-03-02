@@ -1,6 +1,3 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-
 import { BasicInterceptor } from 'crowi-pluginkit';
 
 
