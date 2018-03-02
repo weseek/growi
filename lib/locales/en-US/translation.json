@@ -270,6 +270,10 @@
     "insert_single":"Please insert single e-mail address per line.",
     "Authentication mechanism settings":"Authentication mechanism settings"
 
-  }
+ },
+
+  "markdown_setting": { 
+    "markdown_rendering": "You can change Markdown rendering settings."
+
+ }
 }
- 
