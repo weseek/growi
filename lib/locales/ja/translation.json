@@ -285,7 +285,8 @@
     "restrict_emails": "登録可能なメールアドレスを制限することができます。",
     "for_instance":"例えば、会社で使う場合 などと記載すると、",
     "only_those":"その会社のメールアドレスを持っている人のみ登録可能になります。",
-    "insert_single":"1行に1メールアドレス入力してください。"
+    "insert_single":"1行に1メールアドレス入力してください。",
+    "Authentication mechanism settings":"認証機構設定"
   }
 }
 
