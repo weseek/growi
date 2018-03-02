@@ -12,6 +12,7 @@
   "Create": "作成",
   "Admin": "管理",
   "New": "作成",
+  "Shortcuts": "ショートカット",
 
   "Update": "更新",
   "Update Page": "ページを更新",
@@ -68,15 +69,34 @@
   "Input page name (optional)": "ページ名を入力(空欄OK)",
   "New Page": "新規ページ",
   "Create under": "<code>%s</code>以下に作成",
-
+  
+  
+ 
+  
   "Table of Contents": "目次",
-
+  "Management Wiki Home": "Wiki管理トップ",
+  "App settings": "アプリ設定",
+  "Security settings": "セキュリティ設定",
+  "Markdown settings": "Markdown設定",
+  "Customize": "カスタマイズ",
+  "Notification settings": "通知設定",
+  "User management": "ユーザー管理",
+  "Basic settings": "基本設定",
+  "Basic authentication": "Basic認証",
+  "Password": "パスワード",
+  "Guest users access": "ゲストユーザーのアクセス",
+  "Register limitation": "登録の制限",
+  "The contents entered here will be shown in the header etc": "ここに入力した内容は、ヘッダー等に表示されます。", 
   "Public": "公開",
   "Anyone with the link": "リンクを知っている人のみ",
   "Specified users": "特定ユーザーのみ",
   "Just me": "自分のみ",
   "Shareable link": "このページの共有用URL",
+  "The whitelist of registration permission E-mail address": "登録許可メールアドレスの<br>ホワイトリスト",
+  "Selecting authentication mechanism": "認証機構選択",
 
+  
+ 
   "Show latest": "最新のページを表示",
   "Load latest": "最新版を読み込む",
   "edited this page": "さんがこのページを編集しました。",
@@ -124,8 +144,10 @@
   "Current password": "現在のパスワード",
   "New password": "新しいパスワード",
   "Re-enter new password": "(確認用)",
-  "Please set a password": "パスワードを設定してください",
+  "Password is not set": "パスワードが設定されていません",
   "You can sign in with email and password": "<code>%s</code> と設定されたパスワードの組み合わせでログイン可能になります。",
+
+  "Security settings": "セキュリティ設定",
 
   "API Settings": "API設定",
   "API Token Settings": "API Token設定",
@@ -146,6 +168,9 @@
           "conflict": "すでに他の人がこのページを編集していたため保存できませんでした。ページを再読み込み後、自分の編集箇所のみ再度編集してください。"
       }
   },
+
+
+  
 
   "modal_rename": {
     "label": {
@@ -187,19 +212,62 @@
     }
   },
 
-  "modal_help": {
-      "basic": {
-          "title": "基本的な機能",
-          "body1": "表示される画面には、「一覧ページ」と「ページ」の2種類があります",
-          "body2": "スラッシュ <code>/</code> で終わるページは、その階層の一覧ページとなります。",
-          "body3": "ページでの変更はすべて記録されています。History からそのページの過去の状態を見ることができます。"
-      },
-      "tips": {
-          "title": "編集のコツ",
-          "body1": "文章の <strong>構造</strong> を意識しましょう。本を書くように、内容と文脈を整理してセクション・サブセクション...と構造的に書くと、わかりやすく他人に伝わりやすいページがになります。"
-      },
-      "markdown": {
-          "title": "記法"
-      }
-  }
+  "modal_shortcuts": {
+    "global": {
+        "Open/Close shortcut help": "ショートカットヘルプの表示/非表示",
+        "Edit Page": "ページ編集",
+        "Create Page": "ページ作成"
+    },
+    "editor": {
+        "Indent": "インデント",
+        "Outdent": "左インデント",
+        "Save Page": "保存",
+        "Delete Line": "行削除"
+    }
+  },
+   
+  "admin_top": {
+    "Management Wiki": "Wiki管理",
+    "System Information": "システム情報",
+    "wiki_administrator": "この画面はWiki管理者のみがアクセスできる画面です。",
+    "assign_administrator": "「ユーザー管理」から「管理者にする」ボタンを使ってユーザーをWiki管理者に任命することができます。",
+    "List of installed plugins": "インストールされているプラグイン一覧",
+    "Package name": "パッケージ名",
+    "Specified version": "指定バージョン",
+    "Installed version": "インストールされているバージョン"
+  
+  
+  
+  },
+
+  "app_setting": { 
+    "Wiki name": "Wikiの名前",
+    "wiki_change": "ヘッダーやHTMLタイトルに使用されるWikiの名前を変更できます。",
+    "header_content": "ここに入力した内容は、ヘッダー等に表示されます。",
+    "Confidential name": "コンフィデンシャル表示",
+    "コンフィデンシャル表示": "Confidential name",  
+    "enable_files_except_image": "画像以外のファイルアップロードを許可",
+    "attach_enable": "許可をしている場合、画像以外のファイルをページに添付可能になります。",
+    "Reload": "更新",
+    "Mail settings": "メールの設定",
+    "SMTP_used": "SMTPの設定がされている場合、それが利用されます。",
+    "SMTP_but_AWS": "SMTP設定がなく、AWSの設定がある場合、SESでの送信を試みます。",
+    "neihter_of": "どちらの設定もない場合、メールは送信されません。",
+    "From e-mail address": "Fromアドレス",
+    "SMTP settings": "SMTP設定"   ,
+    "Host": "ホスト",
+    "Port": "ポート",
+    "User": "ユーザー",
+    "AWS settings": "AWS設定",
+    "AWS_access": "AWS にアクセスするための設定を行います。AWS の設定を完了させると、ファイルアップロード機能、プロフィール写真機能などが有効になります。",
+    "No_SMTP_setting": "また、SMTP の設定が無い場合、SES を利用したメール送信が行われます。FromメールアドレスのVerify、プロダクション利用設定をする必要があります。",
+    "change_setting": "この設定を途中で変更すると、これまでにアップロードしたファイル等へのアクセスができなくなりますのでご注意下さい。",
+    "region": "リージョン",
+    "packet name": "パケット名",
+    "Plugin settings": "プラグイン設定",
+    "Enable plugin loading": "プラグインの読み込みを有効にします。",
+    "valid": "有効",
+    "invalid": "無効"
+
+   }
 }

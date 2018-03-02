@@ -5,13 +5,13 @@
 {% block content_head %}
 <div class="header-wrap">
   <header id="page-header">
-    <h1 class="title" id="">カスタマイズ</h1>
+    <h1 class="title" id="">{{ t('Security settings') }}</h1>
   </header>
 </div>
 {% endblock %}
 
 {% block content_main %}
-<div class="content-main">
+<div class="content-main admin-security">
   <div class="row">
     <div class="col-md-3">
       {% include './widget/menu.html' with {current: 'security'} %}
@@ -38,16 +38,16 @@
 
       <form action="/_api/admin/security/general" method="post" class="form-horizontal" id="generalSetting" role="form">
         <fieldset>
-        <legend>基本設定</legend>
+        <legend>{{ t('Security settings') }}</legend>
 
           <div class="form-group">
-            <label for="settingForm[security:registrationMode]" class="col-xs-3 control-label">Basic認証</label>
+            <label for="settingForm[security:registrationMode]" class="col-xs-3 control-label">{{ t('Basic authentication') }}</label>
             <div class="col-xs-3">
               <label for="">ID</label>
               <input class="form-control" type="text" name="settingForm[security:basicName]"   value="{{ settingForm['security:basicName']|default('') }}">
             </div>
             <div class="col-xs-3">
-              <label for="">パスワード</label>
+              <label for="">{{ t('Password') }}</label>
               <input class="form-control" type="text" name="settingForm[security:basicSecret]" value="{{ settingForm['security:basicSecret']|default('') }}">
             </div>
             <div class="col-xs-offset-3 col-xs-9">
@@ -59,7 +59,7 @@
           </div>
 
           <div class="form-group">
-            <label for="settingForm[security:restrictGuestMode]" class="col-xs-3 control-label">ゲストユーザーのアクセス</label>
+            <label for="settingForm[security:restrictGuestMode]" class="col-xs-3 control-label">{{ t('Guest users access') }}</label>
             <div class="col-xs-6">
               <select class="form-control" name="settingForm[security:restrictGuestMode]" value="{{ settingForm['security:restrictGuestMode'] }}">
                 {% for modeValue, modeLabel in consts.restrictGuestMode %}
@@ -70,19 +70,19 @@
           </div>
 
           <div class="form-group">
-            <label for="settingForm[security:registrationMode]" class="col-xs-3 control-label">登録の制限</label>
+            <label for="settingForm[security:registrationMode]" class="col-xs-3 control-label">{{ t('Register limitation') }}</label>
             <div class="col-xs-6">
               <select class="form-control" name="settingForm[security:registrationMode]" value="{{ settingForm['security:registrationMode'] }}">
                 {% for modeValue, modeLabel in consts.registrationMode %}
                 <option value="{{ modeValue }}" {% if modeValue == settingForm['security:registrationMode'] %}selected{% endif %} >{{ modeLabel }}</option>
                 {% endfor %}
               </select>
-              <p class="help-block">ここに入力した内容は、ヘッダー等に表示されます。</p>
+              <p class="help-block">{{ t('The contents entered here will be shown in the header etc') }}</p>
             </div>
           </div>
 
           <div class="form-group">
-            <label for="settingForm[security:registrationWhiteList]" class="col-xs-3 control-label">登録許可メールアドレスの<br>ホワイトリスト</label>
+            <label for="settingForm[security:registrationWhiteList]" class="col-xs-3 control-label">{{ t('The whitelist of registration permission E-mail address') }}</label>
             <div class="col-xs-8">
               <textarea class="form-control" type="textarea" name="settingForm[security:registrationWhiteList]" placeholder="例: @crowi.wiki">{{ settingForm['security:registrationWhiteList']|join('&#13')|raw }}</textarea>
               <p class="help-block">登録可能なメールアドレスを制限することができます。例えば、会社で使う場合、<code>@crowi.wiki</code> などと記載すると、その会社のメールアドレスを持っている人のみ登録可能になります。<br>
@@ -93,7 +93,7 @@
           <div class="form-group">
             <div class="col-xs-offset-3 col-xs-6">
               <input type="hidden" name="_csrf" value="{{ csrf() }}">
-              <button type="submit" class="btn btn-primary">更新</button>
+              <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
             </div>
           </div>
 
@@ -102,8 +102,8 @@
 
       <form action="/_api/admin/security/mechanism" method="post" class="form-horizontal" id="mechanismSetting" role="form">
         <fieldset>
-        <legend>認証機構設定</legend>
-          <p class="alert alert-info"><b>NOTE: </b>Reboot the server and apply the changes</p>
+          <legend>{{ t('Selecting authentication mechanism') }}</legend>
+          <p class="alert alert-info"><b>NOTE: </b>Restarting the server is needed if you switch the auth mechanism.</p>
           <div class="form-group">
             <div class="col-xs-6">
               <h4>
@@ -126,7 +126,7 @@
               </h4>
               <ul>
                 <li>Username, E-mail and Password authentication</li>
-                <li class="text-muted">(TBD) <del>LDAP authentication</del></li>
+                <li>LDAP authentication</li>
                 <li class="text-muted">(TBD) <del>Google OAuth2 authentication</del></li>
                 <li class="text-muted">(TBD) <del>Facebook OAuth2 authentication</del></li>
                 <li class="text-muted">(TBD) <del>Twitter OAuth authentication</del></li>
@@ -138,65 +138,133 @@
           <div class="form-group">
             <div class="col-xs-offset-5 col-xs-6">
               <input type="hidden" name="_csrf" value="{{ csrf() }}">
-              <button type="submit" class="btn btn-primary">更新</button>
+              <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
             </div>
           </div>
-      </form>
-
-      <form action="/_api/admin/security/google" method="post" class="form-horizontal officialCrowiMechanism" id="googleSetting" role="form"
-          {% if true === settingForm['security:isEnabledPassport'] %}style="display: none;"{% endif %}>
-        <fieldset>
-          <h3>Google 設定</h3>
-          <p class="well">
-            Google Cloud Platform の <a href="https://console.cloud.google.com/apis/credentials">API Manager</a>
-            から OAuth2 Client ID を作成すると、Google アカウントにコネクトして登録やログインが可能になります。
-          </p>
-
-          <ol class="help-block">
-            <li><a href="https://console.cloud.google.com/apis/credentials">API Manager</a> へアクセス</li>
-            <li>プロジェクトを作成していない場合は作成してください</li>
-            <li>「認証情報を作成」-> OAuthクライアントID</li>
-            <ol>
-              <li>「ウェブアプリケーション」を選択</li>
-              <li>承認済みのリダイレクトURLに、 <code>https://${crowi.host}/google/callback</code> を入力<br>
-              (<code>${crowi.host}</code>は環境に合わせて変更してください)</li>
-            </ol>
-          </ol>
-
-          <div class="form-group">
-            <label for="settingForm[google:clientId]" class="col-xs-3 control-label">Client ID</label>
-            <div class="col-xs-6">
-              <input class="form-control" type="text" name="settingForm[google:clientId]" value="{{ settingForm['google:clientId'] }}">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="settingForm[google:clientSecret]" class="col-xs-3 control-label">Client Secret</label>
-            <div class="col-xs-6">
-              <input class="form-control" type="text" name="settingForm[google:clientSecret]" value="{{ settingForm['google:clientSecret'] }}">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <div class="col-xs-offset-3 col-xs-6">
-              <input type="hidden" name="_csrf" value="{{ csrf() }}">
-              <button type="submit" class="btn btn-primary">更新</button>
-            </div>
-          </div>
-
         </fieldset>
       </form>
 
-      <form action="/_api/admin/security/ldap" method="post" class="form-horizontal passportStrategy" id="ldapSetting" role="form"
-          {% if !settingForm['security:isEnabledPassport'] %}style="display: none;"{% endif %}>
-        <fieldset>
-          <h3>[Passport] LDAP Strategy</h3>
-          <p class="well">
-            (TBD)
+
+      <div class="auth-mechanism-configurations">
+
+        <legend>認証機構設定</legend>
+
+        {% set isOfficialConfigurationVisible = !isEnabledPassport() %}
+        <div class="official-crowi-auth-settings" {% if !isOfficialConfigurationVisible %}style="display: none;"{% endif %}>
+          {% set isRestartingServerNeeded = isPassportLocalStrategySetup() %}
+          <p class="alert alert-warning"
+              {% if !isRestartingServerNeeded %}style="display: none;"{% endif %}>
+            <b>
+              <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+              Restarting the server is needed.
+            </b>
+            The server is running with Passport authentication mechanism.
           </p>
 
-        </fieldset>
-      </form>
+          <form action="/_api/admin/security/google" method="post" class="form-horizontal " id="googleSetting" role="form"
+              {% if isRestartingServerNeeded %}style="opacity: 0.4;"{% endif %}>
+
+            <fieldset>
+              <h4>Google 設定</h4>
+              <p class="well">
+                Google Cloud Platform の <a href="https://console.cloud.google.com/apis/credentials">API Manager</a>
+                から OAuth2 Client ID を作成すると、Google アカウントにコネクトして登録やログインが可能になります。
+              </p>
+
+              <ol class="help-block">
+                <li><a href="https://console.cloud.google.com/apis/credentials">API Manager</a> へアクセス</li>
+                <li>プロジェクトを作成していない場合は作成してください</li>
+                <li>「認証情報を作成」-> OAuthクライアントID</li>
+                <ol>
+                  <li>「ウェブアプリケーション」を選択</li>
+                  <li>承認済みのリダイレクトURLに、 <code>https://${crowi.host}/google/callback</code> を入力<br>
+                  (<code>${crowi.host}</code>は環境に合わせて変更してください)</li>
+                </ol>
+              </ol>
+
+              <div class="form-group">
+                <label for="settingForm[google:clientId]" class="col-xs-3 control-label">Client ID</label>
+                <div class="col-xs-6">
+                  <input class="form-control" type="text" name="settingForm[google:clientId]" value="{{ settingForm['google:clientId'] }}">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="settingForm[google:clientSecret]" class="col-xs-3 control-label">Client Secret</label>
+                <div class="col-xs-6">
+                  <input class="form-control" type="text" name="settingForm[google:clientSecret]" value="{{ settingForm['google:clientSecret'] }}">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="col-xs-offset-3 col-xs-6">
+                  <input type="hidden" name="_csrf" value="{{ csrf() }}">
+                  <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
+                </div>
+              </div>
+
+            </fieldset>
+          </form>
+        </div>
+
+        {#
+         # passport settings nav
+         #}
+        {% set isPassportConfigurationVisible = settingForm['security:isEnabledPassport'] %}
+        <div class="passport-settings" {% if !isPassportConfigurationVisible %}style="display: none;"{% endif %}>
+
+          {% set isRestartingServerNeeded = !isPassportLocalStrategySetup() %}
+          <p class="alert alert-warning"
+              {% if !isRestartingServerNeeded %}style="display: none;"{% endif %}>
+            <b>
+              <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+              Restarting the server is needed.
+            </b>
+            The server is running with Official Crowi authentication mechanism.
+          </p>
+          <ul class="nav nav-tabs" role="tablist" {% if isRestartingServerNeeded %}style="opacity: 0.4;"{% endif %}>
+            <li class="active">
+              <a href="#passport-ldap" data-toggle="tab" role="tab"><i class="fa fa-sitemap"></i> LDAP</a>
+            </li>
+            <li>
+              <a href="#passport-google-oauth" data-toggle="tab" role="tab"><i class="fa fa-google"></i> Google OAuth</a>
+            </li>
+            <li>
+              <a href="#passport-facebook" data-toggle="tab" role="tab"><i class="fa fa-facebook"></i> Facebook</a>
+            </li>
+            <li>
+              <a href="#passport-twitter" data-toggle="tab" role="tab"><i class="fa fa-twitter"></i> Twitter</a>
+            </li>
+            <li>
+              <a href="#passport-github" data-toggle="tab" role="tab"><i class="fa fa-github"></i> Github</a>
+            </li>
+          </ul>
+
+          <div class="tab-content" {% if isRestartingServerNeeded %}style="opacity: 0.4;"{% endif %}>
+            <div id="passport-ldap" class="tab-pane active" role="tabpanel" >
+              {% include './widget/passport/ldap.html' with { settingForm: settingForm } %}
+            </div>
+
+            <div id="passport-google-oauth" class="tab-pane" role="tabpanel">
+              {% include './widget/passport/google-oauth.html' %}
+            </div>
+
+            <div id="passport-facebook" class="tab-pane" role="tabpanel">
+              {% include './widget/passport/facebook.html' %}
+            </div>
+
+            <div id="passport-twitter" class="tab-pane" role="tabpanel">
+              {% include './widget/passport/twitter.html' %}
+            </div>
+
+            <div id="passport-github" class="tab-pane" role="tabpanel">
+              {% include './widget/passport/github.html' %}
+            </div>
+
+          </div><!-- /.tab-content -->
+        </div>
+
+      </div><!-- /.auth-mechanism-configurations -->
 
     </div>
   </div>
@@ -255,12 +323,12 @@
       const isEnabledPassport = ($(this).val() === "true");
 
       if (isEnabledPassport) {
-        $('form.officialCrowiMechanism').hide(400);
-        $('form.passportStrategy').show(400);
+        $('.official-crowi-auth-settings').hide(400);
+        $('.passport-settings').show(400);
       }
       else {
-        $('form.officialCrowiMechanism').show(400);
-        $('form.passportStrategy').hide(400);
+        $('.official-crowi-auth-settings').show(400);
+        $('.passport-settings').hide(400);
       }
     });
   </script>

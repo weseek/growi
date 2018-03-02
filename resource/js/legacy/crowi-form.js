@@ -1,19 +1,8 @@
   var pageId = $('#content-main').data('page-id');
   var pagePath= $('#content-main').data('path');
-  var isEnabledLineBreaks = $('#content-main').data('linebreaks-enabled');
-
-  // generate options obj
-  var rendererOptions = {
-    // see: https://www.npmjs.com/package/marked
-    marked: {
-      breaks: isEnabledLineBreaks
-    }
-  };
 
   require('bootstrap-sass');
-  require('inline-attachment/src/inline-attachment');
   require('./thirdparty-js/jquery.selection');
-  const toastr = require('toastr');
 
   // show/hide
   function FetchPagesUpdatePostAndInsert(path) {
@@ -56,49 +45,15 @@
     $('.content-main').removeClass('on-edit');
   });
 
-  // detect mutations for #edit-form
-  const targetSelector = '#edit-form';
-  var mo = new MutationObserver(function(mutations){
-    // initialize caret position when '#edit-form' activated
-    if (mutations[0].target.classList.contains('active')) {
-      initCaretPosition();
-    }
-  });
-  mo.observe(
-    document.querySelector(targetSelector),
-    {
-      attributes: true,
-      attributeFilter: ['class'],
-    }
-  );
-
-  /**
-   * scroll the textarea named '#form-body' according to the attribute 'data-caret-position'
-   *  that is set in Crowi.setScrollPositionToFormBody
-   */
-  function initCaretPosition() {
-    const textarea = document.querySelector('#form-body');
-    const position = textarea.getAttribute('data-caret-position');
-
-    if (position !== null) {
-      // focus
-      textarea.blur();
-      textarea.focus();
-      // scroll to the bottom for a moment
-      textarea.scrollTop = textarea.scrollHeight;
-      // set caret to the target position
-      textarea.selectionStart = position;
-      textarea.selectionEnd = position;
-
-      // remove attribute
-      textarea.removeAttribute('data-caret-position');
-    }
-  }
-
 /**
  * DOM ready
  */
 $(function() {
+  /*
+   * DUPRECATED CODES
+   * using PageEditor React Component -- 2017.01.06 Yuki Takei
+   *
+
   // preview watch
   var originalContent = $('#form-body').val();
 
@@ -127,11 +82,11 @@ $(function() {
     crowi.interceptorManager.process('preRenderPreview', context)
       .then(() => crowi.interceptorManager.process('prePreProcess', context))
       .then(() => {
-        context.markdown = crowiRenderer.preProcess(context.markdown, context.dom);
+        context.markdown = crowiRenderer.preProcess(context.markdown);
       })
       .then(() => crowi.interceptorManager.process('postPreProcess', context))
       .then(() => {
-        var parsedHTML = crowiRenderer.render(context.markdown, context.dom, rendererOptions);
+        var parsedHTML = crowiRenderer.render(context.markdown, context.dom);
         context['parsedHTML'] = parsedHTML;
       })
       .then(() => crowi.interceptorManager.process('postRenderPreview', context))
@@ -177,12 +132,13 @@ $(function() {
       crowi.clearDraft(pagePath);
     }
   });
+  */
   $('#page-form').on('submit', function(e) {
     // avoid message
-    isFormChanged = false;
+    // isFormChanged = false;
     crowi.clearDraft(pagePath);
   });
-
+  /*
   // This is a temporary implementation until porting to React.
   var insertText = function(start, end, newText, mode) {
     var editor = document.querySelector('#form-body');
@@ -411,9 +367,6 @@ $(function() {
     }
   };
 
-  /**
-   * event handler when 'Ctrl-S' pressed
-   */
   var handleSKey = function(event) {
     if (!event.ctrlKey && !event.metaKey) {
       return;
@@ -451,7 +404,7 @@ $(function() {
         let page = res.page;
         pageId = page._id
 
-        toastr.success(undefined, 'Saved successful', {
+        toastr.success(undefined, 'Saved successfully', {
           closeButton: true,
           progressBar: true,
           newestOnTop: false,
@@ -667,4 +620,5 @@ $(function() {
     });
   };
   enableScrollSync();
+  */
 });

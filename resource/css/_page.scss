@@ -125,7 +125,7 @@
 
       // alert component settings for trash page and moved page
       // see: https://jsfiddle.net/me420sky/2/
-      .alert-trash, .alert-moved {
+      .alert-trash, .alert-moved, .alert-unlinked {
         padding: 10px 15px;
 
         span {
@@ -267,7 +267,7 @@
 
   .footer { // {{{
     position: fixed;
-    width: 100%;
+    width: calc(25% - 18px);
     bottom: 0px;
     height: 26px;
     padding: 4px;

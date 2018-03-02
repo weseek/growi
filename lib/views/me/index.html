@@ -15,6 +15,7 @@
 
   <ul class="nav nav-tabs">
     <li class="active"><a href="/me"><i class="fa fa-gears"></i> {{ t('User Information') }}</a></li>
+    <li><a href="/me/external-accounts"><i class="fa fa-user-plus"></i> {{ t('External Accounts') }}</a></li>
     <li><a href="/me/password"><i class="fa fa-key"></i> {{ t('Password Settings') }}</a></li>
     <li><a href="/me/apiToken"><i class="fa fa-rocket"></i> {{ t('API Settings') }}</a></li>
   </ul>
@@ -56,10 +57,10 @@
           <input class="form-control" type="text" name="userForm[name]" value="{{ user.name }}" required>
         </div>
       </div>
-      <div class="form-group {% if not user.email %}has-error{% endif %}">
+      <div class="form-group">
         <label for="userForm[email]" class="col-sm-2 control-label">{{ t('Email') }}</label>
         <div class="col-sm-4">
-          <input class="form-control" type="email" name="userForm[email]" value="{{ user.email }}" required>
+          <input class="form-control" type="email" name="userForm[email]" value="{{ user.email }}">
         </div>
         <div class="col-sm-offset-2 col-sm-10">
           {% if config.crowi['security:registrationWhiteList'] && config.crowi['security:registrationWhiteList'].length %}

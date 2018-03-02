@@ -10,6 +10,7 @@ const helpers = require('./helpers');
  */
 const AssetsPlugin = require('assets-webpack-plugin');
 const CommonsChunkPlugin = require('webpack/lib/optimize/CommonsChunkPlugin');
+const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');;
 
 /*
  * Webpack configuration
@@ -32,7 +33,9 @@ module.exports = function (options) {
     externals: {
       // require("jquery") is external and available
       //  on the global var jQuery
-      "jquery": "jQuery"
+      "jquery": "jQuery",
+      "emojione": "emojione",
+      "hljs": "hljs",
     },
     resolve: {
       extensions: ['.js', '.json'],
@@ -45,6 +48,9 @@ module.exports = function (options) {
           exclude: /node_modules/,
           use: [{
             loader: 'babel-loader?cacheDirectory',
+            options: {
+              plugins: ['lodash'],
+            }
           }]
         },
         {
@@ -96,14 +102,15 @@ module.exports = function (options) {
         chunks: ['commons', 'plugin'],
       }),
 
-      new webpack.ProvidePlugin({
+      new LodashModuleReplacementPlugin,
+
+      // ignore
+      new webpack.IgnorePlugin(/^\.\/lib\/deflate\.js/, /markdown-it-plantuml/),
+
+      new webpack.ProvidePlugin({ // refs externals
         jQuery: "jquery",
         $: "jquery",
-        hljs: "reveal.js/plugin/highlight/highlight",
       }),
-
-      // omit moment/locale/*.js
-      new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /ja/),
 
     ]
   };

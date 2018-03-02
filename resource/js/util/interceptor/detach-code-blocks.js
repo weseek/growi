@@ -40,8 +40,8 @@ export class DetachCodeBlockInterceptor extends BasicInterceptor {
 
     context.dcbContextMap = {};
 
-    // see: https://regex101.com/r/8PAEcC/1
-    context.markdown = markdown.replace(/```(.|[\r\n])*?```/gm, (all) => {
+    // see: https://regex101.com/r/8PAEcC/3
+    context.markdown = markdown.replace(/((```|~~~)(.|[\r\n])*?(```|~~~))|(`[^\r\n]*?`)/gm, (all) => {
       // create ID
       const replaceId = 'dcb-' + this.createRandomStr(8);
 

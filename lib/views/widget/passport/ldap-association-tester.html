@@ -1,0 +1,72 @@
+<form id="formTestLdapCredentials" method="post" class="form-horizontal" role="form">
+  <div class="alert-container"></div>
+  <fieldset>
+    <div class="form-group">
+      <label for="username" class="col-xs-3 control-label">{{ t('Username') }}</label>
+      <div class="col-xs-6">
+        <input class="form-control" name="loginForm[username]">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="password" class="col-xs-3 control-label">{{ t('Password') }}</label>
+      <div class="col-xs-6">
+        <input class="form-control col-xs-4" type="password" name="loginForm[password]">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <button type="button" class="btn btn-default col-xs-offset-5 col-xs-2" onclick="testLdapCredentials()">{{ t('Test') }}</button>
+    </div>
+
+  </fieldset>
+
+  <script>
+    /**
+     * test association (ajax)
+     */
+    function testLdapCredentials() {
+      function showMessage(formId, msg, status) {
+        $('#' + formId + ' .alert-container .alert').remove();
+
+        var $message = $('<p class="alert"></p>');
+        $message.addClass('alert-' + status);
+        $message.html(msg.replace('\n', '<br>'));
+        $message.appendTo('#' + formId + '> .alert-container');
+
+        if (status == 'success') {
+          setTimeout(function()
+          {
+            $message.fadeOut({
+              complete: function() {
+                $message.remove();
+              }
+            });
+          }, 5000);
+        }
+      }
+
+      var $form = $('#formTestLdapCredentials');
+      var $action = '/_api/login/testLdap';
+      var $id = $form.attr('id');
+      var $button = $('button', this);
+      $button.attr('disabled', 'disabled');
+
+      var jqxhr = $.post($action, $form.serialize(), function(data)
+        {
+          if (!data.status) {
+            showMessage($id, 'data.status not found', 'danger');
+          }
+          else {
+            showMessage($id, data.message, data.status);
+          }
+        })
+        .fail(function() {
+          showMessage($id, 'エラーが発生しました', 'danger');
+        })
+        .always(function() {
+          $button.prop('disabled', false);
+        });
+        return false;
+    }
+  </script>
+</form>

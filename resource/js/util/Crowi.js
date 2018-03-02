@@ -4,6 +4,7 @@
 
 import axios from 'axios'
 import InterceptorManager from '../../../lib/util/interceptor-manager';
+
 import {
   DetachCodeBlockInterceptor,
   RestoreCodeBlockInterceptor,
@@ -19,6 +20,7 @@ export default class Crowi {
     this.location = window.location || {};
     this.document = window.document || {};
     this.localStorage = window.localStorage || {};
+    this.pageEditor = undefined;
 
     this.fetchUsers = this.fetchUsers.bind(this);
     this.apiGet = this.apiGet.bind(this);
@@ -38,6 +40,7 @@ export default class Crowi {
     this.userByName = {};
     this.userById   = {};
     this.draft = {};
+    this.editorOptions = {};
 
     this.recoverData();
   }
@@ -61,12 +64,18 @@ export default class Crowi {
     return this.config;
   }
 
+  setPageEditor(pageEditor) {
+    this.pageEditor = pageEditor;
+  }
+
   recoverData() {
     const keys = [
       'userByName',
       'userById',
       'users',
       'draft',
+      'editorOptions',
+      'previewOptions',
     ];
 
     keys.forEach(key => {
@@ -112,14 +121,26 @@ export default class Crowi {
     });
   }
 
+  setCaretLine(line) {
+    if (this.pageEditor != null) {
+      this.pageEditor.setCaretLine(line);
+    }
+  }
+
+  focusToEditor() {
+    if (this.pageEditor != null) {
+      this.pageEditor.focusToEditor();
+    }
+  }
+
   clearDraft(path) {
     delete this.draft[path];
-    this.localStorage.draft = JSON.stringify(this.draft);
+    this.localStorage.setItem('draft', JSON.stringify(this.draft));
   }
 
   saveDraft(path, body) {
     this.draft[path] = body;
-    this.localStorage.draft = JSON.stringify(this.draft);
+    this.localStorage.setItem('draft', JSON.stringify(this.draft));
   }
 
   findDraft(path) {
@@ -128,6 +149,14 @@ export default class Crowi {
     }
 
     return null;
+  }
+
+  saveEditorOptions(options) {
+    this.localStorage.setItem('editorOptions', JSON.stringify(options));
+  }
+
+  savePreviewOptions(options) {
+    this.localStorage.setItem('previewOptions', JSON.stringify(options));
   }
 
   findUserById(userId) {
@@ -187,26 +216,5 @@ export default class Crowi {
     });
   }
 
-  static escape (html, encode) {
-    return html
-      .replace(!encode ? /&(?!#?\w+;)/g : /&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#39;');
-  }
-
-  static unescape(html) {
-    return html.replace(/&([#\w]+);/g, function(_, n) {
-      n = n.toLowerCase();
-      if (n === 'colon') return ':';
-      if (n.charAt(0) === '#') {
-        return n.charAt(1) === 'x'
-          ? String.fromCharCode(parseInt(n.substring(2), 16))
-          : String.fromCharCode(+n.substring(1));
-      }
-      return '';
-    });
-  }
 }
 

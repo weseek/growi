@@ -27,7 +27,7 @@
         <div class="comment-form-main">
           <div class="comment-write" id="comment-write">
             <textarea class="comment-form-comment form-control" id="comment-form-comment" name="commentForm[comment]"
-                rows="10" placeholder="Write comments here..." {% if not user %}disabled{% endif %}></textarea>
+                required placeholder="Write comments here..." {% if not user %}disabled{% endif %}></textarea>
           </div>
           <div class="comment-submit">
             <input type="hidden" name="_csrf" value="{{ csrf() }}">

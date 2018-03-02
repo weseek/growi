@@ -1,4 +1,4 @@
-import moment from 'moment';
+import dateFnsFormat from 'date-fns/format';
 
 export default class Template {
 
@@ -12,15 +12,15 @@ export default class Template {
   }
 
   getYear() {
-    return moment().format('YYYY');
+    return dateFnsFormat(new Date(), 'YYYY');
   }
 
   getMonth() {
-    return moment().format('YYYY/MM');
+    return dateFnsFormat(new Date(), 'YYYY/MM');
   }
 
   getDate() {
-    return moment().format('YYYY/MM/DD');
+    return dateFnsFormat(new Date(), 'YYYY/MM/DD');
   }
 
   getUser() {
@@ -56,9 +56,17 @@ export default class Template {
       pageName = this.parseTemplateString(lang.split(':')[1]);
     }
     code = this.parseTemplateString(code);
-    return `
-    <div class="page-template-builder">
-    <button class="template-create-button btn btn-default" data-template="${templateId}" data-path="${pageName}"><i class="fa fa-pencil"></i> ${pageName}</button>
-      <pre><code id="${templateId}" class="lang-${lang}">${code}\n</code></pre></div>\n`;
+
+    const content = `
+      <div class="page-template-builder">
+        <button class="template-create-button btn btn-default" data-template="${templateId}" data-path="${pageName}#edit-form">
+          <i class="fa fa-pencil"></i> ${pageName}
+        </button>
+        <pre><code id="${templateId}" class="lang-${lang}">${code}\n</code></pre>
+      </div>`;
+
+    // wrap with <pre-dummy>
+    //   to avoid to be wrapped with <pre><code> by markdown-it
+    return `<pre-dummy>${content}<pre-dummy>\n`;
   }
 }

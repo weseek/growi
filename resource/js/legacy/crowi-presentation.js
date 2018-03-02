@@ -35,7 +35,6 @@ require.ensure([], () => {
   require('reveal.js/lib/js/classList.js');
   require('reveal.js/plugin/markdown/marked.js');
   require('reveal.js/plugin/markdown/markdown.js');
-  require('reveal.js/plugin/highlight/highlight.js');
   require('reveal.js/plugin/zoom-js/zoom.js');
   require('reveal.js/plugin/notes/notes.js');
 
