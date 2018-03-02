@@ -277,7 +277,8 @@
     "validate Line Break": "Validate Line Break",
     "treat_text": "Treat line breaking in the text page as < br > in HTML",
     "validate_comment": "Validate Line Break in the comment section",
-    "treat_comment": "Treat line breaking in the comment section as < br > in HTML"
+    "treat_comment": "Treat line breaking in the comment section as < br > in HTML",
+    "TBD": "(TBD: Markdown function in the comment section has not been implemented yet)"
 
  }
 }
