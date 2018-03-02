@@ -283,7 +283,8 @@
      },
   
      "customize_page": { 
-       "Behavior": "Behavior"
+       "Behavior": "Behavior",
+       "Layout": "Layout"
 
  }
 }
