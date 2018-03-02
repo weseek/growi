@@ -559,7 +559,7 @@ $(function() {
     // omg
     function createCommentHTML(revision, creator, comment, commentedAt) {
       var $comment = $('<div>');
-      var $commentImage = $('<img class="picture picture-rounded">')
+      var $commentImage = $('<img class="picture img-circle">')
         .attr('src', Crowi.userPicture(creator));
       var $commentCreator = $('<div class="page-comment-creator">')
         .text(creator.username);
@@ -729,7 +729,7 @@ $(function() {
       $userHtml.attr('href', '/user/' + user.username);
       $userHtml.attr('title', user.name);
 
-      var $userPicture = $('<img class="picture picture-xs picture-rounded">');
+      var $userPicture = $('<img class="img-circle-xs img-circle">');
       $userPicture.attr('alt', user.name);
       $userPicture.attr('src',  Crowi.userPicture(user));
 

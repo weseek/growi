@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import { noop } from 'lodash/noop';
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
@@ -6,7 +7,6 @@ import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 import UserPicture from './User/UserPicture';
 import PageListMeta from './PageList/PageListMeta';
 import PagePath from './PageList/PagePath';
-import PropTypes from 'prop-types';
 
 export default class SearchTypeahead extends React.Component {
 
@@ -106,7 +106,7 @@ export default class SearchTypeahead extends React.Component {
     const page = option;
     return (
       <span>
-      <UserPicture user={page.revision.author} />
+      <UserPicture user={page.revision.author} size="sm" />
       <PagePath page={page} />
       <PageListMeta page={page} />
       </span>

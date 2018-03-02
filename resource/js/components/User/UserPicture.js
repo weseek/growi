@@ -23,9 +23,9 @@ export default class UserPicture extends React.Component {
   }
 
   getClassName() {
-    let className = ['picture', 'picture-rounded'];
+    let className = ['img-circle'];
     if (this.props.size) {
-      className.push('picture-' + this.props.size);
+      className.push('img-circle-' + this.props.size);
     }
 
     return className.join(' ');

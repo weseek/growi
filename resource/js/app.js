@@ -89,6 +89,7 @@ crowiRenderer.setup(crowi.config);
  */
 const componentMappings = {
   'search-top': <HeaderSearchBox crowi={crowi} />,
+  'search-sidebar': <HeaderSearchBox crowi={crowi} />,
   'search-page': <SearchPage crowi={crowi} crowiRenderer={crowiRenderer} />,
   'page-list-search': <PageListSearch crowi={crowi} />,
 

@@ -230,38 +230,6 @@ footer {
   cursor: not-allowed;
 }
 
-// user picture
-.picture {
-
-  // 通常サイズ
-  width: 24px;
-  height: 24px;
-
-  // size list
-  &.picture-lg {
-    width: 48px;
-    height: 48px;
-  }
-  &.picture-sm {
-    width: 16px;
-    height: 16px;
-  }
-  &.picture-xs {
-    width: 12px;
-    height: 12px;
-  }
-
-  // design option
-  &.picture-sq {
-    border-radius: 2px;
-    border: solid 1px #ccc;
-  }
-  &.picture-rounded {
-    border-radius: 50%;
-    box-shadow: 0 0 2px rgba(0,0,0,.3);
-  }
-}
-
 .highlighted {
   color: #333;
   background-color: rgba(255,255,140,0.5);
