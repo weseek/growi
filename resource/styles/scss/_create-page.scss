@@ -1,0 +1,46 @@
+.modal.create-page {
+
+  @media (min-width: $screen-sm-min) { // {{{ more than tablet size
+    .modal-dialog {
+      width: 750px;
+    }
+  }
+
+  .modal-body {
+    h3, h4 {
+      margin-bottom: 10px;
+    }
+
+    form {
+
+      .page-name-addons {
+        position: absolute;
+        top: 7px;
+        left: 27px;
+      }
+      .page-today-prefix {
+        display: inline-block;
+      }
+      .page-today-input1 {
+        width: 60px;
+        padding-left: 2px;
+        padding-right: 2px;
+        display: inline-block;
+      }
+      .page-today-suffix {
+        display: inline-block;
+      }
+      .page-today-input2 {
+        // width: 100%;
+        display: inline-block;
+      }
+      #page-name-inputter input {
+        min-width: 300px; // Workaround to display placeholder.
+                          //   cf https://github.com/ericgio/react-bootstrap-typeahead/issues/256
+      }
+      .create-page-under-tree-label code {
+        font-family: $font-family-monospace-not-strictly;
+      }
+    }
+  }
+}
