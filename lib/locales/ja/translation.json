@@ -300,8 +300,9 @@
   },
   
      "customize_page": { 
-       "Behavior": "挙動"
-
+       "Behavior": "挙動",
+       "Layout": "レイアウト"
+      
  }
 }
 
