@@ -70,7 +70,7 @@
             <div class="btn-group btn-toggle" data-toggle="buttons">
               <label class="btn btn-default {% if markdownSetting['markdown:isEnabledLinebreaksInComments'] %}active{% endif %}" data-active-class="primary">
                 <input name="markdownSetting[markdown:isEnabledLinebreaksInComments]" value="true" type="radio"
-                    {% if true === markdownSetting['markdown:isEnabledLinebreaksInComments'] %}checked{% endif %}> 有効
+                    {% if true === markdownSetting['markdown:isEnabledLinebreaksInComments'] %}checked{% endif %}> {{ t('valid') }}
               </label>
               <label class="btn btn-default {% if !markdownSetting['markdown:isEnabledLinebreaksInComments'] %}active{% endif %}" data-active-class="primary">
                 <input name="markdownSetting[markdown:isEnabledLinebreaksInComments]" value="false" type="radio"
