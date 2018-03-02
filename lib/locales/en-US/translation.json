@@ -266,7 +266,8 @@
     "users_without_account": "Users without account is not accessible",
     "restrict_emails": "You can restrict registerable e-mail address.",
     "for_instance":" For instance, if you use Crowi-plus within a company, you can write ",
-    "only_those":" Only those whose e-mail address including the company address can register."
+    "only_those":" Only those whose e-mail address including the company address can register.",
+    "insert_single":"Please insert single e-mail address per line."
 
   }
 }
