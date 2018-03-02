@@ -263,7 +263,10 @@
     "Selecting authentication mechanism": "Selecting authentication mechanism",
     "common_authentication": "If you set the basic authentication, common authentication is applied on the whole page." ,
     "without_encryption": "Please be noted that your ID and Password will be sent wihtout encryption.",
-    "users_without_account": "Users without account is not accessible"
+    "users_without_account": "Users without account is not accessible",
+    "restrict_emails": "You can restrict registerable e-mail address."
+    
+
   }
 }
  
