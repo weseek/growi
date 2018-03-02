@@ -275,6 +275,7 @@
   "markdown_setting": { 
     "markdown_rendering": "You can change Markdown rendering settings.",
     "validate Line Break": "Validate Line Break",
-    "treat_text": "Treat line breaking in the text page as < br > in HTML"
+    "treat_text": "Treat line breaking in the text page as < br > in HTML",
+    "validate_comment": "Validate Line Break in the comment section"
  }
 }
