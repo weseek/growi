@@ -39,7 +39,7 @@ class Lsx {
    * @static
    * @param {any} query
    * @param {any} pagePath
-   * @param {any} optionsDepth
+   * @param {any} optionsNum
    * @returns
    *
    * @memberOf Lsx
@@ -64,22 +64,26 @@ class Lsx {
    *
    * @static
    * @param {any} query
-   * @param {any} pagePath
-   * @param {any} optionsReverse
+   * @param {string} pagePath
+   * @param {string} optionsSort
+   * @param {string} optionsReverse
    * @returns
    *
    * @memberOf Lsx
    */
-  static addReverseCondition(query, pagePath, optionsReverse) {
-    if (optionsReverse !== 'true' && optionsReverse !== 'false') {
-      throw new Error(`specified reverse is '${optionsReverse}' : reverse are must be 'true' or 'false'`);
+  static addSortCondition(query, pagePath, optionsSort, optionsReverse) {
+    let isReversed = false
+
+    if (optionsReverse != null) {
+      if (optionsReverse !== 'true' && optionsReverse !== 'false') {
+        throw new Error(`specified reverse is '${optionsReverse}' : reverse are must be 'true' or 'false'`);
+      }
+      isReversed = (optionsReverse === 'true');
     }
-    if (optionsReverse === 'true') {
-      return query.sort({path: -1});
-    }
-    else {
-      return query.sort({path: 1});
-    }
+
+    let sortOption = {};
+    sortOption[optionsSort] = isReversed ? -1 : 1;
+    return query.sort(sortOption);
   }
 }
 
@@ -105,17 +109,15 @@ module.exports = (crowi, app) => {
 
     try {
       // depth
-      if (options.depth !== undefined) {
+      if (options.depth != null) {
         query = Lsx.addDepthCondition(query, pagePath, options.depth);
       }
       // num
-      if (options.num !== undefined) {
+      if (options.num != null) {
         query = Lsx.addNumCondition(query, pagePath, options.num);
       }
-      // reverse
-      if (options.reverse !== undefined) {
-        query = Lsx.addReverseCondition(query, pagePath, options.reverse);
-      }
+      // sort order
+      query = Lsx.addSortCondition(query, pagePath, 'path', options.reverse);
     }
     catch (error) {
       return res.json(ApiResponse.error(error.message));
