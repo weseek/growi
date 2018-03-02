@@ -267,7 +267,8 @@
     "restrict_emails": "You can restrict registerable e-mail address.",
     "for_instance":" For instance, if you use Crowi-plus within a company, you can write ",
     "only_those":" Only those whose e-mail address including the company address can register.",
-    "insert_single":"Please insert single e-mail address per line."
+    "insert_single":"Please insert single e-mail address per line.",
+    "Authentication mechanism settings":"Authentication mechanism settings"
 
   }
 }
