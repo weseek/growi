@@ -205,16 +205,6 @@ $(function() {
     var dateString = today.getFullYear() + '/' + month + '/' + day;
     $('#create-page-today .page-today-suffix').text('/' + dateString + '/');
     $('#create-page-today .page-today-input2').data('prefix', '/' + dateString + '/');
-
-    var input2Width = $('#create-page-today .col-xs-10').outerWidth() - 1;
-    var newWidth = input2Width
-      - $('#create-page-today .page-today-prefix').outerWidth()
-      - $('#create-page-today .page-today-input1').outerWidth()
-      - $('#create-page-today .page-today-suffix').outerWidth()
-      - 42
-      ;
-    $('#create-page-today .form-control.page-today-input2').css({width: newWidth}).focus();
-
   });
 
   $('#create-page-today').submit(function(e) {

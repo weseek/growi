@@ -51,12 +51,6 @@
     padding-top: 4px;
     height: 30px;
 
-    // focus
-    &.focus {
-      box-shadow: none;
-      border-color: #ccc;
-    }
-
     .rbt-input-wrapper {
       margin-left: 8px;
     }
@@ -79,11 +73,6 @@
       }
     }
   }
-  // hide loading icon
-  .rbt-aux {
-    display: none;
-  }
-
 }
 
 // layout

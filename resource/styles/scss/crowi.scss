@@ -5,6 +5,7 @@
 @import 'variables';
 
 @import 'override-agileadmin';
+@import 'override-rbt';
 
 // crowi component
 // @import 'admin';
@@ -112,6 +113,7 @@ footer {
   margin-bottom: 0;
   border-radius: 0;
 }
+*/
 
 .modal.create-page {
 
@@ -160,6 +162,7 @@ footer {
   }
 }
 
+/*
 .popular-page-high {
   color: #e80000;
   font-size: 1.1em;

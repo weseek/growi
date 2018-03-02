@@ -8,7 +8,9 @@
   }
 }
 
-// logo
+/*
+ * Logo
+ */
 .top-left-part {
   line-height: 0%;
   a {
@@ -34,7 +36,34 @@
   }
 }
 
+/*
+ * Dropdown
+ */
+.dropdown-menu {
+  border-radius: 0;
 
+  > li > a {
+    padding: 5px 15px;
+  }
+}
+
+
+/*
+ * Modal
+ */
+.modal-content {
+  border: none;
+  border-radius: 0;
+
+  .modal-header, .modal-footer {
+    padding: 10px 15px;
+  }
+}
+
+
+/*
+ * Helper Classes
+ */
 .img-circle {
   // size list
   &.img-circle-lg {
