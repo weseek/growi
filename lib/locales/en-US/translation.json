@@ -287,6 +287,7 @@
        "Layout": "Layout",
         "Function": "Function",
         "function_choose": "You can choose Valid/Invalid of the function",
-        "Timeline function": "Timeline function"
+        "Timeline function": "Timeline function",
+         "subpage_display": "You can show the timeline of the subpages."
  }
 }
