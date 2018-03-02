@@ -44,7 +44,7 @@
   "View diff": "差分を見る",
 
   "User ID": "ユーザーID",
-  "User Settings": "ユーザー設定",
+  "Home": "ホーム",
   "User Information": "ユーザー情報",
   "Basic Info": "ユーザーの基本情報",
   "Name": "名前",
@@ -69,10 +69,10 @@
   "Input page name (optional)": "ページ名を入力(空欄OK)",
   "New Page": "新規ページ",
   "Create under": "<code>%s</code>以下に作成",
-  
-  
- 
-  
+
+
+
+
   "Table of Contents": "目次",
   "Management Wiki Home": "Wiki管理トップ",
   "App settings": "アプリ設定",
@@ -86,7 +86,7 @@
   "Password": "パスワード",
   "Guest users access": "ゲストユーザーのアクセス",
   "Register limitation": "登録の制限",
-  "The contents entered here will be shown in the header etc": "ここに入力した内容は、ヘッダー等に表示されます。", 
+  "The contents entered here will be shown in the header etc": "ここに入力した内容は、ヘッダー等に表示されます。",
   "Public": "公開",
   "Anyone with the link": "リンクを知っている人のみ",
   "Specified users": "特定ユーザーのみ",
@@ -95,8 +95,8 @@
   "The whitelist of registration permission E-mail address": "登録許可メールアドレスの<br>ホワイトリスト",
   "Selecting authentication mechanism": "認証機構選択",
 
-  
- 
+
+
   "Show latest": "最新のページを表示",
   "Load latest": "最新版を読み込む",
   "edited this page": "さんがこのページを編集しました。",
@@ -170,7 +170,7 @@
   },
 
 
-  
+
 
   "modal_rename": {
     "label": {
@@ -225,7 +225,7 @@
         "Delete Line": "行削除"
     }
   },
-   
+
   "admin_top": {
     "Management Wiki": "Wiki管理",
     "System Information": "システム情報",
@@ -235,17 +235,17 @@
     "Package name": "パッケージ名",
     "Specified version": "指定バージョン",
     "Installed version": "インストールされているバージョン"
-  
-  
-  
+
+
+
   },
 
-  "app_setting": { 
+  "app_setting": {
     "Wiki name": "Wikiの名前",
     "wiki_change": "ヘッダーやHTMLタイトルに使用されるWikiの名前を変更できます。",
     "header_content": "ここに入力した内容は、ヘッダー等に表示されます。",
     "Confidential name": "コンフィデンシャル表示",
-    "コンフィデンシャル表示": "Confidential name",  
+    "コンフィデンシャル表示": "Confidential name",
     "enable_files_except_image": "画像以外のファイルアップロードを許可",
     "attach_enable": "許可をしている場合、画像以外のファイルをページに添付可能になります。",
     "Reload": "更新",
