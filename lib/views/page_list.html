@@ -144,7 +144,7 @@
       <div class="revision-history-list">
         {% for tr in tree %}
         <div class="revision-hisory-outer">
-          <img src="{{ tr.author|picture }}" class="img-circle">
+          <img src="{{ tr.author|picture }}" class="picture img-circle">
           <div class="revision-history-main">
             <div class="revision-history-author">
               <strong>{% if tr.author %}{{ tr.author.username }}{% else %}-{% endif %}</strong>

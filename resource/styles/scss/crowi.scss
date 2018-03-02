@@ -430,6 +430,29 @@ input.searching {
  * Helper Classes
  */
 
+.picture {
+  width: 24px;
+  height: 24px;
+
+  // size list
+  &.picture-lg {
+    width: 48px;
+    height: 48px;
+  }
+  &.picture-md {
+    width: 24px;
+    height: 24px;
+  }
+  &.picture-sm {
+    width: 16px;
+    height: 16px;
+  }
+  &.picture-xs {
+    width: 12px;
+    height: 12px;
+  }
+}
+
 .cmd-key.mac {
   &:after {
     content: '⌘';

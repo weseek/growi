@@ -719,7 +719,7 @@ $(function() {
       $userHtml.attr('href', '/user/' + user.username);
       $userHtml.attr('title', user.name);
 
-      var $userPicture = $('<img class="img-circle-xs img-circle">');
+      var $userPicture = $('<img class="picture picture-xs img-circle">');
       $userPicture.attr('alt', user.name);
       $userPicture.attr('src',  Crowi.userPicture(user));
 
