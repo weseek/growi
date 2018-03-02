@@ -147,7 +147,7 @@
 
       <div class="auth-mechanism-configurations">
 
-        <legend>認証機構設定</legend>
+        <legend>{{ t('security_setting.Authentication mechanism settings') }}</legend>
 
         {% set isOfficialConfigurationVisible = !isEnabledPassport() %}
         <div class="official-crowi-auth-settings" {% if !isOfficialConfigurationVisible %}style="display: none;"{% endif %}>
