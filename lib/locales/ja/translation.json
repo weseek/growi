@@ -290,7 +290,8 @@
   },
 
   "markdown_setting": { 
-    "markdown_rendering": "Markdownレンダリングの設定を変更できます。"
+    "markdown_rendering": "Markdownレンダリングの設定を変更できます。",
+    "validate Line Break": "Line Break を有効にする"
 
  }
 }
