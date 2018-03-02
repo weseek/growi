@@ -301,8 +301,11 @@
   
      "customize_page": { 
        "Behavior": "挙動",
-       "Layout": "レイアウト"
-      
+       "Layout": "レイアウト",
+       "Function": "機能",
+       "function_choose": "機能の有効/無効を選択できます。"
+
+       
  }
 }
 
