@@ -288,6 +288,7 @@
         "Function": "Function",
         "function_choose": "You can choose Valid/Invalid of the function",
         "Timeline function": "Timeline function",
-         "subpage_display": "You can show the timeline of the subpages."
+        "subpage_display": "You can show the timeline of the subpages.",
+        "performance_decrease": "If there are many subpages, performance decreases while page loading."
  }
 }
