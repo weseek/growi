@@ -1,11 +1,11 @@
 {% extends '../layout/admin.html' %}
 
-{% block html_title %}Wiki管理 · {{ path }}{% endblock %}
+{% block html_title %}Wiki管理· {{ path }}{% endblock %}
 
 {% block content_head %}
 <div class="header-wrap">
   <header id="page-header">
-    <h1 class="title" id="">Wiki管理</h1>
+    <h1 class="title" id=""> {{ t('admin_top.Management Wiki') }}</h1>
   </header>
 </div>
 {% endblock %}
@@ -25,12 +25,11 @@
       {% include './widget/menu.html' %}
     </div>
     <div class="col-md-9">
-      <p>
-      この画面はWiki管理者のみがアクセスできる画面です。<br>
-      「ユーザー管理」から「管理者にする」ボタンを使ってユーザーをWiki管理者に任命することができます。
+      <p> {{ t("admin_top.wiki_administrator") }}<br>
+      {{ t("admin_top.assign_administrator") }}
       </p>
 
-      <h3>システム情報</h3>
+      <h3>{{ t('admin_top.System Information') }}</h3>
       <table class="table table-bordered">
         <tr>
           <th class="col-sm-4">crowi-plus</th>
@@ -50,16 +49,16 @@
         </tr>
       </table>
 
-      <h3>インストールされているプラグイン一覧</h3>
+      <h3>{{ t('admin_top.List of installed plugins') }}</h3>
       <table class="table table-bordered">
         <th class="text-center">
-          パッケージ名
+          {{ t('admin_top.Package name') }}
         </th>
         <th class="text-center">
-          指定バージョン
+          {{ t('admin_top.Specified version') }}
         </th>
         <th class="text-center">
-          インストールされているバージョン
+          {{ t('admin_top.Installed version') }}
         </th>
         {% for pluginName in Object.keys(plugins) %}
         <tr>
