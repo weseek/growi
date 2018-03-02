@@ -6,6 +6,7 @@ CHANGES
 * Improvement: Ensure to set absolute url from root when attaching files when `FILE_UPLOAD=local`
 * Fix: Inline code blocks that includes doller sign are broken
 * Fix: Comment count is not updated when a comment of the page is deleted
+* Improvement: i18n in `/admin` (WIP)
 * Support: Upgrade libs
     * googleapis
     * markdown-it-plantuml
