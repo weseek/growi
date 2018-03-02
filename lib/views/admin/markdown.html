@@ -74,7 +74,7 @@
               </label>
               <label class="btn btn-default {% if !markdownSetting['markdown:isEnabledLinebreaksInComments'] %}active{% endif %}" data-active-class="primary">
                 <input name="markdownSetting[markdown:isEnabledLinebreaksInComments]" value="false" type="radio"
-                    {% if !markdownSetting['markdown:isEnabledLinebreaksInComments'] %}checked{% endif %}> 無効
+                    {% if !markdownSetting['markdown:isEnabledLinebreaksInComments'] %}checked{% endif %}> {{ t('invalid') }}
               </label>
             </div>
             <p class="help-block">コメント中の改行を、HTML内で&lt;br&gt;として扱います<br>(TBD: コメント欄の Markdown 化は未だ実装されていません)</p>
