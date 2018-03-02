@@ -17,10 +17,6 @@
       background: #fff;
       width: 100%;
 
-      p.stopper {
-        display: none;
-      }
-
       &.affix {
         width: 100%;
         top: 0;
@@ -34,19 +30,6 @@
           font-size: 1.8em;
         }
 
-        p.stopper {
-          display: block;
-          position: absolute;
-          bottom: -30px;
-          right: 10px;
-          background: #fff;
-          padding: 7px 14px;
-          margin: 0;
-          border: solid 1px #ccc;
-          border-top: none;
-          border-radius: 0 0 5px 5px;
-          font-size: .8em;
-        }
       }
 
     }
