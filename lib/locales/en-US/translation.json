@@ -264,7 +264,8 @@
     "common_authentication": "If you set the basic authentication, common authentication is applied on the whole page." ,
     "without_encryption": "Please be noted that your ID and Password will be sent wihtout encryption.",
     "users_without_account": "Users without account is not accessible",
-    "restrict_emails": "You can restrict registerable e-mail address."
+    "restrict_emails": "You can restrict registerable e-mail address.",
+    "for_instance":" For instance, if you use Crowi-plus within a company, you can write "
     
 
   }

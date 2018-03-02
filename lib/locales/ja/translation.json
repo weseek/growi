@@ -282,7 +282,9 @@
     "common_authentication": "Basic認証を設定すると、ページ全体に共通の認証がかかります。",
     "without_encryption": "IDとパスワードは暗号化されずに送信されるのでご注意下さい。",
     "users_without_account": "アカウントを持たないユーザーはアクセス不可",
-    "restrict_emails": "登録可能なメールアドレスを制限することができます。"
+    "restrict_emails": "登録可能なメールアドレスを制限することができます。",
+    "for_instance":"例えば、会社で使う場合 などと記載すると、"
+
   }
 }
 
