@@ -287,7 +287,12 @@
     "only_those":"その会社のメールアドレスを持っている人のみ登録可能になります。",
     "insert_single":"1行に1メールアドレス入力してください。",
     "Authentication mechanism settings":"認証機構設定"
-  }
+  },
+
+  "markdown_setting": { 
+    "markdown_rendering": "Markdownレンダリングの設定を変更できます。"
+
+ }
 }
 
 
