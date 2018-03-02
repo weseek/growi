@@ -290,6 +290,7 @@
         "Timeline function": "Timeline function",
         "subpage_display": "You can show the timeline of the subpages.",
         "performance_decrease": "If there are many subpages, performance decreases while page loading.",
-        "list_page_display": "You can speed up list page display by invalidating."
+        "list_page_display": "You can speed up list page display by invalidating.",
+        "tab_switch": "Save tab-switching in the browser"
  }
 }
