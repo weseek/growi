@@ -5,63 +5,19 @@
 
   &.main-container { // {{{
 
-    .crowi-header { // {{{
-      z-index: 1040;
-      // background: $crowiHeaderBackground;
-      // height: $crowiHeaderHeight;
-      border-radius: 0;
-      border: none;
-      margin-bottom: 0;
-
-      box-shadow: 0 3px 10px 0px rgba(0,0,0,.3);
-
-      .navbar-brand {
-        font-weight: bold;
-        img {
-          display: inline;
-          margin-right: 8px;
-        }
-      }
-      .navbar-collapse {
-        // background: $crowiHeaderBackground;
-      }
-
-      > div > .navbar-nav li button {
-        margin: 10px;
-      }
-
-      > div > a ,
-      > div > ul > li > a {
-        color: #ccc;
-        &:hover {
-          color: #aaa;
-        }
-      }
-
+    .navbar-top-links { // {{{
       .confidential {
         a {
-          border: solid 2px #f00;
-          background: #fff;
-          color: #f00;
-          font-weight: bold;
-          height: 42px;
-          margin-top: 5px;
-          padding: 10px;
-          margin-right: 5px;
+          // border: solid 2px #f00;
+          // background: #fff;
+          // color: #f00;
+          // font-weight: bold;
+          // height: 42px;
+          // margin-top: 5px;
+          // padding: 10px;
+          // margin-right: 5px;
         }
       }
-
-      .navbar-toggle {
-        position: absolute;
-        top: 0;
-        right: 0;
-      }
-      .navbar-collapse.collapse.in {
-
-        .confidential {
-        }
-      }
-
     } // }}}
 
     .main {

@@ -8,11 +8,9 @@
   color: #999;
 }
 .search-listpage-clear {
-  z-index: 3;
   display: none;
   position: absolute;
   right: 8px;
-  z-index: 10;
   font-size: 0.6em;
   width: 22px;
   height: 22px;
@@ -20,37 +18,51 @@
   padding: 8px;
 }
 
-.search-input-group {
-  display: inline-block;
-  margin-left: 20px;
-  margin-bottom: 0;
-  width: 200px;
-  vertical-align: bottom;
-}
-
-.search-top {
-  .search-top-input-group {
-    .search-top-clear {
+.search-top, .search-sidebar {
+  .search-input-group {
+    .search-clear {
       position: absolute;
-      right: 40px;
-      z-index: 10;
-      width: 22px;
-      height: 22px;
-      top: 7px;
-      color: #ccc;
+      z-index: 2;
+      right: 28px;
+      width: 24px;
+      height: 24px;
+      top: 3px;
+      color: #999;
       padding: 0;
+    }
+  }
+
+  .input-group-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    a {
+      padding: 4px 10px;
     }
   }
 
   // using react-bootstrap-typeahead
   // see: https://github.com/ericgio/react-bootstrap-typeahead
+  .rbt-input.form-control {
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 40px;
+    border-top-right-radius: 40px;
+    border-bottom-right-radius: 40px;
+    padding-top: 4px;
+    height: 30px;
+
+    // focus
+    &.focus {
+      box-shadow: none;
+      border-color: #ccc;
+    }
+
+    .rbt-input-wrapper {
+      margin-left: 8px;
+    }
+  }
   .rbt-menu {
     li a span {
-      .picture {
-        width: 14px;
-        height: 14px;
-      }
-
       .page-path {
         display: inline;
         padding: 0 4px;
@@ -71,8 +83,31 @@
   .rbt-aux {
     display: none;
   }
+
 }
 
+// layout
+.search-top {
+  margin-top: 10px;
+  margin-bottom: 10px;
+
+  .rbt-input.form-control {
+    width: 180px;
+    transition: 0.3s ease-out;
+    // focus
+    &.focus {
+      width: 300px;
+    }
+  }
+}
+.search-sidebar {
+  .search-form, .form-group, .rbt-input.form-control, .input-group {
+    width: 100%;
+  }
+  .input-group-btn {
+    right: 30px;
+  }
+}
 
 .search-result {
 
@@ -129,57 +164,3 @@
     }
   }
 }
-
-// Smartphone and Tablet
-@media (max-width: $screen-xs-max) {
-  .search-top {
-    margin-top: 4px 0 0 0;
-    padding: 0;
-    border-style: none !important;
-    box-shadow: none !important;
-    -webkit-box-shadow: none !important;
-  }
-
-  .search-result {
-    .search-result-content {
-      .search-result-page {
-        .wiki {
-          h1, h2, h3, h4, h5, h6 {
-            font-size: medium;
-          }
-          height: 250px;
-          overflow: scroll;
-        }
-      }
-    }
-  }
-}
-
-.search-top .search-form {
-  @media (min-width: $screen-sm-max) {
-    // using react-bootstrap-typeahead
-    // see: https://github.com/ericgio/react-bootstrap-typeahead
-    .rbt-input input {
-      width: 500px !important;
-    }
-  }
-  @media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
-    background-color: #0f0;
-    // using react-bootstrap-typeahead
-    // see: https://github.com/ericgio/react-bootstrap-typeahead
-    .rbt-input input {
-      width: 270px !important;
-    }
-  }
-  @media (min-width: $screen-xs-min) and (max-width: $screen-xs-max) {
-    width: 70%;
-  }
-  @media (min-width: $screen-xs-min*2/3) and (max-width: $screen-xs-min) {
-    width: 58%;
-  }
-  @media (max-width: $screen-xs-min*2/3) {
-    width: 40%;
-    min-width: 120px;
-  }
-}
-
