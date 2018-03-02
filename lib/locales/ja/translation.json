@@ -307,9 +307,8 @@
        "Timeline function": "タイムライン機能",
        "subpage_display": "配下ページのタイムラインを表示できます。",
        "performance_decrease": "配下ページが多い場合はページロード時のパフォーマンスが落ちます。",
-       "list_page_display": "無効化することでリストページの表示を高速化できます。"
-
-
+       "list_page_display": "無効化することでリストページの表示を高速化できます。",
+       "tab_switch":"タブ変更をブラウザ履歴に保存"
        
  }
 }
