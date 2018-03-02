@@ -9,7 +9,7 @@
   <li class="{% if current == 'customize'%}active{% endif %}"><a href="/admin/customize"><i class="fa fa-object-group"></i> {{ t('Customize') }}</a></li>
   <li class="{% if current == 'notification'%}active{% endif %}"><a href="/admin/notification"><i class="fa fa-bell"></i> {{ t('Notification settings') }}</a></li>
   <li class="{% if current == 'user' || current == 'external-account' %}active{% endif %}"><a href="/admin/users"><i class="fa fa-users"></i> {{ t('User management') }}</a></li>
-  <li class="{% if current == 'user-group'%}active{% endif %}"><a href="/admin/user-groups"><i class="fa fa-users"></i> グループ管理</a></li>
+  <li class="{% if current == 'user-group'%}active{% endif %}"><a href="/admin/user-groups"><i class="fa fa-users"></i> {{ t('UserGroup management') }}</a></li>
   {% if searchConfigured() %}
   <li class="{% if current == 'search'%}active{% endif %}"><a href="/admin/search"><i class="fa fa-search"></i> 検索管理</a></li>
   {% endif %}

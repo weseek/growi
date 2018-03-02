@@ -75,6 +75,7 @@
 
   "Table of Contents": "Table of Contents",
 
+  "UserGroup management": "UserGroup management",
   "Public": "Public",
   "Anyone with the link": "Anyone with the link",
   "Specified users only": "Specified users only",
@@ -211,8 +212,8 @@
 
               }
   },
-            
-  "admin_top": { 
+
+  "admin_top": {
     "Management Wiki": "Management Wiki",
     "System Information": "System Information",
     "wiki_administrator": "Only Wiki administrator can access this page",
@@ -221,7 +222,7 @@
     "Package name": "Package name",
     "Specified version": "Specified version",
     "Installed version": "Installed version"
-    
+
   },
 
   "app_setting": {
@@ -238,7 +239,7 @@
     "SMTP_but_AWS": "If you do not have SMTP settings but AWS settings,  e-mails will be sent by SES.",
     "neihter_of": "If you do not of neither of these, e-mails will not be sent.",
     "From e-mail address": "From e-mail address",
-    "SMTP settings": "SMTP settings"  , 
+    "SMTP settings": "SMTP settings"  ,
     "Host": "Host",
     "Port": "Port",
     "User": "User",
@@ -257,4 +258,4 @@
   }
 
 }
- 
+
