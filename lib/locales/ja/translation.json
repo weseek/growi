@@ -305,7 +305,9 @@
        "Function": "機能",
        "function_choose": "機能の有効/無効を選択できます。",
        "Timeline function": "タイムライン機能",
-       "subpage_display": "配下ページのタイムラインを表示できます。"
+       "subpage_display": "配下ページのタイムラインを表示できます。",
+       "performance_decrease": "配下ページが多い場合はページロード時のパフォーマンスが落ちます。"
+
 
        
  }
