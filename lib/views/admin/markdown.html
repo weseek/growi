@@ -54,7 +54,7 @@
               </label>
               <label class="btn btn-default {% if !markdownSetting['markdown:isEnabledLinebreaks'] %}active{% endif %}" data-active-class="primary">
                 <input name="markdownSetting[markdown:isEnabledLinebreaks]" value="false" type="radio"
-                    {% if !markdownSetting['markdown:isEnabledLinebreaks'] %}checked{% endif %}> 無効
+                    {% if !markdownSetting['markdown:isEnabledLinebreaks'] %}checked{% endif %}> {{ t('invalid') }}
               </label>
             </div>
             <p class="help-block">ページテキスト中の改行を、HTML内で&lt;br&gt;として扱います</p>
