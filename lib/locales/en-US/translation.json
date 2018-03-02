@@ -291,6 +291,7 @@
         "subpage_display": "You can show the timeline of the subpages.",
         "performance_decrease": "If there are many subpages, performance decreases while page loading.",
         "list_page_display": "You can speed up list page display by invalidating.",
-        "tab_switch": "Save tab-switching in the browser"
+        "tab_switch": "Save tab-switching in the browser",
+        "save_edit": "Save edit tab and history tab switching in the browser and make it object for forward/back command of the browser."
  }
 }
