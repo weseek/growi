@@ -286,7 +286,7 @@
        "Behavior": "Behavior",
        "Layout": "Layout",
         "Function": "Function",
-        "function_choose": "You can choose Valid/Invalid of the function"
-
+        "function_choose": "You can choose Valid/Invalid of the function",
+        "Timeline function": "Timeline function"
  }
 }
