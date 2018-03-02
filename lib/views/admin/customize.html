@@ -179,7 +179,7 @@
             <div class="btn-group btn-toggle" data-toggle="buttons">
               <label class="btn btn-default {% if settingForm['customize:isSavedStatesOfTabChanges'] %}active{% endif %}" data-active-class="primary">
                 <input name="settingForm[customize:isSavedStatesOfTabChanges]" value="true" type="radio"
-                    {% if true === settingForm['customize:isSavedStatesOfTabChanges'] %}checked{% endif %}> 有効
+                    {% if true === settingForm['customize:isSavedStatesOfTabChanges'] %}checked{% endif %}> {{ t('Valid') }}
               </label>
               <label class="btn btn-default {% if !settingForm['customize:isSavedStatesOfTabChanges'] %}active{% endif %}" data-active-class="primary">
                 <input name="settingForm[customize:isSavedStatesOfTabChanges]" value="false" type="radio"
