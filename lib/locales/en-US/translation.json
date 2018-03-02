@@ -280,5 +280,10 @@
     "treat_comment": "Treat line breaking in the comment section as < br > in HTML",
     "TBD": "(TBD: Markdown function in the comment section has not been implemented yet)"
 
+     },
+  
+     "customize_page": { 
+       "Behavior": "Behavior"
+
  }
 }
