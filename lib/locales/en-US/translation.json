@@ -295,6 +295,7 @@
         "save_edit": "Save edit tab and history tab switching in the browser and make it object for forward/back command of the browser.",
         "by_invalidating": "By invalidating, you can make page transition as the only object for forward/back command of the browser.",        
         "Custom CSS": "Custom CSS",
-        "write_CSS": "You can write CSS that is applied to whole system."
+        "write_CSS": "You can write CSS that is applied to whole system.",
+        "reflect_change": "You need to reload the page to reflect the change."
       }
 }
