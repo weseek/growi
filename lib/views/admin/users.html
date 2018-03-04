@@ -216,7 +216,7 @@
                     {% if sUser.username != user.username %}
                     <form action="/admin/user/{{ sUser._id.toString() }}/suspend" method="post">
                       <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                      <button type="submit" class="btn btn-block btn-warning">アカウント停止</button>
+                      <button type="submit" class="btn btn-block btn-warning">{{ t('user_management.Deactivate account') }}</button>
                     </form>
                     {% else %}
                     <button class="btn btn-block btn-warning" disabled>アカウント停止</button>
