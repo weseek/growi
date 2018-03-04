@@ -329,7 +329,10 @@
         "Last login": "最終ログイン",
         "Manage": "操作",
         "Edit menu": "編集メニュー",
-        "Reissue password": "パスワードの再発行"
+        "Reissue password": "パスワードの再発行",
+        "Status":"ステータス"
+        
+
         
          
       }
