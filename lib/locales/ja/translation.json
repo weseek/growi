@@ -331,7 +331,8 @@
         "Edit menu": "編集メニュー",
         "Reissue password": "パスワードの再発行",
         "Status":"ステータス",
-        "Deactivate account":"アカウント停止"
+        "Deactivate account":"アカウント停止",
+        "your_own":"自分自身のアカウントを停止することはできません"
         
         
 
