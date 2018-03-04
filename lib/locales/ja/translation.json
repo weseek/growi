@@ -318,6 +318,11 @@
         "Custom script": "カスタムスクリプト",
         "write_java": "システム全体に適用されるJavaScriptを記述できます。"
        
- }
+ },
+
+     "user_management": { 
+        "User management": "ユーザー管理"
+         
+      }
 }
 
