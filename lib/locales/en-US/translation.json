@@ -315,7 +315,8 @@
         "Edit menu": "Edit menu",
         "Reissue password": "Reissue password",
         "Status":"Status",
-        "Deactivate account":"Deactivate account" 
+        "Deactivate account":"Deactivate account",
+        "your_own":"You cannot deactivate your own account"
         
         
       }
