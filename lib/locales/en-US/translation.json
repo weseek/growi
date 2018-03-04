@@ -311,7 +311,8 @@
         "user_list": "List of users",
         "Date created": "Date created",
         "Last login": "Last login",
-        "Manage": "Manage"
+        "Manage": "Manage",
+        "Edit menu": "Edit menu" 
         
         
       }
