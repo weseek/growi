@@ -254,7 +254,7 @@
 
                   {% if sUser.status == 2 %} {# activated な人だけこのメニューを表示 #}
                   <li class="divider"></li>
-                  <li class="dropdown-header">管理者メニュー</li>
+                  <li class="dropdown-header">{{ t('user_management.Administrator menu') }}</li>
 
                   <li class="dropdown-button">
                     {% if sUser.admin %}
