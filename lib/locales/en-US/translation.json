@@ -305,7 +305,8 @@
  },
 
   "user_management": { 
-        "User management": "User management"
+        "User management": "User management",
+        "invite_users": "Invite new users"
          
       }
 }
