@@ -321,7 +321,8 @@
  },
 
      "user_management": { 
-        "User management": "ユーザー管理"
+        "User management": "ユーザー管理",
+        "invite_users": "新規ユーザーの招待"
          
       }
 }
