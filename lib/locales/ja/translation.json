@@ -325,7 +325,9 @@
         "invite_users": "新規ユーザーの招待",
         "external account": "外部アカウントの管理",
         "user_list": "ユーザー一覧",
-        "Date created": "作成日" 
+        "Date created": "作成日",
+        "Last login": "最終ログイン"
+
         
          
       }
