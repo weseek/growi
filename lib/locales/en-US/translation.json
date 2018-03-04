@@ -298,7 +298,9 @@
         "write_CSS": "You can write CSS that is applied to whole system.",
         "reflect_change": "You need to reload the page to reflect the change.",
         "ctrl_space": "Ctrl+Space to Autocomplete",
-        "Custom script": "Custom script"
+        "Custom script": "Custom script",
+        "write_java": "You can write Javascript that is applied to whole system."
+        
         
       }
 }
