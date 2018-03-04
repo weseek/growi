@@ -315,7 +315,8 @@
         "write_CSS": " システム全体に適用されるCSSを記述できます。",
         "reflect_change": "変更の反映はページの更新が必要です。",
         "ctrl_space": "Ctrl+Space でコード補完",
-        "Custom script": "カスタムスクリプト"
+        "Custom script": "カスタムスクリプト",
+        "write_java": "システム全体に適用されるJavaScriptを記述できます。"
        
  }
 }
