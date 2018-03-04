@@ -310,7 +310,9 @@
         "external_account": "External account management",
         "user_list": "List of users",
         "Date created": "Date created",
-        "Last login": "Last login"
+        "Last login": "Last login",
+        "Manage": "Manage"
+        
         
       }
 }
