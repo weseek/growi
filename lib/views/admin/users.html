@@ -264,7 +264,7 @@
                         <button type="submit" class="btn btn-block btn-danger">管理者からはずす</button>
                       </form>
                       {% else %}
-                      <p class="alert alert-danger">自分自身を管理者から外すことはできません</p>
+                      <p class="alert alert-danger">{{ t("user_management.cannot_remove") }}</p>
                       {% endif %}
                     {% else %}
                       <form action="/admin/user/{{ sUser._id.toString() }}/makeAdmin" method="post">
