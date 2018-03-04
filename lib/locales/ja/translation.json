@@ -313,7 +313,8 @@
        "by_invalidating": "無効化することで、ページ遷移のみを戻る/進む操作の対象にすることができます。",
        "Custom CSS": "カスタム CSS",
         "write_CSS": " システム全体に適用されるCSSを記述できます。",
-        "reflect_change": "変更の反映はページの更新が必要です。"
+        "reflect_change": "変更の反映はページの更新が必要です。",
+        "ctrl_space": "Ctrl+Space でコード補完"
        
  }
 }
