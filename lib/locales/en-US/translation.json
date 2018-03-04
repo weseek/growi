@@ -309,6 +309,8 @@
         "invite_users": "Invite new users",
         "external_account": "External account management",
         "user_list": "List of users",
-        "Date created": "Date created"
+        "Date created": "Date created",
+        "Last login": "Last login"
+        
       }
 }
