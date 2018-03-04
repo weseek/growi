@@ -313,7 +313,8 @@
         "Last login": "Last login",
         "Manage": "Manage",
         "Edit menu": "Edit menu",
-        "Reissue password": "Reissue password" 
+        "Reissue password": "Reissue password",
+        "Status":"Status" 
         
         
       }
