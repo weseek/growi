@@ -302,5 +302,10 @@
         "write_java": "You can write Javascript that is applied to whole system."
         
         
+ },
+
+  "user_management": { 
+        "User management": "User management"
+         
       }
 }
