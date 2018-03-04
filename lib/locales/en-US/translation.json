@@ -317,7 +317,8 @@
         "Status":"Status",
         "Deactivate account":"Deactivate account",
         "your_own":"You cannot deactivate your own account",
-        "Administrator menu":"Administrator menu"
+        "Administrator menu":"Administrator menu",
+        "cannot_remove":"You cannot remove yourself from administrator"
         
         
       }
