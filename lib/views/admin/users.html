@@ -219,9 +219,9 @@
                       <button type="submit" class="btn btn-block btn-warning">{{ t('user_management.Deactivate account') }}</button>
                     </form>
                     {% else %}
-                    <button class="btn btn-block btn-warning" disabled>アカウント停止</button>
+                    <button class="btn btn-block btn-warning" disabled>{{ t('user_management.Deactivate account') }}</button>
                     <br>
-                    <p class="alert alert-danger">自分自身のアカウントを停止することはできません</p>
+                    <p class="alert alert-danger">{{ t("user_management.your_own") }}</p>
                     {% endif %}
                   </li>
                   {% endif %}
