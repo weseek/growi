@@ -307,7 +307,8 @@
   "user_management": { 
         "User management": "User management",
         "invite_users": "Invite new users",
-        "external_account": "External account management" 
+        "external_account": "External account management",
+        "user_list": "List of users" 
          
       }
 }
