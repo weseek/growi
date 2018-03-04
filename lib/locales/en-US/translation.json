@@ -316,7 +316,8 @@
         "Reissue password": "Reissue password",
         "Status":"Status",
         "Deactivate account":"Deactivate account",
-        "your_own":"You cannot deactivate your own account"
+        "your_own":"You cannot deactivate your own account",
+        "Administrator menu":"Administrator menu"
         
         
       }
