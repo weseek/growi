@@ -240,7 +240,7 @@
 
       <form action="/_api/admin/customize/script" method="post" class="form-horizontal" id="cutomscriptSettingForm" role="form">
       <fieldset>
-        <legend>カスタムスクリプト</legend>
+        <legend>{{ t('customize_page.Custom script') }}</legend>
 
         <p class="well">
           システム全体に適用されるJavaScriptを記述できます。<br>
@@ -280,7 +280,7 @@ window.addEventListener('load', (event) => {
           <div class="col-xs-12">
             <p class="help-block text-right">
               <i class="fa fa-fw fa-keyboard-o" aria-hidden="true"></i>
-              Ctrl+Space でコード補完
+              {{ t("customize_page.ctrl_space") }}
             </p>
           </div>
         </div>
