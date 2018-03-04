@@ -323,7 +323,8 @@
      "user_management": { 
         "User management": "ユーザー管理",
         "invite_users": "新規ユーザーの招待",
-        "external account": "外部アカウントの管理" 
+        "external account": "外部アカウントの管理",
+        "user_list": "ユーザー一覧" 
          
       }
 }
