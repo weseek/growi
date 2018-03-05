@@ -248,7 +248,7 @@
     "ex): internal use only": "例: 社外秘",  
     "enable_files_except_image": "画像以外のファイルアップロードを許可",
     "attach_enable": "許可をしている場合、画像以外のファイルをページに添付可能になります。",
-    "Reload": "更新",
+    "Update": "更新",
     "Mail settings": "メールの設定",
     "SMTP_used": "SMTPの設定がされている場合、それが利用されます。",
     "SMTP_but_AWS": "SMTP設定がなく、AWSの設定がある場合、SESでの送信を試みます。",
