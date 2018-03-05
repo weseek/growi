@@ -74,7 +74,7 @@ export default class RevisionPath extends React.Component {
       marginRight: "0.2em",
     }
     const editButtonStyle = {
-      fontSize: "0.6em",
+      fontSize: "0.5em",
       marginLeft: "0.5em",
       padding: "0 2px",
     };
@@ -106,9 +106,9 @@ export default class RevisionPath extends React.Component {
         </span>
         {afterElements}
         <CopyButton buttonId="btnCopyRevisionPath" text={this.props.pagePath}
-            buttonClassName="btn btn-default btn-copy" iconClassName="fa fa-clone" />
+            buttonClassName="btn btn-default btn-copy" iconClassName="ti-layers" />
         <a href="#edit-form" className="btn btn-default btn-edit" style={editButtonStyle}>
-          <i className="fa fa-edit"></i>
+          <i className="ti-pencil-alt"></i>
         </a>
       </span>
     );
