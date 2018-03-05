@@ -183,11 +183,12 @@ gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js
           </a>
         </li>
         <li class="dropdown">
-          <a class="dropdown-toggle waves-effect waves-light" data-toggle="dropdown" href="/user/{{ user.username }}">
+          <a class="dropdown-toggle waves-effect waves-light" data-toggle="dropdown">
             <img src="{{ user|picture }}" class="picture img-circle" width="25" /> {{ user.name }}
           </a>
           <ul class="dropdown-menu">
-            <li><a href="/me"><i class="fa-fw ti-home"></i>{{ t('Home') }}</a></li>
+            <li><a href="/user/{{ user.username }}"><i class="fa-fw ti-home"></i>{{ t('Home') }}</a></li>
+            <li><a href="/me"><i class="fa-fw ti-settings"></i>{{ t('User Settings') }}</a></li>
             <li role="separator" class="divider"></li>
             <li><a href="/trash"><i class="fa-fw ti-trash"></i>{{ t('Deleted Pages') }}</a></li>
             <li role="separator" class="divider"></li>
