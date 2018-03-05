@@ -294,7 +294,7 @@
     "validate Line Break": "Line Break を有効にする",
     "treat_text": "ページテキスト中の改行を、HTML内で&ltbr>として扱います",
     "validate_comment": "コメント欄で Line Break を有効にする",
-    "treat_comment": "コメント中の改行を、HTML内で<&lt;br&lt;>として扱います",
+    "treat_comment": "コメント中の改行を、HTML内で&ltbr>として扱います",
     "TBD": "(TBD: コメント欄の Markdown 化は未だ実装されていません)"
 
   },
