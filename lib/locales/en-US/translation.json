@@ -231,7 +231,7 @@
     "ex): internal use only":"ex): internal use only",
     "enable_files_except_image": "Enable file upload other than image files.",
     "attach_enable": "You can attach files other than image files if you enable this option.",
-    "Reload": "Reload",
+    "Update": "Update",
     "Mail settings": "Mail settings",
     "SMTP_used": "If you have SMTP settings, it will be used.",
     "SMTP_but_AWS": "If you do not have SMTP settings but AWS settings,  e-mails will be sent by SES.",
