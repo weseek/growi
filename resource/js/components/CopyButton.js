@@ -30,7 +30,7 @@ export default class CopyButton extends React.Component {
     return (
       <span className="btn-copy-container" style={containerStyle}>
         <ClipboardButton className={this.props.buttonClassName}
-            button-id={this.props.buttonId} button-data-toggle="tooltip" button-title="copied!" button-data-placement="bottom" button-data-trigger="manual"
+            button-id={this.props.buttonId} button-data-toggle="tooltip" button-data-container="body" button-title="copied!" button-data-placement="bottom" button-data-trigger="manual"
             button-style={style}
             data-clipboard-text={this.props.text} onSuccess={this.showToolTip}>
 
