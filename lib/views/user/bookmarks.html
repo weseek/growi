@@ -4,7 +4,7 @@
 
 {% block html_title %}{{ pageUser.name }}'s Bookmarks · {% endblock %}
 
-{% block content_head %}
+{% block layout_header %}
 <div class="header-wrap">
   <header id="page-header">
     <h1 class="title">{{ pageUser.name }}'s Bookmarks</h1>
@@ -26,5 +26,5 @@
 {% block side_content %}
 {% endblock %}
 
-{% block footer %}
+{% block layout_footer %}
 {% endblock %}

@@ -1,10 +1,6 @@
 {% extends '../../user_page.html' %}
 
 
-{% block layout_sidebar %}
-{% endblock %}
-
-
 {% block layout_main %}
 <div id="main" class="main col-md-12 {% if page %}{{ css.grant(page) }}{% endif %} {% block main_css_class %}{% endblock %}">
   {% if page && page.grant != 1 %}
@@ -30,11 +26,6 @@
            #   Because this block has content like 'Bookmarks' or 'Recent Created' whose height changes dynamically,
            #   setting of 'revision-toc' (affix) is hindered.
            #}
-
-          {% block content_head %}
-            {% parent %}
-          {% endblock %}
-
           {% block content_main_before %}
           {% endblock %}
 
@@ -66,7 +57,7 @@
 {% endblock %} {# layout_main #}
 
 
-{% block footer %}
+{% block layout_footer %}
   {% parent %}
   {% include '../widget/system-version.html' %}
 {% endblock %}

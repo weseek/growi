@@ -2,7 +2,7 @@
 
 {% block html_title %}{{ t('Home') }} · {{ path }}{% endblock %}
 
-{% block content_head %}
+{% block layout_header %}
 <div class="header-wrap">
   <header id="page-header">
     <h1 class="title" id="">{{ t('Home') }}</h1>
@@ -305,5 +305,5 @@
 {% block content_footer %}
 {% endblock content_footer %}
 
-{% block footer %}
-{% endblock footer %}
+{% block layout_footer %}
+{% endblock layout_footer %}

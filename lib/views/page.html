@@ -2,9 +2,9 @@
 
 {% block html_title %}{{ path|path2name }} · {{ path }}{% endblock %}
 
-{% block content_head %}
+{% block layout_header %}
 
-{% block content_head_before %}
+{% block layout_header_before %}
 {% endblock %}
 
 <div class="header-wrap">
@@ -37,7 +37,7 @@
   </header>
 </div>
 
-{% block content_head_after %}
+{% block layout_header_after %}
 {% endblock %}
 
 {% endblock %}
@@ -251,7 +251,7 @@
   {% endif %}
 {% endblock %}
 
-{% block footer %}
+{% block layout_footer %}
 {% endblock %}
 
 {% block body_end %}

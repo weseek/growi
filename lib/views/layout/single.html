@@ -3,9 +3,6 @@
 {% block layout_main %}
 <div id="main" class="main col-md-12">
   <article>
-    {% block content_head %}
-    {% endblock %}
-
     {% block content_main %}
     {% endblock content_main %}
 
@@ -16,7 +13,7 @@
 
 {% endblock %} {# layout_main #}
 
-{% block footer %}
+{% block layout_footer %}
 {% parent %}
 <div class="system-version">
   <span>

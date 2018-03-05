@@ -1,7 +1,6 @@
 {% extends 'layout.html' %}
 
-{% block layout_sidebar %}
-
+{% block layout_main %}
 <a href="" class=" hidden-xs hidden-sm layout-control" id="toggle-sidebar"><i class="fa fa-chevron-right"></i> <span class="hide-on-affix-top"></span></a>
 <aside class="sidebar col-md-3 hidden-xs hidden-sm hidden-print">
 
@@ -26,9 +25,6 @@
   </div>
 </aside>
 
-{% endblock %} {# layout_sidebar #}
-
-{% block layout_main %}
 <div id="main" class="main col-md-9 {% if page %}{{ css.grant(page) }}{% endif %} {% block main_css_class %}{% endblock %}">
   {% if page && page.grant != 1 %}
   <p class="page-grant">
@@ -42,11 +38,7 @@
   </p>
   {% endif %}
   <article>
-    {% block content_head %}
-    {% endblock %}
-
     {% block content_main %}
-    //
     {% endblock content_main %}
 
     {% block content_footer %}
