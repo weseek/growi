@@ -1,4 +1,6 @@
-// when sidebar is hidden
+/*
+ * Sidebar
+ */
 .content-wrapper {
   // hide sidebar by agile-admin completely
   .sidebar {
@@ -6,26 +8,6 @@
   }
   #page-wrapper {
     margin-left: 0;
-  }
-
-  // Logo
-  .top-left-part {
-    background-color: darken($topbar, 10%);
-
-    .logo {
-      svg.dark-logo, svg.light-logo {
-        fill: lighten($topbar, 15%);
-
-        &:hover {
-          .group1 {
-            fill: #74bc45;
-          }
-          .group2 {
-            fill: #1664b0;
-          }
-        }
-      }
-    }
   }
 }
 
@@ -61,8 +43,25 @@
       height: 50px;
     }
   }
-
 }
+// when sidebar is hidden
+.content-wrapper {
+  .top-left-part {
+    background-color: darken($topbar, 10%);
+
+    .logo {
+      svg.dark-logo, svg.light-logo {
+        fill: lighten($topbar, 15%);
+
+        &:hover {
+          .group1 { fill: #74bc45; }
+          .group2 { fill: #1664b0; }
+        }
+      }
+    }
+  }
+}
+
 
 /*
  * Form
