@@ -23,16 +23,20 @@
       }
     }
 
-    .like-button {
+    .like-button, .bookmark-link {
+      border: none;
       font-size: 1.2em;
       line-height: 0.8em;
+      &:not(:hover) {
+        background-color: transparent;
+      }
+    }
+    .like-button {
       &.active {
         @extend .btn-info;
       }
     }
     .bookmark-link {
-      font-size: 1.2em;
-      line-height: 0.8em;
       &.active {
         @extend .btn-warning;
       }
@@ -86,8 +90,8 @@
       top: 0;
       left: 0;
       padding: 5px 20px;
-      // z-index: 1039;
-      // background: rgba(255, 255, 255, .9);
+      z-index: 15; // over the .sidebar
+      background: rgba(white, .9);
       box-shadow: 0 0px 2px #999;
 
       h1 {
