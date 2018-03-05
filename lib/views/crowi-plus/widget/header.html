@@ -13,20 +13,16 @@
       {% if page %}
       <div class="flex-item-action">
         {% if user %}
-        <button
+        <a
             data-csrftoken="{{ csrf() }}"
             data-liked="{% if page.isLiked(user) %}1{% else %}0{% endif %}"
-            class="like-button btn btn-default btn-sm {% if page.isLiked(user) %}active{% endif %}"
-        ><i class="fa fa-thumbs-o-up"></i></button>
+            class="like-button btn btn-default btn-outline btn-circle {% if page.isLiked(user) %}active{% endif %}"
+        ><i class="fa fa-thumbs-o-up"></i></a>
         {% endif %}
       </div>
       <div class="flex-item-action">
         {% if user %}
-        <span id="bookmark-button">
-          <p class="bookmark-link">
-            <i class="fa fa-star-o"></i>
-          </p>
-        </span>
+        <span id="bookmark-button"></span>
         {% endif %}
       </div>
 

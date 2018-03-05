@@ -4,6 +4,100 @@
 .crowi.main-container {
   // padding controll of .header-wrap and .content-main are moved to _layout and _form
 
+  /*
+   * header
+   */
+  header {
+    .btn-copy, .btn-edit {
+      @extend .text-muted;
+      opacity: 0.3;
+      border: none;
+      &:not(:hover) {
+        background-color: transparent;
+      }
+    }
+    // change button opacity
+    &:hover {
+      .btn.btn-copy, .btn.btn-edit {
+        opacity: unset;
+      }
+    }
+
+    .like-button {
+      font-size: 1.2em;
+      line-height: 0.8em;
+      &.active {
+        @extend .btn-info;
+      }
+    }
+    .bookmark-link {
+      font-size: 1.2em;
+      line-height: 0.8em;
+      &.active {
+        @extend .btn-warning;
+      }
+    }
+
+    .flex-title-line {
+      line-height: 1;
+      display: flex;
+      align-items:         center;
+
+      .flex-item-title {
+        flex-basis: auto;
+        margin-right: auto;
+      }
+      .flex-item-action {
+        flex-basis: 2em;
+        text-align: center;
+        padding: 0 2px;
+      }
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-top: 0;
+      margin-bottom: 0;
+
+      .btn-copy-container {
+        font-size: 0.65em;
+      }
+
+      //// TODO crowi layout only
+      // a.last-path {
+      //   color: #D1E2E4;
+      //   opacity: .4;
+
+      //   &:hover {
+      //     color: inherit;
+      //   }
+      // }
+
+    }
+
+    .url-line {
+      color: #999;
+      font-size: 1rem;
+    }
+
+    // affix
+    &.affix {
+      width: 100%;
+      top: 0;
+      left: 0;
+      padding: 5px 20px;
+      // z-index: 1039;
+      // background: rgba(255, 255, 255, .9);
+      box-shadow: 0 0px 2px #999;
+
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+
+  }
+
+  /*
   .main { // {{{ .main of layout related
     transition: .5s ease;
     -webkit-transition: .5s ease;
@@ -11,94 +105,6 @@
 
     article {
       background: #fff;
-    }
-
-    article header {
-      background: #fff;
-      width: 100%;
-
-      &.affix {
-        width: 100%;
-        top: 0;
-        left: 0;
-        padding: 5px 20px;
-        z-index: 1039;
-        background: rgba(255, 255, 255, .9);
-        box-shadow: 0 0px 2px #999;
-
-        h1 {
-          font-size: 1.8em;
-        }
-
-      }
-
-    }
-
-    &.col-md-12 article header.affix {
-      width: 100%;
-    }
-
-    article header { // not affixed
-      .bookmark-link {
-        color: #e6b422;
-        font-size: 2em;
-        &.bookmarked {
-          //color: #fff;
-        }
-      }
-
-      .flex-title-line {
-        line-height: 1;
-        display: -webkit-flex;
-        display: flex;
-        -webkit-align-items: center;
-        align-items:         center;
-
-        .flex-item-title {
-          -webkit-flex-basis: auto;
-          flex-basis: auto;
-          margin-right: auto;
-        }
-        .flex-item-action {
-          -webkit-flex-basis: 2em;
-          flex-basis: 2em;
-          text-align: center;
-          padding: 0 2px;
-        }
-      }
-
-      h1 {
-        font-size: 28px;
-        margin-top: 0;
-        margin-bottom: 0;
-
-        .btn-copy-container {
-          font-size: 0.65em;
-        }
-
-        a.last-path {
-          color: #D1E2E4;
-          opacity: .4;
-
-          &:hover {
-            color: inherit;
-          }
-        }
-
-      }
-
-      .url-line {
-        color: #999;
-        font-size: 1rem;
-      }
-
-      // change button opacity
-      .btn.btn-muted {
-        opacity: 0.3;
-      }
-      &:hover .btn.btn-muted {
-        opacity: unset;
-      }
     }
 
     .content-main {
@@ -219,7 +225,6 @@
       }
     }
 
-
     .side-content {
       // margin-bottom: $crowiFooterHeight + $crowiHeaderHeight;
       color: #666;
@@ -247,7 +252,9 @@
       }
     }
   } // }}}
+  */
 
+  /*
   .footer { // {{{
     position: fixed;
     width: calc(25% - 18px);
@@ -284,8 +291,9 @@
       }
     } // }}}
   } // }}}
-
+  */
 }
+/*
 .crowi.main-container .main .content-main .revision-history { // {{{
   h1 {
     padding-bottom: 0.3em;
@@ -355,8 +363,10 @@
   }
 
 } // }}}
+*/
 
 // for not_found.html
+/*
 .crowi.main-container {
   .message-not-found {
     margin-top: 10px;
@@ -369,3 +379,4 @@
     }
   }
 }
+*/

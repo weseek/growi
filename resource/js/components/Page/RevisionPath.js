@@ -77,7 +77,6 @@ export default class RevisionPath extends React.Component {
       fontSize: "0.6em",
       marginLeft: "0.5em",
       padding: "0 2px",
-      border: 'none',
     };
 
     const pageLength = this.state.pages.length;
@@ -107,9 +106,9 @@ export default class RevisionPath extends React.Component {
         </span>
         {afterElements}
         <CopyButton buttonId="btnCopyRevisionPath" text={this.props.pagePath}
-            buttonClassName="btn btn-default btn-muted" iconClassName="fa fa-clone text-muted" />
-        <a href="#edit-form" className="btn btn-default btn-muted" style={editButtonStyle}>
-          <i className="fa fa-edit text-muted"></i>
+            buttonClassName="btn btn-default btn-copy" iconClassName="fa fa-clone" />
+        <a href="#edit-form" className="btn btn-default btn-edit" style={editButtonStyle}>
+          <i className="fa fa-edit"></i>
         </a>
       </span>
     );

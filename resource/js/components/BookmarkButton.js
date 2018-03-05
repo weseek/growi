@@ -67,11 +67,13 @@ export default class BookmarkButton extends React.Component {
     }
 
     const iconName = this.state.bookmarked ? 'star' : 'star-o';
+    const addedClassName = this.state.bookmarked ? 'active' : '';
 
     return (
-      <a href="#" title="Bookmark" className="bookmark-link" onClick={this.handleClick}>
+      <button href="#" title="Bookmark" onClick={this.handleClick}
+          className={`bookmark-link btn btn-default btn-circle btn-outline ${addedClassName}`}>
         <Icon name={iconName} />
-      </a>
+      </button>
     );
   }
 }
