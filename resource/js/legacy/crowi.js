@@ -526,7 +526,7 @@ $(function() {
     var $header = $('#page-header');
     if ($header.length > 0) {
       var headerHeight = $header.outerHeight(true);
-      $('.header-wrap').css({height: (headerHeight + 16) + 'px'});
+      $('.header-wrap').css({height: (headerHeight + 0) + 'px'});
       $header.affix({
         offset: {
           top: function() {
