@@ -326,43 +326,6 @@ input.searching {
   }
 }
 
-// notification
-.fk-notif {
-  display: none;
-
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  position: fixed;
-  z-index: 1029;
-  padding: 10px;
-  box-shadow: -1px 0 3px 0px #666;
-  font-weight: bold;
-  transition: all .3s;
-
-  &.fk-notif-danger {
-    background: #b94a48;
-    color: #fff;
-
-    a {
-      color: #f5ecf4;
-      text-decoration: underline;
-      &:hover {
-        text-decoration: none;
-      }
-    }
-  }
-
-  &.fk-notif-warning {
-    background: #fcf8e3;
-    color: #8a6d3b;
-  }
-}
-.on-edit .fk-notif {
-  bottom: 50px;
-  z-index: 1061;
-}
-
 // external-services
 .crowi {
   .github-link {
