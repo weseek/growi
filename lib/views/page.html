@@ -90,7 +90,7 @@
   {% endif %}
 
   {% if not page.isDeleted() %}
-  <ul class="nav nav-tabs customtab hidden-print">
+  <ul class="nav nav-tabs hidden-print">
     <li class=" {% if not req.body.pageForm %}active{% endif %}" data-toggle="tooltip" {# data-title="あなたの 確認待ち です" title="" data-placement="bottom" data-trigger="manual" data-tooltip-stay #}>
       <a href="#revision-body" data-toggle="tab">
       <i class="ti-control-play"></i> View
@@ -128,7 +128,7 @@
   </ul>
   {% endif %}
 
-  <div class="tab-content wiki-content">
+  <div class="tab-content">
   {% if req.query.renamed and not page.isDeleted() %}
   <div class="alert alert-info alert-moved">
     <span>
@@ -185,7 +185,7 @@
         <a data-toggle="collapse" data-parent="#revision-toc" href="#revision-toc-content" class="revision-toc-head">{{ t('Table of Contents') }}</a>
         <div id="revision-toc-content" class="revision-toc-content collapse in"></div>
       </div>
-      <div id="page"></div>
+      <div id="page" class="m-t-5 m-l-5"></div>
     </div>
 
     {# edit form #}

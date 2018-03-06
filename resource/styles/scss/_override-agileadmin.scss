@@ -99,3 +99,13 @@
     padding: 10px 15px;
   }
 }
+
+
+/*
+ * Tab
+ */
+.nav-tabs {
+  > li > a {
+    border-radius: 0;
+  }
+}
