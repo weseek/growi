@@ -1,7 +1,12 @@
 CHANGES
 ========
 
-## 2.4.2-RC
+## 2.4.3-RC
+
+* 
+
+
+## 2.4.2
 
 * Improvement: Ensure to set absolute url from root when attaching files when `FILE_UPLOAD=local`
 * Fix: Inline code blocks that includes doller sign are broken

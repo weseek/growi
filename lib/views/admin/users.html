@@ -1,11 +1,11 @@
 {% extends '../layout/admin.html' %}
 
-{% block html_title %}ユーザー管理 · {% endblock %}
+{% block html_title %}{{ t('user_management.User management') }}· {% endblock %}
 
 {% block layout_header %}
 <div class="header-wrap">
   <header id="page-header">
-    <h1 class="title" id="">ユーザー管理</h1>
+    <h1 class="title" id="">{{ t('user_management.User management') }}</h1>
   </header>
 </div>
 {% endblock %}
@@ -33,10 +33,10 @@
 
     <div class="col-md-9">
       <p>
-        <button data-toggle="collapse" class="btn btn-default" href="#inviteUserForm">新規ユーザーの招待</button>
+        <button data-toggle="collapse" class="btn btn-default" href="#inviteUserForm">{{ t("user_management.invite_users") }}</button>
         <a class="btn btn-default" href="/admin/users/external-accounts">
           <i class="fa fa-user-plus" aria-hidden="true"></i>
-          外部アカウントの管理
+          {{ t("user_management.external_account") }}
         </a>
       </p>
       <form role="form" action="/admin/user/invite" method="post">
@@ -136,7 +136,7 @@
         </div><!-- /.modal-dialog -->
       </div>
 
-      <h2>ユーザー一覧</h2>
+      <h2>{{ t("user_management.user_list") }}</h2>
 
       <table class="table table-hover table-striped table-bordered table-user-list">
         <thead>
@@ -144,11 +144,11 @@
             <th width="100px">#</th>
             <th>Status</th>
             <th><code>username</code></th>
-            <th>名前</th>
-            <th>メールアドレス</th>
-            <th width="100px">作成日</th>
-            <th width="150px">最終ログイン</th>
-            <th width="90px">操作</th>
+            <th>{{ t('Name') }}</th>
+            <th>{{ t('Email') }}</th>
+            <th width="100px">{{ t('user_management.Date created') }}</th>
+            <th width="150px">{{ t('user_management.Last login') }}</th>
+            <th width="90px">{{ t('user_management.Manage') }}</th>
           </tr>
         </thead>
         <tbody>
@@ -181,13 +181,13 @@
             <td>
               <div class="btn-group admin-user-menu">
                 <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-                  編集
+                  {{ t('Edit') }}
                   <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu" role="menu">
-                  <li class="dropdown-header">編集メニュー</li>
+                  <li class="dropdown-header">{{ t('user_management.Edit menu') }}</li>
                   <li>
-                    <a href="">編集</a>
+                    <a href="">{{ t('Edit') }}</a>
 
                   </li>
                   <li class="dropdown-button">
@@ -196,11 +196,11 @@
                       data-user-email="{{ sUser.email }}"
                       data-target="#admin-password-reset-modal"
                       data-toggle="modal" class="btn btn-block btn-default">
-                      パスワードの再発行
+                      {{ t('user_management.Reissue password') }}
                     </a>
                   </li>
                   <li class="divider"></li>
-                  <li class="dropdown-header">ステータス</li>
+                  <li class="dropdown-header">{{ t('user_management.Status') }}</li>
 
                   {% if sUser.status == 1 %}
                   <li class="dropdown-button">
@@ -216,12 +216,12 @@
                     {% if sUser.username != user.username %}
                     <form action="/admin/user/{{ sUser._id.toString() }}/suspend" method="post">
                       <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                      <button type="submit" class="btn btn-block btn-warning">アカウント停止</button>
+                      <button type="submit" class="btn btn-block btn-warning">{{ t('user_management.Deactivate account') }}</button>
                     </form>
                     {% else %}
-                    <button class="btn btn-block btn-warning" disabled>アカウント停止</button>
+                    <button class="btn btn-block btn-warning" disabled>{{ t('user_management.Deactivate account') }}</button>
                     <br>
-                    <p class="alert alert-danger">自分自身のアカウントを停止することはできません</p>
+                    <p class="alert alert-danger">{{ t("user_management.your_own") }}</p>
                     {% endif %}
                   </li>
                   {% endif %}
@@ -254,7 +254,7 @@
 
                   {% if sUser.status == 2 %} {# activated な人だけこのメニューを表示 #}
                   <li class="divider"></li>
-                  <li class="dropdown-header">管理者メニュー</li>
+                  <li class="dropdown-header">{{ t('user_management.Administrator menu') }}</li>
 
                   <li class="dropdown-button">
                     {% if sUser.admin %}
@@ -264,7 +264,7 @@
                         <button type="submit" class="btn btn-block btn-danger">管理者からはずす</button>
                       </form>
                       {% else %}
-                      <p class="alert alert-danger">自分自身を管理者から外すことはできません</p>
+                      <p class="alert alert-danger">{{ t("user_management.cannot_remove") }}</p>
                       {% endif %}
                     {% else %}
                       <form action="/admin/user/{{ sUser._id.toString() }}/makeAdmin" method="post">
