@@ -57,7 +57,7 @@ export default class Comment extends React.Component {
     const commentBody = ReactUtils.nl2br(comment.comment);
     const creatorsPage = `/user/${creator.username}`;
     const revHref = `?revision=${comment.revision}`;
-    const revFirst8Letters = comment.revision.substr(0,8);
+    const revFirst8Letters = comment.revision.substr(-8);
     const revisionLavelClassName = this.getRevisionLabelClassName();
 
     return (

@@ -6,7 +6,6 @@
     padding: 1em;
     margin-left: 4.5em;
     margin-bottom: 1em;
-    border-radius: 3px;
     &:before {
       border: 1em solid transparent;
       border-right-color:#f5f5f5;
@@ -20,7 +19,7 @@
     }
   }
 
-  %picture-rounded {
+  %picture {
     float: left;
     margin-top: 0.8em;
     width: 3em;
@@ -49,8 +48,8 @@
     }
 
     // ユーザーアイコン
-    .picture.picture-rounded {
-      @extend %picture-rounded;
+    .picture {
+      @extend %picture;
     }
 
     // コメントセクション
@@ -72,14 +71,6 @@
         vertical-align: 25%;
       }
     }
-
-    .page-comment-control {
-      position: absolute;
-      display: none;    // default hidden
-      top: 0;
-      right: 0;
-    }
-
   }
 
   // show when hover
@@ -91,8 +82,8 @@
     position: relative;
     margin-top: 2em;
     // user icon
-    .picture.picture-rounded {
-      @extend %picture-rounded;
+    .picture {
+      @extend %picture;
     }
 
     // seciton
