@@ -1,11 +1,11 @@
 {% extends '../layout/admin.html' %}
 
-{% block html_title %}アプリ設定 · {% endblock %}
+{% block html_title %}{{ t('App settings') }} · {% endblock %}
 
 {% block content_head %}
 <div class="header-wrap">
   <header id="page-header">
-    <h1 class="title" id="">アプリ設定</h1>
+    <h1 class="title" id="">{{ t('App settings') }}</h1>
   </header>
 </div>
 {% endblock %}
@@ -34,21 +34,21 @@
 
       <form action="/_api/admin/settings/app" method="post" class="form-horizontal" id="appSettingForm" role="form">
       <fieldset>
-        <legend>アプリ設定</legend>
+        <legend>{{ t('App settings') }}</legend>
         <div class="form-group">
-          <label for="settingForm[app:title]" class="col-xs-3 control-label">Wikiの名前</label>
+          <label for="settingForm[app:title]" class="col-xs-3 control-label">{{ t('app_setting.Wiki name') }}</label>
           <div class="col-xs-6">
             <input class="form-control" type="text" name="settingForm[app:title]" value="{{ settingForm['app:title'] }}">
 
-            <p class="help-block">ヘッダーやHTMLタイトルに使用されるWikiの名前を変更できます。</p>
+            <p class="help-block">{{ t("app_setting.wiki_change") }}</p>
           </div>
         </div>
 
         <div class="form-group">
-          <label for="settingForm[app:confidential]" class="col-xs-3 control-label">コンフィデンシャル表示</label>
+          <label for="settingForm[app:confidential]" class="col-xs-3 control-label">{{ t('app_setting.Confidential name') }}</label>
           <div class="col-xs-6">
-            <input class="form-control" type="text" name="settingForm[app:confidential]" value="{{ settingForm['app:confidential'] }}" placeholder="例: 社外秘">
-            <p class="help-block">ここに入力した内容は、ヘッダー等に表示されます。</p>
+            <input class="form-control" type="text" name="settingForm[app:confidential]" value="{{ settingForm['app:confidential'] }}" placeholder="{{ t('app_setting. ex): internal use only') }}">
+            <p class="help-block">{{ t("app_setting.header_content") }}</p>
           </div>
         </div>
 
@@ -63,11 +63,11 @@
               {% else %}
               {% endif %}
               >
-              <label for="settingForm[app:fileUpload]" class="">画像以外のファイルアップロードを許可</label>
+              <label for="settingForm[app:fileUpload]" class="">{{ t("app_setting.enable_files_except_image") }}</label>
 
               <p class="help-block">
-                ファイルアップロードの設定を有効にしている場合にのみ、選択可能です。<br>
-                許可をしている場合、画像以外のファイルをページに添付可能になります。
+                {{ t("app_setting.enable_files_except_image") }}<br>
+                {{ t("app_setting.attach_enable") }}
               </p>
           </div>
         </div>
@@ -75,7 +75,7 @@
         <div class="form-group">
           <div class="col-xs-offset-3 col-xs-6">
             <input type="hidden" name="_csrf" value="{{ csrf() }}">
-            <button type="submit" class="btn btn-primary">更新</button>
+            <button type="submit" class="btn btn-primary">{{ t('app_setting.Reload') }}</button>
           </div>
         </div>
       </fieldset>
@@ -83,35 +83,35 @@
 
       <form action="/_api/admin/settings/mail" method="post" class="form-horizontal" id="mailSettingForm" role="form">
       <fieldset>
-      <legend>メールの設定</legend>
-      <p class="well">SMTPの設定がされている場合、それが利用されます。SMTP設定がなく、AWSの設定がある場合、SESでの送信を試みます。<br>どちらの設定もない場合、メールは送信されません。</p>
+      <legend>{{ t('app_setting.Mail settings') }}</legend>
+      <p class="well">{{ t("app_setting.SMTP_used") }} {{ t("app_setting.SMTP_but_AWS") }}<br>{{ t("app_setting.neihter_of") }}</p>
 
         <div class="form-group">
-          <label for="settingForm[mail.from]" class="col-xs-3 control-label">Fromアドレス</label>
+          <label for="settingForm[mail.from]" class="col-xs-3 control-label">{{ t('app_setting.From e-mail address') }}</label>
           <div class="col-xs-6">
             <input class="form-control" type="text" name="settingForm[mail:from]" placeholder="例: mail@crowi.wiki" value="{{ settingForm['mail:from'] }}">
           </div>
         </div>
 
         <div class="form-group">
-          <label class="col-xs-3 control-label">SMTP設定</label>
+          <label class="col-xs-3 control-label">{{ t('app_setting.SMTP settings') }}</label>
           <div class="col-xs-4">
-            <label for="">ホスト</label>
+            <label for="">{{ t('app_setting.Host') }}</label>
             <input class="form-control" type="text" name="settingForm[mail:smtpHost]"   value="{{ settingForm['mail:smtpHost']|default('') }}">
           </div>
           <div class="col-xs-2">
-            <label for="">ポート</label>
+            <label for="">{{ t('app_setting.Port') }}</label>
             <input class="form-control" type="text" name="settingForm[mail:smtpPort]" value="{{ settingForm['mail:smtpPort']|default('') }}">
           </div>
         </div>
 
         <div class="form-group">
           <div class="col-xs-3 col-xs-offset-3">
-            <label for="">ユーザー</label>
+            <label for="">{{ t('app_setting.User') }}</label>
             <input class="form-control" type="text" name="settingForm[mail:smtpUser]"   value="{{ settingForm['mail:smtpUser']|default('') }}">
           </div>
           <div class="col-xs-3">
-            <label for="">パスワード</label>
+            <label for="">{{ t('Password') }}</label>
             <input class="form-control" type="password" name="settingForm[mail:smtpPassword]" value="{{ settingForm['mail:smtpPassword']|default('') }}">
           </div>
         </div>
@@ -119,7 +119,7 @@
         <div class="form-group">
           <div class="col-xs-offset-3 col-xs-6">
             <input type="hidden" name="_csrf" value="{{ csrf() }}">
-            <button type="submit" class="btn btn-primary">更新</button>
+            <button type="submit" class="btn btn-primary">{{ t('app_setting.Reload') }}</button>
           </div>
         </div>
 
@@ -128,7 +128,7 @@
 
       <form action="/_api/admin/settings/aws" method="post" class="form-horizontal" id="awsSettingForm" role="form">
       <fieldset>
-      <legend>AWS設定</legend>
+      <legend>{{ t('app_setting.AWS settings') }}</legend>
         <p class="well">AWS にアクセスするための設定を行います。AWS の設定を完了させると、ファイルアップロード機能、プロフィール写真機能などが有効になります。<br>
         また、SMTP の設定が無い場合、SES を利用したメール送信が行われます。FromメールアドレスのVerify、プロダクション利用設定をする必要があります。<br>
           <br>
