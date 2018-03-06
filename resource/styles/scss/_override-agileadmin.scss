@@ -96,7 +96,11 @@
 /*
  * Button
  */
-
+.btn {
+  &:not(.btn-rounded) {
+    border-radius: 0;
+  }
+}
 
 /*
  * Dropdown
