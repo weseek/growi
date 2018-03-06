@@ -270,77 +270,43 @@
   } // }}}
   */
 }
-/*
-.crowi.main-container .main .content-main .revision-history { // {{{
-  h1 {
-    padding-bottom: 0.3em;
-    font-size: 2.3em;
-    font-weight: bold;
-    border-bottom: solid 1px #ccc;
-  }
 
+.crowi.main-container .main .content-main .revision-history { // {{{
 
   .revision-history-list {
     .revision-hisory-outer {
-      margin-top: 8px;
-
       .revision-history-main {
-
         .picture {
-          float: left;
           width: 32px;
           height: 32px;
         }
-
-        .revision-history-author {
-          margin-left: 40px;
-          color: #666;
-        }
-        .revision-history-comment {
-          margin-left: 40px;
-        }
         .revision-history-meta {
-          margin-left: 40px;
-
-          p {
-            margin-bottom: 8px;
-          }
-
-          a {
-            margin-right: 8px;
-          }
           a:hover {
             cursor: pointer;
           }
         }
 
+        .caret {
+          transform: rotate(-90deg);
+          transition: 0.4s;
+
+          &.caret-opened {
+            transform: rotate(0deg);
+          }
+        }
       }
       .revision-history-diff {
-        margin-left: 40px;
+        padding-left: 40px;
       }
     }
 
     li {
       position: relative;
       list-style: none;
-
-      a {
-        color: #666;
-        padding: 3px 5px 3px 40px;
-        display: block;
-
-        &:hover {
-          // background: darken($crowiAsideBackground, 10%);
-          text-decoration: none;
-          color: darken($link-color, 35%);
-        }
-      }
-
     }
   }
 
 } // }}}
-*/
 
 // for not_found.html
 /*
