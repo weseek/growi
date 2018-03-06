@@ -101,39 +101,13 @@
 
   }
 
+  // alert component settings for trash page and moved page
+  // see: https://jsfiddle.net/me420sky/2/
+  .alert-trash, .alert-moved, .alert-unlinked {
+    padding: 10px 15px;
+  }
+
   /*
-  .main { // {{{ .main of layout related
-    transition: .5s ease;
-    -webkit-transition: .5s ease;
-    background: #fff;
-
-    article {
-      background: #fff;
-    }
-
-    .content-main {
-      .tab-content {
-        margin-top: 30px;
-      }
-
-      // alert component settings for trash page and moved page
-      // see: https://jsfiddle.net/me420sky/2/
-      .alert-trash, .alert-moved, .alert-unlinked {
-        padding: 10px 15px;
-
-        span {
-          line-height: 25px;
-        }
-
-        >div:after {
-          clear: both;
-          content: '';
-          display: table;
-        }
-      }
-    }
-  } // }}}
-
   // {{{ grant related style
   .main.grant-restricted,
   .main.grant-specified,

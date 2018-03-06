@@ -16,6 +16,7 @@
   {% endif %}
   <article>
     {% block content_main_before %}
+      {% parent %}
     {% endblock %}
 
     {% block content_main %}
@@ -23,6 +24,7 @@
     {% endblock content_main %}
 
     {% block content_main_after %}
+      {% parent %}
     {% endblock %}
 
     {% block content_footer %}
