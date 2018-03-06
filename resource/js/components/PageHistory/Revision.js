@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import UserDate     from '../Common/UserDate';
-import Icon         from '../Common/Icon';
 import UserPicture  from '../User/UserPicture';
 
 export default class Revision extends React.Component {

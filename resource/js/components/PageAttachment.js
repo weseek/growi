@@ -1,6 +1,5 @@
 import React from 'react';
 
-import Icon from './Common/Icon';
 import PageAttachmentList from './PageAttachment/PageAttachmentList';
 import DeleteAttachmentModal from './PageAttachment/DeleteAttachmentModal';
 
