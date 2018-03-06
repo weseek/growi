@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Icon from './Common/Icon'
-
 export default class BookmarkButton extends React.Component {
 
   constructor(props) {
@@ -66,13 +64,12 @@ export default class BookmarkButton extends React.Component {
       return <div></div>;
     }
 
-    const iconName = this.state.bookmarked ? 'star' : 'star-o';
     const addedClassName = this.state.bookmarked ? 'active' : '';
 
     return (
       <button href="#" title="Bookmark" onClick={this.handleClick}
           className={`bookmark-link btn btn-default btn-circle btn-outline ${addedClassName}`}>
-        <Icon name={iconName} />
+        <i className="icon-star"></i>
       </button>
     );
   }
