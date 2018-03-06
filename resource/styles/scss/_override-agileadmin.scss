@@ -2,7 +2,10 @@
  * Sidebar
  */
 .content-wrapper {
-  // hide sidebar by agile-admin completely
+  // hide elements by agile-admin completely
+  .logo .logo-text {
+    display: none;
+  }
   .sidebar {
     display: none;
   }

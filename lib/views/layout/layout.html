@@ -105,7 +105,7 @@ gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js
 
 {% block html_body %}
 <body
-  class="crowi main-container {% block html_base_css %}{% endblock %} {% if 'crowi-plus' === layoutType() %}crowi-plus{% endif %}"
+  class="crowi main-container content-wrapper {% block html_base_css %}{% endblock %} {% if 'crowi-plus' === layoutType() %}crowi-plus{% endif %}"
   data-me="{{ user._id.toString() }}"
   data-plugin-enabled="{{ isEnabledPlugins() }}"
  {% block html_base_attr %}{% endblock %}
@@ -140,7 +140,7 @@ gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js
             <!-- <img src="../plugins/images/agileadmin-text.png" alt="home" class="dark-logo" /> -->
             <!--This is light logo text-->
             <!-- <img src="../plugins/images/agileadmin-text-dark.png" alt="home" class="light-logo" /> -->
-            <span class="light-logo-text">
+            <span class="logo-text light-logo-text">
               <svg xmlns="http://www.w3.org/2000/svg">
                 <text x="0" y="{{22+appTitleFontSize/2}}" font-size="{{appTitleFontSize}}">
                   {% block title %}{{ appTitle }}{% endblock %}
@@ -154,7 +154,7 @@ gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js
       <ul class="nav navbar-top-links navbar-left hidden-xs">
         <li>
           <a class="open-close hidden-xs waves-effect waves-light">
-            <i class="ti-angle-left"></i>
+            <i class="ti-menu"></i>
           </a>
         </li>
         <li>
