@@ -38,7 +38,7 @@
             <div class="text-muted">{{ page.createdAt|datetz('Y/m/d H:i:s') }}</div>
           </div>
         </li>
-        <li>
+        <li class="m-t-5">
           <div class="creator-picture">
             <a href="{{ userPageRoot(page.lastUpdateUser) }}">
               <img src="{{ page.lastUpdateUser|default(author)|picture }}" class="picture img-circle"><br>

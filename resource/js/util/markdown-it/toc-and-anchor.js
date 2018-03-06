@@ -10,7 +10,7 @@ export default class TocAndAnchorConfigurer {
   configure(md) {
     md.use(require('markdown-it-toc-and-anchor-with-slugid').default, {
         tocLastLevel: 3,
-        anchorLinkBefore: true,
+        anchorLinkBefore: false,
         anchorLinkSymbol: '',
         anchorLinkSymbolClassName: 'ti-link',
         anchorClassName: 'revision-head-link',

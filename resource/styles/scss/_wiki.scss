@@ -55,12 +55,6 @@ div.body {
   &:hover .revision-head-link,
   &:hover .revision-head-edit-button {
     visibility: unset;
-  }
-
-  .revision-head-link {
-    margin-left: -1em;
-  }
-  .revision-head-edit-button {
     margin-left: 0.5em;
   }
 
@@ -83,6 +77,7 @@ div.body {
     margin-top: 2em;
     padding-bottom: 0.3em;
     font-size: 1.8em;
+    line-height: 1.1em;
     border-bottom: solid 1px #ccc;
   }
   h2 {
