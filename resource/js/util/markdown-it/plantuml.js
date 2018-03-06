@@ -1,3 +1,4 @@
+import plantumlEncoder from 'plantuml-encoder';
 import urljoin from 'url-join';
 
 export default class PlantUMLConfigurer {
@@ -6,21 +7,19 @@ export default class PlantUMLConfigurer {
     this.crowi = crowi;
     const config = crowi.getConfig();
 
-    this.deflate = require('markdown-it-plantuml/lib/deflate.js');
-    this.serverUrl = config.env.PLANTUML_URI || 'http://plantuml.com';
+    this.serverUrl = config.env.PLANTUML_URI || 'http://plantuml.com/plantuml';
 
     this.generateSource = this.generateSource.bind(this);
   }
 
   configure(md) {
-    md.use(require('markdown-it-plantuml'), 'name', {
+    md.use(require('markdown-it-plantuml'), {
       generateSource: this.generateSource,
     });
   }
 
   generateSource(umlCode) {
-    const zippedCode =
-      this.deflate.encode64(this.deflate.zip_deflate('@startuml\n' + umlCode + '\n@enduml', 9));
-    return urljoin(this.serverUrl, 'plantuml', 'svg' , zippedCode);
+    const zippedCode = plantumlEncoder.encode(`@startuml\n${umlCode}\n@enduml`);
+    return urljoin(this.serverUrl, 'svg' , zippedCode);
   }
 }

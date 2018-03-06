@@ -25,6 +25,7 @@ import SearchTypeahead  from './components/SearchTypeahead';
 
 import CustomCssEditor  from './components/Admin/CustomCssEditor';
 import CustomScriptEditor from './components/Admin/CustomScriptEditor';
+import CustomHeaderEditor from './components/Admin/CustomHeaderEditor';
 
 import * as entities from 'entities';
 
@@ -191,6 +192,16 @@ if (customScriptEditorElem != null) {
   ReactDOM.render(
     <CustomScriptEditor inputElem={customScriptInputElem} />,
     customScriptEditorElem
+  )
+}
+const customHeaderEditorElem = document.getElementById('custom-header-editor');
+if (customHeaderEditorElem != null) {
+  // get input[type=hidden] element
+  const customHeaderInputElem = document.getElementById('inputCustomHeader');
+
+  ReactDOM.render(
+    <CustomHeaderEditor inputElem={customHeaderInputElem} />,
+    customHeaderEditorElem
   )
 }
 

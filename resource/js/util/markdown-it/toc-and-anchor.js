@@ -9,6 +9,7 @@ export default class TocAndAnchorConfigurer {
 
   configure(md) {
     md.use(require('markdown-it-toc-and-anchor-with-slugid').default, {
+        tocLastLevel: 3,
         anchorLinkBefore: false,
         anchorLinkSymbol: '',
         anchorLinkSymbolClassName: 'fa fa-link',

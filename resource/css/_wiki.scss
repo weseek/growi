@@ -34,7 +34,7 @@ div.body {
     background: #fcfcfc;
     padding: 10px;
 
-    > ul {
+    > ul > li { // first level of li
       margin: 4px 4px 4px 15px;
       padding: 5px;
     }

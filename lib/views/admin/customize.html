@@ -204,6 +204,42 @@
       </fieldset>
       </form>
 
+      <form action="/_api/admin/customize/header" method="post" class="form-horizontal" id="cutomheaderSettingForm" role="form">
+      <fieldset>
+        <legend>カスタムヘッダーHTML</legend>
+
+        <p class="well">
+          システム全体に適用される HTML を記述できます。<code>&lt;header&gt;</code> タグ内の他の <code>&lt;script&gt;</code> タグ読み込み前に展開されます。<br>
+          変更の反映はページの更新が必要です。
+        </p>
+
+        <p class="help-block">
+          Examples:
+          <pre><code>&lt;script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js" defer&gt;&lt;script&gt;</script></code></pre>
+        </p>
+
+        <div class="form-group">
+          <div class="col-xs-12">
+            <div id="custom-header-editor"></div>
+            <input type="hidden" id="inputCustomHeader" name="settingForm[customize:header]" value="{{ settingForm['customize:header'] }}">
+          </div>
+          <div class="col-xs-12">
+            <p class="help-block text-right">
+              <i class="fa fa-fw fa-keyboard-o" aria-hidden="true"></i>
+              Ctrl+Space でコード補完
+            </p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-xs-offset-5 col-xs-6">
+            <input type="hidden" name="_csrf" value="{{ csrf() }}">
+            <button type="submit" class="btn btn-primary">更新</button>
+          </div>
+        </div>
+
+      </fieldset>
+      </form>
 
       <form action="/_api/admin/customize/css" method="post" class="form-horizontal" id="cutomcssSettingForm" role="form">
       <fieldset>
@@ -299,7 +335,7 @@ window.addEventListener('load', (event) => {
   </div>
 
   <script>
-    $('#cutomcssSettingForm, #cutomscriptSettingForm, #cutomlayoutSettingForm, #cutombehaviorSettingForm, #customfeaturesSettingForm').each(function() {
+    $('#cutomcssSettingForm, #cutomscriptSettingForm, #cutomlayoutSettingForm, #cutombehaviorSettingForm, #customfeaturesSettingForm, #cutomheaderSettingForm').each(function() {
       $(this).submit(function()
       {
         function showMessage(formId, msg, status) {

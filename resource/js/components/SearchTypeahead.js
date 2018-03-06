@@ -1,6 +1,6 @@
-import {noop} from 'lodash';
 import React from 'react';
 
+import { noop } from 'lodash/noop';
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 
 import UserPicture from './User/UserPicture';

@@ -1,6 +1,3 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-
 import { BasicInterceptor } from 'crowi-pluginkit';
 
 
@@ -40,8 +37,8 @@ export class DetachCodeBlockInterceptor extends BasicInterceptor {
 
     context.dcbContextMap = {};
 
-    // see: https://regex101.com/r/8PAEcC/2
-    context.markdown = markdown.replace(/(```(.|[\r\n])*?```)|(`[^\r\n]*?`)/gm, (all) => {
+    // see: https://regex101.com/r/8PAEcC/3
+    context.markdown = markdown.replace(/((```|~~~)(.|[\r\n])*?(```|~~~))|(`[^\r\n]*?`)/gm, (all) => {
       // create ID
       const replaceId = 'dcb-' + this.createRandomStr(8);
 
@@ -107,7 +104,9 @@ export class RestoreCodeBlockInterceptor extends BasicInterceptor {
       // get context object from context
       let dcbContext = context.dcbContextMap[replaceId];
 
-      context.markdown = context.markdown.replace(dcbContext.substituteContent, dcbContext.content);
+      // replace it with content by using getter function so that the doller sign does not work
+      // see: https://github.com/weseek/crowi-plus/issues/285
+      context.markdown = context.markdown.replace(dcbContext.substituteContent, () => { return dcbContext.content; });
     });
 
     // resolve

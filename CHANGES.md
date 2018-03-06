@@ -1,7 +1,35 @@
 CHANGES
 ========
 
-## 2.4.0-RC
+## 2.4.3-RC
+
+* 
+
+
+## 2.4.2
+
+* Improvement: Ensure to set absolute url from root when attaching files when `FILE_UPLOAD=local`
+* Fix: Inline code blocks that includes doller sign are broken
+* Fix: Comment count is not updated when a comment of the page is deleted
+* Improvement: i18n in `/admin` (WIP)
+* Support: Upgrade libs
+    * googleapis
+    * markdown-it-plantuml
+
+## 2.4.1
+
+* Feature: Custom Header HTML
+* Improvement: Add highlight.js languages
+    * dockerfile, go, gradle, json, less, scss, typescript, yaml
+* Fix: Couldn't connect to PLANTUML_URI
+    * Introduced by 2.4.0
+* Fix: Couldn't render UML which includes CJK
+    * Introduced by 2.4.0
+* Support: Upgrade libs
+    * axios
+    * diff2html
+
+## 2.4.0
 
 * Feature: Support Footnotes
 * Feature: Support Task lists
@@ -10,7 +38,9 @@ CHANGES
 * Feature: Enable to switch whether rendering MathJax in realtime or not
 * Improvement: Replace markdown parser with markdown-it
 * Improvement: Generate anchor of headers with header strings
+* Improvement: Enhanced Scroll Sync on Markdown Editor/Preview
 * Improvement: Update `#revision-body` tab contents after saving with `Ctrl-S`
+* Fix: 500 Internal Server Error occures when basic-auth configuration is set
 
 ## 2.3.9
 
