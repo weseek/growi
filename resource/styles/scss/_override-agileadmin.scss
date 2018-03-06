@@ -97,7 +97,7 @@
  * Button
  */
 .btn {
-  &:not(.btn-rounded) {
+  &:not(.btn-rounded):not(.btn-circle) {
     border-radius: 0;
   }
 }
