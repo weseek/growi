@@ -69,10 +69,10 @@
   "Input page name (optional)": "ページ名を入力(空欄OK)",
   "New Page": "新規ページ",
   "Create under": "<code>%s</code>以下に作成",
-  
-  
- 
-  
+
+
+
+
   "Table of Contents": "目次",
   "Management Wiki Home": "Wiki管理トップ",
   "App settings": "アプリ設定",
@@ -86,7 +86,7 @@
   "Password": "パスワード",
   "Guest users access": "ゲストユーザーのアクセス",
   "Register limitation": "登録の制限",
-  "The contents entered here will be shown in the header etc": "ここに入力した内容は、ヘッダー等に表示されます。", 
+  "The contents entered here will be shown in the header etc": "ここに入力した内容は、ヘッダー等に表示されます。",
   "Public": "公開",
   "Anyone with the link": "リンクを知っている人のみ",
   "Specified users": "特定ユーザーのみ",
@@ -95,8 +95,8 @@
   "The whitelist of registration permission E-mail address": "登録許可メールアドレスの<br>ホワイトリスト",
   "Selecting authentication mechanism": "認証機構選択",
 
-  
- 
+
+
   "Show latest": "最新のページを表示",
   "Load latest": "最新版を読み込む",
   "edited this page": "さんがこのページを編集しました。",
@@ -170,7 +170,7 @@
   },
 
 
-  
+
 
   "modal_rename": {
     "label": {
@@ -225,7 +225,7 @@
         "Delete Line": "行削除"
     }
   },
-   
+
   "admin_top": {
     "Management Wiki": "Wiki管理",
     "System Information": "システム情報",
@@ -235,17 +235,17 @@
     "Package name": "パッケージ名",
     "Specified version": "指定バージョン",
     "Installed version": "インストールされているバージョン"
-  
-  
-  
+
+
+
   },
 
-  "app_setting": { 
+  "app_setting": {
     "Wiki name": "Wikiの名前",
     "wiki_change": "ヘッダーやHTMLタイトルに使用されるWikiの名前を変更できます。",
     "header_content": "ここに入力した内容は、ヘッダー等に表示されます。",
     "Confidential name": "コンフィデンシャル表示",
-    "ex): internal use only": "例: 社外秘",  
+    "ex): internal use only": "例: 社外秘",
     "enable_files_except_image": "画像以外のファイルアップロードを許可",
     "attach_enable": "許可をしている場合、画像以外のファイルをページに添付可能になります。",
     "Update": "更新",
@@ -272,7 +272,7 @@
 
    },
 
-  "security_setting": { 
+  "security_setting": {
     "Basic authentication": "Basic認証",
     "Security settings": "セキュリティ設定",
     "Guest users access": "ゲストユーザーのアクセス",
@@ -289,7 +289,7 @@
     "Authentication mechanism settings":"認証機構設定"
   },
 
-  "markdown_setting": { 
+  "markdown_setting": {
     "markdown_rendering": "Markdownレンダリングの設定を変更できます。",
     "validate Line Break": "Line Break を有効にする",
     "treat_text": "ページテキスト中の改行を、HTML内で<code>&lt;br&gt;</code>として扱います",
@@ -298,8 +298,8 @@
     "TBD": "(TBD: コメント欄の Markdown 化は未だ実装されていません)"
 
   },
-  
-     "customize_page": { 
+
+     "customize_page": {
        "Behavior": "挙動",
        "Layout": "レイアウト",
        "Function": "機能",
@@ -317,10 +317,10 @@
         "ctrl_space": "Ctrl+Space でコード補完",
         "Custom script": "カスタムスクリプト",
         "write_java": "システム全体に適用されるJavaScriptを記述できます。"
-       
+
  },
 
-     "user_management": { 
+     "user_management": {
         "User management": "ユーザー管理",
         "invite_users": "新規ユーザーの招待",
         "external_account": "外部アカウントの管理",
@@ -335,12 +335,12 @@
         "your_own":"自分自身のアカウントを停止することはできません",
         "Administrator menu":"管理者メニュー",
         "cannot_remove":"自分自身を管理者から外すことはできません"
-        
-        
-        
 
-        
-         
+
+
+
+
+
       }
 }
 
