@@ -373,6 +373,13 @@ input.searching {
   }
 }
 
+// transplant from FontAwesome
+.icon-fw {
+  width: 20px;
+  display: inline-block;
+  text-align: left;
+}
+
 .cmd-key.mac {
   &:after {
     content: '⌘';
