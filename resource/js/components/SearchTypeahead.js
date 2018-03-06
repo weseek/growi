@@ -128,9 +128,9 @@ export default class SearchTypeahead extends React.Component {
     let isHidden = (this.state.input.length === 0);
 
     return isHidden ? <span></span> : (
-      <a className="btn btn-link search-top-clear" onClick={this.restoreInitialData} hidden={isHidden}>
-        <i className="fa fa-times-circle" />
-      </a>
+      <button className="btn btn-link search-top-clear" onClick={this.restoreInitialData} hidden={isHidden}>
+        <i className="icon-close" />
+      </button>
     );
   }
 

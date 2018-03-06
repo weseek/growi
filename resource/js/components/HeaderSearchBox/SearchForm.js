@@ -64,8 +64,8 @@ export default class SearchForm extends React.Component {
               placeholder="Search ..."
             />
             <InputGroup.Button>
-              <Button href="#" type="submit" bsStyle="link">
-                <i className="ti-search"></i>
+              <Button type="submit" bsStyle="link">
+                <i className="icon-magnifier"></i>
               </Button >
             </InputGroup.Button>
           </InputGroup>
