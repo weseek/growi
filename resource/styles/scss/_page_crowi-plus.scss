@@ -23,6 +23,9 @@
     // the container of h1
     div.title-container {
       margin-right: auto;
+      h1 {
+        line-height: 1.1em;
+      }
     }
 
     ul.authors {
@@ -50,7 +53,7 @@
   /*
    * affix header
    */
-  .main #page-header.affix {
+  header.affix {
     // show logo link
     div.title-logo-container {
       display: unset;
