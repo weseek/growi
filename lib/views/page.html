@@ -23,7 +23,7 @@
             data-csrftoken="{{ csrf() }}"
             data-liked="{% if page.isLiked(user) %}1{% else %}0{% endif %}"
             class="like-button btn btn-default btn-outline btn-circle {% if page.isLiked(user) %}active{% endif %}"
-        ><i class="fa fa-thumbs-o-up"></i></button>
+        ><i class="icon-like"></i></button>
         {% endif %}
       </div>
       {% endif %}
@@ -132,14 +132,14 @@
 
     <li {% if req.body.pageForm %}class="active"{% endif %}>
       <a {% if user %}href="#edit-form" data-toggle="tab"{% endif %} class="edit-button {% if not user %}edit-button-disabled{% endif %}">
-        <i class="ti-pencil-alt"></i> {{ t('Edit') }}
+        <i class="icon-note"></i> {{ t('Edit') }}
       </a>
     </li>
 
 
     <li class="dropdown pull-right">
       <a class="dropdown-toggle {% if not user %}dropdown-disabled{% endif %}" {% if user %}data-toggle="dropdown" href="#"{% endif %}>
-        <i class="fa fa-ellipsis-v"></i>
+        <i class="icon-options-vertical"></i>
       </a>
       <ul class="dropdown-menu">
        <li><a href="#" data-target="#renamePage" data-toggle="modal"><i class="fa-fw ti-location-arrow"></i> {{ t('Move') }}</a></li>
@@ -152,8 +152,8 @@
       </ul>
     </li>
     {% if page %}
-    <li class="pull-right"><a href="#revision-history" data-toggle="tab"><i class="ti-timer"></i> History</a></li>
-    <li class="pull-right"><a href="?presentation=1" class="toggle-presentation"><i class="ti-layout-slider-alt"></i> {{ t('Presentation Mode') }}</a></li>
+    <li class="pull-right"><a href="#revision-history" data-toggle="tab"><i class="icon-layers"></i> History</a></li>
+    <li class="pull-right"><a href="?presentation=1" class="toggle-presentation"><i class="icon-film"></i> {{ t('Presentation Mode') }}</a></li>
     {% endif %}
   </ul>
   {% endif %}
@@ -195,7 +195,7 @@
     {# raw revision history #}
     {% if not page %}
     {% else %}
-    <div class="tab-pane revision-history" id="revision-history">
+    <div class="tab-pane revision-history m-t-10" id="revision-history">
     </div>
     {% endif %}
 

@@ -46,7 +46,7 @@ Crowi.appendEditSectionButtons = function(parentElement) {
     $(this).append(`
       <span class="revision-head-edit-button">
         <a href="#edit-form" onClick="Crowi.setCaretLineData(${line})">
-          <i class="ti-pencil-alt"></i>
+          <i class="icon-note"></i>
         </a>
       </span>
       `

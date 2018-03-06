@@ -17,7 +17,7 @@
             data-csrftoken="{{ csrf() }}"
             data-liked="{% if page.isLiked(user) %}1{% else %}0{% endif %}"
             class="like-button btn btn-default btn-outline btn-circle {% if page.isLiked(user) %}active{% endif %}"
-        ><i class="fa fa-thumbs-o-up"></i></button>
+        ><i class="icon-like"></i></button>
         {% endif %}
       </div>
       <div class="flex-item-action">
