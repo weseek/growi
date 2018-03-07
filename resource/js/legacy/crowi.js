@@ -92,10 +92,10 @@ Crowi.setCaretLineAndFocusToEditor = function() {
 // original: middleware.swigFilter
 Crowi.userPicture = function (user) {
   if (!user) {
-    return '/images/userpicture.png';
+    return '/images/user.svg';
   }
 
-  return user.image || '/images/userpicture.png';
+  return user.image || '/images/user.svg';
 };
 
 Crowi.modifyScrollTop = function() {
