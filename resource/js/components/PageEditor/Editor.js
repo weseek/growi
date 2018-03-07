@@ -266,7 +266,6 @@ export default class Editor extends React.Component {
   renderOverlay() {
     const overlayStyle = {
       position: 'absolute',
-      zIndex: 1060, // FIXME: required because .content-main.on-edit has 'z-index:1050'
       top: 0,
       right: 0,
       bottom: 0,

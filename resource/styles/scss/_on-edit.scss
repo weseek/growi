@@ -1,7 +1,16 @@
-// import Growi variable
-@import 'variables';
+body.on-edit {
 
-.crowi.main-container .main .content-main.on-edit { // {{{ Edit Form of Page
+  .navbar.navbar-static-top,
+  .row.page-list,
+  .row.page-comments-row,
+  .row.page-attachments-row,
+  footer {
+    display: none;
+  }
+
+
+
+  /*
   padding: 0;
 
   position: fixed;
@@ -61,6 +70,7 @@
       }
     }
   }
+*/
 
   .page-editor-editor-container {
     padding-right: 0;
@@ -196,18 +206,18 @@
     overflow-y: scroll;
   }
 
-  .form-group.form-submit-group {
-    position: fixed;
-    z-index: 1054;
-    bottom: 0;
-    width: 100%;
-    left: 0;
-    padding: 8px;
-    min-height: 50px;
-    background: rgba(255,255,255,.8);
-    border-top: solid 1px #ccc;
-    margin-bottom: 0;
-  }
+  // .form-group.form-submit-group {
+  //   position: fixed;
+  //   z-index: 1054;
+  //   bottom: 0;
+  //   width: 100%;
+  //   left: 0;
+  //   padding: 8px;
+  //   min-height: 50px;
+  //   background: rgba(255,255,255,.8);
+  //   border-top: solid 1px #ccc;
+  //   margin-bottom: 0;
+  // }
 
   #page-editor-options-selector {
     label {
@@ -228,6 +238,7 @@
   }
 } // }}}
 
+/*
 .crowi.main-container .main .page-list.content-main { // {{{ Edit Form of Page List
 
   .close-button {
@@ -249,7 +260,8 @@
     border-bottom: solid 1px #ccc;
   }
 } // }}}
-
+*/
+/*
 @media (max-width: $screen-sm-max) { // {{{ less than tablet size
 
   .content-main.on-edit {
@@ -268,11 +280,11 @@
     float: right;
   }
 } // }}}
-
+*/
 // overwrite .CodeMirror-hints
 .CodeMirror-hints {
   // FIXME: required because .content-main.on-edit has 'z-index:1050'
-  z-index: 1060 !important;
+  // z-index: 1060 !important;
 
   max-height: 30em !important;
 

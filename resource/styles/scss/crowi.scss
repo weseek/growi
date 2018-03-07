@@ -12,14 +12,14 @@
 
 // crowi component
 // @import 'admin';
-// @import 'attachments';
+@import 'attachments';
 @import 'comment';
 @import 'comment_crowi-plus';
 @import 'create-page';
 @import 'crowi-sidebar';
-// @import 'form';
 @import 'layout';
 @import 'layout_crowi-plus';
+@import 'on-edit';
 @import 'page_list';
 @import 'page';
 @import 'page_crowi-plus';
@@ -34,22 +34,6 @@
 /*
 ul {
   padding-left: 18px;
-}
-
-
-.meta {
-  margin-top: 0;
-  padding: 16px;
-  color: #666;
-  border-top: solid 1px #ccc;
-  background: #f0f0f0;
-  font-size: 0.95em;
-  color: #888;
-
-  .picture {
-    width: 16px;
-    height: 16px;
-  }
 }
 
 .page-meta {

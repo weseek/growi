@@ -27,7 +27,7 @@
   }
 
   $('a[data-toggle="tab"][href="#edit-form"]').on('show.bs.tab', function() {
-    $('.content-main').addClass('on-edit');
+    $('body').addClass('on-edit');
 
     if (slackConfigured) {
       var $slackChannels = $('#page-form-slack-channel');
@@ -41,7 +41,7 @@
   });
 
   $('a[data-toggle="tab"][href="#edit-form"]').on('hide.bs.tab', function() {
-    $('.content-main').removeClass('on-edit');
+    $('body').removeClass('on-edit');
   });
 
 /**
