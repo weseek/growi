@@ -14,7 +14,7 @@ https://github.com/weseek/crowi-plus.
 
 1. crowi/crowi (https://github.com/crowi/crowi)
 2. Microsoft/vscode (https://github.com/Microsoft/vscode)
-
+3. stephenhutchings/typicons.font (https://github.com/stephenhutchings/typicons.font)
 
 
 License Notice for Crowi
@@ -77,4 +77,14 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
+```
+
+
+License Notice for Typicons
+------------------------
+
+https://creativecommons.org/licenses/by-sa/3.0/
+
+```
+Copyright (c) 2018 Stephen Hutchings
 ```
