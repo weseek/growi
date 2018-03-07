@@ -21,13 +21,13 @@
 
     {% if page.commentCount > 0 %}
     <span>
-      <i class="fa fa-comment"></i>{{ page.commentCount }}
+      <i class="icon-bubble"></i>{{ page.commentCount }}
     </span>
     {% endif  %}
 
     {% if page.liker.length > 0 %}
     <span class="page-list-liker" data-count="{{ page.liker.length }}">
-      <i class="fa fa-thumbs-up"></i>{{ page.liker.length }}
+      <i class="icon-like"></i>{{ page.liker.length }}
     </span>
     {% endif  %}
 
