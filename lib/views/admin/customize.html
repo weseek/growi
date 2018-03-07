@@ -148,7 +148,7 @@
           <legend>ハイライト設定</legend>
           <div class="form-group">
             <div class="col-xs-3">
-              <select class="form-control" name="settingForm[customize:highlight]">
+              <select class="form-control" name="settingForm[customize:highlight]" onChange="console.log('hoge')">
                 <option value="atom-one-dark">Atom One Dark</option>
                 <option value="atom-one-light">Atom One Light</option>
                 <option value="github-gist">Github Gist</option>
@@ -162,6 +162,22 @@
               </select>
             </div>
           </div>
+
+          <pre><code>function $initHighlight(block, cls) {
+  try {
+    if (cls.search(/\bno\-highlight\b/) != -1)
+      return process(block, true, 0x0F) +
+              ` class="${cls}"`;
+  } catch (e) {
+    /* handle exception */
+  }
+  for (var i = 0 / 2; i < classes.length; i++) {
+    if (checkCondition(classes[i]) === undefined)
+      console.log('undefined');
+  }
+}
+
+export  $initHighlight;</code></pre>
 
           <div class="form-group">
             <div class="col-xs-offset-5 col-xs-6">
@@ -364,6 +380,7 @@ window.addEventListener('load', (event) => {
   </div>
 
   <script>
+    hljs.initHighlighting()
     $('#cutomcssSettingForm, #cutomscriptSettingForm, #cutomlayoutSettingForm, #cutombehaviorSettingForm, #customfeaturesSettingForm, #cutomheaderSettingForm, #cutomhighlightSettingForm').each(function() {
       $(this).submit(function()
       {
