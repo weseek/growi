@@ -26,10 +26,23 @@
 
 {% block content_main_before %}
   <h2 class="message-not-found text-muted">
-    <i class="fa fa-info-circle" aria-hidden="true"></i>
+    <i class="icon-info" aria-hidden="true"></i>
     Page is not found
   </h2>
 {% endblock %}
+
+{% if req.query.renamed %}
+<div class="alert alert-info alert-moved">
+  <span>
+    <strong>{{ t('Moved') }}: </strong> {{ t('page_page.notice.moved', req.query.renamed) }}
+  </span>
+</div>
+{% endif %}
+{% if req.query.unlinked %}
+<div class="alert alert-info alert-unlinked">
+  <strong>{{ t('Unlinked') }}: </strong> {{ t('page_page.notice.unlinked') }}
+</div>
+{% endif %}
 
 <div id="content-main" class="content-main content-main-not-found page-list"
   data-path="{{ path }}"
@@ -42,35 +55,24 @@
 
     <li>
       <a {% if user %}href="#edit-form" data-toggle="tab"{% endif %} class="edit-button {% if not user %}edit-button-disabled{% endif %}">
-        <i class="fa fa-pencil-square-o"></i> {{ t('Create') }}
+        <i class="icon-note"></i> {{ t('Create') }}
       </a>
     </li>
 
     {% if user %}
     <li class="dropdown pull-right">
-      <a href="#" onclick="history.back();"><i class="fa fa-times"></i> {{ t('Cancel') }}</a>
+      <a href="#" onclick="history.back();"><i class="icon-close"></i> {{ t('Cancel') }}</a>
     </li>
     {% endif %}
   </ul>
 
   <div class="tab-content">
-    {% if req.query.renamed %}
-    <div class="alert alert-info alert-moved">
-      <span>
-        <strong>{{ t('Moved') }}: </strong> {{ t('page_page.notice.moved', req.query.renamed) }}
-      </span>
-    </div>
-    {% endif %}
-    {% if req.query.unlinked %}
-    <div class="alert alert-info">
-      <strong>{{ t('Unlinked') }}: </strong> {{ t('page_page.notice.unlinked') }}
-    </div>
-    {% endif %}
-
     {# list view #}
     <div class="active tab-pane page-list-container" id="revision-body">
       {% if pages.length == 0 %}
-        There are no pages under <strong>{{ path }}</strong>.
+        <div class="m-t-20">
+          There are no pages under <strong>{{ path }}</strong>.
+        </div>
       {% endif  %}
 
       {% include 'widget/page_list.html' with { pages: pages, pager: pager, viewConfig: viewConfig } %}
