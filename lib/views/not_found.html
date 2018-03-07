@@ -25,24 +25,24 @@
 {% block content_main %}
 
 {% block content_main_before %}
+  {% if req.query.renamed %}
+  <div class="alert alert-info alert-moved">
+    <span>
+      <strong>{{ t('Moved') }}: </strong> {{ t('page_page.notice.moved', req.query.renamed) }}
+    </span>
+  </div>
+  {% endif %}
+  {% if req.query.unlinked %}
+  <div class="alert alert-info alert-unlinked">
+    <strong>{{ t('Unlinked') }}: </strong> {{ t('page_page.notice.unlinked') }}
+  </div>
+  {% endif %}
+
   <h2 class="message-not-found text-muted">
     <i class="icon-info" aria-hidden="true"></i>
     Page is not found
   </h2>
 {% endblock %}
-
-{% if req.query.renamed %}
-<div class="alert alert-info alert-moved">
-  <span>
-    <strong>{{ t('Moved') }}: </strong> {{ t('page_page.notice.moved', req.query.renamed) }}
-  </span>
-</div>
-{% endif %}
-{% if req.query.unlinked %}
-<div class="alert alert-info alert-unlinked">
-  <strong>{{ t('Unlinked') }}: </strong> {{ t('page_page.notice.unlinked') }}
-</div>
-{% endif %}
 
 <div id="content-main" class="content-main content-main-not-found page-list"
   data-path="{{ path }}"
