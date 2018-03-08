@@ -19,17 +19,7 @@
   {#
     Right Tabs
   #}
-
-  {% if isPortal %}
-  <li class="dropdown pull-right">
-    <a class="dropdown-toggle {% if not user %}dropdown-disabled{% endif %}" {% if user %}data-toggle="dropdown" href="#"{% endif %}>
-      <i class="icon-options-vertical"></i>
-    </a>
-    <ul class="dropdown-menu">
-      <li><a href="#" data-target="#unportalize" data-toggle="modal"><i class="fa fa-share"></i> {{ t('Unportalize') }}</a></li>
-    </ul>
-  </li>
-  {% else %}
+  {% if not isPortal %}
   <li class="dropdown pull-right">
     <a class="dropdown-toggle {% if not user %}dropdown-disabled{% endif %}" {% if user %}data-toggle="dropdown" href="#"{% endif %}>
       <i class="icon-options-vertical"></i>
@@ -44,8 +34,19 @@
       {% endif %}
     </ul>
   </li>
+  {% elseif ('/' !== path) %}
+  <li class="dropdown pull-right">
+    <a class="dropdown-toggle {% if not user %}dropdown-disabled{% endif %}" {% if user %}data-toggle="dropdown" href="#"{% endif %}>
+      <i class="icon-options-vertical"></i>
+    </a>
+    <ul class="dropdown-menu">
+      <li><a href="#" data-target="#unportalize" data-toggle="modal"><i class="fa fa-share"></i> {{ t('Unportalize') }}</a></li>
+    </ul>
+  </li>
   {% endif %}
+
   <li class="pull-right"><a href="#revision-history" data-toggle="tab"><i class="icon-layers"></i> History</a></li>
   <li class="pull-right"><a href="?presentation=1" class="toggle-presentation"><i class="icon-film"></i> {{ t('Presentation Mode') }}</a></li>
+
 </ul>
 {% endif %}

@@ -49,7 +49,7 @@
   <ul class="nav nav-tabs hidden-print">
     <li><a>Create: {{ path }}</a></li>
     <li class="dropdown pull-right">
-      <a href="#" onclick="history.back();"><i class="fa fa-times"></i> {{ t('Cancel') }}</a>
+      <a href="#" onclick="history.back();"><i class="icon-close"></i> {{ t('Cancel') }}</a>
     </li>
   </ul>
   <div class="tab-content">
@@ -74,13 +74,13 @@
 {% endblock %}
 
 {% block side_header %}
-  {% if not page.isDeleted() %}
+  {% if page and not page.isDeleted() %}
     {% include 'widget/page_side_header.html' %}
   {% endif %}
 {% endblock %} {# side_header #}
 
 {% block side_content %}
-  {% if not page.isDeleted() %}
+  {% if page and not page.isDeleted() %}
     {% include 'widget/page_side_content.html' %}
   {% endif %}
 {% endblock %}
