@@ -22,7 +22,7 @@
         </div>
       </div>
       <div>
-        {% if page %}
+        {% if page and user %}
         <button
             data-csrftoken="{{ csrf() }}"
             data-liked="{% if page.isLiked(user) %}1{% else %}0{% endif %}"
