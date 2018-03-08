@@ -2,49 +2,6 @@ div.body {
   padding: 10px;
 }
 
-.revision-toc {
-  float: right;
-  font-size: .9em;
-  border: solid 1px #aaa;
-  border-radius: 5px;
-  max-width: 250px;
-  overflow: hidden;
-
-  .revision-toc-head {
-    display: inline-block;
-    float: right;
-    border-left: solid 1px #aaa;
-    border-bottom: solid 1px #aaa;
-    border-radius: 0 5px;
-    padding: 3px 11px;
-    font-weight: bold;
-    background: #f0f0f0;
-    margin-left: 5px;
-    margin-bottom: 5px;
-
-    &.collapsed {
-      border: none;
-      margin: 0;
-    }
-  }
-  .revision-toc-content {
-    background: #fcfcfc;
-    padding: 10px;
-
-    > ul {
-      padding-left: 0;
-      ul {
-        padding-left: 1em;
-      }
-    }
-
-    > ul > li { // first level of li
-      margin: 4px 4px 4px 15px;
-      padding: 5px;
-    }
-  }
-}
-
 .revision-head {
 
   .revision-head-link,
@@ -192,7 +149,7 @@ div.body {
 }
 
 @media (max-width: $screen-sm-max) { // {{{ tablet and iphone size
-  .crowi.main-container .main .wiki {
+  .main-container .main .wiki {
     img {
       max-width: 100%;
     }

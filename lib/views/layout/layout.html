@@ -107,8 +107,9 @@ gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js
 
 {% block html_body %}
 <body
-  class="crowi main-container content-wrapper {% block html_base_css %}{% endblock %}
-      {% if 'crowi-plus' === layoutType() %}crowi-plus{% endif %}"
+  class="main-container content-wrapper {% block html_base_css %}{% endblock %}
+      {% if 'crowi' === layoutType() %}crowi{% endif %}
+      {% if 'crowi-plus' === layoutType() %}growi{% endif %}"
   data-me="{{ user._id.toString() }}"
   data-plugin-enabled="{{ isEnabledPlugins() }}"
  {% block html_base_attr %}{% endblock %}

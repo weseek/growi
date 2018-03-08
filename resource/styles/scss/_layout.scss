@@ -1,60 +1,78 @@
-.crowi { // {{{
+.main-container { // {{{
   h1, h2, h3, h4, h5, h6 {
     font-weight: 500;
   }
 
-  &.main-container { // {{{
-
-    .navbar-top-links { // {{{
-      .confidential {
-        a {
-          // border: solid 2px #f00;
-          // background: #fff;
-          // color: #f00;
-          // font-weight: bold;
-          // height: 42px;
-          // margin-top: 5px;
-          // padding: 10px;
-          // margin-right: 5px;
-        }
-      }
-    } // }}}
-
-    .main {
-      padding: 0; // cancel bootstrap padding
-
-      .header-wrap {
-        padding: 16px 16px 0 16px;
-        min-height: 70px;
-      }
-
-      .content-main {
-        padding: 8px 16px;
+  .navbar-top-links { // {{{
+    .confidential {
+      a {
+        // border: solid 2px #f00;
+        // background: #fff;
+        // color: #f00;
+        // font-weight: bold;
+        // height: 42px;
+        // margin-top: 5px;
+        // padding: 10px;
+        // margin-right: 5px;
       }
     }
-
-    .layout-control { // {{{
-      transition: .3s ease;
-      -webkit-transition: .3s ease;
-      position: fixed;
-      display: block;
-      text-align: center;
-      right: 25%;
-      bottom: 25px;
-      padding: 5px 8px;
-      border: solid 1px #ccc;
-      border-right: none;
-      border-radius: 5px 0 0 5px;
-      z-index: 1039;
-      font-size: .8em;
-
-      &:hover {
-        text-decoration: none;
-        cursor: pointer;
-      }
-    } // }}}
-
   } // }}}
+
+  .main {
+    padding: 0; // cancel bootstrap padding
+
+    .header-wrap {
+      padding: 16px 16px 0 16px;
+      min-height: 70px;
+    }
+
+    .content-main {
+      padding: 8px 16px;
+    }
+  }
+
+  .layout-control { // {{{
+    transition: .3s ease;
+    -webkit-transition: .3s ease;
+    position: fixed;
+    display: block;
+    text-align: center;
+    right: 25%;
+    bottom: 25px;
+    padding: 5px 8px;
+    border: solid 1px #ccc;
+    border-right: none;
+    border-radius: 5px 0 0 5px;
+    z-index: 1039;
+    font-size: .8em;
+
+    &:hover {
+      text-decoration: none;
+      cursor: pointer;
+    }
+  } // }}}
+
+  .revision-toc {
+    font-size: .9em;
+    max-width: 250px;
+    overflow: hidden;
+
+    .revision-toc-content {
+      padding: 10px;
+
+      > ul {
+        padding-left: 0;
+        ul {
+          padding-left: 1em;
+        }
+      }
+
+      > ul > li { // first level of li
+        margin: 4px 4px 4px 15px;
+        padding: 5px;
+      }
+    }
+  }
 } // }}}
 
 
@@ -135,7 +153,7 @@
 } // }}}
 
 @media print { // {{{ printable style
-  .crowi.main-container { // {{{
+  .main-container { // {{{
     padding: 30px;
 
     a:after {

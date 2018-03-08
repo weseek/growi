@@ -1,7 +1,7 @@
 // import diff2html styles
 @import "~diff2html/dist/diff2html.css";
 
-.crowi.main-container {
+.main-container {
   // padding controll of .header-wrap and .content-main are moved to _layout and _form
 
   /*
@@ -136,7 +136,7 @@
   */
 }
 
-.crowi.main-container .main .content-main .revision-history { // {{{
+.main-container .main .content-main .revision-history { // {{{
 
   .revision-history-list {
     .revision-hisory-outer {
@@ -175,7 +175,7 @@
 
 // for not_found.html
 /*
-.crowi.main-container {
+.main-container {
   .message-not-found {
     margin-top: 10px;
     margin-left: 16px;
