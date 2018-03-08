@@ -46,19 +46,19 @@
 
       <label>名前</label>
       <div class="input-group">
-        <span class="input-group-addon"><i class="fa fa-user"></i></span>
+        <span class="input-group-addon"><i class="icon-user"></i></span>
         <input type="text" class="form-control" placeholder="記入例: 山田 太郎" name="registerForm[name]" value="{{ req.body.registerForm.name }}" required>
       </div>
 
       <label >メールアドレス</label>
       <div class="input-group">
-        <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
+        <span class="input-group-addon"><i class="icon-envelope"></i></span>
         <input type="email" class="form-control" placeholder="E-mail" name="registerForm[email]" value="{{ googleEmail|default(req.body.registerForm.email) }}" required>
       </div>
 
       <label>パスワード</label>
       <div class="input-group">
-        <span class="input-group-addon"><i class="fa fa-key"></i></span>
+        <span class="input-group-addon"><i class="icon-key"></i></span>
         <input type="password" class="form-control" placeholder="Password" name="registerForm[password]" required>
       </div>
       <p class="help-block">

@@ -81,7 +81,7 @@
     </div>
     <form role="form" action="/login" method="post">
       <div class="input-group">
-        <span class="input-group-addon"><i class="fa fa-fw fa-user"></i></span>
+        <span class="input-group-addon"><i class="icon-fw icon-user"></i></span>
         <input type="text" class="form-control" placeholder="Username or E-mail" name="loginForm[username]">
         {% if isLdapSetup() %}
         <span class="input-group-addon">
@@ -93,7 +93,7 @@
       </div>
 
       <div class="input-group">
-        <span class="input-group-addon"><i class="fa fa-fw fa-key"></i></span>
+        <span class="input-group-addon"><i class="icon-fw icon-lock"></i></span>
         <input type="password" class="form-control" placeholder="Password" name="loginForm[password]">
       </div>
 
@@ -116,7 +116,7 @@
     </div>
 
     {% if config.crowi['security:registrationMode'] != 'Closed' %}
-    <p class="bottom-text"><a href="#register" id="register"><i class="fa fa-pencil"></i> {{ t('Sign up is here') }}</a></p>
+    <p class="bottom-text"><a href="#register" id="register"><i class="ti-check-box"></i> {{ t('Sign up is here') }}</a></p>
     {% endif %}
   </div>
 
@@ -170,7 +170,7 @@
 
       <label>{{ t('User ID') }}</label>
       <div class="input-group" id="input-group-username">
-        <span class="input-group-addon"><strong>@</strong></span>
+        <span class="input-group-addon"><i class="icon-user"></i></span>
         <input type="text" class="form-control" placeholder="{{ t('Example') }}: taroyama" name="registerForm[username]" value="{{ req.body.registerForm.username }}" required>
       </div>
       <p class="help-block">
@@ -180,13 +180,13 @@
 
       <label>{{ t('Name') }}</label>
       <div class="input-group">
-        <span class="input-group-addon"><i class="fa fa-user"></i></span>
+        <span class="input-group-addon"><i class="icon-tag"></i></span>
         <input type="text" class="form-control" placeholder="{{ t('Example') }}: {{ t('Taro Yamada') }}" name="registerForm[name]" value="{{ googleName|default(req.body.registerForm.name) }}" required>
       </div>
 
       <label>{{ t('Email') }}</label>
       <div class="input-group">
-        <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
+        <span class="input-group-addon"><i class="icon-envelope"></i></span>
         <input type="email" class="form-control" placeholder="E-mail" name="registerForm[email]" value="{{ googleEmail|default(req.body.registerForm.email) }}" required>
       </div>
       {% if config.crowi['security:registrationWhiteList'] && config.crowi['security:registrationWhiteList'].length %}
@@ -202,7 +202,7 @@
 
       <label>{{ t('Password') }}</label>
       <div class="input-group">
-        <span class="input-group-addon"><i class="fa fa-key"></i></span>
+        <span class="input-group-addon"><i class="icon-lock"></i></span>
         <input type="password" class="form-control" placeholder="Password" name="registerForm[password]" required>
       </div>
       <p class="help-block">
