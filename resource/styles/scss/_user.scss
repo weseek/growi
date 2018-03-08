@@ -2,6 +2,7 @@
   .user-page-header {
 
     h1 {
+      font-size: 2.5em;
       color: #666;
     }
 
@@ -28,41 +29,7 @@
       }
     }
 
-    /*
-    .header-wrap {
-
-      h1 {
-        margin: 0;
-        font-size: 1.1em;
-      }
-
-      .user-page-header {
-        margin-bottom: 32px;
-
-        .bookmark-link {
-          float: right;
-          color: #e6b422;
-          font-size: 2em;
-          &.bookmarked {
-            //color: #fff;
-          }
-        }
-
-        .user-page-picture {
-          img {
-            height: 64px;
-            width: 64px;
-          }
-        }
-      }
-
-      .user-page-content-tab {
-        padding: 16px 0 8px;
-      }
-
-    }
-    */
-  } // }}}
+  }
 }
 
 .user-component {

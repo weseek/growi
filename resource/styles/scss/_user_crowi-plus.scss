@@ -1,20 +1,15 @@
-.growi.main-container {
-  .main-crowi-plus-customized.user-page {
+.growi.main-container .user-page {
 
-    .header-wrap {
-      padding: 16px 0 0 0;
+  // affix
+  .user-page-header.affix {
+    #revision-path {
+      display: none;
     }
+  }
 
-    .revision-toc {
-      .revision-toc-content {
-        margin-top: 0;
-        background: none;
-      }
-
-      &.affix {
-        top: 0;
-      }
+  .revision-toc {
+    &.affix {
+      top: 130px;
     }
-
   }
 }

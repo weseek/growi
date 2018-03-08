@@ -4,96 +4,16 @@
 
 
 {% block layout_header %}
-
-{% if pageUser %}
-
-<div class="header-wrap">
-  <header id="page-header" class="user-page-header">
-
-    <h4 id="revision-path"></h4>
-
-    <div class="d-flex align-items-center">
-      <img src="{{ pageUser|picture }}" class="picture img-circle">
-      <div class="m-l-30">
-        <div class="d-flex align-items-center">
-          <h1>
-            {{ pageUser.name }}
-          </h1>
-          <div class="m-l-5">
-            {% if page %}
-            <button
-                data-csrftoken="{{ csrf() }}"
-                data-liked="{% if page.isLiked(user) %}1{% else %}0{% endif %}"
-                class="like-button btn btn-default btn-outline btn-circle {% if page.isLiked(user) %}active{% endif %}"
-            ><i class="icon-like"></i></button>
-            <span id="bookmark-button"></span>
-            {% endif %}
-          </div>
-        </div>
-        <div class="user-page-meta">
-          <ul>
-            <li class="user-page-username"><i class="fa fa-user"></i> @{{ pageUser.username }}</li>
-            <li class="user-page-email"><i class="fa fa-envelope-o"></i> {{ pageUser.email }}</li>
-            {% if pageUser.introduction %}
-            <li class="user-page-introduction"><p>{{ pageUser.introduction|nl2br }}</p></li>
-            {% endif %}
-          </ul>
-        </div>
-      </div>
-    </div>
-  </header>
-</div>
-
-{% else %}
-  {% parent %}
-{% endif %}
-
+  {% if pageUser %}
+    {% include 'widget/user_page_header.html' %}
+  {% else %}
+    {% parent %}
+  {% endif %}
 {% endblock %}
 
 
 {% block content_main_before %}
-  <div class="user-page-content">
-    <ul class="nav nav-tabs user-page-content-menu">
-      <li class="active">
-        <a href="#user-bookmark-list" data-toggle="tab"><i class="fa fa-star"></i> Bookmarks</a>
-      </li>
-      <li>
-        <a href="#user-created-list" data-toggle="tab"><i class="fa fa-pencil"></i> Recent Created</a>
-      </li>
-      {% if user._id.toString() == pageUser._id.toString() %}
-      <li>
-        <a href="/me"><i class="fa fa-gears"></i> Settings</a>
-      </li>
-      {% endif %}
-    </ul>
-    <div class="user-page-content-tab tab-content">
-
-      <div class="tab-pane user-bookmark-list page-list active" id="user-bookmark-list">
-        <div class="page-list-container">
-          {% if bookmarkList.length == 0 %}
-          No bookmarks yet.
-          {% else %}
-            {% include 'widget/page_list.html' with { pages: bookmarkList, pagePropertyName: 'page' } %}
-            <div class="user-page-list-additional-link">
-              <a href="/user/{{ pageUser.username }}/bookmarks"><i class="fa fa-angle-double-right"></i> See bookmarks</a>
-            </div>
-          {% endif %}
-        </div>
-      </div>
-
-      <div class="tab-pane user-created-list page-list" id="user-created-list">
-        <div class="page-list-container">
-          {% if createdList.length == 0 %}
-          No created pages yet.
-          {% else %}
-            {% include 'widget/page_list.html' with { pages: createdList } %}
-            <div class="user-page-list-additional-link">
-              <a href="/user/{{ pageUser.username }}/recent-create"><i class="fa fa-angle-double-right"></i> See created pages</a>
-            </div>
-          {% endif %}
-        </div>
-      </div>
-    </div>
+  <div class="m-l-15 m-r-15 m-b-30">
+    {% include 'widget/user_page_content.html' %}
   </div>
-</div>
 {% endblock %}

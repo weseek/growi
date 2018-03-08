@@ -1,22 +1,66 @@
-{% extends 'base/user_page_nosidebar.html' %}
+{% extends 'page.html' %}
 
 {% block main_css_class %}
-  main-crowi-plus-customized
   {% parent %}
+  user-page
 {% endblock %}
 
 {% block layout_header %}
-  {% parent %}
-{% endblock %} {# /content_head #}
+  {% if pageUser %}
+    {% include '../widget/user_page_header.html' %}
+  {% else %}
+    {% parent %}
+  {% endif %}
+{% endblock %}
 
 
 {% block content_main %}
-  {% parent %}
+  <div class="container-fluid">
+    <div class="row">
 
-  {# force remove #revision-toc from #content_main of parent #}
-  <script>
-    $('#revision-toc').remove();
-  </script>
+      <div class="col-lg-10 col-md-9">
+
+        {#
+         # ensure to insert 'user_page_content' widget to here
+         #
+         #   Because this block has content like 'Bookmarks' or 'Recent Created' whose height changes dynamically,
+         #   setting of 'revision-toc' (affix) is hindered.
+         #}
+        <div class="m-b-30">
+          {% include '../widget/user_page_content.html' %}
+        </div>
+
+        {% block content_main_before %}
+          {% parent %}
+        {% endblock %}
+
+        {% include '../widget/page_content.html' %}
+
+        {# force remove #revision-toc from #content_main of parent #}
+        <script>
+          $('#revision-toc').remove();
+        </script>
+
+      </div> {# /.col- #}
+
+      {# relocate #revision-toc #}
+      <div class="col-lg-2 col-md-3 visible-lg visible-md">
+        <div id="revision-toc" class="revision-toc" data-spy="affix" data-offset-top="75">
+          <div id="revision-toc-content" class="revision-toc-content"></div>
+        </div>
+      </div> {# /.col- #}
+
+    </div>
+
+    {% if 'crowi-plus' === behaviorType() %}
+    <div class="row page-list m-t-30">
+      <div class="col-md-12">
+        {% include '../widget/page_list_and_timeline.html' %}
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
 {% endblock %}
 
 {% block content_main_after %}
