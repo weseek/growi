@@ -5,31 +5,31 @@
 
     <div class="d-flex align-items-center">
       <img src="{{ pageUser|picture }}" class="picture img-circle">
-      <div class="m-l-30">
+      <div class="m-l-30" style="flex: 1;">
         <div class="d-flex align-items-center">
           <h1>
             {{ pageUser.name }}
           </h1>
-          <div class="m-l-5">
-            {% if page %}
-            <button
-                data-csrftoken="{{ csrf() }}"
-                data-liked="{% if page.isLiked(user) %}1{% else %}0{% endif %}"
-                class="like-button btn btn-default btn-outline btn-circle {% if page.isLiked(user) %}active{% endif %}"
-            ><i class="icon-like"></i></button>
-            <span id="bookmark-button"></span>
-            {% endif %}
-          </div>
         </div>
         <div class="user-page-meta">
           <ul>
-            <li class="user-page-username"><i class="fa fa-user"></i> @{{ pageUser.username }}</li>
-            <li class="user-page-email"><i class="fa fa-envelope-o"></i> {{ pageUser.email }}</li>
+            <li class="user-page-username"><i class="icon-user"></i> {{ pageUser.username }}</li>
+            <li class="user-page-email"><i class="icon-envelope"></i> {{ pageUser.email }}</li>
             {% if pageUser.introduction %}
             <li class="user-page-introduction"><p>{{ pageUser.introduction|nl2br }}</p></li>
             {% endif %}
           </ul>
         </div>
+      </div>
+      <div>
+        {% if page %}
+        <button
+            data-csrftoken="{{ csrf() }}"
+            data-liked="{% if page.isLiked(user) %}1{% else %}0{% endif %}"
+            class="like-button btn btn-lg btn-default btn-outline btn-circle {% if page.isLiked(user) %}active{% endif %}"
+        ><i class="icon-like"></i></button>
+        <span id="bookmark-button-lg"></span>
+        {% endif %}
       </div>
     </div>
   </header>

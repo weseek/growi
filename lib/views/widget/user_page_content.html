@@ -1,14 +1,14 @@
 <div class="user-page-content">
   <ul class="nav nav-tabs user-page-content-menu">
     <li class="active">
-      <a href="#user-bookmark-list" data-toggle="tab"><i class="fa fa-star"></i> Bookmarks</a>
+      <a href="#user-bookmark-list" data-toggle="tab"><i class="icon-star"></i> Bookmarks</a>
     </li>
     <li>
-      <a href="#user-created-list" data-toggle="tab"><i class="fa fa-pencil"></i> Recent Created</a>
+      <a href="#user-created-list" data-toggle="tab"><i class="icon-clock"></i> Recent Created</a>
     </li>
     {% if user._id.toString() == pageUser._id.toString() %}
     <li>
-      <a href="/me"><i class="fa fa-gears"></i> Settings</a>
+      <a href="/me"><i class="icon-wrench"></i> Settings</a>
     </li>
     {% endif %}
   </ul>
