@@ -14,10 +14,10 @@
 <div class="content-main">
 
   <ul class="nav nav-tabs">
-    <li class="active"><a href="/me"><i class="fa fa-gears"></i> {{ t('User Information') }}</a></li>
-    <li><a href="/me/external-accounts"><i class="fa fa-user-plus"></i> {{ t('External Accounts') }}</a></li>
-    <li><a href="/me/password"><i class="fa fa-key"></i> {{ t('Password Settings') }}</a></li>
-    <li><a href="/me/apiToken"><i class="fa fa-rocket"></i> {{ t('API Settings') }}</a></li>
+    <li class="active"><a href="/me"><i class="icon-user"></i> {{ t('User Information') }}</a></li>
+    <li><a href="/me/external-accounts"><i class="icon-share-alt"></i> {{ t('External Accounts') }}</a></li>
+    <li><a href="/me/password"><i class="icon-lock"></i> {{ t('Password Settings') }}</a></li>
+    <li><a href="/me/apiToken"><i class="icon-paper-plane"></i> {{ t('API Settings') }}</a></li>
   </ul>
 
   <div class="tab-content">
@@ -106,7 +106,7 @@
             <input type="radio" form="formImageType" name="imagetypeForm[isGravatarEnabled]" value="true" {% if user.isGravatarEnabled %}checked="checked"{% endif %}>
             <img src="https://gravatar.com/avatar/00000000000000000000000000000000?s=24" /> Gravatar
             <a href="https://gravatar.com/">
-              <small><i class="fa fa-external-link" aria-hidden="true"></i></small>
+              <small><i class="icon-arrow-right-circle" aria-hidden="true"></i></small>
             </a>
           </h4>
         </div>
