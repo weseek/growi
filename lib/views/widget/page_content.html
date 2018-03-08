@@ -10,41 +10,7 @@
 
   {% include 'page_alerts.html' %}
 
-  {% if not page.isDeleted() %}
-  <ul class="nav nav-tabs hidden-print">
-    <li class=" {% if not req.body.pageForm %}active{% endif %}" data-toggle="tooltip" {# data-title="あなたの 確認待ち です" title="" data-placement="bottom" data-trigger="manual" data-tooltip-stay #}>
-      <a href="#revision-body" data-toggle="tab">
-      <i class="icon-control-play"></i> View
-      </a>
-    </li>
-
-    <li {% if req.body.pageForm %}class="active"{% endif %}>
-      <a {% if user %}href="#edit-form" data-toggle="tab"{% endif %} class="edit-button {% if not user %}edit-button-disabled{% endif %}">
-        <i class="icon-note"></i> {{ t('Edit') }}
-      </a>
-    </li>
-
-
-    <li class="dropdown pull-right">
-      <a class="dropdown-toggle {% if not user %}dropdown-disabled{% endif %}" {% if user %}data-toggle="dropdown" href="#"{% endif %}>
-        <i class="icon-options-vertical"></i>
-      </a>
-      <ul class="dropdown-menu">
-        <li><a href="#" data-target="#renamePage" data-toggle="modal"><i class="icon-fw icon-action-redo"></i> {{ t('Move') }}</a></li>
-        <li class="divider"></li>
-        <li><a href="#" data-target="#duplicatePage" data-toggle="modal"><i class="icon-fw icon-docs"></i> {{ t('Duplicate') }}</a></li>
-        {% if isDeletablePage() %}
-        <li class="divider"></li>
-        <li class=""><a href="#" data-target="#deletePage" data-toggle="modal"><i class="icon-fw icon-fire text-danger"></i> {{ t('Delete') }}</a></li>
-        {% endif %}
-      </ul>
-    </li>
-    {% if page %}
-    <li class="pull-right"><a href="#revision-history" data-toggle="tab"><i class="icon-layers"></i> History</a></li>
-    <li class="pull-right"><a href="?presentation=1" class="toggle-presentation"><i class="icon-film"></i> {{ t('Presentation Mode') }}</a></li>
-    {% endif %}
-  </ul>
-  {% endif %}
+  {% include 'page_tabs.html' %}
 
   <div class="tab-content">
 
@@ -85,6 +51,3 @@
     <i class="fa fa-exclamation-triangle"></i> <span class="edited-user"></span> {{ t('edited this page') }} <a href="javascript:location.reload();"><i class="fa fa-angle-double-right"></i> {{ t('Load latest') }}</a>
   </div>
 </div>
-
-{% block content_main_after %}
-{% endblock %}

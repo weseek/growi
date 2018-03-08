@@ -19,17 +19,19 @@
       <div class="title-container">
         <div class="d-flex">
           <h1 class="title flex-item-title" id="revision-path"></h1>
+          {% if false %} {# Disable temporaly -- 2018.03.08 Yuki Takei #}
           {% if searchConfigured() && !isTopPage() && !isTrashPage() %}
           <form id="search-listpage-form" class="m-l-10 input-group search-input-group hidden-xs hidden-sm"
               data-toggle="tooltip" data-placement="bottom" title="{{ path }} 以下から検索" data-container="body">
             <div class="input-group">
-              <input id="#search-listpage-input" type="text" class="form-control input-sm" data-path="{{ path }}" placeholder="Search for...">
+              <input id="search-listpage-input" type="text" class="form-control input-sm" data-path="{{ path }}" placeholder="Search for...">
               <span class="input-group-btn">
                 <button class="btn btn-default btn-sm"><i class="icon-magnifier"></i></button>
               </span>
             </div><!-- /input-group -->
             <a class="search-listpage-clear" id="search-listpage-clear"><i class="fa fa-times-circle"></i></a>
           </form>
+          {% endif %}
           {% endif %}
         </div>
         <div id="revision-url" class="url-line"></div>
@@ -66,9 +68,11 @@
  # but now the header and page list content is rendered separately by the server,
  # so now bind the values through the hidden fields.
  #}
+{% if false %} {# Disable temporaly -- 2018.03.08 Yuki Takei #}
 {% if searchConfigured() && !isTopPage() && !isTrashPage() %}
 <div id="page-list-search">
 </div>
+{% endif %}
 {% endif %}
 
 <div class="page-list content-main {% if req.body.pageForm %}on-edit{% endif %}"
@@ -85,41 +89,26 @@
 
 <div class="portal {% if not page or req.query.offset > 0 %}hide{% endif %}">
 
-  <ul class="nav nav-tabs hidden-print">
-   {# portal tab #}
-    <li class=" {% if not req.body.pageForm %}active{% endif %}">
-      {% if page %}
-      <a href="#revision-body" data-toggle="tab">
-        <i class="icon-control-play"></i> View
-      </a>
-      {% else %}
-      <a>Create Portal: {{ path }}</a>
-      {% endif %}
-    </li>
-    <li {% if req.body.pageForm %}class="active"{% endif %}>
-      <a {% if user %}href="#edit-form" data-toggle="tab"{% endif %} class="edit-button {% if not user %}edit-button-disabled{% endif %}">
-        <i class="icon-note"></i> {{ t('Edit') }}
-      </a>
-    </li>
+  {% if page %}
+    {% include 'widget/page_tabs.html' %}
+  {% else %}
+    <ul class="nav nav-tabs hidden-print">
+      <li class=" {% if not req.body.pageForm %}active{% endif %}">
+        <a>Create Portal: {{ path }}</a>
+      </li>
+      <li {% if req.body.pageForm %}class="active"{% endif %}>
+        <a {% if user %}href="#edit-form" data-toggle="tab"{% endif %} class="edit-button {% if not user %}edit-button-disabled{% endif %}">
+          <i class="icon-note"></i> {{ t('Edit') }}
+        </a>
+      </li>
 
-    {% if not page %}
-    <li class="pull-right close-button">
-      <a href="#" id="portal-form-close">
-        <i class="fa fa-times"></i>
-      </a>
-    </li>
-    {% else %}
-    <li class="dropdown pull-right">
-      <a class="dropdown-toggle {% if not user %}dropdown-disabled{% endif %}" {% if user %}data-toggle="dropdown" href="#"{% endif %}>
-        <i class="icon-options-vertical"></i>
-      </a>
-      <ul class="dropdown-menu">
-        <li><a href="#" data-target="#unportalize" data-toggle="modal"><i class="fa fa-share"></i> {{ t('Unportalize') }}</a></li>
-      </ul>
-    </li>
-    <li class="pull-right"><a href="#revision-history" data-toggle="tab"><i class="icon-layers"></i> History</a></li>
-    {% endif %}
-  </ul>
+      <li class="pull-right close-button">
+        <a href="#" id="portal-form-close">
+          <i class="fa fa-times"></i>
+        </a>
+      </li>
+    </ul>
+  {% endif %}
 
   <div class="tab-content">
   {% if page and not page.isLatestRevision() %}
