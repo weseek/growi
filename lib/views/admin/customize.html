@@ -148,7 +148,7 @@
           <legend>ハイライト設定</legend>
           <div class="form-group">
             <div class="col-xs-3">
-              <select class="form-control" name="settingForm[customize:highlight]" onChange="console.log('hoge')">
+              <select class="form-control" name="settingForm[customize:highlight]" onChange="selectHighlight()">
                 <option value="atom-one-dark">Atom One Dark</option>
                 <option value="atom-one-light">Atom One Light</option>
                 <option value="github-gist">Github Gist</option>
@@ -163,7 +163,7 @@
             </div>
           </div>
 
-          <pre><code>function $initHighlight(block, cls) {
+          <pre><code class="highlight-demo">function $initHighlight(block, cls) {
   try {
     if (cls.search(/\bno\-highlight\b/) != -1)
       return process(block, true, 0x0F) +
@@ -380,7 +380,6 @@ window.addEventListener('load', (event) => {
   </div>
 
   <script>
-    hljs.initHighlighting()
     $('#cutomcssSettingForm, #cutomscriptSettingForm, #cutomlayoutSettingForm, #cutombehaviorSettingForm, #customfeaturesSettingForm, #cutomheaderSettingForm, #cutomhighlightSettingForm').each(function() {
       $(this).submit(function()
       {
@@ -428,8 +427,22 @@ window.addEventListener('load', (event) => {
         return false;
       });
     });
+    // highlight.js 有効化
+    hljs.initHighlighting()
+
     // 保存した highlight の値を selector に復元する
     $('#cutomhighlightSettingForm select').val('{{ highlightType() }}');
+
+    function selectHighlight() {
+      // selecter で選択された値
+      var val = $('#cutomhighlightSettingForm select').val()
+      // 追加する style の DOM
+      var style = `<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/${val}.css">`;
+      // body の最後に追加 layout.html は body に読み込まれてるため、body の一番下に追加しないと上書きされない
+      $('body link:last').after(style);
+      // demo の部分だけ highlight.js 再読み込み
+      hljs.highlightBlock($(".highlight-demo")[0]);
+    }
 
   </script>
 
