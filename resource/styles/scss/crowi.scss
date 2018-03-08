@@ -83,89 +83,11 @@ footer {
   }
 }
 
-.modal-backdrop {
-  z-index: 1060;
-}
-.modal {
-  z-index: 1061;
-  p {
-    font-size: 1em;
-  }
-
-  h3, h4 {
-    font-size: 18px;
-    margin: 0;
-  }
-}
-.modal-body.alert {
-  margin-bottom: 0;
-  border-radius: 0;
-}
 */
 
 /*
-.popular-page-high {
-  color: #e80000;
-  font-size: 1.1em;
-  font-weight: bold;
-}
-.popular-page-mid {
-  color: #e47800;
-  font-weight: bold;
-}
-.popular-page-low {
-  color: #ab7c7c;
-}
-
-
-// {{{ add badge variation
-.badge-default {
-  @include label-variant($label-default-bg);
-}
-.badge-primary {
-  @include label-variant($label-primary-bg);
-}
-.badge-success {
-  @include label-variant($label-success-bg);
-}
-.badge-info {
-  @include label-variant($label-info-bg);
-}
-.badge-warning {
-  @include label-variant($label-warning-bg);
-}
-.badge-danger {
-  @include label-variant($label-danger-bg);
-}
-// }}}
-
-.dropdown-menu {
-  .dropdown-button {
-    padding: 3px 20px;
-  }
-}
-
-.notif {
-  a {
-  }
-
-  .badge {
-    position: absolute;
-    top: 6px;
-    right: 1px;
-    padding: 3px 6px;
-    font-size: 11px;
-    font-weight: normal;
-  }
-}
-
-.dropdown-menu {
-  li {
-    a {
-      padding: 5px 20px;
-    }
-  }
-}
+ * for Guest User Mode
+ */
 .dropdown-disabled {
   cursor: not-allowed;
 }
@@ -174,54 +96,11 @@ footer {
   cursor: not-allowed;
 }
 
-.highlighted {
-  color: #333;
-  background-color: rgba(255,255,140,0.5);
-  border-radius: 3px;
-}
 
-// adjust
-// this is for diff2html. hide page name from diff view
-.d2h-file-header {
-  display: none;
-}
-
+/*
 // components
-.flip-container { // {{{
-  perspective: 1000;
-
-  .flipper {
-    .front, .back {
-      -webkit-backface-visibility: hidden;
-      backface-visibility: hidden;
-      transition: 0.4s;
-      -webkit-transform-style: preserve-3d;
-      transform-style: preserve-3d;
-    }
-
-    .front {
-      z-index: 2;
-    }
-
-    .back {
-    }
-
-    .back,
-    &.to-flip .front {
-      -webkit-transform: rotateY(180deg);
-      transform: rotateY(180deg);
-    }
-
-    &.to-flip .back {
-      -webkit-transform: rotateY(0);
-      transform: rotateY(0);
-    }
-  }
-}
 
 // buttons
-.btn-primary {
-}
 $btn-google-color: rgb(204,89,71);
 .btn-google {
   @include button-variant(lighten($btn-google-color, 50%), $btn-google-color, darken($btn-google-color, 20%));
@@ -265,70 +144,6 @@ input.searching {
     }
   }
 }
-
-// external-services
-.crowi {
-  .github-link {
-    background: #e5f6f8;
-    padding: 1px;
-    border-radius: 3px;
-    display: inline-block;
-    border: solid 1px #ccc;
-    color: #555;
-    text-decoration: none;
-
-    &:hover {
-      background: #afdadf;
-    }
-  }
-}
-
-.fullscreen-layer {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 0;
-  background: rgba(0, 0, 0, .5);
-  z-index: 9999;
-  opacity: 0;
-  -webkit-transition: opacity .3s ease-out;
-  -moz-transition: opacity .3s ease-out;
-  transition: opacity .3s ease-out;
-
-  & > * {
-    box-shadow: 0 0 20px rgba(0, 0, 0, .8);
-  }
-}
-.overlay-on {
-  .container-fluid,
-  .crowi-header {
-    -webkit-filter: blur(5px);
-    -moz-filter: blur(5px);
-    filter: blur(5px);
-  }
-
-  .fullscreen-layer {
-    opacity: 1;
-    height: 100%;
-  }
-}
-
-#presentation-container {
-  position: absolute;
-  top: 5%;
-  left: 5%;
-  width: 90%;
-  height: 90%;
-  background: #000;
-
-  iframe {
-    width: 100%;
-    height: 100%;
-    border: 0;
-  }
-}
-*/
 
 /*
  * Helper Classes
