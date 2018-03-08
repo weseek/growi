@@ -67,15 +67,14 @@
         font-size: 0.65em;
       }
 
-      //// TODO crowi layout only
-      // a.last-path {
-      //   color: #D1E2E4;
-      //   opacity: .4;
+      // crowi layout only
+      a.last-path {
+        color: #ccc;
 
-      //   &:hover {
-      //     color: inherit;
-      //   }
-      // }
+        &:hover {
+          color: inherit;
+        }
+      }
 
     }
 
