@@ -35,7 +35,9 @@ export default class Attachment extends React.Component {
     const fileType = <span className="attachment-filetype label label-default">{attachment.fileFormat}</span>;
 
     const btnTrash = (this.props.isUserLoggedIn)
-        ? <a className="text-danger attachment-delete" onClick={this._onAttachmentDeleteClicked}><Icon name="trash-o" /></a>
+        ? <a className="text-danger attachment-delete" onClick={this._onAttachmentDeleteClicked}>
+            <i className="icon-trash"></i>
+          </a>
         : '';
 
     return (
