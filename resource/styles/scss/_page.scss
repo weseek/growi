@@ -8,6 +8,16 @@
    * header
    */
   header {
+    line-height: 1em;
+
+    // the container of h1
+    div.title-container {
+      margin-right: auto;
+      h1 {
+        line-height: 1.1em;
+      }
+    }
+
     .btn-copy, .btn-copy-link, .btn-edit {
       @extend .text-muted;
       opacity: 0.3;
@@ -39,22 +49,6 @@
     .bookmark-link {
       &.active {
         @extend .btn-warning;
-      }
-    }
-
-    .flex-title-line {
-      line-height: 1;
-      display: flex;
-      align-items:         center;
-
-      .flex-item-title {
-        flex-basis: auto;
-        margin-right: auto;
-      }
-      .flex-item-action {
-        flex-basis: 2em;
-        text-align: center;
-        padding: 0 2px;
       }
     }
 

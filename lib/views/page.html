@@ -9,15 +9,13 @@
 
   <div class="header-wrap">
     <header id="page-header">
-      <div class="flex-title-line">
-        <h1 class="title flex-item-title" id="revision-path"></h1>
-        {% if page %}
-        <div class="flex-item-action">
-          {% if user %}
-          <span id="bookmark-button"></span>
-          {% endif %}
+      <div class="d-flex align-items-center">
+        <div class="title-container">
+          <h1 class="title flex-item-title" id="revision-path"></h1>
+          <div id="revision-url" class="url-line"></div>
         </div>
-        <div class="flex-item-action visible-xs visible-sm">
+        {% if page %}
+        <div>
           {% if user %}
           <button
               data-csrftoken="{{ csrf() }}"
@@ -26,10 +24,13 @@
           ><i class="icon-like"></i></button>
           {% endif %}
         </div>
+        <div>
+          {% if user %}
+          <span id="bookmark-button"></span>
+          {% endif %}
+        </div>
         {% endif %}
       </div>
-
-      <div id="revision-url" class="url-line"></div>
     </header>
   </div>
 

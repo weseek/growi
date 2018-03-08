@@ -13,31 +13,29 @@
 {% endblock %}
 
 <div class="header-wrap">
-  <header class="portal-header {% if page %}has-page{% endif %}">
+  <header id="page-header" class="{% if page %}has-page{% endif %}">
 
-    <div class="flex-title-line">
-      <h1 class="title flex-item-title">
-        <span id="revision-path"></span>
-        {% if searchConfigured() && !isTopPage() && !isTrashPage() %}
-        <form class="input-group search-input-group hidden-xs hidden-sm" data-toggle="tooltip" data-placement="bottom" title="{{ path }} 以下から検索" id="search-listpage-form">
-          <div class="input-group">
-            <input id="#search-listpage-input" type="text" class="form-control" data-path="{{ path }}" placeholder="Search for...">
-            <span class="input-group-btn">
-              <button class="btn btn-default"><i class="icon-magnifier"></i></button>
-            </span>
-          </div><!-- /input-group -->
-          <a class="search-listpage-clear" id="search-listpage-clear"><i class="fa fa-times-circle"></i></a>
-        </form>
-        {% endif %}
-      </h1>
-
-      {% if page %}
-      <div class="flex-item-action">
-        {% if user %}
-        <span id="bookmark-button" data-csrftoken="{{ csrf() }}"></span>
-        {% endif %}
+    <div class="d-flex align-items-center">
+      <div class="title-container">
+        <div class="d-flex">
+          <h1 class="title flex-item-title" id="revision-path"></h1>
+          {% if searchConfigured() && !isTopPage() && !isTrashPage() %}
+          <form id="search-listpage-form" class="m-l-10 input-group search-input-group hidden-xs hidden-sm"
+              data-toggle="tooltip" data-placement="bottom" title="{{ path }} 以下から検索" data-container="body">
+            <div class="input-group">
+              <input id="#search-listpage-input" type="text" class="form-control input-sm" data-path="{{ path }}" placeholder="Search for...">
+              <span class="input-group-btn">
+                <button class="btn btn-default btn-sm"><i class="icon-magnifier"></i></button>
+              </span>
+            </div><!-- /input-group -->
+            <a class="search-listpage-clear" id="search-listpage-clear"><i class="fa fa-times-circle"></i></a>
+          </form>
+          {% endif %}
+        </div>
+        <div id="revision-url" class="url-line"></div>
       </div>
-      <div class="flex-item-action visible-xs visible-sm">
+      {% if page %}
+      <div>
         {% if user %}
         <button
             data-csrftoken="{{ csrf() }}"
@@ -46,10 +44,13 @@
         ><i class="icon-like"></i></button>
         {% endif %}
       </div>
+      <div>
+        {% if user %}
+        <span id="bookmark-button"></span>
+        {% endif %}
+      </div>
       {% endif %}
     </div>
-
-    <div id="revision-url" class="url-line"></div>
 
   </header>
 </div>
@@ -110,7 +111,7 @@
     {% else %}
     <li class="dropdown pull-right">
       <a class="dropdown-toggle {% if not user %}dropdown-disabled{% endif %}" {% if user %}data-toggle="dropdown" href="#"{% endif %}>
-        <i class="icon-virtical"></i>
+        <i class="icon-options-vertical"></i>
       </a>
       <ul class="dropdown-menu">
         <li><a href="#" data-target="#unportalize" data-toggle="modal"><i class="fa fa-share"></i> {{ t('Unportalize') }}</a></li>

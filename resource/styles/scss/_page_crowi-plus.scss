@@ -1,5 +1,5 @@
 .crowi-plus.main-container {
-  .flex-title-line {
+  header {
 
     div.title-logo-container {
       display: none;  // hide in default
@@ -17,14 +17,6 @@
           width: 16px;
           height: 16px;
         }
-      }
-    }
-
-    // the container of h1
-    div.title-container {
-      margin-right: auto;
-      h1 {
-        line-height: 1.1em;
       }
     }
 
