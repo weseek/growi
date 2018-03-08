@@ -1,4 +1,4 @@
-{% extends 'layout/2column.html' %}
+{% extends '../layout/2column.html' %}
 
 {% block html_title %}{{ path|path2name }} · {{ path }}{% endblock %}
 
@@ -58,7 +58,7 @@
     </div>
   </div>
   {% else %}
-    {% include 'widget/page_content.html' %}
+    {% include '../widget/page_content.html' %}
   {% endif %}
 {% endblock %}
 
@@ -69,19 +69,19 @@
 
 {% block content_footer %}
   {% if page %}
-    {% include 'widget/page_attachments.html' %}
+    {% include '../widget/page_attachments.html' %}
   {% endif %}
 {% endblock %}
 
 {% block side_header %}
   {% if page and not page.isDeleted() %}
-    {% include 'widget/page_side_header.html' %}
+    {% include '../widget/page_side_header.html' %}
   {% endif %}
 {% endblock %} {# side_header #}
 
 {% block side_content %}
   {% if page and not page.isDeleted() %}
-    {% include 'widget/page_side_content.html' %}
+    {% include '../widget/page_side_content.html' %}
   {% endif %}
 {% endblock %}
 
@@ -93,5 +93,5 @@
     <div id="presentation-container"></div>
   </div>
 
-  {% include 'widget/page_modals.html' %}
+  {% include '../widget/page_modals.html' %}
 {% endblock %}

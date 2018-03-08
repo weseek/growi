@@ -1,4 +1,4 @@
-{% extends 'layout/2column.html' %}
+{% extends '../layout/2column.html' %}
 
 {% block html_title %}{{ path|path2name }} · {{ path }}{% endblock %}
 
@@ -75,11 +75,11 @@
   {% endif %}
   {% endif %}
 
-  {% include 'widget/page_content.html' %}
+  {% include '../widget/page_content.html' %}
 
   <div class="row page-list">
     <div class="col-md-12">
-      {% include 'widget/page_list_and_timeline.html' %}
+      {% include '../widget/page_list_and_timeline.html' %}
     </div>
   </div>
 
@@ -106,15 +106,15 @@
   </div>
 </div>
 {% else %}
-  {% include 'widget/page_side_header.html' %}
+  {% include '../widget/page_side_header.html' %}
 {% endif %}
 
 {% endblock %} {# side_header #}
 
 {% block body_end %}
 <div id="crowi-modals">
-  {% include 'modal/what_is_portal.html' %}
-  {% include 'modal/unportalize.html' %}
+  {% include '../modal/what_is_portal.html' %}
+  {% include '../modal/unportalize.html' %}
 </div>
 <div class="modal fade portal-warning-modal" id="portal-warning-modal">
   <div class="modal-dialog">
