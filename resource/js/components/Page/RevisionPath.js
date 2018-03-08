@@ -74,7 +74,6 @@ export default class RevisionPath extends React.Component {
       marginRight: "0.2em",
     }
     const editButtonStyle = {
-      fontSize: "0.5em",
       marginLeft: "0.5em",
       padding: "0 2px",
     };
@@ -100,7 +99,7 @@ export default class RevisionPath extends React.Component {
     });
 
     return (
-      <span>
+      <span className="d-flex align-items-center">
         <span className="separator" style={rootStyle}>
           <a href="/">/</a>
         </span>
