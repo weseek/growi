@@ -2,7 +2,6 @@
 
 {% block main_css_class %}
   main-crowi-plus-customized
-  {% parent %}
 {% endblock %}
 
 {% block layout_header %}
@@ -18,16 +17,24 @@
 {% endblock %} {# /content_head #}
 
 
+{% block content_main_before %}
+  {% include '../widget/page_alerts.html' %}
+{% endblock %}
+
+
 {% block content_main %}
   <div class="container-fluid">
+
     <div class="row">
-
       <div class="col-lg-10 col-md-9">
+        <h2 class="message-not-found text-muted">
+          <i class="icon-info" aria-hidden="true"></i>
+          Page is not found
+        </h2>
 
-        {% parent %}
+        {% include '../widget/not_found_content.html' %}
 
       </div> {# /.col- #}
-
     </div>
 
   </div>

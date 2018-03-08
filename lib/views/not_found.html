@@ -22,74 +22,25 @@
 
 {% endblock %} {# /content_head #}
 
-{% block content_main %}
 
 {% block content_main_before %}
-  {% if req.query.renamed %}
-  <div class="alert alert-info alert-moved">
-    <span>
-      <strong>{{ t('Moved') }}: </strong> {{ t('page_page.notice.moved', req.query.renamed) }}
-    </span>
-  </div>
-  {% endif %}
-  {% if req.query.unlinked %}
-  <div class="alert alert-info alert-unlinked">
-    <strong>{{ t('Unlinked') }}: </strong> {{ t('page_page.notice.unlinked') }}
-  </div>
-  {% endif %}
+  {% include 'widget/page_alerts.html' %}
+{% endblock %}
 
-  <h2 class="message-not-found text-muted">
+
+{% block content_main %}
+  <h2 class="m-l-15 message-not-found text-muted">
     <i class="icon-info" aria-hidden="true"></i>
     Page is not found
   </h2>
+
+  {% include 'widget/not_found_content.html' %}
 {% endblock %}
 
-<div id="content-main" class="content-main content-main-not-found page-list"
-  data-path="{{ path }}"
-  data-path-shortname="{{ path|path2name }}"
-  data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
-  >
-
-  <ul class="nav nav-tabs hidden-print">
-    <li class="active"><a href="#revision-body" data-toggle="tab">{{ t('List View') }}</a></li>
-
-    <li>
-      <a {% if user %}href="#edit-form" data-toggle="tab"{% endif %} class="edit-button {% if not user %}edit-button-disabled{% endif %}">
-        <i class="icon-note"></i> {{ t('Create') }}
-      </a>
-    </li>
-
-    {% if user %}
-    <li class="dropdown pull-right">
-      <a href="#" onclick="history.back();"><i class="icon-close"></i> {{ t('Cancel') }}</a>
-    </li>
-    {% endif %}
-  </ul>
-
-  <div class="tab-content">
-    {# list view #}
-    <div class="active tab-pane page-list-container" id="revision-body">
-      {% if pages.length == 0 %}
-        <div class="m-t-20">
-          There are no pages under <strong>{{ path }}</strong>.
-        </div>
-      {% endif  %}
-
-      {% include 'widget/page_list.html' with { pages: pages, pager: pager, viewConfig: viewConfig } %}
-    </div>
-
-    {# edit view #}
-    <div class="edit-form tab-pane {% if req.body.pageForm %}active{% endif %}" id="edit-form">
-      {% include '_form.html' %}
-    </div>
-
-  </div>
-</div>
 
 {% block content_main_after %}
 {% endblock %}
 
-{% endblock %}
 
 {% block content_footer %}
 {% endblock %}
