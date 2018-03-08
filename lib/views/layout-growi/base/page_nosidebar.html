@@ -1,4 +1,4 @@
-{% extends '../../page.html' %}
+{% extends '../../layout/layout.html' %}
 
 
 {% block layout_main %}
@@ -16,19 +16,15 @@
   {% endif %}
   <article>
     {% block content_main_before %}
-      {% parent %}
     {% endblock %}
 
     {% block content_main %}
-      {% parent %}
     {% endblock content_main %}
 
     {% block content_main_after %}
-      {% parent %}
     {% endblock %}
 
     {% block content_footer %}
-      {% parent %}
     {% endblock %}
   </article>
 </div>

@@ -38,8 +38,14 @@
   </p>
   {% endif %}
   <article>
+    {% block content_main_before %}
+    {% endblock %}
+
     {% block content_main %}
     {% endblock content_main %}
+
+    {% block content_main_after %}
+    {% endblock %}
 
     {% block content_footer %}
     {% endblock %}

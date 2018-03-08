@@ -17,13 +17,18 @@
 
 {% endblock %} {# /content_head #}
 
+
+{% block content_main_before %}
+{% endblock %}
+
+
 {% block content_main %}
   <div class="container-fluid">
     <div class="row">
 
       <div class="col-lg-10 col-md-9">
 
-        {% parent %}
+        {% include '../widget/page_content.html' %}
 
         {# force remove #revision-toc from #content_main of parent #}
         <script>
@@ -54,4 +59,18 @@
 
 {% block content_main_after %}
   {% include 'widget/comments.html' %}
+{% endblock %}
+
+{% block content_footer %}
+  {% if page %}
+    {% include '../widget/page_attachments.html' %}
+  {% endif %}
+{% endblock %}
+
+{% block body_end %}
+  <div id="presentation-layer" class="fullscreen-layer">
+    <div id="presentation-container"></div>
+  </div>
+
+  {% include '../widget/page_modals.html' %}
 {% endblock %}

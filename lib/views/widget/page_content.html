@@ -1,0 +1,90 @@
+<div id="content-main" class="content-main"
+  data-path="{{ path }}"
+  data-path-shortname="{{ path|path2name }}"
+  data-page-id="{% if page %}{{ page._id.toString() }}{% endif %}"
+  data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
+  data-page-revision-id="{% if revision %}{{ revision._id.toString() }}{% endif %}"
+  data-page-revision-created="{% if revision %}{{ revision.createdAt|datetz('U') }}{% endif %}"
+  data-page-is-seen="{% if page and page.isSeenUser(user) %}1{% else %}0{% endif %}"
+  >
+
+  {% include 'page_alerts.html' %}
+
+  {% if not page.isDeleted() %}
+  <ul class="nav nav-tabs hidden-print">
+    <li class=" {% if not req.body.pageForm %}active{% endif %}" data-toggle="tooltip" {# data-title="あなたの 確認待ち です" title="" data-placement="bottom" data-trigger="manual" data-tooltip-stay #}>
+      <a href="#revision-body" data-toggle="tab">
+      <i class="icon-control-play"></i> View
+      </a>
+    </li>
+
+    <li {% if req.body.pageForm %}class="active"{% endif %}>
+      <a {% if user %}href="#edit-form" data-toggle="tab"{% endif %} class="edit-button {% if not user %}edit-button-disabled{% endif %}">
+        <i class="icon-note"></i> {{ t('Edit') }}
+      </a>
+    </li>
+
+
+    <li class="dropdown pull-right">
+      <a class="dropdown-toggle {% if not user %}dropdown-disabled{% endif %}" {% if user %}data-toggle="dropdown" href="#"{% endif %}>
+        <i class="icon-options-vertical"></i>
+      </a>
+      <ul class="dropdown-menu">
+       <li><a href="#" data-target="#renamePage" data-toggle="modal"><i class="icon-fw icon-action-redo"></i> {{ t('Move') }}</a></li>
+       <li class="divider"></li>
+       <li><a href="#" data-target="#duplicatePage" data-toggle="modal"><i class="icon-fw icon-docs"></i> {{ t('Duplicate') }}</a></li>
+       {% if isDeletablePage() %}
+       <li class="divider"></li>
+       <li class=""><a href="#" data-target="#deletePage" data-toggle="modal"><i class="icon-fw icon-fire text-danger"></i> {{ t('Delete') }}</a></li>
+       {% endif %}
+      </ul>
+    </li>
+    {% if page %}
+    <li class="pull-right"><a href="#revision-history" data-toggle="tab"><i class="icon-layers"></i> History</a></li>
+    <li class="pull-right"><a href="?presentation=1" class="toggle-presentation"><i class="icon-film"></i> {{ t('Presentation Mode') }}</a></li>
+    {% endif %}
+  </ul>
+  {% endif %}
+
+  <div class="tab-content">
+
+    {% if not page.isLatestRevision() %}
+    <div class="alert alert-warning">
+      <strong>{{ t('Warning') }}: </strong> {{ t('page_page.notice.version') }} <i class="fa fa-magic"></i> <a href="{{ page.path }}">{{ t('Show latest') }}</a>
+    </div>
+    {% endif %}
+
+    <script type="text/template" id="raw-text-original">{{ revision.body }}</script>
+
+    {# formatted text #}
+    <div class="tab-pane {% if not req.body.pageForm %}active{% endif %}" id="revision-body">
+      <div class="revision-toc" id="revision-toc">
+        <a data-toggle="collapse" data-parent="#revision-toc" href="#revision-toc-content" class="revision-toc-head">{{ t('Table of Contents') }}</a>
+        <div id="revision-toc-content" class="revision-toc-content collapse in"></div>
+      </div>
+      <div id="page" class="m-t-15"></div>
+    </div>
+
+    {# edit form #}
+    {% if not page.isDeleted() %}
+    <div class="edit-form tab-pane {% if req.body.pageForm %}active{% endif %}" id="edit-form">
+      {% include '../_form.html' %}
+    </div>
+    {% endif %}
+
+    {# raw revision history #}
+    {% if not page %}
+    {% else %}
+    <div class="tab-pane revision-history m-t-10" id="revision-history">
+    </div>
+    {% endif %}
+
+  </div>
+
+  <div id="notifPageEdited" class="myadmin-alert alert-warning myadmin-alert-bottom alertbottom2">
+    <i class="fa fa-exclamation-triangle"></i> <span class="edited-user"></span> {{ t('edited this page') }} <a href="javascript:location.reload();"><i class="fa fa-angle-double-right"></i> {{ t('Load latest') }}</a>
+  </div>
+</div>
+
+{% block content_main_after %}
+{% endblock %}
