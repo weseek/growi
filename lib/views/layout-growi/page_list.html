@@ -19,6 +19,7 @@
 
 
 {% block content_main_before %}
+
 {% endblock %}
 
 
@@ -64,6 +65,9 @@
   <div id="presentation-layer" class="fullscreen-layer">
     <div id="presentation-container"></div>
   </div>
-
-  {% include '../widget/page_modals.html' %}
+  <div id="crowi-modals">
+    {% include '../widget/page_modals.html' %}
+    {% include '../modal/what_is_portal.html' %}
+    {% include '../modal/unportalize.html' %}
+  </div>
 {% endblock %}

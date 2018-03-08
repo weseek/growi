@@ -99,12 +99,7 @@
 {% block side_header %}
 
 {% if not page and not isUserPageList(path) and !isTrashPage() %}
-<div class="portal-side">
-  <div class="portal-form-button">
-    <button class="btn btn-primary" id="create-portal-button">Create Portal</button>
-    <p class="help-block"><a href="#" data-target="#help-portal" data-toggle="modal"><i class="fa fa-question-circle"></i> What is Portal?</a></p>
-  </div>
-</div>
+  {% include '../widget/create_portal.html' %}
 {% else %}
   {% include '../widget/page_side_header.html' %}
 {% endif %}
@@ -115,29 +110,5 @@
 <div id="crowi-modals">
   {% include '../modal/what_is_portal.html' %}
   {% include '../modal/unportalize.html' %}
-</div>
-<div class="modal fade portal-warning-modal" id="portal-warning-modal">
-  <div class="modal-dialog">
-    <div class="modal-content">
-
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title">ポータルに関するヒント</h4>
-      </div>
-      <div class="modal-body">
-
-        <strong>Warning!</strong><br>
-
-        <p>既に <strong><a href="{{ path|removeLastSlash }}">{{ path|removeLastSlash }}</a></strong> のページが存在します。</p>
-
-        <p>
-          <a href="{{ path|removeLastSlash }}">{{ path|removeLastSlash }}</a> をポータル化するには、
-          <a href="{{ path|removeLastSlash }}">{{ path|removeLastSlash }}</a> に移動し、「ページを移動」させてください。<br>
-          <a href="{{ path|removeLastSlash }}">{{ path|removeLastSlash }}</a> とは別に、このページ(<code>{{ path }}</code>)にポータルを作成する場合、このまま編集を続けて作成してください。
-        </p>
-
-      </div>
-    </div>
-  </div>
 </div>
 {% endblock %} {# body_end #}
