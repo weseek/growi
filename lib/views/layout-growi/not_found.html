@@ -23,19 +23,15 @@
 
 
 {% block content_main %}
-  <div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-10 col-md-9">
+      <h2 class="message-not-found text-muted m-b-20">
+        <i class="icon-info" aria-hidden="true"></i>
+        Page is not found
+      </h2>
 
-    <div class="row">
-      <div class="col-lg-10 col-md-9">
-        <h2 class="message-not-found text-muted">
-          <i class="icon-info" aria-hidden="true"></i>
-          Page is not found
-        </h2>
+      {% include '../widget/not_found_content.html' %}
 
-        {% include '../widget/not_found_content.html' %}
-
-      </div> {# /.col- #}
-    </div>
-
+    </div> {# /.col- #}
   </div>
 {% endblock %}
