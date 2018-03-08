@@ -522,15 +522,17 @@ $(function() {
     }
     */
 
-    // header
-    var $header = $('#page-header');
-    if ($header.length > 0) {
-      var headerHeight = $header.outerHeight(true);
-      $('.header-wrap').css({height: (headerHeight + 0) + 'px'});
-      $header.affix({
+    // header affix
+    var $affixContent = $('#page-header');
+    if ($affixContent.length > 0) {
+      var $affixContentContainer = $('.row.bg-title');
+      var containerHeight = $affixContentContainer.outerHeight(true);
+      // fix height(固定)
+      $affixContentContainer.css({height: containerHeight + 'px'});
+      $affixContent.affix({
         offset: {
           top: function() {
-            return headerHeight + 86; // (54 header + 16 header padding-top + 16 content padding-top)
+            return $('.navbar').outerHeight(true) + containerHeight;
           }
         }
       });

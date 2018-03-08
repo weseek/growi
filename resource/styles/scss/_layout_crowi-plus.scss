@@ -1,6 +1,17 @@
 .growi.main-container {
-  .main-crowi-plus-customized .content-main {
+  .content-main {
     padding: 0;
+  }
+
+  .revision-toc {
+    &.affix {
+      margin-top: 5px;
+      top: calc(46px + 5px);
+    }
+
+    .revision-toc-content {
+      padding: 0;
+    }
   }
 
   @media (max-width: $screen-sm-max) {
