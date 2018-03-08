@@ -1,3 +1,4 @@
+{% if page %}
 <ul class="nav nav-tabs hidden-print">
 
   {#
@@ -47,3 +48,4 @@
   <li class="pull-right"><a href="#revision-history" data-toggle="tab"><i class="icon-layers"></i> History</a></li>
   <li class="pull-right"><a href="?presentation=1" class="toggle-presentation"><i class="icon-film"></i> {{ t('Presentation Mode') }}</a></li>
 </ul>
+{% endif %}

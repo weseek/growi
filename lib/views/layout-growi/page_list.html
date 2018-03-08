@@ -24,11 +24,12 @@
 
 {% block content_main %}
   <div class="container-fluid">
+
     <div class="row">
 
       <div class="col-lg-10 col-md-9">
 
-          {% include '../widget/page_content.html' %}
+        {% include '../widget/page_content.html' %}
 
         {# force remove #revision-toc from #content_main of parent #}
         <script>
@@ -47,6 +48,12 @@
         </div>
       </div> {# /.col- #}
 
+    </div>
+
+    <div class="row page-list">
+      <div class="col-md-12">
+        {% include '../widget/page_list_container.html' %}
+      </div>
     </div>
   </div>
 {% endblock %}
