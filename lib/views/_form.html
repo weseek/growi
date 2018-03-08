@@ -56,7 +56,14 @@
       {% else %}
       <select name="pageForm[grant]" class="form-control">
         {% for grantId, grantLabel in consts.pageGrants %}
-        <option value="{{ grantId }}" {% if pageForm.grant|default(page.grant) == grantId %}selected{% endif %}>{{ t(grantLabel) }}</option>
+        <option value="{{ grantId }}" {% if pageForm.grant|default(page.grant) == grantId %}selected{% endif %} {% if grantId == 5 && userRelatedGroups.length == 0 %}disabled{% endif %}>{{ t(grantLabel) }}</option>
+        {% endfor %}
+      </select>
+      {% endif %}
+      {% if userRelatedGroups.length != 0 %}
+      <select name="pageForm[grantUserGroupId]" class="form-control">
+        {% for userGroup in userRelatedGroups %}
+        <option value="{{ userGroup.id }}">{{ userGroup.name }}</option>
         {% endfor %}
       </select>
       {% endif %}
