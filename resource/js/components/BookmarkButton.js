@@ -64,7 +64,12 @@ export default class BookmarkButton extends React.Component {
       return <div></div>;
     }
 
-    const addedClassName = this.state.bookmarked ? 'active' : '';
+    const btnSizeClassName = this.props.size ? `btn-${this.props.size}` : 'btn-md';
+    const addedClassNames = [
+      this.state.bookmarked ? 'active' : '',
+      btnSizeClassName,
+    ];
+    const addedClassName = addedClassNames.join(' ');
 
     return (
       <button href="#" title="Bookmark" onClick={this.handleClick}
@@ -78,4 +83,5 @@ export default class BookmarkButton extends React.Component {
 BookmarkButton.propTypes = {
   pageId: PropTypes.string,
   crowi: PropTypes.object.isRequired,
+  size: PropTypes.string,
 };

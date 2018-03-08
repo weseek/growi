@@ -96,6 +96,7 @@ const componentMappings = {
   //'revision-history': <PageHistory pageId={pageId} />,
   'seen-user-list': <SeenUserList pageId={pageId} crowi={crowi} />,
   'bookmark-button': <BookmarkButton pageId={pageId} crowi={crowi} />,
+  'bookmark-button-lg': <BookmarkButton pageId={pageId} crowi={crowi} size="lg" />,
 
   'page-name-inputter': <NewPageNameInputter crowi={crowi} parentPageName={pagePath} />,
 

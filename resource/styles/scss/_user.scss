@@ -29,6 +29,13 @@
       }
     }
 
+    .like-button, .bookmark-link {
+      &.btn-lg {
+        font-size: 1.5em;
+        padding: 8px;
+      }
+    }
+
   }
 }
 
