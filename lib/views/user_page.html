@@ -2,32 +2,56 @@
 
 {% block main_css_class %}user-page{% endblock %}
 
+
 {% block layout_header %}
 
 {% if pageUser %}
 
 <div class="header-wrap">
-  <h1 class="title" id="revision-path"></h1>
-  <div class="user-page-header">
-  {% if page %}
-    <span id="bookmark-button" data-csrftoken="{{ csrf() }}"></span>
-  {% endif %}
-    <div class="pull-left user-page-picture">
+  <header id="page-header" class="user-page-header">
+
+    <h4 id="revision-path"></h4>
+
+    <div class="d-flex align-items-center">
       <img src="{{ pageUser|picture }}" class="picture img-circle">
+      <div class="m-l-30">
+        <div class="d-flex align-items-center">
+          <h1>
+            {{ pageUser.name }}
+          </h1>
+          <div class="m-l-5">
+            {% if page %}
+            <button
+                data-csrftoken="{{ csrf() }}"
+                data-liked="{% if page.isLiked(user) %}1{% else %}0{% endif %}"
+                class="like-button btn btn-default btn-outline btn-circle {% if page.isLiked(user) %}active{% endif %}"
+            ><i class="icon-like"></i></button>
+            <span id="bookmark-button"></span>
+            {% endif %}
+          </div>
+        </div>
+        <div class="user-page-meta">
+          <ul>
+            <li class="user-page-username"><i class="fa fa-user"></i> @{{ pageUser.username }}</li>
+            <li class="user-page-email"><i class="fa fa-envelope-o"></i> {{ pageUser.email }}</li>
+            {% if pageUser.introduction %}
+            <li class="user-page-introduction"><p>{{ pageUser.introduction|nl2br }}</p></li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
     </div>
-    <div class="user-page-meta">
-      <h2>{{ pageUser.name }}</h2>
-      <ul>
-        <li class="user-page-username"><i class="fa fa-user"></i> @{{ pageUser.username }}</li>
-        <li class="user-page-email"><i class="fa fa-envelope-o"></i> {{ pageUser.email }}</li>
-        {% if pageUser.introduction %}
-        <li class="user-page-introduction"><p>{{ pageUser.introduction|nl2br }}</p></li>
-        {% endif %}
-      </ul>
-    </div>
-  </div>
+  </header>
+</div>
+
+{% else %}
+  {% parent %}
+{% endif %}
+
+{% endblock %}
 
 
+{% block content_main_before %}
   <div class="user-page-content">
     <ul class="nav nav-tabs user-page-content-menu">
       <li class="active">
@@ -72,10 +96,4 @@
     </div>
   </div>
 </div>
-
-{% else %}
-  {% parent %}
-{% endif %}
-
 {% endblock %}
-
