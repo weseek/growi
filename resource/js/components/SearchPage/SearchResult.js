@@ -258,9 +258,11 @@ export default class SearchResult extends React.Component {
                 <i className="icon-bulb" /> Found {this.props.searchResultMeta.total} pages with "{this.props.searchingKeyword}"
               </div>
               <div className="clearfix"></div>
-              <ul className="page-list-ul page-list-ul-flat nav">
-                {listView}
-              </ul>
+              <div className="page-list">
+                <ul className="page-list-ul page-list-ul-flat nav">
+                  {listView}
+                </ul>
+              </div>
             </nav>
           </div>
           <div className="col-md-8 search-result-content" id="search-result-content">

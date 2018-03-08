@@ -21,57 +21,57 @@
     line-height: 1.6em;
     font-size: 15px;
   }
-}
 
-.page-list-ul {
-  margin: 0;
-  padding-left: 0;
-
-  > li {
-    margin: 0;
-    list-style: none;
-
-    .page-list-option {
-      float: right;
-      margin-left: 4px;
-    }
-
-    .picture {
-      width: 16px;
-      height: 16px;
-    }
-
-    > a {
-      display: inline;
-      padding: 0 4px;
-      color: inherit;
-
-      strong {
-        color: #333;
-      }
-    }
-
-    > span.page-list-meta {
-      font-size: .9em;
-      color: #999;
-
-      >span {
-        margin-right: .3rem;
-      }
-
-      i {
-        margin-right: 2px;
-      }
-    }
-  }
-
-  // after second level indent
   .page-list-ul {
-    padding-left: 2rem;
-  }
-
-  // override .page-list-ul
-  &.page-list-ul-flat {
+    margin: 0;
     padding-left: 0;
+
+    > li {
+      margin: 0;
+      list-style: none;
+
+      .page-list-option {
+        float: right;
+        margin-left: 4px;
+      }
+
+      .picture {
+        width: 16px;
+        height: 16px;
+      }
+
+      > a {
+        display: inline;
+        padding: 0 4px;
+        color: inherit;
+
+        strong {
+          color: #333;
+        }
+      }
+
+      > span.page-list-meta {
+        font-size: .9em;
+        color: #999;
+
+        >span {
+          margin-right: .3rem;
+        }
+
+        i {
+          margin-right: 2px;
+        }
+      }
+    }
+
+    // after second level indent
+    .page-list-ul {
+      padding-left: 2rem;
+    }
+
+    // override .page-list-ul
+    &.page-list-ul-flat {
+      padding-left: 0;
+    }
   }
 }
