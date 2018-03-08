@@ -129,7 +129,6 @@
   "New password": "New password",
   "Re-enter new password": "Re-enter new password",
   "Password is not set": "Password is not set",
-  "You can sign in with email and password": "You can sign in with <code>%s</code> and password",
 
   "API Settings": "API Settings",
   "API Token Settings": "API Token Settings",

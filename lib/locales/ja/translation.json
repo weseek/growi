@@ -145,7 +145,6 @@
   "New password": "新しいパスワード",
   "Re-enter new password": "(確認用)",
   "Password is not set": "パスワードが設定されていません",
-  "You can sign in with email and password": "<code>%s</code> と設定されたパスワードの組み合わせでログイン可能になります。",
 
   "Security settings": "セキュリティ設定",
 
