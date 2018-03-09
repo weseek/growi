@@ -262,13 +262,12 @@ body.on-edit {
         background-color: inherit;
       }
     }
-  }
 
-  @media (max-width: $screen-xs-max) { // {{{ less than smartphone size
-    #page-editor-options-selector {
+    @media (max-width: $screen-xs-max) { // {{{ less than smartphone size
       display: none;
     }
   }
+
 } // }}}
 
 /*
