@@ -15,7 +15,7 @@ export default class SearchTypeahead extends React.Component {
     super(props);
 
     this.state = {
-      input: '',
+      input: this.props.keywordOnInit,
       keyword: '',
       searchedKeyword: '',
       pages: [],
@@ -125,10 +125,10 @@ export default class SearchTypeahead extends React.Component {
    * Get restore form button to initialize button
    */
   getRestoreFormButton() {
-    let isHidden = (this.state.input.length === 0);
+    let isHidden = (this.state.input === this.props.keywordOnInit);
 
     return isHidden ? <span></span> : (
-      <button className="btn btn-link search-top-clear" onClick={this.restoreInitialData} hidden={isHidden}>
+      <button type="button" className="btn btn-link search-clear" onClick={this.restoreInitialData}>
         <i className="icon-close" />
       </button>
     );
@@ -189,6 +189,6 @@ SearchTypeahead.defaultProps = {
   onSearchError:   noop,
   onChange:        noop,
   emptyLabel:      null,
-  placeholder:     "",
-  keywordOnInit:   "",
+  placeholder:     '',
+  keywordOnInit:   '',
 };
