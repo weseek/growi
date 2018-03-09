@@ -8,6 +8,7 @@ body.on-edit {
   .row.not-found-message-row,
   .users-meta,
   .user-page-content-container,
+  .portal-form-button,
   .alert-info.alert-moved,
   .alert-info.alert-unlinked,
   .like-button, .bookmark-link, .btn-edit,
@@ -269,6 +270,17 @@ body.on-edit {
     }
   }
 } // }}}
+
+/*
+ * for creating portal
+ */
+.nav-tabs-create-portal {
+  display: none;
+}
+.on-edit .nav-tabs-create-portal {
+  display: block;
+}
+
 
 /*
 .crowi.main-container .main .page-list.content-main { // {{{ Edit Form of Page List

@@ -371,9 +371,7 @@ $(function() {
   });
 
   $('#create-portal-button').on('click', function(e) {
-    $('.portal').removeClass('hide');
     $('body').addClass('on-edit');
-    $('.portal a[data-toggle="tab"][href="#edit-form"]').tab('show');
 
     var path = $('.content-main').data('path');
     if (path != '/' && $('.content-main').data('page-id') == '') {
@@ -386,9 +384,7 @@ $(function() {
     }
   });
   $('#portal-form-close').on('click', function(e) {
-    $('.portal').addClass('hide');
     $('body').removeClass('on-edit');
-
     return false;
   });
 

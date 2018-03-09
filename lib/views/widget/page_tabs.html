@@ -49,4 +49,23 @@
   <li class="pull-right"><a href="?presentation=1" class="toggle-presentation"><i class="icon-film"></i> {{ t('Presentation Mode') }}</a></li>
 
 </ul>
+
+{% else %} {# for creating portal #}
+
+<ul class="nav nav-tabs nav-tabs-create-portal hidden-print">
+
+  <li class="nav-main-left-tab">
+    <a id="portal-form-close" href="#">
+      <i class="icon-action-undo"></i> {{ t('Cancel') }}
+    </a>
+  </li>
+
+  <li class="nav-main-left-tab active">
+    <a>
+      <i class="icon-note"></i> {{ t('Create') }}
+    </a>
+  </li>
+
 {% endif %}
+
+</ul>
