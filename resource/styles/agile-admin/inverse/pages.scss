@@ -1430,7 +1430,7 @@ a.mytooltip {
 
 
 /********* Megamenu Page**********/
-
+/*
 .megamenu {
     left: 0px;
     right: 0px;
@@ -1483,10 +1483,10 @@ a.mytooltip {
         opacity: 0.8;
     }
 }
-
+*/
 
 /*Data tables*/
-
+/*
 button.dt-button,
 div.dt-button,
 a.dt-button {
@@ -1518,17 +1518,17 @@ table.dataTable.display tbody tr.even>.sorting_1,
 table.dataTable.order-column.stripe tbody tr.even>.sorting_1 {
     background: none;
 }
-
+*/
 
 /*Summernote*/
-
+/*
 .note-editor {
     border: 1px solid $border;
     .panel-heading {
         padding: 6px 10px 10px;
     }
 }
-
+*/
 
 /*--------------------------------------------------------------
   Update 1.6
@@ -1536,14 +1536,14 @@ table.dataTable.order-column.stripe tbody tr.even>.sorting_1 {
 
 
 /*left-right-aside-column*/
-
+/*
 .page-aside {
     position: relative;
 }
-
+*/
 
 /*left-aside-column*/
-
+/*
 .left-aside {
     position: absolute;
     background: $white;
@@ -1594,10 +1594,10 @@ table.dataTable.order-column.stripe tbody tr.even>.sorting_1 {
         }
     }
 }
-
+*/
 
 /*Chat-box*/
-
+/*
 .chat-main-box {
     position: relative;
     background: $white;
@@ -1676,10 +1676,10 @@ table.dataTable.order-column.stripe tbody tr.even>.sorting_1 {
         }
     }
 }
-
+*/
 
 /*User Cards*/
-
+/*
 .el-element-overlay .white-box {
     padding: 0px;
 }
@@ -1720,7 +1720,7 @@ table.dataTable.order-column.stripe tbody tr.even>.sorting_1 {
         &:hover img {
             -ms-transform: scale(1.2) translateZ(0);
             -webkit-transform: scale(1.2) translateZ(0);
-            /* transform: scale(1.2) translateZ(0); */
+            // transform: scale(1.2) translateZ(0);
         }
         .el-info {
             text-decoration: none;
@@ -1790,20 +1790,20 @@ table.dataTable.order-column.stripe tbody tr.even>.sorting_1 {
         height: 100%;
     }
 }
-
+*/
 
 /*Login sidebar*/
-
+/*
 .login-sidebar {
     position: absolute;
     right: 0px;
     margin-top: 0px;
     height: 100%;
 }
-
+*/
 
 /*Listing*/
-
+/*
 .common-list {
     margin: 0px;
     padding: 0px;
@@ -1820,10 +1820,10 @@ table.dataTable.order-column.stripe tbody tr.even>.sorting_1 {
         }
     }
 }
-
+*/
 
 /*table layouts*/
-
+/*
 .color-table.primary-table thead th {
     background-color: $primary;
     color: $white;
@@ -2113,10 +2113,10 @@ table.dataTable.order-column.stripe tbody tr.even>.sorting_1 {
         background-color: $muted;
     }
 }
-
+*/
 
 /* Material Form Input Elements */
-
+/*
 .floating-labels .form-group {
     position: relative;
 }
@@ -2252,11 +2252,14 @@ table.dataTable.order-column.stripe tbody tr.even>.sorting_1 {
 .has-feedback label~.t-0 {
     top: 0;
 }
+*/
 
 /*Dashboard chart*/
+/*
 .dashboard-chart{
     margin-left:-33px;
      margin-right:-33px;
     margin-top:-25px;
 
 }
+*/
