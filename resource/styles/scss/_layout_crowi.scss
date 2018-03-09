@@ -40,5 +40,20 @@
     .portal-form-button {
       text-align: center;
     }
+
+    .system-version {
+      position: absolute;
+      left: 0.5em;
+      right: 1em;
+      bottom: 0.5em;
+
+      display: flex;
+      justify-content: space-between;
+
+      @media (max-width: $screen-sm-max) {
+        display: none;
+      }
+    }
   }
+
 }

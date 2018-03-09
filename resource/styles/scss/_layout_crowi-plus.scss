@@ -14,11 +14,6 @@
     }
   }
 
-  @media (max-width: $screen-sm-max) {
-    .system-version {
-      display: none;
-    }
-  }
 }
 
 .system-version {
@@ -29,5 +24,9 @@
 
   > span {
     margin-left: .5em;
+  }
+
+  @media (max-width: $screen-xs-max) {
+    display: none;
   }
 }

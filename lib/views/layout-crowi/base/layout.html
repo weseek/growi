@@ -18,14 +18,7 @@
     {% block side_footer %}
     {% endblock %}
 
-    <div id="footer-container" class="footer">
-      <footer class="">
-        <p>
-          <a href="https://github.com/weseek/crowi-plus">crowi-plus</a> {{ crowiVersion() }}
-          <a href="" class="pull-right" data-target="#shortcuts-modal" data-toggle="modal"><i class="fa fa-keyboard-o"></i>&nbsp;<span class="cmd-key"></span>-/</a>
-        </p>
-      </footer>
-    </div>
+    {% include '../../widget/system-version.html' %}
   </aside>
 
   <div class="row bg-title">
