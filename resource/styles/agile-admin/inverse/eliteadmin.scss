@@ -1441,6 +1441,14 @@ table.dataTable thead .sorting:after {
       font-size:14px;
     }
 }
+
+@mixin panel-border-and-footer($color) {
+  border: 1px solid $color;
+  .panel-footer {
+    background-color: rgba($color, .1);
+  }
+}
+
 .panel{
   border-radius:$radius;
   margin-bottom:15px;
@@ -1485,7 +1493,6 @@ table.dataTable thead .sorting:after {
   }
 }
 .panel-green, .panel-success{
-    border-color: $success;
     .panel-heading {
         border-color: $success;
         color: white;
@@ -1503,6 +1510,7 @@ table.dataTable thead .sorting:after {
             color: darken($success, 15%);
         }
     }
+    @include panel-border-and-footer($success);
 }
 .panel-black, .panel-inverse{
     border-color: $inverse;
@@ -1523,6 +1531,7 @@ table.dataTable thead .sorting:after {
             color: darken($inverse, 15%);
         }
     }
+    @include panel-border-and-footer($inverse);
 }
 .panel-darkblue, .panel-primary{
     border-color: $primary;
@@ -1543,6 +1552,7 @@ table.dataTable thead .sorting:after {
             color: darken($primary, 15%);
         }
     }
+    @include panel-border-and-footer($primary);
 }
 .panel-blue, .panel-info{
     border-color: $info;
@@ -1563,6 +1573,7 @@ table.dataTable thead .sorting:after {
             color: darken($info, 15%);
         }
     }
+    @include panel-border-and-footer($info);
 }
 
 .panel-red, .panel-danger {
@@ -1584,6 +1595,7 @@ table.dataTable thead .sorting:after {
             color: darken($danger, 15%);
         }
     }
+    @include panel-border-and-footer($danger);
 }
 
 .panel-yellow, .panel-warning {
@@ -1605,17 +1617,18 @@ table.dataTable thead .sorting:after {
             color: darken($warning, 15%);
         }
     }
+    @include panel-border-and-footer($warning);
 }
 .panel-white, .panel-default{
     border-color: $border;
     .panel-heading {
         color: $dark;
-        background-color: $white;
+        background-color: $border;
         border-bottom:1px solid $border;
 
     }
     .panel-body{
-     color:$dark;
+      color:$dark;
     }
     .panel-action a{ color:$dark; opacity:0.5;
       &:hover{
@@ -1628,7 +1641,7 @@ table.dataTable thead .sorting:after {
       color:$dark;
       border-top:1px solid $border;
     }
-
+    @include panel-border-and-footer($border);
 }
 .full-panel-info{
     border-color: $info;

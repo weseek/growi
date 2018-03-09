@@ -82,29 +82,8 @@
 
 
 /*
- * Alert
- */
-.alert {
-  border-radius: 0;
-}
-
-
-/*
- * Form
- */
-.form-control {
-  border-radius: 0;
-}
-
-
-/*
  * Button
  */
-.btn {
-  &:not(.btn-rounded):not(.btn-circle) {
-    border-radius: 0;
-  }
-}
 button.btn.btn-link:hover {
   text-decoration: none;
 }
@@ -113,8 +92,6 @@ button.btn.btn-link:hover {
  * Dropdown
  */
 .dropdown-menu {
-  border-radius: 0;
-
   > li > a {
     padding: 5px 15px;
   }
@@ -126,20 +103,10 @@ button.btn.btn-link:hover {
  */
 .modal-content {
   border: none;
-  border-radius: 0;
+  // border-radius: 0;
 
   .modal-header, .modal-footer {
     padding: 10px 15px;
-  }
-}
-
-
-/*
- * Tab
- */
-.nav-tabs {
-  > li > a {
-    border-radius: 0;
   }
 }
 
@@ -153,4 +120,28 @@ button.btn.btn-link:hover {
   &.well-sm {
     padding: .5em;
   }
+}
+
+
+/*
+ * Panel
+ */
+.panel {
+  .panel-heading {
+    padding: 7px 15px;
+  }
+  .panel-body {
+    padding: 15px;
+  }
+  .panel-footer {
+    padding: 7px 15px;
+  }
+}
+
+
+/*
+ * Label
+ */
+.label {
+  padding: 2px 7px;
 }
