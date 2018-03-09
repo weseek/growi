@@ -1,10 +1,10 @@
-{% extends '../layout/2column.html' %}
+{% extends 'base/layout.html' %}
 
 {% block html_title %}{{ path|path2name }} · {{ path }}{% endblock %}
 
-{% block layout_header %}
+{% block content_header %}
 
-  {% block layout_header_before %}
+  {% block content_header_before %}
   {% endblock %}
 
   <div class="header-wrap">
@@ -34,7 +34,7 @@
     </header>
   </div>
 
-  {% block layout_header_after %}
+  {% block content_header_after %}
   {% endblock %}
 
 {% endblock %}
