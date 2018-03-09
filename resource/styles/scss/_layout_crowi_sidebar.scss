@@ -11,7 +11,6 @@
   background: #f5f5f5;
 
   transition: .3s ease;
-  -webkit-transition: .3s ease;
 
 
   .page-meta {
@@ -71,19 +70,13 @@
   }
 
   .side-content {
-    // margin-bottom: $crowiFooterHeight + $crowiHeaderHeight;
+    margin-bottom: 100px;
     color: #666;
     padding: 15px;
 
     h3 {
       font-size: 1.1em;
     }
-
-    // disabled in crowi-plus -- 2017.06.03 Yuki Takei
-    // a {
-    //   color: #ccc;
-    //   &:hover { color: #aaa;}
-    // }
 
     ul.fitted-list {
       padding-left: 0;
@@ -95,6 +88,93 @@
         }
       }
     }
+
+    .page-comments {
+      margin: 8px 0 0 0;
+
+      .page-comment-form {
+        margin-top: 16px;
+
+        .comment-form {
+        }
+
+        .comment-form-main {
+
+          .comment-form-comment {
+            height: 60px;
+          }
+
+          .comment-submit {
+            margin-top: 8px;
+            text-align: right;
+          }
+        }
+      }
+
+      .page-comments-list {
+        .page-comment {
+          margin-top: 8px;
+          padding-top: 8px;
+          border-top: solid 1px #ccc;
+
+          .picture {
+            float: left;
+            width: 24px;
+            height: 24px;
+          }
+
+          .page-comment-creator {
+            font-weight: bold;
+          }
+
+          .page-comment-main {
+            position: relative;
+            margin-left: 40px;
+
+            .page-comment-meta {
+              color: #aaa;
+              font-size: .9em;
+            }
+            .page-comment-body {
+              padding: 8px 0;
+              word-wrap: break-word;
+            }
+            .page-comment-control {
+              position: absolute;
+              display: none;    // default hidden
+              top: 0;
+              right: 0;
+            }
+          }
+
+          // show controls when hover
+          .page-comment-main:hover > .page-comment-control {
+            display: block;
+          }
+        }
+      }
+    }
+
+  }
+
+  .portal-form-button {
+    text-align: center;
+  }
+
+  .system-version {
+    position: fixed;
+    z-index: 1;
+    right: 1.4em;
+    width: calc(25% - 1.5em);
+    bottom: 0.1em;
+    padding-right: 1em;
+    opacity: 1;
+
+    display: flex;
+    justify-content: space-between;
+
+    background-color: #f5f5f5;
+    transition: .3s ease;
   }
 
 } // }}}
@@ -107,7 +187,7 @@
     }
   }
 
-  .crowi-sidebar { // {{{
+  .crowi-sidebar, .system-version { // {{{
     right: -25%;
   } // }}}
 

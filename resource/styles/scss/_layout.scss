@@ -85,82 +85,6 @@ $nav-main-left-tab-width: 95px;
 }
 
 
-.crowi.single { // {{{
-} // }}}
-
-.crowi.single.nologin { // {{{
-  .installer-header {
-    margin-top: 100px;
-    text-align: center;
-
-    h1 {
-      margin: 40px 0 40px;
-      color: #fff;
-      font-size: 1.6em;
-    }
-  }
-
-  .main {
-    margin: 0;
-    padding: 0;
-  }
-
-  h1.login-page {
-    margin-top: 80px;
-    color: #fff;
-    font-size: 1.6em;
-    padding: 10px;
-    text-align: center;
-    text-shadow: 0px 0px 6px rgba(0,0,0,.5);
-    line-height: 100%;
-  }
-
-
-  .login-dialog-container {
-
-    margin: 40px auto;
-    float: none;
-
-    .login-dialog {
-      position: relative;
-
-      form {
-        margin-top: 10px;
-        .input-group {
-          margin-bottom: 10px;
-        }
-      }
-
-      .login-dialog-inner, .register-dialog-inner {
-        top: 0;
-        left: 0;
-        padding: 42px 48px;
-        background: #fff;
-        position: absolute;
-        margin-bottom: 40px;
-        width: 100%;
-
-        box-shadow: 0 1px 40px 0 rgba(0,0,0,0.3);
-        border-radius: 3px;
-
-        h2 {
-          margin: 0 0 28px;
-          font-size: 1.3em;
-          text-align: center;
-        }
-      }
-
-      p.bottom-text {
-        text-align: right;
-        margin: 20px 0 0;
-      }
-    }
-
-  }
-
-
-} // }}}
-
 @media print { // {{{ printable style
   .main-container { // {{{
     padding: 30px;
@@ -206,3 +130,14 @@ $nav-main-left-tab-width: 95px;
     }
   }
 } // }}}
+
+.system-version {
+  position: fixed;
+  right: 0.5em;
+  bottom: 0;
+  opacity: .6;
+
+  > span {
+    margin-left: .5em;
+  }
+}
