@@ -250,8 +250,8 @@
     "Plugin settings": "Plugin settings",
     "Enable plugin loading": "Enable plugin loading",
     "Load plugins": "Load plugins",
-    "valid": "Valid",
-    "invalid": "Invalid"
+    "Enabled": "Enabled",
+    "Disabled": "Disabled"
 
   },
  "security_setting": {

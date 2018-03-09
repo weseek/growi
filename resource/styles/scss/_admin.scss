@@ -1,51 +1,63 @@
-.admin-user-menu {
-  .dropdown-menu {
-    left: auto;
-    right: 0;
-  }
-}
+.admin-page {
 
-.admin-customize {
-  .ss-container img {
-    padding: .5em;
-    background-color: #ddd;
+  .admin-user-menu {
+    .dropdown-menu {
+      left: auto;
+      right: 0;
+    }
+  }
+
+  .admin-customize {
+    .ss-container img {
+      padding: .5em;
+      background-color: #ddd;
+    }
+
+    .table-user-list {
+      .label-admin {
+        margin-left: 1em;
+      }
+    }
+
+    // override CodeMirror styles
+    .CodeMirror pre {
+      font-family: $font-family-monospace;
+    }
+  }
+
+  .admin-security {
+    .passport-logo {
+      padding: 4px;
+      height: 32px;
+      background-color: black;
+    }
+
+    .auth-mechanism-configurations {
+      min-height: 800px;
+    }
   }
 
   // Toggle Twitter Bootstrap button class when active
   // https://jsfiddle.net/ms040m01/3/
+  @mixin active-color($color, $bg-color, $border-color) {
+    color: $color;
+    background-color: darken($bg-color, 10%);
+    border-color: $border-color;
+
+    &:hover {
+      background-color: darken($bg-color, 15%);
+    }
+  }
   .btn-group.btn-toggle {
+    .btn {
+      min-width: 90px;
+    }
+    .btn.active[data-active-class="default"] {
+      @include active-color($btn-default-color, $btn-default-bg, $btn-default-border);
+    }
     .btn.active[data-active-class="primary"] {
-      color: $btn-primary-color;
-      background-color: darken($btn-primary-bg, 10%);
-      border-color: $btn-primary-border;
-
-      &:hover {
-        background-color: darken($btn-primary-bg, 15%);
-      }
+      @include active-color($btn-primary-color, $btn-primary-bg, $btn-primary-border);
     }
   }
 
-  .table-user-list {
-    .label-admin {
-      margin-left: 1em;
-    }
-  }
-
-  // override CodeMirror styles
-  .CodeMirror pre {
-    font-family: $font-family-monospace;
-  }
 }
-
-.admin-security {
-  .passport-logo {
-    padding: 4px;
-    height: 32px;
-    background-color: black;
-  }
-
-  .auth-mechanism-configurations {
-    min-height: 800px;
-  }
-}
-
