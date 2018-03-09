@@ -100,7 +100,7 @@
         </fieldset>
       </form>
 
-      <form action="/_api/admin/security/mechanism" method="post" class="form-horizontal" id="mechanismSetting" role="form">
+      <form action="/_api/admin/security/mechanism" method="post" class="form-horizontal m-t-30" id="mechanismSetting" role="form">
         <fieldset>
           <legend>{{ t('Selecting authentication mechanism') }}</legend>
           <p class="alert alert-info"><b>NOTE: </b>Restarting the server is needed if you switch the auth mechanism.</p>
@@ -145,7 +145,7 @@
       </form>
 
 
-      <div class="auth-mechanism-configurations">
+      <div class="auth-mechanism-configurations m-t-10">
 
         <legend>{{ t('security_setting.Authentication mechanism settings') }}</legend>
 
@@ -161,7 +161,7 @@
             The server is running with Passport authentication mechanism.
           </p>
 
-          <form action="/_api/admin/security/google" method="post" class="form-horizontal " id="googleSetting" role="form"
+          <form action="/_api/admin/security/google" method="post" class="form-horizontal" id="googleSetting" role="form"
               {% if isRestartingServerNeeded %}style="opacity: 0.4;"{% endif %}>
 
             <fieldset>
@@ -240,7 +240,7 @@
             </li>
           </ul>
 
-          <div class="tab-content" {% if isRestartingServerNeeded %}style="opacity: 0.4;"{% endif %}>
+          <div class="tab-content p-t-10" {% if isRestartingServerNeeded %}style="opacity: 0.4;"{% endif %}>
             <div id="passport-ldap" class="tab-pane active" role="tabpanel" >
               {% include './widget/passport/ldap.html' with { settingForm: settingForm } %}
             </div>
