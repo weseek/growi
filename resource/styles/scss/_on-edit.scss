@@ -87,12 +87,16 @@ body.on-edit {
   }
 
   .row.bg-title {
+    $left-margin: $nav-main-left-tab-width * 2 + 25px;  // width of .nav-main-left-tab x 2 + some margin
+
     position: absolute;
     z-index: 1;
-    left: 190px;
-    min-width: calc(100% - 190px);
+    left: $left-margin;
+    min-width: calc(100% - #{$left-margin});
+
     // for crowi layout
-    > .col-md-9 {
+    > .col-md-9, .col-xs-12 {
+      padding: 0;
       width: 100%;
     }
 
