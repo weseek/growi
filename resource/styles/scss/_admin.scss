@@ -49,6 +49,9 @@
     }
   }
   .btn-group.btn-toggle {
+    .btn {
+      min-width: 60px;
+    }
     .btn.active[data-active-class="default"] {
       @include active-color($btn-default-color, $btn-default-bg, $btn-default-border);
     }
