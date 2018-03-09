@@ -202,11 +202,13 @@
                   <li class="dropdown-header">{{ t('user_management.Status') }}</li>
 
                   {% if sUser.status == 1 %}
+                  <form id="form_activate_{{ sUserId }}" action="/admin/user/{{ sUserId }}/activate" method="post">
+                    <input type="hidden" name="_csrf" value="{{ csrf() }}">
+                  </form>
                   <li>
-                    <form action="/admin/user/{{ sUserId }}/activate" method="post">
-                      <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                      <button type="submit"><i class="icon-check"></i> 承認する</button>
-                    </form>
+                    <a href="javascript:form_activate_{{ sUserId }}.submit()">
+                      <i class="icon-fw icon-user-following"></i> 承認する
+                    </a>
                   </li>
                   {% endif  %}
 
