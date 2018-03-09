@@ -49,10 +49,6 @@
 
       display: flex;
       justify-content: space-between;
-
-      @media (max-width: $screen-sm-max) {
-        display: none;
-      }
     }
   }
 
