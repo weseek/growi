@@ -144,7 +144,7 @@ export default class SearchTypeahead extends React.Component {
       : [];
 
     return (
-      <span>
+      <span className="search-typeahead">
         <AsyncTypeahead
           {...this.props}
           ref="typeahead"
