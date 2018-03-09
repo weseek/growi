@@ -60,6 +60,7 @@ $(document).ready(function () {
   });
   // Theme settings
   //Open-Close-right sidebar
+  /*
   $(".right-side-toggle").click(function () {
       $(".right-sidebar").slideDown(50);
       $(".right-sidebar").toggleClass("shw-rside");
@@ -85,6 +86,10 @@ $(document).ready(function () {
           $('.fxsdr').attr('checked', false);
       }
   });
+  */
+  /*
+   * comment out because 'a.active' breaks bootstrap tab -- 2018.03.10 Yuki Takei
+   *
   $(function () {
     var url = window.location;
     var element = $('ul.nav a').filter(function () {
@@ -94,6 +99,7 @@ $(document).ready(function () {
         element.addClass('active');
     }
   });
+  */
   // This is for click on open close button
   // Sidebar open close
   $(".open-close").on('click', function () {
