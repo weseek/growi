@@ -45,21 +45,7 @@
 
 
 {% block content_main %}
-  {% if not page %}
-  <ul class="nav nav-tabs hidden-print">
-    <li><a>Create: {{ path }}</a></li>
-    <li class="dropdown pull-right">
-      <a href="#" onclick="history.back();"><i class="icon-close"></i> {{ t('Cancel') }}</a>
-    </li>
-  </ul>
-  <div class="tab-content">
-    <div class="edit-form">
-    {% include '../_form.html' %}
-    </div>
-  </div>
-  {% else %}
-    {% include '../widget/page_content.html' %}
-  {% endif %}
+  {% include '../widget/page_content.html' %}
 {% endblock %}
 
 

@@ -1,77 +1,112 @@
 body.on-edit {
 
+  // hide unnecessary elements
   .navbar.navbar-static-top,
   .row.page-list,
   .row.page-comments-row,
   .row.page-attachments-row,
+  .row.not-found-message-row,
+  .alert-info.alert-moved,
+  .alert-info.alert-unlinked,
+  .like-button, .bookmark-link, .btn-edit,
+  .authors,
   footer {
     display: none;
   }
 
-
-
-  /*
-  padding: 0;
-
-  position: fixed;
-  z-index: 1050;
-  background: #fff;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-
-  .nav {
-    margin-top: 8px;
-    height: 40px;
-
-    .dropdown-menu {
-      z-index: 1060;
-    }
+  // hide unnecessary elements for growi layout
+  .revision-toc-container {
+    display: none;
   }
 
-  .tab-content {
-    top: 48px;
-    bottom: 58px;
-    position: absolute;
-    z-index: 1051;
-    left: 0;
-    right: 0;
-    margin-top: 4px;
+  // hide unnecessary elements for crowi layout
+  #toggle-sidebar,
+  .crowi-sidebar {
+    display: none;
+  }
 
-    .alert-info.alert-moved,
-    .alert-info.alert-unlinked {
-      display: none;
+  /*****************
+   * Expand Editor
+   *****************/
+  .expand-by-flex {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+  .container-fluid {
+    padding-bottom: 0;
+  }
+  .main {
+    width: 100vw;
+    height: 100vh;
+    margin-top: 0px !important;
+    padding-top: 2px;
+    padding-left: 0;
+    padding-right: 0;
+
+    // for growi layout
+    > .row {
+      margin: 0;
+      > .col-lg-10, > .col-md-9 {
+        width: 100vw;
+        padding: 0;
+      }
     }
 
-    // layout (height: 100%)
-    .edit-form {
-      height: 100%;
-      > form {
-        height: 100%;
-        > #page-editor {
-          height: 100%;
+    &,
+    .content-main,
+    .tab-content,
+    .edit-form,
+    .page-form {
+      @extend .expand-by-flex;
+    }
 
-          .row, .col-md-6, .col-sm-12,
-          .react-codemirror2, .CodeMirror, .CodeMirror-scroll,
-          .page-editor-preview-body
-          {
-            height: 100%;
-          }
+    .page-form {
+
+      #page-editor {
+        &,
+        .row, .col-md-6, .col-sm-12,
+        .react-codemirror2, .CodeMirror, .CodeMirror-scroll,
+        .page-editor-preview-body {
+          height: calc(100vh - 100px);
         }
       }
-    }
-  }
 
-  .page-form-setting {
-    .extended-setting {
-      label {
-        margin-bottom: 0;
+      .form-group.form-submit-group {
+        width: 100%;
+        margin: 0;
+        padding: 8px;
+        min-height: 50px;
+        background-color: #fafafa;
+        border-top: solid 1px #ccc;
       }
+
     }
   }
-*/
 
+  .row.bg-title {
+    position: absolute;
+    z-index: 1;
+    left: 190px;
+    min-width: calc(50% - 190px);
+
+    background: none;
+
+    h1 {
+      font-size: 20px;
+      line-height: 1em;
+    }
+  }
+
+  /*****************
+   * Editor styles
+   *****************/
+  .main {
+    background-color: #fafafa;
+    #page-editor {
+      background-color: #fff;
+    }
+  }
   .page-editor-editor-container {
     padding-right: 0;
     border-right: 1px solid #ccc;
@@ -205,19 +240,6 @@ body.on-edit {
     padding-right: 15px;
     overflow-y: scroll;
   }
-
-  // .form-group.form-submit-group {
-  //   position: fixed;
-  //   z-index: 1054;
-  //   bottom: 0;
-  //   width: 100%;
-  //   left: 0;
-  //   padding: 8px;
-  //   min-height: 50px;
-  //   background: rgba(255,255,255,.8);
-  //   border-top: solid 1px #ccc;
-  //   margin-bottom: 0;
-  // }
 
   #page-editor-options-selector {
     label {

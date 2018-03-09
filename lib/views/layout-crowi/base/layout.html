@@ -28,8 +28,8 @@
     </div>
   </div><!-- /.bg-title -->
 
-  <div class="row m-t-15">
-    <div id="main" class="main col-md-9 {% if page %}{{ css.grant(page) }}{% endif %} {% block main_css_class %}{% endblock %}">
+  <div class="row">
+    <div id="main" class="main m-t-15 col-md-9 {% if page %}{{ css.grant(page) }}{% endif %} {% block main_css_class %}{% endblock %}">
       {% if page && page.grant != 1 %}
       <p class="page-grant">
         <i class="fa fa-lock"></i> {{ consts.pageGrants[page.grant] }} ({{ t('Browsing of this page is restricted') }})
@@ -41,19 +41,19 @@
         <input type="text" class="copy-link form-control" value="{{ baseUrl }}/{{ page._id.toString() }}" readonly>
       </p>
       {% endif %}
-      <article>
-        {% block content_main_before %}
-        {% endblock %}
 
-        {% block content_main %}
-        {% endblock content_main %}
+      {% block content_main_before %}
+      {% endblock %}
 
-        {% block content_main_after %}
-        {% endblock %}
+      {% block content_main %}
+      {% endblock content_main %}
 
-        {% block content_footer %}
-        {% endblock %}
-      </article>
+      {% block content_main_after %}
+      {% endblock %}
+
+      {% block content_footer %}
+      {% endblock %}
+
     </div>
   </div>
 
