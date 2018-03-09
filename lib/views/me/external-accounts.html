@@ -5,7 +5,7 @@
 {% block content_header %}
 <div class="header-wrap">
   <header id="page-header">
-    <h1 class="title" id="">{{ t('Home') }}</h1>
+    <h1 class="title" id="">{{ t('Password Settings') }}</h1>
   </header>
 </div>
 {% endblock %}
@@ -58,9 +58,9 @@
 
 
 
-  <legend style="line-height: 1.7em;">
+  <legend class="m-t-20" style="line-height: 1.7em;">
     <button class="btn btn-default btn-sm pull-right" data-target="#create-external-account" data-toggle="modal">
-      <i class="fa fa-plus-circle" aria-hidden="true"></i>
+      <i class="icon-plus" aria-hidden="true"></i>
       Add
     </button>
     {{ t('External Accounts') }}
@@ -120,23 +120,23 @@
 
           <ul class="nav nav-tabs passport-settings" role="tablist">
             <li class="active">
-              <a href="#passport-ldap" data-toggle="tab" role="tab"><i class="fa fa-sitemap"></i> LDAP</a>
+              <a href="#passport-ldap" data-toggle="tab" role="tab"><i class="icon-organization"></i> LDAP</a>
             </li>
             <li>
-              <a href="#passport-google-oauth" data-toggle="tab" role="tab"><i class="fa fa-google"></i> Google OAuth</a>
+              <a href="#passport-google-oauth" data-toggle="tab" role="tab"><i class="icon-social-google"></i> Google OAuth</a>
             </li>
             <li>
-              <a href="#passport-facebook" data-toggle="tab" role="tab"><i class="fa fa-facebook"></i> Facebook</a>
+              <a href="#passport-facebook" data-toggle="tab" role="tab"><i class="icon-social-facebook"></i> Facebook</a>
             </li>
             <li>
-              <a href="#passport-twitter" data-toggle="tab" role="tab"><i class="fa fa-twitter"></i> Twitter</a>
+              <a href="#passport-twitter" data-toggle="tab" role="tab"><i class="icon-social-twitter"></i> Twitter</a>
             </li>
             <li>
-              <a href="#passport-github" data-toggle="tab" role="tab"><i class="fa fa-github"></i> Github</a>
+              <a href="#passport-github" data-toggle="tab" role="tab"><i class="icon-social-github"></i> Github</a>
             </li>
           </ul>
 
-          <div class="tab-content passport-settings">
+          <div class="tab-content passport-settings m-t-15">
             <div id="passport-ldap" class="tab-pane active" role="tabpanel" >
               <div id="formLdapAssociationContainer">
                 {% include '../widget/passport/ldap-association-tester.html' %}

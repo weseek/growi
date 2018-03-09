@@ -1,11 +1,11 @@
 {% extends '../layout-growi/base/layout.html' %}
 
-{% block html_title %}{{ t('Home') }} · {{ path }}{% endblock %}
+{% block html_title %}{{ t('User Settings') }} · {{ path }}{% endblock %}
 
 {% block content_header %}
 <div class="header-wrap">
   <header id="page-header">
-    <h1 class="title" id="">{{ t('Home') }}</h1>
+    <h1 class="title" id="">{{ t('User Settings') }}</h1>
   </header>
 </div>
 {% endblock %}
@@ -47,7 +47,7 @@
   {% endif %}
 
 
-  <div class="form-box">
+  <div class="form-box m-t-20">
     <form action="/me" method="post" class="form-horizontal" role="form">
       <fieldset>
         <legend>{{ t('Basic Info') }}</legend>
@@ -91,7 +91,7 @@
     </form>
   </div>
 
-  <div class="form-box">
+  <div class="form-box m-t-20">
 
     <!-- separeted form tag -->
     <form action="/me/imagetype" id="formImageType" method="post" class="form" role="form"></form>

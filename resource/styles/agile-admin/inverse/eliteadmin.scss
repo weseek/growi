@@ -665,9 +665,10 @@ label{
 .input-group-btn .btn {
     padding: 8px 12px;
 }
+/* reset to bootstrap default
 .form-horizontal .form-group{ margin-left:-7.5px; margin-right:-7.5px; margin-bottom:25px;}
 .form-group{ margin-bottom:25px;}
-
+*/
 .select2-container-multi .select2-choices{ border: 1px solid $light;
 }
 .list-group-item, .list-group-item:first-child, .list-group-item:last-child{ border-radius:$radius; border-color:$border;}
