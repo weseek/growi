@@ -90,7 +90,11 @@ body.on-edit {
     position: absolute;
     z-index: 1;
     left: 190px;
-    min-width: calc(50% - 190px);
+    min-width: calc(100% - 190px);
+    // for crowi layout
+    > .col-md-9 {
+      width: 100%;
+    }
 
     background: none;
 
