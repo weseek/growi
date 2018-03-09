@@ -217,12 +217,12 @@
                   <li>
                     {% if sUser.username != user.username %}
                     <a href="javascript:form_suspend_{{ sUserId }}.submit()">
-                      <i class="icon-fw icon-minus"></i>
+                      <i class="icon-fw icon-ban"></i>
                       {{ t('user_management.Deactivate account') }}
                     </a>
                     {% else %}
                     <a disabled>
-                      <i class="icon-fw icon-minus"></i>
+                      <i class="icon-fw icon-ban"></i>
                       {{ t('user_management.Deactivate account') }}
                     </a>
                     <p class="alert alert-danger m-l-10 m-r-10 p-10">{{ t("user_management.your_own") }}</p>
@@ -239,7 +239,7 @@
                   </form>
                   <li>
                     <a href="javascript:form_activate_{{ sUserId }}.submit()">
-                      <i class="icon-fw icon-action-undo"></i> 元に戻す
+                      <i class="icon-fw icon-action-redo"></i> 元に戻す
                     </a>
                   </li>
                   <li>
@@ -288,7 +288,7 @@
                   </form>
                   <li>
                     <a href="javascript:form_makeAdmin_{{ sUserId }}.submit()">
-                      <i class="icon-fw icon-user-following"></i> 管理者にする
+                      <i class="icon-fw icon-magic-wand"></i> 管理者にする
                     </a>
                   </li>
                   {% endif %}
