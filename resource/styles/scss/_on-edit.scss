@@ -6,12 +6,14 @@ body.on-edit {
   .row.page-comments-row,
   .row.page-attachments-row,
   .row.not-found-message-row,
+  .users-meta,
+  .user-page-content-container,
   .alert-info.alert-moved,
   .alert-info.alert-unlinked,
   .like-button, .bookmark-link, .btn-edit,
   .authors,
   footer {
-    display: none;
+    display: none !important;
   }
 
   // hide unnecessary elements for growi layout
