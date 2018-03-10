@@ -35,8 +35,8 @@ import Dropzone from 'react-dropzone';
 
 import pasteHelper from './PasteHelper';
 import markdownListHelper from './MarkdownListHelper';
+import markdownTableHelper from './MarkdownTableHelper';
 import emojiAutoCompleteHelper from './EmojiAutoCompleteHelper';
-
 
 export default class Editor extends React.Component {
 
@@ -344,7 +344,11 @@ export default class Editor extends React.Component {
               highlightFormatting: true,
               // continuelist, indentlist
               extraKeys: {
-                "Enter": markdownListHelper.newlineAndIndentContinueMarkdownList,
+                "Enter": function(editor) {
+                  // [TODO] encapsulation all helper in InsertNewLineHelper(TBD)
+                  markdownListHelper.newlineAndIndentContinueMarkdownList(editor);
+                  markdownTableHelper.newlineAndIndentContinueMarkdownList(editor);
+                },
                 "Tab": "indentMore",
                 "Shift-Tab": "indentLess",
                 "Ctrl-Q": (cm) => { cm.foldCode(cm.getCursor()) },

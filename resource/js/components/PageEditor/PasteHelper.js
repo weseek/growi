@@ -22,6 +22,7 @@ class PasteHelper {
     }
 
     markdownListHelper.pasteText(editor, event, text);
+    // [TODO] add markdownTableHelper
   }
 
   // Firefox versions prior to 53 return a bogus MIME type for every file drag, so dragovers with
