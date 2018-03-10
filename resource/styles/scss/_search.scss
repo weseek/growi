@@ -105,10 +105,11 @@
 
   .search-result-list {
     nav {
+      padding-right: 0;
       &.affix {
         top: 8px;
-        width: 32%;
-        padding-right: 0;
+        width: 33%;
+        padding-right: 5px;
         padding-bottom: 50px;
         height: 100%;
         overflow-y: scroll;
@@ -126,7 +127,7 @@
     }
 
     .search-result-meta {
-      margin-bottom: 16px;
+      margin-bottom: 10px;
       font-weight: bold;
     }
 
@@ -142,6 +143,7 @@
     .search-result-page {
       > h2 {
         font-size: 20px;
+        line-height: 1em;
       }
       &:first-child > h2 {
         margin-top: 0;

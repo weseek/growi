@@ -189,7 +189,7 @@ export default class SearchResult extends React.Component {
       deletionModeButtons =
       <div className="btn-group">
         <button type="button" className="btn btn-rounded btn-default btn-xs" onClick={() => this.handleDeletionModeChange()}>
-          <i className="icon-action-undo"/> Cancel
+          <i className="icon-ban"/> Cancel
         </button>
         <button type="button" className="btn btn-rounded btn-danger btn-xs" onClick={() => this.showDeleteConfirmModal()} disabled={this.state.selectedPages.size == 0}>
           <i className="icon-trash"/> Delete
@@ -230,7 +230,7 @@ export default class SearchResult extends React.Component {
               onClick={() => this.toggleCheckbox(page)} />
             }
           <div className="page-list-option">
-            <a href={page.path}><i className="fa fa-sign-in" /></a>
+            <a href={page.path}><i className="icon-login" /></a>
           </div>
         </Page>
       );
@@ -255,7 +255,7 @@ export default class SearchResult extends React.Component {
                 {allSelectCheck}
               </div>
               <div className="search-result-meta">
-                <i className="icon-bulb" /> Found {this.props.searchResultMeta.total} pages with "{this.props.searchingKeyword}"
+                <i className="icon-magnifier" /> Found {this.props.searchResultMeta.total} pages with "{this.props.searchingKeyword}"
               </div>
               <div className="clearfix"></div>
               <div className="page-list">
