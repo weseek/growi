@@ -72,3 +72,10 @@
 .popular-page-low {
   color: #ab7c7c;
 }
+
+.panel-timeline {
+  border: 1px solid #ccc;
+  > .panel-heading {
+    background-color: #ccc;
+  }
+}
