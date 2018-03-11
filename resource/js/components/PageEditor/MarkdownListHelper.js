@@ -7,7 +7,6 @@ class MarkdownListHelper {
     // https://regex101.com/r/7BN2fR/5
     this.indentAndMarkRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]\s|[*+-]\s|(\d+)([.)]))(\s*)/;
     this.indentAndMarkOnlyRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]|[*+-]|(\d+)[.)])(\s*)$/;
-    this.indentAndUnorderedMarkRE = /[*+-]\s/;
 
     this.newlineAndIndentContinueMarkdownList = this.newlineAndIndentContinueMarkdownList.bind(this);
     this.pasteText = this.pasteText.bind(this);
@@ -31,12 +30,10 @@ class MarkdownListHelper {
     console.log('strFromBol: ' + strFromBol);
     console.log('will return ' + (this.indentAndMarkRE.test(strToEol)
                                  || this.indentAndMarkRE.test(strFromBol)
-                                 || this.indentAndMarkOnlyRE.test(strFromBol)
-                                 || this.indentAndUnorderedMarkRE.test(strFromBol) ? 'true' : 'false'));
+                                 || this.indentAndMarkOnlyRE.test(strFromBol) ? 'true' : 'false'));
     return this.indentAndMarkRE.test(strToEol)
            || this.indentAndMarkRE.test(strFromBol)
-           || this.indentAndMarkOnlyRE.test(strFromBol)
-           || this.indentAndUnorderedMarkRE.test(strFromBol);
+           || this.indentAndMarkOnlyRE.test(strFromBol);
   }
 
   /**

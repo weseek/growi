@@ -15,7 +15,7 @@ class ContextBasedNewLineHandlerExecutor {
   execNewLineHandler(editor) {
     let newLineHelpers = [markdownTableHelper, markdownListHelper];
     const helper = newLineHelpers.find( h => h.isMatchedContext(editor));
-    if (helper) {
+    if (helper != undefined) {
       helper.handleNewLine(editor);
     } else {
       codemirror.commands.newlineAndIndent(editor);

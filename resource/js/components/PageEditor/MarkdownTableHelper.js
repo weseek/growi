@@ -3,9 +3,10 @@ import * as codemirror from 'codemirror';
 class MarkdownTableHelper {
 
   constructor() {
-    // https://stackoverflow.com/questions/9837935/regex-for-markdown-table-syntax
-    // https://regex101.com/r/7BN2fR/6
-    this.tableTitleAndHeaderAndBodyRE = /\|(?:([^\r\n\|]*)\|)+\r?\n\|(?:(\:?-+\:?)\|)+\r?\n(\|(?:([^\r\n\|]*)\|)+\r?\n)+/;
+    // https://github.com/markdown-it/markdown-it/blob/d29f421927e93e88daf75f22089a3e732e195bd2/lib/rules_block/table.js#L83
+    // https://regex101.com/r/7BN2fR/7
+    this.tableAlignmentLineRE = /^[-:|][-:|\s]*$/;
+    this.linePartOfTableRE = /^\|[^\r\n]*|[^\r\n]*\|$|([^\|\r\n]+\|[^\|\r\n]*)+/; // own idea
 
     this.isMatchedContext = this.isMatchedContext.bind(this);
     this.handleNewLine = this.handleNewLine.bind(this);
@@ -17,6 +18,7 @@ class MarkdownTableHelper {
     this.getEot = this.getEot.bind(this);
     this.getBol = this.getBol.bind(this);
     this.getStrFromBot = this.getStrFromBot.bind(this);
+    this.getStrToEot = this.getStrToEot.bind(this);
     this.getStrFromBol = this.getStrFromBol.bind(this);
   }
 
@@ -27,10 +29,10 @@ class MarkdownTableHelper {
   isMatchedContext(editor) {
     console.log('MarkdownTableHelper.isMatchedContext');
     // get strings from BOL(beginning of line) to current position
-    const strFromBot = this.getStrFromBot(editor);
-    console.log('strFromBol: ' + strFromBot);
-    console.log('will return ' + (this.tableTitleAndHeaderAndBodyRE.test(strFromBot) ? 'true' : 'false'));
-    return this.tableTitleAndHeaderAndBodyRE.test(strFromBot);
+    const strFromBol = this.getStrFromBol(editor);
+    console.log('strFromBol: ' + strFromBol);
+    console.log('will return ' + (this.linePartOfTableRE.test(strFromBol) ? 'true' : 'false'));
+    return this.linePartOfTableRE.test(strFromBol);
   }
 
   /**
@@ -48,17 +50,16 @@ class MarkdownTableHelper {
    */
   newlineAndIndentContinueMarkdownTable(editor) {
     console.log('MarkdownTableHelper.newlineAndIndentContinueMarkdownTable');
-    if (!this.isMatchedContext(editor)) {
-      return;
-    }
+    if (!this.isMatchedContext(editor)) return;
 
     // get lines all of table from current position to beginning of table
-    const strTableLines = this.getStrFromBot(editor);
+    const strTableLines = this.getStrFromBot(editor) + this.getStrToEot(editor);
+    console.log('strTableLines: ' + strTableLines);
     // [TODO] Format table lines
-    strTableLinesFormated = strTableLines;
+    const strTableLinesFormated = strTableLines;
     // replace the lines to strFormatedTableLines
     editor.getDoc().replaceRange(strTableLinesFormated, this.getBot(editor), this.getEot(editor));
-    codemirror.commands.newline(editor);
+    codemirror.commands.newlineAndIndent(editor);
   }
 
   /**
@@ -73,21 +74,37 @@ class MarkdownTableHelper {
 
   /**
    * return the postion of the BOT(beginning of table)
+   * (It is assumed that current line is a part of table)
    */
   getBot(editor) {
-    // [TODO] return the postion of the BOT(beginning of table)
+    const firstLine = editor.getDoc().firstLine();
     const curPos = editor.getCursor();
-    return { line: curPos.line, ch: 0 };
+    let begLine = curPos.line - 1;
+    for (; begLine >= firstLine; begLine--) {
+      const strLine = editor.getDoc().getLine(begLine);
+      if (!this.linePartOfTableRE.test(strLine)) {
+        break;
+      }
+    }
+    return { line: begLine, ch: 0 };
   }
 
   /**
    * return the postion of the EOT(end of table)
+   * (It is assumed that current line is a part of table)
    */
   getEot(editor) {
-    // [TODO] return the postion of the EOT(end of table)
+    const lastLine = editor.getDoc().lastLine();
     const curPos = editor.getCursor();
-    const lineLength = editor.getDoc().getLine(curPos.line).length;
-    return { line: curPos.line, ch: lineLength };
+    let endLine = curPos.line + 1;
+    for (; endLine <= lastLine; endLine++) {
+      const strLine = editor.getDoc().getLine(endLine);
+      if (!this.linePartOfTableRE.test(strLine)) {
+        break;
+      }
+    }
+    const lineLength = editor.getDoc().getLine(Math.min(endLine, lastLine)).length;
+    return { line: endLine, ch: lineLength };
   }
 
   /**
@@ -99,11 +116,19 @@ class MarkdownTableHelper {
   }
 
   /**
-   * return strings from current position to BOL(beginning of table)
+   * return strings from BOT(beginning of table) to current position
    */
   getStrFromBot(editor) {
     const curPos = editor.getCursor();
     return editor.getDoc().getRange(this.getBot(editor), curPos);
+  }
+
+  /**
+   * return strings from current position to EOT(end of table)
+   */
+  getStrToEot(editor) {
+    const curPos = editor.getCursor();
+    return editor.getDoc().getRange(curPos, this.getEot(editor));
   }
 
   /**
