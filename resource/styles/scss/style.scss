@@ -3,12 +3,7 @@
 @import 'vendor';
 
 // import variables
-// @import '../agile-admin/inverse/colors/default.scss';   // import to read variables
 @import 'variables';
-
-// agile-admin theme
-// @import '../agile-admin/inverse/style';
-// @import '../agile-admin/inverse/colors/default.scss';   // import again to apply styles
 
 // override react-bootstrap-typeahead styles
 @import 'override-rbt';

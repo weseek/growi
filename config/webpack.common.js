@@ -27,8 +27,9 @@ module.exports = function (options) {
       'legacy-admin':         './resource/js/legacy/crowi-admin',
       'legacy-presentation':  './resource/js/legacy/crowi-presentation',
       'plugin':               './resource/js/plugin',
-      'style':                './resource/styles',
-      'style-presentation':   './resource/styles/presentation',
+      'style':                './resource/styles/scss/style.scss',
+      'style-theme-default':  './resource/styles/scss/theme/default.scss',
+      'style-presentation':   './resource/styles/scss/style-presentation.scss',
     },
     externals: {
       // require("jquery") is external and available
