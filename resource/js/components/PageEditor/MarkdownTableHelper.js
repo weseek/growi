@@ -93,7 +93,7 @@ class MarkdownTableHelper {
         break;
       }
     }
-    const botLine = Math.max(firstLine, line + 1); // [TODO] research that it is safe botLine is assigned by zero
+    const botLine = Math.max(firstLine, line + 1);
     return { line: botLine, ch: 0 };
   }
 
