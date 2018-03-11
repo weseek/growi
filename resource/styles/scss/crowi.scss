@@ -1,16 +1,16 @@
-// import bootstrap variables
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/variables";
-
-// import crowi variables
-@import 'variables';
 
 // vendor
 @import 'vendor';
 
+// import variables
+// @import '../agile-admin/inverse/colors/default.scss';   // import to read variables
+@import 'variables';
+
 // agile-admin theme
-@import '../agile-admin/inverse/style';
-@import '../agile-admin/inverse/colors/default.scss';
-@import 'override-agileadmin';
+// @import '../agile-admin/inverse/style';
+// @import '../agile-admin/inverse/colors/default.scss';   // import again to apply styles
+
+// override react-bootstrap-typeahead styles
 @import 'override-rbt';
 
 // crowi component

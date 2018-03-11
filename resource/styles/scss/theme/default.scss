@@ -1,0 +1,11 @@
+// import to read variables
+@import '../../agile-admin/inverse/colors/default';
+
+// apply agile-admin theme
+@import '../../agile-admin/inverse/style';
+
+// import again to apply colors
+@import '../../agile-admin/inverse/colors/default';
+
+// override
+@import 'override-agileadmin';
