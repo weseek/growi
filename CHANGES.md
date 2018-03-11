@@ -1,7 +1,11 @@
 CHANGES
 ========
 
-## 2.4.3-RC
+## 2.4.4-RC
+
+* 
+
+## 2.4.3
 
 * Improvement: i18n in `/admin`
 * Improvement: Add `SESSION_NAME` environment variable
