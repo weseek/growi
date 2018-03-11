@@ -7,6 +7,7 @@ class MarkdownListHelper {
     // https://regex101.com/r/7BN2fR/5
     this.indentAndMarkRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]\s|[*+-]\s|(\d+)([.)]))(\s*)/;
     this.indentAndMarkOnlyRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]|[*+-]|(\d+)[.)])(\s*)$/;
+    this.indentAndUnorderedMarkRE = /[*+-]\s/;
 
     this.newlineAndIndentContinueMarkdownList = this.newlineAndIndentContinueMarkdownList.bind(this);
     this.pasteText = this.pasteText.bind(this);
@@ -18,19 +19,51 @@ class MarkdownListHelper {
   }
 
   /**
+   * return whether context is matched by list
+   * @param {any} editor An editor instance of CodeMirror
+   */
+  isMatchedContext(editor) {
+    console.log('MarkdownListHelper.isMatchedContext');
+    // get strings from BOL(beginning of line) to current position
+    const strFromBol = this.getStrFromBol(editor);
+    const strToEol = this.getStrToEol(editor);
+    console.log('strToEol: ' + strToEol);
+    console.log('strFromBol: ' + strFromBol);
+    console.log('will return ' + (this.indentAndMarkRE.test(strToEol)
+                                 || this.indentAndMarkRE.test(strFromBol)
+                                 || this.indentAndMarkOnlyRE.test(strFromBol)
+                                 || this.indentAndUnorderedMarkRE.test(strFromBol) ? 'true' : 'false'));
+    return this.indentAndMarkRE.test(strToEol)
+           || this.indentAndMarkRE.test(strFromBol)
+           || this.indentAndMarkOnlyRE.test(strFromBol)
+           || this.indentAndUnorderedMarkRE.test(strFromBol);
+  }
+
+  /**
+   * handle new line
+   * @param {any} editor An editor instance of CodeMirror
+   */
+  handleNewLine(editor) {
+    console.log('MarkdownListHelper.handleNewLine');
+    this.newlineAndIndentContinueMarkdownList(editor);
+  }
+
+  /**
    * wrap codemirror.commands.newlineAndIndentContinueMarkdownList
    * @param {any} editor An editor instance of CodeMirror
    */
   newlineAndIndentContinueMarkdownList(editor) {
+    console.log('MarkdownListHelper.newlineAndIndentContinueMarkdownList');
     // get strings from current position to EOL(end of line) before break the line
     const strToEol = this.getStrToEol(editor);
-
     if (this.indentAndMarkRE.test(strToEol)) {
+      console.log('MarkdownListHelper.newlineAndIndentContinueMarkdownList: abort auto indent');
       codemirror.commands.newlineAndIndent(editor);
       // replace the line with strToEol (abort auto indent)
       editor.getDoc().replaceRange(strToEol, this.getBol(editor), this.getEol(editor));
     }
     else {
+      console.log('MarkdownListHelper.newlineAndIndentContinueMarkdownList: will auto indent');
       codemirror.commands.newlineAndIndentContinueMarkdownList(editor);
     }
   }
