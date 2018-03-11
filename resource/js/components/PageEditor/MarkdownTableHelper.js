@@ -1,5 +1,7 @@
 import * as codemirror from 'codemirror';
 
+import markdownTable from 'markdown-table';
+
 class MarkdownTableHelper {
 
   constructor() {
@@ -20,6 +22,7 @@ class MarkdownTableHelper {
     this.getStrFromBot = this.getStrFromBot.bind(this);
     this.getStrToEot = this.getStrToEot.bind(this);
     this.getStrFromBol = this.getStrFromBol.bind(this);
+    this.parseFromTableStringToJSON = this.parseFromTableStringToJSON.bind(this);
   }
 
   /**
@@ -53,12 +56,16 @@ class MarkdownTableHelper {
     if (!this.isMatchedContext(editor)) return;
 
     // get lines all of table from current position to beginning of table
-    const strTableLines = this.getStrFromBot(editor) + this.getStrToEot(editor);
+    const strTableLines = this.getStrFromBot(editor);
     console.log('strTableLines: ' + strTableLines);
-    // [TODO] Format table lines
-    const strTableLinesFormated = strTableLines;
+
+    const table = this.parseFromTableStringToJSON(editor, this.getBot(editor), editor.getCursor());
+    console.log('table: ' + JSON.stringify(table));
+    const strTableLinesFormated = table;
+    console.log('strTableLinesFormated: ' + strTableLinesFormated);
+
     // replace the lines to strFormatedTableLines
-    editor.getDoc().replaceRange(strTableLinesFormated, this.getBot(editor), this.getEot(editor));
+    editor.getDoc().replaceRange(strTableLinesFormated, this.getBot(editor), editor.getCursor());
     codemirror.commands.newlineAndIndent(editor);
   }
 
@@ -79,14 +86,15 @@ class MarkdownTableHelper {
   getBot(editor) {
     const firstLine = editor.getDoc().firstLine();
     const curPos = editor.getCursor();
-    let begLine = curPos.line - 1;
-    for (; begLine >= firstLine; begLine--) {
-      const strLine = editor.getDoc().getLine(begLine);
+    let line = curPos.line - 1;
+    for (; line >= firstLine; line--) {
+      const strLine = editor.getDoc().getLine(line);
       if (!this.linePartOfTableRE.test(strLine)) {
         break;
       }
     }
-    return { line: begLine, ch: 0 };
+    const botLine = Math.max(firstLine, line + 1); // [TODO] research that it is safe botLine is assigned by zero
+    return { line: botLine, ch: 0 };
   }
 
   /**
@@ -96,15 +104,16 @@ class MarkdownTableHelper {
   getEot(editor) {
     const lastLine = editor.getDoc().lastLine();
     const curPos = editor.getCursor();
-    let endLine = curPos.line + 1;
-    for (; endLine <= lastLine; endLine++) {
-      const strLine = editor.getDoc().getLine(endLine);
+    let line = curPos.line + 1;
+    for (; line <= lastLine; line++) {
+      const strLine = editor.getDoc().getLine(line);
       if (!this.linePartOfTableRE.test(strLine)) {
         break;
       }
     }
-    const lineLength = editor.getDoc().getLine(Math.min(endLine, lastLine)).length;
-    return { line: endLine, ch: lineLength };
+    const eotLine = Math.min(line - 1, lastLine);
+    const lineLength = editor.getDoc().getLine(eotLine).length;
+    return { line: eotLine, ch: lineLength };
   }
 
   /**
@@ -137,6 +146,48 @@ class MarkdownTableHelper {
   getStrFromBol(editor) {
     const curPos = editor.getCursor();
     return editor.getDoc().getRange(this.getBol(editor), curPos);
+  }
+
+  /**
+   * returns object whose described by 'markdown-table' format
+   *   ref. https://github.com/wooorm/markdown-table
+   * @param {string} lines all of table
+   */
+  parseFromTableStringToJSON(editor, posBeg, posEnd) {
+    console.log("parseFromTableStringToJSON: posBeg.line: " + posBeg.line + ", posEnd.line: " + posEnd.line);
+    let contents = [];
+    let aligns = [];
+    for (let pos = posBeg; pos.line <= posEnd.line; pos.line++) {
+      const line = editor.getDoc().getLine(pos.line);
+      console.log("line#" + pos.line + ": " + line);
+
+      if (this.tableAlignmentLineRE.test(line)) {
+        // parse line which described alignment
+        const alignRuleRE = [
+          { align: 'c', regex: /^:-+:$/ },
+          { align: 'l', regex: /^:-+$/  },
+          { align: 'r', regex: /^-+:$/  },
+        ];
+        let lineText = "";
+        lineText = line.replace(/^\||\|$/g, ''); // strip off pipe charactor which is placed head of line and last of line.
+        lineText = lineText.replace(/\s*/g, '');
+        aligns = lineText.split(/\|/).map(col => {
+          const rule = alignRuleRE.find(rule => col.match(rule.regex));
+          return (rule != undefined) ? rule.align : '';
+        });
+      } else {
+        // parse line whether header or body
+        let lineText = "";
+        lineText = line.replace(/\s*\|\s*/g, '|');
+        lineText = lineText.replace(/^\||\|$/g, ''); // strip off pipe charactor which is placed head of line and last of line.
+        const row = lineText.split(/\|/);
+        console.log('row: ' + row);
+        contents.push(row);
+      }
+    }
+    console.log('contents: ' + JSON.stringify(contents));
+    console.log('aligns: ' + JSON.stringify(aligns));
+    return markdownTable(contents, { align: aligns } );
   }
 }
 
