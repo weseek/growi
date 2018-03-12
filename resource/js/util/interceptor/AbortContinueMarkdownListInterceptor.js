@@ -1,14 +1,22 @@
+import { BasicInterceptor } from 'crowi-pluginkit';
+
 import * as codemirror from 'codemirror';
 
-class MarkdownListHelper {
+import markdownTable from 'markdown-table';
+
+/**
+ * The interceptor that reform markdown table
+ */
+export default class AbortContinueMarkdownListInterceptor extends BasicInterceptor {
 
   constructor() {
+    super();
+
     // https://github.com/codemirror/CodeMirror/blob/c7853a989c77bb9f520c9c530cbe1497856e96fc/addon/edit/continuelist.js#L14
     // https://regex101.com/r/7BN2fR/5
     this.indentAndMarkRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]\s|[*+-]\s|(\d+)([.)]))(\s*)/;
     this.indentAndMarkOnlyRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]|[*+-]|(\d+)[.)])(\s*)$/;
 
-    this.newlineAndIndentContinueMarkdownList = this.newlineAndIndentContinueMarkdownList.bind(this);
     this.pasteText = this.pasteText.bind(this);
 
     this.getBol = this.getBol.bind(this);
@@ -18,21 +26,44 @@ class MarkdownListHelper {
   }
 
   /**
-   * wrap codemirror.commands.newlineAndIndentContinueMarkdownList
-   * @param {any} editor An editor instance of CodeMirror
+   * @inheritdoc
    */
-  newlineAndIndentContinueMarkdownList(editor) {
+  isInterceptWhen(contextName) {
+    return (
+      contextName === 'preHandleEnter'
+    );
+  }
+
+  /**
+   * return boolean value whether processable parallel
+   */
+  isProcessableParallel() {
+    return false;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  process(contextName, ...args) {
+    const context = Object.assign(args[0]);   // clone
+    const editor = context.editor;
+
+    console.log('AbortContinueMarkdownListInterceptor.process');
+
     // get strings from current position to EOL(end of line) before break the line
     const strToEol = this.getStrToEol(editor);
-
     if (this.indentAndMarkRE.test(strToEol)) {
+      console.log('AbortContinueMarkdownListInterceptor.newlineAndIndentContinueMarkdownList: abort auto indent');
       codemirror.commands.newlineAndIndent(editor);
       // replace the line with strToEol (abort auto indent)
       editor.getDoc().replaceRange(strToEol, this.getBol(editor), this.getEol(editor));
+
+      // report to manager that handling was done
+      context.handlers.push(this.className);
     }
-    else {
-      codemirror.commands.newlineAndIndentContinueMarkdownList(editor);
-    }
+
+    // resolve
+    return Promise.resolve(context);
   }
 
   /**
@@ -160,8 +191,3 @@ class MarkdownListHelper {
     return editor.getDoc().getRange(curPos, this.getEol(editor));
   }
 }
-
-// singleton pattern
-const instance = new MarkdownListHelper();
-Object.freeze(instance);
-export default instance;

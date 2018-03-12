@@ -1,20 +1,19 @@
-import * as codemirror from 'codemirror';
+import { BasicInterceptor } from 'crowi-pluginkit';
 
 import markdownTable from 'markdown-table';
 
-class MarkdownTableHelper {
+/**
+ * The interceptor that reform markdown table
+ */
+export default class ReformMarkdownTableInterceptor extends BasicInterceptor {
 
   constructor() {
+    super();
+
     // https://github.com/markdown-it/markdown-it/blob/d29f421927e93e88daf75f22089a3e732e195bd2/lib/rules_block/table.js#L83
     // https://regex101.com/r/7BN2fR/7
     this.tableAlignmentLineRE = /^[-:|][-:|\s]*$/;
     this.linePartOfTableRE = /^\|[^\r\n]*|[^\r\n]*\|$|([^\|\r\n]+\|[^\|\r\n]*)+/; // own idea
-
-    this.isMatchedContext = this.isMatchedContext.bind(this);
-    this.handleNewLine = this.handleNewLine.bind(this);
-
-    this.newlineAndIndentContinueMarkdownTable = this.newlineAndIndentContinueMarkdownTable.bind(this);
-    this.pasteText = this.pasteText.bind(this);
 
     this.getBot = this.getBot.bind(this);
     this.getEot = this.getEot.bind(this);
@@ -26,57 +25,53 @@ class MarkdownTableHelper {
   }
 
   /**
-   * return whether context is matched by table
-   * @param {any} editor An editor instance of CodeMirror
+   * @inheritdoc
    */
-  isMatchedContext(editor) {
-    console.log('MarkdownTableHelper.isMatchedContext');
+  isInterceptWhen(contextName) {
+    return (
+      contextName === 'preHandleEnter'
+    );
+  }
+
+  /**
+   * return boolean value whether processable parallel
+   */
+  isProcessableParallel() {
+    return false;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  process(contextName, ...args) {
+    const context = Object.assign(args[0]);   // clone
+    const editor = context.editor;
+
+    console.log('MarkdownTableHelper.process');
+
     // get strings from BOL(beginning of line) to current position
     const strFromBol = this.getStrFromBol(editor);
-    console.log('strFromBol: ' + strFromBol);
-    console.log('will return ' + (this.linePartOfTableRE.test(strFromBol) ? 'true' : 'false'));
-    return this.linePartOfTableRE.test(strFromBol);
-  }
 
-  /**
-   * handle new line
-   * @param {any} editor An editor instance of CodeMirror
-   */
-  handleNewLine(editor) {
-    console.log('MarkdownTableHelper.handleNewLine');
-    this.newlineAndIndentContinueMarkdownTable(editor);
-  }
+    if (this.linePartOfTableRE.test(strFromBol)) {
 
-  /**
-   * insert new line with auto shaping format of Markdown table
-   * @param {any} editor An editor instance of CodeMirror
-   */
-  newlineAndIndentContinueMarkdownTable(editor) {
-    console.log('MarkdownTableHelper.newlineAndIndentContinueMarkdownTable');
-    if (!this.isMatchedContext(editor)) return;
+      // get lines all of table from current position to beginning of table
+      const strTableLines = this.getStrFromBot(editor);
+      console.log('strTableLines: ' + strTableLines);
 
-    // get lines all of table from current position to beginning of table
-    const strTableLines = this.getStrFromBot(editor);
-    console.log('strTableLines: ' + strTableLines);
+      const table = this.parseFromTableStringToJSON(editor, this.getBot(editor), editor.getCursor());
+      console.log('table: ' + JSON.stringify(table));
+      const strTableLinesFormated = table;
+      console.log('strTableLinesFormated: ' + strTableLinesFormated);
 
-    const table = this.parseFromTableStringToJSON(editor, this.getBot(editor), editor.getCursor());
-    console.log('table: ' + JSON.stringify(table));
-    const strTableLinesFormated = table;
-    console.log('strTableLinesFormated: ' + strTableLinesFormated);
+      // replace the lines to strFormatedTableLines
+      editor.getDoc().replaceRange(strTableLinesFormated, this.getBot(editor), editor.getCursor());
 
-    // replace the lines to strFormatedTableLines
-    editor.getDoc().replaceRange(strTableLinesFormated, this.getBot(editor), editor.getCursor());
-    codemirror.commands.newlineAndIndent(editor);
-  }
+      // report to manager that handling was done
+      context.handlers.push(this.className);
+    }
 
-  /**
-   * paste text
-   * @param {any} editor An editor instance of CodeMirror
-   * @param {any} event
-   * @param {string} text
-   */
-  pasteText(editor, event, text) {
-    // [TODO] replace to formated table markdown
+    // resolve
+    return Promise.resolve(context);
   }
 
   /**
@@ -190,8 +185,3 @@ class MarkdownTableHelper {
     return markdownTable(contents, { align: aligns } );
   }
 }
-
-// singleton pattern
-const instance = new MarkdownTableHelper();
-Object.freeze(instance);
-export default instance;

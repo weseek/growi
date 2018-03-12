@@ -34,8 +34,12 @@ require('codemirror/theme/twilight.css');
 import Dropzone from 'react-dropzone';
 
 import pasteHelper from './PasteHelper';
-import contextBasedNewLineHandlerExecutor from './ContextBasedNewLineHandlerExecutor';
 import emojiAutoCompleteHelper from './EmojiAutoCompleteHelper';
+
+import InterceptorManager from '../../../../lib/util/interceptor-manager';
+
+import AbortContinueMarkdownListInterceptor from '../../util/interceptor/AbortContinueMarkdownListInterceptor';
+import ReformMarkdownTableInterceptor from '../../util/interceptor/ReformMarkdownTableInterceptor';
 
 export default class Editor extends React.Component {
 
@@ -44,6 +48,12 @@ export default class Editor extends React.Component {
 
     // https://regex101.com/r/7BN2fR/2
     this.indentAndMarkPattern = /^([ \t]*)(?:>|\-|\+|\*|\d+\.) /;
+
+    this.interceptorManager = new InterceptorManager();
+    this.interceptorManager.addInterceptors([
+      new AbortContinueMarkdownListInterceptor(),
+      new ReformMarkdownTableInterceptor(),
+    ]);
 
     this.state = {
       value: this.props.value,
@@ -56,6 +66,7 @@ export default class Editor extends React.Component {
     this.setScrollTopByLine = this.setScrollTopByLine.bind(this);
     this.forceToFocus = this.forceToFocus.bind(this);
     this.dispatchSave = this.dispatchSave.bind(this);
+    this.handleEnterKey = this.handleEnterKey.bind(this);
 
     this.onScrollCursorIntoView = this.onScrollCursorIntoView.bind(this);
     this.onPaste = this.onPaste.bind(this);
@@ -157,6 +168,27 @@ export default class Editor extends React.Component {
     if (this.props.onUpload != null) {
       this.props.onUpload(files);
     }
+  }
+
+  /**
+   * handle ENTER key
+   */
+  handleEnterKey() {
+
+    const editor = this.getCodeMirror();
+    var context = {
+      handlers: [],  // list of handlers which process enter key
+      editor: editor,
+    };
+
+    const interceptorManager = this.interceptorManager;
+    interceptorManager.process('preHandleEnter', context)
+      .then(() => {
+        if (context.handlers.length == 0) {
+          console.log('codemirror.commands.newlineAndIndentContinueMarkdownList(editor)');
+          codemirror.commands.newlineAndIndentContinueMarkdownList(editor);
+        }
+      });
   }
 
   onScrollCursorIntoView(editor, event) {
@@ -343,7 +375,7 @@ export default class Editor extends React.Component {
               highlightFormatting: true,
               // continuelist, indentlist
               extraKeys: {
-                "Enter": contextBasedNewLineHandlerExecutor.execNewLineHandler,
+                "Enter": this.handleEnterKey,
                 "Tab": "indentMore",
                 "Shift-Tab": "indentLess",
                 "Ctrl-Q": (cm) => { cm.foldCode(cm.getCursor()) },
