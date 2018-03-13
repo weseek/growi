@@ -149,6 +149,8 @@
     "colors": "^1.1.2",
     "commander": "^2.11.0",
     "easy-livereload": "^1.2.0",
+    "eslint": "^4.18.2",
+    "eslint-plugin-react": "^7.7.0",
     "mocha": "^5.0.0",
     "morgan": "^1.8.2",
     "node-dev": "^3.1.3",
