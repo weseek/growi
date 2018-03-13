@@ -7,10 +7,13 @@ $sidebar:#fff;
 $bodycolor:#fff;
 $headingtext: #2b2b2b;
 $bodytext: #686868;
+$linktext: $inverse;
+$linktext-hover: lighten($inverse, 20%);
 $sidebar-text:#54667a;
-$themecolor:#f75b36;
+$themecolor:#393C4A;
 $dark-themecolor:#4F5467;
 
+$primary: $topbar;
 
 body{
   background:$sidebar;
@@ -19,7 +22,7 @@ body{
 /*Top Header Part*/
 
 .logo i{ color:$white;}
-.top-left-part{ 
+.top-left-part{
   .light-logo{
     display:inline-block;
   }
@@ -27,7 +30,7 @@ body{
     display:none;
   }
 }
-.navbar-header{ 
+.navbar-header{
      background:$topbar;
 }
 .navbar-top-links > li > a{
@@ -51,7 +54,7 @@ body{
     color:$themecolor;
 }
 .bg-title{
-  
+
 }
 
 /*Sidebar*/
@@ -61,7 +64,7 @@ body{
     box-shadow:1px 0px 20px rgba(0, 0, 0, 0.08);
   .label-custom{
       background:$megna;
-  }  
+  }
 }
 #side-menu li a{
     color:$sidebar-text;
@@ -78,7 +81,7 @@ body{
    &.active {
             border-left:3px solid $themecolor;
             color:$dark;
-            
+
             font-weight:500;
         i{
           color:$themecolor;
@@ -89,7 +92,7 @@ body{
 #side-menu ul > li > a {
     &:hover{
         color:$themecolor;
-        
+
     }
     &.active{
      color:$dark;

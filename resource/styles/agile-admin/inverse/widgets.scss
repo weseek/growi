@@ -648,9 +648,9 @@ Basic List
     border-color:$danger;
 }
 .alert-primary {
-    background: $purple;
+    background: $primary;
     color:$white;
-    border-color:$purple;
+    border-color:$primary;
 }
 .alert-info {
     background: $info;
@@ -2233,7 +2233,7 @@ position:relative;
 .btn-1b.btn-info:after, .btn-1c.btn-info:after, .btn-1d.btn-info:after, .btn-1e.btn-info:after, .btn-1f.btn-info:after{background: $info;}
 .btn-1b.btn-warning:after, .btn-1c.btn-warning:after, .btn-1d.btn-warning:after, .btn-1e.btn-warning:after, .btn-1f.btn-warning:after{background: $warning;}
 .btn-1b.btn-danger:after, .btn-1c.btn-danger:after, .btn-1d.btn-danger:after, .btn-1e.btn-danger:after, .btn-1f.btn-danger:after{background: $danger;}
-.btn-1b.btn-primary:after, .btn-1c.btn-primary:after, .btn-1d.btn-primary:after, .btn-1e.btn-primary:after, .btn-1f.btn-primary:after{background: $purple;}
+.btn-1b.btn-primary:after, .btn-1c.btn-primary:after, .btn-1d.btn-primary:after, .btn-1e.btn-primary:after, .btn-1f.btn-primary:after{background: $primary;}
 .btn-1b.btn-success:after, .btn-1c.btn-success:after, .btn-1d.btn-success:after, .btn-1e.btn-success:after, .btn-1f.btn-success:after{background: $success;}
 .btn-1b.btn-inverse:after, .btn-1c.btn-inverse:after, .btn-1d.btn-inverse:after, .btn-1e.btn-inverse:after, .btn-1f.btn-inverse:after{background: $inverse;}
 

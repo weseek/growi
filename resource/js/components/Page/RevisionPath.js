@@ -57,7 +57,7 @@ export default class RevisionPath extends React.Component {
       return <a href={pagePath+'/'} className={(isLastElement && !this.state.isListPage) ? 'last-path' : ''}>/</a>;
     }
     else if (!isLastElement) {
-      return <span className="text-primary">/</span>;
+      return <span>/</span>;
     }
     else {
       return <span></span>

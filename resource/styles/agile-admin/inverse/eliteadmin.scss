@@ -71,6 +71,11 @@ b {
   font-weight:$font-bold;
 }
 a {
+  color: $linktext;
+
+  &:hover, &:focus {
+    color: $linktext-hover;
+  }
 
   &:hover {
     outline: 0;

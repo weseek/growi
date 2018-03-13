@@ -8,38 +8,43 @@ $basefont1: Lato, -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN'
 $basefont2: Lato, -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
 
 
+/*bootstrap Color*/
+$danger: #ff0a54;
+$success: #00bb83;
+$warning: #ffa32b;
+$primary: #2c5ca9;
+$info: #009fbb;
+$muted: #98a6ad;
+$dark: #3e4d6c;
+$inverse:#3e4d6c;
+$light:#e4e7ea;
+$extralight:#f7fafc ;
+$gray: #eee;
+$gray-light: #f0f0f0;
+$gray-lighter: #f5f5f5;
+$gray-extralight: #fafafa;
+
+/*Normal Color*/
+$white: #ffffff;
+$red:#ff0000;
+$purple:#7b00ce;
+$blue:#0d00c5;
+$yellow:#cccf0e;
+$border:$gray;
+$megna:#00b5c2;
+
 /*Theme Colors*/
 $topbar:#3c4451;
 $sidebar:#4F5467;
 $bodycolor:#fff;
 $headingtext: #2b2b2b;
 $bodytext: #686868;
+$linktext: $inverse;
+$linktext-hover: lighten($inverse, 20%);
 $sidebar-text:#54667a;
 $themecolor:#ff6849;
 $dark-themecolor:#4F5467;
 
-/*bootstrap Color*/
-$danger: #f75b36;
-$success: #00c292;
-$warning: #f8c255;
-$primary: #2c5ca9;
-$info: #008efa;
-$muted: #98a6ad;
-$dark: #3e4d6c;
-$inverse:#3e4d6c;
-$light:#e4e7ea;
-$extralight:#f7fafc ;
-
-
-
-/*Normal Color*/
-$white: #ffffff;
-$red:#fb3a3a;
-$purple:#2c5ca9;
-$blue:#02bec9;
-$yellow:#a0aec4;
-$border:rgba(120, 130, 140, 0.21);
-$megna:#00b5c2;
 
 $rgt:right;
 $lft:left;
