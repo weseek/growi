@@ -82,6 +82,12 @@ if (isEnabledPlugins) {
 // configure renderer
 crowiRenderer.setup(crowi.config);
 
+// restore draft when the first time to edit
+const draft = crowi.findDraft(pagePath);
+if (!pageRevisionId && draft != null) {
+  markdown = draft;
+}
+
 /**
  * define components
  *  key: id of element

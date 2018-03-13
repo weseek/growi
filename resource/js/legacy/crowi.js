@@ -460,6 +460,16 @@ $(function() {
 
   if (pageId) {
 
+    // for Crowi Template LangProcessor
+    $('.template-create-button', $('#revision-body')).on('click', function() {
+      var path = $(this).data('path');
+      var templateId = $(this).data('template');
+      var template = $('#' + templateId).html();
+
+      crowi.saveDraft(path, template);
+      top.location.href = `${path}#edit-form`;
+    });
+
     /*
      * transplanted to React components -- 2018.02.04 Yuki Takei
      *
@@ -796,6 +806,7 @@ $(function() {
   });
 });
 
+/*
 Crowi.getRevisionBodyContent = function() {
   return $('#revision-body-content').html();
 }
@@ -803,6 +814,7 @@ Crowi.getRevisionBodyContent = function() {
 Crowi.replaceRevisionBodyContent = function(html) {
   $('#revision-body-content').html(html);
 }
+*/
 
 Crowi.findHashFromUrl = function(url)
 {
