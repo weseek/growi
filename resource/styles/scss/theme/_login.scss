@@ -1,0 +1,82 @@
+.login-page {
+  // background color
+  background:
+    linear-gradient(45deg, darken($inverse, 30%)  0%, hsla(340, 100%, 55%, 0) 70%),
+    linear-gradient(135deg, $growi-green 10%, hsla(225, 95%, 50%, 0) 70%),
+    linear-gradient(225deg, $growi-blue  10%, hsla(140, 90%, 50%, 0) 80%),
+    linear-gradient(315deg, darken($inverse, 25%) 100%, hsla(35, 95%, 55%, 0) 70%);
+  #page-wrapper {
+    background: none;
+  }
+
+  // centering
+  .main {
+    height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    // align-items: center;
+  }
+  .login-dialog {
+  }
+
+  .input-group {
+    margin-bottom: 10px;
+
+    .input-group-addon {
+      border: none;
+      border-radius: 0;
+      color: white;
+      background-color: rgba(black, 0.4);
+    }
+    .form-control {
+      border: none;
+      color: white;
+      background-color: rgba(lighten(black, 10%), 0.4);
+      &::placeholder {
+        color: rgba($gray-light, 0.6);
+      }
+    }
+  }
+
+  .btn-login {
+    border: none;
+    color: rgb(216, 133, 133);
+    width: 150px;
+    background-color: rgba(lighten(black, 20%), 0.4);
+  }
+
+  // flip animation
+  .flipper {
+    .front, .back {
+      // backface-visibility: hidden;
+      transition: 0.4s;
+      // transform-style: preserve-3d;
+    }
+
+    .front {
+      z-index: 2;
+    }
+
+    .back {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      // position: absolute;
+      // top: 0;
+    }
+
+    &.to-flip .front {
+      transform: translateX(-200%);
+    }
+
+    .back {
+      transform: translateY(-50%) translateX(200%);
+    }
+    &.to-flip .back {
+      transform: translateY(-50%) translateX(-50%);
+    }
+  }
+
+}

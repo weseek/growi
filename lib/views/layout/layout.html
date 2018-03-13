@@ -83,7 +83,9 @@ gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js
   {% block html_head_loading_legacy %}
     <script src="{{ webpack_asset('legacy').js }}" defer></script>
   {% endblock %}
+  {% block html_head_loading_app %}
   <script src="{{ webpack_asset('app').js }}" defer></script>
+  {% endblock %}
 
   <!-- Google Fonts -->
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
@@ -210,6 +212,7 @@ gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js
   {% include '../modal/create_page.html' %}
   {% endblock  %} {# layout_head_nav #}
 
+  {% block sidebar %}
   <!-- Left navbar-header -->
   <div class="navbar-default sidebar" role="navigation">
     <div class="sidebar-nav navbar-collapse slimscrollsidebar">
@@ -225,6 +228,7 @@ gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js
     </div>
   </div>
   <!-- Left navbar-header end -->
+  {% endblock %}
 
   <!-- Page Content -->
   <div id="page-wrapper">
