@@ -5,6 +5,7 @@ CHANGES
 
 * Fix: Template LangProcessor doesn't work
     * Introduced by 2.4.0
+* Support: Apply ESLint
 
 ## 2.4.3
 
