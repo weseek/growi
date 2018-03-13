@@ -46,15 +46,19 @@ export default class ReformMarkdownTableInterceptor extends BasicInterceptor {
    * @inheritdoc
    */
   process(contextName, ...args) {
-    const context = Object.assign(args[0]);   // clone
-    const editor = context.editor;
+    console.log(performance.now() + ': ReformMarkdownTableInterceptor.process is started');
 
-    console.log('MarkdownTableHelper.process');
+    const orgContext = args[0];
+    const editor = orgContext.editor;
 
     // get strings from BOL(beginning of line) to current position
     const strFromBol = this.getStrFromBol(editor);
 
     if (this.linePartOfTableRE.test(strFromBol)) {
+      const context = Object.assign(args[0]);   // clone
+      const editor = context.editor;
+
+      console.log('MarkdownTableHelper.process');
 
       // get lines all of table from current position to beginning of table
       const strTableLines = this.getStrFromBot(editor);
@@ -73,8 +77,11 @@ export default class ReformMarkdownTableInterceptor extends BasicInterceptor {
       context.handlers.push(this.className);
     }
 
+    console.log(performance.now() + ': ReformMarkdownTableInterceptor.process is finished');
+
     // resolve
-    return Promise.resolve(context);
+    // return Promise.resolve(context);
+    return Promise.resolve(orgContext);
   }
 
   /**

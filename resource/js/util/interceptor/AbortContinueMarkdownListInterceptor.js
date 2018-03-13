@@ -45,14 +45,17 @@ export default class AbortContinueMarkdownListInterceptor extends BasicIntercept
    * @inheritdoc
    */
   process(contextName, ...args) {
-    const context = Object.assign(args[0]);   // clone
-    const editor = context.editor;
+    console.log(performance.now() + ': AbortContinueMarkdownListInterceptor.process is started');
+    const orgContext = args[0];
+    const editor = orgContext.editor;
 
     console.log('AbortContinueMarkdownListInterceptor.process');
 
     // get strings from current position to EOL(end of line) before break the line
     const strToEol = this.getStrToEol(editor);
     if (this.indentAndMarkRE.test(strToEol)) {
+      const context = Object.assign(args[0]);   // clone
+
       console.log('AbortContinueMarkdownListInterceptor.newlineAndIndentContinueMarkdownList: abort auto indent');
       codemirror.commands.newlineAndIndent(editor);
       // replace the line with strToEol (abort auto indent)
@@ -62,8 +65,10 @@ export default class AbortContinueMarkdownListInterceptor extends BasicIntercept
       context.handlers.push(this.className);
     }
 
+    console.log(performance.now() + ': AbortContinueMarkdownListInterceptor.process is finished');
+
     // resolve
-    return Promise.resolve(context);
+    return Promise.resolve(orgContext);
   }
 
   /**
