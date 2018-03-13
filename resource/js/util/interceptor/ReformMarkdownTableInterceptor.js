@@ -1,5 +1,7 @@
 import { BasicInterceptor } from 'crowi-pluginkit';
 
+import * as codemirror from 'codemirror';
+
 import markdownTable from 'markdown-table';
 
 /**
@@ -65,6 +67,7 @@ export default class ReformMarkdownTableInterceptor extends BasicInterceptor {
 
       // replace the lines to strFormatedTableLines
       editor.getDoc().replaceRange(strTableLinesFormated, this.getBot(editor), editor.getCursor());
+      codemirror.commands.newlineAndIndent(editor);
 
       // report to manager that handling was done
       context.handlers.push(this.className);
