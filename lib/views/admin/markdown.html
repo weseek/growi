@@ -1,11 +1,12 @@
 {% extends '../layout/admin.html' %}
 
-{% block html_title %}Markdown設定 · {{ path }}{% endblock %}
+{% block html_title %}{{ t('Markdown settings') }}
+ · {{ path }}{% endblock %}
 
 {% block content_head %}
 <div class="header-wrap">
   <header id="page-header">
-    <h1 class="title" id="">Markdown設定</h1>
+    <h1 class="title" id="">{{ t('Markdown settings') }}</h1>
   </header>
 </div>
 {% endblock %}
@@ -38,51 +39,52 @@
 
       <form action="/admin/markdown/lineBreaksSetting" method="post" class="form-horizontal" id="markdownSettingForm" role="form">
       <fieldset>
-        <legend>Markdown設定</legend>
-        <p class="well">Markdownレンダリングの設定を変更できます。</p>
+        <legend>{{ t('Markdown settings') }}</legend>
+        <p class="well">{{ t("markdown_setting.markdown_rendering") }}</p>
 
         <div class="form-group">
           <label for="markdownSetting[markdown:isEnabledLinebreaks]" class="col-xs-4 control-label">
-            Line Break を有効にする
+            {{ t('markdown_setting.validate Line Break') }}
           </label>
           <div class="col-xs-5">
             <div class="btn-group btn-toggle" data-toggle="buttons">
               <label class="btn btn-default {% if markdownSetting['markdown:isEnabledLinebreaks'] %}active{% endif %}" data-active-class="primary">
                 <input name="markdownSetting[markdown:isEnabledLinebreaks]" value="true" type="radio"
-                    {% if true === markdownSetting['markdown:isEnabledLinebreaks'] %}checked{% endif %}> 有効
+                    {% if true === markdownSetting['markdown:isEnabledLinebreaks'] %}checked{% endif %}> {{ t('valid') }}
               </label>
               <label class="btn btn-default {% if !markdownSetting['markdown:isEnabledLinebreaks'] %}active{% endif %}" data-active-class="primary">
                 <input name="markdownSetting[markdown:isEnabledLinebreaks]" value="false" type="radio"
-                    {% if !markdownSetting['markdown:isEnabledLinebreaks'] %}checked{% endif %}> 無効
+                    {% if !markdownSetting['markdown:isEnabledLinebreaks'] %}checked{% endif %}> {{ t('invalid') }}
               </label>
             </div>
-            <p class="help-block">ページテキスト中の改行を、HTML内で&lt;br&gt;として扱います</p>
+            <p class="help-block">{{ t("markdown_setting.treat_text") }}
+</p>
           </div>
         </div>
 
         <div class="form-group">
           <label for="markdownSetting[markdown:isEnabledLinebreaksInComments]" class="col-xs-4 control-label">
-            (TBD)<br>コメント欄で Line Break を有効にする
+            (TBD)<br>{{ t("markdown_setting.validate_comment") }}
           </label>
           <div class="col-xs-5">
             <div class="btn-group btn-toggle" data-toggle="buttons">
               <label class="btn btn-default {% if markdownSetting['markdown:isEnabledLinebreaksInComments'] %}active{% endif %}" data-active-class="primary">
                 <input name="markdownSetting[markdown:isEnabledLinebreaksInComments]" value="true" type="radio"
-                    {% if true === markdownSetting['markdown:isEnabledLinebreaksInComments'] %}checked{% endif %}> 有効
+                    {% if true === markdownSetting['markdown:isEnabledLinebreaksInComments'] %}checked{% endif %}> {{ t('valid') }}
               </label>
               <label class="btn btn-default {% if !markdownSetting['markdown:isEnabledLinebreaksInComments'] %}active{% endif %}" data-active-class="primary">
                 <input name="markdownSetting[markdown:isEnabledLinebreaksInComments]" value="false" type="radio"
-                    {% if !markdownSetting['markdown:isEnabledLinebreaksInComments'] %}checked{% endif %}> 無効
+                    {% if !markdownSetting['markdown:isEnabledLinebreaksInComments'] %}checked{% endif %}> {{ t('invalid') }}
               </label>
             </div>
-            <p class="help-block">コメント中の改行を、HTML内で&lt;br&gt;として扱います<br>(TBD: コメント欄の Markdown 化は未だ実装されていません)</p>
+            <p class="help-block">{{ t("markdown_setting.treat_comment") }}<br>{{ t("markdown_setting.TBD") }}</p>
           </div>
         </div>
 
         <div class="form-group">
           <div class="col-xs-offset-4 col-xs-5">
             <input type="hidden" name="_csrf" value="{{ csrf() }}">
-            <button type="submit" class="btn btn-primary">更新</button>
+            <button type="submit" class="btn btn-primary">{{ t("Update") }}</button>
           </div>
         </div>
       </fieldset>

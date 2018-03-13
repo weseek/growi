@@ -60,8 +60,6 @@ export default class PageEditor extends React.Component {
   }
 
   componentWillMount() {
-    // restore draft
-    this.restoreDraft();
     // initial rendering
     this.renderPreview(this.state.markdown);
   }
@@ -284,16 +282,6 @@ export default class PageEditor extends React.Component {
     scrollSyncHelper.scrollEditor(this.refs.editor, this.previewElement, offset);
   }
 
-  /*
-   * methods for draft
-   */
-  restoreDraft() {
-    // restore draft when the first time to edit
-    const draft = this.props.crowi.findDraft(this.props.pagePath);
-    if (!this.props.revisionId && draft != null) {
-      this.setState({markdown: draft});
-    }
-  }
   saveDraft() {
     // only when the first time to edit
     if (!this.state.revisionId) {

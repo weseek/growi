@@ -152,6 +152,22 @@ npm start
 For more info, see [Developers Guide](https://github.com/weseek/crowi-plus/wiki/Developers-Guide) on Wiki.
 
 
+Environment Variables
+======================
+
+* **Required**
+    * MONGO_URI: URI to connect to MongoDB.
+* **Option**
+    * NODE_ENV: `production` OR `development`.
+    * PORT: Server port. default: `3000`
+    * REDIS_URL: URI to connect to Redis (to session store).
+    * SESSION_NAME: The name of the session ID cookie to set in the response by Express. default: `connect.sid`
+    * ELASTICSEARCH_URI: URI to connect to Elasticearch.
+    * PASSWORD_SEED: A password seed used by password hash generator.
+    * SECRET_TOKEN: A secret key for verifying the integrity of signed cookies.
+    * FILE_UPLOAD: `aws` (default), `local`, `none`
+
+
 Documentation
 ==============
 

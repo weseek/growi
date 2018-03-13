@@ -1,11 +1,20 @@
 CHANGES
 ========
 
-## 2.4.3-RC
+## 2.4.4-RC
 
-* 
+* Fix: Template LangProcessor doesn't work
+    * Introduced by 2.4.0
 
+## 2.4.3
 
+* Improvement: i18n in `/admin`
+* Improvement: Add `SESSION_NAME` environment variable
+* Fix: All Elements are cleared when the Check All button in DeletionMode
+* Support: Upgrade libs
+    * uglifycss
+    * sinon-chai
+    
 ## 2.4.2
 
 * Improvement: Ensure to set absolute url from root when attaching files when `FILE_UPLOAD=local`
