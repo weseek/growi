@@ -1,5 +1,10 @@
 {% extends 'layout.html' %}
 
+{% block highlight_js_css %}
+  <!-- highlight.js -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/{{ highlightType() }}.css">
+{% endblock %}
+
 {% block layout_sidebar %}
 
 <a href="" class=" hidden-xs hidden-sm layout-control" id="toggle-sidebar"><i class="fa fa-chevron-right"></i> <span class="hide-on-affix-top"></span></a>
