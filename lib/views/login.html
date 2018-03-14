@@ -25,13 +25,13 @@
 <div class="main container-fluid">
 
   <div class="row">
-    <div class="login-header p-b-30 col-sm-offset-3 col-sm-6 text-center">
+    <div class="login-header p-b-30 col-sm-offset-4 col-sm-4 text-center">
       <h1>
         {{ config.crowi['app:title'] || 'GROWI' }}<br>
       </h1>
     </div>
 
-    <div class="login-dialog col-sm-offset-3 col-sm-6 flipper {% if req.query.register or req.body.registerForm or isRegistering or googleId %}to-flip{% endif %}" id="login-dialog">
+    <div class="login-dialog col-sm-offset-4 col-sm-4 flipper {% if req.query.register or req.body.registerForm or isRegistering or googleId %}to-flip{% endif %}" id="login-dialog">
 
       <div class="front">
         <div id="login-form-errors">
@@ -114,7 +114,10 @@
 
           <div class="input-group m-t-30 d-flex justify-content-center">
             <input type="hidden" name="_csrf" value="{{ csrf() }}">
-            <button type="submit" class="btn btn-default btn-lg btn-login">{{ t('Sign in') }}</button>
+            <button type="submit" class="fcbtn btn btn-danger btn-1b btn-login">
+              <span class="btn-label"><i class="icon-login"></i></span>
+              {{ t('Sign in') }}
+            </button>
           </div>
         </form>
 
@@ -217,7 +220,10 @@
           <input type="hidden" name="_csrf" value="{{ csrf() }}">
 
           <div class="input-group m-t-30 d-flex justify-content-center">
-            <input type="submit" class="btn btn-default btn-lg btn-register" value="{{ t('Sign up') }}">
+            <button type="submit" class="fcbtn btn btn-success btn-1b btn-register">
+              <span class="btn-label"><i class="icon-user-follow"></i></span>
+              {{ t('Sign up') }}
+            </button>
           </div>
         </form>
 

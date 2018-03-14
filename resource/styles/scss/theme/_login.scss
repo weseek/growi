@@ -54,8 +54,11 @@
     }
   }
 
-  .login-header, .login-dialog {
-    background-color: rgba($white, 0.3);
+  .login-header {
+    background-color: rgba($white, 0.5);
+  }
+  .login-dialog {
+    background-color: rgba($white, 0.5);
   }
 
   .input-group {
@@ -77,11 +80,34 @@
     }
   }
 
+  // button style
   .btn-login, .btn-register {
     border: none;
     color: white;
-    width: 150px;
     background-color: rgba(lighten(black, 20%), 0.4);
-  }
 
+    .btn-label {
+      margin: -8px 20px -8px -20px;
+      padding: 9px 15px;
+    }
+    &:focus {
+      border: none;
+    }
+  }
+  .btn-login {
+    .btn-label {
+      background-color: rgba($danger, 0.4);
+    }
+    &:after {
+      background-color: #7e4153;
+    }
+  }
+  .btn-register {
+    .btn-label {
+      background-color: rgba($success, 0.4);
+    }
+    &:after {
+      background-color: #3f7263;
+    }
+  }
 }
