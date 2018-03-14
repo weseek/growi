@@ -1,4 +1,6 @@
 .login-page {
+  $dark-gray: darken(white, 30%);
+
   // background color
   background:
     linear-gradient(45deg, darken($inverse, 30%)  0%, hsla(340, 100%, 55%, 0) 70%),
@@ -26,19 +28,34 @@
           margin-left: 20px;
         }
 
+        @media(min-width: 480px) {
+          .col-sm-offset-4 {
+            margin-left: calc(50% - 150px);
+          }
+          .col-sm-4 {
+            width: 300px;
+          }
+        }
+
         .login-header {
-          padding: 30px;
+          padding: 30px 30px 10px;
 
           display: flex;
           flex-direction: column;
           align-items: center;
         }
 
+        .link-growi-org {
+          position: absolute;
+          bottom: 9px;
+        }
+
         // flip animation
         .login-dialog.flipper {
           transition: min-height 0.2s;
+
           &.to-flip {
-            min-height: 335px;
+            min-height: 313px;
           }
 
           .front, .back {
@@ -63,13 +80,9 @@
             transform: rotateY(0deg);
           }
         }
-      }
-    }
-  }
-
-  a {
-    color: $gray;
-  }
+      }  // .main
+    }  // #page-wrapper
+  } // #wrapper
 
   .login-header {
     background-color: rgba($white, 0.5);
@@ -96,7 +109,7 @@
     .input-group-addon {
       border: none;
       border-radius: 0;
-      color: white;
+      color: $dark-gray;
       background-color: rgba(black, 0.4);
     }
     .form-control {
@@ -104,7 +117,7 @@
       color: white;
       background-color: rgba(lighten(black, 10%), 0.4);
       &::placeholder {
-        color: rgba($gray-light, 0.6);
+        color: $dark-gray;
       }
     }
   }
@@ -141,6 +154,30 @@
   }
 
   hr {
+    margin: 10px 0;
     border-color: #ccc;
+  }
+
+  // footer link text
+  .link-growi-org {
+    color: rgba(black, 0.2);
+    font-weight: bold;
+    font-size: smaller;
+
+    .growi, .org {
+      transition: color 0.8s;
+    }
+
+    &:hover, &.focus {
+      .growi {
+        color: darken($growi-green, 20%);
+      }
+      .org {
+        color: darken($growi-blue, 20%);
+      }
+    }
+  }
+  .link-switch {
+    color: $gray;
   }
 }
