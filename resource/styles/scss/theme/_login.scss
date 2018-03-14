@@ -160,20 +160,21 @@
 
   // footer link text
   .link-growi-org {
-    color: rgba(black, 0.2);
+    color: rgba(black, 0.4);
     font-weight: bold;
     font-size: smaller;
 
-    .growi, .org {
+    &, .growi, .org {
       transition: color 0.8s;
     }
 
     &:hover, &.focus {
+      color: black;
       .growi {
         color: darken($growi-green, 20%);
       }
       .org {
-        color: darken($growi-blue, 20%);
+        color: darken($growi-blue, 15%);
       }
     }
   }
