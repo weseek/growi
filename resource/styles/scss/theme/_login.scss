@@ -21,6 +21,19 @@
       .main {
         width: 100vw;
 
+        > .row {
+          margin-right: 20px;
+          margin-left: 20px;
+        }
+
+        .login-header {
+          padding: 30px;
+
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+
         // flip animation
         .login-dialog.flipper {
           transition: min-height 0.2s;
@@ -54,8 +67,24 @@
     }
   }
 
+  a {
+    color: $gray;
+  }
+
   .login-header {
     background-color: rgba($white, 0.5);
+    .logo {
+      width: 70px;
+      .group1, .group2 {
+        fill: rgba(black, 0.5);
+      }
+
+    }
+    h1 {
+      color: rgba(black, 0.5);
+      font-size: 22px;
+      line-height: 1em;
+    }
   }
   .login-dialog {
     background-color: rgba($white, 0.5);
@@ -109,5 +138,9 @@
     &:after {
       background-color: #3f7263;
     }
+  }
+
+  hr {
+    border-color: #ccc;
   }
 }

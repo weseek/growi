@@ -25,9 +25,10 @@
 <div class="main container-fluid">
 
   <div class="row">
-    <div class="login-header p-b-30 col-sm-offset-4 col-sm-4 text-center">
+    <div class="login-header col-sm-offset-4 col-sm-4 text-center">
+      <div class="logo">{% include 'widget/logo.html' %}</div>
       <h1>
-        {{ config.crowi['app:title'] || 'GROWI' }}<br>
+        {{ config.crowi['app:title'] || 'GROWI' }}
       </h1>
     </div>
 
@@ -136,7 +137,10 @@
         </div>
 
         {% if config.crowi['security:registrationMode'] != 'Closed' %}
-        <p class="bottom-text"><a href="#register" id="register"><i class="ti-check-box"></i> {{ t('Sign up is here') }}</a></p>
+        <p class="text-right text-success">
+          <a href="#register" id="register">
+            <i class="ti-check-box"></i> {{ t('Sign up is here') }}
+          </a></p>
         {% endif %}
       </div>
       {% if config.crowi['security:registrationMode'] != 'Closed' %}
@@ -241,7 +245,11 @@
           {% endif %}
         </div>
 
-        <p class="bottom-text"><a href="#login" id="login"><i class="fa fa-sign-out"></i> {{ t('Sign in is here') }}</a></p>
+        <p class="text-right">
+          <a href="#login" id="login">
+            <i class="icon-fw icon-login"></i>{{ t('Sign in is here') }}
+          </a>
+        </p>
       </div>
       {% endif %} {# if registrationMode == Closed #}
 
