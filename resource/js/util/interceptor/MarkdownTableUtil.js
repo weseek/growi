@@ -1,17 +1,13 @@
-import { BasicInterceptor } from 'crowi-pluginkit';
-
 import * as codemirror from 'codemirror';
 
 import markdownTable from 'markdown-table';
 
 /**
- * The interceptor that reform markdown table
+ * Utility for markdown table
  */
-export default class ReformMarkdownTableInterceptor extends BasicInterceptor {
+class MarkdownTableUtil {
 
   constructor() {
-    super();
-
     // https://github.com/markdown-it/markdown-it/blob/d29f421927e93e88daf75f22089a3e732e195bd2/lib/rules_block/table.js#L83
     // https://regex101.com/r/7BN2fR/7
     this.tableAlignmentLineRE = /^[-:|][-:|\s]*$/;
@@ -24,64 +20,6 @@ export default class ReformMarkdownTableInterceptor extends BasicInterceptor {
     this.getStrToEot = this.getStrToEot.bind(this);
     this.getStrFromBol = this.getStrFromBol.bind(this);
     this.parseFromTableStringToJSON = this.parseFromTableStringToJSON.bind(this);
-  }
-
-  /**
-   * @inheritdoc
-   */
-  isInterceptWhen(contextName) {
-    return (
-      contextName === 'preHandleEnter'
-    );
-  }
-
-  /**
-   * return boolean value whether processable parallel
-   */
-  isProcessableParallel() {
-    return false;
-  }
-
-  /**
-   * @inheritdoc
-   */
-  process(contextName, ...args) {
-    console.log(performance.now() + ': ReformMarkdownTableInterceptor.process is started');
-
-    const orgContext = args[0];
-    const editor = orgContext.editor;
-
-    // get strings from BOL(beginning of line) to current position
-    const strFromBol = this.getStrFromBol(editor);
-
-    if (this.linePartOfTableRE.test(strFromBol)) {
-      const context = Object.assign(args[0]);   // clone
-      const editor = context.editor;
-
-      console.log('MarkdownTableHelper.process');
-
-      // get lines all of table from current position to beginning of table
-      const strTableLines = this.getStrFromBot(editor);
-      console.log('strTableLines: ' + strTableLines);
-
-      const table = this.parseFromTableStringToJSON(editor, this.getBot(editor), editor.getCursor());
-      console.log('table: ' + JSON.stringify(table));
-      const strTableLinesFormated = table;
-      console.log('strTableLinesFormated: ' + strTableLinesFormated);
-
-      // replace the lines to strFormatedTableLines
-      editor.getDoc().replaceRange(strTableLinesFormated, this.getBot(editor), editor.getCursor());
-      codemirror.commands.newlineAndIndent(editor);
-
-      // report to manager that handling was done
-      context.handlers.push(this.className);
-    }
-
-    console.log(performance.now() + ': ReformMarkdownTableInterceptor.process is finished');
-
-    // resolve
-    // return Promise.resolve(context);
-    return Promise.resolve(orgContext);
   }
 
   /**
@@ -195,3 +133,8 @@ export default class ReformMarkdownTableInterceptor extends BasicInterceptor {
     return markdownTable(contents, { align: aligns } );
   }
 }
+
+// singleton pattern
+const instance = new MarkdownTableUtil();
+Object.freeze(instance);
+export default instance;
