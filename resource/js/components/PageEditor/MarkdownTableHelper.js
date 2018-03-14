@@ -43,10 +43,14 @@ export default class MarkdownTableUtil extends BasicInterceptor {
     const orgContext = args[0];
     const editor = orgContext.editor;
 
+    const curPos = editor.getCursor();
+    const isEndOfLine = (curPos.ch == editor.getDoc().getLine(curPos.line).length);
+    console.log(performance.now() + ': curPos.ch=' + curPos.ch + ', curPos.line=' + curPos.line);
+
     // get strings from BOL(beginning of line) to current position
     const strFromBol = mtu.getStrFromBol(editor);
 
-    if (this.linePartOfTableRE.test(strFromBol)) {
+    if (isEndOfLine && this.linePartOfTableRE.test(strFromBol)) {
       const context = Object.assign(args[0]);   // clone
       const editor = context.editor;
 

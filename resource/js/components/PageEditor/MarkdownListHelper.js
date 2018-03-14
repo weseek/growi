@@ -59,6 +59,7 @@ export default class MarkdownListHelper extends BasicInterceptor {
     console.log(performance.now() + ': AbortContinueMarkdownListInterceptor.process is finished');
 
     // resolve
+    // return Promise.resolve(context);
     return Promise.resolve(orgContext);
   }
 
