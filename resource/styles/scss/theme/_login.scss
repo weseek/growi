@@ -9,16 +9,53 @@
     background: none;
   }
 
-  // centering
-  .main {
+  // layout
+  #wrapper {
     height: 100vh;
 
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    // align-items: center;
+    #page-wrapper {
+      height: 80vh;
+      display: flex;
+      align-items: center;
+
+      .main {
+        width: 100vw;
+
+        // flip animation
+        .login-dialog.flipper {
+          transition: min-height 0.2s;
+          &.to-flip {
+            min-height: 335px;
+          }
+
+          .front, .back {
+            backface-visibility: hidden;
+            transition: 0.4s;
+            transform-style: preserve-3d;
+          }
+          .front {
+            z-index: 2;
+          }
+          .back {
+            position: absolute;
+            top: 0;
+            left: 15px;
+            right: 15px;
+          }
+          .back,
+          &.to-flip .front {
+            transform: rotateY(180deg);
+          }
+          &.to-flip .back {
+            transform: rotateY(0deg);
+          }
+        }
+      }
+    }
   }
-  .login-dialog {
+
+  .login-header, .login-dialog {
+    background-color: rgba($white, 0.3);
   }
 
   .input-group {
@@ -40,43 +77,11 @@
     }
   }
 
-  .btn-login {
+  .btn-login, .btn-register {
     border: none;
-    color: rgb(216, 133, 133);
+    color: white;
     width: 150px;
     background-color: rgba(lighten(black, 20%), 0.4);
-  }
-
-  // flip animation
-  .flipper {
-    .front, .back {
-      // backface-visibility: hidden;
-      transition: 0.4s;
-      // transform-style: preserve-3d;
-    }
-
-    .front {
-      z-index: 2;
-    }
-
-    .back {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      // position: absolute;
-      // top: 0;
-    }
-
-    &.to-flip .front {
-      transform: translateX(-200%);
-    }
-
-    .back {
-      transform: translateY(-50%) translateX(200%);
-    }
-    &.to-flip .back {
-      transform: translateY(-50%) translateX(-50%);
-    }
   }
 
 }

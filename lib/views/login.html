@@ -22,243 +22,220 @@
 
 {% block layout_main %}
 
-<div class="main container">
+<div class="main container-fluid">
 
   <div class="row">
-    <h1>
-      {% if config.crowi['app:title'] == 'Crowi' %}
-        <img src="/images/logo/135x32.png" alt="Crowi">
-      {% else %}
-        {{ config.crowi['app:title'] }}<br>
-        <img src="/images/logo/100x11_w.png" alt="powered by Crowi">
-      {% endif %}
-    </h1>
-  </div>
+    <div class="login-header p-b-30 col-sm-offset-3 col-sm-6 text-center">
+      <h1>
+        {{ config.crowi['app:title'] || 'GROWI' }}<br>
+      </h1>
+    </div>
 
-  <div class="row">
-    <div class="login-dialog col-md-12 flipper {% if req.query.register or req.body.registerForm or isRegistering or googleId %}to-flip{% endif %}" id="login-dialog">
+    <div class="login-dialog col-sm-offset-3 col-sm-6 flipper {% if req.query.register or req.body.registerForm or isRegistering or googleId %}to-flip{% endif %}" id="login-dialog">
 
-      <div>
-        <div class="col-md-4"></div>
-        <div class="front col-md-4">
-          <div id="login-form-errors">
-            {% if isLdapSetupFailed() %}
-            <div class="alert alert-warning">
-              LDAP is enabled but the configuration has something wrong.<br>
-              <small>(set the environment variables <code>DEBUG=crowi:service:PassportService</code> and get the logs)</small>
-            </div>
-            {% endif %}
-
-            {#
-            # The case that there already exists a user whose username matches ID of the newly created LDAP user
-            # https://github.com/weseek/crowi-plus/issues/193
-            #}
-            {% set isDuplicatedUsernameExceptionOccured = req.flash('isDuplicatedUsernameExceptionOccured') %}
-            {% if isDuplicatedUsernameExceptionOccured != null %}
-            <div class="alert alert-warning">
-              <i class="fa fa-fw fa-info-circle"></i>
-              <strong>DuplicatedUsernameException occured</strong>
-              <p>
-                Your LDAP authentication was succeess, but a new user could not be created.
-                See the issue <a href="https://github.com/weseek/crowi-plus/issues/193">#193</a>.
-              </p>
-            </div>
-            {% endif %}
-
-            {% set success = req.flash('successMessage') %}
-            {% if success.length %}
-            <div class="alert alert-success">
-              {{ success }}
-            </div>
-            {% endif %}
-
-            {% set warn = req.flash('warningMessage') %}
-            {% if warn.length %}
-            {% for w in warn %}
-            <div class="alert alert-warning">
-              {{ w }}
-            </div>
-            {% endfor %}
-            {% endif %}
-
-            {% set error = req.flash('errorMessage') %}
-            {% if error.length %}
-            {% for e in error %}
-            <div class="alert alert-danger">
-              {{ e }}
-            </div>
-            {% endfor %}
-            {% endif %}
-
-            {% if req.form.errors.length > 0 %}
-            <div class="alert alert-danger">
-              <ul>
-              {% for error in req.form.errors %}
-                <li>{{ error }}</li>
-              {% endfor %}
-              </ul>
-            </div>
-            {% endif %}
+      <div class="front">
+        <div id="login-form-errors">
+          {% if isLdapSetupFailed() %}
+          <div class="alert alert-warning">
+            LDAP is enabled but the configuration has something wrong.<br>
+            <small>(set the environment variables <code>DEBUG=crowi:service:PassportService</code> and get the logs)</small>
           </div>
+          {% endif %}
 
-          <form role="form" action="/login" method="post">
-            <div class="input-group">
-              <span class="input-group-addon"><i class="icon-fw icon-user"></i></span>
-              <input type="text" class="form-control" placeholder="Username or E-mail" name="loginForm[username]">
-              {% if isLdapSetup() %}
-              <span class="input-group-addon">
-                <small class="text-primary">
-                  <i class="fa fa-fw fa-check-circle"></i> LDAP
-                </small>
-              </span>
-              {% endif %}
-            </div>
-
-            <div class="input-group">
-              <span class="input-group-addon"><i class="icon-fw icon-lock"></i></span>
-              <input type="password" class="form-control" placeholder="Password" name="loginForm[password]">
-            </div>
-
-            <div class="input-group m-t-30 d-flex justify-content-center">
-              <input type="hidden" name="_csrf" value="{{ csrf() }}">
-              <button type="submit" class="btn btn-default btn-lg btn-login">{{ t('Sign in') }}</button>
-            </div>
-          </form>
-
-          <hr>
-
-          <div class="row">
-            {% if googleLoginEnabled() %}
-            <div class="col-md-8">
-              <p>{{ t('Sign in by Google Account') }}</p>
-              <form role="form" action="/login/google" method="get">
-                <button type="submit" class="btn btn-block btn-google"><i class="fa fa-google-plus-square"></i> {{ t('Sign in') }}</button>
-                <input type="hidden" name="_csrf" value="{{ csrf() }}">
-              </form>
-            </div>
-            {% endif %}
+          {#
+          # The case that there already exists a user whose username matches ID of the newly created LDAP user
+          # https://github.com/weseek/crowi-plus/issues/193
+          #}
+          {% set isDuplicatedUsernameExceptionOccured = req.flash('isDuplicatedUsernameExceptionOccured') %}
+          {% if isDuplicatedUsernameExceptionOccured != null %}
+          <div class="alert alert-warning">
+            <i class="fa fa-fw fa-info-circle"></i>
+            <strong>DuplicatedUsernameException occured</strong>
+            <p>
+              Your LDAP authentication was succeess, but a new user could not be created.
+              See the issue <a href="https://github.com/weseek/crowi-plus/issues/193">#193</a>.
+            </p>
           </div>
+          {% endif %}
 
-          {% if config.crowi['security:registrationMode'] != 'Closed' %}
-          <p class="bottom-text"><a href="#register" id="register"><i class="ti-check-box"></i> {{ t('Sign up is here') }}</a></p>
+          {% set success = req.flash('successMessage') %}
+          {% if success.length %}
+          <div class="alert alert-success">
+            {{ success }}
+          </div>
+          {% endif %}
+
+          {% set warn = req.flash('warningMessage') %}
+          {% if warn.length %}
+          {% for w in warn %}
+          <div class="alert alert-warning">
+            {{ w }}
+          </div>
+          {% endfor %}
+          {% endif %}
+
+          {% set error = req.flash('errorMessage') %}
+          {% if error.length %}
+          {% for e in error %}
+          <div class="alert alert-danger">
+            {{ e }}
+          </div>
+          {% endfor %}
+          {% endif %}
+
+          {% if req.form.errors.length > 0 %}
+          <div class="alert alert-danger">
+            <ul>
+            {% for error in req.form.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+            </ul>
+          </div>
           {% endif %}
         </div>
+
+        <form role="form" action="/login" method="post">
+          <div class="input-group">
+            <span class="input-group-addon"><i class="icon-fw icon-user"></i></span>
+            <input type="text" class="form-control" placeholder="Username or E-mail" name="loginForm[username]">
+            {% if isLdapSetup() %}
+            <span class="input-group-addon">
+              <small class="text-primary">
+                <i class="fa fa-fw fa-check-circle"></i> LDAP
+              </small>
+            </span>
+            {% endif %}
+          </div>
+
+          <div class="input-group">
+            <span class="input-group-addon"><i class="icon-fw icon-lock"></i></span>
+            <input type="password" class="form-control" placeholder="Password" name="loginForm[password]">
+          </div>
+
+          <div class="input-group m-t-30 d-flex justify-content-center">
+            <input type="hidden" name="_csrf" value="{{ csrf() }}">
+            <button type="submit" class="btn btn-default btn-lg btn-login">{{ t('Sign in') }}</button>
+          </div>
+        </form>
+
+        <hr>
+
+        <div class="row">
+          {% if googleLoginEnabled() %}
+          <div class="col-md-8">
+            <p>{{ t('Sign in by Google Account') }}</p>
+            <form role="form" action="/login/google" method="get">
+              <button type="submit" class="btn btn-block btn-google"><i class="fa fa-google-plus-square"></i> {{ t('Sign in') }}</button>
+              <input type="hidden" name="_csrf" value="{{ csrf() }}">
+            </form>
+          </div>
+          {% endif %}
+        </div>
+
+        {% if config.crowi['security:registrationMode'] != 'Closed' %}
+        <p class="bottom-text"><a href="#register" id="register"><i class="ti-check-box"></i> {{ t('Sign up is here') }}</a></p>
+        {% endif %}
       </div>
-
-      <div class="clearfix"></div>
-
       {% if config.crowi['security:registrationMode'] != 'Closed' %}
-      <div>
-        <div class="back col-md-6">
-          <h2>{{ t('Sign up') }}</h2>
+      <div class="back">
+        {% if config.crowi['security:registrationMode'] == 'Restricted' %}
+        <p class="alert alert-warning">
+          {{ t('page_register.notice.restricted') }}<br>
+          {{ t('page_register.notice.restricted_defail') }}
+        </p>
+        {% endif %}
 
-          {% if config.crowi['security:registrationMode'] == 'Restricted' %}
-          <p class="alert alert-warning">
-            {{ t('page_register.notice.restricted') }}<br>
-            {{ t('page_register.notice.restricted_defail') }}
+        {% if googleId %}
+        <div class="google-info alert alert-info">
+          {% if googleImage %}
+          <p class="text-center">
+            <img src="{{ googleImage }}" class="img-circle img-circle-lg">
           </p>
           {% endif %}
+          <code>{{ googleEmail }}</code> {{ t('page_register with this Google Account') }}<br>
+          {{ t('page_register.notice.google_account_continue') }}
+        </div>
+        {% endif %}
 
-          {% if googleId %}
-          <div class="google-info alert alert-info">
-            {% if googleImage %}
-            <p class="text-center">
-              <img src="{{ googleImage }}" class="img-circle img-circle-lg">
-            </p>
-            {% endif %}
-            <code>{{ googleEmail }}</code> {{ t('page_register with this Google Account') }}<br>
-            {{ t('page_register.notice.google_account_continue') }}
+        <div id="register-form-errors">
+          {% set message = req.flash('registerWarningMessage') %}
+          {% if message.length %}
+          <div class="alert alert-danger">
+            {% for msg in message %}
+            {{ msg }}<br>
+            {% endfor  %}
           </div>
           {% endif %}
 
-          <div id="register-form-errors">
-            {% set message = req.flash('registerWarningMessage') %}
-            {% if message.length %}
-            <div class="alert alert-danger">
-              {% for msg in message %}
-              {{ msg }}<br>
-              {% endfor  %}
-            </div>
-            {% endif %}
-
-            {% if req.form.errors.length > 0 %}
-            <div class="alert alert-danger">
-              <ul>
-              {% for error in req.form.errors %}
-                <li>{{ error }}</li>
-              {% endfor %}
-              </ul>
-            </div>
-            {% endif %}
-          </div>
-
-          <form role="form" method="post" action="/register" id="register-form">
-            <input type="hidden" class="form-control" name="registerForm[googleId]" value="{{ googleId|default(req.body.registerForm.googleId) }}">
-
-            <label>{{ t('User ID') }}</label>
-            <div class="input-group" id="input-group-username">
-              <span class="input-group-addon"><i class="icon-user"></i></span>
-              <input type="text" class="form-control" placeholder="{{ t('Example') }}: taroyama" name="registerForm[username]" value="{{ req.body.registerForm.username }}" required>
-            </div>
-            <p class="help-block">
-            <span id="help-block-username" class="text-danger"></span>
-            {{ t('page_register.form_help.user_id') }}
-            </p>
-
-            <label>{{ t('Name') }}</label>
-            <div class="input-group">
-              <span class="input-group-addon"><i class="icon-tag"></i></span>
-              <input type="text" class="form-control" placeholder="{{ t('Example') }}: {{ t('Taro Yamada') }}" name="registerForm[name]" value="{{ googleName|default(req.body.registerForm.name) }}" required>
-            </div>
-
-            <label>{{ t('Email') }}</label>
-            <div class="input-group">
-              <span class="input-group-addon"><i class="icon-envelope"></i></span>
-              <input type="email" class="form-control" placeholder="E-mail" name="registerForm[email]" value="{{ googleEmail|default(req.body.registerForm.email) }}" required>
-            </div>
-            {% if config.crowi['security:registrationWhiteList'] && config.crowi['security:registrationWhiteList'].length %}
-            <p class="help-block">
-              {{ t('page_register.form_help.email') }}
-            </p>
+          {% if req.form.errors.length > 0 %}
+          <div class="alert alert-danger">
             <ul>
-              {% for em in config.crowi['security:registrationWhiteList'] %}
-              <li><code>{{ em }}</code></li>
-              {% endfor %}
+            {% for error in req.form.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
             </ul>
-            {% endif %}
+          </div>
+          {% endif %}
+        </div>
 
-            <label>{{ t('Password') }}</label>
-            <div class="input-group">
-              <span class="input-group-addon"><i class="icon-lock"></i></span>
-              <input type="password" class="form-control" placeholder="Password" name="registerForm[password]" required>
-            </div>
-            <p class="help-block">
-              {{ t('page_register.form_help.password') }}
-            </p>
+        <form role="form" method="post" action="/register" id="register-form">
+          <input type="hidden" class="form-control" name="registerForm[googleId]" value="{{ googleId|default(req.body.registerForm.googleId) }}">
 
-            {% if googleImage %}
-              <input type="hidden" name="registerForm[googleImage]" value="{{ googleImage }}">
-            {% endif  %}
-            <input type="hidden" name="_csrf" value="{{ csrf() }}">
-            <input type="submit" class="btn btn-primary btn-lg btn-block" value="{{ t('Sign up') }}">
-          </form>
-
-          <hr>
-
-          <div class="row">
-            {% if googleLoginEnabled() %}
-            <div class="col-md-6">
-              <p>{{ t('Sign up with Google Account') }}</p>
-              <form role="form" method="post" action="/register/google">
-                <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                <button type="submit" class="btn btn-block btn-google"><i class="fa fa-google-plus-square"></i> {{ t('Login') }}</button>
-              </form>
-            </div>
-            {% endif %}
+          <div class="input-group" id="input-group-username">
+            <span class="input-group-addon"><i class="icon-user"></i></span>
+            <input type="text" class="form-control" placeholder="{{ t('User ID') }}" name="registerForm[username]" value="{{ req.body.registerForm.username }}" required>
           </div>
 
-          <p class="bottom-text"><a href="#login" id="login"><i class="fa fa-sign-out"></i> {{ t('Sign in is here') }}</a></p>
+          <div class="input-group">
+            <span class="input-group-addon"><i class="icon-tag"></i></span>
+            <input type="text" class="form-control" placeholder="{{ t('Name') }}" name="registerForm[name]" value="{{ googleName|default(req.body.registerForm.name) }}" required>
+          </div>
+
+          <div class="input-group">
+            <span class="input-group-addon"><i class="icon-envelope"></i></span>
+            <input type="email" class="form-control" placeholder="{{ t('Email') }}" name="registerForm[email]" value="{{ googleEmail|default(req.body.registerForm.email) }}" required>
+          </div>
+          {% if config.crowi['security:registrationWhiteList'] && config.crowi['security:registrationWhiteList'].length %}
+          <p class="help-block">
+            {{ t('page_register.form_help.email') }}
+          </p>
+          <ul>
+            {% for em in config.crowi['security:registrationWhiteList'] %}
+            <li><code>{{ em }}</code></li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+
+          <div class="input-group">
+            <span class="input-group-addon"><i class="icon-lock"></i></span>
+            <input type="password" class="form-control" placeholder="{{ t('Password') }}" name="registerForm[password]" required>
+          </div>
+
+          {% if googleImage %}
+            <input type="hidden" name="registerForm[googleImage]" value="{{ googleImage }}">
+          {% endif  %}
+          <input type="hidden" name="_csrf" value="{{ csrf() }}">
+
+          <div class="input-group m-t-30 d-flex justify-content-center">
+            <input type="submit" class="btn btn-default btn-lg btn-register" value="{{ t('Sign up') }}">
+          </div>
+        </form>
+
+        <hr>
+
+        <div class="row">
+          {% if googleLoginEnabled() %}
+          <div class="col-md-6">
+            <p>{{ t('Sign up with Google Account') }}</p>
+            <form role="form" method="post" action="/register/google">
+              <input type="hidden" name="_csrf" value="{{ csrf() }}">
+              <button type="submit" class="btn btn-block btn-google"><i class="fa fa-google-plus-square"></i> {{ t('Login') }}</button>
+            </form>
+          </div>
+          {% endif %}
         </div>
+
+        <p class="bottom-text"><a href="#login" id="login"><i class="fa fa-sign-out"></i> {{ t('Sign in is here') }}</a></p>
       </div>
       {% endif %} {# if registrationMode == Closed #}
 
