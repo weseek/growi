@@ -5,6 +5,34 @@ body{
 /*Top Header Part*/
 
 .logo i{ color:$white;}
+.top-left-part {
+  background-color: $sidebar;
+}
+// when sidebar is hidden
+.content-wrapper {
+  .top-left-part {
+    // set transition for fill
+    svg * {
+      transition: fill 0.8s ease-out;
+    }
+
+    background-color: darken($topbar, 10%);
+
+    .logo {
+      .logo-mark {
+        svg {
+          fill: lighten($topbar, 15%);
+
+          &:hover {
+            .group1 { fill: $growi-green; }
+            .group2 { fill: $growi-blue; }
+          }
+        }
+      }
+    }
+  }
+}
+
 .navbar-header{
      background:$topbar;
 }
