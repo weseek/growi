@@ -38,50 +38,34 @@ export default class MarkdownTableUtil extends BasicInterceptor {
    * @inheritdoc
    */
   process(contextName, ...args) {
-    console.log(performance.now() + ': ReformMarkdownTableInterceptor.process is started');
-
-    const orgContext = args[0];
-    const editor = orgContext.editor;
+    const context = Object.assign(args[0]);   // clone
+    const editor = context.editor;
 
     const curPos = editor.getCursor();
     const isEndOfLine = (curPos.ch == editor.getDoc().getLine(curPos.line).length);
-    console.log(performance.now() + ': curPos.ch=' + curPos.ch + ', curPos.line=' + curPos.line);
 
     // get strings from BOL(beginning of line) to current position
     const strFromBol = mtu.getStrFromBol(editor);
 
     if (isEndOfLine && this.linePartOfTableRE.test(strFromBol)) {
-      const context = Object.assign(args[0]);   // clone
-      const editor = context.editor;
-
-      console.log('MarkdownTableHelper.process');
-
       // get lines all of table from current position to beginning of table
       const strTableLines = mtu.getStrFromBot(editor);
-      console.log('strTableLines: ' + strTableLines);
 
       const table = mtu.parseFromTableStringToJSON(editor, mtu.getBot(editor), editor.getCursor());
-      console.log('table: ' + JSON.stringify(table));
 
       let newRow = [];
-      table.table[0].forEach(() => { newRow.push(' ') });
-      console.log('empty: ' + JSON.stringify(newRow));
+      table.table[0].forEach(() => { newRow.push('') });
       table.table.push(newRow);
-      console.log('table: ' + JSON.stringify(table));
 
       const curPos = editor.getCursor();
       const nextLineHead = { line: curPos.line + 1, ch: 0 };
       const tableBottom = mtu.parseFromTableStringToJSON(editor, nextLineHead, mtu.getEot(editor));
-      console.log('tableBottom: ' + JSON.stringify(tableBottom));
       if (tableBottom.table.length > 0) {
         table.table = table.table.concat(tableBottom.table);
       }
-      console.log('table: ' + JSON.stringify(table));
 
+      // replace the lines to strTableLinesFormated
       const strTableLinesFormated = markdownTable(table.table, { align: table.align });
-      console.log('strTableLinesFormated: ' + strTableLinesFormated);
-
-      // replace the lines to strFormatedTableLines
       editor.getDoc().replaceRange(strTableLinesFormated, mtu.getBot(editor), mtu.getEot(editor));
       editor.getDoc().setCursor(curPos.line + 1, 2);
 
@@ -89,10 +73,7 @@ export default class MarkdownTableUtil extends BasicInterceptor {
       context.handlers.push(this.className);
     }
 
-    console.log(performance.now() + ': ReformMarkdownTableInterceptor.process is finished');
-
     // resolve
-    // return Promise.resolve(context);
-    return Promise.resolve(orgContext);
+    return Promise.resolve(context);
   }
 }

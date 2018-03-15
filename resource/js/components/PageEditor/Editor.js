@@ -182,17 +182,12 @@ export default class Editor extends React.Component {
     };
 
     const interceptorManager = this.interceptorManager;
-    console.log(performance.now() + ': interceptorManager.process is started');
     interceptorManager.process('preHandleEnter', context)
       .then(() => {
         if (context.handlers.length == 0) {
-          console.log('codemirror.commands.newlineAndIndentContinueMarkdownList(editor)');
-          console.log(performance.now() + ': codemirror.commands.newlineAndIndentContinueMarkdownList is started');
           codemirror.commands.newlineAndIndentContinueMarkdownList(editor);
-          console.log(performance.now() + ': codemirror.commands.newlineAndIndentContinueMarkdownList is finished');
         }
       });
-    console.log(performance.now() + ': interceptorManager.process is finished');
   }
 
   onScrollCursorIntoView(editor, event) {

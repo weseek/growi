@@ -96,12 +96,10 @@ class MarkdownTableUtil {
    * @param {string} lines all of table
    */
   parseFromTableStringToJSON(editor, posBeg, posEnd) {
-    console.log("parseFromTableStringToJSON: posBeg.line: " + posBeg.line + ", posEnd.line: " + posEnd.line);
     let contents = [];
     let aligns = [];
     for (let pos = posBeg; pos.line <= posEnd.line; pos.line++) {
       const line = editor.getDoc().getLine(pos.line);
-      console.log("line#" + pos.line + ": " + line);
 
       if (this.tableAlignmentLineRE.test(line) && !this.tableAlignmentLineNegRE.test(line)) {
         // parse line which described alignment
@@ -117,19 +115,15 @@ class MarkdownTableUtil {
           const rule = alignRuleRE.find(rule => col.match(rule.regex));
           return (rule != undefined) ? rule.align : '';
         });
-        console.log('align: ' + aligns);
       } else {
         // parse line whether header or body
         let lineText = "";
         lineText = line.replace(/\s*\|\s*/g, '|');
         lineText = lineText.replace(/^\||\|$/g, ''); // strip off pipe charactor which is placed head of line and last of line.
         const row = lineText.split(/\|/);
-        console.log('row: ' + JSON.stringify(row));
         contents.push(row);
       }
     }
-    console.log('contents: ' + JSON.stringify(contents));
-    console.log('aligns: ' + JSON.stringify(aligns));
     return { table: contents, align: aligns };
   }
 }
