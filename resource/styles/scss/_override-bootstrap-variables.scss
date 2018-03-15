@@ -1,0 +1,22 @@
+//
+// Variables
+// --------------------------------------------------
+
+
+//== Colors
+//
+//## Gray and brand colors for use across Bootstrap.
+
+$gray-base:              #000 !default;
+$gray-darker:            lighten($gray-base, 13.5%) !default; // #222
+$gray-dark:              lighten($gray-base, 20%) !default;   // #333
+$gray:                   #f0f0f0;
+$gray-light:             #f5f5f5;
+$gray-lighter:           #fafafa;
+$gray-extralight:        #fafafa; // Growi original
+
+$brand-primary:         $primary;
+$brand-success:         $success;
+$brand-info:            $info;
+$brand-warning:         $warning;
+$brand-danger:          $danger;

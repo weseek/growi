@@ -1,5 +1,5 @@
 .login-page {
-  $dark-gray: darken(white, 30%);
+  $gray-dark-for-login: darken(white, 30%);
 
   // background color
   background:
@@ -100,7 +100,7 @@
   } // #wrapper
 
   .login-header {
-    background-color: rgba($white, 0.5);
+    background-color: rgba(white, 0.5);
     .logo {
       width: 70px;
       .group1, .group2 {
@@ -115,7 +115,7 @@
     }
   }
   .login-dialog {
-    background-color: rgba($white, 0.5);
+    background-color: rgba(white, 0.5);
   }
 
   .input-group {
@@ -125,7 +125,7 @@
       text-align: center;
       border: none;
       border-radius: 0;
-      color: $dark-gray;
+      color: $gray-dark-for-login;
       background-color: rgba(black, 0.4);
     }
     .form-control {
@@ -133,7 +133,7 @@
       color: white;
       background-color: rgba(lighten(black, 10%), 0.4);
       &::placeholder {
-        color: $dark-gray;
+        color: $gray-dark-for-login;
       }
     }
   }
@@ -154,7 +154,7 @@
   }
   .btn-login.fcbtn {
     .btn-label {
-      background-color: rgba($danger, 0.4);
+      background-color: rgba($brand-danger, 0.4);
     }
     &:after {
       background-color: #7e4153;
@@ -162,7 +162,7 @@
   }
   .btn-register.fcbtn {
     .btn-label {
-      background-color: rgba($success, 0.4);
+      background-color: rgba($brand-success, 0.4);
     }
     &:after {
       background-color: #3f7263;

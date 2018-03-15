@@ -144,7 +144,7 @@ div.body {
   }
 
   .highlighted {
-    @extend .bg-warning;
+    background-color: $brand-warning;
   }
 
 }
