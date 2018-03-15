@@ -65,11 +65,12 @@ div.body {
     font-size: .9em;
     margin: 0 0 30px 0;
     padding: 0 20px;
-    color: darken(gray, 10%);
+    color: lighten($gray-dark, 35%);
   }
 
   pre {
     border: none;
+    border-radius: 3px;
   }
 
   img {
