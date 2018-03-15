@@ -1,7 +1,5 @@
 import * as codemirror from 'codemirror';
 
-import markdownTable from 'markdown-table';
-
 /**
  * Utility for markdown table
  */
@@ -11,6 +9,7 @@ class MarkdownTableUtil {
     // https://github.com/markdown-it/markdown-it/blob/d29f421927e93e88daf75f22089a3e732e195bd2/lib/rules_block/table.js#L83
     // https://regex101.com/r/7BN2fR/7
     this.tableAlignmentLineRE = /^[-:|][-:|\s]*$/;
+    this.tableAlignmentLineNegRE = /^[^-:]*$/;  // it is need to check to ignore empty row which is matched above RE
     this.linePartOfTableRE = /^\|[^\r\n]*|[^\r\n]*\|$|([^\|\r\n]+\|[^\|\r\n]*)+/; // own idea
 
     this.getBot = this.getBot.bind(this);
@@ -92,7 +91,7 @@ class MarkdownTableUtil {
   }
 
   /**
-   * returns object whose described by 'markdown-table' format
+   * returns JSON whose described by 'markdown-table' format
    *   ref. https://github.com/wooorm/markdown-table
    * @param {string} lines all of table
    */
@@ -104,7 +103,7 @@ class MarkdownTableUtil {
       const line = editor.getDoc().getLine(pos.line);
       console.log("line#" + pos.line + ": " + line);
 
-      if (this.tableAlignmentLineRE.test(line)) {
+      if (this.tableAlignmentLineRE.test(line) && !this.tableAlignmentLineNegRE.test(line)) {
         // parse line which described alignment
         const alignRuleRE = [
           { align: 'c', regex: /^:-+:$/ },
@@ -118,19 +117,20 @@ class MarkdownTableUtil {
           const rule = alignRuleRE.find(rule => col.match(rule.regex));
           return (rule != undefined) ? rule.align : '';
         });
+        console.log('align: ' + aligns);
       } else {
         // parse line whether header or body
         let lineText = "";
         lineText = line.replace(/\s*\|\s*/g, '|');
         lineText = lineText.replace(/^\||\|$/g, ''); // strip off pipe charactor which is placed head of line and last of line.
         const row = lineText.split(/\|/);
-        console.log('row: ' + row);
+        console.log('row: ' + JSON.stringify(row));
         contents.push(row);
       }
     }
     console.log('contents: ' + JSON.stringify(contents));
     console.log('aligns: ' + JSON.stringify(aligns));
-    return markdownTable(contents, { align: aligns } );
+    return { table: contents, align: aligns };
   }
 }
 

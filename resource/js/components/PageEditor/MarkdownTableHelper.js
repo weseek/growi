@@ -62,12 +62,28 @@ export default class MarkdownTableUtil extends BasicInterceptor {
 
       const table = mtu.parseFromTableStringToJSON(editor, mtu.getBot(editor), editor.getCursor());
       console.log('table: ' + JSON.stringify(table));
-      const strTableLinesFormated = table;
+
+      let newRow = [];
+      table.table[0].forEach(() => { newRow.push(' ') });
+      console.log('empty: ' + JSON.stringify(newRow));
+      table.table.push(newRow);
+      console.log('table: ' + JSON.stringify(table));
+
+      const curPos = editor.getCursor();
+      const nextLineHead = { line: curPos.line + 1, ch: 0 };
+      const tableBottom = mtu.parseFromTableStringToJSON(editor, nextLineHead, mtu.getEot(editor));
+      console.log('tableBottom: ' + JSON.stringify(tableBottom));
+      if (tableBottom.table.length > 0) {
+        table.table = table.table.concat(tableBottom.table);
+      }
+      console.log('table: ' + JSON.stringify(table));
+
+      const strTableLinesFormated = markdownTable(table.table, { align: table.align });
       console.log('strTableLinesFormated: ' + strTableLinesFormated);
 
       // replace the lines to strFormatedTableLines
-      editor.getDoc().replaceRange(strTableLinesFormated, mtu.getBot(editor), editor.getCursor());
-      codemirror.commands.newlineAndIndent(editor);
+      editor.getDoc().replaceRange(strTableLinesFormated, mtu.getBot(editor), mtu.getEot(editor));
+      editor.getDoc().setCursor(curPos.line + 1, 2);
 
       // report to manager that handling was done
       context.handlers.push(this.className);
