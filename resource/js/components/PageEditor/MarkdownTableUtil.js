@@ -1,3 +1,5 @@
+import markdown_table from 'markdown-table';
+
 /**
  * Utility for markdown table
  */
@@ -16,7 +18,8 @@ class MarkdownTableUtil {
     this.getStrFromBot = this.getStrFromBot.bind(this);
     this.getStrToEot = this.getStrToEot.bind(this);
     this.getStrFromBol = this.getStrFromBol.bind(this);
-    this.parseFromTableStringToJSON = this.parseFromTableStringToJSON.bind(this);
+
+    this.parseFromTableStringToMarkdownTable = this.parseFromTableStringToMarkdownTable.bind(this);
   }
 
   /**
@@ -89,11 +92,11 @@ class MarkdownTableUtil {
   }
 
   /**
-   * returns JSON whose described by 'markdown-table' format
+   * returns markdown table whose described by 'markdown-table' format
    *   ref. https://github.com/wooorm/markdown-table
    * @param {string} lines all of table
    */
-  parseFromTableStringToJSON(editor, posBeg, posEnd) {
+  parseFromTableStringToMarkdownTable(editor, posBeg, posEnd) {
     let contents = [];
     let aligns = [];
     for (let pos = posBeg; pos.line <= posEnd.line; pos.line++) {
@@ -122,7 +125,64 @@ class MarkdownTableUtil {
         contents.push(row);
       }
     }
-    return { table: contents, align: aligns };
+    return (new MarkdownTable(contents, { align: aligns }));
+  }
+
+  /**
+   * return boolean value whether the current position of cursor is end of line
+   */
+  isEndOfLine(editor) {
+    const curPos = editor.getCursor();
+    return (curPos.ch == editor.getDoc().getLine(curPos.line).length);
+  }
+
+  /**
+   * add a row at the end
+   * (This function overwrite directory markdown table specified as argument.)
+   * @param {MarkdownTable} markdown table
+   */
+  addRowToMarkdownTable(mdtable) {
+    const numCol = mdtable.table.length > 0 ? mdtable.table[0].length : 1;
+    let newRow = [];
+    (new Array(numCol)).forEach(() => newRow.push('')); // create cols
+    mdtable.table.push(newRow);
+  }
+
+  /**
+   * returns markdown table that is merged all of markdown table in array
+   * (The merged markdown table options are used for the first markdown table.)
+   * @param {Array} array of markdown table
+   */
+  mergeMarkdownTable(mdtable_list) {
+    if (mdtable_list == undefined
+        || !(mdtable_list instanceof Array)) {
+      return undefined;
+    }
+
+    let newTable = [];
+    const options = mdtable_list[0].options; // use option of first markdown-table
+    mdtable_list.forEach((mdtable) => {
+      newTable = newTable.concat(mdtable.table)
+    });
+    return (new MarkdownTable(newTable, options));
+  }
+}
+
+/**
+ * markdown table class for markdown-table module
+ *   ref. https://github.com/wooorm/markdown-table
+ */
+class MarkdownTable {
+
+  constructor(table, options) {
+    this.table = table || [];
+    this.options = options || {};
+
+    this.toString = this.toString.bind(this);
+  }
+
+  toString() {
+    return markdown_table(this.table, this.options);
   }
 }
 
