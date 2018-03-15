@@ -122,6 +122,7 @@
     margin-bottom: 10px;
 
     .input-group-addon {
+      text-align: center;
       border: none;
       border-radius: 0;
       color: $dark-gray;
@@ -195,5 +196,8 @@
   }
   .link-switch {
     color: $gray;
+    &:hover {
+      color: white;
+    }
   }
 }
