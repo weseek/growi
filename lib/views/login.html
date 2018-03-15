@@ -25,17 +25,18 @@
 <div class="main container-fluid">
 
   <div class="row">
-    <div class="login-header col-sm-offset-4 col-sm-4 text-center">
+    <div class="login-header col-sm-offset-4 col-sm-4">
       <div class="logo">{% include 'widget/logo.html' %}</div>
       <h1>
         {{ config.crowi['app:title'] || 'GROWI' }}
       </h1>
 
-      <div id="login-form-errors">
+      <div class="login-form-errors">
         {% if isLdapSetupFailed() %}
-        <div class="alert alert-warning">
-          LDAP is enabled but the configuration has something wrong.<br>
-          <small>(set the environment variables <code>DEBUG=crowi:service:PassportService</code> and get the logs)</small>
+        <div class="alert alert-warning small">
+          <strong><i class="icon-fw icon-info"></i>LDAP is enabled but the configuration has something wrong.</strong>
+          <br>
+          (Please set the environment variables <code>DEBUG=crowi:service:PassportService</code> to get the logs)
         </div>
         {% endif %}
 
@@ -45,9 +46,8 @@
         #}
         {% set isDuplicatedUsernameExceptionOccured = req.flash('isDuplicatedUsernameExceptionOccured') %}
         {% if isDuplicatedUsernameExceptionOccured != null %}
-        <div class="alert alert-warning">
-          <i class="fa fa-fw fa-info-circle"></i>
-          <strong>DuplicatedUsernameException occured</strong>
+        <div class="alert alert-warning small">
+          <p><strong><i class="icon-fw icon-ban"></i>DuplicatedUsernameException occured</strong></p>
           <p>
             Your LDAP authentication was succeess, but a new user could not be created.
             See the issue <a href="https://github.com/weseek/crowi-plus/issues/193">#193</a>.
@@ -111,8 +111,8 @@
             <input type="text" class="form-control" placeholder="Username or E-mail" name="loginForm[username]">
             {% if isLdapSetup() %}
             <span class="input-group-addon">
-              <small class="text-primary">
-                <i class="fa fa-fw fa-check-circle"></i> LDAP
+              <small class="text-success">
+                <i class="icon-fw icon-check"></i> LDAP
               </small>
             </span>
             {% endif %}
