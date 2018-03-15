@@ -7,3 +7,42 @@
 .bg-title{
   background: darken($bodycolor, 5%);
 }
+
+/*
+  * Code
+  */
+code {
+  background-color: darken($bodycolor, 5%);
+}
+
+/*
+  * Form
+  */
+input.form-control, textarea.form-control {
+  color: lighten($bodytext, 30%);
+  background-color: darken($bodycolor, 5%);
+  border: 1px solid darken($bodycolor, 5%);
+}
+
+/*
+ * Tabs
+ */
+.nav.nav-tabs {
+  $border-color: #999;
+  border-color: $border-color;
+
+  > li > a {
+    color:$light;
+    &:hover, &:focus {
+      color: $light;
+    }
+  }
+  > li:not(.active) > a {
+    &:hover, &:focus {
+      border-top-color: darken($border-color, 25%);
+      border-left-color: darken($border-color, 25%);
+      border-right-color: darken($border-color, 25%);
+      border-bottom: transparent;
+    }
+  }
+}

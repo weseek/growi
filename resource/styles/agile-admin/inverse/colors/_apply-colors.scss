@@ -147,3 +147,39 @@ body{
   background:$themecolor;
   color:$white;
 }
+
+/*
+ * Legend
+ */
+legend {
+  color: $headingtext;
+}
+
+/*
+ * Modal
+ */
+.modal-content {
+  background-color: $bodycolor;
+}
+
+/*
+ * Wells
+ */
+.well {
+  background-color: darken($bodycolor, 5%);
+}
+
+/*
+ * Tabs
+ */
+.nav.nav-tabs {
+  > li > a {
+    &, &:hover, &:focus {
+      background: transparent;
+    }
+  }
+  > li.active > a {
+    background: transparent;
+    border-bottom: 1px solid $bodycolor;
+  }
+}

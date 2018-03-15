@@ -7,3 +7,17 @@
 .bg-title{
   background: #fafafa;
 }
+
+/*
+* Form
+*/
+.form-control {
+  background-color: $bodycolor;
+}
+
+/*
+* Tabs
+*/
+.nav-tabs > li > a {
+  color: $dark;
+}
