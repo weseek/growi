@@ -1,3 +1,7 @@
+/*
+ * Growi original
+ */
+
 #page-wrapper {
   padding-bottom: 0;
 }
@@ -31,29 +35,14 @@
   }
 }
 .logo {
-  // set transition for fill
-  svg * {
-    transition: fill 0.8s ease-out;
-  }
-
-  .dark-logo, .dark-logo-text {
-    svg {
-      fill: white;
-    }
-  }
-  .light-logo, .light-logo-text {
-    svg {
-      fill: $dark-themecolor;
-    }
-  }
-  .dark-logo, .light-logo {
+  .logo-mark {
     svg {
       padding: 12px;
       width: 50px;
       height: 50px;
     }
   }
-  .dark-logo-text, .light-logo-text {
+  .logo-text {
     svg {
       width: 156px;
       height: 50px;
@@ -63,10 +52,15 @@
 // when sidebar is hidden
 .content-wrapper {
   .top-left-part {
+    // set transition for fill
+    svg * {
+      transition: fill 0.8s ease-out;
+    }
+
     background-color: darken($topbar, 10%);
 
     .logo {
-      .dark-logo, .light-logo {
+      .logo-mark {
         svg {
           fill: lighten($topbar, 15%);
 

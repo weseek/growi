@@ -131,23 +131,12 @@ gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js
       <div class="top-left-part">
         <a class="logo" href="/">
           <b>
-            <!--This is dark logo icon-->
-            <img src="../plugins/images/agileadmin-logo.png" alt="home" class="dark-logo" />
-            <!--This is light logo icon-->
-            <!-- <img src="../plugins/images/agileadmin-logo-dark.png" alt="home" class="light-logo" /> -->
-            <!-- <svg viewBox="0 0 448 448">
-              <path d="M0 376v-48q0-3.25 2.375-5.625t5.625-2.375h48q3.25 0 5.625 2.375t2.375 5.625v48q0 3.25-2.375 5.625t-5.625 2.375h-48q-3.25 0-5.625-2.375t-2.375-5.625zM0 280v-48q0-3.25 2.375-5.625t5.625-2.375h48q3.25 0 5.625 2.375t2.375 5.625v48q0 3.25-2.375 5.625t-5.625 2.375h-48q-3.25 0-5.625-2.375t-2.375-5.625zM0 184v-48q0-3.25 2.375-5.625t5.625-2.375h48q3.25 0 5.625 2.375t2.375 5.625v48q0 3.25-2.375 5.625t-5.625 2.375h-48q-3.25 0-5.625-2.375t-2.375-5.625zM0 88v-48q0-3.25 2.375-5.625t5.625-2.375h48q3.25 0 5.625 2.375t2.375 5.625v48q0 3.25-2.375 5.625t-5.625 2.375h-48q-3.25 0-5.625-2.375t-2.375-5.625zM96 376v-48q0-3.25 2.375-5.625t5.625-2.375h336q3.25 0 5.625 2.375t2.375 5.625v48q0 3.25-2.375 5.625t-5.625 2.375h-336q-3.25 0-5.625-2.375t-2.375-5.625zM96 280v-48q0-3.25 2.375-5.625t5.625-2.375h336q3.25 0 5.625 2.375t2.375 5.625v48q0 3.25-2.375 5.625t-5.625 2.375h-336q-3.25 0-5.625-2.375t-2.375-5.625zM96 184v-48q0-3.25 2.375-5.625t5.625-2.375h336q3.25 0 5.625 2.375t2.375 5.625v48q0 3.25-2.375 5.625t-5.625 2.375h-336q-3.25 0-5.625-2.375t-2.375-5.625zM96 88v-48q0-3.25 2.375-5.625t5.625-2.375h336q3.25 0 5.625 2.375t2.375 5.625v48q0 3.25-2.375 5.625t-5.625 2.375h-336q-3.25 0-5.625-2.375t-2.375-5.625z"></path>
-            </svg> -->
-            <div class="light-logo">{% include '../widget/logo.html' %}</div>
+            <div class="logo-mark">{% include '../widget/logo.html' %}</div>
           </b>
           <span class="hidden-xs" style="color: black">
             {% set appTitle = config.crowi['app:title'] | default('GROWI') %}
             {% set appTitleFontSize = getAppTitleFontSize(appTitle) %}
-            <!--This is dark logo text-->
-            <!-- <img src="../plugins/images/agileadmin-text.png" alt="home" class="dark-logo" /> -->
-            <!--This is light logo text-->
-            <!-- <img src="../plugins/images/agileadmin-text-dark.png" alt="home" class="light-logo" /> -->
-            <span class="logo-text light-logo-text">
+            <span class="logo-text">
               <svg xmlns="http://www.w3.org/2000/svg">
                 <text x="0" y="{{22+appTitleFontSize/2}}" font-size="{{appTitleFontSize}}">
                   {% block title %}{{ appTitle }}{% endblock %}

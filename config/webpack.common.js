@@ -29,6 +29,7 @@ module.exports = function (options) {
       'plugin':               './resource/js/plugin',
       'style':                './resource/styles/scss/style.scss',
       'style-theme-default':  './resource/styles/scss/theme/default.scss',
+      'style-theme-default-dark':  './resource/styles/scss/theme/default-dark.scss',
       'style-presentation':   './resource/styles/scss/style-presentation.scss',
     },
     externals: {
