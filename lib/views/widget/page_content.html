@@ -15,12 +15,6 @@
   <div class="tab-content">
 
     {% if page %}
-      {% if not page.isLatestRevision() %}
-      <div class="alert alert-warning">
-        <strong>{{ t('Warning') }}: </strong> {{ t('page_page.notice.version') }} <i class="fa fa-magic"></i> <a href="{{ page.path }}">{{ t('Show latest') }}</a>
-      </div>
-      {% endif %}
-
       <script type="text/template" id="raw-text-original">{{ revision.body }}</script>
 
       {# formatted text #}
