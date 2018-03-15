@@ -37,7 +37,7 @@
       border: none;
       font-size: 1.2em;
       line-height: 0.8em;
-      &:not(:hover) {
+      &:not(:hover):not(.active) {
         background-color: transparent;
       }
     }

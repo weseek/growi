@@ -14,22 +14,7 @@
           <h1 class="title flex-item-title" id="revision-path"></h1>
           <div id="revision-url" class="url-line"></div>
         </div>
-        {% if page %}
-        <div>
-          {% if user %}
-          <button
-              data-csrftoken="{{ csrf() }}"
-              data-liked="{% if page.isLiked(user) %}1{% else %}0{% endif %}"
-              class="like-button btn btn-default btn-outline btn-circle {% if page.isLiked(user) %}active{% endif %}"
-          ><i class="icon-like"></i></button>
-          {% endif %}
-        </div>
-        <div>
-          {% if user %}
-          <span id="bookmark-button"></span>
-          {% endif %}
-        </div>
-        {% endif %}
+        {% include '../widget/header-buttons.html' %}
       </div>
     </header>
   </div>
