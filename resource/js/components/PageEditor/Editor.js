@@ -38,8 +38,8 @@ import emojiAutoCompleteHelper from './EmojiAutoCompleteHelper';
 
 import InterceptorManager from '../../../../lib/util/interceptor-manager';
 
-import MarkdownListHelper from './MarkdownListHelper';
-import MarkdownTableHelper from './MarkdownTableHelper';
+import MarkdownListInterceptor from './MarkdownListInterceptor';
+import MarkdownTableInterceptor from './MarkdownTableInterceptor';
 
 export default class Editor extends React.Component {
 
@@ -51,8 +51,8 @@ export default class Editor extends React.Component {
 
     this.interceptorManager = new InterceptorManager();
     this.interceptorManager.addInterceptors([
-      new MarkdownListHelper(),
-      new MarkdownTableHelper(),
+      new MarkdownListInterceptor(),
+      new MarkdownTableInterceptor(),
     ]);
 
     this.state = {

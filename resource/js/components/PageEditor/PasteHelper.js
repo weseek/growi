@@ -1,6 +1,6 @@
 import accepts from 'attr-accept'
 
-import markdownListHelper from './MarkdownListHelper';
+import markdownListInterceptor from './MarkdownListInterceptor';
 
 class PasteHelper {
 
@@ -21,7 +21,7 @@ class PasteHelper {
       return;
     }
 
-    markdownListHelper.pasteText(editor, event, text);
+    markdownListInterceptor.pasteText(editor, event, text);
   }
 
   // Firefox versions prior to 53 return a bogus MIME type for every file drag, so dragovers with

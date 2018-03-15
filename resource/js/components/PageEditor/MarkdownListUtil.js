@@ -1,5 +1,3 @@
-import * as codemirror from 'codemirror';
-
 /**
  * Utility for markdown list
  */

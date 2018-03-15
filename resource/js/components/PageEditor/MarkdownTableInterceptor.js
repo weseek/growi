@@ -1,21 +1,15 @@
 import { BasicInterceptor } from 'crowi-pluginkit';
-import * as codemirror from 'codemirror';
 import markdownTable from 'markdown-table';
 
-import mtu from '../../util/interceptor/MarkdownTableUtil';
+import mtu from './MarkdownTableUtil';
 
 /**
- * Utility for markdown table
+ * Interceptor for markdown table
  */
-export default class MarkdownTableUtil extends BasicInterceptor {
+export default class MarkdownTableInterceptor extends BasicInterceptor {
 
   constructor() {
     super();
-
-    // https://github.com/markdown-it/markdown-it/blob/d29f421927e93e88daf75f22089a3e732e195bd2/lib/rules_block/table.js#L83
-    // https://regex101.com/r/7BN2fR/7
-    this.tableAlignmentLineRE = /^[-:|][-:|\s]*$/;
-    this.linePartOfTableRE = /^\|[^\r\n]*|[^\r\n]*\|$|([^\|\r\n]+\|[^\|\r\n]*)+/; // own idea
   }
 
   /**
@@ -47,7 +41,7 @@ export default class MarkdownTableUtil extends BasicInterceptor {
     // get strings from BOL(beginning of line) to current position
     const strFromBol = mtu.getStrFromBol(editor);
 
-    if (isEndOfLine && this.linePartOfTableRE.test(strFromBol)) {
+    if (isEndOfLine && mtu.linePartOfTableRE.test(strFromBol)) {
       // get lines all of table from current position to beginning of table
       const strTableLines = mtu.getStrFromBot(editor);
 

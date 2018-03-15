@@ -1,17 +1,12 @@
 import { BasicInterceptor } from 'crowi-pluginkit';
 import * as codemirror from 'codemirror';
 
-import mlu from '../../util/interceptor/MarkdownListUtil';
+import mlu from './MarkdownListUtil';
 
-export default class MarkdownListHelper extends BasicInterceptor {
+export default class MarkdownListInterceptor extends BasicInterceptor {
 
   constructor() {
     super();
-
-    // https://github.com/codemirror/CodeMirror/blob/c7853a989c77bb9f520c9c530cbe1497856e96fc/addon/edit/continuelist.js#L14
-    // https://regex101.com/r/7BN2fR/5
-    this.indentAndMarkRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]\s|[*+-]\s|(\d+)([.)]))(\s*)/;
-    this.indentAndMarkOnlyRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]|[*+-]|(\d+)[.)])(\s*)$/;
 
     this.pasteText = this.pasteText.bind(this);
   }
@@ -41,7 +36,7 @@ export default class MarkdownListHelper extends BasicInterceptor {
 
     // get strings from current position to EOL(end of line) before break the line
     const strToEol = mlu.getStrToEol(editor);
-    if (this.indentAndMarkRE.test(strToEol)) {
+    if (mlu.indentAndMarkRE.test(strToEol)) {
       codemirror.commands.newlineAndIndent(editor);
 
       // replace the line with strToEol (abort auto indent)
@@ -65,10 +60,10 @@ export default class MarkdownListHelper extends BasicInterceptor {
     // get strings from BOL(beginning of line) to current position
     const strFromBol = mlu.getStrFromBol(editor);
 
-    const matched = strFromBol.match(this.indentAndMarkRE);
+    const matched = strFromBol.match(mlu.indentAndMarkRE);
     // when match indentAndMarkOnlyRE
     // (this means the current position is the beginning of the list item)
-    if (this.indentAndMarkOnlyRE.test(strFromBol)) {
+    if (mlu.indentAndMarkOnlyRE.test(strFromBol)) {
       const adjusted = this.adjustPastedData(strFromBol, text);
 
       // replace
@@ -91,8 +86,8 @@ export default class MarkdownListHelper extends BasicInterceptor {
     let adjusted = null;
 
     // list data (starts with indent and mark)
-    if (text.match(this.indentAndMarkRE)) {
-      const indent = indentAndMark.match(this.indentAndMarkRE)[1];
+    if (text.match(mlu.indentAndMarkRE)) {
+      const indent = indentAndMark.match(mlu.indentAndMarkRE)[1];
 
       // splice to an array of line
       const lines = text.match(/[^\r\n]+/g);
@@ -134,7 +129,7 @@ export default class MarkdownListHelper extends BasicInterceptor {
     let isListful = false;
     let count = 0;
     lines.forEach((line) => {
-      if (line.match(this.indentAndMarkRE)) {
+      if (line.match(mlu.indentAndMarkRE)) {
         count++;
       }
       // ensure to be true if it is 50% or more
