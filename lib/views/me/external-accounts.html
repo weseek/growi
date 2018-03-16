@@ -111,7 +111,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
 
-        <div class="modal-header">
+        <div class="modal-header bg-info">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
           <div class="modal-title">{{ t('Create External Account') }}</div>
         </div>
@@ -141,7 +141,7 @@
               <div id="formLdapAssociationContainer">
                 {% include '../widget/passport/ldap-association-tester.html' %}
                 <div class="clearfix">
-                  <button type="button" class="btn btn-primary pull-right" onclick="associateLdap()">
+                  <button type="button" class="btn btn-info pull-right" onclick="associateLdap()">
                     <i class="fa fa-plus-circle" aria-hidden="true"></i>
                     {{ t('Add') }}
                   </button>
