@@ -19,6 +19,10 @@ input.form-control, textarea.form-control {
   background-color: darken($bodycolor, 5%);
   border: 1px solid darken($border, 30%);
 }
+.form-control[disabled], .form-control[readonly] {
+  color: lighten($bodytext, 10%);
+  background-color: lighten($bodycolor, 5%);
+}
 
 /*
  * Dropdown

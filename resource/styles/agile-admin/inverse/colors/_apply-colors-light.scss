@@ -10,6 +10,10 @@
 .form-control {
   background-color: $bodycolor;
 }
+.form-control[disabled], .form-control[readonly] {
+  color: lighten($bodytext, 10%);
+  background-color: darken($bodycolor, 5%);
+}
 
 /*
  * Tabs
