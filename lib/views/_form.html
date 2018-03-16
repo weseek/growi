@@ -21,19 +21,16 @@
   <input type="hidden" id="form-body" name="pageForm[body]" value="{% if pageForm.body %}{{ pageForm.body }}{% endif %}">
   <input type="hidden" name="pageForm[path]" value="{{ path }}">
   <input type="hidden" name="pageForm[currentRevision]" value="{{ pageForm.currentRevision|default(page.revision._id.toString()) }}">
-  <div class="form-submit-group form-group form-inline d-flex justify-content-between">
+  <div class="page-editor-footer form-submit-group form-group form-inline d-flex justify-content-between">
     <div>
       <div id="page-editor-options-selector"></div>
     </div>
 
     <div class="form-inline page-form-setting d-flex" id="page-form-setting" data-slack-configured="{{ slackConfigured() }}">
-      {% if slackConfigured() %}
-      <span class="input-group extended-setting m-r-5">
+      {% if !slackConfigured() %}
+      <span class="input-group input-group-sm extended-setting m-r-5">
         <span class="input-group-addon">
-          <label>
-            <i class="fa fa-slack"></i>
-            <input class="" type="checkbox" name="pageForm[notify][slack][on]" value="1">
-          </label>
+          <input class="" type="checkbox" name="pageForm[notify][slack][on]" value="1">
         </span>
         <input class="form-control" type="text" name="pageForm[notify][slack][channel]" value="{{ page.extended.slack|default('') }}" placeholder="slack-channel-name"
           id="page-form-slack-channel"
@@ -49,14 +46,14 @@
       {% if forceGrant %}
       <input type="hidden" name="pageForm[grant]" value="{{ forceGrant }}">
       {% else %}
-      <select name="pageForm[grant]" class="form-control m-r-5">
+      <select name="pageForm[grant]" class="form-control input-sm m-r-5">
         {% for grantId, grantLabel in consts.pageGrants %}
         <option value="{{ grantId }}" {% if pageForm.grant|default(page.grant) == grantId %}selected{% endif %}>{{ t(grantLabel) }}</option>
         {% endfor %}
       </select>
       {% endif %}
       <input type="hidden" id="edit-form-csrf" name="_csrf" value="{{ csrf() }}">
-      <input type="submit" class="btn btn-primary" id="edit-form-submit" value="{{ t('Update Page') }}" />
+      <button type="submit" class="btn btn-sm btn-primary" id="edit-form-submit">{{ t('Update Page') }}</button>
     </div>
   </div>
 </form>

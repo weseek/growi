@@ -71,16 +71,25 @@ body.on-edit {
         .row, .col-md-6, .col-sm-12,
         .react-codemirror2, .CodeMirror, .CodeMirror-scroll,
         .page-editor-preview-body {
-          height: calc(100vh - 100px);
+          height: calc(100vh
+            - 2px   /* .main padding-top */
+            - 42px  /* .nav height */
+            - 1px   /* .page-editor-footer border-top */
+            - 39px  /* .page-editor-footer min-height */
+          );
         }
       }
 
-      .form-group.form-submit-group {
+      .page-editor-footer {
         width: 100%;
         margin: 0;
-        padding: 8px;
-        min-height: 50px;
+        padding: 4px;
+        min-height: 39px;
         border-top: solid 1px transparent;
+
+        .input-group-addon {
+          line-height: 1em;
+        }
       }
 
     }

@@ -84,7 +84,7 @@ export default class OptionsSelector extends React.Component {
     return (
       <FormGroup controlId="formControlsSelect">
         <ControlLabel>Theme:</ControlLabel>
-        <FormControl componentClass="select" placeholder="select"
+        <FormControl componentClass="select" placeholder="select" className="input-sm"
             onChange={this.onChangeTheme}
             inputRef={ el => this.themeSelectorInputEl=el }>
 
@@ -99,7 +99,7 @@ export default class OptionsSelector extends React.Component {
     const bool = this.state.editorOptions.styleActiveLine;
     return (
       <FormGroup controlId="formControlsSelect">
-        <Button active={bool} className="btn-style-active-line"
+        <Button active={bool} className="btn-sm btn-style-active-line"
             onClick={this.onClickStyleActiveLine}>
           Active Line
         </Button>
@@ -122,7 +122,7 @@ export default class OptionsSelector extends React.Component {
     return (
       <FormGroup controlId="formControlsSelect">
         <OverlayTrigger placement="top" overlay={tooltip}>
-          <Button active={isActive} className="btn-render-mathjax-in-realtime"
+          <Button active={isActive} className="btn-sm btn-render-mathjax-in-realtime"
               onClick={this.onClickRenderMathJaxInRealtime}>
             <i className="fa fa-superscript" aria-hidden="true"></i>
           </Button>
