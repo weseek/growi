@@ -292,7 +292,7 @@ export default class Editor extends React.Component {
       flexDirection: 'column',
     }
     const expandHeight = {
-      height: 'calc(100% - 20px)'
+      height: 'calc(100% - 22px)'
     }
 
     const theme = this.props.editorOptions.theme || 'elegant';
@@ -372,7 +372,7 @@ export default class Editor extends React.Component {
         <button type="button" className="btn btn-default btn-block btn-open-dropzone"
             onClick={() => {this.refs.dropzone.open()}}>
 
-          <i className="fa fa-paperclip" aria-hidden="true"></i>&nbsp;
+          <i className="icon-paper-clip" aria-hidden="true"></i>&nbsp;
           Attach files by dragging &amp; dropping,&nbsp;
           <span className="btn-link">selecting them</span>,&nbsp;
           or pasting from the clipboard.
