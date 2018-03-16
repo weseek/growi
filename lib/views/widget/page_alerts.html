@@ -47,6 +47,14 @@
     </div>
     {% endif %}
 
+    {% if req.query.duplicated and not page.isDeleted() %}
+    <div class="alert alert-success alert-moved">
+      <span>
+        <strong>{{ t('Duplicated') }}: </strong> {{ t('page_page.notice.duplicated', req.query.duplicated) }}
+      </span>
+    </div>
+    {% endif %}
+
     {% if req.query.unlinked %}
     <div class="alert alert-info alert-unlinked">
       <strong>{{ t('Unlinked') }}: </strong> {{ t('page_page.notice.unlinked') }}

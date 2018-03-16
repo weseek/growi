@@ -156,6 +156,7 @@
       "notice": {
           "version": "これは現在の版ではありません。",
           "moved": "このページは <code>%s</code> から移動しました。",
+          "duplicated": "このページは <code>%s</code> から複製されました。",
           "unlinked": "このページへのリダイレクトは削除されました。",
           "restricted": "このページの閲覧は制限されています"
       }

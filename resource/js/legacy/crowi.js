@@ -236,8 +236,8 @@ $(function() {
 
   // rename
   $('#renamePage').on('shown.bs.modal', function (e) {
-    $('#newPageName').focus();
-    $('.msg-already-exists').hide();
+    $('#renamePage #newPageName').focus();
+    $('#renamePage .msg-already-exists').hide();
   });
   $('#renamePageForm, #unportalize-form').submit(function(e) {
     // create name-value map
@@ -254,11 +254,12 @@ $(function() {
     }).done(function(res) {
       if (!res.ok) {
         // if already exists
-        $('.msg-already-exists').show();
-        $('#linkToNewPage').html(`
+        $('#renamePage .msg-already-exists').show();
+        $('#renamePage #linkToNewPage').html(`
           <a href="${nameValueMap.new_path}">${nameValueMap.new_path} <i class="icon-login"></i></a>
         `);
-      } else {
+      }
+      else {
         var page = res.page;
         top.location.href = page.path + '?renamed=' + pagePath;
       }
@@ -269,7 +270,8 @@ $(function() {
 
   // duplicate
   $('#duplicatePage').on('shown.bs.modal', function (e) {
-    $('#duplicatePageName').focus();
+    $('#duplicatePage #duplicatePageName').focus();
+    $('#duplicatePage .msg-already-exists').hide();
   });
   $('#duplicatePageForm, #unportalize-form').submit(function (e) {
     // create name-value map
@@ -283,23 +285,17 @@ $(function() {
       url: '/_api/pages.duplicate',
       data: $(this).serialize(),
       dataType: 'json'
-    }).done(function (res) {
+    }).done(function(res) {
       if (!res.ok) {
         // if already exists
-        $('#duplicatePageNameCheck').html('<i class="fa fa-times-circle"></i> ' + res.error);
-        $('#duplicatePageNameCheck').addClass('alert-danger');
-        $('#linkToNewPage').html(`
-          <i class="fa fa-fw fa-arrow-right"></i><a href="${nameValueMap.new_path}">${nameValueMap.new_path}</a>
+        $('#duplicatePage .msg-already-exists').show();
+        $('#duplicatePage #linkToNewPage').html(`
+          <a href="${nameValueMap.new_path}">${nameValueMap.new_path} <i class="icon-login"></i></a>
         `);
-      } else {
+      }
+      else {
         var page = res.page;
-
-        $('#duplicatePageNameCheck').removeClass('alert-danger');
-        $('#duplicatePageNameCheck').html('<img src="/images/loading_s.gif"> Page duplicated! Redirecting to new page location.');
-
-        setTimeout(function () {
-          top.location.href = page.path + '?duplicated=' + pagePath;
-        }, 1000);
+        top.location.href = page.path + '?duplicated=' + pagePath;
       }
     });
 

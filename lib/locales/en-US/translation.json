@@ -143,6 +143,7 @@
       "notice": {
           "version": "This is not the current version.",
           "moved": "This page was moved from <code>%s</code>",
+          "duplicated": "This page was duplicated from <code>%s</code>",
           "unlinked": "Redirect pages to this page have been deleted.",
           "restricted": "Access to this page is restricted"
       }
