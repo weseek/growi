@@ -237,6 +237,7 @@ $(function() {
   // rename
   $('#renamePage').on('shown.bs.modal', function (e) {
     $('#newPageName').focus();
+    $('.msg-already-exists').hide();
   });
   $('#renamePageForm, #unportalize-form').submit(function(e) {
     // create name-value map
@@ -253,22 +254,13 @@ $(function() {
     }).done(function(res) {
       if (!res.ok) {
         // if already exists
-        $('#newPageNameCheck').html('<i class="fa fa-times-circle"></i> ' + res.error);
-        $('#newPageNameCheck').addClass('alert-danger');
+        $('.msg-already-exists').show();
         $('#linkToNewPage').html(`
-          <i class="fa fa-fw fa-arrow-right"></i><a href="${nameValueMap.new_path}">${nameValueMap.new_path}</a>
+          <a href="${nameValueMap.new_path}">${nameValueMap.new_path} <i class="icon-login"></i></a>
         `);
       } else {
         var page = res.page;
-
-        $('#newPageNameCheck').removeClass('alert-danger');
-        //$('#newPageNameCheck').html('<img src="/images/loading_s.gif"> 移動しました。移動先にジャンプします。');
-        // fix
-        $('#newPageNameCheck').html('<img src="/images/loading_s.gif"> Page moved! Redirecting to new page location.');
-
-        setTimeout(function() {
-          top.location.href = page.path + '?renamed=' + pagePath;
-        }, 1000);
+        top.location.href = page.path + '?renamed=' + pagePath;
       }
     });
 
