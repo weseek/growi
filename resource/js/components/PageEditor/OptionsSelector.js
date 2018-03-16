@@ -159,8 +159,9 @@ export default class OptionsSelector extends React.Component {
 
     return (
       <MenuItem onClick={this.onClickStyleActiveLine}>
-        <span className="icon-container"><i className={iconClassName}></i></span>
-        Show active line
+        <span className="icon-container"></span>
+        <span className="menuitem-label">Show active line</span>
+        <i className={iconClassName}></i>
       </MenuItem>
     )
   }
@@ -181,14 +182,18 @@ export default class OptionsSelector extends React.Component {
 
     return (
       <MenuItem onClick={this.onClickRenderMathJaxInRealtime}>
-        <span className="icon-container"><i className={iconClassName}></i></span>
-        MathJax Rendering
+        <span className="icon-container"><img src="/images/icons/fx.svg" width="14px"></img></span>
+        <span className="menuitem-label">MathJax Rendering</span>
+        <i className={iconClassName}></i>
       </MenuItem>
     )
   }
 
   render() {
-    return <span>{this.renderThemeSelector()} {this.renderConfigurationDropdown()}</span>
+    return <span>
+      <span className="m-l-5">{this.renderThemeSelector()}</span>
+      <span className="m-l-5">{this.renderConfigurationDropdown()}</span>
+    </span>
   }
 }
 
