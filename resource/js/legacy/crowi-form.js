@@ -1,6 +1,7 @@
   var pageId = $('#content-main').data('page-id');
   var pagePath= $('#content-main').data('path');
 
+  require('bootstrap-select');
   require('bootstrap-sass');
 
   // show/hide

@@ -81,10 +81,12 @@ export default class OptionsSelector extends React.Component {
       return <option key={theme} value={theme}>{theme}</option>;
     });
 
+    const bsClassName = 'form-control-dummy'; // set form-control* to shrink width
+
     return (
       <FormGroup controlId="formControlsSelect">
         <ControlLabel>Theme:</ControlLabel>
-        <FormControl componentClass="select" placeholder="select" className="input-sm"
+        <FormControl componentClass="select" placeholder="select" bgSize="sm" bsClass={bsClassName} className="btn-group-sm selectpicker"
             onChange={this.onChangeTheme}
             inputRef={ el => this.themeSelectorInputEl=el }>
 

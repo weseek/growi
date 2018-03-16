@@ -61,7 +61,7 @@
           <div class="form-group">
             <label for="settingForm[security:restrictGuestMode]" class="col-xs-3 control-label">{{ t('Guest users access') }}</label>
             <div class="col-xs-6">
-              <select class="form-control" name="settingForm[security:restrictGuestMode]" value="{{ settingForm['security:restrictGuestMode'] }}">
+              <select class="form-control selectpicker" name="settingForm[security:restrictGuestMode]" value="{{ settingForm['security:restrictGuestMode'] }}">
                 {% for modeValue, modeLabel in consts.restrictGuestMode %}
                 <option value="{{ modeValue }}" {% if modeValue == settingForm['security:restrictGuestMode'] %}selected{% endif %} >{{ modeLabel }}</option>
                 {% endfor %}
@@ -72,7 +72,7 @@
           <div class="form-group">
             <label for="settingForm[security:registrationMode]" class="col-xs-3 control-label">{{ t('Register limitation') }}</label>
             <div class="col-xs-6">
-              <select class="form-control" name="settingForm[security:registrationMode]" value="{{ settingForm['security:registrationMode'] }}">
+              <select class="form-control selectpicker" name="settingForm[security:registrationMode]" value="{{ settingForm['security:registrationMode'] }}">
                 {% for modeValue, modeLabel in consts.registrationMode %}
                 <option value="{{ modeValue }}" {% if modeValue == settingForm['security:registrationMode'] %}selected{% endif %} >{{ modeLabel }}</option>
                 {% endfor %}

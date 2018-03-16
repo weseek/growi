@@ -1,3 +1,5 @@
+require('bootstrap-select');
+
 $(function() {
   var UpdatePost = {};
 

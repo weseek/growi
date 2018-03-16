@@ -48,7 +48,7 @@
       {% if forceGrant %}
       <input type="hidden" name="pageForm[grant]" value="{{ forceGrant }}">
       {% else %}
-      <select name="pageForm[grant]" class="form-control input-sm m-r-5">
+      <select name="pageForm[grant]" class="m-r-5 selectpicker btn-group-sm">
         {% for grantId, grantLabel in consts.pageGrants %}
         <option value="{{ grantId }}" {% if pageForm.grant|default(page.grant) == grantId %}selected{% endif %}>{{ t(grantLabel) }}</option>
         {% endfor %}
