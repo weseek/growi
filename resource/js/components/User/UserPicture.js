@@ -12,7 +12,7 @@ export default class UserPicture extends React.Component {
     }
     // uploaded image
     else {
-      return user.image || '/images/user.svg';
+      return user.image || '/images/icons/user.svg';
     }
   }
 
