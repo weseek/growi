@@ -1144,6 +1144,7 @@ label{
   background: $this-color;
   border:1px solid $this-color;
    &:hover, &:focus, &.focus{
+    color: $bodytext;
     opacity:0.8;
     border:1px solid $this-color;
     background:$this-color;

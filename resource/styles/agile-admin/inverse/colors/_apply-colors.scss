@@ -160,6 +160,7 @@ legend {
  */
 .modal {
   .modal-header {
+    border-bottom-color: $border;
     &.bg-primary, &.bg-info, &.bg-success, &.bg-warning, &.bg-danger {
       color: white;
       .close {
@@ -175,6 +176,9 @@ legend {
   }
   .modal-content {
     background-color: $bodycolor;
+  }
+  .modal-footer {
+    border-top-color: $border;
   }
 }
 
@@ -234,13 +238,19 @@ legend {
 body.on-edit {
   .main {
     background-color: darken($bodycolor, 2%);
-  }
 
-  .page-editor-editor-container {
-    border-right: 1px solid $border;
-  }
-  .page-editor-preview-container {
-    background-color: $bodycolor;
+    .page-editor-editor-container {
+      border-right-color: $border;
+    }
+    .page-editor-preview-container {
+      background-color: $bodycolor;
+    }
+
+    .page-form {
+      .form-group.form-submit-group {
+        border-top-color: $border;
+      }
+    }
   }
 }
 
@@ -256,6 +266,28 @@ body.on-edit {
     background-color: darken($bodycolor, 4%);
     &:before {
       border-right-color: darken($bodycolor, 4%);
+    }
+  }
+}
+
+/*
+ * GROWI search result
+ */
+.search-result {
+  .search-result-list {
+    .page-list {
+      .page-list-ul {
+        > li > a {
+          background-color: transparent;
+        }
+        li:hover {
+          background-color: darken($bodycolor, 4%);
+        }
+        li.active {
+          background-color: darken($bodycolor, 8%);
+          border-color: $themecolor;
+        }
+      }
     }
   }
 }
