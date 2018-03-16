@@ -44,54 +44,6 @@
 
 
 /*
-// components
-
-// buttons
-$btn-google-color: rgb(204,89,71);
-.btn-google {
-  @include button-variant(lighten($btn-google-color, 50%), $btn-google-color, darken($btn-google-color, 20%));
-}
-
-
-input.searching {
-  background: #fff url(/images/loading_s.gif) right no-repeat;
-}
-.search-list {
-  padding: 0;
-
-  li {
-    list-style: none;
-  }
-  .list-link {
-    padding-bottom: 5px;
-    a {
-      display: block;
-      word-break: break-all;
-      font-weight: bold;
-      text-decoration: none;
-      span {
-        font-weight: normal;
-      }
-      &:hover {
-        background: #f0f0f0;
-        color: #666;
-      }
-    }
-    .search-description {
-      font-size: .8em;
-      color: #999;
-    }
-  }
-
-  .next-link {
-    a {
-      display: block;
-      text-align: center;
-    }
-  }
-}
-
-/*
  * Helper Classes
  */
 
