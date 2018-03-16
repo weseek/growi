@@ -97,3 +97,14 @@ input.form-control, textarea.form-control {
     }
   }
 }
+
+/*
+ * GROWI search page
+ */
+.search-page {
+  .input-group-btn {
+    .btn-default {
+      border: 1px solid darken($border, 30%); // fit to input.form-control
+    }
+  }
+}

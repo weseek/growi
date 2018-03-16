@@ -27,9 +27,6 @@
     color: #999;
     padding: 0;
   }
-  .rbt-input {
-    border: none;
-  }
   .rbt-menu {
     li a span {
       .page-path {
@@ -68,6 +65,7 @@
   // using react-bootstrap-typeahead
   // see: https://github.com/ericgio/react-bootstrap-typeahead
   .rbt-input.form-control {
+    border: none;
     background-color: rgba(255, 255, 255, 0.9);
     border-radius: 40px;
     border-top-right-radius: 40px;
@@ -119,11 +117,10 @@
       }
       .nav {
         > li {
-          padding: 0px 10px 0 0;
+          padding: 2px 8px;
           &.active {
-            padding-right: 7px;
-            border-right: solid 3px #666;
-            background: $gray-light;
+            padding-right: 5px;
+            border-right: solid 3px transparent;
           }
         }
       }

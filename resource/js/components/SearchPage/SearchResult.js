@@ -209,7 +209,7 @@ export default class SearchResult extends React.Component {
     else {
       deletionModeButtons =
       <div className="btn-group">
-        <button type="button" className="btn btn-default btn-outline btn-rounded btn-xs" onClick={() => this.handleDeletionModeChange()}>
+        <button type="button" className="btn btn-default btn-rounded btn-xs" onClick={() => this.handleDeletionModeChange()}>
           <i className="ti-check-box"/> DeletionMode
         </button>
       </div>
