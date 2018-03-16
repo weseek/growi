@@ -162,9 +162,11 @@ legend {
   .modal-header {
     &.bg-primary, &.bg-info, &.bg-success, &.bg-warning, &.bg-danger {
       color: white;
+      .close {
+        color: white;
+      }
     }
     .close {
-      color: white;
       opacity: 0.5;
       &:hover {
         opacity: 0.9;
