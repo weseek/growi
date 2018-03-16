@@ -291,9 +291,6 @@ export default class Editor extends React.Component {
       display: 'flex',
       flexDirection: 'column',
     }
-    const expandHeight = {
-      height: 'calc(100% - 22px)'
-    }
 
     const theme = this.props.editorOptions.theme || 'elegant';
     const styleActiveLine = this.props.editorOptions.styleActiveLine || undefined;
@@ -303,7 +300,6 @@ export default class Editor extends React.Component {
           ref="dropzone"
           disableClick
           disablePreview={true}
-          style={expandHeight}
           accept={this.getDropzoneAccept()}
           className={this.getDropzoneClassName()}
           acceptClassName="dropzone-accepted"

@@ -66,17 +66,26 @@ body.on-edit {
 
     .page-form {
 
+      // calculate margin
+      $header-plus-footer: 2px                      // .main padding-top
+                         + 42px                     // .nav height
+                         + 1px                      // .page-editor-footer border-top
+                         + 39px;                    // .page-editor-footer min-height
+      $preview-margin: $header-plus-footer;
+      $editor-margin: $header-plus-footer + 22px;   // .btn-open-dropzone height
+
       #page-editor {
+        // right(preview)
         &,
-        .row, .col-md-6, .col-sm-12,
-        .react-codemirror2, .CodeMirror, .CodeMirror-scroll,
+        .row,
+        .page-editor-preview-container,
         .page-editor-preview-body {
-          height: calc(100vh
-            - 2px   /* .main padding-top */
-            - 42px  /* .nav height */
-            - 1px   /* .page-editor-footer border-top */
-            - 39px  /* .page-editor-footer min-height */
-          );
+          height: calc(100vh - #{$preview-margin});
+        }
+        // left(editor)
+        .page-editor-editor-container,
+        .react-codemirror2, .CodeMirror, .CodeMirror-scroll {
+          height: calc(100vh - #{$editor-margin});
         }
       }
 
@@ -237,7 +246,7 @@ body.on-edit {
     } // end of.dropzone
 
     .btn-open-dropzone {
-      z-index: 1;
+      z-index: 2;
       font-size: small;
       text-align: right;
       padding-top: 3px;
@@ -245,7 +254,6 @@ body.on-edit {
       border: none;
       border-radius: 0;
       border-top: 1px dotted #ccc;
-      background-color: transparent;
 
       &:active {
         box-shadow: none;
