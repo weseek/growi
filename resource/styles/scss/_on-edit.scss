@@ -80,7 +80,6 @@ body.on-edit {
         margin: 0;
         padding: 8px;
         min-height: 50px;
-        background-color: #fafafa;
         border-top: solid 1px #ccc;
       }
 
@@ -112,16 +111,8 @@ body.on-edit {
   /*****************
    * Editor styles
    *****************/
-  .main {
-    background-color: #fafafa;
-    #page-editor {
-      background-color: #fff;
-    }
-  }
   .page-editor-editor-container {
     padding-right: 0;
-    border-right: 1px solid #ccc;
-
     // override CodeMirror styles
     .CodeMirror {
       pre {

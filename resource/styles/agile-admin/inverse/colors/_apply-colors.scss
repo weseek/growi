@@ -57,7 +57,7 @@ body{
     color:$themecolor;
 }
 .bg-title{
-
+  background: darken($bodycolor, 2%);
 }
 
 /*Sidebar*/
@@ -179,7 +179,31 @@ legend {
     }
   }
   > li.active > a {
-    background: transparent;
+    background: $bodycolor;
     border-bottom: 1px solid $bodycolor;
+  }
+}
+
+
+/*
+ * header
+ */
+.main-container header.affix {
+  background: rgba(darken($bodycolor, 2%), .9);
+}
+
+/*
+ * on-edit
+ */
+body.on-edit {
+  .main {
+    background-color: darken($bodycolor, 2%);
+  }
+
+  .page-editor-editor-container {
+    border-right: 1px solid $border;
+  }
+  .page-editor-preview-container {
+    background-color: $bodycolor;
   }
 }

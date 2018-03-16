@@ -15,5 +15,7 @@ $dark-themecolor:#4F5467;
 
 $primary: $topbar;
 
+$border: lighten($basecolor, 40%);
+
 @import 'apply-colors';
 @import 'apply-colors-dark';

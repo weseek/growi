@@ -4,10 +4,6 @@
   }
 }
 
-.bg-title{
-  background: darken($bodycolor, 5%);
-}
-
 /*
   * Code
   */
@@ -28,8 +24,7 @@ input.form-control, textarea.form-control {
  * Tabs
  */
 .nav.nav-tabs {
-  $border-color: #999;
-  border-color: $border-color;
+  border-bottom-color: $border;
 
   > li > a {
     color:$light;
@@ -37,12 +32,27 @@ input.form-control, textarea.form-control {
       color: $light;
     }
   }
+  > li.active > a {
+    border-top-color: $border;
+    border-left-color: $border;
+    border-right-color: $border;
+  }
   > li:not(.active) > a {
     &:hover, &:focus {
-      border-top-color: darken($border-color, 25%);
-      border-left-color: darken($border-color, 25%);
-      border-right-color: darken($border-color, 25%);
+      border-top-color: darken($border, 20%);
+      border-left-color: darken($border, 20%);
+      border-right-color: darken($border, 20%);
       border-bottom: transparent;
     }
+  }
+}
+
+
+/*
+ * header
+ */
+.main-container header.affix {
+  .logo-mark {
+    fill: white;
   }
 }
