@@ -1,20 +1,17 @@
 .crowi-sidebar { // {{{
   position: fixed;
   padding: 65px 0 0 0;
-  color: #333;
   height: 100%;
   right: 0;
   top: 0;
   overflow: auto;
-  border-left: solid 1px #ccc;
-  background: #f5f5f5;
+  border-left: solid 1px transparent;
 
   transition: .3s ease;
 
 
   .page-meta {
     padding: 15px 15px 5px 15px;
-    color: #666;
     font-size: .9em;
     border-bottom: solid 1px #ccc;
 
@@ -70,7 +67,6 @@
 
   .side-content {
     margin-bottom: 100px;
-    color: #666;
     padding: 15px;
 
     h3 {
@@ -114,7 +110,6 @@
         .page-comment {
           margin-top: 8px;
           padding-top: 8px;
-          border-top: solid 1px #ccc;
 
           .picture {
             float: left;
@@ -172,7 +167,6 @@
     display: flex;
     justify-content: space-between;
 
-    background-color: #f5f5f5;
     transition: .3s ease;
   }
 

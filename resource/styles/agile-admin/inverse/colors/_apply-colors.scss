@@ -211,6 +211,17 @@ legend {
 
 
 /*
+ * Crowi sidebar
+ */
+.crowi-sidebar {
+  background-color: darken($bodycolor, 4%);
+  border-left: solid 1px $border;
+  .system-version {
+    background-color: darken($bodycolor, 4%);
+  }
+}
+
+/*
  * GROWI header
  */
 .main-container header.affix {
