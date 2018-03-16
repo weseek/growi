@@ -4,15 +4,15 @@
 
       <form role="form" id="delete-page-form" onsubmit="return false;">
 
-        <div class="modal-header">
+        <div class="modal-header {% if page.isDeleted() %}bg-danger{% endif %}">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title">
+          <div class="modal-title">
             {% if page.isDeleted() %}
-            <i class="icon-fw icon-fire text-danger"></i> {{ t('modal_delete.label.completely') }}
+            <i class="icon-fw icon-fire"></i> {{ t('modal_delete.label.completely') }}
             {% else %}
             <i class="icon-fw icon-trash"></i> {{ t('modal_delete.label.Delete Page') }}
             {% endif %}
-          </h4>
+          </div>
         </div>
         <div class="modal-body">
           <div class="form-group">
