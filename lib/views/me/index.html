@@ -148,7 +148,7 @@
             {% if isUploadable() %}
             <form action="/_api/me/picture/upload" id="pictureUploadForm" method="post" class="form-horizontal" role="form" enctype="multipart/form-data">
               <input name="userPicture" type="file" accept="image/*">
-              <div id="pictureUploadFormProgress">
+              <div id="pictureUploadFormProgress" class="d-flex align-items-center">
               </div>
             </form>
             {% else %}
@@ -179,7 +179,7 @@
         return false;
       }
 
-      $('#pictureUploadFormProgress').html('<img src="/images/loading_s.gif"> アップロード中...');
+      $('#pictureUploadFormProgress').html('<div class="speeding-wheel-sm m-r-5"></div> アップロード中...');
       $.ajax($form.attr("action"), {
         type: 'post',
         processData: false,
