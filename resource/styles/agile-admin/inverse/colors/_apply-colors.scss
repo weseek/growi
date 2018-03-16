@@ -163,6 +163,15 @@ legend {
 }
 
 /*
+ * Panel
+ */
+.panel {
+  .panel-body {
+    background-color: $bodycolor;
+  }
+}
+
+/*
  * Wells
  */
 .well {
@@ -205,5 +214,22 @@ body.on-edit {
   }
   .page-editor-preview-container {
     background-color: $bodycolor;
+  }
+}
+
+/*
+ * comment form
+ */
+.growi .main {
+  .page-comments-row {
+    border-top-color: $border;
+  }
+  .comment-form {
+    .comment-form-main {
+      background-color: darken($bodycolor, 4%);
+      &:before {
+        border-right-color: darken($bodycolor, 4%);
+      }
+    }
   }
 }

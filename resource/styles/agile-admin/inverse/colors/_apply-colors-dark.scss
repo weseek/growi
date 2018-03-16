@@ -17,7 +17,28 @@ code {
 input.form-control, textarea.form-control {
   color: lighten($bodytext, 30%);
   background-color: darken($bodycolor, 5%);
-  border: 1px solid darken($bodycolor, 5%);
+  border: 1px solid darken($border, 30%);
+}
+
+/*
+ * Dropdown
+ */
+.dropdown-menu {
+  background-color: $bodycolor;
+  > li > a {
+    color: $bodytext;
+  }
+}
+
+/*
+ * Panel
+ */
+.panel {
+  &, &.panel-white, &.panel-default {
+    .panel-heading, .panel-body {
+      color: $light;
+    }
+  }
 }
 
 /*
