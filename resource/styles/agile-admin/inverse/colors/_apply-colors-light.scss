@@ -17,3 +17,20 @@
 .nav-tabs > li > a {
   color: $dark;
 }
+
+
+/*
+ * GROWI page list
+ */
+ .page-list {
+  .page-list-ul {
+    > li {
+      > a strong {
+        color: darken($bodytext, 20%);
+      }
+      > span.page-list-meta {
+        color: lighten($bodytext, 10%);;
+      }
+    }
+  }
+}

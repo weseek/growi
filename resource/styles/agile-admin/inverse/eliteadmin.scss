@@ -1140,26 +1140,27 @@ label{
 
 }
 .btn-default, .btn-default.disabled{
-  background:$light;
-  border:1px solid $light;
+  color: $bodytext;
+  $this-color: darken($bodycolor, 10%);
+  background: $this-color;
+  border:1px solid $this-color;
    &:hover, &:focus, &.focus{
     opacity:0.8;
-    border:1px solid $light;
-    background:$light;
+    border:1px solid $this-color;
+    background:$this-color;
   }
 
 }
 
 .btn-default.btn-outline {
-    background-color:$white;
+    background-color: transparent;
     &:hover, &:focus, &.focus{
-    background:$light;
-
+    background:darken($bodycolor, 10%);
     }
 }
 .btn-primary.btn-outline {
     color: $primary;
-    background-color:$white;
+    background-color: transparent;
      &:hover, &:focus, &.focus{
     background:$primary;
     color:$white;

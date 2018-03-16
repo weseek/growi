@@ -70,10 +70,26 @@ input.form-control, textarea.form-control {
 
 
 /*
- * header
+ * GROWI header
  */
 .main-container header.affix {
   .logo-mark {
     fill: white;
+  }
+}
+
+/*
+ * GROWI page list
+ */
+.page-list {
+  .page-list-ul {
+    > li {
+      > a strong {
+        color: lighten($bodytext, 25%);
+      }
+      > span.page-list-meta {
+        color: $bodytext;
+      }
+    }
   }
 }

@@ -2216,6 +2216,7 @@ position:relative;
 
 /* Button 1b */
 .btn-1b{
+  overflow: hidden;
   &:after {
   width: 100%;
   height: 0;
