@@ -291,3 +291,11 @@ body.on-edit {
     }
   }
 }
+
+/*
+ * GROWI page attachments
+ */
+.page-attachments-row {
+  border-top-color: $border;
+  background-color: darken($bodycolor, 2%);
+}
