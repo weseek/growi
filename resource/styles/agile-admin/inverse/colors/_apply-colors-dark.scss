@@ -23,6 +23,15 @@ input.form-control, textarea.form-control {
   color: lighten($bodytext, 10%);
   background-color: lighten($bodycolor, 5%);
 }
+/*
+ * Form
+ */
+.input-group .input-group-addon {
+  color: $dark;
+  background-color: rgba($topbar, 0.4);
+  border: 1px solid darken($border, 30%);
+  border-right: none;
+}
 
 /*
  * Dropdown
@@ -114,5 +123,14 @@ input.form-control, textarea.form-control {
     .btn-default {
       border: 1px solid darken($border, 30%); // fit to input.form-control
     }
+  }
+}
+
+/*
+ * GROWI on-edit
+ */
+.page-editor-footer {
+  #slack-mark-black {
+    display: none;
   }
 }

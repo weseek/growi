@@ -51,6 +51,16 @@
 }
 
 /*
+ * Form
+ */
+.input-sm,
+.input-group-sm > .form-control,
+.input-group-addon.input-sm,
+.input-group-sm > .input-group-addon {
+  border-radius: $radius;
+}
+
+/*
  * Button
  */
 button.btn.btn-link:hover {
