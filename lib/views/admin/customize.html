@@ -143,12 +143,12 @@
       </fieldset>
       </form>
 
-      <form action="/_api/admin/customize/highlight" method="post" class="form-horizontal" id="cutomhighlightSettingForm" role="form">
+      <form action="/_api/admin/customize/highlightJsStyle" method="post" class="form-horizontal" id="cutomhighlightJsStyleSettingForm" role="form">
         <fieldset>
           <legend>ハイライト設定</legend>
           <div class="form-group">
             <div class="col-xs-3">
-              <select class="form-control" name="settingForm[customize:highlight]" onChange="selectHighlight()">
+              <select class="form-control" name="settingForm[customize:highlightJsStyle]" onChange="selectHighlight()">
                 {% for key in Object.keys(highlightJsCssSelectorOptions) %}
                   <option value={{key}}>{{highlightJsCssSelectorOptions[key]}}</option>
                 {% endfor %}
@@ -373,7 +373,7 @@ window.addEventListener('load', (event) => {
   </div>
 
   <script>
-    $('#cutomcssSettingForm, #cutomscriptSettingForm, #cutomlayoutSettingForm, #cutombehaviorSettingForm, #customfeaturesSettingForm, #cutomheaderSettingForm, #cutomhighlightSettingForm').each(function() {
+    $('#cutomcssSettingForm, #cutomscriptSettingForm, #cutomlayoutSettingForm, #cutombehaviorSettingForm, #customfeaturesSettingForm, #cutomheaderSettingForm, #cutomhighlightJsStyleSettingForm').each(function() {
       $(this).submit(function()
       {
         function showMessage(formId, msg, status) {
@@ -424,11 +424,11 @@ window.addEventListener('load', (event) => {
     hljs.initHighlighting()
 
     // 保存した highlight の値を selector に復元する
-    $('#cutomhighlightSettingForm select').val('{{ highlightType() }}');
+    $('#cutomhighlightJsStyleSettingForm select').val('{{ highlightJsStyle() }}');
 
     function selectHighlight() {
       // selecter で選択された値
-      var val = $('#cutomhighlightSettingForm select').val()
+      var val = $('#cutomhighlightJsStyleSettingForm select').val()
       // 追加する style の DOM
       var style = `<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/${val}.css">`;
       // body の最後に追加 layout.html は body に読み込まれてるため、body の一番下に追加しないと上書きされない
