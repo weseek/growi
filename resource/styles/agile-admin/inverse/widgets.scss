@@ -2181,6 +2181,15 @@ position:relative;
 .jq-icon-error {background-color: $danger; color:$white;}
 .jq-icon-warning{ background-color:$warning; color:$white;}
 */
+#toast-container > div {
+  border-radius: $radius;
+  box-shadow: none;
+  opacity: 1;
+}
+.toast-info {background-color: $info; color:$white;}
+.toast-success {background-color: $success; color:$white;}
+.toast-error {background-color: $danger; color:$white;}
+.toast-warning{ background-color:$warning; color:$white;}
 
 
 /*Dropzone*/
