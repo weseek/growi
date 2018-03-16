@@ -150,7 +150,7 @@
           <legend>ハイライト設定</legend>
           <div class="form-group">
             <div class="col-xs-3">
-              <select class="form-control" name="settingForm[customize:highlightJsStyle]" onChange="selectHighlight()">
+              <select class="form-control" name="settingForm[customize:highlightJsStyle]" onChange="selectHighlightJsStyle(event)">
                 {% for key in Object.keys(highlightJsCssSelectorOptions) %}
                   <option value={{key}}>{{highlightJsCssSelectorOptions[key]}}</option>
                 {% endfor %}
@@ -432,10 +432,10 @@ window.addEventListener('load', (event) => {
     // 保存した highlight の値を selector に復元する
     $('#cutomhighlightJsStyleSettingForm select').val('{{ highlightJsStyle() }}');
 
-    function selectHighlight() {
+    function selectHighlightJsStyle(event) {
       // selecter で選択された値
-      var val = $('#cutomhighlightJsStyleSettingForm select').val()
-      // 追加する style の DOM
+      var val = event.target.value
+      // css の URL を書き換える
       $(".highlightJsCss")[0].href = `https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/${val}.css`;
       // demo の部分だけ highlight.js 再読み込み
       hljs.highlightBlock($(".highlight-demo")[0]);
