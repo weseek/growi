@@ -6,6 +6,9 @@ import FormControl from 'react-bootstrap/es/FormControl';
 import ControlLabel from 'react-bootstrap/es/ControlLabel';
 import Button from 'react-bootstrap/es/Button';
 
+import Dropdown from 'react-bootstrap/es/Dropdown';
+import MenuItem from 'react-bootstrap/es/MenuItem';
+
 import OverlayTrigger  from 'react-bootstrap/es/OverlayTrigger';
 import Tooltip from 'react-bootstrap/es/Tooltip';
 
@@ -20,6 +23,7 @@ export default class OptionsSelector extends React.Component {
     this.state = {
       editorOptions: this.props.editorOptions || new EditorOptions(),
       previewOptions: this.props.previewOptions || new PreviewOptions(),
+      isCddMenuOpened: false,
       isMathJaxEnabled,
     }
 
@@ -30,6 +34,7 @@ export default class OptionsSelector extends React.Component {
     this.onChangeTheme = this.onChangeTheme.bind(this);
     this.onClickStyleActiveLine = this.onClickStyleActiveLine.bind(this);
     this.onClickRenderMathJaxInRealtime = this.onClickRenderMathJaxInRealtime.bind(this);
+    this.onToggleConfigurationDropdown = this.onToggleConfigurationDropdown.bind(this);
   }
 
   componentDidMount() {
@@ -50,6 +55,9 @@ export default class OptionsSelector extends React.Component {
   }
 
   onClickStyleActiveLine(event) {
+    // keep dropdown opened
+    this._cddForceOpen = true;
+
     const newValue = !this.state.editorOptions.styleActiveLine;
     const newOpts = Object.assign(this.state.editorOptions, {styleActiveLine: newValue});
     this.setState({editorOptions: newOpts});
@@ -59,12 +67,28 @@ export default class OptionsSelector extends React.Component {
   }
 
   onClickRenderMathJaxInRealtime(event) {
+    // keep dropdown opened
+    this._cddForceOpen = true;
+
     const newValue = !this.state.previewOptions.renderMathJaxInRealtime;
     const newOpts = Object.assign(this.state.previewOptions, {renderMathJaxInRealtime: newValue});
     this.setState({previewOptions: newOpts});
 
     // dispatch event
     this.dispatchOnChange();
+  }
+
+  /*
+   * see: https://github.com/react-bootstrap/react-bootstrap/issues/1490#issuecomment-207445759
+   */
+  onToggleConfigurationDropdown(newValue) {
+    if (this._cddForceOpen) {
+      this.setState({ isCddMenuOpened: true });
+      this._cddForceOpen = false;
+    }
+    else {
+      this.setState({ isCddMenuOpened: newValue });
+    }
   }
 
   /**
@@ -86,7 +110,7 @@ export default class OptionsSelector extends React.Component {
     return (
       <FormGroup controlId="formControlsSelect">
         <ControlLabel>Theme:</ControlLabel>
-        <FormControl componentClass="select" placeholder="select" bgSize="sm" bsClass={bsClassName} className="btn-group-sm selectpicker"
+        <FormControl componentClass="select" placeholder="select" bsClass={bsClassName} className="btn-group-sm selectpicker"
             onChange={this.onChangeTheme}
             inputRef={ el => this.themeSelectorInputEl=el }>
 
@@ -97,44 +121,74 @@ export default class OptionsSelector extends React.Component {
     )
   }
 
-  renderStyleActiveLineSelector() {
-    const bool = this.state.editorOptions.styleActiveLine;
+  renderConfigurationDropdown() {
     return (
       <FormGroup controlId="formControlsSelect">
-        <Button active={bool} className="btn-sm btn-style-active-line"
-            onClick={this.onClickStyleActiveLine}>
-          Active Line
-        </Button>
+
+        <Dropdown dropup id="configurationDropdown" className="configuration-dropdown"
+            open={this.state.isCddMenuOpened} onToggle={this.onToggleConfigurationDropdown}>
+
+          <Dropdown.Toggle bsSize="sm">
+            <i className="icon-settings"></i>
+          </Dropdown.Toggle>
+
+          <Dropdown.Menu>
+            {this.renderActiveLineMenuItem()}
+            {this.renderRealtimeMathJaxMenuItem()}
+            {/* <MenuItem divider /> */}
+          </Dropdown.Menu>
+
+        </Dropdown>
+
       </FormGroup>
     )
   }
 
-  renderRealtimeMathJaxSelector() {
+  renderActiveLineMenuItem() {
     if (!this.state.isMathJaxEnabled) {
       return;
     }
 
-    // tooltip
-    const tooltip = (
-      <Tooltip id="tooltip-realtime-mathjax-rendering">Realtime MathJax Rendering</Tooltip>
-    );
+    const isActive = this.state.editorOptions.styleActiveLine;
+
+    const iconClasses = ['text-info']
+    if (isActive) {
+      iconClasses.push('ti-check')
+    }
+    const iconClassName = iconClasses.join(' ');
+
+    return (
+      <MenuItem onClick={this.onClickStyleActiveLine}>
+        <span className="icon-container"><i className={iconClassName}></i></span>
+        Show active line
+      </MenuItem>
+    )
+  }
+
+  renderRealtimeMathJaxMenuItem() {
+    if (!this.state.isMathJaxEnabled) {
+      return;
+    }
 
     const isEnabled = this.state.isMathJaxEnabled;
     const isActive = isEnabled && this.state.previewOptions.renderMathJaxInRealtime;
+
+    const iconClasses = ['text-info']
+    if (isActive) {
+      iconClasses.push('ti-check')
+    }
+    const iconClassName = iconClasses.join(' ');
+
     return (
-      <FormGroup controlId="formControlsSelect">
-        <OverlayTrigger placement="top" overlay={tooltip}>
-          <Button active={isActive} className="btn-sm btn-render-mathjax-in-realtime"
-              onClick={this.onClickRenderMathJaxInRealtime}>
-            <i className="fa fa-superscript" aria-hidden="true"></i>
-          </Button>
-        </OverlayTrigger>
-      </FormGroup>
+      <MenuItem onClick={this.onClickRenderMathJaxInRealtime}>
+        <span className="icon-container"><i className={iconClassName}></i></span>
+        MathJax Rendering
+      </MenuItem>
     )
   }
 
   render() {
-    return <span>{this.renderThemeSelector()} {this.renderStyleActiveLineSelector()} {this.renderRealtimeMathJaxSelector()}</span>
+    return <span>{this.renderThemeSelector()} {this.renderConfigurationDropdown()}</span>
   }
 }
 

@@ -86,14 +86,15 @@ body.on-edit {
         padding: 4px;
         min-height: 39px;
         border-top: solid 1px transparent;
+      }
 
-        .input-group-slack {
-          .input-group-addon {
-            padding: 2px 8px;
-            line-height: 1em;
-            img, input {
-              vertical-align: middle;
-            }
+      // slack
+      .input-group-slack {
+        .input-group-addon {
+          padding: 2px 8px;
+          line-height: 1em;
+          img, input {
+            vertical-align: middle;
           }
         }
       }
@@ -265,9 +266,11 @@ body.on-edit {
       margin-right: 0.5em;
     }
 
-    .btn-style-active-line, .btn-render-mathjax-in-realtime {
-      &:hover:not(.active), &:focus:not(.active) {
-        background-color: inherit;
+    // configuration dropdown
+    .configuration-dropdown {
+      .icon-container {
+        display: inline-block;
+        width: 20px;
       }
     }
 
