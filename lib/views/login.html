@@ -147,11 +147,17 @@
         </div>
 
         {% if config.crowi['security:registrationMode'] != 'Closed' %}
-        <a href="#register" id="register" class="pull-right link-switch">
-          <i class="ti-check-box"></i> {{ t('Sign up is here') }}
-        </a>
+        <div class="row">
+          <div class="col-xs-12 text-right">
+            <a href="#register" id="register" class="link-switch">
+              <i class="ti-check-box"></i> {{ t('Sign up is here') }}
+            </a>
+          </div>
+        </div>
         {% endif %}
       </div>
+
+
       {% if config.crowi['security:registrationMode'] != 'Closed' %}
       <div class="back">
         {% if config.crowi['security:registrationMode'] == 'Restricted' %}
@@ -180,6 +186,9 @@
             <span class="input-group-addon"><i class="icon-user"></i></span>
             <input type="text" class="form-control" placeholder="{{ t('User ID') }}" name="registerForm[username]" value="{{ req.body.registerForm.username }}" required>
           </div>
+          <p class="help-block">
+            <span id="help-block-username"></span>
+          </p>
 
           <div class="input-group">
             <span class="input-group-addon"><i class="icon-tag"></i></span>
@@ -233,9 +242,13 @@
           {% endif %}
         </div>
 
-        <a href="#login" id="login" class="pull-right link-switch">
-          <i class="icon-fw icon-login"></i>{{ t('Sign in is here') }}
-        </a>
+        <div class="row">
+          <div class="col-xs-12 text-right">
+            <a href="#login" id="login" class="link-switch">
+              <i class="icon-fw icon-login"></i>{{ t('Sign in is here') }}
+            </a>
+          </div>
+        </div>
       </div>
       {% endif %} {# if registrationMode == Closed #}
 
@@ -266,12 +279,16 @@
 
   $('#register-form input[name="registerForm[username]"]').change(function(e) {
     var username = $(this).val();
+    $('#login-dialog').removeClass('has-error');
     $('#input-group-username').removeClass('has-error');
     $('#help-block-username').html("");
 
     $.getJSON('/_api/check_username', {username: username}, function(json) {
       if (!json.valid) {
-        $('#help-block-username').html('<i class="fa fa-warning"></i> This User ID is not available.<br>');
+        $('#help-block-username').html(
+          '<i class="icon-fw icon-ban"></i> This User ID is not available.'
+        );
+        $('#login-dialog').addClass('has-error');
         $('#input-group-username').addClass('has-error');
       }
     });

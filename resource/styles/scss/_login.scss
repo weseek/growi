@@ -1,4 +1,4 @@
-.login-page {
+.login-page, .installer {
   $gray-dark-for-login: darken(white, 30%);
 
   // background color
@@ -16,7 +16,7 @@
     height: 100vh;
 
     #page-wrapper {
-      height: 80vh;
+      height: 100vh;
       display: flex;
       align-items: center;
 
@@ -26,15 +26,6 @@
         > .row {
           margin-right: 20px;
           margin-left: 20px;
-        }
-
-        @media(min-width: 480px) {
-          .col-sm-offset-4 {
-            margin-left: calc(50% - 170px);
-          }
-          .col-sm-4 {
-            width: 340px;
-          }
         }
 
         .login-header {
@@ -60,45 +51,11 @@
           }
         }
 
-        .link-growi-org {
-          position: absolute;
-          bottom: 9px;
-        }
-
-        // flip animation
-        .login-dialog.flipper {
-          transition: min-height 0.2s;
-
-          &.to-flip {
-            min-height: 313px;
-          }
-
-          .front, .back {
-            backface-visibility: hidden;
-            transition: 0.4s;
-            transform-style: preserve-3d;
-          }
-          .front {
-            z-index: 2;
-          }
-          .back {
-            position: absolute;
-            top: 0;
-            left: 15px;
-            right: 15px;
-          }
-          .back,
-          &.to-flip .front {
-            transform: rotateY(180deg);
-          }
-          &.to-flip .back {
-            transform: rotateY(0deg);
-          }
-        }
       }  // .main
     }  // #page-wrapper
   } // #wrapper
 
+  // styles
   .login-header {
     background-color: rgba(white, 0.5);
     .logo {
@@ -129,12 +86,16 @@
       background-color: rgba(black, 0.4);
     }
     .form-control {
-      border: none;
       color: white;
       background-color: rgba(lighten(black, 10%), 0.4);
       &::placeholder {
         color: $gray-dark-for-login;
       }
+    }
+  }
+  .input-group:not(.has-error) {
+    .form-control {
+      border: transparent;
     }
   }
 
@@ -198,6 +159,76 @@
     color: $gray;
     &:hover {
       color: white;
+    }
+  }
+}
+
+
+.login-page {
+  // layout
+  .main .row {
+    @media(min-width: 350px) {
+      .col-sm-offset-4 {
+        margin-left: calc(50% - 160px);
+      }
+      .col-sm-4 {
+        width: 320px;
+      }
+    }
+  }
+
+  // flip animation
+  .login-dialog.flipper {
+    transition: min-height 0.2s;
+
+    &.to-flip {
+      min-height: 295px;
+      // has-error
+      &.has-error {
+        min-height: #{295px + 32px};
+      }
+    }
+
+    .front, .back {
+      backface-visibility: hidden;
+      transition: 0.4s;
+      transform-style: preserve-3d;
+    }
+    .front {
+      z-index: 2;
+    }
+    .back {
+      position: absolute;
+      top: 0;
+      left: 15px;
+      right: 15px;
+    }
+    .back,
+    &.to-flip .front {
+      transform: rotateY(180deg);
+    }
+    &.to-flip .back {
+      transform: rotateY(0deg);
+    }
+  }
+
+  .link-growi-org {
+    position: absolute;
+    bottom: 9px;
+  }
+}
+
+
+.installer {
+  // layout
+  .main .row {
+    @media(min-width: 510px) {
+      .col-sm-offset-4 {
+        margin-left: calc(50% - 240px);
+      }
+      .col-sm-4 {
+        width: 480px;
+      }
     }
   }
 }
