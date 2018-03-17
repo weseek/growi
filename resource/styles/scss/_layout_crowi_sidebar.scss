@@ -172,11 +172,22 @@
 
 } // }}}
 
+body:not(.aside-hidden) #toggle-sidebar {
+  i.ti-angle-left {
+    display: none;
+  }
+  i.ti-angle-right {
+    display: block;
+  }
+}
 .aside-hidden { // {{{
   #toggle-sidebar {
     right: 0;
-    i {
-      transform: rotate(180deg);
+    i.ti-angle-right {
+      display: block;
+    }
+    i.ti-angle-right {
+      display: none;
     }
   }
 
@@ -184,7 +195,8 @@
     right: -25%;
   } // }}}
 
-  .main { // {{{
+  .bg-title .col-md-9,
+  .main {
     width: 100%;
-  } // }}}
+  }
 } // }}}
