@@ -1,4 +1,4 @@
-.login-page, .installer {
+.login-page, .installer, .invited {
   $gray-dark-for-login: darken(white, 30%);
 
   // background color
@@ -220,7 +220,7 @@
 }
 
 
-.installer {
+.installer, .invited {
   // layout
   .main .row {
     @media(min-width: 510px) {
