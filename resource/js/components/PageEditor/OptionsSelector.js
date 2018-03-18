@@ -157,7 +157,7 @@ export default class OptionsSelector extends React.Component {
       <MenuItem onClick={this.onClickStyleActiveLine}>
         <span className="icon-container"></span>
         <span className="menuitem-label">Show active line</span>
-        <i className={iconClassName}></i>
+        <span className="icon-container"><i className={iconClassName}></i></span>
       </MenuItem>
     )
   }
