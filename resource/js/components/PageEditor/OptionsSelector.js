@@ -145,10 +145,6 @@ export default class OptionsSelector extends React.Component {
   }
 
   renderActiveLineMenuItem() {
-    if (!this.state.isMathJaxEnabled) {
-      return;
-    }
-
     const isActive = this.state.editorOptions.styleActiveLine;
 
     const iconClasses = ['text-info']
