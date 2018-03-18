@@ -176,6 +176,11 @@
       }
     }
   }
+  .link-growi-org {
+    position: absolute;
+    z-index: 2;
+    bottom: 9px;
+  }
 
   // flip animation
   .login-dialog.flipper {
@@ -212,10 +217,6 @@
     }
   }
 
-  .link-growi-org {
-    position: absolute;
-    bottom: 9px;
-  }
 }
 
 
