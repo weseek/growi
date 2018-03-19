@@ -26,6 +26,7 @@ import SearchTypeahead  from './components/SearchTypeahead';
 import CustomCssEditor  from './components/Admin/CustomCssEditor';
 import CustomScriptEditor from './components/Admin/CustomScriptEditor';
 import CustomHeaderEditor from './components/Admin/CustomHeaderEditor';
+import CustomTitleEditor from './components/Admin/CustomTitleEditor';
 
 import * as entities from 'entities';
 
@@ -152,10 +153,10 @@ if (pageEditorElem) {
 
   pageEditor = ReactDOM.render(
     <PageEditor crowi={crowi} crowiRenderer={crowiRenderer}
-        pageId={pageId} revisionId={pageRevisionId} pagePath={pagePath}
-        markdown={markdown}
-        editorOptions={editorOptions} previewOptions={previewOptions}
-        onSaveSuccess={onSaveSuccess} />,
+      pageId={pageId} revisionId={pageRevisionId} pagePath={pagePath}
+      markdown={markdown}
+      editorOptions={editorOptions} previewOptions={previewOptions}
+      onSaveSuccess={onSaveSuccess} />,
     pageEditorElem
   );
   // set refs for pageEditor
@@ -166,15 +167,15 @@ const pageEditorOptionsSelectorElem = document.getElementById('page-editor-optio
 if (pageEditorOptionsSelectorElem) {
   ReactDOM.render(
     <OptionsSelector crowi={crowi}
-        editorOptions={editorOptions} previewOptions={previewOptions}
-        onChange={(newEditorOptions, newPreviewOptions) => { // set onChange event handler
-          // set options
-          pageEditor.setEditorOptions(newEditorOptions);
-          pageEditor.setPreviewOptions(newPreviewOptions);
-          // save
-          crowi.saveEditorOptions(newEditorOptions);
-          crowi.savePreviewOptions(newPreviewOptions);
-        }} />,
+      editorOptions={editorOptions} previewOptions={previewOptions}
+      onChange={(newEditorOptions, newPreviewOptions) => { // set onChange event handler
+        // set options
+        pageEditor.setEditorOptions(newEditorOptions);
+        pageEditor.setPreviewOptions(newPreviewOptions);
+        // save
+        crowi.saveEditorOptions(newEditorOptions);
+        crowi.savePreviewOptions(newPreviewOptions);
+      }} />,
     pageEditorOptionsSelectorElem
   );
 }
@@ -208,7 +209,17 @@ if (customHeaderEditorElem != null) {
   ReactDOM.render(
     <CustomHeaderEditor inputElem={customHeaderInputElem} />,
     customHeaderEditorElem
-  )
+  );
+}
+const customTitleEditorElem = document.getElementById('custom-title-editor');
+if (customTitleEditorElem != null) {
+  // get input[type=hidden] element
+  const customTitleInputElem = document.getElementById('inputCustomTitle');
+
+  ReactDOM.render(
+    <CustomTitleEditor inputElem={customTitleInputElem} />,
+    customTitleEditorElem
+  );
 }
 
 // うわーもうー
