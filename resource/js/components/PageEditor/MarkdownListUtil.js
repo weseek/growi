@@ -1,6 +1,7 @@
-import * as codemirror from 'codemirror';
-
-class MarkdownListHelper {
+/**
+ * Utility for markdown list
+ */
+class MarkdownListUtil {
 
   constructor() {
     // https://github.com/codemirror/CodeMirror/blob/c7853a989c77bb9f520c9c530cbe1497856e96fc/addon/edit/continuelist.js#L14
@@ -8,31 +9,13 @@ class MarkdownListHelper {
     this.indentAndMarkRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]\s|[*+-]\s|(\d+)([.)]))(\s*)/;
     this.indentAndMarkOnlyRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]|[*+-]|(\d+)[.)])(\s*)$/;
 
-    this.newlineAndIndentContinueMarkdownList = this.newlineAndIndentContinueMarkdownList.bind(this);
     this.pasteText = this.pasteText.bind(this);
 
     this.getBol = this.getBol.bind(this);
     this.getEol = this.getEol.bind(this);
     this.getStrFromBol = this.getStrFromBol.bind(this);
     this.getStrToEol = this.getStrToEol.bind(this);
-  }
-
-  /**
-   * wrap codemirror.commands.newlineAndIndentContinueMarkdownList
-   * @param {any} editor An editor instance of CodeMirror
-   */
-  newlineAndIndentContinueMarkdownList(editor) {
-    // get strings from current position to EOL(end of line) before break the line
-    const strToEol = this.getStrToEol(editor);
-
-    if (this.indentAndMarkRE.test(strToEol)) {
-      codemirror.commands.newlineAndIndent(editor);
-      // replace the line with strToEol (abort auto indent)
-      editor.getDoc().replaceRange(strToEol, this.getBol(editor), this.getEol(editor));
-    }
-    else {
-      codemirror.commands.newlineAndIndentContinueMarkdownList(editor);
-    }
+    this.newlineWithoutIndent = this.newlineWithoutIndent.bind(this);
   }
 
   /**
@@ -159,9 +142,19 @@ class MarkdownListHelper {
     const curPos = editor.getCursor();
     return editor.getDoc().getRange(curPos, this.getEol(editor));
   }
+
+  /**
+   * insert newline without indent
+   */
+  newlineWithoutIndent(editor, strToEol) {
+    codemirror.commands.newlineAndIndent(editor);
+
+    // replace the line with strToEol (abort auto indent)
+    editor.getDoc().replaceRange(strToEol, this.getBol(editor), this.getEol(editor));
+  }
 }
 
 // singleton pattern
-const instance = new MarkdownListHelper();
+const instance = new MarkdownListUtil();
 Object.freeze(instance);
 export default instance;

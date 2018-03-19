@@ -101,6 +101,7 @@
     "markdown-it-plantuml": "^1.0.0",
     "markdown-it-task-lists": "^2.1.0",
     "markdown-it-toc-and-anchor-with-slugid": "^1.1.2",
+    "markdown-table": "^1.1.1",
     "md5": "^2.2.1",
     "method-override": "^2.3.10",
     "mkdirp": "~0.5.1",
