@@ -39,7 +39,7 @@
   {% endif %}
 
   <!-- highlight.js -->
-  <link class="highlightJsCss" rel="stylesheet" href="">
+  <link class="highlightJsCss" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/{{ highlightJsStyle() }}.css">
 
   <div class="row">
     <div class="col-md-3">
@@ -427,17 +427,16 @@ window.addEventListener('load', (event) => {
       });
     });
 
-    // highlight.js の css の URL を代入
-    $(".highlightJsCss")[0].href = "https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/{{ highlightJsStyle() }}.css"
-
     // highlight.js 有効化
     hljs.initHighlighting()
 
     function selectHighlightJsStyle(event) {
       // selecter で選択された値
       var val = event.target.value
+      // 変更前の値
+      var beforeVal = $(".highlightJsCss")[0].href.split('/').pop()
       // css の URL を書き換える
-      $(".highlightJsCss")[0].href = `https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/${val}.css`;
+      $(".highlightJsCss")[0].href = $(".highlightJsCss")[0].href.replace(beforeVal, `${val}.css`);
       // demo の部分だけ highlight.js 再読み込み
       hljs.highlightBlock($(".highlight-demo")[0]);
     }
