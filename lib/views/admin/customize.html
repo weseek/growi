@@ -153,7 +153,7 @@
               <select class="form-control" name="settingForm[customize:highlightJsStyle]" onChange="selectHighlightJsStyle(event)">
                 {% for key in Object.keys(highlightJsCssSelectorOptions) %}
                   {% if key == highlightJsStyle() %}
-                    <option value={{key}} selected="true">{{highlightJsCssSelectorOptions[key]}}</option>
+                    <option value={{key}} selected>{{highlightJsCssSelectorOptions[key]}}</option>
                   {% else %}
                     <option value={{key}}>{{highlightJsCssSelectorOptions[key]}}</option>
                   {% endif %}
