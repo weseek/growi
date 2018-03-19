@@ -98,7 +98,7 @@ class MarkdownTableUtil {
    * @param {string} lines all of table
    */
   parseFromTableStringToMarkdownTable(strMDTable) {
-    const arrMDTableLines = strMDTable.split(/[\r\n]+/);
+    const arrMDTableLines = strMDTable.split(/(\r\n|\r|\n)/);
     let contents = [];
     let aligns = [];
     for (let n = 0; n < arrMDTableLines.length; n++) {
