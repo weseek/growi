@@ -15,6 +15,7 @@ class MarkdownListUtil {
     this.getEol = this.getEol.bind(this);
     this.getStrFromBol = this.getStrFromBol.bind(this);
     this.getStrToEol = this.getStrToEol.bind(this);
+    this.newlineWithoutIndent = this.newlineWithoutIndent.bind(this);
   }
 
   /**
@@ -140,6 +141,16 @@ class MarkdownListUtil {
   getStrToEol(editor) {
     const curPos = editor.getCursor();
     return editor.getDoc().getRange(curPos, this.getEol(editor));
+  }
+
+  /**
+   * insert newline without indent
+   */
+  newlineWithoutIndent(editor, strToEol) {
+    codemirror.commands.newlineAndIndent(editor);
+
+    // replace the line with strToEol (abort auto indent)
+    editor.getDoc().replaceRange(strToEol, this.getBol(editor), this.getEol(editor));
   }
 }
 

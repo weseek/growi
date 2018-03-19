@@ -20,6 +20,7 @@ class MarkdownTableUtil {
     this.getStrFromBol = this.getStrFromBol.bind(this);
 
     this.parseFromTableStringToMarkdownTable = this.parseFromTableStringToMarkdownTable.bind(this);
+    this.replaceMarkdownTableWithReformed = this.replaceMarkdownTableWithReformed.bind(this);
   }
 
   /**
@@ -96,11 +97,12 @@ class MarkdownTableUtil {
    *   ref. https://github.com/wooorm/markdown-table
    * @param {string} lines all of table
    */
-  parseFromTableStringToMarkdownTable(editor, posBeg, posEnd) {
+  parseFromTableStringToMarkdownTable(strMDTable) {
+    const arrMDTableLines = strMDTable.split(/[\r\n]+/);
     let contents = [];
     let aligns = [];
-    for (let pos = posBeg; pos.line <= posEnd.line; pos.line++) {
-      const line = editor.getDoc().getLine(pos.line);
+    for (let n = 0; n < arrMDTableLines.length; n++) {
+      const line = arrMDTableLines[n];
 
       if (this.tableAlignmentLineRE.test(line) && !this.tableAlignmentLineNegRE.test(line)) {
         // parse line which described alignment
@@ -116,7 +118,7 @@ class MarkdownTableUtil {
           const rule = alignRuleRE.find(rule => col.match(rule.regex));
           return (rule != undefined) ? rule.align : '';
         });
-      } else {
+      } else if (this.linePartOfTableRE.test(line)) {
         // parse line whether header or body
         let lineText = "";
         lineText = line.replace(/\s*\|\s*/g, '|');
@@ -165,6 +167,21 @@ class MarkdownTableUtil {
       newTable = newTable.concat(mdtable.table)
     });
     return (new MarkdownTable(newTable, options));
+  }
+
+  /**
+   * replace markdown table which is reformed by markdown-table
+   * @param {MarkdownTable} markdown table
+   */
+  replaceMarkdownTableWithReformed(editor, table) {
+    const curPos = editor.getCursor();
+
+    // replace the lines to strTableLinesFormated
+    const strTableLinesFormated = table.toString();
+    editor.getDoc().replaceRange(strTableLinesFormated, this.getBot(editor), this.getEot(editor));
+
+    // set cursor to first column
+    editor.getDoc().setCursor(curPos.line + 1, 2);
   }
 }
 

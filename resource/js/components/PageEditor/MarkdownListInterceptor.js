@@ -35,10 +35,7 @@ export default class MarkdownListInterceptor extends BasicInterceptor {
     // get strings from current position to EOL(end of line) before break the line
     const strToEol = mlu.getStrToEol(editor);
     if (mlu.indentAndMarkRE.test(strToEol)) {
-      codemirror.commands.newlineAndIndent(editor);
-
-      // replace the line with strToEol (abort auto indent)
-      editor.getDoc().replaceRange(strToEol, mlu.getBol(editor), mlu.getEol(editor));
+      mlu.newlineWithoutIndent(editor, strToEol);
 
       // report to manager that handling was done
       context.handlers.push(this.className);

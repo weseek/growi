@@ -39,23 +39,18 @@ export default class MarkdownTableInterceptor extends BasicInterceptor {
 
     if (mtu.isEndOfLine(editor) && mtu.linePartOfTableRE.test(strFromBol)) {
       // get lines all of table from current position to beginning of table
-      const strTableLines = mtu.getStrFromBot(editor);
-
-      let table = mtu.parseFromTableStringToMarkdownTable(editor, mtu.getBot(editor), editor.getCursor());
+      const strFromBot = mtu.getStrFromBot(editor);
+      let table = mtu.parseFromTableStringToMarkdownTable(strFromBot);
 
       mtu.addRowToMarkdownTable(table);
 
-      const curPos = editor.getCursor();
-      const nextLineHead = { line: curPos.line + 1, ch: 0 };
-      const tableBottom = mtu.parseFromTableStringToMarkdownTable(editor, nextLineHead, mtu.getEot(editor));
+      const strToEot = mtu.getStrToEot(editor);
+      const tableBottom = mtu.parseFromTableStringToMarkdownTable(strToEot);
       if (tableBottom.table.length > 0) {
         table = mtu.mergeMarkdownTable([table, tableBottom]);
       }
 
-      // replace the lines to strTableLinesFormated
-      const strTableLinesFormated = table.toString();
-      editor.getDoc().replaceRange(strTableLinesFormated, mtu.getBot(editor), mtu.getEot(editor));
-      editor.getDoc().setCursor(curPos.line + 1, 2);
+      mtu.replaceMarkdownTableWithReformed(editor, table);
 
       // report to manager that handling was done
       context.handlers.push(this.className);
