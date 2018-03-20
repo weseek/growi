@@ -1,4 +1,6 @@
 require('bootstrap-select');
+console.log('require style-switcher');
+require('./thirdparty-js/jQuery.style.switcher');
 
 $(function() {
   var UpdatePost = {};
@@ -54,4 +56,7 @@ $(function() {
 
     return false;
   });
+
+  // style switcher
+  $('#styleOptions').styleSwitcher();
 });
