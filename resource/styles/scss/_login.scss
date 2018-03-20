@@ -1,4 +1,4 @@
-.login-page, .installer, .invited {
+.nologin {
   $gray-dark-for-login: darken(white, 30%);
 
   // background color
@@ -220,7 +220,7 @@
 }
 
 
-.installer, .invited {
+.installer, .invited, .nologin.error {
   // layout
   .main .row {
     @media(min-width: 510px) {
@@ -231,5 +231,11 @@
         width: 480px;
       }
     }
+  }
+}
+
+.nologin.error {
+  .alert h2 {
+    line-height: 1em;
   }
 }
