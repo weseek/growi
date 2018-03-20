@@ -152,11 +152,7 @@
             <div class="col-xs-3">
               <select class="form-control" name="settingForm[customize:highlightJsStyle]" onChange="selectHighlightJsStyle(event)">
                 {% for key in Object.keys(highlightJsCssSelectorOptions) %}
-                  {% if key == highlightJsStyle() %}
-                    <option value={{key}} selected>{{highlightJsCssSelectorOptions[key]}}</option>
-                  {% else %}
-                    <option value={{key}}>{{highlightJsCssSelectorOptions[key]}}</option>
-                  {% endif %}
+                  <option value={{key}} {% if key == highlightJsStyle() %} selected {% endif %}>{{highlightJsCssSelectorOptions[key]}}</option>
                 {% endfor %}
               </select>
             </div>
@@ -431,14 +427,13 @@ window.addEventListener('load', (event) => {
     hljs.initHighlighting()
 
     function selectHighlightJsStyle(event) {
+      var highlightJsCssDOM = $(".highlightJsCss")[0]
       // selecter で選択された値
       var val = event.target.value
-      // 変更前の値
-      var beforeVal = $(".highlightJsCss")[0].href.split('/').pop()
       // css の URL を書き換える
-      $(".highlightJsCss")[0].href = $(".highlightJsCss")[0].href.replace(beforeVal, `${val}.css`);
+      highlightJsCssDOM.href = highlightJsCssDOM.href.replace(/[^/]+.css$/i, `${val}.css`)
       // demo の部分だけ highlight.js 再読み込み
-      hljs.highlightBlock($(".highlight-demo")[0]);
+      hljs.highlightBlock(highlightJsCssDOM);
     }
 
   </script>
