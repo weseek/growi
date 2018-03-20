@@ -61,7 +61,7 @@
     </div>
     {% endif %}
 
-    {% if not page.isLatestRevision() %}
+    {% if page and not page.isLatestRevision() %}
     <div class="alert alert-warning">
       <strong>{{ t('Warning') }}: </strong> {{ t('page_page.notice.version') }}
       <a href="{{ page.path }}"><i class="icon-fw icon-arrow-right-circle"></i>{{ t('Show latest') }}</a>
