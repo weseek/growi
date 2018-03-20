@@ -423,16 +423,16 @@ window.addEventListener('load', (event) => {
       });
     });
 
-    // highlight.js 有効化
+    // init highlight.js
     hljs.initHighlighting()
 
     function selectHighlightJsStyle(event) {
       var highlightJsCssDOM = $(".highlightJsCss")[0]
-      // selecter で選択された値
+      // selected value
       var val = event.target.value
-      // css の URL を書き換える
-      highlightJsCssDOM.href = highlightJsCssDOM.href.replace(/[^/]+.css$/i, `${val}.css`)
-      // demo の部分だけ highlight.js 再読み込み
+      // replace css url
+      highlightJsCssDOM.href = highlightJsCssDOM.href.replace(/[^/]+/.css$/, `${val}.css`);
+      // reload highlight.js of demo code
       hljs.highlightBlock(highlightJsCssDOM);
     }
 
