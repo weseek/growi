@@ -1,5 +1,11 @@
 <div class="row row-alerts">
   <div class="col-xs-12">
+    {% if page && page.grant != 1 %}
+    <p class="alert alert-inverse alert-grant">
+      <i class="icon-fw icon-lock"></i><strong>{{ consts.pageGrants[page.grant] }}</strong> ({{ t('Browsing of this page is restricted') }})
+    </p>
+    {% endif %}
+
     {% if page.isDeleted() %}
     <div class="alert alert-warning alert-trash d-flex align-items-center justify-content-between">
       <div>
