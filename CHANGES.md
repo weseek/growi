@@ -4,6 +4,7 @@ CHANGES
 ## 2.4.4-RC
 
 * Feature: Autoformat Markdown Table
+* Feature: highlight.js Theme Selector
 * Fix: The bug of updating numbering list by codemirror
 * Fix: Template LangProcessor doesn't work
     * Introduced by 2.4.0
