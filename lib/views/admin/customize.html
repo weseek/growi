@@ -13,7 +13,6 @@
   </style>
 {% endblock %}
 
-
 {% block content_header %}
 <div class="header-wrap">
   <header id="page-header">
@@ -142,7 +141,6 @@
       </fieldset>
       </form>
 
-
       <form action="/_api/admin/customize/features" method="post" class="form-horizontal" id="customfeaturesSettingForm" role="form">
       <fieldset>
       <legend>{{ t('customize_page.Function') }}</legend>
@@ -203,6 +201,67 @@
       </fieldset>
       </form>
 
+      <form action="/_api/admin/customize/highlightJsStyle" method="post" class="form-horizontal" id="cutomhighlightJsStyleSettingForm" role="form">
+        <fieldset>
+          <legend>{{ t('customize_page.Code Highlight') }}</legend>
+          <div class="form-group">
+            <label for="settingForm[customize:highlightJsStyle]" class="col-xs-3 control-label">{{ t('customize_page.Theme') }}</label>
+            <div class="col-xs-9">
+              <select class="form-control selectpicker" name="settingForm[customize:highlightJsStyle]" onChange="selectHighlightJsStyle(event)">
+                {% for key in Object.keys(highlightJsCssSelectorOptions) %}
+                  <option value={{key}} {% if key == highlightJsStyle() %} selected {% endif %}>{{highlightJsCssSelectorOptions[key].name}}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="settingForm[customize:highlightJsStyleBorder]" class="col-xs-3 control-label">(TBD) Border</label>
+            <div class="col-xs-9">
+              <div class="btn-group btn-toggle" data-toggle="buttons">
+                <label class="btn btn-default btn-rounded btn-outline {% if settingForm['customize:highlightJsStyleBorder'] %}active{% endif %}" data-active-class="primary">
+                  <input name="settingForm[customize:highlightJsStyleBorder]" value="true" type="radio"
+                      {% if true === settingForm['customize:highlightJsStyleBorder'] %}checked{% endif %}> ON
+                </label>
+                <label class="btn btn-default btn-rounded btn-outline {% if !settingForm['customize:highlightJsStyleBorder'] %}active{% endif %}" data-active-class="default">
+                  <input name="settingForm[customize:highlightJsStyleBorder]" value="false" type="radio"
+                      {% if !settingForm['customize:highlightJsStyleBorder'] %}checked{% endif %}> OFF
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/{{ highlightJsStyle() }}.css" class="highlightJsCss">
+
+          <p class="help-block">
+            Examples:
+            <pre class="hljs"><code class="highlightjs-demo">function $initHighlight(block, cls) {
+  try {
+    if (cls.search(/\bno\-highlight\b/) != -1)
+      return process(block, true, 0x0F) +
+              ` class="${cls}"`;
+  } catch (e) {
+    /* handle exception */
+  }
+  for (var i = 0 / 2; i < classes.length; i++) {
+    if (checkCondition(classes[i]) === undefined)
+      console.log('undefined');
+  }
+}
+
+export  $initHighlight;</code></pre>
+          </p>
+
+          <div class="form-group">
+            <div class="col-xs-offset-5 col-xs-6">
+              <input type="hidden" name="_csrf" value="{{ csrf() }}">
+              <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
+            </div>
+          </div>
+
+        </fieldset>
+      </form>
+
       <form action="/_api/admin/customize/header" method="post" class="form-horizontal" id="cutomheaderSettingForm" role="form">
       <fieldset>
         <legend>カスタムヘッダーHTML</legend>
@@ -214,7 +273,7 @@
 
         <p class="help-block">
           Examples:
-          <pre><code>&lt;script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js" defer&gt;&lt;/script&gt;</code></pre>
+          <pre class="hljs"><code>&lt;script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js" defer&gt;&lt;/script&gt;</code></pre>
         </p>
 
         <div class="form-group">
@@ -300,7 +359,7 @@
         </p>
         <p class="help-block">
           Examples:
-<pre><code>console.log($('.main-container'));
+<pre class="hljs"><code>console.log($('.main-container'));
 
 window.addEventListener('load', (event) => {
   console.log('config: ', crowi.config);
@@ -334,7 +393,7 @@ window.addEventListener('load', (event) => {
   </div>
 
   <script>
-    $('#cutomcssSettingForm, #cutomscriptSettingForm, #cutomlayoutSettingForm, #cutombehaviorSettingForm, #customfeaturesSettingForm, #cutomheaderSettingForm').each(function() {
+    $('#cutomcssSettingForm, #cutomscriptSettingForm, #cutomlayoutSettingForm, #cutombehaviorSettingForm, #customfeaturesSettingForm, #cutomheaderSettingForm, #cutomhighlightJsStyleSettingForm').each(function() {
       $(this).submit(function()
       {
         function showMessage(formId, msg, status) {
@@ -381,6 +440,18 @@ window.addEventListener('load', (event) => {
         return false;
       });
     });
+
+    // init highlight.js
+    hljs.initHighlightingOnLoad()
+
+    function selectHighlightJsStyle(event) {
+      var highlightJsCssDOM = $(".highlightJsCss")[0]
+      // selected value
+      var val = event.target.value
+      // replace css url
+      // see https://regex101.com/r/gBNZYu/4
+      highlightJsCssDOM.href = highlightJsCssDOM.href.replace(/[^/]+\.css$/, `${val}.css`);
+    }
 
   </script>
 

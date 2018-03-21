@@ -287,7 +287,6 @@
     "insert_single":"1行に1メールアドレス入力してください。",
     "Authentication mechanism settings":"認証機構設定"
   },
-
   "markdown_setting": {
     "markdown_rendering": "Markdownレンダリングの設定を変更できます。",
     "validate Line Break": "Line Break を有効にする",
@@ -298,48 +297,45 @@
 
   },
 
-     "customize_page": {
-       "Behavior": "挙動",
-       "Layout": "レイアウト",
-       "Function": "機能",
-       "function_choose": "機能の有効/無効を選択できます。",
-       "Timeline function": "タイムライン機能",
-       "subpage_display": "配下ページのタイムラインを表示できます。",
-       "performance_decrease": "配下ページが多い場合はページロード時のパフォーマンスが落ちます。",
-       "list_page_display": "無効化することでリストページの表示を高速化できます。",
-       "tab_switch":"タブ変更をブラウザ履歴に保存",
-       "save_edit": "編集タブやヒストリータブ等の切り替えをブラウザ履歴に保存し、ブラウザの戻る/進む操作の対象にします。",
-       "by_invalidating": "無効化することで、ページ遷移のみを戻る/進む操作の対象にすることができます。",
-       "Custom CSS": "カスタム CSS",
-        "write_CSS": " システム全体に適用されるCSSを記述できます。",
-        "reflect_change": "変更の反映はページの更新が必要です。",
-        "ctrl_space": "Ctrl+Space でコード補完",
-        "Custom script": "カスタムスクリプト",
-        "write_java": "システム全体に適用されるJavaScriptを記述できます。"
+  "customize_page": {
+    "Behavior": "挙動",
+    "Layout": "レイアウト",
+    "Function": "機能",
+    "function_choose": "機能の有効/無効を選択できます。",
+    "Timeline function": "タイムライン機能",
+    "Code Highlight": "コードハイライト",
+    "Theme": "テーマ",
+    "subpage_display": "配下ページのタイムラインを表示できます。",
+    "performance_decrease": "配下ページが多い場合はページロード時のパフォーマンスが落ちます。",
+    "list_page_display": "無効化することでリストページの表示を高速化できます。",
+    "tab_switch": "タブ変更をブラウザ履歴に保存",
+    "save_edit": "編集タブやヒストリータブ等の切り替えをブラウザ履歴に保存し、ブラウザの戻る/進む操作の対象にします。",
+    "by_invalidating": "無効化することで、ページ遷移のみを戻る/進む操作の対象にすることができます。",
+    "Custom CSS": "カスタム CSS",
+    "write_CSS": " システム全体に適用されるCSSを記述できます。",
+    "reflect_change": "変更の反映はページの更新が必要です。",
+    "ctrl_space": "Ctrl+Space でコード補完",
+    "Custom script": "カスタムスクリプト",
+    "write_java": "システム全体に適用されるJavaScriptを記述できます。"
 
- },
+  },
 
-     "user_management": {
-        "User management": "ユーザー管理",
-        "invite_users": "新規ユーザーの招待",
-        "external_account": "外部アカウントの管理",
-        "user_list": "ユーザー一覧",
-        "Date created": "作成日",
-        "Last login": "最終ログイン",
-        "Manage": "操作",
-        "Edit menu": "編集メニュー",
-        "Reissue password": "パスワードの再発行",
-        "Status":"ステータス",
-        "Deactivate account":"アカウント停止",
-        "your_own":"自分自身のアカウントを停止することはできません",
-        "Administrator menu":"管理者メニュー",
-        "cannot_remove":"自分自身を管理者から外すことはできません"
+  "user_management": {
+    "User management": "ユーザー管理",
+    "invite_users": "新規ユーザーの招待",
+    "external_account": "外部アカウントの管理",
+    "user_list": "ユーザー一覧",
+    "Date created": "作成日",
+    "Last login": "最終ログイン",
+    "Manage": "操作",
+    "Edit menu": "編集メニュー",
+    "Reissue password": "パスワードの再発行",
+    "Status": "ステータス",
+    "Deactivate account": "アカウント停止",
+    "your_own": "自分自身のアカウントを停止することはできません",
+    "Administrator menu": "管理者メニュー",
+    "cannot_remove": "自分自身を管理者から外すことはできません"
+  }
 
-
-
-
-
-
-      }
 }
 

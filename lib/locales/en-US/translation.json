@@ -255,7 +255,7 @@
     "Disable": "Disable"
 
   },
- "security_setting": {
+  "security_setting": {
     "Basic authentication": "Basic authentication",
     "Security settings": "Security settings",
     "Guest users access": "Guest users access",
@@ -270,8 +270,7 @@
     "only_those":" Only those whose e-mail address including the company address can register.",
     "insert_single":"Please insert single e-mail address per line.",
     "Authentication mechanism settings":"Authentication mechanism settings"
-
- },
+  },
 
   "markdown_setting": {
     "markdown_rendering": "You can change Markdown rendering settings.",
@@ -280,47 +279,45 @@
     "validate_comment": "Validate Line Break in the comment section",
     "treat_comment": "Treat line breaking in the comment section as <code>&lt;br&gt;</code> in HTML",
     "TBD": "(TBD: Markdown function in the comment section has not been implemented yet)"
+  },
 
-     },
-
-     "customize_page": {
-       "Behavior": "Behavior",
-       "Layout": "Layout",
-        "Function": "Function",
-        "function_choose": "You can choose Valid/Invalid of the function",
-        "Timeline function": "Timeline function",
-        "subpage_display": "You can show the timeline of the subpages.",
-        "performance_decrease": "If there are many subpages, performance decreases while page loading.",
-        "list_page_display": "You can speed up list page display by invalidating.",
-        "tab_switch": "Save tab-switching in the browser",
-        "save_edit": "Save edit tab and history tab switching in the browser and make it object for forward/back command of the browser.",
-        "by_invalidating": "By invalidating, you can make page transition as the only object for forward/back command of the browser.",
-        "Custom CSS": "Custom CSS",
-        "write_CSS": "You can write CSS that is applied to whole system.",
-        "reflect_change": "You need to reload the page to reflect the change.",
-        "ctrl_space": "Ctrl+Space to Autocomplete",
-        "Custom script": "Custom script",
-        "write_java": "You can write Javascript that is applied to whole system."
-
-
- },
+  "customize_page": {
+    "Behavior": "Behavior",
+    "Layout": "Layout",
+    "Function": "Function",
+    "function_choose": "You can choose Valid/Invalid of the function",
+    "Timeline function": "Timeline function",
+    "Code Highlight": "Code Highlight",
+    "Theme": "Theme",
+    "subpage_display": "You can show the timeline of the subpages.",
+    "performance_decrease": "If there are many subpages, performance decreases while page loading.",
+    "list_page_display": "You can speed up list page display by invalidating.",
+    "tab_switch": "Save tab-switching in the browser",
+    "save_edit": "Save edit tab and history tab switching in the browser and make it object for forward/back command of the browser.",
+    "by_invalidating": "By invalidating, you can make page transition as the only object for forward/back command of the browser.",
+    "Custom CSS": "Custom CSS",
+    "write_CSS": "You can write CSS that is applied to whole system.",
+    "reflect_change": "You need to reload the page to reflect the change.",
+    "ctrl_space": "Ctrl+Space to Autocomplete",
+    "Custom script": "Custom script",
+    "write_java": "You can write Javascript that is applied to whole system."
+  },
 
   "user_management": {
-        "User management": "User management",
-        "invite_users": "Invite new users",
-        "external_account": "External account management",
-        "user_list": "List of users",
-        "Date created": "Date created",
-        "Last login": "Last login",
-        "Manage": "Manage",
-        "Edit menu": "Edit menu",
-        "Reissue password": "Reissue password",
-        "Status":"Status",
-        "Deactivate account":"Deactivate account",
-        "your_own":"You cannot deactivate your own account",
-        "Administrator menu":"Administrator menu",
-        "cannot_remove":"You cannot remove yourself from administrator"
+    "User management": "User management",
+    "invite_users": "Invite new users",
+    "external_account": "External account management",
+    "user_list": "List of users",
+    "Date created": "Date created",
+    "Last login": "Last login",
+    "Manage": "Manage",
+    "Edit menu": "Edit menu",
+    "Reissue password": "Reissue password",
+    "Status":"Status",
+    "Deactivate account":"Deactivate account",
+    "your_own":"You cannot deactivate your own account",
+    "Administrator menu":"Administrator menu",
+    "cannot_remove":"You cannot remove yourself from administrator"
+  }
 
-
-      }
 }
