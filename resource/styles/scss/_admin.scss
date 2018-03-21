@@ -78,6 +78,11 @@
     a {
       border: 1px solid #ccc;
       background-color: #f5f5f5;
+
+      &.active {
+        border-color: $brand-success;
+        background-color: $brand-success;
+      }
     }
 
     // theme color

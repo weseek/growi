@@ -53,11 +53,15 @@
           <legend>{{ t('customize_page.Theme') }}</legend>
 
           <div id="themeOptions" class="d-flex">
-            <a href="#" class="default" onclick="selectTheme('default')"
+            <a id="theme-option-default" href="#"
+                class="default {% if 'default' === settingForm['customize:theme'] %}active{% endif %}"
+                onclick="selectTheme('default')"
                 data-theme="{{ webpack_asset('style-theme-default').css }}">
               {% include 'widget/theme-colorbox.html' %}
             </a>
-            <a href="#" class="default-dark" onclick="selectTheme('default-dark')"
+            <a id="theme-option-default-dark" href="#"
+                class="default-dark {% if 'default-dark' === settingForm['customize:theme'] %}active{% endif %}"
+                onclick="selectTheme('default-dark')"
                 data-theme="{{ webpack_asset('style-theme-default-dark').css }}">
               {% include 'widget/theme-colorbox.html' %}
             </a>
@@ -508,6 +512,9 @@ window.addEventListener('load', (event) => {
     function selectTheme(theme) {
       // update hidden
       $('#hiddenInputTheme').val(theme);
+      // update .active class
+      $('#themeOptions .active').removeClass('active');
+      $(`#themeOptions #theme-option-${theme}`).addClass('active');
     }
   </script>
 
