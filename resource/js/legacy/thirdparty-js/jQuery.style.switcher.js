@@ -24,7 +24,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 **/
-console.log('style switcher');
 (function ($) {
 	var jStyleSwitcher,
 		_defaultOptions = {
@@ -174,7 +173,7 @@ console.log('style switcher');
 		},
 
 		getFullAssetPath: function(asset) {
-			return this.config.fullPath + asset + '.css';
+			return this.config.fullPath + asset;
 		},
 
 		checkCookie: function () {
@@ -214,7 +213,7 @@ console.log('style switcher');
 			this.$root.find('a').click(
 				function () {
 					var asset = $(this).data('theme'),
-						newStyle = self.getFullAssetPath(asset);
+            newStyle = self.getFullAssetPath(asset);
 					// update link tag
 					self.updateStyle(newStyle);
 					// update default ref
@@ -229,7 +228,6 @@ console.log('style switcher');
 	};
 
 	$.fn.styleSwitcher = function (options) {
-    console.log('options', options);
 		return new jStyleSwitcher(this, $.extend(true, _defaultOptions, options));
 	};
 })(jQuery);

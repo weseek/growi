@@ -67,18 +67,21 @@ gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js
     <script src="{{ webpack_asset('dev').js }}" async></script>
   {% endif %}
 
-  <script src="{{ webpack_asset('style').js }}"></script>
-  <script src="{{ webpack_asset('style-theme-default').js }}"></script>
-  <!-- <script src="{{ webpack_asset('style-theme-default-dark').js }}"></script> -->
   <script src="{{ webpack_asset('commons').js }}" defer></script>
   {% if isEnabledPlugins() %}
-    <script src="{{ webpack_asset('plugin').js }}" defer></script>
+  <script src="{{ webpack_asset('plugin').js }}" defer></script>
   {% endif %}
   {% block html_head_loading_legacy %}
-    <script src="{{ webpack_asset('legacy').js }}" defer></script>
+  <script src="{{ webpack_asset('legacy').js }}" defer></script>
   {% endblock %}
   {% block html_head_loading_app %}
   <script src="{{ webpack_asset('app').js }}" defer></script>
+  {% endblock %}
+
+  <!-- styles -->
+  {% block style_css_block %}
+  <link rel="stylesheet" href="{{ webpack_asset('style').css }}">
+  <link rel="stylesheet" href="{{ webpack_asset('style-theme-default').css }}">
   {% endblock %}
 
   <!-- Google Fonts -->

@@ -10,6 +10,7 @@ const helpers = require('./helpers');
  */
 const AssetsPlugin = require('assets-webpack-plugin');
 const CommonsChunkPlugin = require('webpack/lib/optimize/CommonsChunkPlugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');;
 
 /*
@@ -56,16 +57,26 @@ module.exports = function (options) {
           }]
         },
         {
+          test: /\.scss$/,
+          use: ExtractTextPlugin.extract({
+            fallback: 'style-loader',
+            use: 'css-loader!sass-loader'
+          }),
+          include: [helpers.root('resource/styles/scss')]
+        },
+        {
           test: /\.css$/,
           use: ['style-loader', 'css-loader'],
           // comment out 'include' spec for crowi-plugins
           // include: [helpers.root('resource')]
+          exclude: [helpers.root('resource/styles/scss')]
         },
         {
           test: /\.scss$/,
           use: ['style-loader', 'css-loader', 'sass-loader'],
           // comment out 'include' spec for crowi-plugins
           // include: [helpers.root('resource')]
+          exclude: [helpers.root('resource/styles/scss')]
         },
         /*
          * File loader for supporting images, for example, in CSS files.

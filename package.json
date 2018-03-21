@@ -84,6 +84,7 @@
     "express-pino-logger": "^3.0.1",
     "express-session": "~1.15.0",
     "express-webpack-assets": "^0.1.0",
+    "extract-text-webpack-plugin": "^3.0.2",
     "file-loader": "^1.1.0",
     "googleapis": "^27.0.0",
     "graceful-fs": "^4.1.11",

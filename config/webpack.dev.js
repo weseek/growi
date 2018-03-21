@@ -13,6 +13,7 @@ const commonConfig = require('./webpack.common.js');
  * Webpack Plugins
  */
 const CommonsChunkPlugin = require('webpack/lib/optimize/CommonsChunkPlugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const DllBundlesPlugin = require('webpack-dll-bundles-plugin').DllBundlesPlugin;
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
@@ -50,6 +51,8 @@ module.exports = function (options) {
       ],
     },
     plugins: [
+
+      new ExtractTextPlugin('[name].bundle.css'),
 
       new DllBundlesPlugin({
         bundles: {
