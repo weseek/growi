@@ -1,7 +1,11 @@
 CHANGES
 ========
 
-## 2.4.4-RC
+## 2.4.5-RC
+
+* 
+
+## 2.4.4
 
 * Feature: Autoformat Markdown Table
 * Feature: highlight.js Theme Selector
