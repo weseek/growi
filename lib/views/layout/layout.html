@@ -81,7 +81,7 @@ gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js
   <!-- styles -->
   {% block style_css_block %}
   <link rel="stylesheet" href="{{ webpack_asset('style').css }}">
-  <link rel="stylesheet" href="{{ webpack_asset('style-theme-default').css }}">
+  <link rel="stylesheet" href="{{ webpack_asset('style-theme-' + theme()).css }}">
   {% endblock %}
 
   <!-- Google Fonts -->

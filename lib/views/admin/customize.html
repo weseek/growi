@@ -3,8 +3,8 @@
 {% block html_title %}{{ t('Customize') }} {% endblock %}
 
 {% block style_css_block %}
-<link rel="stylesheet" href="{{ webpack_asset('style').css }}">
-<link rel="stylesheet" id="jssDefault" {# append id for theme selector #} href="{{ webpack_asset('style-theme-default').css }}">
+  <link rel="stylesheet" href="{{ webpack_asset('style').css }}">
+  <link rel="stylesheet" id="jssDefault" {# append id for theme selector #} href="{{ webpack_asset('style-theme-' + theme()).css }}">
 {% endblock %}
 
 {% block html_additional_headers %}
