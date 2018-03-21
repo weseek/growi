@@ -77,9 +77,9 @@ input.form-control, textarea.form-control {
   border-bottom-color: $border;
 
   > li > a {
-    color:$light;
+    color:$linktext;
     &:hover, &:focus {
-      color: $light;
+      color: $linktext-hover;
     }
   }
   > li.active > a {
