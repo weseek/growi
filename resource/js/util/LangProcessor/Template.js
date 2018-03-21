@@ -59,7 +59,7 @@ export default class Template {
 
     const content = `
       <div class="page-template-builder">
-        <button class="template-create-button btn btn-default" data-template="${templateId}" data-path="${pageName}#edit-form">
+        <button class="template-create-button btn btn-default" data-template="${templateId}" data-path="${pageName}">
           <i class="fa fa-pencil"></i> ${pageName}
         </button>
         <pre><code id="${templateId}" class="lang-${lang}">${code}\n</code></pre>

@@ -1,7 +1,19 @@
 CHANGES
 ========
 
-## 2.4.3-RC
+## 2.4.4-RC
+
+* Feature: Autoformat Markdown Table
+* Feature: highlight.js Theme Selector
+* Fix: The bug of updating numbering list by codemirror
+* Fix: Template LangProcessor doesn't work
+    * Introduced by 2.4.0
+* Support: Apply ESLint
+* Support: Upgrade libs
+    * react, react-dom
+    * codemirror, react-codemirror2
+
+## 2.4.3
 
 * Improvement: i18n in `/admin`
 * Improvement: Add `SESSION_NAME` environment variable
