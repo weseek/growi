@@ -61,4 +61,47 @@
     }
   }
 
+  // theme selector
+  #themeOptions {
+    // layout
+    a {
+      margin-right: 10px;
+      margin-bottom: 10px;
+      padding: 3px;
+
+      svg {
+        display: block;
+      }
+    }
+
+    // style
+    a {
+      border: 1px solid #ccc;
+      background-color: #f5f5f5;
+    }
+
+    // theme color
+    .default {
+      .color1 {
+        fill: white;
+      }
+      .color2 {
+        fill: #4f5467;
+      }
+      .color3 {
+        fill: #4f5467;
+      }
+    }
+    .default-dark {
+      .color1 {
+        fill: #2e343f;
+      }
+      .color2 {
+        fill: #151515;
+      }
+      .color3 {
+        fill: #f75b36;
+      }
+    }
+  }
 }

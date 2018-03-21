@@ -4,7 +4,7 @@
 
 {% block style_css_block %}
 <link rel="stylesheet" href="{{ webpack_asset('style').css }}">
-<link rel="stylesheet" id="jssDefault" {# append id for style-switcher #} href="{{ webpack_asset('style-theme-default').css }}">
+<link rel="stylesheet" id="jssDefault" {# append id for theme selector #} href="{{ webpack_asset('style-theme-default').css }}">
 {% endblock %}
 
 {% block html_additional_headers %}
@@ -51,30 +51,15 @@
       <form action="/_api/admin/customize/theme" method="post" class="form-horizontal" id="cutomthemeSettingForm" role="form">
         <fieldset>
           <legend>{{ t('customize_page.Theme') }}</legend>
-          <!-- <div class="form-group">
-            <label for="settingForm[customize:highlightJsStyle]" class="col-xs-3 control-label">{{ t('customize_page.Theme') }}</label>
-            <div class="col-xs-9">
-              <select class="form-control selectpicker" name="settingForm[customize:highlightJsStyle]" onChange="selectHighlightJsStyle(event)">
-                {% for key in Object.keys(highlightJsCssSelectorOptions) %}
-                  <option value={{key}} {% if key == highlightJsStyle() %} selected {% endif %}>{{highlightJsCssSelectorOptions[key].name}}</option>
-                {% endfor %}
-              </select>
-            </div>
-          </div> -->
 
-          <script type="text/javascript">
-            // $(document).ready(function() {
-            //   $('#styleOptions').styleSwitcher();
-            // });
-          </script>
-          <ul id="styleOptions">
-            <li>
-              <a href="javascript: void(0)" data-theme="{{ webpack_asset('style-theme-default').css }}">Default</a>
-            </li>
-            <li>
-              <a href="javascript: void(0)" data-theme="{{ webpack_asset('style-theme-default-dark').css }}">Default Dark</a>
-            </li>
-          </ul>
+          <div id="themeOptions" class="d-flex">
+            <a href="#" class="default"      data-theme="{{ webpack_asset('style-theme-default').css }}">
+              {% include 'widget/theme-colorbox.html' %}
+            </a>
+            <a href="#" class="default-dark" data-theme="{{ webpack_asset('style-theme-default-dark').css }}">
+              {% include 'widget/theme-colorbox.html' %}
+            </a>
+          </div>
 
           <div class="form-group">
             <div class="col-xs-offset-5 col-xs-6">
@@ -502,7 +487,7 @@ window.addEventListener('load', (event) => {
     }
 
     /*
-     * Theme switcher
+     * Theme Selector
      */
     options = {
       hasPreview: false,
@@ -512,7 +497,7 @@ window.addEventListener('load', (event) => {
       }
     };
     $(document).ready(function() {
-      $('#styleOptions').styleSwitcher(options);
+      $('#themeOptions').styleSwitcher(options);
     });
 
   </script>
