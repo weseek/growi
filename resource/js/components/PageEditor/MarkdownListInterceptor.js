@@ -1,6 +1,4 @@
 import { BasicInterceptor } from 'crowi-pluginkit';
-import * as codemirror from 'codemirror';
-
 import mlu from './MarkdownListUtil';
 
 export default class MarkdownListInterceptor extends BasicInterceptor {
