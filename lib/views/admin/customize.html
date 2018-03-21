@@ -37,9 +37,6 @@
   </div>
   {% endif %}
 
-  <!-- highlight.js -->
-  <link class="highlightJsCss" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/{{ highlightJsStyle() }}.css">
-
   <div class="row">
     <div class="col-md-3">
       {% include './widget/menu.html' with {current: 'customize'} %}
@@ -220,7 +217,9 @@
 
           <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/{{ highlightJsStyle() }}.css" class="highlightJsCss">
 
-          <pre><code class="highlight-demo">function $initHighlight(block, cls) {
+          <p class="help-block">
+            Examples:
+            <pre class="hljs"><code class="highlightjs-demo">function $initHighlight(block, cls) {
   try {
     if (cls.search(/\bno\-highlight\b/) != -1)
       return process(block, true, 0x0F) +
@@ -235,6 +234,7 @@
 }
 
 export  $initHighlight;</code></pre>
+          </p>
 
           <div class="form-group">
             <div class="col-xs-offset-5 col-xs-6">
@@ -257,7 +257,7 @@ export  $initHighlight;</code></pre>
 
         <p class="help-block">
           Examples:
-          <pre><code>&lt;script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js" defer&gt;&lt;/script&gt;</code></pre>
+          <pre class="hljs"><code>&lt;script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js" defer&gt;&lt;/script&gt;</code></pre>
         </p>
 
         <div class="form-group">
@@ -343,7 +343,7 @@ export  $initHighlight;</code></pre>
         </p>
         <p class="help-block">
           Examples:
-<pre><code>console.log($('.main-container'));
+<pre class="hljs"><code>console.log($('.main-container'));
 
 window.addEventListener('load', (event) => {
   console.log('config: ', crowi.config);
@@ -426,16 +426,15 @@ window.addEventListener('load', (event) => {
     });
 
     // init highlight.js
-    hljs.initHighlighting()
+    hljs.initHighlightingOnLoad()
 
     function selectHighlightJsStyle(event) {
       var highlightJsCssDOM = $(".highlightJsCss")[0]
       // selected value
       var val = event.target.value
       // replace css url
+      // see https://regex101.com/r/gBNZYu/3
       highlightJsCssDOM.href = highlightJsCssDOM.href.replace(/[^/]+\.css$/, `${val}.css`);
-      // reload highlight.js of demo code
-      hljs.highlightBlock(highlightJsCssDOM);
     }
 
   </script>
