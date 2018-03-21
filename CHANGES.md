@@ -3,9 +3,14 @@ CHANGES
 
 ## 2.4.4-RC
 
+* Feature: Autoformat Markdown Table
+* Fix: The bug of updating numbering list by codemirror
 * Fix: Template LangProcessor doesn't work
     * Introduced by 2.4.0
 * Support: Apply ESLint
+* Support: Upgrade libs
+    * react, react-dom
+    * codemirror, react-codemirror2
 
 ## 2.4.3
 
