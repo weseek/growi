@@ -144,45 +144,6 @@
       </fieldset>
       </form>
 
-      <form action="/_api/admin/customize/highlightJsStyle" method="post" class="form-horizontal" id="cutomhighlightJsStyleSettingForm" role="form">
-        <fieldset>
-          <legend>ハイライト設定</legend>
-          <div class="form-group">
-            <div class="col-xs-3">
-              <select class="form-control" name="settingForm[customize:highlightJsStyle]" onChange="selectHighlightJsStyle(event)">
-                {% for key in Object.keys(highlightJsCssSelectorOptions) %}
-                  <option value={{key}} {% if key == highlightJsStyle() %} selected {% endif %}>{{highlightJsCssSelectorOptions[key]}}</option>
-                {% endfor %}
-              </select>
-            </div>
-          </div>
-
-          <pre><code class="highlight-demo">function $initHighlight(block, cls) {
-  try {
-    if (cls.search(/\bno\-highlight\b/) != -1)
-      return process(block, true, 0x0F) +
-              ` class="${cls}"`;
-  } catch (e) {
-    /* handle exception */
-  }
-  for (var i = 0 / 2; i < classes.length; i++) {
-    if (checkCondition(classes[i]) === undefined)
-      console.log('undefined');
-  }
-}
-
-export  $initHighlight;</code></pre>
-
-          <div class="form-group">
-            <div class="col-xs-offset-5 col-xs-6">
-              <input type="hidden" name="_csrf" value="{{ csrf() }}">
-              <button type="submit" class="btn btn-primary">更新</button>
-            </div>
-          </div>
-
-        </fieldset>
-        </form>
-
       <form action="/_api/admin/customize/features" method="post" class="form-horizontal" id="customfeaturesSettingForm" role="form">
       <fieldset>
       <legend>{{ t('customize_page.Function') }}</legend>
@@ -241,6 +202,48 @@ export  $initHighlight;</code></pre>
         </div>
 
       </fieldset>
+      </form>
+
+      <form action="/_api/admin/customize/highlightJsStyle" method="post" class="form-horizontal" id="cutomhighlightJsStyleSettingForm" role="form">
+        <fieldset>
+          <legend>{{ t('customize_page.Code Highlight') }}</legend>
+          <div class="form-group">
+            <label for="settingForm[customize:highlightJsStyle]" class="col-xs-3 control-label">{{ t('customize_page.Theme') }}</label>
+            <div class="col-xs-9">
+              <select class="form-control" name="settingForm[customize:highlightJsStyle]" onChange="selectHighlightJsStyle(event)">
+                {% for key in Object.keys(highlightJsCssSelectorOptions) %}
+                  <option value={{key}} {% if key == highlightJsStyle() %} selected {% endif %}>{{highlightJsCssSelectorOptions[key]}}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+
+          <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/{{ highlightJsStyle() }}.css" class="highlightJsCss">
+
+          <pre><code class="highlight-demo">function $initHighlight(block, cls) {
+  try {
+    if (cls.search(/\bno\-highlight\b/) != -1)
+      return process(block, true, 0x0F) +
+              ` class="${cls}"`;
+  } catch (e) {
+    /* handle exception */
+  }
+  for (var i = 0 / 2; i < classes.length; i++) {
+    if (checkCondition(classes[i]) === undefined)
+      console.log('undefined');
+  }
+}
+
+export  $initHighlight;</code></pre>
+
+          <div class="form-group">
+            <div class="col-xs-offset-5 col-xs-6">
+              <input type="hidden" name="_csrf" value="{{ csrf() }}">
+              <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
+            </div>
+          </div>
+
+        </fieldset>
       </form>
 
       <form action="/_api/admin/customize/header" method="post" class="form-horizontal" id="cutomheaderSettingForm" role="form">
