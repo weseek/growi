@@ -163,7 +163,7 @@ export default class GrowiRenderer {
       }
     }
 
-    return '';
+    return `<pre class="hljs"><code>${code}</code></pre>`;
   }
 
 }
