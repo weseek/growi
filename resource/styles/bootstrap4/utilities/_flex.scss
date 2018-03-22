@@ -4,10 +4,9 @@
 //
 // Custom styles for additional flex alignment options.
 
-// @each $breakpoint in map-keys($grid-breakpoints) {
-//   @include media-breakpoint-up($breakpoint) {
-//     $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
-    $infix: '';
+@each $breakpoint in map-keys($grid-breakpoints) {
+  @include media-breakpoint-up($breakpoint) {
+    $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
 
     .flex#{$infix}-row            { flex-direction: row !important; }
     .flex#{$infix}-column         { flex-direction: column !important; }
@@ -43,5 +42,5 @@
     .align-self#{$infix}-center   { align-self: center !important; }
     .align-self#{$infix}-baseline { align-self: baseline !important; }
     .align-self#{$infix}-stretch  { align-self: stretch !important; }
-//   }
-// }
+  }
+}
