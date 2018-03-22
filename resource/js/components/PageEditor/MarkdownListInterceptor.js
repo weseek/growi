@@ -1,4 +1,4 @@
-import { BasicInterceptor } from 'crowi-pluginkit';
+import { BasicInterceptor } from 'growi-pluginkit';
 import mlu from './MarkdownListUtil';
 
 export default class MarkdownListInterceptor extends BasicInterceptor {

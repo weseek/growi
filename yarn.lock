@@ -1765,10 +1765,6 @@ cross-spawn@^5.0.1, cross-spawn@^5.1.0:
     shebang-command "^1.2.0"
     which "^1.2.9"
 
-crowi-pluginkit@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/crowi-pluginkit/-/crowi-pluginkit-1.1.0.tgz#c423f812a1d5198f57ba0180230b6be53120595d"
-
 crypt@~0.0.1:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/crypt/-/crypt-0.0.2.tgz#88d7ff7ec0dfb86f713dc87bbb42d044d3e6c41b"
@@ -3011,6 +3007,10 @@ googleapis@^27.0.0:
 graceful-fs@^4.1.11, graceful-fs@^4.1.2, graceful-fs@^4.1.6:
   version "4.1.11"
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.1.11.tgz#0e8bdfe4d1ddb8854d64e04ea7c00e2a026e5658"
+
+growi-pluginkit@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/growi-pluginkit/-/growi-pluginkit-1.1.0.tgz#8e837cd0ba50e6a13eacc75882e09c96eda10679"
 
 growl@1.10.3:
   version "1.10.3"
