@@ -153,10 +153,10 @@ if (pageEditorElem) {
 
   pageEditor = ReactDOM.render(
     <PageEditor crowi={crowi} crowiRenderer={crowiRenderer}
-      pageId={pageId} revisionId={pageRevisionId} pagePath={pagePath}
-      markdown={markdown}
-      editorOptions={editorOptions} previewOptions={previewOptions}
-      onSaveSuccess={onSaveSuccess} />,
+        pageId={pageId} revisionId={pageRevisionId} pagePath={pagePath}
+        markdown={markdown}
+        editorOptions={editorOptions} previewOptions={previewOptions}
+        onSaveSuccess={onSaveSuccess} />,
     pageEditorElem
   );
   // set refs for pageEditor
@@ -167,15 +167,15 @@ const pageEditorOptionsSelectorElem = document.getElementById('page-editor-optio
 if (pageEditorOptionsSelectorElem) {
   ReactDOM.render(
     <OptionsSelector crowi={crowi}
-      editorOptions={editorOptions} previewOptions={previewOptions}
-      onChange={(newEditorOptions, newPreviewOptions) => { // set onChange event handler
-        // set options
-        pageEditor.setEditorOptions(newEditorOptions);
-        pageEditor.setPreviewOptions(newPreviewOptions);
-        // save
-        crowi.saveEditorOptions(newEditorOptions);
-        crowi.savePreviewOptions(newPreviewOptions);
-      }} />,
+        editorOptions={editorOptions} previewOptions={previewOptions}
+        onChange={(newEditorOptions, newPreviewOptions) => { // set onChange event handler
+          // set options
+          pageEditor.setEditorOptions(newEditorOptions);
+          pageEditor.setPreviewOptions(newPreviewOptions);
+          // save
+          crowi.saveEditorOptions(newEditorOptions);
+          crowi.savePreviewOptions(newPreviewOptions);
+        }} />,
     pageEditorOptionsSelectorElem
   );
 }
@@ -209,7 +209,7 @@ if (customHeaderEditorElem != null) {
   ReactDOM.render(
     <CustomHeaderEditor inputElem={customHeaderInputElem} />,
     customHeaderEditorElem
-  );
+  )
 }
 const customTitleEditorElem = document.getElementById('custom-title-editor');
 if (customTitleEditorElem != null) {
@@ -219,7 +219,7 @@ if (customTitleEditorElem != null) {
   ReactDOM.render(
     <CustomTitleEditor inputElem={customTitleInputElem} />,
     customTitleEditorElem
-  );
+  )
 }
 
 // うわーもうー
