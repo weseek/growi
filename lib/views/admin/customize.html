@@ -334,6 +334,48 @@ export  $initHighlight;</code></pre>
       </fieldset>
       </form>
 
+      <form action="/_api/admin/customize/title" method="post" class="form-horizontal" id="customtitleSettingForm" role="form">
+        <fieldset>
+          <legend>カスタムヘッダーTitle</legend>
+
+          <p class="well">
+            ヘッダーの&lt;title&gt;タグのコンテンツをカスタムできる。サイト名を入れたい位置に、&#123;&#123;sitename&#125;&#125;
+            パスを入れたい位置に&#123;&#123;path&#125;&#125;を置くことでそれぞれの値に自動置換されます。それ以外の部分は自由に記述して下さい。<br>
+          </p>
+
+          <p class="help-block">
+            Examples:
+            <pre><code>&#123;&#123;sitename&#125;&#125; hoge - &#123;&#123;path&#125;&#125;</code></pre>
+          </p>
+
+          <p class="help-block">
+            Output:
+            <pre><code>&lt;title&gt;GROWI hoge - /xxx/yyy/zzz/Sandbox&lt;&#047;title&gt;</code></pre>
+          </p>
+
+          <div class="form-group">
+            <div class="col-xs-12">
+              <div id="custom-title-editor"></div>
+              <input type="hidden" id="inputCustomTitle" name="settingForm[customize:title]" value="{{ settingForm['customize:title'] }}">
+            </div>
+            <div class="col-xs-12">
+              <p class="help-block text-right">
+                <i class="fa fa-fw fa-keyboard-o" aria-hidden="true"></i>
+                Ctrl+Space でコード補完
+              </p>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="col-xs-offset-5 col-xs-6">
+              <input type="hidden" name="_csrf" value="{{ csrf() }}">
+              <button type="submit" class="btn btn-primary">更新</button>
+            </div>
+          </div>
+
+        </fieldset>
+        </form>
+
       <form action="/_api/admin/customize/css" method="post" class="form-horizontal" id="cutomcssSettingForm" role="form">
       <fieldset>
         <legend>{{ t('customize_page.Custom CSS') }}</legend>
@@ -432,7 +474,7 @@ window.addEventListener('load', (event) => {
   {% parent %}
   <script>
     $(`#customthemeSettingForm, #cutomlayoutSettingForm, #cutombehaviorSettingForm, #cutomhighlightJsStyleSettingForm,
-       #customfeaturesSettingForm, #cutomheaderSettingForm, #cutomcssSettingForm, #cutomscriptSettingForm`
+       #customfeaturesSettingForm, #cutomheaderSettingForm, #cutomcssSettingForm, #cutomscriptSettingForm, #customtitleSettingForm`
     ).each(function() {
       $(this).submit(function()
       {
