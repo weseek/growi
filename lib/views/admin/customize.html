@@ -301,15 +301,21 @@ export  $initHighlight;</code></pre>
 
       <form action="/_api/admin/customize/title" method="post" class="form-horizontal" id="customtitleSettingForm" role="form">
         <fieldset>
-          <legend>カスタムヘッダータイトルHTML</legend>
+          <legend>カスタムヘッダーTitle</legend>
 
           <p class="well">
-            &lt;title&gt;タグのコンテンツをカスタムできる。具体的にはユーザ、ページタイトル、サイト名の3つの順番入れ替えや表示・非表示がカスタマイズできる。<br>
+            ヘッダーの&lt;title&gt;タグのコンテンツをカスタムできる。サイト名を入れたい位置に、&#123;&#123;sitename&#125;&#125;
+            パスを入れたい位置に&#123;&#123;path&#125;&#125;を置くことでそれぞれの値に自動置換されます。それ以外の部分は自由に記述して下さい。<br>
           </p>
 
           <p class="help-block">
             Examples:
-            <pre><code>\{% block html_title %}{% endblock %} {{ config.crowi['app:title']|default('Crowi') }}\</code></pre>
+            <pre><code>&#123;&#123;sitename&#125;&#125; hoge - &#123;&#123;path&#125;&#125;</code></pre>
+          </p>
+
+          <p class="help-block">
+            Output:
+            <pre><code>&lt;title&gt;GROWI hoge - /xxx/yyy/zzz/Sandbox&lt;&#047;title&gt;</code></pre>
           </p>
 
           <div class="form-group">
