@@ -132,19 +132,22 @@
           </div>
         </form>
 
+        {% if googleLoginEnabled() %}
         <hr>
 
-        <div class="row">
-          {% if googleLoginEnabled() %}
-          <div class="col-md-8">
-            <p>{{ t('Sign in by Google Account') }}</p>
-            <form role="form" action="/login/google" method="get">
-              <button type="submit" class="btn btn-block btn-google"><i class="fa fa-google-plus-square"></i> {{ t('Sign in') }}</button>
-              <input type="hidden" name="_csrf" value="{{ csrf() }}">
-            </form>
-          </div>
-          {% endif %}
+        <div class="input-group m-t-15 m-b-10 mx-auto">
+          <form role="form" action="/login/google" method="get">
+            <input type="hidden" name="_csrf" value="{{ csrf() }}">
+            <button type="submit" class="fcbtn btn btn-danger btn-1b btn-login-google">
+              <span class="btn-label"><i class="icon-social-google"></i></span>
+              {{ t('Sign in') }}
+            </button>
+            <div class="small text-right">by Google Account</div>
+          </form>
         </div>
+        {% endif %}
+
+        <hr>
 
         {% if config.crowi['security:registrationMode'] != 'Closed' %}
         <div class="row">
@@ -229,18 +232,6 @@
         </form>
 
         <hr>
-
-        <div class="row">
-          {% if googleLoginEnabled() %}
-          <div class="col-md-6">
-            <p>{{ t('Sign up with Google Account') }}</p>
-            <form role="form" method="post" action="/register/google">
-              <input type="hidden" name="_csrf" value="{{ csrf() }}">
-              <button type="submit" class="btn btn-block btn-google"><i class="fa fa-google-plus-square"></i> {{ t('Login') }}</button>
-            </form>
-          </div>
-          {% endif %}
-        </div>
 
         <div class="row">
           <div class="col-xs-12 text-right">

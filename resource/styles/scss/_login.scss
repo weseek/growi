@@ -59,7 +59,6 @@
   .login-header {
     background-color: rgba(white, 0.5);
     .logo {
-      width: 70px;
       .group1, .group2 {
         fill: rgba(black, 0.5);
       }
@@ -100,7 +99,7 @@
   }
 
   // button style
-  .btn-login.fcbtn, .btn-register.fcbtn {
+  .btn-login.fcbtn, .btn-register.fcbtn, .btn-login-google.fcbtn {
     border: none;
     color: white;
     background-color: rgba(lighten(black, 20%), 0.4);
@@ -119,6 +118,14 @@
     }
     &:after {
       background-color: #7e4153;
+    }
+  }
+  .btn-login-google.fcbtn {
+    .btn-label {
+      background-color: rgba(#444, 0.4);
+    }
+    &:after {
+      background-color: #555;
     }
   }
   .btn-register.fcbtn {
