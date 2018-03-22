@@ -38,7 +38,7 @@
 
       <form action="/_api/admin/security/general" method="post" class="form-horizontal" id="generalSetting" role="form">
         <fieldset>
-        <legend>{{ t('security_setting.Security settings') }}</legend>
+        <legend class="alert-anchor">{{ t('security_setting.Security settings') }}</legend>
 
           <div class="form-group">
             <label for="settingForm[security:registrationMode]" class="col-xs-3 control-label">{{ t('Basic authentication') }}</label>
@@ -102,7 +102,7 @@
 
       <form action="/_api/admin/security/mechanism" method="post" class="form-horizontal m-t-30" id="mechanismSetting" role="form">
         <fieldset>
-          <legend>{{ t('Selecting authentication mechanism') }}</legend>
+          <legend class="alert-anchor">{{ t('Selecting authentication mechanism') }}</legend>
           <p class="alert alert-info"><b>NOTE: </b>Restarting the server is needed if you switch the auth mechanism.</p>
           <div class="form-group">
             <div class="col-xs-6">
@@ -166,7 +166,7 @@
 
             <fieldset>
               <h4>Google 設定</h4>
-              <p class="well">
+              <p class="well alert-anchor">
                 Google Cloud Platform の <a href="https://console.cloud.google.com/apis/credentials">API Manager</a>
                 から OAuth2 Client ID を作成すると、Google アカウントにコネクトして登録やログインが可能になります。
               </p>
@@ -282,7 +282,7 @@
           var $message = $('<p class="alert"></p>');
           $message.addClass('alert-' + status);
           $message.html(msg.replace('\n', '<br>'));
-          $message.insertAfter('#' + formId + ' legend');
+          $message.insertAfter('#' + formId + ' .alert-anchor');
 
           if (status == 'success') {
             setTimeout(function()
