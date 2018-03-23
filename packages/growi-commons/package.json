@@ -1,7 +1,7 @@
 {
   "name": "growi-pluginkit",
   "version": "1.1.0",
-  "description": "The GROWI Plugin Kit to develop plugins",
+  "description": "GROWI Plugin Kit to develop plugins",
   "main": "lib/index.js",
   "files": [
     "lib"
