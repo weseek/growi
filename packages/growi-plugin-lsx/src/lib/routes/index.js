@@ -1,5 +1,5 @@
 module.exports = (crowi, app) => {
-  var debug = require('debug')('crowi-plugin:lsx:routes')
+  var debug = require('debug')('growi-plugin:lsx:routes')
     , middleware = crowi.require('../util/middlewares')
     , lsx = require('./lsx')(crowi, app)
     , loginRequired = middleware.loginRequired
