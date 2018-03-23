@@ -1,9 +1,16 @@
 CHANGES
 ========
 
-## 2.4.5-RC
+## 3.0.0-RC
 
-* 
+* Feature: Group Access Control List
+* Feature: Add theme selector
+* Support: Add dark theme
+* Support: Refreshing bootstrap theme and icons
+* Support: Upgrade libs
+    * react-bootstrap
+    * react-bootstrap-typeahead
+    * react-clipboard.js
 
 ## 2.4.4
 
