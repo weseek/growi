@@ -48,12 +48,6 @@ build-prod:
         yarn install --production
 
     - script:
-      name: install plugins
-      code: |
-        yarn add crowi-plugin-lsx
-        yarn add crowi-plugin-pukiwiki-like-linker
-
-    - script:
       name: print dependencies
       code: yarn list --depth=0
 
@@ -86,12 +80,6 @@ build-dev:
       code: |
         yarn global add npm@4
         yarn install
-
-    - script:
-      name: install plugins
-      code: |
-        yarn add crowi-plugin-lsx
-        yarn add crowi-plugin-pukiwiki-like-linker
 
     - script:
       name: print dependencies
