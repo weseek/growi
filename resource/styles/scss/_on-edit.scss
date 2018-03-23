@@ -29,6 +29,16 @@ body.on-edit {
     display: none;
   }
 
+  /*
+   * right tabs
+   */
+  .nav-main-right-tab:not(.dropdown) {
+    // hide if screen size is less than smartphone
+    @media (max-width: $screen-xs-max) {
+      display: none;
+    }
+  }
+
   /*****************
    * Expand Editor
    *****************/
@@ -114,11 +124,12 @@ body.on-edit {
 
   .row.bg-title {
     $left-margin: $nav-main-left-tab-width * 2 + 25px;  // width of .nav-main-left-tab x 2 + some margin
+    $right-margin: 128px + 94px;                        // width of presentation and history tabs width
 
     position: absolute;
     z-index: 1;
     left: $left-margin;
-    min-width: calc(100% - #{$left-margin});
+    min-width: calc(100% - #{$left-margin} - #{$right-margin});
 
     // for crowi layout
     > .col-md-9, .col-xs-12 {
@@ -131,6 +142,11 @@ body.on-edit {
     h1 {
       font-size: 20px;
       line-height: 1em;
+    }
+
+    // hide if screen size is less than smartphone
+    @media (max-width: $screen-xs-max) {
+      display: none;
     }
   }
 
