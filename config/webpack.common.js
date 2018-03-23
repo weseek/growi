@@ -11,7 +11,6 @@ const helpers = require('./helpers');
 const AssetsPlugin = require('assets-webpack-plugin');
 const CommonsChunkPlugin = require('webpack/lib/optimize/CommonsChunkPlugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');;
 
 /*
  * Webpack configuration
@@ -114,8 +113,6 @@ module.exports = function (options) {
         name: 'commons',
         chunks: ['commons', 'plugin'],
       }),
-
-      new LodashModuleReplacementPlugin,
 
       // ignore
       new webpack.IgnorePlugin(/^\.\/lib\/deflate\.js/, /markdown-it-plantuml/),
