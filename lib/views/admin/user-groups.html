@@ -73,24 +73,30 @@
       <div class="modal fade" id="admin-delete-user-group-modal">
         <div class="modal-dialog">
           <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-danger">
               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-              <h4 class="modal-title"><code id="admin-delete-user-group-name"></code>グループを削除しますか?</h4>
+              <div class="modal-title">
+                <i class="icon icon-fire"></i> グループの削除
+              </div>
             </div>
 
             <div class="modal-body">
-              <p>
+              <dl>
+                <dt>グループ名</dt>
+                <dd><span id="admin-delete-user-group-name"></span></dd>
+              </dl>
+              <span class="text-danger">
                 グループの削除を行うと元に戻すことはできませんのでご注意ください。
-              </p>
-
-              <form method="post" id="admin-user-groups-delete">
+              </span>
+            </div>
+            <div class="modal-footer">
+              <form method="post" id="admin-user-groups-delete" class="text-right">
                 <input type="hidden" name="user_group_id" value="">
                 <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                <button type="submit" value="" class="btn btn-danger">
-                  実行
+                <button type="submit" value="" class="btn btn-sm btn-danger">
+                  <i class="icon icon-fire"></i> 削除
                 </button>
               </form>
-
             </div>
 
           </div>
@@ -101,7 +107,7 @@
 
       <h2>グループ一覧</h2>
 
-      <table class="table table-hover table-striped table-bordered table-user-list">
+      <table class="table table-bordered table-user-list">
         <thead>
           <tr>
             <th width="100px">#</th>
