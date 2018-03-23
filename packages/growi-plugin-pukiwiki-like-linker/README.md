@@ -1,5 +1,5 @@
-# crowi-plugin-pukiwiki-like-linker
-The [crowi-plus][crowi-plus] Plugin to add PukiwikiLikeLinker
+# growi-plugin-pukiwiki-like-linker
+[GROWI][growi] Plugin to add PukiwikiLikeLinker
 
 Overview
 ----------
@@ -41,10 +41,10 @@ Install
 1. install plugin
 
     ```
-    $ npm install --save crowi-plugin-pukiwiki-like-linker
+    $ npm install --save growi-plugin-pukiwiki-like-linker
     ```
 
-1. build client app (see [crowi-plus][crowi-plus])
+1. build client app (see [GROWI][growi])
 
 
-[crowi-plus]: https://github.com/weseek/crowi-plus
+[growi]: https://github.com/weseek/growi
