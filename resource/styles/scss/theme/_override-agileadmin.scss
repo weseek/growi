@@ -51,6 +51,15 @@
 }
 
 /*
+ * Nav
+ */
+.nav-pills {
+  > li > a {
+    border-radius: 3px;
+  }
+}
+
+/*
  * Form
  */
 .input-sm,
