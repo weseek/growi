@@ -1,0 +1,169 @@
+{% extends '../layout/admin.html' %}
+
+{% block html_title %}グループ管理 · {% endblock %}
+
+{% block content_head %}
+<div class="header-wrap">
+  <header id="page-header">
+    <h1 class="title" id="">グループ管理</h1>
+  </header>
+</div>
+{% endblock %}
+
+{% block content_main %}
+<div class="content-main">
+  {% set smessage = req.flash('successMessage') %}
+  {% if smessage.length %}
+  <div class="alert alert-success">
+    {{ smessage }}
+  </div>
+  {% endif %}
+
+  {% set emessage = req.flash('errorMessage') %}
+  {% if emessage.length %}
+  <div class="alert alert-danger">
+    {{ emessage }}
+  </div>
+  {% endif %}
+
+  <div class="row">
+    <div class="col-md-3">
+      {% include './widget/menu.html' with {current: 'user-group'} %}
+    </div>
+
+    <div class="col-md-9">
+      <p>
+        <button  data-toggle="collapse" class="btn btn-default" href="#createGroupForm">新規グループの作成</button>
+      </p>
+      <form role="form" action="/admin/user-group/create" method="post">
+        <div id="createGroupForm" class="collapse">
+          <div class="form-group">
+            <label for="createGroupForm[userGroupName]">グループ名</label>
+            <textarea class="form-control" name="createGroupForm[userGroupName]" placeholder="例: Group1"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">作成する</button>
+        </div>
+        <input type="hidden" name="_csrf" value="{{ csrf() }}">
+      </form>
+
+      {% set createdUserGroup = req.flash('createdUserGroup') %}
+      {% if createdUserGroup.length %}
+      <div class="modal fade in" id="createdGroupModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              <h4 class="modal-title">グループを作成しました</h4>
+            </div>
+
+            <div class="modal-body">
+              <p>
+                作成したグループにユーザを追加してください
+              </p>
+
+              <pre>{{ createdUserGroup.name }}</pre>
+            </div>
+
+          </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+      </div><!-- /.modal -->
+      {% endif %}
+
+      <div class="modal fade" id="admin-delete-user-group-modal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              <h4 class="modal-title"><code id="admin-delete-user-group-name"></code>グループを削除しますか?</h4>
+            </div>
+
+            <div class="modal-body">
+              <p>
+                グループの削除を行うと元に戻すことはできませんのでご注意ください。
+              </p>
+
+              <form method="post" id="admin-user-groups-delete">
+                <input type="hidden" name="user_group_id" value="">
+                <input type="hidden" name="_csrf" value="{{ csrf() }}">
+                <button type="submit" value="" class="btn btn-danger">
+                  実行
+                </button>
+              </form>
+
+            </div>
+
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+
+      <h2>グループ一覧</h2>
+
+      <table class="table table-hover table-striped table-bordered table-user-list">
+        <thead>
+          <tr>
+            <th width="100px">#</th>
+            <th>名前</th>
+            <th>ユーザ一覧</th>
+            <th width="100px">作成日</th>
+            <th width="90px">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for sGroup in userGroups %}
+          <tr>
+            <td>
+              <img src="{{ sGroup|picture }}" class="picture picture-rounded" />
+            </td>
+            <td>{{ sGroup.name }}</td>
+            <td><ul class="list-inline">
+              {% for relation in userGroupRelations.get(sGroup) %}
+              <li class="list-inline-item badge badge-primary">{{relation.relatedUser.username}}</li>
+              {% endfor %}
+            </ul></td>
+            <td>{{ sGroup.createdAt|date('Y-m-d', sGroup.createdAt.getTimezoneOffset()) }}</td>
+            <td>
+              <div class="btn-group admin-group-menu">
+                <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                  操作
+                  <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li class="dropdown-header">メニュー</li>
+                  <li class="divider"></li>
+
+                  <li class="dropdown-button">
+                    <a href="/admin/user-group-detail/{{sGroup.name}}" class="btn btn-block btn-default">詳細</a>
+                  </li>
+
+                  <li class="dropdown-button">
+                    <a href="#"
+                      data-user-group-id="{{ sGroup._id.toString() }}"
+                      data-user-group-name="{{ sGroup.name.toString() }}"
+                      data-target="#admin-delete-user-group-modal"
+                      data-toggle="modal" class="btn btn-block btn-danger">
+                      グループの削除
+                    </a>
+                  </li>
+
+                </ul>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      {% include '../widget/pager.html' with {path: "/admin/user-groups", pager: pager} %}
+
+    </div>
+  </div>
+</div>
+{% endblock content_main %}
+
+{% block content_footer %}
+{% endblock content_footer %}
+
+
