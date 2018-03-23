@@ -17,17 +17,21 @@
 }
 
 .search-typeahead {
+  position: relative;
+
   .search-clear {
     position: absolute;
     z-index: 2;
-    right: 28px;
+    top: 4px;
+    right: 4px;
     width: 24px;
     height: 24px;
-    top: 7px;
     color: #999;
     padding: 0;
   }
   .rbt-menu {
+    margin-top: 3px;
+
     li a span {
       .page-path {
         display: inline;
@@ -51,6 +55,7 @@
 .search-top, .search-sidebar {
   .search-clear {
     top: 3px;
+    right: 26px;
   }
 
   .input-group-btn {

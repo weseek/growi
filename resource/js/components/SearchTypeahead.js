@@ -144,7 +144,7 @@ export default class SearchTypeahead extends React.Component {
       : [];
 
     return (
-      <span className="search-typeahead">
+      <div className="search-typeahead">
         <AsyncTypeahead
           {...this.props}
           ref="typeahead"
@@ -163,7 +163,7 @@ export default class SearchTypeahead extends React.Component {
           defaultSelected={defaultSelected}
         />
         {restoreFormButton}
-      </span>
+      </div>
     );
   }
 }
