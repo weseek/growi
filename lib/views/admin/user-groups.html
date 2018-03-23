@@ -2,7 +2,7 @@
 
 {% block html_title %}グループ管理 · {% endblock %}
 
-{% block content_head %}
+{% block content_header %}
 <div class="header-wrap">
   <header id="page-header">
     <h1 class="title" id="">グループ管理</h1>
@@ -105,17 +105,17 @@
         <thead>
           <tr>
             <th width="100px">#</th>
-            <th>名前</th>
+            <th>{{ t('Name') }}</th>
             <th>ユーザ一覧</th>
             <th width="100px">作成日</th>
-            <th width="90px">操作</th>
+            <th width="70px"></th>
           </tr>
         </thead>
         <tbody>
           {% for sGroup in userGroups %}
           <tr>
             <td>
-              <img src="{{ sGroup|picture }}" class="picture picture-rounded" />
+              <img src="{{ sGroup|picture }}" class="picture img-circle" />
             </td>
             <td>{{ sGroup.name }}</td>
             <td><ul class="list-inline">
@@ -127,24 +127,22 @@
             <td>
               <div class="btn-group admin-group-menu">
                 <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-                  操作
-                  <span class="caret"></span>
+                  <i class="icon-settings"></i> <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu" role="menu">
-                  <li class="dropdown-header">メニュー</li>
-                  <li class="divider"></li>
-
-                  <li class="dropdown-button">
-                    <a href="/admin/user-group-detail/{{sGroup.name}}" class="btn btn-block btn-default">詳細</a>
+                  <li>
+                    <a href="/admin/user-group-detail/{{sGroup.name}}">
+                      <i class="icon-fw icon-note"></i> 編集
+                    </a>
                   </li>
 
-                  <li class="dropdown-button">
+                  <li>
                     <a href="#"
-                      data-user-group-id="{{ sGroup._id.toString() }}"
-                      data-user-group-name="{{ sGroup.name.toString() }}"
-                      data-target="#admin-delete-user-group-modal"
-                      data-toggle="modal" class="btn btn-block btn-danger">
-                      グループの削除
+                        data-user-group-id="{{ sGroup._id.toString() }}"
+                        data-user-group-name="{{ sGroup.name.toString() }}"
+                        data-target="#admin-delete-user-group-modal"
+                        data-toggle="modal">
+                      <i class="icon-fw icon-fire text-danger"></i> 削除する
                     </a>
                   </li>
 
