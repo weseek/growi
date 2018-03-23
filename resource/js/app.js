@@ -224,7 +224,7 @@ if (customTitleEditorElem != null) {
   )
 }
 
-// うわーもうー
+// うわーもうー (commented by Crowi team -- 2018.03.23 Yuki Takei)
 $('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', function() {
   ReactDOM.render(<PageHistory pageId={pageId} crowi={crowi} />, document.getElementById('revision-history'));
 });
