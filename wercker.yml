@@ -1,4 +1,4 @@
-box: node:6.12
+box: node:8
 
 services:
   - mongo:3.4
@@ -13,8 +13,7 @@ test:
     - script:
       name: install dependencies
       code: |
-        yarn global add npm@4
-        yarn install
+        yarn
 
     - script:
       name: print dependencies
@@ -44,7 +43,6 @@ build-prod:
     - script:
       name: install dependencies
       code: |
-        yarn global add npm@4
         yarn install --production
 
     - script:
@@ -84,7 +82,6 @@ build-dev:
     - script:
       name: install dependencies
       code: |
-        yarn global add npm@4
         yarn install
 
     - script:
