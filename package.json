@@ -21,7 +21,7 @@
   "scripts": {
     "build:dev:analyze": "cross-env ANALYZE=1 npm run build:dev",
     "build:dev:watch": "npm run build:dev -- --watch",
-    "build:dev": "npm run clean:js && webpack --config config/webpack.dev.js --progress --profile --watch",
+    "build:dev": "npm run clean:js && webpack --config config/webpack.dev.js --progress --profile",
     "build:prod:analyze": "cross-env ANALYZE=1 npm run build:prod",
     "build:prod": "npm run clean && webpack --config config/webpack.prod.js --progress --profile --bail",
     "build": "npm run build:dev:watch",
