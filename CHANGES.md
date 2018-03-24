@@ -7,6 +7,7 @@ CHANGES
 * Feature: Add theme selector
 * Support: Add dark theme
 * Support: Refreshing bootstrap theme and icons
+* Support: Use Browsersync instead of easy-livereload
 * Support: Upgrade libs
     * react-bootstrap
     * react-bootstrap-typeahead
