@@ -64,6 +64,10 @@ gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js
   {% if env === 'development' %}
     <script src="/dll/vendor.dll.js"></script>
     <script src="{{ webpack_asset('dev').js }}" async></script>
+    <!-- Browsersync -->
+    <script id="__bs_script__">//<![CDATA[
+      document.write("<script async src='http://HOST:3001/browser-sync/browser-sync-client.js?v=2.23.6'><\/script>".replace("HOST", location.hostname));
+    //]]></script>
   {% endif %}
 
   <script src="{{ webpack_asset('commons').js }}" defer></script>
@@ -223,10 +227,10 @@ gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js
 
 </div><!-- /#wrapper -->
 
+{% include '../modal/shortcuts.html' %}
+
 {% block body_end %}
 {% endblock %}
-
-{% include '../modal/shortcuts.html' %}
 </body>
 {% endblock %}
 
