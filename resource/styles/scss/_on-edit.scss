@@ -81,7 +81,7 @@ body.on-edit {
       $header-plus-footer: 2px                      // .main padding-top
                          + 42px                     // .nav height
                          + 1px                      // .page-editor-footer border-top
-                         + 39px;                    // .page-editor-footer min-height
+                         + 40px;                    // .page-editor-footer min-height
       $preview-margin: $header-plus-footer;
       $editor-margin: $header-plus-footer + 22px;   // .btn-open-dropzone height
 
@@ -103,9 +103,13 @@ body.on-edit {
       .page-editor-footer {
         width: 100%;
         margin: 0;
-        padding: 4px;
-        min-height: 39px;
+        padding: 3px;
+        min-height: 40px;
         border-top: solid 1px transparent;
+
+        .btn-submit {
+          width: 100px;
+        }
       }
 
       // slack
