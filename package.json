@@ -93,7 +93,6 @@
     "jquery-slimscroll": "^1.3.8",
     "jquery-ui": "^1.12.1",
     "jquery.cookie": "~1.4.1",
-    "lodash-webpack-plugin": "^0.11.4",
     "markdown-it": "^8.4.0",
     "markdown-it-emoji": "^1.4.0",
     "markdown-it-footnote": "^3.0.1",
