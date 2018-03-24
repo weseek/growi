@@ -1,6 +1,6 @@
 {
   "name": "growi-plugin-lsx",
-  "version": "1.3.12",
+  "version": "1.3.13",
   "description": "GROWI plugin to add lsx tag",
   "keywords": [
     "growi",
@@ -13,7 +13,7 @@
   "scripts": {
     "build:watch": "npm run build -- --watch",
     "build": "babel src --out-dir lib --source-maps inline",
-    "clean": "npm cache clean && npm run rimraf -- lib",
+    "clean": "npm run rimraf -- lib",
     "resources": "mkdirp lib/resource/css && ncp src/resource/css lib/resource/css",
     "prebuild:watch": "npm run clean && npm run resources",
     "prebuild": "npm run clean && npm run resources",
@@ -48,8 +48,8 @@
     "rimraf": "^2.6.1"
   },
   "engines": {
-    "node": ">=6.11 <7",
-    "npm": ">=4.6 <5",
-    "yarn": "^1.1.0"
+    "node": ">=6.11 <9",
+    "npm": ">=4",
+    "yarn": "^1.3.1"
   }
 }
