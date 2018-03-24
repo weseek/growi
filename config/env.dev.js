@@ -13,7 +13,7 @@ module.exports = {
     // 'express:*',
     // 'crowi:*',
     'crowi:crowi',
-    'crowi:crowi:dev',
+    // 'crowi:crowi:dev',
     'crowi:crowi:express-init',
     'crowi:models:external-account',
     // 'crowi:routes:login',
