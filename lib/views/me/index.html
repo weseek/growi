@@ -78,8 +78,8 @@
       <div class="form-group {% if not user.emailpublished %}has-error{% endif %}">
         <label for="userForm[emailPublished]" class="col-sm-2 control-label">{{ t('Disclose E-mail') }}</label>
         <div class="col-sm-4">
-          <label class="radio-inline"><input type="radio" name="userForm[emailPublished]" value="{{ consts.emailPublished }}" {% if user.emailPublished == consts.emailpublished %}checked="checked"{% endif %}>{{ t('Show') }}</label>
-          <label class="radio-inline"><input type="radio" name="userForm[emailPublished]" value="{{ consts.emailPublished }}" {% if user.emailPublished == consts.emailpublished %}checked="checked"{% endif %}>{{ t('Hide') }}</label>
+          <label class="radio-inline"><input type="radio" name="userForm[emailPublished]" value="{{ true }}" {% if user.emailPublished == true %}checked="checked"{% endif %}>{{ t('Show') }}</label>
+          <label class="radio-inline"><input type="radio" name="userForm[emailPublished]" value="{{ false }}" {% if user.emailPublished == false %}checked="checked"{% endif %}>{{ t('Hide') }}</label>
         </div>
       </div>
       
