@@ -19,7 +19,7 @@
       <h2>{{ pageUser.name }}</h2>
       <ul>
         <li class="user-page-username"><i class="fa fa-user"></i> @{{ pageUser.username }}</li>
-      　{% if pageUser.isEmailPublished == true %}
+      　{% if pageUser.isEmailPublished %}
         <li class="user-page-email"><i class="fa fa-envelope-o"></i> {{ pageUser.email }}</li>
         {% else %}
         <li class="user-page-email"></i> </li>
