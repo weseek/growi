@@ -83,7 +83,7 @@
                 グループの削除を行うと元に戻すことはできませんのでご注意ください。
               </p>
 
-              <form method="post" id="admin-user-groups-delete">
+              <form action="/admin/user-group.remove" method="post" id="admin-user-groups-delete">
                 <input type="hidden" name="user_group_id" value="">
                 <input type="hidden" name="_csrf" value="{{ csrf() }}">
                 <button type="submit" value="" class="btn btn-danger">

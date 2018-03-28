@@ -62,10 +62,6 @@ $(function() {
     $('#admin-user-groups-delete input[name=user_group_id]').val(userGroupId);
   });
 
-  $('form#admin-user-groups-delete').on('submit', function (e) {
-    $.post('/_api/admin/user-group.remove', $(this).serialize(), function (res) {});
-  });
-
   $('form#user-group-relation-create').on('submit', function (e) {
     $.post('/admin/user-group-relation/create', $(this).serialize(), function (res) {
       $('#admin-add-user-group-relation-modal').modal('hide');
