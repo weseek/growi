@@ -21,25 +21,20 @@
   <input type="hidden" id="form-body" name="pageForm[body]" value="{% if pageForm.body %}{{ pageForm.body }}{% endif %}">
   <input type="hidden" name="pageForm[path]" value="{{ path }}">
   <input type="hidden" name="pageForm[currentRevision]" value="{{ pageForm.currentRevision|default(page.revision._id.toString()) }}">
-  <div class="form-submit-group form-group form-inline">
-    {#<button class="btn btn-default">
-      <i class="fa fa-file-text"></i>
-      ファイルを追加 ...
-    </button>#}
-
-    <div class="pull-left">
+  <div class="page-editor-footer form-submit-group form-group form-inline
+      d-flex align-items-center justify-content-between">
+    <div>
       <div id="page-editor-options-selector"></div>
     </div>
 
-    <div class="pull-right form-inline page-form-setting" id="page-form-setting" data-slack-configured="{{ slackConfigured() }}">
+    <div class="form-inline page-form-setting d-flex align-items-center" id="page-form-setting" data-slack-configured="{{ slackConfigured() }}">
       {% if slackConfigured() %}
-      <span class="input-group extended-setting">
-        <span class="input-group-addon">
-          <label>
-            <i class="fa fa-slack"></i>
-            <input class="" type="checkbox" name="pageForm[notify][slack][on]" value="1">
-          </label>
-        </span>
+      <span class="input-group input-group-sm input-group-slack extended-setting m-r-5">
+        <div class="input-group-addon">
+          <img id="slack-mark-white" src="/images/icons/slack/mark-monochrome_white.svg" width="18" height="18">
+          <img id="slack-mark-black" src="/images/icons/slack/mark-monochrome_black.svg" width="18" height="18">
+          <input class="" type="checkbox" name="pageForm[notify][slack][on]" value="1">
+        </div>
         <input class="form-control" type="text" name="pageForm[notify][slack][channel]" value="{{ page.extended.slack|default('') }}" placeholder="slack-channel-name"
           id="page-form-slack-channel"
           data-toggle="popover"
@@ -54,7 +49,7 @@
       {% if forceGrant %}
       <input type="hidden" name="pageForm[grant]" value="{{ forceGrant }}">
       {% else %}
-      <select name="pageForm[grant]" class="form-control">
+      <select name="pageForm[grant]" class="m-r-5 selectpicker btn-group-sm">
         {% for grantId, grantLabel in consts.pageGrants %}
         <option value="{{ grantId }}" {% if pageForm.grant|default(page.grant) == grantId %}selected{% endif %} {% if grantId == 5 && userRelatedGroups.length == 0 %}disabled{% endif %}>{{ t(grantLabel) }}</option>
         {% endfor %}
@@ -68,7 +63,7 @@
       </select>
       {% endif %}
       <input type="hidden" id="edit-form-csrf" name="_csrf" value="{{ csrf() }}">
-      <input type="submit" class="btn btn-primary" id="edit-form-submit" value="{{ t('Update Page') }}" />
+      <button type="submit" class="btn btn-primary btn-submit" id="edit-form-submit">{{ t('Update') }}</button>
     </div>
   </div>
 </form>

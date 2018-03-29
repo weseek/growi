@@ -11,6 +11,7 @@ const commonConfig = require('./webpack.common.js'); // the settings that are co
  * Webpack Plugins
  */
 const CommonsChunkPlugin = require('webpack/lib/optimize/CommonsChunkPlugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const UglifyJsPlugin = require('webpack/lib/optimize/UglifyJsPlugin');
 const OptimizeJsPlugin = require('optimize-js-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
@@ -44,6 +45,8 @@ module.exports = function (env) {
           NODE_ENV: JSON.stringify(ENV),
         }
       }),
+
+      new ExtractTextPlugin('[name].[contenthash].css'),
 
       new OptimizeJsPlugin({
         sourceMap: false

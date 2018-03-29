@@ -1,9 +1,29 @@
 CHANGES
 ========
 
-## 2.4.4-RC
+## 3.0.0-RC
 
-* 
+* Feature: Group Access Control List
+* Feature: Add theme selector
+* Support: Add dark theme
+* Support: Refreshing bootstrap theme and icons
+* Support: Use Browsersync instead of easy-livereload
+* Support: Upgrade libs
+    * react-bootstrap
+    * react-bootstrap-typeahead
+    * react-clipboard.js
+
+## 2.4.4
+
+* Feature: Autoformat Markdown Table
+* Feature: highlight.js Theme Selector
+* Fix: The bug of updating numbering list by codemirror
+* Fix: Template LangProcessor doesn't work
+    * Introduced by 2.4.0
+* Support: Apply ESLint
+* Support: Upgrade libs
+    * react, react-dom
+    * codemirror, react-codemirror2
 
 ## 2.4.3
 

@@ -14,14 +14,19 @@ export default class Page extends React.Component {
       link = page.path;
     }
 
+    const styleFlex = {
+      flex: 1
+    }
+
     return (
-      <li className="page-list-li">
-        {this.props.children}
+      <li className="page-list-li d-flex align-items-center">
         <UserPicture user={page.revision.author} />
         <a className="page-list-link" href={link}>
           <PagePath page={page} excludePathString={this.props.excludePathString} />
         </a>
         <PageListMeta page={page} />
+        <div style={styleFlex}></div>
+        {this.props.children}
       </li>
     );
   }

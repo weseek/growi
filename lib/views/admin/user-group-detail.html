@@ -2,7 +2,7 @@
 
 {% block html_title %}グループ管理 · {% endblock %}
 
-{% block content_head %}
+{% block content_header %}
 <div class="header-wrap">
   <header id="page-header">
     <h1 class="title" id="">グループ管理(グループ詳細)</h1>
@@ -32,7 +32,10 @@
     </div>
 
     <div class="col-md-9">
-          <a href="/admin/user-groups"><i class="fa fa-arrow-left"></i> グループ一覧に戻る</a>
+      <a href="/admin/user-groups" class="btn btn-default">
+        <i class="icon-fw ti-arrow-left" aria-hidden="true"></i>
+        グループ一覧に戻る
+      </a>
 
       <div class="modal fade" id="admin-add-user-group-relation-modal">
         <div class="modal-dialog">
@@ -40,27 +43,27 @@
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
               <h4 class="modal-title">
-                グループにユーザを追加します</h4>
+                グループへのユーザー追加
+              </h4>
             </div>
 
             <div class="modal-body">
               <p>
-                ユーザ名を入力してください。
+                <strong>方法1.</strong> ユーザ名を入力して追加
               </p>
               <form class="form-inline" role="form" action="/admin/user-group-relation/create" method="post">
                 <div class="form-group">
-                  <label for="inputRelatedUserName">Add related user:</label>
                   <input type="text" name="user_name" class="form-control input-sm" id="inputRelatedUserName" placeholder="username">
                 </div>
                 <input type="hidden" name="user_group_id" value="{{userGroup.id}}">
                 <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                <button type="submit" class="btn btn-sm btn-danger">実行</button>
+                <button type="submit" class="btn btn-sm btn-success">追加</button>
               </form>
 
               {% if 0 < notRelatedusers.length %}
               <hr>
               <p>
-                ユーザ名を選択してください。
+                <strong>方法2.</strong> ユーザーを下のリストから選択
               </p>
 
               <ul class="list-inline">
@@ -85,7 +88,7 @@
         <!-- /.modal-dialog -->
       </div>
 
-      <div class="form-box">
+      <div class="m-t-20 form-box">
         <form action="/admin/user-group/{{userGroup.id}}/update" method="post" class="form-horizontal" role="form">
           <fieldset>
             <legend>基本情報</legend>
@@ -111,7 +114,7 @@
         </form>
       </div>
 
-      <div class="form-box">
+      <div class="m-t-20 form-box">
         <fieldset>
           <legend>グループ画像の設定</legend>
           <div class="form-group col-sm-8">
@@ -125,7 +128,7 @@
               </label>
               <div class="col-sm-8">
                 <p>
-                  <img src="{{ userGroup|uploadedpicture }}" width="64" id="settingUserPicture">
+                  <img src="{{ userGroup|uploadedpicture }}" id="settingUserPicture" class="picture picture-lg img-circle">
                   <br>
                 </p>
                 <p>
@@ -160,9 +163,9 @@
         </fieldset>
       </div><!-- /.form-box -->
 
-      <legend>ユーザー一覧</legend>
+      <legend class="m-t-20">ユーザー一覧</legend>
 
-      <table class="table table-hover table-striped table-bordered table-user-list">
+      <table class="table table-bordered table-user-list">
         <thead>
           <tr>
             <th width="100px">#</th>
@@ -172,7 +175,7 @@
             <th>名前</th>
             <th width="100px">作成日</th>
             <th width="150px">最終ログイン</th>
-            <th width="90px">操作</th>
+            <th width="70px"></th>
           </tr>
         </thead>
         <tbody>
@@ -180,7 +183,7 @@
           {% set sUser = sRelation.relatedUser%}
           <tr>
             <td>
-              <img src="{{ sRelation.relatedUser|picture }}" class="picture picture-rounded" />
+              <img src="{{ sRelation.relatedUser|picture }}" class="picture img-circle" />
             </td>
             <td>
               <strong>{{ sRelation.relatedUser.username }}</strong>
@@ -193,17 +196,16 @@
             <td>
               <div class="btn-group admin-user-menu">
                 <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-                  編集
-                  <span class="caret"></span>
+                  <i class="icon-settings"></i> <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu" role="menu">
-                  <li class="dropdown-header">編集メニュー</li>
-                  <li class="divider"></li>
-                  <li class="dropdown-button">
-                    <form action="/admin/user-group-relation/{{userGroup.name}}/remove-relation/{{ sRelation._id.toString() }}" method="post">
-                      <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                      <button type="submit" class="btn btn-block btn-danger">グループから外す</button>
-                    </form>
+                  <form id="form_removeFromGroup_{{ sUser.id }}" action="/admin/user-group-relation/{{userGroup.name}}/remove-relation/{{ sRelation._id.toString() }}" method="post">
+                    <input type="hidden" name="_csrf" value="{{ csrf() }}">
+                  </form>
+                  <li>
+                    <a href="javascript:form_removeFromGroup_{{ sUser.id }}.submit()">
+                      <i class="icon-fw icon-user-unfollow"></i> グループから外す
+                    </a>
                   </li>
                 </ul>
               </div>
@@ -214,7 +216,11 @@
           {% if 0 < notRelatedusers.length %}
           <tr>
             <td></td>
-            <td><button type="button" class="btn btn-primary" data-target="#admin-add-user-group-relation-modal" data-toggle="modal"><i class="fa fa-plus"></i></button></td>
+            <td class="text-center">
+              <button class="btn btn-default" data-target="#admin-add-user-group-relation-modal" data-toggle="modal">
+                <i class="ti-plus"></i>
+              </button>
+            </td>
             <td></td>
             <td></td>
             <td></td>
@@ -226,7 +232,7 @@
 
       <!-- {% include '../widget/pager.html' with {path: "/admin/user-group-detail", pager: pager} %} -->
 
-      <legend>ページ一覧</legend>
+      <legend class="m-t-20">ページ一覧</legend>
 
       {% if pageGroupRelations.length == 0 %}<p>グループが閲覧権限を保有するページはありません</p>{% endif %}
       {% include '../widget/page_list.html' with { pages: pageGroupRelations, pagePropertyName: 'targetPage' } %}

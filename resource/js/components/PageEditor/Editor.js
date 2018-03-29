@@ -34,9 +34,12 @@ require('codemirror/theme/twilight.css');
 import Dropzone from 'react-dropzone';
 
 import pasteHelper from './PasteHelper';
-import markdownListHelper from './MarkdownListHelper';
 import emojiAutoCompleteHelper from './EmojiAutoCompleteHelper';
 
+import InterceptorManager from '../../../../lib/util/interceptor-manager';
+
+import MarkdownListInterceptor from './MarkdownListInterceptor';
+import MarkdownTableInterceptor from './MarkdownTableInterceptor';
 
 export default class Editor extends React.Component {
 
@@ -45,6 +48,12 @@ export default class Editor extends React.Component {
 
     // https://regex101.com/r/7BN2fR/2
     this.indentAndMarkPattern = /^([ \t]*)(?:>|\-|\+|\*|\d+\.) /;
+
+    this.interceptorManager = new InterceptorManager();
+    this.interceptorManager.addInterceptors([
+      new MarkdownListInterceptor(),
+      new MarkdownTableInterceptor(),
+    ]);
 
     this.state = {
       value: this.props.value,
@@ -57,6 +66,7 @@ export default class Editor extends React.Component {
     this.setScrollTopByLine = this.setScrollTopByLine.bind(this);
     this.forceToFocus = this.forceToFocus.bind(this);
     this.dispatchSave = this.dispatchSave.bind(this);
+    this.handleEnterKey = this.handleEnterKey.bind(this);
 
     this.onScrollCursorIntoView = this.onScrollCursorIntoView.bind(this);
     this.onPaste = this.onPaste.bind(this);
@@ -158,6 +168,26 @@ export default class Editor extends React.Component {
     if (this.props.onUpload != null) {
       this.props.onUpload(files);
     }
+  }
+
+  /**
+   * handle ENTER key
+   */
+  handleEnterKey() {
+
+    const editor = this.getCodeMirror();
+    var context = {
+      handlers: [],  // list of handlers which process enter key
+      editor: editor,
+    };
+
+    const interceptorManager = this.interceptorManager;
+    interceptorManager.process('preHandleEnter', context)
+      .then(() => {
+        if (context.handlers.length == 0) {
+          codemirror.commands.newlineAndIndentContinueMarkdownList(editor);
+        }
+      });
   }
 
   onScrollCursorIntoView(editor, event) {
@@ -266,7 +296,6 @@ export default class Editor extends React.Component {
   renderOverlay() {
     const overlayStyle = {
       position: 'absolute',
-      zIndex: 1060, // FIXME: required because .content-main.on-edit has 'z-index:1050'
       top: 0,
       right: 0,
       bottom: 0,
@@ -292,9 +321,6 @@ export default class Editor extends React.Component {
       display: 'flex',
       flexDirection: 'column',
     }
-    const expandHeight = {
-      height: 'calc(100% - 20px)'
-    }
 
     const theme = this.props.editorOptions.theme || 'elegant';
     const styleActiveLine = this.props.editorOptions.styleActiveLine || undefined;
@@ -304,7 +330,6 @@ export default class Editor extends React.Component {
           ref="dropzone"
           disableClick
           disablePreview={true}
-          style={expandHeight}
           accept={this.getDropzoneAccept()}
           className={this.getDropzoneClassName()}
           acceptClassName="dropzone-accepted"
@@ -344,7 +369,7 @@ export default class Editor extends React.Component {
               highlightFormatting: true,
               // continuelist, indentlist
               extraKeys: {
-                "Enter": markdownListHelper.newlineAndIndentContinueMarkdownList,
+                "Enter": this.handleEnterKey,
                 "Tab": "indentMore",
                 "Shift-Tab": "indentLess",
                 "Ctrl-Q": (cm) => { cm.foldCode(cm.getCursor()) },
@@ -373,7 +398,7 @@ export default class Editor extends React.Component {
         <button type="button" className="btn btn-default btn-block btn-open-dropzone"
             onClick={() => {this.refs.dropzone.open()}}>
 
-          <i className="fa fa-paperclip" aria-hidden="true"></i>&nbsp;
+          <i className="icon-paper-clip" aria-hidden="true"></i>&nbsp;
           Attach files by dragging &amp; dropping,&nbsp;
           <span className="btn-link">selecting them</span>,&nbsp;
           or pasting from the clipboard.

@@ -2,7 +2,7 @@
 
 {% block html_title %}グループ管理 · {% endblock %}
 
-{% block content_head %}
+{% block content_header %}
 <div class="header-wrap">
   <header id="page-header">
     <h1 class="title" id="">グループ管理</h1>
@@ -73,24 +73,30 @@
       <div class="modal fade" id="admin-delete-user-group-modal">
         <div class="modal-dialog">
           <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-danger">
               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-              <h4 class="modal-title"><code id="admin-delete-user-group-name"></code>グループを削除しますか?</h4>
+              <div class="modal-title">
+                <i class="icon icon-fire"></i> グループの削除
+              </div>
             </div>
 
             <div class="modal-body">
-              <p>
+              <dl>
+                <dt>グループ名</dt>
+                <dd><span id="admin-delete-user-group-name"></span></dd>
+              </dl>
+              <span class="text-danger">
                 グループの削除を行うと元に戻すことはできませんのでご注意ください。
-              </p>
-
-              <form action="/admin/user-group.remove" method="post" id="admin-user-groups-delete">
+              </span>
+            </div>
+            <div class="modal-footer">
+              <form action="/admin/user-group.remove" method="post" id="admin-user-groups-delete" class="text-right">
                 <input type="hidden" name="user_group_id" value="">
                 <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                <button type="submit" value="" class="btn btn-danger">
-                  実行
+                <button type="submit" value="" class="btn btn-sm btn-danger">
+                  <i class="icon icon-fire"></i> 削除
                 </button>
               </form>
-
             </div>
 
           </div>
@@ -101,21 +107,21 @@
 
       <h2>グループ一覧</h2>
 
-      <table class="table table-hover table-striped table-bordered table-user-list">
+      <table class="table table-bordered table-user-list">
         <thead>
           <tr>
             <th width="100px">#</th>
-            <th>名前</th>
+            <th>{{ t('Name') }}</th>
             <th>ユーザ一覧</th>
             <th width="100px">作成日</th>
-            <th width="90px">操作</th>
+            <th width="70px"></th>
           </tr>
         </thead>
         <tbody>
           {% for sGroup in userGroups %}
           <tr>
             <td>
-              <img src="{{ sGroup|picture }}" class="picture picture-rounded" />
+              <img src="{{ sGroup|picture }}" class="picture img-circle" />
             </td>
             <td>{{ sGroup.name }}</td>
             <td><ul class="list-inline">
@@ -127,24 +133,22 @@
             <td>
               <div class="btn-group admin-group-menu">
                 <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-                  操作
-                  <span class="caret"></span>
+                  <i class="icon-settings"></i> <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu" role="menu">
-                  <li class="dropdown-header">メニュー</li>
-                  <li class="divider"></li>
-
-                  <li class="dropdown-button">
-                    <a href="/admin/user-group-detail/{{sGroup.name}}" class="btn btn-block btn-default">詳細</a>
+                  <li>
+                    <a href="/admin/user-group-detail/{{sGroup.name}}">
+                      <i class="icon-fw icon-note"></i> 編集
+                    </a>
                   </li>
 
-                  <li class="dropdown-button">
+                  <li>
                     <a href="#"
-                      data-user-group-id="{{ sGroup._id.toString() }}"
-                      data-user-group-name="{{ sGroup.name.toString() }}"
-                      data-target="#admin-delete-user-group-modal"
-                      data-toggle="modal" class="btn btn-block btn-danger">
-                      グループの削除
+                        data-user-group-id="{{ sGroup._id.toString() }}"
+                        data-user-group-name="{{ sGroup.name.toString() }}"
+                        data-target="#admin-delete-user-group-modal"
+                        data-toggle="modal">
+                      <i class="icon-fw icon-fire text-danger"></i> 削除する
                     </a>
                   </li>
 

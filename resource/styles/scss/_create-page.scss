@@ -1,0 +1,64 @@
+.modal.create-page {
+
+  @media (min-width: $screen-sm-min) { // {{{ more than tablet size
+    .modal-dialog {
+      width: 750px;
+    }
+  }
+
+  .modal-body {
+    legend {
+      margin-bottom: 10px;
+    }
+
+    form {
+
+      // layout
+      .create-page-input-container {
+        .create-page-input-row {
+          flex: 1;
+        }
+        .create-page-button-container {
+          margin-left: 15px;
+        }
+
+        // change layout by screen size
+        @media (max-width: $screen-xs-max) {
+          flex-direction: column;
+          .create-page-button-container {
+            margin-top: 10px;
+            text-align: right;
+          }
+        }
+      }
+
+      .page-today-prefix {
+      }
+      .page-today-input1 {
+        width: 60px;
+        margin-left: 5px;
+        margin-right: 5px;
+        padding-left: 2px;
+        padding-right: 2px;
+      }
+      .page-today-suffix {
+      }
+      .page-today-input2 {
+        flex: 1;
+        margin-left: 5px;
+      }
+
+      #page-name-inputter {
+        flex: 1;
+        input {
+          min-width: 300px; // Workaround to display placeholder.
+                            //   cf https://github.com/ericgio/react-bootstrap-typeahead/issues/256
+        }
+      }
+
+      .create-page-under-tree-label code {
+        font-family: $font-family-monospace-not-strictly;
+      }
+    }
+  } // .modal-body
+}

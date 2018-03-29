@@ -1,0 +1,71 @@
+
+.page-list {
+  .page-list-container {
+    line-height: 1.6em;
+    font-size: 15px;
+  }
+
+  .page-list-ul {
+    margin: 0;
+    padding-left: 0;
+
+    > li {
+      margin: 0;
+      list-style: none;
+
+      .picture {
+        width: 16px;
+        height: 16px;
+      }
+
+      > a {
+        display: inline;
+        padding: 0 4px;
+        color: inherit;
+      }
+
+      > span.page-list-meta {
+        font-size: .9em;
+
+        >span {
+          margin-right: .3rem;
+        }
+
+        i {
+          margin-right: 2px;
+        }
+      }
+    }
+
+    // after second level indent
+    .page-list-ul {
+      padding-left: 2rem;
+    }
+
+    // override .page-list-ul
+    &.page-list-ul-flat {
+      padding-left: 0;
+    }
+  }
+
+}
+
+.popular-page-high {
+  color: #e80000;
+  font-size: 1.1em;
+  font-weight: bold;
+}
+.popular-page-mid {
+  color: #e47800;
+  font-weight: bold;
+}
+.popular-page-low {
+  color: #ab7c7c;
+}
+
+.panel-timeline {
+  border: 1px solid #ccc;
+  > .panel-heading {
+    background-color: #ccc;
+  }
+}

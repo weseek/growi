@@ -26,6 +26,7 @@ import SearchTypeahead  from './components/SearchTypeahead';
 import CustomCssEditor  from './components/Admin/CustomCssEditor';
 import CustomScriptEditor from './components/Admin/CustomScriptEditor';
 import CustomHeaderEditor from './components/Admin/CustomHeaderEditor';
+import CustomTitleEditor from './components/Admin/CustomTitleEditor';
 
 import * as entities from 'entities';
 
@@ -82,6 +83,12 @@ if (isEnabledPlugins) {
 // configure renderer
 crowiRenderer.setup(crowi.config);
 
+// restore draft when the first time to edit
+const draft = crowi.findDraft(pagePath);
+if (!pageRevisionId && draft != null) {
+  markdown = draft;
+}
+
 /**
  * define components
  *  key: id of element
@@ -89,12 +96,14 @@ crowiRenderer.setup(crowi.config);
  */
 const componentMappings = {
   'search-top': <HeaderSearchBox crowi={crowi} />,
+  'search-sidebar': <HeaderSearchBox crowi={crowi} />,
   'search-page': <SearchPage crowi={crowi} crowiRenderer={crowiRenderer} />,
   'page-list-search': <PageListSearch crowi={crowi} />,
 
   //'revision-history': <PageHistory pageId={pageId} />,
   'seen-user-list': <SeenUserList pageId={pageId} crowi={crowi} />,
   'bookmark-button': <BookmarkButton pageId={pageId} crowi={crowi} />,
+  'bookmark-button-lg': <BookmarkButton pageId={pageId} crowi={crowi} size="lg" />,
 
   'page-name-inputter': <NewPageNameInputter crowi={crowi} parentPageName={pagePath} />,
 
@@ -204,8 +213,18 @@ if (customHeaderEditorElem != null) {
     customHeaderEditorElem
   )
 }
+const customTitleEditorElem = document.getElementById('custom-title-editor');
+if (customTitleEditorElem != null) {
+  // get input[type=hidden] element
+  const customTitleInputElem = document.getElementById('inputCustomTitle');
 
-// うわーもうー
+  ReactDOM.render(
+    <CustomTitleEditor inputElem={customTitleInputElem} />,
+    customTitleEditorElem
+  )
+}
+
+// うわーもうー (commented by Crowi team -- 2018.03.23 Yuki Takei)
 $('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', function() {
   ReactDOM.render(<PageHistory pageId={pageId} crowi={crowi} />, document.getElementById('revision-history'));
 });

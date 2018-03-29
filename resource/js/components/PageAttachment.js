@@ -1,6 +1,5 @@
 import React from 'react';
 
-import Icon from './Common/Icon';
 import PageAttachmentList from './PageAttachment/PageAttachmentList';
 import DeleteAttachmentModal from './PageAttachment/DeleteAttachmentModal';
 
@@ -113,7 +112,6 @@ export default class PageAttachment extends React.Component {
 
     return (
       <div>
-        <p>Attachments</p>
         <PageAttachmentList
           attachments={this.state.attachments}
           inUse={this.state.inUse}

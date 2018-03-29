@@ -2,49 +2,47 @@
   <div class="modal-dialog">
     <div class="modal-content">
 
-      <div class="modal-header">
+      <div class="modal-header bg-primary">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title">{{ t('New Page') }}</h4>
+        <div class="modal-title">{{ t('New Page') }}</div>
       </div>
 
       <div class="modal-body">
 
-        <form class="form-horizontal" id="create-page-today" role="form">
-          <fieldset>
-            <div class="col-xs-12">
-              <h4>{{ t("Create today's") }}</h4>
-            </div>
-            <div class="col-xs-10">
-              <span class="page-today-prefix">{{ userPageRoot(user) }}/</span>
-              <input type="text" data-prefix="{{ userPageRoot(user) }}/" class="page-today-input1 form-control text-center" value="{{ t('Memo') }}" id="" name="">
-              <span class="page-today-suffix">/{{ now|datetz('Y/m/d') }}/</span>
-              <input type="text" data-prefix="/{{ now|datetz('Y/m/d') }}/" class="page-today-input2 form-control" id="page-today-input2" name="" placeholder="{{ t('Input page name (optional)') }}">
-            </div>
-            <div class="col-xs-2">
-              <button type="submit" class="btn btn-primary">{{ t('Create') }}</button>
+        <form class="row form-horizontal" id="create-page-today" role="form">
+          <fieldset class="col-xs-12">
+            <legend>{{ t("Create today's") }}</legend>
+            <div class="d-flex create-page-input-container">
+              <div class="create-page-input-row d-flex align-items-center">
+                <span class="page-today-prefix">{{ userPageRoot(user) }}/</span>
+                <input type="text" data-prefix="{{ userPageRoot(user) }}/" class="page-today-input1 form-control text-center" value="{{ t('Memo') }}" id="" name="">
+                <span class="page-today-suffix">/{{ now|datetz('Y/m/d') }}/</span>
+                <input type="text" data-prefix="/{{ now|datetz('Y/m/d') }}/" class="page-today-input2 form-control" id="page-today-input2" name="" placeholder="{{ t('Input page name (optional)') }}">
+              </div>
+              <div class="create-page-button-container">
+                <button type="submit" class="fcbtn btn btn-outline btn-rounded btn-primary btn-1b"><i class="icon-fw icon-doc"></i>{{ t('Create') }}</button>
+              </div>
             </div>
           </fieldset>
         </form>
-        <hr>
 
-        <form class="form-horizontal" id="create-page-under-tree" role="form">
-          <fieldset>
-            <div class="col-xs-12 create-page-under-tree-label">
-              <h4>{{ t('Create under', parentPath(path)) }}</h4>
-            </div>
-            <div class="col-xs-10">
-              {% if searchConfigured() %}
-              <div class="clearfix" id="page-name-inputter"></div>
-              {% else %}
-              <input type="text" value="{{ parentPath(path) }}" class="page-name-input form-control " placeholder="{{ t('Input page name') }}" required />
-              {% endif %}
-            </div>
-            <div class="col-xs-2">
-              <button type="submit" class="btn btn-primary">{{ t('Create') }}</button>
+        <form class="row form-horizontal m-t-15" id="create-page-under-tree" role="form">
+          <fieldset class="col-xs-12">
+            <legend>{{ t('Create under', parentPath(path)) }}</legend>
+            <div class="d-flex create-page-input-container">
+              <div class="create-page-input-row d-flex align-items-center">
+                {% if searchConfigured() %}
+                <div id="page-name-inputter"></div>
+                {% else %}
+                <input type="text" value="{{ parentPath(path) }}" class="page-name-input form-control " placeholder="{{ t('Input page name') }}" required />
+                {% endif %}
+              </div>
+              <div class="create-page-button-container">
+                <button type="submit" class="fcbtn btn btn-outline btn-rounded btn-primary btn-1b"><i class="icon-fw icon-doc"></i>{{ t('Create') }}</button>
+              </div>
             </div>
           </fieldset>
         </form>
-        <hr>
 
       </div><!-- /.modal-body -->
 

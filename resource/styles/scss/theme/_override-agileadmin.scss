@@ -1,0 +1,137 @@
+/*
+ * Growi original
+ */
+
+#page-wrapper {
+  padding-bottom: 0;
+}
+
+/*
+ * Sidebar
+ */
+.content-wrapper {
+  // hide elements by agile-admin completely
+  .logo .logo-text {
+    display: none;
+  }
+  @media(min-width:768px) {
+    .sidebar {
+      display: none;
+    }
+  }
+  #page-wrapper {
+    margin-left: 0;
+  }
+}
+
+/*
+ * Logo
+ */
+.top-left-part {
+  line-height: 0%;
+
+  a {
+    text-transform: none;
+  }
+}
+.logo {
+  .logo-mark {
+    svg {
+      padding: 12px;
+      width: 50px;
+      height: 50px;
+    }
+  }
+  .logo-text {
+    svg {
+      width: 156px;
+      height: 50px;
+    }
+  }
+}
+
+/*
+ * Nav
+ */
+.nav-pills {
+  > li > a {
+    border-radius: 3px;
+  }
+}
+
+/*
+ * Form
+ */
+.input-sm,
+.input-group-sm > .form-control,
+.input-group-addon.input-sm,
+.input-group-sm > .input-group-addon,
+.btn-group-sm > .btn {
+  border-radius: $radius;
+}
+
+/*
+ * Button
+ */
+button.btn.btn-link:hover {
+  text-decoration: none;
+}
+
+/*
+ * Dropdown
+ */
+.dropdown-menu {
+  > li > a {
+    padding: 5px 15px;
+  }
+}
+
+
+/*
+ * Modal
+ */
+.modal-content {
+  border: none;
+  // border-radius: 0;
+
+  .modal-header, .modal-footer {
+    padding: 10px 15px;
+  }
+}
+
+
+/*
+ * Wells
+ */
+.well {
+  border-radius: 3px;
+  padding: .7em;
+  &.well-sm {
+    padding: .5em;
+  }
+}
+
+
+/*
+ * Panel
+ */
+.panel {
+  .panel-heading {
+    padding: 7px 15px;
+    text-transform: none;
+  }
+  .panel-body {
+    padding: 15px;
+  }
+  .panel-footer {
+    padding: 7px 15px;
+  }
+}
+
+
+/*
+ * Label
+ */
+.label {
+  padding: 2px 7px;
+}
