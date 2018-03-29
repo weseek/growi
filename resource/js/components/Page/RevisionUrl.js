@@ -5,13 +5,6 @@ import CopyButton from '../CopyButton';
 
 export default class RevisionUrl extends React.Component {
 
-  showToolTip() {
-    $('#btnCopy').tooltip('show');
-    setTimeout(() => {
-      $('#btnCopy').tooltip('hide');
-    }, 1000);
-  }
-
   render() {
     const buttonStyle = {
       fontSize: "1em"
@@ -26,7 +19,7 @@ export default class RevisionUrl extends React.Component {
       <span>
         {url}
         <CopyButton buttonId="btnCopyRevisionUrl" text={copiedText}
-            buttonClassName="btn btn-default btn-muted" buttonStyle={buttonStyle} iconClassName="fa fa-link text-muted" />
+            buttonClassName="btn btn-default btn-copy-link" buttonStyle={buttonStyle} iconClassName="ti-clipboard" />
       </span>
     );
   }

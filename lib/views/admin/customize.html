@@ -2,6 +2,11 @@
 
 {% block html_title %}{{ t('Customize') }} {% endblock %}
 
+{% block style_css_block %}
+  <link rel="stylesheet" href="{{ webpack_asset('style').css }}">
+  <link rel="stylesheet" id="jssDefault" {# append id for theme selector #} href="{{ webpack_asset('style-theme-' + theme()).css }}">
+{% endblock %}
+
 {% block html_additional_headers %}
   {% parent %}
   <!-- CodeMirror -->
@@ -13,7 +18,7 @@
   </style>
 {% endblock %}
 
-{% block content_head %}
+{% block content_header %}
 <div class="header-wrap">
   <header id="page-header">
     <h1 class="title" id="">{{ t('Customize') }} </h1>
@@ -42,6 +47,36 @@
       {% include './widget/menu.html' with {current: 'customize'} %}
     </div>
     <div class="col-md-9">
+
+      <form action="/_api/admin/customize/theme" method="post" class="form-horizontal" id="customthemeSettingForm" role="form">
+        <fieldset>
+          <legend>{{ t('customize_page.Theme') }}</legend>
+
+          <div id="themeOptions" class="d-flex">
+            <a id="theme-option-default" href="#"
+                class="default {% if 'default' === settingForm['customize:theme'] %}active{% endif %}"
+                onclick="selectTheme('default')"
+                data-theme="{{ webpack_asset('style-theme-default').css }}">
+              {% include 'widget/theme-colorbox.html' %}
+            </a>
+            <a id="theme-option-default-dark" href="#"
+                class="default-dark {% if 'default-dark' === settingForm['customize:theme'] %}active{% endif %}"
+                onclick="selectTheme('default-dark')"
+                data-theme="{{ webpack_asset('style-theme-default-dark').css }}">
+              {% include 'widget/theme-colorbox.html' %}
+            </a>
+          </div>
+
+          <div class="form-group">
+            <div class="col-xs-offset-5 col-xs-6">
+              <input type="hidden" id="hiddenInputTheme" name="settingForm[customize:theme]" value="{{ settingForm['customize:theme'] }}">
+              <input type="hidden" name="_csrf" value="{{ csrf() }}">
+              <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
+            </div>
+          </div>
+
+        </fieldset>
+      </form>
 
       <form action="/_api/admin/customize/behavior" method="post" class="form-horizontal" id="cutombehaviorSettingForm" role="form">
       <fieldset>
@@ -150,13 +185,13 @@
           <label for="settingForm[customize:isEnabledTimeline]" class="col-xs-3 control-label">{{ t('customize_page.Timeline function') }}</label>
           <div class="col-xs-9">
             <div class="btn-group btn-toggle" data-toggle="buttons">
-              <label class="btn btn-default {% if settingForm['customize:isEnabledTimeline'] %}active{% endif %}" data-active-class="primary">
+              <label class="btn btn-default btn-rounded btn-outline {% if settingForm['customize:isEnabledTimeline'] %}active{% endif %}" data-active-class="primary">
                 <input name="settingForm[customize:isEnabledTimeline]" value="true" type="radio"
-                    {% if true === settingForm['customize:isEnabledTimeline'] %}checked{% endif %}> {{ t('Valid') }}
+                    {% if true === settingForm['customize:isEnabledTimeline'] %}checked{% endif %}> ON
               </label>
-              <label class="btn btn-default {% if !settingForm['customize:isEnabledTimeline'] %}active{% endif %}" data-active-class="primary">
+              <label class="btn btn-default btn-rounded btn-outline {% if !settingForm['customize:isEnabledTimeline'] %}active{% endif %}" data-active-class="default">
                 <input name="settingForm[customize:isEnabledTimeline]" value="false" type="radio"
-                    {% if !settingForm['customize:isEnabledTimeline'] %}checked{% endif %}> {{ t('Invalid') }}
+                    {% if !settingForm['customize:isEnabledTimeline'] %}checked{% endif %}> OFF
               </label>
             </div>
 
@@ -174,13 +209,13 @@
           <label for="settingForm[customize:isSavedStatesOfTabChanges]" class="col-xs-3 control-label">{{ t("customize_page.tab_switch") }}</label>
           <div class="col-xs-9">
             <div class="btn-group btn-toggle" data-toggle="buttons">
-              <label class="btn btn-default {% if settingForm['customize:isSavedStatesOfTabChanges'] %}active{% endif %}" data-active-class="primary">
+              <label class="btn btn-default btn-rounded btn-outline {% if settingForm['customize:isSavedStatesOfTabChanges'] %}active{% endif %}" data-active-class="primary">
                 <input name="settingForm[customize:isSavedStatesOfTabChanges]" value="true" type="radio"
-                    {% if true === settingForm['customize:isSavedStatesOfTabChanges'] %}checked{% endif %}> {{ t('Valid') }}
+                    {% if true === settingForm['customize:isSavedStatesOfTabChanges'] %}checked{% endif %}> ON
               </label>
-              <label class="btn btn-default {% if !settingForm['customize:isSavedStatesOfTabChanges'] %}active{% endif %}" data-active-class="primary">
+              <label class="btn btn-default btn-rounded btn-outline {% if !settingForm['customize:isSavedStatesOfTabChanges'] %}active{% endif %}" data-active-class="default">
                 <input name="settingForm[customize:isSavedStatesOfTabChanges]" value="false" type="radio"
-                    {% if !settingForm['customize:isSavedStatesOfTabChanges'] %}checked{% endif %}> {{ t('Invalid') }}
+                    {% if !settingForm['customize:isSavedStatesOfTabChanges'] %}checked{% endif %}> OFF
               </label>
             </div>
 
@@ -207,7 +242,7 @@
           <div class="form-group">
             <label for="settingForm[customize:highlightJsStyle]" class="col-xs-3 control-label">{{ t('customize_page.Theme') }}</label>
             <div class="col-xs-9">
-              <select class="form-control" name="settingForm[customize:highlightJsStyle]" onChange="selectHighlightJsStyle(event)">
+              <select class="form-control selectpicker" name="settingForm[customize:highlightJsStyle]" onChange="selectHighlightJsStyle(event)">
                 {% for key in Object.keys(highlightJsCssSelectorOptions) %}
                   <option value={{key}} {% if key == highlightJsStyle() %} selected {% endif %}>{{highlightJsCssSelectorOptions[key].name}}</option>
                 {% endfor %}
@@ -219,13 +254,13 @@
             <label for="settingForm[customize:highlightJsStyleBorder]" class="col-xs-3 control-label">(TBD) Border</label>
             <div class="col-xs-9">
               <div class="btn-group btn-toggle" data-toggle="buttons">
-                <label class="btn btn-default {% if settingForm['customize:highlightJsStyleBorder'] %}active{% endif %}" data-active-class="primary">
+                <label class="btn btn-default btn-rounded btn-outline {% if settingForm['customize:highlightJsStyleBorder'] %}active{% endif %}" data-active-class="primary">
                   <input name="settingForm[customize:highlightJsStyleBorder]" value="true" type="radio"
-                      {% if true === settingForm['customize:highlightJsStyleBorder'] %}checked{% endif %}> {{ t('Valid') }}
+                      {% if true === settingForm['customize:highlightJsStyleBorder'] %}checked{% endif %}> ON
                 </label>
-                <label class="btn btn-default {% if !settingForm['customize:highlightJsStyleBorder'] %}active{% endif %}" data-active-class="primary">
+                <label class="btn btn-default btn-rounded btn-outline {% if !settingForm['customize:highlightJsStyleBorder'] %}active{% endif %}" data-active-class="default">
                   <input name="settingForm[customize:highlightJsStyleBorder]" value="false" type="radio"
-                      {% if !settingForm['customize:highlightJsStyleBorder'] %}checked{% endif %}> {{ t('Invalid') }}
+                      {% if !settingForm['customize:highlightJsStyleBorder'] %}checked{% endif %}> OFF
                 </label>
               </div>
             </div>
@@ -292,12 +327,54 @@ export  $initHighlight;</code></pre>
         <div class="form-group">
           <div class="col-xs-offset-5 col-xs-6">
             <input type="hidden" name="_csrf" value="{{ csrf() }}">
-            <button type="submit" class="btn btn-primary">更新</button>
+            <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
           </div>
         </div>
 
       </fieldset>
       </form>
+
+      <form action="/_api/admin/customize/title" method="post" class="form-horizontal" id="customtitleSettingForm" role="form">
+        <fieldset>
+          <legend>カスタムヘッダーTitle</legend>
+
+          <p class="well">
+            ヘッダーの&lt;title&gt;タグのコンテンツをカスタムできる。サイト名を入れたい位置に、&#123;&#123;sitename&#125;&#125;
+            パスを入れたい位置に&#123;&#123;path&#125;&#125;を置くことでそれぞれの値に自動置換されます。それ以外の部分は自由に記述して下さい。<br>
+          </p>
+
+          <p class="help-block">
+            Examples:
+            <pre><code>&#123;&#123;sitename&#125;&#125; hoge - &#123;&#123;path&#125;&#125;</code></pre>
+          </p>
+
+          <p class="help-block">
+            Output:
+            <pre><code>&lt;title&gt;GROWI hoge - /xxx/yyy/zzz/Sandbox&lt;&#047;title&gt;</code></pre>
+          </p>
+
+          <div class="form-group">
+            <div class="col-xs-12">
+              <div id="custom-title-editor"></div>
+              <input type="hidden" id="inputCustomTitle" name="settingForm[customize:title]" value="{{ settingForm['customize:title'] }}">
+            </div>
+            <div class="col-xs-12">
+              <p class="help-block text-right">
+                <i class="fa fa-fw fa-keyboard-o" aria-hidden="true"></i>
+                Ctrl+Space でコード補完
+              </p>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="col-xs-offset-5 col-xs-6">
+              <input type="hidden" name="_csrf" value="{{ csrf() }}">
+              <button type="submit" class="btn btn-primary">更新</button>
+            </div>
+          </div>
+
+        </fieldset>
+        </form>
 
       <form action="/_api/admin/customize/css" method="post" class="form-horizontal" id="cutomcssSettingForm" role="form">
       <fieldset>
@@ -391,9 +468,14 @@ window.addEventListener('load', (event) => {
 
     </div>
   </div>
+{% endblock content_main %}
 
+{% block body_end %}
+  {% parent %}
   <script>
-    $('#cutomcssSettingForm, #cutomscriptSettingForm, #cutomlayoutSettingForm, #cutombehaviorSettingForm, #customfeaturesSettingForm, #cutomheaderSettingForm, #cutomhighlightJsStyleSettingForm').each(function() {
+    $(`#customthemeSettingForm, #cutomlayoutSettingForm, #cutombehaviorSettingForm, #cutomhighlightJsStyleSettingForm,
+       #customfeaturesSettingForm, #cutomheaderSettingForm, #cutomcssSettingForm, #cutomscriptSettingForm, #customtitleSettingForm`
+    ).each(function() {
       $(this).submit(function()
       {
         function showMessage(formId, msg, status) {
@@ -441,7 +523,9 @@ window.addEventListener('load', (event) => {
       });
     });
 
-    // init highlight.js
+    /*
+     * highlight.js style switcher
+     */
     hljs.initHighlightingOnLoad()
 
     function selectHighlightJsStyle(event) {
@@ -453,10 +537,31 @@ window.addEventListener('load', (event) => {
       highlightJsCssDOM.href = highlightJsCssDOM.href.replace(/[^/]+\.css$/, `${val}.css`);
     }
 
+    /*
+     * Theme Selector
+     */
+    options = {
+      hasPreview: false,
+      fullPath: '',
+      cookie: {
+        isManagingLoad: false
+      }
+    };
+    $(document).ready(function() {
+      $('#themeOptions').styleSwitcher(options);
+    });
+
+    function selectTheme(theme) {
+      // update hidden
+      $('#hiddenInputTheme').val(theme);
+      // update .active class
+      $('#themeOptions .active').removeClass('active');
+      $(`#themeOptions #theme-option-${theme}`).addClass('active');
+    }
   </script>
 
 </div>
-{% endblock content_main %}
+{% endblock %}
 
 {% block content_footer %}
 {% endblock content_footer %}

@@ -9,13 +9,13 @@
       <label for="{{nameForIsLdapEnabled}}" class="col-xs-3 control-label">Use LDAP</label>
       <div class="col-xs-6">
         <div class="btn-group btn-toggle" data-toggle="buttons">
-          <label class="btn btn-default {% if isLdapEnabled %}active{% endif %}" data-active-class="primary">
+          <label class="btn btn-default btn-rounded btn-outline {% if isLdapEnabled %}active{% endif %}" data-active-class="primary">
             <input name="{{nameForIsLdapEnabled}}" value="true" type="radio"
-                {% if true === isLdapEnabled %}checked{% endif %}> Enable
+                {% if true === isLdapEnabled %}checked{% endif %}> ON
           </label>
-          <label class="btn btn-default {% if !isLdapEnabled %}active{% endif %}" data-active-class="primary">
+          <label class="btn btn-default btn-rounded btn-outline {% if !isLdapEnabled %}active{% endif %}" data-active-class="default">
             <input name="{{nameForIsLdapEnabled}}" value="false" type="radio"
-                {% if !isLdapEnabled %}checked{% endif %}> Disable
+                {% if !isLdapEnabled %}checked{% endif %}> OFF
           </label>
         </div>
       </div>
@@ -43,11 +43,11 @@
         <label for="{{nameForIsUserBind}}" class="col-xs-3 control-label">Binding Mode</label>
         <div class="col-xs-6">
           <div class="btn-group btn-toggle" data-toggle="buttons">
-            <label class="btn btn-default {% if !isUserBind %}active{% endif %}" data-active-class="primary">
+            <label class="btn btn-default btn-rounded btn-outline {% if !isUserBind %}active{% endif %}" data-active-class="primary">
               <input name="{{nameForIsUserBind}}" value="false" type="radio"
                   {% if !isUserBind %}checked{% endif %}> Manager Bind
             </label>
-            <label class="btn btn-default {% if isUserBind %}active{% endif %}" data-active-class="primary">
+            <label class="btn btn-default btn-rounded btn-outline {% if isUserBind %}active{% endif %}" data-active-class="primary">
               <input name="{{nameForIsUserBind}}" value="true" type="radio"
                   {% if isUserBind %}checked{% endif %}> User Bind
             </label>
@@ -284,7 +284,7 @@
 
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title">{{ t('Test LDAP Account') }}</h4>
+        <div class="modal-title">{{ t('Test LDAP Account') }}</div>
       </div>
 
       <div class="modal-body">

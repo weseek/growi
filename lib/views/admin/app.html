@@ -2,7 +2,7 @@
 
 {% block html_title %}{{ t('App settings') }} · {% endblock %}
 
-{% block content_head %}
+{% block content_header %}
 <div class="header-wrap">
   <header id="page-header">
     <h1 class="title" id="">{{ t('App settings') }}</h1>
@@ -133,7 +133,7 @@
         {{ t("app_setting.No_SMTP_setting") }}<br>
           <br>
 
-          <span class="text-danger"><i class="fa fa-warning"></i> {{ t("app_setting.change_setting") }}</span>
+          <span class="text-danger"><i class="ti-unlink"></i> {{ t("app_setting.change_setting") }}</span>
         </p>
 
         <div class="form-group">
@@ -183,14 +183,15 @@
         <div class="form-group">
           <label for="settingForm[plugin:isEnabledPlugins]" class="col-xs-3 control-label">{{ t('app_setting.Load plugins') }}</label>
           <div class="col-xs-6">
+
             <div class="btn-group btn-toggle" data-toggle="buttons">
-              <label class="btn btn-default {% if settingForm['plugin:isEnabledPlugins'] %}active{% endif %}" data-active-class="primary">
+              <label class="btn btn-default btn-rounded btn-outline {% if settingForm['plugin:isEnabledPlugins'] %}active{% endif %}" data-active-class="primary">
                 <input name="settingForm[plugin:isEnabledPlugins]" value="true" type="radio"
-                    {% if true === settingForm['plugin:isEnabledPlugins'] %}checked{% endif %}> {{ t('app_setting.valid') }}
+                    {% if true === settingForm['plugin:isEnabledPlugins'] %}checked{% endif %}> ON
               </label>
-              <label class="btn btn-default {% if !settingForm['plugin:isEnabledPlugins'] %}active{% endif %}" data-active-class="primary">
+              <label class="btn btn-default btn-rounded btn-outline {% if !settingForm['plugin:isEnabledPlugins'] %}active{% endif %}" data-active-class="default">
                 <input name="settingForm[plugin:isEnabledPlugins]" value="false" type="radio"
-                    {% if !settingForm['plugin:isEnabledPlugins'] %}checked{% endif %}> {{ t('app_setting.invalid') }}
+                    {% if !settingForm['plugin:isEnabledPlugins'] %}checked{% endif %}> OFF
               </label>
             </div>
           </div>

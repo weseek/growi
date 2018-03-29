@@ -1,0 +1,104 @@
+.growi.main-container  {
+
+  %comment-section {
+    position: relative;
+    padding: 1em;
+    margin-left: 4.5em;
+    margin-bottom: 1em;
+    &:before {
+      border: 1em solid transparent;
+      border-left-width: 0;
+      left: -1em;
+      content: "";
+      display: block;
+      top: 1.5em;
+      position: absolute;
+      width: 0;
+    }
+  }
+
+  %picture {
+    float: left;
+    margin-top: 0.8em;
+    width: 3em;
+    height: 3em;
+  }
+
+  .page-comments-row {
+    border-top: 5px solid;
+    margin: 30px 0px;
+  }
+
+  .page-comments {
+    h4 {
+      margin-bottom: 1em;
+    }
+  }
+
+  .page-comment {
+    position: relative;
+
+    // ユーザー名
+    .page-comment-creator {
+      margin-top: -0.5em;
+      margin-bottom: 0.5em;
+      font-weight: bold;
+    }
+
+    // ユーザーアイコン
+    .picture {
+      @extend %picture;
+    }
+
+    // コメントセクション
+    .page-comment-main {
+      @extend %comment-section;
+    }
+
+    // コメント本文
+    .page-comment-body {
+      margin-bottom: 0.5em;
+    }
+
+    .page-comment-meta {
+      color: #999;
+      font-size: .9em;
+      text-align: right;
+
+      * {
+        vertical-align: 25%;
+      }
+    }
+  }
+
+  // show when hover
+  .page-comment-main:hover > .page-comment-control {
+    display: block;
+  }
+
+  .comment-form {
+    position: relative;
+    margin-top: 2em;
+    // user icon
+    .picture {
+      @extend %picture;
+    }
+
+    // seciton
+    .comment-form-main {
+      @extend %comment-section;
+    }
+
+    // textarea
+    .comment-write {
+      margin-bottom: 0.5em;
+    }
+    .comment-form-comment {
+      height: 80px;
+      &:focus, &:not(:invalid) {
+        transition: height 0.2s ease-out;
+        height: 180px;
+      }
+    }
+  }
+}

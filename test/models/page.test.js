@@ -9,21 +9,27 @@ chai.use(sinonChai);
 describe('Page', () => {
   var Page = utils.models.Page,
     User   = utils.models.User,
+    UserGroup = utils.models.UserGroup,
+    UserGroupRelation = utils.models.UserGroupRelation,
+    PageGroupRelation = utils.models.PageGroupRelation,
     conn   = utils.mongoose.connection,
     createdPages,
-    createdUsers;
+    createdUsers,
+    createdUserGroups;
 
   before(done => {
     conn.collection('pages').remove().then(() => {
       var userFixture = [
-        {name: 'Anon 0', username: 'anonymous0', email: 'anonymous0@example.com'},
-        {name: 'Anon 1', username: 'anonymous1', email: 'anonymous1@example.com'}
+        { name: 'Anon 0', username: 'anonymous0', email: 'anonymous0@example.com' },
+        { name: 'Anon 1', username: 'anonymous1', email: 'anonymous1@example.com' },
+        { name: 'Anon 2', username: 'anonymous2', email: 'anonymous2@example.com' },
       ];
 
       return testDBUtil.generateFixture(conn, 'User', userFixture);
     }).then(testUsers => {
       createdUsers = testUsers;
       var testUser0 = testUsers[0];
+      var testUser1 = testUsers[1];
 
       var fixture = [
         {
@@ -62,11 +68,55 @@ describe('Page', () => {
           creator: testUser0,
           extended: {hoge: 1}
         },
+        {
+          path: '/grant/groupacl',
+          grant: 5,
+          grantedUsers: [],
+          creator: testUser1,
+        },
       ];
 
-      return testDBUtil.generateFixture(conn, 'Page', fixture)
-      .then(pages => {
-        createdPages = pages;
+      return testDBUtil.generateFixture(conn, 'Page', fixture);
+    })
+    .then(pages => {
+      createdPages = pages;
+      groupFixture = [
+        {
+          image: '',
+          name: 'TestGroup0',
+        },
+        {
+          image: '',
+          name: 'TestGroup1',
+        },
+      ];
+
+      return testDBUtil.generateFixture(conn, 'UserGroup', groupFixture);
+    })
+    .then(userGroups => {
+      createdUserGroups = userGroups;
+      testGroup0 = createdUserGroups[0];
+      testUser0 = createdUsers[0];
+      userGroupRelationFixture = [
+        {
+          relatedGroup: testGroup0,
+          relatedUser: testUser0,
+        }
+      ];
+      return testDBUtil.generateFixture(conn, 'UserGroupRelation', userGroupRelationFixture);
+    })
+    .then(userGroupRelations => {
+      testGroup0 = createdUserGroups[0];
+      testPage = createdPages[6];
+      pageGroupRelationFixture = [
+        {
+          relatedGroup: testGroup0,
+          targetPage: testPage,
+        }
+      ];
+
+      return testDBUtil.generateFixture(conn, 'PageGroupRelation', pageGroupRelationFixture)
+      .then(pageGroupRelations => {
         done();
       });
     });
@@ -300,9 +350,12 @@ describe('Page', () => {
         const pageToFind = createdPages[0];
         const grantedUser = createdUsers[0];
         Page.findPageByIdAndGrantedUser(pageToFind._id, grantedUser)
-        .then(pageData => {
+        .then((pageData) => {
           expect(pageData.path).to.equal(pageToFind.path);
           done();
+        })
+        .catch((err) => {
+          done(err);
         });
       });
 
@@ -316,6 +369,33 @@ describe('Page', () => {
           expect(err).to.instanceof(Error);
           done();
         });
+      });
+    });
+
+    context('findPageByIdAndGrantedUser granted userGroup', () => {
+      it('should find page', done => {
+        const pageToFind = createdPages[6];
+        const grantedUser = createdUsers[0];
+        Page.findPageByIdAndGrantedUser(pageToFind._id, grantedUser)
+        .then(pageData => {
+          expect(pageData.path).to.equal(pageToFind.path);
+          done();
+        })
+        .catch((err) => {
+          done(err);
+        });
+      });
+
+      it('should error by grant userGroup', done => {
+        const pageToFind = createdPages[6];
+        const grantedUser = createdUsers[2];
+        Page.findPageByIdAndGrantedUser(pageToFind._id, grantedUser)
+          .then(pageData => {
+            done(new Error());
+          }).catch(err => {
+            expect(err).to.instanceof(Error);
+            done();
+          });
       });
     });
   });

@@ -1,0 +1,17 @@
+@import '../variables';
+
+$topbar:#4F5467;
+$sidebar:#fff;
+$bodycolor:#fff;
+$headingtext: #2b2b2b;
+$bodytext: #686868;
+$linktext: $inverse;
+$linktext-hover: lighten($inverse, 20%);
+$sidebar-text:#54667a;
+$themecolor:#393C4A;
+$dark-themecolor:#4F5467;
+
+$primary: $topbar;
+
+@import 'apply-colors';
+@import 'apply-colors-light';

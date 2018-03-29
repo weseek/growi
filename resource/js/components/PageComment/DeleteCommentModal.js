@@ -41,16 +41,22 @@ export default class DeleteCommentModal extends React.Component {
     return (
       <Modal show={this.props.isShown} onHide={this.props.cancel} className="page-comment-delete-modal">
         <Modal.Header closeButton>
-          <Modal.Title>Delete comment?</Modal.Title>
+          <Modal.Title>
+            <i className="icon-fw icon-fire text-danger"></i>
+            Delete comment?
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <UserPicture user={comment.creator} size="xs" /> <strong>{comment.creator.username}</strong> wrote on {commentDate}:
-          <p className="comment-body">{commentBody}</p>
+          <p className="well well-sm comment-body m-t-5">{commentBody}</p>
         </Modal.Body>
         <Modal.Footer>
           <span className="text-danger">{this.props.errorMessage}</span>&nbsp;
-          <Button onClick={this.props.cancel}>Cancel</Button>
-          <Button onClick={this.props.confirmedToDelete} className="btn-danger">Delete</Button>
+          <Button onClick={this.props.cancel} bsClass="btn btn-sm">Cancel</Button>
+          <Button onClick={this.props.confirmedToDelete} bsClass="btn btn-sm btn-danger">
+            <i className="icon icon-fire"></i>
+            Delete
+          </Button>
         </Modal.Footer>
       </Modal>
     );

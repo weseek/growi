@@ -43,10 +43,15 @@ export default class DeletePageListModal extends React.Component {
           </ul>
         </Modal.Body>
         <Modal.Footer>
-          <span className="text-danger">{this.props.errorMessage}</span>&nbsp;
-          <Checkbox onClick={this.props.toggleDeleteCompletely}>Delete completely</Checkbox>
-          <Button onClick={this.props.cancel}>Cancel</Button>
-          <Button onClick={this.props.confirmedToDelete} className="btn-danger">Delete</Button>
+          <div className="d-flex justify-content-between">
+            <span className="text-danger">{this.props.errorMessage}</span>
+            <span className="d-flex">
+              <Checkbox onClick={this.props.toggleDeleteCompletely}>Delete completely</Checkbox>
+              <span className="m-l-10">
+                <Button onClick={this.props.confirmedToDelete}><i className="icon-trash"></i>Delete</Button>
+              </span>
+            </span>
+          </div>
         </Modal.Footer>
       </Modal>
     );

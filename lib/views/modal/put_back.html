@@ -4,9 +4,9 @@
 
       <form role="form" id="revert-delete-page-form" onsubmit="return false;">
 
-        <div class="modal-header">
+        <div class="modal-header bg-info">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title"><i class="fa fa-trash-o"></i> {{ t('modal_putBack.label.Put Back Page') }}</h4>
+          <div class="modal-title"><i class="icon-action-undo"></i> {{ t('modal_putBack.label.Put Back Page') }}</div>
         </div>
         <div class="modal-body">
           <div class="form-group">
@@ -19,11 +19,11 @@
           <input type="hidden" name="_csrf" value="{{ csrf() }}">
           <input type="hidden" name="path" value="{{ page.path }}">
           <input type="hidden" name="page_id" value="{{ page._id.toString() }}">
-          <label class="checkbox-inline text-danger">
+          <label class="checkbox-inline">
             <input type="checkbox" name="recursively" checked> {{ t('modal_putBack.label.recursively') }}
           </label>
-          <button type="submit" class="btn btn-default btn-sm putBack-button">
-            <i class="fa fa-undo" aria-hidden="true"></i>
+          <button type="submit" class="btn btn-sm btn-info putBack-button">
+            <i class="icon-action-undo" aria-hidden="true"></i>
             {{ t('Put Back') }}
           </button>
         </div>

@@ -2,7 +2,6 @@ import React from 'react';
 import Button from 'react-bootstrap/es/Button';
 import Modal from 'react-bootstrap/es/Modal';
 
-import Icon from '../Common/Icon';
 import User from '../User/User';
 
 export default class DeleteAttachmentModal extends React.Component {
@@ -30,7 +29,7 @@ export default class DeleteAttachmentModal extends React.Component {
 
     return (
         <p className="attachment-delete-file">
-          <Icon name="file-o" />
+          <i className="fa fa-file-o"></i>
         </p>
     );
   }

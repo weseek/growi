@@ -45,7 +45,7 @@ export default class SearchForm extends React.Component {
           />
           <span className="input-group-btn">
             <button type="submit" className="btn btn-default">
-              <i className="search-top-icon fa fa-search"></i>
+              <i className="search-top-icon icon-magnifier"></i>
             </button>
           </span>
       </form>

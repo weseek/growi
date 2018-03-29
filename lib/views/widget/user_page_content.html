@@ -1,0 +1,44 @@
+<div class="user-page-content">
+  <ul class="nav nav-tabs user-page-content-menu">
+    <li class="active">
+      <a href="#user-bookmark-list" data-toggle="tab"><i class="icon-star"></i> Bookmarks</a>
+    </li>
+    <li>
+      <a href="#user-created-list" data-toggle="tab"><i class="icon-clock"></i> Recent Created</a>
+    </li>
+    {% if user._id.toString() == pageUser._id.toString() %}
+    <li>
+      <a href="/me"><i class="icon-wrench"></i> Settings</a>
+    </li>
+    {% endif %}
+  </ul>
+
+  <div class="m-t-10 user-page-content-tab tab-content">
+
+    <div class="tab-pane user-bookmark-list page-list active" id="user-bookmark-list">
+      <div class="page-list-container">
+        {% if bookmarkList.length == 0 %}
+        No bookmarks yet.
+        {% else %}
+          {% include 'page_list.html' with { pages: bookmarkList, pagePropertyName: 'page' } %}
+          <div class="user-page-list-additional-link">
+            <a href="/user/{{ pageUser.username }}/bookmarks"><i class="fa fa-angle-double-right"></i> See bookmarks</a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="tab-pane user-created-list page-list" id="user-created-list">
+      <div class="page-list-container">
+        {% if createdList.length == 0 %}
+        No created pages yet.
+        {% else %}
+          {% include 'page_list.html' with { pages: createdList } %}
+          <div class="user-page-list-additional-link">
+            <a href="/user/{{ pageUser.username }}/recent-create"><i class="fa fa-angle-double-right"></i> See created pages</a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>

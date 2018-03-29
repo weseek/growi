@@ -4,7 +4,7 @@
     {# default(author) としているのは、v1.1.1 以前に page.creator データが入ってないから。暫定として最新更新ユーザーを表示しちゃう。 #}
     <div class="col-md-3 creator-picture">
       <a href="{{ userPageRoot(page.creator) }}">
-        <img src="{{ page.creator|default(author)|picture }}" class="picture picture-lg picture-rounded"><br>
+        <img src="{{ page.creator|default(author)|picture }}" class="picture picture-lg img-circle"><br>
       </a>
     </div>
     <div class="col-md-9">
@@ -15,10 +15,10 @@
         {{ t('Created') }}: {{ page.createdAt|datetz('Y/m/d H:i:s') }}<br>
 
         {% if page.lastUpdateUser %}
-          {{ t('Last updated') }}: {{ page.updatedAt|datetz('Y/m/d H:i:s') }} <a href="/user/{{ page.lastUpdateUser.username }}"><img src="{{ page.lastUpdateUser|picture }}" class="picture picture-xs picture-rounded" alt="{{ page.lastUpdateUser.name }}"></a>
+          {{ t('Last updated') }}: {{ page.updatedAt|datetz('Y/m/d H:i:s') }} <a href="/user/{{ page.lastUpdateUser.username }}"><img src="{{ page.lastUpdateUser|picture }}" class="picture picture-xs img-circle" alt="{{ page.lastUpdateUser.name }}"></a>
         {% else %}
           {# for BC 1.5.x #}
-          {{ t('Last updated') }}: {{ page.updatedAt|datetz('Y/m/d H:i:s') }} <a href="/user/{{ page.revision.author.username }}"><img src="{{ page.revision.author|picture }}" class="picture picture-xs picture-rounded" alt="{{ page.revision.author.name }}"></a>
+          {{ t('Last updated') }}: {{ page.updatedAt|datetz('Y/m/d H:i:s') }} <a href="/user/{{ page.revision.author.username }}"><img src="{{ page.revision.author|picture }}" class="picture picture-xs img-circle" alt="{{ page.revision.author.name }}"></a>
         {% endif %}
       </p>
     </div>
@@ -27,7 +27,7 @@
   <div class="like-box">
     <dl class="dl-horizontal">
       <dt>
-        <i class="fa fa-thumbs-o-up"></i> {{ t('Like!') }}
+        <i class="icon-like"></i> {{ t('Like!') }}
       </dt>
       <dd>
         <p class="liker-count">
@@ -36,8 +36,8 @@
         <button
           data-csrftoken="{{ csrf() }}"
           data-liked="{% if page.isLiked(user) %}1{% else %}0{% endif %}"
-          class="like-button btn btn-default btn-sm {% if page.isLiked(user) %}active{% endif %}"
-          ><i class="fa fa-thumbs-o-up"></i> {{ t('Like!') }}</button>
+          class="like-button btn btn-xs btn-default btn-outline btn-rounded {% if page.isLiked(user) %}active btn-info{% endif %}"
+          ><i class="icon-like"></i> {{ t('Like!') }}</button>
         {% endif %}
         </p>
         <p id="liker-list" class="liker-list" data-likers="{{ page.liker|default([])|join(',') }}">

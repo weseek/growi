@@ -1,4 +1,4 @@
-box: node:6.12
+box: node:8
 
 services:
   - mongo:3.4
@@ -13,8 +13,7 @@ test:
     - script:
       name: install dependencies
       code: |
-        yarn global add npm@4
-        yarn install
+        yarn
 
     - script:
       name: print dependencies
@@ -44,14 +43,13 @@ build-prod:
     - script:
       name: install dependencies
       code: |
-        yarn global add npm@4
         yarn install --production
 
     - script:
       name: install plugins
       code: |
-        yarn add crowi-plugin-lsx
-        yarn add crowi-plugin-pukiwiki-like-linker
+        yarn add growi-plugin-lsx
+        yarn add growi-plugin-pukiwiki-like-linker
 
     - script:
       name: print dependencies
@@ -84,14 +82,13 @@ build-dev:
     - script:
       name: install dependencies
       code: |
-        yarn global add npm@4
         yarn install
 
     - script:
       name: install plugins
       code: |
-        yarn add crowi-plugin-lsx
-        yarn add crowi-plugin-pukiwiki-like-linker
+        yarn add growi-plugin-lsx
+        yarn add growi-plugin-pukiwiki-like-linker
 
     - script:
       name: print dependencies

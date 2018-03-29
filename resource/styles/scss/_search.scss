@@ -1,0 +1,165 @@
+// import react-bootstrap-typeahead
+@import "~react-bootstrap-typeahead/css/Typeahead";
+
+.search-listpage-icon {
+  font-size: 16px;
+  color: #999;
+}
+.search-listpage-clear {
+  display: none;
+  position: absolute;
+  right: 8px;
+  font-size: 0.6em;
+  width: 22px;
+  height: 22px;
+  color: #ccc;
+  padding: 8px;
+}
+
+.search-typeahead {
+  position: relative;
+
+  .search-clear {
+    position: absolute;
+    z-index: 2;
+    top: 4px;
+    right: 4px;
+    width: 24px;
+    height: 24px;
+    color: #999;
+    padding: 0;
+  }
+  .rbt-menu {
+    margin-top: 3px;
+
+    li a span {
+      .page-path {
+        display: inline;
+        padding: 0 4px;
+        color: inherit;
+      }
+
+      .page-list-meta {
+        font-size: .9em;
+        color: #999;
+
+        >span {
+          margin-right: .3rem;
+        }
+      }
+    }
+  }
+}
+
+// top and sidebar input styles
+.search-top, .search-sidebar {
+  .search-clear {
+    top: 3px;
+    right: 26px;
+  }
+
+  .input-group-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    .btn {
+      padding: 4px 10px;
+    }
+  }
+
+  // using react-bootstrap-typeahead
+  // see: https://github.com/ericgio/react-bootstrap-typeahead
+  .rbt-input.form-control {
+    border: none;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 40px;
+    border-top-right-radius: 40px;
+    border-bottom-right-radius: 40px;
+    padding-top: 4px;
+    height: 30px;
+
+    .rbt-input-wrapper {
+      margin-left: 8px;
+    }
+  }
+}
+
+// layout
+.search-top {
+  margin-top: 10px;
+  margin-bottom: 10px;
+
+  .rbt-input.form-control {
+    width: 180px;
+    transition: 0.3s ease-out;
+    // focus
+    &.focus {
+      width: 300px;
+    }
+  }
+}
+.search-sidebar {
+  .search-form, .form-group, .rbt-input.form-control, .input-group {
+    width: 100%;
+  }
+  .input-group-btn {
+    right: 30px;
+  }
+}
+
+.search-result {
+
+  .search-result-list {
+    nav {
+      padding-right: 0;
+      &.affix {
+        top: 8px;
+        width: 33%;
+        padding-right: 5px;
+        padding-bottom: 50px;
+        height: 100%;
+        overflow-y: scroll;
+      }
+      .nav {
+        > li {
+          padding: 2px 8px;
+          &.active {
+            padding-right: 5px;
+            border-right: solid 3px transparent;
+          }
+        }
+      }
+    }
+
+    .search-result-meta {
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    .search-result-list-delete-checkbox {
+      margin: 0 10px 0 0;
+      vertical-align: middle;
+    }
+  }
+
+  .search-result-content {
+    padding-bottom: 32px;
+
+    .search-result-page {
+      > h2 {
+        font-size: 20px;
+        line-height: 1em;
+      }
+      &:first-child > h2 {
+        margin-top: 0;
+      }
+
+      .wiki {
+        border: solid 1px #ccc;
+        padding: 16px;
+        border-radius: 3px;
+        font-size: 13px;
+      }
+    }
+  }
+}

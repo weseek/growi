@@ -1,0 +1,77 @@
+<div class="row row-alerts">
+  <div class="col-xs-12">
+    {% if page && page.grant != 1 %}
+    <p class="alert alert-inverse alert-grant">
+      <i class="icon-fw icon-lock"></i><strong>{{ consts.pageGrants[page.grant] }}</strong> ({{ t('Browsing of this page is restricted') }})
+    </p>
+    {% endif %}
+
+    {% if page.isDeleted() %}
+    <div class="alert alert-warning alert-trash d-flex align-items-center justify-content-between">
+      <div>
+        <i class="icon-trash" aria-hidden="true"></i>
+        This page is in the trash.<br>
+        Deleted by <img src="{{ page.lastUpdateUser|picture }}" class="picture picture-sm img-circle"> {{ page.lastUpdateUser.name }} at {{ page.updatedAt|datetz('Y-m-d H:i:s') }}
+      </div>
+      {% if user %}
+      <ul class="list-inline">
+        <li>
+          <a href="#" class="btn btn-default btn-rounded btn-sm" data-target="#putBackPage" data-toggle="modal"><i class="icon-action-undo" aria-hidden="true"></i> {{ t('Put Back') }}</a>
+        </li>
+        <li>
+          <a href="#" class="btn btn-danger btn-rounded btn-sm" data-target="#deletePage" data-toggle="modal"><i class="icon-fire" aria-hidden="true"></i> {{ t('Delete Completely') }}</a>
+        </li>
+      </ul>{# /.pull-right #}
+      {% endif %}
+    </div>
+    {% endif %}
+
+    {% if req.query.renamed and not page.isDeleted() %}
+    <div class="alert alert-info alert-moved">
+      <span>
+        <strong>{{ t('Moved') }}: </strong> {{ t('page_page.notice.moved', req.query.renamed) }}
+      </span>
+    </div>
+    {% endif %}
+
+    {% if req.query.redirectFrom and not page.isDeleted() %}
+    <div class="alert alert-info alert-moved d-flex align-items-center justify-content-between">
+      <span>
+        <strong>{{ t('Moved') }}: </strong> {{ t('page_page.notice.moved', req.query.redirectFrom) }}
+      </span>
+      {% if user %}
+      <form role="form" id="unlink-page-form" onsubmit="return false;">
+        <input type="hidden" name="_csrf" value="{{ csrf() }}">
+        <input type="hidden" name="path" value="{{ page.path }}">
+        <input type="hidden" name="page_id" value="{{ page._id.toString() }}">
+        <button type="submit" class="btn btn-default btn-sm pull-right">
+          <i class="fa fa-unlink" aria-hidden="true"></i>
+          Unlink
+        </button>
+      </form>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    {% if req.query.duplicated and not page.isDeleted() %}
+    <div class="alert alert-success alert-moved">
+      <span>
+        <strong>{{ t('Duplicated') }}: </strong> {{ t('page_page.notice.duplicated', req.query.duplicated) }}
+      </span>
+    </div>
+    {% endif %}
+
+    {% if req.query.unlinked %}
+    <div class="alert alert-info alert-unlinked">
+      <strong>{{ t('Unlinked') }}: </strong> {{ t('page_page.notice.unlinked') }}
+    </div>
+    {% endif %}
+
+    {% if page and not page.isLatestRevision() %}
+    <div class="alert alert-warning">
+      <strong>{{ t('Warning') }}: </strong> {{ t('page_page.notice.version') }}
+      <a href="{{ page.path }}"><i class="icon-fw icon-arrow-right-circle"></i>{{ t('Show latest') }}</a>
+    </div>
+    {% endif %}
+  </div>
+</div>
