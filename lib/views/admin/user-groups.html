@@ -90,7 +90,7 @@
               </span>
             </div>
             <div class="modal-footer">
-              <form method="post" id="admin-user-groups-delete" class="text-right">
+              <form action="/admin/user-group.remove" method="post" id="admin-user-groups-delete" class="text-right">
                 <input type="hidden" name="user_group_id" value="">
                 <input type="hidden" name="_csrf" value="{{ csrf() }}">
                 <button type="submit" value="" class="btn btn-sm btn-danger">
