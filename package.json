@@ -73,7 +73,7 @@
     "debug": "^3.1.0",
     "diff": "^3.3.0",
     "diff2html": "^2.3.3",
-    "easy-logger": "^0.0.5",
+    "eazy-logger": "^3.0.2",
     "elasticsearch": "^14.0.0",
     "entities": "^1.1.1",
     "env-cmd": "^7.0.0",

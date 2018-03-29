@@ -2225,11 +2225,7 @@ easy-extender@2.3.2:
   dependencies:
     lodash "^3.10.1"
 
-easy-logger@^0.0.5:
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/easy-logger/-/easy-logger-0.0.5.tgz#c092fea8e8828c35c2a738cb93c6d0c31ef222c5"
-
-eazy-logger@3.0.2:
+eazy-logger@3.0.2, eazy-logger@^3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/eazy-logger/-/eazy-logger-3.0.2.tgz#a325aa5e53d13a2225889b2ac4113b2b9636f4fc"
   dependencies:
