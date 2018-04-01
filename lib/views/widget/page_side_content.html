@@ -2,7 +2,7 @@
 <ul class="fitted-list">
   <li class="input-group">
     <span class="input-group-addon">{{ t('Share Link') }}</span>
-    <input readonly class="copy-link form-control" type="text" value="{{ config.crowi['app:title']|default('Crowi') }} {{ path }}  {{ baseUrl }}/{{ page._id.toString() }}">
+    <input readonly class="copy-link form-control" type="text" value="{{ config.crowi['app:title'] | default('GROWI') }} {{ path }}  {{ baseUrl }}/{{ page._id.toString() }}">
   </li>
   <li class="input-group">
     <span class="input-group-addon">Markdown</span>

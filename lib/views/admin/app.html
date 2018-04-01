@@ -38,8 +38,7 @@
         <div class="form-group">
           <label for="settingForm[app:title]" class="col-xs-3 control-label">{{ t('app_setting.Wiki name') }}</label>
           <div class="col-xs-6">
-            <input class="form-control" type="text" name="settingForm[app:title]" value="{{ settingForm['app:title'] }}">
-
+            <input class="form-control" type="text" name="settingForm[app:title]" value="{{ settingForm['app:title'] | default('') }}">
             <p class="help-block">{{ t("app_setting.wiki_change") }}</p>
           </div>
         </div>

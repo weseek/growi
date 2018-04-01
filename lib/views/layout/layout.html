@@ -4,13 +4,13 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>{% block html_title %}{{ path|path2name }} · {{ path }}{% endblock %} {{ config.crowi['app:title']|default('Crowi') }}</title>
+  <title>{% block html_title %}{{ path|path2name }} · {{ path }}{% endblock %} {{ config.crowi['app:title'] | default('GROWI') }}</title>
   <meta name="description" content="">
   <meta name="author" content="">
 
   <meta name="viewport" content="width=device-width,initial-scale=1">
 
-  <meta name="apple-mobile-web-app-title" content="{{ config.crowi['app:title']|default('Crowi') }}">
+  <meta name="apple-mobile-web-app-title" content="{{ config.crowi['app:title'] | default('GROWI') }}">
 
   {% include '../widget/favicon.html' %}
 
