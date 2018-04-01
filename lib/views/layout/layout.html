@@ -4,13 +4,13 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>{% block html_title %}{{ path|path2name }} · {{ path }}{% endblock %} {{ config.crowi['app:title'] | default('GROWI') }}</title>
+  <title>{% block html_title %}{{ path|path2name }} · {{ path }}{% endblock %} {{ appTitle() }}</title>
   <meta name="description" content="">
   <meta name="author" content="">
 
   <meta name="viewport" content="width=device-width,initial-scale=1">
 
-  <meta name="apple-mobile-web-app-title" content="{{ config.crowi['app:title'] | default('GROWI') }}">
+  <meta name="apple-mobile-web-app-title" content="{{ appTitle() }}">
 
   {% include '../widget/favicon.html' %}
 
@@ -134,7 +134,7 @@ gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js
             <div class="logo-mark">{% include '../widget/logo.html' %}</div>
           </b>
           <span class="hidden-xs" style="color: black">
-            {% set appTitle = config.crowi['app:title'] | default('GROWI') %}
+            {% set appTitle = appTitle() %}
             {% set appTitleFontSize = getAppTitleFontSize(appTitle) %}
             <span class="logo-text">
               <svg xmlns="http://www.w3.org/2000/svg">
