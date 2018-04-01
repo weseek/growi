@@ -143,7 +143,7 @@ release: # would be run on release branch
         git push --delete origin $TMP_RELEASE_BRANCH
 
     - script:
-      name: trigger crowi-plus-docker release pipeline
+      name: trigger growi-docker release pipeline
       code: sh ./bin/wercker/trigger-crowi-plus-docker.sh
 
   after-steps:

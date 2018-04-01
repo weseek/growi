@@ -55,8 +55,8 @@
               <p class="well">
                 <i class="icon-fw icon-exclamation text-danger"></i><span class="text-danger">NOT RECOMMENDED</span>
                 <br><br>
-                This is the way that compatible with the official Crowi,<br>
-                but not recommended in crowi-plus because it is too complex.
+                This is the way that compatible with Crowi,<br>
+                but not recommended in GROWI because it is too complex.
                 <br><br>
                 Please use <a href="#slack-incoming-webhooks" data-toggle="tab" onclick="activateTab('slack-incoming-webhooks')">Slack incomming webhooks Configuration</a> instead.
               </p>
@@ -118,7 +118,7 @@
                 <li>
                   Create App from <a href="https://api.slack.com/applications/new">this link</a>, and fill the form out as below:
                   <dl class="dl-horizontal">
-                    <dt>App Name</dt> <dd><code>crowi-plus</code> </dd>
+                    <dt>App Name</dt> <dd><code>growi</code> </dd>
                     <dt>Development Slack Workspace</dt> <dd>Select the workspace you want to notify to.</dd>
                   </dl>
                 </li>
@@ -143,7 +143,7 @@
               Set Permission Scopes to the App
               <ol>
                 <li>Go to "OAuth &amp; Permissions" page.</li>
-                <li>Add "Send messages as crowi-plus"(<code>chat:write:bot</code>).</li>
+                <li>Add "Send messages as GROWI"(<code>chat:write:bot</code>).</li>
                 <li>Don't forget to <strong>save</strong>.</li>
               </ol>
             </li>
@@ -162,7 +162,7 @@
             <li>
               (At Workspace) Approve the app
               <ol>
-                <li>Go to the management Apps page for the workspace you installed the app and approve crowi-plus.</li>
+                <li>Go to the management Apps page for the workspace you installed the app and approve "growi".</li>
               </ol>
             </li>
             <li>
@@ -172,10 +172,10 @@
               </ol>
             </li>
             <li>
-              (At crowi-plus) Input "clientId" and "clientSecret" and submit on this page.
+              (At GROWI admin page) Input "clientId" and "clientSecret" and submit on this page.
             </li>
             <li>
-              (At crowi-plus) Click "Connect to Slack" button to start OAuth process.
+              (At GROWI admin page) Click "Connect to Slack" button to start OAuth process.
             </li>
           </ol>
           {# {% endif %} #}
@@ -202,7 +202,7 @@
                   <input type="checkbox" name="slackIwhSetting[slack:isIncomingWebhookPrioritized]" value="1"
                     {% if slackSetting['slack:isIncomingWebhookPrioritized'] %}checked{% endif %}>
                   Prioritize Incoming Webhook than Slack App
-                  <p class="help-block">Check this option and crowi-plus use Incoming Webhooks even if Slack App settings are enabled.</p>
+                  <p class="help-block">Check this option and GROWI use Incoming Webhooks even if Slack App settings are enabled.</p>
                 </div>
               </div>
 
@@ -231,7 +231,7 @@
               </ol>
             </li>
             <li>
-              (At crowi-plus) Set Webhook URL
+              (At GROWI admin page) Set Webhook URL
               <ol>
                 <li>Input "Webhook URL" and submit on this page.</li>
               </ol>

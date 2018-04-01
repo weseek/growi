@@ -42,7 +42,7 @@
 
         {#
         # The case that there already exists a user whose username matches ID of the newly created LDAP user
-        # https://github.com/weseek/crowi-plus/issues/193
+        # https://github.com/weseek/growi/issues/193
         #}
         {% set isDuplicatedUsernameExceptionOccured = req.flash('isDuplicatedUsernameExceptionOccured') %}
         {% if isDuplicatedUsernameExceptionOccured != null %}
@@ -50,7 +50,7 @@
           <p><strong><i class="icon-fw icon-ban"></i>DuplicatedUsernameException occured</strong></p>
           <p>
             Your LDAP authentication was succeess, but a new user could not be created.
-            See the issue <a href="https://github.com/weseek/crowi-plus/issues/193">#193</a>.
+            See the issue <a href="https://github.com/weseek/growi/issues/193">#193</a>.
           </p>
         </div>
         {% endif %}

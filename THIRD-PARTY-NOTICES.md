@@ -1,5 +1,5 @@
-crowi-plus uses third-party libraries or other resources that may  
-be distributed under licenses different than the crowi-plus software.
+GROWI uses third-party libraries or other resources that may  
+be distributed under licenses different than the GROWI software.
 
 In the event that we accidentally failed to list a required notice,  
 please bring it to our attention through any of the ways detailed here :
@@ -9,7 +9,7 @@ please bring it to our attention through any of the ways detailed here :
 The attached notices are provided for information only.
 
 For any licenses that require disclosure of source, sources are available at  
-https://github.com/weseek/crowi-plus.
+https://github.com/weseek/growi.
 
 
 1. crowi/crowi (https://github.com/crowi/crowi)

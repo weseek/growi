@@ -1,7 +1,7 @@
 /**
- * Crowi::app.js
+ * Growi::app.js
  *
- * @package crowi-plus
+ * @package growi
  * @author  Yuki Takei <yuki@weseek.co.jp>
  */
 

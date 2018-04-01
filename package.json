@@ -1,7 +1,7 @@
 {
-  "name": "crowi-plus",
+  "name": "growi",
   "version": "3.0.0-RC",
-  "description": "Enhanced Crowi",
+  "description": "Team collaboration system with markdown",
   "tags": [
     "wiki",
     "communication",
@@ -13,10 +13,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/weseek/crowi-plus.git"
+    "url": "https://github.com/weseek/growi.git"
   },
   "bugs": {
-    "url": "https://github.com/weseek/crowi-plus/issues"
+    "url": "https://github.com/weseek/growi/issues"
   },
   "scripts": {
     "build:dev:analyze": "cross-env ANALYZE=1 npm run build:dev",
