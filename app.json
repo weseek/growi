@@ -28,7 +28,7 @@
     {
       "plan": "bonsai:sandbox-6",
       "options": {
-        "version": "5.1"
+        "version": "5.4.3"
       }
     }
   ]
