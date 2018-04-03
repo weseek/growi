@@ -5,7 +5,7 @@
  * @author  Yuki Takei <yuki@weseek.co.jp>
  */
 
-var crowi = new (require('./lib/crowi'))(__dirname, process.env);
+var growi = new (require('./lib/crowi'))(__dirname, process.env);
 
-crowi.start()
-  .catch(crowi.exitOnerror);
+growi.start()
+  .catch(growi.exitOnerror);

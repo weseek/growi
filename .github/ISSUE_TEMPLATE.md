@@ -14,7 +14,7 @@ Environment
 
 [growi-docker-compose]: https://github.com/weseek/growi-docker-compose
 
-*(Accessing https://{CROWI_HOST}/admin helps you to fill in above versions)*
+*(Accessing https://{GROWI_HOST}/admin helps you to fill in above versions)*
 
 
 ### Client

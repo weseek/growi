@@ -66,15 +66,11 @@ module.exports = function (options) {
         {
           test: /\.css$/,
           use: ['style-loader', 'css-loader'],
-          // comment out 'include' spec for crowi-plugins
-          // include: [helpers.root('resource')]
           exclude: [helpers.root('resource/styles/scss')]
         },
         {
           test: /\.scss$/,
           use: ['style-loader', 'css-loader', 'sass-loader'],
-          // comment out 'include' spec for crowi-plugins
-          // include: [helpers.root('resource')]
           exclude: [helpers.root('resource/styles/scss')]
         },
         /*

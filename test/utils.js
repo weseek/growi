@@ -1,6 +1,6 @@
 'use strict';
 
-var mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || process.env.MONGO_URI || 'mongodb://localhost/crowi_test'
+var mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || process.env.MONGO_URI || 'mongodb://localhost/growi_test'
   , mongoose= require('mongoose')
   , fs = require('fs')
   , models = {}

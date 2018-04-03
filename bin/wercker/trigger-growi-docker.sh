@@ -7,14 +7,14 @@
 #
 # require
 #   - $WERCKER_TOKEN
-#   - $CROWI_PLUS_DOCKER_PIPELINE_ID
+#   - $GROWI_DOCKER_PIPELINE_ID
 #   - $RELEASE_VERSION
 #
 RESPONSE=`curl -X POST \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $WERCKER_TOKEN" \
   https://app.wercker.com/api/v3/runs -d '{ \
-    "pipelineId": "'$CROWI_PLUS_DOCKER_PIPELINE_ID'", \
+    "pipelineId": "'$GROWI_DOCKER_PIPELINE_ID'", \
     "branch": "release", \
     "envVars": [ \
       { \
