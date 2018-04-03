@@ -17,7 +17,9 @@ npm-debug.log
 
 # Dist #
 /report/
-/public/
+/public/dll
+/public/js
+/public/uploads
 /src/*/__build__/
 /__build__/**
 /src/*/dist/
