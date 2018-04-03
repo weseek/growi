@@ -1,4 +1,6 @@
-![Crowi](http://res.cloudinary.com/hrscywv4p/image/upload/c_limit,f_auto,h_900,q_80,w_1200/v1/199673/https_www_filepicker_io_api_file_VpYEP32ZQyCZ85u6XCXo_zskpra.png)
+<p align="center">
+  <img src="./public/images/logo-with-letter.png" width="200px">
+</p>
 
 <p align="center">
   <a href="https://heroku.com/deploy"><img src="https://www.herokucdn.com/deploy/button.png"></a>
