@@ -21,7 +21,7 @@ body{
     .logo {
       .logo-mark {
         svg {
-          fill: lighten($topbar, 15%);
+          fill: $logo-mark-fill;
 
           &:hover {
             .group1 { fill: $growi-green; }
