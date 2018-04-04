@@ -194,10 +194,10 @@ describe('Page', () => {
       expect(Page.isCreatableName('/hoge/xx.md')).to.be.false;
 
       // start with https?
-      expect(Page.isCreatableName('/http://demo.crowi.wiki/user/sotarok/hoge')).to.be.false;
-      expect(Page.isCreatableName('/https://demo.crowi.wiki/user/sotarok/hoge')).to.be.false;
-      expect(Page.isCreatableName('http://demo.crowi.wiki/user/sotarok/hoge')).to.be.false;
-      expect(Page.isCreatableName('https://demo.crowi.wiki/user/sotarok/hoge')).to.be.false;
+      expect(Page.isCreatableName('/http://demo.growi.org/hoge')).to.be.false;
+      expect(Page.isCreatableName('/https://demo.growi.org/hoge')).to.be.false;
+      expect(Page.isCreatableName('http://demo.growi.org/hoge')).to.be.false;
+      expect(Page.isCreatableName('https://demo.growi.org/hoge')).to.be.false;
 
       expect(Page.isCreatableName('/ the / path / with / space')).to.be.false;
 

@@ -3,42 +3,6 @@ import PropTypes from 'prop-types';
 
 export default class PagePath extends React.Component {
 
-  // Original Crowi.linkPath
-  /*
-  Crowi.linkPath = function(revisionPath) {
-    var $revisionPath = revisionPath || '#revision-path';
-    var $title = $($revisionPath);
-    var pathData = $('#content-main').data('path');
-
-    if (!pathData) {
-      return ;
-    }
-
-    var realPath = pathData.trim();
-    if (realPath.substr(-1, 1) == '/') {
-      realPath = realPath.substr(0, realPath.length - 1);
-    }
-
-    var path = '';
-    var pathHtml = '';
-    var splittedPath = realPath.split(/\//);
-    splittedPath.shift();
-    splittedPath.forEach(function(sub) {
-      path += '/';
-      pathHtml += ' <a href="' + path + '">/</a> ';
-      if (sub) {
-        path += sub;
-        pathHtml += '<a href="' + path + '">' + sub + '</a>';
-      }
-    });
-    if (path.substr(-1, 1) != '/') {
-      path += '/';
-      pathHtml += ' <a href="' + path + '" class="last-path">/</a>';
-    }
-    $title.html(pathHtml);
-  };
-  */
-
   linkPath(path) {
     return path;
   }
