@@ -19,7 +19,11 @@
       <h2>{{ pageUser.name }}</h2>
       <ul>
         <li class="user-page-username"><i class="fa fa-user"></i> @{{ pageUser.username }}</li>
+      　{% if pageUser.isEmailPublished %}
         <li class="user-page-email"><i class="fa fa-envelope-o"></i> {{ pageUser.email }}</li>
+        {% else %}
+        <li class="user-page-email"></i> </li> <!-- // Hide user's email -->
+        {% endif %}
         {% if pageUser.introduction %}
         <li class="user-page-introduction"><p>{{ pageUser.introduction|nl2br }}</p></li>
         {% endif %}

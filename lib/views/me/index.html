@@ -75,13 +75,22 @@
           {% endif %}
         </div>
       </div>
-      <div class="form-group {% if not user.lang %}has-error{% endif %}">
-        <label for="userForm[lang]" class="col-sm-2 control-label">{{ t('Language') }}</label>
+      <div class="form-group {% if not user.isEmailPublished %}has-error{% endif %}">
+        <label for="userForm[isEmailPublished]" class="col-sm-2 control-label">{{ t('Disclose E-mail') }}</label>
+        <div class="col-sm-4">
+          <label class="radio-inline"><input type="radio" name="userForm[isEmailPublished]" value="{{ true }}" {% if user.isEmailPublished == true %}checked="checked"{% endif %}>{{ t('Show') }}</label>
+          <label class="radio-inline"><input type="radio" name="userForm[isEmailPublished]" value="{{ false }}" {% if user.isEmailPublished == false %}checked="checked"{% endif %}>{{ t('Hide') }}</label>
+        </div>
+      </div>
+      
+       <div class="form-group {% if not user.lang %}has-error{% endif %}">
+       <label for="userForm[lang]" class="col-sm-2 control-label">{{ t('Language') }}</label>
         <div class="col-sm-4">
           <label class="radio-inline"><input type="radio" name="userForm[lang]" value="{{ consts.language.LANG_EN_US }}" {% if user.lang == consts.language.LANG_EN_US %}checked="checked"{% endif %}>{{ t('English') }}</label>
           <label class="radio-inline"><input type="radio" name="userForm[lang]" value="{{ consts.language.LANG_JA }}" {% if user.lang == consts.language.LANG_JA %}checked="checked"{% endif %}>{{ t('Japanese') }}</label>
         </div>
       </div>
+
       <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
           <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
