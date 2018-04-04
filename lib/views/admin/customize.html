@@ -82,11 +82,12 @@
       <fieldset>
         <legend>{{ t('customize_page.Behavior') }}</legend>
 
+        {% set isBehaviorGrowi = 'growi' === settingForm['customize:behavior'] || 'crowi-plus' === settingForm['customize:behavior'] %}
         <div class="form-group">
           <div class="col-xs-6">
             <h4>
               <input type="radio" name="settingForm[customize:behavior]" value="crowi"
-                  {% if !settingForm['customize:behavior'] || 'crowi' === settingForm['customize:behavior'] %}checked="checked"{% endif %}>
+                  {% if !isBehaviorGrowi %}checked="checked"{% endif %}>
               Official Crowi Behavior
             </h4>
             <ul>
@@ -102,7 +103,7 @@
           <div class="col-xs-6">
             <h4>
               <input type="radio" name="settingForm[customize:behavior]" value="crowi-plus"
-                  {% if 'crowi-plus' === settingForm['customize:behavior'] %}checked="checked"{% endif %}>
+                  {% if isBehaviorGrowi %}checked="checked"{% endif %}>
               crowi-plus Simplified Behavior <small class="text-success">(Recommended)</small>
             </h4>
             <ul>
@@ -128,11 +129,12 @@
       <fieldset>
         <legend>{{ t('customize_page.Layout') }}</legend>
 
+        {% set isLayoutGrowi = 'growi' === settingForm['customize:layout'] || 'crowi-plus' === settingForm['customize:layout'] %}
         <div class="form-group">
           <div class="col-xs-6">
             <h4>
               <input type="radio" name="settingForm[customize:layout]" value="crowi"
-                  {% if !settingForm['customize:layout'] || 'crowi' === settingForm['customize:layout'] %}checked="checked"{% endif %}>
+                  {% if !isLayoutGrowi %}checked="checked"{% endif %}>
               Official Crowi Classic Layout
             </h4>
             <a href="/images/admin/customize/layout-classic.gif" class="ss-container">
@@ -150,7 +152,7 @@
           <div class="col-xs-6">
             <h4>
               <input type="radio" name="settingForm[customize:layout]" value="crowi-plus"
-                  {% if 'crowi-plus' === settingForm['customize:layout'] %}checked="checked"{% endif %}>
+                  {% if isLayoutGrowi %}checked="checked"{% endif %}>
               crowi-plus Enhanced Layout <small class="text-success">(Recommended)</small>
             </h4>
             <a href="/images/admin/customize/layout-crowi-plus.gif" class="ss-container">

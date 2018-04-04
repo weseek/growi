@@ -22,7 +22,7 @@ export default class PageComments extends React.Component {
       // desc order array
       comments: [],
 
-      isLayoutTypeCrowiPlus: false,
+      isLayoutTypeGrowi: false,
 
       // for deleting comment
       commentToDelete: undefined,
@@ -53,7 +53,7 @@ export default class PageComments extends React.Component {
     const pageId = this.props.pageId;
 
     const layoutType = this.props.crowi.getConfig()['layoutType'];
-    this.setState({isLayoutTypeCrowiPlus: 'crowi-plus' === layoutType});
+    this.setState({isLayoutTypeGrowi: 'crowi-plus' === layoutType || 'growi' === layoutType});
 
     // get data (desc order array)
     this.props.crowi.apiGet('/comments.get', {page_id: pageId})
@@ -134,7 +134,7 @@ export default class PageComments extends React.Component {
     let olderComments = [];
 
     let comments = this.state.comments;
-    if (this.state.isLayoutTypeCrowiPlus) {
+    if (this.state.isLayoutTypeGrowi) {
       // replace with asc order array
       comments = comments.slice().reverse();  // non-destructive reverse
     }
@@ -176,7 +176,7 @@ export default class PageComments extends React.Component {
     );
 
     // generate toggle elements
-    const iconForNewer = (this.state.isLayoutTypeCrowiPlus)
+    const iconForNewer = (this.state.isLayoutTypeGrowi)
       ? <i className="fa fa-angle-double-down"></i>
       : <i className="fa fa-angle-double-up"></i>;
     const toggleNewer = (newerElements.length === 0)
@@ -186,7 +186,7 @@ export default class PageComments extends React.Component {
           {iconForNewer} Comments for Newer Revision {iconForNewer}
         </a>
       );
-    const iconForOlder = (this.state.isLayoutTypeCrowiPlus)
+    const iconForOlder = (this.state.isLayoutTypeGrowi)
       ? <i className="fa fa-angle-double-up"></i>
       : <i className="fa fa-angle-double-down"></i>;
     const toggleOlder = (olderElements.length === 0)
@@ -198,7 +198,7 @@ export default class PageComments extends React.Component {
       );
 
     // layout blocks
-    const commentsElements = (this.state.isLayoutTypeCrowiPlus)
+    const commentsElements = (this.state.isLayoutTypeGrowi)
       ? (
         <div>
           {olderBlock}

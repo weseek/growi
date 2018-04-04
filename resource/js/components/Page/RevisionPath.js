@@ -22,7 +22,7 @@ export default class RevisionPath extends React.Component {
 
     // whether set link to '/'
     const behaviorType = this.props.crowi.getConfig()['behaviorType'];
-    const isLinkToListPage = ('crowi-plus' !== behaviorType);
+    const isLinkToListPage = (!behaviorType || 'crowi' === behaviorType);
     this.setState({ isLinkToListPage });
 
     // generate pages obj
