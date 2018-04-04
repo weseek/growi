@@ -20,7 +20,6 @@ GROWI
 [![dependencies status](https://david-dm.org/weseek/growi.svg)](https://david-dm.org/weseek/growi)
 [![devDependencies Status](https://david-dm.org/weseek/growi/dev-status.svg)](https://david-dm.org/weseek/growi?type=dev)
 [![docker pulls](https://img.shields.io/docker/pulls/weseek/growi.svg)](https://hub.docker.com/r/weseek/growi/)
-[![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
 
 
 * **Pluggable**
