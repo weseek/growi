@@ -5,13 +5,15 @@
 </p>
 
 <p align="center">
-  <a href="https://heroku.com/deploy"><img src="https://www.herokucdn.com/deploy/button.png"></a>
-</p>
-<p align="center">
   <a href="https://demo.growi.org">Demo Site</a>
 </p>
+<p align="center">
+  <a href="https://github.com/weseek/crowi-plus/releases/latest"><img src="https://img.shields.io/github/release/weseek/crowi-plus.svg"></a>
+  <a href="https://heroku.com/deploy"><img src="https://www.herokucdn.com/deploy/button.png"></a>
+  <a href="https://growi-slackin.weseek.co.jp/"><img src="https://crowi-plus-slackin.weseek.co.jp/badge.svg"></a>
+</p>
 
-GROWI [![Github Releases](https://img.shields.io/github/release/weseek/crowi-plus.svg)](https://github.com/weseek/crowi-plus/releases/latest) [![Chat on Slack](https://growi-slackin.weseek.co.jp/badge.svg)][slackin]
+GROWI 
 ===========
 
 [![wercker status](https://app.wercker.com/status/39cdc49d067d65c39cb35d52ceae6dc1/s/master "wercker status")](https://app.wercker.com/project/byKey/39cdc49d067d65c39cb35d52ceae6dc1)
@@ -198,7 +200,7 @@ You can write issues and PRs in English or Japanese.
 Discussion
 -----------
 
-If you have questions or suggestions, you can [join our Slack team][slackin] and talk about anything, anytime.
+If you have questions or suggestions, you can [join our Slack team][https://growi-slackin.weseek.co.jp/] and talk about anything, anytime.
 
 
 License
@@ -214,4 +216,3 @@ License
 [pulls]: https://github.com/weseek/growi/pulls
 [dockerhub]: https://hub.docker.com/r/weseek/growi
 [docker-compose]: https://github.com/weseek/growi-docker-compose
-[slackin]: https://growi-slackin.weseek.co.jp/
