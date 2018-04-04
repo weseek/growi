@@ -200,7 +200,7 @@ You can write issues and PRs in English or Japanese.
 Discussion
 -----------
 
-If you have questions or suggestions, you can [join our Slack team][https://growi-slackin.weseek.co.jp/] and talk about anything, anytime.
+If you have questions or suggestions, you can [join our Slack team](https://growi-slackin.weseek.co.jp/) and talk about anything, anytime.
 
 
 License
