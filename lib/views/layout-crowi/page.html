@@ -45,13 +45,13 @@
 
 {% block side_header %}
   {% if page and not page.isDeleted() %}
-    {% include '../widget/page_side_header.html' %}
+    {% include 'widget/page_side_header.html' %}
   {% endif %}
 {% endblock %} {# side_header #}
 
 {% block side_content %}
   {% if page and not page.isDeleted() %}
-    {% include '../widget/page_side_content.html' %}
+    {% include 'widget/page_side_content.html' %}
   {% endif %}
 {% endblock %}
 
