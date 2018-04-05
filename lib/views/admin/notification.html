@@ -199,9 +199,13 @@
               <div class="form-group">
                 <label for="slackIwhSetting[slack:isIncomingWebhookPrioritized]" class="col-xs-3 control-label"></label>
                 <div class="col-xs-9">
-                  <input type="checkbox" name="slackIwhSetting[slack:isIncomingWebhookPrioritized]" value="1"
-                    {% if slackSetting['slack:isIncomingWebhookPrioritized'] %}checked{% endif %}>
-                  Prioritize Incoming Webhook than Slack App
+                  <div class="checkbox checkbox-info">
+                    <input type="checkbox" id ="cbPrioritizeIWH" name="slackIwhSetting[slack:isIncomingWebhookPrioritized]" value="1"
+                      {% if slackSetting['slack:isIncomingWebhookPrioritized'] %}checked{% endif %}>
+                    <label for="cbPrioritizeIWH">
+                      Prioritize Incoming Webhook than Slack App
+                    </label>
+                  </div>
                   <p class="help-block">Check this option and GROWI use Incoming Webhooks even if Slack App settings are enabled.</p>
                 </div>
               </div>
