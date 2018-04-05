@@ -107,22 +107,15 @@
           <div class="form-group">
             <div class="col-xs-6">
               <h4>
-                <input type="radio" name="settingForm[security:isEnabledPassport]" value="false"
-                    {% if !settingForm['security:isEnabledPassport'] %}checked="checked"{% endif %}>
-                Official Crowi authentication mechanism
-              </h4>
-              <ul>
-                <li>Username, E-mail and Password authentication</li>
-                <li>Google OAuth2 authentication</li>
-              </ul>
-            </div>
-            <div class="col-xs-6">
-              <h4>
-                <input type="radio" name="settingForm[security:isEnabledPassport]" value="true"
-                    {% if true === settingForm['security:isEnabledPassport'] %}checked="checked"{% endif %}>
-                <a href="http://passportjs.org/">
-                  <img src="/images/admin/security/passport-logo.svg" class="passport-logo"> Passport
-                </a> authentication mechanism <small class="text-success">(Recommended)</small>
+                <div class="radio radio-primary">
+                  <input type="radio" id="radioPassportAuthMech" name="settingForm[security:isEnabledPassport]" value="true"
+                      {% if true === settingForm['security:isEnabledPassport'] %}checked="checked"{% endif %}>
+                  <label for="radioPassportAuthMech">
+                    <a href="http://passportjs.org/">
+                      <img src="/images/admin/security/passport-logo.svg" class="passport-logo"> Passport
+                    </a> authentication mechanism <small class="text-success">(Recommended)</small>
+                  </label>
+                </div>
               </h4>
               <ul>
                 <li>Username, E-mail and Password authentication</li>
@@ -131,6 +124,21 @@
                 <li class="text-muted">(TBD) <del>Facebook OAuth2 authentication</del></li>
                 <li class="text-muted">(TBD) <del>Twitter OAuth authentication</del></li>
                 <li class="text-muted">(TBD) <del>Github OAuth2 authentication</del></li>
+              </ul>
+            </div>
+            <div class="col-xs-6">
+              <h4>
+                <div class="radio radio-primary">
+                  <input type="radio" id="radioCrowiAuthMech" name="settingForm[security:isEnabledPassport]" value="false"
+                      {% if !settingForm['security:isEnabledPassport'] %}checked="checked"{% endif %}>
+                  <label for="radioCrowiAuthMech">
+                    Crowi classic authentication mechanism
+                  </label>
+                </div>
+              </h4>
+              <ul>
+                <li>Username, E-mail and Password authentication</li>
+                <li>Google OAuth2 authentication</li>
               </ul>
             </div>
           </div>

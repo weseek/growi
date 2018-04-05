@@ -1993,7 +1993,7 @@ table.dataTable thead .sorting:after {
       -webkit-transition: 0.3s ease-in-out;
       background-color: $white;
       border-radius: 1px;
-      border: 1px solid $border;
+      border: 1px solid darken($border, 10%);
       content: "";
       display: inline-block;
       height: 17px;
@@ -2178,7 +2178,7 @@ table.dataTable thead .sorting:after {
       -webkit-transition: border 0.5s ease-in-out;
       background-color: $white;
       border-radius: 50%;
-      border: 1px solid $border;
+      border: 1px solid darken($border, 15%);
       content: "";
       display: inline-block;
       height: 17px;
