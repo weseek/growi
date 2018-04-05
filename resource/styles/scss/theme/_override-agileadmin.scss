@@ -60,6 +60,15 @@
 }
 
 /*
+ * Link
+ */
+a {
+  &:hover, &:focus {
+    text-decoration: underline;
+  }
+}
+
+/*
  * Form
  */
 .input-sm,
@@ -109,6 +118,10 @@ button.btn.btn-link:hover {
   &.well-sm {
     padding: .5em;
   }
+
+  a {
+    text-decoration: underline;
+  }
 }
 
 
@@ -134,4 +147,14 @@ button.btn.btn-link:hover {
  */
 .label {
   padding: 2px 7px;
+}
+
+
+/*
+ * Wiki
+ */
+.wiki {
+  a {
+    text-decoration: underline;
+  }
 }
