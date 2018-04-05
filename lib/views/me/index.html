@@ -80,8 +80,14 @@
       <div class="form-group {% if not user.lang %}has-error{% endif %}">
         <label for="userForm[lang]" class="col-sm-2 control-label">{{ t('Language') }}</label>
         <div class="col-sm-4">
-          <label class="radio-inline"><input type="radio" name="userForm[lang]" value="{{ consts.language.LANG_EN_US }}" {% if user.lang == consts.language.LANG_EN_US %}checked="checked"{% endif %}>{{ t('English') }}</label>
-          <label class="radio-inline"><input type="radio" name="userForm[lang]" value="{{ consts.language.LANG_JA }}" {% if user.lang == consts.language.LANG_JA %}checked="checked"{% endif %}>{{ t('Japanese') }}</label>
+          <div class="radio radio-primary radio-inline">
+            <input type="radio" id="radioLangEn" name="userForm[lang]" value="{{ consts.language.LANG_EN_US }}" {% if user.lang == consts.language.LANG_EN_US %}checked="checked"{% endif %}>
+            <label for="radioLangEn">{{ t('English') }}</label>
+          </div>
+          <div class="radio radio-primary radio-inline">
+            <input type="radio" id="radioLangJa" name="userForm[lang]" value="{{ consts.language.LANG_JA }}" {% if user.lang == consts.language.LANG_JA %}checked="checked"{% endif %}>
+            <label for="radioLangJa">{{ t('Japanese') }}</label>
+          </div>
         </div>
       </div>
       <div class="form-group">
@@ -103,26 +109,30 @@
       <legend>{{ t('Set Profile Image') }}</legend>
 
       <div class="form-group col-md-2 col-sm-offset-1 col-sm-4">
-        <div class="radio">
-          <h4>
-            <input type="radio" form="formImageType" name="imagetypeForm[isGravatarEnabled]" value="true" {% if user.isGravatarEnabled %}checked="checked"{% endif %}>
-            <img src="https://gravatar.com/avatar/00000000000000000000000000000000?s=24" /> Gravatar
+        <h4>
+          <div class="radio radio-primary">
+            <input type="radio" id="radioGravatar" form="formImageType" name="imagetypeForm[isGravatarEnabled]" value="true" {% if user.isGravatarEnabled %}checked="checked"{% endif %}>
+            <label for="radioGravatar">
+              <img src="https://gravatar.com/avatar/00000000000000000000000000000000?s=24" /> Gravatar
+            </label>
             <a href="https://gravatar.com/">
               <small><i class="icon-arrow-right-circle" aria-hidden="true"></i></small>
             </a>
-          </h4>
-        </div>
+          </div>
+        </h4>
 
         <img src="{{ user|gravatar }}" width="64">
       </div><!-- /.col-sm* -->
 
       <div class="form-group col-md-4 col-sm-7">
-        <div class="radio">
-          <h4>
-            <input type="radio" form="formImageType" name="imagetypeForm[isGravatarEnabled]" value="false" {% if !user.isGravatarEnabled  %}checked="checked"{% endif %}>
-            {{ t('Upload Image') }}
-          </h4>
-        </div>
+        <h4>
+          <div class="radio radio-primary">
+            <input type="radio" id="radioUploadPicture" form="formImageType" name="imagetypeForm[isGravatarEnabled]" value="false" {% if !user.isGravatarEnabled  %}checked="checked"{% endif %}>
+            <label for="radioUploadPicture">
+              {{ t('Upload Image') }}
+            </label>
+          </div>
+        </h4>
         <div class="form-group">
           <div id="pictureUploadFormMessage"></div>
           <label for="" class="col-sm-4 control-label">
