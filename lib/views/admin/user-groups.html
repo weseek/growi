@@ -1,11 +1,11 @@
 {% extends '../layout/admin.html' %}
 
-{% block html_title %}グループ管理 · {% endblock %}
+{% block html_title %}{{ customTitle(t('UserGroup management')) }}{% endblock %}
 
 {% block content_header %}
 <div class="header-wrap">
   <header id="page-header">
-    <h1 class="title" id="">グループ管理</h1>
+    <h1 class="title" id="">{{ t('UserGroup management') }}</h1>
   </header>
 </div>
 {% endblock %}
