@@ -13,6 +13,8 @@ $themecolor:#134;
 $primary: $themecolor;
 
 $logo-mark-fill: lighten(desaturate($topbar, 10%), 15%);
+$wikilinktext: lighten($themecolor, 20%);
+$wikilinktext-hover: darken($wikilinktext, 5%);
 
 @import 'apply-colors';
 @import 'apply-colors-light';

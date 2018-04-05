@@ -227,6 +227,20 @@ legend {
 }
 
 /*
+ * GROWI wiki
+ */
+.wiki {
+  a {
+    color: $wikilinktext;
+    text-decoration: underline;
+    &:hover {
+      color: $wikilinktext-hover;
+    }
+  }
+}
+
+
+/*
  * GROWI header
  */
 .main-container header.affix {

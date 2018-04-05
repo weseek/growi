@@ -2,21 +2,6 @@ div.body {
   padding: 10px;
 }
 
-.revision-head {
-
-  .revision-head-link,
-  .revision-head-edit-button {
-    visibility: hidden;
-    font-size: 0.6em;
-  }
-  &:hover .revision-head-link,
-  &:hover .revision-head-edit-button {
-    visibility: unset;
-    margin-left: 0.5em;
-  }
-
-}
-
 .wiki {
   line-height: 1.8em;
   font-size: 15px;
@@ -147,6 +132,22 @@ div.body {
     background-color: $brand-warning;
   }
 
+  .revision-head {
+    a {
+      text-decoration: none;
+    }
+
+    .revision-head-link,
+    .revision-head-edit-button {
+      visibility: hidden;
+      font-size: 0.6em;
+    }
+    &:hover .revision-head-link,
+    &:hover .revision-head-edit-button {
+      visibility: unset;
+      margin-left: 0.5em;
+    }
+  }
 }
 
 @media (max-width: $screen-sm-max) { // {{{ tablet and iphone size
