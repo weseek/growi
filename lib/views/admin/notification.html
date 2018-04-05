@@ -38,15 +38,76 @@
 
       <ul class="nav nav-tabs" role="tablist">
         <li class="active">
-          <a href="#slack-app" data-toggle="tab" role="tab"><i class="icon-settings"></i> Slack App</a>
+          <a href="#slack-incoming-webhooks" data-toggle="tab" role="tab"><i class="icon-settings"></i> Slack Incoming Webhooks</a>
         </li>
         <li role="tab">
-          <a href="#slack-incoming-webhooks" data-toggle="tab" role="tab"><i class="icon-settings"></i> Slack Incoming Webhooks</a>
+          <a href="#slack-app" data-toggle="tab" role="tab"><i class="icon-settings"></i> Slack App</a>
         </li>
       </ul>
 
-      <div class="tab-content">
-        <div id="slack-app" class="tab-pane active" role="tabpanel" >
+      <div class="tab-content m-t-15">
+        <div id="slack-incoming-webhooks" class="tab-pane active" role="tabpanel">
+
+          <form action="/admin/notification/slackIwhSetting" method="post" class="form-horizontal" id="appSettingForm" role="form">
+            <fieldset>
+              <legend>Slack Incoming Webhooks Configuration</legend>
+
+              <div class="form-group">
+                <label for="slackIwhSetting[slack:incomingWebhookUrl]" class="col-xs-3 control-label">Webhook URL</label>
+                <div class="col-xs-9">
+                  <input class="form-control" type="text" name="slackIwhSetting[slack:incomingWebhookUrl]" value="{{ slackSetting['slack:incomingWebhookUrl'] }}">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="slackIwhSetting[slack:isIncomingWebhookPrioritized]" class="col-xs-3 control-label"></label>
+                <div class="col-xs-9">
+                  <div class="checkbox checkbox-info">
+                    <input type="checkbox" id ="cbPrioritizeIWH" name="slackIwhSetting[slack:isIncomingWebhookPrioritized]" value="1"
+                      {% if slackSetting['slack:isIncomingWebhookPrioritized'] %}checked{% endif %}>
+                    <label for="cbPrioritizeIWH">
+                      Prioritize Incoming Webhook than Slack App
+                    </label>
+                  </div>
+                  <p class="help-block">Check this option and GROWI use Incoming Webhooks even if Slack App settings are enabled.</p>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="col-xs-offset-3 col-xs-6">
+                  <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+              </div>
+            </fieldset>
+            <input type="hidden" name="_csrf" value="{{ csrf() }}">
+          </form>
+
+          <hr>
+          <h3>
+            <i class="icon-question" aria-hidden="true"></i>
+            <a href="#collapseHelpForIwh" data-toggle="collapse">How to configure Incoming Webhooks?</a>
+          </h3>
+
+          <ol id="collapseHelpForIwh" class="collapse">
+            <li>
+              (At Workspace) Add a hook
+              <ol>
+                <li>Go to <a href="https://slack.com/services/new/incoming-webhook">Incoming Webhooks Configuration page</a>.</li>
+                <li>Choose the default channel to post.</li>
+                <li>Add.</li>
+              </ol>
+            </li>
+            <li>
+              (At GROWI admin page) Set Webhook URL
+              <ol>
+                <li>Input "Webhook URL" and submit on this page.</li>
+              </ol>
+            </li>
+          </ol>
+
+        </div><!-- /#slack-incoming-webhooks -->
+
+        <div id="slack-app" class="tab-pane" role="tabpanel" >
 
           <form action="/admin/notification/slackSetting" method="post" class="form-horizontal" id="appSettingForm" role="form">
             <fieldset>
@@ -183,66 +244,7 @@
 
         </div><!-- /#slack-app -->
 
-        <div id="slack-incoming-webhooks" class="tab-pane" role="tabpanel">
 
-          <form action="/admin/notification/slackIwhSetting" method="post" class="form-horizontal" id="appSettingForm" role="form">
-            <fieldset>
-              <legend>Slack Incoming Webhooks Configuration</legend>
-
-              <div class="form-group">
-                <label for="slackIwhSetting[slack:incomingWebhookUrl]" class="col-xs-3 control-label">Webhook URL</label>
-                <div class="col-xs-9">
-                  <input class="form-control" type="text" name="slackIwhSetting[slack:incomingWebhookUrl]" value="{{ slackSetting['slack:incomingWebhookUrl'] }}">
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label for="slackIwhSetting[slack:isIncomingWebhookPrioritized]" class="col-xs-3 control-label"></label>
-                <div class="col-xs-9">
-                  <div class="checkbox checkbox-info">
-                    <input type="checkbox" id ="cbPrioritizeIWH" name="slackIwhSetting[slack:isIncomingWebhookPrioritized]" value="1"
-                      {% if slackSetting['slack:isIncomingWebhookPrioritized'] %}checked{% endif %}>
-                    <label for="cbPrioritizeIWH">
-                      Prioritize Incoming Webhook than Slack App
-                    </label>
-                  </div>
-                  <p class="help-block">Check this option and GROWI use Incoming Webhooks even if Slack App settings are enabled.</p>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <div class="col-xs-offset-3 col-xs-6">
-                  <button type="submit" class="btn btn-primary">Submit</button>
-                </div>
-              </div>
-            </fieldset>
-            <input type="hidden" name="_csrf" value="{{ csrf() }}">
-          </form>
-
-          <hr>
-          <h3>
-            <i class="icon-question" aria-hidden="true"></i>
-            <a href="#collapseHelpForIwh" data-toggle="collapse">How to configure Incoming Webhooks?</a>
-          </h3>
-
-          <ol id="collapseHelpForIwh" class="collapse">
-            <li>
-              (At Workspace) Add a hook
-              <ol>
-                <li>Go to <a href="https://slack.com/services/new/incoming-webhook">Incoming Webhooks Configuration page</a>.</li>
-                <li>Choose the default channel to post.</li>
-                <li>Add.</li>
-              </ol>
-            </li>
-            <li>
-              (At GROWI admin page) Set Webhook URL
-              <ol>
-                <li>Input "Webhook URL" and submit on this page.</li>
-              </ol>
-            </li>
-          </ol>
-
-        </div><!-- /#slack-incoming-webhooks -->
 
       </div><!-- /.tab-content -->
 
@@ -306,8 +308,8 @@
     window.addEventListener('load', function(e) {
       // hash on page
       if (location.hash) {
-        if (location.hash == '#slack-incoming-webhooks') {
-          activateTab('slack-incoming-webhooks');
+        if (location.hash == '#slack-app') {
+          activateTab('slack-app');
         }
       }
     });
