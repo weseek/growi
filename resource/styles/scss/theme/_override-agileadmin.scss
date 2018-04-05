@@ -69,6 +69,44 @@ a {
 }
 
 /*
+ * Alert
+ */
+.alert {
+  a {
+    color: white;
+  }
+
+  &.alert-info {
+    a {
+      &:hover, &:focus {
+        color: lighten($info, 40%);
+      }
+    }
+  }
+  &.alert-success {
+    a {
+      &:hover, &:focus {
+        color: lighten($success, 40%);
+      }
+    }
+  }
+  &.alert-warning {
+    a {
+      &:hover, &:focus {
+        color: lighten($warning, 30%);
+      }
+    }
+  }
+  &.alert-danger {
+    a {
+      &:hover, &:focus {
+        color: lighten($danger, 30%);
+      }
+    }
+  }
+}
+
+/*
  * Form
  */
 .input-sm,
@@ -139,6 +177,9 @@ button.btn.btn-link:hover {
   .panel-footer {
     padding: 7px 15px;
   }
+}
+.panel.panel-primary .panel-heading{
+
 }
 
 
