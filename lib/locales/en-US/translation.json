@@ -226,8 +226,8 @@
   },
 
   "app_setting": {
-    "Wiki name": "Wiki name",
-    "wiki_change": "You can change Wiki name which is used for header and HTML title.",
+    "Site Name": "Site name",
+    "sitename_change": "You can change Site Name which is used for header and HTML title.",
     "header_content": "The contents entered here will be shown in the header etc.",
     "Confidential name": "Confidential name",
     "ex): internal use only":"ex): internal use only",

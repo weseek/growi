@@ -26,7 +26,6 @@ import SearchTypeahead  from './components/SearchTypeahead';
 import CustomCssEditor  from './components/Admin/CustomCssEditor';
 import CustomScriptEditor from './components/Admin/CustomScriptEditor';
 import CustomHeaderEditor from './components/Admin/CustomHeaderEditor';
-import CustomTitleEditor from './components/Admin/CustomTitleEditor';
 
 import * as entities from 'entities';
 
@@ -211,16 +210,6 @@ if (customHeaderEditorElem != null) {
   ReactDOM.render(
     <CustomHeaderEditor inputElem={customHeaderInputElem} />,
     customHeaderEditorElem
-  )
-}
-const customTitleEditorElem = document.getElementById('custom-title-editor');
-if (customTitleEditorElem != null) {
-  // get input[type=hidden] element
-  const customTitleInputElem = document.getElementById('inputCustomTitle');
-
-  ReactDOM.render(
-    <CustomTitleEditor inputElem={customTitleInputElem} />,
-    customTitleEditorElem
   )
 }
 
