@@ -5,6 +5,8 @@ CHANGES
 
 * Feature: Group Access Control List
 * Feature: Add theme selector
+* Fix: bosai version
+* Support: Rename to GROWI
 * Support: Add dark theme
 * Support: Refreshing bootstrap theme and icons
 * Support: Use Browsersync instead of easy-livereload
