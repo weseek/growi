@@ -5,6 +5,7 @@ CHANGES
 
 * Feature: Group Access Control List
 * Feature: Add theme selector
+* Feature: Custom title tag content
 * Fix: bosai version
 * Support: Rename to GROWI
 * Support: Add dark theme
