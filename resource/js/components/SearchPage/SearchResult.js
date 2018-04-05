@@ -176,7 +176,7 @@ export default class SearchResult extends React.Component {
       }
       return (
         <div className="content-main">
-            <i className="fa fa-meh-o" /> No page found with "{this.props.searchingKeyword}"{under}
+            <i className="icon-fw icon-info" /> No page found with "{this.props.searchingKeyword}"{under}
         </div>
       );
 
@@ -188,8 +188,12 @@ export default class SearchResult extends React.Component {
     if (this.state.deletionMode) {
       deletionModeButtons =
       <div className="btn-group">
-        <button type="button" className="btn btn-danger btn-xs" onClick={() => this.showDeleteConfirmModal()} disabled={this.state.selectedPages.size == 0}><i className="fa fa-trash-o"/> Delete</button>
-        <button type="button" className="btn btn-default btn-xs" onClick={() => this.handleDeletionModeChange()}><i className="fa fa-undo"/> Cancel</button>
+        <button type="button" className="btn btn-rounded btn-default btn-xs" onClick={() => this.handleDeletionModeChange()}>
+          <i className="icon-ban"/> Cancel
+        </button>
+        <button type="button" className="btn btn-rounded btn-danger btn-xs" onClick={() => this.showDeleteConfirmModal()} disabled={this.state.selectedPages.size == 0}>
+          <i className="icon-trash"/> Delete
+        </button>
       </div>
       allSelectCheck =
       <div>
@@ -205,8 +209,8 @@ export default class SearchResult extends React.Component {
     else {
       deletionModeButtons =
       <div className="btn-group">
-        <button type="button" className="btn btn-default btn-xs" onClick={() => this.handleDeletionModeChange()}>
-          <i className="fa fa-toggle-off"/> DeletionMode
+        <button type="button" className="btn btn-default btn-rounded btn-xs" onClick={() => this.handleDeletionModeChange()}>
+          <i className="ti-check-box"/> DeletionMode
         </button>
       </div>
     }
@@ -226,7 +230,7 @@ export default class SearchResult extends React.Component {
               onClick={() => this.toggleCheckbox(page)} />
             }
           <div className="page-list-option">
-            <a href={page.path}><i className="fa fa-sign-in" /></a>
+            <a href={page.path}><i className="icon-login" /></a>
           </div>
         </Page>
       );
@@ -251,12 +255,14 @@ export default class SearchResult extends React.Component {
                 {allSelectCheck}
               </div>
               <div className="search-result-meta">
-                <i className="fa fa-lightbulb-o" /> Found {this.props.searchResultMeta.total} pages with "{this.props.searchingKeyword}"
+                <i className="icon-magnifier" /> Found {this.props.searchResultMeta.total} pages with "{this.props.searchingKeyword}"
               </div>
               <div className="clearfix"></div>
-              <ul className="page-list-ul page-list-ul-flat nav">
-                {listView}
-              </ul>
+              <div className="page-list">
+                <ul className="page-list-ul page-list-ul-flat nav">
+                  {listView}
+                </ul>
+              </div>
             </nav>
           </div>
           <div className="col-md-8 search-result-content" id="search-result-content">

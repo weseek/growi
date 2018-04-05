@@ -1,0 +1,149 @@
+@import "../variables.scss";
+
+/*Just change your choise color here its theme Colors*/
+
+$topbar:#00c292;
+$sidebar:#4F5467;
+$bodycolor:#f1f2f7;
+$headingtext: #2b2b2b;
+$bodytext: #686868;
+$sidebar-text:#a6acbc;
+$themecolor:#00c292;
+$dark-themecolor:#4F5467;
+
+
+body{
+  background:$sidebar;
+}
+
+/*Top Header Part*/
+.top-left-part{
+  background:$sidebar;
+}
+.logo b{
+   
+}
+.logo i{ color:$white;}
+
+.navbar-header{ 
+     background:$topbar;
+}
+.navbar-top-links > li > a{
+    color:$white;
+}
+
+
+/*Right panel*/
+.right-sidebar .rpanel-title{
+  background:$themecolor;
+}
+
+/*Bread Crumb*/
+.bg-title .breadcrumb .active{
+    color:$themecolor;
+}
+.bg-title{
+  
+}
+
+/*Sidebar*/
+
+.sidebar {
+    background:$sidebar;
+    box-shadow:1px 0px 20px rgba(0, 0, 0, 0.08);
+  .label-custom{
+      background:$megna;
+  }  
+}
+#side-menu li a{
+    color:$sidebar-text;
+}
+#side-menu li a{
+    color:$sidebar-text;
+  border-left:0px solid $sidebar;
+}
+
+#side-menu > li > a {
+    &:hover, &:focus{
+        background:rgba(0, 0, 0, 0.07);
+    }
+   &.active {
+            border-left:3px solid $themecolor;
+            color:$white;
+            
+            font-weight:500;
+        i{
+          color:$themecolor;
+        }
+        }
+
+}
+#side-menu ul > li > a {
+    &:hover{
+        color:$themecolor;
+        
+    }
+    &.active{
+     color:$white;
+     font-weight:500;
+    }
+}
+.sidebar #side-menu .user-pro{
+  .nav-second-level a:hover{
+          color:$themecolor;
+        }
+  }
+.content-wrapper .sidebar .nav-second-level{
+  li{
+    background:#444859;
+  }
+}   
+@media(min-width:768px) {
+  .content-wrapper { 
+        #side-menu ul, .sidebar #side-menu > li:hover, .sidebar .nav-second-level > li > a{
+              background:#444859;
+         }
+   }     
+}
+.user-profile .user-pro-body .u-dropdown{
+  color:$sidebar-text;
+}
+/*themecolor*/
+
+.bg-theme {
+  background-color: #6e8680 !important;
+}
+.bg-theme-dark {
+  background-color: $themecolor !important;
+}
+
+/*Chat widget*/
+.chat-list .odd .chat-text{
+    background:$themecolor;
+}
+/*Button*/
+.btn-custom{
+  background:$themecolor;
+  border:1px solid $themecolor;
+  color:$white;
+  &:hover{
+    background:$themecolor;
+    opacity:0.8;
+    color:$white;
+    border:1px solid $themecolor;
+  }
+}
+/*Custom tab*/
+.customtab li.active a, .customtab li.active a:hover,  .customtab li.active a:focus{
+ border-bottom:2px solid $themecolor;
+ color:$themecolor;
+}
+.tabs-vertical li.active a, .tabs-vertical li.active a:hover,  .tabs-vertical li.active a:focus{
+  background:$themecolor;
+  border-right:2px solid $themecolor;
+}
+/*Nav-pills*/
+.nav-pills>li.active>a, .nav-pills>li.active>a:focus, .nav-pills>li.active>a:hover{
+  background:$themecolor;
+  color:$white;
+}

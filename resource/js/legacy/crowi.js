@@ -14,6 +14,8 @@ const escapeStringRegexp = require('escape-string-regexp');
 require('bootstrap-sass');
 require('jquery.cookie');
 
+require('./thirdparty-js/agile-admin');
+
 var Crowi = {};
 
 if (!window) {
@@ -44,7 +46,7 @@ Crowi.appendEditSectionButtons = function(parentElement) {
     $(this).append(`
       <span class="revision-head-edit-button">
         <a href="#edit-form" onClick="Crowi.setCaretLineData(${line})">
-          <i class="fa fa-edit"></i>
+          <i class="icon-note"></i>
         </a>
       </span>
       `
@@ -90,10 +92,10 @@ Crowi.setCaretLineAndFocusToEditor = function() {
 // original: middleware.swigFilter
 Crowi.userPicture = function (user) {
   if (!user) {
-    return '/images/userpicture.png';
+    return '/images/icons/user.svg';
   }
 
-  return user.image || '/images/userpicture.png';
+  return user.image || '/images/icons/user.svg';
 };
 
 Crowi.modifyScrollTop = function() {
@@ -203,16 +205,6 @@ $(function() {
     var dateString = today.getFullYear() + '/' + month + '/' + day;
     $('#create-page-today .page-today-suffix').text('/' + dateString + '/');
     $('#create-page-today .page-today-input2').data('prefix', '/' + dateString + '/');
-
-    var input2Width = $('#create-page-today .col-xs-10').outerWidth() - 1;
-    var newWidth = input2Width
-      - $('#create-page-today .page-today-prefix').outerWidth()
-      - $('#create-page-today .page-today-input1').outerWidth()
-      - $('#create-page-today .page-today-suffix').outerWidth()
-      - 42
-      ;
-    $('#create-page-today .form-control.page-today-input2').css({width: newWidth}).focus();
-
   });
 
   $('#create-page-today').submit(function(e) {
@@ -244,7 +236,8 @@ $(function() {
 
   // rename
   $('#renamePage').on('shown.bs.modal', function (e) {
-    $('#newPageName').focus();
+    $('#renamePage #newPageName').focus();
+    $('#renamePage .msg-already-exists').hide();
   });
   $('#renamePageForm, #unportalize-form').submit(function(e) {
     // create name-value map
@@ -261,22 +254,14 @@ $(function() {
     }).done(function(res) {
       if (!res.ok) {
         // if already exists
-        $('#newPageNameCheck').html('<i class="fa fa-times-circle"></i> ' + res.error);
-        $('#newPageNameCheck').addClass('alert-danger');
-        $('#linkToNewPage').html(`
-          <i class="fa fa-fw fa-arrow-right"></i><a href="${nameValueMap.new_path}">${nameValueMap.new_path}</a>
+        $('#renamePage .msg-already-exists').show();
+        $('#renamePage #linkToNewPage').html(`
+          <a href="${nameValueMap.new_path}">${nameValueMap.new_path} <i class="icon-login"></i></a>
         `);
-      } else {
+      }
+      else {
         var page = res.page;
-
-        $('#newPageNameCheck').removeClass('alert-danger');
-        //$('#newPageNameCheck').html('<img src="/images/loading_s.gif"> 移動しました。移動先にジャンプします。');
-        // fix
-        $('#newPageNameCheck').html('<img src="/images/loading_s.gif"> Page moved! Redirecting to new page location.');
-
-        setTimeout(function() {
-          top.location.href = page.path + '?renamed=' + pagePath;
-        }, 1000);
+        top.location.href = page.path + '?renamed=' + pagePath;
       }
     });
 
@@ -285,7 +270,8 @@ $(function() {
 
   // duplicate
   $('#duplicatePage').on('shown.bs.modal', function (e) {
-    $('#duplicatePageName').focus();
+    $('#duplicatePage #duplicatePageName').focus();
+    $('#duplicatePage .msg-already-exists').hide();
   });
   $('#duplicatePageForm, #unportalize-form').submit(function (e) {
     // create name-value map
@@ -299,23 +285,17 @@ $(function() {
       url: '/_api/pages.duplicate',
       data: $(this).serialize(),
       dataType: 'json'
-    }).done(function (res) {
+    }).done(function(res) {
       if (!res.ok) {
         // if already exists
-        $('#duplicatePageNameCheck').html('<i class="fa fa-times-circle"></i> ' + res.error);
-        $('#duplicatePageNameCheck').addClass('alert-danger');
-        $('#linkToNewPage').html(`
-          <i class="fa fa-fw fa-arrow-right"></i><a href="${nameValueMap.new_path}">${nameValueMap.new_path}</a>
+        $('#duplicatePage .msg-already-exists').show();
+        $('#duplicatePage #linkToNewPage').html(`
+          <a href="${nameValueMap.new_path}">${nameValueMap.new_path} <i class="icon-login"></i></a>
         `);
-      } else {
+      }
+      else {
         var page = res.page;
-
-        $('#duplicatePageNameCheck').removeClass('alert-danger');
-        $('#duplicatePageNameCheck').html('<img src="/images/loading_s.gif"> Page duplicated! Redirecting to new page location.');
-
-        setTimeout(function () {
-          top.location.href = page.path + '?duplicated=' + pagePath;
-        }, 1000);
+        top.location.href = page.path + '?duplicated=' + pagePath;
       }
     });
 
@@ -379,9 +359,7 @@ $(function() {
   });
 
   $('#create-portal-button').on('click', function(e) {
-    $('.portal').removeClass('hide');
-    $('.content-main').addClass('on-edit');
-    $('.portal a[data-toggle="tab"][href="#edit-form"]').tab('show');
+    $('body').addClass('on-edit');
 
     var path = $('.content-main').data('path');
     if (path != '/' && $('.content-main').data('page-id') == '') {
@@ -394,9 +372,7 @@ $(function() {
     }
   });
   $('#portal-form-close').on('click', function(e) {
-    $('.portal').addClass('hide');
-    $('.content-main').removeClass('on-edit');
-
+    $('body').removeClass('on-edit');
     return false;
   });
 
@@ -445,29 +421,6 @@ $(function() {
 
       $('#view-timeline').data('shown', 1);
     }
-  });
-
-  // login
-  $('#register').on('click', function() {
-    $('#login-dialog').addClass('to-flip');
-    return false;
-  });
-  $('#login').on('click', function() {
-    $('#login-dialog').removeClass('to-flip');
-    return false;
-  });
-
-  $('#register-form input[name="registerForm[username]"]').change(function(e) {
-    var username = $(this).val();
-    $('#input-group-username').removeClass('has-error');
-    $('#help-block-username').html("");
-
-    $.getJSON('/_api/check_username', {username: username}, function(json) {
-      if (!json.valid) {
-        $('#help-block-username').html('<i class="fa fa-warning"></i> This User ID is not available.<br>');
-        $('#input-group-username').addClass('has-error');
-      }
-    });
   });
 
   if (pageId) {
@@ -540,15 +493,17 @@ $(function() {
     }
     */
 
-    // header
-    var $header = $('#page-header');
-    if ($header.length > 0) {
-      var headerHeight = $header.outerHeight(true);
-      $('.header-wrap').css({height: (headerHeight + 16) + 'px'});
-      $header.affix({
+    // header affix
+    var $affixContent = $('#page-header');
+    if ($affixContent.length > 0) {
+      var $affixContentContainer = $('.row.bg-title');
+      var containerHeight = $affixContentContainer.outerHeight(true);
+      // fix height(固定)
+      $affixContentContainer.css({height: containerHeight + 'px'});
+      $affixContent.affix({
         offset: {
           top: function() {
-            return headerHeight + 86; // (54 header + 16 header padding-top + 16 content padding-top)
+            return $('.navbar').outerHeight(true) + containerHeight;
           }
         }
       });
@@ -567,7 +522,7 @@ $(function() {
     // omg
     function createCommentHTML(revision, creator, comment, commentedAt) {
       var $comment = $('<div>');
-      var $commentImage = $('<img class="picture picture-rounded">')
+      var $commentImage = $('<img class="picture img-circle">')
         .attr('src', Crowi.userPicture(creator));
       var $commentCreator = $('<div class="page-comment-creator">')
         .text(creator.username);
@@ -737,7 +692,7 @@ $(function() {
       $userHtml.attr('href', '/user/' + user.username);
       $userHtml.attr('title', user.name);
 
-      var $userPicture = $('<img class="picture picture-xs picture-rounded">');
+      var $userPicture = $('<img class="picture picture-xs img-circle">');
       $userPicture.attr('alt', user.name);
       $userPicture.attr('src',  Crowi.userPicture(user));
 

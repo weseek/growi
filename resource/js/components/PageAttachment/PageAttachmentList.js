@@ -22,9 +22,14 @@ export default class PageAttachmentList extends React.Component {
     });
 
     return (
-      <ul>
-        {attachmentList}
-      </ul>
+      <div>
+        {(attachmentList.length != 0) &&
+          <h5><strong>Attachments</strong></h5>
+        }
+        <ul>
+          {attachmentList}
+        </ul>
+      </div>
     );
   }
 }

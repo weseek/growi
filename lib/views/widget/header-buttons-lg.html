@@ -1,0 +1,13 @@
+{% if page %}
+  {% set opts = { size: 'lg' }  %}
+  <div>
+    {% if user %}
+      {% include 'header-button-like.html' with opts %}
+    {% endif %}
+  </div>
+  <div class="m-l-5">
+    {% if user %}
+      {% include 'header-button-bookmark.html' with opts %}
+    {% endif %}
+  </div>
+{% endif %}

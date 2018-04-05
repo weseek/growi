@@ -47,6 +47,7 @@
   "View diff": "View diff",
 
   "User ID": "User ID",
+  "Home": "Home",
   "User Settings": "User Settings",
   "User Information": "User Information",
   "Basic Info": "Basic Info",
@@ -75,10 +76,12 @@
 
   "Table of Contents": "Table of Contents",
 
+  "UserGroup management": "UserGroup management",
   "Public": "Public",
   "Anyone with the link": "Anyone with the link",
   "Specified users only": "Specified users only",
   "Just me": "Just me",
+  "Only inside the group": "Only inside the group",
   "Shareable link": "Shareable link",
 
   "Show latest": "Show latest",
@@ -129,7 +132,6 @@
   "New password": "New password",
   "Re-enter new password": "Re-enter new password",
   "Password is not set": "Password is not set",
-  "You can sign in with email and password": "You can sign in with <code>%s</code> and password",
 
   "API Settings": "API Settings",
   "API Token Settings": "API Token Settings",
@@ -143,6 +145,7 @@
       "notice": {
           "version": "This is not the current version.",
           "moved": "This page was moved from <code>%s</code>",
+          "duplicated": "This page was duplicated from <code>%s</code>",
           "unlinked": "Redirect pages to this page have been deleted.",
           "restricted": "Access to this page is restricted"
       }
@@ -250,8 +253,8 @@
     "Plugin settings": "Plugin settings",
     "Enable plugin loading": "Enable plugin loading",
     "Load plugins": "Load plugins",
-    "valid": "Valid",
-    "invalid": "Invalid"
+    "Enable": "Enable",
+    "Disable": "Disable"
 
   },
   "security_setting": {
@@ -265,7 +268,7 @@
     "without_encryption": "Please be noted that your ID and Password will be sent wihtout encryption.",
     "users_without_account": "Users without account is not accessible",
     "restrict_emails": "You can restrict registerable e-mail address.",
-    "for_instance":" For instance, if you use Crowi-plus within a company, you can write ",
+    "for_instance":" For instance, if you use growi within a company, you can write ",
     "only_those":" Only those whose e-mail address including the company address can register.",
     "insert_single":"Please insert single e-mail address per line.",
     "Authentication mechanism settings":"Authentication mechanism settings"

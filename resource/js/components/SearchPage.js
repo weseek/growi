@@ -91,14 +91,10 @@ export default class SearchPage extends React.Component {
   render() {
     return (
       <div>
-        <div className="header-wrap">
-          <header>
-            <SearchForm
-              onSearchFormChanged={this.search}
-              keyword={this.state.searchingKeyword}
-              />
-          </header>
-        </div>
+        <SearchForm
+          onSearchFormChanged={this.search}
+          keyword={this.state.searchingKeyword}
+          />
 
         <SearchResult
           crowi={this.props.crowi} crowiRenderer={this.props.crowiRenderer}

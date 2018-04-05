@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import UserDate     from '../Common/UserDate';
-import Icon         from '../Common/Icon';
 import UserPicture  from '../User/UserPicture';
 
 export default class Revision extends React.Component {
@@ -29,25 +28,29 @@ export default class Revision extends React.Component {
       pic = <UserPicture user={author} />;
     }
 
-    const iconName = this.props.revisionDiffOpened ? 'caret-down' : 'caret-right';
+    const iconClass = this.props.revisionDiffOpened ? 'caret caret-opened' : 'caret';
     return (
-      <div className="revision-history-main">
-        {pic}
-        <div className="revision-history-author">
-          <strong>{author.username}</strong>
+      <div className="revision-history-main d-flex">
+        <div className="m-t-5">
+          {pic}
         </div>
-        <div className="revision-history-meta">
-          <p>
-            <UserDate dateTime={revision.createdAt} />
-          </p>
-          <p>
-            <a className="diff-view" onClick={this._onDiffOpenClicked}>
-              <Icon name={iconName} /> View diff
-            </a>
-            <a href={"?revision=" + revision._id }>
-              <Icon name="sign-in" /> Go to this version
-            </a>
-          </p>
+        <div className="m-l-10">
+          <div className="revision-history-author">
+            <strong>{author.username}</strong>
+          </div>
+          <div className="revision-history-meta">
+            <p>
+              <UserDate dateTime={revision.createdAt} />
+            </p>
+            <p>
+              <a className="diff-view" onClick={this._onDiffOpenClicked}>
+                <i className={iconClass}></i> View diff
+              </a>
+              <a href={"?revision=" + revision._id } className="m-l-10">
+                <i className="icon-login"></i> Go to this version
+              </a>
+            </p>
+          </div>
         </div>
       </div>
     );

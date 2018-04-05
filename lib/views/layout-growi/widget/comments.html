@@ -1,0 +1,52 @@
+<div class="page-comments-row row">
+
+  <div class="page-comments col-lg-7 col-md-9">
+
+    <h4><i class="icon-fw icon-bubbles"></i> Comments</h4>
+
+    <div class="page-comments-list" id="page-comments-list">
+      {# transplanted to PageComments React component -- 2017.06.02 Yuki Takei
+      <div class="page-comments-list-newer collapse" id="page-comments-list-newer"></div>
+
+      <a class="page-comments-list-toggle-newer text-center" data-toggle="collapse" href="#page-comments-list-newer"><i class="ti-angle-double-up"></i> Comments for Newer Revision <i class="ti-angle-double-up"></i></a>
+
+      <div class="page-comments-list-current" id="page-comments-list-current"></div>
+
+      <a class="page-comments-list-toggle-older text-center" data-toggle="collapse" href="#page-comments-list-older"><i class="ti-angle-double-down"></i> Comments for Older Revision <i class="ti-angle-double-down"></i></a>
+
+      <div class="page-comments-list-older collapse in" id="page-comments-list-older"></div>
+      #}
+    </div>
+
+    {% if page and not page.isDeleted() %}
+    <form class="form page-comment-form" id="page-comment-form" onsubmit="return false;">
+      <div class="comment-form">
+        <div class="comment-form-user">
+            <img src="{{ user|picture }}" class="picture img-circle" width="25" alt="{{ user.name }}" title="{{ user.name }}" />
+        </div>
+        <div class="comment-form-main">
+          <div class="comment-write" id="comment-write">
+            <textarea class="comment-form-comment form-control" id="comment-form-comment" name="commentForm[comment]"
+                required placeholder="Write comments here..." {% if not user %}disabled{% endif %}></textarea>
+          </div>
+          <div class="comment-submit">
+            <input type="hidden" name="_csrf" value="{{ csrf() }}">
+            <input type="hidden" name="commentForm[page_id]" value="{{ page._id.toString() }}">
+            <input type="hidden" name="commentForm[revision_id]" value="{{ revision._id.toString() }}">
+            <div class="pull-right">
+              <span class="text-danger" id="comment-form-message"></span>
+              <button type="submit" id="comment-form-button" class="fcbtn btn btn-sm btn-outline btn-rounded btn-primary btn-1b" {% if not user %}disabled{% endif %}>
+                Comment
+              </button>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+        </div>
+      </div>
+    </form>
+    <div id="page-comment-form-behavior"></div>
+    {% endif %}
+
+  </div>
+
+</div>

@@ -1,0 +1,89 @@
+// vendor
+@import 'vendor';
+
+// import variables
+@import '../agile-admin/inverse/variables';
+@import 'variables';
+
+@import 'override-bootstrap-variables';
+
+// override react-bootstrap-typeahead styles
+@import 'override-rbt';
+
+// crowi component
+@import 'admin';
+@import 'attachments';
+@import 'comment';
+@import 'comment_growi';
+@import 'create-page';
+@import 'layout';
+@import 'layout_crowi';
+@import 'layout_crowi_sidebar';
+@import 'layout_growi';
+@import 'login';
+@import 'on-edit';
+@import 'page_list';
+@import 'page';
+@import 'page_growi';
+@import 'search';
+@import 'shortcuts';
+@import 'user';
+@import 'user_growi';
+@import 'wiki';
+
+/*
+ * for Guest User Mode
+ */
+.dropdown-disabled {
+  cursor: not-allowed;
+}
+
+.edit-button.edit-button-disabled {
+  cursor: not-allowed;
+}
+
+
+/*
+ * Helper Classes
+ */
+
+.picture {
+  width: 24px;
+  height: 24px;
+
+  // size list
+  &.picture-lg {
+    width: 48px;
+    height: 48px;
+  }
+  &.picture-md {
+    width: 24px;
+    height: 24px;
+  }
+  &.picture-sm {
+    width: 18px;
+    height: 18px;
+  }
+  &.picture-xs {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+// transplant from FontAwesome
+.icon-fw {
+  width: 1.4em;
+  display: inline-block;
+  text-align: left;
+}
+
+.cmd-key.mac {
+  &:after {
+    content: '⌘';
+  }
+}
+.cmd-key.win {
+  &:after {
+    content: 'Ctrl';
+  }
+}

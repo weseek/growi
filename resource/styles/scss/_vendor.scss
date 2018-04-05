@@ -1,0 +1,15 @@
+// import bootstrap
+$bootstrap-sass-asset-helper: true;
+@import "~bootstrap-sass/assets/stylesheets/bootstrap";
+
+// import bootstrap4 utility classes
+@import "../bootstrap4/bootstrap";
+
+// import toastr styles
+@import '~toastr/build/toastr';
+
+// import metismenu styles
+@import '~metismenu/dist/metisMenu';
+
+// import bootstrap-select styles
+@import '~bootstrap-select/sass/bootstrap-select';

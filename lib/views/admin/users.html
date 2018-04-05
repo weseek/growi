@@ -2,7 +2,7 @@
 
 {% block html_title %}{{ t('user_management.User management') }}· {% endblock %}
 
-{% block content_head %}
+{% block content_header %}
 <div class="header-wrap">
   <header id="page-header">
     <h1 class="title" id="">{{ t('user_management.User management') }}</h1>
@@ -33,9 +33,11 @@
 
     <div class="col-md-9">
       <p>
-        <button data-toggle="collapse" class="btn btn-default" href="#inviteUserForm">{{ t("user_management.invite_users") }}</button>
-        <a class="btn btn-default" href="/admin/users/external-accounts">
-          <i class="fa fa-user-plus" aria-hidden="true"></i>
+        <button data-toggle="collapse" class="btn btn-default" href="#inviteUserForm">
+          {{ t("user_management.invite_users") }}
+        </button>
+        <a class="btn btn-default btn-outline" href="/admin/users/external-accounts">
+          <i class="icon-user-follow" aria-hidden="true"></i>
           {{ t("user_management.external_account") }}
         </a>
       </p>
@@ -63,7 +65,7 @@
 
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-              <h4 class="modal-title">ユーザーを招待しました</h4>
+              <div class="modal-title">ユーザーを招待しました</div>
             </div>
 
             <div class="modal-body">
@@ -86,7 +88,7 @@
           <div class="modal-content">
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-              <h4 class="modal-title">パスワードを新規発行しますか?</h4>
+              <div class="modal-title">パスワードを新規発行しますか?</div>
             </div>
 
             <div class="modal-body">
@@ -117,7 +119,7 @@
 
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-              <h4 class="modal-title">Password reset!</h4>
+              <div class="modal-title">Password reset!</div>
             </div>
 
             <div class="modal-body">
@@ -138,7 +140,7 @@
 
       <h2>{{ t("user_management.user_list") }}</h2>
 
-      <table class="table table-hover table-striped table-bordered table-user-list">
+      <table class="table table-default table-bordered table-user-list">
         <thead>
           <tr>
             <th width="100px">#</th>
@@ -148,16 +150,17 @@
             <th>{{ t('Email') }}</th>
             <th width="100px">{{ t('user_management.Date created') }}</th>
             <th width="150px">{{ t('user_management.Last login') }}</th>
-            <th width="90px">{{ t('user_management.Manage') }}</th>
+            <th width="70px"></th>
           </tr>
         </thead>
         <tbody>
           {% for sUser in users %}
+          {% set sUserId = sUser._id.toString() %}
           <tr>
             <td>
-              <img src="{{ sUser|picture }}" class="picture picture-rounded" />
+              <img src="{{ sUser|picture }}" class="picture img-circle" />
               {% if sUser.admin %}
-              <span class="label label-primary label-admin">
+              <span class="label label-inverse label-admin">
                 Admin
               </span>
               {% endif %}
@@ -180,22 +183,18 @@
             </td>
             <td>
               <div class="btn-group admin-user-menu">
-                <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-                  {{ t('Edit') }}
-                  <span class="caret"></span>
+                <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown">
+                  <i class="icon-settings"></i> <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu" role="menu">
                   <li class="dropdown-header">{{ t('user_management.Edit menu') }}</li>
                   <li>
-                    <a href="">{{ t('Edit') }}</a>
-
-                  </li>
-                  <li class="dropdown-button">
                     <a href="#"
-                      data-user-id="{{ sUser._id.toString() }}"
-                      data-user-email="{{ sUser.email }}"
-                      data-target="#admin-password-reset-modal"
-                      data-toggle="modal" class="btn btn-block btn-default">
+                        data-user-id="{{ sUserId }}"
+                        data-user-email="{{ sUser.email }}"
+                        data-target="#admin-password-reset-modal"
+                        data-toggle="modal">
+                      <i class="icon-fw icon-key"></i>
                       {{ t('user_management.Reissue password') }}
                     </a>
                   </li>
@@ -203,52 +202,65 @@
                   <li class="dropdown-header">{{ t('user_management.Status') }}</li>
 
                   {% if sUser.status == 1 %}
-                  <li class="dropdown-button">
-                    <form action="/admin/user/{{ sUser._id.toString() }}/activate" method="post">
-                      <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                      <button type="submit" class="btn btn-block btn-info">承認する</button>
-                    </form>
+                  <form id="form_activate_{{ sUserId }}" action="/admin/user/{{ sUserId }}/activate" method="post">
+                    <input type="hidden" name="_csrf" value="{{ csrf() }}">
+                  </form>
+                  <li>
+                    <a href="javascript:form_activate_{{ sUserId }}.submit()">
+                      <i class="icon-fw icon-user-following"></i> 承認する
+                    </a>
                   </li>
                   {% endif  %}
 
                   {% if sUser.status == 2 %}
-                  <li class="dropdown-button">
+                  <form id="form_suspend_{{ sUserId }}" action="/admin/user/{{ sUserId }}/suspend" method="post">
+                    <input type="hidden" name="_csrf" value="{{ csrf() }}">
+                  </form>
+                  <li>
                     {% if sUser.username != user.username %}
-                    <form action="/admin/user/{{ sUser._id.toString() }}/suspend" method="post">
-                      <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                      <button type="submit" class="btn btn-block btn-warning">{{ t('user_management.Deactivate account') }}</button>
-                    </form>
+                    <a href="javascript:form_suspend_{{ sUserId }}.submit()">
+                      <i class="icon-fw icon-ban"></i>
+                      {{ t('user_management.Deactivate account') }}
+                    </a>
                     {% else %}
-                    <button class="btn btn-block btn-warning" disabled>{{ t('user_management.Deactivate account') }}</button>
-                    <br>
-                    <p class="alert alert-danger">{{ t("user_management.your_own") }}</p>
+                    <a disabled>
+                      <i class="icon-fw icon-ban"></i>
+                      {{ t('user_management.Deactivate account') }}
+                    </a>
+                    <p class="alert alert-danger m-l-10 m-r-10 p-10">{{ t("user_management.your_own") }}</p>
                     {% endif %}
                   </li>
                   {% endif %}
 
                   {% if sUser.status == 3 %}
-                  <li class="dropdown-button">
-                    <form action="/admin/user/{{ sUser._id.toString() }}/activate" method="post">
-                      <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                      <button type="submit" class="btn btn-block btn-default">元に戻す</button>
-                    </form>
+                  <form id="form_activate_{{ sUserId }}" action="/admin/user/{{ sUserId }}/activate" method="post">
+                    <input type="hidden" name="_csrf" value="{{ csrf() }}">
+                  </form>
+                  <form id="form_remove_{{ sUserId }}" action="/admin/user/{{ sUserId }}/remove" method="post">
+                    <input type="hidden" name="_csrf" value="{{ csrf() }}">
+                  </form>
+                  <li>
+                    <a href="javascript:form_activate_{{ sUserId }}.submit()">
+                      <i class="icon-fw icon-action-redo"></i> 元に戻す
+                    </a>
                   </li>
-                  <li class="dropdown-button">
+                  <li>
                     {# label は同じだけど、こっちは論理削除 #}
-                    <form action="/admin/user/{{ sUser._id.toString() }}/remove" method="post">
-                      <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                      <button type="submit" class="btn btn-block btn-danger">削除する</button>
-                    </form>
+                    <a href="javascript:form_remove_{{ sUserId }}.submit()">
+                      <i class="icon-fw icon-fire text-danger"></i> 削除する
+                    </a>
                   </li>
                   {% endif  %}
 
                   {% if sUser.status == 1 || sUser.status == 5 %}
+                  <form id="form_removeCompletely_{{ sUserId }}" action="/admin/user/{{ sUser._id.toString() }}/removeCompletely" method="post">
+                    <input type="hidden" name="_csrf" value="{{ csrf() }}">
+                  </form>
                   <li class="dropdown-button">
                     {# label は同じだけど、こっちは物理削除 #}
-                    <form action="/admin/user/{{ sUser._id.toString() }}/removeCompletely" method="post">
-                      <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                      <button type="submit" class="btn btn-block btn-danger">削除する</button>
-                    </form>
+                    <a href="javascript:form_removeCompletely_{{ sUserId }}.submit()">
+                      <i class="icon-fw icon-fire text-danger"></i> 削除する
+                    </a>
                   </li>
                   {% endif  %}
 
@@ -256,23 +268,33 @@
                   <li class="divider"></li>
                   <li class="dropdown-header">{{ t('user_management.Administrator menu') }}</li>
 
-                  <li class="dropdown-button">
-                    {% if sUser.admin %}
-                      {% if sUser.username != user.username %}
-                      <form action="/admin/user/{{ sUser._id.toString() }}/removeFromAdmin" method="post">
-                        <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                        <button type="submit" class="btn btn-block btn-danger">管理者からはずす</button>
-                      </form>
-                      {% else %}
-                      <p class="alert alert-danger">{{ t("user_management.cannot_remove") }}</p>
-                      {% endif %}
+                  {% if sUser.admin %}
+                  <form id="form_removeFromAdmin_{{ sUserId }}" action="/admin/user/{{ sUser._id.toString() }}/removeFromAdmin" method="post">
+                    <input type="hidden" name="_csrf" value="{{ csrf() }}">
+                  </form>
+                  <li>
+                    {% if sUser.username != user.username %}
+                      <a href="javascript:form_removeFromAdmin_{{ sUserId }}.submit()">
+                        <i class="icon-fw icon-user-unfollow"></i> 管理者からはずす
+                      </a>
                     {% else %}
-                      <form action="/admin/user/{{ sUser._id.toString() }}/makeAdmin" method="post">
-                        <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                        <button type="submit" class="btn btn-block btn-primary">管理者にする</button>
-                      </form>
+                      <a disabled>
+                        <i class="icon-fw icon-user-unfollow"></i> 管理者からはずす
+                      </a>
+                      <p class="alert alert-danger m-l-10 m-r-10 p-10">{{ t("user_management.cannot_remove") }}</p>
                     {% endif %}
                   </li>
+                  {% else %}
+                  <form id="form_makeAdmin_{{ sUserId }}" action="/admin/user/{{ sUser._id.toString() }}/makeAdmin" method="post">
+                    <input type="hidden" name="_csrf" value="{{ csrf() }}">
+                  </form>
+                  <li>
+                    <a href="javascript:form_makeAdmin_{{ sUserId }}.submit()">
+                      <i class="icon-fw icon-magic-wand"></i> 管理者にする
+                    </a>
+                  </li>
+                  {% endif %}
+
                   {% endif %}
                 </ul>
               </div>

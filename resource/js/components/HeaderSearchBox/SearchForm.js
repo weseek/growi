@@ -1,14 +1,12 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import FormGroup from 'react-bootstrap/es/FormGroup';
 import Button from 'react-bootstrap/es/Button';
 import InputGroup from 'react-bootstrap/es/InputGroup';
 
 import SearchTypeahead from '../SearchTypeahead';
 
-import UserPicture from '../User/UserPicture';
-import PageListMeta from '../PageList/PageListMeta';
-import PagePath from '../PageList/PagePath';
-import PropTypes from 'prop-types';
 
 // Header.SearchForm
 export default class SearchForm extends React.Component {
@@ -55,7 +53,7 @@ export default class SearchForm extends React.Component {
     return (
       <form
         action="/_search"
-        className="search-form form-group input-group search-top-input-group"
+        className="search-form form-group input-group search-input-group"
       >
         <FormGroup>
           <InputGroup>
@@ -66,8 +64,8 @@ export default class SearchForm extends React.Component {
               placeholder="Search ..."
             />
             <InputGroup.Button>
-              <Button type="submit">
-                <i className="search-top-icon fa fa-search"></i>
+              <Button type="submit" bsStyle="link">
+                <i className="icon-magnifier"></i>
               </Button >
             </InputGroup.Button>
           </InputGroup>

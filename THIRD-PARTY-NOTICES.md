@@ -1,5 +1,5 @@
-crowi-plus uses third-party libraries or other resources that may  
-be distributed under licenses different than the crowi-plus software.
+GROWI uses third-party libraries or other resources that may  
+be distributed under licenses different than the GROWI software.
 
 In the event that we accidentally failed to list a required notice,  
 please bring it to our attention through any of the ways detailed here :
@@ -9,12 +9,12 @@ please bring it to our attention through any of the ways detailed here :
 The attached notices are provided for information only.
 
 For any licenses that require disclosure of source, sources are available at  
-https://github.com/weseek/crowi-plus.
+https://github.com/weseek/growi.
 
 
 1. crowi/crowi (https://github.com/crowi/crowi)
 2. Microsoft/vscode (https://github.com/Microsoft/vscode)
-
+3. stephenhutchings/typicons.font (https://github.com/stephenhutchings/typicons.font)
 
 
 License Notice for Crowi
@@ -77,4 +77,14 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
+```
+
+
+License Notice for Typicons
+------------------------
+
+https://creativecommons.org/licenses/by-sa/3.0/
+
+```
+Copyright (c) 2018 Stephen Hutchings
 ```

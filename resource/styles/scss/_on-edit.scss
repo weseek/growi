@@ -1,0 +1,402 @@
+body.on-edit {
+
+  // hide unnecessary elements
+  .navbar.navbar-static-top,
+  .row.row-alerts,
+  .row.page-list,
+  .row.page-comments-row,
+  .row.page-attachments-row,
+  .row.not-found-message-row,
+  .users-meta,
+  .user-page-content-container,
+  .portal-form-button,
+  .alert-info.alert-moved,
+  .alert-info.alert-unlinked,
+  .like-button, .bookmark-link, .btn-edit,
+  .authors,
+  footer {
+    display: none !important;
+  }
+
+  // hide unnecessary elements for growi layout
+  .revision-toc-container {
+    display: none;
+  }
+
+  // hide unnecessary elements for crowi layout
+  #toggle-sidebar,
+  .crowi-sidebar {
+    display: none;
+  }
+
+  /*
+   * right tabs
+   */
+  .nav-main-right-tab:not(.dropdown) {
+    // hide if screen size is less than smartphone
+    @media (max-width: $screen-xs-max) {
+      display: none;
+    }
+  }
+
+  /*****************
+   * Expand Editor
+   *****************/
+  .expand-by-flex {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+  .container-fluid {
+    padding-bottom: 0;
+  }
+  .main {
+    width: 100vw;
+    height: 100vh;
+    margin-top: 0px !important;
+    padding-top: 2px;
+    padding-left: 0;
+    padding-right: 0;
+
+    // for growi layout
+    > .row {
+      margin: 0;
+      > .col-lg-10, > .col-md-9 {
+        width: 100vw;
+        padding: 0;
+      }
+    }
+
+    &,
+    .content-main,
+    .tab-content,
+    .edit-form,
+    .page-form {
+      @extend .expand-by-flex;
+    }
+
+    .page-form {
+
+      // calculate margin
+      $header-plus-footer: 2px                      // .main padding-top
+                         + 42px                     // .nav height
+                         + 1px                      // .page-editor-footer border-top
+                         + 40px;                    // .page-editor-footer min-height
+      $preview-margin: $header-plus-footer;
+      $editor-margin: $header-plus-footer + 22px;   // .btn-open-dropzone height
+
+      #page-editor {
+        // right(preview)
+        &,
+        .row,
+        .page-editor-preview-container,
+        .page-editor-preview-body {
+          height: calc(100vh - #{$preview-margin});
+        }
+        // left(editor)
+        .page-editor-editor-container,
+        .react-codemirror2, .CodeMirror, .CodeMirror-scroll {
+          height: calc(100vh - #{$editor-margin});
+        }
+      }
+
+      .page-editor-footer {
+        width: 100%;
+        margin: 0;
+        padding: 3px;
+        min-height: 40px;
+        border-top: solid 1px transparent;
+
+        .btn-submit {
+          width: 100px;
+        }
+      }
+
+      // slack
+      .input-group-slack {
+        .input-group-addon {
+          padding: 2px 8px;
+          line-height: 1em;
+          img, input {
+            vertical-align: middle;
+          }
+        }
+      }
+
+    }
+  }
+
+  .row.bg-title {
+    $left-margin: $nav-main-left-tab-width * 2 + 25px;  // width of .nav-main-left-tab x 2 + some margin
+    $right-margin: 128px + 94px;                        // width of presentation and history tabs width
+
+    position: absolute;
+    z-index: 1;
+    left: $left-margin;
+    min-width: calc(100% - #{$left-margin} - #{$right-margin});
+
+    // for crowi layout
+    > .col-md-9, .col-xs-12 {
+      padding: 0;
+      width: 100%;
+    }
+
+    background: none;
+
+    h1 {
+      font-size: 20px;
+      line-height: 1em;
+    }
+
+    // hide if screen size is less than smartphone
+    @media (max-width: $screen-xs-max) {
+      display: none;
+    }
+  }
+
+  /*****************
+   * Editor styles
+   *****************/
+  .page-editor-editor-container {
+    border-right: 1px solid transparent;
+    padding-right: 0;
+    // override CodeMirror styles
+    .CodeMirror {
+      pre {
+        font-family: $font-family-monospace-not-strictly;
+      }
+      .cm-matchhighlight {
+        background-color: cyan;
+      }
+      .CodeMirror-selection-highlight-scrollbar {
+        background-color: darkcyan;
+      }
+    }
+
+    // for Dropzone
+    .dropzone {
+      @mixin insertFontAwesome($code) {
+        &:before {
+          margin-right: 0.2em;
+          font-family: FontAwesome;
+          content: $code;
+        }
+      }
+
+      // default layout and style
+      .dropzone-overlay {
+        // layout
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        // style
+        margin: 0 15px;
+      }
+      .dropzone-overlay-content {
+        font-size: 2em;
+        padding: 0.2em;
+        border-radius: 5px;
+      }
+
+      // unuploadable or rejected
+      &.dropzone-unuploadable, &.dropzone-rejected {
+        .dropzone-overlay {
+          background: rgba(200,200,200,0.8);
+        }
+        .dropzone-overlay-content {
+          color: #444;
+        }
+      }
+      // uploading
+      &.dropzone-uploading {
+        .dropzone-overlay {
+          background: rgba(255,255,255,0.5);
+        }
+        .dropzone-overlay-content {
+          padding: 0.3em;
+          background: rgba(200,200,200,0.5);
+          color: #444;
+        }
+      }
+
+      // unuploadable
+      &.dropzone-unuploadable {
+        .dropzone-overlay-content {
+          // insert content
+          @include insertFontAwesome("\f06a ");  // fa-exclamation-circle
+          &:after {
+            content: "File uploading is disabled";
+          }
+        }
+      }
+      // uploadable
+      &.dropzone-uploadable {
+        // accepted
+        &.dropzone-accepted:not(.dropzone-rejected) {
+          .dropzone-overlay {
+            border: 4px dashed #ccc;
+          }
+          .dropzone-overlay-content {
+            // insert content
+            @include insertFontAwesome("\f093");  // fa-upload
+            &:after {
+              content: "Drop here to upload";
+            }
+            // style
+            color: #666;
+            background: rgba(200,200,200,0.8);
+          }
+        }
+        // file type mismatch
+        &.dropzone-rejected:not(.dropzone-uploadablefile) .dropzone-overlay-content {
+          // insert content
+          @include insertFontAwesome("\f03e");  // fa-picture-o
+          &:after {
+            content: "Only an image file is allowed";
+          }
+        }
+        // multiple files
+        &.dropzone-accepted.dropzone-rejected .dropzone-overlay-content {
+          // insert content
+          @include insertFontAwesome("\f071");  // fa-fa-exclamation-triangle
+          &:after {
+            content: "Only 1 file is allowed";
+          }
+        }
+      }
+    } // end of.dropzone
+
+    .btn-open-dropzone {
+      z-index: 2;
+      font-size: small;
+      text-align: right;
+      padding-top: 3px;
+      padding-bottom: 0;
+      border: none;
+      border-radius: 0;
+      border-top: 1px dotted #ccc;
+
+      &:active {
+        box-shadow: none;
+      }
+    }
+  }
+  .page-editor-preview-container {
+  }
+
+  .page-editor-preview-body {
+    padding-top: 18px;
+    padding-right: 15px;
+    overflow-y: scroll;
+  }
+
+  #page-editor-options-selector {
+    label {
+      margin-right: 0.5em;
+    }
+
+    // configuration dropdown
+    .configuration-dropdown {
+      .icon-container {
+        display: inline-block;
+        width: 20px;
+      }
+      .dropdown-menu > li > a {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .menuitem-label {
+          flex: 1;
+          margin-right: 10px;
+        }
+      }
+    }
+
+    @media (max-width: $screen-xs-max) { // {{{ less than smartphone size
+      display: none;
+    }
+  }
+
+} // }}}
+
+/*
+ * for creating portal
+ */
+.nav-tabs-create-portal {
+  display: none;
+}
+.on-edit .nav-tabs-create-portal {
+  display: block;
+}
+
+
+/*
+.crowi.main-container .main .page-list.content-main { // {{{ Edit Form of Page List
+
+  .close-button {
+    display: none;
+  }
+}
+.crowi.main-container .main .page-list.content-main.on-edit { // {{{ Edit Form of Page List
+  .close-button {
+    display: block;
+  }
+
+  .page-list-container {
+    display: none;
+  }
+
+  .portal-form-header {
+    height: 16px;
+    padding: 8px;
+    border-bottom: solid 1px #ccc;
+  }
+} // }}}
+*/
+/*
+@media (max-width: $screen-sm-max) { // {{{ less than tablet size
+
+  .content-main.on-edit {
+    .form-group.form-submit-group {
+      select.form-control {
+        display: inline-block;
+        max-width: 50%;
+      }
+    }
+  }
+
+} // }}}
+
+@media (max-width: $screen-xs-max) { // {{{ less than smartphone size
+  #edit-form-submit {
+    float: right;
+  }
+} // }}}
+*/
+// overwrite .CodeMirror-hints
+.CodeMirror-hints {
+  // FIXME: required because .content-main.on-edit has 'z-index:1050'
+  // z-index: 1060 !important;
+
+  max-height: 30em !important;
+
+  .CodeMirror-hint.crowi-emoji-autocomplete {
+    font-family: $font-family-monospace-not-strictly;
+    line-height: 1.6em;
+
+    .img-container {
+      display: inline-block;
+      width: 30px;
+    }
+  }
+  // active line
+  .CodeMirror-hint-active.crowi-emoji-autocomplete {
+    .img-container {
+      font-size: 15px;  // adjust to .wiki
+      padding-top: 0.3em;
+      padding-bottom: 0.3em;
+    }
+  }
+
+}

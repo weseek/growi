@@ -296,7 +296,6 @@ export default class Editor extends React.Component {
   renderOverlay() {
     const overlayStyle = {
       position: 'absolute',
-      zIndex: 1060, // FIXME: required because .content-main.on-edit has 'z-index:1050'
       top: 0,
       right: 0,
       bottom: 0,
@@ -322,9 +321,6 @@ export default class Editor extends React.Component {
       display: 'flex',
       flexDirection: 'column',
     }
-    const expandHeight = {
-      height: 'calc(100% - 20px)'
-    }
 
     const theme = this.props.editorOptions.theme || 'elegant';
     const styleActiveLine = this.props.editorOptions.styleActiveLine || undefined;
@@ -334,7 +330,6 @@ export default class Editor extends React.Component {
           ref="dropzone"
           disableClick
           disablePreview={true}
-          style={expandHeight}
           accept={this.getDropzoneAccept()}
           className={this.getDropzoneClassName()}
           acceptClassName="dropzone-accepted"
@@ -403,7 +398,7 @@ export default class Editor extends React.Component {
         <button type="button" className="btn btn-default btn-block btn-open-dropzone"
             onClick={() => {this.refs.dropzone.open()}}>
 
-          <i className="fa fa-paperclip" aria-hidden="true"></i>&nbsp;
+          <i className="icon-paper-clip" aria-hidden="true"></i>&nbsp;
           Attach files by dragging &amp; dropping,&nbsp;
           <span className="btn-link">selecting them</span>,&nbsp;
           or pasting from the clipboard.

@@ -9,9 +9,9 @@
 
       <form role="form" id="unportalize-form" onsubmit="return false;">
 
-        <div class="modal-header">
+        <div class="modal-header bg-warning">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title">ポータル化を解除する</h4>
+          <div class="modal-title">ポータル化を解除する</div>
         </div>
         <div class="modal-body">
           <ul>
@@ -42,7 +42,7 @@
           <input type="hidden" class="form-control" name="new_path" id="newPageName" value="{{ unportalizedPath }}">
           <input type="hidden" name="page_id" value="{{ page._id.toString() }}">
           <input type="hidden" name="revision_id" value="{{ page.revision._id.toString() }}">
-          <input type="submit" class="btn btn-primary" value="Unportalize!">
+          <button type="submit" class="btn btn-warning">Unportalize</button>
         </div>
 
       </form>

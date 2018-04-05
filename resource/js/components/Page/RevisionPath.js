@@ -22,7 +22,7 @@ export default class RevisionPath extends React.Component {
 
     // whether set link to '/'
     const behaviorType = this.props.crowi.getConfig()['behaviorType'];
-    const isLinkToListPage = ('crowi-plus' !== behaviorType);
+    const isLinkToListPage = (!behaviorType || 'crowi' === behaviorType);
     this.setState({ isLinkToListPage });
 
     // generate pages obj
@@ -57,7 +57,7 @@ export default class RevisionPath extends React.Component {
       return <a href={pagePath+'/'} className={(isLastElement && !this.state.isListPage) ? 'last-path' : ''}>/</a>;
     }
     else if (!isLastElement) {
-      return <span className="text-primary">/</span>;
+      return <span>/</span>;
     }
     else {
       return <span></span>
@@ -74,10 +74,8 @@ export default class RevisionPath extends React.Component {
       marginRight: "0.2em",
     }
     const editButtonStyle = {
-      fontSize: "0.6em",
       marginLeft: "0.5em",
       padding: "0 2px",
-      border: 'none',
     };
 
     const pageLength = this.state.pages.length;
@@ -101,15 +99,15 @@ export default class RevisionPath extends React.Component {
     });
 
     return (
-      <span>
+      <span className="d-flex align-items-center">
         <span className="separator" style={rootStyle}>
           <a href="/">/</a>
         </span>
         {afterElements}
         <CopyButton buttonId="btnCopyRevisionPath" text={this.props.pagePath}
-            buttonClassName="btn btn-default btn-muted" iconClassName="fa fa-clone text-muted" />
-        <a href="#edit-form" className="btn btn-default btn-muted" style={editButtonStyle}>
-          <i className="fa fa-edit text-muted"></i>
+            buttonClassName="btn btn-default btn-copy" iconClassName="ti-clipboard" />
+        <a href="#edit-form" className="btn btn-default btn-edit" style={editButtonStyle}>
+          <i className="icon-note"></i>
         </a>
       </span>
     );

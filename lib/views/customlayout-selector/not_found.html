@@ -1,5 +1,5 @@
-{% if 'crowi-plus' === layoutType() %}
-  {% include '../crowi-plus/not_found.html' %}
+{% if !layoutType() || 'crowi' === layoutType() %}
+  {% include '../layout-crowi/not_found.html' %}
 {% else %}
-  {% include '../not_found.html' %}
+  {% include '../layout-growi/not_found.html' %}
 {% endif %}

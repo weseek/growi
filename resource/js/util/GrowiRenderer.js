@@ -92,9 +92,7 @@ export default class GrowiRenderer {
           new HeaderLineNumberConfigurer(crowi)
         ]);
         break;
-      case 'timeline':
-        break;
-      case 'searchresult':
+      default:
         break;
     }
   }
@@ -163,7 +161,7 @@ export default class GrowiRenderer {
       }
     }
 
-    return '';
+    return `<pre class="hljs"><code>${code}</code></pre>`;
   }
 
 }

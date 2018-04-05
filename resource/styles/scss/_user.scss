@@ -1,0 +1,50 @@
+.main-container {
+  .user-page-header {
+
+    h1 {
+      font-size: 2.5em;
+      color: #666;
+    }
+
+    .picture {
+      height: 64px;
+      width: 64px;
+    }
+
+    .user-page-meta {
+      color: #999;
+
+      ul {
+        padding-left: 0;
+        li {
+          list-style: none;
+        }
+      }
+      .user-page-username {
+        font-weight: bold;
+      }
+      .user-page-email {
+      }
+      .user-page-introduction {
+      }
+    }
+
+    .like-button, .bookmark-link {
+      &.btn-lg {
+        font-size: 1.5em;
+        padding: 8px;
+      }
+    }
+
+  }
+}
+
+.user-component {
+
+  img.picture {
+    margin-right: 4px;
+  }
+  span {
+    margin-right: 4px;
+  }
+}

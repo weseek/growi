@@ -1,4 +1,4 @@
-import { BasicInterceptor } from 'crowi-pluginkit';
+import { BasicInterceptor } from 'growi-pluginkit';
 
 import mtu from './MarkdownTableUtil';
 

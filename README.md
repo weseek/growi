@@ -1,55 +1,38 @@
-![Crowi](http://res.cloudinary.com/hrscywv4p/image/upload/c_limit,f_auto,h_900,q_80,w_1200/v1/199673/https_www_filepicker_io_api_file_VpYEP32ZQyCZ85u6XCXo_zskpra.png)
+<p align="center">
+  <a href="https://growi.org">
+    <img src="https://user-images.githubusercontent.com/1638767/38254268-d4476bbe-3793-11e8-964c-8865d690baff.png" width="240px">
+  </a>
+</p>
 
 <p align="center">
+  <a href="https://demo.growi.org">Demo Site</a>
+</p>
+<p align="center">
+  <a href="https://github.com/weseek/crowi-plus/releases/latest"><img src="https://img.shields.io/github/release/weseek/crowi-plus.svg"></a>
   <a href="https://heroku.com/deploy"><img src="https://www.herokucdn.com/deploy/button.png"></a>
-</p>
-<p align="center">
-  <a href="https://demo.crowi-plus.org">Demo Site</a>
+  <a href="https://growi-slackin.weseek.co.jp/"><img src="https://crowi-plus-slackin.weseek.co.jp/badge.svg"></a>
 </p>
 
-crowi-plus [![Chat on Slack](https://crowi-plus-slackin.weseek.co.jp/badge.svg)][slackin]
+GROWI 
 ===========
 
 [![wercker status](https://app.wercker.com/status/39cdc49d067d65c39cb35d52ceae6dc1/s/master "wercker status")](https://app.wercker.com/project/byKey/39cdc49d067d65c39cb35d52ceae6dc1)
-[![dependencies status](https://david-dm.org/weseek/crowi-plus.svg)](https://david-dm.org/weseek/crowi-plus)
-[![devDependencies Status](https://david-dm.org/weseek/crowi-plus/dev-status.svg)](https://david-dm.org/weseek/crowi-plus?type=dev)
-[![docker pulls](https://img.shields.io/docker/pulls/weseek/crowi-plus.svg)](https://hub.docker.com/r/weseek/crowi-plus/)
-[![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
+[![dependencies status](https://david-dm.org/weseek/growi.svg)](https://david-dm.org/weseek/growi)
+[![devDependencies Status](https://david-dm.org/weseek/growi/dev-status.svg)](https://david-dm.org/weseek/growi?type=dev)
+[![docker pulls](https://img.shields.io/docker/pulls/weseek/growi.svg)](https://hub.docker.com/r/weseek/growi/)
 
-
-**crowi-plus** is a fork of [Crowi][crowi] which is [perfectly compatible with the official project](https://github.com/weseek/crowi-plus/wiki/Correspondence-table-with-Crowi-version).
-
-
-Why crowi-plus?
-================
 
 * **Pluggable**
-  * You can find plugins from [npm](https://www.npmjs.com/browse/keyword/crowi-plugin) or [github](https://github.com/search?q=topic%3Acrowi-plugin)!
-* **Fast**
-  * Optimize client-side code chunks by Webpack
-  * Optimize the performance when live preview
-  * Adopt faster libs([date-fns](https://github.com/date-fns/date-fns), [pino](https://github.com/pinojs/pino))
-  * Using CDN
-* **Secure**
-  * Prevent XSS (Cross Site Scripting)
-  * Upgrade jQuery to 3.x and other insecure libs
-  * The official Crowi status is [![dependencies Status](https://david-dm.org/crowi/crowi/status.svg)](https://david-dm.org/crowi/crowi) [![devDependencies Status](https://david-dm.org/crowi/crowi/dev-status.svg)](https://david-dm.org/crowi/crowi?type=dev)
-* **Convenient**
+  * You can find plugins from [npm](https://www.npmjs.com/browse/keyword/growi-plugin) or [github](https://github.com/search?q=topic%3Agrowi-plugin)!
+* **Features**
   * Support Authentication with LDAP / Active Directory 
   * Slack Incoming Webhooks Integration
-  * [Miscellaneous features](https://github.com/weseek/crowi-plus/wiki/Additional-Features)
+  * [Miscellaneous features](https://github.com/weseek/growi/wiki/Additional-Features)
 * **[Docker Ready][dockerhub]**
 * **[Docker Compose Ready][docker-compose]**
-  * [Multiple sites example](https://github.com/weseek/crowi-plus-docker-compose/tree/master/examples/multi-app)
-  * [HTTPS(with Let's Encrypt) proxy integration example](https://github.com/weseek/crowi-plus-docker-compose/tree/master/examples/https-portal)
+  * [Multiple sites example](https://github.com/weseek/growi-docker-compose/tree/master/examples/multi-app)
+  * [HTTPS(with Let's Encrypt) proxy integration example](https://github.com/weseek/growi-docker-compose/tree/master/examples/https-portal)
 * Support IE11 (Experimental)
-* **Developer-friendly**
-  * Less compile time
-  * LiveReload separately available by server/client code change
-  * Exclude Environment-dependency (confirmed to be developable on Win/Mac/Linux)
-
-Check out all additional features from [**here**](https://github.com/weseek/crowi-plus/wiki/Additional-Features).
-
 
 Quick Start for Production
 ===========================
@@ -64,26 +47,26 @@ Using docker-compose
 ---------------------
 
 ```bash
-git clone https://github.com/weseek/crowi-plus-docker-compose.git crowi-plus
-cd crowi-plus
+git clone https://github.com/weseek/growi-docker-compose.git growi
+cd growi
 docker-compose up
 ```
 
-See also [weseek/crowi-plus-docker-compose][docker-compose]
+See also [weseek/growi-docker-compose][docker-compose]
 
 On-premise
 ----------
 
-[**Migration Guide from Official Crowi** is here](https://github.com/weseek/crowi-plus/wiki/Migration-Guide-from-Official-Crowi).
+[**Migration Guide from Crowi** is here](https://github.com/weseek/growi/wiki/Migration-Guide-from-Crowi).
 
 ### Dependencies
 
-- node 6.x (DON'T USE 7.x)
-- npm 4.x (DON'T USE 5.x)
+- node 8.x (DON'T USE 9.x)
+- npm 5.x
 - yarn
 - MongoDB 3.x
 
-See [confirmed versions](https://github.com/weseek/crowi-plus/wiki/Developers-Guide#versions-confirmed-to-work).
+See [confirmed versions](https://github.com/weseek/growi/wiki/Developers-Guide#versions-confirmed-to-work).
 
 #### Optional Dependencies
 
@@ -98,24 +81,24 @@ See [confirmed versions](https://github.com/weseek/crowi-plus/wiki/Developers-Gu
 #### Build and run the app
 
 ```bash
-git clone https://github.com/weseek/crowi-plus.git
-cd crowi-plus
+git clone https://github.com/weseek/growi.git
+cd growi
 yarn
-MONGO_URI=mongodb://MONGO_HOST:MONGO_PORT/crowi npm start
+MONGO_URI=mongodb://MONGO_HOST:MONGO_PORT/growi npm start
 ```
 
 **DO NOT USE `npm install`**, use `yarn` instead.
 
-If you launch crowi-plus with Redis and ElasticSearch, add environment variables before `npm start` like following:
+If you launch growi with Redis and ElasticSearch, add environment variables before `npm start` like following:
 
 ```
-export MONGO_URI=mongodb://MONGO_HOST:MONGO_PORT/crowi
-export REDIS_URL=redis://REDIS_HOST:REDIS_PORT/crowi
-export ELASTICSEARCH_URI=http://ELASTICSEARCH_HOST:ELASTICSEARCH_PORT/crowi
+export MONGO_URI=mongodb://MONGO_HOST:MONGO_PORT/growi
+export REDIS_URL=redis://REDIS_HOST:REDIS_PORT/growi
+export ELASTICSEARCH_URI=http://ELASTICSEARCH_HOST:ELASTICSEARCH_PORT/growi
 npm start
 ```
 
-For more info, see [Developers Guide](https://github.com/weseek/crowi-plus/wiki/Developers-Guide) and [the official documents](https://github.com/crowi/crowi/wiki/Install-and-Configuration#env-parameters).
+For more info, see [Developers Guide](https://github.com/weseek/growi/wiki/Developers-Guide) and [Crowi documents](https://github.com/crowi/crowi/wiki/Install-and-Configuration#env-parameters).
 
 #### Command details
 
@@ -137,19 +120,19 @@ npm start
 
 * Stop server if server is running
 * `yarn add` to install plugin or `npm install --save`
-  * **Don't forget `--save` option if you use npm** or crowi-plus doesn't detect plugins
+  * **Don't forget `--save` option if you use npm** or growi doesn't detect plugins
 * `npm start` to build client app and start server
 
 #### Examples
 
 ```bash
-yarn add crowi-plugin-lsx
+yarn add growi-plugin-lsx
 npm start
 ```
 
 
 
-For more info, see [Developers Guide](https://github.com/weseek/crowi-plus/wiki/Developers-Guide) on Wiki.
+For more info, see [Developers Guide](https://github.com/weseek/growi/wiki/Developers-Guide) on Wiki.
 
 
 Environment Variables
@@ -171,10 +154,10 @@ Environment Variables
 Documentation
 ==============
 
-* [github wiki pages](https://github.com/weseek/crowi-plus/wiki)
-  * [Questions and Answers](https://github.com/weseek/crowi-plus/wiki/Questions-and-Answers)
-  * [Migration Guide from Official Crowi](https://github.com/weseek/crowi-plus/wiki/Migration-Guide-from-Official-Crowi)
-  * [Developers Guide](https://github.com/weseek/crowi-plus/wiki/Developers-Guide)
+* [github wiki pages](https://github.com/weseek/growi/wiki)
+  * [Questions and Answers](https://github.com/weseek/growi/wiki/Questions-and-Answers)
+  * [Migration Guide from Crowi](https://github.com/weseek/growi/wiki/Migration-Guide-from-Crowi)
+  * [Developers Guide](https://github.com/weseek/growi/wiki/Developers-Guide)
 
 Contribution
 ============
@@ -185,7 +168,6 @@ For development
 ### Build and Run the app
 
 1. `clone` this repository
-1. `yarn global add npm@4` to install required global dependencies
 1. `yarn` to install all dependencies
     * DO NOT USE `npm install`
 1. `npm run build` to build client app
@@ -196,7 +178,7 @@ Found a Bug?
 -------------
 
 If you found a bug in the source code, you can help us by
-[submitting an issue][issues] to our [GitHub Repository][crowi-plus]. Even better, you can
+[submitting an issue][issues] to our [GitHub Repository][growi]. Even better, you can
 [submit a Pull Request][pulls] with a fix.
 
 Missing a Feature?
@@ -217,7 +199,7 @@ You can write issues and PRs in English or Japanese.
 Discussion
 -----------
 
-If you have questions or suggestions, you can [join our Slack team][slackin] and talk about anything, anytime.
+If you have questions or suggestions, you can [join our Slack team](https://growi-slackin.weseek.co.jp/) and talk about anything, anytime.
 
 
 License
@@ -228,9 +210,8 @@ License
 
 
 [crowi]: https://github.com/crowi/crowi
-[crowi-plus]: https://github.com/weseek/crowi-plus
-[issues]: https://github.com/weseek/crowi-plus/issues
-[pulls]: https://github.com/weseek/crowi-plus/pulls
-[dockerhub]: https://hub.docker.com/r/weseek/crowi-plus
-[docker-compose]: https://github.com/weseek/crowi-plus-docker-compose
-[slackin]: https://crowi-plus-slackin.weseek.co.jp/
+[growi]: https://github.com/weseek/growi
+[issues]: https://github.com/weseek/growi/issues
+[pulls]: https://github.com/weseek/growi/pulls
+[dockerhub]: https://hub.docker.com/r/weseek/growi
+[docker-compose]: https://github.com/weseek/growi-docker-compose
