@@ -2191,12 +2191,12 @@ table.dataTable thead .sorting:after {
       outline: none !important;
     }
     &::after {
-      -moz-transition: -moz-transform 0.3s cubic-bezier(0.8, -0.33, 0.2, 1.33);
+      -moz-transition: -moz-transform 0.2s;
       -ms-transform: scale(0, 0);
       -o-transform: scale(0, 0);
-      -o-transition: -o-transform 0.3s cubic-bezier(0.8, -0.33, 0.2, 1.33);
+      -o-transition: -o-transform 0.2s;
       -webkit-transform: scale(0, 0);
-      -webkit-transition: -webkit-transform 0.3s cubic-bezier(0.8, -0.33, 0.2, 1.33);
+      -webkit-transition: -webkit-transform 0.2s;
       background-color: $dark;
       border-radius: 50%;
       content: " ";
@@ -2207,7 +2207,7 @@ table.dataTable thead .sorting:after {
       position: absolute;
       top: 5px;
       transform: scale(0, 0);
-      transition: transform 0.3s cubic-bezier(0.8, -0.33, 0.2, 1.33);
+      transition: transform 0.2s;
       width: 7px;
     }
   }
