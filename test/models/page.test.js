@@ -209,12 +209,6 @@ describe('Page', () => {
         expect(Page.isCreatableName('/' + pn + '/abc')).to.be.false;
       }
 
-      var forbidden = ['bookmarks', 'comments', 'activities', 'pages', 'recent-create', 'recent-edit'];
-      for (var i = 0; i < forbidden.length ; i++) {
-        var pn = forbidden[i];
-        expect(Page.isCreatableName('/user/aoi/' + pn)).to.be.false;
-        expect(Page.isCreatableName('/user/aoi/x/' + pn)).to.be.true;
-      }
     });
   });
 
