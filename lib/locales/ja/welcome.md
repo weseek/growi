@@ -16,9 +16,9 @@
 Contents
 =========
 
-|[/Features]|[/Sandbox]|
+|All Pages|[/Sandbox]|
 | --- | --- |
-| <div class="alert alert-info"><span style="font-size: x-large;"><i class="icon-check"></i> [[全ての機能をチェック>/Features]]</span></div> | <div class="alert alert-success"><span style="font-size: x-large;"><i class="icon-check"></i> [[Sandboxをチェック>/Sandbox]]</span></div> $lsx(/Sandbox)|
+| $lsx(/) | <div class="alert alert-success"><span style="font-size: x-large;"><i class="icon-check"></i> [[Sandboxをチェック>/Sandbox]]</span></div> $lsx(/Sandbox)|
 
 Slack
 =====
