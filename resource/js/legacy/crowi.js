@@ -205,6 +205,9 @@ $(function() {
     var dateString = today.getFullYear() + '/' + month + '/' + day;
     $('#create-page-today .page-today-suffix').text('/' + dateString + '/');
     $('#create-page-today .page-today-input2').data('prefix', '/' + dateString + '/');
+
+    // focus
+    $('#create-page-today .page-today-input2').eq(0).focus();
   });
 
   $('#create-page-today').submit(function(e) {
