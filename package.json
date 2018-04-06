@@ -11,6 +11,7 @@
   "author": "Yuki Takei <yuki@weseek.co.jp>",
   "contributors": [],
   "license": "MIT",
+  "homepage": "https://growi.org",
   "repository": {
     "type": "git",
     "url": "https://github.com/weseek/growi.git"
