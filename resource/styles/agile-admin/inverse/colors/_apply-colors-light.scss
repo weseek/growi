@@ -22,6 +22,14 @@
   color: $dark;
 }
 
+/*
+ * GROWI header
+ */
+ .main-container header.affix {
+  .logo-mark {
+    fill: $themecolor;
+  }
+}
 
 /*
  * GROWI page list
