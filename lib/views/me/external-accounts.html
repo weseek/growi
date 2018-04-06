@@ -24,7 +24,7 @@
 
   {% set couldntDisassociateError = req.flash('couldntDisassociateError') %}
   {% if couldntDisassociateError != null %}
-  <div class="alert alert-danger">
+  <div class="alert alert-danger m-t-10">
     <b>Couldn't disassociate External Account</b><br>
     You have not set a password and have only one External Account.
   </div>
@@ -33,7 +33,7 @@
   {% set error = req.flash('errorMessage') %}
   {% if error.length %}
   {% for e in error %}
-  <div class="alert alert-danger">
+  <div class="alert alert-danger m-t-10">
     <b>Server Error occured:</b><br>
     {{ e }}
   </div>
@@ -43,7 +43,7 @@
   {% set warn = req.flash('warningMessage') %}
   {% if warn.length %}
   {% for w in warn %}
-  <div class="alert alert-warning">
+  <div class="alert alert-warning m-t-10">
     {{ w }}
   </div>
   {% endfor %}
@@ -51,7 +51,7 @@
 
   {% set message = req.flash('successMessage') %}
   {% if message.length %}
-  <div class="alert alert-success">
+  <div class="alert alert-success m-t-10">
     <b>{{ message }}</b>
   </div>
   {% endif %}

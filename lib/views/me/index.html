@@ -26,20 +26,20 @@
 
   {% set smessage = req.flash('successMessage') %}
   {% if smessage.length %}
-  <div class="alert alert-success">
+  <div class="alert alert-success m-t-10">
     {{ smessage }}
   </div>
   {% endif %}
 
   {% set wmessage = req.flash('warningMessage') %}
   {% if wmessage.length %}
-  <div class="alert alert-danger">
+  <div class="alert alert-danger m-t-10">
     {{ wmessage }}
   </div>
   {% endif %}
 
   {% if req.form.errors.length > 0 %}
-  <div class="alert alert-danger">
+  <div class="alert alert-danger m-t-10">
     <ul>
     {% for error in req.form.errors %}
       <li>{{ error }}</li>
@@ -77,6 +77,19 @@
           {% endif %}
         </div>
       </div>
+      <div class="form-group">
+        <label for="userForm[isEmailPublished]" class="col-sm-2 control-label">{{ t('Disclose E-mail') }}</label>
+        <div class="col-sm-4">
+          <div class="radio radio-primary radio-inline">
+            <input type="radio" id="radioEmailShow" name="userForm[isEmailPublished]" value="{{ true }}" {% if user.isEmailPublished == true %}checked="checked"{% endif %}>
+            <label for="radioEmailShow">{{ t('Show') }}</label>
+          </div>
+          <div class="radio radio-primary radio-inline">
+            <input type="radio" id="radioEmailHide" name="userForm[isEmailPublished]" value="{{ false }}" {% if user.isEmailPublished == false %}checked="checked"{% endif %}>
+            <label for="radioEmailHide">{{ t('Hide') }}</label>
+          </div>
+        </div>
+      </div>
       <div class="form-group {% if not user.lang %}has-error{% endif %}">
         <label for="userForm[lang]" class="col-sm-2 control-label">{{ t('Language') }}</label>
         <div class="col-sm-4">
@@ -90,6 +103,7 @@
           </div>
         </div>
       </div>
+
       <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
           <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>

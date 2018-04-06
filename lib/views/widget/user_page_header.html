@@ -14,7 +14,14 @@
         <div class="user-page-meta">
           <ul>
             <li class="user-page-username"><i class="icon-user"></i> {{ pageUser.username }}</li>
-            <li class="user-page-email"><i class="icon-envelope"></i> {{ pageUser.email }}</li>
+            <li class="user-page-email">
+              <i class="icon-envelope"></i>
+              {% if pageUser.isEmailPublished %}
+                {{ pageUser.email }}
+              {% else %}
+                *****
+              {% endif %}
+            </li>
             {% if pageUser.introduction %}
             <li class="user-page-introduction"><p>{{ pageUser.introduction|nl2br }}</p></li>
             {% endif %}
