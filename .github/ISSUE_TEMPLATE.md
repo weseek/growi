@@ -6,15 +6,15 @@ Environment
 | item     | version |
 | ---      | --- |
 |OS        ||
-|crowi-plus|x.y.z|
+|GROWI     |x.y.z|
 |node.js   |x.y.z|
 |npm       |x.y.z|
 |Using Docker|yes/no|
-|Using [crowi-plus-docker-compose][crowi-plus-docker-compose]|yes/no|
+|Using [growi-docker-compose][growi-docker-compose]|yes/no|
 
-[crowi-plus-docker-compose]: https://github.com/weseek/crowi-plus-docker-compose
+[growi-docker-compose]: https://github.com/weseek/growi-docker-compose
 
-*(Accessing https://{CROWI_HOST}/admin helps you to fill in above versions)*
+*(Accessing https://{GROWI_HOST}/admin helps you to fill in above versions)*
 
 
 ### Client

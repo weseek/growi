@@ -1,0 +1,315 @@
+body{
+  background:$sidebar;
+}
+
+/*Top Header Part*/
+
+.logo i{ color:$white;}
+.top-left-part {
+  background-color: $sidebar;
+}
+// when sidebar is hidden
+.content-wrapper {
+  .top-left-part {
+    // set transition for fill
+    svg * {
+      transition: fill 0.8s ease-out;
+    }
+
+    background-color: darken($topbar, 10%);
+
+    .logo {
+      .logo-mark {
+        svg {
+          fill: $logo-mark-fill;
+
+          &:hover {
+            .group1 { fill: $growi-green; }
+            .group2 { fill: $growi-blue; }
+          }
+        }
+      }
+    }
+  }
+}
+
+.navbar-header{
+     background:$topbar;
+}
+.navbar-top-links > li > a{
+    color:$white;
+}
+/*
+.notify .heartbit{
+    border-color:$white;
+}
+.notify .point{
+  background-color:$danger;
+}*/
+
+/*Right panel*/
+.right-sidebar .rpanel-title{
+  background:$themecolor;
+}
+
+/*Bread Crumb*/
+.bg-title .breadcrumb .active{
+    color:$themecolor;
+}
+.bg-title{
+  background: darken($bodycolor, 2%);
+}
+
+/*Sidebar*/
+
+.sidebar {
+    background:$sidebar;
+    box-shadow:1px 0px 20px rgba(0, 0, 0, 0.08);
+  .label-custom{
+      background:$megna;
+  }
+}
+#side-menu li a{
+    color:$sidebar-text;
+}
+#side-menu li a{
+    color:$sidebar-text;
+  border-left:0px solid $sidebar;
+}
+
+#side-menu > li > a {
+    &:hover, &:focus{
+        background:rgba(0, 0, 0, 0.03);
+    }
+   &.active {
+            border-left:3px solid $themecolor;
+            color:$dark;
+
+            font-weight:500;
+        i{
+          color:$themecolor;
+        }
+        }
+
+}
+#side-menu ul > li > a {
+    &:hover{
+        color:$themecolor;
+
+    }
+    &.active{
+     color:$dark;
+     font-weight:500;
+    }
+}
+.sidebar #side-menu .user-pro{
+  .nav-second-level a:hover{
+          color:$themecolor;
+        }
+  }
+
+/*themecolor*/
+
+.bg-theme {
+  background-color: $danger !important;
+}
+.bg-theme-dark {
+  background-color: $megna !important;
+}
+
+/*Chat widget*/
+.chat-list .odd .chat-text{
+    background:$themecolor;
+}
+/*Button*/
+.btn-custom{
+  background:$themecolor;
+  border:1px solid $themecolor;
+  color:$white;
+  &:hover{
+    background:$themecolor;
+    opacity:0.8;
+    color:$white;
+    border:1px solid $themecolor;
+  }
+}
+/*Custom tab*/
+.customtab li.active a, .customtab li.active a:hover,  .customtab li.active a:focus{
+ border-bottom:2px solid $themecolor;
+ color:$themecolor;
+}
+.tabs-vertical li.active a, .tabs-vertical li.active a:hover,  .tabs-vertical li.active a:focus{
+  background:$themecolor;
+  border-right:2px solid $themecolor;
+}
+/*Nav-pills*/
+.nav-pills>li.active>a, .nav-pills>li.active>a:focus, .nav-pills>li.active>a:hover{
+  background:$themecolor;
+  color:$white;
+}
+
+/*
+ * Legend
+ */
+legend {
+  color: $headingtext;
+}
+
+/*
+ * Modal
+ */
+.modal {
+  .modal-header {
+    border-bottom-color: $border;
+    &.bg-primary, &.bg-info, &.bg-success, &.bg-warning, &.bg-danger {
+      color: white;
+      .close {
+        color: white;
+      }
+    }
+    .close {
+      opacity: 0.5;
+      &:hover {
+        opacity: 0.9;
+      }
+    }
+  }
+  .modal-content {
+    background-color: $bodycolor;
+  }
+  .modal-footer {
+    border-top-color: $border;
+  }
+}
+
+/*
+ * Panel
+ */
+.panel {
+  .panel-body {
+    background-color: $bodycolor;
+  }
+}
+
+/*
+ * Wells
+ */
+.well {
+  background-color: darken($bodycolor, 5%);
+  border-color: $border;
+}
+
+/*
+ * Tabs
+ */
+.nav.nav-tabs {
+  > li > a {
+    &, &:hover, &:focus {
+      background: transparent;
+    }
+  }
+  > li.active > a {
+    background: $bodycolor;
+    border-bottom: 1px solid $bodycolor;
+  }
+}
+
+
+/*
+ * Crowi sidebar
+ */
+.crowi-sidebar {
+  background-color: darken($bodycolor, 4%);
+  border-left: solid 1px $border;
+  .system-version {
+    background-color: darken($bodycolor, 4%);
+  }
+}
+
+/*
+ * GROWI wiki
+ */
+.wiki {
+  a {
+    color: $wikilinktext;
+    &:hover {
+      color: $wikilinktext-hover;
+    }
+  }
+}
+
+
+/*
+ * GROWI header
+ */
+.main-container header.affix {
+  background: rgba(darken($bodycolor, 2%), .9);
+}
+
+/*
+ * GROWI on-edit
+ */
+body.on-edit {
+  .main {
+    background-color: darken($bodycolor, 2%);
+
+    .page-editor-editor-container {
+      border-right-color: $border;
+    }
+    .page-editor-preview-container {
+      background-color: $bodycolor;
+    }
+
+    .page-form {
+      .page-editor-footer {
+        border-top-color: $border;
+      }
+    }
+  }
+}
+
+/*
+ * GROWI comment form
+ */
+.growi .main {
+  .page-comments-row {
+    border-top-color: $border;
+  }
+  .page-comment .page-comment-main,
+  .comment-form-main {
+    background-color: darken($bodycolor, 4%);
+    &:before {
+      border-right-color: darken($bodycolor, 4%);
+    }
+  }
+}
+
+/*
+ * GROWI search result
+ */
+.search-result {
+  .search-result-list {
+    .page-list {
+      .page-list-ul {
+        > li > a {
+          background-color: transparent;
+        }
+        li:hover {
+          background-color: darken($bodycolor, 4%);
+        }
+        li.active {
+          background-color: darken($bodycolor, 8%);
+          border-color: $themecolor;
+        }
+      }
+    }
+  }
+}
+
+/*
+ * GROWI page attachments
+ */
+.page-attachments-row {
+  border-top-color: $border;
+  background-color: darken($bodycolor, 2%);
+}

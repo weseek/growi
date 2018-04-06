@@ -1,0 +1,191 @@
+// import diff2html styles
+@import "~diff2html/dist/diff2html.css";
+
+.main-container {
+  // padding controll of .header-wrap and .content-main are moved to _layout and _form
+
+  /*
+   * header
+   */
+  header {
+    line-height: 1em;
+
+    // the container of h1
+    div.title-container {
+      margin-right: auto;
+      h1 {
+        line-height: 1.1em;
+      }
+    }
+
+    .btn-copy, .btn-copy-link, .btn-edit {
+      @extend .text-muted;
+      opacity: 0.3;
+      border: none;
+      &:not(:hover) {
+        background-color: transparent;
+      }
+    }
+    // change button opacity
+    &:hover {
+      .btn.btn-copy, .btn-copy-link, .btn.btn-edit {
+        opacity: unset;
+      }
+    }
+
+    .like-button, .bookmark-link {
+      border: none;
+      font-size: 1.2em;
+      line-height: 0.8em;
+      &:not(:hover):not(.active) {
+        background-color: transparent;
+      }
+    }
+    .like-button {
+      &.active {
+        @extend .btn-info;
+      }
+    }
+    .bookmark-link {
+      &.active {
+        @extend .btn-warning;
+      }
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-top: 0;
+      margin-bottom: 0;
+
+      // crowi layout only
+      a.last-path {
+        color: #ccc;
+
+        &:hover {
+          color: inherit;
+        }
+      }
+
+    }
+
+    .url-line {
+      color: #999;
+      font-size: 1rem;
+    }
+
+    // affix
+    &.affix {
+      width: 100%;
+      top: 0;
+      left: 0;
+      padding: 2px 20px;
+      z-index: 15; // over the .sidebar
+      box-shadow: 0 0px 2px #999;
+
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+
+  }
+
+  // alert component settings
+  .alert-trash, .alert-moved, .alert-unlinked, .alert-grant {
+    padding: 10px 15px;
+  }
+
+}
+
+.main-container .main .content-main .revision-history { // {{{
+
+  .revision-history-list {
+    .revision-hisory-outer {
+      .revision-history-main {
+        .picture {
+          width: 32px;
+          height: 32px;
+        }
+        .revision-history-meta {
+          a:hover {
+            cursor: pointer;
+          }
+        }
+
+        .caret {
+          transform: rotate(-90deg);
+          transition: 0.4s;
+
+          &.caret-opened {
+            transform: rotate(0deg);
+          }
+        }
+      }
+      .revision-history-diff {
+        padding-left: 40px;
+      }
+    }
+
+    li {
+      position: relative;
+      list-style: none;
+    }
+  }
+
+  // adjust
+  // this is for diff2html. hide page name from diff view
+  .d2h-file-header {
+    display: none;
+  }
+  .d2h-diff-tbody {
+    background-color: white;
+  }
+
+} // }}}
+
+/*
+ * for Presentation
+ */
+.fullscreen-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 0;
+  background: rgba(0, 0, 0, .5);
+  z-index: 9999;
+  opacity: 0;
+  -webkit-transition: opacity .3s ease-out;
+  -moz-transition: opacity .3s ease-out;
+  transition: opacity .3s ease-out;
+
+  & > * {
+    box-shadow: 0 0 20px rgba(0, 0, 0, .8);
+  }
+}
+.overlay-on {
+  #wrapper {
+    -webkit-filter: blur(5px);
+    -moz-filter: blur(5px);
+    filter: blur(5px);
+  }
+
+  .fullscreen-layer {
+    opacity: 1;
+    height: 100%;
+  }
+}
+
+#presentation-container {
+  position: absolute;
+  top: 5%;
+  left: 5%;
+  width: 90%;
+  height: 90%;
+  background: #000;
+
+  iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+}

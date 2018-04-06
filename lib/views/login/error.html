@@ -1,56 +1,53 @@
-{% extends '../layout/single-nologin.html' %}
+{% extends '../layout/layout.html' %}
 
-{% block html_title %}Error · {% endblock %}
+{% block html_base_css %}error nologin{% endblock %}
 
-{% block content_main %}
+{% block html_title %}{{ customTitle('セットアップ') }}{% endblock %}
 
-<h1 class="login-page">
-  {% if config.crowi['app:title'] == 'Crowi' %}
-    <img src="/logo/135x32.png" alt="Crowi">
-  {% else %}
-    {{ config.crowi['app:title'] }}<br>
-    <img src="/logo/100x11_w.png" alt="powered by Crowi">
-  {% endif %}
-</h1>
 
-<div class="login-dialog-container flip-container col-md-5">
 
-<div class="login-dialog" id="login-dialog">
-
-  <div class="login-dialog-inner front">
-    {% if reason === 'registered'%}
-
-      <h2>登録完了</h2>
-
-      <p class="text-center">
-        <i class="fa fa-smile-o fa-3x"></i>
-      </p>
-      <hr>
-      <div class="alert alert-info text-center">
-        {{ reasonMessage }}
-      </div>
-
-    {% else %}
-
-      <h2>ログインエラー</h2>
-
-      <p class="text-center">
-        <i class="fa fa-meh-o fa-3x"></i>
-      </p>
-      <hr>
-      {% if reasonMessage != '' %}
-      <div class="alert alert-danger text-center">
-        {{ reasonMessage }}
-      </div>
-      {% endif %}
-
-    {% endif %}
-
-  </div>
-
-</div>
-
-</div>
-
+{#
+ # Remove default contents
+ #}
+{% block html_head_loading_legacy %}
+{% endblock %}
+{% block html_head_loading_app %}
+{% endblock %}
+{% block layout_head_nav %}
+{% endblock %}
+{% block sidebar %}
 {% endblock %}
 
+
+
+{% block layout_main %}
+
+<div class="main container-fluid">
+
+  <div class="row">
+
+    <div class="login-header col-sm-offset-4 col-sm-4">
+      <div class="logo">{% include '../widget/logo.html' %}</div>
+      <h1>GROWI</h1>
+
+      <div class="m-b-15 login-form-errors text-center">
+        {% if reason === 'registered'%}
+        <div class="alert alert-success">
+          <h2>登録完了</h2>
+        </div>
+        {% else %}
+        <div class="alert alert-warning">
+            <h2>ログインエラー</h2>
+        </div>
+        {% endif %}
+      </div>
+
+      <p>{{ reasonMessage }}</p>
+    </div>
+
+
+  </div>{# /.row #}
+
+</div>{# /.main #}
+
+{% endblock %}

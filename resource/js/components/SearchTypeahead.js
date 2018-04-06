@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import { noop } from 'lodash/noop';
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
@@ -6,7 +7,6 @@ import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 import UserPicture from './User/UserPicture';
 import PageListMeta from './PageList/PageListMeta';
 import PagePath from './PageList/PagePath';
-import PropTypes from 'prop-types';
 
 export default class SearchTypeahead extends React.Component {
 
@@ -15,7 +15,7 @@ export default class SearchTypeahead extends React.Component {
     super(props);
 
     this.state = {
-      input: '',
+      input: this.props.keywordOnInit,
       keyword: '',
       searchedKeyword: '',
       pages: [],
@@ -106,7 +106,7 @@ export default class SearchTypeahead extends React.Component {
     const page = option;
     return (
       <span>
-      <UserPicture user={page.revision.author} />
+      <UserPicture user={page.revision.author} size="sm" />
       <PagePath page={page} />
       <PageListMeta page={page} />
       </span>
@@ -125,12 +125,12 @@ export default class SearchTypeahead extends React.Component {
    * Get restore form button to initialize button
    */
   getRestoreFormButton() {
-    let isHidden = (this.state.input.length === 0);
+    let isHidden = (this.state.input === this.props.keywordOnInit);
 
     return isHidden ? <span></span> : (
-      <a className="btn btn-link search-top-clear" onClick={this.restoreInitialData} hidden={isHidden}>
-        <i className="fa fa-times-circle" />
-      </a>
+      <button type="button" className="btn btn-link search-clear" onMouseDown={this.restoreInitialData}>
+        <i className="icon-close" />
+      </button>
     );
   }
 
@@ -144,7 +144,7 @@ export default class SearchTypeahead extends React.Component {
       : [];
 
     return (
-      <span>
+      <div className="search-typeahead">
         <AsyncTypeahead
           {...this.props}
           ref="typeahead"
@@ -163,7 +163,7 @@ export default class SearchTypeahead extends React.Component {
           defaultSelected={defaultSelected}
         />
         {restoreFormButton}
-      </span>
+      </div>
     );
   }
 }
@@ -189,6 +189,6 @@ SearchTypeahead.defaultProps = {
   onSearchError:   noop,
   onChange:        noop,
   emptyLabel:      null,
-  placeholder:     "",
-  keywordOnInit:   "",
+  placeholder:     '',
+  keywordOnInit:   '',
 };

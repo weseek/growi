@@ -1,11 +1,11 @@
 {% extends '../layout/admin.html' %}
 
-{% block html_title %}外部アカウント管理 · {% endblock %}
+{% block html_title %}{{ customTitle(t('External Account management')) }}{% endblock %}
 
-{% block content_head %}
+{% block content_header %}
 <div class="header-wrap">
   <header id="page-header">
-    <h1 class="title" id="">ユーザー管理/外部アカウント管理</h1>
+    <h1 class="title" id="">{{ t('User management') }}/{{ t('External Account management') }}</h1>
   </header>
 </div>
 {% endblock %}
@@ -41,14 +41,14 @@
     <div class="col-md-9">
       <p>
         <a class="btn btn-default" href="/admin/users">
-          <i class="fa fa-arrow-left" aria-hidden="true"></i>
+          <i class="icon-fw ti-arrow-left" aria-hidden="true"></i>
           ユーザー管理に戻る
         </a>
       </p>
 
       <h2>外部アカウント一覧</h2>
 
-      <table class="table table-hover table-striped table-bordered table-user-list">
+      <table class="table table-bordered table-user-list">
         <thead>
           <tr>
             <th width="120px">Authentication Provider</th>
@@ -62,12 +62,12 @@
                   data-animation="false" data-html="true"
                   data-content="<small>関連付けられているユーザーがパスワードを設定しているかどうかを表示します</small>">
                 <small>
-                  <i class="fa fa-info-circle" aria-hidden="true"></i>
+                  <i class="icon-question" aria-hidden="true"></i>
                 </small>
               </a>
             </th>
-            <th width="100px">作成日</th>
-            <th width="90px">操作</th>
+            <th width="100px">{{ t('user_management.Date created') }}</th>
+            <th width="70px"></th>
           </tr>
         </thead>
         <tbody>
@@ -96,16 +96,18 @@
               <div class="btn-group admin-user-menu">
 
                 <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-                  編集
-                  <span class="caret"></span>
+                  <i class="icon-settings"></i> <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu" role="menu">
-                  <li class="dropdown-header">編集メニュー</li>
-                  <li class="dropdown-button">
-                    <form action="/admin/users/external-accounts/{{ account.accountId }}/remove" method="post">
-                      <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                      <button type="submit" class="btn btn-block btn-danger">削除する</button>
-                    </form>
+                  <li class="dropdown-header">{{ t('user_management.Edit menu') }}</li>
+                  <form id="form_remove_{{ account.accountId }}" action="/admin/users/external-accounts/{{ account.accountId }}/remove" method="post">
+                    <input type="hidden" name="_csrf" value="{{ csrf() }}">
+                  </form>
+                  <li>
+                    <a href="javascript:form_remove_{{ account.accountId }}.submit()">
+                      <i class="icon-fw icon-fire text-danger"></i>
+                      削除する
+                    </a>
                   </li>
                 </ul>{# end of .dropdown-menu #}
 

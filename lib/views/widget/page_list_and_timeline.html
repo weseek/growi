@@ -1,0 +1,42 @@
+<div class="page-list-container">
+  <ul class="nav nav-tabs">
+      <li class="active"><a href="#view-list" data-toggle="tab">{{ t('List View') }}</a></li>
+      {% if isEnabledTimeline() %}
+      <li><a href="#view-timeline" data-toggle="tab">{{ t('Timeline View') }}</a></li>
+      {% endif %}
+  </ul>
+
+  <div class="tab-content">
+    {% if pages.length == 0 %}
+
+      {% if isTrashPage() %}
+      No deleted pages.
+      {% else %}
+      There are no pages under <strong>{{ path }}</strong>.
+      {% endif %}
+    {% endif  %}
+
+    {# list view #}
+    <div class="p-t-10 active tab-pane fade page-list-container in" id="view-list">
+      {% include 'page_list.html' with { pages: pages, pager: pager, viewConfig: viewConfig } %}
+    </div>
+
+    {# timeline view #}
+    {% if isEnabledTimeline() %}
+    <div class="tab-pane m-t-30" id="view-timeline" data-shown=0>
+      {% for page in pages %}
+      <div class="timeline-body" id="id-{{ page.id }}" data-page-path="{{ page.path }}">
+        <div class="panel panel-timeline">
+          <div class="panel-heading"><a href="{{ page.path }}">{{ page.path }}</a></div>
+          <div class="panel-body">
+            <div class="revision-body wiki"></div>
+          </div>
+        </div>
+        <script type="text/template">{{ page.revision.body }}</script>
+      </div>
+      <hr>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+</div>

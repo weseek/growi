@@ -1,8 +1,8 @@
 {% extends '../layout/admin.html' %}
 
-{% block html_title %}{{ t('Security settings') }} · {% endblock %}
+{% block html_title %}{{ customTitle(t('Security settings')) }} · {% endblock %}
 
-{% block content_head %}
+{% block content_header %}
 <div class="header-wrap">
   <header id="page-header">
     <h1 class="title" id="">{{ t('Security settings') }}</h1>
@@ -38,7 +38,7 @@
 
       <form action="/_api/admin/security/general" method="post" class="form-horizontal" id="generalSetting" role="form">
         <fieldset>
-        <legend>{{ t('security_setting.Security settings') }}</legend>
+        <legend class="alert-anchor">{{ t('security_setting.Security settings') }}</legend>
 
           <div class="form-group">
             <label for="settingForm[security:registrationMode]" class="col-xs-3 control-label">{{ t('Basic authentication') }}</label>
@@ -61,7 +61,7 @@
           <div class="form-group">
             <label for="settingForm[security:restrictGuestMode]" class="col-xs-3 control-label">{{ t('Guest users access') }}</label>
             <div class="col-xs-6">
-              <select class="form-control" name="settingForm[security:restrictGuestMode]" value="{{ settingForm['security:restrictGuestMode'] }}">
+              <select class="form-control selectpicker" name="settingForm[security:restrictGuestMode]" value="{{ settingForm['security:restrictGuestMode'] }}">
                 {% for modeValue, modeLabel in consts.restrictGuestMode %}
                 <option value="{{ modeValue }}" {% if modeValue == settingForm['security:restrictGuestMode'] %}selected{% endif %} >{{ modeLabel }}</option>
                 {% endfor %}
@@ -72,7 +72,7 @@
           <div class="form-group">
             <label for="settingForm[security:registrationMode]" class="col-xs-3 control-label">{{ t('Register limitation') }}</label>
             <div class="col-xs-6">
-              <select class="form-control" name="settingForm[security:registrationMode]" value="{{ settingForm['security:registrationMode'] }}">
+              <select class="form-control selectpicker" name="settingForm[security:registrationMode]" value="{{ settingForm['security:registrationMode'] }}">
                 {% for modeValue, modeLabel in consts.registrationMode %}
                 <option value="{{ modeValue }}" {% if modeValue == settingForm['security:registrationMode'] %}selected{% endif %} >{{ modeLabel }}</option>
                 {% endfor %}
@@ -100,29 +100,22 @@
         </fieldset>
       </form>
 
-      <form action="/_api/admin/security/mechanism" method="post" class="form-horizontal" id="mechanismSetting" role="form">
+      <form action="/_api/admin/security/mechanism" method="post" class="form-horizontal m-t-30" id="mechanismSetting" role="form">
         <fieldset>
-          <legend>{{ t('Selecting authentication mechanism') }}</legend>
+          <legend class="alert-anchor">{{ t('Selecting authentication mechanism') }}</legend>
           <p class="alert alert-info"><b>NOTE: </b>Restarting the server is needed if you switch the auth mechanism.</p>
           <div class="form-group">
             <div class="col-xs-6">
               <h4>
-                <input type="radio" name="settingForm[security:isEnabledPassport]" value="false"
-                    {% if !settingForm['security:isEnabledPassport'] %}checked="checked"{% endif %}>
-                Official Crowi authentication mechanism
-              </h4>
-              <ul>
-                <li>Username, E-mail and Password authentication</li>
-                <li>Google OAuth2 authentication</li>
-              </ul>
-            </div>
-            <div class="col-xs-6">
-              <h4>
-                <input type="radio" name="settingForm[security:isEnabledPassport]" value="true"
-                    {% if true === settingForm['security:isEnabledPassport'] %}checked="checked"{% endif %}>
-                <a href="http://passportjs.org/">
-                  <img src="/images/admin/security/passport-logo.svg" class="passport-logo"> Passport
-                </a> authentication mechanism <small class="text-success">(Recommended)</small>
+                <div class="radio radio-primary">
+                  <input type="radio" id="radioPassportAuthMech" name="settingForm[security:isEnabledPassport]" value="true"
+                      {% if true === settingForm['security:isEnabledPassport'] %}checked="checked"{% endif %}>
+                  <label for="radioPassportAuthMech">
+                    <a href="http://passportjs.org/">
+                      <img src="/images/admin/security/passport-logo.svg" class="passport-logo"> Passport
+                    </a> authentication mechanism <small class="text-success">(Recommended)</small>
+                  </label>
+                </div>
               </h4>
               <ul>
                 <li>Username, E-mail and Password authentication</li>
@@ -131,6 +124,21 @@
                 <li class="text-muted">(TBD) <del>Facebook OAuth2 authentication</del></li>
                 <li class="text-muted">(TBD) <del>Twitter OAuth authentication</del></li>
                 <li class="text-muted">(TBD) <del>Github OAuth2 authentication</del></li>
+              </ul>
+            </div>
+            <div class="col-xs-6">
+              <h4>
+                <div class="radio radio-primary">
+                  <input type="radio" id="radioCrowiAuthMech" name="settingForm[security:isEnabledPassport]" value="false"
+                      {% if !settingForm['security:isEnabledPassport'] %}checked="checked"{% endif %}>
+                  <label for="radioCrowiAuthMech">
+                    Crowi classic authentication mechanism
+                  </label>
+                </div>
+              </h4>
+              <ul>
+                <li>Username, E-mail and Password authentication</li>
+                <li>Google OAuth2 authentication</li>
               </ul>
             </div>
           </div>
@@ -145,7 +153,7 @@
       </form>
 
 
-      <div class="auth-mechanism-configurations">
+      <div class="auth-mechanism-configurations m-t-10">
 
         <legend>{{ t('security_setting.Authentication mechanism settings') }}</legend>
 
@@ -155,18 +163,18 @@
           <p class="alert alert-warning"
               {% if !isRestartingServerNeeded %}style="display: none;"{% endif %}>
             <b>
-              <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+              <i class="icon-exclamation" aria-hidden="true"></i>
               Restarting the server is needed.
             </b>
             The server is running with Passport authentication mechanism.
           </p>
 
-          <form action="/_api/admin/security/google" method="post" class="form-horizontal " id="googleSetting" role="form"
+          <form action="/_api/admin/security/google" method="post" class="form-horizontal" id="googleSetting" role="form"
               {% if isRestartingServerNeeded %}style="opacity: 0.4;"{% endif %}>
 
             <fieldset>
               <h4>Google 設定</h4>
-              <p class="well">
+              <p class="well alert-anchor">
                 Google Cloud Platform の <a href="https://console.cloud.google.com/apis/credentials">API Manager</a>
                 から OAuth2 Client ID を作成すると、Google アカウントにコネクトして登録やログインが可能になります。
               </p>
@@ -217,30 +225,30 @@
           <p class="alert alert-warning"
               {% if !isRestartingServerNeeded %}style="display: none;"{% endif %}>
             <b>
-              <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+              <i class="icon-exclamation" aria-hidden="true"></i>
               Restarting the server is needed.
             </b>
             The server is running with Official Crowi authentication mechanism.
           </p>
           <ul class="nav nav-tabs" role="tablist" {% if isRestartingServerNeeded %}style="opacity: 0.4;"{% endif %}>
             <li class="active">
-              <a href="#passport-ldap" data-toggle="tab" role="tab"><i class="fa fa-sitemap"></i> LDAP</a>
+              <a href="#passport-ldap" data-toggle="tab" role="tab"><i class="icon-organization"></i> LDAP</a>
             </li>
             <li>
-              <a href="#passport-google-oauth" data-toggle="tab" role="tab"><i class="fa fa-google"></i> Google OAuth</a>
+              <a href="#passport-google-oauth" data-toggle="tab" role="tab"><i class="icon-social-google"></i> Google OAuth</a>
             </li>
             <li>
-              <a href="#passport-facebook" data-toggle="tab" role="tab"><i class="fa fa-facebook"></i> Facebook</a>
+              <a href="#passport-facebook" data-toggle="tab" role="tab"><i class="icon-social-facebook"></i> Facebook</a>
             </li>
             <li>
-              <a href="#passport-twitter" data-toggle="tab" role="tab"><i class="fa fa-twitter"></i> Twitter</a>
+              <a href="#passport-twitter" data-toggle="tab" role="tab"><i class="icon-social-twitter"></i> Twitter</a>
             </li>
             <li>
-              <a href="#passport-github" data-toggle="tab" role="tab"><i class="fa fa-github"></i> Github</a>
+              <a href="#passport-github" data-toggle="tab" role="tab"><i class="icon-social-github"></i> Github</a>
             </li>
           </ul>
 
-          <div class="tab-content" {% if isRestartingServerNeeded %}style="opacity: 0.4;"{% endif %}>
+          <div class="tab-content p-t-10" {% if isRestartingServerNeeded %}style="opacity: 0.4;"{% endif %}>
             <div id="passport-ldap" class="tab-pane active" role="tabpanel" >
               {% include './widget/passport/ldap.html' with { settingForm: settingForm } %}
             </div>
@@ -282,7 +290,7 @@
           var $message = $('<p class="alert"></p>');
           $message.addClass('alert-' + status);
           $message.html(msg.replace('\n', '<br>'));
-          $message.insertAfter('#' + formId + ' legend');
+          $message.insertAfter('#' + formId + ' .alert-anchor');
 
           if (status == 'success') {
             setTimeout(function()

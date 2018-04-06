@@ -8,7 +8,7 @@
 {% endif %}
 
 <li>
-  <img src="{{ page.revision.author|picture }}" class="picture picture-rounded">
+  <img src="{{ page.revision.author|picture }}" class="picture img-circle">
   <a href="{{ page.path }}"
     class="page-list-link"
     data-path="{{ page.path }}"
@@ -21,13 +21,13 @@
 
     {% if page.commentCount > 0 %}
     <span>
-      <i class="fa fa-comment"></i>{{ page.commentCount }}
+      <i class="icon-bubble"></i>{{ page.commentCount }}
     </span>
     {% endif  %}
 
     {% if page.liker.length > 0 %}
     <span class="page-list-liker" data-count="{{ page.liker.length }}">
-      <i class="fa fa-thumbs-up"></i>{{ page.liker.length }}
+      <i class="icon-like"></i>{{ page.liker.length }}
     </span>
     {% endif  %}
 

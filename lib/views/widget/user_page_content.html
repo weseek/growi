@@ -1,0 +1,38 @@
+<div class="user-page-content">
+  <ul class="nav nav-tabs user-page-content-menu">
+    <li class="active">
+      <a href="#user-bookmark-list" data-toggle="tab"><i class="icon-star"></i> Bookmarks</a>
+    </li>
+    <li>
+      <a href="#user-created-list" data-toggle="tab"><i class="icon-clock"></i> Recent Created</a>
+    </li>
+    {% if user._id.toString() == pageUser._id.toString() %}
+    <li>
+      <a href="/me"><i class="icon-wrench"></i> Settings</a>
+    </li>
+    {% endif %}
+  </ul>
+
+  <div class="m-t-10 user-page-content-tab tab-content">
+
+    <div class="tab-pane user-bookmark-list page-list active" id="user-bookmark-list">
+      <div class="page-list-container">
+        {% if bookmarkList.length == 0 %}
+        No bookmarks yet.
+        {% else %}
+          {% include 'page_list.html' with { pages: bookmarkList, pagePropertyName: 'page' } %}
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="tab-pane user-created-list page-list" id="user-created-list">
+      <div class="page-list-container">
+        {% if createdList.length == 0 %}
+        No created pages yet.
+        {% else %}
+          {% include 'page_list.html' with { pages: createdList } %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>

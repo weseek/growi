@@ -1,8 +1,8 @@
 {% extends '../layout/admin.html' %}
 
-{% block html_title %}{{ t('admin_top.Management Wiki') }}· {{ path }}{% endblock %}
+{% block html_title %}{{ customTitle(t('admin_top.Management Wiki')) }}{% endblock %}
 
-{% block content_head %}
+{% block content_header %}
 <div class="header-wrap">
   <header id="page-header">
     <h1 class="title" id=""> {{ t('admin_top.Management Wiki') }}</h1>
@@ -29,11 +29,13 @@
       {{ t("admin_top.assign_administrator") }}
       </p>
 
-      <h3>{{ t('admin_top.System Information') }}</h3>
+      <legend>
+        <h2>{{ t('admin_top.System Information') }}</h2>
+      </legend>
       <table class="table table-bordered">
         <tr>
-          <th class="col-sm-4">crowi-plus</th>
-          <td>{{ crowiVersion() }}</td>
+          <th class="col-sm-4">GROWI</th>
+          <td>{{ growiVersion() }}</td>
         </tr>
         <tr>
           <th>node.js</th>
@@ -49,7 +51,9 @@
         </tr>
       </table>
 
-      <h3>{{ t('admin_top.List of installed plugins') }}</h3>
+      <legend>
+        <h2>{{ t('admin_top.List of installed plugins') }}</h2>
+      </legend>
       <table class="table table-bordered">
         <th class="text-center">
           {{ t('admin_top.Package name') }}

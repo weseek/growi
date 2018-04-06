@@ -1,12 +1,13 @@
-{% extends '../layout/2column.html' %}
+{% extends '../layout-growi/base/layout.html' %}
 
 
-{% block html_title %}{{ t('API Settings') }} · {{ path }}{% endblock %}
+{% block html_title %}{{ customTitle(t('API Settings')) }}{% endblock %}
 
-{% block content_head %}
+
+{% block content_header %}
 <div class="header-wrap">
   <header id="page-header">
-  <h1 class="title" id="">{{ t('User Settings') }}</h1>
+  <h1 class="title" id="">{{ t('API Settings') }}</h1>
   </header>
 </div>
 {% endblock %}
@@ -15,23 +16,25 @@
 <div class="content-main">
 
   <ul class="nav nav-tabs">
-    <li><a href="/me"><i class="fa fa-gears"></i> {{ t('User Information') }}</a></li>
-    <li><a href="/me/external-accounts"><i class="fa fa-user-plus"></i> {{ t('External Accounts') }}</a></li>
-    <li><a href="/me/password"><i class="fa fa-key"></i> {{ t('Password Settings') }}</a></li>
-    <li class="active"><a href="/me/apiToken"><i class="fa fa-rocket"></i> {{ t('API Settings') }}</a></li>
+    <li><a href="/me"><i class="icon-user"></i> {{ t('User Information') }}</a></li>
+    {% if isEnabledPassport() %}
+    <li><a href="/me/external-accounts"><i class="icon-share-alt"></i> {{ t('External Accounts') }}</a></li>
+    {% endif %}
+    <li><a href="/me/password"><i class="icon-lock"></i> {{ t('Password Settings') }}</a></li>
+    <li class="active"><a href="/me/apiToken"><i class="icon-paper-plane"></i> {{ t('API Settings') }}</a></li>
   </ul>
 
   <div class="tab-content">
 
   {% set message = req.flash('successMessage') %}
   {% if message.length %}
-  <div class="alert alert-success">
+  <div class="alert alert-success m-t-10">
     {{ message }}
   </div>
   {% endif %}
 
   {% if req.form.errors.length > 0 %}
-  <div class="alert alert-danger">
+  <div class="alert alert-danger m-t-10">
     <ul>
     {% for error in req.form.errors %}
       <li>{{ error }}</li>
@@ -40,7 +43,7 @@
   </div>
   {% endif %}
 
-  <div id="form-box">
+  <div class="form-box m-t-20">
 
     <form action="/me/apiToken" method="post" class="form-horizontal" role="form">
     <fieldset>
@@ -59,7 +62,7 @@
       </div>
 
       <div class="form-group">
-        <div class="col-xs-offset-3 col-xs-10">
+        <div class="col-xs-offset-3 col-xs-9">
 
           <p class="alert alert-warning">
             {{ t('page_me_apitoken.notice.update_token1') }}<br>
@@ -82,5 +85,5 @@
 {% block content_footer %}
 {% endblock %}
 
-{% block footer %}
+{% block layout_footer %}
 {% endblock %}

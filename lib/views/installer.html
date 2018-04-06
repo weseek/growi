@@ -1,89 +1,113 @@
-{% extends 'layout/single-nologin.html' %}
+{% extends 'layout/layout.html' %}
 
-{% block html_title %}セットアップ {% endblock %}
+{% block html_base_css %}installer nologin{% endblock %}
 
-{% block content_main %}
-
-
-<div class="login-dialog-container col-md-5">
-
-<div class="installer-header">
-  <img src="/logo/135x32.png" alt="Crowi">
-  <h1>
-    Crowi のセットアップへようこそ!
-  </h1>
-</div>
+{% block html_title %}{{ customTitle('セットアップ') }}{% endblock %}
 
 
-<div class="login-dialog"  id="login-dialog">
-  <div class="login-dialog-inner">
-    <h2>管理者の作成</h2>
 
-    <p class="text-info">
-    はじめに、管理者アカウントを作成してください。
-    </p>
+{#
+ # Remove default contents
+ #}
+{% block html_head_loading_legacy %}
+{% endblock %}
+{% block html_head_loading_app %}
+{% endblock %}
+{% block layout_head_nav %}
+{% endblock %}
+{% block sidebar %}
+{% endblock %}
 
-    {% if req.form.errors.length > 0 %}
-    <div class="alert alert-danger">
-      <ul>
-      {% for error in req.form.errors %}
-        <li>{{ error }}</li>
-      {% endfor %}
-      </ul>
+
+
+{% block layout_main %}
+
+<div class="main container-fluid">
+
+  <div class="row">
+
+    <div class="login-header col-sm-offset-4 col-sm-4">
+      <div class="logo">{% include 'widget/logo.html' %}</div>
+      <h1>GROWI</h1>
+
+      <div class="login-form-errors">
+        {% if req.form.errors.length > 0 %}
+        <div class="alert alert-danger">
+          <ul>
+          {% for error in req.form.errors %}
+            <li>{{ error }}</li>
+          {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
+      </div>
     </div>
-    {% endif %}
 
-    <form role="form" action="/installer/createAdmin" method="post">
-      <label>ユーザーID</label>
-      <div class="input-group" id="input-group-username">
-        <span class="input-group-addon"><strong>@</strong></span>
-        <input type="text" class="form-control" placeholder="記入例: taroyama" name="registerForm[username]" value="{{ req.body.registerForm.username }}" required>
-      </div>
-      <p class="help-block">
-      <span id="help-block-username" class="text-danger"></span>
-      ユーザーIDは、ユーザーページのURLなどに利用されます。半角英数字と一部の記号のみ利用できます。
+    <div class="login-dialog p-t-10 p-b-10 col-sm-offset-4 col-sm-4" id="login-dialog">
+      <p class="alert alert-success">
+        <strong>最初のアカウントの作成</strong><br>
+        <small>初めに作成するアカウントは、自動的に管理者権限が付与されます</small>
       </p>
 
-      <label>名前</label>
-      <div class="input-group">
-        <span class="input-group-addon"><i class="fa fa-user"></i></span>
-        <input type="text" class="form-control" placeholder="記入例: 山田 太郎" name="registerForm[name]" value="{{ req.body.registerForm.name }}" required>
-      </div>
+      <form role="form" action="/installer/createAdmin" method="post" id="register-form">
 
-      <label >メールアドレス</label>
-      <div class="input-group">
-        <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
-        <input type="email" class="form-control" placeholder="E-mail" name="registerForm[email]" value="{{ googleEmail|default(req.body.registerForm.email) }}" required>
-      </div>
+        <div class="input-group" id="input-group-username">
+          <span class="input-group-addon"><i class="icon-user"></i></span>
+          <input type="text" class="form-control" placeholder="{{ t('User ID') }}" name="registerForm[username]" value="{{ req.body.registerForm.username }}" required>
+        </div>
+        <p class="help-block">
+          <span id="help-block-username"></span>
+        </p>
 
-      <label>パスワード</label>
-      <div class="input-group">
-        <span class="input-group-addon"><i class="fa fa-key"></i></span>
-        <input type="password" class="form-control" placeholder="Password" name="registerForm[password]" required>
-      </div>
-      <p class="help-block">
-      パスワードは6文字以上の半角英数字または記号
-      </p>
+        <div class="input-group">
+          <span class="input-group-addon"><i class="icon-tag"></i></span>
+          <input type="text" class="form-control" placeholder="{{ t('Name') }}" name="registerForm[name]" value="{{ googleName|default(req.body.registerForm.name) }}" required>
+        </div>
 
-      <input type="hidden" name="_csrf" value="{{ csrf() }}">
-      <input type="submit" class="btn btn-primary btn-lg btn-block" value="作成">
-    </form>
+        <div class="input-group">
+          <span class="input-group-addon"><i class="icon-envelope"></i></span>
+          <input type="email" class="form-control" placeholder="{{ t('Email') }}" name="registerForm[email]" value="{{ googleEmail|default(req.body.registerForm.email) }}" required>
+        </div>
 
-  </div>
-</div>
+        <div class="input-group">
+          <span class="input-group-addon"><i class="icon-lock"></i></span>
+          <input type="password" class="form-control" placeholder="{{ t('Password') }}" name="registerForm[password]" required>
+        </div>
 
-</div>
+        <input type="hidden" name="_csrf" value="{{ csrf() }}">
+        <div class="input-group m-t-30 m-b-20 d-flex justify-content-center">
+          <button type="submit" class="fcbtn btn btn-success btn-1b btn-register">
+            <span class="btn-label"><i class="icon-user-follow"></i></span>
+            {{ t('Create') }}
+          </button>
+        </div>
+
+        <div class="input-group m-t-30 d-flex justify-content-center">
+          <a href="https://growi.org" class="link-growi-org">
+            <span class="growi">GROWI</span>.<span class="org">ORG
+          </a>
+        </div>
+      </form>
+    </div>
+
+  </div>{# /.row #}
+
+</div>{# /.main #}
 
 <script>
 $(function() {
   $('#register-form input[name="registerForm[username]"]').change(function(e) {
     var username = $(this).val();
+    $('#login-dialog').removeClass('has-error');
     $('#input-group-username').removeClass('has-error');
     $('#help-block-username').html("");
 
     $.getJSON('/_api/check_username', {username: username}, function(json) {
       if (!json.valid) {
-        $('#help-block-username').html('<i class="fa fa-warning"></i>このユーザーIDは利用できません。<br>');
+        $('#help-block-username').html(
+          '<i class="icon-fw icon-ban"></i>このユーザーIDは利用できません。'
+        );
+        $('#login-dialog').addClass('has-error');
         $('#input-group-username').addClass('has-error');
       }
     });

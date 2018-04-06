@@ -1,0 +1,49 @@
+<div id="content-main" class="content-main"
+  data-path="{{ path }}"
+  data-path-shortname="{{ path|path2name }}"
+  data-page-id="{% if page %}{{ page._id.toString() }}{% endif %}"
+  data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
+  data-page-revision-id="{% if revision %}{{ revision._id.toString() }}{% endif %}"
+  data-page-revision-created="{% if revision %}{{ revision.createdAt|datetz('U') }}{% endif %}"
+  data-page-is-seen="{% if page and page.isSeenUser(user) %}1{% else %}0{% endif %}"
+  >
+
+  {% include 'page_alerts.html' %}
+
+  {% include 'page_tabs.html' %}
+
+  <div class="tab-content">
+
+    {% if page %}
+      <script type="text/template" id="raw-text-original">{{ revision.body }}</script>
+
+      {# formatted text #}
+      <div class="tab-pane {% if not req.body.pageForm %}active{% endif %}" id="revision-body">
+        <div class="revision-toc" id="revision-toc">
+          <a data-toggle="collapse" data-parent="#revision-toc" href="#revision-toc-content" class="revision-toc-head">{{ t('Table of Contents') }}</a>
+          <div id="revision-toc-content" class="revision-toc-content collapse in"></div>
+        </div>
+        <div id="page" class="m-t-15"></div>
+      </div>
+    {% endif %}
+
+    {# edit form #}
+    {% if not page.isDeleted() %}
+    <div class="edit-form tab-pane {% if req.body.pageForm %}active{% endif %}" id="edit-form">
+      {% include '../_form.html' %}
+    </div>
+    {% endif %}
+
+    {# raw revision history #}
+    {% if not page %}
+    {% else %}
+    <div class="tab-pane revision-history m-t-10" id="revision-history">
+    </div>
+    {% endif %}
+
+  </div>
+
+  <div id="notifPageEdited" class="myadmin-alert alert-warning myadmin-alert-bottom alertbottom2">
+    <i class="fa fa-exclamation-triangle"></i> <span class="edited-user"></span> {{ t('edited this page') }} <a href="javascript:location.reload();"><i class="fa fa-angle-double-right"></i> {{ t('Load latest') }}</a>
+  </div>
+</div>

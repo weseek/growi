@@ -12,7 +12,7 @@ export default class UserPicture extends React.Component {
     }
     // uploaded image
     else {
-      return user.image || '/images/userpicture.png';
+      return user.image || '/images/icons/user.svg';
     }
   }
 
@@ -23,7 +23,8 @@ export default class UserPicture extends React.Component {
   }
 
   getClassName() {
-    let className = ['picture', 'picture-rounded'];
+    let className = ['img-circle', 'picture'];
+    // size
     if (this.props.size) {
       className.push('picture-' + this.props.size);
     }

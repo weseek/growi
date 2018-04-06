@@ -1,4 +1,4 @@
-box: node:6.12
+box: node:8
 
 services:
   - mongo:3.4
@@ -13,8 +13,7 @@ test:
     - script:
       name: install dependencies
       code: |
-        yarn global add npm@4
-        yarn install
+        yarn
 
     - script:
       name: print dependencies
@@ -23,7 +22,7 @@ test:
     - script:
       name: npm test
       code: |
-        export MONGO_URI=mongodb://$MONGO_PORT_27017_TCP_ADDR/crowi_test
+        export MONGO_URI=mongodb://$MONGO_PORT_27017_TCP_ADDR/growi_test
         echo "export MONGO_URI=$MONGO_URI"
         npm test
 
@@ -44,14 +43,13 @@ build-prod:
     - script:
       name: install dependencies
       code: |
-        yarn global add npm@4
         yarn install --production
 
     - script:
       name: install plugins
       code: |
-        yarn add crowi-plugin-lsx
-        yarn add crowi-plugin-pukiwiki-like-linker
+        yarn add growi-plugin-lsx
+        yarn add growi-plugin-pukiwiki-like-linker
 
     - script:
       name: print dependencies
@@ -84,14 +82,13 @@ build-dev:
     - script:
       name: install dependencies
       code: |
-        yarn global add npm@4
         yarn install
 
     - script:
       name: install plugins
       code: |
-        yarn add crowi-plugin-lsx
-        yarn add crowi-plugin-pukiwiki-like-linker
+        yarn add growi-plugin-lsx
+        yarn add growi-plugin-pukiwiki-like-linker
 
     - script:
       name: print dependencies
@@ -146,8 +143,8 @@ release: # would be run on release branch
         git push --delete origin $TMP_RELEASE_BRANCH
 
     - script:
-      name: trigger crowi-plus-docker release pipeline
-      code: sh ./bin/wercker/trigger-crowi-plus-docker.sh
+      name: trigger growi-docker release pipeline
+      code: sh ./bin/wercker/trigger-growi-docker.sh
 
   after-steps:
     - slack-notifier:

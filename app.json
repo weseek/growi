@@ -1,11 +1,11 @@
 {
-  "name": "crowi-plus",
-  "description": "Enhanced Crowi",
+  "name": "growi",
+  "description": "Team collaboration system with markdown",
   "keywords": [
     "wiki",
     "communication"
   ],
-  "repository": "https://github.com/weseek/crowi-plus",
+  "repository": "https://github.com/weseek/growi",
   "success_url": "/",
   "env": {
     "SECRET_TOKEN": {
@@ -18,7 +18,7 @@
     },
     "INSTALL_PLUGINS": {
       "description": "Comma-separated list of plugin package names to install.",
-      "value": "crowi-plugin-lsx",
+      "value": "growi-plugin-lsx",
       "required": false
     }
   },
@@ -28,7 +28,7 @@
     {
       "plan": "bonsai:sandbox-6",
       "options": {
-        "version": "5.1"
+        "version": "5.4.3"
       }
     }
   ]

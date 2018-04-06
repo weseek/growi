@@ -1,6 +1,6 @@
 'use strict';
 
-var mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || process.env.MONGO_URI || 'mongodb://localhost/crowi_test'
+var mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || process.env.MONGO_URI || 'mongodb://localhost/growi_test'
   , mongoose= require('mongoose')
   , fs = require('fs')
   , models = {}
@@ -46,12 +46,15 @@ after('Close database connection', function (done) {
 
 // Setup Models
 fs.readdirSync(MODEL_DIR).forEach(function(file) {
-  if (file.match(/^(\w+)\.js$/)) {
+  if (file.match(/^([\w-]+)\.js$/)) {
     var name = RegExp.$1;
     if (name === 'index') {
       return;
     }
-    var modelName = name.charAt(0).toUpperCase() + name.slice(1);
+    var modelName = '';
+    name.split('-').map(splitted => {
+      modelName += (splitted.charAt(0).toUpperCase() + splitted.slice(1));
+    });
     models[modelName] = require(MODEL_DIR + '/' + file)(crowi);
   }
 });

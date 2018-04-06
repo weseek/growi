@@ -57,7 +57,7 @@ export default class Comment extends React.Component {
     const commentBody = ReactUtils.nl2br(comment.comment);
     const creatorsPage = `/user/${creator.username}`;
     const revHref = `?revision=${comment.revision}`;
-    const revFirst8Letters = comment.revision.substr(0,8);
+    const revFirst8Letters = comment.revision.substr(-8);
     const revisionLavelClassName = this.getRevisionLabelClassName();
 
     return (
@@ -75,9 +75,9 @@ export default class Comment extends React.Component {
             <a className={revisionLavelClassName} href={revHref}>{revFirst8Letters}</a>
           </div>
           <div className="page-comment-control">
-            <a className="btn btn-link" onClick={this.deleteBtnClickedHandler}>
-              <i className="fa fa-trash-o"></i>
-            </a>
+            <button className="btn btn-link" onClick={this.deleteBtnClickedHandler}>
+              <i className="ti-close"></i>
+            </button>
           </div>
         </div>
       </div>

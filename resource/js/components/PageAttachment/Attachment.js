@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Icon from '../Common/Icon';
 import User from '../User/User';
 
 export default class Attachment extends React.Component {
@@ -13,10 +12,10 @@ export default class Attachment extends React.Component {
 
   iconNameByFormat(format) {
     if (format.match(/image\/.+/i)) {
-      return 'file-image-o';
+      return 'fa fa-file-image-o';
     }
 
-    return 'file-o';
+    return 'fa fa-file-o';
   }
 
   _onAttachmentDeleteClicked(event) {
@@ -36,13 +35,15 @@ export default class Attachment extends React.Component {
     const fileType = <span className="attachment-filetype label label-default">{attachment.fileFormat}</span>;
 
     const btnTrash = (this.props.isUserLoggedIn)
-        ? <a className="text-danger attachment-delete" onClick={this._onAttachmentDeleteClicked}><Icon name="trash-o" /></a>
+        ? <a className="text-danger attachment-delete" onClick={this._onAttachmentDeleteClicked}>
+            <i className="icon-trash"></i>
+          </a>
         : '';
 
     return (
       <li>
           <User user={attachment.creator} />
-          <Icon name={formatIcon} />
+          <i className={formatIcon}></i>
 
           <a href={attachment.url}> {attachment.originalName}</a>
 

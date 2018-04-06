@@ -1,0 +1,24 @@
+<div class="system-version hidden-xs">
+  <span>
+    <a href="https://growi.org">GROWI</a> {{ growiVersion() }}
+  </span>
+  <span>
+    <a href="" data-target="#shortcuts-modal" data-toggle="modal"><i class="fa fa-keyboard-o"></i>&nbsp;<span class="cmd-key"></span>-/</a>
+  </span>
+</div>
+<script>
+  /*
+  * add classes to cmd-key by OS
+  */
+  var platform = navigator.platform.toLowerCase();
+  var isMac = (platform.indexOf('mac') > -1);
+
+  document.querySelectorAll('.system-version .cmd-key').forEach((element) => {
+    if (isMac) {
+      element.classList.add('mac');
+    }
+    else {
+      element.classList.add('win');
+    }
+  });
+</script>

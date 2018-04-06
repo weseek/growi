@@ -1,0 +1,248 @@
+.nologin {
+  $gray-dark-for-login: darken(white, 30%);
+
+  // background color
+  background:
+    linear-gradient(45deg, darken($inverse, 30%)  0%, hsla(340, 100%, 55%, 0) 70%),
+    linear-gradient(135deg, $growi-green 10%, hsla(225, 95%, 50%, 0) 70%),
+    linear-gradient(225deg, $growi-blue  10%, hsla(140, 90%, 50%, 0) 80%),
+    linear-gradient(315deg, darken($inverse, 25%) 100%, hsla(35, 95%, 55%, 0) 70%);
+  #page-wrapper {
+    background: none;
+  }
+
+  // layout
+  #wrapper {
+    height: 100vh;
+
+    #page-wrapper {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+
+      .main {
+        width: 100vw;
+
+        > .row {
+          margin-right: 20px;
+          margin-left: 20px;
+        }
+
+        .login-header {
+          padding-top: 30px;
+          padding-bottom: 10px;
+
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .login-form-errors {
+          width: 100%;
+
+          .alert {
+            margin-top: 10px;
+            margin-bottom: 0;
+            padding: 5px;
+
+            ul {
+              padding-left: 1.5em;
+            }
+          }
+        }
+
+      }  // .main
+    }  // #page-wrapper
+  } // #wrapper
+
+  // styles
+  .login-header {
+    background-color: rgba(white, 0.5);
+    .logo {
+      .group1, .group2 {
+        fill: rgba(black, 0.5);
+      }
+
+    }
+    h1 {
+      color: rgba(black, 0.5);
+      font-size: 22px;
+      line-height: 1em;
+    }
+  }
+  .login-dialog {
+    background-color: rgba(white, 0.5);
+  }
+
+  .input-group {
+    margin-bottom: 10px;
+
+    .input-group-addon {
+      text-align: center;
+      border: none;
+      border-radius: 0;
+      color: $gray-dark-for-login;
+      background-color: rgba(black, 0.4);
+    }
+    .form-control {
+      color: white;
+      background-color: rgba(lighten(black, 10%), 0.4);
+      &::placeholder {
+        color: $gray-dark-for-login;
+      }
+    }
+  }
+  .input-group:not(.has-error) {
+    .form-control {
+      border: transparent;
+    }
+  }
+
+  // button style
+  .btn-login.fcbtn, .btn-register.fcbtn, .btn-login-google.fcbtn {
+    border: none;
+    color: white;
+    background-color: rgba(lighten(black, 20%), 0.4);
+
+    .btn-label {
+      margin: -8px 20px -8px -20px;
+      padding: 9px 15px;
+    }
+    &:focus {
+      border: none;
+    }
+  }
+  .btn-login.fcbtn {
+    .btn-label {
+      background-color: rgba($brand-danger, 0.4);
+    }
+    &:after {
+      background-color: #7e4153;
+    }
+  }
+  .btn-login-google.fcbtn {
+    .btn-label {
+      background-color: rgba(#444, 0.4);
+    }
+    &:after {
+      background-color: #555;
+    }
+  }
+  .btn-register.fcbtn {
+    .btn-label {
+      background-color: rgba($brand-success, 0.4);
+    }
+    &:after {
+      background-color: #3f7263;
+    }
+  }
+
+  hr {
+    margin: 10px 0;
+    border-color: #ccc;
+  }
+
+  // footer link text
+  .link-growi-org {
+    color: rgba(black, 0.4);
+    font-weight: bold;
+    font-size: smaller;
+
+    &, .growi, .org {
+      transition: color 0.8s;
+    }
+
+    &:hover, &.focus {
+      color: black;
+      .growi {
+        color: darken($growi-green, 20%);
+      }
+      .org {
+        color: darken($growi-blue, 15%);
+      }
+    }
+  }
+  .link-switch {
+    color: $gray;
+    &:hover {
+      color: white;
+    }
+  }
+}
+
+
+.login-page {
+  // layout
+  .main .row {
+    @media(min-width: 350px) {
+      .col-sm-offset-4 {
+        margin-left: calc(50% - 160px);
+      }
+      .col-sm-4 {
+        width: 320px;
+      }
+    }
+  }
+  .link-growi-org {
+    position: absolute;
+    z-index: 2;
+    bottom: 9px;
+  }
+
+  // flip animation
+  .login-dialog.flipper {
+    transition: min-height 0.2s;
+
+    &.to-flip {
+      min-height: 295px;
+      // has-error
+      &.has-error {
+        min-height: #{295px + 32px};
+      }
+    }
+
+    .front, .back {
+      backface-visibility: hidden;
+      transition: 0.4s;
+      transform-style: preserve-3d;
+    }
+    .front {
+      z-index: 2;
+    }
+    .back {
+      position: absolute;
+      top: 0;
+      left: 15px;
+      right: 15px;
+    }
+    .back,
+    &.to-flip .front {
+      transform: rotateY(180deg);
+    }
+    &.to-flip .back {
+      transform: rotateY(0deg);
+    }
+  }
+
+}
+
+
+.installer, .invited, .nologin.error {
+  // layout
+  .main .row {
+    @media(min-width: 510px) {
+      .col-sm-offset-4 {
+        margin-left: calc(50% - 240px);
+      }
+      .col-sm-4 {
+        width: 480px;
+      }
+    }
+  }
+}
+
+.nologin.error {
+  .alert h2 {
+    line-height: 1em;
+  }
+}

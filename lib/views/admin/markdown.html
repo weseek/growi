@@ -1,9 +1,9 @@
 {% extends '../layout/admin.html' %}
 
-{% block html_title %}{{ t('Markdown settings') }}
+{% block html_title %}{{ customTitle(t('Markdown settings')) }}
  · {{ path }}{% endblock %}
 
-{% block content_head %}
+{% block content_header %}
 <div class="header-wrap">
   <header id="page-header">
     <h1 class="title" id="">{{ t('Markdown settings') }}</h1>
@@ -48,13 +48,13 @@
           </label>
           <div class="col-xs-5">
             <div class="btn-group btn-toggle" data-toggle="buttons">
-              <label class="btn btn-default {% if markdownSetting['markdown:isEnabledLinebreaks'] %}active{% endif %}" data-active-class="primary">
+              <label class="btn btn-default btn-rounded btn-outline {% if markdownSetting['markdown:isEnabledLinebreaks'] %}active{% endif %}" data-active-class="primary">
                 <input name="markdownSetting[markdown:isEnabledLinebreaks]" value="true" type="radio"
-                    {% if true === markdownSetting['markdown:isEnabledLinebreaks'] %}checked{% endif %}> {{ t('valid') }}
+                    {% if true === markdownSetting['markdown:isEnabledLinebreaks'] %}checked{% endif %}> ON
               </label>
-              <label class="btn btn-default {% if !markdownSetting['markdown:isEnabledLinebreaks'] %}active{% endif %}" data-active-class="primary">
+              <label class="btn btn-default btn-rounded btn-outline {% if !markdownSetting['markdown:isEnabledLinebreaks'] %}active{% endif %}" data-active-class="default">
                 <input name="markdownSetting[markdown:isEnabledLinebreaks]" value="false" type="radio"
-                    {% if !markdownSetting['markdown:isEnabledLinebreaks'] %}checked{% endif %}> {{ t('invalid') }}
+                    {% if !markdownSetting['markdown:isEnabledLinebreaks'] %}checked{% endif %}> OFF
               </label>
             </div>
             <p class="help-block">{{ t("markdown_setting.treat_text") }}
@@ -68,13 +68,13 @@
           </label>
           <div class="col-xs-5">
             <div class="btn-group btn-toggle" data-toggle="buttons">
-              <label class="btn btn-default {% if markdownSetting['markdown:isEnabledLinebreaksInComments'] %}active{% endif %}" data-active-class="primary">
+              <label class="btn btn-default btn-rounded btn-outline {% if markdownSetting['markdown:isEnabledLinebreaksInComments'] %}active{% endif %}" data-active-class="primary">
                 <input name="markdownSetting[markdown:isEnabledLinebreaksInComments]" value="true" type="radio"
-                    {% if true === markdownSetting['markdown:isEnabledLinebreaksInComments'] %}checked{% endif %}> {{ t('valid') }}
+                    {% if true === markdownSetting['markdown:isEnabledLinebreaksInComments'] %}checked{% endif %}> ON
               </label>
-              <label class="btn btn-default {% if !markdownSetting['markdown:isEnabledLinebreaksInComments'] %}active{% endif %}" data-active-class="primary">
+              <label class="btn btn-default btn-rounded btn-outline {% if !markdownSetting['markdown:isEnabledLinebreaksInComments'] %}active{% endif %}" data-active-class="default">
                 <input name="markdownSetting[markdown:isEnabledLinebreaksInComments]" value="false" type="radio"
-                    {% if !markdownSetting['markdown:isEnabledLinebreaksInComments'] %}checked{% endif %}> {{ t('invalid') }}
+                    {% if !markdownSetting['markdown:isEnabledLinebreaksInComments'] %}checked{% endif %}> OFF
               </label>
             </div>
             <p class="help-block">{{ t("markdown_setting.treat_comment") }}<br>{{ t("markdown_setting.TBD") }}</p>

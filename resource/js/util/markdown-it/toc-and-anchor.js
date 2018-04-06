@@ -12,7 +12,7 @@ export default class TocAndAnchorConfigurer {
         tocLastLevel: 3,
         anchorLinkBefore: false,
         anchorLinkSymbol: '',
-        anchorLinkSymbolClassName: 'fa fa-link',
+        anchorLinkSymbolClassName: 'icon-link',
         anchorClassName: 'revision-head-link',
         slugify: this.customSlugify,
       })

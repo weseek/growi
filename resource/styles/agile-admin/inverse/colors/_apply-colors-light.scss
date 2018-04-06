@@ -1,0 +1,66 @@
+.top-left-part {
+  .logo-mark, .logo-text {
+    fill: $themecolor;
+  }
+}
+
+/*
+ * Form
+ */
+.form-control {
+  background-color: $bodycolor;
+}
+.form-control[disabled], .form-control[readonly] {
+  color: lighten($bodytext, 10%);
+  background-color: darken($bodycolor, 5%);
+}
+
+/*
+ * Tabs
+ */
+.nav-tabs > li > a {
+  color: $dark;
+}
+
+/*
+ * GROWI header
+ */
+ .main-container header.affix {
+  .logo-mark {
+    fill: $themecolor;
+  }
+}
+
+/*
+ * GROWI page list
+ */
+ .page-list {
+  .page-list-ul {
+    > li {
+      > a strong {
+        color: darken($bodytext, 20%);
+      }
+      > span.page-list-meta {
+        color: lighten($bodytext, 10%);;
+      }
+    }
+  }
+}
+
+/*
+ * GROWI on-edit
+ */
+ .page-editor-footer {
+  #slack-mark-white {
+    display: none;
+  }
+}
+
+.wiki {
+  h1 {
+    border-color: darken($border, 10%);
+  }
+  h2 {
+    border-color: $border;
+  }
+}

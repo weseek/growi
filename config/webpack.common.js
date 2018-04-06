@@ -10,7 +10,7 @@ const helpers = require('./helpers');
  */
 const AssetsPlugin = require('assets-webpack-plugin');
 const CommonsChunkPlugin = require('webpack/lib/optimize/CommonsChunkPlugin');
-const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');;
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 /*
  * Webpack configuration
@@ -27,8 +27,10 @@ module.exports = function (options) {
       'legacy-admin':         './resource/js/legacy/crowi-admin',
       'legacy-presentation':  './resource/js/legacy/crowi-presentation',
       'plugin':               './resource/js/plugin',
-      'style':                './resource/styles',
-      'style-presentation':   './resource/styles/presentation',
+      'style':                './resource/styles/scss/style.scss',
+      'style-theme-default':  './resource/styles/scss/theme/default.scss',
+      'style-theme-default-dark':  './resource/styles/scss/theme/default-dark.scss',
+      'style-presentation':   './resource/styles/scss/style-presentation.scss',
     },
     externals: {
       // require("jquery") is external and available
@@ -54,16 +56,22 @@ module.exports = function (options) {
           }]
         },
         {
+          test: /\.scss$/,
+          use: ExtractTextPlugin.extract({
+            fallback: 'style-loader',
+            use: 'css-loader!sass-loader'
+          }),
+          include: [helpers.root('resource/styles/scss')]
+        },
+        {
           test: /\.css$/,
           use: ['style-loader', 'css-loader'],
-          // comment out 'include' spec for crowi-plugins
-          // include: [helpers.root('resource')]
+          exclude: [helpers.root('resource/styles/scss')]
         },
         {
           test: /\.scss$/,
           use: ['style-loader', 'css-loader', 'sass-loader'],
-          // comment out 'include' spec for crowi-plugins
-          // include: [helpers.root('resource')]
+          exclude: [helpers.root('resource/styles/scss')]
         },
         /*
          * File loader for supporting images, for example, in CSS files.
@@ -101,8 +109,6 @@ module.exports = function (options) {
         name: 'commons',
         chunks: ['commons', 'plugin'],
       }),
-
-      new LodashModuleReplacementPlugin,
 
       // ignore
       new webpack.IgnorePlugin(/^\.\/lib\/deflate\.js/, /markdown-it-plantuml/),

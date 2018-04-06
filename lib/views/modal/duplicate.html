@@ -4,9 +4,9 @@
 
       <form role="form" id="duplicatePageForm" onsubmit="return false;">
 
-        <div class="modal-header">
+        <div class="modal-header bg-primary">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title">{{ t('modal_duplicate.label.Duplicate page') }}</h4>
+          <div class="modal-title">{{ t('modal_duplicate.label.Duplicate page') }}</div>
         </div>
         <div class="modal-body">
             <div class="form-group">
@@ -22,12 +22,21 @@
             </div>
         </div>
         <div class="modal-footer">
-          <p><small class="pull-left" id="duplicatePageNameCheck"></small></p>
-          <input type="hidden" name="_csrf" value="{{ csrf() }}">
-          <input type="hidden" name="path" value="{{ page.path }}">
-          <input type="hidden" name="page_id" value="{{ page._id.toString() }}">
-          <input type="hidden" name="revision_id" value="{{ page.revision._id.toString() }}">
-          <input type="submit" class="btn btn-primary" value="Duplicate page">
+          <div class="d-flex justify-content-between">
+            <p>
+              <span class="text-danger msg-already-exists">
+                <strong><i class="icon-fw icon-ban"></i>{{ t('Page is already exists.') }}</strong>
+              </span>
+              <small id="linkToNewPage" class="msg-already-exists"></small>
+            </p>
+            <div>
+              <input type="hidden" name="_csrf" value="{{ csrf() }}">
+              <input type="hidden" name="path" value="{{ page.path }}">
+              <input type="hidden" name="page_id" value="{{ page._id.toString() }}">
+              <input type="hidden" name="revision_id" value="{{ page.revision._id.toString() }}">
+              <button type="submit" class="btn btn-primary">Duplicate page</button>
+            </div>
+          </div>
         </div>
 
       </form>

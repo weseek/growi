@@ -4,23 +4,15 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-
-  <title>{% block html_title %}{% endblock %} {{ config.crowi['app:title']|default('Crowi') }}</title>
+  <title>{% block html_title %}{{ customTitle(path) }}{% endblock %}</title>
   <meta name="description" content="">
   <meta name="author" content="">
 
   <meta name="viewport" content="width=device-width,initial-scale=1">
 
-  <meta name="apple-mobile-web-app-title" content="{{ config.crowi['app:title']|default('Crowi') }}">
+  <meta name="apple-mobile-web-app-title" content="{{ appTitle() }}">
 
-  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-  <link rel="apple-touch-icon"                 href="/apple-touch-icon.png">
-  <link rel="apple-touch-icon" sizes="72x72"   href="/apple-touch-icon-72x72.png">
-  <link rel="apple-touch-icon" sizes="120x120" href="/apple-touch-icon-120x120.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-180x180.png">
-  <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
-  <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
-  <link rel="icon" type="image/png" href="/android-chrome-192x192.png" sizes="192x192">
+  {% include '../widget/favicon.html' %}
 
   {{ customHeader() }}
 
@@ -72,22 +64,37 @@ gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js
   {% if env === 'development' %}
     <script src="/dll/vendor.dll.js"></script>
     <script src="{{ webpack_asset('dev').js }}" async></script>
+    <!-- Browsersync -->
+    <script id="__bs_script__">//<![CDATA[
+      document.write("<script async src='http://HOST:3001/browser-sync/browser-sync-client.js?v=2.23.6'><\/script>".replace("HOST", location.hostname));
+    //]]></script>
   {% endif %}
 
-  <script src="{{ webpack_asset('style').js }}"></script>
   <script src="{{ webpack_asset('commons').js }}" defer></script>
   {% if isEnabledPlugins() %}
-    <script src="{{ webpack_asset('plugin').js }}" defer></script>
+  <script src="{{ webpack_asset('plugin').js }}" defer></script>
   {% endif %}
   {% block html_head_loading_legacy %}
-    <script src="{{ webpack_asset('legacy').js }}" defer></script>
+  <script src="{{ webpack_asset('legacy').js }}" defer></script>
   {% endblock %}
+  {% block html_head_loading_app %}
   <script src="{{ webpack_asset('app').js }}" defer></script>
+  {% endblock %}
+
+  <!-- styles -->
+  {% block style_css_block %}
+  <link rel="stylesheet" href="{{ webpack_asset('style').css }}">
+  <link rel="stylesheet" href="{{ webpack_asset('style-theme-' + theme()).css }}">
+  {% endblock %}
 
   <!-- Google Fonts -->
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+  <!-- Themify Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cd-themify-icons@0.0.1/index.min.css">
+  <!-- Simple Line icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-line-icons@2.4.1/css/simple-line-icons.min.css">
   <!-- emojione -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/emojione@3.1.2/extras/css/emojione.min.css">
   <!-- highlight.js -->
@@ -103,117 +110,126 @@ gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js
 
 {% block html_body %}
 <body
-  class="crowi main-container {% block html_base_css %}{% endblock %} {% if 'crowi-plus' === layoutType() %}crowi-plus{% endif %}"
+  class="main-container content-wrapper {% block html_base_css %}{% endblock %}
+      {% if !layoutType() || 'crowi' === layoutType() %}crowi{% else %}growi{% endif %}"
   data-me="{{ user._id.toString() }}"
   data-plugin-enabled="{{ isEnabledPlugins() }}"
- {% block html_base_attr %}{% endblock %}
+  {% block html_base_attr %}{% endblock %}
   data-csrftoken="{{ csrf() }}"
   data-current-username="{% if user %}{{ user.username }}{% endif %}"
  >
 
-{% block layout_head_nav %}
-<nav class="crowi-header navbar navbar-default" role="navigation">
-  <!-- Brand and toggle get grouped for better mobile display -->
-  <div class="navbar-header">
-    <a class="navbar-brand" href="/">
-      <img alt="Crowi" src="/logo/32x32.png" width="16">
-      <span class="hidden-xs">{% block title %}{{ config.crowi['app:title']|default('Crowi') }}{% endblock %}</span>
-    </a>
-  {% if searchConfigured() %}
-  <div class="navbar-form navbar-left search-top" role="search" id="search-top">
+<div id="wrapper">
+  <!-- Navigation -->
+  {% block layout_head_nav %}
+  <nav class="navbar navbar-default navbar-static-top m-b-0">
+    <div class="navbar-header">
+      <a class="navbar-toggle hidden-sm hidden-md hidden-lg " href="javascript:void(0)" data-toggle="collapse" data-target=".navbar-collapse">
+        <i class="ti-menu"></i>
+      </a>
+      <div class="top-left-part">
+        <a class="logo" href="/">
+          <b>
+            <div class="logo-mark">{% include '../widget/logo.html' %}</div>
+          </b>
+          <span class="hidden-xs" style="color: black">
+            {% set appTitle = appTitle() %}
+            {% set appTitleFontSize = getAppTitleFontSize(appTitle) %}
+            <span class="logo-text">
+              <svg xmlns="http://www.w3.org/2000/svg">
+                <text x="0" y="{{22+appTitleFontSize/2}}" font-size="{{appTitleFontSize}}">
+                  {% block title %}{{ appTitle }}{% endblock %}
+                </text>
+              </svg>
+            </span>
+          </span>
+        </a>
+      </div>
+
+      <ul class="nav navbar-top-links navbar-left hidden-xs">
+        <li>
+          <a class="open-close hidden-xs waves-effect waves-light">
+            <i class="ti-menu"></i>
+          </a>
+        </li>
+        <li>
+          {% if searchConfigured() %}
+          <div class="navbar-form navbar-left search-top" role="search" id="search-top"></div>
+          {% endif %}
+        </li>
+      </ul>
+
+      <ul class="nav navbar-top-links navbar-right pull-right">
+        {% if user and user.admin %}
+        <li id="">
+          <a href="/admin" id="link-mypage">
+            <i class="icon-settings"></i> {{ t('Admin') }}
+          </a>
+        </li>
+        {% endif %}
+
+        {% if user %}
+        <li id="" class="dropdown">
+          <a href="#" data-target="#create-page" data-toggle="modal">
+            <i class="icon-pencil"></i> {{ t('New') }}
+          </a>
+        </li>
+        <li class="dropdown">
+          <a class="dropdown-toggle waves-effect waves-light" data-toggle="dropdown">
+            <img src="{{ user|picture }}" class="picture img-circle" width="25" /> {{ user.name }}
+          </a>
+          <ul class="dropdown-menu">
+            <li><a href="/user/{{ user.username }}"><i class="icon-fw icon-home"></i>{{ t('Home') }}</a></li>
+            <li><a href="/me"><i class="icon-fw icon-wrench"></i>{{ t('User Settings') }}</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="/trash"><i class="icon-fw icon-trash"></i>{{ t('Deleted Pages') }}</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="/logout"><i class="icon-fw icon-power"></i>{{ t('Sign out') }}</a></li>
+          </ul>
+          <!-- /.dropdown-messages -->
+        </li>
+        {% else %}
+        <li id="login-user"><a href="/login">Login</a></li>
+        {% endif %}
+        {% if config.crowi['app:confidential'] && config.crowi['app:confidential'] != '' %}
+        <li class="confidential"><a href="#">{{ config.crowi['app:confidential'] }}</a></li>
+        {% endif %}
+      </ul>
+    </div><!-- /.navbar-header -->
+  </nav>
+  {% include '../modal/create_page.html' %}
+  {% endblock  %} {# layout_head_nav #}
+
+  {% block sidebar %}
+  <!-- Left navbar-header -->
+  <div class="navbar-default sidebar" role="navigation">
+    <div class="sidebar-nav navbar-collapse slimscrollsidebar">
+      <ul class="nav" id="side-menu">
+        <li class="sidebar-search hidden-sm hidden-md hidden-lg">
+          {% if searchConfigured() %}
+          <div class="search-sidebar" role="search" id="search-sidebar"></div>
+          {% endif %}
+        </li>
+
+        <li><a href="#">(TBD) Create /Sidebar</a></li>
+      </ul>
+    </div>
   </div>
-  {% endif %}
-  </div>
+  <!-- Left navbar-header end -->
+  {% endblock %}
 
+  <!-- Page Content -->
+  <div id="page-wrapper">
+    {% block layout_main %}
+    {% endblock %} {# layout_main #}
+  </div><!-- /#page-wrapper -->
 
-  <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbarCollapse">
-    <span class="sr-only">Toggle navigation</span>
-    <span class="icon-bar"></span>
-    <span class="icon-bar"></span>
-    <span class="icon-bar"></span>
-  </button>
-  <!-- Collect the nav links, forms, and other content for toggling -->
-  <div class="collapse navbar-collapse" id="navbarCollapse">
+</div><!-- /#wrapper -->
 
-    <ul class="nav navbar-nav navbar-right">
-
-      {% if user and user.admin %}
-      <li id="">
-        <a href="/admin" id="link-mypage">
-          <i class="fa fa-cube"></i> {{ t('Admin') }}
-        </a>
-      </li>
-      {% endif %}
-      {#
-      <li id="">
-        <a href="#" id="createPage">
-          <i class="fa fa-plus"> 新規</i>
-        </a>
-      </li>
-      #}
-      {% if user %}
-      {#
-      <li id="" class="notif">
-        <a href="" id="notif-opener">
-          <i class="fa fa-globe"></i> <span class="badge badge-danger">6</span>
-        </a>
-      </li>
-      #}
-      <li id="" class="dropdown">
-        <button class="btn btn-default create-page-button" data-target="#create-page" data-toggle="modal">
-          <i class="fa fa-pencil"></i> {{ t('New') }}
-        </button>
-      </li>
-      <li id="login-user">
-        <a href="/user/{{ user.username }}" id="link-mypage">
-          <img src="{{ user|picture }}" class="picture picture-rounded" width="25" /> {{ user.name }}
-        </a>
-      </li>
-      <li class="dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bars"></i> <label class="sr-only">メニュー</label></a>
-        <ul class="dropdown-menu">
-          <li><a href="/me"><i class="fa fa-gears"></i> {{ t('User Settings') }}</a></li>
-          <li class="divider"></li>
-          <li><a href="/trash/"><i class="fa fa-trash-o"></i> {{ t('Deleted Pages') }}</a></li>
-          <li class="divider"></li>
-          <li><a href="/logout"><i class="fa fa-sign-out"></i> {{ t('Sign out') }}</a></li>
-          {# <li><a href="#">今日の日報を作成</a></li> #}
-          {# <li class="divider"></li> #}
-          {# <li class="divider"></li> #}
-          {# <li><a href="#">ログアウト</a></li> #}
-        </ul>
-      </li>
-      {% else %}
-      <li id="login-user"><a href="/login"><i class="fa fa-user"></i> Login</a></li>
-      {% endif %}
-      {% if config.crowi['app:confidential'] && config.crowi['app:confidential'] != '' %}
-      <li class="confidential"><a href="#">{{ config.crowi['app:confidential'] }}</a></li>
-      {% endif %}
-    </ul>
-  </div><!-- /.navbar-collapse -->
-</nav>
-{% include '../modal/create_page.html' %}
-{% endblock  %} {# layout_head_nav #}
-
-<div class="container-fluid">
-  <div class="row">
-
-  {% block layout_sidebar %}
-  {% endblock %} {# layout_sidebar #}
-
-  {% block layout_main %}
-  {% endblock %} {# layout_main #}
-
-{% block footer %}
-{% endblock %}
-
-  </div> {# /.row #}
-</div> {# /.container-fluid #}
+{% include '../modal/shortcuts.html' %}
 
 {% block body_end %}
 {% endblock %}
-
-{% include '../modal/shortcuts.html' %}
 </body>
 {% endblock %}
 

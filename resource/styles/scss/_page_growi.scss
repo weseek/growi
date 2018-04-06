@@ -1,0 +1,55 @@
+.growi.main-container {
+  header {
+
+    div.title-logo-container {
+      display: none;  // hide in default
+
+      a {
+        width: 32px;
+        height: 32px;
+
+        // centering
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        img {
+          width: 16px;
+          height: 16px;
+        }
+      }
+    }
+
+    ul.authors {
+      margin: 0;
+
+      li {
+        list-style: none;
+        font-size: 12px;
+      }
+
+      .picture {
+        width: 22px;
+        height: 22px;
+        border: 1px solid #ccc;
+      }
+    }
+
+  }
+
+  /*
+   * affix header
+   */
+  header.affix {
+    // show logo link
+    div.title-logo-container {
+      display: unset;
+      margin-left: -12px;
+      margin-right: 6px;
+    }
+    // hide authors in affix
+    .authors {
+      display: none !important;
+    }
+  }
+}

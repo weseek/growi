@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Icon from './Common/Icon';
 import PageRevisionList from './PageHistory/PageRevisionList';
 
 export default class PageHistory extends React.Component {
@@ -118,7 +117,6 @@ export default class PageHistory extends React.Component {
   render() {
     return (
       <div>
-        <h1><Icon name="history" /> History</h1>
         <PageRevisionList
           revisions={this.state.revisions}
           diffOpened={this.state.diffOpened}

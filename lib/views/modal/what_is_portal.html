@@ -4,7 +4,7 @@
 
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title">What is Portal?</h4>
+        <div class="modal-title">What is Portal?</div>
       </div>
 
       <div class="modal-body">
@@ -55,3 +55,27 @@
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
+<div class="modal fade portal-warning-modal" id="portal-warning-modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <div class="modal-title">ポータルに関するヒント</div>
+      </div>
+      <div class="modal-body">
+
+        <strong>Warning!</strong><br>
+
+        <p>既に <strong><a href="{{ path|removeLastSlash }}">{{ path|removeLastSlash }}</a></strong> のページが存在します。</p>
+
+        <p>
+          <a href="{{ path|removeLastSlash }}">{{ path|removeLastSlash }}</a> をポータル化するには、
+          <a href="{{ path|removeLastSlash }}">{{ path|removeLastSlash }}</a> に移動し、「ページを移動」させてください。<br>
+          <a href="{{ path|removeLastSlash }}">{{ path|removeLastSlash }}</a> とは別に、このページ(<code>{{ path }}</code>)にポータルを作成する場合、このまま編集を続けて作成してください。
+        </p>
+
+      </div>
+    </div>
+  </div>
+</div>
