@@ -6,6 +6,7 @@ CHANGES
 * Feature: Group Access Control List
 * Feature: Add theme selector
 * Feature: Custom title tag content
+* Feature: Add a control to switch whether email shown or hidden by user
 * Fix: bosai version
 * Support: Rename to GROWI
 * Support: Add dark theme
