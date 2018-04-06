@@ -56,7 +56,7 @@
       </select>
       {% endif %}
       {% if userRelatedGroups.length != 0 %}
-      <select name="pageForm[grantUserGroupId]" class="form-control">
+      <select name="pageForm[grantUserGroupId]" class="selectpicker btn-group-sm">
         {% for userGroup in userRelatedGroups %}
         <option value="{{ userGroup.id }}">{{ userGroup.name }}</option>
         {% endfor %}

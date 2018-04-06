@@ -27,6 +27,7 @@ GROWI
 * **Pluggable**
   * You can find plugins from [npm](https://www.npmjs.com/browse/keyword/growi-plugin) or [github](https://github.com/search?q=topic%3Agrowi-plugin)!
 * **Features**
+  * Create hierarchical pages with markdown
   * Support Authentication with LDAP / Active Directory 
   * Slack Incoming Webhooks Integration
   * [Miscellaneous features](https://github.com/weseek/growi/wiki/Additional-Features)
@@ -121,8 +122,7 @@ npm start
 ### How to install plugins
 
 * Stop server if server is running
-* `yarn add` to install plugin or `npm install --save`
-  * **Don't forget `--save` option if you use npm** or growi doesn't detect plugins
+* `yarn add` to install plugin or `npm install`
 * `npm start` to build client app and start server
 
 #### Examples
