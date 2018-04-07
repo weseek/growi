@@ -1,5 +1,3 @@
-# Sorry, GROWI v3.0.0 - v3.0.1 has been broken. Please wait v3.0.2 that is under constructing.
-
 <p align="center">
   <a href="https://growi.org">
     <img src="https://user-images.githubusercontent.com/1638767/38254268-d4476bbe-3793-11e8-964c-8865d690baff.png" width="240px">
