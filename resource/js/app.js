@@ -46,15 +46,10 @@ if (mainContent !== null) {
   pageRevisionId = mainContent.getAttribute('data-page-revision-id');
   pageRevisionCreatedAt = +mainContent.getAttribute('data-page-revision-created');
   pagePath = mainContent.attributes['data-path'].value;
-  /*
-   * Commented out temporally -- 2018.04.07 Yuki Takei
-   * This will be fixed by https://github.com/weseek/growi/issues/324
-   *
   const rawText = document.getElementById('raw-text-original');
   if (rawText) {
     pageContent = rawText.innerHTML;
   }
-  */
   markdown = entities.decodeHTML(pageContent);
 }
 const isLoggedin = document.querySelector('.main-container.nologin') == null;
