@@ -24,10 +24,6 @@ GROWI
 [![devDependencies Status](https://david-dm.org/weseek/growi/dev-status.svg)](https://david-dm.org/weseek/growi?type=dev)
 [![docker pulls](https://img.shields.io/docker/pulls/weseek/growi.svg)](https://hub.docker.com/r/weseek/growi/)
 
-
-Table of Contents
------------------
-
 - [Features](#features)
 - [Quick Start for Production](#quick-start-for-production)
     - [On-premise](#on-premise)
