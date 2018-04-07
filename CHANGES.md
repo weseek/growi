@@ -1,12 +1,16 @@
 CHANGES
 ========
 
-## 3.0.0-RC
+## 3.0.3-RC
+
+* 
+
+## 3.0.2
 
 * Feature: Group Access Control List
-* Feature: Add theme selector
-* Feature: Custom title tag content
+* Feature: Add site theme selector
 * Feature: Add a control to switch whether email shown or hidden by user
+* Feature: Custom title tag content
 * Fix: bosai version
 * Support: Rename to GROWI
 * Support: Add dark theme
@@ -16,6 +20,10 @@ CHANGES
     * react-bootstrap
     * react-bootstrap-typeahead
     * react-clipboard.js
+
+## 3.0.1 (Missing number)
+
+## 3.0.0 (Missing number)
 
 ## 2.4.4
 
