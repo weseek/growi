@@ -5,14 +5,15 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/weseek/crowi-plus/releases/latest"><img src="https://img.shields.io/github/release/weseek/crowi-plus.svg"></a>
+  <a href="https://growi-slackin.weseek.co.jp/"><img src="https://crowi-plus-slackin.weseek.co.jp/badge.svg"></a>
+</p>
+
+<p align="center">
   <a href="https://demo.growi.org">Demo Site</a>
 </p>
 <p align="center">
   <a href="https://heroku.com/deploy"><img src="https://www.herokucdn.com/deploy/button.png"></a>
-</p>
-<p align="center">
-  <a href="https://github.com/weseek/crowi-plus/releases/latest"><img src="https://img.shields.io/github/release/weseek/crowi-plus.svg"></a>
-  <a href="https://growi-slackin.weseek.co.jp/"><img src="https://crowi-plus-slackin.weseek.co.jp/badge.svg"></a>
 </p>
 
 GROWI 
