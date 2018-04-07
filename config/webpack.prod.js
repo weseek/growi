@@ -26,7 +26,7 @@ const PORT = process.env.PORT || 3000;
 
 module.exports = function (env) {
   return webpackMerge(commonConfig({ env: ENV }), {
-    devtool: 'source-map',
+    devtool: undefined,
     output: {
       path: helpers.root('public/js'),
       publicPath: '/js/',

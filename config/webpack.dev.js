@@ -63,7 +63,7 @@ module.exports = function (options) {
         },
         dllDir: helpers.root('public/dll'),
         webpackConfig: webpackMergeDll(commonConfig({env: ENV}), {
-          devtool: 'cheap-module-source-map',
+          devtool: undefined,
           plugins: [],
         })
       }),
