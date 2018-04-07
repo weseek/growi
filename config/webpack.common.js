@@ -59,7 +59,10 @@ module.exports = function (options) {
           test: /\.scss$/,
           use: ExtractTextPlugin.extract({
             fallback: 'style-loader',
-            use: 'css-loader!sass-loader'
+            use: [
+              { loader: 'css-loader', options: { minimize: isProd, sourceMap: !isProd } },
+              { loader: 'sass-loader', options: { sourceMap: !isProd } }
+            ]
           }),
           include: [helpers.root('resource/styles/scss')]
         },

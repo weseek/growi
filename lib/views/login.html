@@ -147,15 +147,17 @@
 
         <hr>
 
-        {% if config.crowi['security:registrationMode'] != 'Closed' %}
         <div class="row">
           <div class="col-xs-12 text-right">
+            {% if config.crowi['security:registrationMode'] != 'Closed' %}
             <a href="#register" id="register" class="link-switch">
               <i class="ti-check-box"></i> {{ t('Sign up is here') }}
             </a>
+            {% else %}
+            &nbsp;
+            {% endif %}
           </div>
         </div>
-        {% endif %}
       </div>
 
 

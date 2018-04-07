@@ -16,7 +16,13 @@
   {% include 'not_found_tabs.html' %}
 
   <div class="tab-content">
+    {#
+     # Commented out temporally -- 2018.04.07 Yuki Takei
+     # This will be fixed by https://github.com/weseek/growi/issues/324
+     #
+     #
     <script type="text/template" id="raw-text-original"># {{ path|path2name }}</script>
+     #}
     {# list view #}
     <div class="p-t-10 active tab-pane page-list-container" id="revision-body">
       {% if pages.length == 0 %}
