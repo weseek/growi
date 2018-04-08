@@ -203,10 +203,8 @@
 
     .front, .back {
       backface-visibility: hidden;
-      -webkit-backface-visibility: hidden;
       transition: 0.4s;
       transform-style: preserve-3d;
-      -webkit-transform-style: preserve-3d;
     }
     .front {
       z-index: 2;
