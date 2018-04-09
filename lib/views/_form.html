@@ -17,6 +17,7 @@
 <form action="/_/edit" id="page-form" method="post" class="{% if isUploadable() %}uploadable{% endif %} page-form">
 
   <div id="page-editor">{% if pageForm.body %}{{ pageForm.body }}{% endif %}</div>
+  <!-- <div id="page-editor">{% if pageForm.body %}{{ pageForm.body }}{% elseif isEnabledAttachTitleHeader() %}# {{ path|path2name }}{% endif %}</div> -->
 
   <input type="hidden" id="form-body" name="pageForm[body]" value="{% if pageForm.body %}{{ pageForm.body }}{% endif %}">
   <input type="hidden" name="pageForm[path]" value="{{ path }}">
