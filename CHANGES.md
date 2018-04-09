@@ -3,7 +3,14 @@ CHANGES
 
 ## 3.0.3-RC
 
-* 
+* Fix: Login page is broken in iOS
+* Fix: Hide presentation tab if portal page
+* Fix: A few checkboxes doesn't work
+    * Invite user check with email in `/admin/user`
+    * Recursively check in rename modal
+    * Redirect check in rename modal
+* Fix: Activating invited user form url is wrong
+* Support: Use postcss-loader and autoprefixer
 
 ## 3.0.2
 
