@@ -1,11 +1,8 @@
-# Sorry, GROWI v3.0.0 - v3.0.1 has been broken. Please wait v3.0.2 that is under constructing.
-
 <p align="center">
   <a href="https://growi.org">
     <img src="https://user-images.githubusercontent.com/1638767/38254268-d4476bbe-3793-11e8-964c-8865d690baff.png" width="240px">
   </a>
 </p>
-
 <p align="center">
   <a href="https://github.com/weseek/crowi-plus/releases/latest"><img src="https://img.shields.io/github/release/weseek/crowi-plus.svg"></a>
   <a href="https://growi-slackin.weseek.co.jp/"><img src="https://crowi-plus-slackin.weseek.co.jp/badge.svg"></a>
@@ -18,6 +15,7 @@
   <a href="https://heroku.com/deploy"><img src="https://www.herokucdn.com/deploy/button.png"></a>
 </p>
 
+
 GROWI 
 ===========
 
@@ -26,6 +24,18 @@ GROWI
 [![devDependencies Status](https://david-dm.org/weseek/growi/dev-status.svg)](https://david-dm.org/weseek/growi?type=dev)
 [![docker pulls](https://img.shields.io/docker/pulls/weseek/growi.svg)](https://hub.docker.com/r/weseek/growi/)
 
+- [Features](#features)
+- [Quick Start for Production](#quick-start-for-production)
+    - [On-premise](#on-premise)
+    - [Using Heroku](#using-heroku)
+    - [Using docker-compose](#using-docker-compose)
+- [Environment Variables](#environment-variables)
+- [Documentation](#documentation)
+- [License](#license)
+
+
+Features
+========
 
 * **Pluggable**
   * You can find plugins from [npm](https://www.npmjs.com/browse/keyword/growi-plugin) or [github](https://github.com/search?q=topic%3Agrowi-plugin)!

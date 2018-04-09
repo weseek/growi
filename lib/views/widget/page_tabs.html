@@ -50,7 +50,9 @@
   {% endif %}
 
   <li class="nav-main-right-tab pull-right"><a href="#revision-history" data-toggle="tab"><i class="icon-layers"></i> History</a></li>
-  <li class="nav-main-right-tab pull-right"><a href="?presentation=1" class="toggle-presentation"><i class="icon-film"></i> {{ t('Presentation Mode') }}</a></li>
+  {% if not isPortal %}
+    <li class="nav-main-right-tab pull-right"><a href="?presentation=1" class="toggle-presentation"><i class="icon-film"></i> {{ t('Presentation Mode') }}</a></li>
+  {% endif %}
 
 </ul>
 

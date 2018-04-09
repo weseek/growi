@@ -60,7 +60,16 @@ module.exports = function (options) {
           use: ExtractTextPlugin.extract({
             fallback: 'style-loader',
             use: [
-              { loader: 'css-loader', options: { minimize: isProd, sourceMap: !isProd } },
+              { loader: 'css-loader', options: {
+                sourceMap: !isProd,
+                minimize: isProd
+              } },
+              { loader: 'postcss-loader', options: {
+                sourceMap: !isProd,
+                plugins: (loader) => [
+                  require('autoprefixer')()
+                ]
+              } },
               { loader: 'sass-loader', options: { sourceMap: !isProd } }
             ]
           }),
