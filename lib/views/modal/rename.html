@@ -20,17 +20,15 @@
                 <input type="text" class="form-control" name="new_path" id="newPageName" value="{{ page.path }}">
               </div>
             </div>
-            <div class="checkbox">
-              <label>
-                <input name="move_recursively" value="1" type="checkbox" checked> {{ t('modal_rename.label.Move recursively') }}
-              </label>
+            <div class="checkbox checkbox-info">
+              <input name="move_recursively" id="cbRecursively" value="1" type="checkbox" checked>
+              <label for="cbRecursively">{{ t('modal_rename.label.Move recursively') }}</label>
               <p class="help-block"> {{ t('modal_rename.help.recursive', page.path) }}
               </p>
             </div>
-            <div class="checkbox">
-               <label>
-                 <input name="create_redirect" value="1"  type="checkbox"> {{ t('modal_rename.label.Redirect') }}
-               </label>
+            <div class="checkbox checkbox-info">
+              <input name="create_redirect" id="cbRedirect" value="1"  type="checkbox">
+               <label for="cbRedirect">{{ t('modal_rename.label.Redirect') }}</label>
                <p class="help-block"> {{ t('modal_rename.help.redirect', page.path) }}
                </p>
             </div>
