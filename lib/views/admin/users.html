@@ -47,10 +47,9 @@
             <label for="inviteForm[emailList]">メールアドレス (複数行入力で複数人招待可能)</label>
             <textarea class="form-control" name="inviteForm[emailList]" placeholder="例: user@crowi.wiki"></textarea>
           </div>
-          <div class="checkbox">
-            <label>
-              <input type="checkbox" name="inviteForm[sendEmail]" checked> 招待をメールで送信
-            </label>
+          <div class="checkbox checkbox-info">
+            <input type="checkbox" id="inviteWithEmail" name="inviteForm[sendEmail]" checked>
+            <label for="inviteWithEmail">招待をメールで送信</label>
           </div>
           <button type="submit" class="btn btn-primary">招待する</button>
         </div>
