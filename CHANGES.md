@@ -1,7 +1,11 @@
 CHANGES
 ========
 
-## 3.0.3-RC
+## 3.0.4-RC
+
+* Fix: Page-saving error after new page creation
+
+## 3.0.3
 
 * Fix: Login page is broken in iOS
 * Fix: Hide presentation tab if portal page
