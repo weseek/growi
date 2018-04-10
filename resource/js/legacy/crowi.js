@@ -233,7 +233,11 @@ $(function() {
     if (name.match(/.+\/$/)) {
       name = name.substr(0, name.length - 1);
     }
-    top.location.href = name + '#edit-form';
+    var names = name.split('/');
+    names.forEach(function(item, index) {
+      names[index] = encodeURIComponent(item);
+    });
+    top.location.href = names.join('/') + '#edit-form';
     return false;
   });
 
