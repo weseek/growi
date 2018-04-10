@@ -147,6 +147,11 @@ export default class Crowi {
     if (this.draft && this.draft[path]) {
       return this.draft[path];
     }
+    if (this.config.isEnabledAttachTitleHeader) {
+      var pathdraft = "# " + path;
+      this.saveDraft(path, pathdraft);
+      return this.draft[path];
+    }
 
     return null;
   }
