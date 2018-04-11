@@ -326,8 +326,10 @@
     "reflect_change": "変更の反映はページの更新が必要です。",
     "ctrl_space": "Ctrl+Space でコード補完",
     "Custom script": "カスタムスクリプト",
-    "write_java": "システム全体に適用されるJavaScriptを記述できます。"
-
+    "write_java": "システム全体に適用されるJavaScriptを記述できます。",
+    "attach_title_header": "タイトルヘッダの挿入",
+    "attach_title_header_desc": "新規作成したページの1行目にページのパスをタイトルヘッダとして挿入します。(Crowi の規定値はON)",
+    "by_invalidating_title_header": "無効化することで、まっさらな状態からページを作成することができます。(GROWI の標準はOFF)"
   },
 
   "user_management": {
