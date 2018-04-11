@@ -36,7 +36,7 @@ export default class RevisionPath extends React.Component {
     let parentPath = '/';
     splitted.forEach((pageName) => {
       pages.push({
-        pagePath: parentPath + pageName,
+        pagePath: parentPath + encodeURIComponent(pageName),
         pageName: pageName,
       });
       parentPath += pageName + '/';

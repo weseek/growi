@@ -15,6 +15,7 @@ require('bootstrap-sass');
 require('jquery.cookie');
 
 require('./thirdparty-js/agile-admin');
+const pagePathUtil = require('../../../lib/util/pagePathUtil');
 
 var Crowi = {};
 
@@ -233,7 +234,7 @@ $(function() {
     if (name.match(/.+\/$/)) {
       name = name.substr(0, name.length - 1);
     }
-    top.location.href = name + '#edit-form';
+    top.location.href = pagePathUtil.encodePagePath(name) + '#edit-form';
     return false;
   });
 
@@ -385,8 +386,8 @@ $(function() {
   $('.page-list-link').each(function() {
     var $link = $(this);
     var text = $link.text();
-    var path = $link.data('path');
-    var shortPath = String($link.data('short-path')); // convert to string
+    var path = decodeURIComponent($link.data('path'));
+    var shortPath = decodeURIComponent($link.data('short-path')); // convert to string
 
     if (path == null || shortPath == null) {
       // continue
