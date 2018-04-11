@@ -1,7 +1,11 @@
 CHANGES
 ========
 
-## 3.0.4-RC
+## 3.0.5-RC
+
+* 
+
+## 3.0.4
 
 * Improvement: The option that switch whether add h1 section when create new page
 * Improvement: Encode page path that includes special character
