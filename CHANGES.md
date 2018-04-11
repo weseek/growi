@@ -4,6 +4,7 @@ CHANGES
 ## 3.0.4-RC
 
 * Improvement: The option that switch whether add h1 section when create new page
+* Improvement: Encode page path that includes special character
 * Fix: Page-saving error after new page creation
 
 ## 3.0.3
