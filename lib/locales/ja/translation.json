@@ -66,9 +66,9 @@
   "Show": "公開",
   "Hide": "非公開",
   "Disclose E-mail": "メールアドレスの公開",
-  
- 
-  
+
+
+
 
   "Create today's": "今日の◯◯を作成",
   "Memo": "メモ",
@@ -326,8 +326,9 @@
     "reflect_change": "変更の反映はページの更新が必要です。",
     "ctrl_space": "Ctrl+Space でコード補完",
     "Custom script": "カスタムスクリプト",
-    "write_java": "システム全体に適用されるJavaScriptを記述できます。"
-
+    "write_java": "システム全体に適用されるJavaScriptを記述できます。",
+    "attach_title_header": "新規ページ作成時の h1 セクション自動挿入",
+    "attach_title_header_desc": "新規作成したページの1行目に、ページのパスを h1 セクションとして挿入します。"
   },
 
   "user_management": {

@@ -161,24 +161,24 @@ gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js
 
       <ul class="nav navbar-top-links navbar-right pull-right">
         {% if user and user.admin %}
-        <li id="">
-          <a href="/admin" id="link-mypage">
-            <i class="icon-settings"></i> {{ t('Admin') }}
+        <li class="nav-item-admin">
+          <a href="/admin">
+            <i class="icon-settings"></i><span>{{ t('Admin') }}</span>
           </a>
         </li>
         {% endif %}
 
         {% if user %}
-        <li id="" class="dropdown">
+        <li class="nav-item-create-page">
           <a href="#" data-target="#create-page" data-toggle="modal">
-            <i class="icon-pencil"></i> {{ t('New') }}
+            <i class="icon-pencil"></i><span>{{ t('New') }}</span>
           </a>
         </li>
         <li class="dropdown">
           <a class="dropdown-toggle waves-effect waves-light" data-toggle="dropdown">
             <img src="{{ user|picture }}" class="picture img-circle" width="25" /> {{ user.name }}
           </a>
-          <ul class="dropdown-menu">
+          <ul class="dropdown-menu dropdown-menu-right">
             <li><a href="/user/{{ user.username }}"><i class="icon-fw icon-home"></i>{{ t('Home') }}</a></li>
             <li><a href="/me"><i class="icon-fw icon-wrench"></i>{{ t('User Settings') }}</a></li>
             <li role="separator" class="divider"></li>

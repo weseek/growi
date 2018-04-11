@@ -22,6 +22,7 @@ export default class PageEditor extends React.Component {
     const isMathJaxEnabled = !!config.env.MATHJAX;
 
     this.state = {
+      pageId: this.props.pageId,
       revisionId: this.props.revisionId,
       markdown: this.props.markdown,
       isUploadable,
@@ -110,10 +111,10 @@ export default class PageEditor extends React.Component {
     let data;
 
     // update
-    if (this.props.pageId != null) {
+    if (this.state.pageId != null) {
       endpoint = '/pages.update';
       data = {
-        page_id: this.props.pageId,
+        page_id: this.state.pageId,
         revision_id: this.state.revisionId,
         body: this.state.markdown,
       };
@@ -295,9 +296,10 @@ export default class PageEditor extends React.Component {
   pageSavedHandler(page) {
     // update states
     this.setState({
+      pageId: page.id,
       revisionId: page.revision._id,
       markdown: page.revision.body
-    })
+    });
 
     // clear draft
     this.clearDraft();

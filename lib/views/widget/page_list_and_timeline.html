@@ -7,18 +7,19 @@
   </ul>
 
   <div class="tab-content">
-    {% if pages.length == 0 %}
-
-      {% if isTrashPage() %}
-      No deleted pages.
-      {% else %}
-      There are no pages under <strong>{{ path }}</strong>.
-      {% endif %}
-    {% endif  %}
-
     {# list view #}
     <div class="p-t-10 active tab-pane fade page-list-container in" id="view-list">
-      {% include 'page_list.html' with { pages: pages, pager: pager, viewConfig: viewConfig } %}
+      {% if pages.length == 0 %}
+        <div class="m-t-10">
+          {% if isTrashPage() %}
+          No deleted pages.
+          {% else %}
+          There are no pages under <strong>{{ path }}</strong>.
+          {% endif %}
+        </div>
+      {% else %}
+        {% include 'page_list.html' with { pages: pages, pager: pager, viewConfig: viewConfig } %}
+      {% endif %}
     </div>
 
     {# timeline view #}
