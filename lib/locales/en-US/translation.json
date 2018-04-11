@@ -69,8 +69,8 @@
   "Show": "Show",
   "Hide": "Hide",
   "Disclose E-mail": "Disclose E-mail",
-  
-  
+
+
 
   "Create today's": "Create today's ...",
   "Memo": "memo",
@@ -307,9 +307,8 @@
     "ctrl_space": "Ctrl+Space to Autocomplete",
     "Custom script": "Custom script",
     "write_java": "You can write Javascript that is applied to whole system.",
-    "attach_title_header": "Attach title header",
-    "attach_title_header_desc": "Attach the page path to new page first line when you create new page.(ON is Crowi default)",
-    "by_invalidating_title_header": "By invalidating, you can create the page cleanly.(OFF is GROWI standard)"
+    "attach_title_header": "Add h1 section when create new page automatically",
+    "attach_title_header_desc": "Add page path to the first line as h1 section when create new page"
   },
 
   "user_management": {
