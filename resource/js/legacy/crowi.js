@@ -383,7 +383,7 @@ $(function() {
   /*
    * wrap short path with <strong></strong>
    */
-  $('.page-list-link').each(function() {
+  $('#view-list .page-list-ul-flat .page-list-link').each(function() {
     var $link = $(this);
     var text = $link.text();
     var path = decodeURIComponent($link.data('path'));
