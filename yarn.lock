@@ -3454,9 +3454,9 @@ https-proxy-agent@^1.0.0:
     debug "2"
     extend "3"
 
-i18next-express-middleware@^1.0.5:
-  version "1.0.9"
-  resolved "https://registry.yarnpkg.com/i18next-express-middleware/-/i18next-express-middleware-1.0.9.tgz#5f198d2166794f0dbaaca2c9b613c0795485dfbe"
+i18next-express-middleware@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/i18next-express-middleware/-/i18next-express-middleware-1.1.1.tgz#9204f28c8800ac3bff87fbee01945367956f349c"
   dependencies:
     cookies "0.7.1"
 
@@ -3471,9 +3471,9 @@ i18next-sprintf-postprocessor@^0.2.2:
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/i18next-sprintf-postprocessor/-/i18next-sprintf-postprocessor-0.2.2.tgz#2e409f1043579382698b6a2da70cdaa551d67ea4"
 
-i18next@^10.0.1:
-  version "10.2.2"
-  resolved "https://registry.yarnpkg.com/i18next/-/i18next-10.2.2.tgz#1f2dc55ca2e8d7e071f7aff9f78654ef7f003c0e"
+i18next@^11.1.1:
+  version "11.1.1"
+  resolved "https://registry.yarnpkg.com/i18next/-/i18next-11.1.1.tgz#df3a683542d7756a8aa8d6b884b61141239c394a"
 
 iconv-lite@0.4.19, iconv-lite@^0.4.17, iconv-lite@~0.4.13:
   version "0.4.19"
@@ -7238,9 +7238,9 @@ uglify-to-browserify@~1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/uglify-to-browserify/-/uglify-to-browserify-1.0.2.tgz#6e0924d6bda6b5afe349e39a6d632850a0f882b7"
 
-uglifycss@^0.0.28:
-  version "0.0.28"
-  resolved "https://registry.yarnpkg.com/uglifycss/-/uglifycss-0.0.28.tgz#b865ae5f66e4fcec6ea1d979e150dc5bf37ceb1c"
+uglifycss@^0.0.29:
+  version "0.0.29"
+  resolved "https://registry.yarnpkg.com/uglifycss/-/uglifycss-0.0.29.tgz#abe49531155d146e75dd2fdf933d371bc1180054"
 
 uglifyjs-webpack-plugin@^0.4.6:
   version "0.4.6"
