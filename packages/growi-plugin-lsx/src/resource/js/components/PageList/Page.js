@@ -68,8 +68,8 @@ export class Page extends React.Component {
 
   getIconElement() {
     return (this.state.isExists)
-        ? <i className="fa fa-file-text" aria-hidden="true"></i>
-        : <i className="fa fa-file-o" aria-hidden="true"></i>;
+        ? <i className="ti-agenda" aria-hidden="true"></i>
+        : <i className="ti-file lsx-page-not-exist" aria-hidden="true"></i>;
   }
 
   /**
@@ -88,7 +88,7 @@ export class Page extends React.Component {
     const pageNode = this.props.pageNode;
 
     // create PagePath element
-    let pagePathNode = <PagePath pagePath={pageNode.pagePath} />;
+    let pagePathNode = <PagePath pagePath={pageNode.pagePath} isExists={this.state.isExists} />;
     if (this.state.isLinkable) {
       pagePathNode = <a className="page-list-link" href={this.omitSlashOfEnd(pageNode.pagePath)}>{pagePathNode}</a>;
     }

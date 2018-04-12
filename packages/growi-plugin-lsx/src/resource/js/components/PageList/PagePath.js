@@ -28,11 +28,14 @@ export class PagePath extends React.Component {
   render() {
     const pagePath = this.props.pagePath.replace(this.props.excludePathString.replace(/^\//, ''), '');
     const shortPath = this.getShortPath(pagePath);
-    const shortPathEscaped = shortPath.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-    const pathPrefix = pagePath.replace(new RegExp(shortPathEscaped + '(/)?$'), '');
+
+    let classNames = ['page-path']
+    if (!this.props.isExists) {
+      classNames.push('lsx-page-not-exist');
+    }
 
     return (
-      <span className="page-path">
+      <span className={classNames.join(' ')}>
         {shortPath}
       </span>
     );
@@ -41,6 +44,7 @@ export class PagePath extends React.Component {
 
 PagePath.propTypes = {
   pagePath: PropTypes.string.isRequired,
+  isExists: PropTypes.bool.isRequired,
 };
 
 PagePath.defaultProps = {

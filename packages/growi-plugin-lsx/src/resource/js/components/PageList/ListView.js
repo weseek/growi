@@ -29,7 +29,7 @@ export class ListView extends React.Component {
     }
 
     return (
-      <div className="page-list">
+      <div className="page-list lsx">
         <ul className="page-list-ul">
         {listView}
         </ul>

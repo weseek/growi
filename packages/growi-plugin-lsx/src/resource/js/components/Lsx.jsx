@@ -187,7 +187,7 @@ export class Lsx extends React.Component {
       return (
         <div className="text-muted">
           <i className="fa fa-spinner fa-pulse fa-fw"></i>
-          <span className="lsxBlink">{lsxContext.tagExpression}</span>
+          <span className="lsx-blink">{lsxContext.tagExpression}</span>
         </div>
       );
     }

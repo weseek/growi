@@ -23,12 +23,12 @@ export class PageListMeta extends React.Component {
 
     let CommentCount;
     if (page.commentCount > 0) {
-      CommentCount = <span><i className="fa fa-comment" />{page.commentCount}</span>;
+      CommentCount = <span><i className="icon-bubble" />{page.commentCount}</span>;
     }
 
     let LikerCount;
     if (page.liker.length > 0) {
-      LikerCount = <span><i className="fa fa-thumbs-up" />{page.liker.length}</span>;
+      LikerCount = <span><i className="icon-like" />{page.liker.length}</span>;
     }
 
 
