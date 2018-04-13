@@ -3,6 +3,8 @@ CHANGES
 
 ## 3.0.6-RC
 
+* Improvement: Simplify configuration for Slack Web API
+* Support: Use 'slack-node' instead of '@slack/client'
 * Support: Upgrade libs
     * googleapis
     * i18next
