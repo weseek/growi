@@ -10,6 +10,7 @@ CHANGES
     * i18next
     * i18next-express-middleware
     * react-bootstrap-typeahead
+    * sass-loader
     * uglifycss
 
 ## 3.0.5
