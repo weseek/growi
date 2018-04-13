@@ -75,7 +75,7 @@
 
               <div class="form-group">
                 <div class="col-xs-offset-3 col-xs-6">
-                  <button type="submit" class="btn btn-primary">Submit</button>
+                  <button type="submit" class="btn btn-primary">Save</button>
                 </div>
               </div>
             </fieldset>
@@ -117,55 +117,27 @@
                 <i class="icon-fw icon-exclamation text-danger"></i><span class="text-danger">NOT RECOMMENDED</span>
                 <br><br>
                 This is the way that compatible with Crowi,<br>
-                but not recommended in GROWI because it is too complex.
+                but not recommended in GROWI because it is <strong>too complex</strong>.
                 <br><br>
                 Please use <a href="#slack-incoming-webhooks" data-toggle="tab" onclick="activateTab('slack-incoming-webhooks')">Slack incomming webhooks Configuration</a> instead.
               </p>
 
               <div class="form-group">
-                <label for="slackSetting[slack:clientId]" class="col-xs-3 control-label">clientId</label>
+                <label for="slackSetting[slack:token]" class="col-xs-3 control-label">OAuth Access Token</label>
                 <div class="col-xs-6">
-                  <input class="form-control" type="text" name="slackSetting[slack:clientId]" value="{{ slackSetting['slack:clientId'] }}">
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label for="slackSetting[slack:clientSecret]" class="col-xs-3 control-label">clientSecret</label>
-                <div class="col-xs-6">
-                  <input class="form-control" type="text" name="slackSetting[slack:clientSecret]" value="{{ slackSetting['slack:clientSecret'] }}">
+                  <input class="form-control" type="text" name="slackSetting[slack:token]" value="{{ slackSetting['slack:token'] || '' }}">
                 </div>
               </div>
 
               <div class="form-group">
                 <div class="col-xs-offset-3 col-xs-6">
-                  <button type="submit" class="btn btn-primary">Submit</button>
+                  <button type="submit" class="btn btn-primary">Save</button>
                 </div>
               </div>
             </fieldset>
             <input type="hidden" name="_csrf" value="{{ csrf() }}">
           </form>
 
-          {% if hasSlackWebClientConfig %}
-          <div class="text-center">
-            {% if hasSlackToken %}
-            <p>Crowi and Slack is already <strong>connected</strong>. You can re-connect to refresh and overwirte the token with your Slack account.</p>
-            <a class="btn btn-warning btn-rounded" href="/admin/notification/slackSetting/disconnect">
-              <i class="icon-power"></i> Disconnect from Slack
-            </a>
-            <a class="btn btn-success btn-outline btn-rounded" href="{{ slackAuthUrl }}" target="_blank">
-              <i class="icon-login"></i> Reconnect to Slack
-            </a>
-            {% else %}
-            <p>Slack clientId and clientSecret is configured. Now, you can connect with Slack.</p>
-            <a class="btn btn-primary btn-outline2 btn-rounded" href="{{ slackAuthUrl }}" target="_blank">
-              <i class="icon-login"></i> Connect to Slack
-            </a>
-            {% endif %}
-          </div>
-
-          {% endif %}
-
-          {# {% if not hasSlackWebClientConfig %} #}
           <hr>
           <h3>
             <i class="icon-question" aria-hidden="true"></i>
@@ -187,20 +159,6 @@
               </ol>
             </li>
             <li>
-              Get App Credentials
-              <ol>
-                <li>Go To "Basic Information" page and make a note "Client ID" and "Client Secret".</li>
-              </ol>
-            </li>
-            <li>
-              Set Redirect URLs
-              <ol>
-                <li>Go to "OAuth &amp; Permissions" page.</li>
-                <li>Add <code><script>document.write(location.origin);</script>/admin/notification/slackAuth</code> .</li>
-                <li>Don't forget to <strong>save</strong>.</li>
-              </ol>
-            </li>
-            <li>
               Set Permission Scopes to the App
               <ol>
                 <li>Go to "OAuth &amp; Permissions" page.</li>
@@ -218,29 +176,17 @@
               Install the app
               <ol>
                 <li>Go to "Install App to Your Workspace" page and install.</li>
+                <li>Go to "OAuth &amp; Permissions" page and copy <code>OAuth Access Token</code>.</li>
               </ol>
             </li>
             <li>
-              (At Workspace) Approve the app
+              (At this page) Set OAuth Access Token
               <ol>
-                <li>Go to the management Apps page for the workspace you installed the app and approve "growi".</li>
+                <li>Input "OAuth Access Token".</li>
+                <li>Don't forget to <strong>save</strong>.</li>
               </ol>
-            </li>
-            <li>
-              (At Workspace) Invite the bot to your workspace
-              <ol>
-                <li>Invite the user you created in <code>4. Add a bot user</code> to the channel you notify to.</li>
-              </ol>
-            </li>
-            <li>
-              (At GROWI admin page) Input "clientId" and "clientSecret" and submit on this page.
-            </li>
-            <li>
-              (At GROWI admin page) Click "Connect to Slack" button to start OAuth process.
             </li>
           </ol>
-          {# {% endif %} #}
-
 
         </div><!-- /#slack-app -->
 

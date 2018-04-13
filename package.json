@@ -47,7 +47,6 @@
     "webpack": "webpack"
   },
   "dependencies": {
-    "@slack/client": "^3.14.0",
     "assets-webpack-plugin": "~3.5.1",
     "async": "^2.3.0",
     "autoprefixer": "^8.2.0",
@@ -137,6 +136,7 @@
     "reveal.js": "^3.5.0",
     "rimraf": "^2.6.1",
     "sass-loader": "^6.0.3",
+    "slack-node": "^0.1.8",
     "socket.io": "^2.0.3",
     "socket.io-client": "^2.0.3",
     "style-loader": "^0.20.1",
