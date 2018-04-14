@@ -275,7 +275,9 @@
     "for_instance":" For instance, if you use growi within a company, you can write ",
     "only_those":" Only those whose e-mail address including the company address can register.",
     "insert_single":"Please insert single e-mail address per line.",
-    "Authentication mechanism settings":"Authentication mechanism settings"
+    "Authentication mechanism settings":"Authentication mechanism settings",
+    "external_as_local": "Bind the external account with the same username as the local one to the local one automatically",
+    "external_as_local_help": "Enabling this option may be helpful if you want to authenticate users with external accounts, that are originally created as local accounts."
   },
 
   "markdown_setting": {
