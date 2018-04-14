@@ -1,9 +1,21 @@
 CHANGES
 ========
 
-## 3.0.5-RC
+## 3.0.6-RC
 
-* 
+* Improvement: Simplify configuration for Slack Web API
+* Support: Use 'slack-node' instead of '@slack/client'
+* Support: Upgrade libs
+    * googleapis
+    * i18next
+    * i18next-express-middleware
+    * react-bootstrap-typeahead
+    * sass-loader
+    * uglifycss
+
+## 3.0.5
+
+* Fix: lsx plugins doesn't show page names
 
 ## 3.0.4
 
