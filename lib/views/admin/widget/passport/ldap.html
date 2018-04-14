@@ -124,9 +124,9 @@
           </p>
 
           <div class="checkbox checkbox-info">
-            <input type="checkbox" id="cbTreatUsernameMatchingAsIdentical" name="settingForm[security:passport-ldap:isTreatUsernameMatchingAsIdentical]" value="1"
-                {% if settingForm['security:passport-ldap:isTreatUsernameMatchingAsIdentical'] %}checked{% endif %} />
-            <label for="cbTreatUsernameMatchingAsIdentical">
+            <input type="checkbox" id="cbSameUsernameTreatedAsIdenticalUser" name="settingForm[security:passport-ldap:isSameUsernameTreatedAsIdenticalUser]" value="1"
+                {% if settingForm['security:passport-ldap:isSameUsernameTreatedAsIdenticalUser'] %}checked{% endif %} />
+            <label for="cbSameUsernameTreatedAsIdenticalUser">
               {{ t("security_setting.Treat username matching as identical") }}
             </label>
           </div>
