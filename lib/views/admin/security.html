@@ -92,25 +92,6 @@
 
           <div class="form-group">
             <div class="col-xs-offset-3 col-xs-6">
-              <div class="checkbox checkbox-info">
-                <input type="checkbox" id="externalAsLocal" name="settingForm[security:externalAsLocal]" value="1"
-                                                                                                                 {% if settingForm['security:externalAsLocal'] %}
-                checked
-                {% endif %}
-                />
-                <label for="externalAsLocal">
-                  {{ t("security_setting.external_as_local") }}
-                </label>
-              </div>
-  
-              <p class="help-block">
-                {{ t("security_setting.external_as_local_help") }}
-              </p>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <div class="col-xs-offset-3 col-xs-6">
               <input type="hidden" name="_csrf" value="{{ csrf() }}">
               <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
             </div>

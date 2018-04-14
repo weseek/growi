@@ -296,8 +296,8 @@
     "only_those":"その会社のメールアドレスを持っている人のみ登録可能になります。",
     "insert_single":"1行に1メールアドレス入力してください。",
     "Authentication mechanism settings":"認証機構設定",
-    "external_as_local": "外部アカウントをそれと同じユーザー名を持ったローカルアカウントに自動的にリンクする",
-    "external_as_local_help": "ローカルアカウントとして作成されたユーザーを外部アカウントで認証したい場合に役に立つかもしれません。"
+    "Treat username matching as identical": "新規ログイン時、<code>username</code> が一致したローカルアカウントが存在した場合は自動的に紐付ける",
+    "Treat username matching as identical_warn": "WARNING: <code>username</code> の一致を以て同一ユーザーであるとみなすので、セキュリティに注意してください"
   },
   "markdown_setting": {
     "markdown_rendering": "Markdownレンダリングの設定を変更できます。",
