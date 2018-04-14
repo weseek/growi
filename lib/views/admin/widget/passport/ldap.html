@@ -122,8 +122,17 @@
               Specification of mappings when creating new users
             </small>
           </p>
+
+          <div class="checkbox checkbox-info">
+            <input type="checkbox" id="cbTreatUsernameMatchingAsIdentical" name="settingForm[security:passport-ldap:isTreatUsernameMatchingAsIdentical]" value="1"
+                {% if settingForm['security:passport-ldap:isTreatUsernameMatchingAsIdentical'] %}checked{% endif %} />
+            <label for="cbTreatUsernameMatchingAsIdentical">
+              {{ t("security_setting.Treat username matching as identical") }}
+            </label>
+          </div>
         </div>
       </div>
+
 
       <h4>Group Search Filter (Optional)</h4>
 
