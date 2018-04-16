@@ -1,7 +1,11 @@
 CHANGES
 ========
 
-## 3.0.7-RC
+## 3.0.8-RC
+
+* 
+
+## 3.0.7
 
 * Improvement: Enable to download an attached file with original name
 * Improvement: Use MongoDB for session store instead of Redis
