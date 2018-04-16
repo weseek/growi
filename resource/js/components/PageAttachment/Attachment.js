@@ -34,6 +34,12 @@ export default class Attachment extends React.Component {
 
     const fileType = <span className="attachment-filetype label label-default">{attachment.fileFormat}</span>;
 
+    const btnDownload = (this.props.isUserLoggedIn)
+        ? <a className="attachment-download" href={`/download/${attachment._id}`}>
+            <i className="icon-cloud-download"></i>
+          </a>
+        : '';
+
     const btnTrash = (this.props.isUserLoggedIn)
         ? <a className="text-danger attachment-delete" onClick={this._onAttachmentDeleteClicked}>
             <i className="icon-trash"></i>
@@ -42,16 +48,17 @@ export default class Attachment extends React.Component {
 
     return (
       <li>
-          <User user={attachment.creator} />
-          <i className={formatIcon}></i>
+        <User user={attachment.creator} />
+        <i className={formatIcon}></i>
 
-          <a href={attachment.url}> {attachment.originalName}</a>
+        <a href={attachment.url}> {attachment.originalName}</a>
 
-          {fileType}
+        {fileType}
 
-          {fileInUse}
+        {fileInUse}
 
-          {btnTrash}
+        {btnDownload}
+        {btnTrash}
       </li>
     );
   }

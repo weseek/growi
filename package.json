@@ -1,6 +1,6 @@
 {
   "name": "growi",
-  "version": "3.0.6-RC",
+  "version": "3.0.7-RC",
   "description": "Team collaboration software using markdown",
   "tags": [
     "wiki",
@@ -64,6 +64,7 @@
     "check-node-version": "^3.1.1",
     "codemirror": "^5.36.0",
     "connect-flash": "~0.1.1",
+    "connect-mongo": "^2.0.1",
     "connect-redis": "^3.3.0",
     "cookie-parser": "^1.4.3",
     "cross-env": "^5.0.5",
@@ -132,7 +133,6 @@
     "react-codemirror2": "^4.2.1",
     "react-dom": "^16.2.0",
     "react-dropzone": "^4.2.7",
-    "redis": "^2.7.1",
     "reveal.js": "^3.5.0",
     "rimraf": "^2.6.1",
     "sass-loader": "^7.0.1",

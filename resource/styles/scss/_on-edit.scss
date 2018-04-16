@@ -178,7 +178,7 @@ body.on-edit {
       @mixin insertFontAwesome($code) {
         &:before {
           margin-right: 0.2em;
-          font-family: FontAwesome;
+          font-family: 'simple-line-icons';
           content: $code;
         }
       }
@@ -193,9 +193,8 @@ body.on-edit {
         margin: 0 15px;
       }
       .dropzone-overlay-content {
-        font-size: 2em;
-        padding: 0.2em;
-        border-radius: 5px;
+        font-size: 2.5em;
+        padding: 0.5em;
       }
 
       // unuploadable or rejected
@@ -223,7 +222,7 @@ body.on-edit {
       &.dropzone-unuploadable {
         .dropzone-overlay-content {
           // insert content
-          @include insertFontAwesome("\f06a ");  // fa-exclamation-circle
+          @include insertFontAwesome("\e617");  // icon-exclamation
           &:after {
             content: "File uploading is disabled";
           }
@@ -238,7 +237,7 @@ body.on-edit {
           }
           .dropzone-overlay-content {
             // insert content
-            @include insertFontAwesome("\f093");  // fa-upload
+            @include insertFontAwesome("\e084");  // icon-cloud-upload
             &:after {
               content: "Drop here to upload";
             }
@@ -250,7 +249,7 @@ body.on-edit {
         // file type mismatch
         &.dropzone-rejected:not(.dropzone-uploadablefile) .dropzone-overlay-content {
           // insert content
-          @include insertFontAwesome("\f03e");  // fa-picture-o
+          @include insertFontAwesome("\e032");  // icon-picture
           &:after {
             content: "Only an image file is allowed";
           }
@@ -258,7 +257,7 @@ body.on-edit {
         // multiple files
         &.dropzone-accepted.dropzone-rejected .dropzone-overlay-content {
           // insert content
-          @include insertFontAwesome("\f071");  // fa-fa-exclamation-triangle
+          @include insertFontAwesome("\e617");  // icon-exclamation
           &:after {
             content: "Only 1 file is allowed";
           }

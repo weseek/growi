@@ -1,8 +1,19 @@
 CHANGES
 ========
 
-## 3.0.6-RC
+## 3.0.7-RC
 
+* Improvement: Enable to download an attached file with original name
+* Improvement: Use MongoDB for session store instead of Redis
+* Improvement: Update dropzone overlay icons and styles
+* Fix: Dropzone overlay elements doesn't show
+    * Introduced by 3.0.0
+* Fix: Broken page path of timeline
+    * Introduced by 3.0.4
+
+## 3.0.6
+
+* Improvement: Automatically bind external accounts newly logged in to local accounts when username match
 * Improvement: Simplify configuration for Slack Web API
 * Support: Use 'slack-node' instead of '@slack/client'
 * Support: Upgrade libs
@@ -15,6 +26,7 @@ CHANGES
 
 ## 3.0.5
 
+* Improvement: Update lsx icons and styles
 * Fix: lsx plugins doesn't show page names
 
 ## 3.0.4

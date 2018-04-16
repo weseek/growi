@@ -18,13 +18,12 @@
     },
     "INSTALL_PLUGINS": {
       "description": "Comma-separated list of plugin package names to install.",
-      "value": "growi-plugin-lsx",
+      "value": "growi-plugin-lsx,growi-plugin-pukiwiki-like-linker",
       "required": false
     }
   },
   "addons": [
     "mongolab",
-    "redistogo",
     {
       "plan": "bonsai:sandbox-6",
       "options": {
