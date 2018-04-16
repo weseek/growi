@@ -4,6 +4,7 @@ CHANGES
 ## 3.0.7-RC
 
 * Fix: Broken page path of timeline
+    * Introduced by 3.0.4
 
 ## 3.0.6
 
