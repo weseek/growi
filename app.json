@@ -24,7 +24,6 @@
   },
   "addons": [
     "mongolab",
-    "redistogo",
     {
       "plan": "bonsai:sandbox-6",
       "options": {
