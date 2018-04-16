@@ -4,6 +4,9 @@ CHANGES
 ## 3.0.7-RC
 
 * Improvement: Use MongoDB for session store instead of Redis
+* Improvement: Update dropzone overlay icons and styles
+* Fix: Dropzone overlay elements doesn't show
+    * Introduced by 3.0.0
 * Fix: Broken page path of timeline
     * Introduced by 3.0.4
 
