@@ -3,7 +3,7 @@ CHANGES
 
 ## 3.0.7-RC
 
-* 
+* Fix: Broken page path of timeline
 
 ## 3.0.6
 
@@ -20,6 +20,7 @@ CHANGES
 
 ## 3.0.5
 
+* Improvement: Update lsx icons and styles
 * Fix: lsx plugins doesn't show page names
 
 ## 3.0.4
