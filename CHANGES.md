@@ -3,6 +3,7 @@ CHANGES
 
 ## 3.0.7-RC
 
+* Improvement: Enable to download an attached file with original name
 * Improvement: Use MongoDB for session store instead of Redis
 * Improvement: Update dropzone overlay icons and styles
 * Fix: Dropzone overlay elements doesn't show
