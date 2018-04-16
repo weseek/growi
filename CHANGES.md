@@ -3,6 +3,7 @@ CHANGES
 
 ## 3.0.7-RC
 
+* Improvement: Use MongoDB for session store instead of Redis
 * Fix: Broken page path of timeline
     * Introduced by 3.0.4
 
