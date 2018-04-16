@@ -296,6 +296,7 @@ export default class Editor extends React.Component {
   renderOverlay() {
     const overlayStyle = {
       position: 'absolute',
+      zIndex: 4,  // forward than .CodeMirror-gutters
       top: 0,
       right: 0,
       bottom: 0,
