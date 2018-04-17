@@ -18,7 +18,7 @@ Contents
 
 |All Pages|[/Sandbox]|
 | --- | --- |
-| $lsx(/) | <div class="alert alert-success"><span style="font-size: x-large;"><i class="icon-check"></i> [[Sandboxをチェック>/Sandbox]]</span></div> $lsx(/Sandbox)|
+| $lsx(/) | <div class="alert alert-success"><span style="font-size: x-large;"><i class="icon-check"></i> [Sandboxをチェック](/Sandbox)</span></div> $lsx(/Sandbox)|
 
 Slack
 =====
