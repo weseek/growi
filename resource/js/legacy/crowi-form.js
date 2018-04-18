@@ -45,6 +45,20 @@
     $('body').removeClass('on-edit');
   });
 
+  $('#select-grant').on('change', function() {
+    var $selectGrant = $('#select-grant');
+    var selectGrant = $selectGrant.val();
+    console.log(selectGrant);
+    if (selectGrant === '5') {
+      console.log('show collapse');
+      $('#select-grant-group').collapse('show');
+    }
+    else {
+      console.log('hide collapse');
+      $('#select-grant-group').collapse('hide');
+    }
+  });
+
 /**
  * DOM ready
  */
