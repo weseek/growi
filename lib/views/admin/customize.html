@@ -66,8 +66,9 @@
               {% include 'widget/theme-colorbox.html' %}
             </a>
             <a id="theme-option-nature"
-             class="nature"
-             data-theme="{{ webpack_asset('style-theme-nature').css }}">
+                class="nature {% if 'nature' === settingForm['customize:theme'] %}active{% endif %}"
+                onclick="selectTheme('nature')"
+                data-theme="{{ webpack_asset('style-theme-nature').css }}">
               {% include 'widget/theme-colorbox.html' %}
             </a>
           </div>
