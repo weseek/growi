@@ -143,13 +143,17 @@ body.on-edit {
 
     background: none;
 
-    h1 {
-      font-size: 20px;
+    h1#revision-path {
+      @include variable-font-size(20px);
       line-height: 1em;
+
+      .d-flex {
+        flex-wrap: nowrap;  // nowrap even if the path is too long
+      }
     }
 
     // hide if screen size is less than smartphone
-    @media (max-width: $screen-xs-max) {
+    @media (max-width: $screen-xs) {
       display: none;
     }
   }
