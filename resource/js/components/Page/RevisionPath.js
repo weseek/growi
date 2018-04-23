@@ -73,6 +73,9 @@ export default class RevisionPath extends React.Component {
       marginLeft: "0.2em",
       marginRight: "0.2em",
     }
+    const pathSegmentStyle = {
+      wordBreak: 'keep-all'
+    }
     const editButtonStyle = {
       marginLeft: "0.5em",
       padding: "0 2px",
@@ -86,9 +89,10 @@ export default class RevisionPath extends React.Component {
 
       // add elements for page
       afterElements.push(
-        <span key={page.pagePath} className="path-segment">
+        <span key={page.pagePath} className="path-segment" style={pathSegmentStyle}>
           <a href={page.pagePath}>{page.pageName}</a>
-        </span>);
+        </span>
+      );
 
       // add elements for '/'
       afterElements.push(
