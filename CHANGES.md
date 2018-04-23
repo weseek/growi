@@ -4,6 +4,7 @@ CHANGES
 ## 3.0.8-RC
 
 * Improvement: h1#revision-path occupies most of the screen when the page path is long
+* Improvement: Ensure not to save concealed email field to localStorage
 * Fix: Cannot input "c" and "e" on iOS
 
 ## 3.0.7
