@@ -1,7 +1,12 @@
 CHANGES
 ========
 
-## 3.0.7-RC
+## 3.0.8-RC
+
+* Improvement: h1#revision-path occupies most of the screen when the page path is long
+* Fix: Cannot input "c" and "e" on iOS
+
+## 3.0.7
 
 * Improvement: Enable to download an attached file with original name
 * Improvement: Use MongoDB for session store instead of Redis

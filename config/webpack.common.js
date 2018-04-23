@@ -30,6 +30,7 @@ module.exports = function (options) {
       'style':                './resource/styles/scss/style.scss',
       'style-theme-default':  './resource/styles/scss/theme/default.scss',
       'style-theme-default-dark':  './resource/styles/scss/theme/default-dark.scss',
+      'style-theme-nature':   './resource/styles/scss/theme/nature.scss',
       'style-presentation':   './resource/styles/scss/style-presentation.scss',
     },
     externals: {

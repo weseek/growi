@@ -88,7 +88,8 @@ export default class RevisionPath extends React.Component {
       afterElements.push(
         <span key={page.pagePath} className="path-segment">
           <a href={page.pagePath}>{page.pageName}</a>
-        </span>);
+        </span>
+      );
 
       // add elements for '/'
       afterElements.push(

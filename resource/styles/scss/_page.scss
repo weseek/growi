@@ -52,10 +52,19 @@
       }
     }
 
-    h1 {
-      font-size: 28px;
+    .url-line {
+      color: #999;
+      font-size: 1rem;
+    }
+
+    h1#revision-path {
+      @include variable-font-size(28px);
+
       margin-top: 0;
       margin-bottom: 0;
+      .d-flex {
+        flex-wrap: wrap;  // for long page path
+      }
 
       // crowi layout only
       a.last-path {
@@ -68,11 +77,6 @@
 
     }
 
-    .url-line {
-      color: #999;
-      font-size: 1rem;
-    }
-
     // affix
     &.affix {
       width: 100%;
@@ -82,8 +86,8 @@
       z-index: 15; // over the .sidebar
       box-shadow: 0 0px 2px #999;
 
-      h1 {
-        font-size: 1.8em;
+      h1#revision-path {
+        @include variable-font-size(20px);
       }
     }
 
