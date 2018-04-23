@@ -2,9 +2,10 @@
 
 $themecolor:#00424b;
 
-$topbar:#11a543;
+$topbar:#118050;//0d6e10;
 $sidebar:#fff;
-$bodycolor:#fafff5;
+$bodycolor:#fefffd;
+
 $headingtext: #52644b;
 $bodytext: #333333;
 $linktext: lighten($themecolor, 20%);
@@ -13,7 +14,7 @@ $sidebar-text:#5c7253;
 
 $primary: $themecolor;
 
-$logo-mark-fill: lighten(desaturate($topbar, 10%), 15%);
+$logo-mark-fill: lighten(desaturate($topbar, 30%), 20%);
 $wikilinktext: lighten($themecolor, 20%);
 $wikilinktext-hover: lighten($wikilinktext, 20%);
 
