@@ -50,13 +50,13 @@
     var selectGrant = $selectGrant.val();
     console.log(selectGrant);
     if (selectGrant === '5') {
-      console.log('show collapse');
-      $('#select-grant-group').collapse('show');
+      console.log('show modal');
+      $('#select-grant-group').modal('show');
     }
     else {
-      console.log('hide collapse');
-      $('#select-grant-group').collapse('hide');
+      $('#select-grant-pre').val(selectGrant);
     }
+    console.log('select-grant-pre : ', $('#select-grant-pre').val());
   });
 
 /**

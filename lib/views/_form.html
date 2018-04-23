@@ -51,12 +51,15 @@
       {% else %}
       <select id="select-grant" name="pageForm[grant]" class="m-r-5 selectpicker btn-group-sm">
         {% for grantId, grantLabel in consts.pageGrants %}
-        <option value="{{ grantId }}" {% if pageForm.grant|default(page.grant) == grantId %}selected{% endif %} {% if grantId == 5 && userRelatedGroups.length == 0 %}disabled{% endif %}>{{ t(grantLabel) }}</option>
+        <option value="{{ grantId }}" {% if pageForm.grant|default(page.grant) == grantId %}selected{% endif %}>{{ t(grantLabel) }}</option>
         {% endfor %}
+        <option value="5" {% if pageForm.grant|default(page.grant) == "5" %}selected{% endif %}>{{ t('Only inside the group') }}</option>
       </select>
+      <input id="select-grant-pre" type="hidden" value="{{ page.grant }}">
       {% endif %}
+      <input id="grant-group" type="hidden" name="pageForm[grantUserGroupId]" value="">
       {% if userRelatedGroups.length != 0 %}
-      <div id="select-grant-group" class="collapse width">
+      <div class="collapse width">
         <select name="pageForm[grantUserGroupId]" class="selectpicker btn-group-sm">
           {% for userGroup in userRelatedGroups %}
           <option value="{{ userGroup.id }}">{{ userGroup.name }}</option>
