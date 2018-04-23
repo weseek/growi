@@ -3,6 +3,12 @@ CHANGES
 
 ## 3.0.9-RC
 
+* Support: Upgrade libs
+    * codemirror
+    * react-codemirror2
+    * normalize-path
+    * style-loader
+
 ## 3.0.8
 
 * Improvement: h1#revision-path occupies most of the screen when the page path is long
