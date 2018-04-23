@@ -1,7 +1,9 @@
 CHANGES
 ========
 
-## 3.0.8-RC
+## 3.0.9-RC
+
+## 3.0.8
 
 * Improvement: h1#revision-path occupies most of the screen when the page path is long
 * Improvement: Ensure not to save concealed email field to localStorage
