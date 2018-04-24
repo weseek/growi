@@ -3,6 +3,8 @@ CHANGES
 
 ## 3.0.9-RC
 
+* Fix: Registering new LDAP User is failed
+    * Introduced by 3.0.6
 * Support: Upgrade libs
     * codemirror
     * react-codemirror2
