@@ -6,13 +6,12 @@ $topbar:#118050;;
 $sidebar:#fff;
 $bodycolor:#fefffd;
 
-$headingtext: #695846;
+$headingtext: #46694e;
 $bodytext: #333333;
-$linktext: $themecolor;
+$linktext: lighten($themecolor,5%);
 $linktext-hover: lighten($linktext, 12%);
 $sidebar-text:#5c7253;
-$border:#f3f3e9;
-$table-border-color:$border;
+$border: #e9f0de;
 
 $primary: $themecolor;
 

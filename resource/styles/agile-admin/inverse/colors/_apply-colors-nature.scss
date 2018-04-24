@@ -16,10 +16,44 @@
 }
 
 /*
+ * Panel
+ */
+ .panel {
+ &, &.panel-white, &.panel-default {
+    border-color: darken($bodycolor,3%);
+    .panel-heading {
+      color: $headingtext;
+      background-color: darken($bodycolor,3%);
+      border-bottom:1px solid darken($bodycolor,3%);
+   }
+  }
+}
+
+/*
  * Tabs
  */
-.nav-tabs > li > a {
-  color: $dark;
+ .nav.nav-tabs {
+  border-bottom-color: $border;
+
+  > li > a {
+    color:$linktext;
+    &:hover, &:focus {
+      color: $linktext-hover;
+    }
+  }
+  > li.active > a {
+    border-top-color: $border;
+    border-left-color: $border;
+    border-right-color: $border;
+  }
+  > li:not(.active) > a {
+    &:hover, &:focus {
+      border-top-color: darken($border, 5%);
+      border-left-color: darken($border, 5%);
+      border-right-color: darken($border, 5%);
+      border-bottom: transparent;
+    }
+  }
 }
 
 /*
@@ -58,7 +92,7 @@
 
 .wiki {
   h1 {
-    border-color: darken($border, 20%);
+    border-color: $border;
   }
   h2 {
     border-color: $border;
