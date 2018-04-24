@@ -51,6 +51,8 @@ $rgt:right !default;
 $lft:left !default;
 
 $dark-text:#848a96 !default;
+$navbar-border: #999 !default;
+$active-navbar-border: lighten($navbar-border, 20%) !default;
 
 /*Border radius*/
 $radius: 0 !default;

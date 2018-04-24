@@ -20,6 +20,8 @@ $wikilinktext-hover: darken($wikilinktext, 5%);
 
 $dark: darken($bodytext, 5%);
 $border: lighten($basecolor, 15%);
+$navbar-border: lighten($border, 10%);
+$active-navbar-border: darken($border, 3%);
 
 @import 'apply-colors';
 @import 'apply-colors-dark';
