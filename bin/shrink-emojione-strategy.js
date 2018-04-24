@@ -4,7 +4,6 @@
  * @author Yuki Takei <yuki@weseek.co.jp>
  */
 const fs = require('graceful-fs');
-const normalize = require('normalize-path');
 const helpers = require('../config/helpers');
 
 const OUT = helpers.root('tmp/emoji_strategy_shrinked.json');

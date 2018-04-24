@@ -39,11 +39,11 @@
 
 .text-white { color: #fff !important; }
 
-@each $color, $value in $theme-colors {
-  @include text-emphasis-variant(".text-#{$color}", $value);
-}
+// @each $color, $value in $theme-colors {
+//   @include text-emphasis-variant(".text-#{$color}", $value);
+// }
 
-.text-muted { color: $text-muted !important; }
+// .text-muted { color: $text-muted !important; }
 
 // Misc
 

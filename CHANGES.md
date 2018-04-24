@@ -1,9 +1,20 @@
 CHANGES
 ========
 
-## 3.0.8-RC
+## 3.0.9-RC
+
+* Fix: Registering new LDAP User is failed
+    * Introduced by 3.0.6
+* Support: Upgrade libs
+    * codemirror
+    * react-codemirror2
+    * normalize-path
+    * style-loader
+
+## 3.0.8
 
 * Improvement: h1#revision-path occupies most of the screen when the page path is long
+* Improvement: Ensure not to save concealed email field to localStorage
 * Fix: Cannot input "c" and "e" on iOS
 
 ## 3.0.7
