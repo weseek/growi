@@ -1,0 +1,21 @@
+@import '../variables';
+
+$themecolor:#af8f25;
+
+$topbar:#53490d;
+$sidebar:#fff;
+$bodycolor:#fff;
+$headingtext: #2b2b2b;
+$bodytext: #333333;
+$linktext: darken($themecolor, 15%);
+$linktext-hover: lighten($linktext, 10%);
+$sidebar-text:#5a4a38;
+
+$primary: $themecolor;
+
+$logo-mark-fill: lighten(desaturate($topbar, 10%), 15%);
+$wikilinktext: darken($themecolor, 15%);
+$wikilinktext-hover: lighten($wikilinktext, 10%);
+
+@import 'apply-colors';
+@import 'apply-colors-light';
