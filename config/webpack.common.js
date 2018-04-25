@@ -31,6 +31,7 @@ module.exports = function (options) {
       'style-theme-default':  './resource/styles/scss/theme/default.scss',
       'style-theme-default-dark':  './resource/styles/scss/theme/default-dark.scss',
       'style-theme-nature':   './resource/styles/scss/theme/nature.scss',
+      'style-theme-mytheme1': './resource/styles/scss/theme/mytheme1.scss',
       'style-presentation':   './resource/styles/scss/style-presentation.scss',
     },
     externals: {
