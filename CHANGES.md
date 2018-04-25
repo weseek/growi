@@ -3,6 +3,7 @@ CHANGES
 
 ## 3.0.10-RC
 
+* Improvement: Add 'nature' theme
 * Fix: Page list and Timeline layout for layout-growi
 * Fix: Adjust theme colors
     * Introduced by 3.0.9
