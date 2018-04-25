@@ -41,6 +41,13 @@ $border-radius-large: 0;
 $border-radius-small: 0;
 
 
+//== Buttons
+//
+//## For each of Bootstrap's buttons, define text, background and border color.
+
+$btn-default-bg: $btn-default-bgcolor;
+
+
 
 //== Forms
 //
@@ -49,7 +56,7 @@ $border-radius-small: 0;
 //** `<input>` background color
 $input-bg:                       $bodycolor;
 //** `<input disabled>` background color
-$input-bg-disabled:              darken($bodycolor, 10%);
+$input-bg-disabled:              $btn-default-bgcolor;
 
 //** `<input>` border color
 $input-border:                   $border;
