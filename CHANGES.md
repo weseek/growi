@@ -1,7 +1,9 @@
 CHANGES
 ========
 
-## 3.0.10-RC
+## 3.0.11-RC
+
+## 3.0.10
 
 * Improvement: Add 'nature' theme
 * Fix: Page list and Timeline layout for layout-growi
