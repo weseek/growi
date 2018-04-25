@@ -52,26 +52,16 @@
         <fieldset>
           <legend>{{ t('customize_page.Theme') }}</legend>
 
-          <div id="themeOptions" class="d-flex">
-            <a id="theme-option-default" href="#"
-                class="default {% if 'default' === settingForm['customize:theme'] %}active{% endif %}"
-                onclick="selectTheme('default')"
-                data-theme="{{ webpack_asset('style-theme-default').css }}">
-              {% include 'widget/theme-colorbox.html' %}
-            </a>
-            <a id="theme-option-default-dark" href="#"
-                class="default-dark {% if 'default-dark' === settingForm['customize:theme'] %}active{% endif %}"
-                onclick="selectTheme('default-dark')"
-                data-theme="{{ webpack_asset('style-theme-default-dark').css }}">
-              {% include 'widget/theme-colorbox.html' %}
-            </a>
-            <a id="theme-option-nature" href="#"
-                class="nature {% if 'nature' === settingForm['customize:theme'] %}active{% endif %}"
-                onclick="selectTheme('nature')"
-                data-theme="{{ webpack_asset('style-theme-nature').css }}">
-              {% include 'widget/theme-colorbox.html' %}
-            </a>
-
+          <div id="themeOptions">
+          {# Light Themes #}
+            <div class="d-flex">
+              {% include 'widget/theme-colorbox.html' with { themeName: 'default' } %}
+              {% include 'widget/theme-colorbox.html' with { themeName: 'nature' } %}
+            </div>
+            <div class="d-flex">
+              {% include 'widget/theme-colorbox.html' with { themeName: 'default-dark' } %}
+            </div>
+          {# Dark Themes #}
           </div>
 
           <div class="form-group">
