@@ -78,7 +78,7 @@
     "eazy-logger": "^3.0.2",
     "elasticsearch": "^14.0.0",
     "entities": "^1.1.1",
-    "env-cmd": "^7.0.0",
+    "env-cmd": "^8.0.1",
     "escape-string-regexp": "^1.0.5",
     "express": "^4.16.1",
     "express-form": "~0.12.0",
