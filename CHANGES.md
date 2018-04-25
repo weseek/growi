@@ -1,10 +1,18 @@
 CHANGES
 ========
 
-## 3.0.9-RC
+## 3.0.10-RC
+
+* Improvement: Add 'nature' theme
+* Fix: Page list and Timeline layout for layout-growi
+* Fix: Adjust theme colors
+    * Introduced by 3.0.9
+
+## 3.0.9
 
 * Fix: Registering new LDAP User is failed
     * Introduced by 3.0.6
+* Support: Organize scss for overriding bootstrap variables
 * Support: Upgrade libs
     * codemirror
     * react-codemirror2

@@ -49,6 +49,10 @@ input.form-control, textarea.form-control {
   > li > a {
     color: $bodytext;
   }
+
+  .divider {
+    background-color: $border;
+  }
 }
 
 .modal {

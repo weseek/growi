@@ -1140,7 +1140,7 @@ label{
 }
 .btn-default, .btn-default.disabled{
   color: $bodytext;
-  $this-color: darken($bodycolor, 10%);
+  $this-color: $btn-default-bgcolor;
   background: $this-color;
   border:1px solid $this-color;
    &:hover, &:focus, &.focus{
@@ -1155,7 +1155,7 @@ label{
 .btn-default.btn-outline {
     background-color: transparent;
     &:hover, &:focus, &.focus{
-    background:darken($bodycolor, 10%);
+    background: $btn-default-bgcolor;
     }
 }
 .btn-primary.btn-outline {

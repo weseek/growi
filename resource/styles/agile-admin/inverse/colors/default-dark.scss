@@ -22,6 +22,7 @@ $dark: darken($bodytext, 5%);
 $border: lighten($basecolor, 15%);
 $navbar-border: lighten($border, 10%);
 $active-navbar-border: darken($border, 3%);
+$btn-default-bgcolor: darken($basecolor, 10%);
 
 @import 'apply-colors';
 @import 'apply-colors-dark';
