@@ -34,7 +34,7 @@ body.on-edit {
    */
   .nav-main-right-tab:not(.dropdown) {
     // hide if screen size is less than smartphone
-    @media (max-width: $screen-xs-max) {
+    @media (max-width: $screen-xs) {
       display: none;
     }
   }
@@ -128,12 +128,12 @@ body.on-edit {
 
   .row.bg-title {
     $left-margin: $nav-main-left-tab-width * 2 + 25px;  // width of .nav-main-left-tab x 2 + some margin
-    $right-margin: 128px + 94px;                        // width of presentation and history tabs width
+    $right-margin: 128px + 94px + 46px;                 // width of all of nav-main-right-tab
 
     position: absolute;
     z-index: 1;
     left: $left-margin;
-    min-width: calc(100% - #{$left-margin} - #{$right-margin});
+    width: calc(100% - #{$left-margin} - #{$right-margin});
 
     // for crowi layout
     > .col-md-9, .col-xs-12 {
@@ -143,13 +143,24 @@ body.on-edit {
 
     background: none;
 
-    h1 {
-      font-size: 20px;
+    .header-wrap {
+      overflow-x: hidden;
+    }
+    h1#revision-path {
+      @include variable-font-size(20px);
       line-height: 1em;
+
+      // nowrap even if the path is too long
+      .d-flex {
+        flex-wrap: nowrap;
+      }
+      .path-segment {
+        white-space: nowrap;
+      }
     }
 
     // hide if screen size is less than smartphone
-    @media (max-width: $screen-xs-max) {
+    @media (max-width: $screen-sm) {
       display: none;
     }
   }

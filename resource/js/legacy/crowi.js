@@ -902,7 +902,7 @@ window.addEventListener('keydown', (event) => {
 
   // ignore when target dom is input
   const inputPattern = /^input|textinput|textarea$/i;
-  if (target.tagName.match(inputPattern)) {
+  if (target.tagName.match(inputPattern) || target.isContentEditable) {
     return;
   }
 

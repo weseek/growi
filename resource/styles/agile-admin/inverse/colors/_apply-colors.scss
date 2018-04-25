@@ -214,6 +214,33 @@ legend {
   }
 }
 
+/*
+ * Tabs
+ */
+ .nav.nav-tabs {
+  border-bottom-color: $navbar-border;
+
+  > li > a {
+    color:$linktext;
+    &:hover, &:focus {
+      color: $linktext-hover;
+    }
+  }
+  > li.active > a {
+    border-top-color: $navbar-border;
+    border-left-color: $navbar-border;
+    border-right-color: $navbar-border;
+  }
+  > li:not(.active) > a {
+    &:hover, &:focus {
+      border-top-color: $active-navbar-border;
+      border-left-color: $active-navbar-border;
+      border-right-color: $active-navbar-border;
+      border-bottom: transparent;
+    }
+  }
+}
+
 
 /*
  * Crowi sidebar

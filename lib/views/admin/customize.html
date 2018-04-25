@@ -65,12 +65,14 @@
                 data-theme="{{ webpack_asset('style-theme-default-dark').css }}">
               {% include 'widget/theme-colorbox.html' %}
             </a>
+            {# Hide temporary for release v3.0.8 -- 2018.04.24 Yuki Takei
             <a id="theme-option-nature" href="#"
-                class="nature {% if 'nature' === settingForm['customize:theme'] %}active{% endif %}"
-                onclick="selectTheme('nature')"
-                data-theme="{{ webpack_asset('style-theme-nature').css }}">
+             class="nature {% if 'nature' === settingForm['customize:theme'] %}active{% endif %}"
+             onclick="selectTheme('nature')"
+             data-theme="{{ webpack_asset('style-theme-nature').css }}">
               {% include 'widget/theme-colorbox.html' %}
             </a>
+            #}
           </div>
 
           <div class="form-group">
