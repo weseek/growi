@@ -55,11 +55,11 @@
           <div id="themeOptions">
           {# Light Themes #}
             <div class="d-flex">
-              {% include 'widget/theme-colorbox.html' with { themeName: 'default' } %}
-              {% include 'widget/theme-colorbox.html' with { themeName: 'nature' } %}
+              {% include 'widget/theme-colorbox.html' with { name: 'default',  bg: '#ffffff', topbar: '#334455', theme: '#112744' } %}
+              {% include 'widget/theme-colorbox.html' with { name: 'nature',   bg: '#f9fff3', topbar: '#118050', theme: '#460039' } %}
             </div>
             <div class="d-flex">
-              {% include 'widget/theme-colorbox.html' with { themeName: 'default-dark' } %}
+              {% include 'widget/theme-colorbox.html' with { name: 'default-dark', bg: '#212731', topbar: '#151515', theme: '#f75b36' } %}
             </div>
           {# Dark Themes #}
           </div>
