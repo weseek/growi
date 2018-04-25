@@ -36,6 +36,26 @@ module.exports = function (env) {
     },
     module: {
       rules: [
+        {
+          test: /\.scss$/,
+          use: ExtractTextPlugin.extract({
+            fallback: 'style-loader',
+            use: [
+              { loader: 'css-loader', options: {
+                sourceMap: false,
+                minimize: true
+              } },
+              { loader: 'postcss-loader', options: {
+                sourceMap: false,
+                plugins: (loader) => [
+                  require('autoprefixer')()
+                ]
+              } },
+              { loader: 'sass-loader', options: { sourceMap: false } }
+            ]
+          }),
+          include: [helpers.root('resource/styles/scss')]
+        }
       ]
     },
     plugins: [

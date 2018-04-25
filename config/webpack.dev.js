@@ -32,7 +32,7 @@ const PORT = process.env.PORT || 3000;
  */
 module.exports = function (options) {
   return webpackMerge(commonConfig({ env: ENV }), {
-    devtool: 'cheap-module-source-map',
+    devtool: 'source-map',
     entry: {
       dev: './resource/js/dev',
     },
@@ -48,6 +48,23 @@ module.exports = function (options) {
     },
     module: {
       rules: [
+        {
+          test: /\.css$/,
+          use: [
+            { loader: 'style-loader', options: { sourceMap: true } },
+            { loader: 'css-loader', options: { sourceMap: true } },
+          ],
+          include: [helpers.root('resource/styles/scss')]
+        },
+        {
+          test: /\.scss$/,
+          use: [
+            { loader: 'style-loader', options: { sourceMap: true } },
+            { loader: 'css-loader', options: { sourceMap: true } },
+            { loader: 'sass-loader', options: { sourceMap: true } },
+          ],
+          include: [helpers.root('resource/styles/scss')]
+        },
       ],
     },
     plugins: [

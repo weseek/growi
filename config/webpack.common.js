@@ -57,26 +57,6 @@ module.exports = function (options) {
           }]
         },
         {
-          test: /\.scss$/,
-          use: ExtractTextPlugin.extract({
-            fallback: 'style-loader',
-            use: [
-              { loader: 'css-loader', options: {
-                sourceMap: !isProd,
-                minimize: isProd
-              } },
-              { loader: 'postcss-loader', options: {
-                sourceMap: !isProd,
-                plugins: (loader) => [
-                  require('autoprefixer')()
-                ]
-              } },
-              { loader: 'sass-loader', options: { sourceMap: !isProd } }
-            ]
-          }),
-          include: [helpers.root('resource/styles/scss')]
-        },
-        {
           test: /\.css$/,
           use: ['style-loader', 'css-loader'],
           exclude: [helpers.root('resource/styles/scss')]
