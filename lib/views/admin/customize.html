@@ -303,7 +303,7 @@
 
           <p class="help-block">
             Examples:
-            <pre class="hljs"><code class="highlightjs-demo">function $initHighlight(block, cls) {
+            <pre class="hljs {% if !settingForm['customize:highlightJsStyleBorder'] %}no-border{% endif %}"><code class="highlightjs-demo">function $initHighlight(block, cls) {
   try {
     if (cls.search(/\bno\-highlight\b/) != -1)
       return process(block, true, 0x0F) +
