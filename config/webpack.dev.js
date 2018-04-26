@@ -67,8 +67,21 @@ module.exports = function(options) {
       new DllBundlesPlugin({
         bundles: {
           vendor: [
+            'axios',
+            'codemirror',
+            'date-fns',
+            'diff',
+            'diff2html',
+            'jquery-ui',
+            'markdown-it',
+            'metismenu',
             'react',
-            'react-dom'
+            'react-dom',
+            'react-bootstrap',
+            'react-bootstrap-typeahead',
+            'react-dropzone',
+            'socket.io-client',
+            'toastr',
           ],
         },
         dllDir: helpers.root('public/dll'),
