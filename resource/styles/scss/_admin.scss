@@ -31,6 +31,11 @@
     .CodeMirror pre {
       font-family: $font-family-monospace;
     }
+
+    // override Highlight Js Style Border
+    .hljs{
+      border: none;
+    }
   }
 
   .admin-security {
