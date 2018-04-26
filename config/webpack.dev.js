@@ -12,8 +12,6 @@ const commonConfig = require('./webpack.common.js');
 /*
  * Webpack Plugins
  */
-const CommonsChunkPlugin = require('webpack/lib/optimize/CommonsChunkPlugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const DllBundlesPlugin = require('webpack-dll-bundles-plugin').DllBundlesPlugin;
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
@@ -22,17 +20,15 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
  */
 const ANALYZE = process.env.ANALYZE;
 const ENV = process.env.ENV = process.env.NODE_ENV = 'development';
-const HOST = process.env.HOST || '0.0.0.0';
-const PORT = process.env.PORT || 3000;
 
 /*
  * Webpack configuration
  *
  * See: http://webpack.github.io/docs/configuration.html#cli
  */
-module.exports = function (options) {
+module.exports = function(options) {
   return webpackMerge(commonConfig({ env: ENV }), {
-    devtool: 'cheap-module-source-map',
+    devtool: 'cheap-module-eval-source-map',
     entry: {
       dev: './resource/js/dev',
     },
@@ -40,7 +36,6 @@ module.exports = function (options) {
       path: helpers.root('public/js'),
       publicPath: '/js/',
       filename: '[name].bundle.js',
-      sourceMapFilename: '[file].map',
     },
     resolve: {
       extensions: ['.js', '.json'],
@@ -48,11 +43,26 @@ module.exports = function (options) {
     },
     module: {
       rules: [
+        {
+          test: /\.css$/,
+          use: [
+            'style-loader',
+            { loader: 'css-loader', options: { sourceMap: true } },
+          ],
+          include: [helpers.root('resource/styles/scss')]
+        },
+        {
+          test: /\.scss$/,
+          use: [
+            'style-loader',
+            { loader: 'css-loader', options: { sourceMap: true } },
+            { loader: 'sass-loader', options: { sourceMap: true } },
+          ],
+          include: [helpers.root('resource/styles/scss')]
+        },
       ],
     },
     plugins: [
-
-      new ExtractTextPlugin('[name].bundle.css'),
 
       new DllBundlesPlugin({
         bundles: {

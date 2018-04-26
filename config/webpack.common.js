@@ -10,15 +10,13 @@ const helpers = require('./helpers');
  */
 const AssetsPlugin = require('assets-webpack-plugin');
 const CommonsChunkPlugin = require('webpack/lib/optimize/CommonsChunkPlugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 /*
  * Webpack configuration
  *
  * See: http://webpack.github.io/docs/configuration.html#cli
  */
-module.exports = function (options) {
-  isProd = options.env === 'production';
+module.exports = function(options) {
   return {
     entry: {
       'app':                  './resource/js/app',
@@ -36,9 +34,9 @@ module.exports = function (options) {
     externals: {
       // require("jquery") is external and available
       //  on the global var jQuery
-      "jquery": "jQuery",
-      "emojione": "emojione",
-      "hljs": "hljs",
+      'jquery': 'jQuery',
+      'emojione': 'emojione',
+      'hljs': 'hljs',
     },
     resolve: {
       extensions: ['.js', '.json'],
@@ -55,26 +53,6 @@ module.exports = function (options) {
               plugins: ['lodash'],
             }
           }]
-        },
-        {
-          test: /\.scss$/,
-          use: ExtractTextPlugin.extract({
-            fallback: 'style-loader',
-            use: [
-              { loader: 'css-loader', options: {
-                sourceMap: !isProd,
-                minimize: isProd
-              } },
-              { loader: 'postcss-loader', options: {
-                sourceMap: !isProd,
-                plugins: (loader) => [
-                  require('autoprefixer')()
-                ]
-              } },
-              { loader: 'sass-loader', options: { sourceMap: !isProd } }
-            ]
-          }),
-          include: [helpers.root('resource/styles/scss')]
         },
         {
           test: /\.css$/,
@@ -127,8 +105,8 @@ module.exports = function (options) {
       new webpack.IgnorePlugin(/^\.\/lib\/deflate\.js/, /markdown-it-plantuml/),
 
       new webpack.ProvidePlugin({ // refs externals
-        jQuery: "jquery",
-        $: "jquery",
+        jQuery: 'jquery',
+        $: 'jquery',
       }),
 
     ]
