@@ -287,11 +287,11 @@
             <label for="settingForm[customize:highlightJsStyleBorder]" class="col-xs-3 control-label">(TBD) Border</label>
             <div class="col-xs-9">
               <div class="btn-group btn-toggle" data-toggle="buttons">
-                <label class="btn btn-default btn-rounded btn-outline {% if settingForm['customize:highlightJsStyleBorder'] %}active{% endif %}" data-active-class="primary">
+                <label class="btn btn-default btn-rounded btn-outline {% if settingForm['customize:highlightJsStyleBorder'] %}active{% endif %}" data-active-class="primary" onclick="selectBorderOn()">
                   <input name="settingForm[customize:highlightJsStyleBorder]" value="true" type="radio"
                       {% if true === settingForm['customize:highlightJsStyleBorder'] %}checked{% endif %}> ON
                 </label>
-                <label class="btn btn-default btn-rounded btn-outline {% if !settingForm['customize:highlightJsStyleBorder'] %}active{% endif %}" data-active-class="default">
+                <label class="btn btn-default btn-rounded btn-outline {% if !settingForm['customize:highlightJsStyleBorder'] %}active{% endif %}" data-active-class="default" onclick="selectBorderOff()">
                   <input name="settingForm[customize:highlightJsStyleBorder]" value="false" type="radio"
                       {% if !settingForm['customize:highlightJsStyleBorder'] %}checked{% endif %}> OFF
                 </label>
@@ -579,6 +579,13 @@ window.addEventListener('load', (event) => {
       // update .active class
       $('#themeOptions .active').removeClass('active');
       $(`#themeOptions #theme-option-${theme}`).addClass('active');
+    }
+
+    function selectBorderOn(){
+      $('.no-border').removeClass('no-border');
+    }
+    function selectBorderOff(){
+      $('.hljs').addClass('no-border')
     }
   </script>
 
