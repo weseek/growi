@@ -372,7 +372,7 @@ export  $initHighlight;</code></pre>
 
         <p class="help-block">
           Examples:
-          <pre class="hljs"><code>&lt;script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js" defer&gt;&lt;/script&gt;</code></pre>
+          <pre class="hljs {% if !settingForm['customize:highlightJsStyleBorder'] %}no-border{% endif %}"><code>&lt;script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js" defer&gt;&lt;/script&gt;</code></pre>
         </p>
 
         <div class="form-group">
@@ -458,7 +458,7 @@ export  $initHighlight;</code></pre>
         </p>
         <p class="help-block">
           Examples:
-<pre class="hljs"><code>console.log($('.main-container'));
+<pre class="hljs {% if !settingForm['customize:highlightJsStyleBorder'] %}no-border{% endif %}"><code>console.log($('.main-container'));
 
 window.addEventListener('load', (event) => {
   console.log('config: ', crowi.config);
