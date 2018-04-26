@@ -3,6 +3,10 @@ CHANGES
 
 ## 3.0.11-RC
 
+* Support: Optimize development build
+* Support: Upgrade libs
+    * env-cmd
+
 ## 3.0.10
 
 * Improvement: Add 'nature' theme
