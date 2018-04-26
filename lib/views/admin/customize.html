@@ -57,6 +57,12 @@
         <fieldset>
           <legend>{{ t('customize_page.Theme') }}</legend>
 
+          {% if env === 'development' %}
+            <div class="alert alert-warning">
+              <strong>DEBUG MESSAGE:</strong> development build では、リアルタイムプレビューが無効になります
+            </div>
+          {% endif %}
+
           <div id="themeOptions">
             {# Light Themes #}
             <div class="d-flex">
@@ -506,12 +512,12 @@ window.addEventListener('load', (event) => {
       $(this).submit(function()
       {
         function showMessage(formId, msg, status) {
-          $('#' + formId + ' .alert').remove();
+          $('#' + formId + ' #alert-results').remove();
 
           if (!status) {
             status = 'success';
           }
-          var $message = $('<p class="alert"></p>');
+          var $message = $('<p id="alert-results" class="alert"></p>');
           $message.addClass('alert-' + status);
           $message.html(msg.replace('\n', '<br>'));
           $message.insertAfter('#' + formId + ' legend');
