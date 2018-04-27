@@ -45,8 +45,8 @@
     $('body').removeClass('on-edit');
   });
 
-  $('#select-grant').on('change', function() {
-    var $selectGrant = $('#select-grant');
+  $('#select-grant > option').on('click', function() {
+    var $selectGrant = $('#select-grant > option');
     var selectGrant = $selectGrant.val();
     console.log(selectGrant);
     if (selectGrant === '5') {
@@ -55,8 +55,24 @@
     }
     else {
       $('#select-grant-pre').val(selectGrant);
+      $('#grant-group').val("");
     }
-    console.log('select-grant-pre : ', $('#select-grant-pre').val());
+  });
+
+  $('#grant-group').on('change', function($event) {
+    var $grantGroup = $('#grant-group');
+    var grantGroup = $grantGroup.val();
+    console.log(grantGroup);
+    if (grantGroup != null && grantGroup != "") {
+      var $groupGrant = $('#group-grant');
+      var selectedGroupElement =
+      $groupGrant.replaceWith
+
+    }
+  });
+
+  $('#no-group').on('click', function() {
+    location.href = "/admin/user-groups";
   });
 
 /**

@@ -12,9 +12,7 @@
 
         <ul class="list-inline">
           {% for sGroup in userRelatedGroups %}
-          <li>
-            <button class="btn btn-xs btn-primary" onclick="$('#grant-group').val(sGroup.id)">{{sGroup.name}}</button>
-          </li>
+          <li><button class="btn btn-xs btn-primary" onclick="$('#grant-group').val('{{sGroup.id}}')" data-dismiss="modal">{{sGroup.name}}</button></li>
           {% endfor %}
         </ul>
 
