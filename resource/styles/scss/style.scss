@@ -1,13 +1,12 @@
-// vendor
-@import 'vendor';
-
 // import variables
 @import '../agile-admin/inverse/variables';
 @import 'variables';
+@import 'mixins';
 
 @import 'override-bootstrap-variables';
 
-@import 'override-bootstrap-collapse-width';
+// vendor
+@import 'vendor';
 
 // override react-bootstrap-typeahead styles
 @import 'override-rbt';

@@ -8,11 +8,11 @@
 //## Gray and brand colors for use across Bootstrap.
 
 $gray-base:              #000 !default;
-$gray-darker:            lighten($gray-base, 13.5%) !default; // #222
-$gray-dark:              lighten($gray-base, 20%) !default;   // #333
-$gray:                   #f0f0f0;
-$gray-light:             #f5f5f5;
-$gray-lighter:           #fafafa;
+$gray-darker:            lighten($gray-base, 13.5%); // #222
+$gray-dark:              lighten($gray-base, 20%);   // #333
+$gray:                   lighten($gray-base, 33.5%); // #555
+$gray-light:             lighten($gray-base, 46.7%); // #777
+$gray-lighter:           lighten($gray-base, 93.5%); // #eee
 $gray-extralight:        #fafafa; // Growi original
 
 $brand-primary:         $primary;
@@ -41,6 +41,13 @@ $border-radius-large: 0;
 $border-radius-small: 0;
 
 
+//== Buttons
+//
+//## For each of Bootstrap's buttons, define text, background and border color.
+
+$btn-default-bg: $btn-default-bgcolor;
+
+
 
 //== Forms
 //
@@ -49,7 +56,7 @@ $border-radius-small: 0;
 //** `<input>` background color
 $input-bg:                       $bodycolor;
 //** `<input disabled>` background color
-$input-bg-disabled:              darken($bodycolor, 10%);
+$input-bg-disabled:              $btn-default-bgcolor;
 
 //** `<input>` border color
 $input-border:                   $border;

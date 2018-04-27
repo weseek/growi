@@ -49,6 +49,10 @@ input.form-control, textarea.form-control {
   > li > a {
     color: $bodytext;
   }
+
+  .divider {
+    background-color: $border;
+  }
 }
 
 .modal {
@@ -71,31 +75,29 @@ input.form-control, textarea.form-control {
 }
 
 /*
- * Tabs
+ * Table
  */
-.nav.nav-tabs {
-  border-bottom-color: $border;
+ .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th,
+ .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td ,
+ .table > thead > tr > th, .table-bordered{
+     border-top: 1px solid $border;
+ }
 
-  > li > a {
-    color:$linktext;
-    &:hover, &:focus {
-      color: $linktext-hover;
-    }
-  }
-  > li.active > a {
-    border-top-color: $border;
-    border-left-color: $border;
-    border-right-color: $border;
-  }
-  > li:not(.active) > a {
-    &:hover, &:focus {
-      border-top-color: darken($border, 5%);
-      border-left-color: darken($border, 5%);
-      border-right-color: darken($border, 5%);
-      border-bottom: transparent;
-    }
-  }
-}
+ .table-bordered > thead > tr > th,
+ .table-bordered > tbody > tr > th,
+ .table-bordered > tfoot > tr > th,
+ .table-bordered > thead > tr > td,
+ .table-bordered > tbody > tr > td,
+ .table-bordered > tfoot > tr > td {
+   border: 1px solid $border;
+ }
+ .table > thead > tr > th {
+     border-bottom: 1px solid $border;
+ }
+
+ .table-bordered {
+     border: 1px solid $border;
+ }
 
 
 /*

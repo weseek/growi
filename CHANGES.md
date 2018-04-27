@@ -1,9 +1,35 @@
 CHANGES
 ========
 
-## 3.0.8-RC
+## 3.0.11-RC
 
-* 
+* Support: Optimize development build
+* Support: Upgrade libs
+    * env-cmd
+
+## 3.0.10
+
+* Improvement: Add 'nature' theme
+* Fix: Page list and Timeline layout for layout-growi
+* Fix: Adjust theme colors
+    * Introduced by 3.0.9
+
+## 3.0.9
+
+* Fix: Registering new LDAP User is failed
+    * Introduced by 3.0.6
+* Support: Organize scss for overriding bootstrap variables
+* Support: Upgrade libs
+    * codemirror
+    * react-codemirror2
+    * normalize-path
+    * style-loader
+
+## 3.0.8
+
+* Improvement: h1#revision-path occupies most of the screen when the page path is long
+* Improvement: Ensure not to save concealed email field to localStorage
+* Fix: Cannot input "c" and "e" on iOS
 
 ## 3.0.7
 

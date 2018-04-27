@@ -1607,9 +1607,9 @@ code-point-at@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
 
-codemirror@^5.36.0:
-  version "5.36.0"
-  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.36.0.tgz#1172ad9dc298056c06e0b34e5ccd23825ca15b40"
+codemirror@^5.37.0:
+  version "5.37.0"
+  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.37.0.tgz#c349b584e158f590277f26d37c2469a6bc538036"
 
 color-convert@^1.3.0, color-convert@^1.9.0:
   version "1.9.1"
@@ -1872,6 +1872,16 @@ cross-spawn@^5.0.1, cross-spawn@^5.1.0:
   resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-5.1.0.tgz#e8bd0efee58fcff6f8f94510a0a554bbfa235449"
   dependencies:
     lru-cache "^4.0.1"
+    shebang-command "^1.2.0"
+    which "^1.2.9"
+
+cross-spawn@^6.0.5:
+  version "6.0.5"
+  resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-6.0.5.tgz#4a5ec7c64dfae22c3a14124dbacdee846d80cbc4"
+  dependencies:
+    nice-try "^1.0.4"
+    path-key "^2.0.1"
+    semver "^5.5.0"
     shebang-command "^1.2.0"
     which "^1.2.9"
 
@@ -2373,11 +2383,11 @@ entities@^1.1.1, entities@~1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/entities/-/entities-1.1.1.tgz#6e5c2d0a5621b5dadaecef80b90edfb5cd7772f0"
 
-env-cmd@^7.0.0:
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/env-cmd/-/env-cmd-7.0.0.tgz#d1fcfea6e0cbe6bf50b7130221d568907b6349bd"
+env-cmd@^8.0.1:
+  version "8.0.1"
+  resolved "https://registry.yarnpkg.com/env-cmd/-/env-cmd-8.0.1.tgz#0070518b29e78b1102f2e753551eaae3f971a335"
   dependencies:
-    cross-spawn "^5.0.1"
+    cross-spawn "^6.0.5"
 
 errno@^0.1.3:
   version "0.1.6"
@@ -4760,6 +4770,10 @@ neo-async@^2.5.0:
   version "2.5.1"
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.5.1.tgz#acb909e327b1e87ec9ef15f41b8a269512ad41ee"
 
+nice-try@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/nice-try/-/nice-try-1.0.4.tgz#d93962f6c52f2c1558c0fbda6d512819f1efe1c4"
+
 nise@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/nise/-/nise-1.2.0.tgz#079d6cadbbcb12ba30e38f1c999f36ad4d6baa53"
@@ -4934,11 +4948,15 @@ normalize-package-data@^2.3.2, normalize-package-data@^2.3.4:
     semver "2 || 3 || 4 || 5"
     validate-npm-package-license "^3.0.1"
 
-normalize-path@^2.0.0, normalize-path@^2.0.1, normalize-path@^2.1.1:
+normalize-path@^2.0.0, normalize-path@^2.0.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/normalize-path/-/normalize-path-2.1.1.tgz#1ab28b556e198363a8c1a6f7e6fa20137fe6aed9"
   dependencies:
     remove-trailing-separator "^1.0.1"
+
+normalize-path@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/normalize-path/-/normalize-path-3.0.0.tgz#0dcd69ff23a1c9b11fd0978316644a0388216a65"
 
 normalize-range@^0.1.2:
   version "0.1.2"
@@ -5275,7 +5293,7 @@ path-is-inside@^1.0.1, path-is-inside@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/path-is-inside/-/path-is-inside-1.0.2.tgz#365417dede44430d1c11af61027facf074bdfc53"
 
-path-key@^2.0.0:
+path-key@^2.0.0, path-key@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/path-key/-/path-key-2.0.1.tgz#411cadb574c5a140d3a4b1910d40d80cc9f40b40"
 
@@ -5955,9 +5973,9 @@ react-clipboard.js@^1.1.3:
     clipboard "^1.6.1"
     prop-types "^15.5.0"
 
-react-codemirror2@^4.2.1:
-  version "4.2.1"
-  resolved "https://registry.yarnpkg.com/react-codemirror2/-/react-codemirror2-4.2.1.tgz#4ad3c5c60ebbcb34880f961721b51527324ec021"
+react-codemirror2@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/react-codemirror2/-/react-codemirror2-5.0.0.tgz#18e0d4495c3cfe0c4675dd9bfcea074ca3aa9f56"
 
 react-dom@^16.2.0:
   version "16.2.0"
@@ -6503,19 +6521,12 @@ schema-utils@^0.3.0:
   dependencies:
     ajv "^5.0.0"
 
-schema-utils@^0.4.0:
+schema-utils@^0.4.0, schema-utils@^0.4.5:
   version "0.4.5"
   resolved "https://registry.yarnpkg.com/schema-utils/-/schema-utils-0.4.5.tgz#21836f0608aac17b78f9e3e24daff14a5ca13a3e"
   dependencies:
     ajv "^6.1.0"
     ajv-keywords "^3.1.0"
-
-schema-utils@^0.4.3:
-  version "0.4.3"
-  resolved "https://registry.yarnpkg.com/schema-utils/-/schema-utils-0.4.3.tgz#e2a594d3395834d5e15da22b48be13517859458e"
-  dependencies:
-    ajv "^5.0.0"
-    ajv-keywords "^2.1.0"
 
 scss-tokenizer@^0.2.3:
   version "0.2.3"
@@ -6531,6 +6542,10 @@ select@^1.1.2:
 "semver@2 || 3 || 4 || 5", semver@^5.0.3, semver@^5.1.0, semver@^5.3.0:
   version "5.4.1"
   resolved "https://registry.yarnpkg.com/semver/-/semver-5.4.1.tgz#e059c09d8571f0540823733433505d3a2f00b18e"
+
+semver@^5.5.0:
+  version "5.5.0"
+  resolved "https://registry.yarnpkg.com/semver/-/semver-5.5.0.tgz#dc4bbc7a6ca9d916dee5d43516f0092b58f7b8ab"
 
 semver@~5.3.0:
   version "5.3.0"
@@ -6980,12 +6995,12 @@ strip-json-comments@~2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-2.0.1.tgz#3c531942e908c2697c0ec344858c286c7ca0a60a"
 
-style-loader@^0.20.1:
-  version "0.20.1"
-  resolved "https://registry.yarnpkg.com/style-loader/-/style-loader-0.20.1.tgz#33ac2bf4d5c65a8906bc586ad253334c246998d0"
+style-loader@^0.21.0:
+  version "0.21.0"
+  resolved "https://registry.yarnpkg.com/style-loader/-/style-loader-0.21.0.tgz#68c52e5eb2afc9ca92b6274be277ee59aea3a852"
   dependencies:
     loader-utils "^1.1.0"
-    schema-utils "^0.4.3"
+    schema-utils "^0.4.5"
 
 supports-color@4.4.0:
   version "4.4.0"

@@ -92,40 +92,5 @@
         background-color: $brand-success;
       }
     }
-
-    // theme color
-    .default {
-      .color1 {
-        fill: white;
-      }
-      .color2 {
-        fill: #334455;
-      }
-      .color3 {
-        fill: #112744;
-      }
-    }
-    .default-dark {
-      .color1 {
-        fill: #212731;
-      }
-      .color2 {
-        fill: #151515;
-      }
-      .color3 {
-        fill: #f75b36;
-      }
-    }
-    .nature {
-      .color1 {
-        fill: #dfffd1;
-      }
-      .color2 {
-        fill: #1f9b33;
-      }
-      .color3 {
-        fill: #56f736;
-      }
-    }
   }
 }
