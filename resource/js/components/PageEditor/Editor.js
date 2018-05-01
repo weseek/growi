@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import * as codemirror from 'codemirror';
+import mtu from './MarkdownTableUtil';
 
 import { UnControlled as ReactCodeMirror } from 'react-codemirror2';
 require('codemirror/lib/codemirror.css');
@@ -392,6 +393,12 @@ export default class Editor extends React.Component {
               // Emoji AutoComplete
               emojiAutoCompleteHelper.showHint(editor);
             }}
+            onCursor={(editor, event) => {
+              const strFromBol = mtu.getStrFromBol(editor);
+              if (mtu.isEndOfLine(editor) && mtu.linePartOfTableRE.test(strFromBol)){
+              console.log("console.log()")
+              }
+              }}
             onDragEnter={this.onDragEnterForCM}
           />
         </Dropzone>
