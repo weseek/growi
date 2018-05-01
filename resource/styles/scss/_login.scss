@@ -202,9 +202,12 @@
     }
 
     .front, .back {
-      backface-visibility: hidden;
       transition: 0.4s;
+      backface-visibility: hidden;
       transform-style: preserve-3d;
+      // fix https://github.com/weseek/growi/issues/330
+      -webkit-backface-visibility: hidden;
+      -webkit-transform-style: preserve-3d;
     }
     .front {
       z-index: 2;
