@@ -3,9 +3,12 @@ CHANGES
 
 ## 3.0.11-RC
 
+* Fix: login.html is broken in iOS
 * Support: Optimize development build
 * Support: Upgrade libs
     * env-cmd
+    * googleapis
+    * sinon
 
 ## 3.0.10
 
