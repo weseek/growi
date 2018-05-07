@@ -280,7 +280,7 @@
         "passport": "Passport",
         "auth_mechanism": "authentication mechanism",
         "recommended": "Recommended",
-        "username_email_password": "Username, E-mail and Password authentication",
+        "username_email_password": "Username, Email and Password authentication",
         "ldap_auth": "LDAP authentication",
         "google_auth2": "Google OAuth2 authentication",
         "facebook_auth2": "Facebook OAuth2 authentication",
