@@ -103,7 +103,7 @@
       <form action="/_api/admin/security/mechanism" method="post" class="form-horizontal m-t-30" id="mechanismSetting" role="form">
         <fieldset>
           <legend class="alert-anchor">{{ t('Selecting authentication mechanism') }}</legend>
-          <p class="alert alert-info"><b>NOTE: </b>Restarting the server is needed if you switch the auth mechanism.</p>
+          <p class="alert alert-info"><b>{{ t("security_setting.note") }}: </b>{{ t("security_setting.require_server_restart_change_auth") }}</p>
           <div class="form-group">
             <div class="col-xs-6">
               <h4>
