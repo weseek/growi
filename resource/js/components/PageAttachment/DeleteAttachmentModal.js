@@ -28,9 +28,9 @@ export default class DeleteAttachmentModal extends React.Component {
     }
 
     return (
-        <p className="attachment-delete-file">
-          <i className="fa fa-file-o"></i>
-        </p>
+      <p className="attachment-delete-file">
+        <i className="fa fa-file-o"></i>
+      </p>
     );
   }
 
@@ -39,9 +39,6 @@ export default class DeleteAttachmentModal extends React.Component {
     if (attachment === null) {
       return null;
     }
-
-
-    const inUse = this.props.inUse;
 
     const props = Object.assign({}, this.props);
     delete props.onAttachmentDeleteClickedConfirm;
@@ -71,8 +68,7 @@ export default class DeleteAttachmentModal extends React.Component {
         <Modal.Footer>
           {deletingIndicator}
           <Button onClick={this._onDeleteConfirm} bsStyle="danger"
-            disabled={this.props.deleting}
-            >Delete!</Button>
+            disabled={this.props.deleting}>Delete!</Button>
         </Modal.Footer>
       </Modal>
     );
