@@ -23,6 +23,9 @@ require('codemirror/addon/fold/markdown-fold');
 require('codemirror/addon/fold/brace-fold');
 require('codemirror/mode/gfm/gfm');
 
+require('codemirror/addon/dialog/dialog');
+require('codemirror/addon/dialog/dialog.css');
+
 require('codemirror/theme/elegant.css');
 require('codemirror/theme/neo.css');
 require('codemirror/theme/mdn-like.css');
@@ -80,11 +83,38 @@ export default class Editor extends React.Component {
     this.renderOverlay = this.renderOverlay.bind(this);
   }
 
+  // TODO use jsdom
+  fetchJsFromCDN(src, externals) {
+    return new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.setAttribute('src', src);
+      script.addEventListener('load', () => {
+        resolve(externals.map(key => {
+          const ext = window[key]
+          typeof ext === 'undefined' && console.warn(`No external named '${key}' in window`);
+          return ext;
+        }));
+      });
+      script.addEventListener('error', reject);
+      document.body.appendChild(script);
+    });
+  }
+
   componentDidMount() {
     // initialize caret line
     this.setCaretLine(0);
     // set save handler
     codemirror.commands.save = this.dispatchSave;
+
+    // FIXME debug code -- 2018.05.07 Yuki Takei
+    // vim mode
+    window.CodeMirror = require('codemirror');
+    Promise.all([
+      this.fetchJsFromCDN('https://cdn.jsdelivr.net/npm/codemirror@5.37.0/keymap/vim.min.js', ['vim']),
+    ]).then(() => {
+      console.log('loaded vim');
+      this.getCodeMirror().setOption('keyMap', 'vim');
+    });
   }
 
   getCodeMirror() {
