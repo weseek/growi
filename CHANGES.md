@@ -1,7 +1,11 @@
 CHANGES
 ========
 
-## 3.0.11-RC
+## 3.0.12-RC
+
+* 
+
+## 3.0.11
 
 * Fix: login.html is broken in iOS
 * Fix: Removing attachment is crashed
