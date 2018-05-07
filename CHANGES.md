@@ -4,6 +4,8 @@ CHANGES
 ## 3.0.11-RC
 
 * Fix: login.html is broken in iOS
+* Fix: Removing attachment is crashed
+* Fix: File-attaching error after new page creation
 * Support: Optimize development build
 * Support: Upgrade libs
     * env-cmd
