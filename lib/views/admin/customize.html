@@ -3,8 +3,13 @@
 {% block html_title %}{{ customTitle(t('Customize')) }} {% endblock %}
 
 {% block style_css_block %}
-  <link rel="stylesheet" href="{{ webpack_asset('style').css }}">
-  <link rel="stylesheet" id="jssDefault" {# append id for theme selector #} href="{{ webpack_asset('style-theme-' + theme()).css }}">
+  {% if env === 'development' %}
+    <script src="{{ webpack_asset('style').js }}"></script>
+    <script src="{{ webpack_asset('style-theme-' + theme()).js }}"></script>
+  {% else %}
+    <link rel="stylesheet" href="{{ webpack_asset('style').css }}">
+    <link rel="stylesheet" id="jssDefault" {# append id for theme selector #} href="{{ webpack_asset('style-theme-' + theme()).css }}">
+  {% endif %}
 {% endblock %}
 
 {% block html_additional_headers %}
@@ -51,6 +56,12 @@
       <form action="/_api/admin/customize/theme" method="post" class="form-horizontal" id="customthemeSettingForm" role="form">
         <fieldset>
           <legend>{{ t('customize_page.Theme') }}</legend>
+
+          {% if env === 'development' %}
+            <div class="alert alert-warning">
+              <strong>DEBUG MESSAGE:</strong> development build では、リアルタイムプレビューが無効になります
+            </div>
+          {% endif %}
 
           <div id="themeOptions">
             {# Light Themes #}
@@ -501,12 +512,12 @@ window.addEventListener('load', (event) => {
       $(this).submit(function()
       {
         function showMessage(formId, msg, status) {
-          $('#' + formId + ' .alert').remove();
+          $('#' + formId + ' #alert-results').remove();
 
           if (!status) {
             status = 'success';
           }
-          var $message = $('<p class="alert"></p>');
+          var $message = $('<p id="alert-results" class="alert"></p>');
           $message.addClass('alert-' + status);
           $message.html(msg.replace('\n', '<br>'));
           $message.insertAfter('#' + formId + ' legend');

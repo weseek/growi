@@ -1,6 +1,6 @@
 {
   "name": "growi",
-  "version": "3.0.10-RC",
+  "version": "3.0.11-RC",
   "description": "Team collaboration software using markdown",
   "tags": [
     "wiki",
@@ -78,7 +78,7 @@
     "eazy-logger": "^3.0.2",
     "elasticsearch": "^14.0.0",
     "entities": "^1.1.1",
-    "env-cmd": "^7.0.0",
+    "env-cmd": "^8.0.1",
     "escape-string-regexp": "^1.0.5",
     "express": "^4.16.1",
     "express-form": "~0.12.0",
@@ -87,7 +87,7 @@
     "express-webpack-assets": "^0.1.0",
     "extract-text-webpack-plugin": "^3.0.2",
     "file-loader": "^1.1.0",
-    "googleapis": "^28.1.0",
+    "googleapis": "^29.0.0",
     "graceful-fs": "^4.1.11",
     "growi-pluginkit": "^1.1.0",
     "i18next": "^11.1.1",
@@ -164,7 +164,7 @@
     "morgan": "^1.8.2",
     "node-dev": "^3.1.3",
     "on-headers": "^1.0.1",
-    "sinon": "^4.0.0",
+    "sinon": "^5.0.2",
     "sinon-chai": "^3.0.0",
     "webpack-dll-bundles-plugin": "^1.0.0-beta.5"
   },

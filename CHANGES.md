@@ -1,7 +1,16 @@
 CHANGES
 ========
 
-## 3.0.10-RC
+## 3.0.11-RC
+
+* Fix: login.html is broken in iOS
+* Support: Optimize development build
+* Support: Upgrade libs
+    * env-cmd
+    * googleapis
+    * sinon
+
+## 3.0.10
 
 * Improvement: Add 'nature' theme
 * Fix: Page list and Timeline layout for layout-growi
