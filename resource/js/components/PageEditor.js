@@ -158,7 +158,7 @@ export default class PageEditor extends React.Component {
     formData.append('_csrf', this.props.crowi.csrfToken);
     formData.append('file', file);
     formData.append('path', this.props.pagePath);
-    formData.append('page_id', this.props.pageId || 0);
+    formData.append('page_id', this.state.pageId || 0);
 
     // post
     this.props.crowi.apiPost(endpoint, formData)
