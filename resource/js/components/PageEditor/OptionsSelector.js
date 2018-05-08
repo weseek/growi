@@ -30,8 +30,15 @@ export default class OptionsSelector extends React.Component {
     this.availableThemes = [
       'elegant', 'neo', 'mdn-like', 'material', 'monokai', 'twilight'
     ]
+    this.keymapModes = {
+      default: 'Default',
+      vim: 'Vim',
+      emacs: 'Emacs',
+      sublime: 'Sublime Text',
+    }
 
     this.onChangeTheme = this.onChangeTheme.bind(this);
+    this.onChangeKeymapMode = this.onChangeKeymapMode.bind(this);
     this.onClickStyleActiveLine = this.onClickStyleActiveLine.bind(this);
     this.onClickRenderMathJaxInRealtime = this.onClickRenderMathJaxInRealtime.bind(this);
     this.onToggleConfigurationDropdown = this.onToggleConfigurationDropdown.bind(this);
@@ -48,6 +55,15 @@ export default class OptionsSelector extends React.Component {
   onChangeTheme() {
     const newValue = this.themeSelectorInputEl.value;
     const newOpts = Object.assign(this.state.editorOptions, {theme: newValue});
+    this.setState({editorOptions: newOpts});
+
+    // dispatch event
+    this.dispatchOnChange();
+  }
+
+  onChangeKeymapMode() {
+    const newValue = this.keymapModeSelectorInputEl.value;
+    const newOpts = Object.assign(this.state.editorOptions, {keymapMode: newValue});
     this.setState({editorOptions: newOpts});
 
     // dispatch event
@@ -113,6 +129,29 @@ export default class OptionsSelector extends React.Component {
         <FormControl componentClass="select" placeholder="select" bsClass={bsClassName} className="btn-group-sm selectpicker"
             onChange={this.onChangeTheme}
             inputRef={ el => this.themeSelectorInputEl=el }>
+
+          {optionElems}
+
+        </FormControl>
+      </FormGroup>
+    )
+  }
+
+  renderKeymapModeSelector() {
+    const optionElems = [];
+    for (let mode in this.keymapModes) {
+      const label = this.keymapModes[mode];
+      optionElems.push(<option key={mode} value={mode}>{label}</option>);
+    }
+
+    const bsClassName = 'form-control-dummy'; // set form-control* to shrink width
+
+    return (
+      <FormGroup controlId="formControlsSelect">
+        <ControlLabel>Mode:</ControlLabel>
+        <FormControl componentClass="select" placeholder="select" bsClass={bsClassName} className="btn-group-sm selectpicker"
+            onChange={this.onChangeKeymapMode}
+            inputRef={ el => this.keymapModeSelectorInputEl=el }>
 
           {optionElems}
 
@@ -188,6 +227,7 @@ export default class OptionsSelector extends React.Component {
   render() {
     return <span>
       <span className="m-l-5">{this.renderThemeSelector()}</span>
+      <span className="m-l-5">{this.renderKeymapModeSelector()}</span>
       <span className="m-l-5">{this.renderConfigurationDropdown()}</span>
     </span>
   }
@@ -196,6 +236,7 @@ export default class OptionsSelector extends React.Component {
 export class EditorOptions {
   constructor(props) {
     this.theme = 'elegant';
+    this.keymapMode = 'default';
     this.styleActiveLine = false;
 
     Object.assign(this, props);
