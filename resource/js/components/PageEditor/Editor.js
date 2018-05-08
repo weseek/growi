@@ -8,7 +8,6 @@ const loadCssSync = require('load-css-file');
 import * as codemirror from 'codemirror';
 
 import { UnControlled as ReactCodeMirror } from 'react-codemirror2';
-require('codemirror/lib/codemirror.css');
 require('codemirror/addon/display/autorefresh');
 require('codemirror/addon/edit/matchbrackets');
 require('codemirror/addon/edit/matchtags');
@@ -26,8 +25,6 @@ require('codemirror/addon/fold/foldgutter.css');
 require('codemirror/addon/fold/markdown-fold');
 require('codemirror/addon/fold/brace-fold');
 require('codemirror/mode/gfm/gfm');
-
-require('codemirror/theme/elegant.css');
 
 
 import Dropzone from 'react-dropzone';
@@ -59,7 +56,7 @@ export default class Editor extends React.Component {
       isUploading: false,
     };
 
-    this.loadedThemeSet = new Set('elegant');
+    this.loadedThemeSet = new Set(['eclipse', 'elegant']);   // themes imported in _vendor.scss
     this.loadedKeymapSet = new Set();
 
     this.getCodeMirror = this.getCodeMirror.bind(this);
