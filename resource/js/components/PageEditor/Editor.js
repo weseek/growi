@@ -93,8 +93,9 @@ export default class Editor extends React.Component {
     // set CodeMirror instance as 'CodeMirror' so that CDN addons can reference
     window.CodeMirror = require('codemirror');
 
-    // TODO apply indivisual settings
-    this.setKeymapMode('vim');
+    // apply keymapMode
+    const keymapMode = this.props.editorOptions.keymapMode;
+    this.setKeymapMode(keymapMode);
   }
 
   getCodeMirror() {
@@ -159,7 +160,7 @@ export default class Editor extends React.Component {
   setKeymapMode(keymapMode) {
     const loadCssAsync = this.loadCssAsync;
 
-    if (!keymapMode.match(/^(vim|emacs|sublime)$/)) {
+    if (keymapMode == null || !keymapMode.match(/^(vim|emacs|sublime)$/)) {
       // reset keymap
       this.getCodeMirror().setOption('keyMap', 'default');
       return;
