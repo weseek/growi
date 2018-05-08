@@ -1,6 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import urljoin from 'url-join';
+const loadScripts = require('simple-load-script').all;
+const loadCss = require('load-css-file');
+
 import * as codemirror from 'codemirror';
 
 import { UnControlled as ReactCodeMirror } from 'react-codemirror2';
@@ -22,9 +26,6 @@ require('codemirror/addon/fold/foldgutter.css');
 require('codemirror/addon/fold/markdown-fold');
 require('codemirror/addon/fold/brace-fold');
 require('codemirror/mode/gfm/gfm');
-
-require('codemirror/addon/dialog/dialog');
-require('codemirror/addon/dialog/dialog.css');
 
 require('codemirror/theme/elegant.css');
 require('codemirror/theme/neo.css');
@@ -48,6 +49,8 @@ export default class Editor extends React.Component {
 
   constructor(props) {
     super(props);
+
+    this.cmCdnRoot = 'https://cdn.jsdelivr.net/npm/codemirror@5.37.0';
 
     this.interceptorManager = new InterceptorManager();
     this.interceptorManager.addInterceptors([
@@ -80,22 +83,6 @@ export default class Editor extends React.Component {
     this.renderOverlay = this.renderOverlay.bind(this);
   }
 
-  // TODO use jsdom
-  fetchJsFromCDN(src, externals) {
-    return new Promise((resolve, reject) => {
-      const script = document.createElement('script');
-      script.setAttribute('src', src);
-      script.addEventListener('load', () => {
-        resolve(externals.map(key => {
-          const ext = window[key]
-          typeof ext === 'undefined' && console.warn(`No external named '${key}' in window`);
-          return ext;
-        }));
-      });
-      script.addEventListener('error', reject);
-      document.body.appendChild(script);
-    });
-  }
 
   componentDidMount() {
     // initialize caret line
@@ -103,19 +90,22 @@ export default class Editor extends React.Component {
     // set save handler
     codemirror.commands.save = this.dispatchSave;
 
-    // FIXME debug code -- 2018.05.07 Yuki Takei
-    // vim mode
+    // set CodeMirror instance as 'CodeMirror' so that CDN addons can reference
     window.CodeMirror = require('codemirror');
-    Promise.all([
-      this.fetchJsFromCDN('https://cdn.jsdelivr.net/npm/codemirror@5.37.0/keymap/vim.min.js', ['vim']),
-    ]).then(() => {
-      console.log('loaded vim');
-      this.getCodeMirror().setOption('keyMap', 'vim');
-    });
+
+    // TODO apply indivisual settings
+    this.setKeymapMode('vim');
   }
 
   getCodeMirror() {
     return this.refs.cm.editor;
+  }
+
+  loadCssAsync(source) {
+    return new Promise((resolve) => {
+      loadCss(source);
+      resolve();
+    });
   }
 
   forceToFocus() {
@@ -158,6 +148,34 @@ export default class Editor extends React.Component {
     // get top position of the line
     var top = editor.charCoords({line, ch: 0}, 'local').top;
     editor.scrollTo(null, top);
+  }
+
+  /**
+   * set Key Maps
+   * @see https://codemirror.net/doc/manual.html#keymaps
+   *
+   * @param {string} keymapMode 'vim' or 'emacs' or 'sublime'
+   */
+  setKeymapMode(keymapMode) {
+    const loadCssAsync = this.loadCssAsync;
+
+    if (!keymapMode.match(/^(vim|emacs|sublime)$/)) {
+      // reset keymap
+      this.getCodeMirror().setOption('keyMap', 'default');
+      return;
+    }
+
+    Promise.all([
+      loadScripts(
+        urljoin(this.cmCdnRoot, 'addon/dialog/dialog.min.js'),
+        urljoin(this.cmCdnRoot, `keymap/${keymapMode}.min.js`)
+      ),
+      loadCssAsync(
+        urljoin(this.cmCdnRoot, 'addon/dialog/dialog.min.css')
+      )
+    ]).then(() => {
+      this.getCodeMirror().setOption('keyMap', keymapMode);
+    });
   }
 
   /**
