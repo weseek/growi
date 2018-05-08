@@ -28,11 +28,6 @@ require('codemirror/addon/fold/brace-fold');
 require('codemirror/mode/gfm/gfm');
 
 require('codemirror/theme/elegant.css');
-require('codemirror/theme/neo.css');
-require('codemirror/theme/mdn-like.css');
-require('codemirror/theme/material.css');
-require('codemirror/theme/monokai.css');
-require('codemirror/theme/twilight.css');
 
 
 import Dropzone from 'react-dropzone';
@@ -63,6 +58,8 @@ export default class Editor extends React.Component {
       dropzoneActive: false,
       isUploading: false,
     };
+
+    this.loadedThemeSet = new Set('elegant');
 
     // manage keymap w/o state because 'cm.setOption' is invoked manually
     this.currentKeymapMode = undefined;
@@ -98,12 +95,18 @@ export default class Editor extends React.Component {
     // set CodeMirror instance as 'CodeMirror' so that CDN addons can reference
     window.CodeMirror = require('codemirror');
 
+    // load theme
+    const theme = this.props.editorOptions.theme;
+    this.loadTheme(theme);
     // apply keymapMode
     const keymapMode = this.props.editorOptions.keymapMode;
     this.setKeymapMode(keymapMode);
   }
 
   componentWillReceiveProps(nextProps) {
+    // load theme
+    const theme = nextProps.editorOptions.theme;
+    this.loadTheme(theme);
     // apply keymapMode
     const keymapMode = nextProps.editorOptions.keymapMode;
     this.setKeymapMode(keymapMode);
@@ -163,13 +166,29 @@ export default class Editor extends React.Component {
   }
 
   /**
+   * load Theme
+   * @see https://codemirror.net/doc/manual.html#config
+   *
+   * @param {string} theme
+   */
+  loadTheme(theme) {
+    // load theme
+    let cssList = [];
+    if (!this.loadedThemeSet.has(theme)) {
+      this.loadCss(urljoin(this.cmCdnRoot, `theme/${theme}.min.css`));
+
+      // update Set
+      this.loadedThemeSet.add(theme);
+    }
+  }
+
+  /**
    * set Key Maps
    * @see https://codemirror.net/doc/manual.html#keymaps
    *
    * @param {string} keymapMode 'vim' or 'emacs' or 'sublime'
    */
   setKeymapMode(keymapMode) {
-    const loadCss = this.loadCss;
 
     if (this.currentKeymapMode === keymapMode) {
       // do nothing
@@ -182,6 +201,7 @@ export default class Editor extends React.Component {
       return;
     }
 
+    const loadCss = this.loadCss;
     let scriptList = [];
     let cssList = [];
 
