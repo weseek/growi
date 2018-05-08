@@ -29,7 +29,7 @@ export default class OptionsSelector extends React.Component {
 
     this.availableThemes = [
       'elegant', 'neo', 'mdn-like', 'material', 'monokai', 'twilight'
-    ]
+    ];
     this.keymapModes = {
       default: 'Default',
       vim: 'Vim',
