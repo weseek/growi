@@ -60,15 +60,14 @@ export default class Editor extends React.Component {
     };
 
     this.loadedThemeSet = new Set('elegant');
-
-    // manage keymap w/o state because 'cm.setOption' is invoked manually
-    this.currentKeymapMode = undefined;
     this.loadedKeymapSet = new Set();
-
 
     this.getCodeMirror = this.getCodeMirror.bind(this);
     this.setCaretLine = this.setCaretLine.bind(this);
     this.setScrollTopByLine = this.setScrollTopByLine.bind(this);
+    this.loadTheme = this.loadTheme.bind(this);
+    this.loadKeymapMode = this.loadKeymapMode.bind(this);
+    this.setKeymapMode = this.setKeymapMode.bind(this);
     this.forceToFocus = this.forceToFocus.bind(this);
     this.dispatchSave = this.dispatchSave.bind(this);
     this.handleEnterKey = this.handleEnterKey.bind(this);
@@ -94,20 +93,15 @@ export default class Editor extends React.Component {
 
     // set CodeMirror instance as 'CodeMirror' so that CDN addons can reference
     window.CodeMirror = require('codemirror');
-
-    // load theme
-    const theme = this.props.editorOptions.theme;
-    this.loadTheme(theme);
-    // apply keymapMode
-    const keymapMode = this.props.editorOptions.keymapMode;
-    this.setKeymapMode(keymapMode);
   }
 
   componentWillReceiveProps(nextProps) {
     // load theme
     const theme = nextProps.editorOptions.theme;
     this.loadTheme(theme);
-    // apply keymapMode
+
+    // set keymap
+    const prevKeymapMode = this.props.editorOptions.keymapMode;
     const keymapMode = nextProps.editorOptions.keymapMode;
     this.setKeymapMode(keymapMode);
   }
@@ -183,24 +177,10 @@ export default class Editor extends React.Component {
   }
 
   /**
-   * set Key Maps
-   * @see https://codemirror.net/doc/manual.html#keymaps
-   *
-   * @param {string} keymapMode 'vim' or 'emacs' or 'sublime'
+   * load assets for Key Maps
+   * @param {*} keymapMode 'default' or 'vim' or 'emacs' or 'sublime'
    */
-  setKeymapMode(keymapMode) {
-
-    if (this.currentKeymapMode === keymapMode) {
-      // do nothing
-      return;
-    }
-    if (keymapMode == null || !keymapMode.match(/^(vim|emacs|sublime)$/)) {
-      // set 'default'
-      this.currentKeymapMode = 'default';
-      this.getCodeMirror().setOption('keyMap', this.currentKeymapMode);
-      return;
-    }
-
+  loadKeymapMode(keymapMode) {
     const loadCss = this.loadCss;
     let scriptList = [];
     let cssList = [];
@@ -217,10 +197,23 @@ export default class Editor extends React.Component {
       this.loadedKeymapSet.add(keymapMode);
     }
 
-    // update fields
-    this.currentKeymapMode = keymapMode;
+    return Promise.all(scriptList.concat(cssList));
+  }
 
-    Promise.all(scriptList.concat(cssList))
+  /**
+   * set Key Maps
+   * @see https://codemirror.net/doc/manual.html#keymaps
+   *
+   * @param {string} keymapMode 'default' or 'vim' or 'emacs' or 'sublime'
+   */
+  setKeymapMode(keymapMode) {
+    if (!keymapMode.match(/^(vim|emacs|sublime)$/)) {
+      // reset
+      this.getCodeMirror().setOption('keyMap', 'default');
+      return;
+    }
+
+    this.loadKeymapMode(keymapMode)
     .then(() => {
       this.getCodeMirror().setOption('keyMap', keymapMode);
     });
