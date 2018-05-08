@@ -5,7 +5,10 @@ module.exports = {
     "es6": true,
     "node": true
   },
-  "extends": "eslint:recommended",
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended"
+  ],
   "parserOptions": {
     "ecmaFeatures": {
       "experimentalObjectRestSpread": true,
@@ -32,7 +35,11 @@ module.exports = {
     "indent": [
       "error",
       2,
-      { "SwitchCase": 1 }
+      {
+        "SwitchCase": 1,
+        "FunctionExpression": {"parameters": 2},
+        "CallExpression": {"parameters": 2}
+      }
     ],
     "key-spacing": [
       "error", { "beforeColon": false, "afterColon": true }
@@ -47,6 +54,11 @@ module.exports = {
     "quotes": [
       "error",
       "single"
+    ],
+    "react/jsx-indent": [
+      "error",
+      4,
+      { "ignoredNodes": ["JSXElement *"] }
     ],
     "semi": [
       "error",
