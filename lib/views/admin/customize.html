@@ -303,7 +303,7 @@
 
           <p class="help-block">
             Examples:
-            <pre class="hljs {% if !settingForm['customize:highlightJsStyleBorder'] %}no-border{% endif %}"><code class="highlightjs-demo">function $initHighlight(block, cls) {
+            <pre class="hljs hljs-border {% if !settingForm['customize:highlightJsStyleBorder'] %}hljs-no-border{% endif %}"><code class="highlightjs-demo">function $initHighlight(block, cls) {
   try {
     if (cls.search(/\bno\-highlight\b/) != -1)
       return process(block, true, 0x0F) +
@@ -372,7 +372,7 @@ export  $initHighlight;</code></pre>
 
         <p class="help-block">
           Examples:
-          <pre class="hljs {% if !settingForm['customize:highlightJsStyleBorder'] %}no-border{% endif %}"><code>&lt;script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js" defer&gt;&lt;/script&gt;</code></pre>
+          <pre class="hljs"><code>&lt;script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js" defer&gt;&lt;/script&gt;</code></pre>
         </p>
 
         <div class="form-group">
@@ -458,7 +458,7 @@ export  $initHighlight;</code></pre>
         </p>
         <p class="help-block">
           Examples:
-<pre class="hljs {% if !settingForm['customize:highlightJsStyleBorder'] %}no-border{% endif %}"><code>console.log($('.main-container'));
+<pre class="hljs"><code>console.log($('.main-container'));
 
 window.addEventListener('load', (event) => {
   console.log('config: ', crowi.config);
@@ -582,10 +582,10 @@ window.addEventListener('load', (event) => {
     }
 
     function selectBorderOn(){
-      $('.no-border').removeClass('no-border');
+      $('.hljs-no-border').removeClass('hljs-no-border');
     }
     function selectBorderOff(){
-      $('.hljs').addClass('no-border')
+      $('.hljs-border').addClass('hljs-no-border')
     }
   </script>
 
