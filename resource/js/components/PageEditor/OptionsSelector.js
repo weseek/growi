@@ -50,6 +50,7 @@ export default class OptionsSelector extends React.Component {
 
   init() {
     this.themeSelectorInputEl.value = this.state.editorOptions.theme;
+    this.keymapModeSelectorInputEl.value = this.state.editorOptions.keymapMode;
   }
 
   onChangeTheme() {
