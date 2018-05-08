@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import urljoin from 'url-join';
-const loadScripts = require('simple-load-script').all;
-const loadCss = require('load-css-file');
+const loadScript = require('simple-load-script');
+const loadCssSync = require('load-css-file');
 
 import * as codemirror from 'codemirror';
 
@@ -64,6 +64,11 @@ export default class Editor extends React.Component {
       isUploading: false,
     };
 
+    // manage keymap w/o state because 'cm.setOption' is invoked manually
+    this.currentKeymapMode = undefined;
+    this.loadedKeymapSet = new Set();
+
+
     this.getCodeMirror = this.getCodeMirror.bind(this);
     this.setCaretLine = this.setCaretLine.bind(this);
     this.setScrollTopByLine = this.setScrollTopByLine.bind(this);
@@ -98,13 +103,19 @@ export default class Editor extends React.Component {
     this.setKeymapMode(keymapMode);
   }
 
+  componentWillReceiveProps(nextProps) {
+    // apply keymapMode
+    const keymapMode = nextProps.editorOptions.keymapMode;
+    this.setKeymapMode(keymapMode);
+  }
+
   getCodeMirror() {
     return this.refs.cm.editor;
   }
 
-  loadCssAsync(source) {
+  loadCss(source) {
     return new Promise((resolve) => {
-      loadCss(source);
+      loadCssSync(source);
       resolve();
     });
   }
@@ -158,23 +169,39 @@ export default class Editor extends React.Component {
    * @param {string} keymapMode 'vim' or 'emacs' or 'sublime'
    */
   setKeymapMode(keymapMode) {
-    const loadCssAsync = this.loadCssAsync;
+    const loadCss = this.loadCss;
 
+    if (this.currentKeymapMode === keymapMode) {
+      // do nothing
+      return;
+    }
     if (keymapMode == null || !keymapMode.match(/^(vim|emacs|sublime)$/)) {
-      // reset keymap
-      this.getCodeMirror().setOption('keyMap', 'default');
+      // set 'default'
+      this.currentKeymapMode = 'default';
+      this.getCodeMirror().setOption('keyMap', this.currentKeymapMode);
       return;
     }
 
-    Promise.all([
-      loadScripts(
-        urljoin(this.cmCdnRoot, 'addon/dialog/dialog.min.js'),
-        urljoin(this.cmCdnRoot, `keymap/${keymapMode}.min.js`)
-      ),
-      loadCssAsync(
-        urljoin(this.cmCdnRoot, 'addon/dialog/dialog.min.css')
-      )
-    ]).then(() => {
+    let scriptList = [];
+    let cssList = [];
+
+    // add dependencies
+    if (this.loadedKeymapSet.size == 0) {
+      scriptList.push(loadScript(urljoin(this.cmCdnRoot, 'addon/dialog/dialog.min.js')));
+      cssList.push(loadCss(urljoin(this.cmCdnRoot, 'addon/dialog/dialog.min.css')));
+    }
+    // load keymap
+    if (!this.loadedKeymapSet.has(keymapMode)) {
+      scriptList.push(loadScript(urljoin(this.cmCdnRoot, `keymap/${keymapMode}.min.js`)));
+      // update Set
+      this.loadedKeymapSet.add(keymapMode);
+    }
+
+    // update fields
+    this.currentKeymapMode = keymapMode;
+
+    Promise.all(scriptList.concat(cssList))
+    .then(() => {
       this.getCodeMirror().setOption('keyMap', keymapMode);
     });
   }
@@ -367,7 +394,7 @@ export default class Editor extends React.Component {
       height: '100%',
       display: 'flex',
       flexDirection: 'column',
-    }
+    };
 
     const theme = this.props.editorOptions.theme || 'elegant';
     const styleActiveLine = this.props.editorOptions.styleActiveLine || undefined;
@@ -451,7 +478,7 @@ export default class Editor extends React.Component {
           or pasting from the clipboard.
         </button>
       </div>
-    )
+    );
   }
 
 }
