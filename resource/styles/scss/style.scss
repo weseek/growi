@@ -8,6 +8,9 @@
 // vendor
 @import 'vendor';
 
+// override highlightJsStyle
+@import 'override-hljs';
+
 // override react-bootstrap-typeahead styles
 @import 'override-rbt';
 
