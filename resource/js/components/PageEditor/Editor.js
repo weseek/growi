@@ -1,6 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import urljoin from 'url-join';
+const loadScript = require('simple-load-script');
+const loadCssSync = require('load-css-file');
+
 import * as codemirror from 'codemirror';
 
 import { UnControlled as ReactCodeMirror } from 'react-codemirror2';
@@ -46,8 +50,7 @@ export default class Editor extends React.Component {
   constructor(props) {
     super(props);
 
-    // https://regex101.com/r/7BN2fR/2
-    this.indentAndMarkPattern = /^([ \t]*)(?:>|\-|\+|\*|\d+\.) /;
+    this.cmCdnRoot = 'https://cdn.jsdelivr.net/npm/codemirror@5.37.0';
 
     this.interceptorManager = new InterceptorManager();
     this.interceptorManager.addInterceptors([
@@ -60,6 +63,11 @@ export default class Editor extends React.Component {
       dropzoneActive: false,
       isUploading: false,
     };
+
+    // manage keymap w/o state because 'cm.setOption' is invoked manually
+    this.currentKeymapMode = undefined;
+    this.loadedKeymapSet = new Set();
+
 
     this.getCodeMirror = this.getCodeMirror.bind(this);
     this.setCaretLine = this.setCaretLine.bind(this);
@@ -80,15 +88,36 @@ export default class Editor extends React.Component {
     this.renderOverlay = this.renderOverlay.bind(this);
   }
 
+
   componentDidMount() {
     // initialize caret line
     this.setCaretLine(0);
     // set save handler
     codemirror.commands.save = this.dispatchSave;
+
+    // set CodeMirror instance as 'CodeMirror' so that CDN addons can reference
+    window.CodeMirror = require('codemirror');
+
+    // apply keymapMode
+    const keymapMode = this.props.editorOptions.keymapMode;
+    this.setKeymapMode(keymapMode);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    // apply keymapMode
+    const keymapMode = nextProps.editorOptions.keymapMode;
+    this.setKeymapMode(keymapMode);
   }
 
   getCodeMirror() {
     return this.refs.cm.editor;
+  }
+
+  loadCss(source) {
+    return new Promise((resolve) => {
+      loadCssSync(source);
+      resolve();
+    });
   }
 
   forceToFocus() {
@@ -131,6 +160,50 @@ export default class Editor extends React.Component {
     // get top position of the line
     var top = editor.charCoords({line, ch: 0}, 'local').top;
     editor.scrollTo(null, top);
+  }
+
+  /**
+   * set Key Maps
+   * @see https://codemirror.net/doc/manual.html#keymaps
+   *
+   * @param {string} keymapMode 'vim' or 'emacs' or 'sublime'
+   */
+  setKeymapMode(keymapMode) {
+    const loadCss = this.loadCss;
+
+    if (this.currentKeymapMode === keymapMode) {
+      // do nothing
+      return;
+    }
+    if (keymapMode == null || !keymapMode.match(/^(vim|emacs|sublime)$/)) {
+      // set 'default'
+      this.currentKeymapMode = 'default';
+      this.getCodeMirror().setOption('keyMap', this.currentKeymapMode);
+      return;
+    }
+
+    let scriptList = [];
+    let cssList = [];
+
+    // add dependencies
+    if (this.loadedKeymapSet.size == 0) {
+      scriptList.push(loadScript(urljoin(this.cmCdnRoot, 'addon/dialog/dialog.min.js')));
+      cssList.push(loadCss(urljoin(this.cmCdnRoot, 'addon/dialog/dialog.min.css')));
+    }
+    // load keymap
+    if (!this.loadedKeymapSet.has(keymapMode)) {
+      scriptList.push(loadScript(urljoin(this.cmCdnRoot, `keymap/${keymapMode}.min.js`)));
+      // update Set
+      this.loadedKeymapSet.add(keymapMode);
+    }
+
+    // update fields
+    this.currentKeymapMode = keymapMode;
+
+    Promise.all(scriptList.concat(cssList))
+    .then(() => {
+      this.getCodeMirror().setOption('keyMap', keymapMode);
+    });
   }
 
   /**
@@ -321,7 +394,7 @@ export default class Editor extends React.Component {
       height: '100%',
       display: 'flex',
       flexDirection: 'column',
-    }
+    };
 
     const theme = this.props.editorOptions.theme || 'elegant';
     const styleActiveLine = this.props.editorOptions.styleActiveLine || undefined;
@@ -363,17 +436,17 @@ export default class Editor extends React.Component {
               matchTags: {bothTags: true},
               // folding
               foldGutter: true,
-              gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+              gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
               // match-highlighter, matchesonscrollbar, annotatescrollbar options
               highlightSelectionMatches: {annotateScrollbar: true},
               // markdown mode options
               highlightFormatting: true,
               // continuelist, indentlist
               extraKeys: {
-                "Enter": this.handleEnterKey,
-                "Tab": "indentMore",
-                "Shift-Tab": "indentLess",
-                "Ctrl-Q": (cm) => { cm.foldCode(cm.getCursor()) },
+                'Enter': this.handleEnterKey,
+                'Tab': 'indentMore',
+                'Shift-Tab': 'indentLess',
+                'Ctrl-Q': (cm) => { cm.foldCode(cm.getCursor()) },
               }
             }}
             onScroll={(editor, data) => {
@@ -405,7 +478,7 @@ export default class Editor extends React.Component {
           or pasting from the clipboard.
         </button>
       </div>
-    )
+    );
   }
 
 }
