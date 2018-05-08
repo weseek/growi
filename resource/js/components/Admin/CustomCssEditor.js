@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { UnControlled as CodeMirror } from 'react-codemirror2';
-require('codemirror/lib/codemirror.css');
 require('codemirror/addon/display/autorefresh');
 require('codemirror/addon/lint/css-lint');
 require('codemirror/addon/hint/css-hint');
@@ -10,7 +9,6 @@ require('codemirror/addon/hint/show-hint');
 require('codemirror/addon/edit/matchbrackets');
 require('codemirror/addon/edit/closebrackets');
 require('codemirror/mode/css/css');
-require('codemirror/theme/eclipse.css');
 
 require('jquery-ui/ui/widgets/resizable');
 

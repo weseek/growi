@@ -13,3 +13,8 @@ $bootstrap-sass-asset-helper: true;
 
 // import bootstrap-select styles
 @import '~bootstrap-select/sass/bootstrap-select';
+
+// import CodeMirror styles
+@import '~codemirror/lib/codemirror.css';
+@import '~codemirror/theme/elegant.css';
+@import '~codemirror/theme/eclipse.css';

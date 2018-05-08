@@ -1,9 +1,18 @@
 CHANGES
 ========
 
-## 3.0.11-RC
+## 3.0.12-RC
+
+* Feature: Support Vim/Emacs/Sublime-Text keybindings
+* Improvement: Dynamic loading for CodeMirror theme files from CDN
+* Improvement: Add some CodeMirror themes (Eclipse, Dracula)
+
+
+## 3.0.11
 
 * Fix: login.html is broken in iOS
+* Fix: Removing attachment is crashed
+* Fix: File-attaching error after new page creation
 * Support: Optimize development build
 * Support: Upgrade libs
     * env-cmd
