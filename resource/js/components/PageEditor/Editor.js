@@ -522,6 +522,7 @@ export default class Editor extends React.Component {
 Editor.propTypes = {
   value: PropTypes.string,
   options: PropTypes.object,
+  editorOptions: PropTypes.object,
   isUploadable: PropTypes.bool,
   isUploadableFile: PropTypes.bool,
   onChange: PropTypes.func,
