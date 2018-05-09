@@ -142,14 +142,19 @@ export default class OptionsSelector extends React.Component {
     const optionElems = [];
     for (let mode in this.keymapModes) {
       const label = this.keymapModes[mode];
-      optionElems.push(<option key={mode} value={mode}>{label}</option>);
+      const dataContent = (mode === 'default')
+        ? label
+        : `<img src='/images/icons/${mode}.png' width='16px' class='m-r-5'></img> ${label}`;
+      optionElems.push(
+        <option key={mode} value={mode} data-content={dataContent}>{label}</option>
+      );
     }
 
     const bsClassName = 'form-control-dummy'; // set form-control* to shrink width
 
     return (
       <FormGroup controlId="formControlsSelect">
-        <ControlLabel>Mode:</ControlLabel>
+        <ControlLabel>Keymap:</ControlLabel>
         <FormControl componentClass="select" placeholder="select" bsClass={bsClassName} className="btn-group-sm selectpicker"
             onChange={this.onChangeKeymapMode}
             inputRef={ el => this.keymapModeSelectorInputEl=el }>
