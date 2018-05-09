@@ -1,8 +1,4 @@
-.admin-page{
-  .admin-customize{
-    // override Highlight Js Style Border
-    .hljs-no-border {
-      border: none;
-    }
-  }
+// override Highlight Js Style Border
+.hljs-no-border {
+   border: none;
 }
