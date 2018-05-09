@@ -101,7 +101,6 @@ export default class Editor extends React.Component {
     this.loadTheme(theme);
 
     // set keymap
-    const prevKeymapMode = this.props.editorOptions.keymapMode;
     const keymapMode = nextProps.editorOptions.keymapMode;
     this.setKeymapMode(keymapMode);
   }
@@ -166,8 +165,6 @@ export default class Editor extends React.Component {
    * @param {string} theme
    */
   loadTheme(theme) {
-    // load theme
-    let cssList = [];
     if (!this.loadedThemeSet.has(theme)) {
       this.loadCss(urljoin(this.cmCdnRoot, `theme/${theme}.min.css`));
 
@@ -203,7 +200,7 @@ export default class Editor extends React.Component {
     return Promise.all(scriptList.concat(cssList))
       .then(() => {
         this.setState({ isLoadingKeymap: false });
-      })
+      });
   }
 
   /**
@@ -354,7 +351,7 @@ export default class Editor extends React.Component {
     let accept = 'null';    // reject all
     if (this.props.isUploadable) {
       if (!this.props.isUploadableFile) {
-        accept = 'image/*'  // image only
+        accept = 'image/*'; // image only
       }
       else {
         accept = '';        // allow all
@@ -481,7 +478,7 @@ export default class Editor extends React.Component {
                 'Enter': this.handleEnterKey,
                 'Tab': 'indentMore',
                 'Shift-Tab': 'indentLess',
-                'Ctrl-Q': (cm) => { cm.foldCode(cm.getCursor()) },
+                'Ctrl-Q': (cm) => { cm.foldCode(cm.getCursor()); },
               }
             }}
             onScroll={(editor, data) => {
@@ -505,7 +502,7 @@ export default class Editor extends React.Component {
         </Dropzone>
 
         <button type="button" className="btn btn-default btn-block btn-open-dropzone"
-          onClick={() => {this.refs.dropzone.open()}}>
+          onClick={() => {this.refs.dropzone.open();}}>
 
           <i className="icon-paper-clip" aria-hidden="true"></i>&nbsp;
           Attach files by dragging &amp; dropping,&nbsp;
