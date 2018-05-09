@@ -82,7 +82,6 @@ body.on-edit {
                          + 42px                     // .nav height
                          + 1px                      // .page-editor-footer border-top
                          + 40px;                    // .page-editor-footer min-height
-      $preview-margin: $header-plus-footer;
       $editor-margin: $header-plus-footer + 22px;   // .btn-open-dropzone height
 
       #page-editor {
@@ -91,13 +90,15 @@ body.on-edit {
         .row,
         .page-editor-preview-container,
         .page-editor-preview-body {
-          height: calc(100vh - #{$preview-margin});
+          height: calc(100vh - #{$header-plus-footer});
         }
         // left(editor)
-        .page-editor-editor-container,
+        .page-editor-editor-container {
+          height: calc(100vh - #{$header-plus-footer});
         .react-codemirror2, .CodeMirror, .CodeMirror-scroll {
           height: calc(100vh - #{$editor-margin});
         }
+      }
       }
 
       .page-editor-footer {
