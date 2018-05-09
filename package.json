@@ -161,7 +161,7 @@
     "colors": "^1.1.2",
     "commander": "^2.11.0",
     "connect-browser-sync": "^2.1.0",
-    "eslint": "^4.18.2",
+    "eslint": "^4.19.1",
     "eslint-plugin-react": "^7.7.0",
     "mocha": "^5.0.0",
     "morgan": "^1.8.2",
