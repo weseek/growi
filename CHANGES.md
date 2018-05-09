@@ -3,7 +3,7 @@ CHANGES
 
 ## 3.0.13-RC
 
-* 
+* Support: Translate /admin/security
 
 ## 3.0.12
 
