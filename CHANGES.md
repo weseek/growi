@@ -1,11 +1,28 @@
 CHANGES
 ========
 
-## 3.0.11-RC
+## 3.0.13-RC
 
+* Support: Translate /admin/security
+
+## 3.0.12
+
+* Feature: Support Vim/Emacs/Sublime-Text keybindings
+* Improvement: Add some CodeMirror themes (Eclipse, Dracula)
+* Improvement: Dynamic loading for CodeMirror theme files from CDN
+* Improvement: Prevent XSS when move/redirect/duplicate
+
+
+## 3.0.11
+
+* Fix: login.html is broken in iOS
+* Fix: Removing attachment is crashed
+* Fix: File-attaching error after new page creation
 * Support: Optimize development build
 * Support: Upgrade libs
     * env-cmd
+    * googleapis
+    * sinon
 
 ## 3.0.10
 

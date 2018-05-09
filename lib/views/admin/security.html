@@ -63,7 +63,7 @@
             <div class="col-xs-6">
               <select class="form-control selectpicker" name="settingForm[security:restrictGuestMode]" value="{{ settingForm['security:restrictGuestMode'] }}">
                 {% for modeValue, modeLabel in consts.restrictGuestMode %}
-                <option value="{{ modeValue }}" {% if modeValue == settingForm['security:restrictGuestMode'] %}selected{% endif %} >{{ modeLabel }}</option>
+                <option value="{{ t(modeValue) }}" {% if modeValue == settingForm['security:restrictGuestMode'] %}selected{% endif %} >{{ t(modeLabel) }}</option>
                 {% endfor %}
               </select>
             </div>
@@ -74,7 +74,7 @@
             <div class="col-xs-6">
               <select class="form-control selectpicker" name="settingForm[security:registrationMode]" value="{{ settingForm['security:registrationMode'] }}">
                 {% for modeValue, modeLabel in consts.registrationMode %}
-                <option value="{{ modeValue }}" {% if modeValue == settingForm['security:registrationMode'] %}selected{% endif %} >{{ modeLabel }}</option>
+                <option value="{{ t(modeValue) }}" {% if modeValue == settingForm['security:registrationMode'] %}selected{% endif %} >{{ t(modeLabel) }}</option>
                 {% endfor %}
               </select>
               <p class="help-block">{{ t('The contents entered here will be shown in the header etc') }}</p>
@@ -84,8 +84,8 @@
           <div class="form-group">
             <label for="settingForm[security:registrationWhiteList]" class="col-xs-3 control-label">{{ t('The whitelist of registration permission E-mail address') }}</label>
             <div class="col-xs-8">
-              <textarea class="form-control" type="textarea" name="settingForm[security:registrationWhiteList]" placeholder="例: @crowi.wiki">{{ settingForm['security:registrationWhiteList']|join('&#13')|raw }}</textarea>
-              <p class="help-block">{{ t("security_setting.restrict_emails") }}{{ t("security_setting.for_instance") }}<code>@crowi.wiki</code>{{ t("security_setting.only_those") }}<br>
+              <textarea class="form-control" type="textarea" name="settingForm[security:registrationWhiteList]" placeholder="{{ t('security_setting.example') }}: @crowi.wiki">{{ settingForm['security:registrationWhiteList']|join('&#13')|raw }}</textarea>
+              <p class="help-block">{{ t("security_setting.restrict_emails") }}{{ t("security_setting.for_instance") }}<code>@growi.org</code>{{ t("security_setting.only_those") }}<br>
               {{ t("security_setting.insert_single") }}</p>
             </div>
           </div>
@@ -103,7 +103,7 @@
       <form action="/_api/admin/security/mechanism" method="post" class="form-horizontal m-t-30" id="mechanismSetting" role="form">
         <fieldset>
           <legend class="alert-anchor">{{ t('Selecting authentication mechanism') }}</legend>
-          <p class="alert alert-info"><b>NOTE: </b>Restarting the server is needed if you switch the auth mechanism.</p>
+          <p class="alert alert-info"><b>{{ t("security_setting.note") }}: </b>{{ t("security_setting.require_server_restart_change_auth") }}</p>
           <div class="form-group">
             <div class="col-xs-6">
               <h4>
@@ -113,17 +113,17 @@
                   <label for="radioPassportAuthMech">
                     <a href="http://passportjs.org/">
                       <img src="/images/admin/security/passport-logo.svg" class="passport-logo"> Passport
-                    </a> authentication mechanism <small class="text-success">(Recommended)</small>
+                    </a> {{ t("security_setting.auth_mechanism") }} <small class="text-success">({{ t("security_setting.recommended") }})</small>
                   </label>
                 </div>
               </h4>
               <ul>
-                <li>Username, E-mail and Password authentication</li>
-                <li>LDAP authentication</li>
-                <li class="text-muted">(TBD) <del>Google OAuth2 authentication</del></li>
-                <li class="text-muted">(TBD) <del>Facebook OAuth2 authentication</del></li>
-                <li class="text-muted">(TBD) <del>Twitter OAuth authentication</del></li>
-                <li class="text-muted">(TBD) <del>Github OAuth2 authentication</del></li>
+                <li>{{ t("security_setting.username_email_password") }}</li>
+                <li>{{ t("security_setting.ldap_auth") }}</li>
+                <li class="text-muted">(TBD) <del>{{ t("security_setting.google_auth2") }}</del></li>
+                <li class="text-muted">(TBD) <del>{{ t("security_setting.facebook_auth2") }}</del></li>
+                <li class="text-muted">(TBD) <del>{{ t("security_setting.twitter_auth2") }}</del></li>
+                <li class="text-muted">(TBD) <del>{{ t("security_setting.github_auth2") }}</del></li>
               </ul>
             </div>
             <div class="col-xs-6">
@@ -132,13 +132,13 @@
                   <input type="radio" id="radioCrowiAuthMech" name="settingForm[security:isEnabledPassport]" value="false"
                       {% if !settingForm['security:isEnabledPassport'] %}checked="checked"{% endif %}>
                   <label for="radioCrowiAuthMech">
-                    Crowi classic authentication mechanism
+                    Crowi Classic {{ t("security_setting.auth_mechanism") }}
                   </label>
                 </div>
               </h4>
               <ul>
-                <li>Username, E-mail and Password authentication</li>
-                <li>Google OAuth2 authentication</li>
+                <li>{{ t("security_setting.username_email_password") }}</li>
+                <li>{{ t("security_setting.google_auth2") }}</li>
               </ul>
             </div>
           </div>
@@ -164,41 +164,39 @@
               {% if !isRestartingServerNeeded %}style="display: none;"{% endif %}>
             <b>
               <i class="icon-exclamation" aria-hidden="true"></i>
-              Restarting the server is needed.
+              {{ t("security_setting.require_server_restart") }}
             </b>
-            The server is running with Passport authentication mechanism.
+            {{ t("security_setting.server_on_passport_auth") }}
           </p>
 
           <form action="/_api/admin/security/google" method="post" class="form-horizontal" id="googleSetting" role="form"
               {% if isRestartingServerNeeded %}style="opacity: 0.4;"{% endif %}>
 
             <fieldset>
-              <h4>Google 設定</h4>
+              <h4>{{ t("security_setting.google_setting") }}</h4>
               <p class="well alert-anchor">
-                Google Cloud Platform の <a href="https://console.cloud.google.com/apis/credentials">API Manager</a>
-                から OAuth2 Client ID を作成すると、Google アカウントにコネクトして登録やログインが可能になります。
+                {{ t("security_setting.connect_api_manager") }}
               </p>
 
               <ol class="help-block">
-                <li><a href="https://console.cloud.google.com/apis/credentials">API Manager</a> へアクセス</li>
-                <li>プロジェクトを作成していない場合は作成してください</li>
-                <li>「認証情報を作成」-> OAuthクライアントID</li>
+                <li>{{ t("security_setting.access_api_manager") }}</li>
+                <li>{{ t("security_setting.create_project") }}</li>
+                <li>{{ t("security_setting.create_auth_to_oauth") }}</li>
                 <ol>
-                  <li>「ウェブアプリケーション」を選択</li>
-                  <li>承認済みのリダイレクトURLに、 <code>https://${crowi.host}/google/callback</code> を入力<br>
-                  (<code>${crowi.host}</code>は環境に合わせて変更してください)</li>
+                  <li>{{ t("security_setting.select_webapp") }}</li>
+                  <li>{{ t("security_setting.change_redirect_url") }}</li>
                 </ol>
               </ol>
 
               <div class="form-group">
-                <label for="settingForm[google:clientId]" class="col-xs-3 control-label">Client ID</label>
+                <label for="settingForm[google:clientId]" class="col-xs-3 control-label">{{ t("security_setting.clientID") }}</label>
                 <div class="col-xs-6">
                   <input class="form-control" type="text" name="settingForm[google:clientId]" value="{{ settingForm['google:clientId'] }}">
                 </div>
               </div>
 
               <div class="form-group">
-                <label for="settingForm[google:clientSecret]" class="col-xs-3 control-label">Client Secret</label>
+                <label for="settingForm[google:clientSecret]" class="col-xs-3 control-label">{{ t("security_setting.client_secret") }}</label>
                 <div class="col-xs-6">
                   <input class="form-control" type="text" name="settingForm[google:clientSecret]" value="{{ settingForm['google:clientSecret'] }}">
                 </div>
@@ -226,9 +224,9 @@
               {% if !isRestartingServerNeeded %}style="display: none;"{% endif %}>
             <b>
               <i class="icon-exclamation" aria-hidden="true"></i>
-              Restarting the server is needed.
+              {{ t("security_setting.require_server_restart") }}
             </b>
-            The server is running with Official Crowi authentication mechanism.
+            {{ t("security_setting.server_on_crowi_auth") }}
           </p>
           <ul class="nav nav-tabs" role="tablist" {% if isRestartingServerNeeded %}style="opacity: 0.4;"{% endif %}>
             <li class="active">
@@ -311,13 +309,13 @@
         var jqxhr = $.post($form.attr('action'), $form.serialize(), function(data)
           {
             if (data.status) {
-              showMessage($id, '更新しました');
+              showMessage($id, '更新しました Updated');
             } else {
               showMessage($id, data.message, 'danger');
             }
           })
           .fail(function() {
-            showMessage($id, 'エラーが発生しました', 'danger');
+            showMessage($id, 'エラーが発生しました Error', 'danger');
           })
           .always(function() {
             $button.prop('disabled', false);

@@ -12,10 +12,10 @@ export default class Attachment extends React.Component {
 
   iconNameByFormat(format) {
     if (format.match(/image\/.+/i)) {
-      return 'fa fa-file-image-o';
+      return 'icon-picture';
     }
 
-    return 'fa fa-file-o';
+    return 'icon-doc';
   }
 
   _onAttachmentDeleteClicked(event) {
@@ -24,7 +24,6 @@ export default class Attachment extends React.Component {
 
   render() {
     const attachment = this.props.attachment;
-    const attachmentId = attachment._id
     const formatIcon = this.iconNameByFormat(attachment.fileFormat);
 
     let fileInUse = '';
@@ -35,16 +34,18 @@ export default class Attachment extends React.Component {
     const fileType = <span className="attachment-filetype label label-default">{attachment.fileFormat}</span>;
 
     const btnDownload = (this.props.isUserLoggedIn)
-        ? <a className="attachment-download" href={`/download/${attachment._id}`}>
-            <i className="icon-cloud-download"></i>
-          </a>
-        : '';
+      ? (
+        <a className="attachment-download" href={`/download/${attachment._id}`}>
+          <i className="icon-cloud-download"></i>
+        </a>)
+      : '';
 
     const btnTrash = (this.props.isUserLoggedIn)
-        ? <a className="text-danger attachment-delete" onClick={this._onAttachmentDeleteClicked}>
-            <i className="icon-trash"></i>
-          </a>
-        : '';
+      ? (
+        <a className="text-danger attachment-delete" onClick={this._onAttachmentDeleteClicked}>
+          <i className="icon-trash"></i>
+        </a>)
+      : '';
 
     return (
       <li>
