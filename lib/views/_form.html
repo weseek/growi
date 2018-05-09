@@ -46,10 +46,15 @@
       </span>
       {% endif %}
 
-      <div id="page-grant-selector"></div>
-      <!-- {% if forceGrant %}
+      {% if forceGrant %}
       <input type="hidden" name="pageForm[grant]" value="{{ forceGrant }}">
       {% else %}
+      <div>
+        <div id="page-grant-selector"></div>
+      </div>
+      <input type="hidden" name="pageForm[grant]" value="{{ pageForm.grant }}">
+      <input id="grant-group" type="hidden" name="pageForm[grantUserGroupId]" value="{% if pageForm.grant %}{{ pageForm.grant }}{% endif %}">
+<!--
       <select id="select-grant" name="pageForm[grant]" class="m-r-5 selectpicker btn-group-sm">
         {% for grantId, grantLabel in consts.pageGrants %}
         <option value="{{ grantId }}" {% if pageForm.grant|default(page.grant) == grantId %}selected{% endif %}>{{ t(grantLabel) }}</option>

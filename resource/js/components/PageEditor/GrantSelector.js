@@ -25,13 +25,16 @@ export default class GrantSelector extends React.Component {
       isGroupModalShown: false,
     }
 
-    this.availableGrants = {
-      1:'Public',
-      2:'Anyone with the linc',
+    this.availableGrants = [1, 2,/* 3,*/ 4, 5]
+
+    this.availableGrantLabels = {
+      1: 'Public',
+      2: 'Anyone with the linc',
       // 3:'Specified users only',
-      4:'Just me',
-      5:'Only inside the group',
+      4: 'Just me',
+      5: 'Only inside the group',
     }
+
     this.onChangeGrant = this.onChangeGrant.bind(this);
   }
 
@@ -40,7 +43,7 @@ export default class GrantSelector extends React.Component {
   }
 
   init() {
-    this.grantSelectorInputEl.value = this.state.editorOptions.theme;
+    this.grantSelectorInputEl.value = this.state.pageGrant.grant;
   }
 
   onChangeGrant(userGroup) {
@@ -75,20 +78,20 @@ export default class GrantSelector extends React.Component {
   }
 
   renderGrantSelector() {
-    const optionElems = this.availableGrants.map((entry) => {
-      return <option key={entry.key} value={entry.key}>{entry.value}</option>;
+    const grantElems = this.availableGrants.map((grant) => {
+      return <option key={grant} value={grant}>{this.availableGrantLabels[grant]}</option>;
     });
 
     const bsClassName = 'form-control-dummy'; // set form-control* to shrink width
 
     return (
       <FormGroup controlId="formControlsSelect">
-        <ControlLabel>Theme:</ControlLabel>
+        <ControlLabel>Grant:</ControlLabel>
         <FormControl componentClass="select" placeholder="select" bsClass={bsClassName} className="btn-group-sm selectpicker"
             onChange={this.onChangeGrant}
             inputRef={ el => this.grantSelectorInputEl=el }>
 
-          {optionElems}
+          {grantElems}
 
         </FormControl>
       </FormGroup>
@@ -186,7 +189,7 @@ export default class GrantSelector extends React.Component {
 
   render() {
     return <span>
-      <span className="m-l-5">{this.renderThemeSelector()}</span>
+      <span className="m-l-5">{this.renderGrantSelector()}</span>
     </span>
   }
 }

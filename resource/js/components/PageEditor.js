@@ -10,6 +10,7 @@ import { EditorOptions, PreviewOptions } from './PageEditor/OptionsSelector';
 import Editor from './PageEditor/Editor';
 import Preview from './PageEditor/Preview';
 import scrollSyncHelper from './PageEditor/ScrollSyncHelper';
+import { PageGrant } from './PageEditor/GrantSelector';
 
 export default class PageEditor extends React.Component {
 
@@ -30,6 +31,7 @@ export default class PageEditor extends React.Component {
       isMathJaxEnabled,
       editorOptions: this.props.editorOptions,
       previewOptions: this.props.previewOptions,
+      pageGrant: this.props.pageGrant,
     };
 
     this.growiRenderer = new GrowiRenderer(this.props.crowi, this.props.crowiRenderer, {mode: 'editor'});
@@ -95,6 +97,15 @@ export default class PageEditor extends React.Component {
   }
 
   /**
+   * set page grant
+   * @param {any} pageGrant
+   * @memberof PageEditor
+   */
+  setGrant(pageGrant) {
+    this.setState({ pageGrant });
+  }
+
+  /**
    * the change event handler for `markdown` state
    * @param {string} value
    */
@@ -109,6 +120,14 @@ export default class PageEditor extends React.Component {
   onSave() {
     let endpoint;
     let data;
+    let grantData;
+    let grantGroupId;
+    if (this.state.pageGrant != null) {
+      grantData = this.state.pageGrant.grant;
+      if (this.state.pageGrant.grantGroup != null) {
+        grantGroupId = this.state.pageGrant.grantGroup.userGroupId;
+      }
+    }
 
     // update
     if (this.state.pageId != null) {
@@ -117,6 +136,8 @@ export default class PageEditor extends React.Component {
         page_id: this.state.pageId,
         revision_id: this.state.revisionId,
         body: this.state.markdown,
+        grant: grantData,
+        grantUserGroupId: grantGroupId,
       };
     }
     // create
@@ -125,6 +146,8 @@ export default class PageEditor extends React.Component {
       data = {
         path: this.props.pagePath,
         body: this.state.markdown,
+        grant: grantData,
+        grantUserGroupId: grantGroupId,
       };
     }
 
@@ -399,4 +422,5 @@ PageEditor.propTypes = {
   onSaveSuccess: PropTypes.func,
   editorOptions: PropTypes.instanceOf(EditorOptions),
   previewOptions: PropTypes.instanceOf(PreviewOptions),
+  pageGrant: PropTypes.instanceOf(PageGrant),
 };

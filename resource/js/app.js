@@ -10,7 +10,7 @@ import SearchPage       from './components/SearchPage';
 import PageEditor       from './components/PageEditor';
 import OptionsSelector  from './components/PageEditor/OptionsSelector';
 import { EditorOptions, PreviewOptions } from './components/PageEditor/OptionsSelector';
-import GrantSelector from './components/PageEditor/GrantSelector';
+import GrantSelector, { UserGroup, PageGrant } from './components/PageEditor/GrantSelector';
 import Page             from './components/Page';
 import PageListSearch   from './components/PageListSearch';
 import PageHistory      from './components/PageHistory';
@@ -42,6 +42,7 @@ let pageRevisionCreatedAt = null;
 let pagePath;
 let pageContent = '';
 let markdown = '';
+let pageGrant = null;
 if (mainContent !== null) {
   pageId = mainContent.getAttribute('data-page-id');
   pageRevisionId = mainContent.getAttribute('data-page-revision-id');
@@ -158,6 +159,7 @@ if (pageEditorElem) {
         pageId={pageId} revisionId={pageRevisionId} pagePath={pagePath}
         markdown={markdown}
         editorOptions={editorOptions} previewOptions={previewOptions}
+        pageGrant={pageGrant}
         onSaveSuccess={onSaveSuccess} />,
     pageEditorElem
   );
@@ -182,20 +184,16 @@ if (pageEditorOptionsSelectorElem) {
   );
 }
 // render GrantSelector
+const userRelatedGroups = new UserGroup(crowi.userRelatedGroups);
 const pageEditorGrantSelectorElem = document.getElementById('page-grant-selector');
 if (pageEditorGrantSelectorElem) {
-  const userRelatedGroups = window.getElementById("user-related-group-data").value;
-  const pageGrant = window.getElementById("page-grant").value;
+  const pageGrant = document.getElementById("page-grant").value;
   ReactDOM.render(
     <GrantSelector crowi={crowi}
-      userRelatedGroups={userRelatedGroups} pageGrant={pageGrant}
-      onChange={(newPageGrant, newPreviewOptions) => { // set onChange event handler
+      userRelatedGroups={userRelatedGroups} pageGrant={new PageGrant(pageGrant)}
+      onChange={(newPageGrant) => { // set onChange event handler
         // set options
-        pageEditor.setEditorOptions(newEditorOptions);
-        pageEditor.setPreviewOptions(newPreviewOptions);
-        // save
-        crowi.saveEditorOptions(newEditorOptions);
-        crowi.savePreviewOptions(newPreviewOptions);
+        pageEditor.setGrant(newPageGrant);
       }} />,
     pageEditorGrantSelectorElem
   );
