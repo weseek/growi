@@ -59,11 +59,11 @@
   {% endif %}
   {% endif %}
 
-  <div class="{% if isPortal %}m-b-30{% endif %}">
+  <div>
     {% include '../widget/page_content.html' %}
   </div>
 
-  <div class="row page-list">
+  <div class="row page-list {% if isPortal %}m-t-30{% endif %}">
     <div class="col-md-12">
       {% include '../widget/page_list_and_timeline.html' %}
     </div>

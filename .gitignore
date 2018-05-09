@@ -14,6 +14,7 @@ Thumbs.db
 /bower_components/
 npm-debug.log
 /npm-debug.log.*
+package-lock.json
 
 # Dist #
 /report/

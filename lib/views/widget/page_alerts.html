@@ -29,7 +29,7 @@
     {% if req.query.renamed and not page.isDeleted() %}
     <div class="alert alert-info alert-moved">
       <span>
-        <strong>{{ t('Moved') }}: </strong> {{ t('page_page.notice.moved', req.query.renamed) }}
+        <strong>{{ t('Moved') }}: </strong> {{ t('page_page.notice.moved', req.sanitize(req.query.renamed)) }}
       </span>
     </div>
     {% endif %}
@@ -37,7 +37,7 @@
     {% if req.query.redirectFrom and not page.isDeleted() %}
     <div class="alert alert-info alert-moved d-flex align-items-center justify-content-between">
       <span>
-        <strong>{{ t('Moved') }}: </strong> {{ t('page_page.notice.moved', req.query.redirectFrom) }}
+        <strong>{{ t('Moved') }}: </strong> {{ t('page_page.notice.moved', req.sanitize(req.query.redirectFrom)) }}
       </span>
       {% if user %}
       <form role="form" id="unlink-page-form" onsubmit="return false;">
@@ -56,7 +56,7 @@
     {% if req.query.duplicated and not page.isDeleted() %}
     <div class="alert alert-success alert-moved">
       <span>
-        <strong>{{ t('Duplicated') }}: </strong> {{ t('page_page.notice.duplicated', req.query.duplicated) }}
+        <strong>{{ t('Duplicated') }}: </strong> {{ t('page_page.notice.duplicated', req.sanitize(req.query.duplicated)) }}
       </span>
     </div>
     {% endif %}

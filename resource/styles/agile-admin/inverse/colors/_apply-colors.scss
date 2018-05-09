@@ -281,7 +281,7 @@ body.on-edit {
     background-color: darken($bodycolor, 2%);
 
     .page-editor-editor-container {
-      border-right-color: $border;
+      border-right-color: $navbar-border;
     }
     .page-editor-preview-container {
       background-color: $bodycolor;

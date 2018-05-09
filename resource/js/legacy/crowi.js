@@ -502,8 +502,6 @@ $(function() {
     if ($affixContent.length > 0) {
       var $affixContentContainer = $('.row.bg-title');
       var containerHeight = $affixContentContainer.outerHeight(true);
-      // fix height(固定)
-      $affixContentContainer.css({height: containerHeight + 'px'});
       $affixContent.affix({
         offset: {
           top: function() {
