@@ -85,7 +85,7 @@
             <label for="settingForm[security:registrationWhiteList]" class="col-xs-3 control-label">{{ t('The whitelist of registration permission E-mail address') }}</label>
             <div class="col-xs-8">
               <textarea class="form-control" type="textarea" name="settingForm[security:registrationWhiteList]" placeholder="{{ t('security_setting.example') }}: @crowi.wiki">{{ settingForm['security:registrationWhiteList']|join('&#13')|raw }}</textarea>
-              <p class="help-block">{{ t("security_setting.restrict_emails") }}{{ t("security_setting.for_instance") }}<code>@crowi.wiki</code>{{ t("security_setting.only_those") }}<br>
+              <p class="help-block">{{ t("security_setting.restrict_emails") }}{{ t("security_setting.for_instance") }}<code>@growi.org</code>{{ t("security_setting.only_those") }}<br>
               {{ t("security_setting.insert_single") }}</p>
             </div>
           </div>
@@ -112,7 +112,7 @@
                       {% if true === settingForm['security:isEnabledPassport'] %}checked="checked"{% endif %}>
                   <label for="radioPassportAuthMech">
                     <a href="http://passportjs.org/">
-                      <img src="/images/admin/security/passport-logo.svg" class="passport-logo"> {{ t("security_setting.passport") }}
+                      <img src="/images/admin/security/passport-logo.svg" class="passport-logo"> Passport
                     </a> {{ t("security_setting.auth_mechanism") }} <small class="text-success">({{ t("security_setting.recommended") }})</small>
                   </label>
                 </div>
@@ -132,7 +132,7 @@
                   <input type="radio" id="radioCrowiAuthMech" name="settingForm[security:isEnabledPassport]" value="false"
                       {% if !settingForm['security:isEnabledPassport'] %}checked="checked"{% endif %}>
                   <label for="radioCrowiAuthMech">
-                    {{ t("security_setting.crowi_auth") }}
+                    Crowi Classic {{ t("security_setting.auth_mechanism") }}
                   </label>
                 </div>
               </h4>

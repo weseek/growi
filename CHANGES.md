@@ -1,7 +1,11 @@
 CHANGES
 ========
 
-## 3.0.12-RC
+## 3.0.13-RC
+
+* Support: Translate /admin/security
+
+## 3.0.12
 
 * Feature: Support Vim/Emacs/Sublime-Text keybindings
 * Improvement: Add some CodeMirror themes (Eclipse, Dracula)
