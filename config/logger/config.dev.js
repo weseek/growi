@@ -12,6 +12,6 @@ module.exports = {
   'growi:routes:login-passport': 'debug',
   'growi:service:PassportService': 'debug',
   // 'growi:routes:page': 'debug',
-  // 'growi:plugins:*': 'debug',
+  // 'growi-plugin:*': 'debug',
   // 'growi:InterceptorManager': 'debug',
 };
