@@ -184,10 +184,20 @@ if (pageEditorOptionsSelectorElem) {
   );
 }
 // render GrantSelector
-const userRelatedGroups = new UserGroup(crowi.userRelatedGroups);
+const userRelatedGroups = JSON.parse(document.getElementById('user-related-group-data').textContent || '{}', (value) => {
+  return new UserGroup(value);
+})
+const pageGrant = new PageGrant();
 const pageEditorGrantSelectorElem = document.getElementById('page-grant-selector');
 if (pageEditorGrantSelectorElem) {
-  const pageGrant = document.getElementById("page-grant").value;
+  pageGrant.grant = document.getElementById("page-grant").value;
+  const grantGroupData = document.getElementById("grant-group").value;
+  if (grantGroupData != null) {
+    grantGroup = new UserGroup();
+    grantGroup.userGroup =
+    pageGrant.grantGroup = new UserGroup();
+
+  }
   ReactDOM.render(
     <GrantSelector crowi={crowi}
       userRelatedGroups={userRelatedGroups} pageGrant={new PageGrant(pageGrant)}
