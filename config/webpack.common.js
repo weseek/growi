@@ -3,6 +3,7 @@
  */
 
 const webpack = require('webpack');
+const path = require('path');
 const helpers = require('./helpers');
 
 /*
@@ -42,6 +43,12 @@ module.exports = function(options) {
     resolve: {
       extensions: ['.js', '.json'],
       modules: [helpers.root('src'), helpers.root('node_modules')],
+      alias: {
+        '@root': path.resolve(__dirname, '../'),
+        '@alias/logger': path.resolve(__dirname, '../lib/service/logger'),
+        // replace bunyan
+        'bunyan': 'browser-bunyan',
+      }
     },
     module: {
       rules: [
@@ -112,4 +119,4 @@ module.exports = function(options) {
 
     ]
   };
-}
+};
