@@ -7,10 +7,4 @@ module.exports = {
     // 'growi-plugin-lsx',
     // 'growi-plugin-pukiwiki-like-linker',
   ],
-  // settings for 'visionmedia/debug'
-  // see also './logger/config.prod.js'
-  DEBUG: [
-    // 'express:*',
-    'growi:*',
-  ].join(),
 };
