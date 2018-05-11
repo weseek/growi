@@ -16,19 +16,31 @@ $linktext-hover: lighten($linktext, 12%);
 $sidebar-text: $themecolor;
 
 $primary: $themecolor;
-$success: lighten($themecolor,20%);
 $info: lighten($themecolor,20%);
-$warning: lighten($themecolor,20%);
-// $danger: ;
+
+$logo-mark-fill: lighten(desaturate($topbar, 30%), 20%);
+$wikilinktext: lighten($themecolor, 20%);
+$wikilinktext-hover: lighten($wikilinktext, 20%);
+
+@import 'apply-colors';
+@import 'apply-colors-light';
 
 
-//change color of inline-code (default: red)
+// change color of inline-code (default: red)
 :not(.hljs) > code:not(.hljs) {
   background-color: lighten($subthemecolor,70%);
   color: $subthemecolor;
 }
 
-//change color of surrounding border of theme option icon at admin/customize (default: green)
+// change color of highlighted header in wiki (default: orange)
+.wiki {
+  .code-line.revision-head.highlighted {
+    background-color: lighten($themecolor,20%);
+    color: $themelight;
+  }
+}
+
+// change color of surrounding border of theme option icon at admin/customize (default: green)
 .admin-page {
   #themeOptions {
     a.active {
@@ -37,18 +49,3 @@ $warning: lighten($themecolor,20%);
     }
   }
 }
-
-//change color of highlighted header in wiki (default: orange)
-.wiki {
-  .code-line.revision-head.highlighted {
-    background-color: lighten($themecolor,20%);
-    color: $themelight;
-  }
-}
-
-$logo-mark-fill: lighten(desaturate($topbar, 30%), 20%);
-$wikilinktext: lighten($themecolor, 20%);
-$wikilinktext-hover: lighten($wikilinktext, 20%);
-
-@import 'apply-colors';
-@import 'apply-colors-light';
