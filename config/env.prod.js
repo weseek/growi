@@ -1,5 +1,5 @@
 module.exports = {
-  // logging settings
+  NODE_ENV: 'production',
   DEBUG: [
     'crowi:crowi',
   ].join(),
