@@ -36,6 +36,7 @@ export default class GrantSelector extends React.Component {
     }
 
     this.onChangeGrant = this.onChangeGrant.bind(this);
+    // this.updateElementValue = this.updateElementValue.bind(this);
   }
 
   componentDidMount() {
@@ -46,11 +47,22 @@ export default class GrantSelector extends React.Component {
     this.grantSelectorInputEl.value = this.state.pageGrant.grant;
   }
 
+  updateElementValue() {
+    console.log(this.state.pageGrant);
+    if (this.state.pageGrant != null) {
+      document.getElementById("page-grant").value = this.state.pageGrant.grant;
+      if (this.state.pageGrant.grantGroup != null) {
+        document.getElementById("grant-group").value = this.state.pageGrant.grantGroup.grantGroupId;
+      }
+    }
+  }
+
   onChangeGrant(grant) {
     const newValue = this.grantSelectorInputEl.value;
     const newGrant = Object.assign(this.state.pageGrant, {grant: newValue});
     this.setState({ pageGrant: newGrant });
 
+    this.updateElementValue();
     // dispatch event
     this.dispatchOnChange();
   }
@@ -95,70 +107,6 @@ export default class GrantSelector extends React.Component {
 
         </FormControl>
       </FormGroup>
-    )
-  }
-
-  renderConfigurationDropdown() {
-    return (
-      <FormGroup controlId="formControlsSelect">
-
-        <Dropdown dropup id="configurationDropdown" className="configuration-dropdown"
-            open={this.state.isCddMenuOpened} onToggle={this.onToggleConfigurationDropdown}>
-
-          <Dropdown.Toggle bsSize="sm">
-            <i className="icon-settings"></i>
-          </Dropdown.Toggle>
-
-          <Dropdown.Menu>
-            {this.renderActiveLineMenuItem()}
-            {this.renderRealtimeMathJaxMenuItem()}
-            {/* <MenuItem divider /> */}
-          </Dropdown.Menu>
-
-        </Dropdown>
-
-      </FormGroup>
-    )
-  }
-
-  renderActiveLineMenuItem() {
-    const isActive = this.state.editorOptions.styleActiveLine;
-
-    const iconClasses = ['text-info']
-    if (isActive) {
-      iconClasses.push('ti-check')
-    }
-    const iconClassName = iconClasses.join(' ');
-
-    return (
-      <MenuItem onClick={this.onClickStyleActiveLine}>
-        <span className="icon-container"></span>
-        <span className="menuitem-label">Show active line</span>
-        <span className="icon-container"><i className={iconClassName}></i></span>
-      </MenuItem>
-    )
-  }
-
-  renderRealtimeMathJaxMenuItem() {
-    if (!this.state.isMathJaxEnabled) {
-      return;
-    }
-
-    const isEnabled = this.state.isMathJaxEnabled;
-    const isActive = isEnabled && this.state.previewOptions.renderMathJaxInRealtime;
-
-    const iconClasses = ['text-info']
-    if (isActive) {
-      iconClasses.push('ti-check')
-    }
-    const iconClassName = iconClasses.join(' ');
-
-    return (
-      <MenuItem onClick={this.onClickRenderMathJaxInRealtime}>
-        <span className="icon-container"><img src="/images/icons/fx.svg" width="14px"></img></span>
-        <span className="menuitem-label">MathJax Rendering</span>
-        <i className={iconClassName}></i>
-      </MenuItem>
     )
   }
 

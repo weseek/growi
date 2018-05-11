@@ -191,11 +191,12 @@ const pageEditorGrantSelectorElem = document.getElementById('page-grant-selector
 if (pageEditorGrantSelectorElem) {
   pageGrant = new PageGrant();
   pageGrant.grant = document.getElementById("page-grant").value;
-  const grantGroupData = document.getElementById("grant-group").value;
+  const grantGroupData = JSON.parse(document.getElementById("grant-group").textContent || '{}');
   if (grantGroupData != null) {
     const grantGroup = new UserGroup();
-    grantGroup.userGroup =
-    pageGrant.grantGroup = new UserGroup();
+    grantGroup.userGroupId = grantGroupData.id;
+    grantGroup.userGroup = grantGroupData;
+    pageGrant.grantGroup = grantGroup;
   }
   ReactDOM.render(
     <GrantSelector crowi={crowi}
