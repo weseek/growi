@@ -2,6 +2,8 @@
 
 process.env.NODE_ENV = 'test';
 
+require('module-alias/register');
+
 var express = require('express')
   , ROOT_DIR = __dirname + '/..'
   , MODEL_DIR = __dirname + '/../lib/models'
@@ -9,7 +11,7 @@ var express = require('express')
   ;
 
 testDBUtil = {
-  generateFixture: function (conn, model, fixture) {
+  generateFixture: function(conn, model, fixture) {
     if (conn.readyState == 0) {
       return Promise.reject();
     }

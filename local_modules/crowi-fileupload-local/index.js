@@ -3,7 +3,7 @@
 module.exports = function(crowi) {
   'use strict';
 
-  var debug = require('debug')('crowi:lib:fileUploaderLocal')
+  var debug = require('debug')('growi:lib:fileUploaderLocal')
     , fs = require('fs')
     , path = require('path')
     , mkdir = require('mkdirp')
