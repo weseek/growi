@@ -175,6 +175,7 @@
     "webpack-dll-bundles-plugin": "^1.0.0-beta.5"
   },
   "_moduleAliases": {
+    "@root": ".",
     "@alias/logger": "lib/service/logger",
     "@alias/debug": "lib/service/logger/alias-for-debug"
   },
