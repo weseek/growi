@@ -1,5 +1,5 @@
 var program = require('commander')
-  , debug = require('debug')('crowi:console:util')
+  , debug = require('@alias/debug')('growi:console:util')
   , colors = require('colors')
   , crowi = new (require('../lib/crowi'))(__dirname + '/../', process.env)
   ;

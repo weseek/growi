@@ -11,7 +11,6 @@ module.exports = {
   // see also './logger/config.prod.js'
   DEBUG: [
     // 'express:*',
-    'crowi:*',
     'growi:*',
   ].join(),
 };
