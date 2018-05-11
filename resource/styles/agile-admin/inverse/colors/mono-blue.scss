@@ -21,22 +21,26 @@ $info: lighten($themecolor,20%);
 $warning: lighten($themecolor,20%);
 // $danger: ;
 
-code{
+
+//change color of inline-code (default: red)
+:not(.hljs) > code:not(.hljs) {
   background-color: lighten($subthemecolor,70%);
   color: $subthemecolor;
 }
 
-.admin-page{
-  #themeOptions{
-    a.active{
+//change color of surrounding border of theme option icon at admin/customize (default: green)
+.admin-page {
+  #themeOptions {
+    a.active {
       background-color: lighten($themecolor,20%);
       border-color: lighten($themecolor,20%);
     }
   }
 }
 
-.wiki{
-  .code-line.revision-head.highlighted{
+//change color of highlighted header in wiki (default: orange)
+.wiki {
+  .code-line.revision-head.highlighted {
     background-color: lighten($themecolor,20%);
     color: $themelight;
   }
