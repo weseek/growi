@@ -9,6 +9,10 @@ module.exports = {
     "eslint:recommended",
     "plugin:react/recommended"
   ],
+  "globals": {
+    "window": true,
+    "emojione": true
+  },
   "parserOptions": {
     "ecmaFeatures": {
       "experimentalObjectRestSpread": true,

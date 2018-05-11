@@ -30,7 +30,7 @@ require('codemirror/mode/gfm/gfm');
 import Dropzone from 'react-dropzone';
 
 import pasteHelper from './PasteHelper';
-import emojiAutoCompleteHelper from './EmojiAutoCompleteHelper';
+import EmojiAutoCompleteHelper from './EmojiAutoCompleteHelper';
 
 import InterceptorManager from '../../../../lib/util/interceptor-manager';
 
@@ -53,6 +53,7 @@ export default class Editor extends React.Component {
     this.state = {
       value: this.props.value,
       dropzoneActive: false,
+      isEnabledEmojiAutoComplete: false,
       isUploading: false,
       isLoadingKeymap: false,
     };
@@ -84,6 +85,12 @@ export default class Editor extends React.Component {
     this.renderLoadingKeymapOverlay = this.renderLoadingKeymapOverlay.bind(this);
   }
 
+  componentWillMount() {
+    if (this.props.emojiStrategy != null) {
+      this.emojiAutoCompleteHelper = new EmojiAutoCompleteHelper(this.props.emojiStrategy);
+      this.setState({isEnabledEmojiAutoComplete: true});
+    }
+  }
 
   componentDidMount() {
     // initialize caret line
@@ -495,7 +502,9 @@ export default class Editor extends React.Component {
               }
 
               // Emoji AutoComplete
-              emojiAutoCompleteHelper.showHint(editor);
+              if (this.state.isEnabledEmojiAutoComplete) {
+                this.emojiAutoCompleteHelper.showHint(editor);
+              }
             }}
             onDragEnter={this.onDragEnterForCM}
           />
@@ -525,6 +534,7 @@ Editor.propTypes = {
   editorOptions: PropTypes.object,
   isUploadable: PropTypes.bool,
   isUploadableFile: PropTypes.bool,
+  emojiStrategy: PropTypes.object,
   onChange: PropTypes.func,
   onScroll: PropTypes.func,
   onScrollCursorIntoView: PropTypes.func,
