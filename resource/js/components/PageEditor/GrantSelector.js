@@ -21,7 +21,7 @@ export default class GrantSelector extends React.Component {
     const config = this.props.crowi.getConfig();
 
     this.state = {
-      pageGrant: this.props.pageGrant || new PageGrant(),
+      pageGrant: this.props.pageGrant,
       isGroupModalShown: false,
     }
 
@@ -46,8 +46,8 @@ export default class GrantSelector extends React.Component {
     this.grantSelectorInputEl.value = this.state.pageGrant.grant;
   }
 
-  onChangeGrant(userGroup) {
-    const newValue = userGroup;
+  onChangeGrant(grant) {
+    const newValue = this.grantSelectorInputEl.value;
     const newGrant = Object.assign(this.state.pageGrant, {grant: newValue});
     this.setState({ pageGrant: newGrant });
 
@@ -87,7 +87,7 @@ export default class GrantSelector extends React.Component {
     return (
       <FormGroup controlId="formControlsSelect">
         <ControlLabel>Grant:</ControlLabel>
-        <FormControl componentClass="select" placeholder="select" bsClass={bsClassName} className="btn-group-sm selectpicker"
+        <FormControl componentClass="select" placeholder="select" defaultValue={this.state.pageGrant.grant} bsClass={bsClassName} className="btn-group-sm selectpicker"
             onChange={this.onChangeGrant}
             inputRef={ el => this.grantSelectorInputEl=el }>
 
