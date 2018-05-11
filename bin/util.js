@@ -41,4 +41,4 @@ crowi.init()
       });
 
     program.parse(process.argv);
-  }).catch(crowi.exitOnError);
+  });
