@@ -3,6 +3,8 @@ CHANGES
 
 ## 3.0.13-RC
 
+* Improvement: Add Vim/Emacs/Sublime-Text icons for keybindings menu
+* Improvement: Add 'mono-blue' theme
 * Support: Translate /admin/security
 
 ## 3.0.12
