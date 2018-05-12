@@ -17,8 +17,6 @@ require('jquery.cookie');
 require('./thirdparty-js/agile-admin');
 const pagePathUtil = require('../../../lib/util/pagePathUtil');
 
-const crowi = window.crowi;
-const crowiRenderer = window.crowiRenderer;
 let Crowi = {};
 
 if (!window) {
