@@ -18,7 +18,7 @@ export default class PageListSearch extends React.Component {
       searchedPages: [],
       searchResultMeta: {},
       searchError: null,
-    }
+    };
 
     this.changeURL = this.changeURL.bind(this);
     this.search = this.search.bind(this);
@@ -92,9 +92,9 @@ export default class PageListSearch extends React.Component {
     let hash = location.hash || '';
     // TODO 整理する
     if (refreshHash || this.state.searchedKeyword !== '') {
-        hash = '';
+      hash = '';
     }
-    if (window.history && window.history.pushState){
+    if (window.history && window.history.pushState) {
       window.history.pushState('', `Search - ${keyword}`, `${tree}?q=${keyword}${hash}`);
     }
   }
@@ -133,7 +133,7 @@ export default class PageListSearch extends React.Component {
         searchError: err,
       });
     });
-  };
+  }
 
   render() {
     return (

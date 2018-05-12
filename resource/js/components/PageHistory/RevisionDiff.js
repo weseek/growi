@@ -40,4 +40,4 @@ RevisionDiff.propTypes = {
   currentRevision: PropTypes.object.isRequired,
   previousRevision: PropTypes.object.isRequired,
   revisionDiffOpened: PropTypes.bool.isRequired,
-}
+};

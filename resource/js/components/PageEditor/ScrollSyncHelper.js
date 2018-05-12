@@ -19,7 +19,7 @@ class ScrollSyncHelper {
         parentElement.getElementsByClassName('code-line'),
         element => {
           const line = +element.getAttribute('data-line');
-          return { element, line }
+          return { element, line };
         })
         .filter(x => !isNaN(x.line));
     }
@@ -101,7 +101,8 @@ class ScrollSyncHelper {
       if (next) {
         const betweenProgress = (offset - parentElement.scrollTop - previous.element.getBoundingClientRect().top) / (next.element.getBoundingClientRect().top - previous.element.getBoundingClientRect().top);
         return previous.line + betweenProgress * (next.line - previous.line);
-      } else {
+      }
+      else {
         return previous.line;
       }
     }

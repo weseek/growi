@@ -8,7 +8,7 @@ export default class RevisionUrl extends React.Component {
   render() {
     const buttonStyle = {
       fontSize: '1em'
-    }
+    };
 
     const url = (this.props.pageId == null)
       ? decodeURIComponent(location.href)
