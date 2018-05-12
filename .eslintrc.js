@@ -44,7 +44,7 @@ module.exports = {
       2,
       {
         "SwitchCase": 1,
-        "ignoredNodes": ['JSXElement *', 'JSXElement'],
+        "ignoredNodes": ['JSXElement *', 'JSXElement', "JSXAttribute", "JSXSpreadAttribute"],
         "FunctionDeclaration": {"body": 1, "parameters": 2},
         "FunctionExpression": {"body": 1, "parameters": 2},
         "MemberExpression": "off"
@@ -72,11 +72,8 @@ module.exports = {
       "error",
       "single"
     ],
-    "react/jsx-indent-props": [
-      "error",
-      2
-    ],
-    "react/no-string-refs": 'off',
+    "react/jsx-uses-vars": 1,
+    "react/no-string-refs": "off",
     "semi": [
       "error",
       "always",

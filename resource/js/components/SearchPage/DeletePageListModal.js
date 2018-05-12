@@ -5,14 +5,12 @@ import Button from 'react-bootstrap/es/Button';
 import Modal from 'react-bootstrap/es/Modal';
 import Checkbox from 'react-bootstrap/es/Checkbox';
 
-import ReactUtils from '../ReactUtils';
-
 export default class DeletePageListModal extends React.Component {
 
   /*
    * the threshold for omitting body
    */
-  static get OMIT_BODY_THRES() { return 400 };
+  static get OMIT_BODY_THRES() { return 400 }
 
   constructor(props) {
     super(props);
@@ -23,7 +21,7 @@ export default class DeletePageListModal extends React.Component {
 
   render() {
     if (this.props.pages === undefined || this.props.pages.length == 0) {
-      return <div></div>
+      return <div></div>;
     }
 
     const listView = this.props.pages.map((page) => {
