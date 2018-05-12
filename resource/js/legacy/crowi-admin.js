@@ -2,8 +2,6 @@ require('bootstrap-select');
 require('./thirdparty-js/jQuery.style.switcher');
 
 $(function() {
-  var UpdatePost = {};
-
   $('#slackNotificationForm').on('submit', function(e) {
     $.post('/_api/admin/notification.add', $(this).serialize(), function(res) {
       if (res.ok) {
@@ -44,8 +42,8 @@ $(function() {
         $('#admin-password-reset-modal').modal('hide');
         $('#admin-password-reset-modal-done').modal('show');
 
-        $("#admin-password-reset-done-user").text(res.user.email);
-        $("#admin-password-reset-done-password").text(res.newPassword);
+        $('#admin-password-reset-done-user').text(res.user.email);
+        $('#admin-password-reset-done-password').text(res.newPassword);
         return ;
       }
 
@@ -56,7 +54,7 @@ $(function() {
     return false;
   });
 
-  $('#admin-delete-user-group-modal').on('show.bs.modal', function (button) {
+  $('#admin-delete-user-group-modal').on('show.bs.modal', function(button) {
     var data = $(button.relatedTarget);
     var userGroupId = data.data('user-group-id');
     var userGroupName = data.data('user-group-name');
@@ -65,15 +63,15 @@ $(function() {
     $('#admin-user-groups-delete input[name=user_group_id]').val(userGroupId);
   });
 
-  $('form#user-group-relation-create').on('submit', function (e) {
-    $.post('/admin/user-group-relation/create', $(this).serialize(), function (res) {
+  $('form#user-group-relation-create').on('submit', function(e) {
+    $.post('/admin/user-group-relation/create', $(this).serialize(), function(res) {
       $('#admin-add-user-group-relation-modal').modal('hide');
       return;
-     });
+    });
   });
 
 
-  $("#pictureUploadForm input[name=userGroupPicture]").on('change', function () {
+  $('#pictureUploadForm input[name=userGroupPicture]').on('change', function() {
     var $form = $('#pictureUploadForm');
     var fd = new FormData($form[0]);
     if ($(this).val() == '') {
@@ -81,19 +79,20 @@ $(function() {
     }
 
     $('#pictureUploadFormProgress').html('<img src="/images/loading_s.gif"> アップロード中...');
-    $.ajax($form.attr("action"), {
+    $.ajax($form.attr('action'), {
       type: 'post',
       processData: false,
       contentType: false,
       data: fd,
       dataType: 'json',
-      success: function (data) {
+      success: function(data) {
         if (data.status) {
           $('#settingUserPicture').attr('src', data.url + '?time=' + (new Date()));
           $('#pictureUploadFormMessage')
             .addClass('alert alert-success')
             .html('変更しました');
-        } else {
+        }
+        else {
           $('#pictureUploadFormMessage')
             .addClass('alert alert-danger')
             .html('変更中にエラーが発生しました。');
