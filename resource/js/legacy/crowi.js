@@ -9,7 +9,7 @@ import GrowiRenderer from '../util/GrowiRenderer';
 import Page from '../components/Page';
 
 const io = require('socket.io-client');
-const entities = require("entities");
+const entities = require('entities');
 const escapeStringRegexp = require('escape-string-regexp');
 require('bootstrap-sass');
 require('jquery.cookie');
@@ -17,7 +17,9 @@ require('jquery.cookie');
 require('./thirdparty-js/agile-admin');
 const pagePathUtil = require('../../../lib/util/pagePathUtil');
 
-var Crowi = {};
+const crowi = window.crowi;
+const crowiRenderer = window.crowiRenderer;
+let Crowi = {};
 
 if (!window) {
   window = {};
@@ -34,7 +36,7 @@ Crowi.createErrorView = function(msg) {
  */
 Crowi.renderTocContent = (tocHtml) => {
   $('#revision-toc-content').html(tocHtml);
-}
+};
 
 /**
  * append buttons to section headers
@@ -62,7 +64,7 @@ Crowi.appendEditSectionButtons = function(parentElement) {
 Crowi.setCaretLineData = function(line) {
   const pageEditorDom = document.querySelector('#page-editor');
   pageEditorDom.setAttribute('data-caret-line', line);
-}
+};
 
 /**
  * invoked when;
@@ -88,10 +90,10 @@ Crowi.setCaretLineAndFocusToEditor = function() {
 
   // focus
   crowi.focusToEditor();
-}
+};
 
 // original: middleware.swigFilter
-Crowi.userPicture = function (user) {
+Crowi.userPicture = function(user) {
   if (!user) {
     return '/images/icons/user.svg';
   }
@@ -103,7 +105,7 @@ Crowi.modifyScrollTop = function() {
   var offset = 10;
 
   var hash = window.location.hash;
-  if (hash === "") {
+  if (hash === '') {
     return;
   }
 
@@ -130,11 +132,11 @@ Crowi.modifyScrollTop = function() {
 
     window.scrollTo(0, (window.scrollY - pageHeaderRect.height - offset));
   }, timeout);
-}
+};
 
 Crowi.updateCurrentRevision = function(revisionId) {
   $('#page-form [name="pageForm[currentRevision]"]').val(revisionId);
-}
+};
 
 Crowi.handleKeyEHandler = (event) => {
   // ignore when dom that has 'modal in' classes exists
@@ -144,7 +146,7 @@ Crowi.handleKeyEHandler = (event) => {
   // show editor
   $('a[data-toggle="tab"][href="#edit-form"]').tab('show');
   event.preventDefault();
-}
+};
 
 Crowi.handleKeyCHandler = (event) => {
   // ignore when dom that has 'modal in' classes exists
@@ -154,21 +156,21 @@ Crowi.handleKeyCHandler = (event) => {
   // show modal to create a page
   $('#create-page').modal();
   event.preventDefault();
-}
+};
 
 Crowi.handleKeyCtrlSlashHandler = (event) => {
   // show modal to create a page
   $('#shortcuts-modal').modal('toggle');
   event.preventDefault();
-}
+};
 
 $(function() {
   var config = JSON.parse(document.getElementById('crowi-context-hydrate').textContent || '{}');
 
   var pageId = $('#content-main').data('page-id');
-  var revisionId = $('#content-main').data('page-revision-id');
-  var revisionCreatedAt = $('#content-main').data('page-revision-created');
-  var currentUser = $('#content-main').data('current-user');
+  // var revisionId = $('#content-main').data('page-revision-id');
+  // var revisionCreatedAt = $('#content-main').data('page-revision-created');
+  // var currentUser = $('#content-main').data('current-user');
   var isSeen = $('#content-main').data('page-is-seen');
   var pagePath= $('#content-main').data('path');
   var isSavedStatesOfTabChanges = config['isSavedStatesOfTabChanges'];
@@ -182,7 +184,8 @@ $(function() {
     if ($mainContainer.hasClass('aside-hidden')) {
       $('.main-container').removeClass('aside-hidden');
       $.cookie('aside-hidden', 0, { expires: 30, path: '/' });
-    } else {
+    }
+    else {
       $mainContainer.addClass('aside-hidden');
       $.cookie('aside-hidden', 1, { expires: 30, path: '/' });
     }
@@ -193,12 +196,12 @@ $(function() {
     $('.main-container').addClass('aside-hidden');
   }
 
-  $('.copy-link').on('click', function () {
+  $('.copy-link').on('click', function() {
     $(this).select();
   });
 
 
-  $('#create-page').on('shown.bs.modal', function (e) {
+  $('#create-page').on('shown.bs.modal', function(e) {
     // quick hack: replace from server side rendering "date" to client side "date"
     var today = new Date();
     var month = ('0' + (today.getMonth() + 1)).slice(-2);
@@ -239,7 +242,7 @@ $(function() {
   });
 
   // rename
-  $('#renamePage').on('shown.bs.modal', function (e) {
+  $('#renamePage').on('shown.bs.modal', function(e) {
     $('#renamePage #newPageName').focus();
     $('#renamePage .msg-already-exists').hide();
   });
@@ -248,7 +251,7 @@ $(function() {
     let nameValueMap = {};
     $(this).serializeArray().forEach((obj) => {
       nameValueMap[obj.name] = obj.value;
-    })
+    });
 
     $.ajax({
       type: 'POST',
@@ -273,16 +276,16 @@ $(function() {
   });
 
   // duplicate
-  $('#duplicatePage').on('shown.bs.modal', function (e) {
+  $('#duplicatePage').on('shown.bs.modal', function(e) {
     $('#duplicatePage #duplicatePageName').focus();
     $('#duplicatePage .msg-already-exists').hide();
   });
-  $('#duplicatePageForm, #unportalize-form').submit(function (e) {
+  $('#duplicatePageForm, #unportalize-form').submit(function(e) {
     // create name-value map
     let nameValueMap = {};
     $(this).serializeArray().forEach((obj) => {
       nameValueMap[obj.name] = obj.value;
-    })
+    });
 
     $.ajax({
       type: 'POST',
@@ -317,7 +320,8 @@ $(function() {
       if (!res.ok) {
         $('#delete-errors').html('<i class="fa fa-times-circle"></i> ' + res.error);
         $('#delete-errors').addClass('alert-danger');
-      } else {
+      }
+      else {
         var page = res.page;
         top.location.href = page.path;
       }
@@ -335,7 +339,8 @@ $(function() {
       if (!res.ok) {
         $('#delete-errors').html('<i class="fa fa-times-circle"></i> ' + res.error);
         $('#delete-errors').addClass('alert-danger');
-      } else {
+      }
+      else {
         var page = res.page;
         top.location.href = page.path;
       }
@@ -349,11 +354,13 @@ $(function() {
       url: '/_api/pages.unlink',
       data: $('#unlink-page-form').serialize(),
       dataType: 'json'
-    }).done(function(res) {
+    })
+    .done(function(res) {
       if (!res.ok) {
         $('#delete-errors').html('<i class="fa fa-times-circle"></i> ' + res.error);
         $('#delete-errors').addClass('alert-danger');
-      } else {
+      }
+      else {
         var page = res.page;
         top.location.href = page.path + '?unlinked=true';
       }
@@ -385,7 +392,9 @@ $(function() {
    */
   $('#view-list .page-list-ul-flat .page-list-link').each(function() {
     var $link = $(this);
+    /* eslint-disable no-unused-vars */
     var text = $link.text();
+    /* eslint-enable */
     var path = decodeURIComponent($link.data('path'));
     var shortPath = decodeURIComponent($link.data('short-path')); // convert to string
 
@@ -410,13 +419,14 @@ $(function() {
     }
 
     if (isShown == 0) {
-      $('#view-timeline .timeline-body').each(function()
-      {
+      $('#view-timeline .timeline-body').each(function() {
         var id = $(this).attr('id');
         var contentId = '#' + id + ' > script';
         var revisionBody = '#' + id + ' .revision-body';
         var revisionBodyElem = document.querySelector(revisionBody);
+        /* eslint-disable no-unused-vars */
         var revisionPath = '#' + id + ' .revision-path';
+        /* eslint-enable */
         var pagePath = document.getElementById(id).getAttribute('data-page-path');
         var markdown = entities.decodeHTML($(contentId).html());
 
@@ -640,7 +650,8 @@ $(function() {
             MarkLiked();
           }
         });
-      } else {
+      }
+      else {
         $.post('/_api/likes.remove', {_csrf: token, page_id: pageId}, function(res) {
           if (res.ok) {
             MarkUnLiked();
@@ -650,7 +661,7 @@ $(function() {
 
       return false;
     });
-    var $likerList = $("#liker-list");
+    var $likerList = $('#liker-list');
     var likers = $likerList.data('likers');
     if (likers && likers.length > 0) {
       var users = crowi.findUserByIds(likers.split(','));
@@ -659,36 +670,26 @@ $(function() {
       }
     }
 
-    function AddToLikers (users) {
+    /* eslint-disable no-inner-declarations */
+    function AddToLikers(users) {
       $.each(users, function(i, user) {
         $likerList.append(CreateUserLinkWithPicture(user));
       });
     }
 
-    function MarkLiked()
-    {
+    function MarkLiked() {
       $likeButton.addClass('active');
       $likeButton.data('liked', 1);
       $likeCount.text(parseInt($likeCount.text()) + 1);
     }
 
-    function MarkUnLiked()
-    {
+    function MarkUnLiked() {
       $likeButton.removeClass('active');
       $likeButton.data('liked', 0);
       $likeCount.text(parseInt($likeCount.text()) - 1);
     }
 
-    if (!isSeen) {
-      $.post('/_api/pages.seen', {page_id: pageId}, function(res) {
-        // ignore unless response has error
-        if (res.ok && res.seenUser) {
-          $('#content-main').data('page-is-seen', 1);
-        }
-      });
-    }
-
-    function CreateUserLinkWithPicture (user) {
+    function CreateUserLinkWithPicture(user) {
       var $userHtml = $('<a>');
       $userHtml.data('user-id', user._id);
       $userHtml.attr('href', '/user/' + user.username);
@@ -700,6 +701,16 @@ $(function() {
 
       $userHtml.append($userPicture);
       return $userHtml;
+    }
+    /* eslint-enable */
+
+    if (!isSeen) {
+      $.post('/_api/pages.seen', {page_id: pageId}, function(res) {
+        // ignore unless response has error
+        if (res.ok && res.seenUser) {
+          $('#content-main').data('page-is-seen', 1);
+        }
+      });
     }
 
     // presentation
@@ -726,7 +737,7 @@ $(function() {
     //
     var me = $('body').data('me');
     var socket = io();
-    socket.on('page edited', function (data) {
+    socket.on('page edited', function(data) {
       if (data.user._id != me
         && data.page.path == pagePath) {
         $('#notifPageEdited').show();
@@ -783,15 +794,16 @@ Crowi.replaceRevisionBodyContent = function(html) {
 }
 */
 
-Crowi.findHashFromUrl = function(url)
-{
+Crowi.findHashFromUrl = function(url) {
   var match;
+  /* eslint-disable no-cond-assign */
   if (match = url.match(/#(.+)$/)) {
     return `#${match[1]}`;
   }
+  /* eslint-enable */
 
-  return "";
-}
+  return '';
+};
 
 Crowi.findSectionHeader = function(hash) {
   if (hash.length == 0) {
@@ -808,23 +820,21 @@ Crowi.findSectionHeader = function(hash) {
   }
 
   return null;
-}
+};
 
-Crowi.unhighlightSelectedSection = function(hash)
-{
+Crowi.unhighlightSelectedSection = function(hash) {
   const elem = Crowi.findSectionHeader(hash);
   if (elem != null) {
     elem.classList.remove('highlighted');
   }
-}
+};
 
-Crowi.highlightSelectedSection = function(hash)
-{
+Crowi.highlightSelectedSection = function(hash) {
   const elem = Crowi.findSectionHeader(hash);
   if (elem != null) {
     elem.classList.add('highlighted');
   }
-}
+};
 
 window.addEventListener('load', function(e) {
   // hash on page
@@ -847,10 +857,12 @@ window.addEventListener('load', function(e) {
       if (count/totalUsers > 0.05) {
         $(liker).addClass('popular-page-high');
         // 5%
-      } else if (count/totalUsers > 0.02) {
+      }
+      else if (count/totalUsers > 0.02) {
         $(liker).addClass('popular-page-mid');
         // 2%
-      } else if (count/totalUsers > 0.005) {
+      }
+      else if (count/totalUsers > 0.005) {
         $(liker).addClass('popular-page-low');
         // 0.5%
       }
@@ -861,10 +873,12 @@ window.addEventListener('load', function(e) {
       if (count/totalUsers > 0.10) {
         // 10%
         $(seer).addClass('popular-page-high');
-      } else if (count/totalUsers > 0.05) {
+      }
+      else if (count/totalUsers > 0.05) {
         // 5%
         $(seer).addClass('popular-page-mid');
-      } else if (count/totalUsers > 0.02) {
+      }
+      else if (count/totalUsers > 0.02) {
         // 2%
         $(seer).addClass('popular-page-low');
       }
