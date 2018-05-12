@@ -10,8 +10,11 @@ module.exports = {
     "plugin:react/recommended"
   ],
   "globals": {
-    "window": true,
-    "emojione": true
+    "$": true,
+    "jquery": true,
+    "emojione": true,
+    "hljs": true,
+    "window": true
   },
   "parserOptions": {
     "ecmaFeatures": {
@@ -42,7 +45,9 @@ module.exports = {
       {
         "SwitchCase": 1,
         "ignoredNodes": ['JSXElement *', 'JSXElement'],
-        "FunctionExpression": {"parameters": 2},
+        "FunctionDeclaration": {"body": 1, "parameters": 2},
+        "FunctionExpression": {"body": 1, "parameters": 2},
+        "MemberExpression": "off"
       }
     ],
     "key-spacing": [
