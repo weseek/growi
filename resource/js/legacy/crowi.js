@@ -2,6 +2,9 @@
 /* Author: Sotaro KARASAWA <sotarok@crocos.co.jp>
 */
 
+/* global crowi: true */
+/* global crowiRenderer: true */
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 

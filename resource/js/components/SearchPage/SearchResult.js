@@ -121,7 +121,9 @@ export default class SearchResult extends React.Component {
           isDeleted = false;
         }
       }).catch(err => {
+        /* eslint-disable no-console */
         console.log(err.message);
+        /* eslint-enable */
         isDeleted = false;
         this.setState({errorMessageForDeleting: err.message});
       });
@@ -177,7 +179,7 @@ export default class SearchResult extends React.Component {
       }
       return (
         <div className="content-main">
-            <i className="icon-fw icon-info" /> No page found with "{this.props.searchingKeyword}"{under}
+            <i className="icon-fw icon-info" /> No page found with &quot;{this.props.searchingKeyword}&quot;{under}
         </div>
       );
 
@@ -256,7 +258,7 @@ export default class SearchResult extends React.Component {
                 {allSelectCheck}
               </div>
               <div className="search-result-meta">
-                <i className="icon-magnifier" /> Found {this.props.searchResultMeta.total} pages with "{this.props.searchingKeyword}"
+                <i className="icon-magnifier" /> Found {this.props.searchResultMeta.total} pages with &quot;{this.props.searchingKeyword}&quot;
               </div>
               <div className="clearfix"></div>
               <div className="page-list">
