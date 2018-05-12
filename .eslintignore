@@ -1,0 +1,6 @@
+/.github/**
+/.vscode/**
+/node_modules/**
+/public/**
+/test/**
+/tmp/**
