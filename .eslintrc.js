@@ -51,7 +51,11 @@ module.exports = {
       }
     ],
     "key-spacing": [
-      "error", { "beforeColon": false, "afterColon": true }
+      "error", {
+        "beforeColon": false,
+        "afterColon": true,
+        "mode": "minimum"
+      }
     ],
     "keyword-spacing": [
       "error", {}
@@ -75,7 +79,8 @@ module.exports = {
     "react/no-string-refs": 'off',
     "semi": [
       "error",
-      "always"
+      "always",
+      { "omitLastInOneLineBlock": true }
     ],
     "space-before-blocks": [
       "error",
