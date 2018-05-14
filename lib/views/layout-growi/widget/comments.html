@@ -28,6 +28,7 @@
           <div class="comment-write" id="comment-write">
             <textarea class="comment-form-comment form-control" id="comment-form-comment" name="commentForm[comment]"
                 required placeholder="Write comments here..." {% if not user %}disabled{% endif %}></textarea>
+            <input type="checkbox" id="comment-form-is-markdown" name="commentForm[is_markdown]" value="1"> Markdown<br>
           </div>
           <div class="comment-submit">
             <input type="hidden" name="_csrf" value="{{ csrf() }}">
