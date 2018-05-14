@@ -238,10 +238,10 @@ $(function() {
     return false;
   });
 
-  // rename
-  $('#renamePage').on('shown.bs.modal', function (e) {
+  // rename/unportalize
+  $('#renamePage, #unportalize').on('shown.bs.modal', function(e) {
     $('#renamePage #newPageName').focus();
-    $('#renamePage .msg-already-exists').hide();
+    $('#renamePage .msg-already-exists, #unportalize .msg-already-exists').hide();
   });
   $('#renamePageForm, #unportalize-form').submit(function(e) {
     // create name-value map
@@ -255,11 +255,12 @@ $(function() {
       url: '/_api/pages.rename',
       data: $(this).serialize(),
       dataType: 'json'
-    }).done(function(res) {
+    })
+    .done(function(res) {
       if (!res.ok) {
         // if already exists
-        $('#renamePage .msg-already-exists').show();
-        $('#renamePage #linkToNewPage').html(`
+        $('#renamePage .msg-already-exists, #unportalize .msg-already-exists').show();
+        $('#renamePage #linkToNewPage, #unportalize #linkToNewPage').html(`
           <a href="${nameValueMap.new_path}">${nameValueMap.new_path} <i class="icon-login"></i></a>
         `);
       }

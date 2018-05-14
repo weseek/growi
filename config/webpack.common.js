@@ -3,6 +3,7 @@
  */
 
 const webpack = require('webpack');
+const path = require('path');
 const helpers = require('./helpers');
 
 /*
@@ -29,6 +30,7 @@ module.exports = function(options) {
       'style-theme-default':  './resource/styles/scss/theme/default.scss',
       'style-theme-default-dark':  './resource/styles/scss/theme/default-dark.scss',
       'style-theme-nature':   './resource/styles/scss/theme/nature.scss',
+      'style-theme-mono-blue':   './resource/styles/scss/theme/mono-blue.scss',
       'style-presentation':   './resource/styles/scss/style-presentation.scss',
     },
     externals: {
@@ -41,6 +43,12 @@ module.exports = function(options) {
     resolve: {
       extensions: ['.js', '.json'],
       modules: [helpers.root('src'), helpers.root('node_modules')],
+      alias: {
+        '@root': path.resolve(__dirname, '../'),
+        '@alias/logger': path.resolve(__dirname, '../lib/service/logger'),
+        // replace bunyan
+        'bunyan': 'browser-bunyan',
+      }
     },
     module: {
       rules: [
@@ -111,4 +119,4 @@ module.exports = function(options) {
 
     ]
   };
-}
+};

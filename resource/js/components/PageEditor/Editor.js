@@ -31,7 +31,7 @@ require('codemirror/mode/gfm/gfm');
 import Dropzone from 'react-dropzone';
 
 import pasteHelper from './PasteHelper';
-import emojiAutoCompleteHelper from './EmojiAutoCompleteHelper';
+import EmojiAutoCompleteHelper from './EmojiAutoCompleteHelper';
 
 import InterceptorManager from '../../../../lib/util/interceptor-manager';
 
@@ -54,7 +54,9 @@ export default class Editor extends React.Component {
     this.state = {
       value: this.props.value,
       dropzoneActive: false,
+      isEnabledEmojiAutoComplete: false,
       isUploading: false,
+      isLoadingKeymap: false,
     };
 
     this.loadedThemeSet = new Set(['eclipse', 'elegant']);   // themes imported in _vendor.scss
@@ -79,9 +81,17 @@ export default class Editor extends React.Component {
 
     this.getDropzoneAccept = this.getDropzoneAccept.bind(this);
     this.getDropzoneClassName = this.getDropzoneClassName.bind(this);
-    this.renderOverlay = this.renderOverlay.bind(this);
+    this.renderDropzoneOverlay = this.renderDropzoneOverlay.bind(this);
+
+    this.renderLoadingKeymapOverlay = this.renderLoadingKeymapOverlay.bind(this);
   }
 
+  componentWillMount() {
+    if (this.props.emojiStrategy != null) {
+      this.emojiAutoCompleteHelper = new EmojiAutoCompleteHelper(this.props.emojiStrategy);
+      this.setState({isEnabledEmojiAutoComplete: true});
+    }
+  }
 
   componentDidMount() {
     // initialize caret line
@@ -99,7 +109,6 @@ export default class Editor extends React.Component {
     this.loadTheme(theme);
 
     // set keymap
-    const prevKeymapMode = this.props.editorOptions.keymapMode;
     const keymapMode = nextProps.editorOptions.keymapMode;
     this.setKeymapMode(keymapMode);
   }
@@ -164,8 +173,6 @@ export default class Editor extends React.Component {
    * @param {string} theme
    */
   loadTheme(theme) {
-    // load theme
-    let cssList = [];
     if (!this.loadedThemeSet.has(theme)) {
       this.loadCss(urljoin(this.cmCdnRoot, `theme/${theme}.min.css`));
 
@@ -195,7 +202,13 @@ export default class Editor extends React.Component {
       this.loadedKeymapSet.add(keymapMode);
     }
 
-    return Promise.all(scriptList.concat(cssList));
+    // set loading state
+    this.setState({ isLoadingKeymap: true });
+
+    return Promise.all(scriptList.concat(cssList))
+      .then(() => {
+        this.setState({ isLoadingKeymap: false });
+      });
   }
 
   /**
@@ -212,9 +225,9 @@ export default class Editor extends React.Component {
     }
 
     this.loadKeymapMode(keymapMode)
-    .then(() => {
-      this.getCodeMirror().setOption('keyMap', keymapMode);
-    });
+      .then(() => {
+        this.getCodeMirror().setOption('keyMap', keymapMode);
+      });
   }
 
   /**
@@ -346,7 +359,7 @@ export default class Editor extends React.Component {
     let accept = 'null';    // reject all
     if (this.props.isUploadable) {
       if (!this.props.isUploadableFile) {
-        accept = 'image/*'  // image only
+        accept = 'image/*'; // image only
       }
       else {
         accept = '';        // allow all
@@ -377,8 +390,8 @@ export default class Editor extends React.Component {
     return className;
   }
 
-  renderOverlay() {
-    const overlayStyle = {
+  getOverlayStyle() {
+    return {
       position: 'absolute',
       zIndex: 4,  // forward than .CodeMirror-gutters
       top: 0,
@@ -386,18 +399,34 @@ export default class Editor extends React.Component {
       bottom: 0,
       left: 0,
     };
+  }
+
+  renderDropzoneOverlay() {
+    const overlayStyle = this.getOverlayStyle();
 
     return (
-      <div style={overlayStyle} className="dropzone-overlay">
+      <div style={overlayStyle} className="overlay">
         {this.state.isUploading &&
-          <span className="dropzone-overlay-content">
-            <i className="fa fa-spinner fa-pulse fa-fw"></i>
+          <span className="overlay-content">
+            <div className="speeding-wheel d-inline-block"></div>
             <span className="sr-only">Uploading...</span>
           </span>
         }
-        {!this.state.isUploading && <span className="dropzone-overlay-content"></span>}
+        {!this.state.isUploading && <span className="overlay-content"></span>}
       </div>
     );
+  }
+
+  renderLoadingKeymapOverlay() {
+    const overlayStyle = this.getOverlayStyle();
+
+    return this.state.isLoadingKeymap
+      ? <div style={overlayStyle} className="loading-keymap overlay">
+          <span className="overlay-content">
+            <div className="speeding-wheel d-inline-block"></div> Loading Keymap ...
+          </span>
+        </div>
+      : '';
   }
 
   render() {
@@ -409,7 +438,7 @@ export default class Editor extends React.Component {
 
     const theme = this.props.editorOptions.theme || 'elegant';
     const styleActiveLine = this.props.editorOptions.styleActiveLine || undefined;
-    return (
+    return <React.Fragment>
       <div style={flexContainer}>
         <Dropzone
           ref="dropzone"
@@ -423,7 +452,7 @@ export default class Editor extends React.Component {
           onDragLeave={this.onDragLeave}
           onDrop={this.onDrop}
         >
-          { this.state.dropzoneActive && this.renderOverlay() }
+          { this.state.dropzoneActive && this.renderDropzoneOverlay() }
 
           <ReactCodeMirror
             ref="cm"
@@ -457,7 +486,7 @@ export default class Editor extends React.Component {
                 'Enter': this.handleEnterKey,
                 'Tab': 'indentMore',
                 'Shift-Tab': 'indentLess',
-                'Ctrl-Q': (cm) => { cm.foldCode(cm.getCursor()) },
+                'Ctrl-Q': (cm) => { cm.foldCode(cm.getCursor()); },
               }
             }}
             onScroll={(editor, data) => {
@@ -474,7 +503,9 @@ export default class Editor extends React.Component {
               }
 
               // Emoji AutoComplete
-              emojiAutoCompleteHelper.showHint(editor);
+              if (this.state.isEnabledEmojiAutoComplete) {
+                this.emojiAutoCompleteHelper.showHint(editor);
+              }
             }}
             onCursor={(editor, event) => {
               const strFromBol = mtu.getStrFromBol(editor);
@@ -487,15 +518,19 @@ export default class Editor extends React.Component {
         </Dropzone>
 
         <button type="button" className="btn btn-default btn-block btn-open-dropzone"
-            onClick={() => {this.refs.dropzone.open()}}>
+          onClick={() => {this.refs.dropzone.open();}}>
 
           <i className="icon-paper-clip" aria-hidden="true"></i>&nbsp;
           Attach files by dragging &amp; dropping,&nbsp;
           <span className="btn-link">selecting them</span>,&nbsp;
           or pasting from the clipboard.
         </button>
+
+        { this.renderLoadingKeymapOverlay() }
+
       </div>
-    );
+
+    </React.Fragment>;
   }
 
 }
@@ -503,8 +538,10 @@ export default class Editor extends React.Component {
 Editor.propTypes = {
   value: PropTypes.string,
   options: PropTypes.object,
+  editorOptions: PropTypes.object,
   isUploadable: PropTypes.bool,
   isUploadableFile: PropTypes.bool,
+  emojiStrategy: PropTypes.object,
   onChange: PropTypes.func,
   onScroll: PropTypes.func,
   onScrollCursorIntoView: PropTypes.func,

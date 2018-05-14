@@ -1,19 +1,19 @@
-import emojiStrategy from '../../util/emojione/emoji_strategy_shrinked.json';
-
 class EmojiAutoCompleteHelper {
 
-  constructor() {
-    this.emojiShortnameImageMap = {}
+  constructor(emojiStrategy) {
+    this.emojiStrategy = emojiStrategy;
+
+    this.emojiShortnameImageMap = {};
 
     this.initEmojiImageMap = this.initEmojiImageMap.bind(this);
     this.showHint = this.showHint.bind(this);
 
-    this.initEmojiImageMap()
+    this.initEmojiImageMap();
   }
 
   initEmojiImageMap() {
-    for (let unicode in emojiStrategy) {
-      const data = emojiStrategy[unicode];
+    for (let unicode in this.emojiStrategy) {
+      const data = this.emojiStrategy[unicode];
       const shortname = data.shortname;
       // add image tag
       this.emojiShortnameImageMap[shortname] = emojione.shortnameToImage(shortname);
@@ -26,7 +26,7 @@ class EmojiAutoCompleteHelper {
    */
   showHint(editor) {
     // see https://regex101.com/r/gy3i03/1
-    const pattern = /:[^:\s]+/
+    const pattern = /:[^:\s]+/;
 
     const currentPos = editor.getCursor();
     // find previous ':shortname'
@@ -77,7 +77,7 @@ class EmojiAutoCompleteHelper {
             `<div class="img-container">${this.emojiShortnameImageMap[shortname]}</div>` +
             `<span class="shortname-container">${shortname}</span>`;
         }
-      }
+      };
     });
   }
 
@@ -96,8 +96,8 @@ class EmojiAutoCompleteHelper {
     const countLen4 = () => { countLen3() + results4.length; }
     // TODO performance tune
     // when total length of all results is less than `maxLength`
-    for (let unicode in emojiStrategy) {
-      const data = emojiStrategy[unicode];
+    for (let unicode in this.emojiStrategy) {
+      const data = this.emojiStrategy[unicode];
 
       if (maxLength <= countLen1()) { break; }
       // prefix match to shortname
@@ -122,7 +122,7 @@ class EmojiAutoCompleteHelper {
       else if ((data.keywords != null) && data.keywords.find(elem => elem.indexOf(term) > -1)) {
         results4.push(data.shortname);
       }
-    };
+    }
 
     let results = results1.concat(results2).concat(results3).concat(results4);
     results = results.slice(0, maxLength);
@@ -132,7 +132,4 @@ class EmojiAutoCompleteHelper {
 
 }
 
-// singleton pattern
-const instance = new EmojiAutoCompleteHelper();
-Object.freeze(this);
-export default instance;
+export default EmojiAutoCompleteHelper;

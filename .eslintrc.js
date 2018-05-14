@@ -9,6 +9,10 @@ module.exports = {
     "eslint:recommended",
     "plugin:react/recommended"
   ],
+  "globals": {
+    "window": true,
+    "emojione": true
+  },
   "parserOptions": {
     "ecmaFeatures": {
       "experimentalObjectRestSpread": true,
@@ -37,8 +41,8 @@ module.exports = {
       2,
       {
         "SwitchCase": 1,
+        "ignoredNodes": ['JSXElement *', 'JSXElement'],
         "FunctionExpression": {"parameters": 2},
-        "CallExpression": {"parameters": 2}
       }
     ],
     "key-spacing": [
@@ -51,15 +55,19 @@ module.exports = {
       "error",
       "unix"
     ],
+    "no-unused-vars": [
+      "error",
+      { "args": "none" }
+    ],
     "quotes": [
       "error",
       "single"
     ],
-    "react/jsx-indent": [
+    "react/jsx-indent-props": [
       "error",
-      4,
-      { "ignoredNodes": ["JSXElement *"] }
+      2
     ],
+    "react/no-string-refs": 'off',
     "semi": [
       "error",
       "always"

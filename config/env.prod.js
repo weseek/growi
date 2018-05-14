@@ -1,6 +1,4 @@
 module.exports = {
-  // logging settings
-  DEBUG: [
-    'crowi:crowi',
-  ].join(),
-}
+  NODE_ENV: 'production',
+  // FORMAT_NODE_LOG: false,
+};

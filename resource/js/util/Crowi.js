@@ -2,7 +2,9 @@
  * Crowi context class for client
  */
 
-import axios from 'axios'
+import axios from 'axios';
+
+import emojiStrategy from './emojione/emoji_strategy_shrinked.json';
 import InterceptorManager from '../../../lib/util/interceptor-manager';
 
 import {
@@ -53,7 +55,7 @@ export default class Crowi {
   }
 
   getContext() {
-    return context;
+    return this.context;
   }
 
   setConfig(config) {
@@ -66,6 +68,10 @@ export default class Crowi {
 
   setPageEditor(pageEditor) {
     this.pageEditor = pageEditor;
+  }
+
+  getEmojiStrategy() {
+    return emojiStrategy;
   }
 
   recoverData() {

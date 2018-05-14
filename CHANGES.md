@@ -3,7 +3,14 @@ CHANGES
 
 ## 3.0.13-RC
 
+* Improvement: Add Vim/Emacs/Sublime-Text icons for keybindings menu
+* Improvement: Add 'mono-blue' theme
+* Fix: Unportalize process failed silently
+* Support: Switch the logger from 'pino' to 'bunyan'
+* Support: Set the alias for 'debug' to the debug function of 'bunyan'
 * Support: Translate /admin/security
+* Support: Optimize bundles
+    * upgrade 'markdown-it-toc-and-anchor-with-slugid' and omit 'uslug'
 
 ## 3.0.12
 
@@ -11,7 +18,6 @@ CHANGES
 * Improvement: Add some CodeMirror themes (Eclipse, Dracula)
 * Improvement: Dynamic loading for CodeMirror theme files from CDN
 * Improvement: Prevent XSS when move/redirect/duplicate
-
 
 ## 3.0.11
 
