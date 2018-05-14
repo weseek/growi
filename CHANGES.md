@@ -5,6 +5,7 @@ CHANGES
 
 * Improvement: Add Vim/Emacs/Sublime-Text icons for keybindings menu
 * Improvement: Add 'mono-blue' theme
+* Fix: Unportalize process failed silently
 * Support: Switch the logger from 'pino' to 'bunyan'
 * Support: Set the alias for 'debug' to the debug function of 'bunyan'
 * Support: Translate /admin/security
