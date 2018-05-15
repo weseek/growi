@@ -54,7 +54,13 @@ module.exports = function(options) {
       rules: [
         {
           test: /.jsx?$/,
-          exclude: /node_modules/,
+          exclude: {
+            test:    helpers.root('node_modules'),
+            exclude: [  // include as a result
+              // sindresorhus/string-width uses sindresorhus/is-fullwidth-code-point
+              helpers.root('node_modules/is-fullwidth-code-point'),
+            ]
+          },
           use: [{
             loader: 'babel-loader?cacheDirectory',
             options: {
