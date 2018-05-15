@@ -174,9 +174,6 @@ body.on-edit {
     padding-right: 0;
     // override CodeMirror styles
     .CodeMirror {
-      pre {
-        font-family: $font-family-monospace-not-strictly;
-      }
       .cm-matchhighlight {
         background-color: cyan;
       }
