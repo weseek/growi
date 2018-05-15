@@ -57,8 +57,8 @@ module.exports = function(options) {
           exclude: {
             test:    helpers.root('node_modules'),
             exclude: [  // include as a result
-              // sindresorhus/string-width uses sindresorhus/is-fullwidth-code-point
-              helpers.root('node_modules/is-fullwidth-code-point'),
+              helpers.root('node_modules/string-width'),
+              helpers.root('node_modules/is-fullwidth-code-point'), // depends from string-width
             ]
           },
           use: [{
