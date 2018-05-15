@@ -7,19 +7,4 @@ module.exports = {
     // 'growi-plugin-lsx',
     // 'growi-plugin-pukiwiki-like-linker',
   ],
-  // filters for debug
-  DEBUG: [
-    // 'express:*',
-    // 'crowi:*',
-    'crowi:crowi',
-    // 'crowi:crowi:dev',
-    'crowi:crowi:express-init',
-    'crowi:models:external-account',
-    // 'crowi:routes:login',
-    'crowi:routes:login-passport',
-    'crowi:service:PassportService',
-    // 'crowi:routes:page',
-    // 'crowi:plugins:*',
-    // 'crowi:InterceptorManager',
-  ].join(),
-}
+};

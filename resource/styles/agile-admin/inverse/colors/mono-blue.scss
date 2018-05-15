@@ -1,0 +1,51 @@
+@import '../variables';
+
+$themecolor: #00587A;
+$themelight: #F7FBFD;
+$subthemecolor: #186718;
+
+
+$topbar: $themecolor;
+$sidebar: $themelight;
+$bodycolor: $themelight;
+
+$headingtext: $themecolor;
+$bodytext: $themecolor;
+$linktext: lighten($themecolor,5%);
+$linktext-hover: lighten($linktext, 12%);
+$sidebar-text: $themecolor;
+
+$primary: $themecolor;
+$info: lighten($themecolor,20%);
+
+$logo-mark-fill: lighten(desaturate($topbar, 30%), 20%);
+$wikilinktext: lighten($themecolor, 20%);
+$wikilinktext-hover: lighten($wikilinktext, 20%);
+
+@import 'apply-colors';
+@import 'apply-colors-light';
+
+
+// change color of inline-code (default: red)
+:not(.hljs) > code:not(.hljs) {
+  background-color: lighten($subthemecolor,70%);
+  color: $subthemecolor;
+}
+
+// change color of highlighted header in wiki (default: orange)
+.wiki {
+  .code-line.revision-head.highlighted {
+    background-color: lighten($themecolor,20%);
+    color: $themelight;
+  }
+}
+
+// change color of surrounding border of theme option icon at admin/customize (default: green)
+.admin-page {
+  #themeOptions {
+    a.active {
+      background-color: lighten($themecolor,20%);
+      border-color: lighten($themecolor,20%);
+    }
+  }
+}
