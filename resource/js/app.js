@@ -159,7 +159,6 @@ if (pageEditorElem) {
         pageId={pageId} revisionId={pageRevisionId} pagePath={pagePath}
         markdown={markdown}
         editorOptions={editorOptions} previewOptions={previewOptions}
-        pageGrant={pageGrant}
         onSaveSuccess={onSaveSuccess} />,
     pageEditorElem
   );

@@ -109,14 +109,6 @@ export default class PageEditor extends React.Component {
   onSave() {
     let endpoint;
     let data;
-    let grantData;
-    let grantGroupId;
-    if (this.state.pageGrant != null) {
-      grantData = this.state.pageGrant.grant;
-      if (this.state.pageGrant.grantGroup != null) {
-        grantGroupId = this.state.pageGrant.grantGroup.userGroupId;
-      }
-    }
 
     // update
     if (this.state.pageId != null) {
@@ -125,8 +117,6 @@ export default class PageEditor extends React.Component {
         page_id: this.state.pageId,
         revision_id: this.state.revisionId,
         body: this.state.markdown,
-        grant: grantData,
-        grantUserGroupId: grantGroupId,
       };
     }
     // create
@@ -135,8 +125,6 @@ export default class PageEditor extends React.Component {
       data = {
         path: this.props.pagePath,
         body: this.state.markdown,
-        grant: grantData,
-        grantUserGroupId: grantGroupId,
       };
     }
 
