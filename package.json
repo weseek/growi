@@ -31,6 +31,7 @@
     "clean:report": "rimraf -- report",
     "clean": "npm-run-all -p clean:*",
     "heroku-postbuild": "sh bin/heroku/install-plugins.sh && npm run build:prod",
+    "lint:fix": "eslint . --fix",
     "lint": "eslint .",
     "mkdirp": "mkdirp",
     "plugin:def": "node bin/generate-plugin-definitions-source.js",
