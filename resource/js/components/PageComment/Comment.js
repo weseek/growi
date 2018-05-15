@@ -52,6 +52,11 @@ export default class Comment extends React.Component {
     const comment = this.props.comment;
     const creator = comment.creator;
 
+    // temporary from here
+    const isMarkdown = comment.isMarkdown;
+    let markdownText = isMarkdown ? 'markdown' : 'plain';
+    // to here
+
     const rootClassName = this.getRootClassName();
     const commentDate = dateFnsFormat(comment.createdAt, 'YYYY/MM/DD HH:mm');
     const commentBody = ReactUtils.nl2br(comment.comment);
@@ -68,6 +73,7 @@ export default class Comment extends React.Component {
         <div className="page-comment-main">
           <div className="page-comment-creator">
             <a href={creatorsPage}>{creator.username}</a>
+            <p>{markdownText}!!!</p>
           </div>
           <div className="page-comment-body">{commentBody}</div>
           <div className="page-comment-meta">

@@ -38,6 +38,7 @@ export default class PageCommentFormBehavior extends React.Component {
           pageComments.init();
 
           $('#comment-form-comment').val('');
+          $('#comment-form-is-markdown').prop('checked', false);
           $('#comment-form-message').text('');
         } else {
           $('#comment-form-message').text(data.error);
