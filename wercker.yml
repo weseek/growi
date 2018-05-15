@@ -59,6 +59,11 @@ build-prod:
       code: |
         npm run build:prod:analyze
 
+    - script:
+      name: npm run server:prod:ci
+      code: |
+        npm run server:prod:ci
+
   after-steps:
     - script:
       name: copy report to artifacts
