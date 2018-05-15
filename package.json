@@ -41,6 +41,7 @@
     "postserver:prod:container": "echo ---------------------------------------- && echo [WARNING] && echo   'server:prod:container' is deprecated. && echo   Please use 'sever:prod' && echo ----------------------------------------",
     "server:dev": "env-cmd config/env.dev.js node-dev --respawn app.js",
     "server:prod:container": "npm run server:prod",
+    "server:prod:ci": "npm run server:prod -- --ci",
     "server:prod": "env-cmd config/env.prod.js node app.js",
     "server": "npm run server:dev",
     "start": "npm run server:prod",
