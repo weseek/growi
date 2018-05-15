@@ -6,11 +6,13 @@ CHANGES
 * Improvement: Add Vim/Emacs/Sublime-Text icons for keybindings menu
 * Improvement: Add 'mono-blue' theme
 * Fix: Unportalize process failed silently
+* Fix: Sidebar breaks editor layouts
 * Support: Switch the logger from 'pino' to 'bunyan'
 * Support: Set the alias for 'debug' to the debug function of 'bunyan'
 * Support: Translate /admin/security
 * Support: Optimize bundles
     * upgrade 'markdown-it-toc-and-anchor-with-slugid' and omit 'uslug'
+* Support: Optimize .eslintrc.js
 
 ## 3.0.12
 
