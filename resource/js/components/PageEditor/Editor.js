@@ -130,6 +130,8 @@ export default class Editor extends React.Component {
       this.getCodeMirror().focus();
       if (editor.hasFocus()) {
         clearInterval(intervalId);
+        // refresh
+        editor.refresh();
       }
     }, 100);
   }
