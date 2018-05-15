@@ -1,7 +1,11 @@
 CHANGES
 ========
 
-## 3.0.13-RC
+## 3.0.14
+
+* 
+
+## 3.0.13
 
 * Improvement: Add Vim/Emacs/Sublime-Text icons for keybindings menu
 * Improvement: Add 'mono-blue' theme
