@@ -44,8 +44,8 @@ module.exports = function(options) {
       extensions: ['.js', '.json'],
       modules: [helpers.root('src'), helpers.root('node_modules')],
       alias: {
-        '@root': path.resolve(__dirname, '../'),
-        '@alias/logger': path.resolve(__dirname, '../lib/service/logger'),
+        '@root': helpers.root('/'),
+        '@alias/logger': helpers.root('lib/service/logger'),
         // replace bunyan
         'bunyan': 'browser-bunyan',
       }

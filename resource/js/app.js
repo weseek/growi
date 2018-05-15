@@ -21,14 +21,12 @@ import RevisionPath     from './components/Page/RevisionPath';
 import RevisionUrl      from './components/Page/RevisionUrl';
 import BookmarkButton   from './components/BookmarkButton';
 import NewPageNameInputter from './components/NewPageNameInputter';
-import SearchTypeahead  from './components/SearchTypeahead';
 
 import CustomCssEditor  from './components/Admin/CustomCssEditor';
 import CustomScriptEditor from './components/Admin/CustomScriptEditor';
 import CustomHeaderEditor from './components/Admin/CustomHeaderEditor';
 
 import * as entities from 'entities';
-
 
 if (!window) {
   window = {};
