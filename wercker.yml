@@ -43,13 +43,12 @@ build-prod:
     - script:
       name: install dependencies
       code: |
-        yarn install
+        yarn
 
     - script:
       name: install plugins
       code: |
-        yarn add growi-plugin-lsx
-        yarn add growi-plugin-pukiwiki-like-linker
+        yarn add growi-plugin-lsx growi-plugin-pukiwiki-like-linker
 
     - script:
       name: print dependencies
