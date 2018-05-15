@@ -36,9 +36,9 @@ test:
 
 build-prod:
   steps:
-    # - script:
-    #   name: set yarn cache-folder
-    #   code: yarn config set cache-folder $WERCKER_CACHE_DIR/yarn
+    - script:
+      name: set yarn cache-folder
+      code: yarn config set cache-folder $WERCKER_CACHE_DIR/yarn
 
     - script:
       name: install dependencies
