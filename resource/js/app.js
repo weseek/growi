@@ -188,6 +188,8 @@ const userRelatedGroups = JSON.parse(document.getElementById('user-related-group
   return new UserGroup(value);
 })
 const pageEditorGrantSelectorElem = document.getElementById('page-grant-selector');
+const pageGrantElem = document.getElementById("page-grant");
+const pageGrantGroupElem = document.getElementById("grant-group");
 if (pageEditorGrantSelectorElem) {
   pageGrant = new PageGrant();
   pageGrant.grant = document.getElementById("page-grant").value;
@@ -203,7 +205,8 @@ if (pageEditorGrantSelectorElem) {
       userRelatedGroups={userRelatedGroups} pageGrant={pageGrant}
       onChange={(newPageGrant) => { // set onChange event handler
         // set options
-        pageEditor.setGrant(newPageGrant);
+        pageGrantElem.value = newPageGrant.grant;
+        pageGrantGroupElem.value = newPageGrant.grantGroup.userGroupId || '';
       }} />,
     pageEditorGrantSelectorElem
   );

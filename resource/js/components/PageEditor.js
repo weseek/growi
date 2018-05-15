@@ -10,7 +10,6 @@ import { EditorOptions, PreviewOptions } from './PageEditor/OptionsSelector';
 import Editor from './PageEditor/Editor';
 import Preview from './PageEditor/Preview';
 import scrollSyncHelper from './PageEditor/ScrollSyncHelper';
-import { PageGrant } from './PageEditor/GrantSelector';
 
 export default class PageEditor extends React.Component {
 
@@ -31,7 +30,6 @@ export default class PageEditor extends React.Component {
       isMathJaxEnabled,
       editorOptions: this.props.editorOptions,
       previewOptions: this.props.previewOptions,
-      pageGrant: this.props.pageGrant,
     };
 
     this.growiRenderer = new GrowiRenderer(this.props.crowi, this.props.crowiRenderer, {mode: 'editor'});
@@ -94,15 +92,6 @@ export default class PageEditor extends React.Component {
    */
   setPreviewOptions(previewOptions) {
     this.setState({ previewOptions });
-  }
-
-  /**
-   * set page grant
-   * @param {any} pageGrant
-   * @memberof PageEditor
-   */
-  setGrant(pageGrant) {
-    this.setState({ pageGrant });
   }
 
   /**
@@ -422,5 +411,4 @@ PageEditor.propTypes = {
   onSaveSuccess: PropTypes.func,
   editorOptions: PropTypes.instanceOf(EditorOptions),
   previewOptions: PropTypes.instanceOf(PreviewOptions),
-  pageGrant: PropTypes.instanceOf(PageGrant),
 };

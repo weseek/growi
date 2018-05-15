@@ -1,8 +1,0 @@
-// override bootstrap-collapse behavior (holizontal collapse)
-// see: https://getbootstrap.com/docs/3.3/javascript/#collapse, https://stackoverflow.com/a/18602739/1596547
-.collapsing.width {
-  -webkit-transition-property: width, visibility;
-  transition-property: width, visibility;
-  width: 0;
-  height: auto;
-}

@@ -47,22 +47,11 @@ export default class GrantSelector extends React.Component {
     this.grantSelectorInputEl.value = this.state.pageGrant.grant;
   }
 
-  updateElementValue() {
-    console.log(this.state.pageGrant);
-    if (this.state.pageGrant != null) {
-      document.getElementById("page-grant").value = this.state.pageGrant.grant;
-      if (this.state.pageGrant.grantGroup != null) {
-        document.getElementById("grant-group").value = this.state.pageGrant.grantGroup.grantGroupId;
-      }
-    }
-  }
-
   onChangeGrant(grant) {
     const newValue = this.grantSelectorInputEl.value;
     const newGrant = Object.assign(this.state.pageGrant, {grant: newValue});
     this.setState({ pageGrant: newGrant });
 
-    this.updateElementValue();
     // dispatch event
     this.dispatchOnChange();
   }
