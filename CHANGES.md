@@ -3,7 +3,7 @@ CHANGES
 
 ## 3.0.14
 
-* 
+* Improvement: Auto-format markdown tables which includes multibyte text
 
 ## 3.0.13
 
