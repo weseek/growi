@@ -62,6 +62,8 @@ build-prod:
     - script:
       name: npm run server:prod:ci
       code: |
+        export MONGO_URI=mongodb://$MONGO_PORT_27017_TCP_ADDR/growi
+        echo "export MONGO_URI=$MONGO_URI"
         npm run server:prod:ci
 
   after-steps:
