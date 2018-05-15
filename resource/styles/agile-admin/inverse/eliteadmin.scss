@@ -830,15 +830,15 @@ label{
 // Wrappers
 
 #wrapper {
-    width: 100%;
-
+  position: relative;
+  width: 100%;
 }
 
 #page-wrapper {
-    padding: 0px;
-    min-height: 568px;
-    background:$bodycolor;
-    padding-bottom:60px;
+  padding: 0px;
+  min-height: 568px;
+  background:$bodycolor;
+  padding-bottom:60px;
 }
 
 /*

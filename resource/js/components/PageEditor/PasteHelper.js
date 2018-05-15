@@ -1,4 +1,4 @@
-import accepts from 'attr-accept'
+import accepts from 'attr-accept';
 
 import markdownListUtil from './MarkdownListUtil';
 
@@ -33,7 +33,7 @@ class PasteHelper {
    * @param {*} accept
    */
   fileAccepted(file, accept) {
-    return file.type === 'application/x-moz-file' || accepts(file, accept)
+    return file.type === 'application/x-moz-file' || accepts(file, accept);
   }
   /**
    * transplanted from react-dropzone
@@ -44,7 +44,7 @@ class PasteHelper {
    * @param {number} minSize
    */
   fileMatchSize(file, maxSize, minSize) {
-    return file.size <= maxSize && file.size >= minSize
+    return file.size <= maxSize && file.size >= minSize;
   }
 }
 

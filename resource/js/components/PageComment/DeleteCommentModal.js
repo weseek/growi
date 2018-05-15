@@ -14,7 +14,7 @@ export default class DeleteCommentModal extends React.Component {
   /*
    * the threshold for omitting body
    */
-  static get OMIT_BODY_THRES() { return 400 };
+  static get OMIT_BODY_THRES() { return 400 }
 
   constructor(props) {
     super(props);
@@ -25,7 +25,7 @@ export default class DeleteCommentModal extends React.Component {
 
   render() {
     if (this.props.comment === undefined) {
-      return <div></div>
+      return <div></div>;
     }
 
     const comment = this.props.comment;

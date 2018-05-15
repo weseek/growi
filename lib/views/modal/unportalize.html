@@ -32,17 +32,21 @@
             </div>
         </div>
         <div class="modal-footer">
-          <p class="pull-left text-left">
-            <small id="newPageNameCheck"></small>
-            <br>
-            <span id="linkToNewPage"></span>
-          </p>
-          <input type="hidden" name="_csrf" value="{{ csrf() }}">
-          <input type="hidden" name="path" value="{{ page.path }}">
-          <input type="hidden" class="form-control" name="new_path" id="newPageName" value="{{ unportalizedPath }}">
-          <input type="hidden" name="page_id" value="{{ page._id.toString() }}">
-          <input type="hidden" name="revision_id" value="{{ page.revision._id.toString() }}">
-          <button type="submit" class="btn btn-warning">Unportalize</button>
+          <div class="d-flex justify-content-between">
+            <p>
+              <span class="text-danger msg-already-exists">
+                <strong><i class="icon-fw icon-ban"></i>{{ t('Page is already exists.') }}</strong>
+              </span>
+              <small id="linkToNewPage" class="msg-already-exists"></small>
+            </p>
+            <div>
+              <input type="hidden" name="_csrf" value="{{ csrf() }}">
+              <input type="hidden" name="path" value="{{ page.path }}">
+              <input type="hidden" class="form-control" name="new_path" id="newPageName" value="{{ unportalizedPath }}">
+              <input type="hidden" name="page_id" value="{{ page._id.toString() }}">
+              <input type="hidden" name="revision_id" value="{{ page.revision._id.toString() }}">
+              <button type="submit" class="btn btn-warning">Unportalize</button>
+            </div>
         </div>
 
       </form>

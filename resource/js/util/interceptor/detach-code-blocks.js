@@ -33,7 +33,9 @@ export class DetachCodeBlockInterceptor extends BasicInterceptor {
   process(contextName, ...args) {
     const context = Object.assign(args[0]);   // clone
     const markdown = context.markdown;
+    /* eslint-disable no-unused-vars */
     const currentPagePath = context.currentPagePath;
+    /* eslint-enable */
 
     context.dcbContextMap = {};
 
@@ -63,8 +65,8 @@ export class DetachCodeBlockInterceptor extends BasicInterceptor {
    * @return random strings
    */
   createRandomStr(length) {
-    const bag = "abcdefghijklmnopqrstuvwxyz0123456789";
-    let generated = "";
+    const bag = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    let generated = '';
     for (var i = 0; i < length; i++) {
       generated += bag[Math.floor(Math.random() * bag.length)];
     }
@@ -106,7 +108,7 @@ export class RestoreCodeBlockInterceptor extends BasicInterceptor {
 
       // replace it with content by using getter function so that the doller sign does not work
       // see: https://github.com/weseek/crowi-plus/issues/285
-      context.markdown = context.markdown.replace(dcbContext.substituteContent, () => { return dcbContext.content; });
+      context.markdown = context.markdown.replace(dcbContext.substituteContent, () => { return dcbContext.content });
     });
 
     // resolve

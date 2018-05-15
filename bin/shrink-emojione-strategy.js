@@ -14,7 +14,7 @@ const markdownItEmojiFull = require('markdown-it-emoji/lib/data/full.json');
 let shrinkedMap = {};
 for (let unicode in emojiStrategy) {
   const data = emojiStrategy[unicode];
-  const shortname = data.shortname.replace(/\:/g, '');
+  const shortname = data.shortname.replace(/:/g, '');
 
   // ignore if it isn't included in markdownItEmojiFull
   if (markdownItEmojiFull[shortname] == null) {

@@ -7,12 +7,12 @@ export default class RevisionUrl extends React.Component {
 
   render() {
     const buttonStyle = {
-      fontSize: "1em"
-    }
+      fontSize: '1em'
+    };
 
     const url = (this.props.pageId == null)
-        ? decodeURIComponent(location.href)
-        : `${location.origin}/${this.props.pageId}`;
+      ? decodeURIComponent(location.href)
+      : `${location.origin}/${this.props.pageId}`;
     const copiedText = this.props.pagePath + '\n' + url;
 
     return (

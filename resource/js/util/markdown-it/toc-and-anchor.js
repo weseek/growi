@@ -1,5 +1,3 @@
-import uslug from 'uslug';
-
 export default class TocAndAnchorConfigurer {
 
   constructor(crowi, renderToc) {
@@ -9,14 +7,12 @@ export default class TocAndAnchorConfigurer {
 
   configure(md) {
     md.use(require('markdown-it-toc-and-anchor-with-slugid').default, {
-        tocLastLevel: 3,
-        anchorLinkBefore: false,
-        anchorLinkSymbol: '',
-        anchorLinkSymbolClassName: 'icon-link',
-        anchorClassName: 'revision-head-link',
-        slugify: this.customSlugify,
-      })
-      ;
+      tocLastLevel: 3,
+      anchorLinkBefore: false,
+      anchorLinkSymbol: '',
+      anchorLinkSymbolClassName: 'icon-link',
+      anchorClassName: 'revision-head-link',
+    });
 
     // set toc render function
     if (this.renderToc != null) {
@@ -28,11 +24,4 @@ export default class TocAndAnchorConfigurer {
     }
   }
 
-  /**
-   * create Base64 encoded id
-   * @param {string} header
-   */
-  customSlugify(header) {
-    return encodeURIComponent(uslug(header.trim()));
-  }
 }

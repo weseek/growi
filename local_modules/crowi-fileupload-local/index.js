@@ -3,7 +3,7 @@
 module.exports = function(crowi) {
   'use strict';
 
-  var debug = require('debug')('crowi:lib:fileUploaderLocal')
+  var debug = require('debug')('growi:lib:fileUploaderLocal')
     , fs = require('fs')
     , path = require('path')
     , mkdir = require('mkdirp')
@@ -54,7 +54,7 @@ module.exports = function(crowi) {
     return path.posix.join('/uploads', filePath);
   };
 
-  lib.findDeliveryFile = function (fileId, filePath) {
+  lib.findDeliveryFile = function(fileId, filePath) {
     return Promise.resolve(lib.generateUrl(filePath));
   };
 

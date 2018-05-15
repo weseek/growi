@@ -4,13 +4,9 @@ import PropTypes from 'prop-types';
 import FormGroup from 'react-bootstrap/es/FormGroup';
 import FormControl from 'react-bootstrap/es/FormControl';
 import ControlLabel from 'react-bootstrap/es/ControlLabel';
-import Button from 'react-bootstrap/es/Button';
 
 import Dropdown from 'react-bootstrap/es/Dropdown';
 import MenuItem from 'react-bootstrap/es/MenuItem';
-
-import OverlayTrigger  from 'react-bootstrap/es/OverlayTrigger';
-import Tooltip from 'react-bootstrap/es/Tooltip';
 
 export default class OptionsSelector extends React.Component {
 
@@ -25,7 +21,7 @@ export default class OptionsSelector extends React.Component {
       previewOptions: this.props.previewOptions || new PreviewOptions(),
       isCddMenuOpened: false,
       isMathJaxEnabled,
-    }
+    };
 
     this.availableThemes = [
       'eclipse', 'elegant', 'neo', 'mdn-like', 'material', 'dracula', 'monokai', 'twilight'
@@ -35,7 +31,7 @@ export default class OptionsSelector extends React.Component {
       vim: 'Vim',
       emacs: 'Emacs',
       sublime: 'Sublime Text',
-    }
+    };
 
     this.onChangeTheme = this.onChangeTheme.bind(this);
     this.onChangeKeymapMode = this.onChangeKeymapMode.bind(this);
@@ -135,21 +131,26 @@ export default class OptionsSelector extends React.Component {
 
         </FormControl>
       </FormGroup>
-    )
+    );
   }
 
   renderKeymapModeSelector() {
     const optionElems = [];
     for (let mode in this.keymapModes) {
       const label = this.keymapModes[mode];
-      optionElems.push(<option key={mode} value={mode}>{label}</option>);
+      const dataContent = (mode === 'default')
+        ? label
+        : `<img src='/images/icons/${mode}.png' width='16px' class='m-r-5'></img> ${label}`;
+      optionElems.push(
+        <option key={mode} value={mode} data-content={dataContent}>{label}</option>
+      );
     }
 
     const bsClassName = 'form-control-dummy'; // set form-control* to shrink width
 
     return (
       <FormGroup controlId="formControlsSelect">
-        <ControlLabel>Mode:</ControlLabel>
+        <ControlLabel>Keymap:</ControlLabel>
         <FormControl componentClass="select" placeholder="select" bsClass={bsClassName} className="btn-group-sm selectpicker"
             onChange={this.onChangeKeymapMode}
             inputRef={ el => this.keymapModeSelectorInputEl=el }>
@@ -158,7 +159,7 @@ export default class OptionsSelector extends React.Component {
 
         </FormControl>
       </FormGroup>
-    )
+    );
   }
 
   renderConfigurationDropdown() {
@@ -181,15 +182,15 @@ export default class OptionsSelector extends React.Component {
         </Dropdown>
 
       </FormGroup>
-    )
+    );
   }
 
   renderActiveLineMenuItem() {
     const isActive = this.state.editorOptions.styleActiveLine;
 
-    const iconClasses = ['text-info']
+    const iconClasses = ['text-info'];
     if (isActive) {
-      iconClasses.push('ti-check')
+      iconClasses.push('ti-check');
     }
     const iconClassName = iconClasses.join(' ');
 
@@ -199,7 +200,7 @@ export default class OptionsSelector extends React.Component {
         <span className="menuitem-label">Show active line</span>
         <span className="icon-container"><i className={iconClassName}></i></span>
       </MenuItem>
-    )
+    );
   }
 
   renderRealtimeMathJaxMenuItem() {
@@ -210,9 +211,9 @@ export default class OptionsSelector extends React.Component {
     const isEnabled = this.state.isMathJaxEnabled;
     const isActive = isEnabled && this.state.previewOptions.renderMathJaxInRealtime;
 
-    const iconClasses = ['text-info']
+    const iconClasses = ['text-info'];
     if (isActive) {
-      iconClasses.push('ti-check')
+      iconClasses.push('ti-check');
     }
     const iconClassName = iconClasses.join(' ');
 
@@ -222,7 +223,7 @@ export default class OptionsSelector extends React.Component {
         <span className="menuitem-label">MathJax Rendering</span>
         <i className={iconClassName}></i>
       </MenuItem>
-    )
+    );
   }
 
   render() {
@@ -230,7 +231,7 @@ export default class OptionsSelector extends React.Component {
       <span className="m-l-5">{this.renderThemeSelector()}</span>
       <span className="m-l-5">{this.renderKeymapModeSelector()}</span>
       <span className="m-l-5">{this.renderConfigurationDropdown()}</span>
-    </span>
+    </span>;
   }
 }
 

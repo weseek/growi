@@ -21,9 +21,9 @@ export default class CopyButton extends React.Component {
   render() {
     const containerStyle = {
       lineHeight: 0
-    }
+    };
     const style = Object.assign({
-      padding: "0 2px",
+      padding: '0 2px',
       verticalAlign: 'text-top',
     }, this.props.buttonStyle);
 

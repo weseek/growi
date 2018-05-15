@@ -361,6 +361,8 @@ export default class PageEditor extends React.Component {
   }
 
   render() {
+    const emojiStrategy = this.props.crowi.getEmojiStrategy();
+
     return (
       <div className="row">
         <div className="col-md-6 col-sm-12 page-editor-editor-container">
@@ -368,6 +370,7 @@ export default class PageEditor extends React.Component {
             editorOptions={this.state.editorOptions}
             isUploadable={this.state.isUploadable}
             isUploadableFile={this.state.isUploadableFile}
+            emojiStrategy={emojiStrategy}
             onScroll={this.onEditorScroll}
             onScrollCursorIntoView={this.onEditorScrollCursorIntoView}
             onChange={this.onMarkdownChanged}

@@ -1,7 +1,7 @@
 <form action="/_api/admin/security/passport-ldap" method="post" class="form-horizontal" id="ldapSetting" role="form">
 
   <fieldset>
-    <legend>LDAP Configuration</legend>
+    <legend>LDAP {{ t("security_setting.configuration") }}</legend>
 
     {% set nameForIsLdapEnabled = "settingForm[security:passport-ldap:isEnabled]" %}
     {% set isLdapEnabled = settingForm['security:passport-ldap:isEnabled'] %}
@@ -30,8 +30,8 @@
               name="settingForm[security:passport-ldap:serverUrl]" value="{{ settingForm['security:passport-ldap:serverUrl'] || '' }}">
           <p class="help-block">
             <small>
-              The LDAP URL of the directory service in the format <code>ldap://host:port/DN</code> or <code>ldaps://host:port/DN</code>.<br>
-              Example: <code>ldaps://ldap.company.com/ou=people,dc=company,dc=com</code>
+              {{ t("security_setting.ldap.server_url_detail") }}<br>
+              {{ t("security_setting.example") }}: <code>ldaps://ldap.company.com/ou=people,dc=company,dc=com</code>
             </small>
           </p>
         </div>
@@ -40,16 +40,16 @@
       {% set nameForIsUserBind = "settingForm[security:passport-ldap:isUserBind]" %}
       {% set isUserBind = settingForm['security:passport-ldap:isUserBind'] %}
       <div class="form-group">
-        <label for="{{nameForIsUserBind}}" class="col-xs-3 control-label">Binding Mode</label>
+        <label for="{{nameForIsUserBind}}" class="col-xs-3 control-label">{{ t("security_setting.ldap.bind_mode") }}</label>
         <div class="col-xs-6">
           <div class="btn-group btn-toggle" data-toggle="buttons">
             <label class="btn btn-default btn-rounded btn-outline {% if !isUserBind %}active{% endif %}" data-active-class="primary">
               <input name="{{nameForIsUserBind}}" value="false" type="radio"
-                  {% if !isUserBind %}checked{% endif %}> Manager Bind
+                  {% if !isUserBind %}checked{% endif %}> {{ t("security_setting.ldap.bind_manager") }}
             </label>
             <label class="btn btn-default btn-rounded btn-outline {% if isUserBind %}active{% endif %}" data-active-class="primary">
               <input name="{{nameForIsUserBind}}" value="true" type="radio"
-                  {% if isUserBind %}checked{% endif %}> User Bind
+                  {% if isUserBind %}checked{% endif %}> {{ t("security_setting.ldap.bind_user") }}
             </label>
           </div>
         </div>
@@ -62,55 +62,58 @@
               name="settingForm[security:passport-ldap:bindDN]" value="{{ settingForm['security:passport-ldap:bindDN'] || '' }}">
           <p class="help-block passport-ldap-managerbind" {% if isUserBind %}style="display: none;"{% endif %}>
             <small>
-              The DN of the account that authenticates and queries the directory service
+              {{ t("security_setting.ldap.bind_DN_manager_detail") }}
             </small>
           </p>
           <p class="help-block passport-ldap-userbind" {% if !isUserBind %}style="display: none;"{% endif %}>
             <small>
-              The query used to bind with the directory service.<br>
-              Use <code>{% raw %}{{username}}{% endraw %}</code> to reference the username entered in the login page.<br>
-              Example: <code>uid={% raw %}{{username}}{% endraw %},dc=domain,dc=com</code><br>
+              {{ t("security_setting.ldap.bind_DN_user_detail1") }}<br>
+              {{ t("security_setting.ldap.bind_DN_user_detail2") }}<br>
+              {{ t("security_setting.example") }}: <code>uid={% raw %}{{username}}{% endraw %},dc=domain,dc=com</code><br>
             </small>
           </p>
           </div>
       </div>
 
       <div class="form-group">
-        <label for="settingForm[security:passport-ldap:bindDNPassword]" class="col-xs-3 control-label">Bind DN Password</label>
+        <label for="settingForm[security:passport-ldap:bindDNPassword]" class="col-xs-3 control-label">{{ t("security_setting.ldap.bind_DN_password") }}</label>
         <div class="col-xs-6">
           <input class="form-control passport-ldap-managerbind" type="text" {% if isUserBind %}style="display: none;"{% endif %}
               name="settingForm[security:passport-ldap:bindDNPassword]" value="{{ settingForm['security:passport-ldap:bindDNPassword'] || '' }}">
           <p class="help-block passport-ldap-managerbind">
             <small>
-              The password for the Bind DN account.
+              {{ t("security_setting.ldap.bind_DN_password_manager_detail") }}
             </small>
           </p>
           <p class="help-block passport-ldap-userbind" {% if !isUserBind %}style="display: none;"{% endif %}>
             <small>
-              The password that is entered in the login page will be used to bind.
+              {{ t("security_setting.ldap.bind_DN_password_user_detail") }}
             </small>
           </p>
         </div>
       </div>
 
       <div class="form-group">
-        <label for="settingForm[security:passport-ldap:searchFilter]" class="col-xs-3 control-label">Search Filter</label>
+        <label for="settingForm[security:passport-ldap:searchFilter]" class="col-xs-3 control-label">{{ t("security_setting.ldap.search_filter") }}</label>
         <div class="col-xs-6">
           <input class="form-control" type="text" placeholder="Default: (uid={% raw %}{{username}}{% endraw %})"
               name="settingForm[security:passport-ldap:searchFilter]" value="{{ settingForm['security:passport-ldap:searchFilter'] || '' }}">
           <p class="help-block">
             <small>
-              The query used to locate the authenticated user.<br>
-              Use <code>{% raw %}{{username}}{% endraw %}</code> to reference the username entered in the login page.<br>
-              If empty, the filter <code>(uid={% raw %}{{username}}{% endraw %})</code> is used.<br>
-              <br>
-              Example to match with 'uid' or 'mail': <code>(|(uid={% raw %}{{username}}{% endraw %})(mail={% raw %}{{username}}{% endraw %}))</code>
+              {{ t("security_setting.ldap.search_filter_detail1") }}<br>
+              {{ t("security_setting.ldap.search_filter_detail2") }}<br>
+              {{ t("security_setting.ldap.search_filter_detail3") }}
+            </small>
+          </p>
+          <p>
+            <small>
+              {{ t("security_setting.ldap.search_filter_example") }}: <code>(|(uid={% raw %}{{username}}{% endraw %})(mail={% raw %}{{username}}{% endraw %}))</code>
             </small>
           </p>
         </div>
       </div>
 
-      <h4>Attribute Mapping (Optional)</h4>
+      <h4>Attribute Mapping ({{ t("security_setting.optional") }})</h4>
 
       <div class="form-group">
         <label for="settingForm[security:passport-ldap:attrMapUsername]" class="col-xs-3 control-label">username</label>
@@ -119,7 +122,7 @@
               name="settingForm[security:passport-ldap:attrMapUsername]" value="{{ settingForm['security:passport-ldap:attrMapUsername'] || '' }}">
           <p class="help-block">
             <small>
-              Specification of mappings when creating new users
+              {{ t("security_setting.ldap.username_detail") }}
             </small>
           </p>
 
@@ -127,55 +130,61 @@
             <input type="checkbox" id="cbSameUsernameTreatedAsIdenticalUser" name="settingForm[security:passport-ldap:isSameUsernameTreatedAsIdenticalUser]" value="1"
                 {% if settingForm['security:passport-ldap:isSameUsernameTreatedAsIdenticalUser'] %}checked{% endif %} />
             <label for="cbSameUsernameTreatedAsIdenticalUser">
-              {{ t("security_setting.Treat username matching as identical") }}
+              {{ t("security_setting.ldap.Treat username matching as identical") }}
             </label>
+            <p class="help-block">
+              <small>
+                {{ t("security_setting.ldap.Treat username matching as identical_warn") }}
+              </small>
+            </p>
           </div>
         </div>
       </div>
 
 
-      <h4>Group Search Filter (Optional)</h4>
+      <h4>{{ t("security_setting.ldap.group_search_filter") }} ({{ t("security_setting.optional") }})</h4>
 
       <div class="form-group">
-        <label for="settingForm[security:passport-ldap:groupSearchBase]" class="col-xs-3 control-label">Group Search Base DN</label>
+        <label for="settingForm[security:passport-ldap:groupSearchBase]" class="col-xs-3 control-label">{{ t("security_setting.ldap.group_search_base_DN") }}</label>
         <div class="col-xs-6">
           <input class="form-control" type="text"
               name="settingForm[security:passport-ldap:groupSearchBase]" value="{{ settingForm['security:passport-ldap:groupSearchBase'] || '' }}">
           <p class="help-block">
             <small>
-              The base DN from which to search for groups. If defined, also <code>Group Search Filter</code> must be defined for the search to work.<br>
-              Example: <code>ou=groups,dc=domain,dc=com</code><br>
+              {{ t("security_setting.ldap.group_search_base_DN_detail") }}<br>
+              {{ t("security_setting.example") }}: <code>ou=groups,dc=domain,dc=com</code>
             </small>
           </p>
         </div>
       </div>
 
       <div class="form-group">
-        <label for="settingForm[security:passport-ldap:groupSearchFilter]" class="col-xs-3 control-label">Group Search Filter</label>
+        <label for="settingForm[security:passport-ldap:groupSearchFilter]" class="col-xs-3 control-label">{{ t("security_setting.ldap.group_search_filter") }}</label>
         <div class="col-xs-6">
           <input class="form-control" type="text"
               name="settingForm[security:passport-ldap:groupSearchFilter]" value="{{ settingForm['security:passport-ldap:groupSearchFilter'] || '' }}">
           <p class="help-block">
             <small>
-              The query used to filter for groups.<br>
-              Use <code>{% raw %}{{dn}}{% endraw %}</code> to have it replaced of the found user object.<br>
-              <br>
-              Example: <code>(&(cn=group1)(memberUid={% raw %}{{dn}}{% endraw %}))</code> hits the groups
-              which has <code>cn=group1</code> and <code>memberUid</code> includes the user's <code>uid</code>
-              (when <code>Group DN Property</code> is not changed from the default value.)
+              {{ t("security_setting.ldap.group_search_filter_detail1") }}<br>
+              {{ t("security_setting.ldap.group_search_filter_detail2") }}
+            </small>
+          </p>
+          <p class="help-block">
+            <small>
+              {{ t("security_setting.example") }}: {{ t("security_setting.ldap.group_search_filter_detail3") }}
             </small>
           </p>
         </div>
       </div>
 
       <div class="form-group">
-        <label for="settingForm[security:passport-ldap:groupSearchFilter]" class="col-xs-3 control-label">Group DN Property</label>
+        <label for="settingForm[security:passport-ldap:groupSearchFilter]" class="col-xs-3 control-label">{{ t("security_setting.ldap.group_search_user_DN_property") }}</label>
         <div class="col-xs-6">
           <input class="form-control" type="text" placeholder="Default: uid"
               name="settingForm[security:passport-ldap:groupDnProperty]" value="{{ settingForm['security:passport-ldap:groupDnProperty'] || '' }}">
           <p class="help-block">
             <small>
-              The property of user object to use in <code>{% raw %}{{dn}}{% endraw %}</code> interpolation of <code>Group Search Filter</code>.
+              {{ t("security_setting.ldap.group_search_user_DN_property_detail") }}
             </small>
           </p>
         </div>
@@ -193,7 +202,7 @@
             data-target="#test-ldap-account" data-toggle="modal"
             {%if !isLdapEnabled %}style="display: none;"{% endif %}>
 
-          Test Saved Configuration
+          {{ t("security_setting.ldap.test_config") }}
         </button>
       </div>
     </div>
