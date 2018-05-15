@@ -43,7 +43,7 @@ build-prod:
     - script:
       name: install dependencies
       code: |
-        yarn install --production
+        yarn install
 
     - script:
       name: install plugins
