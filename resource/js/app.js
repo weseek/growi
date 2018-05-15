@@ -150,7 +150,7 @@ if (pageEditorElem) {
     if (componentInstances.page != null) {
       componentInstances.page.setMarkdown(page.revision.body);
     }
-  }
+  };
 
   pageEditor = ReactDOM.render(
     <PageEditor crowi={crowi} crowiRenderer={crowiRenderer}
@@ -190,7 +190,7 @@ if (customCssEditorElem != null) {
   ReactDOM.render(
     <CustomCssEditor inputElem={customCssInputElem} />,
     customCssEditorElem
-  )
+  );
 }
 const customScriptEditorElem = document.getElementById('custom-script-editor');
 if (customScriptEditorElem != null) {
@@ -200,7 +200,7 @@ if (customScriptEditorElem != null) {
   ReactDOM.render(
     <CustomScriptEditor inputElem={customScriptInputElem} />,
     customScriptEditorElem
-  )
+  );
 }
 const customHeaderEditorElem = document.getElementById('custom-header-editor');
 if (customHeaderEditorElem != null) {
@@ -210,7 +210,7 @@ if (customHeaderEditorElem != null) {
   ReactDOM.render(
     <CustomHeaderEditor inputElem={customHeaderInputElem} />,
     customHeaderEditorElem
-  )
+  );
 }
 
 // うわーもうー (commented by Crowi team -- 2018.03.23 Yuki Takei)

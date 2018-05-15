@@ -1,7 +1,7 @@
 var Reveal = require('reveal.js');
 
-require("reveal.js/css/reveal.css");
-require("reveal.js/css/theme/black.css");
+require('reveal.js/css/reveal.css');
+require('reveal.js/css/theme/black.css');
 require('reveal.js/lib/js/head.min.js');
 require('reveal.js/lib/js/html5shiv.js');
 
@@ -39,9 +39,9 @@ require.ensure([], () => {
   require('reveal.js/plugin/notes/notes.js');
 
   // fix https://github.com/weseek/crowi-plus/issues/96
-  Reveal.slide(0,0);
+  Reveal.slide(0, 0);
   Reveal.sync();
-})
+});
 
 Reveal.addEventListener('ready', function(event) {
   // event.currentSlide, event.indexh, event.indexv
