@@ -35,4 +35,5 @@ growi.start()
   .catch(err => {
     logger.error('An error occurred, unable to start the server');
     logger.error(err);
+    process.exit(1);
   });
