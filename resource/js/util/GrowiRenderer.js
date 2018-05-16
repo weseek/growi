@@ -149,21 +149,22 @@ export default class GrowiRenderer {
         return this.langProcessors[lang].process(code, langExt);
       }
 
+      const noborder = (true) ? `hljs-no-border` : '';
       const citeTag = (langFn) ? `<cite>${langFn}</cite>` : '';
       if (hljs.getLanguage(lang)) {
         try {
-          return `<pre class="hljs">${citeTag}<code class="language-${lang}">${hljs.highlight(lang, code, true).value}</code></pre>`;
+          return `<pre class="hljs ${noborder}">${citeTag}<code class="language-${lang}">${hljs.highlight(lang, code, true).value}</code></pre>`;
         }
         catch (__) {
-          return `<pre class="hljs">${citeTag}<code class="language-${lang}">${code}}</code></pre>`;
+          return `<pre class="hljs ${noborder}">${citeTag}<code class="language-${lang}">${code}}</code></pre>`;
         }
       }
       else {
-        return `<pre class="hljs">${citeTag}<code>${code}</code></pre>`;
+        return `<pre class="hljs ${noborder}">${citeTag}<code>${code}</code></pre>`;
       }
     }
 
-    return `<pre class="hljs"><code>${code}</code></pre>`;
+    return `<pre class="hljs ${noborder}"><code>${code}</code></pre>`;
   }
 
 }
