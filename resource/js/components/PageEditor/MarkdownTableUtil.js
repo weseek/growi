@@ -1,4 +1,5 @@
-import markdown_table from 'markdown-table';
+import markdownTable from 'markdown-table';
+import stringWidth from 'string-width';
 
 /**
  * Utility for markdown table
@@ -128,7 +129,7 @@ class MarkdownTableUtil {
         contents.push(row);
       }
     }
-    return (new MarkdownTable(contents, { align: aligns }));
+    return (new MarkdownTable(contents, { align: aligns, stringLength: stringWidth }));
   }
 
   /**
@@ -200,7 +201,7 @@ class MarkdownTable {
   }
 
   toString() {
-    return markdown_table(this.table, this.options);
+    return markdownTable(this.table, this.options);
   }
 }
 

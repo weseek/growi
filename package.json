@@ -167,6 +167,7 @@
     "sinon": "^5.0.2",
     "sinon-chai": "^3.0.0",
     "socket.io-client": "^2.0.3",
+    "string-width": "^2.1.1",
     "style-loader": "^0.21.0",
     "throttle-debounce": "^1.0.1",
     "toastr": "^2.1.2",
