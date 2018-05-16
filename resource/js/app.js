@@ -185,14 +185,18 @@ if (pageEditorOptionsSelectorElem) {
 // render GrantSelector
 const userRelatedGroups = JSON.parse(document.getElementById('user-related-group-data').textContent || '{}', (value) => {
   return new UserGroup(value);
-})
+});
 const pageEditorGrantSelectorElem = document.getElementById('page-grant-selector');
-const pageGrantElem = document.getElementById("page-grant");
-const pageGrantGroupElem = document.getElementById("grant-group");
+const pageGrantElem = document.getElementById('page-grant');
+const pageGrantGroupElem = document.getElementById('grant-group');
+function setGrant(newPageGrant) {
+  pageGrantElem.value = newPageGrant.grant;
+  pageGrantGroupElem.value = newPageGrant.grantGroup.userGroupId || '';
+}
 if (pageEditorGrantSelectorElem) {
   pageGrant = new PageGrant();
-  pageGrant.grant = document.getElementById("page-grant").value;
-  const grantGroupData = JSON.parse(document.getElementById("grant-group").textContent || '{}');
+  pageGrant.grant = document.getElementById('page-grant').value;
+  const grantGroupData = JSON.parse(document.getElementById('grant-group').textContent || '{}');
   if (grantGroupData != null) {
     const grantGroup = new UserGroup();
     grantGroup.userGroupId = grantGroupData.id;
@@ -202,11 +206,7 @@ if (pageEditorGrantSelectorElem) {
   ReactDOM.render(
     <GrantSelector crowi={crowi}
       userRelatedGroups={userRelatedGroups} pageGrant={pageGrant}
-      onChange={(newPageGrant) => { // set onChange event handler
-        // set options
-        pageGrantElem.value = newPageGrant.grant;
-        pageGrantGroupElem.value = newPageGrant.grantGroup.userGroupId || '';
-      }} />,
+      onChange={setGrant} />,
     pageEditorGrantSelectorElem
   );
 }

@@ -36,7 +36,6 @@ export default class GrantSelector extends React.Component {
     };
 
     this.onChangeGrant = this.onChangeGrant.bind(this);
-    // this.updateElementValue = this.updateElementValue.bind(this);
   }
 
   // Init component when the component did mount.
@@ -131,7 +130,7 @@ export default class GrantSelector extends React.Component {
         </li>;
     });
     return (
-      <Modal show={this.props.isGroupModalShown} onHide={this.props.cancel} className="select-grant-group">
+      <Modal show={this.props.isGroupModalShown} className="select-grant-group">
         <Modal.Header closeButton>
           <Modal.Title>
             Select a Group
