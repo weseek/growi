@@ -98,6 +98,7 @@
     "rimraf": "^2.6.1",
     "slack-node": "^0.1.8",
     "socket.io": "^2.0.3",
+    "string-width": "^2.1.1",
     "swig-templates": "^2.0.2",
     "uglifycss": "^0.0.29",
     "xss": "^0.3.5"
@@ -167,7 +168,6 @@
     "sinon": "^5.0.2",
     "sinon-chai": "^3.0.0",
     "socket.io-client": "^2.0.3",
-    "string-width": "^2.1.1",
     "style-loader": "^0.21.0",
     "throttle-debounce": "^1.0.1",
     "toastr": "^2.1.2",
