@@ -1,6 +1,6 @@
 {
   "name": "growi",
-  "version": "3.0.13-RC",
+  "version": "3.0.14-RC",
   "description": "Team collaboration software using markdown",
   "tags": [
     "wiki",
@@ -31,6 +31,8 @@
     "clean:report": "rimraf -- report",
     "clean": "npm-run-all -p clean:*",
     "heroku-postbuild": "sh bin/heroku/install-plugins.sh && npm run build:prod",
+    "lint:fix": "eslint . --fix",
+    "lint": "eslint .",
     "mkdirp": "mkdirp",
     "plugin:def": "node bin/generate-plugin-definitions-source.js",
     "prebuild:dev": "env-cmd config/env.dev.js npm run plugin:def",
@@ -145,6 +147,7 @@
     "slack-node": "^0.1.8",
     "socket.io": "^2.0.3",
     "socket.io-client": "^2.0.3",
+    "string-width": "^2.1.1",
     "style-loader": "^0.21.0",
     "swig-templates": "^2.0.2",
     "throttle-debounce": "^1.0.1",

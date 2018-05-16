@@ -57,7 +57,7 @@ export default class DeleteAttachmentModal extends React.Component {
 
     let deletingIndicator = '';
     if (this.props.deleting) {
-      deletingIndicator = <div class="speeding-wheel-sm"></div>;
+      deletingIndicator = <div className="speeding-wheel-sm"></div>;
     }
     if (this.props.deleteError) {
       deletingIndicator = <span>{this.props.deleteError}</span>;

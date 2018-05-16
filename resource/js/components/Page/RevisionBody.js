@@ -35,7 +35,7 @@ export default class RevisionBody extends React.Component {
 
   renderMathJax() {
     const MathJax = window.MathJax;
-    MathJax.Hub.Queue(["Typeset", MathJax.Hub, this.element]);
+    MathJax.Hub.Queue(['Typeset', MathJax.Hub, this.element]);
   }
 
   generateInnerHtml(html) {
@@ -53,7 +53,7 @@ export default class RevisionBody extends React.Component {
         }}
         className="wiki" dangerouslySetInnerHTML={this.generateInnerHtml(this.props.html)}>
       </div>
-    )
+    );
   }
 }
 

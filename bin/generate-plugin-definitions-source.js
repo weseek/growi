@@ -22,7 +22,7 @@ if (process.env.NODE_ENV === 'development'
     && process.env.PLUGIN_NAMES_TOBE_LOADED !== undefined
     && process.env.PLUGIN_NAMES_TOBE_LOADED.length > 0) {
 
-  pluginNamesDev = process.env.PLUGIN_NAMES_TOBE_LOADED.split(',');
+  const pluginNamesDev = process.env.PLUGIN_NAMES_TOBE_LOADED.split(',');
 
   // merge and remove duplicates
   if (pluginNamesDev.length > 0) {

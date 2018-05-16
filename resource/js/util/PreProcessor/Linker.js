@@ -9,6 +9,6 @@ export default class Linker {
       // process square branckets like '[/Level1]'
       // see: https://regex101.com/r/QSt1yu/5
       .replace(/\[(\/[^\]\n]+?)\](?!\()/g, '<a href="$1">$1</a>')
-      ;
+    ;
   }
 }

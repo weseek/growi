@@ -18,7 +18,7 @@ export default class SearchPage extends React.Component {
       searchedPages: [],
       searchResultMeta: {},
       searchError: null,
-    }
+    };
 
     this.search = this.search.bind(this);
     this.changeURL = this.changeURL.bind(this);
@@ -47,9 +47,9 @@ export default class SearchPage extends React.Component {
     let hash = location.hash || '';
     // TODO 整理する
     if (refreshHash || this.state.searchedKeyword !== '') {
-        hash = '';
+      hash = '';
     }
-    if (window.history && window.history.pushState){
+    if (window.history && window.history.pushState) {
       window.history.pushState('', `Search - ${keyword}`, `/_search?q=${keyword}${hash}`);
     }
   }
@@ -86,7 +86,7 @@ export default class SearchPage extends React.Component {
         searchError: err,
       });
     });
-  };
+  }
 
   render() {
     return (

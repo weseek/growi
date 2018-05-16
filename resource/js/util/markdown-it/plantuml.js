@@ -20,6 +20,6 @@ export default class PlantUMLConfigurer {
 
   generateSource(umlCode) {
     const zippedCode = plantumlEncoder.encode(`@startuml\n${umlCode}\n@enduml`);
-    return urljoin(this.serverUrl, 'svg' , zippedCode);
+    return urljoin(this.serverUrl, 'svg', zippedCode);
   }
 }

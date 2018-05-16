@@ -303,7 +303,7 @@ body.on-edit {
     border-top-color: $border;
   }
   .page-comment .page-comment-main,
-  .comment-form-main {
+  .page-comment-form .comment-form-main {
     background-color: darken($bodycolor, 4%);
     &:before {
       border-right-color: darken($bodycolor, 4%);

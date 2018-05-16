@@ -16,7 +16,7 @@ export default class Page extends React.Component {
 
     const styleFlex = {
       flex: 1
-    }
+    };
 
     return (
       <li className="page-list-li d-flex align-items-center">
