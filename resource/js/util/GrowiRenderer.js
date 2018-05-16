@@ -139,6 +139,7 @@ export default class GrowiRenderer {
   }
 
   codeRenderer(code, langExt) {
+    const config = this.crowi.getConfig();
     if (langExt) {
       const langAndFn = langExt.split(':');
       const lang = langAndFn[0];
@@ -149,7 +150,7 @@ export default class GrowiRenderer {
         return this.langProcessors[lang].process(code, langExt);
       }
 
-      const noborder = (true) ? `hljs-no-border` : '';
+      const noborder = (!config.highlightJsStyleBorder) ? 'hljs-no-border' : '';
       const citeTag = (langFn) ? `<cite>${langFn}</cite>` : '';
       if (hljs.getLanguage(lang)) {
         try {
