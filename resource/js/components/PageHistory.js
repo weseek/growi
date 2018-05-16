@@ -38,7 +38,8 @@ export default class PageHistory extends React.Component {
 
         if (i === 0 || i === lastId) {
           diffOpened[revision._id] = true;
-        } else {
+        }
+        else {
           diffOpened[revision._id] = false;
         }
       });
@@ -106,7 +107,7 @@ export default class PageHistory extends React.Component {
 
             return rev;
           })
-        })
+        });
       }
     }).catch(err => {
 

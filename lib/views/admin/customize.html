@@ -3,8 +3,13 @@
 {% block html_title %}{{ customTitle(t('Customize')) }} {% endblock %}
 
 {% block style_css_block %}
-  <link rel="stylesheet" href="{{ webpack_asset('style').css }}">
-  <link rel="stylesheet" id="jssDefault" {# append id for theme selector #} href="{{ webpack_asset('style-theme-' + theme()).css }}">
+  {% if env === 'development' %}
+    <script src="{{ webpack_asset('style').js }}"></script>
+    <script src="{{ webpack_asset('style-theme-' + theme()).js }}"></script>
+  {% else %}
+    <link rel="stylesheet" href="{{ webpack_asset('style').css }}">
+    <link rel="stylesheet" id="jssDefault" {# append id for theme selector #} href="{{ webpack_asset('style-theme-' + theme()).css }}">
+  {% endif %}
 {% endblock %}
 
 {% block html_additional_headers %}
@@ -52,11 +57,18 @@
         <fieldset>
           <legend>{{ t('customize_page.Theme') }}</legend>
 
+          {% if env === 'development' %}
+            <div class="alert alert-warning">
+              <strong>DEBUG MESSAGE:</strong> development build では、リアルタイムプレビューが無効になります
+            </div>
+          {% endif %}
+
           <div id="themeOptions">
             {# Light Themes #}
             <div class="d-flex">
               {% include 'widget/theme-colorbox.html' with { name: 'default',  bg: '#ffffff', topbar: '#334455', theme: '#112744' } %}
               {% include 'widget/theme-colorbox.html' with { name: 'nature',   bg: '#f9fff3', topbar: '#118050', theme: '#460039' } %}
+              {% include 'widget/theme-colorbox.html' with { name: 'mono-blue',   bg: '#F7FBFD', topbar: '#00587A', theme: '#00587A' } %}
             </div>
             {# Dark Themes #}
             <div class="d-flex">
@@ -501,12 +513,12 @@ window.addEventListener('load', (event) => {
       $(this).submit(function()
       {
         function showMessage(formId, msg, status) {
-          $('#' + formId + ' .alert').remove();
+          $('#' + formId + ' #alert-results').remove();
 
           if (!status) {
             status = 'success';
           }
-          var $message = $('<p class="alert"></p>');
+          var $message = $('<p id="alert-results" class="alert"></p>');
           $message.addClass('alert-' + status);
           $message.html(msg.replace('\n', '<br>'));
           $message.insertAfter('#' + formId + ' legend');

@@ -1,5 +1,3 @@
-import emojiStrategy from '../emojione/emoji_strategy_shrinked.json';
-
 export default class EmojiConfigurer {
 
   constructor(crowi) {
@@ -7,11 +5,13 @@ export default class EmojiConfigurer {
   }
 
   configure(md) {
+    const emojiStrategy = this.crowi.getEmojiStrategy();
+
     const emojiShortnameUnicodeMap = {};
 
     for (let unicode in emojiStrategy) {
       const data = emojiStrategy[unicode];
-      const shortname = data.shortname.replace(/\:/g, '');
+      const shortname = data.shortname.replace(/:/g, '');
       emojiShortnameUnicodeMap[shortname] = String.fromCharCode(unicode);
     }
 

@@ -100,7 +100,7 @@ export default class PageEditor extends React.Component {
    */
   onMarkdownChanged(value) {
     this.renderWithDebounce(value);
-    this.saveDraftWithDebounce()
+    this.saveDraftWithDebounce();
   }
 
   /**
@@ -135,15 +135,15 @@ export default class PageEditor extends React.Component {
           closeButton: true,
           progressBar: true,
           newestOnTop: false,
-          showDuration: "100",
-          hideDuration: "100",
-          timeOut: "1200",
-          extendedTimeOut: "150",
+          showDuration: '100',
+          hideDuration: '100',
+          timeOut: '1200',
+          extendedTimeOut: '150',
         });
 
         this.pageSavedHandler(res.page);
       })
-      .catch(this.apiErrorHandler)
+      .catch(this.apiErrorHandler);
   }
 
   /**
@@ -158,7 +158,7 @@ export default class PageEditor extends React.Component {
     formData.append('_csrf', this.props.crowi.csrfToken);
     formData.append('file', file);
     formData.append('path', this.props.pagePath);
-    formData.append('page_id', this.props.pageId || 0);
+    formData.append('page_id', this.state.pageId || 0);
 
     // post
     this.props.crowi.apiPost(endpoint, formData)
@@ -233,7 +233,7 @@ export default class PageEditor extends React.Component {
     // turn on the flag
     this.isOriginOfScrollSyncEditor = true;
     scrollSyncHelper.scrollPreview(this.previewElement, line);
-  };
+  }
 
   /**
    * scroll Preview element by cursor moving
@@ -253,7 +253,7 @@ export default class PageEditor extends React.Component {
     // turn on the flag
     this.isOriginOfScrollSyncEditor = true;
     scrollSyncHelper.scrollPreviewToRevealOverflowing(this.previewElement, line);
-  };
+  }
 
   /**
    * the scroll event handler from Preview component
@@ -316,15 +316,13 @@ export default class PageEditor extends React.Component {
       closeButton: true,
       progressBar: true,
       newestOnTop: false,
-      showDuration: "100",
-      hideDuration: "100",
-      timeOut: "3000",
+      showDuration: '100',
+      hideDuration: '100',
+      timeOut: '3000',
     });
   }
 
   renderPreview(value) {
-    const config = this.props.crowi.config;
-
     this.setState({ markdown: value });
 
     // render html
@@ -363,31 +361,34 @@ export default class PageEditor extends React.Component {
   }
 
   render() {
+    const emojiStrategy = this.props.crowi.getEmojiStrategy();
+
     return (
       <div className="row">
         <div className="col-md-6 col-sm-12 page-editor-editor-container">
           <Editor ref="editor" value={this.state.markdown}
-              editorOptions={this.state.editorOptions}
-              isUploadable={this.state.isUploadable}
-              isUploadableFile={this.state.isUploadableFile}
-              onScroll={this.onEditorScroll}
-              onScrollCursorIntoView={this.onEditorScrollCursorIntoView}
-              onChange={this.onMarkdownChanged}
-              onSave={this.onSave}
-              onUpload={this.onUpload}
+            editorOptions={this.state.editorOptions}
+            isUploadable={this.state.isUploadable}
+            isUploadableFile={this.state.isUploadableFile}
+            emojiStrategy={emojiStrategy}
+            onScroll={this.onEditorScroll}
+            onScrollCursorIntoView={this.onEditorScrollCursorIntoView}
+            onChange={this.onMarkdownChanged}
+            onSave={this.onSave}
+            onUpload={this.onUpload}
           />
         </div>
         <div className="col-md-6 hidden-sm hidden-xs page-editor-preview-container">
           <Preview html={this.state.html}
-              inputRef={el => this.previewElement = el}
-              isMathJaxEnabled={this.state.isMathJaxEnabled}
-              renderMathJaxOnInit={false}
-              previewOptions={this.state.previewOptions}
-              onScroll={this.onPreviewScroll}
+            inputRef={el => this.previewElement = el}
+            isMathJaxEnabled={this.state.isMathJaxEnabled}
+            renderMathJaxOnInit={false}
+            previewOptions={this.state.previewOptions}
+            onScroll={this.onPreviewScroll}
           />
         </div>
       </div>
-    )
+    );
   }
 }
 

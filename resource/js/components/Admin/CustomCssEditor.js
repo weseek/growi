@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { UnControlled as CodeMirror } from 'react-codemirror2';
-require('codemirror/lib/codemirror.css');
 require('codemirror/addon/display/autorefresh');
 require('codemirror/addon/lint/css-lint');
 require('codemirror/addon/hint/css-hint');
@@ -10,7 +9,6 @@ require('codemirror/addon/hint/show-hint');
 require('codemirror/addon/edit/matchbrackets');
 require('codemirror/addon/edit/closebrackets');
 require('codemirror/mode/css/css');
-require('codemirror/theme/eclipse.css');
 
 require('jquery-ui/ui/widgets/resizable');
 
@@ -37,7 +35,7 @@ export default class CustomCssEditor extends React.Component {
           autoRefresh: true,
           matchBrackets: true,
           autoCloseBrackets: true,
-          extraKeys: {"Ctrl-Space": "autocomplete"},
+          extraKeys: {'Ctrl-Space': 'autocomplete'},
         }}
         editorDidMount={(editor, next) => {
           // resizable with jquery.ui
@@ -51,7 +49,7 @@ export default class CustomCssEditor extends React.Component {
           this.props.inputElem.value = value;
         }}
       />
-    )
+    );
   }
 
 }

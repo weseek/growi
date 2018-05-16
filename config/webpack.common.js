@@ -10,15 +10,13 @@ const helpers = require('./helpers');
  */
 const AssetsPlugin = require('assets-webpack-plugin');
 const CommonsChunkPlugin = require('webpack/lib/optimize/CommonsChunkPlugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 /*
  * Webpack configuration
  *
  * See: http://webpack.github.io/docs/configuration.html#cli
  */
-module.exports = function (options) {
-  isProd = options.env === 'production';
+module.exports = function(options) {
   return {
     entry: {
       'app':                  './resource/js/app',
@@ -31,50 +29,43 @@ module.exports = function (options) {
       'style-theme-default':  './resource/styles/scss/theme/default.scss',
       'style-theme-default-dark':  './resource/styles/scss/theme/default-dark.scss',
       'style-theme-nature':   './resource/styles/scss/theme/nature.scss',
+      'style-theme-mono-blue':   './resource/styles/scss/theme/mono-blue.scss',
       'style-presentation':   './resource/styles/scss/style-presentation.scss',
     },
     externals: {
       // require("jquery") is external and available
       //  on the global var jQuery
-      "jquery": "jQuery",
-      "emojione": "emojione",
-      "hljs": "hljs",
+      'jquery': 'jQuery',
+      'emojione': 'emojione',
+      'hljs': 'hljs',
     },
     resolve: {
       extensions: ['.js', '.json'],
       modules: [helpers.root('src'), helpers.root('node_modules')],
+      alias: {
+        '@root': helpers.root('/'),
+        '@alias/logger': helpers.root('lib/service/logger'),
+        // replace bunyan
+        'bunyan': 'browser-bunyan',
+      }
     },
     module: {
       rules: [
         {
           test: /.jsx?$/,
-          exclude: /node_modules/,
+          exclude: {
+            test:    helpers.root('node_modules'),
+            exclude: [  // include as a result
+              helpers.root('node_modules/string-width'),
+              helpers.root('node_modules/is-fullwidth-code-point'), // depends from string-width
+            ]
+          },
           use: [{
             loader: 'babel-loader?cacheDirectory',
             options: {
               plugins: ['lodash'],
             }
           }]
-        },
-        {
-          test: /\.scss$/,
-          use: ExtractTextPlugin.extract({
-            fallback: 'style-loader',
-            use: [
-              { loader: 'css-loader', options: {
-                sourceMap: !isProd,
-                minimize: isProd
-              } },
-              { loader: 'postcss-loader', options: {
-                sourceMap: !isProd,
-                plugins: (loader) => [
-                  require('autoprefixer')()
-                ]
-              } },
-              { loader: 'sass-loader', options: { sourceMap: !isProd } }
-            ]
-          }),
-          include: [helpers.root('resource/styles/scss')]
         },
         {
           test: /\.css$/,
@@ -96,7 +87,7 @@ module.exports = function (options) {
         /* File loader for supporting fonts, for example, in CSS files.
         */
         {
-          test: /\.(eot|woff2?|svg|ttf)([\?]?.*)$/,
+          test: /\.(eot|woff2?|svg|ttf)([?]?.*)$/,
           use: 'file-loader',
         }
       ]
@@ -127,10 +118,10 @@ module.exports = function (options) {
       new webpack.IgnorePlugin(/^\.\/lib\/deflate\.js/, /markdown-it-plantuml/),
 
       new webpack.ProvidePlugin({ // refs externals
-        jQuery: "jquery",
-        $: "jquery",
+        jQuery: 'jquery',
+        $: 'jquery',
       }),
 
     ]
   };
-}
+};

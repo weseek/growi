@@ -12,7 +12,7 @@ export default class PageAttachmentList extends React.Component {
     const attachmentList = this.props.attachments.map((attachment, idx) => {
       return (
         <Attachment
-          key={"page:attachment:" + attachment._id}
+          key={'page:attachment:' + attachment._id}
           attachment={attachment}
           inUse={this.props.inUse[attachment._id] || false}
           onAttachmentDeleteClicked={this.props.onAttachmentDeleteClicked}

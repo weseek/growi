@@ -60,22 +60,22 @@ export default class RevisionPath extends React.Component {
       return <span>/</span>;
     }
     else {
-      return <span></span>
+      return <span></span>;
     }
   }
 
   render() {
     // define styles
     const rootStyle = {
-      marginRight: "0.2em",
-    }
+      marginRight: '0.2em',
+    };
     const separatorStyle = {
-      marginLeft: "0.2em",
-      marginRight: "0.2em",
-    }
+      marginLeft: '0.2em',
+      marginRight: '0.2em',
+    };
     const editButtonStyle = {
-      marginLeft: "0.5em",
-      padding: "0 2px",
+      marginLeft: '0.5em',
+      padding: '0 2px',
     };
 
     const pageLength = this.state.pages.length;

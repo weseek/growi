@@ -27,19 +27,19 @@ export default class PageAttachment extends React.Component {
     }
 
     this.props.crowi.apiGet('/attachments.list', {page_id: pageId })
-    .then(res => {
-      const attachments = res.attachments;
-      let inUse = {};
+      .then(res => {
+        const attachments = res.attachments;
+        let inUse = {};
 
-      for (const attachment of attachments) {
-        inUse[attachment._id] = this.checkIfFileInUse(attachment);
-      }
+        for (const attachment of attachments) {
+          inUse[attachment._id] = this.checkIfFileInUse(attachment);
+        }
 
-      this.setState({
-        attachments: attachments,
-        inUse: inUse,
+        this.setState({
+          attachments: attachments,
+          inUse: inUse,
+        });
       });
-    });
   }
 
   checkIfFileInUse(attachment) {
@@ -62,20 +62,20 @@ export default class PageAttachment extends React.Component {
     });
 
     this.props.crowi.apiPost('/attachments.remove', {attachment_id: attachmentId})
-    .then(res => {
-      this.setState({
-        attachments: this.state.attachments.filter((at) => {
-          return at._id != attachmentId;
-        }),
-        attachmentToDelete: null,
-        deleting: false,
+      .then(res => {
+        this.setState({
+          attachments: this.state.attachments.filter((at) => {
+            return at._id != attachmentId;
+          }),
+          attachmentToDelete: null,
+          deleting: false,
+        });
+      }).catch(err => {
+        this.setState({
+          deleteError: 'Something went wrong.',
+          deleting: false,
+        });
       });
-    }).catch(err => {
-      this.setState({
-        deleteError: 'Something went wrong.',
-        deleting: false,
-      });
-    });
   }
 
   isUserLoggedIn() {

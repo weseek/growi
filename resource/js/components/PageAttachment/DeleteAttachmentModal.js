@@ -15,22 +15,30 @@ export default class DeleteAttachmentModal extends React.Component {
     this.props.onAttachmentDeleteClickedConfirm(this.props.attachmentToDelete);
   }
 
-  renderByFileFormat(attachment) {
-    if (attachment.fileFormat.match(/image\/.+/i)) {
-      return (
-        <div className="attachment-delete-image">
-          <p>
-            {attachment.originalName} uploaded by <User user={attachment.creator} username />
-          </p>
-          <img src={attachment.url} />
-        </div>
-      );
+  iconNameByFormat(format) {
+    if (format.match(/image\/.+/i)) {
+      return 'icon-picture';
     }
 
+    return 'icon-doc';
+  }
+
+  renderByFileFormat(attachment) {
+    const content = (attachment.fileFormat.match(/image\/.+/i))
+      ? <img src={attachment.url} />
+      : '';
+
+
     return (
-        <p className="attachment-delete-file">
-          <i className="fa fa-file-o"></i>
+      <div className="attachment-delete-image">
+        <p>
+          <i className={this.iconNameByFormat(attachment.fileFormat)}></i> {attachment.originalName}
         </p>
+        <p>
+          uploaded by <User user={attachment.creator} username />
+        </p>
+        {content}
+      </div>
     );
   }
 
@@ -39,9 +47,6 @@ export default class DeleteAttachmentModal extends React.Component {
     if (attachment === null) {
       return null;
     }
-
-
-    const inUse = this.props.inUse;
 
     const props = Object.assign({}, this.props);
     delete props.onAttachmentDeleteClickedConfirm;
@@ -52,10 +57,10 @@ export default class DeleteAttachmentModal extends React.Component {
 
     let deletingIndicator = '';
     if (this.props.deleting) {
-      deletingIndicator = <Icon name="spinner" spin />;
+      deletingIndicator = <div className="speeding-wheel-sm"></div>;
     }
     if (this.props.deleteError) {
-      deletingIndicator = <p>{this.props.deleteError}</p>;
+      deletingIndicator = <span>{this.props.deleteError}</span>;
     }
 
     let renderAttachment = this.renderByFileFormat(attachment);
@@ -69,10 +74,11 @@ export default class DeleteAttachmentModal extends React.Component {
           {renderAttachment}
         </Modal.Body>
         <Modal.Footer>
-          {deletingIndicator}
+          <div className="mr-3 d-inline-block">
+            {deletingIndicator}
+          </div>
           <Button onClick={this._onDeleteConfirm} bsStyle="danger"
-            disabled={this.props.deleting}
-            >Delete!</Button>
+            disabled={this.props.deleting}>Delete!</Button>
         </Modal.Footer>
       </Modal>
     );

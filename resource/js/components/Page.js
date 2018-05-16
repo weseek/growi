@@ -60,7 +60,7 @@ export default class Page extends React.Component {
         return;
       }
       const k = keyword
-            .replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+            .replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
             .replace(/(^"|"$)/g, ''); // for phrase (quoted) keyword
       const keywordExp = new RegExp(`(${k}(?!(.*?")))`, 'ig');
       returnBody = returnBody.replace(keywordExp, '<em class="highlighted">$&</em>');
@@ -117,7 +117,7 @@ export default class Page extends React.Component {
           isMathJaxEnabled={isMathJaxEnabled}
           renderMathJaxOnInit={true}
       />
-    )
+    );
   }
 }
 

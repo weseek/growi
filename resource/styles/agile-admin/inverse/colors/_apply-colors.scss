@@ -281,7 +281,7 @@ body.on-edit {
     background-color: darken($bodycolor, 2%);
 
     .page-editor-editor-container {
-      border-right-color: $border;
+      border-right-color: $navbar-border;
     }
     .page-editor-preview-container {
       background-color: $bodycolor;
@@ -303,7 +303,7 @@ body.on-edit {
     border-top-color: $border;
   }
   .page-comment .page-comment-main,
-  .comment-form-main {
+  .page-comment-form .comment-form-main {
     background-color: darken($bodycolor, 4%);
     &:before {
       border-right-color: darken($bodycolor, 4%);

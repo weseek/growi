@@ -6,17 +6,17 @@ module.exports = function(crowi) {
   var aws = require('aws-sdk')
     , fs = require('fs')
     , path = require('path')
-    , debug = require('debug')('crowi:lib:fileUploaderAws')
+    , debug = require('debug')('growi:lib:fileUploaderAws')
     , lib = {}
     , getAwsConfig = function() {
-        var config = crowi.getConfig();
-        return {
-          accessKeyId: config.crowi['aws:accessKeyId'],
-          secretAccessKey: config.crowi['aws:secretAccessKey'],
-          region: config.crowi['aws:region'],
-          bucket: config.crowi['aws:bucket']
-        };
+      var config = crowi.getConfig();
+      return {
+        accessKeyId: config.crowi['aws:accessKeyId'],
+        secretAccessKey: config.crowi['aws:secretAccessKey'],
+        region: config.crowi['aws:region'],
+        bucket: config.crowi['aws:bucket']
       };
+    };
 
   function S3Factory() {
     const awsConfig = getAwsConfig();
@@ -88,7 +88,7 @@ module.exports = function(crowi) {
     return url;
   };
 
-  lib.findDeliveryFile = function (fileId, filePath) {
+  lib.findDeliveryFile = function(fileId, filePath) {
     var cacheFile = lib.createCacheFileName(fileId);
 
     return new Promise((resolve, reject) => {
@@ -102,7 +102,7 @@ module.exports = function(crowi) {
       var fileStream = fs.createWriteStream(cacheFile);
       var fileUrl = lib.generateUrl(filePath);
       debug('Load attachement file into local cache file', fileUrl, cacheFile);
-      var request = loader.get(fileUrl, function(response) {
+      loader.get(fileUrl, function(response) {
         response.pipe(fileStream, { end: false });
         response.on('end', () => {
           fileStream.end();
@@ -130,7 +130,7 @@ module.exports = function(crowi) {
       debug('Failed to delete cache file (file may not exists).', err);
       // through
     });
-  }
+  };
 
   // private
   lib.createCacheFileName = function(fileId) {
@@ -151,7 +151,8 @@ module.exports = function(crowi) {
         debug('Cache file found but the size is 0');
         return true;
       }
-    } catch (e) {
+    }
+    catch (e) {
       // no such file or directory
       debug('Stats error', e);
       return true;

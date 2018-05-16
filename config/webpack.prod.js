@@ -10,7 +10,6 @@ const commonConfig = require('./webpack.common.js'); // the settings that are co
 /**
  * Webpack Plugins
  */
-const CommonsChunkPlugin = require('webpack/lib/optimize/CommonsChunkPlugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const UglifyJsPlugin = require('webpack/lib/optimize/UglifyJsPlugin');
 const OptimizeJsPlugin = require('optimize-js-plugin');
@@ -21,10 +20,8 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
  */
 const ANALYZE = process.env.ANALYZE;
 const ENV = process.env.NODE_ENV = process.env.ENV = 'production';
-const HOST = process.env.HOST || 'localhost';
-const PORT = process.env.PORT || 3000;
 
-module.exports = function (env) {
+module.exports = function(env) {
   return webpackMerge(commonConfig({ env: ENV }), {
     devtool: undefined,
     output: {
@@ -36,6 +33,26 @@ module.exports = function (env) {
     },
     module: {
       rules: [
+        {
+          test: /\.scss$/,
+          use: ExtractTextPlugin.extract({
+            fallback: 'style-loader',
+            use: [
+              { loader: 'css-loader', options: {
+                sourceMap: false,
+                minimize: true
+              } },
+              { loader: 'postcss-loader', options: {
+                sourceMap: false,
+                plugins: (loader) => [
+                  require('autoprefixer')()
+                ]
+              } },
+              { loader: 'sass-loader', options: { sourceMap: false } }
+            ]
+          }),
+          include: [helpers.root('resource/styles/scss')]
+        }
       ]
     },
     plugins: [
@@ -99,4 +116,4 @@ module.exports = function (env) {
     ],
 
   });
-}
+};

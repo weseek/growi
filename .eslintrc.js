@@ -5,7 +5,17 @@ module.exports = {
     "es6": true,
     "node": true
   },
-  "extends": "eslint:recommended",
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended"
+  ],
+  "globals": {
+    "$": true,
+    "jquery": true,
+    "emojione": true,
+    "hljs": true,
+    "window": true
+  },
   "parserOptions": {
     "ecmaFeatures": {
       "experimentalObjectRestSpread": true,
@@ -32,10 +42,20 @@ module.exports = {
     "indent": [
       "error",
       2,
-      { "SwitchCase": 1 }
+      {
+        "SwitchCase": 1,
+        "ignoredNodes": ['JSXElement *', 'JSXElement', "JSXAttribute", "JSXSpreadAttribute"],
+        "FunctionDeclaration": {"body": 1, "parameters": 2},
+        "FunctionExpression": {"body": 1, "parameters": 2},
+        "MemberExpression": "off"
+      }
     ],
     "key-spacing": [
-      "error", { "beforeColon": false, "afterColon": true }
+      "error", {
+        "beforeColon": false,
+        "afterColon": true,
+        "mode": "minimum"
+      }
     ],
     "keyword-spacing": [
       "error", {}
@@ -44,13 +64,20 @@ module.exports = {
       "error",
       "unix"
     ],
+    "no-unused-vars": [
+      "error",
+      { "args": "none" }
+    ],
     "quotes": [
       "error",
       "single"
     ],
+    "react/jsx-uses-vars": 1,
+    "react/no-string-refs": "off",
     "semi": [
       "error",
-      "always"
+      "always",
+      { "omitLastInOneLineBlock": true }
     ],
     "space-before-blocks": [
       "error",
