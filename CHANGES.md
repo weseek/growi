@@ -4,6 +4,7 @@ CHANGES
 ## 3.0.14
 
 * Improvement: Auto-format markdown tables which includes multibyte text
+* Improvement: Enable to switch show/hide border for highlight.js
 
 ## 3.0.13
 
