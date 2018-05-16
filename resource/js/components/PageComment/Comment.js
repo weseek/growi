@@ -51,15 +51,15 @@ export default class Comment extends React.Component {
   render() {
     const comment = this.props.comment;
     const creator = comment.creator;
+    const isMarkdown = comment.isMarkdown;
 
     // temporary from here
-    const isMarkdown = comment.isMarkdown;
     let markdownText = isMarkdown ? 'markdown' : 'plain';
     // to here
 
     const rootClassName = this.getRootClassName();
     const commentDate = dateFnsFormat(comment.createdAt, 'YYYY/MM/DD HH:mm');
-    const commentBody = ReactUtils.nl2br(comment.comment);
+    const commentBody = isMarkdown ? ReactUtils.nl2br(comment.comment) : ReactUtils.nl2br(comment.comment);
     const creatorsPage = `/user/${creator.username}`;
     const revHref = `?revision=${comment.revision}`;
     const revFirst8Letters = comment.revision.substr(-8);
