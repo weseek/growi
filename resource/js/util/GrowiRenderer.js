@@ -92,6 +92,11 @@ export default class GrowiRenderer {
           new HeaderLineNumberConfigurer(crowi)
         ]);
         break;
+      case 'comment':
+        this.markdownItConfigurers = this.markdownItConfigurers.concat([
+          new HeaderLineNumberConfigurer(crowi),
+        ]);
+        break;
       default:
         break;
     }
