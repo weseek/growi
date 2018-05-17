@@ -355,50 +355,6 @@ body.on-edit {
   display: block;
 }
 
-
-/*
-.crowi.main-container .main .page-list.content-main { // {{{ Edit Form of Page List
-
-  .close-button {
-    display: none;
-  }
-}
-.crowi.main-container .main .page-list.content-main.on-edit { // {{{ Edit Form of Page List
-  .close-button {
-    display: block;
-  }
-
-  .page-list-container {
-    display: none;
-  }
-
-  .portal-form-header {
-    height: 16px;
-    padding: 8px;
-    border-bottom: solid 1px #ccc;
-  }
-} // }}}
-*/
-/*
-@media (max-width: $screen-sm-max) { // {{{ less than tablet size
-
-  .content-main.on-edit {
-    .form-group.form-submit-group {
-      select.form-control {
-        display: inline-block;
-        max-width: 50%;
-      }
-    }
-  }
-
-} // }}}
-
-@media (max-width: $screen-xs-max) { // {{{ less than smartphone size
-  #edit-form-submit {
-    float: right;
-  }
-} // }}}
-*/
 // overwrite .CodeMirror-hints
 .CodeMirror-hints {
   // FIXME: required because .content-main.on-edit has 'z-index:1050'
