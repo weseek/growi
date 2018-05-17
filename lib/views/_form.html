@@ -53,7 +53,7 @@
         <div id="page-grant-selector"></div>
       </div>
       <input type="hidden" id="page-grant" name="pageForm[grant]" value="{{ pageForm.grant|default(page.grant) }}">
-      <input id="grant-group" type="hidden" name="pageForm[grantUserGroupId]" value="{% if pageForm.grant %}{{ pageForm.grant }}{% endif %}">
+      <input id="grant-group" type="hidden" value="{% if pageForm.grant %}{{ pageForm.grant }}{% endif %}">
 <!--
       <select id="select-grant" name="pageForm[grant]" class="m-r-5 selectpicker btn-group-sm">
         {% for grantId, grantLabel in consts.pageGrants %}
@@ -79,6 +79,15 @@
         </select>
       </div>
       {% endif %} -->
+      {% if userRelatedGroups.length != 0 %}
+      <div>
+        <select name="pageForm[grantUserGroupId]" class="selectpicker btn-group-sm">
+          {% for userGroup in userRelatedGroups %}
+          <option value="{{ userGroup.id }}">{{ userGroup.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      {% endif %}
       <!-- <input type="hidden" id="page-grant" value="{{ page.grant }}"> -->
       <input type="hidden" id="user-related-group-data" value="{{userRelatedGroups}}">
       <input type="hidden" id="edit-form-csrf" name="_csrf" value="{{ csrf() }}">
