@@ -14,6 +14,7 @@ import Page             from './components/Page';
 import PageListSearch   from './components/PageListSearch';
 import PageHistory      from './components/PageHistory';
 import PageComments     from './components/PageComments';
+import CommentForm from './components/PageComment/CommentForm';
 import PageCommentFormBehavior from './components/PageCommentFormBehavior';
 import PageAttachment   from './components/PageAttachment';
 import SeenUserList     from './components/SeenUserList';
@@ -126,6 +127,12 @@ Object.keys(componentMappings).forEach((key) => {
     componentInstances[key] = ReactDOM.render(componentMappings[key], elem);
   }
 });
+
+// render comment form
+const writeCommentElem = document.getElementById('page-comment-write');
+if (writeCommentElem) {
+  ReactDOM.render(<CommentForm />, writeCommentElem);
+}
 
 // render components with refs to another component
 const elem = document.getElementById('page-comment-form-behavior');
