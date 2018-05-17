@@ -64,7 +64,7 @@
     "cookie-parser": "^1.4.3",
     "cross-env": "^5.0.5",
     "csrf": "~3.0.3",
-    "elasticsearch": "^14.0.0",
+    "elasticsearch": "^15.0.0",
     "entities": "^1.1.1",
     "env-cmd": "^8.0.1",
     "escape-string-regexp": "^1.0.5",

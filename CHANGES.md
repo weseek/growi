@@ -5,6 +5,8 @@ CHANGES
 
 * Improvement: Auto-format markdown tables which includes multibyte text
 * Improvement: Enable to switch show/hide border for highlight.js
+* Support: Upgrade libs
+    * elasticsearch
 
 ## 3.0.13
 
