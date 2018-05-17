@@ -189,7 +189,7 @@ const userRelatedGroups = JSON.parse(document.getElementById('user-related-group
 const pageEditorGrantSelectorElem = document.getElementById('page-grant-selector');
 const pageGrantElem = document.getElementById('page-grant');
 const pageGrantGroupElem = document.getElementById('grant-group');
-function setGrant(newPageGrant) {
+function updatePageGrantElems(newPageGrant) {
   pageGrantElem.value = newPageGrant.grant;
   pageGrantGroupElem.value = newPageGrant.grantGroup.userGroupId || '';
 }
@@ -206,7 +206,7 @@ if (pageEditorGrantSelectorElem) {
   ReactDOM.render(
     <GrantSelector crowi={crowi}
       userRelatedGroups={userRelatedGroups} pageGrant={pageGrant}
-      onChange={setGrant} />,
+      onChange={updatePageGrantElems} />,
     pageEditorGrantSelectorElem
   );
 }
