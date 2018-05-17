@@ -20,12 +20,30 @@ export default class Comment extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      html: '',
+    };
+
     this.isCurrentUserIsAuthor = this.isCurrentUserEqualsToAuthor.bind(this);
     this.isCurrentRevision = this.isCurrentRevision.bind(this);
     this.getRootClassName = this.getRootClassName.bind(this);
     this.getRevisionLabelClassName = this.getRevisionLabelClassName.bind(this);
     this.deleteBtnClickedHandler = this.deleteBtnClickedHandler.bind(this);
     this.renderHtml = this.renderHtml.bind(this);
+  }
+
+  componentWillMount() {
+    this.renderHtml(this.props.comment.comment, this.props.highlightKeywords);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.renderHtml(nextProps.comment.comment, nextProps.highlightKeywords);
+  }
+
+  //not used
+  setMarkdown(markdown) {
+    this.setState({ markdown });
+    this.renderHtml(markdown, this.props.highlightKeywords);
   }
 
   isCurrentUserEqualsToAuthor() {
@@ -48,6 +66,17 @@ export default class Comment extends React.Component {
 
   deleteBtnClickedHandler() {
     this.props.deleteBtnClicked(this.props.comment);
+  }
+
+  renderRevisionBody() {
+    const config = this.props.crowi.getConfig();
+    const isMathJaxEnabled = !!config.env.MATHJAX;
+    return (
+      <RevisionBody html={this.state.html}
+          inputRef={el => this.revisionBodyElement = el}
+          isMathJaxEnabled={isMathJaxEnabled}
+          renderMathJaxOnInit={true} />
+    );
   }
 
   renderHtml(markdown, highlightKeywords) {
@@ -93,13 +122,9 @@ export default class Comment extends React.Component {
     const creator = comment.creator;
     const isMarkdown = comment.isMarkdown;
 
-    // temporary from here
-    let markdownText = isMarkdown ? 'markdown' : 'plain';
-    // to here
-
     const rootClassName = this.getRootClassName();
     const commentDate = dateFnsFormat(comment.createdAt, 'YYYY/MM/DD HH:mm');
-    const commentBody = isMarkdown ? ReactUtils.nl2br(comment.comment) : ReactUtils.nl2br(comment.comment);
+    const commentBody = isMarkdown ? this.renderRevisionBody() : ReactUtils.nl2br(comment.comment);
     const creatorsPage = `/user/${creator.username}`;
     const revHref = `?revision=${comment.revision}`;
     const revFirst8Letters = comment.revision.substr(-8);
@@ -113,7 +138,6 @@ export default class Comment extends React.Component {
         <div className="page-comment-main">
           <div className="page-comment-creator">
             <a href={creatorsPage}>{creator.username}</a>
-            <p>{markdownText}!!!</p>
           </div>
           <div className="page-comment-body">{commentBody}</div>
           <div className="page-comment-meta">
