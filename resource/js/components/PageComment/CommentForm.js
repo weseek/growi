@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
+import FormControl from 'react-bootstrap/es/FormControl';
+import UserPicture from '../User/UserPicture';
 /**
  *
  * @author Yuki Takei <yuki@weseek.co.jp>
@@ -15,12 +16,36 @@ export default class CommentForm extends React.Component {
     super(props);
 
     this.state = {
+      value: ''
     };
   }
 
+  handleChange(e) {
+    this.setState({ value: e.target.value });
+  }
+
   render() {
+
+    const creator = "yusuketk";
+    const creatorsPage = `/user/${creator}`;
+
     return (
-      <h1>CommentForm.js</h1>
+      <div className="comment-form">
+        <a href={creatorsPage}>
+        <UserPicture />
+        </a>
+        <div className="comment-form-main">
+          <div className="comment-form-editor">
+          </div>
+          <FormControl
+            type="text"
+            value={this.state.value}
+            placeholder="Write comments here..."
+            onChange={this.handleChange}
+          />
+
+        </div>
+      </div>
     );
   }
 }
