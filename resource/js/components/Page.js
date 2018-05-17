@@ -117,7 +117,7 @@ export default class Page extends React.Component {
           isMathJaxEnabled={isMathJaxEnabled}
           renderMathJaxOnInit={true}
       />
-    )
+    );
   }
 }
 
