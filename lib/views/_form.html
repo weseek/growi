@@ -49,19 +49,38 @@
       {% if forceGrant %}
       <input type="hidden" name="pageForm[grant]" value="{{ forceGrant }}">
       {% else %}
-      <select name="pageForm[grant]" class="m-r-5 selectpicker btn-group-sm">
+      <div>
+        <div id="page-grant-selector"></div>
+      </div>
+      <input type="hidden" id="page-grant" name="pageForm[grant]" value="{{ pageForm.grant|default(page.grant) }}">
+      <input id="grant-group" type="hidden" name="pageForm[grantUserGroupId]" value="{% if pageForm.grant %}{{ pageForm.grant }}{% endif %}">
+<!--
+      <select id="select-grant" name="pageForm[grant]" class="m-r-5 selectpicker btn-group-sm">
         {% for grantId, grantLabel in consts.pageGrants %}
-        <option value="{{ grantId }}" {% if pageForm.grant|default(page.grant) == grantId %}selected{% endif %} {% if grantId == 5 && userRelatedGroups.length == 0 %}disabled{% endif %}>{{ t(grantLabel) }}</option>
+        <option value="{{ grantId }}" {% if pageForm.grant|default(page.grant) == grantId %}selected{% endif %}>{{ t(grantLabel) }}</option>
         {% endfor %}
+        {% if user and user.admin && userRelatedGroups %}
+        <option id="no-group" value="/admin/user-groups">{{ t('Only inside the group') }} you have no groups.</option>
+        {% endif %}
+        <option id="group-grant" value="5">{{ t('Only inside the group') }}</option>
+        {% if pageForm.grant|default(page.grant) == "5" && pageRelatedGroup != null %}
+        <option id="group-grant" value="5" selected>{{pageRelatedGroup}}</option>
+        {% endif %}
       </select>
+      <input id="select-grant-pre" type="hidden" value="{{ page.grant }}">
       {% endif %}
+      <input id="grant-group" type="hidden" name="pageForm[grantUserGroupId]" value="">
       {% if userRelatedGroups.length != 0 %}
-      <select name="pageForm[grantUserGroupId]" class="selectpicker btn-group-sm">
-        {% for userGroup in userRelatedGroups %}
-        <option value="{{ userGroup.id }}">{{ userGroup.name }}</option>
-        {% endfor %}
-      </select>
-      {% endif %}
+      <div class="collapse width">
+        <select name="pageForm[grantUserGroupId]" class="selectpicker btn-group-sm">
+          {% for userGroup in userRelatedGroups %}
+          <option value="{{ userGroup.id }}">{{ userGroup.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      {% endif %} -->
+      <!-- <input type="hidden" id="page-grant" value="{{ page.grant }}"> -->
+      <input type="hidden" id="user-related-group-data" value="{{userRelatedGroups}}">
       <input type="hidden" id="edit-form-csrf" name="_csrf" value="{{ csrf() }}">
       <button type="submit" class="btn btn-primary btn-submit" id="edit-form-submit">{{ t('Update') }}</button>
     </div>

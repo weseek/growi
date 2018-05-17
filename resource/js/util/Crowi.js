@@ -43,6 +43,7 @@ export default class Crowi {
     this.userById   = {};
     this.draft = {};
     this.editorOptions = {};
+    this.userRelatedGroups = {};
 
     this.recoverData();
   }
