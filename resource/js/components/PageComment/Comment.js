@@ -5,6 +5,7 @@ import dateFnsFormat from 'date-fns/format';
 
 import ReactUtils from '../ReactUtils';
 import UserPicture from '../User/UserPicture';
+import RevisionBody from '../Page/RevisionBody';
 
 /**
  *
@@ -24,6 +25,7 @@ export default class Comment extends React.Component {
     this.getRootClassName = this.getRootClassName.bind(this);
     this.getRevisionLabelClassName = this.getRevisionLabelClassName.bind(this);
     this.deleteBtnClickedHandler = this.deleteBtnClickedHandler.bind(this);
+    this.renderHtml = this.renderHtml.bind(this);
   }
 
   isCurrentUserEqualsToAuthor() {
@@ -46,6 +48,44 @@ export default class Comment extends React.Component {
 
   deleteBtnClickedHandler() {
     this.props.deleteBtnClicked(this.props.comment);
+  }
+
+  renderHtml(markdown, highlightKeywords) {
+    var context = {
+      markdown,
+      dom: this.revisionBodyElement,
+      currentPagePath: this.props.pagePath,
+    };
+
+    const crowiRenderer = this.props.crowiRenderer;
+    const interceptorManager = this.props.crowi.interceptorManager;
+    interceptorManager.process('preCommentRender', context)
+      .then(() => interceptorManager.process('preCommentPreProcess', context))
+      .then(() => {
+        context.markdown = crowiRenderer.preProcess(context.markdown);
+      })
+      .then(() => interceptorManager.process('postCommentPreProcess', context))
+      .then(() => {
+        var parsedHTML = crowiRenderer.process(context.markdown);
+        context['parsedHTML'] = parsedHTML;
+      })
+      .then(() => interceptorManager.process('preCommentPostProcess', context))
+      .then(() => {
+        context.parsedHTML = crowiRenderer.postProcess(context.parsedHTML, context.dom);
+
+        // highlight
+        if (highlightKeywords != null) {
+          context.parsedHTML = this.getHighlightedBody(context.parsedHTML, highlightKeywords);
+        }
+      })
+      .then(() => interceptorManager.process('postCommentPostProcess', context))
+      .then(() => interceptorManager.process('preCommentRenderHtml', context))
+      .then(() => {
+        this.setState({ html: context.parsedHTML });
+      })
+      // process interceptors for post rendering
+      .then(() => interceptorManager.process('postCommentRenderHtml', context));
+
   }
 
   render() {
@@ -96,4 +136,8 @@ Comment.propTypes = {
   currentRevisionId: PropTypes.string.isRequired,
   currentUserId: PropTypes.string.isRequired,
   deleteBtnClicked: PropTypes.func.isRequired,
+  crowi: PropTypes.object.isRequired,
+  crowiRenderer: PropTypes.object.isRequired,
+  pagePath: PropTypes.string.isRequired,
+  highlightKeywords: PropTypes.string,
 };

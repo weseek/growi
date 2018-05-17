@@ -123,7 +123,10 @@ export default class PageComments extends React.Component {
         <Comment key={comment._id} comment={comment}
           currentUserId={this.props.crowi.me}
           currentRevisionId={this.props.revisionId}
-          deleteBtnClicked={this.confirmToDeleteComment} />
+          deleteBtnClicked={this.confirmToDeleteComment}
+          crowi={this.props.crowi}
+          crowiRenderer={this.props.crowiRenderer}
+          pagePath={this.props.pagePath} />
       );
     });
   }
@@ -239,4 +242,7 @@ PageComments.propTypes = {
   revisionId: PropTypes.string,
   revisionCreatedAt: PropTypes.number,
   crowi: PropTypes.object.isRequired,
+  crowiRenderer: PropTypes.object.isRequired,
+  pagePath: PropTypes.string.isRequired,
+  highlightKeywords: PropTypes.string,
 };

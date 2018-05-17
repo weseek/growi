@@ -110,7 +110,9 @@ export default class Page extends React.Component {
   render() {
     const config = this.props.crowi.getConfig();
     const isMathJaxEnabled = !!config.env.MATHJAX;
-
+    // (el) => {
+    //   this.revisionBodyElement = el;
+    // }
     return (
       <RevisionBody html={this.state.html}
           inputRef={el => this.revisionBodyElement = el}
