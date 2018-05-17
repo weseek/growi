@@ -43,6 +43,10 @@ export default class CommentForm extends React.Component {
             placeholder="Write comments here..."
             onChange={this.handleChange}
           />
+          <div className="form-check">
+          <input type="checkbox" className="form-check-input" id="checkbox-markdown"></input>
+            <label className="form-check-label" htmlFor="checkbox-markdown">Markdown</label>
+          </div>
 
         </div>
       </div>
