@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import FormControl from 'react-bootstrap/es/FormControl';
 import * as toastr from 'toastr';
 import { throttle, debounce } from 'throttle-debounce';
 
@@ -366,9 +365,10 @@ export default class PageEditor extends React.Component {
 
     return (
       <div className="row">
-        <div className="col-md-6 hidden-sm hidden-xs page-editor-editor-container">
+        <div className="col-md-6 col-sm-12 page-editor-editor-container">
           <Editor ref="editor" value={this.state.markdown}
             editorOptions={this.state.editorOptions}
+            isMobile={this.props.crowi.isMobile}
             isUploadable={this.state.isUploadable}
             isUploadableFile={this.state.isUploadableFile}
             emojiStrategy={emojiStrategy}
@@ -378,12 +378,6 @@ export default class PageEditor extends React.Component {
             onSave={this.onSave}
             onUpload={this.onUpload}
           />
-        </div>
-        <div className="col-sm-12 visible-sm visible-xs page-editor-mobileeditor-container">
-          <FormControl componentClass="textarea" defaultValue={this.state.markdown}
-            onChange={(e) => {
-              this.onMarkdownChanged(e.target.value);
-            }} />
         </div>
         <div className="col-md-6 hidden-sm hidden-xs page-editor-preview-container">
           <Preview html={this.state.html}

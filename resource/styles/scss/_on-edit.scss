@@ -97,7 +97,8 @@ body.on-edit {
         .page-editor-editor-container {
           height: calc(100vh - #{$header-plus-footer});
 
-          .react-codemirror2, .CodeMirror, .CodeMirror-scroll {
+          .react-codemirror2, .CodeMirror, .CodeMirror-scroll,
+          .textarea-for-mobile {
             height: calc(100vh - #{$editor-margin});
             // less than smartphone
             @media (max-width: $screen-xs) {
@@ -282,6 +283,10 @@ body.on-edit {
         }
       }
     } // end of.dropzone
+
+    .textarea-for-mobile {
+      border: none;
+    }
 
     .loading-keymap {
       @include overlay-processing-style();

@@ -26,7 +26,7 @@ require('codemirror/addon/fold/markdown-fold');
 require('codemirror/addon/fold/brace-fold');
 require('codemirror/mode/gfm/gfm');
 
-
+import FormControl from 'react-bootstrap/es/FormControl';
 import Dropzone from 'react-dropzone';
 
 import pasteHelper from './PasteHelper';
@@ -42,14 +42,6 @@ export default class Editor extends React.Component {
   constructor(props) {
     super(props);
 
-    this.cmCdnRoot = 'https://cdn.jsdelivr.net/npm/codemirror@5.37.0';
-
-    this.interceptorManager = new InterceptorManager();
-    this.interceptorManager.addInterceptors([
-      new MarkdownListInterceptor(),
-      new MarkdownTableInterceptor(),
-    ]);
-
     this.state = {
       value: this.props.value,
       dropzoneActive: false,
@@ -58,8 +50,12 @@ export default class Editor extends React.Component {
       isLoadingKeymap: false,
     };
 
-    this.loadedThemeSet = new Set(['eclipse', 'elegant']);   // themes imported in _vendor.scss
-    this.loadedKeymapSet = new Set();
+    if (this.props.isMobile) {
+      this.initOnMobile();
+    }
+    else {
+      this.initOnPC();
+    }
 
     this.getCodeMirror = this.getCodeMirror.bind(this);
     this.setCaretLine = this.setCaretLine.bind(this);
@@ -85,14 +81,34 @@ export default class Editor extends React.Component {
     this.renderLoadingKeymapOverlay = this.renderLoadingKeymapOverlay.bind(this);
   }
 
+  initOnPC() {
+    this.cmCdnRoot = 'https://cdn.jsdelivr.net/npm/codemirror@5.37.0';
+
+    this.interceptorManager = new InterceptorManager();
+    this.interceptorManager.addInterceptors([
+      new MarkdownListInterceptor(),
+      new MarkdownTableInterceptor(),
+    ]);
+
+    this.loadedThemeSet = new Set(['eclipse', 'elegant']);   // themes imported in _vendor.scss
+    this.loadedKeymapSet = new Set();
+  }
+
+  initOnMobile() {
+  }
+
   componentWillMount() {
-    if (this.props.emojiStrategy != null) {
+    if (!this.props.isMobile && this.props.emojiStrategy != null) {
       this.emojiAutoCompleteHelper = new EmojiAutoCompleteHelper(this.props.emojiStrategy);
       this.setState({isEnabledEmojiAutoComplete: true});
     }
   }
 
   componentDidMount() {
+    if (this.props.isMobile) {
+      return;
+    }
+
     // initialize caret line
     this.setCaretLine(0);
     // set save handler
@@ -103,6 +119,10 @@ export default class Editor extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    if (this.props.isMobile) {
+      return;
+    }
+
     // load theme
     const theme = nextProps.editorOptions.theme;
     this.loadTheme(theme);
@@ -124,6 +144,10 @@ export default class Editor extends React.Component {
   }
 
   forceToFocus() {
+    if (this.props.isMobile) {
+      return;
+    }
+
     const editor = this.getCodeMirror();
     // use setInterval with reluctance -- 2018.01.11 Yuki Takei
     const intervalId = setInterval(() => {
@@ -141,7 +165,8 @@ export default class Editor extends React.Component {
    * @param {string} number
    */
   setCaretLine(line) {
-    if (isNaN(line)) {
+    if (this.props.isMobile || isNaN(line)) {
+      // TODO impl
       return;
     }
 
@@ -157,7 +182,7 @@ export default class Editor extends React.Component {
    * @param {number} line
    */
   setScrollTopByLine(line) {
-    if (isNaN(line)) {
+    if (this.props.isMobile || isNaN(line)) {
       return;
     }
 
@@ -246,8 +271,13 @@ export default class Editor extends React.Component {
    * @param {string} text
    */
   insertText(text) {
-    const editor = this.getCodeMirror();
-    editor.getDoc().replaceSelection(text);
+    if (this.props.isMobile) {
+      // TODO insert to textarea
+    }
+    else {
+      const editor = this.getCodeMirror();
+      editor.getDoc().replaceSelection(text);
+    }
   }
 
   /**
@@ -272,20 +302,24 @@ export default class Editor extends React.Component {
    * handle ENTER key
    */
   handleEnterKey() {
+    if (this.props.isMobile) {
+      // TODO impl
+    }
+    else {
+      const editor = this.getCodeMirror();
+      var context = {
+        handlers: [],  // list of handlers which process enter key
+        editor: editor,
+      };
 
-    const editor = this.getCodeMirror();
-    var context = {
-      handlers: [],  // list of handlers which process enter key
-      editor: editor,
-    };
-
-    const interceptorManager = this.interceptorManager;
-    interceptorManager.process('preHandleEnter', context)
-      .then(() => {
-        if (context.handlers.length == 0) {
-          codemirror.commands.newlineAndIndentContinueMarkdownList(editor);
-        }
-      });
+      const interceptorManager = this.interceptorManager;
+      interceptorManager.process('preHandleEnter', context)
+        .then(() => {
+          if (context.handlers.length == 0) {
+            codemirror.commands.newlineAndIndentContinueMarkdownList(editor);
+          }
+        });
+    }
   }
 
   onScrollCursorIntoView(editor, event) {
@@ -437,79 +471,97 @@ export default class Editor extends React.Component {
       flexDirection: 'column',
     };
 
+    const isMobile = this.props.isMobile;
+
     const theme = this.props.editorOptions.theme || 'elegant';
     const styleActiveLine = this.props.editorOptions.styleActiveLine || undefined;
     return <React.Fragment>
       <div style={flexContainer}>
         <Dropzone
-          ref="dropzone"
-          disableClick
-          disablePreview={true}
-          accept={this.getDropzoneAccept()}
-          className={this.getDropzoneClassName()}
-          acceptClassName="dropzone-accepted"
-          rejectClassName="dropzone-rejected"
-          multiple={false}
-          onDragLeave={this.onDragLeave}
-          onDrop={this.onDrop}
-        >
+            ref="dropzone"
+            disableClick
+            disablePreview={true}
+            accept={this.getDropzoneAccept()}
+            className={this.getDropzoneClassName()}
+            acceptClassName="dropzone-accepted"
+            rejectClassName="dropzone-rejected"
+            multiple={false}
+            onDragLeave={this.onDragLeave}
+            onDrop={this.onDrop}
+          >
+
           { this.state.dropzoneActive && this.renderDropzoneOverlay() }
 
-          <ReactCodeMirror
-            ref="cm"
-            editorDidMount={(editor) => {
-              // add event handlers
-              editor.on('paste', this.onPaste);
-              editor.on('scrollCursorIntoView', this.onScrollCursorIntoView);
-            }}
-            value={this.state.value}
-            options={{
-              mode: 'gfm',
-              theme: theme,
-              styleActiveLine: styleActiveLine,
-              lineNumbers: true,
-              tabSize: 4,
-              indentUnit: 4,
-              lineWrapping: true,
-              autoRefresh: true,
-              autoCloseTags: true,
-              matchBrackets: true,
-              matchTags: {bothTags: true},
-              // folding
-              foldGutter: true,
-              gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
-              // match-highlighter, matchesonscrollbar, annotatescrollbar options
-              highlightSelectionMatches: {annotateScrollbar: true},
-              // markdown mode options
-              highlightFormatting: true,
-              // continuelist, indentlist
-              extraKeys: {
-                'Enter': this.handleEnterKey,
-                'Tab': 'indentMore',
-                'Shift-Tab': 'indentLess',
-                'Ctrl-Q': (cm) => { cm.foldCode(cm.getCursor()) },
-              }
-            }}
-            onScroll={(editor, data) => {
-              if (this.props.onScroll != null) {
-                // add line data
-                const line = editor.lineAtHeight(data.top, 'local');
-                data.line = line;
-                this.props.onScroll(data);
-              }
-            }}
-            onChange={(editor, data, value) => {
-              if (this.props.onChange != null) {
-                this.props.onChange(value);
-              }
+          {/* for PC */}
+          { !isMobile &&
+            <ReactCodeMirror
+              ref="cm"
+              editorDidMount={(editor) => {
+                // add event handlers
+                editor.on('paste', this.onPaste);
+                editor.on('scrollCursorIntoView', this.onScrollCursorIntoView);
+              }}
+              value={this.state.value}
+              options={{
+                mode: 'gfm',
+                theme: theme,
+                styleActiveLine: styleActiveLine,
+                lineNumbers: true,
+                tabSize: 4,
+                indentUnit: 4,
+                lineWrapping: true,
+                autoRefresh: true,
+                autoCloseTags: true,
+                matchBrackets: true,
+                matchTags: {bothTags: true},
+                // folding
+                foldGutter: true,
+                gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+                // match-highlighter, matchesonscrollbar, annotatescrollbar options
+                highlightSelectionMatches: {annotateScrollbar: true},
+                // markdown mode options
+                highlightFormatting: true,
+                // continuelist, indentlist
+                extraKeys: {
+                  'Enter': this.handleEnterKey,
+                  'Tab': 'indentMore',
+                  'Shift-Tab': 'indentLess',
+                  'Ctrl-Q': (cm) => { cm.foldCode(cm.getCursor()) },
+                }
+              }}
+              onScroll={(editor, data) => {
+                if (this.props.onScroll != null) {
+                  // add line data
+                  const line = editor.lineAtHeight(data.top, 'local');
+                  data.line = line;
+                  this.props.onScroll(data);
+                }
+              }}
+              onChange={(editor, data, value) => {
+                if (this.props.onChange != null) {
+                  this.props.onChange(value);
+                }
 
-              // Emoji AutoComplete
-              if (this.state.isEnabledEmojiAutoComplete) {
-                this.emojiAutoCompleteHelper.showHint(editor);
-              }
-            }}
-            onDragEnter={this.onDragEnterForCM}
-          />
+                // Emoji AutoComplete
+                if (this.state.isEnabledEmojiAutoComplete) {
+                  this.emojiAutoCompleteHelper.showHint(editor);
+                }
+              }}
+              onDragEnter={this.onDragEnterForCM}
+            />
+          }
+
+          {/* for mobile */}
+          { isMobile &&
+            <FormControl componentClass="textarea" className="textarea-for-mobile"
+              defaultValue={this.state.value}
+              onChange={(e) => {
+                if (this.props.onChange != null) {
+                  this.props.onChange(e.target.value);
+                }
+              }} />
+          }
+
         </Dropzone>
 
         <button type="button" className="btn btn-default btn-block btn-open-dropzone"
@@ -534,6 +586,7 @@ Editor.propTypes = {
   value: PropTypes.string,
   options: PropTypes.object,
   editorOptions: PropTypes.object,
+  isMobile: PropTypes.bool,
   isUploadable: PropTypes.bool,
   isUploadableFile: PropTypes.bool,
   emojiStrategy: PropTypes.object,
