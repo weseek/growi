@@ -10,8 +10,11 @@ module.exports = {
     "plugin:react/recommended"
   ],
   "globals": {
-    "window": true,
-    "emojione": true
+    "$": true,
+    "jquery": true,
+    "emojione": true,
+    "hljs": true,
+    "window": true
   },
   "parserOptions": {
     "ecmaFeatures": {
@@ -41,12 +44,18 @@ module.exports = {
       2,
       {
         "SwitchCase": 1,
-        "ignoredNodes": ['JSXElement *', 'JSXElement'],
-        "FunctionExpression": {"parameters": 2},
+        "ignoredNodes": ['JSXElement *', 'JSXElement', "JSXAttribute", "JSXSpreadAttribute"],
+        "FunctionDeclaration": {"body": 1, "parameters": 2},
+        "FunctionExpression": {"body": 1, "parameters": 2},
+        "MemberExpression": "off"
       }
     ],
     "key-spacing": [
-      "error", { "beforeColon": false, "afterColon": true }
+      "error", {
+        "beforeColon": false,
+        "afterColon": true,
+        "mode": "minimum"
+      }
     ],
     "keyword-spacing": [
       "error", {}
@@ -63,14 +72,12 @@ module.exports = {
       "error",
       "single"
     ],
-    "react/jsx-indent-props": [
-      "error",
-      2
-    ],
-    "react/no-string-refs": 'off',
+    "react/jsx-uses-vars": 1,
+    "react/no-string-refs": "off",
     "semi": [
       "error",
-      "always"
+      "always",
+      { "omitLastInOneLineBlock": true }
     ],
     "space-before-blocks": [
       "error",

@@ -1,0 +1,7 @@
+/.github/**
+/.vscode/**
+/node_modules/**
+/public/**
+/resource/js/legacy/thirdparty-js/**
+/test/**
+/tmp/**

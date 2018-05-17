@@ -33,7 +33,7 @@ export default class CustomHeaderEditor extends React.Component {
           autoRefresh: true,
           matchBrackets: true,
           autoCloseBrackets: true,
-          extraKeys: {"Ctrl-Space": "autocomplete"},
+          extraKeys: {'Ctrl-Space': 'autocomplete'},
         }}
         editorDidMount={(editor, next) => {
           // resizable with jquery.ui
@@ -47,7 +47,7 @@ export default class CustomHeaderEditor extends React.Component {
           this.props.inputElem.value = value;
         }}
       />
-    )
+    );
   }
 
 }

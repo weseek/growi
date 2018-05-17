@@ -130,6 +130,8 @@ export default class Editor extends React.Component {
       this.getCodeMirror().focus();
       if (editor.hasFocus()) {
         clearInterval(intervalId);
+        // refresh
+        editor.refresh();
       }
     }, 100);
   }
@@ -485,7 +487,7 @@ export default class Editor extends React.Component {
                 'Enter': this.handleEnterKey,
                 'Tab': 'indentMore',
                 'Shift-Tab': 'indentLess',
-                'Ctrl-Q': (cm) => { cm.foldCode(cm.getCursor()); },
+                'Ctrl-Q': (cm) => { cm.foldCode(cm.getCursor()) },
               }
             }}
             onScroll={(editor, data) => {
@@ -511,7 +513,7 @@ export default class Editor extends React.Component {
         </Dropzone>
 
         <button type="button" className="btn btn-default btn-block btn-open-dropzone"
-          onClick={() => {this.refs.dropzone.open();}}>
+          onClick={() => {this.refs.dropzone.open()}}>
 
           <i className="icon-paper-clip" aria-hidden="true"></i>&nbsp;
           Attach files by dragging &amp; dropping,&nbsp;

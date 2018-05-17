@@ -1,12 +1,6 @@
 import React from 'react';
-import { FormGroup } from 'react-bootstrap/es/FormGroup';
-import { Button } from 'react-bootstrap/es/Button';
-import { InputGroup } from 'react-bootstrap/es/InputGroup';
-
-import UserPicture from './User/UserPicture';
-import PageListMeta from './PageList/PageListMeta';
-import PagePath from './PageList/PagePath';
 import PropTypes from 'prop-types';
+
 import SearchTypeahead from './SearchTypeahead';
 
 export default class NewPageNameInputter extends React.Component {

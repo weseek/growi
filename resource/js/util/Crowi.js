@@ -89,14 +89,15 @@ export default class Crowi {
       if (this.localStorage[key]) {
         try {
           this[key] = JSON.parse(this.localStorage[key]);
-        } catch (e) {
+        }
+        catch (e) {
           this.localStorage.removeItem(key);
         }
       }
     });
   }
 
-  fetchUsers () {
+  fetchUsers() {
     const interval = 1000*60*15; // 15min
     const currentTime = new Date();
     if (this.localStorage.lastFetched && interval > currentTime - new Date(this.localStorage.lastFetched)) {
@@ -213,7 +214,8 @@ export default class Crowi {
       .then(res => {
         if (res.data.ok) {
           resolve(res.data);
-        } else {
+        }
+        else {
           reject(new Error(res.data.error));
         }
       })

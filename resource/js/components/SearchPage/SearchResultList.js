@@ -14,8 +14,6 @@ export default class SearchResultList extends React.Component {
   }
 
   render() {
-    var isEnabledLineBreaks = $('#content-main').data('linebreaks-enabled');
-
     const resultList = this.props.pages.map((page) => {
       const pageBody = page.revision.body;
       return (

@@ -98,7 +98,7 @@ export default class SearchTypeahead extends React.Component {
 
     // navigate to page
     if (page != null) {
-        window.location = page.path;
+      window.location = page.path;
     }
   }
 
@@ -139,7 +139,7 @@ export default class SearchTypeahead extends React.Component {
       ? 'Error on searching.'
       : 'No matches found on title...';
     const restoreFormButton = this.getRestoreFormButton();
-    const defaultSelected = (this.props.keywordOnInit != "")
+    const defaultSelected = (this.props.keywordOnInit != '')
       ? [{path: this.props.keywordOnInit}]
       : [];
 
@@ -148,7 +148,7 @@ export default class SearchTypeahead extends React.Component {
         <AsyncTypeahead
           {...this.props}
           ref="typeahead"
-          inputProps={{name: "q", autoComplete: "off"}}
+          inputProps={{name: 'q', autoComplete: 'off'}}
           isLoading={this.state.isLoading}
           labelKey="path"
           minLength={2}

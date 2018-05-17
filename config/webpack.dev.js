@@ -99,4 +99,4 @@ module.exports = function(options) {
 
     ]
   });
-}
+};

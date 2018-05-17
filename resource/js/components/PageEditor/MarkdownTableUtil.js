@@ -1,4 +1,5 @@
-import markdown_table from 'markdown-table';
+import markdownTable from 'markdown-table';
+import stringWidth from 'string-width';
 
 /**
  * Utility for markdown table
@@ -111,23 +112,24 @@ class MarkdownTableUtil {
           { align: 'l', regex: /^:-+$/  },
           { align: 'r', regex: /^-+:$/  },
         ];
-        let lineText = "";
+        let lineText = '';
         lineText = line.replace(/^\||\|$/g, ''); // strip off pipe charactor which is placed head of line and last of line.
         lineText = lineText.replace(/\s*/g, '');
         aligns = lineText.split(/\|/).map(col => {
           const rule = alignRuleRE.find(rule => col.match(rule.regex));
           return (rule != undefined) ? rule.align : '';
         });
-      } else if (this.linePartOfTableRE.test(line)) {
+      }
+      else if (this.linePartOfTableRE.test(line)) {
         // parse line whether header or body
-        let lineText = "";
+        let lineText = '';
         lineText = line.replace(/\s*\|\s*/g, '|');
         lineText = lineText.replace(/^\||\|$/g, ''); // strip off pipe charactor which is placed head of line and last of line.
         const row = lineText.split(/\|/);
         contents.push(row);
       }
     }
-    return (new MarkdownTable(contents, { align: aligns }));
+    return (new MarkdownTable(contents, { align: aligns, stringLength: stringWidth }));
   }
 
   /**
@@ -164,7 +166,7 @@ class MarkdownTableUtil {
     let newTable = [];
     const options = mdtable_list[0].options; // use option of first markdown-table
     mdtable_list.forEach((mdtable) => {
-      newTable = newTable.concat(mdtable.table)
+      newTable = newTable.concat(mdtable.table);
     });
     return (new MarkdownTable(newTable, options));
   }
@@ -199,7 +201,7 @@ class MarkdownTable {
   }
 
   toString() {
-    return markdown_table(this.table, this.options);
+    return markdownTable(this.table, this.options);
   }
 }
 

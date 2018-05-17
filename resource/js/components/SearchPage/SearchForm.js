@@ -54,6 +54,7 @@ export default class SearchForm extends React.Component {
 }
 
 SearchForm.propTypes = {
+  keyword: PropTypes.string,
   onSearchFormChanged: PropTypes.func.isRequired,
 };
 SearchForm.defaultProps = {
