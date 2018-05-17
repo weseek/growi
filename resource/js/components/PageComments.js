@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import GrowiRenderer from '../util/GrowiRenderer';
+
 import Comment from './PageComment/Comment';
 import DeleteCommentModal from './PageComment/DeleteCommentModal';
 
@@ -29,6 +31,8 @@ export default class PageComments extends React.Component {
       isDeleteConfirmModalShown: false,
       errorMessageForDeleting: undefined,
     };
+
+    this.growiRenderer = new GrowiRenderer(this.props.crowi, this.props.crowiRenderer, {mode: 'comment'});
 
     this.init = this.init.bind(this);
     this.confirmToDeleteComment = this.confirmToDeleteComment.bind(this);
@@ -125,8 +129,7 @@ export default class PageComments extends React.Component {
           currentRevisionId={this.props.revisionId}
           deleteBtnClicked={this.confirmToDeleteComment}
           crowi={this.props.crowi}
-          crowiRenderer={this.props.crowiRenderer}
-          pagePath={this.props.pagePath} />
+          crowiRenderer={this.growiRenderer} />
       );
     });
   }
@@ -242,7 +245,4 @@ PageComments.propTypes = {
   revisionId: PropTypes.string,
   revisionCreatedAt: PropTypes.number,
   crowi: PropTypes.object.isRequired,
-  crowiRenderer: PropTypes.object.isRequired,
-  pagePath: PropTypes.string.isRequired,
-  highlightKeywords: PropTypes.string,
 };

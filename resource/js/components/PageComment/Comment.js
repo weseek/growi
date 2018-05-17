@@ -33,17 +33,17 @@ export default class Comment extends React.Component {
   }
 
   componentWillMount() {
-    this.renderHtml(this.props.comment.comment, this.props.highlightKeywords);
+    this.renderHtml(this.props.comment.comment);
   }
 
   componentWillReceiveProps(nextProps) {
-    this.renderHtml(nextProps.comment.comment, nextProps.highlightKeywords);
+    this.renderHtml(nextProps.comment.comment);
   }
 
   //not used
   setMarkdown(markdown) {
     this.setState({ markdown });
-    this.renderHtml(markdown, this.props.highlightKeywords);
+    this.renderHtml(markdown);
   }
 
   isCurrentUserEqualsToAuthor() {
@@ -79,11 +79,10 @@ export default class Comment extends React.Component {
     );
   }
 
-  renderHtml(markdown, highlightKeywords) {
+  renderHtml(markdown) {
     var context = {
       markdown,
       dom: this.revisionBodyElement,
-      currentPagePath: this.props.pagePath,
     };
 
     const crowiRenderer = this.props.crowiRenderer;
@@ -101,11 +100,6 @@ export default class Comment extends React.Component {
       .then(() => interceptorManager.process('preCommentPostProcess', context))
       .then(() => {
         context.parsedHTML = crowiRenderer.postProcess(context.parsedHTML, context.dom);
-
-        // highlight
-        if (highlightKeywords != null) {
-          context.parsedHTML = this.getHighlightedBody(context.parsedHTML, highlightKeywords);
-        }
       })
       .then(() => interceptorManager.process('postCommentPostProcess', context))
       .then(() => interceptorManager.process('preCommentRenderHtml', context))
@@ -162,6 +156,4 @@ Comment.propTypes = {
   deleteBtnClicked: PropTypes.func.isRequired,
   crowi: PropTypes.object.isRequired,
   crowiRenderer: PropTypes.object.isRequired,
-  pagePath: PropTypes.string.isRequired,
-  highlightKeywords: PropTypes.string,
 };
