@@ -1,8 +1,9 @@
 CHANGES
 ========
 
-## 3.0.14
+## 3.1.0-RC
 
+* Improvement: Group Access Control List - Select group modal
 * Improvement: Auto-format markdown tables which includes multibyte text
 * Improvement: Enable to switch show/hide border for highlight.js
 * Support: Upgrade libs
