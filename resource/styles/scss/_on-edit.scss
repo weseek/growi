@@ -96,14 +96,15 @@ body.on-edit {
         // left(editor)
         .page-editor-editor-container {
           height: calc(100vh - #{$header-plus-footer});
-        .react-codemirror2, .CodeMirror, .CodeMirror-scroll {
-          height: calc(100vh - #{$editor-margin});
-          // less than smartphone
-          @media (max-width: $screen-xs) {
-            height: calc(100vh - #{$editor-margin-sm});
+
+          .react-codemirror2, .CodeMirror, .CodeMirror-scroll {
+            height: calc(100vh - #{$editor-margin});
+            // less than smartphone
+            @media (max-width: $screen-xs) {
+              height: calc(100vh - #{$editor-margin-sm});
+            }
           }
         }
-      }
       }
 
       .page-editor-footer {
