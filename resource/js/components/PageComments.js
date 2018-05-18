@@ -32,7 +32,7 @@ export default class PageComments extends React.Component {
       errorMessageForDeleting: undefined,
     };
 
-    this.growiRenderer = new GrowiRenderer(this.props.crowi, this.props.crowiRenderer, {mode: 'comment'});
+    this.growiRenderer = new GrowiRenderer(this.props.crowi, null, {mode: 'comment'});
 
     this.init = this.init.bind(this);
     this.confirmToDeleteComment = this.confirmToDeleteComment.bind(this);
