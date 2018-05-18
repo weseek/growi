@@ -83,6 +83,7 @@ body.on-edit {
                          + 1px                      // .page-editor-footer border-top
                          + 40px;                    // .page-editor-footer min-height
       $editor-margin: $header-plus-footer + 22px;   // .btn-open-dropzone height
+      $editor-margin-sm: $header-plus-footer;
 
       #page-editor {
         // right(preview)
@@ -97,6 +98,10 @@ body.on-edit {
           height: calc(100vh - #{$header-plus-footer});
         .react-codemirror2, .CodeMirror, .CodeMirror-scroll {
           height: calc(100vh - #{$editor-margin});
+          // less than smartphone
+          @media (max-width: $screen-xs) {
+            height: calc(100vh - #{$editor-margin-sm});
+          }
         }
       }
       }
@@ -160,7 +165,7 @@ body.on-edit {
       }
     }
 
-    // hide if screen size is less than smartphone
+    // hide if screen size is less than tablet
     @media (max-width: $screen-sm) {
       display: none;
     }
@@ -294,6 +299,11 @@ body.on-edit {
       &:active {
         box-shadow: none;
       }
+
+      // hide if screen size is less than smartphone
+      @media (max-width: $screen-xs) {
+        display: none;
+      }
     }
   }
   .page-editor-preview-container {
@@ -345,50 +355,6 @@ body.on-edit {
   display: block;
 }
 
-
-/*
-.crowi.main-container .main .page-list.content-main { // {{{ Edit Form of Page List
-
-  .close-button {
-    display: none;
-  }
-}
-.crowi.main-container .main .page-list.content-main.on-edit { // {{{ Edit Form of Page List
-  .close-button {
-    display: block;
-  }
-
-  .page-list-container {
-    display: none;
-  }
-
-  .portal-form-header {
-    height: 16px;
-    padding: 8px;
-    border-bottom: solid 1px #ccc;
-  }
-} // }}}
-*/
-/*
-@media (max-width: $screen-sm-max) { // {{{ less than tablet size
-
-  .content-main.on-edit {
-    .form-group.form-submit-group {
-      select.form-control {
-        display: inline-block;
-        max-width: 50%;
-      }
-    }
-  }
-
-} // }}}
-
-@media (max-width: $screen-xs-max) { // {{{ less than smartphone size
-  #edit-form-submit {
-    float: right;
-  }
-} // }}}
-*/
 // overwrite .CodeMirror-hints
 .CodeMirror-hints {
   // FIXME: required because .content-main.on-edit has 'z-index:1050'

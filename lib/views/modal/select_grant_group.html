@@ -1,0 +1,23 @@
+<div class="modal select-grant-group" id="select-grant-group">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header bg-primary">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <div class="modal-title">{{ t('SelectGrantGroup') }}</div>
+      </div>
+
+      <div class="modal-body">
+        <p>グループを下のリストから選択</p>
+
+        <ul class="list-inline">
+          {% for sGroup in userRelatedGroups %}
+          <li><button class="btn btn-xs btn-primary" onclick="$('#grant-group').val('{{sGroup.id}}')" data-dismiss="modal">{{sGroup.name}}</button></li>
+          {% endfor %}
+        </ul>
+
+      </div><!-- /.modal-body -->
+
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
