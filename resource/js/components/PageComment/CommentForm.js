@@ -29,7 +29,7 @@ export default class CommentForm extends React.Component {
         <div className="comment-form-user">
         </div>
         <div className="comment-form-main">
-          <div className="comment-write comment-form-editor">
+          <div className="comment-write">
             <textarea className="comment-form-comment form-control" id="comment-form-comment" name="commentForm[comment]" required placeholder="Write comments here..." >
             </textarea>
             <div className="form-check">
