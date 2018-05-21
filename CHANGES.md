@@ -6,6 +6,8 @@ CHANGES
 * Improvement: Group Access Control List - Select group modal
 * Improvement: Auto-format markdown tables which includes multibyte text
 * Improvement: Enable to switch show/hide border for highlight.js
+* Improvement: BindDN field allows also ActiveDirectory styles 
+* Fix: Comment body doesn't break long terms
 * Support: Upgrade libs
     * elasticsearch
 
