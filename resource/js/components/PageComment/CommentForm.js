@@ -22,21 +22,11 @@ export default class CommentForm extends React.Component {
     };
   }
 
-  handleChange(e) {
-    this.setState({ value: e.target.value });
-  }
-
   render() {
-
-    const creator = "yusuketk";
-    const creatorsPage = `/user/${creator}`;
 
     return (
       <div className="comment-form">
         <div className="comment-form-user">
-          <a href={creatorsPage}>
-            <UserPicture />
-          </a>
         </div>
         <div className="comment-form-main">
           <div className="comment-write comment-form-editor">
