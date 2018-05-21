@@ -131,13 +131,7 @@ Object.keys(componentMappings).forEach((key) => {
 // render comment form
 const writeCommentElem = document.getElementById('page-comment-write');
 if (writeCommentElem) {
-  ReactDOM.render(<CommentForm crowi={crowi} pageId={pageId} revisionId={pageRevisionId} />, writeCommentElem);
-}
-
-// render components with refs to another component
-const elem = document.getElementById('page-comment-form-behavior');
-if (elem) {
-  ReactDOM.render(<PageCommentFormBehavior crowi={crowi} pageComments={componentInstances['page-comments-list']} />, elem);
+  ReactDOM.render(<CommentForm pageComments={componentInstances['page-comments-list']} crowi={crowi} pageId={pageId} revisionId={pageRevisionId} />, writeCommentElem);
 }
 
 /*

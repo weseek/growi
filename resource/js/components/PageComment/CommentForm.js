@@ -19,9 +19,9 @@ export default class CommentForm extends React.Component {
       isMarkdown: false,
     };
 
-    this.testComment = new Comment();
     this.handleChange = this.handleChange.bind(this);
     this.postComment = this.postComment.bind(this);
+    this.reload = this.reload.bind(this);
   }
 
   handleChange(event) {
@@ -36,12 +36,31 @@ export default class CommentForm extends React.Component {
 
   postComment(event) {
     event.preventDefault();
-    console.log(this.props.crowi.csrfToken);
-    this.props.crowi.apiPost('/comments.add', JSON.stringify({comment: this.state.comment, page_id: this.props.pageId, revision_id: this.props.revisionId}));
+    this.props.crowi.apiPost('/comments.add', {
+      commentForm: {
+        comment: this.state.comment,
+        _csrf: this.props.crowi.csrfToken,
+        page_id: this.props.pageId,
+        revision_id: this.props.revisionId,
+        is_markdown: this.state.isMarkdown,
+      }
+    })
+      .then(() => {
+        this.reload();
+      });
+  }
+
+  reload() {
+    this.props.pageComments.init();
+    this.setState({
+      comment: '',
+      isMarkdown: false,
+    });
   }
 
   render() {
     //{% if not user %}disabled{% endif %}をtextareaとbuttonに追加
+    // denounce/throttle
     return (
       <div>
         <form className="form page-comment-form" id="page-comment-form" onSubmit={this.postComment}>
@@ -52,8 +71,8 @@ export default class CommentForm extends React.Component {
             <div className="comment-form-main">
               <div className="comment-write" id="comment-write">
                 <textarea className="comment-form-comment form-control" id="comment-form-comment" name="comment"
-                  required placeholder="Write comments here..." onChange={this.handleChange}></textarea>
-                <input type="checkbox" id="comment-form-is-markdown" name="isMarkdown" value="1" onChange={this.handleChange} /> Markdown<br />
+                  required placeholder="Write comments here..." value={this.state.comment} onChange={this.handleChange}></textarea>
+                <input type="checkbox" id="comment-form-is-markdown" name="isMarkdown" checked={this.state.isMarkdown} value="1" onChange={this.handleChange} /> Markdown<br />
               </div>
               <div className="comment-submit">
                 <div className="pull-right">
@@ -73,6 +92,7 @@ export default class CommentForm extends React.Component {
 }
 
 CommentForm.propTypes = {
+  pageComments: PropTypes.object.isRequired,
   crowi: PropTypes.object.isRequired,
   pageId: PropTypes.string,
   revisionId: PropTypes.string,
