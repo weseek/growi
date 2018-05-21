@@ -17,10 +17,12 @@
 
   </fieldset>
 
+  {% if showLog %}
   <fieldset>
     <h5>Logs</h5>
     <textarea id="taLogs" class="col-xs-12" rows="4" readonly></textarea>
   </fieldset>
+  {% endif %}
 
   <fieldset class="mt-4">
     <button type="button" class="btn btn-default col-xs-offset-5 col-xs-2" onclick="testLdapCredentials()">{{ t('Test') }}</button>
@@ -74,16 +76,19 @@
             showMessage($id, data.message, data.status);
           }
 
-          if (data.err) {
-            addLogs($id, data.err);
-          }
-          if (data.ldapConfiguration) {
-            const prettified = JSON.stringify(data.ldapConfiguration.server, undefined, 4);
-            addLogs($id, `LDAP Configuration : ${prettified}`);
-          }
-          if (data.ldapAccountInfo) {
-            const prettified = JSON.stringify(data.ldapAccountInfo, undefined, 4);
-            addLogs($id, `Retrieved LDAP Account : ${prettified}`);
+          // add logs
+          if ('true' === '{{showLog}}') {
+            if (data.err) {
+              addLogs($id, data.err);
+            }
+            if (data.ldapConfiguration) {
+              const prettified = JSON.stringify(data.ldapConfiguration.server, undefined, 4);
+              addLogs($id, `LDAP Configuration : ${prettified}`);
+            }
+            if (data.ldapAccountInfo) {
+              const prettified = JSON.stringify(data.ldapAccountInfo, undefined, 4);
+              addLogs($id, `Retrieved LDAP Account : ${prettified}`);
+            }
           }
         })
         .fail(function() {
