@@ -35,10 +35,9 @@ export default class CommentForm extends React.Component {
   }
 
   postComment(event) {
-    let mk = this.state.isMarkdown ? 'Markdown' : 'Plain';
-    alert(mk + ' Comment: ' + this.state.comment);
-    // this.props.crowi.apiPost('/comments.add', {page_id: this.props.pageId});
     event.preventDefault();
+    console.log(this.props.crowi.csrfToken);
+    this.props.crowi.apiPost('/comments.add', JSON.stringify({comment: this.state.comment, page_id: this.props.pageId, revision_id: this.props.revisionId}));
   }
 
   render() {
@@ -57,9 +56,6 @@ export default class CommentForm extends React.Component {
                 <input type="checkbox" id="comment-form-is-markdown" name="isMarkdown" value="1" onChange={this.handleChange} /> Markdown<br />
               </div>
               <div className="comment-submit">
-                <input type="hidden" name="_csrf" value="{{ csrf() }}" />
-                <input type="hidden" name="commentForm[page_id]" value="{{ page._id.toString() }}" />
-                <input type="hidden" name="commentForm[revision_id]" value="{{ revision._id.toString() }}" />
                 <div className="pull-right">
                   <span className="text-danger" id="comment-form-message"></span>
                   <button type="submit" value="Submit" id="comment-form-button" className="fcbtn btn btn-sm btn-outline btn-rounded btn-primary btn-1b">
@@ -79,4 +75,5 @@ export default class CommentForm extends React.Component {
 CommentForm.propTypes = {
   crowi: PropTypes.object.isRequired,
   pageId: PropTypes.string,
+  revisionId: PropTypes.string,
 };
