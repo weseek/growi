@@ -7,6 +7,7 @@ CHANGES
 * Improvement: Auto-format markdown tables which includes multibyte text
 * Improvement: Enable to switch show/hide border for highlight.js
 * Improvement: BindDN field allows also ActiveDirectory styles 
+* Improvement: Show LDAP logs when testing login
 * Fix: Comment body doesn't break long terms
 * Support: Upgrade libs
     * elasticsearch
