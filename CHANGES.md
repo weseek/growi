@@ -9,6 +9,7 @@ CHANGES
 * Improvement: BindDN field allows also ActiveDirectory styles 
 * Improvement: Show LDAP logs when testing login
 * Fix: Comment body doesn't break long terms
+* Fix: lsx plugin lists up pages that hit by forward match wrongly
 * Support: Upgrade libs
     * elasticsearch
 
