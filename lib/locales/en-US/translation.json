@@ -352,10 +352,10 @@
 
   "markdown_setting": {
     "markdown_rendering": "You can change Markdown rendering settings.",
-    "validate Line Break": "Validate Line Break",
-    "treat_text": "Treat line breaking in the text page as <code>&lt;br&gt;</code> in HTML",
-    "validate_comment": "Validate Line Break in the comment section",
-    "treat_comment": "Treat line breaking in the comment section as <code>&lt;br&gt;</code> in HTML",
+    "Enable Line Break": "Enable Line Break",
+    "Enable Line Break desc": "Treat line break in the text page as <code>&lt;br&gt;</code> in HTML",
+    "Enable Line Break for comment": "Enable Line Break in comment",
+    "Enable Line Break for comment desc": "Treat line break in comment as <code>&lt;br&gt;</code> in HTML",
     "TBD": "(TBD: Markdown function in the comment section has not been implemented yet)"
   },
 
