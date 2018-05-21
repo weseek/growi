@@ -3,7 +3,7 @@ import { BasicInterceptor } from 'growi-pluginkit';
 
 class DetachCodeBlockUtil {
   static createReplaceStr(replaceId) {
-    return `__dcb__${replaceId}__`;
+    return `<pre class="detached-code-block">${replaceId}</pre>`;
   }
 }
 
@@ -50,7 +50,7 @@ export class DetachCodeBlockInterceptor extends BasicInterceptor {
 
     context.dcbContextMap = {};
 
-    // see: https://regex101.com/r/8PAEcC/3
+    // see: https://regex101.com/r/8PAEcC/4
     context[targetKey] = context[targetKey].replace(/((```|~~~)(.|[\r\n])*?(```|~~~))|(`[^\r\n]*?`)|(<pre>(.|[\r\n])*?<\/pre>)|(<pre\s[^>]*>(.|[\r\n])*?<\/pre>)/gm, (all) => {
       // create ID
       const replaceId = 'dcb-' + this.createRandomStr(8);
