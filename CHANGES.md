@@ -8,8 +8,10 @@ CHANGES
 * Improvement: Enable to switch show/hide border for highlight.js
 * Improvement: BindDN field allows also ActiveDirectory styles 
 * Improvement: Show LDAP logs when testing login
+* Improvement: Detach code blocks correctly
 * Fix: Comment body doesn't break long terms
 * Fix: lsx plugin lists up pages that hit by forward match wrongly
+    * Introduced by 3.0.4
 * Support: Upgrade libs
     * elasticsearch
 
