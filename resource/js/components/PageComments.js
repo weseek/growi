@@ -62,6 +62,9 @@ export default class PageComments extends React.Component {
     this.retrieveData();
   }
 
+  /**
+   * Load data of comments and store them in state
+   */
   retrieveData() {
     // get data (desc order array)
     this.props.crowi.apiGet('/comments.get', {page_id: this.props.pageId})

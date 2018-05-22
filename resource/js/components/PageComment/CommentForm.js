@@ -19,11 +19,11 @@ export default class CommentForm extends React.Component {
       isMarkdown: false,
     };
 
-    this.handleChange = this.handleChange.bind(this);
+    this.updateState = this.updateState.bind(this);
     this.postComment = this.postComment.bind(this);
   }
 
-  handleChange(event) {
+  updateState(event) {
     const target = event.target;
     const value = target.type === 'checkbox' ? target.checked : target.value;
     const name = target.name;
@@ -33,6 +33,9 @@ export default class CommentForm extends React.Component {
     });
   }
 
+  /**
+   * Load data of comments and rerender <PageComments />
+   */
   postComment(event) {
     event.preventDefault();
     this.props.crowi.apiPost('/comments.add', {
@@ -48,6 +51,10 @@ export default class CommentForm extends React.Component {
         if (this.props.onPostComplete != null) {
           this.props.onPostComplete(res.comment);
         }
+        this.setState({
+          comment: '',
+          isMarkdown: false,
+        });
       });
   }
 
@@ -64,8 +71,8 @@ export default class CommentForm extends React.Component {
             <div className="comment-form-main">
               <div className="comment-write" id="comment-write">
                 <textarea className="comment-form-comment form-control" id="comment-form-comment" name="comment"
-                  required placeholder="Write comments here..." value={this.state.comment} onChange={this.handleChange}></textarea>
-                <input type="checkbox" id="comment-form-is-markdown" name="isMarkdown" checked={this.state.isMarkdown} value="1" onChange={this.handleChange} /> Markdown<br />
+                  required placeholder="Write comments here..." value={this.state.comment} onChange={this.updateState}></textarea>
+                <input type="checkbox" id="comment-form-is-markdown" name="isMarkdown" checked={this.state.isMarkdown} value="1" onChange={this.updateState} /> Markdown<br />
               </div>
               <div className="comment-submit">
                 <div className="pull-right">
