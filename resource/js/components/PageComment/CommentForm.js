@@ -1,5 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import FormControl from 'react-bootstrap/es/FormControl';
+import Button from 'react-bootstrap/es/Button';
+import UserPicture from '../User/UserPicture';
 
 /**
  *
