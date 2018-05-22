@@ -32,7 +32,7 @@ export default class MarkdownTableInterceptor extends BasicInterceptor {
    */
   process(contextName, ...args) {
     const context = Object.assign(args[0]);   // clone
-    const editor = context.editor;
+    const editor = context.editor;            // codemirror
 
     // get strings from BOL(beginning of line) to current position
     const strFromBol = mtu.getStrFromBol(editor);

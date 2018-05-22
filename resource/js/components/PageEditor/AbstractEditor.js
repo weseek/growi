@@ -32,6 +32,20 @@ export default class AbstractEditor extends React.Component {
   }
 
   /**
+   * return strings from BOL(beginning of line) to current position
+   */
+  getStrFromBol() {
+    throw new Error('this method should be impelemented in subclass');
+  }
+
+  /**
+   * return strings from current position to EOL(end of line)
+   */
+  getStrToEol(editor) {
+    throw new Error('this method should be impelemented in subclass');
+  }
+
+  /**
    * dispatch onSave event
    */
   dispatchSave() {

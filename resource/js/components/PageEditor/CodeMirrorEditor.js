@@ -40,6 +40,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
   constructor(props) {
     super(props);
+    this.logger = require('@alias/logger')('growi:PageEditor:CodeMirrorEditor');
 
     this.state = {
       value: this.props.value,
@@ -52,12 +53,20 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.init();
 
     this.getCodeMirror = this.getCodeMirror.bind(this);
+
+    this.forceToFocus = this.forceToFocus.bind(this);
     this.setCaretLine = this.setCaretLine.bind(this);
     this.setScrollTopByLine = this.setScrollTopByLine.bind(this);
+
+    this.getStrFromBol = this.getStrFromBol.bind(this);
+    this.getStrToEol = this.getStrToEol.bind(this);
+    this.getBol = this.getBol.bind(this);
+    this.getEol = this.getEol.bind(this);
+    this.insertLinebreak = this.insertLinebreak.bind(this);
+
     this.loadTheme = this.loadTheme.bind(this);
     this.loadKeymapMode = this.loadKeymapMode.bind(this);
     this.setKeymapMode = this.setKeymapMode.bind(this);
-    this.forceToFocus = this.forceToFocus.bind(this);
     this.dispatchSave = this.dispatchSave.bind(this);
     this.handleEnterKey = this.handleEnterKey.bind(this);
 
@@ -73,7 +82,8 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.interceptorManager = new InterceptorManager();
     this.interceptorManager.addInterceptors([
       new MarkdownListInterceptor(),
-      new MarkdownTableInterceptor(),
+      // TODO refactor
+      // new MarkdownTableInterceptor(),
     ]);
 
     this.loadedThemeSet = new Set(['eclipse', 'elegant']);   // themes imported in _vendor.scss
@@ -168,6 +178,51 @@ export default class CodeMirrorEditor extends AbstractEditor {
     editor.getDoc().replaceSelection(text);
   }
 
+  /**
+   * @inheritDoc
+   */
+  getStrFromBol() {
+    const editor = this.getCodeMirror();
+    const curPos = editor.getCursor();
+    return editor.getDoc().getRange(this.getBol(), curPos);
+  }
+
+  /**
+   * @inheritDoc
+   */
+  getStrToEol() {
+    const editor = this.getCodeMirror();
+    const curPos = editor.getCursor();
+    return editor.getDoc().getRange(curPos, this.getEol());
+  }
+
+  /**
+   * return the postion of the BOL(beginning of line)
+   */
+  getBol() {
+    const editor = this.getCodeMirror();
+    const curPos = editor.getCursor();
+    return { line: curPos.line, ch: 0 };
+  }
+
+  /**
+   * return the postion of the EOL(end of line)
+   */
+  getEol() {
+    const editor = this.getCodeMirror();
+    const curPos = editor.getCursor();
+    const lineLength = editor.getDoc().getLine(curPos.line).length;
+    return { line: curPos.line, ch: lineLength };
+  }
+
+  insertLinebreak(strToEol) {
+    const editor = this.getCodeMirror();
+    codemirror.commands.newlineAndIndent(editor);
+
+    // replace the line with strToEol (abort auto indent)
+    editor.getDoc().replaceRange(strToEol, this.getBol(), this.getEol());
+  }
+
   loadCss(source) {
     return new Promise((resolve) => {
       loadCssSync(source);
@@ -243,24 +298,21 @@ export default class CodeMirrorEditor extends AbstractEditor {
    * handle ENTER key
    */
   handleEnterKey() {
-    if (this.props.isMobile) {
-      // TODO impl
-    }
-    else {
-      const editor = this.getCodeMirror();
-      var context = {
-        handlers: [],  // list of handlers which process enter key
-        editor: editor,
-      };
+    // TODO refactor
+    // input both of AbstractEditor and CodeMirror
 
-      const interceptorManager = this.interceptorManager;
-      interceptorManager.process('preHandleEnter', context)
-        .then(() => {
-          if (context.handlers.length == 0) {
-            codemirror.commands.newlineAndIndentContinueMarkdownList(editor);
-          }
-        });
-    }
+    var context = {
+      handlers: [],  // list of handlers which process enter key
+      editor: this,
+    };
+
+    const interceptorManager = this.interceptorManager;
+    interceptorManager.process('preHandleEnter', context)
+      .then(() => {
+        if (context.handlers.length == 0) {
+          codemirror.commands.newlineAndIndentContinueMarkdownList(this.getCodeMirror());
+        }
+      });
   }
 
   scrollCursorIntoViewHandler(editor, event) {
@@ -281,7 +333,8 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
     // text
     if (types.includes('text/plain')) {
-      pasteHelper.pasteText(editor, event);
+      // TODO refactor
+      // pasteHelper.pasteText(editor, event);
     }
     // files
     else if (types.includes('Files')) {

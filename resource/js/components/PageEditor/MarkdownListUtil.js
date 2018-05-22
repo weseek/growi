@@ -12,25 +12,18 @@ class MarkdownListUtil {
     this.indentAndMarkOnlyRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]|[*+-]|(\d+)[.)])(\s*)$/;
 
     this.pasteText = this.pasteText.bind(this);
-
-    this.getBol = this.getBol.bind(this);
-    this.getEol = this.getEol.bind(this);
-    this.getStrFromBol = this.getStrFromBol.bind(this);
-    this.getStrToEol = this.getStrToEol.bind(this);
-    this.newlineWithoutIndent = this.newlineWithoutIndent.bind(this);
   }
 
   /**
    * paste text
-   * @param {any} editor An editor instance of CodeMirror
+   * @param {any} editor An editor instance of AbstractEditor
    * @param {any} event
    * @param {string} text
    */
   pasteText(editor, event, text) {
     // get strings from BOL(beginning of line) to current position
-    const strFromBol = this.getStrFromBol(editor);
+    const strFromBol = editor.getStrFromBol();
 
-    const matched = strFromBol.match(this.indentAndMarkRE);
     // when match indentAndMarkOnlyRE
     // (this means the current position is the beginning of the list item)
     if (this.indentAndMarkOnlyRE.test(strFromBol)) {
@@ -39,7 +32,9 @@ class MarkdownListUtil {
       // replace
       if (adjusted != null) {
         event.preventDefault();
-        editor.getDoc().replaceRange(adjusted, this.getBol(editor), editor.getCursor());
+        // TODO refactor
+        // editor.getDoc().replaceRange(adjusted, this.getBol(editor), editor.getCursor());
+        console.log('replaceRange with:', adjusted);
       }
     }
   }
@@ -112,48 +107,6 @@ class MarkdownListUtil {
     return isListful;
   }
 
-  /**
-   * return the postion of the BOL(beginning of line)
-   */
-  getBol(editor) {
-    const curPos = editor.getCursor();
-    return { line: curPos.line, ch: 0 };
-  }
-
-  /**
-   * return the postion of the EOL(end of line)
-   */
-  getEol(editor) {
-    const curPos = editor.getCursor();
-    const lineLength = editor.getDoc().getLine(curPos.line).length;
-    return { line: curPos.line, ch: lineLength };
-  }
-
-  /**
-   * return strings from BOL(beginning of line) to current position
-   */
-  getStrFromBol(editor) {
-    const curPos = editor.getCursor();
-    return editor.getDoc().getRange(this.getBol(editor), curPos);
-  }
-
-  /**
-   * return strings from current position to EOL(end of line)
-   */
-  getStrToEol(editor) {
-    const curPos = editor.getCursor();
-    return editor.getDoc().getRange(curPos, this.getEol(editor));
-  }
-
-  /**
-   * insert newline without indent
-   */
-  newlineWithoutIndent(editor, strToEol) {
-    codemirror.commands.newlineAndIndent(editor);
-
-    // replace the line with strToEol (abort auto indent)
-    editor.getDoc().replaceRange(strToEol, this.getBol(editor), this.getEol(editor));
-  }
 }
 
 // singleton pattern
