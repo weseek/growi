@@ -181,14 +181,7 @@ if (pageEditorOptionsSelectorElem) {
   );
 }
 // render GrantSelector
-/*
- * Commented out temporary -- 2018.05.21 Yuki Takei
- *
- *  err: Uncaught TypeError: Cannot read property 'textContent' of null
- *
-const userRelatedGroups = JSON.parse(document.getElementById('user-related-group-data').textContent || '{}', (value) => {
-  return new UserGroup(value);
-});
+const userRelatedGroupsElem = document.getElementById('user-related-group-data');
 const pageEditorGrantSelectorElem = document.getElementById('page-grant-selector');
 const pageGrantElem = document.getElementById('page-grant');
 const pageGrantGroupElem = document.getElementById('grant-group');
@@ -197,6 +190,15 @@ function updatePageGrantElems(newPageGrant) {
   pageGrantGroupElem.value = newPageGrant.grantGroup.userGroupId || '';
 }
 if (pageEditorGrantSelectorElem) {
+  let userRelatedGroups = [];
+  if (userRelatedGroupsElem != null) {
+    let userRelatedGroupsJSON = JSON.parse(userRelatedGroupsElem.textContent || '{}')
+    if (userRelatedGroupsJSON != null && userRelatedGroupsJSON.length > 0) {
+      userRelatedGroups = userRelatedGroupsJSON.map((value) => {
+        return new UserGroup(value);
+      });
+    }
+  }
   pageGrant = new PageGrant();
   pageGrant.grant = document.getElementById('page-grant').value;
   const grantGroupData = JSON.parse(document.getElementById('grant-group').textContent || '{}');
@@ -213,7 +215,6 @@ if (pageEditorGrantSelectorElem) {
     pageEditorGrantSelectorElem
   );
 }
-*/
 
 // render for admin
 const customCssEditorElem = document.getElementById('custom-css-editor');
