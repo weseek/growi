@@ -190,11 +190,11 @@ function updatePageGrantElems(newPageGrant) {
   pageGrantGroupElem.value = newPageGrant.grantGroup.userGroupId || '';
 }
 if (pageEditorGrantSelectorElem) {
-  let userRelatedGroups = [];
+  let userRelatedGroups;
   if (userRelatedGroupsElem != null) {
-    let userRelatedGroupsJSON = JSON.parse(userRelatedGroupsElem.textContent || '{}')
-    if (userRelatedGroupsJSON != null && userRelatedGroupsJSON.length > 0) {
-      userRelatedGroups = userRelatedGroupsJSON.map((value) => {
+    let userRelatedGroupsJSONString = userRelatedGroupsElem.textContent;
+    if (userRelatedGroupsJSONString != null && userRelatedGroupsJSONString.length > 0) {
+      userRelatedGroups = JSON.parse(userRelatedGroupsJSONString || '{}', (value) => {
         return new UserGroup(value);
       });
     }
