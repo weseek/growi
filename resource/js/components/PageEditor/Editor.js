@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import AbstractEditor from './AbstractEditor';
 
 import urljoin from 'url-join';
 const loadScript = require('simple-load-script');
@@ -37,7 +38,7 @@ import InterceptorManager from '../../../../lib/util/interceptor-manager';
 import MarkdownListInterceptor from './MarkdownListInterceptor';
 import MarkdownTableInterceptor from './MarkdownTableInterceptor';
 
-export default class Editor extends React.Component {
+export default class Editor extends AbstractEditor {
 
   constructor(props) {
     super(props);
@@ -583,18 +584,12 @@ export default class Editor extends React.Component {
 
 }
 
-Editor.propTypes = {
-  value: PropTypes.string,
-  options: PropTypes.object,
-  editorOptions: PropTypes.object,
+Editor.propTypes = Object.assign({
   isMobile: PropTypes.bool,
   isUploadable: PropTypes.bool,
   isUploadableFile: PropTypes.bool,
   emojiStrategy: PropTypes.object,
   onChange: PropTypes.func,
-  onScroll: PropTypes.func,
-  onScrollCursorIntoView: PropTypes.func,
-  onSave: PropTypes.func,
   onUpload: PropTypes.func,
-};
+}, AbstractEditor.propTypes);
 
