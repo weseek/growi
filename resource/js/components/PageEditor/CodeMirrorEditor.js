@@ -44,9 +44,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
     this.state = {
       value: this.props.value,
-      dropzoneActive: false,
       isEnabledEmojiAutoComplete: false,
-      isUploading: false,
       isLoadingKeymap: false,
     };
 
