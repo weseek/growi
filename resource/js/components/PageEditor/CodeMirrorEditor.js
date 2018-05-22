@@ -82,8 +82,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.interceptorManager = new InterceptorManager();
     this.interceptorManager.addInterceptors([
       new MarkdownListInterceptor(),
-      // TODO refactor
-      // new MarkdownTableInterceptor(),
+      new MarkdownTableInterceptor(),
     ]);
 
     this.loadedThemeSet = new Set(['eclipse', 'elegant']);   // themes imported in _vendor.scss
@@ -306,9 +305,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
    * handle ENTER key
    */
   handleEnterKey() {
-    // TODO refactor
-    // input both of AbstractEditor and CodeMirror
-
     var context = {
       handlers: [],  // list of handlers which process enter key
       editor: this,

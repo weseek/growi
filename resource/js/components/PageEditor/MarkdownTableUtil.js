@@ -18,7 +18,6 @@ class MarkdownTableUtil {
     this.getBol = this.getBol.bind(this);
     this.getStrFromBot = this.getStrFromBot.bind(this);
     this.getStrToEot = this.getStrToEot.bind(this);
-    this.getStrFromBol = this.getStrFromBol.bind(this);
 
     this.parseFromTableStringToMarkdownTable = this.parseFromTableStringToMarkdownTable.bind(this);
     this.replaceMarkdownTableWithReformed = this.replaceMarkdownTableWithReformed.bind(this);
@@ -83,14 +82,6 @@ class MarkdownTableUtil {
   getStrToEot(editor) {
     const curPos = editor.getCursor();
     return editor.getDoc().getRange(curPos, this.getEot(editor));
-  }
-
-  /**
-   * return strings from BOL(beginning of line) to current position
-   */
-  getStrFromBol(editor) {
-    const curPos = editor.getCursor();
-    return editor.getDoc().getRange(this.getBol(editor), curPos);
   }
 
   /**

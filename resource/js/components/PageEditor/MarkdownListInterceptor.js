@@ -28,7 +28,7 @@ export default class MarkdownListInterceptor extends BasicInterceptor {
    */
   process(contextName, ...args) {
     const context = Object.assign(args[0]);   // clone
-    const editor = context.editor;
+    const editor = context.editor;            // AbstractEditor instance
 
     // get strings from current position to EOL(end of line) before break the line
     const strToEol = editor.getStrToEol();
