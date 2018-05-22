@@ -41,7 +41,15 @@ export default class AbstractEditor extends React.Component {
   /**
    * return strings from current position to EOL(end of line)
    */
-  getStrToEol(editor) {
+  getStrToEol() {
+    throw new Error('this method should be impelemented in subclass');
+  }
+
+  /**
+   * replace Beggining Of Line to current position with param 'text'
+   * @param {string} text
+   */
+  replaceBolToCurrentPos(text) {
     throw new Error('this method should be impelemented in subclass');
   }
 

@@ -197,6 +197,14 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   /**
+   * @inheritDoc
+   */
+  replaceBolToCurrentPos(text) {
+    const editor = this.getCodeMirror();
+    editor.getDoc().replaceRange(text, this.getBol(), editor.getCursor());
+  }
+
+  /**
    * return the postion of the BOL(beginning of line)
    */
   getBol() {
@@ -333,8 +341,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
     // text
     if (types.includes('text/plain')) {
-      // TODO refactor
-      // pasteHelper.pasteText(editor, event);
+      pasteHelper.pasteText(this, event);
     }
     // files
     else if (types.includes('Files')) {

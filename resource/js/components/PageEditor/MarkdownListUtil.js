@@ -1,5 +1,3 @@
-import * as codemirror from 'codemirror';
-
 /**
  * Utility for markdown list
  */
@@ -32,9 +30,7 @@ class MarkdownListUtil {
       // replace
       if (adjusted != null) {
         event.preventDefault();
-        // TODO refactor
-        // editor.getDoc().replaceRange(adjusted, this.getBol(editor), editor.getCursor());
-        console.log('replaceRange with:', adjusted);
+        editor.replaceBolToCurrentPos(adjusted);
       }
     }
   }
