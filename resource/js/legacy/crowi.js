@@ -83,8 +83,8 @@ Crowi.setCaretLineAndFocusToEditor = function() {
 
   const line = pageEditorDom.getAttribute('data-caret-line');
 
-  if (line != null) {
-    crowi.setCaretLine(line);
+  if (line != null && !isNaN(line)) {
+    crowi.setCaretLine(+line);
     // reset data-caret-line attribute
     pageEditorDom.removeAttribute('data-caret-line');
   }

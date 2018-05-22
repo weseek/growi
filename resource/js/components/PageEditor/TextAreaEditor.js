@@ -53,6 +53,9 @@ export default class TextAreaEditor extends AbstractEditor {
    * @inheritDoc
    */
   forceToFocus() {
+    setTimeout(() => {
+      this.textarea.focus();
+    }, 150);
   }
 
   /**
@@ -63,6 +66,13 @@ export default class TextAreaEditor extends AbstractEditor {
       return;
     }
 
+    const lines = this.textarea.value.split('\n').slice(0, line+1);
+    const pos = lines
+        .map(lineStr => lineStr.length + 1) // correct length+1 of each lines
+        .reduce((a, x) => a += x, 0)        // sum
+        - 1;                                // -1
+
+    this.textarea.setSelectionRange(pos, pos);
   }
 
   /**
