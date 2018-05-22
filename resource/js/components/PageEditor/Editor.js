@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 
 import AbstractEditor from './AbstractEditor';
 import CodeMirrorEditor from './CodeMirrorEditor';
+import TextAreaEditor from './TextAreaEditor';
 
-import FormControl from 'react-bootstrap/es/FormControl';
 import Dropzone from 'react-dropzone';
 
 import pasteHelper from './PasteHelper';
@@ -39,7 +39,7 @@ export default class Editor extends AbstractEditor {
 
   getEditorSubstance() {
     return this.props.isMobile
-      ? this.refs.simpleEditor
+      ? this.refs.taEditor
       : this.refs.cmEditor;
   }
 
@@ -236,16 +236,12 @@ export default class Editor extends AbstractEditor {
 
           {/* for mobile */}
           { isMobile &&
-            <FormControl
-              ref="simpleEditor"
-              componentClass="textarea" className="textarea-for-mobile"
-              inputRef={ref => { this.mobileeditor = ref }}
-              defaultValue={this.state.value}
-              onChange={(e) => {
-                if (this.props.onChange != null) {
-                  this.props.onChange(e.target.value);
-                }
-              }} />
+            <TextAreaEditor
+              ref="taEditor"
+              onPasteFiles={this.pasteFilesHandler}
+              onDragEnter={this.dragEnterHandler}
+              {...this.props}
+            />
           }
 
         </Dropzone>
