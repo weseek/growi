@@ -87,6 +87,17 @@ export default class TextAreaEditor extends AbstractEditor {
    * @inheritDoc
    */
   insertText(text) {
+    const startPos = this.textarea.selectionStart;
+    const endPos = this.textarea.selectionEnd;
+
+    // create new value
+    const value = this.textarea.value;
+    const newValue = value.substring(0, startPos) + text + value.substring(endPos, value.length-1);
+    // calculate new position
+    const newPos = startPos + text.length;
+
+    this.textarea.value = newValue;
+    this.textarea.setSelectionRange(newPos, newPos);
   }
 
   /**
