@@ -1,7 +1,7 @@
 import { BasicInterceptor } from 'growi-pluginkit';
 import mlu from './MarkdownListUtil';
 
-export default class MarkdownListInterceptor extends BasicInterceptor {
+export default class PreventMarkdownListInterceptor extends BasicInterceptor {
 
   constructor() {
     super();
@@ -33,6 +33,7 @@ export default class MarkdownListInterceptor extends BasicInterceptor {
     // get strings from current position to EOL(end of line) before break the line
     const strToEol = editor.getStrToEol();
     if (mlu.indentAndMarkRE.test(strToEol)) {
+      // newline simply
       editor.insertLinebreak();
 
       // report to manager that handling was done

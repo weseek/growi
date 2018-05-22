@@ -9,7 +9,7 @@ import pasteHelper from './PasteHelper';
 
 import InterceptorManager from '../../../../lib/util/interceptor-manager';
 
-import MarkdownListInterceptor from './MarkdownListInterceptor';
+import PreventMarkdownListInterceptor from './PreventMarkdownListInterceptor';
 
 export default class TextAreaEditor extends AbstractEditor {
 
@@ -33,7 +33,7 @@ export default class TextAreaEditor extends AbstractEditor {
   init() {
     this.interceptorManager = new InterceptorManager();
     this.interceptorManager.addInterceptors([
-      new MarkdownListInterceptor(),
+      new PreventMarkdownListInterceptor(),
     ]);
   }
 

@@ -33,7 +33,7 @@ import EmojiAutoCompleteHelper from './EmojiAutoCompleteHelper';
 
 import InterceptorManager from '../../../../lib/util/interceptor-manager';
 
-import MarkdownListInterceptor from './MarkdownListInterceptor';
+import PreventMarkdownListInterceptor from './PreventMarkdownListInterceptor';
 import MarkdownTableInterceptor from './MarkdownTableInterceptor';
 
 export default class CodeMirrorEditor extends AbstractEditor {
@@ -71,7 +71,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
     this.interceptorManager = new InterceptorManager();
     this.interceptorManager.addInterceptors([
-      new MarkdownListInterceptor(),
+      new PreventMarkdownListInterceptor(),
       new MarkdownTableInterceptor(),
     ]);
 
