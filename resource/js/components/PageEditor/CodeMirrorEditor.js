@@ -419,6 +419,5 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
 CodeMirrorEditor.propTypes = Object.assign({
   emojiStrategy: PropTypes.object,
-  onDragEnter: PropTypes.func,
 }, AbstractEditor.propTypes);
 

@@ -99,5 +99,6 @@ AbstractEditor.propTypes = {
   onScrollCursorIntoView: PropTypes.func,
   onSave: PropTypes.func,
   onPasteFiles: PropTypes.func,
+  onDragEnter: PropTypes.func,
 };
 
