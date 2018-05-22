@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import FormControl from 'react-bootstrap/es/FormControl';
 import Button from 'react-bootstrap/es/Button';
 import UserPicture from '../User/UserPicture';
-
 /**
  *
  * @author Yuki Takei <yuki@weseek.co.jp>
@@ -66,29 +65,32 @@ export default class CommentForm extends React.Component {
     // denounce/throttle
     return (
       <div>
-        <form className="form page-comment-form" id="page-comment-form" onSubmit={this.postComment}>
-          <div className="comment-form">
-            <div className="comment-form-user">
-              <img src="{{ user|picture }}" className="picture img-circle" width="25" alt="{{ user.name }}" title="{{ user.name }}" />
-            </div>
-            <div className="comment-form-main">
-              <div className="comment-write" id="comment-write">
-                <textarea className="comment-form-comment form-control" id="comment-form-comment" name="comment"
-                  required placeholder="Write comments here..." value={this.state.comment} onChange={this.updateState}></textarea>
-                <input type="checkbox" id="comment-form-is-markdown" name="isMarkdown" checked={this.state.isMarkdown} value="1" onChange={this.updateState} /> Markdown<br />
+      <form className="form page-comment-form" id="page-comment-form" onSubmit={this.postComment}>
+        <div className="comment-form">
+          <div className="comment-form-user">
+          </div>
+          <div className="comment-form-main">
+            <div className="comment-write">
+              <textarea className="comment-form-comment form-control" id="comment-form-comment" name="comment" required placeholder="Write comments here..." value={this.state.comment} onChange={this.updateState} >
+              </textarea>
+              <div className="form-check">
+              {/* <input type="checkbox" className="form-check-input" id="checkbox-markdown" checked={this.state.isMarkdown} value="1" onChange={this.updateState} />
+              <label className="form-check-label" htmlFor="checkbox-markdown">Markdown</label> */}
+              <input type="checkbox" id="comment-form-is-markdown" name="isMarkdown" checked={this.state.isMarkdown} value="1" onChange={this.updateState} /> Markdown<br />
               </div>
-              <div className="comment-submit">
-                <div className="pull-right">
-                  <span className="text-danger" id="comment-form-message"></span>
-                  <button type="submit" value="Submit" id="comment-form-button" className="fcbtn btn btn-sm btn-outline btn-rounded btn-primary btn-1b">
+            </div>
+            <div className="comment-submit">
+              <div className="pull-right">
+                <Button type="submit" value="Submit" bsStyle="primary" className="fcbtn btn btn-sm btn-primary btn-outline btn-rounded btn-1b">
                     Comment
-                  </button>
-                </div>
-                <div className="clearfix"></div>
+                </Button>
+              </div>
+              <div className="clearfix">
               </div>
             </div>
           </div>
-        </form>
+        </div>
+      </form>
       </div>
     );
   }
