@@ -80,6 +80,15 @@ export default class AbstractEditor extends React.Component {
     }
   }
 
+  /**
+   * dispatch onPasteFiles event
+   * @param {object} event
+   */
+  dispatchPasteFiles(event) {
+    if (this.props.onPasteFiles != null) {
+      this.props.onPasteFiles(event);
+    }
+  }
 }
 
 AbstractEditor.propTypes = {

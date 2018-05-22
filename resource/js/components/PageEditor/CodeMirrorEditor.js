@@ -323,12 +323,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
     }
   }
 
-  dispatchPasteFiles(event) {
-    if (this.props.onPasteFiles != null) {
-      this.props.onPasteFiles(event);
-    }
-  }
-
   getOverlayStyle() {
     return {
       position: 'absolute',
