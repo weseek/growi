@@ -368,8 +368,7 @@ export default class PageEditor extends React.Component {
         <div className="col-md-6 col-sm-12 page-editor-editor-container">
           <Editor ref="editor" value={this.state.markdown}
             editorOptions={this.state.editorOptions}
-            // isMobile={this.props.crowi.isMobile}
-            isMobile={true}
+            isMobile={this.props.crowi.isMobile}
             isUploadable={this.state.isUploadable}
             isUploadableFile={this.state.isUploadableFile}
             emojiStrategy={emojiStrategy}
