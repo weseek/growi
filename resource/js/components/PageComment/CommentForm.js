@@ -21,7 +21,6 @@ export default class CommentForm extends React.Component {
 
     this.handleChange = this.handleChange.bind(this);
     this.postComment = this.postComment.bind(this);
-    this.reload = this.reload.bind(this);
   }
 
   handleChange(event) {
@@ -45,17 +44,11 @@ export default class CommentForm extends React.Component {
         is_markdown: this.state.isMarkdown,
       }
     })
-      .then(() => {
-        this.reload();
+      .then((res) => {
+        if (this.props.onPostComplete != null) {
+          this.props.onPostComplete(res.comment);
+        }
       });
-  }
-
-  reload() {
-    this.props.pageComments.init();
-    this.setState({
-      comment: '',
-      isMarkdown: false,
-    });
   }
 
   render() {
@@ -92,8 +85,8 @@ export default class CommentForm extends React.Component {
 }
 
 CommentForm.propTypes = {
-  pageComments: PropTypes.object.isRequired,
   crowi: PropTypes.object.isRequired,
+  onPostComplete: PropTypes.func,
   pageId: PropTypes.string,
   revisionId: PropTypes.string,
 };
