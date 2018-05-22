@@ -34,11 +34,9 @@ export default class MarkdownTableInterceptor extends BasicInterceptor {
     const context = Object.assign(args[0]);   // clone
     const editor = context.editor;            // AbstractEditor instance
 
-    if (editor != null) {
-      if (editor.constructor.name !== 'CodeMirrorEditor') {
-        // resolve
-        return Promise.resolve(context);
-      }
+    // do nothing if editor is not a CodeMirrorEditor
+    if (editor == null || editor.getCodeMirror() == null) {
+      return Promise.resolve(context);
     }
 
     const cm = editor.getCodeMirror();
