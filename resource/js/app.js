@@ -181,6 +181,11 @@ if (pageEditorOptionsSelectorElem) {
   );
 }
 // render GrantSelector
+/*
+ * Commented out temporary -- 2018.05.21 Yuki Takei
+ *
+ *  err: Uncaught TypeError: Cannot read property 'textContent' of null
+ *
 const userRelatedGroups = JSON.parse(document.getElementById('user-related-group-data').textContent || '{}', (value) => {
   return new UserGroup(value);
 });
@@ -208,6 +213,7 @@ if (pageEditorGrantSelectorElem) {
     pageEditorGrantSelectorElem
   );
 }
+*/
 
 // render for admin
 const customCssEditorElem = document.getElementById('custom-css-editor');

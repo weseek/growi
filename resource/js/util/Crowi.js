@@ -33,10 +33,8 @@ export default class Crowi {
     this.apiRequest = this.apiRequest.bind(this);
 
     this.interceptorManager = new InterceptorManager();
-    this.interceptorManager.addInterceptors([
-      new DetachCodeBlockInterceptor(this),
-      new RestoreCodeBlockInterceptor(this),
-    ]);
+    this.interceptorManager.addInterceptor(new DetachCodeBlockInterceptor(this), 10);       // process as soon as possible
+    this.interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(this), 900);     // process as late as possible
 
     // FIXME
     this.me = context.me;
