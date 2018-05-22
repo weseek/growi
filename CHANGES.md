@@ -14,6 +14,7 @@ CHANGES
     * Introduced by 3.0.4
 * Support: Upgrade libs
     * elasticsearch
+    * googleapis
 
 ## 3.0.13
 
