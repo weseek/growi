@@ -35,13 +35,3 @@ $inline-code-bg: lighten($subthemecolor,70%);
     color: $themelight;
   }
 }
-
-// change color of surrounding border of theme option icon at admin/customize (default: green)
-.admin-page {
-  #themeOptions {
-    a.active {
-      background-color: lighten($themecolor,20%);
-      border-color: lighten($themecolor,20%);
-    }
-  }
-}
