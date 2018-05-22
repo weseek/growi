@@ -52,20 +52,12 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
     this.getCodeMirror = this.getCodeMirror.bind(this);
 
-    this.forceToFocus = this.forceToFocus.bind(this);
-    this.setCaretLine = this.setCaretLine.bind(this);
-    this.setScrollTopByLine = this.setScrollTopByLine.bind(this);
-
-    this.getStrFromBol = this.getStrFromBol.bind(this);
-    this.getStrToEol = this.getStrToEol.bind(this);
     this.getBol = this.getBol.bind(this);
     this.getEol = this.getEol.bind(this);
-    this.insertLinebreak = this.insertLinebreak.bind(this);
 
     this.loadTheme = this.loadTheme.bind(this);
     this.loadKeymapMode = this.loadKeymapMode.bind(this);
     this.setKeymapMode = this.setKeymapMode.bind(this);
-    this.dispatchSave = this.dispatchSave.bind(this);
     this.handleEnterKey = this.handleEnterKey.bind(this);
 
     this.scrollCursorIntoViewHandler = this.scrollCursorIntoViewHandler.bind(this);
@@ -122,10 +114,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
    * @inheritDoc
    */
   forceToFocus() {
-    if (this.props.isMobile) {
-      return;
-    }
-
     const editor = this.getCodeMirror();
     // use setInterval with reluctance -- 2018.01.11 Yuki Takei
     const intervalId = setInterval(() => {
@@ -170,14 +158,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
   /**
    * @inheritDoc
    */
-  insertText(text) {
-    const editor = this.getCodeMirror();
-    editor.getDoc().replaceSelection(text);
-  }
-
-  /**
-   * @inheritDoc
-   */
   getStrFromBol() {
     const editor = this.getCodeMirror();
     const curPos = editor.getCursor();
@@ -202,6 +182,14 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   /**
+   * @inheritDoc
+   */
+  insertText(text) {
+    const editor = this.getCodeMirror();
+    editor.getDoc().replaceSelection(text);
+  }
+
+  /**
    * return the postion of the BOL(beginning of line)
    */
   getBol() {
@@ -218,14 +206,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
     const curPos = editor.getCursor();
     const lineLength = editor.getDoc().getLine(curPos.line).length;
     return { line: curPos.line, ch: lineLength };
-  }
-
-  insertLinebreak(strToEol) {
-    const editor = this.getCodeMirror();
-    codemirror.commands.newlineAndIndent(editor);
-
-    // replace the line with strToEol (abort auto indent)
-    editor.getDoc().replaceRange(strToEol, this.getBol(), this.getEol());
   }
 
   loadCss(source) {

@@ -5,6 +5,17 @@ export default class AbstractEditor extends React.Component {
 
   constructor(props) {
     super(props);
+
+    this.forceToFocus = this.forceToFocus.bind(this);
+    this.setCaretLine = this.setCaretLine.bind(this);
+    this.setScrollTopByLine = this.setScrollTopByLine.bind(this);
+
+    this.getStrFromBol = this.getStrFromBol.bind(this);
+    this.getStrToEol = this.getStrToEol.bind(this);
+    this.insertText = this.insertText.bind(this);
+    this.insertLinebreak = this.insertLinebreak.bind(this);
+
+    this.dispatchSave = this.dispatchSave.bind(this);
   }
 
   forceToFocus() {
@@ -22,13 +33,6 @@ export default class AbstractEditor extends React.Component {
    * @param {number} line
    */
   setScrollTopByLine(line) {
-  }
-
-  /**
-   * insert text
-   * @param {string} text
-   */
-  insertText(text) {
   }
 
   /**
@@ -51,6 +55,20 @@ export default class AbstractEditor extends React.Component {
    */
   replaceBolToCurrentPos(text) {
     throw new Error('this method should be impelemented in subclass');
+  }
+
+  /**
+   * insert text
+   * @param {string} text
+   */
+  insertText(text) {
+  }
+
+  /**
+   * insert line break to the current position
+   */
+  insertLinebreak() {
+    this.insertText('\n');
   }
 
   /**

@@ -33,7 +33,7 @@ export default class MarkdownListInterceptor extends BasicInterceptor {
     // get strings from current position to EOL(end of line) before break the line
     const strToEol = editor.getStrToEol();
     if (mlu.indentAndMarkRE.test(strToEol)) {
-      editor.insertLinebreak(strToEol);
+      editor.insertLinebreak();
 
       // report to manager that handling was done
       context.handlers.push(this.className);
