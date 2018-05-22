@@ -47,6 +47,8 @@ export default class PageComments extends React.Component {
     if (pageId) {
       this.init();
     }
+
+    this.retrieveData = this.retrieveData.bind(this);
   }
 
   init() {
@@ -54,21 +56,23 @@ export default class PageComments extends React.Component {
       return ;
     }
 
-    const pageId = this.props.pageId;
-
     const layoutType = this.props.crowi.getConfig()['layoutType'];
     this.setState({isLayoutTypeGrowi: 'crowi-plus' === layoutType || 'growi' === layoutType});
 
+    this.retrieveData();
+  }
+
+  /**
+   * Load data of comments and store them in state
+   */
+  retrieveData() {
     // get data (desc order array)
-    this.props.crowi.apiGet('/comments.get', {page_id: pageId})
-    .then(res => {
-      if (res.ok) {
-        this.setState({comments: res.comments});
-      }
-    }).catch(err => {
-
-    });
-
+    this.props.crowi.apiGet('/comments.get', {page_id: this.props.pageId})
+      .then(res => {
+        if (res.ok) {
+          this.setState({comments: res.comments});
+        }
+      });
   }
 
   confirmToDeleteComment(comment) {
