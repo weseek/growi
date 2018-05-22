@@ -8,6 +8,7 @@
   "repository": "https://github.com/weseek/growi",
   "success_url": "/",
   "env": {
+    "NODE_ENV": "development",
     "SECRET_TOKEN": {
       "description": "A secret key for verifying the integrity of signed cookies.",
       "generator": "secret"
