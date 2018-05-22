@@ -21,16 +21,12 @@ $info: lighten($themecolor,20%);
 $logo-mark-fill: lighten(desaturate($topbar, 30%), 20%);
 $wikilinktext: lighten($themecolor, 20%);
 $wikilinktext-hover: lighten($wikilinktext, 20%);
+$inline-code-color: $subthemecolor;
+$inline-code-bg: lighten($subthemecolor,70%);
 
 @import 'apply-colors';
 @import 'apply-colors-light';
 
-
-// change color of inline-code (default: red)
-:not(.hljs) > code:not(.hljs) {
-  background-color: lighten($subthemecolor,70%);
-  color: $subthemecolor;
-}
 
 // change color of highlighted header in wiki (default: orange)
 .wiki {
