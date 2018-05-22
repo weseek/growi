@@ -21,7 +21,7 @@ export default class Editor extends AbstractEditor {
 
     this.getEditorSubstance = this.getEditorSubstance.bind(this);
 
-    this.setCaretLine = this.setCaretLine.bind(this);
+    this.pasteFilesHandler = this.pasteFilesHandler.bind(this);
 
     this.dragEnterHandler = this.dragEnterHandler.bind(this);
     this.dragLeaveHandler = this.dragLeaveHandler.bind(this);
