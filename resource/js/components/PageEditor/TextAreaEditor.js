@@ -25,7 +25,9 @@ export default class TextAreaEditor extends AbstractEditor {
 
     this.handleEnterKey = this.handleEnterKey.bind(this);
 
+    this.keyPressHandler = this.keyPressHandler.bind(this);
     this.pasteHandler = this.pasteHandler.bind(this);
+    this.dragEnterHandler = this.dragEnterHandler.bind(this);
   }
 
   init() {
@@ -39,14 +41,10 @@ export default class TextAreaEditor extends AbstractEditor {
     // initialize caret line
     this.setCaretLine(0);
 
-    this.textarea.addEventListener('paste', (e) => {
-      this.logger.info('paste');
-      this.pasteHandler(e);
-    });
-    this.textarea.addEventListener('dragenter', (e) => {
-      this.logger.info('dragenter');
-      this.dispatchDragEnter(e);
-    });
+    // set event handlers
+    this.textarea.addEventListener('keypress', this.keyPressHandler);
+    this.textarea.addEventListener('paste', this.pasteHandler);
+    this.textarea.addEventListener('dragenter', this.dragEnterHandler);
   }
 
   /**
@@ -66,6 +64,9 @@ export default class TextAreaEditor extends AbstractEditor {
       return;
     }
 
+    // scroll to bottom
+    this.textarea.scrollTop = this.textarea.scrollHeight;
+
     const lines = this.textarea.value.split('\n').slice(0, line+1);
     const pos = lines
         .map(lineStr => lineStr.length + 1) // correct length+1 of each lines
@@ -79,10 +80,7 @@ export default class TextAreaEditor extends AbstractEditor {
    * @inheritDoc
    */
   setScrollTopByLine(line) {
-    if (isNaN(line)) {
-      return;
-    }
-
+    // do nothing
   }
 
   /**
@@ -107,6 +105,21 @@ export default class TextAreaEditor extends AbstractEditor {
    * @inheritDoc
    */
   replaceBolToCurrentPos(text) {
+  }
+
+  /**
+   * keypress event handler
+   * @param {string} event
+   */
+  keyPressHandler(event) {
+    const key = event.key.toLowerCase();
+    if (key === 'enter') {
+      if (event.ctrlKey || event.altKey || event.metaKey) {
+        return;
+      }
+
+      this.handleEnterKey();
+    }
   }
 
   /**
@@ -143,6 +156,10 @@ export default class TextAreaEditor extends AbstractEditor {
     else if (types.includes('Files')) {
       this.dispatchPasteFiles(event);
     }
+  }
+
+  dragEnterHandler(event) {
+    this.dispatchDragEnter(event);
   }
 
   dispatchDragEnter(event) {
