@@ -5,16 +5,6 @@ export default class AbstractEditor extends React.Component {
 
   constructor(props) {
     super(props);
-
-    this.state = {
-      value: this.props.value,
-    };
-
-    this.forceToFocus = this.forceToFocus.bind(this);
-    this.setCaretLine = this.setCaretLine.bind(this);
-    this.setScrollTopByLine = this.setScrollTopByLine.bind(this);
-    this.insertText = this.insertText.bind(this);
-    this.dispatchSave = this.dispatchSave.bind(this);
   }
 
   forceToFocus() {

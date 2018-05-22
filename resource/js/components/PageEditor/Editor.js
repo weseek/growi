@@ -19,6 +19,10 @@ export default class Editor extends AbstractEditor {
       isUploading: false,
     };
 
+    this.getEditorSubstance = this.getEditorSubstance.bind(this);
+
+    this.setCaretLine = this.setCaretLine.bind(this);
+
     this.dragEnterHandler = this.dragEnterHandler.bind(this);
     this.dragLeaveHandler = this.dragLeaveHandler.bind(this);
     this.dropHandler = this.dropHandler.bind(this);
@@ -33,42 +37,38 @@ export default class Editor extends AbstractEditor {
     this.setCaretLine(0);
   }
 
-  forceToFocus() {
-    if (this.props.isMobile) {
-    }
-    else {
-    }
+  getEditorSubstance() {
+    return this.props.isMobile
+      ? this.refs.simpleEditor
+      : this.refs.cmEditor;
   }
 
   /**
-   * set caret position of codemirror
-   * @param {string} number
+   * @inheritDoc
+   */
+  forceToFocus() {
+    this.getEditorSubstance().forceToFocus();
+  }
+
+  /**
+   * @inheritDoc
    */
   setCaretLine(line) {
-    if (this.props.isMobile) {
-    }
-    else {
-    }
+    this.getEditorSubstance().setCaretLine(line);
   }
 
   /**
    * @inheritDoc
    */
   setScrollTopByLine(line) {
-    if (this.props.isMobile) {
-    }
-    else {
-    }
+    this.getEditorSubstance().setScrollTopByLine(line);
   }
 
   /**
    * @inheritDoc
    */
   insertText(text) {
-    if (this.props.isMobile) {
-    }
-    else {
-    }
+    this.getEditorSubstance().insertText(text);
   }
 
   /**
@@ -227,6 +227,7 @@ export default class Editor extends AbstractEditor {
           {/* for PC */}
           { !isMobile &&
             <CodeMirrorEditor
+              ref="cmEditor"
               onPasteFiles={this.pasteFilesHandler}
               onDragEnter={this.dragEnterHandler}
               {...this.props}
@@ -235,7 +236,9 @@ export default class Editor extends AbstractEditor {
 
           {/* for mobile */}
           { isMobile &&
-            <FormControl componentClass="textarea" className="textarea-for-mobile"
+            <FormControl
+              ref="simpleEditor"
+              componentClass="textarea" className="textarea-for-mobile"
               inputRef={ref => { this.mobileeditor = ref }}
               defaultValue={this.state.value}
               onChange={(e) => {
