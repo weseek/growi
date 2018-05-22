@@ -17,11 +17,6 @@ export default class AbstractEditor extends React.Component {
     this.dispatchSave = this.dispatchSave.bind(this);
   }
 
-  componentDidMount() {
-    // initialize caret line
-    this.setCaretLine(0);
-  }
-
   forceToFocus() {
   }
 
@@ -50,6 +45,9 @@ export default class AbstractEditor extends React.Component {
    * dispatch onSave event
    */
   dispatchSave() {
+    if (this.props.onSave != null) {
+      this.props.onSave();
+    }
   }
 
 }
@@ -61,5 +59,6 @@ AbstractEditor.propTypes = {
   onScroll: PropTypes.func,
   onScrollCursorIntoView: PropTypes.func,
   onSave: PropTypes.func,
+  onPasteFiles: PropTypes.func,
 };
 
