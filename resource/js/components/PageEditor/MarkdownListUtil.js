@@ -9,12 +9,34 @@ class MarkdownListUtil {
     this.indentAndMarkRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]\s|[*+-]\s|(\d+)([.)]))(\s*)/;
     this.indentAndMarkOnlyRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]|[*+-]|(\d+)[.)])(\s*)$/;
 
+    this.newlineAndIndentContinueMarkdownList = this.newlineAndIndentContinueMarkdownList.bind(this);
     this.pasteText = this.pasteText.bind(this);
   }
 
   /**
+   * Self Implementation with AbstractEditor interface
+   * @param {AbstractEditor} editor An instance of AbstractEditor
+   */
+  newlineAndIndentContinueMarkdownList(editor) {
+    const strFromBol = editor.getStrFromBol();
+
+    if (this.indentAndMarkOnlyRE.test(strFromBol)) {
+      // clear current line and end list
+      editor.replaceBolToCurrentPos('\n');
+    }
+    else if (this.indentAndMarkRE.test(strFromBol)) {
+      // continue list
+      const indentAndMark = strFromBol.match(this.indentAndMarkRE)[0];
+      editor.insertText(`\n${indentAndMark}`);
+    }
+    else {
+      editor.insertLinebreak();
+    }
+  }
+
+  /**
    * paste text
-   * @param {any} editor An editor instance of AbstractEditor
+   * @param {AbstractEditor} editor An instance of AbstractEditor
    * @param {any} event
    * @param {string} text
    */

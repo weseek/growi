@@ -1,11 +1,12 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 
 import FormControl from 'react-bootstrap/es/FormControl';
 
 import AbstractEditor from './AbstractEditor';
 
 import pasteHelper from './PasteHelper';
+import mlu from './MarkdownListUtil';
 
 import InterceptorManager from '../../../../lib/util/interceptor-manager';
 
@@ -90,6 +91,44 @@ export default class TextAreaEditor extends AbstractEditor {
     const startPos = this.textarea.selectionStart;
     const endPos = this.textarea.selectionEnd;
 
+    this.replaceValue(text, startPos, endPos);
+  }
+
+  /**
+   * @inheritDoc
+   */
+  getStrFromBol() {
+    const currentPos = this.textarea.selectionStart;
+    return this.textarea.value.substring(this.getBolPos(), currentPos);
+  }
+
+  /**
+   * @inheritDoc
+   */
+  getStrToEol() {
+    const currentPos = this.textarea.selectionStart;
+    return this.textarea.value.substring(currentPos, this.getEolPos());
+  }
+
+  /**
+   * @inheritDoc
+   */
+  replaceBolToCurrentPos(text) {
+    const currentPos = this.textarea.selectionStart;
+    this.replaceValue(text, this.getBolPos(), currentPos);
+  }
+
+  getBolPos() {
+    const currentPos = this.textarea.selectionStart;
+    return this.textarea.value.lastIndexOf('\n', currentPos-1) + 1;
+  }
+
+  getEolPos() {
+    const currentPos = this.textarea.selectionStart;
+    return this.textarea.value.indexOf('\n', currentPos);
+  }
+
+  replaceValue(text, startPos, endPos) {
     // create new value
     const value = this.textarea.value;
     const newValue = value.substring(0, startPos) + text + value.substring(endPos, value.length-1);
@@ -98,24 +137,6 @@ export default class TextAreaEditor extends AbstractEditor {
 
     this.textarea.value = newValue;
     this.textarea.setSelectionRange(newPos, newPos);
-  }
-
-  /**
-   * @inheritDoc
-   */
-  getStrFromBol() {
-  }
-
-  /**
-   * @inheritDoc
-   */
-  getStrToEol() {
-  }
-
-  /**
-   * @inheritDoc
-   */
-  replaceBolToCurrentPos(text) {
   }
 
   /**
@@ -129,6 +150,7 @@ export default class TextAreaEditor extends AbstractEditor {
         return;
       }
 
+      event.preventDefault();
       this.handleEnterKey();
     }
   }
@@ -146,8 +168,7 @@ export default class TextAreaEditor extends AbstractEditor {
     interceptorManager.process('preHandleEnter', context)
       .then(() => {
         if (context.handlers.length == 0) {
-          // TODO impl
-          // codemirror.commands.newlineAndIndentContinueMarkdownList(this.getCodeMirror());
+          mlu.newlineAndIndentContinueMarkdownList(this);
         }
       });
   }
