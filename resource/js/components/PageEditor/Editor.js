@@ -554,6 +554,7 @@ export default class Editor extends React.Component {
           {/* for mobile */}
           { isMobile &&
             <FormControl componentClass="textarea" className="textarea-for-mobile"
+              inputRef={ref => { this.mobileeditor = ref }}
               defaultValue={this.state.value}
               onChange={(e) => {
                 if (this.props.onChange != null) {
