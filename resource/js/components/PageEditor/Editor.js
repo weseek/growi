@@ -512,10 +512,10 @@ export default class Editor extends React.Component {
             onCursor={(editor, event) => {
               const strFromBol = mtu.getStrFromBol(editor);
               if (mtu.isEndOfLine(editor) && mtu.linePartOfTableRE.test(strFromBol)) {
-                this.setState({additionalClass: 'fugafuga'});
+                this.setState({additionalClass: 'add-icon'});
               }
               else {
-                this.setState({additionalClass: 'hogehoge'});
+                this.setState({additionalClass: ''});
               }
               }}
             onDragEnter={this.onDragEnterForCM}
