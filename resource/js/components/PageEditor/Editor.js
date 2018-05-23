@@ -438,6 +438,7 @@ export default class Editor extends React.Component {
     }
     else {
       this.setState({additionalClass: ''});
+    }
   }
 
   render() {
