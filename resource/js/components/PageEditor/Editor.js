@@ -441,7 +441,7 @@ export default class Editor extends React.Component {
     const theme = this.props.editorOptions.theme || 'elegant';
     const styleActiveLine = this.props.editorOptions.styleActiveLine || undefined;
     return <React.Fragment>
-      <div style={flexContainer}>
+      <div style={flexContainer} className={this.state.additionalClass}>
         <Dropzone
           ref="dropzone"
           disableClick
@@ -511,8 +511,11 @@ export default class Editor extends React.Component {
             }}
             onCursor={(editor, event) => {
               const strFromBol = mtu.getStrFromBol(editor);
-              if (mtu.isEndOfLine(editor) && mtu.linePartOfTableRE.test(strFromBol)){
-              console.log("console.log()")
+              if (mtu.isEndOfLine(editor) && mtu.linePartOfTableRE.test(strFromBol)) {
+                this.setState({additionalClass: 'fugafuga'});
+              }
+              else {
+                this.setState({additionalClass: 'hogehoge'});
               }
               }}
             onDragEnter={this.onDragEnterForCM}
@@ -549,5 +552,6 @@ Editor.propTypes = {
   onScrollCursorIntoView: PropTypes.func,
   onSave: PropTypes.func,
   onUpload: PropTypes.func,
+  additionalClass: PropTypes.string
 };
 
