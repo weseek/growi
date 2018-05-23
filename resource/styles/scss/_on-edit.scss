@@ -96,6 +96,14 @@ body.on-edit {
         // left(editor)
         .page-editor-editor-container {
           height: calc(100vh - #{$header-plus-footer});
+        .fugafuga {
+          .CodeMirror-cursor{
+            &:after{
+              font-family: 'FontAwesome';
+              content: '\f0ce';
+            }
+          }
+        }
         .react-codemirror2, .CodeMirror, .CodeMirror-scroll {
           height: calc(100vh - #{$editor-margin});
           // less than smartphone
