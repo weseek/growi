@@ -79,15 +79,13 @@ export default class CommentForm extends React.Component {
               <textarea className="comment-form-comment form-control" id="comment-form-comment" name="comment" required placeholder="Write comments here..." value={this.state.comment} onChange={this.updateState} >
               </textarea>
               <div className="form-check">
-              {/* <input type="checkbox" className="form-check-input" id="checkbox-markdown" checked={this.state.isMarkdown} value="1" onChange={this.updateState} />
-              <label className="form-check-label" htmlFor="checkbox-markdown">Markdown</label> */}
               <input type="checkbox" id="comment-form-is-markdown" name="isMarkdown" checked={this.state.isMarkdown} value="1" onChange={this.updateState} /> Markdown<br />
               </div>
           </Tab>
               <Tab eventKey={2} title="Prevrew">
-                <Panel className="comment-form-preview">
-                  Preview
-                </Panel>
+               <div className="comment-form-prevew">
+               preview
+               </div>
               </Tab>
             </Tabs>
             </div>
