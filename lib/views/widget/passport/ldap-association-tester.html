@@ -14,10 +14,18 @@
       </div>
     </div>
 
-    <div class="form-group">
-      <button type="button" class="btn btn-default col-xs-offset-5 col-xs-2" onclick="testLdapCredentials()">{{ t('Test') }}</button>
-    </div>
 
+  </fieldset>
+
+  {% if showLog %}
+  <fieldset>
+    <h5>Logs</h5>
+    <textarea id="taLogs" class="col-xs-12" rows="4" readonly></textarea>
+  </fieldset>
+  {% endif %}
+
+  <fieldset class="mt-4">
+    <button type="button" class="btn btn-default col-xs-offset-5 col-xs-2" onclick="testLdapCredentials()">{{ t('Test') }}</button>
   </fieldset>
 
   <script>
@@ -44,6 +52,14 @@
           }, 5000);
         }
       }
+      /**
+       * add logs
+       */
+      function addLogs(formId, log) {
+        const textarea = $(`#${formId} #taLogs`);
+        const newLog = `${new Date()} - ${log}\n\n`;
+        textarea.val(`${newLog}${textarea.val()}`);
+      }
 
       var $form = $('#formTestLdapCredentials');
       var $action = '/_api/login/testLdap';
@@ -58,6 +74,21 @@
           }
           else {
             showMessage($id, data.message, data.status);
+          }
+
+          // add logs
+          if ('true' === '{{showLog}}') {
+            if (data.err) {
+              addLogs($id, data.err);
+            }
+            if (data.ldapConfiguration) {
+              const prettified = JSON.stringify(data.ldapConfiguration.server, undefined, 4);
+              addLogs($id, `LDAP Configuration : ${prettified}`);
+            }
+            if (data.ldapAccountInfo) {
+              const prettified = JSON.stringify(data.ldapAccountInfo, undefined, 4);
+              addLogs($id, `Retrieved LDAP Account : ${prettified}`);
+            }
           }
         })
         .fail(function() {

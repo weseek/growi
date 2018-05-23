@@ -57,3 +57,15 @@
     border-color: $border;
   }
 }
+
+/*
+ * GROWI admin page #themeOptions
+ */
+ .admin-page {
+  #themeOptions {
+    a.active {
+      background-color: lighten($themecolor,20%);
+      border-color: lighten($themecolor,20%);
+    }
+  }
+}

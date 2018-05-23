@@ -3,7 +3,7 @@ import { BasicInterceptor } from 'growi-pluginkit';
 
 class DetachCodeBlockUtil {
   static createReplaceStr(replaceId) {
-    return `<pre>${replaceId}</pre>`;
+    return `<pre class="detached-code-block">${replaceId}</pre>`;
   }
 }
 
@@ -14,6 +14,8 @@ export class DetachCodeBlockInterceptor extends BasicInterceptor {
 
   constructor(crowi) {
     super();
+    this.logger = require('@alias/logger')('growi:DetachCodeBlockInterceptor');
+
     this.crowi = crowi;
     this.crowiForJquery = crowi.getCrowiForJquery();
   }
@@ -22,27 +24,37 @@ export class DetachCodeBlockInterceptor extends BasicInterceptor {
    * @inheritdoc
    */
   isInterceptWhen(contextName) {
-    return (
-      contextName === 'prePreProcess'
-    );
+    return /^prePreProcess|prePostProcess$/.test(contextName);
+  }
+
+  getTargetKey(contextName) {
+    if (contextName === 'prePreProcess') {
+      return 'markdown';
+    }
+    else if (contextName === 'prePostProcess') {
+      return 'parsedHTML';
+    }
   }
 
   /**
    * @inheritdoc
    */
   process(contextName, ...args) {
+    this.logger.debug(`processing: 'contextName'=${contextName}`);
+
     const context = Object.assign(args[0]);   // clone
-    const markdown = context.markdown;
+    const targetKey = this.getTargetKey(contextName);
     /* eslint-disable no-unused-vars */
     const currentPagePath = context.currentPagePath;
     /* eslint-enable */
 
     context.dcbContextMap = {};
 
-    // see: https://regex101.com/r/8PAEcC/3
-    context.markdown = markdown.replace(/((```|~~~)(.|[\r\n])*?(```|~~~))|(`[^\r\n]*?`)/gm, (all) => {
+    // see: https://regex101.com/r/8PAEcC/4
+    context[targetKey] = context[targetKey].replace(/((```|~~~)(.|[\r\n])*?(```|~~~))|(`[^\r\n]*?`)|(<pre>(.|[\r\n])*?<\/pre>)|(<pre\s[^>]*>(.|[\r\n])*?<\/pre>)/gm, (all) => {
       // create ID
       const replaceId = 'dcb-' + this.createRandomStr(8);
+      this.logger.debug(`'replaceId'=${replaceId} : `, all);
 
       // register to context
       let dcbContext = {};
@@ -82,6 +94,8 @@ export class RestoreCodeBlockInterceptor extends BasicInterceptor {
 
   constructor(crowi) {
     super();
+    this.logger = require('@alias/logger')('growi:DetachCodeBlockInterceptor');
+
     this.crowi = crowi;
     this.crowiForJquery = crowi.getCrowiForJquery();
   }
@@ -90,16 +104,26 @@ export class RestoreCodeBlockInterceptor extends BasicInterceptor {
    * @inheritdoc
    */
   isInterceptWhen(contextName) {
-    return (
-      contextName === 'postPreProcess'
-    );
+    return /^postPreProcess|preRenderHtml|preRenderPreviewHtml$/.test(contextName);
+  }
+
+  getTargetKey(contextName) {
+    if (contextName === 'postPreProcess') {
+      return 'markdown';
+    }
+    else if (contextName === 'preRenderHtml' || contextName === 'preRenderPreviewHtml') {
+      return 'parsedHTML';
+    }
   }
 
   /**
    * @inheritdoc
    */
   process(contextName, ...args) {
+    this.logger.debug(`processing: 'contextName'=${contextName}`);
+
     const context = Object.assign(args[0]);   // clone
+    const targetKey = this.getTargetKey(contextName);
 
     // forEach keys of dcbContextMap
     Object.keys(context.dcbContextMap).forEach((replaceId) => {
@@ -107,8 +131,8 @@ export class RestoreCodeBlockInterceptor extends BasicInterceptor {
       let dcbContext = context.dcbContextMap[replaceId];
 
       // replace it with content by using getter function so that the doller sign does not work
-      // see: https://github.com/weseek/crowi-plus/issues/285
-      context.markdown = context.markdown.replace(dcbContext.substituteContent, () => { return dcbContext.content });
+      // see: https://github.com/weseek/growi/issues/285
+      context[targetKey] = context[targetKey].replace(dcbContext.substituteContent, () => { return dcbContext.content });
     });
 
     // resolve

@@ -181,9 +181,7 @@ if (pageEditorOptionsSelectorElem) {
   );
 }
 // render GrantSelector
-const userRelatedGroups = JSON.parse(document.getElementById('user-related-group-data').textContent || '{}', (value) => {
-  return new UserGroup(value);
-});
+const userRelatedGroupsElem = document.getElementById('user-related-group-data');
 const pageEditorGrantSelectorElem = document.getElementById('page-grant-selector');
 const pageGrantElem = document.getElementById('page-grant');
 const pageGrantGroupElem = document.getElementById('grant-group');
@@ -192,6 +190,15 @@ function updatePageGrantElems(newPageGrant) {
   pageGrantGroupElem.value = newPageGrant.grantGroup.userGroupId || '';
 }
 if (pageEditorGrantSelectorElem) {
+  let userRelatedGroups;
+  if (userRelatedGroupsElem != null) {
+    let userRelatedGroupsJSONString = userRelatedGroupsElem.textContent;
+    if (userRelatedGroupsJSONString != null && userRelatedGroupsJSONString.length > 0) {
+      userRelatedGroups = JSON.parse(userRelatedGroupsJSONString || '{}', (value) => {
+        return new UserGroup(value);
+      });
+    }
+  }
   pageGrant = new PageGrant();
   pageGrant.grant = document.getElementById('page-grant').value;
   const grantGroupData = JSON.parse(document.getElementById('grant-group').textContent || '{}');
