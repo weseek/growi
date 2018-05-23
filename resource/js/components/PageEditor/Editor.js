@@ -431,6 +431,15 @@ export default class Editor extends React.Component {
       : '';
   }
 
+  onCursor(editor, event) {
+    const strFromBol = mtu.getStrFromBol(editor);
+    if (mtu.isEndOfLine(editor) && mtu.linePartOfTableRE.test(strFromBol)) {
+      this.setState({additionalClass: 'add-icon'});
+    }
+    else {
+      this.setState({additionalClass: ''});
+  }
+
   render() {
     const flexContainer = {
       height: '100%',
@@ -509,15 +518,7 @@ export default class Editor extends React.Component {
                 this.emojiAutoCompleteHelper.showHint(editor);
               }
             }}
-            onCursor={(editor, event) => {
-              const strFromBol = mtu.getStrFromBol(editor);
-              if (mtu.isEndOfLine(editor) && mtu.linePartOfTableRE.test(strFromBol)) {
-                this.setState({additionalClass: 'add-icon'});
-              }
-              else {
-                this.setState({additionalClass: ''});
-              }
-              }}
+            onCursor={this.onCursor}
             onDragEnter={this.onDragEnterForCM}
           />
         </Dropzone>
