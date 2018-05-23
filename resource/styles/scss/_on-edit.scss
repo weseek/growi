@@ -96,9 +96,12 @@ body.on-edit {
         // left(editor)
         .page-editor-editor-container {
           height: calc(100vh - #{$header-plus-footer});
-        .add-icon .CodeMirror-cursor &:after {
-          font-family: 'FontAwesome';
-          content: '\f0ce';
+        }
+        .add-icon .CodeMirror-cursor {
+          &:after {
+            font-family: 'FontAwesome';
+            content: '\f0ce';
+          }
         }
         .react-codemirror2, .CodeMirror, .CodeMirror-scroll {
           height: calc(100vh - #{$editor-margin});
@@ -108,7 +111,7 @@ body.on-edit {
           }
         }
       }
-      }
+
 
       .page-editor-footer {
         width: 100%;
