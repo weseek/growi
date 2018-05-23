@@ -75,6 +75,7 @@ export default class Editor extends React.Component {
     this.onScrollCursorIntoView = this.onScrollCursorIntoView.bind(this);
     this.onPaste = this.onPaste.bind(this);
 
+    this.onCursor = this.onCursor.bind(this);
     this.onDragEnterForCM = this.onDragEnterForCM.bind(this);
     this.onDragLeave = this.onDragLeave.bind(this);
     this.onDrop = this.onDrop.bind(this);
