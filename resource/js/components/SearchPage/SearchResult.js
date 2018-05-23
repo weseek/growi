@@ -10,12 +10,12 @@ export default class SearchResult extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      deletionMode : false,
-      selectedPages : new Set(),
+      deletionMode: false,
+      selectedPages: new Set(),
       isDeleteCompletely: undefined,
       isDeleteConfirmModalShown: false,
       errorMessageForDeleting: undefined,
-    }
+    };
     this.toggleDeleteCompletely = this.toggleDeleteCompletely.bind(this);
     this.deleteSelectedPages = this.deleteSelectedPages.bind(this);
     this.closeDeleteConfirmModal = this.closeDeleteConfirmModal.bind(this);
@@ -45,7 +45,8 @@ export default class SearchResult extends React.Component {
   toggleCheckbox(page) {
     if (this.state.selectedPages.has(page)) {
       this.state.selectedPages.delete(page);
-    } else {
+    }
+    else {
       this.state.selectedPages.add(page);
     }
     this.setState({isDeleteConfirmModalShown: false});
@@ -120,7 +121,9 @@ export default class SearchResult extends React.Component {
           isDeleted = false;
         }
       }).catch(err => {
+        /* eslint-disable no-console */
         console.log(err.message);
+        /* eslint-enable */
         isDeleted = false;
         this.setState({errorMessageForDeleting: err.message});
       });
@@ -176,7 +179,7 @@ export default class SearchResult extends React.Component {
       }
       return (
         <div className="content-main">
-            <i className="icon-fw icon-info" /> No page found with "{this.props.searchingKeyword}"{under}
+            <i className="icon-fw icon-info" /> No page found with &quot;{this.props.searchingKeyword}&quot;{under}
         </div>
       );
 
@@ -194,7 +197,7 @@ export default class SearchResult extends React.Component {
         <button type="button" className="btn btn-rounded btn-danger btn-xs" onClick={() => this.showDeleteConfirmModal()} disabled={this.state.selectedPages.size == 0}>
           <i className="icon-trash"/> Delete
         </button>
-      </div>
+      </div>;
       allSelectCheck =
       <div>
         <label>
@@ -204,7 +207,7 @@ export default class SearchResult extends React.Component {
             checked={this.isAllSelected()} />
             &nbsp;Check All
         </label>
-      </div>
+      </div>;
     }
     else {
       deletionModeButtons =
@@ -212,11 +215,11 @@ export default class SearchResult extends React.Component {
         <button type="button" className="btn btn-default btn-rounded btn-xs" onClick={() => this.handleDeletionModeChange()}>
           <i className="ti-check-box"/> DeletionMode
         </button>
-      </div>
+      </div>;
     }
 
     const listView = this.props.pages.map((page) => {
-      const pageId = "#" + page._id;
+      const pageId = '#' + page._id;
       return (
         <Page page={page}
           linkTo={pageId}
@@ -255,7 +258,7 @@ export default class SearchResult extends React.Component {
                 {allSelectCheck}
               </div>
               <div className="search-result-meta">
-                <i className="icon-magnifier" /> Found {this.props.searchResultMeta.total} pages with "{this.props.searchingKeyword}"
+                <i className="icon-magnifier" /> Found {this.props.searchResultMeta.total} pages with &quot;{this.props.searchingKeyword}&quot;
               </div>
               <div className="clearfix"></div>
               <div className="page-list">
@@ -289,10 +292,12 @@ export default class SearchResult extends React.Component {
 
 SearchResult.propTypes = {
   crowi: PropTypes.object.isRequired,
+  crowiRenderer: PropTypes.object,
   tree: PropTypes.string.isRequired,
   pages: PropTypes.array.isRequired,
   searchingKeyword: PropTypes.string.isRequired,
   searchResultMeta: PropTypes.object.isRequired,
+  searchError: PropTypes.object
 };
 SearchResult.defaultProps = {
   tree: '',

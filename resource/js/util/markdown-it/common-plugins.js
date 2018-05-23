@@ -9,7 +9,7 @@ export default class CommonPluginsConfigurer {
       .use(require('markdown-it-task-lists'), {
         enabled: true,
       })
-      ;
+    ;
   }
 
 }

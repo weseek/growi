@@ -29,15 +29,6 @@ body.on-edit {
     display: none;
   }
 
-  /*
-   * right tabs
-   */
-  .nav-main-right-tab:not(.dropdown) {
-    // hide if screen size is less than smartphone
-    @media (max-width: $screen-xs) {
-      display: none;
-    }
-  }
 
   /*****************
    * Expand Editor
@@ -51,7 +42,7 @@ body.on-edit {
     padding-bottom: 0;
   }
   .main {
-    width: 100vw;
+    width: 100%;
     height: 100vh;
     margin-top: 0px !important;
     padding-top: 2px;
@@ -62,7 +53,7 @@ body.on-edit {
     > .row {
       margin: 0;
       > .col-lg-10, > .col-md-9 {
-        width: 100vw;
+        width: 100%;
         padding: 0;
       }
     }
@@ -83,6 +74,7 @@ body.on-edit {
                          + 1px                      // .page-editor-footer border-top
                          + 40px;                    // .page-editor-footer min-height
       $editor-margin: $header-plus-footer + 22px;   // .btn-open-dropzone height
+      $editor-margin-sm: $header-plus-footer;
 
       #page-editor {
         // right(preview)
@@ -95,10 +87,16 @@ body.on-edit {
         // left(editor)
         .page-editor-editor-container {
           height: calc(100vh - #{$header-plus-footer});
-        .react-codemirror2, .CodeMirror, .CodeMirror-scroll {
-          height: calc(100vh - #{$editor-margin});
+
+          .react-codemirror2, .CodeMirror, .CodeMirror-scroll,
+          .textarea-editor {
+            height: calc(100vh - #{$editor-margin});
+            // less than smartphone
+            @media (max-width: $screen-xs) {
+              height: calc(100vh - #{$editor-margin-sm});
+            }
+          }
         }
-      }
       }
 
       .page-editor-footer {
@@ -160,7 +158,7 @@ body.on-edit {
       }
     }
 
-    // hide if screen size is less than smartphone
+    // hide if screen size is less than tablet
     @media (max-width: $screen-sm) {
       display: none;
     }
@@ -174,9 +172,6 @@ body.on-edit {
     padding-right: 0;
     // override CodeMirror styles
     .CodeMirror {
-      pre {
-        font-family: $font-family-monospace-not-strictly;
-      }
       .cm-matchhighlight {
         background-color: cyan;
       }
@@ -280,6 +275,11 @@ body.on-edit {
       }
     } // end of.dropzone
 
+    .textarea-editor {
+      border: none;
+      font-family: monospace;
+    }
+
     .loading-keymap {
       @include overlay-processing-style();
     }
@@ -296,6 +296,11 @@ body.on-edit {
 
       &:active {
         box-shadow: none;
+      }
+
+      // hide if screen size is less than smartphone
+      @media (max-width: $screen-xs) {
+        display: none;
       }
     }
   }
@@ -348,50 +353,6 @@ body.on-edit {
   display: block;
 }
 
-
-/*
-.crowi.main-container .main .page-list.content-main { // {{{ Edit Form of Page List
-
-  .close-button {
-    display: none;
-  }
-}
-.crowi.main-container .main .page-list.content-main.on-edit { // {{{ Edit Form of Page List
-  .close-button {
-    display: block;
-  }
-
-  .page-list-container {
-    display: none;
-  }
-
-  .portal-form-header {
-    height: 16px;
-    padding: 8px;
-    border-bottom: solid 1px #ccc;
-  }
-} // }}}
-*/
-/*
-@media (max-width: $screen-sm-max) { // {{{ less than tablet size
-
-  .content-main.on-edit {
-    .form-group.form-submit-group {
-      select.form-control {
-        display: inline-block;
-        max-width: 50%;
-      }
-    }
-  }
-
-} // }}}
-
-@media (max-width: $screen-xs-max) { // {{{ less than smartphone size
-  #edit-form-submit {
-    float: right;
-  }
-} // }}}
-*/
 // overwrite .CodeMirror-hints
 .CodeMirror-hints {
   // FIXME: required because .content-main.on-edit has 'z-index:1050'

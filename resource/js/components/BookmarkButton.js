@@ -38,7 +38,8 @@ export default class BookmarkButton extends React.Component {
       .then(res => {
         this.markBookmarked();
       });
-    } else {
+    }
+    else {
       this.props.crowi.apiPost('/bookmarks.remove', {page_id: pageId})
       .then(res => {
         this.markUnBookmarked();

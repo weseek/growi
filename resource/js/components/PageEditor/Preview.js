@@ -34,7 +34,7 @@ export default class Preview extends React.Component {
           renderMathJaxInRealtime={renderMathJaxInRealtime}
         />
       </div>
-    )
+    );
   }
 }
 

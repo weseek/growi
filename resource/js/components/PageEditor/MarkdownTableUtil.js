@@ -1,4 +1,5 @@
-import markdown_table from 'markdown-table';
+import markdownTable from 'markdown-table';
+import stringWidth from 'string-width';
 
 /**
  * Utility for markdown table
@@ -10,14 +11,13 @@ class MarkdownTableUtil {
     // https://regex101.com/r/7BN2fR/7
     this.tableAlignmentLineRE = /^[-:|][-:|\s]*$/;
     this.tableAlignmentLineNegRE = /^[^-:]*$/;  // it is need to check to ignore empty row which is matched above RE
-    this.linePartOfTableRE = /^\|[^\r\n]*|[^\r\n]*\|$|([^\|\r\n]+\|[^\|\r\n]*)+/; // own idea
+    this.linePartOfTableRE = /^\|[^\r\n]*|[^\r\n]*\|$|([^|\r\n]+\|[^|\r\n]*)+/; // own idea
 
     this.getBot = this.getBot.bind(this);
     this.getEot = this.getEot.bind(this);
     this.getBol = this.getBol.bind(this);
     this.getStrFromBot = this.getStrFromBot.bind(this);
     this.getStrToEot = this.getStrToEot.bind(this);
-    this.getStrFromBol = this.getStrFromBol.bind(this);
 
     this.parseFromTableStringToMarkdownTable = this.parseFromTableStringToMarkdownTable.bind(this);
     this.replaceMarkdownTableWithReformed = this.replaceMarkdownTableWithReformed.bind(this);
@@ -85,14 +85,6 @@ class MarkdownTableUtil {
   }
 
   /**
-   * return strings from BOL(beginning of line) to current position
-   */
-  getStrFromBol(editor) {
-    const curPos = editor.getCursor();
-    return editor.getDoc().getRange(this.getBol(editor), curPos);
-  }
-
-  /**
    * returns markdown table whose described by 'markdown-table' format
    *   ref. https://github.com/wooorm/markdown-table
    * @param {string} lines all of table
@@ -111,23 +103,24 @@ class MarkdownTableUtil {
           { align: 'l', regex: /^:-+$/  },
           { align: 'r', regex: /^-+:$/  },
         ];
-        let lineText = "";
+        let lineText = '';
         lineText = line.replace(/^\||\|$/g, ''); // strip off pipe charactor which is placed head of line and last of line.
         lineText = lineText.replace(/\s*/g, '');
         aligns = lineText.split(/\|/).map(col => {
           const rule = alignRuleRE.find(rule => col.match(rule.regex));
           return (rule != undefined) ? rule.align : '';
         });
-      } else if (this.linePartOfTableRE.test(line)) {
+      }
+      else if (this.linePartOfTableRE.test(line)) {
         // parse line whether header or body
-        let lineText = "";
+        let lineText = '';
         lineText = line.replace(/\s*\|\s*/g, '|');
         lineText = lineText.replace(/^\||\|$/g, ''); // strip off pipe charactor which is placed head of line and last of line.
         const row = lineText.split(/\|/);
         contents.push(row);
       }
     }
-    return (new MarkdownTable(contents, { align: aligns }));
+    return (new MarkdownTable(contents, { align: aligns, stringLength: stringWidth }));
   }
 
   /**
@@ -164,7 +157,7 @@ class MarkdownTableUtil {
     let newTable = [];
     const options = mdtable_list[0].options; // use option of first markdown-table
     mdtable_list.forEach((mdtable) => {
-      newTable = newTable.concat(mdtable.table)
+      newTable = newTable.concat(mdtable.table);
     });
     return (new MarkdownTable(newTable, options));
   }
@@ -199,7 +192,7 @@ class MarkdownTable {
   }
 
   toString() {
-    return markdown_table(this.table, this.options);
+    return markdownTable(this.table, this.options);
   }
 }
 

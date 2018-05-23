@@ -60,7 +60,7 @@ export default class Page extends React.Component {
         return;
       }
       const k = keyword
-            .replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+            .replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
             .replace(/(^"|"$)/g, ''); // for phrase (quoted) keyword
       const keywordExp = new RegExp(`(${k}(?!(.*?")))`, 'ig');
       returnBody = returnBody.replace(keywordExp, '<em class="highlighted">$&</em>');
@@ -109,15 +109,17 @@ export default class Page extends React.Component {
 
   render() {
     const config = this.props.crowi.getConfig();
+    const isMobile = this.props.crowi.isMobile;
     const isMathJaxEnabled = !!config.env.MATHJAX;
 
-    return (
-      <RevisionBody html={this.state.html}
+    return <div className={isMobile ? 'page-mobile' : ''}>
+      <RevisionBody
+          html={this.state.html}
           inputRef={el => this.revisionBodyElement = el}
           isMathJaxEnabled={isMathJaxEnabled}
           renderMathJaxOnInit={true}
       />
-    )
+    </div>;
   }
 }
 

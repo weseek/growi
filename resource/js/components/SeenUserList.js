@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import UserList from './SeenUserList/UserList';
 
 export default class SeenUserList extends React.Component {
@@ -22,7 +24,7 @@ export default class SeenUserList extends React.Component {
 
   getSeenUserIds() {
     // FIXME: Consider another way to bind values.
-    const $seenUserList = $("#seen-user-list");
+    const $seenUserList = $('#seen-user-list');
     if ($seenUserList.length > 0) {
       const seenUsers = $seenUserList.data('seen-users');
       if (seenUsers) {
@@ -44,3 +46,7 @@ export default class SeenUserList extends React.Component {
     );
   }
 }
+
+SeenUserList.propTypes = {
+  crowi: PropTypes.object.isRequired,
+};

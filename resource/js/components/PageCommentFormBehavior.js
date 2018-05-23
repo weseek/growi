@@ -40,7 +40,8 @@ export default class PageCommentFormBehavior extends React.Component {
           $('#comment-form-comment').val('');
           $('#comment-form-is-markdown').prop('checked', false);
           $('#comment-form-message').text('');
-        } else {
+        }
+        else {
           $('#comment-form-message').text(data.error);
         }
       }).fail(function(data) {
@@ -55,7 +56,7 @@ export default class PageCommentFormBehavior extends React.Component {
 
   render() {
     // render nothing
-    return <div></div>
+    return <div></div>;
   }
 }
 

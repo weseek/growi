@@ -56,7 +56,7 @@ export default class Comment extends React.Component {
   }
 
   getRootClassName() {
-    return "page-comment "
+    return 'page-comment '
         + (this.isCurrentUserEqualsToAuthor() ? 'page-comment-me ' : '');
   }
 

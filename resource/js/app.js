@@ -10,6 +10,7 @@ import SearchPage       from './components/SearchPage';
 import PageEditor       from './components/PageEditor';
 import OptionsSelector  from './components/PageEditor/OptionsSelector';
 import { EditorOptions, PreviewOptions } from './components/PageEditor/OptionsSelector';
+import GrantSelector, { UserGroup, PageGrant } from './components/PageEditor/GrantSelector';
 import Page             from './components/Page';
 import PageListSearch   from './components/PageListSearch';
 import PageHistory      from './components/PageHistory';
@@ -22,14 +23,12 @@ import RevisionPath     from './components/Page/RevisionPath';
 import RevisionUrl      from './components/Page/RevisionUrl';
 import BookmarkButton   from './components/BookmarkButton';
 import NewPageNameInputter from './components/NewPageNameInputter';
-import SearchTypeahead  from './components/SearchTypeahead';
 
 import CustomCssEditor  from './components/Admin/CustomCssEditor';
 import CustomScriptEditor from './components/Admin/CustomScriptEditor';
 import CustomHeaderEditor from './components/Admin/CustomHeaderEditor';
 
 import * as entities from 'entities';
-
 
 if (!window) {
   window = {};
@@ -42,6 +41,7 @@ let pageRevisionCreatedAt = null;
 let pagePath;
 let pageContent = '';
 let markdown = '';
+let pageGrant = null;
 if (mainContent !== null) {
   pageId = mainContent.getAttribute('data-page-id');
   pageRevisionId = mainContent.getAttribute('data-page-revision-id');
@@ -159,7 +159,7 @@ if (pageEditorElem) {
     if (componentInstances.page != null) {
       componentInstances.page.setMarkdown(page.revision.body);
     }
-  }
+  };
 
   pageEditor = ReactDOM.render(
     <PageEditor crowi={crowi} crowiRenderer={crowiRenderer}
@@ -189,6 +189,41 @@ if (pageEditorOptionsSelectorElem) {
     pageEditorOptionsSelectorElem
   );
 }
+// render GrantSelector
+const userRelatedGroupsElem = document.getElementById('user-related-group-data');
+const pageEditorGrantSelectorElem = document.getElementById('page-grant-selector');
+const pageGrantElem = document.getElementById('page-grant');
+const pageGrantGroupElem = document.getElementById('grant-group');
+function updatePageGrantElems(newPageGrant) {
+  pageGrantElem.value = newPageGrant.grant;
+  pageGrantGroupElem.value = newPageGrant.grantGroup.userGroupId || '';
+}
+if (pageEditorGrantSelectorElem) {
+  let userRelatedGroups;
+  if (userRelatedGroupsElem != null) {
+    let userRelatedGroupsJSONString = userRelatedGroupsElem.textContent;
+    if (userRelatedGroupsJSONString != null && userRelatedGroupsJSONString.length > 0) {
+      userRelatedGroups = JSON.parse(userRelatedGroupsJSONString || '{}', (value) => {
+        return new UserGroup(value);
+      });
+    }
+  }
+  pageGrant = new PageGrant();
+  pageGrant.grant = document.getElementById('page-grant').value;
+  const grantGroupData = JSON.parse(document.getElementById('grant-group').textContent || '{}');
+  if (grantGroupData != null) {
+    const grantGroup = new UserGroup();
+    grantGroup.userGroupId = grantGroupData.id;
+    grantGroup.userGroup = grantGroupData;
+    pageGrant.grantGroup = grantGroup;
+  }
+  ReactDOM.render(
+    <GrantSelector crowi={crowi}
+      userRelatedGroups={userRelatedGroups} pageGrant={pageGrant}
+      onChange={updatePageGrantElems} />,
+    pageEditorGrantSelectorElem
+  );
+}
 
 // render for admin
 const customCssEditorElem = document.getElementById('custom-css-editor');
@@ -199,7 +234,7 @@ if (customCssEditorElem != null) {
   ReactDOM.render(
     <CustomCssEditor inputElem={customCssInputElem} />,
     customCssEditorElem
-  )
+  );
 }
 const customScriptEditorElem = document.getElementById('custom-script-editor');
 if (customScriptEditorElem != null) {
@@ -209,7 +244,7 @@ if (customScriptEditorElem != null) {
   ReactDOM.render(
     <CustomScriptEditor inputElem={customScriptInputElem} />,
     customScriptEditorElem
-  )
+  );
 }
 const customHeaderEditorElem = document.getElementById('custom-header-editor');
 if (customHeaderEditorElem != null) {
@@ -219,7 +254,7 @@ if (customHeaderEditorElem != null) {
   ReactDOM.render(
     <CustomHeaderEditor inputElem={customHeaderInputElem} />,
     customHeaderEditorElem
-  )
+  );
 }
 
 // うわーもうー (commented by Crowi team -- 2018.03.23 Yuki Takei)

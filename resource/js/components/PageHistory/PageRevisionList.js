@@ -12,29 +12,30 @@ export default class PageRevisionList extends React.Component {
 
     const revisionList = this.props.revisions.map((revision, idx) => {
       const revisionId = revision._id
-        , revisionDiffOpened = this.props.diffOpened[revisionId] || false
+        , revisionDiffOpened = this.props.diffOpened[revisionId] || false;
 
 
       let previousRevision;
       if (idx+1 < revisionCount) {
         previousRevision = revisions[idx + 1];
-      } else {
+      }
+      else {
         previousRevision = revision; // if it is the first revision, show full text as diff text
       }
 
       return (
-        <div className="revision-hisory-outer" key={"revision-history-" + revisionId}>
+        <div className="revision-hisory-outer" key={'revision-history-' + revisionId}>
           <Revision
             revision={revision}
             revisionDiffOpened={revisionDiffOpened}
             onDiffOpenClicked={this.props.onDiffOpenClicked}
-            key={"revision-history-rev-" + revisionId}
+            key={'revision-history-rev-' + revisionId}
             />
           <RevisionDiff
             revisionDiffOpened={revisionDiffOpened}
             currentRevision={revision}
             previousRevision={previousRevision}
-            key={"revision-diff-" + revisionId}
+            key={'revision-diff-' + revisionId}
           />
         </div>
       );
@@ -52,5 +53,5 @@ PageRevisionList.propTypes = {
   revisions: PropTypes.array,
   diffOpened: PropTypes.object,
   onDiffOpenClicked: PropTypes.func.isRequired,
-}
+};
 

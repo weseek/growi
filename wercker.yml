@@ -43,13 +43,12 @@ build-prod:
     - script:
       name: install dependencies
       code: |
-        yarn install --production
+        yarn
 
     - script:
       name: install plugins
       code: |
-        yarn add growi-plugin-lsx
-        yarn add growi-plugin-pukiwiki-like-linker
+        yarn add growi-plugin-lsx growi-plugin-pukiwiki-like-linker
 
     - script:
       name: print dependencies
@@ -59,6 +58,13 @@ build-prod:
       name: npm run build:prod:analyze
       code: |
         npm run build:prod:analyze
+
+    - script:
+      name: npm run server:prod:ci
+      code: |
+        export MONGO_URI=mongodb://$MONGO_PORT_27017_TCP_ADDR/growi
+        echo "export MONGO_URI=$MONGO_URI"
+        npm run server:prod:ci
 
   after-steps:
     - script:
@@ -82,13 +88,12 @@ build-dev:
     - script:
       name: install dependencies
       code: |
-        yarn install
+        yarn
 
     - script:
       name: install plugins
       code: |
-        yarn add growi-plugin-lsx
-        yarn add growi-plugin-pukiwiki-like-linker
+        yarn add growi-plugin-lsx growi-plugin-pukiwiki-like-linker
 
     - script:
       name: print dependencies

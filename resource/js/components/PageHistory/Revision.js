@@ -46,7 +46,7 @@ export default class Revision extends React.Component {
               <a className="diff-view" onClick={this._onDiffOpenClicked}>
                 <i className={iconClass}></i> View diff
               </a>
-              <a href={"?revision=" + revision._id } className="m-l-10">
+              <a href={'?revision=' + revision._id } className="m-l-10">
                 <i className="icon-login"></i> Go to this version
               </a>
             </p>
@@ -61,5 +61,5 @@ Revision.propTypes = {
   revision: PropTypes.object,
   revisionDiffOpened: PropTypes.bool.isRequired,
   onDiffOpenClicked: PropTypes.func.isRequired,
-}
+};
 
