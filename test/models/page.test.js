@@ -74,6 +74,21 @@ describe('Page', () => {
           grantedUsers: [],
           creator: testUser1,
         },
+        {
+          path: '/page1',
+          grant: Page.GRANT_PUBLIC,
+          creator: testUser0,
+        },
+        {
+          path: '/page1/child1',
+          grant: Page.GRANT_PUBLIC,
+          creator: testUser0,
+        },
+        {
+          path: '/page2',
+          grant: Page.GRANT_PUBLIC,
+          creator: testUser0,
+        },
       ];
 
       return testDBUtil.generateFixture(conn, 'Page', fixture);
@@ -390,6 +405,69 @@ describe('Page', () => {
             expect(err).to.instanceof(Error);
             done();
           });
+      });
+    });
+  });
+
+  context('generateQueryToListByStartWith', () => {
+    it('should return only /page/', done => {
+      const user = createdUsers[0];
+      Page.generateQueryToListByStartWith('/page/', user, { isRegExpEscapedFromPath: true })
+      .then(pages => {
+        // assert length
+        expect(pages.length).to.equal(1);
+        // assert paths
+        const pagePaths = pages.map(page => page.path);
+        expect(pagePaths).to.include.members(['/page/for/extended'])
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+    });
+    it('should return only /page1/', done => {
+      const user = createdUsers[0];
+      Page.generateQueryToListByStartWith('/page1/', user, { isRegExpEscapedFromPath: true })
+      .then(pages => {
+        // assert length
+        expect(pages.length).to.equal(2);
+        // assert paths
+        const pagePaths = pages.map(page => page.path);
+        expect(pagePaths).to.include.members(['/page1', '/page1/child1'])
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+    });
+    it('should return pages which starts with /page', done => {
+      const user = createdUsers[0];
+      Page.generateQueryToListByStartWith('/page', user, {})
+      .then(pages => {
+        // assert length
+        expect(pages.length).to.equal(4);
+        // assert paths
+        const pagePaths = pages.map(page => page.path);
+        expect(pagePaths).to.include.members(['/page/for/extended', '/page1', '/page1/child1', '/page2'])
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+    });
+    it('should process with regexp', done => {
+      const user = createdUsers[0];
+      Page.generateQueryToListByStartWith('/page\\d{1}/', user, {})
+      .then(pages => {
+        // assert length
+        expect(pages.length).to.equal(3);
+        // assert paths
+        const pagePaths = pages.map(page => page.path);
+        expect(pagePaths).to.include.members(['/page1', '/page1/child1', '/page2'])
+        done();
+      })
+      .catch((err) => {
+        done(err);
       });
     });
   });

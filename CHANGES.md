@@ -1,16 +1,33 @@
 CHANGES
 ========
 
-## 3.0.13-RC
+## 3.1.0-RC
+
+* Improvement: Group Access Control List - Select group modal
+* Improvement: Auto-format markdown tables which includes multibyte text
+* Improvement: Enable to switch show/hide border for highlight.js
+* Improvement: BindDN field allows also ActiveDirectory styles 
+* Improvement: Show LDAP logs when testing login
+* Improvement: Detach code blocks correctly
+* Fix: Comment body doesn't break long terms
+* Fix: lsx plugin lists up pages that hit by forward match wrongly
+    * Introduced by 3.0.4
+* Support: Upgrade libs
+    * elasticsearch
+    * googleapis
+
+## 3.0.13
 
 * Improvement: Add Vim/Emacs/Sublime-Text icons for keybindings menu
 * Improvement: Add 'mono-blue' theme
 * Fix: Unportalize process failed silently
+* Fix: Sidebar breaks editor layouts
 * Support: Switch the logger from 'pino' to 'bunyan'
 * Support: Set the alias for 'debug' to the debug function of 'bunyan'
 * Support: Translate /admin/security
 * Support: Optimize bundles
     * upgrade 'markdown-it-toc-and-anchor-with-slugid' and omit 'uslug'
+* Support: Optimize .eslintrc.js
 
 ## 3.0.12
 

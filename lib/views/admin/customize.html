@@ -281,7 +281,7 @@
       </fieldset>
       </form>
 
-      <form action="/_api/admin/customize/highlightJsStyle" method="post" class="form-horizontal" id="cutomhighlightJsStyleSettingForm" role="form">
+      <form action="/_api/admin/customize/highlightJsStyle" method="post" class="form-horizontal" id="customhighlightJsStyleSettingForm" role="form">
         <fieldset>
           <legend>{{ t('customize_page.Code Highlight') }}</legend>
           <div class="form-group">
@@ -299,11 +299,11 @@
             <label for="settingForm[customize:highlightJsStyleBorder]" class="col-xs-3 control-label">(TBD) Border</label>
             <div class="col-xs-9">
               <div class="btn-group btn-toggle" data-toggle="buttons">
-                <label class="btn btn-default btn-rounded btn-outline {% if settingForm['customize:highlightJsStyleBorder'] %}active{% endif %}" data-active-class="primary">
+                <label class="btn btn-default btn-rounded btn-outline {% if settingForm['customize:highlightJsStyleBorder'] %}active{% endif %}" data-active-class="primary" onclick="selectBorderOn()">
                   <input name="settingForm[customize:highlightJsStyleBorder]" value="true" type="radio"
                       {% if true === settingForm['customize:highlightJsStyleBorder'] %}checked{% endif %}> ON
                 </label>
-                <label class="btn btn-default btn-rounded btn-outline {% if !settingForm['customize:highlightJsStyleBorder'] %}active{% endif %}" data-active-class="default">
+                <label class="btn btn-default btn-rounded btn-outline {% if !settingForm['customize:highlightJsStyleBorder'] %}active{% endif %}" data-active-class="default" onclick="selectBorderOff()">
                   <input name="settingForm[customize:highlightJsStyleBorder]" value="false" type="radio"
                       {% if !settingForm['customize:highlightJsStyleBorder'] %}checked{% endif %}> OFF
                 </label>
@@ -315,7 +315,7 @@
 
           <p class="help-block">
             Examples:
-            <pre class="hljs"><code class="highlightjs-demo">function $initHighlight(block, cls) {
+            <pre class="hljs {% if !settingForm['customize:highlightJsStyleBorder'] %}hljs-no-border{% endif %}"><code class="highlightjs-demo">function $initHighlight(block, cls) {
   try {
     if (cls.search(/\bno\-highlight\b/) != -1)
       return process(block, true, 0x0F) +
@@ -507,7 +507,7 @@ window.addEventListener('load', (event) => {
 {% block body_end %}
   {% parent %}
   <script>
-    $(`#customthemeSettingForm, #cutomlayoutSettingForm, #cutombehaviorSettingForm, #cutomhighlightJsStyleSettingForm,
+    $(`#customthemeSettingForm, #cutomlayoutSettingForm, #cutombehaviorSettingForm, #customhighlightJsStyleSettingForm,
        #customfeaturesSettingForm, #cutomheaderSettingForm, #cutomcssSettingForm, #cutomscriptSettingForm, #customtitleSettingForm`
     ).each(function() {
       $(this).submit(function()
@@ -591,6 +591,13 @@ window.addEventListener('load', (event) => {
       // update .active class
       $('#themeOptions .active').removeClass('active');
       $(`#themeOptions #theme-option-${theme}`).addClass('active');
+    }
+
+    function selectBorderOn(){
+      $('.hljs-no-border').removeClass('hljs-no-border');
+    }
+    function selectBorderOff(){
+      $('#customhighlightJsStyleSettingForm .hljs').addClass('hljs-no-border')
     }
   </script>
 

@@ -62,14 +62,17 @@
               name="settingForm[security:passport-ldap:bindDN]" value="{{ settingForm['security:passport-ldap:bindDN'] || '' }}">
           <p class="help-block passport-ldap-managerbind" {% if isUserBind %}style="display: none;"{% endif %}>
             <small>
-              {{ t("security_setting.ldap.bind_DN_manager_detail") }}
+              {{ t("security_setting.ldap.bind_DN_manager_detail") }}<br>
+              {{ t("security_setting.example") }}1: <code>uid=admin,dc=domain,dc=com</code><br>
+              {{ t("security_setting.example") }}2: <code>admin@domain.com</code>
             </small>
           </p>
           <p class="help-block passport-ldap-userbind" {% if !isUserBind %}style="display: none;"{% endif %}>
             <small>
               {{ t("security_setting.ldap.bind_DN_user_detail1") }}<br>
               {{ t("security_setting.ldap.bind_DN_user_detail2") }}<br>
-              {{ t("security_setting.example") }}: <code>uid={% raw %}{{username}}{% endraw %},dc=domain,dc=com</code><br>
+              {{ t("security_setting.example") }}1: <code>uid={% raw %}{{username}}{% endraw %},dc=domain,dc=com</code><br>
+              {{ t("security_setting.example") }}2: <code>{% raw %}{{username}}{% endraw %}@domain.com</code>
             </small>
           </p>
           </div>
@@ -105,9 +108,10 @@
               {{ t("security_setting.ldap.search_filter_detail3") }}
             </small>
           </p>
-          <p>
+          <p class="help-block">
             <small>
-              {{ t("security_setting.ldap.search_filter_example") }}: <code>(|(uid={% raw %}{{username}}{% endraw %})(mail={% raw %}{{username}}{% endraw %}))</code>
+              {{ t("security_setting.example") }}1 - {{ t("security_setting.ldap.search_filter_example1") }}: <code>(|(uid={% raw %}{{username}}{% endraw %})(mail={% raw %}{{username}}{% endraw %}))</code><br>
+              {{ t("security_setting.example") }}2 - {{ t("security_setting.ldap.search_filter_example2") }}: <code>(sAMAccountName={% raw %}{{username}}{% endraw %})</code>
             </small>
           </p>
         </div>
@@ -307,7 +311,7 @@
 
       <div class="modal-body">
 
-        {% include '../../../widget/passport/ldap-association-tester.html' %}
+        {% include '../../../widget/passport/ldap-association-tester.html' with { showLog: true } %}
 
       </div><!-- /.modal-body -->
 

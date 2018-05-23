@@ -12,17 +12,16 @@ export default class HeaderConfigurer {
     // combine rule and set
     // rules.heading_open = this.combineRules(this.injectRevisionHeadClass, headingOpenOrg);
     rules.heading_open = (tokens, idx, options, env, self) => {
-      const token = tokens[idx];
-
       // Inject 'revision-head' class
-			this.injectRevisionHeadClass(tokens, idx, options, env, self);
+      this.injectRevisionHeadClass(tokens, idx, options, env, self);
 
-			if (original) {
-				return original(tokens, idx, options, env, self);
-			} else {
-				return self.renderToken(tokens, idx, options, env, self);
-			}
-		};
+      if (original) {
+        return original(tokens, idx, options, env, self);
+      }
+      else {
+        return self.renderToken(tokens, idx, options, env, self);
+      }
+    };
   }
 
   /**

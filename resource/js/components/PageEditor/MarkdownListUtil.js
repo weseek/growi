@@ -1,5 +1,3 @@
-import * as codemirror from 'codemirror';
-
 /**
  * Utility for markdown list
  */
@@ -11,26 +9,41 @@ class MarkdownListUtil {
     this.indentAndMarkRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]\s|[*+-]\s|(\d+)([.)]))(\s*)/;
     this.indentAndMarkOnlyRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]|[*+-]|(\d+)[.)])(\s*)$/;
 
+    this.newlineAndIndentContinueMarkdownList = this.newlineAndIndentContinueMarkdownList.bind(this);
     this.pasteText = this.pasteText.bind(this);
+  }
 
-    this.getBol = this.getBol.bind(this);
-    this.getEol = this.getEol.bind(this);
-    this.getStrFromBol = this.getStrFromBol.bind(this);
-    this.getStrToEol = this.getStrToEol.bind(this);
-    this.newlineWithoutIndent = this.newlineWithoutIndent.bind(this);
+  /**
+   * Self Implementation with AbstractEditor interface
+   * @param {AbstractEditor} editor An instance of AbstractEditor
+   */
+  newlineAndIndentContinueMarkdownList(editor) {
+    const strFromBol = editor.getStrFromBol();
+
+    if (this.indentAndMarkOnlyRE.test(strFromBol)) {
+      // clear current line and end list
+      editor.replaceBolToCurrentPos('\n');
+    }
+    else if (this.indentAndMarkRE.test(strFromBol)) {
+      // continue list
+      const indentAndMark = strFromBol.match(this.indentAndMarkRE)[0];
+      editor.insertText(`\n${indentAndMark}`);
+    }
+    else {
+      editor.insertLinebreak();
+    }
   }
 
   /**
    * paste text
-   * @param {any} editor An editor instance of CodeMirror
+   * @param {AbstractEditor} editor An instance of AbstractEditor
    * @param {any} event
    * @param {string} text
    */
   pasteText(editor, event, text) {
     // get strings from BOL(beginning of line) to current position
-    const strFromBol = this.getStrFromBol(editor);
+    const strFromBol = editor.getStrFromBol();
 
-    const matched = strFromBol.match(this.indentAndMarkRE);
     // when match indentAndMarkOnlyRE
     // (this means the current position is the beginning of the list item)
     if (this.indentAndMarkOnlyRE.test(strFromBol)) {
@@ -39,7 +52,7 @@ class MarkdownListUtil {
       // replace
       if (adjusted != null) {
         event.preventDefault();
-        editor.getDoc().replaceRange(adjusted, this.getBol(editor), editor.getCursor());
+        editor.replaceBolToCurrentPos(adjusted);
       }
     }
   }
@@ -64,7 +77,7 @@ class MarkdownListUtil {
       // indent
       const replacedLines = lines.map((line) => {
         return indent + line;
-      })
+      });
 
       adjusted = replacedLines.join('\n');
     }
@@ -75,7 +88,7 @@ class MarkdownListUtil {
     // not listful data
     else {
       // append `indentAndMark` at the beginning of all lines (except the first line)
-      const replacedText = text.replace(/(\r\n|\r|\n)/g, "$1" + indentAndMark);
+      const replacedText = text.replace(/(\r\n|\r|\n)/g, '$1' + indentAndMark);
       // append `indentAndMark` to the first line
       adjusted = indentAndMark + replacedText;
     }
@@ -112,48 +125,6 @@ class MarkdownListUtil {
     return isListful;
   }
 
-  /**
-   * return the postion of the BOL(beginning of line)
-   */
-  getBol(editor) {
-    const curPos = editor.getCursor();
-    return { line: curPos.line, ch: 0 };
-  }
-
-  /**
-   * return the postion of the EOL(end of line)
-   */
-  getEol(editor) {
-    const curPos = editor.getCursor();
-    const lineLength = editor.getDoc().getLine(curPos.line).length;
-    return { line: curPos.line, ch: lineLength };
-  }
-
-  /**
-   * return strings from BOL(beginning of line) to current position
-   */
-  getStrFromBol(editor) {
-    const curPos = editor.getCursor();
-    return editor.getDoc().getRange(this.getBol(editor), curPos);
-  }
-
-  /**
-   * return strings from current position to EOL(end of line)
-   */
-  getStrToEol(editor) {
-    const curPos = editor.getCursor();
-    return editor.getDoc().getRange(curPos, this.getEol(editor));
-  }
-
-  /**
-   * insert newline without indent
-   */
-  newlineWithoutIndent(editor, strToEol) {
-    codemirror.commands.newlineAndIndent(editor);
-
-    // replace the line with strToEol (abort auto indent)
-    editor.getDoc().replaceRange(strToEol, this.getBol(editor), this.getEol(editor));
-  }
 }
 
 // singleton pattern

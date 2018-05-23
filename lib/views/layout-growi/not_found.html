@@ -18,3 +18,13 @@
     </div> {# /.col- #}
   </div>
 {% endblock %}
+
+{% block body_end %}
+  <div id="presentation-layer" class="fullscreen-layer">
+    <div id="presentation-container"></div>
+  </div>
+
+  <div id="crowi-modals">
+    {% include '../modal/select_grant_group.html' %}
+  </div>
+{% endblock %}

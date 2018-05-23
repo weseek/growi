@@ -1,5 +1,4 @@
 import MarkdownIt from 'markdown-it';
-import * as entities from 'entities';
 
 import Linker        from './PreProcessor/Linker';
 import CsvToTable    from './PreProcessor/CsvToTable';
@@ -92,6 +91,11 @@ export default class GrowiRenderer {
           new HeaderLineNumberConfigurer(crowi)
         ]);
         break;
+      case 'comment':
+        this.markdownItConfigurers = this.markdownItConfigurers.concat([
+          new HeaderLineNumberConfigurer(crowi),
+        ]);
+        break;
       default:
         break;
     }
@@ -140,6 +144,9 @@ export default class GrowiRenderer {
   }
 
   codeRenderer(code, langExt) {
+    const config = this.crowi.getConfig();
+    const noborder = (!config.highlightJsStyleBorder) ? 'hljs-no-border' : '';
+
     if (langExt) {
       const langAndFn = langExt.split(':');
       const lang = langAndFn[0];
@@ -153,15 +160,18 @@ export default class GrowiRenderer {
       const citeTag = (langFn) ? `<cite>${langFn}</cite>` : '';
       if (hljs.getLanguage(lang)) {
         try {
-          return `<pre class="hljs">${citeTag}<code class="language-${lang}">${hljs.highlight(lang, code, true).value}</code></pre>`;
-        } catch (__) {}
+          return `<pre class="hljs ${noborder}">${citeTag}<code class="language-${lang}">${hljs.highlight(lang, code, true).value}</code></pre>`;
+        }
+        catch (__) {
+          return `<pre class="hljs ${noborder}">${citeTag}<code class="language-${lang}">${code}}</code></pre>`;
+        }
       }
       else {
-        return `<pre class="hljs">${citeTag}<code>${code}</code></pre>`;
+        return `<pre class="hljs ${noborder}">${citeTag}<code>${code}</code></pre>`;
       }
     }
 
-    return `<pre class="hljs"><code>${code}</code></pre>`;
+    return `<pre class="hljs ${noborder}"><code>${code}</code></pre>`;
   }
 
 }

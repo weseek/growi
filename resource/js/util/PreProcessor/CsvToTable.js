@@ -8,16 +8,12 @@ export default class CsvToTable {
       switch (group1) {
         case 'tsv':
           return csvToMarkdownTable(group2, '\t');
-          break;
         case 'tsv-h':
           return csvToMarkdownTable(group2, '\t', true);
-          break;
         case 'csv':
           return csvToMarkdownTable(group2, ',');
-          break;
         case 'csv-h':
           return csvToMarkdownTable(group2, ',', true);
-          break;
         default:
           return all;
       }

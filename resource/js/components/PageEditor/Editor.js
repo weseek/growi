@@ -1,232 +1,74 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import urljoin from 'url-join';
-const loadScript = require('simple-load-script');
-const loadCssSync = require('load-css-file');
-
-import * as codemirror from 'codemirror';
-
-import { UnControlled as ReactCodeMirror } from 'react-codemirror2';
-require('codemirror/addon/display/autorefresh');
-require('codemirror/addon/edit/matchbrackets');
-require('codemirror/addon/edit/matchtags');
-require('codemirror/addon/edit/closetag');
-require('codemirror/addon/edit/continuelist');
-require('codemirror/addon/hint/show-hint');
-require('codemirror/addon/hint/show-hint.css');
-require('codemirror/addon/search/searchcursor');
-require('codemirror/addon/search/match-highlighter');
-require('codemirror/addon/selection/active-line');
-require('codemirror/addon/scroll/annotatescrollbar');
-require('codemirror/addon/fold/foldcode');
-require('codemirror/addon/fold/foldgutter');
-require('codemirror/addon/fold/foldgutter.css');
-require('codemirror/addon/fold/markdown-fold');
-require('codemirror/addon/fold/brace-fold');
-require('codemirror/mode/gfm/gfm');
-
+import AbstractEditor from './AbstractEditor';
+import CodeMirrorEditor from './CodeMirrorEditor';
+import TextAreaEditor from './TextAreaEditor';
 
 import Dropzone from 'react-dropzone';
 
 import pasteHelper from './PasteHelper';
-import EmojiAutoCompleteHelper from './EmojiAutoCompleteHelper';
 
-import InterceptorManager from '../../../../lib/util/interceptor-manager';
-
-import MarkdownListInterceptor from './MarkdownListInterceptor';
-import MarkdownTableInterceptor from './MarkdownTableInterceptor';
-
-export default class Editor extends React.Component {
+export default class Editor extends AbstractEditor {
 
   constructor(props) {
     super(props);
 
-    this.cmCdnRoot = 'https://cdn.jsdelivr.net/npm/codemirror@5.37.0';
-
-    this.interceptorManager = new InterceptorManager();
-    this.interceptorManager.addInterceptors([
-      new MarkdownListInterceptor(),
-      new MarkdownTableInterceptor(),
-    ]);
-
     this.state = {
-      value: this.props.value,
       dropzoneActive: false,
-      isEnabledEmojiAutoComplete: false,
       isUploading: false,
-      isLoadingKeymap: false,
     };
 
-    this.loadedThemeSet = new Set(['eclipse', 'elegant']);   // themes imported in _vendor.scss
-    this.loadedKeymapSet = new Set();
+    this.getEditorSubstance = this.getEditorSubstance.bind(this);
 
-    this.getCodeMirror = this.getCodeMirror.bind(this);
-    this.setCaretLine = this.setCaretLine.bind(this);
-    this.setScrollTopByLine = this.setScrollTopByLine.bind(this);
-    this.loadTheme = this.loadTheme.bind(this);
-    this.loadKeymapMode = this.loadKeymapMode.bind(this);
-    this.setKeymapMode = this.setKeymapMode.bind(this);
-    this.forceToFocus = this.forceToFocus.bind(this);
-    this.dispatchSave = this.dispatchSave.bind(this);
-    this.handleEnterKey = this.handleEnterKey.bind(this);
+    this.pasteFilesHandler = this.pasteFilesHandler.bind(this);
 
-    this.onScrollCursorIntoView = this.onScrollCursorIntoView.bind(this);
-    this.onPaste = this.onPaste.bind(this);
-
-    this.onDragEnterForCM = this.onDragEnterForCM.bind(this);
-    this.onDragLeave = this.onDragLeave.bind(this);
-    this.onDrop = this.onDrop.bind(this);
+    this.dragEnterHandler = this.dragEnterHandler.bind(this);
+    this.dragLeaveHandler = this.dragLeaveHandler.bind(this);
+    this.dropHandler = this.dropHandler.bind(this);
 
     this.getDropzoneAccept = this.getDropzoneAccept.bind(this);
     this.getDropzoneClassName = this.getDropzoneClassName.bind(this);
     this.renderDropzoneOverlay = this.renderDropzoneOverlay.bind(this);
-
-    this.renderLoadingKeymapOverlay = this.renderLoadingKeymapOverlay.bind(this);
-  }
-
-  componentWillMount() {
-    if (this.props.emojiStrategy != null) {
-      this.emojiAutoCompleteHelper = new EmojiAutoCompleteHelper(this.props.emojiStrategy);
-      this.setState({isEnabledEmojiAutoComplete: true});
-    }
   }
 
   componentDidMount() {
     // initialize caret line
     this.setCaretLine(0);
-    // set save handler
-    codemirror.commands.save = this.dispatchSave;
-
-    // set CodeMirror instance as 'CodeMirror' so that CDN addons can reference
-    window.CodeMirror = require('codemirror');
   }
 
-  componentWillReceiveProps(nextProps) {
-    // load theme
-    const theme = nextProps.editorOptions.theme;
-    this.loadTheme(theme);
-
-    // set keymap
-    const keymapMode = nextProps.editorOptions.keymapMode;
-    this.setKeymapMode(keymapMode);
-  }
-
-  getCodeMirror() {
-    return this.refs.cm.editor;
-  }
-
-  loadCss(source) {
-    return new Promise((resolve) => {
-      loadCssSync(source);
-      resolve();
-    });
-  }
-
-  forceToFocus() {
-    const editor = this.getCodeMirror();
-    // use setInterval with reluctance -- 2018.01.11 Yuki Takei
-    const intervalId = setInterval(() => {
-      this.getCodeMirror().focus();
-      if (editor.hasFocus()) {
-        clearInterval(intervalId);
-      }
-    }, 100);
+  getEditorSubstance() {
+    return this.props.isMobile
+      ? this.refs.taEditor
+      : this.refs.cmEditor;
   }
 
   /**
-   * set caret position of codemirror
-   * @param {string} number
+   * @inheritDoc
+   */
+  forceToFocus() {
+    this.getEditorSubstance().forceToFocus();
+  }
+
+  /**
+   * @inheritDoc
    */
   setCaretLine(line) {
-    if (isNaN(line)) {
-      return;
-    }
-
-    const editor = this.getCodeMirror();
-    const linePosition = Math.max(0, line);
-
-    editor.setCursor({line: linePosition});   // leave 'ch' field as null/undefined to indicate the end of line
-    this.setScrollTopByLine(linePosition);
+    this.getEditorSubstance().setCaretLine(line);
   }
 
   /**
-   * scroll
-   * @param {number} line
+   * @inheritDoc
    */
   setScrollTopByLine(line) {
-    if (isNaN(line)) {
-      return;
-    }
-
-    const editor = this.getCodeMirror();
-    // get top position of the line
-    var top = editor.charCoords({line, ch: 0}, 'local').top;
-    editor.scrollTo(null, top);
+    this.getEditorSubstance().setScrollTopByLine(line);
   }
 
   /**
-   * load Theme
-   * @see https://codemirror.net/doc/manual.html#config
-   *
-   * @param {string} theme
+   * @inheritDoc
    */
-  loadTheme(theme) {
-    if (!this.loadedThemeSet.has(theme)) {
-      this.loadCss(urljoin(this.cmCdnRoot, `theme/${theme}.min.css`));
-
-      // update Set
-      this.loadedThemeSet.add(theme);
-    }
-  }
-
-  /**
-   * load assets for Key Maps
-   * @param {*} keymapMode 'default' or 'vim' or 'emacs' or 'sublime'
-   */
-  loadKeymapMode(keymapMode) {
-    const loadCss = this.loadCss;
-    let scriptList = [];
-    let cssList = [];
-
-    // add dependencies
-    if (this.loadedKeymapSet.size == 0) {
-      scriptList.push(loadScript(urljoin(this.cmCdnRoot, 'addon/dialog/dialog.min.js')));
-      cssList.push(loadCss(urljoin(this.cmCdnRoot, 'addon/dialog/dialog.min.css')));
-    }
-    // load keymap
-    if (!this.loadedKeymapSet.has(keymapMode)) {
-      scriptList.push(loadScript(urljoin(this.cmCdnRoot, `keymap/${keymapMode}.min.js`)));
-      // update Set
-      this.loadedKeymapSet.add(keymapMode);
-    }
-
-    // set loading state
-    this.setState({ isLoadingKeymap: true });
-
-    return Promise.all(scriptList.concat(cssList))
-      .then(() => {
-        this.setState({ isLoadingKeymap: false });
-      });
-  }
-
-  /**
-   * set Key Maps
-   * @see https://codemirror.net/doc/manual.html#keymaps
-   *
-   * @param {string} keymapMode 'default' or 'vim' or 'emacs' or 'sublime'
-   */
-  setKeymapMode(keymapMode) {
-    if (!keymapMode.match(/^(vim|emacs|sublime)$/)) {
-      // reset
-      this.getCodeMirror().setOption('keyMap', 'default');
-      return;
-    }
-
-    this.loadKeymapMode(keymapMode)
-      .then(() => {
-        this.getCodeMirror().setOption('keyMap', keymapMode);
-      });
+  insertText(text) {
+    this.getEditorSubstance().insertText(text);
   }
 
   /**
@@ -240,24 +82,6 @@ export default class Editor extends React.Component {
   }
 
   /**
-   * insert text
-   * @param {string} text
-   */
-  insertText(text) {
-    const editor = this.getCodeMirror();
-    editor.getDoc().replaceSelection(text);
-  }
-
-  /**
-   * dispatch onSave event
-   */
-  dispatchSave() {
-    if (this.props.onSave != null) {
-      this.props.onSave();
-    }
-  }
-
-  /**
    * dispatch onUpload event
    */
   dispatchUpload(files) {
@@ -266,68 +90,26 @@ export default class Editor extends React.Component {
     }
   }
 
-  /**
-   * handle ENTER key
-   */
-  handleEnterKey() {
+  pasteFilesHandler(event) {
+    const dropzone = this.refs.dropzone;
+    const items = event.clipboardData.items || event.clipboardData.files || [];
 
-    const editor = this.getCodeMirror();
-    var context = {
-      handlers: [],  // list of handlers which process enter key
-      editor: editor,
-    };
+    // abort if length is not 1
+    if (items.length != 1) {
+      return;
+    }
 
-    const interceptorManager = this.interceptorManager;
-    interceptorManager.process('preHandleEnter', context)
-      .then(() => {
-        if (context.handlers.length == 0) {
-          codemirror.commands.newlineAndIndentContinueMarkdownList(editor);
-        }
-      });
-  }
+    const file = items[0].getAsFile();
+    // check type and size
+    if (pasteHelper.fileAccepted(file, dropzone.props.accept) &&
+        pasteHelper.fileMatchSize(file, dropzone.props.maxSize, dropzone.props.minSize)) {
 
-  onScrollCursorIntoView(editor, event) {
-    if (this.props.onScrollCursorIntoView != null) {
-      const line = editor.getCursor().line;
-      this.props.onScrollCursorIntoView(line);
+      this.dispatchUpload(file);
+      this.setState({ isUploading: true });
     }
   }
 
-  /**
-   * CodeMirror paste event handler
-   * see: https://codemirror.net/doc/manual.html#events
-   * @param {any} editor An editor instance of CodeMirror
-   * @param {any} event
-   */
-  onPaste(editor, event) {
-    const types = event.clipboardData.types;
-
-    // text
-    if (types.includes('text/plain')) {
-      pasteHelper.pasteText(editor, event);
-    }
-    // files
-    else if (types.includes('Files')) {
-      const dropzone = this.refs.dropzone;
-      const items = event.clipboardData.items || event.clipboardData.files || [];
-
-      // abort if length is not 1
-      if (items.length != 1) {
-        return;
-      }
-
-      const file = items[0].getAsFile();
-      // check type and size
-      if (pasteHelper.fileAccepted(file, dropzone.props.accept) &&
-          pasteHelper.fileMatchSize(file, dropzone.props.maxSize, dropzone.props.minSize)) {
-
-        this.dispatchUpload(file);
-        this.setState({ isUploading: true });
-      }
-    }
-  }
-
-  onDragEnterForCM(editor, event) {
+  dragEnterHandler(event) {
     const dataTransfer = event.dataTransfer;
 
     // do nothing if contents is not files
@@ -338,11 +120,11 @@ export default class Editor extends React.Component {
     this.setState({ dropzoneActive: true });
   }
 
-  onDragLeave() {
+  dragLeaveHandler() {
     this.setState({ dropzoneActive: false });
   }
 
-  onDrop(accepted, rejected) {
+  dropHandler(accepted, rejected) {
     // rejected
     if (accepted.length != 1) { // length should be 0 or 1 because `multiple={false}` is set
       this.setState({ dropzoneActive: false });
@@ -416,18 +198,6 @@ export default class Editor extends React.Component {
     );
   }
 
-  renderLoadingKeymapOverlay() {
-    const overlayStyle = this.getOverlayStyle();
-
-    return this.state.isLoadingKeymap
-      ? <div style={overlayStyle} className="loading-keymap overlay">
-          <span className="overlay-content">
-            <div className="speeding-wheel d-inline-block"></div> Loading Keymap ...
-          </span>
-        </div>
-      : '';
-  }
-
   render() {
     const flexContainer = {
       height: '100%',
@@ -435,91 +205,55 @@ export default class Editor extends React.Component {
       flexDirection: 'column',
     };
 
-    const theme = this.props.editorOptions.theme || 'elegant';
-    const styleActiveLine = this.props.editorOptions.styleActiveLine || undefined;
+    const isMobile = this.props.isMobile;
+
     return <React.Fragment>
       <div style={flexContainer}>
         <Dropzone
-          ref="dropzone"
-          disableClick
-          disablePreview={true}
-          accept={this.getDropzoneAccept()}
-          className={this.getDropzoneClassName()}
-          acceptClassName="dropzone-accepted"
-          rejectClassName="dropzone-rejected"
-          multiple={false}
-          onDragLeave={this.onDragLeave}
-          onDrop={this.onDrop}
-        >
+            ref="dropzone"
+            disableClick
+            disablePreview={true}
+            accept={this.getDropzoneAccept()}
+            className={this.getDropzoneClassName()}
+            acceptClassName="dropzone-accepted"
+            rejectClassName="dropzone-rejected"
+            multiple={false}
+            onDragLeave={this.dragLeaveHandler}
+            onDrop={this.dropHandler}
+          >
+
           { this.state.dropzoneActive && this.renderDropzoneOverlay() }
 
-          <ReactCodeMirror
-            ref="cm"
-            editorDidMount={(editor) => {
-              // add event handlers
-              editor.on('paste', this.onPaste);
-              editor.on('scrollCursorIntoView', this.onScrollCursorIntoView);
-            }}
-            value={this.state.value}
-            options={{
-              mode: 'gfm',
-              theme: theme,
-              styleActiveLine: styleActiveLine,
-              lineNumbers: true,
-              tabSize: 4,
-              indentUnit: 4,
-              lineWrapping: true,
-              autoRefresh: true,
-              autoCloseTags: true,
-              matchBrackets: true,
-              matchTags: {bothTags: true},
-              // folding
-              foldGutter: true,
-              gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
-              // match-highlighter, matchesonscrollbar, annotatescrollbar options
-              highlightSelectionMatches: {annotateScrollbar: true},
-              // markdown mode options
-              highlightFormatting: true,
-              // continuelist, indentlist
-              extraKeys: {
-                'Enter': this.handleEnterKey,
-                'Tab': 'indentMore',
-                'Shift-Tab': 'indentLess',
-                'Ctrl-Q': (cm) => { cm.foldCode(cm.getCursor()); },
-              }
-            }}
-            onScroll={(editor, data) => {
-              if (this.props.onScroll != null) {
-                // add line data
-                const line = editor.lineAtHeight(data.top, 'local');
-                data.line = line;
-                this.props.onScroll(data);
-              }
-            }}
-            onChange={(editor, data, value) => {
-              if (this.props.onChange != null) {
-                this.props.onChange(value);
-              }
+          {/* for PC */}
+          { !isMobile &&
+            <CodeMirrorEditor
+              ref="cmEditor"
+              onPasteFiles={this.pasteFilesHandler}
+              onDragEnter={this.dragEnterHandler}
+              {...this.props}
+            />
+          }
 
-              // Emoji AutoComplete
-              if (this.state.isEnabledEmojiAutoComplete) {
-                this.emojiAutoCompleteHelper.showHint(editor);
-              }
-            }}
-            onDragEnter={this.onDragEnterForCM}
-          />
+          {/* for mobile */}
+          { isMobile &&
+            <TextAreaEditor
+              ref="taEditor"
+              onPasteFiles={this.pasteFilesHandler}
+              onDragEnter={this.dragEnterHandler}
+              {...this.props}
+            />
+          }
+
         </Dropzone>
 
         <button type="button" className="btn btn-default btn-block btn-open-dropzone"
-          onClick={() => {this.refs.dropzone.open();}}>
+          onClick={() => {this.refs.dropzone.open()}}>
 
           <i className="icon-paper-clip" aria-hidden="true"></i>&nbsp;
           Attach files by dragging &amp; dropping,&nbsp;
           <span className="btn-link">selecting them</span>,&nbsp;
           or pasting from the clipboard.
         </button>
-
-        { this.renderLoadingKeymapOverlay() }
 
       </div>
 
@@ -528,17 +262,12 @@ export default class Editor extends React.Component {
 
 }
 
-Editor.propTypes = {
-  value: PropTypes.string,
-  options: PropTypes.object,
-  editorOptions: PropTypes.object,
+Editor.propTypes = Object.assign({
+  isMobile: PropTypes.bool,
   isUploadable: PropTypes.bool,
   isUploadableFile: PropTypes.bool,
   emojiStrategy: PropTypes.object,
   onChange: PropTypes.func,
-  onScroll: PropTypes.func,
-  onScrollCursorIntoView: PropTypes.func,
-  onSave: PropTypes.func,
   onUpload: PropTypes.func,
-};
+}, AbstractEditor.propTypes);
 

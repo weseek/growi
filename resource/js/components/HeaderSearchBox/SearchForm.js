@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import FormGroup from 'react-bootstrap/es/FormGroup';
 import Button from 'react-bootstrap/es/Button';
@@ -47,8 +46,8 @@ export default class SearchForm extends React.Component {
 
   render() {
     const emptyLabel = (this.state.searchError !== null)
-        ? 'Error on searching.'
-        : 'No matches found on title... Hit [Enter] key so that search on contents.';
+      ? 'Error on searching.'
+      : 'No matches found on title... Hit [Enter] key so that search on contents.';
 
     return (
       <form

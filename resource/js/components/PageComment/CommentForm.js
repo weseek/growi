@@ -6,7 +6,6 @@ import Panel from 'react-bootstrap/es/panel';
 import Tab from 'react-bootstrap/es/tab';
 import Tabs from 'react-bootstrap/es/tabs';
 import UserPicture from '../User/UserPicture';
-
 /**
  *
  * @author Yuki Takei <yuki@weseek.co.jp>
@@ -21,48 +20,97 @@ export default class CommentForm extends React.Component {
     super(props);
 
     this.state = {
-      value: ''
+      comment: '',
+      isMarkdown: false,
     };
+
+    this.updateState = this.updateState.bind(this);
+    this.postComment = this.postComment.bind(this);
+  }
+
+  updateState(event) {
+    const target = event.target;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const name = target.name;
+
+    this.setState({
+      [name]: value
+    });
+  }
+
+  /**
+   * Load data of comments and rerender <PageComments />
+   */
+  postComment(event) {
+    event.preventDefault();
+    this.props.crowi.apiPost('/comments.add', {
+      commentForm: {
+        comment: this.state.comment,
+        _csrf: this.props.crowi.csrfToken,
+        page_id: this.props.pageId,
+        revision_id: this.props.revisionId,
+        is_markdown: this.state.isMarkdown,
+      }
+    })
+      .then((res) => {
+        if (this.props.onPostComplete != null) {
+          this.props.onPostComplete(res.comment);
+        }
+        this.setState({
+          comment: '',
+          isMarkdown: false,
+        });
+      });
   }
 
   render() {
-
+    //{% if not user %}disabled{% endif %}をtextareaとbuttonに追加
+    // denounce/throttle
     return (
-      <div className="comment-form">
-        <div className="comment-form-user">
-        </div>
-        <div className="comment-form-main">
-          <div className="comment-write">
-            <Tabs defaultActiveKey={1} id="comment-form-tabs">
+      <div>
+      <form className="form page-comment-form" id="page-comment-form" onSubmit={this.postComment}>
+        <div className="comment-form">
+          <div className="comment-form-user">
+          </div>
+          <div className="comment-form-main">
+            <div className="comment-write">
+ 			<Tabs defaultActiveKey={1} id="comment-form-tabs">
               <Tab eventKey={1} title="Write">
-                <div className="textarea">
-                  <textarea className="comment-form-comment form-control" id="comment-form-comment" name="commentForm[comment]" required placeholder="Write comments here..." >
-                  </textarea>
-                </div>
-              </Tab>
+              <textarea className="comment-form-comment form-control" id="comment-form-comment" name="comment" required placeholder="Write comments here..." value={this.state.comment} onChange={this.updateState} >
+              </textarea>
+              <div className="form-check">
+              {/* <input type="checkbox" className="form-check-input" id="checkbox-markdown" checked={this.state.isMarkdown} value="1" onChange={this.updateState} />
+              <label className="form-check-label" htmlFor="checkbox-markdown">Markdown</label> */}
+              <input type="checkbox" id="comment-form-is-markdown" name="isMarkdown" checked={this.state.isMarkdown} value="1" onChange={this.updateState} /> Markdown<br />
+              </div>
+          </Tab>
               <Tab eventKey={2} title="Prevrew">
                 <Panel className="comment-form-preview">
                   Preview
                 </Panel>
               </Tab>
             </Tabs>
-          </div>
-          <div className="comment-submit">
-            <input type="checkbox" className="form-check-input" id="checkbox-markdown" />
-            <label className="form-check-label" htmlFor="checkbox-markdown">Markdown</label>
-            <div className="pull-right">
-              <Button bsStyle="primary" className="fcbtn btn btn-sm btn-primary btn-outline btn-rounded btn-1b">
-                 Comment
-              </Button>
             </div>
-            <div className="clearfix">
+            <div className="comment-submit">
+              <div className="pull-right">
+                <Button type="submit" value="Submit" bsStyle="primary" className="fcbtn btn btn-sm btn-primary btn-outline btn-rounded btn-1b">
+                    Comment
+                </Button>
+              </div>
+              <div className="clearfix">
+              </div>
             </div>
           </div>
         </div>
-       </div>
-     );
+      </form>
+      </div>
+    );
   }
 }
 
 CommentForm.propTypes = {
+  crowi: PropTypes.object.isRequired,
+  onPostComplete: PropTypes.func,
+  pageId: PropTypes.string,
+  revisionId: PropTypes.string,
 };

@@ -14,7 +14,7 @@ export default class CrowiPlugin {
     try {
       definitions = require('../../tmp/plugins/plugin-definitions');
     }
-    catch(e) {
+    catch (e) {
       // TODO show warning
       // do nothing
       return;

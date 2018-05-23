@@ -116,4 +116,4 @@ module.exports = function(env) {
     ],
 
   });
-}
+};
