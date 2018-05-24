@@ -1,11 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
 import Button from 'react-bootstrap/es/Button';
 import FormControl from 'react-bootstrap/es/FormControl';
 import Tab from 'react-bootstrap/es/tab';
 import Tabs from 'react-bootstrap/es/tabs';
 import UserPicture from '../User/UserPicture';
-import CommentHtml from './CommentHtml';
+
 /**
  *
  * @author Yuki Takei <yuki@weseek.co.jp>
@@ -14,18 +15,22 @@ import CommentHtml from './CommentHtml';
  * @class Comment
  * @extends {React.Component}
  */
+
 export default class CommentForm extends React.Component {
 
   constructor(props) {
     super(props);
 
     this.state = {
-      comment: 'hoge',
+      comment: '# a',
       isMarkdown: false,
-    };
+      html: '',
+     };
 
     this.updateState = this.updateState.bind(this);
     this.postComment = this.postComment.bind(this);
+    this.getCommentHtml = this.getCommentHtml.bind(this);
+    this.renderHtml = this.renderHtml.bind(this);
   }
 
   updateState(event) {
@@ -63,32 +68,75 @@ export default class CommentForm extends React.Component {
       });
   }
 
-  render() {
-console.log(`commentfotm`)
-    //{% if not user %}disabled{% endif %}をtextareaとbuttonに追加
-    // denounce/throttle
-    return (
-      <div>
+  getCommentHtml(){
+    if(!this.state.html){
+      this.renderHtml(this.state.comment)
+    }
+  }
+
+  renderHtml(markdown) {
+    var context = {
+      markdown,
+    };
+
+    const crowiRenderer = this.props.crowiRenderer;
+    const interceptorManager = this.props.crowi.interceptorManager;
+    interceptorManager.process('prePreviewRender', context)
+      .then(() => interceptorManager.process('prePreviewPreProcess', context))
+      .then(() => {
+        context.markdown = crowiRenderer.preProcess(context.markdown);
+      })
+      .then(() => interceptorManager.process('postPreviewPreProcess', context))
+      .then(() => {
+        var parsedHTML = crowiRenderer.process(context.markdown);
+        context['parsedHTML'] = parsedHTML;
+      })
+      .then(() => interceptorManager.process('prePreviewPostProcess', context))
+      .then(() => {
+        context.parsedHTML = crowiRenderer.postProcess(context.parsedHTML, context.dom);
+      })
+      .then(() => interceptorManager.process('postPreviewPostProcess', context))
+      .then(() => interceptorManager.process('prePreviewRenderHtml', context))
+      .then(() => {
+  　　     this.setState({ html: context.parsedHTML });
+      })
+      // process interceptors for post rendering
+      .then(() => interceptorManager.process('postPreviewRenderHtml', context));
+  }
+
+  generateInnerHtml(html) {
+    return {__html: html};
+  }
+
+
+render() {
+  this.getCommentHtml()
+  console.log(this.state.html)
+  //{% if not user %}disabled{% endif %}をtextareaとbuttonに追加
+  // denounce/throttle
+  return (
+    <div>
       <form className="form page-comment-form" id="page-comment-form" onSubmit={this.postComment}>
         <div className="comment-form">
           <div className="comment-form-user">
           </div>
           <div className="comment-form-main">
             <div className="comment-write">
- 			<Tabs defaultActiveKey={1} id="comment-form-tabs">
-              <Tab eventKey={1} title="Write">
-              <textarea className="comment-form-comment form-control" id="comment-form-comment" name="comment" required placeholder="Write comments here..." value={this.state.comment} onChange={this.updateState} >
-              </textarea>
-              <div className="form-check">
-              <input type="checkbox" id="comment-form-is-markdown" name="isMarkdown" checked={this.state.isMarkdown} value="1" onChange={this.updateState} /> Markdown<br />
-              </div>
-          </Tab>
-              <Tab eventKey={2} title="Prevrew">
-               <div className="comment-form-prevew">
-                 <CommentHtml crowi={this.props.crowi} crowiRenderer={this.props.crowiRenderer} comment={this.state.comment}/>
-               </div>
-              </Tab>
-            </Tabs>
+ 	        		<Tabs defaultActiveKey={1} id="comment-form-tabs">
+                <Tab eventKey={1} title="Write">
+                  <textarea className="comment-form-comment form-control" id="comment-form-comment" name="comment" required placeholder="Write comments here..." value={this.state.comment} onChange={this.updateState} >
+                  </textarea>
+                  <div className="form-check">
+                    <input type="checkbox" id="comment-form-is-markdown" name="isMarkdown" checked={this.state.isMarkdown} value="1" onChange={this.updateState} /> Markdown<br />
+                  </div>
+                </Tab>
+                <Tab eventKey={2} title="Prevrew">
+                  <div className="comment-form-prevew">
+                    <div className="commenthtml" dangerouslySetInnerHTML={this.generateInnerHtml(this.state.html)}>
+                    </div>
+                  </div>
+                </Tab>
+              </Tabs>
             </div>
             <div className="comment-submit">
               <div className="pull-right">
@@ -102,7 +150,7 @@ console.log(`commentfotm`)
           </div>
         </div>
       </form>
-      </div>
+    </div>
     );
   }
 }
