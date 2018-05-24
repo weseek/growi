@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Button from 'react-bootstrap/es/Button';
 import FormControl from 'react-bootstrap/es/FormControl';
-import Panel from 'react-bootstrap/es/panel';
 import Tab from 'react-bootstrap/es/tab';
 import Tabs from 'react-bootstrap/es/tabs';
 import UserPicture from '../User/UserPicture';
+import CommentHtml from './CommentHtml';
 /**
  *
  * @author Yuki Takei <yuki@weseek.co.jp>
@@ -20,7 +20,7 @@ export default class CommentForm extends React.Component {
     super(props);
 
     this.state = {
-      comment: '',
+      comment: 'hoge',
       isMarkdown: false,
     };
 
@@ -64,6 +64,7 @@ export default class CommentForm extends React.Component {
   }
 
   render() {
+console.log(`commentfotm`)
     //{% if not user %}disabled{% endif %}をtextareaとbuttonに追加
     // denounce/throttle
     return (
@@ -84,7 +85,7 @@ export default class CommentForm extends React.Component {
           </Tab>
               <Tab eventKey={2} title="Prevrew">
                <div className="comment-form-prevew">
-               preview
+                 <CommentHtml crowi={this.props.crowi} crowiRenderer={this.props.crowiRenderer} comment={this.state.comment}/>
                </div>
               </Tab>
             </Tabs>
@@ -111,4 +112,5 @@ CommentForm.propTypes = {
   onPostComplete: PropTypes.func,
   pageId: PropTypes.string,
   revisionId: PropTypes.string,
+  crowiRenderer:  PropTypes.object.isRequired,
 };

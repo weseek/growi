@@ -138,7 +138,7 @@ if (writeCommentElem) {
     }
   };
   ReactDOM.render(
-    <CommentForm crowi={crowi} pageId={pageId} revisionId={pageRevisionId} onPostComplete={postCompleteHandler} />,
+    <CommentForm crowi={crowi} pageId={pageId} revisionId={pageRevisionId} onPostComplete={postCompleteHandler} crowiRenderer={crowiRenderer}/>,
     writeCommentElem);
 }
 
