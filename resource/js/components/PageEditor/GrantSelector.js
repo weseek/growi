@@ -150,7 +150,7 @@ export default class GrantSelector extends React.Component {
 
   render() {
     return <span>
-      <span className="m-l-5">{this.renderGrantSelector()}</span>
+      <span>{this.renderGrantSelector()}</span>
     </span>;
   }
 }
