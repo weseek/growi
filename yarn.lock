@@ -7659,9 +7659,9 @@ xmlhttprequest-ssl@~1.5.4:
   version "1.5.4"
   resolved "https://registry.yarnpkg.com/xmlhttprequest-ssl/-/xmlhttprequest-ssl-1.5.4.tgz#04f560915724b389088715cc0ed7813e9677bf57"
 
-xss@^0.3.5:
-  version "0.3.7"
-  resolved "https://registry.yarnpkg.com/xss/-/xss-0.3.7.tgz#1df6dc85c0240b455b5e5f0428bdeccd739ab4ee"
+xss@^0.3.7:
+  version "0.3.8"
+  resolved "https://registry.yarnpkg.com/xss/-/xss-0.3.8.tgz#d0cbe23bde490bc98c139f08de3899165a68af0e"
   dependencies:
     commander "^2.9.0"
     cssfilter "0.0.10"
