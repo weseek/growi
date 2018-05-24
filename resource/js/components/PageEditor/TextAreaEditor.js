@@ -90,7 +90,6 @@ export default class TextAreaEditor extends AbstractEditor {
   insertText(text) {
     const startPos = this.textarea.selectionStart;
     const endPos = this.textarea.selectionEnd;
-
     this.replaceValue(text, startPos, endPos);
   }
 
@@ -125,13 +124,17 @@ export default class TextAreaEditor extends AbstractEditor {
 
   getEolPos() {
     const currentPos = this.textarea.selectionStart;
-    return this.textarea.value.indexOf('\n', currentPos);
+    const pos = this.textarea.value.indexOf('\n', currentPos);
+    if (pos < 0) {  // not found but EOF
+      return this.textarea.value.length;
+    }
+    return pos;
   }
 
   replaceValue(text, startPos, endPos) {
     // create new value
     const value = this.textarea.value;
-    const newValue = value.substring(0, startPos) + text + value.substring(endPos, value.length-1);
+    const newValue = value.substring(0, startPos) + text + value.substring(endPos, value.length);
     // calculate new position
     const newPos = startPos + text.length;
 
