@@ -122,6 +122,7 @@ gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js
   {% block html_base_attr %}{% endblock %}
   data-csrftoken="{{ csrf() }}"
   data-current-username="{% if user %}{{ user.username }}{% endif %}"
+  data-userlang="{% if user %}{{ user.lang }}{% endif %}"
  >
 
 <div id="wrapper">

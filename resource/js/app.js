@@ -1,5 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { I18nextProvider } from 'react-i18next';
+
+import i18nFactory from './i18n';
 
 import Crowi from './util/Crowi';
 // import CrowiRenderer from './util/CrowiRenderer';
@@ -32,6 +35,9 @@ import * as entities from 'entities';
 if (!window) {
   window = {};
 }
+
+const userlang = $('body').data('userlang');
+const i18n = i18nFactory(userlang);
 
 const mainContent = document.querySelector('#content-main');
 let pageId = null;
@@ -209,9 +215,11 @@ if (pageEditorGrantSelectorElem) {
     pageGrant.grantGroup = grantGroup;
   }
   ReactDOM.render(
-    <GrantSelector crowi={crowi}
-      userRelatedGroups={userRelatedGroups} pageGrant={pageGrant}
-      onChange={updatePageGrantElems} />,
+    <I18nextProvider i18n={i18n}>
+      <GrantSelector crowi={crowi}
+        userRelatedGroups={userRelatedGroups} pageGrant={pageGrant}
+        onChange={updatePageGrantElems} />
+    </I18nextProvider>,
     pageEditorGrantSelectorElem
   );
 }
