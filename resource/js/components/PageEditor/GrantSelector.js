@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { translate } from 'react-i18next';
 
 import FormGroup from 'react-bootstrap/es/FormGroup';
 import FormControl from 'react-bootstrap/es/FormControl';
-import ControlLabel from 'react-bootstrap/es/ControlLabel';
+// import ControlLabel from 'react-bootstrap/es/ControlLabel';
 // import Button from 'react-bootstrap/es/Button';
 
 // import Modal from 'react-bootstrap/es/Modal';
@@ -15,7 +16,7 @@ import ControlLabel from 'react-bootstrap/es/ControlLabel';
  * @class GrantSelector
  * @extends {React.Component}
  */
-export default class GrantSelector extends React.Component {
+class GrantSelector extends React.Component {
 
   constructor(props) {
     super(props);
@@ -29,7 +30,7 @@ export default class GrantSelector extends React.Component {
 
     this.availableGrantLabels = {
       1: 'Public',
-      2: 'Anyone with the linc',
+      2: 'Anyone with the link',
       // 3:'Specified users only',
       4: 'Just me',
       5: 'Only inside the group',
@@ -97,8 +98,9 @@ export default class GrantSelector extends React.Component {
    * @memberof GrantSelector
    */
   renderGrantSelector() {
+    const { t } = this.props;
     const grantElems = this.availableGrants.map((grant) => {
-      return <option key={grant} value={grant}>{this.availableGrantLabels[grant]}</option>;
+      return <option key={grant} value={grant}>{t(this.availableGrantLabels[grant])}</option>;
     });
 
     const bsClassName = 'form-control-dummy'; // set form-control* to shrink width
@@ -171,9 +173,12 @@ export class UserGroup {
 }
 
 GrantSelector.propTypes = {
+  t: PropTypes.func.isRequired,               // i18next
   crowi: PropTypes.object.isRequired,
   isGroupModalShown: PropTypes.bool,
   userRelatedGroups: PropTypes.object,
   pageGrant: PropTypes.instanceOf(PageGrant),
   onChange: PropTypes.func,
 };
+
+export default translate()(GrantSelector);

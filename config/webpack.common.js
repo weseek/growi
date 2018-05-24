@@ -45,6 +45,7 @@ module.exports = function(options) {
       alias: {
         '@root': helpers.root('/'),
         '@alias/logger': helpers.root('lib/service/logger'),
+        '@alias/locales': helpers.root('lib/locales'),
         // replace bunyan
         'bunyan': 'browser-bunyan',
       }
@@ -66,6 +67,13 @@ module.exports = function(options) {
               plugins: ['lodash'],
             }
           }]
+        },
+        {
+          test: /locales/,
+          loader: '@alienfast/i18next-loader',
+          options: {
+            basenameAsNamespace: true,
+          }
         },
         {
           test: /\.css$/,
