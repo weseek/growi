@@ -10,7 +10,7 @@ $headingtext: #D9A364;
 $bodytext: #97D7CF;
 $linktext: darken($themecolor, 15%);
 $linktext-hover: lighten($linktext, 80%);
-$sidebar-text:rgb(29, 88, 81);
+$sidebar-text:rgb(65, 133, 124);
 $dark-themecolor:#4F5467;
 
 
@@ -31,3 +31,6 @@ $inline-code-bg: darken($bodycolor, 5%);
 @import 'apply-colors';
 @import 'apply-colors-dark';
 
+.bg-title{
+  border-bottom: 1px solid rgb(131, 228, 215);
+}
