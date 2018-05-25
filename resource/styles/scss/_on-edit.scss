@@ -96,6 +96,7 @@ body.on-edit {
         // left(editor)
         .page-editor-editor-container {
           height: calc(100vh - #{$header-plus-footer});
+        }
         .react-codemirror2, .CodeMirror, .CodeMirror-scroll {
           height: calc(100vh - #{$editor-margin});
           // less than smartphone
@@ -104,7 +105,7 @@ body.on-edit {
           }
         }
       }
-      }
+
 
       .page-editor-footer {
         width: 100%;
@@ -208,6 +209,13 @@ body.on-edit {
         padding: 0.3em;
         background: rgba(200,200,200,0.5);
         color: #444;
+      }
+    }
+    // add icon on cursor
+    .add-cursor-icon .CodeMirror-cursor {
+      &:after {
+        font-family: 'FontAwesome';
+        content: '\f0ce';
       }
     }
 

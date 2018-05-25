@@ -6,6 +6,7 @@ const loadScript = require('simple-load-script');
 const loadCssSync = require('load-css-file');
 
 import * as codemirror from 'codemirror';
+import mtu from './MarkdownTableUtil';
 
 import { UnControlled as ReactCodeMirror } from 'react-codemirror2';
 require('codemirror/addon/display/autorefresh');
@@ -56,6 +57,7 @@ export default class Editor extends React.Component {
       isEnabledEmojiAutoComplete: false,
       isUploading: false,
       isLoadingKeymap: false,
+      additionalClass: "",
     };
 
     this.loadedThemeSet = new Set(['eclipse', 'elegant']);   // themes imported in _vendor.scss
@@ -74,6 +76,7 @@ export default class Editor extends React.Component {
     this.onScrollCursorIntoView = this.onScrollCursorIntoView.bind(this);
     this.onPaste = this.onPaste.bind(this);
 
+    this.onCursor = this.onCursor.bind(this);
     this.onDragEnterForCM = this.onDragEnterForCM.bind(this);
     this.onDragLeave = this.onDragLeave.bind(this);
     this.onDrop = this.onDrop.bind(this);
@@ -430,6 +433,16 @@ export default class Editor extends React.Component {
       : '';
   }
 
+  onCursor(editor, event) {
+    const strFromBol = mtu.getStrFromBol(editor);
+    if (mtu.isEndOfLine(editor) && mtu.linePartOfTableRE.test(strFromBol)) {
+      this.setState({additionalClass: 'add-cursor-icon'});
+    }
+    else {
+      this.setState({additionalClass: ''});
+    }
+  }
+
   render() {
     const flexContainer = {
       height: '100%',
@@ -440,7 +453,7 @@ export default class Editor extends React.Component {
     const theme = this.props.editorOptions.theme || 'elegant';
     const styleActiveLine = this.props.editorOptions.styleActiveLine || undefined;
     return <React.Fragment>
-      <div style={flexContainer}>
+      <div style={flexContainer} className={this.state.additionalClass}>
         <Dropzone
           ref="dropzone"
           disableClick
@@ -508,6 +521,7 @@ export default class Editor extends React.Component {
                 this.emojiAutoCompleteHelper.showHint(editor);
               }
             }}
+            onCursor={this.onCursor}
             onDragEnter={this.onDragEnterForCM}
           />
         </Dropzone>
