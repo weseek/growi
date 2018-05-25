@@ -212,7 +212,7 @@ body.on-edit {
       }
     }
     // add icon on cursor
-    .add-cursor-icon .CodeMirror-cursor {
+    .autoformat-markdown-table-activated .CodeMirror-cursor {
       &:after {
         font-family: 'FontAwesome';
         content: '\f0ce';

@@ -436,7 +436,7 @@ export default class Editor extends React.Component {
   onCursor(editor, event) {
     const strFromBol = mtu.getStrFromBol(editor);
     if (mtu.isEndOfLine(editor) && mtu.linePartOfTableRE.test(strFromBol)) {
-      this.setState({additionalClass: 'add-cursor-icon'});
+      this.setState({additionalClass: 'autoformat-markdown-table-activated'});
     }
     else {
       this.setState({additionalClass: ''});
