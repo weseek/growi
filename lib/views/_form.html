@@ -49,7 +49,7 @@
       <div id="page-grant-selector"></div>
 
       <input type="hidden" id="page-grant" name="pageForm[grant]" value="{{ pageForm.grant|default(page.grant) }}">
-      <input type="hidden" id="grant-group" value="{% if pageForm.grant %}{% endif %}">
+      <input type="hidden" id="grant-group" name="pageForm[grantGroup]" value="{% if pageForm.grantGroup|default(page.grantGroup) %}{% endif %}">
       <input type="hidden" id="edit-form-csrf" name="_csrf" value="{{ csrf() }}">
       <button type="submit" class="btn btn-primary btn-submit" id="edit-form-submit">{{ t('Update') }}</button>
     </div>
