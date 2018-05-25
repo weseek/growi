@@ -168,7 +168,6 @@ GrantSelector.propTypes = {
   t: PropTypes.func.isRequired,               // i18next
   crowi: PropTypes.object.isRequired,
   isGroupModalShown: PropTypes.bool,
-  userRelatedGroups: PropTypes.object,
   pageGrant: PropTypes.number,
   pageGrantGroup: PropTypes.object,
   onChangePageGrant: PropTypes.func,

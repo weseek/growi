@@ -187,32 +187,33 @@ if (pageEditorOptionsSelectorElem) {
   );
 }
 // render GrantSelector
-const userRelatedGroupsElem = document.getElementById('user-related-group-data');
 const pageEditorGrantSelectorElem = document.getElementById('page-grant-selector');
-const pageGrantElem = document.getElementById('page-grant');
-const pageGrantGroupElem = document.getElementById('grant-group');
-function updatePageGrantElem(pageGrant) {
-  pageGrantElem.value = pageGrant;
-}
-function updatePageGrantGroupElem(pageGrantGroupId) {
-  pageGrantGroupElem.value = pageGrantGroupId;
-}
 if (pageEditorGrantSelectorElem) {
-  let userRelatedGroups;
-  if (userRelatedGroupsElem != null) {
-    let userRelatedGroupsJSONString = userRelatedGroupsElem.textContent;
-    if (userRelatedGroupsJSONString != null && userRelatedGroupsJSONString.length > 0) {
-      userRelatedGroups = JSON.parse(userRelatedGroupsJSONString || '{}', (value) => {
-        return new UserGroup(value);
-      });
-    }
+  // let userRelatedGroups;
+  // if (userRelatedGroupsElem != null) {
+  //   let userRelatedGroupsJSONString = userRelatedGroupsElem.textContent;
+  //   if (userRelatedGroupsJSONString != null && userRelatedGroupsJSONString.length > 0) {
+  //     userRelatedGroups = JSON.parse(userRelatedGroupsJSONString || '{}', (value) => {
+  //       return new UserGroup(value);
+  //     });
+  //   }
+  // }
+  const pageGrantElem = document.getElementById('page-grant');
+  const pageGrantGroupElem = document.getElementById('grant-group');
+  /* eslint-disable no-inner-declarations */
+  function updatePageGrantElem(pageGrant) {
+    pageGrantElem.value = pageGrant;
   }
-  pageGrant = +(document.getElementById('page-grant').value);
-  const pageGrantGroup = JSON.parse(document.getElementById('grant-group').textContent || '{}');
+  function updatePageGrantGroupElem(pageGrantGroupId) {
+    pageGrantGroupElem.value = pageGrantGroupId;
+  }
+  /* eslint-enable */
+  pageGrant = +(pageGrantElem.value);
+  const pageGrantGroup = JSON.parse(pageGrantGroupElem.textContent || '{}');
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
       <GrantSelector crowi={crowi}
-        userRelatedGroups={userRelatedGroups} pageGrant={pageGrant} pageGrantGroup={pageGrantGroup}
+        pageGrant={pageGrant} pageGrantGroup={pageGrantGroup}
         onChangePageGrant={updatePageGrantElem}
         onDeterminePageGrantGroupId={updatePageGrantGroupElem} />
     </I18nextProvider>,
