@@ -189,15 +189,6 @@ if (pageEditorOptionsSelectorElem) {
 // render GrantSelector
 const pageEditorGrantSelectorElem = document.getElementById('page-grant-selector');
 if (pageEditorGrantSelectorElem) {
-  // let userRelatedGroups;
-  // if (userRelatedGroupsElem != null) {
-  //   let userRelatedGroupsJSONString = userRelatedGroupsElem.textContent;
-  //   if (userRelatedGroupsJSONString != null && userRelatedGroupsJSONString.length > 0) {
-  //     userRelatedGroups = JSON.parse(userRelatedGroupsJSONString || '{}', (value) => {
-  //       return new UserGroup(value);
-  //     });
-  //   }
-  // }
   const pageGrantElem = document.getElementById('page-grant');
   const pageGrantGroupElem = document.getElementById('grant-group');
   /* eslint-disable no-inner-declarations */

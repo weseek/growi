@@ -53,6 +53,7 @@ class GrantSelector extends React.Component {
 
     //// DIRTY HACK -- 2018.05.25 Yuki Takei
     // set group name to the bootstrap-select options
+    //  cz: .selectpicker('refresh') doesn't replace data-content
     $('.page-grant-selector .group-name').text(this.getGroupName());
   }
 
@@ -139,11 +140,13 @@ class GrantSelector extends React.Component {
 
       // DIRTY HACK -- 2018.05.25 Yuki Takei
       // remove 'Only inside the group' item
+      //  cz: .selectpicker('refresh') doesn't replace data-content
       grantElems.splice(3, 1);
     }
     else {
       // DIRTY HACK -- 2018.05.25 Yuki Takei
       // remove 'Reselect the group' item
+      //  cz: .selectpicker('refresh') doesn't replace data-content
       grantElems.splice(4, 1);
     }
 
