@@ -13,7 +13,7 @@ import SearchPage       from './components/SearchPage';
 import PageEditor       from './components/PageEditor';
 import OptionsSelector  from './components/PageEditor/OptionsSelector';
 import { EditorOptions, PreviewOptions } from './components/PageEditor/OptionsSelector';
-import GrantSelector, { UserGroup, PageGrant } from './components/PageEditor/GrantSelector';
+import GrantSelector    from './components/PageEditor/GrantSelector';
 import Page             from './components/Page';
 import PageListSearch   from './components/PageListSearch';
 import PageHistory      from './components/PageHistory';
@@ -63,6 +63,7 @@ const isLoggedin = document.querySelector('.main-container.nologin') == null;
 // FIXME
 const crowi = new Crowi({
   me: $('body').data('current-username'),
+  isAdmin: $('body').data('is-admin'),
   csrfToken: $('body').data('csrftoken'),
 }, window);
 window.crowi = crowi;
@@ -187,38 +188,32 @@ if (pageEditorOptionsSelectorElem) {
   );
 }
 // render GrantSelector
-const userRelatedGroupsElem = document.getElementById('user-related-group-data');
 const pageEditorGrantSelectorElem = document.getElementById('page-grant-selector');
-const pageGrantElem = document.getElementById('page-grant');
-const pageGrantGroupElem = document.getElementById('grant-group');
-function updatePageGrantElems(newPageGrant) {
-  pageGrantElem.value = newPageGrant.grant;
-  pageGrantGroupElem.value = newPageGrant.grantGroup.userGroupId || '';
-}
 if (pageEditorGrantSelectorElem) {
-  let userRelatedGroups;
-  if (userRelatedGroupsElem != null) {
-    let userRelatedGroupsJSONString = userRelatedGroupsElem.textContent;
-    if (userRelatedGroupsJSONString != null && userRelatedGroupsJSONString.length > 0) {
-      userRelatedGroups = JSON.parse(userRelatedGroupsJSONString || '{}', (value) => {
-        return new UserGroup(value);
-      });
-    }
+  const grantElem = document.getElementById('page-grant');
+  const grantGroupElem = document.getElementById('grant-group');
+  const grantGroupNameElem = document.getElementById('grant-group-name');
+  /* eslint-disable no-inner-declarations */
+  function updateGrantElem(pageGrant) {
+    grantElem.value = pageGrant;
   }
-  pageGrant = new PageGrant();
-  pageGrant.grant = document.getElementById('page-grant').value;
-  const grantGroupData = JSON.parse(document.getElementById('grant-group').textContent || '{}');
-  if (grantGroupData != null) {
-    const grantGroup = new UserGroup();
-    grantGroup.userGroupId = grantGroupData.id;
-    grantGroup.userGroup = grantGroupData;
-    pageGrant.grantGroup = grantGroup;
+  function updateGrantGroupElem(grantGroupId) {
+    grantGroupElem.value = grantGroupId;
   }
+  function updateGrantGroupNameElem(grantGroupName) {
+    grantGroupNameElem.value = grantGroupName;
+  }
+  /* eslint-enable */
+  const pageGrant = +grantElem.value;
+  const pageGrantGroupId = grantGroupElem.value;
+  const pageGrantGroupName = grantGroupNameElem.value;
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
       <GrantSelector crowi={crowi}
-        userRelatedGroups={userRelatedGroups} pageGrant={pageGrant}
-        onChange={updatePageGrantElems} />
+        pageGrant={pageGrant} pageGrantGroupId={pageGrantGroupId} pageGrantGroupName={pageGrantGroupName}
+        onChangePageGrant={updateGrantElem}
+        onDeterminePageGrantGroupId={updateGrantGroupElem}
+        onDeterminePageGrantGroupName={updateGrantGroupNameElem} />
     </I18nextProvider>,
     pageEditorGrantSelectorElem
   );

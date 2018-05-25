@@ -35,13 +35,13 @@ export default class Crowi {
 
     // FIXME
     this.me = context.me;
+    this.isAdmin = context.isAdmin;
 
     this.users = [];
     this.userByName = {};
     this.userById   = {};
     this.draft = {};
     this.editorOptions = {};
-    this.userRelatedGroups = {};
 
     this.recoverData();
   }
