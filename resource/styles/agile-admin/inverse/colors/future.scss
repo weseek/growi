@@ -1,21 +1,30 @@
 @import '../variables';
 
-$themecolor:#af8f25;
+$basecolor: #16282D;
+$themecolor:rgb(11, 78, 104);
 
-$topbar:#497C84;
+$topbar:#011414;
 $sidebar:#fff;
-$bodycolor:#16282D;
-$headingtext: #2b2b2b;
-$bodytext: #333333;
+$bodycolor:$basecolor;
+$headingtext: rgb(218, 216, 117);
+$bodytext: #97D7CF;
 $linktext: darken($themecolor, 15%);
-$linktext-hover: lighten($linktext, 10%);
-$sidebar-text:#5a4a38;
+$linktext-hover: lighten($linktext, 80%);
+$sidebar-text:rgb(29, 88, 81);
+$dark-themecolor:#4F5467;
 
 $primary: $themecolor;
+$logo-mark-fill: rgb(170, 245, 237);
+$wikilinktext: saturate($bodytext, 20%);
+$wikilinktext-hover: darken($wikilinktext, 5%);
 
-$logo-mark-fill: lighten(desaturate($topbar, 10%), 15%);
-$wikilinktext: darken($themecolor, 15%);
-$wikilinktext-hover: lighten($wikilinktext, 10%);
+$dark: darken($bodytext, 5%);
+$border: lighten($basecolor, 15%);
+$navbar-border: lighten($border, 10%);
+$active-navbar-border: darken($border, 3%);
+$btn-default-bgcolor: darken($basecolor, 10%);
+$inline-code-bg: darken($bodycolor, 5%);
 
 @import 'apply-colors';
-@import 'apply-colors-light';
+@import 'apply-colors-dark';
+
