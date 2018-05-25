@@ -21,19 +21,16 @@ class GrantSelector extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      pageGrant: this.props.pageGrant,
-      isGroupModalShown: false,
-    };
-
     this.availableGrants = [1, 2, /*3, */4, 5];
-
     this.availableGrantLabels = {
       1: 'Public',
       2: 'Anyone with the link',
       // 3:'Specified users only',
       4: 'Just me',
       5: 'Only inside the group',
+    };
+
+    this.state = {
     };
 
     this.onChangeGrant = this.onChangeGrant.bind(this);
@@ -46,7 +43,7 @@ class GrantSelector extends React.Component {
 
   // Initialize the component.
   init() {
-    this.grantSelectorInputEl.value = this.state.pageGrant.grant;
+    this.grantSelectorInputEl.value = this.props.pageGrant;
   }
 
   /**
@@ -55,15 +52,12 @@ class GrantSelector extends React.Component {
    * @memberof GrantSelector
    */
   onChangeGrant(grant) {
-    const newValue = this.grantSelectorInputEl.value;
-    const newGrant = Object.assign(this.state.pageGrant, {grant: newValue});
-    this.setState({ pageGrant: newGrant });
+    const pageGrant = this.grantSelectorInputEl.value;
 
     // dispatch event
-    this.dispatchOnChange();
+    this.dispatchOnChange(pageGrant);
   }
 
-  // (TBD)
   // /**
   //  * On click event handler for grant usergroup.
   //  *
@@ -75,7 +69,7 @@ class GrantSelector extends React.Component {
   //   this.setState({ pageGrant: newGrant });
 
   //   // dispatch event
-  //   this.dispatchOnChange();
+  //   // this.dispatchOnChange();
   //   // close group select modal
   //   if (this.state.isModalShown) {
   //     this.setState({ isGroupModalShown: false });
@@ -86,9 +80,15 @@ class GrantSelector extends React.Component {
    * dispatch onChange event
    * @memberof GrantSelector
    */
-  dispatchOnChange() {
-    if (this.props.onChange != null) {
-      this.props.onChange(this.state.pageGrant);
+  dispatchOnChange(pageGrant) {
+    if (this.props.onChangePageGrant != null) {
+      this.props.onChangePageGrant(pageGrant);
+    }
+  }
+
+  dispatchOnDeterminePageGrantGroup(pageGrantGroup) {
+    if (this.props.onDeterminePageGrantGroupId != null) {
+      this.props.onDeterminePageGrantGroupId(pageGrantGroup);
     }
   }
 
@@ -103,11 +103,12 @@ class GrantSelector extends React.Component {
       return <option key={grant} value={grant}>{t(this.availableGrantLabels[grant])}</option>;
     });
 
-    const bsClassName = 'form-control-dummy'; // set form-control* to shrink width
+    const pageGrant = this.props.pageGrant || 1;  // default: 1
 
+    const bsClassName = 'form-control-dummy'; // set form-control* to shrink width
     return (
       <FormGroup controlId="formControlsSelect" className="m-b-0">
-        <FormControl componentClass="select" placeholder="select" defaultValue={this.state.pageGrant.grant} bsClass={bsClassName} className="btn-group-sm selectpicker"
+        <FormControl componentClass="select" placeholder="select" defaultValue={pageGrant} bsClass={bsClassName} className="btn-group-sm selectpicker"
           onChange={this.onChangeGrant}
           inputRef={ el => this.grantSelectorInputEl=el }>
 
@@ -154,15 +155,6 @@ class GrantSelector extends React.Component {
   }
 }
 
-export class PageGrant {
-  constructor(props) {
-    this.grant = '';
-    this.grantGroup = null;
-
-    Object.assign(this, props);
-  }
-}
-
 export class UserGroup {
   constructor(props) {
     this.userGroupId = '';
@@ -177,8 +169,10 @@ GrantSelector.propTypes = {
   crowi: PropTypes.object.isRequired,
   isGroupModalShown: PropTypes.bool,
   userRelatedGroups: PropTypes.object,
-  pageGrant: PropTypes.instanceOf(PageGrant),
-  onChange: PropTypes.func,
+  pageGrant: PropTypes.number,
+  pageGrantGroup: PropTypes.object,
+  onChangePageGrant: PropTypes.func,
+  onDeterminePageGrantGroupId: PropTypes.func,
 };
 
 export default translate()(GrantSelector);

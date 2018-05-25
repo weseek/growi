@@ -13,7 +13,7 @@ import SearchPage       from './components/SearchPage';
 import PageEditor       from './components/PageEditor';
 import OptionsSelector  from './components/PageEditor/OptionsSelector';
 import { EditorOptions, PreviewOptions } from './components/PageEditor/OptionsSelector';
-import GrantSelector, { UserGroup, PageGrant } from './components/PageEditor/GrantSelector';
+import GrantSelector, { UserGroup } from './components/PageEditor/GrantSelector';
 import Page             from './components/Page';
 import PageListSearch   from './components/PageListSearch';
 import PageHistory      from './components/PageHistory';
@@ -191,9 +191,11 @@ const userRelatedGroupsElem = document.getElementById('user-related-group-data')
 const pageEditorGrantSelectorElem = document.getElementById('page-grant-selector');
 const pageGrantElem = document.getElementById('page-grant');
 const pageGrantGroupElem = document.getElementById('grant-group');
-function updatePageGrantElems(newPageGrant) {
-  pageGrantElem.value = newPageGrant.grant;
-  pageGrantGroupElem.value = newPageGrant.grantGroup.userGroupId || '';
+function updatePageGrantElem(pageGrant) {
+  pageGrantElem.value = pageGrant;
+}
+function updatePageGrantGroupElem(pageGrantGroupId) {
+  pageGrantGroupElem.value = pageGrantGroupId;
 }
 if (pageEditorGrantSelectorElem) {
   let userRelatedGroups;
@@ -205,20 +207,14 @@ if (pageEditorGrantSelectorElem) {
       });
     }
   }
-  pageGrant = new PageGrant();
-  pageGrant.grant = document.getElementById('page-grant').value;
-  const grantGroupData = JSON.parse(document.getElementById('grant-group').textContent || '{}');
-  if (grantGroupData != null) {
-    const grantGroup = new UserGroup();
-    grantGroup.userGroupId = grantGroupData.id;
-    grantGroup.userGroup = grantGroupData;
-    pageGrant.grantGroup = grantGroup;
-  }
+  pageGrant = +(document.getElementById('page-grant').value);
+  const pageGrantGroup = JSON.parse(document.getElementById('grant-group').textContent || '{}');
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
       <GrantSelector crowi={crowi}
-        userRelatedGroups={userRelatedGroups} pageGrant={pageGrant}
-        onChange={updatePageGrantElems} />
+        userRelatedGroups={userRelatedGroups} pageGrant={pageGrant} pageGrantGroup={pageGrantGroup}
+        onChangePageGrant={updatePageGrantElem}
+        onDeterminePageGrantGroupId={updatePageGrantGroupElem} />
     </I18nextProvider>,
     pageEditorGrantSelectorElem
   );
