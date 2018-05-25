@@ -63,6 +63,7 @@ const isLoggedin = document.querySelector('.main-container.nologin') == null;
 // FIXME
 const crowi = new Crowi({
   me: $('body').data('current-username'),
+  isAdmin: $('body').data('is-admin'),
   csrfToken: $('body').data('csrftoken'),
 }, window);
 window.crowi = crowi;
