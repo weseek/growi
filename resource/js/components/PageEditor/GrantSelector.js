@@ -4,10 +4,8 @@ import { translate } from 'react-i18next';
 
 import FormGroup from 'react-bootstrap/es/FormGroup';
 import FormControl from 'react-bootstrap/es/FormControl';
-// import ControlLabel from 'react-bootstrap/es/ControlLabel';
 import ListGroup from 'react-bootstrap/es/ListGroup';
 import ListGroupItem from 'react-bootstrap/es/ListGroupItem';
-
 import Modal from 'react-bootstrap/es/Modal';
 
 const SPECIFIED_GROUP_VALUE = 'specifiedGroup';
@@ -24,14 +22,14 @@ class GrantSelector extends React.Component {
   constructor(props) {
     super(props);
 
-    this.availableGrants = [1, 2, /*3, */4, 5];
-    this.availableGrantLabels = {
-      1: 'Public',
-      2: 'Anyone with the link',
-      // 3:'Specified users only',
-      4: 'Just me',
-      5: 'Only inside the group',
-    };
+    this.availableGrants = [
+      { pageGrant: 1, iconClass: 'icon-people', styleClass: '', label: 'Public' },
+      { pageGrant: 2, iconClass: 'icon-link', styleClass: 'text-info', label: 'Anyone with the link' },
+      // { pageGrant: 3, iconClass: '', label: 'Specified users only' },
+      { pageGrant: 4, iconClass: 'icon-lock', styleClass: 'text-danger', label: 'Just me' },
+      { pageGrant: 5, iconClass: 'icon-options', styleClass: '', label: 'Only inside the group' },  // appeared only one of these 'pageGrant: 5'
+      { pageGrant: 5, iconClass: 'icon-options', styleClass: '', label: 'Reselect the group' },     // appeared only one of these 'pageGrant: 5'
+    ];
 
     this.state = {
       pageGrant: this.props.pageGrant || 1,  // default: 1
@@ -41,6 +39,9 @@ class GrantSelector extends React.Component {
 
     this.showSelectGroupModal = this.showSelectGroupModal.bind(this);
     this.hideSelectGroupModal = this.hideSelectGroupModal.bind(this);
+
+    this.getGroupName = this.getGroupName.bind(this);
+
     this.changeGrantHandler = this.changeGrantHandler.bind(this);
     this.groupListItemClickHandler = this.groupListItemClickHandler.bind(this);
   }
@@ -49,6 +50,10 @@ class GrantSelector extends React.Component {
     // refresh bootstrap-select
     // see https://silviomoreto.github.io/bootstrap-select/methods/#selectpickerrefresh
     $('.page-grant-selector.selectpicker').selectpicker('refresh');
+
+    //// DIRTY HACK -- 2018.05.25 Yuki Takei
+    // set group name to the bootstrap-select options
+    $('.page-grant-selector .group-name').text(this.getGroupName());
   }
 
   showSelectGroupModal() {
@@ -56,6 +61,11 @@ class GrantSelector extends React.Component {
   }
   hideSelectGroupModal() {
     this.setState({ isSelectGroupModalShown: false });
+  }
+
+  getGroupName() {
+    const pageGrantGroup = this.state.pageGrantGroup;
+    return pageGrantGroup ? pageGrantGroup.name : '';
   }
 
   /**
@@ -110,31 +120,45 @@ class GrantSelector extends React.Component {
    */
   renderGrantSelector() {
     const { t } = this.props;
+
+    let index = 0;
+    let selectedValue = this.state.pageGrant;
     const grantElems = this.availableGrants.map((grant) => {
-      return <option key={grant} value={grant}>{t(this.availableGrantLabels[grant])}</option>;
+      const dataContent = `<i class="icon icon-fw ${grant.iconClass} ${grant.styleClass}"></i> <span class="${grant.styleClass}">${t(grant.label)}</span>`;
+      return <option key={index++} value={grant.pageGrant} data-content={dataContent}>{t(grant.label)}</option>;
     });
 
-    let defaultValue = this.state.pageGrant;
-    // add specified group option
     const pageGrantGroup = this.state.pageGrantGroup;
     if (pageGrantGroup != null) {
-      defaultValue = SPECIFIED_GROUP_VALUE;
+      selectedValue = SPECIFIED_GROUP_VALUE;
       /*
        * set SPECIFIED_GROUP_VALUE to grant selector
        *  cz: bootstrap-select input element has the defferent state to React component
        */
       this.grantSelectorInputEl.value = SPECIFIED_GROUP_VALUE;
+
+      // DIRTY HACK -- 2018.05.25 Yuki Takei
+      // remove 'Only inside the group' item
+      grantElems.splice(3, 1);
     }
+    else {
+      // DIRTY HACK -- 2018.05.25 Yuki Takei
+      // remove 'Reselect the group' item
+      grantElems.splice(4, 1);
+    }
+
+    // add specified group option
     grantElems.push(
-      <option key="specifiedGroupKey" value={SPECIFIED_GROUP_VALUE} style={{ display: pageGrantGroup ? 'inherit' : 'none' }}>
-        {pageGrantGroup && pageGrantGroup.name}
+      <option ref="specifiedGroupOption" key="specifiedGroupKey" value={SPECIFIED_GROUP_VALUE} style={{ display: pageGrantGroup ? 'inherit' : 'none' }}
+          data-content={`<i class="icon icon-fw icon-organization text-success"></i> <span class="group-name text-success">${this.getGroupName()}</span>`}>
+        {this.getGroupName()}
       </option>
     );
 
     const bsClassName = 'form-control-dummy'; // set form-control* to shrink width
     return (
       <FormGroup className="m-b-0">
-        <FormControl componentClass="select" placeholder="select" defaultValue={defaultValue} bsClass={bsClassName} className="btn-group-sm page-grant-selector selectpicker"
+        <FormControl componentClass="select" placeholder="select" defaultValue={selectedValue} bsClass={bsClassName} className="btn-group-sm page-grant-selector selectpicker"
           onChange={this.changeGrantHandler}
           inputRef={ el => this.grantSelectorInputEl=el }>
 
