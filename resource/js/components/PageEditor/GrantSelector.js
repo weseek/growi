@@ -129,7 +129,7 @@ class GrantSelector extends React.Component {
 
     const bsClassName = 'form-control-dummy'; // set form-control* to shrink width
     return (
-      <FormGroup lassName="m-b-0">
+      <FormGroup className="m-b-0">
         <FormControl componentClass="select" placeholder="select" defaultValue={defaultValue} bsClass={bsClassName} className="btn-group-sm page-grant-selector selectpicker"
           onChange={this.changeGrantHandler}
           inputRef={ el => this.grantSelectorInputEl=el }>
