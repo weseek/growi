@@ -209,7 +209,7 @@ if (pageEditorGrantSelectorElem) {
   }
   /* eslint-enable */
   pageGrant = +(pageGrantElem.value);
-  const pageGrantGroup = JSON.parse(pageGrantGroupElem.textContent || '{}');
+  const pageGrantGroup = JSON.parse(pageGrantGroupElem.textContent || null);
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
       <GrantSelector crowi={crowi}

@@ -7,9 +7,10 @@ import FormControl from 'react-bootstrap/es/FormControl';
 // import ControlLabel from 'react-bootstrap/es/ControlLabel';
 import ListGroup from 'react-bootstrap/es/ListGroup';
 import ListGroupItem from 'react-bootstrap/es/ListGroupItem';
-import Button from 'react-bootstrap/es/Button';
 
 import Modal from 'react-bootstrap/es/Modal';
+
+const SPECIFIED_GROUP_VALUE = 'specifiedGroup';
 
 /**
  * Page grant select component
@@ -33,6 +34,8 @@ class GrantSelector extends React.Component {
     };
 
     this.state = {
+      pageGrant: this.props.pageGrant || 1,  // default: 1
+      pageGrantGroup: this.props.pageGrantGroup,
       isSelectGroupModalShown: false,
     };
 
@@ -49,7 +52,7 @@ class GrantSelector extends React.Component {
 
   // Initialize the component.
   init() {
-    this.grantSelectorInputEl.value = this.props.pageGrant;
+    // this.grantSelectorInputEl.value = this.props.pageGrant;
   }
 
   showSelectGroupModal() {
@@ -60,27 +63,34 @@ class GrantSelector extends React.Component {
   }
 
   /**
-   * On change event handler for pagegrant.
-   * @param {any} grant page grant
-   * @memberof GrantSelector
+   * change event handler for pageGrant selector
    */
-  changeGrantHandler(grant) {
+  changeGrantHandler() {
     const pageGrant = +this.grantSelectorInputEl.value;
 
     // show modal
     if (pageGrant === 5) {
       this.showSelectGroupModal();
     }
+    // reset pageGrantGroup
     else {
+      this.setState({ pageGrantGroup: null });
       this.dispatchOnDeterminePageGrantGroup('');
     }
+
+    this.setState({ pageGrant });
 
     // dispatch event
     this.dispatchOnChange(pageGrant);
   }
 
   groupListItemClickHandler(pageGrantGroup) {
-    this.dispatchOnDeterminePageGrantGroup(pageGrantGroup);
+    this.setState({ pageGrantGroup });
+
+    // dispatch event
+    this.dispatchOnDeterminePageGrantGroup(pageGrantGroup._id);
+
+    // hide modal
     this.hideSelectGroupModal();
   }
 
@@ -107,12 +117,25 @@ class GrantSelector extends React.Component {
       return <option key={grant} value={grant}>{t(this.availableGrantLabels[grant])}</option>;
     });
 
-    const pageGrant = this.props.pageGrant || 1;  // default: 1
+    let defaultValue = this.state.pageGrant;
+
+    // add specified group option
+    const pageGrantGroup = this.state.pageGrantGroup;
+    if (pageGrantGroup != null) {
+      defaultValue = SPECIFIED_GROUP_VALUE;
+      this.grantSelectorInputEl.value = SPECIFIED_GROUP_VALUE;
+    }
+    grantElems.push(
+      <option key="specifiedGroupKey" value={SPECIFIED_GROUP_VALUE} style={{ display: pageGrantGroup ? 'inherit' : 'none' }}>
+        {pageGrantGroup && pageGrantGroup.name}
+      </option>
+    );
 
     const bsClassName = 'form-control-dummy'; // set form-control* to shrink width
     return (
       <FormGroup controlId="formControlsSelect" className="m-b-0">
-        <FormControl componentClass="select" placeholder="select" defaultValue={pageGrant} bsClass={bsClassName} className="btn-group-sm selectpicker"
+        {/* <FormControl componentClass="select" placeholder="select" defaultValue={pageGrant} bsClass={bsClassName} className="btn-group-sm selectpicker" */}
+        <FormControl componentClass="select" placeholder="select" defaultValue={defaultValue} bsClass={bsClassName} className="btn-group-sm"
           onChange={this.changeGrantHandler}
           inputRef={ el => this.grantSelectorInputEl=el }>
 
@@ -138,7 +161,7 @@ class GrantSelector extends React.Component {
     ];
 
     const groupListItems = userRelatedGroups.map((group) => {
-      return <ListGroupItem key={group._id} header={group.name} onClick={() => { this.groupListItemClickHandler(group._id) }}>
+      return <ListGroupItem key={group._id} header={group.name} onClick={() => { this.groupListItemClickHandler(group) }}>
           (TBD) List group members
         </ListGroupItem>;
     });
