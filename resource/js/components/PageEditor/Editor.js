@@ -57,6 +57,7 @@ export default class Editor extends React.Component {
       isEnabledEmojiAutoComplete: false,
       isUploading: false,
       isLoadingKeymap: false,
+      additionalClass: "",
     };
 
     this.loadedThemeSet = new Set(['eclipse', 'elegant']);   // themes imported in _vendor.scss
