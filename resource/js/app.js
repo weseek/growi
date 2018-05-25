@@ -13,7 +13,7 @@ import SearchPage       from './components/SearchPage';
 import PageEditor       from './components/PageEditor';
 import OptionsSelector  from './components/PageEditor/OptionsSelector';
 import { EditorOptions, PreviewOptions } from './components/PageEditor/OptionsSelector';
-import GrantSelector, { UserGroup } from './components/PageEditor/GrantSelector';
+import GrantSelector    from './components/PageEditor/GrantSelector';
 import Page             from './components/Page';
 import PageListSearch   from './components/PageListSearch';
 import PageHistory      from './components/PageHistory';

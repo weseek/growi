@@ -5,9 +5,9 @@ import { translate } from 'react-i18next';
 import FormGroup from 'react-bootstrap/es/FormGroup';
 import FormControl from 'react-bootstrap/es/FormControl';
 // import ControlLabel from 'react-bootstrap/es/ControlLabel';
-// import Button from 'react-bootstrap/es/Button';
+import Button from 'react-bootstrap/es/Button';
 
-// import Modal from 'react-bootstrap/es/Modal';
+import Modal from 'react-bootstrap/es/Modal';
 
 /**
  * Page grant select component
@@ -31,9 +31,11 @@ class GrantSelector extends React.Component {
     };
 
     this.state = {
+      isSelectGroupModalShown: false,
     };
 
-    this.onChangeGrant = this.onChangeGrant.bind(this);
+    this.changeGrantHandler = this.changeGrantHandler.bind(this);
+    this.hideSelectGroupModalHandler = this.hideSelectGroupModalHandler.bind(this);
   }
 
   // Init component when the component did mount.
@@ -51,30 +53,24 @@ class GrantSelector extends React.Component {
    * @param {any} grant page grant
    * @memberof GrantSelector
    */
-  onChangeGrant(grant) {
-    const pageGrant = this.grantSelectorInputEl.value;
+  changeGrantHandler(grant) {
+    const pageGrant = +this.grantSelectorInputEl.value;
+
+    // show modal
+    if (pageGrant === 5) {
+      this.setState({ isSelectGroupModalShown: true });
+    }
+    else {
+      // TODO unset pageGrantGroup
+    }
 
     // dispatch event
     this.dispatchOnChange(pageGrant);
   }
 
-  // /**
-  //  * On click event handler for grant usergroup.
-  //  *
-  //  * @memberof GrantSelector
-  //  */
-  // onClickGrantGroup() {
-  //   const newValue = this.groupSelectorInputEl.value;
-  //   const newGrant = Object.assign(this.state.pageGrant, { grantGroup: newValue });
-  //   this.setState({ pageGrant: newGrant });
-
-  //   // dispatch event
-  //   // this.dispatchOnChange();
-  //   // close group select modal
-  //   if (this.state.isModalShown) {
-  //     this.setState({ isGroupModalShown: false });
-  //   }
-  // }
+  hideSelectGroupModalHandler() {
+    this.setState({ isSelectGroupModalShown: false });
+  }
 
   /**
    * dispatch onChange event
@@ -109,7 +105,7 @@ class GrantSelector extends React.Component {
     return (
       <FormGroup controlId="formControlsSelect" className="m-b-0">
         <FormControl componentClass="select" placeholder="select" defaultValue={pageGrant} bsClass={bsClassName} className="btn-group-sm selectpicker"
-          onChange={this.onChangeGrant}
+          onChange={this.changeGrantHandler}
           inputRef={ el => this.grantSelectorInputEl=el }>
 
           {grantElems}
@@ -119,48 +115,49 @@ class GrantSelector extends React.Component {
     );
   }
 
-  // (TBD)
-  // /**
-  //  * Render select grantgroup modal.
-  //  *
-  //  * @returns
-  //  * @memberof GrantSelector
-  //  */
-  // renderSelectGroupModal() {
-  //   // const userRelatedGroups = this.props.userRelatedGroups;
-  //   const groupList = this.userRelatedGroups.map((group) => {
-  //     return <li>
-  //         <Button onClick={this.onClickGrantGroup(group)} bsClass="btn btn-sm btn-primary">{group.name}</Button>
-  //       </li>;
-  //   });
-  //   return (
-  //     <Modal show={this.props.isGroupModalShown} className="select-grant-group">
-  //       <Modal.Header closeButton>
-  //         <Modal.Title>
-  //           Select a Group
-  //         </Modal.Title>
-  //       </Modal.Header>
-  //       <Modal.Body>
+  /**
+   * Render select grantgroup modal.
+   *
+   * @returns
+   * @memberof GrantSelector
+   */
+  renderSelectGroupModal() {
+    // TODO fetch from API
+    const userRelatedGroups = [
+      { _id: 1, name: 'hoge' },
+      { _id: 2, name: 'fuga' },
+      { _id: 3, name: 'foo' },
+    ];
 
-  //         <ul className="list-inline">
-  //           {groupList}
-  //         </ul>
-  //       </Modal.Body>
-  //     </Modal>
-  //   );
-  // }
+    const groupList = userRelatedGroups.map((group) => {
+      return <li key={group._id}>
+          <Button onClick={this.dispatchOnDeterminePageGrantGroup(group._id)} bsClass="btn btn-sm btn-primary">{group.name}</Button>
+        </li>;
+    });
+    return (
+        <Modal className="select-grant-group"
+          container={this} show={this.state.isSelectGroupModalShown} onHide={this.hideSelectGroupModalHandler}
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>
+              Select a Group
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+
+            <ul className="list-inline">
+              {groupList}
+            </ul>
+          </Modal.Body>
+        </Modal>
+    );
+  }
 
   render() {
-    return <div className="m-r-5">{this.renderGrantSelector()}</div>;
-  }
-}
-
-export class UserGroup {
-  constructor(props) {
-    this.userGroupId = '';
-    this.userGroup;
-
-    Object.assign(this, props);
+    return <React.Fragment>
+      <div className="m-r-5">{this.renderGrantSelector()}</div>
+      {this.renderSelectGroupModal()}
+    </React.Fragment>;
   }
 }
 
