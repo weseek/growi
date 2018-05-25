@@ -64,33 +64,34 @@ class GrantSelector extends React.Component {
   changeGrantHandler() {
     const pageGrant = +this.grantSelectorInputEl.value;
 
-    // show modal
+    // select group
     if (pageGrant === 5) {
       this.showSelectGroupModal();
-    }
-    // reset pageGrantGroup
-    else {
-      this.setState({ pageGrantGroup: null });
-      this.dispatchOnDeterminePageGrantGroup('');
+      /*
+       * reset grant selector to state
+       */
+      this.grantSelectorInputEl.value = this.state.pageGrant;
+      return;
     }
 
-    this.setState({ pageGrant });
-
+    this.setState({ pageGrant, pageGrantGroup: null });
     // dispatch event
-    this.dispatchOnChange(pageGrant);
+    this.dispatchOnChangePageGrant(pageGrant);
+    this.dispatchOnDeterminePageGrantGroup(null);
   }
 
   groupListItemClickHandler(pageGrantGroup) {
-    this.setState({ pageGrantGroup });
+    this.setState({ pageGrant: 5, pageGrantGroup });
 
     // dispatch event
+    this.dispatchOnChangePageGrant(5);
     this.dispatchOnDeterminePageGrantGroup(pageGrantGroup._id);
 
     // hide modal
     this.hideSelectGroupModal();
   }
 
-  dispatchOnChange(pageGrant) {
+  dispatchOnChangePageGrant(pageGrant) {
     if (this.props.onChangePageGrant != null) {
       this.props.onChangePageGrant(pageGrant);
     }
@@ -114,11 +115,14 @@ class GrantSelector extends React.Component {
     });
 
     let defaultValue = this.state.pageGrant;
-
     // add specified group option
     const pageGrantGroup = this.state.pageGrantGroup;
     if (pageGrantGroup != null) {
       defaultValue = SPECIFIED_GROUP_VALUE;
+      /*
+       * set SPECIFIED_GROUP_VALUE to grant selector
+       *  cz: bootstrap-select input element has the defferent state to React component
+       */
       this.grantSelectorInputEl.value = SPECIFIED_GROUP_VALUE;
     }
     grantElems.push(
