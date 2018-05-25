@@ -190,7 +190,7 @@ class GrantSelector extends React.Component {
 
     let content = this.state.userRelatedGroups.length === 0
       ? <div>
-          <p>There is no group to which you belong.</p>
+          <h4>There is no group to which you belong.</h4>
           { this.props.crowi.isAdmin &&
             <p><a href="/admin/user-groups"><i className="icon icon-fw icon-login"></i> Manage Groups</a></p>
           }
