@@ -34,6 +34,7 @@ class GrantSelector extends React.Component {
     this.state = {
       pageGrant: this.props.pageGrant || 1,  // default: 1
       pageGrantGroup: this.props.pageGrantGroup,
+      userRelatedGroups: [],
       isSelectGroupModalShown: false,
     };
 
@@ -179,18 +180,20 @@ class GrantSelector extends React.Component {
    * @memberof GrantSelector
    */
   renderSelectGroupModal() {
-    // TODO fetch from API
-    const userRelatedGroups = [
-      { _id: 1, name: 'hoge' },
-      { _id: 2, name: 'fuga' },
-      { _id: 3, name: 'foo' },
-    ];
+    const generateGroupListItems = () => {
+      this.state.userRelatedGroups.map((group) => {
+        return <ListGroupItem key={group._id} header={group.name} onClick={() => { this.groupListItemClickHandler(group) }}>
+            (TBD) List group members
+          </ListGroupItem>;
+      });
+    };
 
-    const groupListItems = userRelatedGroups.map((group) => {
-      return <ListGroupItem key={group._id} header={group.name} onClick={() => { this.groupListItemClickHandler(group) }}>
-          (TBD) List group members
-        </ListGroupItem>;
-    });
+    let content = this.state.userRelatedGroups.length === 0
+      ? <span>There is no group to which you belong.</span>
+      : <ListGroup>
+        {generateGroupListItems()}
+      </ListGroup>;
+
     return (
         <Modal className="select-grant-group"
           container={this} show={this.state.isSelectGroupModalShown} onHide={this.hideSelectGroupModal}
@@ -201,9 +204,7 @@ class GrantSelector extends React.Component {
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <ListGroup>
-              {groupListItems}
-            </ListGroup>
+            {content}
           </Modal.Body>
         </Modal>
     );
