@@ -35,6 +35,7 @@ import InterceptorManager from '../../../../lib/util/interceptor-manager';
 
 import PreventMarkdownListInterceptor from './PreventMarkdownListInterceptor';
 import MarkdownTableInterceptor from './MarkdownTableInterceptor';
+import mtu from './MarkdownTableUtil';
 
 export default class CodeMirrorEditor extends AbstractEditor {
 
@@ -46,6 +47,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       value: this.props.value,
       isEnabledEmojiAutoComplete: false,
       isLoadingKeymap: false,
+      additionalClass: '',
     };
 
     this.init();
@@ -62,6 +64,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
     this.scrollCursorIntoViewHandler = this.scrollCursorIntoViewHandler.bind(this);
     this.pasteHandler = this.pasteHandler.bind(this);
+    this.cursorHandler = this.cursorHandler.bind(this);
 
     this.renderLoadingKeymapOverlay = this.renderLoadingKeymapOverlay.bind(this);
   }
@@ -304,6 +307,16 @@ export default class CodeMirrorEditor extends AbstractEditor {
     }
   }
 
+  cursorHandler(editor, event) {
+    const strFromBol = this.getStrFromBol();
+    if (mtu.isEndOfLine(editor) && mtu.linePartOfTableRE.test(strFromBol)) {
+      this.setState({additionalClass: 'autoformat-markdown-table-activated'});
+    }
+    else {
+      this.setState({additionalClass: ''});
+    }
+  }
+
   /**
    * CodeMirror paste event handler
    * see: https://codemirror.net/doc/manual.html#events
@@ -352,6 +365,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     return <React.Fragment>
       <ReactCodeMirror
         ref="cm"
+        className={this.state.additionalClass}
         editorDidMount={(editor) => {
           // add event handlers
           editor.on('paste', this.pasteHandler);
@@ -385,6 +399,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
             'Ctrl-Q': (cm) => { cm.foldCode(cm.getCursor()) },
           }
         }}
+        onCursor={this.cursorHandler}
         onScroll={(editor, data) => {
           if (this.props.onScroll != null) {
             // add line data

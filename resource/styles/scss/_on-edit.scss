@@ -99,6 +99,7 @@ body.on-edit {
         }
       }
 
+
       .page-editor-footer {
         width: 100%;
         margin: 0;
@@ -201,6 +202,13 @@ body.on-edit {
         padding: 0.3em;
         background: rgba(200,200,200,0.5);
         color: #444;
+      }
+    }
+    // add icon on cursor
+    .autoformat-markdown-table-activated .CodeMirror-cursor {
+      &:after {
+        font-family: 'FontAwesome';
+        content: '\f0ce';
       }
     }
 

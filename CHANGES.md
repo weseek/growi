@@ -4,7 +4,9 @@ CHANGES
 ## 3.1.0-RC
 
 * Improvement: Group Access Control List - Select group modal
-* Improvement: Auto-format markdown tables which includes multibyte text
+* Improvement: Add 'future' theme
+* Improvement: Auto-format markdown table which includes multibyte text
+* Improvement: Show icon when auto-format markdown table is activated
 * Improvement: Enable to switch show/hide border for highlight.js
 * Improvement: BindDN field allows also ActiveDirectory styles 
 * Improvement: Show LDAP logs when testing login
