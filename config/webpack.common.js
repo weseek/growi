@@ -30,6 +30,7 @@ module.exports = function(options) {
       'style-theme-default-dark':  './resource/styles/scss/theme/default-dark.scss',
       'style-theme-nature':   './resource/styles/scss/theme/nature.scss',
       'style-theme-mono-blue':   './resource/styles/scss/theme/mono-blue.scss',
+      'style-theme-future': './resource/styles/scss/theme/future.scss',
       'style-presentation':   './resource/styles/scss/style-presentation.scss',
     },
     externals: {
