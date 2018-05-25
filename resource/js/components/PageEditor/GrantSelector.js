@@ -33,10 +33,15 @@ class GrantSelector extends React.Component {
 
     this.state = {
       pageGrant: this.props.pageGrant || 1,  // default: 1
-      pageGrantGroup: this.props.pageGrantGroup,
       userRelatedGroups: [],
       isSelectGroupModalShown: false,
     };
+    if (this.props.pageGrantGroupId !== '') {
+      this.state.pageGrantGroup = {
+        _id: this.props.pageGrantGroupId,
+        name: this.props.pageGrantGroupName
+      };
+    }
 
     this.showSelectGroupModal = this.showSelectGroupModal.bind(this);
     this.hideSelectGroupModal = this.hideSelectGroupModal.bind(this);
@@ -48,14 +53,22 @@ class GrantSelector extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    /*
+     * set SPECIFIED_GROUP_VALUE to grant selector
+     *  cz: bootstrap-select input element has the defferent state to React component
+     */
+    if (this.state.pageGrantGroup != null) {
+      this.grantSelectorInputEl.value = SPECIFIED_GROUP_VALUE;
+    }
+
     // refresh bootstrap-select
     // see https://silviomoreto.github.io/bootstrap-select/methods/#selectpickerrefresh
     $('.page-grant-selector.selectpicker').selectpicker('refresh');
-
     //// DIRTY HACK -- 2018.05.25 Yuki Takei
     // set group name to the bootstrap-select options
     //  cz: .selectpicker('refresh') doesn't replace data-content
     $('.page-grant-selector .group-name').text(this.getGroupName());
+
   }
 
   showSelectGroupModal() {
@@ -114,7 +127,7 @@ class GrantSelector extends React.Component {
 
     // dispatch event
     this.dispatchOnChangePageGrant(5);
-    this.dispatchOnDeterminePageGrantGroup(pageGrantGroup._id);
+    this.dispatchOnDeterminePageGrantGroup(pageGrantGroup);
 
     // hide modal
     this.hideSelectGroupModal();
@@ -128,7 +141,10 @@ class GrantSelector extends React.Component {
 
   dispatchOnDeterminePageGrantGroup(pageGrantGroup) {
     if (this.props.onDeterminePageGrantGroupId != null) {
-      this.props.onDeterminePageGrantGroupId(pageGrantGroup);
+      this.props.onDeterminePageGrantGroupId(pageGrantGroup ? pageGrantGroup._id : '');
+    }
+    if (this.props.onDeterminePageGrantGroupName != null) {
+      this.props.onDeterminePageGrantGroupName(pageGrantGroup ? pageGrantGroup.name : '');
     }
   }
 
@@ -150,12 +166,6 @@ class GrantSelector extends React.Component {
     const pageGrantGroup = this.state.pageGrantGroup;
     if (pageGrantGroup != null) {
       selectedValue = SPECIFIED_GROUP_VALUE;
-      /*
-       * set SPECIFIED_GROUP_VALUE to grant selector
-       *  cz: bootstrap-select input element has the defferent state to React component
-       */
-      this.grantSelectorInputEl.value = SPECIFIED_GROUP_VALUE;
-
       // DIRTY HACK -- 2018.05.25 Yuki Takei
       // remove 'Only inside the group' item
       //  cz: .selectpicker('refresh') doesn't replace data-content
@@ -167,6 +177,11 @@ class GrantSelector extends React.Component {
       //  cz: .selectpicker('refresh') doesn't replace data-content
       grantElems.splice(4, 1);
     }
+
+    /*
+     * react-bootstrap couldn't be rendered only with React feature.
+     * see also 'componentDidUpdate'
+     */
 
     // add specified group option
     grantElems.push(
@@ -245,9 +260,11 @@ GrantSelector.propTypes = {
   crowi: PropTypes.object.isRequired,
   isGroupModalShown: PropTypes.bool,
   pageGrant: PropTypes.number,
-  pageGrantGroup: PropTypes.object,
+  pageGrantGroupId: PropTypes.string,
+  pageGrantGroupName: PropTypes.string,
   onChangePageGrant: PropTypes.func,
   onDeterminePageGrantGroupId: PropTypes.func,
+  onDeterminePageGrantGroupName: PropTypes.func,
 };
 
 export default translate()(GrantSelector);

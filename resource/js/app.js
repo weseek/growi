@@ -190,24 +190,30 @@ if (pageEditorOptionsSelectorElem) {
 // render GrantSelector
 const pageEditorGrantSelectorElem = document.getElementById('page-grant-selector');
 if (pageEditorGrantSelectorElem) {
-  const pageGrantElem = document.getElementById('page-grant');
-  const pageGrantGroupElem = document.getElementById('grant-group');
+  const grantElem = document.getElementById('page-grant');
+  const grantGroupElem = document.getElementById('grant-group');
+  const grantGroupNameElem = document.getElementById('grant-group-name');
   /* eslint-disable no-inner-declarations */
-  function updatePageGrantElem(pageGrant) {
-    pageGrantElem.value = pageGrant;
+  function updateGrantElem(pageGrant) {
+    grantElem.value = pageGrant;
   }
-  function updatePageGrantGroupElem(pageGrantGroupId) {
-    pageGrantGroupElem.value = pageGrantGroupId;
+  function updateGrantGroupElem(grantGroupId) {
+    grantGroupElem.value = grantGroupId;
+  }
+  function updateGrantGroupNameElem(grantGroupName) {
+    grantGroupNameElem.value = grantGroupName;
   }
   /* eslint-enable */
-  pageGrant = +(pageGrantElem.value);
-  const pageGrantGroup = JSON.parse(pageGrantGroupElem.textContent || null);
+  const pageGrant = +grantElem.value;
+  const pageGrantGroupId = grantGroupElem.value;
+  const pageGrantGroupName = grantGroupNameElem.value;
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
       <GrantSelector crowi={crowi}
-        pageGrant={pageGrant} pageGrantGroup={pageGrantGroup}
-        onChangePageGrant={updatePageGrantElem}
-        onDeterminePageGrantGroupId={updatePageGrantGroupElem} />
+        pageGrant={pageGrant} pageGrantGroupId={pageGrantGroupId} pageGrantGroupName={pageGrantGroupName}
+        onChangePageGrant={updateGrantElem}
+        onDeterminePageGrantGroupId={updateGrantGroupElem}
+        onDeterminePageGrantGroupName={updateGrantGroupNameElem} />
     </I18nextProvider>,
     pageEditorGrantSelectorElem
   );
