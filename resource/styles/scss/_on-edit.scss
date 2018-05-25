@@ -29,15 +29,6 @@ body.on-edit {
     display: none;
   }
 
-  /*
-   * right tabs
-   */
-  .nav-main-right-tab:not(.dropdown) {
-    // hide if screen size is less than smartphone
-    @media (max-width: $screen-xs) {
-      display: none;
-    }
-  }
 
   /*****************
    * Expand Editor
@@ -96,12 +87,14 @@ body.on-edit {
         // left(editor)
         .page-editor-editor-container {
           height: calc(100vh - #{$header-plus-footer});
-        }
-        .react-codemirror2, .CodeMirror, .CodeMirror-scroll {
-          height: calc(100vh - #{$editor-margin});
-          // less than smartphone
-          @media (max-width: $screen-xs) {
-            height: calc(100vh - #{$editor-margin-sm});
+
+          .react-codemirror2, .CodeMirror, .CodeMirror-scroll,
+          .textarea-editor {
+            height: calc(100vh - #{$editor-margin});
+            // less than smartphone
+            @media (max-width: $screen-xs) {
+              height: calc(100vh - #{$editor-margin-sm});
+            }
           }
         }
       }
@@ -289,6 +282,11 @@ body.on-edit {
         }
       }
     } // end of.dropzone
+
+    .textarea-editor {
+      border: none;
+      font-family: monospace;
+    }
 
     .loading-keymap {
       @include overlay-processing-style();

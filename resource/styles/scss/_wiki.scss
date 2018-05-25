@@ -134,14 +134,22 @@ div.body {
 
     .revision-head-link,
     .revision-head-edit-button {
-      visibility: hidden;
+      margin-left: 0.5em;
       font-size: 0.6em;
+      opacity: 0;
     }
     &:hover .revision-head-link,
     &:hover .revision-head-edit-button {
-      visibility: unset;
-      margin-left: 0.5em;
+      opacity: 1 !important;
     }
+  }
+}
+
+// mobile
+.page-mobile .wiki .revision-head {
+  .revision-head-link,
+  .revision-head-edit-button {
+    opacity: 0.3;
   }
 }
 
