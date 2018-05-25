@@ -45,14 +45,10 @@ class GrantSelector extends React.Component {
     this.groupListItemClickHandler = this.groupListItemClickHandler.bind(this);
   }
 
-  // Init component when the component did mount.
-  componentDidMount() {
-    this.init();
-  }
-
-  // Initialize the component.
-  init() {
-    // this.grantSelectorInputEl.value = this.props.pageGrant;
+  componentDidUpdate(prevProps, prevState) {
+    // refresh bootstrap-select
+    // see https://silviomoreto.github.io/bootstrap-select/methods/#selectpickerrefresh
+    $('.page-grant-selector.selectpicker').selectpicker('refresh');
   }
 
   showSelectGroupModal() {
@@ -133,9 +129,8 @@ class GrantSelector extends React.Component {
 
     const bsClassName = 'form-control-dummy'; // set form-control* to shrink width
     return (
-      <FormGroup controlId="formControlsSelect" className="m-b-0">
-        {/* <FormControl componentClass="select" placeholder="select" defaultValue={pageGrant} bsClass={bsClassName} className="btn-group-sm selectpicker" */}
-        <FormControl componentClass="select" placeholder="select" defaultValue={defaultValue} bsClass={bsClassName} className="btn-group-sm"
+      <FormGroup lassName="m-b-0">
+        <FormControl componentClass="select" placeholder="select" defaultValue={defaultValue} bsClass={bsClassName} className="btn-group-sm page-grant-selector selectpicker"
           onChange={this.changeGrantHandler}
           inputRef={ el => this.grantSelectorInputEl=el }>
 
