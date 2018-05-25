@@ -5,6 +5,8 @@ import { translate } from 'react-i18next';
 import FormGroup from 'react-bootstrap/es/FormGroup';
 import FormControl from 'react-bootstrap/es/FormControl';
 // import ControlLabel from 'react-bootstrap/es/ControlLabel';
+import ListGroup from 'react-bootstrap/es/ListGroup';
+import ListGroupItem from 'react-bootstrap/es/ListGroupItem';
 import Button from 'react-bootstrap/es/Button';
 
 import Modal from 'react-bootstrap/es/Modal';
@@ -34,8 +36,10 @@ class GrantSelector extends React.Component {
       isSelectGroupModalShown: false,
     };
 
+    this.showSelectGroupModal = this.showSelectGroupModal.bind(this);
+    this.hideSelectGroupModal = this.hideSelectGroupModal.bind(this);
     this.changeGrantHandler = this.changeGrantHandler.bind(this);
-    this.hideSelectGroupModalHandler = this.hideSelectGroupModalHandler.bind(this);
+    this.groupListItemClickHandler = this.groupListItemClickHandler.bind(this);
   }
 
   // Init component when the component did mount.
@@ -48,6 +52,13 @@ class GrantSelector extends React.Component {
     this.grantSelectorInputEl.value = this.props.pageGrant;
   }
 
+  showSelectGroupModal() {
+    this.setState({ isSelectGroupModalShown: true });
+  }
+  hideSelectGroupModal() {
+    this.setState({ isSelectGroupModalShown: false });
+  }
+
   /**
    * On change event handler for pagegrant.
    * @param {any} grant page grant
@@ -58,24 +69,21 @@ class GrantSelector extends React.Component {
 
     // show modal
     if (pageGrant === 5) {
-      this.setState({ isSelectGroupModalShown: true });
+      this.showSelectGroupModal();
     }
     else {
-      // TODO unset pageGrantGroup
+      this.dispatchOnDeterminePageGrantGroup('');
     }
 
     // dispatch event
     this.dispatchOnChange(pageGrant);
   }
 
-  hideSelectGroupModalHandler() {
-    this.setState({ isSelectGroupModalShown: false });
+  groupListItemClickHandler(pageGrantGroup) {
+    this.dispatchOnDeterminePageGrantGroup(pageGrantGroup);
+    this.hideSelectGroupModal();
   }
 
-  /**
-   * dispatch onChange event
-   * @memberof GrantSelector
-   */
   dispatchOnChange(pageGrant) {
     if (this.props.onChangePageGrant != null) {
       this.props.onChangePageGrant(pageGrant);
@@ -129,10 +137,10 @@ class GrantSelector extends React.Component {
       { _id: 3, name: 'foo' },
     ];
 
-    const groupList = userRelatedGroups.map((group) => {
-      return <li key={group._id}>
-          <Button onClick={this.dispatchOnDeterminePageGrantGroup(group._id)} bsClass="btn btn-sm btn-primary">{group.name}</Button>
-        </li>;
+    const groupListItems = userRelatedGroups.map((group) => {
+      return <ListGroupItem key={group._id} header={group.name} onClick={() => { this.groupListItemClickHandler(group._id) }}>
+          (TBD) List group members
+        </ListGroupItem>;
     });
     return (
         <Modal className="select-grant-group"
@@ -144,10 +152,9 @@ class GrantSelector extends React.Component {
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-
-            <ul className="list-inline">
-              {groupList}
-            </ul>
+            <ListGroup>
+              {groupListItems}
+            </ListGroup>
           </Modal.Body>
         </Modal>
     );
