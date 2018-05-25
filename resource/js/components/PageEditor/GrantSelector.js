@@ -162,7 +162,7 @@ class GrantSelector extends React.Component {
     });
     return (
         <Modal className="select-grant-group"
-          container={this} show={this.state.isSelectGroupModalShown} onHide={this.hideSelectGroupModalHandler}
+          container={this} show={this.state.isSelectGroupModalShown} onHide={this.hideSelectGroupModal}
         >
           <Modal.Header closeButton>
             <Modal.Title>
