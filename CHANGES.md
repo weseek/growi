@@ -4,17 +4,19 @@ CHANGES
 ## 3.1.0-RC
 
 * Improvement: Group Access Control List - Select group modal
+* Improvement: Better input on mobile
 * Improvement: Add 'future' theme
+* Improvement: Detach code blocks correctly
 * Improvement: Auto-format markdown table which includes multibyte text
 * Improvement: Show icon when auto-format markdown table is activated
 * Improvement: Enable to switch show/hide border for highlight.js
 * Improvement: BindDN field allows also ActiveDirectory styles 
 * Improvement: Show LDAP logs when testing login
-* Improvement: Detach code blocks correctly
 * Fix: Comment body doesn't break long terms
 * Fix: lsx plugin lists up pages that hit by forward match wrongly
     * Introduced by 3.0.4
 * Support: Multilingualize React components with i18next
+* Support: Organize dependencies
 * Support: Upgrade libs
     * elasticsearch
     * googleapis
