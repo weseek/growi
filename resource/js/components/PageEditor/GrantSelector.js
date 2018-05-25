@@ -59,6 +59,7 @@ class GrantSelector extends React.Component {
   }
 
   showSelectGroupModal() {
+    this.retrieveUserGroupRelations();
     this.setState({ isSelectGroupModalShown: true });
   }
   hideSelectGroupModal() {
@@ -68,6 +69,22 @@ class GrantSelector extends React.Component {
   getGroupName() {
     const pageGrantGroup = this.state.pageGrantGroup;
     return pageGrantGroup ? pageGrantGroup.name : '';
+  }
+
+  /**
+   * Retrieve user-group-relations data from backend
+   */
+  retrieveUserGroupRelations() {
+    this.props.crowi.apiGet('/me/user-group-relations')
+      .then(res => {
+        return res.userGroupRelations;
+      })
+      .then(userGroupRelations => {
+        const userRelatedGroups = userGroupRelations.map(relation => {
+          return relation.relatedGroup;
+        });
+        this.setState({userRelatedGroups});
+      });
   }
 
   /**
@@ -181,7 +198,7 @@ class GrantSelector extends React.Component {
    */
   renderSelectGroupModal() {
     const generateGroupListItems = () => {
-      this.state.userRelatedGroups.map((group) => {
+      return this.state.userRelatedGroups.map((group) => {
         return <ListGroupItem key={group._id} header={group.name} onClick={() => { this.groupListItemClickHandler(group) }}>
             (TBD) List group members
           </ListGroupItem>;
