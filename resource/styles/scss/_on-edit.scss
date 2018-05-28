@@ -82,10 +82,12 @@ body.on-edit {
         .row,
         .page-editor-preview-container,
         .page-editor-preview-body {
+          min-height: calc(100vh - #{$header-plus-footer});   // for IE11
           height: calc(100vh - #{$header-plus-footer});
         }
         // left(editor)
         .page-editor-editor-container {
+          min-height: calc(100vh - #{$header-plus-footer});   // for IE11
           height: calc(100vh - #{$header-plus-footer});
 
           .react-codemirror2, .CodeMirror, .CodeMirror-scroll,
