@@ -46,7 +46,6 @@ export default class CommentForm extends React.Component {
   }
 
   getCommentHtml(){
-    // this.renderHtml(this.state.comment)
     if(this.state.isMarkdown){
       this.renderHtml(this.state.comment)
     } else {
