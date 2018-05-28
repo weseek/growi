@@ -1,11 +1,15 @@
 CHANGES
 ========
 
-## 3.1.0-RC
+## 3.1.1
+
+* Improvement: Add 'future' theme
+
+
+## 3.1.0
 
 * Improvement: Group Access Control List - Select group modal
 * Improvement: Better input on mobile
-* Improvement: Add 'future' theme
 * Improvement: Detach code blocks correctly
 * Improvement: Auto-format markdown table which includes multibyte text
 * Improvement: Show icon when auto-format markdown table is activated
