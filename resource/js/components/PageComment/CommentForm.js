@@ -5,8 +5,8 @@ import CommentPreview from '../PageComment/CommentPreview';
 
 import Button from 'react-bootstrap/es/Button';
 import FormControl from 'react-bootstrap/es/FormControl';
-import Tab from 'react-bootstrap/es/tab';
-import Tabs from 'react-bootstrap/es/tabs';
+import Tab from 'react-bootstrap/es/Tab';
+import Tabs from 'react-bootstrap/es/Tabs';
 import UserPicture from '../User/UserPicture';
 
 /**
