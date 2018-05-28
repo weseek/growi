@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import CommentPreview from '../PageComment/CommentPreview';
+
 import Button from 'react-bootstrap/es/Button';
 import FormControl from 'react-bootstrap/es/FormControl';
 import Tab from 'react-bootstrap/es/tab';
@@ -22,15 +24,15 @@ export default class CommentForm extends React.Component {
     super(props);
 
     this.state = {
-      comment: '# a',
+      comment: '',
       isMarkdown: false,
       html: '',
-     };
+    };
 
     this.updateState = this.updateState.bind(this);
     this.postComment = this.postComment.bind(this);
-    this.getCommentHtml = this.getCommentHtml.bind(this);
     this.renderHtml = this.renderHtml.bind(this);
+    this.getCommentHtml = this.getCommentHtml.bind(this);
   }
 
   updateState(event) {
@@ -43,6 +45,9 @@ export default class CommentForm extends React.Component {
     });
   }
 
+  getCommentHtml(){
+    this.renderHtml(this.state.comment)
+  }
   /**
    * Load data of comments and rerender <PageComments />
    */
@@ -68,15 +73,10 @@ export default class CommentForm extends React.Component {
       });
   }
 
-  getCommentHtml(){
-    if(!this.state.html){
-      this.renderHtml(this.state.comment)
-    }
-  }
-
   renderHtml(markdown) {
     var context = {
       markdown,
+      dom: this.previewElement,
     };
 
     const crowiRenderer = this.props.crowiRenderer;
@@ -110,7 +110,6 @@ export default class CommentForm extends React.Component {
 
 
 render() {
-  this.getCommentHtml()
   console.log(this.state.html)
   //{% if not user %}disabled{% endif %}をtextareaとbuttonに追加
   // denounce/throttle
@@ -122,7 +121,7 @@ render() {
           </div>
           <div className="comment-form-main">
             <div className="comment-write">
- 	        		<Tabs defaultActiveKey={1} id="comment-form-tabs">
+ 	        		<Tabs defaultActiveKey={1} id="comment-form-tabs" onSelect={this.getCommentHtml}>
                 <Tab eventKey={1} title="Write">
                   <textarea className="comment-form-comment form-control" id="comment-form-comment" name="comment" required placeholder="Write comments here..." value={this.state.comment} onChange={this.updateState} >
                   </textarea>
@@ -132,8 +131,10 @@ render() {
                 </Tab>
                 <Tab eventKey={2} title="Prevrew">
                   <div className="comment-form-prevew">
-                    <div className="commenthtml" dangerouslySetInnerHTML={this.generateInnerHtml(this.state.html)}>
-                    </div>
+                       <CommentPreview
+                        html={this.state.html}
+                        inputRef={el => this.previewElement = el}
+                        />
                   </div>
                 </Tab>
               </Tabs>
