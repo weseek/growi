@@ -27,12 +27,13 @@ export default class CommentForm extends React.Component {
       comment: '',
       isMarkdown: true,
       html: '',
-    };
+      key: 1,
+       };
 
     this.updateState = this.updateState.bind(this);
     this.postComment = this.postComment.bind(this);
     this.renderHtml = this.renderHtml.bind(this);
-    this.getCommentHtml = this.getCommentHtml.bind(this);
+    this.handleSelect = this.handleSelect.bind(this);
   }
 
   updateState(event) {
@@ -45,13 +46,15 @@ export default class CommentForm extends React.Component {
     });
   }
 
-  getCommentHtml(){
+  handleSelect(key){
+    this.setState({ key });
     if(this.state.isMarkdown){
       this.renderHtml(this.state.comment)
     } else {
      this.setState({ html: this.state.comment})
     }
   }
+
   /**
    * Load data of comments and rerender <PageComments />
    */
@@ -72,7 +75,9 @@ export default class CommentForm extends React.Component {
         }
         this.setState({
           comment: '',
-          isMarkdown: false,
+          isMarkdown: true,
+          html: '',
+          key: 1,
         });
       });
   }
@@ -114,9 +119,7 @@ export default class CommentForm extends React.Component {
 
 
 render() {
-  console.log(this.state.html)
   //{% if not user %}disabled{% endif %}をtextareaとbuttonに追加
-  // denounce/throttle
   return (
     <div>
       <form className="form page-comment-form" id="page-comment-form" onSubmit={this.postComment}>
@@ -125,7 +128,7 @@ render() {
           </div>
           <div className="comment-form-main">
             <div className="comment-write">
- 	        		<Tabs defaultActiveKey={1} id="comment-form-tabs" onSelect={this.getCommentHtml}>
+ 	        		<Tabs activeKey={this.state.key} id="comment-form-tabs" onSelect={this.handleSelect} animation={false}>
                 <Tab eventKey={1} title="Write">
                   <textarea className="comment-form-comment form-control" id="comment-form-comment" name="comment" required placeholder="Write comments here..." value={this.state.comment} onChange={this.updateState} >
                   </textarea>
