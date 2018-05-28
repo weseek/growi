@@ -25,7 +25,7 @@ export default class CommentForm extends React.Component {
 
     this.state = {
       comment: '',
-      isMarkdown: false,
+      isMarkdown: true,
       html: '',
     };
 
@@ -46,7 +46,12 @@ export default class CommentForm extends React.Component {
   }
 
   getCommentHtml(){
-    this.renderHtml(this.state.comment)
+    // this.renderHtml(this.state.comment)
+    if(this.state.isMarkdown){
+      this.renderHtml(this.state.comment)
+    } else {
+     this.setState({ html: this.state.comment})
+    }
   }
   /**
    * Load data of comments and rerender <PageComments />
