@@ -15,6 +15,7 @@ CHANGES
 * Fix: Comment body doesn't break long terms
 * Fix: lsx plugin lists up pages that hit by forward match wrongly
     * Introduced by 3.0.4
+* Fix: Editor is broken on IE11
 * Support: Multilingualize React components with i18next
 * Support: Organize dependencies
 * Support: Upgrade libs
