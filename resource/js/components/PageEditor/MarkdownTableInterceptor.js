@@ -32,25 +32,32 @@ export default class MarkdownTableInterceptor extends BasicInterceptor {
    */
   process(contextName, ...args) {
     const context = Object.assign(args[0]);   // clone
-    const editor = context.editor;
+    const editor = context.editor;            // AbstractEditor instance
+
+    // do nothing if editor is not a CodeMirrorEditor
+    if (editor == null || editor.getCodeMirror() == null) {
+      return Promise.resolve(context);
+    }
+
+    const cm = editor.getCodeMirror();
 
     // get strings from BOL(beginning of line) to current position
-    const strFromBol = mtu.getStrFromBol(editor);
+    const strFromBol = editor.getStrFromBol();
 
-    if (mtu.isEndOfLine(editor) && mtu.linePartOfTableRE.test(strFromBol)) {
+    if (mtu.isEndOfLine(cm) && mtu.linePartOfTableRE.test(strFromBol)) {
       // get lines all of table from current position to beginning of table
-      const strFromBot = mtu.getStrFromBot(editor);
+      const strFromBot = mtu.getStrFromBot(cm);
       let table = mtu.parseFromTableStringToMarkdownTable(strFromBot);
 
       mtu.addRowToMarkdownTable(table);
 
-      const strToEot = mtu.getStrToEot(editor);
+      const strToEot = mtu.getStrToEot(cm);
       const tableBottom = mtu.parseFromTableStringToMarkdownTable(strToEot);
       if (tableBottom.table.length > 0) {
         table = mtu.mergeMarkdownTable([table, tableBottom]);
       }
 
-      mtu.replaceMarkdownTableWithReformed(editor, table);
+      mtu.replaceMarkdownTableWithReformed(cm, table);
 
       // report to manager that handling was done
       context.handlers.push(this.className);

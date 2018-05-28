@@ -1,5 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { I18nextProvider } from 'react-i18next';
+
+import i18nFactory from './i18n';
 
 import Crowi from './util/Crowi';
 // import CrowiRenderer from './util/CrowiRenderer';
@@ -10,6 +13,7 @@ import SearchPage       from './components/SearchPage';
 import PageEditor       from './components/PageEditor';
 import OptionsSelector  from './components/PageEditor/OptionsSelector';
 import { EditorOptions, PreviewOptions } from './components/PageEditor/OptionsSelector';
+import GrantSelector    from './components/PageEditor/GrantSelector';
 import Page             from './components/Page';
 import PageListSearch   from './components/PageListSearch';
 import PageHistory      from './components/PageHistory';
@@ -21,7 +25,6 @@ import RevisionPath     from './components/Page/RevisionPath';
 import RevisionUrl      from './components/Page/RevisionUrl';
 import BookmarkButton   from './components/BookmarkButton';
 import NewPageNameInputter from './components/NewPageNameInputter';
-import SearchTypeahead  from './components/SearchTypeahead';
 
 import CustomCssEditor  from './components/Admin/CustomCssEditor';
 import CustomScriptEditor from './components/Admin/CustomScriptEditor';
@@ -29,10 +32,12 @@ import CustomHeaderEditor from './components/Admin/CustomHeaderEditor';
 
 import * as entities from 'entities';
 
-
 if (!window) {
   window = {};
 }
+
+const userlang = $('body').data('userlang');
+const i18n = i18nFactory(userlang);
 
 const mainContent = document.querySelector('#content-main');
 let pageId = null;
@@ -41,6 +46,7 @@ let pageRevisionCreatedAt = null;
 let pagePath;
 let pageContent = '';
 let markdown = '';
+let pageGrant = null;
 if (mainContent !== null) {
   pageId = mainContent.getAttribute('data-page-id');
   pageRevisionId = mainContent.getAttribute('data-page-revision-id');
@@ -57,6 +63,7 @@ const isLoggedin = document.querySelector('.main-container.nologin') == null;
 // FIXME
 const crowi = new Crowi({
   me: $('body').data('current-username'),
+  isAdmin: $('body').data('is-admin'),
   csrfToken: $('body').data('csrftoken'),
 }, window);
 window.crowi = crowi;
@@ -178,6 +185,37 @@ if (pageEditorOptionsSelectorElem) {
           crowi.savePreviewOptions(newPreviewOptions);
         }} />,
     pageEditorOptionsSelectorElem
+  );
+}
+// render GrantSelector
+const pageEditorGrantSelectorElem = document.getElementById('page-grant-selector');
+if (pageEditorGrantSelectorElem) {
+  const grantElem = document.getElementById('page-grant');
+  const grantGroupElem = document.getElementById('grant-group');
+  const grantGroupNameElem = document.getElementById('grant-group-name');
+  /* eslint-disable no-inner-declarations */
+  function updateGrantElem(pageGrant) {
+    grantElem.value = pageGrant;
+  }
+  function updateGrantGroupElem(grantGroupId) {
+    grantGroupElem.value = grantGroupId;
+  }
+  function updateGrantGroupNameElem(grantGroupName) {
+    grantGroupNameElem.value = grantGroupName;
+  }
+  /* eslint-enable */
+  const pageGrant = +grantElem.value;
+  const pageGrantGroupId = grantGroupElem.value;
+  const pageGrantGroupName = grantGroupNameElem.value;
+  ReactDOM.render(
+    <I18nextProvider i18n={i18n}>
+      <GrantSelector crowi={crowi}
+        pageGrant={pageGrant} pageGrantGroupId={pageGrantGroupId} pageGrantGroupName={pageGrantGroupName}
+        onChangePageGrant={updateGrantElem}
+        onDeterminePageGrantGroupId={updateGrantGroupElem}
+        onDeterminePageGrantGroupName={updateGrantGroupNameElem} />
+    </I18nextProvider>,
+    pageEditorGrantSelectorElem
   );
 }
 

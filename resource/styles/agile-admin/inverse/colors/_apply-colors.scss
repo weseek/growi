@@ -149,6 +149,15 @@ body{
 }
 
 /*
+ * code color of inline-code
+ */
+:not(.hljs) > code:not(.hljs) {
+  color: $inline-code-color;
+  background-color: $inline-code-bg;
+}
+
+
+/*
  * Legend
  */
 legend {
@@ -303,7 +312,7 @@ body.on-edit {
     border-top-color: $border;
   }
   .page-comment .page-comment-main,
-  .comment-form-main {
+  .page-comment-form .comment-form-main {
     background-color: darken($bodycolor, 4%);
     &:before {
       border-right-color: darken($bodycolor, 4%);

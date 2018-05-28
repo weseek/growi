@@ -3,7 +3,6 @@
  */
 
 const webpack = require('webpack');
-const path = require('path');
 const helpers = require('./helpers');
 
 /*
@@ -31,6 +30,7 @@ module.exports = function(options) {
       'style-theme-default-dark':  './resource/styles/scss/theme/default-dark.scss',
       'style-theme-nature':   './resource/styles/scss/theme/nature.scss',
       'style-theme-mono-blue':   './resource/styles/scss/theme/mono-blue.scss',
+      'style-theme-future': './resource/styles/scss/theme/future.scss',
       'style-presentation':   './resource/styles/scss/style-presentation.scss',
     },
     externals: {
@@ -44,8 +44,9 @@ module.exports = function(options) {
       extensions: ['.js', '.json'],
       modules: [helpers.root('src'), helpers.root('node_modules')],
       alias: {
-        '@root': path.resolve(__dirname, '../'),
-        '@alias/logger': path.resolve(__dirname, '../lib/service/logger'),
+        '@root': helpers.root('/'),
+        '@alias/logger': helpers.root('lib/service/logger'),
+        '@alias/locales': helpers.root('lib/locales'),
         // replace bunyan
         'bunyan': 'browser-bunyan',
       }
@@ -54,13 +55,26 @@ module.exports = function(options) {
       rules: [
         {
           test: /.jsx?$/,
-          exclude: /node_modules/,
+          exclude: {
+            test:    helpers.root('node_modules'),
+            exclude: [  // include as a result
+              helpers.root('node_modules/string-width'),
+              helpers.root('node_modules/is-fullwidth-code-point'), // depends from string-width
+            ]
+          },
           use: [{
             loader: 'babel-loader?cacheDirectory',
             options: {
               plugins: ['lodash'],
             }
           }]
+        },
+        {
+          test: /locales/,
+          loader: '@alienfast/i18next-loader',
+          options: {
+            basenameAsNamespace: true,
+          }
         },
         {
           test: /\.css$/,

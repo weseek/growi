@@ -46,26 +46,15 @@
       </span>
       {% endif %}
 
-      {% if forceGrant %}
-      <input type="hidden" name="pageForm[grant]" value="{{ forceGrant }}">
-      {% else %}
-      <select name="pageForm[grant]" class="m-r-5 selectpicker btn-group-sm">
-        {% for grantId, grantLabel in consts.pageGrants %}
-        <option value="{{ grantId }}" {% if pageForm.grant|default(page.grant) == grantId %}selected{% endif %} {% if grantId == 5 && userRelatedGroups.length == 0 %}disabled{% endif %}>{{ t(grantLabel) }}</option>
-        {% endfor %}
-      </select>
-      {% endif %}
-      {% if userRelatedGroups.length != 0 %}
-      <select name="pageForm[grantUserGroupId]" class="selectpicker btn-group-sm">
-        {% for userGroup in userRelatedGroups %}
-        <option value="{{ userGroup.id }}">{{ userGroup.name }}</option>
-        {% endfor %}
-      </select>
-      {% endif %}
+      <div id="page-grant-selector"></div>
+
+      <input type="hidden" id="page-grant" name="pageForm[grant]" value="{{ page.grant }}">
+      <input type="hidden" id="grant-group" name="pageForm[grantUserGroupId]" value="{{ pageRelatedGroup._id.toString() }}">
       <input type="hidden" id="edit-form-csrf" name="_csrf" value="{{ csrf() }}">
       <button type="submit" class="btn btn-primary btn-submit" id="edit-form-submit">{{ t('Update') }}</button>
     </div>
   </div>
 </form>
+<input type="hidden" id="grant-group-name" value="{{ pageRelatedGroup.name }}">{# for storing group name #}
 <div class="file-module hidden">
 </div>

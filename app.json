@@ -8,6 +8,10 @@
   "repository": "https://github.com/weseek/growi",
   "success_url": "/",
   "env": {
+    "NODE_ENV": {
+      "description": "DO NOT CHANGE - 'yarn' needs this to install devDependencies",
+      "value": "development"
+    },
     "SECRET_TOKEN": {
       "description": "A secret key for verifying the integrity of signed cookies.",
       "generator": "secret"

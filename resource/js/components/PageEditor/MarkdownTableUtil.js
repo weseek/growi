@@ -1,4 +1,5 @@
-import markdown_table from 'markdown-table';
+import markdownTable from 'markdown-table';
+import stringWidth from 'string-width';
 
 /**
  * Utility for markdown table
@@ -10,14 +11,13 @@ class MarkdownTableUtil {
     // https://regex101.com/r/7BN2fR/7
     this.tableAlignmentLineRE = /^[-:|][-:|\s]*$/;
     this.tableAlignmentLineNegRE = /^[^-:]*$/;  // it is need to check to ignore empty row which is matched above RE
-    this.linePartOfTableRE = /^\|[^\r\n]*|[^\r\n]*\|$|([^\|\r\n]+\|[^\|\r\n]*)+/; // own idea
+    this.linePartOfTableRE = /^\|[^\r\n]*|[^\r\n]*\|$|([^|\r\n]+\|[^|\r\n]*)+/; // own idea
 
     this.getBot = this.getBot.bind(this);
     this.getEot = this.getEot.bind(this);
     this.getBol = this.getBol.bind(this);
     this.getStrFromBot = this.getStrFromBot.bind(this);
     this.getStrToEot = this.getStrToEot.bind(this);
-    this.getStrFromBol = this.getStrFromBol.bind(this);
 
     this.parseFromTableStringToMarkdownTable = this.parseFromTableStringToMarkdownTable.bind(this);
     this.replaceMarkdownTableWithReformed = this.replaceMarkdownTableWithReformed.bind(this);
@@ -85,14 +85,6 @@ class MarkdownTableUtil {
   }
 
   /**
-   * return strings from BOL(beginning of line) to current position
-   */
-  getStrFromBol(editor) {
-    const curPos = editor.getCursor();
-    return editor.getDoc().getRange(this.getBol(editor), curPos);
-  }
-
-  /**
    * returns markdown table whose described by 'markdown-table' format
    *   ref. https://github.com/wooorm/markdown-table
    * @param {string} lines all of table
@@ -128,7 +120,7 @@ class MarkdownTableUtil {
         contents.push(row);
       }
     }
-    return (new MarkdownTable(contents, { align: aligns }));
+    return (new MarkdownTable(contents, { align: aligns, stringLength: stringWidth }));
   }
 
   /**
@@ -200,7 +192,7 @@ class MarkdownTable {
   }
 
   toString() {
-    return markdown_table(this.table, this.options);
+    return markdownTable(this.table, this.options);
   }
 }
 

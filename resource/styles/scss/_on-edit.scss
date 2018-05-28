@@ -29,15 +29,6 @@ body.on-edit {
     display: none;
   }
 
-  /*
-   * right tabs
-   */
-  .nav-main-right-tab:not(.dropdown) {
-    // hide if screen size is less than smartphone
-    @media (max-width: $screen-xs) {
-      display: none;
-    }
-  }
 
   /*****************
    * Expand Editor
@@ -83,6 +74,7 @@ body.on-edit {
                          + 1px                      // .page-editor-footer border-top
                          + 40px;                    // .page-editor-footer min-height
       $editor-margin: $header-plus-footer + 22px;   // .btn-open-dropzone height
+      $editor-margin-sm: $header-plus-footer;
 
       #page-editor {
         // right(preview)
@@ -90,16 +82,25 @@ body.on-edit {
         .row,
         .page-editor-preview-container,
         .page-editor-preview-body {
+          min-height: calc(100vh - #{$header-plus-footer});   // for IE11
           height: calc(100vh - #{$header-plus-footer});
         }
         // left(editor)
         .page-editor-editor-container {
+          min-height: calc(100vh - #{$header-plus-footer});   // for IE11
           height: calc(100vh - #{$header-plus-footer});
-        .react-codemirror2, .CodeMirror, .CodeMirror-scroll {
-          height: calc(100vh - #{$editor-margin});
+
+          .react-codemirror2, .CodeMirror, .CodeMirror-scroll,
+          .textarea-editor {
+            height: calc(100vh - #{$editor-margin});
+            // less than smartphone
+            @media (max-width: $screen-xs) {
+              height: calc(100vh - #{$editor-margin-sm});
+            }
+          }
         }
       }
-      }
+
 
       .page-editor-footer {
         width: 100%;
@@ -160,7 +161,7 @@ body.on-edit {
       }
     }
 
-    // hide if screen size is less than smartphone
+    // hide if screen size is less than tablet
     @media (max-width: $screen-sm) {
       display: none;
     }
@@ -174,9 +175,6 @@ body.on-edit {
     padding-right: 0;
     // override CodeMirror styles
     .CodeMirror {
-      pre {
-        font-family: $font-family-monospace-not-strictly;
-      }
       .cm-matchhighlight {
         background-color: cyan;
       }
@@ -206,6 +204,13 @@ body.on-edit {
         padding: 0.3em;
         background: rgba(200,200,200,0.5);
         color: #444;
+      }
+    }
+    // add icon on cursor
+    .autoformat-markdown-table-activated .CodeMirror-cursor {
+      &:after {
+        font-family: 'FontAwesome';
+        content: '\f0ce';
       }
     }
 
@@ -280,6 +285,11 @@ body.on-edit {
       }
     } // end of.dropzone
 
+    .textarea-editor {
+      border: none;
+      font-family: monospace;
+    }
+
     .loading-keymap {
       @include overlay-processing-style();
     }
@@ -296,6 +306,11 @@ body.on-edit {
 
       &:active {
         box-shadow: none;
+      }
+
+      // hide if screen size is less than smartphone
+      @media (max-width: $screen-xs) {
+        display: none;
       }
     }
   }
@@ -336,6 +351,13 @@ body.on-edit {
     }
   }
 
+  #page-grant-selector {
+    .btn-group {
+      min-width: 150px;
+    }
+  }
+
+
 } // }}}
 
 /*
@@ -348,50 +370,6 @@ body.on-edit {
   display: block;
 }
 
-
-/*
-.crowi.main-container .main .page-list.content-main { // {{{ Edit Form of Page List
-
-  .close-button {
-    display: none;
-  }
-}
-.crowi.main-container .main .page-list.content-main.on-edit { // {{{ Edit Form of Page List
-  .close-button {
-    display: block;
-  }
-
-  .page-list-container {
-    display: none;
-  }
-
-  .portal-form-header {
-    height: 16px;
-    padding: 8px;
-    border-bottom: solid 1px #ccc;
-  }
-} // }}}
-*/
-/*
-@media (max-width: $screen-sm-max) { // {{{ less than tablet size
-
-  .content-main.on-edit {
-    .form-group.form-submit-group {
-      select.form-control {
-        display: inline-block;
-        max-width: 50%;
-      }
-    }
-  }
-
-} // }}}
-
-@media (max-width: $screen-xs-max) { // {{{ less than smartphone size
-  #edit-form-submit {
-    float: right;
-  }
-} // }}}
-*/
 // overwrite .CodeMirror-hints
 .CodeMirror-hints {
   // FIXME: required because .content-main.on-edit has 'z-index:1050'

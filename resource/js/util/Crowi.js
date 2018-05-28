@@ -18,6 +18,9 @@ export default class Crowi {
     this.config = {};
     this.csrfToken = context.csrfToken;
 
+    const userAgent = window.navigator.userAgent.toLowerCase();
+    this.isMobile = /iphone|ipad|android/.test(userAgent);
+
     this.window = window;
     this.location = window.location || {};
     this.document = window.document || {};
@@ -30,13 +33,12 @@ export default class Crowi {
     this.apiRequest = this.apiRequest.bind(this);
 
     this.interceptorManager = new InterceptorManager();
-    this.interceptorManager.addInterceptors([
-      new DetachCodeBlockInterceptor(this),
-      new RestoreCodeBlockInterceptor(this),
-    ]);
+    this.interceptorManager.addInterceptor(new DetachCodeBlockInterceptor(this), 10);       // process as soon as possible
+    this.interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(this), 900);     // process as late as possible
 
     // FIXME
     this.me = context.me;
+    this.isAdmin = context.isAdmin;
 
     this.users = [];
     this.userByName = {};

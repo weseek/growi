@@ -44,7 +44,7 @@
 
         <div class="form-group">
           <label for="markdownSetting[markdown:isEnabledLinebreaks]" class="col-xs-4 control-label">
-            {{ t('markdown_setting.validate Line Break') }}
+            {{ t('markdown_setting.Enable Line Break') }}
           </label>
           <div class="col-xs-5">
             <div class="btn-group btn-toggle" data-toggle="buttons">
@@ -57,14 +57,14 @@
                     {% if !markdownSetting['markdown:isEnabledLinebreaks'] %}checked{% endif %}> OFF
               </label>
             </div>
-            <p class="help-block">{{ t("markdown_setting.treat_text") }}
+            <p class="help-block">{{ t("markdown_setting.Enable Line Break desc") }}
 </p>
           </div>
         </div>
 
         <div class="form-group">
           <label for="markdownSetting[markdown:isEnabledLinebreaksInComments]" class="col-xs-4 control-label">
-            (TBD)<br>{{ t("markdown_setting.validate_comment") }}
+            (TBD)<br>{{ t("markdown_setting.Enable Line Break for comment") }}
           </label>
           <div class="col-xs-5">
             <div class="btn-group btn-toggle" data-toggle="buttons">
@@ -77,7 +77,7 @@
                     {% if !markdownSetting['markdown:isEnabledLinebreaksInComments'] %}checked{% endif %}> OFF
               </label>
             </div>
-            <p class="help-block">{{ t("markdown_setting.treat_comment") }}<br>{{ t("markdown_setting.TBD") }}</p>
+            <p class="help-block">{{ t("markdown_setting.Enable Line Break for comment desc") }}<br>{{ t("markdown_setting.TBD") }}</p>
           </div>
         </div>
 
