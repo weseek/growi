@@ -1,0 +1,40 @@
+<div class="modal" id="create-template">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header bg-primary">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <div class="modal-title">Create/Edit Template</div>
+      </div>
+      <div class="modal-body">
+          <div class="form-group">
+            <label for="">Create a new template for <code>{{ page.path }}</code></label><br>
+            <div class="row">
+              <div class="col-sm-6">
+                <p class="help-block">Local Template</p>
+                <p class="help-block">Applies only to immediate decendant pages</p>
+                <div class="d-flex justify-content-center">
+                  {% if template %}
+                  <a href="{{ page.path }}/@template#edit-form"><button type="submit" class="btn btn-xs btn-primary">Edit</button></a>
+                  {% else %}
+                  <a href="{{ page.path }}/@template#edit-form"><button type="submit" class="btn btn-xs btn-primary">Create</button></a>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="col-sm-6">
+                  <p class="help-block">Global Template</p>
+                  <p class="help-block">Applies to all decendant pages</p>
+                  <div class="d-flex justify-content-center">
+                    {% if template %}
+                    <a href="{{ page.path }}/_template#edit-form"><button type="submit" class="btn btn-xs btn-primary">Edit</button></a>
+                    {% else %}
+                    <a href="{{ page.path }}/_template#edit-form"><button type="submit" class="btn btn-xs btn-primary">Create</button></a>
+                    {% endif %}
+                  </div>
+              </div>
+            </div>
+          </div>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
