@@ -8,27 +8,29 @@
       </div>
       <div class="modal-body">
           <div class="form-group">
-            <label for="">Create a new template for <code>{{ page.path }}</code></label><br>
+            <label for="">Create a new template for <code>{{ page.path }}</code></label><br><br>
             <div class="row">
               <div class="col-sm-6">
-                <p class="help-block">Local Template</p>
-                <p class="help-block">Applies only to immediate decendant pages</p>
+                <p class="help-block text-center"><strong>Local Template</strong></p>
+                <p class="help-block text-center"><small>Applies only to immediate decendant pages</small></p>
+                <br>
                 <div class="d-flex justify-content-center">
-                  {% if template %}
-                  <a href="{{ page.path }}/@template#edit-form"><button type="submit" class="btn btn-xs btn-primary">Edit</button></a>
+                  {% if localTemplateExists %}
+                  <a href="{{ page.path }}/@template#edit-form"><button class="btn btn-xs btn-primary">Edit</button></a>
                   {% else %}
-                  <a href="{{ page.path }}/@template#edit-form"><button type="submit" class="btn btn-xs btn-primary">Create</button></a>
+                  <a href="{{ page.path }}/@template#edit-form"><button class="btn btn-xs btn-primary">Create</button></a>
                   {% endif %}
                 </div>
               </div>
               <div class="col-sm-6">
-                  <p class="help-block">Global Template</p>
-                  <p class="help-block">Applies to all decendant pages</p>
+                  <p class="help-block text-center"><strong>Global Template</strong></p>
+                  <p class="help-block text-center"><small>Applies to all decendant pages</small></p>
+                  <br>
                   <div class="d-flex justify-content-center">
-                    {% if template %}
-                    <a href="{{ page.path }}/_template#edit-form"><button type="submit" class="btn btn-xs btn-primary">Edit</button></a>
+                    {% if globalTemplateExists %}
+                    <a href="{{ page.path }}/_template#edit-form"><button class="btn btn-xs btn-primary">Edit</button></a>
                     {% else %}
-                    <a href="{{ page.path }}/_template#edit-form"><button type="submit" class="btn btn-xs btn-primary">Create</button></a>
+                    <a href="{{ page.path }}/_template#edit-form"><button class="btn btn-xs btn-primary">Create</button></a>
                     {% endif %}
                   </div>
               </div>
