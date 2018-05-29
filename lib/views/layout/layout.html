@@ -16,6 +16,44 @@
 
   {{ customHeader() }}
 
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jQuery-slimScroll/1.3.8/jquery.slimscroll.min.js"></script>
+  <script>
+  function DrawScrollbar() {
+    // 高さ(h) = ウィンドウの内部高ーページヘッダ高ー左上のアイコン高（32固定）
+    var h = window.innerHeight - document.getElementById('page-header').clientHeight - 32;
+    $('#revision-toc-content').slimScroll({
+      railVisible: true,
+      railColor: '#f00',
+      position: 'right',
+      height: h,
+    });
+  }
+  </script>
+
+  <script>
+  $(function(){
+    DrawScrollbar();
+  });
+  </script>
+
+  <script>
+  (function () {
+    var timer = 0;
+
+    window.onresize = function () {
+      if (timer > 0) {
+        clearTimeout(timer);
+      }
+
+      timer = setTimeout(function () {
+        DrawScrollbar();
+      }, 200);
+    };
+  }());
+  </script>
+
+
   <!-- polyfills for IE11 -->
   <script>
     var userAgent = window.navigator.userAgent.toLowerCase();
