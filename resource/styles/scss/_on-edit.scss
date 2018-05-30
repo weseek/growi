@@ -82,10 +82,12 @@ body.on-edit {
         .row,
         .page-editor-preview-container,
         .page-editor-preview-body {
+          min-height: calc(100vh - #{$header-plus-footer});   // for IE11
           height: calc(100vh - #{$header-plus-footer});
         }
         // left(editor)
         .page-editor-editor-container {
+          min-height: calc(100vh - #{$header-plus-footer});   // for IE11
           height: calc(100vh - #{$header-plus-footer});
 
           .react-codemirror2, .CodeMirror, .CodeMirror-scroll,
@@ -98,6 +100,7 @@ body.on-edit {
           }
         }
       }
+
 
       .page-editor-footer {
         width: 100%;
@@ -201,6 +204,13 @@ body.on-edit {
         padding: 0.3em;
         background: rgba(200,200,200,0.5);
         color: #444;
+      }
+    }
+    // add icon on cursor
+    .autoformat-markdown-table-activated .CodeMirror-cursor {
+      &:after {
+        font-family: 'FontAwesome';
+        content: '\f0ce';
       }
     }
 
@@ -340,6 +350,13 @@ body.on-edit {
       display: none;
     }
   }
+
+  #page-grant-selector {
+    .btn-group {
+      min-width: 150px;
+    }
+  }
+
 
 } // }}}
 

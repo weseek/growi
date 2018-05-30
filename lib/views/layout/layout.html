@@ -118,10 +118,12 @@ gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js
   class="main-container content-wrapper {% block html_base_css %}{% endblock %}
       {% if !layoutType() || 'crowi' === layoutType() %}crowi{% else %}growi{% endif %}"
   data-me="{{ user._id.toString() }}"
+  data-is-admin="{{ user.admin }}"
   data-plugin-enabled="{{ isEnabledPlugins() }}"
   {% block html_base_attr %}{% endblock %}
   data-csrftoken="{{ csrf() }}"
   data-current-username="{% if user %}{{ user.username }}{% endif %}"
+  data-userlang="{% if user %}{{ user.lang }}{% endif %}"
  >
 
 <div id="wrapper">

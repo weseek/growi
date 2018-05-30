@@ -1,9 +1,15 @@
 <div class="row row-alerts">
   <div class="col-xs-12">
     {% if page && page.grant != 1 %}
-    <p class="alert alert-inverse alert-grant">
-      <i class="icon-fw icon-lock"></i><strong>{{ consts.pageGrants[page.grant] }}</strong> ({{ t('Browsing of this page is restricted') }})
-    </p>
+      <p class="alert alert-inverse alert-grant">
+      {% if page.grant == 2 %}
+        <i class="icon-fw icon-link"></i><strong>{{ consts.pageGrants[page.grant] }}</strong> ({{ t('Browsing of this page is restricted') }})
+      {% elseif page.grant == 4 %}
+        <i class="icon-fw icon-lock"></i><strong>{{ consts.pageGrants[page.grant] }}</strong> ({{ t('Browsing of this page is restricted') }})
+      {% elseif page.grant == 5 %}
+        <i class="icon-fw icon-organization"></i><strong>'{{ pageRelatedGroup.name }}' only</strong> ({{ t('Browsing of this page is restricted') }})
+      {% endif %}
+      </p>
     {% endif %}
 
     {% if page.isDeleted() %}
