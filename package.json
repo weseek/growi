@@ -39,6 +39,7 @@
     "prebuild:prod": "npm run plugin:def",
     "prestart": "npm run build:prod",
     "postserver:prod:container": "echo ---------------------------------------- && echo [WARNING] && echo   'server:prod:container' is deprecated. && echo   Please use 'sever:prod' && echo ----------------------------------------",
+    "server:debug": "env-cmd config/env.dev.js node-dev --inspect app.js",
     "server:dev": "env-cmd config/env.dev.js node-dev --respawn app.js",
     "server:prod:container": "npm run server:prod",
     "server:prod:ci": "npm run server:prod -- --ci",
