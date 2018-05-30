@@ -31,6 +31,7 @@ module.exports = function(options) {
       'style-theme-nature':   './resource/styles/scss/theme/nature.scss',
       'style-theme-mono-blue':   './resource/styles/scss/theme/mono-blue.scss',
       'style-theme-future': './resource/styles/scss/theme/future.scss',
+      'style-theme-blue-night': './resource/styles/scss/theme/blue-night.scss',
       'style-presentation':   './resource/styles/scss/style-presentation.scss',
     },
     externals: {

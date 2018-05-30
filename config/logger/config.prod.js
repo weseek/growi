@@ -1,3 +1,3 @@
 module.exports = {
-  default: 'info',
+  default: 'warn',
 };
