@@ -422,7 +422,8 @@
 
   "installer_page": {
     "not_available": "このユーザーIDは利用できません",
-    "Setup": "セットアップ"
+    "Setup": "セットアップ",
+    "first_account": "最初のアカウントの作成"
   }
 
 }
