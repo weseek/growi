@@ -404,7 +404,8 @@
 
   "installer_page": {
     "not_available": "This user ID is currently not available",
-    "Setup": "Setup"
+    "Setup": "Setup",
+    "first_account": "Create the first account"
   }
 
 }
