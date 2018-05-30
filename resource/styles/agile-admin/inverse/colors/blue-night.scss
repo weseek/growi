@@ -48,7 +48,7 @@ $inline-code-bg: #0a121b;
   }
 }
 
-pre {
+:not(.hljs) > pre:not(.hljs) {
   color: $bodytext;
   background-color: $inline-code-bg;
 }
