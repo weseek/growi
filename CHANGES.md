@@ -4,6 +4,10 @@ CHANGES
 ## 3.1.2-RC
 
 * Improvement: Add 'future' theme
+* Support: Upgrade libs
+    * assets-webpack-plugin
+    * react-clipboard.js
+    * xss
 
 ## 3.1.1-RC
 
