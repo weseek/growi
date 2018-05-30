@@ -4,6 +4,8 @@ CHANGES
 ## 3.1.2-RC
 
 * Improvement: Add 'future' theme
+* Fix: Posting to Slack doesn't work
+    * Introduced by 3.1.0
 * Support: Upgrade libs
     * assets-webpack-plugin
     * react-clipboard.js
