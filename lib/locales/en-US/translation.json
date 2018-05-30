@@ -400,6 +400,11 @@
     "your_own":"You cannot deactivate your own account",
     "Administrator menu":"Administrator menu",
     "cannot_remove":"You cannot remove yourself from administrator"
+  },
+
+  "installer_page": {
+    "not_available": "This user ID is currently not available",
+    "Setup": "Setup"
   }
 
 }
