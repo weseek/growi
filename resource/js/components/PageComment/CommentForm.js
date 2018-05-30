@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import ReactUtils from '../ReactUtils';
 
 import CommentPreview from '../PageComment/CommentPreview';
-import RevisionBody from '../Page/RevisionBody';
 
 import Button from 'react-bootstrap/es/Button';
 import FormControl from 'react-bootstrap/es/FormControl';
