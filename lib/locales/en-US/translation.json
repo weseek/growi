@@ -405,7 +405,8 @@
   "installer_page": {
     "not_available": "This user ID is currently not available",
     "Setup": "Setup",
-    "first_account": "Create the first account"
+    "first_account": "Create the first account",
+    "administrative_privileges": "Administrative privileges are automatically authorized to the first account"
   }
 
 }
