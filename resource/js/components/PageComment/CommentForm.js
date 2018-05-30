@@ -124,22 +124,21 @@ export default class CommentForm extends React.Component {
 
 
 render() {
-  // const creatorsPage = `/user/${this.state.creator.username}`;
-
-  // const crowi = this.props.crowi;
-  const user = crowi.me;
+  const crowi = this.props.crowi;
+  const username = crowi.me;
+  const user = crowi.findUser(username);
+  const creatorsPage = `/user/${username}`;
   const comment = this.state.comment;
   const commentPreview = this.state.isMarkdown ? this.getCommentHtml(): ReactUtils.nl2br(comment);
-  //{% if not user %}disabled{% endif %}をtextareaとbuttonに追加
   return (
     <div>
       <form className="form page-comment-form" id="page-comment-form" onSubmit={this.postComment}>
-        { user &&
+        { username &&
           <div className="comment-form">
             <div className="comment-form-user">
-              {/* <a href={creatorsPage}> */}
-                {/* <UserPicture user={user} /> */}
-              {/* </a> */}
+              <a href={creatorsPage}>
+                <UserPicture user={user} />
+              </a>
             </div>
             <div className="comment-form-main">
               <div className="comment-write">
