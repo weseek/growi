@@ -18,6 +18,8 @@
   <div class="tab-content">
     {% if isEnabledAttachTitleHeader() %}
     <script type="text/template" id="raw-text-original"># {{ path|path2name }}</script>
+    {% elseif template %}
+    <script type="text/template" id="raw-text-original">{{ template }}</script>
     {% endif %}
     {# list view #}
     <div class="p-t-10 active tab-pane page-list-container" id="revision-body">
