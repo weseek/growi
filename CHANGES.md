@@ -1,9 +1,13 @@
 CHANGES
 ========
 
-## 3.1.1-RC
+## 3.1.2-RC
 
 * Improvement: Add 'future' theme
+
+## 3.1.1-RC
+
+* Improvement: Add 'blue-night' theme
 * Improvement: List up pages which restricted for Group ACL
 * Fix: PageGroupRelation didn't remove when page is removed completely
 
