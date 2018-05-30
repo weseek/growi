@@ -1,8 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import FormControl from 'react-bootstrap/es/FormControl';
+import ReactUtils from '../ReactUtils';
+
+import CommentPreview from '../PageComment/CommentPreview';
+
 import Button from 'react-bootstrap/es/Button';
+import FormControl from 'react-bootstrap/es/FormControl';
+import Tab from 'react-bootstrap/es/Tab';
+import Tabs from 'react-bootstrap/es/Tabs';
 import UserPicture from '../User/UserPicture';
+
 /**
  *
  * @author Yuki Takei <yuki@weseek.co.jp>
@@ -11,6 +18,7 @@ import UserPicture from '../User/UserPicture';
  * @class Comment
  * @extends {React.Component}
  */
+
 export default class CommentForm extends React.Component {
 
   constructor(props) {
@@ -18,11 +26,15 @@ export default class CommentForm extends React.Component {
 
     this.state = {
       comment: '',
-      isMarkdown: false,
-    };
+      isMarkdown: true,
+      html: '',
+      key: 1,
+       };
 
     this.updateState = this.updateState.bind(this);
     this.postComment = this.postComment.bind(this);
+    this.renderHtml = this.renderHtml.bind(this);
+    this.handleSelect = this.handleSelect.bind(this);
   }
 
   updateState(event) {
@@ -33,6 +45,11 @@ export default class CommentForm extends React.Component {
     this.setState({
       [name]: value
     });
+  }
+
+  handleSelect(key){
+    this.setState({ key });
+    this.renderHtml(this.state.comment)
   }
 
   /**
@@ -55,29 +72,90 @@ export default class CommentForm extends React.Component {
         }
         this.setState({
           comment: '',
-          isMarkdown: false,
+          isMarkdown: true,
+          html: '',
+          key: 1,
         });
       });
   }
 
-  render() {
-    //{% if not user %}disabled{% endif %}をtextareaとbuttonに追加
-    // denounce/throttle
-    return (
-      <div>
+  getCommentHtml(){
+    return(
+        <CommentPreview
+          html={this.state.html}
+          inputRef={el => this.previewElement = el}/>
+    )
+  }
+
+  renderHtml(markdown) {
+    var context = {
+      markdown,
+      dom: this.previewElement,
+    };
+
+    const crowiRenderer = this.props.crowiRenderer;
+    const interceptorManager = this.props.crowi.interceptorManager;
+    interceptorManager.process('prePreviewRender', context)
+      .then(() => interceptorManager.process('prePreviewPreProcess', context))
+      .then(() => {
+        context.markdown = crowiRenderer.preProcess(context.markdown);
+      })
+      .then(() => interceptorManager.process('postPreviewPreProcess', context))
+      .then(() => {
+        var parsedHTML = crowiRenderer.process(context.markdown);
+        context['parsedHTML'] = parsedHTML;
+      })
+      .then(() => interceptorManager.process('prePreviewPostProcess', context))
+      .then(() => {
+        context.parsedHTML = crowiRenderer.postProcess(context.parsedHTML, context.dom);
+      })
+      .then(() => interceptorManager.process('postPreviewPostProcess', context))
+      .then(() => interceptorManager.process('prePreviewRenderHtml', context))
+      .then(() => {
+  　　     this.setState({ html: context.parsedHTML });
+      })
+      // process interceptors for post rendering
+      .then(() => interceptorManager.process('postPreviewRenderHtml', context));
+  }
+
+  generateInnerHtml(html) {
+    return {__html: html};
+  }
+
+
+render() {
+  // const creatorsPage = `/user/${this.state.creator.username}`;
+
+  // const crowi = this.props.crowi;
+  // const user = crowi.me;
+  const comment = this.state.comment;
+  const commentPreview = this.state.isMarkdown ? this.getCommentHtml(): ReactUtils.nl2br(comment);
+  //{% if not user %}disabled{% endif %}をtextareaとbuttonに追加
+  return (
+    <div>
       <form className="form page-comment-form" id="page-comment-form" onSubmit={this.postComment}>
         <div className="comment-form">
           <div className="comment-form-user">
+            {/* <a href={creatorsPage}> */}
+              {/* <UserPicture user={user} /> */}
+            {/* </a> */}
           </div>
           <div className="comment-form-main">
             <div className="comment-write">
-              <textarea className="comment-form-comment form-control" id="comment-form-comment" name="comment" required placeholder="Write comments here..." value={this.state.comment} onChange={this.updateState} >
-              </textarea>
-              <div className="form-check">
-              {/* <input type="checkbox" className="form-check-input" id="checkbox-markdown" checked={this.state.isMarkdown} value="1" onChange={this.updateState} />
-              <label className="form-check-label" htmlFor="checkbox-markdown">Markdown</label> */}
-              <input type="checkbox" id="comment-form-is-markdown" name="isMarkdown" checked={this.state.isMarkdown} value="1" onChange={this.updateState} /> Markdown<br />
-              </div>
+ 	        		<Tabs activeKey={this.state.key} id="comment-form-tabs" onSelect={this.handleSelect} animation={false}>
+                <Tab eventKey={1} title="Write">
+                  <textarea className="comment-form-comment form-control" id="comment-form-comment" name="comment" required placeholder="Write comments here..." value={this.state.comment} onChange={this.updateState} >
+                  </textarea>
+                  <div className="form-check">
+                    <input type="checkbox" id="comment-form-is-markdown" name="isMarkdown" checked={this.state.isMarkdown} value="1" onChange={this.updateState} /> Markdown<br />
+                  </div>
+                </Tab>
+                <Tab eventKey={2} title="Preview">
+                  <div className="comment-form-preview">
+                  {commentPreview}
+                  </div>
+                </Tab>
+              </Tabs>
             </div>
             <div className="comment-submit">
               <div className="pull-right">
@@ -91,7 +169,7 @@ export default class CommentForm extends React.Component {
           </div>
         </div>
       </form>
-      </div>
+    </div>
     );
   }
 }
@@ -101,4 +179,5 @@ CommentForm.propTypes = {
   onPostComplete: PropTypes.func,
   pageId: PropTypes.string,
   revisionId: PropTypes.string,
+  crowiRenderer:  PropTypes.object.isRequired,
 };
