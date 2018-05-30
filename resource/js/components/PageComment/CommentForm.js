@@ -124,6 +124,10 @@ export default class CommentForm extends React.Component {
 
 
 render() {
+  // const creatorsPage = `/user/${this.state.creator.username}`;
+
+  // const crowi = this.props.crowi;
+  // const user = crowi.me;
   const comment = this.state.comment;
   const commentPreview = this.state.isMarkdown ? this.getCommentHtml(): ReactUtils.nl2br(comment);
   //{% if not user %}disabled{% endif %}をtextareaとbuttonに追加
@@ -132,6 +136,9 @@ render() {
       <form className="form page-comment-form" id="page-comment-form" onSubmit={this.postComment}>
         <div className="comment-form">
           <div className="comment-form-user">
+            {/* <a href={creatorsPage}> */}
+              {/* <UserPicture user={user} /> */}
+            {/* </a> */}
           </div>
           <div className="comment-form-main">
             <div className="comment-write">
@@ -143,8 +150,8 @@ render() {
                     <input type="checkbox" id="comment-form-is-markdown" name="isMarkdown" checked={this.state.isMarkdown} value="1" onChange={this.updateState} /> Markdown<br />
                   </div>
                 </Tab>
-                <Tab eventKey={2} title="Prevrew">
-                  <div className="comment-form-prevew">
+                <Tab eventKey={2} title="Preview">
+                  <div className="comment-form-preview">
                   {commentPreview}
                   </div>
                 </Tab>
