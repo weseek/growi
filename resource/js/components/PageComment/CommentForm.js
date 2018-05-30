@@ -127,47 +127,49 @@ render() {
   // const creatorsPage = `/user/${this.state.creator.username}`;
 
   // const crowi = this.props.crowi;
-  // const user = crowi.me;
+  const user = crowi.me;
   const comment = this.state.comment;
   const commentPreview = this.state.isMarkdown ? this.getCommentHtml(): ReactUtils.nl2br(comment);
   //{% if not user %}disabled{% endif %}をtextareaとbuttonに追加
   return (
     <div>
       <form className="form page-comment-form" id="page-comment-form" onSubmit={this.postComment}>
-        <div className="comment-form">
-          <div className="comment-form-user">
-            {/* <a href={creatorsPage}> */}
-              {/* <UserPicture user={user} /> */}
-            {/* </a> */}
-          </div>
-          <div className="comment-form-main">
-            <div className="comment-write">
- 	        		<Tabs activeKey={this.state.key} id="comment-form-tabs" onSelect={this.handleSelect} animation={false}>
-                <Tab eventKey={1} title="Write">
-                  <textarea className="comment-form-comment form-control" id="comment-form-comment" name="comment" required placeholder="Write comments here..." value={this.state.comment} onChange={this.updateState} >
-                  </textarea>
-                  <div className="form-check">
-                    <input type="checkbox" id="comment-form-is-markdown" name="isMarkdown" checked={this.state.isMarkdown} value="1" onChange={this.updateState} /> Markdown<br />
-                  </div>
-                </Tab>
-                <Tab eventKey={2} title="Preview">
-                  <div className="comment-form-preview">
-                  {commentPreview}
-                  </div>
-                </Tab>
-              </Tabs>
+        { user &&
+          <div className="comment-form">
+            <div className="comment-form-user">
+              {/* <a href={creatorsPage}> */}
+                {/* <UserPicture user={user} /> */}
+              {/* </a> */}
             </div>
-            <div className="comment-submit">
-              <div className="pull-right">
-                <Button type="submit" value="Submit" bsStyle="primary" className="fcbtn btn btn-sm btn-primary btn-outline btn-rounded btn-1b">
-                    Comment
-                </Button>
+            <div className="comment-form-main">
+              <div className="comment-write">
+ 	          		<Tabs activeKey={this.state.key} id="comment-form-tabs" onSelect={this.handleSelect} animation={false}>
+                  <Tab eventKey={1} title="Write">
+                    <textarea className="comment-form-comment form-control" id="comment-form-comment" name="comment" required placeholder="Write comments here..." value={this.state.comment} onChange={this.updateState} >
+                    </textarea>
+                    <div className="form-check">
+                      <input type="checkbox" id="comment-form-is-markdown" name="isMarkdown" checked={this.state.isMarkdown} value="1" onChange={this.updateState} /> Markdown<br />
+                    </div>
+                  </Tab>
+                  <Tab eventKey={2} title="Preview">
+                    <div className="comment-form-preview">
+                    {commentPreview}
+                    </div>
+                  </Tab>
+                </Tabs>
               </div>
-              <div className="clearfix">
+              <div className="comment-submit">
+                <div className="pull-right">
+                  <Button type="submit" value="Submit" bsStyle="primary" className="fcbtn btn btn-sm btn-primary btn-outline btn-rounded btn-1b">
+                      Comment
+                  </Button>
+                </div>
+                <div className="clearfix">
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        }
       </form>
     </div>
     );
