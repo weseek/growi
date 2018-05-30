@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import ReactUtils from '../ReactUtils';
 
 import CommentPreview from '../PageComment/CommentPreview';
+import RevisionBody from '../Page/RevisionBody';
 
 import Button from 'react-bootstrap/es/Button';
 import FormControl from 'react-bootstrap/es/FormControl';
@@ -48,11 +50,7 @@ export default class CommentForm extends React.Component {
 
   handleSelect(key){
     this.setState({ key });
-    if(this.state.isMarkdown){
-      this.renderHtml(this.state.comment)
-    } else {
-     this.setState({ html: this.state.comment})
-    }
+    this.renderHtml(this.state.comment)
   }
 
   /**
@@ -80,6 +78,14 @@ export default class CommentForm extends React.Component {
           key: 1,
         });
       });
+  }
+
+  getCommentHtml(){
+    return(
+        <CommentPreview
+          html={this.state.html}
+          inputRef={el => this.previewElement = el}/>
+    )
   }
 
   renderHtml(markdown) {
@@ -119,6 +125,8 @@ export default class CommentForm extends React.Component {
 
 
 render() {
+  const comment = this.state.comment;
+  const commentPreview = this.state.isMarkdown ? this.getCommentHtml(): ReactUtils.nl2br(comment);
   //{% if not user %}disabled{% endif %}をtextareaとbuttonに追加
   return (
     <div>
@@ -138,10 +146,7 @@ render() {
                 </Tab>
                 <Tab eventKey={2} title="Prevrew">
                   <div className="comment-form-prevew">
-                       <CommentPreview
-                        html={this.state.html}
-                        inputRef={el => this.previewElement = el}
-                        />
+                  {commentPreview}
                   </div>
                 </Tab>
               </Tabs>
