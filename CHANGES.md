@@ -11,7 +11,7 @@ CHANGES
     * react-clipboard.js
     * xss
 
-## 3.1.1-RC
+## 3.1.1
 
 * Improvement: Add 'blue-night' theme
 * Improvement: List up pages which restricted for Group ACL
