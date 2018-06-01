@@ -21,7 +21,6 @@
       {
         "type": "chrome",
         "request": "launch",
-        "trace": true,
         "name": "Debug: Chrome",
         "sourceMaps": true,
         "sourceMapPathOverrides": {
