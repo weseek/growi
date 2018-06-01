@@ -75,6 +75,11 @@
       pagePath = pagePath.slice(0, -1);
     };
 
+    $.get(`/_api/page.template?path=${pagePath}`)
+    .then(templateInfo => {
+      console.log('data', templateInfo);
+    });
+
     $("#template-type").on("change", () => {
       if ($("#template-type").val() === "local") {
         href = pagePath + "/__template#edit-form";
