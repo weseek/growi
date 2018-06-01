@@ -11,10 +11,11 @@
       margin-bottom: 10px;
     }
 
-    form {
+    form, div {
 
       // layout
       .create-page-input-container {
+        justify-content: space-between;
         .create-page-input-row {
           flex: 1;
         }
