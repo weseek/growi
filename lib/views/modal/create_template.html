@@ -18,7 +18,7 @@
                   <p class="help-block text-center"><small>{{ t('template.local.desc') }}</small></p>
                 </div>
                 <div class="panel-footer text-center">
-                  {% if localTemplateExists %}
+                  {% if childrenTemplateExists %}
                   <a href="{{ page.path }}/_template#edit-form"><button class="btn btn-sm btn-primary">{{ t('Edit') }}</button></a>
                   {% else %}
                   <a href="{{ page.path }}/_template#edit-form"><button class="btn btn-sm btn-primary">{{ t('Create') }}</button></a>
@@ -34,7 +34,7 @@
                   <p class="help-block text-center"><small>{{ t('template.global.desc') }}</small></p>
                 </div>
                 <div class="panel-footer text-center">
-                  {% if globalTemplateExists %}
+                  {% if decendantsTemplateExists %}
                   <a href="{{ page.path }}/__template#edit-form"><button class="btn btn-sm btn-primary">{{ t('Edit') }}</button></a>
                   {% else %}
                   <a href="{{ page.path }}/__template#edit-form"><button class="btn btn-sm btn-primary">{{ t('Create') }}</button></a>
