@@ -1,0 +1,42 @@
+<div class="modal" id="create-template">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header bg-primary">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <div class="modal-title">{{ t('Create/Edit Template') }}</div>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="">{{ t('modal_template.label.Create template', page.path) }}</label><br><br>
+          <div class="row">
+            <div class="col-sm-6">
+              <p class="help-block text-center"><strong>{{ t('modal_template.label.Local template') }}</strong></p>
+              <p class="help-block text-center"><small>{{ t('modal_template.help.Local template') }}</small></p>
+              <br>
+              <div class="d-flex justify-content-center">
+                {% if localTemplateExists %}
+                <a href="{{ page.path }}/__template#edit-form"><button class="btn btn-xs btn-primary">{{ t('Edit') }}</button></a>
+                {% else %}
+                <a href="{{ page.path }}/__template#edit-form"><button class="btn btn-xs btn-primary">{{ t('Create') }}</button></a>
+                {% endif %}
+              </div>
+            </div>
+            <div class="col-sm-6">
+                <p class="help-block text-center"><strong>{{ t('modal_template.label.Global template') }}</strong></p>
+                <p class="help-block text-center"><small>{{ t('modal_template.help.Global template') }}</small></p>
+                <br>
+                <div class="d-flex justify-content-center">
+                  {% if globalTemplateExists %}
+                  <a href="{{ page.path }}/_template#edit-form"><button class="btn btn-xs btn-primary">{{ t('Edit') }}</button></a>
+                  {% else %}
+                  <a href="{{ page.path }}/_template#edit-form"><button class="btn btn-xs btn-primary">{{ t('Create') }}</button></a>
+                  {% endif %}
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
