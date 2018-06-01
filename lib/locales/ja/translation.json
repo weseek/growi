@@ -40,7 +40,7 @@
   "Share Link": "共有用リンク",
   "Markdown Link": "Markdown形式のリンク",
 
-  "Create/Edit Template": "テンプレートの作成/編集",
+  "Create/Edit Template": "テンプレートページの作成/編集",
 
   "Unportalize": "ポータル解除",
 
@@ -79,13 +79,7 @@
   "Input page name": "ページ名を入力",
   "Input page name (optional)": "ページ名を入力(空欄OK)",
   "New Page": "新規ページ",
-  "Create under": "ページを<code>%s</code>以下に作成",
-  "Create template under": "テンプレートを<code>%s</code>以下に作成",
-  "Option select template": "テンプレートタイプを選択してください",
-  "Option local template": "ローカルテンプレート(/__template) - 指定されたパス直下のページにのみ適応されます",
-  "Option global template": "グローバルテンプレート(/_template) - 指定されたパス以下すべてのページに適応されます",
-
-
+  "Create under": "ページを以下に作成",
 
   "Table of Contents": "目次",
   "Management Wiki Home": "Wiki管理トップ",
@@ -214,18 +208,6 @@
     }
   },
 
-  "modal_template": {
-    "label": {
-      "Create template": "<code>%s</code> にテンプレートを作成します",
-      "Local template": "ローカルテンプレート",
-      "Global template": "グローバルテンプレート"
-    },
-    "help": {
-      "Local template": "指定されたパス直下のページにのみ<br>適応されます。",
-      "Global template": "指定されたパス以下すべてのページに<br>適応されます。"
-    }
-  },
-
   "modal_duplicate": {
     "label": {
       "Duplicate page": "ページを複製する",
@@ -252,6 +234,25 @@
         "Outdent": "左インデント",
         "Save Page": "保存",
         "Delete Line": "行削除"
+    }
+  },
+
+  "template": {
+    "modal_label": {
+      "Create/Edit Template Page": "テンプレートページの作成/編集",
+      "Create template under": "<code>%s</code> にテンプレートページを作成"
+    },
+    "option_label": {
+      "select": "テンプレートタイプを選択してください",
+      "create/edit": "テンプレートページの作成/編集.."
+    },
+    "local": {
+      "label": "同一階層テンプレート",
+      "desc": "テンプレートページが存在する階層にのみ適応されます"
+    },
+    "global": {
+      "label": "下位層テンプレート",
+      "desc": "テンプレートページが存在する下位層のすべてのページに適応されます"
     }
   },
 

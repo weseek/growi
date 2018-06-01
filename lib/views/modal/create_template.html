@@ -4,18 +4,18 @@
 
       <div class="modal-header bg-primary">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <div class="modal-title">{{ t('Create/Edit Template') }}</div>
+        <div class="modal-title">{{ t('template.modal_label.Create/Edit Template Page') }}</div>
       </div>
       <div class="modal-body">
         <div class="form-group">
-          <label class="mb-4">{{ t('modal_template.label.Create template', page.path) }}</label>
+          <label class="mb-4">{{ t('template.modal_label.Create template under', page.path ) }}</label>
           <div class="row">
             <div class="col-sm-6">
               <div class="panel panel-default">
-                <div class="panel-heading">{{ t('modal_template.label.Local template') }}</div>
+                <div class="panel-heading">{{ t('template.local.label') }}</div>
                 <div class="panel-body">
                   <p class="text-center"><code>__template</code></p>
-                  <p class="help-block text-center"><small>{{ t('modal_template.help.Local template') }}</small></p>
+                  <p class="help-block text-center"><small>{{ t('template.local.desc') }}</small></p>
                 </div>
                 <div class="panel-footer text-center">
                   {% if localTemplateExists %}
@@ -28,10 +28,10 @@
             </div>
             <div class="col-sm-6">
               <div class="panel panel-default">
-                <div class="panel-heading">{{ t('modal_template.label.Global template') }}</div>
+                <div class="panel-heading">{{ t('template.global.label') }}</div>
                 <div class="panel-body">
                   <p class="text-center"><code>_template</code></p>
-                  <p class="help-block text-center"><small>{{ t('modal_template.help.Global template') }}</small></p>
+                  <p class="help-block text-center"><small>{{ t('template.global.desc') }}</small></p>
                 </div>
                 <div class="panel-footer text-center">
                   {% if globalTemplateExists %}

@@ -42,7 +42,7 @@
 
   "Management Wiki": "Management Wiki",
 
-  "Create/Edit Template": "Create/Edit Template",
+  "Create/Edit Template": "Create/Edit Template Page",
 
   "Unportalize": "Unportalize",
 
@@ -80,11 +80,7 @@
   "Input page name": "Input page name",
   "Input page name (optional)": "Input page name (optional)",
   "New Page": "New Page",
-  "Create under": "Create page under: <code>%s</code>",
-  "Create template under": "Create template under: <code>%s</code>",
-  "Option select template": "Select template type",
-  "Option local template": "Local Template(/__template) - Applies only to immediate decendant pages",
-  "Option global template": "Global Template(/_template) - Applies to all decendant pages",
+  "Create under": "Create page under below:",
 
   "Table of Contents": "Table of Contents",
 
@@ -194,18 +190,6 @@
     }
   },
 
-  "modal_template": {
-    "label": {
-      "Create template": "Create a new template for <code>%s</code>",
-      "Local template": "Local Template",
-      "Global template": "Global Template"
-    },
-    "help": {
-      "Local template": "Applies only to immediate decendant pages",
-      "Global template": "Applies to all decendant pages"
-    }
-  },
-
   "modal_duplicate": {
     "label": {
       "Duplicate page": "Duplicate page",
@@ -236,6 +220,25 @@
           "Delete Line": "Delete Line"
 
               }
+  },
+
+  "template": {
+    "modal_label": {
+      "Create/Edit Template Page": "Create/Edit Template Page",
+      "Create template under": "Create template page under: <code>%s</code>"
+    },
+    "option_label": {
+      "create/edit": "Create/Edit Template page..",
+      "select": "Select template page type"
+    },
+    "local": {
+      "label": "Template for children",
+      "desc": "Applies only to the same level pages which the template exists"
+    },
+    "global": {
+      "label": "Template for descendants",
+      "desc": "Applies to all decendant pages"
+    }
   },
 
   "admin_top": {
