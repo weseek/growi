@@ -8,31 +8,39 @@
       </div>
       <div class="modal-body">
         <div class="form-group">
-          <label for="">{{ t('modal_template.label.Create template', page.path) }}</label><br><br>
+          <label class="mb-4">{{ t('modal_template.label.Create template', page.path) }}</label>
           <div class="row">
             <div class="col-sm-6">
-              <p class="help-block text-center"><strong>{{ t('modal_template.label.Local template') }}</strong></p>
-              <p class="help-block text-center"><small>{{ t('modal_template.help.Local template') }}</small></p>
-              <br>
-              <div class="d-flex justify-content-center">
-                {% if localTemplateExists %}
-                <a href="{{ page.path }}/__template#edit-form"><button class="btn btn-xs btn-primary">{{ t('Edit') }}</button></a>
-                {% else %}
-                <a href="{{ page.path }}/__template#edit-form"><button class="btn btn-xs btn-primary">{{ t('Create') }}</button></a>
-                {% endif %}
+              <div class="panel panel-default">
+                <div class="panel-heading">{{ t('modal_template.label.Local template') }}</div>
+                <div class="panel-body">
+                  <p class="text-center"><code>__template</code></p>
+                  <p class="help-block text-center"><small>{{ t('modal_template.help.Local template') }}</small></p>
+                </div>
+                <div class="panel-footer text-center">
+                  {% if localTemplateExists %}
+                  <a href="{{ page.path }}/__template#edit-form"><button class="btn btn-sm btn-primary">{{ t('Edit') }}</button></a>
+                  {% else %}
+                  <a href="{{ page.path }}/__template#edit-form"><button class="btn btn-sm btn-primary">{{ t('Create') }}</button></a>
+                  {% endif %}
+                </div>
               </div>
             </div>
             <div class="col-sm-6">
-                <p class="help-block text-center"><strong>{{ t('modal_template.label.Global template') }}</strong></p>
-                <p class="help-block text-center"><small>{{ t('modal_template.help.Global template') }}</small></p>
-                <br>
-                <div class="d-flex justify-content-center">
+              <div class="panel panel-default">
+                <div class="panel-heading">{{ t('modal_template.label.Global template') }}</div>
+                <div class="panel-body">
+                  <p class="text-center"><code>_template</code></p>
+                  <p class="help-block text-center"><small>{{ t('modal_template.help.Global template') }}</small></p>
+                </div>
+                <div class="panel-footer text-center">
                   {% if globalTemplateExists %}
-                  <a href="{{ page.path }}/_template#edit-form"><button class="btn btn-xs btn-primary">{{ t('Edit') }}</button></a>
+                  <a href="{{ page.path }}/_template#edit-form"><button class="btn btn-sm btn-primary">{{ t('Edit') }}</button></a>
                   {% else %}
-                  <a href="{{ page.path }}/_template#edit-form"><button class="btn btn-xs btn-primary">{{ t('Create') }}</button></a>
+                  <a href="{{ page.path }}/_template#edit-form"><button class="btn btn-sm btn-primary">{{ t('Create') }}</button></a>
                   {% endif %}
                 </div>
+              </div>
             </div>
           </div>
         </div>
