@@ -74,6 +74,20 @@
           <input type="password" class="form-control" placeholder="{{ t('Password') }}" name="registerForm[password]" required>
         </div>
 
+        <div class="form-group">
+          <label for="settingForm[customize:isSavedStatesOfTabChanges]" class="col-xs-3 control-label">{{ t("customize_page.tab_switch") }}</label>
+          <div class="col-xs-9">
+            <div class="btn-group btn-toggle" data-toggle="buttons">
+              <label class="btn btn-default btn-rounded btn-outline {% if settingForm['customize:isSavedStatesOfTabChanges'] %}active{% endif %}" data-active-class="primary">
+                <input name="settingForm[customize:isSavedStatesOfTabChanges]" value="true" type="radio"
+                    {% if true === settingForm['customize:isSavedStatesOfTabChanges'] %}checked{% endif %}> ON
+              </label>
+              <label class="btn btn-default btn-rounded btn-outline {% if !settingForm['customize:isSavedStatesOfTabChanges'] %}active{% endif %}" data-active-class="default">
+                <input name="settingForm[customize:isSavedStatesOfTabChanges]" value="false" type="radio"
+                    {% if !settingForm['customize:isSavedStatesOfTabChanges'] %}checked{% endif %}> OFF
+              </label>
+        </div>
+
         <input type="hidden" name="_csrf" value="{{ csrf() }}">
         <div class="input-group m-t-30 m-b-20 d-flex justify-content-center">
           <button type="submit" class="fcbtn btn btn-success btn-1b btn-register">
