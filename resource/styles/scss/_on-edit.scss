@@ -29,15 +29,6 @@ body.on-edit {
     display: none;
   }
 
-  /*
-   * right tabs
-   */
-  .nav-main-right-tab:not(.dropdown) {
-    // hide if screen size is less than smartphone
-    @media (max-width: $screen-xs) {
-      display: none;
-    }
-  }
 
   /*****************
    * Expand Editor
@@ -91,20 +82,25 @@ body.on-edit {
         .row,
         .page-editor-preview-container,
         .page-editor-preview-body {
+          min-height: calc(100vh - #{$header-plus-footer});   // for IE11
           height: calc(100vh - #{$header-plus-footer});
         }
         // left(editor)
         .page-editor-editor-container {
+          min-height: calc(100vh - #{$header-plus-footer});   // for IE11
           height: calc(100vh - #{$header-plus-footer});
-        .react-codemirror2, .CodeMirror, .CodeMirror-scroll {
-          height: calc(100vh - #{$editor-margin});
-          // less than smartphone
-          @media (max-width: $screen-xs) {
-            height: calc(100vh - #{$editor-margin-sm});
+
+          .react-codemirror2, .CodeMirror, .CodeMirror-scroll,
+          .textarea-editor {
+            height: calc(100vh - #{$editor-margin});
+            // less than smartphone
+            @media (max-width: $screen-xs) {
+              height: calc(100vh - #{$editor-margin-sm});
+            }
           }
         }
       }
-      }
+
 
       .page-editor-footer {
         width: 100%;
@@ -210,6 +206,13 @@ body.on-edit {
         color: #444;
       }
     }
+    // add icon on cursor
+    .autoformat-markdown-table-activated .CodeMirror-cursor {
+      &:after {
+        font-family: 'FontAwesome';
+        content: '\f0ce';
+      }
+    }
 
     // for Dropzone
     .dropzone {
@@ -282,6 +285,11 @@ body.on-edit {
       }
     } // end of.dropzone
 
+    .textarea-editor {
+      border: none;
+      font-family: monospace;
+    }
+
     .loading-keymap {
       @include overlay-processing-style();
     }
@@ -342,6 +350,13 @@ body.on-edit {
       display: none;
     }
   }
+
+  #page-grant-selector {
+    .btn-group {
+      min-width: 150px;
+    }
+  }
+
 
 } // }}}
 

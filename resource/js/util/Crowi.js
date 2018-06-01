@@ -18,6 +18,9 @@ export default class Crowi {
     this.config = {};
     this.csrfToken = context.csrfToken;
 
+    const userAgent = window.navigator.userAgent.toLowerCase();
+    this.isMobile = /iphone|ipad|android/.test(userAgent);
+
     this.window = window;
     this.location = window.location || {};
     this.document = window.document || {};
@@ -35,13 +38,13 @@ export default class Crowi {
 
     // FIXME
     this.me = context.me;
+    this.isAdmin = context.isAdmin;
 
     this.users = [];
     this.userByName = {};
     this.userById   = {};
     this.draft = {};
     this.editorOptions = {};
-    this.userRelatedGroups = {};
 
     this.recoverData();
   }

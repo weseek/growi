@@ -30,6 +30,8 @@ module.exports = function(options) {
       'style-theme-default-dark':  './resource/styles/scss/theme/default-dark.scss',
       'style-theme-nature':   './resource/styles/scss/theme/nature.scss',
       'style-theme-mono-blue':   './resource/styles/scss/theme/mono-blue.scss',
+      'style-theme-future': './resource/styles/scss/theme/future.scss',
+      'style-theme-blue-night': './resource/styles/scss/theme/blue-night.scss',
       'style-presentation':   './resource/styles/scss/style-presentation.scss',
     },
     externals: {
@@ -45,6 +47,7 @@ module.exports = function(options) {
       alias: {
         '@root': helpers.root('/'),
         '@alias/logger': helpers.root('lib/service/logger'),
+        '@alias/locales': helpers.root('lib/locales'),
         // replace bunyan
         'bunyan': 'browser-bunyan',
       }
@@ -66,6 +69,13 @@ module.exports = function(options) {
               plugins: ['lodash'],
             }
           }]
+        },
+        {
+          test: /locales/,
+          loader: '@alienfast/i18next-loader',
+          options: {
+            basenameAsNamespace: true,
+          }
         },
         {
           test: /\.css$/,

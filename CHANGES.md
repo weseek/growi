@@ -1,17 +1,39 @@
 CHANGES
 ========
 
-## 3.1.0-RC
+## 3.1.2-RC
+
+* Improvement: Add 'future' theme
+* Fix: Posting to Slack doesn't work
+    * Introduced by 3.1.0
+* Support: Upgrade libs
+    * assets-webpack-plugin
+    * react-clipboard.js
+    * xss
+
+## 3.1.1-RC
+
+* Improvement: Add 'blue-night' theme
+* Improvement: List up pages which restricted for Group ACL
+* Fix: PageGroupRelation didn't remove when page is removed completely
+
+
+## 3.1.0
 
 * Improvement: Group Access Control List - Select group modal
-* Improvement: Auto-format markdown tables which includes multibyte text
+* Improvement: Better input on mobile
+* Improvement: Detach code blocks correctly
+* Improvement: Auto-format markdown table which includes multibyte text
+* Improvement: Show icon when auto-format markdown table is activated
 * Improvement: Enable to switch show/hide border for highlight.js
 * Improvement: BindDN field allows also ActiveDirectory styles 
 * Improvement: Show LDAP logs when testing login
-* Improvement: Detach code blocks correctly
 * Fix: Comment body doesn't break long terms
 * Fix: lsx plugin lists up pages that hit by forward match wrongly
     * Introduced by 3.0.4
+* Fix: Editor is broken on IE11
+* Support: Multilingualize React components with i18next
+* Support: Organize dependencies
 * Support: Upgrade libs
     * elasticsearch
     * googleapis
