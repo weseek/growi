@@ -19,7 +19,6 @@ import PageListSearch   from './components/PageListSearch';
 import PageHistory      from './components/PageHistory';
 import PageComments     from './components/PageComments';
 import CommentForm from './components/PageComment/CommentForm';
-import PageCommentFormBehavior from './components/PageCommentFormBehavior';
 import PageAttachment   from './components/PageAttachment';
 import SeenUserList     from './components/SeenUserList';
 import RevisionPath     from './components/Page/RevisionPath';
