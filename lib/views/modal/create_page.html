@@ -46,13 +46,13 @@
 
         <div class="row form-horizontal m-t-15">
           <fieldset class="col-xs-12">
-            <legend>Create template under <code>{{ parentPath(path) }}</code></legend>
+            <legend>{{ t('Create template under', parentPath(path)) }}</legend>
             <div class="d-flex create-page-input-container">
               <div class="create-page-input-row d-flex align-items-center">
                 <select id="template-type" class="page-name-input form-control">
-                  <option value="" disabled selected>Select tempate type</option>
-                  <option value="local">Local Template(/__template) - Applies only to immediate decendant pages</option>
-                  <option value="global">Global Template(/_template) - Applies to all decendant pages</option>
+                  <option value="" disabled selected>{{ t('Option select template') }}</option>
+                  <option value="local">{{ t('Option local template', parentPath(path)) }}</option>
+                  <option value="global">{{ t('Option global template', parentPath(path)) }}</option>
                 </select>
               </div>
               <div class="create-page-button-container">

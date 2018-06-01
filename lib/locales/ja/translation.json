@@ -30,6 +30,8 @@
 
   "List View": "リスト表示",
   "Timeline View": "タイムライン表示",
+  "History": "更新履歴",
+  "Presentation Mode": "プレゼンテーション",
 
   "Created": "作成日",
   "Last updated": "最終更新",
@@ -37,6 +39,8 @@
   "Share": "共有",
   "Share Link": "共有用リンク",
   "Markdown Link": "Markdown形式のリンク",
+
+  "Create/Edit Template": "テンプレートの作成/編集",
 
   "Unportalize": "ポータル解除",
 
@@ -75,8 +79,11 @@
   "Input page name": "ページ名を入力",
   "Input page name (optional)": "ページ名を入力(空欄OK)",
   "New Page": "新規ページ",
-  "Create under": "<code>%s</code>以下に作成",
-
+  "Create under": "ページを<code>%s</code>以下に作成",
+  "Create template under": "テンプレートを<code>%s</code>以下に作成",
+  "Option select template": "テンプレートタイプを選択してください",
+  "Option local template": "ローカルテンプレート(/__template) - 指定されたパス直下のページにのみ適応されます",
+  "Option global template": "ローカルテンプレート(/__template) - 指定されたパス以下すべてのページに適応されます",
 
 
 
@@ -203,6 +210,18 @@
       "Delete Page": "ページを削除する",
       "recursively": "全ての子ページも処理",
       "completely": "完全削除"
+    }
+  },
+
+  "modal_template": {
+    "label": {
+      "Create template": "<code>%s</code> にテンプレートを作成します",
+      "Local template": "ローカルテンプレート",
+      "Global template": "グローバルテンプレート"
+    },
+    "help": {
+      "Local template": "指定されたパス直下のページにのみ<br>適応されます。",
+      "Global template": "指定されたパス以下すべてのページに<br>適応されます。"
     }
   },
 

@@ -26,10 +26,11 @@
   "Sign in with Google Account": "Sign in with Google Account",
   "Sign up with this Google Account": "Sign up with this Google Account",
   "Example": "Example",
-  "Taro Yamada": "James Bond",
+  "Taro Yamada": "John Doe",
 
   "List View": "List",
   "Timeline View": "Timeline",
+  "History": "History",
   "Presentation Mode": "Presentation",
 
   "Created": "Created",
@@ -40,6 +41,8 @@
   "Markdown Link": "Markdown Link",
 
   "Management Wiki": "Management Wiki",
+
+  "Create/Edit Template": "Create/Edit Template",
 
   "Unportalize": "Unportalize",
 
@@ -78,6 +81,10 @@
   "Input page name (optional)": "Input page name (optional)",
   "New Page": "New Page",
   "Create under": "Create page under: <code>%s</code>",
+  "Create template under": "Create template under: <code>%s</code>",
+  "Option select template": "Select template type",
+  "Option local template": "Local Template(/__template) - Applies only to immediate decendant pages",
+  "Option global template": "Global Template(/_template) - Applies to all decendant pages",
 
   "Table of Contents": "Table of Contents",
 
@@ -183,6 +190,18 @@
       "Delete Page": "Delete Page",
       "recursively": "Process recursively",
       "completely": "Delete completely"
+    }
+  },
+
+  "modal_template": {
+    "label": {
+      "Create template": "Create a new template for <code>%s</code>",
+      "Local template": "Local Template",
+      "Global template": "Global Template"
+    },
+    "help": {
+      "Local template": "Applies only to immediate decendant pages",
+      "Global template": "Applies to all decendant pages"
     }
   },
 
