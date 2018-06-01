@@ -29,7 +29,7 @@ export default class CommentForm extends React.Component {
       isMarkdown: true,
       html: '',
       key: 1,
-       };
+    };
 
     this.updateState = this.updateState.bind(this);
     this.postComment = this.postComment.bind(this);
@@ -47,9 +47,9 @@ export default class CommentForm extends React.Component {
     });
   }
 
-  handleSelect(key){
+  handleSelect(key) {
     this.setState({ key });
-    this.renderHtml(this.state.comment)
+    this.renderHtml(this.state.comment);
   }
 
   /**
@@ -79,12 +79,12 @@ export default class CommentForm extends React.Component {
       });
   }
 
-  getCommentHtml(){
-    return(
-        <CommentPreview
-          html={this.state.html}
-          inputRef={el => this.previewElement = el}/>
-    )
+  getCommentHtml() {
+    return (
+      <CommentPreview
+        html={this.state.html}
+        inputRef={el => this.previewElement = el}/>
+    );
   }
 
   renderHtml(markdown) {
@@ -95,27 +95,27 @@ export default class CommentForm extends React.Component {
 
     const crowiRenderer = this.props.crowiRenderer;
     const interceptorManager = this.props.crowi.interceptorManager;
-    interceptorManager.process('prePreviewRender', context)
-      .then(() => interceptorManager.process('prePreviewPreProcess', context))
+    interceptorManager.process('preCommnetFormPreviewRender', context)
+      .then(() => interceptorManager.process('preCommnetFormPreviewPreProcess', context))
       .then(() => {
         context.markdown = crowiRenderer.preProcess(context.markdown);
       })
-      .then(() => interceptorManager.process('postPreviewPreProcess', context))
+      .then(() => interceptorManager.process('postCommnetFormPreviewPreProcess', context))
       .then(() => {
         var parsedHTML = crowiRenderer.process(context.markdown);
         context['parsedHTML'] = parsedHTML;
       })
-      .then(() => interceptorManager.process('prePreviewPostProcess', context))
+      .then(() => interceptorManager.process('preCommnetFormPreviewPostProcess', context))
       .then(() => {
         context.parsedHTML = crowiRenderer.postProcess(context.parsedHTML, context.dom);
       })
-      .then(() => interceptorManager.process('postPreviewPostProcess', context))
-      .then(() => interceptorManager.process('prePreviewRenderHtml', context))
+      .then(() => interceptorManager.process('postCommnetFormPreviewPostProcess', context))
+      .then(() => interceptorManager.process('preCommnetFormPreviewRenderHtml', context))
       .then(() => {
-  　　     this.setState({ html: context.parsedHTML });
+        this.setState({ html: context.parsedHTML });
       })
       // process interceptors for post rendering
-      .then(() => interceptorManager.process('postPreviewRenderHtml', context));
+      .then(() => interceptorManager.process('postCommnetFormPreviewRenderHtml', context));
   }
 
   generateInnerHtml(html) {
@@ -123,54 +123,54 @@ export default class CommentForm extends React.Component {
   }
 
 
-render() {
-  const crowi = this.props.crowi;
-  const username = crowi.me;
-  const user = crowi.findUser(username);
-  const creatorsPage = `/user/${username}`;
-  const comment = this.state.comment;
-  const commentPreview = this.state.isMarkdown ? this.getCommentHtml(): ReactUtils.nl2br(comment);
-  return (
-    <div>
-      <form className="form page-comment-form" id="page-comment-form" onSubmit={this.postComment}>
-        { username &&
-          <div className="comment-form">
-            <div className="comment-form-user">
-              <a href={creatorsPage}>
-                <UserPicture user={user} />
-              </a>
-            </div>
-            <div className="comment-form-main">
-              <div className="comment-write">
- 	          		<Tabs activeKey={this.state.key} id="comment-form-tabs" onSelect={this.handleSelect} animation={false}>
-                  <Tab eventKey={1} title="Write">
-                    <textarea className="comment-form-comment form-control" id="comment-form-comment" name="comment" required placeholder="Write comments here..." value={this.state.comment} onChange={this.updateState} >
-                    </textarea>
-                    <div className="form-check">
-                      <input type="checkbox" id="comment-form-is-markdown" name="isMarkdown" checked={this.state.isMarkdown} value="1" onChange={this.updateState} /> Markdown<br />
-                    </div>
-                  </Tab>
-                  <Tab eventKey={2} title="Preview">
-                    <div className="comment-form-preview">
-                    {commentPreview}
-                    </div>
-                  </Tab>
-                </Tabs>
+  render() {
+    const crowi = this.props.crowi;
+    const username = crowi.me;
+    const user = crowi.findUser(username);
+    const creatorsPage = `/user/${username}`;
+    const comment = this.state.comment;
+    const commentPreview = this.state.isMarkdown ? this.getCommentHtml(): ReactUtils.nl2br(comment);
+    return (
+      <div>
+        <form className="form page-comment-form" id="page-comment-form" onSubmit={this.postComment}>
+          { username &&
+            <div className="comment-form">
+              <div className="comment-form-user">
+                <a href={creatorsPage}>
+                  <UserPicture user={user} />
+                </a>
               </div>
-              <div className="comment-submit">
-                <div className="pull-right">
-                  <Button type="submit" value="Submit" bsStyle="primary" className="fcbtn btn btn-sm btn-primary btn-outline btn-rounded btn-1b">
-                      Comment
-                  </Button>
+              <div className="comment-form-main">
+                <div className="comment-write">
+                  <Tabs activeKey={this.state.key} id="comment-form-tabs" onSelect={this.handleSelect} animation={false}>
+                    <Tab eventKey={1} title="Write">
+                      <textarea className="comment-form-comment form-control" id="comment-form-comment" name="comment" required placeholder="Write comments here..." value={this.state.comment} onChange={this.updateState} >
+                      </textarea>
+                      <div className="form-check">
+                        <input type="checkbox" id="comment-form-is-markdown" name="isMarkdown" checked={this.state.isMarkdown} value="1" onChange={this.updateState} /> Markdown<br />
+                      </div>
+                    </Tab>
+                    <Tab eventKey={2} title="Preview">
+                      <div className="comment-form-preview">
+                      {commentPreview}
+                      </div>
+                    </Tab>
+                  </Tabs>
                 </div>
-                <div className="clearfix">
+                <div className="comment-submit">
+                  <div className="pull-right">
+                    <Button type="submit" value="Submit" bsStyle="primary" className="fcbtn btn btn-sm btn-primary btn-outline btn-rounded btn-1b">
+                        Comment
+                    </Button>
+                  </div>
+                  <div className="clearfix">
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        }
-      </form>
-    </div>
+          }
+        </form>
+      </div>
     );
   }
 }
