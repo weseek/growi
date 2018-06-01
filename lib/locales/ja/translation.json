@@ -83,7 +83,7 @@
   "Create template under": "テンプレートを<code>%s</code>以下に作成",
   "Option select template": "テンプレートタイプを選択してください",
   "Option local template": "ローカルテンプレート(/__template) - 指定されたパス直下のページにのみ適応されます",
-  "Option global template": "ローカルテンプレート(/__template) - 指定されたパス以下すべてのページに適応されます",
+  "Option global template": "グローバルテンプレート(/_template) - 指定されたパス以下すべてのページに適応されます",
 
 
 
