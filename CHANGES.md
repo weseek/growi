@@ -4,6 +4,19 @@ CHANGES
 ## 3.1.2-RC
 
 * Improvement: Add 'future' theme
+* Improvement: Modify syntax for Crowi compatible template feature
+    * *before*
+        ~~~
+        ``` template:/page/name
+        page contents
+        ```
+        ~~~
+    * *after*
+        ~~~
+        ::: template:/page/name
+        page contents
+        :::
+        ~~~
 * Fix: Posting to Slack doesn't work
     * Introduced by 3.1.0
 * Support: Upgrade libs

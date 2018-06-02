@@ -3,8 +3,7 @@ import MarkdownIt from 'markdown-it';
 import Linker        from './PreProcessor/Linker';
 import CsvToTable    from './PreProcessor/CsvToTable';
 import XssFilter     from './PreProcessor/XssFilter';
-
-import Template from './LangProcessor/Template';
+import CrowiTemplate from './PostProcessor/CrowiTemplate';
 
 import CommonPluginsConfigurer from './markdown-it/common-plugins';
 import EmojiConfigurer from './markdown-it/emoji';
@@ -38,11 +37,8 @@ export default class GrowiRenderer {
       new XssFilter(crowi),
     ];
     this.postProcessors = this.originRenderer.postProcessors || [
+      new CrowiTemplate(crowi),
     ];
-
-    this.langProcessors = this.originRenderer.langProcessors || {
-      'template': new Template(crowi),
-    };
 
     this.initMarkdownItConfigurers = this.initMarkdownItConfigurers.bind(this);
     this.setup = this.setup.bind(this);
@@ -146,11 +142,6 @@ export default class GrowiRenderer {
       const langAndFn = langExt.split(':');
       const lang = langAndFn[0];
       const langFn = langAndFn[1] || null;
-
-      // process langProcessors
-      if (this.langProcessors[lang] != null) {
-        return this.langProcessors[lang].process(code, langExt);
-      }
 
       const citeTag = (langFn) ? `<cite>${langFn}</cite>` : '';
       if (hljs.getLanguage(lang)) {
