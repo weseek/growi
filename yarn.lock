@@ -3236,13 +3236,13 @@ google-p12-pem@^1.0.0:
     node-forge "^0.7.1"
     pify "^3.0.0"
 
-googleapis@^30.0.0:
-  version "30.0.0"
-  resolved "https://registry.yarnpkg.com/googleapis/-/googleapis-30.0.0.tgz#4673ba34878217539ca5aa4216fef4db6c247649"
+googleapis@^31.0.2:
+  version "31.0.2"
+  resolved "https://registry.yarnpkg.com/googleapis/-/googleapis-31.0.2.tgz#03266287c8b52681e4311a28d9ff2d800e8f1afb"
   dependencies:
     google-auth-library "^1.4.0"
     pify "^3.0.0"
-    qs "^6.5.1"
+    qs "^6.5.2"
     url-template "^2.0.8"
     uuid "^3.2.1"
 
@@ -5823,9 +5823,13 @@ qs@6.2.1:
   version "6.2.1"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.2.1.tgz#ce03c5ff0935bc1d9d69a9f14cbd18e568d67625"
 
-qs@6.5.1, qs@^6.5.1, qs@~6.5.1:
+qs@6.5.1, qs@~6.5.1:
   version "6.5.1"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.5.1.tgz#349cdf6eef89ec45c12d7d5eb3fc0c870343a6d8"
+
+qs@^6.5.2:
+  version "6.5.2"
+  resolved "https://registry.yarnpkg.com/qs/-/qs-6.5.2.tgz#cb3ae806e8740444584ef154ce8ee98d403f3e36"
 
 qs@~6.3.0:
   version "6.3.2"
