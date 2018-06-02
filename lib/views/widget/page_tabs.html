@@ -22,7 +22,20 @@
     Right Tabs
   #}
   {% if !isTrashPage() %}
-    {% if not isPortal %}
+    {% if isPortal %}
+    <li class="nav-main-right-tab dropdown pull-right">
+      <a class="dropdown-toggle {% if not user %}dropdown-disabled{% endif %}" {% if user %}data-toggle="dropdown" href="#"{% endif %}>
+        <i class="icon-options-vertical"></i>
+      </a>
+      <ul class="dropdown-menu">
+        <li><a href="#" data-target="#create-template" data-toggle="modal"><i class="icon-fw icon-magic-wand"></i> {{ t('template.option_label.create/edit') }}</a></li>
+        {% if ('/' !== path) %}
+        <li class="divider"></li>
+        <li><a href="#" data-target="#unportalize" data-toggle="modal"><i class="fa fa-share"></i> {{ t('Unportalize') }}</a></li>
+        {% endif %}
+      </ul>
+    </li>
+    {% else %}
     <li class="nav-main-right-tab dropdown pull-right">
       <a class="dropdown-toggle {% if not user %}dropdown-disabled{% endif %}" {% if user %}data-toggle="dropdown" href="#"{% endif %}>
         <i class="icon-options-vertical"></i>
@@ -38,16 +51,6 @@
         {% endif %}
       </ul>
     </li>
-    {% elseif ('/' !== path) %}
-    <li class="nav-main-right-tab dropdown pull-right">
-      <a class="dropdown-toggle {% if not user %}dropdown-disabled{% endif %}" {% if user %}data-toggle="dropdown" href="#"{% endif %}>
-        <i class="icon-options-vertical"></i>
-      </a>
-      <ul class="dropdown-menu">
-        <li><a href="#" data-target="#unportalize" data-toggle="modal"><i class="fa fa-share"></i> {{ t('Unportalize') }}</a></li>
-      </ul>
-    </li>
-    {% endif %}
   {% endif %}
 
   <li class="nav-main-right-tab pull-right">
