@@ -78,6 +78,12 @@
     $.get(`/_api/page.template?path=${pagePath}`)
     .then(templateInfo => {
       console.log('data', templateInfo);
+      // merge master and change variable name to childrenTemplateExists and decendantsTemplateExists
+      let buttonTextChildren = templateInfo.localTemplateExists ? 'Edit' : 'Create';
+      let buttonTextDecendants = templateInfo.globalTemplateExists ? 'Edit' : 'Create';
+      console.log(buttonTextChildren)
+      console.log(buttonTextDecendants)
+
     });
 
     $("#template-type").on("change", () => {
