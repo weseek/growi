@@ -1,0 +1,8 @@
+.modal.create-template {
+  @media (min-width: $screen-sm) {
+    // align .panel-body heights
+    .panel-select-template .panel-body {
+      min-height: 120px;
+    }
+  }
+}

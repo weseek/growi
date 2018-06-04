@@ -26,10 +26,11 @@
   "Sign in with Google Account": "Sign in with Google Account",
   "Sign up with this Google Account": "Sign up with this Google Account",
   "Example": "Example",
-  "Taro Yamada": "James Bond",
+  "Taro Yamada": "John Doe",
 
   "List View": "List",
   "Timeline View": "Timeline",
+  "History": "History",
   "Presentation Mode": "Presentation",
 
   "Created": "Created",
@@ -40,6 +41,8 @@
   "Markdown Link": "Markdown Link",
 
   "Management Wiki": "Management Wiki",
+
+  "Create/Edit Template": "Create/Edit Template Page",
 
   "Unportalize": "Unportalize",
 
@@ -77,7 +80,7 @@
   "Input page name": "Input page name",
   "Input page name (optional)": "Input page name (optional)",
   "New Page": "New Page",
-  "Create under": "Create page under: <code>%s</code>",
+  "Create under": "Create page under below:",
 
   "Table of Contents": "Table of Contents",
 
@@ -217,6 +220,25 @@
           "Delete Line": "Delete Line"
 
               }
+  },
+
+  "template": {
+    "modal_label": {
+      "Create/Edit Template Page": "Create/Edit Template Page",
+      "Create template under": "Create template page under: <code>%s</code>"
+    },
+    "option_label": {
+      "create/edit": "Create/Edit Template page..",
+      "select": "Select template page type"
+    },
+    "local": {
+      "label": "Template for children",
+      "desc": "Applies only to the same level pages which the template exists"
+    },
+    "global": {
+      "label": "Template for descendants",
+      "desc": "Applies to all decendant pages"
+    }
   },
 
   "admin_top": {

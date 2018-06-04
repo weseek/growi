@@ -30,6 +30,8 @@
 
   "List View": "リスト表示",
   "Timeline View": "タイムライン表示",
+  "History": "更新履歴",
+  "Presentation Mode": "プレゼンテーション",
 
   "Created": "作成日",
   "Last updated": "最終更新",
@@ -37,6 +39,8 @@
   "Share": "共有",
   "Share Link": "共有用リンク",
   "Markdown Link": "Markdown形式のリンク",
+
+  "Create/Edit Template": "テンプレートページの作成/編集",
 
   "Unportalize": "ポータル解除",
 
@@ -75,10 +79,7 @@
   "Input page name": "ページ名を入力",
   "Input page name (optional)": "ページ名を入力(空欄OK)",
   "New Page": "新規ページ",
-  "Create under": "<code>%s</code>以下に作成",
-
-
-
+  "Create under": "ページを以下に作成",
 
   "Table of Contents": "目次",
   "Management Wiki Home": "Wiki管理トップ",
@@ -233,6 +234,25 @@
         "Outdent": "左インデント",
         "Save Page": "保存",
         "Delete Line": "行削除"
+    }
+  },
+
+  "template": {
+    "modal_label": {
+      "Create/Edit Template Page": "テンプレートページの作成/編集",
+      "Create template under": "<code>%s</code> にテンプレートページを作成"
+    },
+    "option_label": {
+      "select": "テンプレートタイプを選択してください",
+      "create/edit": "テンプレートページの作成/編集.."
+    },
+    "local": {
+      "label": "同一階層テンプレート",
+      "desc": "テンプレートページが存在する階層にのみ適応されます"
+    },
+    "global": {
+      "label": "下位層テンプレート",
+      "desc": "テンプレートページが存在する下位層のすべてのページに適応されます"
     }
   },
 

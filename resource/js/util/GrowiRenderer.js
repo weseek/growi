@@ -1,10 +1,10 @@
 import MarkdownIt from 'markdown-it';
+import xss from 'xss';
 
 import Linker        from './PreProcessor/Linker';
 import CsvToTable    from './PreProcessor/CsvToTable';
 import XssFilter     from './PreProcessor/XssFilter';
-
-import Template from './LangProcessor/Template';
+import CrowiTemplate from './PostProcessor/CrowiTemplate';
 
 import CommonPluginsConfigurer from './markdown-it/common-plugins';
 import EmojiConfigurer from './markdown-it/emoji';
@@ -30,6 +30,8 @@ export default class GrowiRenderer {
       { isAutoSetup: true },      // default options
       options || {});             // specified options
 
+    this.xssFilterForCode = new xss.FilterXSS();
+
     // initialize processors
     //  that will be retrieved if originRenderer exists
     this.preProcessors = this.originRenderer.preProcessors || [
@@ -38,11 +40,8 @@ export default class GrowiRenderer {
       new XssFilter(crowi),
     ];
     this.postProcessors = this.originRenderer.postProcessors || [
+      new CrowiTemplate(crowi),
     ];
-
-    this.langProcessors = this.originRenderer.langProcessors || {
-      'template': new Template(crowi),
-    };
 
     this.initMarkdownItConfigurers = this.initMarkdownItConfigurers.bind(this);
     this.setup = this.setup.bind(this);
@@ -147,11 +146,6 @@ export default class GrowiRenderer {
       const lang = langAndFn[0];
       const langFn = langAndFn[1] || null;
 
-      // process langProcessors
-      if (this.langProcessors[lang] != null) {
-        return this.langProcessors[lang].process(code, langExt);
-      }
-
       const citeTag = (langFn) ? `<cite>${langFn}</cite>` : '';
       if (hljs.getLanguage(lang)) {
         try {
@@ -162,11 +156,13 @@ export default class GrowiRenderer {
         }
       }
       else {
-        return `<pre class="hljs ${noborder}">${citeTag}<code>${code}</code></pre>`;
+        const escapedCode = this.xssFilterForCode.process(code);
+        return `<pre class="hljs ${noborder}">${citeTag}<code>${escapedCode}</code></pre>`;
       }
     }
 
-    return `<pre class="hljs ${noborder}"><code>${code}</code></pre>`;
+    const escapedCode = this.xssFilterForCode.process(code);
+    return `<pre class="hljs ${noborder}"><code>${escapedCode}</code></pre>`;
   }
 
 }

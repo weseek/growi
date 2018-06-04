@@ -1,9 +1,35 @@
 CHANGES
 ========
 
-## 3.1.1-RC
+## 3.1.2-RC
 
+* Feature: Template page
 * Improvement: Add 'future' theme
+* Improvement: Modify syntax for Crowi compatible template feature
+    * *before*
+        ~~~
+        ``` template:/page/name
+        page contents
+        ```
+        ~~~
+    * *after*
+        ~~~
+        ::: template:/page/name
+        page contents
+        :::
+        ~~~
+* Improvement: Escape iframe tag in block codes
+* Fix: Posting to Slack doesn't work
+    * Introduced by 3.1.0
+* Support: Upgrade libs
+    * assets-webpack-plugin
+    * googleapis
+    * react-clipboard.js
+    * xss
+
+## 3.1.1
+
+* Improvement: Add 'blue-night' theme
 * Improvement: List up pages which restricted for Group ACL
 * Fix: PageGroupRelation didn't remove when page is removed completely
 
