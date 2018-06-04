@@ -76,7 +76,8 @@ export default class Comment extends React.Component {
       <RevisionBody html={this.state.html}
           inputRef={el => this.revisionBodyElement = el}
           isMathJaxEnabled={isMathJaxEnabled}
-          renderMathJaxOnInit={true} />
+          renderMathJaxOnInit={true}
+          type="comment" />
     );
   }
 
