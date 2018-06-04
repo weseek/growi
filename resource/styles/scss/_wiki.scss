@@ -1,11 +1,4 @@
-div.body {
-  padding: 10px;
-}
-
-.wiki {
-  line-height: 1.8em;
-  font-size: 15px;
-
+%markdown-html {
   h1, h2, h3, h4, h5, h6 {
     margin-top: 1.6em;
     margin-bottom: .8em;
@@ -143,6 +136,24 @@ div.body {
       opacity: 1 !important;
     }
   }
+}
+
+div.body {
+  padding: 10px;
+}
+
+.wiki {
+  line-height: 1.8em;
+  font-size: 15px;
+
+  @extend %markdown-html;
+}
+
+.comment {
+  line-height: 1.2em;
+  font-size: 10px;
+
+  @extend %markdown-html;
 }
 
 // mobile
