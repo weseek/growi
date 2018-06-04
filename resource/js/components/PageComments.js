@@ -32,7 +32,7 @@ export default class PageComments extends React.Component {
       errorMessageForDeleting: undefined,
     };
 
-    this.growiRenderer = new GrowiRenderer(this.props.crowi, null, {mode: 'comment'});
+    this.growiRenderer = new GrowiRenderer(this.props.crowi, this.props.crowiOriginRenderer, {mode: 'comment'});
 
     this.init = this.init.bind(this);
     this.confirmToDeleteComment = this.confirmToDeleteComment.bind(this);
@@ -249,4 +249,5 @@ PageComments.propTypes = {
   revisionId: PropTypes.string,
   revisionCreatedAt: PropTypes.number,
   crowi: PropTypes.object.isRequired,
+  crowiOriginRenderer: PropTypes.object.isRequired,
 };
