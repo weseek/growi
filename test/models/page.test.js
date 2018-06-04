@@ -200,7 +200,9 @@ describe('Page', () => {
       expect(Page.isCreatableName('/meeting/edit')).to.be.false;
 
       // under score
-      expect(Page.isCreatableName('/_')).to.be.false;
+      expect(Page.isCreatableName('/_')).to.be.true;
+      expect(Page.isCreatableName('/_template')).to.be.true;
+      expect(Page.isCreatableName('/__template')).to.be.true;
       expect(Page.isCreatableName('/_r/x')).to.be.false;
       expect(Page.isCreatableName('/_api')).to.be.false;
       expect(Page.isCreatableName('/_apix')).to.be.false;

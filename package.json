@@ -75,7 +75,7 @@
     "express-sanitizer": "^1.0.4",
     "express-session": "~1.15.0",
     "express-webpack-assets": "^0.1.0",
-    "googleapis": "^30.0.0",
+    "googleapis": "^31.0.2",
     "graceful-fs": "^4.1.11",
     "growi-pluginkit": "^1.1.0",
     "i18next": "^11.1.1",
