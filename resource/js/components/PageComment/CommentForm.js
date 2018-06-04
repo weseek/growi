@@ -158,7 +158,9 @@ export default class CommentForm extends React.Component {
                 </div>
                 <div className="comment-submit">
                   <div className="pull-left">
-                    <input type="checkbox" id="comment-form-is-markdown" name="isMarkdown" checked={this.state.isMarkdown} value="1" onChange={this.updateState} /> Markdown<br />
+                  <label>
+                    <input type="checkbox" id="comment-form-is-markdown" name="isMarkdown" checked={this.state.isMarkdown} value="1" onChange={this.updateState} /> Markdown
+                  </label>
                   </div>
                   <div className="pull-right">
                     <Button type="submit" value="Submit" bsStyle="primary" className="fcbtn btn btn-sm btn-primary btn-outline btn-rounded btn-1b">
