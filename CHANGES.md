@@ -1,7 +1,12 @@
 CHANGES
 ========
 
-## 3.1.2-RC
+## 3.1.3-RC
+
+* Feature: Write comment with Markdown
+* Fix: HTML escaped characters in markdown are unescaped unexpectedly after page is saved
+
+## 3.1.2
 
 * Feature: Template page
 * Improvement: Add 'future' theme
