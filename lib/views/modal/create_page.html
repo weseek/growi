@@ -78,7 +78,7 @@
   let pagePath = $("#link-to-template").attr("href");
 
   if (pagePath.endsWith("/")) {
-    pagePath = pagePath.slice(0, -1);
+      pagePath = pagePath.slice(0, -1);
   };
 
   $.get(`/_api/pages.templates?path=${pagePath}`)
