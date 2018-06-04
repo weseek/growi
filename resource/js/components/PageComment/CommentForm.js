@@ -94,27 +94,27 @@ export default class CommentForm extends React.Component {
 
     const crowiRenderer = this.props.crowiRenderer;
     const interceptorManager = this.props.crowi.interceptorManager;
-    interceptorManager.process('preCommnetFormPreviewRender', context)
-      .then(() => interceptorManager.process('preCommnetFormPreviewPreProcess', context))
+    interceptorManager.process('preRenderCommnetPreview', context)
+      .then(() => interceptorManager.process('prePreProcess', context))
       .then(() => {
         context.markdown = crowiRenderer.preProcess(context.markdown);
       })
-      .then(() => interceptorManager.process('postCommnetFormPreviewPreProcess', context))
+      .then(() => interceptorManager.process('postPreProcess', context))
       .then(() => {
         var parsedHTML = crowiRenderer.process(context.markdown);
         context['parsedHTML'] = parsedHTML;
       })
-      .then(() => interceptorManager.process('preCommnetFormPreviewPostProcess', context))
+      .then(() => interceptorManager.process('prePostProcess', context))
       .then(() => {
         context.parsedHTML = crowiRenderer.postProcess(context.parsedHTML, context.dom);
       })
-      .then(() => interceptorManager.process('postCommnetFormPreviewPostProcess', context))
-      .then(() => interceptorManager.process('preCommnetFormPreviewRenderHtml', context))
+      .then(() => interceptorManager.process('postPostProcess', context))
+      .then(() => interceptorManager.process('preRenderCommentPreviewHtml', context))
       .then(() => {
         this.setState({ html: context.parsedHTML });
       })
       // process interceptors for post rendering
-      .then(() => interceptorManager.process('postCommnetFormPreviewRenderHtml', context));
+      .then(() => interceptorManager.process('postRenderCommentPreviewHtml', context));
   }
 
   generateInnerHtml(html) {
