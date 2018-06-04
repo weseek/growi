@@ -123,6 +123,7 @@ export default class CommentForm extends React.Component {
 
 
   render() {
+    const isMarkdown = this.state.isMarkdown;
     const crowi = this.props.crowi;
     const username = crowi.me;
     const user = crowi.findUser(username);
@@ -146,11 +147,13 @@ export default class CommentForm extends React.Component {
                       <textarea className="comment-form-comment form-control" id="comment-form-comment" name="comment" required placeholder="Write comments here..." value={this.state.comment} onChange={this.updateState} >
                       </textarea>
                     </Tab>
+                    { isMarkdown == true &&
                     <Tab eventKey={2} title="Preview">
                       <div className="comment-form-preview">
                       {commentPreview}
                       </div>
                     </Tab>
+                    }
                   </Tabs>
                 </div>
                 <div className="comment-submit">
