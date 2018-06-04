@@ -6,13 +6,14 @@ import CsvToTable    from './PreProcessor/CsvToTable';
 import XssFilter     from './PreProcessor/XssFilter';
 import CrowiTemplate from './PostProcessor/CrowiTemplate';
 
-import CommonPluginsConfigurer from './markdown-it/common-plugins';
 import EmojiConfigurer from './markdown-it/emoji';
+import FooternoteConfigurer from './markdown-it/footernote';
 import HeaderLineNumberConfigurer from './markdown-it/header-line-number';
 import HeaderConfigurer from './markdown-it/header';
 import MathJaxConfigurer from './markdown-it/mathjax';
 import PlantUMLConfigurer from './markdown-it/plantuml';
 import TableConfigurer from './markdown-it/table';
+import TaskListsConfigurer from './markdown-it/task-lists';
 import TocAndAnchorConfigurer from './markdown-it/toc-and-anchor';
 
 export default class GrowiRenderer {
@@ -68,7 +69,7 @@ export default class GrowiRenderer {
     this.isMarkdownItConfigured = false;
 
     this.markdownItConfigurers = [
-      new CommonPluginsConfigurer(crowi),
+      new TaskListsConfigurer(crowi),
       new HeaderConfigurer(crowi),
       new TableConfigurer(crowi),
       new EmojiConfigurer(crowi),
@@ -81,18 +82,19 @@ export default class GrowiRenderer {
     switch (mode) {
       case 'page':
         this.markdownItConfigurers = this.markdownItConfigurers.concat([
+          new FooternoteConfigurer(crowi),
           new TocAndAnchorConfigurer(crowi, options.renderToc),
           new HeaderLineNumberConfigurer(crowi),
         ]);
         break;
       case 'editor':
         this.markdownItConfigurers = this.markdownItConfigurers.concat([
+          new FooternoteConfigurer(crowi),
           new HeaderLineNumberConfigurer(crowi)
         ]);
         break;
       case 'comment':
         this.markdownItConfigurers = this.markdownItConfigurers.concat([
-          new HeaderLineNumberConfigurer(crowi),
         ]);
         break;
       default:
