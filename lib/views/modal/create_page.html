@@ -56,7 +56,12 @@
                 </select>
               </div>
               <div class="create-page-button-container">
-                  <a id="link-to-template" href="{{ page.path || path }}"><button class="fcbtn btn btn-outline btn-rounded btn-primary btn-1b"><i class="icon-fw icon-doc"></i>{{ t('Create') }}</button></a>
+                  <a id="link-to-template" href="{{ page.path || path }}">
+                    <button class="fcbtn btn btn-outline btn-rounded btn-primary btn-1b">
+                      <i class="icon-fw icon-doc"></i>
+                      <span id="template-button">{{ t('Create') }}</span>
+                    </button>
+                  </a>
               </div>
             </div>
           </fieldset>
@@ -69,6 +74,8 @@
 </div><!-- /.modal -->
 <script>
   if($("#create-page")) {
+    let buttonTextChildren = 'Create';
+    let buttonTextDecendants = 'Create';
     let pagePath = $("#link-to-template").attr("href");
 
     if (pagePath.endsWith("/")) {
@@ -77,23 +84,20 @@
 
     $.get(`/_api/page.template?path=${pagePath}`)
     .then(templateInfo => {
-      console.log('data', templateInfo);
-      // merge master and change variable name to childrenTemplateExists and decendantsTemplateExists
-      let buttonTextChildren = templateInfo.localTemplateExists ? 'Edit' : 'Create';
-      let buttonTextDecendants = templateInfo.globalTemplateExists ? 'Edit' : 'Create';
-      console.log(buttonTextChildren)
-      console.log(buttonTextDecendants)
-
+      buttonTextChildren = ((templateInfo.childrenTemplateExists) ? 'Edit' : 'Create');
+      buttonTextDecendants = ((templateInfo.decendantsTemplateExists) ? 'Edit' : 'Create');
     });
 
     $("#template-type").on("change", () => {
       if ($("#template-type").val() === "children") {
         href = pagePath + "/_template#edit-form";
         $("#link-to-template").attr("href", href);
+        $('#template-button').text(buttonTextChildren);
       }
       else if ($("#template-type").val() === "decentants") {
         href = pagePath + "/__template#edit-form";
         $("#link-to-template").attr("href", href);
+        $('#template-button').text(buttonTextDecendants);
       };
     });
   };
