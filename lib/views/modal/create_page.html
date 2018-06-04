@@ -81,7 +81,7 @@
     pagePath = pagePath.slice(0, -1);
   };
 
-  $.get(`/_api/page.template?path=${pagePath}`)
+  $.get(`/_api/pages.templates?path=${pagePath}`)
   .then(templateInfo => {
     buttonTextChildren = templateInfo.childrenTemplateExists ? '{{ t('Edit') }}' : '{{ t('Create') }}';
     buttonTextDecendants = templateInfo.decendantsTemplateExists ? '{{ t('Edit') }}' : '{{ t('Create') }}';
