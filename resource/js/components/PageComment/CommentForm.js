@@ -145,9 +145,6 @@ export default class CommentForm extends React.Component {
                     <Tab eventKey={1} title="Write">
                       <textarea className="comment-form-comment form-control" id="comment-form-comment" name="comment" required placeholder="Write comments here..." value={this.state.comment} onChange={this.updateState} >
                       </textarea>
-                      <div className="form-check">
-                        <input type="checkbox" id="comment-form-is-markdown" name="isMarkdown" checked={this.state.isMarkdown} value="1" onChange={this.updateState} /> Markdown<br />
-                      </div>
                     </Tab>
                     <Tab eventKey={2} title="Preview">
                       <div className="comment-form-preview">
@@ -157,6 +154,9 @@ export default class CommentForm extends React.Component {
                   </Tabs>
                 </div>
                 <div className="comment-submit">
+                  <div className="pull-left">
+                    <input type="checkbox" id="comment-form-is-markdown" name="isMarkdown" checked={this.state.isMarkdown} value="1" onChange={this.updateState} /> Markdown<br />
+                  </div>
                   <div className="pull-right">
                     <Button type="submit" value="Submit" bsStyle="primary" className="fcbtn btn btn-sm btn-primary btn-outline btn-rounded btn-1b">
                         Comment
