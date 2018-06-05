@@ -22,6 +22,7 @@ export default class CommentPreview extends React.Component {
 
         <RevisionBody
           {...this.props}
+          additionalClassName="comment"
         />
       </div>
     );

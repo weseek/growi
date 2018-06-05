@@ -129,6 +129,7 @@ export default class CommentForm extends React.Component {
     const creatorsPage = `/user/${username}`;
     const comment = this.state.comment;
     const commentPreview = this.state.isMarkdown ? this.getCommentHtml(): ReactUtils.nl2br(comment);
+
     return (
       <div>
         <form className="form page-comment-form" id="page-comment-form" onSubmit={this.postComment}>
@@ -145,18 +146,24 @@ export default class CommentForm extends React.Component {
                     <Tab eventKey={1} title="Write">
                       <textarea className="comment-form-comment form-control" id="comment-form-comment" name="comment" required placeholder="Write comments here..." value={this.state.comment} onChange={this.updateState} >
                       </textarea>
-                      <div className="form-check">
-                        <input type="checkbox" id="comment-form-is-markdown" name="isMarkdown" checked={this.state.isMarkdown} value="1" onChange={this.updateState} /> Markdown<br />
-                      </div>
                     </Tab>
+                    { this.state.isMarkdown == true &&
                     <Tab eventKey={2} title="Preview">
                       <div className="comment-form-preview">
-                      {commentPreview}
+                       {commentPreview}
                       </div>
                     </Tab>
+                    }
                   </Tabs>
                 </div>
                 <div className="comment-submit">
+                  <div className="pull-left">
+                  { this.state.key == 1 &&
+                    <label>
+                      <input type="checkbox" id="comment-form-is-markdown" name="isMarkdown" checked={this.state.isMarkdown} value="1" onChange={this.updateState} /> Markdown
+                    </label>
+                  }
+                  </div>
                   <div className="pull-right">
                     <Button type="submit" value="Submit" bsStyle="primary" className="fcbtn btn btn-sm btn-primary btn-outline btn-rounded btn-1b">
                         Comment
