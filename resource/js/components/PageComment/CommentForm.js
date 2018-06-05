@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactUtils from '../ReactUtils';
 
+import CommentEditor from '../PageComment/CommentEditor';
 import CommentPreview from '../PageComment/CommentPreview';
 
 import Button from 'react-bootstrap/es/Button';
@@ -144,8 +145,22 @@ export default class CommentForm extends React.Component {
                 <div className="comment-write">
                   <Tabs activeKey={this.state.key} id="comment-form-tabs" onSelect={this.handleSelect} animation={false}>
                     <Tab eventKey={1} title="Write">
-                      <textarea className="comment-form-comment form-control" id="comment-form-comment" name="comment" required placeholder="Write comments here..." value={this.state.comment} onChange={this.updateState} >
-                      </textarea>
+                      {/* <textarea className="comment-form-comment form-control" id="comment-form-comment" name="comment" required placeholder="Write comments here..." value={this.state.comment} onChange={this.updateState} >
+                      </textarea> */}
+                      <CommentEditor
+                      // ref="editor"
+                      // value={this.state.markdown}
+                      // editorOptions={this.state.editorOptions}
+                      // isMobile={this.props.crowi.isMobile}
+                      // isUploadable={this.state.isUploadable}
+                      // isUploadableFile={this.state.isUploadableFile}
+                      // emojiStrategy={emojiStrategy}
+                      // onScroll={this.onEditorScroll}
+                      // onScrollCursorIntoView={this.onEditorScrollCursorIntoView}
+                      // onChange={this.onMarkdownChanged}
+                      // onSave={this.onSave}
+                      // onUpload={this.onUpload}
+                      />
                     </Tab>
                     { this.state.isMarkdown == true &&
                     <Tab eventKey={2} title="Preview">
