@@ -82,10 +82,10 @@
   };
 
   $.get(`/_api/pages.templates?path=${pagePath}`)
-  .then(templateInfo => {
-    buttonTextChildren = templateInfo.childrenTemplateExists ? '{{ t('Edit') }}' : '{{ t('Create') }}';
-    buttonTextDecendants = templateInfo.decendantsTemplateExists ? '{{ t('Edit') }}' : '{{ t('Create') }}';
-  });
+    .then(templateInfo => {
+      buttonTextChildren = templateInfo.childrenTemplateExists ? '{{ t('Edit') }}' : '{{ t('Create') }}';
+      buttonTextDecendants = templateInfo.decendantsTemplateExists ? '{{ t('Edit') }}' : '{{ t('Create') }}';
+    });
 
   $("#create-template").ready(() => {
     $('#template-button-children').text(buttonTextChildren);

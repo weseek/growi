@@ -11,17 +11,10 @@ export default class PageListMeta extends React.Component {
     return false;
   }
 
-  isTemplatePath(path) {
-    if (path.match(/.*\/_{1,2}template$/)) {
-      return true;
-    }
-
-    return false;
-  }
-
   render() {
     // TODO isPortal()
     const page = this.props.page;
+    const templateChecker = require('../../util/templateChecker');
 
     // portal check
     let PortalLabel;
@@ -31,8 +24,8 @@ export default class PageListMeta extends React.Component {
 
     // template check
     let TemplateLabel;
-    if (this.isPortalPath(page.path)) {
-      TemplateLabel = <span className="label label-info">TMPLT</span>;
+    if (templateChecker(page.path)) {
+      TemplateLabel = <span className="label label-info">TMPL</span>;
     }
 
     let CommentCount;
