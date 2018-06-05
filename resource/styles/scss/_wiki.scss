@@ -143,161 +143,153 @@ div.body {
       opacity: 1 !important;
     }
   }
-}
 
-.comment {
-  line-height: 1.5em;
-  font-size: 14px;
+  &.comment {
+    line-height: 1.5em;
+    font-size: 14px;
 
-  h1, h2, h3, h4, h5, h6 {
-    margin-top: 1.6em * 0.95;
-    margin-bottom: .8em * 0.95;
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.6em * 0.95;
+      margin-bottom: .8em * 0.95;
 
-    &:first-child {
-      margin-top: 0;
+      &:first-child {
+        margin-top: 0;
+      }
     }
-  }
 
-  h1 {
-    margin-top: 2em * 0.95;
-    padding-bottom: 0.3em * 0.95;
-    font-size: 1.8em * 0.95;
-    line-height: 1.1em * 0.95;
-    font-weight: bold;
-    border-bottom: solid 1px transparent;
-  }
-  h2 {
-    padding-bottom: 0.5em * 0.95;
-    font-size: 1.4em * 0.95;
-    line-height: 1.225 * 0.95;
-    font-weight: bold;
-    border-bottom: 1px solid transparent;
-  }
-  h3 {
-    font-size: 1.2em * 0.95;
-    font-weight: bold;
-  }
-  h4 {
-    font-size: 1.1em;
-    font-weight: normal;
-  }
-  h5 {
-    font-size: 1.05em;
-    font-weight: normal;
-  }
-  h6 {
-    font-size: 1.00em;
-    font-weight: normal;
-  }
+    h1 {
+      margin-top: 2em * 0.95;
+      padding-bottom: 0.3em * 0.95;
+      font-size: 1.8em * 0.95;
+      line-height: 1.1em * 0.95;
+      font-weight: bold;
+      border-bottom: solid 1px transparent;
+    }
+    h2 {
+      padding-bottom: 0.5em * 0.95;
+      font-size: 1.4em * 0.95;
+      line-height: 1.225 * 0.95;
+      font-weight: bold;
+      border-bottom: 1px solid transparent;
+    }
+    h3 {
+      font-size: 1.2em * 0.95;
+      font-weight: bold;
+    }
+    h4 {
+      font-size: 1.1em;
+      font-weight: normal;
+    }
+    h5 {
+      font-size: 1.05em;
+      font-weight: normal;
+    }
+    h6 {
+      font-size: 1.00em;
+      font-weight: normal;
+    }
 
-  p {
-    font-weight: normal;
-    margin: 15px 0;
-  }
-  blockquote {
-    font-size: .9em;
-    margin: 0 0 30px 0;
-    padding: 0 20px;
-    color: lighten($gray-dark, 35%);
-  }
+    p {
+      font-weight: normal;
+      margin: 15px 0;
+    }
+    blockquote {
+      font-size: .9em;
+      margin: 0 0 30px 0;
+      padding: 0 20px;
+      color: lighten($gray-dark, 35%);
+    }
 
-  img {
-    margin: 5px 0;
-    max-width: 100%;
-  }
-
-  img.emojione {
-    margin-top: -0.3em !important;
-    margin-bottom: 0 !important;
-    border: none;
-    box-shadow: none;
-  }
-
-  ul, ol {
-    padding-left: 30px;
-    margin: 20px 0;
-
-    li {
+    img {
       margin: 5px 0;
-      line-height: 1.8em;
+      max-width: 100%;
+    }
+
+    img.emojione {
+      margin-top: -0.3em !important;
+      margin-bottom: 0 !important;
+      border: none;
+      box-shadow: none;
     }
 
     ul, ol {
-      margin: 0;
-    }
-  }
+      padding-left: 30px;
+      margin: 20px 0;
 
-  // borrowed from https://www.npmjs.com/package/github-markdown-css
-  .contains-task-list {
-    .task-list-item {
-      list-style-type: none;
-    }
-    .task-list-item+.task-list-item {
-      margin-top: 3px;
-    }
-    .task-list-item input {
-      margin: 0 0.2em 0.25em -1.6em;
-      vertical-align: middle;
-    }
-  }
+      li {
+        margin: 5px 0;
+        line-height: 1.8em;
+      }
 
-  pre.hljs {
-    position: relative;
-
-    cite {
-      position: absolute;
-      top: 0;
-      right: 0;
-      padding: 0 4px;
-      background: #ccc;
-      color: #333;
-      font-style: normal;
-      font-weight: bold;
-      opacity: 0.6;
-    }
-  };
-
-  p code {  // only inline code blocks
-    font-family: $font-family-monospace-not-strictly;
-  }
-
-  .page-template-builder {
-    position: relative;
-
-    .template-create-button {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-    }
-  }
-
-  .highlighted {
-    background-color: $brand-warning;
-  }
-
-  .revision-head {
-    a {
-      text-decoration: none;
+      ul, ol {
+        margin: 0;
+      }
     }
 
-    .revision-head-link,
-    .revision-head-edit-button {
-      margin-left: 0.5em;
-      font-size: 0.6em;
-      opacity: 0;
+    // borrowed from https://www.npmjs.com/package/github-markdown-css
+    .contains-task-list {
+      .task-list-item {
+        list-style-type: none;
+      }
+      .task-list-item+.task-list-item {
+        margin-top: 3px;
+      }
+      .task-list-item input {
+        margin: 0 0.2em 0.25em -1.6em;
+        vertical-align: middle;
+      }
     }
-    &:hover .revision-head-link,
-    &:hover .revision-head-edit-button {
-      opacity: 1 !important;
-    }
-  }
-}
 
-// mobile
-.page-mobile .wiki .revision-head {
-  .revision-head-link,
-  .revision-head-edit-button {
-    opacity: 0.3;
+    pre.hljs {
+      position: relative;
+
+      cite {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 0 4px;
+        background: #ccc;
+        color: #333;
+        font-style: normal;
+        font-weight: bold;
+        opacity: 0.6;
+      }
+    };
+
+    p code {  // only inline code blocks
+      font-family: $font-family-monospace-not-strictly;
+    }
+
+    .page-template-builder {
+      position: relative;
+
+      .template-create-button {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+      }
+    }
+
+    .highlighted {
+      background-color: $brand-warning;
+    }
+
+    .revision-head {
+      a {
+        text-decoration: none;
+      }
+
+      .revision-head-link,
+      .revision-head-edit-button {
+        margin-left: 0.5em;
+        font-size: 0.6em;
+        opacity: 0;
+      }
+      &:hover .revision-head-link,
+      &:hover .revision-head-edit-button {
+        opacity: 1 !important;
+      }
+    }
   }
 }
 
