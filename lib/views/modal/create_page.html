@@ -51,12 +51,17 @@
               <div class="create-page-input-row d-flex align-items-center">
                 <select id="template-type" class="page-name-input form-control">
                   <option value="" disabled selected>{{ t('template.option_label.select') }}</option>
-                  <option value="children">{{ t('template.local.label') }}(_template) - {{ t('template.local.desc') }}</option>
-                  <option value="decentants">{{ t('template.global.label') }}(__template) - {{ t('template.global.desc') }}</option>
+                  <option value="children">{{ t('template.children.label') }}(_template) - {{ t('template.children.desc') }}</option>
+                  <option value="decentants">{{ t('template.decendants.label') }}(__template) - {{ t('template.decendants.desc') }}</option>
                 </select>
               </div>
               <div class="create-page-button-container">
-                  <a id="link-to-template" href="{{ page.path || path }}"><button class="fcbtn btn btn-outline btn-rounded btn-primary btn-1b"><i class="icon-fw icon-doc"></i>{{ t('Create') }}</button></a>
+                  <a id="link-to-template" href="{{ page.path || path }}">
+                    <button class="fcbtn btn btn-outline btn-rounded btn-primary btn-1b">
+                      <i class="icon-fw icon-doc"></i>
+                      <span id="template-button">{{ t('Create') }}/{{ t('Edit') }}</span>
+                    </button>
+                  </a>
               </div>
             </div>
           </fieldset>
@@ -68,22 +73,35 @@
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 <script>
-  if($("#create-page")) {
-    let pagePath = $("#link-to-template").attr("href");
+  let buttonTextChildren;
+  let buttonTextDecendants;
+  let pagePath = $("#link-to-template").attr("href");
 
-    if (pagePath.endsWith("/")) {
+  if (pagePath.endsWith("/")) {
       pagePath = pagePath.slice(0, -1);
-    };
-
-    $("#template-type").on("change", () => {
-      if ($("#template-type").val() === "children") {
-        href = pagePath + "/_template#edit-form";
-        $("#link-to-template").attr("href", href);
-      }
-      else if ($("#template-type").val() === "decentants") {
-        href = pagePath + "/__template#edit-form";
-        $("#link-to-template").attr("href", href);
-      };
-    });
   };
+
+  $.get(`/_api/pages.templates?path=${pagePath}`)
+    .then(templateInfo => {
+      buttonTextChildren = templateInfo.childrenTemplateExists ? '{{ t('Edit') }}' : '{{ t('Create') }}';
+      buttonTextDecendants = templateInfo.decendantsTemplateExists ? '{{ t('Edit') }}' : '{{ t('Create') }}';
+    });
+
+  $("#create-template").ready(() => {
+    $('#template-button-children').text(buttonTextChildren);
+    $('#template-button-decendants').text(buttonTextDecendants);
+  });
+
+  $("#template-type").on("change", () => {
+    if ($("#template-type").val() === "children") {
+      href = pagePath + "/_template#edit-form";
+      $("#link-to-template").attr("href", href);
+      $('#template-button').text(buttonTextChildren);
+    }
+    else if ($("#template-type").val() === "decentants") {
+      href = pagePath + "/__template#edit-form";
+      $("#link-to-template").attr("href", href);
+      $('#template-button').text(buttonTextDecendants);
+    };
+  });
 </script>
