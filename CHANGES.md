@@ -1,9 +1,21 @@
 CHANGES
 ========
 
-## 3.1.1
+## 3.1.2-RC
 
 * Improvement: Add 'future' theme
+* Fix: Posting to Slack doesn't work
+    * Introduced by 3.1.0
+* Support: Upgrade libs
+    * assets-webpack-plugin
+    * react-clipboard.js
+    * xss
+
+## 3.1.1
+
+* Improvement: Add 'blue-night' theme
+* Improvement: List up pages which restricted for Group ACL
+* Fix: PageGroupRelation didn't remove when page is removed completely
 
 
 ## 3.1.0

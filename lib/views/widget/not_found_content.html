@@ -17,7 +17,15 @@
 
   <div class="tab-content">
     {% if isEnabledAttachTitleHeader() %}
+    {% if template %}
+    <script type="text/template" id="raw-text-original"># {{ path|path2name }}&NewLine;{{ template }}</script>
+    {% else %}
     <script type="text/template" id="raw-text-original"># {{ path|path2name }}</script>
+    {% endif %}
+    {% else %}
+    {% if template %}
+    <script type="text/template" id="raw-text-original">{{ template }}</script>
+    {% endif %}
     {% endif %}
     {# list view #}
     <div class="p-t-10 active tab-pane page-list-container" id="revision-body">
