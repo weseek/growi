@@ -317,17 +317,14 @@ body.on-edit {
     &:before {
       border-right-color: darken($bodycolor, 4%);
     }
-  }
-  .nav.nav-tabs {
-    > li.active > a {
-      background: transparent;
+    .nav.nav-tabs {
+      > li.active > a {
+        background: transparent;
         border-bottom: solid 1px darken($bodycolor, 4%);
-      border-bottom-color: darken($bodycolor, 4%);
+        border-bottom-color: darken($bodycolor, 4%);
+      }
     }
   }
-}    .comment-write {
-  margin-bottom: 0.5em;
-
 }
 
 /*
