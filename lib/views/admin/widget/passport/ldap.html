@@ -134,19 +134,6 @@
         </div>
 
         <div class="row">
-        <label for="settingForm[security:passport-ldap:attrMapName]" class="col-xs-3 control-label">name</label>
-        <div class="col-xs-6">
-          <input class="form-control" type="text" placeholder="Default: null"
-              name="settingForm[security:passport-ldap:attrMapName]" value="{{ settingForm['security:passport-ldap:attrMapName'] || '' }}">
-          <p class="help-block">
-            <small>
-              {{ t("security_setting.ldap.name_detail") }}
-            </small>
-          </p>
-        </div>
-        </div>
-
-        <div class="row">
         <div class="col-xs-6 col-xs-offset-3">
           <div class="checkbox checkbox-info">
             <input type="checkbox" id="cbSameUsernameTreatedAsIdenticalUser" name="settingForm[security:passport-ldap:isSameUsernameTreatedAsIdenticalUser]" value="1"
@@ -164,6 +151,18 @@
         </div>
       </div>
 
+      <div class="row">
+        <label for="settingForm[security:passport-ldap:attrMapName]" class="col-xs-3 control-label">name</label>
+        <div class="col-xs-6">
+          <input class="form-control" type="text"
+              name="settingForm[security:passport-ldap:attrMapName]" value="{{ settingForm['security:passport-ldap:attrMapName'] || '' }}">
+          <p class="help-block">
+            <small>
+              {{ t("security_setting.ldap.name_detail") }}
+            </small>
+          </p>
+        </div>
+        </div>
 
       <h4>{{ t("security_setting.ldap.group_search_filter") }} ({{ t("security_setting.optional") }})</h4>
 
