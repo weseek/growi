@@ -75,8 +75,8 @@
         </div>
         {# tantatively borrowed from customize.html #}
         <div class="form-group">
-          <label for="registerForm[language]" class="col-xs-3 control-label">{{ t("Language") }}</label>
-          <div class="col-xs-9">
+          <div class="col-sm-12">
+            <label for="registerForm[language]" class="control-label">{{ t("Language") }}</label>
             <div class="btn-group btn-toggle" data-toggle="buttons">
               <label class="btn btn-default btn-rounded btn-outline {% if registerForm[language] %}active{% endif %}" data-active-class="primary">
                 <input name="registerForm[language]" value="true" type="radio"
