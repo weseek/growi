@@ -250,7 +250,7 @@
       "label": "同一階層テンプレート",
       "desc": "テンプレートページが存在する階層にのみ適応されます"
     },
-    "global": {
+    "decendants": {
       "label": "下位層テンプレート",
       "desc": "テンプレートページが存在する下位層のすべてのページに適応されます"
     }
@@ -368,8 +368,8 @@
       "search_filter_detail3": "空欄の場合 <code>(uid=&#123;&#123;username&#125;&#125;)</code> が使用されます。",
       "search_filter_example1": "'uid' または 'mail' に一致",
       "search_filter_example2": "'sAMAccountName' に一致 (Active Directory)",
-      "username_detail": "新規ユーザーに関連付けるusernameを設定",
-      "name_detail": "新規ユーザーに名前関連付ける表示名を設定",
+      "username_detail": "新規ユーザーのアカウント名usernameに関連付け",
+      "name_detail": "新規ユーザーの表示名nameに関連付け",
       "Treat username matching as identical": "新規ログイン時、<code>username</code> が一致したローカルアカウントが存在した場合は自動的に紐付ける",
       "Treat username matching as identical_warn": "WARNING: <code>username</code> の一致を以て同一ユーザーであるとみなすので、セキュリティに注意してください",
       "group_search_base_DN": "グループ検索ベース DN",
