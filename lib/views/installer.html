@@ -52,11 +52,11 @@
         <div class="form-group">
           <div class="col-sm-12">
             <div class="btn-group btn-toggle m-t-10 m-b-20 d-flex justify-content-center" data-toggle="buttons">
-              <label class="btn btn-default btn-rounded btn-outline {% if registerForm[language] %}active{% endif %}" data-active-class="primary">
+              <label class="btn btn-default btn-rounded btn-outline btn btn-primary {% if registerForm[language] %}active{% endif %}" data-active-class="primary">
                 <input name="registerForm[language]" value="true" type="radio"
                     {% if true === registerForm[language] %}checked{% endif %}> 日本語
               </label>
-              <label class="btn btn-default btn-rounded btn-outline {% if !registerForm['language'] %}active{% endif %}" data-active-class="default">
+              <label class="btn btn-default btn-rounded btn-outline btn btn-primary {% if !registerForm['language'] %}active{% endif %}" data-active-class="default">
                 <input name="registerForm[language]" value="false" type="radio"
                     {% if !registerForm['language'] %}checked{% endif %}> English
               </label>
