@@ -8,7 +8,8 @@ CHANGES
 * Improvement: Omit unnecessary response header
 * Improvement: Support LDAP attribute mappings for user's full name
 * Fix: HTML escaped characters in markdown are unescaped unexpectedly after page is saved
-
+* Fix: Posting to Slack doesn't work
+    * Introduced by 3.1.0
 
 ## 3.1.2
 
@@ -28,8 +29,6 @@ CHANGES
         :::
         ~~~
 * Improvement: Escape iframe tag in block codes
-* Fix: Posting to Slack doesn't work
-    * Introduced by 3.1.0
 * Support: Upgrade libs
     * assets-webpack-plugin
     * googleapis
