@@ -75,16 +75,16 @@
         </div>
         {# tantatively borrowed from customize.html #}
         <div class="form-group">
-          <label for="settingForm[customize:isSavedStatesOfTabChanges]" class="col-xs-3 control-label">{{ t("Language") }}</label>
+          <label for="registerForm[language]" class="col-xs-3 control-label">{{ t("Language") }}</label>
           <div class="col-xs-9">
             <div class="btn-group btn-toggle" data-toggle="buttons">
-              <label class="btn btn-default btn-rounded btn-outline {% if settingForm['customize:isSavedStatesOfTabChanges'] %}active{% endif %}" data-active-class="primary">
-                <input name="settingForm[customize:isSavedStatesOfTabChanges]" value="true" type="radio"
-                    {% if true === settingForm['customize:isSavedStatesOfTabChanges'] %}checked{% endif %}> 日本語
+              <label class="btn btn-default btn-rounded btn-outline {% if registerForm[language] %}active{% endif %}" data-active-class="primary">
+                <input name="registerForm[language]" value="true" type="radio"
+                    {% if true === registerForm[language] %}checked{% endif %}> 日本語
               </label>
-              <label class="btn btn-default btn-rounded btn-outline {% if !settingForm['customize:isSavedStatesOfTabChanges'] %}active{% endif %}" data-active-class="default">
-                <input name="settingForm[customize:isSavedStatesOfTabChanges]" value="false" type="radio"
-                    {% if !settingForm['customize:isSavedStatesOfTabChanges'] %}checked{% endif %}> English
+              <label class="btn btn-default btn-rounded btn-outline {% if !registerForm['language'] %}active{% endif %}" data-active-class="default">
+                <input name="registerForm[language]" value="false" type="radio"
+                    {% if !registerForm['language'] %}checked{% endif %}> English
               </label>
         </div>
 
