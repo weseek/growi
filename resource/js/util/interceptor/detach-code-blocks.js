@@ -104,14 +104,15 @@ export class RestoreCodeBlockInterceptor extends BasicInterceptor {
    * @inheritdoc
    */
   isInterceptWhen(contextName) {
-    return /^postPreProcess|preRenderHtml|preRenderPreviewHtml$/.test(contextName);
+    return /^postPreProcess|preRenderHtml|preRenderPreviewHtml|preRenderCommentHtml|preRenderCommentPreviewHtml$/.test(contextName);
   }
 
   getTargetKey(contextName) {
     if (contextName === 'postPreProcess') {
       return 'markdown';
     }
-    else if (contextName === 'preRenderHtml' || contextName === 'preRenderPreviewHtml') {
+    else if (contextName === 'preRenderHtml' || contextName === 'preRenderPreviewHtml'
+        || contextName === 'preRenderCommentHtml' || contextName === 'preRenderCommentPreviewHtml') {
       return 'parsedHTML';
     }
   }

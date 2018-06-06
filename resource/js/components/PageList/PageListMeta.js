@@ -14,11 +14,18 @@ export default class PageListMeta extends React.Component {
   render() {
     // TODO isPortal()
     const page = this.props.page;
+    const templateChecker = require('../../../../lib/util/templateChecker');
 
     // portal check
     let PortalLabel;
     if (this.isPortalPath(page.path)) {
       PortalLabel = <span className="label label-info">PORTAL</span>;
+    }
+
+    // template check
+    let TemplateLabel;
+    if (templateChecker(page.path)) {
+      TemplateLabel = <span className="label label-info">TMPL</span>;
     }
 
     let CommentCount;
@@ -35,6 +42,7 @@ export default class PageListMeta extends React.Component {
     return (
       <span className="page-list-meta">
         {PortalLabel}
+        {TemplateLabel}
         {CommentCount}
         {LikerCount}
       </span>

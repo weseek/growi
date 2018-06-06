@@ -143,6 +143,61 @@ div.body {
       opacity: 1 !important;
     }
   }
+
+  $ratio: 0.95;
+  &.comment {
+    line-height: 1.5em;
+    font-size: 14px;
+
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.6em * $ratio;
+      margin-bottom: .8em * $ratio;
+    }
+
+    h1 {
+      margin-top: 2em * $ratio;
+      padding-bottom: 0.3em * $ratio;
+      font-size: 1.8em * $ratio;
+      line-height: 1.1em * $ratio;
+    }
+    h2 {
+      padding-bottom: 0.5em * $ratio;
+      font-size: 1.4em * $ratio;
+      line-height: 1.225 * $ratio;
+    }
+    h3 {
+      font-size: 1.2em * $ratio;
+    }
+
+    blockquote {
+      font-size: .9em * $ratio;
+    }
+
+    img.emojione {
+      margin-top: -0.3em * $ratio !important;
+    }
+
+    ul, ol {
+      li {
+        line-height: 1.8em * $ratio;
+      }
+    }
+
+    // borrowed from https://www.npmjs.com/package/github-markdown-css
+    .contains-task-list {
+      .task-list-item input {
+        margin: 0 0.2em * $ratio 0.25em * $ratio -1.6em * $ratio;
+      }
+    }
+
+    .revision-head {
+      .revision-head-link,
+      .revision-head-edit-button {
+        margin-left: 0.5em * $ratio;
+        font-size: 0.6em * $ratio;
+      }
+    }
+  }
 }
 
 // mobile

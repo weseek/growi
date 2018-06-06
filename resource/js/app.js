@@ -18,7 +18,7 @@ import Page             from './components/Page';
 import PageListSearch   from './components/PageListSearch';
 import PageHistory      from './components/PageHistory';
 import PageComments     from './components/PageComments';
-import PageCommentFormBehavior from './components/PageCommentFormBehavior';
+import CommentForm from './components/PageComment/CommentForm';
 import PageAttachment   from './components/PageAttachment';
 import SeenUserList     from './components/SeenUserList';
 import RevisionPath     from './components/Page/RevisionPath';
@@ -29,8 +29,6 @@ import NewPageNameInputter from './components/NewPageNameInputter';
 import CustomCssEditor  from './components/Admin/CustomCssEditor';
 import CustomScriptEditor from './components/Admin/CustomScriptEditor';
 import CustomHeaderEditor from './components/Admin/CustomHeaderEditor';
-
-import * as entities from 'entities';
 
 if (!window) {
   window = {};
@@ -46,7 +44,6 @@ let pageRevisionCreatedAt = null;
 let pagePath;
 let pageContent = '';
 let markdown = '';
-let pageGrant = null;
 if (mainContent !== null) {
   pageId = mainContent.getAttribute('data-page-id');
   pageRevisionId = mainContent.getAttribute('data-page-revision-id');
@@ -54,9 +51,8 @@ if (mainContent !== null) {
   pagePath = mainContent.attributes['data-path'].value;
   const rawText = document.getElementById('raw-text-original');
   if (rawText) {
-    pageContent = rawText.innerHTML;
+    markdown = rawText.innerHTML;
   }
-  markdown = entities.decodeHTML(pageContent);
 }
 const isLoggedin = document.querySelector('.main-container.nologin') == null;
 
@@ -116,7 +112,7 @@ const componentMappings = {
 };
 // additional definitions if data exists
 if (pageId) {
-  componentMappings['page-comments-list'] = <PageComments pageId={pageId} revisionId={pageRevisionId} revisionCreatedAt={pageRevisionCreatedAt} crowi={crowi} />;
+  componentMappings['page-comments-list'] = <PageComments pageId={pageId} revisionId={pageRevisionId} revisionCreatedAt={pageRevisionCreatedAt} crowi={crowi} crowiOriginRenderer={crowiRenderer} />;
   componentMappings['page-attachment'] = <PageAttachment pageId={pageId} pageContent={pageContent} crowi={crowi} />;
 }
 if (pagePath) {
@@ -134,10 +130,18 @@ Object.keys(componentMappings).forEach((key) => {
   }
 });
 
-// render components with refs to another component
-const elem = document.getElementById('page-comment-form-behavior');
-if (elem) {
-  ReactDOM.render(<PageCommentFormBehavior crowi={crowi} pageComments={componentInstances['page-comments-list']} />, elem);
+// render comment form
+const writeCommentElem = document.getElementById('page-comment-write');
+if (writeCommentElem) {
+  const pageCommentsElem = componentInstances['page-comments-list'];
+  const postCompleteHandler = (comment) => {
+    if (pageCommentsElem != null) {
+      pageCommentsElem.retrieveData();
+    }
+  };
+  ReactDOM.render(
+    <CommentForm crowi={crowi} pageId={pageId} revisionId={pageRevisionId} onPostComplete={postCompleteHandler} crowiRenderer={crowiRenderer}/>,
+    writeCommentElem);
 }
 
 /*

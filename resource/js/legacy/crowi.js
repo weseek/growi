@@ -430,7 +430,7 @@ $(function() {
         var revisionPath = '#' + id + ' .revision-path';
         /* eslint-enable */
         var pagePath = document.getElementById(id).getAttribute('data-page-path');
-        var markdown = entities.decodeHTML($(contentId).html());
+        var markdown = $(contentId).html();
 
         ReactDOM.render(<Page crowi={crowi} crowiRenderer={growiRendererForTimeline} markdown={markdown} pagePath={pagePath} />, revisionBodyElem);
       });
