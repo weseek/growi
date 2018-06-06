@@ -1,7 +1,13 @@
 CHANGES
 ========
 
-## 3.1.3-RC
+## 3.1.4-RC
+
+* Support: Upgrade libs
+    * markdown-it-toc-and-anchor-with-slugid
+
+
+## 3.1.3
 
 * Feature: Write comment with Markdown
 * Improvement: Support some placeholders for template page
