@@ -231,11 +231,11 @@
       "create/edit": "Create/Edit Template page..",
       "select": "Select template page type"
     },
-    "local": {
+    "children": {
       "label": "Template for children",
       "desc": "Applies only to the same level pages which the template exists"
     },
-    "global": {
+    "decendants": {
       "label": "Template for descendants",
       "desc": "Applies to all decendant pages"
     }
