@@ -48,7 +48,19 @@
         <strong>{{ t('installer_page.first_account') }}</strong><br>
         <small>{{ t('installer_page.administrative_privileges') }}</small>
       </p>
-
+   {# tantatively borrowed from customize.html #}
+        <div class="form-group">
+          <div class="col-sm-12">
+            <div class="btn-group btn-toggle m-t-10 m-b-20 d-flex justify-content-center" data-toggle="buttons">
+              <label class="btn btn-default btn-rounded btn-outline {% if registerForm[language] %}active{% endif %}" data-active-class="primary">
+                <input name="registerForm[language]" value="true" type="radio"
+                    {% if true === registerForm[language] %}checked{% endif %}> 日本語
+              </label>
+              <label class="btn btn-default btn-rounded btn-outline {% if !registerForm['language'] %}active{% endif %}" data-active-class="default">
+                <input name="registerForm[language]" value="false" type="radio"
+                    {% if !registerForm['language'] %}checked{% endif %}> English
+              </label>
+        </div>
       <form role="form" action="/installer/createAdmin" method="post" id="register-form">
 
         <div class="input-group" id="input-group-username">
@@ -73,19 +85,7 @@
           <span class="input-group-addon"><i class="icon-lock"></i></span>
           <input type="password" class="form-control" placeholder="{{ t('Password') }}" name="registerForm[password]" required>
         </div>
-        {# tantatively borrowed from customize.html #}
-        <div class="form-group">
-          <div class="col-sm-12">
-            <div class="btn-group btn-toggle m-t-30 m-b-20 d-flex justify-content-center" data-toggle="buttons">
-              <label class="btn btn-default btn-rounded btn-outline {% if registerForm[language] %}active{% endif %}" data-active-class="primary">
-                <input name="registerForm[language]" value="true" type="radio"
-                    {% if true === registerForm[language] %}checked{% endif %}> 日本語
-              </label>
-              <label class="btn btn-default btn-rounded btn-outline {% if !registerForm['language'] %}active{% endif %}" data-active-class="default">
-                <input name="registerForm[language]" value="false" type="radio"
-                    {% if !registerForm['language'] %}checked{% endif %}> English
-              </label>
-        </div>
+     
 
         <input type="hidden" name="_csrf" value="{{ csrf() }}">
         <div class="input-group m-t-30 m-b-20 d-flex justify-content-center">
