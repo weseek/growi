@@ -4,7 +4,9 @@ CHANGES
 ## 3.1.3-RC
 
 * Feature: Write comment with Markdown
+* Improvement: Support some placeholders for template page
 * Improvement: Omit unnecessary response header
+* Improvement: Support LDAP attribute mappings for user's full name
 * Fix: HTML escaped characters in markdown are unescaped unexpectedly after page is saved
 
 
