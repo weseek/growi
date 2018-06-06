@@ -4,7 +4,9 @@ CHANGES
 ## 3.1.3-RC
 
 * Feature: Write comment with Markdown
+* Improvement: Omit unnecessary response header
 * Fix: HTML escaped characters in markdown are unescaped unexpectedly after page is saved
+
 
 ## 3.1.2
 
