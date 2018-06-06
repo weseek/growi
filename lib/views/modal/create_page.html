@@ -44,24 +44,21 @@
           </fieldset>
         </form>
 
-        <div id = "template-form" class="row form-horizontal m-t-15">
+        <div id="template-form" class="row form-horizontal m-t-15">
           <fieldset class="col-xs-12">
             <legend>{{ t('template.modal_label.Create template under', parentPath(path)) }}</legend>
             <div class="d-flex create-page-input-container">
               <div class="create-page-input-row d-flex align-items-center">
-                <select id="template-type" class="page-name-input form-control">
-                  <option value="" disabled selected>{{ t('template.option_label.select') }}</option>
-                  <option value="children">{{ t('template.children.label') }}(_template) - {{ t('template.children.desc') }}</option>
-                  <option value="decentants">{{ t('template.decendants.label') }}(__template) - {{ t('template.decendants.desc') }}</option>
+                <select id="template-type" class="form-control selectpicker" title="{{ t('template.option_label.select') }}">
+                  <option value="children" data-subtext="- {{ t('template.children.desc') }}">{{ t('template.children.label') }}(_template)</option>
+                  <option value="decentants" data-subtext="- {{ t('template.decendants.desc') }}">{{ t('template.decendants.label') }}(__template)</option>
                 </select>
               </div>
               <div class="create-page-button-container">
-                  <a id="link-to-template" href="{{ page.path || path }}">
-                    <button class="fcbtn btn btn-outline btn-rounded btn-primary btn-1b">
-                      <i class="icon-fw icon-doc"></i>
-                      <span id="template-button">{{ t('Create') }}/{{ t('Edit') }}</span>
-                    </button>
-                  </a>
+                <a id="link-to-template" href="{{ page.path || path }}" class="fcbtn btn btn-outline btn-rounded btn-primary btn-1b disabled">
+                  <i class="icon-fw icon-doc"></i>
+                  <span id="create-template-button-link">{{ t('Create') }}/{{ t('Edit') }}</span>
+                </a>
               </div>
             </div>
           </fieldset>
@@ -83,25 +80,23 @@
 
   $.get(`/_api/pages.templates?path=${pagePath}`)
     .then(templateInfo => {
-      buttonTextChildren = templateInfo.childrenTemplateExists ? '{{ t('Edit') }}' : '{{ t('Create') }}';
-      buttonTextDecendants = templateInfo.decendantsTemplateExists ? '{{ t('Edit') }}' : '{{ t('Create') }}';
+      buttonTextChildren = templateInfo.childrenTemplateExists ? `{{ t('Edit') }}` : `{{ t('Create') }}`;
+      buttonTextDecendants = templateInfo.decendantsTemplateExists ? `{{ t('Edit') }}` : `{{ t('Create') }}`;
     });
 
-  $("#create-template").ready(() => {
-    $('#template-button-children').text(buttonTextChildren);
-    $('#template-button-decendants').text(buttonTextDecendants);
-  });
-
   $("#template-type").on("change", () => {
+    // enable button
+    $('#link-to-template').removeClass("disabled");
+
     if ($("#template-type").val() === "children") {
       href = pagePath + "/_template#edit-form";
       $("#link-to-template").attr("href", href);
-      $('#template-button').text(buttonTextChildren);
+      $('#create-template-button-link').text(buttonTextChildren);
     }
     else if ($("#template-type").val() === "decentants") {
       href = pagePath + "/__template#edit-form";
       $("#link-to-template").attr("href", href);
-      $('#template-button').text(buttonTextDecendants);
+      $('#create-template-button-link').text(buttonTextDecendants);
     };
   });
 </script>
