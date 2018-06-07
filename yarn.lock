@@ -4370,6 +4370,15 @@ map-values@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/map-values/-/map-values-1.0.1.tgz#768b8e79c009bf2b64fee806e22a7b1c4190c990"
 
+markdown-it-blockdiag@^0.3.5:
+  version "0.3.5"
+  resolved "https://registry.yarnpkg.com/markdown-it-blockdiag/-/markdown-it-blockdiag-0.3.5.tgz#02d119ef9b5cddb1dcfc6f040c4bda0f78017510"
+  dependencies:
+    pako "^1.0.6"
+    paths "^0.1.1"
+    url-join "^4.0.0"
+    utf8-bytes "0.0.1"
+
 markdown-it-emoji@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/markdown-it-emoji/-/markdown-it-emoji-1.4.0.tgz#9bee0e9a990a963ba96df6980c4fddb05dfb4dcc"
@@ -5218,7 +5227,7 @@ pako@1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/pako/-/pako-1.0.3.tgz#5f515b0c6722e1982920ae8005eacb0b7ca73ccf"
 
-pako@~1.0.5:
+pako@^1.0.6, pako@~1.0.5:
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/pako/-/pako-1.0.6.tgz#0101211baa70c4bca4a0f63f2206e97b7dfaf258"
 
@@ -5355,6 +5364,10 @@ path-type@^3.0.0:
   resolved "https://registry.yarnpkg.com/path-type/-/path-type-3.0.0.tgz#cef31dc8e0a1a3bb0d105c0cd97cf3bf47f4e36f"
   dependencies:
     pify "^3.0.0"
+
+paths@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/paths/-/paths-0.1.1.tgz#9ad909d7f769dd8acb3a1c033c5eef43123d3d17"
 
 pathval@^1.0.0:
   version "1.1.0"
