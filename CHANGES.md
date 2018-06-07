@@ -3,6 +3,7 @@ CHANGES
 
 ## 3.1.4-RC
 
+* Fix: sanitize `#raw-text-original` content with 'entities'
 * Fix: page.rename api doesn't work
 * Support: Upgrade libs
     * markdown-it-toc-and-anchor-with-slugid

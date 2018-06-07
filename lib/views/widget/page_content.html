@@ -15,7 +15,7 @@
   <div class="tab-content">
 
     {% if page %}
-      <script type="text/template" id="raw-text-original">{{ revision.body }}</script>
+      <script type="text/template" id="raw-text-original">{{ revision.body.toString() | sanitize }}</script>
 
       {# formatted text #}
       <div class="tab-pane {% if not req.body.pageForm %}active{% endif %}" id="revision-body">
