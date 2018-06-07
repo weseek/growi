@@ -33,19 +33,19 @@ export default class CommentForm extends React.Component {
     };
 
     this.updateState = this.updateState.bind(this);
+    this.updateStateCheckbox = this.updateStateCheckbox.bind(this);
     this.postComment = this.postComment.bind(this);
     this.renderHtml = this.renderHtml.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
   }
 
-  updateState(event) {
-    const target = event.target;
-    // const value = target.type === 'checkbox' ? target.checked : target.value;
-    // const name = target.name;
+  updateState(value) {
+    this.setState({comment: value});
+  }
 
-    this.setState({
-      // [name]: value
-    });
+  updateStateCheckbox(event) {
+    const value = event.target.checked;
+    this.setState({isMarkdown: value});
   }
 
   handleSelect(key) {
@@ -149,18 +149,18 @@ export default class CommentForm extends React.Component {
                     <Tab eventKey={1} title="Write">
                       {/* <textarea className="comment-form-comment form-control" id="comment-form-comment" name="comment" required placeholder="Write comments here..." value={this.state.comment} onChange={this.updateState} >
                       </textarea> */}
-                       <Editor ref="editor" type="text"
+                       <Editor ref="editor"
                        value={this.state.comment}
-                        editorOptions={this.state.editorOptions}
-                        isMobile={this.props.crowi.isMobile}
-                        // isUploadable={this.state.isUploadable}
-                        // isUploadableFile={this.state.isUploadableFile}
-                        emojiStrategy={emojiStrategy}
-                        // onScroll={this.onEditorScroll}
-                        // onScrollCursorIntoView={this.onEditorScrollCursorIntoView}
-                        onChange={this.updateState}
-                        // onSave={this.onSave}
-                        // onUpload={this.onUpload}
+                       editorOptions={this.state.editorOptions}
+                       isMobile={this.props.crowi.isMobile}
+                       // isUploadable={this.state.isUploadable}
+                       // isUploadableFile={this.state.isUploadableFile}
+                       emojiStrategy={emojiStrategy}
+                       // onScroll={this.onEditorScroll}
+                       // onScrollCursorIntoView={this.onEditorScrollCursorIntoView}
+                       onChange={this.updateState}
+                       // onSave={this.onSave}
+                       // onUpload={this.onUpload}
                       />
                     </Tab>
                     { this.state.isMarkdown == true &&
@@ -176,7 +176,7 @@ export default class CommentForm extends React.Component {
                   <div className="pull-left">
                   { this.state.key == 1 &&
                     <label>
-                      <input type="checkbox" id="comment-form-is-markdown" name="isMarkdown" checked={this.state.isMarkdown} value="1" onChange={this.updateState} /> Markdown
+                      <input type="checkbox" id="comment-form-is-markdown" name="isMarkdown" checked={this.state.isMarkdown} value="1" onChange={this.updateStateCheckbox} /> Markdown
                     </label>
                   }
                   </div>
