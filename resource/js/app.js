@@ -130,20 +130,6 @@ Object.keys(componentMappings).forEach((key) => {
   }
 });
 
-// render comment form
-const writeCommentElem = document.getElementById('page-comment-write');
-if (writeCommentElem) {
-  const pageCommentsElem = componentInstances['page-comments-list'];
-  const postCompleteHandler = (comment) => {
-    if (pageCommentsElem != null) {
-      pageCommentsElem.retrieveData();
-    }
-  };
-  ReactDOM.render(
-    <CommentForm crowi={crowi} pageId={pageId} revisionId={pageRevisionId} onPostComplete={postCompleteHandler} crowiRenderer={crowiRenderer}/>,
-    writeCommentElem);
-}
-
 /*
  * PageEditor
  */
@@ -174,6 +160,21 @@ if (pageEditorElem) {
   // set refs for pageEditor
   crowi.setPageEditor(pageEditor);
 }
+
+// render comment form
+const writeCommentElem = document.getElementById('page-comment-write');
+if (writeCommentElem) {
+  const pageCommentsElem = componentInstances['page-comments-list'];
+  const postCompleteHandler = (comment) => {
+    if (pageCommentsElem != null) {
+      pageCommentsElem.retrieveData();
+    }
+  };
+  ReactDOM.render(
+    <CommentForm crowi={crowi} pageId={pageId} revisionId={pageRevisionId} onPostComplete={postCompleteHandler} crowiRenderer={crowiRenderer} editorOptions={editorOptions}/>,
+    writeCommentElem);
+}
+
 // render OptionsSelector
 const pageEditorOptionsSelectorElem = document.getElementById('page-editor-options-selector');
 if (pageEditorOptionsSelectorElem) {
