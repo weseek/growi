@@ -183,6 +183,14 @@ Crowi.initSlimScrollForRevisionToc = () => {
 
   drawScrollbar();
 
+  // TODO turn performance
+  let resizeTimer = undefined;
+  window.addEventListener('resize', (event) => {
+    resizeTimer = setTimeout(() => {
+      drawScrollbar();
+    }, 200);
+  });
+
   // set event listener
   // revisionTocElem.addEventListener('affix.bs.affix', () => {
   //   console.log('hoge');
