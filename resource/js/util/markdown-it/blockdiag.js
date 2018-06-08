@@ -10,6 +10,7 @@ export default class BlockdiagConfigurer {
   configure(md) {
     md.use(require('markdown-it-blockdiag'), {
       generateSourceUrl: this.generateSourceUrl,
+      marker: '```',
     });
   }
 }
