@@ -28,34 +28,36 @@
 
 
 <!-- Side Scroll Bar-->
+
 <script>
-  function DrawScrollbar() {
-     var h = window.innerHeight - document.getElementById('page-header').clientHeight ;
-    $('#revision-toc-content').slimScroll({
-      railVisible: true,
-      position: 'right',
-      height: h,
-    });
-  }
 
-  $(function(){
-    DrawScrollbar();
+function DrawScrollbar() {
+
+  var h = window.innerHeight - ((document.getElementById('revision-toc').clientHeight))/2 ;
+  $('#revision-toc-content').slimScroll({
+    railVisible: true,
+    height: h,
   });
+}
 
-  (function () {
-    var timer = 0;
+$(function(){
+  DrawScrollbar();
+});
 
-    window.onresize = function () {
-      if (timer > 0) {
-        clearTimeout(timer);
-      }
+(function () {
+  var timer = 0;
 
-      timer = setTimeout(function () {
-        DrawScrollbar();
-      }, 200);
-    };
-  }());
-  </script>
+  window.onresize = function () {
+    if (timer > 0) {
+      clearTimeout(timer);
+    }
+
+    timer = setTimeout(function () {
+      DrawScrollbar();
+    }, 200);
+  };
+}());
+</script>
 
 <footer class="footer">
   {% include '../../widget/system-version.html' %}
