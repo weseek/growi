@@ -169,9 +169,10 @@ Crowi.handleKeyCtrlSlashHandler = (event) => {
 
 Crowi.initSlimScrollForRevisionToc = () => {
   const revisionTocElem = document.querySelector('.growi .revision-toc');
+  const tocContentElem = document.querySelector('.growi .revision-toc .markdownIt-TOC');
 
   // growi layout only
-  if (revisionTocElem == null) {
+  if (revisionTocElem == null || tocContentElem == null) {
     return;
   }
 
@@ -182,7 +183,11 @@ Crowi.initSlimScrollForRevisionToc = () => {
 
   function resetScrollbar(revisionTocTop) {
     // window height - revisionTocTop - .system-version height
-    const h = window.innerHeight - revisionTocTop - 20;
+    let h = window.innerHeight - revisionTocTop - 20;
+
+    const tocContentHeight = tocContentElem.getBoundingClientRect().height + 15;  // add margin
+
+    h = Math.min(h, tocContentHeight);
 
     $('#revision-toc-content').slimScroll({
       railVisible: true,
