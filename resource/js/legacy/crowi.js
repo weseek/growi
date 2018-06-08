@@ -165,6 +165,30 @@ Crowi.handleKeyCtrlSlashHandler = (event) => {
   event.preventDefault();
 };
 
+Crowi.initSlimScrollForRevisionToc = () => {
+  // slimScroll for revision-toc
+  const revisionTocElem = document.getElementById('revision-toc');
+  function drawScrollbar() {
+    // calculate absolute top of '#revision-toc' element
+    const revisionTocTop = revisionTocElem.getBoundingClientRect().top;
+    // inner height - revisionTocTop
+    const h = window.innerHeight - revisionTocTop;
+
+    $('#revision-toc-content').slimScroll({
+      railVisible: true,
+      position: 'right',
+      height: h,
+    });
+  }
+
+  drawScrollbar();
+
+  // set event listener
+  // revisionTocElem.addEventListener('affix.bs.affix', () => {
+  //   console.log('hoge');
+  // });
+};
+
 $(function() {
   var config = JSON.parse(document.getElementById('crowi-context-hydrate').textContent || '{}');
 
@@ -529,6 +553,20 @@ $(function() {
       });
     }
 
+    // (function () {
+    //   var timer = 0;
+
+    //   window.onresize = function () {
+    //     if (timer > 0) {
+    //       clearTimeout(timer);
+    //     }
+
+    //     timer = setTimeout(function () {
+    //       DrawScrollbar();
+    //     }, 200);
+    //   };
+    // }());
+
     /*
      * transplanted to React components -- 2017.06.02 Yuki Takei
      *
@@ -890,6 +928,7 @@ window.addEventListener('load', function(e) {
   Crowi.highlightSelectedSection(location.hash);
   Crowi.modifyScrollTop();
   Crowi.setCaretLineAndFocusToEditor();
+  Crowi.initSlimScrollForRevisionToc();
 });
 
 window.addEventListener('hashchange', function(e) {
