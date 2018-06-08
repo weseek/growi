@@ -8,9 +8,10 @@ export default class BlockdiagConfigurer {
   }
 
   configure(md) {
-    md.use(require('markdown-it-blockdiag'), {
-      generateSourceUrl: this.generateSourceUrl,
-      marker: '```',
-    });
+    //// disable temporary because this breaks /Sandbox -- 2018.06.08 Yuki Takei
+    // md.use(require('markdown-it-blockdiag'), {
+    //   generateSourceUrl: this.generateSourceUrl,
+    //   marker: ':::',
+    // });
   }
 }
