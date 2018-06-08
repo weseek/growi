@@ -181,8 +181,8 @@ Crowi.initSlimScrollForRevisionToc = () => {
   }
 
   function resetScrollbar(revisionTocTop) {
-    // inner height - revisionTocTop
-    const h = window.innerHeight - revisionTocTop;
+    // window height - revisionTocTop - .system-version height
+    const h = window.innerHeight - revisionTocTop - 20;
 
     $('#revision-toc-content').slimScroll({
       railVisible: true,
