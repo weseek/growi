@@ -15,6 +15,7 @@ import PlantUMLConfigurer from './markdown-it/plantuml';
 import TableConfigurer from './markdown-it/table';
 import TaskListsConfigurer from './markdown-it/task-lists';
 import TocAndAnchorConfigurer from './markdown-it/toc-and-anchor';
+import BlockdiagConfigurer from './markdown-it/blockdiag';
 
 export default class GrowiRenderer {
 
@@ -75,6 +76,7 @@ export default class GrowiRenderer {
       new EmojiConfigurer(crowi),
       new MathJaxConfigurer(crowi),
       new PlantUMLConfigurer(crowi),
+      new BlockdiagConfigurer(crowi),
     ];
 
     // add configurers according to mode
