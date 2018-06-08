@@ -1,10 +1,14 @@
 CHANGES
 ========
 
-## 3.1.4-RC
+## 3.1.5-RC
 
 * Feature: Support [blockdiag](http://blockdiag.com)
 * Feature: Add `BLOCKDIAG_URI` environment variable
+
+## 3.1.4
+
+* Improvement: Enable to scroll revision-toc
 * Fix: sanitize `#raw-text-original` content with 'entities'
 * Fix: page.rename api doesn't work
 * Support: Upgrade libs
