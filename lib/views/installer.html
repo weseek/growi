@@ -52,15 +52,12 @@
         <div class="form-group">
           <div class="col-sm-12">
             <div class="btn-group btn-toggle m-t-10 m-b-20 d-flex justify-content-center" data-toggle="buttons">
-              <label class="btn btn-default btn-rounded btn-outline btn btn-primary {% if registerForm[language] %}active{% endif %}" data-active-class="primary">
-                <input name="registerForm[language]" value="true" type="radio"
-                    {% if true === registerForm[language] %}checked{% endif %}> 日本語
-              </label>
-              <label class="btn btn-default btn-rounded btn-outline btn btn-primary {% if !registerForm['language'] %}active{% endif %}" data-active-class="default">
-                <input name="registerForm[language]" value="false" type="radio"
-                    {% if !registerForm['language'] %}checked{% endif %}> English
-              </label>
-        </div>
+            <select name="registerForm[language]">
+              <option value="サンプル1">サンプル1</option>
+              <option value="サンプル2">サンプル2</option>
+              <option value="サンプル3">サンプル3</option>
+            </select>
+                     </div>
       <form role="form" action="/installer/createAdmin" method="post" id="register-form">
 
         <div class="input-group" id="input-group-username">
