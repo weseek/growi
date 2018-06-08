@@ -1,13 +1,47 @@
 CHANGES
 ========
 
-## 3.1.2-RC
+## 3.1.4-RC
 
-* Improvement: Add 'future' theme
+* Feature: Support [blockdiag](http://blockdiag.com)
+* Feature: Add `BLOCKDIAG_URI` environment variable
+* Fix: sanitize `#raw-text-original` content with 'entities'
+* Fix: page.rename api doesn't work
+* Support: Upgrade libs
+    * markdown-it-toc-and-anchor-with-slugid
+
+
+## 3.1.3
+
+* Feature: Write comment with Markdown
+* Improvement: Support some placeholders for template page
+* Improvement: Omit unnecessary response header
+* Improvement: Support LDAP attribute mappings for user's full name
+* Fix: HTML escaped characters in markdown are unescaped unexpectedly after page is saved
 * Fix: Posting to Slack doesn't work
     * Introduced by 3.1.0
+
+## 3.1.2
+
+* Feature: Template page
+* Improvement: Add 'future' theme
+* Improvement: Modify syntax for Crowi compatible template feature
+    * *before*
+        ~~~
+        ``` template:/page/name
+        page contents
+        ```
+        ~~~
+    * *after*
+        ~~~
+        ::: template:/page/name
+        page contents
+        :::
+        ~~~
+* Improvement: Escape iframe tag in block codes
 * Support: Upgrade libs
     * assets-webpack-plugin
+    * googleapis
     * react-clipboard.js
     * xss
 

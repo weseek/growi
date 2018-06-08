@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import GrowiRenderer from '../util/GrowiRenderer';
+
 import Comment from './PageComment/Comment';
 import DeleteCommentModal from './PageComment/DeleteCommentModal';
 
@@ -30,6 +32,8 @@ export default class PageComments extends React.Component {
       errorMessageForDeleting: undefined,
     };
 
+    this.growiRenderer = new GrowiRenderer(this.props.crowi, this.props.crowiOriginRenderer, {mode: 'comment'});
+
     this.init = this.init.bind(this);
     this.confirmToDeleteComment = this.confirmToDeleteComment.bind(this);
     this.deleteComment = this.deleteComment.bind(this);
@@ -43,6 +47,8 @@ export default class PageComments extends React.Component {
     if (pageId) {
       this.init();
     }
+
+    this.retrieveData = this.retrieveData.bind(this);
   }
 
   init() {
@@ -50,21 +56,23 @@ export default class PageComments extends React.Component {
       return ;
     }
 
-    const pageId = this.props.pageId;
-
     const layoutType = this.props.crowi.getConfig()['layoutType'];
     this.setState({isLayoutTypeGrowi: 'crowi-plus' === layoutType || 'growi' === layoutType});
 
+    this.retrieveData();
+  }
+
+  /**
+   * Load data of comments and store them in state
+   */
+  retrieveData() {
     // get data (desc order array)
-    this.props.crowi.apiGet('/comments.get', {page_id: pageId})
-    .then(res => {
-      if (res.ok) {
-        this.setState({comments: res.comments});
-      }
-    }).catch(err => {
-
-    });
-
+    this.props.crowi.apiGet('/comments.get', {page_id: this.props.pageId})
+      .then(res => {
+        if (res.ok) {
+          this.setState({comments: res.comments});
+        }
+      });
   }
 
   confirmToDeleteComment(comment) {
@@ -123,7 +131,9 @@ export default class PageComments extends React.Component {
         <Comment key={comment._id} comment={comment}
           currentUserId={this.props.crowi.me}
           currentRevisionId={this.props.revisionId}
-          deleteBtnClicked={this.confirmToDeleteComment} />
+          deleteBtnClicked={this.confirmToDeleteComment}
+          crowi={this.props.crowi}
+          crowiRenderer={this.growiRenderer} />
       );
     });
   }
@@ -239,4 +249,5 @@ PageComments.propTypes = {
   revisionId: PropTypes.string,
   revisionCreatedAt: PropTypes.number,
   crowi: PropTypes.object.isRequired,
+  crowiOriginRenderer: PropTypes.object.isRequired,
 };

@@ -1,4 +1,4 @@
-<div class="modal" id="create-template">
+<div class="modal create-template" id="create-template">
   <div class="modal-dialog">
     <div class="modal-content">
 
@@ -11,34 +11,30 @@
           <label class="mb-4">{{ t('template.modal_label.Create template under', page.path ) }}</label>
           <div class="row">
             <div class="col-sm-6">
-              <div class="panel panel-default">
-                <div class="panel-heading">{{ t('template.local.label') }}</div>
+              <div class="panel panel-default panel-select-template">
+                <div class="panel-heading">{{ t('template.children.label') }}</div>
                 <div class="panel-body">
-                  <p class="text-center"><code>__template</code></p>
-                  <p class="help-block text-center"><small>{{ t('template.local.desc') }}</small></p>
+                  <p class="text-center"><code>_template</code></p>
+                  <p class="help-block text-center"><small>{{ t('template.children.desc') }}</small></p>
                 </div>
                 <div class="panel-footer text-center">
-                  {% if localTemplateExists %}
-                  <a href="{{ page.path }}/__template#edit-form"><button class="btn btn-sm btn-primary">{{ t('Edit') }}</button></a>
-                  {% else %}
-                  <a href="{{ page.path }}/__template#edit-form"><button class="btn btn-sm btn-primary">{{ t('Create') }}</button></a>
-                  {% endif %}
+                  <a href="{% if page.path.endsWith('/') %}{{ page.path }}{% else %}{{ page.path}}/{% endif %}_template#edit-form"
+                      class="btn btn-sm btn-primary" id="template-button-children">
+                  </a>
                 </div>
               </div>
             </div>
             <div class="col-sm-6">
-              <div class="panel panel-default">
-                <div class="panel-heading">{{ t('template.global.label') }}</div>
+              <div class="panel panel-default panel-select-template">
+                <div class="panel-heading">{{ t('template.decendants.label') }}</div>
                 <div class="panel-body">
-                  <p class="text-center"><code>_template</code></p>
-                  <p class="help-block text-center"><small>{{ t('template.global.desc') }}</small></p>
+                  <p class="text-center"><code>__template</code></p>
+                  <p class="help-block text-center"><small>{{ t('template.decendants.desc') }}</small></p>
                 </div>
                 <div class="panel-footer text-center">
-                  {% if globalTemplateExists %}
-                  <a href="{{ page.path }}/_template#edit-form"><button class="btn btn-sm btn-primary">{{ t('Edit') }}</button></a>
-                  {% else %}
-                  <a href="{{ page.path }}/_template#edit-form"><button class="btn btn-sm btn-primary">{{ t('Create') }}</button></a>
-                  {% endif %}
+                  <a href="{% if page.path.endsWith('/') %}{{ page.path }}{% else %}{{ page.path}}/{% endif %}__template#edit-form"
+                      class="btn btn-sm btn-primary" id="template-button-decendants">
+                  </a>
                 </div>
               </div>
             </div>

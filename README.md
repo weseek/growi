@@ -159,10 +159,12 @@ Environment Variables
     * NODE_ENV: `production` OR `development`.
     * PORT: Server port. default: `3000`
     * REDIS_URL: URI to connect to Redis (to session store).
-    * SESSION_NAME: The name of the session ID cookie to set in the response by Express. default: `connect.sid`
     * ELASTICSEARCH_URI: URI to connect to Elasticearch.
+    * PLANTUML_URI: URI to connect to [PlantUML](http://plantuml.com/) server.
+    * BLOCKDIAG_URI: URI to connect to [blockdiag](http://http://blockdiag.com/) server.
     * PASSWORD_SEED: A password seed used by password hash generator.
     * SECRET_TOKEN: A secret key for verifying the integrity of signed cookies.
+    * SESSION_NAME: The name of the session ID cookie to set in the response by Express. default: `connect.sid`
     * FILE_UPLOAD: `aws` (default), `local`, `none`
 
 

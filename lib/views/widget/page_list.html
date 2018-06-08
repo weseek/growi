@@ -19,6 +19,10 @@
       <span class="label label-info">PORTAL</span>
     {% endif  %}
 
+    {% if page.isTemplate() %}
+      <span class="label label-info">TMPL</span>
+    {% endif  %}
+
     {% if page.commentCount > 0 %}
     <span>
       <i class="icon-bubble"></i>{{ page.commentCount }}

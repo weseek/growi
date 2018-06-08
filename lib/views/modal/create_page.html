@@ -44,19 +44,21 @@
           </fieldset>
         </form>
 
-        <div id = "template-form" class="row form-horizontal m-t-15">
+        <div id="template-form" class="row form-horizontal m-t-15">
           <fieldset class="col-xs-12">
             <legend>{{ t('template.modal_label.Create template under', parentPath(path)) }}</legend>
             <div class="d-flex create-page-input-container">
               <div class="create-page-input-row d-flex align-items-center">
-                <select id="template-type" class="page-name-input form-control">
-                  <option value="" disabled selected>{{ t('template.option_label.select') }}</option>
-                  <option value="local">{{ t('template.local.label') }}(__template) - {{ t('template.local.desc') }}</option>
-                  <option value="global">{{ t('template.global.label') }}(_template) - {{ t('template.global.desc') }}</option>
+                <select id="template-type" class="form-control selectpicker" title="{{ t('template.option_label.select') }}">
+                  <option value="children" data-subtext="- {{ t('template.children.desc') }}">{{ t('template.children.label') }}(_template)</option>
+                  <option value="decentants" data-subtext="- {{ t('template.decendants.desc') }}">{{ t('template.decendants.label') }}(__template)</option>
                 </select>
               </div>
               <div class="create-page-button-container">
-                  <a id="link-to-template" href="{{ page.path || path }}"><button class="fcbtn btn btn-outline btn-rounded btn-primary btn-1b"><i class="icon-fw icon-doc"></i>{{ t('Create') }}</button></a>
+                <a id="link-to-template" href="{{ page.path || path }}" class="fcbtn btn btn-outline btn-rounded btn-primary btn-1b disabled">
+                  <i class="icon-fw icon-doc"></i>
+                  <span id="create-template-button-link">{{ t('Create') }}/{{ t('Edit') }}</span>
+                </a>
               </div>
             </div>
           </fieldset>
@@ -68,22 +70,33 @@
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 <script>
-  if($("#create-page")) {
-    let pagePath = $("#link-to-template").attr("href");
+  let buttonTextChildren;
+  let buttonTextDecendants;
+  let pagePath = $("#link-to-template").attr("href");
 
-    if (pagePath.endsWith("/")) {
+  if (pagePath.endsWith("/")) {
       pagePath = pagePath.slice(0, -1);
-    };
-
-    $("#template-type").on("change", () => {
-      if ($("#template-type").val() === "local") {
-        href = pagePath + "/__template#edit-form";
-        $("#link-to-template").attr("href", href);
-      }
-      else if ($("#template-type").val() === "global") {
-        href = pagePath + "/_template#edit-form";
-        $("#link-to-template").attr("href", href);
-      };
-    });
   };
+
+  $.get(`/_api/pages.templates?path=${pagePath}`)
+    .then(templateInfo => {
+      buttonTextChildren = templateInfo.childrenTemplateExists ? `{{ t('Edit') }}` : `{{ t('Create') }}`;
+      buttonTextDecendants = templateInfo.decendantsTemplateExists ? `{{ t('Edit') }}` : `{{ t('Create') }}`;
+    });
+
+  $("#template-type").on("change", () => {
+    // enable button
+    $('#link-to-template').removeClass("disabled");
+
+    if ($("#template-type").val() === "children") {
+      href = pagePath + "/_template#edit-form";
+      $("#link-to-template").attr("href", href);
+      $('#create-template-button-link').text(buttonTextChildren);
+    }
+    else if ($("#template-type").val() === "decentants") {
+      href = pagePath + "/__template#edit-form";
+      $("#link-to-template").attr("href", href);
+      $('#create-template-button-link').text(buttonTextDecendants);
+    };
+  });
 </script>
