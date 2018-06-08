@@ -165,6 +165,50 @@ Crowi.handleKeyCtrlSlashHandler = (event) => {
   event.preventDefault();
 };
 
+Crowi.initSlimScrollForRevisionToc = () => {
+  function getCurrentRevisionTocTop() {
+    const revisionTocElem = document.getElementById('revision-toc');
+    // calculate absolute top of '#revision-toc' element
+    return revisionTocElem.getBoundingClientRect().top;
+  }
+
+  function resetScrollbar(revisionTocTop) {
+    // inner height - revisionTocTop
+    const h = window.innerHeight - revisionTocTop;
+
+    $('#revision-toc-content').slimScroll({
+      railVisible: true,
+      position: 'right',
+      height: h,
+    });
+  }
+
+  // initialize
+  const revisionTocTop = getCurrentRevisionTocTop();
+  resetScrollbar(revisionTocTop);
+
+  /*
+   * set event listener
+   */
+  // resize
+  // TODO turn performance
+  window.addEventListener('resize', (event) => {
+    setTimeout(() => {
+      resetScrollbar(getCurrentRevisionTocTop());
+    }, 200);
+  });
+  // affix on
+  $('#revision-toc').on('affixed.bs.affix', function() {
+    resetScrollbar(getCurrentRevisionTocTop());
+  });
+  // affix off
+  $('#revision-toc').on('affixed-top.bs.affix', function() {
+    // calculate sum of height (.navbar-header + bg-title) + margin-top of .main
+    const sum = 138;
+    resetScrollbar(sum);
+  });
+};
+
 $(function() {
   var config = JSON.parse(document.getElementById('crowi-context-hydrate').textContent || '{}');
 
@@ -529,6 +573,20 @@ $(function() {
       });
     }
 
+    // (function () {
+    //   var timer = 0;
+
+    //   window.onresize = function () {
+    //     if (timer > 0) {
+    //       clearTimeout(timer);
+    //     }
+
+    //     timer = setTimeout(function () {
+    //       DrawScrollbar();
+    //     }, 200);
+    //   };
+    // }());
+
     /*
      * transplanted to React components -- 2017.06.02 Yuki Takei
      *
@@ -890,6 +948,7 @@ window.addEventListener('load', function(e) {
   Crowi.highlightSelectedSection(location.hash);
   Crowi.modifyScrollTop();
   Crowi.setCaretLineAndFocusToEditor();
+  Crowi.initSlimScrollForRevisionToc();
 });
 
 window.addEventListener('hashchange', function(e) {
