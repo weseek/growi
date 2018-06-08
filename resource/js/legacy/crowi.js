@@ -166,11 +166,13 @@ Crowi.handleKeyCtrlSlashHandler = (event) => {
 };
 
 Crowi.initSlimScrollForRevisionToc = () => {
-  // slimScroll for revision-toc
-  const revisionTocElem = document.getElementById('revision-toc');
-  function drawScrollbar() {
+  function getCurrentRevisionTocTop() {
+    const revisionTocElem = document.getElementById('revision-toc');
     // calculate absolute top of '#revision-toc' element
-    const revisionTocTop = revisionTocElem.getBoundingClientRect().top;
+    return revisionTocElem.getBoundingClientRect().top;
+  }
+
+  function resetScrollbar(revisionTocTop) {
     // inner height - revisionTocTop
     const h = window.innerHeight - revisionTocTop;
 
@@ -181,20 +183,30 @@ Crowi.initSlimScrollForRevisionToc = () => {
     });
   }
 
-  drawScrollbar();
+  // initialize
+  const revisionTocTop = getCurrentRevisionTocTop();
+  resetScrollbar(revisionTocTop);
 
+  /*
+   * set event listener
+   */
+  // resize
   // TODO turn performance
-  let resizeTimer = undefined;
   window.addEventListener('resize', (event) => {
-    resizeTimer = setTimeout(() => {
-      drawScrollbar();
+    setTimeout(() => {
+      resetScrollbar(getCurrentRevisionTocTop());
     }, 200);
   });
-
-  // set event listener
-  // revisionTocElem.addEventListener('affix.bs.affix', () => {
-  //   console.log('hoge');
-  // });
+  // affix on
+  $('#revision-toc').on('affixed.bs.affix', function() {
+    resetScrollbar(getCurrentRevisionTocTop());
+  });
+  // affix off
+  $('#revision-toc').on('affixed-top.bs.affix', function() {
+    // calculate sum of height (.navbar-header + bg-title) + margin-top of .main
+    const sum = 138;
+    resetScrollbar(sum);
+  });
 };
 
 $(function() {
