@@ -166,8 +166,14 @@ Crowi.handleKeyCtrlSlashHandler = (event) => {
 };
 
 Crowi.initSlimScrollForRevisionToc = () => {
+  const revisionTocElem = document.querySelector('.growi .revision-toc');
+
+  // growi layout only
+  if (revisionTocElem == null) {
+    return;
+  }
+
   function getCurrentRevisionTocTop() {
-    const revisionTocElem = document.getElementById('revision-toc');
     // calculate absolute top of '#revision-toc' element
     return revisionTocElem.getBoundingClientRect().top;
   }
