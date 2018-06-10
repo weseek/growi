@@ -1,12 +1,13 @@
-# CHANGES
+CHANGES
+========
 
 ## 3.1.6-RC
 
-* \(WIP\) Feature: Support [blockdiag](http://blockdiag.com)
+* (WIP) Feature: Support [blockdiag](http://blockdiag.com)
 * Feature: Add `BLOCKDIAG_URI` environment variable
 * Support: Upgrade libs
-  * googleapis
-  * throttle-debounce
+    * googleapis
+    * throttle-debounce
 
 ## 3.1.5
 
@@ -16,53 +17,53 @@
 * Improvement: Support LDAP attribute mappings for user's full name
 * Improvement: Enable to scroll revision-toc
 * Fix: Posting to Slack doesn't work
-  * Introduced by 3.1.0
+    * Introduced by 3.1.0
 * Fix: page.rename api doesn't work
 * Fix: HTML escaped characters in markdown are unescaped unexpectedly after page is saved
 * Fix: sanitize `#raw-text-original` content with 'entities'
 * Fix: Double newline character posted
-  * Introduced by 3.1.4
+    * Introduced by 3.1.4
 * Fix: List and Comment components do not displayed
-  * Introduced by 3.1.4
+    * Introduced by 3.1.4
 * Support: Upgrade libs
-  * markdown-it-toc-and-anchor-with-slugid
+    * markdown-it-toc-and-anchor-with-slugid
 
-## 3.1.4 \(Missing number\)
 
-## 3.1.3 \(Missing number\)
+## 3.1.4 (Missing number)
+
+## 3.1.3 (Missing number)
+
 
 ## 3.1.2
 
 * Feature: Template page
 * Improvement: Add 'future' theme
 * Improvement: Modify syntax for Crowi compatible template feature
-  * _before_
-
-    ```text
-      ``` template:/page/name
-      page contents
-      ```
-    ```
-
-  * _after_
-
-    ```text
-      ::: template:/page/name
-      page contents
-      :::
-    ```
+    * *before*
+        ~~~
+        ``` template:/page/name
+        page contents
+        ```
+        ~~~
+    * *after*
+        ~~~
+        ::: template:/page/name
+        page contents
+        :::
+        ~~~
 * Improvement: Escape iframe tag in block codes
 * Support: Upgrade libs
-  * assets-webpack-plugin
-  * googleapis
-  * react-clipboard.js
-  * xss
+    * assets-webpack-plugin
+    * googleapis
+    * react-clipboard.js
+    * xss
 
 ## 3.1.1
 
 * Improvement: Add 'blue-night' theme
 * Improvement: List up pages which restricted for Group ACL
 * Fix: PageGroupRelation didn't remove when page is removed completely
+
 
 ## 3.1.0
 
@@ -76,13 +77,13 @@
 * Improvement: Show LDAP logs when testing login
 * Fix: Comment body doesn't break long terms
 * Fix: lsx plugin lists up pages that hit by forward match wrongly
-  * Introduced by 3.0.4
+    * Introduced by 3.0.4
 * Fix: Editor is broken on IE11
 * Support: Multilingualize React components with i18next
 * Support: Organize dependencies
 * Support: Upgrade libs
-  * elasticsearch
-  * googleapis
+    * elasticsearch
+    * googleapis
 
 ## 3.0.13
 
@@ -94,13 +95,13 @@
 * Support: Set the alias for 'debug' to the debug function of 'bunyan'
 * Support: Translate /admin/security
 * Support: Optimize bundles
-  * upgrade 'markdown-it-toc-and-anchor-with-slugid' and omit 'uslug'
+    * upgrade 'markdown-it-toc-and-anchor-with-slugid' and omit 'uslug'
 * Support: Optimize .eslintrc.js
 
 ## 3.0.12
 
 * Feature: Support Vim/Emacs/Sublime-Text keybindings
-* Improvement: Add some CodeMirror themes \(Eclipse, Dracula\)
+* Improvement: Add some CodeMirror themes (Eclipse, Dracula)
 * Improvement: Dynamic loading for CodeMirror theme files from CDN
 * Improvement: Prevent XSS when move/redirect/duplicate
 
@@ -111,31 +112,31 @@
 * Fix: File-attaching error after new page creation
 * Support: Optimize development build
 * Support: Upgrade libs
-  * env-cmd
-  * googleapis
-  * sinon
+    * env-cmd
+    * googleapis
+    * sinon
 
 ## 3.0.10
 
 * Improvement: Add 'nature' theme
 * Fix: Page list and Timeline layout for layout-growi
 * Fix: Adjust theme colors
-  * Introduced by 3.0.9
+    * Introduced by 3.0.9
 
 ## 3.0.9
 
 * Fix: Registering new LDAP User is failed
-  * Introduced by 3.0.6
+    * Introduced by 3.0.6
 * Support: Organize scss for overriding bootstrap variables
 * Support: Upgrade libs
-  * codemirror
-  * react-codemirror2
-  * normalize-path
-  * style-loader
+    * codemirror
+    * react-codemirror2
+    * normalize-path
+    * style-loader
 
 ## 3.0.8
 
-* Improvement: h1\#revision-path occupies most of the screen when the page path is long
+* Improvement: h1#revision-path occupies most of the screen when the page path is long
 * Improvement: Ensure not to save concealed email field to localStorage
 * Fix: Cannot input "c" and "e" on iOS
 
@@ -145,9 +146,9 @@
 * Improvement: Use MongoDB for session store instead of Redis
 * Improvement: Update dropzone overlay icons and styles
 * Fix: Dropzone overlay elements doesn't show
-  * Introduced by 3.0.0
+    * Introduced by 3.0.0
 * Fix: Broken page path of timeline
-  * Introduced by 3.0.4
+    * Introduced by 3.0.4
 
 ## 3.0.6
 
@@ -155,12 +156,12 @@
 * Improvement: Simplify configuration for Slack Web API
 * Support: Use 'slack-node' instead of '@slack/client'
 * Support: Upgrade libs
-  * googleapis
-  * i18next
-  * i18next-express-middleware
-  * react-bootstrap-typeahead
-  * sass-loader
-  * uglifycss
+    * googleapis
+    * i18next
+    * i18next-express-middleware
+    * react-bootstrap-typeahead
+    * sass-loader
+    * uglifycss
 
 ## 3.0.5
 
@@ -178,9 +179,9 @@
 * Fix: Login page is broken in iOS
 * Fix: Hide presentation tab if portal page
 * Fix: A few checkboxes doesn't work
-  * Invite user check with email in `/admin/user`
-  * Recursively check in rename modal
-  * Redirect check in rename modal
+    * Invite user check with email in `/admin/user`
+    * Recursively check in rename modal
+    * Redirect check in rename modal
 * Fix: Activating invited user form url is wrong
 * Support: Use postcss-loader and autoprefixer
 
@@ -196,13 +197,13 @@
 * Support: Refreshing bootstrap theme and icons
 * Support: Use Browsersync instead of easy-livereload
 * Support: Upgrade libs
-  * react-bootstrap
-  * react-bootstrap-typeahead
-  * react-clipboard.js
+    * react-bootstrap
+    * react-bootstrap-typeahead
+    * react-clipboard.js
 
-## 3.0.1 \(Missing number\)
+## 3.0.1 (Missing number)
 
-## 3.0.0 \(Missing number\)
+## 3.0.0 (Missing number)
 
 ## 2.4.4
 
@@ -210,11 +211,11 @@
 * Feature: highlight.js Theme Selector
 * Fix: The bug of updating numbering list by codemirror
 * Fix: Template LangProcessor doesn't work
-  * Introduced by 2.4.0
+    * Introduced by 2.4.0
 * Support: Apply ESLint
 * Support: Upgrade libs
-  * react, react-dom
-  * codemirror, react-codemirror2
+    * react, react-dom
+    * codemirror, react-codemirror2
 
 ## 2.4.3
 
@@ -222,31 +223,31 @@
 * Improvement: Add `SESSION_NAME` environment variable
 * Fix: All Elements are cleared when the Check All button in DeletionMode
 * Support: Upgrade libs
-  * uglifycss
-  * sinon-chai
-
+    * uglifycss
+    * sinon-chai
+    
 ## 2.4.2
 
 * Improvement: Ensure to set absolute url from root when attaching files when `FILE_UPLOAD=local`
 * Fix: Inline code blocks that includes doller sign are broken
 * Fix: Comment count is not updated when a comment of the page is deleted
-* Improvement: i18n in `/admin` \(WIP\)
+* Improvement: i18n in `/admin` (WIP)
 * Support: Upgrade libs
-  * googleapis
-  * markdown-it-plantuml
+    * googleapis
+    * markdown-it-plantuml
 
 ## 2.4.1
 
 * Feature: Custom Header HTML
 * Improvement: Add highlight.js languages
-  * dockerfile, go, gradle, json, less, scss, typescript, yaml
-* Fix: Couldn't connect to PLANTUML\_URI
-  * Introduced by 2.4.0
+    * dockerfile, go, gradle, json, less, scss, typescript, yaml
+* Fix: Couldn't connect to PLANTUML_URI
+    * Introduced by 2.4.0
 * Fix: Couldn't render UML which includes CJK
-  * Introduced by 2.4.0
+    * Introduced by 2.4.0
 * Support: Upgrade libs
-  * axios
-  * diff2html
+    * axios
+    * diff2html
 
 ## 2.4.0
 
@@ -267,7 +268,7 @@
 * Fix: Close Shortcuts help with `Ctrl-/`, ESC key
 * Fix: Jump to last line wrongly when `.revision-head-edit-button` clicked
 * Support: Upgrade libs
-  * googleapis
+    * googleapis
 
 ## 2.3.8
 
@@ -277,13 +278,13 @@
 * Improvement: Ensure to scroll when edit button of section clicked
 * Improvement: Enabled to toggle the style for active line
 * Support: Upgrade libs
-  * style-loader
-  * react-codemirror2
+    * style-loader
+    * react-codemirror2
 
 ## 2.3.7
 
 * Fix: Open popups when `Ctrl+C` pressed
-  * Introduced by 2.3.5
+    * Introduced by 2.3.5
 
 ## 2.3.6
 
@@ -301,21 +302,21 @@
 * Improvement: Show shortcuts help with `Ctrl-/`
 * Fix: DOMs that has `.alert-info` class don't be displayed
 * Support: Switch and upgrade libs
-  * 8fold-marked -&gt; marked
-  * react-bootstrap
-  * googleapis
-  * mongoose
-  * mongoose-unique-validator
-  * etc..
+    * 8fold-marked -> marked
+    * react-bootstrap
+    * googleapis
+    * mongoose
+    * mongoose-unique-validator
+    * etc..
 
-## 2.3.4 \(Missing number\)
+## 2.3.4 (Missing number)
 
 ## 2.3.3
 
 * Fix: The XSS Library escapes inline code blocks
-  * Degraded by 2.3.0
+    * Degraded by 2.3.0
 * Fix: NPE occurs on Elasticsearch when initial access
-* Fix: Couldn't invite users\(failed to create\)
+* Fix: Couldn't invite users(failed to create)
 
 ## 2.3.2
 
@@ -324,7 +325,7 @@
 ## 2.3.1
 
 * Fix: Blockquote doesn't work
-  * Degraded by 2.3.0
+    * Degraded by 2.3.0
 * Fix: Couldn't create user with first LDAP logging in
 
 ## 2.3.0
@@ -333,25 +334,25 @@
 * Improvement: Prevent XSS
 * Fix: node versions couldn't be shown
 * Support: Upgrade libs
-  * express-pino-logger
+    * express-pino-logger
 
 ## 2.2.4
 
 * Fix: googleapis v23.0.0 lost the function `oauth2Client.setCredentials`
-  * Degraded by 2.2.2 updates
+    * Degraded by 2.2.2 updates
 * Fix: HeaderSearchBox didn't append 'q=' param when searching
-  * Degraded by 2.2.3 updates
+    * Degraded by 2.2.3 updates
 
 ## 2.2.3
 
 * Fix: The server responds anything when using passport
-  * Degraded by 2.2.2 updates
+    * Degraded by 2.2.2 updates
 * Fix: Update `lastLoginAt` when login is success
 * Support: Replace moment with date-fns
 * Support: Upgrade react-bootstrap-typeahead
 * Improvement: Replace emojify.js with emojione
 
-## 2.2.2 \(Missing number\)
+## 2.2.2 (Missing number)
 
 ## 2.2.1
 
@@ -374,7 +375,7 @@
 ## 2.1.1
 
 * Fix: The problem that React Modal doesn't work
-* Support: Lock some packages\(react, react-dom, mongoose\)
+* Support: Lock some packages(react, react-dom, mongoose)
 
 ## 2.1.0
 
@@ -387,7 +388,7 @@
 ## 2.0.9
 
 * Fix: Server is down when a guest user accesses to someone's private pages
-* Support: Merge official Crowi \(master branch\)
+* Support: Merge official Crowi (master branch)
 * Support: Upgrade outdated libs
 
 ## 2.0.8
@@ -399,27 +400,27 @@
 ## 2.0.7
 
 * Improvement: Add recursively option for Delete/Move/Putback operation
-* Improvement: Comment layout and sort order \(crowi-plus Enhanced Layout\)
+* Improvement: Comment layout and sort order (crowi-plus Enhanced Layout)
 
 ## 2.0.6
 
 * Fix: check whether `$APP_DIR/public/uploads` exists before creating symlink
-  * Fixed in weseek/crowi-plus-docker
+    * Fixed in weseek/crowi-plus-docker
 
 ## 2.0.5
 
 * Improvement: Adjust styles for CodeMirror
 * Fix: File upload does not work when using crowi-plus-docker-compose and `FILE_UPLOAD=local` is set  
-  * Fixed in weseek/crowi-plus-docker
+    * Fixed in weseek/crowi-plus-docker
 
-## 2.0.2 - 2.0.4 \(Missing number\)
+## 2.0.2 - 2.0.4 (Missing number)
 
 ## 2.0.1
 
 * Feature: Custom Script
 * Improvement: Adjust layout and styles for admin pages
 * Improvement: Record and show last updated date in user list page
-* Fix: Ignore Ctrl+\(Shift+\)Tab when editing \(cherry-pick from the official\)
+* Fix: Ignore Ctrl+(Shift+)Tab when editing (cherry-pick from the official)
 
 ## 2.0.0
 
@@ -439,7 +440,7 @@
 
 ## 1.2.14
 
-* Fix: Tabs\(`a[data-toggle="tab"][href="#..."]`\) push browser history twice
+* Fix: Tabs(`a[data-toggle="tab"][href="#..."]`) push browser history twice
 * Fix: `a[href="#edit-form"]` still save history even when disabling pushing states option
 
 ## 1.2.13
@@ -447,7 +448,7 @@
 * Improvement: Enabled to switch whether to push states with History API when tabs changes 
 * Fix: Layout of the Not Found page
 
-## 1.2.12 \(Missing number\)
+## 1.2.12 (Missing number)
 
 ## 1.2.11
 
@@ -460,7 +461,7 @@
 
 ## 1.2.9
 
-* Improvement: Enabled to save with ⌘+S on Mac
+* Improvement: Enabled to save with <kbd>⌘+S</kbd> on Mac
 * Improvement: Adopt the fastest logger 'pino'
 * Fix: The problem that can't upload profile image
 
@@ -468,19 +469,19 @@
 
 * Fix: The problem that redirect doesn't work when using 'crowi-plus Simplified Behavior'
 
-## 1.2.7 \(Missing number\)
+## 1.2.7 (Missing number)
 
 ## 1.2.6
 
-* Fix: The problem that page\_list widget doesn't show the picture of revision.author
+* Fix: The problem that page_list widget doesn't show the picture of revision.author
 * Fix: Change implementation of Bootstrap3 toggle switch for admin pages
 
 ## 1.2.5
 
 * Feature: crowi-plus Simplified Behavior
-  * `/page` and `/page/` both shows the page
-  * `/nonexistent_page` shows editing form
-  * All pages shows the list of sub pages
+    * `/page` and `/page/` both shows the page
+    * `/nonexistent_page` shows editing form
+    * All pages shows the list of sub pages
 * Improvement: Ensure to be able to disable Timeline feature
 
 ## 1.2.4
@@ -490,12 +491,12 @@
 ## 1.2.3
 
 * Improvement: Ensure to be able to use Presentation Mode even when not logged in
-* Improvement: Presentation Mode on IE11 \(Experimental\)
+* Improvement: Presentation Mode on IE11 (Experimental)
 * Fix: Broken Presentation Mode
 
 ## 1.2.2
 
-* Support: Merge official Crowi \(master branch\)
+* Support: Merge official Crowi (master branch)
 
 ## 1.2.1
 
@@ -511,13 +512,13 @@
 
 ## 1.1.11
 
-* Fix: Omit Comment form from page\_list \(crowi-plus Enhanced Layout\)
+* Fix: Omit Comment form from page_list (crowi-plus Enhanced Layout)
 * Fix: .search-box is broken on sm/xs screen
 
 ## 1.1.10
 
 * Fix: .search-box is broken on sm/xs screen
-* Support: Browsable with IE11 \(Experimental\)
+* Support: Browsable with IE11 (Experimental)
 
 ## 1.1.9
 
@@ -542,7 +543,7 @@
 ## 1.1.5
 
 * Fix: crowi-plus Enhanced Layout
-* Support: Merge official Crowi v1.6.1 master branch \[573144b\]
+* Support: Merge official Crowi v1.6.1 master branch [573144b]
 
 ## 1.1.4
 
@@ -551,7 +552,7 @@
 
 ## 1.1.3
 
-* Improvement: Use POSIX-style paths \(bollowed crowi/crowi\#219 by @Tomasom\)
+* Improvement: Use POSIX-style paths (bollowed crowi/crowi#219 by @Tomasom)
 
 ## 1.1.2
 
@@ -576,7 +577,7 @@
 
 * Feature: Ensure to delete page completely
 * Feature: Ensure to delete redirect page
-* Fix: https access to Gravatar \(this time for sure\)
+* Fix: https access to Gravatar (this time for sure)
 
 ## 1.0.7
 
@@ -596,7 +597,7 @@
 ## 1.0.4
 
 * Improvement: Detach code blocks before preProcess
-* Support: Ensure to deploy to Heroku with INSTALL\_PLUGINS env
+* Support: Ensure to deploy to Heroku with INSTALL_PLUGINS env
 * Support: Ensure to load plugins easily when development
 
 ## 1.0.3
@@ -622,4 +623,3 @@
 * Support: Abolish gulp
 * Support: LiveReload
 * Support: Update libs
-
