@@ -5,6 +5,9 @@ CHANGES
 
 * (WIP) Feature: Support [blockdiag](http://blockdiag.com)
 * Feature: Add `BLOCKDIAG_URI` environment variable
+* Support: Upgrade libs
+    * googleapis
+    * throttle-debounce
 
 ## 3.1.5
 
