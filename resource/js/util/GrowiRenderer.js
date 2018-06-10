@@ -16,6 +16,8 @@ import TableConfigurer from './markdown-it/table';
 import TaskListsConfigurer from './markdown-it/task-lists';
 import TocAndAnchorConfigurer from './markdown-it/toc-and-anchor';
 import BlockdiagConfigurer from './markdown-it/blockdiag';
+import MermaidConfigurer from './markdown-it/mermaid';
+import SmartArrowConfigurer from './markdown-it/smartarrows';
 
 export default class GrowiRenderer {
 
@@ -70,6 +72,8 @@ export default class GrowiRenderer {
     this.isMarkdownItConfigured = false;
 
     this.markdownItConfigurers = [
+      new SmartArrowConfigurer(crowi),
+      new MermaidConfigurer(crowi),	  
       new TaskListsConfigurer(crowi),
       new HeaderConfigurer(crowi),
       new TableConfigurer(crowi),

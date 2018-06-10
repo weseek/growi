@@ -83,6 +83,8 @@
     "i18next-express-middleware": "^1.1.1",
     "i18next-node-fs-backend": "^1.0.0",
     "i18next-sprintf-postprocessor": "^0.2.2",
+    "markdown-it-mermaid": "^0.2.5",
+    "markdown-it-smartarrows": "^1.0.1",
     "md5": "^2.2.1",
     "method-override": "^2.3.10",
     "mkdirp": "~0.5.1",
