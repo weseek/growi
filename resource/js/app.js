@@ -30,6 +30,8 @@ import CustomCssEditor  from './components/Admin/CustomCssEditor';
 import CustomScriptEditor from './components/Admin/CustomScriptEditor';
 import CustomHeaderEditor from './components/Admin/CustomHeaderEditor';
 
+import * as entities from 'entities';
+
 if (!window) {
   window = {};
 }
@@ -44,6 +46,7 @@ let pageRevisionCreatedAt = null;
 let pagePath;
 let pageContent = '';
 let markdown = '';
+let pageGrant = null;
 if (mainContent !== null) {
   pageId = mainContent.getAttribute('data-page-id');
   pageRevisionId = mainContent.getAttribute('data-page-revision-id');
@@ -51,8 +54,9 @@ if (mainContent !== null) {
   pagePath = mainContent.attributes['data-path'].value;
   const rawText = document.getElementById('raw-text-original');
   if (rawText) {
-    markdown = rawText.innerHTML;
+    pageContent = rawText.innerHTML;
   }
+  markdown = entities.decodeHTML(pageContent);
 }
 const isLoggedin = document.querySelector('.main-container.nologin') == null;
 
