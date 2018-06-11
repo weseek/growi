@@ -72,14 +72,11 @@ export default class Comment extends React.Component {
   renderRevisionBody() {
     const config = this.props.crowi.getConfig();
     const isMathJaxEnabled = !!config.env.MATHJAX;
-    const isMermaidEnabled = !!config.env.MERMAID;
     return (
       <RevisionBody html={this.state.html}
           inputRef={el => this.revisionBodyElement = el}
           isMathJaxEnabled={isMathJaxEnabled}
           renderMathJaxOnInit={true}
-          isMermaidEnabled={isMermaidEnabled}
-          renderMermaidOnInit={true}
           additionalClassName="comment" />
     );
   }

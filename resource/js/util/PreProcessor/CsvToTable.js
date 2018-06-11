@@ -14,6 +14,8 @@ export default class CsvToTable {
           return csvToMarkdownTable(group2, ',');
         case 'csv-h':
           return csvToMarkdownTable(group2, ',', true);
+        case 'mermaid':
+            return ['<div class="mermaid">',group2,'</div>'].join('');
         default:
           return all;
       }

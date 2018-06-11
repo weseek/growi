@@ -111,7 +111,7 @@ export default class Page extends React.Component {
     const config = this.props.crowi.getConfig();
     const isMobile = this.props.crowi.isMobile;
     const isMathJaxEnabled = !!config.env.MATHJAX;
-    const isMermaidEnabled = !!config.env.MERMAID;
+    //const isMermaidEnabled = !!config.env.MERMAID;
 
     return <div className={isMobile ? 'page-mobile' : ''}>
       <RevisionBody
@@ -119,8 +119,6 @@ export default class Page extends React.Component {
           inputRef={el => this.revisionBodyElement = el}
           isMathJaxEnabled={isMathJaxEnabled}
           renderMathJaxOnInit={true}
-          isMermaidEnabled={isMermaidEnabled}
-          renderMermaidOnInit={true}
       />
     </div>;
   }

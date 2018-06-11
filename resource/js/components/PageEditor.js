@@ -20,7 +20,6 @@ export default class PageEditor extends React.Component {
     const isUploadable = config.upload.image || config.upload.file;
     const isUploadableFile = config.upload.file;
     const isMathJaxEnabled = !!config.env.MATHJAX;
-    const isMermaidEnabled = !!config.env.MERMAID;
 
     this.state = {
       pageId: this.props.pageId,
@@ -29,7 +28,6 @@ export default class PageEditor extends React.Component {
       isUploadable,
       isUploadableFile,
       isMathJaxEnabled,
-      isMermaidEnabled,
       editorOptions: this.props.editorOptions,
       previewOptions: this.props.previewOptions,
     };
@@ -386,8 +384,6 @@ export default class PageEditor extends React.Component {
             inputRef={el => this.previewElement = el}
             isMathJaxEnabled={this.state.isMathJaxEnabled}
             renderMathJaxOnInit={false}
-            isMermaidEnabled={this.state.isMermaidEnabled}
-            renderMermaidOnInit={false}
             previewOptions={this.state.previewOptions}
             onScroll={this.onPreviewScroll}
           />

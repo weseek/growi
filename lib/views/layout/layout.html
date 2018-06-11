@@ -64,9 +64,10 @@ gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js
 
   {% if local_config.env.MERMAID %}
     <!-- mermaid -->
-    <script type="" async>
+    <!-- script src="https://unpkg.com/mermaid/" ></script -->
+    <script type="text/javascript" >
+      mermaid.initialize({startOnLoad:true});
     </script>
-    <script src="" async></script>
   {% endif %}
 
 

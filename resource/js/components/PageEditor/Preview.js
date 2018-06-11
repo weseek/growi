@@ -16,7 +16,6 @@ export default class Preview extends React.Component {
 
   render() {
     const renderMathJaxInRealtime = this.props.previewOptions.renderMathJaxInRealtime;
-    const renderMermaidInRealtime = this.props.previewOptions.renderMermaidInRealtime;
 
     return (
       <div className="page-editor-preview-body"
@@ -33,7 +32,6 @@ export default class Preview extends React.Component {
         <RevisionBody
           {...this.props}
           renderMathJaxInRealtime={renderMathJaxInRealtime}
-          renderMermaidInRealtime={renderMermaidInRealtime}
         />
       </div>
     );
@@ -45,7 +43,6 @@ Preview.propTypes = {
   inputRef: PropTypes.func.isRequired,  // for getting div element
   isMathJaxEnabled: PropTypes.bool,
   renderMathJaxOnInit: PropTypes.bool,
-  renderMermaidOnInit: PropTypes.bool,
   previewOptions: PropTypes.instanceOf(PreviewOptions),
   onScroll: PropTypes.func,
 };

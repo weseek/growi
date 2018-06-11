@@ -30,6 +30,12 @@ import CustomCssEditor  from './components/Admin/CustomCssEditor';
 import CustomScriptEditor from './components/Admin/CustomScriptEditor';
 import CustomHeaderEditor from './components/Admin/CustomHeaderEditor';
 
+import mermaid from 'mermaid';
+mermaid.initialize({
+  theme: 'forest',
+});
+
+
 import * as entities from 'entities';
 
 if (!window) {

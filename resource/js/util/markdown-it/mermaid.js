@@ -1,4 +1,4 @@
-import markdownItMermaid from 'markdown-it-mermaid';
+//import markdownItMermaid from 'markdown-it-mermaid';
 
 export default class MermaidConfigurer {
 
@@ -9,8 +9,8 @@ export default class MermaidConfigurer {
   }
 
   configure(md) {
-    if (this.isEnabled) {
-	     md.use(markdownItMermaid);
-    }
+    //if (this.isEnabled) {
+	  //   md.use(markdownItMermaid);
+    //}
   }
 }
