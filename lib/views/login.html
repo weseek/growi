@@ -146,6 +146,50 @@
         {% endif %}
 
         <hr>
+        <div class="input-group m-t-15 m-b-10 mx-auto d-flex flex-row justify-content-around flex-wrap">
+          {#% if passportGoogleLoginEnabled() %#}
+          <form role="form" action="/auth/passport/google" method="get">
+            <input type="hidden" name="_csrf" value="{{ csrf() }}">
+            <button type="submit" class="fcbtn btn btn-danger btn-1b btn-login-google">
+              <span class="btn-label"><i class="icon-social-google"></i></span>
+              {{ t('Sign in') }}(passport)
+            </button>
+            <div class="small text-right">by Google Account</div>
+          </form>
+          {#% endif %#}
+          {#% if passportGithubLoginEnabled() %#}
+          <form role="form" action="/auth/passport/github" method="get">
+            <input type="hidden" name="_csrf" value="{{ csrf() }}">
+            <button type="submit" class="fcbtn btn btn-danger btn-1b btn-login-github">
+              <span class="btn-label"><i class="icon-social-github"></i></span>
+              {{ t('Sign in') }}
+            </button>
+            <div class="small text-right">by Github Account</div>
+          </form>
+          {#% endif %#}
+          {#% if passportFacebookLoginEnabled() %#}
+          <form role="form" action="/auth/passport/facebook" method="get">
+            <input type="hidden" name="_csrf" value="{{ csrf() }}">
+            <button type="submit" class="fcbtn btn btn-danger btn-1b btn-login-facebook">
+              <span class="btn-label"><i class="icon-social-facebook"></i></span>
+              {{ t('Sign in') }}
+            </button>
+            <div class="small text-right">by Facebook Account</div>
+          </form>
+          {#% endif %#}
+          {#% if passportTwitterLoginEnabled() %#}
+          <form role="form" action="/auth/passport/twitter" method="get">
+            <input type="hidden" name="_csrf" value="{{ csrf() }}">
+            <button type="submit" class="fcbtn btn btn-danger btn-1b btn-login-twitter">
+              <span class="btn-label"><i class="icon-social-twitter"></i></span>
+              {{ t('Sign in') }}
+            </button>
+            <div class="small text-right">by Twitter Account</div>
+          </form>
+          {#% endif %#}
+        </div>
+
+        <hr>
 
         <div class="row">
           <div class="col-xs-12 text-right">
