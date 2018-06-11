@@ -5,6 +5,7 @@ CHANGES
 
 * (WIP) Feature: Support [blockdiag](http://blockdiag.com)
 * Feature: Add `BLOCKDIAG_URI` environment variable
+* Fix: Select modal for group is not shown 
 * Support: Upgrade libs
     * googleapis
     * throttle-debounce
