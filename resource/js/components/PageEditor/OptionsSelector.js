@@ -15,12 +15,14 @@ export default class OptionsSelector extends React.Component {
 
     const config = this.props.crowi.getConfig();
     const isMathJaxEnabled = !!config.env.MATHJAX;
+    const isMermaidEnabled = !!config.env.MERMAID;
 
     this.state = {
       editorOptions: this.props.editorOptions || new EditorOptions(),
       previewOptions: this.props.previewOptions || new PreviewOptions(),
       isCddMenuOpened: false,
       isMathJaxEnabled,
+      isMermaidEnabled,
     };
 
     this.availableThemes = [
@@ -37,6 +39,7 @@ export default class OptionsSelector extends React.Component {
     this.onChangeKeymapMode = this.onChangeKeymapMode.bind(this);
     this.onClickStyleActiveLine = this.onClickStyleActiveLine.bind(this);
     this.onClickRenderMathJaxInRealtime = this.onClickRenderMathJaxInRealtime.bind(this);
+    this.onClickRenderMermaidInRealtime = this.onClickRenderMermaidInRealtime.bind(this);
     this.onToggleConfigurationDropdown = this.onToggleConfigurationDropdown.bind(this);
   }
 
@@ -85,6 +88,18 @@ export default class OptionsSelector extends React.Component {
 
     const newValue = !this.state.previewOptions.renderMathJaxInRealtime;
     const newOpts = Object.assign(this.state.previewOptions, {renderMathJaxInRealtime: newValue});
+    this.setState({previewOptions: newOpts});
+
+    // dispatch event
+    this.dispatchOnChange();
+  }
+
+  onClickRenderMermaidInRealtime(event) {
+    // keep dropdown opened
+    this._cddForceOpen = true;
+
+    const newValue = !this.state.previewOptions.renderMermaidInRealtime;
+    const newOpts = Object.assign(this.state.previewOptions, {renderMermaidInRealtime: newValue});
     this.setState({previewOptions: newOpts});
 
     // dispatch event
@@ -176,6 +191,7 @@ export default class OptionsSelector extends React.Component {
           <Dropdown.Menu>
             {this.renderActiveLineMenuItem()}
             {this.renderRealtimeMathJaxMenuItem()}
+            {this.renderRealtimeMermaidMenuItem()}
             {/* <MenuItem divider /> */}
           </Dropdown.Menu>
 
@@ -226,6 +242,29 @@ export default class OptionsSelector extends React.Component {
     );
   }
 
+  renderRealtimeMermaidMenuItem() {
+      if (!this.state.isMermaidEnabled) {
+        return;
+      }
+
+      const isEnabled = this.state.isMermaidEnabled;
+      const isActive = isEnabled && this.state.previewOptions.renderMermaidInRealtime;
+
+      const iconClasses = ['text-info'];
+      if (isActive) {
+        iconClasses.push('ti-check');
+      }
+      const iconClassName = iconClasses.join(' ');
+
+      return (
+        <MenuItem onClick={this.onClickRenderMermaidInRealtime}>
+          <span className="icon-container"><img src="/images/icons/fx.svg" width="14px"></img></span>
+          <span className="menuitem-label">Mermaid Rendering</span>
+          <i className={iconClassName}></i>
+        </MenuItem>
+      );
+  }
+
   render() {
     return <span>
       <span className="m-l-5">{this.renderThemeSelector()}</span>
@@ -248,6 +287,7 @@ export class EditorOptions {
 export class PreviewOptions {
   constructor(props) {
     this.renderMathJaxInRealtime = false;
+    this.renderMermaidInRealtime = false;
 
     Object.assign(this, props);
   }

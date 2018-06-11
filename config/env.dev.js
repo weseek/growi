@@ -1,7 +1,7 @@
 module.exports = {
   NODE_ENV: 'development',
   FILE_UPLOAD: 'local',
-  MERMAID: 0,  
+  MERMAID: 1,  
   // MATHJAX: 1,
   ELASTICSEARCH_URI: 'http://localhost:9200/growi',
   PLUGIN_NAMES_TOBE_LOADED: [

@@ -10,32 +10,50 @@ export default class RevisionBody extends React.Component {
 
     // create debounced method for rendering MathJax
     this.renderMathJaxWithDebounce = debounce(200, this.renderMathJax);
+    this.renderMermaidWithDebounce = debounce(300, this.renderMermaid);
   }
 
   componentDidMount() {
     const MathJax = window.MathJax;
+    const Mermaid = window.Mermaid;
     if (MathJax != null && this.props.isMathJaxEnabled && this.props.renderMathJaxOnInit) {
       this.renderMathJaxWithDebounce();
+    }
+    if (Mermaid != null && this.props.isMermaidEnabled && this.props.renderMermaidOnInit) {
+      this.renderMermaidWithDebounce();
     }
   }
 
   componentDidUpdate() {
     const MathJax = window.MathJax;
+    const Mermaid = window.Mermaid;
     if (MathJax != null && this.props.isMathJaxEnabled && this.props.renderMathJaxInRealtime) {
       this.renderMathJaxWithDebounce();
+    }
+    if (Mermaid != null && this.props.isMermaidEnabled && this.props.renderMermaidInRealtime) {
+      this.renderMermaidWithDebounce();
     }
   }
 
   componentWillReceiveProps(nextProps) {
     const MathJax = window.MathJax;
+    const Mermaid = window.Mermaid;
     if (MathJax != null && this.props.isMathJaxEnabled && this.props.renderMathJaxOnInit) {
       this.renderMathJaxWithDebounce();
+    }
+    if (Mermaid != null && this.props.isMermaidEnabled && this.props.renderMermaidOnInit) {
+      this.renderMermaidWithDebounce();
     }
   }
 
   renderMathJax() {
     const MathJax = window.MathJax;
     MathJax.Hub.Queue(['Typeset', MathJax.Hub, this.element]);
+  }
+
+  renderMermaid() {
+    const Mermaid = window.Mermaid;
+    //MathJax.Hub.Queue(['Typeset', MathJax.Hub, this.element]);
   }
 
   generateInnerHtml(html) {
@@ -63,5 +81,8 @@ RevisionBody.propTypes = {
   isMathJaxEnabled: PropTypes.bool,
   renderMathJaxOnInit: PropTypes.bool,
   renderMathJaxInRealtime: PropTypes.bool,
+  isMermaidEnabled: PropTypes.bool,
+  renderMermaidOnInit: PropTypes.bool,
+  renderMermaidInRealtime: PropTypes.bool,
   additionalClassName: PropTypes.string,
 };

@@ -10,7 +10,7 @@ export default class MermaidConfigurer {
 
   configure(md) {
     if (this.isEnabled) {
-	md.use(markdownItMermaid);
+	     md.use(markdownItMermaid);
     }
   }
 }

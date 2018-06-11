@@ -62,6 +62,15 @@ gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js" async></script>
   {% endif %}
 
+  {% if local_config.env.MERMAID %}
+    <!-- mermaid -->
+    <script type="" async>
+    </script>
+    <script src="" async></script>
+  {% endif %}
+
+
+
   {% if env === 'development' %}
     <script src="/dll/vendor.dll.js"></script>
     <script src="{{ webpack_asset('dev').js }}" async></script>
