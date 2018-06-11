@@ -148,11 +148,10 @@
         <hr>
         <div class="input-group m-t-15 m-b-10 mx-auto d-flex flex-row justify-content-around flex-wrap">
           {#% if passportGoogleLoginEnabled() %#}
-          <form role="form" action="/auth/passport/google" method="get">
-            <input type="hidden" name="_csrf" value="{{ csrf() }}">
+          <form role="form" action="/passport/google" method="get">
             <button type="submit" class="fcbtn btn btn-danger btn-1b btn-login-google">
               <span class="btn-label"><i class="icon-social-google"></i></span>
-              {{ t('Sign in') }}(passport)
+              {{ t('Sign in') }}
             </button>
             <div class="small text-right">by Google Account</div>
           </form>
