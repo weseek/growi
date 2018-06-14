@@ -1,7 +1,11 @@
 CHANGES
 ========
 
-## 3.1.6-RC
+## 3.1.7-RC
+
+* 
+
+## 3.1.6
 
 * Feature: Support [blockdiag](http://blockdiag.com)
 * Feature: Add `BLOCKDIAG_URI` environment variable
