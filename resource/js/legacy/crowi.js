@@ -828,6 +828,10 @@ $(function() {
       window.location.hash = '#edit-form';
       window.history.replaceState('', 'Edit', '#edit-form');
     });
+    $('a[data-toggle="tab"][href="#hackmd"]').on('show.bs.tab', function() {
+      window.location.hash = '#hackmd';
+      window.history.replaceState('', 'HackMD', '#hackmd');
+    });
     $('a[data-toggle="tab"][href="#revision-body"]').on('show.bs.tab', function() {
       // couln't solve https://github.com/weseek/crowi-plus/issues/119 completely -- 2017.07.03 Yuki Takei
       window.location.hash = '#';
@@ -840,6 +844,9 @@ $(function() {
     });
     $('a[data-toggle="tab"][href="#edit-form"]').on('show.bs.tab', function() {
       window.history.replaceState('', 'Edit', '#edit-form');
+    });
+    $('a[data-toggle="tab"][href="#hackmd"]').on('show.bs.tab', function() {
+      window.history.replaceState('', 'HackMD', '#hackmd');
     });
     $('a[data-toggle="tab"][href="#revision-body"]').on('show.bs.tab', function() {
       window.history.replaceState('', '',  location.href.replace(location.hash, ''));
@@ -916,7 +923,10 @@ window.addEventListener('load', function(e) {
       // focus
       Crowi.setCaretLineAndFocusToEditor();
     }
-    if (location.hash == '#revision-history') {
+    else if (location.hash == '#hackmd') {
+      $('a[data-toggle="tab"][href="#hackmd"]').tab('show');
+    }
+    else if (location.hash == '#revision-history') {
       $('a[data-toggle="tab"][href="#revision-history"]').tab('show');
     }
   }
@@ -973,7 +983,10 @@ window.addEventListener('hashchange', function(e) {
     if (location.hash == '#edit-form') {
       $('a[data-toggle="tab"][href="#edit-form"]').tab('show');
     }
-    if (location.hash == '#revision-history') {
+    else if (location.hash == '#hackmd') {
+      $('a[data-toggle="tab"][href="#hackmd"]').tab('show');
+    }
+    else if (location.hash == '#revision-history') {
       $('a[data-toggle="tab"][href="#revision-history"]').tab('show');
     }
   }

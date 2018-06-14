@@ -27,11 +27,15 @@
       </div>
     {% endif %}
 
-    {# edit form #}
     {% if not page.isDeleted() %}
-    <div class="edit-form tab-pane {% if req.body.pageForm %}active{% endif %}" id="edit-form">
+      {# edit form #}
+      <div class="tab-pane edit-form {% if req.body.pageForm %}active{% endif %}" id="edit-form">
+        <div id="page-editor">{% if pageForm.body %}{{ pageForm.body }}{% endif %}</div>
+      </div>
+      <div class="tab-pane edit-form" id="hackmd">
+        <div id="hackmd-editor">hackmd-editor</div>
+      </div>
       {% include '../_form.html' %}
-    </div>
     {% endif %}
 
     {# raw revision history #}

@@ -14,6 +14,18 @@ function FetchPagesUpdatePostAndInsert(path) {
   });
 }
 
+function initSlack() {
+  if (slackConfigured) {
+    var $slackChannels = $('#page-form-slack-channel');
+    var slackChannels = $slackChannels.val();
+    // if slackChannels is empty, then fetch default (admin setting)
+    // if not empty, it means someone specified this setting for the page.
+    if (slackChannels === '') {
+      FetchPagesUpdatePostAndInsert(pagePath);
+    }
+  }
+}
+
 var slackConfigured = $('#page-form-setting').data('slack-configured');
 
 // for new page
@@ -29,20 +41,24 @@ if (!pageId) {
 
 $('a[data-toggle="tab"][href="#edit-form"]').on('show.bs.tab', function() {
   $('body').addClass('on-edit');
-
-  if (slackConfigured) {
-    var $slackChannels = $('#page-form-slack-channel');
-    var slackChannels = $slackChannels.val();
-    // if slackChannels is empty, then fetch default (admin setting)
-    // if not empty, it means someone specified this setting for the page.
-    if (slackChannels === '') {
-      FetchPagesUpdatePostAndInsert(pagePath);
-    }
-  }
+  $('body').addClass('builtin-editor');
+  initSlack();
 });
 
 $('a[data-toggle="tab"][href="#edit-form"]').on('hide.bs.tab', function() {
   $('body').removeClass('on-edit');
+  $('body').removeClass('builtin-editor');
+});
+
+$('a[data-toggle="tab"][href="#hackmd"]').on('show.bs.tab', function() {
+  $('body').addClass('on-edit');
+  $('body').addClass('hackmd');
+  initSlack();
+});
+
+$('a[data-toggle="tab"][href="#hackmd"]').on('hide.bs.tab', function() {
+  $('body').removeClass('on-edit');
+  $('body').removeClass('hackmd');
 });
 
 /**

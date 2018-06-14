@@ -121,7 +121,7 @@ export default class OptionsSelector extends React.Component {
     const bsClassName = 'form-control-dummy'; // set form-control* to shrink width
 
     return (
-      <FormGroup controlId="formControlsSelect">
+      <FormGroup controlId="formControlsSelect" className="my-0">
         <ControlLabel>Theme:</ControlLabel>
         <FormControl componentClass="select" placeholder="select" bsClass={bsClassName} className="btn-group-sm selectpicker"
             onChange={this.onChangeTheme}
@@ -149,7 +149,7 @@ export default class OptionsSelector extends React.Component {
     const bsClassName = 'form-control-dummy'; // set form-control* to shrink width
 
     return (
-      <FormGroup controlId="formControlsSelect">
+      <FormGroup controlId="formControlsSelect" className="my-0">
         <ControlLabel>Keymap:</ControlLabel>
         <FormControl componentClass="select" placeholder="select" bsClass={bsClassName} className="btn-group-sm selectpicker"
             onChange={this.onChangeKeymapMode}
@@ -164,7 +164,7 @@ export default class OptionsSelector extends React.Component {
 
   renderConfigurationDropdown() {
     return (
-      <FormGroup controlId="formControlsSelect">
+      <FormGroup controlId="formControlsSelect" className="my-0">
 
         <Dropdown dropup id="configurationDropdown" className="configuration-dropdown"
             open={this.state.isCddMenuOpened} onToggle={this.onToggleConfigurationDropdown}>
@@ -227,11 +227,11 @@ export default class OptionsSelector extends React.Component {
   }
 
   render() {
-    return <span>
+    return <div className="d-flex flex-row">
       <span className="m-l-5">{this.renderThemeSelector()}</span>
       <span className="m-l-5">{this.renderKeymapModeSelector()}</span>
       <span className="m-l-5">{this.renderConfigurationDropdown()}</span>
-    </span>;
+    </div>;
   }
 }
 
