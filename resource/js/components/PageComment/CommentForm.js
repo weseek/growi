@@ -37,7 +37,7 @@ export default class CommentForm extends React.Component {
       key: 1,
       isUploadable,
       isUploadableFile,
-      editorOptions: this.props.editorOptions,
+      errorMessage: undefined,
     };
 
     this.updateState = this.updateState.bind(this);
@@ -86,9 +86,14 @@ export default class CommentForm extends React.Component {
           isMarkdown: true,
           html: '',
           key: 1,
+          errorMessage: undefined,
         });
         // reset value
         this.refs.editor.setValue('');
+      })
+      .catch(err => {
+        const errorMessage = err.message || 'An unknown error occured when posting comment';
+        this.setState({ errorMessage });
       });
   }
 
@@ -233,21 +238,19 @@ export default class CommentForm extends React.Component {
                     }
                   </Tabs>
                 </div>
-                <div className="comment-submit">
-                  <div className="pull-left">
+                <div className="comment-submit d-flex">
                   { this.state.key == 1 &&
                     <label>
                       <input type="checkbox" id="comment-form-is-markdown" name="isMarkdown" checked={this.state.isMarkdown} value="1" onChange={this.updateStateCheckbox} /> Markdown
                     </label>
                   }
-                  </div>
-                  <div className="pull-right">
-                    <Button type="submit" value="Submit" bsStyle="primary" className="fcbtn btn btn-sm btn-primary btn-outline btn-rounded btn-1b">
-                        Comment
-                    </Button>
-                  </div>
-                  <div className="clearfix">
-                  </div>
+                  <div style={{flex: 1}}></div>{/* spacer */}
+                  { this.state.errorMessage &&
+                    <span className="text-danger text-right mr-2">{this.state.errorMessage}</span>
+                  }
+                  <Button type="submit" value="Submit" bsStyle="primary" className="fcbtn btn btn-sm btn-primary btn-outline btn-rounded btn-1b">
+                    Comment
+                  </Button>
                 </div>
               </div>
             </div>
