@@ -53,6 +53,13 @@ export default class Editor extends AbstractEditor {
   /**
    * @inheritDoc
    */
+  setValue(newValue) {
+    this.getEditorSubstance().setValue(newValue);
+  }
+
+  /**
+   * @inheritDoc
+   */
   setCaretLine(line) {
     this.getEditorSubstance().setCaretLine(line);
   }

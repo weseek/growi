@@ -87,6 +87,8 @@ export default class CommentForm extends React.Component {
           html: '',
           key: 1,
         });
+        // reset value
+        this.refs.editor.setValue('');
       });
   }
 

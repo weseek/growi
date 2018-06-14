@@ -132,6 +132,14 @@ export default class CodeMirrorEditor extends AbstractEditor {
   /**
    * @inheritDoc
    */
+  setValue(newValue) {
+    this.setState({ value: newValue });
+    this.getCodeMirror().getDoc().setValue(newValue);
+  }
+
+  /**
+   * @inheritDoc
+   */
   setCaretLine(line) {
     if (isNaN(line)) {
       return;
