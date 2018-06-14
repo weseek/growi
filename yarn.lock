@@ -4370,11 +4370,11 @@ map-values@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/map-values/-/map-values-1.0.1.tgz#768b8e79c009bf2b64fee806e22a7b1c4190c990"
 
-markdown-it-blockdiag@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/markdown-it-blockdiag/-/markdown-it-blockdiag-1.0.0.tgz#d949ab426e59f948713eb9702ab186a92a572736"
+markdown-it-blockdiag@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/markdown-it-blockdiag/-/markdown-it-blockdiag-1.0.2.tgz#30f055a0d5e3dc7195a9055ebbd404381261fe8b"
   dependencies:
-    markdown-it-fence "0.0.2"
+    markdown-it-fence "0.1.3"
     pako "^1.0.6"
     paths "^0.1.1"
     url-join "^4.0.0"
@@ -4384,9 +4384,9 @@ markdown-it-emoji@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/markdown-it-emoji/-/markdown-it-emoji-1.4.0.tgz#9bee0e9a990a963ba96df6980c4fddb05dfb4dcc"
 
-markdown-it-fence@0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/markdown-it-fence/-/markdown-it-fence-0.0.2.tgz#ce1fe95900891603300d9da519aada144d5de9fc"
+markdown-it-fence@0.1.3:
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/markdown-it-fence/-/markdown-it-fence-0.1.3.tgz#26e90149b7de5658cdb27096b2e2b5ec4e72d6ce"
 
 markdown-it-footnote@^3.0.1:
   version "3.0.1"
