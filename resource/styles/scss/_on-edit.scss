@@ -375,7 +375,8 @@ body.on-edit {
   &.hackmd #hackmd {
     @extend %expand-by-flex;
 
-    #hackmd-editor {
+    #hackmd-editor,
+    iframe {
       min-height: calc(100vh - #{$header-plus-footer});   // for IE11
       height: calc(100vh - #{$header-plus-footer});
     }
