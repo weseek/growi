@@ -152,6 +152,10 @@ div.body {
     h1, h2, h3, h4, h5, h6 {
       margin-top: 1.6em * $ratio;
       margin-bottom: .8em * $ratio;
+
+      &:first-child {
+        margin-top: 15px;
+      }
     }
 
     h1 {
@@ -178,8 +182,11 @@ div.body {
     }
 
     ul, ol {
+      padding-left: 15px;
+      margin: 10px 0;
+
       li {
-        line-height: 1.8em * $ratio;
+        line-height: 1.1em;
       }
     }
 
