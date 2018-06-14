@@ -191,6 +191,7 @@ export default class CommentForm extends React.Component {
     const commentPreview = this.state.isMarkdown ? this.getCommentHtml(): ReactUtils.nl2br(comment);
     const emojiStrategy = this.props.crowi.getEmojiStrategy();
 
+    const editorOptions = Object.assign(this.props.editorOptions || {}, { lineNumbers: false });
     return (
       <div>
         <form className="form page-comment-form" id="page-comment-form" onSubmit={this.postComment}>
@@ -209,7 +210,7 @@ export default class CommentForm extends React.Component {
                       </textarea> */}
                        <Editor ref="editor"
                        value={this.state.comment}
-                       editorOptions={this.state.editorOptions}
+                       editorOptions={editorOptions}
                        isMobile={this.props.crowi.isMobile}
                        isUploadable={this.state.isUploadable}
                        isUploadableFile={this.state.isUploadableFile}
@@ -257,8 +258,9 @@ export default class CommentForm extends React.Component {
 
 CommentForm.propTypes = {
   crowi: PropTypes.object.isRequired,
+  crowiRenderer:  PropTypes.object.isRequired,
   onPostComplete: PropTypes.func,
   pageId: PropTypes.string,
   revisionId: PropTypes.string,
-  crowiRenderer:  PropTypes.object.isRequired,
+  editorOptions: PropTypes.object,
 };
