@@ -1,29 +1,39 @@
 CHANGES
 ========
 
-## 3.1.5-RC
+## 3.1.6-RC
 
 * Feature: Support [blockdiag](http://blockdiag.com)
 * Feature: Add `BLOCKDIAG_URI` environment variable
-
-## 3.1.4
-
-* Improvement: Enable to scroll revision-toc
-* Fix: sanitize `#raw-text-original` content with 'entities'
-* Fix: page.rename api doesn't work
+* Fix: Select modal for group is not shown 
 * Support: Upgrade libs
-    * markdown-it-toc-and-anchor-with-slugid
+    * googleapis
+    * throttle-debounce
 
-
-## 3.1.3
+## 3.1.5
 
 * Feature: Write comment with Markdown
 * Improvement: Support some placeholders for template page
 * Improvement: Omit unnecessary response header
 * Improvement: Support LDAP attribute mappings for user's full name
-* Fix: HTML escaped characters in markdown are unescaped unexpectedly after page is saved
+* Improvement: Enable to scroll revision-toc
 * Fix: Posting to Slack doesn't work
     * Introduced by 3.1.0
+* Fix: page.rename api doesn't work
+* Fix: HTML escaped characters in markdown are unescaped unexpectedly after page is saved
+* Fix: sanitize `#raw-text-original` content with 'entities'
+* Fix: Double newline character posted
+    * Introduced by 3.1.4
+* Fix: List and Comment components do not displayed
+    * Introduced by 3.1.4
+* Support: Upgrade libs
+    * markdown-it-toc-and-anchor-with-slugid
+
+
+## 3.1.4 (Missing number)
+
+## 3.1.3 (Missing number)
+
 
 ## 3.1.2
 
