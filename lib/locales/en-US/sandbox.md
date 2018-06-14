@@ -659,9 +659,9 @@ See [blockdiag](http://blockdiag.com/).
 ## blockdiag
 
 <!-- Resize blockdiag -->
-<div style="width: 50%">
+<div style="max-width: 600px">
 
-:::blockdiag
+::: blockdiag
 blockdiag {
    A -> B -> C -> D;
    A -> E -> F -> G;
@@ -673,9 +673,9 @@ blockdiag {
 ## seqdiag
 
 <!-- Resize blockdiag -->
-<div style="width: 50%">
+<div style="max-width: 600px">
 
-:::seqdiag
+::: seqdiag
 seqdiag {
   browser  -> webserver [label = "GET /index.html"];
   browser <-- webserver;
@@ -691,9 +691,9 @@ seqdiag {
 ## actdiag
 
 <!-- Resize blockdiag -->
-<div style="width: 50%">
+<div style="max-width: 600px">
 
-:::actdiag
+::: actdiag
 actdiag {
   write -> convert -> image
 
@@ -713,9 +713,9 @@ actdiag {
 ## nwdiag
 
 <!-- Resize blockdiag -->
-<div style="width: 50%">
+<div style="max-width: 600px">
 
-:::nwdiag
+::: nwdiag
 nwdiag {
   network dmz {
       address = "210.x.x.x/24"
@@ -739,9 +739,9 @@ nwdiag {
 ## rackdiag
 
 <!-- Resize blockdiag -->
-<div style="width: 50%">
+<div style="max-width: 600px">
 
-:::rackdiag
+::: rackdiag
 rackdiag {
   // define height of rack
   8U;
@@ -762,9 +762,9 @@ rackdiag {
 ## packetdiag
 
 <!-- Resize blockdiag -->
-<div style="width: 50%">
+<div style="max-width: 600px">
 
-:::packetdiag
+::: packetdiag
 packetdiag {
   colwidth = 32
   node_height = 72
