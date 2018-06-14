@@ -3,7 +3,9 @@ CHANGES
 
 ## 3.1.7-RC
 
-* 
+* Support: Upgrade libs
+    * sinon
+    * sinon-chai
 
 ## 3.1.6
 
