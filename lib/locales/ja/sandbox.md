@@ -661,12 +661,12 @@ See [blockdiag](http://blockdiag.com/).
 <!-- Resize blockdiag -->
 <div style="width: 50%">
 
-```blockdiag
+:::blockdiag
 blockdiag {
    A -> B -> C -> D;
    A -> E -> F -> G;
 }
-```
+:::
 
 </div>
 
@@ -675,7 +675,7 @@ blockdiag {
 <!-- Resize blockdiag -->
 <div style="width: 50%">
 
-```seqdiag
+:::seqdiag
 seqdiag {
   browser  -> webserver [label = "GET /index.html"];
   browser <-- webserver;
@@ -684,7 +684,7 @@ seqdiag {
               webserver <-- database;
   browser <-- webserver;
 }
-```
+:::
 
 </div>
 
@@ -693,7 +693,7 @@ seqdiag {
 <!-- Resize blockdiag -->
 <div style="width: 50%">
 
-```actdiag
+:::actdiag
 actdiag {
   write -> convert -> image
 
@@ -706,7 +706,7 @@ actdiag {
      convert [label = "Convert reST to Image"];
   }
 }
-```
+:::
 
 </div>
 
@@ -715,7 +715,7 @@ actdiag {
 <!-- Resize blockdiag -->
 <div style="width: 50%">
 
-```nwdiag
+:::nwdiag
 nwdiag {
   network dmz {
       address = "210.x.x.x/24"
@@ -732,7 +732,7 @@ nwdiag {
       db02;
   }
 }
-```
+:::
 
 </div>
 
@@ -741,7 +741,7 @@ nwdiag {
 <!-- Resize blockdiag -->
 <div style="width: 50%">
 
-```rackdiag
+:::rackdiag
 rackdiag {
   // define height of rack
   8U;
@@ -755,7 +755,7 @@ rackdiag {
   7: Load Balancer
   8: L3 Switch
 }
-```
+:::
 
 </div>
 
@@ -764,7 +764,7 @@ rackdiag {
 <!-- Resize blockdiag -->
 <div style="width: 50%">
 
-```packetdiag
+:::packetdiag
 packetdiag {
   colwidth = 32
   node_height = 72
@@ -787,6 +787,6 @@ packetdiag {
   160-191: (Options and Padding)
   192-223: data [colheight = 3]
 }
-```
+:::
 
 </div>
