@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactUtils from '../ReactUtils';
 
+import * as toastr from 'toastr';
+
 import Editor from '../PageEditor/Editor';
 import CommentPreview from '../PageComment/CommentPreview';
 
@@ -24,11 +26,17 @@ export default class CommentForm extends React.Component {
   constructor(props) {
     super(props);
 
+    const config = this.props.crowi.getConfig();
+    const isUploadable = config.upload.image || config.upload.file;
+    const isUploadableFile = config.upload.file;
+
     this.state = {
       comment: '',
       isMarkdown: true,
       html: '',
       key: 1,
+      isUploadable,
+      isUploadableFile,
       editorOptions: this.props.editorOptions,
     };
 
@@ -37,6 +45,8 @@ export default class CommentForm extends React.Component {
     this.postComment = this.postComment.bind(this);
     this.renderHtml = this.renderHtml.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
+    this.apiErrorHandler = this.apiErrorHandler.bind(this);
+    this.onUpload = this.onUpload.bind(this);
   }
 
   updateState(value) {
@@ -123,6 +133,54 @@ export default class CommentForm extends React.Component {
     return {__html: html};
   }
 
+  onUpload(file) {
+    const endpoint = '/attachments.add';
+
+    // create a FromData instance
+    const formData = new FormData();
+    formData.append('_csrf', this.props.crowi.csrfToken);
+    formData.append('file', file);
+    formData.append('path', this.props.pagePath);
+    formData.append('page_id', this.state.pageId || 0);
+
+    // post
+    this.props.crowi.apiPost(endpoint, formData)
+      .then((res) => {
+        const url = res.url;
+        const attachment = res.attachment;
+        const fileName = attachment.originalName;
+
+        let insertText = `[${fileName}](${url})`;
+        // when image
+        if (attachment.fileFormat.startsWith('image/')) {
+          // modify to "![fileName](url)" syntax
+          insertText = '!' + insertText;
+        }
+        this.refs.editor.insertText(insertText);
+
+        // update page information if created
+        // if (res.pageCreated) {
+        //   this.pageSavedHandler(res.page);
+        // }
+      })
+      .catch(this.apiErrorHandler)
+      // finally
+      .then(() => {
+        this.refs.editor.terminateUploadingState();
+      });
+  }
+
+  apiErrorHandler(error) {
+    console.error(error);
+    toastr.error(error.message, 'Error occured', {
+      closeButton: true,
+      progressBar: true,
+      newestOnTop: false,
+      showDuration: '100',
+      hideDuration: '100',
+      timeOut: '3000',
+    });
+  }
 
   render() {
     const crowi = this.props.crowi;
@@ -153,14 +211,14 @@ export default class CommentForm extends React.Component {
                        value={this.state.comment}
                        editorOptions={this.state.editorOptions}
                        isMobile={this.props.crowi.isMobile}
-                       // isUploadable={this.state.isUploadable}
-                       // isUploadableFile={this.state.isUploadableFile}
+                       isUploadable={this.state.isUploadable}
+                       isUploadableFile={this.state.isUploadableFile}
                        emojiStrategy={emojiStrategy}
                        // onScroll={this.onEditorScroll}
                        // onScrollCursorIntoView={this.onEditorScrollCursorIntoView}
                        onChange={this.updateState}
                        // onSave={this.onSave}
-                       // onUpload={this.onUpload}
+                       onUpload={this.onUpload}
                       />
                     </Tab>
                     { this.state.isMarkdown == true &&
