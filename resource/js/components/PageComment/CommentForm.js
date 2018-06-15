@@ -267,5 +267,6 @@ CommentForm.propTypes = {
   onPostComplete: PropTypes.func,
   pageId: PropTypes.string,
   revisionId: PropTypes.string,
+  pagePath: PropTypes.string,
   editorOptions: PropTypes.object,
 };
