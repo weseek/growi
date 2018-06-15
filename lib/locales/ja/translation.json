@@ -396,8 +396,13 @@
     "Enable Line Break desc": "ページテキスト中の改行を、HTML内で<code>&lt;br&gt;</code>として扱います",
     "Enable Line Break for comment": "コメント欄で Line Break を有効にする",
     "Enable Line Break for comment desc": "コメント中の改行を、HTML内で<code>&lt;br&gt;</code>として扱います",
-    "TBD": "(TBD: コメント欄の Markdown 化は未だ実装されていません)"
-
+    "TBD": "(TBD: コメント欄の Markdown 化は未だ実装されていません)",
+    "Prevent XSS(Cross Site Scripting)": "クロスサイトスクリプティング(XSS)をブロックする",
+    "Prevent XSS(Cross Site Scripting)desc": "悪意のあるプログラムからの攻撃を防ぎます",
+    "Prevent XSS(Cross Site Scripting)desc2": "無効にすることで、<code>&lt;iframe&gt;</code>等の一部ソースの表示を可能にします",
+    "Strip ignore tag": "Strip ignore tag",
+    "White list tag names": "許可されたリストのタグの名前を表示",
+    "White list tag attributes": "許可されたリストのタグの名前を表示"
   },
 
   "customize_page": {
