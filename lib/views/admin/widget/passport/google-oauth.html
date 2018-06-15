@@ -43,14 +43,14 @@
     <div class="form-group">
       <label for="settingForm[security:passport-google:clientId]" class="col-xs-3 control-label">{{ t("security_setting.clientID") }}</label>
       <div class="col-xs-6">
-        <input class="form-control" type="text" name="settingForm[security:passport-google:clientId]" value="{{ settingForm['security:passport-google:clientId'] }}">
+        <input class="form-control" type="text" name="settingForm[security:passport-google:clientId]" value="{{ settingForm['security:passport-google:clientId'] || '' }}">
       </div>
     </div>
 
     <div class="form-group">
       <label for="settingForm[security:passport-google:clientSecret]" class="col-xs-3 control-label">{{ t("security_setting.client_secret") }}</label>
       <div class="col-xs-6">
-        <input class="form-control" type="text" name="settingForm[security:passport-google:clientSecret]" value="{{ settingForm['security:passport-google:clientSecret'] }}">
+        <input class="form-control" type="text" name="settingForm[security:passport-google:clientSecret]" value="{{ settingForm['security:passport-google:clientSecret'] || '' }}">
       </div>
     </div>
   </fieldset>
