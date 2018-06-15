@@ -3,6 +3,9 @@ CHANGES
 
 ## 3.1.7-RC
 
+* Fix: Update hidden input 'pageForm[grant]' when save with Ctrl-S
+* Fix: Show alert message when conflict
+* Fix: `BLOCKDIAG_URI` environment variable doesn't work
 * Support: Upgrade libs
     * sinon
     * sinon-chai
