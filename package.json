@@ -95,6 +95,7 @@
     "nodemailer-ses-transport": "~1.5.0",
     "npm-run-all": "^4.1.2",
     "passport": "^0.4.0",
+    "passport-google-auth": "^1.0.2",
     "passport-ldapauth": "^2.0.0",
     "passport-local": "^1.0.0",
     "react": "^16.2.0",
