@@ -123,8 +123,10 @@ export default class TextAreaEditor extends AbstractEditor {
    * @inheritDoc
    */
   replaceBolToCurrentPos(text) {
-    const currentPos = this.textarea.selectionStart;
-    this.replaceValue(text, this.getBolPos(), currentPos);
+    const startPos = this.textarea.selectionStart;
+    const endPos = this.textarea.selectionEnd;
+    const lowerPos = (startPos < endPos) ? endPos : startPos;
+    this.replaceValue(text, this.getBolPos(), lowerPos);
   }
 
   getBolPos() {

@@ -190,7 +190,8 @@ export default class CodeMirrorEditor extends AbstractEditor {
    */
   replaceBolToCurrentPos(text) {
     const editor = this.getCodeMirror();
-    editor.getDoc().replaceRange(text, this.getBol(), editor.getCursor());
+    const pos = this.selectLowerPos(editor.getCursor('from'), editor.getCursor('to'));
+    editor.getDoc().replaceRange(text, this.getBol(), pos);
   }
 
   /**
