@@ -6,6 +6,7 @@ CHANGES
 * Fix: Update hidden input 'pageForm[grant]' when save with Ctrl-S
 * Fix: Show alert message when conflict
 * Fix: `BLOCKDIAG_URI` environment variable doesn't work
+* Support: Ensure to inject logger configuration from environment variables
 * Support: Upgrade libs
     * sinon
     * sinon-chai
