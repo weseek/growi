@@ -366,7 +366,7 @@
       "test_config": "Test Saved Configuration"
     },
     "Google_OAuth": {
-      "use_Google_OAuth": "Use Google OAuth",
+      "use_Google_OAuth": "Google OAuth",
       "change_redirect_url": "Enter <code>https://${crowi.host}/passport/google/callback</code> <br>(where <code>${crowi.host}</code> is your host name) for \"Authorized redirect URIs\"."
     },
     "Facebook": {
