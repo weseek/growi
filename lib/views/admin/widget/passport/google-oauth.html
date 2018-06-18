@@ -1,10 +1,66 @@
-<form action="" method="post" class="form-horizontal passportStrategy" id="googleOauthSetting" role="form">
-  <fieldset>
-    <legend>Google OAuth {{ t("security_setting.configuration") }}</legend>
-    <p class="well">(TBD)</p>
-  </fieldset>
-</form>
+<form action="/_api/admin/security/passport-google" method="post" class="form-horizontal passportStrategy" id="googleSetting" role="form"
+    {% if isRestartingServerNeeded %}style="opacity: 0.4;"{% endif %}>
+  <legend>Google OAuth {{ t("security_setting.configuration") }}</legend>
+  <p class="well alert-anchor">{{ t("security_setting.connect_api_manager") }}</p>
+  {% set nameForIsGoogleEnabled = "settingForm[security:passport-google:isEnabled]" %}
+  {% set isGoogleEnabled = settingForm['security:passport-google:isEnabled'] %}
+  <div class="form-group">
+    <label for="{{nameForIsGoogleEnabled}}" class="col-xs-3 control-label">Use Google OAuth</label>
+    <div class="col-xs-6">
+      <div class="btn-group btn-toggle" data-toggle="buttons">
+        <label class="btn btn-default btn-rounded btn-outline {% if isGoogleEnabled %}active{% endif %}" data-active-class="primary">
+          <input name="{{nameForIsGoogleEnabled}}" value="true" type="radio"
+              {% if true === isGoogleEnabled %}checked{% endif %}> ON
+        </label>
+        <label class="btn btn-default btn-rounded btn-outline {% if !isGoogleEnabled %}active{% endif %}" data-active-class="default">
+          <input name="{{nameForIsGoogleEnabled}}" value="false" type="radio"
+              {% if !isGoogleEnabled %}checked{% endif %}> OFF
+        </label>
+      </div>
+    </div>
+  </div>
+  <fieldset id="passport-google-hide-when-disabled" {%if !isGoogleEnabled %}style="display: none;"{% endif %}>
+    <h4>{{ t("security_setting.google_setting") }}</h4>
+    <ol class="help-block">
+      <li>{{ t("security_setting.access_api_manager") }}</li>
+      <li>{{ t("security_setting.create_project") }}</li>
+      <li>{{ t("security_setting.create_auth_to_oauth") }}</li>
+      <ol>
+        <li>{{ t("security_setting.select_webapp") }}</li>
+        <li>{{ t("security_setting.change_redirect_url") }}</li>
+      </ol>
+    </ol>
 
+    <div class="form-group">
+      <label for="settingForm[security:passport-google:clientId]" class="col-xs-3 control-label">{{ t("security_setting.clientID") }}</label>
+      <div class="col-xs-6">
+        <input class="form-control" type="text" name="settingForm[security:passport-google:clientId]" value="{{ settingForm['security:passport-google:clientId'] || '' }}">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="settingForm[security:passport-google:clientSecret]" class="col-xs-3 control-label">{{ t("security_setting.client_secret") }}</label>
+      <div class="col-xs-6">
+        <input class="form-control" type="text" name="settingForm[security:passport-google:clientSecret]" value="{{ settingForm['security:passport-google:clientSecret'] || '' }}">
+      </div>
+    </div>
+  </fieldset>
+
+  <div class="form-group" id="btn-update">
+    <div class="col-xs-offset-3 col-xs-6">
+      <input type="hidden" name="_csrf" value="{{ csrf() }}">
+      <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
+      <button type="button"
+            class="btn btn-default passport-google-hide-when-disabled"
+            data-target="#test-google-account" data-toggle="modal"
+            {%if !isGoogleEnabled %}style="display: none;"{% endif %}>
+
+          {{ t("security_setting.ldap.test_config") }}
+        </button>
+    </div>
+  </div>
+
+</form>
 {% if false %}
 <hr>
 <h4>
@@ -80,3 +136,35 @@
   </li>
 </ol>
 {% endif %}
+
+<div class="modal test-google-account" id="test-google-account">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <div class="modal-title">Test Google Account</div>
+      </div>
+
+      <div class="modal-body">
+
+        {% include '../../../widget/passport/ldap-association-tester.html' with { showLog: true } %}
+
+      </div><!-- /.modal-body -->
+
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<script>
+  $('input[name="settingForm[security:passport-google:isEnabled]"]').change(function() {
+      const isEnabled = ($(this).val() === "true");
+
+      if (isEnabled) {
+        $('#passport-google-hide-when-disabled').show(400);
+      }
+      else {
+        $('#passport-google-hide-when-disabled').hide(400);
+      }
+    });
+</script>

@@ -320,9 +320,9 @@
 		"create_project": "Create Project if no projects have been created.",
 		"create_auth_to_oauth": "\"Create credentials\" -> \"OAuth clientID\"",
 		"select_webapp": "Select \"Web Application\"",
-    "change_redirect_url": "Enter <code>https://${crowi.host}/google/callback</code> <br>(where < code > $ {crowi.host} < /code> is your host name) for \"Authorized redirect URIs\".",
+    "change_redirect_url": "Enter <code>https://${crowi.host}/google/callback</code> <br>(where <code>${crowi.host}</code> is your host name) for \"Authorized redirect URIs\".",
     "clientID": "Client ID",
-    "client_secret": "クライアントシークレット",
+    "client_secret": "Client Secret",
     "guest_mode": {
       "deny": "Deny Unregistered Users",
       "readonly": "View Only"
