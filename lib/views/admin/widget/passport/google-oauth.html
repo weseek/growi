@@ -30,7 +30,7 @@
           <li>{{ t("security_setting.create_auth_to_oauth") }}</li>
           <ol>
             <li>{{ t("security_setting.select_webapp") }}</li>
-            <li>{{ t("security_setting.Google_OAuth.change_redirect_url") }}</li>
+            <li>{{ t("security_setting.Google_OAuth.change_redirect_url", "https://${growi.host}/passport/google/callback", "${growi.host}") }}</li>
           </ol>
         </ol>
       </div>

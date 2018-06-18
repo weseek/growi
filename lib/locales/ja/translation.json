@@ -384,7 +384,7 @@
     },
     "Google_OAuth": {
       "use_Google_OAuth": "Google OAuth認証",
-      "change_redirect_url": "承認済みのリダイレクトURLに、 <code>https://${growi.host}/passport/google/callback</code> を入力<br>(<code>${growi.host}</code>は環境に合わせて変更してください)"
+      "change_redirect_url": "承認済みのリダイレクトURLに、 <code>%s</code> を入力<br>(<code>%s</code>は環境に合わせて変更してください)"
     },
     "Facebook": {
     },
