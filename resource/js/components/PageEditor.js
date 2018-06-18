@@ -311,7 +311,6 @@ export default class PageEditor extends React.Component {
   }
 
   apiErrorHandler(error) {
-    console.error(error);
     toastr.error(error.message, 'Error occured', {
       closeButton: true,
       progressBar: true,

@@ -137,8 +137,9 @@ Crowi.modifyScrollTop = function() {
   }, timeout);
 };
 
-Crowi.updateCurrentRevision = function(revisionId) {
-  $('#page-form [name="pageForm[currentRevision]"]').val(revisionId);
+Crowi.updatePageForm = function(page) {
+  $('#page-form [name="pageForm[currentRevision]"]').val(page.revision._id);
+  $('#page-form [name="pageForm[grant]"]').val(page.grant);
 };
 
 Crowi.handleKeyEHandler = (event) => {
