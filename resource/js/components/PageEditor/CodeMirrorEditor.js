@@ -179,6 +179,15 @@ export default class CodeMirrorEditor extends AbstractEditor {
   /**
    * @inheritDoc
    */
+  getStrFromBolToSelectedUpperPos() {
+    const editor = this.getCodeMirror();
+    const pos = this.selectUpperPos(editor.getCursor('from'), editor.getCursor('to'));
+    return editor.getDoc().getRange(this.getBol(), pos);
+  }
+
+  /**
+   * @inheritDoc
+   */
   replaceBolToCurrentPos(text) {
     const editor = this.getCodeMirror();
     editor.getDoc().replaceRange(text, this.getBol(), editor.getCursor());
@@ -209,6 +218,32 @@ export default class CodeMirrorEditor extends AbstractEditor {
     const curPos = editor.getCursor();
     const lineLength = editor.getDoc().getLine(curPos.line).length;
     return { line: curPos.line, ch: lineLength };
+  }
+
+  /**
+   * select the upper position of pos1 and pos2
+   * @param {{line: number, ch: number}} pos1
+   * @param {{line: number, ch: number}} pos2
+   */
+  selectUpperPos(pos1, pos2) {
+    // if both is in same line
+    if (pos1.line === pos2.line) {
+      return (pos1.ch < pos2.ch) ? pos1 : pos2;
+    }
+    return (pos1.line < pos2.line) ? pos1 : pos2;
+  }
+
+  /**
+   * select the lower position of pos1 and pos2
+   * @param {{line: number, ch: number}} pos1
+   * @param {{line: number, ch: number}} pos2
+   */
+  selectLowerPos(pos1, pos2) {
+    // if both is in same line
+    if (pos1.line === pos2.line) {
+      return (pos1.ch < pos2.ch) ? pos2 : pos1;
+    }
+    return (pos1.line < pos2.line) ? pos2 : pos1;
   }
 
   loadCss(source) {
