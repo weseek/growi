@@ -376,7 +376,8 @@
 	},
 
   "markdown_setting": {
-    "markdown_rendering": "You can change Markdown rendering settings.",
+    "line_break_setting": "Line Break Setting",
+    "line_break_setting_desc": "You can change line break settings.",
     "Enable Line Break": "Enable Line Break",
     "Enable Line Break desc": "Treat line break in the text page as <code>&lt;br&gt;</code> in HTML",
     "Enable Line Break for comment": "Enable Line Break in comment",
