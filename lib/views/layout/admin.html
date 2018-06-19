@@ -6,7 +6,7 @@
 
 {% block html_additional_headers %}
   {% parent %}
-  <script src="{{ webpack_asset('legacy-admin').js }}" defer></script>
+  <script src="{{ webpack_asset('legacy-admin.js') }}" defer></script>
 {% endblock %}
 
 {# disable custom script in admin page #}

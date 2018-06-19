@@ -8,17 +8,17 @@ const helpers = require('./helpers');
 /*
  * Webpack Plugins
  */
-const AssetsPlugin = require('assets-webpack-plugin');
-const CommonsChunkPlugin = require('webpack/lib/optimize/CommonsChunkPlugin');
+const WebpackAssetsManifest = require('webpack-assets-manifest');
 
 /*
  * Webpack configuration
  *
  * See: http://webpack.github.io/docs/configuration.html#cli
  */
-module.exports = function(options) {
+module.exports = (options) => {
   return {
-    entry: {
+    mode: options.mode,
+    entry: Object.assign({
       'app':                  './resource/js/app',
       'legacy':               './resource/js/legacy/crowi',
       'legacy-form':          './resource/js/legacy/crowi-form',
@@ -26,14 +26,21 @@ module.exports = function(options) {
       'legacy-presentation':  './resource/js/legacy/crowi-presentation',
       'plugin':               './resource/js/plugin',
       'style':                './resource/styles/scss/style.scss',
+      'style-presentation':   './resource/styles/scss/style-presentation.scss',
+      // themes
       'style-theme-default':  './resource/styles/scss/theme/default.scss',
       'style-theme-default-dark':  './resource/styles/scss/theme/default-dark.scss',
       'style-theme-nature':   './resource/styles/scss/theme/nature.scss',
       'style-theme-mono-blue':   './resource/styles/scss/theme/mono-blue.scss',
       'style-theme-future': './resource/styles/scss/theme/future.scss',
       'style-theme-blue-night': './resource/styles/scss/theme/blue-night.scss',
-      'style-presentation':   './resource/styles/scss/style-presentation.scss',
-    },
+    }, options.entry || {}),  // Merge with env dependent settings
+    output: Object.assign({
+      path: helpers.root('public/js'),
+      publicPath: '/js/',
+      filename: '[name]-[hash].js',
+      chunkFilename: '[id]-[chunkhash].js',
+    }, options.output || {}), // Merge with env dependent settings
     externals: {
       // require("jquery") is external and available
       //  on the global var jQuery
@@ -53,7 +60,7 @@ module.exports = function(options) {
       }
     },
     module: {
-      rules: [
+      rules: options.module.rules.concat([
         {
           test: /.jsx?$/,
           exclude: {
@@ -64,10 +71,7 @@ module.exports = function(options) {
             ]
           },
           use: [{
-            loader: 'babel-loader?cacheDirectory',
-            options: {
-              plugins: ['lodash'],
-            }
+            loader: 'babel-loader?cacheDirectory'
           }]
         },
         {
@@ -100,29 +104,29 @@ module.exports = function(options) {
           test: /\.(eot|woff2?|svg|ttf)([?]?.*)$/,
           use: 'file-loader',
         }
-      ]
+      ])
     },
-    plugins: [
+    plugins: options.plugins.concat([
 
-      new AssetsPlugin({
-        path: helpers.root('public/js'),
-        filename: 'webpack-assets.json',
-        prettyPrint: true,
+      new WebpackAssetsManifest({ publicPath: true }),
+
+      new webpack.DefinePlugin({
+        'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
       }),
 
-      new CommonsChunkPlugin({
-        name: 'commons',
-        chunks: ['app', 'legacy', 'legacy-form', 'legacy-admin'],
-        minChunks: module => /node_modules/.test(module.resource),
-      }),
-      new CommonsChunkPlugin({
-        name: 'commons',
-        chunks: ['commons', 'legacy-presentation'],
-      }),
-      new CommonsChunkPlugin({
-        name: 'commons',
-        chunks: ['commons', 'plugin'],
-      }),
+      // new CommonsChunkPlugin({
+      //   name: 'commons',
+      //   chunks: ['app', 'legacy', 'legacy-form', 'legacy-admin'],
+      //   minChunks: module => /node_modules/.test(module.resource),
+      // }),
+      // new CommonsChunkPlugin({
+      //   name: 'commons',
+      //   chunks: ['commons', 'legacy-presentation'],
+      // }),
+      // new CommonsChunkPlugin({
+      //   name: 'commons',
+      //   chunks: ['commons', 'plugin'],
+      // }),
 
       // ignore
       new webpack.IgnorePlugin(/^\.\/lib\/deflate\.js/, /markdown-it-plantuml/),
@@ -132,6 +136,12 @@ module.exports = function(options) {
         $: 'jquery',
       }),
 
-    ]
+    ]),
+
+    devtool: options.devtool,
+    target: 'web', // Make web variables accessible to webpack, e.g. window
+    performance: options.performance || {},
+    optimization: options.optimization || {},
+    stats: options.stats || {},
   };
 };
