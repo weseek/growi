@@ -58,7 +58,6 @@ module.exports = require('./webpack.common')({
 
   ],
   optimization: {
-    namedModules: true,
     minimizer: [
       new UglifyJsPlugin({
         cache: true,
@@ -66,21 +65,5 @@ module.exports = require('./webpack.common')({
       }),
       new OptimizeCSSAssetsPlugin({})
     ],
-    splitChunks: {
-      cacheGroups: {
-        commons: {
-          chunks: 'initial',
-          minChunks: 2,
-          minSize: 1,
-        },
-        vendor: {
-          test: /node_modules/,
-          chunks: 'initial',
-          name: 'vendor',
-          priority: 10,
-          enforce: true
-        }
-      }
-    }
   },
 });

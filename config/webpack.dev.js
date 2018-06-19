@@ -9,13 +9,13 @@ const helpers = require('./helpers');
 /*
  * Webpack Plugins
  */
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
-
-/*
- * Webpack configuration
- *
- * See: http://webpack.github.io/docs/configuration.html#cli
+/**
+ * Webpack Constants
  */
+const ANALYZE = process.env.ANALYZE;
+
 module.exports = require('./webpack.common')({
   mode: 'development',
   devtool: 'cheap-module-eval-source-map',
@@ -54,9 +54,14 @@ module.exports = require('./webpack.common')({
       manifest: path.join(helpers.root('public/dll'), 'manifest.json')
     }),
 
+    new BundleAnalyzerPlugin({
+      analyzerMode: ANALYZE ? 'server' : 'disabled',
+    }),
+
     new webpack.HotModuleReplacementPlugin(),
 
   ],
+  optimization: {},
   performance: {
     hints: false
   }

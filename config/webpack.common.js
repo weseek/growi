@@ -140,8 +140,34 @@ module.exports = (options) => {
 
     devtool: options.devtool,
     target: 'web', // Make web variables accessible to webpack, e.g. window
+    optimization: {
+      namedModules: true,
+      splitChunks: {
+        cacheGroups: {
+          commons: {
+            test: /resource/,
+            chunks: 'initial',
+            name: 'commons',
+            minChunks: 2,
+            minSize: 1,
+            priority: 20
+          },
+          vendors: {
+            test: /node_modules/,
+            chunks: (chunk) => {
+              return chunk.name !== 'legacy-presentation';
+            },
+            name: 'vendors',
+            // minChunks: 2,
+            minSize: 1,
+            priority: 10,
+            enforce: true
+          }
+        }
+      },
+      minimizer: options.optimization.minimizer || [],
+    },
     performance: options.performance || {},
-    optimization: options.optimization || {},
     stats: options.stats || {},
   };
 };
