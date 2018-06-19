@@ -365,7 +365,9 @@
       "group_search_user_DN_property_detail": "The property of user object to use in <code>&#123;&#123;dn&#125;&#125;</code> interpolation of <code>Group Search Filter</code>.",
       "test_config": "Test Saved Configuration"
     },
-    "Google OAuth": {
+    "Google_OAuth": {
+      "use_Google_OAuth": "Google OAuth",
+      "change_redirect_url": "Enter <code>%s</code> <br>(where <code>%s</code> is your host name) for \"Authorized redirect URIs\"."
     },
     "Facebook": {
     },
