@@ -38,8 +38,7 @@ module.exports = (options) => {
     output: Object.assign({
       path: helpers.root('public/js'),
       publicPath: '/js/',
-      filename: '[name]-[hash].js',
-      chunkFilename: '[id]-[chunkhash].js',
+      filename: '[name].bundle.js',
     }, options.output || {}), // Merge with env dependent settings
     externals: {
       // require("jquery") is external and available

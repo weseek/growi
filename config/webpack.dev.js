@@ -22,9 +22,6 @@ module.exports = require('./webpack.common')({
   entry: {
     dev: './resource/js/dev',
   },
-  output: {
-    filename: '[name].bundle.js',
-  },
   resolve: {
     // TODO merge in webpack.common.js
     modules: [path.join(process.env.HOME, '.node_modules')],
