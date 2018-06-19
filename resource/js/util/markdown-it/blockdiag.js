@@ -4,7 +4,7 @@ export default class BlockdiagConfigurer {
     this.crowi = crowi;
     const config = crowi.getConfig();
 
-    this.generateSourceUrl = config.env.BLOCKDIAG_URL || 'https://blockdiag-api.com/';
+    this.generateSourceUrl = config.env.BLOCKDIAG_URI || 'https://blockdiag-api.com/';
   }
 
   configure(md) {

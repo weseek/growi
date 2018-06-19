@@ -105,11 +105,10 @@ MONGO_URI=mongodb://MONGO_HOST:MONGO_PORT/growi npm start
 
 **DO NOT USE `npm install`**, use `yarn` instead.
 
-If you launch growi with Redis and ElasticSearch, add environment variables before `npm start` like following:
+If you launch growi with ElasticSearch, add environment variables before `npm start` like following:
 
 ```
 export MONGO_URI=mongodb://MONGO_HOST:MONGO_PORT/growi
-export REDIS_URL=redis://REDIS_HOST:REDIS_PORT/growi
 export ELASTICSEARCH_URI=http://ELASTICSEARCH_HOST:ELASTICSEARCH_PORT/growi
 npm start
 ```
@@ -158,8 +157,8 @@ Environment Variables
 * **Option**
     * NODE_ENV: `production` OR `development`.
     * PORT: Server port. default: `3000`
-    * REDIS_URL: URI to connect to Redis (to session store).
     * ELASTICSEARCH_URI: URI to connect to Elasticearch.
+    * REDIS_URI: URI to connect to Redis (to session store).
     * PLANTUML_URI: URI to connect to [PlantUML](http://plantuml.com/) server.
     * BLOCKDIAG_URI: URI to connect to [blockdiag](http://http://blockdiag.com/) server.
     * PASSWORD_SEED: A password seed used by password hash generator.
