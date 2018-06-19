@@ -8,32 +8,40 @@ const helpers = require('./helpers');
 /*
  * Webpack Plugins
  */
-const AssetsPlugin = require('assets-webpack-plugin');
-const CommonsChunkPlugin = require('webpack/lib/optimize/CommonsChunkPlugin');
+const WebpackAssetsManifest = require('webpack-assets-manifest');
+const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 
 /*
  * Webpack configuration
  *
  * See: http://webpack.github.io/docs/configuration.html#cli
  */
-module.exports = function(options) {
+module.exports = (options) => {
   return {
-    entry: {
-      'app':                  './resource/js/app',
-      'legacy':               './resource/js/legacy/crowi',
-      'legacy-form':          './resource/js/legacy/crowi-form',
-      'legacy-admin':         './resource/js/legacy/crowi-admin',
-      'legacy-presentation':  './resource/js/legacy/crowi-presentation',
-      'plugin':               './resource/js/plugin',
-      'style':                './resource/styles/scss/style.scss',
-      'style-theme-default':  './resource/styles/scss/theme/default.scss',
-      'style-theme-default-dark':  './resource/styles/scss/theme/default-dark.scss',
-      'style-theme-nature':   './resource/styles/scss/theme/nature.scss',
-      'style-theme-mono-blue':   './resource/styles/scss/theme/mono-blue.scss',
-      'style-theme-future': './resource/styles/scss/theme/future.scss',
-      'style-theme-blue-night': './resource/styles/scss/theme/blue-night.scss',
-      'style-presentation':   './resource/styles/scss/style-presentation.scss',
-    },
+    mode: options.mode,
+    entry: Object.assign({
+      'js/app':                   './resource/js/app',
+      'js/legacy':                './resource/js/legacy/crowi',
+      'js/legacy-form':           './resource/js/legacy/crowi-form',
+      'js/legacy-admin':          './resource/js/legacy/crowi-admin',
+      'js/legacy-presentation':   './resource/js/legacy/crowi-presentation',
+      'js/plugin':                './resource/js/plugin',
+      // styles
+      'styles/style':                './resource/styles/scss/style.scss',
+      'styles/style-presentation':   './resource/styles/scss/style-presentation.scss',
+      // themes
+      'styles/theme-default':        './resource/styles/scss/theme/default.scss',
+      'styles/theme-default-dark':   './resource/styles/scss/theme/default-dark.scss',
+      'styles/theme-nature':         './resource/styles/scss/theme/nature.scss',
+      'styles/theme-mono-blue':      './resource/styles/scss/theme/mono-blue.scss',
+      'styles/theme-future':         './resource/styles/scss/theme/future.scss',
+      'styles/theme-blue-night':     './resource/styles/scss/theme/blue-night.scss',
+    }, options.entry || {}),  // Merge with env dependent settings
+    output: Object.assign({
+      path: helpers.root('public'),
+      publicPath: '/',
+      filename: '[name].bundle.js',
+    }, options.output || {}), // Merge with env dependent settings
     externals: {
       // require("jquery") is external and available
       //  on the global var jQuery
@@ -53,7 +61,7 @@ module.exports = function(options) {
       }
     },
     module: {
-      rules: [
+      rules: options.module.rules.concat([
         {
           test: /.jsx?$/,
           exclude: {
@@ -64,10 +72,7 @@ module.exports = function(options) {
             ]
           },
           use: [{
-            loader: 'babel-loader?cacheDirectory',
-            options: {
-              plugins: ['lodash'],
-            }
+            loader: 'babel-loader?cacheDirectory'
           }]
         },
         {
@@ -98,40 +103,62 @@ module.exports = function(options) {
         */
         {
           test: /\.(eot|woff2?|svg|ttf)([?]?.*)$/,
-          use: 'file-loader',
+          use: 'null-loader',
         }
-      ]
+      ])
     },
-    plugins: [
+    plugins: options.plugins.concat([
 
-      new AssetsPlugin({
-        path: helpers.root('public/js'),
-        filename: 'webpack-assets.json',
-        prettyPrint: true,
-      }),
+      new WebpackAssetsManifest({ publicPath: true }),
 
-      new CommonsChunkPlugin({
-        name: 'commons',
-        chunks: ['app', 'legacy', 'legacy-form', 'legacy-admin'],
-        minChunks: module => /node_modules/.test(module.resource),
-      }),
-      new CommonsChunkPlugin({
-        name: 'commons',
-        chunks: ['commons', 'legacy-presentation'],
-      }),
-      new CommonsChunkPlugin({
-        name: 'commons',
-        chunks: ['commons', 'plugin'],
+      new webpack.DefinePlugin({
+        'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
       }),
 
       // ignore
       new webpack.IgnorePlugin(/^\.\/lib\/deflate\.js/, /markdown-it-plantuml/),
+
+      new LodashModuleReplacementPlugin({
+        flattening: true
+      }),
 
       new webpack.ProvidePlugin({ // refs externals
         jQuery: 'jquery',
         $: 'jquery',
       }),
 
-    ]
+    ]),
+
+    devtool: options.devtool,
+    target: 'web', // Make web variables accessible to webpack, e.g. window
+    optimization: {
+      namedModules: true,
+      splitChunks: {
+        cacheGroups: {
+          commons: {
+            test: /resource/,
+            chunks: 'initial',
+            name: 'js/commons',
+            minChunks: 2,
+            minSize: 1,
+            priority: 20
+          },
+          vendors: {
+            test: /node_modules/,
+            chunks: (chunk) => {
+              return chunk.name !== 'legacy-presentation';
+            },
+            name: 'js/vendors',
+            // minChunks: 2,
+            minSize: 1,
+            priority: 10,
+            enforce: true
+          }
+        }
+      },
+      minimizer: options.optimization.minimizer || [],
+    },
+    performance: options.performance || {},
+    stats: options.stats || {},
   };
 };
