@@ -1,6 +1,167 @@
-<form action="" method="post" class="form-horizontal passportStrategy" id="githubOauthSetting" role="form">
-  <fieldset>
-    <legend>Github OAuth {{ t("security_setting.configuration") }}</legend>
-    <p class="well">(TBD)</p>
+<form action="/_api/admin/security/passport-github" method="post" class="form-horizontal passportStrategy" id="githubSetting" role="form"
+    {% if isRestartingServerNeeded %}style="opacity: 0.4;"{% endif %}>
+  <legend>GitHub OAuth {{ t("security_setting.configuration") }}</legend>
+  <p class="well alert-anchor">{{ t("security_setting.connect_api_manager") }}</p>
+  {% set nameForIsGitHubEnabled = "settingForm[security:passport-github:isEnabled]" %}
+  {% set isGitHubEnabled = settingForm['security:passport-github:isEnabled'] %}
+  <div class="form-group">
+    <label for="{{nameForIsGitHubEnabled}}" class="col-xs-3 control-label">{{ t("security_setting.GitHub_OAuth.use_GitHub_OAuth") }}</label>
+    <div class="col-xs-6">
+      <div class="btn-group btn-toggle" data-toggle="buttons">
+        <label class="btn btn-default btn-rounded btn-outline {% if isGitHubEnabled %}active{% endif %}" data-active-class="primary">
+          <input name="{{nameForIsGitHubEnabled}}" value="true" type="radio"
+              {% if true === isGitHubEnabled %}checked{% endif %}> ON
+        </label>
+        <label class="btn btn-default btn-rounded btn-outline {% if !isGitHubEnabled %}active{% endif %}" data-active-class="default">
+          <input name="{{nameForIsGitHubEnabled}}" value="false" type="radio"
+              {% if !isGitHubEnabled %}checked{% endif %}> OFF
+        </label>
+      </div>
+    </div>
+  </div>
+  <fieldset id="passport-github-hide-when-disabled" {%if !isGitHubEnabled %}style="display: none;"{% endif %}>
+
+    <div class="form-group">
+      <label for="settingForm[security:passport-github:clientId]" class="col-xs-3 control-label">{{ t("security_setting.github_setting") }}</label>
+      <div class="col-xs-6">
+        <ol class="help-block">
+          <li>{{ t("security_setting.access_api_manager") }}</li>
+          <li>{{ t("security_setting.create_project") }}</li>
+          <li>{{ t("security_setting.create_auth_to_oauth") }}</li>
+          <ol>
+            <li>{{ t("security_setting.select_webapp") }}</li>
+            <li>{{ t("security_setting.GitHub_OAuth.change_redirect_url", "https://${growi.host}/passport/github/callback", "${growi.host}") }}</li>
+          </ol>
+        </ol>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="settingForm[security:passport-github:clientId]" class="col-xs-3 control-label">{{ t("security_setting.clientID") }}</label>
+      <div class="col-xs-6">
+        <input class="form-control" type="text" name="settingForm[security:passport-github:clientId]" value="{{ settingForm['security:passport-github:clientId'] || '' }}">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="settingForm[security:passport-github:clientSecret]" class="col-xs-3 control-label">{{ t("security_setting.client_secret") }}</label>
+      <div class="col-xs-6">
+        <input class="form-control" type="text" name="settingForm[security:passport-github:clientSecret]" value="{{ settingForm['security:passport-github:clientSecret'] || '' }}">
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-xs-6 col-xs-offset-3">
+        <div class="checkbox checkbox-info">
+          <input type="checkbox" id="bindByUserName-GitHub" name="settingForm[security:passport-github:isSameUsernameTreatedAsIdenticalUser]" value="1"
+              {% if settingForm['security:passport-github:isSameUsernameTreatedAsIdenticalUser'] %}checked{% endif %} />
+          <label for="bindByUserName-GitHub">
+            {{ t("security_setting.ldap.Treat username matching as identical") }}
+          </label>
+          <p class="help-block">
+            <small>
+              {{ t("security_setting.ldap.Treat username matching as identical_warn") }}
+            </small>
+          </p>
+        </div>
+      </div>
+    </div>
+
   </fieldset>
+
+  <div class="form-group" id="btn-update">
+    <div class="col-xs-offset-3 col-xs-6">
+      <input type="hidden" name="_csrf" value="{{ csrf() }}">
+      <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
+    </div>
+  </div>
+
 </form>
+{% if false %}
+<hr>
+<h4>
+  <i class="fa fa-question-circle" aria-hidden="true"></i>
+  <a href="#collapseHelpForApp" data-toggle="collapse">How to configure Slack App?</a>
+</h4>
+
+<ol id="collapseHelpForApp" class="collapse">
+  <li>
+    Register Slack App
+    <ol>
+      <li>
+        Create App from <a href="https://api.slack.com/applications/new">this link</a>, and fill the form out as below:
+        <dl class="dl-horizontal">
+          <dt>App Name</dt> <dd><code>growi</code> </dd>
+          <dt>Development Slack Team</dt> <dd>Select the team you want to notify to.</dd>
+        </dl>
+      </li>
+      <li><strong>Save</strong> it.</li>
+    </ol>
+  </li>
+  <li>
+    Get App Credentials
+    <ol>
+      <li>Go To "Basic Information" page and make a note "Client ID" and "Client Secret".</li>
+    </ol>
+  </li>
+  <li>
+    Set Redirect URLs
+    <ol>
+      <li>Go to "OAuth &amp; Permissions" page.</li>
+      <li>Add <code><script>document.write(location.origin);</script>/admin/notification/slackAuth</code> .</li>
+      <li>Don't forget to <strong>save</strong>.</li>
+    </ol>
+  </li>
+  <li>
+    Set Permission Scopes to the App
+    <ol>
+      <li>Go to "OAuth &amp; Permissions" page.</li>
+      <li>Add "Send messages as GROWI"(<code>chat:write:bot</code>).</li>
+      <li>Don't forget to <strong>save</strong>.</li>
+    </ol>
+  </li>
+  <li>
+    Create a bot user
+    <ol>
+      <li>Go to "Bot Users" page and add.</li>
+    </ol>
+  </li>
+  <li>
+    Install the app
+    <ol>
+      <li>Go to "Install App to Your Team" page and install.</li>
+    </ol>
+  </li>
+  <li>
+    (At Team) Approve the app
+    <ol>
+      <li>Go to the management Apps page for the team you installed the app and approve "growi".</li>
+    </ol>
+  </li>
+  <li>
+    (At Team) Invite the bot to your team
+    <ol>
+      <li>Invite the user you created in <code>4. Add a bot user</code> to the channel you notify to.</li>
+    </ol>
+  </li>
+  <li>
+    (At GROWI admin page) Input "clientId" and "clientSecret" and submit on this page.
+  </li>
+  <li>
+    (At GROWI admin page) Click "Connect to Slack" button to start OAuth process.
+  </li>
+</ol>
+{% endif %}
+
+<script>
+  $('input[name="settingForm[security:passport-github:isEnabled]"]').change(function() {
+      const isEnabled = ($(this).val() === "true");
+
+      if (isEnabled) {
+        $('#passport-github-hide-when-disabled').show(400);
+      }
+      else {
+        $('#passport-github-hide-when-disabled').hide(400);
+      }
+    });
+</script>
+
