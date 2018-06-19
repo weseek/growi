@@ -29,14 +29,6 @@ module.exports = require('./webpack.common')({
   module: {
     rules: [
       {
-        test: /\.css$/,
-        use: [
-          'style-loader',
-          { loader: 'css-loader', options: { sourceMap: true } },
-        ],
-        include: [helpers.root('resource/styles/scss')]
-      },
-      {
         test: /\.scss$/,
         use: [
           'style-loader',
