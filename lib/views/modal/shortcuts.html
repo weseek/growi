@@ -67,7 +67,7 @@
     var platform = navigator.platform.toLowerCase();
     var isMac = (platform.indexOf('mac') > -1);
 
-    document.querySelectorAll('#shortcuts-modal .cmd-key').forEach((element) => {
+    document.querySelectorAll('#shortcuts-modal .cmd-key').forEach(function(element) {
       if (isMac) {
         element.classList.add('mac');
       }

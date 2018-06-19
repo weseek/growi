@@ -26,6 +26,7 @@ module.exports = (options) => {
       'js/legacy-admin':          './resource/js/legacy/crowi-admin',
       'js/legacy-presentation':   './resource/js/legacy/crowi-presentation',
       'js/plugin':                './resource/js/plugin',
+      'js/ie11-polyfill':         './resource/js/ie11-polyfill',
       // styles
       'styles/style':                './resource/styles/scss/style.scss',
       'styles/style-presentation':   './resource/styles/scss/style-presentation.scss',
@@ -146,7 +147,7 @@ module.exports = (options) => {
           vendors: {
             test: /node_modules/,
             chunks: (chunk) => {
-              return chunk.name !== 'legacy-presentation';
+              return chunk.name != null && !chunk.name.match(/legacy-presentation|ie11-polyfill/);
             },
             name: 'js/vendors',
             // minChunks: 2,
