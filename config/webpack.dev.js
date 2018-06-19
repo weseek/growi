@@ -50,8 +50,6 @@ module.exports = require('./webpack.common')({
       analyzerMode: ANALYZE ? 'server' : 'disabled',
     }),
 
-    new webpack.HotModuleReplacementPlugin(),
-
   ],
   optimization: {},
   performance: {
