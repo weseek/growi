@@ -1,7 +1,12 @@
 CHANGES
 ========
 
-## 3.1.7-RC
+## 3.1.8
+
+* Support: Upgrade libs
+    * webpack
+
+## 3.1.7
 
 * Fix: Update hidden input 'pageForm[grant]' when save with Ctrl-S
 * Fix: Show alert message when conflict
