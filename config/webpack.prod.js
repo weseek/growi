@@ -22,7 +22,7 @@ module.exports = require('./webpack.common')({
   devtool: undefined,
   output: {
     filename: '[name].[chunkhash].bundle.js',
-    chunkFilename: '[name].[id].[chunkhash].chunk.js'
+    chunkFilename: '[name].[chunkhash].chunk.js'
   },
   module: {
     rules: [
@@ -47,7 +47,6 @@ module.exports = require('./webpack.common')({
 
     new MiniCssExtractPlugin({
       filename: '[name].[hash].css',
-      chunkFilename: '[id].[hash].css'
     }),
 
     new BundleAnalyzerPlugin({
