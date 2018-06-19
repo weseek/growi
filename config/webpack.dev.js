@@ -20,7 +20,7 @@ module.exports = require('./webpack.common')({
   mode: 'development',
   devtool: 'cheap-module-eval-source-map',
   entry: {
-    dev: './resource/js/dev',
+    'js/dev': './resource/js/dev',
   },
   resolve: {
     // TODO merge in webpack.common.js

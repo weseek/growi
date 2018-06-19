@@ -20,25 +20,26 @@ module.exports = (options) => {
   return {
     mode: options.mode,
     entry: Object.assign({
-      'app':                  './resource/js/app',
-      'legacy':               './resource/js/legacy/crowi',
-      'legacy-form':          './resource/js/legacy/crowi-form',
-      'legacy-admin':         './resource/js/legacy/crowi-admin',
-      'legacy-presentation':  './resource/js/legacy/crowi-presentation',
-      'plugin':               './resource/js/plugin',
-      'style':                './resource/styles/scss/style.scss',
-      'style-presentation':   './resource/styles/scss/style-presentation.scss',
+      'js/app':                   './resource/js/app',
+      'js/legacy':                './resource/js/legacy/crowi',
+      'js/legacy-form':           './resource/js/legacy/crowi-form',
+      'js/legacy-admin':          './resource/js/legacy/crowi-admin',
+      'js/legacy-presentation':   './resource/js/legacy/crowi-presentation',
+      'js/plugin':                './resource/js/plugin',
+      // styles
+      'styles/style':                './resource/styles/scss/style.scss',
+      'styles/style-presentation':   './resource/styles/scss/style-presentation.scss',
       // themes
-      'style-theme-default':  './resource/styles/scss/theme/default.scss',
-      'style-theme-default-dark':  './resource/styles/scss/theme/default-dark.scss',
-      'style-theme-nature':   './resource/styles/scss/theme/nature.scss',
-      'style-theme-mono-blue':   './resource/styles/scss/theme/mono-blue.scss',
-      'style-theme-future': './resource/styles/scss/theme/future.scss',
-      'style-theme-blue-night': './resource/styles/scss/theme/blue-night.scss',
+      'styles/theme-default':        './resource/styles/scss/theme/default.scss',
+      'styles/theme-default-dark':   './resource/styles/scss/theme/default-dark.scss',
+      'styles/theme-nature':         './resource/styles/scss/theme/nature.scss',
+      'styles/theme-mono-blue':      './resource/styles/scss/theme/mono-blue.scss',
+      'styles/theme-future':         './resource/styles/scss/theme/future.scss',
+      'styles/theme-blue-night':     './resource/styles/scss/theme/blue-night.scss',
     }, options.entry || {}),  // Merge with env dependent settings
     output: Object.assign({
-      path: helpers.root('public/js'),
-      publicPath: '/js/',
+      path: helpers.root('public'),
+      publicPath: '/',
       filename: '[name].bundle.js',
     }, options.output || {}), // Merge with env dependent settings
     externals: {
@@ -102,7 +103,7 @@ module.exports = (options) => {
         */
         {
           test: /\.(eot|woff2?|svg|ttf)([?]?.*)$/,
-          use: 'file-loader',
+          use: 'null-loader',
         }
       ])
     },
@@ -137,7 +138,7 @@ module.exports = (options) => {
           commons: {
             test: /resource/,
             chunks: 'initial',
-            name: 'commons',
+            name: 'js/commons',
             minChunks: 2,
             minSize: 1,
             priority: 20
@@ -147,7 +148,7 @@ module.exports = (options) => {
             chunks: (chunk) => {
               return chunk.name !== 'legacy-presentation';
             },
-            name: 'vendors',
+            name: 'js/vendors',
             // minChunks: 2,
             minSize: 1,
             priority: 10,

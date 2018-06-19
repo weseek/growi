@@ -63,33 +63,33 @@ gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js
 
   {% if env === 'development' %}
     <script src="/dll/dll.js"></script>
-    <script src="{{ webpack_asset('dev.js') }}" async></script>
+    <script src="{{ webpack_asset('js/dev.js') }}" async></script>
     <!-- Browsersync -->
     <script id="__bs_script__">//<![CDATA[
       document.write("<script async src='http://HOST:3001/browser-sync/browser-sync-client.js?v=2.23.6'><\/script>".replace("HOST", location.hostname));
     //]]></script>
   {% endif %}
 
-  <script src="{{ webpack_asset('vendors.js') }}" defer></script>
-  <script src="{{ webpack_asset('commons.js') }}" defer></script>
+  <script src="{{ webpack_asset('js/vendors.js') }}" defer></script>
+  <script src="{{ webpack_asset('js/commons.js') }}" defer></script>
   {% if isEnabledPlugins() %}
-  <script src="{{ webpack_asset('plugin.js') }}" defer></script>
+  <script src="{{ webpack_asset('js/plugin.js') }}" defer></script>
   {% endif %}
   {% block html_head_loading_legacy %}
-  <script src="{{ webpack_asset('legacy.js') }}" defer></script>
+  <script src="{{ webpack_asset('js/legacy.js') }}" defer></script>
   {% endblock %}
   {% block html_head_loading_app %}
-  <script src="{{ webpack_asset('app.js') }}" defer></script>
+  <script src="{{ webpack_asset('js/app.js') }}" defer></script>
   {% endblock %}
 
   <!-- styles -->
   {% block style_css_block %}
     {% if env === 'development' %}
-      <script src="{{ webpack_asset('style.js') }}"></script>
-      <script src="{{ webpack_asset('style-theme-' + theme() + '.js') }}"></script>
+      <script src="{{ webpack_asset('styles/style.js') }}"></script>
+      <script src="{{ webpack_asset('styles/theme-' + theme() + '.js') }}"></script>
     {% else %}
-      <link rel="stylesheet" href="{{ webpack_asset('style.css') }}">
-      <link rel="stylesheet" href="{{ webpack_asset('style-theme-' + theme() + '.css') }}">
+      <link rel="stylesheet" href="{{ webpack_asset('styles/style.css') }}">
+      <link rel="stylesheet" href="{{ webpack_asset('styles/theme-' + theme() + '.css') }}">
     {% endif %}
   {% endblock %}
 
