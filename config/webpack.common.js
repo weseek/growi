@@ -9,6 +9,7 @@ const helpers = require('./helpers');
  * Webpack Plugins
  */
 const WebpackAssetsManifest = require('webpack-assets-manifest');
+const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 
 /*
  * Webpack configuration
@@ -113,22 +114,10 @@ module.exports = (options) => {
         'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
       }),
 
-      // new CommonsChunkPlugin({
-      //   name: 'commons',
-      //   chunks: ['app', 'legacy', 'legacy-form', 'legacy-admin'],
-      //   minChunks: module => /node_modules/.test(module.resource),
-      // }),
-      // new CommonsChunkPlugin({
-      //   name: 'commons',
-      //   chunks: ['commons', 'legacy-presentation'],
-      // }),
-      // new CommonsChunkPlugin({
-      //   name: 'commons',
-      //   chunks: ['commons', 'plugin'],
-      // }),
-
       // ignore
       new webpack.IgnorePlugin(/^\.\/lib\/deflate\.js/, /markdown-it-plantuml/),
+
+      new LodashModuleReplacementPlugin,
 
       new webpack.ProvidePlugin({ // refs externals
         jQuery: 'jquery',
