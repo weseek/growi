@@ -117,7 +117,9 @@ module.exports = (options) => {
       // ignore
       new webpack.IgnorePlugin(/^\.\/lib\/deflate\.js/, /markdown-it-plantuml/),
 
-      new LodashModuleReplacementPlugin,
+      new LodashModuleReplacementPlugin({
+        flattening: true
+      }),
 
       new webpack.ProvidePlugin({ // refs externals
         jQuery: 'jquery',
