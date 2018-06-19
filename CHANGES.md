@@ -4,6 +4,7 @@ CHANGES
 ## 3.1.8
 
 * Support: Upgrade libs
+    * react-bootstrap-typeahead
     * webpack
 
 ## 3.1.7
