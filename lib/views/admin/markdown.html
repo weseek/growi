@@ -82,6 +82,38 @@
         </div>
 
         <div class="form-group">
+            <label for="markdownSetting[markdown:isPreventXss]" class="col-xs-4 control-label">
+              {{ t('markdown_setting.Prevent XSS(Cross Site Scripting)') }}
+            </label>
+            <div class="col-xs-5">
+                <div class="btn-group btn-toggle" data-toggle="buttons">
+                    <label class="btn btn-default btn-rounded btn-outline {% if markdownSetting['markdown:isEnabledPreventXss'] %}active{% endif %}" data-active-class="primary">
+                      <input name="markdownSetting[markdown:isEnabledPreventXss]" value="true" type="radio"
+                          {% if true === markdownSetting['markdown:isEnabledPreventXss'] %}checked{% endif %}> ON
+                    </label>
+                    <label class="btn btn-default btn-rounded btn-outline {% if !markdownSetting['markdown:isEnabledPreventXss'] %}active{% endif %}" data-active-class="default">
+                      <input name="markdownSetting[markdown:isEnabledPreventXss]" value="false" type="radio"
+                          {% if !markdownSetting['markdown:isEnabledPreventXss'] %}checked{% endif %}> OFF
+                    </label>
+                  </div>
+              <div>
+                <div class="input">
+                  <form>
+                    <input type="radio" name="preventXSS" value="stripignoretag" checked>
+                      {{ t('markdown_setting.Strip ignore tag') }}<br>
+                    <input type="radio" name="preventXSS" value="WLtagnames">
+                      {{ t('markdown_setting.White list tag names') }}<br>
+                    <input type="radio" name="preventXSS" value="WLtagattribute">
+                      {{ t('markdown_setting.White list tag attributes') }}
+                  </form>
+                </div>
+              </div>
+              <p class="help-block">{{ t("markdown_setting.Prevent XSS(Cross Site Scripting)desc") }}<br>{{ t("markdown_setting.Prevent XSS(Cross Site Scripting)desc2") }}</p>
+              </div>
+
+
+
+        <div class="form-group">
           <div class="col-xs-offset-4 col-xs-5">
             <input type="hidden" name="_csrf" value="{{ csrf() }}">
             <button type="submit" class="btn btn-primary">{{ t("Update") }}</button>
