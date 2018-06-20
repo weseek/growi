@@ -146,7 +146,7 @@ if (pageEditorElem) {
   // create onSave event handler
   const onSaveSuccess = function(page) {
     // modify the revision id value to pass checking id when updating
-    crowi.getCrowiForJquery().updateCurrentRevision(page.revision._id);
+    crowi.getCrowiForJquery().updatePageForm(page);
     // re-render Page component if exists
     if (componentInstances.page != null) {
       componentInstances.page.setMarkdown(page.revision.body);

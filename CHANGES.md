@@ -1,9 +1,26 @@
 CHANGES
 ========
 
-## 3.1.6-RC
+## 3.1.8
 
-* (WIP) Feature: Support [blockdiag](http://blockdiag.com)
+* Support: Upgrade libs
+    * react-bootstrap-typeahead
+    * webpack
+
+## 3.1.7
+
+* Fix: Update hidden input 'pageForm[grant]' when save with Ctrl-S
+* Fix: Show alert message when conflict
+* Fix: `BLOCKDIAG_URI` environment variable doesn't work
+* Fix: Paste in markdown list doesn't work correctly
+* Support: Ensure to inject logger configuration from environment variables
+* Support: Upgrade libs
+    * sinon
+    * sinon-chai
+
+## 3.1.6
+
+* Feature: Support [blockdiag](http://blockdiag.com)
 * Feature: Add `BLOCKDIAG_URI` environment variable
 * Fix: Select modal for group is not shown 
 * Support: Upgrade libs

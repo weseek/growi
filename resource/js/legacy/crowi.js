@@ -16,7 +16,6 @@ import Page from '../components/Page';
 const io = require('socket.io-client');
 const entities = require('entities');
 const escapeStringRegexp = require('escape-string-regexp');
-require('bootstrap-sass');
 require('jquery.cookie');
 
 require('./thirdparty-js/agile-admin');
@@ -137,8 +136,9 @@ Crowi.modifyScrollTop = function() {
   }, timeout);
 };
 
-Crowi.updateCurrentRevision = function(revisionId) {
-  $('#page-form [name="pageForm[currentRevision]"]').val(revisionId);
+Crowi.updatePageForm = function(page) {
+  $('#page-form [name="pageForm[currentRevision]"]').val(page.revision._id);
+  $('#page-form [name="pageForm[grant]"]').val(page.grant);
 };
 
 Crowi.handleKeyEHandler = (event) => {

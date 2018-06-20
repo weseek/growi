@@ -18,8 +18,12 @@ package-lock.json
 
 # Dist #
 /report/
+/public/*.chunk.js
+/public/*.bundle.js
+/public/manifest.json
 /public/dll
 /public/js
+/public/styles
 /public/uploads
 /src/*/__build__/
 /__build__/**

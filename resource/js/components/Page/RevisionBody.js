@@ -43,6 +43,7 @@ export default class RevisionBody extends React.Component {
   }
 
   render() {
+    const additionalClassName = this.props.additionalClassName || '';
     return (
       <div
         ref={(elm) => {
@@ -51,7 +52,7 @@ export default class RevisionBody extends React.Component {
             this.props.inputRef(elm);
           }
         }}
-        className={'wiki ' + this.props.additionalClassName} dangerouslySetInnerHTML={this.generateInnerHtml(this.props.html)}>
+        className={`wiki ${additionalClassName}`} dangerouslySetInnerHTML={this.generateInnerHtml(this.props.html)}>
       </div>
     );
   }

@@ -17,6 +17,7 @@ module.exports = {
     "window": true
   },
   "parserOptions": {
+    "ecmaVersion": 8,
     "ecmaFeatures": {
       "experimentalObjectRestSpread": true,
       "jsx": true

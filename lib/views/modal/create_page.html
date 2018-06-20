@@ -78,13 +78,13 @@
       pagePath = pagePath.slice(0, -1);
   };
 
-  $.get(`/_api/pages.templates?path=${pagePath}`)
-    .then(templateInfo => {
-      buttonTextChildren = templateInfo.childrenTemplateExists ? `{{ t('Edit') }}` : `{{ t('Create') }}`;
-      buttonTextDecendants = templateInfo.decendantsTemplateExists ? `{{ t('Edit') }}` : `{{ t('Create') }}`;
+  $.get('/_api/pages.templates?path=' + pagePath)   // don't use template literal(`...${}`) for IE11
+    .then(function(templateInfo) {                  // don't use arrow function for IE11
+      buttonTextChildren = templateInfo.childrenTemplateExists ? '{{ t("Edit") }}' : '{{ t("Create") }}';
+      buttonTextDecendants = templateInfo.decendantsTemplateExists ? '{{ t("Edit") }}' : '{{ t("Create") }}';
     });
 
-  $("#template-type").on("change", () => {
+  $("#template-type").on("change", function() {
     // enable button
     $('#link-to-template').removeClass("disabled");
 

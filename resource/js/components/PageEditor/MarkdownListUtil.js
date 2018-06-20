@@ -42,7 +42,7 @@ class MarkdownListUtil {
    */
   pasteText(editor, event, text) {
     // get strings from BOL(beginning of line) to current position
-    const strFromBol = editor.getStrFromBol();
+    const strFromBol = editor.getStrFromBolToSelectedUpperPos();
 
     // when match indentAndMarkOnlyRE
     // (this means the current position is the beginning of the list item)
