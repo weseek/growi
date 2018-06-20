@@ -400,9 +400,13 @@
     "Prevent XSS(Cross Site Scripting)": "クロスサイトスクリプティング(XSS)をブロックする",
     "Prevent XSS(Cross Site Scripting)desc": "悪意のあるプログラムからの攻撃を防ぎます",
     "Prevent XSS(Cross Site Scripting)desc2": "無効にすることで、<code>&lt;iframe&gt;</code>等の一部ソースの表示を可能にします",
-    "Strip ignore tag": "ホワイトリストに入っていないタグを出力しない",
-    "White list tag names": "タグのホワイトリスト",
-    "White list tag attributes": "タグ属性のホワイトリスト"
+    "Allow all": "すべて許可する",
+    "Ignore all": "すべて許可しない",
+    "Recommended setting": "おすすめ設定",
+    "Whitelist setting": "ホワイトリスト設定",
+    "tag":"タグ",
+    "tag attribute":"タグの属性",
+    "Add white list desc":"ホワイトリストに追加したい要素をカンマ&lt;,&gt;で区切って追加してください"
   },
 
   "customize_page": {

@@ -87,31 +87,43 @@
             </label>
             <div class="col-xs-5">
                 <div class="btn-group btn-toggle" data-toggle="buttons">
-                    <label class="btn btn-default btn-rounded btn-outline {% if markdownSetting['markdown:isEnabledPreventXss'] %}active{% endif %}" data-active-class="primary">
-                      <input name="markdownSetting[markdown:isEnabledPreventXss]" value="true" type="radio"
-                          {% if true === markdownSetting['markdown:isEnabledPreventXss'] %}checked{% endif %}> ON
+                    <label class="btn btn-default btn-rounded btn-outline {% if markdownSetting['markdown:isEnabledPreventXss'] %}active{% endif %}" data-active-class="primary" for="check1">
+                      <input id="check1" name="markdownSetting[markdown:isEnabledPreventXss]" value="true" type="radio"
+                          {% if true === markdownSetting['markdown:isEnabledPreventXss'] %}checked{% endif %} > ON
                     </label>
                     <label class="btn btn-default btn-rounded btn-outline {% if !markdownSetting['markdown:isEnabledPreventXss'] %}active{% endif %}" data-active-class="default">
                       <input name="markdownSetting[markdown:isEnabledPreventXss]" value="false" type="radio"
                           {% if !markdownSetting['markdown:isEnabledPreventXss'] %}checked{% endif %}> OFF
                     </label>
                   </div>
-              <div>
-                <div class="input">
+
+                <div id="selectXSS" class="input">
                   <form>
-                    <input type="radio" name="preventXSS" value="stripignoretag" checked>
-                      {{ t('markdown_setting.Strip ignore tag') }}<br>
-                    <input type="radio" name="preventXSS" value="WLtagnames">
-                      {{ t('markdown_setting.White list tag names') }}<br>
-                    <input type="radio" name="preventXSS" value="WLtagattribute">
-                      {{ t('markdown_setting.White list tag attributes') }}
+                    <input type="radio" name="preventXSS" value="1" checked>
+                      {{ t('markdown_setting.Allow all') }}<br>
+                    <input type="radio" name="preventXSS" value="1">
+                      {{ t('markdown_setting.Ignore all') }}<br>
+                    <input type="radio" name="preventXSS" value="1">
+                      {{ t('markdown_setting.Recommended setting') }}<br>
+                    <input type="radio" name="preventXSS" value="2">
+                      {{ t('markdown_setting.Whitelist setting') }}<br>
+                      <div id="WLsetting" class="input">
+                         <p class="help-block">{{ t('markdown_setting.Add white list desc') }}</p>
+                        <div class="inputbox">
+                          {{ t('markdown_setting.tag') }}
+                          <input type="text" name="tag" size="70" value="" placeholder="span, iframe, input">
+                        </div>
+                        <div class="inputbox">
+                          {{ t('markdown_setting.tag attribute') }}
+                          <input type="text" name="tagattribute" size="70" value="" placeholder="class, type, placeholder, name, required">
+                        </div>
+                      </div>
                   </form>
                 </div>
-              </div>
-              <p class="help-block">{{ t("markdown_setting.Prevent XSS(Cross Site Scripting)desc") }}<br>{{ t("markdown_setting.Prevent XSS(Cross Site Scripting)desc2") }}</p>
-              </div>
 
-
+              <p class="help-block">{{ t("markdown_setting.Prevent XSS(Cross Site Scripting)desc") }}<br>
+                {{ t("markdown_setting.Prevent XSS(Cross Site Scripting)desc2") }}</p>
+              </div>
 
         <div class="form-group">
           <div class="col-xs-offset-4 col-xs-5">
