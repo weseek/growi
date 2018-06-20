@@ -1,6 +1,6 @@
 <form action="/_api/admin/security/passport-twitter" method="post" class="form-horizontal passportStrategy" id="twitterSetting" role="form"
     {% if isRestartingServerNeeded %}style="opacity: 0.4;"{% endif %}>
-  <legend>{{ t("security_setting.OAuth.GitHub.name") }}{{ t("security_setting.configuration") }}</legend>
+  <legend>{{ t("security_setting.OAuth.Twitter.name") }}{{ t("security_setting.configuration") }}</legend>
   <p class="well alert-anchor">{{ t("security_setting.OAuth.connect_api_manager", "https://github.com/settings/developers", "GitHub Developer Settings") }}</p>
   {% set nameForIsGitHubEnabled = "settingForm[security:passport-github:isEnabled]" %}
   {% set isGitHubEnabled = settingForm['security:passport-github:isEnabled'] %}
