@@ -136,7 +136,7 @@
         <div class="input-group m-t-15 m-b-10 mx-auto">
           <form role="form" action="/login/google" method="get">
             <input type="hidden" name="_csrf" value="{{ csrf() }}">
-            <button type="submit" class="fcbtn btn btn-danger btn-1b btn-login-google">
+            <button type="submit" class="fcbtn btn btn-danger btn-1b btn-login-oauth" id="google">
               <span class="btn-label"><i class="icon-social-google"></i></span>
               {{ t('Sign in') }}
             </button>
@@ -150,7 +150,7 @@
         <div class="input-group m-t-15 m-b-10 mx-auto d-flex flex-row justify-content-around flex-wrap">
           {% if passportGoogleLoginEnabled() %}
           <form role="form" action="/passport/google" method="get">
-            <button type="submit" class="fcbtn btn btn-1b btn-login-google">
+            <button type="submit" class="fcbtn btn btn-1b btn-login-oauth" id="google">
               <span class="btn-label"><i class="icon-social-google"></i></span>
               {{ t('Sign in') }}
             </button>
@@ -160,7 +160,7 @@
           {% if passportGitHubLoginEnabled() %}
           <form role="form" action="/passport/github" method="get">
             <input type="hidden" name="_csrf" value="{{ csrf() }}">
-            <button type="submit" class="fcbtn btn btn-1b btn-login-github">
+            <button type="submit" class="fcbtn btn btn-1b btn-login-oauth" id="github">
               <span class="btn-label"><i class="icon-social-github"></i></span>
               {{ t('Sign in') }}
             </button>
@@ -170,7 +170,7 @@
           {% if passportFacebookLoginEnabled() %}
           <form role="form" action="/passport/facebook" method="get">
             <input type="hidden" name="_csrf" value="{{ csrf() }}">
-            <button type="submit" class="fcbtn btn btn-1b btn-login-facebook">
+            <button type="submit" class="fcbtn btn btn-1b btn-login-oauth" id="facebook">
               <span class="btn-label"><i class="icon-social-facebook"></i></span>
               {{ t('Sign in') }}
             </button>
@@ -180,7 +180,7 @@
           {% if passportTwitterLoginEnabled() %}
           <form role="form" action="/passport/twitter" method="get">
             <input type="hidden" name="_csrf" value="{{ csrf() }}">
-            <button type="submit" class="fcbtn btn btn-1b btn-login-twitter">
+            <button type="submit" class="fcbtn btn btn-1b btn-login-oauth" id="twitter">
               <span class="btn-label"><i class="icon-social-twitter"></i></span>
               {{ t('Sign in') }}
             </button>
