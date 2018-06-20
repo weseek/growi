@@ -111,7 +111,7 @@
                   <input type="radio" id="radioPassportAuthMech" name="settingForm[security:isEnabledPassport]" value="true"
                       {% if true === settingForm['security:isEnabledPassport'] %}checked="checked"{% endif %}>
                   <label for="radioPassportAuthMech">
-                    <a href="http://passportjs.org/">
+                    <a href="http://passportjs.org/" target="_blank">
                       <img src="/images/admin/security/passport-logo.svg" class="passport-logo"> Passport
                     </a> {{ t("security_setting.auth_mechanism") }} <small class="text-success">({{ t("security_setting.recommended") }})</small>
                   </label>
