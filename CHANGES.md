@@ -1,7 +1,7 @@
 CHANGES
 ========
 
-## 3.1.8
+## 3.1.8-RC
 
 * Imprv: Place the commented page at the beginning of the list
 * Imprv: Resolve errors on IE11 (Experimental)
