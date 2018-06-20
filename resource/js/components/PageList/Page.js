@@ -20,7 +20,7 @@ export default class Page extends React.Component {
 
     return (
       <li className="page-list-li d-flex align-items-center">
-        <UserPicture user={page.revision.author} />
+        <UserPicture user={page.lastUpdateUser} />
         <a className="page-list-link" href={link}>
           <PagePath page={page} excludePathString={this.props.excludePathString} />
         </a>
