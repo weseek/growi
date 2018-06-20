@@ -5,6 +5,7 @@ CHANGES
 
 * Support: Upgrade libs
     * react-bootstrap-typeahead
+    * react-codemirror2
     * webpack
 
 ## 3.1.7
