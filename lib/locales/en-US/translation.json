@@ -332,8 +332,10 @@
       "restricted": "Reuqire Admin permission",
       "closed": "Invitation Only"
     },
-    "configuration": "Configuration",
+    "configuration": " Configuration",
     "optional": "Optional",
+    "Treat username matching as identical": "Automatically bind external accounts newly logged in to local accounts when <code>%s</code> match",
+    "Treat username matching as identical_warn": "WARNING: Be aware of security because the system treats the same user as a match of <code>%s</code>.",
     "ldap": {
       "server_url_detail": "The LDAP URL of the directory service in the format <code>ldap://host:port/DN</code> or <code>ldaps://host:port/DN</code>.",
       "bind_mode": "Binding Mode",
@@ -353,8 +355,6 @@
       "search_filter_example2": "Match with 'sAMAccountName' for Active Directory",
       "username_detail": "Specification of mappings for <code>username</code> when creating new users",
       "name_detail": "Specification of mappings for <code>name</code> when creating new users",
-      "Treat username matching as identical": "Automatically bind external accounts newly logged in to local accounts when <code>username</code> match",
-  		"Treat username matching as identical_warn": "WARNING: Be aware of security because the system treats the same user as a match of <code>username</code>.",
       "group_search_base_DN": "Group Search Base DN",
       "group_search_base_DN_detail": "The base DN from which to search for groups. If defined, also <code>Group Search Filter</code> must be defined for the search to work.",
       "group_search_filter": "Group Search Filter",
@@ -365,15 +365,30 @@
       "group_search_user_DN_property_detail": "The property of user object to use in <code>&#123;&#123;dn&#125;&#125;</code> interpolation of <code>Group Search Filter</code>.",
       "test_config": "Test Saved Configuration"
     },
-    "Google_OAuth": {
-      "use_Google_OAuth": "Google OAuth",
-      "change_redirect_url": "Enter <code>%s</code> <br>(where <code>%s</code> is your host name) for \"Authorized redirect URIs\"."
-    },
-    "Facebook": {
-    },
-    "Twitter": {
-    },
-    "Github": {
+    "OAuth": {
+      "register": "Register for %s",
+      "connect_api_manager": "Register your Growi at <a href=\"%s\" target=\"_blank\">%s</a>",
+      "change_redirect_url": "Enter <code>%s</code> <br>(where <code>%s</code> is your host name) for \"Authorized redirect URIs\".",
+      "Google": {
+        "name": "Google OAuth",
+        "register_1": "Access <a href=\"%s\" target=\"_blank\">%s</a>",
+        "register_2": "Create Project if no projects exist",
+        "register_3": "Create Credentials &rightarrow; OAuth client ID &rightarrow; Select \"Web application\"",
+        "register_4": "Register your OAuth App with one of Authorized redirect URIs as <code>%s</code> (where <code>%s</code> is your hostname)",
+        "register_5": "Copy and paste your ClientID and Client Secret below"
+      },
+      "Facebook": {
+        "name": "Facebook OAuth"
+      },
+      "Twitter": {
+        "name": "Twitter OAuth"
+      },
+      "GitHub": {
+        "name": "GitHub OAuth",
+        "register_1": "Access <a href=\"%s\" target=\"_blank\">%s</a>",
+        "register_2": "Register your OAuth App with \"Authorization callback URL\" as <code>%s</code> (where <code>%s</code> is your hostname)",
+        "register_3": "Copy and paste your ClientID and Client Secret below"
+      }
     }
 	},
 
