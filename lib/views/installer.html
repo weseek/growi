@@ -3,7 +3,7 @@
 {% block html_base_css %}installer nologin{% endblock %}
 
 {% block html_title %}{{ customTitle('セットアップ') }}{% endblock %}
-
+              
 
 
 {#
@@ -45,10 +45,18 @@
 
     <div class="login-dialog p-t-10 p-b-10 col-sm-offset-4 col-sm-4" id="login-dialog">
       <p class="alert alert-success">
-        <strong>最初のアカウントの作成</strong><br>
-        <small>初めに作成するアカウントは、自動的に管理者権限が付与されます</small>
+        <strong>{{ t('installer_page.first_account') }}</strong><br>
+        <small>{{ t('installer_page.administrative_privileges') }}</small>
       </p>
-
+   {# tantatively borrowed from customize.html #}
+        <div class="form-group">
+          <div class="p-b-10 d-flex justify-content-center">
+            <label>言語/Language&emsp;</label>
+            <select name="registerForm[language]">
+              <option value="Japanese">日本語</option>
+              <option value="English">English</option>
+            </select>
+        </div>
       <form role="form" action="/installer/createAdmin" method="post" id="register-form">
 
         <div class="input-group" id="input-group-username">
@@ -73,6 +81,7 @@
           <span class="input-group-addon"><i class="icon-lock"></i></span>
           <input type="password" class="form-control" placeholder="{{ t('Password') }}" name="registerForm[password]" required>
         </div>
+     
 
         <input type="hidden" name="_csrf" value="{{ csrf() }}">
         <div class="input-group m-t-30 m-b-20 d-flex justify-content-center">
@@ -113,6 +122,10 @@ $(function() {
     });
   });
 });
+$(function() {
+  $(location).attr('search');
+  if("#?lang=ja" == location.search) {
+}
 </script>
 
 {% endblock %}

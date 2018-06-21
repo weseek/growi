@@ -439,6 +439,13 @@
     "your_own":"You cannot deactivate your own account",
     "Administrator menu":"Administrator menu",
     "cannot_remove":"You cannot remove yourself from administrator"
+  },
+
+  "installer_page": {
+    "not_available": "This user ID is currently not available",
+    "Setup": "Setup",
+    "first_account": "Create the first account",
+    "administrative_privileges": "Administrative privileges are automatically authorized to the first account"
   }
 
 }
