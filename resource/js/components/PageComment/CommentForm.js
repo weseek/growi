@@ -45,8 +45,6 @@ export default class CommentForm extends React.Component {
     this.postComment = this.postComment.bind(this);
     this.renderHtml = this.renderHtml.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
-    this.pageSavedHandler = this.pageSavedHandler.bind(this);
-    this.clearDraft = this.clearDraft.bind(this);
     this.apiErrorHandler = this.apiErrorHandler.bind(this);
     this.onUpload = this.onUpload.bind(this);
   }
@@ -150,7 +148,7 @@ export default class CommentForm extends React.Component {
     formData.append('_csrf', this.props.crowi.csrfToken);
     formData.append('file', file);
     formData.append('path', this.props.pagePath);
-    formData.append('page_id', this.state.pageId || 0);
+    formData.append('page_id', this.props.pageId || 0);
 
     // post
     this.props.crowi.apiPost(endpoint, formData)
@@ -166,11 +164,6 @@ export default class CommentForm extends React.Component {
           insertText = '!' + insertText;
         }
         this.refs.editor.insertText(insertText);
-
-        // update page information if created
-        // if (res.pageCreated) {
-        //   this.pageSavedHandler(res.page);
-        // }
       })
       .catch(this.apiErrorHandler)
       // finally
@@ -178,26 +171,6 @@ export default class CommentForm extends React.Component {
         this.refs.editor.terminateUploadingState();
       });
   }
-
-  clearDraft() {
-    this.props.crowi.clearDraft(this.props.pagePath);
-  }
-
-  pageSavedHandler(page) {
-    // update states
-    this.setState({
-      pageId: page.id,
-      revisionId: page.revision._id,
-      markdown: page.revision.body
-    });
-       // clear draft
-       this.clearDraft();
-
-       // dispatch onSaveSuccess event
-       if (this.props.onSaveSuccess != null) {
-         this.props.onSaveSuccess(page);
-       }
-      }
 
   apiErrorHandler(error) {
     console.error(error);
