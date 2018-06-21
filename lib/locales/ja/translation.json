@@ -325,6 +325,7 @@
     "username_email_password": "ユーザー名、Eメール、パスワードでの認証",
     "ldap_auth": "LDAP 認証",
     "google_auth2": "Google OAuth2 認証",
+    "google_auth2_by_crowi_desc": "ただし、この機能では新たなユーザーは作成されず、関連付け設定を行った既存ユーザーをログインできるようにするだけです。",
     "facebook_auth2": "Facebook OAuth2 認証",
     "twitter_auth2": "Twitter OAuth 認証",
     "github_auth2": "Github OAuth2 認証",
@@ -384,7 +385,6 @@
     },
     "OAuth": {
       "register": "%sに登録",
-      "connect_api_manager": "あなたのGrowiを<a href=\"%s\" target=\"_blank\">%s</a>で登録してください。",
       "change_redirect_url": "承認済みのリダイレクトURLに、 <code>%s</code> を入力<br>(<code>%s</code>は環境に合わせて変更してください)",
       "Google": {
         "name": "Google OAuth認証",
@@ -392,7 +392,7 @@
         "register_2": "プロジェクトがない場合はプロジェクトを作成",
         "register_3": "認証情報を作成 &rightarrow; OAuthクライアントID &rightarrow; ウェブアプリケーションを選択",
         "register_4": "承認済みのリダイレクトURIを<code>%s</code>としてGrowiを登録 (<code>%s</code>は環境に合わせて変更してください)",
-        "register_5": "以下にクライアントIDとクライアントシークレットを貼り付ける"
+        "register_5": "上記フォームにクライアントIDとクライアントシークレットを入力"
       },
       "Facebook": {
         "name": "Facebook OAuth認証"
@@ -404,7 +404,7 @@
         "name": "GitHub OAuth認証",
         "register_1": "<a href=\"%s\" target=\"_blank\">%s</a>へアクセス",
         "register_2": "\"Authorization callback URL\"を<code>%s</code>としてGrowiを登録 (<code>%s</code>は環境に合わせて変更してください)",
-        "register_3": "以下にクライアントIDとクライアントシークレットを貼り付ける"
+        "register_3": "上記フォームにクライアントIDとクライアントシークレットを入力"
       }
     }
   },

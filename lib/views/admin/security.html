@@ -121,9 +121,9 @@
                 <li>{{ t("security_setting.username_email_password") }}</li>
                 <li>{{ t("security_setting.ldap_auth") }}</li>
                 <li>{{ t("security_setting.google_auth2") }}</li>
+                <li>{{ t("security_setting.github_auth2") }}</li>
                 <li class="text-muted">(TBD) <del>{{ t("security_setting.facebook_auth2") }}</del></li>
                 <li class="text-muted">(TBD) <del>{{ t("security_setting.twitter_auth2") }}</del></li>
-                <li>{{ t("security_setting.github_auth2") }}</li>
               </ul>
             </div>
             <div class="col-xs-6">
@@ -138,7 +138,10 @@
               </h4>
               <ul>
                 <li>{{ t("security_setting.username_email_password") }}</li>
-                <li>{{ t("security_setting.google_auth2") }}</li>
+                <li class="text-muted">
+                  {{ t("security_setting.google_auth2") }}
+                  <ul><li>{{ t("security_setting.google_auth2_by_crowi_desc") }}</li></ul>
+                </li>
               </ul>
             </div>
           </div>
@@ -233,7 +236,10 @@
               <a href="#passport-ldap" data-toggle="tab" role="tab"><i class="fa fa-sitemap"></i> LDAP</a>
             </li>
             <li>
-              <a href="#passport-google-oauth" data-toggle="tab" role="tab"><i class="icon-social-google"></i> Google</a>
+              <a href="#passport-google-oauth" data-toggle="tab" role="tab"><i class="fa fa-google"></i> Google</a>
+            </li>
+            <li>
+              <a href="#passport-github" data-toggle="tab" role="tab"><i class="fa fa-github"></i> GitHub</a>
             </li>
             <li class="tbd">
               <a href="#passport-facebook" data-toggle="tab" role="tab"><i class="fa fa-facebook"></i> (TBD) Facebook</a>
@@ -241,8 +247,6 @@
             <li class="tbd">
               <a href="#passport-twitter" data-toggle="tab" role="tab"><i class="fa fa-twitter"></i> (TBD) Twitter</a>
             </li>
-            <li>
-              <a href="#passport-github" data-toggle="tab" role="tab"><i class="icon-social-github"></i> GitHub</a>
           </ul>
 
           <div class="tab-content p-t-10" {% if isRestartingServerNeeded %}style="opacity: 0.4;"{% endif %}>
