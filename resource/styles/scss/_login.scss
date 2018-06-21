@@ -98,8 +98,26 @@
     }
   }
 
+  .collapse-oauth {
+    overflow: hidden;
+    &:not(.in) {
+      height: 0;
+      padding: 0 !important;
+    }
+
+    form {
+      flex: 1;
+      @media(min-width: 350px) {
+        flex: 0.49;
+      }
+    }
+    .spacer {
+      height: 10px;
+    }
+  }
+
   // button style
-  .btn-login.fcbtn, .btn-register.fcbtn, .btn-login-oauth.fcbtn {
+  .btn-login.fcbtn, .btn-register.fcbtn, .btn-login-oauth.fcbtn, .btn-collapse-oauth {
     border: none;
     color: white;
     background-color: rgba(lighten(black, 20%), 0.4);
@@ -110,6 +128,12 @@
     }
     &:focus {
       border: none;
+    }
+  }
+  .btn-login-oauth {
+    flex: 1;
+    .btn-label-text {
+      flex: 1;
     }
   }
   .btn-login.fcbtn {
