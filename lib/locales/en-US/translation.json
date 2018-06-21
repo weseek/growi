@@ -310,7 +310,7 @@
     "google_auth2_by_crowi_desc": "However, this feature does not create new users, butit only makes it possible to login to the existing user who set up the association.",
     "facebook_auth2": "Facebook OAuth2 authentication",
     "twitter_auth2": "Twitter OAuth authentication",
-    "github_auth2": "Github OAuth2 authentication",
+    "github_auth2": "GitHub OAuth2 authentication",
     "crowi_auth": "Crowi classic authentication mechanism",
 		"require_server_restart": "Restarting the server is required.",
 		"server_on_passport_auth": "The server is running with Passport authentication mechanism.",

@@ -328,7 +328,7 @@
     "google_auth2_by_crowi_desc": "ただし、この機能では新たなユーザーは作成されず、関連付け設定を行った既存ユーザーをログインできるようにするだけです。",
     "facebook_auth2": "Facebook OAuth2 認証",
     "twitter_auth2": "Twitter OAuth 認証",
-    "github_auth2": "Github OAuth2 認証",
+    "github_auth2": "GitHub OAuth2 認証",
     "require_server_restart": "サーバーを再起動してください。",
     "server_on_passport_auth": "Passport 認証機構でサーバーが稼働しています。",
     "server_on_crowi_auth": "Crowi Classic 認証機構でサーバーが稼働しています。",
