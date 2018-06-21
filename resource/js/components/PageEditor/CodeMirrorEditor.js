@@ -10,7 +10,6 @@ const loadCssSync = require('load-css-file');
 import * as codemirror from 'codemirror';
 
 import { UnControlled as ReactCodeMirror } from 'react-codemirror2';
-require('codemirror/addon/display/autorefresh');
 require('codemirror/addon/edit/matchbrackets');
 require('codemirror/addon/edit/matchtags');
 require('codemirror/addon/edit/closetag');
@@ -27,6 +26,7 @@ require('codemirror/addon/fold/foldgutter.css');
 require('codemirror/addon/fold/markdown-fold');
 require('codemirror/addon/fold/brace-fold');
 require('codemirror/mode/gfm/gfm');
+require('../../util/codemirror/autorefresh.ext');
 
 import pasteHelper from './PasteHelper';
 import EmojiAutoCompleteHelper from './EmojiAutoCompleteHelper';
@@ -428,7 +428,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
           tabSize: 4,
           indentUnit: 4,
           lineWrapping: true,
-          autoRefresh: true,
+          autoRefresh: {force: true},   // force option is enabled by autorefresh.ext.js -- Yuki Takei
           autoCloseTags: true,
           matchBrackets: true,
           matchTags: {bothTags: true},

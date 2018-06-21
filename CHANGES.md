@@ -1,10 +1,14 @@
 CHANGES
 ========
 
-## 3.1.8
+## 3.1.8-RC
 
+* Imprv: Place the commented page at the beginning of the list
+* Imprv: Resolve errors on IE11 (Experimental)
+* Support: Migrate to webpack 4 
 * Support: Upgrade libs
     * react-bootstrap-typeahead
+    * react-codemirror2
     * webpack
 
 ## 3.1.7
