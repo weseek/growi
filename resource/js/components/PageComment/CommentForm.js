@@ -106,7 +106,7 @@ export default class CommentForm extends React.Component {
   }
 
   renderHtml(markdown) {
-    var context = {
+    const context = {
       markdown,
       dom: this.previewElement,
     };
@@ -120,7 +120,7 @@ export default class CommentForm extends React.Component {
       })
       .then(() => interceptorManager.process('postPreProcess', context))
       .then(() => {
-        var parsedHTML = crowiRenderer.process(context.markdown);
+        const parsedHTML = crowiRenderer.process(context.markdown);
         context['parsedHTML'] = parsedHTML;
       })
       .then(() => interceptorManager.process('prePostProcess', context))
@@ -173,7 +173,6 @@ export default class CommentForm extends React.Component {
   }
 
   apiErrorHandler(error) {
-    console.error(error);
     toastr.error(error.message, 'Error occured', {
       closeButton: true,
       progressBar: true,
@@ -193,7 +192,6 @@ export default class CommentForm extends React.Component {
     const commentPreview = this.state.isMarkdown ? this.getCommentHtml(): ReactUtils.nl2br(comment);
     const emojiStrategy = this.props.crowi.getEmojiStrategy();
 
-    const editorOptions = Object.assign(this.props.editorOptions || {}, { lineNumbers: false });
     return (
       <div>
         <form className="form page-comment-form" id="page-comment-form" onSubmit={this.postComment}>
@@ -210,7 +208,7 @@ export default class CommentForm extends React.Component {
                     <Tab eventKey={1} title="Write">
                       <Editor ref="editor"
                         value={this.state.comment}
-                        editorOptions={editorOptions}
+                        editorOptions={this.props.editorOptions}
                         lineNumbers={false}
                         isMobile={this.props.crowi.isMobile}
                         isUploadable={this.state.isUploadable}
@@ -260,4 +258,7 @@ CommentForm.propTypes = {
   revisionId: PropTypes.string,
   pagePath: PropTypes.string,
   editorOptions: PropTypes.object,
+};
+CommentForm.defaultProps = {
+  editorOptions: {},
 };

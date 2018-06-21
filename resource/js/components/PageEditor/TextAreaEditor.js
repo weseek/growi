@@ -181,8 +181,7 @@ export default class TextAreaEditor extends AbstractEditor {
   /**
    * handle ENTER key
    */
-  handleEnterKey() {
-    var context = {
+    const context = {
       handlers: [],  // list of handlers which process enter key
       editor: this,
     };
