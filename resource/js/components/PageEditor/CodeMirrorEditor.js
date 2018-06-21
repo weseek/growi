@@ -162,7 +162,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
     const editor = this.getCodeMirror();
     // get top position of the line
-    var top = editor.charCoords({line, ch: 0}, 'local').top;
+    const top = editor.charCoords({line, ch: 0}, 'local').top;
     editor.scrollTo(null, top);
   }
 
@@ -330,7 +330,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
    * handle ENTER key
    */
   handleEnterKey() {
-    var context = {
+    const context = {
       handlers: [],  // list of handlers which process enter key
       editor: this,
     };
