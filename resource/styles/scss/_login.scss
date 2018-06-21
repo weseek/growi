@@ -99,7 +99,7 @@
   }
 
   // button style
-  .btn-login.fcbtn, .btn-register.fcbtn, .btn-login-google.fcbtn {
+  .btn-login.fcbtn, .btn-register.fcbtn, .btn-login-oauth.fcbtn {
     border: none;
     color: white;
     background-color: rgba(lighten(black, 20%), 0.4);
@@ -120,9 +120,33 @@
       background-color: #7e4153;
     }
   }
-  .btn-login-google.fcbtn {
+  .btn-login-oauth.fcbtn#google {
     .btn-label {
-      background-color: rgba(#444, 0.4);
+      background: linear-gradient(to bottom right, darken(#db3236, 20%), darken(#f4c20d, 20%), darken(#3cba54, 20%), darken(#4885ed, 20%));
+    }
+    &:after {
+      background-color: #555;
+    }
+  }
+  .btn-login-oauth.fcbtn#github {
+    .btn-label {
+      background-color: rgba(#24292e, 0.4);
+    }
+    &:after {
+      background-color: #555;
+    }
+  }
+  .btn-login-oauth.fcbtn#facebook {
+    .btn-label {
+      background-color: rgba(#29487d, 0.4);
+    }
+    &:after {
+      background-color: #555;
+    }
+  }
+  .btn-login-oauth.fcbtn#twitter {
+    .btn-label {
+      background-color: rgba(#1da1f2, 0.4);
     }
     &:after {
       background-color: #555;

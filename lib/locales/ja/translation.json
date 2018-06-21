@@ -84,7 +84,7 @@
   "Table of Contents": "目次",
   "Management Wiki Home": "Wiki管理トップ",
   "App settings": "アプリ設定",
-  "Markdown settings": "Markdown設定",
+  "Markdown settings": "マークダウン設定",
   "Customize": "カスタマイズ",
   "Notification settings": "通知設定",
   "User management": "ユーザー管理",
@@ -332,8 +332,8 @@
     "server_on_passport_auth": "Passport 認証機構でサーバーが稼働しています。",
     "server_on_crowi_auth": "Crowi Classic 認証機構でサーバーが稼働しています。",
     "google_setting": "Google 設定",
-    "connect_api_manager": "Google Cloud Platform の <a href=\"https://console.cloud.google.com/apis/credentials\">API Manager</a>から OAuth2 Client ID を作成すると、Google アカウントにコネクトして登録やログインが可能になります。",
-    "access_api_manager": "<a href=\"https://console.cloud.google.com/apis/credentials\">API Manager</a> へアクセス",
+    "connect_api_manager": "Google Cloud Platform の <a href=\"https://console.cloud.google.com/apis/credentials\" target=\"_blank\">API Manager</a>から OAuth2 Client ID を作成すると、Google アカウントにコネクトして登録やログインが可能になります。",
+    "access_api_manager": "<a href=\"%s\" target=\"_blank\">%s</a> へアクセス",
     "create_project": "プロジェクトを作成していない場合は作成してください",
     "create_auth_to_oauth": "「認証情報を作成」-> OAuthクライアントID",
     "select_webapp": "「ウェブアプリケーション」を選択",
@@ -349,8 +349,10 @@
       "restricted": "制限 (登録完了には管理者の承認が必要)",
       "closed": "非公開 (登録には管理者による招待が必要)"
     },
-    "configuration": "コンフィギュレーション",
+    "configuration": "設定",
     "optional": "オプション",
+    "Treat username matching as identical": "新規ログイン時、<code>%s</code> が一致したローカルアカウントが存在した場合は自動的に紐付ける",
+    "Treat username matching as identical_warn": "警告: <code>%s</code> の一致を以て同一ユーザーであるとみなすので、セキュリティに注意してください",
     "ldap": {
       "server_url_detail": "LDAP URLを <code>ldap://host:port/DN</code> または <code>ldaps://host:port/DN</code> の形式で入力してください。",
       "bind_mode": "Bind モード",
@@ -370,8 +372,6 @@
       "search_filter_example2": "'sAMAccountName' に一致 (Active Directory)",
       "username_detail": "新規ユーザーのアカウント名(<code>username</code>)に関連付ける属性",
       "name_detail": "新規ユーザーの表示名(<code>name</code>)に関連付ける属性",
-      "Treat username matching as identical": "新規ログイン時、<code>username</code> が一致したローカルアカウントが存在した場合は自動的に紐付ける",
-      "Treat username matching as identical_warn": "WARNING: <code>username</code> の一致を以て同一ユーザーであるとみなすので、セキュリティに注意してください",
       "group_search_base_DN": "グループ検索ベース DN",
       "group_search_base_DN_detail": "グループ検索を実行するベース DN。利用する場合は <code>グループ検索フィルター</code> も入力する必要があります。",
       "group_search_filter": "グループ検索フィルター",
@@ -379,15 +379,33 @@
       "group_search_filter_detail2": "ログイン対象ユーザーオブジェクトのプロパティーで置換する場合は <code>&#123;&#123;dn&#125;&#125;</code> を用いてください。",
       "group_search_filter_detail3": "<code>(&(cn=group1)(memberUid=&#123;&#123;dn&#125;&#125;))</code> は <code>cn=group1</code> と、ユーザーの <code>uid</code> を含む <code>memberUid</code> を持つグループにヒットします(<code>ユーザーの DN プロパティー</code> がデフォルトから変更されていない場合)",
       "group_search_user_DN_property": "ユーザーの DN プロパティー",
-      "group_search_user_DN_property_detail": "<code>グループ検索フィルター</code> 内の <code>&#123;&#123;dn&#125;&#125;</code> で置換される、ユーザーオブジェクトのプロパティー"
+      "group_search_user_DN_property_detail": "<code>グループ検索フィルター</code> 内の <code>&#123;&#123;dn&#125;&#125;</code> で置換される、ユーザーオブジェクトのプロパティー",
+      "test_config": "ログインテスト"
     },
-    "Google OAuth": {
-    },
-    "Facebook": {
-    },
-    "Twitter": {
-    },
-    "Github": {
+    "OAuth": {
+      "register": "%sに登録",
+      "connect_api_manager": "あなたのGrowiを<a href=\"%s\" target=\"_blank\">%s</a>で登録してください。",
+      "change_redirect_url": "承認済みのリダイレクトURLに、 <code>%s</code> を入力<br>(<code>%s</code>は環境に合わせて変更してください)",
+      "Google": {
+        "name": "Google OAuth認証",
+        "register_1": "<a href=\"%s\" target=\"_blank\">%s</a>へアクセス",
+        "register_2": "プロジェクトがない場合はプロジェクトを作成",
+        "register_3": "認証情報を作成 &rightarrow; OAuthクライアントID &rightarrow; ウェブアプリケーションを選択",
+        "register_4": "承認済みのリダイレクトURIを<code>%s</code>としてGrowiを登録 (<code>%s</code>は環境に合わせて変更してください)",
+        "register_5": "以下にクライアントIDとクライアントシークレットを貼り付ける"
+      },
+      "Facebook": {
+        "name": "Facebook OAuth認証"
+      },
+      "Twitter": {
+        "name": "Twitter OAuth認証"
+      },
+      "GitHub": {
+        "name": "GitHub OAuth認証",
+        "register_1": "<a href=\"%s\" target=\"_blank\">%s</a>へアクセス",
+        "register_2": "\"Authorization callback URL\"を<code>%s</code>としてGrowiを登録 (<code>%s</code>は環境に合わせて変更してください)",
+        "register_3": "以下にクライアントIDとクライアントシークレットを貼り付ける"
+      }
     }
   },
   "markdown_setting": {

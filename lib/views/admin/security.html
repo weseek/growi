@@ -111,7 +111,7 @@
                   <input type="radio" id="radioPassportAuthMech" name="settingForm[security:isEnabledPassport]" value="true"
                       {% if true === settingForm['security:isEnabledPassport'] %}checked="checked"{% endif %}>
                   <label for="radioPassportAuthMech">
-                    <a href="http://passportjs.org/">
+                    <a href="http://passportjs.org/" target="_blank">
                       <img src="/images/admin/security/passport-logo.svg" class="passport-logo"> Passport
                     </a> {{ t("security_setting.auth_mechanism") }} <small class="text-success">({{ t("security_setting.recommended") }})</small>
                   </label>
@@ -120,10 +120,10 @@
               <ul>
                 <li>{{ t("security_setting.username_email_password") }}</li>
                 <li>{{ t("security_setting.ldap_auth") }}</li>
-                <li class="text-muted tbd">(TBD) <del>{{ t("security_setting.google_auth2") }}</del></li>
-                <li class="text-muted tbd">(TBD) <del>{{ t("security_setting.facebook_auth2") }}</del></li>
-                <li class="text-muted tbd">(TBD) <del>{{ t("security_setting.twitter_auth2") }}</del></li>
-                <li class="text-muted tbd">(TBD) <del>{{ t("security_setting.github_auth2") }}</del></li>
+                <li>{{ t("security_setting.google_auth2") }}</li>
+                <li class="text-muted">(TBD) <del>{{ t("security_setting.facebook_auth2") }}</del></li>
+                <li class="text-muted">(TBD) <del>{{ t("security_setting.twitter_auth2") }}</del></li>
+                <li>{{ t("security_setting.github_auth2") }}</li>
               </ul>
             </div>
             <div class="col-xs-6">
@@ -179,7 +179,7 @@
               </p>
 
               <ol class="help-block">
-                <li>{{ t("security_setting.access_api_manager") }}</li>
+                <li>{{ t("security_setting.access_api_manager", "https://console.cloud.google.com/apis/credentials", "API Manager") }}</li>
                 <li>{{ t("security_setting.create_project") }}</li>
                 <li>{{ t("security_setting.create_auth_to_oauth") }}</li>
                 <ol>
@@ -232,8 +232,8 @@
             <li class="active">
               <a href="#passport-ldap" data-toggle="tab" role="tab"><i class="fa fa-sitemap"></i> LDAP</a>
             </li>
-            <li class="tbd">
-              <a href="#passport-google-oauth" data-toggle="tab" role="tab"><i class="fa fa-google"></i> (TBD) Google OAuth</a>
+            <li>
+              <a href="#passport-google-oauth" data-toggle="tab" role="tab"><i class="icon-social-google"></i> Google</a>
             </li>
             <li class="tbd">
               <a href="#passport-facebook" data-toggle="tab" role="tab"><i class="fa fa-facebook"></i> (TBD) Facebook</a>
@@ -241,9 +241,8 @@
             <li class="tbd">
               <a href="#passport-twitter" data-toggle="tab" role="tab"><i class="fa fa-twitter"></i> (TBD) Twitter</a>
             </li>
-            <li class="tbd">
-              <a href="#passport-github" data-toggle="tab" role="tab"><i class="fa fa-github"></i> (TBD) Github</a>
-            </li>
+            <li>
+              <a href="#passport-github" data-toggle="tab" role="tab"><i class="icon-social-github"></i> GitHub</a>
           </ul>
 
           <div class="tab-content p-t-10" {% if isRestartingServerNeeded %}style="opacity: 0.4;"{% endif %}>
@@ -276,7 +275,7 @@
   </div>
 
   <script>
-    $('#generalSetting, #googleSetting, #mechanismSetting').each(function() {
+    $('#generalSetting, #googleSetting, #mechanismSetting, #githubSetting').each(function() {
       $(this).submit(function()
       {
         function showMessage(formId, msg, status) {
