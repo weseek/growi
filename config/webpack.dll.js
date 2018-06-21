@@ -9,23 +9,27 @@ module.exports = {
   mode: 'development',
   entry: {
     dlls: [
-      'browser-bunyan', 'bunyan-format',
+      // Libraries
       'axios',
+      'babel-polyfill',
       'bootstrap-select',
+      'browser-bunyan', 'bunyan-format',
+      'codemirror', 'react-codemirror2',
       'clipboard',
       'date-fns',
+      'diff2html',
       'debug',
       'entities',
-      'react', 'react-dom', 'react-bootstrap', 'react-bootstrap-typeahead', 'react-i18next',
-      'codemirror', 'react-codemirror2', 'react-dropzone',
-      'jquery-slimscroll',
-      'markdown-it', 'csv-to-markdown-table',
-      'diff2html',
-      'lodash', 'pako',
       'i18next', 'i18next-browser-languagedetector',
+      'jquery-slimscroll',
+      'lodash', 'pako',
+      'markdown-it', 'csv-to-markdown-table',
+      'react', 'react-dom',
+      'react-bootstrap', 'react-bootstrap-typeahead', 'react-i18next', 'react-dropzone',
       'socket.io-client',
       'toastr',
       'xss',
+      // GROWI Libraries
       'growi-pluginkit',
     ]
   },
@@ -43,5 +47,5 @@ module.exports = {
       path: helpers.root('public/dll/manifest.json'),
       name: 'growi_dlls'
     })
-  ]
+  ],
 };
