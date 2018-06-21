@@ -42,8 +42,8 @@ module.exports = require('./webpack.common')({
   plugins: [
 
     new webpack.DllReferencePlugin({
-      context: helpers.root('public/dll'),
-      manifest: path.join(helpers.root('public/dll'), 'manifest.json')
+      context: helpers.root(),
+      manifest: require(helpers.root('public/dll', 'manifest.json')),
     }),
 
     new BundleAnalyzerPlugin({
