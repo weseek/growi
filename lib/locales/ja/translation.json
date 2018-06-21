@@ -333,7 +333,7 @@
     "server_on_crowi_auth": "Crowi Classic 認証機構でサーバーが稼働しています。",
     "google_setting": "Google 設定",
     "connect_api_manager": "Google Cloud Platform の <a href=\"https://console.cloud.google.com/apis/credentials\" target=\"_blank\">API Manager</a>から OAuth2 Client ID を作成すると、Google アカウントにコネクトして登録やログインが可能になります。",
-    "access_api_manager": "<a href=\"https://console.cloud.google.com/apis/credentials\" target=\"_blank\">API Manager</a> へアクセス",
+    "access_api_manager": "<a href=\"%s\" target=\"_blank\">%s</a> へアクセス",
     "create_project": "プロジェクトを作成していない場合は作成してください",
     "create_auth_to_oauth": "「認証情報を作成」-> OAuthクライアントID",
     "select_webapp": "「ウェブアプリケーション」を選択",

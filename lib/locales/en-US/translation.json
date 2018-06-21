@@ -316,7 +316,7 @@
 		"server_on_crowi_auth": "The server is running with official Crowi authentication mechanism.",
 		"google_setting": "Google Setting",
     "connect_api_manager": "You can use your Google account to sign up and login after creating OAuth2 ClientId at <a href=\"https://console.cloud.google.com/apis/credentials\" target=\"_blank\">API Manager on Google Cloud Platform</a>",
-		"access_api_manager": "Access <a href=\"https://console.cloud.google.com/apis/credentials\" target=\"_blank\">API Manager</a>",
+		"access_api_manager": "Access <a href=\"%s\" target=\"_blank\">%s</a>",
 		"create_project": "Create Project if no projects have been created.",
 		"create_auth_to_oauth": "\"Create credentials\" -> \"OAuth clientID\"",
 		"select_webapp": "Select \"Web Application\"",
