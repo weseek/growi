@@ -3,8 +3,12 @@ CHANGES
 
 ## 3.1.8-RC
 
-* Imprv: Place the commented page at the beginning of the list
-* Imprv: Resolve errors on IE11 (Experimental)
+* Feature: Login with Google Account
+* Feature: Login with GitHub Account
+* Feature: Attach files in Comment
+* Improvement: Write comment with CodeMirror Editor
+* Improvement: Place the commented page at the beginning of the list
+* Improvement: Resolve errors on IE11 (Experimental)
 * Support: Migrate to webpack 4 
 * Support: Upgrade libs
     * react-bootstrap-typeahead
