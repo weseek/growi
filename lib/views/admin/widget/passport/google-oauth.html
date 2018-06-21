@@ -1,11 +1,11 @@
 <form action="/_api/admin/security/passport-google" method="post" class="form-horizontal passportStrategy" id="googleSetting" role="form"
     {% if isRestartingServerNeeded %}style="opacity: 0.4;"{% endif %}>
-  <legend>Google OAuth {{ t("security_setting.configuration") }}</legend>
-  <p class="well alert-anchor">{{ t("security_setting.connect_api_manager") }}</p>
+  <legend>{{ t("security_setting.OAuth.Google.name") }}{{ t("security_setting.configuration") }}</legend>
+  <p class="well alert-anchor">{{ t("security_setting.OAuth.connect_api_manager", "https://console.cloud.google.com/apis/credentials", "Google Cloud Platform API Manager") }}</p>
   {% set nameForIsGoogleEnabled = "settingForm[security:passport-google:isEnabled]" %}
   {% set isGoogleEnabled = settingForm['security:passport-google:isEnabled'] %}
   <div class="form-group">
-    <label for="{{nameForIsGoogleEnabled}}" class="col-xs-3 control-label">{{ t("security_setting.Google_OAuth.use_Google_OAuth") }}</label>
+    <label for="{{nameForIsGoogleEnabled}}" class="col-xs-3 control-label">{{ t("security_setting.OAuth.Google.name") }}</label>
     <div class="col-xs-6">
       <div class="btn-group btn-toggle" data-toggle="buttons">
         <label class="btn btn-default btn-rounded btn-outline {% if isGoogleEnabled %}active{% endif %}" data-active-class="primary">
@@ -22,16 +22,14 @@
   <fieldset id="passport-google-hide-when-disabled" {%if !isGoogleEnabled %}style="display: none;"{% endif %}>
 
     <div class="form-group">
-      <label for="settingForm[security:passport-google:clientId]" class="col-xs-3 control-label">{{ t("security_setting.google_setting") }}</label>
+      <label for="settingForm[security:passport-google:clientId]" class="col-xs-3 control-label">{{ t("security_setting.OAuth.register", t("security_setting.OAuth.Google.name") ) }}</label>
       <div class="col-xs-6">
         <ol class="help-block">
-          <li>{{ t("security_setting.access_api_manager") }}</li>
-          <li>{{ t("security_setting.create_project") }}</li>
-          <li>{{ t("security_setting.create_auth_to_oauth") }}</li>
-          <ol>
-            <li>{{ t("security_setting.select_webapp") }}</li>
-            <li>{{ t("security_setting.Google_OAuth.change_redirect_url", "https://${growi.host}/passport/google/callback", "${growi.host}") }}</li>
-          </ol>
+          <li>{{ t("security_setting.OAuth.Google.register_1", "https://console.cloud.google.com/apis/credentials", "Google Cloud Platform API Manager") }}</li>
+          <li>{{ t("security_setting.OAuth.Google.register_2") }}</li>
+          <li>{{ t("security_setting.OAuth.Google.register_3") }}</li>
+          <li>{{ t("security_setting.OAuth.Google.register_4", "https://${growi.host}/passport/google/callback", "${growi.host}") }}</li>
+          <li>{{ t("security_setting.OAuth.Google.register_5") }}</li>
         </ol>
       </div>
     </div>
@@ -55,11 +53,11 @@
           <input type="checkbox" id="bindByUserName-Google" name="settingForm[security:passport-google:isSameUsernameTreatedAsIdenticalUser]" value="1"
               {% if settingForm['security:passport-google:isSameUsernameTreatedAsIdenticalUser'] %}checked{% endif %} />
           <label for="bindByUserName-Google">
-            {{ t("security_setting.ldap.Treat username matching as identical") }}
+            {{ t("security_setting.Treat username matching as identical", "username") }}
           </label>
           <p class="help-block">
             <small>
-              {{ t("security_setting.ldap.Treat username matching as identical_warn") }}
+              {{ t("security_setting.Treat username matching as identical_warn", "username") }}
             </small>
           </p>
         </div>
