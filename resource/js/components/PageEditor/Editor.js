@@ -60,6 +60,13 @@ export default class Editor extends AbstractEditor {
   /**
    * @inheritDoc
    */
+  setGfmMode(bool) {
+    this.getEditorSubstance().setGfmMode(bool);
+  }
+
+  /**
+   * @inheritDoc
+   */
   setCaretLine(line) {
     this.getEditorSubstance().setCaretLine(line);
   }

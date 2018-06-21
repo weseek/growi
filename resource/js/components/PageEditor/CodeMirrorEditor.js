@@ -45,6 +45,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
     this.state = {
       value: this.props.value,
+      isGfmMode: this.props.isGfmMode,
       isEnabledEmojiAutoComplete: false,
       isLoadingKeymap: false,
       additionalClass: '',
@@ -135,6 +136,18 @@ export default class CodeMirrorEditor extends AbstractEditor {
   setValue(newValue) {
     this.setState({ value: newValue });
     this.getCodeMirror().getDoc().setValue(newValue);
+  }
+
+  /**
+   * @inheritDoc
+   */
+  setGfmMode(bool) {
+    this.setState({
+      isGfmMode: bool,
+      isEnabledEmojiAutoComplete: bool,
+    });
+    const mode = bool ? 'gfm' : undefined;
+    this.getCodeMirror().setOption('mode', mode);
   }
 
   /**
@@ -330,6 +343,11 @@ export default class CodeMirrorEditor extends AbstractEditor {
    * handle ENTER key
    */
   handleEnterKey() {
+    if (!this.state.isGfmMode) {
+      codemirror.commands.newlineAndIndent(this.getCodeMirror());
+      return;
+    }
+
     const context = {
       handlers: [],  // list of handlers which process enter key
       editor: this,
@@ -404,6 +422,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   render() {
+    const mode = this.state.isGfmMode ? 'gfm' : undefined;
     const defaultEditorOptions = {
       theme: 'elegant',
       lineNumbers: true,
@@ -421,7 +440,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
         }}
         value={this.state.value}
         options={{
-          mode: 'gfm',
+          mode: mode,
           theme: editorOptions.theme,
           styleActiveLine: editorOptions.styleActiveLine,
           lineNumbers: this.props.lineNumbers,

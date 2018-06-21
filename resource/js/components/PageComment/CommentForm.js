@@ -56,6 +56,8 @@ export default class CommentForm extends React.Component {
   updateStateCheckbox(event) {
     const value = event.target.checked;
     this.setState({isMarkdown: value});
+    // changeMode
+    this.refs.editor.setGfmMode(value);
   }
 
   handleSelect(key) {
@@ -208,6 +210,7 @@ export default class CommentForm extends React.Component {
                     <Tab eventKey={1} title="Write">
                       <Editor ref="editor"
                         value={this.state.comment}
+                        isGfmMode={this.state.isMarkdown}
                         editorOptions={this.props.editorOptions}
                         lineNumbers={false}
                         isMobile={this.props.crowi.isMobile}
