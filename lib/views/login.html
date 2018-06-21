@@ -151,7 +151,7 @@
           {% if passportGoogleLoginEnabled() %}
           <form role="form" action="/passport/google" method="get">
             <button type="submit" class="fcbtn btn btn-1b btn-login-oauth" id="google">
-              <span class="btn-label"><i class="icon-social-google"></i></span>
+              <span class="btn-label"><i class="fa fa-google"></i></span>
               {{ t('Sign in') }}
             </button>
             <div class="small text-right">by Google Account</div>
@@ -161,7 +161,7 @@
           <form role="form" action="/passport/github" method="get">
             <input type="hidden" name="_csrf" value="{{ csrf() }}">
             <button type="submit" class="fcbtn btn btn-1b btn-login-oauth" id="github">
-              <span class="btn-label"><i class="icon-social-github"></i></span>
+              <span class="btn-label"><i class="fa fa-github"></i></span>
               {{ t('Sign in') }}
             </button>
             <div class="small text-right">by Github Account</div>
@@ -171,7 +171,7 @@
           <form role="form" action="/passport/facebook" method="get">
             <input type="hidden" name="_csrf" value="{{ csrf() }}">
             <button type="submit" class="fcbtn btn btn-1b btn-login-oauth" id="facebook">
-              <span class="btn-label"><i class="icon-social-facebook"></i></span>
+              <span class="btn-label"><i class="fa fa-facebook"></i></span>
               {{ t('Sign in') }}
             </button>
             <div class="small text-right">by Facebook Account</div>
@@ -181,7 +181,7 @@
           <form role="form" action="/passport/twitter" method="get">
             <input type="hidden" name="_csrf" value="{{ csrf() }}">
             <button type="submit" class="fcbtn btn btn-1b btn-login-oauth" id="twitter">
-              <span class="btn-label"><i class="icon-social-twitter"></i></span>
+              <span class="btn-label"><i class="fa fa-twitter"></i></span>
               {{ t('Sign in') }}
             </button>
             <div class="small text-right">by Twitter Account</div>
