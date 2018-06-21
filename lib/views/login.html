@@ -147,9 +147,9 @@
 
         {% if passportGoogleLoginEnabled() || passportGitHubLoginEnabled() || passportFacebookLoginEnabled() || passportTwitterLoginEnabled() %}
         <hr class="mb-1">
-        <div class="collapse collapse-oauth">
+        <div class="collapse collapse-oauth collapse-anchor">
           <div class="spacer"></div>
-          <div class="collapse-anchor d-flex flex-row justify-content-between flex-wrap">
+          <div class="d-flex flex-row justify-content-between flex-wrap">
             {% if passportGoogleLoginEnabled() %}
             <form role="form" action="/passport/google" class="d-inline-flex flex-column">
               <button type="submit" class="fcbtn btn btn-1b btn-login-oauth d-flex" id="google">
