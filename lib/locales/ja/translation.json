@@ -413,8 +413,7 @@
     "Enable Line Break": "Line Break を有効にする",
     "Enable Line Break desc": "ページテキスト中の改行を、HTML内で<code>&lt;br&gt;</code>として扱います",
     "Enable Line Break for comment": "コメント欄で Line Break を有効にする",
-    "Enable Line Break for comment desc": "コメント中の改行を、HTML内で<code>&lt;br&gt;</code>として扱います",
-    "TBD": "(TBD: コメント欄の Markdown 化は未だ実装されていません)"
+    "Enable Line Break for comment desc": "コメント中の改行を、HTML内で<code>&lt;br&gt;</code>として扱います"
 
   },
 
