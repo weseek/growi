@@ -4,15 +4,8 @@
       <div class="page-attachments" id="page-attachment"></div>
 
       <p class="page-meta">
-        Path: <span id="pagePath">{{ page.path }}</span><br>
-        {# for BC #}
-        {% if page.lastUpdateUser %}
-          Last updated at {{ page.updatedAt|datetz('Y-m-d H:i:s') }} by <img src="{{ page.lastUpdateUser|picture }}" class="picture img-circle"> {{ page.lastUpdateUser.name }}<br>
-        {% else %}
-          Last updated at {{ page.revision.createdAt|datetz('Y-m-d H:i:s') }} by <img src="{{ page.revision.author|picture }}" class="picture img-circle"> {{ page.revision.author.name }}<br>
-        {% endif %}
-        {# /for BC #}
-        Created at {{ page.createdAt|datetz('Y-m-d H:i:s') }} by <img src="{{ page.creator|default(page.creator)|picture }}" class="picture img-circle"> {{ page.creator.name }}<br>
+        <p>Last revision posted at {{ page.revision.createdAt|datetz('Y-m-d H:i:s') }} by <a href="/user/{{ page.revision.author.username }}"><img src="{{ page.revision.author|picture }}" class="picture picture-sm img-circle"> {{ page.revision.author.name }}</a></p>
+        <p>Created at {{ page.createdAt|datetz('Y-m-d H:i:s') }} by <a href="/user/{{ page.creator.username }}"><img src="{{ page.creator|default(page.creator)|picture }}" class="picture picture-sm img-circle"> {{ page.creator.name }}</a></p>
       </p>
     </div>
   </div>

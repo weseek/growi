@@ -22,6 +22,12 @@ export default class AbstractEditor extends React.Component {
   }
 
   /**
+   * set new value
+   */
+  setValue(newValue) {
+  }
+
+  /**
    * set caret position of codemirror
    * @param {string} number
    */
@@ -46,6 +52,13 @@ export default class AbstractEditor extends React.Component {
    * return strings from current position to EOL(end of line)
    */
   getStrToEol() {
+    throw new Error('this method should be impelemented in subclass');
+  }
+
+  /**
+   * return strings from BOL(beginning of line) to current position
+   */
+  getStrFromBolToSelectedUpperPos() {
     throw new Error('this method should be impelemented in subclass');
   }
 

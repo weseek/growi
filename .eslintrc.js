@@ -17,6 +17,7 @@ module.exports = {
     "window": true
   },
   "parserOptions": {
+    "ecmaVersion": 8,
     "ecmaFeatures": {
       "experimentalObjectRestSpread": true,
       "jsx": true
@@ -68,6 +69,7 @@ module.exports = {
       "error",
       { "args": "none" }
     ],
+    "no-var": [ "error" ],
     "quotes": [
       "error",
       "single"

@@ -1,10 +1,32 @@
 CHANGES
 ========
 
-## 3.1.6-RC
+## 3.1.8-RC
 
-* (WIP) Feature: Support [blockdiag](http://blockdiag.com)
+* Imprv: Place the commented page at the beginning of the list
+* Imprv: Resolve errors on IE11 (Experimental)
+* Support: Migrate to webpack 4 
+* Support: Upgrade libs
+    * react-bootstrap-typeahead
+    * react-codemirror2
+    * webpack
+
+## 3.1.7
+
+* Fix: Update hidden input 'pageForm[grant]' when save with Ctrl-S
+* Fix: Show alert message when conflict
+* Fix: `BLOCKDIAG_URI` environment variable doesn't work
+* Fix: Paste in markdown list doesn't work correctly
+* Support: Ensure to inject logger configuration from environment variables
+* Support: Upgrade libs
+    * sinon
+    * sinon-chai
+
+## 3.1.6
+
+* Feature: Support [blockdiag](http://blockdiag.com)
 * Feature: Add `BLOCKDIAG_URI` environment variable
+* Fix: Select modal for group is not shown 
 * Support: Upgrade libs
     * googleapis
     * throttle-debounce

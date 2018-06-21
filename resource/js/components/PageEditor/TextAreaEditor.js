@@ -60,6 +60,14 @@ export default class TextAreaEditor extends AbstractEditor {
   /**
    * @inheritDoc
    */
+  setValue(newValue) {
+    this.setState({ value: newValue });
+    this.textarea.value = newValue;
+  }
+
+  /**
+   * @inheritDoc
+   */
   setCaretLine(line) {
     if (isNaN(line)) {
       return;
@@ -112,9 +120,21 @@ export default class TextAreaEditor extends AbstractEditor {
   /**
    * @inheritDoc
    */
+  getStrFromBolToSelectedUpperPos() {
+    const startPos = this.textarea.selectionStart;
+    const endPos = this.textarea.selectionEnd;
+    const upperPos = (startPos < endPos) ? startPos : endPos;
+    return this.textarea.value.substring(this.getBolPos(), upperPos);
+  }
+
+  /**
+   * @inheritDoc
+   */
   replaceBolToCurrentPos(text) {
-    const currentPos = this.textarea.selectionStart;
-    this.replaceValue(text, this.getBolPos(), currentPos);
+    const startPos = this.textarea.selectionStart;
+    const endPos = this.textarea.selectionEnd;
+    const lowerPos = (startPos < endPos) ? endPos : startPos;
+    this.replaceValue(text, this.getBolPos(), lowerPos);
   }
 
   getBolPos() {

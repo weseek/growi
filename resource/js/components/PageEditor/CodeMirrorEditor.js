@@ -10,7 +10,6 @@ const loadCssSync = require('load-css-file');
 import * as codemirror from 'codemirror';
 
 import { UnControlled as ReactCodeMirror } from 'react-codemirror2';
-require('codemirror/addon/display/autorefresh');
 require('codemirror/addon/edit/matchbrackets');
 require('codemirror/addon/edit/matchtags');
 require('codemirror/addon/edit/closetag');
@@ -27,6 +26,7 @@ require('codemirror/addon/fold/foldgutter.css');
 require('codemirror/addon/fold/markdown-fold');
 require('codemirror/addon/fold/brace-fold');
 require('codemirror/mode/gfm/gfm');
+require('../../util/codemirror/autorefresh.ext');
 
 import pasteHelper from './PasteHelper';
 import EmojiAutoCompleteHelper from './EmojiAutoCompleteHelper';
@@ -132,6 +132,14 @@ export default class CodeMirrorEditor extends AbstractEditor {
   /**
    * @inheritDoc
    */
+  setValue(newValue) {
+    this.setState({ value: newValue });
+    this.getCodeMirror().getDoc().setValue(newValue);
+  }
+
+  /**
+   * @inheritDoc
+   */
   setCaretLine(line) {
     if (isNaN(line)) {
       return;
@@ -179,9 +187,19 @@ export default class CodeMirrorEditor extends AbstractEditor {
   /**
    * @inheritDoc
    */
+  getStrFromBolToSelectedUpperPos() {
+    const editor = this.getCodeMirror();
+    const pos = this.selectUpperPos(editor.getCursor('from'), editor.getCursor('to'));
+    return editor.getDoc().getRange(this.getBol(), pos);
+  }
+
+  /**
+   * @inheritDoc
+   */
   replaceBolToCurrentPos(text) {
     const editor = this.getCodeMirror();
-    editor.getDoc().replaceRange(text, this.getBol(), editor.getCursor());
+    const pos = this.selectLowerPos(editor.getCursor('from'), editor.getCursor('to'));
+    editor.getDoc().replaceRange(text, this.getBol(), pos);
   }
 
   /**
@@ -209,6 +227,32 @@ export default class CodeMirrorEditor extends AbstractEditor {
     const curPos = editor.getCursor();
     const lineLength = editor.getDoc().getLine(curPos.line).length;
     return { line: curPos.line, ch: lineLength };
+  }
+
+  /**
+   * select the upper position of pos1 and pos2
+   * @param {{line: number, ch: number}} pos1
+   * @param {{line: number, ch: number}} pos2
+   */
+  selectUpperPos(pos1, pos2) {
+    // if both is in same line
+    if (pos1.line === pos2.line) {
+      return (pos1.ch < pos2.ch) ? pos1 : pos2;
+    }
+    return (pos1.line < pos2.line) ? pos1 : pos2;
+  }
+
+  /**
+   * select the lower position of pos1 and pos2
+   * @param {{line: number, ch: number}} pos1
+   * @param {{line: number, ch: number}} pos2
+   */
+  selectLowerPos(pos1, pos2) {
+    // if both is in same line
+    if (pos1.line === pos2.line) {
+      return (pos1.ch < pos2.ch) ? pos2 : pos1;
+    }
+    return (pos1.line < pos2.line) ? pos2 : pos1;
   }
 
   loadCss(source) {
@@ -360,8 +404,12 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   render() {
-    const theme = this.props.editorOptions.theme || 'elegant';
-    const styleActiveLine = this.props.editorOptions.styleActiveLine || undefined;
+    const defaultEditorOptions = {
+      theme: 'elegant',
+      lineNumbers: true,
+    };
+    const editorOptions = Object.assign(defaultEditorOptions, this.props.editorOptions || {});
+
     return <React.Fragment>
       <ReactCodeMirror
         ref="cm"
@@ -374,19 +422,19 @@ export default class CodeMirrorEditor extends AbstractEditor {
         value={this.state.value}
         options={{
           mode: 'gfm',
-          theme: theme,
-          styleActiveLine: styleActiveLine,
-          lineNumbers: true,
+          theme: editorOptions.theme,
+          styleActiveLine: editorOptions.styleActiveLine,
+          lineNumbers: editorOptions.lineNumbers,
           tabSize: 4,
           indentUnit: 4,
           lineWrapping: true,
-          autoRefresh: true,
+          autoRefresh: {force: true},   // force option is enabled by autorefresh.ext.js -- Yuki Takei
           autoCloseTags: true,
           matchBrackets: true,
           matchTags: {bothTags: true},
           // folding
-          foldGutter: true,
-          gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+          foldGutter: (editorOptions.lineNumbers ? true : false),
+          gutters: (editorOptions.lineNumbers ? ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'] : []),
           // match-highlighter, matchesonscrollbar, annotatescrollbar options
           highlightSelectionMatches: {annotateScrollbar: true},
           // markdown mode options
