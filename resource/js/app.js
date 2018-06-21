@@ -80,9 +80,9 @@ const crowiRenderer = new GrowiRenderer(crowi, null, {
 window.crowiRenderer = crowiRenderer;
 
 // FIXME
-var isEnabledPlugins = $('body').data('plugin-enabled');
+const isEnabledPlugins = $('body').data('plugin-enabled');
 if (isEnabledPlugins) {
-  var crowiPlugin = window.crowiPlugin;
+  const crowiPlugin = window.crowiPlugin;
   crowiPlugin.installAll(crowi, crowiRenderer);
 }
 
