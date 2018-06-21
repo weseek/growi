@@ -60,6 +60,14 @@ export default class TextAreaEditor extends AbstractEditor {
   /**
    * @inheritDoc
    */
+  setValue(newValue) {
+    this.setState({ value: newValue });
+    this.textarea.value = newValue;
+  }
+
+  /**
+   * @inheritDoc
+   */
   setCaretLine(line) {
     if (isNaN(line)) {
       return;

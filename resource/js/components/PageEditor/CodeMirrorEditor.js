@@ -132,6 +132,14 @@ export default class CodeMirrorEditor extends AbstractEditor {
   /**
    * @inheritDoc
    */
+  setValue(newValue) {
+    this.setState({ value: newValue });
+    this.getCodeMirror().getDoc().setValue(newValue);
+  }
+
+  /**
+   * @inheritDoc
+   */
   setCaretLine(line) {
     if (isNaN(line)) {
       return;
@@ -396,8 +404,12 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   render() {
-    const theme = this.props.editorOptions.theme || 'elegant';
-    const styleActiveLine = this.props.editorOptions.styleActiveLine || undefined;
+    const defaultEditorOptions = {
+      theme: 'elegant',
+      lineNumbers: true,
+    };
+    const editorOptions = Object.assign(defaultEditorOptions, this.props.editorOptions || {});
+
     return <React.Fragment>
       <ReactCodeMirror
         ref="cm"
@@ -410,9 +422,9 @@ export default class CodeMirrorEditor extends AbstractEditor {
         value={this.state.value}
         options={{
           mode: 'gfm',
-          theme: theme,
-          styleActiveLine: styleActiveLine,
-          lineNumbers: true,
+          theme: editorOptions.theme,
+          styleActiveLine: editorOptions.styleActiveLine,
+          lineNumbers: editorOptions.lineNumbers,
           tabSize: 4,
           indentUnit: 4,
           lineWrapping: true,
@@ -421,8 +433,8 @@ export default class CodeMirrorEditor extends AbstractEditor {
           matchBrackets: true,
           matchTags: {bothTags: true},
           // folding
-          foldGutter: true,
-          gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+          foldGutter: (editorOptions.lineNumbers ? true : false),
+          gutters: (editorOptions.lineNumbers ? ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'] : []),
           // match-highlighter, matchesonscrollbar, annotatescrollbar options
           highlightSelectionMatches: {annotateScrollbar: true},
           // markdown mode options
