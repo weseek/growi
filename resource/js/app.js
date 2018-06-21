@@ -86,8 +86,8 @@ if (isEnabledPlugins) {
   crowiPlugin.installAll(crowi, crowiRenderer);
 }
 
-// configure renderer
-crowiRenderer.setup(crowi.config);
+// setup renderer after plugins are installed
+crowiRenderer.setup();
 
 // restore draft when the first time to edit
 const draft = crowi.findDraft(pagePath);

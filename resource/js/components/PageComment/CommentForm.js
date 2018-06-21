@@ -2,15 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactUtils from '../ReactUtils';
 
-import * as toastr from 'toastr';
-
-import Editor from '../PageEditor/Editor';
-import CommentPreview from '../PageComment/CommentPreview';
-
 import Button from 'react-bootstrap/es/Button';
 import Tab from 'react-bootstrap/es/Tab';
 import Tabs from 'react-bootstrap/es/Tabs';
 import UserPicture from '../User/UserPicture';
+import * as toastr from 'toastr';
+
+import GrowiRenderer from '../../util/GrowiRenderer';
+
+import Editor from '../PageEditor/Editor';
+import CommentPreview from '../PageComment/CommentPreview';
 
 /**
  *
@@ -39,6 +40,8 @@ export default class CommentForm extends React.Component {
       isUploadableFile,
       errorMessage: undefined,
     };
+
+    this.growiRenderer = new GrowiRenderer(this.props.crowi, this.props.crowiOriginRenderer, {mode: 'comment'});
 
     this.updateState = this.updateState.bind(this);
     this.updateStateCheckbox = this.updateStateCheckbox.bind(this);
@@ -113,21 +116,21 @@ export default class CommentForm extends React.Component {
       dom: this.previewElement,
     };
 
-    const crowiRenderer = this.props.crowiRenderer;
+    const growiRenderer = this.growiRenderer;
     const interceptorManager = this.props.crowi.interceptorManager;
     interceptorManager.process('preRenderCommnetPreview', context)
       .then(() => interceptorManager.process('prePreProcess', context))
       .then(() => {
-        context.markdown = crowiRenderer.preProcess(context.markdown);
+        context.markdown = growiRenderer.preProcess(context.markdown);
       })
       .then(() => interceptorManager.process('postPreProcess', context))
       .then(() => {
-        const parsedHTML = crowiRenderer.process(context.markdown);
+        const parsedHTML = growiRenderer.process(context.markdown);
         context['parsedHTML'] = parsedHTML;
       })
       .then(() => interceptorManager.process('prePostProcess', context))
       .then(() => {
-        context.parsedHTML = crowiRenderer.postProcess(context.parsedHTML, context.dom);
+        context.parsedHTML = growiRenderer.postProcess(context.parsedHTML, context.dom);
       })
       .then(() => interceptorManager.process('postPostProcess', context))
       .then(() => interceptorManager.process('preRenderCommentPreviewHtml', context))
@@ -255,7 +258,7 @@ export default class CommentForm extends React.Component {
 
 CommentForm.propTypes = {
   crowi: PropTypes.object.isRequired,
-  crowiRenderer:  PropTypes.object.isRequired,
+  crowiOriginRenderer: PropTypes.object.isRequired,
   onPostComplete: PropTypes.func,
   pageId: PropTypes.string,
   revisionId: PropTypes.string,
