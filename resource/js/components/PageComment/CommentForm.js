@@ -208,15 +208,16 @@ export default class CommentForm extends React.Component {
                 <div className="comment-write">
                   <Tabs activeKey={this.state.key} id="comment-form-tabs" onSelect={this.handleSelect} animation={false}>
                     <Tab eventKey={1} title="Write">
-                       <Editor ref="editor"
-                       value={this.state.comment}
-                       editorOptions={editorOptions}
-                       isMobile={this.props.crowi.isMobile}
-                       isUploadable={this.state.isUploadable}
-                       isUploadableFile={this.state.isUploadableFile}
-                       emojiStrategy={emojiStrategy}
-                       onChange={this.updateState}
-                       onUpload={this.onUpload}
+                      <Editor ref="editor"
+                        value={this.state.comment}
+                        editorOptions={editorOptions}
+                        lineNumbers={false}
+                        isMobile={this.props.crowi.isMobile}
+                        isUploadable={this.state.isUploadable}
+                        isUploadableFile={this.state.isUploadableFile}
+                        emojiStrategy={emojiStrategy}
+                        onChange={this.updateState}
+                        onUpload={this.onUpload}
                       />
                     </Tab>
                     { this.state.isMarkdown == true &&

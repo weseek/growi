@@ -424,7 +424,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
           mode: 'gfm',
           theme: editorOptions.theme,
           styleActiveLine: editorOptions.styleActiveLine,
-          lineNumbers: editorOptions.lineNumbers,
+          lineNumbers: this.props.lineNumbers,
           tabSize: 4,
           indentUnit: 4,
           lineWrapping: true,
@@ -433,8 +433,8 @@ export default class CodeMirrorEditor extends AbstractEditor {
           matchBrackets: true,
           matchTags: {bothTags: true},
           // folding
-          foldGutter: (editorOptions.lineNumbers ? true : false),
-          gutters: (editorOptions.lineNumbers ? ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'] : []),
+          foldGutter: this.props.lineNumbers,
+          gutters: this.props.lineNumbers ? ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'] : [],
           // match-highlighter, matchesonscrollbar, annotatescrollbar options
           highlightSelectionMatches: {annotateScrollbar: true},
           // markdown mode options
@@ -482,5 +482,8 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
 CodeMirrorEditor.propTypes = Object.assign({
   emojiStrategy: PropTypes.object,
+  lineNumbers: PropTypes.bool,
 }, AbstractEditor.propTypes);
-
+CodeMirrorEditor.defaultProps = {
+  lineNumbers: true,
+};
