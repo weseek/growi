@@ -122,7 +122,7 @@
   }
   .btn-login-oauth.fcbtn#google {
     .btn-label {
-      background: linear-gradient(to bottom right, darken(#db3236, 20%), darken(#f4c20d, 20%), darken(#3cba54, 20%), darken(#4885ed, 20%));
+      background: rgba(#f13d25, 0.4);
     }
     &:after {
       background-color: #555;
