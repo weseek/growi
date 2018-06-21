@@ -208,8 +208,6 @@ export default class CommentForm extends React.Component {
                 <div className="comment-write">
                   <Tabs activeKey={this.state.key} id="comment-form-tabs" onSelect={this.handleSelect} animation={false}>
                     <Tab eventKey={1} title="Write">
-                      {/* <textarea className="comment-form-comment form-control" id="comment-form-comment" name="comment" required placeholder="Write comments here..." value={this.state.comment} onChange={this.updateState} >
-                      </textarea> */}
                        <Editor ref="editor"
                        value={this.state.comment}
                        editorOptions={editorOptions}
@@ -217,10 +215,7 @@ export default class CommentForm extends React.Component {
                        isUploadable={this.state.isUploadable}
                        isUploadableFile={this.state.isUploadableFile}
                        emojiStrategy={emojiStrategy}
-                       // onScroll={this.onEditorScroll}
-                       // onScrollCursorIntoView={this.onEditorScrollCursorIntoView}
                        onChange={this.updateState}
-                       // onSave={this.onSave}
                        onUpload={this.onUpload}
                       />
                     </Tab>
