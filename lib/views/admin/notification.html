@@ -38,15 +38,22 @@
 
       <ul class="nav nav-tabs" role="tablist">
         <li class="active">
-          <a href="#slack-incoming-webhooks" data-toggle="tab" role="tab"><i class="icon-settings"></i> Slack Incoming Webhooks</a>
+          <a href="#user-trigger-notification" data-toggle="tab" role="tab"><i class="icon-settings"></i> User Trigger Notification</a>
         </li>
         <li role="tab">
-          <a href="#slack-app" data-toggle="tab" role="tab"><i class="icon-settings"></i> Slack App</a>
+          <a href="#global-notification" data-toggle="tab" role="tab"><i class="icon-settings"></i> Global Notification</a>
         </li>
       </ul>
-
       <div class="tab-content m-t-15">
-        <div id="slack-incoming-webhooks" class="tab-pane active" role="tabpanel">
+        <div id="user-trigger-notification" class="tab-pane active" role="tabpanel">
+
+          <select class="selectpicker" id="selectSlackOption" data-width="auto">
+            <option value="slack-incoming-webhooks">Slack Incoming Webhooks</option>
+            <option value="slack-app">Slack App</option>
+          </select><!-- /.select-tab -->
+
+          <div class="tab-content m-t-15">
+            <div id="slack-incoming-webhooks" class="tab-pane active" role="tabpanel">
 
           <form action="/admin/notification/slackIwhSetting" method="post" class="form-horizontal" id="appSettingForm" role="form">
             <fieldset>
@@ -105,9 +112,9 @@
             </li>
           </ol>
 
-        </div><!-- /#slack-incoming-webhooks -->
+            </div><!-- /#slack-incoming-webhooks -->
 
-        <div id="slack-app" class="tab-pane" role="tabpanel" >
+            <div id="slack-app" class="tab-pane" role="tabpanel" >
 
           <form action="/admin/notification/slackSetting" method="post" class="form-horizontal" id="appSettingForm" role="form">
             <fieldset>
@@ -188,12 +195,15 @@
             </li>
           </ol>
 
-        </div><!-- /#slack-app -->
+            </div><!-- /#slack-app -->
 
+          </div><!-- /#user-trigger-notification -->
+
+          <div id="global-notification" class="tab-pane" role="tabpanel" >
+          </div><!-- /#global-notification -->
 
 
       </div><!-- /.tab-content -->
-
       <hr>
 
       <h4>Default Notification Settings for Patterns</h4>
@@ -259,6 +269,18 @@
         }
       }
     });
+
+    $("#selectSlackOption").on('change',function(){
+      if(this.value=="slack-incoming-webhooks"){
+        $("#slack-incoming-webhooks").addClass('active');
+        $("#slack-app").removeClass('active');
+      }
+      if(this.value=="slack-app"){
+        $("#slack-incoming-webhooks").removeClass('active');
+        $("#slack-app").addClass('active');
+      }
+    });
+
 
     function activateTab(tab){
       $('.nav-tabs a[href="#' + tab + '"]').tab('show');
