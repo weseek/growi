@@ -48,8 +48,8 @@
         <div id="user-trigger-notification" class="tab-pane active" role="tabpanel">
 
           <select class="selectpicker" id="selectSlackOption" data-width="auto">
-            <option value="slack-incoming-webhooks">Slack Incoming Webhooks</option>
-            <option value="slack-app">Slack App</option>
+            <option value="1">Slack Incoming Webhooks</option>
+            <option value="2">Slack App</option>
           </select><!-- /.select-tab -->
 
           <div class="tab-content m-t-15">
@@ -251,6 +251,7 @@
         </div><!-- /#user-trigger-notification -->
 
         <div id="global-notification" class="tab-pane" role="tabpanel" >
+          <p class="alert alert-info">not implemented now</p>
           <hr>
           <h4>Default Notification Settings for Patterns</h4>
 
@@ -264,20 +265,20 @@
               <form id="slackNotificationForm">
               <tr>
                 <td>
-                  <input class="form-control" type="text" name="pathPattern" value="" placeholder="e.g. /projects/xxx/MTG/*">
+                  <input class="form-control" type="text" name="globalPathPattern" value="" placeholder="e.g. /projects/xxx/MTG/*">
                   <p class="help-block">
                     Path name of wiki. Pattern expression with <code>*</code> can be used.
                   </p>
                 </td>
                 <td>
-                  <input class="form-control form-inline" type="text" name="channel" value="" placeholder="e.g. project-xxx">
+                  <input class="form-control form-inline" type="text" name="globalChannel" value="" placeholder="e.g. project-xxx">
                   <p class="help-block">
                     Slack channel name. Without <code>#</code>.
                   </p>
                 </td>
                 <td>
                   <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                  <input type="submit" value="Add" class="btn btn-primary">
+                  <input type="submit" value="Add" class="btn btn-primary" disabled>
                 </td>
               </tr>
               </form>
@@ -305,9 +306,6 @@
 
       </div><!-- /.tab-content -->
 
-
-
-
     </div>
   </div>
 
@@ -322,11 +320,11 @@
     });
 
     $("#selectSlackOption").on('change',function(){
-      if(this.value=="slack-incoming-webhooks"){
-        $("#slack-incoming-webhooks").addClass('active');
+      if(this.value=="1"){
         $("#slack-app").removeClass('active');
+        $("#slack-incoming-webhooks").addClass('active');
       }
-      if(this.value=="slack-app"){
+      if(this.value=="2"){
         $("#slack-incoming-webhooks").removeClass('active');
         $("#slack-app").addClass('active');
       }
