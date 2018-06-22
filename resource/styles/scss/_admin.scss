@@ -37,7 +37,7 @@
     }
 
     .auth-mechanism-configurations {
-      min-height: 800px;
+      min-height: 300px;
     }
   }
 
@@ -90,11 +90,28 @@
   }
 }
 
-
+//markdown prevent XSS setting
 .input{
   margin: 1em;
 }
 
 .inputbox{
   width: 100%;
+}
+
+//security XSS prevent
+.XSSprevent{
+  min-height: 200px;
+}
+.XSSlink{
+  width: 50%;
+  text-align: center;
+  font-size: 1.3em;
+}
+.XSSprevent .a{
+  width: 100%;
+}
+.XSSposition{
+  text-align: center;
+  margin: auto;
 }

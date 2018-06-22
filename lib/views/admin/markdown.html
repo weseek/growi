@@ -80,7 +80,7 @@
           </div>
         </div>
 
-        <div class="form-group">
+        <div id="preventXSS" class="form-group">
             <label for="markdownSetting[markdown:isPreventXss]" class="col-xs-4 control-label">
               {{ t('markdown_setting.Prevent XSS(Cross Site Scripting)') }}
             </label>
@@ -96,7 +96,7 @@
                     </label>
                   </div>
 
-                <div class="collapse input" id="collapseExample">
+                <div class="input collapse " id="collapseExample">
                   <form>
                     <input type="radio" name="preventXSS" value="1" checked>
                       {{ t('markdown_setting.Ignore all') }}<br>
@@ -107,11 +107,11 @@
                       <div id="WLsetting" class="input collapse">
                          <p class="help-block">{{ t('markdown_setting.Add white list desc') }}</p>
                         <div class="inputbox">
-                          {{ t('markdown_setting.tag') }}
+                          <div>{{ t('markdown_setting.tag') }}</div>
                           <input type="text" name="tag" size="70" value="" placeholder="span, iframe, input">
                         </div>
                         <div class="inputbox">
-                          {{ t('markdown_setting.tag attribute') }}
+                          <div>{{ t('markdown_setting.tag attribute') }}</div>
                           <input type="text" name="tagattribute" size="70" value="" placeholder="class, type, placeholder, name, required">
                         </div>
                       </div>
