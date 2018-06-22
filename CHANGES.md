@@ -1,6 +1,11 @@
 CHANGES
 ========
 
+## 3.2.0-RC
+* Support: Upgrade libs
+    * react
+    * react-dom
+
 ## 3.1.8-RC
 
 * Feature: Login with Google Account
