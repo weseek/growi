@@ -4,11 +4,11 @@
 
 {% block style_css_block %}
   {% if env === 'development' %}
-    <script src="{{ webpack_asset('style').js }}"></script>
-    <script src="{{ webpack_asset('style-theme-' + theme()).js }}"></script>
+    <script src="{{ webpack_asset('styles/style.js') }}"></script>
+    <script src="{{ webpack_asset('styles/theme-' + theme() + '.js') }}"></script>
   {% else %}
-    <link rel="stylesheet" href="{{ webpack_asset('style').css }}">
-    <link rel="stylesheet" id="jssDefault" {# append id for theme selector #} href="{{ webpack_asset('style-theme-' + theme()).css }}">
+    <link rel="stylesheet" href="{{ webpack_asset('styles/style.css') }}">
+    <link rel="stylesheet" id="jssDefault" {# append id for theme selector #} href="{{ webpack_asset('styles/theme-' + theme() + '.css') }}">
   {% endif %}
 {% endblock %}
 
@@ -298,7 +298,7 @@
           </div>
 
           <div class="form-group">
-            <label for="settingForm[customize:highlightJsStyleBorder]" class="col-xs-3 control-label">(TBD) Border</label>
+            <label for="settingForm[customize:highlightJsStyleBorder]" class="col-xs-3 control-label">Border</label>
             <div class="col-xs-9">
               <div class="btn-group btn-toggle" data-toggle="buttons">
                 <label class="btn btn-default btn-rounded btn-outline {% if settingForm['customize:highlightJsStyleBorder'] %}active{% endif %}" data-active-class="primary" onclick="selectBorderOn()">

@@ -98,8 +98,26 @@
     }
   }
 
+  .collapse-oauth {
+    overflow: hidden;
+    &:not(.in) {
+      height: 0;
+      padding: 0 !important;
+    }
+
+    form {
+      flex: 1;
+      @media(min-width: 350px) {
+        flex: 0.49;
+      }
+    }
+    .spacer {
+      height: 10px;
+    }
+  }
+
   // button style
-  .btn-login.fcbtn, .btn-register.fcbtn, .btn-login-google.fcbtn {
+  .btn-login.fcbtn, .btn-register.fcbtn, .btn-login-oauth.fcbtn, .btn-collapse-oauth {
     border: none;
     color: white;
     background-color: rgba(lighten(black, 20%), 0.4);
@@ -112,6 +130,12 @@
       border: none;
     }
   }
+  .btn-login-oauth {
+    flex: 1;
+    .btn-label-text {
+      flex: 1;
+    }
+  }
   .btn-login.fcbtn {
     .btn-label {
       background-color: rgba($brand-danger, 0.4);
@@ -120,9 +144,33 @@
       background-color: #7e4153;
     }
   }
-  .btn-login-google.fcbtn {
+  .btn-login-oauth.fcbtn#google {
     .btn-label {
-      background-color: rgba(#444, 0.4);
+      background: rgba(#f13d25, 0.4);
+    }
+    &:after {
+      background-color: #555;
+    }
+  }
+  .btn-login-oauth.fcbtn#github {
+    .btn-label {
+      background-color: rgba(#24292e, 0.4);
+    }
+    &:after {
+      background-color: #555;
+    }
+  }
+  .btn-login-oauth.fcbtn#facebook {
+    .btn-label {
+      background-color: rgba(#29487d, 0.4);
+    }
+    &:after {
+      background-color: #555;
+    }
+  }
+  .btn-login-oauth.fcbtn#twitter {
+    .btn-label {
+      background-color: rgba(#1da1f2, 0.4);
     }
     &:after {
       background-color: #555;
