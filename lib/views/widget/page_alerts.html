@@ -79,5 +79,12 @@
       <a href="{{ page.path }}"><i class="icon-fw icon-arrow-right-circle"></i>{{ t('Show latest') }}</a>
     </div>
     {% endif %}
+
+    {% set dmessage = req.flash('dangerMessage') %}
+    {% if dmessage.length %}
+    <div class="alert alert-danger m-b-15">
+      {{ dmessage }}
+    </div>
+    {% endif %}
   </div>
 </div>

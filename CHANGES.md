@@ -1,23 +1,64 @@
 CHANGES
 ========
 
-## 3.1.4-RC
+## 3.1.8-RC
 
-* Fix: sanitize `#raw-text-original` content with 'entities'
-* Fix: page.rename api doesn't work
+* Feature: Login with Google Account
+* Feature: Login with GitHub Account
+* Feature: Attach files in Comment
+* Improvement: Write comment with CodeMirror Editor
+* Improvement: Place the commented page at the beginning of the list
+* Improvement: Resolve errors on IE11 (Experimental)
+* Support: Migrate to webpack 4 
 * Support: Upgrade libs
-    * markdown-it-toc-and-anchor-with-slugid
+    * react-bootstrap-typeahead
+    * react-codemirror2
+    * webpack
 
+## 3.1.7
 
-## 3.1.3
+* Fix: Update hidden input 'pageForm[grant]' when save with Ctrl-S
+* Fix: Show alert message when conflict
+* Fix: `BLOCKDIAG_URI` environment variable doesn't work
+* Fix: Paste in markdown list doesn't work correctly
+* Support: Ensure to inject logger configuration from environment variables
+* Support: Upgrade libs
+    * sinon
+    * sinon-chai
+
+## 3.1.6
+
+* Feature: Support [blockdiag](http://blockdiag.com)
+* Feature: Add `BLOCKDIAG_URI` environment variable
+* Fix: Select modal for group is not shown 
+* Support: Upgrade libs
+    * googleapis
+    * throttle-debounce
+
+## 3.1.5
 
 * Feature: Write comment with Markdown
 * Improvement: Support some placeholders for template page
 * Improvement: Omit unnecessary response header
 * Improvement: Support LDAP attribute mappings for user's full name
-* Fix: HTML escaped characters in markdown are unescaped unexpectedly after page is saved
+* Improvement: Enable to scroll revision-toc
 * Fix: Posting to Slack doesn't work
     * Introduced by 3.1.0
+* Fix: page.rename api doesn't work
+* Fix: HTML escaped characters in markdown are unescaped unexpectedly after page is saved
+* Fix: sanitize `#raw-text-original` content with 'entities'
+* Fix: Double newline character posted
+    * Introduced by 3.1.4
+* Fix: List and Comment components do not displayed
+    * Introduced by 3.1.4
+* Support: Upgrade libs
+    * markdown-it-toc-and-anchor-with-slugid
+
+
+## 3.1.4 (Missing number)
+
+## 3.1.3 (Missing number)
+
 
 ## 3.1.2
 

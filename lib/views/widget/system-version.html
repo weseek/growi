@@ -13,7 +13,7 @@
   var platform = navigator.platform.toLowerCase();
   var isMac = (platform.indexOf('mac') > -1);
 
-  document.querySelectorAll('.system-version .cmd-key').forEach((element) => {
+  document.querySelectorAll('.system-version .cmd-key').forEach(function(element) {
     if (isMac) {
       element.classList.add('mac');
     }

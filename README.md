@@ -4,8 +4,8 @@
   </a>
 </p>
 <p align="center">
-  <a href="https://github.com/weseek/crowi-plus/releases/latest"><img src="https://img.shields.io/github/release/weseek/crowi-plus.svg"></a>
-  <a href="https://growi-slackin.weseek.co.jp/"><img src="https://crowi-plus-slackin.weseek.co.jp/badge.svg"></a>
+  <a href="https://github.com/weseek/growi/releases/latest"><img src="https://img.shields.io/github/release/weseek/growi.svg"></a>
+  <a href="https://growi-slackin.weseek.co.jp/"><img src="https://growi-slackin.weseek.co.jp/badge.svg"></a>
 </p>
 
 <p align="center">
@@ -105,11 +105,10 @@ MONGO_URI=mongodb://MONGO_HOST:MONGO_PORT/growi npm start
 
 **DO NOT USE `npm install`**, use `yarn` instead.
 
-If you launch growi with Redis and ElasticSearch, add environment variables before `npm start` like following:
+If you launch growi with ElasticSearch, add environment variables before `npm start` like following:
 
 ```
 export MONGO_URI=mongodb://MONGO_HOST:MONGO_PORT/growi
-export REDIS_URL=redis://REDIS_HOST:REDIS_PORT/growi
 export ELASTICSEARCH_URI=http://ELASTICSEARCH_HOST:ELASTICSEARCH_PORT/growi
 npm start
 ```
@@ -158,11 +157,13 @@ Environment Variables
 * **Option**
     * NODE_ENV: `production` OR `development`.
     * PORT: Server port. default: `3000`
-    * REDIS_URL: URI to connect to Redis (to session store).
-    * SESSION_NAME: The name of the session ID cookie to set in the response by Express. default: `connect.sid`
     * ELASTICSEARCH_URI: URI to connect to Elasticearch.
+    * REDIS_URI: URI to connect to Redis (to session store).
+    * PLANTUML_URI: URI to connect to [PlantUML](http://plantuml.com/) server.
+    * BLOCKDIAG_URI: URI to connect to [blockdiag](http://http://blockdiag.com/) server.
     * PASSWORD_SEED: A password seed used by password hash generator.
     * SECRET_TOKEN: A secret key for verifying the integrity of signed cookies.
+    * SESSION_NAME: The name of the session ID cookie to set in the response by Express. default: `connect.sid`
     * FILE_UPLOAD: `aws` (default), `local`, `none`
 
 
