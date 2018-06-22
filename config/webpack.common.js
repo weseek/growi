@@ -27,6 +27,7 @@ module.exports = (options) => {
       'js/legacy-presentation':   './resource/js/legacy/crowi-presentation',
       'js/plugin':                './resource/js/plugin',
       'js/ie11-polyfill':         './resource/js/ie11-polyfill',
+      'js/agent-for-hackmd':      './resource/js/agent-for-hackmd',
       // styles
       'styles/style':                './resource/styles/scss/style.scss',
       'styles/style-presentation':   './resource/styles/scss/style-presentation.scss',
@@ -148,7 +149,8 @@ module.exports = (options) => {
           vendors: {
             test: /node_modules/,
             chunks: (chunk) => {
-              return chunk.name != null && !chunk.name.match(/legacy-presentation|ie11-polyfill/);
+              // ignore patterns
+              return chunk.name != null && !chunk.name.match(/legacy-presentation|ie11-polyfill|agent-for-hackmd/);
             },
             name: 'js/vendors',
             // minChunks: 2,
