@@ -2,6 +2,7 @@ CHANGES
 ========
 
 ## 3.2.0-RC
+* Feature: Simultaneously edit by multiple people with HackMD integration
 * Support: Upgrade libs
     * react
     * react-dom
