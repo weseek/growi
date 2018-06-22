@@ -87,17 +87,17 @@
             </label>
             <div class="col-xs-5">
                 <div class="btn-group btn-toggle" data-toggle="buttons">
-                    <label class="btn btn-default btn-rounded btn-outline {% if markdownSetting['markdown:isEnabledPreventXss'] %}active{% endif %}" data-active-class="primary" for="check1">
+                    <label class="btn btn-default btn-rounded btn-outline {% if markdownSetting['markdown:isEnabledPreventXss'] %}active{% endif %}" data-active-class="primary" for="check1" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
                       <input id="xsscheck1" name="markdownSetting[markdown:isEnabledPreventXss]" value="true" type="radio"
                           {% if true === markdownSetting['markdown:isEnabledPreventXss'] %}checked{% endif %} > ON
                     </label>
-                    <label class="btn btn-default btn-rounded btn-outline {% if !markdownSetting['markdown:isEnabledPreventXss'] %}active{% endif %}" data-active-class="default">
+                    <label class="btn btn-default btn-rounded btn-outline {% if !markdownSetting['markdown:isEnabledPreventXss'] %}active{% endif %}" data-active-class="default" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
                       <input name="markdownSetting[markdown:isEnabledPreventXss]" value="false" type="radio"
                           {% if !markdownSetting['markdown:isEnabledPreventXss'] %}checked{% endif %}> OFF
                     </label>
                   </div>
 
-                <div id="selectXSS" class="input">
+                <div class="collapse input" id="collapseExample">
                   <form>
                     <input type="radio" name="preventXSS" value="1" checked>
                       {{ t('markdown_setting.Allow all') }}<br>
@@ -105,9 +105,9 @@
                       {{ t('markdown_setting.Ignore all') }}<br>
                     <input type="radio" name="preventXSS" value="3">
                       {{ t('markdown_setting.Recommended setting') }}<br>
-                    <input type="radio" name="preventXSS" value="4">
+                    <input type="radio" name="preventXSS" value="4" data-toggle="collapse" data-target="#WLsetting" aria-expanded="false" aria-controls="#WLsetting">
                       {{ t('markdown_setting.Whitelist setting') }}<br>
-                      <div id="WLsetting" class="input">
+                      <div id="WLsetting" class="input collapse">
                          <p class="help-block">{{ t('markdown_setting.Add white list desc') }}</p>
                         <div class="inputbox">
                           {{ t('markdown_setting.tag') }}
