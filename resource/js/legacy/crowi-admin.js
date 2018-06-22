@@ -110,21 +110,17 @@ $(function() {
 
 //XSS prevention accordion display
 $(function() {
-  $('input[type=radio]').change(function() {
+  $('input:radio[name=\'markdownSetting[markdown:isEnabledPreventXss]'.change(function() {
     $('#selectXSS').removeClass('invisible');
 
     if ($('input:radio[name=\'markdownSetting[markdown:isEnabledPreventXss]\']:checked').val() == 'false') {
       $('#selectXSS').addClass('invisible');
     }
-  }).trigger('change'); //←(1)
-});
+    $('input:radio[name=\'preventXSS]'.change(function() {
+      $('#WLsetting').removeClass('invisible');
 
-$(function() {
-  $('input[type=radio]').change(function() {
-    $('#WLsetting').removeClass('invisible');
-
-    if ($('input:radio[name=\'preventXSS\']:checked').val() == '1') {
-      $('#WLsetting').addClass('invisible');
-    }
-  }).trigger('change'); //←(1)
+      if ($('input:radio[name=\'preventXSS\']:checked').val() !== '4') {
+        $('#WLsetting').addClass('invisible');
+      }
+  }).trigger('change');
 });
