@@ -100,11 +100,11 @@
           </label>
           <div class="col-xs-5">
             <div class="btn-group btn-toggle" data-toggle="buttons">
-              <label class="btn btn-default btn-rounded btn-outline {% if markdownSetting['markdown:isEnabledPreventXSS'] %}active{% endif %}" data-active-class="primary">
+              <label class="btn btn-default btn-rounded btn-outline {% if markdownSetting['markdown:XSS:isPrevented'] %}active{% endif %}" data-active-class="primary">
                 <input name="markdownSetting[markdown:XSS:isPrevented]" value="true" type="radio"
                     {% if true === markdownSetting['markdown:XSS:isPrevented'] %}checked{% endif %}> ON
               </label>
-              <label class="btn btn-default btn-rounded btn-outline {% if !markdownSetting['markdown:isEnabledPreventXSS'] %}active{% endif %}" data-active-class="default">
+              <label class="btn btn-default btn-rounded btn-outline {% if !markdownSetting['markdown:XSS:isPrevented'] %}active{% endif %}" data-active-class="default">
                 <input name="markdownSetting[markdown:XSS:isPrevented]" value="false" type="radio"
                     {% if !markdownSetting['markdown:XSS:isPrevented'] %}checked{% endif %}> OFF
               </label>
