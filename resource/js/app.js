@@ -14,6 +14,7 @@ import PageEditor       from './components/PageEditor';
 import OptionsSelector  from './components/PageEditor/OptionsSelector';
 import { EditorOptions, PreviewOptions } from './components/PageEditor/OptionsSelector';
 import GrantSelector    from './components/PageEditor/GrantSelector';
+import HackmdEditor     from './components/HackmdEditor';
 import Page             from './components/Page';
 import PageListSearch   from './components/PageListSearch';
 import PageHistory      from './components/PageHistory';
@@ -225,6 +226,29 @@ if (pageEditorGrantSelectorElem) {
         onDeterminePageGrantGroupName={updateGrantGroupNameElem} />
     </I18nextProvider>,
     pageEditorGrantSelectorElem
+  );
+}
+
+/*
+ * HackMD Editor
+ */
+// render PageEditor
+const hackmdEditorElem = document.getElementById('hackmd-editor');
+if (hackmdEditorElem) {
+  // create onSave event handler
+  const onSaveSuccess = function(page) {
+    // modify the revision id value to pass checking id when updating
+    crowi.getCrowiForJquery().updatePageForm(page);
+    // re-render Page component if exists
+    if (componentInstances.page != null) {
+      componentInstances.page.setMarkdown(page.revision.body);
+    }
+  };
+
+  pageEditor = ReactDOM.render(
+    <HackmdEditor crowi={crowi}
+        onSaveSuccess={onSaveSuccess} />,
+    hackmdEditorElem
   );
 }
 

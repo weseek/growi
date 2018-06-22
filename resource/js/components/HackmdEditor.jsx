@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-
-export default class HackmdEditor extends React.Component {
+export default class HackmdEditor extends React.PureComponent {
 
   constructor(props) {
     super(props);
@@ -17,13 +16,15 @@ export default class HackmdEditor extends React.Component {
   }
 
   render() {
-    const hackMdUri = this.props.crowi.config.HACKMD_URI;
+    const envVars = this.props.crowi.config.env;
+    const hackMdUri = envVars.HACKMD_URI;
     if (hackMdUri == null) {
       return <React.Fragment></React.Fragment>;
     }
 
     return (
-      <iframe src={hackMdUri}></iframe>
+      <iframe src={hackMdUri}>
+      </iframe>
     );
   }
 }

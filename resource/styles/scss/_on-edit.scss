@@ -377,8 +377,11 @@ body.on-edit {
 
     #hackmd-editor,
     iframe {
+      width: 100vw;
       min-height: calc(100vh - #{$header-plus-footer});   // for IE11
       height: calc(100vh - #{$header-plus-footer});
+
+      border: none;
     }
   }
 

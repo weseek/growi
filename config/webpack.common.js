@@ -51,7 +51,7 @@ module.exports = (options) => {
       'hljs': 'hljs',
     },
     resolve: {
-      extensions: ['.js', '.json'],
+      extensions: ['.js', '.jsx', '.json'],
       modules: [helpers.root('src'), helpers.root('node_modules')],
       alias: {
         '@root': helpers.root('/'),
