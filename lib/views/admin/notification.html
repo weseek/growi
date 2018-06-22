@@ -252,38 +252,7 @@
 
         <div id="global-notification" class="tab-pane" role="tabpanel" >
           <p class="alert alert-info">not implemented now</p>
-          <hr>
-          <h4>Default Notification Settings for Patterns</h4>
-
-          <table class="table table-bordered">
-            <thead>
-              <th>Pattern</th>
-              <th>Channel</th>
-              <th>Operation</th>
-            </thead>
-            <tbody class="admin-notif-list">
-              <form id="globaNotificationForm">
-              <tr>
-                <td>
-                  <input class="form-control" type="text" name="globalPathPattern" value="" placeholder="e.g. /projects/xxx/MTG/*">
-                  <p class="help-block">
-                    Path name of wiki. Pattern expression with <code>*</code> can be used.
-                  </p>
-                </td>
-                <td>
-                  <input class="form-control form-inline" type="text" name="globalChannel" value="" placeholder="e.g. project-xxx">
-                  <p class="help-block">
-                    Slack channel name. Without <code>#</code>.
-                  </p>
-                </td>
-                <td>
-                  <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                  <input type="submit" value="Add" class="btn btn-primary" disabled>
-                </td>
-              </tr>
-            </form>
-          </table>
-       </div><!-- /#global-notification -->
+        </div><!-- /#global-notification -->
 
       </div><!-- /.tab-content -->
 
