@@ -115,13 +115,11 @@
 
         <div class="form-group">
           <div id="selectXSS" class="input">
-            <input type="radio" name="markdownSetting[markdown:XSS:option]" value="1" checked>
-              {{ t('markdown_setting.Allow all') }}<br>
-            <input type="radio" name="markdownSetting[markdown:XSS:option]" value="2">
+            <input type="radio" name="markdownSetting[markdown:XSS:option]" value="1">
               {{ t('markdown_setting.Ignore all') }}<br>
-            <input type="radio" name="markdownSetting[markdown:XSS:option]" value="3">
+            <input type="radio" name="markdownSetting[markdown:XSS:option]" value="2" checked>
               {{ t('markdown_setting.Recommended setting') }}<br>
-            <input type="radio" name="markdownSetting[markdown:XSS:option]" value="4">
+            <input type="radio" name="markdownSetting[markdown:XSS:option]" value="3">
               {{ t('markdown_setting.Whitelist setting') }}<br>
         </div>
 
