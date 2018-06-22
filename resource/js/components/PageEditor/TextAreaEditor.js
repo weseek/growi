@@ -20,6 +20,7 @@ export default class TextAreaEditor extends AbstractEditor {
 
     this.state = {
       value: this.props.value,
+      isGfmMode: this.props.isGfmMode,
     };
 
     this.init();
@@ -55,6 +56,23 @@ export default class TextAreaEditor extends AbstractEditor {
     setTimeout(() => {
       this.textarea.focus();
     }, 150);
+  }
+
+  /**
+   * @inheritDoc
+   */
+  setValue(newValue) {
+    this.setState({ value: newValue });
+    this.textarea.value = newValue;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  setGfmMode(bool) {
+    this.setState({
+      isGfmMode: bool,
+    });
   }
 
   /**
@@ -112,9 +130,21 @@ export default class TextAreaEditor extends AbstractEditor {
   /**
    * @inheritDoc
    */
+  getStrFromBolToSelectedUpperPos() {
+    const startPos = this.textarea.selectionStart;
+    const endPos = this.textarea.selectionEnd;
+    const upperPos = (startPos < endPos) ? startPos : endPos;
+    return this.textarea.value.substring(this.getBolPos(), upperPos);
+  }
+
+  /**
+   * @inheritDoc
+   */
   replaceBolToCurrentPos(text) {
-    const currentPos = this.textarea.selectionStart;
-    this.replaceValue(text, this.getBolPos(), currentPos);
+    const startPos = this.textarea.selectionStart;
+    const endPos = this.textarea.selectionEnd;
+    const lowerPos = (startPos < endPos) ? endPos : startPos;
+    this.replaceValue(text, this.getBolPos(), lowerPos);
   }
 
   getBolPos() {
@@ -153,16 +183,20 @@ export default class TextAreaEditor extends AbstractEditor {
         return;
       }
 
-      event.preventDefault();
-      this.handleEnterKey();
+      this.handleEnterKey(event);
     }
   }
 
   /**
    * handle ENTER key
+   * @param {string} event
    */
-  handleEnterKey() {
-    var context = {
+  handleEnterKey(event) {
+    if (!this.state.isGfmMode) {
+      return; // do nothing
+    }
+
+    const context = {
       handlers: [],  // list of handlers which process enter key
       editor: this,
     };
@@ -170,6 +204,7 @@ export default class TextAreaEditor extends AbstractEditor {
     const interceptorManager = this.interceptorManager;
     interceptorManager.process('preHandleEnter', context)
       .then(() => {
+        event.preventDefault();
         if (context.handlers.length == 0) {
           mlu.newlineAndIndentContinueMarkdownList(this);
         }

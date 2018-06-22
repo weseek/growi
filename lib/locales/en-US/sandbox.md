@@ -48,7 +48,7 @@
 
 ## Br 改行
 
-改行の前に半角スペース`  `を2つ記述します。  
+改行の前に半角スペース`  `を2つ記述します。
 ***この挙動は、オプションで変更可能です***
 
 ```
@@ -58,7 +58,7 @@ piyo
 ```
 
 hoge
-fuga  
+fuga
 piyo
 
 ## Blockquotes 引用
@@ -66,12 +66,12 @@ piyo
 先頭に`>`を記述します。ネストは`>`を多重に記述します。
 
 ```
-> 引用  
+> 引用
 > 引用
 >> 多重引用
 ```
 
-> 引用  
+> 引用
 > 引用
 >> 多重引用
 
@@ -235,7 +235,7 @@ ___
 &lt;/user/admin1>
 ```
 
-[/Sandbox]  
+[/Sandbox]
 </user/admin1>
 
 ## Pukiwiki like linker
@@ -243,7 +243,7 @@ ___
 (available by [weseek/growi-plugin-pukiwiki-like-linker
 ](https://github.com/weseek/growi-plugin-pukiwiki-like-linker) )
 
-最も柔軟な Linker です。  
+最も柔軟な Linker です。
 記述中のページを基点とした相対リンクと、表示テキストに対するリンクを同時に実現できます。
 
 ```
@@ -251,14 +251,14 @@ ___
 Bootstrap3のExampleは[[こちら>./Bootstrap3]]
 ```
 
-[[../user]]  
+[[../user]]
 Bootstrap3のExampleは[[こちら>./Bootstrap3]]
 
 # :pencil: Lists
 
 ## Ul 箇条書きリスト
 
-ハイフン`-`、プラス`+`、アスタリスク`*`のいずれかを先頭に記述します。  
+ハイフン`-`、プラス`+`、アスタリスク`*`のいずれかを先頭に記述します。
 ネストはタブで表現します。
 
 ```
@@ -281,7 +281,7 @@ Bootstrap3のExampleは[[こちら>./Bootstrap3]]
 
 ## Ol 番号付きリスト
 
-`番号.`を先頭に記述します。ネストはタブで表現します。  
+`番号.`を先頭に記述します。ネストはタブで表現します。
 番号は自動的に採番されるため、すべての行を1.と記述するのがお勧めです。
 
 ```
@@ -567,7 +567,7 @@ class BaseClass
 namespace net.dummy #DDDDDD {
     .BaseClass <|-- Person
     Meeting o-- Person
-    
+
     .BaseClass <|- Meeting
 }
 
@@ -594,11 +594,11 @@ package "Some Group" {
   HTTP - [First Component]
   [Another Component]
 }
- 
+
 node "Other Groups" {
   FTP - [Second Component]
   [First Component] --> FTP
-} 
+}
 
 cloud {
   [Example 1]
@@ -646,10 +646,147 @@ state State3 {
 State3 --> State3 : Failed
 State3 --> [*] : Succeeded / Save Result
 State3 --> [*] : Aborted
- 
+
 @enduml
 
 <!-- Reset PlantUML -->
 <div class="clearfix"></div>
 
+# :pencil: blockdiag
 
+See [blockdiag](http://blockdiag.com/).
+
+## blockdiag
+
+<!-- Resize blockdiag -->
+<div style="max-width: 600px">
+
+::: blockdiag
+blockdiag {
+   A -> B -> C -> D;
+   A -> E -> F -> G;
+}
+:::
+
+</div>
+
+## seqdiag
+
+<!-- Resize blockdiag -->
+<div style="max-width: 600px">
+
+::: seqdiag
+seqdiag {
+  browser  -> webserver [label = "GET /index.html"];
+  browser <-- webserver;
+  browser  -> webserver [label = "POST /blog/comment"];
+              webserver  -> database [label = "INSERT comment"];
+              webserver <-- database;
+  browser <-- webserver;
+}
+:::
+
+</div>
+
+## actdiag
+
+<!-- Resize blockdiag -->
+<div style="max-width: 600px">
+
+::: actdiag
+actdiag {
+  write -> convert -> image
+
+  lane user {
+     label = "User"
+     write [label = "Writing reST"];
+     image [label = "Get diagram IMAGE"];
+  }
+  lane actdiag {
+     convert [label = "Convert reST to Image"];
+  }
+}
+:::
+
+</div>
+
+## nwdiag
+
+<!-- Resize blockdiag -->
+<div style="max-width: 600px">
+
+::: nwdiag
+nwdiag {
+  network dmz {
+      address = "210.x.x.x/24"
+
+      web01 [address = "210.x.x.1"];
+      web02 [address = "210.x.x.2"];
+  }
+  network internal {
+      address = "172.x.x.x/24";
+
+      web01 [address = "172.x.x.1"];
+      web02 [address = "172.x.x.2"];
+      db01;
+      db02;
+  }
+}
+:::
+
+</div>
+
+## rackdiag
+
+<!-- Resize blockdiag -->
+<div style="max-width: 600px">
+
+::: rackdiag
+rackdiag {
+  // define height of rack
+  8U;
+
+  // define rack items
+  1: UPS [2U];
+  3: DB Server
+  4: Web Server
+  5: Web Server
+  6: Web Server
+  7: Load Balancer
+  8: L3 Switch
+}
+:::
+
+</div>
+
+## packetdiag
+
+<!-- Resize blockdiag -->
+<div style="max-width: 600px">
+
+::: packetdiag
+packetdiag {
+  colwidth = 32
+  node_height = 72
+
+  0-15: Source Port
+  16-31: Destination Port
+  32-63: Sequence Number
+  64-95: Acknowledgment Number
+  96-99: Data Offset
+  100-105: Reserved
+  106: URG [rotate = 270]
+  107: ACK [rotate = 270]
+  108: PSH [rotate = 270]
+  109: RST [rotate = 270]
+  110: SYN [rotate = 270]
+  111: FIN [rotate = 270]
+  112-127: Window
+  128-143: Checksum
+  144-159: Urgent Pointer
+  160-191: (Options and Padding)
+  192-223: data [colheight = 3]
+}
+:::
+
+</div>

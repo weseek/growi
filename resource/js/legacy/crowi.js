@@ -8,13 +8,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import { debounce } from 'throttle-debounce';
+
 import GrowiRenderer from '../util/GrowiRenderer';
 import Page from '../components/Page';
 
 const io = require('socket.io-client');
 const entities = require('entities');
 const escapeStringRegexp = require('escape-string-regexp');
-require('bootstrap-sass');
 require('jquery.cookie');
 
 require('./thirdparty-js/agile-admin');
@@ -135,8 +136,9 @@ Crowi.modifyScrollTop = function() {
   }, timeout);
 };
 
-Crowi.updateCurrentRevision = function(revisionId) {
-  $('#page-form [name="pageForm[currentRevision]"]').val(revisionId);
+Crowi.updatePageForm = function(page) {
+  $('#page-form [name="pageForm[currentRevision]"]').val(page.revision._id);
+  $('#page-form [name="pageForm[grant]"]').val(page.grant);
 };
 
 Crowi.handleKeyEHandler = (event) => {
@@ -163,6 +165,60 @@ Crowi.handleKeyCtrlSlashHandler = (event) => {
   // show modal to create a page
   $('#shortcuts-modal').modal('toggle');
   event.preventDefault();
+};
+
+Crowi.initSlimScrollForRevisionToc = () => {
+  const revisionTocElem = document.querySelector('.growi .revision-toc');
+  const tocContentElem = document.querySelector('.growi .revision-toc .markdownIt-TOC');
+
+  // growi layout only
+  if (revisionTocElem == null || tocContentElem == null) {
+    return;
+  }
+
+  function getCurrentRevisionTocTop() {
+    // calculate absolute top of '#revision-toc' element
+    return revisionTocElem.getBoundingClientRect().top;
+  }
+
+  function resetScrollbar(revisionTocTop) {
+    // window height - revisionTocTop - .system-version height
+    let h = window.innerHeight - revisionTocTop - 20;
+
+    const tocContentHeight = tocContentElem.getBoundingClientRect().height + 15;  // add margin
+
+    h = Math.min(h, tocContentHeight);
+
+    $('#revision-toc-content').slimScroll({
+      railVisible: true,
+      position: 'right',
+      height: h,
+    });
+  }
+
+  const resetScrollbarDebounced = debounce(100, resetScrollbar);
+
+  // initialize
+  const revisionTocTop = getCurrentRevisionTocTop();
+  resetScrollbar(revisionTocTop);
+
+  /*
+   * set event listener
+   */
+  // resize
+  window.addEventListener('resize', (event) => {
+    resetScrollbarDebounced(getCurrentRevisionTocTop());
+  });
+  // affix on
+  $('#revision-toc').on('affixed.bs.affix', function() {
+    resetScrollbar(getCurrentRevisionTocTop());
+  });
+  // affix off
+  $('#revision-toc').on('affixed-top.bs.affix', function() {
+    // calculate sum of height (.navbar-header + .bg-title) + margin-top of .main
+    const sum = 138;
+    resetScrollbar(sum);
+  });
 };
 
 $(function() {
@@ -529,6 +585,20 @@ $(function() {
       });
     }
 
+    // (function () {
+    //   var timer = 0;
+
+    //   window.onresize = function () {
+    //     if (timer > 0) {
+    //       clearTimeout(timer);
+    //     }
+
+    //     timer = setTimeout(function () {
+    //       DrawScrollbar();
+    //     }, 200);
+    //   };
+    // }());
+
     /*
      * transplanted to React components -- 2017.06.02 Yuki Takei
      *
@@ -890,6 +960,7 @@ window.addEventListener('load', function(e) {
   Crowi.highlightSelectedSection(location.hash);
   Crowi.modifyScrollTop();
   Crowi.setCaretLineAndFocusToEditor();
+  Crowi.initSlimScrollForRevisionToc();
 });
 
 window.addEventListener('hashchange', function(e) {

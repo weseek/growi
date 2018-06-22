@@ -22,6 +22,19 @@ export default class AbstractEditor extends React.Component {
   }
 
   /**
+   * set new value
+   */
+  setValue(newValue) {
+  }
+
+  /**
+   * Enable/Disable GFM mode
+   * @param {bool} bool
+   */
+  setGfmMode(bool) {
+  }
+
+  /**
    * set caret position of codemirror
    * @param {string} number
    */
@@ -46,6 +59,13 @@ export default class AbstractEditor extends React.Component {
    * return strings from current position to EOL(end of line)
    */
   getStrToEol() {
+    throw new Error('this method should be impelemented in subclass');
+  }
+
+  /**
+   * return strings from BOL(beginning of line) to current position
+   */
+  getStrFromBolToSelectedUpperPos() {
     throw new Error('this method should be impelemented in subclass');
   }
 
@@ -93,6 +113,7 @@ export default class AbstractEditor extends React.Component {
 
 AbstractEditor.propTypes = {
   value: PropTypes.string,
+  ifGfmMode: PropTypes.bool,
   editorOptions: PropTypes.object,
   onChange: PropTypes.func,
   onScroll: PropTypes.func,
@@ -100,5 +121,8 @@ AbstractEditor.propTypes = {
   onSave: PropTypes.func,
   onPasteFiles: PropTypes.func,
   onDragEnter: PropTypes.func,
+};
+AbstractEditor.defaultProps = {
+  isGfmMode: true,
 };
 
