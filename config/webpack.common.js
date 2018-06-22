@@ -30,6 +30,7 @@ module.exports = (options) => {
       // styles
       'styles/style':                './resource/styles/scss/style.scss',
       'styles/style-presentation':   './resource/styles/scss/style-presentation.scss',
+      'styles/style-hackmd':         './resource/styles/scss/style-hackmd.scss',
       // themes
       'styles/theme-default':        './resource/styles/scss/theme/default.scss',
       'styles/theme-default-dark':   './resource/styles/scss/theme/default-dark.scss',
