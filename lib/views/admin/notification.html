@@ -262,7 +262,7 @@
               <th>Operation</th>
             </thead>
             <tbody class="admin-notif-list">
-              <form id="slackNotificationForm">
+              <form id="globaNotificationForm">
               <tr>
                 <td>
                   <input class="form-control" type="text" name="globalPathPattern" value="" placeholder="e.g. /projects/xxx/MTG/*">
@@ -281,26 +281,7 @@
                   <input type="submit" value="Add" class="btn btn-primary" disabled>
                 </td>
               </tr>
-              </form>
-
-              {% for notif in settings %}
-              <tr class="admin-notif-row" data-updatepost-id="{{ notif._id.toString() }}">
-                <td>
-                  {{ notif.pathPattern }}
-                </td>
-                <td>
-                  {{ notif.channel }}
-                </td>
-                <td>
-                  <form class="admin-remove-updatepost">
-                    <input type="hidden" name="id" value="{{ notif._id.toString() }}">
-                    <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                    <input type="submit" value="Delete" class="btn btn-default">
-                  </form>
-                </td>
-              </tr>
-              {% endfor %}
-            </tbody>
+            </form>
           </table>
        </div><!-- /#global-notification -->
 
