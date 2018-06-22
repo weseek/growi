@@ -69,6 +69,7 @@ module.exports = {
       "error",
       { "args": "none" }
     ],
+    "no-var": [ "error" ],
     "quotes": [
       "error",
       "single"

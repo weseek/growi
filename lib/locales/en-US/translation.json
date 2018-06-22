@@ -307,22 +307,23 @@
     "username_email_password": "Username, Email and Password authentication",
     "ldap_auth": "LDAP authentication",
     "google_auth2": "Google OAuth2 authentication",
+    "google_auth2_by_crowi_desc": "However, this feature does not create new users, butit only makes it possible to login to the existing user who set up the association.",
     "facebook_auth2": "Facebook OAuth2 authentication",
     "twitter_auth2": "Twitter OAuth authentication",
-    "github_auth2": "Github OAuth2 authentication",
+    "github_auth2": "GitHub OAuth2 authentication",
     "crowi_auth": "Crowi classic authentication mechanism",
 		"require_server_restart": "Restarting the server is required.",
 		"server_on_passport_auth": "The server is running with Passport authentication mechanism.",
 		"server_on_crowi_auth": "The server is running with official Crowi authentication mechanism.",
 		"google_setting": "Google Setting",
-    "connect_api_manager": "You can use your Google account to sign up and login after creating OAuth2 ClientId at <a href=\"https://console.cloud.google.com/apis/credentials\">API Manager on Google Cloud Platform</a>",
-		"access_api_manager": "Access <a href=\"https://console.cloud.google.com/apis/credentials\">API Manager</a>",
+    "connect_api_manager": "You can use your Google account to sign up and login after creating OAuth2 ClientId at <a href=\"https://console.cloud.google.com/apis/credentials\" target=\"_blank\">API Manager on Google Cloud Platform</a>",
+		"access_api_manager": "Access <a href=\"%s\" target=\"_blank\">%s</a>",
 		"create_project": "Create Project if no projects have been created.",
 		"create_auth_to_oauth": "\"Create credentials\" -> \"OAuth clientID\"",
 		"select_webapp": "Select \"Web Application\"",
-    "change_redirect_url": "Enter <code>https://${crowi.host}/google/callback</code> <br>(where < code > $ {crowi.host} < /code> is your host name) for \"Authorized redirect URIs\".",
+    "change_redirect_url": "Enter <code>https://${crowi.host}/google/callback</code> <br>(where <code>${crowi.host}</code> is your host name) for \"Authorized redirect URIs\".",
     "clientID": "Client ID",
-    "client_secret": "クライアントシークレット",
+    "client_secret": "Client Secret",
     "guest_mode": {
       "deny": "Deny Unregistered Users",
       "readonly": "View Only"
@@ -332,8 +333,10 @@
       "restricted": "Reuqire Admin permission",
       "closed": "Invitation Only"
     },
-    "configuration": "Configuration",
+    "configuration": " Configuration",
     "optional": "Optional",
+    "Treat username matching as identical": "Automatically bind external accounts newly logged in to local accounts when <code>%s</code> match",
+    "Treat username matching as identical_warn": "WARNING: Be aware of security because the system treats the same user as a match of <code>%s</code>.",
     "ldap": {
       "server_url_detail": "The LDAP URL of the directory service in the format <code>ldap://host:port/DN</code> or <code>ldaps://host:port/DN</code>.",
       "bind_mode": "Binding Mode",
@@ -353,8 +356,6 @@
       "search_filter_example2": "Match with 'sAMAccountName' for Active Directory",
       "username_detail": "Specification of mappings for <code>username</code> when creating new users",
       "name_detail": "Specification of mappings for <code>name</code> when creating new users",
-      "Treat username matching as identical": "Automatically bind external accounts newly logged in to local accounts when <code>username</code> match",
-  		"Treat username matching as identical_warn": "WARNING: Be aware of security because the system treats the same user as a match of <code>username</code>.",
       "group_search_base_DN": "Group Search Base DN",
       "group_search_base_DN_detail": "The base DN from which to search for groups. If defined, also <code>Group Search Filter</code> must be defined for the search to work.",
       "group_search_filter": "Group Search Filter",
@@ -365,13 +366,29 @@
       "group_search_user_DN_property_detail": "The property of user object to use in <code>&#123;&#123;dn&#125;&#125;</code> interpolation of <code>Group Search Filter</code>.",
       "test_config": "Test Saved Configuration"
     },
-    "Google OAuth": {
-    },
-    "Facebook": {
-    },
-    "Twitter": {
-    },
-    "Github": {
+    "OAuth": {
+      "register": "Register for %s",
+      "change_redirect_url": "Enter <code>%s</code> <br>(where <code>%s</code> is your host name) for \"Authorized redirect URIs\".",
+      "Google": {
+        "name": "Google OAuth",
+        "register_1": "Access <a href=\"%s\" target=\"_blank\">%s</a>",
+        "register_2": "Create Project if no projects exist",
+        "register_3": "Create Credentials &rightarrow; OAuth client ID &rightarrow; Select \"Web application\"",
+        "register_4": "Register your OAuth App with one of Authorized redirect URIs as <code>%s</code> (where <code>%s</code> is your hostname)",
+        "register_5": "Copy and paste your ClientID and Client Secret above"
+      },
+      "Facebook": {
+        "name": "Facebook OAuth"
+      },
+      "Twitter": {
+        "name": "Twitter OAuth"
+      },
+      "GitHub": {
+        "name": "GitHub OAuth",
+        "register_1": "Access <a href=\"%s\" target=\"_blank\">%s</a>",
+        "register_2": "Register your OAuth App with \"Authorization callback URL\" as <code>%s</code> (where <code>%s</code> is your hostname)",
+        "register_3": "Copy and paste your ClientID and Client Secret above"
+      }
     }
 	},
 
@@ -380,8 +397,7 @@
     "Enable Line Break": "Enable Line Break",
     "Enable Line Break desc": "Treat line break in the text page as <code>&lt;br&gt;</code> in HTML",
     "Enable Line Break for comment": "Enable Line Break in comment",
-    "Enable Line Break for comment desc": "Treat line break in comment as <code>&lt;br&gt;</code> in HTML",
-    "TBD": "(TBD: Markdown function in the comment section has not been implemented yet)"
+    "Enable Line Break for comment desc": "Treat line break in comment as <code>&lt;br&gt;</code> in HTML"
   },
 
   "customize_page": {

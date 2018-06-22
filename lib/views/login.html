@@ -42,12 +42,12 @@
         # The case that there already exists a user whose username matches ID of the newly created LDAP user
         # https://github.com/weseek/growi/issues/193
         #}
-        {% set isDuplicatedUsernameExceptionOccured = req.flash('isDuplicatedUsernameExceptionOccured') %}
-        {% if isDuplicatedUsernameExceptionOccured != null %}
+        {% set failedProviderForDuplicatedUsernameException = req.flash('provider-DuplicatedUsernameException') %}
+        {% if failedProviderForDuplicatedUsernameException != null %}
         <div class="alert alert-warning small">
           <p><strong><i class="icon-fw icon-ban"></i>DuplicatedUsernameException occured</strong></p>
           <p>
-            Your LDAP authentication was succeess, but a new user could not be created.
+            Your {{ failedProviderForDuplicatedUsernameException }} authentication was succeess, but a new user could not be created.
             See the issue <a href="https://github.com/weseek/growi/issues/193">#193</a>.
           </p>
         </div>
@@ -136,7 +136,7 @@
         <div class="input-group m-t-15 m-b-10 mx-auto">
           <form role="form" action="/login/google" method="get">
             <input type="hidden" name="_csrf" value="{{ csrf() }}">
-            <button type="submit" class="fcbtn btn btn-danger btn-1b btn-login-google">
+            <button type="submit" class="fcbtn btn btn-danger btn-1b btn-login-oauth" id="google">
               <span class="btn-label"><i class="icon-social-google"></i></span>
               {{ t('Sign in') }}
             </button>
@@ -145,7 +145,74 @@
         </div>
         {% endif %}
 
+        {% if passportGoogleLoginEnabled() || passportGitHubLoginEnabled() || passportFacebookLoginEnabled() || passportTwitterLoginEnabled() %}
+        <hr class="mb-1">
+        <div class="collapse collapse-oauth collapse-anchor">
+          <div class="spacer"></div>
+          <div class="d-flex flex-row justify-content-between flex-wrap">
+            {% if passportGoogleLoginEnabled() %}
+            <form role="form" action="/passport/google" class="d-inline-flex flex-column">
+              <button type="submit" class="fcbtn btn btn-1b btn-login-oauth d-flex" id="google">
+                <span class="btn-label"><i class="fa fa-google"></i></span>
+                <span class="btn-label-text">{{ t('Sign in') }}</span>
+              </button>
+              <div class="small text-right">by Google Account</div>
+            </form>
+            {% endif %}
+            {% if passportGitHubLoginEnabled() %}
+            <form role="form" action="/passport/github" class="d-inline-flex flex-column">
+              <input type="hidden" name="_csrf" value="{{ csrf() }}">
+              <button type="submit" class="fcbtn btn btn-1b btn-login-oauth d-inline-flex" id="github">
+                <span class="btn-label"><i class="fa fa-github"></i></span>
+                <span class="btn-label-text">{{ t('Sign in') }}</span>
+              </button>
+              <div class="small text-right">by GitHub Account</div>
+            </form>
+            {% endif %}
+            {% if passportFacebookLoginEnabled() %}
+            <form role="form" action="/passport/facebook" class="d-inline-flex flex-column">
+              <input type="hidden" name="_csrf" value="{{ csrf() }}">
+              <button type="submit" class="fcbtn btn btn-1b btn-login-oauth d-inline-flex" id="facebook">
+                <span class="btn-label"><i class="fa fa-facebook"></i></span>
+                <span class="btn-label-text">{{ t('Sign in') }}</span>
+              </button>
+              <div class="small text-right">by Facebook Account</div>
+            </form>
+            {% endif %}
+            {% if passportTwitterLoginEnabled() %}
+            <form role="form" action="/passport/twitter" class="d-inline-flex flex-column">
+              <input type="hidden" name="_csrf" value="{{ csrf() }}">
+              <button type="submit" class="fcbtn btn btn-1b btn-login-oauth d-inline-flex" id="twitter">
+                <span class="btn-label"><i class="fa fa-twitter"></i></span>
+                <span class="btn-label-text">{{ t('Sign in') }}</span>
+              </button>
+              <div class="small text-right">by Twitter Account</div>
+            </form>
+            {% endif %}
+          </div>{# ./d-flex flex-row flex-wrap #}
+          <div class="spacer"></div>
+        </div>
+        <hr class="mt-2 mb-0">
+        <div class="text-center">
+          <button class="collapse-anchor btn btn-xs btn-collapse-oauth mb-3" data-toggle="collapse" data-parent="#accordion" href="#collapse-oauth" aria-expanded="true" aria-controls="collapseOne">
+            OAuth
+          </button>
+        </div>
+        {% else %}
         <hr>
+        {% endif %}
+
+
+        <script>
+          $(".collapse-anchor").hover(
+            function() {
+              $('.collapse-oauth').collapse('show');
+            },
+            function() {
+              $('.collapse-oauth').collapse('hide');
+            }
+          );
+        </script>
 
         <div class="row">
           <div class="col-xs-12 text-right">

@@ -1,4 +1,5 @@
 {
+  "plugins": ["lodash"],
   "presets": [
     ["env", {
       "targets": {

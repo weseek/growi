@@ -16,7 +16,6 @@ import Page from '../components/Page';
 const io = require('socket.io-client');
 const entities = require('entities');
 const escapeStringRegexp = require('escape-string-regexp');
-require('bootstrap-sass');
 require('jquery.cookie');
 
 require('./thirdparty-js/agile-admin');

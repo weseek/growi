@@ -1,7 +1,7 @@
 <a id="theme-option-{{name}}" href="#"
     class="{{name}} {% if name === settingForm['customize:theme'] %}active{% endif %}"
     onclick="selectTheme('{{name}}')"
-    data-theme="{{ webpack_asset('style-theme-' + name).css }}">
+    data-theme="{{ webpack_asset('styles/theme-' + name + '.css') }}">
 
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
     <title>{{name}}</title>

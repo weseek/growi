@@ -2,11 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { UnControlled as CodeMirror } from 'react-codemirror2';
-require('codemirror/addon/display/autorefresh');
 require('codemirror/addon/hint/show-hint');
 require('codemirror/addon/edit/matchbrackets');
 require('codemirror/addon/edit/closebrackets');
 require('codemirror/mode/htmlmixed/htmlmixed');
+require('../../util/codemirror/autorefresh.ext');
 
 require('jquery-ui/ui/widgets/resizable');
 
@@ -30,7 +30,7 @@ export default class CustomHeaderEditor extends React.Component {
           tabSize: 2,
           indentUnit: 2,
           theme: 'eclipse',
-          autoRefresh: true,
+          autoRefresh: {force: true},   // force option is enabled by autorefresh.ext.js -- Yuki Takei
           matchBrackets: true,
           autoCloseBrackets: true,
           extraKeys: {'Ctrl-Space': 'autocomplete'},
