@@ -31,7 +31,6 @@ module.exports = (options) => {
       // styles
       'styles/style':                './resource/styles/scss/style.scss',
       'styles/style-presentation':   './resource/styles/scss/style-presentation.scss',
-      'styles/style-hackmd':         './resource/styles/scss/style-hackmd.scss',
       // themes
       'styles/theme-default':        './resource/styles/scss/theme/default.scss',
       'styles/theme-default-dark':   './resource/styles/scss/theme/default-dark.scss',
@@ -39,6 +38,8 @@ module.exports = (options) => {
       'styles/theme-mono-blue':      './resource/styles/scss/theme/mono-blue.scss',
       'styles/theme-future':         './resource/styles/scss/theme/future.scss',
       'styles/theme-blue-night':     './resource/styles/scss/theme/blue-night.scss',
+      // styles for external services
+      'styles/style-hackmd':         './resource/styles/hackmd/style.scss',
     }, options.entry || {}),  // Merge with env dependent settings
     output: Object.assign({
       path: helpers.root('public'),
@@ -88,12 +89,12 @@ module.exports = (options) => {
         {
           test: /\.css$/,
           use: ['style-loader', 'css-loader'],
-          exclude: [helpers.root('resource/styles/scss')]
+          exclude: [helpers.root('resource/styles')]
         },
         {
           test: /\.scss$/,
           use: ['style-loader', 'css-loader', 'sass-loader'],
-          exclude: [helpers.root('resource/styles/scss')]
+          exclude: [helpers.root('resource/styles')]
         },
         /*
          * File loader for supporting images, for example, in CSS files.

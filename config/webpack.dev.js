@@ -9,6 +9,7 @@ const helpers = require('./helpers');
 /*
  * Webpack Plugins
  */
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 /**
@@ -37,9 +38,22 @@ module.exports = require('./webpack.common')({
         ],
         include: [helpers.root('resource/styles/scss')]
       },
+      { // Dump CSS for HackMD
+        test: /\.scss$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          'css-loader',
+          'scss-loader',
+        ],
+        include: [helpers.root('resource/styles/hackmd')]
+      },
     ],
   },
   plugins: [
+
+    new MiniCssExtractPlugin({
+      filename: '[name].bundle.css',
+    }),
 
     new webpack.DllReferencePlugin({
       context: helpers.root(),
