@@ -44,6 +44,8 @@ const mainContent = document.querySelector('#content-main');
 let pageId = null;
 let pageRevisionId = null;
 let pageRevisionCreatedAt = null;
+let pageRevisionIdHackmdSynced = null;
+let pageIdOnHackmd = null;
 let pagePath;
 let pageContent = '';
 let markdown = '';
@@ -52,6 +54,8 @@ if (mainContent !== null) {
   pageId = mainContent.getAttribute('data-page-id');
   pageRevisionId = mainContent.getAttribute('data-page-revision-id');
   pageRevisionCreatedAt = +mainContent.getAttribute('data-page-revision-created');
+  pageRevisionIdHackmdSynced = mainContent.getAttribute('data-page-revision-id-hackmd-synced') || null;
+  pageIdOnHackmd = mainContent.getAttribute('data-page-id-on-hackmd') || null;
   pagePath = mainContent.attributes['data-path'].value;
   const rawText = document.getElementById('raw-text-original');
   if (rawText) {
@@ -248,6 +252,7 @@ if (pageEditorWithHackmdElem) {
   pageEditor = ReactDOM.render(
     <PageEditorWithHackmd crowi={crowi}
         pageId={pageId} revisionId={pageRevisionId}
+        revisionIdHackmdSynced={pageRevisionIdHackmdSynced} pageIdOnHackmd={pageIdOnHackmd}
         markdown={markdown}
         onSaveSuccess={onSaveSuccess} />,
     pageEditorWithHackmdElem

@@ -24,7 +24,7 @@ export default class HackmdEditor extends React.PureComponent {
   }
 
   render() {
-    const src = `${this.props.hackMdUri}/${this.props.pageIdOnHackMD}`;
+    const src = `${this.props.hackMdUri}/${this.props.pageIdOnHackmd}`;
     return (
       <iframe id='iframe-hackmd'
         ref='iframe'
@@ -39,5 +39,5 @@ export default class HackmdEditor extends React.PureComponent {
 HackmdEditor.propTypes = {
   markdown: PropTypes.string.isRequired,
   hackMdUri: PropTypes.string.isRequired,
-  pageIdOnHackMD: PropTypes.string.isRequired,
+  pageIdOnHackmd: PropTypes.string.isRequired,
 };
