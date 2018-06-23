@@ -14,7 +14,7 @@ import PageEditor       from './components/PageEditor';
 import OptionsSelector  from './components/PageEditor/OptionsSelector';
 import { EditorOptions, PreviewOptions } from './components/PageEditor/OptionsSelector';
 import GrantSelector    from './components/PageEditor/GrantSelector';
-import HackmdEditor     from './components/HackmdEditor';
+import PageEditorWithHackmd from './components/PageEditorWithHackmd';
 import Page             from './components/Page';
 import PageListSearch   from './components/PageListSearch';
 import PageHistory      from './components/PageHistory';
@@ -232,9 +232,9 @@ if (pageEditorGrantSelectorElem) {
 /*
  * HackMD Editor
  */
-// render PageEditor
-const hackmdEditorElem = document.getElementById('hackmd-editor');
-if (hackmdEditorElem) {
+// render PageEditorWithHackmd
+const pageEditorWithHackmdElem = document.getElementById('page-editor-with-hackmd');
+if (pageEditorWithHackmdElem) {
   // create onSave event handler
   const onSaveSuccess = function(page) {
     // modify the revision id value to pass checking id when updating
@@ -246,9 +246,11 @@ if (hackmdEditorElem) {
   };
 
   pageEditor = ReactDOM.render(
-    <HackmdEditor crowi={crowi}
+    <PageEditorWithHackmd crowi={crowi}
+        pageId={pageId} revisionId={pageRevisionId}
+        markdown={markdown}
         onSaveSuccess={onSaveSuccess} />,
-    hackmdEditorElem
+    pageEditorWithHackmdElem
   );
 }
 

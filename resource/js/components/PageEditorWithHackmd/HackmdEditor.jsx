@@ -15,22 +15,20 @@ export default class HackmdEditor extends React.PureComponent {
   componentWillMount() {
   }
 
+  syncToLatestRevision() {
+
+  }
+
   loadHandler() {
 
   }
 
   render() {
-    const envVars = this.props.crowi.config.env;
-    const hackMdUri = envVars.HACKMD_URI;
-
-    if (hackMdUri == null) {
-      return <React.Fragment></React.Fragment>;
-    }
-
+    const src = `${this.props.hackMdUri}/${this.props.pageIdOnHackMD}`;
     return (
       <iframe id='iframe-hackmd'
         ref='iframe'
-        src={hackMdUri}
+        src={src}
         onLoad={this.loadHandler}
       >
       </iframe>
@@ -39,6 +37,7 @@ export default class HackmdEditor extends React.PureComponent {
 }
 
 HackmdEditor.propTypes = {
-  crowi: PropTypes.object.isRequired,
-  pageIdOnHackMD: PropTypes.string,
+  markdown: PropTypes.string.isRequired,
+  hackMdUri: PropTypes.string.isRequired,
+  pageIdOnHackMD: PropTypes.string.isRequired,
 };

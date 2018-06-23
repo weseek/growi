@@ -11,7 +11,7 @@
  */
 
 /* eslint-disable no-console  */
-console.log('Loading GROWI agent for HackMD...');
+console.log('[HackMD] Loading GROWI agent for HackMD...');
 
 const allowedOrigin = '{{origin}}';         // will be replaced by swig
 const styleFilePath = '{{styleFilePath}}';  // will be replaced by swig
@@ -22,26 +22,40 @@ const styleFilePath = '{{styleFilePath}}';  // will be replaced by swig
  */
 function validateOrigin(event) {
   if (event.origin !== allowedOrigin) {
-    console.error('Rejected', 'Cause: "event.origin" and "allowedOrigin" does not match');
+    console.error('[HackMD] Message is rejected.', 'Cause: "event.origin" and "allowedOrigin" does not match');
     return;
   }
 }
 
+/**
+ * Insert link tag to load style file
+ */
 function insertStyle() {
   const element = document.createElement('link');
   element.href = styleFilePath;
   element.rel = 'stylesheet';
   document.getElementsByTagName('head')[0].appendChild(element);
 }
+
+
 insertStyle();
 
 window.addEventListener('message', (event) => {
   validateOrigin(event);
-  console.log('getValue called');
+
+  const data = JSON.parse(event.data);
+  switch (data.operation) {
+    case 'getValue':
+      console.log('getValue called');
+      break;
+    case 'setValue':
+      console.log('setValue called');
+      break;
+  }
 });
 
 window.addEventListener('load', (event) => {
   console.log('loaded');
 });
 
-console.log('GROWI agent for HackMD has successfully loaded.');
+console.log('[HackMD] GROWI agent for HackMD has successfully loaded.');
