@@ -11,6 +11,7 @@ CHANGES
 * Improvement: Resolve errors on IE11 (Experimental)
 * Support: Migrate to webpack 4 
 * Support: Upgrade libs
+    * eslint
     * react-bootstrap-typeahead
     * react-codemirror2
     * webpack
