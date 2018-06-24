@@ -27,12 +27,14 @@ export default class PageEditorWithHackmd extends React.PureComponent {
       return <React.Fragment></React.Fragment>;
     }
 
-    return <HackmdEditor
-        markdown={this.props.markdown}
-        hackMdUri={hackMdUri}
-        pageIdOnHackmd={this.props.pageIdOnHackmd}
-      >
-      </HackmdEditor>;
+    return (
+      <HackmdEditor
+          markdown={this.props.markdown}
+          hackMdUri={hackMdUri}
+          pageIdOnHackmd={this.props.pageIdOnHackmd}
+        >
+      </HackmdEditor>
+    );
   }
 }
 
