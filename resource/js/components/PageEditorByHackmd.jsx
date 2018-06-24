@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import HackmdEditor from './PageEditorWithHackmd/HackmdEditor';
+import HackmdEditor from './PageEditorByHackmd/HackmdEditor';
 
-export default class PageEditorWithHackmd extends React.PureComponent {
+export default class PageEditorByHackmd extends React.PureComponent {
 
   constructor(props) {
     super(props);
@@ -38,7 +38,7 @@ export default class PageEditorWithHackmd extends React.PureComponent {
   }
 }
 
-PageEditorWithHackmd.propTypes = {
+PageEditorByHackmd.propTypes = {
   crowi: PropTypes.object.isRequired,
   markdown: PropTypes.string.isRequired,
   pageId: PropTypes.string,

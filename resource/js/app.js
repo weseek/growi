@@ -14,7 +14,7 @@ import PageEditor       from './components/PageEditor';
 import OptionsSelector  from './components/PageEditor/OptionsSelector';
 import { EditorOptions, PreviewOptions } from './components/PageEditor/OptionsSelector';
 import GrantSelector    from './components/PageEditor/GrantSelector';
-import PageEditorWithHackmd from './components/PageEditorWithHackmd';
+import PageEditorByHackmd from './components/PageEditorByHackmd';
 import Page             from './components/Page';
 import PageListSearch   from './components/PageListSearch';
 import PageHistory      from './components/PageHistory';
@@ -250,7 +250,7 @@ if (pageEditorWithHackmdElem) {
   };
 
   pageEditor = ReactDOM.render(
-    <PageEditorWithHackmd crowi={crowi}
+    <PageEditorByHackmd crowi={crowi}
         pageId={pageId} revisionId={pageRevisionId}
         revisionIdHackmdSynced={pageRevisionIdHackmdSynced} pageIdOnHackmd={pageIdOnHackmd}
         markdown={markdown}
