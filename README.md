@@ -165,6 +165,11 @@ Environment Variables
     * SECRET_TOKEN: A secret key for verifying the integrity of signed cookies.
     * SESSION_NAME: The name of the session ID cookie to set in the response by Express. default: `connect.sid`
     * FILE_UPLOAD: `aws` (default), `local`, `none`
+* **Option (Overwritable in admin page)**
+    * OAUTH_GOOGLE_CLIENT_ID: Google API client id for OAuth login
+    * OAUTH_GOOGLE_CLIENT_SECRET: Google API client secret for OAuth login
+    * OAUTH_GITHUB_CLIENT_ID: GitHub API client id for OAuth login
+    * OAUTH_GITHUB_CLIENT_SECRET: GitHub API client secret for OAuth login
 
 
 Documentation
