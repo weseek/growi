@@ -38,6 +38,10 @@
     text-transform: uppercase;
     text-align: center;
     color: #666;
+    /* SVG Properties*/
+    polygon {
+      fill: #666;
+    }
 
     &.key-longer {
       width: 64px;
