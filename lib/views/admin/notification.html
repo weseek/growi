@@ -126,7 +126,7 @@
                     This is the way that compatible with Crowi,<br>
                     but not recommended in GROWI because it is <strong>too complex</strong>.
                     <br><br>
-                    Please use <a href="#slack-incoming-webhooks" data-toggle="tab" onclick="activateTab('slack-incoming-webhooks')">Slack incomming webhooks Configuration</a> instead.
+                    Please use <a href="#slack-incoming-webhooks" data-toggle="tab" onclick="activateSlackIwh()">Slack incomming webhooks Configuration</a> instead.
                   </p>
 
                   <div class="form-group">
@@ -260,30 +260,39 @@
   </div>
 
   <script>
+    function activateTab(tab){
+      $('.nav-tabs a[href="#' + tab + '"]').tab('show');
+    };
+
+    function activateSlackIwh() {
+      $("#selectSlackOption").selectpicker('val', '1');
+      $("#slack-app").removeClass('active');
+      $("#slack-incoming-webhooks").addClass('active');
+    }
+
+    function activateSlackApp() {
+      $("#selectSlackOption").selectpicker('val', '2');
+      $("#slack-incoming-webhooks").removeClass('active');
+      $("#slack-app").addClass('active');
+    }
+
     window.addEventListener('load', function(e) {
       // hash on page
       if (location.hash) {
-        if (location.hash == '#slack-app') {
-          activateTab('slack-app');
+        if (location.hash == '#global-notification') {
+          activateTab('global-notification');
         }
       }
     });
 
     $("#selectSlackOption").on('change', function() {
       if (this.value === "1") {
-        $("#slack-app").removeClass('active');
-        $("#slack-incoming-webhooks").addClass('active');
+        activateSlackIwh();
       }
       else if (this.value === "2") {
-        $("#slack-incoming-webhooks").removeClass('active');
-        $("#slack-app").addClass('active');
+        activateSlackApp();
       }
     });
-
-
-    function activateTab(tab){
-      $('.nav-tabs a[href="#' + tab + '"]').tab('show');
-    };
   </script>
 </div>
 {% endblock content_main %}
