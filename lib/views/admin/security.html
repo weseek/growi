@@ -100,6 +100,20 @@
         </fieldset>
       </form>
 
+
+      <!-- prevent XSS link -->
+      <div>
+          <legend>{{ t('security_setting.xss_prevent_setting') }}</legend>
+            <div class="xss-position">
+              <a class="flexbox" href="/admin/markdown/#preventXSS">
+                {{ t('security_setting.xss_prevent_setting_link') }}
+              </a>
+            </div>
+        </div>
+
+
+
+
       <form action="/_api/admin/security/mechanism" method="post" class="form-horizontal m-t-30" id="mechanismSetting" role="form">
         <fieldset>
           <legend class="alert-anchor">{{ t('Selecting authentication mechanism') }}</legend>
@@ -274,16 +288,6 @@
         </div>
 
       </div><!-- /.auth-mechanism-configurations -->
-
-      <div class="XSSprevent">
-        <legend>{{ t('security_setting.XSS_prevent_setting') }}</legend>
-          <div class="XSSposition">
-            <a class="btn btn-default XSSlink" href="/admin/markdown/#preventXSS">
-              {{ t('security_setting.XSS_prevent_setting_link') }}
-            </a>
-          </div>
-      </div>
-
     </div>
   </div>
 
