@@ -39,8 +39,8 @@
 
       <form action="/admin/markdown/lineBreaksSetting" method="post" class="form-horizontal" id="markdownSettingForm" role="form">
       <fieldset>
-        <legend>{{ t('Markdown settings') }}</legend>
-        <p class="well">{{ t("markdown_setting.markdown_rendering") }}</p>
+        <legend>{{ t('markdown_setting.line_break_setting') }}</legend>
+        <p class="well">{{ t("markdown_setting.line_break_setting_desc") }}</p>
 
         <div class="form-group">
           <label for="markdownSetting[markdown:isEnabledLinebreaks]" class="col-xs-4 control-label">
@@ -176,9 +176,40 @@
                         </form>
                     </fieldset>
                   </div>
-              </div>
 
+      </fieldset>
+      </form>
 
+      <form action="/admin/markdown/XSSSetting" method="post" class="form-horizontal" id="markdownSettingForm" role="form">
+      <fieldset>
+        <legend>{{ t('markdown_setting.XSS_setting') }}</legend>
+        <p class="well">{{ t("markdown_setting.XSS_setting_desc") }}</p>
+        <div class="form-group">
+          <label for="markdownSetting[markdown:isPreventXSS]" class="col-xs-4 control-label">
+            {{ t('markdown_setting.Prevent XSS(Cross Site Scripting)') }}
+          </label>
+          <div class="col-xs-5">
+            <div class="btn-group btn-toggle" data-toggle="buttons">
+              <label class="btn btn-default btn-rounded btn-outline {% if markdownSetting['markdown:isEnabledPreventXSS'] %}active{% endif %}" data-active-class="primary">
+                <input name="markdownSetting[markdown:isEnabledPreventXSS]" value="true" type="radio"
+                    {% if true === markdownSetting['markdown:isEnabledPreventXSS'] %}checked{% endif %}> ON
+              </label>
+              <label class="btn btn-default btn-rounded btn-outline {% if !markdownSetting['markdown:isEnabledPreventXSS'] %}active{% endif %}" data-active-class="default">
+                <input name="markdownSetting[markdown:isEnabledPreventXSS]" value="false" type="radio"
+                    {% if !markdownSetting['markdown:isEnabledPreventXSS'] %}checked{% endif %}> OFF
+              </label>
+            </div>
+            <!-- <div class="input">
+              <input type="radio" name="preventXSS" value="stripignoretag" checked>
+                {{ t('markdown_setting.Strip ignore tag') }}<br>
+              <input type="radio" name="preventXSS" value="WLtagnames">
+                {{ t('markdown_setting.White list tag names') }}<br>
+              <input type="radio" name="preventXSS" value="WLtagattribute">
+                {{ t('markdown_setting.White list tag attributes') }}
+            </div> -->
+            <p class="help-block">{{ t("markdown_setting.Prevent XSS(Cross Site Scripting)desc") }}<br>{{ t("markdown_setting.Prevent XSS(Cross Site Scripting)desc2") }}</p>
+          </div>
+        </div>
 
               </fieldset>
             </form>
@@ -223,8 +254,13 @@
             <button type="submit" class="btn btn-primary">{{ t("Update") }}</button>
           </div>
         </div>
+
       </fieldset>
       </form>
+
+
+
+
 
     </div>
   </div>
