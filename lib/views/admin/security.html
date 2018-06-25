@@ -100,19 +100,13 @@
         </fieldset>
       </form>
 
-
       <!-- prevent XSS link -->
       <div>
-          <legend>{{ t('security_setting.xss_prevent_setting') }}</legend>
-            <div class="xss-position">
-              <a class="flexbox" href="/admin/markdown/#preventXSS">
-                {{ t('security_setting.xss_prevent_setting_link') }}
-              </a>
-            </div>
+        <legend>{{ t('security_setting.xss_prevent_setting') }}</legend>
+        <div class="text-center">
+          <a class="flexbox" href="/admin/markdown/#preventXSS">{{ t('security_setting.xss_prevent_setting_link') }}</a>
         </div>
-
-
-
+       </div>
 
       <form action="/_api/admin/security/mechanism" method="post" class="form-horizontal m-t-30" id="mechanismSetting" role="form">
         <fieldset>
