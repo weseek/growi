@@ -269,12 +269,12 @@
       }
     });
 
-    $("#selectSlackOption").on('change',function(){
-      if(this.value=="1"){
+    $("#selectSlackOption").on('change', function() {
+      if (this.value === "1") {
         $("#slack-app").removeClass('active');
         $("#slack-incoming-webhooks").addClass('active');
       }
-      if(this.value=="2"){
+      else if (this.value === "2") {
         $("#slack-incoming-webhooks").removeClass('active');
         $("#slack-app").addClass('active');
       }
