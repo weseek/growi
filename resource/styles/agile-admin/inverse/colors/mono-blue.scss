@@ -33,5 +33,9 @@ $inline-code-bg: lighten($subthemecolor,70%);
   .code-line.revision-head.highlighted {
     background-color: lighten($themecolor,20%);
     color: $themelight;
+
+    .icon-note, .icon-link {
+      color: $themelight;
+    }
   }
 }
