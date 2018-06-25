@@ -90,7 +90,7 @@
       </fieldset>
       </form>
 
-      <form action="/admin/markdown/XSSSetting" method="post" class="form-horizontal" id="markdownSettingForm" role="form">
+      <form action="/admin/markdown/xss-setting" method="post" class="form-horizontal" id="markdownSettingForm" role="form">
       <fieldset>
         <legend>{{ t('markdown_setting.XSS_setting') }}</legend>
         <p class="well">{{ t("markdown_setting.XSS_setting_desc") }}</p>
@@ -100,13 +100,13 @@
           </label>
           <div class="col-xs-5">
             <div class="btn-group btn-toggle" data-toggle="buttons">
-              <label class="btn btn-default btn-rounded btn-outline {% if markdownSetting['markdown:XSS:isPrevented'] %}active{% endif %}" data-active-class="primary">
-                <input name="markdownSetting[markdown:XSS:isPrevented]" value="true" type="radio"
-                    {% if true === markdownSetting['markdown:XSS:isPrevented'] %}checked{% endif %}> ON
+              <label class="btn btn-default btn-rounded btn-outline {% if markdownSetting['markdown:xss:isPrevented'] %}active{% endif %}" data-active-class="primary">
+                <input name="markdownSetting[markdown:xss:isPrevented]" value="true" type="radio"
+                    {% if true === markdownSetting['markdown:xss:isPrevented'] %}checked{% endif %}> ON
               </label>
-              <label class="btn btn-default btn-rounded btn-outline {% if !markdownSetting['markdown:XSS:isPrevented'] %}active{% endif %}" data-active-class="default">
-                <input name="markdownSetting[markdown:XSS:isPrevented]" value="false" type="radio"
-                    {% if !markdownSetting['markdown:XSS:isPrevented'] %}checked{% endif %}> OFF
+              <label class="btn btn-default btn-rounded btn-outline {% if !markdownSetting['markdown:xss:isPrevented'] %}active{% endif %}" data-active-class="default">
+                <input name="markdownSetting[markdown:xss:isPrevented]" value="false" type="radio"
+                    {% if !markdownSetting['markdown:xss:isPrevented'] %}checked{% endif %}> OFF
               </label>
             </div>
             <p class="help-block">{{ t("markdown_setting.Prevent XSS(Cross Site Scripting)desc") }}<br>{{ t("markdown_setting.Prevent XSS(Cross Site Scripting)desc2") }}</p>
@@ -115,11 +115,11 @@
 
         <div class="form-group">
           <div id="selectXSS" class="input">
-            <input type="radio" name="markdownSetting[markdown:XSS:option]" value="1">
+            <input type="radio" name="markdownSetting[markdown:xss:option]" value="1">
               {{ t('markdown_setting.Ignore all') }}<br>
-            <input type="radio" name="markdownSetting[markdown:XSS:option]" value="2" checked>
+            <input type="radio" name="markdownSetting[markdown:xss:option]" value="2" checked>
               {{ t('markdown_setting.Recommended setting') }}<br>
-            <input type="radio" name="markdownSetting[markdown:XSS:option]" value="3">
+            <input type="radio" name="markdownSetting[markdown:xss:option]" value="3">
               {{ t('markdown_setting.Whitelist setting') }}<br>
         </div>
 
@@ -128,11 +128,11 @@
             <p class="help-block">{{ t('markdown_setting.Add white list desc') }}</p>
            <div class="inputbox">
              {{ t('markdown_setting.tag') }}
-             <input type="text" name="markdownSetting[markdown:XSS:tagWhiteList]" size="70" value="" placeholder="span, iframe, input">
+             <input type="text" name="markdownSetting[markdown:xss:tagWhiteList]" size="70" value="" placeholder="span, iframe, input">
            </div>
            <div class="inputbox">
              {{ t('markdown_setting.tag attribute') }}
-             <input type="text" name="markdownSetting[markdown:XSS:attrWhiteList]" size="70" value="" placeholder="class, type, placeholder, name, required">
+             <input type="text" name="markdownSetting[markdown:xss:attrWhiteList]" size="70" value="" placeholder="class, type, placeholder, name, required">
            </div>
          </div>
         </div>
@@ -147,10 +147,6 @@
       </fieldset>
       </form>
 
-
-
-
-
     </div>
   </div>
 
@@ -159,6 +155,3 @@
 
 {% block content_footer %}
 {% endblock content_footer %}
-
-
-
