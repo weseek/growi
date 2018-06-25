@@ -206,20 +206,23 @@
   },
 
   "modal_shortcuts": {
-      "global": {
-          "title": "Global shortcuts",
-          "Open/Close shortcut help": "Open/Close shortcut help",
-          "Edit Page": "Edit Page",
-          "Create Page": "Create Page"
-      },
-      "editor": {
-          "title": "Editor shortcuts",
-          "Indent": "Indent",
-          "Outdent": "Outdent",
-          "Save Page": "Save Page",
-          "Delete Line": "Delete Line"
-
-              }
+    "global": {
+      "title": "Global shortcuts",
+      "Open/Close shortcut help": "Open/Close shortcut help",
+      "Edit Page": "Edit Page",
+      "Create Page": "Create Page"
+    },
+    "editor": {
+      "title": "Editor shortcuts",
+      "Indent": "Indent",
+      "Outdent": "Outdent",
+      "Save Page": "Save Page",
+      "Delete Line": "Delete Line"
+    },
+    "commentform": {
+      "title": "Comment Form shortcuts",
+      "Post": "Post"
+    }
   },
 
   "template": {

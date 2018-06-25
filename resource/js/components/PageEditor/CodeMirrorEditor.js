@@ -71,6 +71,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.loadKeymapMode = this.loadKeymapMode.bind(this);
     this.setKeymapMode = this.setKeymapMode.bind(this);
     this.handleEnterKey = this.handleEnterKey.bind(this);
+    this.handleCtrlEnterKey = this.handleCtrlEnterKey.bind(this);
 
     this.scrollCursorIntoViewHandler = this.scrollCursorIntoViewHandler.bind(this);
     this.pasteHandler = this.pasteHandler.bind(this);
@@ -369,6 +370,15 @@ export default class CodeMirrorEditor extends AbstractEditor {
       });
   }
 
+  /**
+   * handle Ctrl+ENTER key
+   */
+  handleCtrlEnterKey() {
+    if (this.props.onCtrlEnter != null) {
+      this.props.onCtrlEnter();
+    }
+  }
+
   scrollCursorIntoViewHandler(editor, event) {
     if (this.props.onScrollCursorIntoView != null) {
       const line = editor.getCursor().line;
@@ -468,6 +478,8 @@ export default class CodeMirrorEditor extends AbstractEditor {
           // continuelist, indentlist
           extraKeys: {
             'Enter': this.handleEnterKey,
+            'Ctrl-Enter': this.handleCtrlEnterKey,
+            'Cmd-Enter': this.handleCtrlEnterKey,
             'Tab': 'indentMore',
             'Shift-Tab': 'indentLess',
             'Ctrl-Q': (cm) => { cm.foldCode(cm.getCursor()) },
