@@ -8,6 +8,15 @@ const loadScript = require('simple-load-script');
 const loadCssSync = require('load-css-file');
 
 import * as codemirror from 'codemirror';
+// set save handler
+codemirror.commands.save = (instance) => {
+  if (instance.codeMirrorEditor != null) {
+    instance.codeMirrorEditor.dispatchSave();
+  }
+};
+// set CodeMirror instance as 'CodeMirror' so that CDN addons can reference
+window.CodeMirror = require('codemirror');
+
 
 import { UnControlled as ReactCodeMirror } from 'react-codemirror2';
 require('codemirror/addon/edit/matchbrackets');
@@ -91,13 +100,11 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   componentDidMount() {
+    // ensure to be able to resolve 'this' to use 'codemirror.commands.save'
+    this.getCodeMirror().codeMirrorEditor = this;
+
     // initialize caret line
     this.setCaretLine(0);
-    // set save handler
-    codemirror.commands.save = this.dispatchSave;
-
-    // set CodeMirror instance as 'CodeMirror' so that CDN addons can reference
-    window.CodeMirror = require('codemirror');
   }
 
   componentWillReceiveProps(nextProps) {
