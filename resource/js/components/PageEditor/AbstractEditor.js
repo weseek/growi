@@ -22,6 +22,19 @@ export default class AbstractEditor extends React.Component {
   }
 
   /**
+   * set new value
+   */
+  setValue(newValue) {
+  }
+
+  /**
+   * Enable/Disable GFM mode
+   * @param {bool} bool
+   */
+  setGfmMode(bool) {
+  }
+
+  /**
    * set caret position of codemirror
    * @param {string} number
    */
@@ -96,10 +109,12 @@ export default class AbstractEditor extends React.Component {
       this.props.onPasteFiles(event);
     }
   }
+
 }
 
 AbstractEditor.propTypes = {
   value: PropTypes.string,
+  ifGfmMode: PropTypes.bool,
   editorOptions: PropTypes.object,
   onChange: PropTypes.func,
   onScroll: PropTypes.func,
@@ -107,5 +122,9 @@ AbstractEditor.propTypes = {
   onSave: PropTypes.func,
   onPasteFiles: PropTypes.func,
   onDragEnter: PropTypes.func,
+  onCtrlEnter: PropTypes.func,
+};
+AbstractEditor.defaultProps = {
+  isGfmMode: true,
 };
 

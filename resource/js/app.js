@@ -80,14 +80,14 @@ const crowiRenderer = new GrowiRenderer(crowi, null, {
 window.crowiRenderer = crowiRenderer;
 
 // FIXME
-var isEnabledPlugins = $('body').data('plugin-enabled');
+const isEnabledPlugins = $('body').data('plugin-enabled');
 if (isEnabledPlugins) {
-  var crowiPlugin = window.crowiPlugin;
+  const crowiPlugin = window.crowiPlugin;
   crowiPlugin.installAll(crowi, crowiRenderer);
 }
 
-// configure renderer
-crowiRenderer.setup(crowi.config);
+// setup renderer after plugins are installed
+crowiRenderer.setup();
 
 // restore draft when the first time to edit
 const draft = crowi.findDraft(pagePath);
@@ -134,20 +134,6 @@ Object.keys(componentMappings).forEach((key) => {
   }
 });
 
-// render comment form
-const writeCommentElem = document.getElementById('page-comment-write');
-if (writeCommentElem) {
-  const pageCommentsElem = componentInstances['page-comments-list'];
-  const postCompleteHandler = (comment) => {
-    if (pageCommentsElem != null) {
-      pageCommentsElem.retrieveData();
-    }
-  };
-  ReactDOM.render(
-    <CommentForm crowi={crowi} pageId={pageId} revisionId={pageRevisionId} onPostComplete={postCompleteHandler} crowiRenderer={crowiRenderer}/>,
-    writeCommentElem);
-}
-
 /*
  * PageEditor
  */
@@ -178,6 +164,21 @@ if (pageEditorElem) {
   // set refs for pageEditor
   crowi.setPageEditor(pageEditor);
 }
+
+// render comment form
+const writeCommentElem = document.getElementById('page-comment-write');
+if (writeCommentElem) {
+  const pageCommentsElem = componentInstances['page-comments-list'];
+  const postCompleteHandler = (comment) => {
+    if (pageCommentsElem != null) {
+      pageCommentsElem.retrieveData();
+    }
+  };
+  ReactDOM.render(
+    <CommentForm crowi={crowi} crowiOriginRenderer={crowiRenderer} pageId={pageId} revisionId={pageRevisionId} pagePath={pagePath} onPostComplete={postCompleteHandler} editorOptions={editorOptions}/>,
+    writeCommentElem);
+}
+
 // render OptionsSelector
 const pageEditorOptionsSelectorElem = document.getElementById('page-editor-options-selector');
 if (pageEditorOptionsSelectorElem) {

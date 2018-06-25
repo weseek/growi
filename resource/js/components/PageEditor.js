@@ -325,7 +325,7 @@ export default class PageEditor extends React.Component {
     this.setState({ markdown: value });
 
     // render html
-    var context = {
+    const context = {
       markdown: this.state.markdown,
       dom: this.previewElement,
       currentPagePath: decodeURIComponent(location.pathname)
@@ -340,7 +340,7 @@ export default class PageEditor extends React.Component {
       })
       .then(() => interceptorManager.process('postPreProcess', context))
       .then(() => {
-        var parsedHTML = growiRenderer.process(context.markdown);
+        const parsedHTML = growiRenderer.process(context.markdown);
         context['parsedHTML'] = parsedHTML;
       })
       .then(() => interceptorManager.process('prePostProcess', context))

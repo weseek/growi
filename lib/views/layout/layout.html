@@ -16,20 +16,19 @@
 
   {{ customHeader() }}
 
-
   <!-- polyfills for IE11 -->
   <script>
     var userAgent = window.navigator.userAgent.toLowerCase();
     if (userAgent.indexOf('msie') != -1 || userAgent.indexOf('trident') != -1) {
       var scriptElement = document.createElement('script');
-      scriptElement.src = 'https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.23.0/polyfill.min.js';
+      scriptElement.src = '{{ webpack_asset("js/ie11-polyfill.js") }}';
       var headElement = document.getElementsByTagName('head')[0];
       headElement.appendChild(scriptElement);
     }
   </script>
 
-  <!-- jQuery, emojione -->
-  <script src="https://cdn.jsdelivr.net/combine/npm/emojione@3.1.2,npm/jquery@3.3.1"></script>
+  <!-- jQuery, emojione, bootstrap -->
+  <script src="https://cdn.jsdelivr.net/combine/npm/emojione@3.1.2,npm/jquery@3.3.1,npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
   <!-- highlight.js -->
   <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/highlight.min.js"></script>
   <script src="https://cdn.jsdelivr.net/combine/
@@ -63,33 +62,35 @@ gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js
   {% endif %}
 
   {% if env === 'development' %}
-    <script src="/dll/vendor.dll.js"></script>
-    <script src="{{ webpack_asset('dev').js }}" async></script>
+    <script src="/dll/dll.js"></script>
+    <script src="{{ webpack_asset('js/dev.js') }}" async></script>
     <!-- Browsersync -->
     <script id="__bs_script__">//<![CDATA[
       document.write("<script async src='http://HOST:3001/browser-sync/browser-sync-client.js?v=2.23.6'><\/script>".replace("HOST", location.hostname));
     //]]></script>
   {% endif %}
 
-  <script src="{{ webpack_asset('commons').js }}" defer></script>
+  <script src="{{ webpack_asset('js/vendors.js') }}" defer></script>
+  <script src="{{ webpack_asset('js/commons.js') }}" defer></script>
   {% if isEnabledPlugins() %}
-  <script src="{{ webpack_asset('plugin').js }}" defer></script>
+  <script src="{{ webpack_asset('js/plugin.js') }}" defer></script>
   {% endif %}
   {% block html_head_loading_legacy %}
-  <script src="{{ webpack_asset('legacy').js }}" defer></script>
+  <script src="{{ webpack_asset('js/legacy.js') }}" defer></script>
   {% endblock %}
   {% block html_head_loading_app %}
-  <script src="{{ webpack_asset('app').js }}" defer></script>
+  <script src="{{ webpack_asset('js/app.js') }}" defer></script>
   {% endblock %}
 
   <!-- styles -->
   {% block style_css_block %}
     {% if env === 'development' %}
-      <script src="{{ webpack_asset('style').js }}"></script>
-      <script src="{{ webpack_asset('style-theme-' + theme()).js }}"></script>
+      <script src="{{ webpack_asset('styles/style.js') }}"></script>
+      <script src="{{ webpack_asset('styles/theme-' + theme() + '.js') }}"></script>
     {% else %}
-      <link rel="stylesheet" href="{{ webpack_asset('style').css }}">
-      <link rel="stylesheet" href="{{ webpack_asset('style-theme-' + theme()).css }}">
+      <link rel="stylesheet" href="{{ webpack_asset('js/vendors.css') }}">
+      <link rel="stylesheet" href="{{ webpack_asset('styles/style.css') }}">
+      <link rel="stylesheet" href="{{ webpack_asset('styles/theme-' + theme() + '.css') }}">
     {% endif %}
   {% endblock %}
 
@@ -219,7 +220,7 @@ gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js
           {% endif %}
         </li>
 
-        <li><a href="#">(TBD) Create /Sidebar</a></li>
+        <li class="tbd"><a href="#">(TBD) Create /Sidebar</a></li>
       </ul>
     </div>
   </div>

@@ -106,11 +106,22 @@ export default class GrowiRenderer {
 
   /**
    * setup with crowi config
-   * @param {any} config crowi config
    */
-  setup(config) {
+  setup() {
+    const crowiConfig = this.crowi.config;
+
+    let isEnabledLinebreaks = undefined;
+    switch (this.options.mode) {
+      case 'comment':
+        isEnabledLinebreaks = crowiConfig.isEnabledLinebreaksInComments;
+        break;
+      default:
+        isEnabledLinebreaks = crowiConfig.isEnabledLinebreaks;
+        break;
+    }
+
     this.md.set({
-      breaks: config.isEnabledLineBreaks,
+      breaks: isEnabledLinebreaks,
     });
 
     if (!this.isMarkdownItConfigured) {

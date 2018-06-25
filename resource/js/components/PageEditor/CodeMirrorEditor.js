@@ -8,9 +8,17 @@ const loadScript = require('simple-load-script');
 const loadCssSync = require('load-css-file');
 
 import * as codemirror from 'codemirror';
+// set save handler
+codemirror.commands.save = (instance) => {
+  if (instance.codeMirrorEditor != null) {
+    instance.codeMirrorEditor.dispatchSave();
+  }
+};
+// set CodeMirror instance as 'CodeMirror' so that CDN addons can reference
+window.CodeMirror = require('codemirror');
+
 
 import { UnControlled as ReactCodeMirror } from 'react-codemirror2';
-require('codemirror/addon/display/autorefresh');
 require('codemirror/addon/edit/matchbrackets');
 require('codemirror/addon/edit/matchtags');
 require('codemirror/addon/edit/closetag');
@@ -27,6 +35,7 @@ require('codemirror/addon/fold/foldgutter.css');
 require('codemirror/addon/fold/markdown-fold');
 require('codemirror/addon/fold/brace-fold');
 require('codemirror/mode/gfm/gfm');
+require('../../util/codemirror/autorefresh.ext');
 
 import pasteHelper from './PasteHelper';
 import EmojiAutoCompleteHelper from './EmojiAutoCompleteHelper';
@@ -45,6 +54,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
     this.state = {
       value: this.props.value,
+      isGfmMode: this.props.isGfmMode,
       isEnabledEmojiAutoComplete: false,
       isLoadingKeymap: false,
       additionalClass: '',
@@ -61,6 +71,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.loadKeymapMode = this.loadKeymapMode.bind(this);
     this.setKeymapMode = this.setKeymapMode.bind(this);
     this.handleEnterKey = this.handleEnterKey.bind(this);
+    this.handleCtrlEnterKey = this.handleCtrlEnterKey.bind(this);
 
     this.scrollCursorIntoViewHandler = this.scrollCursorIntoViewHandler.bind(this);
     this.pasteHandler = this.pasteHandler.bind(this);
@@ -90,13 +101,11 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   componentDidMount() {
+    // ensure to be able to resolve 'this' to use 'codemirror.commands.save'
+    this.getCodeMirror().codeMirrorEditor = this;
+
     // initialize caret line
     this.setCaretLine(0);
-    // set save handler
-    codemirror.commands.save = this.dispatchSave;
-
-    // set CodeMirror instance as 'CodeMirror' so that CDN addons can reference
-    window.CodeMirror = require('codemirror');
   }
 
   componentWillReceiveProps(nextProps) {
@@ -132,6 +141,26 @@ export default class CodeMirrorEditor extends AbstractEditor {
   /**
    * @inheritDoc
    */
+  setValue(newValue) {
+    this.setState({ value: newValue });
+    this.getCodeMirror().getDoc().setValue(newValue);
+  }
+
+  /**
+   * @inheritDoc
+   */
+  setGfmMode(bool) {
+    this.setState({
+      isGfmMode: bool,
+      isEnabledEmojiAutoComplete: bool,
+    });
+    const mode = bool ? 'gfm' : undefined;
+    this.getCodeMirror().setOption('mode', mode);
+  }
+
+  /**
+   * @inheritDoc
+   */
   setCaretLine(line) {
     if (isNaN(line)) {
       return;
@@ -154,7 +183,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
     const editor = this.getCodeMirror();
     // get top position of the line
-    var top = editor.charCoords({line, ch: 0}, 'local').top;
+    const top = editor.charCoords({line, ch: 0}, 'local').top;
     editor.scrollTo(null, top);
   }
 
@@ -322,7 +351,12 @@ export default class CodeMirrorEditor extends AbstractEditor {
    * handle ENTER key
    */
   handleEnterKey() {
-    var context = {
+    if (!this.state.isGfmMode) {
+      codemirror.commands.newlineAndIndent(this.getCodeMirror());
+      return;
+    }
+
+    const context = {
       handlers: [],  // list of handlers which process enter key
       editor: this,
     };
@@ -334,6 +368,15 @@ export default class CodeMirrorEditor extends AbstractEditor {
           codemirror.commands.newlineAndIndentContinueMarkdownList(this.getCodeMirror());
         }
       });
+  }
+
+  /**
+   * handle Ctrl+ENTER key
+   */
+  handleCtrlEnterKey() {
+    if (this.props.onCtrlEnter != null) {
+      this.props.onCtrlEnter();
+    }
   }
 
   scrollCursorIntoViewHandler(editor, event) {
@@ -396,8 +439,13 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   render() {
-    const theme = this.props.editorOptions.theme || 'elegant';
-    const styleActiveLine = this.props.editorOptions.styleActiveLine || undefined;
+    const mode = this.state.isGfmMode ? 'gfm' : undefined;
+    const defaultEditorOptions = {
+      theme: 'elegant',
+      lineNumbers: true,
+    };
+    const editorOptions = Object.assign(defaultEditorOptions, this.props.editorOptions || {});
+
     return <React.Fragment>
       <ReactCodeMirror
         ref="cm"
@@ -409,20 +457,20 @@ export default class CodeMirrorEditor extends AbstractEditor {
         }}
         value={this.state.value}
         options={{
-          mode: 'gfm',
-          theme: theme,
-          styleActiveLine: styleActiveLine,
-          lineNumbers: true,
+          mode: mode,
+          theme: editorOptions.theme,
+          styleActiveLine: editorOptions.styleActiveLine,
+          lineNumbers: this.props.lineNumbers,
           tabSize: 4,
           indentUnit: 4,
           lineWrapping: true,
-          autoRefresh: true,
+          autoRefresh: {force: true},   // force option is enabled by autorefresh.ext.js -- Yuki Takei
           autoCloseTags: true,
           matchBrackets: true,
           matchTags: {bothTags: true},
           // folding
-          foldGutter: true,
-          gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+          foldGutter: this.props.lineNumbers,
+          gutters: this.props.lineNumbers ? ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'] : [],
           // match-highlighter, matchesonscrollbar, annotatescrollbar options
           highlightSelectionMatches: {annotateScrollbar: true},
           // markdown mode options
@@ -430,6 +478,8 @@ export default class CodeMirrorEditor extends AbstractEditor {
           // continuelist, indentlist
           extraKeys: {
             'Enter': this.handleEnterKey,
+            'Ctrl-Enter': this.handleCtrlEnterKey,
+            'Cmd-Enter': this.handleCtrlEnterKey,
             'Tab': 'indentMore',
             'Shift-Tab': 'indentLess',
             'Ctrl-Q': (cm) => { cm.foldCode(cm.getCursor()) },
@@ -470,5 +520,8 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
 CodeMirrorEditor.propTypes = Object.assign({
   emojiStrategy: PropTypes.object,
+  lineNumbers: PropTypes.bool,
 }, AbstractEditor.propTypes);
-
+CodeMirrorEditor.defaultProps = {
+  lineNumbers: true,
+};
