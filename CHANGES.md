@@ -1,12 +1,10 @@
 CHANGES
 ========
 
-## 3.1.9-RC
+## 3.1.10-RC
 
-* Improvement: Retrieve OAuth settings from environment variables
-* Fix: Couldn't activate GitHub settings after save in /admin/security
 
-## 3.1.8
+## 3.1.9
 
 * Feature: Login with Google Account
 * Feature: Login with GitHub Account
@@ -21,6 +19,10 @@ CHANGES
     * react-bootstrap-typeahead
     * react-codemirror2
     * webpack
+
+
+## 3.1.8 (Missing number)
+
 
 ## 3.1.7
 
@@ -63,6 +65,7 @@ CHANGES
 
 
 ## 3.1.4 (Missing number)
+
 
 ## 3.1.3 (Missing number)
 
