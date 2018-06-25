@@ -105,7 +105,7 @@
                 </div>
               </div>
 
-              <fieldset id="xss-hide-when-disabled" {%if !isGoogleEnabled %}style="display: none;"{% endif %}>
+              <fieldset id="xss-hide-when-disabled" {%if !isXssEnabled %}style="display: none;"{% endif %}>
                 <p class="help-block">{{ t("markdown_setting.Prevent XSS(Cross Site Scripting)desc") }}<br>
                 {{ t("markdown_setting.Prevent XSS(Cross Site Scripting)desc2") }}</p>
 
@@ -140,7 +140,7 @@
                       </div>
                     </div>
 
-                    <fieldset id="xss2-hide-when-disabled" {%if !isGoogleEnabled %}style="display: none;"{% endif %}>
+                    <fieldset id="xss2-hide-when-disabled" {%if !isXssEnabled %}style="display: none;"{% endif %}>
                         <form>
                             <div>
                               {{ t('markdown_setting.tag') }}
@@ -157,7 +157,7 @@
                         </form>
                     </fieldset>
 
-                    <fieldset id="xss3-hide-when-disabled" {%if !isGoogleEnabled %}style="display: none;"{% endif %}>
+                    <fieldset id="xss3-hide-when-disabled" {%if !isXssEnabled %}style="display: none;"{% endif %}>
                         <form>
                             <div>
                               {{ t('markdown_setting.tag') }}
