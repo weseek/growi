@@ -46,6 +46,7 @@ export default class CommentForm extends React.Component {
 
     this.growiRenderer = new GrowiRenderer(this.props.crowi, this.props.crowiOriginRenderer, {mode: 'comment'});
 
+    this.init = this.init.bind(this);
     this.updateState = this.updateState.bind(this);
     this.updateStateCheckbox = this.updateStateCheckbox.bind(this);
     this.updateSlackChannel =this.updateSlackChannel.bind(this);
@@ -54,6 +55,40 @@ export default class CommentForm extends React.Component {
     this.handleSelect = this.handleSelect.bind(this);
     this.apiErrorHandler = this.apiErrorHandler.bind(this);
     this.onUpload = this.onUpload.bind(this);
+  }
+
+  componentWillMount() {
+    const pageId = this.props.pageId;
+
+    if (pageId) {
+      this.init();
+    }
+
+    this.retrieveData = this.retrieveData.bind(this);
+  }
+
+  init() {
+    if (!this.props.pageId) {
+      return ;
+    }
+
+    // const layoutType = this.props.crowi.getConfig()['layoutType'];
+    // this.setState({isLayoutTypeGrowi: 'crowi-plus' === layoutType || 'growi' === layoutType});
+
+    this.retrieveData();
+  }
+
+  /**
+   * Load data of comments and store them in state
+   */
+  retrieveData() {
+    // get data (desc order array)
+    this.props.crowi.apiGet('/channel.get', {page_id: this.props.pageId})
+      .then(res => {
+        if (res.ok) {
+          this.setState({channel: res.channel});
+        }
+      });
   }
 
   updateState(value) {
