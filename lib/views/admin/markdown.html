@@ -108,79 +108,78 @@
               </div>
 
               <fieldset id="xss-hide-when-disabled" {%if !isXssEnabled %}style="display: none;"{% endif %}>
-                <p class="help-block">{{ t("markdown_setting.Prevent XSS(Cross Site Scripting)desc") }}<br>
-                {{ t("markdown_setting.Prevent XSS(Cross Site Scripting)desc2") }}</p>
+                <p class="help-block">{{ t("markdown_setting.Prevent XSS(Cross Site Scripting)desc") }}</p>
 
                 {% set nameForIsXss2Enabled = "settingForm[security:xss2-prevent:isEnabled]" %}
 
-                  <div>
-                    <div class="form-group">
-                      <div class="col-xs-6">
-                        <div class="btn-group btn-toggle" data-toggle="buttons">
-                          <div>
-                            <label data-active-class="primary">
-                              <input name="{{nameForIsXss2Enabled}}" value="1" type="radio"
-                              {% if !isXssEnabled %}checked{% endif %}>
-                              {{ t('markdown_setting.Ignore all') }}
-                            </label>
-                          </div>
-                          <div>
-                            <label data-active-class="primary">
-                                <input name="{{nameForIsXss2Enabled}}" value="2" type="radio"
-                                {% if true === isXssEnabled %}checked{% endif %}>
-                              {{ t('markdown_setting.Recommended setting') }}<br>
-                            </label>
-                          </div>
-                          <div>
-                            <label data-active-class="primary">
-                              <input name="{{nameForIsXss2Enabled}}" value="3" type="radio"
+                <div>
+                  <div class="form-group">
+                    <div class="col-xs-6">
+                      <div class="btn-group btn-toggle" data-toggle="buttons">
+                        <div>
+                          <label data-active-class="primary">
+                            <input name="{{nameForIsXss2Enabled}}" value="1" type="radio"
+                            {% if !isXssEnabled %}checked{% endif %}>
+                            {{ t('markdown_setting.Ignore all tags') }}
+                          </label>
+                        </div>
+                        <div>
+                          <label data-active-class="primary">
+                              <input name="{{nameForIsXss2Enabled}}" value="2" type="radio"
                               {% if true === isXssEnabled %}checked{% endif %}>
-                              {{ t('markdown_setting.Whitelist setting') }}
-                            </label>
-                          </div>
+                            {{ t('markdown_setting.Recommended setting') }}<br>
+                          </label>
+                        </div>
+                        <div>
+                          <label data-active-class="primary">
+                            <input name="{{nameForIsXss2Enabled}}" value="3" type="radio"
+                            {% if true === isXssEnabled %}checked{% endif %}>
+                            {{ t('markdown_setting.Custom Whitelist') }}
+                          </label>
                         </div>
                       </div>
                     </div>
-
-                    <fieldset id="xss2-hide-when-disabled" {%if !isXssEnabled %}style="display: none;"{% endif %}>
-                        <form>
-                            <div>
-                              {{ t('markdown_setting.tag') }}
-                              <div>
-                                <textarea type="text" name="tag" rows="5" cols="40" value="" readonly></textarea>
-                              </div>
-                            </div>
-                            <div>
-                              {{ t('markdown_setting.tag attribute') }}
-                              <div>
-                                <textarea name="tagattribute" rows="5" cols="40" value="" readonly></textarea>
-                              </div>
-                            </div>
-                        </form>
-                    </fieldset>
-
-                    <fieldset id="xss3-hide-when-disabled" {%if !isXssEnabled %}style="display: none;"{% endif %}>
-                        <form>
-                            <div>
-                              {{ t('markdown_setting.tag') }}
-                              <div>
-                                <textarea type="text" name="tag" rows="5" cols="40" value="" placeholder="span, iframe, input"></textarea>
-                                <input type="button" value="おすすめ設定をインポート" />
-                              </div>
-                            </div>
-                            <div>
-                              {{ t('markdown_setting.tag attribute') }}
-                              <div>
-                                <textarea name="tagattribute" rows="5" cols="40" value="" placeholder="class, type, placeholder, name, required"></textarea>
-                                <input type="button" value="おすすめ設定をインポート" />
-                              </div>
-                            </div>
-                        </form>
-                    </fieldset>
                   </div>
 
-      </fieldset>
-      </form>
+                  <fieldset id="xss2-hide-when-disabled" {%if !isXssEnabled %}style="display: none;" {% endif %}>
+                    <form>
+                      <div>
+                        {{ t('markdown_setting.Tag names') }}
+                        <div>
+                          <textarea type="text" name="tag" rows="5" cols="40" readonly>span, iframe, input</textarea>
+                        </div>
+                      </div>
+                      <div>
+                        {{ t('markdown_setting.Tag attributes') }}
+                        <div>
+                          <textarea name="tagattribute" rows="5" cols="40" readonly>class, type, placeholder, name, required</textarea>
+                        </div>
+                      </div>
+                    </form>
+                  </fieldset>
+
+                  <fieldset id="xss3-hide-when-disabled" {%if !isXssEnabled %}style="display: none;" {% endif %}>
+                    <form>
+                      <div>
+                        {{ t('markdown_setting.Tag names') }}
+                        <div>
+                          <textarea type="text" name="tag" rows="5" cols="40" value="" placeholder="span, iframe, input"></textarea>
+                          <input type="button" class="btn btn-default" value="おすすめ設定をインポート" />
+                        </div>
+                      </div>
+                      <div>
+                        {{ t('markdown_setting.Tag attributes') }}
+                        <div>
+                          <textarea name="tagattribute" rows="5" cols="40" value="" placeholder="class, type, placeholder, name, required"></textarea>
+                          <input type="button" class="btn btn-default" value="おすすめ設定をインポート" />
+                        </div>
+                      </div>
+                    </form>
+                  </fieldset>
+                </div>
+
+              </fieldset>
+            </form>
 
 
             <script>
