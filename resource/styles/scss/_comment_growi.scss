@@ -105,13 +105,15 @@
       }
     }
 
-          // slack
-          .input-group-slack {
-              padding: 4px 6px;
-              line-height: 1em;
-              img, input {
-                vertical-align: middle;
-              }
-          }
+    // slack
+    .input-group-slack {
+      .input-group-addon {
+        padding: 4px 0px;
+        line-height: 1em;
+        img, input {
+          vertical-align: middle;
+        }
+      }
+    }
   }
 }
