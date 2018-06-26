@@ -45,6 +45,19 @@
         </p>
       </div>
     </div>
+
+    <div class="form-group">
+      <label for="settingForm[security:passport-google:callbackURL]" class="col-xs-3 control-label">{{ t("security_setting.callback_URL") }}</label>
+      <div class="col-xs-6">
+        <input class="form-control" type="text" name="settingForm[security:passport-google:callbackURL]" value="{{ settingForm['security:passport-google:callbackURL'] || '' }}">
+        <p class="help-block">
+          <small>
+            {{ t("security_setting.Use env var if empty", "OAUTH_GOOGLE_callback_URL") }}
+          </small>
+        </p>
+      </div>
+    </div>
+
     <div class="form-group">
       <div class="col-xs-6 col-xs-offset-3">
         <div class="checkbox checkbox-info">
