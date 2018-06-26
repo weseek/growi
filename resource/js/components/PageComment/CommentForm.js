@@ -36,6 +36,7 @@ export default class CommentForm extends React.Component {
       comment: '',
       isMarkdown: true,
       notif: false,
+      channel: '',
       html: '',
       key: 1,
       isUploadable,
@@ -47,6 +48,7 @@ export default class CommentForm extends React.Component {
 
     this.updateState = this.updateState.bind(this);
     this.updateStateCheckbox = this.updateStateCheckbox.bind(this);
+    this.updateSlackChannel =this.updateSlackChannel.bind(this);
     this.postComment = this.postComment.bind(this);
     this.renderHtml = this.renderHtml.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
@@ -69,6 +71,10 @@ export default class CommentForm extends React.Component {
     if ( name === "slack") {
       this.setState({notif: value})
     }
+  }
+
+  updateSlackChannel(value) {
+    this.setState({channel: value})
   }
 
   handleSelect(key) {
@@ -263,13 +269,14 @@ export default class CommentForm extends React.Component {
                         <img id="slack-mark-black" src="/images/icons/slack/mark-monochrome_black.svg" width="18" height="18"/>
                         <input className="comment-form-slack" type="checkbox" name="slack" value="1" onChange={this.updateStateCheckbox}/>
                       </label>
-                      <input className="form-control" type="text" value="" placeholder="slack-channel-name"
+                      <input className="form-control" type="text" value={this.state.channel} placeholder="slack-channel-name"
                         id="comment-form-slack-channel"
                         data-toggle="popover"
                         title="Slack通知"
                         data-content="通知するにはチェックを入れてください。カンマ区切りで複数チャンネルに通知することができます。"
                         data-trigger="focus"
                         data-placement="top"
+                        onChange={e => this.updateSlackChannel(e.target.value)}
                       />
                     </span>
                   </div>
