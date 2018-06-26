@@ -6749,9 +6749,9 @@ rc@^1.1.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-react-bootstrap-typeahead@^3.1.4:
-  version "3.1.4"
-  resolved "https://registry.yarnpkg.com/react-bootstrap-typeahead/-/react-bootstrap-typeahead-3.1.4.tgz#970106959e0491f29fdeeb5dd7f51ca87b83c2e2"
+react-bootstrap-typeahead@=3.0.4:
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/react-bootstrap-typeahead/-/react-bootstrap-typeahead-3.0.4.tgz#1ebfb259f986c86ff03beef1091cab4614d6ea1d"
   dependencies:
     classnames "^2.2.0"
     escape-string-regexp "^1.0.5"
@@ -6761,7 +6761,7 @@ react-bootstrap-typeahead@^3.1.4:
     prop-types-extra "^1.0.1"
     react-onclickoutside "^6.1.1"
     react-overlays "^0.8.1"
-    react-popper "^0.10.4"
+    react-popper "^0.9.0"
     warning "^3.0.0"
 
 react-bootstrap@^0.32.1:
@@ -6831,9 +6831,9 @@ react-overlays@^0.8.0, react-overlays@^0.8.1:
     react-transition-group "^2.2.0"
     warning "^3.0.0"
 
-react-popper@^0.10.4:
-  version "0.10.4"
-  resolved "https://registry.yarnpkg.com/react-popper/-/react-popper-0.10.4.tgz#af2a415ea22291edd504678d7afda8a6ee3295aa"
+react-popper@^0.9.0:
+  version "0.9.5"
+  resolved "https://registry.yarnpkg.com/react-popper/-/react-popper-0.9.5.tgz#02a24ef3eec33af9e54e8358ab70eb0e331edd05"
   dependencies:
     popper.js "^1.14.1"
     prop-types "^15.6.1"
