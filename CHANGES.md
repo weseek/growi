@@ -1,12 +1,16 @@
 CHANGES
 ========
 
-## 3.1.8-RC
+## 3.1.10-RC
+
+
+## 3.1.9
 
 * Feature: Login with Google Account
 * Feature: Login with GitHub Account
 * Feature: Attach files in Comment
 * Improvement: Write comment with CodeMirror Editor
+* Improvement: Post comment with Ctrl-Enter
 * Improvement: Place the commented page at the beginning of the list
 * Improvement: Resolve errors on IE11 (Experimental)
 * Support: Migrate to webpack 4 
@@ -15,6 +19,10 @@ CHANGES
     * react-bootstrap-typeahead
     * react-codemirror2
     * webpack
+
+
+## 3.1.8 (Missing number)
+
 
 ## 3.1.7
 
@@ -57,6 +65,7 @@ CHANGES
 
 
 ## 3.1.4 (Missing number)
+
 
 ## 3.1.3 (Missing number)
 
