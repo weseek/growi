@@ -324,6 +324,8 @@
     "change_redirect_url": "Enter <code>https://${crowi.host}/google/callback</code> <br>(where <code>${crowi.host}</code> is your host name) for \"Authorized redirect URIs\".",
     "clientID": "Client ID",
     "client_secret": "Client Secret",
+    "xss_prevent_setting":"Prevent XSS(Cross Site Scripting)",
+    "xss_prevent_setting_link":"Go to Markdown settings",
     "guest_mode": {
       "deny": "Deny Unregistered Users",
       "readonly": "View Only"
