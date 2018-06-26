@@ -344,6 +344,7 @@
     "change_redirect_url": "承認済みのリダイレクトURLに、 <code>https://${crowi.host}/google/callback</code> を入力<br>(<code>${crowi.host}</code>は環境に合わせて変更してください)",
     "clientID": "クライアントID",
     "client_secret": "クライアントシークレット",
+    "callback_URL": "コールバックURL",
     "guest_mode": {
       "deny": "アカウントを持たないユーザーはアクセス不可",
       "readonly": "閲覧のみ許可"
