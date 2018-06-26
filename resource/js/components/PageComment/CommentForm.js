@@ -239,10 +239,25 @@ export default class CommentForm extends React.Component {
                       <input type="checkbox" id="comment-form-is-markdown" name="isMarkdown" checked={this.state.isMarkdown} value="1" onChange={this.updateStateCheckbox} /> Markdown
                     </label>
                   }
+
+
                   <div style={{flex: 1}}></div>{/* spacer */}
-                  { this.state.errorMessage &&
-                    <span className="text-danger text-right mr-2">{this.state.errorMessage}</span>
-                  }
+                  <div className="input-group-addon">
+                    <img id="slack-mark-white" src="/images/icons/slack/mark-monochrome_white.svg" width="18" height="18"/>
+                    <img id="slack-mark-black" src="/images/icons/slack/mark-monochrome_black.svg" width="18" height="18"/>
+                    <input className="comment-notif" type="checkbox" name="pageForm[notify][slack][on]" value="1"/>
+                  </div>
+                  <input className="comment-slack-channel" type="text" name="pageForm[notify][slack][channel]" value="" placeholder="slack-channel-name"
+                  id="comment-form-slack-channel"
+                  data-toggle="popover"
+                  title="Slack通知"
+                  data-content="通知するにはチェックを入れてください。カンマ区切りで複数チャンネルに通知することができます。"
+                  data-trigger="focus"
+                  data-placement="top"
+                  />
+                    { this.state.errorMessage &&
+                      <span className="text-danger text-right mr-2">{this.state.errorMessage}</span>
+                    }
                   <Button type="submit" value="Submit" bsStyle="primary" className="fcbtn btn btn-sm btn-primary btn-outline btn-rounded btn-1b">
                     Comment
                   </Button>
@@ -255,6 +270,8 @@ export default class CommentForm extends React.Component {
     );
   }
 }
+
+
 
 CommentForm.propTypes = {
   crowi: PropTypes.object.isRequired,
