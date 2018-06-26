@@ -80,71 +80,148 @@
           </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group my-3">
           <div class="col-xs-offset-4 col-xs-5">
             <input type="hidden" name="_csrf" value="{{ csrf() }}">
             <button type="submit" class="btn btn-primary">{{ t("Update") }}</button>
           </div>
         </div>
-
       </fieldset>
       </form>
 
       <form action="/admin/markdown/xss-setting" method="post" class="form-horizontal" id="markdownSettingForm" role="form">
-      <fieldset>
-        <legend>{{ t('markdown_setting.XSS_setting') }}</legend>
-        <p class="well">{{ t("markdown_setting.XSS_setting_desc") }}</p>
-        <div class="form-group">
-          <label for="markdownSetting[markdown:isPreventXSS]" class="col-xs-4 control-label">
+        <fieldset>
+
+          {% set nameForIsXssEnabled = "settingForm[security:xss-prevent:isEnabled]" %}
+
+          <legend>{{ t('markdown_setting.XSS_setting') }}</legend>
+          <p class="well">{{ t("markdown_setting.XSS_setting_desc") }}</p>
+
+          <label for="markdownSetting[markdown:isPreventXss]" class="col-xs-4 control-label">
             {{ t('markdown_setting.Prevent XSS(Cross Site Scripting)') }}
           </label>
+
           <div class="col-xs-5">
-            <div class="btn-group btn-toggle" data-toggle="buttons">
-              <label class="btn btn-default btn-rounded btn-outline {% if markdownSetting['markdown:xss:isPrevented'] %}active{% endif %}" data-active-class="primary">
-                <input name="markdownSetting[markdown:xss:isPrevented]" value="true" type="radio"
-                    {% if true === markdownSetting['markdown:xss:isPrevented'] %}checked{% endif %}> ON
-              </label>
-              <label class="btn btn-default btn-rounded btn-outline {% if !markdownSetting['markdown:xss:isPrevented'] %}active{% endif %}" data-active-class="default">
-                <input name="markdownSetting[markdown:xss:isPrevented]" value="false" type="radio"
-                    {% if !markdownSetting['markdown:xss:isPrevented'] %}checked{% endif %}> OFF
-              </label>
+            <div class="form-group">
+              <div class="col-xs-6">
+                <div class="btn-group btn-toggle" data-toggle="buttons">
+                  <label class="btn btn-default btn-rounded btn-outline" data-active-class="primary">
+                    <input name="{{nameForIsXssEnabled}}" value="true" type="radio"
+                        {% if true === isXssEnabled %}checked{% endif %}> ON
+                  </label>
+                  <label class="btn btn-default btn-rounded btn-outline {% if !isGoogleEnabled %}active{% endif %}" data-active-class="default">
+                    <input name="{{nameForIsXssEnabled}}" value="false" type="radio"
+                        {% if !isXssEnabled %}checked{% endif %}> OFF
+                  </label>
+                </div>
+              </div>
             </div>
-            <p class="help-block">{{ t("markdown_setting.Prevent XSS(Cross Site Scripting)desc") }}<br>{{ t("markdown_setting.Prevent XSS(Cross Site Scripting)desc2") }}</p>
+
+            <fieldset id="xss-hide-when-disabled" {%if !isXssEnabled %}style="display: none;"{% endif %}>
+              {% set nameForIsXss2Enabled = "settingForm[security:xss2-prevent:isEnabled]" %}
+              <p class="help-block">{{ t("markdown_setting.Prevent XSS(Cross Site Scripting)desc") }}</p>
+
+              <div class="form-group">
+                <div class="col-xs-6">
+                  <div class="btn-group btn-toggle" data-toggle="buttons">
+                    <div>
+                      <label data-active-class="primary">
+                        <input name="{{nameForIsXss2Enabled}}" value="1" type="radio"
+                        {% if !isXssEnabled %}checked{% endif %}>
+                        {{ t('markdown_setting.Ignore all tags') }}
+                      </label>
+                    </div>
+                    <div>
+                      <label data-active-class="primary">
+                          <input name="{{nameForIsXss2Enabled}}" value="2" type="radio"
+                          {% if true === isXssEnabled %}checked{% endif %}>
+                        {{ t('markdown_setting.Recommended setting') }}<br>
+                      </label>
+                    </div>
+                    <div>
+                      <label data-active-class="primary">
+                        <input name="{{nameForIsXss2Enabled}}" value="3" type="radio"
+                        {% if true === isXssEnabled %}checked{% endif %}>
+                        {{ t('markdown_setting.Custom Whitelist') }}
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div id="xss2-hide-when-disabled" {%if !isXssEnabled %}style="display: none;" {% endif %}>
+                <div>
+                  {{ t('markdown_setting.Tag names') }}
+                  <div>
+                    <textarea type="text" name="tag" rows="5" cols="40" readonly>span, iframe, input</textarea>
+                  </div>
+                </div>
+                <div>
+                  {{ t('markdown_setting.Tag attributes') }}
+                  <div>
+                    <textarea name="tagattribute" rows="5" cols="40" readonly>class, type, placeholder, name, required</textarea>
+                  </div>
+                </div>
+              </div>
+
+              <div id="xss3-hide-when-disabled" {%if !isXssEnabled %}style="display: none;" {% endif %}>
+                <div>
+                  {{ t('markdown_setting.Tag names') }}
+                  <div>
+                    <textarea type="text" name="tag" rows="5" cols="40" value="" placeholder="span, iframe, input"></textarea>
+                    <input type="button" class="btn btn-default" value="おすすめ設定をインポート" />
+                  </div>
+                </div>
+                <div>
+                  {{ t('markdown_setting.Tag attributes') }}
+                  <div>
+                    <textarea name="tagattribute" rows="5" cols="40" value="" placeholder="class, type, placeholder, name, required"></textarea>
+                    <input type="button" class="btn btn-default" value="おすすめ設定をインポート" />
+                  </div>
+                </div>
+              </div>
+            </fieldset>
           </div>
-        </div>
 
-        <div class="form-group">
-          <div id="selectXSS" class="input">
-            <input type="radio" name="markdownSetting[markdown:xss:option]" value="1">
-              {{ t('markdown_setting.Ignore all') }}<br>
-            <input type="radio" name="markdownSetting[markdown:xss:option]" value="2" checked>
-              {{ t('markdown_setting.Recommended setting') }}<br>
-            <input type="radio" name="markdownSetting[markdown:xss:option]" value="3">
-              {{ t('markdown_setting.Whitelist setting') }}<br>
-        </div>
+          <script>
+            $('input[name="settingForm[security:xss-prevent:isEnabled]"]').change(function() {
+              const isEnabled = ($(this).val() === "true");
 
-        <div class="form-group">
-          <div id="WLsetting" class="input">
-            <p class="help-block">{{ t('markdown_setting.Add white list desc') }}</p>
-           <div class="inputbox">
-             {{ t('markdown_setting.tag') }}
-             <input type="text" name="markdownSetting[markdown:xss:tagWhiteList]" size="70" value="" placeholder="span, iframe, input">
-           </div>
-           <div class="inputbox">
-             {{ t('markdown_setting.tag attribute') }}
-             <input type="text" name="markdownSetting[markdown:xss:attrWhiteList]" size="70" value="" placeholder="class, type, placeholder, name, required">
-           </div>
-         </div>
-        </div>
+              if (isEnabled) {
+                $('#xss-hide-when-disabled').show(400);
+              }
+              else {
+                $('#xss-hide-when-disabled').hide(400);
+              }
+            });
 
-        <div class="form-group">
-          <div class="col-xs-offset-4 col-xs-5">
-            <input type="hidden" name="_csrf" value="{{ csrf() }}">
-            <button type="submit" class="btn btn-primary">{{ t("Update") }}</button>
+            $('input[name="settingForm[security:xss2-prevent:isEnabled]"]').change(function() {
+              const isEnabled = ($(this).val() === "1");
+              const isEnabled2 = ($(this).val() === "2");
+
+              if (isEnabled) {
+                $('#xss2-hide-when-disabled').hide(400);
+                $('#xss3-hide-when-disabled').hide(400);
+              }
+              else if (isEnabled2) {
+                $('#xss2-hide-when-disabled').show(400);
+                $('#xss3-hide-when-disabled').hide(400);
+              }
+              else {
+                $('#xss3-hide-when-disabled').show(400);
+                $('#xss2-hide-when-disabled').hide(400);
+              }
+            });
+          </script>
+
+          <div class="form-group my-3">
+            <div class="col-xs-offset-4 col-xs-5">
+              <input type="hidden" name="_csrf" value="{{ csrf() }}">
+              <button type="submit" class="btn btn-primary">{{ t("Update") }}</button>
+            </div>
           </div>
-        </div>
 
-      </fieldset>
+        </fieldset>
       </form>
 
     </div>
@@ -155,3 +232,10 @@
 
 {% block content_footer %}
 {% endblock content_footer %}
+
+
+
+
+
+
+

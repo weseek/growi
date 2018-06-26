@@ -327,6 +327,8 @@
     "change_redirect_url": "Enter <code>https://${crowi.host}/google/callback</code> <br>(where <code>${crowi.host}</code> is your host name) for \"Authorized redirect URIs\".",
     "clientID": "Client ID",
     "client_secret": "Client Secret",
+    "xss_prevent_setting":"Prevent XSS(Cross Site Scripting)",
+    "xss_prevent_setting_link":"Go to Markdown settings",
     "guest_mode": {
       "deny": "Deny Unregistered Users",
       "readonly": "View Only"
@@ -402,7 +404,17 @@
     "Enable Line Break": "Enable Line Break",
     "Enable Line Break desc": "Treat line break in the text page as <code>&lt;br&gt;</code> in HTML",
     "Enable Line Break for comment": "Enable Line Break in comment",
-    "Enable Line Break for comment desc": "Treat line break in comment as <code>&lt;br&gt;</code> in HTML"
+    "Enable Line Break for comment desc": "Treat line break in comment as <code>&lt;br&gt;</code> in HTML",
+    "XSS_setting": "Prevent XSS(Cross Site Scripting) Setting",
+    "XSS_setting_desc": "You can change the handling of HTML tags in markdown text.",
+    "Prevent XSS(Cross Site Scripting)": "Suppress HTML tag rendering",
+    "Prevent XSS(Cross Site Scripting)desc": "(TBD) 以下のオプション設定により、<code>&lt;iframe&gt;</code>等の一部のタグの描画を有効化します",
+    "Ignore all tags": "Ignore all tags",
+    "Recommended setting": "Recommended setting",
+    "Custom Whitelist": "Custom Whitelist",
+    "Tag names":"Tag names",
+    "Tag attributes":"Tag attributes",
+    "Add white list desc":"(TBD) ホワイトリストに追加したい要素をカンマ&lt;,&gt;で区切って追加してください"
   },
 
   "customize_page": {
