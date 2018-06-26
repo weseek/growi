@@ -109,6 +109,7 @@ export default class AbstractEditor extends React.Component {
       this.props.onPasteFiles(event);
     }
   }
+
 }
 
 AbstractEditor.propTypes = {
@@ -121,6 +122,7 @@ AbstractEditor.propTypes = {
   onSave: PropTypes.func,
   onPasteFiles: PropTypes.func,
   onDragEnter: PropTypes.func,
+  onCtrlEnter: PropTypes.func,
 };
 AbstractEditor.defaultProps = {
   isGfmMode: true,
