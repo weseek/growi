@@ -72,7 +72,10 @@ export default class CommentForm extends React.Component {
    * Load data of comments and rerender <PageComments />
    */
   postComment(event) {
-    event.preventDefault();
+    if (event != null) {
+      event.preventDefault();
+    }
+
     this.props.crowi.apiPost('/comments.add', {
       commentForm: {
         comment: this.state.comment,
@@ -222,6 +225,7 @@ export default class CommentForm extends React.Component {
                         emojiStrategy={emojiStrategy}
                         onChange={this.updateState}
                         onUpload={this.onUpload}
+                        onCtrlEnter={this.postComment}
                       />
                     </Tab>
                     { this.state.isMarkdown == true &&

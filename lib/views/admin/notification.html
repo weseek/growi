@@ -38,231 +38,261 @@
 
       <ul class="nav nav-tabs" role="tablist">
         <li class="active">
-          <a href="#slack-incoming-webhooks" data-toggle="tab" role="tab"><i class="icon-settings"></i> Slack Incoming Webhooks</a>
+          <a href="#user-trigger-notification" data-toggle="tab" role="tab"><i class="icon-settings"></i> User Trigger Notification</a>
         </li>
         <li role="tab">
-          <a href="#slack-app" data-toggle="tab" role="tab"><i class="icon-settings"></i> Slack App</a>
+          <a href="#global-notification" data-toggle="tab" role="tab"><i class="icon-settings"></i> Global Notification</a>
         </li>
       </ul>
-
       <div class="tab-content m-t-15">
-        <div id="slack-incoming-webhooks" class="tab-pane active" role="tabpanel">
+        <div id="user-trigger-notification" class="tab-pane active" role="tabpanel">
 
-          <form action="/admin/notification/slackIwhSetting" method="post" class="form-horizontal" id="appSettingForm" role="form">
-            <fieldset>
-              <legend>Slack Incoming Webhooks Configuration</legend>
+          <select class="selectpicker" id="selectSlackOption" data-width="auto">
+            <option value="1">Slack Incoming Webhooks</option>
+            <option value="2">Slack App</option>
+          </select><!-- /.select-tab -->
 
-              <div class="form-group">
-                <label for="slackIwhSetting[slack:incomingWebhookUrl]" class="col-xs-3 control-label">Webhook URL</label>
-                <div class="col-xs-9">
-                  <input class="form-control" type="text" name="slackIwhSetting[slack:incomingWebhookUrl]" value="{{ slackSetting['slack:incomingWebhookUrl'] }}">
-                </div>
-              </div>
+          <div class="tab-content m-t-15">
+            <div id="slack-incoming-webhooks" class="tab-pane active" role="tabpanel">
 
-              <div class="form-group">
-                <label for="slackIwhSetting[slack:isIncomingWebhookPrioritized]" class="col-xs-3 control-label"></label>
-                <div class="col-xs-9">
-                  <div class="checkbox checkbox-info">
-                    <input type="checkbox" id ="cbPrioritizeIWH" name="slackIwhSetting[slack:isIncomingWebhookPrioritized]" value="1"
-                      {% if slackSetting['slack:isIncomingWebhookPrioritized'] %}checked{% endif %}>
-                    <label for="cbPrioritizeIWH">
-                      Prioritize Incoming Webhook than Slack App
-                    </label>
+              <form action="/admin/notification/slackIwhSetting" method="post" class="form-horizontal" id="appSettingForm" role="form">
+                <fieldset>
+                  <legend>Slack Incoming Webhooks Configuration</legend>
+
+                  <div class="form-group">
+                    <label for="slackIwhSetting[slack:incomingWebhookUrl]" class="col-xs-3 control-label">Webhook URL</label>
+                    <div class="col-xs-9">
+                      <input class="form-control" type="text" name="slackIwhSetting[slack:incomingWebhookUrl]" value="{{ slackSetting['slack:incomingWebhookUrl'] }}">
+                    </div>
                   </div>
-                  <p class="help-block">Check this option and GROWI use Incoming Webhooks even if Slack App settings are enabled.</p>
-                </div>
-              </div>
 
-              <div class="form-group">
-                <div class="col-xs-offset-3 col-xs-6">
-                  <button type="submit" class="btn btn-primary">Save</button>
-                </div>
-              </div>
-            </fieldset>
-            <input type="hidden" name="_csrf" value="{{ csrf() }}">
-          </form>
+                  <div class="form-group">
+                    <label for="slackIwhSetting[slack:isIncomingWebhookPrioritized]" class="col-xs-3 control-label"></label>
+                    <div class="col-xs-9">
+                      <div class="checkbox checkbox-info">
+                        <input type="checkbox" id ="cbPrioritizeIWH" name="slackIwhSetting[slack:isIncomingWebhookPrioritized]" value="1"
+                         {% if slackSetting['slack:isIncomingWebhookPrioritized'] %}checked{% endif %}>
+                        <label for="cbPrioritizeIWH">
+                         Prioritize Incoming Webhook than Slack App
+                        </label>
+                      </div>
+                      <p class="help-block">Check this option and GROWI use Incoming Webhooks even if Slack App settings are enabled.</p>
+                    </div>
+                  </div>
 
-          <hr>
-          <h3>
-            <i class="icon-question" aria-hidden="true"></i>
-            <a href="#collapseHelpForIwh" data-toggle="collapse">How to configure Incoming Webhooks?</a>
-          </h3>
+                  <div class="form-group">
+                    <div class="col-xs-offset-3 col-xs-6">
+                      <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                  </div>
+                </fieldset>
+                <input type="hidden" name="_csrf" value="{{ csrf() }}">
+              </form>
 
-          <ol id="collapseHelpForIwh" class="collapse">
-            <li>
-              (At Workspace) Add a hook
-              <ol>
-                <li>Go to <a href="https://slack.com/services/new/incoming-webhook">Incoming Webhooks Configuration page</a>.</li>
-                <li>Choose the default channel to post.</li>
-                <li>Add.</li>
-              </ol>
-            </li>
-            <li>
-              (At GROWI admin page) Set Webhook URL
-              <ol>
-                <li>Input "Webhook URL" and submit on this page.</li>
-              </ol>
-            </li>
-          </ol>
+              <hr>
+              <h3>
+                <i class="icon-question" aria-hidden="true"></i>
+                <a href="#collapseHelpForIwh" data-toggle="collapse">How to configure Incoming Webhooks?</a>
+              </h3>
 
-        </div><!-- /#slack-incoming-webhooks -->
-
-        <div id="slack-app" class="tab-pane" role="tabpanel" >
-
-          <form action="/admin/notification/slackSetting" method="post" class="form-horizontal" id="appSettingForm" role="form">
-            <fieldset>
-              <legend>Slack App Configuration</legend>
-
-              <p class="well">
-                <i class="icon-fw icon-exclamation text-danger"></i><span class="text-danger">NOT RECOMMENDED</span>
-                <br><br>
-                This is the way that compatible with Crowi,<br>
-                but not recommended in GROWI because it is <strong>too complex</strong>.
-                <br><br>
-                Please use <a href="#slack-incoming-webhooks" data-toggle="tab" onclick="activateTab('slack-incoming-webhooks')">Slack incomming webhooks Configuration</a> instead.
-              </p>
-
-              <div class="form-group">
-                <label for="slackSetting[slack:token]" class="col-xs-3 control-label">OAuth Access Token</label>
-                <div class="col-xs-6">
-                  <input class="form-control" type="text" name="slackSetting[slack:token]" value="{{ slackSetting['slack:token'] || '' }}">
-                </div>
-              </div>
-
-              <div class="form-group">
-                <div class="col-xs-offset-3 col-xs-6">
-                  <button type="submit" class="btn btn-primary">Save</button>
-                </div>
-              </div>
-            </fieldset>
-            <input type="hidden" name="_csrf" value="{{ csrf() }}">
-          </form>
-
-          <hr>
-          <h3>
-            <i class="icon-question" aria-hidden="true"></i>
-            <a href="#collapseHelpForApp" data-toggle="collapse">How to configure Slack App?</a>
-          </h3>
-
-          <ol id="collapseHelpForApp" class="collapse">
-            <li>
-              Register Slack App
-              <ol>
+              <ol id="collapseHelpForIwh" class="collapse">
                 <li>
-                  Create App from <a href="https://api.slack.com/applications/new">this link</a>, and fill the form out as below:
-                  <dl class="dl-horizontal">
-                    <dt>App Name</dt> <dd><code>growi</code> </dd>
-                    <dt>Development Slack Workspace</dt> <dd>Select the workspace you want to notify to.</dd>
-                  </dl>
+                 (At Workspace) Add a hook
+                  <ol>
+                    <li>Go to <a href="https://slack.com/services/new/incoming-webhook">Incoming Webhooks Configuration page</a>.</li>
+                    <li>Choose the default channel to post.</li>
+                    <li>Add.</li>
+                  </ol>
                 </li>
-                <li><strong>Save</strong> it.</li>
+                <li>
+                (At GROWI admin page) Set Webhook URL
+                  <ol>
+                    <li>Input "Webhook URL" and submit on this page.</li>
+                  </ol>
+                </li>
               </ol>
-            </li>
-            <li>
-              Set Permission Scopes to the App
-              <ol>
-                <li>Go to "OAuth &amp; Permissions" page.</li>
-                <li>Add "Send messages as GROWI"(<code>chat:write:bot</code>).</li>
-                <li>Don't forget to <strong>save</strong>.</li>
-              </ol>
-            </li>
-            <li>
-              Create a bot user
-              <ol>
-                <li>Go to "Bot Users" page and add.</li>
-              </ol>
-            </li>
-            <li>
-              Install the app
-              <ol>
-                <li>Go to "Install App to Your Workspace" page and install.</li>
-                <li>Go to "OAuth &amp; Permissions" page and copy <code>OAuth Access Token</code>.</li>
-              </ol>
-            </li>
-            <li>
-              (At this page) Set OAuth Access Token
-              <ol>
-                <li>Input "OAuth Access Token".</li>
-                <li>Don't forget to <strong>save</strong>.</li>
-              </ol>
-            </li>
-          </ol>
 
-        </div><!-- /#slack-app -->
+            </div><!-- /#slack-incoming-webhooks -->
 
+            <div id="slack-app" class="tab-pane" role="tabpanel" >
 
+              <form action="/admin/notification/slackSetting" method="post" class="form-horizontal" id="appSettingForm" role="form">
+                <fieldset>
+                  <legend>Slack App Configuration</legend>
+
+                  <p class="well">
+                    <i class="icon-fw icon-exclamation text-danger"></i><span class="text-danger">NOT RECOMMENDED</span>
+                    <br><br>
+                    This is the way that compatible with Crowi,<br>
+                    but not recommended in GROWI because it is <strong>too complex</strong>.
+                    <br><br>
+                    Please use <a href="#slack-incoming-webhooks" data-toggle="tab" onclick="activateSlackIwh()">Slack incomming webhooks Configuration</a> instead.
+                  </p>
+
+                  <div class="form-group">
+                    <label for="slackSetting[slack:token]" class="col-xs-3 control-label">OAuth Access Token</label>
+                    <div class="col-xs-6">
+                      <input class="form-control" type="text" name="slackSetting[slack:token]" value="{{ slackSetting['slack:token'] || '' }}">
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <div class="col-xs-offset-3 col-xs-6">
+                      <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                  </div>
+                </fieldset>
+                <input type="hidden" name="_csrf" value="{{ csrf() }}">
+              </form>
+
+              <hr>
+              <h3>
+                <i class="icon-question" aria-hidden="true"></i>
+                <a href="#collapseHelpForApp" data-toggle="collapse">How to configure Slack App?</a>
+              </h3>
+
+              <ol id="collapseHelpForApp" class="collapse">
+                <li>
+                  Register Slack App
+                  <ol>
+                    <li>
+                     Create App from <a href="https://api.slack.com/applications/new">this link</a>, and fill the form out as below:
+                      <dl class="dl-horizontal">
+                        <dt>App Name</dt> <dd><code>growi</code> </dd>
+                        <dt>Development Slack Workspace</dt> <dd>Select the workspace you want to notify to.</dd>
+                      </dl>
+                    </li>
+                    <li><strong>Save</strong> it.</li>
+                  </ol>
+                </li>
+                <li>
+                  Set Permission Scopes to the App
+                  <ol>
+                    <li>Go to "OAuth &amp; Permissions" page.</li>
+                    <li>Add "Send messages as GROWI"(<code>chat:write:bot</code>).</li>
+                    <li>Don't forget to <strong>save</strong>.</li>
+                  </ol>
+                </li>
+                <li>
+                  Create a bot user
+                  <ol>
+                    <li>Go to "Bot Users" page and add.</li>
+                  </ol>
+                </li>
+                <li>
+                  Install the app
+                  <ol>
+                    <li>Go to "Install App to Your Workspace" page and install.</li>
+                    <li>Go to "OAuth &amp; Permissions" page and copy <code>OAuth Access Token</code>.</li>
+                  </ol>
+                </li>
+                <li>
+                  (At this page) Set OAuth Access Token
+                  <ol>
+                    <li>Input "OAuth Access Token".</li>
+                    <li>Don't forget to <strong>save</strong>.</li>
+                  </ol>
+                </li>
+              </ol>
+
+            </div><!-- /#slack-app -->
+
+          </div><!-- /.tab-content -->
+          <hr>
+          <h4>Default Notification Settings for Patterns</h4>
+
+          <table class="table table-bordered">
+            <thead>
+              <th>Pattern</th>
+              <th>Channel</th>
+              <th>Operation</th>
+            </thead>
+            <tbody class="admin-notif-list">
+              <form id="slackNotificationForm">
+              <tr>
+                <td>
+                  <input class="form-control" type="text" name="pathPattern" value="" placeholder="e.g. /projects/xxx/MTG/*">
+                  <p class="help-block">
+                    Path name of wiki. Pattern expression with <code>*</code> can be used.
+                  </p>
+                </td>
+                <td>
+                  <input class="form-control form-inline" type="text" name="channel" value="" placeholder="e.g. project-xxx">
+                  <p class="help-block">
+                    Slack channel name. Without <code>#</code>.
+                  </p>
+                </td>
+                <td>
+                  <input type="hidden" name="_csrf" value="{{ csrf() }}">
+                  <input type="submit" value="Add" class="btn btn-primary">
+                </td>
+              </tr>
+              </form>
+
+              {% for notif in settings %}
+              <tr class="admin-notif-row" data-updatepost-id="{{ notif._id.toString() }}">
+                <td>
+                  {{ notif.pathPattern }}
+                </td>
+                <td>
+                  {{ notif.channel }}
+                </td>
+                <td>
+                  <form class="admin-remove-updatepost">
+                    <input type="hidden" name="id" value="{{ notif._id.toString() }}">
+                    <input type="hidden" name="_csrf" value="{{ csrf() }}">
+                    <input type="submit" value="Delete" class="btn btn-default">
+                  </form>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div><!-- /#user-trigger-notification -->
+
+        <div id="global-notification" class="tab-pane" role="tabpanel" >
+          <p class="alert alert-info">not implemented now</p>
+        </div><!-- /#global-notification -->
 
       </div><!-- /.tab-content -->
-
-      <hr>
-
-      <h4>Default Notification Settings for Patterns</h4>
-
-      <table class="table table-bordered">
-        <thead>
-          <th>Pattern</th>
-          <th>Channel</th>
-          <th>Operation</th>
-        </thead>
-        <tbody class="admin-notif-list">
-          <form id="slackNotificationForm">
-          <tr>
-            <td>
-              <input class="form-control" type="text" name="pathPattern" value="" placeholder="e.g. /projects/xxx/MTG/*">
-              <p class="help-block">
-                Path name of wiki. Pattern expression with <code>*</code> can be used.
-              </p>
-            </td>
-            <td>
-              <input class="form-control form-inline" type="text" name="channel" value="" placeholder="e.g. project-xxx">
-              <p class="help-block">
-                Slack channel name. Without <code>#</code>.
-              </p>
-            </td>
-            <td>
-              <input type="hidden" name="_csrf" value="{{ csrf() }}">
-              <input type="submit" value="Add" class="btn btn-primary">
-            </td>
-          </tr>
-          </form>
-
-          {% for notif in settings %}
-          <tr class="admin-notif-row" data-updatepost-id="{{ notif._id.toString() }}">
-            <td>
-              {{ notif.pathPattern }}
-            </td>
-            <td>
-              {{ notif.channel }}
-            </td>
-            <td>
-              <form class="admin-remove-updatepost">
-                <input type="hidden" name="id" value="{{ notif._id.toString() }}">
-                <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                <input type="submit" value="Delete" class="btn btn-default">
-              </form>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-
 
     </div>
   </div>
 
   <script>
+    function activateTab(tab){
+      $('.nav-tabs a[href="#' + tab + '"]').tab('show');
+    };
+
+    function activateSlackIwh() {
+      $("#selectSlackOption").selectpicker('val', '1');
+      $("#slack-app").removeClass('active');
+      $("#slack-incoming-webhooks").addClass('active');
+    }
+
+    function activateSlackApp() {
+      $("#selectSlackOption").selectpicker('val', '2');
+      $("#slack-incoming-webhooks").removeClass('active');
+      $("#slack-app").addClass('active');
+    }
+
     window.addEventListener('load', function(e) {
       // hash on page
       if (location.hash) {
-        if (location.hash == '#slack-app') {
-          activateTab('slack-app');
+        if (location.hash == '#global-notification') {
+          activateTab('global-notification');
         }
       }
     });
 
-    function activateTab(tab){
-      $('.nav-tabs a[href="#' + tab + '"]').tab('show');
-    };
+    $("#selectSlackOption").on('change', function() {
+      if (this.value === "1") {
+        activateSlackIwh();
+      }
+      else if (this.value === "2") {
+        activateSlackApp();
+      }
+    });
   </script>
 </div>
 {% endblock content_main %}
