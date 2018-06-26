@@ -3,6 +3,12 @@ CHANGES
 
 ## 3.1.10-RC
 
+* Fix: OAuth doesn't work in production because callback URL field cannot be specified
+    * Introduced by 3.1.9
+* Fix: Enter key on react-bootstrap-typeahead doesn't submit
+    * Introduced by 3.1.9
+* Fix: CodeMirror of /admin/customize is broken
+    * Introduced by 3.1.9
 
 ## 3.1.9
 
