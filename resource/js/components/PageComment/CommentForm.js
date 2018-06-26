@@ -12,6 +12,7 @@ import GrowiRenderer from '../../util/GrowiRenderer';
 
 import Editor from '../PageEditor/Editor';
 import CommentPreview from '../PageComment/CommentPreview';
+import { HEADER_VALUE } from 'gcp-metadata';
 
 /**
  *
@@ -34,6 +35,7 @@ export default class CommentForm extends React.Component {
     this.state = {
       comment: '',
       isMarkdown: true,
+      notif: false,
       html: '',
       key: 1,
       isUploadable,
@@ -58,9 +60,15 @@ export default class CommentForm extends React.Component {
 
   updateStateCheckbox(event) {
     const value = event.target.checked;
-    this.setState({isMarkdown: value});
-    // changeMode
-    this.refs.editor.setGfmMode(value);
+    const name = event.target.name;
+    if (name === "isMarkdown") {
+      this.setState({isMarkdown: value});
+      // changeMode
+      this.refs.editor.setGfmMode(value);
+    }
+    if ( name === "slack") {
+      this.setState({notif: value})
+    }
   }
 
   handleSelect(key) {
@@ -248,15 +256,15 @@ export default class CommentForm extends React.Component {
                   { this.state.errorMessage &&
                     <span className="text-danger text-right mr-2">{this.state.errorMessage}</span>
                   }
-                  <div className="form-inline page-form-setting d-flex align-items-center" id="page-form-setting" data-slack-configured="{{ slackConfigured() }}">
+                  <div className="form-inline d-flex align-items-center" id="comment-form-setting">
                     <span className="input-group input-group-sm input-group-slack extended-setting m-r-5">
                       <label className="input-group-addon">
                         <img id="slack-mark-white" src="/images/icons/slack/mark-monochrome_white.svg" width="18" height="18"/>
                         <img id="slack-mark-black" src="/images/icons/slack/mark-monochrome_black.svg" width="18" height="18"/>
-                        <input className="" type="checkbox" name="pageForm[notify][slack][on]" value="1"/>
+                        <input className="comment-form-slack" type="checkbox" name="slack" value="1" onChange={this.updateStateCheckbox}/>
                       </label>
-                      <input className="form-control" type="text" name="pageForm[notify][slack][channel]" value="" placeholder="slack-channel-name"
-                        id="page-form-slack-channel"
+                      <input className="form-control" type="text" value="" placeholder="slack-channel-name"
+                        id="comment-form-slack-channel"
                         data-toggle="popover"
                         title="Slack通知"
                         data-content="通知するにはチェックを入れてください。カンマ区切りで複数チャンネルに通知することができます。"
