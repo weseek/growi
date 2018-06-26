@@ -52,7 +52,29 @@
             </table>
           </div><!-- /.col-sm-6 -->
 
-        </div>
+        </div><!-- /.row -->
+
+        <div class="row">
+          <div class="col-sm-6">
+            <h3><strong></strong></h3>
+          </div><!-- /.col-sm-6 -->
+
+          <div class="col-sm-6">
+            <h3><strong>{{ t('modal_shortcuts.commentform.title') }}</strong></h3>
+
+            <table class="table">
+              <tr>
+                <th>{{ t('modal_shortcuts.commentform.Post') }}:</th>
+                <td><span class="key cmd-key"></span> + <span class="key key-longer">{% include '../widget/icon-keyboard-return-enter.html' %}</span></td>
+              </tr>
+              <tr>
+                <th>{{ t('modal_shortcuts.editor.Delete Line') }}:</th>
+                <td><span class="key cmd-key"></span> + <span class="key">D</span></td>
+              </tr>
+            </table>
+          </div><!-- /.col-sm-6 -->
+
+        </div><!-- /.row -->
 
       </div>
 

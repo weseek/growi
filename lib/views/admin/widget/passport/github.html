@@ -26,6 +26,11 @@
       <label for="settingForm[security:passport-github:clientId]" class="col-xs-3 control-label">{{ t("security_setting.clientID") }}</label>
       <div class="col-xs-6">
         <input class="form-control" type="text" name="settingForm[security:passport-github:clientId]" value="{{ settingForm['security:passport-github:clientId'] || '' }}">
+        <p class="help-block">
+          <small>
+            {{ t("security_setting.Use env var if empty", "OAUTH_GITHUB_CLIENT_SECRET") }}
+          </small>
+        </p>
       </div>
     </div>
 
@@ -33,6 +38,11 @@
       <label for="settingForm[security:passport-github:clientSecret]" class="col-xs-3 control-label">{{ t("security_setting.client_secret") }}</label>
       <div class="col-xs-6">
         <input class="form-control" type="text" name="settingForm[security:passport-github:clientSecret]" value="{{ settingForm['security:passport-github:clientSecret'] || '' }}">
+        <p class="help-block">
+          <small>
+            {{ t("security_setting.Use env var if empty", "OAUTH_GITHUB_CLIENT_SECRET") }}
+          </small>
+        </p>
       </div>
     </div>
     <div class="form-group">

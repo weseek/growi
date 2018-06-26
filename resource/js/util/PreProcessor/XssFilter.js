@@ -3,8 +3,7 @@ import Xss from '../../../../lib/util/xss';
 export default class XssFilter {
 
   constructor(crowi) {
-    // TODO read options
-    this.xss = new Xss(true);
+    this.xss = new Xss(crowi);
   }
 
   process(markdown) {
