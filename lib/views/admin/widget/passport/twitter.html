@@ -44,6 +44,7 @@
       </div>
     </div>
 
+
     <div class="form-group">
       <label for="settingForm[security:passport-google:clientSecret]" class="col-xs-3 control-label">{{ t("security_setting.client_secret") }}</label>
       <div class="col-xs-6">
@@ -68,6 +69,23 @@
       </div>
     </div>
 
+    
+    <div class="form-group">
+      <div class="col-xs-6 col-xs-offset-3">
+        <div class="checkbox checkbox-info">
+          <input type="checkbox" id="bindByUserName-Google" name="settingForm[security:passport-google:isSameUsernameTreatedAsIdenticalUser]" value="1"
+              {% if settingForm['security:passport-google:isSameUsernameTreatedAsIdenticalUser'] %}checked{% endif %} />
+          <label for="bindByUserName-Google">
+            {{ t("security_setting.Treat username matching as identical", "username") }}
+          </label>
+          <p class="help-block">
+            <small>
+              {{ t("security_setting.Treat username matching as identical_warn", "username") }}
+            </small>
+          </p>
+        </div>
+      </div>
+    </div>
 
   </fieldset>
 
