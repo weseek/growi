@@ -73,9 +73,9 @@
     <div class="form-group">
       <div class="col-xs-6 col-xs-offset-3">
         <div class="checkbox checkbox-info">
-          <input type="checkbox" id="bindByUserName-Google" name="settingForm[security:passport-google:isSameUsernameTreatedAsIdenticalUser]" value="1"
-              {% if settingForm['security:passport-google:isSameUsernameTreatedAsIdenticalUser'] %}checked{% endif %} />
-          <label for="bindByUserName-Google">
+          <input type="checkbox" id="bindByUserName-Twitter" name="settingForm[security:passport-twitter:isSameUsernameTreatedAsIdenticalUser]" value="1"
+              {% if settingForm['security:passport-twitter:isSameUsernameTreatedAsIdenticalUser'] %}checked{% endif %} />
+          <label for="bindByUserName-Twitter">
             {{ t("security_setting.Treat username matching as identical", "username") }}
           </label>
           <p class="help-block">
