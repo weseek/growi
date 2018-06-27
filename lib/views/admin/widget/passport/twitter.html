@@ -22,10 +22,7 @@
   <fieldset id="passport-twitter-hide-when-disabled" {%if !isTwitterEnabled %}style="display: none;"{% endif %}>
 {# Help Section #}
 <hr>
-<h4>
-  <i class="fa fa-question-circle" aria-hidden="true"></i>
-  <a href="#collapseHelpForTwitterOauth" data-toggle="collapse">How to configure Twitter OAuth?</a>
-</h4>
+
 <ol id="collapseHelpForTwitterOauth" class="collapse">
   <li>{{ t("security_setting.OAuth.Twitter.register_1", "https://console.cloud.google.com/apis/credentials", "Google Cloud Platform API Manager") }}</li>
   <li>{{ t("security_setting.OAuth.Twitter.register_2") }}</li>
