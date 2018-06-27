@@ -2,8 +2,10 @@
     {% if isRestartingServerNeeded %}style="opacity: 0.4;"{% endif %}>
   <legend>{{ t("security_setting.OAuth.Twitter.name") }}{{ t("security_setting.configuration") }}</legend>
   <p class="well alert-anchor">{{ t("security_setting.OAuth.connect_api_manager", "https://github.com/settings/developers", "GitHub Developer Settings") }}</p>
+
   {% set nameForIsTwitterEnabled = "settingForm[security:passport-twitter:isEnabled]" %}
   {% set isTwitterEnabled = settingForm['security:passport-twitter:isEnabled'] %}
+  
   <div class="form-group">
     <label for="{{nameForIsTwitterEnabled}}" class="col-xs-3 control-label">{{ t("security_setting.OAuth.Twitter.name") }}</label>
     <div class="col-xs-6">
