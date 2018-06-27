@@ -392,7 +392,12 @@
         "name": "GitHub OAuth",
         "register_1": "Access <a href=\"%s\" target=\"_blank\">%s</a>",
         "register_2": "Register your OAuth App with \"Authorization callback URL\" as <code>%s</code> (where <code>%s</code> is your hostname)",
-        "register_3": "Copy and paste your ClientID and Client Secret above"
+        "register_3": "Copy and paste your ClientID and Client Secret above"     
+      },
+      "how_to": {
+        "google": "How to configure Google OAuth?",
+        "github": "How to configure GitHub OAuth?",
+        "twitter": "How to configure Twitter OAuth?"
       }
     }
 	},

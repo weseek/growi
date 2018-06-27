@@ -410,6 +410,11 @@
         "register_1": "<a href=\"%s\" target=\"_blank\">%s</a>へアクセス",
         "register_2": "\"Authorization callback URL\"を<code>%s</code>としてGrowiを登録 (<code>%s</code>は環境に合わせて変更してください)",
         "register_3": "上記フォームにクライアントIDとクライアントシークレットを入力"
+      },
+      "how_to": {
+        "google": "Google OAuthの設定方法",
+        "github": "GitHub OAuthの設定方法",
+        "twitter": "Twitter OAuthの設定方法"
       }
     }
   },
