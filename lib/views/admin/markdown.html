@@ -201,17 +201,20 @@
 
 <script>
   $('input[name="markdownSetting[markdown:xss:isPrevented]"]').change(function() {
-    if ($(this).val()) {
+    if ($(this).val() === 'true') {
       $('#xss-hide-when-disabled').show(400);
       switch($('input[name="markdownSetting[markdown:xss:option]"]:checked').val()) {
         case '1':
-          console.log(1)
+          $('#xss2-hide-when-disabled').hide(400);
+          $('#xss3-hide-when-disabled').hide(400);
           break;
         case '2':
-          console.log(2)
+          $('#xss2-hide-when-disabled').show(400);
+          $('#xss3-hide-when-disabled').hide(400);
           break;
         case '3':
-          console.log(3)
+          $('#xss3-hide-when-disabled').show(400);
+          $('#xss2-hide-when-disabled').hide(400);
           break;
         default:
       }
