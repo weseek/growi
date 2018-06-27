@@ -153,13 +153,13 @@
                 <div>
                   {{ t('markdown_setting.Tag names') }}
                   <div>
-                    <textarea class="form-control" type="text" name="recommendedTags" rows="5" cols="40" readonly>{{ markdownSetting['markdown:xss:recommendedTagWhiteList'] }}</textarea>
+                    <textarea class="form-control" name="recommendedTags" rows="5" cols="40" readonly>{{ recommendedXssWhiteList.tags }}</textarea>
                   </div>
                 </div>
                 <div>
                   {{ t('markdown_setting.Tag attributes') }}
                   <div>
-                    <textarea class="form-control" name="recommendedAttrs" rows="5" cols="40" readonly>{{ markdownSetting['markdown:xss:recommendedAttrWhiteList'] }}</textarea>
+                    <textarea class="form-control" name="recommendedAttrs" rows="5" cols="40" readonly>{{ recommendedXssWhiteList.attrs }}</textarea>
                   </div>
                 </div>
               </div>
@@ -239,7 +239,12 @@
     }
   });
 
-  $('#btn-import-attrs')
+  $('#btn-import-tags').on('click', () => {
+    $('textarea[name="markdownSetting[markdown:xss:tagWhiteList]"]').val($('textarea[name="recommendedTags"]').val());
+  });
+  $('#btn-import-attrs').on('click', () => {
+    $('textarea[name="markdownSetting[markdown:xss:attrWhiteList]"]').val($('textarea[name="recommendedAttrs"]').val());
+  });
 </script>
 {% endblock content_main %}
 
