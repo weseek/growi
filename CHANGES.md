@@ -3,7 +3,8 @@ CHANGES
 
 ## 3.1.12-RC
 
-* 
+* Fix: Omit unnecessary css link
+    * Introduced by 3.1.10
 
 ## 3.1.11
 
