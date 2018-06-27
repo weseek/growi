@@ -45,25 +45,14 @@
     </div>
 
     <div class="form-group">
-      <label for="settingForm[security:passport-twitter:clientSecret]" class="col-xs-3 control-label">{{ t("security_setting.client_secret") }}</label>
+      <label for="settingForm[security:passport-google:clientSecret]" class="col-xs-3 control-label">{{ t("security_setting.client_secret") }}</label>
       <div class="col-xs-6">
-        <input class="form-control" type="text" name="settingForm[security:passport-twitter:clientSecret]" value="{{ settingForm['security:passport-twitter:clientSecret'] || '' }}">
-      </div>
-    </div>
-    <div class="form-group">
-      <div class="col-xs-6 col-xs-offset-3">
-        <div class="checkbox checkbox-info">
-          <input type="checkbox" id="bindByUserName-Twitter" name="settingForm[security:passport-twitter:isSameUsernameTreatedAsIdenticalUser]" value="1"
-              {% if settingForm['security:passport-twitter:isSameUsernameTreatedAsIdenticalUser'] %}checked{% endif %} />
-          <label for="bindByUserName-Twitter">
-            {{ t("security_setting.Treat username matching as identical", "username") }}
-          </label>
-          <p class="help-block">
-            <small>
-              {{ t("security_setting.Treat username matching as identical_warn", "username") }}
-            </small>
-          </p>
-        </div>
+        <input class="form-control" type="text" name="settingForm[security:passport-google:clientSecret]" value="{{ settingForm['security:passport-google:clientSecret'] || '' }}">
+        <p class="help-block">
+          <small>
+            {{ t("security_setting.Use env var if empty", "OAUTH_GOOGLE_CLIENT_SECRET") }}
+          </small>
+        </p>
       </div>
     </div>
 
