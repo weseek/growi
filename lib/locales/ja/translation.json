@@ -424,13 +424,12 @@
     "XSS_setting": "XSS(Cross Site Scripting)対策設定",
     "XSS_setting_desc": "マークダウンテキスト内の HTML タグの扱いを設定し、悪意のあるプログラムからの攻撃を防ぎます",
     "Prevent XSS(Cross Site Scripting)": "HTML タグの描画を抑制する",
-    "Prevent XSS(Cross Site Scripting)desc": "以下のオプション設定により、<code>&lt;iframe&gt;</code>等の一部のタグの描画を有効化します",
     "Ignore all tags": "すべてのタグを抑制する",
     "Recommended setting": "おすすめ設定",
     "Custom Whitelist": "カスタムホワイトリスト",
-    "Tag names":"タグ名のリスト",
-    "Tag attributes":"タグ属性のリスト",
-    "Add white list desc":"ホワイトリストに追加したい要素をカンマ&lt;,&gt;で区切って追加してください"
+    "Tag names": "タグ名のホワイトリスト",
+    "Tag attributes": "タグ属性のホワイトリスト",
+    "import_recommended": "おすすめをインポート"
   },
 
   "customize_page": {

@@ -119,7 +119,6 @@
 
             <fieldset id="xss-hide-when-disabled" {%if !isXssEnabled %}style="display: none;"{% endif %}>
               {% set nameForXssOption = "markdownSetting[markdown:xss:option]" %}
-              <p class="help-block">{{ t("markdown_setting.Prevent XSS(Cross Site Scripting)desc") }}</p>
 
               <div class="form-group">
                 <div class="col-xs-6">
@@ -169,14 +168,14 @@
                   {{ t('markdown_setting.Tag names') }}
                   <div>
                     <textarea type="text" name="markdownSetting[markdown:xss:tagWhiteList]" rows="5" cols="40" value="" placeholder="span, iframe, input"></textarea>
-                    <input type="button" class="btn btn-default" value="おすすめ設定をインポート" />
+                    <input type="button" class="btn btn-default" value="{{ t('markdown_setting.import_recommended', 'tags') }}" />
                   </div>
                 </div>
                 <div>
                   {{ t('markdown_setting.Tag attributes') }}
                   <div>
                     <textarea name="markdownSetting[markdown:xss:attrWhiteList]" rows="5" cols="40" value="" placeholder="class, type, placeholder, name, required"></textarea>
-                    <input type="button" class="btn btn-default" value="おすすめ設定をインポート" />
+                    <input type="button" class="btn btn-default" value="{{ t('markdown_setting.import_recommended', 'attrs') }}" />
                   </div>
                 </div>
               </div>
