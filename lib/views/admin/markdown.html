@@ -92,12 +92,12 @@
       <form action="/admin/markdown/xss-setting" method="post" class="form-horizontal" id="markdownSettingForm" role="form">
         <fieldset>
 
-          {% set nameForIsXssEnabled = "settingForm[security:xss-prevent:isEnabled]" %}
+          {% set nameForIsXssEnabled = "markdownSetting[markdown:xss:isPrevented]" %}
 
           <legend>{{ t('markdown_setting.XSS_setting') }}</legend>
           <p class="well">{{ t("markdown_setting.XSS_setting_desc") }}</p>
 
-          <label for="markdownSetting[markdown:isPreventXss]" class="col-xs-4 control-label">
+          <label for="{{nameForIsXssEnabled}}" class="col-xs-4 control-label">
             {{ t('markdown_setting.Prevent XSS(Cross Site Scripting)') }}
           </label>
 
@@ -118,7 +118,7 @@
             </div>
 
             <fieldset id="xss-hide-when-disabled" {%if !isXssEnabled %}style="display: none;"{% endif %}>
-              {% set nameForIsXss2Enabled = "settingForm[security:xss2-prevent:isEnabled]" %}
+              {% set nameForXssOption = "markdownSetting[markdown:xss:option]" %}
               <p class="help-block">{{ t("markdown_setting.Prevent XSS(Cross Site Scripting)desc") }}</p>
 
               <div class="form-group">
@@ -126,21 +126,21 @@
                   <div class="btn-group btn-toggle" data-toggle="buttons">
                     <div>
                       <label data-active-class="primary">
-                        <input name="{{nameForIsXss2Enabled}}" value="1" type="radio"
+                        <input name="{{nameForXssOption}}" value="1" type="radio"
                         {% if !isXssEnabled %}checked{% endif %}>
                         {{ t('markdown_setting.Ignore all tags') }}
                       </label>
                     </div>
                     <div>
                       <label data-active-class="primary">
-                          <input name="{{nameForIsXss2Enabled}}" value="2" type="radio"
+                          <input name="{{nameForXssOption}}" value="2" type="radio"
                           {% if true === isXssEnabled %}checked{% endif %}>
                         {{ t('markdown_setting.Recommended setting') }}<br>
                       </label>
                     </div>
                     <div>
                       <label data-active-class="primary">
-                        <input name="{{nameForIsXss2Enabled}}" value="3" type="radio"
+                        <input name="{{nameForXssOption}}" value="3" type="radio"
                         {% if true === isXssEnabled %}checked{% endif %}>
                         {{ t('markdown_setting.Custom Whitelist') }}
                       </label>
@@ -153,13 +153,13 @@
                 <div>
                   {{ t('markdown_setting.Tag names') }}
                   <div>
-                    <textarea type="text" name="tag" rows="5" cols="40" readonly>span, iframe, input</textarea>
+                    <textarea type="text" name="recommendedTags" rows="5" cols="40" readonly>span, iframe, input</textarea>
                   </div>
                 </div>
                 <div>
                   {{ t('markdown_setting.Tag attributes') }}
                   <div>
-                    <textarea name="tagattribute" rows="5" cols="40" readonly>class, type, placeholder, name, required</textarea>
+                    <textarea name="recommendedAttrs" rows="5" cols="40" readonly>class, type, placeholder, name, required</textarea>
                   </div>
                 </div>
               </div>
@@ -168,14 +168,14 @@
                 <div>
                   {{ t('markdown_setting.Tag names') }}
                   <div>
-                    <textarea type="text" name="tag" rows="5" cols="40" value="" placeholder="span, iframe, input"></textarea>
+                    <textarea type="text" name="markdownSetting[markdown:xss:tagWhiteList]" rows="5" cols="40" value="" placeholder="span, iframe, input"></textarea>
                     <input type="button" class="btn btn-default" value="おすすめ設定をインポート" />
                   </div>
                 </div>
                 <div>
                   {{ t('markdown_setting.Tag attributes') }}
                   <div>
-                    <textarea name="tagattribute" rows="5" cols="40" value="" placeholder="class, type, placeholder, name, required"></textarea>
+                    <textarea name="markdownSetting[markdown:xss:attrWhiteList]" rows="5" cols="40" value="" placeholder="class, type, placeholder, name, required"></textarea>
                     <input type="button" class="btn btn-default" value="おすすめ設定をインポート" />
                   </div>
                 </div>
@@ -184,7 +184,7 @@
           </div>
 
           <script>
-            $('input[name="settingForm[security:xss-prevent:isEnabled]"]').change(function() {
+            $('input[name="markdownSetting[markdown:xss:isPrevented]"]').change(function() {
               const isEnabled = ($(this).val() === "true");
 
               if (isEnabled) {
@@ -195,7 +195,7 @@
               }
             });
 
-            $('input[name="settingForm[security:xss2-prevent:isEnabled]"]').change(function() {
+            $('input[name="markdownSetting[markdown:xss:option]"]').change(function() {
               const isEnabled = ($(this).val() === "1");
               const isEnabled2 = ($(this).val() === "2");
 
