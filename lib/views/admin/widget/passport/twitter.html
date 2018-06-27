@@ -36,6 +36,11 @@
       <label for="settingForm[security:passport-twitter:clientId]" class="col-xs-3 control-label">{{ t("security_setting.clientID") }}</label>
       <div class="col-xs-6">
         <input class="form-control" type="text" name="settingForm[security:passport-twitter:clientId]" value="{{ settingForm['security:passport-twitter:clientId'] || '' }}">
+        <p class="help-block">
+          <small>
+            {{ t("security_setting.Use env var if empty", "OAUTH_GOOGLE_CLIENT_ID") }}
+          </small>
+        </p>
       </div>
     </div>
 
