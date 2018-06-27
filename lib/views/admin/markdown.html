@@ -201,10 +201,20 @@
 
 <script>
   $('input[name="markdownSetting[markdown:xss:isPrevented]"]').change(function() {
-    const isEnabled = ($(this).val() === "true");
-
-    if (isEnabled) {
+    if ($(this).val()) {
       $('#xss-hide-when-disabled').show(400);
+      switch($('input[name="markdownSetting[markdown:xss:option]"]:checked').val()) {
+        case '1':
+          console.log(1)
+          break;
+        case '2':
+          console.log(2)
+          break;
+        case '3':
+          console.log(3)
+          break;
+        default:
+      }
     }
     else {
       $('#xss-hide-when-disabled').hide(400);
@@ -212,14 +222,11 @@
   });
 
   $('input[name="markdownSetting[markdown:xss:option]"]').change(function() {
-    const isEnabled = ($(this).val() === "1");
-    const isEnabled2 = ($(this).val() === "2");
-
-    if (isEnabled) {
+    if ($(this).val() === "1") {
       $('#xss2-hide-when-disabled').hide(400);
       $('#xss3-hide-when-disabled').hide(400);
     }
-    else if (isEnabled2) {
+    else if ($(this).val() === "2") {
       $('#xss2-hide-when-disabled').show(400);
       $('#xss3-hide-when-disabled').hide(400);
     }
