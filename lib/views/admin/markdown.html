@@ -92,7 +92,6 @@
       <form action="/admin/markdown/xss-setting" method="post" class="form-horizontal" id="markdownSettingForm" role="form">
         {% set nameForIsXssEnabled = "markdownSetting[markdown:xss:isPrevented]" %}
         {% set isXssEnabled = markdownSetting['markdown:xss:isPrevented'] %}
-        {% set xssOption = markdownSetting['markdown:xss:option'] %}
 
         <fieldset>
           <legend>{{ t('markdown_setting.XSS_setting') }}</legend>
@@ -120,6 +119,7 @@
 
             <fieldset id="xss-hide-when-disabled" {% if !isXssEnabled %}style="display: none;"{% endif %}>
               {% set nameForXssOption = "markdownSetting[markdown:xss:option]" %}
+              {% set xssOption = markdownSetting['markdown:xss:option'] %}
 
               <div class="form-group">
                 <div class="col-xs-6">
@@ -153,13 +153,13 @@
                 <div>
                   {{ t('markdown_setting.Tag names') }}
                   <div>
-                    <textarea type="text" name="recommendedTags" rows="5" cols="40" readonly>{{ markdownSetting['markdown:xss:tagWhiteList'] }}</textarea>
+                    <textarea class="form-control" type="text" name="recommendedTags" rows="5" cols="40" readonly>{{ markdownSetting['markdown:xss:recommendedTagWhiteList'] }}</textarea>
                   </div>
                 </div>
                 <div>
                   {{ t('markdown_setting.Tag attributes') }}
                   <div>
-                    <textarea name="recommendedAttrs" rows="5" cols="40" readonly>{{ markdownSetting['markdown:xss:attrWhiteList'] }}</textarea>
+                    <textarea class="form-control" name="recommendedAttrs" rows="5" cols="40" readonly>{{ markdownSetting['markdown:xss:recommendedAttrWhiteList'] }}</textarea>
                   </div>
                 </div>
               </div>
@@ -168,14 +168,14 @@
                 <div>
                   {{ t('markdown_setting.Tag names') }}
                   <div>
-                    <textarea type="text" name="markdownSetting[markdown:xss:tagWhiteList]" rows="5" cols="40" placeholder="e.g. iframe, script, video...">{{ markdownSetting['markdown:xss:tagWhiteList'] }}</textarea>
+                    <textarea class="form-control" type="text" name="markdownSetting[markdown:xss:tagWhiteList]" rows="5" cols="40" placeholder="e.g. iframe, script, video...">{{ markdownSetting['markdown:xss:tagWhiteList'] }}</textarea>
                     <input type="button" id="btn-import-tags" class="btn btn-default" value="{{ t('markdown_setting.import_recommended', 'tags') }}" />
                   </div>
                 </div>
                 <div>
                   {{ t('markdown_setting.Tag attributes') }}
                   <div>
-                    <textarea name="markdownSetting[markdown:xss:attrWhiteList]" rows="5" cols="40" placeholder="e.g. src, id, name...">{{ markdownSetting['markdown:xss:attrWhiteList'] }}</textarea>
+                    <textarea class="form-control" name="markdownSetting[markdown:xss:attrWhiteList]" rows="5" cols="40" placeholder="e.g. src, id, name...">{{ markdownSetting['markdown:xss:attrWhiteList'] }}</textarea>
                     <input type="button" id="btn-import-attrs" class="btn btn-default" value="{{ t('markdown_setting.import_recommended', 'attributes') }}" />
                   </div>
                 </div>
