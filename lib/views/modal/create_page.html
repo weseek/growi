@@ -57,7 +57,7 @@
               <div class="create-page-button-container">
                 <a id="link-to-template" href="{{ page.path || path }}" class="fcbtn btn btn-outline btn-rounded btn-primary btn-1b disabled">
                   <i class="icon-fw icon-doc"></i>
-                  <span id="create-template-button-link">{{ t('Create') }}/{{ t('Edit') }}</span>
+                  <span id="create-template-button-link">{{ t('Edit') }}</span>
                 </a>
               </div>
             </div>
@@ -69,34 +69,3 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-<script>
-  let buttonTextChildren;
-  let buttonTextDecendants;
-  let pagePath = $("#link-to-template").attr("href");
-
-  if (pagePath.endsWith("/")) {
-      pagePath = pagePath.slice(0, -1);
-  };
-
-  $.get(`/_api/pages.templates?path=${pagePath}`)
-    .then(templateInfo => {
-      buttonTextChildren = templateInfo.childrenTemplateExists ? `{{ t('Edit') }}` : `{{ t('Create') }}`;
-      buttonTextDecendants = templateInfo.decendantsTemplateExists ? `{{ t('Edit') }}` : `{{ t('Create') }}`;
-    });
-
-  $("#template-type").on("change", () => {
-    // enable button
-    $('#link-to-template').removeClass("disabled");
-
-    if ($("#template-type").val() === "children") {
-      href = pagePath + "/_template#edit-form";
-      $("#link-to-template").attr("href", href);
-      $('#create-template-button-link').text(buttonTextChildren);
-    }
-    else if ($("#template-type").val() === "decentants") {
-      href = pagePath + "/__template#edit-form";
-      $("#link-to-template").attr("href", href);
-      $('#create-template-button-link').text(buttonTextDecendants);
-    };
-  });
-</script>

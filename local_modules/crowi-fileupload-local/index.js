@@ -7,8 +7,6 @@ module.exports = function(crowi) {
     , fs = require('fs')
     , path = require('path')
     , mkdir = require('mkdirp')
-    , Config = crowi.model('Config')
-    , config = crowi.getConfig()
     , lib = {}
     , basePath = path.posix.join(crowi.publicDir, 'uploads'); // TODO: to configurable
 
@@ -17,7 +15,6 @@ module.exports = function(crowi) {
     return new Promise(function(resolve, reject) {
       fs.unlink(path.posix.join(basePath, filePath), function(err) {
         if (err) {
-          debug(err);
           return reject(err);
         }
 

@@ -1,9 +1,10 @@
 <form action="/_api/admin/security/passport-google" method="post" class="form-horizontal passportStrategy" id="googleSetting" role="form"
     {% if isRestartingServerNeeded %}style="opacity: 0.4;"{% endif %}>
-  <legend>{{ t("security_setting.OAuth.Google.name") }}{{ t("security_setting.configuration") }}</legend>
-  <p class="well alert-anchor">{{ t("security_setting.OAuth.connect_api_manager", "https://console.cloud.google.com/apis/credentials", "Google Cloud Platform API Manager") }}</p>
+  <legend class="alert-anchor">{{ t("security_setting.OAuth.Google.name") }}{{ t("security_setting.configuration") }}</legend>
+
   {% set nameForIsGoogleEnabled = "settingForm[security:passport-google:isEnabled]" %}
   {% set isGoogleEnabled = settingForm['security:passport-google:isEnabled'] %}
+
   <div class="form-group">
     <label for="{{nameForIsGoogleEnabled}}" class="col-xs-3 control-label">{{ t("security_setting.OAuth.Google.name") }}</label>
     <div class="col-xs-6">
@@ -22,22 +23,14 @@
   <fieldset id="passport-google-hide-when-disabled" {%if !isGoogleEnabled %}style="display: none;"{% endif %}>
 
     <div class="form-group">
-      <label for="settingForm[security:passport-google:clientId]" class="col-xs-3 control-label">{{ t("security_setting.OAuth.register", t("security_setting.OAuth.Google.name") ) }}</label>
-      <div class="col-xs-6">
-        <ol class="help-block">
-          <li>{{ t("security_setting.OAuth.Google.register_1", "https://console.cloud.google.com/apis/credentials", "Google Cloud Platform API Manager") }}</li>
-          <li>{{ t("security_setting.OAuth.Google.register_2") }}</li>
-          <li>{{ t("security_setting.OAuth.Google.register_3") }}</li>
-          <li>{{ t("security_setting.OAuth.Google.register_4", "https://${growi.host}/passport/google/callback", "${growi.host}") }}</li>
-          <li>{{ t("security_setting.OAuth.Google.register_5") }}</li>
-        </ol>
-      </div>
-    </div>
-
-    <div class="form-group">
       <label for="settingForm[security:passport-google:clientId]" class="col-xs-3 control-label">{{ t("security_setting.clientID") }}</label>
       <div class="col-xs-6">
         <input class="form-control" type="text" name="settingForm[security:passport-google:clientId]" value="{{ settingForm['security:passport-google:clientId'] || '' }}">
+        <p class="help-block">
+          <small>
+            {{ t("security_setting.Use env var if empty", "OAUTH_GOOGLE_CLIENT_ID") }}
+          </small>
+        </p>
       </div>
     </div>
 
@@ -45,8 +38,26 @@
       <label for="settingForm[security:passport-google:clientSecret]" class="col-xs-3 control-label">{{ t("security_setting.client_secret") }}</label>
       <div class="col-xs-6">
         <input class="form-control" type="text" name="settingForm[security:passport-google:clientSecret]" value="{{ settingForm['security:passport-google:clientSecret'] || '' }}">
+        <p class="help-block">
+          <small>
+            {{ t("security_setting.Use env var if empty", "OAUTH_GOOGLE_CLIENT_SECRET") }}
+          </small>
+        </p>
       </div>
     </div>
+
+    <div class="form-group">
+      <label for="settingForm[security:passport-google:callbackUrl]" class="col-xs-3 control-label">{{ t("security_setting.callback_URL") }}</label>
+      <div class="col-xs-6">
+        <input class="form-control" type="text" name="settingForm[security:passport-google:callbackUrl]" value="{{ settingForm['security:passport-google:callbackUrl'] || '' }}">
+        <p class="help-block">
+          <small>
+            {{ t("security_setting.Use env var if empty", "OAUTH_GOOGLE_CALLBACK_URL") }}
+          </small>
+        </p>
+      </div>
+    </div>
+
     <div class="form-group">
       <div class="col-xs-6 col-xs-offset-3">
         <div class="checkbox checkbox-info">
@@ -74,91 +85,30 @@
   </div>
 
 </form>
-{% if false %}
+
+{# Help Section #}
 <hr>
 <h4>
   <i class="fa fa-question-circle" aria-hidden="true"></i>
-  <a href="#collapseHelpForApp" data-toggle="collapse">How to configure Slack App?</a>
+  <a href="#collapseHelpForGoogleOauth" data-toggle="collapse">How to configure Google OAuth?</a>
 </h4>
-
-<ol id="collapseHelpForApp" class="collapse">
-  <li>
-    Register Slack App
-    <ol>
-      <li>
-        Create App from <a href="https://api.slack.com/applications/new">this link</a>, and fill the form out as below:
-        <dl class="dl-horizontal">
-          <dt>App Name</dt> <dd><code>growi</code> </dd>
-          <dt>Development Slack Team</dt> <dd>Select the team you want to notify to.</dd>
-        </dl>
-      </li>
-      <li><strong>Save</strong> it.</li>
-    </ol>
-  </li>
-  <li>
-    Get App Credentials
-    <ol>
-      <li>Go To "Basic Information" page and make a note "Client ID" and "Client Secret".</li>
-    </ol>
-  </li>
-  <li>
-    Set Redirect URLs
-    <ol>
-      <li>Go to "OAuth &amp; Permissions" page.</li>
-      <li>Add <code><script>document.write(location.origin);</script>/admin/notification/slackAuth</code> .</li>
-      <li>Don't forget to <strong>save</strong>.</li>
-    </ol>
-  </li>
-  <li>
-    Set Permission Scopes to the App
-    <ol>
-      <li>Go to "OAuth &amp; Permissions" page.</li>
-      <li>Add "Send messages as GROWI"(<code>chat:write:bot</code>).</li>
-      <li>Don't forget to <strong>save</strong>.</li>
-    </ol>
-  </li>
-  <li>
-    Create a bot user
-    <ol>
-      <li>Go to "Bot Users" page and add.</li>
-    </ol>
-  </li>
-  <li>
-    Install the app
-    <ol>
-      <li>Go to "Install App to Your Team" page and install.</li>
-    </ol>
-  </li>
-  <li>
-    (At Team) Approve the app
-    <ol>
-      <li>Go to the management Apps page for the team you installed the app and approve "growi".</li>
-    </ol>
-  </li>
-  <li>
-    (At Team) Invite the bot to your team
-    <ol>
-      <li>Invite the user you created in <code>4. Add a bot user</code> to the channel you notify to.</li>
-    </ol>
-  </li>
-  <li>
-    (At GROWI admin page) Input "clientId" and "clientSecret" and submit on this page.
-  </li>
-  <li>
-    (At GROWI admin page) Click "Connect to Slack" button to start OAuth process.
-  </li>
+<ol id="collapseHelpForGoogleOauth" class="collapse">
+  <li>{{ t("security_setting.OAuth.Google.register_1", "https://console.cloud.google.com/apis/credentials", "Google Cloud Platform API Manager") }}</li>
+  <li>{{ t("security_setting.OAuth.Google.register_2") }}</li>
+  <li>{{ t("security_setting.OAuth.Google.register_3") }}</li>
+  <li>{{ t("security_setting.OAuth.Google.register_4", "https://${growi.host}/passport/google/callback", "${growi.host}") }}</li>
+  <li>{{ t("security_setting.OAuth.Google.register_5") }}</li>
 </ol>
-{% endif %}
 
 <script>
   $('input[name="settingForm[security:passport-google:isEnabled]"]').change(function() {
-      const isEnabled = ($(this).val() === "true");
+    const isEnabled = ($(this).val() === "true");
 
-      if (isEnabled) {
-        $('#passport-google-hide-when-disabled').show(400);
-      }
-      else {
-        $('#passport-google-hide-when-disabled').hide(400);
-      }
-    });
+    if (isEnabled) {
+      $('#passport-google-hide-when-disabled').show(400);
+    }
+    else {
+      $('#passport-google-hide-when-disabled').hide(400);
+    }
+  });
 </script>

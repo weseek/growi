@@ -13,13 +13,7 @@
       </p>
       <p class="created-at">
         {{ t('Created') }}: {{ page.createdAt|datetz('Y/m/d H:i:s') }}<br>
-
-        {% if page.lastUpdateUser %}
-          {{ t('Last updated') }}: {{ page.updatedAt|datetz('Y/m/d H:i:s') }} <a href="/user/{{ page.lastUpdateUser.username }}"><img src="{{ page.lastUpdateUser|picture }}" class="picture picture-xs img-circle" alt="{{ page.lastUpdateUser.name }}"></a>
-        {% else %}
-          {# for BC 1.5.x #}
-          {{ t('Last updated') }}: {{ page.updatedAt|datetz('Y/m/d H:i:s') }} <a href="/user/{{ page.revision.author.username }}"><img src="{{ page.revision.author|picture }}" class="picture picture-xs img-circle" alt="{{ page.revision.author.name }}"></a>
-        {% endif %}
+        {{ t('Last updated') }}: {{ page.updatedAt|datetz('Y/m/d H:i:s') }} <a href="/user/{{ page.revision.author.username }}"><img src="{{ page.revision.author|picture }}" class="picture picture-xs img-circle" alt="{{ page.revision.author.name }}"></a>
       </p>
     </div>
   </div>

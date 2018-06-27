@@ -206,20 +206,23 @@
   },
 
   "modal_shortcuts": {
-      "global": {
-          "title": "Global shortcuts",
-          "Open/Close shortcut help": "Open/Close shortcut help",
-          "Edit Page": "Edit Page",
-          "Create Page": "Create Page"
-      },
-      "editor": {
-          "title": "Editor shortcuts",
-          "Indent": "Indent",
-          "Outdent": "Outdent",
-          "Save Page": "Save Page",
-          "Delete Line": "Delete Line"
-
-              }
+    "global": {
+      "title": "Global shortcuts",
+      "Open/Close shortcut help": "Open/Close shortcut help",
+      "Edit Page": "Edit Page",
+      "Create Page": "Create Page"
+    },
+    "editor": {
+      "title": "Editor shortcuts",
+      "Indent": "Indent",
+      "Outdent": "Outdent",
+      "Save Page": "Save Page",
+      "Delete Line": "Delete Line"
+    },
+    "commentform": {
+      "title": "Comment Form shortcuts",
+      "Post": "Post"
+    }
   },
 
   "template": {
@@ -307,22 +310,24 @@
     "username_email_password": "Username, Email and Password authentication",
     "ldap_auth": "LDAP authentication",
     "google_auth2": "Google OAuth2 authentication",
+    "google_auth2_by_crowi_desc": "However, this feature does not create new users, butit only makes it possible to login to the existing user who set up the association.",
     "facebook_auth2": "Facebook OAuth2 authentication",
     "twitter_auth2": "Twitter OAuth authentication",
-    "github_auth2": "Github OAuth2 authentication",
+    "github_auth2": "GitHub OAuth2 authentication",
     "crowi_auth": "Crowi classic authentication mechanism",
 		"require_server_restart": "Restarting the server is required.",
 		"server_on_passport_auth": "The server is running with Passport authentication mechanism.",
 		"server_on_crowi_auth": "The server is running with official Crowi authentication mechanism.",
 		"google_setting": "Google Setting",
     "connect_api_manager": "You can use your Google account to sign up and login after creating OAuth2 ClientId at <a href=\"https://console.cloud.google.com/apis/credentials\" target=\"_blank\">API Manager on Google Cloud Platform</a>",
-		"access_api_manager": "Access <a href=\"https://console.cloud.google.com/apis/credentials\" target=\"_blank\">API Manager</a>",
+		"access_api_manager": "Access <a href=\"%s\" target=\"_blank\">%s</a>",
 		"create_project": "Create Project if no projects have been created.",
 		"create_auth_to_oauth": "\"Create credentials\" -> \"OAuth clientID\"",
 		"select_webapp": "Select \"Web Application\"",
     "change_redirect_url": "Enter <code>https://${crowi.host}/google/callback</code> <br>(where <code>${crowi.host}</code> is your host name) for \"Authorized redirect URIs\".",
     "clientID": "Client ID",
     "client_secret": "Client Secret",
+    "callback_URL": "Callback URL",
     "guest_mode": {
       "deny": "Deny Unregistered Users",
       "readonly": "View Only"
@@ -336,6 +341,7 @@
     "optional": "Optional",
     "Treat username matching as identical": "Automatically bind external accounts newly logged in to local accounts when <code>%s</code> match",
     "Treat username matching as identical_warn": "WARNING: Be aware of security because the system treats the same user as a match of <code>%s</code>.",
+    "Use env var if empty": "Use env var <code>%s</code> if empty",
     "ldap": {
       "server_url_detail": "The LDAP URL of the directory service in the format <code>ldap://host:port/DN</code> or <code>ldaps://host:port/DN</code>.",
       "bind_mode": "Binding Mode",
@@ -367,7 +373,6 @@
     },
     "OAuth": {
       "register": "Register for %s",
-      "connect_api_manager": "Register your Growi at <a href=\"%s\" target=\"_blank\">%s</a>",
       "change_redirect_url": "Enter <code>%s</code> <br>(where <code>%s</code> is your host name) for \"Authorized redirect URIs\".",
       "Google": {
         "name": "Google OAuth",
@@ -375,7 +380,7 @@
         "register_2": "Create Project if no projects exist",
         "register_3": "Create Credentials &rightarrow; OAuth client ID &rightarrow; Select \"Web application\"",
         "register_4": "Register your OAuth App with one of Authorized redirect URIs as <code>%s</code> (where <code>%s</code> is your hostname)",
-        "register_5": "Copy and paste your ClientID and Client Secret below"
+        "register_5": "Copy and paste your ClientID and Client Secret above"
       },
       "Facebook": {
         "name": "Facebook OAuth"
@@ -387,7 +392,7 @@
         "name": "GitHub OAuth",
         "register_1": "Access <a href=\"%s\" target=\"_blank\">%s</a>",
         "register_2": "Register your OAuth App with \"Authorization callback URL\" as <code>%s</code> (where <code>%s</code> is your hostname)",
-        "register_3": "Copy and paste your ClientID and Client Secret below"
+        "register_3": "Copy and paste your ClientID and Client Secret above"
       }
     }
 	},
@@ -397,8 +402,7 @@
     "Enable Line Break": "Enable Line Break",
     "Enable Line Break desc": "Treat line break in the text page as <code>&lt;br&gt;</code> in HTML",
     "Enable Line Break for comment": "Enable Line Break in comment",
-    "Enable Line Break for comment desc": "Treat line break in comment as <code>&lt;br&gt;</code> in HTML",
-    "TBD": "(TBD: Markdown function in the comment section has not been implemented yet)"
+    "Enable Line Break for comment desc": "Treat line break in comment as <code>&lt;br&gt;</code> in HTML"
   },
 
   "customize_page": {

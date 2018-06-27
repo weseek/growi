@@ -12,9 +12,18 @@ For any licenses that require disclosure of source, sources are available at
 https://github.com/weseek/growi.
 
 
-1. crowi/crowi (https://github.com/crowi/crowi)
-2. Microsoft/vscode (https://github.com/Microsoft/vscode)
-3. stephenhutchings/typicons.font (https://github.com/stephenhutchings/typicons.font)
+1. Apache License, Version 2.0 Derivative Works
+2. crowi/crowi (https://github.com/crowi/crowi)
+3. Microsoft/vscode (https://github.com/Microsoft/vscode)
+4. stephenhutchings/typicons.font (https://github.com/stephenhutchings/typicons.font)
+
+
+License Notice for Apache License, Version 2.0 Derivative Works
+--------------------------------------------------------
+
+https://www.apache.org/licenses/LICENSE-2.0
+
+This software includes works that is distributed in the Apache License 2.0
 
 
 License Notice for Crowi

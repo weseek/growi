@@ -35,19 +35,18 @@ gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js
 " defer></script>
 
     {% if env === 'development' %}
-      <script src="/dll/vendor.dll.js"></script>
-      <script src="{{ webpack_asset('dev').js }}" async></script>
+      <script src="/dll/dll.js"></script>
+      <script src="{{ webpack_asset('js/dev.js') }}" async></script>
     {% endif %}
 
-    <script src="{{ webpack_asset('commons').js }}" defer></script>
-    <script src="{{ webpack_asset('legacy-presentation').js }}" defer></script>
+    <script src="{{ webpack_asset('js/legacy-presentation.js') }}" defer></script>
 
     <title>{{ path|path2name }} | {{ path }}</title>
 
     <!-- styles -->
-    <link rel="stylesheet" href="{{ webpack_asset('style').css }}">
-    <link rel="stylesheet" href="{{ webpack_asset('style-theme-default').css }}">
-    <link rel="stylesheet" href="{{ webpack_asset('style-presentation').css }}">
+    <link rel="stylesheet" href="{{ webpack_asset('styles/style.css') }}">
+    <link rel="stylesheet" href="{{ webpack_asset('styles/theme-default.css') }}">
+    <link rel="stylesheet" href="{{ webpack_asset('styles/style-presentation.css') }}">
 
     <!-- Google Fonts -->
     <link href='https://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>

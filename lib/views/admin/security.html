@@ -84,7 +84,7 @@
           <div class="form-group">
             <label for="settingForm[security:registrationWhiteList]" class="col-xs-3 control-label">{{ t('The whitelist of registration permission E-mail address') }}</label>
             <div class="col-xs-8">
-              <textarea class="form-control" type="textarea" name="settingForm[security:registrationWhiteList]" placeholder="{{ t('security_setting.example') }}: @crowi.wiki">{{ settingForm['security:registrationWhiteList']|join('&#13')|raw }}</textarea>
+              <textarea class="form-control" type="textarea" name="settingForm[security:registrationWhiteList]" placeholder="{{ t('security_setting.example') }}: @growi.org">{{ settingForm['security:registrationWhiteList']|join('&#13')|raw }}</textarea>
               <p class="help-block">{{ t("security_setting.restrict_emails") }}{{ t("security_setting.for_instance") }}<code>@growi.org</code>{{ t("security_setting.only_those") }}<br>
               {{ t("security_setting.insert_single") }}</p>
             </div>
@@ -121,9 +121,9 @@
                 <li>{{ t("security_setting.username_email_password") }}</li>
                 <li>{{ t("security_setting.ldap_auth") }}</li>
                 <li>{{ t("security_setting.google_auth2") }}</li>
+                <li>{{ t("security_setting.github_auth2") }}</li>
                 <li class="text-muted">(TBD) <del>{{ t("security_setting.facebook_auth2") }}</del></li>
                 <li class="text-muted">(TBD) <del>{{ t("security_setting.twitter_auth2") }}</del></li>
-                <li>{{ t("security_setting.github_auth2") }}</li>
               </ul>
             </div>
             <div class="col-xs-6">
@@ -138,7 +138,10 @@
               </h4>
               <ul>
                 <li>{{ t("security_setting.username_email_password") }}</li>
-                <li>{{ t("security_setting.google_auth2") }}</li>
+                <li class="text-muted">
+                  {{ t("security_setting.google_auth2") }}
+                  <ul><li>{{ t("security_setting.google_auth2_by_crowi_desc") }}</li></ul>
+                </li>
               </ul>
             </div>
           </div>
@@ -179,7 +182,7 @@
               </p>
 
               <ol class="help-block">
-                <li>{{ t("security_setting.access_api_manager") }}</li>
+                <li>{{ t("security_setting.access_api_manager", "https://console.cloud.google.com/apis/credentials", "API Manager") }}</li>
                 <li>{{ t("security_setting.create_project") }}</li>
                 <li>{{ t("security_setting.create_auth_to_oauth") }}</li>
                 <ol>
@@ -230,19 +233,19 @@
           </p>
           <ul class="nav nav-tabs" role="tablist" {% if isRestartingServerNeeded %}style="opacity: 0.4;"{% endif %}>
             <li class="active">
-              <a href="#passport-ldap" data-toggle="tab" role="tab"><i class="icon-organization"></i> LDAP</a>
+              <a href="#passport-ldap" data-toggle="tab" role="tab"><i class="fa fa-sitemap"></i> LDAP</a>
             </li>
             <li>
-              <a href="#passport-google-oauth" data-toggle="tab" role="tab"><i class="icon-social-google"></i> Google</a>
+              <a href="#passport-google-oauth" data-toggle="tab" role="tab"><i class="fa fa-google"></i> Google</a>
             </li>
             <li>
-              <a href="#passport-facebook" data-toggle="tab" role="tab"><i class="icon-social-facebook"></i> Facebook</a>
+              <a href="#passport-github" data-toggle="tab" role="tab"><i class="fa fa-github"></i> GitHub</a>
             </li>
-            <li>
-              <a href="#passport-twitter" data-toggle="tab" role="tab"><i class="icon-social-twitter"></i> Twitter</a>
+            <li class="tbd">
+              <a href="#passport-facebook" data-toggle="tab" role="tab"><i class="fa fa-facebook"></i> (TBD) Facebook</a>
             </li>
-            <li>
-              <a href="#passport-github" data-toggle="tab" role="tab"><i class="icon-social-github"></i> GitHub</a>
+            <li class="tbd">
+              <a href="#passport-twitter" data-toggle="tab" role="tab"><i class="fa fa-twitter"></i> (TBD) Twitter</a>
             </li>
           </ul>
 
