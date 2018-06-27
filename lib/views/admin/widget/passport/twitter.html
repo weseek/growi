@@ -49,7 +49,7 @@
       <div class="col-xs-6 col-xs-offset-3">
         <div class="checkbox checkbox-info">
           <input type="checkbox" id="bindByUserName-Twitter" name="settingForm[security:passport-twitter:isSameUsernameTreatedAsIdenticalUser]" value="1"
-              {% if settingForm['security:passport-github:isSameUsernameTreatedAsIdenticalUser'] %}checked{% endif %} />
+              {% if settingForm['security:passport-twitter:isSameUsernameTreatedAsIdenticalUser'] %}checked{% endif %} />
           <label for="bindByUserName-GitHub">
             {{ t("security_setting.Treat username matching as identical", "username") }}
           </label>
