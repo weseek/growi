@@ -46,9 +46,9 @@
 
 
     <div class="form-group">
-      <label for="settingForm[security:passport-google:clientSecret]" class="col-xs-3 control-label">{{ t("security_setting.client_secret") }}</label>
+      <label for="settingForm[security:passport-twitter:clientSecret]" class="col-xs-3 control-label">{{ t("security_setting.client_secret") }}</label>
       <div class="col-xs-6">
-        <input class="form-control" type="text" name="settingForm[security:passport-google:clientSecret]" value="{{ settingForm['security:passport-google:clientSecret'] || '' }}">
+        <input class="form-control" type="text" name="settingForm[security:passport-twitter:clientSecret]" value="{{ settingForm['security:passport-twitter:clientSecret'] || '' }}">
         <p class="help-block">
           <small>
              {{ t("security_setting.Use env var if empty", "OAUTH_TWITTER_CALLBACK_URL") }}
