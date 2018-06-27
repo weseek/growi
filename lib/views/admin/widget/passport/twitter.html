@@ -12,7 +12,7 @@
           <input name="{{nameForIsTwitterEnabled}}" value="true" type="radio"
               {% if true === isTwitterEnabled %}checked{% endif %}> ON
         </label>
-        <label class="btn btn-default btn-rounded btn-outline {% if !isGitHubEnabled %}active{% endif %}" data-active-class="default">
+        <label class="btn btn-default btn-rounded btn-outline {% if !isTwitterEnabled %}active{% endif %}" data-active-class="default">
           <input name="{{nameForIsGitHubEnabled}}" value="false" type="radio"
               {% if !isGitHubEnabled %}checked{% endif %}> OFF
         </label>
