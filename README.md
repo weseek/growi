@@ -168,10 +168,10 @@ Environment Variables
 * **Option (Overwritable in admin page)**
     * OAUTH_GOOGLE_CLIENT_ID: Google API client id for OAuth login
     * OAUTH_GOOGLE_CLIENT_SECRET: Google API client secret for OAuth login
-    * OAUTH_GOOGLE_CALLBACK_URI: Google API callback URI for OAuth login
+    * OAUTH_GOOGLE_CALLBACK_URI: Google API callback URI for OAuth login (Set `https://${growi.host}/passport/google/callback`)
     * OAUTH_GITHUB_CLIENT_ID: GitHub API client id for OAuth login
     * OAUTH_GITHUB_CLIENT_SECRET: GitHub API client secret for OAuth login
-    * OAUTH_GITHUB_CALLBACK_URI: GitHub API callback URI for OAuth login
+    * OAUTH_GITHUB_CALLBACK_URI: GitHub API callback URI for OAuth login (Set `https://${growi.host}/passport/github/callback`)
 
 
 Documentation
