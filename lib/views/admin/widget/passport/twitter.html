@@ -8,7 +8,7 @@
     <label for="{{nameForIsTwitterEnabled}}" class="col-xs-3 control-label">{{ t("security_setting.OAuth.GitHub.name") }}</label>
     <div class="col-xs-6">
       <div class="btn-group btn-toggle" data-toggle="buttons">
-        <label class="btn btn-default btn-rounded btn-outline {% if isGitHubEnabled %}active{% endif %}" data-active-class="primary">
+        <label class="btn btn-default btn-rounded btn-outline {% if isTwitterEnabled %}active{% endif %}" data-active-class="primary">
           <input name="{{nameForIsGitHubEnabled}}" value="true" type="radio"
               {% if true === isGitHubEnabled %}checked{% endif %}> ON
         </label>
