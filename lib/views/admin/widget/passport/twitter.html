@@ -10,7 +10,7 @@
       <div class="btn-group btn-toggle" data-toggle="buttons">
         <label class="btn btn-default btn-rounded btn-outline {% if isTwitterEnabled %}active{% endif %}" data-active-class="primary">
           <input name="{{nameForIsTwitterEnabled}}" value="true" type="radio"
-              {% if true === isGitHubEnabled %}checked{% endif %}> ON
+              {% if true === isTwitterEnabled %}checked{% endif %}> ON
         </label>
         <label class="btn btn-default btn-rounded btn-outline {% if !isGitHubEnabled %}active{% endif %}" data-active-class="default">
           <input name="{{nameForIsGitHubEnabled}}" value="false" type="radio"
