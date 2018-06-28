@@ -136,11 +136,11 @@
               <p class="font-weight-bold">{{ t('markdown_setting.Recommended setting') }}</p>
               <div class="m-t-15">
                 {{ t('markdown_setting.Tag names') }}
-                <textarea class="form-control" name="recommendedTags" rows="5" cols="40" readonly>{{ recommendedXssWhiteList.tags }}</textarea>
+                <textarea class="form-control xss-list" name="recommendedTags" rows="5" cols="40" readonly>{{ recommendedXssWhiteList.tags }}</textarea>
               </div>
               <div class="m-t-15">
                 {{ t('markdown_setting.Tag attributes') }}
-                <textarea class="form-control" name="recommendedAttrs" rows="5" cols="40" readonly>{{ recommendedXssWhiteList.attrs }}</textarea>
+                <textarea class="form-control xss-list" name="recommendedAttrs" rows="5" cols="40" readonly>{{ recommendedXssWhiteList.attrs }}</textarea>
               </div>
             </label>
           </div>
@@ -156,7 +156,7 @@
                     {{ t('markdown_setting.import_recommended', 'tags') }}
                   </p>
                 </div>
-                <textarea class="form-control" type="text" name="markdownSetting[markdown:xss:tagWhiteList]" rows="5" cols="40" placeholder="e.g. iframe, script, video...">{{ markdownSetting['markdown:xss:tagWhiteList'] }}</textarea>
+                <textarea class="form-control xss-list" type="text" name="markdownSetting[markdown:xss:tagWhiteList]" rows="5" cols="40" placeholder="e.g. iframe, script, video...">{{ markdownSetting['markdown:xss:tagWhiteList'] }}</textarea>
               </div>
               <div class="m-t-15">
                 <div class="d-flex justify-content-between">
@@ -165,7 +165,7 @@
                     {{ t('markdown_setting.import_recommended', 'attributes') }}
                   </p>
                 </div>
-                <textarea class="form-control" name="markdownSetting[markdown:xss:attrWhiteList]" rows="5" cols="40" placeholder="e.g. src, id, name...">{{ markdownSetting['markdown:xss:attrWhiteList'] }}</textarea>
+                <textarea class="form-control xss-list" name="markdownSetting[markdown:xss:attrWhiteList]" rows="5" cols="40" placeholder="e.g. src, id, name...">{{ markdownSetting['markdown:xss:attrWhiteList'] }}</textarea>
               </div>
             </label>
           </div>
@@ -186,6 +186,11 @@
 </div>
 
 <script>
+  // give a space between items in textarea(',' => ', ')
+  for (var i = 0; i < $('textarea.xss-list').length; i++) {
+    $($('textarea.xss-list')[i]).val($($('textarea.xss-list')[i]).val().replace(/,/g, ', '));
+  };
+
   $('input[name="markdownSetting[markdown:xss:isPrevented]"]').change(function() {
     if ($(this).val() === 'true') {
       $('#xss-hide-when-disabled').slideDown();
