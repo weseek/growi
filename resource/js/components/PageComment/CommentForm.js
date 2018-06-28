@@ -12,7 +12,6 @@ import GrowiRenderer from '../../util/GrowiRenderer';
 
 import Editor from '../PageEditor/Editor';
 import CommentPreview from '../PageComment/CommentPreview';
-import { HEADER_VALUE } from 'gcp-metadata';
 
 /**
  *
@@ -35,8 +34,8 @@ export default class CommentForm extends React.Component {
     this.state = {
       comment: '',
       isMarkdown: true,
-      notif: false,
-      channel: '',
+      isNotification: false,
+      notifSlackChannel: '',
       html: '',
       key: 1,
       isUploadable,
@@ -82,7 +81,7 @@ export default class CommentForm extends React.Component {
     this.props.crowi.apiGet('/pages.updatePost', {path: this.props.pagePath})
     .then(res => {
       if (res.ok) {
-        this.setState({channel: res.updatePost.join(',')});
+        this.setState({notifSlackChannel: res.updatePost.join(',')});
       }
     });
   }
@@ -100,12 +99,12 @@ export default class CommentForm extends React.Component {
       this.refs.editor.setGfmMode(value);
     }
     if ( name === "slack") {
-      this.setState({notif: value})
+      this.setState({isNotification: value})
     }
   }
 
   updateChannel(value) {
-    this.setState({channel: value})
+    this.setState({notifSlackChannel: value})
   }
 
   handleSelect(key) {
@@ -300,7 +299,7 @@ export default class CommentForm extends React.Component {
                         <img id="slack-mark-black" src="/images/icons/slack/mark-monochrome_black.svg" width="18" height="18"/>
                         <input className="comment-form-slack" type="checkbox" name="slack" value="1" onChange={this.updateStateCheckbox}/>
                       </label>
-                      <input className="form-control" type="text" value={this.state.channel} placeholder="slack-channel-name"
+                      <input className="form-control" type="text" value={this.state.notifSlackChannel} placeholder="slack-channel-name"
                         id="comment-form-slack-channel"
                         data-toggle="popover"
                         title="Slack通知"
