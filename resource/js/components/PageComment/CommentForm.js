@@ -78,13 +78,13 @@ export default class CommentForm extends React.Component {
    * Load data of comments and store them in state
    */
   retrieveData() {
-    // // get data (desc order array)
-    // this.props.crowi.apiGet('/channel.get', {page_id: this.props.pageId})
-    //   .then(res => {
-    //     if (res.ok) {
-    //       this.setState({channel: res.channel});
-    //     }
-    //   });
+    // get data (desc order array)
+    this.props.crowi.apiGet('/pages.updatePost', {path: this.props.pagePath})
+    .then(res => {
+      if (res.ok) {
+        this.setState({channel: res.updatePost.join(',')});
+      }
+    });
   }
 
   updateState(value) {
