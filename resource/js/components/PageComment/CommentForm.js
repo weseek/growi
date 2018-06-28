@@ -49,7 +49,7 @@ export default class CommentForm extends React.Component {
     this.init = this.init.bind(this);
     this.updateState = this.updateState.bind(this);
     this.updateStateCheckbox = this.updateStateCheckbox.bind(this);
-    this.updateSlackChannel =this.updateSlackChannel.bind(this);
+    this.updateChannel =this.updateChannel.bind(this);
     this.postComment = this.postComment.bind(this);
     this.renderHtml = this.renderHtml.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
@@ -104,7 +104,7 @@ export default class CommentForm extends React.Component {
     }
   }
 
-  updateSlackChannel(value) {
+  updateChannel(value) {
     this.setState({channel: value})
   }
 
@@ -307,7 +307,7 @@ export default class CommentForm extends React.Component {
                         data-content="通知するにはチェックを入れてください。カンマ区切りで複数チャンネルに通知することができます。"
                         data-trigger="focus"
                         data-placement="top"
-                        onChange={e => this.updateSlackChannel(e.target.value)}
+                        onChange={e => this.updateChannel(e.target.value)}
                       />
                     </span>
                   </div>
