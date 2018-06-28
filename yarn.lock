@@ -553,6 +553,12 @@ async@^2.3.0:
   dependencies:
     lodash "^4.14.0"
 
+async@^2.4.1:
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/async/-/async-2.6.1.tgz#b245a23ca71930044ec53fa46aa00a3e87c6a610"
+  dependencies:
+    lodash "^4.17.10"
+
 async@~0.2.6:
   version "0.2.10"
   resolved "https://registry.yarnpkg.com/async/-/async-0.2.10.tgz#b6bbe0b0674b9d719708ca38de8c237cb526c3d1"
@@ -1942,8 +1948,8 @@ code-point-at@^1.0.0:
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
 
 codemirror@^5.37.0:
-  version "5.37.0"
-  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.37.0.tgz#c349b584e158f590277f26d37c2469a6bc538036"
+  version "5.39.0"
+  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.39.0.tgz#4654f7d2f7e525e04a62e72d9482348ccb37dce5"
 
 collection-visit@^1.0.0:
   version "1.0.0"
@@ -3159,6 +3165,15 @@ extglob@^2.0.4:
     regex-not "^1.0.0"
     snapdragon "^0.8.1"
     to-regex "^3.0.1"
+
+extract-text-webpack-plugin@^4.0.0-beta.0:
+  version "4.0.0-beta.0"
+  resolved "https://registry.yarnpkg.com/extract-text-webpack-plugin/-/extract-text-webpack-plugin-4.0.0-beta.0.tgz#f7361d7ff430b42961f8d1321ba8c1757b5d4c42"
+  dependencies:
+    async "^2.4.1"
+    loader-utils "^1.1.0"
+    schema-utils "^0.4.5"
+    webpack-sources "^1.1.0"
 
 extsprintf@1.2.0:
   version "1.2.0"
@@ -5212,13 +5227,6 @@ mimic-fn@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/mimic-fn/-/mimic-fn-1.1.0.tgz#e667783d92e89dbd342818b5230b9d62a672ad18"
 
-mini-css-extract-plugin@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/mini-css-extract-plugin/-/mini-css-extract-plugin-0.4.0.tgz#ff3bf08bee96e618e177c16ca6131bfecef707f9"
-  dependencies:
-    loader-utils "^1.1.0"
-    webpack-sources "^1.1.0"
-
 minimalistic-assert@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/minimalistic-assert/-/minimalistic-assert-1.0.0.tgz#702be2dda6b37f4836bcb3f5db56641b64a1d3d3"
@@ -6741,9 +6749,9 @@ rc@^1.1.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-react-bootstrap-typeahead@^3.1.4:
-  version "3.1.4"
-  resolved "https://registry.yarnpkg.com/react-bootstrap-typeahead/-/react-bootstrap-typeahead-3.1.4.tgz#970106959e0491f29fdeeb5dd7f51ca87b83c2e2"
+react-bootstrap-typeahead@=3.0.4:
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/react-bootstrap-typeahead/-/react-bootstrap-typeahead-3.0.4.tgz#1ebfb259f986c86ff03beef1091cab4614d6ea1d"
   dependencies:
     classnames "^2.2.0"
     escape-string-regexp "^1.0.5"
@@ -6753,7 +6761,7 @@ react-bootstrap-typeahead@^3.1.4:
     prop-types-extra "^1.0.1"
     react-onclickoutside "^6.1.1"
     react-overlays "^0.8.1"
-    react-popper "^0.10.4"
+    react-popper "^0.9.0"
     warning "^3.0.0"
 
 react-bootstrap@^0.32.1:
@@ -6823,9 +6831,9 @@ react-overlays@^0.8.0, react-overlays@^0.8.1:
     react-transition-group "^2.2.0"
     warning "^3.0.0"
 
-react-popper@^0.10.4:
-  version "0.10.4"
-  resolved "https://registry.yarnpkg.com/react-popper/-/react-popper-0.10.4.tgz#af2a415ea22291edd504678d7afda8a6ee3295aa"
+react-popper@^0.9.0:
+  version "0.9.5"
+  resolved "https://registry.yarnpkg.com/react-popper/-/react-popper-0.9.5.tgz#02a24ef3eec33af9e54e8358ab70eb0e331edd05"
   dependencies:
     popper.js "^1.14.1"
     prop-types "^15.6.1"

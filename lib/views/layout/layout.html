@@ -88,7 +88,6 @@ gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js
       <script src="{{ webpack_asset('styles/style.js') }}"></script>
       <script src="{{ webpack_asset('styles/theme-' + theme() + '.js') }}"></script>
     {% else %}
-      <link rel="stylesheet" href="{{ webpack_asset('js/vendors.css') }}">
       <link rel="stylesheet" href="{{ webpack_asset('styles/style.css') }}">
       <link rel="stylesheet" href="{{ webpack_asset('styles/theme-' + theme() + '.css') }}">
     {% endif %}
