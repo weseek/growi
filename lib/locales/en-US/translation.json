@@ -408,7 +408,7 @@
     "Enable Line Break for comment desc": "Treat line break in comment as <code>&lt;br&gt;</code> in HTML",
     "XSS_setting": "Prevent XSS(Cross Site Scripting) Setting",
     "XSS_setting_desc": "You can change the handling of HTML tags in markdown text.",
-    "Enable XSS prevention": "Prevent XSS",
+    "Enable XSS prevention": "Enable XSS Prevention",
     "Ignore all tags": "Ignore All Tags",
     "Ignore all tags desc": "Stripe all HTML tags and attributes",
     "Recommended setting": "Recommended Setting",
