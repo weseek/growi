@@ -1,4 +1,5 @@
 .admin-page {
+    //security XSS prevent
 
   .admin-user-menu {
     .dropdown-menu {
@@ -6,7 +7,7 @@
       right: 0;
       width: 300px;
     }
-  }
+   }
 
   .admin-group-menu {
     .dropdown-menu {
@@ -37,7 +38,7 @@
     }
 
     .auth-mechanism-configurations {
-      min-height: 800px;
+      min-height: 300px;
     }
   }
 
