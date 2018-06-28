@@ -201,10 +201,14 @@
   });
 
   $('#btn-import-tags').on('click', () => {
-    $('textarea[name="markdownSetting[markdown:xss:tagWhiteList]"]').val($('textarea[name="recommendedTags"]').val());
+    var $tagWhiteList = $('textarea[name="markdownSetting[markdown:xss:tagWhiteList]"]');
+    var $recommendedTagList = $('textarea[name="recommendedTags"]');
+    $tagWhiteList.val($recommendedTagList.val());
   });
   $('#btn-import-attrs').on('click', () => {
-    $('textarea[name="markdownSetting[markdown:xss:attrWhiteList]"]').val($('textarea[name="recommendedAttrs"]').val());
+    var $attrWhiteList = $('textarea[name="markdownSetting[markdown:xss:attrWhiteList]"]');
+    var $recommendedAttrList = $('textarea[name="recommendedAttrs"]');
+    $attrWhiteList.val($recommendedAttrList.val());
   });
 </script>
 {% endblock content_main %}
