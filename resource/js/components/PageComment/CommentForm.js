@@ -71,10 +71,6 @@ export default class CommentForm extends React.Component {
     if (!this.props.pageId) {
       return ;
     }
-
-    // const layoutType = this.props.crowi.getConfig()['layoutType'];
-    // this.setState({isLayoutTypeGrowi: 'crowi-plus' === layoutType || 'growi' === layoutType});
-
     this.retrieveData();
   }
 
@@ -82,13 +78,13 @@ export default class CommentForm extends React.Component {
    * Load data of comments and store them in state
    */
   retrieveData() {
-    // get data (desc order array)
-    this.props.crowi.apiGet('/channel.get', {page_id: this.props.pageId})
-      .then(res => {
-        if (res.ok) {
-          this.setState({channel: res.channel});
-        }
-      });
+    // // get data (desc order array)
+    // this.props.crowi.apiGet('/channel.get', {page_id: this.props.pageId})
+    //   .then(res => {
+    //     if (res.ok) {
+    //       this.setState({channel: res.channel});
+    //     }
+    //   });
   }
 
   updateState(value) {
