@@ -329,6 +329,7 @@
     "client_secret": "Client Secret",
     "xss_prevent_setting":"Prevent XSS(Cross Site Scripting)",
     "xss_prevent_setting_link":"Go to Markdown settings",
+    "callback_URL": "Callback URL",
     "guest_mode": {
       "deny": "Deny Unregistered Users",
       "readonly": "View Only"
