@@ -1,5 +1,77 @@
 .growi.main-container  {
 
+ // for Dropzone
+ .dropzone {
+  @mixin insertSimpleLineIcons($code) {
+    &:before {
+      margin-right: 0.2em;
+      font-family: 'simple-line-icons';
+      content: $code;
+    }
+  }
+
+  // unuploadable or rejected
+  &.dropzone-unuploadable, &.dropzone-rejected {
+    .overlay {
+      background: rgba(200,200,200,0.8);
+    }
+    .overlay-content {
+      color: #444;
+    }
+  }
+  // uploading
+  &.dropzone-uploading {
+
+  }
+
+  // unuploadable
+  &.dropzone-unuploadable {
+    .overlay-content {
+      // insert content
+      @include insertSimpleLineIcons("\e617");  // icon-exclamation
+      &:after {
+        content: "File uploading is disabled";
+      }
+    }
+  }
+  // uploadable
+  &.dropzone-uploadable {
+    // accepted
+    &.dropzone-accepted:not(.dropzone-rejected) {
+      .overlay {
+        border: 4px dashed #ccc;
+      }
+      .overlay-content {
+        // insert content
+        @include insertSimpleLineIcons("\e084");  // icon-cloud-upload
+        &:after {
+          content: "Drop here to upload";
+        }
+        // style
+        color: #666;
+        background: rgba(200,200,200,0.8);
+      }
+    }
+    // file type mismatch
+    &.dropzone-rejected:not(.dropzone-uploadablefile) .overlay-content {
+      // insert content
+      @include insertSimpleLineIcons("\e032");  // icon-picture
+      &:after {
+        content: "Only an image file is allowed";
+      }
+    }
+    // multiple files
+    &.dropzone-accepted.dropzone-rejected .overlay-content {
+      // insert content
+      @include insertSimpleLineIcons("\e617");  // icon-exclamation
+      &:after {
+        content: "Only 1 file is allowed";
+      }
+    }
+  }
+} // end of.dropzone
+
+
   %comment-section {
     position: relative;
     padding: 1em;
@@ -103,6 +175,8 @@
         transition: height 0.2s ease-out;
         height: 180px;
       }
+
+
     }
   }
 }
