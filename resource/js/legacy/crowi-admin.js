@@ -106,3 +106,5 @@ $(function() {
   // style switcher
   $('#styleOptions').styleSwitcher();
 });
+
+
