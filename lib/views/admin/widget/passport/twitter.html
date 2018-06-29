@@ -23,14 +23,6 @@
   <fieldset id="passport-twitter-hide-when-disabled" {%if !isTwitterEnabled %}style="display: none;"{% endif %}>
 
 
-<ol id="collapseHelpForTwitterOauth" class="collapse">
-  <li>{{ t("security_setting.OAuth.Twitter.register_1", "https://console.cloud.google.com/apis/credentials", "Google Cloud Platform API Manager") }}</li>
-  <li>{{ t("security_setting.OAuth.Twitter.register_2") }}</li>
-  <li>{{ t("security_setting.OAuth.Twitter.register_3") }}</li>
-  <li>{{ t("security_setting.OAuth.Twitter.register_4", "https://${growi.host}/passport/google/callback", "${growi.host}") }}</li>
-  <li>{{ t("security_setting.OAuth.Twitter.register_5") }}</li>
-</ol>
-
 
     <div class="form-group">
       <label for="settingForm[security:passport-twitter:clientId]" class="col-xs-3 control-label">{{ t("security_setting.clientID") }}</label>
@@ -123,7 +115,6 @@
   <li>{{ t("security_setting.OAuth.Twitter.register_4", "https://${growi.host}/passport/google/callback", "${growi.host}") }}</li>
   <li>{{ t("security_setting.OAuth.Twitter.register_5") }}</li>
 </ol>
-
 
 <script>
   $('input[name="settingForm[security:passport-twitter:isEnabled]"]').change(function() {
