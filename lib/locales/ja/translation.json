@@ -403,7 +403,12 @@
         "name": "Facebook OAuth認証"
       },
       "Twitter": {
-        "name": "Twitter OAuth認証"
+        "name": "Twitter OAuth認証",
+        "register_1": "<a href=\"%s\" target=\"_blank\">%s</a>へアクセス",
+        "register_2": "プロジェクトがない場合はプロジェクトを作成",
+        "register_3": "認証情報を作成 &rightarrow; OAuthクライアントID &rightarrow; ウェブアプリケーションを選択",
+        "register_4": "承認済みのリダイレクトURIを<code>%s</code>としてGrowiを登録 (<code>%s</code>は環境に合わせて変更してください)",
+        "register_5": "上記フォームにクライアントIDとクライアントシークレットを入力"
       },
       "GitHub": {
         "name": "GitHub OAuth認証",
