@@ -36,19 +36,6 @@
       </div>
     </div>
 
-    
-  <div class="form-group">
-      <label for="settingForm[security:passport-github:clientId]" class="col-xs-3 control-label">{{ t("security_setting.clientID") }}</label>
-      <div class="col-xs-6">
-        <input class="form-control" type="text" name="settingForm[security:passport-github:clientId]" value="{{ settingForm['security:passport-github:clientId'] || '' }}">
-        <p class="help-block">
-          <small>
-            {{ t("security_setting.Use env var if empty", "OAUTH_GITHUB_CLIENT_SECRET") }}
-          </small>
-        </p>
-      </div>
-    </div>
-
     <div class="form-group">
       <label for="settingForm[security:passport-twitter:clientSecret]" class="col-xs-3 control-label">{{ t("security_setting.client_secret") }}</label>
       <div class="col-xs-6">
@@ -112,8 +99,7 @@
   <li>{{ t("security_setting.OAuth.Twitter.register_1", "https://apps.twitter.com/", "Twitter Application Management") }}</li>
   <li>{{ t("security_setting.OAuth.Twitter.register_2") }}</li>
   <li>{{ t("security_setting.OAuth.Twitter.register_3") }}</li>
-  <li>{{ t("security_setting.OAuth.Twitter.register_4", "https://${growi.host}/passport/google/callback", "${growi.host}") }}</li>
-  <li>{{ t("security_setting.OAuth.Twitter.register_5") }}</li>
+  <li>{{ t("security_setting.OAuth.Twitter.register_4", "https://${growi.host}/passport/twitter/callback", "${growi.host}") }}</li>
 </ol>
 
 <script>
