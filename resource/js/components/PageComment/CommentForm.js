@@ -127,6 +127,10 @@ export default class CommentForm extends React.Component {
         page_id: this.props.pageId,
         revision_id: this.props.revisionId,
         is_markdown: this.state.isMarkdown,
+      },
+      slackNotificationForm: {
+        isNotification: this.state.isNotification,
+        notifSlackChannel: this.state.notifSlackChannel,
       }
     })
       .then((res) => {
