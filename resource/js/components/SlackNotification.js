@@ -57,11 +57,13 @@ export default class SlackNotification extends React.Component {
 
   updateState(value) {
     this.setState({notifSlackChannel: value});
+    this.props.onChannelChange(value);
   }
 
   updateStateCheckbox(event) {
     const value = event.target.checked;
     this.setState({isNotification: value});
+    this.props.onSlackOnChange(value);
   }
 
   render() {
@@ -94,4 +96,6 @@ SlackNotification.propTypes = {
   crowi: PropTypes.object.isRequired,
   pageId: PropTypes.string,
   pagePath: PropTypes.string,
+  onChannelChange: PropTypes.func.isRequired,
+  onSlackOnChange: PropTypes.func.isRequired,
 };
