@@ -56,12 +56,12 @@ export default class SlackNotification extends React.Component {
   }
 
   updateState(value) {
-    this.setState({notifSlackChannel: value})
+    this.setState({notifSlackChannel: value});
   }
 
   updateStateCheckbox(event) {
     const value = event.target.checked;
-    this.setState({isNotification: value})
+    this.setState({isNotification: value});
   }
 
   render() {
