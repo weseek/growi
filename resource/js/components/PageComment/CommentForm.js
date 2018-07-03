@@ -40,6 +40,7 @@ export default class CommentForm extends React.Component {
       isUploadable,
       isUploadableFile,
       errorMessage: undefined,
+      hasSlackConfig: config.hasSlackConfig,
     };
 
     this.growiRenderer = new GrowiRenderer(this.props.crowi, this.props.crowiOriginRenderer, {mode: 'comment'});
@@ -259,7 +260,9 @@ export default class CommentForm extends React.Component {
                   { this.state.errorMessage &&
                     <span className="text-danger text-right mr-2">{this.state.errorMessage}</span>
                   }
-                  <SlackNotification crowi={this.props.crowi} pageId={this.props.pageId} pagePath={this.props.pagePath} ref={(slackRef) => {this.slackRef = slackRef}} />
+                  { this.state.hasSlackConfig &&
+                    <SlackNotification crowi={this.props.crowi} pageId={this.props.pageId} pagePath={this.props.pagePath} ref={(slackRef) => {this.slackRef = slackRef}} />
+                  }
                   <Button type="submit" value="Submit" bsStyle="primary" className="fcbtn btn btn-sm btn-primary btn-outline btn-rounded btn-1b">
                     Comment
                   </Button>
