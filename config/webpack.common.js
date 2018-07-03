@@ -37,6 +37,7 @@ module.exports = (options) => {
       'styles/theme-mono-blue':      './resource/styles/scss/theme/mono-blue.scss',
       'styles/theme-future':         './resource/styles/scss/theme/future.scss',
       'styles/theme-blue-night':     './resource/styles/scss/theme/blue-night.scss',
+      'styles/theme-kibela-like':     './resource/styles/scss/theme/kibela-like.scss',
     }, options.entry || {}),  // Merge with env dependent settings
     output: Object.assign({
       path: helpers.root('public'),
