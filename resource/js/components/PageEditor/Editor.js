@@ -215,7 +215,7 @@ export default class Editor extends AbstractEditor {
     const isMobile = this.props.isMobile;
 
     return <React.Fragment>
-      <div style={flexContainer}>
+      <div style={flexContainer} className="editor">
         <Dropzone
             ref="dropzone"
             disableClick
