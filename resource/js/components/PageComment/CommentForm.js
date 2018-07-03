@@ -92,28 +92,28 @@ export default class CommentForm extends React.Component {
         is_markdown: this.state.isMarkdown,
       },
       slackNotificationForm: {
-        isNotification: this.state.isNotification,
-        notifSlackChannel: this.state.notifSlackChannel,
+        isNotification: this.slackRef.state.isNotification,
+        notifSlackChannel: this.slackRef.state.notifSlackChannel,
       }
     })
-      .then((res) => {
-        if (this.props.onPostComplete != null) {
-          this.props.onPostComplete(res.comment);
-        }
-        this.setState({
-          comment: '',
-          isMarkdown: true,
-          html: '',
-          key: 1,
-          errorMessage: undefined,
-        });
-        // reset value
-        this.refs.editor.setValue('');
-      })
-      .catch(err => {
-        const errorMessage = err.message || 'An unknown error occured when posting comment';
-        this.setState({ errorMessage });
+    .then((res) => {
+      if (this.props.onPostComplete != null) {
+        this.props.onPostComplete(res.comment);
+      }
+      this.setState({
+        comment: '',
+        isMarkdown: true,
+        html: '',
+        key: 1,
+        errorMessage: undefined,
       });
+      // reset value
+      this.refs.editor.setValue('');
+    })
+    .catch(err => {
+      const errorMessage = err.message || 'An unknown error occured when posting comment';
+      this.setState({ errorMessage });
+    });
   }
 
   getCommentHtml() {
@@ -259,7 +259,7 @@ export default class CommentForm extends React.Component {
                   { this.state.errorMessage &&
                     <span className="text-danger text-right mr-2">{this.state.errorMessage}</span>
                   }
-                  <SlackNotification crowi={this.props.crowi} pageId={this.props.pageId} pagePath={this.props.pagePath}/>
+                  <SlackNotification crowi={this.props.crowi} pageId={this.props.pageId} pagePath={this.props.pagePath} ref={(slackRef) => {this.slackRef = slackRef}} />
                   <Button type="submit" value="Submit" bsStyle="primary" className="fcbtn btn btn-sm btn-primary btn-outline btn-rounded btn-1b">
                     Comment
                   </Button>
