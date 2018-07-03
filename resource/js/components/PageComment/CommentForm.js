@@ -41,6 +41,8 @@ export default class CommentForm extends React.Component {
       isUploadableFile,
       errorMessage: undefined,
       hasSlackConfig: config.hasSlackConfig,
+      isNotification: false,
+      notifSlackChannel: '',
     };
 
     this.growiRenderer = new GrowiRenderer(this.props.crowi, this.props.crowiOriginRenderer, {mode: 'comment'});
@@ -52,6 +54,8 @@ export default class CommentForm extends React.Component {
     this.handleSelect = this.handleSelect.bind(this);
     this.apiErrorHandler = this.apiErrorHandler.bind(this);
     this.onUpload = this.onUpload.bind(this);
+    this.onChannelChange = this.onChannelChange.bind(this);
+    this.onSlackOnChange = this.onSlackOnChange.bind(this);
   }
 
   updateState(value) {
@@ -76,6 +80,14 @@ export default class CommentForm extends React.Component {
     this.renderHtml(this.state.comment);
   }
 
+  onSlackOnChange(value) {
+    this.setState({isNotification: value});
+  }
+
+  onChannelChange(value) {
+    this.setState({notifSlackChannel: value});
+  }
+
   /**
    * Load data of comments and rerender <PageComments />
    */
@@ -93,8 +105,8 @@ export default class CommentForm extends React.Component {
         is_markdown: this.state.isMarkdown,
       },
       slackNotificationForm: {
-        isNotification: this.slackRef.state.isNotification,
-        notifSlackChannel: this.slackRef.state.notifSlackChannel,
+        isNotification: this.state.isNotification,
+        notifSlackChannel: this.state.notifSlackChannel,
       }
     })
     .then((res) => {
@@ -261,7 +273,13 @@ export default class CommentForm extends React.Component {
                     <span className="text-danger text-right mr-2">{this.state.errorMessage}</span>
                   }
                   { this.state.hasSlackConfig &&
-                    <SlackNotification crowi={this.props.crowi} pageId={this.props.pageId} pagePath={this.props.pagePath} ref={(slackRef) => {this.slackRef = slackRef}} />
+                    <SlackNotification
+                      crowi={this.props.crowi}
+                      pageId={this.props.pageId}
+                      pagePath={this.props.pagePath}
+                      onSlackOnChange={this.onSlackOnChange}
+                      onChannelChange={this.onChannelChange}
+                    />
                   }
                   <Button type="submit" value="Submit" bsStyle="primary" className="fcbtn btn btn-sm btn-primary btn-outline btn-rounded btn-1b">
                     Comment
