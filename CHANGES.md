@@ -3,6 +3,7 @@ CHANGES
 
 ## 3.1.12-RC
 
+* Feature: Add XSS Settings
 * Fix: Omit unnecessary css link
     * Introduced by 3.1.10
 
