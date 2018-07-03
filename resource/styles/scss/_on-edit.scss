@@ -183,7 +183,7 @@ body.on-edit {
       }
     }
 
-     .btn-open-dropzone {
+    .btn-open-dropzone {
       z-index: 2;
       font-size: small;
       text-align: right;
@@ -192,16 +192,15 @@ body.on-edit {
       border: none;
       border-radius: 0;
       border-top: 1px dotted #ccc;
-
       &:active {
         box-shadow: none;
       }
-
       // hide if screen size is less than smartphone
       @media (max-width: $screen-xs) {
         display: none;
       }
     }
+
   }
   .page-editor-preview-container {
   }
