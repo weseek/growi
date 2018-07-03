@@ -60,13 +60,13 @@ export default class CommentForm extends React.Component {
   updateStateCheckbox(event) {
     const value = event.target.checked;
     const name = event.target.name;
-    if (name === "isMarkdown") {
+    if (name === 'isMarkdown') {
       this.setState({isMarkdown: value});
       // changeMode
       this.refs.editor.setGfmMode(value);
     }
-    if ( name === "slack") {
-      this.setState({isNotification: value})
+    if ( name === 'slack') {
+      this.setState({isNotification: value});
     }
   }
 
