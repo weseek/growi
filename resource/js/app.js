@@ -47,11 +47,13 @@ let pagePath;
 let pageContent = '';
 let markdown = '';
 let pageGrant = null;
+let slackChannels = '';
 if (mainContent !== null) {
   pageId = mainContent.getAttribute('data-page-id');
   pageRevisionId = mainContent.getAttribute('data-page-revision-id');
   pageRevisionCreatedAt = +mainContent.getAttribute('data-page-revision-created');
   pagePath = mainContent.attributes['data-path'].value;
+  slackChannels = mainContent.getAttribute('data-slack-channels');
   const rawText = document.getElementById('raw-text-original');
   if (rawText) {
     pageContent = rawText.innerHTML;
@@ -175,7 +177,14 @@ if (writeCommentElem) {
     }
   };
   ReactDOM.render(
-    <CommentForm crowi={crowi} crowiOriginRenderer={crowiRenderer} pageId={pageId} revisionId={pageRevisionId} pagePath={pagePath} onPostComplete={postCompleteHandler} editorOptions={editorOptions}/>,
+    <CommentForm crowi={crowi}
+      crowiOriginRenderer={crowiRenderer}
+      pageId={pageId}
+      revisionId={pageRevisionId}
+      pagePath={pagePath}
+      onPostComplete={postCompleteHandler}
+      editorOptions={editorOptions}
+      slackChannels = {slackChannels}/>,
     writeCommentElem);
 }
 

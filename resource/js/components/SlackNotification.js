@@ -17,46 +17,22 @@ export default class SlackNotification extends React.Component {
 
     this.state = {
       isNotification: false,
-      notifSlackChannel: '',
+      slackChannels: this.props.slackChannels,
     };
 
-    this.init = this.init.bind(this);
     this.updateState = this.updateState.bind(this);
     this.updateStateCheckbox = this.updateStateCheckbox.bind(this);
   }
 
-  componentWillMount() {
-    const pageId = this.props.pageId;
-
-    if (pageId) {
-      this.init();
-    }
-
-    this.retrieveData = this.retrieveData.bind(this);
-  }
-
-  init() {
-    if (!this.props.pageId) {
-      return ;
-    }
-    this.retrieveData();
-  }
-
-  /**
-   * Load data of comments and store them in state
-   */
-  retrieveData() {
-    // get data (desc order array)
-    this.props.crowi.apiGet('/pages.updatePost', {path: this.props.pagePath})
-    .then(res => {
-      if (res.ok) {
-        this.setState({notifSlackChannel: res.updatePost.join(',')});
-      }
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      slackChannels: nextProps.slackChannels
     });
+    console.log('next props');
   }
 
   updateState(value) {
-    this.setState({notifSlackChannel: value});
+    this.setState({slackChannels: value});
     this.props.onChannelChange(value);
   }
 
@@ -75,7 +51,7 @@ export default class SlackNotification extends React.Component {
             <img id="slack-mark-black" src="/images/icons/slack/mark-monochrome_black.svg" width="18" height="18"/>
             <input className="comment-form-slack" type="checkbox" name="slack" value="1" onChange={this.updateStateCheckbox}/>
           </label>
-          <input className="form-control" type="text" value={this.state.notifSlackChannel} placeholder="slack-channel-name"
+          <input className="form-control" type="text" value={this.state.slackChannels} placeholder="slack-channel-name"
             id="comment-form-slack-channel"
             data-toggle="popover"
             title="Slack通知"
@@ -98,4 +74,5 @@ SlackNotification.propTypes = {
   pagePath: PropTypes.string,
   onChannelChange: PropTypes.func.isRequired,
   onSlackOnChange: PropTypes.func.isRequired,
+  slackChannels: PropTypes.string,
 };

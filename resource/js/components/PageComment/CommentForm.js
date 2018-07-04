@@ -42,7 +42,7 @@ export default class CommentForm extends React.Component {
       errorMessage: undefined,
       hasSlackConfig: config.hasSlackConfig,
       isNotification: false,
-      notifSlackChannel: '',
+      slackChannels: this.props.slackChannels,
     };
 
     this.growiRenderer = new GrowiRenderer(this.props.crowi, this.props.crowiOriginRenderer, {mode: 'comment'});
@@ -65,7 +65,7 @@ export default class CommentForm extends React.Component {
   updateStateCheckbox(event) {
     const value = event.target.checked;
     this.setState({isMarkdown: value});
-      // changeMode
+    // changeMode
     this.refs.editor.setGfmMode(value);
   }
 
@@ -79,7 +79,7 @@ export default class CommentForm extends React.Component {
   }
 
   onChannelChange(value) {
-    this.setState({notifSlackChannel: value});
+    this.setState({slackChannels: value});
   }
 
   /**
@@ -100,7 +100,7 @@ export default class CommentForm extends React.Component {
       },
       slackNotificationForm: {
         isNotification: this.state.isNotification,
-        notifSlackChannel: this.state.notifSlackChannel,
+        slackChannels: this.state.slackChannels,
       }
     })
     .then((res) => {
@@ -273,6 +273,7 @@ export default class CommentForm extends React.Component {
                       pagePath={this.props.pagePath}
                       onSlackOnChange={this.onSlackOnChange}
                       onChannelChange={this.onChannelChange}
+                      slackChannels={this.state.slackChannels}
                     />
                   }
                   <Button type="submit" value="Submit" bsStyle="primary" className="fcbtn btn btn-sm btn-primary btn-outline btn-rounded btn-1b">
@@ -298,6 +299,7 @@ CommentForm.propTypes = {
   revisionId: PropTypes.string,
   pagePath: PropTypes.string,
   editorOptions: PropTypes.object,
+  slackChannels: PropTypes.string,
 };
 CommentForm.defaultProps = {
   editorOptions: {},
