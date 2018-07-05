@@ -8,6 +8,9 @@ export default class CopyButton extends React.Component {
     super(props);
 
     this.showToolTip = this.showToolTip.bind(this);
+
+    // retrieve xss library from window
+    this.xss = window.xss;
   }
 
   showToolTip() {
@@ -27,12 +30,14 @@ export default class CopyButton extends React.Component {
       verticalAlign: 'text-top',
     }, this.props.buttonStyle);
 
+    const text = this.xss.process(this.props.text);
+
     return (
       <span className="btn-copy-container" style={containerStyle}>
         <ClipboardButton className={this.props.buttonClassName}
             button-id={this.props.buttonId} button-data-toggle="tooltip" button-data-container="body" button-title="copied!" button-data-placement="bottom" button-data-trigger="manual"
             button-style={style}
-            data-clipboard-text={this.props.text} onSuccess={this.showToolTip}>
+            data-clipboard-text={text} onSuccess={this.showToolTip}>
 
           <i className={this.props.iconClassName}></i>
         </ClipboardButton>
