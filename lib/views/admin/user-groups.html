@@ -119,7 +119,7 @@
         </thead>
         <tbody>
           {% for sGroup in userGroups %}
-          {% set sGroupDetailPageUrl = '/admin/user-group-detail/' + sGroup.name %}
+          {% set sGroupDetailPageUrl = '/admin/user-group-detail/' + sGroup._id.toString() %}
           <tr>
             <td>
               <img src="{{ sGroup|picture }}" class="picture img-circle" />

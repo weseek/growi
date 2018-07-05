@@ -199,7 +199,7 @@
                   <i class="icon-settings"></i> <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu" role="menu">
-                  <form id="form_removeFromGroup_{{ sUser.id }}" action="/admin/user-group-relation/{{userGroup.name}}/remove-relation/{{ sRelation._id.toString() }}" method="post">
+                  <form id="form_removeFromGroup_{{ sUser.id }}" action="/admin/user-group-relation/{{userGroup._id.toString()}}/remove-relation/{{ sRelation._id.toString() }}" method="post">
                     <input type="hidden" name="_csrf" value="{{ csrf() }}">
                   </form>
                   <li>
