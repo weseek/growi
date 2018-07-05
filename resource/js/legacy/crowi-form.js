@@ -4,14 +4,14 @@ var pagePath= $('#content-main').data('path');
 require('bootstrap-select');
 
 // show/hide
-function FetchPagesUpdatePostAndInsert(path) {
-  $.get('/_api/pages.updatePost', {path: path}, function(res) {
-    if (res.ok) {
-      var $slackChannels = $('#page-form-slack-channel');
-      $slackChannels.val(res.updatePost.join(','));
-    }
-  });
-}
+// function FetchPagesUpdatePostAndInsert(path) {
+//   $.get('/_api/pages.updatePost', {path: path}, function(res) {
+//     if (res.ok) {
+//       var $slackChannels = $('#page-form-slack-channel');
+//       $slackChannels.val(res.updatePost.join(','));
+//     }
+//   });
+// }
 
 var slackConfigured = $('#page-form-setting').data('slack-configured');
 
@@ -29,15 +29,15 @@ if (!pageId) {
 $('a[data-toggle="tab"][href="#edit-form"]').on('show.bs.tab', function() {
   $('body').addClass('on-edit');
 
-  if (slackConfigured) {
-    var $slackChannels = $('#page-form-slack-channel');
-    var slackChannels = $slackChannels.val();
-    // if slackChannels is empty, then fetch default (admin setting)
-    // if not empty, it means someone specified this setting for the page.
-    if (slackChannels === '') {
-      FetchPagesUpdatePostAndInsert(pagePath);
-    }
-  }
+  // if (slackConfigured) {
+  //   var $slackChannels = $('#page-form-slack-channel');
+  //   var slackChannels = $slackChannels.val();
+  //   // if slackChannels is empty, then fetch default (admin setting)
+  //   // if not empty, it means someone specified this setting for the page.
+  //   if (slackChannels === '') {
+  //     FetchPagesUpdatePostAndInsert(pagePath);
+  //   }
+  // }
 });
 
 $('a[data-toggle="tab"][href="#edit-form"]').on('hide.bs.tab', function() {

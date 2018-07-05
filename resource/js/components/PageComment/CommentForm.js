@@ -41,7 +41,7 @@ export default class CommentForm extends React.Component {
       isUploadableFile,
       errorMessage: undefined,
       hasSlackConfig: config.hasSlackConfig,
-      isNotification: false,
+      isSlackEnabled: false,
       slackChannels: this.props.slackChannels,
     };
 
@@ -75,7 +75,7 @@ export default class CommentForm extends React.Component {
   }
 
   onSlackOnChange(value) {
-    this.setState({isNotification: value});
+    this.setState({isSlackEnabled: value});
   }
 
   onChannelChange(value) {
@@ -99,7 +99,7 @@ export default class CommentForm extends React.Component {
         is_markdown: this.state.isMarkdown,
       },
       slackNotificationForm: {
-        isNotification: this.state.isNotification,
+        isSlackEnabled: this.state.isSlackEnabled,
         slackChannels: this.state.slackChannels,
       }
     })
@@ -113,6 +113,7 @@ export default class CommentForm extends React.Component {
         html: '',
         key: 1,
         errorMessage: undefined,
+        isSlackEnabled: false,
       });
       // reset value
       this.refs.editor.setValue('');
@@ -273,6 +274,7 @@ export default class CommentForm extends React.Component {
                       pagePath={this.props.pagePath}
                       onSlackOnChange={this.onSlackOnChange}
                       onChannelChange={this.onChannelChange}
+                      isSlackEnabled={this.state.isSlackEnabled}
                       slackChannels={this.state.slackChannels}
                     />
                   }

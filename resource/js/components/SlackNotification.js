@@ -16,7 +16,7 @@ export default class SlackNotification extends React.Component {
     super(props);
 
     this.state = {
-      isNotification: false,
+      isSlackEnabled: this.props.isSlackEnabled,
       slackChannels: this.props.slackChannels,
     };
 
@@ -26,9 +26,9 @@ export default class SlackNotification extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     this.setState({
+      isSlackEnabled: nextProps.isSlackEnabled,
       slackChannels: nextProps.slackChannels
     });
-    console.log('next props');
   }
 
   updateState(value) {
@@ -38,7 +38,7 @@ export default class SlackNotification extends React.Component {
 
   updateStateCheckbox(event) {
     const value = event.target.checked;
-    this.setState({isNotification: value});
+    this.setState({isSlackEnabled: value});
     this.props.onSlackOnChange(value);
   }
 
@@ -49,7 +49,7 @@ export default class SlackNotification extends React.Component {
           <label className="input-group-addon">
             <img id="slack-mark-white" src="/images/icons/slack/mark-monochrome_white.svg" width="18" height="18"/>
             <img id="slack-mark-black" src="/images/icons/slack/mark-monochrome_black.svg" width="18" height="18"/>
-            <input className="comment-form-slack" type="checkbox" name="slack" value="1" onChange={this.updateStateCheckbox}/>
+            <input className="comment-form-slack" type="checkbox" name="slack" value="1" checked={this.state.isSlackEnabled} onChange={this.updateStateCheckbox}/>
           </label>
           <input className="form-control" type="text" value={this.state.slackChannels} placeholder="slack-channel-name"
             id="comment-form-slack-channel"
@@ -74,5 +74,6 @@ SlackNotification.propTypes = {
   pagePath: PropTypes.string,
   onChannelChange: PropTypes.func.isRequired,
   onSlackOnChange: PropTypes.func.isRequired,
+  isSlackEnabled: PropTypes.bool,
   slackChannels: PropTypes.string,
 };
