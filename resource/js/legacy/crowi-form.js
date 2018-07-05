@@ -13,7 +13,7 @@ require('bootstrap-select');
 //   });
 // }
 
-var slackConfigured = $('#page-form-setting').data('slack-configured');
+// var slackConfigured = $('#page-form-setting').data('slack-configured');
 
 // for new page
 if (!pageId) {
@@ -21,9 +21,9 @@ if (!pageId) {
     $('#page-warning-modal').modal('show');
   }
 
-  if (slackConfigured) {
-    FetchPagesUpdatePostAndInsert(pagePath);
-  }
+  // if (slackConfigured) {
+  //   FetchPagesUpdatePostAndInsert(pagePath);
+  // }
 }
 
 $('a[data-toggle="tab"][href="#edit-form"]').on('show.bs.tab', function() {
