@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { translate } from 'react-i18next';
 
+import * as entities from 'entities';
+
 import FormGroup from 'react-bootstrap/es/FormGroup';
 import FormControl from 'react-bootstrap/es/FormControl';
 import ListGroup from 'react-bootstrap/es/ListGroup';
@@ -81,7 +83,7 @@ class GrantSelector extends React.Component {
 
   getGroupName() {
     const pageGrantGroup = this.state.pageGrantGroup;
-    return pageGrantGroup ? pageGrantGroup.name : '';
+    return pageGrantGroup ? entities.encodeHTML(pageGrantGroup.name) : '';
   }
 
   /**
