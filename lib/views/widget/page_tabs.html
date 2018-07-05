@@ -12,7 +12,7 @@
 
   {% if !isTrashPage() %}
   <li class="nav-main-left-tab nav-tab-edit {% if req.body.pageForm %}active{% endif %}">
-    <a {% if user %}href="#edit-form" data-toggle="tab"{% endif %} class="edit-button {% if not user %}edit-button-disabled{% endif %}">
+    <a {% if user %}href="#edit" data-toggle="tab"{% endif %} class="edit-button {% if not user %}edit-button-disabled{% endif %}">
       <i class="icon-note"></i> {{ t('Edit') }}
     </a>
   </li>

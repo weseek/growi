@@ -38,13 +38,13 @@ if (!pageId) {
   }
 }
 
-$('a[data-toggle="tab"][href="#edit-form"]').on('show.bs.tab', function() {
+$('a[data-toggle="tab"][href="#edit"]').on('show.bs.tab', function() {
   $('body').addClass('on-edit');
   $('body').addClass('builtin-editor');
   initSlack();
 });
 
-$('a[data-toggle="tab"][href="#edit-form"]').on('hide.bs.tab', function() {
+$('a[data-toggle="tab"][href="#edit"]').on('hide.bs.tab', function() {
   $('body').removeClass('on-edit');
   $('body').removeClass('builtin-editor');
 });

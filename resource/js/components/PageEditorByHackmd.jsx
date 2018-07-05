@@ -24,15 +24,15 @@ export default class PageEditorByHackmd extends React.PureComponent {
     const hackMdUri = envVars.HACKMD_URI;
 
     if (hackMdUri == null || this.props.pageIdOnHackmd == null) {
-      return <React.Fragment></React.Fragment>;
+      return <div className="hackmd-nopage">aaa</div>;
     }
 
     return (
       <HackmdEditor
-          markdown={this.props.markdown}
-          hackMdUri={hackMdUri}
-          pageIdOnHackmd={this.props.pageIdOnHackmd}
-        >
+        markdown={this.props.markdown}
+        hackMdUri={hackMdUri}
+        pageIdOnHackmd={this.props.pageIdOnHackmd}
+      >
       </HackmdEditor>
     );
   }

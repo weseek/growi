@@ -50,7 +50,7 @@ Crowi.appendEditSectionButtons = function(parentElement) {
     // add button
     $(this).append(`
       <span class="revision-head-edit-button">
-        <a href="#edit-form" onClick="Crowi.setCaretLineData(${line})">
+        <a href="#edit" onClick="Crowi.setCaretLineData(${line})">
           <i class="icon-note"></i>
         </a>
       </span>
@@ -147,7 +147,7 @@ Crowi.handleKeyEHandler = (event) => {
     return;
   }
   // show editor
-  $('a[data-toggle="tab"][href="#edit-form"]').tab('show');
+  $('a[data-toggle="tab"][href="#edit"]').tab('show');
   event.preventDefault();
 };
 
@@ -282,7 +282,7 @@ $(function() {
     if (input2 === '') {
       prefix2 = prefix2.slice(0, -1);
     }
-    top.location.href = prefix1 + input1 + prefix2 + input2 + '#edit-form';
+    top.location.href = prefix1 + input1 + prefix2 + input2 + '#edit';
     return false;
   });
 
@@ -294,7 +294,7 @@ $(function() {
     if (name.match(/.+\/$/)) {
       name = name.substr(0, name.length - 1);
     }
-    top.location.href = pagePathUtil.encodePagePath(name) + '#edit-form';
+    top.location.href = pagePathUtil.encodePagePath(name) + '#edit';
     return false;
   });
 
@@ -504,7 +504,7 @@ $(function() {
       var template = $('#' + templateId).html();
 
       crowi.saveDraft(path, template);
-      top.location.href = `${path}#edit-form`;
+      top.location.href = `${path}#edit`;
     });
 
     /*
@@ -824,9 +824,9 @@ $(function() {
       window.location.hash = '#revision-history';
       window.history.replaceState('', 'History', '#revision-history');
     });
-    $('a[data-toggle="tab"][href="#edit-form"]').on('show.bs.tab', function() {
-      window.location.hash = '#edit-form';
-      window.history.replaceState('', 'Edit', '#edit-form');
+    $('a[data-toggle="tab"][href="#edit"]').on('show.bs.tab', function() {
+      window.location.hash = '#edit';
+      window.history.replaceState('', 'Edit', '#edit');
     });
     $('a[data-toggle="tab"][href="#hackmd"]').on('show.bs.tab', function() {
       window.location.hash = '#hackmd';
@@ -842,8 +842,8 @@ $(function() {
     $('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', function() {
       window.history.replaceState('', 'History', '#revision-history');
     });
-    $('a[data-toggle="tab"][href="#edit-form"]').on('show.bs.tab', function() {
-      window.history.replaceState('', 'Edit', '#edit-form');
+    $('a[data-toggle="tab"][href="#edit"]').on('show.bs.tab', function() {
+      window.history.replaceState('', 'Edit', '#edit');
     });
     $('a[data-toggle="tab"][href="#hackmd"]').on('show.bs.tab', function() {
       window.history.replaceState('', 'HackMD', '#hackmd');
@@ -851,14 +851,14 @@ $(function() {
     $('a[data-toggle="tab"][href="#revision-body"]').on('show.bs.tab', function() {
       window.history.replaceState('', '',  location.href.replace(location.hash, ''));
     });
-    // replace all href="#edit-form" link behaviors
-    $(document).on('click', 'a[href="#edit-form"]', function() {
-      window.location.replace('#edit-form');
+    // replace all href="#edit" link behaviors
+    $(document).on('click', 'a[href="#edit"]', function() {
+      window.location.replace('#edit');
     });
   }
 
   // focus to editor when 'shown.bs.tab' event fired
-  $('a[href="#edit-form"]').on('shown.bs.tab', function(e) {
+  $('a[href="#edit"]').on('shown.bs.tab', function(e) {
     Crowi.setCaretLineAndFocusToEditor();
   });
 });
@@ -918,8 +918,8 @@ Crowi.highlightSelectedSection = function(hash) {
 window.addEventListener('load', function(e) {
   // hash on page
   if (location.hash) {
-    if (location.hash == '#edit-form') {
-      $('a[data-toggle="tab"][href="#edit-form"]').tab('show');
+    if (location.hash === '#edit' || location.hash === '#edit-form') {
+      $('a[data-toggle="tab"][href="#edit"]').tab('show');
       // focus
       Crowi.setCaretLineAndFocusToEditor();
     }
@@ -980,8 +980,8 @@ window.addEventListener('hashchange', function(e) {
 
   // hash on page
   if (location.hash) {
-    if (location.hash == '#edit-form') {
-      $('a[data-toggle="tab"][href="#edit-form"]').tab('show');
+    if (location.hash === '#edit') {
+      $('a[data-toggle="tab"][href="#edit"]').tab('show');
     }
     else if (location.hash == '#hackmd') {
       $('a[data-toggle="tab"][href="#hackmd"]').tab('show');

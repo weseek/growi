@@ -151,7 +151,7 @@ body.on-edit {
   }
 
 
-  &.builtin-editor #edit-form {
+  &.builtin-editor .tab-pane#edit {
     @extend %expand-by-flex;
 
     #page-editor {
@@ -369,19 +369,25 @@ body.on-edit {
       }
     }
 
-  } // .builtin-editor #edit-form
+  } // .builtin-editor .tab-pane#edit
 
 
-  &.hackmd #hackmd {
-    @extend %expand-by-flex;
+  &.hackmd {
+    #page-editor-options-selector {
+      display: none;
+    }
 
-    #hackmd-editor,
-    iframe {
-      width: 100vw;
-      min-height: calc(100vh - #{$header-plus-footer});   // for IE11
-      height: calc(100vh - #{$header-plus-footer});
+    .tab-pane#hackmd {
+      @extend %expand-by-flex;
 
-      border: none;
+      #hackmd-editor,
+      .hackmd-nopage, #iframe-hackmd {
+        width: 100vw;
+        min-height: calc(100vh - #{$header-plus-footer});   // for IE11
+        height: calc(100vh - #{$header-plus-footer});
+
+        border: none;
+      }
     }
   }
 
