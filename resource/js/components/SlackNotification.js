@@ -66,8 +66,6 @@ export default class SlackNotification extends React.Component {
   }
 }
 
-
-
 SlackNotification.propTypes = {
   crowi: PropTypes.object.isRequired,
   pageId: PropTypes.string,

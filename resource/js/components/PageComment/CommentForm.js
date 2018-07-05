@@ -291,8 +291,6 @@ export default class CommentForm extends React.Component {
   }
 }
 
-
-
 CommentForm.propTypes = {
   crowi: PropTypes.object.isRequired,
   crowiOriginRenderer: PropTypes.object.isRequired,
