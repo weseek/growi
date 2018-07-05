@@ -4,6 +4,8 @@ import { I18nextProvider } from 'react-i18next';
 
 import i18nFactory from './i18n';
 
+import Xss from '../../lib/util/xss';
+
 import Crowi from './util/Crowi';
 // import CrowiRenderer from './util/CrowiRenderer';
 import GrowiRenderer from './util/GrowiRenderer';
@@ -24,7 +26,7 @@ import SeenUserList     from './components/SeenUserList';
 import RevisionPath     from './components/Page/RevisionPath';
 import RevisionUrl      from './components/Page/RevisionUrl';
 import BookmarkButton   from './components/BookmarkButton';
-import NewPageNameInputter from './components/NewPageNameInputter';
+import NewPageNameInput from './components/NewPageNameInput';
 
 import CustomCssEditor  from './components/Admin/CustomCssEditor';
 import CustomScriptEditor from './components/Admin/CustomScriptEditor';
@@ -38,6 +40,10 @@ if (!window) {
 
 const userlang = $('body').data('userlang');
 const i18n = i18nFactory(userlang);
+
+// setup xss library
+const xss = new Xss();
+window.xss = xss;
 
 const mainContent = document.querySelector('#content-main');
 let pageId = null;
@@ -111,7 +117,7 @@ const componentMappings = {
   'bookmark-button': <BookmarkButton pageId={pageId} crowi={crowi} />,
   'bookmark-button-lg': <BookmarkButton pageId={pageId} crowi={crowi} size="lg" />,
 
-  'page-name-inputter': <NewPageNameInputter crowi={crowi} parentPageName={pagePath} />,
+  'page-name-inputter': <NewPageNameInput crowi={crowi} parentPageName={pagePath} />,
 
 };
 // additional definitions if data exists
