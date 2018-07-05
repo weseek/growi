@@ -8,7 +8,7 @@ const helpers = require('./helpers');
  * Webpack Plugins
  */
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
@@ -28,24 +28,25 @@ module.exports = require('./webpack.common')({
     rules: [
       {
         test: /\.scss$/,
-        use: [
-          MiniCssExtractPlugin.loader,
-          'css-loader',
-          { loader: 'postcss-loader', options: {
-            sourceMap: false,
-            plugins: (loader) => [
-              require('autoprefixer')()
-            ]
-          } },
-          'sass-loader'
-        ],
+        use: ExtractTextPlugin.extract({
+          use: [
+            'css-loader',
+            { loader: 'postcss-loader', options: {
+              sourceMap: false,
+              plugins: (loader) => [
+                require('autoprefixer')()
+              ]
+            } },
+            'sass-loader'
+          ]
+        }),
         include: [helpers.root('resource/styles/scss')]
       }
     ]
   },
   plugins: [
 
-    new MiniCssExtractPlugin({
+    new ExtractTextPlugin({
       filename: '[name].[hash].css',
     }),
 

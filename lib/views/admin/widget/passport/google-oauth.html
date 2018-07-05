@@ -26,6 +26,11 @@
       <label for="settingForm[security:passport-google:clientId]" class="col-xs-3 control-label">{{ t("security_setting.clientID") }}</label>
       <div class="col-xs-6">
         <input class="form-control" type="text" name="settingForm[security:passport-google:clientId]" value="{{ settingForm['security:passport-google:clientId'] || '' }}">
+        <p class="help-block">
+          <small>
+            {{ t("security_setting.Use env var if empty", "OAUTH_GOOGLE_CLIENT_ID") }}
+          </small>
+        </p>
       </div>
     </div>
 
@@ -33,8 +38,28 @@
       <label for="settingForm[security:passport-google:clientSecret]" class="col-xs-3 control-label">{{ t("security_setting.client_secret") }}</label>
       <div class="col-xs-6">
         <input class="form-control" type="text" name="settingForm[security:passport-google:clientSecret]" value="{{ settingForm['security:passport-google:clientSecret'] || '' }}">
+        <p class="help-block">
+          <small>
+            {{ t("security_setting.Use env var if empty", "OAUTH_GOOGLE_CLIENT_SECRET") }}
+          </small>
+        </p>
       </div>
     </div>
+
+    <div class="form-group">
+      <label for="settingForm[security:passport-google:callbackUrl]" class="col-xs-3 control-label">{{ t("security_setting.callback_URL") }}</label>
+      <div class="col-xs-6">
+        <input class="form-control" type="text" name="settingForm[security:passport-google:callbackUrl]" value="{{ settingForm['security:passport-google:callbackUrl'] || '' }}"
+            placeholder="http(s)://${growi.host}/passport/google/callback">
+        <p class="help-block">
+          Input <code>http(s)://${growi.host}/passport/google/callback</code><br>
+          <small>
+            {{ t("security_setting.Use env var if empty", "OAUTH_GOOGLE_CALLBACK_URI") }}
+          </small>
+        </p>
+      </div>
+    </div>
+
     <div class="form-group">
       <div class="col-xs-6 col-xs-offset-3">
         <div class="checkbox checkbox-info">

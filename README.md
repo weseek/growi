@@ -158,13 +158,20 @@ Environment Variables
     * NODE_ENV: `production` OR `development`.
     * PORT: Server port. default: `3000`
     * ELASTICSEARCH_URI: URI to connect to Elasticearch.
-    * REDIS_URI: URI to connect to Redis (to session store).
+    * REDIS_URI: URI to connect to Redis (use it as a session store instead of MongoDB).
     * PLANTUML_URI: URI to connect to [PlantUML](http://plantuml.com/) server.
     * BLOCKDIAG_URI: URI to connect to [blockdiag](http://http://blockdiag.com/) server.
     * PASSWORD_SEED: A password seed used by password hash generator.
     * SECRET_TOKEN: A secret key for verifying the integrity of signed cookies.
     * SESSION_NAME: The name of the session ID cookie to set in the response by Express. default: `connect.sid`
     * FILE_UPLOAD: `aws` (default), `local`, `none`
+* **Option (Overwritable in admin page)**
+    * OAUTH_GOOGLE_CLIENT_ID: Google API client id for OAuth login
+    * OAUTH_GOOGLE_CLIENT_SECRET: Google API client secret for OAuth login
+    * OAUTH_GOOGLE_CALLBACK_URI: Google API callback URI for OAuth login (Set `https://${growi.host}/passport/google/callback`)
+    * OAUTH_GITHUB_CLIENT_ID: GitHub API client id for OAuth login
+    * OAUTH_GITHUB_CLIENT_SECRET: GitHub API client secret for OAuth login
+    * OAUTH_GITHUB_CALLBACK_URI: GitHub API callback URI for OAuth login (Set `https://${growi.host}/passport/github/callback`)
 
 
 Documentation

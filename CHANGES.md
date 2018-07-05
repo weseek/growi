@@ -7,23 +7,48 @@ CHANGES
     * react
     * react-dom
 
-## 3.1.8-RC
+## 3.1.12-RC
+
+* Feature: Add XSS Settings
+* Improvement: Prevent XSS in various situations
+* Improvement: Add overlay styles for pasting file to comment form
+* Fix: Omit unnecessary css link
+    * Introduced by 3.1.10
+* Fix: Invitation mail do not be sent
+
+## 3.1.11
+
+* Fix: OAuth doesn't work in production because callback URL field cannot be specified
+    * Introduced by 3.1.9
+
+## 3.1.10
+
+* Fix: Enter key on react-bootstrap-typeahead doesn't submit
+    * Introduced by 3.1.9
+* Fix: CodeMirror of `/admin/customize` is broken
+    * Introduced by 3.1.9
+
+## 3.1.9
 
 * Feature: Login with Google Account
 * Feature: Login with GitHub Account
 * Feature: Attach files in Comment
 * Improvement: Write comment with CodeMirror Editor
+* Improvement: Post comment with `Ctrl-Enter`
 * Improvement: Place the commented page at the beginning of the list
 * Improvement: Resolve errors on IE11 (Experimental)
 * Support: Migrate to webpack 4 
 * Support: Upgrade libs
+    * eslint
     * react-bootstrap-typeahead
     * react-codemirror2
     * webpack
 
+## 3.1.8 (Missing number)
+
 ## 3.1.7
 
-* Fix: Update hidden input 'pageForm[grant]' when save with Ctrl-S
+* Fix: Update hidden input 'pageForm[grant]' when save with `Ctrl-S`
 * Fix: Show alert message when conflict
 * Fix: `BLOCKDIAG_URI` environment variable doesn't work
 * Fix: Paste in markdown list doesn't work correctly
@@ -62,6 +87,7 @@ CHANGES
 
 
 ## 3.1.4 (Missing number)
+
 
 ## 3.1.3 (Missing number)
 
@@ -125,7 +151,7 @@ CHANGES
 * Fix: Sidebar breaks editor layouts
 * Support: Switch the logger from 'pino' to 'bunyan'
 * Support: Set the alias for 'debug' to the debug function of 'bunyan'
-* Support: Translate /admin/security
+* Support: Translate `/admin/security`
 * Support: Optimize bundles
     * upgrade 'markdown-it-toc-and-anchor-with-slugid' and omit 'uslug'
 * Support: Optimize .eslintrc.js

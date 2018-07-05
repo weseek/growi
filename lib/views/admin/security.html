@@ -84,7 +84,7 @@
           <div class="form-group">
             <label for="settingForm[security:registrationWhiteList]" class="col-xs-3 control-label">{{ t('The whitelist of registration permission E-mail address') }}</label>
             <div class="col-xs-8">
-              <textarea class="form-control" type="textarea" name="settingForm[security:registrationWhiteList]" placeholder="{{ t('security_setting.example') }}: @crowi.wiki">{{ settingForm['security:registrationWhiteList']|join('&#13')|raw }}</textarea>
+              <textarea class="form-control" type="textarea" name="settingForm[security:registrationWhiteList]" placeholder="{{ t('security_setting.example') }}: @growi.org">{{ settingForm['security:registrationWhiteList']|join('&#13')|raw }}</textarea>
               <p class="help-block">{{ t("security_setting.restrict_emails") }}{{ t("security_setting.for_instance") }}<code>@growi.org</code>{{ t("security_setting.only_those") }}<br>
               {{ t("security_setting.insert_single") }}</p>
             </div>
@@ -100,7 +100,17 @@
         </fieldset>
       </form>
 
-      <form action="/_api/admin/security/mechanism" method="post" class="form-horizontal m-t-30" id="mechanismSetting" role="form">
+      <!-- prevent XSS link -->
+      <div class="mt-5">
+        <legend>{{ t('security_setting.xss_prevent_setting') }}</legend>
+        <div class="text-center">
+          <a class="flexbox" style="font-size: large;" href="/admin/markdown/#preventXSS">
+            <i class="fa-fw icon-login"></i> {{ t('security_setting.xss_prevent_setting_link') }}
+          </a>
+        </div>
+       </div>
+
+      <form action="/_api/admin/security/mechanism" method="post" class="form-horizontal mt-5" id="mechanismSetting" role="form">
         <fieldset>
           <legend class="alert-anchor">{{ t('Selecting authentication mechanism') }}</legend>
           <p class="alert alert-info"><b>{{ t("security_setting.note") }}: </b>{{ t("security_setting.require_server_restart_change_auth") }}</p>
@@ -274,7 +284,6 @@
         </div>
 
       </div><!-- /.auth-mechanism-configurations -->
-
     </div>
   </div>
 

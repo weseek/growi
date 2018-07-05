@@ -38,65 +38,187 @@
       {% endif %}
 
       <form action="/admin/markdown/lineBreaksSetting" method="post" class="form-horizontal" id="markdownSettingForm" role="form">
-      <fieldset>
-        <legend>{{ t('Markdown settings') }}</legend>
-        <p class="well">{{ t("markdown_setting.markdown_rendering") }}</p>
+        <fieldset>
+          <legend>{{ t('markdown_setting.line_break_setting') }}</legend>
+          <p class="well">{{ t("markdown_setting.line_break_setting_desc") }}</p>
 
-        <div class="form-group">
-          <label for="markdownSetting[markdown:isEnabledLinebreaks]" class="col-xs-4 control-label">
-            {{ t('markdown_setting.Enable Line Break') }}
-          </label>
-          <div class="col-xs-5">
-            <div class="btn-group btn-toggle" data-toggle="buttons">
-              <label class="btn btn-default btn-rounded btn-outline {% if markdownSetting['markdown:isEnabledLinebreaks'] %}active{% endif %}" data-active-class="primary">
-                <input name="markdownSetting[markdown:isEnabledLinebreaks]" value="true" type="radio"
-                    {% if true === markdownSetting['markdown:isEnabledLinebreaks'] %}checked{% endif %}> ON
-              </label>
-              <label class="btn btn-default btn-rounded btn-outline {% if !markdownSetting['markdown:isEnabledLinebreaks'] %}active{% endif %}" data-active-class="default">
-                <input name="markdownSetting[markdown:isEnabledLinebreaks]" value="false" type="radio"
-                    {% if !markdownSetting['markdown:isEnabledLinebreaks'] %}checked{% endif %}> OFF
-              </label>
+          <div class="form-group">
+            <label for="markdownSetting[markdown:isEnabledLinebreaks]" class="col-xs-4 control-label">
+              {{ t('markdown_setting.Enable Line Break') }}
+            </label>
+            <div class="col-xs-5">
+              <div class="btn-group btn-toggle" data-toggle="buttons">
+                <label class="btn btn-default btn-rounded btn-outline {% if markdownSetting['markdown:isEnabledLinebreaks'] %}active{% endif %}" data-active-class="primary">
+                  <input name="markdownSetting[markdown:isEnabledLinebreaks]" value="true" type="radio"
+                      {% if true === markdownSetting['markdown:isEnabledLinebreaks'] %}checked{% endif %}> ON
+                </label>
+                <label class="btn btn-default btn-rounded btn-outline {% if !markdownSetting['markdown:isEnabledLinebreaks'] %}active{% endif %}" data-active-class="default">
+                  <input name="markdownSetting[markdown:isEnabledLinebreaks]" value="false" type="radio"
+                      {% if !markdownSetting['markdown:isEnabledLinebreaks'] %}checked{% endif %}> OFF
+                </label>
+              </div>
+              <p class="help-block">{{ t("markdown_setting.Enable Line Break desc") }}</p>
             </div>
-            <p class="help-block">{{ t("markdown_setting.Enable Line Break desc") }}</p>
           </div>
-        </div>
 
-        <div class="form-group">
-          <label for="markdownSetting[markdown:isEnabledLinebreaksInComments]" class="col-xs-4 control-label">
-            {{ t("markdown_setting.Enable Line Break for comment") }}
-          </label>
-          <div class="col-xs-5">
-            <div class="btn-group btn-toggle" data-toggle="buttons">
-              <label class="btn btn-default btn-rounded btn-outline {% if markdownSetting['markdown:isEnabledLinebreaksInComments'] %}active{% endif %}" data-active-class="primary">
-                <input name="markdownSetting[markdown:isEnabledLinebreaksInComments]" value="true" type="radio"
-                    {% if true === markdownSetting['markdown:isEnabledLinebreaksInComments'] %}checked{% endif %}> ON
-              </label>
-              <label class="btn btn-default btn-rounded btn-outline {% if !markdownSetting['markdown:isEnabledLinebreaksInComments'] %}active{% endif %}" data-active-class="default">
-                <input name="markdownSetting[markdown:isEnabledLinebreaksInComments]" value="false" type="radio"
-                    {% if !markdownSetting['markdown:isEnabledLinebreaksInComments'] %}checked{% endif %}> OFF
-              </label>
+          <div class="form-group">
+            <label for="markdownSetting[markdown:isEnabledLinebreaksInComments]" class="col-xs-4 control-label">
+              {{ t("markdown_setting.Enable Line Break for comment") }}
+            </label>
+            <div class="col-xs-5">
+              <div class="btn-group btn-toggle" data-toggle="buttons">
+                <label class="btn btn-default btn-rounded btn-outline {% if markdownSetting['markdown:isEnabledLinebreaksInComments'] %}active{% endif %}" data-active-class="primary">
+                  <input name="markdownSetting[markdown:isEnabledLinebreaksInComments]" value="true" type="radio"
+                      {% if true === markdownSetting['markdown:isEnabledLinebreaksInComments'] %}checked{% endif %}> ON
+                </label>
+                <label class="btn btn-default btn-rounded btn-outline {% if !markdownSetting['markdown:isEnabledLinebreaksInComments'] %}active{% endif %}" data-active-class="default">
+                  <input name="markdownSetting[markdown:isEnabledLinebreaksInComments]" value="false" type="radio"
+                      {% if !markdownSetting['markdown:isEnabledLinebreaksInComments'] %}checked{% endif %}> OFF
+                </label>
+              </div>
+              <p class="help-block">{{ t("markdown_setting.Enable Line Break for comment desc") }}</p>
             </div>
-            <p class="help-block">{{ t("markdown_setting.Enable Line Break for comment desc") }}</p>
           </div>
-        </div>
 
-        <div class="form-group">
-          <div class="col-xs-offset-4 col-xs-5">
+          <div class="form-group my-3">
+            <div class="col-xs-offset-4 col-xs-5">
+              <input type="hidden" name="_csrf" value="{{ csrf() }}">
+              <button type="submit" class="btn btn-primary">{{ t("Update") }}</button>
+            </div>
+          </div>
+        </fieldset>
+      </form>
+
+      <form action="/admin/markdown/xss-setting" method="post" class="form-horizontal" id="markdownSettingForm" role="form">
+        {% set nameForIsXssEnabled = "markdownSetting[markdown:xss:isEnabledPrevention]" %}
+        {% set isXssEnabled = markdownSetting['markdown:xss:isEnabledPrevention'] %}
+
+        <legend>{{ t('markdown_setting.XSS_setting') }}</legend>
+        <p class="well">{{ t("markdown_setting.XSS_setting_desc") }}</p>
+
+        <fieldset class="row">
+          <div class="form-group">
+            <label for="markdownSetting[markdown:isEnabledLinebreaks]" class="col-xs-4 control-label">
+              {{ t('markdown_setting.Enable XSS prevention') }}
+            </label>
+            <div class="col-xs-5">
+              <div class="btn-group btn-toggle" data-toggle="buttons">
+                <label class="btn btn-default btn-rounded btn-outline {% if isXssEnabled %}active{% endif %}" data-active-class="primary">
+                  <input name="{{nameForIsXssEnabled}}" value="true" type="radio"
+                      {% if isXssEnabled %}checked{% endif %}> ON
+                </label>
+                <label class="btn btn-default btn-rounded btn-outline {% if !isXssEnabled %}active{% endif %}" data-active-class="default">
+                  <input name="{{nameForIsXssEnabled}}" value="false" type="radio"
+                      {% if !isXssEnabled %}checked{% endif %}> OFF
+                </label>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="form-group row my-3" id="xss-hide-when-disabled" {% if !isXssEnabled %}style="display: none;"{% endif %}>
+          {% set nameForXssOption = "markdownSetting[markdown:xss:option]" %}
+          {% set xssOption = markdownSetting['markdown:xss:option'] %}
+
+          <div class="col-xs-4 radio radio-primary">
+            <input type="radio" id="option1" name="{{nameForXssOption}}" value="1" {% if xssOption === 1 %}checked{% endif %}>
+            <label for="option1">
+              <p class="font-weight-bold">{{ t('markdown_setting.Ignore all tags') }}</p>
+              <div class="m-t-15">
+                  {{ t('markdown_setting.Ignore all tags desc') }}
+              </div>
+            </label>
+          </div>
+
+          <div class="col-xs-4 radio radio-primary">
+            <input type="radio" id="option2" name="{{nameForXssOption}}" value="2" {% if xssOption === 2 %}checked{% endif %}>
+            <label for="option2">
+              <p class="font-weight-bold">{{ t('markdown_setting.Recommended setting') }}</p>
+              <div class="m-t-15">
+                {{ t('markdown_setting.Tag names') }}
+                <textarea class="form-control xss-list" name="recommendedTags" rows="6" cols="40" readonly>{{ recommendedXssWhiteList.tags }}</textarea>
+              </div>
+              <div class="m-t-15">
+                {{ t('markdown_setting.Tag attributes') }}
+                <textarea class="form-control xss-list" name="recommendedAttrs" rows="6" cols="40" readonly>{{ recommendedXssWhiteList.attrs }}</textarea>
+              </div>
+            </label>
+          </div>
+
+          <div class="col-xs-4 radio radio-primary">
+            <input type="radio" id="option3" name="{{nameForXssOption}}" value="3" {% if xssOption === 3 %}checked{% endif %}>
+            <label for="option3">
+              <p class="font-weight-bold">{{ t('markdown_setting.Custom Whitelist') }}</p>
+              <div class="m-t-15">
+                <div class="d-flex justify-content-between">
+                  {{ t('markdown_setting.Tag names') }}
+                  <p id="btn-import-tags" class="btn btn-xs btn-primary">
+                    {{ t('markdown_setting.import_recommended', 'tags') }}
+                  </p>
+                </div>
+                <textarea class="form-control xss-list" type="text" name="markdownSetting[markdown:xss:tagWhiteList]" rows="6" cols="40" placeholder="e.g. iframe, script, video...">{{ markdownSetting['markdown:xss:tagWhiteList'] }}</textarea>
+              </div>
+              <div class="m-t-15">
+                <div class="d-flex justify-content-between">
+                  {{ t('markdown_setting.Tag attributes') }}
+                  <p id="btn-import-attrs" class="btn btn-xs btn-primary">
+                    {{ t('markdown_setting.import_recommended', 'attributes') }}
+                  </p>
+                </div>
+                <textarea class="form-control xss-list" name="markdownSetting[markdown:xss:attrWhiteList]" rows="6" cols="40" placeholder="e.g. src, id, name...">{{ markdownSetting['markdown:xss:attrWhiteList'] }}</textarea>
+              </div>
+            </label>
+          </div>
+
+        </fieldset>
+
+        <div class="form-group row">
+          <div class="col-xs-12 d-flex justify-content-center">
             <input type="hidden" name="_csrf" value="{{ csrf() }}">
             <button type="submit" class="btn btn-primary">{{ t("Update") }}</button>
           </div>
         </div>
-      </fieldset>
-      </form>
 
+      </form>
     </div>
   </div>
 
 </div>
+
+<script>
+  // give a space between items in textarea(',' => ', ')
+  for (var i = 0; i < $('textarea.xss-list').length; i++) {
+    $($('textarea.xss-list')[i]).val($($('textarea.xss-list')[i]).val().replace(/,/g, ', '));
+  };
+
+  $('input[name="markdownSetting[markdown:xss:isEnabledPrevention]"]').change(function() {
+    if ($(this).val() === 'true') {
+      $('#xss-hide-when-disabled').slideDown();
+    }
+    else {
+      $('#xss-hide-when-disabled').slideUp();
+    }
+  });
+
+  $('#btn-import-tags').on('click', () => {
+    var $tagWhiteList = $('textarea[name="markdownSetting[markdown:xss:tagWhiteList]"]');
+    var $recommendedTagList = $('textarea[name="recommendedTags"]');
+    $tagWhiteList.val($recommendedTagList.val());
+  });
+  $('#btn-import-attrs').on('click', () => {
+    var $attrWhiteList = $('textarea[name="markdownSetting[markdown:xss:attrWhiteList]"]');
+    var $recommendedAttrList = $('textarea[name="recommendedAttrs"]');
+    $attrWhiteList.val($recommendedAttrList.val());
+  });
+</script>
 {% endblock content_main %}
 
 {% block content_footer %}
 {% endblock content_footer %}
+
+
+
+
 
 
 

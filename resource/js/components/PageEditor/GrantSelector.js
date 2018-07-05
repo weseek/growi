@@ -43,6 +43,9 @@ class GrantSelector extends React.Component {
       };
     }
 
+    // retrieve xss library from window
+    this.xss = window.xss;
+
     this.showSelectGroupModal = this.showSelectGroupModal.bind(this);
     this.hideSelectGroupModal = this.hideSelectGroupModal.bind(this);
 
@@ -81,7 +84,7 @@ class GrantSelector extends React.Component {
 
   getGroupName() {
     const pageGrantGroup = this.state.pageGrantGroup;
-    return pageGrantGroup ? pageGrantGroup.name : '';
+    return pageGrantGroup ? this.xss.process(pageGrantGroup.name) : '';
   }
 
   /**

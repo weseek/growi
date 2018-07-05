@@ -206,20 +206,23 @@
   },
 
   "modal_shortcuts": {
-      "global": {
-          "title": "Global shortcuts",
-          "Open/Close shortcut help": "Open/Close shortcut help",
-          "Edit Page": "Edit Page",
-          "Create Page": "Create Page"
-      },
-      "editor": {
-          "title": "Editor shortcuts",
-          "Indent": "Indent",
-          "Outdent": "Outdent",
-          "Save Page": "Save Page",
-          "Delete Line": "Delete Line"
-
-              }
+    "global": {
+      "title": "Global shortcuts",
+      "Open/Close shortcut help": "Open/Close shortcut help",
+      "Edit Page": "Edit Page",
+      "Create Page": "Create Page"
+    },
+    "editor": {
+      "title": "Editor shortcuts",
+      "Indent": "Indent",
+      "Outdent": "Outdent",
+      "Save Page": "Save Page",
+      "Delete Line": "Delete Line"
+    },
+    "commentform": {
+      "title": "Comment Form shortcuts",
+      "Post": "Post"
+    }
   },
 
   "template": {
@@ -324,6 +327,9 @@
     "change_redirect_url": "Enter <code>https://${crowi.host}/google/callback</code> <br>(where <code>${crowi.host}</code> is your host name) for \"Authorized redirect URIs\".",
     "clientID": "Client ID",
     "client_secret": "Client Secret",
+    "xss_prevent_setting":"Prevent XSS(Cross Site Scripting)",
+    "xss_prevent_setting_link":"Go to Markdown settings",
+    "callback_URL": "Callback URL",
     "guest_mode": {
       "deny": "Deny Unregistered Users",
       "readonly": "View Only"
@@ -337,6 +343,7 @@
     "optional": "Optional",
     "Treat username matching as identical": "Automatically bind external accounts newly logged in to local accounts when <code>%s</code> match",
     "Treat username matching as identical_warn": "WARNING: Be aware of security because the system treats the same user as a match of <code>%s</code>.",
+    "Use env var if empty": "Use env var <code>%s</code> if empty",
     "ldap": {
       "server_url_detail": "The LDAP URL of the directory service in the format <code>ldap://host:port/DN</code> or <code>ldaps://host:port/DN</code>.",
       "bind_mode": "Binding Mode",
@@ -393,11 +400,22 @@
 	},
 
   "markdown_setting": {
-    "markdown_rendering": "You can change Markdown rendering settings.",
+    "line_break_setting": "Line Break Setting",
+    "line_break_setting_desc": "You can change line break settings.",
     "Enable Line Break": "Enable Line Break",
     "Enable Line Break desc": "Treat line break in the text page as <code>&lt;br&gt;</code> in HTML",
     "Enable Line Break for comment": "Enable Line Break in comment",
-    "Enable Line Break for comment desc": "Treat line break in comment as <code>&lt;br&gt;</code> in HTML"
+    "Enable Line Break for comment desc": "Treat line break in comment as <code>&lt;br&gt;</code> in HTML",
+    "XSS_setting": "Prevent XSS(Cross Site Scripting) Setting",
+    "XSS_setting_desc": "You can change the handling of HTML tags in markdown text.",
+    "Enable XSS prevention": "Enable XSS Prevention",
+    "Ignore all tags": "Ignore All Tags",
+    "Ignore all tags desc": "Stripe all HTML tags and attributes",
+    "Recommended setting": "Recommended Setting",
+    "Custom Whitelist": "Custom Whitelist",
+    "Tag names":"Tag names",
+    "Tag attributes":"Tag attributes",
+    "import_recommended": "Import recommended %s"
   },
 
   "customize_page": {
