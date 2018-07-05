@@ -35,7 +35,7 @@
           <img id="slack-mark-black" src="/images/icons/slack/mark-monochrome_black.svg" width="18" height="18">
           <input class="" type="checkbox" name="pageForm[notify][slack][on]" value="1">
         </label>
-        <input class="form-control" type="text" name="pageForm[notify][slack][channel]" value="{{ slack }}" placeholder="slack-channel-name"
+        <input class="form-control" type="text" name="pageForm[notify][slack][channel]" value="{{ slack|default('') }}" placeholder="slack-channel-name"
           id="page-form-slack-channel"
           data-toggle="popover"
           title="Slack通知"
