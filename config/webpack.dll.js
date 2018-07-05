@@ -12,7 +12,6 @@ module.exports = {
       // Libraries
       'axios',
       'babel-polyfill',
-      'bootstrap-select',
       'browser-bunyan', 'bunyan-format',
       'codemirror', 'react-codemirror2',
       'clipboard',
