@@ -2,8 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { translate } from 'react-i18next';
 
-import * as entities from 'entities';
-
 import FormGroup from 'react-bootstrap/es/FormGroup';
 import FormControl from 'react-bootstrap/es/FormControl';
 import ListGroup from 'react-bootstrap/es/ListGroup';
@@ -45,6 +43,9 @@ class GrantSelector extends React.Component {
       };
     }
 
+    // retrieve xss library from window
+    this.xss = window.xss;
+
     this.showSelectGroupModal = this.showSelectGroupModal.bind(this);
     this.hideSelectGroupModal = this.hideSelectGroupModal.bind(this);
 
@@ -83,7 +84,7 @@ class GrantSelector extends React.Component {
 
   getGroupName() {
     const pageGrantGroup = this.state.pageGrantGroup;
-    return pageGrantGroup ? entities.encodeHTML(pageGrantGroup.name) : '';
+    return pageGrantGroup ? this.xss.process(pageGrantGroup.name) : '';
   }
 
   /**
