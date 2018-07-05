@@ -185,22 +185,9 @@ export default class Editor extends AbstractEditor {
     return className;
   }
 
-  getOverlayStyle() {
-    return {
-      position: 'absolute',
-      zIndex: 4,  // forward than .CodeMirror-gutters
-      top: 0,
-      right: 0,
-      bottom: 0,
-      left: 0,
-    };
-  }
-
   renderDropzoneOverlay() {
-    const overlayStyle = this.getOverlayStyle();
-
     return (
-      <div style={overlayStyle} className="overlay">
+      <div className="overlay">
         {this.state.isUploading &&
           <span className="overlay-content">
             <div className="speeding-wheel d-inline-block"></div>
@@ -221,8 +208,8 @@ export default class Editor extends AbstractEditor {
 
     const isMobile = this.props.isMobile;
 
-    return <React.Fragment>
-      <div style={flexContainer} className="dropzone-container">
+    return (
+      <div style={flexContainer} className="editor-container">
         <Dropzone
             ref="dropzone"
             disableClick
@@ -270,8 +257,7 @@ export default class Editor extends AbstractEditor {
         </button>
 
       </div>
-
-    </React.Fragment>;
+    );
   }
 
 }
