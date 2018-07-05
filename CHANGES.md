@@ -4,8 +4,11 @@ CHANGES
 ## 3.1.12-RC
 
 * Feature: Add XSS Settings
+* Improvement: Prevent XSS in various situations
+* Improvement: Add overlay styles for pasting file to comment form
 * Fix: Omit unnecessary css link
     * Introduced by 3.1.10
+* Fix: Invitation mail do not be sent
 
 ## 3.1.11
 
