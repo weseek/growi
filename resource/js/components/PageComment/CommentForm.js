@@ -268,7 +268,8 @@ export default class CommentForm extends React.Component {
                     <span className="text-danger text-right mr-2">{this.state.errorMessage}</span>
                   }
                   { this.state.hasSlackConfig &&
-                    <SlackNotification
+                    <div className="form-inline d-flex align-items-center">
+                      <SlackNotification
                       crowi={this.props.crowi}
                       pageId={this.props.pageId}
                       pagePath={this.props.pagePath}
@@ -276,7 +277,8 @@ export default class CommentForm extends React.Component {
                       onChannelChange={this.onChannelChange}
                       isSlackEnabled={this.state.isSlackEnabled}
                       slackChannels={this.state.slackChannels}
-                    />
+                      />
+                    </div>
                   }
                   <Button type="submit" value="Submit" bsStyle="primary" className="fcbtn btn btn-sm btn-primary btn-outline btn-rounded btn-1b">
                     Comment

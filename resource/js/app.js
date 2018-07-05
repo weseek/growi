@@ -19,6 +19,7 @@ import PageListSearch   from './components/PageListSearch';
 import PageHistory      from './components/PageHistory';
 import PageComments     from './components/PageComments';
 import CommentForm from './components/PageComment/CommentForm';
+import SlackNotification from './components/SlackNotification';
 import PageAttachment   from './components/PageAttachment';
 import SeenUserList     from './components/SeenUserList';
 import RevisionPath     from './components/Page/RevisionPath';
@@ -186,6 +187,20 @@ if (writeCommentElem) {
       editorOptions={editorOptions}
       slackChannels = {slackChannels}/>,
     writeCommentElem);
+}
+
+// render slack notification form
+const editorSlackElem = document.getElementById('editor-slack-notification');
+if (editorSlackElem) {
+  ReactDOM.render(
+    <SlackNotification
+      crowi={crowi}
+      pageId={pageId}
+      pagePath={pagePath}
+      isSlackEnabled={false}
+      slackChannels={slackChannels}
+      formName='pageForm' />,
+    editorSlackElem);
 }
 
 // render OptionsSelector
