@@ -42,7 +42,7 @@ export default class CommentForm extends React.Component {
       errorMessage: undefined,
       hasSlackConfig: config.hasSlackConfig,
       isSlackEnabled: false,
-      slackChannels: '',
+      slackChannels: this.props.slackChannels,
     };
 
     this.growiRenderer = new GrowiRenderer(this.props.crowi, this.props.crowiOriginRenderer, {mode: 'comment'});
@@ -56,15 +56,6 @@ export default class CommentForm extends React.Component {
     this.onUpload = this.onUpload.bind(this);
     this.onChannelChange = this.onChannelChange.bind(this);
     this.onSlackOnChange = this.onSlackOnChange.bind(this);
-  }
-
-  componentWillMount() {
-    this.props.crowi.apiGet('/pages.updatePost', {path: this.props.pagePath})
-      .then(res => {
-        if (res.ok) {
-          this.setState({slackChannels: res.updatePost.join(', ')});
-        }
-      });
   }
 
   updateState(value) {
@@ -308,6 +299,7 @@ CommentForm.propTypes = {
   revisionId: PropTypes.string,
   pagePath: PropTypes.string,
   editorOptions: PropTypes.object,
+  slackChannels: PropTypes.string,
 };
 CommentForm.defaultProps = {
   editorOptions: {},
