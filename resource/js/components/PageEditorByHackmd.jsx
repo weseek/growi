@@ -24,7 +24,19 @@ export default class PageEditorByHackmd extends React.PureComponent {
     const hackMdUri = envVars.HACKMD_URI;
 
     if (hackMdUri == null || this.props.pageIdOnHackmd == null) {
-      return <div className="hackmd-nopage">aaa</div>;
+      return (
+        <div className="hackmd-nopage d-flex justify-content-center align-items-center">
+          <div>
+            <p className="text-center">
+              <button className="btn btn-success btn-lg waves-effect waves-light" type="button">
+                <span className="btn-label"><i className="fa fa-file-text-o"></i></span>
+                Start to edit with HackMD
+              </button>
+            </p>
+            <p className="text-center">Clone this page and start to edit with multiple peoples.</p>
+          </div>
+        </div>
+      );
     }
 
     return (
