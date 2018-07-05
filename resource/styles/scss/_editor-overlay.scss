@@ -1,10 +1,16 @@
-.dropzone-container {
+.editor-container {
   .overlay {
     // layout
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-left: 15px;
+
+    position: absolute;
+    z-index: 7;  // forward than .CodeMirror-vscrollbar
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
   }
 
   .overlay-content {
@@ -16,19 +22,6 @@
       font-size: 2.5em;
     }
   }
-
-  .comment-form {
-    .overlay {
-      // style
-      margin-right: 15px;
-      margin-top: 55px;
-      margin-bottom: 55px;
-    }
-    .overlay-content {
-      font-size: 1.8em;
-    }
-  }
-
 
   @mixin overlay-processing-style() {
     .overlay {
@@ -57,6 +50,8 @@
         content: $code;
       }
     }
+
+    position: relative;   // against .overlay position: absolute
 
     // unuploadable or rejected
     &.dropzone-unuploadable, &.dropzone-rejected {
