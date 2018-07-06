@@ -119,12 +119,12 @@
         </thead>
         <tbody>
           {% for sGroup in userGroups %}
-          {% set sGroupDetailPageUrl = '/admin/user-group-detail/' + sGroup.name %}
+          {% set sGroupDetailPageUrl = '/admin/user-group-detail/' + sGroup._id.toString() %}
           <tr>
             <td>
               <img src="{{ sGroup|picture }}" class="picture img-circle" />
             </td>
-            <td><a href="{{ sGroupDetailPageUrl }}">{{ sGroup.name }}</a></td>
+            <td><a href="{{ sGroupDetailPageUrl }}">{{ sGroup.name | preventXss }}</a></td>
             <td><ul class="list-inline">
               {% for relation in userGroupRelations.get(sGroup) %}
               <li class="list-inline-item badge badge-primary">{{relation.relatedUser.username}}</li>
@@ -146,7 +146,7 @@
                   <li>
                     <a href="#"
                         data-user-group-id="{{ sGroup._id.toString() }}"
-                        data-user-group-name="{{ sGroup.name.toString() }}"
+                        data-user-group-name="{{ sGroup.name.toString() | encodeHTML }}"
                         data-target="#admin-delete-user-group-modal"
                         data-toggle="modal">
                       <i class="icon-fw icon-fire text-danger"></i> 削除する
