@@ -1,7 +1,11 @@
 CHANGES
 ========
 
-## 3.1.12-RC
+## 3.1.13-RC
+
+* 
+
+## 3.1.12
 
 * Feature: Add XSS Settings
 * Feature: Notify to Slack when comment
