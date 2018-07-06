@@ -1,7 +1,7 @@
 <div class="row not-found-message-row m-b-20">
   <div class="col-md-12">
     <h2 class="text-muted">
-      <i class="icon-info" aria-hidden="true"></i>
+      <i class="icon-ban" aria-hidden="true"></i>
       Forbidden
     </h2>
   </div>
@@ -12,6 +12,14 @@
   data-path-shortname="{{ path|path2name | preventXss }}"
   data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
   >
+
+  <div class="row row-alerts">
+    <div class="col-xs-12">
+        <p class="alert alert-inverse alert-grant">
+          Browsing of this page is restricted
+        </p>
+    </div>
+  </div>
 
   <ul class="nav nav-tabs hidden-print">
     <li class="nav-main-left-tab active">
