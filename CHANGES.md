@@ -4,6 +4,7 @@ CHANGES
 ## 3.1.12-RC
 
 * Feature: Add XSS Settings
+* Feature: Notify to Slack when comment
 * Improvement: Prevent XSS in various situations
 * Improvement: Add overlay styles for pasting file to comment form
 * Fix: Omit unnecessary css link
