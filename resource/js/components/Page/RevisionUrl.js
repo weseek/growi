@@ -5,15 +5,24 @@ import CopyButton from '../CopyButton';
 
 export default class RevisionUrl extends React.Component {
 
+  constructor(props) {
+    super(props);
+
+    // retrieve xss library from window
+    this.xss = window.xss;
+  }
+
   render() {
     const buttonStyle = {
       fontSize: '1em'
     };
 
+    const pagePath = this.xss.process(this.props.pagePath);
+
     const url = (this.props.pageId == null)
       ? decodeURIComponent(location.href)
       : `${location.origin}/${this.props.pageId}`;
-    const copiedText = this.props.pagePath + '\n' + url;
+    const copiedText = pagePath + '\n' + url;
 
     return (
       <span>
