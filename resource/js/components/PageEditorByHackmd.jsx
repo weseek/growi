@@ -54,7 +54,7 @@ export default class PageEditorByHackmd extends React.PureComponent {
     const params = {
       pageId: this.props.pageId,
     };
-    this.props.crowi.apiPost('/hackmd/integrate', params)
+    this.props.crowi.apiPost('/hackmd.integrate', params)
       .then(res => {
         if (!res.ok) {
           throw new Error(res.error);
@@ -63,6 +63,7 @@ export default class PageEditorByHackmd extends React.PureComponent {
         this.setState({
           isInitialized: true,
           pageIdOnHackmd: res.pageIdOnHackmd,
+          revisionIdHackmdSynced: res.revisionIdHackmdSynced,
         });
       })
       .catch(this.apiErrorHandler)
@@ -71,6 +72,9 @@ export default class PageEditorByHackmd extends React.PureComponent {
       });
   }
 
+  /**
+   * Start to edit w/o any api request
+   */
   resumeToEdit() {
     this.setState({isInitialized: true});
   }
@@ -92,9 +96,9 @@ export default class PageEditorByHackmd extends React.PureComponent {
     if (this.state.isInitialized) {
       return (
         <HackmdEditor
-        markdown={this.props.markdown}
-        hackmdUri={hackmdUri}
-        pageIdOnHackmd={this.state.pageIdOnHackmd}
+          markdown={this.props.markdown}
+          hackmdUri={hackmdUri}
+          pageIdOnHackmd={this.state.pageIdOnHackmd}
         >
         </HackmdEditor>
       );
@@ -112,24 +116,8 @@ export default class PageEditorByHackmd extends React.PureComponent {
         </div>
       );
     }
-    // Page does not have 'pageIdOnHackmd' or revisions are mismatch
-    else if (!isPageExistsOnHackmd || !isRevisionMatch) {
-      content = (
-        <div>
-          <p className="text-center hackmd-status-label"><i className="fa fa-file-text"></i> HackMD is READY!</p>
-          <p className="text-center">
-            <button className="btn btn-info btn-lg waves-effect waves-light" type="button"
-                onClick={() => this.syncAndStartToEdit()} disabled={this.state.isInitializing}>
-              <span className="btn-label"><i className="icon-paper-plane"></i></span>
-              Start to edit with HackMD
-            </button>
-          </p>
-          <p className="text-center">Click to clone page content and start to edit.</p>
-        </div>
-      );
-    }
-    // revision match -> continue
-    else {
+    // page is exists, revisions are match, isHackmdBodyHasDraft is true
+    else if (isPageExistsOnHackmd && isRevisionMatch && this.props.isHackmdBodyHasDraft) {
       content = (
         <div>
           <p className="text-center hackmd-status-label"><i className="fa fa-file-text"></i> HackMD is READY!</p>
@@ -141,6 +129,21 @@ export default class PageEditorByHackmd extends React.PureComponent {
             </button>
           </p>
           <p className="text-center">Click to edit from the previous continuation.</p>
+        </div>
+      );
+    }
+    else {
+      content = (
+        <div>
+          <p className="text-center hackmd-status-label"><i className="fa fa-file-text"></i> HackMD is READY!</p>
+          <p className="text-center">
+            <button className="btn btn-info btn-lg waves-effect waves-light" type="button"
+                onClick={() => this.syncAndStartToEdit()} disabled={this.state.isInitializing}>
+              <span className="btn-label"><i className="icon-paper-plane"></i></span>
+              Start to edit with HackMD
+            </button>
+          </p>
+          <p className="text-center">Click to clone page content and start to edit.</p>
         </div>
       );
     }
@@ -158,6 +161,7 @@ PageEditorByHackmd.propTypes = {
   markdown: PropTypes.string.isRequired,
   pageId: PropTypes.string,
   revisionId: PropTypes.string,
-  revisionIdHackmdSynced: PropTypes.string,
   pageIdOnHackmd: PropTypes.string,
+  revisionIdHackmdSynced: PropTypes.string,
+  isHackmdBodyHasDraft: PropTypes.bool,
 };

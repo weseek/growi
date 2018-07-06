@@ -52,11 +52,11 @@ let pageId = null;
 let pageRevisionId = null;
 let pageRevisionCreatedAt = null;
 let pageRevisionIdHackmdSynced = null;
+let isHackmdBodyHasDraft = false;
 let pageIdOnHackmd = null;
 let pagePath;
 let pageContent = '';
 let markdown = '';
-let pageGrant = null;
 let slackChannels = '';
 if (mainContent !== null) {
   pageId = mainContent.getAttribute('data-page-id');
@@ -64,6 +64,7 @@ if (mainContent !== null) {
   pageRevisionCreatedAt = +mainContent.getAttribute('data-page-revision-created');
   pageRevisionIdHackmdSynced = mainContent.getAttribute('data-page-revision-id-hackmd-synced') || null;
   pageIdOnHackmd = mainContent.getAttribute('data-page-id-on-hackmd') || null;
+  isHackmdBodyHasDraft = !!mainContent.getAttribute('data-page-hackmd-body-has-draft');
   pagePath = mainContent.attributes['data-path'].value;
   slackChannels = mainContent.getAttribute('data-slack-channels');
   const rawText = document.getElementById('raw-text-original');
@@ -282,7 +283,7 @@ if (pageEditorWithHackmdElem) {
   pageEditor = ReactDOM.render(
     <PageEditorByHackmd crowi={crowi}
         pageId={pageId} revisionId={pageRevisionId}
-        revisionIdHackmdSynced={pageRevisionIdHackmdSynced} pageIdOnHackmd={pageIdOnHackmd}
+        pageIdOnHackmd={pageIdOnHackmd} revisionIdHackmdSynced={pageRevisionIdHackmdSynced} isHackmdBodyHasDraft={isHackmdBodyHasDraft}
         markdown={markdown}
         onSaveSuccess={onSaveSuccess} />,
     pageEditorWithHackmdElem
