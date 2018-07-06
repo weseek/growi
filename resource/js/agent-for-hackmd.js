@@ -9,9 +9,9 @@
  *
  * @author Yuki Takei <yuki@weseek.co.jp>
  */
+// import { debounce } from 'throttle-debounce';
 
 /* eslint-disable no-console  */
-console.log('[HackMD] Loading GROWI agent for HackMD...');
 
 const allowedOrigin = '{{origin}}';         // will be replaced by swig
 const styleFilePath = '{{styleFilePath}}';  // will be replaced by swig
@@ -37,25 +37,53 @@ function insertStyle() {
   document.getElementsByTagName('head')[0].appendChild(element);
 }
 
+function postMessageOnSave() {
+  console.log('notifyChanges');
+  window.parent.postMessage('notifyChanges', allowedOrigin);
+}
 
-insertStyle();
+function addEventListenersToCodemirror() {
+  // get CodeMirror instance
+  const editor = window.editor;
+  editor.on('change', (cm, change) => {
+    postMessageOnSave();
+  });
+}
 
-window.addEventListener('message', (event) => {
-  validateOrigin(event);
-
-  const data = JSON.parse(event.data);
-  switch (data.operation) {
-    case 'getValue':
-      console.log('getValue called');
-      break;
-    case 'setValue':
-      console.log('setValue called');
-      break;
+/**
+ * main
+ */
+(function() {
+  // check HackMD is in iframe
+  if (window === window.parent) {
+    console.log('[GROWI] Loading agent for HackMD is not processed because currently not in iframe');
+    return;
   }
-});
 
-window.addEventListener('load', (event) => {
-  console.log('loaded');
-});
+  console.log('[HackMD] Loading GROWI agent for HackMD...');
 
-console.log('[HackMD] GROWI agent for HackMD has successfully loaded.');
+  insertStyle();
+
+  // Add event listeners
+  window.addEventListener('message', (event) => {
+    validateOrigin(event);
+
+    const data = JSON.parse(event.data);
+    switch (data.operation) {
+      case 'getValue':
+        console.log('getValue called');
+        break;
+      case 'setValue':
+        console.log('setValue called');
+        break;
+    }
+  });
+
+  window.addEventListener('load', (event) => {
+    console.log('loaded');
+    addEventListenersToCodemirror();
+  });
+
+  console.log('[HackMD] GROWI agent for HackMD has successfully loaded.');
+}());
+
