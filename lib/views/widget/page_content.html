@@ -35,11 +35,9 @@
       <div class="tab-pane {% if req.body.pageForm %}active{% endif %}" id="edit">
         <div id="page-editor">{% if pageForm.body %}{{ pageForm.body }}{% endif %}</div>
       </div>
-      {# disabled temporary -- 2018.07.06 Yuki Takei
       <div class="tab-pane" id="hackmd">
         <div id="page-editor-with-hackmd"></div>
       </div>
-      #}
       {% include '../_form.html' %}
     {% endif %}
 
