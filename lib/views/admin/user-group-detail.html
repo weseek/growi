@@ -1,11 +1,11 @@
 {% extends '../layout/admin.html' %}
 
-{% block html_title %}{{ customTitle(t('UserGroup management') + '/' + userGroup.name) }}{% endblock %}
+{% block html_title %}{{ customTitle(t('UserGroup management') + '/' + userGroup.name) | preventXss }}{% endblock %}
 
 {% block content_header %}
 <div class="header-wrap">
   <header id="page-header">
-    <h1 class="title" id="">{{ t('UserGroup management') + '/' + userGroup.name }}</h1>
+    <h1 class="title" id="">{{ t('UserGroup management') + '/' + userGroup.name | preventXss }}</h1>
   </header>
 </div>
 {% endblock %}
@@ -199,7 +199,7 @@
                   <i class="icon-settings"></i> <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu" role="menu">
-                  <form id="form_removeFromGroup_{{ sUser.id }}" action="/admin/user-group-relation/{{userGroup.name}}/remove-relation/{{ sRelation._id.toString() }}" method="post">
+                  <form id="form_removeFromGroup_{{ sUser.id }}" action="/admin/user-group-relation/{{userGroup._id.toString()}}/remove-relation/{{ sRelation._id.toString() }}" method="post">
                     <input type="hidden" name="_csrf" value="{{ csrf() }}">
                   </form>
                   <li>

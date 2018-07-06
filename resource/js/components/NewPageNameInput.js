@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import SearchTypeahead from './SearchTypeahead';
 
-export default class NewPageNameInputter extends React.Component {
+export default class NewPageNameInput extends React.Component {
 
   constructor(props) {
 
@@ -59,11 +59,11 @@ export default class NewPageNameInputter extends React.Component {
   }
 }
 
-NewPageNameInputter.propTypes = {
+NewPageNameInput.propTypes = {
   crowi:          PropTypes.object.isRequired,
   parentPageName: PropTypes.string,
 };
 
-NewPageNameInputter.defaultProps = {
+NewPageNameInput.defaultProps = {
   parentPageName: '',
 };

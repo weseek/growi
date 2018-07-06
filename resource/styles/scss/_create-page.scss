@@ -20,6 +20,9 @@
         }
         .create-page-button-container {
           margin-left: 15px;
+          .btn {
+            min-width: 105px;
+          }
         }
 
         // change layout by screen size

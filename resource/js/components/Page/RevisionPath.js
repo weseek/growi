@@ -13,6 +13,9 @@ export default class RevisionPath extends React.Component {
       isListPage: false,
       isLinkToListPage: true,
     };
+
+    // retrieve xss library from window
+    this.xss = window.xss;
   }
 
   componentWillMount() {
@@ -37,7 +40,7 @@ export default class RevisionPath extends React.Component {
     splitted.forEach((pageName) => {
       pages.push({
         pagePath: parentPath + encodeURIComponent(pageName),
-        pageName: pageName,
+        pageName: this.xss.process(pageName),
       });
       parentPath += pageName + '/';
     });
