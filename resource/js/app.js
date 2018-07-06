@@ -21,6 +21,7 @@ import PageListSearch   from './components/PageListSearch';
 import PageHistory      from './components/PageHistory';
 import PageComments     from './components/PageComments';
 import CommentForm from './components/PageComment/CommentForm';
+import SlackNotification from './components/SlackNotification';
 import PageAttachment   from './components/PageAttachment';
 import SeenUserList     from './components/SeenUserList';
 import RevisionPath     from './components/Page/RevisionPath';
@@ -53,11 +54,13 @@ let pagePath;
 let pageContent = '';
 let markdown = '';
 let pageGrant = null;
+let slackChannels = '';
 if (mainContent !== null) {
   pageId = mainContent.getAttribute('data-page-id');
   pageRevisionId = mainContent.getAttribute('data-page-revision-id');
   pageRevisionCreatedAt = +mainContent.getAttribute('data-page-revision-created');
   pagePath = mainContent.attributes['data-path'].value;
+  slackChannels = mainContent.getAttribute('data-slack-channels');
   const rawText = document.getElementById('raw-text-original');
   if (rawText) {
     pageContent = rawText.innerHTML;
@@ -181,8 +184,29 @@ if (writeCommentElem) {
     }
   };
   ReactDOM.render(
-    <CommentForm crowi={crowi} crowiOriginRenderer={crowiRenderer} pageId={pageId} revisionId={pageRevisionId} pagePath={pagePath} onPostComplete={postCompleteHandler} editorOptions={editorOptions}/>,
+    <CommentForm crowi={crowi}
+      crowiOriginRenderer={crowiRenderer}
+      pageId={pageId}
+      revisionId={pageRevisionId}
+      pagePath={pagePath}
+      onPostComplete={postCompleteHandler}
+      editorOptions={editorOptions}
+      slackChannels = {slackChannels}/>,
     writeCommentElem);
+}
+
+// render slack notification form
+const editorSlackElem = document.getElementById('editor-slack-notification');
+if (editorSlackElem) {
+  ReactDOM.render(
+    <SlackNotification
+      crowi={crowi}
+      pageId={pageId}
+      pagePath={pagePath}
+      isSlackEnabled={false}
+      slackChannels={slackChannels}
+      formName='pageForm' />,
+    editorSlackElem);
 }
 
 // render OptionsSelector

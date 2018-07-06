@@ -12,6 +12,7 @@ import GrowiRenderer from '../../util/GrowiRenderer';
 
 import Editor from '../PageEditor/Editor';
 import CommentPreview from '../PageComment/CommentPreview';
+import SlackNotification from '../SlackNotification';
 
 /**
  *
@@ -39,6 +40,9 @@ export default class CommentForm extends React.Component {
       isUploadable,
       isUploadableFile,
       errorMessage: undefined,
+      hasSlackConfig: config.hasSlackConfig,
+      isSlackEnabled: false,
+      slackChannels: this.props.slackChannels,
     };
 
     this.growiRenderer = new GrowiRenderer(this.props.crowi, this.props.crowiOriginRenderer, {mode: 'comment'});
@@ -50,6 +54,8 @@ export default class CommentForm extends React.Component {
     this.handleSelect = this.handleSelect.bind(this);
     this.apiErrorHandler = this.apiErrorHandler.bind(this);
     this.onUpload = this.onUpload.bind(this);
+    this.onChannelChange = this.onChannelChange.bind(this);
+    this.onSlackOnChange = this.onSlackOnChange.bind(this);
   }
 
   updateState(value) {
@@ -68,6 +74,14 @@ export default class CommentForm extends React.Component {
     this.renderHtml(this.state.comment);
   }
 
+  onSlackOnChange(value) {
+    this.setState({isSlackEnabled: value});
+  }
+
+  onChannelChange(value) {
+    this.setState({slackChannels: value});
+  }
+
   /**
    * Load data of comments and rerender <PageComments />
    */
@@ -83,26 +97,31 @@ export default class CommentForm extends React.Component {
         page_id: this.props.pageId,
         revision_id: this.props.revisionId,
         is_markdown: this.state.isMarkdown,
+      },
+      slackNotificationForm: {
+        isSlackEnabled: this.state.isSlackEnabled,
+        slackChannels: this.state.slackChannels,
       }
     })
-      .then((res) => {
-        if (this.props.onPostComplete != null) {
-          this.props.onPostComplete(res.comment);
-        }
-        this.setState({
-          comment: '',
-          isMarkdown: true,
-          html: '',
-          key: 1,
-          errorMessage: undefined,
-        });
-        // reset value
-        this.refs.editor.setValue('');
-      })
-      .catch(err => {
-        const errorMessage = err.message || 'An unknown error occured when posting comment';
-        this.setState({ errorMessage });
+    .then((res) => {
+      if (this.props.onPostComplete != null) {
+        this.props.onPostComplete(res.comment);
+      }
+      this.setState({
+        comment: '',
+        isMarkdown: true,
+        html: '',
+        key: 1,
+        errorMessage: undefined,
+        isSlackEnabled: false,
       });
+      // reset value
+      this.refs.editor.setValue('');
+    })
+    .catch(err => {
+      const errorMessage = err.message || 'An unknown error occured when posting comment';
+      this.setState({ errorMessage });
+    });
   }
 
   getCommentHtml() {
@@ -243,9 +262,23 @@ export default class CommentForm extends React.Component {
                       <input type="checkbox" id="comment-form-is-markdown" name="isMarkdown" checked={this.state.isMarkdown} value="1" onChange={this.updateStateCheckbox} /> Markdown
                     </label>
                   }
+
                   <div style={{flex: 1}}></div>{/* spacer */}
                   { this.state.errorMessage &&
                     <span className="text-danger text-right mr-2">{this.state.errorMessage}</span>
+                  }
+                  { this.state.hasSlackConfig &&
+                    <div className="form-inline d-flex align-items-center">
+                      <SlackNotification
+                      crowi={this.props.crowi}
+                      pageId={this.props.pageId}
+                      pagePath={this.props.pagePath}
+                      onSlackOnChange={this.onSlackOnChange}
+                      onChannelChange={this.onChannelChange}
+                      isSlackEnabled={this.state.isSlackEnabled}
+                      slackChannels={this.state.slackChannels}
+                      />
+                    </div>
                   }
                   <Button type="submit" value="Submit" bsStyle="primary" className="fcbtn btn btn-sm btn-primary btn-outline btn-rounded btn-1b">
                     Comment
@@ -268,6 +301,7 @@ CommentForm.propTypes = {
   revisionId: PropTypes.string,
   pagePath: PropTypes.string,
   editorOptions: PropTypes.object,
+  slackChannels: PropTypes.string,
 };
 CommentForm.defaultProps = {
   editorOptions: {},
