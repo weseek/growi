@@ -24,7 +24,7 @@ export default class HackmdEditor extends React.PureComponent {
   }
 
   render() {
-    const src = `${this.props.hackmdUri}/${this.props.pageIdOnHackmd}`;
+    const src = `${this.props.hackmdUri}/${this.props.pageIdOnHackmd}?both`;
     return (
       <iframe id='iframe-hackmd'
         ref='iframe'
