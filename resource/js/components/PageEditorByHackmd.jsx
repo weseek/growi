@@ -17,7 +17,7 @@ export default class PageEditorByHackmd extends React.PureComponent {
     };
 
     this.getHackmdUri = this.getHackmdUri.bind(this);
-    this.syncAndStartToEdit = this.syncAndStartToEdit.bind(this);
+    this.startToEdit = this.startToEdit.bind(this);
     this.resumeToEdit = this.resumeToEdit.bind(this);
 
     this.apiErrorHandler = this.apiErrorHandler.bind(this);
@@ -31,14 +31,10 @@ export default class PageEditorByHackmd extends React.PureComponent {
     return envVars.HACKMD_URI;
   }
 
-  syncToLatestRevision() {
-
-  }
-
   /**
    * Start integration with HackMD
    */
-  syncAndStartToEdit() {
+  startToEdit() {
     const hackmdUri = this.getHackmdUri();
 
     if (hackmdUri == null) {
@@ -138,7 +134,7 @@ export default class PageEditorByHackmd extends React.PureComponent {
           <p className="text-center hackmd-status-label"><i className="fa fa-file-text"></i> HackMD is READY!</p>
           <p className="text-center">
             <button className="btn btn-info btn-lg waves-effect waves-light" type="button"
-                onClick={() => this.syncAndStartToEdit()} disabled={this.state.isInitializing}>
+                onClick={() => this.startToEdit()} disabled={this.state.isInitializing}>
               <span className="btn-label"><i className="icon-paper-plane"></i></span>
               Start to edit with HackMD
             </button>
