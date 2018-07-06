@@ -1,5 +1,6 @@
 {
   "ignore": [
-    "package.json"
+    "package.json",
+    "public/manifest.json"
   ]
 }
