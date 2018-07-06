@@ -27,6 +27,7 @@ module.exports = (options) => {
       'js/legacy-presentation':   './resource/js/legacy/crowi-presentation',
       'js/plugin':                './resource/js/plugin',
       'js/ie11-polyfill':         './resource/js/ie11-polyfill',
+      'js/agent-for-hackmd':      './resource/js/agent-for-hackmd',
       // styles
       'styles/style':                './resource/styles/scss/style.scss',
       'styles/style-presentation':   './resource/styles/scss/style-presentation.scss',
@@ -37,6 +38,8 @@ module.exports = (options) => {
       'styles/theme-mono-blue':      './resource/styles/scss/theme/mono-blue.scss',
       'styles/theme-future':         './resource/styles/scss/theme/future.scss',
       'styles/theme-blue-night':     './resource/styles/scss/theme/blue-night.scss',
+      // styles for external services
+      'styles/style-hackmd':         './resource/styles/hackmd/style.scss',
     }, options.entry || {}),  // Merge with env dependent settings
     output: Object.assign({
       path: helpers.root('public'),
@@ -51,7 +54,7 @@ module.exports = (options) => {
       'hljs': 'hljs',
     },
     resolve: {
-      extensions: ['.js', '.json'],
+      extensions: ['.js', '.jsx', '.json'],
       modules: [helpers.root('src'), helpers.root('node_modules')],
       alias: {
         '@root': helpers.root('/'),
@@ -86,12 +89,12 @@ module.exports = (options) => {
         {
           test: /\.css$/,
           use: ['style-loader', 'css-loader'],
-          exclude: [helpers.root('resource/styles/scss')]
+          exclude: [helpers.root('resource/styles')]
         },
         {
           test: /\.scss$/,
           use: ['style-loader', 'css-loader', 'sass-loader'],
-          exclude: [helpers.root('resource/styles/scss')]
+          exclude: [helpers.root('resource/styles')]
         },
         /*
          * File loader for supporting images, for example, in CSS files.
@@ -147,7 +150,8 @@ module.exports = (options) => {
           vendors: {
             test: /node_modules/,
             chunks: (chunk) => {
-              return chunk.name != null && !chunk.name.match(/legacy-presentation|ie11-polyfill/);
+              // ignore patterns
+              return chunk.name != null && !chunk.name.match(/legacy-presentation|ie11-polyfill|agent-for-hackmd/);
             },
             name: 'js/vendors',
             // minChunks: 2,
