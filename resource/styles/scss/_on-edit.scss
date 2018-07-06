@@ -19,7 +19,6 @@ body.on-edit {
                       + 1px                     // .page-editor-footer border-top
                       + 40px;                   // .page-editor-footer min-height
   $editor-margin: $header-plus-footer + 22px;   // .btn-open-dropzone height
-  $editor-margin-sm: $header-plus-footer;
 
   // hide unnecessary elements
   .navbar.navbar-static-top,
@@ -134,17 +133,6 @@ body.on-edit {
     min-height: 40px;
     border-top: solid 1px transparent;
 
-    // slack
-    .input-group-slack {
-      .input-group-addon {
-        padding: 2px 8px;
-        line-height: 1em;
-        img, input {
-          vertical-align: middle;
-        }
-      }
-    }
-
     .btn-submit {
       width: 100px;
     }
@@ -171,10 +159,6 @@ body.on-edit {
         .react-codemirror2, .CodeMirror, .CodeMirror-scroll,
         .textarea-editor {
           height: calc(100vh - #{$editor-margin});
-          // less than smartphone
-          @media (max-width: $screen-xs) {
-            height: calc(100vh - #{$editor-margin-sm});
-          }
         }
       }
     }
@@ -306,25 +290,6 @@ body.on-edit {
         @include overlay-processing-style();
       }
 
-      .btn-open-dropzone {
-        z-index: 2;
-        font-size: small;
-        text-align: right;
-        padding-top: 3px;
-        padding-bottom: 0;
-        border: none;
-        border-radius: 0;
-        border-top: 1px dotted #ccc;
-
-        &:active {
-          box-shadow: none;
-        }
-
-        // hide if screen size is less than smartphone
-        @media (max-width: $screen-xs) {
-          display: none;
-        }
-      }
     }
     .page-editor-preview-container {
     }

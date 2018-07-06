@@ -8,6 +8,7 @@
   data-page-revision-id-hackmd-synced="{% if revisionHackmdSynced %}{{ revisionHackmdSynced.toString() }}{% endif %}"
   data-page-id-on-hackmd="{% if pageIdOnHackmd %}{{ pageIdOnHackmd.toString() }}{% endif %}"
   data-page-is-seen="{% if page and page.isSeenUser(user) %}1{% else %}0{% endif %}"
+  data-slack-channels="{{ slack|default('') }}"
   >
 
   {% include 'page_alerts.html' %}
