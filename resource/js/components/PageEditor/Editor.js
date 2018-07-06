@@ -251,9 +251,12 @@ export default class Editor extends AbstractEditor {
           onClick={() => {this.refs.dropzone.open()}}>
 
           <i className="icon-paper-clip" aria-hidden="true"></i>&nbsp;
-          Attach files by dragging &amp; dropping,&nbsp;
-          <span className="btn-link">selecting them</span>,&nbsp;
-          or pasting from the clipboard.
+          Attach files
+          <span className="desc-long">
+            &nbsp;by dragging &amp; dropping,&nbsp;
+            <span className="btn-link">selecting them</span>,&nbsp;
+            or pasting from the clipboard.
+          </span>
         </button>
 
       </div>
