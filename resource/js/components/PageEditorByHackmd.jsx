@@ -11,12 +11,14 @@ export default class PageEditorByHackmd extends React.PureComponent {
     super(props);
 
     this.state = {
+      isInitialized: false,
       isInitializing: false,
       pageIdOnHackmd: this.props.pageIdOnHackmd,
     };
 
     this.getHackmdUri = this.getHackmdUri.bind(this);
-    this.startIntegrationWithHackmd = this.startIntegrationWithHackmd.bind(this);
+    this.syncAndStartToEdit = this.syncAndStartToEdit.bind(this);
+    this.resumeToEdit = this.resumeToEdit.bind(this);
 
     this.apiErrorHandler = this.apiErrorHandler.bind(this);
   }
@@ -36,7 +38,7 @@ export default class PageEditorByHackmd extends React.PureComponent {
   /**
    * Start integration with HackMD
    */
-  startIntegrationWithHackmd() {
+  syncAndStartToEdit() {
     const hackmdUri = this.getHackmdUri();
 
     if (hackmdUri == null) {
@@ -44,7 +46,10 @@ export default class PageEditorByHackmd extends React.PureComponent {
       return;
     }
 
-    this.setState({isInitializing: true});
+    this.setState({
+      isInitialized: false,
+      isInitializing: true,
+    });
 
     const params = {
       pageId: this.props.pageId,
@@ -55,12 +60,19 @@ export default class PageEditorByHackmd extends React.PureComponent {
           throw new Error(res.error);
         }
 
-        this.setState({pageIdOnHackmd: res.pageIdOnHackmd});
+        this.setState({
+          isInitialized: true,
+          pageIdOnHackmd: res.pageIdOnHackmd,
+        });
       })
       .catch(this.apiErrorHandler)
       .then(() => {
         this.setState({isInitializing: false});
       });
+  }
+
+  resumeToEdit() {
+    this.setState({isInitialized: true});
   }
 
   apiErrorHandler(error) {
@@ -77,30 +89,66 @@ export default class PageEditorByHackmd extends React.PureComponent {
   render() {
     const hackmdUri = this.getHackmdUri();
 
-    if (hackmdUri == null || this.state.pageIdOnHackmd == null) {
+    if (this.state.isInitialized) {
       return (
-        <div className="hackmd-nopage d-flex justify-content-center align-items-center">
-          <div>
-            <p className="text-center">
-              <button className="btn btn-success btn-lg waves-effect waves-light" type="button"
-                  onClick={() => this.startIntegrationWithHackmd()} disabled={this.state.isInitializing}>
-                <span className="btn-label"><i className="fa fa-file-text-o"></i></span>
-                Start to edit with HackMD
-              </button>
-            </p>
-            <p className="text-center">Clone this page and start to edit with multiple peoples.</p>
-          </div>
+        <HackmdEditor
+        markdown={this.props.markdown}
+        hackmdUri={hackmdUri}
+        pageIdOnHackmd={this.state.pageIdOnHackmd}
+        >
+        </HackmdEditor>
+      );
+    }
+
+    let content = undefined;
+    const isPageExistsOnHackmd = (this.state.pageIdOnHackmd != null);
+    const isRevisionMatch = (this.props.revisionId === this.props.revisionIdHackmdSynced);
+
+    // HackMD is not setup
+    if (hackmdUri == null) {
+      content = (
+        <div>
+          <p className="text-center hackmd-status-label"><i className="fa fa-file-text"></i> HackMD is not set up.</p>
+        </div>
+      );
+    }
+    // Page does not have 'pageIdOnHackmd' or revisions are mismatch
+    else if (!isPageExistsOnHackmd || !isRevisionMatch) {
+      content = (
+        <div>
+          <p className="text-center hackmd-status-label"><i className="fa fa-file-text"></i> HackMD is READY!</p>
+          <p className="text-center">
+            <button className="btn btn-info btn-lg waves-effect waves-light" type="button"
+                onClick={() => this.syncAndStartToEdit()} disabled={this.state.isInitializing}>
+              <span className="btn-label"><i className="icon-paper-plane"></i></span>
+              Start to edit with HackMD
+            </button>
+          </p>
+          <p className="text-center">Click to clone page content and start to edit.</p>
+        </div>
+      );
+    }
+    // revision match -> continue
+    else {
+      content = (
+        <div>
+          <p className="text-center hackmd-status-label"><i className="fa fa-file-text"></i> HackMD is READY!</p>
+          <p className="text-center">
+            <button className="btn btn-success btn-lg waves-effect waves-light" type="button"
+                onClick={() => this.resumeToEdit()}>
+              <span className="btn-label"><i className="icon-control-end"></i></span>
+              Resume to edit with HackMD
+            </button>
+          </p>
+          <p className="text-center">Click to edit from the previous continuation.</p>
         </div>
       );
     }
 
     return (
-      <HackmdEditor
-        markdown={this.props.markdown}
-        hackmdUri={hackmdUri}
-        pageIdOnHackmd={this.state.pageIdOnHackmd}
-      >
-      </HackmdEditor>
+      <div className="hackmd-preinit d-flex justify-content-center align-items-center">
+        {content}
+      </div>
     );
   }
 }

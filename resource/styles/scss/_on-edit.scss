@@ -346,12 +346,17 @@ body.on-edit {
       @extend %expand-by-flex;
 
       #hackmd-editor,
-      .hackmd-nopage, #iframe-hackmd {
+      .hackmd-preinit, #iframe-hackmd {
         width: 100vw;
         min-height: calc(100vh - #{$header-plus-footer});   // for IE11
         height: calc(100vh - #{$header-plus-footer});
 
         border: none;
+      }
+
+      .hackmd-status-label {
+        font-size: 3em;
+        color: $muted;
       }
     }
 
