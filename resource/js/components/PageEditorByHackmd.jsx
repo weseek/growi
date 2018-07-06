@@ -116,8 +116,8 @@ export default class PageEditorByHackmd extends React.PureComponent {
         </div>
       );
     }
-    // page is exists, revisions are match, isHackmdBodyHasDraft is true
-    else if (isPageExistsOnHackmd && isRevisionMatch && this.props.isHackmdBodyHasDraft) {
+    // page is exists, revisions are match, hasDraftOnHackmd is true
+    else if (isPageExistsOnHackmd && isRevisionMatch && this.props.hasDraftOnHackmd) {
       content = (
         <div>
           <p className="text-center hackmd-status-label"><i className="fa fa-file-text"></i> HackMD is READY!</p>
@@ -163,5 +163,5 @@ PageEditorByHackmd.propTypes = {
   revisionId: PropTypes.string,
   pageIdOnHackmd: PropTypes.string,
   revisionIdHackmdSynced: PropTypes.string,
-  isHackmdBodyHasDraft: PropTypes.bool,
+  hasDraftOnHackmd: PropTypes.bool,
 };
