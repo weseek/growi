@@ -64,6 +64,19 @@
           </fieldset>
         </div>
 
+        <script>
+          $('#template-type').on('change', function() {
+            // enable button
+            $('#link-to-template').removeClass('disabled');
+
+            // modify href
+            const value = $(this).val();
+            const pageName = (value === 'children') ? '_template' : '__template';
+            const link = '{{ page.path || path }}/' + pageName + '#edit-form';
+            $('#link-to-template').attr('href', link);
+          });
+        </script>
+
       </div><!-- /.modal-body -->
 
     </div><!-- /.modal-content -->
