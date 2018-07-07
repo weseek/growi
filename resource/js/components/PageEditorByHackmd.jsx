@@ -79,11 +79,16 @@ export default class PageEditorByHackmd extends React.PureComponent {
   /**
    * onChange event of HackmdEditor handler
    */
-  hackmdEditorChangeHandler() {
+  hackmdEditorChangeHandler(body) {
     const hackmdUri = this.getHackmdUri();
 
     if (hackmdUri == null) {
       // do nothing
+      return;
+    }
+
+    // do nothing if contents are same
+    if (this.props.markdown === body) {
       return;
     }
 

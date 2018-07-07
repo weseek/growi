@@ -32,17 +32,18 @@ export default class HackmdEditor extends React.PureComponent {
 
       const data = JSON.parse(e.data);
       const operation = data.operation;
+      const body = data.body;
 
       if (operation === 'notifyBodyChanges') {
-        this.notifyBodyChangesHandler();
+        this.notifyBodyChangesHandler(body);
       }
     });
   }
 
-  notifyBodyChangesHandler() {
+  notifyBodyChangesHandler(body) {
     // dispatch onChange()
     if (this.props.onChange != null) {
-      this.props.onChange();
+      this.props.onChange(body);
     }
   }
 

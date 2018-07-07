@@ -37,9 +37,12 @@ function insertStyle() {
   document.getElementsByTagName('head')[0].appendChild(element);
 }
 
-function postMessageOnSave() {
-  const data = '{ "operation": "notifyBodyChanges" }';
-  window.parent.postMessage(data, allowedOrigin);
+function postMessageOnSave(body) {
+  const data = {
+    operation: 'notifyBodyChanges',
+    body
+  };
+  window.parent.postMessage(window.JSON.stringify(data), allowedOrigin);
 }
 
 function addEventListenersToCodemirror() {
@@ -50,7 +53,7 @@ function addEventListenersToCodemirror() {
   const debouncedFunc = debounce(1500, postMessageOnSave);
 
   editor.on('change', (cm, change) => {
-    debouncedFunc();
+    debouncedFunc(cm.doc.getValue());
   });
 }
 
