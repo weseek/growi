@@ -19,6 +19,7 @@ export default class PageEditorByHackmd extends React.PureComponent {
     this.getHackmdUri = this.getHackmdUri.bind(this);
     this.startToEdit = this.startToEdit.bind(this);
     this.resumeToEdit = this.resumeToEdit.bind(this);
+    this.hackmdEditorChangeHandler = this.hackmdEditorChangeHandler.bind(this);
 
     this.apiErrorHandler = this.apiErrorHandler.bind(this);
   }
@@ -75,6 +76,29 @@ export default class PageEditorByHackmd extends React.PureComponent {
     this.setState({isInitialized: true});
   }
 
+  /**
+   * onChange event of HackmdEditor handler
+   */
+  hackmdEditorChangeHandler() {
+    const hackmdUri = this.getHackmdUri();
+
+    if (hackmdUri == null) {
+      // do nothing
+      return;
+    }
+
+    const params = {
+      pageId: this.props.pageId,
+    };
+    this.props.crowi.apiPost('/hackmd.saveOnHackmd', params)
+      .then(res => {
+        // do nothing
+      })
+      .catch(err => {
+        // do nothing
+      });
+  }
+
   apiErrorHandler(error) {
     toastr.error(error.message, 'Error occured', {
       closeButton: true,
@@ -95,6 +119,7 @@ export default class PageEditorByHackmd extends React.PureComponent {
           markdown={this.props.markdown}
           hackmdUri={hackmdUri}
           pageIdOnHackmd={this.state.pageIdOnHackmd}
+          onChange={this.hackmdEditorChangeHandler}
         >
         </HackmdEditor>
       );
