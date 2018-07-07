@@ -9,7 +9,7 @@
  *
  * @author Yuki Takei <yuki@weseek.co.jp>
  */
-// import { debounce } from 'throttle-debounce';
+import { debounce } from 'throttle-debounce';
 
 /* eslint-disable no-console  */
 
@@ -38,15 +38,19 @@ function insertStyle() {
 }
 
 function postMessageOnSave() {
-  console.log('notifyChanges');
-  window.parent.postMessage('notifyChanges', allowedOrigin);
+  const data = '{ "operation": "notifyBodyChanges" }';
+  window.parent.postMessage(data, allowedOrigin);
 }
 
 function addEventListenersToCodemirror() {
   // get CodeMirror instance
   const editor = window.editor;
+
+  // generate debounced function
+  const debouncedFunc = debounce(1500, postMessageOnSave);
+
   editor.on('change', (cm, change) => {
-    postMessageOnSave();
+    debouncedFunc();
   });
 }
 
