@@ -21,11 +21,11 @@
   <input type="hidden" name="pageForm[currentRevision]" value="{{ pageForm.currentRevision|default(page.revision._id.toString()) }}">
   <div class="page-editor-footer d-flex flex-row align-items-center justify-content-between">
     <div>
-      <div id="page-editor-options-selector"></div>
+      <div id="page-editor-options-selector" class="hidden-xs"></div>
     </div>
 
     <div class="form-inline d-flex align-items-center" id="page-form-setting">
-      <div id="editor-slack-notification"></div>
+      <div id="editor-slack-notification" class="mr-2"></div>
       <div id="page-grant-selector"></div>
       <input type="hidden" id="page-grant" name="pageForm[grant]" value="{{ page.grant }}">
       <input type="hidden" id="grant-group" name="pageForm[grantUserGroupId]" value="{{ pageRelatedGroup._id.toString() }}">
