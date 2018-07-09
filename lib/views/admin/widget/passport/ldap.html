@@ -121,38 +121,38 @@
 
       <div class="form-group">
         <div class="row">
-        <label for="settingForm[security:passport-ldap:attrMapUsername]" class="col-xs-3 control-label">username</label>
-        <div class="col-xs-6">
-          <input class="form-control" type="text" placeholder="Default: uid"
-              name="settingForm[security:passport-ldap:attrMapUsername]" value="{{ settingForm['security:passport-ldap:attrMapUsername'] || '' }}">
-          <p class="help-block">
-            <small>
-              {{ t("security_setting.ldap.username_detail") }}
-            </small>
-          </p>
-        </div>
-        </div>
-
-        <div class="row">
-        <div class="col-xs-6 col-xs-offset-3">
-          <div class="checkbox checkbox-info">
-            <input type="checkbox" id="cbSameUsernameTreatedAsIdenticalUser" name="settingForm[security:passport-ldap:isSameUsernameTreatedAsIdenticalUser]" value="1"
-                {% if settingForm['security:passport-ldap:isSameUsernameTreatedAsIdenticalUser'] %}checked{% endif %} />
-            <label for="cbSameUsernameTreatedAsIdenticalUser">
-              {{ t("security_setting.Treat username matching as identical", "username") }}
-            </label>
+          <label for="settingForm[security:passport-ldap:attrMapUsername]" class="col-xs-3 control-label">username</label>
+          <div class="col-xs-6">
+            <input class="form-control" type="text" placeholder="Default: uid"
+                name="settingForm[security:passport-ldap:attrMapUsername]" value="{{ settingForm['security:passport-ldap:attrMapUsername'] || '' }}">
             <p class="help-block">
               <small>
-                {{ t("security_setting.Treat username matching as identical_warn", "username") }}
+                {{ t("security_setting.ldap.username_detail") }}
               </small>
             </p>
           </div>
         </div>
+
+        <div class="row">
+          <div class="col-xs-6 col-xs-offset-3">
+            <div class="checkbox checkbox-info">
+              <input type="checkbox" id="cbSameUsernameTreatedAsIdenticalUser" name="settingForm[security:passport-ldap:isSameUsernameTreatedAsIdenticalUser]" value="1"
+                  {% if settingForm['security:passport-ldap:isSameUsernameTreatedAsIdenticalUser'] %}checked{% endif %} />
+              <label for="cbSameUsernameTreatedAsIdenticalUser">
+                {{ t("security_setting.Treat username matching as identical", "username") }}
+              </label>
+              <p class="help-block">
+                <small>
+                  {{ t("security_setting.Treat username matching as identical_warn", "username") }}
+                </small>
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
       <div class="row">
-        <label for="settingForm[security:passport-ldap:attrMapName]" class="col-xs-3 control-label">name</label>
+        <label for="settingForm[security:passport-ldap:attrMapName]" class="col-xs-3 control-label">Name</label>
         <div class="col-xs-6">
           <input class="form-control" type="text"
               name="settingForm[security:passport-ldap:attrMapName]" value="{{ settingForm['security:passport-ldap:attrMapName'] || '' }}">
@@ -162,7 +162,20 @@
             </small>
           </p>
         </div>
+      </div>
+
+      <div class="row">
+        <label for="settingForm[security:passport-ldap:attrMapMail]" class="col-xs-3 control-label">Mail</label>
+        <div class="col-xs-6">
+          <input class="form-control" type="text"
+              name="settingForm[security:passport-ldap:attrMapMail]" value="{{ settingForm['security:passport-ldap:attrMapMail'] || '' }}">
+          <p class="help-block">
+            <small>
+              {{ t("security_setting.ldap.mail_detail") }}
+            </small>
+          </p>
         </div>
+      </div>
 
       <h4>{{ t("security_setting.ldap.group_search_filter") }} ({{ t("security_setting.optional") }})</h4>
 
