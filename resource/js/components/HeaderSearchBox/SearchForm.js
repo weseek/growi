@@ -60,7 +60,7 @@ export default class SearchForm extends React.Component {
               crowi={this.crowi}
               onChange={this.onChange}
               emptyLabel={emptyLabel}
-              placeholder="Search ..."
+              placeholder="keyword1-keyword2"
             />
             <InputGroup.Button>
               <Button type="submit" bsStyle="link">
