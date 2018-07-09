@@ -10,7 +10,11 @@ describe('Slack Util', function () {
   var crowi = new (require(ROOT_DIR + '/lib/crowi'))(ROOT_DIR, process.env);
   var slack = require(crowi.libDir + '/util/slack')(crowi);
 
-  it('post method exists', function() {
-    expect(slack).to.respondTo('post');
+  it('post comment method exists', function() {
+    expect(slack).to.respondTo('postComment');
+  });
+
+  it('post page method exists', function() {
+    expect(slack).to.respondTo('postPage');
   });
 });

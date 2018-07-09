@@ -1,4 +1,24 @@
+body:not(.on-edit) {
+  // hide #page-form
+  #page-form {
+    display: none;
+  }
+}
+
 body.on-edit {
+
+  %expand-by-flex {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  // calculate margin
+  $header-plus-footer: 2px                      // .main padding-top
+                      + 42px                    // .nav height
+                      + 1px                     // .page-editor-footer border-top
+                      + 40px;                   // .page-editor-footer min-height
+  $editor-margin: $header-plus-footer + 22px;   // .btn-open-dropzone height
 
   // hide unnecessary elements
   .navbar.navbar-static-top,
@@ -29,15 +49,17 @@ body.on-edit {
     display: none;
   }
 
+  // show only either Edit button or HackMD button
+  &.hackmd .nav-tab-edit {
+    display: none;
+  }
+  &:not(.hackmd) .nav-tab-hackmd {
+    display: none;
+  }
 
   /*****************
    * Expand Editor
    *****************/
-  .expand-by-flex {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-  }
   .container-fluid {
     padding-bottom: 0;
   }
@@ -60,71 +82,8 @@ body.on-edit {
 
     &,
     .content-main,
-    .tab-content,
-    .edit-form,
-    .page-form {
-      @extend .expand-by-flex;
-    }
-
-    .page-form {
-
-      // calculate margin
-      $header-plus-footer: 2px                      // .main padding-top
-                         + 42px                     // .nav height
-                         + 1px                      // .page-editor-footer border-top
-                         + 40px;                    // .page-editor-footer min-height
-      $editor-margin: $header-plus-footer + 22px;   // .btn-open-dropzone height
-      $editor-margin-sm: $header-plus-footer;
-
-      #page-editor {
-        // right(preview)
-        &,
-        .row,
-        .page-editor-preview-container,
-        .page-editor-preview-body {
-          min-height: calc(100vh - #{$header-plus-footer});   // for IE11
-          height: calc(100vh - #{$header-plus-footer});
-        }
-        // left(editor)
-        .page-editor-editor-container {
-          min-height: calc(100vh - #{$header-plus-footer});   // for IE11
-          height: calc(100vh - #{$header-plus-footer});
-
-          .react-codemirror2, .CodeMirror, .CodeMirror-scroll,
-          .textarea-editor {
-            height: calc(100vh - #{$editor-margin});
-            // less than smartphone
-            @media (max-width: $screen-xs) {
-              height: calc(100vh - #{$editor-margin-sm});
-            }
-          }
-        }
-      }
-
-
-      .page-editor-footer {
-        width: 100%;
-        margin: 0;
-        padding: 3px;
-        min-height: 40px;
-        border-top: solid 1px transparent;
-
-        .btn-submit {
-          width: 100px;
-        }
-      }
-
-      // slack
-      .input-group-slack {
-        .input-group-addon {
-          padding: 2px 8px;
-          line-height: 1em;
-          img, input {
-            vertical-align: middle;
-          }
-        }
-      }
-
+    .tab-content {
+      @extend %expand-by-flex;
     }
   }
 
@@ -167,198 +126,239 @@ body.on-edit {
     }
   }
 
-  /*****************
-   * Editor styles
-   *****************/
-  .page-editor-editor-container {
-    border-right: 1px solid transparent;
-    padding-right: 0;
-    // override CodeMirror styles
-    .CodeMirror {
-      .cm-matchhighlight {
-        background-color: cyan;
+  .page-editor-footer {
+    width: 100%;
+    margin: 0;
+    padding: 3px;
+    min-height: 40px;
+    border-top: solid 1px transparent;
+
+    .btn-submit {
+      width: 100px;
+    }
+  }
+
+
+  &.builtin-editor .tab-pane#edit {
+    @extend %expand-by-flex;
+
+    #page-editor {
+      // right(preview)
+      &,
+      .row,
+      .page-editor-preview-container,
+      .page-editor-preview-body {
+        min-height: calc(100vh - #{$header-plus-footer});   // for IE11
+        height: calc(100vh - #{$header-plus-footer});
       }
-      .CodeMirror-selection-highlight-scrollbar {
-        background-color: darkcyan;
+      // left(editor)
+      .page-editor-editor-container {
+        min-height: calc(100vh - #{$header-plus-footer});   // for IE11
+        height: calc(100vh - #{$header-plus-footer});
+
+        .react-codemirror2, .CodeMirror, .CodeMirror-scroll,
+        .textarea-editor {
+          height: calc(100vh - #{$editor-margin});
+        }
       }
     }
 
-    .overlay {
-      // layout
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      // style
-      margin: 0 15px;
-    }
-    .overlay-content {
-      font-size: 2.5em;
-      padding: 0.5em;
-    }
+    /*****************
+    * Editor styles
+    *****************/
+    .page-editor-editor-container {
+      border-right: 1px solid transparent;
+      padding-right: 0;
+      // override CodeMirror styles
+      .CodeMirror {
+        .cm-matchhighlight {
+          background-color: cyan;
+        }
+        .CodeMirror-selection-highlight-scrollbar {
+          background-color: darkcyan;
+        }
+      }
 
-    @mixin overlay-processing-style() {
       .overlay {
-        background: rgba(255,255,255,0.5);
+        // layout
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        // style
+        margin: 0 15px;
       }
       .overlay-content {
-        padding: 0.3em;
-        background: rgba(200,200,200,0.5);
-        color: #444;
-      }
-    }
-    // add icon on cursor
-    .autoformat-markdown-table-activated .CodeMirror-cursor {
-      &:after {
-        font-family: 'FontAwesome';
-        content: '\f0ce';
-      }
-    }
-
-    // for Dropzone
-    .dropzone {
-      @mixin insertSimpleLineIcons($code) {
-        &:before {
-          margin-right: 0.2em;
-          font-family: 'simple-line-icons';
-          content: $code;
-        }
+        font-size: 2.5em;
+        padding: 0.5em;
       }
 
-      // unuploadable or rejected
-      &.dropzone-unuploadable, &.dropzone-rejected {
+      @mixin overlay-processing-style() {
         .overlay {
-          background: rgba(200,200,200,0.8);
+          background: rgba(255,255,255,0.5);
         }
         .overlay-content {
+          padding: 0.3em;
+          background: rgba(200,200,200,0.5);
           color: #444;
         }
       }
-      // uploading
-      &.dropzone-uploading {
+      // add icon on cursor
+      .autoformat-markdown-table-activated .CodeMirror-cursor {
+        &:after {
+          font-family: 'FontAwesome';
+          content: '\f0ce';
+        }
+      }
+
+      // for Dropzone
+      .dropzone {
+        @mixin insertSimpleLineIcons($code) {
+          &:before {
+            margin-right: 0.2em;
+            font-family: 'simple-line-icons';
+            content: $code;
+          }
+        }
+
+        // unuploadable or rejected
+        &.dropzone-unuploadable, &.dropzone-rejected {
+          .overlay {
+            background: rgba(200,200,200,0.8);
+          }
+          .overlay-content {
+            color: #444;
+          }
+        }
+        // uploading
+        &.dropzone-uploading {
+          @include overlay-processing-style();
+        }
+
+        // unuploadable
+        &.dropzone-unuploadable {
+          .overlay-content {
+            // insert content
+            @include insertSimpleLineIcons("\e617");  // icon-exclamation
+            &:after {
+              content: "File uploading is disabled";
+            }
+          }
+        }
+        // uploadable
+        &.dropzone-uploadable {
+          // accepted
+          &.dropzone-accepted:not(.dropzone-rejected) {
+            .overlay {
+              border: 4px dashed #ccc;
+            }
+            .overlay-content {
+              // insert content
+              @include insertSimpleLineIcons("\e084");  // icon-cloud-upload
+              &:after {
+                content: "Drop here to upload";
+              }
+              // style
+              color: #666;
+              background: rgba(200,200,200,0.8);
+            }
+          }
+          // file type mismatch
+          &.dropzone-rejected:not(.dropzone-uploadablefile) .overlay-content {
+            // insert content
+            @include insertSimpleLineIcons("\e032");  // icon-picture
+            &:after {
+              content: "Only an image file is allowed";
+            }
+          }
+          // multiple files
+          &.dropzone-accepted.dropzone-rejected .overlay-content {
+            // insert content
+            @include insertSimpleLineIcons("\e617");  // icon-exclamation
+            &:after {
+              content: "Only 1 file is allowed";
+            }
+          }
+        }
+      } // end of.dropzone
+
+      .textarea-editor {
+        border: none;
+        font-family: monospace;
+      }
+
+      .loading-keymap {
         @include overlay-processing-style();
       }
 
-      // unuploadable
-      &.dropzone-unuploadable {
-        .overlay-content {
-          // insert content
-          @include insertSimpleLineIcons("\e617");  // icon-exclamation
-          &:after {
-            content: "File uploading is disabled";
-          }
-        }
-      }
-      // uploadable
-      &.dropzone-uploadable {
-        // accepted
-        &.dropzone-accepted:not(.dropzone-rejected) {
-          .overlay {
-            border: 4px dashed #ccc;
-          }
-          .overlay-content {
-            // insert content
-            @include insertSimpleLineIcons("\e084");  // icon-cloud-upload
-            &:after {
-              content: "Drop here to upload";
-            }
-            // style
-            color: #666;
-            background: rgba(200,200,200,0.8);
-          }
-        }
-        // file type mismatch
-        &.dropzone-rejected:not(.dropzone-uploadablefile) .overlay-content {
-          // insert content
-          @include insertSimpleLineIcons("\e032");  // icon-picture
-          &:after {
-            content: "Only an image file is allowed";
-          }
-        }
-        // multiple files
-        &.dropzone-accepted.dropzone-rejected .overlay-content {
-          // insert content
-          @include insertSimpleLineIcons("\e617");  // icon-exclamation
-          &:after {
-            content: "Only 1 file is allowed";
-          }
-        }
-      }
-    } // end of.dropzone
-
-    .textarea-editor {
-      border: none;
-      font-family: monospace;
+    }
+    .page-editor-preview-container {
     }
 
-    .loading-keymap {
-      @include overlay-processing-style();
+    .page-editor-preview-body {
+      padding-top: 18px;
+      padding-right: 15px;
+      overflow-y: scroll;
     }
 
-    .btn-open-dropzone {
-      z-index: 2;
-      font-size: small;
-      text-align: right;
-      padding-top: 3px;
-      padding-bottom: 0;
-      border: none;
-      border-radius: 0;
-      border-top: 1px dotted #ccc;
-
-      &:active {
-        box-shadow: none;
+    #page-editor-options-selector {
+      label {
+        margin-right: 0.5em;
       }
 
-      // hide if screen size is less than smartphone
-      @media (max-width: $screen-xs) {
+      // configuration dropdown
+      .configuration-dropdown {
+        .icon-container {
+          display: inline-block;
+          width: 20px;
+        }
+        .dropdown-menu > li > a {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+
+          .menuitem-label {
+            flex: 1;
+            margin-right: 10px;
+          }
+        }
+      }
+
+      @media (max-width: $screen-xs-max) { // {{{ less than smartphone size
         display: none;
       }
     }
-  }
-  .page-editor-preview-container {
-  }
 
-  .page-editor-preview-body {
-    padding-top: 18px;
-    padding-right: 15px;
-    overflow-y: scroll;
-  }
-
-  #page-editor-options-selector {
-    label {
-      margin-right: 0.5em;
-    }
-
-    // configuration dropdown
-    .configuration-dropdown {
-      .icon-container {
-        display: inline-block;
-        width: 20px;
-      }
-      .dropdown-menu > li > a {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-
-        .menuitem-label {
-          flex: 1;
-          margin-right: 10px;
-        }
+    #page-grant-selector {
+      .btn-group {
+        min-width: 150px;
       }
     }
 
-    @media (max-width: $screen-xs-max) { // {{{ less than smartphone size
+  } // .builtin-editor .tab-pane#edit
+
+
+  &.hackmd {
+    #page-editor-options-selector {
       display: none;
     }
-  }
 
-  #page-grant-selector {
-    .btn-group {
-      min-width: 150px;
+    .tab-pane#hackmd {
+      @extend %expand-by-flex;
+
+      #hackmd-editor,
+      .hackmd-nopage, #iframe-hackmd {
+        width: 100vw;
+        min-height: calc(100vh - #{$header-plus-footer});   // for IE11
+        height: calc(100vh - #{$header-plus-footer});
+
+        border: none;
+      }
     }
+
   }
 
+}
 
-} // }}}
 
 /*
  * for creating portal

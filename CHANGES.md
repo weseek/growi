@@ -1,14 +1,36 @@
 CHANGES
 ========
 
-## 3.1.11
+## 3.2.0-RC
+
+* Feature: Simultaneously edit by multiple people with HackMD integration
+* Support: Upgrade libs
+    * react
+    * react-dom
+
+## 3.1.13-RC
 
 * 
 
-## 3.1.10
+## 3.1.12
+
+* Feature: Add XSS Settings
+* Feature: Notify to Slack when comment
+* Improvement: Prevent XSS in various situations
+* Improvement: Show forbidden message when the user accesses to ungranted page
+* Improvement: Add overlay styles for pasting file to comment form
+* Fix: Omit unnecessary css link
+    * Introduced by 3.1.10
+* Fix: Invitation mail do not be sent
+* Fix: Edit template button on New Page modal doesn't work
+
+## 3.1.11
 
 * Fix: OAuth doesn't work in production because callback URL field cannot be specified
     * Introduced by 3.1.9
+
+## 3.1.10
+
 * Fix: Enter key on react-bootstrap-typeahead doesn't submit
     * Introduced by 3.1.9
 * Fix: CodeMirror of `/admin/customize` is broken

@@ -1,0 +1,154 @@
+.editor-container {
+  .overlay {
+    // layout
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    position: absolute;
+    z-index: 7;  // forward than .CodeMirror-vscrollbar
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  }
+
+  .overlay-content {
+    padding: 0.5em;
+  }
+
+  .page-editor-editor-container {
+    .overlay-content {
+      font-size: 2.5em;
+    }
+  }
+
+  @mixin overlay-processing-style() {
+    .overlay {
+      background: rgba(255,255,255,0.5);
+    }
+    .overlay-content {
+      padding: 0.3em;
+      background: rgba(200,200,200,0.5);
+      color: #444;
+    }
+  }
+  // add icon on cursor
+  .autoformat-markdown-table-activated .CodeMirror-cursor {
+    &:after {
+      font-family: 'FontAwesome';
+      content: '\f0ce';
+    }
+  }
+
+  // for Dropzone
+  .dropzone {
+    @mixin insertSimpleLineIcons($code) {
+      &:before {
+        margin-right: 0.2em;
+        font-family: 'simple-line-icons';
+        content: $code;
+      }
+    }
+
+    position: relative;   // against .overlay position: absolute
+
+    // unuploadable or rejected
+    &.dropzone-unuploadable, &.dropzone-rejected {
+      .overlay {
+        background: rgba(200,200,200,0.8);
+      }
+      .overlay-content {
+        color: #444;
+      }
+    }
+    // uploading
+    &.dropzone-uploading {
+      @include overlay-processing-style();
+    }
+
+    // unuploadable
+    &.dropzone-unuploadable {
+      .overlay-content {
+        // insert content
+        @include insertSimpleLineIcons("\e617");  // icon-exclamation
+        &:after {
+          content: "File uploading is disabled";
+        }
+      }
+    }
+    // uploadable
+    &.dropzone-uploadable {
+      // accepted
+      &.dropzone-accepted:not(.dropzone-rejected) {
+        .overlay {
+          border: 4px dashed #ccc;
+        }
+        .overlay-content {
+          // insert content
+          @include insertSimpleLineIcons("\e084");  // icon-cloud-upload
+          &:after {
+            content: "Drop here to upload";
+          }
+          // style
+          color: #666;
+          background: rgba(200,200,200,0.8);
+        }
+      }
+      // file type mismatch
+      &.dropzone-rejected:not(.dropzone-uploadablefile) .overlay-content {
+        // insert content
+        @include insertSimpleLineIcons("\e032");  // icon-picture
+        &:after {
+          content: "Only an image file is allowed";
+        }
+      }
+      // multiple files
+      &.dropzone-accepted.dropzone-rejected .overlay-content {
+        // insert content
+        @include insertSimpleLineIcons("\e617");  // icon-exclamation
+        &:after {
+          content: "Only 1 file is allowed";
+        }
+      }
+    }
+  } // end of.dropzone
+
+  .textarea-editor {
+    border: none;
+    font-family: monospace;
+  }
+
+  .loading-keymap {
+    @include overlay-processing-style();
+  }
+
+  .btn-open-dropzone {
+    z-index: 2;
+    font-size: small;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    border: none;
+    border-radius: 0;
+    border-top: 1px dotted #ccc;
+    &:active {
+      box-shadow: none;
+    }
+  }
+
+}
+
+#page-editor {
+  @media (max-width: $screen-xs) {
+    .desc-long {
+      display: none;
+    }
+  }
+}
+.comment-form {
+  @media (max-width: $screen-sm) {
+    .desc-long {
+      display: none;
+    }
+  }
+}

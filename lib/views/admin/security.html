@@ -100,7 +100,17 @@
         </fieldset>
       </form>
 
-      <form action="/_api/admin/security/mechanism" method="post" class="form-horizontal m-t-30" id="mechanismSetting" role="form">
+      <!-- prevent XSS link -->
+      <div class="mt-5">
+        <legend>{{ t('security_setting.xss_prevent_setting') }}</legend>
+        <div class="text-center">
+          <a class="flexbox" style="font-size: large;" href="/admin/markdown/#preventXSS">
+            <i class="fa-fw icon-login"></i> {{ t('security_setting.xss_prevent_setting_link') }}
+          </a>
+        </div>
+       </div>
+
+      <form action="/_api/admin/security/mechanism" method="post" class="form-horizontal mt-5" id="mechanismSetting" role="form">
         <fieldset>
           <legend class="alert-anchor">{{ t('Selecting authentication mechanism') }}</legend>
           <p class="alert alert-info"><b>{{ t("security_setting.note") }}: </b>{{ t("security_setting.require_server_restart_change_auth") }}</p>
@@ -274,7 +284,6 @@
         </div>
 
       </div><!-- /.auth-mechanism-configurations -->
-
     </div>
   </div>
 

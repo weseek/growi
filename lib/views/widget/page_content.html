@@ -5,7 +5,10 @@
   data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
   data-page-revision-id="{% if revision %}{{ revision._id.toString() }}{% endif %}"
   data-page-revision-created="{% if revision %}{{ revision.createdAt|datetz('U') }}{% endif %}"
+  data-page-revision-id-hackmd-synced="{% if revisionHackmdSynced %}{{ revisionHackmdSynced.toString() }}{% endif %}"
+  data-page-id-on-hackmd="{% if pageIdOnHackmd %}{{ pageIdOnHackmd.toString() }}{% endif %}"
   data-page-is-seen="{% if page and page.isSeenUser(user) %}1{% else %}0{% endif %}"
+  data-slack-channels="{{ slack|default('') }}"
   >
 
   {% include 'page_alerts.html' %}
@@ -15,7 +18,7 @@
   <div class="tab-content">
 
     {% if page %}
-      <script type="text/template" id="raw-text-original">{{ revision.body.toString() | sanitize }}</script>
+      <script type="text/template" id="raw-text-original">{{ revision.body.toString() | encodeHTML }}</script>
 
       {# formatted text #}
       <div class="tab-pane {% if not req.body.pageForm %}active{% endif %}" id="revision-body">
@@ -27,11 +30,17 @@
       </div>
     {% endif %}
 
-    {# edit form #}
     {% if not page.isDeleted() %}
-    <div class="edit-form tab-pane {% if req.body.pageForm %}active{% endif %}" id="edit-form">
+      {# edit form #}
+      <div class="tab-pane {% if req.body.pageForm %}active{% endif %}" id="edit">
+        <div id="page-editor">{% if pageForm.body %}{{ pageForm.body }}{% endif %}</div>
+      </div>
+      {# disabled temporary -- 2018.07.06 Yuki Takei
+      <div class="tab-pane" id="hackmd">
+        <div id="page-editor-with-hackmd"></div>
+      </div>
+      #}
       {% include '../_form.html' %}
-    </div>
     {% endif %}
 
     {# raw revision history #}

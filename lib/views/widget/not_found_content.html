@@ -8,8 +8,8 @@
 </div>
 
 <div id="content-main" class="content-main content-main-not-found page-list"
-  data-path="{{ path }}"
-  data-path-shortname="{{ path|path2name }}"
+  data-path="{{ path | preventXss }}"
+  data-path-shortname="{{ path|path2name | preventXss }}"
   data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
   >
 
@@ -39,9 +39,10 @@
     </div>
 
     {# edit view #}
-    <div class="edit-form tab-pane {% if req.body.pageForm %}active{% endif %}" id="edit-form">
-      {% include '../_form.html' %}
+    <div class="tab-pane {% if req.body.pageForm %}active{% endif %}" id="edit">
+      <div id="page-editor">{% if pageForm.body %}{{ pageForm.body }}{% endif %}</div>
     </div>
+    {% include '../_form.html' %}
 
   </div>
 </div>

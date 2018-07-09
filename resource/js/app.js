@@ -4,6 +4,8 @@ import { I18nextProvider } from 'react-i18next';
 
 import i18nFactory from './i18n';
 
+import Xss from '../../lib/util/xss';
+
 import Crowi from './util/Crowi';
 // import CrowiRenderer from './util/CrowiRenderer';
 import GrowiRenderer from './util/GrowiRenderer';
@@ -14,17 +16,19 @@ import PageEditor       from './components/PageEditor';
 import OptionsSelector  from './components/PageEditor/OptionsSelector';
 import { EditorOptions, PreviewOptions } from './components/PageEditor/OptionsSelector';
 import GrantSelector    from './components/PageEditor/GrantSelector';
+import PageEditorByHackmd from './components/PageEditorByHackmd';
 import Page             from './components/Page';
 import PageListSearch   from './components/PageListSearch';
 import PageHistory      from './components/PageHistory';
 import PageComments     from './components/PageComments';
 import CommentForm from './components/PageComment/CommentForm';
+import SlackNotification from './components/SlackNotification';
 import PageAttachment   from './components/PageAttachment';
 import SeenUserList     from './components/SeenUserList';
 import RevisionPath     from './components/Page/RevisionPath';
 import RevisionUrl      from './components/Page/RevisionUrl';
 import BookmarkButton   from './components/BookmarkButton';
-import NewPageNameInputter from './components/NewPageNameInputter';
+import NewPageNameInput from './components/NewPageNameInput';
 
 import CustomCssEditor  from './components/Admin/CustomCssEditor';
 import CustomScriptEditor from './components/Admin/CustomScriptEditor';
@@ -39,19 +43,29 @@ if (!window) {
 const userlang = $('body').data('userlang');
 const i18n = i18nFactory(userlang);
 
+// setup xss library
+const xss = new Xss();
+window.xss = xss;
+
 const mainContent = document.querySelector('#content-main');
 let pageId = null;
 let pageRevisionId = null;
 let pageRevisionCreatedAt = null;
+let pageRevisionIdHackmdSynced = null;
+let pageIdOnHackmd = null;
 let pagePath;
 let pageContent = '';
 let markdown = '';
 let pageGrant = null;
+let slackChannels = '';
 if (mainContent !== null) {
   pageId = mainContent.getAttribute('data-page-id');
   pageRevisionId = mainContent.getAttribute('data-page-revision-id');
   pageRevisionCreatedAt = +mainContent.getAttribute('data-page-revision-created');
+  pageRevisionIdHackmdSynced = mainContent.getAttribute('data-page-revision-id-hackmd-synced') || null;
+  pageIdOnHackmd = mainContent.getAttribute('data-page-id-on-hackmd') || null;
   pagePath = mainContent.attributes['data-path'].value;
+  slackChannels = mainContent.getAttribute('data-slack-channels');
   const rawText = document.getElementById('raw-text-original');
   if (rawText) {
     pageContent = rawText.innerHTML;
@@ -111,7 +125,7 @@ const componentMappings = {
   'bookmark-button': <BookmarkButton pageId={pageId} crowi={crowi} />,
   'bookmark-button-lg': <BookmarkButton pageId={pageId} crowi={crowi} size="lg" />,
 
-  'page-name-inputter': <NewPageNameInputter crowi={crowi} parentPageName={pagePath} />,
+  'page-name-inputter': <NewPageNameInput crowi={crowi} parentPageName={pagePath} />,
 
 };
 // additional definitions if data exists
@@ -175,8 +189,29 @@ if (writeCommentElem) {
     }
   };
   ReactDOM.render(
-    <CommentForm crowi={crowi} crowiOriginRenderer={crowiRenderer} pageId={pageId} revisionId={pageRevisionId} pagePath={pagePath} onPostComplete={postCompleteHandler} editorOptions={editorOptions}/>,
+    <CommentForm crowi={crowi}
+      crowiOriginRenderer={crowiRenderer}
+      pageId={pageId}
+      revisionId={pageRevisionId}
+      pagePath={pagePath}
+      onPostComplete={postCompleteHandler}
+      editorOptions={editorOptions}
+      slackChannels = {slackChannels}/>,
     writeCommentElem);
+}
+
+// render slack notification form
+const editorSlackElem = document.getElementById('editor-slack-notification');
+if (editorSlackElem) {
+  ReactDOM.render(
+    <SlackNotification
+      crowi={crowi}
+      pageId={pageId}
+      pagePath={pagePath}
+      isSlackEnabled={false}
+      slackChannels={slackChannels}
+      formName='pageForm' />,
+    editorSlackElem);
 }
 
 // render OptionsSelector
@@ -225,6 +260,32 @@ if (pageEditorGrantSelectorElem) {
         onDeterminePageGrantGroupName={updateGrantGroupNameElem} />
     </I18nextProvider>,
     pageEditorGrantSelectorElem
+  );
+}
+
+/*
+ * HackMD Editor
+ */
+// render PageEditorWithHackmd
+const pageEditorWithHackmdElem = document.getElementById('page-editor-with-hackmd');
+if (pageEditorWithHackmdElem) {
+  // create onSave event handler
+  const onSaveSuccess = function(page) {
+    // modify the revision id value to pass checking id when updating
+    crowi.getCrowiForJquery().updatePageForm(page);
+    // re-render Page component if exists
+    if (componentInstances.page != null) {
+      componentInstances.page.setMarkdown(page.revision.body);
+    }
+  };
+
+  pageEditor = ReactDOM.render(
+    <PageEditorByHackmd crowi={crowi}
+        pageId={pageId} revisionId={pageRevisionId}
+        revisionIdHackmdSynced={pageRevisionIdHackmdSynced} pageIdOnHackmd={pageIdOnHackmd}
+        markdown={markdown}
+        onSaveSuccess={onSaveSuccess} />,
+    pageEditorWithHackmdElem
   );
 }
 

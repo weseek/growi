@@ -49,10 +49,12 @@
     <div class="form-group">
       <label for="settingForm[security:passport-github:callbackUrl]" class="col-xs-3 control-label">{{ t("security_setting.callback_URL") }}</label>
       <div class="col-xs-6">
-        <input class="form-control" type="text" name="settingForm[security:passport-github:callbackUrl]" value="{{ settingForm['security:passport-github:callbackUrl'] || '' }}">
+        <input class="form-control" type="text" name="settingForm[security:passport-github:callbackUrl]" value="{{ settingForm['security:passport-github:callbackUrl'] || '' }}"
+            placeholder="http(s)://${growi.host}/passport/github/callback">
         <p class="help-block">
+          Input <code>http(s)://${growi.host}/passport/github/callback</code><br>
           <small>
-            {{ t("security_setting.Use env var if empty", "OAUTH_GITHUB_CALLBACK_URL") }}
+            {{ t("security_setting.Use env var if empty", "OAUTH_GITHUB_CALLBACK_URI") }}
           </small>
         </p>
       </div>

@@ -1,0 +1,5 @@
+{% if !layoutType() || 'crowi' === layoutType() %}
+  {% include '../layout-crowi/forbidden.html' %}
+{% else %}
+  {% include '../layout-growi/forbidden.html' %}
+{% endif %}
