@@ -1,8 +1,13 @@
+{% block html_head_loading_legacy %}
+  <script src="{{ webpack_asset('js/legacy-form.js') }}" defer></script>  {# load legacy-form for using bootstrap-select(.selectpicker) #}
+  {% parent %}
+{% endblock %}
+
 <div class="row not-found-message-row m-b-20">
   <div class="col-md-12">
     <h2 class="text-muted">
-      <i class="icon-info" aria-hidden="true"></i>
-      Page is not found
+      <i class="icon-ban" aria-hidden="true"></i>
+      Forbidden
     </h2>
   </div>
 </div>
@@ -13,20 +18,23 @@
   data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
   >
 
-  {% include 'not_found_tabs.html' %}
+  <div class="row row-alerts">
+    <div class="col-xs-12">
+        <p class="alert alert-inverse alert-grant">
+          <i class="icon-fw icon-lock" aria-hidden="true"></i> Browsing of this page is restricted
+        </p>
+    </div>
+  </div>
+
+  <ul class="nav nav-tabs hidden-print">
+    <li class="nav-main-left-tab active">
+      <a href="#revision-body" data-toggle="tab">
+        <i class="icon-notebook"></i> List
+      </a>
+    </li>
+  </ul>
 
   <div class="tab-content">
-    {% if isEnabledAttachTitleHeader() %}
-    {% if template %}
-    <script type="text/template" id="raw-text-original"># {{ path|path2name }}&NewLine;{{ template }}</script>
-    {% else %}
-    <script type="text/template" id="raw-text-original"># {{ path|path2name }}</script>
-    {% endif %}
-    {% else %}
-    {% if template %}
-    <script type="text/template" id="raw-text-original">{{ template }}</script>
-    {% endif %}
-    {% endif %}
     {# list view #}
     <div class="p-t-10 active tab-pane page-list-container" id="revision-body">
       {% if pages.length == 0 %}
@@ -37,12 +45,6 @@
 
       {% include '../widget/page_list.html' with { pages: pages, pager: pager, viewConfig: viewConfig } %}
     </div>
-
-    {# edit view #}
-    <div class="tab-pane {% if req.body.pageForm %}active{% endif %}" id="edit">
-      <div id="page-editor">{% if pageForm.body %}{{ pageForm.body }}{% endif %}</div>
-    </div>
-    {% include '../_form.html' %}
 
   </div>
 </div>

@@ -122,4 +122,33 @@
   .loading-keymap {
     @include overlay-processing-style();
   }
+
+  .btn-open-dropzone {
+    z-index: 2;
+    font-size: small;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    border: none;
+    border-radius: 0;
+    border-top: 1px dotted #ccc;
+    &:active {
+      box-shadow: none;
+    }
+  }
+
+}
+
+#page-editor {
+  @media (max-width: $screen-xs) {
+    .desc-long {
+      display: none;
+    }
+  }
+}
+.comment-form {
+  @media (max-width: $screen-sm) {
+    .desc-long {
+      display: none;
+    }
+  }
 }

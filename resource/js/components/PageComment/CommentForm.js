@@ -210,6 +210,10 @@ export default class CommentForm extends React.Component {
     });
   }
 
+  renderControls() {
+
+  }
+
   render() {
     const crowi = this.props.crowi;
     const username = crowi.me;
@@ -218,6 +222,13 @@ export default class CommentForm extends React.Component {
     const comment = this.state.comment;
     const commentPreview = this.state.isMarkdown ? this.getCommentHtml(): ReactUtils.nl2br(comment);
     const emojiStrategy = this.props.crowi.getEmojiStrategy();
+
+    const errorMessage = <span className="text-danger text-right mr-2">{this.state.errorMessage}</span>;
+    const submitButton = (
+      <Button type="submit"bsStyle="primary" className="fcbtn btn btn-sm btn-primary btn-outline btn-rounded btn-1b">
+        Comment
+      </Button>
+    );
 
     return (
       <div>
@@ -256,33 +267,35 @@ export default class CommentForm extends React.Component {
                     }
                   </Tabs>
                 </div>
-                <div className="comment-submit d-flex">
-                  { this.state.key == 1 &&
-                    <label>
-                      <input type="checkbox" id="comment-form-is-markdown" name="isMarkdown" checked={this.state.isMarkdown} value="1" onChange={this.updateStateCheckbox} /> Markdown
-                    </label>
-                  }
-
-                  <div style={{flex: 1}}></div>{/* spacer */}
-                  { this.state.errorMessage &&
-                    <span className="text-danger text-right mr-2">{this.state.errorMessage}</span>
-                  }
-                  { this.state.hasSlackConfig &&
-                    <div className="form-inline d-flex align-items-center">
-                      <SlackNotification
-                      crowi={this.props.crowi}
-                      pageId={this.props.pageId}
-                      pagePath={this.props.pagePath}
-                      onSlackOnChange={this.onSlackOnChange}
-                      onChannelChange={this.onChannelChange}
-                      isSlackEnabled={this.state.isSlackEnabled}
-                      slackChannels={this.state.slackChannels}
-                      />
+                <div className="comment-submit">
+                  <div className="d-flex">
+                    { this.state.key == 1 &&
+                      <label style={{flex: 1}}>
+                        <input type="checkbox" id="comment-form-is-markdown" name="isMarkdown" checked={this.state.isMarkdown} value="1" onChange={this.updateStateCheckbox} /> Markdown
+                      </label>
+                    }
+                    <span className="hidden-xs">{ this.state.errorMessage && errorMessage }</span>
+                    { this.state.hasSlackConfig &&
+                      <div className="form-inline align-self-center mr-md-2">
+                        <SlackNotification
+                          crowi={this.props.crowi}
+                          pageId={this.props.pageId}
+                          pagePath={this.props.pagePath}
+                          onSlackOnChange={this.onSlackOnChange}
+                          onChannelChange={this.onChannelChange}
+                          isSlackEnabled={this.state.isSlackEnabled}
+                          slackChannels={this.state.slackChannels}
+                        />
+                      </div>
+                    }
+                    <div className="hidden-xs">{submitButton}</div>
+                  </div>
+                  <div className="visible-xs mt-2">
+                    <div className="d-flex justify-content-end">
+                      { this.state.errorMessage && errorMessage }
+                      <div>{submitButton}</div>
                     </div>
-                  }
-                  <Button type="submit" value="Submit" bsStyle="primary" className="fcbtn btn btn-sm btn-primary btn-outline btn-rounded btn-1b">
-                    Comment
-                  </Button>
+                  </div>
                 </div>
               </div>
             </div>

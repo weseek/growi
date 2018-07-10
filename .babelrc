@@ -1,5 +1,10 @@
 {
-  "plugins": ["lodash"],
+  "plugins": [
+    "lodash",
+    ["transform-runtime", {
+      "regenerator": true
+    }]
+  ],
   "presets": [
     ["env", {
       "targets": {
