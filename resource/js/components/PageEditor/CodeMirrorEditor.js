@@ -150,10 +150,15 @@ export default class CodeMirrorEditor extends AbstractEditor {
    * @inheritDoc
    */
   setGfmMode(bool) {
+    // update state
+    const additionalClassSet = this.state.additionalClassSet;
     this.setState({
       isGfmMode: bool,
       isEnabledEmojiAutoComplete: bool,
+      additionalClassSet,
     });
+
+    // update CodeMirror option
     const mode = bool ? 'gfm' : undefined;
     this.getCodeMirror().setOption('mode', mode);
   }
@@ -425,23 +430,17 @@ export default class CodeMirrorEditor extends AbstractEditor {
     }
   }
 
-  getOverlayStyle() {
-    return {
-      position: 'absolute',
-      zIndex: 4,  // forward than .CodeMirror-gutters
+  renderLoadingKeymapOverlay() {
+    const style = {
       top: 0,
       right: 0,
       bottom: 0,
       left: 0,
     };
-  }
-
-  renderLoadingKeymapOverlay() {
-    const overlayStyle = this.getOverlayStyle();
 
     return this.state.isLoadingKeymap
-      ? <div style={overlayStyle} className="loading-keymap overlay">
-          <span className="overlay-content">
+      ? <div className="overlay overlay-loading-keymap">
+          <span style={style} className="overlay-content">
             <div className="speeding-wheel d-inline-block"></div> Loading Keymap ...
           </span>
         </div>

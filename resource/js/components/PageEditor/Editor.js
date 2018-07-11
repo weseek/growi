@@ -187,7 +187,7 @@ export default class Editor extends AbstractEditor {
 
   renderDropzoneOverlay() {
     return (
-      <div className="overlay">
+      <div className="overlay overlay-dropzone-active">
         {this.state.isUploading &&
           <span className="overlay-content">
             <div className="speeding-wheel d-inline-block"></div>
