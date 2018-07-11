@@ -447,6 +447,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   renderLoadingKeymapOverlay() {
+    // centering
     const style = {
       top: 0,
       right: 0,
