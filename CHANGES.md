@@ -10,7 +10,7 @@ CHANGES
 
 ## 3.1.13-RC
 
-* 
+* Improvement: Add attribute mappings for email to LDAP settings
 
 ## 3.1.12
 
