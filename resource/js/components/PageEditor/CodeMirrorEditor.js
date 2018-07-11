@@ -34,6 +34,7 @@ require('codemirror/addon/fold/foldgutter');
 require('codemirror/addon/fold/foldgutter.css');
 require('codemirror/addon/fold/markdown-fold');
 require('codemirror/addon/fold/brace-fold');
+require('codemirror/addon/display/placeholder');
 require('codemirror/mode/gfm/gfm');
 require('../../util/codemirror/autorefresh.ext');
 
@@ -447,9 +448,10 @@ export default class CodeMirrorEditor extends AbstractEditor {
     const editorOptions = Object.assign(defaultEditorOptions, this.props.editorOptions || {});
 
     return <React.Fragment>
-      <ReactCodeMirror
+           <ReactCodeMirror
         ref="cm"
         className={this.state.additionalClass}
+        placeholder="aaaa"
         editorDidMount={(editor) => {
           // add event handlers
           editor.on('paste', this.pasteHandler);
@@ -512,7 +514,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
       />
 
       { this.renderLoadingKeymapOverlay() }
-
     </React.Fragment>;
   }
 
