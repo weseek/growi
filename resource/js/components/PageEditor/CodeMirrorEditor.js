@@ -19,6 +19,7 @@ window.CodeMirror = require('codemirror');
 
 
 import { UnControlled as ReactCodeMirror } from 'react-codemirror2';
+require('codemirror/addon/display/placeholder');
 require('codemirror/addon/edit/matchbrackets');
 require('codemirror/addon/edit/matchtags');
 require('codemirror/addon/edit/closetag');
@@ -57,6 +58,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       isGfmMode: this.props.isGfmMode,
       isEnabledEmojiAutoComplete: false,
       isLoadingKeymap: false,
+      isCheatsheatShown: this.props.isGfmMode && this.props.value.length === 0,
       additionalClassSet: new Set(),
     };
 
@@ -76,6 +78,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.scrollCursorIntoViewHandler = this.scrollCursorIntoViewHandler.bind(this);
     this.pasteHandler = this.pasteHandler.bind(this);
     this.cursorHandler = this.cursorHandler.bind(this);
+    this.changeHandler = this.changeHandler.bind(this);
 
     this.renderLoadingKeymapOverlay = this.renderLoadingKeymapOverlay.bind(this);
   }
@@ -151,11 +154,9 @@ export default class CodeMirrorEditor extends AbstractEditor {
    */
   setGfmMode(bool) {
     // update state
-    const additionalClassSet = this.state.additionalClassSet;
     this.setState({
       isGfmMode: bool,
       isEnabledEmojiAutoComplete: bool,
-      additionalClassSet,
     });
 
     // update CodeMirror option
@@ -411,6 +412,21 @@ export default class CodeMirrorEditor extends AbstractEditor {
     }
   }
 
+  changeHandler(editor, data, value) {
+    if (this.props.onChange != null) {
+      this.props.onChange(value);
+    }
+
+    // update isCheatsheatShown
+    const isCheatsheatShown = this.state.isGfmMode && value.length === 0;
+    this.setState({isCheatsheatShown});
+
+    // Emoji AutoComplete
+    if (this.state.isEnabledEmojiAutoComplete) {
+      this.emojiAutoCompleteHelper.showHint(editor);
+    }
+  }
+
   /**
    * CodeMirror paste event handler
    * see: https://codemirror.net/doc/manual.html#events
@@ -447,6 +463,22 @@ export default class CodeMirrorEditor extends AbstractEditor {
       : '';
   }
 
+  renderCheatSheatOverlay() {
+    // overlay and centering
+    const style = {
+      right: '2em',
+      bottom: '1em',
+    };
+
+    return (
+      <div className="overlay overlay-gfm-cheatsheat mr-5 mb-2">
+        <span style={style} className="overlay-content">
+          (TBD) Cheat Sheat
+        </span>
+      </div>
+    );
+  }
+
   render() {
     const mode = this.state.isGfmMode ? 'gfm' : undefined;
     const defaultEditorOptions = {
@@ -455,6 +487,8 @@ export default class CodeMirrorEditor extends AbstractEditor {
     };
     const additionalClasses = Array.from(this.state.additionalClassSet).join(' ');
     const editorOptions = Object.assign(defaultEditorOptions, this.props.editorOptions || {});
+
+    const placeholder = this.state.isGfmMode ? 'Input with Markdown..' : 'Input with Plane Text..';
 
     return <React.Fragment>
       <ReactCodeMirror
@@ -476,6 +510,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
           lineWrapping: true,
           autoRefresh: {force: true},   // force option is enabled by autorefresh.ext.js -- Yuki Takei
           autoCloseTags: true,
+          placeholder: placeholder,
           matchBrackets: true,
           matchTags: {bothTags: true},
           // folding
@@ -504,16 +539,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
             this.props.onScroll(data);
           }
         }}
-        onChange={(editor, data, value) => {
-          if (this.props.onChange != null) {
-            this.props.onChange(value);
-          }
-
-          // Emoji AutoComplete
-          if (this.state.isEnabledEmojiAutoComplete) {
-            this.emojiAutoCompleteHelper.showHint(editor);
-          }
-        }}
+        onChange={this.changeHandler}
         onDragEnter={(editor, event) => {
           if (this.props.onDragEnter != null) {
             this.props.onDragEnter(event);
@@ -522,6 +548,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       />
 
       { this.renderLoadingKeymapOverlay() }
+      { this.state.isCheatsheatShown && this.renderCheatSheatOverlay() }
 
     </React.Fragment>;
   }
