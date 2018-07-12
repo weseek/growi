@@ -55,7 +55,7 @@
     <tr class="clickable-row" data-href="{{ detailPageUrl }}" data-updatepost-id="{{ globalNotif._id.toString() }}">
       <td class="unclickable">
         <label class="switch">
-          <input type="checkbox">
+          <input type="checkbox" class="isEnabledToggle">
           <span class="slider round"></span>
         </label>
       </td>
@@ -149,5 +149,14 @@ input:checked + .slider:before {
 <script>
   $(".clickable-row > :not('.unclickable')").click(function(event) {
     window.location = $(event.currentTarget).parent().data("href")
+  });
+
+  $(".isEnabledToggle").on("change", event => {
+    var id = $(event.currentTarget).closest("tr").data("updatepost-id")
+    $.post('/_api/admin/global-notification/toggleIsEnabled?id=' + id, function(res) {
+      if (res.ok) {
+        // alert(id, ': suucess')
+      }
+    });
   });
 </script>
