@@ -140,7 +140,7 @@ input:checked + .slider:before {
     var id = $(event.currentTarget).closest("tr").data("updatepost-id")
     $.post('/_api/admin/global-notification/toggleIsEnabled?id=' + id, function(res) {
       if (res.ok) {
-        // alert(id, ': suucess')
+        // do something
       }
     });
   });
