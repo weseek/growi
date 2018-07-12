@@ -5,6 +5,12 @@
     padding: 1em;
     margin-left: 4.5em;
     margin-bottom: 1em;
+    // screen-xs
+    @media (max-width: $screen-xs) {
+      margin-left: 3.5em;
+    }
+
+    // speech balloon
     &:before {
       border: 1em solid transparent;
       border-left-width: 0;
@@ -14,6 +20,11 @@
       top: 1.5em;
       position: absolute;
       width: 0;
+
+      // screen-xs
+      @media (max-width: $screen-xs) {
+        top: 1em;
+      }
     }
   }
 
@@ -22,6 +33,11 @@
     margin-top: 0.8em;
     width: 3em;
     height: 3em;
+    // screen-xs
+    @media (max-width: $screen-xs) {
+      width: 2em;
+      height: 2em;
+    }
   }
 
   .page-comments-row {

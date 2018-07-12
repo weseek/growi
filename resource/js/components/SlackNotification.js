@@ -47,7 +47,7 @@ export default class SlackNotification extends React.Component {
     const formNameChannels = this.props.formName && this.props.formName + '[notify][slack][channel]';
 
     return (
-      <div className="input-group input-group-sm input-group-slack extended-setting m-r-5">
+      <div className="input-group input-group-sm input-group-slack extended-setting">
         <label className="input-group-addon">
           <img id="slack-mark-white" src="/images/icons/slack/mark-monochrome_white.svg" width="18" height="18"/>
           <img id="slack-mark-black" src="/images/icons/slack/mark-monochrome_black.svg" width="18" height="18"/>
