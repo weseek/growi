@@ -33,13 +33,19 @@ export default class SlackNotification extends React.Component {
 
   updateState(value) {
     this.setState({slackChannels: value});
-    this.props.onChannelChange(value);
+    // dispatch event
+    if (this.props.onChannelChange != null) {
+      this.props.onChannelChange(value);
+    }
   }
 
   updateStateCheckbox(event) {
     const value = event.target.checked;
     this.setState({isSlackEnabled: value});
-    this.props.onSlackOnChange(value);
+    // dispatch event
+    if (this.props.onSlackOnChange != null) {
+      this.props.onSlackOnChange(value);
+    }
   }
 
   render() {
@@ -70,9 +76,9 @@ SlackNotification.propTypes = {
   crowi: PropTypes.object.isRequired,
   pageId: PropTypes.string,
   pagePath: PropTypes.string,
-  onChannelChange: PropTypes.func,
-  onSlackOnChange: PropTypes.func,
   isSlackEnabled: PropTypes.bool,
   slackChannels: PropTypes.string,
   formName: PropTypes.string,
+  onChannelChange: PropTypes.func,
+  onSlackOnChange: PropTypes.func,
 };

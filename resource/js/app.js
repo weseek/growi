@@ -15,14 +15,13 @@ import SearchPage       from './components/SearchPage';
 import PageEditor       from './components/PageEditor';
 import OptionsSelector  from './components/PageEditor/OptionsSelector';
 import { EditorOptions, PreviewOptions } from './components/PageEditor/OptionsSelector';
-import GrantSelector    from './components/PageEditor/GrantSelector';
+import SavePageControls from './components/SavePageControls';
 import PageEditorByHackmd from './components/PageEditorByHackmd';
 import Page             from './components/Page';
 import PageListSearch   from './components/PageListSearch';
 import PageHistory      from './components/PageHistory';
 import PageComments     from './components/PageComments';
 import CommentForm from './components/PageComment/CommentForm';
-import SlackNotification from './components/SlackNotification';
 import PageAttachment   from './components/PageAttachment';
 import SeenUserList     from './components/SeenUserList';
 import RevisionPath     from './components/Page/RevisionPath';
@@ -236,18 +235,18 @@ if (writeCommentElem) {
 }
 
 // render slack notification form
-const editorSlackElem = document.getElementById('editor-slack-notification');
-if (editorSlackElem) {
-  ReactDOM.render(
-    <SlackNotification
-      crowi={crowi}
-      pageId={pageId}
-      pagePath={pagePath}
-      isSlackEnabled={false}
-      slackChannels={slackChannels}
-      formName='pageForm' />,
-    editorSlackElem);
-}
+// const editorSlackElem = document.getElementById('editor-slack-notification');
+// if (editorSlackElem) {
+//   ReactDOM.render(
+//     <SlackNotification
+//       crowi={crowi}
+//       pageId={pageId}
+//       pagePath={pagePath}
+//       isSlackEnabled={false}
+//       slackChannels={slackChannels}
+//       formName='pageForm' />,
+//     editorSlackElem);
+// }
 
 // render OptionsSelector
 const pageEditorOptionsSelectorElem = document.getElementById('page-editor-options-selector');
@@ -267,34 +266,38 @@ if (pageEditorOptionsSelectorElem) {
   );
 }
 // render GrantSelector
-const pageEditorGrantSelectorElem = document.getElementById('page-grant-selector');
-if (pageEditorGrantSelectorElem) {
-  const grantElem = document.getElementById('page-grant');
-  const grantGroupElem = document.getElementById('grant-group');
-  const grantGroupNameElem = document.getElementById('grant-group-name');
-  /* eslint-disable no-inner-declarations */
-  function updateGrantElem(pageGrant) {
-    grantElem.value = pageGrant;
-  }
-  function updateGrantGroupElem(grantGroupId) {
-    grantGroupElem.value = grantGroupId;
-  }
-  function updateGrantGroupNameElem(grantGroupName) {
-    grantGroupNameElem.value = grantGroupName;
-  }
-  /* eslint-enable */
-  const pageGrant = +grantElem.value;
-  const pageGrantGroupId = grantGroupElem.value;
-  const pageGrantGroupName = grantGroupNameElem.value;
+// const pageEditorGrantSelectorElem = document.getElementById('page-grant-selector');
+// if (pageEditorGrantSelectorElem) {
+//   const grantElem = document.getElementById('page-grant');
+//   const grantGroupElem = document.getElementById('grant-group');
+//   const grantGroupNameElem = document.getElementById('grant-group-name');
+//   const pageGrant = +grantElem.value;
+//   const pageGrantGroupId = grantGroupElem.value;
+//   const pageGrantGroupName = grantGroupNameElem.value;
+//   ReactDOM.render(
+//     <I18nextProvider i18n={i18n}>
+//       <GrantSelector crowi={crowi}
+//         pageGrant={pageGrant} pageGrantGroupId={pageGrantGroupId} pageGrantGroupName={pageGrantGroupName}
+//         onChangePageGrant={updateGrantElem}
+//         onDeterminePageGrantGroupId={updateGrantGroupElem}
+//         onDeterminePageGrantGroupName={updateGrantGroupNameElem} />
+//     </I18nextProvider>,
+//     pageEditorGrantSelectorElem
+//   );
+// }
+// render SavePageControls
+const savePageControlsElem = document.getElementById('save-page-controls');
+if (savePageControlsElem) {
+  const pageGrant = +savePageControlsElem.dataset.pageGrant;
+  const pageGrantGroupId = savePageControlsElem.dataset.grantGroup;
+  const pageGrantGroupName = savePageControlsElem.dataset.grantGroupName;
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
-      <GrantSelector crowi={crowi}
-        pageGrant={pageGrant} pageGrantGroupId={pageGrantGroupId} pageGrantGroupName={pageGrantGroupName}
-        onChangePageGrant={updateGrantElem}
-        onDeterminePageGrantGroupId={updateGrantGroupElem}
-        onDeterminePageGrantGroupName={updateGrantGroupNameElem} />
+      <SavePageControls crowi={crowi}
+        pageId={pageId} pagePath={pagePath} slackChannels={slackChannels}
+        pageGrant={pageGrant} pageGrantGroupId={pageGrantGroupId} pageGrantGroupName={pageGrantGroupName} />
     </I18nextProvider>,
-    pageEditorGrantSelectorElem
+    savePageControlsElem
   );
 }
 

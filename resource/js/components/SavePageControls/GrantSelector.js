@@ -120,36 +120,36 @@ class GrantSelector extends React.Component {
     }
 
     this.setState({ pageGrant, pageGrantGroup: null });
-    // dispatch event
-    this.dispatchOnChangePageGrant(pageGrant);
-    this.dispatchOnDeterminePageGrantGroup(null);
+    // // dispatch event
+    // this.dispatchOnChangePageGrant(pageGrant);
+    // this.dispatchOnDeterminePageGrantGroup(null);
   }
 
   groupListItemClickHandler(pageGrantGroup) {
     this.setState({ pageGrant: 5, pageGrantGroup });
 
-    // dispatch event
-    this.dispatchOnChangePageGrant(5);
-    this.dispatchOnDeterminePageGrantGroup(pageGrantGroup);
+    // // dispatch event
+    // this.dispatchOnChangePageGrant(5);
+    // this.dispatchOnDeterminePageGrantGroup(pageGrantGroup);
 
     // hide modal
     this.hideSelectGroupModal();
   }
 
-  dispatchOnChangePageGrant(pageGrant) {
-    if (this.props.onChangePageGrant != null) {
-      this.props.onChangePageGrant(pageGrant);
-    }
-  }
+  // dispatchOnChangePageGrant(pageGrant) {
+  //   if (this.props.onChangePageGrant != null) {
+  //     this.props.onChangePageGrant(pageGrant);
+  //   }
+  // }
 
-  dispatchOnDeterminePageGrantGroup(pageGrantGroup) {
-    if (this.props.onDeterminePageGrantGroupId != null) {
-      this.props.onDeterminePageGrantGroupId(pageGrantGroup ? pageGrantGroup._id : '');
-    }
-    if (this.props.onDeterminePageGrantGroupName != null) {
-      this.props.onDeterminePageGrantGroupName(pageGrantGroup ? pageGrantGroup.name : '');
-    }
-  }
+  // dispatchOnDeterminePageGrantGroup(pageGrantGroup) {
+  //   if (this.props.onDeterminePageGrantGroupId != null) {
+  //     this.props.onDeterminePageGrantGroupId(pageGrantGroup ? pageGrantGroup._id : '');
+  //   }
+  //   if (this.props.onDeterminePageGrantGroupName != null) {
+  //     this.props.onDeterminePageGrantGroupName(pageGrantGroup ? pageGrantGroup.name : '');
+  //   }
+  // }
 
   /**
    * Render grant selector DOM.
@@ -196,8 +196,8 @@ class GrantSelector extends React.Component {
 
     const bsClassName = 'form-control-dummy'; // set form-control* to shrink width
     return (
-      <FormGroup className="m-b-0">
-        <FormControl componentClass="select" placeholder="select" defaultValue={selectedValue} bsClass={bsClassName} className="btn-group-sm page-grant-selector selectpicker"
+      <FormGroup className="grant-selector m-b-0">
+        <FormControl componentClass="select" placeholder="select" defaultValue={selectedValue} bsClass={bsClassName} className="btn-group-sm selectpicker"
           onChange={this.changeGrantHandler}
           inputRef={ el => this.grantSelectorInputEl=el }>
 
@@ -252,7 +252,7 @@ class GrantSelector extends React.Component {
 
   render() {
     return <React.Fragment>
-      <div className="m-r-5">{this.renderGrantSelector()}</div>
+      {this.renderGrantSelector()}
       {this.renderSelectGroupModal()}
     </React.Fragment>;
   }
@@ -261,13 +261,9 @@ class GrantSelector extends React.Component {
 GrantSelector.propTypes = {
   t: PropTypes.func.isRequired,               // i18next
   crowi: PropTypes.object.isRequired,
-  isGroupModalShown: PropTypes.bool,
   pageGrant: PropTypes.number,
   pageGrantGroupId: PropTypes.string,
   pageGrantGroupName: PropTypes.string,
-  onChangePageGrant: PropTypes.func,
-  onDeterminePageGrantGroupId: PropTypes.func,
-  onDeterminePageGrantGroupName: PropTypes.func,
 };
 
 export default translate()(GrantSelector);

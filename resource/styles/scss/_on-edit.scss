@@ -1,9 +1,9 @@
 @import 'editor-overlay';
 
 body:not(.on-edit) {
-  // hide #page-form
-  #page-form {
-    display: none;
+  // hide .page-editor-footer
+  .page-editor-footer {
+    display: none !important;
   }
 }
 
@@ -242,7 +242,7 @@ body.on-edit {
       }
     }
 
-    #page-grant-selector {
+    .grant-selector {
       .btn-group {
         min-width: 150px;
       }
