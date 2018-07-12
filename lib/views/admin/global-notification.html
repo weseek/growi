@@ -2,6 +2,16 @@
   <p data-toggle="collapse" class="btn btn-default">通知設定の追加</p>
 </a>
 <h2>通知設定一覧</h2>
+
+{% set icons = {
+  pageCreate: '<i class="icon-note"></i>',
+  pageEdit: '<i class="icon-note"></i>',
+  pageDelete: '<i class="icon-note"></i>',
+  pageMove: '<i class="icon-note"></i>',
+  pageLike: '<i class="icon-note"></i>',
+  comment: '<i class="icon-note"></i>'
+} %}
+
 <table class="table table-bordered">
   <thead>
     <th>ON/OFF</th>
@@ -20,26 +30,9 @@
         </p>
       </td>
       <td>
-        <table>
-          <tr>
-            <td><i class="icon-note"></i></td>
-            <td><i class="icon-note"></i></td>
-            <td><i class="icon-note"></i></td>
-            <td><i class="icon-note"></i></td>
-            <td><i class="icon-note"></i></td>
-            <td><i class="icon-note"></i></td>
-            <td><i class="icon-note"></i><span style="padding-right: 50px;"></span></td>
-          </tr>
-          <tr>
-            <td><input type="checkbox" value="1" checked=""></td>
-            <td><input type="checkbox" value="1" checked=""></td>
-            <td><input type="checkbox" value="1" checked=""></td>
-            <td><input type="checkbox" value="1" checked=""></td>
-            <td><input type="checkbox" value="1" checked=""></td>
-            <td><input type="checkbox" value="1" checked=""></td>
-            <td><input type="checkbox" value="1" checked=""></td>
-          </tr>
-        </table>
+        {% for icon in icons %}
+          {{ icon | safe }}
+        {% endfor %}
       </td>
       <td>
         <input class="form-control" type="text" placeholder="e.g. xxx@example.com">
@@ -50,12 +43,12 @@
     </tr>
     </form>
 
-    {% for globalNotif in globalNotifications %}
     {% set detailPageUrl = '/admin/global-notification/detail' %}
+    {% for globalNotif in globalNotifications %}
     <tr class="clickable-row" data-href="{{ detailPageUrl }}" data-updatepost-id="{{ globalNotif._id.toString() }}">
       <td class="unclickable">
         <label class="switch">
-          <input type="checkbox" class="isEnabledToggle">
+          <input type="checkbox" class="isEnabledToggle" {% if globalNotif.isEnabled %}checked{% endif %}>
           <span class="slider round"></span>
         </label>
       </td>
@@ -63,17 +56,9 @@
         {{ globalNotif.triggerPath }}
       </td>
       <td>
-        <table>
-          <tr>
-            <td><i class="icon-note"></i></td>
-            <td><i class="icon-note"></i></td>
-            <td><i class="icon-note"></i></td>
-            <td><i class="icon-note"></i></td>
-            <td><i class="icon-note"></i></td>
-            <td><i class="icon-note"></i></td>
-            <td><i class="icon-note"></i></td>
-          </tr>
-        </table>
+        {% for event in globalNotif.triggerEvents %}
+          {{ icons[event] | safe }}
+        {% endfor %}
       </td>
       <td>
         {% if globalNotif.__t == 'mail' %}emailicon {{ globalNotif.toEmail }}
@@ -151,7 +136,7 @@ input:checked + .slider:before {
     window.location = $(event.currentTarget).parent().data("href")
   });
 
-  $(".isEnabledToggle").on("change", event => {
+  $(".isEnabledToggle").on("change", function(event) {
     var id = $(event.currentTarget).closest("tr").data("updatepost-id")
     $.post('/_api/admin/global-notification/toggleIsEnabled?id=' + id, function(res) {
       if (res.ok) {
