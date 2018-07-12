@@ -50,9 +50,9 @@
     </tr>
     </form>
 
-    {% for setting in settings %}
+    {% for globalNotif in globalNotifications %}
     {% set detailPageUrl = '/admin/global-notification/detail' %}
-    <tr class="clickable-row" data-href="{{ detailPageUrl }}" data-updatepost-id="{{ notif._id.toString() }}">
+    <tr class="clickable-row" data-href="{{ detailPageUrl }}" data-updatepost-id="{{ globalNotif._id.toString() }}">
       <td class="unclickable">
         <label class="switch">
           <input type="checkbox">
@@ -60,7 +60,7 @@
         </label>
       </td>
       <td>
-        {{ setting.pathPattern }}
+        {{ globalNotif.triggerPath }}
       </td>
       <td>
         <table>
@@ -76,7 +76,9 @@
         </table>
       </td>
       <td>
-        {{ setting.channel }}
+        {% if globalNotif.__t == 'mail' %}emailicon {{ globalNotif.toEmail }}
+        {% elseif globalNotif.__t == 'slack' %}slackicon {{ globalNotif.slackChannels }}
+        {% endif %}
       </td>
     </tr>
     {% endfor %}

@@ -229,17 +229,17 @@
               </tr>
               </form>
 
-              {% for notif in settings %}
-              <tr class="admin-notif-row" data-updatepost-id="{{ notif._id.toString() }}">
+              {% for userNotif in userNotifications %}
+              <tr class="admin-notif-row" data-updatepost-id="{{ userNotif._id.toString() }}">
                 <td>
-                  {{ notif.pathPattern }}
+                  {{ userNotif.pathPattern }}
                 </td>
                 <td>
-                  {{ notif.channel }}
+                  {{ userNotif.channel }}
                 </td>
                 <td>
                   <form class="admin-remove-updatepost">
-                    <input type="hidden" name="id" value="{{ notif._id.toString() }}">
+                    <input type="hidden" name="id" value="{{ userNotif._id.toString() }}">
                     <input type="hidden" name="_csrf" value="{{ csrf() }}">
                     <input type="submit" value="Delete" class="btn btn-default">
                   </form>
