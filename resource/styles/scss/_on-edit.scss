@@ -9,12 +9,6 @@ body:not(.on-edit) {
 
 body.on-edit {
 
-  %expand-by-flex {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-  }
-
   // calculate margin
   $header-plus-footer: 2px                      // .main padding-top
                       + 42px                    // .nav height
@@ -85,7 +79,45 @@ body.on-edit {
     &,
     .content-main,
     .tab-content {
-      @extend %expand-by-flex;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+
+      .tab-pane#edit, .tab-pane#hackmd {
+        min-height: calc(100vh - #{$header-plus-footer});   // for IE11
+        height: calc(100vh - #{$header-plus-footer});
+      }
+
+      #page-editor {
+        // right(preview)
+        &,
+        .row,
+        .page-editor-preview-container,
+        .page-editor-preview-body {
+          min-height: calc(100vh - #{$header-plus-footer});   // for IE11
+          height: calc(100vh - #{$header-plus-footer});
+        }
+        // left(editor)
+        .page-editor-editor-container {
+          min-height: calc(100vh - #{$header-plus-footer});   // for IE11
+          height: calc(100vh - #{$header-plus-footer});
+
+          .react-codemirror2, .CodeMirror, .CodeMirror-scroll,
+          .textarea-editor {
+            height: calc(100vh - #{$editor-margin});
+          }
+        }
+      }
+
+      #page-editor-with-hackmd {
+        &,
+        .hackmd-preinit, #iframe-hackmd {
+          width: 100vw;
+          min-height: calc(100vh - #{$header-plus-footer});   // for IE11
+          height: calc(100vh - #{$header-plus-footer});
+        }
+      }
+
     }
   }
 
@@ -141,29 +173,7 @@ body.on-edit {
   }
 
 
-  &.builtin-editor .tab-pane#edit {
-    @extend %expand-by-flex;
-
-    #page-editor {
-      // right(preview)
-      &,
-      .row,
-      .page-editor-preview-container,
-      .page-editor-preview-body {
-        min-height: calc(100vh - #{$header-plus-footer});   // for IE11
-        height: calc(100vh - #{$header-plus-footer});
-      }
-      // left(editor)
-      .page-editor-editor-container {
-        min-height: calc(100vh - #{$header-plus-footer});   // for IE11
-        height: calc(100vh - #{$header-plus-footer});
-
-        .react-codemirror2, .CodeMirror, .CodeMirror-scroll,
-        .textarea-editor {
-          height: calc(100vh - #{$editor-margin});
-        }
-      }
-    }
+  &.builtin-editor {
 
     /*****************
     * Editor styles
@@ -246,24 +256,14 @@ body.on-edit {
       display: none;
     }
 
-    .tab-pane#hackmd {
-      @extend %expand-by-flex;
-
-      #hackmd-editor,
-      .hackmd-preinit, #iframe-hackmd {
-        width: 100vw;
-        min-height: calc(100vh - #{$header-plus-footer});   // for IE11
-        height: calc(100vh - #{$header-plus-footer});
-
-        border: none;
-      }
-
-      .hackmd-status-label {
-        font-size: 3em;
-        color: $muted;
-      }
+    .hackmd-preinit, #iframe-hackmd {
+      border: none;
     }
 
+    .hackmd-status-label {
+      font-size: 3em;
+      color: $muted;
+    }
   }
 
 }
