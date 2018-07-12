@@ -44,19 +44,19 @@
           <fieldset class="col-sm-offset-1 col-sm-4">
             <div class="form-group">
               <label for="triggerPath" class="control-label">トリガーパス</label><br />
-              <input class="form-control" type="text" name="globalNotification[triggerPath]" value="" required>
+              <input class="form-control" type="text" name="notificationGlobal[triggerPath]" value="" required>
             </div>
 
             <div class="form-group">
-              <label for="globalNotification[notifyToType]"class="control-label">通知先</label><br />
+              <label for="notificationGlobal[notifyToType]"class="control-label">通知先</label><br />
               <div class="radio radio-primary">
-                <input type="radio" id="mail" name="globalNotification[notifyToType]" value="mail">
+                <input type="radio" id="mail" name="notificationGlobal[notifyToType]" value="mail">
                 <label for="mail">
                   <p class="font-weight-bold">Email</p>
                 </label>
               </div>
               <!-- <div class="radio radio-primary">
-                <input type="radio" id="slack" name="globalNotification[notifyToType]" value="slack">
+                <input type="radio" id="slack" name="notificationGlobal[notifyToType]" value="slack">
                 <label for="slack">
                   <p class="font-weight-bold">Slack</p>
                 </label>
@@ -64,13 +64,13 @@
             </div>
 
             <div class="form-group notify-to-option d-none" id="mail-input">
-              <label for="globalNotification[toEmail]"class="control-label">Email</label><br />
-              <input class="form-control" type="text" name="globalNotification[toEmail]" value="">
+              <label for="notificationGlobal[toEmail]"class="control-label">Email</label><br />
+              <input class="form-control" type="text" name="notificationGlobal[toEmail]" value="">
             </div>
 
             <div class="form-group notify-to-option d-none" id="slack-input">
-              <label for="globalNotification[slackChannels]"class="control-label">Slack Channels</label><br />
-              <input class="form-control" type="text" name="globalNotification[slackChannels]" value="">
+              <label for="notificationGlobal[slackChannels]"class="control-label">Slack Channels</label><br />
+              <input class="form-control" type="text" name="notificationGlobal[slackChannels]" value="">
             </div>
           </fieldset>
 
@@ -78,37 +78,37 @@
             <div class="form-group">
               <label for="triggerEvent"class="control-label">トリガーイベント</label><br />
               <div class="checkbox checkbox-info">
-                <input type="checkbox" id="trigger-event-pageCreate" name="globalNotification[triggerEvent:pageCreate]" value="1" />
+                <input type="checkbox" id="trigger-event-pageCreate" name="notificationGlobal[triggerEvent:pageCreate]" value="pageCreate" />
                 <label for="trigger-event-pageCreate">
                     <i class="icon-note"></i> - When New Page is Created
                 </label>
               </div>
               <div class="checkbox checkbox-info">
-                <input type="checkbox" id="trigger-event-pageEdit" name="globalNotification[triggerEvent:pageEdit]" value="1" />
+                <input type="checkbox" id="trigger-event-pageEdit" name="notificationGlobal[triggerEvent:pageEdit]" value="pageEdit" />
                 <label for="trigger-event-pageEdit">
                     <i class="icon-note"></i> - When Page is Edited
                 </label>
               </div>
               <div class="checkbox checkbox-info">
-                <input type="checkbox" id="trigger-event-pageDelete" name="globalNotification[triggerEvent:pageDelete]" value="1" />
+                <input type="checkbox" id="trigger-event-pageDelete" name="notificationGlobal[triggerEvent:pageDelete]" value="pageDelete" />
                 <label for="trigger-event-pageDelete">
                     <i class="icon-note"></i> - When is Deleted
                 </label>
               </div>
               <div class="checkbox checkbox-info">
-                <input type="checkbox" id="trigger-event-pageMove" name="globalNotification[triggerEvent:pageMove]" value="1" />
+                <input type="checkbox" id="trigger-event-pageMove" name="notificationGlobal[triggerEvent:pageMove]" value="pageMove" />
                 <label for="trigger-event-pageMove">
                     <i class="icon-note"></i> - When Page is Moved (Renamed)
                 </label>
               </div>
               <div class="checkbox checkbox-info">
-                  <input type="checkbox" id="trigger-event-pageLike" name="globalNotification[triggerEvent:pageLike]" value="1" />
+                  <input type="checkbox" id="trigger-event-pageLike" name="notificationGlobal[triggerEvent:pageLike]" value="pageLike" />
                   <label for="trigger-event-pageLike">
                       <i class="icon-note"></i> - When Someone Likes Page
                   </label>
                 </div>
               <div class="checkbox checkbox-info">
-                <input type="checkbox" id="trigger-event-comment" name="globalNotification[triggerEvent:comment]" value="1" />
+                <input type="checkbox" id="trigger-event-comment" name="notificationGlobal[triggerEvent:comment]" value="comment" />
                 <label for="trigger-event-comment">
                     <i class="icon-note"></i> - When Someone Comments on Page
                 </label>
@@ -117,7 +117,7 @@
           </fieldset>
 
           <div class="col-sm-offset-5 col-sm-12 m-t-20">
-            <input type="hidden" name="globalNotificationSettingId" value="">
+            <input type="hidden" name="notificationGlobal[id]" value="">
             <input type="hidden" name="_csrf" value="{{ csrf() }}">
             <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
           </div>
@@ -128,7 +128,7 @@
 </div>
 
 <script>
-  $('input[name="globalNotification[notifyToType]"]').change(function() {
+  $('input[name="notificationGlobal[notifyToType]"]').change(function() {
     var val = $(this).val();
     $('.notify-to-option').addClass('d-none');
     $('#' + val + '-input').removeClass('d-none');
