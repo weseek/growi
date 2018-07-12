@@ -150,6 +150,35 @@ Object.keys(componentMappings).forEach((key) => {
 });
 
 /*
+ * HackMD Editor
+ */
+// render PageEditorWithHackmd
+let pageEditorByHackmd = null;
+const pageEditorWithHackmdElem = document.getElementById('page-editor-with-hackmd');
+if (pageEditorWithHackmdElem) {
+  // create onSave event handler
+  const onSaveSuccess = function(page) {
+    // modify the revision id value to pass checking id when updating
+    crowi.getCrowiForJquery().updatePageForm(page);
+    // re-render Page component if exists
+    if (componentInstances.page != null) {
+      componentInstances.page.setMarkdown(page.revision.body);
+    }
+  };
+
+  pageEditorByHackmd = ReactDOM.render(
+    <PageEditorByHackmd crowi={crowi}
+        pageId={pageId} revisionId={pageRevisionId}
+        pageIdOnHackmd={pageIdOnHackmd} revisionIdHackmdSynced={pageRevisionIdHackmdSynced} hasDraftOnHackmd={hasDraftOnHackmd}
+        markdown={markdown}
+        onSaveSuccess={onSaveSuccess} />,
+    pageEditorWithHackmdElem
+  );
+  componentInstances.pageEditorByHackmd = pageEditorByHackmd;
+}
+
+
+/*
  * PageEditor
  */
 let pageEditor = null;
@@ -162,9 +191,14 @@ if (pageEditorElem) {
   const onSaveSuccess = function(page) {
     // modify the revision id value to pass checking id when updating
     crowi.getCrowiForJquery().updatePageForm(page);
-    // re-render Page component if exists
+
     if (componentInstances.page != null) {
+      // re-render Page component
       componentInstances.page.setMarkdown(page.revision.body);
+      // set revision id to PageEditorByHackmd
+      if (componentInstances.pageEditorByHackmd != null) {
+        componentInstances.pageEditorByHackmd.setRevisionId(page.revision._id);
+      }
     }
   };
 
@@ -261,32 +295,6 @@ if (pageEditorGrantSelectorElem) {
         onDeterminePageGrantGroupName={updateGrantGroupNameElem} />
     </I18nextProvider>,
     pageEditorGrantSelectorElem
-  );
-}
-
-/*
- * HackMD Editor
- */
-// render PageEditorWithHackmd
-const pageEditorWithHackmdElem = document.getElementById('page-editor-with-hackmd');
-if (pageEditorWithHackmdElem) {
-  // create onSave event handler
-  const onSaveSuccess = function(page) {
-    // modify the revision id value to pass checking id when updating
-    crowi.getCrowiForJquery().updatePageForm(page);
-    // re-render Page component if exists
-    if (componentInstances.page != null) {
-      componentInstances.page.setMarkdown(page.revision.body);
-    }
-  };
-
-  pageEditor = ReactDOM.render(
-    <PageEditorByHackmd crowi={crowi}
-        pageId={pageId} revisionId={pageRevisionId}
-        pageIdOnHackmd={pageIdOnHackmd} revisionIdHackmdSynced={pageRevisionIdHackmdSynced} hasDraftOnHackmd={hasDraftOnHackmd}
-        markdown={markdown}
-        onSaveSuccess={onSaveSuccess} />,
-    pageEditorWithHackmdElem
   );
 }
 
