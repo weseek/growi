@@ -118,12 +118,16 @@ export default class PageEditorByHackmd extends React.PureComponent {
   render() {
     const hackmdUri = this.getHackmdUri();
 
+    const isPageExistsOnHackmd = (this.state.pageIdOnHackmd != null);
+    const isRevisionMatch = (this.props.revisionId === this.props.revisionIdHackmdSynced);
+    const isResume = isPageExistsOnHackmd && isRevisionMatch && this.props.hasDraftOnHackmd;
+
     if (this.state.isInitialized) {
       return (
         <HackmdEditor
-          markdown={this.props.markdown}
           hackmdUri={hackmdUri}
           pageIdOnHackmd={this.state.pageIdOnHackmd}
+          initializationMarkdown={isResume ? null : this.props.markdown}
           onChange={this.hackmdEditorChangeHandler}
         >
         </HackmdEditor>
@@ -131,9 +135,6 @@ export default class PageEditorByHackmd extends React.PureComponent {
     }
 
     let content = undefined;
-    const isPageExistsOnHackmd = (this.state.pageIdOnHackmd != null);
-    const isRevisionMatch = (this.props.revisionId === this.props.revisionIdHackmdSynced);
-
     // HackMD is not setup
     if (hackmdUri == null) {
       content = (
@@ -142,8 +143,7 @@ export default class PageEditorByHackmd extends React.PureComponent {
         </div>
       );
     }
-    // page is exists, revisions are match, hasDraftOnHackmd is true
-    else if (isPageExistsOnHackmd && isRevisionMatch && this.props.hasDraftOnHackmd) {
+    else if (isResume) {
       content = (
         <div>
           <p className="text-center hackmd-status-label"><i className="fa fa-file-text"></i> HackMD is READY!</p>

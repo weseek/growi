@@ -40,6 +40,14 @@ export default class HackmdEditor extends React.PureComponent {
     });
   }
 
+  /**
+   *
+   * @param {object} data
+   */
+  postMessageToHackmd(data) {
+    this.refs.iframe.contentWindow.postMessage(JSON.stringify(data), this.props.hackmdUri);
+  }
+
   notifyBodyChangesHandler(body) {
     // dispatch onChange()
     if (this.props.onChange != null) {
@@ -48,7 +56,11 @@ export default class HackmdEditor extends React.PureComponent {
   }
 
   loadHandler() {
-    // this.refs.iframe.postMessage('initialize', )
+    const data = { operation: 'setValue' };
+    if (this.props.initializationMarkdown != null) {
+      data.document = this.props.initializationMarkdown;
+    }
+    this.postMessageToHackmd(data);
   }
 
   render() {
@@ -65,8 +77,8 @@ export default class HackmdEditor extends React.PureComponent {
 }
 
 HackmdEditor.propTypes = {
-  markdown: PropTypes.string.isRequired,
   hackmdUri: PropTypes.string.isRequired,
   pageIdOnHackmd: PropTypes.string.isRequired,
+  initializationMarkdown: PropTypes.string,
   onChange: PropTypes.func,
 };

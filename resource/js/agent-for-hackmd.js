@@ -11,6 +11,8 @@
  */
 import { debounce } from 'throttle-debounce';
 
+const JSON = window.JSON;
+
 /* eslint-disable no-console  */
 
 const allowedOrigin = '{{origin}}';         // will be replaced by swig
@@ -42,7 +44,7 @@ function postMessageOnSave(body) {
     operation: 'notifyBodyChanges',
     body
   };
-  window.parent.postMessage(window.JSON.stringify(data), allowedOrigin);
+  window.parent.postMessage(JSON.stringify(data), allowedOrigin);
 }
 
 function addEventListenersToCodemirror() {
@@ -56,6 +58,13 @@ function addEventListenersToCodemirror() {
     debouncedFunc(cm.doc.getValue());
   });
 }
+
+function setValue(document) {
+  // get CodeMirror instance
+  const editor = window.editor;
+  editor.doc.setValue(document);
+}
+
 
 /**
  * main
@@ -81,7 +90,7 @@ function addEventListenersToCodemirror() {
         console.log('getValue called');
         break;
       case 'setValue':
-        console.log('setValue called');
+        setValue(data.document);
         break;
     }
   });
