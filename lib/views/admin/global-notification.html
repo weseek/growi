@@ -15,34 +15,11 @@
 <table class="table table-bordered">
   <thead>
     <th>ON/OFF</th>
-    <th>Pattern</th>
-    <th>Triggers</th>
+    <th>Trigger Path (expression with <code>*</code> is supported)</th>
+    <th>Trigger Events</th>
     <th>Notify To</th>
   </thead>
   <tbody class="admin-notif-list">
-    <form id="">
-    <tr>
-      <td></td>
-      <td>
-        <input class="form-control" type="text" placeholder="e.g. /projects/xxx/MTG/*">
-        <p class="help-block">
-          Path Pattern of wiki. Expression with <code>*</code> is supported.
-        </p>
-      </td>
-      <td>
-        {% for tag in tags %}
-          {{ tag | safe }}
-        {% endfor %}
-      </td>
-      <td>
-        <input class="form-control" type="text" placeholder="e.g. xxx@example.com">
-        <p class="help-block">
-          Notifications are sent to this email.
-        </p>
-      </td>
-    </tr>
-    </form>
-
     {% set detailPageUrl = '/admin/global-notification/detail' %}
     {% for globalNotif in globalNotifications %}
     <tr class="clickable-row" data-href="{{ detailPageUrl }}" data-updatepost-id="{{ globalNotif._id.toString() }}">
@@ -61,8 +38,8 @@
         {% endfor %}
       </td>
       <td>
-        {% if globalNotif.__t == 'mail' %}emailicon {{ globalNotif.toEmail }}
-        {% elseif globalNotif.__t == 'slack' %}slackicon {{ globalNotif.slackChannels }}
+        {% if globalNotif.__t == 'mail' %}<i class="ti-email"></i> {{ globalNotif.toEmail }}
+        {% elseif globalNotif.__t == 'slack' %}<i class="fa fa-slack"></i> {{ globalNotif.slackChannels }}
         {% endif %}
       </td>
     </tr>
