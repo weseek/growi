@@ -1,4 +1,4 @@
-A new page was created at {{ path }} by {{ username }}.
+{{ username }} created a new page under {{ path }}.
 
 ----------------------
 
