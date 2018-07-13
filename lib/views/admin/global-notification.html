@@ -18,6 +18,7 @@
     <th>Trigger Path (expression with <code>*</code> is supported)</th>
     <th>Trigger Events</th>
     <th>Notify To</th>
+    <th>Action</th>
   </thead>
   <tbody class="admin-notif-list">
     {% set detailPageUrl = '/admin/global-notification/detail' %}
@@ -42,6 +43,9 @@
         {% elseif globalNotif.__t == 'slack' %}<span data-toggle="tooltip" data-placement="top" title="Slack"><i class="fa fa-slack"></i> {{ globalNotif.slackChannels }}</span>
         {% endif %}
       </td>
+      <td class="unclickable">
+        <p class="btn btn-danger btn-delete">{{ t('Delete') }}</p>
+      </td>
     </tr>
     {% endfor %}
   </tbody>
@@ -53,8 +57,18 @@
     window.location = $target.data("href") + "/" + $target.data("updatepost-id");
   });
 
+  $(".unclickable > .btn-delete").click(function(event) {
+    var id = $(event.currentTarget).closest("tr").data("updatepost-id");
+    var $target = $(event.currentTarget).parent();
+    $.post('/admin/global-notification/remove?id=' + id, function(res) {
+      if (res.ok) {
+        $target.closest('tr').remove();
+      }
+    });
+  });
+
   $(".isEnabledToggle").on("change", function(event) {
-    var id = $(event.currentTarget).closest("tr").data("updatepost-id")
+    var id = $(event.currentTarget).closest("tr").data("updatepost-id");
     $.post('/_api/admin/global-notification/toggleIsEnabled?id=' + id, function(res) {
       if (res.ok) {
         // do something
