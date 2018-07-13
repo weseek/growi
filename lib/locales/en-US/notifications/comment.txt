@@ -1,1 +1,5 @@
-comment
+{{ username }} commented on {{ path }}.
+
+----------------------
+
+Growi: {{ appTitle }}

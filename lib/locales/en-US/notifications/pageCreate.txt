@@ -1,1 +1,5 @@
-create
+A new page was created at {{ path }} by {{ username }}.
+
+----------------------
+
+Growi: {{ appTitle }}

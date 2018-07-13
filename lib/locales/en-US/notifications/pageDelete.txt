@@ -1,1 +1,5 @@
-delete
+{{ username }} deleted the page  {{ path }}.
+
+----------------------
+
+Growi: {{ appTitle }}
