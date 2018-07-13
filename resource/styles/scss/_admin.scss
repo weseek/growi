@@ -43,8 +43,18 @@
   }
 
   .admin-notification {
-    .clickable-row > :not(.unclickable) {
-      cursor: pointer;
+    .clickable-row {
+      .unclickable {
+        text-align: center;
+        vertical-align: middle;
+        width: 50px;
+        label.switch {
+          margin: 0;
+        }
+      }
+      :not(.unclickable) {
+        cursor: pointer;
+      }
     }
 
     /* slider checkbox */

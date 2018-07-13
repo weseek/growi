@@ -23,7 +23,7 @@
     {% set detailPageUrl = '/admin/global-notification/detail' %}
     {% for globalNotif in globalNotifications %}
     <tr class="clickable-row" data-href="{{ detailPageUrl }}" data-updatepost-id="{{ globalNotif._id.toString() }}">
-      <td class="unclickable">
+      <td class="unclickable align-middle">
         <label class="switch">
           <input type="checkbox" class="isEnabledToggle" {% if globalNotif.isEnabled %}checked{% endif %}>
           <span class="slider round"></span>
