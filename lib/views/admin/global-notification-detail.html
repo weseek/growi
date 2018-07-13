@@ -44,19 +44,19 @@
           <fieldset class="col-sm-offset-1 col-sm-4">
             <div class="form-group">
               <label for="triggerPath" class="control-label">トリガーパス</label><br />
-              <input class="form-control" type="text" name="notificationGlobal[triggerPath]" value="" required>
+              <input class="form-control" type="text" name="notificationGlobal[triggerPath]" value="{{ setting.triggerPath || '' }}" required>
             </div>
 
             <div class="form-group">
               <label for="notificationGlobal[notifyToType]"class="control-label">通知先</label><br />
               <div class="radio radio-primary">
-                <input type="radio" id="mail" name="notificationGlobal[notifyToType]" value="mail">
+                <input type="radio" id="mail" name="notificationGlobal[notifyToType]" value="mail" {% if setting.__t == 'mail' %}checked{% endif %}>
                 <label for="mail">
                   <p class="font-weight-bold">Email</p>
                 </label>
               </div>
               <!-- <div class="radio radio-primary">
-                <input type="radio" id="slack" name="notificationGlobal[notifyToType]" value="slack">
+                <input type="radio" id="slack" name="notificationGlobal[notifyToType]" value="slack" {% if setting.__t == 'slack' %}checked{% endif %}>
                 <label for="slack">
                   <p class="font-weight-bold">Slack</p>
                 </label>
@@ -65,12 +65,12 @@
 
             <div class="form-group notify-to-option d-none" id="mail-input">
               <label for="notificationGlobal[toEmail]"class="control-label">Email</label><br />
-              <input class="form-control" type="text" name="notificationGlobal[toEmail]" value="">
+              <input class="form-control" type="text" name="notificationGlobal[toEmail]" value="{{ setting.toEmail || '' }}">
             </div>
 
             <div class="form-group notify-to-option d-none" id="slack-input">
               <label for="notificationGlobal[slackChannels]"class="control-label">Slack Channels</label><br />
-              <input class="form-control" type="text" name="notificationGlobal[slackChannels]" value="">
+              <input class="form-control" type="text" name="notificationGlobal[slackChannels]" value="{{ setting.slackChannels || '' }}">
             </div>
           </fieldset>
 
@@ -78,37 +78,37 @@
             <div class="form-group">
               <label for="triggerEvent"class="control-label">トリガーイベント</label><br />
               <div class="checkbox checkbox-info">
-                <input type="checkbox" id="trigger-event-pageCreate" name="notificationGlobal[triggerEvent:pageCreate]" value="pageCreate" />
+                <input type="checkbox" id="trigger-event-pageCreate" name="notificationGlobal[triggerEvent:pageCreate]" value="pageCreate" {% if setting.triggerEvents.indexOf('pageCreate') != -1 %}checked{% endif %} />
                 <label for="trigger-event-pageCreate">
                   <span class="label label-info"><i class="icon-doc"></i> CREATE</span> - When New Page is Created
                 </label>
               </div>
               <div class="checkbox checkbox-info">
-                <input type="checkbox" id="trigger-event-pageEdit" name="notificationGlobal[triggerEvent:pageEdit]" value="pageEdit" />
+                <input type="checkbox" id="trigger-event-pageEdit" name="notificationGlobal[triggerEvent:pageEdit]" value="pageEdit" {% if setting.triggerEvents.indexOf('pageEdit') != -1 %}checked{% endif %} />
                 <label for="trigger-event-pageEdit">
                   <span class="label label-info"><i class="icon-doc"></i> EDIT</span> - When Page is Edited
                 </label>
               </div>
               <div class="checkbox checkbox-info">
-                <input type="checkbox" id="trigger-event-pageDelete" name="notificationGlobal[triggerEvent:pageDelete]" value="pageDelete" />
+                <input type="checkbox" id="trigger-event-pageDelete" name="notificationGlobal[triggerEvent:pageDelete]" value="pageDelete" {% if setting.triggerEvents.indexOf('pageDelete') != -1 %}checked{% endif %} />
                 <label for="trigger-event-pageDelete">
                   <span class="label label-info"><i class="icon-doc"></i> DELETE</span> - When is Deleted
                 </label>
               </div>
               <div class="checkbox checkbox-info">
-                <input type="checkbox" id="trigger-event-pageMove" name="notificationGlobal[triggerEvent:pageMove]" value="pageMove" />
+                <input type="checkbox" id="trigger-event-pageMove" name="notificationGlobal[triggerEvent:pageMove]" value="pageMove" {% if setting.triggerEvents.indexOf('pageMove') != -1 %}checked{% endif %} />
                 <label for="trigger-event-pageMove">
                   <span class="label label-info"><i class="icon-doc"></i> MOVE</span> - When Page is Moved (Renamed)
                 </label>
               </div>
               <div class="checkbox checkbox-info">
-                  <input type="checkbox" id="trigger-event-pageLike" name="notificationGlobal[triggerEvent:pageLike]" value="pageLike" />
+                  <input type="checkbox" id="trigger-event-pageLike" name="notificationGlobal[triggerEvent:pageLike]" value="pageLike" {% if setting.triggerEvents.indexOf('pageLike') != -1 %}checked{% endif %} />
                   <label for="trigger-event-pageLike">
                     <span class="label label-info"><i class="icon-doc"></i> LIKE</span> - When Someone Likes Page
                   </label>
                 </div>
               <div class="checkbox checkbox-info">
-                <input type="checkbox" id="trigger-event-comment" name="notificationGlobal[triggerEvent:comment]" value="comment" />
+                <input type="checkbox" id="trigger-event-comment" name="notificationGlobal[triggerEvent:comment]" value="comment" {% if setting.triggerEvents.indexOf('comment') != -1 %}checked{% endif %} />
                 <label for="trigger-event-comment">
                   <span class="label label-info"><i class="icon-fw icon-bubbles"></i> POST</span> - When Someone Comments on Page
                 </label>

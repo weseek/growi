@@ -106,11 +106,21 @@ input:checked + .slider:before {
 .slider.round:before {
   border-radius: 50%;
 }
+
+.clickable-row > :not(.unclickable) {
+  cursor: pointer;
+}
+
+.clickable-row:hover {
+  background-color: #2196F3;
+  color: white;
+}
 </style>
 
 <script>
   $(".clickable-row > :not('.unclickable')").click(function(event) {
-    window.location = $(event.currentTarget).parent().data("href")
+    var $target = $(event.currentTarget).parent();
+    window.location = $target.data("href") + "/" + $target.data("updatepost-id");
   });
 
   $(".isEnabledToggle").on("change", function(event) {
