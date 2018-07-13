@@ -4,12 +4,12 @@
 <h2>通知設定一覧</h2>
 
 {% set tags = {
-  pageCreate: '<span class="label label-info"><i class="icon-doc"></i> CREATE</span>',
-  pageEdit: '<span class="label label-info"><i class="icon-doc"></i> EDIT</span>',
-  pageDelete: '<span class="label label-info"><i class="icon-doc"></i> DELETE</span>',
-  pageMove: '<span class="label label-info"><i class="icon-doc"></i> MOVE</span>',
-  pageLike: '<span class="label label-info"><i class="icon-doc"></i> LIKE</span>',
-  comment: '<span class="label label-info"><i class="icon-fw icon-bubbles"></i> POST</span>'
+  pageCreate: '<span class="label label-info" data-toggle="tooltip" data-placement="top" title="Page Create"><i class="icon-doc"></i> CREATE</span>',
+  pageEdit: '<span class="label label-info" data-toggle="tooltip" data-placement="top" title="Page Edit"><i class="icon-doc"></i> EDIT</span>',
+  pageDelete: '<span class="label label-info" data-toggle="tooltip" data-placement="top" title="Page Delte"><i class="icon-doc"></i> DELETE</span>',
+  pageMove: '<span class="label label-info" data-toggle="tooltip" data-placement="top" title="Page Move"><i class="icon-doc"></i> MOVE</span>',
+  pageLike: '<span class="label label-info" data-toggle="tooltip" data-placement="top" title="Page Like"><i class="icon-doc"></i> LIKE</span>',
+  comment: '<span class="label label-info" data-toggle="tooltip" data-placement="top" title="New Comment"><i class="icon-fw icon-bubbles"></i> POST</span>'
 } %}
 
 <table class="table table-bordered">
@@ -38,8 +38,8 @@
         {% endfor %}
       </td>
       <td>
-        {% if globalNotif.__t == 'mail' %}<i class="ti-email"></i> {{ globalNotif.toEmail }}
-        {% elseif globalNotif.__t == 'slack' %}<i class="fa fa-slack"></i> {{ globalNotif.slackChannels }}
+        {% if globalNotif.__t == 'mail' %}<span data-toggle="tooltip" data-placement="top" title="Email"><i class="ti-email"></i> {{ globalNotif.toEmail }}</span>
+        {% elseif globalNotif.__t == 'slack' %}<span data-toggle="tooltip" data-placement="top" title="Slack"><i class="fa fa-slack"></i> {{ globalNotif.slackChannels }}</span>
         {% endif %}
       </td>
     </tr>
