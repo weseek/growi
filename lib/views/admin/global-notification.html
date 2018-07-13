@@ -32,7 +32,7 @@
       <td>
         {{ globalNotif.triggerPath }}
       </td>
-      <td>
+      <td style="max-width: 200px;">
         {% for event in globalNotif.triggerEvents %}
           {{ tags[event] | safe }}
         {% endfor %}
