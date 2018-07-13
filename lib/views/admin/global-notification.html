@@ -3,13 +3,13 @@
 </a>
 <h2>通知設定一覧</h2>
 
-{% set icons = {
-  pageCreate: '<i class="icon-note"></i>',
-  pageEdit: '<i class="icon-note"></i>',
-  pageDelete: '<i class="icon-note"></i>',
-  pageMove: '<i class="icon-note"></i>',
-  pageLike: '<i class="icon-note"></i>',
-  comment: '<i class="icon-note"></i>'
+{% set tags = {
+  pageCreate: '<span class="label label-info"><i class="icon-doc"></i> CREATE</span>',
+  pageEdit: '<span class="label label-info"><i class="icon-doc"></i> EDIT</span>',
+  pageDelete: '<span class="label label-info"><i class="icon-doc"></i> DELETE</span>',
+  pageMove: '<span class="label label-info"><i class="icon-doc"></i> MOVE</span>',
+  pageLike: '<span class="label label-info"><i class="icon-doc"></i> LIKE</span>',
+  comment: '<span class="label label-info"><i class="icon-fw icon-bubbles"></i> POST</span>'
 } %}
 
 <table class="table table-bordered">
@@ -30,8 +30,8 @@
         </p>
       </td>
       <td>
-        {% for icon in icons %}
-          {{ icon | safe }}
+        {% for tag in tags %}
+          {{ tag | safe }}
         {% endfor %}
       </td>
       <td>
@@ -57,7 +57,7 @@
       </td>
       <td>
         {% for event in globalNotif.triggerEvents %}
-          {{ icons[event] | safe }}
+          {{ tags[event] | safe }}
         {% endfor %}
       </td>
       <td>
