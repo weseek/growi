@@ -1,0 +1,170 @@
+{% extends '../layout/admin.html' %}
+
+{% block html_title %}{{ customTitle(t('Importer management')) }}{% endblock %}
+
+{% block content_header %}
+<div class="header-wrap">
+  <header id="page-header">
+    <h1 class="title" id="">{{ t('Importer management') }}</h1>
+  </header>
+</div>
+{% endblock %}
+
+{% block content_main %}
+<div class="content-main">
+
+  <div class="row">
+    <div class="col-md-3">
+      {% include './widget/menu.html' with {current: 'importer'} %}
+    </div>
+    <div class="col-md-9">
+
+      {% set smessage = req.flash('successMessage') %}
+      {% if smessage.length %}
+      <div class="alert alert-success">
+        {% for e in smessage %}
+          {{ e }}<br>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      {% set emessage = req.flash('errorMessage') %}
+      {% if emessage.length %}
+      <div class="alert alert-danger">
+        {% for e in emessage %}
+        {{ e }}<br>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <form action="/_api/admin/settings/importer" method="post" class="form-horizontal" id="importerSettingForm" role="form">
+        <fieldset>
+          <!-- esa importer -->
+          <div class="form-group">
+            <legend>{{ t('importer_management.esa_settings.title') }}</legend>
+            <div class="form-group">
+              <label for="settingForm[importer:esa:team_name]" class="col-xs-3 control-label">{{ t('importer_management.esa_settings.team_name') }}</label>
+              <div class="col-xs-6">
+                <input class="form-control" type="text" name="settingForm[importer:esa:team_name]" value="{{ settingForm['importer:esa:team_name'] | default('') }}">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="settingForm[importer:esa:access_token]" class="col-xs-3 control-label">{{ t('importer_management.esa_settings.access_token') }}</label>
+              <div class="col-xs-6">
+                <input class="form-control" type="text" name="settingForm[importer:esa:access_token]" value="{{ settingForm['importer:esa:access_token'] | default('') }}">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="col-xs-offset-3 col-xs-6">
+            <button type="button" class="btn btn-primary" click="importFromEsa">
+              {{ t("importer_management.import") }}
+            </button>
+            <button type="submit" class="btn btn-secondary">{# the first element is the default button to submit #}
+              <input type="hidden" name="_csrf" value="{{ csrf() }}">
+              {{ t('Update') }}
+            </button>
+            <button type="button"
+                class="btn btn-default" click="test-connection-to-esa" data-toggle="modal">
+              {{ t("importer_management.test_connection") }}
+            </button>
+            </div>
+          </div>
+        </fieldset>
+      </form>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  /**
+   * test connection to esa
+   */
+  function testConnectionToEsa() {
+    var $form = $('#importerSettingForm');
+    var $action = '/_api/import/testEsaAPI';
+    var jqxhr = $.post($action, $form.serialize(), function(data)
+      {
+        if (!data.status) {
+          alert("import failed");
+        }
+        else {
+          alert("import success");
+        }
+      })
+      .fail(function() {
+        alert("failed");
+      })
+      .always(function() {
+        $button.prop('disabled', false);
+      });
+    return false;
+  }
+
+  /**
+   * import from esa
+   */
+  function importFromEsa() {
+    alert('importFromEsa');
+  }
+
+  /**
+   * Handle submit button
+   */
+  $('#importerSettingForm').each(function() {
+    $(this).submit(function()
+    {
+      function showMessage(formId, msg, status) {
+        $('#' + formId + ' .alert').remove();
+
+        if (!status) {
+          status = 'success';
+        }
+        var $message = $('<p class="alert"></p>');
+        $message.addClass('alert-' + status);
+        $message.html(msg.replace('\n', '<br>'));
+        $message.insertAfter('#' + formId + ' legend');
+
+        if (status == 'success') {
+          setTimeout(function()
+          {
+            $message.fadeOut({
+              complete: function() {
+                $message.remove();
+              }
+            });
+          }, 5000);
+        }
+      }
+
+      var $form = $(this);
+      var $id = $form.attr('id');
+      var $button = $('button', this);
+      $button.attr('disabled', 'disabled');
+      var jqxhr = $.post($form.attr('action'), $form.serialize(), function(data)
+        {
+          if (data.status) {
+            showMessage($id, '更新しました');
+          } else {
+            showMessage($id, data.message, 'danger');
+          }
+        })
+        .fail(function() {
+          showMessage($id, 'エラーが発生しました', 'danger');
+        })
+        .always(function() {
+          $button.prop('disabled', false);
+      });
+      return false;
+    });
+  });
+
+
+</script>
+
+{% endblock content_main %}
+
+{% block content_footer %}
+{% endblock content_footer %}
