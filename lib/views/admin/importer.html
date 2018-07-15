@@ -19,6 +19,7 @@
     </div>
     <div class="col-md-9">
 
+      <!-- Flash message for success -->
       {% set smessage = req.flash('successMessage') %}
       {% if smessage.length %}
       <div class="alert alert-success">
@@ -28,6 +29,7 @@
       </div>
       {% endif %}
 
+      <!-- Flash message for error -->
       {% set emessage = req.flash('errorMessage') %}
       {% if emessage.length %}
       <div class="alert alert-danger">
@@ -37,6 +39,7 @@
       </div>
       {% endif %}
 
+      <!-- Importer management forms -->
       <form action="/_api/admin/settings/importer" method="post" class="form-horizontal" id="importerSettingForm" role="form">
         <fieldset>
           <!-- esa importer -->
@@ -58,17 +61,18 @@
 
           <div class="form-group">
             <div class="col-xs-offset-3 col-xs-6">
-            <button type="button" class="btn btn-primary" click="importFromEsa">
-              {{ t("importer_management.import") }}
-            </button>
-            <button type="submit" class="btn btn-secondary">{# the first element is the default button to submit #}
-              <input type="hidden" name="_csrf" value="{{ csrf() }}">
-              {{ t('Update') }}
-            </button>
-            <button type="button"
-                class="btn btn-default" click="test-connection-to-esa" data-toggle="modal">
-              {{ t("importer_management.test_connection") }}
-            </button>
+              <button type="button" class="btn btn-primary" onClick="importFromEsa()">
+                {{ t("importer_management.import") }}
+              </button>
+              <button type="submit" class="btn btn-secondary">{# the first element is the default button to submit #}
+                <input type="hidden" name="_csrf" value="{{ csrf() }}">
+                {{ t('Update') }}
+              </button>
+              <span class="col-xs-offset-1">
+                <button type="button" class="btn btn-default" onClick="testConnectionToEsa(this)">
+                  {{ t("importer_management.test_connection") }}
+                </button>
+              </span>
             </div>
           </div>
         </fieldset>
@@ -80,22 +84,51 @@
 
 <script>
   /**
+   * show flash message
+   */
+  function showMessage(formId, msg, status) {
+    $('#' + formId + ' .alert').remove();
+
+    if (!status) {
+      status = 'success';
+    }
+    var $message = $('<p class="alert"></p>');
+    $message.addClass('alert-' + status);
+    $message.html(msg.replace('\n', '<br>'));
+    $message.insertAfter('#' + formId + ' legend');
+
+    if (status == 'success') {
+      setTimeout(function()
+      {
+        $message.fadeOut({
+          complete: function() {
+            $message.remove();
+          }
+        });
+      }, 5000);
+    }
+  }
+
+  /**
    * test connection to esa
    */
-  function testConnectionToEsa() {
+  function testConnectionToEsa(buttonClicked) {
+    var $action = '/_api/admin/imoprt/testEsaAPI';
     var $form = $('#importerSettingForm');
-    var $action = '/_api/import/testEsaAPI';
+    var $id = $form.attr('id');
+    var $button = $(buttonClicked);
+    $button.attr('disabled', 'disabled');
     var jqxhr = $.post($action, $form.serialize(), function(data)
       {
         if (!data.status) {
-          alert("import failed");
+          showMessage($id, "test connection to esa failed", 'danger');
         }
         else {
-          alert("import success");
+          showMessage($id, "test connection to esa success");
         }
       })
       .fail(function() {
-        alert("failed");
+        showMessage($id, "エラーが発生しました", 'danger');
       })
       .always(function() {
         $button.prop('disabled', false);
@@ -116,29 +149,6 @@
   $('#importerSettingForm').each(function() {
     $(this).submit(function()
     {
-      function showMessage(formId, msg, status) {
-        $('#' + formId + ' .alert').remove();
-
-        if (!status) {
-          status = 'success';
-        }
-        var $message = $('<p class="alert"></p>');
-        $message.addClass('alert-' + status);
-        $message.html(msg.replace('\n', '<br>'));
-        $message.insertAfter('#' + formId + ' legend');
-
-        if (status == 'success') {
-          setTimeout(function()
-          {
-            $message.fadeOut({
-              complete: function() {
-                $message.remove();
-              }
-            });
-          }, 5000);
-        }
-      }
-
       var $form = $(this);
       var $id = $form.attr('id');
       var $button = $('button', this);
