@@ -40,7 +40,8 @@
       {% endif %}
 
       <!-- Importer management forms -->
-      <form action="/_api/admin/settings/importer" method="post" class="form-horizontal" id="importerSettingForm" role="form">
+      <form action="/_api/admin/settings/importer" method="post" class="form-horizontal" id="importerSettingForm" role="form"
+          data-success-messaage="更新しました">
         <fieldset>
           <!-- esa importer -->
           <div class="form-group">
@@ -60,16 +61,18 @@
           </div>
 
           <div class="form-group">
+            <input type="hidden" name="_csrf" value="{{ csrf() }}" />
             <div class="col-xs-offset-3 col-xs-6">
-              <button type="button" class="btn btn-primary" onClick="importFromEsa()">
+              <button id="testConnectionToEsa" type="button" class="btn btn-primary" data-action="/_api/admin/import/esa"
+                  data-success-message="Import posts from esa success." data-error-message="Import posts from esa failed.">
                 {{ t("importer_management.import") }}
               </button>
               <button type="submit" class="btn btn-secondary">{# the first element is the default button to submit #}
-                <input type="hidden" name="_csrf" value="{{ csrf() }}">
                 {{ t('Update') }}
               </button>
               <span class="col-xs-offset-1">
-                <button type="button" class="btn btn-default" onClick="testConnectionToEsa(this)">
+                <button id="importFromEsa" type="button" class="btn btn-default" data-action="/_api/admin/imoprt/testEsaAPI"
+                    data-success-message="Test connection to esa success." data-error-message="Test connection to esa failed.">
                   {{ t("importer_management.test_connection") }}
                 </button>
               </span>
@@ -110,67 +113,52 @@
   }
 
   /**
-   * test connection to esa
+   * Post form data and process UI
    */
-  function testConnectionToEsa(buttonClicked) {
-    var $action = '/_api/admin/imoprt/testEsaAPI';
-    var $form = $('#importerSettingForm');
-    var $id = $form.attr('id');
-    var $button = $(buttonClicked);
-    $button.attr('disabled', 'disabled');
-    var jqxhr = $.post($action, $form.serialize(), function(data)
+  function postData(form, button, action, success_msg = "成功しました", error_msg = "エラーが発生しました") {
+    var id = form.attr('id');
+    button.attr('disabled', 'disabled');
+    var jqxhr = $.post(action, form.serialize(), function(data)
       {
         if (!data.status) {
-          showMessage($id, "test connection to esa failed", 'danger');
+          showMessage(id, `${error_msg} ${data.message}`, 'danger');
         }
         else {
-          showMessage($id, "test connection to esa success");
+          showMessage(id, success_msg);
         }
       })
       .fail(function() {
-        showMessage($id, "エラーが発生しました", 'danger');
+        showMessage(id, "エラーが発生しました", 'danger');
       })
       .always(function() {
-        $button.prop('disabled', false);
+        button.prop('disabled', false);
       });
     return false;
   }
 
   /**
-   * import from esa
+   * Handle button
    */
-  function importFromEsa() {
-    alert('importFromEsa');
-  }
+  $('#testConnectionToEsa, #importFromEsa').each(function() {
+    var $form = $('#importerSettingForm');
+    var $button = $(this);
+    var $action = $button.attr('data-action');
+    var $success_msg = $button.attr('data-success-message');
+    var $error_msg = $button.attr('data-error-message');
+    $button.click(function() { return postData($form, $button, $action, $success_msg, $error_msg) });
+  });
 
   /**
    * Handle submit button
    */
   $('#importerSettingForm').each(function() {
-    $(this).submit(function()
-    {
-      var $form = $(this);
-      var $id = $form.attr('id');
-      var $button = $('button', this);
-      $button.attr('disabled', 'disabled');
-      var jqxhr = $.post($form.attr('action'), $form.serialize(), function(data)
-        {
-          if (data.status) {
-            showMessage($id, '更新しました');
-          } else {
-            showMessage($id, data.message, 'danger');
-          }
-        })
-        .fail(function() {
-          showMessage($id, 'エラーが発生しました', 'danger');
-        })
-        .always(function() {
-          $button.prop('disabled', false);
-      });
-      return false;
-    });
+    var $form = $(this);
+    var $button = $("#importerSettingForm input[type='submit']");
+    var $action = $form.attr('action');
+    var $success_msg = $button.attr('data-success-message');
+    var $error_msg = $button.attr('data-error-message');
+    $form.submit(function() { return postData($form, $button, $action, $success_msg, $error_msg) });
   });
-
 
 </script>
 
