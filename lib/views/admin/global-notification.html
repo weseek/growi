@@ -58,23 +58,26 @@
   });
 
   $(".unclickable > .btn-delete").click(function(event) {
-    var id = $(event.currentTarget).closest("tr").data("updatepost-id");
-    var $target = $(event.currentTarget).parent();
+    var $targetRow = $(event.currentTarget).closest("tr");
+    var id = $targetRow.data("updatepost-id");
     $.post('/admin/global-notification/remove?id=' + id, function(res) {
       if (res.ok) {
-        $target.closest('tr').remove();
+        $targetRow.closest('tr').remove();
       }
       else {
         $('.admin-notification > .row > .col-md-9').prepend(
           '<div class=\"alert alert-danger\">Error occurred in deleting global notifcation setting.</div>'
         );
+        location.reload();
       }
     });
   });
 
   $(".isEnabledToggle").on("change", function(event) {
-    var id = $(event.currentTarget).closest("tr").data("updatepost-id");
-    $.post('/_api/admin/global-notification/toggleIsEnabled?id=' + id, function(res) {
+    var $targetRow = $(event.currentTarget).closest("tr");
+    var id = $targetRow.data("updatepost-id");
+    var isEnabled = !$targetRow.find(".isEnabledToggle").is(':checked');
+    $.post('/_api/admin/global-notification/toggleIsEnabled?id=' + id + '&isEnabled=' + isEnabled, function(res) {
       if (res.ok) {
         // do something
       }
@@ -82,6 +85,7 @@
         $('.admin-notification > .row > .col-md-9').prepend(
           '<div class=\"alert alert-danger\">Error occurred in deleting global notifcation setting.</div>'
         );
+        location.reload();
       }
     });
   });
