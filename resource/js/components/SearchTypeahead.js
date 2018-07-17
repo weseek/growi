@@ -54,7 +54,7 @@ export default class SearchTypeahead extends React.Component {
         keyword: '',
         searchedKeyword: '',
       });
-      // return;
+      return;
     }
 
     this.setState({isLoading: true});
@@ -163,7 +163,6 @@ export default class SearchTypeahead extends React.Component {
           caseSensitive={false}
           defaultSelected={defaultSelected}
           promptText={help}
-          useCache={false}
         />
         {restoreFormButton}
       </div>
