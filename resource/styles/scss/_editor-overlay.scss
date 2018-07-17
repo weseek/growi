@@ -36,13 +36,32 @@
 
   // cheat sheat
   .overlay.overlay-gfm-cheatsheat {
+
     justify-content: end;
-    align-items: end;
+    //align-items: end;
 
     pointer-events: none;
 
-    .overlay-content {
+    float: left;
+    position: absolute;
+    height: 400px;
+    width: 320px;
+    border: solid 1.5px lightgray;
+
+
+    right: 0;
+    bottom: 0;
+    margin-left: 100px;
+
+        .overlay-content {
       color: $text-muted;
+    }
+    ul{
+      list-style: none;
+    }
+    .markdown-help{
+      text-align: center;
+      padding: 0.3em;
     }
   }
 }
