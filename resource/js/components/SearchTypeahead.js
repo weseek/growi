@@ -152,7 +152,6 @@ export default class SearchTypeahead extends React.Component {
           inputProps={{name: 'q', autoComplete: 'off'}}
           isLoading={this.state.isLoading}
           labelKey="path"
-          minLength={0}
           options={this.state.pages} // Search result (Some page names)
           emptyLabel={this.emptyLabel ? this.emptyLabel : emptyLabel}
           align='left'
