@@ -63,6 +63,18 @@
     $.post('/admin/global-notification/remove?id=' + id, function(res) {
       if (res.ok) {
         $targetRow.closest('tr').remove();
+        $('.admin-notification > .row > .col-md-9').prepend(
+          '<div class=\"alert alert-success\">Successfully Deleted</div>'
+        );
+        $message = $('.admin-notification > .row > .col-md-9 > .alert.alert-success');
+        setTimeout(function()
+            {
+              $message.fadeOut({
+                complete: function() {
+                  $message.remove();
+                }
+              });
+            }, 2000);
       }
       else {
         $('.admin-notification > .row > .col-md-9').prepend(
@@ -79,7 +91,18 @@
     var isEnabled = !$targetRow.find(".isEnabledToggle").is(':checked');
     $.post('/_api/admin/global-notification/toggleIsEnabled?id=' + id + '&isEnabled=' + isEnabled, function(res) {
       if (res.ok) {
-        // do something
+        $('.admin-notification > .row > .col-md-9').prepend(
+          '<div class=\"alert alert-success\">Successfully Upated</div>'
+        );
+        $message = $('.admin-notification > .row > .col-md-9 > .alert.alert-success');
+        setTimeout(function()
+            {
+              $message.fadeOut({
+                complete: function() {
+                  $message.remove();
+                }
+              });
+            }, 2000);
       }
       else {
         $('.admin-notification > .row > .col-md-9').prepend(
