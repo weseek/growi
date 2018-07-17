@@ -54,7 +54,7 @@ export default class SearchTypeahead extends React.Component {
         keyword: '',
         searchedKeyword: '',
       });
-      return;
+      // return;
     }
 
     this.setState({isLoading: true});
@@ -142,6 +142,7 @@ export default class SearchTypeahead extends React.Component {
     const defaultSelected = (this.props.keywordOnInit != '')
       ? [{path: this.props.keywordOnInit}]
       : [];
+    const help = <h1>help here</h1>;
 
     return (
       <div className="search-typeahead">
@@ -151,7 +152,7 @@ export default class SearchTypeahead extends React.Component {
           inputProps={{name: 'q', autoComplete: 'off'}}
           isLoading={this.state.isLoading}
           labelKey="path"
-          minLength={2}
+          minLength={0}
           options={this.state.pages} // Search result (Some page names)
           emptyLabel={this.emptyLabel ? this.emptyLabel : emptyLabel}
           align='left'
@@ -161,6 +162,8 @@ export default class SearchTypeahead extends React.Component {
           renderMenuItemChildren={this.renderMenuItemChildren}
           caseSensitive={false}
           defaultSelected={defaultSelected}
+          promptText={help}
+          useCache={false}
         />
         {restoreFormButton}
       </div>
