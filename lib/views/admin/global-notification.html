@@ -64,6 +64,11 @@
       if (res.ok) {
         $target.closest('tr').remove();
       }
+      else {
+        $('.admin-notification > .row > .col-md-9').prepend(
+          '<div class=\"alert alert-danger\">Error occurred in deleting global notifcation setting.</div>'
+        );
+      }
     });
   });
 
@@ -72,6 +77,11 @@
     $.post('/_api/admin/global-notification/toggleIsEnabled?id=' + id, function(res) {
       if (res.ok) {
         // do something
+      }
+      else {
+        $('.admin-notification > .row > .col-md-9').prepend(
+          '<div class=\"alert alert-danger\">Error occurred in deleting global notifcation setting.</div>'
+        );
       }
     });
   });
