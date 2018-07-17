@@ -475,7 +475,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       <div className="overlay overlay-gfm-cheatsheat mr-5 mb-2">
         <span style={style} className="overlay-content">
            <div>
-            <p className="markdown-help">Markdownヘルプ</p>
+            <p className="markdown-help">Markdown Help</p>
               <div>
                 <ul>
                   <li># 見出し1</li>
@@ -506,7 +506,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
                   <li>|column 1&nbsp;&nbsp;&nbsp;|&nbsp; &nbsp; &nbsp;column 2|&nbsp; &nbsp;column 3&nbsp; &nbsp;|</li>
                   <li>|column 1&nbsp;&nbsp;&nbsp;|&nbsp; &nbsp; &nbsp;column 2|&nbsp; &nbsp;column 3&nbsp; &nbsp;|</li>
                 </ul>
-
               </div>
 
           </div>

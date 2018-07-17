@@ -59,6 +59,13 @@
     .markdown-help{
       text-align: center;
       padding: 0.3em;
+      font-size: 1.2em;
+      font-family: 'Verdana';
+    }
+  }
+  @media screen and (max-width: 400px) {
+    .overlay-gfm-cheatsheat {
+     visibility: hidden;
     }
   }
 }
