@@ -28,6 +28,8 @@
 
     .overlay-content {
       padding: 0.5em;
+      right: 0;
+      bottom: 0;
     }
   }
 
@@ -37,22 +39,17 @@
   // cheat sheat
   .overlay.overlay-gfm-cheatsheat {
 
+
     justify-content: end;
-    //align-items: end;
+    align-items: end;
 
     pointer-events: none;
 
-    float: left;
-    position: absolute;
+    float: right;
     height: 400px;
     width: 320px;
     border: solid 1.5px lightgray;
-
-
-    right: 0;
-    bottom: 0;
-    margin-left: 100px;
-
+    margin: auto;
         .overlay-content {
       color: $text-muted;
     }

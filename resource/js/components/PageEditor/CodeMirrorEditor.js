@@ -503,8 +503,8 @@ export default class CodeMirrorEditor extends AbstractEditor {
                 <ul>
                   <li>| Left align | Right align | Center align |</li>
                   <li>|:------------|--------------:|:--------------:|</li>
-                  <li>| &nbsp;column 1|&nbsp; &nbsp;column 2&nbsp; &nbsp;|&nbsp; &nbsp;column 3&nbsp; &nbsp;|</li>
-                  <li>| &nbsp;column 1|&nbsp; &nbsp;column 2&nbsp; &nbsp;|&nbsp; &nbsp;column 3&nbsp; &nbsp;|</li>
+                  <li>|column 1&nbsp;&nbsp;&nbsp;|&nbsp; &nbsp; &nbsp;column 2|&nbsp; &nbsp;column 3&nbsp; &nbsp;|</li>
+                  <li>|column 1&nbsp;&nbsp;&nbsp;|&nbsp; &nbsp; &nbsp;column 2|&nbsp; &nbsp;column 3&nbsp; &nbsp;|</li>
                 </ul>
 
               </div>
