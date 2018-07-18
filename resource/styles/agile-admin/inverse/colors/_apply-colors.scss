@@ -250,6 +250,24 @@ legend {
   }
 }
 
+/*
+ * Form Slider
+ */
+.admin-page {
+  span.slider {
+    background-color: #ccc;
+    &:before {
+      background-color: white;
+    }
+  }
+  input:checked+.slider {
+    background-color: #007bff;
+  }
+  input:focus+.slider {
+    box-shadow: 0 0 1px #007bff;
+  }
+}
+
 
 /*
  * Crowi sidebar
