@@ -18,13 +18,13 @@
     <th>Trigger Path (expression with <code>*</code> is supported)</th>
     <th>Trigger Events</th>
     <th>Notify To</th>
-    <th>Action</th>
+    <th></th>
   </thead>
   <tbody class="admin-notif-list">
-    {% set detailPageUrl = '/admin/global-notification' %}
     {% for globalNotif in globalNotifications %}
-    <tr class="clickable-row" data-href="{{ detailPageUrl }}" data-updatepost-id="{{ globalNotif._id.toString() }}">
-      <td class="unclickable align-middle">
+    {% set detailPageUrl = '/admin/global-notification/' + globalNotif.id %}
+    <tr>
+      <td class="align-middle">
         <label class="switch">
           <input type="checkbox" class="isEnabledToggle" {% if globalNotif.isEnabled %}checked{% endif %}>
           <span class="slider round"></span>
@@ -43,46 +43,70 @@
         {% elseif globalNotif.__t == 'slack' %}<span data-toggle="tooltip" data-placement="top" title="Slack"><i class="fa fa-slack"></i> {{ globalNotif.slackChannels }}</span>
         {% endif %}
       </td>
-      <td class="unclickable">
-        <p class="btn btn-danger btn-delete">{{ t('Delete') }}</p>
+      <td>
+        <div class="btn-group admin-group-menu">
+          <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+            <i class="icon-settings"></i> <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu" role="menu">
+            <li>
+              <a href="{{ detailPageUrl }}">
+                <i class="icon-fw icon-note"></i> 編集
+              </a>
+            </li>
+
+            <li class="btn-delete">
+              <a href="#"
+                  data-setting-id="{{ globalNotif.id }}"
+                  data-target="#admin-delete-global-notification"
+                  data-toggle="modal">
+                <i class="icon-fw icon-fire text-danger"></i> 削除する
+              </a>
+            </li>
+
+          </ul>
+        </div>
       </td>
     </tr>
     {% endfor %}
   </tbody>
 </table>
 
-<script>
-  $(".clickable-row > :not('.unclickable')").click(function(event) {
-    var $target = $(event.currentTarget).parent();
-    window.location = $target.data("href") + "/" + $target.data("updatepost-id");
-  });
+<div class="modal fade" id="admin-delete-global-notification">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-danger">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <div class="modal-title">
+            <i class="icon icon-fire"></i> Delete Global Notification Setting
+          </div>
+        </div>
 
-  $(".unclickable > .btn-delete").click(function(event) {
-    var $targetRow = $(event.currentTarget).closest("tr");
-    var id = $targetRow.data("updatepost-id");
-    $.post('/admin/global-notification/' + id + '/remove', function(res) {
-      if (res.ok) {
-        $targetRow.closest('tr').remove();
-        $('.admin-notification > .row > .col-md-9').prepend(
-          '<div class=\"alert alert-success\">Successfully Deleted</div>'
-        );
-        $message = $('.admin-notification > .row > .col-md-9 > .alert.alert-success');
-        setTimeout(function()
-            {
-              $message.fadeOut({
-                complete: function() {
-                  $message.remove();
-                }
-              });
-            }, 2000);
-      }
-      else {
-        $('.admin-notification > .row > .col-md-9').prepend(
-          '<div class=\"alert alert-danger\">Error occurred in deleting global notifcation setting.</div>'
-        );
-        location.reload();
-      }
-    });
+        <div class="modal-body">
+          <span class="text-danger">
+            削除すると元に戻すことはできませんのでご注意ください。
+          </span>
+        </div>
+        <div class="modal-footer">
+          <form action="#" method="post" id="admin-global-notification-setting-delete" class="text-right">
+            <input type="hidden" name="setting-id" value="">
+            <input type="hidden" name="_csrf" value="{{ csrf() }}">
+            <button type="submit" value="" class="btn btn-sm btn-danger">
+              <i class="icon icon-fire"></i> 削除
+            </button>
+          </form>
+        </div>
+
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+
+<script>
+  $(".btn-delete").on("click", function(event) {
+    var id = $(event.currentTarget).find("a").data("setting-id");
+    $("#admin-global-notification-setting-delete").attr("action", "/admin/global-notification/" + id + "/remove");
   });
 
   $(".isEnabledToggle").on("change", function(event) {
