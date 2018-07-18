@@ -25,6 +25,8 @@
     {% for globalNotif in globalNotifications %}
     <tr class="clickable-row" data-href="{{ detailPageUrl }}" data-updatepost-id="{{ globalNotif._id.toString() }}">
       <td class="unclickable align-middle">
+        <!-- TBD -->
+        <!-- <input type="checkbox" class="js-switch" data-size="small" checked /> -->
         <label class="switch">
           <input type="checkbox" class="isEnabledToggle" {% if globalNotif.isEnabled %}checked{% endif %}>
           <span class="slider round"></span>
