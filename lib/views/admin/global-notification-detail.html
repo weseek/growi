@@ -38,9 +38,9 @@
       </a>
 
       {% if setting %}
-        {% set actionPath = '/admin/global-notification/update' %}
+        {% set actionPath = '/admin/global-notification/' + setting.id + '/update' %}
       {% else %}
-        {% set actionPath = '/admin/global-notification/create' %}
+        {% set actionPath = '/admin/global-notification/new' %}
       {% endif %}
       <div class="m-t-20 form-box col-md-11">
         <form action="{{ actionPath }}" method="post" class="form-horizontal" role="form">
