@@ -131,7 +131,13 @@
           <div class="col-sm-offset-5 col-sm-12 m-t-20">
             <input type="hidden" name="notificationGlobal[id]" value="{{ setting.id }}">
             <input type="hidden" name="_csrf" value="{{ csrf() }}">
-            <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
+            <button type="submit" class="btn btn-primary">
+              {% if setting %}
+                {{ t('Update') }}
+              {% else %}
+                {{ t('Create') }}
+              {% endif %}
+            </button>
           </div>
         </form>
       </div>
