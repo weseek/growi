@@ -2,8 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { translate } from 'react-i18next';
 
-import * as toastr from 'toastr';
-
 import SlackNotification from './SlackNotification';
 import GrantSelector from './SavePageControls/GrantSelector';
 
@@ -13,42 +11,25 @@ class SavePageControls extends React.PureComponent {
     super(props);
 
     this.state = {
+      pageId: this.props.pageId,
     };
-
-    this.apiErrorHandler = this.apiErrorHandler.bind(this);
   }
 
   componentWillMount() {
   }
 
-  save() {
-    const params = {
-    };
-    this.props.crowi.apiPost('/page.save', params)
-      .then(res => {
-        if (!res.ok) {
-          throw new Error(res.error);
-        }
-
-      })
-      .catch(this.apiErrorHandler)
-      .then(() => {
-      });
-  }
-
-  apiErrorHandler(error) {
-    toastr.error(error.message, 'Error occured', {
-      closeButton: true,
-      progressBar: true,
-      newestOnTop: false,
-      showDuration: '100',
-      hideDuration: '100',
-      timeOut: '3000',
-    });
+  /**
+   * update pageId of state
+   * @param {string} pageId
+   */
+  setPageId(pageId) {
+    this.setState({pageId});
   }
 
   render() {
     const { t } = this.props;
+
+    const label = this.state.pageId == null ? t('Create') : t('Update');
 
     return (
       <div className="d-flex align-items-center form-inline">
@@ -69,7 +50,7 @@ class SavePageControls extends React.PureComponent {
             pageGrantGroupName={this.props.pageGrantGroupName} />
         </div>
 
-        <button className="btn btn-primary btn-submit">{t('Save')}</button>
+        <button className="btn btn-primary btn-submit">{label}</button>
       </div>
     );
   }
@@ -78,8 +59,8 @@ class SavePageControls extends React.PureComponent {
 SavePageControls.propTypes = {
   t: PropTypes.func.isRequired,               // i18next
   crowi: PropTypes.object.isRequired,
-  // for SlackNotification
   pageId: PropTypes.string,
+  // for SlackNotification
   pagePath: PropTypes.string,
   slackChannels: PropTypes.string,
   // for GrantSelector
