@@ -483,6 +483,11 @@
       "team_name": "チーム名",
       "access_token": "アクセストークン"
     },
+    "qiita_settings": {
+      "title": "qiita:teamインポータ設定",
+      "team_name": "チーム名",
+      "access_token": "アクセストークン"
+    },
     "import": "インポート",
     "test_connection": "接続テスト"
   }
