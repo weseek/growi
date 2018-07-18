@@ -1,7 +1,9 @@
 require('bootstrap-select');
 require('./thirdparty-js/jQuery.style.switcher');
 
-const Switchery = require('./thirdparty-js/switchery/switchery');
+// see https://github.com/abpetkov/switchery/issues/120
+// see https://github.com/abpetkov/switchery/issues/120#issuecomment-286337221
+require('./thirdparty-js/switchery/switchery');
 require('./thirdparty-js/switchery/switchery.css');
 
 $(function() {
