@@ -1,0 +1,115 @@
+<a href="/admin/global-notification/detail">
+  <p class="btn btn-default">通知設定の追加</p>
+</a>
+<h2>通知設定一覧</h2>
+
+{% set tags = {
+  pageCreate: '<span class="label label-info" data-toggle="tooltip" data-placement="top" title="Page Create"><i class="icon-doc"></i> CREATE</span>',
+  pageEdit: '<span class="label label-info" data-toggle="tooltip" data-placement="top" title="Page Edit"><i class="icon-doc"></i> EDIT</span>',
+  pageDelete: '<span class="label label-info" data-toggle="tooltip" data-placement="top" title="Page Delte"><i class="icon-doc"></i> DELETE</span>',
+  pageMove: '<span class="label label-info" data-toggle="tooltip" data-placement="top" title="Page Move"><i class="icon-doc"></i> MOVE</span>',
+  pageLike: '<span class="label label-info" data-toggle="tooltip" data-placement="top" title="Page Like"><i class="icon-doc"></i> LIKE</span>',
+  comment: '<span class="label label-info" data-toggle="tooltip" data-placement="top" title="New Comment"><i class="icon-fw icon-bubbles"></i> POST</span>'
+} %}
+
+<table class="table table-bordered">
+  <thead>
+    <th>ON/OFF</th>
+    <th>Trigger Path (expression with <code>*</code> is supported)</th>
+    <th>Trigger Events</th>
+    <th>Notify To</th>
+    <th>Action</th>
+  </thead>
+  <tbody class="admin-notif-list">
+    {% set detailPageUrl = '/admin/global-notification/detail' %}
+    {% for globalNotif in globalNotifications %}
+    <tr class="clickable-row" data-href="{{ detailPageUrl }}" data-updatepost-id="{{ globalNotif._id.toString() }}">
+      <td class="unclickable align-middle">
+        <label class="switch">
+          <input type="checkbox" class="isEnabledToggle" {% if globalNotif.isEnabled %}checked{% endif %}>
+          <span class="slider round"></span>
+        </label>
+      </td>
+      <td>
+        {{ globalNotif.triggerPath }}
+      </td>
+      <td style="max-width: 200px;">
+        {% for event in globalNotif.triggerEvents %}
+          {{ tags[event] | safe }}
+        {% endfor %}
+      </td>
+      <td>
+        {% if globalNotif.__t == 'mail' %}<span data-toggle="tooltip" data-placement="top" title="Email"><i class="ti-email"></i> {{ globalNotif.toEmail }}</span>
+        {% elseif globalNotif.__t == 'slack' %}<span data-toggle="tooltip" data-placement="top" title="Slack"><i class="fa fa-slack"></i> {{ globalNotif.slackChannels }}</span>
+        {% endif %}
+      </td>
+      <td class="unclickable">
+        <p class="btn btn-danger btn-delete">{{ t('Delete') }}</p>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<script>
+  $(".clickable-row > :not('.unclickable')").click(function(event) {
+    var $target = $(event.currentTarget).parent();
+    window.location = $target.data("href") + "/" + $target.data("updatepost-id");
+  });
+
+  $(".unclickable > .btn-delete").click(function(event) {
+    var $targetRow = $(event.currentTarget).closest("tr");
+    var id = $targetRow.data("updatepost-id");
+    $.post('/admin/global-notification/remove?id=' + id, function(res) {
+      if (res.ok) {
+        $targetRow.closest('tr').remove();
+        $('.admin-notification > .row > .col-md-9').prepend(
+          '<div class=\"alert alert-success\">Successfully Deleted</div>'
+        );
+        $message = $('.admin-notification > .row > .col-md-9 > .alert.alert-success');
+        setTimeout(function()
+            {
+              $message.fadeOut({
+                complete: function() {
+                  $message.remove();
+                }
+              });
+            }, 2000);
+      }
+      else {
+        $('.admin-notification > .row > .col-md-9').prepend(
+          '<div class=\"alert alert-danger\">Error occurred in deleting global notifcation setting.</div>'
+        );
+        location.reload();
+      }
+    });
+  });
+
+  $(".isEnabledToggle").on("change", function(event) {
+    var $targetRow = $(event.currentTarget).closest("tr");
+    var id = $targetRow.data("updatepost-id");
+    var isEnabled = !$targetRow.find(".isEnabledToggle").is(':checked');
+    $.post('/_api/admin/global-notification/toggleIsEnabled?id=' + id + '&isEnabled=' + isEnabled, function(res) {
+      if (res.ok) {
+        $('.admin-notification > .row > .col-md-9').prepend(
+          '<div class=\"alert alert-success\">Successfully Upated</div>'
+        );
+        $message = $('.admin-notification > .row > .col-md-9 > .alert.alert-success');
+        setTimeout(function()
+            {
+              $message.fadeOut({
+                complete: function() {
+                  $message.remove();
+                }
+              });
+            }, 2000);
+      }
+      else {
+        $('.admin-notification > .row > .col-md-9').prepend(
+          '<div class=\"alert alert-danger\">Error occurred in deleting global notifcation setting.</div>'
+        );
+        location.reload();
+      }
+    });
+  });
+</script>
