@@ -1,4 +1,4 @@
-<a href="/admin/global-notification/detail">
+<a href="/admin/global-notification/new">
   <p class="btn btn-default">通知設定の追加</p>
 </a>
 <h2>通知設定一覧</h2>
@@ -21,7 +21,7 @@
     <th>Action</th>
   </thead>
   <tbody class="admin-notif-list">
-    {% set detailPageUrl = '/admin/global-notification/detail' %}
+    {% set detailPageUrl = '/admin/global-notification' %}
     {% for globalNotif in globalNotifications %}
     <tr class="clickable-row" data-href="{{ detailPageUrl }}" data-updatepost-id="{{ globalNotif._id.toString() }}">
       <td class="unclickable align-middle">
@@ -57,7 +57,7 @@
   $(".unclickable > .btn-delete").click(function(event) {
     var $targetRow = $(event.currentTarget).closest("tr");
     var id = $targetRow.data("updatepost-id");
-    $.post('/admin/global-notification/remove?id=' + id, function(res) {
+    $.post('/admin/global-notification/' + id + '/remove', function(res) {
       if (res.ok) {
         $targetRow.closest('tr').remove();
         $('.admin-notification > .row > .col-md-9').prepend(
