@@ -48,35 +48,36 @@
 
           <fieldset class="col-sm-offset-1 col-sm-4">
             <div class="form-group">
-              <label for="triggerPath" class="control-label">トリガーパス</label><br />
+              <label for="triggerPath" class="control-label">トリガーパス</label> (expression with <code>*</code> is supported)<br />
               <input class="form-control" type="text" name="notificationGlobal[triggerPath]" value="{{ setting.triggerPath || '' }}" required>
             </div>
 
             <div class="form-group">
               <label for="notificationGlobal[notifyToType]"class="control-label">通知先</label><br />
               <div class="radio radio-primary">
-                <input type="radio" id="mail" name="notificationGlobal[notifyToType]" value="mail" {% if setting.__t == 'mail' %}checked{% endif %}>
+                <input type="radio" id="mail" name="notificationGlobal[notifyToType]" value="mail" {% if setting.__t == 'mail' %}checked{% endif %} checked>
                 <label for="mail">
                   <p class="font-weight-bold">Email</p>
                 </label>
               </div>
-              <!-- <div class="radio radio-primary">
-                <input type="radio" id="slack" name="notificationGlobal[notifyToType]" value="slack" {% if setting.__t == 'slack' %}checked{% endif %}>
+              <div class="radio radio-primary">
+                <input type="radio" id="slack" name="notificationGlobal[notifyToType]" value="slack" {% if setting.__t == 'slack' %}checked{% endif %} disabled>
                 <label for="slack">
                   <p class="font-weight-bold">Slack</p>
                 </label>
-              </div> -->
+              </div>
             </div>
 
-            <div class="form-group notify-to-option {% if setting.__t != 'mail' %}d-none{% endif %}" id="mail-input">
+            <!-- <div class="form-group notify-to-option {% if setting.__t != 'mail' %}d-none{% endif %}" id="mail-input"> -->
+            <div class="form-group notify-to-option" id="mail-input">
               <label for="notificationGlobal[toEmail]"class="control-label">Email</label><br />
               <input class="form-control" type="text" name="notificationGlobal[toEmail]" value="{{ setting.toEmail || '' }}">
             </div>
 
-            <!-- <div class="form-group notify-to-option {% if setting.__t != 'slack' %}d-none{% endif %}" id="slack-input">
+            <div class="form-group notify-to-option {% if setting.__t != 'slack' %}d-none{% endif %}" id="slack-input">
               <label for="notificationGlobal[slackChannels]"class="control-label">Slack Channels</label><br />
-              <input class="form-control" type="text" name="notificationGlobal[slackChannels]" value="{{ setting.slackChannels || '' }}">
-            </div> -->
+              <input class="form-control" type="text" name="notificationGlobal[slackChannels]" value="{{ setting.slackChannels || '' }}" disabled>
+            </div>
           </fieldset>
 
           <fieldset class="col-sm-offset-1 col-sm-4">
