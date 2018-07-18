@@ -25,7 +25,7 @@
     {% for globalNotif in globalNotifications %}
     <tr class="clickable-row" data-href="{{ detailPageUrl }}" data-updatepost-id="{{ globalNotif._id.toString() }}">
       <td class="unclickable align-middle">
-        <input type="checkbox" class="js-switch" data-size="small" {% if globalNotif.isEnabled %}checked{% endif %} />
+        <input type="checkbox" class="js-switch" data-size="small" data-id="{{ globalNotif._id.toString() }}" {% if globalNotif.isEnabled %}checked{% endif %} />
         <!-- <label class="switch">
           <input type="checkbox" class="isEnabledToggle" {% if globalNotif.isEnabled %}checked{% endif %}>
           <span class="slider round"></span>
@@ -87,9 +87,8 @@
   });
 
   $(".js-switch").on("change", function(event) {
-    var $targetRow = $(event.currentTarget).closest("tr");
-    var id = $targetRow.data("updatepost-id");
-    var isEnabled = !$targetRow.find(".js-switch").is(':checked');
+    var id = event.currentTarget.dataset.id;
+    var isEnabled = event.currentTarget.checked;
     $.post('/_api/admin/global-notification/toggleIsEnabled?id=' + id + '&isEnabled=' + isEnabled, function(res) {
       if (res.ok) {
         // do nothing
