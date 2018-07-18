@@ -1,0 +1,157 @@
+{% extends '../layout/admin.html' %}
+
+{% block html_title %}{{ customTitle(t('Notification settings')) }}{% endblock %}
+
+{% block content_header %}
+<div class="header-wrap">
+  <header id="page-header">
+    <h1 class="title" id="">{{ t('Notification settings') }}</h1>
+  </header>
+</div>
+{% endblock %}
+
+{% block content_main %}
+<div class="content-main">
+  {% set smessage = req.flash('successMessage') %}
+  {% if smessage.length %}
+  <div class="alert alert-success">
+    {{ smessage }}
+  </div>
+  {% endif %}
+
+  {% set emessage = req.flash('errorMessage') %}
+  {% if emessage.length %}
+  <div class="alert alert-danger">
+    {{ emessage }}
+  </div>
+  {% endif %}
+
+  <div class="row">
+    <div class="col-md-3">
+      {% include './widget/menu.html' with {current: 'notification'} %}
+    </div>
+
+    <div class="col-md-9">
+      <a href="/admin/notification#global-notification" class="btn btn-default">
+        <i class="icon-fw ti-arrow-left" aria-hidden="true"></i>
+        通知設定一覧に戻る
+      </a>
+
+      {% if setting %}
+        {% set actionPath = '/admin/global-notification/update' %}
+      {% else %}
+        {% set actionPath = '/admin/global-notification/create' %}
+      {% endif %}
+      <div class="m-t-20 form-box col-md-11">
+        <form action="{{ actionPath }}" method="post" class="form-horizontal" role="form">
+          <legend>通知設定詳細</legend>
+
+          <fieldset class="col-sm-offset-1 col-sm-4">
+            <div class="form-group">
+              <label for="triggerPath" class="control-label">トリガーパス</label><br />
+              <input class="form-control" type="text" name="notificationGlobal[triggerPath]" value="{{ setting.triggerPath || '' }}" required>
+            </div>
+
+            <div class="form-group">
+              <label for="notificationGlobal[notifyToType]"class="control-label">通知先</label><br />
+              <div class="radio radio-primary">
+                <input type="radio" id="mail" name="notificationGlobal[notifyToType]" value="mail" {% if setting.__t == 'mail' %}checked{% endif %}>
+                <label for="mail">
+                  <p class="font-weight-bold">Email</p>
+                </label>
+              </div>
+              <!-- <div class="radio radio-primary">
+                <input type="radio" id="slack" name="notificationGlobal[notifyToType]" value="slack" {% if setting.__t == 'slack' %}checked{% endif %}>
+                <label for="slack">
+                  <p class="font-weight-bold">Slack</p>
+                </label>
+              </div> -->
+            </div>
+
+            <div class="form-group notify-to-option {% if setting.__t != 'mail' %}d-none{% endif %}" id="mail-input">
+              <label for="notificationGlobal[toEmail]"class="control-label">Email</label><br />
+              <input class="form-control" type="text" name="notificationGlobal[toEmail]" value="{{ setting.toEmail || '' }}">
+            </div>
+
+            <!-- <div class="form-group notify-to-option {% if setting.__t != 'slack' %}d-none{% endif %}" id="slack-input">
+              <label for="notificationGlobal[slackChannels]"class="control-label">Slack Channels</label><br />
+              <input class="form-control" type="text" name="notificationGlobal[slackChannels]" value="{{ setting.slackChannels || '' }}">
+            </div> -->
+          </fieldset>
+
+          <fieldset class="col-sm-offset-1 col-sm-4">
+            <div class="form-group">
+              <label for="triggerEvent"class="control-label">トリガーイベント</label><br />
+              <div class="checkbox checkbox-info">
+                <input type="checkbox" id="trigger-event-pageCreate" name="notificationGlobal[triggerEvent:pageCreate]" value="pageCreate"
+                  {% if setting && (setting.triggerEvents.indexOf('pageCreate') != -1) %}checked{% endif %} />
+                <label for="trigger-event-pageCreate">
+                  <span class="label label-info"><i class="icon-doc"></i> CREATE</span> - When New Page is Created
+                </label>
+              </div>
+              <div class="checkbox checkbox-info">
+                <input type="checkbox" id="trigger-event-pageEdit" name="notificationGlobal[triggerEvent:pageEdit]" value="pageEdit"
+                  {% if setting && (setting.triggerEvents.indexOf('pageEdit') != -1) %}checked{% endif %} />
+                <label for="trigger-event-pageEdit">
+                  <span class="label label-info"><i class="icon-doc"></i> EDIT</span> - When Page is Edited
+                </label>
+              </div>
+              <div class="checkbox checkbox-info">
+                <input type="checkbox" id="trigger-event-pageDelete" name="notificationGlobal[triggerEvent:pageDelete]" value="pageDelete"
+                  {% if setting && (setting.triggerEvents.indexOf('pageDelete') != -1) %}checked{% endif %} />
+                <label for="trigger-event-pageDelete">
+                  <span class="label label-info"><i class="icon-doc"></i> DELETE</span> - When is Deleted
+                </label>
+              </div>
+              <div class="checkbox checkbox-info">
+                <input type="checkbox" id="trigger-event-pageMove" name="notificationGlobal[triggerEvent:pageMove]" value="pageMove"
+                  {% if setting && (setting.triggerEvents.indexOf('pageMove') != -1) %}checked{% endif %} />
+                <label for="trigger-event-pageMove">
+                  <span class="label label-info"><i class="icon-doc"></i> MOVE</span> - When Page is Moved (Renamed)
+                </label>
+              </div>
+              <div class="checkbox checkbox-info">
+                  <input type="checkbox" id="trigger-event-pageLike" name="notificationGlobal[triggerEvent:pageLike]" value="pageLike"
+                    {% if setting && (setting.triggerEvents.indexOf('pageLike') != -1) %}checked{% endif %} />
+                  <label for="trigger-event-pageLike">
+                    <span class="label label-info"><i class="icon-doc"></i> LIKE</span> - When Someone Likes Page
+                  </label>
+                </div>
+              <div class="checkbox checkbox-info">
+                <input type="checkbox" id="trigger-event-comment" name="notificationGlobal[triggerEvent:comment]" value="comment"
+                  {% if setting && (setting.triggerEvents.indexOf('comment') != -1) %}checked{% endif %} />
+                <label for="trigger-event-comment">
+                  <span class="label label-info"><i class="icon-fw icon-bubbles"></i> POST</span> - When Someone Comments on Page
+                </label>
+              </div>
+            </div>
+          </fieldset>
+
+          <div class="col-sm-offset-5 col-sm-12 m-t-20">
+            <input type="hidden" name="notificationGlobal[id]" value="{{ setting.id }}">
+            <input type="hidden" name="_csrf" value="{{ csrf() }}">
+            <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  $('input[name="notificationGlobal[notifyToType]"]').change(function() {
+    var val = $(this).val();
+    $('.notify-to-option').addClass('d-none');
+    $('#' + val + '-input').removeClass('d-none');
+  });
+
+  $('button#global-notificatin-delete').submit(function() {
+    alert(123)
+  });
+</script>
+{% endblock content_main %}
+
+{% block content_footer %}
+{% endblock content_footer %}
+
+
