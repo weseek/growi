@@ -43,60 +43,10 @@
   }
 
   .admin-notification {
-    /* slider checkbox */
-
-    /*
-    * Form Slider
-    */
-    .switch {
-      position: relative;
-      display: inline-block;
-      width: 30px;
-      height: 17px;
-    }
-
-    /* Hide default HTML checkbox */
-
-    .switch input {
-      display: none;
-    }
-
-    /* The slider */
-    .slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      -webkit-transition: .4s;
-      transition: .4s;
-    }
-
-    .slider:before {
-      position: absolute;
-      content: "";
-      height: 13px;
-      width: 13px;
-      left: 2px;
-      bottom: 2px;
-      -webkit-transition: .4s;
-      transition: .4s;
-    }
-
-    input:checked+.slider:before {
-      -webkit-transform: translateX(13px);
-      -ms-transform: translateX(13px);
-      transform: translateX(13px);
-    }
-
-    /* Rounded sliders */
-    .slider.round {
-      border-radius: 34px;
-    }
-
-    .slider.round:before {
-      border-radius: 50%;
+    .td-abs-center {
+      text-align: center;
+      vertical-align: middle;
+      width: 1px; // to keep the cell small
     }
   }
 

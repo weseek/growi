@@ -24,11 +24,8 @@
     {% for globalNotif in globalNotifications %}
     {% set detailPageUrl = '/admin/global-notification/' + globalNotif.id %}
     <tr>
-      <td class="align-middle">
-        <label class="switch">
-          <input type="checkbox" class="isEnabledToggle" {% if globalNotif.isEnabled %}checked{% endif %}>
-          <span class="slider round"></span>
-        </label>
+      <td class="align-middle td-abs-center">
+        <input type="checkbox" class="js-switch" data-size="small" data-id="{{ globalNotif._id.toString() }}" {% if globalNotif.isEnabled %}checked{% endif %} />
       </td>
       <td>
         {{ globalNotif.triggerPath }}
@@ -43,7 +40,7 @@
         {% elseif globalNotif.__t == 'slack' %}<span data-toggle="tooltip" data-placement="top" title="Slack"><i class="fa fa-slack"></i> {{ globalNotif.slackChannels }}</span>
         {% endif %}
       </td>
-      <td>
+      <td class="td-abs-center">
         <div class="btn-group admin-group-menu">
           <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
             <i class="icon-settings"></i> <span class="caret"></span>
@@ -109,24 +106,12 @@
     $("#admin-global-notification-setting-delete").attr("action", "/admin/global-notification/" + id + "/remove");
   });
 
-  $(".isEnabledToggle").on("change", function(event) {
-    var $targetRow = $(event.currentTarget).closest("tr");
-    var id = $targetRow.data("updatepost-id");
-    var isEnabled = !$targetRow.find(".isEnabledToggle").is(':checked');
+  $(".js-switch").on("change", function(event) {
+    var id = event.currentTarget.dataset.id;
+    var isEnabled = event.currentTarget.checked;
     $.post('/_api/admin/global-notification/toggleIsEnabled?id=' + id + '&isEnabled=' + isEnabled, function(res) {
       if (res.ok) {
-        $('.admin-notification > .row > .col-md-9').prepend(
-          '<div class=\"alert alert-success\">Successfully Updated</div>'
-        );
-        $message = $('.admin-notification > .row > .col-md-9 > .alert.alert-success');
-        setTimeout(function()
-            {
-              $message.fadeOut({
-                complete: function() {
-                  $message.remove();
-                }
-              });
-            }, 2000);
+        // do nothing
       }
       else {
         $('.admin-notification > .row > .col-md-9').prepend(
