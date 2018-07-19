@@ -25,10 +25,7 @@
     {% for globalNotif in globalNotifications %}
     <tr class="clickable-row" data-href="{{ detailPageUrl }}" data-updatepost-id="{{ globalNotif._id.toString() }}">
       <td class="unclickable align-middle">
-        <label class="switch">
-          <input type="checkbox" class="isEnabledToggle" {% if globalNotif.isEnabled %}checked{% endif %}>
-          <span class="slider round"></span>
-        </label>
+        <input type="checkbox" class="js-switch" data-size="small" data-id="{{ globalNotif._id.toString() }}" {% if globalNotif.isEnabled %}checked{% endif %} />
       </td>
       <td>
         {{ globalNotif.triggerPath }}
@@ -85,24 +82,12 @@
     });
   });
 
-  $(".isEnabledToggle").on("change", function(event) {
-    var $targetRow = $(event.currentTarget).closest("tr");
-    var id = $targetRow.data("updatepost-id");
-    var isEnabled = !$targetRow.find(".isEnabledToggle").is(':checked');
+  $(".js-switch").on("change", function(event) {
+    var id = event.currentTarget.dataset.id;
+    var isEnabled = event.currentTarget.checked;
     $.post('/_api/admin/global-notification/toggleIsEnabled?id=' + id + '&isEnabled=' + isEnabled, function(res) {
       if (res.ok) {
-        $('.admin-notification > .row > .col-md-9').prepend(
-          '<div class=\"alert alert-success\">Successfully Updated</div>'
-        );
-        $message = $('.admin-notification > .row > .col-md-9 > .alert.alert-success');
-        setTimeout(function()
-            {
-              $message.fadeOut({
-                complete: function() {
-                  $message.remove();
-                }
-              });
-            }, 2000);
+        // do nothing
       }
       else {
         $('.admin-notification > .row > .col-md-9').prepend(
