@@ -34,7 +34,7 @@
     <div class="col-md-9">
       <a href="/admin/notification#global-notification" class="btn btn-default">
         <i class="icon-fw ti-arrow-left" aria-hidden="true"></i>
-        通知設定一覧に戻る
+        {{ t('notification_setting.back_to_list') }}
       </a>
 
       {% if setting %}
@@ -44,16 +44,16 @@
       {% endif %}
       <div class="m-t-20 form-box col-md-11">
         <form action="{{ actionPath }}" method="post" class="form-horizontal" role="form">
-          <legend>通知設定詳細</legend>
+          <legend>{{ t('notification_setting.notification_detail') }}</legend>
 
           <fieldset class="col-sm-offset-1 col-sm-4">
             <div class="form-group">
-              <label for="triggerPath" class="control-label">トリガーパス</label> (expression with <code>*</code> is supported)<br />
+              <label for="triggerPath" class="control-label">{{ t('notification_setting.trigger_path') }}</label> {{ t('notification_setting.trigger_path_help', '<code>*</code>') }}<br />
               <input class="form-control" type="text" name="notificationGlobal[triggerPath]" value="{{ setting.triggerPath || '' }}" required>
             </div>
 
             <div class="form-group">
-              <label for="notificationGlobal[notifyToType]"class="control-label">通知先</label><br />
+              <label for="notificationGlobal[notifyToType]"class="control-label">{{ t('notification_setting.notify_to') }}</label><br />
               <div class="radio radio-primary">
                 <input type="radio" id="mail" name="notificationGlobal[notifyToType]" value="mail" {% if setting.__t == 'mail' %}checked{% endif %} checked>
                 <label for="mail">
@@ -80,49 +80,49 @@
             </div>
           </fieldset>
 
-          <fieldset class="col-sm-offset-1 col-sm-4">
+          <fieldset class="col-sm-offset-1 col-sm-5">
             <div class="form-group">
-              <label for="triggerEvent"class="control-label">トリガーイベント</label><br />
+              <label for="triggerEvent"class="control-label">{{ t('notification_setting.trigger_events') }}</label><br />
               <div class="checkbox checkbox-info">
                 <input type="checkbox" id="trigger-event-pageCreate" name="notificationGlobal[triggerEvent:pageCreate]" value="pageCreate"
                   {% if setting && (setting.triggerEvents.indexOf('pageCreate') != -1) %}checked{% endif %} />
                 <label for="trigger-event-pageCreate">
-                  <span class="label label-info"><i class="icon-doc"></i> CREATE</span> - When New Page is Created
+                  <span class="label label-info"><i class="icon-doc"></i> CREATE</span> - {{ t('notification_setting.event_pageCreate') }}
                 </label>
               </div>
               <div class="checkbox checkbox-info">
                 <input type="checkbox" id="trigger-event-pageEdit" name="notificationGlobal[triggerEvent:pageEdit]" value="pageEdit"
                   {% if setting && (setting.triggerEvents.indexOf('pageEdit') != -1) %}checked{% endif %} />
                 <label for="trigger-event-pageEdit">
-                  <span class="label label-info"><i class="icon-doc"></i> EDIT</span> - When Page is Edited
+                  <span class="label label-info"><i class="icon-doc"></i> EDIT</span> - {{ t('notification_setting.event_pageEdit') }}
                 </label>
               </div>
               <div class="checkbox checkbox-info">
                 <input type="checkbox" id="trigger-event-pageDelete" name="notificationGlobal[triggerEvent:pageDelete]" value="pageDelete"
                   {% if setting && (setting.triggerEvents.indexOf('pageDelete') != -1) %}checked{% endif %} />
                 <label for="trigger-event-pageDelete">
-                  <span class="label label-info"><i class="icon-doc"></i> DELETE</span> - When is Deleted
+                  <span class="label label-info"><i class="icon-doc"></i> DELETE</span> - {{ t('notification_setting.event_pageDelete') }}
                 </label>
               </div>
               <div class="checkbox checkbox-info">
                 <input type="checkbox" id="trigger-event-pageMove" name="notificationGlobal[triggerEvent:pageMove]" value="pageMove"
                   {% if setting && (setting.triggerEvents.indexOf('pageMove') != -1) %}checked{% endif %} />
                 <label for="trigger-event-pageMove">
-                  <span class="label label-info"><i class="icon-doc"></i> MOVE</span> - When Page is Moved (Renamed)
+                  <span class="label label-info"><i class="icon-doc"></i> MOVE</span> - {{ t('notification_setting.event_pageMove') }}
                 </label>
               </div>
               <div class="checkbox checkbox-info">
                   <input type="checkbox" id="trigger-event-pageLike" name="notificationGlobal[triggerEvent:pageLike]" value="pageLike"
                     {% if setting && (setting.triggerEvents.indexOf('pageLike') != -1) %}checked{% endif %} />
                   <label for="trigger-event-pageLike">
-                    <span class="label label-info"><i class="icon-doc"></i> LIKE</span> - When Someone Likes Page
+                    <span class="label label-info"><i class="icon-doc"></i> LIKE</span> - {{ t('notification_setting.event_pageLike') }}
                   </label>
                 </div>
               <div class="checkbox checkbox-info">
                 <input type="checkbox" id="trigger-event-comment" name="notificationGlobal[triggerEvent:comment]" value="comment"
                   {% if setting && (setting.triggerEvents.indexOf('comment') != -1) %}checked{% endif %} />
                 <label for="trigger-event-comment">
-                  <span class="label label-info"><i class="icon-fw icon-bubbles"></i> POST</span> - When Someone Comments on Page
+                  <span class="label label-info"><i class="icon-fw icon-bubbles"></i> POST</span> - {{ t('notification_setting.event_comment') }}
                 </label>
               </div>
             </div>

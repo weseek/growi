@@ -1,7 +1,7 @@
 <a href="/admin/global-notification/new">
-  <p class="btn btn-default">通知設定の追加</p>
+  <p class="btn btn-default">{{ t('notification_setting.add_notification') }}</p>
 </a>
-<h2>通知設定一覧</h2>
+<h2>{{ t('notification_setting.notification_list') }}</h2>
 
 {% set tags = {
   pageCreate: '<span class="label label-info" data-toggle="tooltip" data-placement="top" title="Page Create"><i class="icon-doc"></i> CREATE</span>',
@@ -15,9 +15,9 @@
 <table class="table table-bordered">
   <thead>
     <th>ON/OFF</th>
-    <th>Trigger Path (expression with <code>*</code> is supported)</th>
-    <th>Trigger Events</th>
-    <th>Notify To</th>
+    <th>{{ t('notification_setting.trigger_path') }} {{ t('notification_setting.trigger_path_help', '<code>*</code>') }}</th>
+    <th>{{ t('notification_setting.trigger_events') }}</th>
+    <th>{{ t('notification_setting.notify_to') }}</th>
     <th></th>
   </thead>
   <tbody class="admin-notif-list">
@@ -48,7 +48,7 @@
           <ul class="dropdown-menu" role="menu">
             <li>
               <a href="{{ detailPageUrl }}">
-                <i class="icon-fw icon-note"></i> 編集
+                <i class="icon-fw icon-note"></i> {{ t('Edit') }}
               </a>
             </li>
 
@@ -57,7 +57,7 @@
                   data-setting-id="{{ globalNotif.id }}"
                   data-target="#admin-delete-global-notification"
                   data-toggle="modal">
-                <i class="icon-fw icon-fire text-danger"></i> 削除する
+                <i class="icon-fw icon-fire text-danger"></i> {{ t('Delete') }}
               </a>
             </li>
 
