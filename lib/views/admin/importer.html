@@ -80,46 +80,6 @@
           </div>
         </fieldset>
       </form>
-      <form action="/_api/admin/settings/importer" method="post" class="form-horizontal" id="importerSettingForm" role="form"
-          data-success-messaage="更新しました">
-        <fieldset>
-          <!-- qiita:team importer -->
-          <div class="form-group">
-            <legend>{{ t('importer_management.qiita_settings.title') }}</legend>
-            <div class="form-group">
-              <label for="settingForm[importer:qiita:team_name]" class="col-xs-3 control-label">{{ t('importer_management.qiita_settings.team_name') }}</label>
-              <div class="col-xs-6">
-                <input class="form-control" type="text" name="settingForm[importer:qiita:team_name]" value="{{ settingForm['importer:qiita:team_name'] | default('') }}">
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="settingForm[importer:qiita:access_token]" class="col-xs-3 control-label">{{ t('importer_management.qiita_settings.access_token') }}</label>
-              <div class="col-xs-6">
-                <input class="form-control" type="text" name="settingForm[importer:qiita:access_token]" value="{{ settingForm['importer:qiita:access_token'] | default('') }}">
-              </div>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <input type="hidden" name="_csrf" value="{{ csrf() }}" />
-            <div class="col-xs-offset-3 col-xs-6">
-              <button id="testConnectionToEsa" type="button" class="btn btn-primary" data-action="/_api/admin/import/qiita"
-                  data-success-message="Import posts from qiita:team success." data-error-message="Import posts from qiita:team failed.">
-                {{ t("importer_management.import") }}
-              </button>
-              <button type="submit" class="btn btn-secondary">{# the first element is the default button to submit #}
-                {{ t('Update') }}
-              </button>
-              <span class="col-xs-offset-1">
-                <button id="importFromQiita" type="button" class="btn btn-default" data-action="/_api/admin/import/testQiitaAPI"
-                    data-success-message="Test connection to qiita:team success." data-error-message="Test connection to qiita:team failed.">
-                  {{ t("importer_management.test_connection") }}
-                </button>
-              </span>
-            </div>
-          </div>
-        </fieldset>
-      </form>
     </div>
   </div>
 
