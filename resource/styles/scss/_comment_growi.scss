@@ -94,6 +94,9 @@
   }
 
   .comment-form {
+    .overlay {
+      visibility: hidden;
+    }
     position: relative;
     margin-top: 2em;
     // user icon
