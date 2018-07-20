@@ -21,6 +21,7 @@ export default class SearchForm extends React.Component {
 
     this.onSearchError = this.onSearchError.bind(this);
     this.onChange = this.onChange.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
   }
 
   componentDidMount() {
@@ -44,6 +45,10 @@ export default class SearchForm extends React.Component {
     }
   }
 
+  onSubmit(query) {
+    this.refs.form.submit(query);
+  }
+
   render() {
     const emptyLabel = (this.state.searchError !== null)
       ? 'Error on searching.'
@@ -51,14 +56,16 @@ export default class SearchForm extends React.Component {
 
     return (
       <form
-        action="/_search"
-        className="search-form form-group input-group search-input-group"
+        ref='form'
+        action='/_search'
+        className='search-form form-group input-group search-input-group'
       >
         <FormGroup>
           <InputGroup>
             <SearchTypeahead
               crowi={this.crowi}
               onChange={this.onChange}
+              onSubmit={this.onSubmit}
               emptyLabel={emptyLabel}
               placeholder="Search ..."
             />

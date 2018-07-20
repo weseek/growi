@@ -1,4 +1,26 @@
+@import 'editor-overlay';
+
+body:not(.on-edit) {
+  // hide #page-form
+  #page-form {
+    display: none;
+  }
+}
+
 body.on-edit {
+
+  %expand-by-flex {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  // calculate margin
+  $header-plus-footer: 2px                      // .main padding-top
+                      + 42px                    // .nav height
+                      + 1px                     // .page-editor-footer border-top
+                      + 40px;                   // .page-editor-footer min-height
+  $editor-margin: $header-plus-footer + 26px;   // .btn-open-dropzone height
 
   // hide unnecessary elements
   .navbar.navbar-static-top,
@@ -29,15 +51,17 @@ body.on-edit {
     display: none;
   }
 
+  // show only either Edit button or HackMD button
+  &.hackmd .nav-tab-edit {
+    display: none;
+  }
+  &:not(.hackmd) .nav-tab-hackmd {
+    display: none;
+  }
 
   /*****************
    * Expand Editor
    *****************/
-  .expand-by-flex {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-  }
   .container-fluid {
     padding-bottom: 0;
   }
@@ -60,54 +84,8 @@ body.on-edit {
 
     &,
     .content-main,
-    .tab-content,
-    .edit-form,
-    .page-form {
-      @extend .expand-by-flex;
-    }
-
-    .page-form {
-
-      // calculate margin
-      $header-plus-footer: 2px                      // .main padding-top
-                         + 42px                     // .nav height
-                         + 1px                      // .page-editor-footer border-top
-                         + 40px;                    // .page-editor-footer min-height
-      $editor-margin: $header-plus-footer + 22px;   // .btn-open-dropzone height
-
-      #page-editor {
-        // right(preview)
-        &,
-        .row,
-        .page-editor-preview-container,
-        .page-editor-preview-body {
-          min-height: calc(100vh - #{$header-plus-footer});   // for IE11
-          height: calc(100vh - #{$header-plus-footer});
-        }
-        // left(editor)
-        .page-editor-editor-container {
-          min-height: calc(100vh - #{$header-plus-footer});   // for IE11
-          height: calc(100vh - #{$header-plus-footer});
-
-          .react-codemirror2, .CodeMirror, .CodeMirror-scroll,
-          .textarea-editor {
-            height: calc(100vh - #{$editor-margin});
-          }
-        }
-      }
-
-
-      .page-editor-footer {
-        width: 100%;
-        margin: 0;
-        padding: 3px;
-        min-height: 40px;
-        border-top: solid 1px transparent;
-
-        .btn-submit {
-          width: 100px;
-        }
-      }
+    .tab-content {
+      @extend %expand-by-flex;
     }
   }
 
@@ -150,68 +128,141 @@ body.on-edit {
     }
   }
 
-  /*****************
-   * Editor styles
-   *****************/
-  .page-editor-editor-container {
-    border-right: 1px solid transparent;
-    padding-right: 0;
-    // override CodeMirror styles
-    .CodeMirror {
-      .cm-matchhighlight {
-        background-color: cyan;
-      }
-      .CodeMirror-selection-highlight-scrollbar {
-        background-color: darkcyan;
-      }
+  .page-editor-footer {
+    width: 100%;
+    margin: 0;
+    padding: 3px;
+    min-height: 40px;
+    border-top: solid 1px transparent;
+
+    .btn-submit {
+      width: 100px;
     }
-
-  }
-  .page-editor-preview-container {
   }
 
-  .page-editor-preview-body {
-    padding-top: 18px;
-    padding-right: 15px;
-    overflow-y: scroll;
-  }
 
-  #page-editor-options-selector {
-    label {
-      margin-right: 0.5em;
-    }
+  &.builtin-editor .tab-pane#edit {
+    @extend %expand-by-flex;
 
-    // configuration dropdown
-    .configuration-dropdown {
-      .icon-container {
-        display: inline-block;
-        width: 20px;
+    #page-editor {
+      // right(preview)
+      &,
+      .row,
+      .page-editor-preview-container,
+      .page-editor-preview-body {
+        min-height: calc(100vh - #{$header-plus-footer});   // for IE11
+        height: calc(100vh - #{$header-plus-footer});
       }
-      .dropdown-menu > li > a {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+      // left(editor)
+      .page-editor-editor-container {
+        min-height: calc(100vh - #{$header-plus-footer});   // for IE11
+        height: calc(100vh - #{$header-plus-footer});
 
-        .menuitem-label {
-          flex: 1;
-          margin-right: 10px;
+        .react-codemirror2, .CodeMirror, .CodeMirror-scroll,
+        .textarea-editor {
+          height: calc(100vh - #{$editor-margin});
         }
       }
     }
 
-    @media (max-width: $screen-xs-max) { // {{{ less than smartphone size
+    /*****************
+    * Editor styles
+    *****************/
+    .page-editor-editor-container {
+      border-right: 1px solid transparent;
+      padding-right: 0;
+      // override CodeMirror styles
+      .CodeMirror {
+        .cm-matchhighlight {
+          background-color: cyan;
+        }
+        .CodeMirror-selection-highlight-scrollbar {
+          background-color: darkcyan;
+        }
+      }
+
+      // add icon on cursor
+      .autoformat-markdown-table-activated .CodeMirror-cursor {
+        &:after {
+          font-family: 'FontAwesome';
+          content: '\f0ce';
+        }
+      }
+
+      .textarea-editor {
+        border: none;
+        font-family: monospace;
+      }
+
+    }
+    .page-editor-preview-container {
+    }
+
+    .page-editor-preview-body {
+      padding-top: 18px;
+      padding-right: 15px;
+      overflow-y: scroll;
+    }
+
+    #page-editor-options-selector {
+      label {
+        margin-right: 0.5em;
+      }
+
+      // configuration dropdown
+      .configuration-dropdown {
+        .icon-container {
+          display: inline-block;
+          width: 20px;
+        }
+        .dropdown-menu > li > a {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+
+          .menuitem-label {
+            flex: 1;
+            margin-right: 10px;
+          }
+        }
+      }
+
+      @media (max-width: $screen-xs-max) { // {{{ less than smartphone size
+        display: none;
+      }
+    }
+
+    #page-grant-selector {
+      .btn-group {
+        min-width: 150px;
+      }
+    }
+
+  } // .builtin-editor .tab-pane#edit
+
+
+  &.hackmd {
+    #page-editor-options-selector {
       display: none;
     }
-  }
 
-  #page-grant-selector {
-    .btn-group {
-      min-width: 150px;
+    .tab-pane#hackmd {
+      @extend %expand-by-flex;
+
+      #hackmd-editor,
+      .hackmd-nopage, #iframe-hackmd {
+        width: 100vw;
+        min-height: calc(100vh - #{$header-plus-footer});   // for IE11
+        height: calc(100vh - #{$header-plus-footer});
+
+        border: none;
+      }
     }
+
   }
 
+}
 
-} // }}}
 
 /*
  * for creating portal
@@ -248,4 +299,9 @@ body.on-edit {
     }
   }
 
+}
+
+// overwrite .CodeMirror-placeholder
+.CodeMirror pre.CodeMirror-placeholder {
+  color: $text-muted;
 }

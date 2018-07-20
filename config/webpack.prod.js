@@ -40,7 +40,7 @@ module.exports = require('./webpack.common')({
             'sass-loader'
           ]
         }),
-        include: [helpers.root('resource/styles/scss')]
+        include: [helpers.root('resource/styles/scss'), helpers.root('resource/styles/hackmd')]
       }
     ]
   },
