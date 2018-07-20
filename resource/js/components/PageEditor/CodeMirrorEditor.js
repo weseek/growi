@@ -448,7 +448,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     const editorOptions = Object.assign(defaultEditorOptions, this.props.editorOptions || {});
 
     return <React.Fragment>
-           <ReactCodeMirror
+        <ReactCodeMirror
         ref="cm"
         className={this.state.additionalClass}
         placeholder="search"

@@ -64,19 +64,15 @@
   }
   ul, li {
     border-bottom: solid 1px #000000;
-    padding: 0.2em;
-  }
+    }
   li {
-    height: 3.8em;
+    height: 3.6em;
     word-wrap: break-word;
-    font-size: 0.8em;
-    line-height: 1.2em;
   }
 }
 
 // top and sidebar input styles
-.search-top,
-.search-sidebar {
+.search-top, .search-sidebar {
   .search-clear {
     top: 3px;
     right: 26px;
