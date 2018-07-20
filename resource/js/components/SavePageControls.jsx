@@ -56,9 +56,9 @@ class SavePageControls extends React.PureComponent {
         <div className="mr-2">
           <GrantSelector crowi={this.props.crowi}
               ref={(elem) => { this.refs.grantSelector = elem.getWrappedInstance()} }
-              pageGrant={this.props.pageGrant}
-              pageGrantGroupId={this.props.pageGrantGroupId}
-              pageGrantGroupName={this.props.pageGrantGroupName} />
+              grant={this.props.grant}
+              grantGroupId={this.props.grantGroupId}
+              grantGroupName={this.props.grantGroupName} />
         </div>
 
         <button className="btn btn-primary btn-submit" onClick={this.submit}>{label}</button>
@@ -76,9 +76,9 @@ SavePageControls.propTypes = {
   pagePath: PropTypes.string,
   slackChannels: PropTypes.string,
   // for GrantSelector
-  pageGrant: PropTypes.number,
-  pageGrantGroupId: PropTypes.string,
-  pageGrantGroupName: PropTypes.string,
+  grant: PropTypes.number,
+  grantGroupId: PropTypes.string,
+  grantGroupName: PropTypes.string,
 };
 
 export default translate()(SavePageControls);

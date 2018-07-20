@@ -220,15 +220,15 @@ const saveWithSubmitButton = function(options) {
 let savePageControls = null;
 const savePageControlsElem = document.getElementById('save-page-controls');
 if (savePageControlsElem) {
-  const pageGrant = +savePageControlsElem.dataset.pageGrant;
-  const pageGrantGroupId = savePageControlsElem.dataset.grantGroup;
-  const pageGrantGroupName = savePageControlsElem.dataset.grantGroupName;
+  const grant = +savePageControlsElem.dataset.grant;
+  const grantGroupId = savePageControlsElem.dataset.grantGroup;
+  const grantGroupName = savePageControlsElem.dataset.grantGroupName;
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
       <SavePageControls crowi={crowi} onSubmit={saveWithSubmitButton}
           ref={(elem) => { savePageControls = elem.getWrappedInstance() }}
           pageId={pageId} pagePath={pagePath} slackChannels={slackChannels}
-          pageGrant={pageGrant} pageGrantGroupId={pageGrantGroupId} pageGrantGroupName={pageGrantGroupName} />
+          grant={grant} grantGroupId={grantGroupId} grantGroupName={grantGroupName} />
     </I18nextProvider>,
     savePageControlsElem
   );
@@ -328,27 +328,6 @@ if (pageEditorOptionsSelectorElem) {
     pageEditorOptionsSelectorElem
   );
 }
-// render GrantSelector
-// const pageEditorGrantSelectorElem = document.getElementById('page-grant-selector');
-// if (pageEditorGrantSelectorElem) {
-//   const grantElem = document.getElementById('page-grant');
-//   const grantGroupElem = document.getElementById('grant-group');
-//   const grantGroupNameElem = document.getElementById('grant-group-name');
-//   const pageGrant = +grantElem.value;
-//   const pageGrantGroupId = grantGroupElem.value;
-//   const pageGrantGroupName = grantGroupNameElem.value;
-//   ReactDOM.render(
-//     <I18nextProvider i18n={i18n}>
-//       <GrantSelector crowi={crowi}
-//         pageGrant={pageGrant} pageGrantGroupId={pageGrantGroupId} pageGrantGroupName={pageGrantGroupName}
-//         onChangePageGrant={updateGrantElem}
-//         onDeterminePageGrantGroupId={updateGrantGroupElem}
-//         onDeterminePageGrantGroupName={updateGrantGroupNameElem} />
-//     </I18nextProvider>,
-//     pageEditorGrantSelectorElem
-//   );
-// }
-
 
 // render for admin
 const customCssEditorElem = document.getElementById('custom-css-editor');
