@@ -39,7 +39,7 @@ function insertStyle() {
   document.getElementsByTagName('head')[0].appendChild(element);
 }
 
-function postMessageOnSave(body) {
+function postMessageOnChange(body) {
   const data = {
     operation: 'notifyBodyChanges',
     body
@@ -47,16 +47,34 @@ function postMessageOnSave(body) {
   window.parent.postMessage(JSON.stringify(data), allowedOrigin);
 }
 
+function postMessageOnSave(body) {
+  const data = {
+    operation: 'save',
+    body
+  };
+  window.parent.postMessage(JSON.stringify(data), allowedOrigin);
+}
+
 function addEventListenersToCodemirror() {
   // get CodeMirror instance
+  const codemirror = window.CodeMirror;
+  // get CodeMirror editor instance
   const editor = window.editor;
 
+  //// change event
   // generate debounced function
-  const debouncedFunc = debounce(1500, postMessageOnSave);
-
+  const debouncedPostMessageOnChange = debounce(1500, postMessageOnChange);
   editor.on('change', (cm, change) => {
-    debouncedFunc(cm.doc.getValue());
+    debouncedPostMessageOnChange(cm.doc.getValue());
   });
+
+  //// save event
+  // Reset save commands and Cmd-S/Ctrl-S shortcuts that initialized by HackMD
+  codemirror.commands.save = function(cm) {
+    postMessageOnSave(cm.doc.getValue());
+  };
+  delete editor.options.extraKeys['Cmd-S'];
+  delete editor.options.extraKeys['Ctrl-S'];
 }
 
 function setValue(document) {
