@@ -1,10 +1,10 @@
 // import react-bootstrap-typeahead
 @import "~react-bootstrap-typeahead/css/Typeahead";
-
 .search-listpage-icon {
   font-size: 16px;
   color: #999;
 }
+
 .search-listpage-clear {
   display: none;
   position: absolute;
@@ -18,7 +18,6 @@
 
 .search-typeahead {
   position: relative;
-
   .search-clear {
     position: absolute;
     z-index: 2;
@@ -31,23 +30,27 @@
   }
   .rbt-menu {
     margin-top: 3px;
-
     li a span {
       .page-path {
         display: inline;
         padding: 0 4px;
         color: inherit;
       }
-
       .page-list-meta {
         font-size: .9em;
         color: #999;
-
         >span {
           margin-right: .3rem;
         }
       }
     }
+  }
+}
+
+// search help
+.search-help {
+  .search-help, td, th {
+    border: solid 1px gray;
   }
 }
 

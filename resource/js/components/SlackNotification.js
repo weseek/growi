@@ -82,3 +82,7 @@ SlackNotification.propTypes = {
   onChannelChange: PropTypes.func,
   onSlackOnChange: PropTypes.func,
 };
+
+SlackNotification.defaultProps = {
+  slackChannels: '',
+};
