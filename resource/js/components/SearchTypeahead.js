@@ -174,21 +174,21 @@ export default class SearchTypeahead extends React.Component {
 
   getHelpElement() {
     return <table className="table table-borderd search-help">
-              <caption>Search Help</caption>
+              <caption className="text-center">Search Help</caption>
               <tr>
-                <td>keyword</td>
+                <td className="text-center">keyword</td>
                 <th>記事名 or カテゴリ or 本文にkeywordを含む</th>
               </tr>
               <tr>
-                <td>title:keyword</td>
+                <td className="text-center">title:keyword</td>
                 <th>記事名にkeywordを含む</th>
               </tr>
               <tr>
-                <td>a b</td>
+                <td className="text-center">a b</td>
                 <th>文字列aとbを含む(スペース区切り)</th>
               </tr>
               <tr>
-                <td>-keyword</td>
+                <td className="text-center">-keyword</td>
                 <th>文字列keywordを含まない</th>
               </tr>
             </table>;
