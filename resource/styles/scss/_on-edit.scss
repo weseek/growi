@@ -167,6 +167,11 @@ body.on-edit {
     min-height: 40px;
     border-top: solid 1px transparent;
 
+    .grant-selector {
+      .btn-group {
+        min-width: 150px;
+      }
+    }
     .btn-submit {
       width: 100px;
     }
@@ -239,12 +244,6 @@ body.on-edit {
 
       @media (max-width: $screen-xs-max) { // {{{ less than smartphone size
         display: none;
-      }
-    }
-
-    .grant-selector {
-      .btn-group {
-        min-width: 150px;
       }
     }
 
