@@ -461,7 +461,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       <ReactCodeMirror
         ref="cm"
         className={additionalClasses}
-		placeholder="search"
+        placeholder="search"
         editorDidMount={(editor) => {
           // add event handlers
           editor.on('paste', this.pasteHandler);
