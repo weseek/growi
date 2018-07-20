@@ -419,6 +419,23 @@
     "import_recommended": "Import recommended %s"
   },
 
+  "notification_setting": {
+    "notification_list": "List of Notification Settings",
+    "add_notification": "Add New",
+    "trigger_path": "Trigger Path",
+    "trigger_path_help": "(expression with %s is supported)",
+    "trigger_events": "Trigger Events",
+    "notify_to": "Notify To",
+    "back_to_list": "Go back to list",
+    "notification_detail": "Notification Setting Details",
+    "event_pageCreate": "When new page is \"CREATED\"",
+    "event_pageEdit": "When page is \"EDITED\"",
+    "event_pageDelete": "When page is \"DELETED\"",
+    "event_pageMove": "When page is \"MOVED\" (renamed)",
+    "event_pageLike": "When someone \"LIKES\" page",
+    "event_comment": "When someone \"COMMENTS\" on page"
+  },
+
   "customize_page": {
     "Behavior": "Behavior",
     "Layout": "Layout",
