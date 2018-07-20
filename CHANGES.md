@@ -3,10 +3,13 @@ CHANGES
 
 ## 3.2.0-RC
 
-* Feature: Simultaneously edit by multiple people with HackMD integration
+* Feature: HackMD integration so that user can simultaneously edit with multiple people
 
+## 3.1.14-RC
 
-## 3.1.13-RC
+* 
+
+## 3.1.13
 
 * Feature: Global Notification
 * Feature: Send Global Notification with E-mail
