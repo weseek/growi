@@ -43,8 +43,8 @@ export default class SlackNotification extends React.Component {
     const value = event.target.checked;
     this.setState({isSlackEnabled: value});
     // dispatch event
-    if (this.props.onSlackOnChange != null) {
-      this.props.onSlackOnChange(value);
+    if (this.props.onEnabledFlagChange != null) {
+      this.props.onEnabledFlagChange(value);
     }
   }
 
@@ -80,7 +80,7 @@ SlackNotification.propTypes = {
   slackChannels: PropTypes.string,
   formName: PropTypes.string,
   onChannelChange: PropTypes.func,
-  onSlackOnChange: PropTypes.func,
+  onEnabledFlagChange: PropTypes.func,
 };
 
 SlackNotification.defaultProps = {

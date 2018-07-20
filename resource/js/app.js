@@ -212,6 +212,10 @@ const saveWithShortcut = function(markdown) {
     .catch(errorHandler);
 };
 
+const saveWithSubmitButton = function(options) {
+  console.log(options);
+};
+
 // render SavePageControls
 let savePageControls = null;
 const savePageControlsElem = document.getElementById('save-page-controls');
@@ -221,7 +225,7 @@ if (savePageControlsElem) {
   const pageGrantGroupName = savePageControlsElem.dataset.grantGroupName;
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
-      <SavePageControls crowi={crowi}
+      <SavePageControls crowi={crowi} onSubmit={saveWithSubmitButton}
           ref={(elem) => { savePageControls = elem.getWrappedInstance() }}
           pageId={pageId} pagePath={pagePath} slackChannels={slackChannels}
           pageGrant={pageGrant} pageGrantGroupId={pageGrantGroupId} pageGrantGroupName={pageGrantGroupName} />

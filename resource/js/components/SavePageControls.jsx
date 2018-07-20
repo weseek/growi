@@ -13,6 +13,8 @@ class SavePageControls extends React.PureComponent {
     this.state = {
       pageId: this.props.pageId,
     };
+
+    this.submit = this.submit.bind(this);
   }
 
   componentWillMount() {
@@ -26,6 +28,13 @@ class SavePageControls extends React.PureComponent {
     this.setState({pageId});
   }
 
+  submit() {
+    const slackNotificationState = this.refs.slackNotification.state;
+    const grantSelectorState = this.refs.grantSelector.state;
+    const options = Object.assign(slackNotificationState, grantSelectorState);
+    this.props.onSubmit(options);
+  }
+
   render() {
     const { t } = this.props;
 
@@ -35,22 +44,24 @@ class SavePageControls extends React.PureComponent {
       <div className="d-flex align-items-center form-inline">
         <div className="mr-2">
           <SlackNotification
-            crowi={this.props.crowi}
-            pageId={this.props.pageId}
-            pagePath={this.props.pagePath}
-            isSlackEnabled={false}
-            slackChannels={this.props.slackChannels}
-            formName='pageForm' />
+              ref='slackNotification'
+              crowi={this.props.crowi}
+              pageId={this.props.pageId}
+              pagePath={this.props.pagePath}
+              isSlackEnabled={false}
+              slackChannels={this.props.slackChannels}
+              formName='pageForm' />
         </div>
 
         <div className="mr-2">
           <GrantSelector crowi={this.props.crowi}
-            pageGrant={this.props.pageGrant}
-            pageGrantGroupId={this.props.pageGrantGroupId}
-            pageGrantGroupName={this.props.pageGrantGroupName} />
+              ref={(elem) => { this.refs.grantSelector = elem.getWrappedInstance()} }
+              pageGrant={this.props.pageGrant}
+              pageGrantGroupId={this.props.pageGrantGroupId}
+              pageGrantGroupName={this.props.pageGrantGroupName} />
         </div>
 
-        <button className="btn btn-primary btn-submit">{label}</button>
+        <button className="btn btn-primary btn-submit" onClick={this.submit}>{label}</button>
       </div>
     );
   }
@@ -59,6 +70,7 @@ class SavePageControls extends React.PureComponent {
 SavePageControls.propTypes = {
   t: PropTypes.func.isRequired,               // i18next
   crowi: PropTypes.object.isRequired,
+  onSubmit: PropTypes.func.isRequired,
   pageId: PropTypes.string,
   // for SlackNotification
   pagePath: PropTypes.string,
