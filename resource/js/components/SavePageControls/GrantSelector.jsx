@@ -67,11 +67,11 @@ class GrantSelector extends React.Component {
 
     // refresh bootstrap-select
     // see https://silviomoreto.github.io/bootstrap-select/methods/#selectpickerrefresh
-    $('.page-grant-selector.selectpicker').selectpicker('refresh');
+    $('.grant-selector .selectpicker').selectpicker('refresh');
     //// DIRTY HACK -- 2018.05.25 Yuki Takei
     // set group name to the bootstrap-select options
     //  cz: .selectpicker('refresh') doesn't replace data-content
-    $('.page-grant-selector .group-name').text(this.getGroupName());
+    $('.grant-selector .group-name').text(this.getGroupName());
 
   }
 
