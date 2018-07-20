@@ -145,7 +145,7 @@ export default class SearchTypeahead extends React.Component {
     const defaultSelected = (this.props.keywordOnInit != '')
       ? [{path: this.props.keywordOnInit}]
       : [];
-    const help = this.searchHelp();
+    const help = this.getHelpElement();
 
     return (
       <div className="search-typeahead">
@@ -172,22 +172,26 @@ export default class SearchTypeahead extends React.Component {
     );
   }
 
-  searchHelp() {
-    return <div className="search-help">
-            <h5>Search Help</h5>
-              <ul className="left small">
-                <li><h6>keyword</h6></li>
-                <li><h6>title:keyword</h6></li>
-                <li><h6>a b</h6></li>
-                <li><h6>-keyword</h6></li>
-              </ul>
-              <ul className="right small">
-                <li><h6>記事名 or カテゴリ or 本文にkeywordを含む</h6></li>
-                <li><h6>記事名にkeywordを含む</h6></li>
-                <li><h6>文字列aとbを含む(スペース区切り)</h6></li>
-                <li><h6>文字列keywordを含まない</h6></li>
-              </ul>
-            </div>;
+  getHelpElement() {
+    return <table className="table table-borderd search-help">
+              <caption>Search Help</caption>
+              <tr>
+                <td>keyword</td>
+                <th>記事名 or カテゴリ or 本文にkeywordを含む</th>
+              </tr>
+              <tr>
+                <td>title:keyword</td>
+                <th>記事名にkeywordを含む</th>
+              </tr>
+              <tr>
+                <td>a b</td>
+                <th>文字列aとbを含む(スペース区切り)</th>
+              </tr>
+              <tr>
+                <td>-keyword</td>
+                <th>文字列keywordを含まない</th>
+              </tr>
+            </table>;
   }
 }
 
