@@ -4,13 +4,22 @@ CHANGES
 ## 3.2.0-RC
 
 * Feature: Simultaneously edit by multiple people with HackMD integration
-* Support: Upgrade libs
-    * react
-    * react-dom
+
 
 ## 3.1.13-RC
 
+* Feature: Global Notification
+* Feature: Send Global Notification with E-mail
 * Improvement: Add attribute mappings for email to LDAP settings
+* Support: Upgrade libs
+    * autoprefixer
+    * css-loader
+    * method-override
+    * optimize-css-assets-webpack-plugin
+    * react
+    * react-bootstrap-typeahead
+    * react-dom
+
 
 ## 3.1.12
 
