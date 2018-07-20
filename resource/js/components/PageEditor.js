@@ -61,6 +61,11 @@ export default class PageEditor extends React.Component {
     this.renderPreview(this.state.markdown);
   }
 
+  setMarkdown(markdown) {
+    this.setState({ markdown });
+    this.refs.editor.setValue(markdown);
+  }
+
   focusToEditor() {
     this.refs.editor.forceToFocus();
   }

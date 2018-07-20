@@ -176,9 +176,14 @@ const saveWithShortcutSuccessHandler = function(page) {
   if (componentInstances.page != null) {
     componentInstances.page.setMarkdown(page.revision.body);
   }
+  // re-render PageEditor component
+  if (componentInstances.pageEditor != null) {
+    componentInstances.pageEditor.setMarkdown(page.revision.body);
+  }
   // set revision id to PageEditorByHackmd
   if (componentInstances.pageEditorByHackmd != null) {
     componentInstances.pageEditorByHackmd.setRevisionId(pageRevisionId);
+    componentInstances.pageEditorByHackmd.setMarkdown(page.revision.body);
   }
 };
 
@@ -262,7 +267,8 @@ if (pageEditorElem) {
         onSaveWithShortcut={saveWithShortcut} />,
     pageEditorElem
   );
-  // set refs for pageEditor
+  componentInstances.pageEditor = pageEditor;
+  // set refs for setCaretLine/forceToFocus when tab is changed
   crowi.setPageEditor(pageEditor);
 }
 

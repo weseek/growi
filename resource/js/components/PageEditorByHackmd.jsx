@@ -11,6 +11,7 @@ export default class PageEditorByHackmd extends React.PureComponent {
     super(props);
 
     this.state = {
+      markdown: this.props.markdown,
       isInitialized: false,
       isInitializing: false,
       revisionId: this.props.revisionId,
@@ -26,6 +27,13 @@ export default class PageEditorByHackmd extends React.PureComponent {
   }
 
   componentWillMount() {
+  }
+
+  setMarkdown(markdown) {
+    this.setState({ markdown });
+    if (this.refs.hackmdEditor != null) {
+      this.refs.hackmdEditor.setValue(markdown);
+    }
   }
 
   /**
@@ -134,10 +142,14 @@ export default class PageEditorByHackmd extends React.PureComponent {
     if (this.state.isInitialized) {
       return (
         <HackmdEditor
+          ref='hackmdEditor'
           hackmdUri={hackmdUri}
           pageIdOnHackmd={this.state.pageIdOnHackmd}
-          initializationMarkdown={isResume ? null : this.props.markdown}
+          initializationMarkdown={isResume ? null : this.state.markdown}
           onChange={this.hackmdEditorChangeHandler}
+          onSaveWithShortcut={(document) => {
+            this.props.onSaveWithShortcut(document);
+          }}
         >
         </HackmdEditor>
       );
@@ -194,6 +206,7 @@ export default class PageEditorByHackmd extends React.PureComponent {
 PageEditorByHackmd.propTypes = {
   crowi: PropTypes.object.isRequired,
   markdown: PropTypes.string.isRequired,
+  onSaveWithShortcut: PropTypes.func.isRequired,
   pageId: PropTypes.string,
   revisionId: PropTypes.string,
   pageIdOnHackmd: PropTypes.string,

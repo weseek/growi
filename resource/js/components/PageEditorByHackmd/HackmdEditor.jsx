@@ -13,11 +13,20 @@ export default class HackmdEditor extends React.PureComponent {
     this.notifyBodyChangesHandler = this.notifyBodyChangesHandler.bind(this);
 
     this.loadHandler = this.loadHandler.bind(this);
+    this.saveHandler = this.saveHandler.bind(this);
   }
 
   componentDidMount() {
     const contentWindow = this.refs.iframe.contentWindow;
     this.listenMessages(contentWindow);
+  }
+
+  setValue(newValue) {
+    const data = { operation: 'setValue' };
+    if (newValue != null) {
+      data.document = newValue;
+    }
+    this.postMessageToHackmd(data);
   }
 
   /**
@@ -34,8 +43,13 @@ export default class HackmdEditor extends React.PureComponent {
       const operation = data.operation;
       const body = data.body;
 
-      if (operation === 'notifyBodyChanges') {
-        this.notifyBodyChangesHandler(body);
+      switch (operation) {
+        case 'notifyBodyChanges':
+          this.notifyBodyChangesHandler(body);
+          break;
+        case 'save':
+          this.saveHandler(body);
+          break;
       }
     });
   }
@@ -56,11 +70,13 @@ export default class HackmdEditor extends React.PureComponent {
   }
 
   loadHandler() {
-    const data = { operation: 'setValue' };
-    if (this.props.initializationMarkdown != null) {
-      data.document = this.props.initializationMarkdown;
+    this.setValue(this.props.initializationMarkdown);
+  }
+
+  saveHandler(document) {
+    if (this.props.onSaveWithShortcut != null) {
+      this.props.onSaveWithShortcut(document);
     }
-    this.postMessageToHackmd(data);
   }
 
   render() {
@@ -81,4 +97,5 @@ HackmdEditor.propTypes = {
   pageIdOnHackmd: PropTypes.string.isRequired,
   initializationMarkdown: PropTypes.string,
   onChange: PropTypes.func,
+  onSaveWithShortcut: PropTypes.func,
 };
