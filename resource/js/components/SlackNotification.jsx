@@ -31,6 +31,10 @@ export default class SlackNotification extends React.Component {
     });
   }
 
+  getCurrentOptionsToSave() {
+    return Object.assign({}, this.state);
+  }
+
   updateState(value) {
     this.setState({slackChannels: value});
     // dispatch event

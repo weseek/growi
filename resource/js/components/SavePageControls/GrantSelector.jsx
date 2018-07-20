@@ -46,6 +46,7 @@ class GrantSelector extends React.Component {
     // retrieve xss library from window
     this.xss = window.xss;
 
+    this.getCurrentOptionsToSave = this.getCurrentOptionsToSave.bind(this);
     this.showSelectGroupModal = this.showSelectGroupModal.bind(this);
     this.hideSelectGroupModal = this.hideSelectGroupModal.bind(this);
 
@@ -72,6 +73,16 @@ class GrantSelector extends React.Component {
     //  cz: .selectpicker('refresh') doesn't replace data-content
     $('.page-grant-selector .group-name').text(this.getGroupName());
 
+  }
+
+  getCurrentOptionsToSave() {
+    const options = {
+      grant: this.state.pageGrant
+    };
+    if (this.state.pageGrantGroup != null) {
+      options.grantGroup = this.state.pageGrantGroup._id;
+    }
+    return options;
   }
 
   showSelectGroupModal() {

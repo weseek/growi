@@ -29,9 +29,9 @@ class SavePageControls extends React.PureComponent {
   }
 
   submit() {
-    const slackNotificationState = this.refs.slackNotification.state;
-    const grantSelectorState = this.refs.grantSelector.state;
-    const options = Object.assign(slackNotificationState, grantSelectorState);
+    const slackNotificationOptions = this.refs.slackNotification.getCurrentOptionsToSave();
+    const grantSelectorOptions = this.refs.grantSelector.getCurrentOptionsToSave();
+    const options = Object.assign(slackNotificationOptions, grantSelectorOptions);
     this.props.onSubmit(options);
   }
 
