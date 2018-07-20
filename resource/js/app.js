@@ -155,9 +155,6 @@ Object.keys(componentMappings).forEach((key) => {
  * @param {object} page Page instance
  */
 const saveWithShortcutSuccessHandler = function(page) {
-  // modify the revision id value to pass checking id when updating
-  // crowi.getCrowiForJquery().updatePageForm(page);
-
   // show toastr
   toastr.success(undefined, 'Saved successfully', {
     closeButton: true,
@@ -217,13 +214,13 @@ if (savePageControlsElem) {
   const pageGrant = +savePageControlsElem.dataset.pageGrant;
   const pageGrantGroupId = savePageControlsElem.dataset.grantGroup;
   const pageGrantGroupName = savePageControlsElem.dataset.grantGroupName;
-  savePageControls = (
-    <SavePageControls crowi={crowi}
-      pageId={pageId} pagePath={pagePath} slackChannels={slackChannels}
-      pageGrant={pageGrant} pageGrantGroupId={pageGrantGroupId} pageGrantGroupName={pageGrantGroupName} />
-  );
   ReactDOM.render(
-    <I18nextProvider i18n={i18n}>{savePageControls}</I18nextProvider>,
+    <I18nextProvider i18n={i18n}>
+      <SavePageControls crowi={crowi}
+          ref={(elem) => { savePageControls = elem.getWrappedInstance() }}
+          pageId={pageId} pagePath={pagePath} slackChannels={slackChannels}
+          pageGrant={pageGrant} pageGrantGroupId={pageGrantGroupId} pageGrantGroupName={pageGrantGroupName} />
+    </I18nextProvider>,
     savePageControlsElem
   );
   componentInstances.savePageControls = savePageControls;
