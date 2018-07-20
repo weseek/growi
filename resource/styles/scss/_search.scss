@@ -1,10 +1,10 @@
 // import react-bootstrap-typeahead
 @import "~react-bootstrap-typeahead/css/Typeahead";
-
 .search-listpage-icon {
   font-size: 16px;
   color: #999;
 }
+
 .search-listpage-clear {
   display: none;
   position: absolute;
@@ -18,7 +18,6 @@
 
 .search-typeahead {
   position: relative;
-
   .search-clear {
     position: absolute;
     z-index: 2;
@@ -31,18 +30,15 @@
   }
   .rbt-menu {
     margin-top: 3px;
-
     li a span {
       .page-path {
         display: inline;
         padding: 0 4px;
         color: inherit;
       }
-
       .page-list-meta {
         font-size: .9em;
         color: #999;
-
         >span {
           margin-right: .3rem;
         }
@@ -54,8 +50,8 @@
 .search-help {
   margin-left: none;
   text-align: center;
-
-  .right, .left {
+  .right,
+  .left {
     padding: 0px !important;
     border: solid 1px #000000;
     float: left;
@@ -66,7 +62,8 @@
   .right {
     width: 65%;
   }
-  ul, li {
+  ul,
+  li {
     border-bottom: solid 1px #000000;
     padding: 0.2em;
   }
@@ -79,12 +76,12 @@
 }
 
 // top and sidebar input styles
-.search-top, .search-sidebar {
+.search-top,
+.search-sidebar {
   .search-clear {
     top: 3px;
     right: 26px;
   }
-
   .input-group-btn {
     position: absolute;
     top: 0;
@@ -92,9 +89,7 @@
     .btn {
       padding: 4px 10px;
     }
-  }
-
-  // using react-bootstrap-typeahead
+  } // using react-bootstrap-typeahead
   // see: https://github.com/ericgio/react-bootstrap-typeahead
   .rbt-input.form-control {
     border: none;
@@ -103,7 +98,6 @@
     border-bottom-right-radius: 40px;
     padding-top: 6px;
     height: 30px;
-
     .rbt-input-wrapper {
       margin-left: 8px;
     }
@@ -114,18 +108,20 @@
 .search-top {
   margin-top: 10px;
   margin-bottom: 10px;
-
   .rbt-input.form-control {
     width: 180px;
-    transition: 0.3s ease-out;
-    // focus
+    transition: 0.3s ease-out; // focus
     &.focus {
       width: 300px;
     }
   }
 }
+
 .search-sidebar {
-  .search-form, .form-group, .rbt-input.form-control, .input-group {
+  .search-form,
+  .form-group,
+  .rbt-input.form-control,
+  .input-group {
     width: 100%;
   }
   .input-group-btn {
@@ -134,7 +130,6 @@
 }
 
 .search-result {
-
   .search-result-list {
     nav {
       padding-right: 0;
@@ -147,7 +142,7 @@
         overflow-y: scroll;
       }
       .nav {
-        > li {
+        >li {
           padding: 2px 8px;
           &.active {
             padding-right: 5px;
@@ -156,30 +151,25 @@
         }
       }
     }
-
     .search-result-meta {
       margin-bottom: 10px;
       font-weight: bold;
     }
-
     .search-result-list-delete-checkbox {
       margin: 0 10px 0 0;
       vertical-align: middle;
     }
   }
-
   .search-result-content {
     padding-bottom: 32px;
-
     .search-result-page {
-      > h2 {
+      >h2 {
         font-size: 20px;
         line-height: 1em;
       }
-      &:first-child > h2 {
+      &:first-child>h2 {
         margin-top: 0;
       }
-
       .wiki {
         border: solid 1px #ccc;
         padding: 16px;
