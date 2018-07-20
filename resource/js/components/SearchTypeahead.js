@@ -91,6 +91,9 @@ export default class SearchTypeahead extends React.Component {
 
   onInputChange(text) {
     this.setState({input: text});
+    if (text === '') {
+      this.setState({pages: []});
+    }
   }
 
   onChange(selected) {
@@ -142,6 +145,7 @@ export default class SearchTypeahead extends React.Component {
     const defaultSelected = (this.props.keywordOnInit != '')
       ? [{path: this.props.keywordOnInit}]
       : [];
+    const help = this.getHelpElement();
 
     return (
       <div className="search-typeahead">
@@ -151,7 +155,7 @@ export default class SearchTypeahead extends React.Component {
           inputProps={{name: 'q', autoComplete: 'off'}}
           isLoading={this.state.isLoading}
           labelKey="path"
-          minLength={2}
+          minLength={0}
           options={this.state.pages} // Search result (Some page names)
           emptyLabel={this.emptyLabel ? this.emptyLabel : emptyLabel}
           align='left'
@@ -161,10 +165,33 @@ export default class SearchTypeahead extends React.Component {
           renderMenuItemChildren={this.renderMenuItemChildren}
           caseSensitive={false}
           defaultSelected={defaultSelected}
+          promptText={help}
         />
         {restoreFormButton}
       </div>
     );
+  }
+
+  getHelpElement() {
+    return <table className="table table-borderd search-help">
+              <caption className="text-center">Search Help</caption>
+              <tr>
+                <td className="text-center">keyword</td>
+                <th>記事名 or カテゴリ or 本文にkeywordを含む</th>
+              </tr>
+              <tr>
+                <td className="text-center">title:keyword</td>
+                <th>記事名にkeywordを含む</th>
+              </tr>
+              <tr>
+                <td className="text-center">a b</td>
+                <th>文字列aとbを含む(スペース区切り)</th>
+              </tr>
+              <tr>
+                <td className="text-center">-keyword</td>
+                <th>文字列keywordを含まない</th>
+              </tr>
+            </table>;
   }
 }
 
