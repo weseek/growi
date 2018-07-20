@@ -458,10 +458,14 @@ export default class CodeMirrorEditor extends AbstractEditor {
     const editorOptions = Object.assign(defaultEditorOptions, this.props.editorOptions || {});
 
     return <React.Fragment>
-      <ReactCodeMirror
+        <ReactCodeMirror
         ref="cm"
+<<<<<<< HEAD
+        className={this.state.additionalClass}
+        placeholder="search"
+=======
         className={additionalClasses}
-		placeholder="search"
+>>>>>>> origin/master
         editorDidMount={(editor) => {
           // add event handlers
           editor.on('paste', this.pasteHandler);
