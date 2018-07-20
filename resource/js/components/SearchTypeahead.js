@@ -145,7 +145,7 @@ export default class SearchTypeahead extends React.Component {
     const defaultSelected = (this.props.keywordOnInit != '')
       ? [{path: this.props.keywordOnInit}]
       : [];
-    const help = <h1>help here</h1>;
+    const help = this.newMethod();
 
     return (
       <div className="search-typeahead">
@@ -170,6 +170,24 @@ export default class SearchTypeahead extends React.Component {
         {restoreFormButton}
       </div>
     );
+  }
+
+  newMethod() {
+    return <div className="search-help">
+            <p>Search Help</p>
+              <ul className="left">
+                <li>keyword</li>
+                <li>title:keyword</li>
+                <li>a b</li>
+                <li>-keyword</li>
+              </ul>
+              <ul className="right">
+                <li>記事名 or カテゴリ or 本文にkeywordを含む</li>
+                <li>記事名にkeywordを含む</li>
+                <li>文字列aとbを含む(スペース区切り)</li>
+                <li>文字列keywordを含まない</li>
+              </ul>
+            </div>;
   }
 }
 

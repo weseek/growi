@@ -51,6 +51,33 @@
   }
 }
 
+.search-help {
+  margin-left: none;
+  text-align: center;
+
+  .right, .left {
+    padding: 0px !important;
+    border: solid 1px #000000;
+    float: left;
+  }
+  .left {
+    width: 35%;
+  }
+  .right {
+    width: 65%;
+  }
+  ul, li {
+    border-bottom: solid 1px #000000;
+    padding: 0.2em;
+  }
+  li {
+    height: 3.8em;
+    word-wrap: break-word;
+    font-size: 0.8em;
+    line-height: 1.2em;
+  }
+}
+
 // top and sidebar input styles
 .search-top, .search-sidebar {
   .search-clear {
