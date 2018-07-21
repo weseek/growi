@@ -80,7 +80,7 @@ class GrantSelector extends React.Component {
       grant: this.state.grant
     };
     if (this.state.grantGroup != null) {
-      options.grantGroup = this.state.grantGroup._id;
+      options.grantUserGroupId = this.state.grantGroup._id;
     }
     return options;
   }

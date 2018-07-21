@@ -14,10 +14,17 @@ class SavePageControls extends React.PureComponent {
       pageId: this.props.pageId,
     };
 
+    this.getCurrentOptionsToSave = this.getCurrentOptionsToSave.bind(this);
     this.submit = this.submit.bind(this);
   }
 
   componentWillMount() {
+  }
+
+  getCurrentOptionsToSave() {
+    const slackNotificationOptions = this.refs.slackNotification.getCurrentOptionsToSave();
+    const grantSelectorOptions = this.refs.grantSelector.getCurrentOptionsToSave();
+    return Object.assign(slackNotificationOptions, grantSelectorOptions);
   }
 
   /**
@@ -29,10 +36,7 @@ class SavePageControls extends React.PureComponent {
   }
 
   submit() {
-    const slackNotificationOptions = this.refs.slackNotification.getCurrentOptionsToSave();
-    const grantSelectorOptions = this.refs.grantSelector.getCurrentOptionsToSave();
-    const options = Object.assign(slackNotificationOptions, grantSelectorOptions);
-    this.props.onSubmit(options);
+    this.props.onSubmit();
   }
 
   render() {

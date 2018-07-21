@@ -199,12 +199,15 @@ const errorHandler = function(error) {
 };
 
 const saveWithShortcut = function(markdown) {
+  // get options
+  const options = componentInstances.savePageControls.getCurrentOptionsToSave();
+
   let promise = undefined;
   if (pageId == null) {
-    promise = crowi.createPage(pagePath, markdown, {});
+    promise = crowi.createPage(pagePath, markdown, options);
   }
   else {
-    promise = crowi.updatePage(pageId, pageRevisionId, markdown, {});
+    promise = crowi.updatePage(pageId, pageRevisionId, markdown, options);
   }
 
   promise
@@ -212,7 +215,8 @@ const saveWithShortcut = function(markdown) {
     .catch(errorHandler);
 };
 
-const saveWithSubmitButton = function(options) {
+const saveWithSubmitButton = function() {
+  const options = componentInstances.savePageControls.getCurrentOptionsToSave();
   console.log(options);
 };
 
