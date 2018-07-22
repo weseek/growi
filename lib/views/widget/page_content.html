@@ -22,7 +22,7 @@
       <script type="text/template" id="raw-text-original">{{ revision.body.toString() | encodeHTML }}</script>
 
       {# formatted text #}
-      <div class="tab-pane {% if not req.body.pageForm %}active{% endif %}" id="revision-body">
+      <div class="tab-pane" id="revision-body">
         <div class="revision-toc" id="revision-toc">
           <a data-toggle="collapse" data-parent="#revision-toc" href="#revision-toc-content" class="revision-toc-head">{{ t('Table of Contents') }}</a>
           <div id="revision-toc-content" class="revision-toc-content collapse in"></div>
@@ -33,7 +33,7 @@
 
     {% if not page.isDeleted() %}
       {# edit form #}
-      <div class="tab-pane {% if req.body.pageForm %}active{% endif %}" id="edit">
+      <div class="tab-pane" id="edit">
         <div id="page-editor">{% if pageForm.body %}{{ pageForm.body }}{% endif %}</div>
       </div>
       <div class="tab-pane" id="hackmd">
