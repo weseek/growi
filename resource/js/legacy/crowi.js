@@ -627,6 +627,25 @@ $(function() {
     });
   } // end if pageId
 
+  // tab changing handling
+  $('a[href="#edit"]').on('show.bs.tab', function() {
+    $('body').addClass('on-edit');
+    $('body').addClass('builtin-editor');
+  });
+  $('a[href="#edit"]').on('hide.bs.tab', function() {
+    $('body').removeClass('on-edit');
+    $('body').removeClass('builtin-editor');
+  });
+  $('a[href="#hackmd"]').on('show.bs.tab', function() {
+    $('body').addClass('on-edit');
+    $('body').addClass('hackmd');
+  });
+
+  $('a[href="#hackmd"]').on('hide.bs.tab', function() {
+    $('body').removeClass('on-edit');
+    $('body').removeClass('hackmd');
+  });
+
   // hash handling
   if (isSavedStatesOfTabChanges) {
     $('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', function() {
