@@ -121,9 +121,7 @@ export default class SearchResult extends React.Component {
           isDeleted = false;
         }
       }).catch(err => {
-        /* eslint-disable no-console */
-        console.log(err.message);
-        /* eslint-enable */
+        console.error(err.message);   // eslint-disable-line no-console
         isDeleted = false;
         this.setState({errorMessageForDeleting: err.message});
       });
