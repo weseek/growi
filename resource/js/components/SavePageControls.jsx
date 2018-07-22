@@ -53,8 +53,7 @@ class SavePageControls extends React.PureComponent {
               pageId={this.props.pageId}
               pagePath={this.props.pagePath}
               isSlackEnabled={false}
-              slackChannels={this.props.slackChannels}
-              formName='pageForm' />
+              slackChannels={this.props.slackChannels} />
         </div>
 
         <div className="mr-2">

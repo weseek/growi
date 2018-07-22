@@ -53,17 +53,14 @@ export default class SlackNotification extends React.Component {
   }
 
   render() {
-    const formNameSlackOn = this.props.formName && this.props.formName + '[notify][slack][on]';
-    const formNameChannels = this.props.formName && this.props.formName + '[notify][slack][channel]';
-
     return (
       <div className="input-group input-group-sm input-group-slack extended-setting">
         <label className="input-group-addon">
           <img id="slack-mark-white" src="/images/icons/slack/mark-monochrome_white.svg" width="18" height="18"/>
           <img id="slack-mark-black" src="/images/icons/slack/mark-monochrome_black.svg" width="18" height="18"/>
-          <input type="checkbox" name={formNameSlackOn} value="1" checked={this.state.isSlackEnabled} onChange={this.updateStateCheckbox}/>
+          <input type="checkbox" value="1" checked={this.state.isSlackEnabled} onChange={this.updateStateCheckbox}/>
         </label>
-        <input className="form-control" type="text" name={formNameChannels} value={this.state.slackChannels} placeholder="slack channel name"
+        <input className="form-control" type="text" value={this.state.slackChannels} placeholder="slack channel name"
           data-toggle="popover"
           title="Slack通知"
           data-content="通知するにはチェックを入れてください。カンマ区切りで複数チャンネルに通知することができます。"
@@ -82,7 +79,6 @@ SlackNotification.propTypes = {
   pagePath: PropTypes.string,
   isSlackEnabled: PropTypes.bool,
   slackChannels: PropTypes.string,
-  formName: PropTypes.string,
   onChannelChange: PropTypes.func,
   onEnabledFlagChange: PropTypes.func,
 };

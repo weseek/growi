@@ -336,20 +336,6 @@ if (writeCommentElem) {
     writeCommentElem);
 }
 
-// render slack notification form
-// const editorSlackElem = document.getElementById('editor-slack-notification');
-// if (editorSlackElem) {
-//   ReactDOM.render(
-//     <SlackNotification
-//       crowi={crowi}
-//       pageId={pageId}
-//       pagePath={pagePath}
-//       isSlackEnabled={false}
-//       slackChannels={slackChannels}
-//       formName='pageForm' />,
-//     editorSlackElem);
-// }
-
 // render OptionsSelector
 const pageEditorOptionsSelectorElem = document.getElementById('page-editor-options-selector');
 if (pageEditorOptionsSelectorElem) {
