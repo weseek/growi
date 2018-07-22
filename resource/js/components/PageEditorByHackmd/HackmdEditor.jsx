@@ -52,6 +52,14 @@ export default class HackmdEditor extends React.PureComponent {
     });
   }
 
+  /**
+   * return markdown document of HackMD
+   * @return {Promise<string>}
+   */
+  getValue() {
+    return this.hackmd.getValue();
+  }
+
   setValue(newValue) {
     this.hackmd.setValue(newValue);
   }

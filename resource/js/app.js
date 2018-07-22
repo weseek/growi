@@ -215,6 +215,11 @@ const saveWithShortcut = function(markdown) {
     .catch(errorHandler);
 };
 
+const saveWithSubmitButtonSuccessHandler = function() {
+  crowi.clearDraft(pagePath);
+  location.href = pagePath;
+};
+
 const saveWithSubmitButton = function() {
   const editorMode = crowi.getCrowiForJquery().getCurrentEditorMode();
   if (editorMode == null) {
@@ -222,29 +227,32 @@ const saveWithSubmitButton = function() {
     return;
   }
 
-  // get contents
-  const markdown = (editorMode === 'builtin')
-    ? componentInstances.pageEditor.getMarkdown()
-    : componentInstances.pageEditorByHackmd.getMarkdown();
   // get options
   const options = componentInstances.savePageControls.getCurrentOptionsToSave();
 
   let promise = undefined;
-  if (pageId == null) {
-    promise = crowi.createPage(pagePath, markdown, options);
+  // get markdown
+  if (editorMode === 'builtin') {
+    promise = Promise.resolve(componentInstances.pageEditor.getMarkdown());
   }
   else {
-    promise = crowi.updatePage(pageId, pageRevisionId, markdown, options);
+    promise = componentInstances.pageEditorByHackmd.getMarkdown();
+  }
+  // create or update
+  if (pageId == null) {
+    promise = promise.then(markdown => {
+      return crowi.createPage(pagePath, markdown, options);
+    });
+  }
+  else {
+    promise = promise.then(markdown => {
+      return crowi.updatePage(pageId, pageRevisionId, markdown, options);
+    });
   }
 
-  // TODO redirect when success
   promise
-    .then(saveWithShortcutSuccessHandler)
+    .then(saveWithSubmitButtonSuccessHandler)
     .catch(errorHandler);
-
-  if (editorMode === 'builtin') {
-    crowi.clearDraft(pagePath);
-  }
 };
 
 // render SavePageControls
