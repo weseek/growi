@@ -213,6 +213,48 @@ Crowi.initSlimScrollForRevisionToc = () => {
   });
 };
 
+Crowi.findHashFromUrl = function(url) {
+  let match;
+  /* eslint-disable no-cond-assign */
+  if (match = url.match(/#(.+)$/)) {
+    return `#${match[1]}`;
+  }
+  /* eslint-enable */
+
+  return '';
+};
+
+Crowi.findSectionHeader = function(hash) {
+  if (hash.length == 0) {
+    return;
+  }
+
+  // omit '#'
+  const id = hash.replace('#', '');
+  // don't use jQuery and document.querySelector
+  //  because hash may containe Base64 encoded strings
+  const elem = document.getElementById(id);
+  if (elem != null && elem.tagName.match(/h\d+/i)) {  // match h1, h2, h3...
+    return elem;
+  }
+
+  return null;
+};
+
+Crowi.unhighlightSelectedSection = function(hash) {
+  const elem = Crowi.findSectionHeader(hash);
+  if (elem != null) {
+    elem.classList.remove('highlighted');
+  }
+};
+
+Crowi.highlightSelectedSection = function(hash) {
+  const elem = Crowi.findSectionHeader(hash);
+  if (elem != null) {
+    elem.classList.add('highlighted');
+  }
+};
+
 $(function() {
   const config = JSON.parse(document.getElementById('crowi-context-hydrate').textContent || '{}');
 
@@ -690,48 +732,6 @@ $(function() {
     Crowi.setCaretLineAndFocusToEditor();
   });
 });
-
-Crowi.findHashFromUrl = function(url) {
-  let match;
-  /* eslint-disable no-cond-assign */
-  if (match = url.match(/#(.+)$/)) {
-    return `#${match[1]}`;
-  }
-  /* eslint-enable */
-
-  return '';
-};
-
-Crowi.findSectionHeader = function(hash) {
-  if (hash.length == 0) {
-    return;
-  }
-
-  // omit '#'
-  const id = hash.replace('#', '');
-  // don't use jQuery and document.querySelector
-  //  because hash may containe Base64 encoded strings
-  const elem = document.getElementById(id);
-  if (elem != null && elem.tagName.match(/h\d+/i)) {  // match h1, h2, h3...
-    return elem;
-  }
-
-  return null;
-};
-
-Crowi.unhighlightSelectedSection = function(hash) {
-  const elem = Crowi.findSectionHeader(hash);
-  if (elem != null) {
-    elem.classList.remove('highlighted');
-  }
-};
-
-Crowi.highlightSelectedSection = function(hash) {
-  const elem = Crowi.findSectionHeader(hash);
-  if (elem != null) {
-    elem.classList.add('highlighted');
-  }
-};
 
 window.addEventListener('load', function(e) {
   // hash on page
