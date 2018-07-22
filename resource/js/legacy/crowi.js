@@ -255,6 +255,24 @@ Crowi.highlightSelectedSection = function(hash) {
   }
 };
 
+/**
+ * Return editor mode string
+ * @return 'builtin' or 'hackmd' or null (not editing)
+ */
+Crowi.getCurrentEditorMode = function() {
+  const isEditing = $('body').hasClass('on-edit');
+  if (!isEditing) {
+    return null;
+  }
+
+  if ($('body').hasClass('builtin-editor')) {
+    return 'builtin';
+  }
+  else {
+    return 'hackmd';
+  }
+};
+
 $(function() {
   const config = JSON.parse(document.getElementById('crowi-context-hydrate').textContent || '{}');
 

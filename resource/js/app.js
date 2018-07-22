@@ -216,8 +216,35 @@ const saveWithShortcut = function(markdown) {
 };
 
 const saveWithSubmitButton = function() {
+  const editorMode = crowi.getCrowiForJquery().getCurrentEditorMode();
+  if (editorMode == null) {
+    // do nothing
+    return;
+  }
+
+  // get contents
+  const markdown = (editorMode === 'builtin')
+    ? componentInstances.pageEditor.getMarkdown()
+    : componentInstances.pageEditorByHackmd.getMarkdown();
+  // get options
   const options = componentInstances.savePageControls.getCurrentOptionsToSave();
-  console.log(options);
+
+  let promise = undefined;
+  if (pageId == null) {
+    promise = crowi.createPage(pagePath, markdown, options);
+  }
+  else {
+    promise = crowi.updatePage(pageId, pageRevisionId, markdown, options);
+  }
+
+  // TODO redirect when success
+  promise
+    .then(saveWithShortcutSuccessHandler)
+    .catch(errorHandler);
+
+  if (editorMode === 'builtin') {
+    crowi.clearDraft(pagePath);
+  }
 };
 
 // render SavePageControls
