@@ -1,14 +1,4 @@
-const pageId = $('#content-main').data('page-id');
 const pagePath= $('#content-main').data('path');
-
-require('bootstrap-select');
-
-// for new page
-if (!pageId) {
-  if (!pageId && pagePath.match(/(20\d{4}|20\d{6}|20\d{2}_\d{1,2}|20\d{2}_\d{1,2}_\d{1,2})/)) {
-    $('#page-warning-modal').modal('show');
-  }
-}
 
 $('a[data-toggle="tab"][href="#edit"]').on('show.bs.tab', function() {
   $('body').addClass('on-edit');

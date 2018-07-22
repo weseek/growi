@@ -17,6 +17,7 @@ const io = require('socket.io-client');
 const entities = require('entities');
 const escapeStringRegexp = require('escape-string-regexp');
 require('jquery.cookie');
+require('bootstrap-select');
 
 require('./thirdparty-js/agile-admin');
 const pagePathUtil = require('../../../lib/util/pagePathUtil');

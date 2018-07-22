@@ -1,4 +1,3 @@
-require('bootstrap-select');
 require('./thirdparty-js/jQuery.style.switcher');
 
 // see https://github.com/abpetkov/switchery/issues/120
