@@ -1,6 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import Penpal from 'penpal';
+// Penpal.debug = true;
+
 export default class HackmdEditor extends React.PureComponent {
 
   constructor(props) {
@@ -9,57 +12,48 @@ export default class HackmdEditor extends React.PureComponent {
     this.state = {
     };
 
-    this.listenMessages = this.listenMessages.bind(this);
-    this.notifyBodyChangesHandler = this.notifyBodyChangesHandler.bind(this);
+    this.hackmd = null;
 
-    this.loadHandler = this.loadHandler.bind(this);
-    this.saveHandler = this.saveHandler.bind(this);
+    this.initHackmdWithPenpal = this.initHackmdWithPenpal.bind(this);
+
+    this.notifyBodyChangesHandler = this.notifyBodyChangesHandler.bind(this);
+    this.saveWithShortcutHandler = this.saveWithShortcutHandler.bind(this);
   }
 
   componentDidMount() {
-    const contentWindow = this.refs.iframe.contentWindow;
-    this.listenMessages(contentWindow);
+    // append iframe with penpal
+    this.initHackmdWithPenpal();
   }
 
-  setValue(newValue) {
-    const data = { operation: 'setValue' };
-    if (newValue != null) {
-      data.document = newValue;
-    }
-    this.postMessageToHackmd(data);
-  }
+  initHackmdWithPenpal() {
+    const _this = this;   // for in methods scope
 
-  /**
-   *
-   * @param {object} targetWindow
-   */
-  listenMessages(targetWindow) {
-    window.addEventListener('message', (e) => {
-      if (targetWindow !== e.source) {
-        return;
-      }
+    const url = `${this.props.hackmdUri}/${this.props.pageIdOnHackmd}?both`;
 
-      const data = JSON.parse(e.data);
-      const operation = data.operation;
-      const body = data.body;
-
-      switch (operation) {
-        case 'notifyBodyChanges':
-          this.notifyBodyChangesHandler(body);
-          break;
-        case 'save':
-          this.saveHandler(body);
-          break;
+    const connection = Penpal.connectToChild({
+      url,
+      appendTo: this.refs.iframeContainer,
+      methods: {  // expose methods to HackMD
+        notifyBodyChanges(document) {
+          _this.notifyBodyChangesHandler(document);
+        },
+        saveWithShortcut(document) {
+          _this.saveWithShortcutHandler(document);
+        }
+      },
+    });
+    connection.promise.then(child => {
+      this.hackmd = child;
+    });
+    connection.iframe.addEventListener('load', () => {
+      if (this.props.initializationMarkdown != null) {
+        this.setValue(this.props.initializationMarkdown);
       }
     });
   }
 
-  /**
-   *
-   * @param {object} data
-   */
-  postMessageToHackmd(data) {
-    this.refs.iframe.contentWindow.postMessage(JSON.stringify(data), this.props.hackmdUri);
+  setValue(newValue) {
+    this.hackmd.setValue(newValue);
   }
 
   notifyBodyChangesHandler(body) {
@@ -69,25 +63,16 @@ export default class HackmdEditor extends React.PureComponent {
     }
   }
 
-  loadHandler() {
-    this.setValue(this.props.initializationMarkdown);
-  }
-
-  saveHandler(document) {
+  saveWithShortcutHandler(document) {
     if (this.props.onSaveWithShortcut != null) {
       this.props.onSaveWithShortcut(document);
     }
   }
 
   render() {
-    const src = `${this.props.hackmdUri}/${this.props.pageIdOnHackmd}?both`;
     return (
-      <iframe id='iframe-hackmd'
-        ref='iframe'
-        src={src}
-        onLoad={this.loadHandler}
-      >
-      </iframe>
+      // will be rendered in componentDidMount
+      <div id='iframe-hackmd-container' ref='iframeContainer'></div>
     );
   }
 }

@@ -111,7 +111,7 @@ body.on-edit {
 
       #page-editor-with-hackmd {
         &,
-        .hackmd-preinit, #iframe-hackmd {
+        .hackmd-preinit, #iframe-hackmd-container > iframe {
           width: 100vw;
           min-height: calc(100vh - #{$header-plus-footer});   // for IE11
           height: calc(100vh - #{$header-plus-footer});
@@ -255,7 +255,7 @@ body.on-edit {
       display: none;
     }
 
-    .hackmd-preinit, #iframe-hackmd {
+    .hackmd-preinit, #iframe-hackmd-container > iframe {
       border: none;
     }
 

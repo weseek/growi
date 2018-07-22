@@ -167,6 +167,7 @@
     "null-loader": "^0.1.1",
     "on-headers": "^1.0.1",
     "optimize-css-assets-webpack-plugin": "^5.0.0",
+    "penpal": "^3.0.3",
     "plantuml-encoder": "^1.2.5",
     "postcss-loader": "^2.1.3",
     "react": "^16.4.1",

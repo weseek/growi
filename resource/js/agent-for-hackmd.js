@@ -9,25 +9,16 @@
  *
  * @author Yuki Takei <yuki@weseek.co.jp>
  */
-import { debounce } from 'throttle-debounce';
+import Penpal from 'penpal';
+// Penpal.debug = true;
 
-const JSON = window.JSON;
+import { debounce } from 'throttle-debounce';
 
 /* eslint-disable no-console  */
 
 const allowedOrigin = '{{origin}}';         // will be replaced by swig
 const styleFilePath = '{{styleFilePath}}';  // will be replaced by swig
 
-/**
- * Validate origin
- * @param {object} event
- */
-function validateOrigin(event) {
-  if (event.origin !== allowedOrigin) {
-    console.error('[HackMD] Message is rejected.', 'Cause: "event.origin" and "allowedOrigin" does not match');
-    return;
-  }
-}
 
 /**
  * Insert link tag to load style file
@@ -39,20 +30,41 @@ function insertStyle() {
   document.getElementsByTagName('head')[0].appendChild(element);
 }
 
-function postMessageOnChange(body) {
-  const data = {
-    operation: 'notifyBodyChanges',
-    body
-  };
-  window.parent.postMessage(JSON.stringify(data), allowedOrigin);
+/**
+ * return the value of CodeMirror
+ */
+function getValueOfCodemirror() {
+  // get CodeMirror instance
+  const editor = window.editor;
+  return editor.doc.getValue();
 }
 
-function postMessageOnSave(body) {
-  const data = {
-    operation: 'save',
-    body
-  };
-  window.parent.postMessage(JSON.stringify(data), allowedOrigin);
+/**
+ * set the specified document to CodeMirror
+ * @param {string} document
+ */
+function setValueToCodemirror(document) {
+  // get CodeMirror instance
+  const editor = window.editor;
+  editor.doc.setValue(document);
+}
+
+/**
+ * postMessage to GROWI to notify body changes
+ * @param {string} body
+ */
+function postParentToNotifyBodyChanges(body) {
+  window.growi.notifyBodyChanges(body);
+}
+// generate debounced function
+const debouncedPostParentToNotifyBodyChanges = debounce(1500, postParentToNotifyBodyChanges);
+
+/**
+ * postMessage to GROWI to save with shortcut
+ * @param {string} document
+ */
+function postParentToSaveWithShortcut(document) {
+  window.growi.saveWithShortcut(document);
 }
 
 function addEventListenersToCodemirror() {
@@ -62,25 +74,17 @@ function addEventListenersToCodemirror() {
   const editor = window.editor;
 
   //// change event
-  // generate debounced function
-  const debouncedPostMessageOnChange = debounce(1500, postMessageOnChange);
   editor.on('change', (cm, change) => {
-    debouncedPostMessageOnChange(cm.doc.getValue());
+    debouncedPostParentToNotifyBodyChanges(cm.doc.getValue());
   });
 
   //// save event
   // Reset save commands and Cmd-S/Ctrl-S shortcuts that initialized by HackMD
   codemirror.commands.save = function(cm) {
-    postMessageOnSave(cm.doc.getValue());
+    postParentToSaveWithShortcut(cm.doc.getValue());
   };
   delete editor.options.extraKeys['Cmd-S'];
   delete editor.options.extraKeys['Ctrl-S'];
-}
-
-function setValue(document) {
-  // get CodeMirror instance
-  const editor = window.editor;
-  editor.doc.setValue(document);
 }
 
 
@@ -98,24 +102,25 @@ function setValue(document) {
 
   insertStyle();
 
-  // Add event listeners
-  window.addEventListener('message', (event) => {
-    validateOrigin(event);
-
-    const data = JSON.parse(event.data);
-    switch (data.operation) {
-      case 'getValue':
-        console.log('getValue called');
-        break;
-      case 'setValue':
-        setValue(data.document);
-        break;
-    }
-  });
-
   window.addEventListener('load', (event) => {
     console.log('loaded');
     addEventListenersToCodemirror();
+  });
+
+  const connection = Penpal.connectToParent({
+    parentOrigin: allowedOrigin,
+    // Methods child is exposing to parent
+    methods: {
+      getValue() {
+        return getValueOfCodemirror();
+      },
+      setValue(newValue) {
+        setValueToCodemirror(newValue);
+      },
+    }
+  });
+  connection.promise.then(parent => {
+    window.growi = parent;
   });
 
   console.log('[HackMD] GROWI agent for HackMD has successfully loaded.');
