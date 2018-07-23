@@ -436,6 +436,26 @@
     "import_recommended": "おすすめをインポート"
   },
 
+  "notification_setting": {
+    "notification_list": "通知設定の一覧",
+    "add_notification": "通知設定の追加",
+    "trigger_path": "トリガーパス",
+    "trigger_path_help": "(%sが使用できます)",
+    "trigger_events": "トリガーイベント",
+    "notify_to": "通知先",
+    "back_to_list": "通知設定一覧に戻る",
+    "notification_detail": "通知詳細設定",
+    "event_pageCreate": "ページが新規作成されたとき",
+    "event_pageEdit": "ページが編集されたとき",
+    "event_pageDelete": "ページが削除されたとき",
+    "event_pageMove": "ページが移動(名前が変更)されたとき",
+    "event_pageLike": "ページに「いいね」がついたとき",
+    "event_comment": "コメントが投稿されたとき",
+    "email": {
+      "ifttt_link": "IFTTT でメールトリガの新しいアプレットを作る"
+    }
+  },
+
   "customize_page": {
     "Behavior": "挙動",
     "Layout": "レイアウト",
