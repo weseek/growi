@@ -475,8 +475,8 @@ export default class CodeMirrorEditor extends AbstractEditor {
       <div className="mr-5 mb-2">
         <div className="overlay overlay-gfm-cheatsheat cheatsheet-1">
           <span style={style} className="overlay-content">
-            <p className="markdown-help">Markdown Help</p>
-            <div>
+            <h4 className="markdown-help">Markdown Help</h4>
+            <div className="float-left">
               <h5>Header 見出し</h5>
               <ul>
                 <li># 見出し1</li>
@@ -485,6 +485,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
                 <li>#### 見出し4</li>
               </ul>
               <h5>Block 段落</h5>
+
               <ul>
                 <li>text[&nbsp;][&nbsp;](スペース2つで改行)</li>
                 <li>text</li>
@@ -496,15 +497,28 @@ export default class CodeMirrorEditor extends AbstractEditor {
                 <li>[&nbsp;]- リスト1_1</li>
                 <li>[&nbsp;][&nbsp;]- リスト1_1_1</li>
               </ul>
+            </div>
+            <div className="float-right">
+              <h5>強調</h5>
               <ul>
                 <li>これは <i> *italic* </i>です</li>
+                <li>これは <i> _italic_ </i>です</li>
                 <li>これは <b> **ボールド** </b>です</li>
+                <li>これは <b> __ボールド__ </b>です</li>
               </ul>
+              <h5>Table</h5>
               <ul>
                 <li>| Left align | Right align | Center align |</li>
                 <li>|:------------|--------------:|:--------------:|</li>
                 <li>|column 1&nbsp;&nbsp;&nbsp;|&nbsp; &nbsp; &nbsp;column 2|&nbsp; &nbsp;column 3&nbsp; &nbsp;|</li>
                 <li>|column 1&nbsp;&nbsp;&nbsp;|&nbsp; &nbsp; &nbsp;column 2|&nbsp; &nbsp;column 3&nbsp; &nbsp;|</li>
+              </ul>
+              <h5>Images</h5>
+              <p>![Alt文字列](URL) で<code>&lt;img&gt;</code>タグを挿入できます</p>
+              <h5>Link</h5>
+              <ul>
+                <li>[表示テキスト](URL)でリンクに変換されます。</li>
+                <li>[Google](https://www.google.co.jp/)</li>
               </ul>
             </div>
           </span>

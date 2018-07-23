@@ -39,11 +39,11 @@
   // cheat sheat
   .overlay.overlay-gfm-cheatsheat {
 
-
-    justify-content: end;
+    position: absolute;
+    justify-content: flex-end;
     align-items: end;
-
     pointer-events: none;
+
 
     float: right;
     height: 400px;
