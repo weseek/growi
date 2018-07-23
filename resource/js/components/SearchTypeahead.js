@@ -27,9 +27,7 @@ export default class SearchTypeahead extends React.Component {
 
     this.search = this.search.bind(this);
     this.onInputChange = this.onInputChange.bind(this);
-    this.onKeyDown = this.onKeyDown.bind(this);
     this.onChange = this.onChange.bind(this);
-    this.dispatchSubmit = this.dispatchSubmit.bind(this);
     this.getRestoreFormButton = this.getRestoreFormButton.bind(this);
     this.renderMenuItemChildren = this.renderMenuItemChildren.bind(this);
     this.restoreInitialData = this.restoreInitialData.bind(this);
@@ -98,24 +96,12 @@ export default class SearchTypeahead extends React.Component {
     }
   }
 
-  onKeyDown(event) {
-    if (event.keyCode === 13) {
-      this.dispatchSubmit();
-    }
-  }
-
   onChange(selected) {
     const page = selected[0];  // should be single page selected
 
     // navigate to page
     if (page != null) {
       window.location = page.path;
-    }
-  }
-
-  dispatchSubmit() {
-    if (this.props.onSubmit != null) {
-      this.props.onSubmit(this.state.keyword);
     }
   }
 
@@ -159,7 +145,6 @@ export default class SearchTypeahead extends React.Component {
     const defaultSelected = (this.props.keywordOnInit != '')
       ? [{path: this.props.keywordOnInit}]
       : [];
-    const help = this.getHelpElement();
 
     return (
       <div className="search-typeahead">
@@ -176,39 +161,14 @@ export default class SearchTypeahead extends React.Component {
           submitFormOnEnter={true}
           onSearch={this.search}
           onInputChange={this.onInputChange}
-          onKeyDown={this.onKeyDown}
           renderMenuItemChildren={this.renderMenuItemChildren}
           caseSensitive={false}
           defaultSelected={defaultSelected}
-          promptText={help}
+          promptText={this.props.promptText}
         />
         {restoreFormButton}
       </div>
     );
-  }
-
-  getHelpElement() {
-    // TODO disabled temporary -- 2018.07.20 Yuki Takei
-    return <span>(TBD) Show Help</span>;
-    // return <table className="table table-borderd search-help">
-    //           <caption className="text-center">Search Help</caption>
-    //           <tr>
-    //             <td className="text-center">keyword</td>
-    //             <th>記事名 or カテゴリ or 本文にkeywordを含む</th>
-    //           </tr>
-    //           <tr>
-    //             <td className="text-center">title:keyword</td>
-    //             <th>記事名にkeywordを含む</th>
-    //           </tr>
-    //           <tr>
-    //             <td className="text-center">a b</td>
-    //             <th>文字列aとbを含む(スペース区切り)</th>
-    //           </tr>
-    //           <tr>
-    //             <td className="text-center">-keyword</td>
-    //             <th>文字列keywordを含まない</th>
-    //           </tr>
-    //         </table>;
   }
 }
 
@@ -220,10 +180,10 @@ SearchTypeahead.propTypes = {
   onSearchSuccess: PropTypes.func,
   onSearchError:   PropTypes.func,
   onChange:        PropTypes.func,
-  onSubmit:        PropTypes.func,
   emptyLabel:      PropTypes.string,
   placeholder:     PropTypes.string,
   keywordOnInit:   PropTypes.string,
+  promptText:      PropTypes.object,
 };
 
 /**
