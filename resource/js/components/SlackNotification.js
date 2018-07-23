@@ -76,7 +76,3 @@ SlackNotification.propTypes = {
   slackChannels: PropTypes.string,
   formName: PropTypes.string,
 };
-
-SlackNotification.defaultProps = {
-  slackChannels: '',
-};

@@ -15,7 +15,6 @@ export default class NewPageNameInput extends React.Component {
     this.crowi = this.props.crowi;
 
     this.onSearchError = this.onSearchError.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
     this.getParentPageName = this.getParentPageName.bind(this);
   }
 
@@ -29,14 +28,6 @@ export default class NewPageNameInput extends React.Component {
     this.setState({
       searchError: err,
     });
-  }
-
-  onSubmit(query) {
-    // get the closest form element
-    const elem = this.refs.rootDom;
-    const form = elem.closest('form');
-    // submit with jQuery
-    $(form).submit();
   }
 
   getParentPageName(path) {
@@ -57,17 +48,13 @@ export default class NewPageNameInput extends React.Component {
       : 'No matches found on title...';
 
     return (
-      <div ref='rootDom'>
-        <SearchTypeahead
-          ref={this.searchTypeaheadDom}
-          crowi={this.crowi}
-          onSearchError={this.onSearchError}
-          onSubmit={this.onSubmit}
-          emptyLabel={emptyLabel}
-          placeholder="Input page name"
-          keywordOnInit={this.getParentPageName(this.props.parentPageName)}
-        />
-      </div>
+      <SearchTypeahead
+        crowi={this.crowi}
+        onSearchError={this.onSearchError}
+        emptyLabel={emptyLabel}
+        placeholder="Input page name"
+        keywordOnInit={this.getParentPageName(this.props.parentPageName)}
+      />
     );
   }
 }
