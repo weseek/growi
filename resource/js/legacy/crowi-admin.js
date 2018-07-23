@@ -1,6 +1,11 @@
 require('bootstrap-select');
 require('./thirdparty-js/jQuery.style.switcher');
 
+// see https://github.com/abpetkov/switchery/issues/120
+// see https://github.com/abpetkov/switchery/issues/120#issuecomment-286337221
+require('./thirdparty-js/switchery/switchery');
+require('./thirdparty-js/switchery/switchery.css');
+
 $(function() {
   $('#slackNotificationForm').on('submit', function(e) {
     $.post('/_api/admin/notification.add', $(this).serialize(), function(res) {
@@ -105,6 +110,14 @@ $(function() {
 
   // style switcher
   $('#styleOptions').styleSwitcher();
+
+  // switchery
+  const elems = Array.prototype.slice.call(document.querySelectorAll('.js-switch'));
+  elems.forEach(function(elem) {
+    const color = elem.dataset.color;
+    const size = elem.dataset.size;
+    new Switchery(elem, { color, size });
+  });
 });
 
 
