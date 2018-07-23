@@ -477,16 +477,20 @@ export default class CodeMirrorEditor extends AbstractEditor {
           <span style={style} className="overlay-content">
             <p className="markdown-help">Markdown Help</p>
             <div>
+              <h5>Header 見出し</h5>
               <ul>
                 <li># 見出し1</li>
                 <li>## 見出し2</li>
                 <li>### 見出し3</li>
                 <li>#### 見出し4</li>
               </ul>
+              <h5>Block 段落</h5>
               <ul>
                 <li>text[&nbsp;][&nbsp;](スペース2つで改行)</li>
                 <li>text</li>
               </ul>
+              <h5>Br 改行</h5>
+              <h5>UI箇条書きリスト</h5>
               <ul>
                 <li>- リスト1</li>
                 <li>[&nbsp;]- リスト1_1</li>
