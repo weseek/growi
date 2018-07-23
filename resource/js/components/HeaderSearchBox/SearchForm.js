@@ -45,26 +45,26 @@ export default class SearchForm extends React.Component {
   }
 
   getHelpElement() {
-    return <table className="table table-borderd search-help">
-              <caption>Search Help</caption>
-              <tbody>
-                <tr>
-                  <td>keyword</td>
-                  <th>記事名 or カテゴリ or 本文にkeywordを含む</th>
-                </tr>
-                <tr>
-                  <td>title:keyword</td>
-                  <th>記事名にkeywordを含む</th>
-                </tr>
-                <tr>
-                  <td>a b</td>
-                  <th>文字列aとbを含む(スペース区切り)</th>
-                </tr>
-                <tr>
-                  <td>-keyword</td>
-                  <th>文字列keywordを含まない</th>
-                </tr>
-              </tbody>
+    return <table className="table m-1">
+              <caption className="text-left text-primary p-2 pb-2">
+                <h5 className="m-1"><i className="icon-magnifier pr-2"/>Search Help</h5>
+              </caption>
+              <tr>
+                <td className="text-right mt-0 p-1 "><code>keyword</code></td>
+                <th><h6 className="m-0 pt-1">記事名 or 本文に<samp>"keyword"</samp>を含む</h6></th>
+              </tr>
+              <tr>
+                <td className="text-right mt-0 p-1"><code>title:keyword</code></td>
+                <th><h6 className="m-0 pt-1">記事名に<samp>"keyword"</samp>を含む</h6></th>
+              </tr>
+              <tr>
+                <td className="text-right mt-0 p-1"><code>a b</code></td>
+                <th><h6 className="m-0 pt-1">文字列<samp>"a"</samp>と<samp>"b"</samp>を含む (スペース区切り)</h6></th>
+              </tr>
+              <tr>
+                <td className="text-right mt-0 p-1"><code>-keyword</code></td>
+                <th><h6 className="m-0 pt-1">文字列<samp>"keyword"</samp>を含まない</h6></th>
+              </tr>
             </table>;
   }
 
