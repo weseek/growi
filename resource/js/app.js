@@ -56,8 +56,7 @@ let pageIdOnHackmd = null;
 let pagePath;
 let pageContent = '';
 let markdown = '';
-let pageGrant = null;
-let slackChannels = '';
+let slackChannels;
 if (mainContent !== null) {
   pageId = mainContent.getAttribute('data-page-id');
   pageRevisionId = mainContent.getAttribute('data-page-revision-id');
@@ -65,7 +64,7 @@ if (mainContent !== null) {
   pageRevisionIdHackmdSynced = mainContent.getAttribute('data-page-revision-id-hackmd-synced') || null;
   pageIdOnHackmd = mainContent.getAttribute('data-page-id-on-hackmd') || null;
   pagePath = mainContent.attributes['data-path'].value;
-  slackChannels = mainContent.getAttribute('data-slack-channels');
+  slackChannels = mainContent.getAttribute('data-slack-channels') || '';
   const rawText = document.getElementById('raw-text-original');
   if (rawText) {
     pageContent = rawText.innerHTML;
@@ -125,7 +124,7 @@ const componentMappings = {
   'bookmark-button': <BookmarkButton pageId={pageId} crowi={crowi} />,
   'bookmark-button-lg': <BookmarkButton pageId={pageId} crowi={crowi} size="lg" />,
 
-  'page-name-inputter': <NewPageNameInput crowi={crowi} parentPageName={pagePath} />,
+  'page-name-input': <NewPageNameInput crowi={crowi} parentPageName={pagePath} />,
 
 };
 // additional definitions if data exists

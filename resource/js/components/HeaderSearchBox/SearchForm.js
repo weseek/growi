@@ -21,6 +21,7 @@ export default class SearchForm extends React.Component {
 
     this.onSearchError = this.onSearchError.bind(this);
     this.onChange = this.onChange.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
   }
 
   componentDidMount() {
@@ -44,30 +45,8 @@ export default class SearchForm extends React.Component {
     }
   }
 
-  getHelpElement() {
-    return <table className="table table-borderd search-help">
-              <caption>Search Help</caption>
-              <tbody>
-                <tr>
-                  <td>keyword</td>
-                  <th>記事名 or カテゴリ or 本文にkeywordを含む</th>
-                </tr>
-                <tr>
-                  <td>title:keyword</td>
-                  <th>記事名にkeywordを含む</th>
-                </tr>
-                <tr>
-                  <td>a b</td>
-                  <th>文字列aとbを含む(スペース区切り)</th>
-                </tr>
-                <tr>
-                  <td>-keyword</td>
-                  <th>文字列keywordを含まない</th>
-                </tr>
-              </tbody>
-            </table>;
-  }
-
+  onSubmit(query) {
+    this.refs.form.submit(query);
   render() {
     const emptyLabel = (this.state.searchError !== null)
       ? 'Error on searching.'
@@ -75,14 +54,16 @@ export default class SearchForm extends React.Component {
 
     return (
       <form
-        action="/_search"
-        className="search-form form-group input-group search-input-group"
+        ref='form'
+        action='/_search'
+        className='search-form form-group input-group search-input-group'
       >
         <FormGroup>
           <InputGroup>
             <SearchTypeahead
               crowi={this.crowi}
               onChange={this.onChange}
+              onSubmit={this.onSubmit}
               emptyLabel={emptyLabel}
               placeholder="Search ..."
               promptText={this.getHelpElement()}
