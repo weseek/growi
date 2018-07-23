@@ -44,6 +44,30 @@ export default class SearchForm extends React.Component {
     }
   }
 
+  getHelpElement() {
+    return <table className="table table-borderd search-help">
+              <caption>Search Help</caption>
+              <tbody>
+                <tr>
+                  <td>keyword</td>
+                  <th>記事名 or カテゴリ or 本文にkeywordを含む</th>
+                </tr>
+                <tr>
+                  <td>title:keyword</td>
+                  <th>記事名にkeywordを含む</th>
+                </tr>
+                <tr>
+                  <td>a b</td>
+                  <th>文字列aとbを含む(スペース区切り)</th>
+                </tr>
+                <tr>
+                  <td>-keyword</td>
+                  <th>文字列keywordを含まない</th>
+                </tr>
+              </tbody>
+            </table>;
+  }
+
   render() {
     const emptyLabel = (this.state.searchError !== null)
       ? 'Error on searching.'
@@ -61,6 +85,7 @@ export default class SearchForm extends React.Component {
               onChange={this.onChange}
               emptyLabel={emptyLabel}
               placeholder="Search ..."
+              promptText={this.getHelpElement()}
             />
             <InputGroup.Button>
               <Button type="submit" bsStyle="link">
