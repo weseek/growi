@@ -478,6 +478,15 @@
     "your_own":"You cannot deactivate your own account",
     "Administrator menu":"Administrator menu",
     "cannot_remove":"You cannot remove yourself from administrator"
-  }
+  },
 
+  "importer_management": {
+    "esa_settings": {
+      "title": "Settings of esa importer",
+      "team_name": "Team name",
+      "access_token": "Access token"
+    },
+    "import": "Import",
+    "test_connection": "Test connection to esa"
+  }
 }
