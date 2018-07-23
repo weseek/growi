@@ -145,7 +145,6 @@ export default class SearchTypeahead extends React.Component {
     const defaultSelected = (this.props.keywordOnInit != '')
       ? [{path: this.props.keywordOnInit}]
       : [];
-    const help = this.getHelpElement();
 
     return (
       <div className="search-typeahead">
@@ -165,7 +164,7 @@ export default class SearchTypeahead extends React.Component {
           renderMenuItemChildren={this.renderMenuItemChildren}
           caseSensitive={false}
           defaultSelected={defaultSelected}
-          promptText={help}
+          promptText={this.props.promptText}
         />
         {restoreFormButton}
       </div>
@@ -208,6 +207,7 @@ SearchTypeahead.propTypes = {
   emptyLabel:      PropTypes.string,
   placeholder:     PropTypes.string,
   keywordOnInit:   PropTypes.string,
+  promptText:      PropTypes.object,
 };
 
 /**
