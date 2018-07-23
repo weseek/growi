@@ -94,9 +94,12 @@
   }
 
   .comment-form {
-    .overlay {
-      visibility: hidden;
+    .cheatsheet-1 {
+        display: none;
     }
+
+
+
     position: relative;
     margin-top: 2em;
     // user icon
