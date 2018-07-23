@@ -472,52 +472,56 @@ export default class CodeMirrorEditor extends AbstractEditor {
     };
 
     return (
-      <div className="mr-5 mb-2">
-        <div className="overlay overlay-gfm-cheatsheat cheatsheet-1">
+      <div className="float-right">
+        <div className="overlay overlay-gfm-cheatsheat cheatsheet-1 small">
           <span style={style} className="overlay-content">
-            <h4 className="markdown-help">Markdown Help</h4>
-            <div className="float-left">
-              <h5>Header 見出し</h5>
-              <ul>
+            <h4 className="markdown-help text-center">Markdown Help</h4>
+
+              <h5 className="text-center">Header 見出し</h5>
+              <ul className="hljs">
                 <li># 見出し1</li>
                 <li>## 見出し2</li>
                 <li>### 見出し3</li>
                 <li>#### 見出し4</li>
               </ul>
-              <h5>Block 段落</h5>
-
-              <ul>
-                <li>text[&nbsp;][&nbsp;](スペース2つで改行)</li>
+              <h5 className="text-center">Block 段落</h5>
+              <ul className="hljs">
+                <li>text</li>
+                <li><code>[空白行]</code>を挟むことで段落となります。</li>
                 <li>text</li>
               </ul>
-              <h5>Br 改行</h5>
-              <h5>UI箇条書きリスト</h5>
-              <ul>
+              <h5 className="text-center">Br 改行</h5>
+              <ul className="hljs">
+                <li>text<code>[&nbsp;][&nbsp;]</code>スペース2つで改行されます。</li>
+                <li>text</li>
+              </ul>
+              <h5 className="text-center">UI箇条書きリスト</h5>
+              <ul className="hljs">
                 <li>- リスト1</li>
                 <li>[&nbsp;]- リスト1_1</li>
                 <li>[&nbsp;][&nbsp;]- リスト1_1_1</li>
               </ul>
-            </div>
+
             <div className="float-right">
-              <h5>強調</h5>
-              <ul>
+              <h5 className="text-center">強調</h5>
+              <ul className="hljs">
                 <li>これは <i> *italic* </i>です</li>
                 <li>これは <i> _italic_ </i>です</li>
                 <li>これは <b> **ボールド** </b>です</li>
                 <li>これは <b> __ボールド__ </b>です</li>
               </ul>
-              <h5>Table</h5>
-              <ul>
+              <h5 className="text-center">Table</h5>
+              <ul className="hljs">
                 <li>| Left align | Right align | Center align |</li>
                 <li>|:------------|--------------:|:--------------:|</li>
                 <li>|column 1&nbsp;&nbsp;&nbsp;|&nbsp; &nbsp; &nbsp;column 2|&nbsp; &nbsp;column 3&nbsp; &nbsp;|</li>
                 <li>|column 1&nbsp;&nbsp;&nbsp;|&nbsp; &nbsp; &nbsp;column 2|&nbsp; &nbsp;column 3&nbsp; &nbsp;|</li>
               </ul>
-              <h5>Images</h5>
-              <p>![Alt文字列](URL) で<code>&lt;img&gt;</code>タグを挿入できます</p>
-              <h5>Link</h5>
-              <ul>
-                <li>[表示テキスト](URL)でリンクに変換されます。</li>
+              <h5 className="text-center">Images</h5>
+              <p className="hljs">![Alt文字列](URL) で<code>&lt;img&gt;</code>タグを挿入できます</p>
+              <h5 className="text-center">Link</h5>
+              <ul className="hljs">
+                <li><code>[表示テキスト](URL)</code>でリンクに変換されます。</li>
                 <li>[Google](https://www.google.co.jp/)</li>
               </ul>
             </div>
