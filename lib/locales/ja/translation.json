@@ -449,7 +449,10 @@
     "event_pageDelete": "ページが削除されたとき",
     "event_pageMove": "ページが移動(名前が変更)されたとき",
     "event_pageLike": "ページに「いいね」がついたとき",
-    "event_comment": "コメントが投稿されたとき"
+    "event_comment": "コメントが投稿されたとき",
+    "email": {
+      "ifttt_link": "IFTTT でメールトリガの新しいアプレットを作る"
+    }
   },
 
   "customize_page": {

@@ -433,7 +433,10 @@
     "event_pageDelete": "When page is \"DELETED\"",
     "event_pageMove": "When page is \"MOVED\" (renamed)",
     "event_pageLike": "When someone \"LIKES\" page",
-    "event_comment": "When someone \"COMMENTS\" on page"
+    "event_comment": "When someone \"COMMENTS\" on page",
+    "email": {
+      "ifttt_link": "Create a new IFTTT applet with Email trigger"
+    }
   },
 
   "customize_page": {
