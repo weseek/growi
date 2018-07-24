@@ -283,6 +283,7 @@ export default class SearchResult extends React.Component {
           cancel={this.closeDeleteConfirmModal}
           confirmedToDelete={this.deleteSelectedPages}
           toggleDeleteCompletely={this.toggleDeleteCompletely}
+          isDeleteCompletely={this.state.isDeleteCompletely}
         />
 
       </div>//content-main
