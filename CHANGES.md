@@ -7,7 +7,8 @@ CHANGES
 
 ## 3.1.14-RC
 
-* 
+* Improvement: Show help for header search box
+* Fix: Couldn't delete page completely from search result page
 
 ## 3.1.13
 
