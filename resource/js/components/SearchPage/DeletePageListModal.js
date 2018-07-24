@@ -44,7 +44,7 @@ export default class DeletePageListModal extends React.Component {
           <div className="d-flex justify-content-between">
             <span className="text-danger">{this.props.errorMessage}</span>
             <span className="d-flex align-items-center">
-              <Checkbox className="text-danger" onChange={this.props.toggleDeleteCompletely} inline={true} checked={this.props.isDeleteCompletely ? true : false}>Delete completely</Checkbox>
+              <Checkbox className="text-danger" onClick={this.props.toggleDeleteCompletely} inline={true}>Delete completely</Checkbox>
               <span className="m-l-10">
                 <Button onClick={this.props.confirmedToDelete}><i className="icon-trash"></i>Delete</Button>
               </span>
@@ -64,5 +64,4 @@ DeletePageListModal.propTypes = {
   cancel: PropTypes.func.isRequired,                 // for cancel evnet handling
   confirmedToDelete: PropTypes.func.isRequired,      // for confirmed event handling
   toggleDeleteCompletely: PropTypes.func.isRequired, // for delete completely check event handling
-  isDeleteCompletely: PropTypes.bool,
 };
