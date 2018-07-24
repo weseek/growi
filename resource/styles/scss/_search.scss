@@ -92,6 +92,12 @@
       width: 300px;
     }
   }
+
+  table.search-help {
+    th, td {
+      border: none;
+    }
+  }
 }
 .search-sidebar {
   .search-form, .form-group, .rbt-input.form-control, .input-group {
