@@ -35,7 +35,7 @@ export default class PageEditorByHackmd extends React.PureComponent {
    */
   getMarkdown() {
     if (!this.state.isInitialized) {
-      throw new Error('HackmdEditor component has not initialized');
+      return Promise.reject(new Error('HackmdEditor component has not initialized'));
     }
 
     return this.refs.hackmdEditor.getValue()
