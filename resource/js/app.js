@@ -265,7 +265,11 @@ if (savePageControlsElem) {
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
       <SavePageControls crowi={crowi} onSubmit={saveWithSubmitButton}
-          ref={(elem) => { savePageControls = elem.getWrappedInstance() }}
+          ref={(elem) => {
+            if (savePageControls == null) {
+              savePageControls = elem.getWrappedInstance();
+            }
+          }}
           pageId={pageId} pagePath={pagePath} slackChannels={slackChannels}
           grant={grant} grantGroupId={grantGroupId} grantGroupName={grantGroupName} />
     </I18nextProvider>,

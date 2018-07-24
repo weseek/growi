@@ -58,7 +58,11 @@ class SavePageControls extends React.PureComponent {
 
         <div className="mr-2">
           <GrantSelector crowi={this.props.crowi}
-              ref={(elem) => { this.refs.grantSelector = elem.getWrappedInstance()} }
+              ref={(elem) => {
+                if (this.refs.grantSelector == null) {
+                  this.refs.grantSelector = elem.getWrappedInstance();
+                }
+              }}
               grant={this.props.grant}
               grantGroupId={this.props.grantGroupId}
               grantGroupName={this.props.grantGroupName} />
