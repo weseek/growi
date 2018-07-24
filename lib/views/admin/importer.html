@@ -64,7 +64,7 @@
             <input type="hidden" name="_csrf" value="{{ csrf() }}" />
             <div class="col-xs-offset-3 col-xs-6">
               <button id="testConnectionToEsa" type="button" class="btn btn-primary" data-action="/_api/admin/import/esa"
-                  data-success-message="Import posts from esa success." data-error-message="Import posts from esa failed.">
+                  data-success-message="Import posts from esa success." data-error-message="Error occurred in importing pages from esa.io">
                 {{ t("importer_management.import") }}
               </button>
               <button type="submit" class="btn btn-secondary">{# the first element is the default button to submit #}
