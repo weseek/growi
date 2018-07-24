@@ -176,7 +176,7 @@
   }
 
   /**
-   * Handle button
+   * Handle button esa
    */
   $('#testConnectionToEsa, #importFromEsa').each(function() {
     var $form = $('#importerSettingFormEsa');
@@ -188,9 +188,33 @@
   });
 
   /**
-   * Handle submit button
+   * Handle submit button esa
    */
   $('#importerSettingFormEsa').each(function() {
+    var $form = $(this);
+    var $button = $("#importerSettingForm input[type='submit']");
+    var $action = $form.attr('action');
+    var $success_msg = $button.attr('data-success-message');
+    var $error_msg = $button.attr('data-error-message');
+    $form.submit(function() { return postData($form, $button, $action, $success_msg, $error_msg) });
+  });
+
+    /**
+   * Handle button qiita
+   */
+   $('#testConnectionToQiita, #importFromQiita').each(function() {
+    var $form = $('#importerSettingFormQiita');
+    var $button = $(this);
+    var $action = $button.attr('data-action');
+    var $success_msg = $button.attr('data-success-message');
+    var $error_msg = $button.attr('data-error-message');
+    $button.click(function() { return postData($form, $button, $action, $success_msg, $error_msg) });
+  });
+
+  /**
+   * Handle submit button qiita
+   */
+  $('#importerSettingFormQiita').each(function() {
     var $form = $(this);
     var $button = $("#importerSettingForm input[type='submit']");
     var $action = $form.attr('action');
