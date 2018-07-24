@@ -76,33 +76,33 @@ a {
  * Alert
  */
 .alert {
-  a {
+  a:not(.btn) {
     color: white;
   }
 
   &.alert-info {
-    a {
+    a:not(.btn) {
       &:hover, &:focus {
         color: lighten($info, 40%);
       }
     }
   }
   &.alert-success {
-    a {
+    a:not(.btn) {
       &:hover, &:focus {
         color: lighten($success, 40%);
       }
     }
   }
   &.alert-warning {
-    a {
+    a:not(.btn) {
       &:hover, &:focus {
         color: lighten($warning, 30%);
       }
     }
   }
   &.alert-danger {
-    a {
+    a:not(.btn) {
       &:hover, &:focus {
         color: lighten($danger, 30%);
       }

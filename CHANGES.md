@@ -9,6 +9,7 @@ CHANGES
 
 * Improvement: Show help for header search box
 * Fix: Couldn't delete page completely from search result page
+* Fix: Tabs of trash page are broken
 
 ## 3.1.13
 
