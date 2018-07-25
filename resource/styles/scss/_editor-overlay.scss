@@ -28,33 +28,28 @@
       right: 0;
       bottom: 0;
     }
-  } // loading keymap
-  @include overlay-processing-style(overlay-loading-keymap, 2.5em, 0.3em); // cheat sheat
-  .overlay-cheat-sheet {
-    display: flex;
-    justify-content: flex-end;
+  }
+
+  // loading keymap
+  @include overlay-processing-style(overlay-loading-keymap, 2.5em, 0.3em);
+
+  // cheat sheat
+  .overlay.overlay-gfm-cheatsheet {
+    justify-content: end;
     align-items: end;
-    position: absolute;
-    z-index: 7; // forward than .CodeMirror-vscrollbar
-    top: 0;
-    right: 0;
-    bottom: 0;
-    ul {
-      list-style: none;
-    }
-    .overlay-gfm-cheatsheat {
-      justify-content: end;
-      align-items: end;
-      pointer-events: none;
-      border: solid 1.5px lightgray;
-      margin: auto;
-      .overlay-content {
+
+    pointer-events: none;
+
+    .panel {
+      opacity: 0.6;
+      box-shadow: unset;
+      .panel-body {
         color: $text-muted;
+        font-family: monospace;
+        min-width: 30em;
       }
-    }
-    @media screen and (max-width: 340px) {
-      .overlay-gfm-cheatsheat {
-        visibility: hidden;
+      ul > li {
+        list-style: none;
       }
     }
   }

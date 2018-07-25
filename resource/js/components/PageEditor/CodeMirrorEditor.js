@@ -466,84 +466,38 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   renderCheatSheatOverlay() {
-    // overlay and centering
-    const style = {
-      right: '2em',
-      bottom: '1em',
-    };
-
     return (
-      <div className="overlay-cheat-sheet mt-1 p-3 pt-3 small">
-        <div className="overlay-gfm-cheatsheat editor-cheatsheet p-1">
-          <span style={style} className="overlay-content m-2">
-            <h5 className="p-2 m-2"><i className="icon-question pr-2"/>Markdown Help</h5>
-            <h6 className="text-center text-info">Header 見出し</h6>
-            <ul className="hljs small">
-              <li><code>#</code> 見出し1</li>
-              <li><code>##</code> 見出し2</li>
-              <li><code>###</code> 見出し3</li>
-            </ul>
-            <h6 className="text-center text-info">Block 段落</h6>
-            <ul className="hljs small">
-              <li>text</li>
-              <li><code>[空白行]</code>を挟むことで段落となります。</li>
-              <li>text</li>
-            </ul>
-            <h6 className="text-center text-info">Br 改行</h6>
-            <ul className="hljs small">
-              <li>text<code>[][]</code>スペース2つで改行されます。</li>
-              <li>text</li>
-            </ul>
-            <h6 className="text-center text-info">UI箇条書きリスト</h6>
-            <ul className="hljs small">
-              <li><code>-</code> リスト1</li>
-              <li><code>[]-</code> リスト1_1</li>
-              <li><code>[][]-</code> リスト1_1_1</li>
-            </ul>
-            <h5 className="text-center text-info h5">強調</h5>
-            <ul className="hljs small">
-              <li>これは <i><code>*</code>italic<code>*</code></i>です</li>
-              <li>これは <b><code>**</code>ボールド<code>**</code></b>です</li>
-            </ul>
-            <h5 className="text-center text-info h5">Table表</h5>
-            <ul className="hljs text-center">
-              <li>|&nbsp;&nbsp;&nbsp;&nbsp;左寄せ&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;中央寄せ&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;右寄せ&nbsp;&nbsp;&nbsp;&nbsp;|</li>
-              <li>|:-------------|----------------:|:------------:|</li>
-              <li>|column 1&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp; &nbsp;column 3&nbsp; &nbsp;|&nbsp;&nbsp; &nbsp; &nbsp;column 2|</li>
-              <li>|column 1&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp; &nbsp;column 3&nbsp; &nbsp;|&nbsp;&nbsp; &nbsp; &nbsp;column 2|</li>
-            </ul>
-            <h5 className="text-center text-info h5">Images</h5>
-            <ul className="hljs">
-              <li><code> ![Alt文字列](URL)</code> で<span className="text-info">&lt;img&gt;</span>タグを挿入できます</li>
-              <li>[例]![ex](https://example.com/images/a.png)</li>
-            </ul>
-            <h5 className="text-center text-info h5">Link</h5>
-            <ul className="hljs">
-              <li><code>[表示テキスト](URL)</code>でリンクに変換されます。</li>
-              <li>[例][Google](https://www.google.co.jp/)</li>
-            </ul>
-          </span>
-        </div>
-        <div className="overlay-gfm-cheatsheat commentform-cheatsheet pt-3 mt-4">
-          <span style={style} className="overlay-content">
-            <p className="pl-3"><i className="icon-question pr-2"/>Markdown Help</p>
-            <h6 className="text-center text-info">Header 見出し</h6>
-            <ul className="hljs small">
-              <li><code>#</code> 見出し1</li>
-              <li><code>##</code> 見出し2</li>
-              <li><code>###</code> 見出し3</li>
-            </ul>
-            <h6 className="text-center text-info">Br 改行</h6>
-            <ul className="hljs small">
-              <li>text<code>[][]</code>スペース2つで改行されます。</li>
-              <li>text</li>
-            </ul>
-            <h6 className="text-center text-info">強調</h6>
-            <ul className="hljs small">
-              <li>これは <i><code>*</code>italic<code>*</code></i>です</li>
-              <li>これは <b><code>**</code>ボールド<code>**</code></b>です</li>
-            </ul>
-          </span>
+      <div className="overlay overlay-gfm-cheatsheet mt-1 p-3 pt-3">
+        <div className="panel panel-default mb-0">
+          <div className="panel-heading"><i className="icon-fw icon-question"/>Markdown Help</div>
+          <div className="panel-body small">
+            <div className="row">
+              <div className="col-xs-6">
+                <p>
+                  # 見出し1<br />
+                  ## 見出し2<br />
+                  ### 見出し3
+                </p>
+                <p><i>*斜体*</i>&nbsp;&nbsp;<b>**強調**</b></p>
+                <p>
+                  - リスト1<br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;- リスト2
+                </p>
+              </div>
+              <div className="col-xs-6">
+                <p>
+                  [リンク](http://..)<br />
+                  [/ページ名/子ページ名]
+                </p>
+                <p>
+                  ```javascript:index.js<br />
+                  writeCode();<br />
+                  ```
+                </p>
+                <p>行末にスペース2つ[ ][ ]<br />で改行</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );

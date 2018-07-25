@@ -147,7 +147,7 @@ body.on-edit {
     #page-editor {
       // right(preview)
       &,
-      .row,
+      &>.row,
       .page-editor-preview-container,
       .page-editor-preview-body {
         min-height: calc(100vh - #{$header-plus-footer});   // for IE11
@@ -237,10 +237,6 @@ body.on-edit {
         min-width: 150px;
       }
     }
-    // display cheatsheet for editor only
-      .commentform-cheatsheet {
-        display: none;
-      }
   } // .builtin-editor .tab-pane#edit
 
 
