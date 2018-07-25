@@ -465,7 +465,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       : '';
   }
 
-  renderCheatSheatOverlay() {
+  renderCheatSheetOverlay() {
     return (
       <div className="overlay overlay-gfm-cheatsheet mt-1 p-3 pt-3">
         <div className="panel panel-default mb-0">
@@ -573,7 +573,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       />
 
       { this.renderLoadingKeymapOverlay() }
-      { this.state.isCheatsheatShown && this.renderCheatSheatOverlay() }
+      { this.state.isCheatsheatShown && this.renderCheatSheetOverlay() }
 
     </React.Fragment>;
   }
