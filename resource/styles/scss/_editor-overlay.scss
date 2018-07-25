@@ -40,7 +40,7 @@
 
     pointer-events: none;
 
-    .panel {
+    .panel.gfm-cheatsheet {
       opacity: 0.6;
       box-shadow: unset;
       .panel-body {
@@ -53,9 +53,27 @@
       }
     }
 
+    a.gfm-cheatsheet-modal-link {
+      pointer-events: all;
+      cursor: pointer;
+
+      opacity: 0.6;
+      color: $text-muted;
+
+      &:hover, &:focus {
+        opacity: 1;
+      }
+    }
+
     // hide on smartphone
     @media (max-width: $screen-xs) {
       display: none;
     }
+  }
+}
+
+.modal-gfm-cheatsheet .modal-body {
+  .hljs {
+    font-family: monospace;
   }
 }
