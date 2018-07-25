@@ -62,7 +62,7 @@
           <div class="form-group">
             <input type="hidden" name="_csrf" value="{{ csrf() }}" />
             <div class="col-xs-offset-3 col-xs-6">
-              <button id="testConnectionToEsa" type="button" class="btn btn-primary btn-esa" data-action="/_api/admin/import/esa" name="esa"
+              <button id="testConnectionToEsa" type="button" class="btn btn-primary btn-esa" data-action="/_api/admin/import/esa" name="Esa"
                   data-success-message="Import posts from esa success." data-error-message="Error occurred in importing pages from esa.io">
                 {{ t("importer_management.import") }}
               </button>
@@ -70,7 +70,7 @@
                 {{ t('Update') }}
               </button>
               <span class="col-xs-offset-1">
-                <button id="importFromEsa" type="button" class="btn btn-default btn-esa" data-action="/_api/admin/import/testEsaAPI" name="esa"
+                <button id="importFromEsa" type="button" class="btn btn-default btn-esa" data-action="/_api/admin/import/testEsaAPI" name="Esa"
                     data-success-message="Test connection to esa success." data-error-message="Test connection to esa failed.">
                   {{ t("importer_management.esa_settings.test_connection") }}
                 </button>
@@ -102,7 +102,7 @@
           <div class="form-group">
             <input type="hidden" name="_csrf" value="{{ csrf() }}" />
             <div class="col-xs-offset-3 col-xs-6">
-              <button id="testConnectionToQiita" type="button" class="btn btn-primary btn-qiita" data-action="/_api/admin/import/qiita" name="qiita"
+              <button id="testConnectionToQiita" type="button" class="btn btn-primary btn-qiita" data-action="/_api/admin/import/qiita" name="Qiita"
                   data-success-message="Import posts from qiita:team success." data-error-message="Error occurred in importing pages from qiita:team">
                 {{ t("importer_management.import") }}
               </button>
@@ -110,7 +110,7 @@
                 {{ t('Update') }}
               </button>
               <span class="col-xs-offset-1">
-                <button id="importFromQiita" type="button" class="btn btn-default btn-qiita" data-action="/_api/admin/import/testQiitaAPI" name="qiita"
+                <button id="importFromQiita" type="button" class="btn btn-default btn-qiita" data-action="/_api/admin/import/testQiitaAPI" name="Qiita"
                     data-success-message="Test connection to qiita:team success." data-error-message="Test connection to qiita:team failed.">
                   {{ t("importer_management.qiita_settings.test_connection") }}
                 </button>
@@ -179,14 +179,7 @@
    * Handle button esa
    */
   $('.btn-esa, .btn-qiita').each(function() {
-    switch ($(this).attr('name')) {
-      case 'esa': var $form = $('#importerSettingFormEsa');
-      break;
-      case 'qiita': var $form = $('#importerSettingFormQiita');
-      break;
-      default:
-      break;
-    }
+    var $form = $('#importerSettingForm' + $(this).attr('name'));
     var $button = $(this);
     var $action = $button.attr('data-action');
     var $success_msg = $button.attr('data-success-message');
@@ -199,7 +192,7 @@
    */
   $('#importerSettingFormEsa, #importerSettingFormQiita').each(function() {
     var $form = $(this);
-    var $button = $("#importerSettingForm input[type='submit']");
+    var $button = $("#importerSettingForm" + $(this).attr('name') + " button[type='submit']");
     var $action = $form.attr('action');
     var $success_msg = $button.attr('data-success-message');
     var $error_msg = $button.attr('data-error-message');
