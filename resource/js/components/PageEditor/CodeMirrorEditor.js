@@ -473,62 +473,58 @@ export default class CodeMirrorEditor extends AbstractEditor {
     };
 
     return (
-      <div className="overlay-cheat-sheet mt-1 p-3 pt-5 small">
-        <div className="overlay-gfm-cheatsheat cheatsheet-1 p-1">
+      <div className="overlay-cheat-sheet mt-1 p-4 pt-4 small">
+        <div className="overlay-gfm-cheatsheat editor-cheatsheet p-1">
           <span style={style} className="overlay-content m-2">
-            <h5 className="p-2 pt-3 m-2"><i className="icon-question pr-2"/>Markdown Help</h5>
-              <div className="float-left">
-                <h6 className="text-center text-info">Header 見出し</h6>
-                <ul className="hljs small">
-                  <li><code>#</code> 見出し1</li>
-                  <li><code>##</code> 見出し2</li>
-                  <li><code>###</code> 見出し3</li>
-                </ul>
-                <h6 className="text-center text-info">Block 段落</h6>
-                <ul className="hljs small">
-                  <li>text</li>
-                  <li><code>[空白行]</code>を挟むことで段落となります。</li>
-                  <li>text</li>
-                </ul>
-                <h6 className="text-center text-info">Br 改行</h6>
-                <ul className="hljs small">
-                  <li>text<code>[][]</code>スペース2つで改行されます。</li>
-                  <li>text</li>
-                </ul>
-                <h6 className="text-center text-info">UI箇条書きリスト</h6>
-                <ul className="hljs small">
-                  <li><code>-</code> リスト1</li>
-                  <li><code>[]-</code> リスト1_1</li>
-                  <li><code>[][]-</code> リスト1_1_1</li>
-                </ul>
-              </div>
-              <div className="float-left">
-                <h5 className="text-center text-info h5">強調</h5>
-                <ul className="hljs small">
-                  <li>これは <i><code>*</code>italic<code>*</code></i>です</li>
-                  <li>これは <b><code>**</code>ボールド<code>**</code></b>です</li>
-                </ul>
-                <h5 className="text-center text-info h5">Table表</h5>
-                <ul className="hljs text-center">
-                  <li>|&nbsp;&nbsp;&nbsp;&nbsp;左寄せ&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;中央寄せ&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;右寄せ&nbsp;&nbsp;&nbsp;&nbsp;|</li>
-                  <li>|:-------------|----------------:|:------------:|</li>
-                  <li>|column 1&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp; &nbsp;column 3&nbsp; &nbsp;|&nbsp;&nbsp; &nbsp; &nbsp;column 2|</li>
-                  <li>|column 1&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp; &nbsp;column 3&nbsp; &nbsp;|&nbsp;&nbsp; &nbsp; &nbsp;column 2|</li>
-                </ul>
-                <h5 className="text-center text-info h5">Images</h5>
-                <ul className="hljs">
-                  <li><code> ![Alt文字列](URL)</code> で<span className="text-info">&lt;img&gt;</span>タグを挿入できます</li>
-                  <li>[例]![ex](https://example.com/images/a.png)</li>
-                </ul>
-                <h5 className="text-center text-info h5">Link</h5>
-                <ul className="hljs">
-                  <li><code>[表示テキスト](URL)</code>でリンクに変換されます。</li>
-                  <li>[例][Google](https://www.google.co.jp/)</li>
-                </ul>
-              </div>
+            <h5 className="p-2 pt-2 m-2"><i className="icon-question pr-2"/>Markdown Help</h5>
+            <h6 className="text-center text-info">Header 見出し</h6>
+            <ul className="hljs small">
+              <li><code>#</code> 見出し1</li>
+              <li><code>##</code> 見出し2</li>
+              <li><code>###</code> 見出し3</li>
+            </ul>
+            <h6 className="text-center text-info">Block 段落</h6>
+            <ul className="hljs small">
+              <li>text</li>
+              <li><code>[空白行]</code>を挟むことで段落となります。</li>
+              <li>text</li>
+            </ul>
+            <h6 className="text-center text-info">Br 改行</h6>
+            <ul className="hljs small">
+              <li>text<code>[][]</code>スペース2つで改行されます。</li>
+              <li>text</li>
+            </ul>
+            <h6 className="text-center text-info">UI箇条書きリスト</h6>
+            <ul className="hljs small">
+              <li><code>-</code> リスト1</li>
+              <li><code>[]-</code> リスト1_1</li>
+              <li><code>[][]-</code> リスト1_1_1</li>
+            </ul>
+            <h5 className="text-center text-info h5">強調</h5>
+            <ul className="hljs small">
+              <li>これは <i><code>*</code>italic<code>*</code></i>です</li>
+              <li>これは <b><code>**</code>ボールド<code>**</code></b>です</li>
+            </ul>
+            <h5 className="text-center text-info h5">Table表</h5>
+            <ul className="hljs text-center">
+              <li>|&nbsp;&nbsp;&nbsp;&nbsp;左寄せ&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;中央寄せ&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;右寄せ&nbsp;&nbsp;&nbsp;&nbsp;|</li>
+              <li>|:-------------|----------------:|:------------:|</li>
+              <li>|column 1&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp; &nbsp;column 3&nbsp; &nbsp;|&nbsp;&nbsp; &nbsp; &nbsp;column 2|</li>
+              <li>|column 1&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp; &nbsp;column 3&nbsp; &nbsp;|&nbsp;&nbsp; &nbsp; &nbsp;column 2|</li>
+            </ul>
+            <h5 className="text-center text-info h5">Images</h5>
+            <ul className="hljs">
+              <li><code> ![Alt文字列](URL)</code> で<span className="text-info">&lt;img&gt;</span>タグを挿入できます</li>
+              <li>[例]![ex](https://example.com/images/a.png)</li>
+            </ul>
+            <h5 className="text-center text-info h5">Link</h5>
+            <ul className="hljs">
+              <li><code>[表示テキスト](URL)</code>でリンクに変換されます。</li>
+              <li>[例][Google](https://www.google.co.jp/)</li>
+            </ul>
           </span>
         </div>
-        <div className="overlay-gfm-cheatsheat cheatsheet-2 ">
+        <div className="overlay-gfm-cheatsheat commentform-cheatsheet">
           <span style={style} className="overlay-content">
             <p className="pl-3"><i className="icon-question pr-2"/>Markdown Help</p>
             <h6 className="text-center text-info">Header 見出し</h6>

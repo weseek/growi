@@ -237,9 +237,9 @@ body.on-edit {
         min-width: 150px;
       }
     }
-
-      .cheatsheet-2 {
-          display: none;
+    // display cheatsheet for editor only
+      .commentform-cheatsheet {
+        display: none;
       }
   } // .builtin-editor .tab-pane#edit
 
