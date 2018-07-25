@@ -473,10 +473,10 @@ export default class CodeMirrorEditor extends AbstractEditor {
     };
 
     return (
-      <div className="overlay-cheat-sheet mt-1 p-4 pt-4 small">
+      <div className="overlay-cheat-sheet mt-1 p-3 pt-3 small">
         <div className="overlay-gfm-cheatsheat editor-cheatsheet p-1">
           <span style={style} className="overlay-content m-2">
-            <h5 className="p-2 pt-2 m-2"><i className="icon-question pr-2"/>Markdown Help</h5>
+            <h5 className="p-2 m-2"><i className="icon-question pr-2"/>Markdown Help</h5>
             <h6 className="text-center text-info">Header 見出し</h6>
             <ul className="hljs small">
               <li><code>#</code> 見出し1</li>
@@ -524,7 +524,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
             </ul>
           </span>
         </div>
-        <div className="overlay-gfm-cheatsheat commentform-cheatsheet">
+        <div className="overlay-gfm-cheatsheat commentform-cheatsheet pt-3 mt-4">
           <span style={style} className="overlay-content">
             <p className="pl-3"><i className="icon-question pr-2"/>Markdown Help</p>
             <h6 className="text-center text-info">Header 見出し</h6>
