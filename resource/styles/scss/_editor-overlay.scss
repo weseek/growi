@@ -52,5 +52,10 @@
         list-style: none;
       }
     }
+
+    // hide on smartphone
+    @media (max-width: $screen-xs) {
+      display: none;
+    }
   }
 }
