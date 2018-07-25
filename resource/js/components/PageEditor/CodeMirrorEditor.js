@@ -472,36 +472,35 @@ export default class CodeMirrorEditor extends AbstractEditor {
     };
 
     return (
-      <div className="overlay-cheat-sheet mt-2 p-2 pt-5 small">
-        <div className="overlay-gfm-cheatsheat cheatsheet-1">
-          <span style={style} className="overlay-content">
-            <h4 className="p-2 pt-4 m-3"><i className="icon-question pr-2"/>Markdown Help</h4>
+      <div className="overlay-cheat-sheet mt-1 p-3 pt-5 small">
+        <div className="overlay-gfm-cheatsheat cheatsheet-1 p-1">
+          <span style={style} className="overlay-content m-2">
+            <h5 className="p-2 pt-3 m-2"><i className="icon-question pr-2"/>Markdown Help</h5>
               <div className="float-left">
-                <h5 className="text-center text-info h5">Header 見出し</h5>
+                <h6 className="text-center text-info">Header 見出し</h6>
                 <ul className="hljs small">
                   <li><code>#</code> 見出し1</li>
                   <li><code>##</code> 見出し2</li>
                   <li><code>###</code> 見出し3</li>
                 </ul>
-                <h5 className="text-center text-info h5">Block 段落</h5>
+                <h6 className="text-center text-info">Block 段落</h6>
                 <ul className="hljs small">
                   <li>text</li>
                   <li><code>[空白行]</code>を挟むことで段落となります。</li>
                   <li>text</li>
                 </ul>
-                <h5 className="text-center text-info h5">Br 改行</h5>
+                <h6 className="text-center text-info">Br 改行</h6>
                 <ul className="hljs small">
                   <li>text<code>[][]</code>スペース2つで改行されます。</li>
                   <li>text</li>
                 </ul>
-                <h5 className="text-center text-info h5">UI箇条書きリスト</h5>
+                <h6 className="text-center text-info">UI箇条書きリスト</h6>
                 <ul className="hljs small">
                   <li><code>-</code> リスト1</li>
                   <li><code>[]-</code> リスト1_1</li>
                   <li><code>[][]-</code> リスト1_1_1</li>
                 </ul>
               </div>
-
               <div className="float-left">
                 <h5 className="text-center text-info h5">強調</h5>
                 <ul className="hljs small">
@@ -528,39 +527,28 @@ export default class CodeMirrorEditor extends AbstractEditor {
               </div>
           </span>
         </div>
-
-
-        <div className="overlay cheatsheet-2 overlay-gfm-cheatsheat">
+        <div className="overlay-gfm-cheatsheat cheatsheet-2 ">
           <span style={style} className="overlay-content">
-            <p className="markdown-help">Markdown Help</p>
-            <div>
-              <ul>
-                <li># 見出し1</li>
-                <li>## 見出し2</li>
-                <li>### 見出し3</li>
-                <li>#### 見出し4</li>
-              </ul>
-              <ul>
-                <li>text[&nbsp;][&nbsp;](スペース2つで改行)</li>
-                <li>text</li>
-              </ul>
-              <ul>
-                <li>- リスト1</li>
-                <li>[&nbsp;]- リスト1_1</li>
-                <li>[&nbsp;][&nbsp;]- リスト1_1_1</li>
-              </ul>
-              <ul>
-                <li>これは <i> *italic* </i>です</li>
-                <li>これは <b> **ボールド** </b>です</li>
-              </ul>
-
-            </div>
+            <p className="pl-3"><i className="icon-question pr-2"/>Markdown Help</p>
+            <h6 className="text-center text-info">Header 見出し</h6>
+            <ul className="hljs small">
+              <li><code>#</code> 見出し1</li>
+              <li><code>##</code> 見出し2</li>
+              <li><code>###</code> 見出し3</li>
+            </ul>
+            <h6 className="text-center text-info">Br 改行</h6>
+            <ul className="hljs small">
+              <li>text<code>[][]</code>スペース2つで改行されます。</li>
+              <li>text</li>
+            </ul>
+            <h6 className="text-center text-info">強調</h6>
+            <ul className="hljs small">
+              <li>これは <i><code>*</code>italic<code>*</code></i>です</li>
+              <li>これは <b><code>**</code>ボールド<code>**</code></b>です</li>
+            </ul>
           </span>
         </div>
-
-
       </div>
-
     );
   }
 
