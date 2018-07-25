@@ -237,7 +237,10 @@ body.on-edit {
         min-width: 150px;
       }
     }
-
+    // display cheatsheet for editor only
+      .commentform-cheatsheet {
+        display: none;
+      }
   } // .builtin-editor .tab-pane#edit
 
 

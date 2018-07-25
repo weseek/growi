@@ -19,6 +19,7 @@ window.CodeMirror = require('codemirror');
 
 
 import { UnControlled as ReactCodeMirror } from 'react-codemirror2';
+require('codemirror/addon/display/placeholder');
 require('codemirror/addon/edit/matchbrackets');
 require('codemirror/addon/edit/matchtags');
 require('codemirror/addon/edit/closetag');
@@ -58,6 +59,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       isGfmMode: this.props.isGfmMode,
       isEnabledEmojiAutoComplete: false,
       isLoadingKeymap: false,
+      isCheatsheatShown: this.props.isGfmMode && this.props.value.length === 0,
       additionalClassSet: new Set(),
     };
 
@@ -77,6 +79,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.scrollCursorIntoViewHandler = this.scrollCursorIntoViewHandler.bind(this);
     this.pasteHandler = this.pasteHandler.bind(this);
     this.cursorHandler = this.cursorHandler.bind(this);
+    this.changeHandler = this.changeHandler.bind(this);
 
     this.renderLoadingKeymapOverlay = this.renderLoadingKeymapOverlay.bind(this);
   }
@@ -152,11 +155,9 @@ export default class CodeMirrorEditor extends AbstractEditor {
    */
   setGfmMode(bool) {
     // update state
-    const additionalClassSet = this.state.additionalClassSet;
     this.setState({
       isGfmMode: bool,
       isEnabledEmojiAutoComplete: bool,
-      additionalClassSet,
     });
 
     // update CodeMirror option
@@ -412,6 +413,21 @@ export default class CodeMirrorEditor extends AbstractEditor {
     }
   }
 
+  changeHandler(editor, data, value) {
+    if (this.props.onChange != null) {
+      this.props.onChange(value);
+    }
+
+    // update isCheatsheatShown
+    const isCheatsheatShown = this.state.isGfmMode && value.length === 0;
+    this.setState({isCheatsheatShown});
+
+    // Emoji AutoComplete
+    if (this.state.isEnabledEmojiAutoComplete) {
+      this.emojiAutoCompleteHelper.showHint(editor);
+    }
+  }
+
   /**
    * CodeMirror paste event handler
    * see: https://codemirror.net/doc/manual.html#events
@@ -432,6 +448,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   renderLoadingKeymapOverlay() {
+    // centering
     const style = {
       top: 0,
       right: 0,
@@ -448,6 +465,90 @@ export default class CodeMirrorEditor extends AbstractEditor {
       : '';
   }
 
+  renderCheatSheatOverlay() {
+    // overlay and centering
+    const style = {
+      right: '2em',
+      bottom: '1em',
+    };
+
+    return (
+      <div className="overlay-cheat-sheet mt-1 p-3 pt-3 small">
+        <div className="overlay-gfm-cheatsheat editor-cheatsheet p-1">
+          <span style={style} className="overlay-content m-2">
+            <h5 className="p-2 m-2"><i className="icon-question pr-2"/>Markdown Help</h5>
+            <h6 className="text-center text-info">Header 見出し</h6>
+            <ul className="hljs small">
+              <li><code>#</code> 見出し1</li>
+              <li><code>##</code> 見出し2</li>
+              <li><code>###</code> 見出し3</li>
+            </ul>
+            <h6 className="text-center text-info">Block 段落</h6>
+            <ul className="hljs small">
+              <li>text</li>
+              <li><code>[空白行]</code>を挟むことで段落となります。</li>
+              <li>text</li>
+            </ul>
+            <h6 className="text-center text-info">Br 改行</h6>
+            <ul className="hljs small">
+              <li>text<code>[][]</code>スペース2つで改行されます。</li>
+              <li>text</li>
+            </ul>
+            <h6 className="text-center text-info">UI箇条書きリスト</h6>
+            <ul className="hljs small">
+              <li><code>-</code> リスト1</li>
+              <li><code>[]-</code> リスト1_1</li>
+              <li><code>[][]-</code> リスト1_1_1</li>
+            </ul>
+            <h5 className="text-center text-info h5">強調</h5>
+            <ul className="hljs small">
+              <li>これは <i><code>*</code>italic<code>*</code></i>です</li>
+              <li>これは <b><code>**</code>ボールド<code>**</code></b>です</li>
+            </ul>
+            <h5 className="text-center text-info h5">Table表</h5>
+            <ul className="hljs text-center">
+              <li>|&nbsp;&nbsp;&nbsp;&nbsp;左寄せ&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;中央寄せ&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;右寄せ&nbsp;&nbsp;&nbsp;&nbsp;|</li>
+              <li>|:-------------|----------------:|:------------:|</li>
+              <li>|column 1&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp; &nbsp;column 3&nbsp; &nbsp;|&nbsp;&nbsp; &nbsp; &nbsp;column 2|</li>
+              <li>|column 1&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp; &nbsp;column 3&nbsp; &nbsp;|&nbsp;&nbsp; &nbsp; &nbsp;column 2|</li>
+            </ul>
+            <h5 className="text-center text-info h5">Images</h5>
+            <ul className="hljs">
+              <li><code> ![Alt文字列](URL)</code> で<span className="text-info">&lt;img&gt;</span>タグを挿入できます</li>
+              <li>[例]![ex](https://example.com/images/a.png)</li>
+            </ul>
+            <h5 className="text-center text-info h5">Link</h5>
+            <ul className="hljs">
+              <li><code>[表示テキスト](URL)</code>でリンクに変換されます。</li>
+              <li>[例][Google](https://www.google.co.jp/)</li>
+            </ul>
+          </span>
+        </div>
+        <div className="overlay-gfm-cheatsheat commentform-cheatsheet pt-3 mt-4">
+          <span style={style} className="overlay-content">
+            <p className="pl-3"><i className="icon-question pr-2"/>Markdown Help</p>
+            <h6 className="text-center text-info">Header 見出し</h6>
+            <ul className="hljs small">
+              <li><code>#</code> 見出し1</li>
+              <li><code>##</code> 見出し2</li>
+              <li><code>###</code> 見出し3</li>
+            </ul>
+            <h6 className="text-center text-info">Br 改行</h6>
+            <ul className="hljs small">
+              <li>text<code>[][]</code>スペース2つで改行されます。</li>
+              <li>text</li>
+            </ul>
+            <h6 className="text-center text-info">強調</h6>
+            <ul className="hljs small">
+              <li>これは <i><code>*</code>italic<code>*</code></i>です</li>
+              <li>これは <b><code>**</code>ボールド<code>**</code></b>です</li>
+            </ul>
+          </span>
+        </div>
+      </div>
+    );
+  }
+
   render() {
     const mode = this.state.isGfmMode ? 'gfm' : undefined;
     const defaultEditorOptions = {
@@ -456,6 +557,8 @@ export default class CodeMirrorEditor extends AbstractEditor {
     };
     const additionalClasses = Array.from(this.state.additionalClassSet).join(' ');
     const editorOptions = Object.assign(defaultEditorOptions, this.props.editorOptions || {});
+
+    const placeholder = this.state.isGfmMode ? 'Input with Markdown..' : 'Input with Plane Text..';
 
     return <React.Fragment>
       <ReactCodeMirror
@@ -478,6 +581,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
           lineWrapping: true,
           autoRefresh: {force: true},   // force option is enabled by autorefresh.ext.js -- Yuki Takei
           autoCloseTags: true,
+          placeholder: placeholder,
           matchBrackets: true,
           matchTags: {bothTags: true},
           // folding
@@ -506,16 +610,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
             this.props.onScroll(data);
           }
         }}
-        onChange={(editor, data, value) => {
-          if (this.props.onChange != null) {
-            this.props.onChange(value);
-          }
-
-          // Emoji AutoComplete
-          if (this.state.isEnabledEmojiAutoComplete) {
-            this.emojiAutoCompleteHelper.showHint(editor);
-          }
-        }}
+        onChange={this.changeHandler}
         onDragEnter={(editor, event) => {
           if (this.props.onDragEnter != null) {
             this.props.onDragEnter(event);
@@ -524,6 +619,8 @@ export default class CodeMirrorEditor extends AbstractEditor {
       />
 
       { this.renderLoadingKeymapOverlay() }
+      { this.state.isCheatsheatShown && this.renderCheatSheatOverlay() }
+
     </React.Fragment>;
   }
 

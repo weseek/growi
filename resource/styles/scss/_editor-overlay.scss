@@ -1,9 +1,8 @@
 @mixin overlay-processing-style($additionalSelector, $contentFontSize: inherit, $contentPadding: inherit) {
   .overlay.#{$additionalSelector} {
-    background: rgba(255,255,255,0.5);
-
+    background: rgba(255, 255, 255, 0.5);
     .overlay-content {
-      background: rgba(200,200,200,0.5);
+      background: rgba(200, 200, 200, 0.5);
       color: #444;
       font-size: $contentFontSize;
       padding: $contentPadding;
@@ -18,20 +17,45 @@
     display: flex;
     justify-content: center;
     align-items: center;
-
     position: absolute;
-    z-index: 7;  // forward than .CodeMirror-vscrollbar
+    z-index: 7; // forward than .CodeMirror-vscrollbar
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
-
     .overlay-content {
       padding: 0.5em;
+      right: 0;
+      bottom: 0;
+    }
+  } // loading keymap
+  @include overlay-processing-style(overlay-loading-keymap, 2.5em, 0.3em); // cheat sheat
+  .overlay-cheat-sheet {
+    display: flex;
+    justify-content: flex-end;
+    align-items: end;
+    position: absolute;
+    z-index: 7; // forward than .CodeMirror-vscrollbar
+    top: 0;
+    right: 0;
+    bottom: 0;
+    ul {
+      list-style: none;
+    }
+    .overlay-gfm-cheatsheat {
+      justify-content: end;
+      align-items: end;
+      pointer-events: none;
+      border: solid 1.5px lightgray;
+      margin: auto;
+      .overlay-content {
+        color: $text-muted;
+      }
+    }
+    @media screen and (max-width: 340px) {
+      .overlay-gfm-cheatsheat {
+        visibility: hidden;
+      }
     }
   }
-
-  // loading keymap
-  @include overlay-processing-style(overlay-loading-keymap, 2.5em, 0.3em);
-
 }
