@@ -62,6 +62,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       isEnabledEmojiAutoComplete: false,
       isLoadingKeymap: false,
       isSimpleCheatsheetShown: this.props.isGfmMode && this.props.value.length === 0,
+      isCheatsheetModalButtonShown: this.props.isGfmMode && this.props.value.length > 0,
       isCheatsheetModalShown: false,
       additionalClassSet: new Set(),
     };
@@ -83,6 +84,8 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.pasteHandler = this.pasteHandler.bind(this);
     this.cursorHandler = this.cursorHandler.bind(this);
     this.changeHandler = this.changeHandler.bind(this);
+
+    this.updateCheatsheetStates = this.updateCheatsheetStates.bind(this);
 
     this.renderLoadingKeymapOverlay = this.renderLoadingKeymapOverlay.bind(this);
     this.renderCheatsheetModalButton = this.renderCheatsheetModalButton.bind(this);
@@ -163,6 +166,8 @@ export default class CodeMirrorEditor extends AbstractEditor {
       isGfmMode: bool,
       isEnabledEmojiAutoComplete: bool,
     });
+
+    this.updateCheatsheetStates(bool, null);
 
     // update CodeMirror option
     const mode = bool ? 'gfm' : undefined;
@@ -422,9 +427,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       this.props.onChange(value);
     }
 
-    // update isSimpleCheatsheetShown
-    const isSimpleCheatsheetShown = this.state.isGfmMode && value.length === 0;
-    this.setState({isSimpleCheatsheetShown});
+    this.updateCheatsheetStates(null, value);
 
     // Emoji AutoComplete
     if (this.state.isEnabledEmojiAutoComplete) {
@@ -449,6 +452,24 @@ export default class CodeMirrorEditor extends AbstractEditor {
     else if (types.includes('Files')) {
       this.dispatchPasteFiles(event);
     }
+  }
+
+  /**
+   * update states which related to cheatsheet
+   * @param {boolean} isGfmMode (use state.isGfmMode if null is set)
+   * @param {string} value (get value from codemirror if null is set)
+   */
+  updateCheatsheetStates(isGfmMode, value) {
+    if (isGfmMode == null) {
+      isGfmMode = this.state.isGfmMode;
+    }
+    if (value == null) {
+      value = this.getCodeMirror().getDoc().getValue();
+    }
+    // update isSimpleCheatsheetShown, isCheatsheetModalButtonShown
+    const isSimpleCheatsheetShown = isGfmMode && value.length === 0;
+    const isCheatsheetModalButtonShown = isGfmMode && value.length > 0;
+    this.setState({ isSimpleCheatsheetShown, isCheatsheetModalButtonShown });
   }
 
   renderLoadingKeymapOverlay() {
@@ -697,7 +718,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
       <div className="overlay overlay-gfm-cheatsheet mt-1 p-3 pt-3">
         { this.state.isSimpleCheatsheetShown && this.renderSimpleCheatsheet() }
-        { !this.state.isSimpleCheatsheetShown && this.renderCheatsheetModalButton() }
+        { this.state.isCheatsheetModalButtonShown && this.renderCheatsheetModalButton() }
       </div>
 
     </React.Fragment>;
