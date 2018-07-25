@@ -35,6 +35,7 @@ require('codemirror/addon/fold/foldgutter');
 require('codemirror/addon/fold/foldgutter.css');
 require('codemirror/addon/fold/markdown-fold');
 require('codemirror/addon/fold/brace-fold');
+require('codemirror/addon/display/placeholder');
 require('codemirror/mode/gfm/gfm');
 require('../../util/codemirror/autorefresh.ext');
 
@@ -567,6 +568,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       <ReactCodeMirror
         ref="cm"
         className={additionalClasses}
+        placeholder="search"
         editorDidMount={(editor) => {
           // add event handlers
           editor.on('paste', this.pasteHandler);
