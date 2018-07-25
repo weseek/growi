@@ -8,6 +8,7 @@ CHANGES
 ## 3.1.14-RC
 
 * Improvement: Show help for header search box
+* Improvement: Add Markdown Cheatsheet to Editor component
 * Fix: Couldn't delete page completely from search result page
 * Fix: Tabs of trash page are broken
 
