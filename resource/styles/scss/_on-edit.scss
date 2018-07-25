@@ -162,6 +162,10 @@ body.on-edit {
         .textarea-editor {
           height: calc(100vh - #{$editor-margin});
         }
+
+        @media (min-width: $screen-md) {
+          padding-right: 0;
+        }
       }
     }
 
@@ -170,7 +174,6 @@ body.on-edit {
     *****************/
     .page-editor-editor-container {
       border-right: 1px solid transparent;
-      padding-right: 0;
       // override CodeMirror styles
       .CodeMirror {
         .cm-matchhighlight {
