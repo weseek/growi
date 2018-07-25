@@ -62,7 +62,7 @@
           <div class="form-group">
             <input type="hidden" name="_csrf" value="{{ csrf() }}" />
             <div class="col-xs-offset-3 col-xs-6">
-              <button id="testConnectionToEsa" type="button" class="btn btn-primary" data-action="/_api/admin/import/esa"
+              <button id="testConnectionToEsa" type="button" class="btn btn-primary btn-esa" data-action="/_api/admin/import/esa" name="esa"
                   data-success-message="Import posts from esa success." data-error-message="Error occurred in importing pages from esa.io">
                 {{ t("importer_management.import") }}
               </button>
@@ -70,7 +70,7 @@
                 {{ t('Update') }}
               </button>
               <span class="col-xs-offset-1">
-                <button id="importFromEsa" type="button" class="btn btn-default" data-action="/_api/admin/import/testEsaAPI"
+                <button id="importFromEsa" type="button" class="btn btn-default btn-esa" data-action="/_api/admin/import/testEsaAPI" name="esa"
                     data-success-message="Test connection to esa success." data-error-message="Test connection to esa failed.">
                   {{ t("importer_management.esa_settings.test_connection") }}
                 </button>
@@ -102,7 +102,7 @@
           <div class="form-group">
             <input type="hidden" name="_csrf" value="{{ csrf() }}" />
             <div class="col-xs-offset-3 col-xs-6">
-              <button id="testConnectionToQiita" type="button" class="btn btn-primary" data-action="/_api/admin/import/qiita"
+              <button id="testConnectionToQiita" type="button" class="btn btn-primary btn-qiita" data-action="/_api/admin/import/qiita" name="qiita"
                   data-success-message="Import posts from qiita:team success." data-error-message="Error occurred in importing pages from qiita:team">
                 {{ t("importer_management.import") }}
               </button>
@@ -110,7 +110,7 @@
                 {{ t('Update') }}
               </button>
               <span class="col-xs-offset-1">
-                <button id="importFromQiita" type="button" class="btn btn-default" data-action="/_api/admin/import/testQiitaAPI"
+                <button id="importFromQiita" type="button" class="btn btn-default btn-qiita" data-action="/_api/admin/import/testQiitaAPI" name="qiita"
                     data-success-message="Test connection to qiita:team success." data-error-message="Test connection to qiita:team failed.">
                   {{ t("importer_management.qiita_settings.test_connection") }}
                 </button>
@@ -178,8 +178,15 @@
   /**
    * Handle button esa
    */
-  $('#testConnectionToEsa, #importFromEsa').each(function() {
-    var $form = $('#importerSettingFormEsa');
+  $('.btn-esa, .btn-qiita').each(function() {
+    switch ($(this).attr('name')) {
+      case 'esa': var $form = $('#importerSettingFormEsa');
+      break;
+      case 'qiita': var $form = $('#importerSettingFormQiita');
+      break;
+      default:
+      break;
+    }
     var $button = $(this);
     var $action = $button.attr('data-action');
     var $success_msg = $button.attr('data-success-message');
@@ -190,31 +197,7 @@
   /**
    * Handle submit button esa
    */
-  $('#importerSettingFormEsa').each(function() {
-    var $form = $(this);
-    var $button = $("#importerSettingForm input[type='submit']");
-    var $action = $form.attr('action');
-    var $success_msg = $button.attr('data-success-message');
-    var $error_msg = $button.attr('data-error-message');
-    $form.submit(function() { return postData($form, $button, $action, $success_msg, $error_msg) });
-  });
-
-    /**
-   * Handle button qiita
-   */
-   $('#testConnectionToQiita, #importFromQiita').each(function() {
-    var $form = $('#importerSettingFormQiita');
-    var $button = $(this);
-    var $action = $button.attr('data-action');
-    var $success_msg = $button.attr('data-success-message');
-    var $error_msg = $button.attr('data-error-message');
-    $button.click(function() { return postData($form, $button, $action, $success_msg, $error_msg) });
-  });
-
-  /**
-   * Handle submit button qiita
-   */
-  $('#importerSettingFormQiita').each(function() {
+  $('#importerSettingFormEsa, #importerSettingFormQiita').each(function() {
     var $form = $(this);
     var $button = $("#importerSettingForm input[type='submit']");
     var $action = $form.attr('action');
