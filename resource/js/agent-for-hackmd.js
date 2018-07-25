@@ -73,6 +73,11 @@ function addEventListenersToCodemirror() {
   // get CodeMirror editor instance
   const editor = window.editor;
 
+  // e.g. 404 not found
+  if (codemirror == null || editor == null) {
+    return;
+  }
+
   //// change event
   editor.on('change', (cm, change) => {
     debouncedPostParentToNotifyBodyChanges(cm.doc.getValue());
