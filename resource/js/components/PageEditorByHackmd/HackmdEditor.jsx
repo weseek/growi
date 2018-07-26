@@ -44,8 +44,6 @@ export default class HackmdEditor extends React.PureComponent {
     });
     connection.promise.then(child => {
       this.hackmd = child;
-    });
-    connection.iframe.addEventListener('load', () => {
       if (this.props.initializationMarkdown != null) {
         this.setValue(this.props.initializationMarkdown);
       }
