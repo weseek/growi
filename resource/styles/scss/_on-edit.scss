@@ -1,19 +1,13 @@
 @import 'editor-overlay';
 
 body:not(.on-edit) {
-  // hide #page-form
-  #page-form {
-    display: none;
+  // hide .page-editor-footer
+  .page-editor-footer {
+    display: none !important;
   }
 }
 
 body.on-edit {
-
-  %expand-by-flex {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-  }
 
   // calculate margin
   $header-plus-footer: 2px                      // .main padding-top
@@ -85,7 +79,49 @@ body.on-edit {
     &,
     .content-main,
     .tab-content {
-      @extend %expand-by-flex;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+
+      .tab-pane#edit, .tab-pane#hackmd {
+        min-height: calc(100vh - #{$header-plus-footer});   // for IE11
+        height: calc(100vh - #{$header-plus-footer});
+      }
+
+      #page-editor {
+        // right(preview)
+        &,
+        &>.row,
+        .page-editor-preview-container,
+        .page-editor-preview-body {
+          min-height: calc(100vh - #{$header-plus-footer});   // for IE11
+          height: calc(100vh - #{$header-plus-footer});
+        }
+        // left(editor)
+        .page-editor-editor-container {
+          min-height: calc(100vh - #{$header-plus-footer});   // for IE11
+          height: calc(100vh - #{$header-plus-footer});
+
+          .react-codemirror2, .CodeMirror, .CodeMirror-scroll,
+          .textarea-editor {
+            height: calc(100vh - #{$editor-margin});
+          }
+
+          @media (min-width: $screen-md) {
+            padding-right: 0;
+          }
+        }
+      }
+
+      #page-editor-with-hackmd {
+        &,
+        .hackmd-preinit, #iframe-hackmd-container > iframe {
+          width: 100vw;
+          min-height: calc(100vh - #{$header-plus-footer});   // for IE11
+          height: calc(100vh - #{$header-plus-footer});
+        }
+      }
+
     }
   }
 
@@ -135,39 +171,18 @@ body.on-edit {
     min-height: 40px;
     border-top: solid 1px transparent;
 
+    .grant-selector {
+      .btn-group {
+        min-width: 150px;
+      }
+    }
     .btn-submit {
       width: 100px;
     }
   }
 
 
-  &.builtin-editor .tab-pane#edit {
-    @extend %expand-by-flex;
-
-    #page-editor {
-      // right(preview)
-      &,
-      &>.row,
-      .page-editor-preview-container,
-      .page-editor-preview-body {
-        min-height: calc(100vh - #{$header-plus-footer});   // for IE11
-        height: calc(100vh - #{$header-plus-footer});
-      }
-      // left(editor)
-      .page-editor-editor-container {
-        min-height: calc(100vh - #{$header-plus-footer});   // for IE11
-        height: calc(100vh - #{$header-plus-footer});
-
-        .react-codemirror2, .CodeMirror, .CodeMirror-scroll,
-        .textarea-editor {
-          height: calc(100vh - #{$editor-margin});
-        }
-
-        @media (min-width: $screen-md) {
-          padding-right: 0;
-        }
-      }
-    }
+  &.builtin-editor {
 
     /*****************
     * Editor styles
@@ -240,6 +255,12 @@ body.on-edit {
         min-width: 150px;
       }
     }
+
+    #page-grant-selector {
+      .btn-group {
+        min-width: 150px;
+      }
+    }
   } // .builtin-editor .tab-pane#edit
 
 
@@ -248,19 +269,14 @@ body.on-edit {
       display: none;
     }
 
-    .tab-pane#hackmd {
-      @extend %expand-by-flex;
-
-      #hackmd-editor,
-      .hackmd-nopage, #iframe-hackmd {
-        width: 100vw;
-        min-height: calc(100vh - #{$header-plus-footer});   // for IE11
-        height: calc(100vh - #{$header-plus-footer});
-
-        border: none;
-      }
+    .hackmd-preinit, #iframe-hackmd-container > iframe {
+      border: none;
     }
 
+    .hackmd-status-label {
+      font-size: 3em;
+      color: $muted;
+    }
   }
 
 }
