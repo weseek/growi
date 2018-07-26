@@ -5,7 +5,7 @@ CHANGES
 
 * Feature: HackMD integration so that user can simultaneously edit with multiple people
 
-## 3.1.14-RC
+## 3.1.14
 
 * Improvement: Show help for header search box
 * Improvement: Add Markdown Cheatsheet to Editor component
