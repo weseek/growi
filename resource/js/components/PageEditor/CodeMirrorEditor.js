@@ -493,7 +493,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
   renderSimpleCheatsheet() {
     return (
       <div className="panel panel-default gfm-cheatsheet mb-0">
-        <div className="panel-heading"><i className="icon-fw icon-question"/>Markdown Help</div>
         <div className="panel-body small p-b-0">
           <div className="row">
             <div className="col-xs-6">
