@@ -106,32 +106,34 @@ export default class SearchResult extends React.Component {
    * @memberof SearchResult
    */
   deleteSelectedPages() {
-    let isDeleted = true;
     let deleteCompletely = this.state.isDeleteCompletely;
-    Array.from(this.state.selectedPages).map((page) => {
-      const pageId = page._id;
-      const revisionId = page.revision._id;
-      this.props.crowi.apiPost('/pages.remove',
-        {page_id: pageId, revision_id: revisionId, completely: deleteCompletely})
-      .then(res => {
-        if (res.ok) {
-          this.state.selectedPages.delete(page);
-        }
-        else {
-          isDeleted = false;
-        }
-      }).catch(err => {
-        /* eslint-disable no-console */
-        console.log(err.message);
-        /* eslint-enable */
-        isDeleted = false;
-        this.setState({errorMessageForDeleting: err.message});
+    Promise.all(Array.from(this.state.selectedPages).map((page) => {
+      return new Promise((resolve, reject) => {
+        const pageId = page._id;
+        const revisionId = page.revision._id;
+        this.props.crowi.apiPost('/pages.remove', {page_id: pageId, revision_id: revisionId, completely: deleteCompletely})
+          .then(res => {
+            if (res.ok) {
+              this.state.selectedPages.delete(page);
+              return resolve();
+            }
+            else {
+              return reject();
+            }
+          })
+          .catch(err => {
+            /* eslint-disable no-console */
+            console.log(err.message);
+            /* eslint-enable */
+            this.setState({errorMessageForDeleting: err.message});
+            return reject();
+          });
       });
-    });
-
-    if ( isDeleted ) {
+    }))
+    .then(() => {
       window.location.reload();
-    }
+    })
+    .catch(err => {});
   }
 
   /**
