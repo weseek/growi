@@ -1,6 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import SplitButton from 'react-bootstrap/es/SplitButton';
+import MenuItem from 'react-bootstrap/es/MenuItem';
+
 import * as toastr from 'toastr';
 
 import HackmdEditor from './PageEditorByHackmd/HackmdEditor';
@@ -16,6 +19,7 @@ export default class PageEditorByHackmd extends React.PureComponent {
       isInitializing: false,
       revisionId: this.props.revisionId,
       pageIdOnHackmd: this.props.pageIdOnHackmd,
+      hasDraftOnHackmd: this.props.hasDraftOnHackmd,
     };
 
     this.getHackmdUri = this.getHackmdUri.bind(this);
@@ -110,6 +114,13 @@ export default class PageEditorByHackmd extends React.PureComponent {
   }
 
   /**
+   * Reset draft
+   */
+  discardChanges() {
+    this.setState({hasDraftOnHackmd: false});
+  }
+
+  /**
    * onChange event of HackmdEditor handler
    */
   hackmdEditorChangeHandler(body) {
@@ -153,7 +164,7 @@ export default class PageEditorByHackmd extends React.PureComponent {
 
     const isPageExistsOnHackmd = (this.state.pageIdOnHackmd != null);
     const isRevisionMatch = (this.state.revisionId === this.props.revisionIdHackmdSynced);
-    const isResume = isPageExistsOnHackmd && isRevisionMatch && this.props.hasDraftOnHackmd;
+    const isResume = isPageExistsOnHackmd && isRevisionMatch && this.state.hasDraftOnHackmd;
 
     if (this.state.isInitialized) {
       return (
@@ -181,15 +192,20 @@ export default class PageEditorByHackmd extends React.PureComponent {
       );
     }
     else if (isResume) {
+      const title = (
+        <React.Fragment>
+          <span className="btn-label"><i className="icon-control-end"></i></span>
+          Resume to edit with HackMD
+        </React.Fragment>);
       content = (
         <div>
           <p className="text-center hackmd-status-label"><i className="fa fa-file-text"></i> HackMD is READY!</p>
-          <p className="text-center">
-            <button className="btn btn-success btn-lg waves-effect waves-light" type="button"
-                onClick={() => this.resumeToEdit()}>
-              <span className="btn-label"><i className="icon-control-end"></i></span>
-              Resume to edit with HackMD
-            </button>
+          <p className="text-center hackmd-resule-button-container">
+            <SplitButton title={title} bsStyle="success" bsSize="large" className="btn-resume waves-effect waves-light" onClick={() => this.resumeToEdit()}>
+              <MenuItem className="text-center" onClick={() => this.discardChanges()}>
+                <i className="icon-control-rewind"></i> Discard changes
+              </MenuItem>
+            </SplitButton>
           </p>
           <p className="text-center">Click to edit from the previous continuation.</p>
         </div>
@@ -199,7 +215,7 @@ export default class PageEditorByHackmd extends React.PureComponent {
       content = (
         <div>
           <p className="text-center hackmd-status-label"><i className="fa fa-file-text"></i> HackMD is READY!</p>
-          <p className="text-center">
+          <p className="text-center hackmd-start-button-container">
             <button className="btn btn-info btn-lg waves-effect waves-light" type="button"
                 onClick={() => this.startToEdit()} disabled={this.state.isInitializing}>
               <span className="btn-label"><i className="icon-paper-plane"></i></span>

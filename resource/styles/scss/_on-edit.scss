@@ -277,6 +277,17 @@ body.on-edit {
       font-size: 3em;
       color: $muted;
     }
+
+    .hackmd-resule-button-container {
+      .btn-lg .btn-label {
+        padding-top: 6px;     // for SplitButton
+        padding-bottom: 6px;  // for SplitButton
+      }
+      .dropdown-menu {
+        left: unset;
+        right: 0;
+      }
+    }
   }
 
 }
