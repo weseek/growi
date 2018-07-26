@@ -91,7 +91,7 @@ body.on-edit {
       #page-editor {
         // right(preview)
         &,
-        .row,
+        &>.row,
         .page-editor-preview-container,
         .page-editor-preview-body {
           min-height: calc(100vh - #{$header-plus-footer});   // for IE11
@@ -105,6 +105,10 @@ body.on-edit {
           .react-codemirror2, .CodeMirror, .CodeMirror-scroll,
           .textarea-editor {
             height: calc(100vh - #{$editor-margin});
+          }
+
+          @media (min-width: $screen-md) {
+            padding-right: 0;
           }
         }
       }
@@ -185,7 +189,6 @@ body.on-edit {
     *****************/
     .page-editor-editor-container {
       border-right: 1px solid transparent;
-      padding-right: 0;
       // override CodeMirror styles
       .CodeMirror {
         .cm-matchhighlight {
@@ -247,6 +250,17 @@ body.on-edit {
       }
     }
 
+    #page-grant-selector {
+      .btn-group {
+        min-width: 150px;
+      }
+    }
+
+    #page-grant-selector {
+      .btn-group {
+        min-width: 150px;
+      }
+    }
   } // .builtin-editor .tab-pane#edit
 
 
