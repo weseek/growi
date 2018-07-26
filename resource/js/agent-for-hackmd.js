@@ -92,6 +92,23 @@ function addEventListenersToCodemirror() {
   delete editor.options.extraKeys['Ctrl-S'];
 }
 
+function connectToParentWithPenpal() {
+  const connection = Penpal.connectToParent({
+    parentOrigin: allowedOrigin,
+    // Methods child is exposing to parent
+    methods: {
+      getValue() {
+        return getValueOfCodemirror();
+      },
+      setValue(newValue) {
+        setValueToCodemirror(newValue);
+      },
+    }
+  });
+  connection.promise.then(parent => {
+    window.growi = parent;
+  });
+}
 
 /**
  * main
@@ -112,21 +129,7 @@ function addEventListenersToCodemirror() {
     addEventListenersToCodemirror();
   });
 
-  const connection = Penpal.connectToParent({
-    parentOrigin: allowedOrigin,
-    // Methods child is exposing to parent
-    methods: {
-      getValue() {
-        return getValueOfCodemirror();
-      },
-      setValue(newValue) {
-        setValueToCodemirror(newValue);
-      },
-    }
-  });
-  connection.promise.then(parent => {
-    window.growi = parent;
-  });
+  connectToParentWithPenpal();
 
   console.log('[HackMD] GROWI agent for HackMD has successfully loaded.');
 }());
