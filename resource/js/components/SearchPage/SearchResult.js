@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import * as toastr from 'toastr';
 
 import Page from '../PageList/Page';
 import SearchResultList from './SearchResultList';
@@ -133,7 +134,16 @@ export default class SearchResult extends React.Component {
     .then(() => {
       window.location.reload();
     })
-    .catch(err => {});
+    .catch(err => {
+      toastr.error(err, 'Error occured', {
+        closeButton: true,
+        progressBar: true,
+        newestOnTop: false,
+        showDuration: '100',
+        hideDuration: '100',
+        timeOut: '3000',
+      });
+    });
   }
 
   /**
