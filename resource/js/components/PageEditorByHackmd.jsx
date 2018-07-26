@@ -200,13 +200,13 @@ export default class PageEditorByHackmd extends React.PureComponent {
       content = (
         <div>
           <p className="text-center hackmd-status-label"><i className="fa fa-file-text"></i> HackMD is READY!</p>
-          <p className="text-center hackmd-resule-button-container">
-            <SplitButton title={title} bsStyle="success" bsSize="large" className="btn-resume waves-effect waves-light" onClick={() => this.resumeToEdit()}>
+          <div className="text-center hackmd-resume-button-container mb-3">
+            <SplitButton id='split-button-resume-hackmd' title={title} bsStyle="success" bsSize="large" className="btn-resume waves-effect waves-light" onClick={() => this.resumeToEdit()}>
               <MenuItem className="text-center" onClick={() => this.discardChanges()}>
                 <i className="icon-control-rewind"></i> Discard changes
               </MenuItem>
             </SplitButton>
-          </p>
+          </div>
           <p className="text-center">Click to edit from the previous continuation.</p>
         </div>
       );
@@ -215,13 +215,13 @@ export default class PageEditorByHackmd extends React.PureComponent {
       content = (
         <div>
           <p className="text-center hackmd-status-label"><i className="fa fa-file-text"></i> HackMD is READY!</p>
-          <p className="text-center hackmd-start-button-container">
+          <div className="text-center hackmd-start-button-container mb-3">
             <button className="btn btn-info btn-lg waves-effect waves-light" type="button"
                 onClick={() => this.startToEdit()} disabled={this.state.isInitializing}>
               <span className="btn-label"><i className="icon-paper-plane"></i></span>
               Start to edit with HackMD
             </button>
-          </p>
+          </div>
           <p className="text-center">Click to clone page content and start to edit.</p>
         </div>
       );
