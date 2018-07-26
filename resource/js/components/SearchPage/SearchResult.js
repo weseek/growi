@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import * as toastr from 'toastr';
 
 import Page from '../PageList/Page';
 import SearchResultList from './SearchResultList';
@@ -106,32 +107,43 @@ export default class SearchResult extends React.Component {
    * @memberof SearchResult
    */
   deleteSelectedPages() {
-    let isDeleted = true;
     let deleteCompletely = this.state.isDeleteCompletely;
-    Array.from(this.state.selectedPages).map((page) => {
-      const pageId = page._id;
-      const revisionId = page.revision._id;
-      this.props.crowi.apiPost('/pages.remove',
-        {page_id: pageId, revision_id: revisionId, completely: deleteCompletely})
-      .then(res => {
-        if (res.ok) {
-          this.state.selectedPages.delete(page);
-        }
-        else {
-          isDeleted = false;
-        }
-      }).catch(err => {
-        /* eslint-disable no-console */
-        console.log(err.message);
-        /* eslint-enable */
-        isDeleted = false;
-        this.setState({errorMessageForDeleting: err.message});
+    Promise.all(Array.from(this.state.selectedPages).map((page) => {
+      return new Promise((resolve, reject) => {
+        const pageId = page._id;
+        const revisionId = page.revision._id;
+        this.props.crowi.apiPost('/pages.remove', {page_id: pageId, revision_id: revisionId, completely: deleteCompletely})
+          .then(res => {
+            if (res.ok) {
+              this.state.selectedPages.delete(page);
+              return resolve();
+            }
+            else {
+              return reject();
+            }
+          })
+          .catch(err => {
+            /* eslint-disable no-console */
+            console.log(err.message);
+            /* eslint-enable */
+            this.setState({errorMessageForDeleting: err.message});
+            return reject();
+          });
+      });
+    }))
+    .then(() => {
+      window.location.reload();
+    })
+    .catch(err => {
+      toastr.error(err, 'Error occured', {
+        closeButton: true,
+        progressBar: true,
+        newestOnTop: false,
+        showDuration: '100',
+        hideDuration: '100',
+        timeOut: '3000',
       });
     });
-
-    if ( isDeleted ) {
-      window.location.reload();
-    }
   }
 
   /**

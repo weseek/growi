@@ -3,10 +3,16 @@ CHANGES
 
 ## 3.2.0-RC
 
-* Feature: Simultaneously edit by multiple people with HackMD integration
+* Feature: HackMD integration so that user can simultaneously edit with multiple people
 
+## 3.1.14-RC
 
-## 3.1.13-RC
+* Improvement: Show help for header search box
+* Improvement: Add Markdown Cheatsheet to Editor component
+* Fix: Couldn't delete page completely from search result page
+* Fix: Tabs of trash page are broken
+
+## 3.1.13
 
 * Feature: Global Notification
 * Feature: Send Global Notification with E-mail
