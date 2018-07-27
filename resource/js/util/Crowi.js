@@ -196,6 +196,35 @@ export default class Crowi {
     return null;
   }
 
+  createPage(pagePath, markdown, additionalParams = {}) {
+    const params = Object.assign(additionalParams, {
+      path: pagePath,
+      body: markdown,
+    });
+    return this.apiPost('/pages.create', params)
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(res.error);
+        }
+        return res.page;
+      });
+  }
+
+  updatePage(pageId, revisionId, markdown, additionalParams = {}) {
+    const params = Object.assign(additionalParams, {
+      page_id: pageId,
+      revision_id: revisionId,
+      body: markdown,
+    });
+    return this.apiPost('/pages.update', params)
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(res.error);
+        }
+        return res.page;
+      });
+  }
+
   apiGet(path, params) {
     return this.apiRequest('get', path, {params: params});
   }

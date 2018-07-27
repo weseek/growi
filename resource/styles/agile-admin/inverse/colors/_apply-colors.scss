@@ -314,10 +314,8 @@ body.on-edit {
       background-color: $bodycolor;
     }
 
-    .page-form {
-      .page-editor-footer {
-        border-top-color: $border;
-      }
+    .page-editor-footer {
+      border-top-color: $border;
     }
   }
 }

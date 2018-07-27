@@ -1,4 +1,3 @@
-require('bootstrap-select');
 require('./thirdparty-js/jQuery.style.switcher');
 
 // see https://github.com/abpetkov/switchery/issues/120
@@ -31,9 +30,9 @@ $(function() {
   $('#createdUserModal').modal('show');
 
   $('#admin-password-reset-modal').on('show.bs.modal', function(button) {
-    var data = $(button.relatedTarget);
-    var userId = data.data('user-id');
-    var email = data.data('user-email');
+    const data = $(button.relatedTarget);
+    const userId = data.data('user-id');
+    const email = data.data('user-email');
 
     $('#admin-password-reset-user').text(email);
     $('#admin-users-reset-password input[name=user_id]').val(userId);
@@ -60,9 +59,9 @@ $(function() {
   });
 
   $('#admin-delete-user-group-modal').on('show.bs.modal', function(button) {
-    var data = $(button.relatedTarget);
-    var userGroupId = data.data('user-group-id');
-    var userGroupName = data.data('user-group-name');
+    const data = $(button.relatedTarget);
+    const userGroupId = data.data('user-group-id');
+    const userGroupName = data.data('user-group-name');
 
     $('#admin-delete-user-group-name').text(userGroupName);
     $('#admin-user-groups-delete input[name=user_group_id]').val(userGroupId);
@@ -77,8 +76,8 @@ $(function() {
 
 
   $('#pictureUploadForm input[name=userGroupPicture]').on('change', function() {
-    var $form = $('#pictureUploadForm');
-    var fd = new FormData($form[0]);
+    const $form = $('#pictureUploadForm');
+    const fd = new FormData($form[0]);
     if ($(this).val() == '') {
       return false;
     }
@@ -116,7 +115,7 @@ $(function() {
   elems.forEach(function(elem) {
     const color = elem.dataset.color;
     const size = elem.dataset.size;
-    new Switchery(elem, { color, size });
+    new Switchery(elem, { color, size });   // eslint-disable-line no-undef
   });
 });
 
