@@ -1,4 +1,4 @@
-var Reveal = require('reveal.js');
+const Reveal = require('reveal.js');
 
 require('reveal.js/css/reveal.css');
 require('reveal.js/css/theme/black.css');
@@ -46,7 +46,7 @@ require.ensure([], () => {
 Reveal.addEventListener('ready', function(event) {
   // event.currentSlide, event.indexh, event.indexv
   $('.reveal section').each(function(e) {
-    var $self = $(this);
+    const $self = $(this);
     if ($self.children().length == 1) {
       $self.addClass('only');
     }
