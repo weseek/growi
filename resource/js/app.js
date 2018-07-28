@@ -155,6 +155,8 @@ Object.keys(componentMappings).forEach((key) => {
  * @param {object} page Page instance
  */
 const saveWithShortcutSuccessHandler = function(page) {
+  const editorMode = crowi.getCrowiForJquery().getCurrentEditorMode();
+
   // show toastr
   toastr.success(undefined, 'Saved successfully', {
     closeButton: true,
@@ -178,12 +180,15 @@ const saveWithShortcutSuccessHandler = function(page) {
   }
   // re-render PageEditor component
   if (componentInstances.pageEditor != null) {
-    componentInstances.pageEditor.setMarkdown(page.revision.body);
+    const updateEditorValue = (editorMode !== 'builtin');
+    componentInstances.pageEditor.setMarkdown(page.revision.body, updateEditorValue);
   }
   // set revision id to PageEditorByHackmd
   if (componentInstances.pageEditorByHackmd != null) {
     componentInstances.pageEditorByHackmd.setRevisionId(pageRevisionId);
-    componentInstances.pageEditorByHackmd.setMarkdown(page.revision.body);
+
+    const updateEditorValue = (editorMode !== 'hackmd');
+    componentInstances.pageEditorByHackmd.setMarkdown(page.revision.body, updateEditorValue);
   }
 };
 
@@ -199,6 +204,11 @@ const errorHandler = function(error) {
 };
 
 const saveWithShortcut = function(markdown) {
+  const editorMode = crowi.getCrowiForJquery().getCurrentEditorMode();
+  if (editorMode == null) {
+    // do nothing
+    return;
+  }
   // get options
   const options = componentInstances.savePageControls.getCurrentOptionsToSave();
 
@@ -226,7 +236,6 @@ const saveWithSubmitButton = function() {
     // do nothing
     return;
   }
-
   // get options
   const options = componentInstances.savePageControls.getCurrentOptionsToSave();
 

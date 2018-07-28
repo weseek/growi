@@ -52,7 +52,7 @@ export default class PageEditor extends React.Component {
     this.scrollPreviewByEditorLineWithThrottle = throttle(20, this.scrollPreviewByEditorLine);
     this.scrollPreviewByCursorMovingWithThrottle = throttle(20, this.scrollPreviewByCursorMoving);
     this.scrollEditorByPreviewScrollWithThrottle = throttle(20, this.scrollEditorByPreviewScroll);
-    this.renderWithDebounce = debounce(50, throttle(100, this.renderPreview));
+    this.renderPreviewWithDebounce = debounce(50, throttle(100, this.renderPreview));
     this.saveDraftWithDebounce = debounce(800, this.saveDraft);
   }
 
@@ -65,9 +65,11 @@ export default class PageEditor extends React.Component {
     return this.state.markdown;
   }
 
-  setMarkdown(markdown) {
+  setMarkdown(markdown, updateEditorValue = true) {
     this.setState({ markdown });
-    this.refs.editor.setValue(markdown);
+    if (updateEditorValue) {
+      this.refs.editor.setValue(markdown);
+    }
   }
 
   focusToEditor() {
@@ -104,7 +106,7 @@ export default class PageEditor extends React.Component {
    * @param {string} value
    */
   onMarkdownChanged(value) {
-    this.renderWithDebounce(value);
+    this.renderPreviewWithDebounce(value);
     this.saveDraftWithDebounce();
   }
 
