@@ -17,18 +17,7 @@ import { debounce } from 'throttle-debounce';
 /* eslint-disable no-console  */
 
 const allowedOrigin = '{{origin}}';         // will be replaced by swig
-const styleFilePath = '{{styleFilePath}}';  // will be replaced by swig
 
-
-/**
- * Insert link tag to load style file
- */
-function insertStyle() {
-  const element = document.createElement('link');
-  element.href = styleFilePath;
-  element.rel = 'stylesheet';
-  document.getElementsByTagName('head')[0].appendChild(element);
-}
 
 /**
  * return the value of CodeMirror
@@ -153,8 +142,6 @@ function connectToParentWithPenpal() {
   }
 
   console.log('[HackMD] Loading GROWI agent for HackMD...');
-
-  insertStyle();
 
   window.addEventListener('load', (event) => {
     console.log('loaded');
