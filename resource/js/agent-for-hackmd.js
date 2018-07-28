@@ -43,27 +43,17 @@ function setValueToCodemirror(value) {
  * @param {string} value
  */
 function setValueToCodemirrorOnInit(newValue) {
-  if (window.loaded && window.cmClient != null) {
+  if (window.cmClient != null) {
     setValueToCodemirror(newValue);
     return;
   }
-
-  const setValueIfCodemirrorInitialized = () => {
+  else {
     const intervalId = setInterval(() => {
       if (window.cmClient != null) {
         clearInterval(intervalId);
         setValueToCodemirror(newValue);
       }
     }, 250);
-  };
-
-  if (window.loaded) {
-    setValueIfCodemirrorInitialized();
-  }
-  else {
-    window.addEventListener('load', (event) => {
-      setValueIfCodemirrorInitialized();
-    });
   }
 }
 
