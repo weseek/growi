@@ -41,12 +41,41 @@ function getValueOfCodemirror() {
 
 /**
  * set the specified document to CodeMirror
- * @param {string} document
+ * @param {string} value
  */
-function setValueToCodemirror(document) {
+function setValueToCodemirror(value) {
   // get CodeMirror instance
   const editor = window.editor;
-  editor.doc.setValue(document);
+  editor.doc.setValue(value);
+}
+
+/**
+ * set the specified document to CodeMirror on window loaded
+ * @param {string} value
+ */
+function setValueToCodemirrorOnInit(newValue) {
+  if (window.loaded && window.cmClient != null) {
+    setValueToCodemirror(newValue);
+    return;
+  }
+
+  const setValueIfCodemirrorInitialized = () => {
+    const intervalId = setInterval(() => {
+      if (window.cmClient != null) {
+        clearInterval(intervalId);
+        setValueToCodemirror(newValue);
+      }
+    }, 250);
+  };
+
+  if (window.loaded) {
+    setValueIfCodemirrorInitialized();
+  }
+  else {
+    window.addEventListener('load', (event) => {
+      setValueIfCodemirrorInitialized();
+    });
+  }
 }
 
 /**
@@ -103,6 +132,9 @@ function connectToParentWithPenpal() {
       setValue(newValue) {
         setValueToCodemirror(newValue);
       },
+      setValueOnInit(newValue) {
+        setValueToCodemirrorOnInit(newValue);
+      }
     }
   });
   connection.promise.then(parent => {

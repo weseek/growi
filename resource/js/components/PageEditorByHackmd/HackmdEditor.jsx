@@ -45,7 +45,7 @@ export default class HackmdEditor extends React.PureComponent {
     connection.promise.then(child => {
       this.hackmd = child;
       if (this.props.initializationMarkdown != null) {
-        this.setValue(this.props.initializationMarkdown);
+        child.setValueOnInit(this.props.initializationMarkdown);
       }
     });
   }
