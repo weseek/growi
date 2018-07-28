@@ -285,8 +285,6 @@ export default class PageEditor extends React.Component {
       .then(() => interceptorManager.process('preRenderPreviewHtml', context))
       .then(() => {
         this.setState({ html: context.parsedHTML });
-        // set html to the hidden input (for submitting to save)
-        $('#form-body').val(this.state.markdown);
       })
       // process interceptors for post rendering
       .then(() => interceptorManager.process('postRenderPreviewHtml', context));
