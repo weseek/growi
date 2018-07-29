@@ -1,6 +1,117 @@
-<form action="" method="post" class="form-horizontal passportStrategy" id="twitterOauthSetting" role="form">
-  <fieldset>
-    <legend>Twitter OAuth {{ t("security_setting.configuration") }}</legend>
-    <p class="well">(TBD)</p>
+<form action="/_api/admin/security/passport-twitter" method="post" class="form-horizontal passportStrategy" id="twitterSetting" role="form"
+    {% if isRestartingServerNeeded %}style="opacity: 0.4;"{% endif %}>
+  <legend class="alert-anchor">{{ t("security_setting.OAuth.Twitter.name") }}{{ t("security_setting.configuration") }}</legend>
+
+  {% set nameForIsTwitterEnabled = "settingForm[security:passport-twitter:isEnabled]" %}
+  {% set isTwitterEnabled = settingForm['security:passport-twitter:isEnabled'] %}
+  
+  <div class="form-group">
+    <label for="{{nameForIsTwitterEnabled}}" class="col-xs-3 control-label">{{ t("security_setting.OAuth.Twitter.name") }}</label>
+    <div class="col-xs-6">
+      <div class="btn-group btn-toggle" data-toggle="buttons">
+        <label class="btn btn-default btn-rounded btn-outline {% if isTwitterEnabled %}active{% endif %}" data-active-class="primary">
+          <input name="{{nameForIsTwitterEnabled}}" value="true" type="radio"
+              {% if true === isTwitterEnabled %}checked{% endif %}> ON
+        </label>
+        <label class="btn btn-default btn-rounded btn-outline {% if !isTwitterEnabled %}active{% endif %}" data-active-class="default">
+          <input name="{{nameForIsTwitterEnabled}}" value="false" type="radio"
+              {% if !isTwitterEnabled %}checked{% endif %}> OFF
+        </label>
+      </div>
+    </div>
+  </div>
+  <fieldset id="passport-twitter-hide-when-disabled" {%if !isTwitterEnabled %}style="display: none;"{% endif %}>
+
+
+
+    <div class="form-group">
+      <label for="settingForm[security:passport-twitter:consumerKey]" class="col-xs-3 control-label">{{ t("security_setting.clientID") }}</label>
+      <div class="col-xs-6">
+        <input class="form-control" type="text" name="settingForm[security:passport-twitter:consumerKey]" value="{{ settingForm['security:passport-twitter:consumerKey'] || '' }}">
+        <p class="help-block">
+          <small>
+                {{ t("security_setting.Use env var if empty", "OAUTH_TWITTER_CONSUMER_KEY") }}
+          </small>
+        </p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="settingForm[security:passport-twitter:consumerSecret]" class="col-xs-3 control-label">{{ t("security_setting.client_secret") }}</label>
+      <div class="col-xs-6">
+        <input class="form-control" type="text" name="settingForm[security:passport-twitter:consumerSecret]" value="{{ settingForm['security:passport-twitter:consumerSecret'] || '' }}">
+        <p class="help-block">
+          <small>
+             {{ t("security_setting.Use env var if empty", "OAUTH_TWITTER_CONSUMER_SECRET") }}
+          </small>
+        </p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="settingForm[security:passport-twitter:callbackUrl]" class="col-xs-3 control-label">{{ t("security_setting.callback_URL") }}</label>
+      <div class="col-xs-6">
+        <input class="form-control" type="text" name="settingForm[security:passport-twitter:callbackUrl]" value="{{ settingForm['security:passport-twitter:callbackUrl'] || '' }}">
+        <p class="help-block">
+          <small>
+            {{ t("security_setting.Use env var if empty", "OAUTH_TWITTER_CALLBACK_URL") }}
+          </small>
+        </p>
+      </div>
+    </div>
+
+    
+    <div class="form-group">
+      <div class="col-xs-6 col-xs-offset-3">
+        <div class="checkbox checkbox-info">
+          <input type="checkbox" id="bindByUserName-Twitter" name="settingForm[security:passport-twitter:isSameUsernameTreatedAsIdenticalUser]" value="1"
+              {% if settingForm['security:passport-twitter:isSameUsernameTreatedAsIdenticalUser'] %}checked{% endif %} />
+          <label for="bindByUserName-Twitter">
+            {{ t("security_setting.Treat username matching as identical", "username") }}
+          </label>
+          <p class="help-block">
+            <small>
+              {{ t("security_setting.Treat username matching as identical_warn", "username") }}
+            </small>
+          </p>
+        </div>
+      </div>
+    </div>
+
   </fieldset>
+
+  <div class="form-group" id="btn-update">
+    <div class="col-xs-offset-3 col-xs-6">
+      <input type="hidden" name="_csrf" value="{{ csrf() }}">
+      <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
+    </div>
+  </div>
+
 </form>
+
+{# Help Section #}
+<hr>
+<h4>
+  <i class="fa fa-question-circle" aria-hidden="true"></i>
+  <a href="#collapseHelpForTwitterOauth" data-toggle="collapse">{{ t("security_setting.OAuth.how_to.twitter") }}</a>
+</h4>
+<ol id="collapseHelpForTwitterOauth" class="collapse">
+  <li>{{ t("security_setting.OAuth.Twitter.register_1", "https://apps.twitter.com/", "Twitter Application Management") }}</li>
+  <li>{{ t("security_setting.OAuth.Twitter.register_2") }}</li>
+  <li>{{ t("security_setting.OAuth.Twitter.register_3") }}</li>
+  <li>{{ t("security_setting.OAuth.Twitter.register_4", "https://${growi.host}/passport/twitter/callback", "${growi.host}") }}</li>
+</ol>
+
+<script>
+  $('input[name="settingForm[security:passport-twitter:isEnabled]"]').change(function() {
+      const isEnabled = ($(this).val() === "true");
+
+      if (isEnabled) {
+        $('#passport-twitter-hide-when-disabled').show(400);
+      }
+      else {
+        $('#passport-twitter-hide-when-disabled').hide(400);
+      }
+    });
+</script>
+
