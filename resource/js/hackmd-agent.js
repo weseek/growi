@@ -17,18 +17,7 @@ import { debounce } from 'throttle-debounce';
 /* eslint-disable no-console  */
 
 const allowedOrigin = '{{origin}}';         // will be replaced by swig
-const styleFilePath = '{{styleFilePath}}';  // will be replaced by swig
 
-
-/**
- * Insert link tag to load style file
- */
-function insertStyle() {
-  const element = document.createElement('link');
-  element.href = styleFilePath;
-  element.rel = 'stylesheet';
-  document.getElementsByTagName('head')[0].appendChild(element);
-}
 
 /**
  * return the value of CodeMirror
@@ -41,12 +30,31 @@ function getValueOfCodemirror() {
 
 /**
  * set the specified document to CodeMirror
- * @param {string} document
+ * @param {string} value
  */
-function setValueToCodemirror(document) {
+function setValueToCodemirror(value) {
   // get CodeMirror instance
   const editor = window.editor;
-  editor.doc.setValue(document);
+  editor.doc.setValue(value);
+}
+
+/**
+ * set the specified document to CodeMirror on window loaded
+ * @param {string} value
+ */
+function setValueToCodemirrorOnInit(newValue) {
+  if (window.cmClient != null) {
+    setValueToCodemirror(newValue);
+    return;
+  }
+  else {
+    const intervalId = setInterval(() => {
+      if (window.cmClient != null) {
+        clearInterval(intervalId);
+        setValueToCodemirror(newValue);
+      }
+    }, 250);
+  }
 }
 
 /**
@@ -103,6 +111,9 @@ function connectToParentWithPenpal() {
       setValue(newValue) {
         setValueToCodemirror(newValue);
       },
+      setValueOnInit(newValue) {
+        setValueToCodemirrorOnInit(newValue);
+      }
     }
   });
   connection.promise.then(parent => {
@@ -121,8 +132,6 @@ function connectToParentWithPenpal() {
   }
 
   console.log('[HackMD] Loading GROWI agent for HackMD...');
-
-  insertStyle();
 
   window.addEventListener('load', (event) => {
     console.log('loaded');

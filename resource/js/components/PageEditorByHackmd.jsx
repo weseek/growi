@@ -49,9 +49,9 @@ export default class PageEditorByHackmd extends React.PureComponent {
       });
   }
 
-  setMarkdown(markdown) {
+  setMarkdown(markdown, updateEditorValue = true) {
     this.setState({ markdown });
-    if (this.state.isInitialized) {
+    if (this.state.isInitialized && updateEditorValue) {
       this.refs.hackmdEditor.setValue(markdown);
     }
   }
