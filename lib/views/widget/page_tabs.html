@@ -4,25 +4,25 @@
   {#
     Left Tabs
   #}
-  <li class="nav-main-left-tab {% if not req.body.pageForm %}active{% endif %}">
+  <li class="nav-main-left-tab active">
     <a href="#revision-body" data-toggle="tab">
       <i class="icon-control-play"></i> View
     </a>
   </li>
 
   {% if !isTrashPage() %}
-  <li class="nav-main-left-tab nav-tab-edit {% if req.body.pageForm %}active{% endif %}">
+  <li class="nav-main-left-tab nav-tab-edit">
     <a {% if user %}href="#edit" data-toggle="tab"{% endif %} class="edit-button {% if not user %}edit-button-disabled{% endif %}">
       <i class="icon-note"></i> {{ t('Edit') }}
     </a>
   </li>
-  {# disabled temporary -- 2018.07.06 Yuki Takei
+  {% if isHackmdSetup() %}
   <li class="nav-main-left-tab nav-tab-hackmd">
     <a {% if user %}href="#hackmd" data-toggle="tab"{% endif %} class="{% if not user %}edit-button-disabled{% endif %}">
       <i class="fa fa-file-text-o"></i> {{ t('HackMD') }}
     </a>
   </li>
-  #}
+  {% endif %}
   {% endif %}
 
   {#
