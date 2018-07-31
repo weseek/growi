@@ -38,6 +38,7 @@ module.exports = (options) => {
       'styles/theme-mono-blue':      './resource/styles/scss/theme/mono-blue.scss',
       'styles/theme-future':         './resource/styles/scss/theme/future.scss',
       'styles/theme-blue-night':     './resource/styles/scss/theme/blue-night.scss',
+      'styles/theme-kibela':         './resource/styles/scss/theme/kibela.scss',
       // styles for external services
       'styles/style-hackmd':         './resource/styles/hackmd/style.scss',
     }, options.entry || {}),  // Merge with env dependent settings
