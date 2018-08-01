@@ -1,33 +1,36 @@
+.kibela {
 
-html, #page-wrapper {
-  background-color: #F4F5F6 !important;
-}
+  html, body, #page-wrapper {
+    background-color: #F4F5F6 !important;
+    height: 500px;
+  }
 
-.kibela-block {
-  background-color: white;
-  position: absolute;
-  top: 0px;
-  right: 0px;
-  bottom: 0px;
-  left: 0px;
-  margin: auto;
-}
-.kibela-title {
-  margin: none !important;
-  padding: none !important;
-}
-.kibela-page-content {
- padding: 15px;
-}
+  .kibela-block {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+    margin: auto;
+  }
+  .bg-title {
+    margin: none !important;
+    padding: none !important;
+    background: transparent;
+  }
+  .page-content {
 
-.growi.main-container {
+  }
+
+}
+.kibela.main-container {
   .content-main {
     padding: 0;
   }
 
   .revision-toc {
     &.affix {
-      right: 8rem;
+      right: 6rem;
       margin-top: 30px;
       top: calc(46px + 5px);
       min-width: calc(#{100/12*2%} - #{$grid-gutter-width});  // width of 2column - padding
@@ -37,7 +40,7 @@ html, #page-wrapper {
     .revision-toc-content {
       padding: 0;
     }
-    @media screen and (max-width: 1300px) {
+    @media screen and (max-width: 1430px) {
       &.affix {
       right: 0rem !important;
       transition: 0.5s ;

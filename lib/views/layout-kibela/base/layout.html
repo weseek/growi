@@ -1,18 +1,10 @@
 {% extends '../../layout/layout.html' %} {% block layout_main %}
 <div class="container-fluid">
 
-
-
   <div class="row body m-0 p-0">
 
-    <div id="main" class="main m-t-15 col-md-7 kibela-block {% if page %}{{ css.grant(page) }}{% endif %} {% block main_css_class %}{% endblock %}">
+    <div id="main" class="main col-md-7 kibela-block {% if page %}{{ css.grant(page) }}{% endif %} {% block main_css_class %}{% endblock %}">
 
-      <div class="row bg-title kibela-title m-10">
-        <div class="col-xs-12">
-          {% block content_header %} {% endblock %}
-        </div>
-      </div>
-      <!-- /.bg-title -->
 
 
       {% block content_main_before %} {% endblock %} {% block content_main %} {% endblock content_main %} {% block content_main_after
