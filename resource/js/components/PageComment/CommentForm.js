@@ -54,8 +54,8 @@ export default class CommentForm extends React.Component {
     this.handleSelect = this.handleSelect.bind(this);
     this.apiErrorHandler = this.apiErrorHandler.bind(this);
     this.onUpload = this.onUpload.bind(this);
-    this.onChannelChange = this.onChannelChange.bind(this);
-    this.onSlackOnChange = this.onSlackOnChange.bind(this);
+    this.onSlackEnabledFlagChange = this.onSlackEnabledFlagChange.bind(this);
+    this.onSlackChannelsChange = this.onSlackChannelsChange.bind(this);
   }
 
   updateState(value) {
@@ -74,11 +74,11 @@ export default class CommentForm extends React.Component {
     this.renderHtml(this.state.comment);
   }
 
-  onSlackOnChange(value) {
+  onSlackEnabledFlagChange(value) {
     this.setState({isSlackEnabled: value});
   }
 
-  onChannelChange(value) {
+  onSlackChannelsChange(value) {
     this.setState({slackChannels: value});
   }
 
@@ -281,10 +281,10 @@ export default class CommentForm extends React.Component {
                           crowi={this.props.crowi}
                           pageId={this.props.pageId}
                           pagePath={this.props.pagePath}
-                          onSlackOnChange={this.onSlackOnChange}
-                          onChannelChange={this.onChannelChange}
                           isSlackEnabled={this.state.isSlackEnabled}
                           slackChannels={this.state.slackChannels}
+                          onEnabledFlagChange={this.onSlackEnabledFlagChange}
+                          onChannelChange={this.onSlackChannelsChange}
                         />
                       </div>
                     }

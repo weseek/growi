@@ -46,7 +46,6 @@ export default class SlackNotification extends React.Component {
   updateStateCheckbox(event) {
     const value = event.target.checked;
     this.setState({isSlackEnabled: value});
-    this.props.onSlackOnChange(value);
     // dispatch event
     if (this.props.onEnabledFlagChange != null) {
       this.props.onEnabledFlagChange(value);
