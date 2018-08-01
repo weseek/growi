@@ -269,11 +269,13 @@ export default class CommentForm extends React.Component {
                 </div>
                 <div className="comment-submit">
                   <div className="d-flex">
+                    <label style={{flex: 1}}>
                     { this.state.key == 1 &&
-                      <label style={{flex: 1}}>
+                      <span>
                         <input type="checkbox" id="comment-form-is-markdown" name="isMarkdown" checked={this.state.isMarkdown} value="1" onChange={this.updateStateCheckbox} /> Markdown
-                      </label>
+                      </span>
                     }
+                    </label>
                     <span className="hidden-xs">{ this.state.errorMessage && errorMessage }</span>
                     { this.state.hasSlackConfig &&
                       <div className="form-inline align-self-center mr-md-2">
