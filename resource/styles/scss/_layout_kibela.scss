@@ -1,4 +1,10 @@
+
+html, #page-wrapper {
+  background-color: #F4F5F6 !important;
+}
+
 .kibela-block {
+  background-color: white;
   position: absolute;
   top: 0px;
   right: 0px;
@@ -10,6 +16,9 @@
   margin: none !important;
   padding: none !important;
 }
+.kibela-page-content {
+ padding: 15px;
+}
 
 .growi.main-container {
   .content-main {
@@ -18,14 +27,21 @@
 
   .revision-toc {
     &.affix {
-      right: 5rem;
-      margin-top: 10px;
+      right: 8rem;
+      margin-top: 30px;
       top: calc(46px + 5px);
       min-width: calc(#{100/12*2%} - #{$grid-gutter-width});  // width of 2column - padding
+
     }
 
     .revision-toc-content {
       padding: 0;
+    }
+    @media screen and (max-width: 1300px) {
+      &.affix {
+      right: 0rem !important;
+      transition: 0.5s ;
+      }
     }
   }
 }

@@ -1,13 +1,13 @@
 {% extends 'base/layout.html' %} {% block content_header %} {% include 'widget/header.html' %} {% endblock %} {% block content_main_before
 %} {% endblock %} {% block content_main %}
-<div class="row p-10">
-  <div class="bg-white p-10">
+<div class="row page-content">
+  <div class="m-t-30">
 
     {% include '../widget/page_content.html' %}
 
   </div>
 
-    <div class="row page-list bg-white p-10 pt-20 {% if isPortal %}m-t-30{% endif %}">
+    <div class="row page-list bg-white {% if isPortal %}m-t-30{% endif %}">
       <div class="col-md-10">
         {% include '../widget/page_list_and_timeline.html' %}
       </div>
