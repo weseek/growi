@@ -2,10 +2,12 @@
 
   html, body, #page-wrapper {
     background-color: #F4F5F6 !important;
-    height: 500px;
+
   }
 
   .kibela-block {
+    border-top-left-radius: 0.7em;
+    border-top-right-radius: 0.7em;
     position: absolute;
     top: 0px;
     right: 0px;
@@ -17,9 +19,11 @@
     margin: none !important;
     padding: none !important;
     background: transparent;
+    width: 100%;
   }
   .page-content {
-
+    padding: 15px;
+    margin: auto;
   }
 
 }
@@ -40,7 +44,7 @@
     .revision-toc-content {
       padding: 0;
     }
-    @media screen and (max-width: 1430px) {
+    @media screen and (max-width: 1350px) {
       &.affix {
       right: 0rem !important;
       transition: 0.5s ;
