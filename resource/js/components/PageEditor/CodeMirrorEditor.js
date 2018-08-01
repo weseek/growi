@@ -179,8 +179,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
       return;
     }
 
-    console.log('setCaretLine');
-
     const editor = this.getCodeMirror();
     const linePosition = Math.max(0, line);
 
