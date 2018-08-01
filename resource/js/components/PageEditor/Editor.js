@@ -32,11 +32,6 @@ export default class Editor extends AbstractEditor {
     this.renderDropzoneOverlay = this.renderDropzoneOverlay.bind(this);
   }
 
-  componentDidMount() {
-    // initialize caret line
-    this.setCaretLine(0);
-  }
-
   getEditorSubstance() {
     return this.props.isMobile
       ? this.refs.taEditor
