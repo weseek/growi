@@ -1,8 +1,3 @@
-{% block html_head_loading_legacy %}
-  <script src="{{ webpack_asset('js/legacy-form.js') }}" defer></script>
-  {% parent %}
-{% endblock %}
-
 {% if req.form.errors %}
 <div class="alert alert-danger">
   <ul>
