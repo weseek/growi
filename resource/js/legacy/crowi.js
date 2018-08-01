@@ -159,6 +159,28 @@ Crowi.handleKeyCtrlSlashHandler = (event) => {
   event.preventDefault();
 };
 
+Crowi.initAffix = () => {
+  const $affixContent = $('#page-header');
+  if ($affixContent.length > 0) {
+    const $affixContentContainer = $('.row.bg-title');
+    const containerHeight = $affixContentContainer.outerHeight(true);
+    $affixContent.affix({
+      offset: {
+        top: function() {
+          return $('.navbar').outerHeight(true) + containerHeight;
+        }
+      }
+    });
+    $('[data-affix-disable]').on('click', function(e) {
+      const $elm = $($(this).data('affix-disable'));
+      $(window).off('.affix');
+      $elm.removeData('affix').removeClass('affix affix-top affix-bottom');
+      return false;
+    });
+    $affixContentContainer.css({'min-height': containerHeight});
+  }
+};
+
 Crowi.initSlimScrollForRevisionToc = () => {
   const revisionTocElem = document.querySelector('.growi .revision-toc');
   const tocContentElem = document.querySelector('.growi .revision-toc .markdownIt-TOC');
@@ -559,26 +581,6 @@ $(function() {
       top.location.href = `${path}#edit`;
     });
 
-    // header affix
-    const $affixContent = $('#page-header');
-    if ($affixContent.length > 0) {
-      const $affixContentContainer = $('.row.bg-title');
-      const containerHeight = $affixContentContainer.outerHeight(true);
-      $affixContent.affix({
-        offset: {
-          top: function() {
-            return $('.navbar').outerHeight(true) + containerHeight;
-          }
-        }
-      });
-      $('[data-affix-disable]').on('click', function(e) {
-        const $elm = $($(this).data('affix-disable'));
-        $(window).off('.affix');
-        $elm.removeData('affix').removeClass('affix affix-top affix-bottom');
-        return false;
-      });
-    }
-
     // Like
     const $likeButton = $('.like-button');
     const $likeCount = $('#like-count');
@@ -807,6 +809,7 @@ window.addEventListener('load', function(e) {
   Crowi.modifyScrollTop();
   Crowi.setCaretLineAndFocusToEditor();
   Crowi.initSlimScrollForRevisionToc();
+  Crowi.initAffix();
 });
 
 window.addEventListener('hashchange', function(e) {
