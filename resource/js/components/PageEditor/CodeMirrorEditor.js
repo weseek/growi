@@ -513,7 +513,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
                 - リスト 1<br />
                 &nbsp;&nbsp;&nbsp;&nbsp;- リスト 1_1<br />
                 - リスト 2<br />
-                1. 番号付きリスト 1
+                1. 番号付きリスト 1<br />
                 1. 番号付きリスト 2
               </p>
               <hr />
