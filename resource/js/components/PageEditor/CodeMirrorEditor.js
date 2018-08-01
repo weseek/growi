@@ -114,9 +114,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
   componentDidMount() {
     // ensure to be able to resolve 'this' to use 'codemirror.commands.save'
     this.getCodeMirror().codeMirrorEditor = this;
-
-    // initialize caret line
-    this.setCaretLine(0);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -181,6 +178,8 @@ export default class CodeMirrorEditor extends AbstractEditor {
     if (isNaN(line)) {
       return;
     }
+
+    console.log('setCaretLine');
 
     const editor = this.getCodeMirror();
     const linePosition = Math.max(0, line);
