@@ -1,0 +1,79 @@
+@mixin overlay-processing-style($additionalSelector, $contentFontSize: inherit, $contentPadding: inherit) {
+  .overlay.#{$additionalSelector} {
+    background: rgba(255, 255, 255, 0.5);
+    .overlay-content {
+      background: rgba(200, 200, 200, 0.5);
+      color: #444;
+      font-size: $contentFontSize;
+      padding: $contentPadding;
+    }
+  }
+}
+
+// overlay in .editor-container
+.editor-container {
+  .overlay {
+    // layout
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    z-index: 7; // forward than .CodeMirror-vscrollbar
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    .overlay-content {
+      padding: 0.5em;
+      right: 0;
+      bottom: 0;
+    }
+  }
+
+  // loading keymap
+  @include overlay-processing-style(overlay-loading-keymap, 2.5em, 0.3em);
+
+  // cheat sheat
+  .overlay.overlay-gfm-cheatsheet {
+    justify-content: flex-end;
+    align-items: flex-end;
+
+    pointer-events: none;
+
+    .panel.gfm-cheatsheet {
+      opacity: 0.6;
+      box-shadow: unset;
+      .panel-body {
+        color: $text-muted;
+        font-family: monospace;
+        min-width: 30em;
+      }
+      ul > li {
+        list-style: none;
+      }
+    }
+
+    a.gfm-cheatsheet-modal-link {
+      pointer-events: all;
+      cursor: pointer;
+
+      opacity: 0.6;
+      color: $text-muted;
+
+      &:hover, &:focus {
+        opacity: 1;
+      }
+    }
+
+    // hide on smartphone
+    @media (max-width: $screen-xs) {
+      display: none;
+    }
+  }
+}
+
+.modal-gfm-cheatsheet .modal-body {
+  .hljs {
+    font-family: monospace;
+  }
+}

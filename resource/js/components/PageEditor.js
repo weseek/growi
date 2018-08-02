@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import * as toastr from 'toastr';
 import { throttle, debounce } from 'throttle-debounce';
 
 import GrowiRenderer from '../util/GrowiRenderer';
@@ -37,15 +36,12 @@ export default class PageEditor extends React.Component {
     this.setCaretLine = this.setCaretLine.bind(this);
     this.focusToEditor = this.focusToEditor.bind(this);
     this.onMarkdownChanged = this.onMarkdownChanged.bind(this);
-    this.onSave = this.onSave.bind(this);
     this.onUpload = this.onUpload.bind(this);
     this.onEditorScroll = this.onEditorScroll.bind(this);
     this.onEditorScrollCursorIntoView = this.onEditorScrollCursorIntoView.bind(this);
     this.onPreviewScroll = this.onPreviewScroll.bind(this);
     this.saveDraft = this.saveDraft.bind(this);
     this.clearDraft = this.clearDraft.bind(this);
-    this.pageSavedHandler = this.pageSavedHandler.bind(this);
-    this.apiErrorHandler = this.apiErrorHandler.bind(this);
 
     // for scrolling
     this.lastScrolledDateWithCursor = null;
@@ -56,13 +52,24 @@ export default class PageEditor extends React.Component {
     this.scrollPreviewByEditorLineWithThrottle = throttle(20, this.scrollPreviewByEditorLine);
     this.scrollPreviewByCursorMovingWithThrottle = throttle(20, this.scrollPreviewByCursorMoving);
     this.scrollEditorByPreviewScrollWithThrottle = throttle(20, this.scrollEditorByPreviewScroll);
-    this.renderWithDebounce = debounce(50, throttle(100, this.renderPreview));
+    this.renderPreviewWithDebounce = debounce(50, throttle(100, this.renderPreview));
     this.saveDraftWithDebounce = debounce(800, this.saveDraft);
   }
 
   componentWillMount() {
     // initial rendering
     this.renderPreview(this.state.markdown);
+  }
+
+  getMarkdown() {
+    return this.state.markdown;
+  }
+
+  setMarkdown(markdown, updateEditorValue = true) {
+    this.setState({ markdown });
+    if (updateEditorValue) {
+      this.refs.editor.setValue(markdown);
+    }
   }
 
   focusToEditor() {
@@ -99,51 +106,8 @@ export default class PageEditor extends React.Component {
    * @param {string} value
    */
   onMarkdownChanged(value) {
-    this.renderWithDebounce(value);
+    this.renderPreviewWithDebounce(value);
     this.saveDraftWithDebounce();
-  }
-
-  /**
-   * the save event handler
-   */
-  onSave() {
-    let endpoint;
-    let data;
-
-    // update
-    if (this.state.pageId != null) {
-      endpoint = '/pages.update';
-      data = {
-        page_id: this.state.pageId,
-        revision_id: this.state.revisionId,
-        body: this.state.markdown,
-      };
-    }
-    // create
-    else {
-      endpoint = '/pages.create';
-      data = {
-        path: this.props.pagePath,
-        body: this.state.markdown,
-      };
-    }
-
-    this.props.crowi.apiPost(endpoint, data)
-      .then((res) => {
-        // show toastr
-        toastr.success(undefined, 'Saved successfully', {
-          closeButton: true,
-          progressBar: true,
-          newestOnTop: false,
-          showDuration: '100',
-          hideDuration: '100',
-          timeOut: '1200',
-          extendedTimeOut: '150',
-        });
-
-        this.pageSavedHandler(res.page);
-      })
-      .catch(this.apiErrorHandler);
   }
 
   /**
@@ -293,34 +257,6 @@ export default class PageEditor extends React.Component {
     this.props.crowi.clearDraft(this.props.pagePath);
   }
 
-  pageSavedHandler(page) {
-    // update states
-    this.setState({
-      pageId: page.id,
-      revisionId: page.revision._id,
-      markdown: page.revision.body
-    });
-
-    // clear draft
-    this.clearDraft();
-
-    // dispatch onSaveSuccess event
-    if (this.props.onSaveSuccess != null) {
-      this.props.onSaveSuccess(page);
-    }
-  }
-
-  apiErrorHandler(error) {
-    toastr.error(error.message, 'Error occured', {
-      closeButton: true,
-      progressBar: true,
-      newestOnTop: false,
-      showDuration: '100',
-      hideDuration: '100',
-      timeOut: '3000',
-    });
-  }
-
   renderPreview(value) {
     this.setState({ markdown: value });
 
@@ -351,8 +287,6 @@ export default class PageEditor extends React.Component {
       .then(() => interceptorManager.process('preRenderPreviewHtml', context))
       .then(() => {
         this.setState({ html: context.parsedHTML });
-        // set html to the hidden input (for submitting to save)
-        $('#form-body').val(this.state.markdown);
       })
       // process interceptors for post rendering
       .then(() => interceptorManager.process('postRenderPreviewHtml', context));
@@ -374,8 +308,10 @@ export default class PageEditor extends React.Component {
             onScroll={this.onEditorScroll}
             onScrollCursorIntoView={this.onEditorScrollCursorIntoView}
             onChange={this.onMarkdownChanged}
-            onSave={this.onSave}
             onUpload={this.onUpload}
+            onSave={() => {
+              this.props.onSaveWithShortcut(this.state.markdown);
+            }}
           />
         </div>
         <div className="col-md-6 hidden-sm hidden-xs page-editor-preview-container">
@@ -395,11 +331,11 @@ export default class PageEditor extends React.Component {
 PageEditor.propTypes = {
   crowi: PropTypes.object.isRequired,
   crowiRenderer: PropTypes.object.isRequired,
+  onSaveWithShortcut: PropTypes.func.isRequired,
   markdown: PropTypes.string.isRequired,
   pageId: PropTypes.string,
   revisionId: PropTypes.string,
   pagePath: PropTypes.string,
-  onSaveSuccess: PropTypes.func,
   editorOptions: PropTypes.instanceOf(EditorOptions),
   previewOptions: PropTypes.instanceOf(PreviewOptions),
 };

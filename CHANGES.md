@@ -3,14 +3,29 @@ CHANGES
 
 ## 3.2.0-RC
 
-* Feature: Simultaneously edit by multiple people with HackMD integration
+* Feature: HackMD integration so that user can simultaneously edit with multiple people
+
+## 3.1.14
+
+* Improvement: Show help for header search box
+* Improvement: Add Markdown Cheatsheet to Editor component
+* Fix: Couldn't delete page completely from search result page
+* Fix: Tabs of trash page are broken
+
+## 3.1.13
+
+* Feature: Global Notification
+* Feature: Send Global Notification with E-mail
+* Improvement: Add attribute mappings for email to LDAP settings
 * Support: Upgrade libs
+    * autoprefixer
+    * css-loader
+    * method-override
+    * optimize-css-assets-webpack-plugin
     * react
+    * react-bootstrap-typeahead
     * react-dom
 
-## 3.1.13-RC
-
-* 
 
 ## 3.1.12
 

@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import Modal from 'react-bootstrap/es/Modal';
+
 import AbstractEditor from './AbstractEditor';
 
 import urljoin from 'url-join';
@@ -19,6 +21,7 @@ window.CodeMirror = require('codemirror');
 
 
 import { UnControlled as ReactCodeMirror } from 'react-codemirror2';
+require('codemirror/addon/display/placeholder');
 require('codemirror/addon/edit/matchbrackets');
 require('codemirror/addon/edit/matchtags');
 require('codemirror/addon/edit/closetag');
@@ -34,6 +37,7 @@ require('codemirror/addon/fold/foldgutter');
 require('codemirror/addon/fold/foldgutter.css');
 require('codemirror/addon/fold/markdown-fold');
 require('codemirror/addon/fold/brace-fold');
+require('codemirror/addon/display/placeholder');
 require('codemirror/mode/gfm/gfm');
 require('../../util/codemirror/autorefresh.ext');
 
@@ -57,7 +61,10 @@ export default class CodeMirrorEditor extends AbstractEditor {
       isGfmMode: this.props.isGfmMode,
       isEnabledEmojiAutoComplete: false,
       isLoadingKeymap: false,
-      additionalClass: '',
+      isSimpleCheatsheetShown: this.props.isGfmMode && this.props.value.length === 0,
+      isCheatsheetModalButtonShown: this.props.isGfmMode && this.props.value.length > 0,
+      isCheatsheetModalShown: false,
+      additionalClassSet: new Set(),
     };
 
     this.init();
@@ -76,8 +83,12 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.scrollCursorIntoViewHandler = this.scrollCursorIntoViewHandler.bind(this);
     this.pasteHandler = this.pasteHandler.bind(this);
     this.cursorHandler = this.cursorHandler.bind(this);
+    this.changeHandler = this.changeHandler.bind(this);
+
+    this.updateCheatsheetStates = this.updateCheatsheetStates.bind(this);
 
     this.renderLoadingKeymapOverlay = this.renderLoadingKeymapOverlay.bind(this);
+    this.renderCheatsheetModalButton = this.renderCheatsheetModalButton.bind(this);
   }
 
   init() {
@@ -150,10 +161,15 @@ export default class CodeMirrorEditor extends AbstractEditor {
    * @inheritDoc
    */
   setGfmMode(bool) {
+    // update state
     this.setState({
       isGfmMode: bool,
       isEnabledEmojiAutoComplete: bool,
     });
+
+    this.updateCheatsheetStates(bool, null);
+
+    // update CodeMirror option
     const mode = bool ? 'gfm' : undefined;
     this.getCodeMirror().setOption('mode', mode);
   }
@@ -388,11 +404,34 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
   cursorHandler(editor, event) {
     const strFromBol = this.getStrFromBol();
+
+    const autoformatTableClass = 'autoformat-markdown-table-activated';
+    const additionalClassSet = this.state.additionalClassSet;
+    const hasCustomClass = additionalClassSet.has(autoformatTableClass);
     if (mtu.isEndOfLine(editor) && mtu.linePartOfTableRE.test(strFromBol)) {
-      this.setState({additionalClass: 'autoformat-markdown-table-activated'});
+      if (!hasCustomClass) {
+        additionalClassSet.add(autoformatTableClass);
+        this.setState({additionalClassSet});
+      }
     }
     else {
-      this.setState({additionalClass: ''});
+      if (hasCustomClass) {
+        additionalClassSet.delete(autoformatTableClass);
+        this.setState({additionalClassSet});
+      }
+    }
+  }
+
+  changeHandler(editor, data, value) {
+    if (this.props.onChange != null) {
+      this.props.onChange(value);
+    }
+
+    this.updateCheatsheetStates(null, value);
+
+    // Emoji AutoComplete
+    if (this.state.isEnabledEmojiAutoComplete) {
+      this.emojiAutoCompleteHelper.showHint(editor);
     }
   }
 
@@ -415,27 +454,194 @@ export default class CodeMirrorEditor extends AbstractEditor {
     }
   }
 
-  getOverlayStyle() {
-    return {
-      position: 'absolute',
-      zIndex: 4,  // forward than .CodeMirror-gutters
+  /**
+   * update states which related to cheatsheet
+   * @param {boolean} isGfmMode (use state.isGfmMode if null is set)
+   * @param {string} value (get value from codemirror if null is set)
+   */
+  updateCheatsheetStates(isGfmMode, value) {
+    if (isGfmMode == null) {
+      isGfmMode = this.state.isGfmMode;
+    }
+    if (value == null) {
+      value = this.getCodeMirror().getDoc().getValue();
+    }
+    // update isSimpleCheatsheetShown, isCheatsheetModalButtonShown
+    const isSimpleCheatsheetShown = isGfmMode && value.length === 0;
+    const isCheatsheetModalButtonShown = isGfmMode && value.length > 0;
+    this.setState({ isSimpleCheatsheetShown, isCheatsheetModalButtonShown });
+  }
+
+  renderLoadingKeymapOverlay() {
+    // centering
+    const style = {
       top: 0,
       right: 0,
       bottom: 0,
       left: 0,
     };
-  }
-
-  renderLoadingKeymapOverlay() {
-    const overlayStyle = this.getOverlayStyle();
 
     return this.state.isLoadingKeymap
-      ? <div style={overlayStyle} className="loading-keymap overlay">
-          <span className="overlay-content">
+      ? <div className="overlay overlay-loading-keymap">
+          <span style={style} className="overlay-content">
             <div className="speeding-wheel d-inline-block"></div> Loading Keymap ...
           </span>
         </div>
       : '';
+  }
+
+  renderSimpleCheatsheet() {
+    return (
+      <div className="panel panel-default gfm-cheatsheet mb-0">
+        <div className="panel-body small p-b-0">
+          <div className="row">
+            <div className="col-xs-6">
+              <p>
+                # 見出し1<br />
+                ## 見出し2
+              </p>
+              <p><i>*斜体*</i>&nbsp;&nbsp;<b>**強調**</b></p>
+              <p>
+                [リンク](http://..)<br />
+                [/ページ名/子ページ名]
+              </p>
+              <p>
+                ```javascript:index.js<br />
+                writeCode();<br />
+                ```
+              </p>
+            </div>
+            <div className="col-xs-6">
+              <p>
+                - リスト 1<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;- リスト 1_1<br />
+                - リスト 2<br />
+                1. 番号付きリスト 1
+                1. 番号付きリスト 2
+              </p>
+              <hr />
+              <p>行末にスペース2つ[ ][ ]<br />で改行</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  renderCheatsheetModalBody() {
+    return (
+      <div className="row small">
+        <div className="col-sm-6">
+          <h4>Header</h4>
+          <ul className="hljs">
+            <li><code># </code>見出し1</li>
+            <li><code>## </code>見出し2</li>
+            <li><code>### </code>見出し3</li>
+          </ul>
+          <h4>Block</h4>
+          <p className="mb-1"><code>[空白行]</code>を挟むことで段落になります</p>
+          <ul className="hljs">
+            <li>text</li>
+            <li></li>
+            <li>text</li>
+          </ul>
+          <h4>Line breaks</h4>
+          <p className="mb-1">段落中、<code>[space][space]</code>(スペース2つ) で改行されます</p>
+          <ul className="hljs">
+            <li>text<code> </code><code> </code></li>
+            <li>text</li>
+          </ul>
+          <h4>Typography</h4>
+          <ul className="hljs">
+            <li><i>*イタリック*</i></li>
+            <li><b>**ボールド**</b></li>
+            <li><i><b>***イタリックボールド***</b></i></li>
+            <li>~~取り消し線~~ => <s>striked text</s></li>
+          </ul>
+          <h4>Link</h4>
+          <ul className="hljs">
+            <li>[Google](https://www.google.co.jp/)</li>
+            <li>[/Page1/ChildPage1]</li>
+          </ul>
+          <h4>コードハイライト</h4>
+          <ul className="hljs">
+            <li>```javascript:index.js</li>
+            <li>writeCode();</li>
+            <li>```</li>
+          </ul>
+        </div>
+        <div className="col-sm-6">
+          <h4>リスト</h4>
+          <ul className="hljs">
+            <li>- リスト 1</li>
+            <li>&nbsp;&nbsp;- リスト 1_1</li>
+            <li>- リスト 2</li>
+          </ul>
+          <ul className="hljs">
+            <li>1. 番号付きリスト 1</li>
+            <li>1. 番号付きリスト 2</li>
+          </ul>
+          <ul className="hljs">
+            <li>- [ ] タスク(チェックなし)</li>
+            <li>- [x] タスク(チェック付き)</li>
+          </ul>
+          <h4>引用</h4>
+          <ul className="hljs">
+            <li>> 複数行の引用文を</li>
+            <li>> 書くことができます</li>
+          </ul>
+          <ul className="hljs">
+            <li>>> 多重引用</li>
+            <li>>>> 多重引用</li>
+            <li>>>>> 多重引用</li>
+          </ul>
+          <h4>Table</h4>
+          <ul className="hljs text-center">
+            <li>|&nbsp;&nbsp;&nbsp;左寄せ&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;中央寄せ&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;右寄せ&nbsp;&nbsp;&nbsp;|</li>
+            <li>|:-----------|:----------:|-----------:|</li>
+            <li>|column 1&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;column 2&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;column 3|</li>
+            <li>|column 1&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;column 2&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;column 3|</li>
+          </ul>
+          <h4>Images</h4>
+          <p className="mb-1"><code> ![Alt文字列](URL)</code> で<span className="text-info">&lt;img&gt;</span>タグを挿入できます</p>
+          <ul className="hljs">
+            <li>![ex](https://example.com/images/a.png)</li>
+          </ul>
+
+          <hr />
+          <a href="/Sandbox" className="btn btn-info btn-block" target="_blank">
+            <i className="icon-share-alt"/> Sandbox を開く
+          </a>
+        </div>
+      </div>
+    );
+  }
+
+  renderCheatsheetModalButton() {
+    const showCheatsheetModal = () => {
+      this.setState({isCheatsheetModalShown: true});
+    };
+
+    const hideCheatsheetModal = () => {
+      this.setState({isCheatsheetModalShown: false});
+    };
+
+    return (
+      <React.Fragment>
+        <Modal className="modal-gfm-cheatsheet" show={this.state.isCheatsheetModalShown} onHide={() => { hideCheatsheetModal() }}>
+          <Modal.Header closeButton>
+            <Modal.Title><i className="icon-fw icon-question"/>Markdown Help</Modal.Title>
+          </Modal.Header>
+          <Modal.Body className="pt-1">
+            { this.renderCheatsheetModalBody() }
+          </Modal.Body>
+        </Modal>
+
+        <a className="gfm-cheatsheet-modal-link text-muted small" onClick={() => { showCheatsheetModal() }}>
+          <i className="icon-question" /> Markdown
+        </a>
+      </React.Fragment>
+    );
   }
 
   render() {
@@ -444,12 +650,16 @@ export default class CodeMirrorEditor extends AbstractEditor {
       theme: 'elegant',
       lineNumbers: true,
     };
+    const additionalClasses = Array.from(this.state.additionalClassSet).join(' ');
     const editorOptions = Object.assign(defaultEditorOptions, this.props.editorOptions || {});
+
+    const placeholder = this.state.isGfmMode ? 'Input with Markdown..' : 'Input with Plane Text..';
 
     return <React.Fragment>
       <ReactCodeMirror
         ref="cm"
-        className={this.state.additionalClass}
+        className={additionalClasses}
+        placeholder="search"
         editorDidMount={(editor) => {
           // add event handlers
           editor.on('paste', this.pasteHandler);
@@ -466,6 +676,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
           lineWrapping: true,
           autoRefresh: {force: true},   // force option is enabled by autorefresh.ext.js -- Yuki Takei
           autoCloseTags: true,
+          placeholder: placeholder,
           matchBrackets: true,
           matchTags: {bothTags: true},
           // folding
@@ -494,16 +705,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
             this.props.onScroll(data);
           }
         }}
-        onChange={(editor, data, value) => {
-          if (this.props.onChange != null) {
-            this.props.onChange(value);
-          }
-
-          // Emoji AutoComplete
-          if (this.state.isEnabledEmojiAutoComplete) {
-            this.emojiAutoCompleteHelper.showHint(editor);
-          }
-        }}
+        onChange={this.changeHandler}
         onDragEnter={(editor, event) => {
           if (this.props.onDragEnter != null) {
             this.props.onDragEnter(event);
@@ -512,6 +714,11 @@ export default class CodeMirrorEditor extends AbstractEditor {
       />
 
       { this.renderLoadingKeymapOverlay() }
+
+      <div className="overlay overlay-gfm-cheatsheet mt-1 p-3 pt-3">
+        { this.state.isSimpleCheatsheetShown && this.renderSimpleCheatsheet() }
+        { this.state.isCheatsheetModalButtonShown && this.renderCheatsheetModalButton() }
+      </div>
 
     </React.Fragment>;
   }
