@@ -406,13 +406,23 @@
         "name": "Facebook OAuth認証"
       },
       "Twitter": {
-        "name": "Twitter OAuth認証"
+        "name": "Twitter OAuth認証",
+        "register_1": "<a href=\"%s\" target=\"_blank\">%s</a>へアクセス",
+        "register_2": "Twitterにサインイン",
+        "register_3": "Create New Appをクリック &rightarrow; Application Detailsの各項目を入力",
+        "register_4": "Create your Twitter Applicationで作成",
+        "register_5": "上記フォームにクライアントIDとクライアントシークレットを入力"
       },
       "GitHub": {
         "name": "GitHub OAuth認証",
         "register_1": "<a href=\"%s\" target=\"_blank\">%s</a>へアクセス",
         "register_2": "\"Authorization callback URL\"を<code>%s</code>としてGrowiを登録 (<code>%s</code>は環境に合わせて変更してください)",
         "register_3": "上記フォームにクライアントIDとクライアントシークレットを入力"
+      },
+      "how_to": {
+        "google": "Google OAuthの設定方法",
+        "github": "GitHub OAuthの設定方法",
+        "twitter": "Twitter OAuthの設定方法"
       }
     }
   },
