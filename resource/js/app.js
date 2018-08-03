@@ -193,6 +193,11 @@ const saveWithShortcutSuccessHandler = function(page) {
     const updateEditorValue = (editorMode !== 'hackmd');
     componentInstances.pageEditorByHackmd.setMarkdown(page.revision.body, updateEditorValue);
   }
+  // set revision id to PageStatusAlert
+  const pageStatusAlert = componentInstances.pageStatusAlert;
+  if (componentInstances.pageStatusAlert != null) {
+    pageStatusAlert.initRevisionId(pageRevisionId);
+  }
 };
 
 const errorHandler = function(error) {
@@ -382,7 +387,7 @@ if (pageStatusAlertElem) {
               pageStatusAlert = elem.getWrappedInstance();
             }
           }}
-          pageRevisionId={pageRevisionId} />
+          revisionId={pageRevisionId} />
     </I18nextProvider>,
     pageStatusAlertElem
   );
@@ -425,10 +430,9 @@ if (customHeaderEditorElem != null) {
 const socket = io();
 socket.on('page edited', function(data) {
   if (data.page.path == pagePath) {
-    console.log(data);
     const pageStatusAlert = componentInstances.pageStatusAlert;
     if (pageStatusAlert != null) {
-      pageStatusAlert.setPageRevisionId(data.page._id.toString());
+      pageStatusAlert.setLatestRevisionId(data.page._id.toString());
       pageStatusAlert.setLastUpdateUsername(data.user.name);
     }
   }

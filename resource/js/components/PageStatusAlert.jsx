@@ -17,13 +17,21 @@ class PageStatusAlert extends React.Component {
     super(props);
 
     this.state = {
-      pageRevisionId: this.props.pageRevisionId,
+      revisionId: this.props.revisionId,
+      latestRevisionId: this.props.revisionId,
       lastUpdateUsername: undefined,
     };
   }
 
-  setPageRevisionId(pageRevisionId) {
-    this.setState({pageRevisionId});
+  initRevisionId(revisionId) {
+    this.setState({
+      revisionId,
+      latestRevisionId: revisionId,
+    });
+  }
+
+  setLatestRevisionId(revisionId) {
+    this.setState({latestRevisionId: revisionId});
   }
 
   setLastUpdateUsername(lastUpdateUsername) {
@@ -35,10 +43,15 @@ class PageStatusAlert extends React.Component {
     const label1 = t('edited this page');
     const label2 = t('Load latest');
 
+    const isShown = this.state.revisionId !== this.state.latestRevisionId;
+    const style = {
+      display: isShown ? 'block' : 'none'
+    };
+
     return (
-      <div className="myadmin-alert alert-warning myadmin-alert-bottom alertbottom2">
-        <i className="icon-fw icon-bulb"></i><span>{this.state.lastUpdateUsername}</span>
-        {label1}
+      <div className="myadmin-alert alert-warning myadmin-alert-bottom alertbottom2" style={style}>
+        <i className="icon-fw icon-bulb"></i>
+        <span>{this.state.lastUpdateUsername}</span> {label1}&nbsp;
         <a href="javascript:location.reload();">
           <i className="fa fa-angle-double-right"></i> {label2}
         </a>
@@ -50,7 +63,8 @@ class PageStatusAlert extends React.Component {
 PageStatusAlert.propTypes = {
   t: PropTypes.func.isRequired,               // i18next
   crowi: PropTypes.object.isRequired,
-  pageRevisionId: PropTypes.string,
+  revisionId: PropTypes.string,
+  latestRevisionId: PropTypes.string,
 };
 
 PageStatusAlert.defaultProps = {
