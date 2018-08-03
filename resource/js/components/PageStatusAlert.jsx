@@ -64,7 +64,7 @@ class PageStatusAlert extends React.Component {
         &nbsp;
         <i className="fa fa-angle-double-right"></i>
         &nbsp;
-        <a href="">
+        <a href="#hackmd">
           Open HackMD Editor
         </a>
       </div>
@@ -79,7 +79,7 @@ class PageStatusAlert extends React.Component {
         &nbsp;
         <i className="fa fa-angle-double-right"></i>
         &nbsp;
-        <a href="">
+        <a href="#hackmd">
           Open HackMD Editor
         </a>
       </div>
