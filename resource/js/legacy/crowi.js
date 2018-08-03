@@ -673,12 +673,10 @@ $(function() {
       $b.toggleClass('overlay-on');
     });
 
-    //
-    const me = $('body').data('me');
+    // notification from websocket
     const socket = io();
     socket.on('page edited', function(data) {
-      if (data.user._id != me
-        && data.page.path == pagePath) {
+      if (data.page.path == pagePath) {
         $('#notifPageEdited').show();
         $('#notifPageEdited .edited-user').html(data.user.name);
       }
