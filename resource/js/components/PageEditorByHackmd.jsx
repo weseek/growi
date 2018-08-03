@@ -64,6 +64,14 @@ export default class PageEditorByHackmd extends React.PureComponent {
     this.setState({revisionId});
   }
 
+  /**
+   * update hasDraftOnHackmd of state
+   * @param {bool} hasDraftOnHackmd
+   */
+  setHasDraftOnHackmd(hasDraftOnHackmd) {
+    this.setState({hasDraftOnHackmd});
+  }
+
   getHackmdUri() {
     const envVars = this.props.crowi.config.env;
     return envVars.HACKMD_URI;
