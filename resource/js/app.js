@@ -193,10 +193,10 @@ const saveWithShortcutSuccessHandler = function(page) {
     const updateEditorValue = (editorMode !== 'hackmd');
     componentInstances.pageEditorByHackmd.setMarkdown(page.revision.body, updateEditorValue);
   }
-  // set revision id to PageStatusAlert
+  // clear state of PageStatusAlert
   const pageStatusAlert = componentInstances.pageStatusAlert;
   if (componentInstances.pageStatusAlert != null) {
-    pageStatusAlert.initRevisionId(pageRevisionId);
+    pageStatusAlert.clearStatus(pageRevisionId);
   }
 };
 

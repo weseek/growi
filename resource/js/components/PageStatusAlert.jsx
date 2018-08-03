@@ -29,10 +29,15 @@ class PageStatusAlert extends React.Component {
     this.renderUpdatedAlert = this.renderUpdatedAlert.bind(this);
   }
 
-  initRevisionId(revisionId) {
+  /**
+   * clear status (invoked when page is updated)
+   */
+  clearStatus(updatedRevisionId) {
     this.setState({
-      revisionId,
-      latestRevisionId: revisionId,
+      revisionId: updatedRevisionId,
+      latestRevisionId: updatedRevisionId,
+      hasDraftOnHackmd: false,
+      isDraftUpdatingInRealtime: false,
     });
   }
 
