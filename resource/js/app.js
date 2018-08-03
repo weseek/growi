@@ -175,7 +175,7 @@ const saveWithShortcutSuccessHandler = function(page) {
   pageRevisionId = page.revision._id;
 
   // set page id to SavePageControls
-  componentInstances.savePageControls.setPageId(pageId);  // TODO fix this line failed because of i18next
+  componentInstances.savePageControls.setPageId(pageId);
 
   // re-render Page component
   if (componentInstances.page != null) {
@@ -349,7 +349,6 @@ if (writeCommentElem) {
     <CommentForm crowi={crowi}
       crowiOriginRenderer={crowiRenderer}
       pageId={pageId}
-      revisionId={pageRevisionId}
       pagePath={pagePath}
       onPostComplete={postCompleteHandler}
       editorOptions={editorOptions}
