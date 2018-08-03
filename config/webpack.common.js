@@ -22,7 +22,6 @@ module.exports = (options) => {
     entry: Object.assign({
       'js/app':                   './resource/js/app',
       'js/legacy':                './resource/js/legacy/crowi',
-      'js/legacy-form':           './resource/js/legacy/crowi-form',
       'js/legacy-admin':          './resource/js/legacy/crowi-admin',
       'js/legacy-presentation':   './resource/js/legacy/crowi-presentation',
       'js/plugin':                './resource/js/plugin',
