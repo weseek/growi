@@ -428,7 +428,7 @@ if (customHeaderEditorElem != null) {
 
 // notification from websocket
 const socket = io();
-socket.on('page edited', function(data) {
+socket.on('page:update', function(data) {
   console.log(data);
   if (data.page.path == pagePath) {
     // update PageStatusAlert
@@ -437,6 +437,16 @@ socket.on('page edited', function(data) {
       pageStatusAlert.setLatestRevisionId(data.page._id.toString());
       pageStatusAlert.setLastUpdateUsername(data.user.name);
     }
+    // update PageEditorByHackmd
+    const pageEditorByHackmd = componentInstances.pageEditorByHackmd;
+    if (pageEditorByHackmd != null) {
+      pageEditorByHackmd.setHasDraftOnHackmd(data.page.hasDraftOnHackmd);
+    }
+  }
+});
+socket.on('page:updateHasDraftOnHackmd', function(data) {
+  console.log(data);
+  if (data.page.path == pagePath) {
     // update PageEditorByHackmd
     const pageEditorByHackmd = componentInstances.pageEditorByHackmd;
     if (pageEditorByHackmd != null) {
