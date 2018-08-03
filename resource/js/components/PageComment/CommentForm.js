@@ -313,7 +313,6 @@ CommentForm.propTypes = {
   crowiOriginRenderer: PropTypes.object.isRequired,
   onPostComplete: PropTypes.func,
   pageId: PropTypes.string,
-  revisionId: PropTypes.string,
   pagePath: PropTypes.string,
   editorOptions: PropTypes.object,
   slackChannels: PropTypes.string,
