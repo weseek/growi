@@ -20,7 +20,13 @@ class PageStatusAlert extends React.Component {
       revisionId: this.props.revisionId,
       latestRevisionId: this.props.revisionId,
       lastUpdateUsername: undefined,
+      hasDraftOnHackmd: this.props.hasDraftOnHackmd,
+      isDraftUpdatingInRealtime: false,
     };
+
+    this.renderSomeoneEditingAlert = this.renderSomeoneEditingAlert.bind(this);
+    this.renderDraftExistsAlert = this.renderDraftExistsAlert.bind(this);
+    this.renderUpdatedAlert = this.renderUpdatedAlert.bind(this);
   }
 
   initRevisionId(revisionId) {
@@ -38,32 +44,84 @@ class PageStatusAlert extends React.Component {
     this.setState({lastUpdateUsername});
   }
 
-  render() {
+  setHasDraftOnHackmd(hasDraftOnHackmd) {
+    this.setState({
+      hasDraftOnHackmd,
+      isDraftUpdatingInRealtime: true,
+    });
+  }
+
+  renderSomeoneEditingAlert() {
+    return (
+      <div className="myadmin-alert alert-success myadmin-alert-bottom alertbottom2" style={{display: 'block'}}>
+        <i className="icon-fw icon-people"></i>
+        Someone editing this page on HackMD
+        &nbsp;
+        <i className="fa fa-angle-double-right"></i>
+        &nbsp;
+        <a href="">
+          Open HackMD Editor
+        </a>
+      </div>
+    );
+  }
+
+  renderDraftExistsAlert(isRealtime) {
+    return (
+      <div className="myadmin-alert alert-success myadmin-alert-bottom alertbottom2" style={{display: 'block'}}>
+        <i className="icon-fw icon-pencil"></i>
+        This page has a draft on HackMD
+        &nbsp;
+        <i className="fa fa-angle-double-right"></i>
+        &nbsp;
+        <a href="">
+          Open HackMD Editor
+        </a>
+      </div>
+    );
+  }
+
+  renderUpdatedAlert() {
     const { t } = this.props;
     const label1 = t('edited this page');
     const label2 = t('Load latest');
 
-    const isShown = this.state.revisionId !== this.state.latestRevisionId;
-    const style = {
-      display: isShown ? 'block' : 'none'
-    };
-
     return (
-      <div className="myadmin-alert alert-warning myadmin-alert-bottom alertbottom2" style={style}>
+      <div className="myadmin-alert alert-warning myadmin-alert-bottom alertbottom2" style={{display: 'block'}}>
         <i className="icon-fw icon-bulb"></i>
-        <span>{this.state.lastUpdateUsername}</span> {label1}&nbsp;
+        {this.state.lastUpdateUsername} {label1}
+        &nbsp;
+        <i className="fa fa-angle-double-right"></i>
+        &nbsp;
         <a href="javascript:location.reload();">
-          <i className="fa fa-angle-double-right"></i> {label2}
+          {label2}
         </a>
       </div>
     );
+  }
+
+  render() {
+    let content = <React.Fragment></React.Fragment>;
+
+    if (this.state.isDraftUpdatingInRealtime) {
+      content = this.renderSomeoneEditingAlert();
+    }
+    else if (this.state.hasDraftOnHackmd) {
+      content = this.renderDraftExistsAlert();
+    }
+    else if (this.state.revisionId !== this.state.latestRevisionId) {
+      content = this.renderUpdatedAlert();
+    }
+
+    return content;
   }
 }
 
 PageStatusAlert.propTypes = {
   t: PropTypes.func.isRequired,               // i18next
   crowi: PropTypes.object.isRequired,
-  revisionId: PropTypes.string,
+  revisionId: PropTypes.string.isRequired,
+  hasDraftOnHackmd: PropTypes.bool.isRequired,
   latestRevisionId: PropTypes.string,
 };
 

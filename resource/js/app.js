@@ -387,7 +387,7 @@ if (pageStatusAlertElem) {
               pageStatusAlert = elem.getWrappedInstance();
             }
           }}
-          revisionId={pageRevisionId} />
+          revisionId={pageRevisionId} hasDraftOnHackmd={hasDraftOnHackmd} />
     </I18nextProvider>,
     pageStatusAlertElem
   );
@@ -429,7 +429,10 @@ if (customHeaderEditorElem != null) {
 // notification from websocket
 const socket = io();
 socket.on('page:update', function(data) {
-  console.log(data);
+  // skip own trigger
+  if (data.user.username === crowi.me) {
+    return;
+  }
   if (data.page.path == pagePath) {
     // update PageStatusAlert
     const pageStatusAlert = componentInstances.pageStatusAlert;
@@ -444,9 +447,13 @@ socket.on('page:update', function(data) {
     }
   }
 });
-socket.on('page:updateHasDraftOnHackmd', function(data) {
-  console.log(data);
+socket.on('page:editingWithHackmd', function(data) {
   if (data.page.path == pagePath) {
+    // update PageStatusAlert
+    const pageStatusAlert = componentInstances.pageStatusAlert;
+    if (pageStatusAlert != null) {
+      pageStatusAlert.setHasDraftOnHackmd(data.page.hasDraftOnHackmd);
+    }
     // update PageEditorByHackmd
     const pageEditorByHackmd = componentInstances.pageEditorByHackmd;
     if (pageEditorByHackmd != null) {
