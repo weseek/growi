@@ -1,13 +1,49 @@
 .kibela {
 
-  html, body, #page-wrapper {
+  p, h1, h2, h3, h4, h5, h6, li, span, i {
+    color: #3c4a60;
+  }
+  body, html {
+    background-color: gray;
+  }
+  .container-fluid {
+    width: 100%;
+  }
+  .logo-mark {
+    background-color: white;
+    height: 50px;
+  }
+  .group1 {
+   background-color: #5584E1;
+  }
+  .navbar-header {
+    background: white;
+    margin: none !important;
+    padding: none !important;
+  }
+
+  #page-wrapper {
     background-color: #F4F5F6 !important;
 
   }
+  .header-wrap {
+    margin: none !important;
+    padding: none !important;
 
+    svg {
+      display: none;
+    }
+  }
+  .round-corner {
+    border-radius: 0.5em;
+    border-top: solid 0.4em #5584E1;
+    z-index: absolute;
+  }
+  .d-flex {
+    position: relative;
+  }
   .kibela-block {
-    border-top-left-radius: 0.7em;
-    border-top-right-radius: 0.7em;
+
     position: absolute;
     top: 0px;
     right: 0px;
@@ -19,19 +55,16 @@
     margin: none !important;
     padding: none !important;
     background: transparent;
-    width: 100%;
-  }
-  .page-content {
-    padding: 15px;
-    margin: auto;
-  }
-
+    border: none;
+   }
 }
 .kibela.main-container {
   .content-main {
     padding: 0;
+    border-radius: 0.3em;
+    border-top: solid 0.2em #5584E1;
+    z-index: absolute;
   }
-
   .revision-toc {
     &.affix {
       right: 6rem;

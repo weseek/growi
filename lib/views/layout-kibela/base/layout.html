@@ -1,14 +1,24 @@
-{% extends '../../layout/layout.html' %} {% block layout_main %}
+{% extends '../../layout/layout.html' %}
+
+{% block layout_main %}
 <div class="container-fluid">
+
+
 
   <div class="row body m-0 p-0">
 
-    <div id="main" class="main col-md-7 kibela-block bg-white m-t-30 {% if page %}{{ css.grant(page) }}{% endif %} {% block main_css_class %}{% endblock %}">
-
-
-
-      {% block content_main_before %} {% endblock %} {% block content_main %} {% endblock content_main %} {% block content_main_after
-      %} {% endblock %}
+    <div id="main" class="main col-md-7 kibela-block bg-white m-t-30 round-corner {% if page %}{{ css.grant(page) }}{% endif %} {% block main_css_class %}{% endblock %}">
+        <div class="row bg-title">
+            <div class="col-xs-12">
+              {% block content_header %}
+              {% endblock %}
+            </div>
+          </div><!-- /.bg-title -->
+      {% block content_main_before %}
+      {% endblock %} {% block content_main %}
+      {% endblock content_main %}
+      {% block content_main_after%}
+      {% endblock %}
     </div>
 
   </div>
