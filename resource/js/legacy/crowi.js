@@ -13,7 +13,6 @@ import { debounce } from 'throttle-debounce';
 import GrowiRenderer from '../util/GrowiRenderer';
 import Page from '../components/Page';
 
-const io = require('socket.io-client');
 const entities = require('entities');
 const escapeStringRegexp = require('escape-string-regexp');
 require('jquery.cookie');
@@ -673,14 +672,6 @@ $(function() {
       $b.toggleClass('overlay-on');
     });
 
-    // notification from websocket
-    const socket = io();
-    socket.on('page edited', function(data) {
-      if (data.page.path == pagePath) {
-        $('#notifPageEdited').show();
-        $('#notifPageEdited .edited-user').html(data.user.name);
-      }
-    });
   } // end if pageId
 
   // tab changing handling

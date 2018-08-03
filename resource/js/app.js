@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import { I18nextProvider } from 'react-i18next';
 import * as toastr from 'toastr';
 
+import io from 'socket.io-client';
+
 import i18nFactory from './i18n';
 
 import Xss from '../../lib/util/xss';
@@ -24,6 +26,7 @@ import PageHistory      from './components/PageHistory';
 import PageComments     from './components/PageComments';
 import CommentForm from './components/PageComment/CommentForm';
 import PageAttachment   from './components/PageAttachment';
+import PageStatusAlert  from './components/PageStatusAlert';
 import SeenUserList     from './components/SeenUserList';
 import RevisionPath     from './components/Page/RevisionPath';
 import RevisionUrl      from './components/Page/RevisionUrl';
@@ -367,6 +370,25 @@ if (pageEditorOptionsSelectorElem) {
   );
 }
 
+// render PageStatusAlert
+let pageStatusAlert = null;
+const pageStatusAlertElem = document.getElementById('page-status-alert');
+if (pageStatusAlertElem) {
+  ReactDOM.render(
+    <I18nextProvider i18n={i18n}>
+      <PageStatusAlert crowi={crowi}
+          ref={(elem) => {
+            if (pageStatusAlert == null) {
+              pageStatusAlert = elem.getWrappedInstance();
+            }
+          }}
+          pageRevisionId={pageRevisionId} />
+    </I18nextProvider>,
+    pageStatusAlertElem
+  );
+  componentInstances.pageStatusAlert = pageStatusAlert;
+}
+
 // render for admin
 const customCssEditorElem = document.getElementById('custom-css-editor');
 if (customCssEditorElem != null) {
@@ -398,6 +420,19 @@ if (customHeaderEditorElem != null) {
     customHeaderEditorElem
   );
 }
+
+// notification from websocket
+const socket = io();
+socket.on('page edited', function(data) {
+  if (data.page.path == pagePath) {
+    console.log(data);
+    const pageStatusAlert = componentInstances.pageStatusAlert;
+    if (pageStatusAlert != null) {
+      pageStatusAlert.setPageRevisionId(data.page._id.toString());
+      pageStatusAlert.setLastUpdateUsername(data.user.name);
+    }
+  }
+});
 
 // うわーもうー (commented by Crowi team -- 2018.03.23 Yuki Takei)
 $('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', function() {
