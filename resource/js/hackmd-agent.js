@@ -65,7 +65,7 @@ function postParentToNotifyBodyChanges(body) {
   window.growi.notifyBodyChanges(body);
 }
 // generate debounced function
-const debouncedPostParentToNotifyBodyChanges = debounce(1500, postParentToNotifyBodyChanges);
+const debouncedPostParentToNotifyBodyChanges = debounce(800, postParentToNotifyBodyChanges);
 
 /**
  * postMessage to GROWI to save with shortcut
