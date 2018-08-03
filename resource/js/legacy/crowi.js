@@ -68,8 +68,7 @@ Crowi.setCaretLineData = function(line) {
 /**
  * invoked when;
  *
- * 1. window loaded
- * 2. 'shown.bs.tab' event fired
+ * 1. 'shown.bs.tab' event fired
  */
 Crowi.setCaretLineAndFocusToEditor = function() {
   // get 'data-caret-line' attributes
@@ -79,13 +78,10 @@ Crowi.setCaretLineAndFocusToEditor = function() {
     return;
   }
 
-  const line = pageEditorDom.getAttribute('data-caret-line');
-
-  if (line != null && !isNaN(line)) {
-    crowi.setCaretLine(+line);
-    // reset data-caret-line attribute
-    pageEditorDom.removeAttribute('data-caret-line');
-  }
+  const line = pageEditorDom.getAttribute('data-caret-line') || 0;
+  crowi.setCaretLine(+line);
+  // reset data-caret-line attribute
+  pageEditorDom.removeAttribute('data-caret-line');
 
   // focus
   crowi.focusToEditor();
@@ -807,7 +803,6 @@ window.addEventListener('load', function(e) {
 
   Crowi.highlightSelectedSection(location.hash);
   Crowi.modifyScrollTop();
-  Crowi.setCaretLineAndFocusToEditor();
   Crowi.initSlimScrollForRevisionToc();
   Crowi.initAffix();
 });
