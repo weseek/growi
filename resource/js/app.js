@@ -46,6 +46,8 @@ if (!window) {
 const userlang = $('body').data('userlang');
 const i18n = i18nFactory(userlang);
 
+const socket = io();
+
 // setup xss library
 const xss = new Xss();
 window.xss = xss;
@@ -89,6 +91,7 @@ crowi.setConfig(JSON.parse(document.getElementById('crowi-context-hydrate').text
 if (isLoggedin) {
   crowi.fetchUsers();
 }
+const socketClientId = crowi.getSocketClientId();
 
 const crowiRenderer = new GrowiRenderer(crowi, null, {
   mode: 'page',
@@ -219,6 +222,7 @@ const saveWithShortcut = function(markdown) {
   }
   // get options
   const options = componentInstances.savePageControls.getCurrentOptionsToSave();
+  options.socketClientId = socketClientId;
 
   let promise = undefined;
   if (pageId == null) {
@@ -247,6 +251,7 @@ const saveWithSubmitButton = function() {
   }
   // get options
   const options = componentInstances.savePageControls.getCurrentOptionsToSave();
+  options.socketClientId = socketClientId;
 
   let promise = undefined;
   // get markdown
@@ -428,27 +433,62 @@ if (customHeaderEditorElem != null) {
 }
 
 // notification from websocket
-const socket = io();
-socket.on('page:update', function(data) {
-  // skip own trigger
-  if (data.user.username === crowi.me) {
+function updatePageStatusAlert(page, user) {
+  const pageStatusAlert = componentInstances.pageStatusAlert;
+  if (pageStatusAlert != null) {
+    pageStatusAlert.setLatestRevisionId(page._id.toString());
+    pageStatusAlert.setLastUpdateUsername(user.name);
+  }
+}
+socket.on('page:create', function(data) {
+  console.log(data);
+  // skip if triggered myself
+  if (data.socketClientId != null && data.socketClientId === socketClientId) {
     return;
   }
+
+  // update PageStatusAlert
+  if (data.page.path == pagePath) {
+    updatePageStatusAlert(data.page, data.user);
+  }
+});
+socket.on('page:update', function(data) {
+  console.log(data);
+  // skip if triggered myself
+  if (data.socketClientId != null && data.socketClientId === socketClientId) {
+    return;
+  }
+
   if (data.page.path == pagePath) {
     // update PageStatusAlert
-    const pageStatusAlert = componentInstances.pageStatusAlert;
-    if (pageStatusAlert != null) {
-      pageStatusAlert.setLatestRevisionId(data.page._id.toString());
-      pageStatusAlert.setLastUpdateUsername(data.user.name);
-    }
+    updatePageStatusAlert(data.page, data.user);
     // update PageEditorByHackmd
     const pageEditorByHackmd = componentInstances.pageEditorByHackmd;
     if (pageEditorByHackmd != null) {
+      // pageEditorByHackmd.setRevisionId(data.page.hasDraftOnHackmd);
+      // pageEditorByHackmd.setRevisionIdHackmdSynced(data.page.hasDraftOnHackmd);
       pageEditorByHackmd.setHasDraftOnHackmd(data.page.hasDraftOnHackmd);
     }
   }
 });
+socket.on('page:delete', function(data) {
+  console.log(data);
+  // skip if triggered myself
+  if (data.socketClientId != null && data.socketClientId === socketClientId) {
+    return;
+  }
+
+  // update PageStatusAlert
+  if (data.page.path == pagePath) {
+    updatePageStatusAlert(data.page, data.user);
+  }
+});
 socket.on('page:editingWithHackmd', function(data) {
+  // skip if triggered myself
+  if (data.socketClientId != null && data.socketClientId === socketClientId) {
+    return;
+  }
+
   if (data.page.path == pagePath) {
     // update PageStatusAlert
     const pageStatusAlert = componentInstances.pageStatusAlert;

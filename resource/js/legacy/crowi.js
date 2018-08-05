@@ -379,10 +379,12 @@ $(function() {
       nameValueMap[obj.name] = obj.value;
     });
 
+    const data = $(this).serialize() + `&socketClientId=${crowi.getSocketClientId()}`;
+
     $.ajax({
       type: 'POST',
       url: '/_api/pages.rename',
-      data: $(this).serialize(),
+      data: data,
       dataType: 'json'
     })
     .done(function(res) {
