@@ -60,7 +60,7 @@ class PageStatusAlert extends React.Component {
 
   renderSomeoneEditingAlert() {
     return (
-      <div className="myadmin-alert alert-success myadmin-alert-bottom alertbottom2" style={{display: 'block'}}>
+      <div className="alert-hackmd-someone-editing myadmin-alert alert-success myadmin-alert-bottom alertbottom2">
         <i className="icon-fw icon-people"></i>
         Someone editing this page on HackMD
         &nbsp;
@@ -75,7 +75,7 @@ class PageStatusAlert extends React.Component {
 
   renderDraftExistsAlert(isRealtime) {
     return (
-      <div className="myadmin-alert alert-success myadmin-alert-bottom alertbottom2" style={{display: 'block'}}>
+      <div className="alert-hackmd-draft-exists myadmin-alert alert-success myadmin-alert-bottom alertbottom2">
         <i className="icon-fw icon-pencil"></i>
         This page has a draft on HackMD
         &nbsp;
@@ -94,7 +94,7 @@ class PageStatusAlert extends React.Component {
     const label2 = t('Load latest');
 
     return (
-      <div className="myadmin-alert alert-warning myadmin-alert-bottom alertbottom2" style={{display: 'block'}}>
+      <div className="alert-revision-outdated myadmin-alert alert-warning myadmin-alert-bottom alertbottom2">
         <i className="icon-fw icon-bulb"></i>
         {this.state.lastUpdateUsername} {label1}
         &nbsp;
