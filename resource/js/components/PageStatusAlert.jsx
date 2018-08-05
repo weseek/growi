@@ -110,10 +110,11 @@ class PageStatusAlert extends React.Component {
   render() {
     let content = <React.Fragment></React.Fragment>;
 
-    const isHackmdDocumentLatest = this.state.revisionId === this.state.revisionIdHackmdSynced;
+    const isRevisionOutdated = this.state.initialRevisionId !== this.state.revisionId;
+    const isHackmdDocumentOutdated = this.state.revisionId !== this.state.revisionIdHackmdSynced;
 
-    if (!isHackmdDocumentLatest) {
-      if (this.state.initialRevisionId !== this.state.revisionId) {
+    if (isHackmdDocumentOutdated) {
+      if (isRevisionOutdated) {
         content = this.renderUpdatedAlert();
       }
     }
