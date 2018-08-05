@@ -46,6 +46,8 @@ if (!window) {
 const userlang = $('body').data('userlang');
 const i18n = i18nFactory(userlang);
 
+const socket = io();
+
 // setup xss library
 const xss = new Xss();
 window.xss = xss;
@@ -89,6 +91,7 @@ crowi.setConfig(JSON.parse(document.getElementById('crowi-context-hydrate').text
 if (isLoggedin) {
   crowi.fetchUsers();
 }
+const socketClientId = crowi.getSocketClientId();
 
 const crowiRenderer = new GrowiRenderer(crowi, null, {
   mode: 'page',
@@ -173,30 +176,35 @@ const saveWithShortcutSuccessHandler = function(page) {
 
   pageId = page._id;
   pageRevisionId = page.revision._id;
+  pageRevisionIdHackmdSynced = page.revisionHackmdSynced;
 
   // set page id to SavePageControls
   componentInstances.savePageControls.setPageId(pageId);
 
-  // re-render Page component
+  // Page component
   if (componentInstances.page != null) {
     componentInstances.page.setMarkdown(page.revision.body);
   }
-  // re-render PageEditor component
+  // PageEditor component
   if (componentInstances.pageEditor != null) {
     const updateEditorValue = (editorMode !== 'builtin');
     componentInstances.pageEditor.setMarkdown(page.revision.body, updateEditorValue);
   }
-  // set revision id to PageEditorByHackmd
+  // PageEditorByHackmd component
   if (componentInstances.pageEditorByHackmd != null) {
-    componentInstances.pageEditorByHackmd.setRevisionId(pageRevisionId);
-
-    const updateEditorValue = (editorMode !== 'hackmd');
-    componentInstances.pageEditorByHackmd.setMarkdown(page.revision.body, updateEditorValue);
+    // clear state of PageEditorByHackmd
+    componentInstances.pageEditorByHackmd.clearRevisionStatus(pageRevisionId, pageRevisionIdHackmdSynced);
+    // reset
+    if (editorMode !== 'hackmd') {
+      componentInstances.pageEditorByHackmd.setMarkdown(page.revision.body, false);
+      componentInstances.pageEditorByHackmd.reset();
+    }
   }
-  // clear state of PageStatusAlert
+  // PageStatusAlert component
   const pageStatusAlert = componentInstances.pageStatusAlert;
+  // clear state of PageStatusAlert
   if (componentInstances.pageStatusAlert != null) {
-    pageStatusAlert.clearStatus(pageRevisionId);
+    pageStatusAlert.clearRevisionStatus(pageRevisionId, pageRevisionIdHackmdSynced);
   }
 };
 
@@ -217,15 +225,25 @@ const saveWithShortcut = function(markdown) {
     // do nothing
     return;
   }
+
+  let revisionId = pageRevisionId;
   // get options
   const options = componentInstances.savePageControls.getCurrentOptionsToSave();
+  options.socketClientId = socketClientId;
+
+  if (editorMode === 'hackmd') {
+    // set option to sync
+    options.isSyncRevisionToHackmd = true;
+    // use revisionId of PageEditorByHackmd
+    revisionId = componentInstances.pageEditorByHackmd.getRevisionIdHackmdSynced();
+  }
 
   let promise = undefined;
   if (pageId == null) {
     promise = crowi.createPage(pagePath, markdown, options);
   }
   else {
-    promise = crowi.updatePage(pageId, pageRevisionId, markdown, options);
+    promise = crowi.updatePage(pageId, revisionId, markdown, options);
   }
 
   promise
@@ -244,16 +262,24 @@ const saveWithSubmitButton = function() {
     // do nothing
     return;
   }
+
+  let revisionId = pageRevisionId;
   // get options
   const options = componentInstances.savePageControls.getCurrentOptionsToSave();
+  options.socketClientId = socketClientId;
 
   let promise = undefined;
-  // get markdown
   if (editorMode === 'builtin') {
+    // get markdown
     promise = Promise.resolve(componentInstances.pageEditor.getMarkdown());
   }
   else {
+    // get markdown
     promise = componentInstances.pageEditorByHackmd.getMarkdown();
+    // use revisionId of PageEditorByHackmd
+    revisionId = componentInstances.pageEditorByHackmd.getRevisionIdHackmdSynced();
+    // set option to sync
+    options.isSyncRevisionToHackmd = true;
   }
   // create or update
   if (pageId == null) {
@@ -263,7 +289,7 @@ const saveWithSubmitButton = function() {
   }
   else {
     promise = promise.then(markdown => {
-      return crowi.updatePage(pageId, pageRevisionId, markdown, options);
+      return crowi.updatePage(pageId, revisionId, markdown, options);
     });
   }
 
@@ -350,6 +376,7 @@ if (writeCommentElem) {
       crowiOriginRenderer={crowiRenderer}
       pageId={pageId}
       pagePath={pagePath}
+      revisionId={pageRevisionId}
       onPostComplete={postCompleteHandler}
       editorOptions={editorOptions}
       slackChannels = {slackChannels}/>,
@@ -386,7 +413,7 @@ if (pageStatusAlertElem) {
               pageStatusAlert = elem.getWrappedInstance();
             }
           }}
-          revisionId={pageRevisionId} hasDraftOnHackmd={hasDraftOnHackmd} />
+          revisionId={pageRevisionId} revisionIdHackmdSynced={pageRevisionIdHackmdSynced} hasDraftOnHackmd={hasDraftOnHackmd} />
     </I18nextProvider>,
     pageStatusAlertElem
   );
@@ -426,27 +453,65 @@ if (customHeaderEditorElem != null) {
 }
 
 // notification from websocket
-const socket = io();
-socket.on('page:update', function(data) {
-  // skip own trigger
-  if (data.user.username === crowi.me) {
+function updatePageStatusAlert(page, user) {
+  const pageStatusAlert = componentInstances.pageStatusAlert;
+  if (pageStatusAlert != null) {
+    const revisionId = page.revision._id;
+    const revisionIdHackmdSynced = page.revisionHackmdSynced;
+    pageStatusAlert.setRevisionId(revisionId, revisionIdHackmdSynced);
+    pageStatusAlert.setLastUpdateUsername(user.name);
+  }
+}
+socket.on('page:create', function(data) {
+  console.log(data);
+  // skip if triggered myself
+  if (data.socketClientId != null && data.socketClientId === socketClientId) {
     return;
   }
+
+  // update PageStatusAlert
+  if (data.page.path == pagePath) {
+    updatePageStatusAlert(data.page, data.user);
+  }
+});
+socket.on('page:update', function(data) {
+  console.log(data);
+  // skip if triggered myself
+  if (data.socketClientId != null && data.socketClientId === socketClientId) {
+    return;
+  }
+
   if (data.page.path == pagePath) {
     // update PageStatusAlert
-    const pageStatusAlert = componentInstances.pageStatusAlert;
-    if (pageStatusAlert != null) {
-      pageStatusAlert.setLatestRevisionId(data.page._id.toString());
-      pageStatusAlert.setLastUpdateUsername(data.user.name);
-    }
+    updatePageStatusAlert(data.page, data.user);
     // update PageEditorByHackmd
     const pageEditorByHackmd = componentInstances.pageEditorByHackmd;
     if (pageEditorByHackmd != null) {
+      const page = data.page;
+      pageEditorByHackmd.setRevisionId(page.revision._id, page.revisionHackmdSynced);
       pageEditorByHackmd.setHasDraftOnHackmd(data.page.hasDraftOnHackmd);
     }
   }
 });
+socket.on('page:delete', function(data) {
+  console.log(data);
+  // skip if triggered myself
+  if (data.socketClientId != null && data.socketClientId === socketClientId) {
+    return;
+  }
+
+  // update PageStatusAlert
+  if (data.page.path == pagePath) {
+    updatePageStatusAlert(data.page, data.user);
+  }
+});
 socket.on('page:editingWithHackmd', function(data) {
+  console.log(data);
+  // skip if triggered myself
+  if (data.socketClientId != null && data.socketClientId === socketClientId) {
+    return;
+  }
+
   if (data.page.path == pagePath) {
     // update PageStatusAlert
     const pageStatusAlert = componentInstances.pageStatusAlert;

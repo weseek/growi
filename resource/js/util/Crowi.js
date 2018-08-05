@@ -24,6 +24,7 @@ export default class Crowi {
     this.location = window.location || {};
     this.document = window.document || {};
     this.localStorage = window.localStorage || {};
+    this.socketClientId = Math.floor(Math.random() * 100000);
     this.pageEditor = undefined;
 
     this.fetchUsers = this.fetchUsers.bind(this);
@@ -66,6 +67,10 @@ export default class Crowi {
 
   setPageEditor(pageEditor) {
     this.pageEditor = pageEditor;
+  }
+
+  getSocketClientId() {
+    return this.socketClientId;
   }
 
   getEmojiStrategy() {

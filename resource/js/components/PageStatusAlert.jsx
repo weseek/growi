@@ -17,8 +17,9 @@ class PageStatusAlert extends React.Component {
     super(props);
 
     this.state = {
+      initialRevisionId: this.props.revisionId,
       revisionId: this.props.revisionId,
-      latestRevisionId: this.props.revisionId,
+      revisionIdHackmdSynced: this.props.revisionIdHackmdSynced,
       lastUpdateUsername: undefined,
       hasDraftOnHackmd: this.props.hasDraftOnHackmd,
       isDraftUpdatingInRealtime: false,
@@ -30,23 +31,24 @@ class PageStatusAlert extends React.Component {
   }
 
   /**
-   * clear status (invoked when page is updated)
+   * clear status (invoked when page is updated by myself)
    */
-  clearStatus(updatedRevisionId) {
+  clearRevisionStatus(updatedRevisionId, updatedRevisionIdHackmdSynced) {
     this.setState({
+      initialRevisionId: updatedRevisionId,
       revisionId: updatedRevisionId,
-      latestRevisionId: updatedRevisionId,
+      revisionIdHackmdSynced: updatedRevisionIdHackmdSynced,
       hasDraftOnHackmd: false,
       isDraftUpdatingInRealtime: false,
     });
   }
 
-  setLatestRevisionId(revisionId) {
-    this.setState({latestRevisionId: revisionId});
+  setRevisionId(revisionId, revisionIdHackmdSynced) {
+    this.setState({ revisionId, revisionIdHackmdSynced });
   }
 
   setLastUpdateUsername(lastUpdateUsername) {
-    this.setState({lastUpdateUsername});
+    this.setState({ lastUpdateUsername });
   }
 
   setHasDraftOnHackmd(hasDraftOnHackmd) {
@@ -58,7 +60,7 @@ class PageStatusAlert extends React.Component {
 
   renderSomeoneEditingAlert() {
     return (
-      <div className="myadmin-alert alert-success myadmin-alert-bottom alertbottom2" style={{display: 'block'}}>
+      <div className="alert-hackmd-someone-editing myadmin-alert alert-success myadmin-alert-bottom alertbottom2">
         <i className="icon-fw icon-people"></i>
         Someone editing this page on HackMD
         &nbsp;
@@ -73,7 +75,7 @@ class PageStatusAlert extends React.Component {
 
   renderDraftExistsAlert(isRealtime) {
     return (
-      <div className="myadmin-alert alert-success myadmin-alert-bottom alertbottom2" style={{display: 'block'}}>
+      <div className="alert-hackmd-draft-exists myadmin-alert alert-success myadmin-alert-bottom alertbottom2">
         <i className="icon-fw icon-pencil"></i>
         This page has a draft on HackMD
         &nbsp;
@@ -92,7 +94,7 @@ class PageStatusAlert extends React.Component {
     const label2 = t('Load latest');
 
     return (
-      <div className="myadmin-alert alert-warning myadmin-alert-bottom alertbottom2" style={{display: 'block'}}>
+      <div className="alert-revision-outdated myadmin-alert alert-warning myadmin-alert-bottom alertbottom2">
         <i className="icon-fw icon-bulb"></i>
         {this.state.lastUpdateUsername} {label1}
         &nbsp;
@@ -108,14 +110,19 @@ class PageStatusAlert extends React.Component {
   render() {
     let content = <React.Fragment></React.Fragment>;
 
-    if (this.state.isDraftUpdatingInRealtime) {
-      content = this.renderSomeoneEditingAlert();
-    }
-    else if (this.state.hasDraftOnHackmd) {
-      content = this.renderDraftExistsAlert();
-    }
-    else if (this.state.revisionId !== this.state.latestRevisionId) {
+    const isRevisionOutdated = this.state.initialRevisionId !== this.state.revisionId;
+    const isHackmdDocumentOutdated = this.state.revisionId !== this.state.revisionIdHackmdSynced;
+
+    if (isHackmdDocumentOutdated && isRevisionOutdated) {
       content = this.renderUpdatedAlert();
+    }
+    else {
+      if (this.state.isDraftUpdatingInRealtime) {
+        content = this.renderSomeoneEditingAlert();
+      }
+      else if (this.state.hasDraftOnHackmd) {
+        content = this.renderDraftExistsAlert();
+      }
     }
 
     return content;
@@ -125,9 +132,9 @@ class PageStatusAlert extends React.Component {
 PageStatusAlert.propTypes = {
   t: PropTypes.func.isRequired,               // i18next
   crowi: PropTypes.object.isRequired,
-  revisionId: PropTypes.string.isRequired,
   hasDraftOnHackmd: PropTypes.bool.isRequired,
-  latestRevisionId: PropTypes.string,
+  revisionId: PropTypes.string,
+  revisionIdHackmdSynced: PropTypes.string,
 };
 
 PageStatusAlert.defaultProps = {
