@@ -221,9 +221,15 @@ const saveWithShortcut = function(markdown) {
     // do nothing
     return;
   }
+
   // get options
   const options = componentInstances.savePageControls.getCurrentOptionsToSave();
   options.socketClientId = socketClientId;
+
+  if (editorMode === 'hackmd') {
+    // set option to sync
+    options.isSyncRevisionToHackmd = true;
+  }
 
   let promise = undefined;
   if (pageId == null) {
@@ -231,7 +237,6 @@ const saveWithShortcut = function(markdown) {
   }
   else {
     promise = crowi.updatePage(pageId, pageRevisionId, markdown, options);
-    options.isSyncRevisionToHackmd = true;
   }
 
   promise
@@ -255,12 +260,14 @@ const saveWithSubmitButton = function() {
   options.socketClientId = socketClientId;
 
   let promise = undefined;
-  // get markdown
   if (editorMode === 'builtin') {
+    // get markdown
     promise = Promise.resolve(componentInstances.pageEditor.getMarkdown());
   }
   else {
+    // get markdown
     promise = componentInstances.pageEditorByHackmd.getMarkdown();
+    // set option to sync
     options.isSyncRevisionToHackmd = true;
   }
   // create or update
