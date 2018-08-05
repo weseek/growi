@@ -176,6 +176,7 @@ const saveWithShortcutSuccessHandler = function(page) {
 
   pageId = page._id;
   pageRevisionId = page.revision._id;
+  pageRevisionIdHackmdSynced = (page.revisionHackmdSynced != null) ? page.revisionHackmdSynced._id : null;
 
   // set page id to SavePageControls
   componentInstances.savePageControls.setPageId(pageId);
@@ -199,7 +200,7 @@ const saveWithShortcutSuccessHandler = function(page) {
   // clear state of PageStatusAlert
   const pageStatusAlert = componentInstances.pageStatusAlert;
   if (componentInstances.pageStatusAlert != null) {
-    pageStatusAlert.clearStatus(pageRevisionId);
+    pageStatusAlert.clearStatus(pageRevisionId, pageRevisionIdHackmdSynced);
   }
 };
 
@@ -393,7 +394,7 @@ if (pageStatusAlertElem) {
               pageStatusAlert = elem.getWrappedInstance();
             }
           }}
-          revisionId={pageRevisionId} hasDraftOnHackmd={hasDraftOnHackmd} />
+          revisionId={pageRevisionId} revisionIdHackmdSynced={pageRevisionIdHackmdSynced} hasDraftOnHackmd={hasDraftOnHackmd} />
     </I18nextProvider>,
     pageStatusAlertElem
   );
@@ -436,7 +437,9 @@ if (customHeaderEditorElem != null) {
 function updatePageStatusAlert(page, user) {
   const pageStatusAlert = componentInstances.pageStatusAlert;
   if (pageStatusAlert != null) {
-    pageStatusAlert.setLatestRevisionId(page._id.toString());
+    const revisionId = page.revision._id;
+    const revisionIdHackmdSynced = (page.revisionHackmdSynced != null) ? page.revisionHackmdSynced._id : null;
+    pageStatusAlert.setRevisionId(revisionId, revisionIdHackmdSynced);
     pageStatusAlert.setLastUpdateUsername(user.name);
   }
 }
@@ -465,8 +468,8 @@ socket.on('page:update', function(data) {
     // update PageEditorByHackmd
     const pageEditorByHackmd = componentInstances.pageEditorByHackmd;
     if (pageEditorByHackmd != null) {
-      // pageEditorByHackmd.setRevisionId(data.page.hasDraftOnHackmd);
-      // pageEditorByHackmd.setRevisionIdHackmdSynced(data.page.hasDraftOnHackmd);
+      pageEditorByHackmd.setRevisionId(data.page.revision._id);
+      pageEditorByHackmd.setRevisionIdHackmdSynced(data.page.revisionHackmdSynced._id);
       pageEditorByHackmd.setHasDraftOnHackmd(data.page.hasDraftOnHackmd);
     }
   }

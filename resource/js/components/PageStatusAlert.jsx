@@ -17,8 +17,9 @@ class PageStatusAlert extends React.Component {
     super(props);
 
     this.state = {
+      initialRevisionId: this.props.revisionId,
       revisionId: this.props.revisionId,
-      latestRevisionId: this.props.revisionId,
+      revisionIdHackmdSynced: this.props.revisionIdHackmdSynced,
       lastUpdateUsername: undefined,
       hasDraftOnHackmd: this.props.hasDraftOnHackmd,
       isDraftUpdatingInRealtime: false,
@@ -32,21 +33,22 @@ class PageStatusAlert extends React.Component {
   /**
    * clear status (invoked when page is updated)
    */
-  clearStatus(updatedRevisionId) {
+  clearStatus(updatedRevisionId, updatedRevisionIdHackmdSynced) {
     this.setState({
+      initialRevisionId: updatedRevisionId,
       revisionId: updatedRevisionId,
-      latestRevisionId: updatedRevisionId,
+      revisionIdHackmdSynced: updatedRevisionIdHackmdSynced,
       hasDraftOnHackmd: false,
       isDraftUpdatingInRealtime: false,
     });
   }
 
-  setLatestRevisionId(revisionId) {
-    this.setState({latestRevisionId: revisionId});
+  setRevisionId(revisionId, revisionIdHackmdSynced) {
+    this.setState({ revisionId, revisionIdHackmdSynced });
   }
 
   setLastUpdateUsername(lastUpdateUsername) {
-    this.setState({lastUpdateUsername});
+    this.setState({ lastUpdateUsername });
   }
 
   setHasDraftOnHackmd(hasDraftOnHackmd) {
@@ -108,14 +110,20 @@ class PageStatusAlert extends React.Component {
   render() {
     let content = <React.Fragment></React.Fragment>;
 
-    if (this.state.isDraftUpdatingInRealtime) {
-      content = this.renderSomeoneEditingAlert();
+    const isHackmdDocumentLatest = this.state.revisionId === this.state.revisionIdHackmdSynced;
+
+    if (!isHackmdDocumentLatest) {
+      if (this.state.initialRevisionId !== this.state.revisionId) {
+        content = this.renderUpdatedAlert();
+      }
     }
-    else if (this.state.hasDraftOnHackmd) {
-      content = this.renderDraftExistsAlert();
-    }
-    else if (this.state.revisionId !== this.state.latestRevisionId) {
-      content = this.renderUpdatedAlert();
+    else {
+      if (this.state.isDraftUpdatingInRealtime) {
+        content = this.renderSomeoneEditingAlert();
+      }
+      else if (this.state.hasDraftOnHackmd) {
+        content = this.renderDraftExistsAlert();
+      }
     }
 
     return content;
@@ -127,7 +135,7 @@ PageStatusAlert.propTypes = {
   crowi: PropTypes.object.isRequired,
   hasDraftOnHackmd: PropTypes.bool.isRequired,
   revisionId: PropTypes.string,
-  latestRevisionId: PropTypes.string,
+  revisionIdHackmdSynced: PropTypes.string,
 };
 
 PageStatusAlert.defaultProps = {

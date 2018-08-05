@@ -18,6 +18,7 @@ export default class PageEditorByHackmd extends React.PureComponent {
       isInitialized: false,
       isInitializing: false,
       revisionId: this.props.revisionId,
+      revisionIdHackmdSynced: this.props.revisionIdHackmdSynced,
       pageIdOnHackmd: this.props.pageIdOnHackmd,
       hasDraftOnHackmd: this.props.hasDraftOnHackmd,
     };
@@ -62,6 +63,14 @@ export default class PageEditorByHackmd extends React.PureComponent {
    */
   setRevisionId(revisionId) {
     this.setState({revisionId});
+  }
+
+  /**
+   * update revisionIdHackmdSynced of state
+   * @param {string} revisionIdHackmdSynced
+   */
+  setRevisionIdHackmdSynced(revisionIdHackmdSynced) {
+    this.setState({revisionIdHackmdSynced});
   }
 
   /**
@@ -171,8 +180,8 @@ export default class PageEditorByHackmd extends React.PureComponent {
     const hackmdUri = this.getHackmdUri();
 
     const isPageExistsOnHackmd = (this.state.pageIdOnHackmd != null);
-    const isRevisionMatch = (this.state.revisionId === this.props.revisionIdHackmdSynced);
-    const isResume = isPageExistsOnHackmd && isRevisionMatch && this.state.hasDraftOnHackmd;
+    const isResume = isPageExistsOnHackmd && this.state.hasDraftOnHackmd;
+    const isRevisionMatch = (this.state.revisionId === this.state.revisionIdHackmdSynced);
 
     if (this.state.isInitialized) {
       return (
