@@ -17,6 +17,7 @@ export default class PageEditorByHackmd extends React.PureComponent {
       markdown: this.props.markdown,
       isInitialized: false,
       isInitializing: false,
+      initialRevisionId: this.props.revisionId,
       revisionId: this.props.revisionId,
       revisionIdHackmdSynced: this.props.revisionIdHackmdSynced,
       pageIdOnHackmd: this.props.pageIdOnHackmd,
@@ -60,17 +61,10 @@ export default class PageEditorByHackmd extends React.PureComponent {
   /**
    * update revisionId of state
    * @param {string} revisionId
-   */
-  setRevisionId(revisionId) {
-    this.setState({revisionId});
-  }
-
-  /**
-   * update revisionIdHackmdSynced of state
    * @param {string} revisionIdHackmdSynced
    */
-  setRevisionIdHackmdSynced(revisionIdHackmdSynced) {
-    this.setState({revisionIdHackmdSynced});
+  setRevisionId(revisionId, revisionIdHackmdSynced) {
+    this.setState({ revisionId, revisionIdHackmdSynced });
   }
 
   /**
@@ -78,7 +72,7 @@ export default class PageEditorByHackmd extends React.PureComponent {
    * @param {bool} hasDraftOnHackmd
    */
   setHasDraftOnHackmd(hasDraftOnHackmd) {
-    this.setState({hasDraftOnHackmd});
+    this.setState({ hasDraftOnHackmd });
   }
 
   getHackmdUri() {
@@ -181,7 +175,6 @@ export default class PageEditorByHackmd extends React.PureComponent {
 
     const isPageExistsOnHackmd = (this.state.pageIdOnHackmd != null);
     const isResume = isPageExistsOnHackmd && this.state.hasDraftOnHackmd;
-    const isRevisionMatch = (this.state.revisionId === this.state.revisionIdHackmdSynced);
 
     if (this.state.isInitialized) {
       return (
@@ -199,8 +192,13 @@ export default class PageEditorByHackmd extends React.PureComponent {
       );
     }
 
+    const isRevisionOutdated = this.state.initialRevisionId !== this.state.revisionId;
+    const isHackmdDocumentOutdated = this.state.revisionId !== this.state.revisionIdHackmdSynced;
+
     let content = undefined;
-    // HackMD is not setup
+    /*
+     * HackMD is not setup
+     */
     if (hackmdUri == null) {
       content = (
         <div>
@@ -208,7 +206,11 @@ export default class PageEditorByHackmd extends React.PureComponent {
         </div>
       );
     }
+    /*
+     * Resume to edit or discard changes
+     */
     else if (isResume) {
+      const revisionIdHackmdSynced = this.state.revisionIdHackmdSynced;
       const title = (
         <React.Fragment>
           <span className="btn-label"><i className="icon-control-end"></i></span>
@@ -218,23 +220,37 @@ export default class PageEditorByHackmd extends React.PureComponent {
         <div>
           <p className="text-center hackmd-status-label"><i className="fa fa-file-text"></i> HackMD is READY!</p>
           <div className="text-center hackmd-resume-button-container mb-3">
-            <SplitButton id='split-button-resume-hackmd' title={title} bsStyle="success" bsSize="large" className="btn-resume waves-effect waves-light" onClick={() => this.resumeToEdit()}>
+            <SplitButton id='split-button-resume-hackmd' title={title} bsStyle="success" bsSize="large" disabled={isRevisionOutdated}
+                className="btn-resume waves-effect waves-light" onClick={() => this.resumeToEdit()}>
               <MenuItem className="text-center" onClick={() => this.discardChanges()}>
                 <i className="icon-control-rewind"></i> Discard changes
               </MenuItem>
             </SplitButton>
           </div>
-          <p className="text-center">Click to edit from the previous continuation.</p>
+          <p className="text-center">Click to edit from the previous continuation<br />or <span className="text-danger">Discard changes</span> from pull down.</p>
+          { isHackmdDocumentOutdated &&
+            <div className="panel panel-warning mt-5">
+              <div className="panel-heading"><i className="icon-fw icon-info"></i> DRAFT MAY BE OUTDATED</div>
+              <div className="panel-body text-center">
+                The current draft on HackMD is based on&nbsp;
+                <a href={`?revision=${revisionIdHackmdSynced}`}><span className="label label-default">{revisionIdHackmdSynced.substr(-8)}</span></a>.<br />
+                <span className="text-danger">Discard it</span> to start to edit with current revision.
+              </div>
+            </div>
+          }
         </div>
       );
     }
+    /*
+     * Start to edit
+     */
     else {
       content = (
         <div>
           <p className="text-center hackmd-status-label"><i className="fa fa-file-text"></i> HackMD is READY!</p>
           <div className="text-center hackmd-start-button-container mb-3">
-            <button className="btn btn-info btn-lg waves-effect waves-light" type="button"
-                onClick={() => this.startToEdit()} disabled={this.state.isInitializing}>
+            <button className="btn btn-info btn-lg waves-effect waves-light" type="button" disabled={isRevisionOutdated || this.state.isInitializing}
+                onClick={() => this.startToEdit()}>
               <span className="btn-label"><i className="icon-paper-plane"></i></span>
               Start to edit with HackMD
             </button>
