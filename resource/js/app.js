@@ -226,6 +226,7 @@ const saveWithShortcut = function(markdown) {
   }
   else {
     promise = crowi.updatePage(pageId, pageRevisionId, markdown, options);
+    options.isSyncRevisionToHackmd = true;
   }
 
   promise
@@ -254,6 +255,7 @@ const saveWithSubmitButton = function() {
   }
   else {
     promise = componentInstances.pageEditorByHackmd.getMarkdown();
+    options.isSyncRevisionToHackmd = true;
   }
   // create or update
   if (pageId == null) {
