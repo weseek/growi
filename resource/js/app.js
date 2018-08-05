@@ -365,6 +365,7 @@ if (writeCommentElem) {
       crowiOriginRenderer={crowiRenderer}
       pageId={pageId}
       pagePath={pagePath}
+      revisionId={pageRevisionId}
       onPostComplete={postCompleteHandler}
       editorOptions={editorOptions}
       slackChannels = {slackChannels}/>,
@@ -475,8 +476,10 @@ socket.on('page:update', function(data) {
     // update PageEditorByHackmd
     const pageEditorByHackmd = componentInstances.pageEditorByHackmd;
     if (pageEditorByHackmd != null) {
-      pageEditorByHackmd.setRevisionId(data.page.revision._id);
-      pageEditorByHackmd.setRevisionIdHackmdSynced(data.page.revisionHackmdSynced._id);
+      const page = data.page;
+      const revisionId = page.revision._id;
+      const revisionIdHackmdSynced = (page.revisionHackmdSynced != null) ? page.revisionHackmdSynced._id : null;
+      pageEditorByHackmd.setRevisionId(revisionId, revisionIdHackmdSynced);
       pageEditorByHackmd.setHasDraftOnHackmd(data.page.hasDraftOnHackmd);
     }
   }
