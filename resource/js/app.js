@@ -7,6 +7,7 @@ import io from 'socket.io-client';
 
 import i18nFactory from './i18n';
 
+import loggerFactory from '@alias/logger';
 import Xss from '../../lib/util/xss';
 
 import Crowi from './util/Crowi';
@@ -38,6 +39,8 @@ import CustomScriptEditor from './components/Admin/CustomScriptEditor';
 import CustomHeaderEditor from './components/Admin/CustomHeaderEditor';
 
 import * as entities from 'entities';
+
+const logger = loggerFactory('growi:app');
 
 if (!window) {
   window = {};
@@ -463,11 +466,12 @@ function updatePageStatusAlert(page, user) {
   }
 }
 socket.on('page:create', function(data) {
-  console.log(data);
   // skip if triggered myself
   if (data.socketClientId != null && data.socketClientId === socketClientId) {
     return;
   }
+
+  logger.debug({ obj: data }, `websocket on 'page:create'`); // eslint-disable-line quotes
 
   // update PageStatusAlert
   if (data.page.path == pagePath) {
@@ -475,11 +479,12 @@ socket.on('page:create', function(data) {
   }
 });
 socket.on('page:update', function(data) {
-  console.log(data);
   // skip if triggered myself
   if (data.socketClientId != null && data.socketClientId === socketClientId) {
     return;
   }
+
+  logger.debug({ obj: data }, `websocket on 'page:update'`); // eslint-disable-line quotes
 
   if (data.page.path == pagePath) {
     // update PageStatusAlert
@@ -494,11 +499,12 @@ socket.on('page:update', function(data) {
   }
 });
 socket.on('page:delete', function(data) {
-  console.log(data);
   // skip if triggered myself
   if (data.socketClientId != null && data.socketClientId === socketClientId) {
     return;
   }
+
+  logger.debug({ obj: data }, `websocket on 'page:delete'`); // eslint-disable-line quotes
 
   // update PageStatusAlert
   if (data.page.path == pagePath) {
@@ -506,11 +512,12 @@ socket.on('page:delete', function(data) {
   }
 });
 socket.on('page:editingWithHackmd', function(data) {
-  console.log(data);
   // skip if triggered myself
   if (data.socketClientId != null && data.socketClientId === socketClientId) {
     return;
   }
+
+  logger.debug({ obj: data }, `websocket on 'page:editingWithHackmd'`); // eslint-disable-line quotes
 
   if (data.page.path == pagePath) {
     // update PageStatusAlert

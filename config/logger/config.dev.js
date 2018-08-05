@@ -1,7 +1,7 @@
 module.exports = {
   default: 'info',
 
-  //// configure level for name
+  //// configure level for server
   // 'express:*': 'debug',
   // 'growi:*': 'debug',
   'growi:crowi': 'debug',
@@ -14,4 +14,7 @@ module.exports = {
   // 'growi:routes:page': 'debug',
   // 'growi-plugin:*': 'debug',
   // 'growi:InterceptorManager': 'debug',
+
+  //// configure level for client
+  'growi:app': 'debug',
 };
