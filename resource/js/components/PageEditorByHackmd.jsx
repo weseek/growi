@@ -80,6 +80,10 @@ export default class PageEditorByHackmd extends React.PureComponent {
     this.setState({ revisionId, revisionIdHackmdSynced });
   }
 
+  getRevisionIdHackmdSynced() {
+    return this.state.revisionIdHackmdSynced;
+  }
+
   /**
    * update hasDraftOnHackmd of state
    * @param {bool} hasDraftOnHackmd

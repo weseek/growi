@@ -224,6 +224,7 @@ const saveWithShortcut = function(markdown) {
     return;
   }
 
+  let revisionId = pageRevisionId;
   // get options
   const options = componentInstances.savePageControls.getCurrentOptionsToSave();
   options.socketClientId = socketClientId;
@@ -231,6 +232,8 @@ const saveWithShortcut = function(markdown) {
   if (editorMode === 'hackmd') {
     // set option to sync
     options.isSyncRevisionToHackmd = true;
+    // use revisionId of PageEditorByHackmd
+    revisionId = componentInstances.pageEditorByHackmd.getRevisionIdHackmdSynced();
   }
 
   let promise = undefined;
@@ -238,7 +241,7 @@ const saveWithShortcut = function(markdown) {
     promise = crowi.createPage(pagePath, markdown, options);
   }
   else {
-    promise = crowi.updatePage(pageId, pageRevisionId, markdown, options);
+    promise = crowi.updatePage(pageId, revisionId, markdown, options);
   }
 
   promise
@@ -257,6 +260,8 @@ const saveWithSubmitButton = function() {
     // do nothing
     return;
   }
+
+  let revisionId = pageRevisionId;
   // get options
   const options = componentInstances.savePageControls.getCurrentOptionsToSave();
   options.socketClientId = socketClientId;
@@ -269,6 +274,8 @@ const saveWithSubmitButton = function() {
   else {
     // get markdown
     promise = componentInstances.pageEditorByHackmd.getMarkdown();
+    // use revisionId of PageEditorByHackmd
+    revisionId = componentInstances.pageEditorByHackmd.getRevisionIdHackmdSynced();
     // set option to sync
     options.isSyncRevisionToHackmd = true;
   }
@@ -280,7 +287,7 @@ const saveWithSubmitButton = function() {
   }
   else {
     promise = promise.then(markdown => {
-      return crowi.updatePage(pageId, pageRevisionId, markdown, options);
+      return crowi.updatePage(pageId, revisionId, markdown, options);
     });
   }
 
