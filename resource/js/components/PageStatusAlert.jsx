@@ -31,7 +31,7 @@ class PageStatusAlert extends React.Component {
   }
 
   /**
-   * clear status (invoked when page is updated)
+   * clear status (invoked when page is updated by myself)
    */
   clearStatus(updatedRevisionId, updatedRevisionIdHackmdSynced) {
     this.setState({

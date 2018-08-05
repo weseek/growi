@@ -176,29 +176,31 @@ const saveWithShortcutSuccessHandler = function(page) {
 
   pageId = page._id;
   pageRevisionId = page.revision._id;
-  pageRevisionIdHackmdSynced = (page.revisionHackmdSynced != null) ? page.revisionHackmdSynced._id : null;
+  pageRevisionIdHackmdSynced = page.revisionHackmdSynced;
 
   // set page id to SavePageControls
   componentInstances.savePageControls.setPageId(pageId);
 
-  // re-render Page component
+  // Page component
   if (componentInstances.page != null) {
     componentInstances.page.setMarkdown(page.revision.body);
   }
-  // re-render PageEditor component
+  // PageEditor component
   if (componentInstances.pageEditor != null) {
     const updateEditorValue = (editorMode !== 'builtin');
     componentInstances.pageEditor.setMarkdown(page.revision.body, updateEditorValue);
   }
-  // set revision id to PageEditorByHackmd
+  // PageEditorByHackmd component
   if (componentInstances.pageEditorByHackmd != null) {
-    componentInstances.pageEditorByHackmd.setRevisionId(pageRevisionId);
+    // clear state of PageEditorByHackmd
+    componentInstances.pageEditorByHackmd.clearStatus(pageRevisionId, pageRevisionIdHackmdSynced);
 
     const updateEditorValue = (editorMode !== 'hackmd');
     componentInstances.pageEditorByHackmd.setMarkdown(page.revision.body, updateEditorValue);
   }
-  // clear state of PageStatusAlert
+  // PageStatusAlert component
   const pageStatusAlert = componentInstances.pageStatusAlert;
+  // clear state of PageStatusAlert
   if (componentInstances.pageStatusAlert != null) {
     pageStatusAlert.clearStatus(pageRevisionId, pageRevisionIdHackmdSynced);
   }
@@ -446,7 +448,7 @@ function updatePageStatusAlert(page, user) {
   const pageStatusAlert = componentInstances.pageStatusAlert;
   if (pageStatusAlert != null) {
     const revisionId = page.revision._id;
-    const revisionIdHackmdSynced = (page.revisionHackmdSynced != null) ? page.revisionHackmdSynced._id : null;
+    const revisionIdHackmdSynced = page.revisionHackmdSynced;
     pageStatusAlert.setRevisionId(revisionId, revisionIdHackmdSynced);
     pageStatusAlert.setLastUpdateUsername(user.name);
   }
@@ -477,9 +479,7 @@ socket.on('page:update', function(data) {
     const pageEditorByHackmd = componentInstances.pageEditorByHackmd;
     if (pageEditorByHackmd != null) {
       const page = data.page;
-      const revisionId = page.revision._id;
-      const revisionIdHackmdSynced = (page.revisionHackmdSynced != null) ? page.revisionHackmdSynced._id : null;
-      pageEditorByHackmd.setRevisionId(revisionId, revisionIdHackmdSynced);
+      pageEditorByHackmd.setRevisionId(page.revision._id, page.revisionHackmdSynced);
       pageEditorByHackmd.setHasDraftOnHackmd(data.page.hasDraftOnHackmd);
     }
   }
@@ -497,6 +497,7 @@ socket.on('page:delete', function(data) {
   }
 });
 socket.on('page:editingWithHackmd', function(data) {
+  console.log(data);
   // skip if triggered myself
   if (data.socketClientId != null && data.socketClientId === socketClientId) {
     return;
