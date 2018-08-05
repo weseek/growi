@@ -59,14 +59,20 @@ export default class PageEditorByHackmd extends React.PureComponent {
   }
 
   /**
-   * clear status (invoked when page is updated by myself)
+   * reset initialized status
    */
-  clearStatus(updatedRevisionId, updatedRevisionIdHackmdSynced) {
+  reset() {
+    this.setState({ isInitialized: false });
+  }
+
+  /**
+   * clear revision status (invoked when page is updated by myself)
+   */
+  clearRevisionStatus(updatedRevisionId, updatedRevisionIdHackmdSynced) {
     this.setState({
       initialRevisionId: updatedRevisionId,
       revisionId: updatedRevisionId,
       revisionIdHackmdSynced: updatedRevisionIdHackmdSynced,
-      hasDraftOnHackmd: false,
       isDraftUpdatingInRealtime: false,
     });
   }

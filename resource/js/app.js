@@ -193,16 +193,20 @@ const saveWithShortcutSuccessHandler = function(page) {
   // PageEditorByHackmd component
   if (componentInstances.pageEditorByHackmd != null) {
     // clear state of PageEditorByHackmd
-    componentInstances.pageEditorByHackmd.clearStatus(pageRevisionId, pageRevisionIdHackmdSynced);
+    componentInstances.pageEditorByHackmd.clearRevisionStatus(pageRevisionId, pageRevisionIdHackmdSynced);
 
-    const updateEditorValue = (editorMode !== 'hackmd');
-    componentInstances.pageEditorByHackmd.setMarkdown(page.revision.body, updateEditorValue);
+    //// ensure not to update HackMD content being edited and reset -- 2018.08.06 Yuki Takei
+    // const updateEditorValue = (editorMode !== 'hackmd');
+    // componentInstances.pageEditorByHackmd.setMarkdown(page.revision.body, updateEditorValue);
+    if (editorMode !== 'hackmd') {
+      componentInstances.pageEditorByHackmd.reset();
+    }
   }
   // PageStatusAlert component
   const pageStatusAlert = componentInstances.pageStatusAlert;
   // clear state of PageStatusAlert
   if (componentInstances.pageStatusAlert != null) {
-    pageStatusAlert.clearStatus(pageRevisionId, pageRevisionIdHackmdSynced);
+    pageStatusAlert.clearRevisionStatus(pageRevisionId, pageRevisionIdHackmdSynced);
   }
 };
 
