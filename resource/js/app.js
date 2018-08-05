@@ -194,11 +194,9 @@ const saveWithShortcutSuccessHandler = function(page) {
   if (componentInstances.pageEditorByHackmd != null) {
     // clear state of PageEditorByHackmd
     componentInstances.pageEditorByHackmd.clearRevisionStatus(pageRevisionId, pageRevisionIdHackmdSynced);
-
-    //// ensure not to update HackMD content being edited and reset -- 2018.08.06 Yuki Takei
-    // const updateEditorValue = (editorMode !== 'hackmd');
-    // componentInstances.pageEditorByHackmd.setMarkdown(page.revision.body, updateEditorValue);
+    // reset
     if (editorMode !== 'hackmd') {
+      componentInstances.pageEditorByHackmd.setMarkdown(page.revision.body, false);
       componentInstances.pageEditorByHackmd.reset();
     }
   }

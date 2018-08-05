@@ -243,7 +243,7 @@ export default class PageEditorByHackmd extends React.PureComponent {
         <div>
           <p className="text-center hackmd-status-label"><i className="fa fa-file-text"></i> HackMD is READY!</p>
           <div className="text-center hackmd-resume-button-container mb-3">
-            <SplitButton id='split-button-resume-hackmd' title={title} bsStyle="success" bsSize="large" disabled={isRevisionOutdated}
+            <SplitButton id='split-button-resume-hackmd' title={title} bsStyle="success" bsSize="large"
                 className="btn-resume waves-effect waves-light" onClick={() => this.resumeToEdit()}>
               <MenuItem className="text-center" onClick={() => this.discardChanges()}>
                 <i className="icon-control-rewind"></i> Discard changes
