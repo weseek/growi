@@ -104,7 +104,6 @@
     "passport-ldapauth": "^2.0.0",
     "passport-local": "^1.0.0",
     "passport-twitter": "^1.0.4",
-    "request": "^2.87.0",
     "rimraf": "^2.6.1",
     "slack-node": "^0.1.8",
     "socket.io": "^2.0.3",
