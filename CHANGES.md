@@ -3,7 +3,7 @@ CHANGES
 
 ## 3.2.0-RC
 
-* Feature: HackMD integration so that user can simultaneously edit with multiple people
+* Feature: HackMD integration so that user will be able to simultaneously edit with multiple people
 * Feature: Login with Twitter Account
 * Fix: The Initial scroll position is wrong when reloading the page
 
