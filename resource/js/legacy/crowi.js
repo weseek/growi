@@ -13,10 +13,10 @@ import { debounce } from 'throttle-debounce';
 import GrowiRenderer from '../util/GrowiRenderer';
 import Page from '../components/Page';
 
-const io = require('socket.io-client');
 const entities = require('entities');
 const escapeStringRegexp = require('escape-string-regexp');
 require('jquery.cookie');
+require('bootstrap-select');
 
 require('./thirdparty-js/agile-admin');
 const pagePathUtil = require('../../../lib/util/pagePathUtil');
@@ -27,10 +27,6 @@ if (!window) {
   window = {};
 }
 window.Crowi = Crowi;
-
-Crowi.createErrorView = function(msg) {
-  $('#main').prepend($('<p class="alert-message error">' + msg + '</p>'));
-};
 
 /**
  * render Table Of Contents
@@ -71,8 +67,7 @@ Crowi.setCaretLineData = function(line) {
 /**
  * invoked when;
  *
- * 1. window loaded
- * 2. 'shown.bs.tab' event fired
+ * 1. 'shown.bs.tab' event fired
  */
 Crowi.setCaretLineAndFocusToEditor = function() {
   // get 'data-caret-line' attributes
@@ -82,13 +77,10 @@ Crowi.setCaretLineAndFocusToEditor = function() {
     return;
   }
 
-  const line = pageEditorDom.getAttribute('data-caret-line');
-
-  if (line != null && !isNaN(line)) {
-    crowi.setCaretLine(+line);
-    // reset data-caret-line attribute
-    pageEditorDom.removeAttribute('data-caret-line');
-  }
+  const line = pageEditorDom.getAttribute('data-caret-line') || 0;
+  crowi.setCaretLine(+line);
+  // reset data-caret-line attribute
+  pageEditorDom.removeAttribute('data-caret-line');
 
   // focus
   crowi.focusToEditor();
@@ -104,41 +96,36 @@ Crowi.userPicture = function(user) {
 };
 
 Crowi.modifyScrollTop = function() {
-  var offset = 10;
+  const offset = 10;
 
-  var hash = window.location.hash;
+  const hash = window.location.hash;
   if (hash === '') {
     return;
   }
 
-  var pageHeader = document.querySelector('#page-header');
+  const pageHeader = document.querySelector('#page-header');
   if (!pageHeader) {
     return;
   }
-  var pageHeaderRect = pageHeader.getBoundingClientRect();
+  const pageHeaderRect = pageHeader.getBoundingClientRect();
 
-  var sectionHeader = Crowi.findSectionHeader(hash);
+  const sectionHeader = Crowi.findSectionHeader(hash);
   if (sectionHeader === null) {
     return;
   }
 
-  var timeout = 0;
+  let timeout = 0;
   if (window.scrollY === 0) {
     timeout = 200;
   }
   setTimeout(function() {
-    var sectionHeaderRect = sectionHeader.getBoundingClientRect();
+    const sectionHeaderRect = sectionHeader.getBoundingClientRect();
     if (sectionHeaderRect.top >= pageHeaderRect.bottom) {
       return;
     }
 
     window.scrollTo(0, (window.scrollY - pageHeaderRect.height - offset));
   }, timeout);
-};
-
-Crowi.updatePageForm = function(page) {
-  $('#page-form [name="pageForm[currentRevision]"]').val(page.revision._id);
-  $('#page-form [name="pageForm[grant]"]').val(page.grant);
 };
 
 Crowi.handleKeyEHandler = (event) => {
@@ -165,6 +152,28 @@ Crowi.handleKeyCtrlSlashHandler = (event) => {
   // show modal to create a page
   $('#shortcuts-modal').modal('toggle');
   event.preventDefault();
+};
+
+Crowi.initAffix = () => {
+  const $affixContent = $('#page-header');
+  if ($affixContent.length > 0) {
+    const $affixContentContainer = $('.row.bg-title');
+    const containerHeight = $affixContentContainer.outerHeight(true);
+    $affixContent.affix({
+      offset: {
+        top: function() {
+          return $('.navbar').outerHeight(true) + containerHeight;
+        }
+      }
+    });
+    $('[data-affix-disable]').on('click', function(e) {
+      const $elm = $($(this).data('affix-disable'));
+      $(window).off('.affix');
+      $elm.removeData('affix').removeClass('affix affix-top affix-bottom');
+      return false;
+    });
+    $affixContentContainer.css({'min-height': containerHeight});
+  }
 };
 
 Crowi.initSlimScrollForRevisionToc = () => {
@@ -221,23 +230,83 @@ Crowi.initSlimScrollForRevisionToc = () => {
   });
 };
 
-$(function() {
-  var config = JSON.parse(document.getElementById('crowi-context-hydrate').textContent || '{}');
+Crowi.findHashFromUrl = function(url) {
+  let match;
+  /* eslint-disable no-cond-assign */
+  if (match = url.match(/#(.+)$/)) {
+    return `#${match[1]}`;
+  }
+  /* eslint-enable */
 
-  var pageId = $('#content-main').data('page-id');
-  // var revisionId = $('#content-main').data('page-revision-id');
-  // var revisionCreatedAt = $('#content-main').data('page-revision-created');
-  // var currentUser = $('#content-main').data('current-user');
-  var isSeen = $('#content-main').data('page-is-seen');
-  var pagePath= $('#content-main').data('path');
-  var isSavedStatesOfTabChanges = config['isSavedStatesOfTabChanges'];
+  return '';
+};
+
+Crowi.findSectionHeader = function(hash) {
+  if (hash.length == 0) {
+    return;
+  }
+
+  // omit '#'
+  const id = hash.replace('#', '');
+  // don't use jQuery and document.querySelector
+  //  because hash may containe Base64 encoded strings
+  const elem = document.getElementById(id);
+  if (elem != null && elem.tagName.match(/h\d+/i)) {  // match h1, h2, h3...
+    return elem;
+  }
+
+  return null;
+};
+
+Crowi.unhighlightSelectedSection = function(hash) {
+  const elem = Crowi.findSectionHeader(hash);
+  if (elem != null) {
+    elem.classList.remove('highlighted');
+  }
+};
+
+Crowi.highlightSelectedSection = function(hash) {
+  const elem = Crowi.findSectionHeader(hash);
+  if (elem != null) {
+    elem.classList.add('highlighted');
+  }
+};
+
+/**
+ * Return editor mode string
+ * @return 'builtin' or 'hackmd' or null (not editing)
+ */
+Crowi.getCurrentEditorMode = function() {
+  const isEditing = $('body').hasClass('on-edit');
+  if (!isEditing) {
+    return null;
+  }
+
+  if ($('body').hasClass('builtin-editor')) {
+    return 'builtin';
+  }
+  else {
+    return 'hackmd';
+  }
+};
+
+$(function() {
+  const config = JSON.parse(document.getElementById('crowi-context-hydrate').textContent || '{}');
+
+  const pageId = $('#content-main').data('page-id');
+  // const revisionId = $('#content-main').data('page-revision-id');
+  // const revisionCreatedAt = $('#content-main').data('page-revision-created');
+  // const currentUser = $('#content-main').data('current-user');
+  const isSeen = $('#content-main').data('page-is-seen');
+  const pagePath= $('#content-main').data('path');
+  const isSavedStatesOfTabChanges = config['isSavedStatesOfTabChanges'];
 
   $('[data-toggle="popover"]').popover();
   $('[data-toggle="tooltip"]').tooltip();
   $('[data-tooltip-stay]').tooltip('show');
 
   $('#toggle-sidebar').click(function(e) {
-    var $mainContainer = $('.main-container');
+    const $mainContainer = $('.main-container');
     if ($mainContainer.hasClass('aside-hidden')) {
       $('.main-container').removeClass('aside-hidden');
       $.cookie('aside-hidden', 0, { expires: 30, path: '/' });
@@ -260,10 +329,10 @@ $(function() {
 
   $('#create-page').on('shown.bs.modal', function(e) {
     // quick hack: replace from server side rendering "date" to client side "date"
-    var today = new Date();
-    var month = ('0' + (today.getMonth() + 1)).slice(-2);
-    var day = ('0' + today.getDate()).slice(-2);
-    var dateString = today.getFullYear() + '/' + month + '/' + day;
+    const today = new Date();
+    const month = ('0' + (today.getMonth() + 1)).slice(-2);
+    const day = ('0' + today.getDate()).slice(-2);
+    const dateString = today.getFullYear() + '/' + month + '/' + day;
     $('#create-page-today .page-today-suffix').text('/' + dateString + '/');
     $('#create-page-today .page-today-input2').data('prefix', '/' + dateString + '/');
 
@@ -272,10 +341,10 @@ $(function() {
   });
 
   $('#create-page-today').submit(function(e) {
-    var prefix1 = $('input.page-today-input1', this).data('prefix');
-    var input1 = $('input.page-today-input1', this).val();
-    var prefix2 = $('input.page-today-input2', this).data('prefix');
-    var input2 = $('input.page-today-input2', this).val();
+    let prefix1 = $('input.page-today-input1', this).data('prefix');
+    let prefix2 = $('input.page-today-input2', this).data('prefix');
+    const input1 = $('input.page-today-input1', this).val();
+    const input2 = $('input.page-today-input2', this).val();
     if (input1 === '') {
       prefix1 = 'メモ';
     }
@@ -287,7 +356,7 @@ $(function() {
   });
 
   $('#create-page-under-tree').submit(function(e) {
-    var name = $('input', this).val();
+    let name = $('input', this).val();
     if (!name.match(/^\//)) {
       name = '/' + name;
     }
@@ -310,10 +379,12 @@ $(function() {
       nameValueMap[obj.name] = obj.value;
     });
 
+    const data = $(this).serialize() + `&socketClientId=${crowi.getSocketClientId()}`;
+
     $.ajax({
       type: 'POST',
       url: '/_api/pages.rename',
-      data: $(this).serialize(),
+      data: data,
       dataType: 'json'
     })
     .done(function(res) {
@@ -325,7 +396,7 @@ $(function() {
         `);
       }
       else {
-        var page = res.page;
+        const page = res.page;
         top.location.href = page.path + '?renamed=' + pagePath;
       }
     });
@@ -359,7 +430,7 @@ $(function() {
         `);
       }
       else {
-        var page = res.page;
+        const page = res.page;
         top.location.href = page.path + '?duplicated=' + pagePath;
       }
     });
@@ -380,7 +451,7 @@ $(function() {
         $('#delete-errors').addClass('alert-danger');
       }
       else {
-        var page = res.page;
+        const page = res.page;
         top.location.href = page.path;
       }
     });
@@ -399,7 +470,7 @@ $(function() {
         $('#delete-errors').addClass('alert-danger');
       }
       else {
-        var page = res.page;
+        const page = res.page;
         top.location.href = page.path;
       }
     });
@@ -419,7 +490,7 @@ $(function() {
         $('#delete-errors').addClass('alert-danger');
       }
       else {
-        var page = res.page;
+        const page = res.page;
         top.location.href = page.path + '?unlinked=true';
       }
     });
@@ -430,9 +501,9 @@ $(function() {
   $('#create-portal-button').on('click', function(e) {
     $('body').addClass('on-edit');
 
-    var path = $('.content-main').data('path');
+    const path = $('.content-main').data('path');
     if (path != '/' && $('.content-main').data('page-id') == '') {
-      var upperPage = path.substr(0, path.length - 1);
+      const upperPage = path.substr(0, path.length - 1);
       $.get('/_api/pages.get', {path: upperPage}, function(res) {
         if (res.ok && res.page) {
           $('#portal-warning-modal').modal('show');
@@ -449,12 +520,12 @@ $(function() {
    * wrap short path with <strong></strong>
    */
   $('#view-list .page-list-ul-flat .page-list-link').each(function() {
-    var $link = $(this);
+    const $link = $(this);
     /* eslint-disable no-unused-vars */
-    var text = $link.text();
+    const text = $link.text();
     /* eslint-enable */
-    var path = decodeURIComponent($link.data('path'));
-    var shortPath = decodeURIComponent($link.data('short-path')); // convert to string
+    let path = decodeURIComponent($link.data('path'));
+    const shortPath = decodeURIComponent($link.data('short-path')); // convert to string
 
     if (path == null || shortPath == null) {
       // continue
@@ -462,7 +533,7 @@ $(function() {
     }
 
     path = entities.encodeHTML(path);
-    var pattern = escapeStringRegexp(entities.encodeHTML(shortPath)) + '(/)?$';
+    const pattern = escapeStringRegexp(entities.encodeHTML(shortPath)) + '(/)?$';
 
     $link.html(path.replace(new RegExp(pattern), '<strong>' + shortPath + '$1</strong>'));
   });
@@ -470,7 +541,7 @@ $(function() {
   // for list page
   let growiRendererForTimeline = null;
   $('a[data-toggle="tab"][href="#view-timeline"]').on('show.bs.tab', function() {
-    var isShown = $('#view-timeline').data('shown');
+    const isShown = $('#view-timeline').data('shown');
 
     if (growiRendererForTimeline == null) {
       growiRendererForTimeline = new GrowiRenderer(crowi, crowiRenderer, {mode: 'timeline'});
@@ -478,15 +549,15 @@ $(function() {
 
     if (isShown == 0) {
       $('#view-timeline .timeline-body').each(function() {
-        var id = $(this).attr('id');
-        var contentId = '#' + id + ' > script';
-        var revisionBody = '#' + id + ' .revision-body';
-        var revisionBodyElem = document.querySelector(revisionBody);
+        const id = $(this).attr('id');
+        const contentId = '#' + id + ' > script';
+        const revisionBody = '#' + id + ' .revision-body';
+        const revisionBodyElem = document.querySelector(revisionBody);
         /* eslint-disable no-unused-vars */
-        var revisionPath = '#' + id + ' .revision-path';
+        const revisionPath = '#' + id + ' .revision-path';
         /* eslint-enable */
-        var pagePath = document.getElementById(id).getAttribute('data-page-path');
-        var markdown = entities.decodeHTML($(contentId).html());
+        const pagePath = document.getElementById(id).getAttribute('data-page-path');
+        const markdown = entities.decodeHTML($(contentId).html());
 
         ReactDOM.render(<Page crowi={crowi} crowiRenderer={growiRendererForTimeline} markdown={markdown} pagePath={pagePath} />, revisionBodyElem);
       });
@@ -499,223 +570,20 @@ $(function() {
 
     // for Crowi Template LangProcessor
     $('.template-create-button', $('#revision-body')).on('click', function() {
-      var path = $(this).data('path');
-      var templateId = $(this).data('template');
-      var template = $('#' + templateId).html();
+      const path = $(this).data('path');
+      const templateId = $(this).data('template');
+      const template = $('#' + templateId).html();
 
       crowi.saveDraft(path, template);
       top.location.href = `${path}#edit`;
     });
 
-    /*
-     * transplanted to React components -- 2018.02.04 Yuki Takei
-     *
-
-    // if page exists
-    var $rawTextOriginal = $('#raw-text-original');
-    if ($rawTextOriginal.length > 0) {
-      var markdown = entities.decodeHTML($('#raw-text-original').html());
-      var dom = $('#revision-body-content').get(0);
-
-      // create context object
-      var context = {
-        markdown,
-        dom,
-        currentPagePath: decodeURIComponent(location.pathname)
-      };
-
-      crowi.interceptorManager.process('preRender', context)
-        .then(() => crowi.interceptorManager.process('prePreProcess', context))
-        .then(() => {
-          context.markdown = crowiRenderer.preProcess(context.markdown);
-        })
-        .then(() => crowi.interceptorManager.process('postPreProcess', context))
-        .then(() => {
-          var revisionBody = $('#revision-body-content');
-          var parsedHTML = crowiRenderer.render(context.markdown, context.dom);
-          context.parsedHTML = parsedHTML;
-          Promise.resolve(context);
-        })
-        .then(() => crowi.interceptorManager.process('postRender', context))
-        .then(() => crowi.interceptorManager.process('preRenderHtml', context))
-        // render HTML with jQuery
-        .then(() => {
-          $('#revision-body-content').html(context.parsedHTML);
-
-          $('.template-create-button').on('click', function() {
-            var path = $(this).data('path');
-            var templateId = $(this).data('template');
-            var template = $('#' + templateId).html();
-
-            crowi.saveDraft(path, template);
-            top.location.href = path;
-          });
-
-          Crowi.appendEditSectionButtons('#revision-body-content', markdown);
-
-          Promise.resolve($('#revision-body-content'));
-        })
-        // process interceptors for post rendering
-        .then((bodyElement) => {
-          context = Object.assign(context, {bodyElement})
-          return crowi.interceptorManager.process('postRenderHtml', context);
-        });
-
-
-    }
-    */
-
-    // header affix
-    var $affixContent = $('#page-header');
-    if ($affixContent.length > 0) {
-      var $affixContentContainer = $('.row.bg-title');
-      var containerHeight = $affixContentContainer.outerHeight(true);
-      $affixContent.affix({
-        offset: {
-          top: function() {
-            return $('.navbar').outerHeight(true) + containerHeight;
-          }
-        }
-      });
-      $('[data-affix-disable]').on('click', function(e) {
-        var $elm = $($(this).data('affix-disable'));
-        $(window).off('.affix');
-        $elm.removeData('affix').removeClass('affix affix-top affix-bottom');
-        return false;
-      });
-    }
-
-    // (function () {
-    //   var timer = 0;
-
-    //   window.onresize = function () {
-    //     if (timer > 0) {
-    //       clearTimeout(timer);
-    //     }
-
-    //     timer = setTimeout(function () {
-    //       DrawScrollbar();
-    //     }, 200);
-    //   };
-    // }());
-
-    /*
-     * transplanted to React components -- 2017.06.02 Yuki Takei
-     *
-
-    // omg
-    function createCommentHTML(revision, creator, comment, commentedAt) {
-      var $comment = $('<div>');
-      var $commentImage = $('<img class="picture img-circle">')
-        .attr('src', Crowi.userPicture(creator));
-      var $commentCreator = $('<div class="page-comment-creator">')
-        .text(creator.username);
-
-      var $commentRevision = $('<a class="page-comment-revision label">')
-        .attr('href', '?revision=' + revision)
-        .text(revision.substr(0,8));
-      if (revision !== revisionId) {
-        $commentRevision.addClass('label-default');
-      } else {
-        $commentRevision.addClass('label-primary');
-      }
-
-      var $commentMeta = $('<div class="page-comment-meta">')
-        //日付変換
-        .text(moment(commentedAt).format('YYYY/MM/DD HH:mm:ss') + ' ')
-        .append($commentRevision);
-
-      var $commentBody = $('<div class="page-comment-body">')
-        .html(comment.replace(/(\r\n|\r|\n)/g, '<br>'));
-
-      var $commentMain = $('<div class="page-comment-main">')
-        .append($commentCreator)
-        .append($commentBody)
-        .append($commentMeta)
-
-      $comment.addClass('page-comment');
-      if (creator._id === currentUser) {
-        $comment.addClass('page-comment-me');
-      }
-      if (revision !== revisionId) {
-        $comment.addClass('page-comment-old');
-      }
-      $comment
-        .append($commentImage)
-        .append($commentMain);
-
-      return $comment;
-    }
-
-    // get comments
-    var $pageCommentList = $('.page-comments-list');
-    var $pageCommentListNewer =   $('#page-comments-list-newer');
-    var $pageCommentListCurrent = $('#page-comments-list-current');
-    var $pageCommentListOlder =   $('#page-comments-list-older');
-    var hasNewer = false;
-    var hasOlder = false;
-    $.get('/_api/comments.get', {page_id: pageId}, function(res) {
-      if (res.ok) {
-        var comments = res.comments;
-        $.each(comments, function(i, comment) {
-          var commentContent = createCommentHTML(comment.revision, comment.creator, comment.comment, comment.createdAt);
-          if (comment.revision == revisionId) {
-            $pageCommentListCurrent.append(commentContent);
-          } else {
-            if (Date.parse(comment.createdAt)/1000 > revisionCreatedAt) {
-              $pageCommentListNewer.append(commentContent);
-              hasNewer = true;
-            } else {
-              $pageCommentListOlder.append(commentContent);
-              hasOlder = true;
-            }
-          }
-        });
-      }
-    }).fail(function(data) {
-
-    }).always(function() {
-      if (!hasNewer) {
-        $('.page-comments-list-toggle-newer').hide();
-      }
-      if (!hasOlder) {
-        $pageCommentListOlder.addClass('collapse');
-        $('.page-comments-list-toggle-older').hide();
-      }
-    });
-
-    // post comment event
-    $('#page-comment-form').on('submit', function() {
-      var $button = $('#comment-form-button');
-      $button.attr('disabled', 'disabled');
-      $.post('/_api/comments.add', $(this).serialize(), function(data) {
-        $button.prop('disabled', false);
-        if (data.ok) {
-          var comment = data.comment;
-
-          $pageCommentList.prepend(createCommentHTML(comment.revision, comment.creator, comment.comment, comment.createdAt));
-          $('#comment-form-comment').val('');
-          $('#comment-form-message').text('');
-        } else {
-          $('#comment-form-message').text(data.error);
-        }
-      }).fail(function(data) {
-        if (data.status !== 200) {
-          $('#comment-form-message').text(data.statusText);
-        }
-      });
-
-      return false;
-    });
-
-    */
-
     // Like
-    var $likeButton = $('.like-button');
-    var $likeCount = $('#like-count');
+    const $likeButton = $('.like-button');
+    const $likeCount = $('#like-count');
     $likeButton.click(function() {
-      var liked = $likeButton.data('liked');
-      var token = $likeButton.data('csrftoken');
+      const liked = $likeButton.data('liked');
+      const token = $likeButton.data('csrftoken');
       if (!liked) {
         $.post('/_api/likes.add', {_csrf: token, page_id: pageId}, function(res) {
           if (res.ok) {
@@ -733,10 +601,10 @@ $(function() {
 
       return false;
     });
-    var $likerList = $('#liker-list');
-    var likers = $likerList.data('likers');
+    const $likerList = $('#liker-list');
+    const likers = $likerList.data('likers');
     if (likers && likers.length > 0) {
-      var users = crowi.findUserByIds(likers.split(','));
+      const users = crowi.findUserByIds(likers.split(','));
       if (users) {
         AddToLikers(users);
       }
@@ -762,12 +630,12 @@ $(function() {
     }
 
     function CreateUserLinkWithPicture(user) {
-      var $userHtml = $('<a>');
+      const $userHtml = $('<a>');
       $userHtml.data('user-id', user._id);
       $userHtml.attr('href', '/user/' + user.username);
       $userHtml.attr('title', user.name);
 
-      var $userPicture = $('<img class="picture picture-xs img-circle">');
+      const $userPicture = $('<img class="picture picture-xs img-circle">');
       $userPicture.attr('alt', user.name);
       $userPicture.attr('src',  Crowi.userPicture(user));
 
@@ -786,11 +654,11 @@ $(function() {
     }
 
     // presentation
-    var presentaionInitialized = false
+    let presentaionInitialized = false
       , $b = $('body');
 
     $(document).on('click', '.toggle-presentation', function(e) {
-      var $a = $(this);
+      const $a = $(this);
 
       e.preventDefault();
       $b.toggleClass('overlay-on');
@@ -806,17 +674,26 @@ $(function() {
       $b.toggleClass('overlay-on');
     });
 
-    //
-    var me = $('body').data('me');
-    var socket = io();
-    socket.on('page edited', function(data) {
-      if (data.user._id != me
-        && data.page.path == pagePath) {
-        $('#notifPageEdited').show();
-        $('#notifPageEdited .edited-user').html(data.user.name);
-      }
-    });
   } // end if pageId
+
+  // tab changing handling
+  $('a[href="#edit"]').on('show.bs.tab', function() {
+    $('body').addClass('on-edit');
+    $('body').addClass('builtin-editor');
+  });
+  $('a[href="#edit"]').on('hide.bs.tab', function() {
+    $('body').removeClass('on-edit');
+    $('body').removeClass('builtin-editor');
+  });
+  $('a[href="#hackmd"]').on('show.bs.tab', function() {
+    $('body').addClass('on-edit');
+    $('body').addClass('hackmd');
+  });
+
+  $('a[href="#hackmd"]').on('hide.bs.tab', function() {
+    $('body').removeClass('on-edit');
+    $('body').removeClass('hackmd');
+  });
 
   // hash handling
   if (isSavedStatesOfTabChanges) {
@@ -863,58 +740,6 @@ $(function() {
   });
 });
 
-/*
-Crowi.getRevisionBodyContent = function() {
-  return $('#revision-body-content').html();
-}
-
-Crowi.replaceRevisionBodyContent = function(html) {
-  $('#revision-body-content').html(html);
-}
-*/
-
-Crowi.findHashFromUrl = function(url) {
-  var match;
-  /* eslint-disable no-cond-assign */
-  if (match = url.match(/#(.+)$/)) {
-    return `#${match[1]}`;
-  }
-  /* eslint-enable */
-
-  return '';
-};
-
-Crowi.findSectionHeader = function(hash) {
-  if (hash.length == 0) {
-    return;
-  }
-
-  // omit '#'
-  const id = hash.replace('#', '');
-  // don't use jQuery and document.querySelector
-  //  because hash may containe Base64 encoded strings
-  const elem = document.getElementById(id);
-  if (elem != null && elem.tagName.match(/h\d+/i)) {  // match h1, h2, h3...
-    return elem;
-  }
-
-  return null;
-};
-
-Crowi.unhighlightSelectedSection = function(hash) {
-  const elem = Crowi.findSectionHeader(hash);
-  if (elem != null) {
-    elem.classList.remove('highlighted');
-  }
-};
-
-Crowi.highlightSelectedSection = function(hash) {
-  const elem = Crowi.findSectionHeader(hash);
-  if (elem != null) {
-    elem.classList.add('highlighted');
-  }
-};
-
 window.addEventListener('load', function(e) {
   // hash on page
   if (location.hash) {
@@ -932,10 +757,10 @@ window.addEventListener('load', function(e) {
   }
 
   if (crowi && crowi.users || crowi.users.length == 0) {
-    var totalUsers = crowi.users.length;
-    var $listLiker = $('.page-list-liker');
+    const totalUsers = crowi.users.length;
+    const $listLiker = $('.page-list-liker');
     $listLiker.each(function(i, liker) {
-      var count = $(liker).data('count') || 0;
+      const count = $(liker).data('count') || 0;
       if (count/totalUsers > 0.05) {
         $(liker).addClass('popular-page-high');
         // 5%
@@ -949,9 +774,9 @@ window.addEventListener('load', function(e) {
         // 0.5%
       }
     });
-    var $listSeer = $('.page-list-seer');
+    const $listSeer = $('.page-list-seer');
     $listSeer.each(function(i, seer) {
-      var count = $(seer).data('count') || 0;
+      const count = $(seer).data('count') || 0;
       if (count/totalUsers > 0.10) {
         // 10%
         $(seer).addClass('popular-page-high');
@@ -969,8 +794,8 @@ window.addEventListener('load', function(e) {
 
   Crowi.highlightSelectedSection(location.hash);
   Crowi.modifyScrollTop();
-  Crowi.setCaretLineAndFocusToEditor();
   Crowi.initSlimScrollForRevisionToc();
+  Crowi.initAffix();
 });
 
 window.addEventListener('hashchange', function(e) {

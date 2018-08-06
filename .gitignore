@@ -36,5 +36,6 @@ package-lock.json
 # Doc #
 /doc/
 
-# IDE #
+# IDE, dev #
 .idea
+*.orig

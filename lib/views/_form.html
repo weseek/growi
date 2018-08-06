@@ -1,8 +1,3 @@
-{% block html_head_loading_legacy %}
-  <script src="{{ webpack_asset('js/legacy-form.js') }}" defer></script>
-  {% parent %}
-{% endblock %}
-
 {% if req.form.errors %}
 <div class="alert alert-danger">
   <ul>
@@ -14,26 +9,18 @@
 </div>
 {% endif %}
 
-<form action="/_/edit" id="page-form" method="post" class="{% if isUploadable() %}uploadable{% endif %} page-form">
+<div class="page-editor-footer d-flex flex-row align-items-center justify-content-between">
 
-  <input type="hidden" id="form-body" name="pageForm[body]" value="{% if pageForm.body %}{{ pageForm.body }}{% endif %}">
-  <input type="hidden" name="pageForm[path]" value="{{ path | preventXss }}">
-  <input type="hidden" name="pageForm[currentRevision]" value="{{ pageForm.currentRevision|default(page.revision._id.toString()) }}">
-  <div class="page-editor-footer d-flex flex-row align-items-center justify-content-between">
-    <div>
-      <div id="page-editor-options-selector" class="hidden-xs"></div>
-    </div>
-
-    <div class="form-inline d-flex align-items-center" id="page-form-setting">
-      <div id="editor-slack-notification" class="mr-2"></div>
-      <div id="page-grant-selector"></div>
-      <input type="hidden" id="page-grant" name="pageForm[grant]" value="{{ page.grant }}">
-      <input type="hidden" id="grant-group" name="pageForm[grantUserGroupId]" value="{{ pageRelatedGroup._id.toString() }}">
-      <input type="hidden" id="edit-form-csrf" name="_csrf" value="{{ csrf() }}">
-      <button type="submit" class="btn btn-primary btn-submit" id="edit-form-submit">{{ t('Update') }}</button>
-    </div>
+  <div>
+    <div id="page-editor-options-selector" class="hidden-xs"></div>
   </div>
-</form>
-<input type="hidden" id="grant-group-name" value="{{ pageRelatedGroup.name }}">{# for storing group name #}
-<div class="file-module hidden">
+
+  <div id="save-page-controls"
+    data-grant="{{ page.grant }}"
+    data-grant-group="{{ pageRelatedGroup._id.toString() }}"
+    data-grant-group-name="{{ pageRelatedGroup.name }}">
+  </div>
+
 </div>
+
+<div class="file-module hidden"></div>

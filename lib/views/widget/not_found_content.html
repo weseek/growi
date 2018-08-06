@@ -39,10 +39,12 @@
     </div>
 
     {# edit view #}
-    <div class="tab-pane {% if req.body.pageForm %}active{% endif %}" id="edit">
+    <div class="tab-pane" id="edit">
       <div id="page-editor">{% if pageForm.body %}{{ pageForm.body }}{% endif %}</div>
     </div>
     {% include '../_form.html' %}
 
   </div>
+
+  <div id="page-status-alert"></div>
 </div>

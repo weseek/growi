@@ -114,9 +114,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
   componentDidMount() {
     // ensure to be able to resolve 'this' to use 'codemirror.commands.save'
     this.getCodeMirror().codeMirrorEditor = this;
-
-    // initialize caret line
-    this.setCaretLine(0);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -493,7 +490,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
   renderSimpleCheatsheet() {
     return (
       <div className="panel panel-default gfm-cheatsheet mb-0">
-        <div className="panel-heading"><i className="icon-fw icon-question"/>Markdown Help</div>
         <div className="panel-body small p-b-0">
           <div className="row">
             <div className="col-xs-6">
@@ -517,7 +513,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
                 - リスト 1<br />
                 &nbsp;&nbsp;&nbsp;&nbsp;- リスト 1_1<br />
                 - リスト 2<br />
-                1. 番号付きリスト 1
+                1. 番号付きリスト 1<br />
                 1. 番号付きリスト 2
               </p>
               <hr />

@@ -1,9 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { I18nextProvider } from 'react-i18next';
+import * as toastr from 'toastr';
+
+import io from 'socket.io-client';
 
 import i18nFactory from './i18n';
 
+import loggerFactory from '@alias/logger';
 import Xss from '../../lib/util/xss';
 
 import Crowi from './util/Crowi';
@@ -15,15 +19,15 @@ import SearchPage       from './components/SearchPage';
 import PageEditor       from './components/PageEditor';
 import OptionsSelector  from './components/PageEditor/OptionsSelector';
 import { EditorOptions, PreviewOptions } from './components/PageEditor/OptionsSelector';
-import GrantSelector    from './components/PageEditor/GrantSelector';
+import SavePageControls from './components/SavePageControls';
 import PageEditorByHackmd from './components/PageEditorByHackmd';
 import Page             from './components/Page';
 import PageListSearch   from './components/PageListSearch';
 import PageHistory      from './components/PageHistory';
 import PageComments     from './components/PageComments';
 import CommentForm from './components/PageComment/CommentForm';
-import SlackNotification from './components/SlackNotification';
 import PageAttachment   from './components/PageAttachment';
+import PageStatusAlert  from './components/PageStatusAlert';
 import SeenUserList     from './components/SeenUserList';
 import RevisionPath     from './components/Page/RevisionPath';
 import RevisionUrl      from './components/Page/RevisionUrl';
@@ -36,12 +40,16 @@ import CustomHeaderEditor from './components/Admin/CustomHeaderEditor';
 
 import * as entities from 'entities';
 
+const logger = loggerFactory('growi:app');
+
 if (!window) {
   window = {};
 }
 
 const userlang = $('body').data('userlang');
 const i18n = i18nFactory(userlang);
+
+const socket = io();
 
 // setup xss library
 const xss = new Xss();
@@ -52,6 +60,7 @@ let pageId = null;
 let pageRevisionId = null;
 let pageRevisionCreatedAt = null;
 let pageRevisionIdHackmdSynced = null;
+let hasDraftOnHackmd = false;
 let pageIdOnHackmd = null;
 let pagePath;
 let pageContent = '';
@@ -63,6 +72,7 @@ if (mainContent !== null) {
   pageRevisionCreatedAt = +mainContent.getAttribute('data-page-revision-created');
   pageRevisionIdHackmdSynced = mainContent.getAttribute('data-page-revision-id-hackmd-synced') || null;
   pageIdOnHackmd = mainContent.getAttribute('data-page-id-on-hackmd') || null;
+  hasDraftOnHackmd = !!mainContent.getAttribute('data-page-has-draft-on-hackmd');
   pagePath = mainContent.attributes['data-path'].value;
   slackChannels = mainContent.getAttribute('data-slack-channels') || '';
   const rawText = document.getElementById('raw-text-original');
@@ -84,6 +94,7 @@ crowi.setConfig(JSON.parse(document.getElementById('crowi-context-hydrate').text
 if (isLoggedin) {
   crowi.fetchUsers();
 }
+const socketClientId = crowi.getSocketClientId();
 
 const crowiRenderer = new GrowiRenderer(crowi, null, {
   mode: 'page',
@@ -147,6 +158,191 @@ Object.keys(componentMappings).forEach((key) => {
   }
 });
 
+
+/**
+ * save success handler when reloading is not needed
+ * @param {object} page Page instance
+ */
+const saveWithShortcutSuccessHandler = function(page) {
+  const editorMode = crowi.getCrowiForJquery().getCurrentEditorMode();
+
+  // show toastr
+  toastr.success(undefined, 'Saved successfully', {
+    closeButton: true,
+    progressBar: true,
+    newestOnTop: false,
+    showDuration: '100',
+    hideDuration: '100',
+    timeOut: '1200',
+    extendedTimeOut: '150',
+  });
+
+  pageId = page._id;
+  pageRevisionId = page.revision._id;
+  pageRevisionIdHackmdSynced = page.revisionHackmdSynced;
+
+  // set page id to SavePageControls
+  componentInstances.savePageControls.setPageId(pageId);
+
+  // Page component
+  if (componentInstances.page != null) {
+    componentInstances.page.setMarkdown(page.revision.body);
+  }
+  // PageEditor component
+  if (componentInstances.pageEditor != null) {
+    const updateEditorValue = (editorMode !== 'builtin');
+    componentInstances.pageEditor.setMarkdown(page.revision.body, updateEditorValue);
+  }
+  // PageEditorByHackmd component
+  if (componentInstances.pageEditorByHackmd != null) {
+    // clear state of PageEditorByHackmd
+    componentInstances.pageEditorByHackmd.clearRevisionStatus(pageRevisionId, pageRevisionIdHackmdSynced);
+    // reset
+    if (editorMode !== 'hackmd') {
+      componentInstances.pageEditorByHackmd.setMarkdown(page.revision.body, false);
+      componentInstances.pageEditorByHackmd.reset();
+    }
+  }
+  // PageStatusAlert component
+  const pageStatusAlert = componentInstances.pageStatusAlert;
+  // clear state of PageStatusAlert
+  if (componentInstances.pageStatusAlert != null) {
+    pageStatusAlert.clearRevisionStatus(pageRevisionId, pageRevisionIdHackmdSynced);
+  }
+};
+
+const errorHandler = function(error) {
+  toastr.error(error.message, 'Error occured', {
+    closeButton: true,
+    progressBar: true,
+    newestOnTop: false,
+    showDuration: '100',
+    hideDuration: '100',
+    timeOut: '3000',
+  });
+};
+
+const saveWithShortcut = function(markdown) {
+  const editorMode = crowi.getCrowiForJquery().getCurrentEditorMode();
+  if (editorMode == null) {
+    // do nothing
+    return;
+  }
+
+  let revisionId = pageRevisionId;
+  // get options
+  const options = componentInstances.savePageControls.getCurrentOptionsToSave();
+  options.socketClientId = socketClientId;
+
+  if (editorMode === 'hackmd') {
+    // set option to sync
+    options.isSyncRevisionToHackmd = true;
+    // use revisionId of PageEditorByHackmd
+    revisionId = componentInstances.pageEditorByHackmd.getRevisionIdHackmdSynced();
+  }
+
+  let promise = undefined;
+  if (pageId == null) {
+    promise = crowi.createPage(pagePath, markdown, options);
+  }
+  else {
+    promise = crowi.updatePage(pageId, revisionId, markdown, options);
+  }
+
+  promise
+    .then(saveWithShortcutSuccessHandler)
+    .catch(errorHandler);
+};
+
+const saveWithSubmitButtonSuccessHandler = function() {
+  crowi.clearDraft(pagePath);
+  location.href = pagePath;
+};
+
+const saveWithSubmitButton = function() {
+  const editorMode = crowi.getCrowiForJquery().getCurrentEditorMode();
+  if (editorMode == null) {
+    // do nothing
+    return;
+  }
+
+  let revisionId = pageRevisionId;
+  // get options
+  const options = componentInstances.savePageControls.getCurrentOptionsToSave();
+  options.socketClientId = socketClientId;
+
+  let promise = undefined;
+  if (editorMode === 'builtin') {
+    // get markdown
+    promise = Promise.resolve(componentInstances.pageEditor.getMarkdown());
+  }
+  else {
+    // get markdown
+    promise = componentInstances.pageEditorByHackmd.getMarkdown();
+    // use revisionId of PageEditorByHackmd
+    revisionId = componentInstances.pageEditorByHackmd.getRevisionIdHackmdSynced();
+    // set option to sync
+    options.isSyncRevisionToHackmd = true;
+  }
+  // create or update
+  if (pageId == null) {
+    promise = promise.then(markdown => {
+      return crowi.createPage(pagePath, markdown, options);
+    });
+  }
+  else {
+    promise = promise.then(markdown => {
+      return crowi.updatePage(pageId, revisionId, markdown, options);
+    });
+  }
+
+  promise
+    .then(saveWithSubmitButtonSuccessHandler)
+    .catch(errorHandler);
+};
+
+// render SavePageControls
+let savePageControls = null;
+const savePageControlsElem = document.getElementById('save-page-controls');
+if (savePageControlsElem) {
+  const grant = +savePageControlsElem.dataset.grant;
+  const grantGroupId = savePageControlsElem.dataset.grantGroup;
+  const grantGroupName = savePageControlsElem.dataset.grantGroupName;
+  ReactDOM.render(
+    <I18nextProvider i18n={i18n}>
+      <SavePageControls crowi={crowi} onSubmit={saveWithSubmitButton}
+          ref={(elem) => {
+            if (savePageControls == null) {
+              savePageControls = elem.getWrappedInstance();
+            }
+          }}
+          pageId={pageId} pagePath={pagePath} slackChannels={slackChannels}
+          grant={grant} grantGroupId={grantGroupId} grantGroupName={grantGroupName} />
+    </I18nextProvider>,
+    savePageControlsElem
+  );
+  componentInstances.savePageControls = savePageControls;
+}
+
+/*
+ * HackMD Editor
+ */
+// render PageEditorWithHackmd
+let pageEditorByHackmd = null;
+const pageEditorWithHackmdElem = document.getElementById('page-editor-with-hackmd');
+if (pageEditorWithHackmdElem) {
+  pageEditorByHackmd = ReactDOM.render(
+    <PageEditorByHackmd crowi={crowi}
+        pageId={pageId} revisionId={pageRevisionId}
+        pageIdOnHackmd={pageIdOnHackmd} revisionIdHackmdSynced={pageRevisionIdHackmdSynced} hasDraftOnHackmd={hasDraftOnHackmd}
+        markdown={markdown}
+        onSaveWithShortcut={saveWithShortcut} />,
+    pageEditorWithHackmdElem
+  );
+  componentInstances.pageEditorByHackmd = pageEditorByHackmd;
+}
+
+
 /*
  * PageEditor
  */
@@ -156,25 +352,16 @@ const previewOptions = new PreviewOptions(crowi.previewOptions);
 // render PageEditor
 const pageEditorElem = document.getElementById('page-editor');
 if (pageEditorElem) {
-  // create onSave event handler
-  const onSaveSuccess = function(page) {
-    // modify the revision id value to pass checking id when updating
-    crowi.getCrowiForJquery().updatePageForm(page);
-    // re-render Page component if exists
-    if (componentInstances.page != null) {
-      componentInstances.page.setMarkdown(page.revision.body);
-    }
-  };
-
   pageEditor = ReactDOM.render(
     <PageEditor crowi={crowi} crowiRenderer={crowiRenderer}
         pageId={pageId} revisionId={pageRevisionId} pagePath={pagePath}
         markdown={markdown}
         editorOptions={editorOptions} previewOptions={previewOptions}
-        onSaveSuccess={onSaveSuccess} />,
+        onSaveWithShortcut={saveWithShortcut} />,
     pageEditorElem
   );
-  // set refs for pageEditor
+  componentInstances.pageEditor = pageEditor;
+  // set refs for setCaretLine/forceToFocus when tab is changed
   crowi.setPageEditor(pageEditor);
 }
 
@@ -191,26 +378,12 @@ if (writeCommentElem) {
     <CommentForm crowi={crowi}
       crowiOriginRenderer={crowiRenderer}
       pageId={pageId}
-      revisionId={pageRevisionId}
       pagePath={pagePath}
+      revisionId={pageRevisionId}
       onPostComplete={postCompleteHandler}
       editorOptions={editorOptions}
       slackChannels = {slackChannels}/>,
     writeCommentElem);
-}
-
-// render slack notification form
-const editorSlackElem = document.getElementById('editor-slack-notification');
-if (editorSlackElem) {
-  ReactDOM.render(
-    <SlackNotification
-      crowi={crowi}
-      pageId={pageId}
-      pagePath={pagePath}
-      isSlackEnabled={false}
-      slackChannels={slackChannels}
-      formName='pageForm' />,
-    editorSlackElem);
 }
 
 // render OptionsSelector
@@ -230,62 +403,24 @@ if (pageEditorOptionsSelectorElem) {
     pageEditorOptionsSelectorElem
   );
 }
-// render GrantSelector
-const pageEditorGrantSelectorElem = document.getElementById('page-grant-selector');
-if (pageEditorGrantSelectorElem) {
-  const grantElem = document.getElementById('page-grant');
-  const grantGroupElem = document.getElementById('grant-group');
-  const grantGroupNameElem = document.getElementById('grant-group-name');
-  /* eslint-disable no-inner-declarations */
-  function updateGrantElem(pageGrant) {
-    grantElem.value = pageGrant;
-  }
-  function updateGrantGroupElem(grantGroupId) {
-    grantGroupElem.value = grantGroupId;
-  }
-  function updateGrantGroupNameElem(grantGroupName) {
-    grantGroupNameElem.value = grantGroupName;
-  }
-  /* eslint-enable */
-  const pageGrant = +grantElem.value;
-  const pageGrantGroupId = grantGroupElem.value;
-  const pageGrantGroupName = grantGroupNameElem.value;
+
+// render PageStatusAlert
+let pageStatusAlert = null;
+const pageStatusAlertElem = document.getElementById('page-status-alert');
+if (pageStatusAlertElem) {
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
-      <GrantSelector crowi={crowi}
-        pageGrant={pageGrant} pageGrantGroupId={pageGrantGroupId} pageGrantGroupName={pageGrantGroupName}
-        onChangePageGrant={updateGrantElem}
-        onDeterminePageGrantGroupId={updateGrantGroupElem}
-        onDeterminePageGrantGroupName={updateGrantGroupNameElem} />
+      <PageStatusAlert crowi={crowi}
+          ref={(elem) => {
+            if (pageStatusAlert == null) {
+              pageStatusAlert = elem.getWrappedInstance();
+            }
+          }}
+          revisionId={pageRevisionId} revisionIdHackmdSynced={pageRevisionIdHackmdSynced} hasDraftOnHackmd={hasDraftOnHackmd} />
     </I18nextProvider>,
-    pageEditorGrantSelectorElem
+    pageStatusAlertElem
   );
-}
-
-/*
- * HackMD Editor
- */
-// render PageEditorWithHackmd
-const pageEditorWithHackmdElem = document.getElementById('page-editor-with-hackmd');
-if (pageEditorWithHackmdElem) {
-  // create onSave event handler
-  const onSaveSuccess = function(page) {
-    // modify the revision id value to pass checking id when updating
-    crowi.getCrowiForJquery().updatePageForm(page);
-    // re-render Page component if exists
-    if (componentInstances.page != null) {
-      componentInstances.page.setMarkdown(page.revision.body);
-    }
-  };
-
-  pageEditor = ReactDOM.render(
-    <PageEditorByHackmd crowi={crowi}
-        pageId={pageId} revisionId={pageRevisionId}
-        revisionIdHackmdSynced={pageRevisionIdHackmdSynced} pageIdOnHackmd={pageIdOnHackmd}
-        markdown={markdown}
-        onSaveSuccess={onSaveSuccess} />,
-    pageEditorWithHackmdElem
-  );
+  componentInstances.pageStatusAlert = pageStatusAlert;
 }
 
 // render for admin
@@ -319,6 +454,84 @@ if (customHeaderEditorElem != null) {
     customHeaderEditorElem
   );
 }
+
+// notification from websocket
+function updatePageStatusAlert(page, user) {
+  const pageStatusAlert = componentInstances.pageStatusAlert;
+  if (pageStatusAlert != null) {
+    const revisionId = page.revision._id;
+    const revisionIdHackmdSynced = page.revisionHackmdSynced;
+    pageStatusAlert.setRevisionId(revisionId, revisionIdHackmdSynced);
+    pageStatusAlert.setLastUpdateUsername(user.name);
+  }
+}
+socket.on('page:create', function(data) {
+  // skip if triggered myself
+  if (data.socketClientId != null && data.socketClientId === socketClientId) {
+    return;
+  }
+
+  logger.debug({ obj: data }, `websocket on 'page:create'`); // eslint-disable-line quotes
+
+  // update PageStatusAlert
+  if (data.page.path == pagePath) {
+    updatePageStatusAlert(data.page, data.user);
+  }
+});
+socket.on('page:update', function(data) {
+  // skip if triggered myself
+  if (data.socketClientId != null && data.socketClientId === socketClientId) {
+    return;
+  }
+
+  logger.debug({ obj: data }, `websocket on 'page:update'`); // eslint-disable-line quotes
+
+  if (data.page.path == pagePath) {
+    // update PageStatusAlert
+    updatePageStatusAlert(data.page, data.user);
+    // update PageEditorByHackmd
+    const pageEditorByHackmd = componentInstances.pageEditorByHackmd;
+    if (pageEditorByHackmd != null) {
+      const page = data.page;
+      pageEditorByHackmd.setRevisionId(page.revision._id, page.revisionHackmdSynced);
+      pageEditorByHackmd.setHasDraftOnHackmd(data.page.hasDraftOnHackmd);
+    }
+  }
+});
+socket.on('page:delete', function(data) {
+  // skip if triggered myself
+  if (data.socketClientId != null && data.socketClientId === socketClientId) {
+    return;
+  }
+
+  logger.debug({ obj: data }, `websocket on 'page:delete'`); // eslint-disable-line quotes
+
+  // update PageStatusAlert
+  if (data.page.path == pagePath) {
+    updatePageStatusAlert(data.page, data.user);
+  }
+});
+socket.on('page:editingWithHackmd', function(data) {
+  // skip if triggered myself
+  if (data.socketClientId != null && data.socketClientId === socketClientId) {
+    return;
+  }
+
+  logger.debug({ obj: data }, `websocket on 'page:editingWithHackmd'`); // eslint-disable-line quotes
+
+  if (data.page.path == pagePath) {
+    // update PageStatusAlert
+    const pageStatusAlert = componentInstances.pageStatusAlert;
+    if (pageStatusAlert != null) {
+      pageStatusAlert.setHasDraftOnHackmd(data.page.hasDraftOnHackmd);
+    }
+    // update PageEditorByHackmd
+    const pageEditorByHackmd = componentInstances.pageEditorByHackmd;
+    if (pageEditorByHackmd != null) {
+      pageEditorByHackmd.setHasDraftOnHackmd(data.page.hasDraftOnHackmd);
+    }
+  }
+});
 
 // うわーもうー (commented by Crowi team -- 2018.03.23 Yuki Takei)
 $('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', function() {

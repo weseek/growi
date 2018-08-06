@@ -16,7 +16,6 @@ export default class Crowi {
   constructor(context, window) {
     this.context = context;
     this.config = {};
-    this.csrfToken = context.csrfToken;
 
     const userAgent = window.navigator.userAgent.toLowerCase();
     this.isMobile = /iphone|ipad|android/.test(userAgent);
@@ -25,6 +24,7 @@ export default class Crowi {
     this.location = window.location || {};
     this.document = window.document || {};
     this.localStorage = window.localStorage || {};
+    this.socketClientId = Math.floor(Math.random() * 100000);
     this.pageEditor = undefined;
 
     this.fetchUsers = this.fetchUsers.bind(this);
@@ -39,6 +39,7 @@ export default class Crowi {
     // FIXME
     this.me = context.me;
     this.isAdmin = context.isAdmin;
+    this.csrfToken = context.csrfToken;
 
     this.users = [];
     this.userByName = {};
@@ -56,10 +57,6 @@ export default class Crowi {
     return window.Crowi;
   }
 
-  getContext() {
-    return this.context;
-  }
-
   setConfig(config) {
     this.config = config;
   }
@@ -70,6 +67,10 @@ export default class Crowi {
 
   setPageEditor(pageEditor) {
     this.pageEditor = pageEditor;
+  }
+
+  getSocketClientId() {
+    return this.socketClientId;
   }
 
   getEmojiStrategy() {
@@ -194,6 +195,35 @@ export default class Crowi {
     }
 
     return null;
+  }
+
+  createPage(pagePath, markdown, additionalParams = {}) {
+    const params = Object.assign(additionalParams, {
+      path: pagePath,
+      body: markdown,
+    });
+    return this.apiPost('/pages.create', params)
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(res.error);
+        }
+        return res.page;
+      });
+  }
+
+  updatePage(pageId, revisionId, markdown, additionalParams = {}) {
+    const params = Object.assign(additionalParams, {
+      page_id: pageId,
+      revision_id: revisionId,
+      body: markdown,
+    });
+    return this.apiPost('/pages.update', params)
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(res.error);
+        }
+        return res.page;
+      });
   }
 
   apiGet(path, params) {

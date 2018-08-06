@@ -4,8 +4,10 @@ CHANGES
 ## 3.2.0-RC
 
 * Feature: HackMD integration so that user can simultaneously edit with multiple people
+* Feature: Login with Twitter Account
+* Fix: The Initial scroll position is wrong when reloading the page
 
-## 3.1.14-RC
+## 3.1.14
 
 * Improvement: Show help for header search box
 * Improvement: Add Markdown Cheatsheet to Editor component

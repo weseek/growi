@@ -23,29 +23,30 @@ class GrantSelector extends React.Component {
     super(props);
 
     this.availableGrants = [
-      { pageGrant: 1, iconClass: 'icon-people', styleClass: '', label: 'Public' },
-      { pageGrant: 2, iconClass: 'icon-link', styleClass: 'text-info', label: 'Anyone with the link' },
-      // { pageGrant: 3, iconClass: '', label: 'Specified users only' },
-      { pageGrant: 4, iconClass: 'icon-lock', styleClass: 'text-danger', label: 'Just me' },
-      { pageGrant: 5, iconClass: 'icon-options', styleClass: '', label: 'Only inside the group' },  // appeared only one of these 'pageGrant: 5'
-      { pageGrant: 5, iconClass: 'icon-options', styleClass: '', label: 'Reselect the group' },     // appeared only one of these 'pageGrant: 5'
+      { grant: 1, iconClass: 'icon-people', styleClass: '', label: 'Public' },
+      { grant: 2, iconClass: 'icon-link', styleClass: 'text-info', label: 'Anyone with the link' },
+      // { grant: 3, iconClass: '', label: 'Specified users only' },
+      { grant: 4, iconClass: 'icon-lock', styleClass: 'text-danger', label: 'Just me' },
+      { grant: 5, iconClass: 'icon-options', styleClass: '', label: 'Only inside the group' },  // appeared only one of these 'grant: 5'
+      { grant: 5, iconClass: 'icon-options', styleClass: '', label: 'Reselect the group' },     // appeared only one of these 'grant: 5'
     ];
 
     this.state = {
-      pageGrant: this.props.pageGrant || 1,  // default: 1
+      grant: this.props.grant || 1,  // default: 1
       userRelatedGroups: [],
       isSelectGroupModalShown: false,
     };
-    if (this.props.pageGrantGroupId !== '') {
-      this.state.pageGrantGroup = {
-        _id: this.props.pageGrantGroupId,
-        name: this.props.pageGrantGroupName
+    if (this.props.grantGroupId !== '') {
+      this.state.grantGroup = {
+        _id: this.props.grantGroupId,
+        name: this.props.grantGroupName
       };
     }
 
     // retrieve xss library from window
     this.xss = window.xss;
 
+    this.getCurrentOptionsToSave = this.getCurrentOptionsToSave.bind(this);
     this.showSelectGroupModal = this.showSelectGroupModal.bind(this);
     this.hideSelectGroupModal = this.hideSelectGroupModal.bind(this);
 
@@ -60,18 +61,28 @@ class GrantSelector extends React.Component {
      * set SPECIFIED_GROUP_VALUE to grant selector
      *  cz: bootstrap-select input element has the defferent state to React component
      */
-    if (this.state.pageGrantGroup != null) {
+    if (this.state.grantGroup != null) {
       this.grantSelectorInputEl.value = SPECIFIED_GROUP_VALUE;
     }
 
     // refresh bootstrap-select
     // see https://silviomoreto.github.io/bootstrap-select/methods/#selectpickerrefresh
-    $('.page-grant-selector.selectpicker').selectpicker('refresh');
+    $('.grant-selector .selectpicker').selectpicker('refresh');
     //// DIRTY HACK -- 2018.05.25 Yuki Takei
     // set group name to the bootstrap-select options
     //  cz: .selectpicker('refresh') doesn't replace data-content
-    $('.page-grant-selector .group-name').text(this.getGroupName());
+    $('.grant-selector .group-name').text(this.getGroupName());
 
+  }
+
+  getCurrentOptionsToSave() {
+    const options = {
+      grant: this.state.grant
+    };
+    if (this.state.grantGroup != null) {
+      options.grantUserGroupId = this.state.grantGroup._id;
+    }
+    return options;
   }
 
   showSelectGroupModal() {
@@ -83,8 +94,8 @@ class GrantSelector extends React.Component {
   }
 
   getGroupName() {
-    const pageGrantGroup = this.state.pageGrantGroup;
-    return pageGrantGroup ? this.xss.process(pageGrantGroup.name) : '';
+    const grantGroup = this.state.grantGroup;
+    return grantGroup ? this.xss.process(grantGroup.name) : '';
   }
 
   /**
@@ -104,51 +115,29 @@ class GrantSelector extends React.Component {
   }
 
   /**
-   * change event handler for pageGrant selector
+   * change event handler for grant selector
    */
   changeGrantHandler() {
-    const pageGrant = +this.grantSelectorInputEl.value;
+    const grant = +this.grantSelectorInputEl.value;
 
     // select group
-    if (pageGrant === 5) {
+    if (grant === 5) {
       this.showSelectGroupModal();
       /*
        * reset grant selector to state
        */
-      this.grantSelectorInputEl.value = this.state.pageGrant;
+      this.grantSelectorInputEl.value = this.state.grant;
       return;
     }
 
-    this.setState({ pageGrant, pageGrantGroup: null });
-    // dispatch event
-    this.dispatchOnChangePageGrant(pageGrant);
-    this.dispatchOnDeterminePageGrantGroup(null);
+    this.setState({ grant, grantGroup: null });
   }
 
-  groupListItemClickHandler(pageGrantGroup) {
-    this.setState({ pageGrant: 5, pageGrantGroup });
-
-    // dispatch event
-    this.dispatchOnChangePageGrant(5);
-    this.dispatchOnDeterminePageGrantGroup(pageGrantGroup);
+  groupListItemClickHandler(grantGroup) {
+    this.setState({ grant: 5, grantGroup });
 
     // hide modal
     this.hideSelectGroupModal();
-  }
-
-  dispatchOnChangePageGrant(pageGrant) {
-    if (this.props.onChangePageGrant != null) {
-      this.props.onChangePageGrant(pageGrant);
-    }
-  }
-
-  dispatchOnDeterminePageGrantGroup(pageGrantGroup) {
-    if (this.props.onDeterminePageGrantGroupId != null) {
-      this.props.onDeterminePageGrantGroupId(pageGrantGroup ? pageGrantGroup._id : '');
-    }
-    if (this.props.onDeterminePageGrantGroupName != null) {
-      this.props.onDeterminePageGrantGroupName(pageGrantGroup ? pageGrantGroup.name : '');
-    }
   }
 
   /**
@@ -160,14 +149,14 @@ class GrantSelector extends React.Component {
     const { t } = this.props;
 
     let index = 0;
-    let selectedValue = this.state.pageGrant;
-    const grantElems = this.availableGrants.map((grant) => {
-      const dataContent = `<i class="icon icon-fw ${grant.iconClass} ${grant.styleClass}"></i> <span class="${grant.styleClass}">${t(grant.label)}</span>`;
-      return <option key={index++} value={grant.pageGrant} data-content={dataContent}>{t(grant.label)}</option>;
+    let selectedValue = this.state.grant;
+    const grantElems = this.availableGrants.map((opt) => {
+      const dataContent = `<i class="icon icon-fw ${opt.iconClass} ${opt.styleClass}"></i> <span class="${opt.styleClass}">${t(opt.label)}</span>`;
+      return <option key={index++} value={opt.grant} data-content={dataContent}>{t(opt.label)}</option>;
     });
 
-    const pageGrantGroup = this.state.pageGrantGroup;
-    if (pageGrantGroup != null) {
+    const grantGroup = this.state.grantGroup;
+    if (grantGroup != null) {
       selectedValue = SPECIFIED_GROUP_VALUE;
       // DIRTY HACK -- 2018.05.25 Yuki Takei
       // remove 'Only inside the group' item
@@ -188,7 +177,7 @@ class GrantSelector extends React.Component {
 
     // add specified group option
     grantElems.push(
-      <option ref="specifiedGroupOption" key="specifiedGroupKey" value={SPECIFIED_GROUP_VALUE} style={{ display: pageGrantGroup ? 'inherit' : 'none' }}
+      <option ref="specifiedGroupOption" key="specifiedGroupKey" value={SPECIFIED_GROUP_VALUE} style={{ display: grantGroup ? 'inherit' : 'none' }}
           data-content={`<i class="icon icon-fw icon-organization text-success"></i> <span class="group-name text-success">${this.getGroupName()}</span>`}>
         {this.getGroupName()}
       </option>
@@ -196,8 +185,8 @@ class GrantSelector extends React.Component {
 
     const bsClassName = 'form-control-dummy'; // set form-control* to shrink width
     return (
-      <FormGroup className="m-b-0">
-        <FormControl componentClass="select" placeholder="select" defaultValue={selectedValue} bsClass={bsClassName} className="btn-group-sm page-grant-selector selectpicker"
+      <FormGroup className="grant-selector m-b-0">
+        <FormControl componentClass="select" placeholder="select" defaultValue={selectedValue} bsClass={bsClassName} className="btn-group-sm selectpicker"
           onChange={this.changeGrantHandler}
           inputRef={ el => this.grantSelectorInputEl=el }>
 
@@ -252,7 +241,7 @@ class GrantSelector extends React.Component {
 
   render() {
     return <React.Fragment>
-      <div className="m-r-5">{this.renderGrantSelector()}</div>
+      {this.renderGrantSelector()}
       {this.renderSelectGroupModal()}
     </React.Fragment>;
   }
@@ -261,13 +250,9 @@ class GrantSelector extends React.Component {
 GrantSelector.propTypes = {
   t: PropTypes.func.isRequired,               // i18next
   crowi: PropTypes.object.isRequired,
-  isGroupModalShown: PropTypes.bool,
-  pageGrant: PropTypes.number,
-  pageGrantGroupId: PropTypes.string,
-  pageGrantGroupName: PropTypes.string,
-  onChangePageGrant: PropTypes.func,
-  onDeterminePageGrantGroupId: PropTypes.func,
-  onDeterminePageGrantGroupName: PropTypes.func,
+  grant: PropTypes.number,
+  grantGroupId: PropTypes.string,
+  grantGroupName: PropTypes.string,
 };
 
 export default translate()(GrantSelector);

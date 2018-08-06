@@ -98,6 +98,10 @@
     padding: 10px 15px;
   }
 
+  // show PageStatusAlert in default
+  #page-status-alert .myadmin-alert {
+    display: block;
+  }
 }
 
 .main-container .main .content-main .revision-history { // {{{

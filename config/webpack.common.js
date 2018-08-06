@@ -22,12 +22,12 @@ module.exports = (options) => {
     entry: Object.assign({
       'js/app':                   './resource/js/app',
       'js/legacy':                './resource/js/legacy/crowi',
-      'js/legacy-form':           './resource/js/legacy/crowi-form',
       'js/legacy-admin':          './resource/js/legacy/crowi-admin',
       'js/legacy-presentation':   './resource/js/legacy/crowi-presentation',
       'js/plugin':                './resource/js/plugin',
       'js/ie11-polyfill':         './resource/js/ie11-polyfill',
-      'js/agent-for-hackmd':      './resource/js/agent-for-hackmd',
+      'js/hackmd-agent':          './resource/js/hackmd-agent',
+      'js/hackmd-styles':         './resource/js/hackmd-styles',
       // styles
       'styles/style':                './resource/styles/scss/style.scss',
       'styles/style-presentation':   './resource/styles/scss/style-presentation.scss',
@@ -155,7 +155,7 @@ module.exports = (options) => {
             test: /node_modules/,
             chunks: (chunk) => {
               // ignore patterns
-              return chunk.name != null && !chunk.name.match(/legacy-presentation|ie11-polyfill|agent-for-hackmd/);
+              return chunk.name != null && !chunk.name.match(/legacy-presentation|ie11-polyfill|hackmd-/);
             },
             name: 'js/vendors',
             // minChunks: 2,

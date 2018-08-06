@@ -36,6 +36,7 @@ export default (userlang) => {
       // react i18next special options (optional)
       react: {
         wait: false,
+        withRef: true,
         bindI18n: 'languageChanged loaded',
         bindStore: 'added removed',
         nsMode: 'default'

@@ -123,9 +123,7 @@ export default class SearchResult extends React.Component {
             }
           })
           .catch(err => {
-            /* eslint-disable no-console */
-            console.log(err.message);
-            /* eslint-enable */
+            console.log(err.message);   // eslint-disable-line no-console
             this.setState({errorMessageForDeleting: err.message});
             return reject();
           });

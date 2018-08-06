@@ -41,7 +41,8 @@ Features
   * You can find plugins from [npm](https://www.npmjs.com/browse/keyword/growi-plugin) or [github](https://github.com/search?q=topic%3Agrowi-plugin)!
 * **Features**
   * Create hierarchical pages with markdown
-  * Support Authentication with LDAP / Active Directory 
+  * Simultaneously edit with multiple people by [HackMD(CodiMD)](https://hackmd.io/) integration
+  * Support Authentication with LDAP / Active Directory
   * Slack Incoming Webhooks Integration
   * [Miscellaneous features](https://github.com/weseek/growi/wiki/Additional-Features)
 * **[Docker Ready][dockerhub]**
@@ -156,22 +157,26 @@ Environment Variables
     * MONGO_URI: URI to connect to MongoDB.
 * **Option**
     * NODE_ENV: `production` OR `development`.
-    * PORT: Server port. default: `3000`
+    * PORT: Server port. default: `3000`.
     * ELASTICSEARCH_URI: URI to connect to Elasticearch.
     * REDIS_URI: URI to connect to Redis (use it as a session store instead of MongoDB).
-    * PLANTUML_URI: URI to connect to [PlantUML](http://plantuml.com/) server.
-    * BLOCKDIAG_URI: URI to connect to [blockdiag](http://http://blockdiag.com/) server.
     * PASSWORD_SEED: A password seed used by password hash generator.
     * SECRET_TOKEN: A secret key for verifying the integrity of signed cookies.
     * SESSION_NAME: The name of the session ID cookie to set in the response by Express. default: `connect.sid`
     * FILE_UPLOAD: `aws` (default), `local`, `none`
+* **Option to integrate with external systems**
+    * HACKMD_URI: URI to connect to [HackMD(CodiMD)](https://hackmd.io/) server.
+        * **This server must load the GROWI agent. [Here's how to prepare it](https://docs.growi.org/management-cookbook/integrate-with-hackmd).**
+    * HACKMD_URI_FOR_SERVER: URI to connect to [HackMD(CodiMD)](https://hackmd.io/) server from GROWI Express server. If not set, `HACKMD_URI` will be used.
+    * PLANTUML_URI: URI to connect to [PlantUML](http://plantuml.com/) server.
+    * BLOCKDIAG_URI: URI to connect to [blockdiag](http://http://blockdiag.com/) server.
 * **Option (Overwritable in admin page)**
-    * OAUTH_GOOGLE_CLIENT_ID: Google API client id for OAuth login
-    * OAUTH_GOOGLE_CLIENT_SECRET: Google API client secret for OAuth login
-    * OAUTH_GOOGLE_CALLBACK_URI: Google API callback URI for OAuth login (Set `https://${growi.host}/passport/google/callback`)
-    * OAUTH_GITHUB_CLIENT_ID: GitHub API client id for OAuth login
-    * OAUTH_GITHUB_CLIENT_SECRET: GitHub API client secret for OAuth login
-    * OAUTH_GITHUB_CALLBACK_URI: GitHub API callback URI for OAuth login (Set `https://${growi.host}/passport/github/callback`)
+    * OAUTH_GOOGLE_CLIENT_ID: Google API client id for OAuth login.
+    * OAUTH_GOOGLE_CLIENT_SECRET: Google API client secret for OAuth login.
+    * OAUTH_GOOGLE_CALLBACK_URI: Google API callback URI for OAuth login (Set `https://${growi.host}/passport/google/callback`).
+    * OAUTH_GITHUB_CLIENT_ID: GitHub API client id for OAuth login.
+    * OAUTH_GITHUB_CLIENT_SECRET: GitHub API client secret for OAuth login.
+    * OAUTH_GITHUB_CALLBACK_URI: GitHub API callback URI for OAuth login (Set `https://${growi.host}/passport/github/callback`).
 
 
 Documentation
@@ -191,11 +196,11 @@ For development
 ### Build and Run the app
 
 1. `clone` this repository
-1. `yarn` to install all dependencies
+2. `yarn` to install all dependencies
     * DO NOT USE `npm install`
-1. `npm run build` to build client app
-1. `npm run server` to start the dev server
-1. Access `http://0.0.0.0:3000`
+3. `npm run build` to build client app
+4. `npm run server` to start the dev server
+5. Access `http://0.0.0.0:3000`
 
 Found a Bug?
 -------------
