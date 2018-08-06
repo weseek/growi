@@ -53,6 +53,13 @@ body.on-edit {
     display: none;
   }
 
+  // hide hackmd related alert
+  &.hackmd #page-status-alert {
+    .alert-hackmd-someone-editing, .alert-hackmd-draft-exists {
+      display: none;
+    }
+  }
+
   /*****************
    * Expand Editor
    *****************/
@@ -181,6 +188,18 @@ body.on-edit {
     }
   }
 
+  #page-status-alert .myadmin-alert {
+    position: absolute;
+    opacity: 0.8;
+    bottom: 42px;
+    right: 3px;
+    left: 3px;
+    box-shadow: 2px 2px 5px #666;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
 
   &.builtin-editor {
 
@@ -290,6 +309,7 @@ body.on-edit {
         right: 0;
       }
     }
+
   }
 
 }

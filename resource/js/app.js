@@ -3,8 +3,11 @@ import ReactDOM from 'react-dom';
 import { I18nextProvider } from 'react-i18next';
 import * as toastr from 'toastr';
 
+import io from 'socket.io-client';
+
 import i18nFactory from './i18n';
 
+import loggerFactory from '@alias/logger';
 import Xss from '../../lib/util/xss';
 
 import Crowi from './util/Crowi';
@@ -24,6 +27,7 @@ import PageHistory      from './components/PageHistory';
 import PageComments     from './components/PageComments';
 import CommentForm from './components/PageComment/CommentForm';
 import PageAttachment   from './components/PageAttachment';
+import PageStatusAlert  from './components/PageStatusAlert';
 import SeenUserList     from './components/SeenUserList';
 import RevisionPath     from './components/Page/RevisionPath';
 import RevisionUrl      from './components/Page/RevisionUrl';
@@ -36,12 +40,16 @@ import CustomHeaderEditor from './components/Admin/CustomHeaderEditor';
 
 import * as entities from 'entities';
 
+const logger = loggerFactory('growi:app');
+
 if (!window) {
   window = {};
 }
 
 const userlang = $('body').data('userlang');
 const i18n = i18nFactory(userlang);
+
+const socket = io();
 
 // setup xss library
 const xss = new Xss();
@@ -86,6 +94,7 @@ crowi.setConfig(JSON.parse(document.getElementById('crowi-context-hydrate').text
 if (isLoggedin) {
   crowi.fetchUsers();
 }
+const socketClientId = crowi.getSocketClientId();
 
 const crowiRenderer = new GrowiRenderer(crowi, null, {
   mode: 'page',
@@ -170,25 +179,35 @@ const saveWithShortcutSuccessHandler = function(page) {
 
   pageId = page._id;
   pageRevisionId = page.revision._id;
+  pageRevisionIdHackmdSynced = page.revisionHackmdSynced;
 
   // set page id to SavePageControls
-  componentInstances.savePageControls.setPageId(pageId);  // TODO fix this line failed because of i18next
+  componentInstances.savePageControls.setPageId(pageId);
 
-  // re-render Page component
+  // Page component
   if (componentInstances.page != null) {
     componentInstances.page.setMarkdown(page.revision.body);
   }
-  // re-render PageEditor component
+  // PageEditor component
   if (componentInstances.pageEditor != null) {
     const updateEditorValue = (editorMode !== 'builtin');
     componentInstances.pageEditor.setMarkdown(page.revision.body, updateEditorValue);
   }
-  // set revision id to PageEditorByHackmd
+  // PageEditorByHackmd component
   if (componentInstances.pageEditorByHackmd != null) {
-    componentInstances.pageEditorByHackmd.setRevisionId(pageRevisionId);
-
-    const updateEditorValue = (editorMode !== 'hackmd');
-    componentInstances.pageEditorByHackmd.setMarkdown(page.revision.body, updateEditorValue);
+    // clear state of PageEditorByHackmd
+    componentInstances.pageEditorByHackmd.clearRevisionStatus(pageRevisionId, pageRevisionIdHackmdSynced);
+    // reset
+    if (editorMode !== 'hackmd') {
+      componentInstances.pageEditorByHackmd.setMarkdown(page.revision.body, false);
+      componentInstances.pageEditorByHackmd.reset();
+    }
+  }
+  // PageStatusAlert component
+  const pageStatusAlert = componentInstances.pageStatusAlert;
+  // clear state of PageStatusAlert
+  if (componentInstances.pageStatusAlert != null) {
+    pageStatusAlert.clearRevisionStatus(pageRevisionId, pageRevisionIdHackmdSynced);
   }
 };
 
@@ -209,15 +228,25 @@ const saveWithShortcut = function(markdown) {
     // do nothing
     return;
   }
+
+  let revisionId = pageRevisionId;
   // get options
   const options = componentInstances.savePageControls.getCurrentOptionsToSave();
+  options.socketClientId = socketClientId;
+
+  if (editorMode === 'hackmd') {
+    // set option to sync
+    options.isSyncRevisionToHackmd = true;
+    // use revisionId of PageEditorByHackmd
+    revisionId = componentInstances.pageEditorByHackmd.getRevisionIdHackmdSynced();
+  }
 
   let promise = undefined;
   if (pageId == null) {
     promise = crowi.createPage(pagePath, markdown, options);
   }
   else {
-    promise = crowi.updatePage(pageId, pageRevisionId, markdown, options);
+    promise = crowi.updatePage(pageId, revisionId, markdown, options);
   }
 
   promise
@@ -236,16 +265,24 @@ const saveWithSubmitButton = function() {
     // do nothing
     return;
   }
+
+  let revisionId = pageRevisionId;
   // get options
   const options = componentInstances.savePageControls.getCurrentOptionsToSave();
+  options.socketClientId = socketClientId;
 
   let promise = undefined;
-  // get markdown
   if (editorMode === 'builtin') {
+    // get markdown
     promise = Promise.resolve(componentInstances.pageEditor.getMarkdown());
   }
   else {
+    // get markdown
     promise = componentInstances.pageEditorByHackmd.getMarkdown();
+    // use revisionId of PageEditorByHackmd
+    revisionId = componentInstances.pageEditorByHackmd.getRevisionIdHackmdSynced();
+    // set option to sync
+    options.isSyncRevisionToHackmd = true;
   }
   // create or update
   if (pageId == null) {
@@ -255,7 +292,7 @@ const saveWithSubmitButton = function() {
   }
   else {
     promise = promise.then(markdown => {
-      return crowi.updatePage(pageId, pageRevisionId, markdown, options);
+      return crowi.updatePage(pageId, revisionId, markdown, options);
     });
   }
 
@@ -341,8 +378,8 @@ if (writeCommentElem) {
     <CommentForm crowi={crowi}
       crowiOriginRenderer={crowiRenderer}
       pageId={pageId}
-      revisionId={pageRevisionId}
       pagePath={pagePath}
+      revisionId={pageRevisionId}
       onPostComplete={postCompleteHandler}
       editorOptions={editorOptions}
       slackChannels = {slackChannels}/>,
@@ -365,6 +402,25 @@ if (pageEditorOptionsSelectorElem) {
         }} />,
     pageEditorOptionsSelectorElem
   );
+}
+
+// render PageStatusAlert
+let pageStatusAlert = null;
+const pageStatusAlertElem = document.getElementById('page-status-alert');
+if (pageStatusAlertElem) {
+  ReactDOM.render(
+    <I18nextProvider i18n={i18n}>
+      <PageStatusAlert crowi={crowi}
+          ref={(elem) => {
+            if (pageStatusAlert == null) {
+              pageStatusAlert = elem.getWrappedInstance();
+            }
+          }}
+          revisionId={pageRevisionId} revisionIdHackmdSynced={pageRevisionIdHackmdSynced} hasDraftOnHackmd={hasDraftOnHackmd} />
+    </I18nextProvider>,
+    pageStatusAlertElem
+  );
+  componentInstances.pageStatusAlert = pageStatusAlert;
 }
 
 // render for admin
@@ -398,6 +454,84 @@ if (customHeaderEditorElem != null) {
     customHeaderEditorElem
   );
 }
+
+// notification from websocket
+function updatePageStatusAlert(page, user) {
+  const pageStatusAlert = componentInstances.pageStatusAlert;
+  if (pageStatusAlert != null) {
+    const revisionId = page.revision._id;
+    const revisionIdHackmdSynced = page.revisionHackmdSynced;
+    pageStatusAlert.setRevisionId(revisionId, revisionIdHackmdSynced);
+    pageStatusAlert.setLastUpdateUsername(user.name);
+  }
+}
+socket.on('page:create', function(data) {
+  // skip if triggered myself
+  if (data.socketClientId != null && data.socketClientId === socketClientId) {
+    return;
+  }
+
+  logger.debug({ obj: data }, `websocket on 'page:create'`); // eslint-disable-line quotes
+
+  // update PageStatusAlert
+  if (data.page.path == pagePath) {
+    updatePageStatusAlert(data.page, data.user);
+  }
+});
+socket.on('page:update', function(data) {
+  // skip if triggered myself
+  if (data.socketClientId != null && data.socketClientId === socketClientId) {
+    return;
+  }
+
+  logger.debug({ obj: data }, `websocket on 'page:update'`); // eslint-disable-line quotes
+
+  if (data.page.path == pagePath) {
+    // update PageStatusAlert
+    updatePageStatusAlert(data.page, data.user);
+    // update PageEditorByHackmd
+    const pageEditorByHackmd = componentInstances.pageEditorByHackmd;
+    if (pageEditorByHackmd != null) {
+      const page = data.page;
+      pageEditorByHackmd.setRevisionId(page.revision._id, page.revisionHackmdSynced);
+      pageEditorByHackmd.setHasDraftOnHackmd(data.page.hasDraftOnHackmd);
+    }
+  }
+});
+socket.on('page:delete', function(data) {
+  // skip if triggered myself
+  if (data.socketClientId != null && data.socketClientId === socketClientId) {
+    return;
+  }
+
+  logger.debug({ obj: data }, `websocket on 'page:delete'`); // eslint-disable-line quotes
+
+  // update PageStatusAlert
+  if (data.page.path == pagePath) {
+    updatePageStatusAlert(data.page, data.user);
+  }
+});
+socket.on('page:editingWithHackmd', function(data) {
+  // skip if triggered myself
+  if (data.socketClientId != null && data.socketClientId === socketClientId) {
+    return;
+  }
+
+  logger.debug({ obj: data }, `websocket on 'page:editingWithHackmd'`); // eslint-disable-line quotes
+
+  if (data.page.path == pagePath) {
+    // update PageStatusAlert
+    const pageStatusAlert = componentInstances.pageStatusAlert;
+    if (pageStatusAlert != null) {
+      pageStatusAlert.setHasDraftOnHackmd(data.page.hasDraftOnHackmd);
+    }
+    // update PageEditorByHackmd
+    const pageEditorByHackmd = componentInstances.pageEditorByHackmd;
+    if (pageEditorByHackmd != null) {
+      pageEditorByHackmd.setHasDraftOnHackmd(data.page.hasDraftOnHackmd);
+    }
+  }
+});
 
 // うわーもうー (commented by Crowi team -- 2018.03.23 Yuki Takei)
 $('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', function() {

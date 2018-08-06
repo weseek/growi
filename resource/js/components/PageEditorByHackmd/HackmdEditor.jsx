@@ -63,8 +63,8 @@ export default class HackmdEditor extends React.PureComponent {
   }
 
   notifyBodyChangesHandler(body) {
-    // dispatch onChange()
-    if (this.props.onChange != null) {
+    // dispatch onChange() when there is difference from 'initializationMarkdown' props
+    if (this.props.onChange != null && body !== this.props.initializationMarkdown) {
       this.props.onChange(body);
     }
   }
