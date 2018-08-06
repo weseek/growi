@@ -65,7 +65,7 @@ function postParentToNotifyBodyChanges(body) {
   window.growi.notifyBodyChanges(body);
 }
 // generate debounced function
-const debouncedPostParentToNotifyBodyChanges = debounce(1500, postParentToNotifyBodyChanges);
+const debouncedPostParentToNotifyBodyChanges = debounce(800, postParentToNotifyBodyChanges);
 
 /**
  * postMessage to GROWI to save with shortcut
@@ -88,6 +88,10 @@ function addEventListenersToCodemirror() {
 
   //// change event
   editor.on('change', (cm, change) => {
+    if (change.origin === 'ignoreHistory') {
+      // do nothing because this operation triggered by other user
+      return;
+    }
     debouncedPostParentToNotifyBodyChanges(cm.doc.getValue());
   });
 

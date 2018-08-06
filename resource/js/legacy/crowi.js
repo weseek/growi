@@ -13,7 +13,6 @@ import { debounce } from 'throttle-debounce';
 import GrowiRenderer from '../util/GrowiRenderer';
 import Page from '../components/Page';
 
-const io = require('socket.io-client');
 const entities = require('entities');
 const escapeStringRegexp = require('escape-string-regexp');
 require('jquery.cookie');
@@ -68,8 +67,7 @@ Crowi.setCaretLineData = function(line) {
 /**
  * invoked when;
  *
- * 1. window loaded
- * 2. 'shown.bs.tab' event fired
+ * 1. 'shown.bs.tab' event fired
  */
 Crowi.setCaretLineAndFocusToEditor = function() {
   // get 'data-caret-line' attributes
@@ -79,13 +77,10 @@ Crowi.setCaretLineAndFocusToEditor = function() {
     return;
   }
 
-  const line = pageEditorDom.getAttribute('data-caret-line');
-
-  if (line != null && !isNaN(line)) {
-    crowi.setCaretLine(+line);
-    // reset data-caret-line attribute
-    pageEditorDom.removeAttribute('data-caret-line');
-  }
+  const line = pageEditorDom.getAttribute('data-caret-line') || 0;
+  crowi.setCaretLine(+line);
+  // reset data-caret-line attribute
+  pageEditorDom.removeAttribute('data-caret-line');
 
   // focus
   crowi.focusToEditor();
@@ -384,10 +379,12 @@ $(function() {
       nameValueMap[obj.name] = obj.value;
     });
 
+    const data = $(this).serialize() + `&socketClientId=${crowi.getSocketClientId()}`;
+
     $.ajax({
       type: 'POST',
       url: '/_api/pages.rename',
-      data: $(this).serialize(),
+      data: data,
       dataType: 'json'
     })
     .done(function(res) {
@@ -677,16 +674,6 @@ $(function() {
       $b.toggleClass('overlay-on');
     });
 
-    //
-    const me = $('body').data('me');
-    const socket = io();
-    socket.on('page edited', function(data) {
-      if (data.user._id != me
-        && data.page.path == pagePath) {
-        $('#notifPageEdited').show();
-        $('#notifPageEdited .edited-user').html(data.user.name);
-      }
-    });
   } // end if pageId
 
   // tab changing handling
@@ -807,7 +794,6 @@ window.addEventListener('load', function(e) {
 
   Crowi.highlightSelectedSection(location.hash);
   Crowi.modifyScrollTop();
-  Crowi.setCaretLineAndFocusToEditor();
   Crowi.initSlimScrollForRevisionToc();
   Crowi.initAffix();
 });
