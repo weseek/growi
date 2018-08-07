@@ -1,9 +1,11 @@
 .kibela {
-
-  p, h1, h2, h3, h4, h5, h6, li, span, i {
+  p, h1, h2, h3, h4, h5, h6, li, span, i, a, li, .active {
     color: #3c4a60;
   }
-  body, html {
+  .icon-link, .CodeMirror-hint-active, .nav-main-left-tab, .tav-pane, .active {
+    color: #5882FA;
+  }
+  body, html, #page-wrapper, {
     background-color: gray;
   }
   .logo {
@@ -11,32 +13,36 @@
      .logo-mark {
       background-color: white;
       height: 50px;
+      border: none;
+   }
+ }
+ .search-input-group, .search-typeahead {
+   background-color: white !important;
+   border-radius: 2.5em;
+   .btn {
+    background-color: transparent;
    }
  }
 
-
-
-
-  #page-header, .navbar-header, .textarea-editor, .page-editor-preview-body, .btn, .top-left-part {
+  #page-header, .navbar-header, .active, .textarea-editor, .page-editor-preview-body, .top-left-part, .modal-content, .panel-body, .well, .rbt-menu, .input-group, .search-box {
     background: white;
+    color: #3c4a60;
+    border: none;
+  }
+  .main-container header.affix {
+    background: white;
+  }
+  .page-attachment-row {
+    background-color: #E5ECF1 !important;
   }
 
   #page-wrapper {
     background-color: #F4F5F6 !important;
-
-  }
-  .bg-title {
-     svg {
-      display: none;
-    }
   }
   .round-corner {
     border-radius: 0.5em;
     border-top: solid 0.4em #5584E1;
     z-index: absolute;
-  }
-  .d-flex {
-
   }
   .kibela-block {
 
@@ -52,20 +58,23 @@
     padding: none !important;
     background: transparent;
     border: none;
-   }
+    svg {
+      display: none;
+    }
+  }
 }
 .kibela.main-container {
   .content-main {
     padding: 0;
-    border-radius: 0.3em;
+    border-radius: 0.5em;
     border-top: solid 0.2em #5584E1;
     z-index: absolute;
   }
 
   .revision-toc {
     &.affix {
-      right: 6rem;
-      margin-top: 30px;
+      right: 4rem;
+      margin-top: 35px;
       top: calc(46px + 5px);
       min-width: calc(#{100/12*2%} - #{$grid-gutter-width});  // width of 2column - padding
 
@@ -74,7 +83,7 @@
     .revision-toc-content {
       padding: 0;
     }
-    @media screen and (max-width: 1350px) {
+    @media screen and (max-width: 1400px) {
       &.affix {
       right: 0rem !important;
       transition: 0.5s ;
@@ -89,6 +98,144 @@
 
 
 
+
+
+    %comment-section {
+      position: relative;
+      padding: 1em;
+      margin-left: 4.5em;
+      margin-bottom: 1em;
+      // screen-xs
+      @media (max-width: $screen-xs) {
+        margin-left: 3.5em;
+      }
+
+      // speech balloon
+      &:before {
+        width: 0;
+        height: 0;
+        border-top: 20px solid transparent;
+        border-left: 20px solid transparent;
+        border-bottom: 20px solid transparent;
+        border-right: 20px solid #D8E2EB;
+
+        border-left-width: 0;
+        left: -1em;
+        content: "";
+        display: block;
+        top: 1.5em;
+        position: absolute;
+        width: 0;
+
+        // screen-xs
+        @media (max-width: $screen-xs) {
+          top: 1em;
+        }
+      }
+    }
+
+    %picture {
+      float: left;
+      margin-top: 0.8em;
+      width: 3em;
+      height: 3em;
+      // screen-xs
+      @media (max-width: $screen-xs) {
+        width: 2em;
+        height: 2em;
+      }
+    }
+
+    .page-comments-row {
+
+      margin: 30px 0px;
+    }
+
+    .page-comments {
+      h4 {
+        margin-bottom: 1em;
+      }
+    }
+
+    .page-comment {
+      position: relative;
+
+      // ユーザー名
+      .page-comment-creator {
+        margin-top: -0.5em;
+        margin-bottom: 0.5em;
+        font-weight: bold;
+      }
+
+      // ユーザーアイコン
+      .picture {
+        @extend %picture;
+      }
+
+      // コメントセクション
+      .page-comment-main {
+        @extend %comment-section;
+      }
+
+      // コメント本文
+      .page-comment-body {
+        margin-bottom: 0.5em;
+        word-wrap: break-word;
+      }
+
+      .page-comment-meta {
+        color: #999;
+        font-size: .9em;
+        text-align: right;
+
+        * {
+          vertical-align: 25%;
+        }
+      }
+    }
+
+    // show when hover
+    .page-comment-main:hover > .page-comment-control {
+      display: block;
+    }
+
+    // display cheatsheet for comment form only
+    .comment-form {
+      .editor-cheatsheet {
+          display: none;
+      }
+
+
+
+      position: relative;
+      margin-top: 2em;
+      // user icon
+      .picture {
+        @extend %picture;
+      }
+
+      // seciton
+      .comment-form-main {
+        @extend %comment-section;
+        background: #D8E2EB;
+        border-radius: 0.5em;
+      }
+
+      // textarea
+      .comment-write {
+        margin-bottom: 0.5em;
+      }
+      .tab-content{
+        padding-top: 10px;
+      }
+      .comment-form-comment {
+        height: 80px;
+        &:focus, &:not(:invalid) {
+          transition: height 0.2s ease-out;
+          height: 180px;
+        }
+      }
+    }
 
 
 
