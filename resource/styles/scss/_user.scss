@@ -1,7 +1,16 @@
 .main-container {
   .user-page-header {
 
+    #revision-path {
+      margin-bottom: 0;
+    }
+
+    .users-meta {
+      margin-left: 30px;
+    }
+
     h1 {
+      margin: 0;
       font-size: 2.5em;
       color: #666;
     }
@@ -35,7 +44,24 @@
         padding: 8px;
       }
     }
+  }
 
+  // affix
+  .user-page-header.affix {
+
+    .users-meta {
+      margin-left: 15px;
+    }
+
+    h1 {
+      font-size: 1.5em;
+      line-height: 30px;
+    }
+
+    .picture {
+      height: 48px;
+      width: 48px;
+    }
   }
 }
 

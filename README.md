@@ -41,7 +41,8 @@ Features
   * You can find plugins from [npm](https://www.npmjs.com/browse/keyword/growi-plugin) or [github](https://github.com/search?q=topic%3Agrowi-plugin)!
 * **Features**
   * Create hierarchical pages with markdown
-  * Support Authentication with LDAP / Active Directory 
+  * Simultaneously edit with multiple people by [HackMD(CodiMD)](https://hackmd.io/) integration
+  * Support Authentication with LDAP / Active Directory
   * Slack Incoming Webhooks Integration
   * [Miscellaneous features](https://github.com/weseek/growi/wiki/Additional-Features)
 * **[Docker Ready][dockerhub]**
@@ -165,6 +166,7 @@ Environment Variables
     * FILE_UPLOAD: `aws` (default), `local`, `none`
 * **Option to integrate with external systems**
     * HACKMD_URI: URI to connect to [HackMD(CodiMD)](https://hackmd.io/) server.
+        * **This server must load the GROWI agent. [Here's how to prepare it](https://docs.growi.org/management-cookbook/integrate-with-hackmd).**
     * HACKMD_URI_FOR_SERVER: URI to connect to [HackMD(CodiMD)](https://hackmd.io/) server from GROWI Express server. If not set, `HACKMD_URI` will be used.
     * PLANTUML_URI: URI to connect to [PlantUML](http://plantuml.com/) server.
     * BLOCKDIAG_URI: URI to connect to [blockdiag](http://http://blockdiag.com/) server.
