@@ -6,31 +6,27 @@
   body, html {
     background-color: gray;
   }
-  .container-fluid {
-    width: 100%;
-  }
-  .logo-mark {
-    background-color: white;
-    height: 50px;
-  }
-  .group1 {
-   background-color: #5584E1;
-  }
-  .navbar-header {
+  .logo {
+    background: transparent;
+     .logo-mark {
+      background-color: white;
+      height: 50px;
+   }
+ }
+
+
+
+
+  #page-header, .navbar-header, .textarea-editor, .page-editor-preview-body, .btn, .top-left-part {
     background: white;
-    margin: none !important;
-    padding: none !important;
   }
 
   #page-wrapper {
     background-color: #F4F5F6 !important;
 
   }
-  .header-wrap {
-    margin: none !important;
-    padding: none !important;
-
-    svg {
+  .bg-title {
+     svg {
       display: none;
     }
   }
@@ -40,7 +36,7 @@
     z-index: absolute;
   }
   .d-flex {
-    position: relative;
+
   }
   .kibela-block {
 
@@ -65,6 +61,7 @@
     border-top: solid 0.2em #5584E1;
     z-index: absolute;
   }
+
   .revision-toc {
     &.affix {
       right: 6rem;
@@ -84,6 +81,35 @@
       }
     }
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
+
+
+
+
+
+
+
+
+
+
 
 
