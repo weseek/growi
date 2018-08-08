@@ -1,0 +1,151 @@
+.main-container { // {{{
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 500;
+  }
+
+  .navbar-top-links { // {{{
+    .confidential {
+      a {
+        // border: solid 2px #f00;
+        // background: #fff;
+        // color: #f00;
+        // font-weight: bold;
+        // height: 42px;
+        // margin-top: 5px;
+        // padding: 10px;
+        // margin-right: 5px;
+      }
+    }
+
+    .nav-item-admin, .nav-item-create-page {
+      span {
+        margin-left: 0.5em;
+        @media (max-width: $screen-xs-min) {
+          display: none;
+        }
+      }
+    }
+  } // }}}
+
+  .main {
+    .header-wrap {
+      padding: 15px 15px 0 15px;
+      min-height: 70px;
+    }
+  }
+
+  .layout-control { // {{{
+    transition: .3s ease;
+    position: fixed;
+    display: block;
+    text-align: center;
+    right: 25%;
+    bottom: 25px;
+    padding: 5px 8px;
+    border: solid 1px #ccc;
+    border-right: none;
+    border-radius: 5px 0 0 5px;
+    z-index: 1039;
+    font-size: .8em;
+
+    &:hover {
+      text-decoration: none;
+      cursor: pointer;
+    }
+  } // }}}
+
+  .revision-toc {
+    font-size: .9em;
+    max-width: 250px;
+    overflow: hidden;
+
+    .revision-toc-content {
+      padding: 10px;
+
+      > ul {
+        padding-left: 0;
+        ul {
+          padding-left: 1em;
+        }
+      }
+
+      > ul > li { // first level of li
+        margin: 4px 4px 4px 15px;
+        padding: 5px;
+      }
+    }
+  }
+} // }}}
+
+
+// fix tab width to 95 pixels
+// see also '_on-edit.scss'
+$nav-main-left-tab-width: 95px;
+.nav.nav-tabs {
+  .nav-main-left-tab {
+    width: $nav-main-left-tab-width;
+    text-align: center;
+    a {
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+}
+
+
+@media print { // {{{ printable style
+  .main-container { // {{{
+    padding: 30px;
+
+    a:after {
+      display: none !important;
+    }
+    .main {
+      header {
+        border-bottom: solid 1px #666;
+        h1 {
+          font-size: 2em;
+          color: #000;
+        }
+      }
+
+      .revision-toc {
+        float: none;
+        font-size: .9em;
+        border: solid 1px #aaa;
+        border-radius: 5px;
+        max-width: 100%;
+        margin-bottom: 20px;
+
+        .revision-toc-head {
+          display: inline-block;
+          float: none;
+        }
+
+        .revision-toc-content.collapse {
+          display: block;
+          height: auto;
+        }
+      }
+
+      .meta {
+        border-top: solid 1px #ccc;
+        margin-top: 32px;
+        color: #666;
+      }
+
+
+    }
+  }
+} // }}}
+
+.system-version {
+  position: fixed;
+  right: 0.5em;
+  bottom: 0;
+  opacity: .6;
+
+  > span {
+    margin-left: .5em;
+  }
+}

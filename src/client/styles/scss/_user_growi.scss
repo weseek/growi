@@ -1,0 +1,15 @@
+.growi.main-container .user-page {
+
+  // affix
+  .user-page-header.affix {
+    #revision-path {
+      display: none;
+    }
+  }
+
+  .revision-toc {
+    &.affix {
+      top: 130px;
+    }
+  }
+}

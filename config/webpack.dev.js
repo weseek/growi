@@ -21,7 +21,7 @@ module.exports = require('./webpack.common')({
   mode: 'development',
   devtool: 'cheap-module-eval-source-map',
   entry: {
-    'js/dev': './resource/js/dev',
+    'js/dev': './src/client/js/dev',
   },
   resolve: {
     // TODO merge in webpack.common.js
@@ -36,7 +36,7 @@ module.exports = require('./webpack.common')({
           { loader: 'css-loader', options: { sourceMap: true } },
           { loader: 'sass-loader', options: { sourceMap: true } },
         ],
-        include: [helpers.root('resource/styles/scss')]
+        include: [helpers.root('src/client/styles/scss')]
       },
       { // Dump CSS for HackMD
         test: /\.scss$/,
@@ -46,7 +46,7 @@ module.exports = require('./webpack.common')({
             'sass-loader'
           ]
         }),
-        include: [helpers.root('resource/styles/hackmd')]
+        include: [helpers.root('src/client/styles/hackmd')]
       },
     ],
   },
