@@ -250,14 +250,17 @@ export default class PageEditorByHackmd extends React.PureComponent {
               </MenuItem>
             </SplitButton>
           </div>
-          <p className="text-center">Click to edit from the previous continuation<br />or <span className="text-danger">Discard changes</span> from pull down.</p>
+          <p className="text-center">
+            Click to edit from the previous continuation<br />
+            or <button className="btn btn-link text-danger p-0 hackmd-discard-button" onClick={() => this.discardChanges()}>Discard changes</button>.
+          </p>
           { isHackmdDocumentOutdated &&
             <div className="panel panel-warning mt-5">
               <div className="panel-heading"><i className="icon-fw icon-info"></i> DRAFT MAY BE OUTDATED</div>
               <div className="panel-body text-center">
                 The current draft on HackMD is based on&nbsp;
                 <a href={`?revision=${revisionIdHackmdSynced}`}><span className="label label-default">{revisionIdHackmdSynced.substr(-8)}</span></a>.<br />
-                <span className="text-danger">Discard it</span> to start to edit with current revision.
+                <button className="btn btn-link text-danger p-0 hackmd-discard-button" onClick={() => this.discardChanges()}>Discard it</button> to start to edit with current revision.
               </div>
             </div>
           }
