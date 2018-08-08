@@ -48,7 +48,7 @@
     "server:prod": "env-cmd config/env.prod.js node app.js",
     "server": "npm run server:dev",
     "start": "npm run server:prod",
-    "test": "mocha --timeout 10000 -r test/bootstrap.js test/**/*.js",
+    "test": "mocha --timeout 10000 -r src/test/bootstrap.js src/test/**/*.js",
     "version": "node -p \"require('./package.json').version\"",
     "webpack": "webpack"
   },
@@ -199,6 +199,7 @@
   },
   "_moduleAliases": {
     "@root": ".",
+    "@server": "lib",
     "@alias/logger": "lib/service/logger",
     "debug": "lib/service/logger/alias-for-debug"
   },
