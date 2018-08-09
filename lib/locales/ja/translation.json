@@ -511,9 +511,15 @@
     "esa_settings": {
       "title": "esaインポータ設定",
       "team_name": "チーム名",
-      "access_token": "アクセストークン"
+      "access_token": "アクセストークン",
+      "test_connection": "接続テスト"
     },
-    "import": "インポート",
-    "test_connection": "接続テスト"
+    "qiita_settings": {
+      "title": "qiita:teamインポータ設定",
+      "team_name": "チーム名",
+      "access_token": "アクセストークン",
+      "test_connection": "接続テスト"
+    },
+    "import": "インポート"
   }
 }

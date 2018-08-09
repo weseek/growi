@@ -494,9 +494,15 @@
     "esa_settings": {
       "title": "Settings of esa importer",
       "team_name": "Team name",
-      "access_token": "Access token"
+      "access_token": "Access token",
+      "test_connection": "Test connection to esa"
     },
-    "import": "Import",
-    "test_connection": "Test connection to esa"
+    "qiita_settings": {
+      "title": "Settings of qiita:team importer",
+      "team_name": "Team name",
+      "access_token": "Access token",
+      "test_connection": "Test connection to qiita:team"
+    },
+    "import": "Import"
   }
 }
