@@ -4,6 +4,7 @@
 const debug = require('debug')('growi:crowi')
   , logger = require('@alias/logger')('growi:crowi')
   , pkg = require('@root/package.json')
+  , InterceptorManager = require('@commons/service/interceptor-manager')
   , Xss = require('@commons/service/xss')
   , path = require('path')
   , sep = path.sep
@@ -35,9 +36,10 @@ function Crowi(rootdir, env) {
   this.config = {};
   this.searcher = null;
   this.mailer = {};
-  this.interceptorManager = {};
   this.passportService = null;
   this.globalNotificationService = null;
+
+  this.interceptorManager = new InterceptorManager();
   this.xss = new Xss();
 
   this.tokens = null;
@@ -85,8 +87,6 @@ Crowi.prototype.init = function() {
       return self.setupSearcher();
     }).then(function() {
       return self.setupMailer();
-    }).then(function() {
-      return self.setupInterceptorManager();
     }).then(function() {
       return self.setupSlack();
     }).then(function() {
@@ -309,15 +309,6 @@ Crowi.prototype.setupMailer = function() {
   var self = this;
   return new Promise(function(resolve, reject) {
     self.mailer = require('../util/mailer')(self);
-    resolve();
-  });
-};
-
-Crowi.prototype.setupInterceptorManager = function() {
-  var self = this;
-  return new Promise(function(resolve, reject) {
-    const InterceptorManager = require('../util/interceptor-manager');
-    self.interceptorManager = new InterceptorManager();
     resolve();
   });
 };

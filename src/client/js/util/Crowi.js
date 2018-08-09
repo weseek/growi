@@ -4,7 +4,7 @@
 
 import axios from 'axios';
 
-import InterceptorManager from '@server/util/interceptor-manager';
+import InterceptorManager from '@commons/service/interceptor-manager';
 
 import emojiStrategy from './emojione/emoji_strategy_shrinked.json';
 

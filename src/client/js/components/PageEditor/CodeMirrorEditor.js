@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import Modal from 'react-bootstrap/es/Modal';
 
-import InterceptorManager from '@server/util/interceptor-manager';
+import InterceptorManager from '@commons/service/interceptor-manager';
 
 import urljoin from 'url-join';
 const loadScript = require('simple-load-script');
