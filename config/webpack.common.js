@@ -57,7 +57,8 @@ module.exports = (options) => {
       modules: [helpers.root('node_modules')],
       alias: {
         '@root': helpers.root('/'),
-        '@commons': helpers.root('src/server'),
+        '@commons': helpers.root('src/lib'),
+        '@server': helpers.root('src/server'),  // TODO remove this alias
         '@tmp': helpers.root('tmp'),
         '@alias/logger': helpers.root('src/lib/service/logger'),
         '@alias/locales': helpers.root('resource/locales'),

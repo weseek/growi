@@ -1,7 +1,7 @@
 class XssOption {
 
   constructor(config) {
-    const recommendedXssWhiteList = require('../util/recommendedXssWhiteList');
+    const recommendedXssWhiteList = require('./recommendedXssWhiteList');
     const initializedConfig = (config != null) ? config : {};
 
     this.isEnabledXssPrevention = initializedConfig.isEnabledXssPrevention || true;

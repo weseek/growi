@@ -4,6 +4,7 @@
 const debug = require('debug')('growi:crowi')
   , logger = require('@alias/logger')('growi:crowi')
   , pkg = require('@root/package.json')
+  , Xss = require('@commons/service/xss')
   , path = require('path')
   , sep = path.sep
 
@@ -11,7 +12,6 @@ const debug = require('debug')('growi:crowi')
 
   , models = require('../models')
 
-  , Xss = require('../util/xss')
   ;
 
 function Crowi(rootdir, env) {

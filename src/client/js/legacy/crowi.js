@@ -10,7 +10,7 @@ import ReactDOM from 'react-dom';
 
 import { debounce } from 'throttle-debounce';
 
-const pagePathUtil = require('@commons/util/pagePathUtil');
+const pagePathUtil = require('@server/util/pagePathUtil');
 const entities = require('entities');
 const escapeStringRegexp = require('escape-string-regexp');
 require('jquery.cookie');

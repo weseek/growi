@@ -8,7 +8,7 @@ import io from 'socket.io-client';
 import i18nFactory from './i18n';
 
 import loggerFactory from '@alias/logger';
-import Xss from '@commons/util/xss';
+import Xss from '@commons/service/xss';
 
 import Crowi from './util/Crowi';
 // import CrowiRenderer from './util/CrowiRenderer';

@@ -14,7 +14,7 @@ export default class PageListMeta extends React.Component {
   render() {
     // TODO isPortal()
     const page = this.props.page;
-    const templateChecker = require('@commons/util/templateChecker');
+    const templateChecker = require('@server/util/templateChecker');
 
     // portal check
     let PortalLabel;

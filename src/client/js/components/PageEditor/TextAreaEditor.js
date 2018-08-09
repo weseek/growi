@@ -3,7 +3,7 @@ import React from 'react';
 
 import FormControl from 'react-bootstrap/es/FormControl';
 
-import InterceptorManager from '@commons/util/interceptor-manager';
+import InterceptorManager from '@server/util/interceptor-manager';
 
 import AbstractEditor from './AbstractEditor';
 

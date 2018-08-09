@@ -1,10 +1,8 @@
 module.exports = function(crowi) {
-  var mongoose = require('mongoose')
+  const mongoose = require('mongoose')
     , debug = require('debug')('growi:models:config')
     , uglifycss = require('uglifycss')
-    , recommendedXssWhiteList = require('../util/recommendedXssWhiteList')
-    , configSchema
-    , Config
+    , recommendedXssWhiteList = require('@commons/service/xss/recommendedXssWhiteList')
 
     , SECURITY_RESTRICT_GUEST_MODE_DENY = 'Deny'
     , SECURITY_RESTRICT_GUEST_MODE_READONLY = 'Readonly'
@@ -13,6 +11,9 @@ module.exports = function(crowi) {
     , SECURITY_REGISTRATION_MODE_RESTRICTED = 'Resricted'
     , SECURITY_REGISTRATION_MODE_CLOSED = 'Closed'
   ;
+
+  let configSchema;
+  let Config;
 
   configSchema = new mongoose.Schema({
     ns: { type: String, required: true, index: true },

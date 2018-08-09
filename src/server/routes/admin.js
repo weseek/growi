@@ -1,7 +1,7 @@
 module.exports = function(crowi, app) {
   'use strict';
 
-  var debug = require('debug')('growi:routes:admin')
+  const debug = require('debug')('growi:routes:admin')
     , logger = require('@alias/logger')('growi:routes:admin')
     , fs = require('fs')
     , models = crowi.models
@@ -14,11 +14,11 @@ module.exports = function(crowi, app) {
     , Config = models.Config
     , GlobalNotificationSetting = models.GlobalNotificationSetting
     , GlobalNotificationMailSetting = models.GlobalNotificationMailSetting
-    , GlobalNotificationSlackSetting = models.GlobalNotificationSlackSetting
+    , GlobalNotificationSlackSetting = models.GlobalNotificationSlackSetting  // eslint-disable-line no-unused-vars
     , PluginUtils = require('../plugins/plugin-utils')
     , pluginUtils = new PluginUtils()
     , ApiResponse = require('../util/apiResponse')
-    , recommendedXssWhiteList = require('../util/recommendedXssWhiteList')
+    , recommendedXssWhiteList = require('@commons/service/xss/recommendedXssWhiteList')
 
     , MAX_PAGE_LIST = 50
     , actions = {};
@@ -1099,7 +1099,7 @@ module.exports = function(crowi, app) {
     debug('form content', form);
     await saveSettingAsync(form);
     const config = await crowi.getConfig();
-    
+
 
     // reset strategy
     await crowi.passportService.resetTwitterStrategy();
