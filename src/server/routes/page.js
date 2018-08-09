@@ -3,6 +3,7 @@ module.exports = function(crowi, app) {
 
   const debug = require('debug')('growi:routes:page')
     , logger = require('@alias/logger')('growi:routes:page')
+    , pagePathUtils = require('@commons/util/page-path-utils')
     , Page = crowi.model('Page')
     , User = crowi.model('User')
     , Config   = crowi.model('Config')
@@ -13,7 +14,6 @@ module.exports = function(crowi, app) {
     , UpdatePost = crowi.model('UpdatePost')
     , ApiResponse = require('../util/apiResponse')
     , interceptorManager = crowi.getInterceptorManager()
-    , pagePathUtil = require('../util/pagePathUtil')
     , swig = require('swig-templates')
     , getToday = require('../util/getToday')
     , globalNotificationService = crowi.getGlobalNotificationService()
@@ -243,7 +243,7 @@ module.exports = function(crowi, app) {
         seener_threshold: SEENER_THRESHOLD,
       };
       renderVars.pager = generatePager(pagerOptions);
-      renderVars.pages = pagePathUtil.encodePagesPath(pageList);
+      renderVars.pages = pagePathUtils.encodePagesPath(pageList);
     })
     .then(() => {
       return PageGroupRelation.findByPage(renderVars.page);
@@ -312,7 +312,7 @@ module.exports = function(crowi, app) {
       if (page.redirectTo) {
         debug(`Redirect to '${page.redirectTo}'`);
         isRedirect = true;
-        return res.redirect(encodeURI(page.redirectTo + '?redirectFrom=' + pagePathUtil.encodePagePath(page.path)));
+        return res.redirect(encodeURI(page.redirectTo + '?redirectFrom=' + pagePathUtils.encodePagePath(page.path)));
       }
 
       renderVars.page = page;
@@ -415,7 +415,7 @@ module.exports = function(crowi, app) {
               seener_threshold: SEENER_THRESHOLD,
             };
             renderVars.pager = generatePager(pagerOptions);
-            renderVars.pages = pagePathUtil.encodePagesPath(pageList);
+            renderVars.pages = pagePathUtils.encodePagesPath(pageList);
 
             return;
           })
@@ -486,7 +486,7 @@ module.exports = function(crowi, app) {
       pagerOptions.length = pageList.length;
 
       renderVars.pager = generatePager(pagerOptions);
-      renderVars.pages = pagePathUtil.encodePagesPath(pageList);
+      renderVars.pages = pagePathUtils.encodePagesPath(pageList);
       res.render('customlayout-selector/page_list', renderVars);
     }).catch(function(err) {
       debug('Error on rendering deletedPageListShow', err);
@@ -515,7 +515,7 @@ module.exports = function(crowi, app) {
 
       res.render('customlayout-selector/page_list', {
         path: '/',
-        pages: pagePathUtil.encodePagesPath(pages),
+        pages: pagePathUtils.encodePagesPath(pages),
         pager: generatePager({offset: 0, limit: 50})
       });
     }).catch(function(err) {
@@ -549,7 +549,7 @@ module.exports = function(crowi, app) {
 
 
     if (pageData.redirectTo) {
-      return res.redirect(encodeURI(pageData.redirectTo + '?redirectFrom=' + pagePathUtil.encodePagePath(pageData.path)));
+      return res.redirect(encodeURI(pageData.redirectTo + '?redirectFrom=' + pagePathUtils.encodePagePath(pageData.path)));
     }
 
     const renderVars = {
@@ -663,7 +663,7 @@ module.exports = function(crowi, app) {
         return ;
       }
       if (req.query.revision) {
-        return res.redirect(pagePathUtil.encodePagePath(path));
+        return res.redirect(pagePathUtils.encodePagePath(path));
       }
 
       if (isMarkdown) {
@@ -673,13 +673,13 @@ module.exports = function(crowi, app) {
       Page.hasPortalPage(path + '/', req.user)
       .then(function(page) {
         if (page) {
-          return res.redirect(pagePathUtil.encodePagePath(path) + '/');
+          return res.redirect(pagePathUtils.encodePagePath(path) + '/');
         }
         else {
           const fixed = Page.fixToCreatableName(path);
           if (fixed !== path) {
             logger.warn('fixed page name', fixed);
-            res.redirect(pagePathUtil.encodePagePath(fixed));
+            res.redirect(pagePathUtils.encodePagePath(fixed));
             return ;
           }
 
@@ -717,7 +717,7 @@ module.exports = function(crowi, app) {
       return Promise.resolve(pageData);
     }).then(function(page) {
 
-      return res.redirect(pagePathUtil.encodePagePath(page.path));
+      return res.redirect(pagePathUtils.encodePagePath(page.path));
     }).catch(function(err) {
       return res.redirect('/');
     });
@@ -770,7 +770,7 @@ module.exports = function(crowi, app) {
       pagerOptions.length = pages.length;
 
       const result = {};
-      result.pages = pagePathUtil.encodePagesPath(pages);
+      result.pages = pagePathUtils.encodePagesPath(pages);
       return res.json(ApiResponse.success(result));
     }).catch(function(err) {
       return res.json(ApiResponse.error(err));

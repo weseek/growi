@@ -11,7 +11,7 @@ function encodePagesPath(pages) {
 }
 
 function encodePagePath(path) {
-  var paths = path.split('/');
+  const paths = path.split('/');
   paths.forEach(function(item, index) {
     paths[index] = encodeURIComponent(item);
   });

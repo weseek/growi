@@ -10,7 +10,7 @@ import ReactDOM from 'react-dom';
 
 import { debounce } from 'throttle-debounce';
 
-const pagePathUtil = require('@server/util/pagePathUtil');
+const pagePathUtils = require('@commons/util/page-path-utils');
 const entities = require('entities');
 const escapeStringRegexp = require('escape-string-regexp');
 require('jquery.cookie');
@@ -363,7 +363,7 @@ $(function() {
     if (name.match(/.+\/$/)) {
       name = name.substr(0, name.length - 1);
     }
-    top.location.href = pagePathUtil.encodePagePath(name) + '#edit';
+    top.location.href = pagePathUtils.encodePagePath(name) + '#edit';
     return false;
   });
 
