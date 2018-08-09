@@ -45,7 +45,7 @@
     "server:debug": "env-cmd config/env.dev.js node-dev --inspect src/server/app.js",
     "server:dev": "env-cmd config/env.dev.js node-dev --respawn src/server/app.js",
     "server:prod:ci": "npm run server:prod -- --ci",
-    "server:prod": "env-cmd config/env.prod.js node app.js",
+    "server:prod": "env-cmd config/env.prod.js node src/server/app.js",
     "server": "npm run server:dev",
     "start": "npm run server:prod",
     "test": "mocha --timeout 10000 -r src/test/bootstrap.js src/test/**/*.js",
