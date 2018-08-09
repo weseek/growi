@@ -11,4 +11,5 @@
   <li class="{% if current == 'user' || current == 'external-account' %}active{% endif %}"><a href="/admin/users"><i class="icon-fw icon-user"></i> {{ t('User management') }}</a></li>
   <li class="{% if current == 'user-group'%}active{% endif %}"><a href="/admin/user-groups"><i class="icon-fw icon-people"></i> {{ t('UserGroup management') }}</a></li>
   <li class="{% if current == 'search'%}active{% endif %}"><a href="/admin/search"><i class="icon-fw icon-magnifier"></i> {{ t('Full Text Search management') }}</a></li>
+  <li class="{% if current == 'importer'%}active{% endif %}"><a href="/admin/importer"><i class="icon-fw icon-cloud-download"></i> {{ t('Importer management') }}</a></li>
 </ul>

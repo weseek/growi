@@ -77,7 +77,7 @@ module.exports = function(crowi, app) {
   app.get('/passport/twitter'                     , loginPassport.loginWithTwitter);
   app.get('/passport/google/callback'             , loginPassport.loginPassportGoogleCallback);
   app.get('/passport/github/callback'             , loginPassport.loginPassportGitHubCallback);
-  app.get('/passport/twitter/callback'             , loginPassport.loginPassportTwitterCallback); 
+  app.get('/passport/twitter/callback'             , loginPassport.loginPassportTwitterCallback);
 
   // markdown admin
   app.get('/admin/markdown'                   , loginRequired(crowi, app) , middleware.adminRequired() , admin.markdown.index);
@@ -142,6 +142,15 @@ module.exports = function(crowi, app) {
   // user-group-relations admin
   app.post('/admin/user-group-relation/create', loginRequired(crowi, app), middleware.adminRequired(), csrf, admin.userGroupRelation.create);
   app.post('/admin/user-group-relation/:id/remove-relation/:relationId', loginRequired(crowi, app), middleware.adminRequired(), csrf, admin.userGroupRelation.remove);
+
+  // importer management for admin
+  app.get('/admin/importer'                , loginRequired(crowi, app) , middleware.adminRequired() , admin.importer.index);
+  app.post('/_api/admin/settings/importerEsa' , loginRequired(crowi, app) , middleware.adminRequired() , csrf , form.admin.importerEsa , admin.api.importerSettingEsa);
+  app.post('/_api/admin/settings/importerQiita' , loginRequired(crowi, app) , middleware.adminRequired() , csrf , form.admin.importerQiita , admin.api.importerSettingQiita);
+  app.post('/_api/admin/import/esa'        , loginRequired(crowi, app) , middleware.adminRequired() , admin.api.importDataFromEsa);
+  app.post('/_api/admin/import/testEsaAPI' , loginRequired(crowi, app) , middleware.adminRequired() , csrf , form.admin.importerEsa , admin.api.testEsaAPI);
+  app.post('/_api/admin/import/qiita'        , loginRequired(crowi, app) , middleware.adminRequired() , admin.api.importDataFromQiita);
+  app.post('/_api/admin/import/testQiitaAPI' , loginRequired(crowi, app) , middleware.adminRequired() , csrf , form.admin.importerQiita , admin.api.testQiitaAPI);
 
   app.get('/me'                       , loginRequired(crowi, app) , me.index);
   app.get('/me/password'              , loginRequired(crowi, app) , me.password);

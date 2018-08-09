@@ -91,6 +91,7 @@
   "External Account management": "外部アカウント管理",
   "UserGroup management": "グループ管理",
   "Full Text Search management": "全文検索管理",
+  "Importer management": "インポータ管理",
   "Basic settings": "基本設定",
   "Basic authentication": "Basic認証",
   "Guest users access": "ゲストユーザーのアクセス",
@@ -504,6 +505,21 @@
     "your_own": "自分自身のアカウントを停止することはできません",
     "Administrator menu": "管理者メニュー",
     "cannot_remove": "自分自身を管理者から外すことはできません"
-  }
+  },
 
+  "importer_management": {
+    "esa_settings": {
+      "title": "esaインポータ設定",
+      "team_name": "チーム名",
+      "access_token": "アクセストークン",
+      "test_connection": "接続テスト"
+    },
+    "qiita_settings": {
+      "title": "qiita:teamインポータ設定",
+      "team_name": "チーム名",
+      "access_token": "アクセストークン",
+      "test_connection": "接続テスト"
+    },
+    "import": "インポート"
+  }
 }

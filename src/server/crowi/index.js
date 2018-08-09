@@ -38,6 +38,7 @@ function Crowi(rootdir, env) {
   this.mailer = {};
   this.passportService = null;
   this.globalNotificationService = null;
+  this.restQiitaAPIService = null;
   this.interceptorManager = new InterceptorManager();
   this.xss = new Xss();
 
@@ -92,6 +93,8 @@ Crowi.prototype.init = function() {
       return self.setupCsrf();
     }).then(function() {
       return self.setUpGlobalNotification();
+    }).then(function() {
+      return self.setUpRestQiitaAPI();
     });
 };
 
@@ -250,6 +253,10 @@ Crowi.prototype.getInterceptorManager = function() {
 
 Crowi.prototype.getGlobalNotificationService = function() {
   return this.globalNotificationService;
+};
+
+Crowi.prototype.getRestQiitaAPIService = function() {
+  return this.restQiitaAPIService;
 };
 
 Crowi.prototype.setupPassport = function() {
@@ -457,6 +464,16 @@ Crowi.prototype.setUpGlobalNotification = function() {
   const GlobalNotificationService = require('../service/global-notification');
   if (this.globalNotificationService == null) {
     this.globalNotificationService = new GlobalNotificationService(this);
+  }
+};
+
+/**
+ * setup RestQiitaAPIService
+ */
+Crowi.prototype.setUpRestQiitaAPI = function() {
+  const RestQiitaAPIService = require('../service/rest-qiita-API');
+  if (this.restQiitaAPIService == null) {
+    this.restQiitaAPIService = new RestQiitaAPIService(this);
   }
 };
 

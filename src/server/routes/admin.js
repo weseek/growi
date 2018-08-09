@@ -19,6 +19,7 @@ module.exports = function(crowi, app) {
     , pluginUtils = new PluginUtils()
     , ApiResponse = require('../util/apiResponse')
     , recommendedXssWhiteList = require('@commons/service/xss/recommendedXssWhiteList')
+    , importer = require('../util/importer')(crowi)
 
     , MAX_PAGE_LIST = 50
     , actions = {};
@@ -968,6 +969,18 @@ module.exports = function(crowi, app) {
 
   };
 
+  // Importer management
+  actions.importer = {};
+  actions.importer.index = function(req, res) {
+
+    var settingForm;
+    settingForm = Config.setupCofigFormData('crowi', req.config);
+
+    return res.render('admin/importer', {
+      settingForm: settingForm,
+    });
+  };
+
   actions.api = {};
   actions.api.appSetting = function(req, res) {
     var form = req.form.settingForm;
@@ -1213,6 +1226,118 @@ module.exports = function(crowi, app) {
   };
 
   /**
+   * save esa settings, update config cache, and response json
+   *
+   * @param {*} req
+   * @param {*} res
+   */
+  actions.api.importerSettingEsa = async(req, res) => {
+    const form = req.form.settingForm;
+
+    if (!req.form.isValid) {
+      return res.json({status: false, message: req.form.errors.join('\n')});
+    }
+
+    await saveSetting(req, res, form);
+    await importer.initializeEsaClient();
+  };
+
+  /**
+   * save qiita settings, update config cache, and response json
+   *
+   * @param {*} req
+   * @param {*} res
+   */
+  actions.api.importerSettingQiita = async(req, res) => {
+    const form = req.form.settingForm;
+
+    if (!req.form.isValid) {
+      return res.json({status: false, message: req.form.errors.join('\n')});
+    }
+
+    await saveSetting(req, res, form);
+    await importer.initializeQiitaClient();
+  };
+
+  /**
+   * Import all posts from esa
+   *
+   * @param {*} req
+   * @param {*} res
+   */
+  actions.api.importDataFromEsa = async(req, res) => {
+    const user = req.user;
+    let errors;
+
+    try {
+      errors = await importer.importDataFromEsa(user);
+    }
+    catch (err) {
+      errors = [err];
+    }
+
+    if (errors.length > 0) {
+      return res.json({ status: false, message: `<br> - ${errors.join('<br> - ')}` });
+    }
+    return res.json({ status: true });
+  };
+
+  /**
+   * Import all posts from qiita
+   *
+   * @param {*} req
+   * @param {*} res
+   */
+  actions.api.importDataFromQiita = async(req, res) => {
+    const user = req.user;
+    let errors;
+
+    try {
+      errors = await importer.importDataFromQiita(user);
+    }
+    catch (err) {
+      errors = [err];
+    }
+
+    if (errors.length > 0) {
+      return res.json({ status: false, message: `<br> - ${errors.join('<br> - ')}` });
+    }
+    return res.json({ status: true });
+  };
+
+  /**
+   * Test connection to esa and response result with json
+   *
+   * @param {*} req
+   * @param {*} res
+   */
+  actions.api.testEsaAPI = async(req, res) => {
+    try {
+      await importer.testConnectionToEsa();
+      return res.json({ status: true });
+    }
+    catch (err) {
+      return res.json({ status: false, message: `${err}` });
+    }
+  };
+
+  /**
+   * Test connection to qiita and response result with json
+   *
+   * @param {*} req
+   * @param {*} res
+   */
+  actions.api.testQiitaAPI = async(req, res) => {
+    try {
+      await importer.testConnectionToQiita();
+      return res.json({ status: true });
+    }
+    catch (err) {
+      return res.json({ status: false, message: `${err}` });
+    }
+  };
+
+  /**
    * save settings, update config cache, and response json
    *
    * @param {any} req
@@ -1271,7 +1396,6 @@ module.exports = function(crowi, app) {
       text: 'このメールは、WikiのSMTP設定のアップデートにより送信されています。'
     }, callback);
   }
-
 
   return actions;
 };
