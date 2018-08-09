@@ -38,7 +38,6 @@ function Crowi(rootdir, env) {
   this.mailer = {};
   this.passportService = null;
   this.globalNotificationService = null;
-
   this.interceptorManager = new InterceptorManager();
   this.xss = new Xss();
 

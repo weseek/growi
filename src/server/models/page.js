@@ -12,10 +12,10 @@ class UserHasNoGrantException {
 }
 
 module.exports = function(crowi) {
-  var debug = require('debug')('growi:models:page')
+  const debug = require('debug')('growi:models:page')
     , mongoose = require('mongoose')
     , escapeStringRegexp = require('escape-string-regexp')
-    , templateChecker = require('../util/templateChecker')
+    , templateChecker = require('@commons/util/template-checker')
     , ObjectId = mongoose.Schema.Types.ObjectId
     , GRANT_PUBLIC = 1
     , GRANT_RESTRICTED = 2
@@ -30,9 +30,9 @@ module.exports = function(crowi) {
     , STATUS_DEPRECATED = 'deprecated'
 
     , pageEvent = crowi.event('page')
+  ;
 
-    , pageSchema
-    , Comment = crowi.model('Comment');
+  let pageSchema;
 
   function isPortalPath(path) {
     if (path.match(/.*\/$/)) {

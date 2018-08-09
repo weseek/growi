@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import templateChecker from '@commons/util/template-checker';
 
 export default class PageListMeta extends React.Component {
 
@@ -14,7 +15,6 @@ export default class PageListMeta extends React.Component {
   render() {
     // TODO isPortal()
     const page = this.props.page;
-    const templateChecker = require('@server/util/templateChecker');
 
     // portal check
     let PortalLabel;
