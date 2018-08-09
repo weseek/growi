@@ -42,13 +42,13 @@
     "prebuild:dev:app": "env-cmd config/env.dev.js npm run plugin:def",
     "prebuild:prod": "npm run plugin:def",
     "prestart": "npm run build:prod",
-    "server:debug": "env-cmd config/env.dev.js node-dev --inspect app.js",
-    "server:dev": "env-cmd config/env.dev.js node-dev --respawn app.js",
+    "server:debug": "env-cmd config/env.dev.js node-dev --inspect src/server/app.js",
+    "server:dev": "env-cmd config/env.dev.js node-dev --respawn src/server/app.js",
     "server:prod:ci": "npm run server:prod -- --ci",
-    "server:prod": "env-cmd config/env.prod.js node app.js",
+    "server:prod": "env-cmd config/env.prod.js node src/server/app.js",
     "server": "npm run server:dev",
     "start": "npm run server:prod",
-    "test": "mocha --timeout 10000 -r test/bootstrap.js test/**/*.js",
+    "test": "mocha --timeout 10000 -r src/test/bootstrap.js src/test/**/*.js",
     "version": "node -p \"require('./package.json').version\"",
     "webpack": "webpack"
   },
@@ -200,8 +200,10 @@
   },
   "_moduleAliases": {
     "@root": ".",
-    "@alias/logger": "lib/service/logger",
-    "debug": "lib/service/logger/alias-for-debug"
+    "@commons": "src/lib",
+    "@server": "src/server",
+    "@alias/logger": "src/lib/service/logger",
+    "debug": "src/lib/service/logger/alias-for-debug"
   },
   "engines": {
     "node": ">=8.11.1 <9",
@@ -210,7 +212,7 @@
   },
   "config": {
     "blanket": {
-      "pattern": "./lib/**/*.js"
+      "pattern": "./src/lib/**/*.js"
     }
   }
 }
