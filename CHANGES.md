@@ -6,6 +6,10 @@ CHANGES
 * Feature: Import data from esa.io
 * Feature: Import data from Qiita:Team
 * Support: Refactor directory structure
+* Support Upgrade libs
+    * postcss-loader
+    * sass-loader
+    * style-loader
 
 ## 3.2.0
 
