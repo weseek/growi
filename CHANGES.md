@@ -3,6 +3,8 @@ CHANGES
 
 ## 3.2.1-RC
 
+* Feature: Import data from esa.io
+* Feature: Import data from Qiita:Team
 * Support: Refactor directory structure
 
 ## 3.2.0
