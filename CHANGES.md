@@ -1,7 +1,11 @@
 CHANGES
 ========
 
-## 3.2.0-RC
+## 3.2.1-RC
+
+* 
+
+## 3.2.0
 
 * Feature: HackMD integration so that user will be able to simultaneously edit with multiple people
 * Feature: Login with Twitter Account
