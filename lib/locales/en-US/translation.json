@@ -309,11 +309,11 @@
     "recommended": "Recommended",
     "username_email_password": "Username, Email and Password authentication",
     "ldap_auth": "LDAP authentication",
-    "google_auth2": "Google OAuth2 authentication",
+    "google_auth2": "Google OAuth authentication",
     "google_auth2_by_crowi_desc": "However, this feature does not create new users, butit only makes it possible to login to the existing user who set up the association.",
-    "facebook_auth2": "Facebook OAuth2 authentication",
+    "facebook_auth2": "Facebook OAuth authentication",
     "twitter_auth2": "Twitter OAuth authentication",
-    "github_auth2": "GitHub OAuth2 authentication",
+    "github_auth2": "GitHub OAuth authentication",
     "crowi_auth": "Crowi classic authentication mechanism",
 		"require_server_restart": "Restarting the server is required.",
 		"server_on_passport_auth": "The server is running with Passport authentication mechanism.",
@@ -400,7 +400,7 @@
         "name": "GitHub OAuth",
         "register_1": "Access <a href=\"%s\" target=\"_blank\">%s</a>",
         "register_2": "Register your OAuth App with \"Authorization callback URL\" as <code>%s</code> (where <code>%s</code> is your hostname)",
-        "register_3": "Copy and paste your ClientID and Client Secret above"     
+        "register_3": "Copy and paste your ClientID and Client Secret above"
       },
       "how_to": {
         "google": "How to configure Google OAuth?",
