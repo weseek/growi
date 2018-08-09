@@ -1,10 +1,10 @@
 <form action="/_api/admin/security/passport-twitter" method="post" class="form-horizontal passportStrategy" id="twitterSetting" role="form"
     {% if isRestartingServerNeeded %}style="opacity: 0.4;"{% endif %}>
-  <legend class="alert-anchor">{{ t("security_setting.OAuth.Twitter.name") }}{{ t("security_setting.configuration") }}</legend>
+  <legend class="alert-anchor">{{ t("security_setting.OAuth.Twitter.name") }} {{ t("security_setting.configuration") }}</legend>
 
   {% set nameForIsTwitterEnabled = "settingForm[security:passport-twitter:isEnabled]" %}
   {% set isTwitterEnabled = settingForm['security:passport-twitter:isEnabled'] %}
-  
+
   <div class="form-group">
     <label for="{{nameForIsTwitterEnabled}}" class="col-xs-3 control-label">{{ t("security_setting.OAuth.Twitter.name") }}</label>
     <div class="col-xs-6">
@@ -60,7 +60,7 @@
       </div>
     </div>
 
-    
+
     <div class="form-group">
       <div class="col-xs-6 col-xs-offset-3">
         <div class="checkbox checkbox-info">
@@ -91,16 +91,19 @@
 
 {# Help Section #}
 <hr>
-<h4>
-  <i class="fa fa-question-circle" aria-hidden="true"></i>
-  <a href="#collapseHelpForTwitterOauth" data-toggle="collapse">{{ t("security_setting.OAuth.how_to.twitter") }}</a>
-</h4>
-<ol id="collapseHelpForTwitterOauth" class="collapse">
-  <li>{{ t("security_setting.OAuth.Twitter.register_1", "https://apps.twitter.com/", "Twitter Application Management") }}</li>
-  <li>{{ t("security_setting.OAuth.Twitter.register_2") }}</li>
-  <li>{{ t("security_setting.OAuth.Twitter.register_3") }}</li>
-  <li>{{ t("security_setting.OAuth.Twitter.register_4", "https://${growi.host}/passport/twitter/callback", "${growi.host}") }}</li>
-</ol>
+
+<div style="min-height: 300px;">
+  <h4>
+    <i class="icon-question" aria-hidden="true"></i>
+    <a href="#collapseHelpForTwitterOauth" data-toggle="collapse">{{ t("security_setting.OAuth.how_to.twitter") }}</a>
+  </h4>
+  <ol id="collapseHelpForTwitterOauth" class="collapse">
+    <li>{{ t("security_setting.OAuth.Twitter.register_1", "https://apps.twitter.com/", "Twitter Application Management") }}</li>
+    <li>{{ t("security_setting.OAuth.Twitter.register_2") }}</li>
+    <li>{{ t("security_setting.OAuth.Twitter.register_3") }}</li>
+    <li>{{ t("security_setting.OAuth.Twitter.register_4", "https://${growi.host}/passport/twitter/callback", "${growi.host}") }}</li>
+  </ol>
+</div>
 
 <script>
   $('input[name="settingForm[security:passport-twitter:isEnabled]"]').change(function() {

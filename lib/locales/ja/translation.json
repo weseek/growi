@@ -327,11 +327,11 @@
     "recommended": "推奨",
     "username_email_password": "ユーザー名、Eメール、パスワードでの認証",
     "ldap_auth": "LDAP 認証",
-    "google_auth2": "Google OAuth2 認証",
+    "google_auth2": "Google OAuth 認証",
     "google_auth2_by_crowi_desc": "ただし、この機能では新たなユーザーは作成されず、関連付け設定を行った既存ユーザーをログインできるようにするだけです。",
-    "facebook_auth2": "Facebook OAuth2 認証",
+    "facebook_auth2": "Facebook OAuth 認証",
     "twitter_auth2": "Twitter OAuth 認証",
-    "github_auth2": "GitHub OAuth2 認証",
+    "github_auth2": "GitHub OAuth 認証",
     "require_server_restart": "サーバーを再起動してください。",
     "server_on_passport_auth": "Passport 認証機構でサーバーが稼働しています。",
     "server_on_crowi_auth": "Crowi Classic 認証機構でサーバーが稼働しています。",
@@ -395,7 +395,7 @@
       "register": "%sに登録",
       "change_redirect_url": "承認済みのリダイレクトURLに、 <code>%s</code> を入力<br>(<code>%s</code>は環境に合わせて変更してください)",
       "Google": {
-        "name": "Google OAuth認証",
+        "name": "Google OAuth",
         "register_1": "<a href=\"%s\" target=\"_blank\">%s</a>へアクセス",
         "register_2": "プロジェクトがない場合はプロジェクトを作成",
         "register_3": "認証情報を作成 &rightarrow; OAuthクライアントID &rightarrow; ウェブアプリケーションを選択",
@@ -403,10 +403,10 @@
         "register_5": "上記フォームにクライアントIDとクライアントシークレットを入力"
       },
       "Facebook": {
-        "name": "Facebook OAuth認証"
+        "name": "Facebook OAuth"
       },
       "Twitter": {
-        "name": "Twitter OAuth認証",
+        "name": "Twitter OAuth",
         "register_1": "<a href=\"%s\" target=\"_blank\">%s</a>へアクセス",
         "register_2": "Twitterにサインイン",
         "register_3": "Create New Appをクリック &rightarrow; Application Detailsの各項目を入力",
@@ -414,15 +414,15 @@
         "register_5": "上記フォームにクライアントIDとクライアントシークレットを入力"
       },
       "GitHub": {
-        "name": "GitHub OAuth認証",
+        "name": "GitHub OAuth",
         "register_1": "<a href=\"%s\" target=\"_blank\">%s</a>へアクセス",
         "register_2": "\"Authorization callback URL\"を<code>%s</code>としてGrowiを登録 (<code>%s</code>は環境に合わせて変更してください)",
         "register_3": "上記フォームにクライアントIDとクライアントシークレットを入力"
       },
       "how_to": {
-        "google": "Google OAuthの設定方法",
-        "github": "GitHub OAuthの設定方法",
-        "twitter": "Twitter OAuthの設定方法"
+        "google": "Google OAuth の設定方法",
+        "github": "GitHub OAuth の設定方法",
+        "twitter": "Twitter OAuth の設定方法"
       }
     }
   },

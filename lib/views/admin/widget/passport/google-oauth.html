@@ -1,6 +1,6 @@
 <form action="/_api/admin/security/passport-google" method="post" class="form-horizontal passportStrategy" id="googleSetting" role="form"
     {% if isRestartingServerNeeded %}style="opacity: 0.4;"{% endif %}>
-  <legend class="alert-anchor">{{ t("security_setting.OAuth.Google.name") }}{{ t("security_setting.configuration") }}</legend>
+  <legend class="alert-anchor">{{ t("security_setting.OAuth.Google.name") }} {{ t("security_setting.configuration") }}</legend>
 
   {% set nameForIsGoogleEnabled = "settingForm[security:passport-google:isEnabled]" %}
   {% set isGoogleEnabled = settingForm['security:passport-google:isEnabled'] %}
@@ -90,17 +90,20 @@
 
 {# Help Section #}
 <hr>
-<h4>
-  <i class="fa fa-question-circle" aria-hidden="true"></i>
-  <a href="#collapseHelpForGoogleOauth" data-toggle="collapse">{{ t("security_setting.OAuth.how_to.google") }}</a>
-</h4>
-<ol id="collapseHelpForGoogleOauth" class="collapse">
-  <li>{{ t("security_setting.OAuth.Google.register_1", "https://console.cloud.google.com/apis/credentials", "Google Cloud Platform API Manager") }}</li>
-  <li>{{ t("security_setting.OAuth.Google.register_2") }}</li>
-  <li>{{ t("security_setting.OAuth.Google.register_3") }}</li>
-  <li>{{ t("security_setting.OAuth.Google.register_4", "https://${growi.host}/passport/google/callback", "${growi.host}") }}</li>
-  <li>{{ t("security_setting.OAuth.Google.register_5") }}</li>
-</ol>
+
+<div style="min-height: 300px;">
+  <h4>
+    <i class="icon-question" aria-hidden="true"></i>
+    <a href="#collapseHelpForGoogleOauth" data-toggle="collapse">{{ t("security_setting.OAuth.how_to.google") }}</a>
+  </h4>
+  <ol id="collapseHelpForGoogleOauth" class="collapse">
+    <li>{{ t("security_setting.OAuth.Google.register_1", "https://console.cloud.google.com/apis/credentials", "Google Cloud Platform API Manager") }}</li>
+    <li>{{ t("security_setting.OAuth.Google.register_2") }}</li>
+    <li>{{ t("security_setting.OAuth.Google.register_3") }}</li>
+    <li>{{ t("security_setting.OAuth.Google.register_4", "https://${growi.host}/passport/google/callback", "${growi.host}") }}</li>
+    <li>{{ t("security_setting.OAuth.Google.register_5") }}</li>
+  </ol>
+</div>
 
 <script>
   $('input[name="settingForm[security:passport-google:isEnabled]"]').change(function() {

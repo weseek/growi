@@ -1,6 +1,6 @@
 <form action="/_api/admin/security/passport-github" method="post" class="form-horizontal passportStrategy" id="githubSetting" role="form"
     {% if isRestartingServerNeeded %}style="opacity: 0.4;"{% endif %}>
-  <legend class="alert-anchor">{{ t("security_setting.OAuth.GitHub.name") }}{{ t("security_setting.configuration") }}</legend>
+  <legend class="alert-anchor">{{ t("security_setting.OAuth.GitHub.name") }} {{ t("security_setting.configuration") }}</legend>
 
   {% set nameForIsGitHubEnabled = "settingForm[security:passport-github:isEnabled]" %}
   {% set isGitHubEnabled = settingForm['security:passport-github:isEnabled'] %}
@@ -90,15 +90,18 @@
 
 {# Help Section #}
 <hr>
-<h4>
-  <i class="fa fa-question-circle" aria-hidden="true"></i>
-  <a href="#collapseHelpForGithubOauth" data-toggle="collapse">{{ t("security_setting.OAuth.how_to.github") }}</a>
-</h4>
-<ol id="collapseHelpForGithubOauth" class="collapse">
-  <li>{{ t("security_setting.OAuth.GitHub.register_1", "https://github.com/settings/developers", "GitHub Developer Settings") }}</li>
-  <li>{{ t("security_setting.OAuth.GitHub.register_2", "https://${growi.host}/passport/github/callback", "${growi.host}") }}</li>
-  <li>{{ t("security_setting.OAuth.GitHub.register_3") }}</li>
-</ol>
+
+<div style="min-height: 300px;">
+  <h4>
+    <i class="icon-question" aria-hidden="true"></i>
+    <a href="#collapseHelpForGithubOauth" data-toggle="collapse">{{ t("security_setting.OAuth.how_to.github") }}</a>
+  </h4>
+  <ol id="collapseHelpForGithubOauth" class="collapse">
+    <li>{{ t("security_setting.OAuth.GitHub.register_1", "https://github.com/settings/developers", "GitHub Developer Settings") }}</li>
+    <li>{{ t("security_setting.OAuth.GitHub.register_2", "https://${growi.host}/passport/github/callback", "${growi.host}") }}</li>
+    <li>{{ t("security_setting.OAuth.GitHub.register_3") }}</li>
+  </ol>
+</div>
 
 <script>
   $('input[name="settingForm[security:passport-github:isEnabled]"]').change(function() {
