@@ -11,7 +11,7 @@
 {% endblock %}
 
 {% block content_main %}
-<div class="content-main">
+<div class="content-main admin-importer">
 
   <div class="row">
     <div class="col-md-3">
@@ -44,11 +44,39 @@
           data-success-messaage="更新しました">
         <fieldset>
           <legend>{{ t('importer_management.import_from', 'esa.io') }}</legend>
-          <div class="well well-sm">
-
+          <table class="table table-bordered table-mapping">
+            <thead>
+              <tr>
+                <th width="45%">esa.io</th>
+                <th width="10%"></th>
+                <th>GROWI</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th>記事</th>
+                <th><i class="icon-arrow-right-circle text-success"></i></th>
+                <th>ページ</th>
+              </tr>
+              <tr>
+                <th>カテゴリー</th>
+                <th><i class="icon-arrow-right-circle text-success"></i></th>
+                <th>ページパス</th>
+              </tr>
+              <tr>
+                <th>ユーザー</th>
+                <th></th>
+                <th>(TBD)</th>
+              </tr>
+            </tbody>
+          </table>
+          <div class="well well-sm mb-0 small">
+            <ul>
+              <li>既に GROWI 側に同名のページが存在する場合、そのページはスキップされます</li>
+            </ul>
           </div>
           <div class="form-group">
-            <input type="password" name="dummypass" style="visibility: hidden; top: -100px; left: -100px;" />
+            <input type="password" name="dummypass" style="display:none; top: -100px; left: -100px;" />
           </div>
           <div class="form-group">
             <label for="settingForm[importer:esa:team_name]" class="col-xs-3 control-label">{{ t('importer_management.esa_settings.team_name') }}</label>
@@ -82,14 +110,51 @@
           </div>
         </fieldset>
       </form>
+
+
       <!-- qiita:team Importer management forms -->
-      <form action="/_api/admin/settings/importerQiita" method="post" class="form-horizontal" id="importerSettingFormQiita" role="form"
+      <form action="/_api/admin/settings/importerQiita" method="post" class="form-horizontal mt-5" id="importerSettingFormQiita" role="form"
           data-success-messaage="更新しました">
         <fieldset>
           <legend>{{ t('importer_management.import_from', 'Qiita:Team') }}</legend>
-          <div class="well well-sm">test</div>
+          <table class="table table-bordered table-mapping">
+            <thead>
+              <tr>
+                <th width="45%">Qiita:Team</th>
+                <th width="10%"></th>
+                <th>GROWI</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th>記事</th>
+                <th><i class="icon-arrow-right-circle text-success"></i></th>
+                <th>ページ</th>
+              </tr>
+              <tr>
+                <th>タグ</th>
+                <th></th>
+                <th>-</th>
+              </tr>
+              <tr>
+                <th>ディレクトリ階層タグ</th>
+                <th></th>
+                <th>(TBD)</th>
+              </tr>
+              <tr>
+                <th>ユーザー</th>
+                <th></th>
+                <th>(TBD)</th>
+              </tr>
+            </tbody>
+          </table>
+          <div class="well well-sm mb-0 small">
+            <ul>
+              <li>既に GROWI 側に同名のページが存在する場合、そのページはスキップされます</li>
+            </ul>
+          </div>
           <div class="form-group">
-            <input type="password" name="dummypass" style="visibility: hidden; top: -100px; left: -100px;" />
+            <input type="password" name="dummypass" style="display: none; top: -100px; left: -100px;" />
           </div>
           <div class="form-group">
             <label for="settingForm[importer:qiita:team_name]" class="col-xs-3 control-label">{{ t('importer_management.qiita_settings.team_name') }}</label>

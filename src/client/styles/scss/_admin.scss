@@ -50,6 +50,15 @@
     }
   }
 
+  .admin-importer {
+    table.table-mapping {
+      th, td {
+        text-align: center;
+      }
+    }
+  }
+
+
   // Toggle Twitter Bootstrap button class when active
   // https://jsfiddle.net/ms040m01/3/
   @mixin active-color($color, $bg-color, $border-color) {
