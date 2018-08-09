@@ -11,7 +11,7 @@ const helpers = require('../config/helpers');
 const TEMPLATE = helpers.root('bin/templates/plugin-definitions.js.swig');
 const OUT = helpers.root('tmp/plugins/plugin-definitions.js');
 
-const PluginUtils = require('../lib/plugins/plugin-utils');
+const PluginUtils = require('../src/lib/plugins/plugin-utils');
 const pluginUtils = new PluginUtils();
 
 

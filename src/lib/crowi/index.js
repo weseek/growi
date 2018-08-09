@@ -23,12 +23,12 @@ function Crowi(rootdir, env) {
   this.rootDir     = rootdir;
   this.pluginDir   = path.join(this.rootDir, 'node_modules') + sep;
   this.publicDir   = path.join(this.rootDir, 'public') + sep;
-  this.libDir      = path.join(this.rootDir, 'lib') + sep;
+  this.libDir      = path.join(this.rootDir, 'src/lib') + sep;
   this.eventsDir   = path.join(this.libDir, 'events') + sep;
-  this.localeDir   = path.join(this.libDir, 'locales') + sep;
-  this.resourceDir = path.join(this.rootDir, 'resource') + sep;
   this.viewsDir    = path.join(this.libDir, 'views') + sep;
   this.mailDir     = path.join(this.viewsDir, 'mail') + sep;
+  this.resourceDir = path.join(this.rootDir, 'resource') + sep;
+  this.localeDir   = path.join(this.resourceDir, 'locales') + sep;
   this.tmpDir      = path.join(this.rootDir, 'tmp') + sep;
   this.cacheDir    = path.join(this.tmpDir, 'cache');
 
@@ -276,7 +276,7 @@ Crowi.prototype.setupPassport = function() {
     this.passportService.setupLdapStrategy();
     this.passportService.setupGoogleStrategy();
     this.passportService.setupGitHubStrategy();
-    this.passportService.setupTwitterStrategy(); 
+    this.passportService.setupTwitterStrategy();
   }
   catch (err) {
     logger.error(err);

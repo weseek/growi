@@ -58,10 +58,10 @@ module.exports = (options) => {
       modules: [helpers.root('node_modules')],
       alias: {
         '@root': helpers.root('/'),
-        '@commons': helpers.root('lib'),
+        '@commons': helpers.root('src/lib'),
         '@tmp': helpers.root('tmp'),
-        '@alias/logger': helpers.root('lib/service/logger'),
-        '@alias/locales': helpers.root('lib/locales'),
+        '@alias/logger': helpers.root('src/lib/service/logger'),
+        '@alias/locales': helpers.root('resource/locales'),
         // replace bunyan
         'bunyan': 'browser-bunyan',
       }

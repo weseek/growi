@@ -199,9 +199,9 @@
   },
   "_moduleAliases": {
     "@root": ".",
-    "@server": "lib",
-    "@alias/logger": "lib/service/logger",
-    "debug": "lib/service/logger/alias-for-debug"
+    "@server": "src/lib",
+    "@alias/logger": "src/lib/service/logger",
+    "debug": "src/lib/service/logger/alias-for-debug"
   },
   "engines": {
     "node": ">=8.11.1 <9",
@@ -210,7 +210,7 @@
   },
   "config": {
     "blanket": {
-      "pattern": "./lib/**/*.js"
+      "pattern": "./src/lib/**/*.js"
     }
   }
 }

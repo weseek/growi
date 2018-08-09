@@ -9,7 +9,7 @@ require('module-alias/register');
 
 const logger = require('@alias/logger')('growi');
 const helpers = require('./config/helpers');
-const growi = new (require('./lib/crowi'))(__dirname, process.env);
+const growi = new (require('./src/lib/crowi'))(__dirname, process.env);
 
 
 /************************************
