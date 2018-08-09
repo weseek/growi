@@ -23,7 +23,7 @@ function Crowi(rootdir, env) {
   this.rootDir     = rootdir;
   this.pluginDir   = path.join(this.rootDir, 'node_modules') + sep;
   this.publicDir   = path.join(this.rootDir, 'public') + sep;
-  this.libDir      = path.join(this.rootDir, 'src/lib') + sep;
+  this.libDir      = path.join(this.rootDir, 'src/server') + sep;
   this.eventsDir   = path.join(this.libDir, 'events') + sep;
   this.viewsDir    = path.join(this.libDir, 'views') + sep;
   this.mailDir     = path.join(this.viewsDir, 'mail') + sep;

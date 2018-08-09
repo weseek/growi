@@ -4,7 +4,7 @@ var mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || process.en
   , mongoose= require('mongoose')
   , fs = require('fs')
   , models = {}
-  , crowi = new (require(ROOT_DIR + '/lib/crowi'))(ROOT_DIR, process.env)
+  , crowi = new (require(ROOT_DIR + '/src/server/crowi'))(ROOT_DIR, process.env)
   ;
 
 mongoose.Promise = global.Promise;

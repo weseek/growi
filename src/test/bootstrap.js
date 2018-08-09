@@ -6,7 +6,7 @@ require('module-alias/register');
 
 var express = require('express')
   , ROOT_DIR = __dirname + '/../..'
-  , MODEL_DIR = __dirname + '/../../lib/models'
+  , MODEL_DIR = __dirname + '/../../src/server/models'
   , testDBUtil
   ;
 

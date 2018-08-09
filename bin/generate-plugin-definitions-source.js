@@ -11,7 +11,7 @@ const helpers = require('../config/helpers');
 const TEMPLATE = helpers.root('bin/templates/plugin-definitions.js.swig');
 const OUT = helpers.root('tmp/plugins/plugin-definitions.js');
 
-const PluginUtils = require('../src/lib/plugins/plugin-utils');
+const PluginUtils = require('../src/server/plugins/plugin-utils');
 const pluginUtils = new PluginUtils();
 
 
@@ -45,8 +45,8 @@ const definitions = pluginNames
     return definition;
   });
 
-var compiledTemplate = swig.compileFile(TEMPLATE);
-var code = compiledTemplate({definitions});
+const compiledTemplate = swig.compileFile(TEMPLATE);
+const code = compiledTemplate({definitions});
 
 // write
 fs.writeFileSync(OUT, code);
