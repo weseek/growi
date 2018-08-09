@@ -3,16 +3,18 @@
  *
  * @author Yuki Takei <yuki@weseek.co.jp>
  */
+require('module-alias/register');
+
 const fs = require('graceful-fs');
 const normalize = require('normalize-path');
 const swig = require('swig-templates');
-const helpers = require('../config/helpers');
+
+const helpers = require('@commons/util/helpers');
+const PluginUtils = require('../src/server/plugins/plugin-utils');
+const pluginUtils = new PluginUtils();
 
 const TEMPLATE = helpers.root('bin/templates/plugin-definitions.js.swig');
 const OUT = helpers.root('tmp/plugins/plugin-definitions.js');
-
-const PluginUtils = require('../src/server/plugins/plugin-utils');
-const pluginUtils = new PluginUtils();
 
 
 // list plugin names

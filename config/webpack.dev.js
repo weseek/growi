@@ -4,7 +4,7 @@
 
 const path = require('path');
 const webpack = require('webpack');
-const helpers = require('./helpers');
+const helpers = require('../src/lib/util/helpers');
 
 /*
  * Webpack Plugins

@@ -199,6 +199,7 @@
   },
   "_moduleAliases": {
     "@root": ".",
+    "@commons": "src/lib",
     "@server": "src/server",
     "@alias/logger": "src/lib/service/logger",
     "debug": "src/lib/service/logger/alias-for-debug"

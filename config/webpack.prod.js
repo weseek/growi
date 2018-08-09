@@ -1,8 +1,7 @@
 /**
  * @author: Yuki Takei <yuki@weseek.co.jp>
  */
-
-const helpers = require('./helpers');
+const helpers = require('../src/lib/util/helpers');
 
 /**
  * Webpack Plugins

@@ -8,7 +8,7 @@
 require('module-alias/register');
 
 const logger = require('@alias/logger')('growi');
-const helpers = require('../../config/helpers');
+const helpers = require('@commons/util/helpers');
 const growi = new (require('./crowi'))(helpers.root(), process.env);
 
 
