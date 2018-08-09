@@ -1,10 +1,12 @@
 'use strict';
 
-var mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || process.env.MONGO_URI || 'mongodb://localhost/growi_test'
+const mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || process.env.MONGO_URI || 'mongodb://localhost/growi_test'
   , mongoose= require('mongoose')
   , fs = require('fs')
+  , helpers = require('@commons/util/helpers')
+  , Crowi = require('@server/crowi')
+  , crowi = new Crowi(helpers.root(), process.env)
   , models = {}
-  , crowi = new (require(ROOT_DIR + '/src/server/crowi'))(ROOT_DIR, process.env)
   ;
 
 mongoose.Promise = global.Promise;
@@ -45,17 +47,17 @@ after('Close database connection', function (done) {
 });
 
 // Setup Models
-fs.readdirSync(MODEL_DIR).forEach(function(file) {
+fs.readdirSync(helpers.root('src/server/models')).forEach(function(file) {
   if (file.match(/^([\w-]+)\.js$/)) {
-    var name = RegExp.$1;
+    let name = RegExp.$1;
     if (name === 'index') {
       return;
     }
-    var modelName = '';
+    let modelName = '';
     name.split('-').map(splitted => {
       modelName += (splitted.charAt(0).toUpperCase() + splitted.slice(1));
     });
-    models[modelName] = require(MODEL_DIR + '/' + file)(crowi);
+    models[modelName] = require(`@server/models/${file}`)(crowi);
   }
 });
 
@@ -64,4 +66,4 @@ crowi.models = models;
 module.exports = {
   models: models,
   mongoose: mongoose,
-}
+};

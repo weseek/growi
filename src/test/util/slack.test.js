@@ -1,4 +1,4 @@
-var chai = require('chai')
+const chai = require('chai')
   , expect = chai.expect
   , sinon = require('sinon')
   , sinonChai = require('sinon-chai')
@@ -7,8 +7,10 @@ var chai = require('chai')
 chai.use(sinonChai);
 
 describe('Slack Util', function () {
-  var crowi = new (require(ROOT_DIR + '/src/server/crowi'))(ROOT_DIR, process.env);
-  var slack = require(crowi.libDir + '/util/slack')(crowi);
+  const helpers = require('@commons/util/helpers');
+  const Crowi = require('@server/crowi');
+  const crowi = new Crowi(helpers.root(), process.env);
+  const slack = require(crowi.libDir + '/util/slack')(crowi);
 
   it('post comment method exists', function() {
     expect(slack).to.respondTo('postComment');

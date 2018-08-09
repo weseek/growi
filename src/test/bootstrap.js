@@ -4,24 +4,24 @@ process.env.NODE_ENV = 'test';
 
 require('module-alias/register');
 
-var express = require('express')
-  , ROOT_DIR = __dirname + '/../..'
-  , MODEL_DIR = __dirname + '/../../src/server/models'
-  , testDBUtil
-  ;
+const helpers = require('@commons/util/helpers');
+
+const express = require('express');
+
+let testDBUtil;
 
 testDBUtil = {
   generateFixture: function(conn, model, fixture) {
     if (conn.readyState == 0) {
       return Promise.reject();
     }
-    var m = conn.model(model);
+    const m = conn.model(model);
 
     return new Promise(function(resolve, reject) {
-      var createdModels = [];
+      const createdModels = [];
       fixture.reduce(function(promise, entity) {
         return promise.then(function() {
-          var newDoc = new m;
+          const newDoc = new m;
 
           Object.keys(entity).forEach(function(k) {
             newDoc[k] = entity[k];
@@ -42,6 +42,6 @@ testDBUtil = {
 };
 
 global.express = express;
-global.ROOT_DIR = ROOT_DIR;
-global.MODEL_DIR = MODEL_DIR;
+global.ROOT_DIR = helpers.root();
+global.MODEL_DIR = helpers.root('src/server/models');
 global.testDBUtil = testDBUtil;
