@@ -3,7 +3,7 @@ CHANGES
 
 ## 3.2.1-RC
 
-* 
+* Support: Refactor directory structure
 
 ## 3.2.0
 
