@@ -211,16 +211,6 @@ module.exports = function(crowi, app) {
   app.get( '/_api/revisions.ids'      , accessTokenParser , loginRequired(crowi, app, false) , revision.api.ids);
   app.get( '/_api/revisions.list'     , accessTokenParser , loginRequired(crowi, app, false) , revision.api.list);
 
-  //app.get('/_api/revision/:id'     , user.useUserData()         , revision.api.get);
-  //app.get('/_api/r/:revisionId'    , user.useUserData()         , page.api.get);
-
-  /*
-   * WIP: removing pageEdit action
-   * see https://weseek.myjetbrains.com/youtrack/issue/GC-610
-   *
-  app.post('/_/edit'                 , form.revision             , loginRequired(crowi, app) , csrf, page.pageEdit);
-  */
-
   app.get('/trash$'                  , loginRequired(crowi, app, false) , page.trashPageShowWrapper);
   app.get('/trash/$'                 , loginRequired(crowi, app, false) , page.trashPageListShowWrapper);
   app.get('/trash/*/$'               , loginRequired(crowi, app, false) , page.deletedPageListShowWrapper);
@@ -229,6 +219,9 @@ module.exports = function(crowi, app) {
   app.get('/_hackmd/load-styles'       , hackmd.loadStyles);
   app.post('/_api/hackmd.integrate'    , accessTokenParser , loginRequired(crowi, app) , csrf, hackmd.validateForApi, hackmd.integrate);
   app.post('/_api/hackmd.saveOnHackmd' , accessTokenParser , loginRequired(crowi, app) , csrf, hackmd.validateForApi, hackmd.saveOnHackmd);
+
+  // API v3
+  app.use('/_api/v3', require('./apiv3')(crowi));
 
   app.get('/*/$'                   , loginRequired(crowi, app, false) , page.pageListShowWrapper);
   app.get('/*'                     , loginRequired(crowi, app, false) , page.pageShowWrapper);

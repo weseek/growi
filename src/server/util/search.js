@@ -27,12 +27,12 @@ function SearchClient(crowi, esUri) {
   this.mappingFile = crowi.resourceDir + 'search/mappings.json';
 }
 
-SearchClient.prototype.checkESVersion = function() {
-  // TODO
+SearchClient.prototype.getInfo = function() {
+  return this.client.info({});
 };
 
 SearchClient.prototype.registerUpdateEvent = function() {
-  var pageEvent = this.crowi.event('page');
+  const pageEvent = this.crowi.event('page');
   pageEvent.on('create', this.syncPageCreated.bind(this));
   pageEvent.on('update', this.syncPageUpdated.bind(this));
   pageEvent.on('delete', this.syncPageDeleted.bind(this));
