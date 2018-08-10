@@ -1,9 +1,10 @@
 'use strict';
 
 module.exports = function(crowi, app) {
-  var debug = require('debug')('growi:crowi:express-init')
+  const debug = require('debug')('growi:crowi:express-init')
     , path           = require('path')
     , express        = require('express')
+    , helmet         = require('helmet')
     , bodyParser     = require('body-parser')
     , cookieParser   = require('cookie-parser')
     , methodOverride = require('method-override')
@@ -27,7 +28,7 @@ module.exports = function(crowi, app) {
     , User = crowi.model('User')
     ;
 
-  var lngDetector = new i18nMiddleware.LanguageDetector();
+  const lngDetector = new i18nMiddleware.LanguageDetector();
   lngDetector.addDetector(i18nUserSettingDetector);
 
   i18next
@@ -47,17 +48,16 @@ module.exports = function(crowi, app) {
       overloadTranslationOptionHandler: i18nSprintf.overloadTranslationOptionHandler
     });
 
-  // omit unnecessary header
-  app.disable('x-powered-by');
+  app.use(helmet());
 
   app.use(function(req, res, next) {
-    var now = new Date()
-      , baseUrl
+    const now = new Date()
       , tzoffset = -(config.crowi['app:timezone'] || 9) * 60 // for datez
       , Page = crowi.model('Page')
       , User = crowi.model('User')
       , Config = crowi.model('Config')
       ;
+    let baseUrl;
 
     app.set('tzoffset', tzoffset);
 
