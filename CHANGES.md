@@ -5,6 +5,7 @@ CHANGES
 
 * Feature: Import data from esa.io
 * Feature: Import data from Qiita:Team
+* Feature: Add the endpoint for health check
 * Support: Refactor directory structure
 * Support Upgrade libs
     * postcss-loader
