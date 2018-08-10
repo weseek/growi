@@ -1,5 +1,5 @@
 .kibela {
-  p, h1, h2, h3, h4, h5, h6, li, span, i, a, li, .active {
+  p, h1, h2, h3, h4, h5, h6, li, span, i, a, li {
     color: #3c4a60;
   }
   .icon-link, .CodeMirror-hint-active, .nav-main-left-tab, .tav-pane, .active {
@@ -17,20 +17,19 @@
    }
  }
  .search-input-group, .search-typeahead {
-   background-color: white !important;
-   border-radius: 2.5em;
    .btn {
     background-color: transparent;
    }
  }
 
-  #page-header, .navbar-header, .active, .textarea-editor, .page-editor-preview-body, .top-left-part, .modal-content, .panel-body, .well, .rbt-menu, .input-group, .search-box {
+  #page-header, .navbar-header {
     background: white;
     color: #3c4a60;
     border: none;
   }
-  .main-container header.affix {
+  .page-list {
     background: white;
+    border-radius: 0.5em;
   }
   .page-attachment-row {
     background-color: #E5ECF1 !important;
@@ -48,7 +47,7 @@
 
     position: absolute;
     top: 0px;
-    right: 0px;
+    right: 100px;
     bottom: 0px;
     left: 0px;
     margin: auto;
@@ -70,7 +69,7 @@
 
   .revision-toc {
     &.affix {
-      right: 4rem;
+      right: 10rem;
       margin-top: 35px;
       top: calc(46px + 5px);
       min-width: calc(#{100/12*2%} - #{$grid-gutter-width});  // width of 2column - padding
@@ -80,21 +79,13 @@
     .revision-toc-content {
       padding: 0;
     }
-    @media screen and (max-width: 1400px) {
+    @media screen and (max-width: 1440px) {
       &.affix {
       right: 0rem !important;
       transition: 0.5s ;
       }
     }
   }
-
-
-
-
-
-
-
-
 
 
     %comment-section {
