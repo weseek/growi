@@ -6,6 +6,7 @@ CHANGES
 * Feature: Import data from esa.io
 * Feature: Import data from Qiita:Team
 * Feature: Add the endpoint for health check
+* Fix: Renaming page doesn't work if the page was saved with shortcut
 * Support: Refactor directory structure
 * Support Upgrade libs
     * postcss-loader
