@@ -1204,6 +1204,7 @@ module.exports = function(crowi, app) {
         globalNotificationService.notifyPageMove(page, req.body.path, req.user);
       })
       .catch(function(err) {
+        logger.error(err);
         return res.json(ApiResponse.error('Failed to update page.'));
       });
     });

@@ -209,6 +209,9 @@ const saveWithShortcutSuccessHandler = function(page) {
   if (componentInstances.pageStatusAlert != null) {
     pageStatusAlert.clearRevisionStatus(pageRevisionId, pageRevisionIdHackmdSynced);
   }
+
+  // hidden input
+  $('input[name="revision_id"]').val(pageRevisionId);
 };
 
 const errorHandler = function(error) {
