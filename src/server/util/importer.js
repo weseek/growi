@@ -20,7 +20,7 @@ module.exports = crowi => {
       team:        config.crowi['importer:esa:team_name'],
       accessToken: config.crowi['importer:esa:access_token'],
     });
-    logger.info('initialize esa importer');
+    logger.debug('initialize esa importer');
   };
 
   /**
@@ -28,7 +28,7 @@ module.exports = crowi => {
    */
   importer.initializeQiitaClient = () => {
     restQiitaAPIService.reset();
-    logger.info('initialize qiita importer');
+    logger.debug('initialize qiita importer');
   };
 
   /**
