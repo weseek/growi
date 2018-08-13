@@ -13,23 +13,71 @@
      .logo-mark {
       background-color: white;
       height: 50px;
-      border: none;
+      box-shadow: none;
+      svg {
+        width: 60px;
+        height: 60x;
+      }
    }
  }
+  .background-t {
+    background-color: transparent;
+  }
  .search-input-group, .search-typeahead {
    .btn {
     background-color: transparent;
    }
  }
 
-  #page-header, .navbar-header {
+
+ /* navbar */
+
+  .navbar-header {
     background: white;
     color: #3c4a60;
     border: none;
+    height: 58px;
+    padding: 6.5px 8px 5px 8px;
+
+
+    .navbar-right {
+      height: 45px;
+      a {
+        padding-right: 1em;
+        padding-left: 1em;
+        margin-right: 1em;
+        margin-left: 1em;
+      }
+
+    }
+    .nav-item-create-page {
+      background: #5584E1;
+      border-radius: 0.3em;
+      height: 45px;
+
+      span, i {
+      color: white;
+      }
+    }
+    .dropdown {
+      a {
+        color: #3c4a60;
+         .user-name {
+          display: none;
+        }
+      }
+      .img-circle {
+        width: 36px;
+        height: 36px;
+      }
+
+    }
   }
+
+  /* page list */
+
   .page-list {
     background: white;
-    border-radius: 0.5em;
   }
   .page-attachment-row {
     background-color: #E5ECF1 !important;
@@ -39,12 +87,14 @@
     background-color: #F4F5F6 !important;
   }
   .round-corner {
-    border-radius: 0.5em;
+    border-radius: 0.3em;
+  }
+  .round-corner-top {
+    border-radius: 0.3em;
     border-top: solid 0.4em #5584E1;
     z-index: absolute;
   }
   .kibela-block {
-
     position: absolute;
     top: 0px;
     right: 100px;
@@ -53,6 +103,7 @@
     margin: auto;
   }
   .bg-title {
+    position: relative;
     margin: none !important;
     padding: none !important;
     background: transparent;
@@ -136,7 +187,7 @@
 
     .page-comments-row {
 
-      margin: 30px 0px;
+      margin: 10px 0px;
     }
 
     .page-comments {
@@ -206,7 +257,7 @@
       .comment-form-main {
         @extend %comment-section;
         background: #D8E2EB;
-        border-radius: 0.5em;
+        border-radius: 0.3em;
       }
 
       // textarea
@@ -229,7 +280,45 @@
 
 
 
+/*
+ * Tabs
+ */
+ .nav.nav-tabs {
+    border-bottom-color: #F4F5F6;
+  > li > a {
+    &, &:hover, &:focus {
+      background: transparent;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+    }
+  }
+  > li.active > a {
+    background: transparent !important;
+    border-bottom: solid 2.7px #5584E1;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+  }
 
+  .wiki {
+    h1 {
+      border-bottom: solid 2px #5584E1 !important;
+    }
+    h2 {
+      border-color: solid 1px #5584E1;
+    }
+  }
+
+
+body.on-edit {
+  padding: 100px;
+}
+
+
+
+
+}
 
 
 

@@ -1,8 +1,8 @@
 
-  <header id="page-header">
+<header id="page-header background-t">
     <div class="d-flex align-items-center">
       <div class="hidden-xs hidden-sm">
-        <a class="" href="/">
+        <a class="logo" href="/">
           <div class="">{% include '../../widget/logo.html' %}</div>
         </a>
       </div>
@@ -13,9 +13,9 @@
       {% if page %}
       {% include '../../widget/header-buttons.html' %}
 
-      <ul class="authors hidden-sm hidden-xs text-nowrap">
+      <ul class="authors hidden-sm hidden-xs text-nowrap p-t-10">
         <li>
-          <div class="d-flex align-items-center">
+          <div class="d-flex align-items-center b">
             <a class="m-r-5" href="{{ userPageRoot(page.creator) }}">
               <img src="{{ page.creator|default(author)|picture }}" class="picture img-circle">
             </a>
