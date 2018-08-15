@@ -846,4 +846,9 @@ window.addEventListener('keydown', (event) => {
       }
       break;
   }
+
 });
+
+window.onbeforeprint = function () {
+  $("#page-wrapper").css("min-height", "0px");
+};
