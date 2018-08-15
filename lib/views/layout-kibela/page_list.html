@@ -10,10 +10,7 @@
 
 
  {% block content_main %}
-<div class="page-content">
-
-
-
+<div class="row page-content">
 
 
   <div class="col-xs-12">
@@ -39,7 +36,7 @@
     </div> {# /.col- #}
 
 
-  <div class="row page-list bg-white round-corner {% if isPortal %}m-t-30{% endif %}">
+  <div class="row page-list bg-white round-corner m-20 {% if isPortal %}m-t-30{% endif %}">
     <div class="col-md-10 col-xs-12">
       {% include '../widget/page_list_and_timeline_kibela.html' %}
     </div>

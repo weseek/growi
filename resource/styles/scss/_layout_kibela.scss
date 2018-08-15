@@ -63,8 +63,8 @@
       a {
         color: #3c4a60;
          .user-name {
-          display: none;
-        }
+          margin-right: 0.5em;
+          margin-left: 0.5em;        }
       }
       .img-circle {
         width: 36px;
@@ -101,11 +101,10 @@
     bottom: 0px;
     left: 0px;
     margin: auto;
+    height: 10em;
   }
   .bg-title {
     position: relative;
-    margin: none !important;
-    padding: none !important;
     background: transparent;
     border: none;
     svg {
@@ -214,6 +213,8 @@
       // コメントセクション
       .page-comment-main {
         @extend %comment-section;
+        background: #D8E2EB;
+        border-radius: 0.3em;
       }
 
       // コメント本文
@@ -264,9 +265,7 @@
       .comment-write {
         margin-bottom: 0.5em;
       }
-      .tab-content{
-        padding-top: 10px;
-      }
+
       .comment-form-comment {
         height: 80px;
         &:focus, &:not(:invalid) {
@@ -283,42 +282,55 @@
 /*
  * Tabs
  */
- .nav.nav-tabs {
-    border-bottom-color: #F4F5F6;
-  > li > a {
-    &, &:hover, &:focus {
-      background: transparent;
+  .nav.nav-tabs {
+      border-bottom-color: #F4F5F6;
+    > li > a {
+      &, &:hover, &:focus {
+        background: transparent;
+        border-top: none;
+        border-left: none;
+        border-right: none;
+      }
+    }
+    > li.active > a {
+      background: transparent !important;
+      border-bottom: solid 2.7px #5584E1;
       border-top: none;
       border-left: none;
       border-right: none;
     }
-  }
-  > li.active > a {
-    background: transparent !important;
-    border-bottom: solid 2.7px #5584E1;
-    border-top: none;
-    border-left: none;
-    border-right: none;
-  }
 
-  .wiki {
-    h1 {
-      border-bottom: solid 2px #5584E1 !important;
+
+
+    .wiki {
+      h1 {
+        border-bottom: solid 2px #5584E1 !important;
+      }
+      h2 {
+        border-color: solid 1px #5584E1;
+      }
     }
-    h2 {
-      border-color: solid 1px #5584E1;
-    }
+
   }
 
 
-body.on-edit {
-  padding: 100px;
+/* edit */
+.CodeMirror {
+  border: solid 2px lightgray;
 }
+  .tab-content {
+    padding: 1em;
+  }
+  .tab-pane {
+
+    .page-editor-editor-container {
+      padding: 0px;
+    }
+
+  }
 
 
 
-
-}
 
 
 
