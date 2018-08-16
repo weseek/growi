@@ -1,6 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import Modal from 'react-bootstrap/es/Modal';
+import Button from 'react-bootstrap/es/Button';
 
 import { HotTable } from '@handsontable/react';
 
@@ -12,17 +14,24 @@ export default class HandsontableModal extends React.Component {
       show: false,
     };
 
-    this.data = [
-      ['', 'Ford', 'Volvo', 'Toyota', 'Honda'],
-      ['2016', 10, 11, 12, 13],
-      ['2017', 20, 11, 14, 13],
-      ['2018', 30, 15, 12, 13]
-    ];
+    this.settings = {
+      data: this.data,
+      height: 300,
+      rowHeaders: true,
+      colHeaders: true,
+      fixedRowsTop: [0, 1],
+      contextMenu: ['row_above', 'row_below', 'col_left', 'col_right', '---------', 'remove_row', 'remove_col', '---------', 'alignment'],
+      stretchH: 'all',
+      selectionMode: 'multiple',
+    };
+
+    this.initData(this.props.data);
 
     this.cancel = this.cancel.bind(this);
   }
 
   show(data, doneHandler) {
+    this.initData(data);
     this.setState({ show: true });
   }
 
@@ -30,16 +39,38 @@ export default class HandsontableModal extends React.Component {
     this.setState({ show: false });
   }
 
+  initData(data) {
+    const initData = data || [
+      ['col1', 'col2', 'col3'],
+      ['', '', ''],
+      ['', '', ''],
+    ];
+    this.setState({ data: initData });
+  }
+
   render() {
     return (
-      <Modal show={this.state.show} onHide={this.cancel}>
+      <Modal show={this.state.show} onHide={this.cancel} bsSize="large">
         <Modal.Header closeButton>
-          <Modal.Title>Modal heading</Modal.Title>
+          <Modal.Title>Edit Table</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <HotTable data={this.data} colHeaders={true} rowHeaders={true} width="600" height="300" stretchH="all" />
+          <HotTable data={this.state.data} settings={this.settings} />
         </Modal.Body>
+        <Modal.Footer>
+          <div className="d-flex justify-content-between">
+            <Button bsStyle="danger" onClick={() => this.initData(this.props.data)}>Reset</Button>
+            <div className="d-flex">
+              <Button bsStyle="default" onClick={this.cancel}>Cancel</Button>
+              <Button bsStyle="primary">Done</Button>
+            </div>
+          </div>
+        </Modal.Footer>
       </Modal>
     );
   }
 }
+
+HandsontableModal.propTypes = {
+  data: PropTypes.object,
+};
