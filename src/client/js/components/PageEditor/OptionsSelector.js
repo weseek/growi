@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import Button from 'react-bootstrap/es/Button';
 import FormGroup from 'react-bootstrap/es/FormGroup';
 import FormControl from 'react-bootstrap/es/FormControl';
 import ControlLabel from 'react-bootstrap/es/ControlLabel';
@@ -38,6 +39,8 @@ export default class OptionsSelector extends React.Component {
     this.onClickStyleActiveLine = this.onClickStyleActiveLine.bind(this);
     this.onClickRenderMathJaxInRealtime = this.onClickRenderMathJaxInRealtime.bind(this);
     this.onToggleConfigurationDropdown = this.onToggleConfigurationDropdown.bind(this);
+
+    this.dispatchOnClickHandsontableButton = this.dispatchOnClickHandsontableButton.bind(this);
   }
 
   componentDidMount() {
@@ -105,12 +108,23 @@ export default class OptionsSelector extends React.Component {
   }
 
   /**
+   * dispatch onClickHandsontableButton event
+   */
+  dispatchOnClickHandsontableButton() {
+    this.props.onClickHandsontableButton();
+  }
+
+  /**
    * dispatch onChange event
    */
   dispatchOnChange() {
-    if (this.props.onChange != null) {
-      this.props.onChange(this.state.editorOptions, this.state.previewOptions);
-    }
+    this.props.onChange(this.state.editorOptions, this.state.previewOptions);
+  }
+
+  renderHandsontableModalButton() {
+    return (
+      <Button bsSize="small" onClick={this.dispatchOnClickHandsontableButton}><i className="icon-grid"></i></Button>
+    );
   }
 
   renderThemeSelector() {
@@ -228,6 +242,7 @@ export default class OptionsSelector extends React.Component {
 
   render() {
     return <div className="d-flex flex-row">
+      <span className="m-l-5">{this.renderHandsontableModalButton()}</span>
       <span className="m-l-5">{this.renderThemeSelector()}</span>
       <span className="m-l-5">{this.renderKeymapModeSelector()}</span>
       <span className="m-l-5">{this.renderConfigurationDropdown()}</span>
@@ -255,7 +270,8 @@ export class PreviewOptions {
 
 OptionsSelector.propTypes = {
   crowi: PropTypes.object.isRequired,
-  editorOptions: PropTypes.instanceOf(EditorOptions),
-  previewOptions: PropTypes.instanceOf(PreviewOptions),
-  onChange: PropTypes.func,
+  editorOptions: PropTypes.instanceOf(EditorOptions).isRequired,
+  previewOptions: PropTypes.instanceOf(PreviewOptions).isRequired,
+  onChange: PropTypes.func.isRequired,
+  onClickHandsontableButton: PropTypes.func.isRequired,
 };
