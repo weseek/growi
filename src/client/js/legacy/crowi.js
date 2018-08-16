@@ -849,6 +849,7 @@ window.addEventListener('keydown', (event) => {
 
 });
 
+// adjust min-height of page for print temporarily
 window.onbeforeprint = function () {
   $("#page-wrapper").css("min-height", "0px");
 };
