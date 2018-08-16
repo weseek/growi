@@ -30,15 +30,6 @@ export default class HandsontableModal extends React.Component {
     this.cancel = this.cancel.bind(this);
   }
 
-  show(data, doneHandler) {
-    this.initData(data);
-    this.setState({ show: true });
-  }
-
-  cancel() {
-    this.setState({ show: false });
-  }
-
   initData(data) {
     const initData = data || [
       ['col1', 'col2', 'col3'],
@@ -46,6 +37,15 @@ export default class HandsontableModal extends React.Component {
       ['', '', ''],
     ];
     this.setState({ data: initData });
+  }
+
+  show(data, doneHandler) {
+    this.initData(data);
+    this.setState({ show: true });
+  }
+
+  cancel() {
+    this.setState({ show: false });
   }
 
   render() {
