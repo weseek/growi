@@ -3,6 +3,11 @@ import PropTypes from 'prop-types';
 
 import Modal from 'react-bootstrap/es/Modal';
 import Button from 'react-bootstrap/es/Button';
+import ButtonGroup from 'react-bootstrap/es/ButtonGroup';
+import Navbar from 'react-bootstrap/es/Navbar';
+import Nav from 'react-bootstrap/es/Nav';
+import NavDropdown from 'react-bootstrap/es/NavDropdown';
+import MenuItem from 'react-bootstrap/es/MenuItem';
 
 import { HotTable } from '@handsontable/react';
 
@@ -55,6 +60,23 @@ export default class HandsontableModal extends React.Component {
           <Modal.Title>Edit Table</Modal.Title>
         </Modal.Header>
         <Modal.Body>
+          <Navbar>
+            <Nav>
+              <NavDropdown title="Data">
+                <MenuItem>Paste HTML <code>&lt;table&gt;</code> tag</MenuItem>
+                <MenuItem>Paste CSV</MenuItem>
+                <MenuItem>Paste TSV</MenuItem>
+                <MenuItem>Paste Excel data</MenuItem>
+              </NavDropdown>
+            </Nav>
+            <Navbar.Form>
+              <ButtonGroup>
+                <Button><i className="ti-align-left"></i></Button>
+                <Button><i className="ti-align-center"></i></Button>
+                <Button><i className="ti-align-right"></i></Button>
+              </ButtonGroup>
+            </Navbar.Form>
+          </Navbar>
           <HotTable data={this.state.data} settings={this.settings} />
         </Modal.Body>
         <Modal.Footer>
