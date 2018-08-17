@@ -25,7 +25,7 @@
         #   Because this block has content like 'Bookmarks' or 'Recent Created' whose height changes dynamically,
         #   setting of 'revision-toc' (affix) is hindered.
         #}
-      <div class="m-b-30 user-page-content-container">
+      <div class="m-b-30 user-page-content-container hidden-print">
         {% include '../widget/user_page_content.html' %}
       </div>
 
@@ -52,7 +52,7 @@
   </div>
 
   {% if 'growi' === behaviorType() || 'crowi-plus' === behaviorType() %}
-  <div class="row page-list m-t-30">
+  <div class="row page-list hidden-print m-t-30">
     <div class="col-md-10">
       {% include '../widget/page_list_and_timeline.html' %}
     </div>
