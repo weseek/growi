@@ -20,7 +20,6 @@ export default class HandsontableModal extends React.Component {
     };
 
     this.settings = {
-      data: this.data,
       height: 300,
       rowHeaders: true,
       colHeaders: true,
@@ -33,6 +32,7 @@ export default class HandsontableModal extends React.Component {
     this.initData(this.props.data);
 
     this.cancel = this.cancel.bind(this);
+    this.dispatchSave = this.dispatchSave.bind(this);
   }
 
   initData(data) {
@@ -53,6 +53,15 @@ export default class HandsontableModal extends React.Component {
     this.setState({ show: false });
   }
 
+  /**
+   * dispatch save event
+   */
+  dispatchSave() {
+    if (this.props.onSave != null) {
+      this.props.onSave(this.state.data);
+    }
+  }
+
   render() {
     return (
       <Modal show={this.state.show} onHide={this.cancel} bsSize="large">
@@ -62,7 +71,7 @@ export default class HandsontableModal extends React.Component {
         <Modal.Body className="p-0">
           <Navbar className="m-0">
             <Nav>
-              <NavDropdown title="Data">
+              <NavDropdown title="Data" id="ddData">
                 <MenuItem>Paste HTML <code>&lt;table&gt;</code> tag</MenuItem>
                 <MenuItem>Paste CSV</MenuItem>
                 <MenuItem>Paste TSV</MenuItem>
@@ -86,7 +95,7 @@ export default class HandsontableModal extends React.Component {
             <Button bsStyle="danger" onClick={() => this.initData(this.props.data)}>Reset</Button>
             <div className="d-flex">
               <Button bsStyle="default" onClick={this.cancel}>Cancel</Button>
-              <Button bsStyle="primary">Done</Button>
+              <Button bsStyle="primary" onClick={this.dispatchSave}>Done</Button>
             </div>
           </div>
         </Modal.Footer>
@@ -97,4 +106,5 @@ export default class HandsontableModal extends React.Component {
 
 HandsontableModal.propTypes = {
   data: PropTypes.object,
+  onSave: PropTypes.func,
 };
