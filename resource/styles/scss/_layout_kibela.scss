@@ -20,8 +20,15 @@
       }
    }
  }
+
+ /* header */
   .background-t {
     background-color: transparent;
+  }
+  .authors {
+    li {
+      list-style: none !important;
+    }
   }
  .search-input-group, .search-typeahead {
    .btn {
@@ -117,10 +124,6 @@
   }
 }
 .kibela.main-container {
-  .content-main {
-    padding: 0;
-  }
-
   .revision-toc {
     &.affix {
       right: 10rem;
@@ -133,7 +136,7 @@
     .revision-toc-content {
       padding: 0;
     }
-    @media screen and (max-width: 1440px) {
+    @media screen and (max-width: 1350px) {
       &.affix {
       right: 0rem !important;
       transition: 0.5s ;
@@ -262,6 +265,9 @@
         @extend %comment-section;
         background: #D8E2EB;
         border-radius: 0.35em;
+        .CodeMirror {
+          border: none !important;
+        }
       }
 
       // textarea
@@ -325,7 +331,6 @@
     border-left: solid 1.2px lightgray;
     border-right: solid 1.2px lightgray;
     border-bottom: solid 1.2px lightgray;
-    border-radius: 0.35em;
   }
   .tab-content {
     padding: 1em;

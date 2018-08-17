@@ -198,7 +198,7 @@
             <h4>
               <div class="radio radio-primary">
                 <input type="radio" id="radioLayoutKibela" name="settingForm[customize:layout]" value="kibela"
-                    {% if isLayoutKibela %}checked="checked"{% endif %}>
+                    {% if !isLayoutGrowi %}checked="checked"{% endif %}>
                 <label   for="radioLayoutKibela">
                   Kibela Like Layout
                 </label>
@@ -208,7 +208,7 @@
               <img src="/images/admin/customize/layout-classic-thumb.gif" width="240px">
             </a>
             <ul>
-              <li>Functional</li>
+              <li>Simple</li>
               <ul>
                 <li>Collapsible Sidebar</li>
                 <li>Show and post comments in Sidebar</li>

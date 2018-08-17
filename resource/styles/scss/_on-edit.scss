@@ -4,6 +4,7 @@ body:not(.on-edit) {
   // hide .page-editor-footer
   .page-editor-footer {
     display: none !important;
+    border: none;
   }
 }
 
