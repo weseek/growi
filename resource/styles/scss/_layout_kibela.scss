@@ -36,25 +36,29 @@
     background: white;
     color: #3c4a60;
     border: none;
-    height: 58px;
-    padding: 6.5px 8px 5px 8px;
+    height: 60px;
+    padding: 5px 8px 5px 8px;
 
 
     .navbar-right {
-      height: 45px;
       a {
-        padding-right: 1em;
-        padding-left: 1em;
-        margin-right: 1em;
-        margin-left: 1em;
+        margin-right: 1.5em;
       }
 
     }
-    .nav-item-create-page {
+    .navbar-top-links > li > a{
+    border-radius: 0.35em;
+    height: 40px !important;
+    }
+    .create-page {
       background: #5584E1;
-      border-radius: 0.3em;
-      height: 45px;
+      border-radius: 0.35em;
 
+      width: 110px;
+      text-align: center;
+      &:hover{
+        background:rgb(124, 168, 255);
+    }
       span, i {
       color: white;
       }
@@ -87,10 +91,10 @@
     background-color: #F4F5F6 !important;
   }
   .round-corner {
-    border-radius: 0.3em;
+    border-radius: 0.35em;
   }
   .round-corner-top {
-    border-radius: 0.3em;
+    border-radius: 0.35em;
     border-top: solid 0.4em #5584E1;
     z-index: absolute;
   }
@@ -101,7 +105,7 @@
     bottom: 0px;
     left: 0px;
     margin: auto;
-    height: 10em;
+    height: 11em;
   }
   .bg-title {
     position: relative;
@@ -214,7 +218,7 @@
       .page-comment-main {
         @extend %comment-section;
         background: #D8E2EB;
-        border-radius: 0.3em;
+        border-radius: 0.35em;
       }
 
       // コメント本文
@@ -241,11 +245,10 @@
 
     // display cheatsheet for comment form only
     .comment-form {
+      border: none;
       .editor-cheatsheet {
           display: none;
       }
-
-
 
       position: relative;
       margin-top: 2em;
@@ -258,7 +261,7 @@
       .comment-form-main {
         @extend %comment-section;
         background: #D8E2EB;
-        border-radius: 0.3em;
+        border-radius: 0.35em;
       }
 
       // textarea
@@ -315,20 +318,31 @@
 
 
 /* edit */
-.CodeMirror {
-  border: solid 2px lightgray;
-}
+
+  .CodeMirror {
+    border-radius: 0.35em;
+    border-top: solid 0.3em #5584E1;
+    border-left: solid 1.2px lightgray;
+    border-right: solid 1.2px lightgray;
+    border-bottom: solid 1.2px lightgray;
+    border-radius: 0.35em;
+  }
   .tab-content {
     padding: 1em;
   }
   .tab-pane {
 
     .page-editor-editor-container {
-      padding: 0px;
+      margin: 0px;
+      border: none !important;
     }
 
   }
-
+  .page-editor-preview-container {
+    background: white !important;
+    padding-right: 0px !important;
+    padding-left: 2em;
+  }
 
 
 

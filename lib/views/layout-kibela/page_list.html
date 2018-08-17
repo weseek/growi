@@ -13,7 +13,7 @@
 <div class="row page-content">
 
 
-  <div class="col-xs-12">
+  <div class="col-xs-12 bg-white">
 
     {% include '../widget/page_content.html' %}
 
@@ -21,19 +21,19 @@
 
 
   {# force remove #revision-toc from #content_main of parent #}
-  <script>
-    $('#revision-toc').remove();
+      <script>
+        $('#revision-toc').remove();
+      </script>
 
-  </script>
-
-</div> {# /.col- #}
+    </div> {# /.col- #}
 
     {# relocate #revision-toc #}
-    <div class="col-lg-10 col-md-8 revision-toc-container hidden-sm hidden-xs position-absolute">
+    <div class="col-lg-2 col-md-3 revision-toc-container hidden-sm hidden-xs">
       <div id="revision-toc" class="revision-toc" data-spy="affix" data-offset-top="80">
         <div id="revision-toc-content" class="revision-toc-content"></div>
       </div>
     </div> {# /.col- #}
+
 
 
   <div class="row page-list bg-white round-corner m-20 {% if isPortal %}m-t-30{% endif %}">
