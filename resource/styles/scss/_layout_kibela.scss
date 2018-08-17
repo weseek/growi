@@ -113,6 +113,13 @@
     left: 0px;
     margin: auto;
     height: 11em;
+    /*　編集の時だけ消したい
+    &.on-edit .kibela-block {
+      border-radius: 0.35em;
+      border-top: solid 0.4em #5584E1;
+      z-index: absolute;
+    }
+    */
   }
   .bg-title {
     position: relative;
@@ -127,8 +134,8 @@
   .revision-toc {
     &.affix {
       right: 10rem;
-      margin-top: 35px;
-      top: calc(46px + 5px);
+      margin-top: 40px;
+      top: calc(60px + 5px);
       min-width: calc(#{100/12*2%} - #{$grid-gutter-width});  // width of 2column - padding
 
     }
@@ -136,7 +143,7 @@
     .revision-toc-content {
       padding: 0;
     }
-    @media screen and (max-width: 1350px) {
+    @media screen and (max-width: 1400px) {
       &.affix {
       right: 0rem !important;
       transition: 0.5s ;

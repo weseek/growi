@@ -26,7 +26,7 @@
 
     {# relocate #revision-toc #}
     <div class="col-lg-2 col-md-3 revision-toc-container hidden-sm hidden-xs">
-      <div id="revision-toc" class="revision-toc" data-spy="affix" data-offset-top="80">
+      <div id="revision-toc" class="revision-toc affix" data-spy="" data-offset-top="80">
         <div id="revision-toc-content" class="revision-toc-content"></div>
       </div>
     </div> {# /.col- #}
@@ -34,7 +34,7 @@
   </div>
 
   {% if 'growi' === behaviorType() || 'crowi-plus' === behaviorType() %}
-  <div class="row page-list m-t-30 round-corner">
+  <div class="row page-list p-t-10 m-t-30 m-b-30 round-corner">
     <div class="col-md-10">
       {% include '../widget/page_list_and_timeline.html' %}
     </div>
