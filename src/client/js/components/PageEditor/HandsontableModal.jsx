@@ -59,8 +59,8 @@ export default class HandsontableModal extends React.Component {
         <Modal.Header closeButton>
           <Modal.Title>Edit Table</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-          <Navbar>
+        <Modal.Body className="p-0">
+          <Navbar className="m-0">
             <Nav>
               <NavDropdown title="Data">
                 <MenuItem>Paste HTML <code>&lt;table&gt;</code> tag</MenuItem>
@@ -70,14 +70,16 @@ export default class HandsontableModal extends React.Component {
               </NavDropdown>
             </Nav>
             <Navbar.Form>
-              <ButtonGroup>
+              <ButtonGroup className="ml-3">
                 <Button><i className="ti-align-left"></i></Button>
                 <Button><i className="ti-align-center"></i></Button>
                 <Button><i className="ti-align-right"></i></Button>
               </ButtonGroup>
             </Navbar.Form>
           </Navbar>
-          <HotTable data={this.state.data} settings={this.settings} />
+          <div className="p-4">
+            <HotTable data={this.state.data} settings={this.settings} />
+          </div>
         </Modal.Body>
         <Modal.Footer>
           <div className="d-flex justify-content-between">
