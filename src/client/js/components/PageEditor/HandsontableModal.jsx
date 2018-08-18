@@ -11,6 +11,8 @@ import MenuItem from 'react-bootstrap/es/MenuItem';
 
 import { HotTable } from '@handsontable/react';
 
+import MarkdownTable from '../../util/MarkdownTable';
+
 export default class HandsontableModal extends React.Component {
   constructor(props) {
     super(props);
@@ -29,23 +31,26 @@ export default class HandsontableModal extends React.Component {
       selectionMode: 'multiple',
     };
 
-    this.initData(this.props.data);
-
+    this.init = this.init.bind(this);
     this.cancel = this.cancel.bind(this);
     this.dispatchSave = this.dispatchSave.bind(this);
   }
 
-  initData(data) {
-    const initData = data || [
+  componentWillMount() {
+    this.init(this.props.markdownTable);
+  }
+
+  init(markdownTable) {
+    const initMarkdownTable = markdownTable || new MarkdownTable([
       ['col1', 'col2', 'col3'],
       ['', '', ''],
       ['', '', ''],
-    ];
-    this.setState({ data: initData });
+    ]);
+    this.setState({ markdownTable: initMarkdownTable });
   }
 
-  show(data, doneHandler) {
-    this.initData(data);
+  show(markdownTable, doneHandler) {
+    this.init(markdownTable);
     this.setState({ show: true });
   }
 
@@ -58,7 +63,7 @@ export default class HandsontableModal extends React.Component {
    */
   dispatchSave() {
     if (this.props.onSave != null) {
-      this.props.onSave(this.state.data);
+      this.props.onSave(this.state.markdownTable);
     }
   }
 
@@ -87,12 +92,12 @@ export default class HandsontableModal extends React.Component {
             </Navbar.Form>
           </Navbar>
           <div className="p-4">
-            <HotTable data={this.state.data} settings={this.settings} />
+            <HotTable data={this.state.markdownTable.data} settings={this.settings} />
           </div>
         </Modal.Body>
         <Modal.Footer>
           <div className="d-flex justify-content-between">
-            <Button bsStyle="danger" onClick={() => this.initData(this.props.data)}>Reset</Button>
+            <Button bsStyle="danger" onClick={() => this.init(this.props.markdownTable)}>Reset</Button>
             <div className="d-flex">
               <Button bsStyle="default" onClick={this.cancel}>Cancel</Button>
               <Button bsStyle="primary" onClick={this.dispatchSave}>Done</Button>
@@ -105,6 +110,6 @@ export default class HandsontableModal extends React.Component {
 }
 
 HandsontableModal.propTypes = {
-  data: PropTypes.object,
+  markdownTable: PropTypes.instanceOf(MarkdownTable),
   onSave: PropTypes.func,
 };
