@@ -19,7 +19,6 @@ import SearchPage       from './components/SearchPage';
 import PageEditor       from './components/PageEditor';
 import OptionsSelector  from './components/PageEditor/OptionsSelector';
 import { EditorOptions, PreviewOptions } from './components/PageEditor/OptionsSelector';
-import HandsontableModal from './components/PageEditor/HandsontableModal';
 import SavePageControls from './components/SavePageControls';
 import PageEditorByHackmd from './components/PageEditorByHackmd';
 import Page             from './components/Page';
@@ -404,27 +403,9 @@ if (pageEditorOptionsSelectorElem) {
           crowi.saveEditorOptions(newEditorOptions);
           crowi.savePreviewOptions(newPreviewOptions);
         }}
-        onClickHandsontableButton={() => {
-          const handsontableModal = componentInstances.handsontableModal;
-          if (handsontableModal != null) {
-            handsontableModal.show(null, null);
-          }
-        }}
       />,
     pageEditorOptionsSelectorElem
   );
-}
-
-// render HandsontableModal
-let handsontableModal;
-const handsontableModalElem = document.getElementById('handsontable-modal');
-if (handsontableModalElem) {
-  handsontableModal = ReactDOM.render(
-    <HandsontableModal
-      />,
-    handsontableModalElem
-  );
-  componentInstances.handsontableModal = handsontableModal;
 }
 
 // render PageStatusAlert
