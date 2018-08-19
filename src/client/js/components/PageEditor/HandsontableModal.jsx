@@ -11,7 +11,7 @@ import MenuItem from 'react-bootstrap/es/MenuItem';
 
 import { HotTable } from '@handsontable/react';
 
-import MarkdownTable from '../../util/MarkdownTable';
+import MarkdownTable from '../../models/MarkdownTable';
 
 export default class HandsontableModal extends React.Component {
   constructor(props) {
