@@ -179,7 +179,7 @@
     "react-clipboard.js": "^2.0.0",
     "react-codemirror2": "^5.0.4",
     "react-dom": "^16.4.1",
-    "react-dropzone": "^4.2.7",
+    "react-dropzone": "^5.0.1",
     "react-frame-component": "^4.0.0",
     "react-i18next": "^7.6.1",
     "reveal.js": "^3.5.0",
