@@ -85,7 +85,7 @@
     "helmet": "^3.13.0",
     "i18next": "^11.1.1",
     "i18next-express-middleware": "^1.1.1",
-    "i18next-node-fs-backend": "^1.0.0",
+    "i18next-node-fs-backend": "^2.0.0",
     "i18next-sprintf-postprocessor": "^0.2.2",
     "markdown-it-blockdiag": "^1.0.2",
     "md5": "^2.2.1",
