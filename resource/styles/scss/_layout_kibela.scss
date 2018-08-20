@@ -8,16 +8,18 @@
   body, html, #page-wrapper, {
     background-color: gray;
   }
+  .bg-white {
+    background: rgb(254, 255, 254) !important;
+  }
   .logo {
     background: transparent;
-     .logo-mark {
-      background-color: white;
-      height: 50px;
-      box-shadow: none;
-      svg {
-        width: 60px;
-        height: 60x;
-      }
+    .logo-mark {
+    background-color: white;
+    height: 50px;
+    box-shadow: none;
+    svg {
+      width: 60px;
+    }
    }
  }
 
@@ -26,6 +28,7 @@
     background-color: transparent;
   }
   .authors {
+    padding-top: 10px;
     li {
       list-style: none !important;
     }
@@ -36,23 +39,35 @@
    }
  }
 
+  .panel-heading {
+    border-radius: 0.35em 0.35em 0 0 !important;
+  }
 
+ .btn-open-dropzone {
+  background: rgb(243, 245, 247);
+  border-bottom: 0px !important;
+  }
  /* navbar */
 
   .navbar-header {
+    display: inline-block;
+    overflow: visible;
+    min-width: 320px;
     background: white;
     color: #3c4a60;
-    border: none;
+    border-bottom: solid 1px #E6E9EC;
     height: 60px;
     padding: 5px 8px 5px 8px;
-
 
     .navbar-right {
       a {
         margin-right: 1.5em;
       }
 
+
     }
+
+
     .navbar-top-links > li > a{
     border-radius: 0.35em;
     height: 40px !important;
@@ -60,8 +75,7 @@
     .create-page {
       background: #5584E1;
       border-radius: 0.35em;
-
-      width: 110px;
+      width: 8em;
       text-align: center;
       &:hover{
         background:rgb(124, 168, 255);
@@ -81,16 +95,57 @@
         width: 36px;
         height: 36px;
       }
+    }
 
+
+
+    @media screen and (max-width: 770px) {
+
+      .search-top {
+        display: none;
+      }
+      @media screen and (max-width: 500px) {
+
+        .user-name {
+          display: none;
+        }
+        .navbar-right {
+          width: 65%;
+          li {
+            text-align: center;
+            width: 30%;
+            a {
+              margin-right: 0px;
+            }
+            .create-page {
+              width: 60px;
+            }
+            .dropdown {
+              text-align: center;
+              .dropdown-toggle {
+                padding-left: 2em;
+                margin-right: 0px;
+                width: 100%;
+              }
+            }
+          }
+        }
+      }
     }
   }
+
+
+
+
+
 
   /* page list */
 
   .page-list {
     background: white;
   }
-  .page-attachment-row {
+  .page-attachments-row {
+    border: 0px;
     background-color: #E5ECF1 !important;
   }
 
@@ -113,12 +168,9 @@
     left: 0px;
     margin: auto;
     height: 11em;
-    /*　編集の時だけ消したい　*/
-    /*&.on-edit .kibela-block {*/
-      border-radius: 0.35em;
-      border-top: solid 0.4em #5584E1;
-      z-index: absolute;
-    /*}*/
+    border-radius: 0.35em;
+    border-top: solid 0.4em #5584E1;
+    z-index: absolute;
   }
   .bg-title {
     position: relative;
@@ -126,6 +178,9 @@
     border: none;
     svg {
       display: none;
+    }
+    @media screen and (max-width: 765px) {
+      padding-top: 30px;
     }
   }
 }
@@ -150,6 +205,7 @@
     }
   }
 
+  /* Comment section */
 
     %comment-section {
       position: relative;
@@ -168,7 +224,7 @@
         border-top: 20px solid transparent;
         border-left: 20px solid transparent;
         border-bottom: 20px solid transparent;
-        border-right: 20px solid #D8E2EB;
+        border-right: 20px solid #E6E9EC;
 
         border-left-width: 0;
         left: -1em;
@@ -226,7 +282,7 @@
       // コメントセクション
       .page-comment-main {
         @extend %comment-section;
-        background: #D8E2EB;
+        background: #E6E9EC;
         border-radius: 0.35em;
       }
 
@@ -244,6 +300,9 @@
         * {
           vertical-align: 25%;
         }
+      }
+      .page-comment-revision {
+        color: lightgray;
       }
     }
 
@@ -269,10 +328,10 @@
       // seciton
       .comment-form-main {
         @extend %comment-section;
-        background: #D8E2EB;
+        background: #E6E9EC;
         border-radius: 0.35em;
         .CodeMirror {
-          border: none !important;
+          border: 0px;
         }
       }
 
@@ -286,6 +345,26 @@
         &:focus, &:not(:invalid) {
           transition: height 0.2s ease-out;
           height: 180px;
+        }
+      }
+      .CodeMirror {
+      border: 0px !important;
+      }
+      #page-editor {
+        @media (max-width: $screen-sm) {
+          .desc-long {
+            display: none;
+          }
+        }
+      }
+      @media screen and (max-width: 1400px) {
+        .desc-long {
+          display: none;
+        }
+        @media screen and (max-width: 570px) {
+          .gfm-cheatsheet {
+            display: none;
+          }
         }
       }
     }
@@ -328,15 +407,24 @@
 
   }
 
+/* user page */
+
+
+    .header-wrap {
+      margin-left: 2em;
+      padding: 0px;
+    }
+
+
+
+
 
 /* edit */
 
   .CodeMirror {
     border-radius: 0.35em;
-    border-top: solid 0.3em #5584E1;
-    border-left: solid 1.2px lightgray;
-    border-right: solid 1.2px lightgray;
-    border-bottom: solid 1.2px lightgray;
+    border-top: solid 0.3em #5584E1 !important;
+    border: solid 1.2px #D8D8D8;
   }
   .tab-content {
     padding: 1em;
@@ -359,10 +447,16 @@
 
 
 
+}
+
+.on-edit {
+
+    .kibela-block {
+      border: 0px ;
+    }
 
 
 }
-
 
 
 

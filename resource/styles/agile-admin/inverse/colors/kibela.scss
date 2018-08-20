@@ -2,9 +2,9 @@
 
 $radius: 3px;
 
-$themecolor: #00587A;
+$themecolor: rgb(18, 86, 163);
 $themelight: #F4F5F6;
-$subthemecolor: rgb(75, 96, 129);
+$subthemecolor: rgb(90, 149, 216);
 
 
 $topbar: $themecolor;
@@ -20,7 +20,7 @@ $sidebar-text: $themecolor;
 $primary: $themecolor;
 $info: lighten($themecolor,20%);
 
-$logo-mark-fill: lighten(desaturate($topbar, 30%), 20%);
+$logo-mark-fill: lighten($themecolor, 20%);
 $wikilinktext: lighten($themecolor, 20%);
 $wikilinktext-hover: lighten($wikilinktext, 20%);
 $inline-code-color: $subthemecolor;
