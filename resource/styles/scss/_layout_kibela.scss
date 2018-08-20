@@ -113,13 +113,12 @@
     left: 0px;
     margin: auto;
     height: 11em;
-    /*　編集の時だけ消したい
-    &.on-edit .kibela-block {
+    /*　編集の時だけ消したい　*/
+    /*&.on-edit .kibela-block {*/
       border-radius: 0.35em;
       border-top: solid 0.4em #5584E1;
       z-index: absolute;
-    }
-    */
+    /*}*/
   }
   .bg-title {
     position: relative;
