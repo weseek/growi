@@ -2,6 +2,6 @@
 /.vscode/**
 /node_modules/**
 /public/**
-/resource/js/legacy/thirdparty-js/**
+/src/client/js/legacy/thirdparty-js/**
 /test/**
 /tmp/**

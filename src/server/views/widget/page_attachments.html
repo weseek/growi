@@ -1,0 +1,12 @@
+<div class="row page-attachments-row hidden-print">
+  <div class="col-xs-12">
+    <div class="m-t-15 m-b-15">
+      <div class="page-attachments" id="page-attachment"></div>
+
+      <p class="page-meta">
+        <p>Last revision posted at {{ page.revision.createdAt|datetz('Y-m-d H:i:s') }} by <a href="/user/{{ page.revision.author.username }}"><img src="{{ page.revision.author|picture }}" class="picture picture-sm img-circle"> {{ page.revision.author.name }}</a></p>
+        <p>Created at {{ page.createdAt|datetz('Y-m-d H:i:s') }} by <a href="/user/{{ page.creator.username }}"><img src="{{ page.creator|default(page.creator)|picture }}" class="picture picture-sm img-circle"> {{ page.creator.name }}</a></p>
+      </p>
+    </div>
+  </div>
+</div>

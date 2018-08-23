@@ -1,0 +1,52 @@
+{% extends '../../layout/layout.html' %}
+
+{% block html_title %}{{ customTitle(path) }}{% endblock %}
+
+{% block layout_main %}
+<div class="container-fluid">
+
+  <a href="" class=" hidden-xs hidden-sm layout-control" id="toggle-sidebar">
+    <i class="ti-angle-right"></i><i class="ti-angle-left"></i> <span class="hide-on-affix-top"></span>
+  </a>
+  <aside class="crowi-sidebar col-md-3 hidden-xs hidden-sm hidden-print">
+
+    {% block side_header %}
+    {% endblock %}
+
+    <div class="side-content">
+      {% block side_content %}
+      {% endblock %}
+    </div>
+
+    {% block side_footer %}
+    {% endblock %}
+
+    {% include '../../widget/system-version.html' %}
+  </aside>
+
+  <div class="row hidden-print bg-title">
+    <div class="col-md-9">
+      {% block content_header %}
+      {% endblock %}
+    </div>
+  </div><!-- /.bg-title -->
+
+  <div class="row">
+    <div id="main" class="main m-t-15 col-md-9 {% if page %}{{ css.grant(page) }}{% endif %} {% block main_css_class %}{% endblock %}">
+      {% block content_main_before %}
+      {% endblock %}
+
+      {% block content_main %}
+      {% endblock content_main %}
+
+      {% block content_main_after %}
+      {% endblock %}
+
+      {% block content_footer %}
+      {% endblock %}
+
+    </div>
+  </div>
+
+</div><!-- /.container-fluid -->
+{% endblock %} {# layout_main #}
