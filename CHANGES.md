@@ -1,7 +1,11 @@
 CHANGES
 ========
 
-## 3.2.1-RC
+## 3.2.2-RC
+
+* 
+
+## 3.2.1
 
 * Feature: Import data from esa.io
 * Feature: Import data from Qiita:Team
