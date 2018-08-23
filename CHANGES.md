@@ -10,6 +10,8 @@ CHANGES
 * Fix: Renaming page doesn't work if the page was saved with shortcut
 * Support: Refactor directory structure
 * Support Upgrade libs
+    * file-loader
+    * googleapis
     * postcss-loader
     * sass-loader
     * style-loader
