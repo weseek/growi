@@ -11,27 +11,24 @@
 
 
 {% block content_main %}
-  <div class="row">
+<div class="row">
 
-    <div class="col-xs-12 bg-white round-corner">
+  <div class="col-xs-12 bg-white round-corner">
 
-     {% include '../widget/page_content.html' %}
+    {% include '../widget/page_content.html' %}
+    {# force remove #revision-toc from #content_main of parent #}
+    <script>
+      $('#revision-toc').remove();
+    </script>
 
-      {# force remove #revision-toc from #content_main of parent #}
-      <script>
-        $('#revision-toc').remove();
-      </script>
+  </div> {# /.col- #} {# relocate #revision-toc #}
+  <div class="col-lg-2 col-md-3 revision-toc-container hidden-sm hidden-xs">
+    <div id="revision-toc" class="revision-toc affix" data-spy="" data-offset-top="80">
+      <div id="revision-toc-content" class="revision-toc-content"></div>
+    </div>
+  </div> {# /.col- #}
 
-    </div> {# /.col- #}
-
-    {# relocate #revision-toc #}
-    <div class="col-lg-2 col-md-3 revision-toc-container hidden-sm hidden-xs">
-      <div id="revision-toc" class="revision-toc affix" data-spy="" data-offset-top="80">
-        <div id="revision-toc-content" class="revision-toc-content"></div>
-      </div>
-    </div> {# /.col- #}
-
-  </div>
+</div>
 
   {% if 'growi' === behaviorType() || 'crowi-plus' === behaviorType() %}
   <div class="row page-list p-t-10 m-t-30 m-b-30 round-corner">

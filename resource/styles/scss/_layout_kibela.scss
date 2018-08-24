@@ -1,6 +1,9 @@
 .kibela {
-
-  .icon-link, .CodeMirror-hint-active, .nav-main-left-tab, .tav-pane, .active {
+  .icon-link,
+  .CodeMirror-hint-active,
+  .nav-main-left-tab,
+  .tav-pane,
+  .active {
     color: #5882FA;
   }
   .bg-white {
@@ -9,16 +12,15 @@
   .logo {
     background: transparent;
     .logo-mark {
-    background-color: white;
-    height: 50px;
-    box-shadow: none;
-    svg {
-      width: 60px;
+      background-color: white;
+      height: 50px;
+      box-shadow: none;
+      svg {
+        width: 60px;
+      }
     }
-   }
- }
-
- /* header */
+  }
+  /* header */
   .background-t {
     background-color: transparent;
   }
@@ -28,112 +30,20 @@
       list-style: none !important;
     }
   }
- .search-input-group, .search-typeahead {
-   .btn {
-    background-color: transparent;
-   }
- }
+  .search-input-group,
+  .search-typeahead {
+    .btn {
+      background-color: transparent;
+    }
+  }
   .panel-heading {
     border-radius: 0 !important;
   }
-
- .btn-open-dropzone {
-  background: rgb(243, 245, 247);
-  border-bottom: 0px !important;
+  .btn-open-dropzone {
+    background: rgb(243, 245, 247);
+    border-bottom: 0px !important;
   }
- /* navbar */
-
-  .navbar-header {
-    display: inline-block;
-    overflow: visible;
-    min-width: 320px;
-    background: white;
-    color: #3c4a60;
-    border-bottom: solid 1px #E6E9EC;
-    height: 60px;
-    padding: 5px 8px 5px 8px;
-
-    .navbar-right {
-      a {
-        margin-right: 1.5em;
-      }
-    }
-    .top-left-part {
-      background: white;
-    }
-    .navbar-top-links > li > a{
-    border-radius: 0.35em;
-    height: 40px !important;
-    color: #3c4a60;
-    }
-    .create-page {
-      background: #5584E1;
-      border-radius: 0.35em;
-      width: 8em;
-      text-align: center;
-      &:hover{
-        background:rgb(124, 168, 255);
-    }
-      span, i {
-      color: white;
-      }
-    }
-    .dropdown {
-      a {
-         .user-name {
-          margin-right: 0.5em;
-          margin-left: 0.5em;        }
-      }
-      .img-circle {
-        width: 36px;
-        height: 36px;
-      }
-    }
-
-
-
-    @media screen and (max-width: 790px) {
-
-      .search-top, .navbar-toggle {
-        display: none !important;
-      }
-      @media screen and (max-width: 540px) {
-
-        .user-name {
-          display: none;
-        }
-        .navbar-right {
-          width: 80%;
-          li {
-            text-align: center;
-            width: 25%;
-            a {
-              margin-right: 0px;
-            }
-            .create-page {
-              width: 100%;
-            }
-            .dropdown {
-              text-align: center;
-              .dropdown-toggle {
-                padding-left: 0em;
-                margin-right: 0px;
-                width: 100%;
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-
-
-
-
-
-
   /* page list */
-
   .page-list {
     background: white;
   }
@@ -141,7 +51,6 @@
     border: 0px;
     background-color: #E5ECF1 !important;
   }
-
   .round-corner {
     border-radius: 0.35em;
   }
@@ -174,290 +83,8 @@
     }
   }
 }
-.kibela.main-container {
-  .revision-toc {
-    &.affix {
-      right: 10rem;
-      margin-top: 40px;
-      top: calc(60px + 5px);
-      min-width: calc(#{100/12*2%} - #{$grid-gutter-width});  // width of 2column - padding
-
-    }
-
-    .revision-toc-content {
-      padding: 0;
-    }
-    @media screen and (max-width: 1400px) {
-      &.affix {
-      right: 0rem !important;
-      transition: 0.5s ;
-      }
-    }
-  }
-
-  /* search page */
-
-  .search-result-list, .page-list-li {
-    background: #F4F5F6;
-  }
-
-  /* Comment section */
-
-    %comment-section {
-      position: relative;
-      padding: 1em;
-      margin-left: 4.5em;
-      margin-bottom: 1em;
-      // screen-xs
-      @media (max-width: $screen-xs) {
-        margin-left: 3.5em;
-      }
-
-      // speech balloon
-      &:before {
-        width: 0;
-        height: 0;
-        border-top: 20px solid transparent;
-        border-left: 20px solid transparent;
-        border-bottom: 20px solid transparent;
-        border-right: 20px solid #E6E9EC;
-
-        border-left-width: 0;
-        left: -1em;
-        content: "";
-        display: block;
-        top: 1.5em;
-        position: absolute;
-        width: 0;
-
-        // screen-xs
-        @media (max-width: $screen-xs) {
-          top: 1em;
-        }
-      }
-    }
-
-    %picture {
-      float: left;
-      margin-top: 0.8em;
-      width: 3em;
-      height: 3em;
-      // screen-xs
-      @media (max-width: $screen-xs) {
-        width: 2em;
-        height: 2em;
-      }
-    }
-
-    .page-comments-row {
-
-      margin: 10px 0px;
-    }
-
-    .page-comments {
-      h4 {
-        margin-bottom: 1em;
-      }
-    }
-
-    .page-comment {
-      position: relative;
-
-      // ユーザー名
-      .page-comment-creator {
-        margin-top: -0.5em;
-        margin-bottom: 0.5em;
-        font-weight: bold;
-      }
-
-      // ユーザーアイコン
-      .picture {
-        @extend %picture;
-      }
-
-      // コメントセクション
-      .page-comment-main {
-        @extend %comment-section;
-        background: #E6E9EC;
-        border-radius: 0.35em;
-      }
-
-      // コメント本文
-      .page-comment-body {
-        margin-bottom: 0.5em;
-        word-wrap: break-word;
-      }
-
-      .page-comment-meta {
-        color: #E5ECF1;
-        font-size: .9em;
-        text-align: right;
-
-        * {
-          vertical-align: 25%;
-        }
-      }
-    }
-
-    // show when hover
-    .page-comment-main:hover > .page-comment-control {
-      display: block;
-    }
-
-    // display cheatsheet for comment form only
-    .comment-form {
-      border: none;
-      .editor-cheatsheet {
-          display: none;
-      }
-
-      position: relative;
-      margin-top: 2em;
-      // user icon
-      .picture {
-        @extend %picture;
-      }
-
-      // seciton
-      .comment-form-main {
-        @extend %comment-section;
-        background: #E6E9EC;
-        border-radius: 0.35em;
-        .CodeMirror {
-          border: 0px;
-        }
-      }
-
-      // textarea
-      .comment-write {
-        margin-bottom: 0.5em;
-      }
-
-      .comment-form-comment {
-        height: 80px;
-        &:focus, &:not(:invalid) {
-          transition: height 0.2s ease-out;
-          height: 180px;
-        }
-      }
-      .CodeMirror {
-      border: 0px !important;
-      }
-      #page-editor {
-        @media (max-width: $screen-sm) {
-          .desc-long {
-            display: none;
-          }
-        }
-      }
-      @media screen and (max-width: 1400px) {
-        .desc-long {
-          display: none;
-        }
-        @media screen and (max-width: 570px) {
-          .gfm-cheatsheet {
-            display: none;
-          }
-        }
-      }
-    }
-
-
-
-
-
-/*
- * Tabs
- */
-  .nav.nav-tabs {
-      border-bottom-color: #F4F5F6;
-    > li > a {
-      &, &:hover, &:focus {
-        background: transparent;
-        border-top: none;
-        border-left: none;
-        border-right: none;
-      }
-    }
-    > li.active > a {
-      background: transparent !important;
-      border-bottom: solid 2.7px #5584E1;
-      border-top: none;
-      border-left: none;
-      border-right: none;
-    }
-
-
-
-    .wiki {
-      h1 {
-        border-bottom: solid 2px #5584E1 !important;
-      }
-      h2 {
-        border-color: solid 1px #5584E1;
-      }
-    }
-
-  }
-
-/* user page */
-
-
-    .header-wrap {
-      margin-left: 2em;
-      padding: 0px;
-    }
-
-
-
-
-
-/* edit */
-
-  .CodeMirror {
-    border-radius: 0.35em;
-    border-top: solid 0.3em #5584E1 !important;
-    border: solid 1.2px #D8D8D8;
-  }
-  .tab-content {
-    padding: 1em;
-  }
-  .tab-pane {
-
-    .page-editor-editor-container {
-      margin: 0px;
-      border: none !important;
-    }
-
-  }
-  .page-editor-preview-container {
-    background: white !important;
-    padding-right: 0px !important;
-    padding-left: 2em;
-  }
-
-
-
-
-
-}
-
 .on-edit {
-
-    .kibela-block {
-      border: 0px ;
-    }
-
-
+  .kibela-block {
+    border: 0px;
+  }
 }
-
-
-
-
-
-
-
-
-
-
-
