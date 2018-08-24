@@ -1,12 +1,12 @@
 .kibela {
-  p, h1, h2, h3, h4, h5, h6, li, span, i, a, li {
-    color: #3c4a60;
+
+  /* h1 横のアイコン　*/
+
+  h1,.revision-head-link, .revision-head-button, .icon-link, .icon-note {
+    color: black;
   }
   .icon-link, .CodeMirror-hint-active, .nav-main-left-tab, .tav-pane, .active {
     color: #5882FA;
-  }
-  body, html, #page-wrapper, {
-    background-color: gray;
   }
   .bg-white {
     background: rgb(254, 255, 254) !important;
@@ -62,14 +62,14 @@
       a {
         margin-right: 1.5em;
       }
-
-
     }
-
-
+    .top-left-part {
+      background: white;
+    }
     .navbar-top-links > li > a{
     border-radius: 0.35em;
     height: 40px !important;
+    color: #3c4a60;
     }
     .create-page {
       background: #5584E1;
@@ -85,7 +85,6 @@
     }
     .dropdown {
       a {
-        color: #3c4a60;
          .user-name {
           margin-right: 0.5em;
           margin-left: 0.5em;        }
@@ -100,8 +99,8 @@
 
     @media screen and (max-width: 770px) {
 
-      .search-top {
-        display: none;
+      .search-top, .navbar-toggle {
+        display: none !important;
       }
       @media screen and (max-width: 500px) {
 
@@ -148,9 +147,6 @@
     background-color: #E5ECF1 !important;
   }
 
-  #page-wrapper {
-    background-color: #F4F5F6 !important;
-  }
   .round-corner {
     border-radius: 0.35em;
   }
@@ -202,6 +198,12 @@
       transition: 0.5s ;
       }
     }
+  }
+
+  /* search page */
+
+  .search-result-list, .page-list-li {
+    background: #F4F5F6;
   }
 
   /* Comment section */
@@ -292,16 +294,13 @@
       }
 
       .page-comment-meta {
-        color: #999;
+        color: #E5ECF1;
         font-size: .9em;
         text-align: right;
 
         * {
           vertical-align: 25%;
         }
-      }
-      .page-comment-revision {
-        color: lightgray;
       }
     }
 

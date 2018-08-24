@@ -12,8 +12,8 @@ $sidebar: $themelight;
 $bodycolor: $themelight;
 
 $headingtext: $themecolor;
-$bodytext: $themecolor;
-$linktext: lighten($themecolor,5%);
+$bodytext: #3c4a60;
+$linktext: rgb(74,109,204);
 $linktext-hover: lighten($linktext, 12%);
 $sidebar-text: $themecolor;
 
