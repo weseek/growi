@@ -1,10 +1,5 @@
 .kibela {
 
-  /* h1 横のアイコン　*/
-
-  h1,.revision-head-link, .revision-head-button, .icon-link, .icon-note {
-    color: black;
-  }
   .icon-link, .CodeMirror-hint-active, .nav-main-left-tab, .tav-pane, .active {
     color: #5882FA;
   }
@@ -97,31 +92,31 @@
 
 
 
-    @media screen and (max-width: 770px) {
+    @media screen and (max-width: 790px) {
 
       .search-top, .navbar-toggle {
         display: none !important;
       }
-      @media screen and (max-width: 500px) {
+      @media screen and (max-width: 540px) {
 
         .user-name {
           display: none;
         }
         .navbar-right {
-          width: 65%;
+          width: 80%;
           li {
             text-align: center;
-            width: 30%;
+            width: 25%;
             a {
               margin-right: 0px;
             }
             .create-page {
-              width: 60px;
+              width: 100%;
             }
             .dropdown {
               text-align: center;
               .dropdown-toggle {
-                padding-left: 2em;
+                padding-left: 0em;
                 margin-right: 0px;
                 width: 100%;
               }
