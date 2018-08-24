@@ -1,8 +1,7 @@
 /**
  * @author: Yuki Takei <yuki@weseek.co.jp>
  */
-
-const helpers = require('./helpers');
+const helpers = require('../src/lib/util/helpers');
 
 /**
  * Webpack Plugins
@@ -40,7 +39,7 @@ module.exports = require('./webpack.common')({
             'sass-loader'
           ]
         }),
-        include: [helpers.root('resource/styles/scss'), helpers.root('resource/styles/hackmd')]
+        include: [helpers.root('src/client/styles/scss'), helpers.root('src/client/styles/hackmd')]
       }
     ]
   },

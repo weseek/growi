@@ -1,0 +1,118 @@
+<form action="/_api/admin/security/passport-github" method="post" class="form-horizontal passportStrategy" id="githubSetting" role="form"
+    {% if isRestartingServerNeeded %}style="opacity: 0.4;"{% endif %}>
+  <legend class="alert-anchor">{{ t("security_setting.OAuth.GitHub.name") }} {{ t("security_setting.configuration") }}</legend>
+
+  {% set nameForIsGitHubEnabled = "settingForm[security:passport-github:isEnabled]" %}
+  {% set isGitHubEnabled = settingForm['security:passport-github:isEnabled'] %}
+
+  <div class="form-group">
+    <label for="{{nameForIsGitHubEnabled}}" class="col-xs-3 control-label">{{ t("security_setting.OAuth.GitHub.name") }}</label>
+    <div class="col-xs-6">
+      <div class="btn-group btn-toggle" data-toggle="buttons">
+        <label class="btn btn-default btn-rounded btn-outline {% if isGitHubEnabled %}active{% endif %}" data-active-class="primary">
+          <input name="{{nameForIsGitHubEnabled}}" value="true" type="radio"
+              {% if true === isGitHubEnabled %}checked{% endif %}> ON
+        </label>
+        <label class="btn btn-default btn-rounded btn-outline {% if !isGitHubEnabled %}active{% endif %}" data-active-class="default">
+          <input name="{{nameForIsGitHubEnabled}}" value="false" type="radio"
+              {% if !isGitHubEnabled %}checked{% endif %}> OFF
+        </label>
+      </div>
+    </div>
+  </div>
+  <fieldset id="passport-github-hide-when-disabled" {%if !isGitHubEnabled %}style="display: none;"{% endif %}>
+
+    <div class="form-group">
+      <label for="settingForm[security:passport-github:clientId]" class="col-xs-3 control-label">{{ t("security_setting.clientID") }}</label>
+      <div class="col-xs-6">
+        <input class="form-control" type="text" name="settingForm[security:passport-github:clientId]" value="{{ settingForm['security:passport-github:clientId'] || '' }}">
+        <p class="help-block">
+          <small>
+            {{ t("security_setting.Use env var if empty", "OAUTH_GITHUB_CLIENT_SECRET") }}
+          </small>
+        </p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="settingForm[security:passport-github:clientSecret]" class="col-xs-3 control-label">{{ t("security_setting.client_secret") }}</label>
+      <div class="col-xs-6">
+        <input class="form-control" type="text" name="settingForm[security:passport-github:clientSecret]" value="{{ settingForm['security:passport-github:clientSecret'] || '' }}">
+        <p class="help-block">
+          <small>
+            {{ t("security_setting.Use env var if empty", "OAUTH_GITHUB_CLIENT_SECRET") }}
+          </small>
+        </p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="settingForm[security:passport-github:callbackUrl]" class="col-xs-3 control-label">{{ t("security_setting.callback_URL") }}</label>
+      <div class="col-xs-6">
+        <input class="form-control" type="text" name="settingForm[security:passport-github:callbackUrl]" value="{{ settingForm['security:passport-github:callbackUrl'] || '' }}"
+            placeholder="http(s)://${growi.host}/passport/github/callback">
+        <p class="help-block">
+          Input <code>http(s)://${growi.host}/passport/github/callback</code><br>
+          <small>
+            {{ t("security_setting.Use env var if empty", "OAUTH_GITHUB_CALLBACK_URI") }}
+          </small>
+        </p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="col-xs-6 col-xs-offset-3">
+        <div class="checkbox checkbox-info">
+          <input type="checkbox" id="bindByUserName-GitHub" name="settingForm[security:passport-github:isSameUsernameTreatedAsIdenticalUser]" value="1"
+              {% if settingForm['security:passport-github:isSameUsernameTreatedAsIdenticalUser'] %}checked{% endif %} />
+          <label for="bindByUserName-GitHub">
+            {{ t("security_setting.Treat username matching as identical", "username") }}
+          </label>
+          <p class="help-block">
+            <small>
+              {{ t("security_setting.Treat username matching as identical_warn", "username") }}
+            </small>
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </fieldset>
+
+  <div class="form-group" id="btn-update">
+    <div class="col-xs-offset-3 col-xs-6">
+      <input type="hidden" name="_csrf" value="{{ csrf() }}">
+      <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
+    </div>
+  </div>
+
+</form>
+
+{# Help Section #}
+<hr>
+
+<div style="min-height: 300px;">
+  <h4>
+    <i class="icon-question" aria-hidden="true"></i>
+    <a href="#collapseHelpForGithubOauth" data-toggle="collapse">{{ t("security_setting.OAuth.how_to.github") }}</a>
+  </h4>
+  <ol id="collapseHelpForGithubOauth" class="collapse">
+    <li>{{ t("security_setting.OAuth.GitHub.register_1", "https://github.com/settings/developers", "GitHub Developer Settings") }}</li>
+    <li>{{ t("security_setting.OAuth.GitHub.register_2", "https://${growi.host}/passport/github/callback", "${growi.host}") }}</li>
+    <li>{{ t("security_setting.OAuth.GitHub.register_3") }}</li>
+  </ol>
+</div>
+
+<script>
+  $('input[name="settingForm[security:passport-github:isEnabled]"]').change(function() {
+    const isEnabled = ($(this).val() === "true");
+
+    if (isEnabled) {
+      $('#passport-github-hide-when-disabled').show(400);
+    }
+    else {
+      $('#passport-github-hide-when-disabled').hide(400);
+    }
+  });
+</script>
+

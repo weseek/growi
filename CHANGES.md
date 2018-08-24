@@ -1,7 +1,26 @@
 CHANGES
 ========
 
-## 3.2.0-RC
+## 3.2.2-RC
+
+* 
+
+## 3.2.1
+
+* Feature: Import data from esa.io
+* Feature: Import data from Qiita:Team
+* Feature: Add the endpoint for health check
+* Improvement: Adjust styles when printing
+* Fix: Renaming page doesn't work if the page was saved with shortcut
+* Support: Refactor directory structure
+* Support Upgrade libs
+    * file-loader
+    * googleapis
+    * postcss-loader
+    * sass-loader
+    * style-loader
+
+## 3.2.0
 
 * Feature: HackMD integration so that user will be able to simultaneously edit with multiple people
 * Feature: Login with Twitter Account

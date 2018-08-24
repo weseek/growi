@@ -1,0 +1,109 @@
+.admin-page {
+    //security XSS prevent
+
+  .admin-user-menu {
+    .dropdown-menu {
+      left: auto;
+      right: 0;
+      width: 300px;
+    }
+   }
+
+  .admin-group-menu {
+    .dropdown-menu {
+      left: auto;
+      right: 0;
+    }
+  }
+
+  .admin-customize {
+    .ss-container img {
+      padding: .5em;
+      background-color: #ddd;
+    }
+
+    .table-user-list {
+      .label-admin {
+        margin-left: 1em;
+      }
+    }
+  }
+
+  .admin-security {
+    .passport-logo {
+      margin-top: -.5em;
+      padding: 3px;
+      height: 32px;
+      background-color: black;
+    }
+
+    .auth-mechanism-configurations {
+      min-height: 300px;
+    }
+  }
+
+  .admin-notification {
+    .td-abs-center {
+      text-align: center;
+      vertical-align: middle;
+      width: 1px; // to keep the cell small
+    }
+  }
+
+  .admin-importer {
+    table.table-mapping {
+      th, td {
+        text-align: center;
+      }
+    }
+  }
+
+
+  // Toggle Twitter Bootstrap button class when active
+  // https://jsfiddle.net/ms040m01/3/
+  @mixin active-color($color, $bg-color, $border-color) {
+    color: $color;
+    background-color: darken($bg-color, 10%);
+    border-color: $border-color;
+
+    &:hover {
+      background-color: darken($bg-color, 15%);
+    }
+  }
+  .btn-group.btn-toggle {
+    .btn {
+      min-width: 60px;
+    }
+    .btn.active[data-active-class="default"] {
+      @include active-color($btn-default-color, $btn-default-bg, $btn-default-border);
+    }
+    .btn.active[data-active-class="primary"] {
+      @include active-color($btn-primary-color, $btn-primary-bg, $btn-primary-border);
+    }
+  }
+
+  // theme selector
+  #themeOptions {
+    // layout
+    a {
+      margin-right: 10px;
+      margin-bottom: 10px;
+      padding: 3px;
+
+      svg {
+        display: block;
+      }
+    }
+
+    // style
+    a {
+      border: 1px solid #ccc;
+      background-color: #f5f5f5;
+
+      &.active {
+        border-color: $brand-success;
+        background-color: $brand-success;
+      }
+    }
+  }
+}

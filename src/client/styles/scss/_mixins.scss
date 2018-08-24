@@ -1,0 +1,15 @@
+@mixin variable-font-size($basesize) {
+  font-size: $basesize;
+  @media(max-width: $screen-lg) {
+    font-size: #{$basesize * 0.9};
+  }
+  @media(max-width: $screen-md) {
+    font-size: #{$basesize * 0.8};
+  }
+  @media(max-width: $screen-sm) {
+    font-size: #{$basesize * 0.7};
+  }
+  @media(max-width: $screen-xs) {
+    font-size: #{$basesize * 0.6};
+  }
+}

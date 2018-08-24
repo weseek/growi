@@ -1,0 +1,507 @@
+{
+  "Help": "Help",
+  "Edit": "Edit",
+  "Delete": "Delete",
+  "Duplicate": "Duplicate",
+  "Move": "Move",
+  "Moved": "Moved",
+  "Unlinked": "Unlinked",
+  "Like!": "Like!",
+  "Seen by": "Seen by",
+  "Cancel": "Cancel",
+  "Create": "Create",
+  "Admin": "Admin",
+  "New": "New",
+  "Shortcuts": "Shortcuts",
+
+  "Update": "Update",
+  "Update Page": "Update Page",
+  "Warning": "Warning",
+
+  "Sign in": "Sign in",
+  "Sign up is here": "Sign up",
+  "Sign in is here": "Sign in",
+  "Sign up": "Sign up",
+  "Sign up with Google Account": "Sign up with Google Account",
+  "Sign in with Google Account": "Sign in with Google Account",
+  "Sign up with this Google Account": "Sign up with this Google Account",
+  "Example": "Example",
+  "Taro Yamada": "John Doe",
+
+  "List View": "List",
+  "Timeline View": "Timeline",
+  "History": "History",
+  "Presentation Mode": "Presentation",
+
+  "Created": "Created",
+  "Last updated": "Updated",
+
+  "Share": "Share",
+  "Share Link": "Share Link",
+  "Markdown Link": "Markdown Link",
+
+  "Management Wiki": "Management Wiki",
+
+  "Create/Edit Template": "Create/Edit Template Page",
+
+  "Unportalize": "Unportalize",
+
+  "View this version": "View this version",
+  "View diff": "View diff",
+
+  "User ID": "User ID",
+  "Home": "Home",
+  "User Settings": "User Settings",
+  "User Information": "User Information",
+  "Basic Info": "Basic Info",
+  "Name": "Name",
+  "Email": "Email",
+  "Language": "Language",
+  "English": "English",
+  "Japanese": "Japanese",
+  "Set Profile Image": "Set Profile Image",
+  "Upload Image": "Upload Image",
+  "Current Image": "Current Image",
+  "Delete Image": "Delete Image",
+  "Delete this image?": "Delete this image?",
+  "Updated": "Updated",
+  "Upload new image": "Upload new image",
+  "Google Setting": "Google Setting",
+  "Connected": "Connected",
+  "Disconnect": "Disconnect",
+  "Show": "Show",
+  "Hide": "Hide",
+  "Disclose E-mail": "Disclose E-mail",
+
+
+
+  "Create today's": "Create today's ...",
+  "Memo": "memo",
+  "Input page name": "Input page name",
+  "Input page name (optional)": "Input page name (optional)",
+  "New Page": "New Page",
+  "Create under": "Create page under below:",
+
+  "Table of Contents": "Table of Contents",
+
+  "Public": "Public",
+  "Anyone with the link": "Anyone with the link",
+  "Specified users only": "Specified users only",
+  "Just me": "Just me",
+  "Only inside the group": "Only inside the group",
+  "Reselect the group": "Reselect the group",
+  "Shareable link": "Shareable link",
+
+  "Show latest": "Show latest",
+  "Load latest": "Load latest",
+  "edited this page": "edited this page.",
+
+  "Deleted Pages": "Deleted Pages",
+  "Sign out": "Logout",
+
+  "page_register": {
+    "notice": {
+      "restricted": "Admin approval required.",
+      "restricted_defail": "Once the admin approves your sign up, you'll be able to access this wiki.",
+      "google_account_continue": "Enter your user ID, name and password to continue."
+    },
+    "form_help": {
+      "email": "You must have email address which listed below to sign up to this wiki.",
+      "password": "Your password must be at least 6 characters long.",
+      "user_id": "The URL of pages you create will contain your User ID. Your User ID can consist of letters, numbers, and some symbols."
+    }
+  },
+
+  "page_me": {
+    "form_help": {
+      "profile_image1": "Image upload settings not completed.",
+      "profile_image2": "Set up AWS or enable local uploads.",
+      "google_connect1": "With Google Connect, you can sign in with your Google Account.",
+      "google_connect2": "Only Google Apps accounts with the following email addresses are connectable Google accounts:",
+      "google_disconnect1": "If you disconnect your Google account, you will be unable to sign in using Google Authentication",
+      "google_disconnect2": "After disconnecting your Google account, you can sign in normally using your email and password"
+    }
+  },
+  "page_me_apitoken": {
+    "notice": {
+      "apitoken_issued": "API Token is not issued.",
+      "update_token1": "You can update to generate a new API Token.",
+      "update_token2": "You will need to update the API Token in any existing processes."
+    },
+    "form_help": {
+    }
+  },
+
+  "Password": "Password",
+  "Password Settings": "Password Settings",
+  "Set new Password": "Set new Password",
+  "Update Password": "Update Password",
+  "Current password": "Current password",
+  "New password": "New password",
+  "Re-enter new password": "Re-enter new password",
+  "Password is not set": "Password is not set",
+
+  "API Settings": "API Settings",
+  "API Token Settings": "API Token Settings",
+  "Current API Token": "Current API Token",
+  "Update API Token": "Update API Token",
+
+  "Security settings": "Security settings",
+
+
+  "page_page": {
+      "notice": {
+          "version": "This is not the current version.",
+          "moved": "This page was moved from <code>%s</code>",
+          "duplicated": "This page was duplicated from <code>%s</code>",
+          "unlinked": "Redirect pages to this page have been deleted.",
+          "restricted": "Access to this page is restricted"
+      }
+  },
+
+  "page_edit": {
+      "notice": {
+          "conflict": "Couldn't save the changes you made because someone else was editing this page. Please re-edit the affected section after reloading the page."
+      }
+  },
+
+  "modal_rename": {
+    "label": {
+      "Rename page": "Rename page",
+      "New page name": "New page name",
+      "Current page name": "Current page name",
+      "Move recursively": "Move recursively",
+      "Redirect": "Redirect"
+    },
+    "help": {
+      "redirect": "Redirect to new page if someone accesses <code>%s</code>",
+      "recursive": "Rename children of under <code>%s</code> recursively"
+    }
+  },
+
+  "Put Back": "Put Back",
+  "Delete Completely": "Delete Completely",
+
+  "modal_delete": {
+    "label": {
+      "Delete Page": "Delete Page",
+      "recursively": "Process recursively",
+      "completely": "Delete completely"
+    }
+  },
+
+  "modal_duplicate": {
+    "label": {
+      "Duplicate page": "Duplicate page",
+      "New page name": "New page name",
+      "Current page name": "Current page name"
+    }
+  },
+
+  "modal_putBack": {
+    "label": {
+      "Put Back Page": "Put Back Page",
+      "recursively": "Process recursively"
+    }
+  },
+
+  "modal_shortcuts": {
+    "global": {
+      "title": "Global shortcuts",
+      "Open/Close shortcut help": "Open/Close shortcut help",
+      "Edit Page": "Edit Page",
+      "Create Page": "Create Page"
+    },
+    "editor": {
+      "title": "Editor shortcuts",
+      "Indent": "Indent",
+      "Outdent": "Outdent",
+      "Save Page": "Save Page",
+      "Delete Line": "Delete Line"
+    },
+    "commentform": {
+      "title": "Comment Form shortcuts",
+      "Post": "Post"
+    }
+  },
+
+  "template": {
+    "modal_label": {
+      "Create/Edit Template Page": "Create/Edit Template Page",
+      "Create template under": "Create template page under: <code>%s</code>"
+    },
+    "option_label": {
+      "create/edit": "Create/Edit Template page..",
+      "select": "Select template page type"
+    },
+    "children": {
+      "label": "Template for children",
+      "desc": "Applies only to the same level pages which the template exists"
+    },
+    "decendants": {
+      "label": "Template for descendants",
+      "desc": "Applies to all decendant pages"
+    }
+  },
+
+  "admin_top": {
+    "Management Wiki": "Management Wiki",
+    "System Information": "System Information",
+    "wiki_administrator": "Only Wiki administrator can access this page",
+    "assign_administrator": "You can assign administrator from Assign administrator button in the User management page",
+    "List of installed plugins": "List of installed plugins",
+    "Package name": "Package name",
+    "Specified version": "Specified version",
+    "Installed version": "Installed version"
+
+  },
+
+  "app_setting": {
+    "Site Name": "Site name",
+    "sitename_change": "You can change Site Name which is used for header and HTML title.",
+    "header_content": "The contents entered here will be shown in the header etc.",
+    "Confidential name": "Confidential name",
+    "ex): internal use only":"ex): internal use only",
+    "enable_files_except_image": "Enable file upload other than image files.",
+    "attach_enable": "You can attach files other than image files if you enable this option.",
+    "Update": "Update",
+    "Mail settings": "Mail settings",
+    "SMTP_used": "If you have SMTP settings, it will be used.",
+    "SMTP_but_AWS": "If you do not have SMTP settings but AWS settings,  e-mails will be sent by SES.",
+    "neihter_of": "If you do not of neither of these, e-mails will not be sent.",
+    "From e-mail address": "From e-mail address",
+    "SMTP settings": "SMTP settings"  ,
+    "Host": "Host",
+    "Port": "Port",
+    "User": "User",
+    "AWS settings": "AWS settings",
+    "AWS_access": "This is for AWS settings. If you complete AWS settings, file upload function, progile picture function etc will be enabled.",
+    "No_SMTP_setting": "If you do not have SMTP settings, e-mails will be sent via SES. You need to verify from e-mail address and production settings.",
+    "change_setting": "Caution:if you change this setting not completed, you will not be able to access files you have uploaded so far.",
+    "region": "Region",
+    "bucket name": "Bucket name",
+    "Plugin settings": "Plugin settings",
+    "Enable plugin loading": "Enable plugin loading",
+    "Load plugins": "Load plugins",
+    "Enable": "Enable",
+    "Disable": "Disable"
+
+  },
+  "security_setting": {
+		"Basic authentication": "Basic authentication",
+		"Security settings": "Security settings",
+		"Guest users access": "Guest users access",
+		"Register limitation": "Register limitation",
+		"The whitelist of registration permission E-mail address": "The whitelist of registration permission E-mail address",
+		"Selecting authentication mechanism": "Selecting authentication mechanism",
+		"common_authentication": "If you set the basic authentication, common authentication is applied on the whole page.",
+		"without_encryption": "Please be noted that your ID and Password will be sent wihtout encryption.",
+		"users_without_account": "Users without account is not accessible",
+    "example": "Example",
+    "restrict_emails": "You can restrict registerable e-mail address.",
+		"for_instance": " For instance, if you use growi within a company, you can write ",
+		"only_those": " Only those whose e-mail address including the company address can register.",
+		"insert_single": "Please insert single e-mail address per line.",
+		"Authentication mechanism settings": "Authentication mechanism settings",
+    "note": "Note",
+    "require_server_restart_change_auth": "Restarting the server is required if you switch the auth mechanism.",
+    "auth_mechanism": "authentication mechanism",
+    "recommended": "Recommended",
+    "username_email_password": "Username, Email and Password authentication",
+    "ldap_auth": "LDAP authentication",
+    "google_auth2": "Google OAuth authentication",
+    "google_auth2_by_crowi_desc": "However, this feature does not create new users, butit only makes it possible to login to the existing user who set up the association.",
+    "facebook_auth2": "Facebook OAuth authentication",
+    "twitter_auth2": "Twitter OAuth authentication",
+    "github_auth2": "GitHub OAuth authentication",
+    "crowi_auth": "Crowi classic authentication mechanism",
+		"require_server_restart": "Restarting the server is required.",
+		"server_on_passport_auth": "The server is running with Passport authentication mechanism.",
+		"server_on_crowi_auth": "The server is running with official Crowi authentication mechanism.",
+		"google_setting": "Google Setting",
+    "connect_api_manager": "You can use your Google account to sign up and login after creating OAuth2 ClientId at <a href=\"https://console.cloud.google.com/apis/credentials\" target=\"_blank\">API Manager on Google Cloud Platform</a>",
+		"access_api_manager": "Access <a href=\"%s\" target=\"_blank\">%s</a>",
+		"create_project": "Create Project if no projects have been created.",
+		"create_auth_to_oauth": "\"Create credentials\" -> \"OAuth clientID\"",
+		"select_webapp": "Select \"Web Application\"",
+    "change_redirect_url": "Enter <code>https://${crowi.host}/google/callback</code> <br>(where <code>${crowi.host}</code> is your host name) for \"Authorized redirect URIs\".",
+    "clientID": "Client ID",
+    "client_secret": "Client Secret",
+    "xss_prevent_setting":"Prevent XSS(Cross Site Scripting)",
+    "xss_prevent_setting_link":"Go to Markdown settings",
+    "callback_URL": "Callback URL",
+    "guest_mode": {
+      "deny": "Deny Unregistered Users",
+      "readonly": "View Only"
+    },
+    "registration_mode": {
+      "open": "Anyone",
+      "restricted": "Reuqire Admin permission",
+      "closed": "Invitation Only"
+    },
+    "configuration": " Configuration",
+    "optional": "Optional",
+    "Treat username matching as identical": "Automatically bind external accounts newly logged in to local accounts when <code>%s</code> match",
+    "Treat username matching as identical_warn": "WARNING: Be aware of security because the system treats the same user as a match of <code>%s</code>.",
+    "Use env var if empty": "Use env var <code>%s</code> if empty",
+    "ldap": {
+      "server_url_detail": "The LDAP URL of the directory service in the format <code>ldap://host:port/DN</code> or <code>ldaps://host:port/DN</code>.",
+      "bind_mode": "Binding Mode",
+      "bind_manager": "Manager Bind",
+      "bind_user": "User Bind",
+      "bind_DN_manager_detail": "The DN of the account that authenticates and queries the directory service",
+      "bind_DN_user_detail1": "The query used to bind with the directory service.",
+      "bind_DN_user_detail2": "Use <code>&#123;&#123;username&#125;&#125;</code> to reference the username entered in the login page.",
+      "bind_DN_password": "Bind DN Password",
+      "bind_DN_password_manager_detail": "The password for the Bind DN account.",
+      "bind_DN_password_user_detail": "The password that is entered in the login page will be used to bind.",
+      "search_filter": "Search Filter",
+      "search_filter_detail1": "The query used to locate the authenticated user.",
+      "search_filter_detail2": "Use <code>&#123;&#123;username&#125;&#125;</code> to reference the username entered in the login page.",
+      "search_filter_detail3": "If empty, the filter <code>(uid=&#123;&#123;username&#125;&#125;)</code> is used.",
+      "search_filter_example1": "Match with 'uid' or 'mail'",
+      "search_filter_example2": "Match with 'sAMAccountName' for Active Directory",
+      "username_detail": "Specification of mappings for <code>username</code> when creating new users",
+      "name_detail": "Specification of mappings for full name when creating new users",
+      "mail_detail": "Specification of mappings for mail address when creating new users",
+      "group_search_base_DN": "Group Search Base DN",
+      "group_search_base_DN_detail": "The base DN from which to search for groups. If defined, also <code>Group Search Filter</code> must be defined for the search to work.",
+      "group_search_filter": "Group Search Filter",
+      "group_search_filter_detail1": "The query used to filter for groups.",
+      "group_search_filter_detail2": "Use <code>&#123;&#123;dn&#125;&#125;</code> to have it replaced of the found user object.",
+      "group_search_filter_detail3": "<code>(&(cn=group1)(memberUid=&#123;&#123;dn&#125;&#125;))</code> hits the groups which has <code>cn=group1</code> and <code>memberUid</code> includes the user's <code>uid</code>(when <code>Group DN Property</code> is not changed from the default value.)",
+      "group_search_user_DN_property": "User DN Property",
+      "group_search_user_DN_property_detail": "The property of user object to use in <code>&#123;&#123;dn&#125;&#125;</code> interpolation of <code>Group Search Filter</code>.",
+      "test_config": "Test Saved Configuration"
+    },
+    "OAuth": {
+      "register": "Register for %s",
+      "change_redirect_url": "Enter <code>%s</code> <br>(where <code>%s</code> is your host name) for \"Authorized redirect URIs\".",
+      "Google": {
+        "name": "Google OAuth",
+        "register_1": "Access <a href=\"%s\" target=\"_blank\">%s</a>",
+        "register_2": "Create Project if no projects exist",
+        "register_3": "Create Credentials &rightarrow; OAuth client ID &rightarrow; Select \"Web application\"",
+        "register_4": "Register your OAuth App with one of Authorized redirect URIs as <code>%s</code> (where <code>%s</code> is your hostname)",
+        "register_5": "Copy and paste your ClientID and Client Secret above"
+      },
+      "Facebook": {
+        "name": "Facebook OAuth"
+      },
+      "Twitter": {
+        "name": "Twitter OAuth",
+        "register_1": "Access <a href=\"%s\" target=\"_blank\">%s</a>",
+        "register_2": "Sign in Twitter",
+        "register_3": "Create Credentials &rightarrow; OAuth client ID &rightarrow; Select \"Web application\"",
+        "register_4": "Register your OAuth App with one of Authorized redirect URIs as <code>%s</code> (where <code>%s</code> is your hostname)",
+        "register_5": "Copy and paste your ClientID and Client Secret above"
+      },
+      "GitHub": {
+        "name": "GitHub OAuth",
+        "register_1": "Access <a href=\"%s\" target=\"_blank\">%s</a>",
+        "register_2": "Register your OAuth App with \"Authorization callback URL\" as <code>%s</code> (where <code>%s</code> is your hostname)",
+        "register_3": "Copy and paste your ClientID and Client Secret above"
+      },
+      "how_to": {
+        "google": "How to configure Google OAuth?",
+        "github": "How to configure GitHub OAuth?",
+        "twitter": "How to configure Twitter OAuth?"
+      }
+    }
+	},
+
+  "markdown_setting": {
+    "line_break_setting": "Line Break Setting",
+    "line_break_setting_desc": "You can change line break settings.",
+    "Enable Line Break": "Enable Line Break",
+    "Enable Line Break desc": "Treat line break in the text page as <code>&lt;br&gt;</code> in HTML",
+    "Enable Line Break for comment": "Enable Line Break in comment",
+    "Enable Line Break for comment desc": "Treat line break in comment as <code>&lt;br&gt;</code> in HTML",
+    "XSS_setting": "Prevent XSS(Cross Site Scripting) Setting",
+    "XSS_setting_desc": "You can change the handling of HTML tags in markdown text.",
+    "Enable XSS prevention": "Enable XSS Prevention",
+    "Ignore all tags": "Ignore All Tags",
+    "Ignore all tags desc": "Stripe all HTML tags and attributes",
+    "Recommended setting": "Recommended Setting",
+    "Custom Whitelist": "Custom Whitelist",
+    "Tag names":"Tag names",
+    "Tag attributes":"Tag attributes",
+    "import_recommended": "Import recommended %s"
+  },
+
+  "notification_setting": {
+    "notification_list": "List of Notification Settings",
+    "add_notification": "Add New",
+    "trigger_path": "Trigger Path",
+    "trigger_path_help": "(expression with %s is supported)",
+    "trigger_events": "Trigger Events",
+    "notify_to": "Notify To",
+    "back_to_list": "Go back to list",
+    "notification_detail": "Notification Setting Details",
+    "event_pageCreate": "When new page is \"CREATED\"",
+    "event_pageEdit": "When page is \"EDITED\"",
+    "event_pageDelete": "When page is \"DELETED\"",
+    "event_pageMove": "When page is \"MOVED\" (renamed)",
+    "event_pageLike": "When someone \"LIKES\" page",
+    "event_comment": "When someone \"COMMENTS\" on page",
+    "email": {
+      "ifttt_link": "Create a new IFTTT applet with Email trigger"
+    }
+  },
+
+  "customize_page": {
+    "Behavior": "Behavior",
+    "Layout": "Layout",
+    "Function": "Function",
+    "function_choose": "You can choose Valid/Invalid of the function",
+    "Timeline function": "Timeline function",
+    "Code Highlight": "Code Highlight",
+    "Theme": "Theme",
+    "subpage_display": "You can show the timeline of the subpages.",
+    "performance_decrease": "If there are many subpages, performance decreases while page loading.",
+    "list_page_display": "You can speed up list page display by invalidating.",
+    "tab_switch": "Save tab-switching in the browser",
+    "save_edit": "Save edit tab and history tab switching in the browser and make it object for forward/back command of the browser.",
+    "by_invalidating": "By invalidating, you can make page transition as the only object for forward/back command of the browser.",
+    "Custom CSS": "Custom CSS",
+    "write_CSS": "You can write CSS that is applied to whole system.",
+    "reflect_change": "You need to reload the page to reflect the change.",
+    "ctrl_space": "Ctrl+Space to Autocomplete",
+    "Custom script": "Custom script",
+    "write_java": "You can write Javascript that is applied to whole system.",
+    "attach_title_header": "Add h1 section when create new page automatically",
+    "attach_title_header_desc": "Add page path to the first line as h1 section when create new page"
+  },
+
+  "user_management": {
+    "User management": "User management",
+    "invite_users": "Invite new users",
+    "external_account": "External account management",
+    "user_list": "List of users",
+    "Date created": "Date created",
+    "Last login": "Last login",
+    "Manage": "Manage",
+    "Edit menu": "Edit menu",
+    "Reissue password": "Reissue password",
+    "Status":"Status",
+    "Deactivate account":"Deactivate account",
+    "your_own":"You cannot deactivate your own account",
+    "Administrator menu":"Administrator menu",
+    "cannot_remove":"You cannot remove yourself from administrator"
+  },
+
+  "importer_management": {
+    "import_from": "Import from %s",
+    "esa_settings": {
+      "team_name": "Team name",
+      "access_token": "Access token",
+      "test_connection": "Test connection to esa"
+    },
+    "qiita_settings": {
+      "team_name": "Team name",
+      "access_token": "Access token",
+      "test_connection": "Test connection to qiita:team"
+    },
+    "import": "Import"
+  }
+}

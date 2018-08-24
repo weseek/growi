@@ -1,9 +1,8 @@
 /**
  * @author: Yuki Takei <yuki@weseek.co.jp>
  */
-
 const webpack = require('webpack');
-const helpers = require('./helpers');
+const helpers = require('../src/lib/util/helpers');
 
 /*
  * Webpack Plugins
@@ -20,27 +19,27 @@ module.exports = (options) => {
   return {
     mode: options.mode,
     entry: Object.assign({
-      'js/app':                   './resource/js/app',
-      'js/legacy':                './resource/js/legacy/crowi',
-      'js/legacy-admin':          './resource/js/legacy/crowi-admin',
-      'js/legacy-presentation':   './resource/js/legacy/crowi-presentation',
-      'js/plugin':                './resource/js/plugin',
-      'js/ie11-polyfill':         './resource/js/ie11-polyfill',
-      'js/hackmd-agent':          './resource/js/hackmd-agent',
-      'js/hackmd-styles':         './resource/js/hackmd-styles',
+      'js/app':                       './src/client/js/app',
+      'js/legacy':                    './src/client/js/legacy/crowi',
+      'js/legacy-admin':              './src/client/js/legacy/crowi-admin',
+      'js/legacy-presentation':       './src/client/js/legacy/crowi-presentation',
+      'js/plugin':                    './src/client/js/plugin',
+      'js/ie11-polyfill':             './src/client/js/ie11-polyfill',
+      'js/hackmd-agent':              './src/client/js/hackmd-agent',
+      'js/hackmd-styles':             './src/client/js/hackmd-styles',
       // styles
-      'styles/style':                './resource/styles/scss/style.scss',
-      'styles/style-presentation':   './resource/styles/scss/style-presentation.scss',
+      'styles/style':                 './src/client/styles/scss/style.scss',
+      'styles/style-presentation':    './src/client/styles/scss/style-presentation.scss',
       // themes
-      'styles/theme-default':        './resource/styles/scss/theme/default.scss',
-      'styles/theme-default-dark':   './resource/styles/scss/theme/default-dark.scss',
-      'styles/theme-nature':         './resource/styles/scss/theme/nature.scss',
-      'styles/theme-mono-blue':      './resource/styles/scss/theme/mono-blue.scss',
-      'styles/theme-future':         './resource/styles/scss/theme/future.scss',
-      'styles/theme-blue-night':     './resource/styles/scss/theme/blue-night.scss',
-      'styles/theme-kibela':         './resource/styles/scss/theme/kibela.scss',
+      'styles/theme-default':         './src/client/styles/scss/theme/default.scss',
+      'styles/theme-default-dark':    './src/client/styles/scss/theme/default-dark.scss',
+      'styles/theme-nature':          './src/client/styles/scss/theme/nature.scss',
+      'styles/theme-mono-blue':       './src/client/styles/scss/theme/mono-blue.scss',
+      'styles/theme-future':          './src/client/styles/scss/theme/future.scss',
+      'styles/theme-blue-night':      './src/client/styles/scss/theme/blue-night.scss',
+      'styles/theme-kibela':          './src/client/styles/scss/theme/kibela.scss',
       // styles for external services
-      'styles/style-hackmd':         './resource/styles/hackmd/style.scss',
+      'styles/style-hackmd':          './src/client/styles/hackmd/style.scss',
     }, options.entry || {}),  // Merge with env dependent settings
     output: Object.assign({
       path: helpers.root('public'),
@@ -56,11 +55,13 @@ module.exports = (options) => {
     },
     resolve: {
       extensions: ['.js', '.jsx', '.json'],
-      modules: [helpers.root('src'), helpers.root('node_modules')],
+      modules: [helpers.root('node_modules')],
       alias: {
         '@root': helpers.root('/'),
-        '@alias/logger': helpers.root('lib/service/logger'),
-        '@alias/locales': helpers.root('lib/locales'),
+        '@commons': helpers.root('src/lib'),
+        '@tmp': helpers.root('tmp'),
+        '@alias/logger': helpers.root('src/lib/service/logger'),
+        '@alias/locales': helpers.root('resource/locales'),
         // replace bunyan
         'bunyan': 'browser-bunyan',
       }
@@ -94,12 +95,12 @@ module.exports = (options) => {
         {
           test: /\.css$/,
           use: ['style-loader', 'css-loader'],
-          exclude: [helpers.root('resource/styles')]
+          exclude: [helpers.root('src/client/styles')]
         },
         {
           test: /\.scss$/,
           use: ['style-loader', 'css-loader', 'sass-loader'],
-          exclude: [helpers.root('resource/styles')]
+          exclude: [helpers.root('src/client/styles')]
         },
         /*
          * File loader for supporting images, for example, in CSS files.
@@ -145,7 +146,7 @@ module.exports = (options) => {
       splitChunks: {
         cacheGroups: {
           commons: {
-            test: /resource/,
+            test: /src/,
             chunks: 'initial',
             name: 'js/commons',
             minChunks: 2,

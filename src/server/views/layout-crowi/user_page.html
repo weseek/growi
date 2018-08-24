@@ -1,0 +1,19 @@
+{% extends 'page.html' %}
+
+{% block main_css_class %}user-page{% endblock %}
+
+
+{% block content_header %}
+  {% if pageUser %}
+    {% include '../widget/user_page_header.html' %}
+  {% else %}
+    {% parent %}
+  {% endif %}
+{% endblock %}
+
+
+{% block content_main_before %}
+  <div class="m-b-30 user-page-content-container hidden-print">
+    {% include '../widget/user_page_content.html' %}
+  </div>
+{% endblock %}
