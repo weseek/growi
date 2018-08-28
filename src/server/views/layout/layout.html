@@ -117,7 +117,7 @@ gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js
 {% block html_body %}
 <body
   class="main-container content-wrapper {% block html_base_css %}{% endblock %}
-      {% if !layoutType() || 'crowi' === layoutType() %}crowi{% else %}growi{% endif %}"
+      {% if !layoutType() || 'crowi' === layoutType() %}crowi{% elseif !layoutType() || 'kibela' === layoutType() %}kibela{% else %}growi{% endif %}"
   data-me="{{ user._id.toString() }}"
   data-is-admin="{{ user.admin }}"
   data-plugin-enabled="{{ isEnabledPlugins() }}"
@@ -178,13 +178,13 @@ gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js
 
         {% if user %}
         <li class="nav-item-create-page">
-          <a href="#" data-target="#create-page" data-toggle="modal">
+          <a href="#" data-target="#create-page" data-toggle="modal" class="create-page">
             <i class="icon-pencil"></i><span>{{ t('New') }}</span>
           </a>
         </li>
         <li class="dropdown">
           <a class="dropdown-toggle waves-effect waves-light" data-toggle="dropdown">
-            <img src="{{ user|picture }}" class="picture img-circle" width="25" /> {{ user.name }}
+            <img src="{{ user|picture }}" class="picture img-circle" width="25" /> <span class="user-name">{{ user.name }}</span>
           </a>
           <ul class="dropdown-menu dropdown-menu-right">
             <li><a href="/user/{{ user.username }}"><i class="icon-fw icon-home"></i>{{ t('Home') }}</a></li>

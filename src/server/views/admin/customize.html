@@ -69,7 +69,8 @@
               {% include 'widget/theme-colorbox.html' with { name: 'default',  bg: '#ffffff', topbar: '#334455', theme: '#112744' } %}
               {% include 'widget/theme-colorbox.html' with { name: 'nature',   bg: '#f9fff3', topbar: '#118050', theme: '#460039' } %}
               {% include 'widget/theme-colorbox.html' with { name: 'mono-blue',   bg: '#F7FBFD', topbar: '#00587A', theme: '#00587A' } %}
-            </div>
+              {% include 'widget/theme-colorbox.html' with { name: 'kibela',   bg: '#F4F5F6', topbar: '#ffffff', theme: '#5584E1' } %}
+             </div>
             {# Dark Themes #}
             <div class="d-flex">
               {% include 'widget/theme-colorbox.html' with { name: 'default-dark', bg: '#212731', topbar: '#151515', theme: '#f75b36' } %}
@@ -166,7 +167,7 @@
             <ul>
               <li>Simple and Clear</li>
               <ul>
-                <li>Show and post comments from the bottom of the page</li>
+                <li>Show and post comments at the bottom of the page</li>
                 <li>Affix Table-of-contents</li>
               </ul>
             </ul>
@@ -190,6 +191,28 @@
                 <li>Collapsible Sidebar</li>
                 <li>Show and post comments in Sidebar</li>
                 <li>Collapsible Table-of-contents</li>
+              </ul>
+            </ul>
+          </div>
+          <div class="col-xs-6">
+            <h4>
+              <div class="radio radio-primary">
+                <input type="radio" id="radioLayoutKibela" name="settingForm[customize:layout]" value="kibela"
+                    {% if !isLayoutGrowi %}checked="checked"{% endif %}>
+                <label   for="radioLayoutKibela">
+                  Kibela Like Layout
+                </label>
+              </div>
+            </h4>
+            <a href="/images/admin/customize/layout-kibela.gif" class="ss-container">
+              <img src="/images/admin/customize/layout-kibela-thumb.gif" width="240px">
+            </a>
+            <ul>
+              <li>Easy Viewing Structure</li>
+              <ul>
+                <li>Center aligned contents</li>
+                <li>Show and post comments at the bottom of the page</li>
+                <li>Affix Table-of-contents</li>
               </ul>
             </ul>
           </div>

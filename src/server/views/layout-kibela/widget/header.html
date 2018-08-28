@@ -1,0 +1,47 @@
+<header id="page-header background-t">
+  <div class="d-flex align-items-center">
+    <div class="hidden-xs hidden-sm">
+      <a class="logo" href="/">
+        <div class="">{% include '../../widget/logo.html' %}</div>
+      </a>
+    </div>
+    <div class="title-container">
+      <h1 class="title" id="revision-path"></h1>
+      <div id="revision-url" class="url-line"></div>
+    </div>
+    {% if page %} {% include '../../widget/header-buttons.html' %}
+
+    <ul class="authors hidden-sm hidden-xs text-nowrap p-t-10">
+      <li>
+        <div class="d-flex align-items-center b">
+          <a class="m-r-5" href="{{ userPageRoot(page.creator) }}">
+            <img src="{{ page.creator|default(author)|picture }}" class="picture img-circle">
+          </a>
+          <div>
+            <div>Created by
+              <a href="{{ userPageRoot(page.creator) }}">{{ page.creator.name|default(author.name) }}</a>
+            </div>
+            <div class="text-muted">{{ page.createdAt|datetz('Y/m/d H:i:s') }}</div>
+          </div>
+        </div>
+      </li>
+      <li class="m-t-5">
+        <div class="d-flex align-items-center">
+          <a class="m-r-5" href="{{ userPageRoot(page.revision.author) }}">
+            <img src="{{ page.revision.author|default(author)|picture }}" class="picture img-circle">
+          </a>
+          <div>
+            <div>Updated by
+              <a href="{{ userPageRoot(page.revision.author) }}">{{ page.revision.author.name|default(author.name) }}</a>
+            </div>
+            <div class="text-muted">{{ page.updatedAt|datetz('Y/m/d H:i:s') }}</div>
+          </div>
+        </div>
+      </li>
+    </ul>
+    {% endif %} {% if not page and ('/' === path or 'crowi' === behaviorType()) and not isUserPageList(path) and !isTrashPage()
+    %} {% if '/' === path.slice(-1) %} {% include '../../widget/create_portal.html' %} {% endif %} {% endif %}
+
+  </div>
+
+</header>

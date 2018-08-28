@@ -1,0 +1,67 @@
+{% extends 'page.html' %}
+
+{% block main_css_class %}
+  {% parent %}
+  user-page
+{% endblock %}
+
+{% block content_header %}
+  {% if pageUser %}
+    {% include '../widget/user_page_header.html' %}
+  {% else %}
+    {% parent %}
+  {% endif %}
+{% endblock %}
+
+
+{% block content_main %}
+  <div class="row pt-15">
+
+    <div class="col-xs-12 bg-white round-corner">
+
+      {#
+        # ensure to insert 'user_page_content' widget to here
+        #
+        #   Because this block has content like 'Bookmarks' or 'Recent Created' whose height changes dynamically,
+        #   setting of 'revision-toc' (affix) is hindered.
+        #}
+      <div class="m-b-30 user-page-content-container">
+        {% include '../widget/user_page_content.html' %}
+      </div>
+
+      {% block content_main_before %}
+        {% parent %}
+      {% endblock %}
+
+      {% include '../widget/page_content.html' %}
+
+      {# force remove #revision-toc from #content_main of parent #}
+      <script>
+        $('#revision-toc').remove();
+      </script>
+
+    </div> {# /.col- #}
+
+    {# relocate #revision-toc #}
+    <div class="col-lg-2 col-md-3 revision-toc-container hidden-sm hidden-xs">
+      <div id="revision-toc" class="revision-toc affix" data-spy="" data-offset-top="75">
+        <div id="revision-toc-content" class="revision-toc-content"></div>
+      </div>
+    </div> {# /.col- #}
+
+  </div>
+
+  {% if 'growi' === behaviorType() || 'crowi-plus' === behaviorType() %}
+  <div class="row page-list m-t-30">
+    <div class="col-md-10">
+      {% include '../widget/page_list_and_timeline_kibela.html' %}
+    </div>
+  </div>
+  {% endif %}
+
+{% endblock %}
+
+
+{% block content_main_after %}
+  {% include 'widget/comments.html' %}
+{% endblock %}
