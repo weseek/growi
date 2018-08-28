@@ -1,0 +1,55 @@
+@import '../variables';
+
+
+$basecolor: #0c2a44;
+$themelight: rgba(174, 216, 210, 0.973);
+$subthemecolor: rgba($linktext, 0.8);
+$linkcolor: #ffffff;
+$themecolor: #97cbc3;
+
+$topbar: $basecolor;
+$sidebar: $themelight;
+$bodycolor: $themelight;
+
+$headingtext: #ffffff;
+$bodytext: #ffffff;
+$linktext: $linkcolor;
+$linktext-hover: rgba($linktext, 0.8);
+$sidebar-text: $themecolor;
+
+$primary: $themecolor;
+
+$logo-mark-fill: lighten(desaturate($topbar, 10%), 15%);
+$wikilinktext: $linkcolor;
+$wikilinktext-hover: rgba($linktext, 0.8);
+
+$dark: darken($bodytext, 5%);
+$border: #fff;
+$navbar-border: lighten($basecolor, 25%);
+$active-navbar-border: darken($navbar-border, 3%);
+$btn-default-bgcolor: darken($basecolor, 10%);
+$inline-code-color: $subthemecolor;
+$inline-code-bg: #0a121b;
+
+@import 'apply-colors';
+@import 'apply-colors-dark';
+
+.wiki {
+  .highlighted {
+   background-color: lighten($themecolor, 20%);
+  }
+}
+
+.panel {
+  &, &.panel-white, &.panel-default {
+    border-color: $bodytext;
+    color: $basecolor;
+    .panel-heading {
+      color: $basecolor;
+      background-color: 1px solid $bodytext;
+    }
+  }
+  .panel-body {
+    color: black;
+  }
+}
