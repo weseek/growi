@@ -75,9 +75,11 @@ module.exports = function(crowi, app) {
   app.get('/passport/google'                      , loginPassport.loginWithGoogle);
   app.get('/passport/github'                      , loginPassport.loginWithGitHub);
   app.get('/passport/twitter'                     , loginPassport.loginWithTwitter);
+  app.get('/passport/saml'                        , loginPassport.loginWithSaml);
   app.get('/passport/google/callback'             , loginPassport.loginPassportGoogleCallback);
   app.get('/passport/github/callback'             , loginPassport.loginPassportGitHubCallback);
-  app.get('/passport/twitter/callback'             , loginPassport.loginPassportTwitterCallback);
+  app.get('/passport/twitter/callback'            , loginPassport.loginPassportTwitterCallback);
+  app.post('/passport/saml/callback'               , loginPassport.loginPassportSamlCallback);
 
   // markdown admin
   app.get('/admin/markdown'                   , loginRequired(crowi, app) , middleware.adminRequired() , admin.markdown.index);

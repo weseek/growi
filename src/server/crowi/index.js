@@ -283,6 +283,7 @@ Crowi.prototype.setupPassport = function() {
     this.passportService.setupGoogleStrategy();
     this.passportService.setupGitHubStrategy();
     this.passportService.setupTwitterStrategy();
+    this.passportService.setupSamlStrategy();
   }
   catch (err) {
     logger.error(err);

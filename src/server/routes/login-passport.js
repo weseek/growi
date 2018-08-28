@@ -311,6 +311,39 @@ module.exports = function(crowi, app) {
     });
   };
 
+  const loginWithSaml = function(req, res, next) {
+    if (!passportService.isSamlStrategySetup) {
+      debug('SamlStrategy has not been set up');
+      req.flash('warningMessage', 'SamlStrategy has not been set up');
+      return next();
+    }
+
+    passport.authenticate('saml')(req, res);
+  };
+
+  const loginPassportSamlCallback = async(req, res, next) => {
+    const providerId = 'saml';
+    const strategyName = 'saml';
+    const response = await promisifiedPassportAuthentication(req, res, next, strategyName);
+    const userInfo = {
+      'id': response.id,
+      'username': response.username,
+      'name': `${response.firstName} ${response.lastName}`,
+    };
+
+    const externalAccount = await getOrCreateUser(req, res, next, userInfo, providerId);
+    if (!externalAccount) {
+      return loginFailure(req, res, next);
+    }
+
+    const user = await externalAccount.getPopulatedUser();
+
+    // login
+    req.logIn(user, err => {
+      if (err) { return next(err) }
+      return loginSuccess(req, res, user);
+    });
+  };
 
   const promisifiedPassportAuthentication = (req, res, next, strategyName) => {
     return new Promise((resolve, reject) => {
@@ -372,8 +405,10 @@ module.exports = function(crowi, app) {
     loginWithGoogle,
     loginWithGitHub,
     loginWithTwitter,
+    loginWithSaml,
     loginPassportGoogleCallback,
     loginPassportGitHubCallback,
     loginPassportTwitterCallback,
+    loginPassportSamlCallback,
   };
 };

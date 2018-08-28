@@ -5,6 +5,7 @@ const LdapStrategy = require('passport-ldapauth');
 const GoogleStrategy = require('passport-google-auth').Strategy;
 const GitHubStrategy = require('passport-github').Strategy;
 const TwitterStrategy = require('passport-twitter').Strategy;
+const SamlStrategy = require('passport-saml').Strategy;
 
 /**
  * the service class of Passport
@@ -32,6 +33,21 @@ class PassportService {
      * the flag whether LdapStrategy is set up successfully
      */
     this.isGoogleStrategySetup = false;
+
+    /**
+     * the flag whether GitHubStrategy is set up successfully
+     */
+    this.isGitHubStrategySetup = false;
+
+    /**
+     * the flag whether TwitterStrategy is set up successfully
+     */
+    this.isTwitterStrategySetup = false;
+
+    /**
+     * the flag whether SamlStrategy is set up successfully
+     */
+    this.isSamlStrategySetup = false;
 
     /**
      * the flag whether serializer/deserializer are set up successfully
@@ -271,7 +287,6 @@ class PassportService {
 
     const config = this.crowi.config;
     const Config = this.crowi.model('Config');
-    //this
     const isGoogleEnabled = Config.isEnabledPassportGoogle(config);
 
     // when disabled
@@ -317,7 +332,6 @@ class PassportService {
 
     const config = this.crowi.config;
     const Config = this.crowi.model('Config');
-    //this
     const isGitHubEnabled = Config.isEnabledPassportGitHub(config);
 
     // when disabled
@@ -343,8 +357,9 @@ class PassportService {
     this.isGitHubStrategySetup = true;
     debug('GitHubStrategy: setup is done');
   }
+
   /**
-   * reset GoogleStrategy
+   * reset GitHubStrategy
    *
    * @memberof PassportService
    */
@@ -362,7 +377,6 @@ class PassportService {
 
     const config = this.crowi.config;
     const Config = this.crowi.model('Config');
-    //this
     const isTwitterEnabled = Config.isEnabledPassportTwitter(config);
 
     // when disabled
@@ -390,7 +404,7 @@ class PassportService {
   }
 
   /**
-   * reset GoogleStrategy
+   * reset TwitterStrategy
    *
    * @memberof PassportService
    */
@@ -398,6 +412,51 @@ class PassportService {
     debug('TwitterStrategy: reset');
     passport.unuse('twitter');
     this.isTwitterStrategySetup = false;
+  }
+
+  setupSamlStrategy() {
+    // check whether the strategy has already been set up
+    if (this.isSamlStrategySetup) {
+      throw new Error('SamlStrategy has already been set up');
+    }
+
+    const config = this.crowi.config;
+    const Config = this.crowi.model('Config');
+    // const isSamlEnabled = Config.isEnabledPassportSaml(config);
+    const isSamlEnabled = true;
+
+    // when disabled
+    if (!isSamlEnabled) {
+      return;
+    }
+
+    debug('SamlStrategy: setting up..');
+    passport.use(new SamlStrategy({
+      path: config.crowi['security:passport-saml:path'] || process.env.SAML_CALLBACK_URI,
+      entryPoint: config.crowi['security:passport-saml:entryPoint'] || process.env.SAML_ENTRY_POINT,
+      issuer: config.crowi['security:passport-saml:issuer'] || process.env.SAML_ISSUER,
+    }, function(profile, done) {
+      if (profile) {
+        return done(null, profile);
+      }
+      else {
+        return done(null, false);
+      }
+    }));
+
+    this.isSamlStrategySetup = true;
+    debug('SamlStrategy: setup is done');
+  }
+
+  /**
+   * reset SamlStrategy
+   *
+   * @memberof PassportService
+   */
+  resetSamlStrategy() {
+    debug('SamlStrategy: reset');
+    passport.unuse('saml');
+    this.isSamlStrategySetup = false;
   }
 
   /**
