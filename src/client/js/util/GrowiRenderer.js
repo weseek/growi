@@ -23,7 +23,6 @@ export default class GrowiRenderer {
    *
    * @param {Crowi} crowi
    * @param {GrowiRenderer} originRenderer may be customized by plugins
-   * @param {Kibela} kibela
    * @param {object} options
    */
   constructor(crowi, originRenderer, options) {

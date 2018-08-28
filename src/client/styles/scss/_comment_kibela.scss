@@ -1,27 +1,5 @@
 
 .kibela.main-container {
-  .revision-toc {
-    &.affix {
-      right: 10rem;
-      margin-top: 40px;
-      top: calc(60px + 5px);
-      min-width: calc(#{100/12*2%} - #{$grid-gutter-width}); // width of 2column - padding
-    }
-    .revision-toc-content {
-      padding: 0;
-    }
-    @media screen and (max-width: 1400px) {
-      &.affix {
-        right: 0rem !important;
-        transition: 0.5s;
-      }
-    }
-  }
-  /* search page */
-  .search-result-list,
-  .page-list-li {
-    background: #F4F5F6;
-  }
   /* Comment section */
   %comment-section {
     position: relative;
