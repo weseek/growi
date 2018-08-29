@@ -23,9 +23,9 @@
   <fieldset id="passport-saml-hide-when-disabled" {%if !isSamlEnabled %}style="display: none;"{% endif %}>
 
     <div class="form-group">
-      <label for="settingForm[security:passport-saml:clientId]" class="col-xs-3 control-label">{{ t("security_setting.SAML.entry_point") }}</label>
+      <label for="settingForm[security:passport-saml:entryPoint]" class="col-xs-3 control-label">{{ t("security_setting.SAML.entry_point") }}</label>
       <div class="col-xs-6">
-        <input class="form-control" type="text" name="settingForm[security:passport-saml:clientId]" value="{{ settingForm['security:passport-saml:clientId'] || '' }}">
+        <input class="form-control" type="text" name="settingForm[security:passport-saml:entryPoint]" value="{{ settingForm['security:passport-saml:entryPoint'] || '' }}">
         <p class="help-block">
           <small>
             {{ t("security_setting.Use env var if empty", "SAML_ENTRY_POINT") }}
