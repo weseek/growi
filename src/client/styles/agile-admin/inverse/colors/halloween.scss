@@ -4,14 +4,14 @@ $basecolor:#030003;
 $themecolor: #aa4a04;
 $subthemecolor: #e9af2b;
 
-$linkcolor: #7c3a0a;
+$linkcolor: #aa4a04;
 
 $topbar: $themecolor;
 $sidebar:#061f2f;
 $subthemecolor: #e9af2b;
-$bodycolor: #fab362;
-$headingtext: #061f2f;
-$bodytext: #061f2f;
+$bodycolor: #030000;
+$headingtext: #e9af2b;
+$bodytext: #e9af2b;
 $linktext: $linkcolor;
 $linktext-hover: rgba($linktext, 0.8);
 $sidebar-text: $themecolor;
@@ -19,7 +19,7 @@ $dark-themecolor:#4f5467;
 
 $primary: $themecolor;
 
-$logo-mark-fill: lighten(desaturate($topbar, 10%), 15%);
+$logo-mark-fill: lighten($subthemecolor, 20%);
 $wikilinktext: $linkcolor;
 $wikilinktext-hover: rgba($linktext, 0.8);
 
@@ -28,7 +28,7 @@ $border: $themecolor;
 $navbar-border: lighten($basecolor, 25%);
 $active-navbar-border: darken($navbar-border, 3%);
 $btn-default-bgcolor: darken($basecolor, 10%);
-$inline-code-color: $subthemecolor;
+$inline-code-color: a94f04;
 $inline-code-bg: #0a121b;
 
 @import 'apply-colors';
@@ -49,5 +49,10 @@ $inline-code-bg: #0a121b;
     }
   }
 }
-
-
+.rbt-menu {
+  background: lighten($basecolor, 5%);
+}
+.nav-pills>li>a:hover{
+  background: #d3671a;
+  color:$white;
+}

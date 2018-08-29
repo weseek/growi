@@ -1,7 +1,7 @@
 @import '../variables';
 
 $themecolor: #aaa45f;
-$themelight: #ffffff;
+$themelight: #fffefb;
 $subthemecolor: #dddebf;
 
 
@@ -18,10 +18,10 @@ $sidebar-text:  #859083;
 $primary: $themecolor;
 $info: lighten($themecolor,20%);
 
-$logo-mark-fill: lighten(desaturate($topbar, 30%), 20%);
-$wikilinktext: lighten($themecolor, 20%);
+$logo-mark-fill: lighten(desaturate($topbar, 50%), 50%);
+$wikilinktext: lighten($themecolor, 10%);
 $wikilinktext-hover: lighten($wikilinktext, 20%);
-$inline-code-color: $subthemecolor;
+$inline-code-color: darken($themecolor, 20%);
 $inline-code-bg: lighten($subthemecolor,70%);
 
 @import 'apply-colors';
@@ -38,4 +38,7 @@ $inline-code-bg: lighten($subthemecolor,70%);
       color: $themelight;
     }
   }
+}
+.rbt-menu {
+  background: $themelight;
 }

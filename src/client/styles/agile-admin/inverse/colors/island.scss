@@ -1,13 +1,13 @@
 @import '../variables';
 
 
-$basecolor: #0c2a44;
+$themecolor: #0c2a44;
 $themelight: rgba(174, 216, 210, 0.973);
 $subthemecolor: rgba($linktext, 0.8);
-$linkcolor: #ffffff;
+$linkcolor: #fbfdfa;
 $themecolor: #97cbc3;
 
-$topbar: $basecolor;
+$topbar: #0c2a44;
 $sidebar: $themelight;
 $bodycolor: $themelight;
 
@@ -19,37 +19,62 @@ $sidebar-text: $themecolor;
 
 $primary: $themecolor;
 
-$logo-mark-fill: lighten(desaturate($topbar, 10%), 15%);
+$logo-mark-fill: lighten($themelight, 10%);
 $wikilinktext: $linkcolor;
 $wikilinktext-hover: rgba($linktext, 0.8);
 
 $dark: darken($bodytext, 5%);
 $border: #fff;
-$navbar-border: lighten($basecolor, 25%);
+$navbar-border: lighten($themecolor, 25%);
 $active-navbar-border: darken($navbar-border, 3%);
-$btn-default-bgcolor: darken($basecolor, 10%);
-$inline-code-color: $subthemecolor;
-$inline-code-bg: #0a121b;
+$btn-default-bgcolor: darken($themecolor, 10%);
+$inline-code-color: lighten($themelight, 40);
+$inline-code-bg: darken($themelight, 3%);
 
 @import 'apply-colors';
-@import 'apply-colors-dark';
+@import 'apply-colors-light';
 
 .wiki {
   .highlighted {
    background-color: lighten($themecolor, 20%);
   }
 }
-
 .panel {
-  &, &.panel-white, &.panel-default {
+  &,
+  &.panel-white,
+  &.panel-default {
+    background-color: lighten($themecolor, 30%);
     border-color: $bodytext;
-    color: $basecolor;
+    color: $themecolor;
     .panel-heading {
-      color: $basecolor;
-      background-color: 1px solid $bodytext;
+      color: $themecolor;
+      background-color: lighten($themecolor, 20%);
+    }
+    ul {
+      li {
+        a {
+          color: darken($themecolor, 15%);
+        }
+      }
     }
   }
-  .panel-body {
-    color: black;
+}
+/*Nav-pills*/
+ .nav-pills a:hover{
+  background: $themecolor;
+  color: #72a1a4 !important;
+}
+
+/* GROWI page list */
+ .page-list {
+  .page-list-ul {
+    > li {
+      > a strong {
+        color: lighten($themelight, 20%);
+      }
+    }
   }
+}
+.rbt-menu {
+  background: lighten($themelight, 5%);
 }
