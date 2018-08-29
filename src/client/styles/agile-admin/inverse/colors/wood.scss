@@ -45,4 +45,6 @@ $inline-code-bg: lighten($subthemecolor,70%);
 #page-wrapper {
   background-image: url("/images/admin/customize/wood.png") !important;
 }
-
+.bg-title {
+  background: transparent !important;
+}
