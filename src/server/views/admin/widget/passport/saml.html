@@ -1,0 +1,170 @@
+<form action="/_api/admin/security/passport-saml" method="post" class="form-horizontal passportStrategy" id="samlSetting" role="form"
+    {% if isRestartingServerNeeded %}style="opacity: 0.4;"{% endif %}>
+  <legend class="alert-anchor">{{ t("security_setting.SAML.name") }} {{ t("security_setting.configuration") }}</legend>
+
+  {% set nameForIsSamlEnabled = "settingForm[security:passport-saml:isEnabled]" %}
+  {% set isSamlEnabled = settingForm['security:passport-saml:isEnabled'] %}
+
+  <div class="form-group">
+    <label for="{{nameForIsSamlEnabled}}" class="col-xs-3 control-label">{{ t("security_setting.SAML.name") }}</label>
+    <div class="col-xs-6">
+      <div class="btn-group btn-toggle" data-toggle="buttons">
+        <label class="btn btn-default btn-rounded btn-outline {% if isSamlEnabled %}active{% endif %}" data-active-class="primary">
+          <input name="{{nameForIsSamlEnabled}}" value="true" type="radio"
+              {% if true === isSamlEnabled %}checked{% endif %}> ON
+        </label>
+        <label class="btn btn-default btn-rounded btn-outline {% if !isSamlEnabled %}active{% endif %}" data-active-class="default">
+          <input name="{{nameForIsSamlEnabled}}" value="false" type="radio"
+              {% if !isSamlEnabled %}checked{% endif %}> OFF
+        </label>
+      </div>
+    </div>
+  </div>
+  <fieldset id="passport-saml-hide-when-disabled" {%if !isSamlEnabled %}style="display: none;"{% endif %}>
+
+    <div class="form-group">
+      <label for="settingForm[security:passport-saml:clientId]" class="col-xs-3 control-label">{{ t("security_setting.SAML.entry_point") }}</label>
+      <div class="col-xs-6">
+        <input class="form-control" type="text" name="settingForm[security:passport-saml:clientId]" value="{{ settingForm['security:passport-saml:clientId'] || '' }}">
+        <p class="help-block">
+          <small>
+            {{ t("security_setting.Use env var if empty", "SAML_ENTRY_POINT") }}
+          </small>
+        </p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="settingForm[security:passport-saml:callbackUrl]" class="col-xs-3 control-label">{{ t("security_setting.callback_URL") }}</label>
+      <div class="col-xs-6">
+        <input class="form-control" type="text" name="settingForm[security:passport-saml:callbackUrl]" value="{{ settingForm['security:passport-saml:callbackUrl'] || '' }}"
+            placeholder="http(s)://${growi.host}/passport/saml/callback">
+        <p class="help-block">
+          Input <code>http(s)://${growi.host}/passport/saml/callback</code><br>
+          <small>
+            {{ t("security_setting.Use env var if empty", "SAML_ISSUER") }}
+          </small>
+        </p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="settingForm[security:passport-saml:issuer]" class="col-xs-3 control-label">{{ t("security_setting.SAML.issuer") }}</label>
+      <div class="col-xs-6">
+        <input class="form-control" type="text" name="settingForm[security:passport-saml:issuer]" value="{{ settingForm['security:passport-saml:issuer'] || '' }}">
+        <p class="help-block">
+          <small>
+            {{ t("security_setting.Use env var if empty", "SAML_ISSUER") }}
+          </small>
+        </p>
+      </div>
+    </div>
+
+    <h4>Attribute Mapping</h4>
+
+    <div class="form-group">
+      <label for="settingForm[security:passport-saml:attrMapId]" class="col-xs-3 control-label">User ID</label>
+      <div class="col-xs-6">
+        <input class="form-control" type="text" placeholder="Default: id"
+            name="settingForm[security:passport-saml:attrMapId]" value="{{ settingForm['security:passport-saml:attrMapId'] || '' }}">
+        <p class="help-block">
+          <small>
+            {{ t("security_setting.SAML.mapping_detail", "User ID") }}
+          </small>
+        </p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="settingForm[security:passport-saml:attrMapUsername]" class="col-xs-3 control-label">Username</label>
+      <div class="col-xs-6">
+        <input class="form-control" type="text" placeholder="Default: username"
+            name="settingForm[security:passport-saml:attrMapUsername]" value="{{ settingForm['security:passport-saml:attrMapUsername'] || '' }}">
+        <p class="help-block">
+          <small>
+            {{ t("security_setting.SAML.mapping_detail", "Username") }}
+          </small>
+        </p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="col-xs-6 col-xs-offset-3">
+        <div class="checkbox checkbox-info">
+          <input type="checkbox" id="bindByUserName-SAML" name="settingForm[security:passport-saml:isSameUsernameTreatedAsIdenticalUser]" value="1"
+              {% if settingForm['security:passport-saml:isSameUsernameTreatedAsIdenticalUser'] %}checked{% endif %} />
+          <label for="bindByUserName-SAML">
+            {{ t("security_setting.Treat username matching as identical", "username") }}
+          </label>
+          <p class="help-block">
+            <small>
+              {{ t("security_setting.Treat username matching as identical_warn", "username") }}
+            </small>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="settingForm[security:passport-saml:attrMapMail]" class="col-xs-3 control-label">Mail</label>
+      <div class="col-xs-6">
+        <input class="form-control" type="text" placeholder="Default: mail"
+            name="settingForm[security:passport-saml:attrMapMail]" value="{{ settingForm['security:passport-saml:attrMapMail'] || '' }}">
+        <p class="help-block">
+          <small>
+            {{ t("security_setting.SAML.mapping_detail", "Email") }}
+          </small>
+        </p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="settingForm[security:passport-saml:attrMapFirstName]" class="col-xs-3 control-label">First Name</label>
+      <div class="col-xs-6">
+        <input class="form-control" type="text" placeholder="Default: firstName"
+            name="settingForm[security:passport-saml:attrMapFirstName]" value="{{ settingForm['security:passport-saml:attrMapFirstName'] || '' }}">
+        <p class="help-block">
+          <small>
+            {{ t("security_setting.SAML.mapping_detail", "First Name") }}
+          </small>
+        </p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="settingForm[security:passport-saml:attrMapLastName]" class="col-xs-3 control-label">Last Name</label>
+      <div class="col-xs-6">
+        <input class="form-control" type="text" placeholder="Default: lastName"
+            name="settingForm[security:passport-saml:attrMapLastName]" value="{{ settingForm['security:passport-saml:attrMapLastName'] || '' }}">
+        <p class="help-block">
+          <small>
+            {{ t("security_setting.SAML.mapping_detail", "Last Name") }}
+          </small>
+        </p>
+      </div>
+    </div>
+
+  </fieldset>
+
+  <div class="form-group" id="btn-update">
+    <div class="col-xs-offset-3 col-xs-6">
+      <input type="hidden" name="_csrf" value="{{ csrf() }}">
+      <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
+    </div>
+  </div>
+
+</form>
+
+<script>
+  $('input[name="settingForm[security:passport-saml:isEnabled]"]').change(function() {
+    const isEnabled = ($(this).val() === "true");
+
+    if (isEnabled) {
+      $('#passport-saml-hide-when-disabled').show(400);
+    }
+    else {
+      $('#passport-saml-hide-when-disabled').hide(400);
+    }
+  });
+</script>
+

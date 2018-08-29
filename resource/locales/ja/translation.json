@@ -328,6 +328,7 @@
     "recommended": "推奨",
     "username_email_password": "ユーザー名、Eメール、パスワードでの認証",
     "ldap_auth": "LDAP 認証",
+    "saml_auth": "SAML 認証",
     "google_auth2": "Google OAuth 認証",
     "google_auth2_by_crowi_desc": "ただし、この機能では新たなユーザーは作成されず、関連付け設定を行った既存ユーザーをログインできるようにするだけです。",
     "facebook_auth2": "Facebook OAuth 認証",
@@ -391,6 +392,12 @@
       "group_search_user_DN_property": "ユーザーの DN プロパティー",
       "group_search_user_DN_property_detail": "<code>グループ検索フィルター</code> 内の <code>&#123;&#123;dn&#125;&#125;</code> で置換される、ユーザーオブジェクトのプロパティー",
       "test_config": "ログインテスト"
+    },
+    "SAML": {
+      "name": "SAML",
+      "entry_point": "エントリーポイント",
+      "issuer": "発行者",
+      "mapping_detail": "新規ユーザーの%sに関連付ける属性"
     },
     "OAuth": {
       "register": "%sに登録",
