@@ -130,6 +130,7 @@
               <ul>
                 <li>{{ t("security_setting.username_email_password") }}</li>
                 <li>{{ t("security_setting.ldap_auth") }}</li>
+                <li>{{ t("security_setting.saml_auth") }}</li>
                 <li>{{ t("security_setting.google_auth2") }}</li>
                 <li>{{ t("security_setting.github_auth2") }}</li>
                 <li>{{ t("security_setting.twitter_auth2") }}</li>
@@ -246,6 +247,9 @@
               <a href="#passport-ldap" data-toggle="tab" role="tab"><i class="fa fa-sitemap"></i> LDAP</a>
             </li>
             <li>
+              <a href="#passport-saml" data-toggle="tab" role="tab"><i class="fa fa-key"></i> SAML</a>
+            </li>
+            <li>
               <a href="#passport-google-oauth" data-toggle="tab" role="tab"><i class="fa fa-google"></i> Google</a>
             </li>
             <li>
@@ -262,6 +266,10 @@
           <div class="tab-content p-t-10" {% if isRestartingServerNeeded %}style="opacity: 0.4;"{% endif %}>
             <div id="passport-ldap" class="tab-pane active" role="tabpanel" >
               {% include './widget/passport/ldap.html' with { settingForm: settingForm } %}
+            </div>
+
+            <div id="passport-saml" class="tab-pane" role="tabpanel" >
+              {% include './widget/passport/saml.html' %}
             </div>
 
             <div id="passport-google-oauth" class="tab-pane" role="tabpanel">
@@ -288,7 +296,7 @@
   </div>
 
   <script>
-    $('#generalSetting, #googleSetting, #mechanismSetting, #githubSetting, #twitterSetting').each(function() {
+    $('#generalSetting, #samlSetting, #googleSetting, #mechanismSetting, #githubSetting, #twitterSetting').each(function() {
       $(this).submit(function()
       {
         function showMessage(formId, msg, status) {

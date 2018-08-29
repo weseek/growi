@@ -1046,6 +1046,34 @@ module.exports = function(crowi, app) {
       });
   };
 
+  actions.api.securityPassportSamlSetting = async(req, res) => {
+    const form = req.form.settingForm;
+
+    if (!req.form.isValid) {
+      return res.json({status: false, message: req.form.errors.join('\n')});
+    }
+
+    debug('form content', form);
+    await saveSettingAsync(form);
+    const config = await crowi.getConfig();
+
+    // reset strategy
+    await crowi.passportService.resetSamlStrategy();
+    // setup strategy
+    if (Config.isEnabledPassportSaml(config)) {
+      try {
+        await crowi.passportService.setupSamlStrategy(true);
+      }
+      catch (err) {
+        // reset
+        await crowi.passportService.resetSamlStrategy();
+        return res.json({status: false, message: err.message});
+      }
+    }
+
+    return res.json({status: true});
+  };
+
   actions.api.securityPassportGoogleSetting = async(req, res) => {
     const form = req.form.settingForm;
 

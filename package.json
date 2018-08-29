@@ -104,6 +104,7 @@
     "passport-google-auth": "^1.0.2",
     "passport-ldapauth": "^2.0.0",
     "passport-local": "^1.0.0",
+    "passport-saml": "^0.35.0",
     "passport-twitter": "^1.0.4",
     "rimraf": "^2.6.1",
     "slack-node": "^0.1.8",
