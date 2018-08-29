@@ -2,17 +2,17 @@
 
 
 $themecolor: #0c2a44;
-$themelight: rgba(174, 216, 210, 0.973);
+$themelight: rgba(183, 226, 219, 1);
 $subthemecolor: rgba($linktext, 0.8);
-$linkcolor: #fbfdfa;
+$linkcolor: #3c6d72;
 $themecolor: #97cbc3;
 
 $topbar: #0c2a44;
 $sidebar: $themelight;
 $bodycolor: $themelight;
 
-$headingtext: #ffffff;
-$bodytext: #ffffff;
+$headingtext:#3c6d72;
+$bodytext: #3c6d72;
 $linktext: $linkcolor;
 $linktext-hover: rgba($linktext, 0.8);
 $sidebar-text: $themecolor;
@@ -24,11 +24,11 @@ $wikilinktext: $linkcolor;
 $wikilinktext-hover: rgba($linktext, 0.8);
 
 $dark: darken($bodytext, 5%);
-$border: #fff;
+$border: #ffffff ;
 $navbar-border: lighten($themecolor, 25%);
 $active-navbar-border: darken($navbar-border, 3%);
 $btn-default-bgcolor: darken($themecolor, 10%);
-$inline-code-color: lighten($themelight, 40);
+$inline-code-color: #8f5313;
 $inline-code-bg: darken($themelight, 3%);
 
 @import 'apply-colors';
@@ -39,12 +39,15 @@ $inline-code-bg: darken($themelight, 3%);
    background-color: lighten($themecolor, 20%);
   }
 }
+.wiki h1 {
+    border-color: white !important;
+  }
 .panel {
   &,
   &.panel-white,
   &.panel-default {
     background-color: lighten($themecolor, 30%);
-    border-color: $bodytext;
+    border-color: white;
     color: $themecolor;
     .panel-heading {
       color: $themecolor;
@@ -70,11 +73,14 @@ $inline-code-bg: darken($themelight, 3%);
   .page-list-ul {
     > li {
       > a strong {
-        color: lighten($themelight, 20%);
+        color: $linkcolor;
       }
     }
   }
 }
 .rbt-menu {
   background: lighten($themelight, 5%);
+}
+#page-wrapper {
+  background-image: url("/images/admin/customize/island.png") !important;
 }

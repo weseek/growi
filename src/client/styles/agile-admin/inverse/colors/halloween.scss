@@ -43,6 +43,7 @@ $inline-code-bg: #0a121b;
 .panel {
   &, &.panel-white, &.panel-default {
     border-color: $bodytext;
+    background-color: lighten($basecolor, 5%);
     .panel-heading {
       color: $basecolor;
       background-color: 1px solid $bodytext;
