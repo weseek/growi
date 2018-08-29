@@ -422,8 +422,7 @@ class PassportService {
 
     const config = this.crowi.config;
     const Config = this.crowi.model('Config');
-    // const isSamlEnabled = Config.isEnabledPassportSaml(config);
-    const isSamlEnabled = true;
+    const isSamlEnabled = Config.isEnabledPassportSaml(config);
 
     // when disabled
     if (!isSamlEnabled) {

@@ -81,6 +81,11 @@ module.exports = function(crowi, app, req, locals) {
     return Config.isEnabledPassport(config) && Config.isEnabledPassportLdap(config) && !passportService.isLdapStrategySetup;
   };
 
+  locals.passportSamlLoginEnabled = function() {
+    let config = crowi.getConfig();
+    return locals.isEnabledPassport() && config.crowi['security:passport-saml:isEnabled'];
+  };
+
   locals.googleLoginEnabled = function() {
     // return false if Passport is enabled
     // because official crowi mechanism is not used.
@@ -103,7 +108,7 @@ module.exports = function(crowi, app, req, locals) {
   };
 
   locals.passportTwitterLoginEnabled = function() {
-    var config = crowi.getConfig();
+    let config = crowi.getConfig();
     return locals.isEnabledPassport() && config.crowi['security:passport-twitter:isEnabled'];
   };
 
