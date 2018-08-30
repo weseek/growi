@@ -326,9 +326,9 @@ module.exports = function(crowi, app) {
     const strategyName = 'saml';
     const response = await promisifiedPassportAuthentication(req, res, next, strategyName);
     const userInfo = {
-      'id': response.id,
-      'username': response.username,
-      'name': `${response.firstName} ${response.lastName}`,
+      'id': response[config.crowi['security:passport-saml:attrMapId']],
+      'username': response[config.crowi['security:passport-saml:attrMapUsername']],
+      'name': `${response[config.crowi['security:passport-saml:attrMapFirstName']]} ${response[config.crowi['security:passport-saml:attrMapLastName']]}`,
     };
 
     const externalAccount = await getOrCreateUser(req, res, next, userInfo, providerId);
