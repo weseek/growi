@@ -1,4 +1,5 @@
 @import '../variables';
+
 $basecolor:#030003;
 $themecolor: #aa4a04;
 $subthemecolor: #e9af2b;
@@ -22,8 +23,9 @@ $border: $themecolor;
 $navbar-border: lighten($basecolor, 25%);
 $active-navbar-border: darken($navbar-border, 3%);
 $btn-default-bgcolor: darken($basecolor, 10%);
-$inline-code-color: a94f04;
+$inline-code-color: #a94f04;
 $inline-code-bg: #0a121b;
+
 @import 'apply-colors';
 @import 'apply-colors-dark';
 
@@ -55,6 +57,10 @@ $inline-code-bg: #0a121b;
 .nav-pills>li>a:hover {
   background: #d3671a;
   color: $white;
+}
+
+.navbar-header {
+  background-image: url("/images/admin/customize/halloween-navbar.png") !important;
 }
 
 #page-wrapper {

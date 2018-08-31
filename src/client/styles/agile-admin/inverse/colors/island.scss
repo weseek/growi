@@ -1,12 +1,14 @@
 @import '../variables';
+
 $themecolor: #0c2a44;
 $themelight: rgba(183, 226, 219, 1);
+
 $subthemecolor: rgba($linktext, 0.8);
 $linkcolor: #3c6d72;
 $themecolor: #97cbc3;
 $topbar: #0c2a44;
 $sidebar: $themelight;
-$bodycolor: $themelight;
+$bodycolor: lighten($themelight, 5%);
 $headingtext:#3c6d72;
 $bodytext: #3c6d72;
 $linktext: $linkcolor;
@@ -17,12 +19,13 @@ $logo-mark-fill: lighten($themelight, 10%);
 $wikilinktext: $linkcolor;
 $wikilinktext-hover: rgba($linktext, 0.8);
 $dark: darken($bodytext, 5%);
-$border: #ffffff;
-$navbar-border: lighten($themecolor, 25%);
+$border: #76b1a8;
+$navbar-border: #76b1a8;
 $active-navbar-border: darken($navbar-border, 3%);
 $btn-default-bgcolor: darken($themecolor, 10%);
 $inline-code-color: #8f5313;
 $inline-code-bg: darken($themelight, 3%);
+
 @import 'apply-colors';
 @import 'apply-colors-light';
 
@@ -30,10 +33,6 @@ $inline-code-bg: darken($themelight, 3%);
   .highlighted {
     background-color: lighten($themecolor, 20%);
   }
-}
-
-.wiki h1 {
-  border-color: white !important;
 }
 
 .panel {
@@ -47,7 +46,7 @@ $inline-code-bg: darken($themelight, 3%);
 
     .panel-heading {
       color: $themecolor;
-      background-color: lighten($themecolor, 20%);
+      background-color: white;
     }
 
     ul {
@@ -96,3 +95,26 @@ $inline-code-bg: darken($themelight, 3%);
 .page-editor-preview-container {
   background: transparent !important;
 }
+
+/* Table */
+ .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th,
+ .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td ,
+ .table > thead > tr > th, .table-bordered{
+     border-top: 1px solid $border;
+ }
+
+ .table-bordered > thead > tr > th,
+ .table-bordered > tbody > tr > th,
+ .table-bordered > tfoot > tr > th,
+ .table-bordered > thead > tr > td,
+ .table-bordered > tbody > tr > td,
+ .table-bordered > tfoot > tr > td {
+   border: 1px solid $border;
+ }
+ .table > thead > tr > th {
+     border-bottom: 1px solid $border;
+ }
+
+ .table-bordered {
+     border: 1px solid $border;
+ }
