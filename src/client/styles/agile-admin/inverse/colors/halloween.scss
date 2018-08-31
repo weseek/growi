@@ -51,9 +51,28 @@ $inline-code-bg: #0a121b;
   }
 }
 .rbt-menu {
-  background: lighten($basecolor, 5%);
+  background: lighten($basecolor, 7%);
 }
 .nav-pills>li>a:hover{
   background: #d3671a;
   color:$white;
+}
+#page-wrapper {
+  background-image: url("/images/admin/customize/halloween.png") !important;
+}
+.bg-title {
+  background: rgba(0,0,0,0.35) !important;
+}
+
+/*
+ * Tabs
+ */
+.nav.nav-tabs {
+  >li.active>a {
+    background: transparent !important;
+    border-bottom: 1px solid #1f1b1b;
+  }
+}
+.page-editor-preview-body {
+  background: transparent !important;
 }

@@ -84,3 +84,15 @@ $inline-code-bg: darken($themelight, 3%);
 #page-wrapper {
   background-image: url("/images/admin/customize/island.png") !important;
 }
+/*
+ * Tabs
+ */
+ .nav.nav-tabs {
+  >li.active>a {
+    background: transparent !important;
+    border-bottom: 1px solid #d0ece7;
+  }
+}
+.page-editor-preview-container {
+  background: transparent !important;
+}
