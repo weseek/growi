@@ -1,0 +1,8 @@
+// import colors
+@import '../../agile-admin/inverse/colors/halloween';
+
+// apply agile-admin theme
+@import '../../agile-admin/inverse/style';
+
+// override
+@import 'override-agileadmin';

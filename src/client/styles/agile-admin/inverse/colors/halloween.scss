@@ -1,0 +1,80 @@
+@import '../variables';
+
+$basecolor:#0a010a;
+$themecolor: #aa4a04;
+$subthemecolor: #e9af2b;
+$linkcolor: #aa4a04;
+$topbar: $themecolor;
+$sidebar:#061f2f;
+$subthemecolor: #e9af2b;
+$bodycolor: #0f0101;
+$headingtext: #e9af2b;
+$bodytext: #e9af2b;
+$linktext: $linkcolor;
+$linktext-hover: rgba($linktext, 0.8);
+$sidebar-text: $themecolor;
+$dark-themecolor:#4f5467;
+$primary: $themecolor;
+$logo-mark-fill: lighten($subthemecolor, 20%);
+$wikilinktext: $linkcolor;
+$wikilinktext-hover: rgba($linktext, 0.8);
+$dark: darken($bodytext, 5%);
+$border: $themecolor;
+$navbar-border: lighten($basecolor, 25%);
+$active-navbar-border: darken($navbar-border, 3%);
+$btn-default-bgcolor: darken($basecolor, 10%);
+$inline-code-color: #a94f04;
+$inline-code-bg: #0a121b;
+
+@import 'apply-colors';
+@import 'apply-colors-dark';
+
+.wiki {
+  .highlighted {
+    background-color: lighten($themecolor, 20%);
+  }
+}
+
+.panel {
+
+  &,
+  &.panel-white,
+  &.panel-default {
+    border-color: $bodytext;
+    background-color: lighten($basecolor, 5%);
+
+    .panel-heading {
+      color: $basecolor;
+      background-color: 1px solid $bodytext;
+    }
+  }
+}
+
+.rbt-menu {
+  background: lighten($basecolor, 7%);
+}
+
+.nav-pills>li>a:hover {
+  background: #d3671a;
+  color: $white;
+}
+
+#wrapper > .navbar > .navbar-header {
+  background-image: url("/images/themes/halloween/halloween-navbar.png");
+}
+
+.main-container > #wrapper > #page-wrapper {
+  background-image: url("/images/themes/halloween/halloween.png");
+}
+
+.bg-title {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+/* Tabs */
+.nav.nav-tabs {
+  >li.active>a {
+    background: transparent;
+    border-bottom: 1px solid #1f1b1b;
+  }
+}
