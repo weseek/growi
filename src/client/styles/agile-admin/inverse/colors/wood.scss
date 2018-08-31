@@ -40,7 +40,7 @@ $inline-code-bg: lighten($subthemecolor, 70%);
 }
 
 .main-container > #wrapper > #page-wrapper {
-  background-image: url("/images/background/wood.png");
+  background-image: url("/images/themes/wood/wood.png");
 }
 
 .bg-title {
@@ -56,5 +56,5 @@ $inline-code-bg: lighten($subthemecolor, 70%);
 }
 
 #wrapper > .navbar > .navbar-header {
-  background-image: url("/images/background/wood-navbar.png");
+  background-image: url("/images/themes/wood/wood-navbar.png");
 }
