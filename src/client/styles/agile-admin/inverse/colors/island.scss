@@ -1,58 +1,55 @@
 @import '../variables';
-
-
 $themecolor: #0c2a44;
 $themelight: rgba(183, 226, 219, 1);
 $subthemecolor: rgba($linktext, 0.8);
 $linkcolor: #3c6d72;
 $themecolor: #97cbc3;
-
 $topbar: #0c2a44;
 $sidebar: $themelight;
 $bodycolor: $themelight;
-
 $headingtext:#3c6d72;
 $bodytext: #3c6d72;
 $linktext: $linkcolor;
 $linktext-hover: rgba($linktext, 0.8);
 $sidebar-text: $themecolor;
-
 $primary: $themecolor;
-
 $logo-mark-fill: lighten($themelight, 10%);
 $wikilinktext: $linkcolor;
 $wikilinktext-hover: rgba($linktext, 0.8);
-
 $dark: darken($bodytext, 5%);
-$border: #ffffff ;
+$border: #ffffff;
 $navbar-border: lighten($themecolor, 25%);
 $active-navbar-border: darken($navbar-border, 3%);
 $btn-default-bgcolor: darken($themecolor, 10%);
 $inline-code-color: #8f5313;
 $inline-code-bg: darken($themelight, 3%);
-
 @import 'apply-colors';
 @import 'apply-colors-light';
 
 .wiki {
   .highlighted {
-   background-color: lighten($themecolor, 20%);
+    background-color: lighten($themecolor, 20%);
   }
 }
+
 .wiki h1 {
-    border-color: white !important;
-  }
+  border-color: white !important;
+}
+
 .panel {
+
   &,
   &.panel-white,
   &.panel-default {
     background-color: lighten($themecolor, 30%);
     border-color: white;
     color: $themecolor;
+
     .panel-heading {
       color: $themecolor;
       background-color: lighten($themecolor, 20%);
     }
+
     ul {
       li {
         a {
@@ -62,37 +59,42 @@ $inline-code-bg: darken($themelight, 3%);
     }
   }
 }
+
 /*Nav-pills*/
- .nav-pills a:hover{
+.nav-pills a:hover {
   background: $themecolor;
   color: #72a1a4 !important;
 }
 
 /* GROWI page list */
- .page-list {
+.page-list {
   .page-list-ul {
-    > li {
-      > a strong {
+    >li {
+      >a strong {
         color: $linkcolor;
       }
     }
   }
 }
+
 .rbt-menu {
   background: lighten($themelight, 5%);
 }
+
 #page-wrapper {
   background-image: url("/images/admin/customize/island.png") !important;
 }
+
 /*
  * Tabs
  */
- .nav.nav-tabs {
+.nav.nav-tabs {
   >li.active>a {
     background: transparent !important;
     border-bottom: 1px solid #d0ece7;
   }
 }
+
 .page-editor-preview-container {
   background: transparent !important;
 }

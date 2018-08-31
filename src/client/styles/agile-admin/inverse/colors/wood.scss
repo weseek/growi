@@ -42,7 +42,7 @@ $inline-code-bg: lighten($subthemecolor, 70%);
 }
 
 .bg-title {
-  background: #dddebf5d !important;
+  background: transparent !important;
 }
 
 /*
@@ -58,6 +58,7 @@ $inline-code-bg: lighten($subthemecolor, 70%);
 .navbar-header {
   background-image: url("/images/admin/customize/wood-navbar.png") !important;
 }
+
 .page-editor-preview-container {
   background: transparent !important;
 }
