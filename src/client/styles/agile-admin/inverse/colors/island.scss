@@ -60,7 +60,7 @@ $inline-code-bg: darken($themelight, 3%);
   }
 }
 
-/*Nav-pills*/
+/* Nav-pills */
 .nav-pills a:hover {
   background: $themecolor;
   color: #72a1a4 !important;
@@ -85,9 +85,7 @@ $inline-code-bg: darken($themelight, 3%);
   background-image: url("/images/admin/customize/island.png") !important;
 }
 
-/*
- * Tabs
- */
+/* Tabs */
 .nav.nav-tabs {
   >li.active>a {
     background: transparent !important;
