@@ -21,7 +21,7 @@ $wikilinktext-hover: rgba($linktext, 0.8);
 $dark: darken($bodytext, 5%);
 $border: #76b1a8;
 $navbar-border: #76b1a8;
-$active-navbar-border: darken($navbar-border, 3%);
+$active-navbar-border: darken($navbar-border, 13%);
 $btn-default-bgcolor: darken($themecolor, 10%);
 $inline-code-color: #8f5313;
 $inline-code-bg: darken($themelight, 3%);
@@ -59,12 +59,6 @@ $inline-code-bg: darken($themelight, 3%);
   }
 }
 
-/* Nav-pills */
-.nav-pills a:hover {
-  background: $themecolor;
-  color: #72a1a4 !important;
-}
-
 /* GROWI page list */
 .page-list {
   .page-list-ul {
@@ -80,22 +74,17 @@ $inline-code-bg: darken($themelight, 3%);
   background: lighten($themelight, 5%);
 }
 
-#page-wrapper {
-  background-image: url("/images/admin/customize/island.png") !important;
+.main-container > #wrapper > #page-wrapper {
+  background-image: url("/images/background/island.png");
 }
 
 /* Tabs */
 .nav.nav-tabs {
   >li.active>a {
-    background: transparent !important;
+    background: transparent;
     border-bottom: 1px solid #d0ece7;
   }
 }
-
-.page-editor-preview-container {
-  background: transparent !important;
-}
-
 /* Table */
  .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th,
  .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td ,
