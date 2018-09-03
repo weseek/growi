@@ -1,4 +1,5 @@
-const debug = require('debug')('growi:service:GlobalNotification');
+const logger = require('@alias/logger')('growi:service:GlobalNotification');
+const path = require('path');
 /**
  * the service class of GlobalNotificationSetting
  */
@@ -54,6 +55,8 @@ class GlobalNotificationService {
       slack: {},
     };
 
+    logger.debug('notifyPageCreate', option);
+
     this.sendNotification(notifications, option);
   }
 
@@ -68,7 +71,7 @@ class GlobalNotificationService {
     const option = {
       mail: {
         subject: `#pageEdit - ${page.creator.username} edited ${page.path}`,
-        template: `../../locales/${lang}/notifications/pageEdit.txt`,
+        template: path.join(this.crowi.localeDir, `${lang}/notifications/pageEdit.txt`),
         vars: {
           appTitle: this.appTitle,
           path: page.path,
@@ -77,6 +80,8 @@ class GlobalNotificationService {
       },
       slack: {},
     };
+
+    logger.debug('notifyPageEdit', option);
 
     this.sendNotification(notifications, option);
   }

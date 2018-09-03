@@ -3,6 +3,7 @@ module.exports = function(crowi, app) {
 
   const debug = require('debug')('growi:routes:login')
     , logger = require('@alias/logger')('growi:routes:login')
+    , path = require('path')
     , async    = require('async')
     , config = crowi.getConfig()
     , mailer = crowi.getMailer()
@@ -203,7 +204,7 @@ module.exports = function(crowi, app) {
                     mailer.send({
                       to: adminUser.email,
                       subject: '[' + appTitle + ':admin] A New User Created and Waiting for Activation',
-                      template: 'admin/userWaitingActivation.txt',
+                      template: path.join(crowi.localeDir, 'en-US/admin/userWaitingActivation.txt'),
                       vars: {
                         createdUser: userData,
                         adminUser: adminUser,
