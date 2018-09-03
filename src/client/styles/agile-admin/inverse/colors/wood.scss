@@ -41,6 +41,7 @@ $inline-code-bg: lighten($subthemecolor, 70%);
 
 .main-container > #wrapper > #page-wrapper {
   background-image: url("/images/themes/wood/wood.png");
+  background-attachment: fixed;
 }
 
 .bg-title {

@@ -76,6 +76,7 @@ $inline-code-bg: darken($themelight, 3%);
 
 .main-container > #wrapper > #page-wrapper {
   background-image: url("/images/themes/island/island.png");
+  background-attachment: fixed;
 }
 
 /* Tabs */
