@@ -3,7 +3,9 @@ CHANGES
 
 ## 3.2.2-RC
 
-* 
+* Improvement: Add 'wood' theme
+* Improvement: Add 'halloween' theme
+* Improvement: Add 'island' theme
 
 ## 3.2.1
 
