@@ -176,6 +176,14 @@
       background-color: #555;
     }
   }
+  .btn-login-oauth.fcbtn#saml {
+    .btn-label {
+      background-color: rgba(#55a79a, 0.4);
+    }
+    &:after {
+      background-color: #555;
+    }
+  }
   .btn-register.fcbtn {
     .btn-label {
       background-color: rgba($brand-success, 0.4);

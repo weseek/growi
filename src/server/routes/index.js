@@ -67,22 +67,25 @@ module.exports = function(crowi, app) {
   app.post('/_api/admin/security/google'        , loginRequired(crowi, app) , middleware.adminRequired() , csrf, form.admin.securityGoogle, admin.api.securitySetting);
   app.post('/_api/admin/security/mechanism'     , loginRequired(crowi, app) , middleware.adminRequired() , csrf, form.admin.securityMechanism, admin.api.securitySetting);
   app.post('/_api/admin/security/passport-ldap' , loginRequired(crowi, app) , middleware.adminRequired() , csrf, form.admin.securityPassportLdap, admin.api.securityPassportLdapSetting);
+  app.post('/_api/admin/security/passport-saml' , loginRequired(crowi, app) , middleware.adminRequired() , csrf, form.admin.securityPassportSaml, admin.api.securityPassportSamlSetting);
 
   // OAuth
   app.post('/_api/admin/security/passport-google' , loginRequired(crowi, app) , middleware.adminRequired() , csrf, form.admin.securityPassportGoogle, admin.api.securityPassportGoogleSetting);
   app.post('/_api/admin/security/passport-github' , loginRequired(crowi, app) , middleware.adminRequired() , csrf, form.admin.securityPassportGitHub, admin.api.securityPassportGitHubSetting);
-  app.post('/_api/admin/security/passport-twitter' , loginRequired(crowi, app) , middleware.adminRequired() , csrf, form.admin.securityPassportTwitter, admin.api.securityPassportTwitterSetting);
+  app.post('/_api/admin/security/passport-twitter', loginRequired(crowi, app) , middleware.adminRequired() , csrf, form.admin.securityPassportTwitter, admin.api.securityPassportTwitterSetting);
   app.get('/passport/google'                      , loginPassport.loginWithGoogle);
   app.get('/passport/github'                      , loginPassport.loginWithGitHub);
   app.get('/passport/twitter'                     , loginPassport.loginWithTwitter);
+  app.get('/passport/saml'                        , loginPassport.loginWithSaml);
   app.get('/passport/google/callback'             , loginPassport.loginPassportGoogleCallback);
   app.get('/passport/github/callback'             , loginPassport.loginPassportGitHubCallback);
-  app.get('/passport/twitter/callback'             , loginPassport.loginPassportTwitterCallback);
+  app.get('/passport/twitter/callback'            , loginPassport.loginPassportTwitterCallback);
+  app.post('/passport/saml/callback'              , loginPassport.loginPassportSamlCallback);
 
   // markdown admin
   app.get('/admin/markdown'                   , loginRequired(crowi, app) , middleware.adminRequired() , admin.markdown.index);
   app.post('/admin/markdown/lineBreaksSetting', loginRequired(crowi, app) , middleware.adminRequired() , csrf, form.admin.markdown, admin.markdown.lineBreaksSetting); //change form name
-  app.post('/admin/markdown/xss-setting'       , loginRequired(crowi, app) , middleware.adminRequired() , csrf, form.admin.markdownXss, admin.markdown.xssSetting);
+  app.post('/admin/markdown/xss-setting'      , loginRequired(crowi, app) , middleware.adminRequired() , csrf, form.admin.markdownXss, admin.markdown.xssSetting);
 
   // markdown admin
   app.get('/admin/customize'                , loginRequired(crowi, app) , middleware.adminRequired() , admin.customize.index);
