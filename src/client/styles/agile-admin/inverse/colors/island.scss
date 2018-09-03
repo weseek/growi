@@ -108,3 +108,13 @@ $inline-code-bg: darken($themelight, 3%);
  .table-bordered {
      border: 1px solid $border;
  }
+
+
+ // login page
+.nologin {
+  &.login-page {
+    > #wrapper > #page-wrapper {
+      background-image: unset;
+    }
+  }
+}

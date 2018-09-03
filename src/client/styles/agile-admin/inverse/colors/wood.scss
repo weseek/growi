@@ -59,3 +59,24 @@ $inline-code-bg: lighten($subthemecolor, 70%);
 #wrapper > .navbar > .navbar-header {
   background-image: url("/images/themes/wood/wood-navbar.png");
 }
+
+// login page
+.nologin {
+  .input-group {
+    .input-group-addon {
+      background-color: rgba(lighten(black, 10%), 0.6);
+    }
+    .form-control {
+      background-color: rgba(lighten(black, 10%), 0.6);
+    }
+  }
+
+  &.login-page {
+    .login-header, .login-dialog {
+      background-color: rgba(#ccc, 0.5);
+    }
+    .link-switch {
+      color: $bodytext;
+    }
+  }
+}
