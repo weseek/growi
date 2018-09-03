@@ -1,7 +1,8 @@
 module.exports = function(crowi, app) {
   'use strict';
 
-  var debug = require('debug')('growi:routes:login')
+  const debug = require('debug')('growi:routes:login')
+    , logger = require('@alias/logger')('growi:routes:login')
     , async    = require('async')
     , config = crowi.getConfig()
     , mailer = crowi.getMailer()
@@ -10,7 +11,7 @@ module.exports = function(crowi, app) {
     , actions = {};
 
 
-  var clearGoogleSession = function(req) {
+  const clearGoogleSession = function(req) {
     req.session.googleAuthCode
       = req.session.googleId
       = req.session.googleEmail
@@ -18,14 +19,13 @@ module.exports = function(crowi, app) {
       = req.session.googleImage
       = null;
   };
-  var loginSuccess = function(req, res, userData) {
+  const loginSuccess = function(req, res, userData) {
     req.user = req.session.user = userData;
 
     // update lastLoginAt
     userData.updateLastLoginAt(new Date(), (err, uData) => {
       if (err) {
-        console.log(`updateLastLoginAt dumps error: ${err}`);
-        debug(`updateLastLoginAt dumps error: ${err}`);
+        logger.error(`updateLastLoginAt dumps error: ${err}`);
       }
     });
 
@@ -35,7 +35,7 @@ module.exports = function(crowi, app) {
 
     clearGoogleSession(req);
 
-    var jumpTo = req.session.jumpTo;
+    const jumpTo = req.session.jumpTo;
     if (jumpTo) {
       req.session.jumpTo = null;
       return res.redirect(jumpTo);
@@ -45,7 +45,7 @@ module.exports = function(crowi, app) {
     }
   };
 
-  var loginFailure = function(req, res) {
+  const loginFailure = function(req, res) {
     req.flash('warningMessage', 'Sign in failure.');
     return res.redirect('/login');
   };
