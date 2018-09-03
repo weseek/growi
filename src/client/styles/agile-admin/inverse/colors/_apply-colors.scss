@@ -372,3 +372,16 @@ body.on-edit {
   border-top-color: $border;
   background-color: darken($bodycolor, 2%);
 }
+
+/*
+ * GROWI admin page #themeOptions
+ */
+ .admin-page {
+  #themeOptions {
+    .theme-option-container.active {
+      .theme-option-name {
+        color: $bodytext;
+      }
+    }
+  }
+}

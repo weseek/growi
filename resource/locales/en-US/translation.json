@@ -309,6 +309,7 @@
     "recommended": "Recommended",
     "username_email_password": "Username, Email and Password authentication",
     "ldap_auth": "LDAP authentication",
+    "saml_auth": "SAML authentication",
     "google_auth2": "Google OAuth authentication",
     "google_auth2_by_crowi_desc": "However, this feature does not create new users, butit only makes it possible to login to the existing user who set up the association.",
     "facebook_auth2": "Facebook OAuth authentication",
@@ -373,6 +374,12 @@
       "group_search_user_DN_property": "User DN Property",
       "group_search_user_DN_property_detail": "The property of user object to use in <code>&#123;&#123;dn&#125;&#125;</code> interpolation of <code>Group Search Filter</code>.",
       "test_config": "Test Saved Configuration"
+    },
+    "SAML": {
+      "name": "SAML",
+      "entry_point": "Entry Point",
+      "issuer": "Issuer",
+      "mapping_detail": "Specification of mappings for %s when creating new users"
     },
     "OAuth": {
       "register": "Register for %s",

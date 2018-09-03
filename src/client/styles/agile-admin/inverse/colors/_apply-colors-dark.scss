@@ -156,7 +156,7 @@ legend {
  */
 .admin-page {
   #themeOptions {
-    a.active {
+    .theme-option-container.active a {
       background-color: darken($themecolor,15%);
       border-color: darken($themecolor,15%);
     }

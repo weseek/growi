@@ -85,24 +85,31 @@
   // theme selector
   #themeOptions {
     // layout
-    a {
-      margin-right: 10px;
-      margin-bottom: 10px;
-      padding: 3px;
+    .theme-option-container {
+      min-width: 100px;
+      a {
+        margin-right: 10px;
+        margin-bottom: 10px;
+        padding: 3px;
 
-      svg {
-        display: block;
+        svg {
+          display: block;
+        }
       }
     }
 
     // style
-    a {
+    .theme-option-container a {
       border: 1px solid #ccc;
       background-color: #f5f5f5;
-
-      &.active {
-        border-color: $brand-success;
-        background-color: $brand-success;
+    }
+    .theme-option-name {
+      opacity: 0.3;
+    }
+    // style (active)
+    .theme-option-container.active {
+      .theme-option-name {
+        opacity: 1;
       }
     }
   }

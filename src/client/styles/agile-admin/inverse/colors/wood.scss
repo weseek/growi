@@ -1,0 +1,82 @@
+@import '../variables';
+
+$themecolor: #aaa45f;
+$themelight: #f5f3ee;
+$subthemecolor: #dddebf;
+$topbar: $themecolor;
+$sidebar: $themelight;
+$bodycolor: $themelight;
+$headingtext: #577254;
+$bodytext: #7c7a70;
+$linktext: lighten(#6d8969, 5%);
+$linktext-hover: lighten($linktext, 12%);
+$sidebar-text: #859083;
+$primary: $themecolor;
+$info: lighten($themecolor, 10%);
+$logo-mark-fill: lighten(desaturate($topbar, 50%), 50%);
+$wikilinktext: lighten($themecolor, 5%);
+$wikilinktext-hover: lighten($wikilinktext, 15%);
+$inline-code-color: darken($themecolor, 20%);
+$inline-code-bg: lighten($subthemecolor, 70%);
+
+@import 'apply-colors';
+@import 'apply-colors-light';
+
+// change color of highlighted header in wiki (default: orange)
+.wiki {
+  .code-line.revision-head.highlighted {
+    background-color: lighten($themecolor, 20%);
+    color: $themelight;
+
+    .icon-note,
+    .icon-link {
+      color: $themelight;
+    }
+  }
+}
+
+.rbt-menu {
+  background: $themelight;
+}
+
+.main-container > #wrapper > #page-wrapper {
+  background-image: url("/images/themes/wood/wood.png");
+  background-attachment: fixed;
+}
+
+.bg-title {
+  background-color: rgba(226, 221, 192, 0.205);
+}
+
+/* Tabs */
+.nav.nav-tabs {
+  >li.active>a {
+    background: transparent;
+    border-bottom: 1px solid $bodycolor;
+  }
+}
+
+#wrapper > .navbar > .navbar-header {
+  background-image: url("/images/themes/wood/wood-navbar.png");
+}
+
+// login page
+.nologin {
+  .input-group {
+    .input-group-addon {
+      background-color: rgba(lighten(black, 10%), 0.6);
+    }
+    .form-control {
+      background-color: rgba(lighten(black, 10%), 0.6);
+    }
+  }
+
+  &.login-page {
+    .login-header, .login-dialog {
+      background-color: rgba(#ccc, 0.5);
+    }
+    .link-switch {
+      color: $bodytext;
+    }
+  }
+}

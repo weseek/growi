@@ -1,7 +1,16 @@
 CHANGES
 ========
 
-## 3.2.1-RC
+## 3.2.2-RC
+
+* Improvement: Add 'wood' theme
+* Improvement: Add 'halloween' theme
+* Improvement: Add 'island' theme
+* Fix: Sending email function doesn't work
+* Support Upgrade libs
+    * style-loader
+
+## 3.2.1
 
 * Feature: Import data from esa.io
 * Feature: Import data from Qiita:Team
