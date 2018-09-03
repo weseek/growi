@@ -1371,8 +1371,8 @@ module.exports = function(crowi, app) {
   }
 
   function validateMailSetting(req, form, callback) {
-    var mailer = crowi.mailer;
-    var option = {
+    const mailer = crowi.mailer;
+    const option = {
       host: form['mail:smtpHost'],
       port: form['mail:smtpPort'],
     };
@@ -1386,7 +1386,7 @@ module.exports = function(crowi, app) {
       option.secure = true;
     }
 
-    var smtpClient = mailer.createSMTPClient(option);
+    const smtpClient = mailer.createSMTPClient(option);
     debug('mailer setup for validate SMTP setting', smtpClient);
 
     smtpClient.sendMail({
