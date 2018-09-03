@@ -1,15 +1,16 @@
-<a id="theme-option-{{name}}" href="#"
-    class="{{name}} {% if name === settingForm['customize:theme'] %}active{% endif %}"
+<div id="theme-option-{{name}}" class="theme-option-container d-flex flex-column align-items-center {% if name === settingForm['customize:theme'] %}active{% endif %}">
+  <a class="m-0" href="#"
+    class="{{name}}"
     onclick="selectTheme('{{name}}')"
     data-theme="{{ webpack_asset('styles/theme-' + name + '.css') }}">
 
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
-    <title>{{name}}</title>
-    <g>
-      <path d="M -1 -1 L65 -1 L65 65 L-1 65 L-1 -1 Z" fill="{{bg}}"></path>
-      <path d="M -1 -1 L65 -1 L65 15 L-1 15 L-1 -1 Z" fill="{{topbar}}"></path>
-      <path d="M 44 15 L65 15 L65 65 L44 65 L44 15 Z" fill="{{theme}}"></path>
-    </g>
-  </svg>
-
-</a>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+      <g>
+        <path d="M -1 -1 L65 -1 L65 65 L-1 65 L-1 -1 Z" fill="{{bg}}"></path>
+        <path d="M -1 -1 L65 -1 L65 15 L-1 15 L-1 -1 Z" fill="{{topbar}}"></path>
+        <path d="M 44 15 L65 15 L65 65 L44 65 L44 15 Z" fill="{{theme}}"></path>
+      </g>
+    </svg>
+  </a>
+  <span class="theme-option-name"><b>{{name}}</b></span>
+</div>
