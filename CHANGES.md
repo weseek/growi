@@ -6,6 +6,9 @@ CHANGES
 * Improvement: Add 'wood' theme
 * Improvement: Add 'halloween' theme
 * Improvement: Add 'island' theme
+* Fix: Sending email function doesn't work
+* Support Upgrade libs
+    * style-loader
 
 ## 3.2.1
 
