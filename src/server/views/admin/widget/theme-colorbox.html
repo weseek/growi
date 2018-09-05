@@ -1,5 +1,5 @@
 <div id="theme-option-{{name}}" class="theme-option-container d-flex flex-column align-items-center {% if name === settingForm['customize:theme'] %}active{% endif %}">
-  <a class="m-0" href="#"
+  <a class="m-0"
     class="{{name}}"
     onclick="selectTheme('{{name}}')"
     data-theme="{{ webpack_asset('styles/theme-' + name + '.css') }}">
