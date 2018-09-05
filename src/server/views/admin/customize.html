@@ -52,47 +52,6 @@
       {% include './widget/menu.html' with {current: 'customize'} %}
     </div>
     <div class="col-md-9">
-
-      <form action="/_api/admin/customize/theme" method="post" class="form-horizontal" id="customthemeSettingForm" role="form">
-        <fieldset>
-          <legend>{{ t('customize_page.Theme') }}</legend>
-
-          {% if env === 'development' %}
-            <div class="alert alert-warning">
-              <strong>DEBUG MESSAGE:</strong> development build では、リアルタイムプレビューが無効になります
-            </div>
-          {% endif %}
-
-          <div id="themeOptions">
-            {# Light Themes #}
-            <div class="d-flex">
-              {% include 'widget/theme-colorbox.html' with { name: 'default',  bg: '#ffffff', topbar: '#334455', theme: '#112744' } %}
-              {% include 'widget/theme-colorbox.html' with { name: 'nature',   bg: '#f9fff3', topbar: '#118050', theme: '#460039' } %}
-              {% include 'widget/theme-colorbox.html' with { name: 'mono-blue',   bg: '#F7FBFD', topbar: '#00587A', theme: '#00587A' } %}
-           	  {% include 'widget/theme-colorbox.html' with { name: 'wood',   bg: '#fffefb', topbar: '#aaa45f', theme: '#dddebf' } %}
-              {% include 'widget/theme-colorbox.html' with { name: 'island',   bg: '#8ecac0', topbar: '#0c2a44', theme: '#cef2ef' } %}
-              {% include 'widget/theme-colorbox.html' with { name: 'kibela',   bg: '#F4F5F6', topbar: '#ffffff', theme: '#5584E1' } %}
-            </div>
-            {# Dark Themes #}
-            <div class="d-flex mt-3">
-              {% include 'widget/theme-colorbox.html' with { name: 'default-dark', bg: '#212731', topbar: '#151515', theme: '#f75b36' } %}
-              {% include 'widget/theme-colorbox.html' with { name: 'future', bg: '#16282D', topbar: '#011414', theme: '#04B4AE' } %}
-              {% include 'widget/theme-colorbox.html' with { name: 'blue-night', bg: '#061F2F', topbar: '#27343B', theme: '#0090C8' } %}
-              {% include 'widget/theme-colorbox.html' with { name: 'halloween',   bg: '#030003', topbar: '#cc5d1f', theme: '#e9af2b' } %}
-            </div>
-          </div>
-
-          <div class="form-group">
-            <div class="col-xs-offset-5 col-xs-6">
-              <input type="hidden" id="hiddenInputTheme" name="settingForm[customize:theme]" value="{{ settingForm['customize:theme'] }}">
-              <input type="hidden" name="_csrf" value="{{ csrf() }}">
-              <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
-            </div>
-          </div>
-
-        </fieldset>
-      </form>
-
       <form action="/_api/admin/customize/behavior" method="post" class="form-horizontal" id="cutombehaviorSettingForm" role="form">
       <fieldset>
         <legend>{{ t('customize_page.Behavior') }}</legend>
@@ -158,7 +117,7 @@
             <h4>
               <div class="radio radio-primary">
                 <input type="radio" id="radioLayoutGrowi" name="settingForm[customize:layout]" value="growi"
-                    {% if isLayoutGrowi %}checked="checked"{% endif %}>
+                    {% if 'growi' === settingForm['customize:layout'] %}checked="checked"{% endif %}>
                 <label for="radioLayoutGrowi">
                   GROWI Enhanced Layout <small class="text-success">(Recommended)</small>
                 </label>
@@ -179,7 +138,7 @@
             <h4>
               <div class="radio radio-primary">
                 <input type="radio" id="radioLayoutCrowi" name="settingForm[customize:layout]" value="crowi"
-                    {% if !isLayoutGrowi %}checked="checked"{% endif %}>
+                    {% if 'crowi' === settingForm['customize:layout'] %}checked="checked"{% endif %}>
                 <label for="radioLayoutCrowi">
                   Crowi Classic Layout
                 </label>
@@ -201,7 +160,7 @@
             <h4>
               <div class="radio radio-primary">
                 <input type="radio" id="radioLayoutKibela" name="settingForm[customize:layout]" value="kibela"
-                    {% if !isLayoutGrowi %}checked="checked"{% endif %}>
+                    {% if 'kibela' === settingForm['customize:layout'] %}checked="checked"{% endif %}>
                 <label   for="radioLayoutKibela">
                   Kibela Like Layout
                 </label>
@@ -221,10 +180,36 @@
           </div>
         </div>
 
+        <h2>{{ t('customize_page.Theme') }}</h2>
+          <div id="themeOptions">
+            {# Light Themes #}
+            <div class="d-flex">
+              {% include 'widget/theme-colorbox.html' with { name: 'default',  bg: '#ffffff', topbar: '#334455', theme: '#112744' } %}
+              {% include 'widget/theme-colorbox.html' with { name: 'nature',   bg: '#f9fff3', topbar: '#118050', theme: '#460039' } %}
+              {% include 'widget/theme-colorbox.html' with { name: 'mono-blue',   bg: '#F7FBFD', topbar: '#00587A', theme: '#00587A' } %}
+              {% include 'widget/theme-colorbox.html' with { name: 'wood',   bg: '#fffefb', topbar: '#aaa45f', theme: '#dddebf' } %}
+              {% include 'widget/theme-colorbox.html' with { name: 'island',   bg: '#8ecac0', topbar: '#0c2a44', theme: '#cef2ef' } %}
+              {% include 'widget/theme-colorbox.html' with { name: 'kibela',   bg: '#F4F5F6', topbar: '#ffffff', theme: '#5584E1' } %}
+            </div>
+            {# Dark Themes #}
+            <div class="d-flex mt-3">
+              {% include 'widget/theme-colorbox.html' with { name: 'default-dark', bg: '#212731', topbar: '#151515', theme: '#f75b36' } %}
+              {% include 'widget/theme-colorbox.html' with { name: 'future', bg: '#16282D', topbar: '#011414', theme: '#04B4AE' } %}
+              {% include 'widget/theme-colorbox.html' with { name: 'blue-night', bg: '#061F2F', topbar: '#27343B', theme: '#0090C8' } %}
+              {% include 'widget/theme-colorbox.html' with { name: 'halloween',   bg: '#030003', topbar: '#cc5d1f', theme: '#e9af2b' } %}
+            </div>
+          </div>
+          {% if env === 'development' %}
+          <div class="alert alert-warning">
+            <strong>DEBUG MESSAGE:</strong> development build では、リアルタイムプレビューが無効になります
+          </div>
+          {% endif %}
+
         <div class="form-group">
           <div class="col-xs-offset-5 col-xs-6">
+            <input type="hidden" id="hiddenInputTheme" name="settingForm[customize:theme]" value="{{ settingForm['customize:theme'] }}">
             <input type="hidden" name="_csrf" value="{{ csrf() }}">
-            <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
+            <button type="submit"  class="btn btn-primary">{{ t('Update') }}</button>
           </div>
         </div>
 
