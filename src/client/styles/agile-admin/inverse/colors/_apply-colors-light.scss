@@ -72,7 +72,7 @@
  */
 .admin-page {
   #themeOptions {
-    a.active {
+    .theme-option-container.active a {
       background-color: lighten($themecolor,20%);
       border-color: lighten($themecolor,20%);
     }

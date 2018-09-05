@@ -1,6 +1,6 @@
 {
   "name": "growi",
-  "version": "3.2.2-RC",
+  "version": "3.2.3-RC",
   "description": "Team collaboration software using markdown",
   "tags": [
     "wiki",
@@ -104,6 +104,7 @@
     "passport-google-auth": "^1.0.2",
     "passport-ldapauth": "^2.0.0",
     "passport-local": "^1.0.0",
+    "passport-saml": "^0.35.0",
     "passport-twitter": "^1.0.4",
     "rimraf": "^2.6.1",
     "slack-node": "^0.1.8",
@@ -188,7 +189,7 @@
     "sinon": "^6.0.0",
     "sinon-chai": "^3.2.0",
     "socket.io-client": "^2.0.3",
-    "style-loader": "^0.22.1",
+    "style-loader": "^0.23.0",
     "throttle-debounce": "^2.0.0",
     "toastr": "^2.1.2",
     "uglifyjs-webpack-plugin": "^1.2.5",

@@ -12,7 +12,6 @@ module.exports = function(crowi) {
     , config = crowi.getConfig()
     , mailConfig = {}
     , mailer = {}
-    , MAIL_TEMPLATE_DIR = crowi.mailDir
     ;
 
 
@@ -105,7 +104,7 @@ module.exports = function(crowi) {
     if (mailer) {
       var templateVars = config.vars || {};
       return swig.renderFile(
-        MAIL_TEMPLATE_DIR + config.template,
+        config.template,
         templateVars,
         function(err, output) {
           if (err) {

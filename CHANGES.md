@@ -1,9 +1,15 @@
 CHANGES
 ========
 
-## 3.2.2-RC
+## 3.2.2
 
-* 
+* Feature: SAML Authentication (SSO)
+* Improvement: Add 'wood' theme
+* Improvement: Add 'halloween' theme
+* Improvement: Add 'island' theme
+* Fix: Sending email function doesn't work
+* Support Upgrade libs
+    * style-loader
 
 ## 3.2.1
 
@@ -23,7 +29,7 @@ CHANGES
 ## 3.2.0
 
 * Feature: HackMD integration so that user will be able to simultaneously edit with multiple people
-* Feature: Login with Twitter Account
+* Feature: Login with Twitter Account (OAuth)
 * Fix: The Initial scroll position is wrong when reloading the page
 
 ## 3.1.14
@@ -74,8 +80,8 @@ CHANGES
 
 ## 3.1.9
 
-* Feature: Login with Google Account
-* Feature: Login with GitHub Account
+* Feature: Login with Google Account (OAuth)
+* Feature: Login with GitHub Account (OAuth)
 * Feature: Attach files in Comment
 * Improvement: Write comment with CodeMirror Editor
 * Improvement: Post comment with `Ctrl-Enter`

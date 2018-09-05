@@ -23,11 +23,11 @@
         "request": "launch",
         "name": "Debug: Chrome",
         "sourceMaps": true,
+        "webRoot": "${workspaceFolder}/public",
         "sourceMapPathOverrides": {
-          "webpack:///*": "${workspaceRoot}/*"
+          "webpack:///*": "${workspaceFolder}/*"
         },
-        "url": "http://localhost:3000",
-        "webRoot": "${workspaceRoot}/public"
+        "url": "http://localhost:3000"
       }
     ]
 }
