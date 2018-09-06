@@ -84,12 +84,22 @@ gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js
 
   <!-- styles -->
   {% block style_css_block %}
-    {% if env === 'development' %}
-      <script src="{{ webpack_asset('styles/style.js') }}"></script>
-      <script src="{{ webpack_asset('styles/theme-' + theme() + '.js') }}"></script>
+    {% if 'kibela' === layoutType() %}
+      {% if env === 'development' %}
+        <script src="{{ webpack_asset('styles/style.js') }}"></script>
+        <script src="{{ webpack_asset('styles/theme-kibela.js') }}"></script>
+      {% else %}
+        <link rel="stylesheet" href="{{ webpack_asset('styles/style.css') }}">
+        <link rel="stylesheet" href="{{ webpack_asset('styles/theme-kibela.css') }}">
+      {% endif %}
     {% else %}
-      <link rel="stylesheet" href="{{ webpack_asset('styles/style.css') }}">
-      <link rel="stylesheet" href="{{ webpack_asset('styles/theme-' + theme() + '.css') }}">
+      {% if env === 'development' %}
+        <script src="{{ webpack_asset('styles/style.js') }}"></script>
+        <script src="{{ webpack_asset('styles/theme-' + theme() + '.js') }}"></script>
+      {% else %}
+        <link rel="stylesheet" href="{{ webpack_asset('styles/style.css') }}">
+        <link rel="stylesheet" href="{{ webpack_asset('styles/theme-' + theme() + '.css') }}">
+      {% endif %}
     {% endif %}
   {% endblock %}
 
