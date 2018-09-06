@@ -199,7 +199,7 @@ export default class Editor extends AbstractEditor {
 
   renderNavbar() {
     return (
-      <div className="m-0 navbar navbar-default" style={{ minHeight: 'unset' }}>
+      <div className="m-0 navbar navbar-default navbar-editor" style={{ minHeight: 'unset' }}>
         <ul className="pr-4 nav nav-navbar navbar-right">
           <li>
             <Button bsSize="small" onClick={ () => this.refs.handsontableModal.show() }><i className="icon-grid"></i></Button>

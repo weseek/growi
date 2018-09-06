@@ -140,11 +140,12 @@ body.on-edit {
     z-index: 1;
     left: $left-margin;
     width: calc(100% - #{$left-margin} - #{$right-margin});
+    pointer-events: none;                               // disable pointer-events because it becomes an obstacle
 
-    // for crowi layout
-    > .col-md-9, .col-xs-12 {
-      padding: 0;
-      width: 100%;
+    > .header-container {
+      pointer-events: initial;                          // enable pointer-events
+      padding: 0;   // for crowi layout
+      width: 100%;  // for crowi layout
     }
 
     background: none;

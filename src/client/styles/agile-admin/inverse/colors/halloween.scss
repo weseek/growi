@@ -22,6 +22,7 @@ $dark: darken($bodytext, 5%);
 $border: $themecolor;
 $navbar-border: lighten($basecolor, 25%);
 $active-navbar-border: darken($navbar-border, 3%);
+$active-nav-tabs-bgcolor: #231313;
 $btn-default-bgcolor: darken($basecolor, 10%);
 $inline-code-color: #a94f04;
 $inline-code-bg: #0a121b;
@@ -63,7 +64,8 @@ $inline-code-bg: #0a121b;
   background-image: url("/images/themes/halloween/halloween-navbar.jpg");
 }
 
-.main-container > #wrapper > #page-wrapper {
+.main-container > #wrapper > #page-wrapper,
+.page-editor-preview-container {
   background-image: url("/images/themes/halloween/halloween.jpg");
   background-attachment: fixed;
 }
@@ -72,10 +74,14 @@ $inline-code-bg: #0a121b;
   background-color: rgba(0, 0, 0, 0.3);
 }
 
-/* Tabs */
-.nav.nav-tabs {
-  >li.active>a {
-    background: transparent;
-    border-bottom: 1px solid #1f1b1b;
+/*
+ * Tabs
+ */
+body:not(.on-edit) .nav.nav-tabs {
+  > li.active > a {
+    background: linear-gradient(
+      rgba($active-nav-tabs-bgcolor, 0) 0%,
+      rgba($active-nav-tabs-bgcolor, 0) 90%,
+      $active-nav-tabs-bgcolor 100%);         // overwrite only the bottom pixel
   }
 }
