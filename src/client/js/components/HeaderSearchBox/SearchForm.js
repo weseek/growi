@@ -82,7 +82,7 @@ export default class SearchForm extends React.Component {
       <form
         ref='form'
         action='/_search'
-        className='search-form form-group input-group search-input-group'
+        className='search-form form-group input-group search-input-group hidden-print'
       >
         <FormGroup>
           <InputGroup>

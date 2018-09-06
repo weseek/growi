@@ -1,11 +1,11 @@
 module.exports = function(crowi) {
-  var debug = require('debug')('growi:models:user')
+  const debug = require('debug')('growi:models:user')
+    , path = require('path')
     , mongoose = require('mongoose')
     , mongoosePaginate = require('mongoose-paginate')
     , uniqueValidator = require('mongoose-unique-validator')
     , crypto = require('crypto')
     , async = require('async')
-    , ObjectId = mongoose.Schema.Types.ObjectId
 
     , STATUS_REGISTERED = 1
     , STATUS_ACTIVE     = 2
@@ -23,7 +23,7 @@ module.exports = function(crowi) {
 
     , userEvent = crowi.event('user')
 
-    , userSchema;
+  let userSchema;
 
   userSchema = new mongoose.Schema({
     userId: String,
@@ -654,7 +654,7 @@ module.exports = function(crowi) {
               mailer.send({
                 to: user.email,
                 subject: 'Invitation to ' + Config.appTitle(config),
-                template: 'admin/userInvitation.txt',
+                template: path.join(crowi.localeDir, 'en-US/admin/userInvitation.txt'),
                 vars: {
                   email: user.email,
                   password: user.password,

@@ -27,7 +27,6 @@ function Crowi(rootdir, env) {
   this.libDir      = path.join(this.rootDir, 'src/server') + sep;
   this.eventsDir   = path.join(this.libDir, 'events') + sep;
   this.viewsDir    = path.join(this.libDir, 'views') + sep;
-  this.mailDir     = path.join(this.viewsDir, 'mail') + sep;
   this.resourceDir = path.join(this.rootDir, 'resource') + sep;
   this.localeDir   = path.join(this.resourceDir, 'locales') + sep;
   this.tmpDir      = path.join(this.rootDir, 'tmp') + sep;
@@ -283,6 +282,7 @@ Crowi.prototype.setupPassport = function() {
     this.passportService.setupGoogleStrategy();
     this.passportService.setupGitHubStrategy();
     this.passportService.setupTwitterStrategy();
+    this.passportService.setupSamlStrategy();
   }
   catch (err) {
     logger.error(err);
