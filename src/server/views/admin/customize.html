@@ -133,7 +133,7 @@
                   {% include 'widget/theme-colorbox.html' with { name: 'mono-blue',   bg: '#F7FBFD', topbar: '#00587A', theme: '#00587A' } %}
                   {% include 'widget/theme-colorbox.html' with { name: 'wood',   bg: '#fffefb', topbar: '#aaa45f', theme: '#dddebf' } %}
                   {% include 'widget/theme-colorbox.html' with { name: 'island',   bg: '#8ecac0', topbar: '#0c2a44', theme: '#cef2ef' } %}
-                  {% include 'widget/theme-colorbox.html' with { name: 'kibela',   bg: '#F4F5F6', topbar: '#ffffff', theme: '#5584E1' } %}
+                  <!-- {% include 'widget/theme-colorbox.html' with { name: 'kibela',   bg: '#F4F5F6', topbar: '#ffffff', theme: '#5584E1' } %} -->
                 </div>
                 {# Dark Themes #}
                 <div class="d-flex mt-3">
@@ -144,7 +144,9 @@
                 </div>
               </div>
               {% if env === 'development' %}
+                <br>
                 <div class="alert alert-warning">
+
                   <strong>DEBUG MESSAGE:</strong> development build では、リアルタイムプレビューが無効になります
                 </div>
               {% endif %}
