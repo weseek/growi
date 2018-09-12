@@ -27,6 +27,7 @@ module.exports = {
     securityPassportTwitter: require('./admin/securityPassportTwitter'),
     markdown: require('./admin/markdown'),
     markdownXss: require('./admin/markdownXss'),
+    markdownPresentation: require('./admin/markdownPresentation'),
     customcss: require('./admin/customcss'),
     customscript: require('./admin/customscript'),
     customheader: require('./admin/customheader'),

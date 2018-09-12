@@ -86,6 +86,7 @@ module.exports = function(crowi, app) {
   app.get('/admin/markdown'                   , loginRequired(crowi, app) , middleware.adminRequired() , admin.markdown.index);
   app.post('/admin/markdown/lineBreaksSetting', loginRequired(crowi, app) , middleware.adminRequired() , csrf, form.admin.markdown, admin.markdown.lineBreaksSetting); //change form name
   app.post('/admin/markdown/xss-setting'      , loginRequired(crowi, app) , middleware.adminRequired() , csrf, form.admin.markdownXss, admin.markdown.xssSetting);
+  app.post('/admin/markdown/presentationSetting', loginRequired(crowi, app) , middleware.adminRequired() , csrf, form.admin.markdownPresentation, admin.markdown.presentationSetting);
 
   // markdown admin
   app.get('/admin/customize'                , loginRequired(crowi, app) , middleware.adminRequired() , admin.customize.index);
