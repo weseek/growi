@@ -5,5 +5,5 @@ var form = require('express-form')
 
 module.exports = form(
   field('markdownSetting[markdown:pageBreakSeparator]').trim().toInt(),
-  field('markdownSetting[markdown:xss:option]markdownSetting[markdown:pageBreakCustomSeparator]').trim()
+  field('markdownSetting[markdown:pageBreakCustomSeparator]').trim()
 );
