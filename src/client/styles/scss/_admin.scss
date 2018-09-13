@@ -97,6 +97,10 @@
       }
     }
 
+    &.disabled {
+      opacity: 0.5;
+    }
+
     // style
     .theme-option-container a {
       border: 1px solid #ccc;

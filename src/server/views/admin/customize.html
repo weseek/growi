@@ -70,7 +70,7 @@
           <div class="col-xs-6">
             <h4>
               <div class="radio radio-primary">
-                <input type="radio" id="radioLayoutGrowi" name="settingForm[customize:layout]" value="growi" onclick="selectableTheme(true)"
+                <input type="radio" id="radioLayoutGrowi" name="settingForm[customize:layout]" value="growi" onclick="selectableTheme(event)"
                     {% if 'growi' === settingForm['customize:layout'] %}checked="checked"{% endif %}>
                 <label for="radioLayoutGrowi">
                   GROWI Enhanced Layout <small class="text-success">(Recommended)</small>
@@ -91,7 +91,7 @@
           <div class="col-xs-6">
             <h4>
               <div class="radio radio-primary">
-                <input type="radio" id="radioLayoutCrowi" name="settingForm[customize:layout]" value="crowi" onclick="selectableTheme(true)"
+                <input type="radio" id="radioLayoutCrowi" name="settingForm[customize:layout]" value="crowi" onclick="selectableTheme(event)"
                     {% if 'crowi' === settingForm['customize:layout'] %}checked="checked"{% endif %}>
                 <label for="radioLayoutCrowi">
                   Crowi Classic Layout
@@ -113,7 +113,7 @@
           <div class="col-xs-6">
             <h4>
               <div class="radio radio-primary">
-                <input type="radio" id="radioLayoutKibela" name="settingForm[customize:layout]" value="kibela" onclick="selectableTheme(false)"
+                <input type="radio" id="radioLayoutKibela" name="settingForm[customize:layout]" value="kibela" onclick="selectableTheme(event)"
                     {% if 'kibela' === settingForm['customize:layout'] %}checked="checked"{% endif %}>
                 <label   for="radioLayoutKibela">
                   Kibela Like Layout
@@ -134,21 +134,21 @@
           </div>
         </div>
         <h2>{{ t('customize_page.Theme') }}</h2>
-        <div id="themeOptions">
+        <div id="themeOptions" {% if 'kibela' == settingForm['customize:layout'] %}class="disabled"{% endif %}>
           {# Light Themes #}
           <div class="d-flex">
-            {% include 'widget/theme-colorbox.html' with { name: 'default',  bg: '#ffffff', topbar: '#334455', theme: '#112744', isKibela: 'true'} %}
-            {% include 'widget/theme-colorbox.html' with { name: 'nature',   bg: '#f9fff3', topbar: '#118050', theme: '#460039', isKibela: 'true'} %}
-            {% include 'widget/theme-colorbox.html' with { name: 'mono-blue',   bg: '#F7FBFD', topbar: '#00587A', theme: '#00587A', isKibela: 'true'} %}
-            {% include 'widget/theme-colorbox.html' with { name: 'wood',   bg: '#fffefb', topbar: '#aaa45f', theme: '#dddebf', isKibela: 'true'} %}
-            {% include 'widget/theme-colorbox.html' with { name: 'island',   bg: '#8ecac0', topbar: '#0c2a44', theme: '#cef2ef', isKibela: 'true'} %}
+            {% include 'widget/theme-colorbox.html' with { name: 'default',  bg: '#ffffff', topbar: '#334455', theme: '#112744'} %}
+            {% include 'widget/theme-colorbox.html' with { name: 'nature',   bg: '#f9fff3', topbar: '#118050', theme: '#460039'} %}
+            {% include 'widget/theme-colorbox.html' with { name: 'mono-blue',   bg: '#F7FBFD', topbar: '#00587A', theme: '#00587A'} %}
+            {% include 'widget/theme-colorbox.html' with { name: 'wood',   bg: '#fffefb', topbar: '#aaa45f', theme: '#dddebf'} %}
+            {% include 'widget/theme-colorbox.html' with { name: 'island',   bg: '#8ecac0', topbar: '#0c2a44', theme: '#cef2ef'} %}
           </div>
           {# Dark Themes #}
           <div class="d-flex mt-3">
-            {% include 'widget/theme-colorbox.html' with { name: 'default-dark', bg: '#212731', topbar: '#151515', theme: '#f75b36', isKibela: 'true'} %}
-            {% include 'widget/theme-colorbox.html' with { name: 'future', bg: '#16282D', topbar: '#011414', theme: '#04B4AE', isKibela: 'true'} %}
-            {% include 'widget/theme-colorbox.html' with { name: 'blue-night', bg: '#061F2F', topbar: '#27343B', theme: '#0090C8', isKibela: 'true'} %}
-            {% include 'widget/theme-colorbox.html' with { name: 'halloween',   bg: '#030003', topbar: '#cc5d1f', theme: '#e9af2b', isKibela: 'true'} %}
+            {% include 'widget/theme-colorbox.html' with { name: 'default-dark', bg: '#212731', topbar: '#151515', theme: '#f75b36'} %}
+            {% include 'widget/theme-colorbox.html' with { name: 'future', bg: '#16282D', topbar: '#011414', theme: '#04B4AE'} %}
+            {% include 'widget/theme-colorbox.html' with { name: 'blue-night', bg: '#061F2F', topbar: '#27343B', theme: '#0090C8'} %}
+            {% include 'widget/theme-colorbox.html' with { name: 'halloween',   bg: '#030003', topbar: '#cc5d1f', theme: '#e9af2b'} %}
           </div>
         </div>
         {% if env === 'development' %}
@@ -590,8 +590,27 @@ window.addEventListener('load', (event) => {
       highlightJsCssDOM.href = highlightJsCssDOM.href.replace(/[^/]+\.css$/, `${val}.css`);
     }
 
-    function selectableTheme(flag) {
-      $("#customthemeSettingForm").prop("hidden", !flag);
+    function selectableTheme(event) {
+      var val = event.target.value;
+      var themeButtons = document.getElementsByClassName('theme-button');
+
+      if(val == 'kibela') {
+        $('#themeOptions').addClass("disabled");
+        var i=0;
+        while(i < themeButtons.length) {
+          themeButtons[i].removeAttribute("onclick");
+          i++;
+        }
+      }
+      else {
+        $('#themeOptions').removeClass("disabled")
+        var i=0;
+        while(i < themeButtons.length) {
+          var name = themeButtons[i].getAttribute("id");
+          themeButtons[i].setAttribute("onclick",`selectTheme('${name}')`);
+          i++;
+        }
+      }
     }
     /*
      * Theme Selector
