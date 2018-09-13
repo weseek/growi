@@ -1,11 +1,13 @@
 <div id="theme-option-{{name}}" class="theme-option-container d-flex flex-column align-items-center {% if name === settingForm['customize:theme'] %}active{% endif %}">
-  <a class="m-0"
-    class="{{name}}"
-    {% if 'kibela' === settingForm['customize:layout'] %}class="disabled-theme"{% else %}onclick="selectTheme('{{name}}')"{% endif %}
+  <a class="m-0　{{name}}"
+    {% if 'kibela' !== settingForm['customize:layout'] %}onclick="selectTheme('{{name}}')"{% endif %}
     data-theme="{{ webpack_asset('styles/theme-' + name + '.css') }}">
 
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
-      <g>
+      <filter id="button-filter">
+        <feColorMatrix type="saturate" values="0.2" />
+      </filter>
+      <g {% if 'kibela' === settingForm['customize:layout'] %}filter="url(#button-filter)"{% endif %}>
         <path d="M -1 -1 L65 -1 L65 65 L-1 65 L-1 -1 Z" fill="{{bg}}"></path>
         <path d="M -1 -1 L65 -1 L65 15 L-1 15 L-1 -1 Z" fill="{{topbar}}"></path>
         <path d="M 44 15 L65 15 L65 65 L44 65 L44 15 Z" fill="{{theme}}"></path>
