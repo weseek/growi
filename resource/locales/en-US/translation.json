@@ -430,7 +430,7 @@
     "Preset one separator": "Preset 1",
     "Preset one separator desc": "Blank line 3 lines",
     "Preset two separator": "Preset 2",
-    "Preset two separator desc": "Horizontal Rule",
+    "Preset two separator desc": "Markdown horizontal rule",
     "Custom separator": "Custom",
     "Custom separator desc": "Any character",
     "XSS_setting": "Prevent XSS(Cross Site Scripting) Setting",
