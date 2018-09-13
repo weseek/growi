@@ -356,6 +356,8 @@ module.exports = function(crowi, app) {
           return;               // cz: somehow passport.authenticate called twice when ECONNREFUSED error occurred
         }
 
+        logger.debug(`--- authenticate with ${strategyName} strategy ---`);
+
         if (err) {
           logger.error(`'${strategyName}' passport authentication error: `, err);
           req.flash('warningMessage', `Error occured in '${strategyName}' passport authentication`);
@@ -366,6 +368,9 @@ module.exports = function(crowi, app) {
         if (!response) {
           return next();
         }
+
+        logger.debug('response', response);
+        logger.debug('info', info);
 
         resolve(response);
       })(req, res, next);
