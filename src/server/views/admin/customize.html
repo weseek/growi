@@ -133,34 +133,30 @@
             </ul>
           </div>
         </div>
-          <div id="customthemeSettingForm" {% if 'kibela' === settingForm['customize:layout'] %} hidden {% endif %}>
-            <h2>{{ t('customize_page.Theme') }}</h2>
-              <div id="themeOptions">
-                {# Light Themes #}
-                <div class="d-flex">
-                  {% include 'widget/theme-colorbox.html' with { name: 'default',  bg: '#ffffff', topbar: '#334455', theme: '#112744' } %}
-                  {% include 'widget/theme-colorbox.html' with { name: 'nature',   bg: '#f9fff3', topbar: '#118050', theme: '#460039' } %}
-                  {% include 'widget/theme-colorbox.html' with { name: 'mono-blue',   bg: '#F7FBFD', topbar: '#00587A', theme: '#00587A' } %}
-                  {% include 'widget/theme-colorbox.html' with { name: 'wood',   bg: '#fffefb', topbar: '#aaa45f', theme: '#dddebf' } %}
-                  {% include 'widget/theme-colorbox.html' with { name: 'island',   bg: '#8ecac0', topbar: '#0c2a44', theme: '#cef2ef' } %}
-                  <!-- {% include 'widget/theme-colorbox.html' with { name: 'kibela',   bg: '#F4F5F6', topbar: '#ffffff', theme: '#5584E1' } %} -->
-                </div>
-                {# Dark Themes #}
-                <div class="d-flex mt-3">
-                  {% include 'widget/theme-colorbox.html' with { name: 'default-dark', bg: '#212731', topbar: '#151515', theme: '#f75b36' } %}
-                  {% include 'widget/theme-colorbox.html' with { name: 'future', bg: '#16282D', topbar: '#011414', theme: '#04B4AE' } %}
-                  {% include 'widget/theme-colorbox.html' with { name: 'blue-night', bg: '#061F2F', topbar: '#27343B', theme: '#0090C8' } %}
-                  {% include 'widget/theme-colorbox.html' with { name: 'halloween',   bg: '#030003', topbar: '#cc5d1f', theme: '#e9af2b' } %}
-                </div>
-              </div>
-              {% if env === 'development' %}
-                <br>
-                <div class="alert alert-warning">
-
-                  <strong>DEBUG MESSAGE:</strong> development build では、リアルタイムプレビューが無効になります
-                </div>
-              {% endif %}
-            </div>
+        <h2>{{ t('customize_page.Theme') }}</h2>
+        <div id="themeOptions">
+          {# Light Themes #}
+          <div class="d-flex">
+            {% include 'widget/theme-colorbox.html' with { name: 'default',  bg: '#ffffff', topbar: '#334455', theme: '#112744', isKibela: 'true'} %}
+            {% include 'widget/theme-colorbox.html' with { name: 'nature',   bg: '#f9fff3', topbar: '#118050', theme: '#460039', isKibela: 'true'} %}
+            {% include 'widget/theme-colorbox.html' with { name: 'mono-blue',   bg: '#F7FBFD', topbar: '#00587A', theme: '#00587A', isKibela: 'true'} %}
+            {% include 'widget/theme-colorbox.html' with { name: 'wood',   bg: '#fffefb', topbar: '#aaa45f', theme: '#dddebf', isKibela: 'true'} %}
+            {% include 'widget/theme-colorbox.html' with { name: 'island',   bg: '#8ecac0', topbar: '#0c2a44', theme: '#cef2ef', isKibela: 'true'} %}
+          </div>
+          {# Dark Themes #}
+          <div class="d-flex mt-3">
+            {% include 'widget/theme-colorbox.html' with { name: 'default-dark', bg: '#212731', topbar: '#151515', theme: '#f75b36', isKibela: 'true'} %}
+            {% include 'widget/theme-colorbox.html' with { name: 'future', bg: '#16282D', topbar: '#011414', theme: '#04B4AE', isKibela: 'true'} %}
+            {% include 'widget/theme-colorbox.html' with { name: 'blue-night', bg: '#061F2F', topbar: '#27343B', theme: '#0090C8', isKibela: 'true'} %}
+            {% include 'widget/theme-colorbox.html' with { name: 'halloween',   bg: '#030003', topbar: '#cc5d1f', theme: '#e9af2b', isKibela: 'true'} %}
+          </div>
+        </div>
+        {% if env === 'development' %}
+          <br>
+          <div class="alert alert-warning">
+            <strong>DEBUG MESSAGE:</strong> development build では、リアルタイムプレビューが無効になります
+          </div>
+        {% endif %}
         <div class="form-group">
           <div class="col-xs-offset-5 col-xs-6">
             <input type="hidden" id="hiddenInputTheme" name="settingForm[customize:theme]" value="{{ settingForm['customize:theme'] }}">
