@@ -1,4 +1,4 @@
-<div id="theme-option-{{name}}" class="theme-option-container d-flex flex-column align-items-center {% if name === settingForm['customize:theme'] %}active{% endif %}">
+<div id="theme-option-{{name}}" class="theme-option-container d-flex flex-column align-items-center {% if name === settingForm['customize:theme'] && 'kibela' !== settingForm['customize:layout'] %}active{% endif %}">
   <a class="m-0　{{name}}"
     {% if 'kibela' !== settingForm['customize:layout'] %}onclick="selectTheme('{{name}}')"{% endif %}
     data-theme="{{ webpack_asset('styles/theme-' + name + '.css') }}">
