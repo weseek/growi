@@ -65,7 +65,12 @@
       <form action="/_api/admin/customize/layout" method="post" class="form-horizontal" id="customlayoutSettingForm" role="form">
       <fieldset>
         <legend>{{ t('customize_page.Layout') }}</legend>
-
+        {% if env === 'development' %}
+          <br>
+          <div class="alert alert-warning">
+            <strong>DEBUG MESSAGE:</strong> development build では、リアルタイムプレビューが無効になります
+          </div>
+        {% endif %}
         <div class="form-group">
           <div class="col-xs-6">
             <h4>
@@ -151,12 +156,6 @@
             {% include 'widget/theme-colorbox.html' with { name: 'halloween',   bg: '#030003', topbar: '#cc5d1f', theme: '#e9af2b'} %}
           </div>
         </div>
-        {% if env === 'development' %}
-          <br>
-          <div class="alert alert-warning">
-            <strong>DEBUG MESSAGE:</strong> development build では、リアルタイムプレビューが無効になります
-          </div>
-        {% endif %}
         <div class="form-group">
           <div class="col-xs-offset-5 col-xs-6">
             <input type="hidden" id="hiddenInputTheme" name="settingForm[customize:theme]" value="{{ settingForm['customize:theme'] }}">
