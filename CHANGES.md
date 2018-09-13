@@ -1,6 +1,10 @@
 CHANGES
 ========
 
+## 3.2.3-RC
+
+* Support: Shrink image size for themes which recently added
+
 ## 3.2.2
 
 * Feature: SAML Authentication (SSO)
