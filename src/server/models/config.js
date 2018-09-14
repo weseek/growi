@@ -116,8 +116,8 @@ module.exports = function(crowi) {
       'markdown:xss:attrWhiteList': [],
       'markdown:isEnabledLinebreaks': false,
       'markdown:isEnabledLinebreaksInComments': true,
-      'markdown:pageBreakSeparator': 1,
-      'markdown:pageBreakCustomSeparator': '',
+      'markdown:presentation:pageBreakSeparator': 1,
+      'markdown:presentation:pageBreakCustomSeparator': '',
     };
   }
 
@@ -360,7 +360,7 @@ module.exports = function(crowi) {
   };
 
   configSchema.statics.pageBreakSeparator = function(config) {
-    const key = 'markdown:pageBreakSeparator';
+    const key = 'markdown:presentation:pageBreakSeparator';
 
     // return default value if undefined
     if (undefined === config.markdown || undefined === config.markdown[key]) {
@@ -371,7 +371,7 @@ module.exports = function(crowi) {
   };
 
   configSchema.statics.pageBreakCustomSeparator = function(config) {
-    const key = 'markdown:pageBreakCustomSeparator';
+    const key = 'markdown:presentation:pageBreakCustomSeparator';
 
     // return default value if undefined
     if (undefined === config.markdown || undefined === config.markdown[key]) {

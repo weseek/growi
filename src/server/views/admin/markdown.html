@@ -94,8 +94,8 @@
         <p class="well">{{ t("markdown_setting.presentation_setting_desc") }}</p>
 
         <fieldset class="form-group row my-2">
-            {% set nameForPageBreakOption = "markdownSetting[markdown:pageBreakSeparator]" %}
-            {% set pageBreakSeparator = markdownSetting['markdown:pageBreakSeparator'] %}
+            {% set nameForPageBreakOption = "markdownSetting[markdown:presentation:pageBreakSeparator]" %}
+            {% set pageBreakSeparator = markdownSetting['markdown:presentation:pageBreakSeparator'] %}
 
           <label class="col-xs-3 control-label">
             {{ t('markdown_setting.Page break setting') }}
@@ -127,7 +127,7 @@
               <p class="font-weight-bold">{{ t('markdown_setting.Custom separator') }}</p>
               <div class="m-t-15">
                   {{ t('markdown_setting.Custom separator desc') }}
-                  <input class="form-control" type="text" name="markdownSetting[markdown:pageBreakCustomSeparator]" value="{{markdownSetting['markdown:pageBreakCustomSeparator']|default('') }}">
+                  <input class="form-control" type="text" name="markdownSetting[markdown:presentation:pageBreakCustomSeparator]" value="{{markdownSetting['markdown:presentation:pageBreakCustomSeparator']|default('') }}">
               </div>
             </label>
           </div>
