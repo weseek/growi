@@ -434,6 +434,7 @@ class PassportService {
       entryPoint: config.crowi['security:passport-saml:entryPoint'] || process.env.SAML_ENTRY_POINT,
       callbackUrl: config.crowi['security:passport-saml:callbackUrl'] || process.env.SAML_CALLBACK_URI,
       issuer: config.crowi['security:passport-saml:issuer'] || process.env.SAML_ISSUER,
+      cert: config.crowi['security:passport-saml:cert'] || process.env.SAML_CERT,
     }, function(profile, done) {
       if (profile) {
         return done(null, profile);
