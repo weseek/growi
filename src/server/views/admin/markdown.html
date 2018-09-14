@@ -89,6 +89,59 @@
         </fieldset>
       </form>
 
+      <form action="/admin/markdown/presentationSetting" method="post" class="form-horizontal" id="markdownSettingForm" role="form">
+        <legend>{{ t('markdown_setting.presentation_setting') }}</legend>
+        <p class="well">{{ t("markdown_setting.presentation_setting_desc") }}</p>
+
+        <fieldset class="form-group row my-2">
+            {% set nameForPageBreakOption = "markdownSetting[markdown:presentation:pageBreakSeparator]" %}
+            {% set pageBreakSeparator = markdownSetting['markdown:presentation:pageBreakSeparator'] %}
+
+          <label class="col-xs-3 control-label">
+            {{ t('markdown_setting.Page break setting') }}
+          </label>
+
+          <div class="col-xs-3 radio radio-primary">
+              <input type="radio" id="option1" name="{{nameForPageBreakOption}}" value="1" {% if pageBreakSeparator === 1 %}checked{% endif %}>
+              <label for="option1">
+                <p class="font-weight-bold">{{ t('markdown_setting.Preset one separator') }}</p>
+                <div class="m-t-15">
+                    {{ t('markdown_setting.Preset one separator desc') }}
+                </div>
+              </label>
+          </div>
+
+          <div class="col-xs-3 radio radio-primary">
+              <input type="radio" id="option2" name="{{nameForPageBreakOption}}" value="2" {% if pageBreakSeparator === 2 %}checked{% endif %}>
+              <label for="option2">
+                <p class="font-weight-bold">{{ t('markdown_setting.Preset two separator') }}</p>
+                <div class="m-t-15">
+                    {{ t('markdown_setting.Preset two separator desc') }}
+                </div>
+              </label>
+          </div>
+
+          <div class="col-xs-3 radio radio-primary">
+            <input type="radio" id="option3" name="{{nameForPageBreakOption}}" value="3" {% if pageBreakSeparator === 3 %}checked{% endif %}>
+            <label for="option3">
+              <p class="font-weight-bold">{{ t('markdown_setting.Custom separator') }}</p>
+              <div class="m-t-15">
+                  {{ t('markdown_setting.Custom separator desc') }}
+                  <input class="form-control" type="text" name="markdownSetting[markdown:presentation:pageBreakCustomSeparator]" value="{{markdownSetting['markdown:presentation:pageBreakCustomSeparator']|default('') }}">
+              </div>
+            </label>
+          </div>
+
+        </fieldset>
+
+        <div class="form-group my-3">
+          <div class="col-xs-offset-4 col-xs-5">
+            <input type="hidden" name="_csrf" value="{{ csrf() }}">
+            <button type="submit" class="btn btn-primary">{{ t("Update") }}</button>
+          </div>
+        </div>
+      </form>
+
       <form action="/admin/markdown/xss-setting" method="post" class="form-horizontal" id="markdownSettingForm" role="form">
         {% set nameForIsXssEnabled = "markdownSetting[markdown:xss:isEnabledPrevention]" %}
         {% set isXssEnabled = markdownSetting['markdown:xss:isEnabledPrevention'] %}
