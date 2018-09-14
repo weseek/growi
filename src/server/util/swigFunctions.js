@@ -142,6 +142,16 @@ module.exports = function(crowi, app, req, locals) {
     return Config.customCss();
   };
 
+  locals.pageBreakSeparator = function() {
+    let config = crowi.getConfig();
+    return Config.pageBreakSeparator(config);
+  };
+
+  locals.pageBreakCustomSeparator = function() {
+    let config = crowi.getConfig();
+    return Config.pageBreakCustomSeparator(config);
+  };
+
   locals.customScript = function() {
     return Config.customScript();
   };
