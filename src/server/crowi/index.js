@@ -348,9 +348,8 @@ Crowi.prototype.getTokens = function() {
 };
 
 Crowi.prototype.start = function() {
-  var self = this
-    , server
-    , io;
+  const self = this;
+  let server, io;
 
   // init CrowiDev
   if (self.node_env === 'development') {
@@ -367,9 +366,28 @@ Crowi.prototype.start = function() {
       return self.buildServer();
     })
     .then(function(express) {
+      server = express;
+      const options = {};
+
+      let serverUrl = `http://localhost:${self.port}}`;
+      if (self.env.DEV_HTTPS) {
+        serverUrl = `https://localhost:${self.port}}`;
+
+        const fs = require('graceful-fs');
+        const https = require('https');
+
+        options.key = fs.readFileSync( './resource/certs/localhost/key.pem' );
+        options.cert = fs.readFileSync( './resource/certs/localhost/cert.pem' );
+
+        server = https.createServer(options, express);
+      }
+
       return new Promise((resolve) => {
-        server = express.listen(self.port, function() {
-          logger.info(`[${self.node_env}] Express server listening on port ${self.port}`);
+        server = server.listen(self.port, function() {
+          logger.info(`[${self.node_env}] Express server is listening on port ${self.port}`);
+          if (self.env.DEV_HTTPS) {
+            logger.info(`[${self.node_env}] Express server started with HTTPS Self-Signed Certification`);
+          }
 
           // setup for dev
           if (self.node_env === 'development') {
@@ -380,7 +398,7 @@ Crowi.prototype.start = function() {
 
             eazyLogger.info('{bold:Server URLs:}');
             eazyLogger.unprefixed('info', '{grey:=======================================}');
-            eazyLogger.unprefixed('info', `         APP: {magenta:http://localhost:${self.port}}`);
+            eazyLogger.unprefixed('info', `         APP: {magenta:${serverUrl}}`);
             eazyLogger.unprefixed('info', '{grey:=======================================}');
 
             self.crowiDev.setup(server, express);
