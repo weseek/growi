@@ -347,74 +347,30 @@ Crowi.prototype.getTokens = function() {
   return this.tokens;
 };
 
-Crowi.prototype.start = function() {
-  const self = this;
-  let server, io;
-
+Crowi.prototype.start = async function() {
   // init CrowiDev
-  if (self.node_env === 'development') {
+  if (this.node_env === 'development') {
     const CrowiDev = require('./dev');
-    this.crowiDev = new CrowiDev(self);
+    this.crowiDev = new CrowiDev(this);
     this.crowiDev.init();
   }
 
-  return Promise.resolve()
-    .then(function() {
-      return self.init();
-    })
-    .then(function() {
-      return self.buildServer();
-    })
-    .then(function(express) {
-      server = express;
-      const options = {};
+  await this.init();
+  const express = await this.buildServer();
 
-      let serverUrl = `http://localhost:${self.port}}`;
-      if (self.env.DEV_HTTPS) {
-        serverUrl = `https://localhost:${self.port}}`;
+  const server = this.crowiDev.setupServer(express);
 
-        const fs = require('graceful-fs');
-        const https = require('https');
+  const serverListening = server.listen(this.port, () => {
+    logger.info(`[${this.node_env}] Express server is listening on port ${this.port}`);
+  });
 
-        options.key = fs.readFileSync( './resource/certs/localhost/key.pem' );
-        options.cert = fs.readFileSync( './resource/certs/localhost/cert.pem' );
+  const io = require('socket.io')(serverListening);
+  io.sockets.on('connection', function(socket) {
+  });
+  this.io = io;
 
-        server = https.createServer(options, express);
-      }
-
-      return new Promise((resolve) => {
-        server = server.listen(self.port, function() {
-          logger.info(`[${self.node_env}] Express server is listening on port ${self.port}`);
-          if (self.env.DEV_HTTPS) {
-            logger.info(`[${self.node_env}] Express server started with HTTPS Self-Signed Certification`);
-          }
-
-          // setup for dev
-          if (self.node_env === 'development') {
-            const eazyLogger = require('eazy-logger').Logger({
-              prefix: '[{green:GROWI}] ',
-              useLevelPrefixes: false,
-            });
-
-            eazyLogger.info('{bold:Server URLs:}');
-            eazyLogger.unprefixed('info', '{grey:=======================================}');
-            eazyLogger.unprefixed('info', `         APP: {magenta:${serverUrl}}`);
-            eazyLogger.unprefixed('info', '{grey:=======================================}');
-
-            self.crowiDev.setup(server, express);
-          }
-          resolve(server);
-        });
-
-        io = require('socket.io')(server);
-        io.sockets.on('connection', function(socket) {
-        });
-        self.io = io;
-
-        // setup Express Routes
-        self.setupRoutesAtLast(express);
-      });
-    });
+  // setup Express Routes
+  this.setupRoutesAtLast(express);
 };
 
 Crowi.prototype.buildServer = function() {

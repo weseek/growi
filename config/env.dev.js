@@ -8,4 +8,5 @@ module.exports = {
     // 'growi-plugin-lsx',
     // 'growi-plugin-pukiwiki-like-linker',
   ],
+  // DEV_HTTPS: true,
 };
