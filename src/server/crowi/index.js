@@ -358,7 +358,7 @@ Crowi.prototype.start = async function() {
   await this.init();
   const express = await this.buildServer();
 
-  const server = this.crowiDev.setupServer(express);
+  const server = (this.node_env === 'development') ? this.crowiDev.setupServer(express) : express;
 
   const serverListening = server.listen(this.port, () => {
     logger.info(`[${this.node_env}] Express server is listening on port ${this.port}`);
