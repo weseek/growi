@@ -371,6 +371,8 @@ Crowi.prototype.start = async function() {
 
   // setup Express Routes
   this.setupRoutesAtLast(express);
+
+  return serverListening;
 };
 
 Crowi.prototype.buildServer = function() {

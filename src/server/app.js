@@ -24,10 +24,10 @@ process.on('unhandledRejection', (reason, p) => {
 });
 
 growi.start()
-  .then(express => {
+  .then(server => {
     if (helpers.hasProcessFlag('ci')) {
       logger.info('"--ci" flag is detected. Exit process.');
-      express.close(() => {
+      server.close(() => {
         process.exit();
       });
     }
