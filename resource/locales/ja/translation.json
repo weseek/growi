@@ -448,6 +448,7 @@
     "Preset one separator desc": "空行を3行で改頁します",
     "Preset two separator": "プリセット 2",
     "Preset two separator desc": "Markdown の区切り線で改頁します",
+    "Preset two separator value": "-----",
     "Custom separator": "カスタム",
     "Custom separator desc": "任意の文字で改頁します",
     "XSS_setting": "XSS(Cross Site Scripting)対策設定",
