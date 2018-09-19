@@ -734,7 +734,7 @@ module.exports = function(crowi, app) {
   api.list = function(req, res) {
     const username = req.query.user || null;
     const path = req.query.path || null;
-    const limit = 50;
+    const limit = parseInt(req.query.limit) ;
     const offset = parseInt(req.query.offset) || 0;
 
     const pagerOptions = { offset: offset, limit: limit };
