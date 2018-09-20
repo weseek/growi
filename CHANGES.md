@@ -3,6 +3,8 @@ CHANGES
 
 ## 3.2.3-RC
 
+* Feature: Kibela like layout
+* Improvement: Custom newpage separator for presentation view
 * Support: Shrink image size for themes which recently added
 
 ## 3.2.2
