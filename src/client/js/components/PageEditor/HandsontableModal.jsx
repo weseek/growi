@@ -92,7 +92,7 @@ export default class HandsontableModal extends React.Component {
             </Navbar.Form>
           </Navbar>
           <div className="p-4">
-            <HotTable data={this.state.markdownTable.data} settings={this.settings} />
+            <HotTable data={this.state.markdownTable.table} settings={this.settings} />
           </div>
         </Modal.Body>
         <Modal.Footer>
