@@ -12,6 +12,8 @@ import Dropzone from 'react-dropzone';
 import HandsontableModal from './HandsontableModal';
 import pasteHelper from './PasteHelper';
 
+import mtu from './MarkdownTableUtil';
+
 export default class Editor extends AbstractEditor {
 
   constructor(props) {
@@ -202,11 +204,19 @@ export default class Editor extends AbstractEditor {
       <div className="m-0 navbar navbar-default navbar-editor" style={{ minHeight: 'unset' }}>
         <ul className="pr-4 nav nav-navbar navbar-right">
           <li>
-            <Button bsSize="small" onClick={ () => this.refs.handsontableModal.show() }><i className="icon-grid"></i></Button>
+            <Button bsSize="small" onClick={ () => this.refs.handsontableModal.show(this.getMarkDownTable()) }><i className="icon-grid"></i></Button>
           </li>
         </ul>
       </div>
     );
+  }
+
+  /**
+   * TODO return null if the cursor not in a table
+   */
+  getMarkDownTable() {
+    const cm = this.getEditorSubstance().getCodeMirror();
+    return mtu.parseFromTableStringToMarkdownTable(mtu.getStrFromBotToEot(cm));
   }
 
   render() {
