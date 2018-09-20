@@ -33,7 +33,7 @@ export default class HandsontableModal extends React.Component {
 
     this.init = this.init.bind(this);
     this.cancel = this.cancel.bind(this);
-    this.dispatchSave = this.dispatchSave.bind(this);
+    this.save = this.save.bind(this);
   }
 
   componentWillMount() {
@@ -58,13 +58,11 @@ export default class HandsontableModal extends React.Component {
     this.setState({ show: false });
   }
 
-  /**
-   * dispatch save event
-   */
-  dispatchSave() {
+  save() {
     if (this.props.onSave != null) {
       this.props.onSave(this.state.markdownTable);
     }
+    this.setState({ show: false });
   }
 
   render() {
@@ -100,7 +98,7 @@ export default class HandsontableModal extends React.Component {
             <Button bsStyle="danger" onClick={() => this.init(this.props.markdownTable)}>Reset</Button>
             <div className="d-flex">
               <Button bsStyle="default" onClick={this.cancel}>Cancel</Button>
-              <Button bsStyle="primary" onClick={this.dispatchSave}>Done</Button>
+              <Button bsStyle="primary" onClick={this.save}>Done</Button>
             </div>
           </div>
         </Modal.Footer>

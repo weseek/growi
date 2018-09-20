@@ -35,6 +35,7 @@ export default class Editor extends AbstractEditor {
     this.getDropzoneAccept = this.getDropzoneAccept.bind(this);
     this.getDropzoneClassName = this.getDropzoneClassName.bind(this);
     this.renderDropzoneOverlay = this.renderDropzoneOverlay.bind(this);
+    this.replaceMarkDownTable = this.replaceMarkDownTable.bind(this);
   }
 
   getEditorSubstance() {
@@ -219,6 +220,16 @@ export default class Editor extends AbstractEditor {
     return mtu.parseFromTableStringToMarkdownTable(mtu.getStrFromBotToEot(cm));
   }
 
+  /**
+   * TODO move this func to a proper class
+   */
+  replaceMarkDownTable(markdownTable) {
+    const cm = this.getEditorSubstance().getCodeMirror();
+    const curPos = cm.getCursor();
+    cm.getDoc().replaceRange(markdownTable.toString(), mtu.getBot(cm), mtu.getEot(cm));
+    cm.getDoc().setCursor(curPos.line + 1, 2);
+  }
+
   render() {
     const flexContainer = {
       height: '100%',
@@ -281,7 +292,7 @@ export default class Editor extends AbstractEditor {
           </span>
         </button>
 
-        <HandsontableModal ref='handsontableModal' />
+        <HandsontableModal ref='handsontableModal' onSave={ this.replaceMarkDownTable }/>
 
       </div>
     );
