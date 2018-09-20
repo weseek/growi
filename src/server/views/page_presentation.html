@@ -58,15 +58,25 @@ gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js
   <body>
     <div class="reveal">
       <div class="slides">
-        <section data-markdown data-separator="^\n\n\n">
+        {% set pageBreakSeparator = pageBreakSeparator()|default(1) %}
+        {% set pageBreakCustomSeparator = pageBreakCustomSeparator()|default('') %}
+
+        {% if 1 === pageBreakSeparator %}
+          {% set dataSeparator = "^\n\n\n" %}
+        {% elseif 2 === pageBreakSeparator %}
+          {% set dataSeparator = "^-----$" %}
+        {% elseif 3 === pageBreakSeparator %}
+          {% set dataSeparator = "^" + pageBreakCustomSeparator + "$" %}
+        {% else %}
+          {% set dataSeparator = "^\n\n\n" %}
+        {% endif %}
+
+        <section data-markdown data-separator={{dataSeparator}}>
           <script type="text/template">
 {{ revision.body|presentation|safe }}
-
-
-
-# おしまい
           </script>
         </section>
+        <section  data-markdown># おしまい</section>
       </div>
     </div>
 
