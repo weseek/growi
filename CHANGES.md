@@ -1,7 +1,11 @@
 CHANGES
 ========
 
-## 3.2.3-RC
+## 3.2.4-RC
+
+* 
+
+## 3.2.3
 
 * Feature: Kibela like layout
 * Improvement: Custom newpage separator for presentation view
