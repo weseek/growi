@@ -1,4 +1,4 @@
-.kibela {
+body.kibela {
   .icon-link,
   .CodeMirror-hint-active,
   .nav-main-left-tab,
@@ -144,19 +144,47 @@
     border-top: solid 0.3em #5584E1 !important;
     border: solid 1.2px #D8D8D8;
   }
-  .tab-content {
-    padding: 1em;
-  }
-  .tab-pane {
-    .page-editor-editor-container {
-      margin: 0px;
-      border: none !important;
+  &.on-edit {
+    $header-plus-footer: 42px                     // .nav height
+                        + 5.5px                   // .kibela-block border-top
+                        + 15px                    // .tab-content padding-top
+                        + 1px                     // .page-editor-footer border-top
+                        + 60px;                   // .page-editor-footer min-height
+
+    @include expand-editor($header-plus-footer);
+
+    .main {
+      > .row.page-content {
+        > .col-xs-12 {
+          width: 100%;
+          padding: 0;
+        }
+      }
     }
-  }
-  .page-editor-preview-container {
-    background: white !important;
-    padding-right: 0px !important;
-    padding-left: 2em;
+
+    .tab-content {
+      padding-top: 15px;
+      #edit {
+        margin-left: 1em;
+        margin-right: 1em;
+      }
+    }
+    .tab-pane {
+      .page-editor-editor-container {
+        margin: 0px;
+        border: none !important;
+      }
+    }
+    .page-editor-preview-container {
+      background: white !important;
+      padding-right: 0px !important;
+      padding-left: 2em;
+    }
+    .page-editor-footer {
+      margin: 0;
+      padding: 13px;
+      min-height: 60px;
+    }
   }
 }
 .on-edit {
