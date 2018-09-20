@@ -85,6 +85,13 @@ class MarkdownTableUtil {
   }
 
   /**
+   * return strings from BOT(beginning of table) to EOT(end of table)
+   */
+  getStrFromBotToEot(editor) {
+    return editor.getDoc().getRange(this.getBot(editor), this.getEot(editor));
+  }
+
+  /**
    * returns markdown table whose described by 'markdown-table' format
    *   ref. https://github.com/wooorm/markdown-table
    * @param {string} lines all of table
