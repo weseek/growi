@@ -1,5 +1,6 @@
-import markdownTable from 'markdown-table';
 import stringWidth from 'string-width';
+
+import MarkdownTable from '../../models/MarkdownTable';
 
 /**
  * Utility for markdown table
@@ -182,24 +183,6 @@ class MarkdownTableUtil {
 
     // set cursor to first column
     editor.getDoc().setCursor(curPos.line + 1, 2);
-  }
-}
-
-/**
- * markdown table class for markdown-table module
- *   ref. https://github.com/wooorm/markdown-table
- */
-class MarkdownTable {
-
-  constructor(table, options) {
-    this.table = table || [];
-    this.options = options || {};
-
-    this.toString = this.toString.bind(this);
-  }
-
-  toString() {
-    return markdownTable(this.table, this.options);
   }
 }
 

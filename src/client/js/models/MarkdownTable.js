@@ -13,15 +13,15 @@ const linePartOfTableRE = /^\|[^\r\n]*|[^\r\n]*\|$|([^|\r\n]+\|[^|\r\n]*)+/; // 
  */
 export default class MarkdownTable {
 
-  constructor(data, options) {
-    this.data = data || [];
+  constructor(table, options) {
+    this.table = table || [];
     this.options = options || {};
 
     this.toString = this.toString.bind(this);
   }
 
   toString() {
-    return markdownTable(this.data, this.options);
+    return markdownTable(this.table, this.options);
   }
 
   static fromTableTag(str) {
