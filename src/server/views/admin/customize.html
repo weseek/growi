@@ -3,12 +3,22 @@
 {% block html_title %}{{ customTitle(t('Customize')) }} {% endblock %}
 
 {% block style_css_block %}
-  {% if env === 'development' %}
-    <script src="{{ webpack_asset('styles/style.js') }}"></script>
-    <script src="{{ webpack_asset('styles/theme-' + theme() + '.js') }}"></script>
+  {% if 'kibela' === layoutType() %}
+    {% if env === 'development' %}
+      <script src="{{ webpack_asset('styles/style.js') }}"></script>
+      <script src="{{ webpack_asset('styles/theme-kibela.js') }}"></script>
+    {% else %}
+      <link rel="stylesheet" href="{{ webpack_asset('styles/style.css') }}">
+      <link rel="stylesheet" id="jssDefault" {# append id for theme selector #} href="{{ webpack_asset('styles/theme-kibela.css') }}">
+    {% endif %}
   {% else %}
-    <link rel="stylesheet" href="{{ webpack_asset('styles/style.css') }}">
-    <link rel="stylesheet" id="jssDefault" {# append id for theme selector #} href="{{ webpack_asset('styles/theme-' + theme() + '.css') }}">
+    {% if env === 'development' %}
+      <script src="{{ webpack_asset('styles/style.js') }}"></script>
+      <script src="{{ webpack_asset('styles/theme-' + theme() + '.js') }}"></script>
+    {% else %}
+      <link rel="stylesheet" href="{{ webpack_asset('styles/style.css') }}">
+      <link rel="stylesheet" id="jssDefault" {# append id for theme selector #} href="{{ webpack_asset('styles/theme-' + theme() + '.css') }}">
+    {% endif %}
   {% endif %}
 {% endblock %}
 
@@ -26,7 +36,7 @@
 {% block content_header %}
 <div class="header-wrap">
   <header id="page-header">
-    <h1 class="title" id="">{{ t('Customize') }} </h1>
+    <h1 id="admin-title" class="title">{{ t('Customize') }} </h1>
   </header>
 </div>
 {% endblock %}
@@ -52,112 +62,21 @@
       {% include './widget/menu.html' with {current: 'customize'} %}
     </div>
     <div class="col-md-9">
-
-      <form action="/_api/admin/customize/theme" method="post" class="form-horizontal" id="customthemeSettingForm" role="form">
-        <fieldset>
-          <legend>{{ t('customize_page.Theme') }}</legend>
-
-          {% if env === 'development' %}
-            <div class="alert alert-warning">
-              <strong>DEBUG MESSAGE:</strong> development build では、リアルタイムプレビューが無効になります
-            </div>
-          {% endif %}
-
-          <div id="themeOptions">
-            {# Light Themes #}
-            <div class="d-flex">
-              {% include 'widget/theme-colorbox.html' with { name: 'default',  bg: '#ffffff', topbar: '#334455', theme: '#112744' } %}
-              {% include 'widget/theme-colorbox.html' with { name: 'nature',   bg: '#f9fff3', topbar: '#118050', theme: '#460039' } %}
-              {% include 'widget/theme-colorbox.html' with { name: 'mono-blue',   bg: '#F7FBFD', topbar: '#00587A', theme: '#00587A' } %}
-              {% include 'widget/theme-colorbox.html' with { name: 'wood',   bg: '#fffefb', topbar: '#aaa45f', theme: '#dddebf' } %}
-              {% include 'widget/theme-colorbox.html' with { name: 'island',   bg: '#8ecac0', topbar: '#0c2a44', theme: '#cef2ef' } %}
-            </div>
-            {# Dark Themes #}
-            <div class="d-flex mt-3">
-              {% include 'widget/theme-colorbox.html' with { name: 'default-dark', bg: '#212731', topbar: '#151515', theme: '#f75b36' } %}
-              {% include 'widget/theme-colorbox.html' with { name: 'future', bg: '#16282D', topbar: '#011414', theme: '#04B4AE' } %}
-              {% include 'widget/theme-colorbox.html' with { name: 'blue-night', bg: '#061F2F', topbar: '#27343B', theme: '#0090C8' } %}
-              {% include 'widget/theme-colorbox.html' with { name: 'halloween',   bg: '#030003', topbar: '#cc5d1f', theme: '#e9af2b' } %}
-            </div>
-          </div>
-
-          <div class="form-group">
-            <div class="col-xs-offset-5 col-xs-6">
-              <input type="hidden" id="hiddenInputTheme" name="settingForm[customize:theme]" value="{{ settingForm['customize:theme'] }}">
-              <input type="hidden" name="_csrf" value="{{ csrf() }}">
-              <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
-            </div>
-          </div>
-
-        </fieldset>
-      </form>
-
-      <form action="/_api/admin/customize/behavior" method="post" class="form-horizontal" id="cutombehaviorSettingForm" role="form">
-      <fieldset>
-        <legend>{{ t('customize_page.Behavior') }}</legend>
-
-        {% set isBehaviorGrowi = 'growi' === settingForm['customize:behavior'] || 'crowi-plus' === settingForm['customize:behavior'] %}
-        <div class="form-group">
-          <div class="col-xs-6">
-            <h4>
-              <div class="radio radio-primary">
-                <input type="radio" id="radioBehaviorGrowi" name="settingForm[customize:behavior]" value="growi"
-                    {% if isBehaviorGrowi %}checked="checked"{% endif %}>
-                <label for="radioBehaviorGrowi">
-                  GROWI Simplified Behavior <small class="text-success">(Recommended)</small>
-                </label>
-            </div>
-            </h4>
-            <ul>
-              <li>Both of <code>/page</code> and <code>/page/</code> shows the same page</li>
-              <li><code>/nonexistent_page</code> shows editing form</li>
-              <li>All pages shows the list of sub pages <b>if using GROWI Enhanced Layout</b></li>
-            </ul>
-          </div>
-          <div class="col-xs-6">
-            <h4>
-              <div class="radio radio-primary">
-                <input type="radio" id="radioBehaviorCrowi" name="settingForm[customize:behavior]" value="crowi"
-                    {% if !isBehaviorGrowi %}checked="checked"{% endif %}>
-                <label for="radioBehaviorCrowi">
-                  Crowi Classic Behavior
-                </label>
-              </div>
-            </h4>
-            <ul>
-              <li><code>/page</code> shows the page</li>
-              <li><code>/page/</code> shows the list of sub pages</li>
-              <ul>
-                <li>If portal is applied to <code>/page/</code> , the portal and the list of sub pages are shown</li>
-              </ul>
-              <li><code>/nonexistent_page</code> shows editing form</li>
-              <li><code>/nonexistent_page/</code> the list of sub pages</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <div class="col-xs-offset-5 col-xs-6">
-            <input type="hidden" name="_csrf" value="{{ csrf() }}">
-            <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
-          </div>
-        </div>
-
-      </fieldset>
-      </form>
-
-
-      <form action="/_api/admin/customize/layout" method="post" class="form-horizontal" id="cutomlayoutSettingForm" role="form">
+      <form action="/_api/admin/customize/layout" method="post" class="form-horizontal" id="customlayoutSettingForm" role="form">
       <fieldset>
         <legend>{{ t('customize_page.Layout') }}</legend>
-
-        {% set isLayoutGrowi = 'growi' === settingForm['customize:layout'] || 'crowi-plus' === settingForm['customize:layout'] %}
+        {% if env === 'development' %}
+          <br>
+          <div class="alert alert-warning">
+            <strong>DEBUG MESSAGE:</strong> development build では、リアルタイムプレビューが無効になります
+          </div>
+        {% endif %}
         <div class="form-group">
-          <div class="col-xs-6">
+          <div class="col-sm-4">
             <h4>
               <div class="radio radio-primary">
-                <input type="radio" id="radioLayoutGrowi" name="settingForm[customize:layout]" value="growi"
-                    {% if isLayoutGrowi %}checked="checked"{% endif %}>
+                <input type="radio" id="radioLayoutGrowi" name="settingForm[customize:layout]" value="growi" onclick="selectableTheme(event)"
+                    {% if 'growi' === settingForm['customize:layout'] %}checked="checked"{% endif %}>
                 <label for="radioLayoutGrowi">
                   GROWI Enhanced Layout <small class="text-success">(Recommended)</small>
                 </label>
@@ -166,19 +85,38 @@
             <a href="/images/admin/customize/layout-crowi-plus.gif" class="ss-container">
               <img src="/images/admin/customize/layout-crowi-plus-thumb.gif" width="240px">
             </a>
+            <h4>Simple and Clear</h4>
             <ul>
-              <li>Simple and Clear</li>
-              <ul>
-                <li>Show and post comments from the bottom of the page</li>
-                <li>Affix Table-of-contents</li>
-              </ul>
+              <li>Full screen layout and thin margins/paddings</li>
+              <li>Show and post comments at the bottom of the page</li>
+              <li>Affix Table-of-contents</li>
             </ul>
           </div>
-          <div class="col-xs-6">
+          <div class="col-sm-4">
             <h4>
               <div class="radio radio-primary">
-                <input type="radio" id="radioLayoutCrowi" name="settingForm[customize:layout]" value="crowi"
-                    {% if !isLayoutGrowi %}checked="checked"{% endif %}>
+                <input type="radio" id="radioLayoutKibela" name="settingForm[customize:layout]" value="kibela" onclick="selectableTheme(event)"
+                    {% if 'kibela' === settingForm['customize:layout'] %}checked="checked"{% endif %}>
+                <label   for="radioLayoutKibela">
+                  Kibela Like Layout
+                </label>
+              </div>
+            </h4>
+            <a href="/images/admin/customize/layout-kibela.gif" class="ss-container">
+              <img src="/images/admin/customize/layout-kibela-thumb.gif" width="240px">
+            </a>
+            <h4>Easy Viewing Structure</h4>
+            <ul>
+              <li>Center aligned contents</li>
+              <li>Show and post comments at the bottom of the page</li>
+              <li>Affix Table-of-contents</li>
+            </ul>
+          </div>
+          <div class="col-sm-4">
+            <h4>
+              <div class="radio radio-primary">
+                <input type="radio" id="radioLayoutCrowi" name="settingForm[customize:layout]" value="crowi" onclick="selectableTheme(event)"
+                    {% if 'crowi' === settingForm['customize:layout'] %}checked="checked"{% endif %}>
                 <label for="radioLayoutCrowi">
                   Crowi Classic Layout
                 </label>
@@ -187,25 +125,95 @@
             <a href="/images/admin/customize/layout-classic.gif" class="ss-container">
               <img src="/images/admin/customize/layout-classic-thumb.gif" width="240px">
             </a>
+            <h4>Separated Functions</h4>
             <ul>
-              <li>Functional</li>
-              <ul>
-                <li>Collapsible Sidebar</li>
-                <li>Show and post comments in Sidebar</li>
-                <li>Collapsible Table-of-contents</li>
-              </ul>
+              <li>Collapsible Sidebar</li>
+              <li>Show and post comments in Sidebar</li>
+              <li>Collapsible Table-of-contents</li>
             </ul>
           </div>
         </div>
-
+        <h2>{{ t('customize_page.Theme') }}</h2>
+        <div id="themeOptions" {% if 'kibela' == settingForm['customize:layout'] %}class="disabled"{% endif %}>
+          {# Light Themes #}
+          <div class="d-flex">
+            {% include 'widget/theme-colorbox.html' with { name: 'default',  bg: '#ffffff', topbar: '#334455', theme: '#112744'} %}
+            {% include 'widget/theme-colorbox.html' with { name: 'nature',   bg: '#f9fff3', topbar: '#118050', theme: '#460039'} %}
+            {% include 'widget/theme-colorbox.html' with { name: 'mono-blue',   bg: '#F7FBFD', topbar: '#00587A', theme: '#00587A'} %}
+            {% include 'widget/theme-colorbox.html' with { name: 'wood',   bg: '#fffefb', topbar: '#aaa45f', theme: '#dddebf'} %}
+            {% include 'widget/theme-colorbox.html' with { name: 'island',   bg: '#8ecac0', topbar: '#0c2a44', theme: '#cef2ef'} %}
+          </div>
+          {# Dark Themes #}
+          <div class="d-flex mt-3">
+            {% include 'widget/theme-colorbox.html' with { name: 'default-dark', bg: '#212731', topbar: '#151515', theme: '#f75b36'} %}
+            {% include 'widget/theme-colorbox.html' with { name: 'future', bg: '#16282D', topbar: '#011414', theme: '#04B4AE'} %}
+            {% include 'widget/theme-colorbox.html' with { name: 'blue-night', bg: '#061F2F', topbar: '#27343B', theme: '#0090C8'} %}
+            {% include 'widget/theme-colorbox.html' with { name: 'halloween',   bg: '#030003', topbar: '#cc5d1f', theme: '#e9af2b'} %}
+          </div>
+        </div>
         <div class="form-group">
           <div class="col-xs-offset-5 col-xs-6">
+            <input type="hidden" id="hiddenInputTheme" name="settingForm[customize:theme]" value="{{ settingForm['customize:theme'] }}">
             <input type="hidden" name="_csrf" value="{{ csrf() }}">
-            <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
+            <button type="submit"  class="btn btn-primary">{{ t('Update') }}</button>
           </div>
         </div>
 
       </fieldset>
+      </form>
+
+      <form action="/_api/admin/customize/behavior" method="post" class="form-horizontal" id="custombehaviorSettingForm" role="form">
+        <fieldset>
+          <legend>{{ t('customize_page.Behavior') }}</legend>
+
+          {% set isBehaviorGrowi = 'growi' === settingForm['customize:behavior'] || 'crowi-plus' === settingForm['customize:behavior'] %}
+          <div class="form-group">
+            <div class="col-xs-6">
+              <h4>
+                <div class="radio radio-primary">
+                  <input type="radio" id="radioBehaviorGrowi" name="settingForm[customize:behavior]" value="growi"
+                      {% if isBehaviorGrowi %}checked="checked"{% endif %}>
+                  <label for="radioBehaviorGrowi">
+                    GROWI Simplified Behavior <small class="text-success">(Recommended)</small>
+                  </label>
+              </div>
+              </h4>
+              <ul>
+                <li>Both of <code>/page</code> and <code>/page/</code> shows the same page</li>
+                <li><code>/nonexistent_page</code> shows editing form</li>
+                <li>All pages shows the list of sub pages <b>if using GROWI Enhanced Layout</b></li>
+              </ul>
+            </div>
+            <div class="col-xs-6">
+              <h4>
+                <div class="radio radio-primary">
+                  <input type="radio" id="radioBehaviorCrowi" name="settingForm[customize:behavior]" value="crowi"
+                      {% if !isBehaviorGrowi %}checked="checked"{% endif %}>
+                  <label for="radioBehaviorCrowi">
+                    Crowi Classic Behavior
+                  </label>
+                </div>
+              </h4>
+              <ul>
+                <li><code>/page</code> shows the page</li>
+                <li><code>/page/</code> shows the list of sub pages</li>
+                <ul>
+                  <li>If portal is applied to <code>/page/</code> , the portal and the list of sub pages are shown</li>
+                </ul>
+                <li><code>/nonexistent_page</code> shows editing form</li>
+                <li><code>/nonexistent_page/</code> the list of sub pages</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="col-xs-offset-5 col-xs-6">
+              <input type="hidden" name="_csrf" value="{{ csrf() }}">
+              <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
+            </div>
+          </div>
+
+        </fieldset>
       </form>
 
       <form action="/_api/admin/customize/features" method="post" class="form-horizontal" id="customfeaturesSettingForm" role="form">
@@ -378,7 +386,7 @@ export  $initHighlight;</code></pre>
         </fieldset>
       </form>
 
-      <form action="/_api/admin/customize/header" method="post" class="form-horizontal" id="cutomheaderSettingForm" role="form">
+      <form action="/_api/admin/customize/header" method="post" class="form-horizontal" id="customheaderSettingForm" role="form">
       <fieldset>
         <legend>カスタムヘッダーHTML</legend>
 
@@ -415,7 +423,7 @@ export  $initHighlight;</code></pre>
       </fieldset>
       </form>
 
-      <form action="/_api/admin/customize/css" method="post" class="form-horizontal" id="cutomcssSettingForm" role="form">
+      <form action="/_api/admin/customize/css" method="post" class="form-horizontal" id="customcssSettingForm" role="form">
       <fieldset>
         <legend>{{ t('customize_page.Custom CSS') }}</legend>
 
@@ -448,7 +456,7 @@ export  $initHighlight;</code></pre>
       </form>
 
 
-      <form action="/_api/admin/customize/script" method="post" class="form-horizontal" id="cutomscriptSettingForm" role="form">
+      <form action="/_api/admin/customize/script" method="post" class="form-horizontal" id="customscriptSettingForm" role="form">
       <fieldset>
         <legend>{{ t('customize_page.Custom script') }}</legend>
 
@@ -512,8 +520,8 @@ window.addEventListener('load', (event) => {
 {% block body_end %}
   {% parent %}
   <script>
-    $(`#customthemeSettingForm, #cutomlayoutSettingForm, #cutombehaviorSettingForm, #customhighlightJsStyleSettingForm,
-       #customfeaturesSettingForm, #cutomheaderSettingForm, #cutomcssSettingForm, #cutomscriptSettingForm, #customtitleSettingForm`
+    $(`#customlayoutSettingForm, #custombehaviorSettingForm, #customhighlightJsStyleSettingForm,
+       #customfeaturesSettingForm, #customheaderSettingForm, #customcssSettingForm, #customscriptSettingForm, #customtitleSettingForm`
     ).each(function() {
       $(this).submit(function()
       {
@@ -576,6 +584,28 @@ window.addEventListener('load', (event) => {
       highlightJsCssDOM.href = highlightJsCssDOM.href.replace(/[^/]+\.css$/, `${val}.css`);
     }
 
+    function selectableTheme(event) {
+      var val = event.target.value;
+      var themeButtons = document.getElementsByClassName('theme-button');
+
+      if(val == 'kibela') {
+        $('#themeOptions').addClass("disabled");
+        var i=0;
+        while(i < themeButtons.length) {
+          themeButtons[i].removeAttribute("onclick");
+          i++;
+        }
+      }
+      else {
+        $('#themeOptions').removeClass("disabled")
+        var i=0;
+        while(i < themeButtons.length) {
+          var name = themeButtons[i].getAttribute("id");
+          themeButtons[i].setAttribute("onclick",`selectTheme('${name}')`);
+          i++;
+        }
+      }
+    }
     /*
      * Theme Selector
      */

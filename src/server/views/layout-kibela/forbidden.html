@@ -1,0 +1,25 @@
+{% extends 'base/layout.html' %}
+
+
+{% block content_header %}
+  {% include 'widget/header.html' %}
+{% endblock %}
+
+
+{% block content_main_before %}
+  {% include '../widget/page_alerts.html' %}
+{% endblock %}
+
+
+{% block content_main %}
+  <div class="row">
+    <div class="bg-white round-corner">
+      {% include '../widget/forbidden_content.html' %}
+    </div> {# /.col- #}
+  </div>
+{% endblock %}
+
+{% block body_end %}
+  <div id="crowi-modals">
+  </div>
+{% endblock %}

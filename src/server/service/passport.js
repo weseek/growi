@@ -431,7 +431,7 @@ class PassportService {
 
     debug('SamlStrategy: setting up..');
     passport.use(new SamlStrategy({
-      path: config.crowi['security:passport-saml:path'] || process.env.SAML_CALLBACK_URI,
+      path: config.crowi['security:passport-saml:callbackUrl'] || process.env.SAML_CALLBACK_URI,
       entryPoint: config.crowi['security:passport-saml:entryPoint'] || process.env.SAML_ENTRY_POINT,
       issuer: config.crowi['security:passport-saml:issuer'] || process.env.SAML_ISSUER,
     }, function(profile, done) {

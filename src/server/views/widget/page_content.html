@@ -14,7 +14,11 @@
 
   {% include 'page_alerts.html' %}
 
-  {% include 'page_tabs.html' %}
+  {% if !layoutType() || 'kibela' === layoutType() %}
+    {% include 'page_tabs_kibela.html' %}
+  {% else %}
+    {% include 'page_tabs.html' %}
+  {% endif %}
 
   <div class="tab-content">
 

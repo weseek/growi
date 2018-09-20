@@ -1,5 +1,4 @@
 .admin-page {
-    //security XSS prevent
 
   .admin-user-menu {
     .dropdown-menu {
@@ -96,6 +95,11 @@
           display: block;
         }
       }
+    }
+
+    &.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
 
     // style

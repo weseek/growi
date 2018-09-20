@@ -1,5 +1,7 @@
 {% if !layoutType() || 'crowi' === layoutType() %}
   {% include '../layout-crowi/user_page.html' %}
+{% elseif !layoutType() || 'kibela' === layoutType()%}
+  {% include '../layout-kibela/user_page.html' %}
 {% else %}
   {% include '../layout-growi/user_page.html' %}
 {% endif %}

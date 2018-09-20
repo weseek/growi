@@ -8,14 +8,9 @@
    * header
    */
   header {
-    line-height: 1em;
-
     // the container of h1
     div.title-container {
       margin-right: auto;
-      h1 {
-        line-height: 1.1em;
-      }
     }
 
     .btn-copy, .btn-copy-link, .btn-edit {
@@ -58,8 +53,6 @@
     }
 
     h1#revision-path {
-      @include variable-font-size(28px);
-
       margin-top: 0;
       margin-bottom: 0;
       .d-flex {
@@ -76,21 +69,6 @@
       }
 
     }
-
-    // affix
-    &.affix {
-      width: 100%;
-      top: 0;
-      left: 0;
-      padding: 2px 20px;
-      z-index: 15; // over the .sidebar
-      box-shadow: 0 0px 2px #999;
-
-      h1#revision-path {
-        @include variable-font-size(20px);
-      }
-    }
-
   }
 
   // alert component settings
