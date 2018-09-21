@@ -13,7 +13,6 @@ import HandsontableModal from './HandsontableModal';
 import pasteHelper from './PasteHelper';
 
 import mtu from './MarkdownTableUtil';
-import MarkdownTable from '../../models/MarkdownTable';
 
 export default class Editor extends AbstractEditor {
 
@@ -36,7 +35,6 @@ export default class Editor extends AbstractEditor {
     this.getDropzoneAccept = this.getDropzoneAccept.bind(this);
     this.getDropzoneClassName = this.getDropzoneClassName.bind(this);
     this.renderDropzoneOverlay = this.renderDropzoneOverlay.bind(this);
-    this.replaceMarkDownTable = this.replaceMarkDownTable.bind(this);
   }
 
   getEditorSubstance() {
@@ -206,29 +204,11 @@ export default class Editor extends AbstractEditor {
       <div className="m-0 navbar navbar-default navbar-editor" style={{ minHeight: 'unset' }}>
         <ul className="pr-4 nav nav-navbar navbar-right">
           <li>
-            <Button bsSize="small" onClick={ () => this.refs.handsontableModal.show(this.getMarkDownTable()) }><i className="icon-grid"></i></Button>
+            <Button bsSize="small" onClick={ () => this.refs.handsontableModal.show(mtu.getMarkdownTable(this.getEditorSubstance().getCodeMirror())) }><i className="icon-grid"></i></Button>
           </li>
         </ul>
       </div>
     );
-  }
-
-  /**
-   * TODO return null if the cursor not in a table
-   */
-  getMarkDownTable() {
-    const cm = this.getEditorSubstance().getCodeMirror();
-    return MarkdownTable.fromMarkdownString(mtu.getStrFromBotToEot(cm));
-  }
-
-  /**
-   * TODO move this func to a proper class
-   */
-  replaceMarkDownTable(markdownTable) {
-    const cm = this.getEditorSubstance().getCodeMirror();
-    const curPos = cm.getCursor();
-    cm.getDoc().replaceRange(markdownTable.toString(), mtu.getBot(cm), mtu.getEot(cm));
-    cm.getDoc().setCursor(curPos.line + 1, 2);
   }
 
   render() {
@@ -293,7 +273,7 @@ export default class Editor extends AbstractEditor {
           </span>
         </button>
 
-        <HandsontableModal ref='handsontableModal' onSave={ this.replaceMarkDownTable }/>
+        <HandsontableModal ref='handsontableModal' onSave={ table => mtu.replaceMarkdownTable(this.getEditorSubstance().getCodeMirror(), table) }/>
 
       </div>
     );

@@ -18,7 +18,8 @@ class MarkdownTableUtil {
     this.getStrFromBot = this.getStrFromBot.bind(this);
     this.getStrToEot = this.getStrToEot.bind(this);
 
-    this.replaceMarkdownTableWithReformed = this.replaceMarkdownTableWithReformed.bind(this);
+    this.replaceMarkdownTable = this.replaceMarkdownTable.bind(this);
+    this.replaceMarkdownTableWithReformed = this.replaceMarkdownTable; // alias
   }
 
   /**
@@ -83,10 +84,11 @@ class MarkdownTableUtil {
   }
 
   /**
-   * return strings from BOT(beginning of table) to EOT(end of table)
+   * return MarkdownTable instance of the table where cursor exists
    */
-  getStrFromBotToEot(editor) {
-    return editor.getDoc().getRange(this.getBot(editor), this.getEot(editor));
+  getMarkdownTable(editor) {
+    const strFromBotToEot = editor.getDoc().getRange(this.getBot(editor), this.getEot(editor));
+    return MarkdownTable.fromMarkdownString(strFromBotToEot);
   }
 
   /**
@@ -129,17 +131,13 @@ class MarkdownTableUtil {
   }
 
   /**
-   * replace markdown table which is reformed by markdown-table
+   * replace markdown table
+   * (table is reformed by markdown-table)
    * @param {MarkdownTable} markdown table
    */
-  replaceMarkdownTableWithReformed(editor, table) {
+  replaceMarkdownTable(editor, table) {
     const curPos = editor.getCursor();
-
-    // replace the lines to strTableLinesFormated
-    const strTableLinesFormated = table.toString();
-    editor.getDoc().replaceRange(strTableLinesFormated, this.getBot(editor), this.getEot(editor));
-
-    // set cursor to first column
+    editor.getDoc().replaceRange(table.toString(), this.getBot(editor), this.getEot(editor));
     editor.getDoc().setCursor(curPos.line + 1, 2);
   }
 }
