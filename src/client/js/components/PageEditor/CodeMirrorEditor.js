@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import Modal from 'react-bootstrap/es/Modal';
+import Button from 'react-bootstrap/es/Button';
 
 import InterceptorManager from '@commons/service/interceptor-manager';
 
@@ -49,6 +50,7 @@ import EmojiAutoCompleteHelper from './EmojiAutoCompleteHelper';
 import PreventMarkdownListInterceptor from './PreventMarkdownListInterceptor';
 import MarkdownTableInterceptor from './MarkdownTableInterceptor';
 import mtu from './MarkdownTableUtil';
+import HandsontableModal from './HandsontableModal';
 
 export default class CodeMirrorEditor extends AbstractEditor {
 
@@ -641,6 +643,18 @@ export default class CodeMirrorEditor extends AbstractEditor {
     );
   }
 
+  renderNavbar() {
+    return (
+      <div className="m-0 navbar navbar-default navbar-editor" style={{ minHeight: 'unset' }}>
+        <ul className="pr-4 nav nav-navbar navbar-right">
+          <li>
+            <Button bsSize="small" onClick={ () => this.refs.handsontableModal.show(mtu.getMarkdownTable(this.getCodeMirror())) }><i className="icon-grid"></i></Button>
+          </li>
+        </ul>
+      </div>
+    );
+  }
+
   render() {
     const mode = this.state.isGfmMode ? 'gfm' : undefined;
     const defaultEditorOptions = {
@@ -653,6 +667,9 @@ export default class CodeMirrorEditor extends AbstractEditor {
     const placeholder = this.state.isGfmMode ? 'Input with Markdown..' : 'Input with Plane Text..';
 
     return <React.Fragment>
+
+      { this.renderNavbar() }
+
       <ReactCodeMirror
         ref="cm"
         className={additionalClasses}
@@ -717,6 +734,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
         { this.state.isCheatsheetModalButtonShown && this.renderCheatsheetModalButton() }
       </div>
 
+      <HandsontableModal ref='handsontableModal' onSave={ table => mtu.replaceMarkdownTable(this.getCodeMirror(), table) }/>
     </React.Fragment>;
   }
 

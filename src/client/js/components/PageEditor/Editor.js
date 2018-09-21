@@ -1,18 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Button from 'react-bootstrap/es/Button';
-
 import AbstractEditor from './AbstractEditor';
 import CodeMirrorEditor from './CodeMirrorEditor';
 import TextAreaEditor from './TextAreaEditor';
 
 import Dropzone from 'react-dropzone';
 
-import HandsontableModal from './HandsontableModal';
 import pasteHelper from './PasteHelper';
-
-import mtu from './MarkdownTableUtil';
 
 export default class Editor extends AbstractEditor {
 
@@ -199,18 +194,6 @@ export default class Editor extends AbstractEditor {
     );
   }
 
-  renderNavbar() {
-    return (
-      <div className="m-0 navbar navbar-default navbar-editor" style={{ minHeight: 'unset' }}>
-        <ul className="pr-4 nav nav-navbar navbar-right">
-          <li>
-            <Button bsSize="small" onClick={ () => this.refs.handsontableModal.show(mtu.getMarkdownTable(this.getEditorSubstance().getCodeMirror())) }><i className="icon-grid"></i></Button>
-          </li>
-        </ul>
-      </div>
-    );
-  }
-
   render() {
     const flexContainer = {
       height: '100%',
@@ -236,8 +219,6 @@ export default class Editor extends AbstractEditor {
           >
 
           { this.state.dropzoneActive && this.renderDropzoneOverlay() }
-
-          { this.renderNavbar() }
 
           {/* for PC */}
           { !isMobile &&
@@ -272,9 +253,6 @@ export default class Editor extends AbstractEditor {
             or pasting from the clipboard.
           </span>
         </button>
-
-        <HandsontableModal ref='handsontableModal' onSave={ table => mtu.replaceMarkdownTable(this.getEditorSubstance().getCodeMirror(), table) }/>
-
       </div>
     );
   }
