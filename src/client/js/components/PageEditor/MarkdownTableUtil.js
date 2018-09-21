@@ -85,8 +85,14 @@ class MarkdownTableUtil {
 
   /**
    * return MarkdownTable instance of the table where cursor exists
+   * (if cursor is not in the table, return null)
    */
   getMarkdownTable(editor) {
+    const curPos = editor.getCursor();
+    if (!this.linePartOfTableRE.test(editor.getDoc().getLine(curPos.line))) {
+      return null;
+    }
+
     const strFromBotToEot = editor.getDoc().getRange(this.getBot(editor), this.getEot(editor));
     return MarkdownTable.fromMarkdownString(strFromBotToEot);
   }
