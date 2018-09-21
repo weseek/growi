@@ -15,7 +15,9 @@ body.on-edit {
                       + 42px                    // .nav height
                       + 1px                     // .page-editor-footer border-top
                       + 40px;                   // .page-editor-footer min-height
-  $editor-margin: $header-plus-footer + 26px;   // .btn-open-dropzone height
+  $editor-margin: $header-plus-footer
+                  + 26px                        // .btn-open-dropzone height
+                  + 30px;                       // .navbar-editor height
 
   // hide unnecessary elements
   .navbar.navbar-static-top,
