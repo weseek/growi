@@ -1,5 +1,3 @@
-import stringWidth from 'string-width';
-
 import MarkdownTable from '../../models/MarkdownTable';
 
 /**
