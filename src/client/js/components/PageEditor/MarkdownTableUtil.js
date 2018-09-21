@@ -20,7 +20,6 @@ class MarkdownTableUtil {
     this.getStrFromBot = this.getStrFromBot.bind(this);
     this.getStrToEot = this.getStrToEot.bind(this);
 
-    this.parseFromTableStringToMarkdownTable = this.parseFromTableStringToMarkdownTable.bind(this);
     this.replaceMarkdownTableWithReformed = this.replaceMarkdownTableWithReformed.bind(this);
   }
 
@@ -90,45 +89,6 @@ class MarkdownTableUtil {
    */
   getStrFromBotToEot(editor) {
     return editor.getDoc().getRange(this.getBot(editor), this.getEot(editor));
-  }
-
-  /**
-   * returns markdown table whose described by 'markdown-table' format
-   *   ref. https://github.com/wooorm/markdown-table
-   * @param {string} lines all of table
-   */
-  parseFromTableStringToMarkdownTable(strMDTable) {
-    const arrMDTableLines = strMDTable.split(/(\r\n|\r|\n)/);
-    let contents = [];
-    let aligns = [];
-    for (let n = 0; n < arrMDTableLines.length; n++) {
-      const line = arrMDTableLines[n];
-
-      if (this.tableAlignmentLineRE.test(line) && !this.tableAlignmentLineNegRE.test(line)) {
-        // parse line which described alignment
-        const alignRuleRE = [
-          { align: 'c', regex: /^:-+:$/ },
-          { align: 'l', regex: /^:-+$/  },
-          { align: 'r', regex: /^-+:$/  },
-        ];
-        let lineText = '';
-        lineText = line.replace(/^\||\|$/g, ''); // strip off pipe charactor which is placed head of line and last of line.
-        lineText = lineText.replace(/\s*/g, '');
-        aligns = lineText.split(/\|/).map(col => {
-          const rule = alignRuleRE.find(rule => col.match(rule.regex));
-          return (rule != undefined) ? rule.align : '';
-        });
-      }
-      else if (this.linePartOfTableRE.test(line)) {
-        // parse line whether header or body
-        let lineText = '';
-        lineText = line.replace(/\s*\|\s*/g, '|');
-        lineText = lineText.replace(/^\||\|$/g, ''); // strip off pipe charactor which is placed head of line and last of line.
-        const row = lineText.split(/\|/);
-        contents.push(row);
-      }
-    }
-    return (new MarkdownTable(contents, { align: aligns, stringLength: stringWidth }));
   }
 
   /**

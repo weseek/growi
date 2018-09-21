@@ -13,6 +13,7 @@ import HandsontableModal from './HandsontableModal';
 import pasteHelper from './PasteHelper';
 
 import mtu from './MarkdownTableUtil';
+import MarkdownTable from '../../models/MarkdownTable';
 
 export default class Editor extends AbstractEditor {
 
@@ -217,7 +218,7 @@ export default class Editor extends AbstractEditor {
    */
   getMarkDownTable() {
     const cm = this.getEditorSubstance().getCodeMirror();
-    return mtu.parseFromTableStringToMarkdownTable(mtu.getStrFromBotToEot(cm));
+    return MarkdownTable.fromMarkdownString(mtu.getStrFromBotToEot(cm));
   }
 
   /**
