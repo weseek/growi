@@ -72,7 +72,7 @@
           </div>
         {% endif %}
         <div class="form-group">
-          <div class="col-xs-6">
+          <div class="col-sm-4">
             <h4>
               <div class="radio radio-primary">
                 <input type="radio" id="radioLayoutGrowi" name="settingForm[customize:layout]" value="growi" onclick="selectableTheme(event)"
@@ -85,37 +85,14 @@
             <a href="/images/admin/customize/layout-crowi-plus.gif" class="ss-container">
               <img src="/images/admin/customize/layout-crowi-plus-thumb.gif" width="240px">
             </a>
+            <h4>Simple and Clear</h4>
             <ul>
-              <li>Simple and Clear</li>
-              <ul>
-                <li>Show and post comments at the bottom of the page</li>
-                <li>Affix Table-of-contents</li>
-              </ul>
+              <li>Full screen layout and thin margins/paddings</li>
+              <li>Show and post comments at the bottom of the page</li>
+              <li>Affix Table-of-contents</li>
             </ul>
           </div>
-          <div class="col-xs-6">
-            <h4>
-              <div class="radio radio-primary">
-                <input type="radio" id="radioLayoutCrowi" name="settingForm[customize:layout]" value="crowi" onclick="selectableTheme(event)"
-                    {% if 'crowi' === settingForm['customize:layout'] %}checked="checked"{% endif %}>
-                <label for="radioLayoutCrowi">
-                  Crowi Classic Layout
-                </label>
-              </div>
-            </h4>
-            <a href="/images/admin/customize/layout-classic.gif" class="ss-container">
-              <img src="/images/admin/customize/layout-classic-thumb.gif" width="240px">
-            </a>
-            <ul>
-              <li>Functional</li>
-              <ul>
-                <li>Collapsible Sidebar</li>
-                <li>Show and post comments in Sidebar</li>
-                <li>Collapsible Table-of-contents</li>
-              </ul>
-            </ul>
-          </div>
-          <div class="col-xs-6">
+          <div class="col-sm-4">
             <h4>
               <div class="radio radio-primary">
                 <input type="radio" id="radioLayoutKibela" name="settingForm[customize:layout]" value="kibela" onclick="selectableTheme(event)"
@@ -128,13 +105,31 @@
             <a href="/images/admin/customize/layout-kibela.gif" class="ss-container">
               <img src="/images/admin/customize/layout-kibela-thumb.gif" width="240px">
             </a>
+            <h4>Easy Viewing Structure</h4>
             <ul>
-              <li>Easy Viewing Structure</li>
-              <ul>
-                <li>Center aligned contents</li>
-                <li>Show and post comments at the bottom of the page</li>
-                <li>Affix Table-of-contents</li>
-              </ul>
+              <li>Center aligned contents</li>
+              <li>Show and post comments at the bottom of the page</li>
+              <li>Affix Table-of-contents</li>
+            </ul>
+          </div>
+          <div class="col-sm-4">
+            <h4>
+              <div class="radio radio-primary">
+                <input type="radio" id="radioLayoutCrowi" name="settingForm[customize:layout]" value="crowi" onclick="selectableTheme(event)"
+                    {% if 'crowi' === settingForm['customize:layout'] %}checked="checked"{% endif %}>
+                <label for="radioLayoutCrowi">
+                  Crowi Classic Layout
+                </label>
+              </div>
+            </h4>
+            <a href="/images/admin/customize/layout-classic.gif" class="ss-container">
+              <img src="/images/admin/customize/layout-classic-thumb.gif" width="240px">
+            </a>
+            <h4>Separated Functions</h4>
+            <ul>
+              <li>Collapsible Sidebar</li>
+              <li>Show and post comments in Sidebar</li>
+              <li>Collapsible Table-of-contents</li>
             </ul>
           </div>
         </div>

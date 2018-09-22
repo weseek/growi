@@ -1,4 +1,6 @@
-{% extends '../../layout/layout.html' %} {% block layout_main %}
+{% extends '../../layout/layout.html' %}
+
+{% block layout_main %}
 <div class="container-fluid">
 
   <div class="row body m-0 p-0">
@@ -10,7 +12,14 @@
         </div>
       </div>
       <!-- /.bg-title -->
-      {% block content_main_before %} {% endblock %} {% block content_main %} {% endblock content_main %} {% block content_main_after%}
+
+      {% block content_main_before %}
+      {% endblock %}
+
+      {% block content_main %}
+      {% endblock content_main %}
+
+      {% block content_main_after%}
       {% endblock %}
     </div>
 
