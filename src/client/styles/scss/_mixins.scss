@@ -16,7 +16,9 @@
 
 @mixin expand-editor($header-plus-footer) {
   $header-plus-footer: $header-plus-footer + 2px;   // add .main padding-top
-  $editor-margin: $header-plus-footer + 26px;       // add .btn-open-dropzone height
+  $editor-margin: $header-plus-footer
+                  + 25px        // add .btn-open-dropzone height
+                  + 30px;       // add .navbar-editor height
 
   .main {
     width: 100%;
