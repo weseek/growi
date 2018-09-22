@@ -17,18 +17,22 @@ class MarkdownTableUtil {
     this.getBol = this.getBol.bind(this);
     this.getStrFromBot = this.getStrFromBot.bind(this);
     this.getStrToEot = this.getStrToEot.bind(this);
-
+    this.isInTable = this.isInTable.bind(this);
     this.replaceMarkdownTable = this.replaceMarkdownTable.bind(this);
     this.replaceMarkdownTableWithReformed = this.replaceMarkdownTable; // alias
   }
 
   /**
    * return the postion of the BOT(beginning of table)
-   * (It is assumed that current line is a part of table)
+   * (If the cursor is not in a table, return its position)
    */
   getBot(editor) {
-    const firstLine = editor.getDoc().firstLine();
     const curPos = editor.getCursor();
+    if (!this.isInTable(editor)) {
+      return { line: curPos.line, ch: curPos.ch};
+    }
+
+    const firstLine = editor.getDoc().firstLine();
     let line = curPos.line - 1;
     for (; line >= firstLine; line--) {
       const strLine = editor.getDoc().getLine(line);
@@ -42,11 +46,15 @@ class MarkdownTableUtil {
 
   /**
    * return the postion of the EOT(end of table)
-   * (It is assumed that current line is a part of table)
+   * (If the cursor is not in a table, return its position)
    */
   getEot(editor) {
-    const lastLine = editor.getDoc().lastLine();
     const curPos = editor.getCursor();
+    if (!this.isInTable(editor)) {
+      return { line: curPos.line, ch: curPos.ch};
+    }
+
+    const lastLine = editor.getDoc().lastLine();
     let line = curPos.line + 1;
     for (; line <= lastLine; line++) {
       const strLine = editor.getDoc().getLine(line);
@@ -68,7 +76,7 @@ class MarkdownTableUtil {
   }
 
   /**
-   * return strings from BOT(beginning of table) to current position
+   * return strings from BOT(beginning of table) to the cursor position
    */
   getStrFromBot(editor) {
     const curPos = editor.getCursor();
@@ -76,7 +84,7 @@ class MarkdownTableUtil {
   }
 
   /**
-   * return strings from current position to EOT(end of table)
+   * return strings from the cursor position to EOT(end of table)
    */
   getStrToEot(editor) {
     const curPos = editor.getCursor();
@@ -84,12 +92,11 @@ class MarkdownTableUtil {
   }
 
   /**
-   * return MarkdownTable instance of the table where cursor exists
-   * (if cursor is not in the table, return null)
+   * return MarkdownTable instance of the table where the cursor is
+   * (If the cursor is not in a table, return null)
    */
   getMarkdownTable(editor) {
-    const curPos = editor.getCursor();
-    if (!this.linePartOfTableRE.test(editor.getDoc().getLine(curPos.line))) {
+    if (!this.isInTable(editor)) {
       return null;
     }
 
@@ -98,11 +105,19 @@ class MarkdownTableUtil {
   }
 
   /**
-   * return boolean value whether the current position of cursor is end of line
+   * return boolean value whether the cursor position is end of line
    */
   isEndOfLine(editor) {
     const curPos = editor.getCursor();
     return (curPos.ch == editor.getDoc().getLine(curPos.line).length);
+  }
+
+  /**
+   * return boolean value whether the cursor position is in a table
+   */
+  isInTable(editor) {
+    const curPos = editor.getCursor();
+    return this.linePartOfTableRE.test(editor.getDoc().getLine(curPos.line));
   }
 
   /**
@@ -138,7 +153,7 @@ class MarkdownTableUtil {
 
   /**
    * replace markdown table
-   * (table is reformed by markdown-table)
+   * (A replaced table is reformed by markdown-table.)
    * @param {MarkdownTable} markdown table
    */
   replaceMarkdownTable(editor, table) {
