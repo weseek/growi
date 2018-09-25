@@ -253,7 +253,6 @@ export default class Editor extends AbstractEditor {
             or pasting from the clipboard.
           </span>
         </button>
-
       </div>
     );
   }

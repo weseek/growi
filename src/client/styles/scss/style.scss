@@ -14,11 +14,16 @@
 // override react-bootstrap-typeahead styles
 @import 'override-rbt';
 
+// override Handsontable styles
+@import 'override-handsontable';
+
 // crowi component
 @import 'admin';
 @import 'attachments';
 @import 'comment';
 @import 'comment_growi';
+@import 'comment_kibela';
+@import 'navbar_kibela';
 @import 'create-page';
 @import 'create-template';
 @import 'editor-attachment';
@@ -26,6 +31,7 @@
 @import 'layout_crowi';
 @import 'layout_crowi_sidebar';
 @import 'layout_growi';
+@import 'layout_kibela';
 @import 'login';
 @import 'notification';
 @import 'on-edit';

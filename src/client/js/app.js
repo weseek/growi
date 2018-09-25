@@ -414,7 +414,8 @@ if (pageEditorOptionsSelectorElem) {
           // save
           crowi.saveEditorOptions(newEditorOptions);
           crowi.savePreviewOptions(newPreviewOptions);
-        }} />,
+        }}
+      />,
     pageEditorOptionsSelectorElem
   );
 }

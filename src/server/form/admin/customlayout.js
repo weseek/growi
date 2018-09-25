@@ -5,5 +5,6 @@ var form = require('express-form')
   ;
 
 module.exports = form(
-  field('settingForm[customize:layout]')
+  field('settingForm[customize:layout]'),
+  field('settingForm[customize:theme]')
 );
