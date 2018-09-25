@@ -18,12 +18,14 @@ export default class RecentCreated extends React.Component {
     this.getRecentCreatedList( );
     console.log(this.state);
   }
-  getRecentCreatedList() {
+  getRecentCreatedList(selectPageNumber) {
 
     const pageId = this.props.pageId;
     const userId = this.props.crowi.me;
+    const limit = 1; // TODO 表示件数。
+    const offset = selectPageNumber; // TODO 何件目から取得するか　(ページ番号 - 1) * 表示件数
 
-    this.props.crowi.apiGet('/pages.recentCreated', {page_id: pageId , user: userId , limit: 3 , offset: 0 , })
+    this.props.crowi.apiGet('/pages.list', {page_id: pageId , user: userId , limit: limit , offset: offset , })
       .then(res => {
         const pages = res.pages;
         let inUse = {};
@@ -42,7 +44,7 @@ export default class RecentCreated extends React.Component {
     console.log(this.state);
     for (let number = 1; number <= 5; number++) {
       items.push(
-        <Pagination.Item key={number} active={number === active}>{number}</Pagination.Item>
+        <Pagination.Item key={number} active={number === active} onClick={ () => this.getRecentCreatedList(number)}>{number}</Pagination.Item>
       );
     }
     return (
