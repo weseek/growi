@@ -14,6 +14,8 @@ export default class HandsontableModal extends React.Component {
 
     this.state = {
       show: false,
+      markdownTableOnInit: HandsontableModal.getDefaultMarkdownTable(),
+      markdownTable: HandsontableModal.getDefaultMarkdownTable()
     };
 
     this.settings = {
@@ -27,26 +29,24 @@ export default class HandsontableModal extends React.Component {
     };
 
     this.init = this.init.bind(this);
+    this.reset = this.reset.bind(this);
     this.cancel = this.cancel.bind(this);
     this.save = this.save.bind(this);
   }
 
-  componentWillMount() {
-    this.init(this.props.markdownTable);
-  }
-
   init(markdownTable) {
-    const initMarkdownTable = markdownTable || new MarkdownTable([
-      ['col1', 'col2', 'col3'],
-      ['', '', ''],
-      ['', '', ''],
-    ]);
-    this.setState({ markdownTable: initMarkdownTable });
+    const initMarkdownTable = markdownTable || HandsontableModal.getDefaultMarkdownTable();
+    this.setState({ markdownTableOnInit: initMarkdownTable });
+    this.setState({ markdownTable: initMarkdownTable.clone() });
   }
 
-  show(markdownTable, doneHandler) {
+  show(markdownTable) {
     this.init(markdownTable);
     this.setState({ show: true });
+  }
+
+  reset() {
+    this.setState({ markdownTable: this.state.markdownTableOnInit.clone() });
   }
 
   cancel() {
@@ -73,7 +73,7 @@ export default class HandsontableModal extends React.Component {
         </Modal.Body>
         <Modal.Footer>
           <div className="d-flex justify-content-between">
-            <Button bsStyle="danger" onClick={() => this.init(this.props.markdownTable)}>Reset</Button>
+            <Button bsStyle="danger" onClick={this.reset}>Reset</Button>
             <div className="d-flex">
               <Button bsStyle="default" onClick={this.cancel}>Cancel</Button>
               <Button bsStyle="primary" onClick={this.save}>Done</Button>
@@ -83,9 +83,16 @@ export default class HandsontableModal extends React.Component {
       </Modal>
     );
   }
+
+  static getDefaultMarkdownTable() {
+    return new MarkdownTable([
+      ['col1', 'col2', 'col3'],
+      ['', '', ''],
+      ['', '', ''],
+    ]);
+  }
 }
 
 HandsontableModal.propTypes = {
-  markdownTable: PropTypes.instanceOf(MarkdownTable),
-  onSave: PropTypes.func,
+  onSave: PropTypes.func
 };
