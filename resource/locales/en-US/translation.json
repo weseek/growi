@@ -260,6 +260,8 @@
     "Site Name": "Site name",
     "sitename_change": "You can change Site Name which is used for header and HTML title.",
     "header_content": "The contents entered here will be shown in the header etc.",
+    "Site URL": "Site URL",
+    "siteurl_help": "Site full URL beginning from <code>http://</code> or <code>https://</code>.",
     "Confidential name": "Confidential name",
     "ex): internal use only":"ex): internal use only",
     "enable_files_except_image": "Enable file upload other than image files.",

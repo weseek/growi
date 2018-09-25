@@ -38,8 +38,16 @@
         <div class="form-group">
           <label for="settingForm[app:title]" class="col-xs-3 control-label">{{ t('app_setting.Site Name') }}</label>
           <div class="col-xs-6">
-            <input class="form-control" type="text" name="settingForm[app:title]" value="{{ settingForm['app:title'] | default('') }}">
+            <input class="form-control" type="text" name="settingForm[app:title]" value="{{ settingForm['app:title'] | default('') }}" placeholder="GROWI">
             <p class="help-block">{{ t("app_setting.sitename_change") }}</p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="settingForm[app:siteUrl]" class="col-xs-3 control-label">{{ t('app_setting.Site URL') }}</label>
+          <div class="col-xs-6">
+            <input class="form-control" type="text" name="settingForm[app:siteUrl]" value="{{ settingForm['app:siteUrl'] | default('') }}" placeholder="e.g. https://my.growi.org">
+            <p class="help-block">{{ t("app_setting.siteurl_help") }}</p>
           </div>
         </div>
 

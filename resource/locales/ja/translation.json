@@ -278,6 +278,8 @@
     "Site Name": "サイト名",
     "sitename_change": "ヘッダーや HTML タイトルに使用されるサイト名を変更できます。",
     "header_content": "ここに入力した内容は、ヘッダー等に表示されます。",
+    "Site URL": "サイトURL",
+    "siteurl_help": "<code>http://</code> または <code>https://</code> から始まるサイトのURL。",
     "Confidential name": "コンフィデンシャル表示",
     "ex): internal use only": "例: 社外秘",
     "enable_files_except_image": "画像以外のファイルアップロードを許可",
