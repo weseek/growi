@@ -4,9 +4,14 @@ export default class TableConfigurer {
     this.crowi = crowi;
   }
 
+  clickHandler(markdownTableStr) {
+    this.crowi.launchTableModal(markdownTableStr);
+  }
+
   configure(md) {
     md.renderer.rules.table_open = (tokens, idx) => {
-      return '<table class="table table-bordered">';
+      const markdownTableStr = "tokensから取得";
+      return '<table class="table table-bordered"><button onclick="clickHander(markdownTableStr)"></button>';
     };
   }
 
