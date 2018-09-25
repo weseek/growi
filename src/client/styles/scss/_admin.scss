@@ -97,6 +97,11 @@
       }
     }
 
+    &.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
     // style
     .theme-option-container a {
       border: 1px solid #ccc;
