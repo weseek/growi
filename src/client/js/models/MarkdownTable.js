@@ -24,6 +24,18 @@ export default class MarkdownTable {
     return markdownTable(this.table, this.options);
   }
 
+  /**
+   * returns cloned Markdowntable instance
+   * (This method clones only the table field.)
+   */
+  clone() {
+    let newTable = [];
+    for (let i = 0; i < this.table.length; i++) {
+      newTable.push([].concat(this.table[i]));
+    }
+    return new MarkdownTable(newTable, this.options);
+  }
+
   static fromTableTag(str) {
     // TODO impl
     return new MarkdownTable();
