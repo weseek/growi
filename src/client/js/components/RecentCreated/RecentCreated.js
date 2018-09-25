@@ -16,13 +16,14 @@ export default class RecentCreated extends React.Component {
 
   componentWillMount() {
     this.getRecentCreatedList( );
+    console.log(this.state);
   }
   getRecentCreatedList() {
 
     const pageId = this.props.pageId;
     const userId = this.props.crowi.me;
 
-    this.props.crowi.apiGet('/pages.list', {page_id: pageId , user: userId , limit: 3 , offset: 3 , })
+    this.props.crowi.apiGet('/pages.recentCreated', {page_id: pageId , user: userId , limit: 3 , offset: 0 , })
       .then(res => {
         const pages = res.pages;
         let inUse = {};
@@ -38,6 +39,7 @@ export default class RecentCreated extends React.Component {
   render() {
     let active = 1;
     let items = [];
+    console.log(this.state);
     for (let number = 1; number <= 5; number++) {
       items.push(
         <Pagination.Item key={number} active={number === active}>{number}</Pagination.Item>

@@ -696,7 +696,14 @@ module.exports = function(crowi) {
       .populate('revision')
       .exec()
       .then(function(pages) {
-        return Page.populate(pages, {path: 'lastUpdateUser', model: 'User', select: User.USER_PUBLIC_FIELDS}).then(resolve);
+        return Page.populate(pages, {path: 'lastUpdateUser', model: 'User', select: User.USER_PUBLIC_FIELDS}).then(function(data){
+          let totalCount = "";
+          totalCount = new Promise(function(rev,rej){
+            Page.find(conditions).count().populate('revision').exec().then(data);
+          });
+          data.totalCount = totalCount;
+          resolve(data);
+        });
       });
     });
   };
