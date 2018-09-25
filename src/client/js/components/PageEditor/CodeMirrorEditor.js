@@ -91,6 +91,8 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
     this.renderLoadingKeymapOverlay = this.renderLoadingKeymapOverlay.bind(this);
     this.renderCheatsheetModalButton = this.renderCheatsheetModalButton.bind(this);
+
+    this.showHandsonTableHandler = this.showHandsonTableHandler.bind(this);
   }
 
   init() {
@@ -643,12 +645,16 @@ export default class CodeMirrorEditor extends AbstractEditor {
     );
   }
 
+  showHandsonTableHandler() {
+    this.refs.handsontableModal.show(mtu.getMarkdownTable(this.getCodeMirror()));
+  }
+
   renderNavbar() {
     return (
       <div className="m-0 navbar navbar-default navbar-editor" style={{ minHeight: 'unset' }}>
         <ul className="pr-4 nav nav-navbar navbar-right">
           <li>
-            <Button bsSize="small" onClick={ () => this.refs.handsontableModal.show(mtu.getMarkdownTable(this.getCodeMirror())) }><i className="icon-grid"></i></Button>
+            <Button bsSize="small" onClick={ this.showHandsonTableHandler }><i className="icon-grid"></i></Button>
           </li>
         </ul>
       </div>
