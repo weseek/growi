@@ -30,6 +30,7 @@ export default class RecentCreated extends React.Component {
     this.props.crowi.apiGet('/pages.recentCreated', {page_id: pageId , user: userId , limit: limit , offset: offset , })
       .then(res => {
         console.log("res.pages=", res.pages);
+        const totalCount = res.pages[0].totalCount;
         const pages = res.pages[1];
         let inUse = {};
         const active = selectPageNumber;

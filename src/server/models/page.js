@@ -708,15 +708,44 @@ module.exports = function(crowi) {
         return Page.populate(pages, {path: 'lastUpdateUser', model: 'User', select: User.USER_PUBLIC_FIELDS}).then(function(data){
           let totalCount = 30;
           // TODO- totalCount DB search
-          total = [
-            {totalCount: totalCount}
-          ];
-          total.push(data);
-          resolve(total);
+          let countFetcher;
+          countFetcher = Page.countListByCreator(user,option,currentUser);
+          countFetcher.then(function(count){
+            total = [
+              {totalCount: count}
+            ];
+            total.push(data);
+            resolve(total);
+          });
         });
       });
     });
   };
+
+  pageSchema.statics.countListByCreator = function(user, option, currentUser) {
+    var Page = this;
+    var User = crowi.model('User');
+    var limit = option.limit || 50;
+    var offset = option.offset || 0;
+    var conditions = {
+      creator: user._id,
+      redirectTo: null,
+      $and:[
+        {$or:
+          [
+            {status: null},
+            {status: STATUS_PUBLISHED},
+          ]},
+        {$or: [
+          {grant: GRANT_PUBLIC},
+          {grant: GRANT_USER_GROUP},
+        ]}
+      ],
+    };
+
+    return Page.find(conditions).count();
+  };
+
 
   /**
    * Bulk get (for internal only)
