@@ -9,37 +9,41 @@ export default class RecentCreated extends React.Component {
     this.state = {
       RecentCreatedData : '',
       pages : [] ,
+      limit : 10, // TODO GC-941で対応予定
+      active : 1,
     };
     this.getRecentCreatedList = this.getRecentCreatedList.bind(this);
   }
 
 
   componentWillMount() {
-    this.getRecentCreatedList( );
+    this.getRecentCreatedList(1);
     console.log(this.state);
   }
   getRecentCreatedList(selectPageNumber) {
 
     const pageId = this.props.pageId;
     const userId = this.props.crowi.me;
-    const limit = 1; // TODO 表示件数。
-    const offset = selectPageNumber; // TODO 何件目から取得するか　(ページ番号 - 1) * 表示件数
+    const limit = this.state.limit;
+    const offset = (selectPageNumber - 1) * limit;
 
     this.props.crowi.apiGet('/pages.list', {page_id: pageId , user: userId , limit: limit , offset: offset , })
       .then(res => {
         const pages = res.pages;
         let inUse = {};
+        const active = selectPageNumber;
 
         this.setState({
           pages: pages,
           inUse: inUse,
+          active: active,
         });
       });
   }
 
 
   render() {
-    let active = 1;
+    let active = this.state.active;
     let items = [];
     console.log(this.state);
     for (let number = 1; number <= 5; number++) {
