@@ -21,9 +21,14 @@ module.exports = function(crowi) {
 
     , PAGE_ITEMS        = 50
 
-    , userEvent = crowi.event('user')
-
   let userSchema;
+  let userEvent;
+
+  // init event
+  if (crowi != null) {
+    userEvent = crowi.event('user');
+    userEvent.on('activated', userEvent.onActivated);
+  }
 
   userSchema = new mongoose.Schema({
     userId: String,
@@ -55,9 +60,15 @@ module.exports = function(crowi) {
   userSchema.plugin(mongoosePaginate);
   userSchema.plugin(uniqueValidator);
 
-  userEvent.on('activated', userEvent.onActivated);
+  function validateCrowi() {
+    if (crowi == null) {
+      throw new Error('"crowi" is null. Init User model with "crowi" argument first.');
+    }
+  }
 
   function decideUserStatusOnRegistration() {
+    validateCrowi();
+
     var Config = crowi.model('Config'),
       config = crowi.getConfig();
 
@@ -96,6 +107,8 @@ module.exports = function(crowi) {
   }
 
   function generatePassword(password) {
+    validateCrowi();
+
     var hasher = crypto.createHash('sha256');
     hasher.update(crowi.env.PASSWORD_SEED + password);
 
@@ -302,6 +315,8 @@ module.exports = function(crowi) {
   };
 
   userSchema.statics.isEmailValid = function(email, callback) {
+    validateCrowi();
+
     var config = crowi.getConfig()
       , whitelist = config.crowi['security:registrationWhiteList'];
 
@@ -573,6 +588,8 @@ module.exports = function(crowi) {
   };
 
   userSchema.statics.createUsersByInvitation = function(emailList, toSendEmail, callback) {
+    validateCrowi();
+
     var User = this
       , createdUserList = []
       , Config = crowi.model('Config')

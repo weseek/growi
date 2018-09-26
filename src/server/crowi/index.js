@@ -124,8 +124,8 @@ Crowi.prototype.getEnv = function() {
 // getter/setter of model instance
 //
 Crowi.prototype.model = function(name, model) {
-  if (model) {
-    return this.models[name] = model;
+  if (model != null) {
+    this.models[name] = model;
   }
 
   return this.models[name];
