@@ -58,20 +58,20 @@ export default class RecentCreated extends React.Component {
     }
     else {
       items.push(
-        <Pagination.First />
+        <Pagination.First onClick={() => this.getRecentCreatedList(1)} />
       );
       items.push(
-        <Pagination.Prev />
+        <Pagination.Prev onClick={() => this.getRecentCreatedList(this.state.active - 1)} />
       );
     }
 // TODO GC-995 End
-    for (let number = 1; number <= 5; number++) {
+    for (let number = 1; number <= 5; number++) { // TODO GC-992で対応予定
       items.push(
         <Pagination.Item key={number} active={number === active} onClick={ () => this.getRecentCreatedList(number)}>{number}</Pagination.Item>
       );
     }
 // TODO GC-995 Start
-    if (5 === active) {
+    if (5 === active) { // TODO GC-992で対応予定
       items.push(
         <Pagination.Next disabled />
       );
@@ -81,10 +81,10 @@ export default class RecentCreated extends React.Component {
     }
     else {
       items.push(
-        <Pagination.Next />
+        <Pagination.Next onClick={() => this.getRecentCreatedList(this.state.active + 1)} />
       );
       items.push(
-        <Pagination.Last />
+        <Pagination.Last onClick={() => this.getRecentCreatedList(5)} /> // TODO GC-992で対応予定
       );
     }
 // TODO GC-995 End
