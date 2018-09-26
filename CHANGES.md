@@ -3,7 +3,12 @@ CHANGES
 
 ## 3.2.4-RC
 
-* 
+* Support: Mongoose migration mechanism
+* Support: Upgrade libs
+    * mocha
+    * mongoose
+    * mongoose-paginate
+    * mongoose-unique-validator
 
 ## 3.2.3
 
