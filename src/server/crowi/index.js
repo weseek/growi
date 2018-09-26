@@ -146,17 +146,17 @@ Crowi.prototype.setupDatabase = function() {
 
   const mongoUri = getMongoUrl(this.env);
 
-  return mongoose.connect(mongoUri);
+  return mongoose.connect(mongoUri, { useNewUrlParser: true });
 };
 
 Crowi.prototype.setupSessionConfig = function() {
-  var self = this
+  const self = this
     , session  = require('express-session')
-    , sessionConfig
     , sessionAge = (1000*3600*24*30)
     , redisUrl = this.env.REDISTOGO_URL || this.env.REDIS_URI || this.env.REDIS_URL || null
     , mongoUrl = getMongoUrl(this.env)
     ;
+  let sessionConfig;
 
   return new Promise(function(resolve, reject) {
     sessionConfig = {
