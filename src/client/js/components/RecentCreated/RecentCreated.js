@@ -32,7 +32,7 @@ export default class RecentCreated extends React.Component {
       .then(res => {
         console.log("res.pages=", res.pages);
         const totalCount = res.pages[0].totalCount;
-        const totalPage = totalCount / limit;
+        const totalPage = totalCount % limit == 0 ? totalCount / limit : Math.floor(totalCount / limit) + 1;
         const pages = res.pages[1];
         let inUse = {};
         const active = selectPageNumber;
@@ -53,7 +53,6 @@ export default class RecentCreated extends React.Component {
     let items = [];
     let paginationStart = active;
     console.log(this.state);
-// TODO GC-995 Start
     if (1 === active) {
       items.push(
         <Pagination.First disabled />
@@ -70,16 +69,22 @@ export default class RecentCreated extends React.Component {
         <Pagination.Prev onClick={() => this.getRecentCreatedList(this.state.active - 1)} />
       );
     }
-// TODO GC-995 End
-    if (0 < (paginationStart - 2) && paginationStart < (totalPage - 2 )) {
-      paginationStart = paginationStart - 2;
+    if (0 < (active - 2) && active < (totalPage - 2 )) {
+      paginationStart = active - 2;
+    }else if( active < 3){
+      paginationStart = 1;
+    }else if( active >= (totalPage -2) ){
+      paginationStart = (totalPage > 5)? totalPage -4 : totalPage = 4 ? totalPage - 3 : totalPage -2 ;
     }
-    for (let number = paginationStart; number <= (paginationStart - 1) + 5; number++) { // TODO GC-992で対応予定
+    let MaxViewNum =  (paginationStart ) + 4;
+    if(totalPage < paginationStart + 4){
+      MaxViewNum = totalPage;
+    }
+    for (let number = paginationStart; number <= MaxViewNum; number++) { // TODO GC-992で対応予定
       items.push(
         <Pagination.Item key={number} active={number === active} onClick={ () => this.getRecentCreatedList(number)}>{number}</Pagination.Item>
       );
     }
-// TODO GC-995 Start
     if (totalPage === active) {
       items.push(
         <Pagination.Next disabled />
@@ -93,10 +98,10 @@ export default class RecentCreated extends React.Component {
         <Pagination.Next onClick={() => this.getRecentCreatedList(this.state.active + 1)} />
       );
       items.push(
-        <Pagination.Last onClick={() => this.getRecentCreatedList(totalPage)} /> // TODO GC-992で対応予定
+        <Pagination.Last onClick={() => this.getRecentCreatedList(totalPage)} />
       );
     }
-// TODO GC-995 End
+// TODO same key Warning
     return (
       <div className="page-list-container-create">
         <ul className="page-list-ul page-list-ul-flat">
