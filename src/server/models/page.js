@@ -675,19 +675,23 @@ module.exports = function(crowi) {
     var limit = option.limit || 50;
     var offset = option.offset || 0;
     var conditions = {
-      creator: user._id,
-      redirectTo: null,
-      $and:[
-        {$or:
-          [
-            {status: null},
-            {status: STATUS_PUBLISHED},
-          ]},
-        {$or: [
-          {grant: GRANT_PUBLIC},
-          {grant: GRANT_USER_GROUP},
-        ]}
-      ],
+      $or: [{
+            creator: user._id,
+            redirectTo: null,
+            $or: [
+              {status: null},
+              {status: STATUS_PUBLISHED},
+            ],
+            grant: GRANT_PUBLIC,
+          }
+          ,{
+            redirectTo: null,
+            $or: [
+              {status: null},
+              {status: STATUS_PUBLISHED},
+            ],
+            grant: GRANT_USER_GROUP,
+          }]
     };
 
     /*
@@ -705,17 +709,15 @@ module.exports = function(crowi) {
       .populate('revision')
       .exec()
       .then(function(pages) {
-        return Page.populate(pages, {path: 'lastUpdateUser', model: 'User', select: User.USER_PUBLIC_FIELDS}).then(function(data){
-          let totalCount = 30;
-          // TODO- totalCount DB search
+        return Page.populate(pages, {path: 'lastUpdateUser', model: 'User', select: User.USER_PUBLIC_FIELDS}).then(function(pagesData){
           let countFetcher;
           countFetcher = Page.countListByCreator(user,option,currentUser);
           countFetcher.then(function(count){
-            total = [
+            pagesArray = [
               {totalCount: count}
             ];
-            total.push(data);
-            resolve(total);
+            pagesArray.push(pagesData);
+            resolve(pagesArray);
           });
         });
       });
@@ -725,22 +727,24 @@ module.exports = function(crowi) {
   pageSchema.statics.countListByCreator = function(user, option, currentUser) {
     var Page = this;
     var User = crowi.model('User');
-    var limit = option.limit || 50;
-    var offset = option.offset || 0;
     var conditions = {
-      creator: user._id,
-      redirectTo: null,
-      $and:[
-        {$or:
-          [
-            {status: null},
-            {status: STATUS_PUBLISHED},
-          ]},
-        {$or: [
-          {grant: GRANT_PUBLIC},
-          {grant: GRANT_USER_GROUP},
-        ]}
-      ],
+      $or: [{
+            creator: user._id,
+            redirectTo: null,
+            $or: [
+              {status: null},
+              {status: STATUS_PUBLISHED},
+            ],
+            grant: GRANT_PUBLIC,
+          }
+          ,{
+            redirectTo: null,
+            $or: [
+              {status: null},
+              {status: STATUS_PUBLISHED},
+            ],
+            grant: GRANT_USER_GROUP,
+          }]
     };
 
     return Page.find(conditions).count();
