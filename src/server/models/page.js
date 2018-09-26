@@ -677,15 +677,24 @@ module.exports = function(crowi) {
     var conditions = {
       creator: user._id,
       redirectTo: null,
-      $or: [
-        {status: null},
-        {status: STATUS_PUBLISHED},
+      $and:[
+        {$or:
+          [
+            {status: null},
+            {status: STATUS_PUBLISHED},
+          ]},
+        {$or: [
+          {grant: GRANT_PUBLIC},
+          {grant: GRANT_USER_GROUP},
+        ]}
       ],
     };
 
+    /*
     if (!user.equals(currentUser._id)) {
       conditions.grant = GRANT_PUBLIC;
     }
+    */
 
     return new Promise(function(resolve, reject) {
       Page
@@ -697,12 +706,13 @@ module.exports = function(crowi) {
       .exec()
       .then(function(pages) {
         return Page.populate(pages, {path: 'lastUpdateUser', model: 'User', select: User.USER_PUBLIC_FIELDS}).then(function(data){
-          let totalCount = "";
-          totalCount = new Promise(function(rev,rej){
-            Page.find(conditions).count().populate('revision').exec().then(data);
-          });
-          data.totalCount = totalCount;
-          resolve(data);
+          let totalCount = 30;
+          // TODO- totalCount DB search
+          total = [
+            {totalCount: totalCount}
+          ];
+          total.push(data);
+          resolve(total);
         });
       });
     });

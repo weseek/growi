@@ -27,9 +27,10 @@ export default class RecentCreated extends React.Component {
     const limit = this.state.limit;
     const offset = (selectPageNumber - 1) * limit;
 
-    this.props.crowi.apiGet('/pages.list', {page_id: pageId , user: userId , limit: limit , offset: offset , })
+    this.props.crowi.apiGet('/pages.recentCreated', {page_id: pageId , user: userId , limit: limit , offset: offset , })
       .then(res => {
-        const pages = res.pages;
+        console.log("res.pages=", res.pages);
+        const pages = res.pages[1];
         let inUse = {};
         const active = selectPageNumber;
 
