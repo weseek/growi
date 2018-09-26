@@ -11,6 +11,7 @@ export default class RecentCreated extends React.Component {
       pages : [] ,
       limit : 10, // TODO GC-941で対応予定
       active : 1,
+      totalPage: 0,
     };
     this.getRecentCreatedList = this.getRecentCreatedList.bind(this);
   }
@@ -31,6 +32,7 @@ export default class RecentCreated extends React.Component {
       .then(res => {
         console.log("res.pages=", res.pages);
         const totalCount = res.pages[0].totalCount;
+        const totalPage = totalCount / limit;
         const pages = res.pages[1];
         let inUse = {};
         const active = selectPageNumber;
@@ -39,14 +41,17 @@ export default class RecentCreated extends React.Component {
           pages: pages,
           inUse: inUse,
           active: active,
+          totalPage: totalPage,
         });
       });
   }
 
 
   render() {
+    let totalPage = this.state.totalPage;
     let active = this.state.active;
     let items = [];
+    let paginationStart = active;
     console.log(this.state);
 // TODO GC-995 Start
     if (1 === active) {
@@ -66,13 +71,16 @@ export default class RecentCreated extends React.Component {
       );
     }
 // TODO GC-995 End
-    for (let number = 1; number <= 5; number++) { // TODO GC-992で対応予定
+    if (0 < (paginationStart - 2) && paginationStart < (totalPage - 2 )) {
+      paginationStart = paginationStart - 2;
+    }
+    for (let number = paginationStart; number <= (paginationStart - 1) + 5; number++) { // TODO GC-992で対応予定
       items.push(
         <Pagination.Item key={number} active={number === active} onClick={ () => this.getRecentCreatedList(number)}>{number}</Pagination.Item>
       );
     }
 // TODO GC-995 Start
-    if (5 === active) { // TODO GC-992で対応予定
+    if (totalPage === active) {
       items.push(
         <Pagination.Next disabled />
       );
@@ -85,7 +93,7 @@ export default class RecentCreated extends React.Component {
         <Pagination.Next onClick={() => this.getRecentCreatedList(this.state.active + 1)} />
       );
       items.push(
-        <Pagination.Last onClick={() => this.getRecentCreatedList(5)} /> // TODO GC-992で対応予定
+        <Pagination.Last onClick={() => this.getRecentCreatedList(totalPage)} /> // TODO GC-992で対応予定
       );
     }
 // TODO GC-995 End
