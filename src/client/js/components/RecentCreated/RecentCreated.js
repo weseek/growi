@@ -46,11 +46,47 @@ export default class RecentCreated extends React.Component {
     let active = this.state.active;
     let items = [];
     console.log(this.state);
+// TODO GC-995 Start
+    if (1 === active) {
+      items.push(
+        <Pagination.First disabled />
+      );
+      items.push(
+        <Pagination.Prev disabled />
+      );
+    }
+    else {
+      items.push(
+        <Pagination.First />
+      );
+      items.push(
+        <Pagination.Prev />
+      );
+    }
+// TODO GC-995 End
     for (let number = 1; number <= 5; number++) {
       items.push(
         <Pagination.Item key={number} active={number === active} onClick={ () => this.getRecentCreatedList(number)}>{number}</Pagination.Item>
       );
     }
+// TODO GC-995 Start
+    if (5 === active) {
+      items.push(
+        <Pagination.Next disabled />
+      );
+      items.push(
+        <Pagination.Last disabled />
+      );
+    }
+    else {
+      items.push(
+        <Pagination.Next />
+      );
+      items.push(
+        <Pagination.Last />
+      );
+    }
+// TODO GC-995 End
     return (
       <div className="page-list-container-create">
         <ul className="page-list-ul page-list-ul-flat">
