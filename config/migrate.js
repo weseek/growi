@@ -24,6 +24,6 @@ module.exports = {
       useNewUrlParser: true, // removes a deprecation warning when connecting
     },
   },
-  migrationsDir: 'resource/migrations',
+  migrationsDir: 'src/migrations/',
   changelogCollectionName: 'migrations'
 };
