@@ -21,6 +21,12 @@ module.exports = function(crowi) {
     value: { type: String, required: true }
   });
 
+  function validateCrowi() {
+    if (crowi == null) {
+      throw new Error('"crowi" is null. Init Config model with "crowi" argument first.');
+    }
+  }
+
   /**
    * default values when GROWI is cleanly installed
    */
@@ -148,8 +154,10 @@ module.exports = function(crowi) {
   };
 
   configSchema.statics.updateConfigCache = function(ns, config) {
-    var originalConfig = crowi.getConfig();
-    var newNSConfig = originalConfig[ns] || {};
+    validateCrowi();
+
+    const originalConfig = crowi.getConfig();
+    const newNSConfig = originalConfig[ns] || {};
     Object.keys(config).forEach(function(key) {
       if (config[key] || config[key] === '' || config[key] === false) {
         newNSConfig[key] = config[key];
@@ -310,7 +318,7 @@ module.exports = function(crowi) {
   };
 
   configSchema.statics.isUploadable = function(config) {
-    var method = crowi.env.FILE_UPLOAD || 'aws';
+    const method = process.env.FILE_UPLOAD || 'aws';
 
     if (method == 'aws' && (
       !config.crowi['aws:accessKeyId'] ||
@@ -496,6 +504,8 @@ module.exports = function(crowi) {
   };
 
   configSchema.statics.customTitle = function(config, page) {
+    validateCrowi();
+
     const key = 'customize:title';
     let customTitle = getValueForCrowiNS(config, key);
 
@@ -588,7 +598,7 @@ module.exports = function(crowi) {
 
   configSchema.statics.getLocalconfig = function(config) {
     const Config = this;
-    const env = crowi.getEnv();
+    const env = process.env;
 
     const local_config = {
       crowi: {
