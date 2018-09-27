@@ -649,16 +649,8 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.refs.handsontableModal.show(mtu.getMarkdownTable(this.getCodeMirror()));
   }
 
-  renderNavbar() {
-    return (
-      <div className="m-0 navbar navbar-default navbar-editor" style={{ minHeight: 'unset' }}>
-        <ul className="pr-4 nav nav-navbar navbar-right">
-          <li>
-            <Button bsSize="small" onClick={ this.showHandsonTableHandler }><i className="icon-grid"></i></Button>
-          </li>
-        </ul>
-      </div>
-    );
+  getNavbarItems() {
+    return <Button bsSize="small" onClick={ this.showHandsonTableHandler }><i className="icon-grid"></i></Button>;
   }
 
   render() {
@@ -673,8 +665,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
     const placeholder = this.state.isGfmMode ? 'Input with Markdown..' : 'Input with Plane Text..';
 
     return <React.Fragment>
-
-      { this.renderNavbar() }
 
       <ReactCodeMirror
         ref="cm"

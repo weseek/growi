@@ -194,6 +194,31 @@ export default class Editor extends AbstractEditor {
     );
   }
 
+  renderNavbar() {
+    return (
+      <div className="m-0 navbar navbar-default navbar-editor" style={{ minHeight: 'unset' }}>
+        <ul className="pr-4 nav nav-navbar navbar-right">
+          { this.getNavbarItems() != null && this.getNavbarItems().map((item, idx) => {
+            return <li key={idx}>{item}</li>;
+          }) }
+        </ul>
+      </div>
+    );
+  }
+
+  getNavbarItems() {
+    // wait for rendering CodeMirrorEditor or TextAreaEditor
+    if (this.getEditorSubstance() == null) {
+      return null;
+    }
+
+    // set navbar items(react elements) here that are common in CodeMirrorEditor or TextAreaEditor
+    const navbarItems = [];
+
+    // concat common items and items specific to CodeMirrorEditor or TextAreaEditor
+    return navbarItems.concat(this.getEditorSubstance().getNavbarItems());
+  }
+
   render() {
     const flexContainer = {
       height: '100%',
@@ -219,6 +244,8 @@ export default class Editor extends AbstractEditor {
           >
 
           { this.state.dropzoneActive && this.renderDropzoneOverlay() }
+
+          { this.renderNavbar() }
 
           {/* for PC */}
           { !isMobile &&
