@@ -18,6 +18,7 @@ $wikilinktext: lighten($themecolor, 5%);
 $wikilinktext-hover: lighten($wikilinktext, 15%);
 $inline-code-color: darken($themecolor, 20%);
 $inline-code-bg: lighten($subthemecolor, 70%);
+$active-nav-tabs-bgcolor: #fffffc;
 
 @import 'apply-colors';
 @import 'apply-colors-light';
@@ -39,7 +40,8 @@ $inline-code-bg: lighten($subthemecolor, 70%);
   background: $themelight;
 }
 
-.main-container > #wrapper > #page-wrapper {
+.main-container > #wrapper > #page-wrapper,
+.page-editor-preview-container {
   background-image: url("/images/themes/wood/wood.jpg");
   background-attachment: fixed;
 }
@@ -48,16 +50,20 @@ $inline-code-bg: lighten($subthemecolor, 70%);
   background-color: rgba(226, 221, 192, 0.205);
 }
 
-/* Tabs */
-.nav.nav-tabs {
-  >li.active>a {
-    background: transparent;
-    border-bottom: 1px solid $bodycolor;
-  }
-}
-
 #wrapper > .navbar > .navbar-header {
   background-image: url("/images/themes/wood/wood-navbar.jpg");
+}
+
+/*
+ * Tabs
+ */
+body:not(.on-edit) .nav.nav-tabs {
+  > li.active > a {
+    background: linear-gradient(
+      rgba($active-nav-tabs-bgcolor, 0) 0%,
+      rgba($active-nav-tabs-bgcolor, 0) 90%,
+      $active-nav-tabs-bgcolor 100%);         // overwrite only the bottom pixel
+  }
 }
 
 // login page
