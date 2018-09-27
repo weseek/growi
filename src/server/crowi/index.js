@@ -15,7 +15,7 @@ const debug = require('debug')('growi:crowi')
 
   ;
 
-function Crowi(rootdir, env) {
+function Crowi(rootdir) {
   const self = this;
 
   this.version = pkg.version;
@@ -45,7 +45,7 @@ function Crowi(rootdir, env) {
 
   this.models = {};
 
-  this.env = env;
+  this.env = process.env;
   this.node_env = this.env.NODE_ENV || 'development';
 
   this.port = this.env.PORT || 3000;
