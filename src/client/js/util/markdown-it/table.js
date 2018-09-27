@@ -6,7 +6,9 @@ export default class TableConfigurer {
 
   configure(md) {
     md.renderer.rules.table_open = (tokens, idx) => {
-      return '<div><button></button><table class="table table-bordered">';
+      const beginLine = tokens[idx].map[0] + 1;
+      const endLine  = tokens[idx].map[1];
+      return `<div><button data-markdowntable-begin-line=${beginLine} data-markdown-table-end-line=${endLine}></button><table class="table table-bordered">`;
     };
 
     md.renderer.rules.table_close = (tokens, idx) => {
