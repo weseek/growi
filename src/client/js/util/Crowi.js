@@ -3,6 +3,8 @@
  */
 
 import axios from 'axios';
+import React from 'react';
+import ReactDOM from 'react-dom';
 
 import InterceptorManager from '@commons/service/interceptor-manager';
 
@@ -12,6 +14,7 @@ import {
   DetachCodeBlockInterceptor,
   RestoreCodeBlockInterceptor,
 } from './interceptor/detach-code-blocks';
+import HandsontableModal from '../components/PageEditor/HandsontableModal';
 
 export default class Crowi {
   constructor(context, window) {
@@ -225,6 +228,12 @@ export default class Crowi {
         }
         return res.page;
       });
+  }
+
+  launchHandsonTableModal() {
+    const handsonTableModalElem = document.getElementById('handsontable-modal');
+    const handsonTableModal = ReactDOM.render(<HandsontableModal />, handsonTableModalElem);
+    handsonTableModal.show();
   }
 
   apiGet(path, params) {
