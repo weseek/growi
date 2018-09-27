@@ -1264,42 +1264,26 @@ module.exports = function(crowi, app) {
 
   api.recentCreated = function(req, res) {
     const username = req.query.user || null;
-    const path = req.query.path || null;
     const limit = + req.query.limit || 50;
     const offset = + req.query.offset || 0;
 
-    const pagerOptions = { offset: offset, limit: limit };
     const queryOptions = { offset: offset, limit: limit };
 
-    // Accepts only one of these
-    if (username === null && path === null) {
-      return res.json(ApiResponse.error('Parameter user or path is required.'));
-    }
-    if (username !== null && path !== null) {
-      return res.json(ApiResponse.error('Parameter user or path is required.'));
+    if (username == null ) {
+      return res.json(ApiResponse.error('Parameter user is required.'));
     }
 
     let pageFetcher;
-    if (path === null) {
-      pageFetcher = User.findUserByUsername(username)
-      .then(function(user) {
-        if (user === null) {
-          throw new Error('The user not found.');
-        }
-        return Page.findListByCreator(user, queryOptions, req.user);
-      });
-    }
-    else {
-      pageFetcher = Page.findListByStartWith(path, req.user, queryOptions);
-    }
+    pageFetcher = User.findUserByUsername(username)
+    .then(function(user) {
+      if (user === null) {
+        throw new Error('The user not found.');
+      }
+      return Page.findListByCreator(user, queryOptions, req.user);
+    });
 
     pageFetcher
     .then(function(pages) {
-      if (pages.length > limit) {
-        pages.pop();
-      }
-      pagerOptions.length = pages.length;
-
       const result = {};
       result.pages = pagePathUtils.encodePagesPath(pages);
       return res.json(ApiResponse.success(result));
