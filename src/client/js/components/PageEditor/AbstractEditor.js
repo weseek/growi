@@ -110,6 +110,12 @@ export default class AbstractEditor extends React.Component {
     }
   }
 
+  /**
+   * returns items(an array of react elements) in navigation bar for editor
+   */
+  getNavbarItems() {
+    return null;
+  }
 }
 
 AbstractEditor.propTypes = {

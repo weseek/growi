@@ -8,7 +8,7 @@ $linkcolor: #3c6d72;
 $themecolor: #97cbc3;
 $topbar: #0c2a44;
 $sidebar: $themelight;
-$bodycolor: lighten($themelight, 5%);
+$bodycolor: lighten($themelight, 10%);
 $headingtext:#3c6d72;
 $bodytext: #3c6d72;
 $linktext: $linkcolor;
@@ -22,6 +22,7 @@ $dark: darken($bodytext, 5%);
 $border: #76b1a8;
 $navbar-border: #76b1a8;
 $active-navbar-border: darken($navbar-border, 13%);
+$active-nav-tabs-bgcolor: #dbf0ed;
 $btn-default-bgcolor: darken($themecolor, 10%);
 $inline-code-color: #8f5313;
 $inline-code-bg: darken($themelight, 3%);
@@ -74,18 +75,24 @@ $inline-code-bg: darken($themelight, 3%);
   background: lighten($themelight, 5%);
 }
 
-.main-container > #wrapper > #page-wrapper {
+.main-container > #wrapper > #page-wrapper,
+.page-editor-preview-container {
   background-image: url("/images/themes/island/island.png");
   background-attachment: fixed;
 }
 
-/* Tabs */
-.nav.nav-tabs {
-  >li.active>a {
-    background: transparent;
-    border-bottom: 1px solid #d0ece7;
+/*
+ * Tabs
+ */
+ body:not(.on-edit) .nav.nav-tabs {
+  > li.active > a {
+    background: linear-gradient(
+      rgba($active-nav-tabs-bgcolor, 0) 0%,
+      rgba($active-nav-tabs-bgcolor, 0) 90%,
+      $active-nav-tabs-bgcolor 100%);         // overwrite only the bottom pixel
   }
 }
+
 /* Table */
  .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th,
  .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td ,
