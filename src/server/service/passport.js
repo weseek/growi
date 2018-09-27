@@ -298,7 +298,9 @@ class PassportService {
     passport.use(new GoogleStrategy({
       clientId: config.crowi['security:passport-google:clientId'] || process.env.OAUTH_GOOGLE_CLIENT_ID,
       clientSecret: config.crowi['security:passport-google:clientSecret'] || process.env.OAUTH_GOOGLE_CLIENT_SECRET,
-      callbackURL: config.crowi['security:passport-google:callbackUrl'] || process.env.OAUTH_GOOGLE_CALLBACK_URI,
+      callbackURL: (config.crowi['app:siteUrl'] != null)
+        ? `${config.crowi['app:siteUrl']}/passport/google/callback`                                         // auto-generated with v3.2.4 and above
+        : config.crowi['security:passport-google:callbackUrl'] || process.env.OAUTH_GOOGLE_CALLBACK_URI,    // DEPRECATED: backward compatible with v3.2.3 and below
       skipUserProfile: false,
     }, function(accessToken, refreshToken, profile, done) {
       if (profile) {
@@ -343,7 +345,9 @@ class PassportService {
     passport.use(new GitHubStrategy({
       clientID: config.crowi['security:passport-github:clientId'] || process.env.OAUTH_GITHUB_CLIENT_ID,
       clientSecret: config.crowi['security:passport-github:clientSecret'] || process.env.OAUTH_GITHUB_CLIENT_SECRET,
-      callbackURL: config.crowi['security:passport-github:callbackUrl'] || process.env.OAUTH_GITHUB_CALLBACK_URI,
+      callbackURL: (config.crowi['app:siteUrl'] != null)
+        ? `${config.crowi['app:siteUrl']}/passport/github/callback`                                         // auto-generated with v3.2.4 and above
+        : config.crowi['security:passport-github:callbackUrl'] || process.env.OAUTH_GITHUB_CALLBACK_URI,    // DEPRECATED: backward compatible with v3.2.3 and below
       skipUserProfile: false,
     }, function(accessToken, refreshToken, profile, done) {
       if (profile) {
@@ -388,7 +392,9 @@ class PassportService {
     passport.use(new TwitterStrategy({
       consumerKey: config.crowi['security:passport-twitter:consumerKey'] || process.env.OAUTH_TWITTER_CONSUMER_KEY,
       consumerSecret: config.crowi['security:passport-twitter:consumerSecret'] || process.env.OAUTH_TWITTER_CONSUMER_SECRET,
-      callbackURL: config.crowi['security:passport-twitter:callbackUrl'] || process.env.OAUTH_TWITTER_CALLBACK_URI,
+      callbackURL: (config.crowi['app:siteUrl'] != null)
+        ? `${config.crowi['app:siteUrl']}/passport/twitter/callback`                                         // auto-generated with v3.2.4 and above
+        : config.crowi['security:passport-twitter:callbackUrl'] || process.env.OAUTH_TWITTER_CALLBACK_URI,   // DEPRECATED: backward compatible with v3.2.3 and below
       skipUserProfile: false,
     }, function(accessToken, refreshToken, profile, done) {
       if (profile) {
@@ -432,7 +438,9 @@ class PassportService {
     debug('SamlStrategy: setting up..');
     passport.use(new SamlStrategy({
       entryPoint: config.crowi['security:passport-saml:entryPoint'] || process.env.SAML_ENTRY_POINT,
-      callbackUrl: config.crowi['security:passport-saml:callbackUrl'] || process.env.SAML_CALLBACK_URI,
+      callbackURL: (config.crowi['app:siteUrl'] != null)
+        ? `${config.crowi['app:siteUrl']}/passport/saml/callback`                                 // auto-generated with v3.2.4 and above
+        : config.crowi['security:passport-saml:callbackUrl'] || process.env.SAML_CALLBACK_URI,    // DEPRECATED: backward compatible with v3.2.3 and below
       issuer: config.crowi['security:passport-saml:issuer'] || process.env.SAML_ISSUER,
       cert: config.crowi['security:passport-saml:cert'] || process.env.SAML_CERT,
     }, function(profile, done) {

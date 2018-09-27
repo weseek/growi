@@ -310,6 +310,7 @@
     "auth_mechanism": "authentication mechanism",
     "recommended": "Recommended",
     "username_email_password": "Username, Email and Password authentication",
+    "alert_siteUrl_is_not_set": "'Site URL' is NOT set. Define it from %s",
     "ldap_auth": "LDAP authentication",
     "saml_auth": "SAML authentication",
     "google_auth2": "Google OAuth authentication",
@@ -333,6 +334,7 @@
     "xss_prevent_setting":"Prevent XSS(Cross Site Scripting)",
     "xss_prevent_setting_link":"Go to Markdown settings",
     "callback_URL": "Callback URL",
+    "desc_of_callback_URL": "Use it in the setting of the %s provider",
     "guest_mode": {
       "deny": "Deny Unregistered Users",
       "readonly": "View Only"

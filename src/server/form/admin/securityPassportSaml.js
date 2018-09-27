@@ -6,7 +6,6 @@ const field = form.field;
 module.exports = form(
   field('settingForm[security:passport-saml:isEnabled]').trim().toBooleanStrict().required(),
   field('settingForm[security:passport-saml:entryPoint]').trim(),
-  field('settingForm[security:passport-saml:callbackUrl]').trim(),
   field('settingForm[security:passport-saml:issuer]').trim(),
   field('settingForm[security:passport-saml:attrMapId]'),
   field('settingForm[security:passport-saml:attrMapUsername]'),

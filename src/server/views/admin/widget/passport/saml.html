@@ -35,16 +35,15 @@
     </div>
 
     <div class="form-group">
-      <label for="settingForm[security:passport-saml:callbackUrl]" class="col-xs-3 control-label">{{ t("security_setting.callback_URL") }}</label>
+      <label class="col-xs-3 control-label">{{ t("security_setting.callback_URL") }}</label>
       <div class="col-xs-6">
-        <input class="form-control" type="text" name="settingForm[security:passport-saml:callbackUrl]" value="{{ settingForm['security:passport-saml:callbackUrl'] || '' }}"
-            placeholder="http(s)://${growi.host}/passport/saml/callback">
-        <p class="help-block">
-          Input <code>http(s)://${growi.host}/passport/saml/callback</code><br>
-          <small>
-            {{ t("security_setting.Use env var if empty", "SAML_ISSUER") }}
-          </small>
-        </p>
+        <input class="form-control" type="text" value="{% if settingForm['app:siteUrl'] %}{{ settingForm['app:siteUrl'] }}{% else %}[INVALID] {% endif %}/passport/saml/callback" readonly>
+        <p class="help-block small">{{ t("security_setting.desc_of_callback_URL", 'SAML Identity') }}</p>
+        {% if !settingForm['app:siteUrl'] %}
+        <div class="alert alert-danger">
+          <i class="icon-exclamation"></i> {{ t("security_setting.alert_siteUrl_is_not_set", '<a href="/admin/app">' + t('App settings') + '<i class="icon-login"></i></a>') }}
+        </div>
+        {% endif %}
       </div>
     </div>
 

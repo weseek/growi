@@ -329,6 +329,7 @@
     "auth_mechanism": "認証機構",
     "recommended": "推奨",
     "username_email_password": "ユーザー名、Eメール、パスワードでの認証",
+    "alert_siteUrl_is_not_set": "'サイトURL' が設定されていません。%s から設定してください。",
     "ldap_auth": "LDAP 認証",
     "saml_auth": "SAML 認証",
     "google_auth2": "Google OAuth 認証",
@@ -351,6 +352,7 @@
     "xss_prevent_setting":"XSS(Cross Site Scripting)対策設定",
     "xss_prevent_setting_link":"マークダウン設定ページに移動",
     "callback_URL": "コールバックURL",
+    "desc_of_callback_URL": "%s プロバイダ側の設定で利用してください。",
     "guest_mode": {
       "deny": "アカウントを持たないユーザーはアクセス不可",
       "readonly": "閲覧のみ許可"
@@ -403,13 +405,13 @@
     },
     "OAuth": {
       "register": "%sに登録",
-      "change_redirect_url": "承認済みのリダイレクトURLに、 <code>%s</code> を入力<br>(<code>%s</code>は環境に合わせて変更してください)",
+      "change_redirect_url": "承認済みのリダイレクトURLに、 <code>%s</code> を入力",
       "Google": {
         "name": "Google OAuth",
         "register_1": "<a href=\"%s\" target=\"_blank\">%s</a>へアクセス",
         "register_2": "プロジェクトがない場合はプロジェクトを作成",
         "register_3": "認証情報を作成 &rightarrow; OAuthクライアントID &rightarrow; ウェブアプリケーションを選択",
-        "register_4": "承認済みのリダイレクトURIを<code>%s</code>としてGrowiを登録 (<code>%s</code>は環境に合わせて変更してください)",
+        "register_4": "承認済みのリダイレクトURIを<code>%s</code>としてGrowiを登録",
         "register_5": "上記フォームにクライアントIDとクライアントシークレットを入力"
       },
       "Facebook": {
@@ -426,7 +428,7 @@
       "GitHub": {
         "name": "GitHub OAuth",
         "register_1": "<a href=\"%s\" target=\"_blank\">%s</a>へアクセス",
-        "register_2": "\"Authorization callback URL\"を<code>%s</code>としてGrowiを登録 (<code>%s</code>は環境に合わせて変更してください)",
+        "register_2": "\"Authorization callback URL\"を<code>%s</code>としてGrowiを登録",
         "register_3": "上記フォームにクライアントIDとクライアントシークレットを入力"
       },
       "how_to": {
