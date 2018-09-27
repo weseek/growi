@@ -231,16 +231,11 @@ module.exports = function(crowi) {
     return callback(null, configs);
   };
 
-  configSchema.statics.findAndUpdate = function(ns, key, value, callback) {
-    var Config = this;
-    Config.findOneAndUpdate(
+  configSchema.statics.findOneAndUpdateByNsAndKey = async function(ns, key, value) {
+    return this.findOneAndUpdate(
       { ns: ns, key: key },
       { ns: ns, key: key, value: JSON.stringify(value) },
-      { upsert: true, },
-      function(err, config) {
-        debug('Config.findAndUpdate', err, config);
-        callback(err, config);
-      });
+      { upsert: true, });
   };
 
   configSchema.statics.getConfig = function(callback) {
