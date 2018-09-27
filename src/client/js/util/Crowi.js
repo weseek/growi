@@ -227,10 +227,6 @@ export default class Crowi {
       });
   }
 
-  launchTableModal(markdownTableStr) {
-
-  }
-
   apiGet(path, params) {
     return this.apiRequest('get', path, {params: params});
   }
