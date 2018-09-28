@@ -236,9 +236,7 @@ export default class Crowi {
   }
 
   launchHandsonTableModal() {
-    const handsonTableModalElem = document.getElementById('handsontable-modal');
-    const handsonTableModal = ReactDOM.render(<HandsontableModal />, handsonTableModalElem);
-    handsonTableModal.show();
+    this.page.getHandsontableModal().show();
   }
 
   apiGet(path, params) {
