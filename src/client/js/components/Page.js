@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import RevisionBody from './Page/RevisionBody';
+import HandsontableModal from './PageEditor/HandsontableModal';
 
 export default class Page extends React.Component {
 
@@ -69,6 +70,10 @@ export default class Page extends React.Component {
     return returnBody;
   }
 
+  getHandsontableModal() {
+    return this.refs.handsontableModal;
+  }
+
   renderHtml(markdown, highlightKeywords) {
     var context = {
       markdown,
@@ -119,6 +124,7 @@ export default class Page extends React.Component {
           isMathJaxEnabled={isMathJaxEnabled}
           renderMathJaxOnInit={true}
       />
+      <HandsontableModal ref='handsontableModal' />
     </div>;
   }
 }
