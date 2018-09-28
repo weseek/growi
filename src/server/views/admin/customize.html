@@ -290,6 +290,21 @@
         </div>
 
         <div class="form-group">
+          <label for="settingForm[customize:showRecentCreatedNumber]" class="col-xs-3 control-label">{{ t("customize_page.show_document_number") }}</label>
+          <div class="col-xs-5">
+            <select class="form-control selectpicker" name="settingForm[customize:showRecentCreatedNumber]" value="{{ settingForm['customize:showRecentCreatedNumber'] }}">
+              <option value="10" {% if 10 == settingForm['customize:showRecentCreatedNumber'] %}selected{% endif %}>10</option>
+              <option value="30" {% if 30 == settingForm['customize:showRecentCreatedNumber'] %}selected{% endif %}>30</option>
+              <option value="50" {% if 50 == settingForm['customize:showRecentCreatedNumber'] %}selected{% endif %}>50</option>
+            </select>
+
+            <p class="help-block">
+              {{ t("customize_page.show_document_number_desc") }}
+            </p>
+          </div>
+        </div>
+
+        <div class="form-group">
           <div class="col-xs-offset-3 col-xs-6">
             <input type="hidden" name="_csrf" value="{{ csrf() }}">
             <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
