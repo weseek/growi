@@ -7,19 +7,20 @@ export default class RecentCreated extends React.Component {
     super(props);
 
     this.state = {
-      RecentCreatedData : '',
-      pages : [] ,
-      limit : 10, // TODO GC-941で対応予定
-      active : 1,
-      totalPage: 0,
+      pages: [],
+      limit: 10, // TODO GC-941で対応予定
+      activePage: 1,
+      PaginationNumbers: {},
+
     };
     this.getRecentCreatedList = this.getRecentCreatedList.bind(this);
+    this.calculatePagination = this.calculatePagination.bind(this);
   }
 
 
   componentWillMount() {
     this.getRecentCreatedList(1);
-    console.log(this.state);
+    console.log('will mount this.state=', this.state);
   }
   getRecentCreatedList(selectPageNumber) {
 
@@ -30,30 +31,54 @@ export default class RecentCreated extends React.Component {
 
     this.props.crowi.apiGet('/pages.recentCreated', {page_id: pageId , user: userId , limit: limit , offset: offset , })
       .then(res => {
-        console.log("res.pages=", res.pages);
         const totalCount = res.pages[0].totalCount;
-        const totalPage = totalCount % limit == 0 ? totalCount / limit : Math.floor(totalCount / limit) + 1;
+        const activePage = selectPageNumber;
         const pages = res.pages[1];
-        let inUse = {};
-        const active = selectPageNumber;
-
+        // pageNation calculate function call
+        const PaginationNumbers = this.calculatePagination(limit, totalCount, activePage);
         this.setState({
-          pages: pages,
-          inUse: inUse,
-          active: active,
-          totalPage: totalPage,
+          pages,
+          activePage,
+          PaginationNumbers,
         });
       });
+  }
+  calculatePagination(limit, totalCount, activePage) {
+    let PaginationNumbers = {};
+    // pageNation totalPageNumber calculate
+    let totalPage = totalCount % limit === 0 ? totalCount / limit : Math.floor(totalCount / limit) + 1;
+    let paginationStart;
+    // pageNation Number area size = 5 , pageNuber calculate in here
+    // activePage Position calculate ex. 4 5 [6] 7 8 (Page8 over is Max), 3 4 5 [6] 7 (Page7 is Max)
+    if ( activePage < 4) {
+      paginationStart = 1;
+    } else if ( activePage <= (totalPage - 2 )) {
+      paginationStart = activePage- 2;
+    } else if ( activePage >= (totalPage -2) ) {
+      paginationStart = (totalPage > 5)? totalPage -4 : 1;
+    }
+    // MaxViewPageNum calculate ex. 4 5 6 7 8 , 1 2 3 4
+    let MaxViewPageNum =  (paginationStart ) + 4;
+    if (totalPage < paginationStart + 4) {
+      MaxViewPageNum = totalPage;
+    }
+    PaginationNumbers.totalPage = totalPage;
+    PaginationNumbers.paginationStart = paginationStart;
+    PaginationNumbers.MaxViewPageNum = MaxViewPageNum;
+
+    console.log('PagenationNumbers=', PaginationNumbers);
+    return PaginationNumbers;
   }
 
 
   render() {
-    let totalPage = this.state.totalPage;
-    let active = this.state.active;
+    console.log('this.state=', this.state);
+    let totalPage = this.state.PaginationNumbers.totalPage;
+    let activePage = this.state.activePage;
     let items = [];
-    let paginationStart = active;
-    console.log(this.state);
-    if (1 === active) {
+    let paginationStart = this.state.PaginationNumbers.paginationStart;
+    let MaxViewPageNum =  this.state.PaginationNumbers.MaxViewPageNum;
+    if (1 == activePage) {
       items.push(
         <Pagination.First disabled />
       );
@@ -66,26 +91,15 @@ export default class RecentCreated extends React.Component {
         <Pagination.First onClick={() => this.getRecentCreatedList(1)} />
       );
       items.push(
-        <Pagination.Prev onClick={() => this.getRecentCreatedList(this.state.active - 1)} />
+        <Pagination.Prev onClick={() => this.getRecentCreatedList(this.state.activePage - 1)} />
       );
     }
-    if (0 < (active - 2) && active < (totalPage - 2 )) {
-      paginationStart = active - 2;
-    }else if( active < 3){
-      paginationStart = 1;
-    }else if( active >= (totalPage -2) ){
-      paginationStart = (totalPage > 5)? totalPage -4 : totalPage = 4 ? totalPage - 3 : totalPage -2 ;
-    }
-    let MaxViewNum =  (paginationStart ) + 4;
-    if(totalPage < paginationStart + 4){
-      MaxViewNum = totalPage;
-    }
-    for (let number = paginationStart; number <= MaxViewNum; number++) { // TODO GC-992で対応予定
+    for (let number = paginationStart; number <= MaxViewPageNum; number++) {
       items.push(
-        <Pagination.Item key={number} active={number === active} onClick={ () => this.getRecentCreatedList(number)}>{number}</Pagination.Item>
+        <Pagination.Item key={number} active={number === activePage} onClick={ () => this.getRecentCreatedList(number)}>{number}</Pagination.Item>
       );
     }
-    if (totalPage === active) {
+    if (totalPage === activePage) {
       items.push(
         <Pagination.Next disabled />
       );
@@ -95,7 +109,7 @@ export default class RecentCreated extends React.Component {
     }
     else {
       items.push(
-        <Pagination.Next onClick={() => this.getRecentCreatedList(this.state.active + 1)} />
+        <Pagination.Next onClick={() => this.getRecentCreatedList(this.state.activePage + 1)} />
       );
       items.push(
         <Pagination.Last onClick={() => this.getRecentCreatedList(totalPage)} />
@@ -121,7 +135,8 @@ export default class RecentCreated extends React.Component {
 }
 
 RecentCreated.propTypes = {
-    pageId: PropTypes.string.isRequired,
+  pageId: PropTypes.string.isRequired,
+  crowi: PropTypes.object.isRequired,
 };
 
 RecentCreated.defaultProps = {

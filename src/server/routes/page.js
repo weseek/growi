@@ -1276,7 +1276,7 @@ module.exports = function(crowi, app) {
     let pageFetcher;
     pageFetcher = User.findUserByUsername(username)
     .then(function(user) {
-      if (user === null) {
+      if (user == null) {
         throw new Error('The user not found.');
       }
       return Page.findListByCreator(user, queryOptions, req.user);
