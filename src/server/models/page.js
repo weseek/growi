@@ -675,30 +675,18 @@ module.exports = function(crowi) {
     var limit = option.limit || 50;
     var offset = option.offset || 0;
     var conditions = {
-      $or: [{
-            creator: user._id,
-            redirectTo: null,
-            $or: [
-              {status: null},
-              {status: STATUS_PUBLISHED},
-            ],
-            grant: GRANT_PUBLIC,
-          }
-          ,{
-            redirectTo: null,
-            $or: [
-              {status: null},
-              {status: STATUS_PUBLISHED},
-            ],
-            grant: GRANT_USER_GROUP,
-          }]
+      creator: user._id,
+      redirectTo: null,
+      $and : [
+        {$or: [
+          {status: null},
+          {status: STATUS_PUBLISHED},
+        ]},
+        {$or: [
+          {grant: GRANT_PUBLIC},
+          {grant: GRANT_USER_GROUP},
+        ]}],
     };
-
-    /*
-    if (!user.equals(currentUser._id)) {
-      conditions.grant = GRANT_PUBLIC;
-    }
-    */
 
     return new Promise(function(resolve, reject) {
       Page
@@ -728,23 +716,17 @@ module.exports = function(crowi) {
     var Page = this;
     var User = crowi.model('User');
     var conditions = {
-      $or: [{
-            creator: user._id,
-            redirectTo: null,
-            $or: [
-              {status: null},
-              {status: STATUS_PUBLISHED},
-            ],
-            grant: GRANT_PUBLIC,
-          }
-          ,{
-            redirectTo: null,
-            $or: [
-              {status: null},
-              {status: STATUS_PUBLISHED},
-            ],
-            grant: GRANT_USER_GROUP,
-          }]
+      creator: user._id,
+      redirectTo: null,
+      $and : [
+        {$or: [
+          {status: null},
+          {status: STATUS_PUBLISHED},
+        ]},
+        {$or: [
+          {grant: GRANT_PUBLIC},
+          {grant: GRANT_USER_GROUP},
+        ]}],
     };
 
     return Page.find(conditions).count();
