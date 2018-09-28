@@ -158,6 +158,10 @@ Object.keys(componentMappings).forEach((key) => {
   }
 });
 
+// set page if exists
+if (componentInstances['page'] != null) {
+  crowi.setPage(componentInstances['page']);
+}
 
 /**
  * save success handler when reloading is not needed
