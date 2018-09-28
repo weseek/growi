@@ -99,6 +99,7 @@ module.exports = function(crowi) {
       'customize:isEnabledTimeline' : true,
       'customize:isSavedStatesOfTabChanges' : true,
       'customize:isEnabledAttachTitleHeader' : false,
+      'customize:showRecentCreatedNumber' : 10,
 
       'importer:esa:team_name': '',
       'importer:esa:access_token': '',
@@ -543,6 +544,11 @@ module.exports = function(crowi) {
 
   configSchema.statics.isEnabledAttachTitleHeader = function(config) {
     const key = 'customize:isEnabledAttachTitleHeader';
+    return getValueForCrowiNS(config, key);
+  };
+
+  configSchema.statics.showRecentCreatedNumber = function(config) {
+    const key = 'customize:showRecentCreatedNumber';
     return getValueForCrowiNS(config, key);
   };
 
