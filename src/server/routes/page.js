@@ -1262,7 +1262,7 @@ module.exports = function(crowi, app) {
     });
   };
 
-  api.recentCreated = function(req, res) {
+  api.recentCreated = async function(req, res) {
     const username = req.query.user || null;
     const limit = + req.query.limit || 50;
     const offset = + req.query.offset || 0;
@@ -1273,23 +1273,21 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Parameter user is required.'));
     }
 
-    let pageFetcher;
-    pageFetcher = User.findUserByUsername(username)
-    .then(function(user) {
+    try {
+      let user = await User.findUserByUsername(username);
       if (user == null) {
         throw new Error('The user not found.');
       }
-      return Page.findListByCreator(user, queryOptions, req.user);
-    });
+      let pages = await Page.findListByCreator(user, queryOptions, req.user);
 
-    pageFetcher
-    .then(function(pages) {
       const result = {};
       result.pages = pagePathUtils.encodePagesPath(pages);
+
       return res.json(ApiResponse.success(result));
-    }).catch(function(err) {
+    }
+    catch (err) {
       return res.json(ApiResponse.error(err));
-    });
+    }
   };
 
   return actions;
