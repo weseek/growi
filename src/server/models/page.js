@@ -674,19 +674,7 @@ module.exports = function(crowi) {
     var User = crowi.model('User');
     var limit = option.limit || 50;
     var offset = option.offset || 0;
-    var conditions = {
-      creator: user._id,
-      redirectTo: null,
-      $and : [
-        {$or: [
-          {status: null},
-          {status: STATUS_PUBLISHED},
-        ]},
-        {$or: [
-          {grant: GRANT_PUBLIC},
-          {grant: GRANT_USER_GROUP},
-        ]}],
-    };
+    var conditions = setPageListConditions(user);
 
     return new Promise(function(resolve, reject) {
       Page
@@ -711,11 +699,8 @@ module.exports = function(crowi) {
       });
     });
   };
-
-  pageSchema.statics.countListByCreator = function(user, option, currentUser) {
-    var Page = this;
-    var User = crowi.model('User');
-    var conditions = {
+  function setPageListConditions(user) {
+    const conditions = {
       creator: user._id,
       redirectTo: null,
       $and : [
@@ -728,6 +713,14 @@ module.exports = function(crowi) {
           {grant: GRANT_USER_GROUP},
         ]}],
     };
+
+    return conditions;
+  }
+
+  pageSchema.statics.countListByCreator = function(user, option, currentUser) {
+    var Page = this;
+    var User = crowi.model('User');
+    var conditions = setPageListConditions(user);
 
     return Page.find(conditions).count();
   };
