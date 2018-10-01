@@ -1,4 +1,6 @@
 import React from 'react';
+import UserPicture from '../User/UserPicture';
+
 import PropTypes from 'prop-types';
 import Pagination from 'react-bootstrap/lib/Pagination';
 export default class RecentCreated extends React.Component {
@@ -75,11 +77,11 @@ export default class RecentCreated extends React.Component {
    * @param {any} pages Array of pages Model Obj
    *
    */
-  generatePageList(pages) {
+  generatePageList(pages, user) {
     return pages.map((page, i) => {
       return (
         <li key={i}>
-          <img src="/images/icons/user.svg" className="picture img-circle" ></img>
+          <UserPicture user={user} />
           <a href={page.path} className="page-list-link" data-path={page.path} data-short-path={page.revision.body}>{decodeURI(page.path)}</a>
         </li>
       );
@@ -158,7 +160,9 @@ export default class RecentCreated extends React.Component {
   }
 
   render() {
-    const pageList = this.generatePageList(this.state.pages);
+    const username = this.props.crowi.me;
+    const user = this.props.crowi.findUser(username);
+    const pageList = this.generatePageList(this.state.pages, user);
 
     let paginationItems = [];
     let activePage = this.state.activePage;
