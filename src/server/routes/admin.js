@@ -1385,6 +1385,25 @@ module.exports = function(crowi, app) {
   };
 
   /**
+   * Get Config.showRecentCreatedNumber and response result with json
+   *
+   * @param {*} res
+   */
+  actions.api.showRecentCreatedNumber = async(res) => {
+    const config = crowi.getConfig();
+
+    try {
+      const showRecentCreatedNumber = Config.showRecentCreatedNumber(config);
+      const result = {};
+      result.pages = {'showRecentCreatedNumber': showRecentCreatedNumber};
+      return res.json(ApiResponse.success(result));
+    }
+    catch (err) {
+      return res.json(ApiResponse.error(err));
+    }
+  };
+
+  /**
    * save settings, update config cache, and response json
    *
    * @param {any} req
