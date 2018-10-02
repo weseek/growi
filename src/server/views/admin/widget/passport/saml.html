@@ -62,13 +62,13 @@
     <h4>Attribute Mapping</h4>
 
     <div class="form-group">
-      <label for="settingForm[security:passport-saml:attrMapId]" class="col-xs-3 control-label">User ID</label>
+      <label for="settingForm[security:passport-saml:attrMapId]" class="col-xs-3 control-label">Identifier</label>
       <div class="col-xs-6">
-        <input class="form-control" type="text" placeholder="Default: id"
+        <input class="form-control" type="text"
             name="settingForm[security:passport-saml:attrMapId]" value="{{ settingForm['security:passport-saml:attrMapId'] || '' }}">
         <p class="help-block">
           <small>
-            {{ t("security_setting.SAML.mapping_detail", "User ID") }}
+            {{ t("security_setting.SAML.id_detail") }}
           </small>
         </p>
       </div>
@@ -77,11 +77,11 @@
     <div class="form-group">
       <label for="settingForm[security:passport-saml:attrMapUsername]" class="col-xs-3 control-label">Username</label>
       <div class="col-xs-6">
-        <input class="form-control" type="text" placeholder="Default: username"
+        <input class="form-control" type="text"
             name="settingForm[security:passport-saml:attrMapUsername]" value="{{ settingForm['security:passport-saml:attrMapUsername'] || '' }}">
         <p class="help-block">
           <small>
-            {{ t("security_setting.SAML.mapping_detail", "Username") }}
+            {{ t("security_setting.SAML.username_detail") }}
           </small>
         </p>
       </div>
@@ -105,26 +105,39 @@
     </div>
 
     <div class="form-group">
-      <label for="settingForm[security:passport-saml:attrMapFirstName]" class="col-xs-3 control-label">First Name</label>
+      <label for="settingForm[security:passport-saml:attrMapMail]" class="col-xs-3 control-label">Mail</label>
       <div class="col-xs-6">
-        <input class="form-control" type="text" placeholder="Default: firstName"
-            name="settingForm[security:passport-saml:attrMapFirstName]" value="{{ settingForm['security:passport-saml:attrMapFirstName'] || '' }}">
+        <input class="form-control" type="text"
+            name="settingForm[security:passport-saml:attrMapMail]" value="{{ settingForm['security:passport-saml:attrMapMail'] || '' }}">
         <p class="help-block">
           <small>
-            {{ t("security_setting.SAML.mapping_detail", "First Name") }}
+            {{ t("security_setting.SAML.mapping_detail", t("Email")) }}
           </small>
         </p>
       </div>
     </div>
 
     <div class="form-group">
-      <label for="settingForm[security:passport-saml:attrMapLastName]" class="col-xs-3 control-label">Last Name</label>
+      <label for="settingForm[security:passport-saml:attrMapFirstName]" class="col-xs-3 control-label">{{ t("security_setting.SAML.First Name") }}</label>
+      <div class="col-xs-6">
+        <input class="form-control" type="text" placeholder="Default: firstName"
+            name="settingForm[security:passport-saml:attrMapFirstName]" value="{{ settingForm['security:passport-saml:attrMapFirstName'] || '' }}">
+        <p class="help-block">
+          <small>
+            {{ t("security_setting.SAML.mapping_detail", t("security_setting.SAML.First Name")) }}
+          </small>
+        </p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="settingForm[security:passport-saml:attrMapLastName]" class="col-xs-3 control-label">{{ t("security_setting.SAML.Last Name") }}</label>
       <div class="col-xs-6">
         <input class="form-control" type="text" placeholder="Default: lastName"
             name="settingForm[security:passport-saml:attrMapLastName]" value="{{ settingForm['security:passport-saml:attrMapLastName'] || '' }}">
         <p class="help-block">
           <small>
-            {{ t("security_setting.SAML.mapping_detail", "Last Name") }}
+            {{ t("security_setting.SAML.mapping_detail", t("security_setting.SAML.Last Name")) }}
           </small>
         </p>
       </div>
