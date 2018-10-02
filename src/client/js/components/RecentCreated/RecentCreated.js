@@ -29,13 +29,13 @@ export default class RecentCreated extends React.Component {
     const limit = this.state.limit;
     const offset = (selectPageNumber - 1) * limit;
 
-    // pagiNation
+    // pagesList get and pagination calculate
     this.props.crowi.apiGet('/pages.recentCreated', {page_id: pageId, user: userId, limit: limit, offset: offset, })
       .then(res => {
         const totalCount = res.pages[0].totalCount;
         const activePage = selectPageNumber;
         const pages = res.pages[1];
-        // pageNation calculate function call
+        // pagiNation calculate function call
         const PaginationNumbers = this.calculatePagination(limit, totalCount, activePage);
         this.setState({
           pages,
@@ -47,27 +47,24 @@ export default class RecentCreated extends React.Component {
   calculatePagination(limit, totalCount, activePage) {
     let PaginationNumbers = {};
     // pagiNation totalPageNumber calculate
-    let totalPage = totalCount % limit === 0 ? totalCount / limit : Math.floor(totalCount / limit) + 1;
-    let paginationStart;
+    let totalPage = Math.floor(totalCount / limit) + (totalCount % limit === 0 ? 0  : 1);
+    let paginationStart = activePage - 2;
+    let maxViewPageNum =  activePage + 2;
     // pagiNation Number area size = 5 , pageNuber calculate in here
     // activePage Position calculate ex. 4 5 [6] 7 8 (Page8 over is Max), 3 4 5 [6] 7 (Page7 is Max)
-    if ( activePage < 4) {
-      paginationStart = 1;
+    if ( paginationStart < 1 ) {
+      const diff = 1 - paginationStart;
+      paginationStart += diff;
+      maxViewPageNum = Math.min(totalPage, maxViewPageNum + diff);
     }
-    else if ( activePage <= (totalPage - 2 )) {
-      paginationStart = activePage- 2;
-    }
-    else if ( activePage >= (totalPage -2) ) {
-      paginationStart = (totalPage > 5)? totalPage -4 : 1;
-    }
-    // MaxViewPageNum calculate ex. 4 5 6 7 8 , 1 2 3 4
-    let MaxViewPageNum =  (paginationStart ) + 4;
-    if (totalPage < paginationStart + 4) {
-      MaxViewPageNum = totalPage;
+    if ( maxViewPageNum > totalPage ) {
+      const diff = maxViewPageNum - totalPage;
+      maxViewPageNum -= diff;
+      paginationStart = Math.max(1, paginationStart - diff);
     }
     PaginationNumbers.totalPage = totalPage;
     PaginationNumbers.paginationStart = paginationStart;
-    PaginationNumbers.MaxViewPageNum = MaxViewPageNum;
+    PaginationNumbers.maxViewPageNum = maxViewPageNum;
 
     return PaginationNumbers;
   }
@@ -121,9 +118,9 @@ export default class RecentCreated extends React.Component {
    *  ex. << < 4 5 6 7 8 > >>, << < 1 2 3 4 > >>
    * this function set  numbers
    */
-  generatePaginations(activePage, paginationStart, MaxViewPageNum) {
+  generatePaginations(activePage, paginationStart, maxViewPageNum) {
     let paginationItems = [];
-    for (let number = paginationStart; number <= MaxViewPageNum; number++) {
+    for (let number = paginationStart; number <= maxViewPageNum; number++) {
       paginationItems.push(
         <Pagination.Item key={number} active={number === activePage} onClick={ () => this.getRecentCreatedList(number)}>{number}</Pagination.Item>
       );
@@ -168,10 +165,10 @@ export default class RecentCreated extends React.Component {
     let activePage = this.state.activePage;
     let totalPage = this.state.PaginationNumbers.totalPage;
     let paginationStart = this.state.PaginationNumbers.paginationStart;
-    let MaxViewPageNum =  this.state.PaginationNumbers.MaxViewPageNum;
+    let maxViewPageNum =  this.state.PaginationNumbers.maxViewPageNum;
     let firstPrevItems = this.generateFirstPrev(activePage);
     paginationItems.push(firstPrevItems);
-    let paginations = this.generatePaginations(activePage, paginationStart, MaxViewPageNum);
+    let paginations = this.generatePaginations(activePage, paginationStart, maxViewPageNum);
     paginationItems.push(paginations);
     let nextLastItems = this.generateNextLast(activePage, totalPage);
     paginationItems.push(nextLastItems);
