@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import RevisionBody from './Page/RevisionBody';
 import HandsontableModal from './PageEditor/HandsontableModal';
+import MarkdownTable from '../models/MarkdownTable';
 
 export default class Page extends React.Component {
 
@@ -70,8 +71,9 @@ export default class Page extends React.Component {
     return returnBody;
   }
 
-  getHandsontableModal() {
-    return this.refs.handsontableModal;
+  launchHandsonTableModal(beginLineNumber, endLineNumber) {
+    const tableLines = this.state.markdown.split('\n').slice(beginLineNumber - 1, endLineNumber).join('\n');
+    this.refs.handsontableModal.show(MarkdownTable.fromMarkdownString(tableLines));
   }
 
   renderHtml(markdown, highlightKeywords) {

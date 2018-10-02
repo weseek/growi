@@ -232,8 +232,14 @@ export default class Crowi {
       });
   }
 
-  launchHandsonTableModal() {
-    this.page.getHandsontableModal().show();
+  launchHandsonTableModal(componentKind, beginLineNumber, endLineNumber) {
+    let targetComponent;
+    switch (componentKind) {
+      case 'page':
+        targetComponent = this.page;
+        break;
+    }
+    targetComponent.launchHandsonTableModal(beginLineNumber, endLineNumber);
   }
 
   apiGet(path, params) {
