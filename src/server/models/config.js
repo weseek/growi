@@ -73,6 +73,7 @@ module.exports = function(crowi) {
       'security:passport-ldap:groupSearchFilter' : undefined,
       'security:passport-ldap:groupDnProperty' : undefined,
       'security:passport-ldap:isSameUsernameTreatedAsIdenticalUser': false,
+      'security:passport-saml:isEnabled' : false,
       'security:passport-google:isEnabled' : false,
       'security:passport-github:isEnabled' : false,
       'security:passport-twitter:isEnabled' : false,
