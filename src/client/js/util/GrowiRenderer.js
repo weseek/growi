@@ -92,9 +92,9 @@ export default class GrowiRenderer {
         break;
       case 'editor':
         this.markdownItConfigurers = this.markdownItConfigurers.concat([
-          new TableConfigurer(crowi),
           new FooternoteConfigurer(crowi),
-          new HeaderLineNumberConfigurer(crowi)
+          new HeaderLineNumberConfigurer(crowi),
+          new TableConfigurer(crowi)
         ]);
         break;
       case 'comment':
