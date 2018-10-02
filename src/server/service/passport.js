@@ -438,11 +438,11 @@ class PassportService {
     debug('SamlStrategy: setting up..');
     passport.use(new SamlStrategy({
       entryPoint: config.crowi['security:passport-saml:entryPoint'] || process.env.SAML_ENTRY_POINT,
-      callbackURL: (config.crowi['app:siteUrl'] != null)
+      callbackUrl: (config.crowi['app:siteUrl'] != null)
         ? `${config.crowi['app:siteUrl']}/passport/saml/callback`                                 // auto-generated with v3.2.4 and above
         : config.crowi['security:passport-saml:callbackUrl'] || process.env.SAML_CALLBACK_URI,    // DEPRECATED: backward compatible with v3.2.3 and below
       issuer: config.crowi['security:passport-saml:issuer'] || process.env.SAML_ISSUER,
-      cert: config.crowi['security:passport-saml:cert'] || process.env.SAML_CERT,
+      // cert: config.crowi['security:passport-saml:cert'] || process.env.SAML_CERT,
     }, function(profile, done) {
       if (profile) {
         return done(null, profile);
