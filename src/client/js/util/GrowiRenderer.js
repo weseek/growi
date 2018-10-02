@@ -73,7 +73,6 @@ export default class GrowiRenderer {
     this.markdownItConfigurers = [
       new TaskListsConfigurer(crowi),
       new HeaderConfigurer(crowi),
-      new TableConfigurer(crowi),
       new EmojiConfigurer(crowi),
       new MathJaxConfigurer(crowi),
       new PlantUMLConfigurer(crowi),
@@ -93,12 +92,14 @@ export default class GrowiRenderer {
         break;
       case 'editor':
         this.markdownItConfigurers = this.markdownItConfigurers.concat([
+          new TableConfigurer(crowi),
           new FooternoteConfigurer(crowi),
           new HeaderLineNumberConfigurer(crowi)
         ]);
         break;
       case 'comment':
         this.markdownItConfigurers = this.markdownItConfigurers.concat([
+          new TableConfigurer(crowi)
         ]);
         break;
       default:
