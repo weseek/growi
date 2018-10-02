@@ -26,6 +26,7 @@ export default class Crowi {
     this.document = window.document || {};
     this.localStorage = window.localStorage || {};
     this.socketClientId = Math.floor(Math.random() * 100000);
+    this.page = undefined;
     this.pageEditor = undefined;
 
     this.fetchUsers = this.fetchUsers.bind(this);
@@ -64,6 +65,10 @@ export default class Crowi {
 
   getConfig() {
     return this.config;
+  }
+
+  setPage(page) {
+    this.page = page;
   }
 
   setPageEditor(pageEditor) {
@@ -225,6 +230,16 @@ export default class Crowi {
         }
         return res.page;
       });
+  }
+
+  launchHandsontableModal(componentKind, beginLineNumber, endLineNumber) {
+    let targetComponent;
+    switch (componentKind) {
+      case 'page':
+        targetComponent = this.page;
+        break;
+    }
+    targetComponent.launchHandsontableModal(beginLineNumber, endLineNumber);
   }
 
   apiGet(path, params) {

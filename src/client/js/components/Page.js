@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import RevisionBody from './Page/RevisionBody';
+import HandsontableModal from './PageEditor/HandsontableModal';
+import MarkdownTable from '../models/MarkdownTable';
 
 export default class Page extends React.Component {
 
@@ -9,7 +11,7 @@ export default class Page extends React.Component {
     super(props);
 
     this.state = {
-      html: '',
+      html: ''
     };
 
     this.appendEditSectionButtons = this.appendEditSectionButtons.bind(this);
@@ -30,7 +32,6 @@ export default class Page extends React.Component {
   }
 
   setMarkdown(markdown) {
-    this.setState({ markdown });
     this.renderHtml(markdown, this.props.highlightKeywords);
   }
 
@@ -69,8 +70,18 @@ export default class Page extends React.Component {
     return returnBody;
   }
 
+  /**
+   * launch HandsontableModal with data specified by arguments
+   * @param beginLineNumber
+   * @param endLineNumber
+   */
+  launchHandsontableModal(beginLineNumber, endLineNumber) {
+    const tableLines = this.props.markdown.split('\n').slice(beginLineNumber - 1, endLineNumber).join('\n');
+    this.refs.handsontableModal.show(MarkdownTable.fromMarkdownString(tableLines));
+  }
+
   renderHtml(markdown, highlightKeywords) {
-    var context = {
+    let context = {
       markdown,
       dom: this.revisionBodyElement,
       currentPagePath: this.props.pagePath,
@@ -85,8 +96,7 @@ export default class Page extends React.Component {
       })
       .then(() => interceptorManager.process('postPreProcess', context))
       .then(() => {
-        var parsedHTML = crowiRenderer.process(context.markdown);
-        context['parsedHTML'] = parsedHTML;
+        context['parsedHTML'] = crowiRenderer.process(context.markdown);
       })
       .then(() => interceptorManager.process('prePostProcess', context))
       .then(() => {
@@ -119,6 +129,7 @@ export default class Page extends React.Component {
           isMathJaxEnabled={isMathJaxEnabled}
           renderMathJaxOnInit={true}
       />
+      <HandsontableModal ref='handsontableModal' />
     </div>;
   }
 }
