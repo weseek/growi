@@ -11,8 +11,7 @@ export default class Page extends React.Component {
     super(props);
 
     this.state = {
-      html: '',
-      markdown: ''
+      html: ''
     };
 
     this.appendEditSectionButtons = this.appendEditSectionButtons.bind(this);
@@ -77,7 +76,7 @@ export default class Page extends React.Component {
    * @param endLineNumber
    */
   launchHandsontableModal(beginLineNumber, endLineNumber) {
-    const tableLines = this.state.markdown.split('\n').slice(beginLineNumber - 1, endLineNumber).join('\n');
+    const tableLines = this.props.markdown.split('\n').slice(beginLineNumber - 1, endLineNumber).join('\n');
     this.refs.handsontableModal.show(MarkdownTable.fromMarkdownString(tableLines));
   }
 
@@ -111,7 +110,7 @@ export default class Page extends React.Component {
       .then(() => interceptorManager.process('postPostProcess', context))
       .then(() => interceptorManager.process('preRenderHtml', context))
       .then(() => {
-        this.setState({ html: context.parsedHTML, markdown });
+        this.setState({ html: context.parsedHTML });
       })
       // process interceptors for post rendering
       .then(() => interceptorManager.process('postRenderHtml', context));
