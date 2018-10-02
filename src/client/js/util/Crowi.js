@@ -232,14 +232,14 @@ export default class Crowi {
       });
   }
 
-  launchHandsonTableModal(componentKind, beginLineNumber, endLineNumber) {
+  launchHandsontableModal(componentKind, beginLineNumber, endLineNumber) {
     let targetComponent;
     switch (componentKind) {
       case 'page':
         targetComponent = this.page;
         break;
     }
-    targetComponent.launchHandsonTableModal(beginLineNumber, endLineNumber);
+    targetComponent.launchHandsontableModal(beginLineNumber, endLineNumber);
   }
 
   apiGet(path, params) {

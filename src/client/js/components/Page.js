@@ -71,7 +71,12 @@ export default class Page extends React.Component {
     return returnBody;
   }
 
-  launchHandsonTableModal(beginLineNumber, endLineNumber) {
+  /**
+   * launch HandsontableModal with data specified by arguments
+   * @param beginLineNumber
+   * @param endLineNumber
+   */
+  launchHandsontableModal(beginLineNumber, endLineNumber) {
     const tableLines = this.state.markdown.split('\n').slice(beginLineNumber - 1, endLineNumber).join('\n');
     this.refs.handsontableModal.show(MarkdownTable.fromMarkdownString(tableLines));
   }
