@@ -11,6 +11,7 @@ export default class Page extends React.Component {
 
     this.state = {
       html: '',
+      markdown: ''
     };
 
     this.appendEditSectionButtons = this.appendEditSectionButtons.bind(this);
@@ -31,7 +32,6 @@ export default class Page extends React.Component {
   }
 
   setMarkdown(markdown) {
-    this.setState({ markdown });
     this.renderHtml(markdown, this.props.highlightKeywords);
   }
 
@@ -105,7 +105,7 @@ export default class Page extends React.Component {
       .then(() => interceptorManager.process('postPostProcess', context))
       .then(() => interceptorManager.process('preRenderHtml', context))
       .then(() => {
-        this.setState({ html: context.parsedHTML });
+        this.setState({ html: context.parsedHTML, markdown });
       })
       // process interceptors for post rendering
       .then(() => interceptorManager.process('postRenderHtml', context));
