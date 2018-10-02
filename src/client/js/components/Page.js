@@ -77,7 +77,7 @@ export default class Page extends React.Component {
   }
 
   renderHtml(markdown, highlightKeywords) {
-    var context = {
+    let context = {
       markdown,
       dom: this.revisionBodyElement,
       currentPagePath: this.props.pagePath,
@@ -92,8 +92,7 @@ export default class Page extends React.Component {
       })
       .then(() => interceptorManager.process('postPreProcess', context))
       .then(() => {
-        var parsedHTML = crowiRenderer.process(context.markdown);
-        context['parsedHTML'] = parsedHTML;
+        context['parsedHTML'] = crowiRenderer.process(context.markdown);
       })
       .then(() => interceptorManager.process('prePostProcess', context))
       .then(() => {
