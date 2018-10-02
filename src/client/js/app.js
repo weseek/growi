@@ -332,7 +332,7 @@ if (savePageControlsElem) {
 const recentCreatedControlsElem = document.getElementById('user-created-list');
 if (recentCreatedControlsElem) {
   ReactDOM.render(
-    <RecentCreated >
+    <RecentCreated  crowi={crowi} pageId={pageId}  >
 
     </RecentCreated>, document.getElementById('user-created-list')
   );
