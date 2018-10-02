@@ -20,7 +20,20 @@ export default class RecentCreated extends React.Component {
 
 
   componentWillMount() {
+    this.getRecentCreatedLimit();
     this.getRecentCreatedList(1);
+  }
+  getRecentCreatedLimit() {
+    this.props.crowi.apiGet('/pages.recentCreated.limit', {})
+      .then(res => {
+        let limit = res.pages.showRecentCreatedNumber;
+        if (!limit) {
+          limit = 10;
+        }
+        this.setState({
+          limit,
+        });
+      });
   }
   getRecentCreatedList(selectPageNumber) {
 
