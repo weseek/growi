@@ -622,6 +622,7 @@ module.exports = function(crowi) {
         HACKMD_URI: env.HACKMD_URI || null,
         MATHJAX: env.MATHJAX || null,
       },
+      recentCreatedLimit: Config.showRecentCreatedNumber(config),
     };
 
     return local_config;

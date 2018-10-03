@@ -10,7 +10,6 @@ export default class RecentCreated extends React.Component {
 
     this.state = {
       pages: [],
-      limit: 10, // TODO GC-941で対応予定
       activePage: 1,
       PaginationNumbers: {},
 
@@ -26,7 +25,7 @@ export default class RecentCreated extends React.Component {
 
     const pageId = this.props.pageId;
     const userId = this.props.crowi.me;
-    const limit = this.state.limit;
+    const limit = this.props.limit;
     const offset = (selectPageNumber - 1) * limit;
 
     // pagesList get and pagination calculate
@@ -191,6 +190,7 @@ export default class RecentCreated extends React.Component {
 RecentCreated.propTypes = {
   pageId: PropTypes.string.isRequired,
   crowi: PropTypes.object.isRequired,
+  limit: PropTypes.number,
 };
 
 RecentCreated.defaultProps = {
