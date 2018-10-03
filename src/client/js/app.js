@@ -110,58 +110,10 @@ if (isEnabledPlugins) {
   crowiPlugin.installAll(crowi, crowiRenderer);
 }
 
-// setup renderer after plugins are installed
-crowiRenderer.setup();
-
-// restore draft when the first time to edit
-const draft = crowi.findDraft(pagePath);
-if (!pageRevisionId && draft != null) {
-  markdown = draft;
-}
-
 /**
- * define components
- *  key: id of element
- *  value: React Element
+ * component store
  */
-const componentMappings = {
-  'search-top': <HeaderSearchBox crowi={crowi} />,
-  'search-sidebar': <HeaderSearchBox crowi={crowi} />,
-  'search-page': <SearchPage crowi={crowi} crowiRenderer={crowiRenderer} />,
-  'page-list-search': <PageListSearch crowi={crowi} />,
-
-  //'revision-history': <PageHistory pageId={pageId} />,
-  'seen-user-list': <SeenUserList pageId={pageId} crowi={crowi} />,
-  'bookmark-button': <BookmarkButton pageId={pageId} crowi={crowi} />,
-  'bookmark-button-lg': <BookmarkButton pageId={pageId} crowi={crowi} size="lg" />,
-
-  'page-name-input': <NewPageNameInput crowi={crowi} parentPageName={pagePath} />,
-
-};
-// additional definitions if data exists
-if (pageId) {
-  componentMappings['page-comments-list'] = <PageComments pageId={pageId} revisionId={pageRevisionId} revisionCreatedAt={pageRevisionCreatedAt} crowi={crowi} crowiOriginRenderer={crowiRenderer} />;
-  componentMappings['page-attachment'] = <PageAttachment pageId={pageId} pageContent={pageContent} crowi={crowi} />;
-}
-if (pagePath) {
-  componentMappings['page'] = <Page crowi={crowi} crowiRenderer={crowiRenderer} markdown={markdown} pagePath={pagePath} showHeadEditButton={true} />;
-  componentMappings['revision-path'] = <RevisionPath pagePath={pagePath} crowi={crowi} />;
-  componentMappings['revision-url'] = <RevisionUrl pageId={pageId} pagePath={pagePath} />;
-}
-
 let componentInstances = {};
-
-Object.keys(componentMappings).forEach((key) => {
-  const elem = document.getElementById(key);
-  if (elem) {
-    componentInstances[key] = ReactDOM.render(componentMappings[key], elem);
-  }
-});
-
-// set page if exists
-if (componentInstances['page'] != null) {
-  crowi.setPage(componentInstances['page']);
-}
 
 /**
  * save success handler when reloading is not needed
@@ -307,6 +259,57 @@ const saveWithSubmitButton = function() {
     .then(saveWithSubmitButtonSuccessHandler)
     .catch(errorHandler);
 };
+
+// setup renderer after plugins are installed
+crowiRenderer.setup();
+
+// restore draft when the first time to edit
+const draft = crowi.findDraft(pagePath);
+if (!pageRevisionId && draft != null) {
+  markdown = draft;
+}
+
+/**
+ * define components
+ *  key: id of element
+ *  value: React Element
+ */
+const componentMappings = {
+  'search-top': <HeaderSearchBox crowi={crowi} />,
+  'search-sidebar': <HeaderSearchBox crowi={crowi} />,
+  'search-page': <SearchPage crowi={crowi} crowiRenderer={crowiRenderer} />,
+  'page-list-search': <PageListSearch crowi={crowi} />,
+
+  //'revision-history': <PageHistory pageId={pageId} />,
+  'seen-user-list': <SeenUserList pageId={pageId} crowi={crowi} />,
+  'bookmark-button': <BookmarkButton pageId={pageId} crowi={crowi} />,
+  'bookmark-button-lg': <BookmarkButton pageId={pageId} crowi={crowi} size="lg" />,
+
+  'page-name-input': <NewPageNameInput crowi={crowi} parentPageName={pagePath} />,
+
+};
+// additional definitions if data exists
+if (pageId) {
+  componentMappings['page-comments-list'] = <PageComments pageId={pageId} revisionId={pageRevisionId} revisionCreatedAt={pageRevisionCreatedAt} crowi={crowi} crowiOriginRenderer={crowiRenderer} />;
+  componentMappings['page-attachment'] = <PageAttachment pageId={pageId} pageContent={pageContent} crowi={crowi} />;
+}
+if (pagePath) {
+  componentMappings['page'] = <Page crowi={crowi} crowiRenderer={crowiRenderer} markdown={markdown} pagePath={pagePath} showHeadEditButton={true} />;
+  componentMappings['revision-path'] = <RevisionPath pagePath={pagePath} crowi={crowi} />;
+  componentMappings['revision-url'] = <RevisionUrl pageId={pageId} pagePath={pagePath} />;
+}
+
+Object.keys(componentMappings).forEach((key) => {
+  const elem = document.getElementById(key);
+  if (elem) {
+    componentInstances[key] = ReactDOM.render(componentMappings[key], elem);
+  }
+});
+
+// set page if exists
+if (componentInstances['page'] != null) {
+  crowi.setPage(componentInstances['page']);
+}
 
 // render SavePageControls
 let savePageControls = null;
