@@ -183,10 +183,6 @@ const errorHandler = function(error) {
 
 const saveWithShortcut = function(markdown) {
   const editorMode = crowi.getCrowiForJquery().getCurrentEditorMode();
-  if (editorMode == null) {
-    // do nothing
-    return;
-  }
 
   let revisionId = pageRevisionId;
   // get options
