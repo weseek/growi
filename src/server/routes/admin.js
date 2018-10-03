@@ -1387,10 +1387,9 @@ module.exports = function(crowi, app) {
   /**
    * Get Config.showRecentCreatedNumber and response result with json
    *
-   * @param {*} req
    * @param {*} res
    */
-  actions.api.showRecentCreatedNumber = function(req, res) {
+  actions.api.showRecentCreatedNumber = async(res) => {
     const config = crowi.getConfig();
 
     try {
