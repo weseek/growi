@@ -331,8 +331,12 @@ if (savePageControlsElem) {
 // RecentCreated dev GC-939 start
 const recentCreatedControlsElem = document.getElementById('user-created-list');
 if (recentCreatedControlsElem) {
+  let limit = crowi.getConfig().recentCreatedLimit;
+  if (null == limit) {
+    limit = 10;
+  }
   ReactDOM.render(
-    <RecentCreated  crowi={crowi} pageId={pageId}  >
+    <RecentCreated  crowi={crowi} pageId={pageId} limit={limit} >
 
     </RecentCreated>, document.getElementById('user-created-list')
   );
