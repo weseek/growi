@@ -137,6 +137,7 @@ export default class Page extends React.Component {
 Page.propTypes = {
   crowi: PropTypes.object.isRequired,
   crowiRenderer: PropTypes.object.isRequired,
+  onSaveWithShortcut: PropTypes.func.isRequired,
   markdown: PropTypes.string.isRequired,
   pagePath: PropTypes.string.isRequired,
   showHeadEditButton: PropTypes.bool,

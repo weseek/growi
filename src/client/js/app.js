@@ -294,7 +294,7 @@ if (pageId) {
   componentMappings['page-attachment'] = <PageAttachment pageId={pageId} pageContent={pageContent} crowi={crowi} />;
 }
 if (pagePath) {
-  componentMappings['page'] = <Page crowi={crowi} crowiRenderer={crowiRenderer} markdown={markdown} pagePath={pagePath} showHeadEditButton={true} />;
+  componentMappings['page'] = <Page crowi={crowi} crowiRenderer={crowiRenderer} markdown={markdown} pagePath={pagePath} showHeadEditButton={true} onSaveWithShortcut={saveWithShortcut} />;
   componentMappings['revision-path'] = <RevisionPath pagePath={pagePath} crowi={crowi} />;
   componentMappings['revision-url'] = <RevisionUrl pageId={pageId} pagePath={pagePath} />;
 }
