@@ -3,6 +3,8 @@ CHANGES
 
 ## 3.2.4-RC
 
+* Feature: Edit table with Spreadsheet like GUI (Handsontable)
+* Feature: Paging recent created in users home
 * Improvement: Specify certificate for SAML Authentication
 * Fix: SAML Authentication didn't work
 * Support: Mongoose migration mechanism
