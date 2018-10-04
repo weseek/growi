@@ -279,6 +279,16 @@ $active-nav-tabs-bgcolor: $bodycolor !default;
       color: $wikilinktext-hover;
     }
   }
+
+  // table with handsontable modal button
+  .editable-with-handsontable {
+    button {
+      color: $wikilinktext;
+    }
+    button:hover {
+      color: $wikilinktext-hover;
+    }
+  }
 }
 
 
