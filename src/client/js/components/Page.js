@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import RevisionBody from './Page/RevisionBody';
 import HandsontableModal from './PageEditor/HandsontableModal';
 import MarkdownTable from '../models/MarkdownTable';
+import mtu from './PageEditor/MarkdownTableUtil';
 
 export default class Page extends React.Component {
 
@@ -80,19 +81,7 @@ export default class Page extends React.Component {
   }
 
   saveHandlerForHandsontableModal(markdownTable) {
-    const splitMarkdown = this.state.markdown.split('\n');
-    const markdownBeforeTable = splitMarkdown.slice(0, this.currentTargetTableArea.beginLineNumber - 1);
-    const markdownAfterTable = splitMarkdown.slice(this.currentTargetTableArea.endLineNumber);
-
-    let newMarkdown = '';
-    if (markdownBeforeTable.length > 0) {
-      newMarkdown += markdownBeforeTable.join('\n') + '\n';
-    }
-    newMarkdown += markdownTable;
-    if (markdownAfterTable.length > 0) {
-      newMarkdown += '\n' + markdownAfterTable.join('\n');
-    }
-
+    const newMarkdown = mtu.replaceMarkdownTableInMarkdown(markdownTable, this.state.markdown, this.currentTargetTableArea.beginLineNumber, this.currentTargetTableArea.endLineNumber);
     this.props.onSaveWithShortcut(newMarkdown);
   }
 
