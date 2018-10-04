@@ -80,28 +80,6 @@
   #page-status-alert .myadmin-alert {
     display: block;
   }
-
-  // table with handsontable modal button
-  .editable-with-handsontable {
-    position: relative;
-
-    button {
-      display: none;
-    }
-
-    &:hover button {
-      display: block;
-      position: absolute;
-      top: 11px;
-      right: 10px;
-      padding: 0;
-      border: none;
-      background-color: transparent;
-      font-size: 16px;
-      line-height: 1;
-      vertical-align: bottom;
-    }
-  }
 }
 
 .main-container .main .content-main .revision-history { // {{{
@@ -149,6 +127,35 @@
   }
 
 } // }}}
+
+
+/**
+ * for table with handsontable modal button
+ */
+.editable-with-handsontable {
+  position: relative;
+
+  .handsontable-modal-trigger {
+    opacity: 0;
+    position: absolute;
+    top: 11px;
+    right: 10px;
+    padding: 0;
+    border: none;
+    background-color: transparent;
+    font-size: 16px;
+    line-height: 1;
+    vertical-align: bottom;
+  }
+
+  .page-mobile & .handsontable-modal-trigger {
+    opacity: 0.3;
+  }
+
+  &:hover .handsontable-modal-trigger {
+    opacity: 1;
+  }
+}
 
 /*
  * for Presentation
