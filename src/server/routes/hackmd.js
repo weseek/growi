@@ -41,10 +41,10 @@ module.exports = function(crowi, app) {
 
     let origin = `${req.protocol}://${req.get('host')}`;
 
-    // use config.crowi['app:url'] when exist req.headers['x-forwarded-proto'].
+    // use config.crowi['app:siteUrl:fixed'] when exist req.headers['x-forwarded-proto'].
     // refs: lib/crowi/express-init.js
-    if (config.crowi && config.crowi['app:url']) {
-      origin = config.crowi['app:url'];
+    if (config.crowi && config.crowi['app:siteUrl:fixed']) {
+      origin = config.crowi['app:siteUrl:fixed'];
     }
 
     // generate definitions to replace

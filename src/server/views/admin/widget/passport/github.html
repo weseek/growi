@@ -4,6 +4,7 @@
 
   {% set nameForIsGitHubEnabled = "settingForm[security:passport-github:isEnabled]" %}
   {% set isGitHubEnabled = settingForm['security:passport-github:isEnabled'] %}
+  {% set callbackUrl = settingForm['app:siteUrl'] || '[INVALID]' + '/passport/github/callback' %}
 
   <div class="form-group">
     <label for="{{nameForIsGitHubEnabled}}" class="col-xs-3 control-label">{{ t("security_setting.OAuth.GitHub.name") }}</label>
@@ -47,16 +48,15 @@
     </div>
 
     <div class="form-group">
-      <label for="settingForm[security:passport-github:callbackUrl]" class="col-xs-3 control-label">{{ t("security_setting.callback_URL") }}</label>
+      <label class="col-xs-3 control-label">{{ t("security_setting.callback_URL") }}</label>
       <div class="col-xs-6">
-        <input class="form-control" type="text" name="settingForm[security:passport-github:callbackUrl]" value="{{ settingForm['security:passport-github:callbackUrl'] || '' }}"
-            placeholder="http(s)://${growi.host}/passport/github/callback">
-        <p class="help-block">
-          Input <code>http(s)://${growi.host}/passport/github/callback</code><br>
-          <small>
-            {{ t("security_setting.Use env var if empty", "OAUTH_GITHUB_CALLBACK_URI") }}
-          </small>
-        </p>
+          <input class="form-control" type="text" value="{{ callbackUrl }}" readonly>
+        <p class="help-block small">{{ t("security_setting.desc_of_callback_URL", 'OAuth') }}</p>
+        {% if !settingForm['app:siteUrl'] %}
+        <div class="alert alert-danger">
+          <i class="icon-exclamation"></i> {{ t("security_setting.alert_siteUrl_is_not_set", '<a href="/admin/app">' + t('App settings') + '<i class="icon-login"></i></a>') }}
+        </div>
+        {% endif %}
       </div>
     </div>
 
@@ -98,7 +98,7 @@
   </h4>
   <ol id="collapseHelpForGithubOauth" class="collapse">
     <li>{{ t("security_setting.OAuth.GitHub.register_1", "https://github.com/settings/developers", "GitHub Developer Settings") }}</li>
-    <li>{{ t("security_setting.OAuth.GitHub.register_2", "https://${growi.host}/passport/github/callback", "${growi.host}") }}</li>
+    <li>{{ t("security_setting.OAuth.GitHub.register_2", callbackUrl) }}</li>
     <li>{{ t("security_setting.OAuth.GitHub.register_3") }}</li>
   </ol>
 </div>

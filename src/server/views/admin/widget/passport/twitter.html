@@ -4,6 +4,7 @@
 
   {% set nameForIsTwitterEnabled = "settingForm[security:passport-twitter:isEnabled]" %}
   {% set isTwitterEnabled = settingForm['security:passport-twitter:isEnabled'] %}
+  {% set callbackUrl = settingForm['app:siteUrl'] || '[INVALID]' + '/passport/twitter/callback' %}
 
   <div class="form-group">
     <label for="{{nameForIsTwitterEnabled}}" class="col-xs-3 control-label">{{ t("security_setting.OAuth.Twitter.name") }}</label>
@@ -49,14 +50,15 @@
     </div>
 
     <div class="form-group">
-      <label for="settingForm[security:passport-twitter:callbackUrl]" class="col-xs-3 control-label">{{ t("security_setting.callback_URL") }}</label>
+      <label class="col-xs-3 control-label">{{ t("security_setting.callback_URL") }}</label>
       <div class="col-xs-6">
-        <input class="form-control" type="text" name="settingForm[security:passport-twitter:callbackUrl]" value="{{ settingForm['security:passport-twitter:callbackUrl'] || '' }}">
-        <p class="help-block">
-          <small>
-            {{ t("security_setting.Use env var if empty", "OAUTH_TWITTER_CALLBACK_URL") }}
-          </small>
-        </p>
+          <input class="form-control" type="text" value="{{ callbackUrl }}" readonly>
+        <p class="help-block small">{{ t("security_setting.desc_of_callback_URL", 'OAuth') }}</p>
+        {% if !settingForm['app:siteUrl'] %}
+        <div class="alert alert-danger">
+          <i class="icon-exclamation"></i> {{ t("security_setting.alert_siteUrl_is_not_set", '<a href="/admin/app">' + t('App settings') + '<i class="icon-login"></i></a>') }}
+        </div>
+        {% endif %}
       </div>
     </div>
 
@@ -101,7 +103,7 @@
     <li>{{ t("security_setting.OAuth.Twitter.register_1", "https://apps.twitter.com/", "Twitter Application Management") }}</li>
     <li>{{ t("security_setting.OAuth.Twitter.register_2") }}</li>
     <li>{{ t("security_setting.OAuth.Twitter.register_3") }}</li>
-    <li>{{ t("security_setting.OAuth.Twitter.register_4", "https://${growi.host}/passport/twitter/callback", "${growi.host}") }}</li>
+    <li>{{ t("security_setting.OAuth.Twitter.register_4", callbackUrl) }}</li>
   </ol>
 </div>
 

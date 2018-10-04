@@ -1,6 +1,8 @@
 {
   "ignore": [
     "package.json",
-    "public/manifest.json"
+    "public/manifest.json",
+    "config/env.",
+    "config/webpack."
   ]
 }

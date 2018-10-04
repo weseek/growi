@@ -16,7 +16,7 @@ before('Create database connection and clean up', function (done) {
     return done();
   }
 
-  mongoose.connect(mongoUri);
+  mongoose.connect(mongoUri, { useNewUrlParser: true });
 
   function clearDB() {
     for (var i in mongoose.connection.collections) {
@@ -26,7 +26,7 @@ before('Create database connection and clean up', function (done) {
   }
 
   if (mongoose.connection.readyState === 0) {
-    mongoose.connect(mongoUri, function (err) {
+    mongoose.connect(mongoUri, { useNewUrlParser: true }, function (err) {
       if (err) {
         throw err;
       }

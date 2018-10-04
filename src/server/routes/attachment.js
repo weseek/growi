@@ -55,7 +55,7 @@ module.exports = function(crowi, app) {
    * @apiParam {String} page_id
    */
   api.list = function(req, res) {
-    var id = req.query.page_id || null;
+    const id = req.query.page_id || null;
     if (!id) {
       return res.json(ApiResponse.error('Parameters page_id is required.'));
     }
@@ -69,10 +69,10 @@ module.exports = function(crowi, app) {
       //   2. ensure backward compatibility of data
 
       // var config = crowi.getConfig();
-      // var baseUrl = (config.crowi['app:url'] || '');
+      // var baseUrl = (config.crowi['app:siteUrl:fixed'] || '');
       return res.json(ApiResponse.success({
         attachments: attachments.map(at => {
-          var fileUrl = at.fileUrl;
+          const fileUrl = at.fileUrl;
           at = at.toObject();
           // at.url = baseUrl + fileUrl;
           at.url = fileUrl;
