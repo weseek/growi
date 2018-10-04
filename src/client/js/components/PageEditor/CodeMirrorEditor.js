@@ -730,7 +730,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
         { this.state.isCheatsheetModalButtonShown && this.renderCheatsheetModalButton() }
       </div>
 
-      <HandsontableModal ref='handsontableModal' onSave={ table => mtu.replaceMarkdownTable(this.getCodeMirror(), table) }/>
+      <HandsontableModal ref='handsontableModal' onSave={ table => mtu.replaceFocusedMarkdownTableWithEditor(this.getCodeMirror(), table) }/>
     </React.Fragment>;
   }
 
