@@ -86,6 +86,11 @@
     position: relative;
 
     button {
+      display: none;
+    }
+
+    &:hover button {
+      display: block;
       position: absolute;
       top: 11px;
       right: 10px;
