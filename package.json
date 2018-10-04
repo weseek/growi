@@ -201,7 +201,7 @@
     "style-loader": "^0.23.0",
     "throttle-debounce": "^2.0.0",
     "toastr": "^2.1.2",
-    "uglifyjs-webpack-plugin": "^1.2.5",
+    "uglifyjs-webpack-plugin": "^2.0.1",
     "url-join": "^4.0.0",
     "webpack": "^4.12.0",
     "webpack-assets-manifest": "^3.0.1",
