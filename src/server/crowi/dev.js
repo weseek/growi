@@ -85,8 +85,6 @@ class CrowiDev {
     eazyLogger.unprefixed('info', `         APP: {magenta:${serverUrl}}`);
     eazyLogger.unprefixed('info', '{grey:=======================================}');
 
-    this.setupExpressAfterListening(app);
-
     return server;
   }
 

@@ -360,10 +360,15 @@ Crowi.prototype.start = async function() {
 
   const server = (this.node_env === 'development') ? this.crowiDev.setupServer(express) : express;
 
+  // listen
   const serverListening = server.listen(this.port, () => {
     logger.info(`[${this.node_env}] Express server is listening on port ${this.port}`);
+    if (this.node_env === 'development') {
+      this.crowiDev.setupExpressAfterListening(express);
+    }
   });
 
+  // setup WebSocket
   const io = require('socket.io')(serverListening);
   io.sockets.on('connection', function(socket) {
   });
