@@ -29,10 +29,6 @@ export default class Page extends React.Component {
     this.appendEditSectionButtons();
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.renderHtml(nextProps.markdown, nextProps.highlightKeywords);
-  }
-
   setMarkdown(markdown) {
     this.renderHtml(markdown, this.props.highlightKeywords);
   }
