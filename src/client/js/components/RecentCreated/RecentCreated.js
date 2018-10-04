@@ -73,11 +73,12 @@ export default class RecentCreated extends React.Component {
    * @param {any} pages Array of pages Model Obj
    *
    */
-  generatePageList(pages, user) {
+  generatePageList(pages) {
     return pages.map((page, i) => {
+      const pageuser = page.lastUpdateUser;
       return (
         <li key={i}>
-          <UserPicture user={user} />
+          <UserPicture user={pageuser} />
           <a href={page.path} className="page-list-link" data-path={page.path} data-short-path={page.revision.body}>{decodeURI(page.path)}</a>
         </li>
       );
@@ -156,9 +157,7 @@ export default class RecentCreated extends React.Component {
   }
 
   render() {
-    const username = this.props.crowi.me;
-    const user = this.props.crowi.findUser(username);
-    const pageList = this.generatePageList(this.state.pages, user);
+    const pageList = this.generatePageList(this.state.pages);
 
     let paginationItems = [];
     let activePage = this.state.activePage;
