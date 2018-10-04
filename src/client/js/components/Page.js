@@ -11,12 +11,14 @@ export default class Page extends React.Component {
     super(props);
 
     this.state = {
-      html: ''
+      html: '',
+      markdown: ''
     };
 
     this.appendEditSectionButtons = this.appendEditSectionButtons.bind(this);
     this.renderHtml = this.renderHtml.bind(this);
     this.getHighlightedBody = this.getHighlightedBody.bind(this);
+    this.saveHandlerForHandsontableModal = this.saveHandlerForHandsontableModal.bind(this);
   }
 
   componentWillMount() {
@@ -25,10 +27,6 @@ export default class Page extends React.Component {
 
   componentDidUpdate() {
     this.appendEditSectionButtons();
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.renderHtml(nextProps.markdown, nextProps.highlightKeywords);
   }
 
   setMarkdown(markdown) {
@@ -76,8 +74,26 @@ export default class Page extends React.Component {
    * @param endLineNumber
    */
   launchHandsontableModal(beginLineNumber, endLineNumber) {
-    const tableLines = this.props.markdown.split('\n').slice(beginLineNumber - 1, endLineNumber).join('\n');
+    const tableLines = this.state.markdown.split('\n').slice(beginLineNumber - 1, endLineNumber).join('\n');
+    this.currentTargetTableArea = {beginLineNumber, endLineNumber};
     this.refs.handsontableModal.show(MarkdownTable.fromMarkdownString(tableLines));
+  }
+
+  saveHandlerForHandsontableModal(markdownTable) {
+    const splitMarkdown = this.state.markdown.split('\n');
+    const markdownBeforeTable = splitMarkdown.slice(0, this.currentTargetTableArea.beginLineNumber - 1);
+    const markdownAfterTable = splitMarkdown.slice(this.currentTargetTableArea.endLineNumber);
+
+    let newMarkdown = '';
+    if (markdownBeforeTable.length > 0) {
+      newMarkdown += markdownBeforeTable.join('\n') + '\n';
+    }
+    newMarkdown += markdownTable;
+    if (markdownAfterTable.length > 0) {
+      newMarkdown += '\n' + markdownAfterTable.join('\n');
+    }
+
+    this.props.onSaveWithShortcut(newMarkdown);
   }
 
   renderHtml(markdown, highlightKeywords) {
@@ -110,7 +126,7 @@ export default class Page extends React.Component {
       .then(() => interceptorManager.process('postPostProcess', context))
       .then(() => interceptorManager.process('preRenderHtml', context))
       .then(() => {
-        this.setState({ html: context.parsedHTML });
+        this.setState({ html: context.parsedHTML, markdown });
       })
       // process interceptors for post rendering
       .then(() => interceptorManager.process('postRenderHtml', context));
@@ -129,7 +145,7 @@ export default class Page extends React.Component {
           isMathJaxEnabled={isMathJaxEnabled}
           renderMathJaxOnInit={true}
       />
-      <HandsontableModal ref='handsontableModal' />
+      <HandsontableModal ref='handsontableModal' onSave={this.saveHandlerForHandsontableModal} />
     </div>;
   }
 }
@@ -137,6 +153,7 @@ export default class Page extends React.Component {
 Page.propTypes = {
   crowi: PropTypes.object.isRequired,
   crowiRenderer: PropTypes.object.isRequired,
+  onSaveWithShortcut: PropTypes.func.isRequired,
   markdown: PropTypes.string.isRequired,
   pagePath: PropTypes.string.isRequired,
   showHeadEditButton: PropTypes.bool,
