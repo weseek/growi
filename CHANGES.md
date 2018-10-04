@@ -9,10 +9,12 @@ CHANGES
 * Fix: SAML Authentication didn't work
 * Support: Mongoose migration mechanism
 * Support: Upgrade libs
+    * googleapis
     * mocha
     * mongoose
     * mongoose-paginate
     * mongoose-unique-validator
+    * multer
 
 ## 3.2.3
 
