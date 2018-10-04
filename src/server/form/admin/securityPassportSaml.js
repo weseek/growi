@@ -12,5 +12,6 @@ module.exports = form(
   field('settingForm[security:passport-saml:attrMapMail]').trim().required(),
   field('settingForm[security:passport-saml:attrMapFirstName]').trim(),
   field('settingForm[security:passport-saml:attrMapLastName]').trim(),
+  field('settingForm[security:passport-saml:cert]').trim(),
   field('settingForm[security:passport-saml:isSameUsernameTreatedAsIdenticalUser]').trim().toBooleanStrict(),
 );

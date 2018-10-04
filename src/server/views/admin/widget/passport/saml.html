@@ -143,6 +143,33 @@
       </div>
     </div>
 
+    <h4>Options</h4>
+
+    <div class="form-group">
+      <label for="settingForm[security:passport-saml:cert]" class="col-xs-3 control-label">Certificate</label>
+      <div class="col-xs-6">
+        <textarea class="form-control" type="text" rows="5" name="settingForm[security:passport-saml:cert]">{{ settingForm['security:passport-saml:cert'] || '' }}</textarea>
+        <p class="help-block">
+          <small>
+            {{ t("security_setting.SAML.cert_detail1") }}<br>
+            {{ t("security_setting.SAML.cert_detail2") }}
+          </small>
+        </p>
+        <p>
+          <small>
+            e.g.
+            <pre>-----BEGIN CERTIFICATE-----
+MIICBzCCAXACCQD4US7+0A/b/zANBgkqhkiG9w0BAQsFADBIMQswCQYDVQQGEwJK
+UDEOMAwGA1UECAwFVG9reW8xFTATBgNVBAoMDFdFU0VFSywgSW5jLjESMBAGA1UE
+...
+crmVwBzbloUO2l6k1ibwD2WVwpdxMKIF5z58HfKAvxZAzCHE7kMEZr1ge30WRXQA
+pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
+-----END CERTIFICATE-----</pre>
+          </small>
+        </p>
+      </div>
+    </div>
+
   </fieldset>
 
   <div class="form-group" id="btn-update">

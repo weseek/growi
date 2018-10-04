@@ -405,7 +405,9 @@
       "Last Name": "名",
       "id_detail": "SAML Identity プロバイダ内で一意に識別可能な値を格納している属性",
       "username_detail": "新規ユーザーのアカウント名(<code>username</code>)に関連付ける属性",
-      "mapping_detail": "新規ユーザーの%sに関連付ける属性"
+      "mapping_detail": "新規ユーザーの%sに関連付ける属性",
+      "cert_detail1": "IdP からのレスポンスの validation を行うための、PEMエンコードされた X.509 証明書",
+      "cert_detail2": "空の場合は環境変数 <code>SAML_CERT</code> を利用し、そちらも存在しない場合は validation 自体を行いません"
     },
     "OAuth": {
       "register": "%sに登録",
