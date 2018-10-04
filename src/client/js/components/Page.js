@@ -13,7 +13,8 @@ export default class Page extends React.Component {
 
     this.state = {
       html: '',
-      markdown: ''
+      markdown: '',
+      currentTargetTableArea: null
     };
 
     this.appendEditSectionButtons = this.appendEditSectionButtons.bind(this);
@@ -76,13 +77,14 @@ export default class Page extends React.Component {
    */
   launchHandsontableModal(beginLineNumber, endLineNumber) {
     const tableLines = this.state.markdown.split('\n').slice(beginLineNumber - 1, endLineNumber).join('\n');
-    this.currentTargetTableArea = {beginLineNumber, endLineNumber};
+    this.setState({currentTargetTableArea: {beginLineNumber, endLineNumber}});
     this.refs.handsontableModal.show(MarkdownTable.fromMarkdownString(tableLines));
   }
 
   saveHandlerForHandsontableModal(markdownTable) {
-    const newMarkdown = mtu.replaceMarkdownTableInMarkdown(markdownTable, this.state.markdown, this.currentTargetTableArea.beginLineNumber, this.currentTargetTableArea.endLineNumber);
+    const newMarkdown = mtu.replaceMarkdownTableInMarkdown(markdownTable, this.state.markdown, this.state.currentTargetTableArea.beginLineNumber, this.state.currentTargetTableArea.endLineNumber);
     this.props.onSaveWithShortcut(newMarkdown);
+    this.setState({currentTargetTableArea: null});
   }
 
   renderHtml(markdown, highlightKeywords) {
