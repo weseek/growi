@@ -170,7 +170,7 @@ class MarkdownTableUtil {
    * @param endLineNumber
    */
   replaceMarkdownTableInMarkdown(table, markdown, beginLineNumber, endLineNumber) {
-    const splitMarkdown = markdown.split('\n');
+    const splitMarkdown = markdown.split(/\r\n|\r|\n/);
     const markdownBeforeTable = splitMarkdown.slice(0, beginLineNumber - 1);
     const markdownAfterTable = splitMarkdown.slice(endLineNumber);
 
