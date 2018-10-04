@@ -3,6 +3,8 @@ CHANGES
 
 ## 3.2.4-RC
 
+* Improvement: Specify certificate for SAML Authentication
+* Fix: SAML Authentication didn't work
 * Support: Mongoose migration mechanism
 * Support: Upgrade libs
     * mocha
