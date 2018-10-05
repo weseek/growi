@@ -497,7 +497,9 @@
     "Custom script": "Custom script",
     "write_java": "You can write Javascript that is applied to whole system.",
     "attach_title_header": "Add h1 section when create new page automatically",
-    "attach_title_header_desc": "Add page path to the first line as h1 section when create new page"
+    "attach_title_header_desc": "Add page path to the first line as h1 section when create new page",
+    "show_document_number": "Manage the number of documents to be displayed",
+    "show_document_number_desc": "Set the number of items to display on one page in Recent Created on the home screen"
   },
 
   "user_management": {
