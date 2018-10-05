@@ -15,7 +15,7 @@ const debug = require('debug')('growi:crowi')
 
   ;
 
-function Crowi(rootdir, env) {
+function Crowi(rootdir) {
   const self = this;
 
   this.version = pkg.version;
@@ -45,7 +45,7 @@ function Crowi(rootdir, env) {
 
   this.models = {};
 
-  this.env = env;
+  this.env = process.env;
   this.node_env = this.env.NODE_ENV || 'development';
 
   this.port = this.env.PORT || 3000;
@@ -124,8 +124,8 @@ Crowi.prototype.getEnv = function() {
 // getter/setter of model instance
 //
 Crowi.prototype.model = function(name, model) {
-  if (model) {
-    return this.models[name] = model;
+  if (model != null) {
+    this.models[name] = model;
   }
 
   return this.models[name];
@@ -146,17 +146,17 @@ Crowi.prototype.setupDatabase = function() {
 
   const mongoUri = getMongoUrl(this.env);
 
-  return mongoose.connect(mongoUri);
+  return mongoose.connect(mongoUri, { useNewUrlParser: true });
 };
 
 Crowi.prototype.setupSessionConfig = function() {
-  var self = this
+  const self = this
     , session  = require('express-session')
-    , sessionConfig
     , sessionAge = (1000*3600*24*30)
     , redisUrl = this.env.REDISTOGO_URL || this.env.REDIS_URI || this.env.REDIS_URL || null
     , mongoUrl = getMongoUrl(this.env)
     ;
+  let sessionConfig;
 
   return new Promise(function(resolve, reject) {
     sessionConfig = {
@@ -347,56 +347,37 @@ Crowi.prototype.getTokens = function() {
   return this.tokens;
 };
 
-Crowi.prototype.start = function() {
-  var self = this
-    , server
-    , io;
-
+Crowi.prototype.start = async function() {
   // init CrowiDev
-  if (self.node_env === 'development') {
+  if (this.node_env === 'development') {
     const CrowiDev = require('./dev');
-    this.crowiDev = new CrowiDev(self);
+    this.crowiDev = new CrowiDev(this);
     this.crowiDev.init();
   }
 
-  return Promise.resolve()
-    .then(function() {
-      return self.init();
-    })
-    .then(function() {
-      return self.buildServer();
-    })
-    .then(function(express) {
-      return new Promise((resolve) => {
-        server = express.listen(self.port, function() {
-          logger.info(`[${self.node_env}] Express server listening on port ${self.port}`);
+  await this.init();
+  const express = await this.buildServer();
 
-          // setup for dev
-          if (self.node_env === 'development') {
-            const eazyLogger = require('eazy-logger').Logger({
-              prefix: '[{green:GROWI}] ',
-              useLevelPrefixes: false,
-            });
+  const server = (this.node_env === 'development') ? this.crowiDev.setupServer(express) : express;
 
-            eazyLogger.info('{bold:Server URLs:}');
-            eazyLogger.unprefixed('info', '{grey:=======================================}');
-            eazyLogger.unprefixed('info', `         APP: {magenta:http://localhost:${self.port}}`);
-            eazyLogger.unprefixed('info', '{grey:=======================================}');
+  // listen
+  const serverListening = server.listen(this.port, () => {
+    logger.info(`[${this.node_env}] Express server is listening on port ${this.port}`);
+    if (this.node_env === 'development') {
+      this.crowiDev.setupExpressAfterListening(express);
+    }
+  });
 
-            self.crowiDev.setup(server, express);
-          }
-          resolve(server);
-        });
+  // setup WebSocket
+  const io = require('socket.io')(serverListening);
+  io.sockets.on('connection', function(socket) {
+  });
+  this.io = io;
 
-        io = require('socket.io')(server);
-        io.sockets.on('connection', function(socket) {
-        });
-        self.io = io;
+  // setup Express Routes
+  this.setupRoutesAtLast(express);
 
-        // setup Express Routes
-        self.setupRoutesAtLast(express);
-      });
-    });
+  return serverListening;
 };
 
 Crowi.prototype.buildServer = function() {

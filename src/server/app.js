@@ -9,7 +9,7 @@ require('module-alias/register');
 
 const logger = require('@alias/logger')('growi');
 const helpers = require('@commons/util/helpers');
-const growi = new (require('./crowi'))(helpers.root(), process.env);
+const growi = new (require('./crowi'))(helpers.root());
 
 
 /************************************
@@ -24,10 +24,10 @@ process.on('unhandledRejection', (reason, p) => {
 });
 
 growi.start()
-  .then(express => {
+  .then(server => {
     if (helpers.hasProcessFlag('ci')) {
       logger.info('"--ci" flag is detected. Exit process.');
-      express.close(() => {
+      server.close(() => {
         process.exit();
       });
     }

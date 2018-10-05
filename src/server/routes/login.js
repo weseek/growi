@@ -208,7 +208,7 @@ module.exports = function(crowi, app) {
                       vars: {
                         createdUser: userData,
                         adminUser: adminUser,
-                        url: config.crowi['app:url'],
+                        url: config.crowi['app:siteUrl:fixed'],
                         appTitle: appTitle,
                       }
                     },

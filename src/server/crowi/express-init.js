@@ -57,17 +57,18 @@ module.exports = function(crowi, app) {
       , User = crowi.model('User')
       , Config = crowi.model('Config')
       ;
-    let baseUrl;
 
     app.set('tzoffset', tzoffset);
 
     req.config = config;
     req.csrfToken = null;
 
-    config.crowi['app:url'] = baseUrl = (req.headers['x-forwarded-proto'] == 'https' ? 'https' : req.protocol) + '://' + req.get('host');
+    config.crowi['app:siteUrl:fixed'] = (config.crowi['app:siteUrl'] != null)
+      ? config.crowi['app:siteUrl']                                                                         // prioritized with v3.2.4 and above
+      : (req.headers['x-forwarded-proto'] == 'https' ? 'https' : req.protocol) + '://' + req.get('host');   // auto generate (default with v3.2.3 and below)
 
     res.locals.req      = req;
-    res.locals.baseUrl  = baseUrl;
+    res.locals.baseUrl  = config.crowi['app:siteUrl:fixed'];
     res.locals.config   = config;
     res.locals.env      = env;
     res.locals.now      = now;

@@ -260,6 +260,8 @@
     "Site Name": "Site name",
     "sitename_change": "You can change Site Name which is used for header and HTML title.",
     "header_content": "The contents entered here will be shown in the header etc.",
+    "Site URL": "Site URL",
+    "siteurl_help": "Site full URL beginning from <code>http://</code> or <code>https://</code>.",
     "Confidential name": "Confidential name",
     "ex): internal use only":"ex): internal use only",
     "enable_files_except_image": "Enable file upload other than image files.",
@@ -308,6 +310,7 @@
     "auth_mechanism": "authentication mechanism",
     "recommended": "Recommended",
     "username_email_password": "Username, Email and Password authentication",
+    "alert_siteUrl_is_not_set": "'Site URL' is NOT set. Define it from %s",
     "ldap_auth": "LDAP authentication",
     "saml_auth": "SAML authentication",
     "google_auth2": "Google OAuth authentication",
@@ -331,6 +334,7 @@
     "xss_prevent_setting":"Prevent XSS(Cross Site Scripting)",
     "xss_prevent_setting_link":"Go to Markdown settings",
     "callback_URL": "Callback URL",
+    "desc_of_callback_URL": "Use it in the setting of the %s provider",
     "guest_mode": {
       "deny": "Deny Unregistered Users",
       "readonly": "View Only"
@@ -379,7 +383,13 @@
       "name": "SAML",
       "entry_point": "Entry Point",
       "issuer": "Issuer",
-      "mapping_detail": "Specification of mappings for %s when creating new users"
+      "First Name": "First Name",
+      "Last Name": "Last Name",
+      "id_detail": "Specification of the name of attribute which can identify the user in SAML Identity Provider",
+      "username_detail": "Specification of mappings for <code>username</code> when creating new users",
+      "mapping_detail": "Specification of mappings for %s when creating new users",
+      "cert_detail1": "PEM-encoded X.509 signing certificate to validate the response from IdP",
+      "cert_detail2": "Use env var <code>SAML_CERT</code> if empty, and no validation is processed if the variable is also undefined"
     },
     "OAuth": {
       "register": "Register for %s",
