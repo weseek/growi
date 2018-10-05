@@ -106,6 +106,7 @@ module.exports = function(crowi) {
       'customize:isEnabledTimeline' : true,
       'customize:isSavedStatesOfTabChanges' : true,
       'customize:isEnabledAttachTitleHeader' : false,
+      'customize:showRecentCreatedNumber' : 10,
 
       'importer:esa:team_name': '',
       'importer:esa:access_token': '',
@@ -552,6 +553,11 @@ module.exports = function(crowi) {
     return getValueForCrowiNS(config, key);
   };
 
+  configSchema.statics.showRecentCreatedNumber = function(config) {
+    const key = 'customize:showRecentCreatedNumber';
+    return getValueForCrowiNS(config, key);
+  };
+
   configSchema.statics.fileUploadEnabled = function(config) {
     const Config = this;
 
@@ -622,6 +628,7 @@ module.exports = function(crowi) {
         HACKMD_URI: env.HACKMD_URI || null,
         MATHJAX: env.MATHJAX || null,
       },
+      recentCreatedLimit: Config.showRecentCreatedNumber(config),
     };
 
     return local_config;

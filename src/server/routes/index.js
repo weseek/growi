@@ -188,6 +188,7 @@ module.exports = function(crowi, app) {
   // HTTP RPC Styled API (に徐々に移行していいこうと思う)
   app.get('/_api/users.list'          , accessTokenParser , loginRequired(crowi, app, false) , user.api.list);
   app.get('/_api/pages.list'          , accessTokenParser , loginRequired(crowi, app, false) , page.api.list);
+  app.get('/_api/pages.recentCreated' , accessTokenParser , loginRequired(crowi, app, false) , page.api.recentCreated);
   app.post('/_api/pages.create'       , accessTokenParser , loginRequired(crowi, app) , csrf, page.api.create);
   app.post('/_api/pages.update'       , accessTokenParser , loginRequired(crowi, app) , csrf, page.api.update);
   app.get('/_api/pages.get'           , accessTokenParser , loginRequired(crowi, app, false) , page.api.get);

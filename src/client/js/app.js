@@ -33,6 +33,7 @@ import RevisionPath     from './components/Page/RevisionPath';
 import RevisionUrl      from './components/Page/RevisionUrl';
 import BookmarkButton   from './components/BookmarkButton';
 import NewPageNameInput from './components/NewPageNameInput';
+import RecentCreated from './components/RecentCreated/RecentCreated';
 
 import CustomCssEditor  from './components/Admin/CustomCssEditor';
 import CustomScriptEditor from './components/Admin/CustomScriptEditor';
@@ -329,6 +330,21 @@ if (savePageControlsElem) {
   );
   componentInstances.savePageControls = savePageControls;
 }
+
+// RecentCreated dev GC-939 start
+const recentCreatedControlsElem = document.getElementById('user-created-list');
+if (recentCreatedControlsElem) {
+  let limit = crowi.getConfig().recentCreatedLimit;
+  if (null == limit) {
+    limit = 10;
+  }
+  ReactDOM.render(
+    <RecentCreated  crowi={crowi} pageId={pageId} limit={limit} >
+
+    </RecentCreated>, document.getElementById('user-created-list')
+  );
+}
+// RecentCreated dev GC-939 end
 
 /*
  * HackMD Editor
