@@ -514,7 +514,9 @@
     "Custom script": "カスタムスクリプト",
     "write_java": "システム全体に適用されるJavaScriptを記述できます。",
     "attach_title_header": "新規ページ作成時の h1 セクション自動挿入",
-    "attach_title_header_desc": "新規作成したページの1行目に、ページのパスを h1 セクションとして挿入します。"
+    "attach_title_header_desc": "新規作成したページの1行目に、ページのパスを h1 セクションとして挿入します。",
+    "show_document_number": "表示ドキュメント数管理",
+    "show_document_number_desc": "ホーム画面の Recent Created で、1ページに表示する件数を設定します。"
   },
 
   "user_management": {
