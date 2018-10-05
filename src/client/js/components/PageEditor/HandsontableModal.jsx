@@ -6,6 +6,7 @@ import Button from 'react-bootstrap/es/Button';
 import Navbar from 'react-bootstrap/es/Navbar';
 import ButtonGroup from 'react-bootstrap/es/ButtonGroup';
 
+import Handsontable from 'handsontable';
 import { HotTable } from '@handsontable/react';
 
 import MarkdownTable from '../../models/MarkdownTable';
@@ -24,7 +25,17 @@ export default class HandsontableModal extends React.Component {
       height: 300,
       rowHeaders: true,
       colHeaders: true,
-      contextMenu: ['row_above', 'row_below', 'col_left', 'col_right', '---------', 'remove_row', 'remove_col'],
+      contextMenu: {
+        items: {
+          'row_above': {},
+          'row_below': {},
+          'col_left': {},
+          'col_right': {},
+          'separator': Handsontable.plugins.ContextMenu.SEPARATOR,
+          'remove_row': {},
+          'remove_col': {}
+        }
+      },
       stretchH: 'all',
       selectionMode: 'multiple',
     };
