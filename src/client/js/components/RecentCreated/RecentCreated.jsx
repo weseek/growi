@@ -174,7 +174,7 @@ export default class RecentCreated extends React.Component {
     return (
       <div className="page-list-container-create">
         <ul className="page-list-ul page-list-ul-flat">
-            {pageList}
+          {pageList}
         </ul>
         {
         <Pagination bsSize="small">{paginationItems}</Pagination>
