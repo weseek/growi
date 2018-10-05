@@ -27,13 +27,33 @@ export default class HandsontableModal extends React.Component {
       colHeaders: true,
       contextMenu: {
         items: {
-          'row_above': {},
-          'row_below': {},
-          'col_left': {},
-          'col_right': {},
-          'separator': Handsontable.plugins.ContextMenu.SEPARATOR,
-          'remove_row': {},
-          'remove_col': {}
+          'row_above': {}, 'row_below': {}, 'col_left': {}, 'col_right': {},
+          'separator1': Handsontable.plugins.ContextMenu.SEPARATOR,
+          'remove_row': {}, 'remove_col': {},
+          'separator2': Handsontable.plugins.ContextMenu.SEPARATOR,
+          'custom_alignment': {
+            name: 'Align columns',
+            key: 'align_columns',
+            submenu: {
+              items: [{
+                name: 'Left',
+                key: 'align_columns:1',
+                callback: function(key, selection) {
+                  HandsontableModal.alignColumns(this, selection, 'htLeft');
+                }}, {
+                name: 'Center',
+                key: 'align_columns:2',
+                callback: function(key, selection) {
+                  HandsontableModal.alignColumns(this, selection, 'htCenter');
+                }}, {
+                name: 'Right',
+                key: 'align_columns:3',
+                callback: function(key, selection) {
+                  HandsontableModal.alignColumns(this, selection, 'htRight');
+                }}
+              ]
+            }
+          }
         }
       },
       stretchH: 'all',
@@ -111,6 +131,17 @@ export default class HandsontableModal extends React.Component {
       ['', '', ''],
       ['', '', ''],
     ]);
+  }
+
+  static alignColumns(core, selection, className) {
+    const startCol = selection[0].start.col;
+    const endCol = selection[0].end.col;
+    for (let i = startCol; i <= endCol; i++) {
+      for (let j = 0; j < core.countRows(); j++) {
+        core.setCellMeta(j, i, 'className', className);
+      }
+    }
+    core.render();
   }
 }
 
