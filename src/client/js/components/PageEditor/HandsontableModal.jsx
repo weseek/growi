@@ -39,17 +39,17 @@ export default class HandsontableModal extends React.Component {
                 name: 'Left',
                 key: 'align_columns:1',
                 callback: function(key, selection) {
-                  HandsontableModal.alignColumns(this, selection, 'htLeft');
+                  HandsontableModal.alignColumns(this, selection[0].start.col, selection[0].end.col, 'htLeft');
                 }}, {
                 name: 'Center',
                 key: 'align_columns:2',
                 callback: function(key, selection) {
-                  HandsontableModal.alignColumns(this, selection, 'htCenter');
+                  HandsontableModal.alignColumns(this, selection[0].start.col, selection[0].end.col, 'htCenter');
                 }}, {
                 name: 'Right',
                 key: 'align_columns:3',
                 callback: function(key, selection) {
-                  HandsontableModal.alignColumns(this, selection, 'htRight');
+                  HandsontableModal.alignColumns(this, selection[0].start.col, selection[0].end.col, 'htRight');
                 }}
               ]
             }
@@ -133,9 +133,7 @@ export default class HandsontableModal extends React.Component {
     ]);
   }
 
-  static alignColumns(core, selection, className) {
-    const startCol = selection[0].start.col;
-    const endCol = selection[0].end.col;
+  static alignColumns(core, startCol, endCol, className) {
     for (let i = startCol; i <= endCol; i++) {
       for (let j = 0; j < core.countRows(); j++) {
         core.setCellMeta(j, i, 'className', className);
