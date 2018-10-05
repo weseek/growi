@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 
 import Modal from 'react-bootstrap/es/Modal';
 import Button from 'react-bootstrap/es/Button';
+import Navbar from 'react-bootstrap/es/Navbar';
+import ButtonGroup from 'react-bootstrap/es/ButtonGroup';
 
 import { HotTable } from '@handsontable/react';
 
@@ -67,6 +69,15 @@ export default class HandsontableModal extends React.Component {
           <Modal.Title>Edit Table</Modal.Title>
         </Modal.Header>
         <Modal.Body className="p-0">
+          <Navbar>
+            <Navbar.Form>
+              <ButtonGroup>
+                <Button><i className="ti-align-left"></i></Button>
+                <Button><i className="ti-align-center"></i></Button>
+                <Button><i className="ti-align-right"></i></Button>
+              </ButtonGroup>
+            </Navbar.Form>
+          </Navbar>
           <div className="p-4">
             <HotTable data={this.state.markdownTable.table} settings={this.settings} />
           </div>
