@@ -22,7 +22,7 @@ export default class HandsontableModal extends React.Component {
       height: 300,
       rowHeaders: true,
       colHeaders: true,
-      contextMenu: ['row_above', 'row_below', 'col_left', 'col_right', '---------', 'remove_row', 'remove_col', '---------', 'alignment'],
+      contextMenu: ['row_above', 'row_below', 'col_left', 'col_right', '---------', 'remove_row', 'remove_col'],
       stretchH: 'all',
       selectionMode: 'multiple',
     };
