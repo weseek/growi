@@ -30,7 +30,7 @@ export default class HandsontableModal extends React.Component {
 
   init(markdownTable) {
     const initMarkdownTable = markdownTable || HandsontableModal.getDefaultMarkdownTable();
-    const initCallback = function() {
+    const synchronizeAlignSettings = function() {
       const align = initMarkdownTable.options.align;
       for (let i = 0; i < align.length; i++) {
         const mapping = {
@@ -46,7 +46,7 @@ export default class HandsontableModal extends React.Component {
       {
         markdownTableOnInit: initMarkdownTable,
         markdownTable: initMarkdownTable.clone(),
-        handsontableSetting: Object.assign({}, this.state.handsontableSetting, { init: initCallback })
+        handsontableSetting: Object.assign({}, this.state.handsontableSetting, { afterUpdateSettings: synchronizeAlignSettings })
       }
     );
   }
@@ -68,9 +68,6 @@ export default class HandsontableModal extends React.Component {
     if (this.props.onSave != null) {
       this.props.onSave(this.state.markdownTable);
     }
-    // console.log(this.refs.hotTable.hotInstance.getCellMetaAtRow(0));
-    // console.log(this.refs.hotTable.hotInstance.getCellMeta(0, 0));
-    console.log(this.state.handsontableSetting);
     this.setState({ show: false });
   }
 
