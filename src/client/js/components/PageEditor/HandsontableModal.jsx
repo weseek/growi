@@ -44,7 +44,10 @@ export default class HandsontableModal extends React.Component {
       {
         markdownTableOnInit: initMarkdownTable,
         markdownTable: initMarkdownTable.clone(),
-        handsontableSetting: Object.assign({}, this.state.handsontableSetting, { afterUpdateSettings: synchronizeAlignSettings })
+        handsontableSetting: Object.assign({}, this.state.handsontableSetting, {
+          afterUpdateSettings: synchronizeAlignSettings,
+          loadData: synchronizeAlignSettings
+        })
       }
     );
   }
