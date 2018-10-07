@@ -17,7 +17,6 @@ export default class Page extends React.Component {
       currentTargetTableArea: null
     };
 
-    this.appendEditSectionButtons = this.appendEditSectionButtons.bind(this);
     this.renderHtml = this.renderHtml.bind(this);
     this.getHighlightedBody = this.getHighlightedBody.bind(this);
     this.saveHandlerForHandsontableModal = this.saveHandlerForHandsontableModal.bind(this);
@@ -27,25 +26,8 @@ export default class Page extends React.Component {
     this.renderHtml(this.props.markdown, this.props.highlightKeywords);
   }
 
-  componentDidUpdate() {
-    this.appendEditSectionButtons();
-  }
-
   setMarkdown(markdown) {
     this.renderHtml(markdown, this.props.highlightKeywords);
-  }
-
-  /**
-   * Add edit section buttons to headers
-   * This invoke `appendEditSectionButtons` method of `legacy/crowi.js`
-   *
-   * TODO: transplant `appendEditSectionButtons` to this class in the future
-   */
-  appendEditSectionButtons(parentElement) {
-    if (this.props.showHeadEditButton) {
-      const crowiForJquery = this.props.crowi.getCrowiForJquery();
-      crowiForJquery.appendEditSectionButtons(this.revisionBodyElement);
-    }
   }
 
   /**
