@@ -30,13 +30,13 @@ export default class HandsontableModal extends React.Component {
     const initMarkdownTable = markdownTable || HandsontableModal.getDefaultMarkdownTable();
     const synchronizeAlignSettings = function() {
       const align = initMarkdownTable.options.align;
+      const mapping = {
+        'r': 'htRight',
+        'c': 'htCenter',
+        'l': 'htLeft',
+        '': ''
+      };
       for (let i = 0; i < align.length; i++) {
-        const mapping = {
-          'r': 'htRight',
-          'c': 'htCenter',
-          'l': 'htLeft',
-          '': ''
-        };
         HandsontableModal.alignColumns(this, i, i, mapping[align[i]]);
       }
     };
@@ -66,9 +66,24 @@ export default class HandsontableModal extends React.Component {
   }
 
   save() {
-    if (this.props.onSave != null) {
-      this.props.onSave(this.state.markdownTable);
+    const cellMetasAtFirstRow = this.refs.hotTable.hotInstance.getCellMetaAtRow(0);
+    let newMarkdownTable = this.state.markdownTable.clone();
+    let align = [];
+    const mapping = {
+      'htRight': 'r',
+      'htCenter': 'c',
+      'htLeft': 'l',
+      '': ''
+    };
+    for (let i = 0; i < cellMetasAtFirstRow.length; i++) {
+      align.push(mapping[cellMetasAtFirstRow[i].className]);
     }
+    newMarkdownTable.options.align = align;
+
+    if (this.props.onSave != null) {
+      this.props.onSave(newMarkdownTable);
+    }
+
     this.setState({ show: false });
   }
 
