@@ -540,7 +540,7 @@ module.exports = function(crowi) {
     const Page = this;
     const templatePath = cutOffLastSlash(path);
     const pathList = generatePathsOnTree(templatePath, []);
-    const regexpList = pathList.map(path => new RegExp(`^${path}/_{1,2}template$`));
+    const regexpList = pathList.map(path => new RegExp(`^${escapeStringRegexp(path)}/_{1,2}template$`));
 
     return Page
       .find({path: {$in: regexpList}})
