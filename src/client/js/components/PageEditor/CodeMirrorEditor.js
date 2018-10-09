@@ -650,7 +650,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   getNavbarItems() {
-    return <Button bsSize="small" onClick={ this.showHandsonTableHandler }><img src="/images/icons/navbar-editor/table.svg" width="14" /></Button>;
+    return <Button bsSize="small" onClick={ this.showHandsonTableHandler }><img src="/images/icons/editor/table.svg" width="14" /></Button>;
   }
 
   render() {

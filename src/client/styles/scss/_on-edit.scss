@@ -169,8 +169,15 @@ body.on-edit {
       // add icon on cursor
       .autoformat-markdown-table-activated .CodeMirror-cursor {
         &:after {
-          font-family: 'FontAwesome';
-          content: '\f0ce';
+          display: block;
+          content: ' ';
+          background-image: url(/images/icons/editor/table.svg);
+
+          position: relative;
+          width: 14px;
+          height: 14px;
+          top: -16px;
+          left: 5px;
         }
       }
 
