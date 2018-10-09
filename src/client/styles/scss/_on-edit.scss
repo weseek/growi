@@ -87,11 +87,12 @@ body.on-edit {
     z-index: 1;
     left: $left-margin;
     width: calc(100% - #{$left-margin} - #{$right-margin});
+    pointer-events: none;                               // disable pointer-events because it becomes an obstacle
 
-    // for crowi layout
-    > .col-md-9, .col-xs-12 {
-      padding: 0;
-      width: 100%;
+    > .header-container {
+      pointer-events: initial;                          // enable pointer-events
+      padding: 0;   // for crowi layout
+      width: 100%;  // for crowi layout
     }
 
     background: none;
@@ -168,8 +169,15 @@ body.on-edit {
       // add icon on cursor
       .autoformat-markdown-table-activated .CodeMirror-cursor {
         &:after {
-          font-family: 'FontAwesome';
-          content: '\f0ce';
+          display: block;
+          content: ' ';
+          background-image: url(/images/icons/editor/table.svg);
+
+          position: relative;
+          width: 14px;
+          height: 14px;
+          top: -16px;
+          left: 5px;
         }
       }
 

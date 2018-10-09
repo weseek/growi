@@ -1,4 +1,4 @@
-const debug = require('debug')('growi:crowi:dev');
+const logger = require('@alias/logger')('growi:crowi:dev');
 const fs = require('fs');
 const path = require('path');
 
@@ -50,30 +50,66 @@ class CrowiDev {
 
   /**
    *
-   *
-   * @param {any} server http server
    * @param {any} app express
-   *
-   * @memberOf CrowiDev
    */
-  setup(server, app) {
+  setupServer(app) {
+    const port = this.crowi.port;
+    let server = app;
+
+    // for log
+    let serverUrl = `http://localhost:${port}}`;
+
+    if (this.crowi.env.DEV_HTTPS) {
+      logger.info(`[${this.crowi.node_env}] Express server will start with HTTPS Self-Signed Certification`);
+
+      serverUrl = `https://localhost:${port}}`;
+
+      const fs = require('graceful-fs');
+      const https = require('https');
+
+      const options = {
+        key: fs.readFileSync(path.join(this.crowi.rootDir, './resource/certs/localhost/key.pem')),
+        cert: fs.readFileSync(path.join(this.crowi.rootDir, './resource/certs/localhost/cert.pem')),
+      };
+
+      server = https.createServer(options, app);
+    }
+
+    const eazyLogger = require('eazy-logger').Logger({
+      prefix: '[{green:GROWI}] ',
+      useLevelPrefixes: false,
+    });
+
+    eazyLogger.info('{bold:Server URLs:}');
+    eazyLogger.unprefixed('info', '{grey:=======================================}');
+    eazyLogger.unprefixed('info', `         APP: {magenta:${serverUrl}}`);
+    eazyLogger.unprefixed('info', '{grey:=======================================}');
+
+    return server;
+  }
+
+  /**
+   *
+   * @param {any} app express
+   */
+  setupExpressAfterListening(app) {
     this.setupHeaderDebugger(app);
     this.setupBrowserSync(app);
   }
 
   setupHeaderDebugger(app) {
-    debug('setupHeaderDebugger');
+    logger.debug('setupHeaderDebugger');
 
     app.use((req, res, next) => {
       onHeaders(res, () => {
-        debug('HEADERS GOING TO BE WRITTEN');
+        logger.debug('HEADERS GOING TO BE WRITTEN');
       });
       next();
     });
   }
 
   setupBrowserSync(app) {
-    debug('setupBrowserSync');
+    logger.debug('setupBrowserSync');
 
     const browserSync = require('browser-sync');
     const bs = browserSync.create().init({
@@ -93,12 +129,12 @@ class CrowiDev {
         && process.env.PLUGIN_NAMES_TOBE_LOADED.length > 0) {
 
       const pluginNames = process.env.PLUGIN_NAMES_TOBE_LOADED.split(',');
-      debug('loading Plugins for development', pluginNames);
+      logger.debug('[development] loading Plugins', pluginNames);
 
       // merge and remove duplicates
       if (pluginNames.length > 0) {
-        var PluginService = require('../plugins/plugin.service');
-        var pluginService = new PluginService(this.crowi, app);
+        const PluginService = require('../plugins/plugin.service');
+        const pluginService = new PluginService(this.crowi, app);
         pluginService.loadPlugins(pluginNames);
       }
     }

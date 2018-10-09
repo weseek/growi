@@ -211,31 +211,20 @@ legend {
 /*
  * Tabs
  */
+$active-nav-tabs-bgcolor: $bodycolor !default;
 .nav.nav-tabs {
-  > li > a {
-    &, &:hover, &:focus {
-      background: transparent;
-    }
-  }
-  > li.active > a {
-    background: $bodycolor;
-    border-bottom: 1px solid $bodycolor;
-  }
-}
 
-/*
- * Tabs
- */
- .nav.nav-tabs {
   border-bottom-color: $navbar-border;
 
   > li > a {
     color:$linktext;
     &:hover, &:focus {
       color: $linktext-hover;
+      background: transparent;
     }
   }
   > li.active > a {
+    background: $active-nav-tabs-bgcolor;
     border-top-color: $navbar-border;
     border-left-color: $navbar-border;
     border-right-color: $navbar-border;
@@ -290,6 +279,16 @@ legend {
       color: $wikilinktext-hover;
     }
   }
+
+  // table with handsontable modal button
+  .editable-with-handsontable {
+    button {
+      color: $wikilinktext;
+    }
+    button:hover {
+      color: $wikilinktext-hover;
+    }
+  }
 }
 
 
@@ -309,6 +308,9 @@ body.on-edit {
 
     .page-editor-editor-container {
       border-right-color: $navbar-border;
+      .navbar-editor {
+        background-color: $active-nav-tabs-bgcolor;   // same color with active tab
+      }
     }
     .page-editor-preview-container {
       background-color: $bodycolor;

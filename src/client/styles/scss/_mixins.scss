@@ -16,7 +16,9 @@
 
 @mixin expand-editor($header-plus-footer) {
   $header-plus-footer: $header-plus-footer + 2px;   // add .main padding-top
-  $editor-margin: $header-plus-footer + 26px;       // add .btn-open-dropzone height
+  $editor-margin: $header-plus-footer
+                  + 25px        // add .btn-open-dropzone height
+                  + 30px;       // add .navbar-editor height
 
   .main {
     width: 100%;
@@ -47,6 +49,18 @@
           min-height: calc(100vh - #{$header-plus-footer});   // for IE11
           height: calc(100vh - #{$header-plus-footer});
         }
+
+        .navbar-editor {
+          button {
+            padding: 7px 8px;
+            line-height: 1;
+          }
+
+          img {
+            vertical-align: bottom;
+          }
+        }
+
         // left(editor)
         .page-editor-editor-container {
           min-height: calc(100vh - #{$header-plus-footer});   // for IE11

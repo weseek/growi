@@ -1,8 +1,25 @@
 CHANGES
 ========
 
-## 3.2.3-RC
+## 3.2.4-RC
 
+* Feature: Edit table with Spreadsheet like GUI (Handsontable)
+* Feature: Paging recent created in users home
+* Improvement: Specify certificate for SAML Authentication
+* Fix: SAML Authentication didn't work
+* Support: Mongoose migration mechanism
+* Support: Upgrade libs
+    * googleapis
+    * mocha
+    * mongoose
+    * mongoose-paginate
+    * mongoose-unique-validator
+    * multer
+
+## 3.2.3
+
+* Feature: Kibela like layout
+* Improvement: Custom newpage separator for presentation view
 * Support: Shrink image size for themes which recently added
 
 ## 3.2.2

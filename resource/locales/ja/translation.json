@@ -278,6 +278,8 @@
     "Site Name": "サイト名",
     "sitename_change": "ヘッダーや HTML タイトルに使用されるサイト名を変更できます。",
     "header_content": "ここに入力した内容は、ヘッダー等に表示されます。",
+    "Site URL": "サイトURL",
+    "siteurl_help": "<code>http://</code> または <code>https://</code> から始まるサイトのURL。",
     "Confidential name": "コンフィデンシャル表示",
     "ex): internal use only": "例: 社外秘",
     "enable_files_except_image": "画像以外のファイルアップロードを許可",
@@ -327,6 +329,7 @@
     "auth_mechanism": "認証機構",
     "recommended": "推奨",
     "username_email_password": "ユーザー名、Eメール、パスワードでの認証",
+    "alert_siteUrl_is_not_set": "'サイトURL' が設定されていません。%s から設定してください。",
     "ldap_auth": "LDAP 認証",
     "saml_auth": "SAML 認証",
     "google_auth2": "Google OAuth 認証",
@@ -349,6 +352,7 @@
     "xss_prevent_setting":"XSS(Cross Site Scripting)対策設定",
     "xss_prevent_setting_link":"マークダウン設定ページに移動",
     "callback_URL": "コールバックURL",
+    "desc_of_callback_URL": "%s プロバイダ側の設定で利用してください。",
     "guest_mode": {
       "deny": "アカウントを持たないユーザーはアクセス不可",
       "readonly": "閲覧のみ許可"
@@ -397,17 +401,23 @@
       "name": "SAML",
       "entry_point": "エントリーポイント",
       "issuer": "発行者",
-      "mapping_detail": "新規ユーザーの%sに関連付ける属性"
+      "First Name": "姓",
+      "Last Name": "名",
+      "id_detail": "SAML Identity プロバイダ内で一意に識別可能な値を格納している属性",
+      "username_detail": "新規ユーザーのアカウント名(<code>username</code>)に関連付ける属性",
+      "mapping_detail": "新規ユーザーの%sに関連付ける属性",
+      "cert_detail1": "IdP からのレスポンスの validation を行うための、PEMエンコードされた X.509 証明書",
+      "cert_detail2": "空の場合は環境変数 <code>SAML_CERT</code> を利用し、そちらも存在しない場合は validation 自体を行いません"
     },
     "OAuth": {
       "register": "%sに登録",
-      "change_redirect_url": "承認済みのリダイレクトURLに、 <code>%s</code> を入力<br>(<code>%s</code>は環境に合わせて変更してください)",
+      "change_redirect_url": "承認済みのリダイレクトURLに、 <code>%s</code> を入力",
       "Google": {
         "name": "Google OAuth",
         "register_1": "<a href=\"%s\" target=\"_blank\">%s</a>へアクセス",
         "register_2": "プロジェクトがない場合はプロジェクトを作成",
         "register_3": "認証情報を作成 &rightarrow; OAuthクライアントID &rightarrow; ウェブアプリケーションを選択",
-        "register_4": "承認済みのリダイレクトURIを<code>%s</code>としてGrowiを登録 (<code>%s</code>は環境に合わせて変更してください)",
+        "register_4": "承認済みのリダイレクトURIを<code>%s</code>としてGrowiを登録",
         "register_5": "上記フォームにクライアントIDとクライアントシークレットを入力"
       },
       "Facebook": {
@@ -424,7 +434,7 @@
       "GitHub": {
         "name": "GitHub OAuth",
         "register_1": "<a href=\"%s\" target=\"_blank\">%s</a>へアクセス",
-        "register_2": "\"Authorization callback URL\"を<code>%s</code>としてGrowiを登録 (<code>%s</code>は環境に合わせて変更してください)",
+        "register_2": "\"Authorization callback URL\"を<code>%s</code>としてGrowiを登録",
         "register_3": "上記フォームにクライアントIDとクライアントシークレットを入力"
       },
       "how_to": {
@@ -504,7 +514,9 @@
     "Custom script": "カスタムスクリプト",
     "write_java": "システム全体に適用されるJavaScriptを記述できます。",
     "attach_title_header": "新規ページ作成時の h1 セクション自動挿入",
-    "attach_title_header_desc": "新規作成したページの1行目に、ページのパスを h1 セクションとして挿入します。"
+    "attach_title_header_desc": "新規作成したページの1行目に、ページのパスを h1 セクションとして挿入します。",
+    "show_document_number": "表示ドキュメント数管理",
+    "show_document_number_desc": "ホーム画面の Recent Created で、1ページに表示する件数を設定します。"
   },
 
   "user_management": {

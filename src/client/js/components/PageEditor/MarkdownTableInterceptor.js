@@ -1,6 +1,7 @@
 import { BasicInterceptor } from 'growi-pluginkit';
 
 import mtu from './MarkdownTableUtil';
+import MarkdownTable from '../../models/MarkdownTable';
 
 /**
  * Interceptor for markdown table
@@ -47,12 +48,12 @@ export default class MarkdownTableInterceptor extends BasicInterceptor {
     if (mtu.isEndOfLine(cm) && mtu.linePartOfTableRE.test(strFromBol)) {
       // get lines all of table from current position to beginning of table
       const strFromBot = mtu.getStrFromBot(cm);
-      let table = mtu.parseFromTableStringToMarkdownTable(strFromBot);
+      let table = MarkdownTable.fromMarkdownString(strFromBot);
 
       mtu.addRowToMarkdownTable(table);
 
       const strToEot = mtu.getStrToEot(cm);
-      const tableBottom = mtu.parseFromTableStringToMarkdownTable(strToEot);
+      const tableBottom = MarkdownTable.fromMarkdownString(strToEot);
       if (tableBottom.table.length > 0) {
         table = mtu.mergeMarkdownTable([table, tableBottom]);
       }

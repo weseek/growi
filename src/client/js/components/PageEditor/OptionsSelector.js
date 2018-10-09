@@ -108,9 +108,7 @@ export default class OptionsSelector extends React.Component {
    * dispatch onChange event
    */
   dispatchOnChange() {
-    if (this.props.onChange != null) {
-      this.props.onChange(this.state.editorOptions, this.state.previewOptions);
-    }
+    this.props.onChange(this.state.editorOptions, this.state.previewOptions);
   }
 
   renderThemeSelector() {
@@ -255,7 +253,7 @@ export class PreviewOptions {
 
 OptionsSelector.propTypes = {
   crowi: PropTypes.object.isRequired,
-  editorOptions: PropTypes.instanceOf(EditorOptions),
-  previewOptions: PropTypes.instanceOf(PreviewOptions),
-  onChange: PropTypes.func,
+  editorOptions: PropTypes.instanceOf(EditorOptions).isRequired,
+  previewOptions: PropTypes.instanceOf(PreviewOptions).isRequired,
+  onChange: PropTypes.func.isRequired,
 };

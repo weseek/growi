@@ -1,5 +1,4 @@
-import markdownTable from 'markdown-table';
-import stringWidth from 'string-width';
+import MarkdownTable from '../../models/MarkdownTable';
 
 /**
  * Utility for markdown table
@@ -18,18 +17,22 @@ class MarkdownTableUtil {
     this.getBol = this.getBol.bind(this);
     this.getStrFromBot = this.getStrFromBot.bind(this);
     this.getStrToEot = this.getStrToEot.bind(this);
-
-    this.parseFromTableStringToMarkdownTable = this.parseFromTableStringToMarkdownTable.bind(this);
-    this.replaceMarkdownTableWithReformed = this.replaceMarkdownTableWithReformed.bind(this);
+    this.isInTable = this.isInTable.bind(this);
+    this.replaceFocusedMarkdownTableWithEditor = this.replaceFocusedMarkdownTableWithEditor.bind(this);
+    this.replaceMarkdownTableWithReformed = this.replaceFocusedMarkdownTableWithEditor; // alias
   }
 
   /**
    * return the postion of the BOT(beginning of table)
-   * (It is assumed that current line is a part of table)
+   * (If the cursor is not in a table, return its position)
    */
   getBot(editor) {
-    const firstLine = editor.getDoc().firstLine();
     const curPos = editor.getCursor();
+    if (!this.isInTable(editor)) {
+      return { line: curPos.line, ch: curPos.ch};
+    }
+
+    const firstLine = editor.getDoc().firstLine();
     let line = curPos.line - 1;
     for (; line >= firstLine; line--) {
       const strLine = editor.getDoc().getLine(line);
@@ -43,11 +46,15 @@ class MarkdownTableUtil {
 
   /**
    * return the postion of the EOT(end of table)
-   * (It is assumed that current line is a part of table)
+   * (If the cursor is not in a table, return its position)
    */
   getEot(editor) {
-    const lastLine = editor.getDoc().lastLine();
     const curPos = editor.getCursor();
+    if (!this.isInTable(editor)) {
+      return { line: curPos.line, ch: curPos.ch};
+    }
+
+    const lastLine = editor.getDoc().lastLine();
     let line = curPos.line + 1;
     for (; line <= lastLine; line++) {
       const strLine = editor.getDoc().getLine(line);
@@ -69,7 +76,7 @@ class MarkdownTableUtil {
   }
 
   /**
-   * return strings from BOT(beginning of table) to current position
+   * return strings from BOT(beginning of table) to the cursor position
    */
   getStrFromBot(editor) {
     const curPos = editor.getCursor();
@@ -77,7 +84,7 @@ class MarkdownTableUtil {
   }
 
   /**
-   * return strings from current position to EOT(end of table)
+   * return strings from the cursor position to EOT(end of table)
    */
   getStrToEot(editor) {
     const curPos = editor.getCursor();
@@ -85,50 +92,32 @@ class MarkdownTableUtil {
   }
 
   /**
-   * returns markdown table whose described by 'markdown-table' format
-   *   ref. https://github.com/wooorm/markdown-table
-   * @param {string} lines all of table
+   * return MarkdownTable instance of the table where the cursor is
+   * (If the cursor is not in a table, return null)
    */
-  parseFromTableStringToMarkdownTable(strMDTable) {
-    const arrMDTableLines = strMDTable.split(/(\r\n|\r|\n)/);
-    let contents = [];
-    let aligns = [];
-    for (let n = 0; n < arrMDTableLines.length; n++) {
-      const line = arrMDTableLines[n];
-
-      if (this.tableAlignmentLineRE.test(line) && !this.tableAlignmentLineNegRE.test(line)) {
-        // parse line which described alignment
-        const alignRuleRE = [
-          { align: 'c', regex: /^:-+:$/ },
-          { align: 'l', regex: /^:-+$/  },
-          { align: 'r', regex: /^-+:$/  },
-        ];
-        let lineText = '';
-        lineText = line.replace(/^\||\|$/g, ''); // strip off pipe charactor which is placed head of line and last of line.
-        lineText = lineText.replace(/\s*/g, '');
-        aligns = lineText.split(/\|/).map(col => {
-          const rule = alignRuleRE.find(rule => col.match(rule.regex));
-          return (rule != undefined) ? rule.align : '';
-        });
-      }
-      else if (this.linePartOfTableRE.test(line)) {
-        // parse line whether header or body
-        let lineText = '';
-        lineText = line.replace(/\s*\|\s*/g, '|');
-        lineText = lineText.replace(/^\||\|$/g, ''); // strip off pipe charactor which is placed head of line and last of line.
-        const row = lineText.split(/\|/);
-        contents.push(row);
-      }
+  getMarkdownTable(editor) {
+    if (!this.isInTable(editor)) {
+      return null;
     }
-    return (new MarkdownTable(contents, { align: aligns, stringLength: stringWidth }));
+
+    const strFromBotToEot = editor.getDoc().getRange(this.getBot(editor), this.getEot(editor));
+    return MarkdownTable.fromMarkdownString(strFromBotToEot);
   }
 
   /**
-   * return boolean value whether the current position of cursor is end of line
+   * return boolean value whether the cursor position is end of line
    */
   isEndOfLine(editor) {
     const curPos = editor.getCursor();
     return (curPos.ch == editor.getDoc().getLine(curPos.line).length);
+  }
+
+  /**
+   * return boolean value whether the cursor position is in a table
+   */
+  isInTable(editor) {
+    const curPos = editor.getCursor();
+    return this.linePartOfTableRE.test(editor.getDoc().getLine(curPos.line));
   }
 
   /**
@@ -144,7 +133,7 @@ class MarkdownTableUtil {
   }
 
   /**
-   * returns markdown table that is merged all of markdown table in array
+   * return markdown table that is merged all of markdown table in array
    * (The merged markdown table options are used for the first markdown table.)
    * @param {Array} array of markdown table
    */
@@ -163,36 +152,38 @@ class MarkdownTableUtil {
   }
 
   /**
-   * replace markdown table which is reformed by markdown-table
-   * @param {MarkdownTable} markdown table
+   * replace focused markdown table with editor
+   * (A replaced table is reformed by markdown-table.)
+   * @param {MarkdownTable} table
    */
-  replaceMarkdownTableWithReformed(editor, table) {
+  replaceFocusedMarkdownTableWithEditor(editor, table) {
     const curPos = editor.getCursor();
-
-    // replace the lines to strTableLinesFormated
-    const strTableLinesFormated = table.toString();
-    editor.getDoc().replaceRange(strTableLinesFormated, this.getBot(editor), this.getEot(editor));
-
-    // set cursor to first column
+    editor.getDoc().replaceRange(table.toString(), this.getBot(editor), this.getEot(editor));
     editor.getDoc().setCursor(curPos.line + 1, 2);
   }
-}
 
-/**
- * markdown table class for markdown-table module
- *   ref. https://github.com/wooorm/markdown-table
- */
-class MarkdownTable {
+  /**
+   * return markdown where the markdown table specified by line number params is replaced to the markdown table specified by table param
+   * @param {string} markdown
+   * @param {MarkdownTable} table
+   * @param beginLineNumber
+   * @param endLineNumber
+   */
+  replaceMarkdownTableInMarkdown(table, markdown, beginLineNumber, endLineNumber) {
+    const splitMarkdown = markdown.split(/\r\n|\r|\n/);
+    const markdownBeforeTable = splitMarkdown.slice(0, beginLineNumber - 1);
+    const markdownAfterTable = splitMarkdown.slice(endLineNumber);
 
-  constructor(table, options) {
-    this.table = table || [];
-    this.options = options || {};
+    let newMarkdown = '';
+    if (markdownBeforeTable.length > 0) {
+      newMarkdown += markdownBeforeTable.join('\n') + '\n';
+    }
+    newMarkdown += table;
+    if (markdownAfterTable.length > 0) {
+      newMarkdown += '\n' + markdownAfterTable.join('\n');
+    }
 
-    this.toString = this.toString.bind(this);
-  }
-
-  toString() {
-    return markdownTable(this.table, this.options);
+    return newMarkdown;
   }
 }
 

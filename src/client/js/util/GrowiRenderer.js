@@ -16,6 +16,8 @@ import TableConfigurer from './markdown-it/table';
 import TaskListsConfigurer from './markdown-it/task-lists';
 import TocAndAnchorConfigurer from './markdown-it/toc-and-anchor';
 import BlockdiagConfigurer from './markdown-it/blockdiag';
+import TableWithHandsontableButtonConfigurer from './markdown-it/table-with-handsontable-button';
+import HeaderWithEditLinkConfigurer from './markdown-it/header-with-edit-link';
 
 export default class GrowiRenderer {
 
@@ -72,7 +74,6 @@ export default class GrowiRenderer {
     this.markdownItConfigurers = [
       new TaskListsConfigurer(crowi),
       new HeaderConfigurer(crowi),
-      new TableConfigurer(crowi),
       new EmojiConfigurer(crowi),
       new MathJaxConfigurer(crowi),
       new PlantUMLConfigurer(crowi),
@@ -87,16 +88,20 @@ export default class GrowiRenderer {
           new FooternoteConfigurer(crowi),
           new TocAndAnchorConfigurer(crowi, options.renderToc),
           new HeaderLineNumberConfigurer(crowi),
+          new HeaderWithEditLinkConfigurer(crowi),
+          new TableWithHandsontableButtonConfigurer(crowi)
         ]);
         break;
       case 'editor':
         this.markdownItConfigurers = this.markdownItConfigurers.concat([
           new FooternoteConfigurer(crowi),
-          new HeaderLineNumberConfigurer(crowi)
+          new HeaderLineNumberConfigurer(crowi),
+          new TableConfigurer(crowi)
         ]);
         break;
       case 'comment':
         this.markdownItConfigurers = this.markdownItConfigurers.concat([
+          new TableConfigurer(crowi)
         ]);
         break;
       default:

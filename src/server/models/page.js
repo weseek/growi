@@ -540,7 +540,7 @@ module.exports = function(crowi) {
     const Page = this;
     const templatePath = cutOffLastSlash(path);
     const pathList = generatePathsOnTree(templatePath, []);
-    const regexpList = pathList.map(path => new RegExp(`^${path}/_{1,2}template$`));
+    const regexpList = pathList.map(path => new RegExp(`^${escapeStringRegexp(path)}/_{1,2}template$`));
 
     return Page
       .find({path: {$in: regexpList}})
@@ -669,37 +669,47 @@ module.exports = function(crowi) {
     });
   };
 
-  pageSchema.statics.findListByCreator = function(user, option, currentUser) {
-    var Page = this;
-    var User = crowi.model('User');
-    var limit = option.limit || 50;
-    var offset = option.offset || 0;
-    var conditions = {
+  pageSchema.statics.findListByCreator = async function(user, option, currentUser) {
+    let Page = this;
+    let User = crowi.model('User');
+    let limit = option.limit || 50;
+    let offset = option.offset || 0;
+    let conditions = setPageListConditions(user);
+
+    let pages =  await Page.find(conditions).sort({createdAt: -1}).skip(offset).limit(limit).populate('revision').exec();
+    let PagesList = await Page.populate(pages, {path: 'lastUpdateUser', model: 'User', select: User.USER_PUBLIC_FIELDS});
+    let totalCount = await Page.countListByCreator(user);
+    let PagesArray = [
+      {totalCount: totalCount}
+    ];
+    PagesArray.push(PagesList);
+    return PagesArray;
+  };
+  function setPageListConditions(user) {
+    const conditions = {
       creator: user._id,
       redirectTo: null,
-      $or: [
-        {status: null},
-        {status: STATUS_PUBLISHED},
-      ],
+      $and: [
+        {$or: [
+          {status: null},
+          {status: STATUS_PUBLISHED},
+        ]},
+        {$or: [
+          {grant: GRANT_PUBLIC},
+          {grant: GRANT_USER_GROUP},
+        ]}],
     };
 
-    if (!user.equals(currentUser._id)) {
-      conditions.grant = GRANT_PUBLIC;
-    }
+    return conditions;
+  }
 
-    return new Promise(function(resolve, reject) {
-      Page
-      .find(conditions)
-      .sort({createdAt: -1})
-      .skip(offset)
-      .limit(limit)
-      .populate('revision')
-      .exec()
-      .then(function(pages) {
-        return Page.populate(pages, {path: 'lastUpdateUser', model: 'User', select: User.USER_PUBLIC_FIELDS}).then(resolve);
-      });
-    });
+  pageSchema.statics.countListByCreator = function(user) {
+    let Page = this;
+    let conditions = setPageListConditions(user);
+
+    return Page.find(conditions).count();
   };
+
 
   /**
    * Bulk get (for internal only)

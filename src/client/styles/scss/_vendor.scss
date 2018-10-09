@@ -18,3 +18,6 @@ $bootstrap-sass-asset-helper: true;
 @import '~codemirror/lib/codemirror.css';
 @import '~codemirror/theme/elegant.css';
 @import '~codemirror/theme/eclipse.css';
+
+// import Handsontable styles
+@import '~handsontable/dist/handsontable.full.css';
