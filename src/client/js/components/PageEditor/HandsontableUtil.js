@@ -13,7 +13,7 @@ export default class HandsontableUtil {
   }
 
   /**
-   * create a function(handsontable event handler) to adjust the handsontable alignment to the markdown table
+   * return a function(handsontable event handler) to adjust the handsontable alignment to the markdown table
    */
   static createHandlerToSynchronizeHandontableAlignWith(markdownTableAlign) {
     const mapping = {
