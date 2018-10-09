@@ -8,6 +8,7 @@ import Handsontable from 'handsontable';
 import { HotTable } from '@handsontable/react';
 
 import MarkdownTable from '../../models/MarkdownTable';
+import hu from './HandsontableUtil';
 
 export default class HandsontableModal extends React.Component {
   constructor(props) {
@@ -37,7 +38,7 @@ export default class HandsontableModal extends React.Component {
         '': ''
       };
       for (let i = 0; i < align.length; i++) {
-        HandsontableModal.alignColumns(this, i, i, mapping[align[i]]);
+        hu.alignColumns(this, i, i, mapping[align[i]]);
       }
     };
     this.setState(
@@ -143,17 +144,17 @@ export default class HandsontableModal extends React.Component {
                 name: 'Left',
                 key: 'align_columns:1',
                 callback: function(key, selection) {
-                  HandsontableModal.alignColumns(this, selection[0].start.col, selection[0].end.col, 'htLeft');
+                  hu.alignColumns(this, selection[0].start.col, selection[0].end.col, 'htLeft');
                 }}, {
                 name: 'Center',
                 key: 'align_columns:2',
                 callback: function(key, selection) {
-                  HandsontableModal.alignColumns(this, selection[0].start.col, selection[0].end.col, 'htCenter');
+                  hu.alignColumns(this, selection[0].start.col, selection[0].end.col, 'htCenter');
                 }}, {
                 name: 'Right',
                 key: 'align_columns:3',
                 callback: function(key, selection) {
-                  HandsontableModal.alignColumns(this, selection[0].start.col, selection[0].end.col, 'htRight');
+                  hu.alignColumns(this, selection[0].start.col, selection[0].end.col, 'htRight');
                 }}
               ]
             }
@@ -163,15 +164,6 @@ export default class HandsontableModal extends React.Component {
       stretchH: 'all',
       selectionMode: 'multiple'
     };
-  }
-
-  static alignColumns(core, startCol, endCol, className) {
-    for (let i = startCol; i <= endCol; i++) {
-      for (let j = 0; j < core.countRows(); j++) {
-        core.setCellMeta(j, i, 'className', className);
-      }
-    }
-    core.render();
   }
 }
 
