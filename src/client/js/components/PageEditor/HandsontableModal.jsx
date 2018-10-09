@@ -8,7 +8,7 @@ import Handsontable from 'handsontable';
 import { HotTable } from '@handsontable/react';
 
 import MarkdownTable from '../../models/MarkdownTable';
-import hu from './HandsontableUtil';
+import HandsontableUtil from './HandsontableUtil';
 
 export default class HandsontableModal extends React.Component {
   constructor(props) {
@@ -29,25 +29,13 @@ export default class HandsontableModal extends React.Component {
 
   init(markdownTable) {
     const initMarkdownTable = markdownTable || HandsontableModal.getDefaultMarkdownTable();
-    const synchronizeAlignSettings = function() {
-      const align = initMarkdownTable.options.align;
-      const mapping = {
-        'r': 'htRight',
-        'c': 'htCenter',
-        'l': 'htLeft',
-        '': ''
-      };
-      for (let i = 0; i < align.length; i++) {
-        hu.alignColumns(this, i, i, mapping[align[i]]);
-      }
-    };
     this.setState(
       {
         markdownTableOnInit: initMarkdownTable,
         markdownTable: initMarkdownTable.clone(),
         handsontableSetting: Object.assign({}, this.state.handsontableSetting, {
-          afterUpdateSettings: synchronizeAlignSettings,
-          loadData: synchronizeAlignSettings
+          afterUpdateSettings: HandsontableUtil.createHandlerToSynchronizeHandontableAlignWith(initMarkdownTable.options.align),
+          loadData: HandsontableUtil.createHandlerToSynchronizeHandontableAlignWith(initMarkdownTable.options.align)
         })
       }
     );
@@ -67,19 +55,8 @@ export default class HandsontableModal extends React.Component {
   }
 
   save() {
-    const cellMetasAtFirstRow = this.refs.hotTable.hotInstance.getCellMetaAtRow(0);
     let newMarkdownTable = this.state.markdownTable.clone();
-    let align = [];
-    const mapping = {
-      'htRight': 'r',
-      'htCenter': 'c',
-      'htLeft': 'l',
-      '': ''
-    };
-    for (let i = 0; i < cellMetasAtFirstRow.length; i++) {
-      align.push(mapping[cellMetasAtFirstRow[i].className]);
-    }
-    newMarkdownTable.options.align = align;
+    newMarkdownTable.options.align = HandsontableUtil.getMarkdownTableAlignmentFrom(this.refs.hotTable.hotInstance);
 
     if (this.props.onSave != null) {
       this.props.onSave(newMarkdownTable);
@@ -144,17 +121,17 @@ export default class HandsontableModal extends React.Component {
                 name: 'Left',
                 key: 'align_columns:1',
                 callback: function(key, selection) {
-                  hu.alignColumns(this, selection[0].start.col, selection[0].end.col, 'htLeft');
+                  HandsontableUtil.setClassNameToColumns(this, selection[0].start.col, selection[0].end.col, 'htLeft');
                 }}, {
                 name: 'Center',
                 key: 'align_columns:2',
                 callback: function(key, selection) {
-                  hu.alignColumns(this, selection[0].start.col, selection[0].end.col, 'htCenter');
+                  HandsontableUtil.setClassNameToColumns(this, selection[0].start.col, selection[0].end.col, 'htCenter');
                 }}, {
                 name: 'Right',
                 key: 'align_columns:3',
                 callback: function(key, selection) {
-                  hu.alignColumns(this, selection[0].start.col, selection[0].end.col, 'htRight');
+                  HandsontableUtil.setClassNameToColumns(this, selection[0].start.col, selection[0].end.col, 'htRight');
                 }}
               ]
             }
