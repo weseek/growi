@@ -469,7 +469,6 @@ module.exports = function(crowi, app) {
 
   actions.user = {};
   actions.user.index = function(req, res) {
-    const userUpperLimit = crowi.env["USER_UPPER_LIMIT"];
     var page = parseInt(req.query.page) || 1;
 
     User.findUsersWithPagination({page: page}, function(err, result) {
@@ -477,42 +476,15 @@ module.exports = function(crowi, app) {
 
       return res.render('admin/users', {
         users: result.docs,
-        pager: pager,
-        userUpperLimit: userUpperLimit
+        pager: pager
       });
     });
   };
 
   actions.user.invite = function(req, res) {
-    if (!req.form.isValid) {
-      req.flash('errorMessage', req.form.errors.join('\n'));
-      return res.redirect('/admin/users');
-    }
-    const userUpperLimit = crowi.env["USER_UPPER_LIMIT"];
     var form = req.form.inviteForm;
     var toSendEmail = form.sendEmail || false;
-    if (0 < userUpperLimit) {
-      User.findUsers({}, function(err, result) {
-        const currentUsers = result.length;
-        const _form = req.form.inviteForm;
-        const addUsers = _form.emailList.split('\n').length;
-        const sumUsers = currentUsers + addUsers;
-        if (userUpperLimit < sumUsers) {
-          req.flash('errorMessage', "ユーザーが上限に達したため招待できません。");
-          return res.redirect('/admin/users');
-        }
-        User.createUsersByInvitation(form.emailList.split('\n'), toSendEmail, function(err, userList) {
-          if (err) {
-            req.flash('errorMessage', req.form.errors.join('\n'));
-          }
-          else {
-            req.flash('createdUser', userList);
-          }
-          return res.redirect('/admin/users');
-        });
-      });
-    }
-    else {
+    if (req.form.isValid) {
       User.createUsersByInvitation(form.emailList.split('\n'), toSendEmail, function(err, userList) {
         if (err) {
           req.flash('errorMessage', req.form.errors.join('\n'));
@@ -522,6 +494,10 @@ module.exports = function(crowi, app) {
         }
         return res.redirect('/admin/users');
       });
+    }
+    else {
+      req.flash('errorMessage', req.form.errors.join('\n'));
+      return res.redirect('/admin/users');
     }
   };
 
