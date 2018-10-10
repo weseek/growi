@@ -469,14 +469,21 @@ module.exports = function(crowi, app) {
 
   actions.user = {};
   actions.user.index = function(req, res) {
-    var page = parseInt(req.query.page) || 1;
+    const userUpperLimit = crowi.env['USER_UPPER_LIMIT'];
+    User.findAllUsers({status: User.statusActivate})
+    .then(userData => {
+      const activeUsers = userData.length;
+      var page = parseInt(req.query.page) || 1;
 
-    User.findUsersWithPagination({page: page}, function(err, result) {
-      const pager = createPager(result.total, result.limit, result.page, result.pages, MAX_PAGE_LIST);
+      User.findUsersWithPagination({page: page}, function(err, result) {
+        const pager = createPager(result.total, result.limit, result.page, result.pages, MAX_PAGE_LIST);
 
-      return res.render('admin/users', {
-        users: result.docs,
-        pager: pager
+        return res.render('admin/users', {
+          users: result.docs,
+          pager: pager,
+          activeUsers: activeUsers,
+          userUpperLimit: userUpperLimit
+        });
       });
     });
   };
