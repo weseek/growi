@@ -138,8 +138,15 @@ export default class HandsontableModal extends React.Component {
           }
         }
       },
-      stretchH: 'all',
-      selectionMode: 'multiple'
+      selectionMode: 'multiple',
+      modifyColWidth: function(width) {
+        if (width < 100) {
+          return 100;
+        }
+        if (width > 300) {
+          return 300;
+        }
+      }
     };
   }
 }
