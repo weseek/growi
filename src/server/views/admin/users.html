@@ -33,7 +33,7 @@
 
     <div class="col-md-9">
       <p>
-        <button data-toggle="collapse" class="btn btn-default" href="#inviteUserForm">
+        <button data-toggle="collapse" class="btn btn-default" href="#inviteUserForm" {% if isUserUpperLimitError === true %}disabled{% endif %}>
           {{ t("user_management.invite_users") }}
         </button>
         <a class="btn btn-default btn-outline" href="/admin/users/external-accounts">
@@ -41,6 +41,9 @@
           {{ t("user_management.external_account") }}
         </a>
       </p>
+      {% if isUserUpperLimitError === true %}
+      <p>{{ t('user_management.cannot_invite_maximum_users') }}</p>
+      {% endif %}
       <form role="form" action="/admin/user/invite" method="post">
         <div id="inviteUserForm" class="collapse">
           <div class="form-group">

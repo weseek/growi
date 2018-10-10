@@ -469,10 +469,14 @@ module.exports = function(crowi, app) {
 
   actions.user = {};
   actions.user.index = function(req, res) {
-    const userUpperLimit = crowi.env['USER_UPPER_LIMIT'];
+    const userUpperLimit = Number(crowi.env['USER_UPPER_LIMIT']);
     User.findAllUsers({status: User.statusActivate})
     .then(userData => {
       const activeUsers = userData.length;
+      let isUserUpperLimitError = false;
+      if (userUpperLimit !== 0 && userUpperLimit <= activeUsers) {
+        isUserUpperLimitError = true;
+      }
       var page = parseInt(req.query.page) || 1;
 
       User.findUsersWithPagination({page: page}, function(err, result) {
@@ -482,7 +486,8 @@ module.exports = function(crowi, app) {
           users: result.docs,
           pager: pager,
           activeUsers: activeUsers,
-          userUpperLimit: userUpperLimit
+          userUpperLimit: userUpperLimit,
+          isUserUpperLimitError: isUserUpperLimitError
         });
       });
     });
