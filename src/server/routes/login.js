@@ -186,92 +186,102 @@ module.exports = function(crowi, app) {
           return res.redirect('/register');
         }
 
-        User.createUserByEmailAndPassword(name, username, email, password, lang, function(err, userData) {
-          if (err) {
-            req.flash('registerWarningMessage', 'Failed to register.');
+        User.findAllUsers({status: User.statusActivate})
+        .then(userData => {
+          const userUpperLimit = Number(crowi.env['USER_UPPER_LIMIT']);
+          const activeUsers = userData.length;
+          if (userUpperLimit !== 0 && userUpperLimit <= activeUsers) {
+            req.flash('registerWarningMessage', 'ユーザーが上限に達したため登録できません。');
             return res.redirect('/register');
           }
-          else {
 
-            // 作成後、承認が必要なモードなら、管理者に通知する
-            const appTitle = Config.appTitle(config);
-            if (config.crowi['security:registrationMode'] === Config.SECURITY_REGISTRATION_MODE_RESTRICTED) {
-              // TODO send mail
-              User.findAdmins(function(err, admins) {
-                async.each(
-                  admins,
-                  function(adminUser, next) {
-                    mailer.send({
-                      to: adminUser.email,
-                      subject: '[' + appTitle + ':admin] A New User Created and Waiting for Activation',
-                      template: path.join(crowi.localeDir, 'en-US/admin/userWaitingActivation.txt'),
-                      vars: {
-                        createdUser: userData,
-                        adminUser: adminUser,
-                        url: config.crowi['app:url'],
-                        appTitle: appTitle,
-                      }
-                    },
-                    function(err, s) {
-                      debug('completed to send email: ', err, s);
-                      next();
-                    }
-                    );
-                  },
-                  function(err) {
-                    debug('Sending invitation email completed.', err);
-                  }
-                );
-              });
-            }
-
-            if (googleId) {
-              userData.updateGoogleId(googleId, function(err, userData) {
-                if (err) { // TODO
-                }
-                return loginSuccess(req, res, userData);
-              });
-
-              if (googleImage) {
-                var axios = require('axios');
-                var fileUploader = require('../service/file-uploader')(crowi, app);
-                var filePath = User.createUserPictureFilePath(
-                  userData,
-                  googleImage.replace(/^.+\/(.+\..+)$/, '$1')
-                );
-
-                axios.get(googleImage, {responseType: 'stream'})
-                .then(function(response) {
-                  var type = response.headers['content-type'];
-                  var fileStream = response.data;
-                  fileStream.length = parseInt(response.headers['content-length']);
-
-                  fileUploader.uploadFile(filePath, type, fileStream, {})
-                  .then(function(data) {
-                    var imageUrl = fileUploader.generateUrl(filePath);
-                    debug('user picture uploaded', imageUrl);
-                    userData.updateImage(imageUrl, function(err, data) {
-                      if (err) {
-                        debug('Error on update user image', err);
-                      }
-                      // DONE
-                    });
-                  }).catch(function(err) { // ignore
-                    debug('Upload error', err);
-                  });
-                }).catch(function() { // ignore
-                });
-              }
+          User.createUserByEmailAndPassword(name, username, email, password, lang, function(err, userData) {
+            if (err) {
+              req.flash('registerWarningMessage', 'Failed to register.');
+              return res.redirect('/register');
             }
             else {
-              // add a flash message to inform the user that processing was successful -- 2017.09.23 Yuki Takei
-              // cz. loginSuccess method doesn't work on it's own when using passport
-              //      because `req.login()` prepared by passport is not called.
-              req.flash('successMessage', `The user '${userData.username}' is successfully created.`);
 
-              return loginSuccess(req, res, userData);
+              // 作成後、承認が必要なモードなら、管理者に通知する
+              const appTitle = Config.appTitle(config);
+              if (config.crowi['security:registrationMode'] === Config.SECURITY_REGISTRATION_MODE_RESTRICTED) {
+                // TODO send mail
+                User.findAdmins(function(err, admins) {
+                  async.each(
+                    admins,
+                    function(adminUser, next) {
+                      mailer.send({
+                        to: adminUser.email,
+                        subject: '[' + appTitle + ':admin] A New User Created and Waiting for Activation',
+                        template: path.join(crowi.localeDir, 'en-US/admin/userWaitingActivation.txt'),
+                        vars: {
+                          createdUser: userData,
+                          adminUser: adminUser,
+                          url: config.crowi['app:url'],
+                          appTitle: appTitle,
+                        }
+                      },
+                      function(err, s) {
+                        debug('completed to send email: ', err, s);
+                        next();
+                      }
+                      );
+                    },
+                    function(err) {
+                      debug('Sending invitation email completed.', err);
+                    }
+                  );
+                });
+              }
+
+              if (googleId) {
+                userData.updateGoogleId(googleId, function(err, userData) {
+                  if (err) { // TODO
+                  }
+                  return loginSuccess(req, res, userData);
+                });
+
+                if (googleImage) {
+                  var axios = require('axios');
+                  var fileUploader = require('../service/file-uploader')(crowi, app);
+                  var filePath = User.createUserPictureFilePath(
+                    userData,
+                    googleImage.replace(/^.+\/(.+\..+)$/, '$1')
+                  );
+
+                  axios.get(googleImage, {responseType: 'stream'})
+                  .then(function(response) {
+                    var type = response.headers['content-type'];
+                    var fileStream = response.data;
+                    fileStream.length = parseInt(response.headers['content-length']);
+
+                    fileUploader.uploadFile(filePath, type, fileStream, {})
+                    .then(function(data) {
+                      var imageUrl = fileUploader.generateUrl(filePath);
+                      debug('user picture uploaded', imageUrl);
+                      userData.updateImage(imageUrl, function(err, data) {
+                        if (err) {
+                          debug('Error on update user image', err);
+                        }
+                        // DONE
+                      });
+                    }).catch(function(err) { // ignore
+                      debug('Upload error', err);
+                    });
+                  }).catch(function() { // ignore
+                  });
+                }
+              }
+              else {
+                // add a flash message to inform the user that processing was successful -- 2017.09.23 Yuki Takei
+                // cz. loginSuccess method doesn't work on it's own when using passport
+                //      because `req.login()` prepared by passport is not called.
+                req.flash('successMessage', `The user '${userData.username}' is successfully created.`);
+
+                return loginSuccess(req, res, userData);
+              }
             }
-          }
+          });
         });
       });
     }
