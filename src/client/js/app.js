@@ -315,6 +315,8 @@ if (savePageControlsElem) {
   const grant = +savePageControlsElem.dataset.grant;
   const grantGroupId = savePageControlsElem.dataset.grantGroup;
   const grantGroupName = savePageControlsElem.dataset.grantGroupName;
+  // TODO 環境変数取得方法確認
+  const acl_enable = process.env.ACL_ENABLE == 'true' ? true : false;
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
       <SavePageControls crowi={crowi} onSubmit={saveWithSubmitButton}
@@ -324,7 +326,8 @@ if (savePageControlsElem) {
             }
           }}
           pageId={pageId} pagePath={pagePath} slackChannels={slackChannels}
-          grant={grant} grantGroupId={grantGroupId} grantGroupName={grantGroupName} />
+          grant={grant} grantGroupId={grantGroupId} grantGroupName={grantGroupName} acl_enable={acl_enable}
+           />
     </I18nextProvider>,
     savePageControlsElem
   );

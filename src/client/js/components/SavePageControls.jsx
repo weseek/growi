@@ -42,6 +42,7 @@ class SavePageControls extends React.PureComponent {
   render() {
     const { t } = this.props;
 
+    const acl_enable = this.props.acl_enable;
     const label = this.state.pageId == null ? t('Create') : t('Update');
 
     return (
@@ -56,17 +57,20 @@ class SavePageControls extends React.PureComponent {
               slackChannels={this.props.slackChannels} />
         </div>
 
-        <div className="mr-2">
-          <GrantSelector crowi={this.props.crowi}
-              ref={(elem) => {
-                if (this.refs.grantSelector == null) {
-                  this.refs.grantSelector = elem.getWrappedInstance();
-                }
-              }}
-              grant={this.props.grant}
-              grantGroupId={this.props.grantGroupId}
-              grantGroupName={this.props.grantGroupName} />
-        </div>
+
+        {acl_enable &&
+          <div className="mr-2">
+            <GrantSelector crowi={this.props.crowi}
+                ref={(elem) => {
+                  if (this.refs.grantSelector == null) {
+                    this.refs.grantSelector = elem.getWrappedInstance();
+                  }
+                }}
+                grant={this.props.grant}
+                grantGroupId={this.props.grantGroupId}
+                grantGroupName={this.props.grantGroupName} />
+          </div>
+        }
 
         <button className="btn btn-primary btn-submit" onClick={this.submit}>{label}</button>
       </div>
@@ -86,6 +90,7 @@ SavePageControls.propTypes = {
   grant: PropTypes.number,
   grantGroupId: PropTypes.string,
   grantGroupName: PropTypes.string,
+  acl_enable: PropTypes.bool,
 };
 
 export default translate()(SavePageControls);

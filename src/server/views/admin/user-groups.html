@@ -33,7 +33,11 @@
 
     <div class="col-md-9">
       <p>
-        <button  data-toggle="collapse" class="btn btn-default" href="#createGroupForm">新規グループの作成</button>
+        {% if acl_enable %}
+          <button  data-toggle="collapse" class="btn btn-default" href="#createGroupForm">新規グループの作成</button>
+        {% else %}
+          現在の設定では新規グループの作成はできません。
+        {% endif %}
       </p>
       <form role="form" action="/admin/user-group/create" method="post">
         <div id="createGroupForm" class="collapse">
@@ -105,7 +109,7 @@
         <!-- /.modal-dialog -->
       </div>
 
-      <h2>グループ一覧</h2>
+      <h2>グループ一覧{{acl_enable}}</h2>
 
       <table class="table table-bordered table-user-list">
         <thead>
@@ -131,6 +135,7 @@
               {% endfor %}
             </ul></td>
             <td>{{ sGroup.createdAt|date('Y-m-d', sGroup.createdAt.getTimezoneOffset()) }}</td>
+            {% if acl_enable %}
             <td>
               <div class="btn-group admin-group-menu">
                 <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
@@ -156,6 +161,9 @@
                 </ul>
               </div>
             </td>
+            {% else %}
+              <td></td>
+            {% endif %}
           </tr>
           {% endfor %}
         </tbody>

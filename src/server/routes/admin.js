@@ -670,10 +670,12 @@ module.exports = function(crowi, app) {
   actions.userGroup = {};
   actions.userGroup.index = function(req, res) {
     var page = parseInt(req.query.page) || 1;
+    const acl_enable = process.env.ACL_ENABLE == 'true' ? true : false;
     var renderVar = {
       userGroups: [],
       userGroupRelations: new Map(),
       pager: null,
+      acl_enable,
     };
 
     UserGroup.findUserGroupsWithPagination({ page: page })
