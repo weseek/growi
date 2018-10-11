@@ -6,10 +6,11 @@ module.exports = function(crowi) {
   var debug = require('debug')('growi:service:fileUploaderLocal')
   var fs = require('fs');
   var mongoose = require('mongoose');
-  var lib = {}
+  var lib = {};
+  var Attachment = {};
 
-  // mongoose connect
-  mongoose.connect('mongodb://localhost/test');
+  // // mongoose connect
+  // mongoose.connect('mongodb://localhost/test');
 
   // instantiate mongoose-gridfs
   var gridfs = require('mongoose-gridfs')({
@@ -35,18 +36,18 @@ module.exports = function(crowi) {
 
   // for larger file size
   // read a file and receive a stream
-  var stream = Attachment.readById(objectid);
+  // var stream = Attachment.readById(objectid);
 
   // for smaller file size
-  // read a file and receive a buffer
-  Attachment.readById(objectid, function (error, buffer) {
-    debug('Failed to read a file with ' + buffer, error);
-  });
+  // // read a file and receive a buffer
+  // Attachment.readById(objectid, function (error, buffer) {
+  //   debug('Failed to read a file with ' + buffer, error);
+  // });
 
-  // remove file details and its content from gridfs
-  Attachment.unlinkById(objectid, function (error, unlinkedAttachment) {
-    debug('Failed to remove ' + unlinkedAttachment + 'in gridFS', error);
-  });
+  // // remove file details and its content from gridfs
+  // Attachment.unlinkById(objectid, function (error, unlinkedAttachment) {
+  //   debug('Failed to remove ' + unlinkedAttachment + 'in gridFS', error);
+  // });
 
   return lib;
 };
