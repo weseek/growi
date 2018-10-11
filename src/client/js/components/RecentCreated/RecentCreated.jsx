@@ -1,5 +1,5 @@
 import React from 'react';
-import UserPicture from '../User/UserPicture';
+import Page from '../PageList/Page';
 
 import PropTypes from 'prop-types';
 import Pagination from 'react-bootstrap/lib/Pagination';
@@ -11,8 +11,7 @@ export default class RecentCreated extends React.Component {
     this.state = {
       pages: [],
       activePage: 1,
-      PaginationNumbers: {},
-
+      paginationNumbers: {},
     };
     this.calculatePagination = this.calculatePagination.bind(this);
   }
@@ -21,32 +20,33 @@ export default class RecentCreated extends React.Component {
   componentWillMount() {
     this.getRecentCreatedList(1);
   }
-  getRecentCreatedList(selectPageNumber) {
 
+  getRecentCreatedList(selectPageNumber) {
     const pageId = this.props.pageId;
     const userId = this.props.crowi.me;
     const limit = this.props.limit;
     const offset = (selectPageNumber - 1) * limit;
 
     // pagesList get and pagination calculate
-    this.props.crowi.apiGet('/pages.recentCreated', {page_id: pageId, user: userId, limit: limit, offset: offset, })
+    this.props.crowi.apiGet('/pages.recentCreated', { page_id: pageId, user: userId, limit, offset })
       .then(res => {
         const totalCount = res.pages[0].totalCount;
         const activePage = selectPageNumber;
         const pages = res.pages[1];
         // pagiNation calculate function call
-        const PaginationNumbers = this.calculatePagination(limit, totalCount, activePage);
+        const paginationNumbers = this.calculatePagination(limit, totalCount, activePage);
         this.setState({
           pages,
           activePage,
-          PaginationNumbers,
+          paginationNumbers,
         });
       });
   }
+
   calculatePagination(limit, totalCount, activePage) {
-    let PaginationNumbers = {};
-    // pagiNation totalPageNumber calculate
-    let totalPage = Math.floor(totalCount / limit) + (totalCount % limit === 0 ? 0  : 1);
+    // calc totalPageNumber
+    const totalPage = Math.floor(totalCount / limit) + (totalCount % limit === 0 ? 0  : 1);
+
     let paginationStart = activePage - 2;
     let maxViewPageNum =  activePage + 2;
     // pagiNation Number area size = 5 , pageNuber calculate in here
@@ -61,11 +61,12 @@ export default class RecentCreated extends React.Component {
       maxViewPageNum -= diff;
       paginationStart = Math.max(1, paginationStart - diff);
     }
-    PaginationNumbers.totalPage = totalPage;
-    PaginationNumbers.paginationStart = paginationStart;
-    PaginationNumbers.maxViewPageNum = maxViewPageNum;
 
-    return PaginationNumbers;
+    return {
+      totalPage,
+      paginationStart,
+      maxViewPageNum,
+    };
   }
   /**
    * generate Elements of Page
@@ -74,14 +75,8 @@ export default class RecentCreated extends React.Component {
    *
    */
   generatePageList(pages) {
-    return pages.map((page, i) => {
-      const pageuser = page.lastUpdateUser;
-      return (
-        <li key={i}>
-          <UserPicture user={pageuser} />
-          <a href={page.path} className="page-list-link" data-path={page.path} data-short-path={page.revision.body}>{decodeURI(page.path)}</a>
-        </li>
-      );
+    return pages.map(page => {
+      return <Page page={page} key={'recent-created:list-view:' + page._id} />;
     });
 
   }
@@ -160,25 +155,24 @@ export default class RecentCreated extends React.Component {
     const pageList = this.generatePageList(this.state.pages);
 
     let paginationItems = [];
-    let activePage = this.state.activePage;
-    let totalPage = this.state.PaginationNumbers.totalPage;
-    let paginationStart = this.state.PaginationNumbers.paginationStart;
-    let maxViewPageNum =  this.state.PaginationNumbers.maxViewPageNum;
-    let firstPrevItems = this.generateFirstPrev(activePage);
+
+    const activePage = this.state.activePage;
+    const totalPage = this.state.paginationNumbers.totalPage;
+    const paginationStart = this.state.paginationNumbers.paginationStart;
+    const maxViewPageNum =  this.state.paginationNumbers.maxViewPageNum;
+    const firstPrevItems = this.generateFirstPrev(activePage);
     paginationItems.push(firstPrevItems);
-    let paginations = this.generatePaginations(activePage, paginationStart, maxViewPageNum);
+    const paginations = this.generatePaginations(activePage, paginationStart, maxViewPageNum);
     paginationItems.push(paginations);
-    let nextLastItems = this.generateNextLast(activePage, totalPage);
+    const nextLastItems = this.generateNextLast(activePage, totalPage);
     paginationItems.push(nextLastItems);
 
     return (
       <div className="page-list-container-create">
         <ul className="page-list-ul page-list-ul-flat">
-            {pageList}
+          {pageList}
         </ul>
-        {
         <Pagination bsSize="small">{paginationItems}</Pagination>
-        }
       </div>
     );
   }

@@ -6,11 +6,6 @@ const logger = require('@alias/logger')('growi:migrate:init-serverurl');
 const mongoose = require('mongoose');
 const config = require('@root/config/migrate');
 
-const queryToFindSiteUrl = {
-  ns: 'crowi',
-  key: 'app:siteUrl',
-};
-
 /**
  * check all values of the array are equal
  * @see https://stackoverflow.com/a/35568895

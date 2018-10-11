@@ -138,6 +138,15 @@ module.exports = function(crowi) {
     return config.crowi[key];
   }
 
+  function getValueForMarkdownNS(config, key) {
+    // return the default value if undefined
+    if (undefined === config.markdown || undefined === config.markdown[key]) {
+      return getDefaultMarkdownConfigs()[key];
+    }
+
+    return config.markdown[key];
+  }
+
   configSchema.statics.getRestrictGuestModeLabels = function() {
     var labels = {};
     labels[SECURITY_RESTRICT_GUEST_MODE_DENY]     = 'security_setting.guest_mode.deny';
@@ -344,77 +353,36 @@ module.exports = function(crowi) {
 
   configSchema.statics.isEnabledLinebreaks = function(config) {
     const key = 'markdown:isEnabledLinebreaks';
-
-    // return default value if undefined
-    if (undefined === config.markdown || undefined === config.markdown[key]) {
-      return getDefaultMarkdownConfigs()[key];
-    }
-
-    return config.markdown[key];
+    return getValueForMarkdownNS(config, key);
   };
 
   configSchema.statics.isEnabledLinebreaksInComments = function(config) {
     const key = 'markdown:isEnabledLinebreaksInComments';
-
-    // return default value if undefined
-    if (undefined === config.markdown || undefined === config.markdown[key]) {
-      return getDefaultMarkdownConfigs()[key];
-    }
-
-    return config.markdown[key];
+    return getValueForMarkdownNS(config, key);
   };
 
   configSchema.statics.pageBreakSeparator = function(config) {
     const key = 'markdown:presentation:pageBreakSeparator';
-
-    // return default value if undefined
-    if (undefined === config.markdown || undefined === config.markdown[key]) {
-      return getDefaultMarkdownConfigs[key];
-    }
-
-    return config.markdown[key];
+    return getValueForMarkdownNS(config, key);
   };
 
   configSchema.statics.pageBreakCustomSeparator = function(config) {
     const key = 'markdown:presentation:pageBreakCustomSeparator';
-
-    // return default value if undefined
-    if (undefined === config.markdown || undefined === config.markdown[key]) {
-      return getDefaultMarkdownConfigs[key];
-    }
-
-    return config.markdown[key];
+    return getValueForMarkdownNS(config, key);
   };
 
   configSchema.statics.isEnabledXssPrevention = function(config) {
     const key = 'markdown:xss:isEnabledPrevention';
-
-    // return default value if undefined
-    if (undefined === config.markdown || undefined === config.markdown[key]) {
-      return getDefaultMarkdownConfigs[key];
-    }
-
-    return config.markdown[key];
+    return getValueForMarkdownNS(config, key);
   };
 
   configSchema.statics.xssOption = function(config) {
     const key = 'markdown:xss:option';
-
-    // return default value if undefined
-    if (undefined === config.markdown || undefined === config.markdown[key]) {
-      return getDefaultMarkdownConfigs[key];
-    }
-
-    return config.markdown[key];
+    return getValueForMarkdownNS(config, key);
   };
 
   configSchema.statics.tagWhiteList = function(config) {
     const key = 'markdown:xss:tagWhiteList';
-
-    // return default value if undefined
-    if (undefined === config.markdown || undefined === config.markdown[key]) {
-      return getDefaultMarkdownConfigs[key];
-    }
 
     if (this.isEnabledXssPrevention(config)) {
       switch (this.xssOption(config)) {
@@ -439,11 +407,6 @@ module.exports = function(crowi) {
 
   configSchema.statics.attrWhiteList = function(config) {
     const key = 'markdown:xss:attrWhiteList';
-
-    // return default value if undefined
-    if (undefined === config.markdown || undefined === config.markdown[key]) {
-      return getDefaultMarkdownConfigs[key];
-    }
 
     if (this.isEnabledXssPrevention(config)) {
       switch (this.xssOption(config)) {
