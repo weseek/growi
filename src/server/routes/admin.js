@@ -104,7 +104,7 @@ module.exports = function(crowi, app) {
   actions.security = {};
   actions.security.index = function(req, res) {
     const settingForm = Config.setupCofigFormData('crowi', req.config);
-    const acl_enable = process.env.ACL_ENABLE;
+    const acl_enable = process.env.ACL_ENABLE == 'true' ? true : false;
     return res.render('admin/security', { settingForm, acl_enable });
   };
 
@@ -1031,7 +1031,8 @@ module.exports = function(crowi, app) {
 
   actions.api.securitySetting = function(req, res) {
     const form = req.form.settingForm;
-    if (!process.env.ACL_ENABLE) {
+    const acl_enable = process.env.ACL_ENABLE == 'true' ? true : false;
+    if (!acl_enable) {
       const guestMode = form['security:restrictGuestMode'];
       if ( guestMode == 'Deny' ) {
         // TODO エラーメッセージがクライアント画面から消えない
