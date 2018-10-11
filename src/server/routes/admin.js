@@ -104,7 +104,8 @@ module.exports = function(crowi, app) {
   actions.security = {};
   actions.security.index = function(req, res) {
     const settingForm = Config.setupCofigFormData('crowi', req.config);
-    return res.render('admin/security', { settingForm });
+    const acl_enable = process.env.ACL_ENABLE;
+    return res.render('admin/security', { settingForm, acl_enable });
   };
 
   // app.get('/admin/markdown'                  , admin.markdown.index);
@@ -1030,6 +1031,19 @@ module.exports = function(crowi, app) {
 
   actions.api.securitySetting = function(req, res) {
     const form = req.form.settingForm;
+    if (!process.env.ACL_ENABLE) {
+      const guestMode = form['security:restrictGuestMode'];
+      if ( guestMode == 'Deny' ) {
+        // TODO エラーメッセージがクライアント画面から消えない
+        req.form.errors.push('Private Wikiへの設定変更はできません。');
+        return res.json({status: false, message: req.form.errors.join('\n')});
+        /*
+        req.form.errors.push('Private Wikiへの設定変更はできません。');
+        req.flash('errorMessage', req.form.errors);
+        return res.redirect('/admin/security');
+        */
+      }
+    }
 
     if (req.form.isValid) {
       debug('form content', form);

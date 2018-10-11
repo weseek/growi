@@ -48,13 +48,18 @@ module.exports = function(crowi) {
    */
   function getDefaultCrowiConfigs() {
     /* eslint-disable key-spacing */
+    let securityRestrictGuestMode = SECURITY_RESTRICT_GUEST_MODE_DENY;
+    if (process.env.ACL_ENABLE) {
+      securityRestrictGuestMode = SECURITY_RESTRICT_GUEST_MODE_READONLY;
+    }
+
     return {
       //'app:installed'     : "0.0.0",
       'app:confidential'  : '',
 
       'app:fileUpload'    : false,
 
-      'security:restrictGuestMode'      : 'Deny',
+      'security:restrictGuestMode'      : securityRestrictGuestMode,
 
       'security:registrationMode'      : 'Open',
       'security:registrationWhiteList' : [],
