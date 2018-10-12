@@ -215,9 +215,15 @@ module.exports = function(crowi) {
     this.name = name;
     this.username = username;
     this.status = STATUS_ACTIVE;
-    this.save(function(err, userData) {
-      userEvent.emit('activated', userData);
-      return callback(err, userData);
+
+    return new Promise(function(resolve, reject) {
+      this.save(function(err, userData) {
+        userEvent.emit('activated', userData);
+        if (err) {
+          return reject(err);
+        }
+        resolve(userData);
+      });
     });
   };
 
@@ -490,11 +496,13 @@ module.exports = function(crowi) {
     var User = this;
     var usernameUsable = true;
 
-    this.findOne({username: username}, function(err, userData) {
-      if (userData) {
-        usernameUsable = false;
-      }
-      return callback(usernameUsable);
+    return new Promise(function(resolve) {
+      this.findOne({username: username}, function(err, userData) {
+        if (userData) {
+          usernameUsable = false;
+        }
+        resolve(usernameUsable);
+      });
     });
   };
 
