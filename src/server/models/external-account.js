@@ -92,17 +92,9 @@ class ExternalAccount {
               nameToBeRegistered = '';
             }
 
-            User.findAllUsers({status: User.statusActivate})
-            .then(userData => {
-              const userUpperLimit = Number(ExternalAccount.crowi.env['USER_UPPER_LIMIT']);
-              const activeUsers = userData.length;
-              if (userUpperLimit !== 0 && userUpperLimit <= activeUsers) {
-                throw new UserUpperLimitException('ユーザーが上限に達したため登録できません。');
-              }
-              // create a new User with STATUS_ACTIVE
-              debug(`ExternalAccount '${accountId}' is not found, it is going to be registered.`);
-              return User.createUser(nameToBeRegistered, usernameToBeRegistered, mailToBeRegistered, undefined, undefined, User.STATUS_ACTIVE);
-            });
+            // create a new User with STATUS_ACTIVE
+            debug(`ExternalAccount '${accountId}' is not found, it is going to be registered.`);
+            return User.createUser(nameToBeRegistered, usernameToBeRegistered, mailToBeRegistered, undefined, undefined, User.STATUS_ACTIVE);
           })
           .then(newUser => {
             return this.associate(providerType, accountId, newUser);
@@ -160,13 +152,6 @@ class DuplicatedUsernameException {
     this.name = this.constructor.name;
     this.message = message;
     this.user = user;
-  }
-}
-
-class UserUpperLimitException {
-  constructor(message) {
-    this.name = this.constructor.name;
-    this.message = message;
   }
 }
 
