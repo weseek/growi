@@ -36,6 +36,13 @@ export default class HandsontableModal extends React.Component {
         markdownTableOnInit: initMarkdownTable,
         markdownTable: initMarkdownTable.clone(),
         handsontableSetting: Object.assign({}, this.state.handsontableSetting, {
+          /*
+           * AfterUpdateSettings hook is called when this component state changes.
+           *
+           * In detail, when this component state changes, React will re-render HotTable because it is a child component of this component.
+           * HotTable#shouldComponentUpdate is called in this process and it call the updateSettings method for the Handsontable instance.
+           * So, this hook is always called when this component state changes.
+           */
           afterUpdateSettings: HandsontableUtil.createHandlerToSynchronizeHandontableAlignWith(initMarkdownTable.options.align),
           afterSelectionEnd: this.storeSelectedRange.bind(this)
         })
@@ -67,6 +74,9 @@ export default class HandsontableModal extends React.Component {
     this.setState({ show: false });
   }
 
+  /*
+   * use property instead of state for storing latestSelectedRange and avoid calling afterUpdateSettings hook
+   */
   storeSelectedRange() {
     this.latestSelectedRange = this.refs.hotTable.hotInstance.getSelectedRange();
   }
