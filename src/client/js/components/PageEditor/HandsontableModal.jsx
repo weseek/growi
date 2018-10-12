@@ -37,7 +37,8 @@ export default class HandsontableModal extends React.Component {
         markdownTable: initMarkdownTable.clone(),
         handsontableSetting: Object.assign({}, this.state.handsontableSetting, {
           afterUpdateSettings: HandsontableUtil.createHandlerToSynchronizeHandontableAlignWith(initMarkdownTable.options.align),
-          loadData: HandsontableUtil.createHandlerToSynchronizeHandontableAlignWith(initMarkdownTable.options.align)
+          loadData: HandsontableUtil.createHandlerToSynchronizeHandontableAlignWith(initMarkdownTable.options.align),
+          afterSelectionEnd: this.storeSelectedRange.bind(this)
         })
       }
     );
@@ -67,6 +68,33 @@ export default class HandsontableModal extends React.Component {
     this.setState({ show: false });
   }
 
+  storeSelectedRange() {
+    this.latestSelectedRange = this.refs.hotTable.hotInstance.getSelectedRange();
+  }
+
+  clearSelectedRange() {
+    this.latestSelectedRange = null;
+  }
+
+  setClassNameToColumns(className) {
+    if (this.latestSelectedRange == null) return;
+
+    let startCol;
+    let endCol;
+
+    if (this.latestSelectedRange[0].from.col < this.latestSelectedRange[0].to.col) {
+      startCol = this.latestSelectedRange[0].from.col;
+      endCol = this.latestSelectedRange[0].to.col;
+    }
+    else {
+      startCol = this.latestSelectedRange[0].to.col;
+      endCol = this.latestSelectedRange[0].from.col;
+    }
+
+    HandsontableUtil.setClassNameToColumns(this.refs.hotTable.hotInstance, startCol, endCol, className);
+    this.clearSelectedRange();
+  }
+
   render() {
     return (
       <Modal show={this.state.show} onHide={this.cancel} bsSize="large">
@@ -77,9 +105,9 @@ export default class HandsontableModal extends React.Component {
           <Navbar>
             <Navbar.Form>
               <ButtonGroup>
-                <Button><i className="ti-align-left"></i></Button>
-                <Button><i className="ti-align-center"></i></Button>
-                <Button><i className="ti-align-right"></i></Button>
+                <Button onClick={ () => {this.setClassNameToColumns('htLeft')} }><i className="ti-align-left"></i></Button>
+                <Button onClick={ () => {this.setClassNameToColumns('htCenter')} }><i className="ti-align-center"></i></Button>
+                <Button onClick={ () => {this.setClassNameToColumns('htRight')} }><i className="ti-align-right"></i></Button>
               </ButtonGroup>
             </Navbar.Form>
           </Navbar>
