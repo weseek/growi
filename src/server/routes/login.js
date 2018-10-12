@@ -342,23 +342,14 @@ module.exports = function(crowi, app) {
 
       User.isRegisterableUsername(username, function(creatable) {
         if (creatable) {
-          User.findAllUsers({status: User.statusActivate})
-          .then(userData => {
-            const userUpperLimit = Number(crowi.env['USER_UPPER_LIMIT']);
-            const activeUsers = userData.length;
-            if (userUpperLimit !== 0 && userUpperLimit <= activeUsers) {
-              req.flash('warningMessage', 'ユーザーが上限に達したためアクティベートできません。');
+          user.activateInvitedUser(username, name, password, function(err, data) {
+            if (err) {
+              req.flash('warningMessage', 'アクティベートに失敗しました。');
               return res.render('invited');
             }
-            user.activateInvitedUser(username, name, password, function(err, data) {
-              if (err) {
-                req.flash('warningMessage', 'アクティベートに失敗しました。');
-                return res.render('invited');
-              }
-              else {
-                return res.redirect('/');
-              }
-            });
+            else {
+              return res.redirect('/');
+            }
           });
         }
         else {
