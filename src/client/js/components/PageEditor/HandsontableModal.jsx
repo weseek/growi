@@ -27,6 +27,9 @@ export default class HandsontableModal extends React.Component {
     this.reset = this.reset.bind(this);
     this.cancel = this.cancel.bind(this);
     this.save = this.save.bind(this);
+
+    this.storeSelectedRange = this.storeSelectedRange.bind(this);
+    this.clearSelectedRange = this.clearSelectedRange.bind(this);
   }
 
   init(markdownTable) {
@@ -44,7 +47,7 @@ export default class HandsontableModal extends React.Component {
            * So, this hook is always called when this component state changes.
            */
           afterUpdateSettings: HandsontableUtil.createHandlerToSynchronizeHandontableAlignWith(initMarkdownTable.options.align),
-          afterSelectionEnd: this.storeSelectedRange.bind(this)
+          afterSelectionEnd: this.storeSelectedRange
         })
       }
     );
@@ -79,10 +82,16 @@ export default class HandsontableModal extends React.Component {
    */
   storeSelectedRange() {
     this.latestSelectedRange = this.refs.hotTable.hotInstance.getSelectedRange();
+    this.flag = false;
   }
 
   clearSelectedRange() {
-    this.latestSelectedRange = null;
+    if (this.flag) {
+      this.latestSelectedRange = null;
+    }
+    else {
+      this.flag = true;
+    }
   }
 
   setClassNameToColumns(className) {
@@ -101,39 +110,42 @@ export default class HandsontableModal extends React.Component {
     }
 
     HandsontableUtil.setClassNameToColumns(this.refs.hotTable.hotInstance, startCol, endCol, className);
-    this.clearSelectedRange();
+
+    this.flag = true;
   }
 
   render() {
     return (
-      <Modal show={this.state.show} onHide={this.cancel} bsSize="large">
-        <Modal.Header closeButton>
-          <Modal.Title>Edit Table</Modal.Title>
-        </Modal.Header>
-        <Modal.Body className="p-0">
-          <Navbar>
-            <Navbar.Form>
-              <ButtonGroup>
-                <Button onClick={ () => {this.setClassNameToColumns('htLeft')} }><i className="ti-align-left"></i></Button>
-                <Button onClick={ () => {this.setClassNameToColumns('htCenter')} }><i className="ti-align-center"></i></Button>
-                <Button onClick={ () => {this.setClassNameToColumns('htRight')} }><i className="ti-align-right"></i></Button>
-              </ButtonGroup>
-            </Navbar.Form>
-          </Navbar>
-          <div className="p-4">
-            <HotTable ref='hotTable' data={this.state.markdownTable.table} settings={this.state.handsontableSetting} />
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <div className="d-flex justify-content-between">
-            <Button bsStyle="danger" onClick={this.reset}>Reset</Button>
-            <div className="d-flex">
-              <Button bsStyle="default" onClick={this.cancel}>Cancel</Button>
-              <Button bsStyle="primary" onClick={this.save}>Done</Button>
+      <div onClick={ this.clearSelectedRange }>
+        <Modal show={this.state.show} onHide={this.cancel} bsSize="large">
+          <Modal.Header closeButton>
+            <Modal.Title>Edit Table</Modal.Title>
+          </Modal.Header>
+          <Modal.Body className="p-0">
+            <Navbar>
+              <Navbar.Form>
+                <ButtonGroup>
+                  <Button onClick={() => { this.setClassNameToColumns('htLeft') }}><i className="ti-align-left"></i></Button>
+                  <Button onClick={() => { this.setClassNameToColumns('htCenter') }}><i className="ti-align-center"></i></Button>
+                  <Button onClick={() => { this.setClassNameToColumns('htRight') }}><i className="ti-align-right"></i></Button>
+                </ButtonGroup>
+              </Navbar.Form>
+            </Navbar>
+            <div className="p-4">
+              <HotTable ref='hotTable' data={this.state.markdownTable.table} settings={this.state.handsontableSetting} />
             </div>
-          </div>
-        </Modal.Footer>
-      </Modal>
+          </Modal.Body>
+          <Modal.Footer>
+            <div className="d-flex justify-content-between">
+              <Button bsStyle="danger" onClick={this.reset}>Reset</Button>
+              <div className="d-flex">
+                <Button bsStyle="default" onClick={this.cancel}>Cancel</Button>
+                <Button bsStyle="primary" onClick={this.save}>Done</Button>
+              </div>
+            </div>
+          </Modal.Footer>
+        </Modal>
+      </div>
     );
   }
 
