@@ -77,21 +77,27 @@ export default class HandsontableModal extends React.Component {
     this.setState({ show: false });
   }
 
-  /*
-   * use property instead of state for storing latestSelectedRange and avoid calling afterUpdateSettings hook
+  /**
+   * store the latest selected range in HotTable
+   *
+   * This uses property instead of state for storing latestSelectedRange and avoid calling afterUpdateSettings hook
    */
   storeSelectedRange() {
     this.latestSelectedRange = this.refs.hotTable.hotInstance.getSelectedRange();
-    this.flag = false;
   }
 
+  /**
+   * clear the latest selected range in HotTable
+   */
   clearSelectedRange() {
-    if (this.flag) {
-      this.latestSelectedRange = null;
-    }
-    else {
-      this.flag = true;
-    }
+    this.latestSelectedRange = null;
+  }
+
+  /**
+   * stop propagation to prevent 'clearSelectedRange' from being called when a click event is dispatched in HotTable
+   */
+  stopPropagation(e) {
+    e.stopPropagation();
   }
 
   setClassNameToColumns(className) {
@@ -110,13 +116,11 @@ export default class HandsontableModal extends React.Component {
     }
 
     HandsontableUtil.setClassNameToColumns(this.refs.hotTable.hotInstance, startCol, endCol, className);
-
-    this.flag = true;
   }
 
   render() {
     return (
-      <div onClick={ this.clearSelectedRange }>
+      <div onClick={this.clearSelectedRange}>
         <Modal show={this.state.show} onHide={this.cancel} bsSize="large">
           <Modal.Header closeButton>
             <Modal.Title>Edit Table</Modal.Title>
@@ -131,7 +135,7 @@ export default class HandsontableModal extends React.Component {
                 </ButtonGroup>
               </Navbar.Form>
             </Navbar>
-            <div className="p-4">
+            <div className="p-4" onClick={this.stopPropagation.bind(this)}>
               <HotTable ref='hotTable' data={this.state.markdownTable.table} settings={this.state.handsontableSetting} />
             </div>
           </Modal.Body>
