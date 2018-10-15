@@ -8,6 +8,8 @@ module.exports = function(crowi) {
   var mongoose = require('mongoose');
   var gridfs = require('gridfs-stream');
   var path = require('path');
+  var basePath = path.posix.join(crowi.publicDir, 'uploads'); // TODO: to configurable
+
   var lib = {};
 
   mongoose.connect('mongodb://localhost/growi', {
@@ -22,15 +24,31 @@ module.exports = function(crowi) {
     debug('File uploading: ' + filePath);
     return new Promise(function (resolve, reject) {
       // connection.once('open', function () {
-        var gfs = gridfs(connection.db);
+      var gfs = gridfs(connection.db);
+      var localFilePath = path.posix.join(basePath, filePath),
+        dirpath = path.posix.dirname(localFilePath);
 
-        // Writing a file from local to MongoDB
-        var writestream = gfs.createWriteStream({ filename: 'test.jpg' });
-        fs.createReadStream("public/uploads/attachment/5bb73b688ea417589dbd503f/14e456e38cea76bbca34dfdab712b909.jpg").pipe(writestream);
-        writestream.on('close', function (file) {
-          resolve(file);
+      mkdir(dirpath, function (err) {
+        if (err) {
+          return reject(err);
+        }
+
+        var writer = fs.createWriteStream(localFilePath);
+
+        writer.on('error', function (err) {
+          reject(err);
+        }).on('finish', function () {
+          console.log('finish');
         });
       });
+
+      // Writing a file from local to MongoDB
+      var writestream = gfs.createWriteStream({ filename: 'test.jpg' });
+      fs.createReadStream(filePath).pipe(writestream);
+      writestream.on('close', function (file) {
+        resolve(file);
+      });
+    });
     // });
   };
   // // mongoose connect
