@@ -25,22 +25,6 @@ module.exports = function(crowi) {
     return new Promise(function (resolve, reject) {
       // connection.once('open', function () {
       var gfs = gridfs(connection.db);
-      var localFilePath = path.posix.join(basePath, filePath),
-        dirpath = path.posix.dirname(localFilePath);
-
-      mkdir(dirpath, function (err) {
-        if (err) {
-          return reject(err);
-        }
-
-        var writer = fs.createWriteStream(localFilePath);
-
-        writer.on('error', function (err) {
-          reject(err);
-        }).on('finish', function () {
-          console.log('finish');
-        });
-      });
 
       // Writing a file from local to MongoDB
       var writestream = gfs.createWriteStream({ filename: 'test.jpg' });
