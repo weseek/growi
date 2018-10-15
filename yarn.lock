@@ -4001,6 +4001,12 @@ graceful-fs@^4.1.11, graceful-fs@^4.1.2, graceful-fs@^4.1.6:
   version "4.1.11"
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.1.11.tgz#0e8bdfe4d1ddb8854d64e04ea7c00e2a026e5658"
 
+gridfs-stream@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/gridfs-stream/-/gridfs-stream-1.1.1.tgz#3dd3a100ec2021a181282f6eb46709636074df89"
+  dependencies:
+    flushwritable "^1.0.0"
+
 growi-pluginkit@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/growi-pluginkit/-/growi-pluginkit-1.1.0.tgz#8e837cd0ba50e6a13eacc75882e09c96eda10679"

@@ -87,6 +87,7 @@
     "express-webpack-assets": "^0.1.0",
     "googleapis": "^34.0.0",
     "graceful-fs": "^4.1.11",
+    "gridfs-stream": "^1.1.1",
     "growi-pluginkit": "^1.1.0",
     "helmet": "^3.13.0",
     "i18next": "^11.1.1",
