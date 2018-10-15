@@ -491,6 +491,7 @@ module.exports = function(crowi) {
           return true;
         }
       }).then((checkResult) => {
+        console.log(checkResult);
         if (checkResult) {
           return resolve(pageData);
         }
