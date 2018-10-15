@@ -77,25 +77,31 @@ export default class HandsontableModal extends React.Component {
     this.setState({ show: false });
   }
 
-  /**
-   * store the latest selected range in HotTable
+  /*
+   * The following four methods are used for the alignment buttons in the modal navbar.
    *
-   * This uses property instead of state for storing latestSelectedRange and avoid calling afterUpdateSettings hook
+   * - storeSelectedRange
+   * - clearSelectedRange
+   * - stopPropagationFromVisibleTable
+   * - setClassNameToColumns
+   *
+   * In the onClick handler of the alignment buttons, getSelectedRange(Handsontable method) returns not a selected range but null.
+   * That is because the selection has already been canceled when the handler is called by clicking the button.
+   * So, this component stores it in its own property(latestSelectedRange).
+   * In order to store a selection range, add storeSelectedRange to the afterSelectionEnd hook of Handsontable.
+   * On the other hand, this property is cleared when the outside of the table is clicked.
+   * To implement this, set clearSelectedRange to div wrapping a modal and set stopPropagationFromVisibleTable to div wrapping HotTable.
    */
+
+  /* This uses property instead of state for storing latestSelectedRange and avoid calling afterUpdateSettings hook */
   storeSelectedRange() {
     this.latestSelectedRange = this.refs.hotTable.hotInstance.getSelectedRange();
   }
 
-  /**
-   * clear the latest selected range in HotTable
-   */
   clearSelectedRange() {
     this.latestSelectedRange = null;
   }
 
-  /**
-   * stop propagation to prevent 'clearSelectedRange' from being called when a click event is dispatched in HotTable
-   */
   stopPropagationFromVisibleTable(e) {
     const targetClassNames = e.target.className.split(' ');
     if (!(targetClassNames.includes('wtHolder') || targetClassNames.includes('hotTableContainer'))) {
