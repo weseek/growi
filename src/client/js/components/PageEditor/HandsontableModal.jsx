@@ -40,7 +40,7 @@ export default class HandsontableModal extends React.Component {
         markdownTable: initMarkdownTable.clone(),
         handsontableSetting: Object.assign({}, this.state.handsontableSetting, {
           /*
-           * AfterUpdateSettings hook is called when this component state changes.
+           * The afterUpdateSettings hook is called when this component state changes.
            *
            * In detail, when this component state changes, React will re-render HotTable because it is passed some state values of this component.
            * HotTable#shouldComponentUpdate is called in this process and it call the updateSettings method for the Handsontable instance.
