@@ -96,8 +96,11 @@ export default class HandsontableModal extends React.Component {
   /**
    * stop propagation to prevent 'clearSelectedRange' from being called when a click event is dispatched in HotTable
    */
-  stopPropagation(e) {
-    e.stopPropagation();
+  stopPropagationFromVisibleTable(e) {
+    const targetClassNames = e.target.className.split(' ');
+    if (!(targetClassNames.includes('wtHolder') || targetClassNames.includes('hotTableContainer'))) {
+      e.stopPropagation();
+    }
   }
 
   setClassNameToColumns(className) {
@@ -135,7 +138,7 @@ export default class HandsontableModal extends React.Component {
                 </ButtonGroup>
               </Navbar.Form>
             </Navbar>
-            <div className="p-4" onClick={this.stopPropagation.bind(this)}>
+            <div className="p-4 hotTableContainer" onClick={this.stopPropagationFromVisibleTable.bind(this)}>
               <HotTable ref='hotTable' data={this.state.markdownTable.table} settings={this.state.handsontableSetting} />
             </div>
           </Modal.Body>
