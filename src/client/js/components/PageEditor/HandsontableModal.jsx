@@ -121,7 +121,7 @@ export default class HandsontableModal extends React.Component {
   render() {
     return (
       <div onClick={this.clearSelectedRange}>
-        <Modal show={this.state.show} bsSize="large">
+        <Modal show={this.state.show} bsSize="large" onHide={this.cancel}>
           <Modal.Header closeButton>
             <Modal.Title>Edit Table</Modal.Title>
           </Modal.Header>
