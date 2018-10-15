@@ -3,7 +3,9 @@ CHANGES
 
 ## 3.2.5-RC
 
-* 
+* Improvement: Prevent XSS of New Page modal
+* Fix: Recent Created tab of user home shows wrong page list
+    * Introduced by 3.2.4
 
 ## 3.2.4
 
