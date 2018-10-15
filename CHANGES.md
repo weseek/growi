@@ -1,12 +1,20 @@
 CHANGES
 ========
 
-## 3.2.4-RC
+## 3.2.5-RC
+
+* 
+
+## 3.2.4
 
 * Feature: Edit table with Spreadsheet like GUI (Handsontable)
 * Feature: Paging recent created in users home
 * Improvement: Specify certificate for SAML Authentication
 * Fix: SAML Authentication didn't work
+    * Introduced by 3.2.2
+* Fix: Failed to create new page with title which includes RegEx special characters
+* Fix: Preventing XSS Settings are not applied in default
+    * Introduced by 3.1.12
 * Support: Mongoose migration mechanism
 * Support: Upgrade libs
     * googleapis
