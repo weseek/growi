@@ -1263,22 +1263,26 @@ module.exports = function(crowi, app) {
   };
 
   api.recentCreated = async function(req, res) {
-    const username = req.query.user || null;
-    const limit = + req.query.limit || 50;
-    const offset = + req.query.offset || 0;
+    const pageId = req.query.page_id;
 
-    const queryOptions = { offset: offset, limit: limit };
-
-    if (username == null ) {
-      return res.json(ApiResponse.error('Parameter user is required.'));
+    if (pageId == null) {
+      return res.json(ApiResponse.error('param \'pageId\' must not be null'));
     }
 
+    const page = await Page.findPageById(pageId);
+    if (page == null) {
+      return res.json(ApiResponse.error(`Page (id='${pageId}') does not exist`));
+    }
+    if (!isUserPage(page.path)) {
+      return res.json(ApiResponse.error(`Page (id='${pageId}') is not a user home`));
+    }
+
+    const limit = + req.query.limit || 50;
+    const offset = + req.query.offset || 0;
+    const queryOptions = { offset: offset, limit: limit };
+
     try {
-      let user = await User.findUserByUsername(username);
-      if (user == null) {
-        throw new Error('The user not found.');
-      }
-      let pages = await Page.findListByCreator(user, queryOptions, req.user);
+      let pages = await Page.findListByCreator(page.creator, queryOptions, req.user);
 
       const result = {};
       result.pages = pagePathUtils.encodePagesPath(pages);
