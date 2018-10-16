@@ -6,6 +6,7 @@ import Button from 'react-bootstrap/es/Button';
 import Navbar from 'react-bootstrap/es/Navbar';
 import ButtonGroup from 'react-bootstrap/es/ButtonGroup';
 
+
 import Handsontable from 'handsontable';
 import { HotTable } from '@handsontable/react';
 
@@ -27,9 +28,6 @@ export default class HandsontableModal extends React.Component {
     this.reset = this.reset.bind(this);
     this.cancel = this.cancel.bind(this);
     this.save = this.save.bind(this);
-
-    this.storeSelectedRange = this.storeSelectedRange.bind(this);
-    this.clearSelectedRange = this.clearSelectedRange.bind(this);
   }
 
   init(markdownTable) {
@@ -46,8 +44,7 @@ export default class HandsontableModal extends React.Component {
            * HotTable#shouldComponentUpdate is called in this process and it call the updateSettings method for the Handsontable instance.
            * After updateSetting is executed, Handsontable calls a AfterUpdateSetting hook.
            */
-          afterUpdateSettings: HandsontableUtil.createHandlerToSynchronizeHandontableAlignWith(initMarkdownTable.options.align),
-          afterSelectionEnd: this.storeSelectedRange
+          afterUpdateSettings: HandsontableUtil.createHandlerToSynchronizeHandontableAlignWith(initMarkdownTable.options.align)
         })
       }
     );
@@ -77,51 +74,20 @@ export default class HandsontableModal extends React.Component {
     this.setState({ show: false });
   }
 
-  /*
-   * The following four methods are used for the alignment buttons in the modal navbar.
-   *
-   * - storeSelectedRange
-   * - clearSelectedRange
-   * - stopPropagationFromVisibleTable
-   * - setClassNameToColumns
-   *
-   * In the onClick handler of the alignment buttons, getSelectedRange(Handsontable method) returns not a selected range but null.
-   * That is because the selection has already been canceled when the handler is called by clicking the button.
-   * So, this component stores it in its own property(latestSelectedRange).
-   * In order to store a selection range, add storeSelectedRange to the afterSelectionEnd hook of Handsontable.
-   * On the other hand, this property is cleared when the outside of the table is clicked.
-   * To implement this, set clearSelectedRange to div wrapping a modal and set stopPropagationFromVisibleTable to div wrapping HotTable.
-   */
-
-  /* This uses property instead of state for storing latestSelectedRange and avoid calling afterUpdateSettings hook */
-  storeSelectedRange() {
-    this.latestSelectedRange = this.refs.hotTable.hotInstance.getSelectedRange();
-  }
-
-  clearSelectedRange() {
-    this.latestSelectedRange = null;
-  }
-
-  stopPropagationFromVisibleTable(e) {
-    const targetClassNames = e.target.className.split(' ');
-    if (!(targetClassNames.includes('wtHolder') || targetClassNames.includes('hotTableContainer'))) {
-      e.stopPropagation();
-    }
-  }
-
   setClassNameToColumns(className) {
-    if (this.latestSelectedRange == null) return;
+    const selectedRange =  this.refs.hotTable.hotInstance.getSelectedRange();
+    if (selectedRange == null) return;
 
     let startCol;
     let endCol;
 
-    if (this.latestSelectedRange[0].from.col < this.latestSelectedRange[0].to.col) {
-      startCol = this.latestSelectedRange[0].from.col;
-      endCol = this.latestSelectedRange[0].to.col;
+    if (selectedRange[0].from.col < selectedRange[0].to.col) {
+      startCol = selectedRange[0].from.col;
+      endCol = selectedRange[0].to.col;
     }
     else {
-      startCol = this.latestSelectedRange[0].to.col;
-      endCol = this.latestSelectedRange[0].from.col;
+      startCol = selectedRange[0].to.col;
+      endCol = selectedRange[0].from.col;
     }
 
     HandsontableUtil.setClassNameToColumns(this.refs.hotTable.hotInstance, startCol, endCol, className);
@@ -144,7 +110,7 @@ export default class HandsontableModal extends React.Component {
                 </ButtonGroup>
               </Navbar.Form>
             </Navbar>
-            <div className="p-4 hotTableContainer" onClick={this.stopPropagationFromVisibleTable.bind(this)}>
+            <div className="p-4">
               <HotTable ref='hotTable' data={this.state.markdownTable.table} settings={this.state.handsontableSetting} />
             </div>
           </Modal.Body>
@@ -212,7 +178,8 @@ export default class HandsontableModal extends React.Component {
         }
       },
       stretchH: 'all',
-      selectionMode: 'multiple'
+      selectionMode: 'multiple',
+      outsideClickDeselects: false
     };
   }
 }
