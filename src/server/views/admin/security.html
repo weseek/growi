@@ -305,6 +305,7 @@
       {
         function showMessage(formId, msg, status) {
           $('#' + formId + ' > .alert').remove();
+          $('#' + formId ).find('.alert').remove();
 
           if (!status) {
             status = 'success';

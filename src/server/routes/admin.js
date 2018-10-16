@@ -1037,14 +1037,8 @@ module.exports = function(crowi, app) {
     if (!acl_enable) {
       const guestMode = form['security:restrictGuestMode'];
       if ( guestMode == 'Deny' ) {
-        // TODO エラーメッセージがクライアント画面から消えない
         req.form.errors.push('Private Wikiへの設定変更はできません。');
         return res.json({status: false, message: req.form.errors.join('\n')});
-        /*
-        req.form.errors.push('Private Wikiへの設定変更はできません。');
-        req.flash('errorMessage', req.form.errors);
-        return res.redirect('/admin/security');
-        */
       }
     }
 
