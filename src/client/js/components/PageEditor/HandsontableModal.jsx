@@ -21,7 +21,7 @@ export default class HandsontableModal extends React.Component {
       show: false,
       markdownTableOnInit: HandsontableModal.getDefaultMarkdownTable(),
       markdownTable: HandsontableModal.getDefaultMarkdownTable(),
-      handsontableSetting: HandsontableModal.getDefaultHandsotableSetting()
+      handsontableSetting: HandsontableModal.getDefaultHandsontableSetting()
     };
 
     this.init = this.init.bind(this);
@@ -95,36 +95,34 @@ export default class HandsontableModal extends React.Component {
 
   render() {
     return (
-      <div onClick={this.clearSelectedRange}>
-        <Modal show={this.state.show} bsSize="large" onHide={this.cancel} dialogClassName="handsontable-modal">
-          <Modal.Header closeButton>
-            <Modal.Title>Edit Table</Modal.Title>
-          </Modal.Header>
-          <Modal.Body className="p-0">
-            <Navbar>
-              <Navbar.Form>
-                <ButtonGroup>
-                  <Button onClick={() => { this.setClassNameToColumns('htLeft') }}><i className="ti-align-left"></i></Button>
-                  <Button onClick={() => { this.setClassNameToColumns('htCenter') }}><i className="ti-align-center"></i></Button>
-                  <Button onClick={() => { this.setClassNameToColumns('htRight') }}><i className="ti-align-right"></i></Button>
-                </ButtonGroup>
-              </Navbar.Form>
-            </Navbar>
-            <div className="p-4">
-              <HotTable ref='hotTable' data={this.state.markdownTable.table} settings={this.state.handsontableSetting} />
+      <Modal show={this.state.show} onHide={this.cancel} bsSize="large" dialogClassName="handsontable-modal">
+        <Modal.Header closeButton>
+          <Modal.Title>Edit Table</Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="p-0">
+          <Navbar>
+            <Navbar.Form>
+              <ButtonGroup>
+                <Button onClick={() => { this.setClassNameToColumns('htLeft') }}><i className="ti-align-left"></i></Button>
+                <Button onClick={() => { this.setClassNameToColumns('htCenter') }}><i className="ti-align-center"></i></Button>
+                <Button onClick={() => { this.setClassNameToColumns('htRight') }}><i className="ti-align-right"></i></Button>
+              </ButtonGroup>
+            </Navbar.Form>
+          </Navbar>
+          <div className="p-4">
+            <HotTable ref='hotTable' data={this.state.markdownTable.table} settings={this.state.handsontableSetting} />
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <div className="d-flex justify-content-between">
+            <Button bsStyle="danger" onClick={this.reset}>Reset</Button>
+            <div className="d-flex">
+              <Button bsStyle="default" onClick={this.cancel}>Cancel</Button>
+              <Button bsStyle="primary" onClick={this.save}>Done</Button>
             </div>
-          </Modal.Body>
-          <Modal.Footer>
-            <div className="d-flex justify-content-between">
-              <Button bsStyle="danger" onClick={this.reset}>Reset</Button>
-              <div className="d-flex">
-                <Button bsStyle="default" onClick={this.cancel}>Cancel</Button>
-                <Button bsStyle="primary" onClick={this.save}>Done</Button>
-              </div>
-            </div>
-          </Modal.Footer>
-        </Modal>
-      </div>
+          </div>
+        </Modal.Footer>
+      </Modal>
     );
   }
 
@@ -141,7 +139,7 @@ export default class HandsontableModal extends React.Component {
     );
   }
 
-  static getDefaultHandsotableSetting() {
+  static getDefaultHandsontableSetting() {
     return {
       height: 300,
       rowHeaders: true,
