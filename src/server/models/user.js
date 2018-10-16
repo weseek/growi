@@ -707,6 +707,13 @@ module.exports = function(crowi) {
     const User = this
       , newUser = new User();
 
+    // check user upper limit
+    const isUserUpperLimitError = await User.isUserUpperLimitError();
+    if (isUserUpperLimitError) {
+      const err = new UserUpperLimitException();
+      callback(err);
+    }
+
     // check email duplication because email must be unique
     const count = await this.count({ email });
     if (count > 0) {
@@ -779,6 +786,11 @@ module.exports = function(crowi) {
     return username;
   };
 
+  class UserUpperLimitException {
+    constructor() {
+      this.name = this.constructor.name;
+    }
+  }
 
   userSchema.statics.STATUS_REGISTERED  = STATUS_REGISTERED;
   userSchema.statics.STATUS_ACTIVE      = STATUS_ACTIVE;

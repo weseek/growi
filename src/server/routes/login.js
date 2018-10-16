@@ -188,6 +188,10 @@ module.exports = function(crowi, app) {
 
         User.createUserByEmailAndPassword(name, username, email, password, lang, function(err, userData) {
           if (err) {
+            if (err.name === 'UserUpperLimitException') {
+              req.flash('registerWarningMessage', 'Can not register more than the maximum number of users.');
+              return res.redirect('/register');
+            }
             req.flash('registerWarningMessage', 'Failed to register.');
             return res.redirect('/register');
           }
