@@ -67,7 +67,7 @@ export default class HandsontableModal extends React.Component {
 
   render() {
     return (
-      <Modal show={this.state.show} onHide={this.cancel} bsSize="large">
+      <Modal show={this.state.show} onHide={this.cancel} bsSize="large" dialogClassName="handsontable-modal">
         <Modal.Header closeButton>
           <Modal.Title>Edit Table</Modal.Title>
         </Modal.Header>
@@ -138,8 +138,15 @@ export default class HandsontableModal extends React.Component {
           }
         }
       },
-      stretchH: 'all',
-      selectionMode: 'multiple'
+      selectionMode: 'multiple',
+      modifyColWidth: function(width) {
+        if (width < 100) {
+          return 100;
+        }
+        if (width > 300) {
+          return 300;
+        }
+      }
     };
   }
 }
