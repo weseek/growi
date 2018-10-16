@@ -328,7 +328,7 @@ module.exports = function(crowi, app) {
     });
   };
 
-  actions.invited = function(req, res) {
+  actions.invited = async function(req, res) {
     if (!req.user) {
       return res.redirect('/login');
     }
@@ -340,24 +340,29 @@ module.exports = function(crowi, app) {
       var name = invitedForm.name;
       var password = invitedForm.password;
 
-      User.isRegisterableUsername(username, function(creatable) {
-        if (creatable) {
-          user.activateInvitedUser(username, name, password, function(err, data) {
-            if (err) {
-              req.flash('warningMessage', 'アクティベートに失敗しました。');
-              return res.render('invited');
-            }
-            else {
-              return res.redirect('/');
-            }
-          });
+      // check user upper limit
+      const isUserUpperLimitError = await User.isUserUpperLimitError();
+      if (isUserUpperLimitError) {
+        req.flash('warningMessage', 'ユーザーが上限に達したためアクティベートできません。');
+        return res.redirect('/invited');
+      }
+
+      const creatable = await User.isRegisterableUsername(username);
+      if (creatable) {
+        try {
+          await user.activateInvitedUser(username, name, password);
+          return res.redirect('/');
         }
-        else {
-          req.flash('warningMessage', '利用できないユーザーIDです。');
-          debug('username', username);
+        catch (err) {
+          req.flash('warningMessage', 'アクティベートに失敗しました。');
           return res.render('invited');
         }
-      });
+      }
+      else {
+        req.flash('warningMessage', '利用できないユーザーIDです。');
+        debug('username', username);
+        return res.render('invited');
+      }
     }
     else {
       return res.render('invited', {
