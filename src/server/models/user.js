@@ -493,6 +493,20 @@ module.exports = function(crowi) {
     });
   };
 
+  userSchema.statics.isUserUpperLimitError = async function() {
+    let isUserUpperLimitError = false;
+    const User = this;
+    const userUpperLimit = Number(crowi.env['USER_UPPER_LIMIT']);
+    const activeUsers = await User.findAllUsers({status: User.STATUS_ACTIVE});
+    if (userUpperLimit !== 0 && userUpperLimit <= activeUsers.length) {
+      isUserUpperLimitError = true;
+    }
+
+    return new Promise(function(resolve) {
+      resolve(isUserUpperLimitError);
+    });
+  };
+
   userSchema.statics.isRegisterableUsername = function(username) {
     var User = this;
     var usernameUsable = true;
