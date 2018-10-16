@@ -67,7 +67,7 @@ export default class HandsontableModal extends React.Component {
 
   render() {
     return (
-      <Modal show={this.state.show} onHide={this.cancel} bsSize="large">
+      <Modal show={this.state.show} onHide={this.cancel} bsSize="large" dialogClassName="handsontable-modal">
         <Modal.Header closeButton>
           <Modal.Title>Edit Table</Modal.Title>
         </Modal.Header>
