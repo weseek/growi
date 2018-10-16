@@ -1035,6 +1035,12 @@ module.exports = function(crowi, app) {
     const form = req.form.settingForm;
     const acl_enable = process.env.ACL_ENABLE == 'true' ? true : false;
     if (!acl_enable) {
+      const basicName = form['security:basicName'];
+      const basicSecret = form['security:basicSecret'];
+      if (basicName != '' || basicSecret != '') {
+        req.form.errors.push('Public Wikiのため、Basic認証は利用できません。');
+        return res.json({status: false, message: req.form.errors.join('\n')});
+      }
       const guestMode = form['security:restrictGuestMode'];
       if ( guestMode == 'Deny' ) {
         req.form.errors.push('Private Wikiへの設定変更はできません。');
