@@ -210,14 +210,15 @@ module.exports = function(crowi) {
     return this.updateGoogleId(null, callback);
   };
 
-  userSchema.methods.activateInvitedUser = function(username, name, password, callback) {
+  userSchema.methods.activateInvitedUser = function(username, name, password) {
     this.setPassword(password);
     this.name = name;
     this.username = username;
     this.status = STATUS_ACTIVE;
+    const self = this;
 
     return new Promise(function(resolve, reject) {
-      this.save(function(err, userData) {
+      self.save(function(err, userData) {
         userEvent.emit('activated', userData);
         if (err) {
           return reject(err);
@@ -492,12 +493,12 @@ module.exports = function(crowi) {
     });
   };
 
-  userSchema.statics.isRegisterableUsername = function(username, callback) {
+  userSchema.statics.isRegisterableUsername = function(username) {
     var User = this;
     var usernameUsable = true;
 
     return new Promise(function(resolve) {
-      this.findOne({username: username}, function(err, userData) {
+      User.findOne({username: username}, function(err, userData) {
         if (userData) {
           usernameUsable = false;
         }
