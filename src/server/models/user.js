@@ -711,7 +711,7 @@ module.exports = function(crowi) {
     const isUserUpperLimitError = await User.isUserUpperLimitError();
     if (isUserUpperLimitError) {
       const err = new UserUpperLimitException();
-      callback(err);
+      return callback(err);
     }
 
     // check email duplication because email must be unique
