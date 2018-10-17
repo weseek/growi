@@ -38,7 +38,7 @@ module.exports = function(crowi) {
         filename: filePath,
         contentType: contentType
       },
-      fs.createReadStream(fileStream.path),
+      fileStream,
       function (error, createdFile) {
         debug('Failed to upload ' + createdFile + 'to gridFS', error);
         resolve(createdFile._id);
