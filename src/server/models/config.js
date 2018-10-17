@@ -48,7 +48,6 @@ module.exports = function(crowi) {
    */
   function getDefaultCrowiConfigs() {
     /* eslint-disable key-spacing */
-
     return {
       //'app:installed'     : "0.0.0",
       'app:confidential'  : '',
