@@ -105,7 +105,7 @@ export default class HandsontableModal extends React.Component {
         <Modal.Body className="p-0">
           <Navbar>
             <Navbar.Form>
-              <Button className="m-r-20">Data Import</Button>
+              <Button className="m-r-20" onClick={() => this.setState({ open: !this.state.open })}>Data Import</Button>
               <ButtonGroup>
                 <Button onClick={() => { this.setClassNameToColumns('htLeft') }}><i className="ti-align-left"></i></Button>
                 <Button onClick={() => { this.setClassNameToColumns('htCenter') }}><i className="ti-align-center"></i></Button>
@@ -113,6 +113,24 @@ export default class HandsontableModal extends React.Component {
               </ButtonGroup>
             </Navbar.Form>
           </Navbar>
+          <Collapse in={this.state.open}>
+            <div className="p-30">
+              <form action="">
+                <FormGroup controlId="formControlsSelect">
+                  <ControlLabel>Select Data Format</ControlLabel>
+                  <FormControl componentClass="select" placeholder="select">
+                    <option value="select">CSV</option>
+                    <option value="other">TSV</option>
+                    <option value="other">HTML</option>
+                  </FormControl>
+                </FormGroup>
+                <FormGroup controlId="formControlsTextarea">
+                  <ControlLabel>Import Data</ControlLabel>
+                  <FormControl componentClass="textarea" placeholder="textarea" />
+                </FormGroup>
+              </form>
+            </div>
+          </Collapse>
           <div className="p-4">
             <HotTable ref='hotTable' data={this.state.markdownTable.table} settings={this.state.handsontableSetting} />
           </div>
