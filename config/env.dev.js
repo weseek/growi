@@ -1,6 +1,6 @@
 module.exports = {
   NODE_ENV: 'development',
-  FILE_UPLOAD: 'gridfs',
+  FILE_UPLOAD: 'local',
   // MATHJAX: 1,
   ELASTICSEARCH_URI: 'http://localhost:9200/growi',
   HACKMD_URI: 'http://localhost:3010',
