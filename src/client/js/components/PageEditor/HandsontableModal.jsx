@@ -5,7 +5,10 @@ import Modal from 'react-bootstrap/es/Modal';
 import Button from 'react-bootstrap/es/Button';
 import Navbar from 'react-bootstrap/es/Navbar';
 import ButtonGroup from 'react-bootstrap/es/ButtonGroup';
-
+import Collapse from 'react-bootstrap/es/Collapse';
+import FormGroup from 'react-bootstrap/es/FormGroup';
+import ControlLabel from 'react-bootstrap/es/ControlLabel';
+import FormControl from 'react-bootstrap/es/FormControl';
 
 import Handsontable from 'handsontable';
 import { HotTable } from '@handsontable/react';
@@ -102,6 +105,7 @@ export default class HandsontableModal extends React.Component {
         <Modal.Body className="p-0">
           <Navbar>
             <Navbar.Form>
+              <Button className="m-r-20">Data Import</Button>
               <ButtonGroup>
                 <Button onClick={() => { this.setClassNameToColumns('htLeft') }}><i className="ti-align-left"></i></Button>
                 <Button onClick={() => { this.setClassNameToColumns('htCenter') }}><i className="ti-align-center"></i></Button>
