@@ -98,6 +98,9 @@ class ExternalAccount {
           })
           .then(newUser => {
             return this.associate(providerType, accountId, newUser);
+          })
+          .catch(err => {
+            throw err;
           });
 
       });

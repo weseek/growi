@@ -398,6 +398,10 @@ module.exports = function(crowi, app) {
           return;
         }
       }
+      else if (err.name === 'UserUpperLimitException') {
+        req.flash('warningMessage', 'Can not register more than the maximum number of users.');
+        return;
+      }
     }
   };
 
