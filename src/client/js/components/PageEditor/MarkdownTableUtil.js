@@ -18,8 +18,8 @@ class MarkdownTableUtil {
     this.getStrFromBot = this.getStrFromBot.bind(this);
     this.getStrToEot = this.getStrToEot.bind(this);
     this.isInTable = this.isInTable.bind(this);
-    this.replaceMarkdownTable = this.replaceMarkdownTable.bind(this);
-    this.replaceMarkdownTableWithReformed = this.replaceMarkdownTable; // alias
+    this.replaceFocusedMarkdownTableWithEditor = this.replaceFocusedMarkdownTableWithEditor.bind(this);
+    this.replaceMarkdownTableWithReformed = this.replaceFocusedMarkdownTableWithEditor; // alias
   }
 
   /**
@@ -133,7 +133,7 @@ class MarkdownTableUtil {
   }
 
   /**
-   * returns markdown table that is merged all of markdown table in array
+   * return markdown table that is merged all of markdown table in array
    * (The merged markdown table options are used for the first markdown table.)
    * @param {Array} array of markdown table
    */
@@ -152,14 +152,38 @@ class MarkdownTableUtil {
   }
 
   /**
-   * replace markdown table
+   * replace focused markdown table with editor
    * (A replaced table is reformed by markdown-table.)
-   * @param {MarkdownTable} markdown table
+   * @param {MarkdownTable} table
    */
-  replaceMarkdownTable(editor, table) {
+  replaceFocusedMarkdownTableWithEditor(editor, table) {
     const curPos = editor.getCursor();
     editor.getDoc().replaceRange(table.toString(), this.getBot(editor), this.getEot(editor));
     editor.getDoc().setCursor(curPos.line + 1, 2);
+  }
+
+  /**
+   * return markdown where the markdown table specified by line number params is replaced to the markdown table specified by table param
+   * @param {string} markdown
+   * @param {MarkdownTable} table
+   * @param beginLineNumber
+   * @param endLineNumber
+   */
+  replaceMarkdownTableInMarkdown(table, markdown, beginLineNumber, endLineNumber) {
+    const splitMarkdown = markdown.split(/\r\n|\r|\n/);
+    const markdownBeforeTable = splitMarkdown.slice(0, beginLineNumber - 1);
+    const markdownAfterTable = splitMarkdown.slice(endLineNumber);
+
+    let newMarkdown = '';
+    if (markdownBeforeTable.length > 0) {
+      newMarkdown += markdownBeforeTable.join('\n') + '\n';
+    }
+    newMarkdown += table;
+    if (markdownAfterTable.length > 0) {
+      newMarkdown += '\n' + markdownAfterTable.join('\n');
+    }
+
+    return newMarkdown;
   }
 }
 

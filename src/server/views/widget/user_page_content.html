@@ -27,11 +27,6 @@
 
     <div class="tab-pane user-created-list page-list" id="user-created-list">
       <div class="page-list-container">
-        {% if createdList.length == 0 %}
-        No created pages yet.
-        {% else %}
-          {% include 'page_list.html' with { pages: createdList } %}
-        {% endif %}
       </div>
     </div>
   </div>

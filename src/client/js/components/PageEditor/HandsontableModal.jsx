@@ -4,9 +4,11 @@ import PropTypes from 'prop-types';
 import Modal from 'react-bootstrap/es/Modal';
 import Button from 'react-bootstrap/es/Button';
 
+import Handsontable from 'handsontable';
 import { HotTable } from '@handsontable/react';
 
 import MarkdownTable from '../../models/MarkdownTable';
+import HandsontableUtil from './HandsontableUtil';
 
 export default class HandsontableModal extends React.Component {
   constructor(props) {
@@ -15,17 +17,8 @@ export default class HandsontableModal extends React.Component {
     this.state = {
       show: false,
       markdownTableOnInit: HandsontableModal.getDefaultMarkdownTable(),
-      markdownTable: HandsontableModal.getDefaultMarkdownTable()
-    };
-
-    this.settings = {
-      height: 300,
-      rowHeaders: true,
-      colHeaders: true,
-      fixedRowsTop: [0, 1],
-      contextMenu: ['row_above', 'row_below', 'col_left', 'col_right', '---------', 'remove_row', 'remove_col', '---------', 'alignment'],
-      stretchH: 'all',
-      selectionMode: 'multiple',
+      markdownTable: HandsontableModal.getDefaultMarkdownTable(),
+      handsontableSetting: HandsontableModal.getDefaultHandsotableSetting()
     };
 
     this.init = this.init.bind(this);
@@ -36,8 +29,16 @@ export default class HandsontableModal extends React.Component {
 
   init(markdownTable) {
     const initMarkdownTable = markdownTable || HandsontableModal.getDefaultMarkdownTable();
-    this.setState({ markdownTableOnInit: initMarkdownTable });
-    this.setState({ markdownTable: initMarkdownTable.clone() });
+    this.setState(
+      {
+        markdownTableOnInit: initMarkdownTable,
+        markdownTable: initMarkdownTable.clone(),
+        handsontableSetting: Object.assign({}, this.state.handsontableSetting, {
+          afterUpdateSettings: HandsontableUtil.createHandlerToSynchronizeHandontableAlignWith(initMarkdownTable.options.align),
+          loadData: HandsontableUtil.createHandlerToSynchronizeHandontableAlignWith(initMarkdownTable.options.align)
+        })
+      }
+    );
   }
 
   show(markdownTable) {
@@ -54,21 +55,25 @@ export default class HandsontableModal extends React.Component {
   }
 
   save() {
+    let newMarkdownTable = this.state.markdownTable.clone();
+    newMarkdownTable.options.align = HandsontableUtil.getMarkdownTableAlignmentFrom(this.refs.hotTable.hotInstance);
+
     if (this.props.onSave != null) {
-      this.props.onSave(this.state.markdownTable);
+      this.props.onSave(newMarkdownTable);
     }
+
     this.setState({ show: false });
   }
 
   render() {
     return (
-      <Modal show={this.state.show} onHide={this.cancel} bsSize="large">
+      <Modal show={this.state.show} onHide={this.cancel} bsSize="large" dialogClassName="handsontable-modal">
         <Modal.Header closeButton>
           <Modal.Title>Edit Table</Modal.Title>
         </Modal.Header>
         <Modal.Body className="p-0">
           <div className="p-4">
-            <HotTable data={this.state.markdownTable.table} settings={this.settings} />
+            <HotTable ref='hotTable' data={this.state.markdownTable.table} settings={this.state.handsontableSetting} />
           </div>
         </Modal.Body>
         <Modal.Footer>
@@ -85,11 +90,64 @@ export default class HandsontableModal extends React.Component {
   }
 
   static getDefaultMarkdownTable() {
-    return new MarkdownTable([
-      ['col1', 'col2', 'col3'],
-      ['', '', ''],
-      ['', '', ''],
-    ]);
+    return new MarkdownTable(
+      [
+        ['col1', 'col2', 'col3'],
+        ['', '', ''],
+        ['', '', ''],
+      ],
+      {
+        align: ['', '', '']
+      }
+    );
+  }
+
+  static getDefaultHandsotableSetting() {
+    return {
+      height: 300,
+      rowHeaders: true,
+      colHeaders: true,
+      contextMenu: {
+        items: {
+          'row_above': {}, 'row_below': {}, 'col_left': {}, 'col_right': {},
+          'separator1': Handsontable.plugins.ContextMenu.SEPARATOR,
+          'remove_row': {}, 'remove_col': {},
+          'separator2': Handsontable.plugins.ContextMenu.SEPARATOR,
+          'custom_alignment': {
+            name: 'Align columns',
+            key: 'align_columns',
+            submenu: {
+              items: [{
+                name: 'Left',
+                key: 'align_columns:1',
+                callback: function(key, selection) {
+                  HandsontableUtil.setClassNameToColumns(this, selection[0].start.col, selection[0].end.col, 'htLeft');
+                }}, {
+                name: 'Center',
+                key: 'align_columns:2',
+                callback: function(key, selection) {
+                  HandsontableUtil.setClassNameToColumns(this, selection[0].start.col, selection[0].end.col, 'htCenter');
+                }}, {
+                name: 'Right',
+                key: 'align_columns:3',
+                callback: function(key, selection) {
+                  HandsontableUtil.setClassNameToColumns(this, selection[0].start.col, selection[0].end.col, 'htRight');
+                }}
+              ]
+            }
+          }
+        }
+      },
+      selectionMode: 'multiple',
+      modifyColWidth: function(width) {
+        if (width < 100) {
+          return 100;
+        }
+        if (width > 300) {
+          return 300;
+        }
+      }
+    };
   }
 }
 

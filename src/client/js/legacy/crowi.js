@@ -37,25 +37,6 @@ Crowi.renderTocContent = (tocHtml) => {
 };
 
 /**
- * append buttons to section headers
- */
-Crowi.appendEditSectionButtons = function(parentElement) {
-  $('h1,h2,h3,h4,h5,h6', parentElement).each(function(idx, elm) {
-    const line = +elm.getAttribute('data-line');
-
-    // add button
-    $(this).append(`
-      <span class="revision-head-edit-button">
-        <a href="#edit" onClick="Crowi.setCaretLineData(${line})">
-          <i class="icon-note"></i>
-        </a>
-      </span>
-      `
-    );
-  });
-};
-
-/**
  * set 'data-caret-line' attribute that will be processed when 'shown.bs.tab' event fired
  * @param {number} line
  */

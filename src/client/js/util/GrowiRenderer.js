@@ -17,6 +17,7 @@ import TaskListsConfigurer from './markdown-it/task-lists';
 import TocAndAnchorConfigurer from './markdown-it/toc-and-anchor';
 import BlockdiagConfigurer from './markdown-it/blockdiag';
 import TableWithHandsontableButtonConfigurer from './markdown-it/table-with-handsontable-button';
+import HeaderWithEditLinkConfigurer from './markdown-it/header-with-edit-link';
 
 export default class GrowiRenderer {
 
@@ -87,6 +88,7 @@ export default class GrowiRenderer {
           new FooternoteConfigurer(crowi),
           new TocAndAnchorConfigurer(crowi, options.renderToc),
           new HeaderLineNumberConfigurer(crowi),
+          new HeaderWithEditLinkConfigurer(crowi),
           new TableWithHandsontableButtonConfigurer(crowi)
         ]);
         break;

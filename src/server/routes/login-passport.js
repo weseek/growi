@@ -321,30 +321,42 @@ module.exports = function(crowi, app) {
     passport.authenticate('saml')(req, res);
   };
 
-  const loginPassportSamlCallback = async(req, res, next) => {
+  const loginPassportSamlCallback = async(req, res) => {
     const providerId = 'saml';
     const strategyName = 'saml';
-    const attrMapId = config.crowi['security:passport-saml:attrMapId'] || 'id';
-    const attrMapUsername = config.crowi['security:passport-saml:attrMapUsername'] || 'userName';
+    const attrMapId = config.crowi['security:passport-saml:attrMapId'];
+    const attrMapUsername = config.crowi['security:passport-saml:attrMapUsername'];
+    const attrMapMail = config.crowi['security:passport-saml:attrMapMail'];
     const attrMapFirstName = config.crowi['security:passport-saml:attrMapFirstName'] || 'firstName';
     const attrMapLastName = config.crowi['security:passport-saml:attrMapLastName'] || 'lastName';
-    const response = await promisifiedPassportAuthentication(req, res, next, strategyName);
+
+    const response = await promisifiedPassportAuthentication(req, res, loginFailure, strategyName);
     const userInfo = {
       'id': response[attrMapId],
       'username': response[attrMapUsername],
-      'name': `${response[attrMapFirstName]} ${response[attrMapLastName]}`,
+      'email': response[attrMapMail]
     };
 
-    const externalAccount = await getOrCreateUser(req, res, next, userInfo, providerId);
+    // determine name
+    const firstName = response[attrMapFirstName];
+    const lastName = response[attrMapLastName];
+    if (firstName != null || lastName != null) {
+      userInfo['name'] = `${response[attrMapFirstName]} ${response[attrMapLastName]}`.trim();
+    }
+
+    const externalAccount = await getOrCreateUser(req, res, loginFailure, userInfo, providerId);
     if (!externalAccount) {
-      return loginFailure(req, res, next);
+      return loginFailure(req, res);
     }
 
     const user = await externalAccount.getPopulatedUser();
 
     // login
     req.logIn(user, err => {
-      if (err) { return next(err) }
+      if (err != null) {
+        logger.error(err);
+        return loginFailure(req, res);
+      }
       return loginSuccess(req, res, user);
     });
   };
@@ -356,16 +368,21 @@ module.exports = function(crowi, app) {
           return;               // cz: somehow passport.authenticate called twice when ECONNREFUSED error occurred
         }
 
+        logger.debug(`--- authenticate with ${strategyName} strategy ---`);
+
         if (err) {
           logger.error(`'${strategyName}' passport authentication error: `, err);
-          req.flash('warningMessage', `Error occured in '${strategyName}' passport authentication`);
-          return next(); // pass and the flash message is displayed when all of authentications are failed.
+          req.flash('warningMessage', `Error occured in '${strategyName}' passport authentication`);  // pass and the flash message is displayed when all of authentications are failed.
+          return next(req, res);
         }
 
         // authentication failure
         if (!response) {
-          return next();
+          return next(req, res);
         }
+
+        logger.debug('response', response);
+        logger.debug('info', info);
 
         resolve(response);
       })(req, res, next);

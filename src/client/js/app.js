@@ -33,6 +33,7 @@ import RevisionPath     from './components/Page/RevisionPath';
 import RevisionUrl      from './components/Page/RevisionUrl';
 import BookmarkButton   from './components/BookmarkButton';
 import NewPageNameInput from './components/NewPageNameInput';
+import RecentCreated from './components/RecentCreated/RecentCreated';
 
 import CustomCssEditor  from './components/Admin/CustomCssEditor';
 import CustomScriptEditor from './components/Admin/CustomScriptEditor';
@@ -110,58 +111,10 @@ if (isEnabledPlugins) {
   crowiPlugin.installAll(crowi, crowiRenderer);
 }
 
-// setup renderer after plugins are installed
-crowiRenderer.setup();
-
-// restore draft when the first time to edit
-const draft = crowi.findDraft(pagePath);
-if (!pageRevisionId && draft != null) {
-  markdown = draft;
-}
-
 /**
- * define components
- *  key: id of element
- *  value: React Element
+ * component store
  */
-const componentMappings = {
-  'search-top': <HeaderSearchBox crowi={crowi} />,
-  'search-sidebar': <HeaderSearchBox crowi={crowi} />,
-  'search-page': <SearchPage crowi={crowi} crowiRenderer={crowiRenderer} />,
-  'page-list-search': <PageListSearch crowi={crowi} />,
-
-  //'revision-history': <PageHistory pageId={pageId} />,
-  'seen-user-list': <SeenUserList pageId={pageId} crowi={crowi} />,
-  'bookmark-button': <BookmarkButton pageId={pageId} crowi={crowi} />,
-  'bookmark-button-lg': <BookmarkButton pageId={pageId} crowi={crowi} size="lg" />,
-
-  'page-name-input': <NewPageNameInput crowi={crowi} parentPageName={pagePath} />,
-
-};
-// additional definitions if data exists
-if (pageId) {
-  componentMappings['page-comments-list'] = <PageComments pageId={pageId} revisionId={pageRevisionId} revisionCreatedAt={pageRevisionCreatedAt} crowi={crowi} crowiOriginRenderer={crowiRenderer} />;
-  componentMappings['page-attachment'] = <PageAttachment pageId={pageId} pageContent={pageContent} crowi={crowi} />;
-}
-if (pagePath) {
-  componentMappings['page'] = <Page crowi={crowi} crowiRenderer={crowiRenderer} markdown={markdown} pagePath={pagePath} showHeadEditButton={true} />;
-  componentMappings['revision-path'] = <RevisionPath pagePath={pagePath} crowi={crowi} />;
-  componentMappings['revision-url'] = <RevisionUrl pageId={pageId} pagePath={pagePath} />;
-}
-
 let componentInstances = {};
-
-Object.keys(componentMappings).forEach((key) => {
-  const elem = document.getElementById(key);
-  if (elem) {
-    componentInstances[key] = ReactDOM.render(componentMappings[key], elem);
-  }
-});
-
-// set page if exists
-if (componentInstances['page'] != null) {
-  crowi.setPage(componentInstances['page']);
-}
 
 /**
  * save success handler when reloading is not needed
@@ -231,10 +184,6 @@ const errorHandler = function(error) {
 
 const saveWithShortcut = function(markdown) {
   const editorMode = crowi.getCrowiForJquery().getCurrentEditorMode();
-  if (editorMode == null) {
-    // do nothing
-    return;
-  }
 
   let revisionId = pageRevisionId;
   // get options
@@ -308,6 +257,57 @@ const saveWithSubmitButton = function() {
     .catch(errorHandler);
 };
 
+// setup renderer after plugins are installed
+crowiRenderer.setup();
+
+// restore draft when the first time to edit
+const draft = crowi.findDraft(pagePath);
+if (!pageRevisionId && draft != null) {
+  markdown = draft;
+}
+
+/**
+ * define components
+ *  key: id of element
+ *  value: React Element
+ */
+const componentMappings = {
+  'search-top': <HeaderSearchBox crowi={crowi} />,
+  'search-sidebar': <HeaderSearchBox crowi={crowi} />,
+  'search-page': <SearchPage crowi={crowi} crowiRenderer={crowiRenderer} />,
+  'page-list-search': <PageListSearch crowi={crowi} />,
+
+  //'revision-history': <PageHistory pageId={pageId} />,
+  'seen-user-list': <SeenUserList pageId={pageId} crowi={crowi} />,
+  'bookmark-button': <BookmarkButton pageId={pageId} crowi={crowi} />,
+  'bookmark-button-lg': <BookmarkButton pageId={pageId} crowi={crowi} size="lg" />,
+
+  'page-name-input': <NewPageNameInput crowi={crowi} parentPageName={pagePath} />,
+
+};
+// additional definitions if data exists
+if (pageId) {
+  componentMappings['page-comments-list'] = <PageComments pageId={pageId} revisionId={pageRevisionId} revisionCreatedAt={pageRevisionCreatedAt} crowi={crowi} crowiOriginRenderer={crowiRenderer} />;
+  componentMappings['page-attachment'] = <PageAttachment pageId={pageId} pageContent={pageContent} crowi={crowi} />;
+}
+if (pagePath) {
+  componentMappings['page'] = <Page crowi={crowi} crowiRenderer={crowiRenderer} markdown={markdown} pagePath={pagePath} showHeadEditButton={true} onSaveWithShortcut={saveWithShortcut} />;
+  componentMappings['revision-path'] = <RevisionPath pagePath={pagePath} crowi={crowi} />;
+  componentMappings['revision-url'] = <RevisionUrl pageId={pageId} pagePath={pagePath} />;
+}
+
+Object.keys(componentMappings).forEach((key) => {
+  const elem = document.getElementById(key);
+  if (elem) {
+    componentInstances[key] = ReactDOM.render(componentMappings[key], elem);
+  }
+});
+
+// set page if exists
+if (componentInstances['page'] != null) {
+  crowi.setPage(componentInstances['page']);
+}
+
 // render SavePageControls
 let savePageControls = null;
 const savePageControlsElem = document.getElementById('save-page-controls');
@@ -330,6 +330,21 @@ if (savePageControlsElem) {
   );
   componentInstances.savePageControls = savePageControls;
 }
+
+// RecentCreated dev GC-939 start
+const recentCreatedControlsElem = document.getElementById('user-created-list');
+if (recentCreatedControlsElem) {
+  let limit = crowi.getConfig().recentCreatedLimit;
+  if (null == limit) {
+    limit = 10;
+  }
+  ReactDOM.render(
+    <RecentCreated  crowi={crowi} pageId={pageId} limit={limit} >
+
+    </RecentCreated>, document.getElementById('user-created-list')
+  );
+}
+// RecentCreated dev GC-939 end
 
 /*
  * HackMD Editor

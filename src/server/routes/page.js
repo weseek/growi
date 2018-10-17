@@ -734,7 +734,7 @@ module.exports = function(crowi, app) {
   api.list = function(req, res) {
     const username = req.query.user || null;
     const path = req.query.path || null;
-    const limit = 50;
+    const limit = + req.query.limit || 50;
     const offset = parseInt(req.query.offset) || 0;
 
     const pagerOptions = { offset: offset, limit: limit };
@@ -1260,6 +1260,38 @@ module.exports = function(crowi, app) {
       debug('Error occured while get setting', err, err.stack);
       return res.json(ApiResponse.error('Failed to delete redirect page.'));
     });
+  };
+
+  api.recentCreated = async function(req, res) {
+    const pageId = req.query.page_id;
+
+    if (pageId == null) {
+      return res.json(ApiResponse.error('param \'pageId\' must not be null'));
+    }
+
+    const page = await Page.findPageById(pageId);
+    if (page == null) {
+      return res.json(ApiResponse.error(`Page (id='${pageId}') does not exist`));
+    }
+    if (!isUserPage(page.path)) {
+      return res.json(ApiResponse.error(`Page (id='${pageId}') is not a user home`));
+    }
+
+    const limit = + req.query.limit || 50;
+    const offset = + req.query.offset || 0;
+    const queryOptions = { offset: offset, limit: limit };
+
+    try {
+      let pages = await Page.findListByCreator(page.creator, queryOptions, req.user);
+
+      const result = {};
+      result.pages = pagePathUtils.encodePagesPath(pages);
+
+      return res.json(ApiResponse.success(result));
+    }
+    catch (err) {
+      return res.json(ApiResponse.error(err));
+    }
   };
 
   return actions;

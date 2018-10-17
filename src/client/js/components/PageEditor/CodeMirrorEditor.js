@@ -650,7 +650,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   getNavbarItems() {
-    return <Button bsSize="small" onClick={ this.showHandsonTableHandler }><i className="icon-grid"></i></Button>;
+    return <Button bsSize="small" onClick={ this.showHandsonTableHandler }><img src="/images/icons/editor/table.svg" width="14" /></Button>;
   }
 
   render() {
@@ -730,7 +730,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
         { this.state.isCheatsheetModalButtonShown && this.renderCheatsheetModalButton() }
       </div>
 
-      <HandsontableModal ref='handsontableModal' onSave={ table => mtu.replaceMarkdownTable(this.getCodeMirror(), table) }/>
+      <HandsontableModal ref='handsontableModal' onSave={ table => mtu.replaceFocusedMarkdownTableWithEditor(this.getCodeMirror(), table) }/>
     </React.Fragment>;
   }
 
