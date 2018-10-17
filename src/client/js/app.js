@@ -315,7 +315,6 @@ if (savePageControlsElem) {
   const grant = +savePageControlsElem.dataset.grant;
   const grantGroupId = savePageControlsElem.dataset.grantGroup;
   const grantGroupName = savePageControlsElem.dataset.grantGroupName;
-  const acl_enable = savePageControlsElem.dataset.aclEnable == 'true' ? true : false;
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
       <SavePageControls crowi={crowi} onSubmit={saveWithSubmitButton}
@@ -325,8 +324,7 @@ if (savePageControlsElem) {
             }
           }}
           pageId={pageId} pagePath={pagePath} slackChannels={slackChannels}
-          grant={grant} grantGroupId={grantGroupId} grantGroupName={grantGroupName} acl_enable={acl_enable}
-           />
+          grant={grant} grantGroupId={grantGroupId} grantGroupName={grantGroupName} />
     </I18nextProvider>,
     savePageControlsElem
   );

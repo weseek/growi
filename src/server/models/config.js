@@ -48,10 +48,6 @@ module.exports = function(crowi) {
    */
   function getDefaultCrowiConfigs() {
     /* eslint-disable key-spacing */
-    let securityRestrictGuestMode = SECURITY_RESTRICT_GUEST_MODE_DENY;
-    if (process.env.ACL_ENABLE) {
-      securityRestrictGuestMode = SECURITY_RESTRICT_GUEST_MODE_READONLY;
-    }
 
     return {
       //'app:installed'     : "0.0.0",
@@ -59,7 +55,7 @@ module.exports = function(crowi) {
 
       'app:fileUpload'    : false,
 
-      'security:restrictGuestMode'      : securityRestrictGuestMode,
+      'security:restrictGuestMode'      : 'Deny',
 
       'security:registrationMode'      : 'Open',
       'security:registrationWhiteList' : [],
@@ -368,6 +364,10 @@ module.exports = function(crowi) {
 
     return config.markdown[key];
   };
+  configSchema.statics.isEnabledAcl = function(config) {
+    const aclEnable = !(process.env.ACL_ENABLE === 'false');
+    return aclEnable;
+  };
 
   configSchema.statics.pageBreakSeparator = function(config) {
     const key = 'markdown:presentation:pageBreakSeparator';
@@ -632,8 +632,10 @@ module.exports = function(crowi) {
         BLOCKDIAG_URI: env.BLOCKDIAG_URI || null,
         HACKMD_URI: env.HACKMD_URI || null,
         MATHJAX: env.MATHJAX || null,
+        ACL_ENABLE: env.ACL_ENABLE || null,
       },
       recentCreatedLimit: Config.showRecentCreatedNumber(config),
+      isEnabledAcl: Config.isEnabledAcl(config),
     };
 
     return local_config;

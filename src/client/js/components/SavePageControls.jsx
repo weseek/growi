@@ -41,8 +41,8 @@ class SavePageControls extends React.PureComponent {
 
   render() {
     const { t } = this.props;
-
-    const acl_enable = this.props.acl_enable;
+    const config = this.props.crowi.getConfig();
+    const aclEnable = config.isEnabledAcl;
     const label = this.state.pageId == null ? t('Create') : t('Update');
 
     return (
@@ -58,7 +58,7 @@ class SavePageControls extends React.PureComponent {
         </div>
 
 
-        {acl_enable &&
+        {aclEnable &&
           <div className="mr-2">
             <GrantSelector crowi={this.props.crowi}
                 ref={(elem) => {
@@ -90,7 +90,6 @@ SavePageControls.propTypes = {
   grant: PropTypes.number,
   grantGroupId: PropTypes.string,
   grantGroupName: PropTypes.string,
-  acl_enable: PropTypes.bool,
 };
 
 export default translate()(SavePageControls);
