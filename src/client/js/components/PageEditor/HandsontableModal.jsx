@@ -114,8 +114,8 @@ export default class HandsontableModal extends React.Component {
             </Navbar.Form>
           </Navbar>
           <Collapse in={this.state.open}>
-            <div className="p-30">
-              <form action="">
+            <div> {/* This div is necessary for smoothing animations. (https://react-bootstrap.github.io/utilities/transitions/#transitions-collapse) */}
+              <form action="" className="p-4">
                 <FormGroup controlId="formControlsSelect">
                   <ControlLabel>Select Data Format</ControlLabel>
                   <FormControl componentClass="select" placeholder="select">
