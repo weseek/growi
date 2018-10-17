@@ -41,9 +41,6 @@
           {{ t("user_management.external_account") }}
         </a>
       </p>
-      {% if isUserUpperLimitError === true %}
-      <p>{{ t('user_management.cannot_invite_maximum_users') }}</p>
-      {% endif %}
       <form role="form" action="/admin/user/invite" method="post">
         <div id="inviteUserForm" class="collapse">
           <div class="form-group">
@@ -58,6 +55,13 @@
         </div>
         <input type="hidden" name="_csrf" value="{{ csrf() }}">
       </form>
+
+      {% if isUserUpperLimitError === true %}
+      <label>{{ t('user_management.cannot_invite_maximum_users') }}</label>
+      {% endif %}
+      {% if userUpperLimit !== 0 %}
+      <label>{{ t('user_management.current users') }}{{ activeUsers }}</label>
+      {% endif %}
 
       {% set createdUser = req.flash('createdUser') %}
       {% if createdUser.length %}
