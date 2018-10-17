@@ -21,46 +21,45 @@ module.exports = function(crowi) {
   // obtain a model
   AttachmentFile= gridfs.model;
 
-  // // delete a file
-  // lib.deleteFile = function (fileId, filePath) {
-  //   debug('File deletion: ' + filePath);
-  //   return new Promise(function (resolve, reject) {
-  //     fileId = 'id';
-  //     AttachmentFile.unlinkById(fileId, function (error, unlinkedAttachment) {
-  //       resolve();
-  //     });
-  //   });
-  // };
+  // delete a file
+  lib.deleteFile = function (fileId, filePath) {
+    debug('File deletion: ' + fileId);
+    return new Promise(function (resolve, reject) {
+      AttachmentFile.unlinkById(fileId, function (error, unlinkedAttachment) {
+        resolve();
+      });
+    });
+  };
 
   // create or save a file
   lib.uploadFile = function (filePath, contentType, fileStream, options) {
     return new Promise(function (resolve, reject) {
       AttachmentFile.write({
-        filename: 'test1.jpg',
+        filename: filePath,
         contentType: contentType
       },
       fs.createReadStream(fileStream.path),
       function (error, createdFile) {
         debug('Failed to upload ' + createdFile + 'to gridFS', error);
-        resolve(createdFile);
+        resolve(createdFile._id);
       });
     });
   };
 
-  for larger file size
-  read a file and receive a stream
-  var stream = Attachment.readById(objectid);
+  // // for larger file size
+  // // read a file and receive a stream
+  // var stream = Attachment.readById(objectid);
 
-  for smaller file size
-  // read a file and receive a buffer
-  Attachment.readById(objectid, function (error, buffer) {
-    debug('Failed to read a file with ' + buffer, error);
-  });
+  // // for smaller file size
+  // // read a file and receive a buffer
+  // Attachment.readById(objectid, function (error, buffer) {
+  //   debug('Failed to read a file with ' + buffer, error);
+  // });
 
-  // remove file details and its content from gridfs
-  Attachment.unlinkById(objectid, function (error, unlinkedAttachment) {
-    debug('Failed to remove ' + unlinkedAttachment + 'in gridFS', error);
-  });
+  // // remove file details and its content from gridfs
+  // Attachment.unlinkById(objectid, function (error, unlinkedAttachment) {
+  //   debug('Failed to remove ' + unlinkedAttachment + 'in gridFS', error);
+  // });
 
   lib.generateUrl = function (filePath) {
     return path.posix.join('/uploads', filePath);
