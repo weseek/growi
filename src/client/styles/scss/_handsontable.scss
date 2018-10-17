@@ -8,6 +8,16 @@
   }
 }
 
-.handsontable-modal.modal-lg {
-  width: 90%;
+.handsontable-modal {
+  &.modal-lg {
+    width: 90%;
+  }
+
+  .navbar {
+    margin-bottom: 0;
+  }
+
+  .data-import-form {
+    background-color: #f8f8f8;
+  }
 }

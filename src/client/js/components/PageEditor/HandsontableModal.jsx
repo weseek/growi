@@ -115,8 +115,8 @@ export default class HandsontableModal extends React.Component {
           </Navbar>
           <Collapse in={this.state.open}>
             <div> {/* This div is necessary for smoothing animations. (https://react-bootstrap.github.io/utilities/transitions/#transitions-collapse) */}
-              <form action="" className="p-4">
-                <FormGroup controlId="formControlsSelect">
+              <form action="" className="p-4 data-import-form">
+                <FormGroup>
                   <ControlLabel>Select Data Format</ControlLabel>
                   <FormControl componentClass="select" placeholder="select">
                     <option value="select">CSV</option>
@@ -124,9 +124,9 @@ export default class HandsontableModal extends React.Component {
                     <option value="other">HTML</option>
                   </FormControl>
                 </FormGroup>
-                <FormGroup controlId="formControlsTextarea">
+                <FormGroup>
                   <ControlLabel>Import Data</ControlLabel>
-                  <FormControl componentClass="textarea" placeholder="textarea" />
+                  <FormControl componentClass="textarea" placeholder="Paste table data" style={{ height: 200 }}  />
                 </FormGroup>
               </form>
             </div>
