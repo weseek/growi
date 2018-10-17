@@ -46,7 +46,7 @@
 
         <div id="template-form" class="row form-horizontal m-t-15">
           <fieldset class="col-xs-12">
-            <legend>{{ t('template.modal_label.Create template under', parentPath(path | preventXss)) }}</legend>
+            <legend>{{ t('template.modal_label.Create template under', parentPath(path | preventXss | escape)) }}</legend>
             <div class="d-flex create-page-input-container">
               <div class="create-page-input-row d-flex align-items-center">
                 <select id="template-type" class="form-control selectpicker" title="{{ t('template.option_label.select') }}">
