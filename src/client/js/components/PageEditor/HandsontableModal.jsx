@@ -107,6 +107,10 @@ export default class HandsontableModal extends React.Component {
       height: 300,
       rowHeaders: true,
       colHeaders: true,
+      manualRowMove: true,
+      manualRowResize: true,
+      manualColumnMove: true,
+      manualColumnResize: true,
       contextMenu: {
         items: {
           'row_above': {}, 'row_below': {}, 'col_left': {}, 'col_right': {},
@@ -140,12 +144,7 @@ export default class HandsontableModal extends React.Component {
       },
       selectionMode: 'multiple',
       modifyColWidth: function(width) {
-        if (width < 100) {
-          return 100;
-        }
-        if (width > 300) {
-          return 300;
-        }
+        return Math.max(80, Math.min(400, width));
       }
     };
   }
