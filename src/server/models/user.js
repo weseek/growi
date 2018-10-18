@@ -518,9 +518,7 @@ module.exports = function(crowi) {
       isUserUpperLimitError = true;
     }
 
-    return new Promise(function(resolve) {
-      resolve(isUserUpperLimitError);
-    });
+    return isUserUpperLimitError;
   };
 
   userSchema.statics.isRegisterableUsername = function(username) {
