@@ -105,7 +105,9 @@ export default class HandsontableModal extends React.Component {
         <Modal.Body className="p-0">
           <Navbar>
             <Navbar.Form>
-              <Button className="m-r-20" onClick={() => this.setState({ open: !this.state.open })}>Data Import</Button>
+              <Button className="m-r-20 data-import-button" onClick={() => this.setState({ open: !this.state.open })}>
+                Data Import<i className={this.state.open ? 'fa fa-angle-up' : 'fa fa-angle-down' }></i>
+              </Button>
               <ButtonGroup>
                 <Button onClick={() => { this.setClassNameToColumns('htLeft') }}><i className="ti-align-left"></i></Button>
                 <Button onClick={() => { this.setClassNameToColumns('htCenter') }}><i className="ti-align-center"></i></Button>
