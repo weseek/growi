@@ -468,27 +468,24 @@ module.exports = function(crowi, app) {
   };
 
   actions.user = {};
-  actions.user.index = function(req, res) {
-    const userUpperLimit = Number(crowi.env['USER_UPPER_LIMIT']);
-    User.findAllUsers({status: User.statusActivate})
-    .then(userData => {
-      const activeUsers = userData.length;
-      let isUserUpperLimitError = false;
-      if (userUpperLimit !== 0 && userUpperLimit <= activeUsers) {
-        isUserUpperLimitError = true;
-      }
-      var page = parseInt(req.query.page) || 1;
+  actions.user.index = async function(req, res) {
+    const findAllUsers = await User.findAllUsers({status: User.statusActivate});
+    const activeUsers = findAllUsers.length;
+    const Config = crowi.model('Config');
+    const userUpperLimit = Config.userUpperLimit(crowi);
+    const isUserUpperLimitError = await User.isUserUpperLimitError();
 
-      User.findUsersWithPagination({page: page}, function(err, result) {
-        const pager = createPager(result.total, result.limit, result.page, result.pages, MAX_PAGE_LIST);
+    var page = parseInt(req.query.page) || 1;
 
-        return res.render('admin/users', {
-          users: result.docs,
-          pager: pager,
-          activeUsers: activeUsers,
-          userUpperLimit: userUpperLimit,
-          isUserUpperLimitError: isUserUpperLimitError
-        });
+    User.findUsersWithPagination({page: page}, function(err, result) {
+      const pager = createPager(result.total, result.limit, result.page, result.pages, MAX_PAGE_LIST);
+
+      return res.render('admin/users', {
+        users: result.docs,
+        pager: pager,
+        activeUsers: activeUsers,
+        userUpperLimit: userUpperLimit,
+        isUserUpperLimitError: isUserUpperLimitError
       });
     });
   };
