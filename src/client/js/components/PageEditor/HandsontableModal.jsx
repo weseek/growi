@@ -3,9 +3,11 @@ import PropTypes from 'prop-types';
 
 import Modal from 'react-bootstrap/es/Modal';
 import Button from 'react-bootstrap/es/Button';
-import Navbar from 'react-bootstrap/es/Navbar';
 import ButtonGroup from 'react-bootstrap/es/ButtonGroup';
-
+import Collapse from 'react-bootstrap/es/Collapse';
+import FormGroup from 'react-bootstrap/es/FormGroup';
+import ControlLabel from 'react-bootstrap/es/ControlLabel';
+import FormControl from 'react-bootstrap/es/FormControl';
 
 import Handsontable from 'handsontable';
 import { HotTable } from '@handsontable/react';
@@ -19,6 +21,7 @@ export default class HandsontableModal extends React.Component {
 
     this.state = {
       show: false,
+      isDataImportAreaExpanded: false,
       markdownTableOnInit: HandsontableModal.getDefaultMarkdownTable(),
       markdownTable: HandsontableModal.getDefaultMarkdownTable(),
       handsontableSetting: HandsontableModal.getDefaultHandsontableSetting()
@@ -28,6 +31,7 @@ export default class HandsontableModal extends React.Component {
     this.reset = this.reset.bind(this);
     this.cancel = this.cancel.bind(this);
     this.save = this.save.bind(this);
+    this.toggleDataImportArea = this.toggleDataImportArea.bind(this);
   }
 
   init(markdownTable) {
@@ -93,6 +97,10 @@ export default class HandsontableModal extends React.Component {
     HandsontableUtil.setClassNameToColumns(this.refs.hotTable.hotInstance, startCol, endCol, className);
   }
 
+  toggleDataImportArea() {
+    this.setState({ isDataImportAreaExpanded: !this.state.isDataImportAreaExpanded });
+  }
+
   render() {
     return (
       <Modal show={this.state.show} onHide={this.cancel} bsSize="large" dialogClassName="handsontable-modal">
@@ -100,15 +108,38 @@ export default class HandsontableModal extends React.Component {
           <Modal.Title>Edit Table</Modal.Title>
         </Modal.Header>
         <Modal.Body className="p-0">
-          <Navbar>
-            <Navbar.Form>
-              <ButtonGroup>
-                <Button onClick={() => { this.setClassNameToColumns('htLeft') }}><i className="ti-align-left"></i></Button>
-                <Button onClick={() => { this.setClassNameToColumns('htCenter') }}><i className="ti-align-center"></i></Button>
-                <Button onClick={() => { this.setClassNameToColumns('htRight') }}><i className="ti-align-right"></i></Button>
-              </ButtonGroup>
-            </Navbar.Form>
-          </Navbar>
+          <div className="px-4 py-3 modal-navbar">
+            <Button className="m-r-20 data-import-button" onClick={this.toggleDataImportArea}>
+              Data Import<i className={this.state.isDataImportAreaExpanded ? 'fa fa-angle-up' : 'fa fa-angle-down' }></i>
+            </Button>
+            <ButtonGroup>
+              <Button onClick={() => { this.setClassNameToColumns('htLeft') }}><i className="ti-align-left"></i></Button>
+              <Button onClick={() => { this.setClassNameToColumns('htCenter') }}><i className="ti-align-center"></i></Button>
+              <Button onClick={() => { this.setClassNameToColumns('htRight') }}><i className="ti-align-right"></i></Button>
+            </ButtonGroup>
+          </div>
+          <Collapse in={this.state.isDataImportAreaExpanded}>
+            <div> {/* This div is necessary for smoothing animations. (https://react-bootstrap.github.io/utilities/transitions/#transitions-collapse) */}
+              <form action="" className="p-4 data-import-form">
+                <FormGroup>
+                  <ControlLabel>Select Data Format</ControlLabel>
+                  <FormControl componentClass="select" placeholder="select">
+                    <option value="select">CSV</option>
+                    <option value="other">TSV</option>
+                    <option value="other">HTML</option>
+                  </FormControl>
+                </FormGroup>
+                <FormGroup>
+                  <ControlLabel>Import Data</ControlLabel>
+                  <FormControl componentClass="textarea" placeholder="Paste table data" style={{ height: 200 }}  />
+                </FormGroup>
+                <div className="d-flex justify-content-end">
+                  <Button bsStyle="default" onClick={this.toggleDataImportArea}>Cancel</Button>
+                  <Button bsStyle="primary">Import</Button>
+                </div>
+              </form>
+            </div>
+          </Collapse>
           <div className="p-4">
             <HotTable ref='hotTable' data={this.state.markdownTable.table} settings={this.state.handsontableSetting} />
           </div>
