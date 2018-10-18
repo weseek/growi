@@ -129,6 +129,12 @@ module.exports = function(crowi) {
     };
   }
 
+  function getDefaultEnv() {
+    return {
+      'USER_UPPER_LIMIT': 0,
+    };
+  }
+
   function getValueForCrowiNS(config, key) {
     // return the default value if undefined
     if (undefined === config.crowi || undefined === config.crowi[key]) {
@@ -145,6 +151,13 @@ module.exports = function(crowi) {
     }
 
     return config.markdown[key];
+  }
+
+  function getValueEnv(crowi, key) {
+    if (null == crowi.env || null == crowi.env[key]) {
+      return getDefaultEnv()[key];
+    }
+    return crowi.env[key];
   }
 
   configSchema.statics.getRestrictGuestModeLabels = function() {
@@ -595,6 +608,11 @@ module.exports = function(crowi) {
     };
 
     return local_config;
+  };
+
+  configSchema.statics.userUpperLimit = function(crowi) {
+    const key = 'USER_UPPER_LIMIT';
+    return Number(getValueEnv(crowi, key));
   };
 
   /*
