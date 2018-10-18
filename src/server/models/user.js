@@ -505,17 +505,17 @@ module.exports = function(crowi) {
     });
   };
 
-  userSchema.statics.isUserUpperLimitError = async function() {
-    let isUserUpperLimitError = false;
+  userSchema.statics.isUserCountExceedsUpperLimit = async function() {
+    let isUserCountExceedsUpperLimit = false;
     const User = this;
     const Config = crowi.model('Config');
     const userUpperLimit = Config.userUpperLimit(crowi);
     const activeUsers = await User.findAllUsers({status: User.STATUS_ACTIVE});
     if (userUpperLimit !== 0 && userUpperLimit <= activeUsers.length) {
-      isUserUpperLimitError = true;
+      isUserCountExceedsUpperLimit = true;
     }
 
-    return isUserUpperLimitError;
+    return isUserCountExceedsUpperLimit;
   };
 
   userSchema.statics.isRegisterableUsername = async function(username) {
@@ -719,8 +719,8 @@ module.exports = function(crowi) {
       , newUser = new User();
 
     // check user upper limit
-    const isUserUpperLimitError = await User.isUserUpperLimitError();
-    if (isUserUpperLimitError) {
+    const isUserCountExceedsUpperLimit = await User.isUserCountExceedsUpperLimit();
+    if (isUserCountExceedsUpperLimit) {
       const err = new UserUpperLimitException();
       return callback(err);
     }

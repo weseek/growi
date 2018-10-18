@@ -345,8 +345,8 @@ module.exports = function(crowi, app) {
       var password = invitedForm.password;
 
       // check user upper limit
-      const isUserUpperLimitError = await User.isUserUpperLimitError();
-      if (isUserUpperLimitError) {
+      const isUserCountExceedsUpperLimit = await User.isUserCountExceedsUpperLimit();
+      if (isUserCountExceedsUpperLimit) {
         req.flash('warningMessage', 'ユーザーが上限に達したためアクティベートできません。');
         return res.redirect('/invited');
       }

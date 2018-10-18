@@ -473,7 +473,7 @@ module.exports = function(crowi, app) {
     const activeUsers = findAllUsers.length;
     const Config = crowi.model('Config');
     const userUpperLimit = Config.userUpperLimit(crowi);
-    const isUserUpperLimitError = await User.isUserUpperLimitError();
+    const isUserCountExceedsUpperLimit = await User.isUserCountExceedsUpperLimit();
 
     var page = parseInt(req.query.page) || 1;
 
@@ -485,7 +485,7 @@ module.exports = function(crowi, app) {
         pager: pager,
         activeUsers: activeUsers,
         userUpperLimit: userUpperLimit,
-        isUserUpperLimitError: isUserUpperLimitError
+        isUserCountExceedsUpperLimit: isUserCountExceedsUpperLimit
       });
     });
   };
