@@ -21,7 +21,7 @@ export default class HandsontableModal extends React.Component {
 
     this.state = {
       show: false,
-      dataImportAreaExpanded: false,
+      isDataImportAreaExpanded: false,
       markdownTableOnInit: HandsontableModal.getDefaultMarkdownTable(),
       markdownTable: HandsontableModal.getDefaultMarkdownTable(),
       handsontableSetting: HandsontableModal.getDefaultHandsontableSetting()
@@ -98,7 +98,7 @@ export default class HandsontableModal extends React.Component {
   }
 
   toggleDataImportArea() {
-    this.setState({ dataImportAreaExpanded: !this.state.dataImportAreaExpanded });
+    this.setState({ isDataImportAreaExpanded: !this.state.isDataImportAreaExpanded });
   }
 
   render() {
@@ -110,7 +110,7 @@ export default class HandsontableModal extends React.Component {
         <Modal.Body className="p-0">
           <div className="px-4 py-3 modal-navbar">
             <Button className="m-r-20 data-import-button" onClick={this.toggleDataImportArea}>
-              Data Import<i className={this.state.dataImportAreaExpanded ? 'fa fa-angle-up' : 'fa fa-angle-down' }></i>
+              Data Import<i className={this.state.isDataImportAreaExpanded ? 'fa fa-angle-up' : 'fa fa-angle-down' }></i>
             </Button>
             <ButtonGroup>
               <Button onClick={() => { this.setClassNameToColumns('htLeft') }}><i className="ti-align-left"></i></Button>
@@ -118,7 +118,7 @@ export default class HandsontableModal extends React.Component {
               <Button onClick={() => { this.setClassNameToColumns('htRight') }}><i className="ti-align-right"></i></Button>
             </ButtonGroup>
           </div>
-          <Collapse in={this.state.dataImportAreaExpanded}>
+          <Collapse in={this.state.isDataImportAreaExpanded}>
             <div> {/* This div is necessary for smoothing animations. (https://react-bootstrap.github.io/utilities/transitions/#transitions-collapse) */}
               <form action="" className="p-4 data-import-form">
                 <FormGroup>
