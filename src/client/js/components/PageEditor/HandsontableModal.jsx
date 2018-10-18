@@ -117,29 +117,29 @@ export default class HandsontableModal extends React.Component {
               <Button onClick={() => { this.setClassNameToColumns('htCenter') }}><i className="ti-align-center"></i></Button>
               <Button onClick={() => { this.setClassNameToColumns('htRight') }}><i className="ti-align-right"></i></Button>
             </ButtonGroup>
+            <Collapse in={this.state.isDataImportAreaExpanded}>
+              <div> {/* This div is necessary for smoothing animations. (https://react-bootstrap.github.io/utilities/transitions/#transitions-collapse) */}
+                <form action="" className="data-import-form pt-5">
+                  <FormGroup>
+                    <ControlLabel>Select Data Format</ControlLabel>
+                    <FormControl componentClass="select" placeholder="select">
+                      <option value="select">CSV</option>
+                      <option value="other">TSV</option>
+                      <option value="other">HTML</option>
+                    </FormControl>
+                  </FormGroup>
+                  <FormGroup>
+                    <ControlLabel>Import Data</ControlLabel>
+                    <FormControl componentClass="textarea" placeholder="Paste table data" style={{ height: 200 }}  />
+                  </FormGroup>
+                  <div className="d-flex justify-content-end">
+                    <Button bsStyle="default" onClick={this.toggleDataImportArea}>Cancel</Button>
+                    <Button bsStyle="primary">Import</Button>
+                  </div>
+                </form>
+              </div>
+            </Collapse>
           </div>
-          <Collapse in={this.state.isDataImportAreaExpanded}>
-            <div> {/* This div is necessary for smoothing animations. (https://react-bootstrap.github.io/utilities/transitions/#transitions-collapse) */}
-              <form action="" className="p-4 data-import-form">
-                <FormGroup>
-                  <ControlLabel>Select Data Format</ControlLabel>
-                  <FormControl componentClass="select" placeholder="select">
-                    <option value="select">CSV</option>
-                    <option value="other">TSV</option>
-                    <option value="other">HTML</option>
-                  </FormControl>
-                </FormGroup>
-                <FormGroup>
-                  <ControlLabel>Import Data</ControlLabel>
-                  <FormControl componentClass="textarea" placeholder="Paste table data" style={{ height: 200 }}  />
-                </FormGroup>
-                <div className="d-flex justify-content-end">
-                  <Button bsStyle="default" onClick={this.toggleDataImportArea}>Cancel</Button>
-                  <Button bsStyle="primary">Import</Button>
-                </div>
-              </form>
-            </div>
-          </Collapse>
           <div className="p-4">
             <HotTable ref='hotTable' data={this.state.markdownTable.table} settings={this.state.handsontableSetting} />
           </div>
