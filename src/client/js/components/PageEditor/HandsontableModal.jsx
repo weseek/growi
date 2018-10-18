@@ -19,6 +19,7 @@ export default class HandsontableModal extends React.Component {
 
     this.state = {
       show: false,
+      isWindowExpanded: false,
       markdownTableOnInit: HandsontableModal.getDefaultMarkdownTable(),
       markdownTable: HandsontableModal.getDefaultMarkdownTable(),
       handsontableSetting: HandsontableModal.getDefaultHandsontableSetting()
@@ -28,6 +29,7 @@ export default class HandsontableModal extends React.Component {
     this.reset = this.reset.bind(this);
     this.cancel = this.cancel.bind(this);
     this.save = this.save.bind(this);
+    this.toggleWindowExpanded = this.toggleWindowExpanded.bind(this);
   }
 
   init(markdownTable) {
@@ -93,10 +95,31 @@ export default class HandsontableModal extends React.Component {
     HandsontableUtil.setClassNameToColumns(this.refs.hotTable.hotInstance, startCol, endCol, className);
   }
 
-  render() {
+  toggleWindowExpanded() {
+    this.setState({ isWindowExpanded: !this.state.isWindowExpanded });
+  }
+
+  renderExpandOrShrinkButton() {
+    const iconClassName = this.state.isWindowExpanded ? 'icon-size-actual' : 'icon-size-fullscreen';
     return (
-      <Modal show={this.state.show} onHide={this.cancel} bsSize="large" dialogClassName="handsontable-modal">
+      <button className="close mr-3" onClick={this.toggleWindowExpanded}>
+        <i className={iconClassName} style={{ fontSize: '0.8em' }} aria-hidden="true"></i>
+      </button>
+    );
+  }
+
+  render() {
+    const dialogClassNames = ['handsontable-modal'];
+    if (this.state.isWindowExpanded) {
+      dialogClassNames.push('handsontable-modal-expanded');
+    }
+
+    const dialogClassName = dialogClassNames.join(' ');
+
+    return (
+      <Modal show={this.state.show} onHide={this.cancel} bsSize="large" dialogClassName={dialogClassName}>
         <Modal.Header closeButton>
+          { this.renderExpandOrShrinkButton() }
           <Modal.Title>Edit Table</Modal.Title>
         </Modal.Header>
         <Modal.Body className="p-0">
@@ -148,6 +171,13 @@ export default class HandsontableModal extends React.Component {
       manualRowResize: true,
       manualColumnMove: true,
       manualColumnResize: true,
+      selectionMode: 'multiple',
+      outsideClickDeselects: false,
+
+      modifyColWidth: function(width) {
+        return Math.max(80, Math.min(400, width));
+      },
+
       contextMenu: {
         items: {
           'row_above': {}, 'row_below': {}, 'col_left': {}, 'col_right': {},
@@ -178,12 +208,8 @@ export default class HandsontableModal extends React.Component {
             }
           }
         }
-      },
-      selectionMode: 'multiple',
-      outsideClickDeselects: false,
-      modifyColWidth: function(width) {
-        return Math.max(80, Math.min(400, width));
       }
+
     };
   }
 }
