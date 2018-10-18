@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 
 import Modal from 'react-bootstrap/es/Modal';
 import Button from 'react-bootstrap/es/Button';
+import Navbar from 'react-bootstrap/es/Navbar';
+import ButtonGroup from 'react-bootstrap/es/ButtonGroup';
+
 
 import Handsontable from 'handsontable';
 import { HotTable } from '@handsontable/react';
@@ -18,7 +21,7 @@ export default class HandsontableModal extends React.Component {
       show: false,
       markdownTableOnInit: HandsontableModal.getDefaultMarkdownTable(),
       markdownTable: HandsontableModal.getDefaultMarkdownTable(),
-      handsontableSetting: HandsontableModal.getDefaultHandsotableSetting()
+      handsontableSetting: HandsontableModal.getDefaultHandsontableSetting()
     };
 
     this.init = this.init.bind(this);
@@ -34,8 +37,14 @@ export default class HandsontableModal extends React.Component {
         markdownTableOnInit: initMarkdownTable,
         markdownTable: initMarkdownTable.clone(),
         handsontableSetting: Object.assign({}, this.state.handsontableSetting, {
-          afterUpdateSettings: HandsontableUtil.createHandlerToSynchronizeHandontableAlignWith(initMarkdownTable.options.align),
-          loadData: HandsontableUtil.createHandlerToSynchronizeHandontableAlignWith(initMarkdownTable.options.align)
+          /*
+           * The afterUpdateSettings hook is called when this component state changes.
+           *
+           * In detail, when this component state changes, React will re-render HotTable because it is passed some state values of this component.
+           * HotTable#shouldComponentUpdate is called in this process and it call the updateSettings method for the Handsontable instance.
+           * After updateSetting is executed, Handsontable calls a AfterUpdateSetting hook.
+           */
+          afterUpdateSettings: HandsontableUtil.createHandlerToSynchronizeHandontableAlignWith(initMarkdownTable.options.align)
         })
       }
     );
@@ -65,6 +74,25 @@ export default class HandsontableModal extends React.Component {
     this.setState({ show: false });
   }
 
+  setClassNameToColumns(className) {
+    const selectedRange = this.refs.hotTable.hotInstance.getSelectedRange();
+    if (selectedRange == null) return;
+
+    let startCol;
+    let endCol;
+
+    if (selectedRange[0].from.col < selectedRange[0].to.col) {
+      startCol = selectedRange[0].from.col;
+      endCol = selectedRange[0].to.col;
+    }
+    else {
+      startCol = selectedRange[0].to.col;
+      endCol = selectedRange[0].from.col;
+    }
+
+    HandsontableUtil.setClassNameToColumns(this.refs.hotTable.hotInstance, startCol, endCol, className);
+  }
+
   render() {
     return (
       <Modal show={this.state.show} onHide={this.cancel} bsSize="large" dialogClassName="handsontable-modal">
@@ -72,6 +100,15 @@ export default class HandsontableModal extends React.Component {
           <Modal.Title>Edit Table</Modal.Title>
         </Modal.Header>
         <Modal.Body className="p-0">
+          <Navbar>
+            <Navbar.Form>
+              <ButtonGroup>
+                <Button onClick={() => { this.setClassNameToColumns('htLeft') }}><i className="ti-align-left"></i></Button>
+                <Button onClick={() => { this.setClassNameToColumns('htCenter') }}><i className="ti-align-center"></i></Button>
+                <Button onClick={() => { this.setClassNameToColumns('htRight') }}><i className="ti-align-right"></i></Button>
+              </ButtonGroup>
+            </Navbar.Form>
+          </Navbar>
           <div className="p-4">
             <HotTable ref='hotTable' data={this.state.markdownTable.table} settings={this.state.handsontableSetting} />
           </div>
@@ -102,7 +139,7 @@ export default class HandsontableModal extends React.Component {
     );
   }
 
-  static getDefaultHandsotableSetting() {
+  static getDefaultHandsontableSetting() {
     return {
       height: 300,
       rowHeaders: true,
@@ -143,6 +180,7 @@ export default class HandsontableModal extends React.Component {
         }
       },
       selectionMode: 'multiple',
+      outsideClickDeselects: false,
       modifyColWidth: function(width) {
         return Math.max(80, Math.min(400, width));
       }
