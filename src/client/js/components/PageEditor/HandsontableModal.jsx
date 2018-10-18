@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 import Modal from 'react-bootstrap/es/Modal';
 import Button from 'react-bootstrap/es/Button';
-import Navbar from 'react-bootstrap/es/Navbar';
 import ButtonGroup from 'react-bootstrap/es/ButtonGroup';
 import Collapse from 'react-bootstrap/es/Collapse';
 import FormGroup from 'react-bootstrap/es/FormGroup';
@@ -109,18 +108,16 @@ export default class HandsontableModal extends React.Component {
           <Modal.Title>Edit Table</Modal.Title>
         </Modal.Header>
         <Modal.Body className="p-0">
-          <Navbar>
-            <Navbar.Form>
-              <Button className="m-r-20 data-import-button" onClick={this.toggleDataImportArea}>
-                Data Import<i className={this.state.dataImportAreaExpanded ? 'fa fa-angle-up' : 'fa fa-angle-down' }></i>
-              </Button>
-              <ButtonGroup>
-                <Button onClick={() => { this.setClassNameToColumns('htLeft') }}><i className="ti-align-left"></i></Button>
-                <Button onClick={() => { this.setClassNameToColumns('htCenter') }}><i className="ti-align-center"></i></Button>
-                <Button onClick={() => { this.setClassNameToColumns('htRight') }}><i className="ti-align-right"></i></Button>
-              </ButtonGroup>
-            </Navbar.Form>
-          </Navbar>
+          <div className="px-4 py-3 modal-navbar">
+            <Button className="m-r-20 data-import-button" onClick={this.toggleDataImportArea}>
+              Data Import<i className={this.state.dataImportAreaExpanded ? 'fa fa-angle-up' : 'fa fa-angle-down' }></i>
+            </Button>
+            <ButtonGroup>
+              <Button onClick={() => { this.setClassNameToColumns('htLeft') }}><i className="ti-align-left"></i></Button>
+              <Button onClick={() => { this.setClassNameToColumns('htCenter') }}><i className="ti-align-center"></i></Button>
+              <Button onClick={() => { this.setClassNameToColumns('htRight') }}><i className="ti-align-right"></i></Button>
+            </ButtonGroup>
+          </div>
           <Collapse in={this.state.dataImportAreaExpanded}>
             <div> {/* This div is necessary for smoothing animations. (https://react-bootstrap.github.io/utilities/transitions/#transitions-collapse) */}
               <form action="" className="p-4 data-import-form">
