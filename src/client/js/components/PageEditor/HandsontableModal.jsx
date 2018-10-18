@@ -22,6 +22,7 @@ export default class HandsontableModal extends React.Component {
 
     this.state = {
       show: false,
+      dataImportAreaExpanded: false,
       markdownTableOnInit: HandsontableModal.getDefaultMarkdownTable(),
       markdownTable: HandsontableModal.getDefaultMarkdownTable(),
       handsontableSetting: HandsontableModal.getDefaultHandsontableSetting()
@@ -105,8 +106,8 @@ export default class HandsontableModal extends React.Component {
         <Modal.Body className="p-0">
           <Navbar>
             <Navbar.Form>
-              <Button className="m-r-20 data-import-button" onClick={() => this.setState({ open: !this.state.open })}>
-                Data Import<i className={this.state.open ? 'fa fa-angle-up' : 'fa fa-angle-down' }></i>
+              <Button className="m-r-20 data-import-button" onClick={() => this.setState({ dataImportAreaExpanded: !this.state.dataImportAreaExpanded })}>
+                Data Import<i className={this.state.dataImportAreaExpanded ? 'fa fa-angle-up' : 'fa fa-angle-down' }></i>
               </Button>
               <ButtonGroup>
                 <Button onClick={() => { this.setClassNameToColumns('htLeft') }}><i className="ti-align-left"></i></Button>
@@ -115,7 +116,7 @@ export default class HandsontableModal extends React.Component {
               </ButtonGroup>
             </Navbar.Form>
           </Navbar>
-          <Collapse in={this.state.open}>
+          <Collapse in={this.state.dataImportAreaExpanded}>
             <div> {/* This div is necessary for smoothing animations. (https://react-bootstrap.github.io/utilities/transitions/#transitions-collapse) */}
               <form action="" className="p-4 data-import-form">
                 <FormGroup>
@@ -131,7 +132,7 @@ export default class HandsontableModal extends React.Component {
                   <FormControl componentClass="textarea" placeholder="Paste table data" style={{ height: 200 }}  />
                 </FormGroup>
                 <div className="d-flex justify-content-end">
-                  <Button bsStyle="default" onClick={() => this.setState({ open: !this.state.open })}>Cancel</Button>
+                  <Button bsStyle="default" onClick={() => this.setState({ dataImportAreaExpanded: !this.state.dataImportAreaExpanded })}>Cancel</Button>
                   <Button bsStyle="primary">Import</Button>
                 </div>
               </form>
