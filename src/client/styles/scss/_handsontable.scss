@@ -19,6 +19,10 @@
 
   .data-import-form {
     background-color: #f8f8f8;
+
+    .btn + .btn {
+      margin-left: 5px;
+    }
   }
 
   .data-import-button {

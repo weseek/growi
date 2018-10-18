@@ -130,6 +130,10 @@ export default class HandsontableModal extends React.Component {
                   <ControlLabel>Import Data</ControlLabel>
                   <FormControl componentClass="textarea" placeholder="Paste table data" style={{ height: 200 }}  />
                 </FormGroup>
+                <div className="d-flex justify-content-end">
+                  <Button bsStyle="default" onClick={() => this.setState({ open: !this.state.open })}>Cancel</Button>
+                  <Button bsStyle="primary">Import</Button>
+                </div>
               </form>
             </div>
           </Collapse>
