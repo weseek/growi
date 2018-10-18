@@ -8,6 +8,34 @@
   }
 }
 
-.handsontable-modal.modal-lg {
-  width: 90%;
+.handsontable-modal {
+  &.modal-lg {
+    width: 90%;
+  }
+
+  .modal-navbar {
+    background-color: $navbar-default-bg;
+    border-bottom: $border 1px solid;
+  }
+
+  .data-import-form {
+    background-color: #f8f8f8;
+
+    .btn + .btn {
+      margin-left: 5px;
+    }
+  }
+
+  .data-import-button {
+    position: relative;
+    padding-right: 35px;
+    padding-left: 10px;
+
+    i:before {
+      position: absolute;
+      top: 6px;
+      right: 8px;
+      font-size: 20px;
+    }
+  }
 }
