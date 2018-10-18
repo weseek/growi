@@ -8,6 +8,6 @@ module.exports = {
     // 'growi-plugin-lsx',
     // 'growi-plugin-pukiwiki-like-linker',
   ],
-  USER_UPPER_LIMIT: 0,
+  // USER_UPPER_LIMIT: 0,
   // DEV_HTTPS: true,
 };
