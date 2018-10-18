@@ -223,21 +223,18 @@ module.exports = function(crowi) {
     return this.updateGoogleId(null, callback);
   };
 
-  userSchema.methods.activateInvitedUser = function(username, name, password) {
+  userSchema.methods.activateInvitedUser = async function(username, name, password) {
     this.setPassword(password);
     this.name = name;
     this.username = username;
     this.status = STATUS_ACTIVE;
-    const self = this;
 
-    return new Promise(function(resolve, reject) {
-      self.save(function(err, userData) {
-        userEvent.emit('activated', userData);
-        if (err) {
-          return reject(err);
-        }
-        resolve(userData);
-      });
+    this.save(function(err, userData) {
+      userEvent.emit('activated', userData);
+      if (err) {
+        return Promise.reject(err);
+      }
+      return Promise.resolve(userData);
     });
   };
 
