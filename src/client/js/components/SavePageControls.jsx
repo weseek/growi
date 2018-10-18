@@ -41,6 +41,7 @@ class SavePageControls extends React.PureComponent {
 
   render() {
     const { t } = this.props;
+
     const config = this.props.crowi.getConfig();
     const aclEnable = config.isEnabledAcl;
     const label = this.state.pageId == null ? t('Create') : t('Update');

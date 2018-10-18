@@ -329,6 +329,11 @@ module.exports = function(crowi) {
   };
 
   configSchema.statics.isGuesstAllowedToRead = function(config) {
+    // return true if puclic wiki mode
+    if (process.env.ACL_ENABLE === 'false') {
+      return true;
+    }
+
     // return false if undefined
     if (undefined === config.crowi || undefined === config.crowi['security:restrictGuestMode']) {
       return false;
