@@ -518,17 +518,15 @@ module.exports = function(crowi) {
     return isUserUpperLimitError;
   };
 
-  userSchema.statics.isRegisterableUsername = function(username) {
+  userSchema.statics.isRegisterableUsername = async function(username) {
     var User = this;
     var usernameUsable = true;
 
-    return new Promise(function(resolve) {
-      User.findOne({username: username}, function(err, userData) {
-        if (userData) {
-          usernameUsable = false;
-        }
-        resolve(usernameUsable);
-      });
+    this.findOne({username: username}, function(err, userData) {
+      if (userData) {
+        usernameUsable = false;
+      }
+      return usernameUsable;
     });
   };
 
