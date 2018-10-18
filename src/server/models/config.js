@@ -330,7 +330,7 @@ module.exports = function(crowi) {
 
   configSchema.statics.isGuesstAllowedToRead = function(config) {
     // return true if puclic wiki mode
-    if (process.env.ACL_ENABLE === 'false') {
+    if (Config.isPublicWikiOnly(config)) {
       return true;
     }
 
@@ -368,9 +368,12 @@ module.exports = function(crowi) {
 
     return config.markdown[key];
   };
-  configSchema.statics.isEnabledAcl = function(config) {
-    const aclEnable = !(process.env.ACL_ENABLE === 'false');
-    return aclEnable;
+  configSchema.statics.isPublicWikiOnly = function(config) {
+    const publicWikiOnly = process.env.PUBLIC_WIKI_ONLY;
+    if ( publicWikiOnly === 'true' || publicWikiOnly == 1) {
+      return true;
+    }
+    return false;
   };
 
   configSchema.statics.pageBreakSeparator = function(config) {
@@ -636,10 +639,9 @@ module.exports = function(crowi) {
         BLOCKDIAG_URI: env.BLOCKDIAG_URI || null,
         HACKMD_URI: env.HACKMD_URI || null,
         MATHJAX: env.MATHJAX || null,
-        ACL_ENABLE: env.ACL_ENABLE || null,
       },
       recentCreatedLimit: Config.showRecentCreatedNumber(config),
-      isEnabledAcl: Config.isEnabledAcl(config),
+      isAclEnabled: !Config.isPublicWikiOnly(config),
     };
 
     return local_config;
