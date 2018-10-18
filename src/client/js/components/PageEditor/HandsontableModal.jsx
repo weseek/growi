@@ -32,6 +32,7 @@ export default class HandsontableModal extends React.Component {
     this.reset = this.reset.bind(this);
     this.cancel = this.cancel.bind(this);
     this.save = this.save.bind(this);
+    this.toggleDataImportArea = this.toggleDataImportArea.bind(this);
   }
 
   init(markdownTable) {
@@ -97,6 +98,10 @@ export default class HandsontableModal extends React.Component {
     HandsontableUtil.setClassNameToColumns(this.refs.hotTable.hotInstance, startCol, endCol, className);
   }
 
+  toggleDataImportArea() {
+    this.setState({ dataImportAreaExpanded: !this.state.dataImportAreaExpanded });
+  }
+
   render() {
     return (
       <Modal show={this.state.show} onHide={this.cancel} bsSize="large" dialogClassName="handsontable-modal">
@@ -106,7 +111,7 @@ export default class HandsontableModal extends React.Component {
         <Modal.Body className="p-0">
           <Navbar>
             <Navbar.Form>
-              <Button className="m-r-20 data-import-button" onClick={() => this.setState({ dataImportAreaExpanded: !this.state.dataImportAreaExpanded })}>
+              <Button className="m-r-20 data-import-button" onClick={this.toggleDataImportArea}>
                 Data Import<i className={this.state.dataImportAreaExpanded ? 'fa fa-angle-up' : 'fa fa-angle-down' }></i>
               </Button>
               <ButtonGroup>
@@ -132,7 +137,7 @@ export default class HandsontableModal extends React.Component {
                   <FormControl componentClass="textarea" placeholder="Paste table data" style={{ height: 200 }}  />
                 </FormGroup>
                 <div className="d-flex justify-content-end">
-                  <Button bsStyle="default" onClick={() => this.setState({ dataImportAreaExpanded: !this.state.dataImportAreaExpanded })}>Cancel</Button>
+                  <Button bsStyle="default" onClick={this.toggleDataImportArea}>Cancel</Button>
                   <Button bsStyle="primary">Import</Button>
                 </div>
               </form>
