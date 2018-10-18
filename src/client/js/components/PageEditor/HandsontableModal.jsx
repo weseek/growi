@@ -6,6 +6,7 @@ import Button from 'react-bootstrap/es/Button';
 import Navbar from 'react-bootstrap/es/Navbar';
 import ButtonGroup from 'react-bootstrap/es/ButtonGroup';
 
+import { debounce } from 'throttle-debounce';
 
 import Handsontable from 'handsontable';
 import { HotTable } from '@handsontable/react';
@@ -13,14 +14,20 @@ import { HotTable } from '@handsontable/react';
 import MarkdownTable from '../../models/MarkdownTable';
 import HandsontableUtil from './HandsontableUtil';
 
+const DEFAULT_HOT_HEIGHT = 300;
+
 export default class HandsontableModal extends React.Component {
+
+
   constructor(props) {
     super(props);
 
     this.state = {
       show: false,
+      isWindowExpanded: false,
       markdownTableOnInit: HandsontableModal.getDefaultMarkdownTable(),
       markdownTable: HandsontableModal.getDefaultMarkdownTable(),
+      handsontableHeight: DEFAULT_HOT_HEIGHT,
       handsontableSetting: HandsontableModal.getDefaultHandsontableSetting()
     };
 
@@ -28,6 +35,11 @@ export default class HandsontableModal extends React.Component {
     this.reset = this.reset.bind(this);
     this.cancel = this.cancel.bind(this);
     this.save = this.save.bind(this);
+    this.expandWindow = this.expandWindow.bind(this);
+    this.contractWindow = this.contractWindow.bind(this);
+
+    // create debounced method for expanding HotTable
+    this.expandHotTableHeightWithDebounce = debounce(100, this.expandHotTableHeight);
   }
 
   init(markdownTable) {
@@ -93,13 +105,54 @@ export default class HandsontableModal extends React.Component {
     HandsontableUtil.setClassNameToColumns(this.refs.hotTable.hotInstance, startCol, endCol, className);
   }
 
-  render() {
+  expandWindow() {
+    this.setState({ isWindowExpanded: true });
+
+    // invoke updateHotTableHeight method with delay
+    // cz. Resizing this.refs.hotTableContainer is completeted after a little delay after 'isWindowExpanded' set with 'true'
+    this.expandHotTableHeightWithDebounce();
+  }
+
+  contractWindow() {
+    this.setState({ isWindowExpanded: false, handsontableHeight: DEFAULT_HOT_HEIGHT });
+  }
+
+  /**
+   * Expand the height of the Handsontable
+   *  by updating 'handsontableHeight' state
+   *  according to the height of this.refs.hotTableContainer
+   */
+  expandHotTableHeight() {
+    if (this.state.isWindowExpanded && this.refs.hotTableContainer != null) {
+      const height = this.refs.hotTableContainer.getBoundingClientRect().height;
+      this.setState({ handsontableHeight: height });
+    }
+  }
+
+  renderExpandOrContractButton() {
+    const iconClassName = this.state.isWindowExpanded ? 'icon-size-actual' : 'icon-size-fullscreen';
     return (
-      <Modal show={this.state.show} onHide={this.cancel} bsSize="large" dialogClassName="handsontable-modal">
+      <button className="close mr-3" onClick={this.state.isWindowExpanded ? this.contractWindow : this.expandWindow}>
+        <i className={iconClassName} style={{ fontSize: '0.8em' }} aria-hidden="true"></i>
+      </button>
+    );
+  }
+
+  render() {
+    const dialogClassNames = ['handsontable-modal'];
+    if (this.state.isWindowExpanded) {
+      dialogClassNames.push('handsontable-modal-expanded');
+    }
+
+    const dialogClassName = dialogClassNames.join(' ');
+
+    return (
+      <Modal show={this.state.show} onHide={this.cancel} bsSize="large" dialogClassName={dialogClassName}>
         <Modal.Header closeButton>
+          { this.renderExpandOrContractButton() }
           <Modal.Title>Edit Table</Modal.Title>
         </Modal.Header>
-        <Modal.Body className="p-0">
+        <Modal.Body className="p-0 d-flex flex-column">
           <Navbar>
             <Navbar.Form>
               <ButtonGroup>
@@ -109,8 +162,8 @@ export default class HandsontableModal extends React.Component {
               </ButtonGroup>
             </Navbar.Form>
           </Navbar>
-          <div className="p-4">
-            <HotTable ref='hotTable' data={this.state.markdownTable.table} settings={this.state.handsontableSetting} />
+          <div ref="hotTableContainer" className="m-4 hot-table-container">
+            <HotTable ref='hotTable' data={this.state.markdownTable.table} settings={this.state.handsontableSetting} height={this.state.handsontableHeight} />
           </div>
         </Modal.Body>
         <Modal.Footer>
@@ -141,9 +194,19 @@ export default class HandsontableModal extends React.Component {
 
   static getDefaultHandsontableSetting() {
     return {
-      height: 300,
       rowHeaders: true,
       colHeaders: true,
+      manualRowMove: true,
+      manualRowResize: true,
+      manualColumnMove: true,
+      manualColumnResize: true,
+      selectionMode: 'multiple',
+      outsideClickDeselects: false,
+
+      modifyColWidth: function(width) {
+        return Math.max(80, Math.min(400, width));
+      },
+
       contextMenu: {
         items: {
           'row_above': {}, 'row_below': {}, 'col_left': {}, 'col_right': {},
@@ -174,17 +237,8 @@ export default class HandsontableModal extends React.Component {
             }
           }
         }
-      },
-      selectionMode: 'multiple',
-      outsideClickDeselects: false,
-      modifyColWidth: function(width) {
-        if (width < 100) {
-          return 100;
-        }
-        if (width > 300) {
-          return 300;
-        }
       }
+
     };
   }
 }
