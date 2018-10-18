@@ -511,7 +511,8 @@ module.exports = function(crowi) {
   userSchema.statics.isUserUpperLimitError = async function() {
     let isUserUpperLimitError = false;
     const User = this;
-    const userUpperLimit = Number(crowi.env['USER_UPPER_LIMIT']);
+    const Config = crowi.model('Config');
+    const userUpperLimit = Config.userUpperLimit(crowi);
     const activeUsers = await User.findAllUsers({status: User.STATUS_ACTIVE});
     if (userUpperLimit !== 0 && userUpperLimit <= activeUsers.length) {
       isUserUpperLimitError = true;
