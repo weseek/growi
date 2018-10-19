@@ -18,9 +18,8 @@ test:
     - script:
       name: print dependencies
       code: |
-        node -v
-        npm -v
-        yarn -v
+        echo -n "node " && node -v
+        echo -n "npm " && npm -v
         yarn list --depth=0
 
     - script:
@@ -57,9 +56,8 @@ build-prod:
     - script:
       name: print dependencies
       code: |
-        node -v
-        npm -v
-        yarn -v
+        echo -n "node " && node -v
+        echo -n "npm " && npm -v
         yarn list --depth=0
 
     - script:
@@ -106,9 +104,8 @@ build-dev:
     - script:
       name: print dependencies
       code: |
-        node -v
-        npm -v
-        yarn -v
+        echo -n "node " && node -v
+        echo -n "npm " && npm -v
         yarn list --depth=0
 
     - script:
