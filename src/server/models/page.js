@@ -460,9 +460,9 @@ module.exports = function(crowi) {
     const page = await this.findOne({_id: id});
     if (page == null) {
       throw new Error('Page not found');
-        }
+    }
 
-    return Page.populatePageData(page, null);
+    return this.populatePageData(page, null);
   };
 
   pageSchema.statics.findPageByIdAndGrantedUser = function(id, userData) {
