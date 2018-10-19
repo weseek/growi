@@ -28,11 +28,17 @@ module.exports = function(crowi) {
     , STATUS_PUBLISHED  = 'published'
     , STATUS_DELETED    = 'deleted'
     , STATUS_DEPRECATED = 'deprecated'
-
-    , pageEvent = crowi.event('page')
   ;
 
   let pageSchema;
+  let pageEvent;
+
+  // init event
+  if (crowi != null) {
+    pageEvent = crowi.event('page');
+    pageEvent.on('create', pageEvent.onCreate);
+    pageEvent.on('update', pageEvent.onUpdate);
+  }
 
   function isPortalPath(path) {
     if (path.match(/.*\/$/)) {
@@ -40,6 +46,12 @@ module.exports = function(crowi) {
     }
 
     return false;
+  }
+
+  function validateCrowi() {
+    if (crowi == null) {
+      throw new Error('"crowi" is null. Init User model with "crowi" argument first.');
+    }
   }
 
   pageSchema = new mongoose.Schema({
@@ -78,9 +90,6 @@ module.exports = function(crowi) {
     toJSON: {getters: true},
     toObject: {getters: true}
   });
-
-  pageEvent.on('create', pageEvent.onCreate);
-  pageEvent.on('update', pageEvent.onUpdate);
 
   pageSchema.methods.isWIP = function() {
     return this.status === STATUS_WIP;
@@ -277,6 +286,8 @@ module.exports = function(crowi) {
   };
 
   pageSchema.statics.populatePageData = function(pageData, revisionId) {
+    validateCrowi();
+
     const Page = crowi.model('Page');
     const User = crowi.model('User');
 
@@ -331,8 +342,10 @@ module.exports = function(crowi) {
   };
 
   pageSchema.statics.updateCommentCount = function(pageId) {
-    var self = this;
-    var Comment = crowi.model('Comment');
+    validateCrowi();
+
+    const self = this;
+    const Comment = crowi.model('Comment');
     return Comment.countCommentByPageId(pageId)
     .then(function(count) {
       self.update({_id: pageId}, {commentCount: count}, {}, function(err, data) {
@@ -476,9 +489,11 @@ module.exports = function(crowi) {
   };
 
   pageSchema.statics.findPageByIdAndGrantedUser = function(id, userData) {
-    var Page = this;
-    var PageGroupRelation = crowi.model('PageGroupRelation');
-    var pageData = null;
+    validateCrowi();
+
+    const Page = this;
+    const PageGroupRelation = crowi.model('PageGroupRelation');
+    let pageData = null;
 
     return new Promise(function(resolve, reject) {
       Page.findPageById(id)
@@ -506,6 +521,8 @@ module.exports = function(crowi) {
 
   // find page and check if granted user
   pageSchema.statics.findPage = async function(path, userData, revisionId, ignoreNotFound) {
+    validateCrowi();
+
     const PageGroupRelation = crowi.model('PageGroupRelation');
 
     const pageData = await this.findOne({path: path});
@@ -623,6 +640,8 @@ module.exports = function(crowi) {
   };
 
   pageSchema.statics.findListByPageIds = function(ids, options) {
+    validateCrowi();
+
     const Page = this;
     const User = crowi.model('User');
     const limit = options.limit || 50
@@ -671,6 +690,8 @@ module.exports = function(crowi) {
   };
 
   pageSchema.statics.findListByCreator = async function(user, option, currentUser) {
+    validateCrowi();
+
     let Page = this;
     let User = crowi.model('User');
     let limit = option.limit || 50;
@@ -755,25 +776,27 @@ module.exports = function(crowi) {
    * see the comment of `generateQueryToListByStartWith` function
    */
   pageSchema.statics.findListByStartWith = function(path, userData, option) {
-    var Page = this;
-    var User = crowi.model('User');
+    validateCrowi();
+
+    const Page = this;
+    const User = crowi.model('User');
 
     if (!option) {
       option = {sort: 'updatedAt', desc: -1, offset: 0, limit: 50};
     }
-    var opt = {
+    const opt = {
       sort: option.sort || 'updatedAt',
       desc: option.desc || -1,
       offset: option.offset || 0,
       limit: option.limit || 50
     };
-    var sortOpt = {};
+    const sortOpt = {};
     sortOpt[opt.sort] = opt.desc;
 
-    var isPopulateRevisionBody = option.isPopulateRevisionBody || false;
+    const isPopulateRevisionBody = option.isPopulateRevisionBody || false;
 
     return new Promise(function(resolve, reject) {
-      var q = Page.generateQueryToListByStartWith(path, userData, option)
+      let q = Page.generateQueryToListByStartWith(path, userData, option)
         .sort(sortOpt)
         .skip(opt.offset)
         .limit(opt.limit);
@@ -921,8 +944,10 @@ module.exports = function(crowi) {
   };
 
   pageSchema.statics.updateGrantUserGroup = function(page, grant, grantUserGroupId, userData) {
-    var UserGroupRelation = crowi.model('UserGroupRelation');
-    var PageGroupRelation = crowi.model('PageGroupRelation');
+    validateCrowi();
+
+    const UserGroupRelation = crowi.model('UserGroupRelation');
+    const PageGroupRelation = crowi.model('PageGroupRelation');
 
     // グループの場合
     if (grant == GRANT_USER_GROUP) {
@@ -973,6 +998,8 @@ module.exports = function(crowi) {
   };
 
   pageSchema.statics.create = function(path, body, user, options = {}) {
+    validateCrowi();
+
     const Page = this
       , Revision = crowi.model('Revision')
       , format = options.format || 'markdown'
@@ -1031,6 +1058,8 @@ module.exports = function(crowi) {
   };
 
   pageSchema.statics.updatePage = async function(pageData, body, user, options = {}) {
+    validateCrowi();
+
     const Page = this
       , Revision = crowi.model('Revision')
       , grant = options.grant || null
@@ -1166,6 +1195,8 @@ module.exports = function(crowi) {
    * This is danger.
    */
   pageSchema.statics.completelyDeletePage = function(pageData, user, options = {}) {
+    validateCrowi();
+
     // Delete Bookmarks, Attachments, Revisions, Pages and emit delete
     const Bookmark = crowi.model('Bookmark')
       , Attachment = crowi.model('Attachment')
@@ -1277,6 +1308,8 @@ module.exports = function(crowi) {
   };
 
   pageSchema.statics.rename = async function(pageData, newPagePath, user, options) {
+    validateCrowi();
+
     const Page = this
       , Revision = crowi.model('Revision')
       , path = pageData.path
@@ -1288,13 +1321,13 @@ module.exports = function(crowi) {
     newPagePath = crowi.xss.process(newPagePath);
 
     await Page.updatePageProperty(pageData, {updatedAt: Date.now(), path: newPagePath, lastUpdateUser: user});
-        // reivisions の path を変更
+    // reivisions の path を変更
     await Revision.updateRevisionListByPath(path, {path: newPagePath}, {});
 
-        if (createRedirectPage) {
-          const body = 'redirect ' + newPagePath;
+    if (createRedirectPage) {
+      const body = 'redirect ' + newPagePath;
       await Page.create(path, body, user, {redirectTo: newPagePath});
-        }
+    }
 
     let updatedPageData = await Page.findOne({path: newPagePath});
     pageEvent.emit('delete', pageData, user, socketClientId);
@@ -1304,6 +1337,8 @@ module.exports = function(crowi) {
   };
 
   pageSchema.statics.renameRecursively = function(pageData, newPagePathPrefix, user, options) {
+    validateCrowi();
+
     const Page = this
       , path = pageData.path
       , pathRegExp = new RegExp('^' + escapeStringRegexp(path), 'i');
