@@ -56,7 +56,8 @@ export default class HandsontableModal extends React.Component {
            * HotTable#shouldComponentUpdate is called in this process and it call the updateSettings method for the Handsontable instance.
            * After updateSetting is executed, Handsontable calls a AfterUpdateSetting hook.
            */
-          afterUpdateSettings: HandsontableUtil.createHandlerToSynchronizeHandontableAlignWith(initMarkdownTable.options.align)
+          //// commented out and will be fixed by GC-1203 -- 2018.10.19 Yuki Takei
+          // afterUpdateSettings: HandsontableUtil.createHandlerToSynchronizeHandontableAlignWith(initMarkdownTable.options.align)
         })
       }
     );
@@ -77,7 +78,8 @@ export default class HandsontableModal extends React.Component {
 
   save() {
     let newMarkdownTable = this.state.markdownTable.clone();
-    newMarkdownTable.options.align = HandsontableUtil.getMarkdownTableAlignmentFrom(this.refs.hotTable.hotInstance);
+    //// commented out and will be fixed by GC-1203 -- 2018.10.19 Yuki Takei
+    // newMarkdownTable.options.align = HandsontableUtil.getMarkdownTableAlignmentFrom(this.refs.hotTable.hotInstance);
 
     if (this.props.onSave != null) {
       this.props.onSave(newMarkdownTable);
@@ -153,13 +155,15 @@ export default class HandsontableModal extends React.Component {
           <Modal.Title>Edit Table</Modal.Title>
         </Modal.Header>
         <Modal.Body className="p-0 d-flex flex-column">
-          <Navbar>
+          <Navbar className="mb-0">
             <Navbar.Form>
+              {/* commented out and will be fixed by GC-1203 -- 2018.10.19 Yuki Takei
               <ButtonGroup>
                 <Button onClick={() => { this.setClassNameToColumns('htLeft') }}><i className="ti-align-left"></i></Button>
                 <Button onClick={() => { this.setClassNameToColumns('htCenter') }}><i className="ti-align-center"></i></Button>
                 <Button onClick={() => { this.setClassNameToColumns('htRight') }}><i className="ti-align-right"></i></Button>
               </ButtonGroup>
+              */}
             </Navbar.Form>
           </Navbar>
           <div ref="hotTableContainer" className="m-4 hot-table-container">
@@ -213,29 +217,30 @@ export default class HandsontableModal extends React.Component {
           'separator1': Handsontable.plugins.ContextMenu.SEPARATOR,
           'remove_row': {}, 'remove_col': {},
           'separator2': Handsontable.plugins.ContextMenu.SEPARATOR,
-          'custom_alignment': {
-            name: 'Align columns',
-            key: 'align_columns',
-            submenu: {
-              items: [{
-                name: 'Left',
-                key: 'align_columns:1',
-                callback: function(key, selection) {
-                  HandsontableUtil.setClassNameToColumns(this, selection[0].start.col, selection[0].end.col, 'htLeft');
-                }}, {
-                name: 'Center',
-                key: 'align_columns:2',
-                callback: function(key, selection) {
-                  HandsontableUtil.setClassNameToColumns(this, selection[0].start.col, selection[0].end.col, 'htCenter');
-                }}, {
-                name: 'Right',
-                key: 'align_columns:3',
-                callback: function(key, selection) {
-                  HandsontableUtil.setClassNameToColumns(this, selection[0].start.col, selection[0].end.col, 'htRight');
-                }}
-              ]
-            }
-          }
+          //// commented out and will be fixed by GC-1203 -- 2018.10.19 Yuki Takei
+          // 'custom_alignment': {
+          //   name: 'Align columns',
+          //   key: 'align_columns',
+          //   submenu: {
+          //     items: [{
+          //       name: 'Left',
+          //       key: 'align_columns:1',
+          //       callback: function(key, selection) {
+          //         HandsontableUtil.setClassNameToColumns(this, selection[0].start.col, selection[0].end.col, 'htLeft');
+          //       }}, {
+          //       name: 'Center',
+          //       key: 'align_columns:2',
+          //       callback: function(key, selection) {
+          //         HandsontableUtil.setClassNameToColumns(this, selection[0].start.col, selection[0].end.col, 'htCenter');
+          //       }}, {
+          //       name: 'Right',
+          //       key: 'align_columns:3',
+          //       callback: function(key, selection) {
+          //         HandsontableUtil.setClassNameToColumns(this, selection[0].start.col, selection[0].end.col, 'htRight');
+          //       }}
+          //     ]
+          //   }
+          // }
         }
       }
 
