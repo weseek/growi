@@ -510,7 +510,7 @@ module.exports = function(crowi) {
     const User = this;
     const Config = crowi.model('Config');
     const userUpperLimit = Config.userUpperLimit(crowi);
-    const activeUsers = await User.findAllUsers({status: User.STATUS_ACTIVE});
+    const activeUsers = await User.countListByStatus(STATUS_ACTIVE);
     if (userUpperLimit !== 0 && userUpperLimit <= activeUsers.length) {
       isUserCountExceedsUpperLimit = true;
     }
