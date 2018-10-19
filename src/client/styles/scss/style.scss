@@ -14,9 +14,6 @@
 // override react-bootstrap-typeahead styles
 @import 'override-rbt';
 
-// override Handsontable styles
-@import 'override-handsontable';
-
 // crowi component
 @import 'admin';
 @import 'attachments';
@@ -42,6 +39,7 @@
 @import 'shortcuts';
 @import 'user';
 @import 'user_growi';
+@import 'handsontable';
 @import 'wiki';
 
 /*

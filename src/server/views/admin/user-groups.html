@@ -33,7 +33,11 @@
 
     <div class="col-md-9">
       <p>
-        <button  data-toggle="collapse" class="btn btn-default" href="#createGroupForm">新規グループの作成</button>
+        {% if isAclEnabled %}
+          <button  data-toggle="collapse" class="btn btn-default" href="#createGroupForm">新規グループの作成</button>
+        {% else %}
+          現在の設定では新規グループの作成はできません。
+        {% endif %}
       </p>
       <form role="form" action="/admin/user-group/create" method="post">
         <div id="createGroupForm" class="collapse">
@@ -124,13 +128,18 @@
             <td>
               <img src="{{ sGroup|picture }}" class="picture img-circle" />
             </td>
-            <td><a href="{{ sGroupDetailPageUrl }}">{{ sGroup.name | preventXss }}</a></td>
+            {% if isAclEnabled %}
+              <td><a href="{{ sGroupDetailPageUrl }}">{{ sGroup.name | preventXss }}</a></td>
+            {% else %}
+              <td>{{ sGroup.name | preventXss }}</td>
+            {% endif %}
             <td><ul class="list-inline">
               {% for relation in userGroupRelations.get(sGroup) %}
               <li class="list-inline-item badge badge-primary">{{relation.relatedUser.username}}</li>
               {% endfor %}
             </ul></td>
             <td>{{ sGroup.createdAt|date('Y-m-d', sGroup.createdAt.getTimezoneOffset()) }}</td>
+            {% if isAclEnabled %}
             <td>
               <div class="btn-group admin-group-menu">
                 <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
@@ -156,6 +165,9 @@
                 </ul>
               </div>
             </td>
+            {% else %}
+              <td></td>
+            {% endif %}
           </tr>
           {% endfor %}
         </tbody>

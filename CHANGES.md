@@ -1,12 +1,28 @@
 CHANGES
 ========
 
-## 3.2.4-RC
+## 3.2.5-RC
+
+* Feature: Add select alignment buttons of Spreadsheet like GUI (Handsontable)
+* Improvement: Expandable Spreadsheet like GUI (Handsontable)
+* Improvement: Move/Resize rows/columns of Spreadsheet like GUI (Handsontable)
+* Improvement: Prevent XSS of New Page modal
+* Fix: Recent Created tab of user home shows wrong page list
+    * Introduced by 3.2.4
+* Support: Upgrade libs
+    * metismenu
+    * sinon
+
+## 3.2.4
 
 * Feature: Edit table with Spreadsheet like GUI (Handsontable)
 * Feature: Paging recent created in users home
 * Improvement: Specify certificate for SAML Authentication
 * Fix: SAML Authentication didn't work
+    * Introduced by 3.2.2
+* Fix: Failed to create new page with title which includes RegEx special characters
+* Fix: Preventing XSS Settings are not applied in default
+    * Introduced by 3.1.12
 * Support: Mongoose migration mechanism
 * Support: Upgrade libs
     * googleapis

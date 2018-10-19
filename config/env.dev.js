@@ -9,4 +9,5 @@ module.exports = {
     // 'growi-plugin-pukiwiki-like-linker',
   ],
   // DEV_HTTPS: true,
+  // PUBLIC_WIKI_ONLY: true,
 };
