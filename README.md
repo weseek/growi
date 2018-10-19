@@ -79,7 +79,7 @@ On-premise
 ### Dependencies
 
 - node 8.x (DON'T USE 9.x)
-- npm 5.x
+- npm 6.x
 - yarn
 - MongoDB 3.x
 

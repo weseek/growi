@@ -104,7 +104,8 @@ module.exports = function(crowi, app) {
   actions.security = {};
   actions.security.index = function(req, res) {
     const settingForm = Config.setupCofigFormData('crowi', req.config);
-    return res.render('admin/security', { settingForm });
+    const isAclEnabled = !Config.isPublicWikiOnly(req.config);
+    return res.render('admin/security', { settingForm, isAclEnabled });
   };
 
   // app.get('/admin/markdown'                  , admin.markdown.index);
@@ -669,10 +670,12 @@ module.exports = function(crowi, app) {
   actions.userGroup = {};
   actions.userGroup.index = function(req, res) {
     var page = parseInt(req.query.page) || 1;
+    const isAclEnabled = !Config.isPublicWikiOnly(req.config);
     var renderVar = {
       userGroups: [],
       userGroupRelations: new Map(),
       pager: null,
+      isAclEnabled,
     };
 
     UserGroup.findUserGroupsWithPagination({ page: page })
@@ -1030,6 +1033,21 @@ module.exports = function(crowi, app) {
 
   actions.api.securitySetting = function(req, res) {
     const form = req.form.settingForm;
+    const config = crowi.getConfig();
+    const isPublicWikiOnly = Config.isPublicWikiOnly(config);
+    if (isPublicWikiOnly) {
+      const basicName = form['security:basicName'];
+      const basicSecret = form['security:basicSecret'];
+      if (basicName != '' || basicSecret != '') {
+        req.form.errors.push('Public Wikiのため、Basic認証は利用できません。');
+        return res.json({status: false, message: req.form.errors.join('\n')});
+      }
+      const guestMode = form['security:restrictGuestMode'];
+      if ( guestMode == 'Deny' ) {
+        req.form.errors.push('Private Wikiへの設定変更はできません。');
+        return res.json({status: false, message: req.form.errors.join('\n')});
+      }
+    }
 
     if (req.form.isValid) {
       debug('form content', form);

@@ -298,6 +298,7 @@
 		"Selecting authentication mechanism": "Selecting authentication mechanism",
 		"common_authentication": "If you set the basic authentication, common authentication is applied on the whole page.",
 		"without_encryption": "Please be noted that your ID and Password will be sent wihtout encryption.",
+		"basic_acl_disable": "Because of Public Wiki  setting, basic authentication can not be used.",
 		"users_without_account": "Users without account is not accessible",
     "example": "Example",
     "restrict_emails": "You can restrict registerable e-mail address.",

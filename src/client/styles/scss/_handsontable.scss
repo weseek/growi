@@ -8,10 +8,33 @@
   }
 }
 
-.handsontable-modal {
-  &.modal-lg {
-    width: 90%;
+// expanded window layout
+.handsontable-modal.handsontable-modal-expanded {
+  // full-screen modal
+  width: 97%;
+  height: 95%;
+  .modal-content {
+    height: 95%;
   }
+
+  // expand .modal-body (with calculating height)
+  .modal-body {
+    $modal-header: 54px;
+    $modal-footer: 46px;
+    $margin: $modal-header + $modal-footer;
+    height: calc(100% - #{$margin});
+
+    // expand .hot-table-container (with flexbox)
+    .hot-table-container {
+      flex: 1;
+    }
+  }
+}
+
+// Prevent handsontable/handsontable #2937 (Manual column resize does not work when handsontable is loaded inside Bootstrap 3.0 Modal)
+// see https://github.com/handsontable/handsontable/issues/2937#issuecomment-287390111
+.modal.in .modal-dialog.handsontable-modal {
+  transform: none;
 
   .modal-navbar {
     background-color: $navbar-default-bg;
