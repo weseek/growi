@@ -469,8 +469,7 @@ module.exports = function(crowi, app) {
 
   actions.user = {};
   actions.user.index = async function(req, res) {
-    const findAllUsers = await User.findAllUsers({status: User.statusActivate});
-    const activeUsers = findAllUsers.length;
+    const activeUsers = await User.countListByStatus(User.STATUS_ACTIVE);
     const Config = crowi.model('Config');
     const userUpperLimit = Config.userUpperLimit(crowi);
     const isUserCountExceedsUpperLimit = await User.isUserCountExceedsUpperLimit();
