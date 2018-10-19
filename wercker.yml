@@ -17,7 +17,11 @@ test:
 
     - script:
       name: print dependencies
-      code: yarn list --depth=0
+      code: |
+        node -v
+        npm -v
+        yarn -v
+        yarn list --depth=0
 
     - script:
       name: npm test
@@ -52,7 +56,11 @@ build-prod:
 
     - script:
       name: print dependencies
-      code: yarn list --depth=0
+      code: |
+        node -v
+        npm -v
+        yarn -v
+        yarn list --depth=0
 
     - script:
       name: npm run build:prod:analyze
@@ -97,7 +105,11 @@ build-dev:
 
     - script:
       name: print dependencies
-      code: yarn list --depth=0
+      code: |
+        node -v
+        npm -v
+        yarn -v
+        yarn list --depth=0
 
     - script:
       name: npm run build:dev
