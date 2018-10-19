@@ -506,16 +506,18 @@ module.exports = function(crowi) {
   };
 
   userSchema.statics.isUserCountExceedsUpperLimit = async function() {
-    let isUserCountExceedsUpperLimit = false;
-    const User = this;
     const Config = crowi.model('Config');
     const userUpperLimit = Config.userUpperLimit(crowi);
-    const activeUsers = await User.countListByStatus(STATUS_ACTIVE);
-    if (userUpperLimit !== 0 && userUpperLimit <= activeUsers.length) {
-      isUserCountExceedsUpperLimit = true;
+    if (userUpperLimit === 0) {
+      return false;
     }
 
-    return isUserCountExceedsUpperLimit;
+    const activeUsers = await this.countListByStatus(STATUS_ACTIVE);
+    if (userUpperLimit !== 0 && userUpperLimit <= activeUsers) {
+      return true;
+    }
+
+    return false;
   };
 
   userSchema.statics.countListByStatus = async function(status) {
