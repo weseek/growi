@@ -229,34 +229,6 @@ describe('Page', () => {
     });
   });
 
-  describe('.isCreator', () => {
-    context('with creator', () => {
-      it('should return true', done => {
-        User.findOne({email: 'anonymous0@example.com'}, (err, user) => {
-          if (err) { done(err); }
-
-          Page.findOne({path: '/user/anonymous0/memo'}, (err, page) => {
-            expect(page.isCreator(user)).to.be.equal(true);
-            done();
-          })
-        });
-      });
-    });
-
-    context('with non-creator', () => {
-      it('should return false', done => {
-        User.findOne({email: 'anonymous1@example.com'}, (err, user) => {
-          if (err) { done(err); }
-
-          Page.findOne({path: '/user/anonymous0/memo'}, (err, page) => {
-            expect(page.isCreator(user)).to.be.equal(false);
-            done();
-          })
-        });
-      });
-    });
-  });
-
   describe('.isGrantedFor', () => {
     context('with a granted user', () => {
       it('should return true', done => {

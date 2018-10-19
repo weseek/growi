@@ -125,28 +125,12 @@ module.exports = function(crowi) {
     return templateChecker(this.path);
   };
 
-  pageSchema.methods.isCreator = function(userData) {
-    // ゲスト閲覧の場合は userData に false が入る
-    if (!userData) {
-      return false;
-    }
-
-    if (this.populated('creator') && this.creator._id.toString() === userData._id.toString()) {
-      return true;
-    }
-    else if (this.creator.toString() === userData._id.toString()) {
-      return true;
-    }
-
-    return false;
-  };
-
   pageSchema.methods.isGrantedFor = function(userData) {
-    if (this.isPublic() || this.isCreator(userData)) {
+    if (this.isPublic()) {
       return true;
     }
 
-    if (this.grantedUsers.indexOf(userData._id) >= 0) {
+    if (userData != null && this.grantedUsers.indexOf(userData._id) >= 0) {
       return true;
     }
 
