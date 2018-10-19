@@ -518,6 +518,13 @@ module.exports = function(crowi) {
     return isUserCountExceedsUpperLimit;
   };
 
+  userSchema.statics.countListByStatus = async function(status) {
+    const User = this;
+    const conditions = {status: status};
+
+    return User.find(conditions).count();
+  };
+
   userSchema.statics.isRegisterableUsername = async function(username) {
     var User = this;
     var usernameUsable = true;
