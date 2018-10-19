@@ -61,6 +61,7 @@ module.exports = function(crowi) {
     status: { type: String, default: STATUS_PUBLISHED, index: true },
     grant: { type: Number, default: GRANT_PUBLIC, index: true },
     grantedUsers: [{ type: ObjectId, ref: 'User' }],
+    grantedGroup: { type: ObjectId, ref: 'UserGroup', index: true },
     creator: { type: ObjectId, ref: 'User', index: true },
     lastUpdateUser: { type: ObjectId, ref: 'User', index: true },
     liker: [{ type: ObjectId, ref: 'User', index: true }],
@@ -1427,6 +1428,7 @@ module.exports = function(crowi) {
   pageSchema.statics.GRANT_RESTRICTED = GRANT_RESTRICTED;
   pageSchema.statics.GRANT_SPECIFIED = GRANT_SPECIFIED;
   pageSchema.statics.GRANT_OWNER = GRANT_OWNER;
+  pageSchema.statics.GRANT_USER_GROUP = GRANT_USER_GROUP;
   pageSchema.statics.PAGE_GRANT_ERROR = PAGE_GRANT_ERROR;
 
   return mongoose.model('Page', pageSchema);
