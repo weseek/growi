@@ -456,21 +456,13 @@ module.exports = function(crowi) {
     });
   };
 
-  pageSchema.statics.findPageById = function(id) {
-    var Page = this;
-
-    return new Promise(function(resolve, reject) {
-      Page.findOne({_id: id}, function(err, pageData) {
-        if (err) {
-          return reject(err);
+  pageSchema.statics.findPageById = async function(id) {
+    const page = await this.findOne({_id: id});
+    if (page == null) {
+      throw new Error('Page not found');
         }
 
-        if (pageData == null) {
-          return reject(new Error('Page not found'));
-        }
-        return Page.populatePageData(pageData, null).then(resolve);
-      });
-    });
+    return Page.populatePageData(page, null);
   };
 
   pageSchema.statics.findPageByIdAndGrantedUser = function(id, userData) {
