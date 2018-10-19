@@ -129,6 +129,21 @@ class UserGroupRelation {
   }
 
   /**
+   * find all UserGroup IDs that related to specified User
+   *
+   * @static
+   * @param {User} user
+   * @returns {Promise<ObjectId[]>}
+   */
+  static findAllUserGroupIdsRelatedToUser(user) {
+    return this
+      .find({ relatedUser: user.id })
+      .map(relation => {
+        return relation.relatedGroup._id;
+      });
+  }
+
+  /**
    * find all entities with pagination
    *
    * @see https://github.com/edwardhotchkiss/mongoose-paginate
