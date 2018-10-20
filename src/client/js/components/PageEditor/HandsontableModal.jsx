@@ -42,6 +42,7 @@ export default class HandsontableModal extends React.Component {
     this.toggleDataImportArea = this.toggleDataImportArea.bind(this);
     this.expandWindow = this.expandWindow.bind(this);
     this.contractWindow = this.contractWindow.bind(this);
+    this.align = this.align.bind(this);
 
     // create debounced method for expanding HotTable
     this.expandHotTableHeightWithDebounce = debounce(100, this.expandHotTableHeight);
@@ -49,19 +50,26 @@ export default class HandsontableModal extends React.Component {
 
   init(markdownTable) {
     const initMarkdownTable = markdownTable || HandsontableModal.getDefaultMarkdownTable();
+
+    const ref = this;
     this.setState(
       {
         markdownTableOnInit: initMarkdownTable,
         markdownTable: initMarkdownTable.clone(),
         handsontableSetting: Object.assign({}, this.state.handsontableSetting, {
-          /*
-           * The afterUpdateSettings hook is called when this component state changes.
-           *
-           * In detail, when this component state changes, React will re-render HotTable because it is passed some state values of this component.
-           * HotTable#shouldComponentUpdate is called in this process and it call the updateSettings method for the Handsontable instance.
-           * After updateSetting is executed, Handsontable calls a AfterUpdateSetting hook.
-           */
-          afterUpdateSettings: HandsontableUtil.createHandlerToSynchronizeHandontableAlignWith(initMarkdownTable.options.align)
+          afterUpdateSettings: function() {
+            const mapping = {
+              'r': 'htRight',
+              'c': 'htCenter',
+              'l': 'htLeft',
+              '': ''
+            };
+
+            for (let i = 0; i < ref.state.markdownTable.options.align.length; i++) {
+              HandsontableUtil.setClassNameToColumns(this, i, i, mapping[ref.state.markdownTable.options.align[i]]);
+            }
+          },
+          // afterUpdateSettings:
         })
       }
     );
@@ -91,7 +99,7 @@ export default class HandsontableModal extends React.Component {
     this.setState({ show: false });
   }
 
-  setClassNameToColumns(className) {
+  align(direction) {
     const selectedRange = this.refs.hotTable.hotInstance.getSelectedRange();
     if (selectedRange == null) return;
 
@@ -107,7 +115,16 @@ export default class HandsontableModal extends React.Component {
       endCol = selectedRange[0].from.col;
     }
 
-    HandsontableUtil.setClassNameToColumns(this.refs.hotTable.hotInstance, startCol, endCol, className);
+    this.setState((prevState) => {
+      // FIXME
+      const markdownTable = prevState.markdownTable;
+      for (let i = startCol; i <= endCol ; i++) {
+        markdownTable.options.align[i] = direction;
+      }
+      return { markdownTable: markdownTable };
+    }, () => {
+      HandsontableUtil.synchronizeHandsontableModalWithMarkdownTable(this.refs.hotTable.hotInstance, this.state.markdownTable);
+    });
   }
 
   toggleDataImportArea() {
@@ -167,9 +184,9 @@ export default class HandsontableModal extends React.Component {
               Data Import<i className={this.state.isDataImportAreaExpanded ? 'fa fa-angle-up' : 'fa fa-angle-down' }></i>
             </Button>
             <ButtonGroup>
-              <Button onClick={() => { this.setClassNameToColumns('htLeft') }}><i className="ti-align-left"></i></Button>
-              <Button onClick={() => { this.setClassNameToColumns('htCenter') }}><i className="ti-align-center"></i></Button>
-              <Button onClick={() => { this.setClassNameToColumns('htRight') }}><i className="ti-align-right"></i></Button>
+              <Button onClick={() => { this.align('l') }}><i className="ti-align-left"></i></Button>
+              <Button onClick={() => { this.align('c') }}><i className="ti-align-center"></i></Button>
+              <Button onClick={() => { this.align('r') }}><i className="ti-align-right"></i></Button>
             </ButtonGroup>
             <Collapse in={this.state.isDataImportAreaExpanded}>
               <div> {/* This div is necessary for smoothing animations. (https://react-bootstrap.github.io/utilities/transitions/#transitions-collapse) */}

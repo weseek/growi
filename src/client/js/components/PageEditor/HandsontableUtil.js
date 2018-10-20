@@ -31,6 +31,19 @@ export default class HandsontableUtil {
     };
   }
 
+  static synchronizeHandsontableModalWithMarkdownTable(handsontable, markdownTable) {
+    const mapping = {
+      'r': 'htRight',
+      'c': 'htCenter',
+      'l': 'htLeft',
+      '': ''
+    };
+
+    for (let i = 0; i < markdownTable.options.align.length; i++) {
+      HandsontableUtil.setClassNameToColumns(handsontable, i, i, mapping[markdownTable.options.align[i]]);
+    }
+  }
+
   /**
    * return MarkdownTable alignment retrieved from Handsontable instance
    */
