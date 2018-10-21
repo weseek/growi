@@ -39,11 +39,11 @@ export default class HandsontableModal extends React.Component {
     this.reset = this.reset.bind(this);
     this.cancel = this.cancel.bind(this);
     this.save = this.save.bind(this);
+    this.synchronizeAlignment = this.synchronizeAlignment.bind(this);
+    this.alignButtonHandler = this.alignButtonHandler.bind(this);
     this.toggleDataImportArea = this.toggleDataImportArea.bind(this);
     this.expandWindow = this.expandWindow.bind(this);
     this.contractWindow = this.contractWindow.bind(this);
-    this.align = this.align.bind(this);
-    this.synchronizeAlignment = this.synchronizeAlignment.bind(this);
 
     // create debounced method for expanding HotTable
     this.expandHotTableHeightWithDebounce = debounce(100, this.expandHotTableHeight);
@@ -56,10 +56,43 @@ export default class HandsontableModal extends React.Component {
         markdownTableOnInit: initMarkdownTable,
         markdownTable: initMarkdownTable.clone(),
         handsontableSetting: Object.assign({}, this.state.handsontableSetting, {
-          afterUpdateSettings: this.synchronizeAlignment
+          afterUpdateSettings: this.synchronizeAlignment,
+          contextMenu: this.createCustomizedContextMenu()
         })
       }
     );
+  }
+
+  createCustomizedContextMenu() {
+    return {
+      items: {
+        'row_above': {}, 'row_below': {}, 'col_left': {}, 'col_right': {},
+        'separator1': Handsontable.plugins.ContextMenu.SEPARATOR,
+        'remove_row': {}, 'remove_col': {},
+        'separator2': Handsontable.plugins.ContextMenu.SEPARATOR,
+        'custom_alignment': {
+          name: 'Align columns',
+          key: 'align_columns',
+          submenu: {
+            items: [
+              {
+                name: 'Left',
+                key: 'align_columns:1',
+                callback: (key, selection) => {this.align('l', selection[0].start.col, selection[0].end.col)}
+              }, {
+                name: 'Center',
+                key: 'align_columns:2',
+                callback: (key, selection) => {this.align('c', selection[0].start.col, selection[0].end.col)}
+              }, {
+                name: 'Right',
+                key: 'align_columns:3',
+                callback: (key, selection) => {this.align('r', selection[0].start.col, selection[0].end.col)}
+              }
+            ]
+          }
+        }
+      }
+    };
   }
 
   show(markdownTable) {
@@ -83,22 +116,7 @@ export default class HandsontableModal extends React.Component {
     this.setState({ show: false });
   }
 
-  align(direction) {
-    const selectedRange = this.refs.hotTable.hotInstance.getSelectedRange();
-    if (selectedRange == null) return;
-
-    let startCol;
-    let endCol;
-
-    if (selectedRange[0].from.col < selectedRange[0].to.col) {
-      startCol = selectedRange[0].from.col;
-      endCol = selectedRange[0].to.col;
-    }
-    else {
-      startCol = selectedRange[0].to.col;
-      endCol = selectedRange[0].from.col;
-    }
-
+  align(direction, startCol, endCol) {
     this.setState((prevState) => {
       // change only align info, so share table data to avoid redundant copy
       const newMarkdownTable = new MarkdownTable(prevState.markdownTable.table, {align: [].concat(prevState.markdownTable.options.align)});
@@ -122,6 +140,25 @@ export default class HandsontableModal extends React.Component {
     for (let i = 0; i < this.state.markdownTable.options.align.length; i++) {
       HandsontableUtil.setClassNameToColumns(this.refs.hotTable.hotInstance, i, i, mapping[this.state.markdownTable.options.align[i]]);
     }
+  }
+
+  alignButtonHandler(direction) {
+    const selectedRange = this.refs.hotTable.hotInstance.getSelectedRange();
+    if (selectedRange == null) return;
+
+    let startCol;
+    let endCol;
+
+    if (selectedRange[0].from.col < selectedRange[0].to.col) {
+      startCol = selectedRange[0].from.col;
+      endCol = selectedRange[0].to.col;
+    }
+    else {
+      startCol = selectedRange[0].to.col;
+      endCol = selectedRange[0].from.col;
+    }
+
+    this.align(direction, startCol, endCol);
   }
 
   toggleDataImportArea() {
@@ -181,9 +218,9 @@ export default class HandsontableModal extends React.Component {
               Data Import<i className={this.state.isDataImportAreaExpanded ? 'fa fa-angle-up' : 'fa fa-angle-down' }></i>
             </Button>
             <ButtonGroup>
-              <Button onClick={() => { this.align('l') }}><i className="ti-align-left"></i></Button>
-              <Button onClick={() => { this.align('c') }}><i className="ti-align-center"></i></Button>
-              <Button onClick={() => { this.align('r') }}><i className="ti-align-right"></i></Button>
+              <Button onClick={() => { this.alignButtonHandler('l') }}><i className="ti-align-left"></i></Button>
+              <Button onClick={() => { this.alignButtonHandler('c') }}><i className="ti-align-center"></i></Button>
+              <Button onClick={() => { this.alignButtonHandler('r') }}><i className="ti-align-right"></i></Button>
             </ButtonGroup>
             <Collapse in={this.state.isDataImportAreaExpanded}>
               <div> {/* This div is necessary for smoothing animations. (https://react-bootstrap.github.io/utilities/transitions/#transitions-collapse) */}
@@ -251,38 +288,6 @@ export default class HandsontableModal extends React.Component {
 
       modifyColWidth: function(width) {
         return Math.max(80, Math.min(400, width));
-      },
-
-      contextMenu: {
-        items: {
-          'row_above': {}, 'row_below': {}, 'col_left': {}, 'col_right': {},
-          'separator1': Handsontable.plugins.ContextMenu.SEPARATOR,
-          'remove_row': {}, 'remove_col': {},
-          'separator2': Handsontable.plugins.ContextMenu.SEPARATOR,
-          'custom_alignment': {
-            name: 'Align columns',
-            key: 'align_columns',
-            submenu: {
-              items: [{
-                name: 'Left',
-                key: 'align_columns:1',
-                callback: function(key, selection) {
-                  HandsontableUtil.setClassNameToColumns(this, selection[0].start.col, selection[0].end.col, 'htLeft');
-                }}, {
-                name: 'Center',
-                key: 'align_columns:2',
-                callback: function(key, selection) {
-                  HandsontableUtil.setClassNameToColumns(this, selection[0].start.col, selection[0].end.col, 'htCenter');
-                }}, {
-                name: 'Right',
-                key: 'align_columns:3',
-                callback: function(key, selection) {
-                  HandsontableUtil.setClassNameToColumns(this, selection[0].start.col, selection[0].end.col, 'htRight');
-                }}
-              ]
-            }
-          }
-        }
       }
     };
   }
