@@ -43,6 +43,7 @@ export default class HandsontableModal extends React.Component {
     this.expandWindow = this.expandWindow.bind(this);
     this.contractWindow = this.contractWindow.bind(this);
     this.align = this.align.bind(this);
+    this.synchronizeAlignment = this.synchronizeAlignment.bind(this);
 
     // create debounced method for expanding HotTable
     this.expandHotTableHeightWithDebounce = debounce(100, this.expandHotTableHeight);
@@ -50,26 +51,12 @@ export default class HandsontableModal extends React.Component {
 
   init(markdownTable) {
     const initMarkdownTable = markdownTable || HandsontableModal.getDefaultMarkdownTable();
-
-    const ref = this;
     this.setState(
       {
         markdownTableOnInit: initMarkdownTable,
         markdownTable: initMarkdownTable.clone(),
         handsontableSetting: Object.assign({}, this.state.handsontableSetting, {
-          afterUpdateSettings: function() {
-            const mapping = {
-              'r': 'htRight',
-              'c': 'htCenter',
-              'l': 'htLeft',
-              '': ''
-            };
-
-            for (let i = 0; i < ref.state.markdownTable.options.align.length; i++) {
-              HandsontableUtil.setClassNameToColumns(this, i, i, mapping[ref.state.markdownTable.options.align[i]]);
-            }
-          },
-          // afterUpdateSettings:
+          afterUpdateSettings: this.synchronizeAlignment
         })
       }
     );
@@ -123,8 +110,21 @@ export default class HandsontableModal extends React.Component {
       }
       return { markdownTable: markdownTable };
     }, () => {
-      HandsontableUtil.synchronizeHandsontableModalWithMarkdownTable(this.refs.hotTable.hotInstance, this.state.markdownTable);
+      this.synchronizeAlignment();
     });
+  }
+
+  synchronizeAlignment() {
+    const mapping = {
+      'r': 'htRight',
+      'c': 'htCenter',
+      'l': 'htLeft',
+      '': ''
+    };
+
+    for (let i = 0; i < this.state.markdownTable.options.align.length; i++) {
+      HandsontableUtil.setClassNameToColumns(this.refs.hotTable.hotInstance, i, i, mapping[this.state.markdownTable.options.align[i]]);
+    }
   }
 
   toggleDataImportArea() {
