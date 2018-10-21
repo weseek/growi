@@ -100,8 +100,8 @@ export default class HandsontableModal extends React.Component {
     }
 
     this.setState((prevState) => {
-      // change only align info, so share data to avoid redundant copy
-      const newMarkdownTable = new MarkdownTable(prevState.markdownTable.data, [].concat(prevState.markdownTable.options.align));
+      // change only align info, so share table data to avoid redundant copy
+      const newMarkdownTable = new MarkdownTable(prevState.markdownTable.table, {align: [].concat(prevState.markdownTable.options.align)});
       for (let i = startCol; i <= endCol ; i++) {
         newMarkdownTable.options.align[i] = direction;
       }
