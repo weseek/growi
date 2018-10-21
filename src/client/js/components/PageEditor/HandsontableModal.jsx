@@ -15,9 +15,14 @@ import Handsontable from 'handsontable';
 import { HotTable } from '@handsontable/react';
 
 import MarkdownTable from '../../models/MarkdownTable';
-import HandsontableUtil from './HandsontableUtil';
 
 const DEFAULT_HOT_HEIGHT = 300;
+const MARKDOWNTABLE_TO_HANDSONTABLE_ALIGNMENT_SYMBOL_MAPPING = {
+  'r': 'htRight',
+  'c': 'htCenter',
+  'l': 'htLeft',
+  '': ''
+};
 
 export default class HandsontableModal extends React.Component {
 
@@ -130,16 +135,16 @@ export default class HandsontableModal extends React.Component {
   }
 
   synchronizeAlignment() {
-    const mapping = {
-      'r': 'htRight',
-      'c': 'htCenter',
-      'l': 'htLeft',
-      '': ''
-    };
+    const align = this.state.markdownTable.options.align;
+    const hotInstance = this.refs.hotTable.hotInstance;
 
-    for (let i = 0; i < this.state.markdownTable.options.align.length; i++) {
-      HandsontableUtil.setClassNameToColumns(this.refs.hotTable.hotInstance, i, i, mapping[this.state.markdownTable.options.align[i]]);
+
+    for (let i = 0; i < align.length; i++) {
+      for (let j = 0; j < hotInstance.countRows(); j++) {
+        hotInstance.setCellMeta(j, i, 'className', MARKDOWNTABLE_TO_HANDSONTABLE_ALIGNMENT_SYMBOL_MAPPING[align[i]]);
+      }
     }
+    hotInstance.render();
   }
 
   alignButtonHandler(direction) {
