@@ -76,11 +76,8 @@ export default class HandsontableModal extends React.Component {
   }
 
   save() {
-    let newMarkdownTable = this.state.markdownTable.clone();
-    newMarkdownTable.options.align = HandsontableUtil.getMarkdownTableAlignmentFrom(this.refs.hotTable.hotInstance);
-
     if (this.props.onSave != null) {
-      this.props.onSave(newMarkdownTable);
+      this.props.onSave(this.state.markdownTable);
     }
 
     this.setState({ show: false });
