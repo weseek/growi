@@ -135,7 +135,7 @@ export default class HandsontableModal extends React.Component {
     this.setState({ isWindowExpanded: true });
 
     // invoke updateHotTableHeight method with delay
-    // cz. Resizing this.refs.hotTableContainer is completeted after a little delay after 'isWindowExpanded' set with 'true'
+    // cz. Resizing this.refs.hotTableContainer is completed after a little delay after 'isWindowExpanded' set with 'true'
     this.expandHotTableHeightWithDebounce();
   }
 
