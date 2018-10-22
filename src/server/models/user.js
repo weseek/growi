@@ -531,12 +531,11 @@ module.exports = function(crowi) {
     var User = this;
     var usernameUsable = true;
 
-    this.findOne({username: username}, function(err, userData) {
-      if (userData) {
-        usernameUsable = false;
-      }
-      return usernameUsable;
-    });
+    const userData = await this.findOne({username: username});
+    if (userData) {
+      usernameUsable = false;
+    }
+    return usernameUsable;
   };
 
   userSchema.statics.isRegisterable = function(email, username, callback) {
