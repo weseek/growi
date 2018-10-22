@@ -232,9 +232,9 @@ module.exports = function(crowi) {
     this.save(function(err, userData) {
       userEvent.emit('activated', userData);
       if (err) {
-        return Promise.reject(err);
+        throw new Error(err);
       }
-      return Promise.resolve(userData);
+      return userData;
     });
   };
 
@@ -432,7 +432,7 @@ module.exports = function(crowi) {
     return await this.paginate({status: { $ne: STATUS_DELETED }}, { page: options.page || 1, limit: options.limit || PAGE_ITEMS }, function(err, result) {
       if (err) {
         debug('Error on pagination:', err);
-        throw new Error;
+        throw new Error(err);
       }
 
       return result;
