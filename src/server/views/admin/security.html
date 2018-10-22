@@ -44,16 +44,20 @@
             <label for="settingForm[security:registrationMode]" class="col-xs-3 control-label">{{ t('Basic authentication') }}</label>
             <div class="col-xs-3">
               <label for="">ID</label>
-              <input class="form-control" type="text" name="settingForm[security:basicName]"   value="{{ settingForm['security:basicName']|default('') }}">
+              <input class="form-control" type="text" name="settingForm[security:basicName]"   value="{{ settingForm['security:basicName']|default('') }}" {% if not isAclEnabled  %}readonly{% endif%}>
             </div>
             <div class="col-xs-3">
               <label for="">{{ t('Password') }}</label>
-              <input class="form-control" type="text" name="settingForm[security:basicSecret]" value="{{ settingForm['security:basicSecret']|default('') }}">
+              <input class="form-control" type="text" name="settingForm[security:basicSecret]" value="{{ settingForm['security:basicSecret']|default('') }}" {% if not isAclEnabled  %}readonly{% endif%}>
             </div>
             <div class="col-xs-offset-3 col-xs-9">
               <p class="help-block">
-                {{ t("security_setting.common_authentication") }}<br>
-                {{ t("security_setting.without_encryption") }}<br>
+                {% if not isAclEnabled %}
+                  {{ t("security_setting.basic_acl_disable") }}<br>
+                {% else %}
+                  {{ t("security_setting.common_authentication") }}<br>
+                  {{ t("security_setting.without_encryption") }}<br>
+                {% endif %}
               </p>
             </div>
           </div>
@@ -301,6 +305,7 @@
       {
         function showMessage(formId, msg, status) {
           $('#' + formId + ' > .alert').remove();
+          $('#' + formId ).find('.alert').remove();
 
           if (!status) {
             status = 'success';

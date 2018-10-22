@@ -1,6 +1,6 @@
 {
   "name": "growi",
-  "version": "3.2.5-RC",
+  "version": "3.2.6-RC",
   "description": "Team collaboration software using markdown",
   "tags": [
     "wiki",
@@ -218,7 +218,7 @@
   },
   "engines": {
     "node": ">=8.11.1 <9",
-    "npm": ">=5.6.0 <6",
+    "npm": ">=5.6.0 <7",
     "yarn": "^1.5.1"
   },
   "config": {

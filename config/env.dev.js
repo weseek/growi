@@ -10,4 +10,5 @@ module.exports = {
   ],
   // USER_UPPER_LIMIT: 0,
   // DEV_HTTPS: true,
+  // PUBLIC_WIKI_ONLY: true,
 };

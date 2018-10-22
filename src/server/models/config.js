@@ -351,6 +351,11 @@ module.exports = function(crowi) {
   };
 
   configSchema.statics.isGuesstAllowedToRead = function(config) {
+    // return true if puclic wiki mode
+    if (Config.isPublicWikiOnly(config)) {
+      return true;
+    }
+
     // return false if undefined
     if (undefined === config.crowi || undefined === config.crowi['security:restrictGuestMode']) {
       return false;
@@ -372,6 +377,13 @@ module.exports = function(crowi) {
   configSchema.statics.isEnabledLinebreaksInComments = function(config) {
     const key = 'markdown:isEnabledLinebreaksInComments';
     return getValueForMarkdownNS(config, key);
+  };
+  configSchema.statics.isPublicWikiOnly = function(config) {
+    const publicWikiOnly = process.env.PUBLIC_WIKI_ONLY;
+    if ( publicWikiOnly === 'true' || publicWikiOnly == 1) {
+      return true;
+    }
+    return false;
   };
 
   configSchema.statics.pageBreakSeparator = function(config) {
@@ -605,6 +617,7 @@ module.exports = function(crowi) {
         MATHJAX: env.MATHJAX || null,
       },
       recentCreatedLimit: Config.showRecentCreatedNumber(config),
+      isAclEnabled: !Config.isPublicWikiOnly(config),
     };
 
     return local_config;

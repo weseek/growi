@@ -42,6 +42,8 @@ class SavePageControls extends React.PureComponent {
   render() {
     const { t } = this.props;
 
+    const config = this.props.crowi.getConfig();
+    const isAclEnabled = config.isAclEnabled;
     const label = this.state.pageId == null ? t('Create') : t('Update');
 
     return (
@@ -56,17 +58,20 @@ class SavePageControls extends React.PureComponent {
               slackChannels={this.props.slackChannels} />
         </div>
 
-        <div className="mr-2">
-          <GrantSelector crowi={this.props.crowi}
-              ref={(elem) => {
-                if (this.refs.grantSelector == null) {
-                  this.refs.grantSelector = elem.getWrappedInstance();
-                }
-              }}
-              grant={this.props.grant}
-              grantGroupId={this.props.grantGroupId}
-              grantGroupName={this.props.grantGroupName} />
-        </div>
+
+        {isAclEnabled &&
+          <div className="mr-2">
+            <GrantSelector crowi={this.props.crowi}
+                ref={(elem) => {
+                  if (this.refs.grantSelector == null) {
+                    this.refs.grantSelector = elem.getWrappedInstance();
+                  }
+                }}
+                grant={this.props.grant}
+                grantGroupId={this.props.grantGroupId}
+                grantGroupName={this.props.grantGroupName} />
+          </div>
+        }
 
         <button className="btn btn-primary btn-submit" onClick={this.submit}>{label}</button>
       </div>
