@@ -121,6 +121,9 @@ export default class HandsontableModal extends React.Component {
     this.setState({ show: false });
   }
 
+  /**
+   * change the markdownTable alignment and synchronize the handsontable alignment to it
+   */
   align(direction, startCol, endCol) {
     this.setState((prevState) => {
       // change only align info, so share table data to avoid redundant copy
@@ -134,10 +137,12 @@ export default class HandsontableModal extends React.Component {
     });
   }
 
+  /**
+   * synchronize the handsontable alignment to the markdowntable alignment
+   */
   synchronizeAlignment() {
     const align = this.state.markdownTable.options.align;
     const hotInstance = this.refs.hotTable.hotInstance;
-
 
     for (let i = 0; i < align.length; i++) {
       for (let j = 0; j < hotInstance.countRows(); j++) {
