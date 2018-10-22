@@ -426,16 +426,16 @@ module.exports = function(crowi) {
       });
   };
 
-  userSchema.statics.findUsersWithPagination = function(options, callback) {
+  userSchema.statics.findUsersWithPagination = async function(options) {
     var sort = options.sort || {status: 1, username: 1, createdAt: 1};
 
-    this.paginate({status: { $ne: STATUS_DELETED }}, { page: options.page || 1, limit: options.limit || PAGE_ITEMS }, function(err, result) {
+    return await this.paginate({status: { $ne: STATUS_DELETED }}, { page: options.page || 1, limit: options.limit || PAGE_ITEMS }, function(err, result) {
       if (err) {
         debug('Error on pagination:', err);
-        return callback(err, null);
+        throw new Error;
       }
 
-      return callback(err, result);
+      return result;
     }, { sortBy: sort });
   };
 

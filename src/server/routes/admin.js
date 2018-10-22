@@ -477,16 +477,15 @@ module.exports = function(crowi, app) {
 
     var page = parseInt(req.query.page) || 1;
 
-    User.findUsersWithPagination({page: page}, function(err, result) {
-      const pager = createPager(result.total, result.limit, result.page, result.pages, MAX_PAGE_LIST);
+    const result = await User.findUsersWithPagination({page: page});
+    const pager = createPager(result.total, result.limit, result.page, result.pages, MAX_PAGE_LIST);
 
-      return res.render('admin/users', {
-        users: result.docs,
-        pager: pager,
-        activeUsers: activeUsers,
-        userUpperLimit: userUpperLimit,
-        isUserCountExceedsUpperLimit: isUserCountExceedsUpperLimit
-      });
+    return res.render('admin/users', {
+      users: result.docs,
+      pager: pager,
+      activeUsers: activeUsers,
+      userUpperLimit: userUpperLimit,
+      isUserCountExceedsUpperLimit: isUserCountExceedsUpperLimit
     });
   };
 
