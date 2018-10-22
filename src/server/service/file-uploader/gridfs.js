@@ -19,15 +19,15 @@ module.exports = function(crowi) {
   // obtain a model
   AttachmentFile = gridfs.model;
 
-  // delete a file
-  lib.deleteFile = async function(fileId, filePath) {
-    debug('File deletion: ' + fileId);
-    await AttachmentFile.unlinkById(fileId, function(error, unlinkedAttachment) {
-      if (error) {
-        throw new Error(error);
-      }
-    });
-  };
+  // // delete a file
+  // lib.deleteFile = async function(fileId, filePath) {
+  //   debug('File deletion: ' + fileId);
+  //   await AttachmentFile.unlinkById(fileId, function(error, unlinkedAttachment) {
+  //     if (error) {
+  //       throw new Error(error);
+  //     }
+  //   });
+  // };
 
   // create or save a file
   lib.uploadFile = async function(filePath, contentType, fileStream, options) {
