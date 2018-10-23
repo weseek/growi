@@ -24,7 +24,7 @@ const MARKDOWNTABLE_TO_HANDSONTABLE_ALIGNMENT_SYMBOL_MAPPING = {
   '': ''
 };
 
-export default class HandsontableModal extends React.Component {
+export default class HandsontableModal extends React.PureComponent {
 
 
   constructor(props) {
@@ -37,13 +37,17 @@ export default class HandsontableModal extends React.Component {
       markdownTableOnInit: HandsontableModal.getDefaultMarkdownTable(),
       markdownTable: HandsontableModal.getDefaultMarkdownTable(),
       handsontableHeight: DEFAULT_HOT_HEIGHT,
-      handsontableSetting: HandsontableModal.getDefaultHandsontableSetting()
     };
 
     this.init = this.init.bind(this);
     this.reset = this.reset.bind(this);
     this.cancel = this.cancel.bind(this);
     this.save = this.save.bind(this);
+    this.afterLoadDataHandler = this.afterLoadDataHandler.bind(this);
+    this.beforeColumnMoveHandler = this.beforeColumnMoveHandler.bind(this);
+    this.beforeColumnResizeHandler = this.beforeColumnResizeHandler.bind(this);
+    this.afterColumnResizeHandler = this.afterColumnResizeHandler.bind(this);
+    this.modifyColWidthHandler = this.modifyColWidthHandler.bind(this);
     this.synchronizeAlignment = this.synchronizeAlignment.bind(this);
     this.alignButtonHandler = this.alignButtonHandler.bind(this);
     this.toggleDataImportArea = this.toggleDataImportArea.bind(this);
@@ -52,6 +56,15 @@ export default class HandsontableModal extends React.Component {
 
     // create debounced method for expanding HotTable
     this.expandHotTableHeightWithDebounce = debounce(100, this.expandHotTableHeight);
+
+    // a Set instance that stores column indices which are resized manually.
+    // these columns will NOT be determined the width automatically by 'modifyColWidthHandler'
+    this.manuallyResizedColumnIndicesSet = new Set();
+
+    // generate setting object for HotTable instance
+    this.handsontableSettings = Object.assign(HandsontableModal.getDefaultHandsontableSetting(), {
+      contextMenu: this.createCustomizedContextMenu(),
+    });
   }
 
   init(markdownTable) {
@@ -60,12 +73,10 @@ export default class HandsontableModal extends React.Component {
       {
         markdownTableOnInit: initMarkdownTable,
         markdownTable: initMarkdownTable.clone(),
-        handsontableSetting: Object.assign({}, this.state.handsontableSetting, {
-          afterUpdateSettings: this.synchronizeAlignment,
-          contextMenu: this.createCustomizedContextMenu()
-        })
       }
     );
+
+    this.manuallyResizedColumnIndicesSet.clear();
   }
 
   createCustomizedContextMenu() {
@@ -105,12 +116,20 @@ export default class HandsontableModal extends React.Component {
     this.setState({ show: true });
   }
 
+  hide() {
+    this.setState({
+      show: false,
+      isDataImportAreaExpanded: false,
+      isWindowExpanded: false,
+    });
+  }
+
   reset() {
     this.setState({ markdownTable: this.state.markdownTableOnInit.clone() });
   }
 
   cancel() {
-    this.setState({ show: false });
+    this.hide();
   }
 
   save() {
@@ -118,7 +137,54 @@ export default class HandsontableModal extends React.Component {
       this.props.onSave(this.state.markdownTable);
     }
 
-    this.setState({ show: false });
+    this.hide();
+  }
+
+  afterLoadDataHandler(initialLoad) {
+    // clear 'manuallyResizedColumnIndicesSet' for the first loading
+    if (initialLoad) {
+      this.manuallyResizedColumnIndicesSet.clear();
+    }
+
+    this.synchronizeAlignment();
+  }
+
+  beforeColumnMoveHandler(columns, target) {
+    // clear 'manuallyResizedColumnIndicesSet'
+    this.manuallyResizedColumnIndicesSet.clear();
+  }
+
+  beforeColumnResizeHandler(currentColumn) {
+    /*
+     * The following bug disturbs to use 'beforeColumnResizeHandler' to store column index -- 2018.10.23 Yuki Takei
+     * https://github.com/handsontable/handsontable/issues/3328
+     *
+     * At the moment, using 'afterColumnResizeHandler' instead.
+     */
+
+    // store column index
+    // this.manuallyResizedColumnIndicesSet.add(currentColumn);
+  }
+
+  afterColumnResizeHandler(currentColumn) {
+    /*
+     * The following bug disturbs to use 'beforeColumnResizeHandler' to store column index -- 2018.10.23 Yuki Takei
+     * https://github.com/handsontable/handsontable/issues/3328
+     *
+     * At the moment, using 'afterColumnResizeHandler' instead.
+     */
+
+    // store column index
+    this.manuallyResizedColumnIndicesSet.add(currentColumn);
+  }
+
+  modifyColWidthHandler(width, column) {
+    // return original width if the column index exists in 'manuallyResizedColumnIndicesSet'
+    if (this.manuallyResizedColumnIndicesSet.has(column)) {
+      return width;
+    }
+    // return fixed width if first initializing
+    return Math.max(80, Math.min(400, width));
   }
 
   /**
@@ -141,6 +207,10 @@ export default class HandsontableModal extends React.Component {
    * synchronize the handsontable alignment to the markdowntable alignment
    */
   synchronizeAlignment() {
+    if (this.refs.hotTable == null) {
+      return;
+    }
+
     const align = this.state.markdownTable.options.align;
     const hotInstance = this.refs.hotTable.hotInstance;
 
@@ -256,7 +326,14 @@ export default class HandsontableModal extends React.Component {
             </Collapse>
           </div>
           <div ref="hotTableContainer" className="m-4 hot-table-container">
-            <HotTable ref='hotTable' data={this.state.markdownTable.table} settings={this.state.handsontableSetting} height={this.state.handsontableHeight} />
+            <HotTable ref='hotTable' data={this.state.markdownTable.table}
+                settings={this.handsontableSettings} height={this.state.handsontableHeight}
+                afterLoadData={this.afterLoadDataHandler}
+                modifyColWidth={this.modifyColWidthHandler}
+                beforeColumnMove={this.beforeColumnMoveHandler}
+                beforeColumnResize={this.beforeColumnResizeHandler}
+                afterColumnResize={this.afterColumnResizeHandler}
+              />
           </div>
         </Modal.Body>
         <Modal.Footer>
@@ -295,10 +372,6 @@ export default class HandsontableModal extends React.Component {
       manualColumnResize: true,
       selectionMode: 'multiple',
       outsideClickDeselects: false,
-
-      modifyColWidth: function(width) {
-        return Math.max(80, Math.min(400, width));
-      }
     };
   }
 }
