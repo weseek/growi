@@ -11,7 +11,7 @@ module.exports = function(crowi) {
 
   // instantiate mongoose-gridfs
   var gridfs = require('mongoose-gridfs')({
-    collection: 'attachments',
+    collection: 'attachmentFiles',
     model: 'AttachmentFile',
     mongooseConnection: mongoose.connection
   });
@@ -41,8 +41,16 @@ module.exports = function(crowi) {
       });
   };
 
-  lib.generateUrl = function(filePath) {
-    return path.posix.join('/uploads', filePath);
+  // lib.findDeliveryFile = async function(fileId, filePath) {
+  // };
+
+  lib.generateUrl = async function(filePath) {
+    crowi.apiGet('/attachments.get', {
+      attachment_path: filePath
+    })
+    .then((res) => {
+      return res;
+    };
   };
 
   return lib;

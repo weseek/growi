@@ -48,6 +48,17 @@ module.exports = function(crowi, app) {
   };
 
   /**
+   * @api {get} /attachments.get get attachments from MongoDB
+   * @apiName getAttachments
+   * @apiGroup Attachment
+   *
+   * @apiParam {String} attachment_path
+   */
+  api.get = function(req, res) {
+    const path = req.body.attachment_path;
+  };
+
+  /**
    * @api {get} /attachments.list Get attachments of the page
    * @apiName ListAttachments
    * @apiGroup Attachment
