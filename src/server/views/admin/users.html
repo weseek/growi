@@ -33,7 +33,7 @@
 
     <div class="col-md-9">
       <p>
-        <button data-toggle="collapse" class="btn btn-default" href="#inviteUserForm" {% if isUserCountExceedsUpperLimit === true %}disabled{% endif %}>
+        <button data-toggle="collapse" class="btn btn-default" href="#inviteUserForm" {% if isUserCountExceedsUpperLimit %}disabled{% endif %}>
           {{ t("user_management.invite_users") }}
         </button>
         <a class="btn btn-default btn-outline" href="/admin/users/external-accounts">

@@ -190,9 +190,10 @@ module.exports = function(crowi, app) {
           if (err) {
             if (err.name === 'UserUpperLimitException') {
               req.flash('registerWarningMessage', 'Can not register more than the maximum number of users.');
-              return res.redirect('/register');
             }
-            req.flash('registerWarningMessage', 'Failed to register.');
+            else {
+              req.flash('registerWarningMessage', 'Failed to register.');
+            }
             return res.redirect('/register');
           }
           else {

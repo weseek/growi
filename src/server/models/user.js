@@ -524,7 +524,8 @@ module.exports = function(crowi) {
     const User = this;
     const conditions = {status: status};
 
-    return User.find(conditions).count();
+    // TODO count は非推奨。mongoose のバージョンアップ後に countDocuments に変更する。
+    return User.count(conditions);
   };
 
   userSchema.statics.isRegisterableUsername = async function(username) {
