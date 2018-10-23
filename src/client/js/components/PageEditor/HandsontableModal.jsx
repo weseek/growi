@@ -15,11 +15,16 @@ import Handsontable from 'handsontable';
 import { HotTable } from '@handsontable/react';
 
 import MarkdownTable from '../../models/MarkdownTable';
-import HandsontableUtil from './HandsontableUtil';
 
 const DEFAULT_HOT_HEIGHT = 300;
+const MARKDOWNTABLE_TO_HANDSONTABLE_ALIGNMENT_SYMBOL_MAPPING = {
+  'r': 'htRight',
+  'c': 'htCenter',
+  'l': 'htLeft',
+  '': ''
+};
 
-export default class HandsontableModal extends React.Component {
+export default class HandsontableModal extends React.PureComponent {
 
 
   constructor(props) {
@@ -32,19 +37,34 @@ export default class HandsontableModal extends React.Component {
       markdownTableOnInit: HandsontableModal.getDefaultMarkdownTable(),
       markdownTable: HandsontableModal.getDefaultMarkdownTable(),
       handsontableHeight: DEFAULT_HOT_HEIGHT,
-      handsontableSetting: HandsontableModal.getDefaultHandsontableSetting()
     };
 
     this.init = this.init.bind(this);
     this.reset = this.reset.bind(this);
     this.cancel = this.cancel.bind(this);
     this.save = this.save.bind(this);
+    this.afterLoadDataHandler = this.afterLoadDataHandler.bind(this);
+    this.beforeColumnMoveHandler = this.beforeColumnMoveHandler.bind(this);
+    this.beforeColumnResizeHandler = this.beforeColumnResizeHandler.bind(this);
+    this.afterColumnResizeHandler = this.afterColumnResizeHandler.bind(this);
+    this.modifyColWidthHandler = this.modifyColWidthHandler.bind(this);
+    this.synchronizeAlignment = this.synchronizeAlignment.bind(this);
+    this.alignButtonHandler = this.alignButtonHandler.bind(this);
     this.toggleDataImportArea = this.toggleDataImportArea.bind(this);
     this.expandWindow = this.expandWindow.bind(this);
     this.contractWindow = this.contractWindow.bind(this);
 
     // create debounced method for expanding HotTable
     this.expandHotTableHeightWithDebounce = debounce(100, this.expandHotTableHeight);
+
+    // a Set instance that stores column indices which are resized manually.
+    // these columns will NOT be determined the width automatically by 'modifyColWidthHandler'
+    this.manuallyResizedColumnIndicesSet = new Set();
+
+    // generate setting object for HotTable instance
+    this.handsontableSettings = Object.assign(HandsontableModal.getDefaultHandsontableSetting(), {
+      contextMenu: this.createCustomizedContextMenu(),
+    });
   }
 
   init(markdownTable) {
@@ -53,18 +73,42 @@ export default class HandsontableModal extends React.Component {
       {
         markdownTableOnInit: initMarkdownTable,
         markdownTable: initMarkdownTable.clone(),
-        handsontableSetting: Object.assign({}, this.state.handsontableSetting, {
-          /*
-           * The afterUpdateSettings hook is called when this component state changes.
-           *
-           * In detail, when this component state changes, React will re-render HotTable because it is passed some state values of this component.
-           * HotTable#shouldComponentUpdate is called in this process and it call the updateSettings method for the Handsontable instance.
-           * After updateSetting is executed, Handsontable calls a AfterUpdateSetting hook.
-           */
-          afterUpdateSettings: HandsontableUtil.createHandlerToSynchronizeHandontableAlignWith(initMarkdownTable.options.align)
-        })
       }
     );
+
+    this.manuallyResizedColumnIndicesSet.clear();
+  }
+
+  createCustomizedContextMenu() {
+    return {
+      items: {
+        'row_above': {}, 'row_below': {}, 'col_left': {}, 'col_right': {},
+        'separator1': Handsontable.plugins.ContextMenu.SEPARATOR,
+        'remove_row': {}, 'remove_col': {},
+        'separator2': Handsontable.plugins.ContextMenu.SEPARATOR,
+        'custom_alignment': {
+          name: 'Align columns',
+          key: 'align_columns',
+          submenu: {
+            items: [
+              {
+                name: 'Left',
+                key: 'align_columns:1',
+                callback: (key, selection) => {this.align('l', selection[0].start.col, selection[0].end.col)}
+              }, {
+                name: 'Center',
+                key: 'align_columns:2',
+                callback: (key, selection) => {this.align('c', selection[0].start.col, selection[0].end.col)}
+              }, {
+                name: 'Right',
+                key: 'align_columns:3',
+                callback: (key, selection) => {this.align('r', selection[0].start.col, selection[0].end.col)}
+              }
+            ]
+          }
+        }
+      }
+    };
   }
 
   show(markdownTable) {
@@ -72,26 +116,113 @@ export default class HandsontableModal extends React.Component {
     this.setState({ show: true });
   }
 
+  hide() {
+    this.setState({
+      show: false,
+      isDataImportAreaExpanded: false,
+      isWindowExpanded: false,
+    });
+  }
+
   reset() {
     this.setState({ markdownTable: this.state.markdownTableOnInit.clone() });
   }
 
   cancel() {
-    this.setState({ show: false });
+    this.hide();
   }
 
   save() {
-    let newMarkdownTable = this.state.markdownTable.clone();
-    newMarkdownTable.options.align = HandsontableUtil.getMarkdownTableAlignmentFrom(this.refs.hotTable.hotInstance);
-
     if (this.props.onSave != null) {
-      this.props.onSave(newMarkdownTable);
+      this.props.onSave(this.state.markdownTable);
     }
 
-    this.setState({ show: false });
+    this.hide();
   }
 
-  setClassNameToColumns(className) {
+  afterLoadDataHandler(initialLoad) {
+    // clear 'manuallyResizedColumnIndicesSet' for the first loading
+    if (initialLoad) {
+      this.manuallyResizedColumnIndicesSet.clear();
+    }
+
+    this.synchronizeAlignment();
+  }
+
+  beforeColumnMoveHandler(columns, target) {
+    // clear 'manuallyResizedColumnIndicesSet'
+    this.manuallyResizedColumnIndicesSet.clear();
+  }
+
+  beforeColumnResizeHandler(currentColumn) {
+    /*
+     * The following bug disturbs to use 'beforeColumnResizeHandler' to store column index -- 2018.10.23 Yuki Takei
+     * https://github.com/handsontable/handsontable/issues/3328
+     *
+     * At the moment, using 'afterColumnResizeHandler' instead.
+     */
+
+    // store column index
+    // this.manuallyResizedColumnIndicesSet.add(currentColumn);
+  }
+
+  afterColumnResizeHandler(currentColumn) {
+    /*
+     * The following bug disturbs to use 'beforeColumnResizeHandler' to store column index -- 2018.10.23 Yuki Takei
+     * https://github.com/handsontable/handsontable/issues/3328
+     *
+     * At the moment, using 'afterColumnResizeHandler' instead.
+     */
+
+    // store column index
+    this.manuallyResizedColumnIndicesSet.add(currentColumn);
+  }
+
+  modifyColWidthHandler(width, column) {
+    // return original width if the column index exists in 'manuallyResizedColumnIndicesSet'
+    if (this.manuallyResizedColumnIndicesSet.has(column)) {
+      return width;
+    }
+    // return fixed width if first initializing
+    return Math.max(80, Math.min(400, width));
+  }
+
+  /**
+   * change the markdownTable alignment and synchronize the handsontable alignment to it
+   */
+  align(direction, startCol, endCol) {
+    this.setState((prevState) => {
+      // change only align info, so share table data to avoid redundant copy
+      const newMarkdownTable = new MarkdownTable(prevState.markdownTable.table, {align: [].concat(prevState.markdownTable.options.align)});
+      for (let i = startCol; i <= endCol ; i++) {
+        newMarkdownTable.options.align[i] = direction;
+      }
+      return { markdownTable: newMarkdownTable };
+    }, () => {
+      this.synchronizeAlignment();
+    });
+  }
+
+  /**
+   * synchronize the handsontable alignment to the markdowntable alignment
+   */
+  synchronizeAlignment() {
+    if (this.refs.hotTable == null) {
+      return;
+    }
+
+    const align = this.state.markdownTable.options.align;
+    const hotInstance = this.refs.hotTable.hotInstance;
+
+    for (let i = 0; i < align.length; i++) {
+      for (let j = 0; j < hotInstance.countRows(); j++) {
+        hotInstance.setCellMeta(j, i, 'className', MARKDOWNTABLE_TO_HANDSONTABLE_ALIGNMENT_SYMBOL_MAPPING[align[i]]);
+      }
+    }
+    hotInstance.render();
+  }
+
+  alignButtonHandler(direction) {
     const selectedRange = this.refs.hotTable.hotInstance.getSelectedRange();
     if (selectedRange == null) return;
 
@@ -107,7 +238,7 @@ export default class HandsontableModal extends React.Component {
       endCol = selectedRange[0].from.col;
     }
 
-    HandsontableUtil.setClassNameToColumns(this.refs.hotTable.hotInstance, startCol, endCol, className);
+    this.align(direction, startCol, endCol);
   }
 
   toggleDataImportArea() {
@@ -118,7 +249,7 @@ export default class HandsontableModal extends React.Component {
     this.setState({ isWindowExpanded: true });
 
     // invoke updateHotTableHeight method with delay
-    // cz. Resizing this.refs.hotTableContainer is completeted after a little delay after 'isWindowExpanded' set with 'true'
+    // cz. Resizing this.refs.hotTableContainer is completed after a little delay after 'isWindowExpanded' set with 'true'
     this.expandHotTableHeightWithDebounce();
   }
 
@@ -167,9 +298,9 @@ export default class HandsontableModal extends React.Component {
               Data Import<i className={this.state.isDataImportAreaExpanded ? 'fa fa-angle-up' : 'fa fa-angle-down' }></i>
             </Button>
             <ButtonGroup>
-              <Button onClick={() => { this.setClassNameToColumns('htLeft') }}><i className="ti-align-left"></i></Button>
-              <Button onClick={() => { this.setClassNameToColumns('htCenter') }}><i className="ti-align-center"></i></Button>
-              <Button onClick={() => { this.setClassNameToColumns('htRight') }}><i className="ti-align-right"></i></Button>
+              <Button onClick={() => { this.alignButtonHandler('l') }}><i className="ti-align-left"></i></Button>
+              <Button onClick={() => { this.alignButtonHandler('c') }}><i className="ti-align-center"></i></Button>
+              <Button onClick={() => { this.alignButtonHandler('r') }}><i className="ti-align-right"></i></Button>
             </ButtonGroup>
             <Collapse in={this.state.isDataImportAreaExpanded}>
               <div> {/* This div is necessary for smoothing animations. (https://react-bootstrap.github.io/utilities/transitions/#transitions-collapse) */}
@@ -195,7 +326,14 @@ export default class HandsontableModal extends React.Component {
             </Collapse>
           </div>
           <div ref="hotTableContainer" className="m-4 hot-table-container">
-            <HotTable ref='hotTable' data={this.state.markdownTable.table} settings={this.state.handsontableSetting} height={this.state.handsontableHeight} />
+            <HotTable ref='hotTable' data={this.state.markdownTable.table}
+                settings={this.handsontableSettings} height={this.state.handsontableHeight}
+                afterLoadData={this.afterLoadDataHandler}
+                modifyColWidth={this.modifyColWidthHandler}
+                beforeColumnMove={this.beforeColumnMoveHandler}
+                beforeColumnResize={this.beforeColumnResizeHandler}
+                afterColumnResize={this.afterColumnResizeHandler}
+              />
           </div>
         </Modal.Body>
         <Modal.Footer>
@@ -234,42 +372,6 @@ export default class HandsontableModal extends React.Component {
       manualColumnResize: true,
       selectionMode: 'multiple',
       outsideClickDeselects: false,
-
-      modifyColWidth: function(width) {
-        return Math.max(80, Math.min(400, width));
-      },
-
-      contextMenu: {
-        items: {
-          'row_above': {}, 'row_below': {}, 'col_left': {}, 'col_right': {},
-          'separator1': Handsontable.plugins.ContextMenu.SEPARATOR,
-          'remove_row': {}, 'remove_col': {},
-          'separator2': Handsontable.plugins.ContextMenu.SEPARATOR,
-          'custom_alignment': {
-            name: 'Align columns',
-            key: 'align_columns',
-            submenu: {
-              items: [{
-                name: 'Left',
-                key: 'align_columns:1',
-                callback: function(key, selection) {
-                  HandsontableUtil.setClassNameToColumns(this, selection[0].start.col, selection[0].end.col, 'htLeft');
-                }}, {
-                name: 'Center',
-                key: 'align_columns:2',
-                callback: function(key, selection) {
-                  HandsontableUtil.setClassNameToColumns(this, selection[0].start.col, selection[0].end.col, 'htCenter');
-                }}, {
-                name: 'Right',
-                key: 'align_columns:3',
-                callback: function(key, selection) {
-                  HandsontableUtil.setClassNameToColumns(this, selection[0].start.col, selection[0].end.col, 'htRight');
-                }}
-              ]
-            }
-          }
-        }
-      }
     };
   }
 }
