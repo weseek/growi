@@ -5,6 +5,8 @@ CHANGES
 
 * Feature: Import CSV/TSV/HTML table on Spreadsheet like GUI (Handsontable)
 * Feature: Add select alignment buttons of Spreadsheet like GUI (Handsontable)
+* Fix: An error occured by uploading attachment file when the page is not exists
+    * Introduced by 2.3.5
 
 ## 3.2.5
 
