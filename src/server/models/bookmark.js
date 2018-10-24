@@ -116,8 +116,13 @@ module.exports = function(crowi) {
     });
   };
 
+  /**
+   * Remove bookmark
+   * used only when removing the page
+   * @param {string} pageId
+   */
   bookmarkSchema.statics.removeBookmarksByPageId = function(pageId) {
-    var Bookmark = this;
+    const Bookmark = this;
 
     return new Promise(function(resolve, reject) {
       Bookmark.remove({page: pageId}, function(err, data) {
@@ -132,7 +137,7 @@ module.exports = function(crowi) {
   };
 
   bookmarkSchema.statics.removeBookmark = function(page, user) {
-    var Bookmark = this;
+    const Bookmark = this;
 
     return new Promise(function(resolve, reject) {
       Bookmark.findOneAndRemove({page: page, user: user}, function(err, data) {

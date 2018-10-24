@@ -302,6 +302,8 @@ module.exports = function(crowi) {
     });
   };
 
+  // TODO abolish or migrate
+  // https://weseek.myjetbrains.com/youtrack/issue/GC-1185
   pageSchema.statics.populatePageListToAnyObjects = function(pageIdObjectArray) {
     var Page = this;
     var pageIdMappings = {};

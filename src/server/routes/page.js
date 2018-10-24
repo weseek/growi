@@ -707,6 +707,8 @@ module.exports = function(crowi, app) {
   api.redirector = function(req, res) {
     const id = req.params.id;
 
+    // TODO use findPageByIdAndGrantedUser
+    // https://weseek.myjetbrains.com/youtrack/issue/GC-1224
     Page.findPageById(id)
     .then(function(pageData) {
 
