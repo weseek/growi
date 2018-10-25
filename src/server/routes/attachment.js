@@ -11,7 +11,19 @@ module.exports = function(crowi, app) {
     , fileUploader = require('../service/file-uploader')(crowi, app)
     , ApiResponse = require('../util/apiResponse')
     , actions = {}
-    , api = {};
+    , api = {}
+    , AttachmentFile = {}
+    , mongoose = require('mongoose');
+
+  // instantiate mongoose-gridfs
+  var gridfs = require('mongoose-gridfs')({
+    collection: 'attachmentFiles',
+    model: 'AttachmentFile',
+    mongooseConnection: mongoose.connection
+  });
+
+  // obtain a model
+  AttachmentFile = gridfs.model;
 
   actions.api = api;
 
@@ -55,7 +67,23 @@ module.exports = function(crowi, app) {
    * @apiParam {String} attachment_path
    */
   api.get = function(req, res) {
-    const path = req.body.attachment_path;
+    // // var path = req.body.attachment_path;
+    // const path = 'attachment/5ba1b857275c752f20b7204b/fda3c601ac63716bccfc7a867ad74285.png';
+    // Attachment.find({"filePath" : path})
+    // .then(function(attachment) {
+    const id = '5bd14e6f088a41edf63c1887';
+
+    const stream = AttachmentFile.readById(id);
+    stream.on('error', function(error) {
+      throw new Error('failed to load file id:' + id, error);
+    });
+    stream.on('data', function(data) {
+      return data;
+    });
+    stream.on('close', function() {
+      debug('GridFS readstream closed');
+    });
+    // });
   };
 
   /**
@@ -148,7 +176,7 @@ module.exports = function(crowi, app) {
           debug('Uploaded data is: ', data);
 
           // TODO size
-          return Attachment.create(id, req.user, filePath, originalName, fileName, fileType, fileSize);
+          return Attachment.create(id, req.user, filePath, originalName, fileName, fileType, fileSize, data);
         }).then(function(data) {
           var fileUrl = data.fileUrl;
 
