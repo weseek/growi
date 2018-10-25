@@ -6,24 +6,37 @@ import RevisionDiff from './RevisionDiff';
 
 export default class PageRevisionList extends React.Component {
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      showNodiffRevisions: false,
+    };
+  }
+
   renderRow(revision, previousRevision) {
     const revisionId = revision._id;
     const revisionDiffOpened = this.props.diffOpened[revisionId] || false;
+
+    const hasDiff = revision.hasDiffToPrev !== false; // set 'true' if undefined for backward compatibility
 
     return (
       <div className="revision-history-outer" key={`revision-history-${revisionId}`}>
         <Revision
           revision={revision}
           revisionDiffOpened={revisionDiffOpened}
+          hasDiff={hasDiff}
           onDiffOpenClicked={this.props.onDiffOpenClicked}
           key={`revision-history-rev-${revisionId}`}
           />
-        <RevisionDiff
-          revisionDiffOpened={revisionDiffOpened}
-          currentRevision={revision}
-          previousRevision={previousRevision}
-          key={`revision-deff-${revisionId}`}
-        />
+        { hasDiff &&
+          <RevisionDiff
+            revisionDiffOpened={revisionDiffOpened}
+            currentRevision={revision}
+            previousRevision={previousRevision}
+            key={`revision-deff-${revisionId}`}
+          />
+        }
       </div>
     );
   }

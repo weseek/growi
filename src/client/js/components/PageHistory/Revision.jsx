@@ -43,9 +43,16 @@ export default class Revision extends React.Component {
               <UserDate dateTime={revision.createdAt} />
             </p>
             <p>
-              <a className="diff-view" onClick={this._onDiffOpenClicked}>
-                <i className={iconClass}></i> View diff
-              </a>
+              <span className='d-inline-block' style={{ minWidth: '80px' }}>
+                { !this.props.hasDiff &&
+                  <span className='text-muted'>No diff</span>
+                }
+                { this.props.hasDiff &&
+                  <a className="diff-view" onClick={this._onDiffOpenClicked}>
+                    <i className={iconClass}></i> View diff
+                  </a>
+                }
+              </span>
               <a href={'?revision=' + revision._id } className="m-l-10">
                 <i className="icon-login"></i> Go to this version
               </a>
@@ -60,6 +67,7 @@ export default class Revision extends React.Component {
 Revision.propTypes = {
   revision: PropTypes.object,
   revisionDiffOpened: PropTypes.bool.isRequired,
+  hasDiff: PropTypes.bool.isRequired,
   onDiffOpenClicked: PropTypes.func.isRequired,
 };
 
