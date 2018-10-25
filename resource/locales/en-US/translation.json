@@ -46,8 +46,10 @@
 
   "Unportalize": "Unportalize",
 
-  "View this version": "View this version",
+  "Go to this version": "View this version",
   "View diff": "View diff",
+  "No diff": "No diff",
+  "Shrink versions that have no diffs": "Shrink versions that have no diffs",
 
   "User ID": "User ID",
   "Home": "Home",

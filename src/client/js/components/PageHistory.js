@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { translate } from 'react-i18next';
 
 import PageRevisionList from './PageHistory/PageRevisionList';
 
-export default class PageHistory extends React.Component {
+class PageHistory extends React.Component {
 
   constructor(props) {
     super(props);
@@ -119,6 +120,7 @@ export default class PageHistory extends React.Component {
     return (
       <div>
         <PageRevisionList
+          t={this.props.t}
           revisions={this.state.revisions}
           diffOpened={this.state.diffOpened}
           getPreviousRevision={this.getPreviousRevision}
@@ -130,6 +132,9 @@ export default class PageHistory extends React.Component {
 }
 
 PageHistory.propTypes = {
+  t: PropTypes.func.isRequired,               // i18next
   pageId: PropTypes.string,
   crowi: PropTypes.object.isRequired,
 };
+
+export default translate()(PageHistory);
