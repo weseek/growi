@@ -89,11 +89,11 @@ export default class Revision extends React.Component {
   render() {
     const revision = this.props.revision;
 
-    if (this.props.hasDiff || this.props.showNodiffRevisions) {
-      return this.renderFull(revision);
+    if (this.props.isCompactNodiffRevisions && !this.props.hasDiff) {
+      return this.renderSimplifiedNodiff(revision);
     }
     else {
-      return this.renderSimplifiedNodiff(revision);
+      return this.renderFull(revision);
     }
   }
 }
@@ -102,7 +102,7 @@ Revision.propTypes = {
   revision: PropTypes.object,
   revisionDiffOpened: PropTypes.bool.isRequired,
   hasDiff: PropTypes.bool.isRequired,
-  showNodiffRevisions: PropTypes.bool.isRequired,
+  isCompactNodiffRevisions: PropTypes.bool.isRequired,
   onDiffOpenClicked: PropTypes.func.isRequired,
 };
 

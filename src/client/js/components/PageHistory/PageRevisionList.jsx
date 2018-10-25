@@ -10,8 +10,14 @@ export default class PageRevisionList extends React.Component {
     super(props);
 
     this.state = {
-      showNodiffRevisions: false,
+      isCompactNodiffRevisions: true,
     };
+
+    this.cbCompactizeChangeHandler = this.cbCompactizeChangeHandler.bind(this);
+  }
+
+  cbCompactizeChangeHandler() {
+    this.setState({ isCompactNodiffRevisions: !this.state.isCompactNodiffRevisions });
   }
 
   /**
@@ -36,7 +42,7 @@ export default class PageRevisionList extends React.Component {
           revision={revision}
           revisionDiffOpened={revisionDiffOpened}
           hasDiff={hasDiff}
-          showNodiffRevisions={this.state.showNodiffRevisions}
+          isCompactNodiffRevisions={this.state.isCompactNodiffRevisions}
           onDiffOpenClicked={this.props.onDiffOpenClicked}
           key={`revision-history-rev-${revisionId}`}
           />
@@ -75,11 +81,21 @@ export default class PageRevisionList extends React.Component {
       return this.renderRow(revision, previousRevision, hasDiff, isContiguousNodiff);
     });
 
-    return (
-      <div className="revision-history-list">
+    const classNames = ['revision-history-list'];
+    if (this.state.isCompactNodiffRevisions) {
+      classNames.push('revision-history-list-compact');
+    }
+
+    return <React.Fragment>
+      <div className='checkbox checkbox-info pull-right'>
+        <input id='cbCompactize' type='checkbox' value={true} checked={this.state.isCompactNodiffRevisions} onChange={this.cbCompactizeChangeHandler}></input>
+        <label htmlFor='cbCompactize'>Compactize histories that have no diffs</label>
+      </div>
+      <div className="clearfix"></div>
+      <div className={classNames.join(' ')}>
         {revisionList}
       </div>
-    );
+    </React.Fragment>;
   }
 }
 

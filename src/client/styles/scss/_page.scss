@@ -90,9 +90,6 @@
       &:not(:first-of-type) {
         border-top: 1px solid $border;
       }
-      &.revision-history-outer-contiguous-nodiff {
-        border-top: unset !important; // force unset border
-      }
 
       .revision-history-main {
         .picture-lg {
@@ -128,6 +125,12 @@
     li {
       position: relative;
       list-style: none;
+    }
+  }
+  // compacted list
+  .revision-history-list-compact {
+    .revision-history-outer-contiguous-nodiff {
+      border-top: unset !important; // force unset border
     }
   }
 
