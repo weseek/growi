@@ -44,8 +44,10 @@
 
   "Unportalize": "ポータル解除",
 
-  "View this version": "このバージョンを見る",
-  "View diff": "差分を見る",
+  "Go to this version": "このバージョンを見る",
+  "View diff": "差分を表示",
+  "No diff": "差分なし",
+  "Shrink versions that have no diffs": "差分のないバージョンをコンパクトに表示する",
 
   "User ID": "ユーザーID",
   "Home": "ホーム",

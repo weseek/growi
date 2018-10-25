@@ -20,6 +20,8 @@ export default class Revision extends React.Component {
   }
 
   renderSimplifiedNodiff(revision) {
+    const { t } = this.props;
+
     const author = revision.author;
 
     let pic = '';
@@ -35,7 +37,7 @@ export default class Revision extends React.Component {
         <div className="m-l-10">
           <div className="revision-history-meta">
             <span className="text-muted small">
-              <UserDate dateTime={revision.createdAt} /> (No diff)
+              <UserDate dateTime={revision.createdAt} /> ({ t('No diff') })
             </span>
           </div>
         </div>
@@ -44,6 +46,8 @@ export default class Revision extends React.Component {
   }
 
   renderFull(revision) {
+    const { t } = this.props;
+
     const author = revision.author;
 
     let pic = '';
@@ -66,18 +70,18 @@ export default class Revision extends React.Component {
               <UserDate dateTime={revision.createdAt} />
             </p>
             <p>
-              <span className='d-inline-block' style={{ minWidth: '80px' }}>
+              <span className='d-inline-block' style={{ minWidth: '90px' }}>
                 { !this.props.hasDiff &&
-                  <span className='text-muted'>No diff</span>
+                  <span className='text-muted'>{ t('No diff') }</span>
                 }
                 { this.props.hasDiff &&
                   <a className="diff-view" onClick={this._onDiffOpenClicked}>
-                    <i className={iconClass}></i> View diff
+                    <i className={iconClass}></i> { t('View diff') }
                   </a>
                 }
               </span>
               <a href={'?revision=' + revision._id } className="m-l-10">
-                <i className="icon-login"></i> Go to this version
+                <i className="icon-login"></i> { t('Go to this version') }
               </a>
             </p>
           </div>
@@ -99,6 +103,7 @@ export default class Revision extends React.Component {
 }
 
 Revision.propTypes = {
+  t: PropTypes.func.isRequired,               // i18next
   revision: PropTypes.object,
   revisionDiffOpened: PropTypes.bool.isRequired,
   hasDiff: PropTypes.bool.isRequired,
