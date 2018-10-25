@@ -231,7 +231,7 @@ export default class CommentForm extends React.Component {
 
     const errorMessage = <span className="text-danger text-right mr-2">{this.state.errorMessage}</span>;
     const submitButton = (
-      <Button type="submit"bsStyle="primary" className="fcbtn btn btn-sm btn-primary btn-outline btn-rounded btn-1b">
+      <Button type="submit" bsStyle="primary" className="fcbtn btn btn-sm btn-primary btn-outline btn-rounded btn-1b">
         Comment
       </Button>
     );
@@ -239,22 +239,23 @@ export default class CommentForm extends React.Component {
     return (
       <div>
 
-        { !this.state.isFormShown &&
-          <button className="btn btn-lg btn-primary center-block" onClick={this.showCommentFormBtnClickHandler}>
-            <i className="icon-bubble"></i> Add Comment
-          </button>
-        }
-
-        { this.state.isFormShown &&
-          <form className="form page-comment-form" id="page-comment-form" onSubmit={this.postComment}>
-            { username &&
-              <div className="comment-form">
-                <div className="comment-form-user">
-                  <a href={creatorsPage}>
-                    <UserPicture user={user} />
-                  </a>
-                </div>
-                <div className="comment-form-main">
+        <form className="form page-comment-form" id="page-comment-form" onSubmit={this.postComment}>
+          { username &&
+            <div className="comment-form">
+              <div className="comment-form-user">
+                <a href={creatorsPage}>
+                  <UserPicture user={user} />
+                </a>
+              </div>
+              <div className="comment-form-main">
+                {/* Add Comment Button */}
+                { !this.state.isFormShown &&
+                  <button className="btn btn-lg btn-link center-block" onClick={this.showCommentFormBtnClickHandler}>
+                    <i className="icon-bubble"></i> Add Comment
+                  </button>
+                }
+                {/* Editor */}
+                { this.state.isFormShown && <React.Fragment>
                   <div className="comment-write">
                     <Tabs activeKey={this.state.key} id="comment-form-tabs" onSelect={this.handleSelect} animation={false}>
                       <Tab eventKey={1} title="Write">
@@ -313,11 +314,11 @@ export default class CommentForm extends React.Component {
                       </div>
                     </div>
                   </div>
-                </div>
+                </React.Fragment>}
               </div>
-            }
-          </form>
-        }
+            </div>
+          }
+        </form>
 
       </div>
     );
