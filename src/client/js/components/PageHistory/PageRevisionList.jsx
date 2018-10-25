@@ -21,7 +21,7 @@ export default class PageRevisionList extends React.Component {
     const hasDiff = revision.hasDiffToPrev !== false; // set 'true' if undefined for backward compatibility
 
     return (
-      <div className="revision-history-outer" key={`revision-history-${revisionId}`}>
+      <div className="revision-history-outer pt-3" key={`revision-history-${revisionId}`}>
         <Revision
           revision={revision}
           revisionDiffOpened={revisionDiffOpened}

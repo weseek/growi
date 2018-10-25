@@ -86,6 +86,11 @@
 
   .revision-history-list {
     .revision-history-outer {
+      // add border-top except of first element
+      &:not(:first-of-type) {
+        border-top: 1px solid $border;
+      }
+
       .revision-history-main {
         .picture {
           width: 32px;
