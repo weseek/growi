@@ -67,11 +67,11 @@ module.exports = function(crowi, app) {
    * @apiParam {String} attachment_path
    */
   api.get = function(req, res) {
-    // // var path = req.body.attachment_path;
-    // const path = 'attachment/5ba1b857275c752f20b7204b/fda3c601ac63716bccfc7a867ad74285.png';
-    // Attachment.find({"filePath" : path})
-    // .then(function(attachment) {
-    const id = '5bd14e6f088a41edf63c1887';
+    const filePath = "attachment/5ba1b857275c752f20b7204b/1495bb6b10a2b062ac9cc9bde306957a.png";
+    AttachmentFile.find({filename: filePath}, function(file) {
+      // const id = file._id;
+      console.log(file[0]._id);
+    });
 
     const stream = AttachmentFile.readById(id);
     stream.on('error', function(error) {
