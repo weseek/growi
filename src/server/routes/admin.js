@@ -541,7 +541,14 @@ module.exports = function(crowi, app) {
     });
   };
 
-  actions.user.activate = function(req, res) {
+  actions.user.activate = async function(req, res) {
+    // check user upper limit
+    const isUserCountExceedsUpperLimit = await User.isUserCountExceedsUpperLimit();
+    if (isUserCountExceedsUpperLimit) {
+      req.flash('errorMessage', 'ユーザーが上限に達したため有効化できません。');
+      return res.redirect('/admin/users');
+    }
+
     var id = req.params.id;
     User.findById(id, function(err, userData) {
       userData.statusActivate(function(err, userData) {
