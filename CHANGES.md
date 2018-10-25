@@ -5,8 +5,13 @@ CHANGES
 
 * Feature: Import CSV/TSV/HTML table on Spreadsheet like GUI (Handsontable)
 * Feature: Add select alignment buttons of Spreadsheet like GUI (Handsontable)
+* Fix: Login form rejects weak password
 * Fix: An error occured by uploading attachment file when the page is not exists
     * Introduced by 2.3.5
+* Support: Upgrade libs
+    * i18next-express-middleware
+    * i18next-node-fs-backend
+    * i18next-sprintf-postprocessor
 
 ## 3.2.5
 
