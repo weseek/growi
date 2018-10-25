@@ -11,7 +11,7 @@ import * as toastr from 'toastr';
 import GrowiRenderer from '../../util/GrowiRenderer';
 
 import Editor from '../PageEditor/Editor';
-import CommentPreview from '../PageComment/CommentPreview';
+import CommentPreview from './CommentPreview';
 import SlackNotification from '../SlackNotification';
 
 /**
@@ -33,6 +33,7 @@ export default class CommentForm extends React.Component {
     const isUploadableFile = config.upload.file;
 
     this.state = {
+      isFormShown: false,
       comment: '',
       isMarkdown: true,
       html: '',
@@ -56,6 +57,7 @@ export default class CommentForm extends React.Component {
     this.onUpload = this.onUpload.bind(this);
     this.onSlackEnabledFlagChange = this.onSlackEnabledFlagChange.bind(this);
     this.onSlackChannelsChange = this.onSlackChannelsChange.bind(this);
+    this.showCommentFormBtnClickHandler = this.showCommentFormBtnClickHandler.bind(this);
   }
 
   updateState(value) {
@@ -210,6 +212,10 @@ export default class CommentForm extends React.Component {
     });
   }
 
+  showCommentFormBtnClickHandler() {
+    this.setState({ isFormShown: true });
+  }
+
   renderControls() {
 
   }
@@ -232,77 +238,87 @@ export default class CommentForm extends React.Component {
 
     return (
       <div>
-        <form className="form page-comment-form" id="page-comment-form" onSubmit={this.postComment}>
-          { username &&
-            <div className="comment-form">
-              <div className="comment-form-user">
-                <a href={creatorsPage}>
-                  <UserPicture user={user} />
-                </a>
-              </div>
-              <div className="comment-form-main">
-                <div className="comment-write">
-                  <Tabs activeKey={this.state.key} id="comment-form-tabs" onSelect={this.handleSelect} animation={false}>
-                    <Tab eventKey={1} title="Write">
-                      <Editor ref="editor"
-                        value={this.state.comment}
-                        isGfmMode={this.state.isMarkdown}
-                        editorOptions={this.props.editorOptions}
-                        lineNumbers={false}
-                        isMobile={this.props.crowi.isMobile}
-                        isUploadable={this.state.isUploadable}
-                        isUploadableFile={this.state.isUploadableFile}
-                        emojiStrategy={emojiStrategy}
-                        onChange={this.updateState}
-                        onUpload={this.onUpload}
-                        onCtrlEnter={this.postComment}
-                      />
-                    </Tab>
-                    { this.state.isMarkdown == true &&
-                    <Tab eventKey={2} title="Preview">
-                      <div className="comment-form-preview">
-                       {commentPreview}
-                      </div>
-                    </Tab>
-                    }
-                  </Tabs>
+
+        { !this.state.isFormShown &&
+          <button className="btn btn-lg btn-primary center-block" onClick={this.showCommentFormBtnClickHandler}>
+            <i className="icon-bubble"></i> Add Comment
+          </button>
+        }
+
+        { this.state.isFormShown &&
+          <form className="form page-comment-form" id="page-comment-form" onSubmit={this.postComment}>
+            { username &&
+              <div className="comment-form">
+                <div className="comment-form-user">
+                  <a href={creatorsPage}>
+                    <UserPicture user={user} />
+                  </a>
                 </div>
-                <div className="comment-submit">
-                  <div className="d-flex">
-                    <label style={{flex: 1}}>
-                    { this.state.key == 1 &&
-                      <span>
-                        <input type="checkbox" id="comment-form-is-markdown" name="isMarkdown" checked={this.state.isMarkdown} value="1" onChange={this.updateStateCheckbox} /> Markdown
-                      </span>
-                    }
-                    </label>
-                    <span className="hidden-xs">{ this.state.errorMessage && errorMessage }</span>
-                    { this.state.hasSlackConfig &&
-                      <div className="form-inline align-self-center mr-md-2">
-                        <SlackNotification
-                          crowi={this.props.crowi}
-                          pageId={this.props.pageId}
-                          pagePath={this.props.pagePath}
-                          isSlackEnabled={this.state.isSlackEnabled}
-                          slackChannels={this.state.slackChannels}
-                          onEnabledFlagChange={this.onSlackEnabledFlagChange}
-                          onChannelChange={this.onSlackChannelsChange}
+                <div className="comment-form-main">
+                  <div className="comment-write">
+                    <Tabs activeKey={this.state.key} id="comment-form-tabs" onSelect={this.handleSelect} animation={false}>
+                      <Tab eventKey={1} title="Write">
+                        <Editor ref="editor"
+                          value={this.state.comment}
+                          isGfmMode={this.state.isMarkdown}
+                          editorOptions={this.props.editorOptions}
+                          lineNumbers={false}
+                          isMobile={this.props.crowi.isMobile}
+                          isUploadable={this.state.isUploadable}
+                          isUploadableFile={this.state.isUploadableFile}
+                          emojiStrategy={emojiStrategy}
+                          onChange={this.updateState}
+                          onUpload={this.onUpload}
+                          onCtrlEnter={this.postComment}
                         />
-                      </div>
-                    }
-                    <div className="hidden-xs">{submitButton}</div>
+                      </Tab>
+                      { this.state.isMarkdown == true &&
+                      <Tab eventKey={2} title="Preview">
+                        <div className="comment-form-preview">
+                        {commentPreview}
+                        </div>
+                      </Tab>
+                      }
+                    </Tabs>
                   </div>
-                  <div className="visible-xs mt-2">
-                    <div className="d-flex justify-content-end">
-                      { this.state.errorMessage && errorMessage }
-                      <div>{submitButton}</div>
+                  <div className="comment-submit">
+                    <div className="d-flex">
+                      <label style={{flex: 1}}>
+                      { this.state.key == 1 &&
+                        <span>
+                          <input type="checkbox" id="comment-form-is-markdown" name="isMarkdown" checked={this.state.isMarkdown} value="1" onChange={this.updateStateCheckbox} /> Markdown
+                        </span>
+                      }
+                      </label>
+                      <span className="hidden-xs">{ this.state.errorMessage && errorMessage }</span>
+                      { this.state.hasSlackConfig &&
+                        <div className="form-inline align-self-center mr-md-2">
+                          <SlackNotification
+                            crowi={this.props.crowi}
+                            pageId={this.props.pageId}
+                            pagePath={this.props.pagePath}
+                            isSlackEnabled={this.state.isSlackEnabled}
+                            slackChannels={this.state.slackChannels}
+                            onEnabledFlagChange={this.onSlackEnabledFlagChange}
+                            onChannelChange={this.onSlackChannelsChange}
+                          />
+                        </div>
+                      }
+                      <div className="hidden-xs">{submitButton}</div>
+                    </div>
+                    <div className="visible-xs mt-2">
+                      <div className="d-flex justify-content-end">
+                        { this.state.errorMessage && errorMessage }
+                        <div>{submitButton}</div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          }
-        </form>
+            }
+          </form>
+        }
+
       </div>
     );
   }
