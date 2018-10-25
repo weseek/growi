@@ -254,15 +254,12 @@ module.exports = function(crowi) {
     });
   };
 
-  userSchema.methods.statusActivate = async function() {
+  userSchema.methods.statusActivate = function(callback) {
     debug('Activate User', this);
     this.status = STATUS_ACTIVE;
     this.save(function(err, userData) {
       userEvent.emit('activated', userData);
-      if (err) {
-        throw new Error(err);
-      }
-      return userData;
+      return callback(err, userData);
     });
   };
 

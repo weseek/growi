@@ -543,17 +543,17 @@ module.exports = function(crowi, app) {
 
   actions.user.activate = function(req, res) {
     var id = req.params.id;
-
-    User.findById(id, async function(err, userData) {
-      try {
-        const user = await userData.statusActivate();
-        req.flash('successMessage', user.name + 'さんのアカウントを有効化しました');
-      }
-      catch (err) {
-        req.flash('errorMessage', '更新に失敗しました。');
-        debug(err);
-      }
-      return res.redirect('/admin/users');
+    User.findById(id, function(err, userData) {
+      userData.statusActivate(function(err, userData) {
+        if (err === null) {
+          req.flash('successMessage', userData.name + 'さんのアカウントを有効化しました');
+        }
+        else {
+          req.flash('errorMessage', '更新に失敗しました。');
+          debug(err, userData);
+        }
+        return res.redirect('/admin/users');
+      });
     });
   };
 
