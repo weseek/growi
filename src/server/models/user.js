@@ -257,7 +257,7 @@ module.exports = function(crowi) {
   userSchema.methods.statusActivate = async function() {
     debug('Activate User', this);
     this.status = STATUS_ACTIVE;
-    await this.save(function(err, userData) {
+    this.save(function(err, userData) {
       userEvent.emit('activated', userData);
       if (err) {
         throw new Error(err);
