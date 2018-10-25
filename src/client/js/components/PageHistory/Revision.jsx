@@ -19,18 +19,41 @@ export default class Revision extends React.Component {
     this.props.onDiffOpenClicked(this.props.revision);
   }
 
-  render() {
-    const revision = this.props.revision;
+  renderSimplifiedNodiff(revision) {
     const author = revision.author;
 
     let pic = '';
     if (typeof author === 'object') {
-      pic = <UserPicture user={author} />;
+      pic = <UserPicture user={author} size='sm' />;
+    }
+
+    return (
+      <div className="revision-history-main revision-history-main-nodiff my-1 d-flex align-items-center">
+        <div className="picture-container">
+          {pic}
+        </div>
+        <div className="m-l-10">
+          <div className="revision-history-meta">
+            <span className="text-muted small">
+              <UserDate dateTime={revision.createdAt} /> (No diff)
+            </span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  renderFull(revision) {
+    const author = revision.author;
+
+    let pic = '';
+    if (typeof author === 'object') {
+      pic = <UserPicture user={author} size='lg' />;
     }
 
     const iconClass = this.props.revisionDiffOpened ? 'caret caret-opened' : 'caret';
     return (
-      <div className="revision-history-main d-flex">
+      <div className="revision-history-main d-flex mt-3">
         <div className="m-t-5">
           {pic}
         </div>
@@ -62,12 +85,24 @@ export default class Revision extends React.Component {
       </div>
     );
   }
+
+  render() {
+    const revision = this.props.revision;
+
+    if (this.props.hasDiff || this.props.showNodiffRevisions) {
+      return this.renderFull(revision);
+    }
+    else {
+      return this.renderSimplifiedNodiff(revision);
+    }
+  }
 }
 
 Revision.propTypes = {
   revision: PropTypes.object,
   revisionDiffOpened: PropTypes.bool.isRequired,
   hasDiff: PropTypes.bool.isRequired,
+  showNodiffRevisions: PropTypes.bool.isRequired,
   onDiffOpenClicked: PropTypes.func.isRequired,
 };
 

@@ -90,9 +90,12 @@
       &:not(:first-of-type) {
         border-top: 1px solid $border;
       }
+      &.revision-history-outer-contiguous-nodiff {
+        border-top: unset !important; // force unset border
+      }
 
       .revision-history-main {
-        .picture {
+        .picture-lg {
           width: 32px;
           height: 32px;
         }
@@ -109,6 +112,12 @@
           &.caret-opened {
             transform: rotate(0deg);
           }
+        }
+      }
+      .revision-history-main-nodiff {
+        .picture-container {
+          min-width: 32px;
+          text-align: center; // centering .picture
         }
       }
       .revision-history-diff {
