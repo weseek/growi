@@ -1,17 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Navbar from 'react-bootstrap/es/Navbar';
-import Nav from 'react-bootstrap/es/Nav';
-import NavItem from 'react-bootstrap/es/NavItem';
-import Button from 'react-bootstrap/es/Button';
-import ButtonGroup from 'react-bootstrap/es/ButtonGroup';
-import Dropzone from 'react-dropzone';
-
 import AbstractEditor from './AbstractEditor';
 import CodeMirrorEditor from './CodeMirrorEditor';
 import TextAreaEditor from './TextAreaEditor';
 
+import Dropzone from 'react-dropzone';
 
 import pasteHelper from './PasteHelper';
 
@@ -202,13 +196,13 @@ export default class Editor extends AbstractEditor {
 
   renderNavbar() {
     return (
-      <Navbar className="mb-0 navbar-editor" fluid={true}>
-        <Nav pullRight>
+      <div className="m-0 navbar navbar-default navbar-editor" style={{ minHeight: 'unset' }}>
+        <ul className="pr-4 nav nav-navbar navbar-right">
           { this.getNavbarItems() != null && this.getNavbarItems().map((item, idx) => {
-            return <div key={idx}>{item}</div>;
+            return <li key={idx}>{item}</li>;
           }) }
-        </Nav>
-      </Navbar>
+        </ul>
+      </div>
     );
   }
 

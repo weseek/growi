@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import Modal from 'react-bootstrap/es/Modal';
-import NavItem from 'react-bootstrap/es/NavItem';
+import Button from 'react-bootstrap/es/Button';
 
 import InterceptorManager from '@commons/service/interceptor-manager';
 
@@ -650,7 +650,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   getNavbarItems() {
-    return <NavItem bsSize="small" onClick={ this.showHandsonTableHandler }><img src="/images/icons/editor/table.svg" width="14" /></NavItem>;
+    return <Button bsSize="small" onClick={ this.showHandsonTableHandler }><img src="/images/icons/editor/table.svg" width="14" /></Button>;
   }
 
   render() {
