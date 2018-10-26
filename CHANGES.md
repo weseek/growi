@@ -1,9 +1,12 @@
 CHANGES
 ========
 
-## 3.2.6-RC
+## 3.2.7-RC
 
 * Feature: Import CSV/TSV/HTML table on Spreadsheet like GUI (Handsontable)
+
+## 3.2.6
+
 * Feature: Add select alignment buttons of Spreadsheet like GUI (Handsontable)
 * Fix: Login form rejects weak password
 * Fix: An error occured by uploading attachment file when the page is not exists
