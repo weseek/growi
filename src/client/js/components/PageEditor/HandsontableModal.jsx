@@ -176,6 +176,9 @@ export default class HandsontableModal extends React.PureComponent {
 
     // store column index
     this.manuallyResizedColumnIndicesSet.add(currentColumn);
+    // force re-render
+    const hotInstance = this.refs.hotTable.hotInstance;
+    hotInstance.render();
   }
 
   modifyColWidthHandler(width, column) {
