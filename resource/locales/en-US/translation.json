@@ -46,8 +46,10 @@
 
   "Unportalize": "Unportalize",
 
-  "View this version": "View this version",
+  "Go to this version": "View this version",
   "View diff": "View diff",
+  "No diff": "No diff",
+  "Shrink versions that have no diffs": "Shrink versions that have no diffs",
 
   "User ID": "User ID",
   "Home": "Home",
@@ -517,7 +519,9 @@
     "Deactivate account":"Deactivate account",
     "your_own":"You cannot deactivate your own account",
     "Administrator menu":"Administrator menu",
-    "cannot_remove":"You cannot remove yourself from administrator"
+    "cannot_remove":"You cannot remove yourself from administrator",
+    "cannot_invite_maximum_users": "Can not invite more than the maximum number of users.",
+    "current users": "Current users:"
   },
 
   "importer_management": {

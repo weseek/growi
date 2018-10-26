@@ -139,9 +139,9 @@ export default class PageEditor extends React.Component {
         }
         this.refs.editor.insertText(insertText);
 
-        // update page information if created
+        // when if created newly
         if (res.pageCreated) {
-          this.pageSavedHandler(res.page);
+          // do nothing
         }
       })
       .catch(this.apiErrorHandler)

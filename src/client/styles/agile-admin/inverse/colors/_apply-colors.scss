@@ -309,6 +309,7 @@ body.on-edit {
     .page-editor-editor-container {
       border-right-color: $navbar-border;
       .navbar-editor {
+        border-bottom-color: $border;
         background-color: $active-nav-tabs-bgcolor;   // same color with active tab
       }
     }

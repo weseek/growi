@@ -1,15 +1,28 @@
 CHANGES
 ========
 
-## 3.2.5-RC
+## 3.2.6-RC
 
+* Feature: Import CSV/TSV/HTML table on Spreadsheet like GUI (Handsontable)
 * Feature: Add select alignment buttons of Spreadsheet like GUI (Handsontable)
+* Fix: Login form rejects weak password
+* Fix: An error occured by uploading attachment file when the page is not exists
+    * Introduced by 2.3.5
+* Support: Upgrade libs
+    * i18next-express-middleware
+    * i18next-node-fs-backend
+    * i18next-sprintf-postprocessor
+
+## 3.2.5
+
 * Improvement: Expandable Spreadsheet like GUI (Handsontable)
 * Improvement: Move/Resize rows/columns of Spreadsheet like GUI (Handsontable)
 * Improvement: Prevent XSS of New Page modal
 * Fix: Recent Created tab of user home shows wrong page list
     * Introduced by 3.2.4
 * Support: Upgrade libs
+    * @handsontable/react
+    * handsontable
     * metismenu
     * sinon
 

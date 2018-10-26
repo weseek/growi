@@ -15,7 +15,8 @@ module.exports = function(crowi) {
     }},
     format: { type: String, default: 'markdown' },
     author: { type: ObjectId, ref: 'User' },
-    createdAt: { type: Date, default: Date.now }
+    createdAt: { type: Date, default: Date.now },
+    hasDiffToPrev: { type: Boolean },
   });
 
   /*
@@ -80,7 +81,7 @@ module.exports = function(crowi) {
 
   revisionSchema.statics.findRevisionIdList = function(path) {
     return this.find({path: path})
-      .select('_id author createdAt')
+      .select('_id author createdAt hasDiffToPrev')
       .sort({createdAt: -1})
       .exec();
   };
@@ -135,6 +136,9 @@ module.exports = function(crowi) {
     newRevision.format = format;
     newRevision.author = user._id;
     newRevision.createdAt = Date.now();
+    if (pageData.revision != null) {
+      newRevision.hasDiffToPrev = body !== pageData.revision.body;
+    }
 
     return newRevision;
   };
