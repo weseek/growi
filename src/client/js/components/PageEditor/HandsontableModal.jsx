@@ -256,6 +256,9 @@ export default class HandsontableModal extends React.PureComponent {
       case 'csv':
         this.init(MarkdownTable.fromMarkdownString(csvToMarkdown(this.importDataTextArea.value, ',', true)));
         break;
+      case 'tsv':
+        this.init(MarkdownTable.fromMarkdownString(csvToMarkdown(this.importDataTextArea.value, '\t', true)));
+        break;
     }
   }
 
@@ -324,7 +327,7 @@ export default class HandsontableModal extends React.PureComponent {
                     <FormControl componentClass="select" placeholder="select"
                                  inputRef={ ref => this.importDataTypeSelectBox = ref } >
                       <option value="csv">CSV</option>
-                      <option value="tsv">(TBD) TSV</option>
+                      <option value="tsv">TSV</option>
                       <option value="html">(TBD) HTML</option>
                     </FormControl>
                   </FormGroup>
