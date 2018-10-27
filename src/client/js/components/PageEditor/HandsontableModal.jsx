@@ -7,7 +7,6 @@ import Collapse from 'react-bootstrap/es/Collapse';
 import Handsontable from 'handsontable';
 import { HotTable } from '@handsontable/react';
 import { debounce } from 'throttle-debounce';
-import csvToMarkdown from 'csv-to-markdown-table';
 
 import DataImportForm from './DataImportForm';
 import MarkdownTable from '../../models/MarkdownTable';
@@ -248,10 +247,10 @@ export default class HandsontableModal extends React.PureComponent {
   importData(dataFormat, data) {
     switch (dataFormat) {
       case 'csv':
-        this.init(MarkdownTable.fromMarkdownString(csvToMarkdown(data, ',', true)));
+        this.init(MarkdownTable.fromDSV(data, ','));
         break;
       case 'tsv':
-        this.init(MarkdownTable.fromMarkdownString(csvToMarkdown(data, '\t', true)));
+        this.init(MarkdownTable.fromDSV(data, '\t'));
         break;
     }
   }
