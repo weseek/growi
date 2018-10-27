@@ -610,6 +610,16 @@ module.exports = function(crowi) {
     return local_config;
   };
 
+  configSchema.statics.userUpperLimit = function(crowi) {
+    const key = 'USER_UPPER_LIMIT';
+    const env = crowi.env[key];
+
+    if (undefined === crowi.env || undefined === crowi.env[key]) {
+      return 0;
+    }
+    return Number(env);
+  };
+
   /*
   configSchema.statics.isInstalled = function(config)
   {

@@ -33,7 +33,7 @@
 
     <div class="col-md-9">
       <p>
-        <button data-toggle="collapse" class="btn btn-default" href="#inviteUserForm">
+        <button data-toggle="collapse" class="btn btn-default" href="#inviteUserForm" {% if isUserCountExceedsUpperLimit %}disabled{% endif %}>
           {{ t("user_management.invite_users") }}
         </button>
         <a class="btn btn-default btn-outline" href="/admin/users/external-accounts">
@@ -55,6 +55,13 @@
         </div>
         <input type="hidden" name="_csrf" value="{{ csrf() }}">
       </form>
+
+      {% if isUserCountExceedsUpperLimit === true %}
+      <label>{{ t('user_management.cannot_invite_maximum_users') }}</label>
+      {% endif %}
+      {% if userUpperLimit !== 0 %}
+      <label>{{ t('user_management.current users') }}{{ activeUsers }}</label>
+      {% endif %}
 
       {% set createdUser = req.flash('createdUser') %}
       {% if createdUser.length %}

@@ -1,7 +1,7 @@
 'use strict';
 
-var form = require('express-form')
-  , field = form.field;
+const form = require('express-form');
+const field = form.field;
 
 module.exports = form(
   field('mePassword.oldPassword'),

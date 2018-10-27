@@ -15,6 +15,7 @@ export default class Editor extends AbstractEditor {
     super(props);
 
     this.state = {
+      isComponentDidMount: false,
       dropzoneActive: false,
       isUploading: false,
     };
@@ -30,6 +31,10 @@ export default class Editor extends AbstractEditor {
     this.getDropzoneAccept = this.getDropzoneAccept.bind(this);
     this.getDropzoneClassName = this.getDropzoneClassName.bind(this);
     this.renderDropzoneOverlay = this.renderDropzoneOverlay.bind(this);
+  }
+
+  componentDidMount() {
+    this.setState({ isComponentDidMount: true });
   }
 
   getEditorSubstance() {
@@ -207,11 +212,6 @@ export default class Editor extends AbstractEditor {
   }
 
   getNavbarItems() {
-    // wait for rendering CodeMirrorEditor or TextAreaEditor
-    if (this.getEditorSubstance() == null) {
-      return null;
-    }
-
     // set navbar items(react elements) here that are common in CodeMirrorEditor or TextAreaEditor
     const navbarItems = [];
 
@@ -245,7 +245,7 @@ export default class Editor extends AbstractEditor {
 
           { this.state.dropzoneActive && this.renderDropzoneOverlay() }
 
-          { this.renderNavbar() }
+          { this.state.isComponentDidMount && this.renderNavbar() }
 
           {/* for PC */}
           { !isMobile &&
