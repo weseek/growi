@@ -253,6 +253,7 @@ export default class HandsontableModal extends React.PureComponent {
         this.init(MarkdownTable.fromDSV(data, '\t'));
         break;
     }
+    this.toggleDataImportArea();
   }
 
   expandWindow() {
