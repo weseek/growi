@@ -256,6 +256,7 @@ export default class HandsontableModal extends React.PureComponent {
         this.init(MarkdownTable.fromTableTag(data));
         break;
     }
+    this.toggleDataImportArea();
   }
 
   expandWindow() {
