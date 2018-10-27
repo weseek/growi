@@ -31,7 +31,7 @@ export default class DataImportForm extends React.PureComponent {
                        value={this.state.dataFormat} onChange={e => this.setState({dataFormat: e.target.value})}>
             <option value="csv">CSV</option>
             <option value="tsv">TSV</option>
-            <option value="html">(TBD) HTML</option>
+            <option value="html">HTML</option>
           </FormControl>
         </FormGroup>
         <FormGroup>

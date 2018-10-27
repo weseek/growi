@@ -252,6 +252,9 @@ export default class HandsontableModal extends React.PureComponent {
       case 'tsv':
         this.init(MarkdownTable.fromDSV(data, '\t'));
         break;
+      case 'html':
+        this.init(MarkdownTable.fromTableTag(data));
+        break;
     }
   }
 
