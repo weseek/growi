@@ -1,11 +1,17 @@
 import markdownTable from 'markdown-table';
 import stringWidth from 'string-width';
+import TurndownService from 'turndown';
+import {tables} from 'turndown-plugin-gfm';
 
 // https://github.com/markdown-it/markdown-it/blob/d29f421927e93e88daf75f22089a3e732e195bd2/lib/rules_block/table.js#L83
 // https://regex101.com/r/7BN2fR/7
 const tableAlignmentLineRE = /^[-:|][-:|\s]*$/;
 const tableAlignmentLineNegRE = /^[^-:]*$/;  // it is need to check to ignore empty row which is matched above RE
 const linePartOfTableRE = /^\|[^\r\n]*|[^\r\n]*\|$|([^|\r\n]+\|[^|\r\n]*)+/; // own idea
+
+// set up a TurndownService for parsing html to markdown
+const turndownService = new TurndownService();
+turndownService.use(tables);
 
 /**
  * markdown table class for markdown-table module
@@ -37,8 +43,7 @@ export default class MarkdownTable {
   }
 
   static fromTableTag(str) {
-    // TODO impl
-    return new MarkdownTable();
+    return MarkdownTable.fromMarkdownString(turndownService.turndown(str));
   }
 
   /**
