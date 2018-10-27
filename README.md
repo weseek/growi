@@ -207,6 +207,22 @@ For development
 4. `npm run server` to start the dev server
 5. Access `http://0.0.0.0:3000`
 
+Translation
+--------------
+
+### for GROWI system
+
+We have [the Transifex Project for GROWI](https://www.transifex.com/weseek-inc/growi).  
+Please join to our team!
+
+### for documents
+
+*We have [Gitbook site](https://docs.growi.org), but currently Gitbook doesn't support Multi-langage.*
+https://docs.gitbook.com/v2-changes/important-differences#multi-language-books
+
+*We have to wait until it is implemented.*
+
+
 Found a Bug?
 -------------
 
