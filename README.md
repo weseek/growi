@@ -195,34 +195,6 @@ Documentation
 Contribution
 ============
 
-For development
--------------
-
-### Build and Run the app
-
-1. `clone` this repository
-2. `yarn` to install all dependencies
-    * DO NOT USE `npm install`
-3. `npm run build` to build client app
-4. `npm run server` to start the dev server
-5. Access `http://0.0.0.0:3000`
-
-Translation
---------------
-
-### for GROWI system
-
-We have [the Transifex Project for GROWI](https://www.transifex.com/weseek-inc/growi).  
-Please join to our team!
-
-### for documents
-
-*We have [Gitbook site](https://docs.growi.org), but currently Gitbook doesn't support Multi-langage.*
-https://docs.gitbook.com/v2-changes/important-differences#multi-language-books
-
-*We have to wait until it is implemented.*
-
-
 Found a Bug?
 -------------
 
@@ -240,8 +212,23 @@ Repository. If you would like to *implement* a new feature, firstly please submi
 It also allows us to coordinate better, prevent duplication of work and help you to create the change so it can be successfully accepted into the project.
 * **Small Features** can be created and directly [submitted as a Pull Request][pulls].
 
-Language
----------
+Translation
+--------------
+
+### for GROWI system
+
+We have [the Transifex Project for GROWI](https://www.transifex.com/weseek-inc/growi).  
+Please join to our team!
+
+### for documents
+
+*We have [Gitbook site](https://docs.growi.org), but currently Gitbook doesn't support Multi-langage.*
+https://docs.gitbook.com/v2-changes/important-differences#multi-language-books
+
+*We have to wait until it is implemented.*
+
+Language on GitHub
+------------------
 
 You can write issues and PRs in English or Japanese.
 
