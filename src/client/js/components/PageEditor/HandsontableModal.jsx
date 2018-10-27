@@ -298,7 +298,7 @@ export default class HandsontableModal extends React.PureComponent {
         <Modal.Body className="p-0 d-flex flex-column">
           <div className="px-4 py-3 modal-navbar">
             <Button className="m-r-20 data-import-button" onClick={this.toggleDataImportArea}>
-              (TBD) Data Import<i className={this.state.isDataImportAreaExpanded ? 'fa fa-angle-up' : 'fa fa-angle-down' }></i>
+              Data Import<i className={this.state.isDataImportAreaExpanded ? 'fa fa-angle-up' : 'fa fa-angle-down' }></i>
             </Button>
             <ButtonGroup>
               <Button onClick={() => { this.alignButtonHandler('l') }}><i className="ti-align-left"></i></Button>
@@ -311,7 +311,7 @@ export default class HandsontableModal extends React.PureComponent {
                   <FormGroup>
                     <ControlLabel>Select Data Format</ControlLabel>
                     <FormControl componentClass="select" placeholder="select">
-                      <option value="select">(TBD) CSV</option>
+                      <option value="select">CSV</option>
                       <option value="other">(TBD) TSV</option>
                       <option value="other">(TBD) HTML</option>
                     </FormControl>
@@ -322,7 +322,7 @@ export default class HandsontableModal extends React.PureComponent {
                   </FormGroup>
                   <div className="d-flex justify-content-end">
                     <Button bsStyle="default" onClick={this.toggleDataImportArea}>Cancel</Button>
-                    <Button bsStyle="primary">(TBD) Import</Button>
+                    <Button bsStyle="primary">Import</Button>
                   </div>
                 </form>
               </div>
