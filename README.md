@@ -222,8 +222,8 @@ Please join to our team!
 
 ### for documents
 
-*We have [Gitbook site](https://docs.growi.org), but currently Gitbook doesn't support Multi-langage.*
-https://docs.gitbook.com/v2-changes/important-differences#multi-language-books
+*We have [Gitbook site](https://docs.growi.org), but currently Gitbook doesn't support Multi-langage.*  
+-> https://docs.gitbook.com/v2-changes/important-differences#multi-language-books
 
 *We have to wait until it is implemented.*
 
