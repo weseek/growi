@@ -5,7 +5,7 @@ import ControlLabel from 'react-bootstrap/es/ControlLabel';
 import FormControl from 'react-bootstrap/es/FormControl';
 import Button from 'react-bootstrap/es/Button';
 
-export default class DataImportForm extends React.PureComponent {
+export default class DataImportForm extends React.Component {
 
   constructor(props) {
     super(props);
