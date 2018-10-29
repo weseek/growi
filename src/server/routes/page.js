@@ -311,9 +311,9 @@ module.exports = function(crowi, app) {
       // TODO notfound or forbidden
     }
     else if (page.redirectTo) {
-        debug(`Redirect to '${page.redirectTo}'`);
-        return res.redirect(encodeURI(page.redirectTo + '?redirectFrom=' + pagePathUtils.encodePagePath(page.path)));
-      }
+      debug(`Redirect to '${page.redirectTo}'`);
+      return res.redirect(encodeURI(page.redirectTo + '?redirectFrom=' + pagePathUtils.encodePagePath(page.path)));
+    }
 
     debug('Page found', page._id, page.path);
 
@@ -321,51 +321,51 @@ module.exports = function(crowi, app) {
     page = await page.populateDataToShow(revisionId);
 
     renderVars.page = page;
-      if (page) {
-        renderVars.path = page.path;
-        renderVars.revision = page.revision;
-        renderVars.author = page.revision.author;
-        renderVars.pageIdOnHackmd = page.pageIdOnHackmd;
-        renderVars.revisionHackmdSynced = page.revisionHackmdSynced;
-        renderVars.hasDraftOnHackmd = page.hasDraftOnHackmd;
+    if (page) {
+      renderVars.path = page.path;
+      renderVars.revision = page.revision;
+      renderVars.author = page.revision.author;
+      renderVars.pageIdOnHackmd = page.pageIdOnHackmd;
+      renderVars.revisionHackmdSynced = page.revisionHackmdSynced;
+      renderVars.hasDraftOnHackmd = page.hasDraftOnHackmd;
 
       renderVars.tree = await Revision.findRevisionList(page.path, {});
       renderVars.slack = await getSlackChannels(page);
 
       const userPage = isUserPage(page.path);
-          if (userPage) {
-            // change template
-            view = 'customlayout-selector/user_page';
+      if (userPage) {
+        // change template
+        view = 'customlayout-selector/user_page';
 
         const userData = await User.findUserByUsername(User.getUsernameByPath(page.path));
         if (userData != null) {
-              renderVars.pageUser = userData;
+          renderVars.pageUser = userData;
           renderVars.bookmarkList = await Bookmark.findByUser(userData, {limit: 10, populatePage: true, requestUser: req.user});
           renderVars.createdList = await Page.findListByCreator(userData, {limit: 10}, req.user);
-          }
-      else {
+        }
+        else {
           debug('Error on finding user related entities');
-            }
+        }
       }
 
       const pageList = await Page.findListWithDescendants(path, req.user, queryOptions);
-            if (pageList.length > limit) {
-              pageList.pop();
-            }
+      if (pageList.length > limit) {
+        pageList.pop();
+      }
 
-            pagerOptions.length = pageList.length;
+      pagerOptions.length = pageList.length;
 
-            renderVars.viewConfig = {
-              seener_threshold: SEENER_THRESHOLD,
-            };
-            renderVars.pager = generatePager(pagerOptions);
-            renderVars.pages = pagePathUtils.encodePagesPath(pageList);
+      renderVars.viewConfig = {
+        seener_threshold: SEENER_THRESHOLD,
+      };
+      renderVars.pager = generatePager(pagerOptions);
+      renderVars.pages = pagePathUtils.encodePagesPath(pageList);
 
       await interceptorManager.process('beforeRenderPage', req, res, renderVars);
       // https://weseek.myjetbrains.com/youtrack/issue/GC-1224
       // TODO fetch minimum data if the request is for presentation
       return res.render(req.query.presentation ? 'page_presentation' : view, renderVars);
-      }
+    }
 
     // https://weseek.myjetbrains.com/youtrack/issue/GC-1224
     // TODO render if not found or user is forbidden
@@ -1037,7 +1037,7 @@ module.exports = function(crowi, app) {
    * @apiParam {String} page_id Page Id.
    * @apiParam {String} revision_id
    */
-  api.remove = function(req, res) {
+  api.remove = async function(req, res) {
     const pageId = req.body.page_id;
     const previousRevision = req.body.revision_id || null;
     const socketClientId = req.body.socketClientId || undefined;
@@ -1049,48 +1049,49 @@ module.exports = function(crowi, app) {
 
     const options = {socketClientId};
 
-    Page.findPageByIdAndGrantedUser(pageId, req.user)
-      .then(function(pageData) {
-        debug('Delete page', pageData._id, pageData.path);
+    let page = await Page.findOneByIdAndViewer(pageId, req.user);
 
-        if (isCompletely) {
-          if (isRecursively) {
-            return Page.completelyDeletePageRecursively(pageData, req.user, options);
-          }
-          else {
-            return Page.completelyDeletePage(pageData, req.user, options);
-          }
+    if (page == null) {
+      return res.json(ApiResponse.error('The page does not exist.'));
+    }
+
+    debug('Delete page', page._id, page.path);
+
+    try {
+      if (isCompletely) {
+        if (isRecursively) {
+          page = await Page.completelyDeletePageRecursively(page, req.user, options);
         }
-
-        // else
-
-        if (!pageData.isUpdatable(previousRevision)) {
+        else {
+          page = await Page.completelyDeletePage(page, req.user, options);
+        }
+      }
+      else {
+        if (!page.isUpdatable(previousRevision)) {
           throw new Error('Someone could update this page, so couldn\'t delete.');
         }
 
         if (isRecursively) {
-          return Page.deletePageRecursively(pageData, req.user, options);
+          page = await Page.deletePageRecursively(page, req.user, options);
         }
         else {
-          return Page.deletePage(pageData, req.user, options);
+          page = await Page.deletePage(page, req.user, options);
         }
-      })
-      .then(function(data) {
-        debug('Page deleted', data.path);
-        const result = {};
-        result.page = data;   // TODO consider to use serializeToObj method -- 2018.08.06 Yuki Takei
+      }
+    }
+    catch (err) {
+      logger.error('Error occured while get setting', err, err.stack);
+      return res.json(ApiResponse.error('Failed to delete page.'));
+    }
 
-        res.json(ApiResponse.success(result));
-        return data;
-      })
-      .then((page) => {
-        // global notification
-        return globalNotificationService.notifyPageDelete(page);
-      })
-      .catch(function(err) {
-        logger.error('Error occured while get setting', err, err.stack);
-        return res.json(ApiResponse.error('Failed to delete page.'));
-      });
+    debug('Page deleted', page.path);
+    const result = {};
+    result.page = page;   // TODO consider to use serializeToObj method -- 2018.08.06 Yuki Takei
+
+    res.json(ApiResponse.success(result));
+
+    // global notification
+    return globalNotificationService.notifyPageDelete(page);
   };
 
   /**
