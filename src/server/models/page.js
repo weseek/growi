@@ -1,3 +1,65 @@
+const debug = require('debug')('growi:models:page');
+const mongoose = require('mongoose');
+const uniqueValidator = require('mongoose-unique-validator');
+const ObjectId = mongoose.Schema.Types.ObjectId;
+
+const escapeStringRegexp = require('escape-string-regexp');
+
+const templateChecker = require('@commons/util/template-checker');
+
+/*
+ * define schema
+ */
+const GRANT_PUBLIC = 1
+  , GRANT_RESTRICTED = 2
+  , GRANT_SPECIFIED = 3
+  , GRANT_OWNER = 4
+  , GRANT_USER_GROUP = 5
+  , PAGE_GRANT_ERROR = 1
+
+  , STATUS_PUBLISHED  = 'published'
+  , STATUS_DELETED    = 'deleted'
+;
+const pageSchema = new mongoose.Schema({
+  path: { type: String, required: true, index: true, unique: true },
+  revision: { type: ObjectId, ref: 'Revision' },
+  redirectTo: { type: String, index: true },
+  status: { type: String, default: STATUS_PUBLISHED, index: true },
+  grant: { type: Number, default: GRANT_PUBLIC, index: true },
+  grantedUsers: [{ type: ObjectId, ref: 'User' }],
+  grantedGroup: { type: ObjectId, ref: 'UserGroup', index: true },
+  creator: { type: ObjectId, ref: 'User', index: true },
+  lastUpdateUser: { type: ObjectId, ref: 'User', index: true },
+  liker: [{ type: ObjectId, ref: 'User', index: true }],
+  seenUsers: [{ type: ObjectId, ref: 'User', index: true }],
+  commentCount: { type: Number, default: 0 },
+  extended: {
+    type: String,
+    default: '{}',
+    get: function(data) {
+      try {
+        return JSON.parse(data);
+      }
+      catch (e) {
+        return data;
+      }
+    },
+    set: function(data) {
+      return JSON.stringify(data);
+    }
+  },
+  pageIdOnHackmd: String,
+  revisionHackmdSynced: { type: ObjectId, ref: 'Revision' },  // the revision that is synced to HackMD
+  hasDraftOnHackmd: { type: Boolean },                        // set true if revision and revisionHackmdSynced are same but HackMD document has modified
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: Date
+}, {
+  toJSON: {getters: true},
+  toObject: {getters: true}
+});
+// apply plugins
+pageSchema.plugin(uniqueValidator);
+
 /**
  * The Exception class thrown when the user has no grant to see the page
  *
@@ -11,26 +73,24 @@ class UserHasNoGrantException {
   }
 }
 
+class PageQueryBuilder {
+  constructor(query) {
+    this.query = query;
+  }
+
+  async addConditionToFilteringByViewer(user) {
+    this.query = this.query.or([
+      {grant: null},
+      {grant: GRANT_PUBLIC},
+      {grant: GRANT_RESTRICTED, grantedUsers: user._id},
+      {grant: GRANT_SPECIFIED, grantedUsers: user._id},
+      {grant: GRANT_OWNER, grantedUsers: user._id},
+      {grant: GRANT_USER_GROUP},
+    ]);
+  }
+}
+
 module.exports = function(crowi) {
-  const debug = require('debug')('growi:models:page')
-    , mongoose = require('mongoose')
-    , escapeStringRegexp = require('escape-string-regexp')
-    , templateChecker = require('@commons/util/template-checker')
-    , ObjectId = mongoose.Schema.Types.ObjectId
-    , GRANT_PUBLIC = 1
-    , GRANT_RESTRICTED = 2
-    , GRANT_SPECIFIED = 3
-    , GRANT_OWNER = 4
-    , GRANT_USER_GROUP = 5
-    , PAGE_GRANT_ERROR = 1
-
-    , STATUS_WIP        = 'wip'
-    , STATUS_PUBLISHED  = 'published'
-    , STATUS_DELETED    = 'deleted'
-    , STATUS_DEPRECATED = 'deprecated'
-  ;
-
-  let pageSchema;
   let pageEvent;
 
   // init event
@@ -54,59 +114,8 @@ module.exports = function(crowi) {
     }
   }
 
-  pageSchema = new mongoose.Schema({
-    path: { type: String, required: true, index: true, unique: true },
-    revision: { type: ObjectId, ref: 'Revision' },
-    redirectTo: { type: String, index: true },
-    status: { type: String, default: STATUS_PUBLISHED, index: true },
-    grant: { type: Number, default: GRANT_PUBLIC, index: true },
-    grantedUsers: [{ type: ObjectId, ref: 'User' }],
-    grantedGroup: { type: ObjectId, ref: 'UserGroup', index: true },
-    creator: { type: ObjectId, ref: 'User', index: true },
-    lastUpdateUser: { type: ObjectId, ref: 'User', index: true },
-    liker: [{ type: ObjectId, ref: 'User', index: true }],
-    seenUsers: [{ type: ObjectId, ref: 'User', index: true }],
-    commentCount: { type: Number, default: 0 },
-    extended: {
-      type: String,
-      default: '{}',
-      get: function(data) {
-        try {
-          return JSON.parse(data);
-        }
-        catch (e) {
-          return data;
-        }
-      },
-      set: function(data) {
-        return JSON.stringify(data);
-      }
-    },
-    pageIdOnHackmd: String,
-    revisionHackmdSynced: { type: ObjectId, ref: 'Revision' },  // the revision that is synced to HackMD
-    hasDraftOnHackmd: { type: Boolean },                        // set true if revision and revisionHackmdSynced are same but HackMD document has modified
-    createdAt: { type: Date, default: Date.now },
-    updatedAt: Date
-  }, {
-    toJSON: {getters: true},
-    toObject: {getters: true}
-  });
-
-  pageSchema.methods.isWIP = function() {
-    return this.status === STATUS_WIP;
-  };
-
-  pageSchema.methods.isPublished = function() {
-    // null: this is for B.C.
-    return this.status === null || this.status === STATUS_PUBLISHED;
-  };
-
   pageSchema.methods.isDeleted = function() {
     return this.status === STATUS_DELETED;
-  };
-
-  pageSchema.methods.isDeprecated = function() {
-    return this.status === STATUS_DEPRECATED;
   };
 
   pageSchema.methods.isPublic = function() {
@@ -459,12 +468,7 @@ module.exports = function(crowi) {
   };
 
   pageSchema.statics.findPageById = async function(id) {
-    const page = await this.findOne({_id: id});
-    if (page == null) {
-      throw new Error('Page not found');
-    }
-
-    return this.populatePageData(page, null);
+    return this.findOne({_id: id});
   };
 
   pageSchema.statics.findPageByIdAndGrantedUser = function(id, userData) {
