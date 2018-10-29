@@ -268,36 +268,28 @@ module.exports = function(crowi) {
     });
   };
 
-  pageSchema.statics.populatePageData = function(pageData, revisionId) {
+  pageSchema.methods.populateDataToShow = async function(revisionId) {
     validateCrowi();
 
-    const Page = crowi.model('Page');
     const User = crowi.model('User');
 
-    pageData.latestRevision = pageData.revision;
-    if (revisionId) {
-      pageData.revision = revisionId;
+    this.latestRevision = this.revision;
+    if (revisionId != null) {
+      this.revision = revisionId;
     }
-    pageData.likerCount = pageData.liker.length || 0;
-    pageData.seenUsersCount = pageData.seenUsers.length || 0;
+    this.likerCount = this.liker.length || 0;
+    this.seenUsersCount = this.seenUsers.length || 0;
 
-    return new Promise(function(resolve, reject) {
-      pageData.populate([
+    return this
+      .execPopulate([
         {path: 'lastUpdateUser', model: 'User', select: User.USER_PUBLIC_FIELDS},
         {path: 'creator', model: 'User', select: User.USER_PUBLIC_FIELDS},
-        {path: 'revision', model: 'Revision'},
+        {path: 'revision', model: 'Revision', populate: {
+          path: 'author', model: 'User', select: User.USER_PUBLIC_FIELDS
+        }},
         //{path: 'liker', options: { limit: 11 }},
         //{path: 'seenUsers', options: { limit: 11 }},
-      ], function(err, pageData) {
-        Page.populate(pageData, {path: 'revision.author', model: 'User', select: User.USER_PUBLIC_FIELDS}, function(err, data) {
-          if (err) {
-            return reject(err);
-          }
-
-          return resolve(data);
-        });
-      });
-    });
+      ]);
   };
 
   // TODO abolish or migrate
@@ -488,38 +480,6 @@ module.exports = function(crowi) {
     return await queryBuilder.query.exec();
   };
 
-  // find page and check if granted user
-  pageSchema.statics.findPage = async function(path, userData, revisionId, ignoreNotFound) {
-    validateCrowi();
-
-    const PageGroupRelation = crowi.model('PageGroupRelation');
-
-    const pageData = await this.findOne({path: path});
-
-    if (pageData == null) {
-      if (ignoreNotFound) {
-        return null;
-      }
-
-      const pageNotFoundError = new Error('Page Not Found');
-      pageNotFoundError.name = 'Crowi:Page:NotFound';
-      throw new Error(pageNotFoundError);
-    }
-
-    if (!pageData.isGrantedFor(userData)) {
-      const isRelationExists = await PageGroupRelation.isExistsGrantedGroupForPageAndUser(pageData, userData);
-      if (isRelationExists) {
-        return await this.populatePageData(pageData, revisionId || null);
-      }
-      else {
-        throw new UserHasNoGrantException('Page is not granted for the user', userData);
-      }
-    }
-    else {
-      return await this.populatePageData(pageData, revisionId || null);
-    }
-  };
-
   /**
    * find all templates applicable to the new page
    */
@@ -606,6 +566,28 @@ module.exports = function(crowi) {
       return null;
     }
     return this.findOne({path});
+  };
+
+  pageSchema.statics.findPageByPathAndViewer = async function(path, user) {
+    validateCrowi();
+
+    if (path == null) {
+      throw new Error('path is required.');
+    }
+
+    // const Page = this;
+    const baseQuery = this.findOne({path});
+
+    const UserGroupRelation = crowi.model('UserGroupRelation');
+    let userGroups = [];
+    if (user != null) {
+      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
+    }
+
+    const queryBuilder = new PageQueryBuilder(baseQuery);
+    queryBuilder.addConditionToFilteringByViewer(user, userGroups);
+
+    return await queryBuilder.query.exec();
   };
 
   pageSchema.statics.findListByPageIds = function(ids, options) {

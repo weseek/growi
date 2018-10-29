@@ -268,8 +268,9 @@ module.exports = function(crowi, app) {
     return res.redirect(path);
   };
 
-  actions.pageShowForCrowiPlus = function(req, res) {
+  actions.pageShowForCrowiPlus = async function(req, res) {
     const path = getPathFromRequest(req);
+    const revisionId = req.query.revision;
 
     const limit = 50;
     const offset = parseInt(req.query.offset)  || 0;
@@ -303,20 +304,23 @@ module.exports = function(crowi, app) {
 
     let view = 'customlayout-selector/page';
 
-    let isRedirect = false;
-    Page.findPage(path, req.user, req.query.revision)
-    .then(function(page) {
-      debug('Page found', page._id, page.path);
+    let page = await Page.findPageByPathAndViewer(path, req.user);
 
-      // redirect
-      if (page.redirectTo) {
+    if (page == null) {
+      // https://weseek.myjetbrains.com/youtrack/issue/GC-1224
+      // TODO notfound or forbidden
+    }
+    else if (page.redirectTo) {
         debug(`Redirect to '${page.redirectTo}'`);
-        isRedirect = true;
         return res.redirect(encodeURI(page.redirectTo + '?redirectFrom=' + pagePathUtils.encodePagePath(page.path)));
       }
 
-      renderVars.page = page;
+    debug('Page found', page._id, page.path);
 
+    // populate
+    page = await page.populateDataToShow(revisionId);
+
+    renderVars.page = page;
       if (page) {
         renderVars.path = page.path;
         renderVars.revision = page.revision;
@@ -325,86 +329,26 @@ module.exports = function(crowi, app) {
         renderVars.revisionHackmdSynced = page.revisionHackmdSynced;
         renderVars.hasDraftOnHackmd = page.hasDraftOnHackmd;
 
-        return Revision.findRevisionList(page.path, {})
-        .then(function(tree) {
-          renderVars.tree = tree;
-        })
-        .then(() => {
-          return PageGroupRelation.findByPage(renderVars.page);
-        })
-        .then((pageGroupRelation) => {
-          if (pageGroupRelation != null) {
-            renderVars.pageRelatedGroup = pageGroupRelation.relatedGroup;
-          }
-        })
-        .then(() => {
-          return getSlackChannels(page);
-        })
-        .then((channels) => {
-          renderVars.slack = channels;
-        })
-        .then(function() {
-          const userPage = isUserPage(page.path);
-          let userData = null;
+      renderVars.tree = await Revision.findRevisionList(page.path, {});
+      renderVars.slack = await getSlackChannels(page);
 
+      const userPage = isUserPage(page.path);
           if (userPage) {
             // change template
             view = 'customlayout-selector/user_page';
 
-            return User.findUserByUsername(User.getUsernameByPath(page.path))
-            .then(function(data) {
-              if (data === null) {
-                throw new Error('The user not found.');
-              }
-              userData = data;
+        const userData = await User.findUserByUsername(User.getUsernameByPath(page.path));
+        if (userData != null) {
               renderVars.pageUser = userData;
-
-              return Bookmark.findByUser(userData, {limit: 10, populatePage: true, requestUser: req.user});
-            }).then(function(bookmarkList) {
-              renderVars.bookmarkList = bookmarkList;
-
-              return Page.findListByCreator(userData, {limit: 10}, req.user);
-            }).then(function(createdList) {
-              renderVars.createdList = createdList;
-              return Promise.resolve();
-            }).catch(function(err) {
-              debug('Error on finding user related entities', err);
-              // pass
-            });
+          renderVars.bookmarkList = await Bookmark.findByUser(userData, {limit: 10, populatePage: true, requestUser: req.user});
+          renderVars.createdList = await Page.findListByCreator(userData, {limit: 10}, req.user);
           }
-        });
-      }
-    })
-    // page is not found or user is forbidden
-    .catch(function(err) {
-      let isForbidden = false;
-      if (err.name === 'UserHasNoGrantException') {
-        isForbidden = true;
-      }
-
-      if (isForbidden) {
-        view = 'customlayout-selector/forbidden';
-        return;
-      }
       else {
-        view = 'customlayout-selector/not_found';
-
-        // look for templates
-        return Page.findTemplate(path)
-          .then(template => {
-            if (template) {
-              template = replacePlaceholders(template, req);
+          debug('Error on finding user related entities');
             }
-
-            renderVars.template = template;
-          });
       }
-    })
-    // get list pages
-    .then(function() {
-      if (!isRedirect) {
-        Page.findListWithDescendants(path, req.user, queryOptions)
-          .then(function(pageList) {
+
+      const pageList = await Page.findListWithDescendants(path, req.user, queryOptions);
             if (pageList.length > limit) {
               pageList.pop();
             }
@@ -417,19 +361,37 @@ module.exports = function(crowi, app) {
             renderVars.pager = generatePager(pagerOptions);
             renderVars.pages = pagePathUtils.encodePagesPath(pageList);
 
-            return;
-          })
-          .then(function() {
-            return interceptorManager.process('beforeRenderPage', req, res, renderVars);
-          })
-          .then(function() {
-            res.render(req.query.presentation ? 'page_presentation' : view, renderVars);
-          })
-          .catch(function(err) {
-            logger.error('Error on rendering pageListShowForCrowiPlus', err);
-          });
+      await interceptorManager.process('beforeRenderPage', req, res, renderVars);
+      // https://weseek.myjetbrains.com/youtrack/issue/GC-1224
+      // TODO fetch minimum data if the request is for presentation
+      return res.render(req.query.presentation ? 'page_presentation' : view, renderVars);
       }
-    });
+
+    // https://weseek.myjetbrains.com/youtrack/issue/GC-1224
+    // TODO render if not found or user is forbidden
+
+    // let isForbidden = false;
+    // if (err.name === 'UserHasNoGrantException') {
+    //   isForbidden = true;
+    // }
+
+    // if (isForbidden) {
+    //   view = 'customlayout-selector/forbidden';
+    //   return;
+    // }
+    // else {
+    //   view = 'customlayout-selector/not_found';
+
+    //   // look for templates
+    //   return Page.findTemplate(path)
+    //     .then(template => {
+    //       if (template) {
+    //         template = replacePlaceholders(template, req);
+    //       }
+
+    //       renderVars.template = template;
+    //     });
+    // }
   };
 
   const getSlackChannels = async page => {
