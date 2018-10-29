@@ -166,6 +166,10 @@ body.on-edit {
         }
       }
 
+      .navbar-editor {
+        border-bottom: 1px solid transparent;
+      }
+
       // add icon on cursor
       .autoformat-markdown-table-activated .CodeMirror-cursor {
         &:after {

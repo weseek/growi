@@ -223,14 +223,18 @@ module.exports = function(crowi) {
     return this.updateGoogleId(null, callback);
   };
 
-  userSchema.methods.activateInvitedUser = function(username, name, password, callback) {
+  userSchema.methods.activateInvitedUser = async function(username, name, password) {
     this.setPassword(password);
     this.name = name;
     this.username = username;
     this.status = STATUS_ACTIVE;
+
     this.save(function(err, userData) {
       userEvent.emit('activated', userData);
-      return callback(err, userData);
+      if (err) {
+        throw new Error(err);
+      }
+      return userData;
     });
   };
 
@@ -422,16 +426,16 @@ module.exports = function(crowi) {
       });
   };
 
-  userSchema.statics.findUsersWithPagination = function(options, callback) {
+  userSchema.statics.findUsersWithPagination = async function(options) {
     var sort = options.sort || {status: 1, username: 1, createdAt: 1};
 
-    this.paginate({status: { $ne: STATUS_DELETED }}, { page: options.page || 1, limit: options.limit || PAGE_ITEMS }, function(err, result) {
+    return await this.paginate({status: { $ne: STATUS_DELETED }}, { page: options.page || 1, limit: options.limit || PAGE_ITEMS }, function(err, result) {
       if (err) {
         debug('Error on pagination:', err);
-        return callback(err, null);
+        throw new Error(err);
       }
 
-      return callback(err, result);
+      return result;
     }, { sortBy: sort });
   };
 
@@ -501,16 +505,38 @@ module.exports = function(crowi) {
     });
   };
 
-  userSchema.statics.isRegisterableUsername = function(username, callback) {
+  userSchema.statics.isUserCountExceedsUpperLimit = async function() {
+    const Config = crowi.model('Config');
+    const userUpperLimit = Config.userUpperLimit(crowi);
+    if (userUpperLimit === 0) {
+      return false;
+    }
+
+    const activeUsers = await this.countListByStatus(STATUS_ACTIVE);
+    if (userUpperLimit !== 0 && userUpperLimit <= activeUsers) {
+      return true;
+    }
+
+    return false;
+  };
+
+  userSchema.statics.countListByStatus = async function(status) {
+    const User = this;
+    const conditions = {status: status};
+
+    // TODO count は非推奨。mongoose のバージョンアップ後に countDocuments に変更する。
+    return User.count(conditions);
+  };
+
+  userSchema.statics.isRegisterableUsername = async function(username) {
     var User = this;
     var usernameUsable = true;
 
-    this.findOne({username: username}, function(err, userData) {
-      if (userData) {
-        usernameUsable = false;
-      }
-      return callback(usernameUsable);
-    });
+    const userData = await this.findOne({username: username});
+    if (userData) {
+      usernameUsable = false;
+    }
+    return usernameUsable;
   };
 
   userSchema.statics.isRegisterable = function(email, username, callback) {
@@ -701,6 +727,13 @@ module.exports = function(crowi) {
     const User = this
       , newUser = new User();
 
+    // check user upper limit
+    const isUserCountExceedsUpperLimit = await User.isUserCountExceedsUpperLimit();
+    if (isUserCountExceedsUpperLimit) {
+      const err = new UserUpperLimitException();
+      return callback(err);
+    }
+
     // check email duplication because email must be unique
     const count = await this.count({ email });
     if (count > 0) {
@@ -773,6 +806,11 @@ module.exports = function(crowi) {
     return username;
   };
 
+  class UserUpperLimitException {
+    constructor() {
+      this.name = this.constructor.name;
+    }
+  }
 
   userSchema.statics.STATUS_REGISTERED  = STATUS_REGISTERED;
   userSchema.statics.STATUS_ACTIVE      = STATUS_ACTIVE;
