@@ -6,8 +6,11 @@ module.exports = function(crowi) {
   var debug = require('debug')('growi:service:fileUploaderLocal')
   var mongoose = require('mongoose');
   var path = require('path');
+  var fs = require('fs');
   var lib = {};
   var AttachmentFile = {};
+  const express = require('express');
+  const router = express.Router();
 
   // instantiate mongoose-gridfs
   var gridfs = require('mongoose-gridfs')({
@@ -41,16 +44,63 @@ module.exports = function(crowi) {
       });
   };
 
-  // lib.findDeliveryFile = async function(fileId, filePath) {
-  // };
+  lib.findDeliveryFile = function(fileId, filePath) {
+    const cacheFile = lib.createCacheFileName(fileId);
 
-  lib.generateUrl = async function(filePath) {
-    crowi.apiGet('/attachments.get', {
-      attachment_path: filePath
-    })
-    .then((res) => {
-      return res;
-    };
+    debug('find delivery file', cacheFile);
+    if (!lib.shouldUpdateCacheFile(cacheFile)) {
+      return cacheFile;
+    }
+
+    const loader = require('https');
+
+    const fileStream = fs.createWriteStream(cacheFile);
+    const fileUrl = lib.generateUrl(filePath);
+    debug('Load attachement file into local cache file', fileUrl, cacheFile);
+    loader.get(fileUrl, function(response) {
+      response.pipe(fileStream, {
+        end: false
+      });
+      response.on('end', () => {
+        fileStream.end();
+        return cacheFile;
+      });
+    });
+  };
+
+  // private
+  lib.createCacheFileName = function(fileId) {
+    return path.join(crowi.cacheDir, `attachment-${fileId}`);
+  };
+
+  // private
+  lib.shouldUpdateCacheFile = function(filePath) {
+    try {
+      const stats = fs.statSync(filePath);
+
+      if (!stats.isFile()) {
+        debug('Cache file not found or the file is not a regular fil.');
+        return true;
+      }
+
+      if (stats.size <= 0) {
+        debug('Cache file found but the size is 0');
+        return true;
+      }
+    }
+    catch (e) {
+      // no such file or directory
+      debug('Stats error', e);
+      return true;
+    }
+
+    return false;
+  };
+
+
+  lib.generateUrl = function(filePath) {
+    const url = '';
+    return url;
   };
 
   return lib;

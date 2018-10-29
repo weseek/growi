@@ -68,9 +68,8 @@ module.exports = function(crowi, app) {
    */
   api.get = function(req, res) {
     const filePath = "attachment/5ba1b857275c752f20b7204b/1495bb6b10a2b062ac9cc9bde306957a.png";
-    AttachmentFile.find({filename: filePath}, function(file) {
-      // const id = file._id;
-      console.log(file[0]._id);
+    const id = AttachmentFile.find({filename: filePath}, function(file) {
+      return file._id;
     });
 
     const stream = AttachmentFile.readById(id);
@@ -83,7 +82,6 @@ module.exports = function(crowi, app) {
     stream.on('close', function() {
       debug('GridFS readstream closed');
     });
-    // });
   };
 
   /**
