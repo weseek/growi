@@ -208,7 +208,7 @@ module.exports = function(crowi, app) {
   app.post('/_api/bookmarks.remove'   , accessTokenParser , loginRequired(crowi, app) , csrf, bookmark.api.remove);
   app.post('/_api/likes.add'          , accessTokenParser , loginRequired(crowi, app) , csrf, page.api.like);
   app.post('/_api/likes.remove'       , accessTokenParser , loginRequired(crowi, app) , csrf, page.api.unlike);
-  app.get( '/_api/attachments.get'    , accessTokenParser , loginRequired(crowi, app, false) , attachment.api.get);
+  app.get( '/_api/attachments.getMongo'  , accessTokenParser , loginRequired(crowi, app, false) , attachment.api.getMongoFile);
   app.get( '/_api/attachments.list'   , accessTokenParser , loginRequired(crowi, app, false) , attachment.api.list);
   app.post('/_api/attachments.add'    , uploads.single('file'), accessTokenParser, loginRequired(crowi, app) ,csrf, attachment.api.add);
   app.post('/_api/attachments.remove' , accessTokenParser , loginRequired(crowi, app) , csrf, attachment.api.remove);

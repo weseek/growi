@@ -52,7 +52,6 @@ module.exports = function(crowi) {
         }
         return resolve(data);
       });
-
     });
   };
 

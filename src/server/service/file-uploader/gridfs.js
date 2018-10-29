@@ -99,7 +99,7 @@ module.exports = function(crowi) {
 
 
   lib.generateUrl = function(filePath) {
-    const url = '';
+    const url = 'http://localhost:3000/_api/attachments.getMongo';
     return url;
   };
 

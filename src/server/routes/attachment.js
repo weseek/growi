@@ -66,11 +66,15 @@ module.exports = function(crowi, app) {
    *
    * @apiParam {String} attachment_path
    */
-  api.get = function(req, res) {
-    const filePath = "attachment/5ba1b857275c752f20b7204b/1495bb6b10a2b062ac9cc9bde306957a.png";
-    const id = AttachmentFile.find({filename: filePath}, function(file) {
-      return file._id;
+  api.getMongoFile = async function(req, res) {
+    const filePath = req.filePath;
+    const file = await AttachmentFile.find({filename: filePath}, function(err, file) {
+      if (err) {
+        throw new Error(err);
+      }
     });
+    const id = file[0].id;
+
 
     const stream = AttachmentFile.readById(id);
     stream.on('error', function(error) {
