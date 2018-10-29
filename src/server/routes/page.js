@@ -698,32 +698,23 @@ module.exports = function(crowi, app) {
     });
   };
 
-
-  const api = actions.api = {};
-
   /**
    * redirector
    */
-  api.redirector = function(req, res) {
+  actions.redirector = async function(req, res) {
     const id = req.params.id;
 
-    // TODO use findPageByIdAndGrantedUser
-    // https://weseek.myjetbrains.com/youtrack/issue/GC-1224
-    Page.findPageById(id)
-    .then(function(pageData) {
+    const page = await Page.findOneByIdAndViewer(id, req.user);
 
-      if (pageData.grant == Page.GRANT_RESTRICTED && !pageData.isGrantedFor(req.user)) {
-        return Page.pushToGrantedUsers(pageData, req.user);
-      }
-
-      return Promise.resolve(pageData);
-    }).then(function(page) {
-
+    if (page != null) {
       return res.redirect(pagePathUtils.encodePagePath(page.path));
-    }).catch(function(err) {
-      return res.redirect('/');
-    });
+    }
+
+    return res.redirect('/');
   };
+
+
+  const api = actions.api = {};
 
   /**
    * @api {get} /pages.list List pages by user
@@ -864,7 +855,7 @@ module.exports = function(crowi, app) {
     }
 
     let previousRevision = undefined;
-    let updatedPage = await Page.findPageByIdAndGrantedUser(pageId, req.user)
+    let updatedPage = await Page.findOneByIdAndViewer(pageId, req.user)
       .then(function(pageData) {
         if (pageData && revisionId !== null && !pageData.isUpdatable(revisionId)) {
           throw new Error('Posted param "revisionId" is outdated.');

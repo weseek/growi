@@ -78,15 +78,17 @@ class PageQueryBuilder {
     this.query = query;
   }
 
-  async addConditionToFilteringByViewer(user) {
+  addConditionToFilteringByViewer(user, userGroups) {
     this.query = this.query.or([
       {grant: null},
       {grant: GRANT_PUBLIC},
       {grant: GRANT_RESTRICTED, grantedUsers: user._id},
       {grant: GRANT_SPECIFIED, grantedUsers: user._id},
       {grant: GRANT_OWNER, grantedUsers: user._id},
-      {grant: GRANT_USER_GROUP},
+      {grant: GRANT_USER_GROUP, grantedGroup: { $in: userGroups }},
     ]);
+
+    return this;
   }
 }
 
@@ -467,39 +469,36 @@ module.exports = function(crowi) {
     });
   };
 
-  pageSchema.statics.findPageById = async function(id) {
+  // https://weseek.myjetbrains.com/youtrack/issue/GC-1224
+  // remove populate
+  pageSchema.statics.findOneById = async function(id) {
     return this.findOne({_id: id});
   };
 
-  pageSchema.statics.findPageByIdAndGrantedUser = function(id, userData) {
+  /**
+   * @param {string} id ObjectId
+   * @param {User} user User instance
+   */
+  // https://weseek.myjetbrains.com/youtrack/issue/GC-1224
+  //
+  // TODO check whether NotFound or Forbidden in router
+  // org: findPageByIdAndGrantedUser
+  pageSchema.statics.findOneByIdAndViewer = async function(id, user) {
     validateCrowi();
 
-    const Page = this;
-    const PageGroupRelation = crowi.model('PageGroupRelation');
-    let pageData = null;
+    // const Page = this;
+    const baseQuery = this.findOne({_id: id});
 
-    return new Promise(function(resolve, reject) {
-      Page.findPageById(id)
-      .then(function(result) {
-        pageData = result;
-        if (userData && !pageData.isGrantedFor(userData)) {
-          return PageGroupRelation.isExistsGrantedGroupForPageAndUser(pageData, userData);
-        }
-        else {
-          return true;
-        }
-      }).then((checkResult) => {
-        console.log(checkResult);
-        if (checkResult) {
-          return resolve(pageData);
-        }
-        else  {
-          return reject(new Error('Page is not granted for the user')); //PAGE_GRANT_ERROR, null);
-        }
-      }).catch(function(err) {
-        return reject(err);
-      });
-    });
+    const UserGroupRelation = crowi.model('UserGroupRelation');
+    let userGroups = [];
+    if (user != null) {
+      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
+    }
+
+    const queryBuilder = new PageQueryBuilder(baseQuery);
+    queryBuilder.addConditionToFilteringByViewer(user, userGroups);
+
+    return await queryBuilder.query.exec();
   };
 
   // find page and check if granted user
@@ -895,63 +894,6 @@ module.exports = function(crowi) {
     });
   };
 
-  pageSchema.statics.updateGrant = function(page, grant, userData, grantUserGroupId) {
-    var Page = this;
-
-    return new Promise(function(resolve, reject) {
-      if (grant == GRANT_USER_GROUP && grantUserGroupId == null) {
-        reject('grant userGroupId is not specified');
-      }
-
-      page.grant = grant;
-      if (grant == GRANT_PUBLIC || grant == GRANT_USER_GROUP) {
-        page.grantedUsers = [];
-      }
-      else {
-        page.grantedUsers = [];
-        page.grantedUsers.push(userData._id);
-      }
-
-      page.save(function(err, data) {
-        debug('Page.updateGrant, saved grantedUsers.', err, data);
-        if (err) {
-          return reject(err);
-        }
-
-        Page.updateGrantUserGroup(page, grant, grantUserGroupId, userData)
-        .then(() => {
-          return resolve(data);
-        });
-      });
-    });
-  };
-
-  pageSchema.statics.updateGrantUserGroup = function(page, grant, grantUserGroupId, userData) {
-    validateCrowi();
-
-    const UserGroupRelation = crowi.model('UserGroupRelation');
-    const PageGroupRelation = crowi.model('PageGroupRelation');
-
-    // グループの場合
-    if (grant == GRANT_USER_GROUP) {
-      debug('grant is usergroup', grantUserGroupId);
-      return UserGroupRelation.findByGroupIdAndUser(grantUserGroupId, userData)
-      .then((relation) => {
-        if (relation == null) {
-          return new Error('no relations were exist for group and user.');
-        }
-        return PageGroupRelation.findOrCreateRelationForPageAndGroup(page, relation.relatedGroup);
-      })
-      .catch((err) => {
-        return new Error('No UserGroup is exists. userGroupId : ', grantUserGroupId);
-      });
-    }
-    else {
-      return PageGroupRelation.removeAllByPage(page);
-    }
-
-  };
-
   // Instance method でいいのでは
   pageSchema.statics.pushToGrantedUsers = function(page, userData) {
 
@@ -969,7 +911,7 @@ module.exports = function(crowi) {
     });
   };
 
-  pageSchema.statics.pushRevision = async function(pageData, newRevision, user) {
+  async function pushRevision(pageData, newRevision, user, grant, grantUserGroupId) {
     await newRevision.save();
     debug('Successfully saved new revision', newRevision);
 
@@ -978,7 +920,31 @@ module.exports = function(crowi) {
     pageData.updatedAt = Date.now();
 
     return pageData.save();
-  };
+  }
+
+  async function applyGrant(page, user, grant, grantUserGroupId) {
+    if (grant == GRANT_USER_GROUP && grantUserGroupId == null) {
+      throw new Error('grant userGroupId is not specified');
+    }
+
+    page.grant = grant;
+    if (grant == GRANT_PUBLIC || grant == GRANT_USER_GROUP) {
+      page.grantedUsers = [];
+    }
+    else {
+      page.grantedUsers = [];
+      page.grantedUsers.push(user._id);
+    }
+
+    if (grant == GRANT_USER_GROUP) {
+      const UserGroupRelation = crowi.model('UserGroupRelation');
+      const count = await UserGroupRelation.countByGroupIdAndUser(grantUserGroupId, user);
+
+      if (count === 0) {
+        throw new Error('no relations were exist for group and user.');
+      }
+    }
+  }
 
   pageSchema.statics.create = function(path, body, user, options = {}) {
     validateCrowi();
@@ -1015,10 +981,8 @@ module.exports = function(crowi) {
         newPage.createdAt = Date.now();
         newPage.updatedAt = Date.now();
         newPage.redirectTo = redirectTo;
-        newPage.grant = grant;
         newPage.status = STATUS_PUBLISHED;
-        newPage.grantedUsers = [];
-        newPage.grantedUsers.push(user);
+        applyGrant(newPage, user, grant, grantUserGroupId);
 
         return newPage.save();
       })
@@ -1027,10 +991,7 @@ module.exports = function(crowi) {
       })
       .then(() => {
         const newRevision = Revision.prepareRevision(savedPage, body, user, {format: format});
-        return Page.pushRevision(savedPage, newRevision, user);
-      })
-      .then(() => {
-        return Page.updateGrantUserGroup(savedPage, grant, grantUserGroupId, user);
+        return pushRevision(savedPage, newRevision, user);
       })
       .then(() => {
         if (socketClientId != null) {
@@ -1052,14 +1013,11 @@ module.exports = function(crowi) {
       ;
 
     // update existing page
+    applyGrant(pageData, user, grant, grantUserGroupId);
+    let savedPage = await pageData.save();
     const newRevision = await Revision.prepareRevision(pageData, body, user);
-
-    const revision = await Page.pushRevision(pageData, newRevision, user);
-    let savedPage = await Page.findPageByPath(revision.path).populate('revision').populate('creator');
-    if (grant != null) {
-      const grantData = await Page.updateGrant(savedPage, grant, user, grantUserGroupId);
-      debug('Page grant update:', grantData);
-    }
+    const revision = await pushRevision(savedPage, newRevision, user, grant, grantUserGroupId);
+    savedPage = await Page.findPageByPath(revision.path).populate('revision').populate('creator');
 
     if (isSyncRevisionToHackmd) {
       savedPage = await Page.syncRevisionToHackmd(savedPage);

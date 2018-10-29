@@ -173,8 +173,8 @@ module.exports = function(crowi, app) {
   app.post('/me/auth/google'          , loginRequired(crowi, app) , me.authGoogle);
   app.get( '/me/auth/google/callback' , loginRequired(crowi, app) , me.authGoogleCallback);
 
-  app.get( '/:id([0-9a-z]{24})'       , loginRequired(crowi, app, false) , page.api.redirector);
-  app.get( '/_r/:id([0-9a-z]{24})'    , loginRequired(crowi, app, false) , page.api.redirector); // alias
+  app.get( '/:id([0-9a-z]{24})'       , loginRequired(crowi, app, false) , page.redirector);
+  app.get( '/_r/:id([0-9a-z]{24})'    , loginRequired(crowi, app, false) , page.redirector); // alias
   app.get( '/download/:id([0-9a-z]{24})' , loginRequired(crowi, app, false) , attachment.api.download);
 
   app.get( '/_search'                 , loginRequired(crowi, app, false) , search.searchPage);

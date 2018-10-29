@@ -135,12 +135,12 @@ class UserGroupRelation {
    * @param {User} user
    * @returns {Promise<ObjectId[]>}
    */
-  static findAllUserGroupIdsRelatedToUser(user) {
-    return this
-      .find({ relatedUser: user.id })
-      .map(relation => {
-        return relation.relatedGroup._id;
-      });
+  static async findAllUserGroupIdsRelatedToUser(user) {
+    const relations = await this.find({ relatedUser: user.id })
+      .select('relatedGroup')
+      .exec();
+
+    return relations.map(relation => relation.relatedGroup);
   }
 
   /**
@@ -171,25 +171,20 @@ class UserGroupRelation {
   }
 
   /**
-   * find one result by related group id and related user
+   * count by related group id and related user
    *
    * @static
    * @param {string} userGroupId find query param for relatedGroup
    * @param {User} userData find query param for relatedUser
-   * @returns {Promise<UserGroupRelation>}
-   * @memberof UserGroupRelation
+   * @returns {Promise<number>}
    */
-  static findByGroupIdAndUser(userGroupId, userData) {
+  static async countByGroupIdAndUser(userGroupId, userData) {
     const query = {
       relatedGroup: userGroupId,
       relatedUser: userData.id
     };
 
-    return this
-      .findOne(query)
-      .populate('relatedUser')
-      .populate('relatedGroup')
-      .exec();
+    return this.count(query);
   }
 
   /**
