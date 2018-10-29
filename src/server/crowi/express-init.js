@@ -113,7 +113,7 @@ module.exports = function(crowi, app) {
     //   healthcheck endpoint exclude from basic authentication.
     //   however, hard coding is not desirable.
     //   need refactoring (ex. setting basic authentication for each routes)
-    if (req.originalUrl === '/_api/v3/healthcheck') {
+    if (req.path === '/_api/v3/healthcheck') {
       return next();
     }
 
