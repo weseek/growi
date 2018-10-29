@@ -85,9 +85,14 @@
 .main-container .main .content-main .revision-history { // {{{
 
   .revision-history-list {
-    .revision-hisory-outer {
+    .revision-history-outer {
+      // add border-top except of first element
+      &:not(:first-of-type) {
+        border-top: 1px solid $border;
+      }
+
       .revision-history-main {
-        .picture {
+        .picture-lg {
           width: 32px;
           height: 32px;
         }
@@ -106,6 +111,12 @@
           }
         }
       }
+      .revision-history-main-nodiff {
+        .picture-container {
+          min-width: 32px;
+          text-align: center; // centering .picture
+        }
+      }
       .revision-history-diff {
         padding-left: 40px;
       }
@@ -114,6 +125,12 @@
     li {
       position: relative;
       list-style: none;
+    }
+  }
+  // compacted list
+  .revision-history-list-compact {
+    .revision-history-outer-contiguous-nodiff {
+      border-top: unset !important; // force unset border
     }
   }
 

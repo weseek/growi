@@ -4379,15 +4379,15 @@ i18next-browser-languagedetector@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/i18next-browser-languagedetector/-/i18next-browser-languagedetector-2.2.0.tgz#5f41abe61964a56dce70102ab31c3ed5d5866edc"
 
-i18next-express-middleware@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/i18next-express-middleware/-/i18next-express-middleware-1.1.1.tgz#9204f28c8800ac3bff87fbee01945367956f349c"
+i18next-express-middleware@^1.4.1:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/i18next-express-middleware/-/i18next-express-middleware-1.4.1.tgz#273c4a490ad688ce246815ce1288689c63fa7de1"
   dependencies:
     cookies "0.7.1"
 
-i18next-node-fs-backend@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/i18next-node-fs-backend/-/i18next-node-fs-backend-2.0.0.tgz#ea0fc2c38523bdf8da24be00b73e3ad36ce907e3"
+i18next-node-fs-backend@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/i18next-node-fs-backend/-/i18next-node-fs-backend-2.1.0.tgz#b0ad55eb8671b4dedbd21fe434fb50e964a4ece2"
   dependencies:
     js-yaml "3.12.0"
     json5 "2.0.0"
@@ -4396,9 +4396,9 @@ i18next-sprintf-postprocessor@^0.2.2:
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/i18next-sprintf-postprocessor/-/i18next-sprintf-postprocessor-0.2.2.tgz#2e409f1043579382698b6a2da70cdaa551d67ea4"
 
-i18next@^11.1.1:
-  version "11.1.1"
-  resolved "https://registry.yarnpkg.com/i18next/-/i18next-11.1.1.tgz#df3a683542d7756a8aa8d6b884b61141239c394a"
+i18next@^12.0.0:
+  version "12.0.0"
+  resolved "https://registry.yarnpkg.com/i18next/-/i18next-12.0.0.tgz#27c1494219dde0451a8d714d5bfc19bf055d51bb"
 
 iconv-lite@0.4.19, iconv-lite@^0.4.17, iconv-lite@~0.4.13:
   version "0.4.19"

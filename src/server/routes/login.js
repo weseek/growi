@@ -188,7 +188,12 @@ module.exports = function(crowi, app) {
 
         User.createUserByEmailAndPassword(name, username, email, password, lang, function(err, userData) {
           if (err) {
-            req.flash('registerWarningMessage', 'Failed to register.');
+            if (err.name === 'UserUpperLimitException') {
+              req.flash('registerWarningMessage', 'Can not register more than the maximum number of users.');
+            }
+            else {
+              req.flash('registerWarningMessage', 'Failed to register.');
+            }
             return res.redirect('/register');
           }
           else {
@@ -328,7 +333,7 @@ module.exports = function(crowi, app) {
     });
   };
 
-  actions.invited = function(req, res) {
+  actions.invited = async function(req, res) {
     if (!req.user) {
       return res.redirect('/login');
     }
@@ -340,24 +345,29 @@ module.exports = function(crowi, app) {
       var name = invitedForm.name;
       var password = invitedForm.password;
 
-      User.isRegisterableUsername(username, function(creatable) {
-        if (creatable) {
-          user.activateInvitedUser(username, name, password, function(err, data) {
-            if (err) {
-              req.flash('warningMessage', 'アクティベートに失敗しました。');
-              return res.render('invited');
-            }
-            else {
-              return res.redirect('/');
-            }
-          });
+      // check user upper limit
+      const isUserCountExceedsUpperLimit = await User.isUserCountExceedsUpperLimit();
+      if (isUserCountExceedsUpperLimit) {
+        req.flash('warningMessage', 'ユーザーが上限に達したためアクティベートできません。');
+        return res.redirect('/invited');
+      }
+
+      const creatable = await User.isRegisterableUsername(username);
+      if (creatable) {
+        try {
+          await user.activateInvitedUser(username, name, password);
+          return res.redirect('/');
         }
-        else {
-          req.flash('warningMessage', '利用できないユーザーIDです。');
-          debug('username', username);
+        catch (err) {
+          req.flash('warningMessage', 'アクティベートに失敗しました。');
           return res.render('invited');
         }
-      });
+      }
+      else {
+        req.flash('warningMessage', '利用できないユーザーIDです。');
+        debug('username', username);
+        return res.render('invited');
+      }
     }
     else {
       return res.render('invited', {

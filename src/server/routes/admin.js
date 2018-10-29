@@ -469,16 +469,23 @@ module.exports = function(crowi, app) {
   };
 
   actions.user = {};
-  actions.user.index = function(req, res) {
+  actions.user.index = async function(req, res) {
+    const activeUsers = await User.countListByStatus(User.STATUS_ACTIVE);
+    const Config = crowi.model('Config');
+    const userUpperLimit = Config.userUpperLimit(crowi);
+    const isUserCountExceedsUpperLimit = await User.isUserCountExceedsUpperLimit();
+
     var page = parseInt(req.query.page) || 1;
 
-    User.findUsersWithPagination({page: page}, function(err, result) {
-      const pager = createPager(result.total, result.limit, result.page, result.pages, MAX_PAGE_LIST);
+    const result = await User.findUsersWithPagination({page: page});
+    const pager = createPager(result.total, result.limit, result.page, result.pages, MAX_PAGE_LIST);
 
-      return res.render('admin/users', {
-        users: result.docs,
-        pager: pager
-      });
+    return res.render('admin/users', {
+      users: result.docs,
+      pager: pager,
+      activeUsers: activeUsers,
+      userUpperLimit: userUpperLimit,
+      isUserCountExceedsUpperLimit: isUserCountExceedsUpperLimit
     });
   };
 
@@ -534,7 +541,14 @@ module.exports = function(crowi, app) {
     });
   };
 
-  actions.user.activate = function(req, res) {
+  actions.user.activate = async function(req, res) {
+    // check user upper limit
+    const isUserCountExceedsUpperLimit = await User.isUserCountExceedsUpperLimit();
+    if (isUserCountExceedsUpperLimit) {
+      req.flash('errorMessage', 'ユーザーが上限に達したため有効化できません。');
+      return res.redirect('/admin/users');
+    }
+
     var id = req.params.id;
     User.findById(id, function(err, userData) {
       userData.statusActivate(function(err, userData) {
