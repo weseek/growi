@@ -906,7 +906,7 @@ module.exports = function(crowi, app) {
    * @apiParam {String} path
    * @apiParam {String} revision_id
    */
-  api.get = function(req, res) {
+  api.get = async function(req, res) {
     const pagePath = req.query.path || null;
     const pageId = req.query.page_id || null; // TODO: handling
     const revisionId = req.query.revision_id || null;
@@ -915,22 +915,23 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error(new Error('Parameter path or page_id is required.')));
     }
 
-    let pageFinder;
-    if (pageId) { // prioritized
-      pageFinder = Page.findPageByIdAndGrantedUser(pageId, req.user);
+    let page;
+    try {
+      if (pageId) { // prioritized
+        page = await Page.findOneByIdAndViewer(pageId, req.user);
+      }
+      else if (pagePath) {
+        page = await Page.findPage(pagePath, req.user, revisionId);
+      }
     }
-    else if (pagePath) {
-      pageFinder = Page.findPage(pagePath, req.user, revisionId);
-    }
-
-    pageFinder.then(function(pageData) {
-      const result = {};
-      result.page = pageData;   // TODO consider to use serializeToObj method -- 2018.08.06 Yuki Takei
-
-      return res.json(ApiResponse.success(result));
-    }).catch(function(err) {
+    catch (err) {
       return res.json(ApiResponse.error(err));
-    });
+    }
+
+    const result = {};
+    result.page = page;   // TODO consider to use serializeToObj method -- 2018.08.06 Yuki Takei
+
+    return res.json(ApiResponse.success(result));
   };
 
   /**
@@ -940,24 +941,26 @@ module.exports = function(crowi, app) {
    *
    * @apiParam {String} page_id Page Id.
    */
-  api.seen = function(req, res) {
+  api.seen = async function(req, res) {
     const pageId = req.body.page_id;
     if (!pageId) {
       return res.json(ApiResponse.error('page_id required'));
     }
 
-    Page.findPageByIdAndGrantedUser(pageId, req.user)
-    .then(function(page) {
-      return page.seen(req.user);
-    }).then(function(user) {
-      const result = {};
-      result.seenUser = user;
-
-      return res.json(ApiResponse.success(result));
-    }).catch(function(err) {
+    let page;
+    try {
+      page = await Page.findOneByIdAndViewer(pageId, req.user);
+      page = await page.seen(req.user);
+    }
+    catch (err) {
       debug('Seen user update error', err);
       return res.json(ApiResponse.error(err));
-    });
+    }
+
+    const result = {};
+    result.seenUser = page.seenUsers;
+
+    return res.json(ApiResponse.success(result));
   };
 
   /**

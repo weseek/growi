@@ -218,38 +218,25 @@ module.exports = function(crowi) {
   };
 
   pageSchema.methods.isSeenUser = function(userData) {
-    var self = this,
-      Page = self;
-
-    return this.seenUsers.some(function(seenUser) {
-      return seenUser.equals(userData._id);
-    });
+    return this.seenUsers.includes(userData._id);
   };
 
-  pageSchema.methods.seen = function(userData) {
-    var self = this,
-      Page = self;
-
+  pageSchema.methods.seen = async function(userData) {
     if (this.isSeenUser(userData)) {
       debug('seenUsers not updated');
-      return Promise.resolve(this);
+      return this;
     }
 
-    return new Promise(function(resolve, reject) {
-      if (!userData || !userData._id) {
-        reject(new Error('User data is not valid'));
-      }
+    if (!userData || !userData._id) {
+      throw new Error('User data is not valid');
+    }
 
-      var added = self.seenUsers.addToSet(userData);
-      self.save(function(err, data) {
-        if (err) {
-          return reject(err);
-        }
+    const added = this.seenUsers.addToSet(userData);
+    const saved = await this.save();
 
-        debug('seenUsers updated!', added);
-        return resolve(self);
-      });
-    });
+    debug('seenUsers updated!', added);
+
+    return saved;
   };
 
   pageSchema.methods.getSlackChannel = function() {
