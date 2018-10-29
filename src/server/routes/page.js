@@ -946,11 +946,16 @@ module.exports = function(crowi, app) {
     if (!pageId) {
       return res.json(ApiResponse.error('page_id required'));
     }
+    else if (!req.user) {
+      return res.json(ApiResponse.error('user required'));
+    }
 
     let page;
     try {
       page = await Page.findOneByIdAndViewer(pageId, req.user);
-      page = await page.seen(req.user);
+      if (req.user != null) {
+        page = await page.seen(req.user);
+      }
     }
     catch (err) {
       debug('Seen user update error', err);
@@ -970,26 +975,36 @@ module.exports = function(crowi, app) {
    *
    * @apiParam {String} page_id Page Id.
    */
-  api.like = function(req, res) {
-    const id = req.body.page_id;
+  api.like = async function(req, res) {
+    const pageId = req.body.page_id;
+    if (!pageId) {
+      return res.json(ApiResponse.error('page_id required'));
+    }
+    else if (!req.user) {
+      return res.json(ApiResponse.error('user required'));
+    }
 
-    Page.findPageByIdAndGrantedUser(id, req.user)
-    .then(function(pageData) {
-      return pageData.like(req.user);
-    })
-    .then(function(page) {
-      const result = {page: page};
-      res.json(ApiResponse.success(result));
-      return page;
-    })
-    .then((page) => {
+    let page;
+    try {
+      page = await Page.findOneByIdAndViewer(pageId, req.user);
+      page = await page.like(req.user);
+    }
+    catch (err) {
+      debug('Seen user update error', err);
+      return res.json(ApiResponse.error(err));
+    }
+
+    const result = { page };
+    result.seenUser = page.seenUsers;
+    res.json(ApiResponse.success(result));
+
+    try {
       // global notification
-      return globalNotificationService.notifyPageLike(page, req.user);
-    })
-    .catch(function(err) {
-      debug('Like failed', err);
-      return res.json(ApiResponse.error({}));
-    });
+      globalNotificationService.notifyPageLike(page, req.user);
+    }
+    catch (err) {
+      logger.error('Like failed', err);
+    }
   };
 
   /**
@@ -999,19 +1014,28 @@ module.exports = function(crowi, app) {
    *
    * @apiParam {String} page_id Page Id.
    */
-  api.unlike = function(req, res) {
-    const id = req.body.page_id;
+  api.unlike = async function(req, res) {
+    const pageId = req.body.page_id;
+    if (!pageId) {
+      return res.json(ApiResponse.error('page_id required'));
+    }
+    else if (req.user == null) {
+      return res.json(ApiResponse.error('user required'));
+    }
 
-    Page.findPageByIdAndGrantedUser(id, req.user)
-    .then(function(pageData) {
-      return pageData.unlike(req.user);
-    }).then(function(data) {
-      const result = {page: data};
-      return res.json(ApiResponse.success(result));
-    }).catch(function(err) {
-      debug('Unlike failed', err);
-      return res.json(ApiResponse.error({}));
-    });
+    let page;
+    try {
+      page = await Page.findOneByIdAndViewer(pageId, req.user);
+      page = await page.unlike(req.user);
+    }
+    catch (err) {
+      debug('Seen user update error', err);
+      return res.json(ApiResponse.error(err));
+    }
+
+    const result = { page };
+    result.seenUser = page.seenUsers;
+    return res.json(ApiResponse.success(result));
   };
 
   /**
