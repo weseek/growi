@@ -5,7 +5,7 @@ import ControlLabel from 'react-bootstrap/es/ControlLabel';
 import FormControl from 'react-bootstrap/es/FormControl';
 import Button from 'react-bootstrap/es/Button';
 
-export default class DataImportForm extends React.PureComponent {
+export default class TableDataImportForm extends React.Component {
 
   constructor(props) {
     super(props);
@@ -48,7 +48,7 @@ export default class DataImportForm extends React.PureComponent {
   }
 }
 
-DataImportForm.propTypes = {
+TableDataImportForm.propTypes = {
   onCancel: PropTypes.func,
   onImport: PropTypes.func
 };
