@@ -8,6 +8,9 @@ const tableAlignmentLineRE = /^[-:|][-:|\s]*$/;
 const tableAlignmentLineNegRE = /^[^-:]*$/;  // it is need to check to ignore empty row which is matched above RE
 const linePartOfTableRE = /^\|[^\r\n]*|[^\r\n]*\|$|([^|\r\n]+\|[^|\r\n]*)+/; // own idea
 
+// set up DOMParser
+const domParser = new (window.DOMParser)();
+
 /**
  * markdown table class for markdown-table module
  *   ref. https://github.com/wooorm/markdown-table
@@ -37,8 +40,31 @@ export default class MarkdownTable {
     return new MarkdownTable(newTable, this.options);
   }
 
-  static fromTableTag(str) {
-    return null;
+  /**
+   * return a MarkdownTable instance made from a string of HTML table tag
+   */
+  static fromHTMLTableTag(str) {
+    const dom = domParser.parseFromString(str, 'text/html');
+
+    const tableElement = dom.querySelector('table');
+    const trElements = tableElement.querySelectorAll('tr');
+
+    let table = [];
+    for (let i = 0; i < trElements.length; i++) {
+      let row = [];
+      let cellElements = trElements[i].querySelectorAll('th,td');
+      for (let j = 0; j < cellElements.length; j++) {
+        row.push(cellElements[j].innerHTML);
+      }
+      table.push(row);
+    }
+
+    let align = [];
+    for (let i = 0; i < table[0]; i++) {
+      align.push('');
+    }
+
+    return new MarkdownTable(table, {align: align});
   }
 
   /**
