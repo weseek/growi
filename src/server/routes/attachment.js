@@ -74,16 +74,38 @@ module.exports = function(crowi, app) {
       }
     });
     const id = file[0].id;
-    const stream = AttachmentFile.readById(id);
-    stream.on('error', function(error) {
-      throw new Error('failed to load file id:' + id, error);
+    const readStream = new Promise((resolve, reject) => {
+      let buf;
+      const stream = AttachmentFile.readById(id);
+      stream.on('error', function(error) {
+        reject(error);
+      });
+      stream.on('data', function(data) {
+        if (buf) {
+          buf = Buffer.concat([buf, data]);
+        }
+        else {
+          buf = data;
+        }
+      });
+      stream.on('close', function() {
+        debug('GridFS readstream closed');
+        resolve(buf);
+      });
     });
-    stream.on('data', function(data) {
-      return data; // [TODO] data可視化用の処理
-    });
-    stream.on('close', function() {
-      debug('GridFS readstream closed');
-    });
+    const data = await readStream;
+    return data;
+    // return await readStream;
+    // const stream = AttachmentFile.readById(id);
+    // stream.on('error', function(error) {
+    //   throw new Error('failed to load file id:' + id, error);
+    // });
+    // stream.on('data', function(res) {
+    //   data = res;
+    // });
+    // stream.on('close', function() {
+    //   debug('GridFS readstream closed');
+    // });
   };
 
   /**
