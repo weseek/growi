@@ -241,7 +241,7 @@ module.exports = function(crowi, app) {
     const path = getPathFromRequest(req);
 
     let view;
-    const renderVars = {};
+    const renderVars = { path };
 
     if (req.isForbidden) {
       view = 'customlayout-selector/forbidden';
