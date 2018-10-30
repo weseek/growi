@@ -66,46 +66,39 @@ module.exports = function(crowi, app) {
    *
    * @apiParam {String} attachment_path
    */
-  api.getMongoFile = async function(req, res) {
+  api.getMongoFile = function(req, res) {
     const filePath = req.query.filePath;
-    const file = await AttachmentFile.find({filename: filePath}, function(err, file) {
+    AttachmentFile.find({filename: filePath}, function(err, file) {
       if (err) {
         throw new Error(err);
       }
+    })
+    .then(async function(file) {
+      const id = file[0].id;
+      const contentType = file[0].contentType;
+      const readStream = new Promise((resolve, reject) => {
+        let buf;
+        const stream = AttachmentFile.readById(id);
+        stream.on('error', function(error) {
+          reject(error);
+        });
+        stream.on('data', function(data) {
+          if (buf) {
+            buf = Buffer.concat([buf, data]);
+          }
+          else {
+            buf = data;
+          }
+        });
+        stream.on('close', function() {
+          debug('GridFS readstream closed');
+          resolve(buf);
+        });
+      });
+      const data = await readStream;
+      res.set('Content-Type', contentType);
+      return res.send(ApiResponse.success(data));
     });
-    const id = file[0].id;
-    const readStream = new Promise((resolve, reject) => {
-      let buf;
-      const stream = AttachmentFile.readById(id);
-      stream.on('error', function(error) {
-        reject(error);
-      });
-      stream.on('data', function(data) {
-        if (buf) {
-          buf = Buffer.concat([buf, data]);
-        }
-        else {
-          buf = data;
-        }
-      });
-      stream.on('close', function() {
-        debug('GridFS readstream closed');
-        resolve(buf);
-      });
-    });
-    const data = await readStream;
-    return data;
-    // return await readStream;
-    // const stream = AttachmentFile.readById(id);
-    // stream.on('error', function(error) {
-    //   throw new Error('failed to load file id:' + id, error);
-    // });
-    // stream.on('data', function(res) {
-    //   data = res;
-    // });
-    // stream.on('close', function() {
-    //   debug('GridFS readstream closed');
-    // });
   };
 
   /**
