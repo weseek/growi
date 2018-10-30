@@ -187,9 +187,16 @@ module.exports = function(crowi, app) {
     }
   };
   /**
-   * switch action by behaviorType
+   * switch action
+   *   - presentation mode
+   *   - by behaviorType
    */
   actions.pageShowWrapper = function(req, res, next) {
+    // presentation mode
+    if (req.query.presentation) {
+      return actions.showPageForPresentation(req, res, next);
+    }
+
     const behaviorType = Config.behaviorType(config);
 
     if (!behaviorType || 'crowi' === behaviorType) {
@@ -269,6 +276,24 @@ module.exports = function(crowi, app) {
     return res.render(view, renderVars);
   };
 
+  actions.showPageForPresentation = async function(req, res, next) {
+    let path = getPathFromRequest(req);
+    const revisionId = req.query.revision;
+
+    let page = await Page.findPageByPathAndViewer(path, req.user);
+
+    if (page == null) {
+      next();
+    }
+
+    const renderVars = {};
+
+    // populate
+    page = await page.populateDataToMakePresentation(revisionId);
+    addRendarVarsForPage(renderVars, page);
+    return res.render('page_presentation', renderVars);
+  };
+
   actions.pageListShow = async function(req, res) {
     let path = getPathFromRequest(req);
     const revisionId = req.query.revision;
@@ -327,13 +352,6 @@ module.exports = function(crowi, app) {
     const limit = 50;
     const offset = parseInt(req.query.offset)  || 0;
     const renderVars = {};
-
-    // Presentation Mode
-    if (req.query.presentation) {
-      page = await page.populateDataToMakePresentation(revisionId);
-      addRendarVarsForPage(renderVars, page);
-      return res.render('page_presentation', renderVars);
-    }
 
     let view = 'customlayout-selector/page';
 
