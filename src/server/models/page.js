@@ -293,6 +293,14 @@ module.exports = function(crowi) {
       .execPopulate();
   };
 
+  pageSchema.methods.populateDataToMakePresentation = async function(revisionId) {
+    this.latestRevision = this.revision;
+    if (revisionId != null) {
+      this.revision = revisionId;
+    }
+    return this.populate('revision').execPopulate();
+  };
+
   // TODO abolish or migrate
   // https://weseek.myjetbrains.com/youtrack/issue/GC-1185
   pageSchema.statics.populatePageListToAnyObjects = function(pageIdObjectArray) {
@@ -712,14 +720,12 @@ module.exports = function(crowi) {
    * find the page that is match with `path` and its descendants
    */
   pageSchema.statics.findListWithDescendants = function(path, userData, option) {
-    var Page = this;
-
     // ignore other pages than descendants
-    path = Page.addSlashOfEnd(path);
+    path = this.addSlashOfEnd(path);
     // add option to escape the regex strings
     const combinedOption = Object.assign({isRegExpEscapedFromPath: true}, option);
 
-    return Page.findListByStartWith(path, userData, combinedOption);
+    return this.findListByStartWith(path, userData, combinedOption);
   };
 
   /**
