@@ -118,7 +118,7 @@ module.exports = function(crowi, app) {
       return actions.pageListShow(req, res);
     }
     else {
-      return actions.pageListShowForCrowiPlus(req, res);
+      return actions.pageListShowForGrowiBehavior(req, res);
     }
   };
   /**
@@ -131,7 +131,7 @@ module.exports = function(crowi, app) {
       return actions.pageShow(req, res);
     }
     else {
-      return actions.pageShowForCrowiPlus(req, res);
+      return actions.pageShowForGrowiBehavior(req, res);
     }
   };
   /**
@@ -181,6 +181,57 @@ module.exports = function(crowi, app) {
     }
   };
 
+
+  function addRendarVarsForPage(renderVars, page) {
+    renderVars.page = page;
+    renderVars.path = page.path;
+    renderVars.revision = page.revision;
+    renderVars.author = page.revision.author;
+    renderVars.pageIdOnHackmd = page.pageIdOnHackmd;
+    renderVars.revisionHackmdSynced = page.revisionHackmdSynced;
+    renderVars.hasDraftOnHackmd = page.hasDraftOnHackmd;
+  }
+
+  async function addRenderVarsForUserPage(renderVars, page, requestUser) {
+    const userData = await User.findUserByUsername(User.getUsernameByPath(page.path));
+    if (userData != null) {
+      renderVars.pageUser = userData;
+      renderVars.bookmarkList = await Bookmark.findByUser(userData, {limit: 10, populatePage: true, requestUser: requestUser});
+      renderVars.createdList = await Page.findListByCreator(userData, {limit: 10}, requestUser);
+    }
+  }
+
+  async function addRenderVarsForHistory(renderVars, page) {
+    renderVars.tree = await Revision.findRevisionList(page.path, {});
+  }
+
+  async function addRenderVarsForDescendants(renderVars, page, requestUser, offset, limit) {
+    const queryOptions = {
+      offset: offset,
+      limit: limit + 1,
+      isPopulateRevisionBody: Config.isEnabledTimeline(config),
+      includeDeletedPage: page.path.startsWith('/trash/'),
+    };
+    const pageList = await Page.findListWithDescendants(page.path, requestUser, queryOptions);
+    if (pageList.length > limit) {
+      pageList.pop();
+    }
+
+    // index page
+    const pagerOptions = {
+      offset: offset,
+      limit: limit
+    };
+    pagerOptions.length = pageList.length;
+
+    const SEENER_THRESHOLD = 10;
+
+    renderVars.viewConfig = {
+      seener_threshold: SEENER_THRESHOLD,
+    };
+    renderVars.pager = generatePager(pagerOptions);
+    renderVars.pages = pagePathUtils.encodePagesPath(pageList);
+  }
 
   actions.pageListShow = function(req, res) {
     let path = getPathFromRequest(req);
@@ -260,7 +311,7 @@ module.exports = function(crowi, app) {
     });
   };
 
-  actions.pageListShowForCrowiPlus = function(req, res) {
+  actions.pageListShowForGrowiBehavior = function(req, res) {
     let path = getPathFromRequest(req);
     // omit the slash of the last
     path = path.replace((/\/$/), '');
@@ -268,41 +319,12 @@ module.exports = function(crowi, app) {
     return res.redirect(path);
   };
 
-  actions.pageShowForCrowiPlus = async function(req, res) {
+  actions.pageShowForGrowiBehavior = async function(req, res) {
     const path = getPathFromRequest(req);
     const revisionId = req.query.revision;
 
     const limit = 50;
     const offset = parseInt(req.query.offset)  || 0;
-    const SEENER_THRESHOLD = 10;
-
-    // index page
-    const pagerOptions = {
-      offset: offset,
-      limit: limit
-    };
-    const queryOptions = {
-      offset: offset,
-      limit: limit + 1,
-      isPopulateRevisionBody: Config.isEnabledTimeline(config),
-      includeDeletedPage: path.startsWith('/trash/'),
-    };
-
-    const renderVars = {
-      path: path,
-      page: null,
-      revision: {},
-      author: false,
-      pages: [],
-      tree: [],
-      pageRelatedGroup: null,
-      template: null,
-      revisionHackmdSynced: null,
-      hasDraftOnHackmd: false,
-      slack: '',
-    };
-
-    let view = 'customlayout-selector/page';
 
     let page = await Page.findPageByPathAndViewer(path, req.user);
 
@@ -317,55 +339,33 @@ module.exports = function(crowi, app) {
 
     debug('Page found', page._id, page.path);
 
+    const renderVars = {};
+    addRendarVarsForPage(renderVars, page);
+
+    // Presentation Mode
+    if (req.query.presentation) {
+      page = await page.populateDataToMakePresentation(revisionId);
+      return res.render('page_presentation', renderVars);
+    }
+
+    let view = 'customlayout-selector/page';
+
     // populate
     page = await page.populateDataToShow(revisionId);
 
-    renderVars.page = page;
-    if (page) {
-      renderVars.path = page.path;
-      renderVars.revision = page.revision;
-      renderVars.author = page.revision.author;
-      renderVars.pageIdOnHackmd = page.pageIdOnHackmd;
-      renderVars.revisionHackmdSynced = page.revisionHackmdSynced;
-      renderVars.hasDraftOnHackmd = page.hasDraftOnHackmd;
+    renderVars.slack = await getSlackChannels(page);
+    await addRenderVarsForHistory(renderVars, page);
+    await addRenderVarsForDescendants(renderVars, page, req.user, offset, limit);
 
-      renderVars.tree = await Revision.findRevisionList(page.path, {});
-      renderVars.slack = await getSlackChannels(page);
-
-      const userPage = isUserPage(page.path);
-      if (userPage) {
-        // change template
-        view = 'customlayout-selector/user_page';
-
-        const userData = await User.findUserByUsername(User.getUsernameByPath(page.path));
-        if (userData != null) {
-          renderVars.pageUser = userData;
-          renderVars.bookmarkList = await Bookmark.findByUser(userData, {limit: 10, populatePage: true, requestUser: req.user});
-          renderVars.createdList = await Page.findListByCreator(userData, {limit: 10}, req.user);
-        }
-        else {
-          debug('Error on finding user related entities');
-        }
-      }
-
-      const pageList = await Page.findListWithDescendants(path, req.user, queryOptions);
-      if (pageList.length > limit) {
-        pageList.pop();
-      }
-
-      pagerOptions.length = pageList.length;
-
-      renderVars.viewConfig = {
-        seener_threshold: SEENER_THRESHOLD,
-      };
-      renderVars.pager = generatePager(pagerOptions);
-      renderVars.pages = pagePathUtils.encodePagesPath(pageList);
-
-      await interceptorManager.process('beforeRenderPage', req, res, renderVars);
-      // https://weseek.myjetbrains.com/youtrack/issue/GC-1224
-      // TODO fetch minimum data if the request is for presentation
-      return res.render(req.query.presentation ? 'page_presentation' : view, renderVars);
+    const userPage = isUserPage(page.path);
+    if (userPage) {
+      // change template
+      view = 'customlayout-selector/user_page';
+      await addRenderVarsForUserPage(renderVars, page, req.user);
     }
+
+    await interceptorManager.process('beforeRenderPage', req, res, renderVars);
+    return res.render(view, renderVars);
 
     // https://weseek.myjetbrains.com/youtrack/issue/GC-1224
     // TODO render if not found or user is forbidden
