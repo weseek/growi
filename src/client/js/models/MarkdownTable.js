@@ -46,6 +46,10 @@ export default class MarkdownTable {
   static fromHTMLTableTag(str) {
     const dom = domParser.parseFromString(str, 'application/xml');
 
+    if (dom.querySelector('parsererror')) {
+      throw new Error(dom.documentElement.innerHTML);
+    }
+
     const tableElement = dom.querySelector('table');
     const trElements = tableElement.querySelectorAll('tr');
 
