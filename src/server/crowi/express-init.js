@@ -109,6 +109,14 @@ module.exports = function(crowi, app) {
       return next();
     }
 
+    // FIXME:
+    //   healthcheck endpoint exclude from basic authentication.
+    //   however, hard coding is not desirable.
+    //   need refactoring (ex. setting basic authentication for each routes)
+    if (req.path === '/_api/v3/healthcheck') {
+      return next();
+    }
+
     if (config.crowi['security:basicName'] && config.crowi['security:basicSecret']) {
       return basicAuth(
         config.crowi['security:basicName'],
