@@ -131,16 +131,17 @@ module.exports = function(crowi, app) {
     renderVars.slack = await getSlackChannels(page);
   }
 
-  async function addRenderVarsForDescendants(renderVars, page, requestUser, offset, limit) {
+  async function addRenderVarsForDescendants(renderVars, path, requestUser, offset, limit, isRegExpEscapedFromPath) {
     const SEENER_THRESHOLD = 10;
 
     const queryOptions = {
       offset: offset,
       limit: limit + 1,
       isPopulateRevisionBody: Config.isEnabledTimeline(config),
-      includeDeletedPage: page.path.startsWith('/trash/'),
+      includeDeletedPage: path.startsWith('/trash/'),
+      isRegExpEscapedFromPath,
     };
-    const pageList = await Page.findListWithDescendants(page.path, requestUser, queryOptions);
+    const pageList = await Page.findListWithDescendants(path, requestUser, queryOptions);
     if (pageList.length > limit) {
       pageList.pop();
     }
@@ -268,82 +269,31 @@ module.exports = function(crowi, app) {
     return res.render(view, renderVars);
   };
 
-  actions.pageListShow = function(req, res) {
+  actions.pageListShow = async function(req, res) {
     let path = getPathFromRequest(req);
+    const revisionId = req.query.revision;
+
+    let potalPage = await Page.findPageByPathAndViewer(path, req.user);
+
     const limit = 50;
     const offset = parseInt(req.query.offset)  || 0;
-    const SEENER_THRESHOLD = 10;
-    // add slash if root
-    path = path + (path == '/' ? '' : '/');
+    const renderVars = {};
 
-    debug('Page list show', path);
-    // index page
-    const pagerOptions = {
-      offset: offset,
-      limit: limit
-    };
-    const queryOptions = {
-      offset: offset,
-      limit: limit + 1,
-      isPopulateRevisionBody: Config.isEnabledTimeline(config),
-    };
+    if (potalPage != null) {
+      logger.debug('Potal page found when processing pageListShow', potalPage._id, potalPage.path);
 
-    const renderVars = {
-      page: null,
-      path: path,
-      isPortal: false,
-      pages: [],
-      tree: [],
-    };
+      // populate
+      potalPage = await potalPage.populateDataToShow(revisionId);
 
-    Page.hasPortalPage(path, req.user, req.query.revision)
-    .then(function(portalPage) {
-      renderVars.page = portalPage;
-      renderVars.isPortal = (portalPage != null);
+      addRendarVarsForPage(renderVars, potalPage);
+      await addRenderVarsForSlack(renderVars, potalPage);
+    }
 
-      if (portalPage) {
-        renderVars.revision = portalPage.revision;
-        renderVars.pageIdOnHackmd = portalPage.pageIdOnHackmd;
-        renderVars.revisionHackmdSynced = portalPage.revisionHackmdSynced;
-        renderVars.hasDraftOnHackmd = portalPage.hasDraftOnHackmd;
-        return Revision.findRevisionList(portalPage.path, {});
-      }
-      else {
-        return Promise.resolve([]);
-      }
-    })
-    .then(function(tree) {
-      renderVars.tree = tree;
+    // fetch descendants with 'path' including regexp
+    await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit, true);
 
-      return Page.findListByStartWith(path, req.user, queryOptions);
-    })
-    .then(function(pageList) {
-
-      if (pageList.length > limit) {
-        pageList.pop();
-      }
-
-      pagerOptions.length = pageList.length;
-
-      renderVars.viewConfig = {
-        seener_threshold: SEENER_THRESHOLD,
-      };
-      renderVars.pager = generatePager(pagerOptions);
-      renderVars.pages = pagePathUtils.encodePagesPath(pageList);
-    })
-    .then(() => {
-      return PageGroupRelation.findByPage(renderVars.page);
-    })
-    .then((pageGroupRelation) => {
-      if (pageGroupRelation != null) {
-        renderVars.pageRelatedGroup = pageGroupRelation.relatedGroup;
-      }
-    })
-    .then(() => {
-      res.render('customlayout-selector/page_list', renderVars);
-    }).catch(function(err) {
-      debug('Error on rendering pageListShow', err);
-    });
+    await interceptorManager.process('beforeRenderPage', req, res, renderVars);
+    return res.render('customlayout-selector/page_list', renderVars);
   };
 
   actions.pageListShowForGrowiBehavior = function(req, res) {
@@ -372,7 +322,7 @@ module.exports = function(crowi, app) {
       return res.redirect(encodeURI(page.redirectTo + '?redirectFrom=' + pagePathUtils.encodePagePath(page.path)));
     }
 
-    debug('Page found', page._id, page.path);
+    logger.debug('Page found when processing pageShowForGrowiBehavior', page._id, page.path);
 
     const limit = 50;
     const offset = parseInt(req.query.offset)  || 0;
@@ -392,7 +342,7 @@ module.exports = function(crowi, app) {
     addRendarVarsForPage(renderVars, page);
 
     await addRenderVarsForSlack(renderVars, page);
-    await addRenderVarsForDescendants(renderVars, page, req.user, offset, limit);
+    await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit);
 
     if (isUserPage(page.path)) {
       // change template

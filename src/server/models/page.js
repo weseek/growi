@@ -345,18 +345,6 @@ module.exports = function(crowi) {
     });
   };
 
-  pageSchema.statics.hasPortalPage = function(path, user, revisionId) {
-    var self = this;
-    return new Promise(function(resolve, reject) {
-      self.findPage(path, user, revisionId)
-      .then(function(page) {
-        resolve(page);
-      }).catch(function(err) {
-        resolve(null); // check only has portal page, through error
-      });
-    });
-  };
-
   pageSchema.statics.getGrantLabels = function() {
     var grantLabels = {};
     grantLabels[GRANT_PUBLIC]     = 'Public'; // 公開
