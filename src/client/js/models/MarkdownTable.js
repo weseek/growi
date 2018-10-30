@@ -50,6 +50,7 @@ export default class MarkdownTable {
     const trElements = tableElement.querySelectorAll('tr');
 
     let table = [];
+    let maxRowSize = 0;
     for (let i = 0; i < trElements.length; i++) {
       let row = [];
       let cellElements = trElements[i].querySelectorAll('th,td');
@@ -57,10 +58,18 @@ export default class MarkdownTable {
         row.push(cellElements[j].innerHTML);
       }
       table.push(row);
+
+      if (maxRowSize < row.length) maxRowSize = row.length;
+    }
+
+    for (let i = 0; i < table.length; i++) {
+      for (let j = 0; j < maxRowSize - table[i].length; j++) {
+        table[i].push('');
+      }
     }
 
     let align = [];
-    for (let i = 0; i < table[0]; i++) {
+    for (let i = 0; i < maxRowSize; i++) {
       align.push('');
     }
 
