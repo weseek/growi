@@ -8,9 +8,7 @@ module.exports = function(crowi, app) {
     , User = crowi.model('User')
     , Config   = crowi.model('Config')
     , config   = crowi.getConfig()
-    , Revision = crowi.model('Revision')
     , Bookmark = crowi.model('Bookmark')
-    , PageGroupRelation = crowi.model('PageGroupRelation')
     , UpdatePost = crowi.model('UpdatePost')
     , ApiResponse = require('../util/apiResponse')
     , interceptorManager = crowi.getInterceptorManager()
@@ -172,18 +170,143 @@ module.exports = function(crowi, app) {
     return compiledTemplate(definitions);
   }
 
+  async function showPageForPresentation(req, res, next) {
+    let path = getPathFromRequest(req);
+    const revisionId = req.query.revision;
+
+    let page = await Page.findPageByPathAndViewer(path, req.user);
+
+    if (page == null) {
+      next();
+    }
+
+    const renderVars = {};
+
+    // populate
+    page = await page.populateDataToMakePresentation(revisionId);
+    addRendarVarsForPage(renderVars, page);
+    return res.render('page_presentation', renderVars);
+  }
+
+  async function showPageListForCrowiBehavior(req, res, next) {
+    const path = getPathFromRequest(req);
+    const revisionId = req.query.revision;
+
+    // check whether this page has portal page
+    const potalPagePath = `${path}/`;
+
+    let potalPage = await Page.findPageByPathAndViewer(potalPagePath, req.user);
+
+    const limit = 50;
+    const offset = parseInt(req.query.offset)  || 0;
+    const renderVars = { path: potalPagePath };
+
+    if (potalPage != null) {
+      // populate
+      potalPage = await potalPage.populateDataToShow(revisionId);
+      addRendarVarsForPage(renderVars, potalPage);
+
+      await addRenderVarsForSlack(renderVars, potalPage);
+    }
+
+    await addRenderVarsForDescendants(renderVars, potalPagePath, req.user, offset, limit);
+
+    await interceptorManager.process('beforeRenderPage', req, res, renderVars);
+    return res.render('customlayout-selector/page_list', renderVars);
+  }
+
+  async function showPageForCrowiBehavior(req, res, next) {
+    const path = getPathFromRequest(req);
+
+    // check whether this page has portal page
+    const potalPagePath = `${path}/`;
+
+    let potalPage = await Page.findPageByPathAndViewer(potalPagePath, req.user);
+
+    if (potalPage != null) {
+      logger.debug('The portal page is found when processing showPageForCrowiBehavior', potalPage._id, potalPage.path);
+      return res.redirect(potalPage);
+    }
+
+    // delegate to showPageForGrowiBehavior
+    return showPageForGrowiBehavior(req, res, next);
+  }
+
+  async function showPageForGrowiBehavior(req, res, next) {
+    const path = getPathFromRequest(req);
+    const revisionId = req.query.revision;
+
+    let page = await Page.findPageByPathAndViewer(path, req.user);
+
+    if (page == null) {
+      // check the page is forbidden or just does not exist.
+      const isForbidden = await Page.count({path}) > 0;
+      // inject to req
+      req.isForbidden = isForbidden;
+      return next();
+    }
+    else if (page.redirectTo) {
+      debug(`Redirect to '${page.redirectTo}'`);
+      return res.redirect(encodeURI(page.redirectTo + '?redirectFrom=' + pagePathUtils.encodePagePath(page.path)));
+    }
+
+    logger.debug('Page is found when processing pageShowForGrowiBehavior', page._id, page.path);
+
+    const limit = 50;
+    const offset = parseInt(req.query.offset)  || 0;
+    const renderVars = {};
+
+    let view = 'customlayout-selector/page';
+
+    // populate
+    page = await page.populateDataToShow(revisionId);
+    addRendarVarsForPage(renderVars, page);
+
+    await addRenderVarsForSlack(renderVars, page);
+    await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit);
+
+    if (isUserPage(page.path)) {
+      // change template
+      view = 'customlayout-selector/user_page';
+      await addRenderVarsForUserPage(renderVars, page, req.user);
+    }
+
+    await interceptorManager.process('beforeRenderPage', req, res, renderVars);
+    return res.render(view, renderVars);
+  }
+
+  const getSlackChannels = async page => {
+    if (page.extended.slack) {
+      return page.extended.slack;
+    }
+    else {
+      const data = await UpdatePost.findSettingsByPath(page.path);
+      const channels = data.map(e => e.channel).join(', ');
+      return channels;
+    }
+  };
+
+
+
+
+
+  actions.showTopPage = function(req, res) {
+    return showPageListForCrowiBehavior(req, res);
+  };
 
   /**
    * switch action by behaviorType
    */
-  actions.pageListShowWrapper = function(req, res, next) {
+  actions.showPageWithEndOfSlash = function(req, res, next) {
     const behaviorType = Config.behaviorType(config);
 
     if (!behaviorType || 'crowi' === behaviorType) {
-      return actions.pageListShow(req, res, next);
+      return showPageListForCrowiBehavior(req, res, next);
     }
     else {
-      return actions.pageListShowForGrowiBehavior(req, res, next);
+      let path = getPathFromRequest(req);   // end of slash should be omitted
+      // redirect and showPage action will be triggered
+      return res.redirect(path);
     }
   };
   /**
@@ -191,19 +314,19 @@ module.exports = function(crowi, app) {
    *   - presentation mode
    *   - by behaviorType
    */
-  actions.pageShowWrapper = function(req, res, next) {
+  actions.showPage = function(req, res, next) {
     // presentation mode
     if (req.query.presentation) {
-      return actions.showPageForPresentation(req, res, next);
+      return showPageForPresentation(req, res, next);
     }
 
     const behaviorType = Config.behaviorType(config);
 
     if (!behaviorType || 'crowi' === behaviorType) {
-      return actions.pageShow(req, res, next);
+      return showPageForCrowiBehavior(req, res, next);
     }
     else {
-      return actions.pageShowForGrowiBehavior(req, res, next);
+      return showPageForGrowiBehavior(req, res, next);
     }
   };
   /**
@@ -276,113 +399,6 @@ module.exports = function(crowi, app) {
     return res.render(view, renderVars);
   };
 
-  actions.showPageForPresentation = async function(req, res, next) {
-    let path = getPathFromRequest(req);
-    const revisionId = req.query.revision;
-
-    let page = await Page.findPageByPathAndViewer(path, req.user);
-
-    if (page == null) {
-      next();
-    }
-
-    const renderVars = {};
-
-    // populate
-    page = await page.populateDataToMakePresentation(revisionId);
-    addRendarVarsForPage(renderVars, page);
-    return res.render('page_presentation', renderVars);
-  };
-
-  actions.pageListShow = async function(req, res) {
-    let path = getPathFromRequest(req);
-    const revisionId = req.query.revision;
-
-    let potalPage = await Page.findPageByPathAndViewer(path, req.user);
-
-    const limit = 50;
-    const offset = parseInt(req.query.offset)  || 0;
-    const renderVars = {};
-
-    if (potalPage != null) {
-      logger.debug('Potal page found when processing pageListShow', potalPage._id, potalPage.path);
-
-      // populate
-      potalPage = await potalPage.populateDataToShow(revisionId);
-
-      addRendarVarsForPage(renderVars, potalPage);
-      await addRenderVarsForSlack(renderVars, potalPage);
-    }
-
-    // fetch descendants with 'path' including regexp
-    await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit, true);
-
-    await interceptorManager.process('beforeRenderPage', req, res, renderVars);
-    return res.render('customlayout-selector/page_list', renderVars);
-  };
-
-  actions.pageListShowForGrowiBehavior = function(req, res) {
-    let path = getPathFromRequest(req);
-    // omit the slash of the last
-    path = path.replace((/\/$/), '');
-    // redirect
-    return res.redirect(path);
-  };
-
-  actions.pageShowForGrowiBehavior = async function(req, res, next) {
-    const path = getPathFromRequest(req);
-    const revisionId = req.query.revision;
-
-    let page = await Page.findPageByPathAndViewer(path, req.user);
-
-    if (page == null) {
-      // check the page is forbidden or just does not exist.
-      const isForbidden = await Page.count({path}) > 0;
-      // inject to req
-      req.isForbidden = isForbidden;
-      return next();
-    }
-    else if (page.redirectTo) {
-      debug(`Redirect to '${page.redirectTo}'`);
-      return res.redirect(encodeURI(page.redirectTo + '?redirectFrom=' + pagePathUtils.encodePagePath(page.path)));
-    }
-
-    logger.debug('Page found when processing pageShowForGrowiBehavior', page._id, page.path);
-
-    const limit = 50;
-    const offset = parseInt(req.query.offset)  || 0;
-    const renderVars = {};
-
-    let view = 'customlayout-selector/page';
-
-    // populate
-    page = await page.populateDataToShow(revisionId);
-    addRendarVarsForPage(renderVars, page);
-
-    await addRenderVarsForSlack(renderVars, page);
-    await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit);
-
-    if (isUserPage(page.path)) {
-      // change template
-      view = 'customlayout-selector/user_page';
-      await addRenderVarsForUserPage(renderVars, page, req.user);
-    }
-
-    await interceptorManager.process('beforeRenderPage', req, res, renderVars);
-    return res.render(view, renderVars);
-  };
-
-  const getSlackChannels = async page => {
-    if (page.extended.slack) {
-      return page.extended.slack;
-    }
-    else {
-      const data = await UpdatePost.findSettingsByPath(page.path);
-      const channels = data.map(e => e.channel).join(', ');
-      return channels;
-    }
-  };
-
   actions.deletedPageListShow = function(req, res) {
     const path = '/trash' + getPathFromRequest(req);
     const limit = 50;
@@ -449,181 +465,6 @@ module.exports = function(crowi, app) {
       });
     }).catch(function(err) {
       debug('search error', err);
-    });
-  };
-
-  async function renderPage(pageData, req, res, isForbidden) {
-    if (!pageData) {
-      let view = 'customlayout-selector/not_found';
-      let template = undefined;
-
-      // forbidden
-      if (isForbidden) {
-        view = 'customlayout-selector/forbidden';
-      }
-      else {
-        const path = getPathFromRequest(req);
-        template = await Page.findTemplate(path);
-        if (template != null) {
-          template = replacePlaceholders(template, req);
-        }
-      }
-
-      return res.render(view, {
-        author: {},
-        page: false,
-        template,
-      });
-    }
-
-
-    if (pageData.redirectTo) {
-      return res.redirect(encodeURI(pageData.redirectTo + '?redirectFrom=' + pagePathUtils.encodePagePath(pageData.path)));
-    }
-
-    const renderVars = {
-      path: pageData.path,
-      page: pageData,
-      revision: pageData.revision || {},
-      author: pageData.revision.author || false,
-      slack: '',
-    };
-    const userPage = isUserPage(pageData.path);
-    let userData = null;
-
-    Revision.findRevisionList(pageData.path, {})
-    .then(function(tree) {
-      renderVars.tree = tree;
-    })
-    .then(() => {
-      return PageGroupRelation.findByPage(renderVars.page);
-    })
-    .then((pageGroupRelation) => {
-      if (pageGroupRelation != null) {
-        renderVars.pageRelatedGroup = pageGroupRelation.relatedGroup;
-      }
-    })
-    .then(() => {
-      return getSlackChannels(pageData);
-    })
-    .then(channels => {
-      renderVars.slack = channels;
-    })
-    .then(function() {
-      if (userPage) {
-        return User.findUserByUsername(User.getUsernameByPath(pageData.path))
-        .then(function(data) {
-          if (data === null) {
-            throw new Error('The user not found.');
-          }
-          userData = data;
-          renderVars.pageUser = userData;
-
-          return Bookmark.findByUser(userData, {limit: 10, populatePage: true, requestUser: req.user});
-        }).then(function(bookmarkList) {
-          renderVars.bookmarkList = bookmarkList;
-
-          return Page.findListByCreator(userData, {limit: 10}, req.user);
-        }).then(function(createdList) {
-          renderVars.createdList = createdList;
-          return Promise.resolve();
-        }).catch(function(err) {
-          debug('Error on finding user related entities', err);
-          // pass
-        });
-      }
-      else {
-        return Promise.resolve();
-      }
-    }).then(function() {
-      return interceptorManager.process('beforeRenderPage', req, res, renderVars);
-    }).then(function() {
-      let view = 'customlayout-selector/page';
-      if (userData) {
-        view = 'customlayout-selector/user_page';
-      }
-      res.render(req.query.presentation ? 'page_presentation' : view, renderVars);
-    }).catch(function(err) {
-      debug('Error: renderPage()', err);
-      if (err) {
-        res.redirect('/');
-      }
-    });
-  }
-
-  actions.pageShow = function(req, res) {
-    const path = getPathFromRequest(req);
-
-    // FIXME: せっかく getPathFromRequest になってるのにここが生 params[0] だとダサイ
-    const isMarkdown = req.params[0].match(/.+\.md$/) || false;
-
-    res.locals.path = path;
-
-    Page.findPage(path, req.user, req.query.revision)
-    .then(function(page) {
-      debug('Page found', page._id, page.path);
-
-      if (isMarkdown) {
-        res.set('Content-Type', 'text/plain');
-        return res.send(page.revision.body);
-      }
-
-      return renderPage(page, req, res);
-    })
-    // page is not found or the user is forbidden
-    .catch(function(err) {
-
-      let isForbidden = false;
-      if (err.name === 'UserHasNoGrantException') {
-        isForbidden = true;
-      }
-
-      const normalizedPath = Page.normalizePath(path);
-      if (normalizedPath !== path) {
-        return res.redirect(normalizedPath);
-      }
-
-      // pageShow は /* にマッチしてる最後の砦なので、creatableName でない routing は
-      // これ以前に定義されているはずなので、こうしてしまって問題ない。
-      if (!Page.isCreatableName(path)) {
-        // 削除済みページの場合 /trash 以下に移動しているので creatableName になっていないので、表示を許可
-        logger.warn('Page is not creatable name.', path);
-        res.redirect('/');
-        return ;
-      }
-      if (req.query.revision) {
-        return res.redirect(pagePathUtils.encodePagePath(path));
-      }
-
-      if (isMarkdown) {
-        return res.redirect('/');
-      }
-
-      Page.hasPortalPage(path + '/', req.user)
-      .then(function(page) {
-        if (page) {
-          return res.redirect(pagePathUtils.encodePagePath(path) + '/');
-        }
-        else {
-          const fixed = Page.fixToCreatableName(path);
-          if (fixed !== path) {
-            logger.warn('fixed page name', fixed);
-            res.redirect(pagePathUtils.encodePagePath(fixed));
-            return ;
-          }
-
-          // if guest user
-          if (!req.user) {
-            res.redirect('/');
-          }
-
-          // render editor
-          debug('Catch pageShow', err);
-          return renderPage(null, req, res, isForbidden);
-        }
-      }).catch(function(err) {
-        debug('Error on rendering pageShow (redirect to portal)', err);
-      });
     });
   };
 

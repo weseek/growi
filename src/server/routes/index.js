@@ -27,7 +27,7 @@ module.exports = function(crowi, app) {
 
   /* eslint-disable comma-spacing */
 
-  app.get('/'                        , middleware.applicationInstalled(), loginRequired(crowi, app, false) , page.pageListShow);
+  app.get('/'                        , middleware.applicationInstalled(), loginRequired(crowi, app, false) , page.showTopPage);
 
   app.get('/installer'               , middleware.applicationNotInstalled() , middleware.checkSearchIndicesGenerated(crowi, app) , installer.index);
   app.post('/installer/createAdmin'  , middleware.applicationNotInstalled() , form.register , csrf, installer.createAdmin);
@@ -228,6 +228,6 @@ module.exports = function(crowi, app) {
   // API v3
   app.use('/_api/v3', require('./apiv3')(crowi));
 
-  app.get('/*/$'                   , loginRequired(crowi, app, false) , page.pageListShowWrapper, page.notFound);
-  app.get('/*'                     , loginRequired(crowi, app, false) , page.pageShowWrapper, page.notFound);
+  app.get('/*/$'                   , loginRequired(crowi, app, false) , page.showPageWithEndOfSlash, page.notFound);
+  app.get('/*'                     , loginRequired(crowi, app, false) , page.showPage, page.notFound);
 };
