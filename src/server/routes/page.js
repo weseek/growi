@@ -205,7 +205,13 @@ module.exports = function(crowi, app) {
     renderVars.tree = await Revision.findRevisionList(page.path, {});
   }
 
+  async function addRenderVarsForSlack(renderVars, page) {
+    renderVars.slack = await getSlackChannels(page);
+  }
+
   async function addRenderVarsForDescendants(renderVars, page, requestUser, offset, limit) {
+    const SEENER_THRESHOLD = 10;
+
     const queryOptions = {
       offset: offset,
       limit: limit + 1,
@@ -223,8 +229,6 @@ module.exports = function(crowi, app) {
       limit: limit
     };
     pagerOptions.length = pageList.length;
-
-    const SEENER_THRESHOLD = 10;
 
     renderVars.viewConfig = {
       seener_threshold: SEENER_THRESHOLD,
@@ -340,11 +344,11 @@ module.exports = function(crowi, app) {
     debug('Page found', page._id, page.path);
 
     const renderVars = {};
-    addRendarVarsForPage(renderVars, page);
 
     // Presentation Mode
     if (req.query.presentation) {
       page = await page.populateDataToMakePresentation(revisionId);
+      addRendarVarsForPage(renderVars, page);
       return res.render('page_presentation', renderVars);
     }
 
@@ -352,13 +356,13 @@ module.exports = function(crowi, app) {
 
     // populate
     page = await page.populateDataToShow(revisionId);
+    addRendarVarsForPage(renderVars, page);
 
-    renderVars.slack = await getSlackChannels(page);
+    await addRenderVarsForSlack(renderVars, page);
     await addRenderVarsForHistory(renderVars, page);
     await addRenderVarsForDescendants(renderVars, page, req.user, offset, limit);
 
-    const userPage = isUserPage(page.path);
-    if (userPage) {
+    if (isUserPage(page.path)) {
       // change template
       view = 'customlayout-selector/user_page';
       await addRenderVarsForUserPage(renderVars, page, req.user);
