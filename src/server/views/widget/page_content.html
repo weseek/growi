@@ -33,6 +33,9 @@
         </div>
         <div id="page" class="m-t-15"></div>
       </div>
+    {% elseif 'crowi' === behaviorType() %}
+      <div class="tab-pane active" id="cancel-creating-portal">
+      </div>
     {% endif %}
 
     {% if not page.isDeleted() %}

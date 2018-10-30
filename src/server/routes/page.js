@@ -685,8 +685,10 @@ module.exports = function(crowi, app) {
         page = await Page.findOneByIdAndViewer(pageId, req.user);
       }
       else if (pagePath) {
-        page = await Page.findPage(pagePath, req.user, revisionId);
+        page = await Page.findPageByPathAndViewer(pagePath, req.user);
       }
+      // https://weseek.myjetbrains.com/youtrack/issue/GC-1224
+      // TODO populate
     }
     catch (err) {
       return res.json(ApiResponse.error(err));

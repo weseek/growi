@@ -480,7 +480,10 @@ $(function() {
   });
 
   $('#create-portal-button').on('click', function(e) {
+    $('a[data-toggle="tab"][href="#edit"]').tab('show');
+
     $('body').addClass('on-edit');
+    $('body').addClass('builtin-editor');
 
     const path = $('.content-main').data('path');
     if (path != '/' && $('.content-main').data('page-id') == '') {
@@ -494,7 +497,7 @@ $(function() {
   });
   $('#portal-form-close').on('click', function(e) {
     $('body').removeClass('on-edit');
-    return false;
+    $('body').removeClass('builtin-editor');
   });
 
   /*
