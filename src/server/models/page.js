@@ -445,8 +445,6 @@ module.exports = function(crowi) {
     });
   };
 
-  // https://weseek.myjetbrains.com/youtrack/issue/GC-1224
-  // remove populate
   pageSchema.statics.findOneById = async function(id) {
     return this.findOne({_id: id});
   };
@@ -455,10 +453,6 @@ module.exports = function(crowi) {
    * @param {string} id ObjectId
    * @param {User} user User instance
    */
-  // https://weseek.myjetbrains.com/youtrack/issue/GC-1224
-  //
-  // TODO check whether NotFound or Forbidden in router
-  // org: findPageByIdAndGrantedUser
   pageSchema.statics.findOneByIdAndViewer = async function(id, user) {
     validateCrowi();
 

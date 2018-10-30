@@ -331,7 +331,6 @@ if (savePageControlsElem) {
   componentInstances.savePageControls = savePageControls;
 }
 
-// RecentCreated dev GC-939 start
 const recentCreatedControlsElem = document.getElementById('user-created-list');
 if (recentCreatedControlsElem) {
   let limit = crowi.getConfig().recentCreatedLimit;
@@ -344,7 +343,6 @@ if (recentCreatedControlsElem) {
     </RecentCreated>, document.getElementById('user-created-list')
   );
 }
-// RecentCreated dev GC-939 end
 
 /*
  * HackMD Editor

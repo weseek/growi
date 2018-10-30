@@ -158,7 +158,6 @@ module.exports = function(crowi, app) {
     renderVars.pages = pagePathUtils.encodePagesPath(pageList);
   }
 
-  // TODO rename to replacePlaceholdersOfTemplate
   function replacePlaceholdersOfTemplate(template, req) {
     const definitions = {
       pagepath: getPathFromRequest(req),
@@ -688,7 +687,7 @@ module.exports = function(crowi, app) {
         page = await Page.findPageByPathAndViewer(pagePath, req.user);
       }
       // https://weseek.myjetbrains.com/youtrack/issue/GC-1224
-      // TODO populate
+      // TODO populate for backward compatibility
     }
     catch (err) {
       return res.json(ApiResponse.error(err));
