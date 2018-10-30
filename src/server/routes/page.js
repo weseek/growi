@@ -753,19 +753,13 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Parameters body and path are required.'));
     }
 
-    const ignoreNotFound = true;
-    const createdPage = await Page.findPage(pagePath, req.user, null, ignoreNotFound)
-      .then(function(data) {
-        if (data !== null) {
-          throw new Error('Page exists');
+    const isExist = await Page.count({path: pagePath}) > 0;
+    if (isExist) {
+      return res.json(ApiResponse.error('Page exists'));
         }
 
         const options = {grant, grantUserGroupId, socketClientId};
-        return Page.create(pagePath, body, req.user, options);
-      })
-      .catch(function(err) {
-        return res.json(ApiResponse.error(err));
-      });
+    const createdPage = await Page.create(pagePath, body, req.user, options);
 
     const result = { page: serializeToObj(createdPage) };
     result.page.lastUpdateUser = User.filterToPublicFields(createdPage.lastUpdateUser);
