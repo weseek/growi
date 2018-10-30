@@ -281,7 +281,7 @@ module.exports = function(crowi) {
     this.seenUsersCount = this.seenUsers.length || 0;
 
     return this
-      .execPopulate([
+      .populate([
         {path: 'lastUpdateUser', model: 'User', select: User.USER_PUBLIC_FIELDS},
         {path: 'creator', model: 'User', select: User.USER_PUBLIC_FIELDS},
         {path: 'revision', model: 'Revision', populate: {
@@ -289,7 +289,8 @@ module.exports = function(crowi) {
         }},
         //{path: 'liker', options: { limit: 11 }},
         //{path: 'seenUsers', options: { limit: 11 }},
-      ]);
+      ])
+      .execPopulate();
   };
 
   // TODO abolish or migrate
