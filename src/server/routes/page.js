@@ -127,10 +127,6 @@ module.exports = function(crowi, app) {
     }
   }
 
-  async function addRenderVarsForHistory(renderVars, page) {
-    renderVars.tree = await Revision.findRevisionList(page.path, {});
-  }
-
   async function addRenderVarsForSlack(renderVars, page) {
     renderVars.slack = await getSlackChannels(page);
   }
@@ -384,7 +380,6 @@ module.exports = function(crowi, app) {
     addRendarVarsForPage(renderVars, page);
 
     await addRenderVarsForSlack(renderVars, page);
-    await addRenderVarsForHistory(renderVars, page);
     await addRenderVarsForDescendants(renderVars, page, req.user, offset, limit);
 
     if (isUserPage(page.path)) {

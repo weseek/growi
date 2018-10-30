@@ -44,7 +44,7 @@ module.exports = function(crowi, app) {
     const pageId = req.query.page_id || null;
 
     if (pageId && crowi.isPageId(pageId)) {
-      Page.findPageByIdAndGrantedUser(pageId, req.user)
+      Page.findOneByIdAndViewer(pageId, req.user)
       .then(function(pageData) {
         debug('Page found', pageData._id, pageData.path);
         return Revision.findRevisionIdList(pageData.path);
@@ -72,7 +72,7 @@ module.exports = function(crowi, app) {
     const pageId = req.query.page_id || null;
 
     if (pageId) {
-      Page.findPageByIdAndGrantedUser(pageId, req.user)
+      Page.findOneByIdAndViewer(pageId, req.user)
       .then(function(pageData) {
         debug('Page found', pageData._id, pageData.path);
         return Revision.findRevisionList(pageData.path, {});
