@@ -108,80 +108,6 @@ module.exports = function(crowi, app) {
     }
   }
 
-  /**
-   * switch action by behaviorType
-   */
-  actions.pageListShowWrapper = function(req, res) {
-    const behaviorType = Config.behaviorType(config);
-
-    if (!behaviorType || 'crowi' === behaviorType) {
-      return actions.pageListShow(req, res);
-    }
-    else {
-      return actions.pageListShowForGrowiBehavior(req, res);
-    }
-  };
-  /**
-   * switch action by behaviorType
-   */
-  actions.pageShowWrapper = function(req, res) {
-    const behaviorType = Config.behaviorType(config);
-
-    if (!behaviorType || 'crowi' === behaviorType) {
-      return actions.pageShow(req, res);
-    }
-    else {
-      return actions.pageShowForGrowiBehavior(req, res);
-    }
-  };
-  /**
-   * switch action by behaviorType
-   */
-  actions.trashPageListShowWrapper = function(req, res) {
-    const behaviorType = Config.behaviorType(config);
-
-    if (!behaviorType || 'crowi' === behaviorType) {
-      // Crowi behavior for '/trash/*'
-      return actions.deletedPageListShow(req, res);
-    }
-    else {
-      // redirect to '/trash'
-      return res.redirect('/trash');
-    }
-  };
-  /**
-   * switch action by behaviorType
-   */
-  actions.trashPageShowWrapper = function(req, res) {
-    const behaviorType = Config.behaviorType(config);
-
-    if (!behaviorType || 'crowi' === behaviorType) {
-      // redirect to '/trash/'
-      return res.redirect('/trash/');
-    }
-    else {
-      // Crowi behavior for '/trash/*'
-      return actions.deletedPageListShow(req, res);
-    }
-
-  };
-  /**
-   * switch action by behaviorType
-   */
-  actions.deletedPageListShowWrapper = function(req, res) {
-    const behaviorType = Config.behaviorType(config);
-
-    if (!behaviorType || 'crowi' === behaviorType) {
-      // Crowi behavior for '/trash/*'
-      return actions.deletedPageListShow(req, res);
-    }
-    else {
-      const path = '/trash' + getPathFromRequest(req);
-      return res.redirect(path);
-    }
-  };
-
-
   function addRendarVarsForPage(renderVars, page) {
     renderVars.page = page;
     renderVars.path = page.path;
@@ -236,6 +162,103 @@ module.exports = function(crowi, app) {
     renderVars.pager = generatePager(pagerOptions);
     renderVars.pages = pagePathUtils.encodePagesPath(pageList);
   }
+
+
+  /**
+   * switch action by behaviorType
+   */
+  actions.pageListShowWrapper = function(req, res, next) {
+    const behaviorType = Config.behaviorType(config);
+
+    if (!behaviorType || 'crowi' === behaviorType) {
+      return actions.pageListShow(req, res, next);
+    }
+    else {
+      return actions.pageListShowForGrowiBehavior(req, res, next);
+    }
+  };
+  /**
+   * switch action by behaviorType
+   */
+  actions.pageShowWrapper = function(req, res, next) {
+    const behaviorType = Config.behaviorType(config);
+
+    if (!behaviorType || 'crowi' === behaviorType) {
+      return actions.pageShow(req, res, next);
+    }
+    else {
+      return actions.pageShowForGrowiBehavior(req, res, next);
+    }
+  };
+  /**
+   * switch action by behaviorType
+   */
+  actions.trashPageListShowWrapper = function(req, res) {
+    const behaviorType = Config.behaviorType(config);
+
+    if (!behaviorType || 'crowi' === behaviorType) {
+      // Crowi behavior for '/trash/*'
+      return actions.deletedPageListShow(req, res);
+    }
+    else {
+      // redirect to '/trash'
+      return res.redirect('/trash');
+    }
+  };
+  /**
+   * switch action by behaviorType
+   */
+  actions.trashPageShowWrapper = function(req, res) {
+    const behaviorType = Config.behaviorType(config);
+
+    if (!behaviorType || 'crowi' === behaviorType) {
+      // redirect to '/trash/'
+      return res.redirect('/trash/');
+    }
+    else {
+      // Crowi behavior for '/trash/*'
+      return actions.deletedPageListShow(req, res);
+    }
+
+  };
+  /**
+   * switch action by behaviorType
+   */
+  actions.deletedPageListShowWrapper = function(req, res) {
+    const behaviorType = Config.behaviorType(config);
+
+    if (!behaviorType || 'crowi' === behaviorType) {
+      // Crowi behavior for '/trash/*'
+      return actions.deletedPageListShow(req, res);
+    }
+    else {
+      const path = '/trash' + getPathFromRequest(req);
+      return res.redirect(path);
+    }
+  };
+
+  actions.notFound = async function(req, res) {
+    const path = getPathFromRequest(req);
+
+    let view;
+    const renderVars = {};
+
+    if (req.isForbidden) {
+      view = 'customlayout-selector/forbidden';
+    }
+    else {
+      view = 'customlayout-selector/not_found';
+
+      // retrieve templates
+      let template = await Page.findTemplate(path);
+      if (template != null) {
+        template = replacePlaceholders(template, req);
+        renderVars.template = template;
+      }
+    }
+
+    return res.render(view, renderVars);
+  };
 
   actions.pageListShow = function(req, res) {
     let path = getPathFromRequest(req);
@@ -323,18 +346,18 @@ module.exports = function(crowi, app) {
     return res.redirect(path);
   };
 
-  actions.pageShowForGrowiBehavior = async function(req, res) {
+  actions.pageShowForGrowiBehavior = async function(req, res, next) {
     const path = getPathFromRequest(req);
     const revisionId = req.query.revision;
-
-    const limit = 50;
-    const offset = parseInt(req.query.offset)  || 0;
 
     let page = await Page.findPageByPathAndViewer(path, req.user);
 
     if (page == null) {
-      // https://weseek.myjetbrains.com/youtrack/issue/GC-1224
-      // TODO notfound or forbidden
+      // check the page is forbidden or just does not exist.
+      const isForbidden = await Page.count({path}) > 0;
+      // inject to req
+      req.isForbidden = isForbidden;
+      return next();
     }
     else if (page.redirectTo) {
       debug(`Redirect to '${page.redirectTo}'`);
@@ -343,6 +366,8 @@ module.exports = function(crowi, app) {
 
     debug('Page found', page._id, page.path);
 
+    const limit = 50;
+    const offset = parseInt(req.query.offset)  || 0;
     const renderVars = {};
 
     // Presentation Mode
@@ -370,32 +395,6 @@ module.exports = function(crowi, app) {
 
     await interceptorManager.process('beforeRenderPage', req, res, renderVars);
     return res.render(view, renderVars);
-
-    // https://weseek.myjetbrains.com/youtrack/issue/GC-1224
-    // TODO render if not found or user is forbidden
-
-    // let isForbidden = false;
-    // if (err.name === 'UserHasNoGrantException') {
-    //   isForbidden = true;
-    // }
-
-    // if (isForbidden) {
-    //   view = 'customlayout-selector/forbidden';
-    //   return;
-    // }
-    // else {
-    //   view = 'customlayout-selector/not_found';
-
-    //   // look for templates
-    //   return Page.findTemplate(path)
-    //     .then(template => {
-    //       if (template) {
-    //         template = replacePlaceholders(template, req);
-    //       }
-
-    //       renderVars.template = template;
-    //     });
-    // }
   };
 
   const getSlackChannels = async page => {
@@ -409,6 +408,7 @@ module.exports = function(crowi, app) {
     }
   };
 
+  // TODO rename to replacePlaceholdersOfTemplate
   const replacePlaceholders = (template, req) => {
     const definitions = {
       pagepath: getPathFromRequest(req),

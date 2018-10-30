@@ -228,6 +228,6 @@ module.exports = function(crowi, app) {
   // API v3
   app.use('/_api/v3', require('./apiv3')(crowi));
 
-  app.get('/*/$'                   , loginRequired(crowi, app, false) , page.pageListShowWrapper);
-  app.get('/*'                     , loginRequired(crowi, app, false) , page.pageShowWrapper);
+  app.get('/*/$'                   , loginRequired(crowi, app, false) , page.pageListShowWrapper, page.notFound);
+  app.get('/*'                     , loginRequired(crowi, app, false) , page.pageShowWrapper, page.notFound);
 };
