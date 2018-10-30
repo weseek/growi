@@ -159,6 +159,18 @@ module.exports = function(crowi, app) {
     renderVars.pages = pagePathUtils.encodePagesPath(pageList);
   }
 
+  // TODO rename to replacePlaceholdersOfTemplate
+  function replacePlaceholdersOfTemplate(template, req) {
+    const definitions = {
+      pagepath: getPathFromRequest(req),
+      username: req.user.name,
+      today: getToday(),
+    };
+    const compiledTemplate = swig.compile(template);
+
+    return compiledTemplate(definitions);
+  }
+
 
   /**
    * switch action by behaviorType
@@ -248,7 +260,7 @@ module.exports = function(crowi, app) {
       // retrieve templates
       let template = await Page.findTemplate(path);
       if (template != null) {
-        template = replacePlaceholders(template, req);
+        template = replacePlaceholdersOfTemplate(template, req);
         renderVars.template = template;
       }
     }
@@ -401,18 +413,6 @@ module.exports = function(crowi, app) {
       const channels = data.map(e => e.channel).join(', ');
       return channels;
     }
-  };
-
-  // TODO rename to replacePlaceholdersOfTemplate
-  const replacePlaceholders = (template, req) => {
-    const definitions = {
-      pagepath: getPathFromRequest(req),
-      username: req.user.name,
-      today: getToday(),
-    };
-    const compiledTemplate = swig.compile(template);
-
-    return compiledTemplate(definitions);
   };
 
   actions.deletedPageListShow = function(req, res) {
@@ -756,9 +756,9 @@ module.exports = function(crowi, app) {
     const isExist = await Page.count({path: pagePath}) > 0;
     if (isExist) {
       return res.json(ApiResponse.error('Page exists'));
-        }
+    }
 
-        const options = {grant, grantUserGroupId, socketClientId};
+    const options = {grant, grantUserGroupId, socketClientId};
     const createdPage = await Page.create(pagePath, body, req.user, options);
 
     const result = { page: serializeToObj(createdPage) };
