@@ -62,12 +62,6 @@ export default class MarkdownTable {
       if (maxRowSize < row.length) maxRowSize = row.length;
     }
 
-    for (let i = 0; i < table.length; i++) {
-      for (let j = 0; j < maxRowSize - table[i].length; j++) {
-        table[i].push('');
-      }
-    }
-
     let align = [];
     for (let i = 0; i < maxRowSize; i++) {
       align.push('');
