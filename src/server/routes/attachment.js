@@ -67,21 +67,19 @@ module.exports = function(crowi, app) {
    * @apiParam {String} attachment_path
    */
   api.getMongoFile = async function(req, res) {
-    const filePath = req.filePath;
+    const filePath = req.query.filePath;
     const file = await AttachmentFile.find({filename: filePath}, function(err, file) {
       if (err) {
         throw new Error(err);
       }
     });
     const id = file[0].id;
-
-
     const stream = AttachmentFile.readById(id);
     stream.on('error', function(error) {
       throw new Error('failed to load file id:' + id, error);
     });
     stream.on('data', function(data) {
-      return data;
+      return data; // [TODO] data可視化用の処理
     });
     stream.on('close', function() {
       debug('GridFS readstream closed');

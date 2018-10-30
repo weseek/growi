@@ -99,7 +99,7 @@ module.exports = function(crowi) {
 
 
   lib.generateUrl = function(filePath) {
-    const url = 'http://localhost:3000/_api/attachments.getMongo';
+    const url = `http://localhost:3000/_api/attachments.getMongo?filePath=${filePath}`; // [TODO]パス変更
     return url;
   };
 
