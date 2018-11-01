@@ -1,4 +1,5 @@
 const debug = require('debug')('growi:models:page');
+const nodePath = require('path');
 const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
 const ObjectId = mongoose.Schema.Types.ObjectId;
@@ -505,12 +506,11 @@ module.exports = function(crowi) {
    * find all templates applicable to the new page
    */
   pageSchema.statics.findTemplate = function(path) {
-    const Page = this;
-    const templatePath = cutOffLastSlash(path);
-    const pathList = generatePathsOnTree(templatePath, []);
+    const templatePath = nodePath.posix.dirname(path);
+    const pathList = generatePathsOnTree(path, []);
     const regexpList = pathList.map(path => new RegExp(`^${escapeStringRegexp(path)}/_{1,2}template$`));
 
-    return Page
+    return this
       .find({path: {$in: regexpList}})
       .populate({path: 'revision', model: 'Revision'})
       .then(templates => {
@@ -518,19 +518,14 @@ module.exports = function(crowi) {
       });
   };
 
-  const cutOffLastSlash = path => {
-    const lastSlash = path.lastIndexOf('/');
-    return path.substr(0, lastSlash);
-  };
-
   const generatePathsOnTree = (path, pathList) => {
     pathList.push(path);
 
-    if (path === '') {
+    if (path === '/') {
       return pathList;
     }
 
-    const newPath = cutOffLastSlash(path);
+    const newPath = nodePath.posix.dirname(path);
 
     return generatePathsOnTree(newPath, pathList);
   };
@@ -549,11 +544,11 @@ module.exports = function(crowi) {
       return decendantsTemplate;
     }
 
-    if (path === '') {
+    if (path === '/') {
       return;
     }
 
-    const newPath = cutOffLastSlash(path);
+    const newPath = nodePath.posix.dirname(path);
     return assignDecendantsTemplate(decendantsTemplates, newPath);
   };
 
