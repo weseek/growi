@@ -25,6 +25,7 @@ export default class MarkdownTableDataImportForm extends React.Component {
     try {
       const markdownTable = this.convertFormDataToMarkdownTable();
       this.props.onImport(markdownTable);
+      this.setState({parserErrorMessage: null});
     }
     catch (e) {
       this.setState({parserErrorMessage: e.message});
