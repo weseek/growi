@@ -48,8 +48,7 @@
       {% if user %}
       <form role="form" id="unlink-page-form" onsubmit="return false;">
         <input type="hidden" name="_csrf" value="{{ csrf() }}">
-        <input type="hidden" name="path" value="{{ page.path }}">
-        <input type="hidden" name="page_id" value="{{ page._id.toString() }}">
+        <input type="hidden" name="path" value="{{ path }}">
         <button type="submit" class="btn btn-default btn-sm pull-right">
           <i class="ti-unlink" aria-hidden="true"></i>
           Unlink

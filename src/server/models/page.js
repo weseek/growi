@@ -1133,11 +1133,6 @@ module.exports = function(crowi) {
    * @param {string} pagePath
    */
   pageSchema.statics.removeRedirectOriginPageByPath = async function(pagePath) {
-    const isExist = await this.count({ path: pagePath }) > 0;
-    if (!isExist) {
-      return;
-    }
-
     const redirectPage = await this.findByRedirectTo(pagePath);
 
     if (redirectPage == null) {

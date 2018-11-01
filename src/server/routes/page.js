@@ -1031,25 +1031,22 @@ module.exports = function(crowi, app) {
    * @apiParam {String} page_id Page Id.
    * @apiParam {String} revision_id
    */
-  api.unlink = function(req, res) {
-    const pageId = req.body.page_id;
+  api.unlink = async function(req, res) {
+    const path = req.body.path;
 
-    Page.findByIdAndGrantedUser(pageId, req.user)
-    .then(function(pageData) {
-      debug('Unlink page', pageData._id, pageData.path);
-
-      return Page.removeRedirectOriginPageByPath(pageData.path)
-        .then(() => pageData);
-    }).then(function(data) {
-      debug('Redirect Page deleted', data.path);
+    let page;
+    try {
+      page = await Page.removeRedirectOriginPageByPath(path);
+      logger.debug('Redirect Page deleted', path);
+    }
+    catch (err) {
+      logger.error('Error occured while get setting', err);
+      return res.json(ApiResponse.error('Failed to delete redirect page.'));
+    }
       const result = {};
-      result.page = data;   // TODO consider to use serializeToObj method -- 2018.08.06 Yuki Takei
+    result.page = page;   // TODO consider to use serializeToObj method -- 2018.08.06 Yuki Takei
 
       return res.json(ApiResponse.success(result));
-    }).catch(function(err) {
-      debug('Error occured while get setting', err, err.stack);
-      return res.json(ApiResponse.error('Failed to delete redirect page.'));
-    });
   };
 
   api.recentCreated = async function(req, res) {
