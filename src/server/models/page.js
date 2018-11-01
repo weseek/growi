@@ -485,15 +485,13 @@ module.exports = function(crowi) {
 
     // const Page = this;
     const baseQuery = this.findOne({path});
-
-    const UserGroupRelation = crowi.model('UserGroupRelation');
-    let userGroups = [];
-    if (user != null) {
-      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
-    }
-
     const queryBuilder = new PageQueryBuilder(baseQuery);
-    queryBuilder.addConditionToFilteringByViewer(user, userGroups);
+
+    if (user != null) {
+      const UserGroupRelation = crowi.model('UserGroupRelation');
+      const userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
+      queryBuilder.addConditionToFilteringByViewer(user, userGroups);
+    }
 
     return await queryBuilder.query.exec();
   };

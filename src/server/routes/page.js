@@ -18,6 +18,10 @@ module.exports = function(crowi, app) {
 
     , actions = {};
 
+  const PORTAL_STATUS_NOT_EXISTS = 0;
+  const PORTAL_STATUS_EXISTS = 1;
+  const PORTAL_STATUS_FORBIDDEN = 2;
+
   // register page events
 
   const pageEvent = crowi.event('page');
@@ -188,47 +192,34 @@ module.exports = function(crowi, app) {
   }
 
   async function showPageListForCrowiBehavior(req, res, next) {
-    const path = getPathFromRequest(req);
+    const path = Page.addSlashOfEnd(getPathFromRequest(req));
     const revisionId = req.query.revision;
 
     // check whether this page has portal page
-    const potalPagePath = `${path}/`;
+    const portalPageStatus = await getPortalPageState(path, req.user);
 
-    let potalPage = await Page.findByPathAndViewer(potalPagePath, req.user);
+    const renderVars = { path };
+
+    if (portalPageStatus === PORTAL_STATUS_FORBIDDEN) {
+      // inject to req
+      req.isForbidden = true;
+      return next();
+    }
+    else if (portalPageStatus === PORTAL_STATUS_EXISTS) {
+      // populate
+      let portalPage = await Page.findByPathAndViewer(path, req.user);
+      portalPage = await portalPage.populateDataToShow(revisionId);
+      addRendarVarsForPage(renderVars, portalPage);
+      await addRenderVarsForSlack(renderVars, portalPage);
+    }
 
     const limit = 50;
     const offset = parseInt(req.query.offset)  || 0;
-    const renderVars = { path: potalPagePath };
 
-    if (potalPage != null) {
-      // populate
-      potalPage = await potalPage.populateDataToShow(revisionId);
-      addRendarVarsForPage(renderVars, potalPage);
-
-      await addRenderVarsForSlack(renderVars, potalPage);
-    }
-
-    await addRenderVarsForDescendants(renderVars, potalPagePath, req.user, offset, limit);
+    await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit);
 
     await interceptorManager.process('beforeRenderPage', req, res, renderVars);
     return res.render('customlayout-selector/page_list', renderVars);
-  }
-
-  async function showPageForCrowiBehavior(req, res, next) {
-    const path = getPathFromRequest(req);
-
-    // check whether this page has portal page
-    const potalPagePath = `${path}/`;
-
-    let potalPage = await Page.findByPathAndViewer(potalPagePath, req.user);
-
-    if (potalPage != null) {
-      logger.debug('The portal page is found when processing showPageForCrowiBehavior', potalPage._id, potalPage.path);
-      return res.redirect(potalPage);
-    }
-
-    // delegate to showPageForGrowiBehavior
-    return showPageForGrowiBehavior(req, res, next);
   }
 
   async function showPageForGrowiBehavior(req, res, next) {
@@ -239,9 +230,7 @@ module.exports = function(crowi, app) {
 
     if (page == null) {
       // check the page is forbidden or just does not exist.
-      const isForbidden = await Page.count({path}) > 0;
-      // inject to req
-      req.isForbidden = isForbidden;
+      req.isForbidden = await Page.count({path}) > 0;
       return next();
     }
     else if (page.redirectTo) {
@@ -285,7 +274,23 @@ module.exports = function(crowi, app) {
     }
   };
 
+  /**
+   *
+   * @param {string} path
+   * @param {User} user
+   * @returns {number} PORTAL_STATUS_NOT_EXISTS(0) or PORTAL_STATUS_EXISTS(1) or PORTAL_STATUS_FORBIDDEN(2)
+   */
+  async function getPortalPageState(path, user) {
+    const portalPath = Page.addSlashOfEnd(path);
+    let page = await Page.findByPathAndViewer(portalPath, user);
 
+    if (page == null) {
+      // check the page is forbidden or just does not exist.
+      const isForbidden = await Page.count({ path: portalPath }) > 0;
+      return isForbidden ? PORTAL_STATUS_FORBIDDEN : PORTAL_STATUS_NOT_EXISTS;
+    }
+    return PORTAL_STATUS_EXISTS;
+  }
 
 
 
@@ -313,7 +318,7 @@ module.exports = function(crowi, app) {
    *   - presentation mode
    *   - by behaviorType
    */
-  actions.showPage = function(req, res, next) {
+  actions.showPage = async function(req, res, next) {
     // presentation mode
     if (req.query.presentation) {
       return showPageForPresentation(req, res, next);
@@ -321,12 +326,19 @@ module.exports = function(crowi, app) {
 
     const behaviorType = Config.behaviorType(config);
 
+    // check whether this page has portal page
     if (!behaviorType || 'crowi' === behaviorType) {
-      return showPageForCrowiBehavior(req, res, next);
+      const portalPagePath = Page.addSlashOfEnd(getPathFromRequest(req));
+      let hasPortalPage = await Page.count({ path: portalPagePath }) > 0;
+
+      if (hasPortalPage) {
+        logger.debug('The portal page is found', portalPagePath);
+        return res.redirect(portalPagePath);
+      }
     }
-    else {
+
+    // delegate to showPageForGrowiBehavior
       return showPageForGrowiBehavior(req, res, next);
-    }
   };
   /**
    * switch action by behaviorType
@@ -376,7 +388,7 @@ module.exports = function(crowi, app) {
   };
 
   actions.notFound = async function(req, res) {
-    const path = getPathFromRequest(req);
+    const path = req.path;
 
     let view;
     const renderVars = { path };
