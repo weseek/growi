@@ -117,7 +117,7 @@ module.exports = function(crowi) {
   }
 
   pageSchema.methods.isDeleted = function() {
-    return this.status === STATUS_DELETED;
+    return (this.status === STATUS_DELETED) || checkIfTrashed(this.path);
   };
 
   pageSchema.methods.isPublic = function() {
