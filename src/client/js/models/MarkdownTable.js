@@ -8,6 +8,9 @@ const tableAlignmentLineRE = /^[-:|][-:|\s]*$/;
 const tableAlignmentLineNegRE = /^[^-:]*$/;  // it is need to check to ignore empty row which is matched above RE
 const linePartOfTableRE = /^\|[^\r\n]*|[^\r\n]*\|$|([^|\r\n]+\|[^|\r\n]*)+/; // own idea
 
+// set up DOMParser
+const domParser = new (window.DOMParser)();
+
 /**
  * markdown table class for markdown-table module
  *   ref. https://github.com/wooorm/markdown-table
@@ -37,9 +40,42 @@ export default class MarkdownTable {
     return new MarkdownTable(newTable, this.options);
   }
 
-  static fromTableTag(str) {
-    // TODO impl
-    return new MarkdownTable();
+  /**
+   * return a MarkdownTable instance made from a string of HTML table tag
+   *
+   * If a parser error occurs, an error object with an error message is thrown.
+   * The error message is a innerHTML, so must not assign it into element.innerHTML because it can lead to Mutation-based XSS
+   */
+  static fromHTMLTableTag(str) {
+    // use DOMParser to prevent DOM based XSS (https://developer.mozilla.org/en-US/docs/Web/API/DOMParser)
+    const dom = domParser.parseFromString(str, 'application/xml');
+
+    if (dom.querySelector('parsererror')) {
+      throw new Error(dom.documentElement.innerHTML);
+    }
+
+    const tableElement = dom.querySelector('table');
+    const trElements = tableElement.querySelectorAll('tr');
+
+    let table = [];
+    let maxRowSize = 0;
+    for (let i = 0; i < trElements.length; i++) {
+      let row = [];
+      let cellElements = trElements[i].querySelectorAll('th,td');
+      for (let j = 0; j < cellElements.length; j++) {
+        row.push(cellElements[j].innerHTML);
+      }
+      table.push(row);
+
+      if (maxRowSize < row.length) maxRowSize = row.length;
+    }
+
+    let align = [];
+    for (let i = 0; i < maxRowSize; i++) {
+      align.push('');
+    }
+
+    return new MarkdownTable(table, {align: align});
   }
 
   /**

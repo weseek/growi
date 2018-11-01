@@ -8,7 +8,7 @@ import Handsontable from 'handsontable';
 import { HotTable } from '@handsontable/react';
 import { debounce } from 'throttle-debounce';
 
-import TableDataImportForm from './TableDataImportForm';
+import MarkdownTableDataImportForm from './MarkdownTableDataImportForm';
 import MarkdownTable from '../../models/MarkdownTable';
 
 const DEFAULT_HOT_HEIGHT = 300;
@@ -244,15 +244,8 @@ export default class HandsontableModal extends React.PureComponent {
     this.setState({ isDataImportAreaExpanded: !this.state.isDataImportAreaExpanded });
   }
 
-  importData(dataFormat, data) {
-    switch (dataFormat) {
-      case 'csv':
-        this.init(MarkdownTable.fromDSV(data, ','));
-        break;
-      case 'tsv':
-        this.init(MarkdownTable.fromDSV(data, '\t'));
-        break;
-    }
+  importData(markdownTable) {
+    this.init(markdownTable);
     this.toggleDataImportArea();
   }
 
@@ -315,7 +308,7 @@ export default class HandsontableModal extends React.PureComponent {
             </ButtonGroup>
             <Collapse in={this.state.isDataImportAreaExpanded}>
               <div> {/* This div is necessary for smoothing animations. (https://react-bootstrap.github.io/utilities/transitions/#transitions-collapse) */}
-                <TableDataImportForm onCancel={this.toggleDataImportArea} onImport={this.importData}/>
+                <MarkdownTableDataImportForm onCancel={this.toggleDataImportArea} onImport={this.importData}/>
               </div>
             </Collapse>
           </div>
