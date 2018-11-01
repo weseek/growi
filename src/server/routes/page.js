@@ -338,7 +338,7 @@ module.exports = function(crowi, app) {
     }
 
     // delegate to showPageForGrowiBehavior
-      return showPageForGrowiBehavior(req, res, next);
+    return showPageForGrowiBehavior(req, res, next);
   };
   /**
    * switch action by behaviorType
@@ -1043,9 +1043,8 @@ module.exports = function(crowi, app) {
   api.unlink = async function(req, res) {
     const path = req.body.path;
 
-    let page;
     try {
-      page = await Page.removeRedirectOriginPageByPath(path);
+      await Page.removeRedirectOriginPageByPath(path);
       logger.debug('Redirect Page deleted', path);
     }
     catch (err) {
