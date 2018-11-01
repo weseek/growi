@@ -43,7 +43,7 @@ export default class MarkdownTable {
   /**
    * return a MarkdownTable instance made from a string of HTML table tag
    *
-   * When a parser error occurs, this returns a Error object with error message.
+   * If a parser error occurs, an error object with an error message is returned.
    * The error message is a innerHTML, so must not assign it into element.innerHTML because it can lead to Mutation-based XSS
    */
   static fromHTMLTableTag(str) {
