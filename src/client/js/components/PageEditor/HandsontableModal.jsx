@@ -244,18 +244,8 @@ export default class HandsontableModal extends React.PureComponent {
     this.setState({ isDataImportAreaExpanded: !this.state.isDataImportAreaExpanded });
   }
 
-  importData(dataFormat, data) {
-    switch (dataFormat) {
-      case 'csv':
-        this.init(MarkdownTable.fromDSV(data, ','));
-        break;
-      case 'tsv':
-        this.init(MarkdownTable.fromDSV(data, '\t'));
-        break;
-      case 'html':
-        this.init(MarkdownTable.fromHTMLTableTag(data));
-        break;
-    }
+  importData(markdownTable) {
+    this.init(markdownTable);
     this.toggleDataImportArea();
   }
 
