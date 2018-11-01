@@ -1039,55 +1039,40 @@ module.exports = function(crowi) {
 
   };
 
-  pageSchema.statics.revertDeletedPage = function(pageData, user, options) {
-    const Page = this
-      , newPath = Page.getRevertDeletedPageName(pageData.path)
-      ;
+  pageSchema.statics.revertDeletedPage = async function(page, user, options) {
+    const newPath = this.getRevertDeletedPageName(page.path);
 
     // 削除時、元ページの path には必ず redirectTo 付きで、ページが作成される。
     // そのため、そいつは削除してOK
     // が、redirectTo ではないページが存在している場合それは何かがおかしい。(データ補正が必要)
-    return new Promise(function(resolve, reject) {
-      Page.findPageByPath(newPath)
-      .then(function(originPageData) {
-        if (originPageData.redirectTo !== pageData.path) {
-          throw new Error('The new page of to revert is exists and the redirect path of the page is not the deleted page.');
-        }
+    const originPage = await this.findPageByPath(newPath);
+    if (originPage.redirectTo !== page.path) {
+      throw new Error('The new page of to revert is exists and the redirect path of the page is not the deleted page.');
+    }
 
-        return Page.completelyDeletePage(originPageData, options);
-      }).then(function(done) {
-        return Page.updatePageProperty(pageData, {status: STATUS_PUBLISHED, lastUpdateUser: user});
-      }).then(function(done) {
-        pageData.status = STATUS_PUBLISHED;
+    await this.completelyDeletePage(originPage, options);
+    await this.updatePageProperty(page, {status: STATUS_PUBLISHED, lastUpdateUser: user});
 
-        debug('Revert deleted the page, and rename again it', pageData, newPath);
-        return Page.rename(pageData, newPath, user, {});
-      }).then(function(done) {
-        pageData.path = newPath;
-        resolve(pageData);
-      }).catch(reject);
-    });
+    page.status = STATUS_PUBLISHED;
+
+    debug('Revert deleted the page, and rename again it', page, newPath);
+    await this.rename(page, newPath, user, {});
+    page.path = newPath;
+
+    return page;
   };
 
-  pageSchema.statics.revertDeletedPageRecursively = function(pageData, user, options = {}) {
-    const Page = this
-      , path = pageData.path
-      ;
+  pageSchema.statics.revertDeletedPageRecursively = async function(page, user, options = {}) {
     options = Object.assign({ includeDeletedPage: true }, options);
 
-    return new Promise(function(resolve, reject) {
-      Page
-        .generateQueryToListWithDescendants(path, user, options)
-        .exec()
-        .then(function(pages) {
-          Promise.all(pages.map(function(page) {
-            return Page.revertDeletedPage(page, user, options);
-          }))
-          .then(function(data) {
-            return resolve(data[0]);
-          });
-        });
-    });
+    const pages = await this.generateQueryToListWithDescendants(page.path, user, options).exec();
+    const revertedPages = await Promise.all(
+      pages.map(p => {
+        return this.revertDeletedPage(p, user, options);
+      })
+    );
+
+    return revertedPages[0];
   };
 
   /**

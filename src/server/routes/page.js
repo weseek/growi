@@ -904,31 +904,36 @@ module.exports = function(crowi, app) {
    *
    * @apiParam {String} page_id Page Id.
    */
-  api.revertRemove = function(req, res, options) {
+  api.revertRemove = async function(req, res, options) {
     const pageId = req.body.page_id;
     const socketClientId = req.body.socketClientId || undefined;
 
     // get recursively flag
     const isRecursively = (req.body.recursively !== undefined);
 
-    Page.findPageByIdAndGrantedUser(pageId, req.user)
-    .then(function(pageData) {
+    let page;
+    try {
+      page = await Page.findOneByIdAndViewer(pageId, req.user);
+      if (page == null) {
+        throw new Error('The page is not found or the user does not have permission');
+      }
 
       if (isRecursively) {
-        return Page.revertDeletedPageRecursively(pageData, req.user, {socketClientId});
+        page = await Page.revertDeletedPageRecursively(page, req.user, {socketClientId});
       }
       else {
-        return Page.revertDeletedPage(pageData, req.user, {socketClientId});
+        page = await Page.revertDeletedPage(page, req.user, {socketClientId});
       }
-    }).then(function(data) {
-      const result = {};
-      result.page = data;   // TODO consider to use serializeToObj method -- 2018.08.06 Yuki Takei
-
-      return res.json(ApiResponse.success(result));
-    }).catch(function(err) {
+    }
+    catch (err) {
       logger.error('Error occured while get setting', err, err.stack);
       return res.json(ApiResponse.error('Failed to revert deleted page.'));
-    });
+    }
+
+    const result = {};
+    result.page = page;   // TODO consider to use serializeToObj method -- 2018.08.06 Yuki Takei
+
+    return res.json(ApiResponse.success(result));
   };
 
   /**
