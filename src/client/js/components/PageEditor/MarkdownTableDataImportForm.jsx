@@ -67,7 +67,7 @@ export default class MarkdownTableDataImportForm extends React.Component {
         </FormGroup>
         <Collapse in={this.state.parserErrorMessage != null}>
           <FormGroup>
-            <ControlLabel>Parser Error</ControlLabel>
+            <ControlLabel>Parse Error</ControlLabel>
             <FormControl componentClass="textarea" style={{ height: 100 }}  value={this.state.parserErrorMessage} readOnly/>
           </FormGroup>
         </Collapse>
