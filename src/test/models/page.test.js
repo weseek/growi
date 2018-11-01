@@ -1,140 +1,120 @@
-var chai = require('chai')
+const chai = require('chai')
   , expect = chai.expect
-  , sinon = require('sinon')
   , sinonChai = require('sinon-chai')
   , utils = require('../utils.js')
   ;
 chai.use(sinonChai);
 
 describe('Page', () => {
-  var Page = utils.models.Page,
+  const Page = utils.models.Page,
     User   = utils.models.User,
-    UserGroup = utils.models.UserGroup,
-    UserGroupRelation = utils.models.UserGroupRelation,
-    PageGroupRelation = utils.models.PageGroupRelation,
-    conn   = utils.mongoose.connection,
-    createdPages,
+    conn   = utils.mongoose.connection;
+
+  let createdPages,
     createdUsers,
     createdUserGroups;
 
-  before(done => {
-    conn.collection('pages').remove().then(() => {
-      var userFixture = [
-        { name: 'Anon 0', username: 'anonymous0', email: 'anonymous0@example.com' },
-        { name: 'Anon 1', username: 'anonymous1', email: 'anonymous1@example.com' },
-        { name: 'Anon 2', username: 'anonymous2', email: 'anonymous2@example.com' },
-      ];
+  before(async() => {
+    await conn.collection('pages').remove();
 
-      return testDBUtil.generateFixture(conn, 'User', userFixture);
-    }).then(testUsers => {
-      createdUsers = testUsers;
-      var testUser0 = testUsers[0];
-      var testUser1 = testUsers[1];
+    const userFixture = [
+      { name: 'Anon 0', username: 'anonymous0', email: 'anonymous0@example.com' },
+      { name: 'Anon 1', username: 'anonymous1', email: 'anonymous1@example.com' },
+      { name: 'Anon 2', username: 'anonymous2', email: 'anonymous2@example.com' },
+    ];
 
-      var fixture = [
-        {
-          path: '/user/anonymous0/memo',
-          grant: Page.GRANT_RESTRICTED,
-          grantedUsers: [testUser0],
-          creator: testUser0
-        },
-        {
-          path: '/grant/public',
-          grant: Page.GRANT_PUBLIC,
-          grantedUsers: [testUser0],
-          creator: testUser0
-        },
-        {
-          path: '/grant/restricted',
-          grant: Page.GRANT_RESTRICTED,
-          grantedUsers: [testUser0],
-          creator: testUser0
-        },
-        {
-          path: '/grant/specified',
-          grant: Page.GRANT_SPECIFIED,
-          grantedUsers: [testUser0],
-          creator: testUser0
-        },
-        {
-          path: '/grant/owner',
-          grant: Page.GRANT_OWNER,
-          grantedUsers: [testUser0],
-          creator: testUser0,
-        },
-        {
-          path: '/page/for/extended',
-          grant: Page.GRANT_PUBLIC,
-          creator: testUser0,
-          extended: {hoge: 1}
-        },
-        {
-          path: '/grant/groupacl',
-          grant: 5,
-          grantedUsers: [],
-          creator: testUser1,
-        },
-        {
-          path: '/page1',
-          grant: Page.GRANT_PUBLIC,
-          creator: testUser0,
-        },
-        {
-          path: '/page1/child1',
-          grant: Page.GRANT_PUBLIC,
-          creator: testUser0,
-        },
-        {
-          path: '/page2',
-          grant: Page.GRANT_PUBLIC,
-          creator: testUser0,
-        },
-      ];
+    createdUsers = await testDBUtil.generateFixture(conn, 'User', userFixture);
 
-      return testDBUtil.generateFixture(conn, 'Page', fixture);
-    })
-    .then(pages => {
-      createdPages = pages;
-      groupFixture = [
-        {
-          image: '',
-          name: 'TestGroup0',
-        },
-        {
-          image: '',
-          name: 'TestGroup1',
-        },
-      ];
+    const testUser0 = createdUsers[0];
+    const testUser1 = createdUsers[1];
 
-      return testDBUtil.generateFixture(conn, 'UserGroup', groupFixture);
-    })
-    .then(userGroups => {
-      createdUserGroups = userGroups;
-      testGroup0 = createdUserGroups[0];
-      testUser0 = createdUsers[0];
-      userGroupRelationFixture = [
-        {
-          relatedGroup: testGroup0,
-          relatedUser: testUser0,
-        }
-      ];
-      return testDBUtil.generateFixture(conn, 'UserGroupRelation', userGroupRelationFixture);
-    })
-    .then(userGroupRelations => {
-      testGroup0 = createdUserGroups[0];
-      testPage = createdPages[6];
-      pageGroupRelationFixture = [
-        {
-          relatedGroup: testGroup0,
-          targetPage: testPage,
-        }
-      ];
+    const groupFixture = [
+      {
+        image: '',
+        name: 'TestGroup0',
+      },
+      {
+        image: '',
+        name: 'TestGroup1',
+      },
+    ];
+    createdUserGroups = await testDBUtil.generateFixture(conn, 'UserGroup', groupFixture);
 
-      return testDBUtil.generateFixture(conn, 'PageGroupRelation', pageGroupRelationFixture)
-      .then(pageGroupRelations => {
-        done();
-      });
-    });
+    const testGroup0 = createdUserGroups[0];
+    const userGroupRelationFixture = [
+      {
+        relatedGroup: testGroup0,
+        relatedUser: testUser0,
+      },
+      {
+        relatedGroup: testGroup0,
+        relatedUser: testUser1,
+      }
+    ];
+    await testDBUtil.generateFixture(conn, 'UserGroupRelation', userGroupRelationFixture);
+
+    const fixture = [
+      {
+        path: '/user/anonymous0/memo',
+        grant: Page.GRANT_RESTRICTED,
+        grantedUsers: [testUser0],
+        creator: testUser0
+      },
+      {
+        path: '/grant/public',
+        grant: Page.GRANT_PUBLIC,
+        grantedUsers: [testUser0],
+        creator: testUser0
+      },
+      {
+        path: '/grant/restricted',
+        grant: Page.GRANT_RESTRICTED,
+        grantedUsers: [testUser0],
+        creator: testUser0
+      },
+      {
+        path: '/grant/specified',
+        grant: Page.GRANT_SPECIFIED,
+        grantedUsers: [testUser0],
+        creator: testUser0
+      },
+      {
+        path: '/grant/owner',
+        grant: Page.GRANT_OWNER,
+        grantedUsers: [testUser0],
+        creator: testUser0,
+      },
+      {
+        path: '/page/for/extended',
+        grant: Page.GRANT_PUBLIC,
+        creator: testUser0,
+        extended: {hoge: 1}
+      },
+      {
+        path: '/grant/groupacl',
+        grant: 5,
+        grantedUsers: [],
+        grantedGroup: testGroup0,
+        creator: testUser1,
+      },
+      {
+        path: '/page1',
+        grant: Page.GRANT_PUBLIC,
+        creator: testUser0,
+      },
+      {
+        path: '/page1/child1',
+        grant: Page.GRANT_PUBLIC,
+        creator: testUser0,
+      },
+      {
+        path: '/page2',
+        grant: Page.GRANT_PUBLIC,
+        creator: testUser0,
+      },
+    ];
+    createdPages = await testDBUtil.generateFixture(conn, 'Page', fixture);
+
   });
 
   describe('.isPublic', () => {
@@ -317,68 +297,41 @@ describe('Page', () => {
   });
 
   describe('.findPage', () => {
-    context('findById', () => {
-      it('should find page', done => {
-        const pageToFind = createdPages[0];
-        Page.findById(pageToFind._id)
-        .then(pageData => {
-          expect(pageData.path).to.equal(pageToFind.path);
-          done();
-        });
-      });
-    });
-
-    context('findByIdAndGrantedUser', () => {
-      it('should find page', done => {
+    context('findByIdAndViewer', () => {
+      it('should find page', async() => {
         const pageToFind = createdPages[0];
         const grantedUser = createdUsers[0];
-        Page.findByIdAndGrantedUser(pageToFind._id, grantedUser)
-        .then((pageData) => {
-          expect(pageData.path).to.equal(pageToFind.path);
-          done();
-        })
-        .catch((err) => {
-          done(err);
-        });
+
+        const page = await Page.findByIdAndViewer(pageToFind._id, grantedUser);
+        expect(page).to.be.not.null;
+        expect(page.path).to.equal(pageToFind.path);
       });
 
-      it('should error by grant', done => {
+      it('should not be found by grant', async() => {
         const pageToFind = createdPages[0];
         const grantedUser = createdUsers[1];
-        Page.findByIdAndGrantedUser(pageToFind._id, grantedUser)
-        .then(pageData => {
-          done(new Error());
-        }).catch(err => {
-          expect(err).to.instanceof(Error);
-          done();
-        });
+
+        const page = await Page.findByIdAndViewer(pageToFind._id, grantedUser);
+        expect(page).to.be.null;
       });
     });
 
-    context('findByIdAndGrantedUser granted userGroup', () => {
-      it('should find page', done => {
+    context('findByIdAndViewer granted userGroup', () => {
+      it('should find page', async() => {
         const pageToFind = createdPages[6];
         const grantedUser = createdUsers[0];
-        Page.findByIdAndGrantedUser(pageToFind._id, grantedUser)
-        .then(pageData => {
-          expect(pageData.path).to.equal(pageToFind.path);
-          done();
-        })
-        .catch((err) => {
-          done(err);
-        });
+
+        const page = await Page.findByIdAndViewer(pageToFind._id, grantedUser);
+        expect(page).to.be.not.null;
+        expect(page.path).to.equal(pageToFind.path);
       });
 
-      it('should error by grant userGroup', done => {
+      it('should not be found by grant', async() => {
         const pageToFind = createdPages[6];
         const grantedUser = createdUsers[2];
-        Page.findByIdAndGrantedUser(pageToFind._id, grantedUser)
-          .then(pageData => {
-            done(new Error());
-          }).catch(err => {
-            expect(err).to.instanceof(Error);
-            done();
-          });
+
+        const page = await Page.findByIdAndViewer(pageToFind._id, grantedUser);
+        expect(page).to.be.null;
       });
     });
   });
