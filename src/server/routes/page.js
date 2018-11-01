@@ -946,7 +946,7 @@ module.exports = function(crowi, app) {
    * @apiParam {String} new_path
    * @apiParam {Bool} create_redirect
    */
-  api.rename = function(req, res) {
+  api.rename = async function(req, res) {
     const pageId = req.body.page_id;
     const previousRevision = req.body.revision_id || null;
     const newPagePath = Page.normalizePath(req.body.new_path);
@@ -961,44 +961,41 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error(`このページ名は作成できません (${newPagePath})`));
     }
 
-    Page.findByPath(newPagePath)
-    .then(function(page) {
-      if (page != null) {
-        // if page found, cannot cannot rename to that path
-        return res.json(ApiResponse.error(`このページ名は作成できません (${newPagePath})。ページが存在します。`));
+    const isExist = await Page.count({ path: newPagePath }) > 0;
+    if (isExist) {
+      // if page found, cannot cannot rename to that path
+      return res.json(ApiResponse.error(`このページ名は作成できません (${newPagePath})。ページが存在します。`));
+    }
+
+    let page;
+
+    try {
+      page = await Page.findById(pageId);
+      if (!page.isUpdatable(previousRevision)) {
+        throw new Error('Someone could update this page, so couldn\'t delete.');
       }
 
-      Page.findById(pageId)
-      .then(function(pageData) {
-        page = pageData;
-        if (!pageData.isUpdatable(previousRevision)) {
-          throw new Error('Someone could update this page, so couldn\'t delete.');
-        }
+      if (isRecursiveMove) {
+        page = await Page.renameRecursively(page, newPagePath, req.user, options);
+      }
+      else {
+        page = await Page.rename(page, newPagePath, req.user, options);
+      }
+    }
+    catch (err) {
+      logger.error(err);
+      return res.json(ApiResponse.error('Failed to update page.'));
+    }
 
-        if (isRecursiveMove) {
-          return Page.renameRecursively(pageData, newPagePath, req.user, options);
-        }
-        else {
-          return Page.rename(pageData, newPagePath, req.user, options);
-        }
+    const result = {};
+    result.page = page;   // TODO consider to use serializeToObj method -- 2018.08.06 Yuki Takei
 
-      })
-      .then(function() {
-        const result = {};
-        result.page = page;   // TODO consider to use serializeToObj method -- 2018.08.06 Yuki Takei
+    res.json(ApiResponse.success(result));
 
-        return res.json(ApiResponse.success(result));
-      })
-      .then(() => {
-        // global notification
-        globalNotificationService.notifyPageMove(page, req.body.path, req.user);
-      })
-      .catch(function(err) {
-        logger.error(err);
-        return res.json(ApiResponse.error('Failed to update page.'));
-      });
-    });
+    // global notification
+    globalNotificationService.notifyPageMove(page, req.body.path, req.user);
 
+    return page;
   };
 
   /**
@@ -1043,10 +1040,10 @@ module.exports = function(crowi, app) {
       logger.error('Error occured while get setting', err);
       return res.json(ApiResponse.error('Failed to delete redirect page.'));
     }
-      const result = {};
+    const result = {};
     result.page = page;   // TODO consider to use serializeToObj method -- 2018.08.06 Yuki Takei
 
-      return res.json(ApiResponse.success(result));
+    return res.json(ApiResponse.success(result));
   };
 
   api.recentCreated = async function(req, res) {
