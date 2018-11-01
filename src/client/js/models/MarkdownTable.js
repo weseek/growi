@@ -42,8 +42,12 @@ export default class MarkdownTable {
 
   /**
    * return a MarkdownTable instance made from a string of HTML table tag
+   *
+   * When a parser error occurs, this returns a Error object with error message.
+   * The error message is a innerHTML, so must not assign it into element.innerHTML because it can lead to Mutation-based XSS
    */
   static fromHTMLTableTag(str) {
+    // use DOMParser to prevent DOM based XSS (https://developer.mozilla.org/en-US/docs/Web/API/DOMParser)
     const dom = domParser.parseFromString(str, 'application/xml');
 
     if (dom.querySelector('parsererror')) {
