@@ -61,18 +61,6 @@ const pageSchema = new mongoose.Schema({
 // apply plugins
 pageSchema.plugin(uniqueValidator);
 
-/**
- * The Exception class thrown when the user has no grant to see the page
- *
- * @class UserHasNoGrantException
- */
-class UserHasNoGrantException {
-  constructor(message, user) {
-    this.name = this.constructor.name;
-    this.message = message;
-    this.user = user;
-  }
-}
 
 class PageQueryBuilder {
   constructor(query) {
