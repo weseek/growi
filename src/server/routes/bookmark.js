@@ -46,7 +46,7 @@ module.exports = function(crowi, app) {
   actions.api.add = function(req, res) {
     var pageId = req.body.page_id;
 
-    Page.findPageByIdAndGrantedUser(pageId, req.user)
+    Page.findByIdAndGrantedUser(pageId, req.user)
     .then(function(pageData) {
       if (pageData) {
         return Bookmark.add(pageData, req.user);

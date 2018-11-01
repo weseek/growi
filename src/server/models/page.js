@@ -445,15 +445,11 @@ module.exports = function(crowi) {
     });
   };
 
-  pageSchema.statics.findOneById = async function(id) {
-    return this.findOne({_id: id});
-  };
-
   /**
    * @param {string} id ObjectId
    * @param {User} user User instance
    */
-  pageSchema.statics.findOneByIdAndViewer = async function(id, user) {
+  pageSchema.statics.findByIdAndViewer = async function(id, user) {
     validateCrowi();
 
     // const Page = this;
@@ -469,6 +465,40 @@ module.exports = function(crowi) {
     queryBuilder.addConditionToFilteringByViewer(user, userGroups);
 
     return await queryBuilder.query.exec();
+  };
+
+  // find page by path
+  pageSchema.statics.findByPath = function(path) {
+    if (path == null) {
+      return null;
+    }
+    return this.findOne({path});
+  };
+
+  pageSchema.statics.findByPathAndViewer = async function(path, user) {
+    validateCrowi();
+
+    if (path == null) {
+      throw new Error('path is required.');
+    }
+
+    // const Page = this;
+    const baseQuery = this.findOne({path});
+
+    const UserGroupRelation = crowi.model('UserGroupRelation');
+    let userGroups = [];
+    if (user != null) {
+      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
+    }
+
+    const queryBuilder = new PageQueryBuilder(baseQuery);
+    queryBuilder.addConditionToFilteringByViewer(user, userGroups);
+
+    return await queryBuilder.query.exec();
+  };
+
+  pageSchema.statics.findByRedirectTo = function(path) {
+    return this.findOne({redirectTo: path});
   };
 
   /**
@@ -551,36 +581,6 @@ module.exports = function(crowi) {
     return templateBody;
   };
 
-  // find page by path
-  pageSchema.statics.findPageByPath = function(path) {
-    if (path == null) {
-      return null;
-    }
-    return this.findOne({path});
-  };
-
-  pageSchema.statics.findPageByPathAndViewer = async function(path, user) {
-    validateCrowi();
-
-    if (path == null) {
-      throw new Error('path is required.');
-    }
-
-    // const Page = this;
-    const baseQuery = this.findOne({path});
-
-    const UserGroupRelation = crowi.model('UserGroupRelation');
-    let userGroups = [];
-    if (user != null) {
-      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
-    }
-
-    const queryBuilder = new PageQueryBuilder(baseQuery);
-    queryBuilder.addConditionToFilteringByViewer(user, userGroups);
-
-    return await queryBuilder.query.exec();
-  };
-
   pageSchema.statics.findListByPageIds = function(ids, options) {
     validateCrowi();
 
@@ -613,20 +613,6 @@ module.exports = function(crowi) {
 
           return resolve(data);
         });
-      });
-    });
-  };
-
-  pageSchema.statics.findPageByRedirectTo = function(path) {
-    var Page = this;
-
-    return new Promise(function(resolve, reject) {
-      Page.findOne({redirectTo: path}, function(err, pageData) {
-        if (err || pageData === null) {
-          return reject(err);
-        }
-
-        return resolve(pageData);
       });
     });
   };
@@ -975,7 +961,7 @@ module.exports = function(crowi) {
     let savedPage = await pageData.save();
     const newRevision = await Revision.prepareRevision(pageData, body, user);
     const revision = await pushRevision(savedPage, newRevision, user, grant, grantUserGroupId);
-    savedPage = await Page.findPageByPath(revision.path).populate('revision').populate('creator');
+    savedPage = await Page.findByPath(revision.path).populate('revision').populate('creator');
 
     if (isSyncRevisionToHackmd) {
       savedPage = await Page.syncRevisionToHackmd(savedPage);
@@ -1042,15 +1028,18 @@ module.exports = function(crowi) {
   pageSchema.statics.revertDeletedPage = async function(page, user, options) {
     const newPath = this.getRevertDeletedPageName(page.path);
 
-    // 削除時、元ページの path には必ず redirectTo 付きで、ページが作成される。
-    // そのため、そいつは削除してOK
-    // が、redirectTo ではないページが存在している場合それは何かがおかしい。(データ補正が必要)
-    const originPage = await this.findPageByPath(newPath);
-    if (originPage.redirectTo !== page.path) {
-      throw new Error('The new page of to revert is exists and the redirect path of the page is not the deleted page.');
+    const originPage = await this.findByPath(newPath);
+    if (originPage != null) {
+      // 削除時、元ページの path には必ず redirectTo 付きで、ページが作成される。
+      // そのため、そいつは削除してOK
+      // が、redirectTo ではないページが存在している場合それは何かがおかしい。(データ補正が必要)
+      if (originPage.redirectTo !== page.path) {
+        throw new Error('The new page of to revert is exists and the redirect path of the page is not the deleted page.');
+      }
+
+      await this.completelyDeletePage(originPage, options);
     }
 
-    await this.completelyDeletePage(originPage, options);
     await this.updatePageProperty(page, {status: STATUS_PUBLISHED, lastUpdateUser: user});
 
     page.status = STATUS_PUBLISHED;
@@ -1078,44 +1067,31 @@ module.exports = function(crowi) {
   /**
    * This is danger.
    */
-  pageSchema.statics.completelyDeletePage = function(pageData, user, options = {}) {
+  pageSchema.statics.completelyDeletePage = async function(pageData, user, options = {}) {
     validateCrowi();
 
     // Delete Bookmarks, Attachments, Revisions, Pages and emit delete
     const Bookmark = crowi.model('Bookmark')
-      , Attachment = crowi.model('Attachment')
-      , Comment = crowi.model('Comment')
-      , Revision = crowi.model('Revision')
-      , PageGroupRelation = crowi.model('PageGroupRelation')
-      , Page = this
-      , pageId = pageData._id
-      , socketClientId = options.socketClientId || null
-      ;
+    const Attachment = crowi.model('Attachment');
+    const Comment = crowi.model('Comment');
+    const Revision = crowi.model('Revision');
+    const PageGroupRelation = crowi.model('PageGroupRelation');
+    const pageId = pageData._id;
+    const socketClientId = options.socketClientId || null;
 
     debug('Completely delete', pageData.path);
 
-    return new Promise(function(resolve, reject) {
-      Bookmark.removeBookmarksByPageId(pageId)
-      .then(function(done) {
-      }).then(function(done) {
-        return Attachment.removeAttachmentsByPageId(pageId);
-      }).then(function(done) {
-        return Comment.removeCommentsByPageId(pageId);
-      }).then(function(done) {
-        return Revision.removeRevisionsByPath(pageData.path);
-      }).then(function(done) {
-        return Page.removePageById(pageId);
-      }).then(function(done) {
-        return Page.removeRedirectOriginPageByPath(pageData.path);
-      }).then(function(done) {
-        return PageGroupRelation.removeAllByPage(pageData);
-      }).then(function(done) {
-        if (socketClientId != null) {
-          pageEvent.emit('delete', pageData, user, socketClientId); // update as renamed page
-        }
-        resolve(pageData);
-      }).catch(reject);
-    });
+    await Bookmark.removeBookmarksByPageId(pageId);
+    await Attachment.removeAttachmentsByPageId(pageId);
+    await Comment.removeCommentsByPageId(pageId);
+    await Revision.removeRevisionsByPath(pageData.path);
+    await this.findByIdAndRemove(pageId);
+    await this.removeRedirectOriginPageByPath(pageData.path);
+    await PageGroupRelation.removeAllByPage(pageData);
+    if (socketClientId != null) {
+      pageEvent.emit('delete', pageData, user, socketClientId); // update as renamed page
+    }
+    return pageData;
   };
 
   pageSchema.statics.completelyDeletePageRecursively = function(pageData, user, options = {}) {
@@ -1139,28 +1115,11 @@ module.exports = function(crowi) {
     });
   };
 
-  pageSchema.statics.removePageById = function(pageId) {
-    var Page = this;
-
-    return new Promise(function(resolve, reject) {
-      Page.remove({_id: pageId}, function(err, done) {
-        debug('Remove phisiaclly, the page', pageId, err, done);
-        if (err) {
-          return reject(err);
-        }
-
-        resolve(done);
-      });
-    });
-  };
-
-  pageSchema.statics.removePageByPath = function(pagePath) {
-    var Page = this;
-
-    return Page.findPageByPath(pagePath)
-      .then(function(pageData) {
-        return Page.removePageById(pageData.id);
-      });
+  pageSchema.statics.removeByPath = function(path) {
+    if (path == null) {
+      throw new Error('path is required');
+    }
+    return this.findOneAndRemove({ path }).exec();
   };
 
   /**
@@ -1173,22 +1132,22 @@ module.exports = function(crowi) {
    *
    * @param {string} pagePath
    */
-  pageSchema.statics.removeRedirectOriginPageByPath = function(pagePath) {
-    var Page = this;
+  pageSchema.statics.removeRedirectOriginPageByPath = async function(pagePath) {
+    const isExist = await this.count({ path: pagePath }) > 0;
+    if (!isExist) {
+      return;
+    }
 
-    return Page.findPageByRedirectTo(pagePath)
-      .then((redirectOriginPageData) => {
-        // remove
-        return Page.removePageById(redirectOriginPageData.id)
-          // remove recursive
-          .then(() => {
-            return Page.removeRedirectOriginPageByPath(redirectOriginPageData.path);
-          });
-      })
-      .catch((err) => {
-        // do nothing if origin page doesn't exist
-        return Promise.resolve();
-      });
+    const redirectPage = await this.findByRedirectTo(pagePath);
+
+    if (redirectPage == null) {
+      return;
+    }
+
+    // remove
+    await this.findByIdAndRemove(redirectPage.id);
+    // remove recursive
+    await this.removeRedirectOriginPageByPath(redirectPage.path);
   };
 
   pageSchema.statics.rename = async function(pageData, newPagePath, user, options) {

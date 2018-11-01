@@ -317,10 +317,10 @@ describe('Page', () => {
   });
 
   describe('.findPage', () => {
-    context('findPageById', () => {
+    context('findById', () => {
       it('should find page', done => {
         const pageToFind = createdPages[0];
-        Page.findPageById(pageToFind._id)
+        Page.findById(pageToFind._id)
         .then(pageData => {
           expect(pageData.path).to.equal(pageToFind.path);
           done();
@@ -328,11 +328,11 @@ describe('Page', () => {
       });
     });
 
-    context('findPageByIdAndGrantedUser', () => {
+    context('findByIdAndGrantedUser', () => {
       it('should find page', done => {
         const pageToFind = createdPages[0];
         const grantedUser = createdUsers[0];
-        Page.findPageByIdAndGrantedUser(pageToFind._id, grantedUser)
+        Page.findByIdAndGrantedUser(pageToFind._id, grantedUser)
         .then((pageData) => {
           expect(pageData.path).to.equal(pageToFind.path);
           done();
@@ -345,7 +345,7 @@ describe('Page', () => {
       it('should error by grant', done => {
         const pageToFind = createdPages[0];
         const grantedUser = createdUsers[1];
-        Page.findPageByIdAndGrantedUser(pageToFind._id, grantedUser)
+        Page.findByIdAndGrantedUser(pageToFind._id, grantedUser)
         .then(pageData => {
           done(new Error());
         }).catch(err => {
@@ -355,11 +355,11 @@ describe('Page', () => {
       });
     });
 
-    context('findPageByIdAndGrantedUser granted userGroup', () => {
+    context('findByIdAndGrantedUser granted userGroup', () => {
       it('should find page', done => {
         const pageToFind = createdPages[6];
         const grantedUser = createdUsers[0];
-        Page.findPageByIdAndGrantedUser(pageToFind._id, grantedUser)
+        Page.findByIdAndGrantedUser(pageToFind._id, grantedUser)
         .then(pageData => {
           expect(pageData.path).to.equal(pageToFind.path);
           done();
@@ -372,7 +372,7 @@ describe('Page', () => {
       it('should error by grant userGroup', done => {
         const pageToFind = createdPages[6];
         const grantedUser = createdUsers[2];
-        Page.findPageByIdAndGrantedUser(pageToFind._id, grantedUser)
+        Page.findByIdAndGrantedUser(pageToFind._id, grantedUser)
           .then(pageData => {
             done(new Error());
           }).catch(err => {

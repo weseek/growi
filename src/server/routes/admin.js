@@ -606,7 +606,7 @@ module.exports = function(crowi, app) {
       return ExternalAccount.remove({user: userData}).then(() => userData);
     })
     .then((userData) => {
-      return Page.removePageByPath(`/user/${username}`).then(() => userData);
+      return Page.removeByPath(`/user/${username}`).then(() => userData);
     })
     .then((userData) => {
       req.flash('successMessage', `${username} さんのアカウントを削除しました`);

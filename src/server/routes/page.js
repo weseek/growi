@@ -173,7 +173,7 @@ module.exports = function(crowi, app) {
     let path = getPathFromRequest(req);
     const revisionId = req.query.revision;
 
-    let page = await Page.findPageByPathAndViewer(path, req.user);
+    let page = await Page.findByPathAndViewer(path, req.user);
 
     if (page == null) {
       next();
@@ -194,7 +194,7 @@ module.exports = function(crowi, app) {
     // check whether this page has portal page
     const potalPagePath = `${path}/`;
 
-    let potalPage = await Page.findPageByPathAndViewer(potalPagePath, req.user);
+    let potalPage = await Page.findByPathAndViewer(potalPagePath, req.user);
 
     const limit = 50;
     const offset = parseInt(req.query.offset)  || 0;
@@ -220,7 +220,7 @@ module.exports = function(crowi, app) {
     // check whether this page has portal page
     const potalPagePath = `${path}/`;
 
-    let potalPage = await Page.findPageByPathAndViewer(potalPagePath, req.user);
+    let potalPage = await Page.findByPathAndViewer(potalPagePath, req.user);
 
     if (potalPage != null) {
       logger.debug('The portal page is found when processing showPageForCrowiBehavior', potalPage._id, potalPage.path);
@@ -235,7 +235,7 @@ module.exports = function(crowi, app) {
     const path = getPathFromRequest(req);
     const revisionId = req.query.revision;
 
-    let page = await Page.findPageByPathAndViewer(path, req.user);
+    let page = await Page.findByPathAndViewer(path, req.user);
 
     if (page == null) {
       // check the page is forbidden or just does not exist.
@@ -473,7 +473,7 @@ module.exports = function(crowi, app) {
   actions.redirector = async function(req, res) {
     const id = req.params.id;
 
-    const page = await Page.findOneByIdAndViewer(id, req.user);
+    const page = await Page.findByIdAndViewer(id, req.user);
 
     if (page != null) {
       return res.redirect(pagePathUtils.encodePagePath(page.path));
@@ -618,7 +618,7 @@ module.exports = function(crowi, app) {
     }
 
     let previousRevision = undefined;
-    let updatedPage = await Page.findOneByIdAndViewer(pageId, req.user)
+    let updatedPage = await Page.findByIdAndViewer(pageId, req.user)
       .then(function(pageData) {
         if (pageData && revisionId !== null && !pageData.isUpdatable(revisionId)) {
           throw new Error('Posted param "revisionId" is outdated.');
@@ -672,7 +672,6 @@ module.exports = function(crowi, app) {
   api.get = async function(req, res) {
     const pagePath = req.query.path || null;
     const pageId = req.query.page_id || null; // TODO: handling
-    const revisionId = req.query.revision_id || null;
 
     if (!pageId && !pagePath) {
       return res.json(ApiResponse.error(new Error('Parameter path or page_id is required.')));
@@ -681,10 +680,10 @@ module.exports = function(crowi, app) {
     let page;
     try {
       if (pageId) { // prioritized
-        page = await Page.findOneByIdAndViewer(pageId, req.user);
+        page = await Page.findByIdAndViewer(pageId, req.user);
       }
       else if (pagePath) {
-        page = await Page.findPageByPathAndViewer(pagePath, req.user);
+        page = await Page.findByPathAndViewer(pagePath, req.user);
       }
       // https://weseek.myjetbrains.com/youtrack/issue/GC-1224
       // TODO populate for backward compatibility
@@ -717,7 +716,7 @@ module.exports = function(crowi, app) {
 
     let page;
     try {
-      page = await Page.findOneByIdAndViewer(pageId, req.user);
+      page = await Page.findByIdAndViewer(pageId, req.user);
       if (req.user != null) {
         page = await page.seen(req.user);
       }
@@ -751,7 +750,7 @@ module.exports = function(crowi, app) {
 
     let page;
     try {
-      page = await Page.findOneByIdAndViewer(pageId, req.user);
+      page = await Page.findByIdAndViewer(pageId, req.user);
       page = await page.like(req.user);
     }
     catch (err) {
@@ -790,7 +789,7 @@ module.exports = function(crowi, app) {
 
     let page;
     try {
-      page = await Page.findOneByIdAndViewer(pageId, req.user);
+      page = await Page.findByIdAndViewer(pageId, req.user);
       page = await page.unlike(req.user);
     }
     catch (err) {
@@ -852,7 +851,7 @@ module.exports = function(crowi, app) {
 
     const options = {socketClientId};
 
-    let page = await Page.findOneByIdAndViewer(pageId, req.user);
+    let page = await Page.findByIdAndViewer(pageId, req.user);
 
     if (page == null) {
       return res.json(ApiResponse.error('The page does not exist.'));
@@ -883,7 +882,7 @@ module.exports = function(crowi, app) {
       }
     }
     catch (err) {
-      logger.error('Error occured while get setting', err, err.stack);
+      logger.error('Error occured while get setting', err);
       return res.json(ApiResponse.error('Failed to delete page.'));
     }
 
@@ -913,7 +912,7 @@ module.exports = function(crowi, app) {
 
     let page;
     try {
-      page = await Page.findOneByIdAndViewer(pageId, req.user);
+      page = await Page.findByIdAndViewer(pageId, req.user);
       if (page == null) {
         throw new Error('The page is not found or the user does not have permission');
       }
@@ -926,7 +925,7 @@ module.exports = function(crowi, app) {
       }
     }
     catch (err) {
-      logger.error('Error occured while get setting', err, err.stack);
+      logger.error('Error occured while get setting', err);
       return res.json(ApiResponse.error('Failed to revert deleted page.'));
     }
 
@@ -962,14 +961,14 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error(`このページ名は作成できません (${newPagePath})`));
     }
 
-    Page.findPageByPath(newPagePath)
+    Page.findByPath(newPagePath)
     .then(function(page) {
       if (page != null) {
         // if page found, cannot cannot rename to that path
         return res.json(ApiResponse.error(`このページ名は作成できません (${newPagePath})。ページが存在します。`));
       }
 
-      Page.findPageById(pageId)
+      Page.findById(pageId)
       .then(function(pageData) {
         page = pageData;
         if (!pageData.isUpdatable(previousRevision)) {
@@ -1014,7 +1013,7 @@ module.exports = function(crowi, app) {
     const pageId = req.body.page_id;
     const newPagePath = Page.normalizePath(req.body.new_path);
 
-    Page.findPageById(pageId)
+    Page.findById(pageId)
       .then(function(pageData) {
         req.body.path = newPagePath;
         req.body.body = pageData.revision.body;
@@ -1035,7 +1034,7 @@ module.exports = function(crowi, app) {
   api.unlink = function(req, res) {
     const pageId = req.body.page_id;
 
-    Page.findPageByIdAndGrantedUser(pageId, req.user)
+    Page.findByIdAndGrantedUser(pageId, req.user)
     .then(function(pageData) {
       debug('Unlink page', pageData._id, pageData.path);
 
@@ -1060,7 +1059,7 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('param \'pageId\' must not be null'));
     }
 
-    const page = await Page.findPageById(pageId);
+    const page = await Page.findById(pageId);
     if (page == null) {
       return res.json(ApiResponse.error(`Page (id='${pageId}') does not exist`));
     }
