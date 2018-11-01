@@ -7,7 +7,7 @@ import Button from 'react-bootstrap/es/Button';
 import MarkdownTable from '../../models/MarkdownTable';
 import Collapse from 'react-bootstrap/es/Collapse';
 
-export default class TableDataImportForm extends React.Component {
+export default class MarkdownTableDataImportForm extends React.Component {
 
   constructor(props) {
     super(props);
@@ -79,7 +79,7 @@ export default class TableDataImportForm extends React.Component {
   }
 }
 
-TableDataImportForm.propTypes = {
+MarkdownTableDataImportForm.propTypes = {
   onCancel: PropTypes.func,
   onImport: PropTypes.func
 };
