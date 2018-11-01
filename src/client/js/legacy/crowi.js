@@ -471,8 +471,7 @@ $(function() {
         $('#delete-errors').addClass('alert-danger');
       }
       else {
-        const page = res.page;
-        top.location.href = page.path + '?unlinked=true';
+        top.location.href = res.path + '?unlinked=true';
       }
     });
 

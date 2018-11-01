@@ -1040,9 +1040,8 @@ module.exports = function(crowi, app) {
       logger.error('Error occured while get setting', err);
       return res.json(ApiResponse.error('Failed to delete redirect page.'));
     }
-    const result = {};
-    result.page = page;   // TODO consider to use serializeToObj method -- 2018.08.06 Yuki Takei
 
+    const result = { path };
     return res.json(ApiResponse.success(result));
   };
 
