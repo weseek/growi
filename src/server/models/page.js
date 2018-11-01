@@ -817,20 +817,6 @@ module.exports = function(crowi) {
     return q;
   };
 
-  pageSchema.statics.updatePageProperty = function(page, updateData) {
-    var Page = this;
-    return new Promise(function(resolve, reject) {
-      // TODO foreach して save
-      Page.update({_id: page._id}, {$set: updateData}, function(err, data) {
-        if (err) {
-          return reject(err);
-        }
-
-        return resolve(data);
-      });
-    });
-  };
-
   // Instance method でいいのでは
   pageSchema.statics.pushToGrantedUsers = function(page, userData) {
 
@@ -978,8 +964,8 @@ module.exports = function(crowi) {
         return Page.completelyDeletePage(pageData, user, options);
       }
 
-      let updatedPageData = await Page.rename(pageData, newPath, user, {createRedirectPage: true});
-      await Page.updatePageProperty(updatedPageData, {status: STATUS_DELETED, lastUpdateUser: user});
+      pageData.status = STATUS_DELETED;
+      const updatedPageData = await Page.rename(pageData, newPath, user, {createRedirectPage: true});
 
       if (socketClientId != null) {
         pageEvent.emit('delete', updatedPageData, user, socketClientId);
@@ -1033,15 +1019,12 @@ module.exports = function(crowi) {
       await this.completelyDeletePage(originPage, options);
     }
 
-    await this.updatePageProperty(page, {status: STATUS_PUBLISHED, lastUpdateUser: user});
-
     page.status = STATUS_PUBLISHED;
+    page.lastUpdateUser = user;
+    debug('Revert deleted the page', page, newPath);
+    const updatedPage = await this.rename(page, newPath, user, {});
 
-    debug('Revert deleted the page, and rename again it', page, newPath);
-    await this.rename(page, newPath, user, {});
-    page.path = newPath;
-
-    return page;
+    return updatedPage;
   };
 
   pageSchema.statics.revertDeletedPageRecursively = async function(page, user, options = {}) {
@@ -1151,8 +1134,13 @@ module.exports = function(crowi) {
     // sanitize path
     newPagePath = crowi.xss.process(newPagePath);
 
-    await Page.updatePageProperty(pageData, {updatedAt: Date.now(), path: newPagePath, lastUpdateUser: user});
-    // reivisions の path を変更
+    // update Page
+    pageData.path = newPagePath;
+    pageData.lastUpdateUser = user;
+    pageData.updatedAt = Date.now();
+    const updatedPageData = await pageData.save();
+
+    // update Rivisions
     await Revision.updateRevisionListByPath(path, {path: newPagePath}, {});
 
     if (createRedirectPage) {
@@ -1160,7 +1148,6 @@ module.exports = function(crowi) {
       await Page.create(path, body, user, {redirectTo: newPagePath});
     }
 
-    let updatedPageData = await Page.findOne({path: newPagePath});
     pageEvent.emit('delete', pageData, user, socketClientId);
     pageEvent.emit('create', updatedPageData, user, socketClientId);
 
