@@ -299,6 +299,9 @@ module.exports = function(crowi) {
   };
 
   configSchema.statics.isEnabledPassportSaml = function(config) {
+    if (process.env.SAML_ENABLED != null) {   // prioritize env var
+      return process.env.SAML_ENABLED.match(/^(true|1)$/);
+    }
     const key = 'security:passport-saml:isEnabled';
     return getValueForCrowiNS(config, key);
   };
