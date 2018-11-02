@@ -199,11 +199,11 @@
                   <i class="icon-settings"></i> <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu" role="menu">
-                  <form id="form_removeFromGroup_{{ sUser.id }}" action="/admin/user-group-relation/{{userGroup._id.toString()}}/remove-relation/{{ sRelation._id.toString() }}" method="post">
+                  <form id="form_removeFromGroup_{{ loop.index }}" action="/admin/user-group-relation/{{userGroup._id.toString()}}/remove-relation/{{ sRelation._id.toString() }}" method="post">
                     <input type="hidden" name="_csrf" value="{{ csrf() }}">
                   </form>
                   <li>
-                    <a href="javascript:form_removeFromGroup_{{ sUser.id }}.submit()">
+                    <a href="javascript:form_removeFromGroup_{{ loop.index }}.submit()">
                       <i class="icon-fw icon-user-unfollow"></i> グループから外す
                     </a>
                   </li>
