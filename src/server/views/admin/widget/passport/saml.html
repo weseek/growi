@@ -3,21 +3,27 @@
   <legend class="alert-anchor">{{ t("security_setting.SAML.name") }} {{ t("security_setting.configuration") }}</legend>
 
   {% set nameForIsSamlEnabled = "settingForm[security:passport-saml:isEnabled]" %}
-  {% set isSamlEnabled = settingForm['security:passport-saml:isEnabled'] %}
+  {% set isPassportSamlAbilitySetByEnvvar = isPassportSamlAbilitySetByEnvvar() %}
+  {% set isSamlEnabled = passportSamlLoginEnabled() %}
 
   <div class="form-group">
     <label for="{{nameForIsSamlEnabled}}" class="col-xs-3 control-label">{{ t("security_setting.SAML.name") }}</label>
     <div class="col-xs-6">
-      <div class="btn-group btn-toggle" data-toggle="buttons">
-        <label class="btn btn-default btn-rounded btn-outline {% if isSamlEnabled %}active{% endif %}" data-active-class="primary">
-          <input name="{{nameForIsSamlEnabled}}" value="true" type="radio"
-              {% if true === isSamlEnabled %}checked{% endif %}> ON
-        </label>
-        <label class="btn btn-default btn-rounded btn-outline {% if !isSamlEnabled %}active{% endif %}" data-active-class="default">
-          <input name="{{nameForIsSamlEnabled}}" value="false" type="radio"
-              {% if !isSamlEnabled %}checked{% endif %}> OFF
-        </label>
-      </div>
+      {% if isPassportSamlAbilitySetByEnvvar %}
+        <h5>{% if isSamlEnabled %}ON{% else %}OFF{% endif %}</h5>
+        <p class="help-block"><small>Unset <code>SAML_ENABLED</code> env var in order to configure Enable/Disable from this page.</small></p>
+      {% else %}
+        <div class="btn-group btn-toggle" data-toggle="buttons">
+          <label class="btn btn-default btn-rounded btn-outline {% if isSamlEnabled %}active{% endif %}" data-active-class="primary">
+            <input name="{{nameForIsSamlEnabled}}" value="true" type="radio"
+                {% if true === isSamlEnabled %}checked{% endif %}> ON
+          </label>
+          <label class="btn btn-default btn-rounded btn-outline {% if !isSamlEnabled %}active{% endif %}" data-active-class="default">
+            <input name="{{nameForIsSamlEnabled}}" value="false" type="radio"
+                {% if !isSamlEnabled %}checked{% endif %}> OFF
+          </label>
+        </div>
+      {% endif %}
     </div>
   </div>
   <fieldset id="passport-saml-hide-when-disabled" {%if !isSamlEnabled %}style="display: none;"{% endif %}>
@@ -193,4 +199,3 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
     }
   });
 </script>
-

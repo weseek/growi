@@ -81,9 +81,13 @@ module.exports = function(crowi, app, req, locals) {
     return Config.isEnabledPassport(config) && Config.isEnabledPassportLdap(config) && !passportService.isLdapStrategySetup;
   };
 
+  locals.isPassportSamlAbilitySetByEnvvar = function() {
+    return process.env.SAML_ENABLED != null;
+  };
+
   locals.passportSamlLoginEnabled = function() {
-    let config = crowi.getConfig();
-    return locals.isEnabledPassport() && config.crowi['security:passport-saml:isEnabled'];
+    const config = crowi.getConfig();
+    return locals.isEnabledPassport() && Config.isEnabledPassportSaml(config);
   };
 
   locals.googleLoginEnabled = function() {
