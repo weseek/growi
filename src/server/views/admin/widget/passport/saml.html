@@ -9,8 +9,17 @@
   <div class="form-group">
     <label for="{{nameForIsSamlEnabled}}" class="col-xs-3 control-label">{{ t("security_setting.SAML.name") }}</label>
     <div class="col-xs-6">
-      {% if isPassportSamlAbilitySetByEnvvar %}
-        <h5>{% if isSamlEnabled %}ON{% else %}OFF{% endif %}</h5>
+      {% if !isPassportSamlAbilitySetByEnvvar %}
+        <div class="btn-group btn-group-disabled btn-toggle" data-toggle="buttons">
+          <label class="btn btn-default btn-rounded btn-outline {% if isSamlEnabled %}active{% endif %}" data-active-class="primary" disabled>
+            <input name="{{nameForIsSamlEnabled}}" value="true" type="radio"
+                {% if true === isSamlEnabled %}checked{% endif %}> ON
+          </label>
+          <label class="btn btn-default btn-rounded btn-outline {% if !isSamlEnabled %}active{% endif %}" data-active-class="default" disabled>
+            <input name="{{nameForIsSamlEnabled}}" value="false" type="radio"
+                {% if !isSamlEnabled %}checked{% endif %}> OFF
+          </label>
+        </div>
         <p class="help-block"><small>Unset <code>SAML_ENABLED</code> env var in order to configure Enable/Disable from this page.</small></p>
       {% else %}
         <div class="btn-group btn-toggle" data-toggle="buttons">
@@ -197,5 +206,10 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
     else {
       $('#passport-saml-hide-when-disabled').hide(400);
     }
+  });
+
+  // prevent click event for .btn-group-disabled
+  $('.btn-group-disabled').on('click', '.btn', function(event) {
+    return false;
   });
 </script>

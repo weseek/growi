@@ -79,6 +79,13 @@
     .btn.active[data-active-class="primary"] {
       @include active-color($btn-primary-color, $btn-primary-bg, $btn-primary-border);
     }
+
+    // disabled btn-group styles
+    &.btn-group-disabled {
+      .btn:hover {
+        background-color: unset;
+      }
+    }
   }
 
   // theme selector
