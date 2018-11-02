@@ -100,11 +100,11 @@
                 </button>
                 <ul class="dropdown-menu" role="menu">
                   <li class="dropdown-header">{{ t('user_management.Edit menu') }}</li>
-                  <form id="form_remove_{{ account.accountId }}" action="/admin/users/external-accounts/{{ account.accountId }}/remove" method="post">
+                  <form id="form_remove_{{ loop.index }}" action="/admin/users/external-accounts/{{ account.accountId }}/remove" method="post">
                     <input type="hidden" name="_csrf" value="{{ csrf() }}">
                   </form>
                   <li>
-                    <a href="javascript:form_remove_{{ account.accountId }}.submit()">
+                    <a href="javascript:form_remove_{{ loop.index }}.submit()">
                       <i class="icon-fw icon-fire text-danger"></i>
                       削除する
                     </a>
