@@ -80,11 +80,18 @@ module.exports = function(crowi, app) {
 
     const providerId = 'ldap';
     const strategyName = 'ldapauth';
-    const ldapAccountInfo = await promisifiedPassportAuthentication(req, res, next, strategyName);
+    let ldapAccountInfo;
+
+    try {
+      ldapAccountInfo = await promisifiedPassportAuthentication(strategyName, req, res);
+    }
+    catch (err) {
+      return next(err);
+    }
 
     // check groups for LDAP
     if (!isValidLdapUserByGroupFilter(ldapAccountInfo)) {
-      return loginFailure(req, res, next);
+      return next();
     }
 
     /*
@@ -108,7 +115,7 @@ module.exports = function(crowi, app) {
 
     const externalAccount = await getOrCreateUser(req, res, next, userInfo, providerId);
     if (!externalAccount) {
-      return loginFailure(req, res, next);
+      return next();
     }
 
     const user = await externalAccount.getPopulatedUser();
@@ -361,7 +368,7 @@ module.exports = function(crowi, app) {
     });
   };
 
-  const promisifiedPassportAuthentication = (req, res, next, strategyName) => {
+  const promisifiedPassportAuthentication = (strategyName, req, res) => {
     return new Promise((resolve, reject) => {
       passport.authenticate(strategyName, (err, response, info) => {
         if (res.headersSent) {  // dirty hack -- 2017.09.25
@@ -372,20 +379,19 @@ module.exports = function(crowi, app) {
 
         if (err) {
           logger.error(`'${strategyName}' passport authentication error: `, err);
-          req.flash('warningMessage', `Error occured in '${strategyName}' passport authentication`);  // pass and the flash message is displayed when all of authentications are failed.
-          return next(req, res);
-        }
-
-        // authentication failure
-        if (!response) {
-          return next(req, res);
+          reject(err);
         }
 
         logger.debug('response', response);
         logger.debug('info', info);
 
+        // authentication failure
+        if (!response) {
+          reject(response);
+        }
+
         resolve(response);
-      })(req, res, next);
+      })(req, res);
     });
   };
 
