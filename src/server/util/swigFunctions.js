@@ -50,6 +50,14 @@ module.exports = function(crowi, app, req, locals) {
   };
 
   /**
+   * return system language
+   */
+  locals.systemLang = function() {
+    const config = crowi.getConfig();
+    return Config.systemLang(config);
+  };
+
+  /**
    * return true if enabled
    */
   locals.isEnabledPassport = function() {
