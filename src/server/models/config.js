@@ -611,6 +611,7 @@ module.exports = function(crowi) {
       },
       recentCreatedLimit: Config.showRecentCreatedNumber(config),
       isAclEnabled: !Config.isPublicWikiOnly(config),
+      systemLang: Config.systemLang(config),
     };
 
     return local_config;
