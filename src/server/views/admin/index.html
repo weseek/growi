@@ -72,6 +72,30 @@
         </tr>
         {% endfor %}
       </table>
+
+      <legend>
+        <h2>{{ t('admin_top.Language') }}</h2>
+      </legend>
+      <div class="form-group {% if not user.lang %}has-error{% endif %}">
+        <label for="userForm[lang]" class="col-sm-2 control-label">{{ t('Language') }}</label>
+        <div class="col-sm-4">
+          <div class="radio radio-primary radio-inline">
+            <input type="radio" id="radioLangEn" name="userForm[lang]" value="{{ consts.language.LANG_EN_US }}" {% if user.lang == consts.language.LANG_EN_US %}checked="checked"{% endif %}>
+            <label for="radioLangEn">{{ t('English') }}</label>
+          </div>
+          <div class="radio radio-primary radio-inline">
+            <input type="radio" id="radioLangJa" name="userForm[lang]" value="{{ consts.language.LANG_JA }}" {% if user.lang == consts.language.LANG_JA %}checked="checked"{% endif %}>
+            <label for="radioLangJa">{{ t('Japanese') }}</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+          <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
+        </div>
+      </div>
+
     </div>
   </div>
 
