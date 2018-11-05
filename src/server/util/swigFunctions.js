@@ -50,11 +50,11 @@ module.exports = function(crowi, app, req, locals) {
   };
 
   /**
-   * return system language
+   * return app-global language
    */
-  locals.systemLang = function() {
+  locals.appGlobalLang = function() {
     const config = crowi.getConfig();
-    return Config.systemLang(config);
+    return Config.globalLang(config);
   };
 
   /**
