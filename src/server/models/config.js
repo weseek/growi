@@ -284,6 +284,11 @@ module.exports = function(crowi) {
     return getValueForCrowiNS(config, key) || 'GROWI';
   };
 
+  configSchema.statics.systemLang = function(config) {
+    const key = 'app:systemLang';
+    return getValueForCrowiNS(config, key);
+  };
+
   configSchema.statics.isEnabledPassport = function(config) {
     // always true if growi installed cleanly
     if (Object.keys(config.crowi).length == 0) {
