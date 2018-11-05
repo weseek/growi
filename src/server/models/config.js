@@ -53,6 +53,7 @@ module.exports = function(crowi) {
       'app:confidential'  : '',
 
       'app:fileUpload'    : false,
+      'app:systemLang'    : 'en',
 
       'security:restrictGuestMode'      : 'Deny',
 
