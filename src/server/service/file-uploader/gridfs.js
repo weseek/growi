@@ -9,8 +9,6 @@ module.exports = function(crowi) {
   var fs = require('fs');
   var lib = {};
   var AttachmentFile = {};
-  const express = require('express');
-  const router = express.Router();
 
   // instantiate mongoose-gridfs
   var gridfs = require('mongoose-gridfs')({
@@ -35,7 +33,7 @@ module.exports = function(crowi) {
   // create or save a file
   lib.uploadFile = async function(filePath, contentType, fileStream, options) {
     debug('File uploading: ' + filePath);
-    await AttachmentFile.write({filename: filePath, contentType: contentType}, fileStream,
+    AttachmentFile.write({filename: filePath, contentType: contentType}, fileStream,
       function(error, createdFile) {
         if (error) {
           throw new Error('Failed to upload ' + createdFile + 'to gridFS', error);
@@ -99,7 +97,10 @@ module.exports = function(crowi) {
 
 
   lib.generateUrl = function(filePath) {
-    const url = `http://localhost:3000/_api/attachments.getMongo?filePath=${filePath}`; // [TODO]パス変更
+    var config = crowi.getConfig();
+    var baseUrl = (config.crowi['app:siteUrl:fixed'] || '');
+
+    const url = `${baseUrl}/_api/attachments.getMongo?filePath=${filePath}`;
     return url;
   };
 
