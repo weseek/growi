@@ -38,61 +38,50 @@ module.exports = function(crowi) {
         if (error) {
           throw new Error('Failed to upload ' + createdFile + 'to gridFS', error);
         }
-        return createdFile._id;
       });
   };
 
   lib.findDeliveryFile = function(fileId, filePath) {
-  //   const cacheFile = lib.createCacheFileName(fileId);
+    const cacheFile = lib.createCacheFileName(fileId);
 
-  //   debug('find delivery file', cacheFile);
-  //   if (!lib.shouldUpdateCacheFile(cacheFile)) {
-  //     return cacheFile;
-  //   }
+    debug('find delivery file', cacheFile);
+    if (!lib.shouldUpdateCacheFile(cacheFile)) {
+      return cacheFile;
+    }
 
-  //   const loader = require('https');
+    const fileStream = fs.createWriteStream(cacheFile);
+    const fileUrl = lib.generateUrl(filePath);
+    debug('Load attachement file into local cache file', fileUrl, cacheFile);
+    return cacheFile;
+  };
 
-  //   const fileStream = fs.createWriteStream(cacheFile);
-  //   const fileUrl = lib.generateUrl(filePath);
-  //   debug('Load attachement file into local cache file', fileUrl, cacheFile);
-  //   loader.get(fileUrl, function(response) {
-  //     response.pipe(fileStream, {
-  //       end: false
-  //     });
-  //     response.on('end', () => {
-  //       fileStream.end();
-  //       return cacheFile;
-  //     });
-  //   });
-  // };
+  // private
+  lib.createCacheFileName = function(fileId) {
+    return path.join(crowi.cacheDir, `attachment-${fileId}`);
+  };
 
-  // // private
-  // lib.createCacheFileName = function(fileId) {
-  //   return path.join(crowi.cacheDir, `attachment-${fileId}`);
-  // };
+  // private
+  lib.shouldUpdateCacheFile = function(filePath) {
+    try {
+      const stats = fs.statSync(filePath);
 
-  // // private
-  // lib.shouldUpdateCacheFile = function(filePath) {
-  //   try {
-  //     const stats = fs.statSync(filePath);
+      if (!stats.isFile()) {
+        debug('Cache file not found or the file is not a regular fil.');
+        return true;
+      }
 
-  //     if (!stats.isFile()) {
-  //       debug('Cache file not found or the file is not a regular fil.');
-  //       return true;
-  //     }
+      if (stats.size <= 0) {
+        debug('Cache file found but the size is 0');
+        return true;
+      }
+    }
+    catch (e) {
+      // no such file or directory
+      debug('Stats error', e);
+      return true;
+    }
 
-  //     if (stats.size <= 0) {
-  //       debug('Cache file found but the size is 0');
-  //       return true;
-  //     }
-  //   }
-  //   catch (e) {
-  //     // no such file or directory
-  //     debug('Stats error', e);
-  //     return true;
-  //   }
-
-  //   return false;
+    return false;
   };
 
 

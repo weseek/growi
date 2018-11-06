@@ -40,6 +40,10 @@ module.exports = function(crowi, app) {
             if (fileName.match(/^\/uploads/)) {
               return res.download(path.join(crowi.publicDir, fileName), data.originalName);
             }
+            // gridfs
+            else if (fileName.match(/^.*getMongo.*/)) {
+              return res.download(path.join(crowi.publicDir, fileName), data.originalName);
+            }
             // aws
             else {
               const options = {
@@ -64,16 +68,14 @@ module.exports = function(crowi, app) {
    * @apiName getAttachments
    * @apiGroup Attachment
    *
-   * @apiParam {String} attachment_path
+   * @apiParam {String} filePath
    */
   api.getMongoFile = function(req, res) {
     const filePath = req.query.filePath;
-    AttachmentFile.find({filename: filePath}, function(err, file) {
+    AttachmentFile.find({filename: filePath}, async function(err, file) {
       if (err) {
         throw new Error(err);
       }
-    })
-    .then(async function(file) {
       const id = file[0].id;
       const contentType = file[0].contentType;
       const readStream = new Promise((resolve, reject) => {
