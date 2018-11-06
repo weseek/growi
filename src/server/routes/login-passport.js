@@ -80,11 +80,18 @@ module.exports = function(crowi, app) {
 
     const providerId = 'ldap';
     const strategyName = 'ldapauth';
-    const ldapAccountInfo = await promisifiedPassportAuthentication(req, res, next, strategyName);
+    let ldapAccountInfo;
+
+    try {
+      ldapAccountInfo = await promisifiedPassportAuthentication(strategyName, req, res);
+    }
+    catch (err) {
+      return next(err);
+    }
 
     // check groups for LDAP
     if (!isValidLdapUserByGroupFilter(ldapAccountInfo)) {
-      return loginFailure(req, res, next);
+      return next();
     }
 
     /*
@@ -106,9 +113,9 @@ module.exports = function(crowi, app) {
       'email': mailToBeRegistered,
     };
 
-    const externalAccount = await getOrCreateUser(req, res, next, userInfo, providerId);
+    const externalAccount = await getOrCreateUser(req, res, userInfo, providerId);
     if (!externalAccount) {
-      return loginFailure(req, res, next);
+      return next();
     }
 
     const user = await externalAccount.getPopulatedUser();
@@ -223,13 +230,21 @@ module.exports = function(crowi, app) {
   const loginPassportGoogleCallback = async(req, res, next) => {
     const providerId = 'google';
     const strategyName = 'google';
-    const response = await promisifiedPassportAuthentication(req, res, next, strategyName);
+
+    let response;
+    try {
+      response = await promisifiedPassportAuthentication(strategyName, req, res);
+    }
+    catch (err) {
+      return loginFailure(req, res, next);
+    }
+
     const userInfo = {
       'id': response.id,
       'username': response.displayName,
       'name': `${response.name.givenName} ${response.name.familyName}`
     };
-    const externalAccount = await getOrCreateUser(req, res, next, userInfo, providerId);
+    const externalAccount = await getOrCreateUser(req, res, userInfo, providerId);
     if (!externalAccount) {
       return loginFailure(req, res, next);
     }
@@ -256,14 +271,22 @@ module.exports = function(crowi, app) {
   const loginPassportGitHubCallback = async(req, res, next) => {
     const providerId = 'github';
     const strategyName = 'github';
-    const response = await promisifiedPassportAuthentication(req, res, next, strategyName);
+
+    let response;
+    try {
+      response = await promisifiedPassportAuthentication(strategyName, req, res);
+    }
+    catch (err) {
+      return loginFailure(req, res, next);
+    }
+
     const userInfo = {
       'id': response.id,
       'username': response.username,
       'name': response.displayName
     };
 
-    const externalAccount = await getOrCreateUser(req, res, next, userInfo, providerId);
+    const externalAccount = await getOrCreateUser(req, res, userInfo, providerId);
     if (!externalAccount) {
       return loginFailure(req, res, next);
     }
@@ -290,14 +313,22 @@ module.exports = function(crowi, app) {
   const loginPassportTwitterCallback = async(req, res, next) => {
     const providerId = 'twitter';
     const strategyName = 'twitter';
-    const response = await promisifiedPassportAuthentication(req, res, next, strategyName);
+
+    let response;
+    try {
+      response = await promisifiedPassportAuthentication(strategyName, req, res);
+    }
+    catch (err) {
+      return loginFailure(req, res, next);
+    }
+
     const userInfo = {
       'id': response.id,
       'username': response.username,
       'name': response.displayName
     };
 
-    const externalAccount = await getOrCreateUser(req, res, next, userInfo, providerId);
+    const externalAccount = await getOrCreateUser(req, res, userInfo, providerId);
     if (!externalAccount) {
       return loginFailure(req, res, next);
     }
@@ -330,7 +361,14 @@ module.exports = function(crowi, app) {
     const attrMapFirstName = config.crowi['security:passport-saml:attrMapFirstName'] || 'firstName';
     const attrMapLastName = config.crowi['security:passport-saml:attrMapLastName'] || 'lastName';
 
-    const response = await promisifiedPassportAuthentication(req, res, loginFailure, strategyName);
+    let response;
+    try {
+      response = await promisifiedPassportAuthentication(strategyName, req, res);
+    }
+    catch (err) {
+      return loginFailure(req, res);
+    }
+
     const userInfo = {
       'id': response[attrMapId],
       'username': response[attrMapUsername],
@@ -344,7 +382,7 @@ module.exports = function(crowi, app) {
       userInfo['name'] = `${response[attrMapFirstName]} ${response[attrMapLastName]}`.trim();
     }
 
-    const externalAccount = await getOrCreateUser(req, res, loginFailure, userInfo, providerId);
+    const externalAccount = await getOrCreateUser(req, res, userInfo, providerId);
     if (!externalAccount) {
       return loginFailure(req, res);
     }
@@ -361,7 +399,7 @@ module.exports = function(crowi, app) {
     });
   };
 
-  const promisifiedPassportAuthentication = (req, res, next, strategyName) => {
+  const promisifiedPassportAuthentication = (strategyName, req, res) => {
     return new Promise((resolve, reject) => {
       passport.authenticate(strategyName, (err, response, info) => {
         if (res.headersSent) {  // dirty hack -- 2017.09.25
@@ -372,24 +410,23 @@ module.exports = function(crowi, app) {
 
         if (err) {
           logger.error(`'${strategyName}' passport authentication error: `, err);
-          req.flash('warningMessage', `Error occured in '${strategyName}' passport authentication`);  // pass and the flash message is displayed when all of authentications are failed.
-          return next(req, res);
-        }
-
-        // authentication failure
-        if (!response) {
-          return next(req, res);
+          reject(err);
         }
 
         logger.debug('response', response);
         logger.debug('info', info);
 
+        // authentication failure
+        if (!response) {
+          reject(response);
+        }
+
         resolve(response);
-      })(req, res, next);
+      })(req, res);
     });
   };
 
-  const getOrCreateUser = async(req, res, next, userInfo, providerId) => {
+  const getOrCreateUser = async(req, res, userInfo, providerId) => {
     try {
       // find or register(create) user
       const externalAccount = await ExternalAccount.findOrRegister(

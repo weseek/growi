@@ -44,8 +44,6 @@ gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js
     <title>{{ path|path2name }} | {{ path }}</title>
 
     <!-- styles -->
-    <link rel="stylesheet" href="{{ webpack_asset('styles/style.css') }}">
-    <link rel="stylesheet" href="{{ webpack_asset('styles/theme-default.css') }}">
     <link rel="stylesheet" href="{{ webpack_asset('styles/style-presentation.css') }}">
 
     <!-- Google Fonts -->
@@ -61,17 +59,15 @@ gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js
         {% set pageBreakSeparator = pageBreakSeparator()|default(1) %}
         {% set pageBreakCustomSeparator = pageBreakCustomSeparator()|default('') %}
 
-        {% if 1 === pageBreakSeparator %}
-          {% set dataSeparator = "^\n\n\n" %}
+        {% if 3 === pageBreakSeparator %}
+          {% set dataSeparator = pageBreakCustomSeparator %}
         {% elseif 2 === pageBreakSeparator %}
           {% set dataSeparator = "^-----$" %}
-        {% elseif 3 === pageBreakSeparator %}
-          {% set dataSeparator = "^" + pageBreakCustomSeparator + "$" %}
         {% else %}
-          {% set dataSeparator = "^\n\n\n" %}
+          {% set dataSeparator = "\n\n\n" %}
         {% endif %}
 
-        <section data-markdown data-separator={{dataSeparator}}>
+        <section data-markdown data-separator="{{dataSeparator}}">
           <script type="text/template">
 {{ revision.body|presentation|safe }}
           </script>

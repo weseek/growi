@@ -1,19 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
 import Modal from 'react-bootstrap/es/Modal';
 import Button from 'react-bootstrap/es/Button';
 import ButtonGroup from 'react-bootstrap/es/ButtonGroup';
-
-import { debounce } from 'throttle-debounce';
 import Collapse from 'react-bootstrap/es/Collapse';
-import FormGroup from 'react-bootstrap/es/FormGroup';
-import ControlLabel from 'react-bootstrap/es/ControlLabel';
-import FormControl from 'react-bootstrap/es/FormControl';
-
 import Handsontable from 'handsontable';
 import { HotTable } from '@handsontable/react';
+import { debounce } from 'throttle-debounce';
 
+import MarkdownTableDataImportForm from './MarkdownTableDataImportForm';
 import MarkdownTable from '../../models/MarkdownTable';
 
 const DEFAULT_HOT_HEIGHT = 300;
@@ -51,6 +46,7 @@ export default class HandsontableModal extends React.PureComponent {
     this.synchronizeAlignment = this.synchronizeAlignment.bind(this);
     this.alignButtonHandler = this.alignButtonHandler.bind(this);
     this.toggleDataImportArea = this.toggleDataImportArea.bind(this);
+    this.importData = this.importData.bind(this);
     this.expandWindow = this.expandWindow.bind(this);
     this.contractWindow = this.contractWindow.bind(this);
 
@@ -248,6 +244,11 @@ export default class HandsontableModal extends React.PureComponent {
     this.setState({ isDataImportAreaExpanded: !this.state.isDataImportAreaExpanded });
   }
 
+  importData(markdownTable) {
+    this.init(markdownTable);
+    this.toggleDataImportArea();
+  }
+
   expandWindow() {
     this.setState({ isWindowExpanded: true });
 
@@ -307,24 +308,7 @@ export default class HandsontableModal extends React.PureComponent {
             </ButtonGroup>
             <Collapse in={this.state.isDataImportAreaExpanded}>
               <div> {/* This div is necessary for smoothing animations. (https://react-bootstrap.github.io/utilities/transitions/#transitions-collapse) */}
-                <form action="" className="data-import-form pt-5">
-                  <FormGroup>
-                    <ControlLabel>Select Data Format</ControlLabel>
-                    <FormControl componentClass="select" placeholder="select">
-                      <option value="select">CSV</option>
-                      <option value="other">TSV</option>
-                      <option value="other">HTML</option>
-                    </FormControl>
-                  </FormGroup>
-                  <FormGroup>
-                    <ControlLabel>Import Data</ControlLabel>
-                    <FormControl componentClass="textarea" placeholder="Paste table data" style={{ height: 200 }}  />
-                  </FormGroup>
-                  <div className="d-flex justify-content-end">
-                    <Button bsStyle="default" onClick={this.toggleDataImportArea}>Cancel</Button>
-                    <Button bsStyle="primary">Import</Button>
-                  </div>
-                </form>
+                <MarkdownTableDataImportForm onCancel={this.toggleDataImportArea} onImport={this.importData}/>
               </div>
             </Collapse>
           </div>

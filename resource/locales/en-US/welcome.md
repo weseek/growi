@@ -6,8 +6,8 @@
 <div class="panel panel-default">
   <div class="panel-heading">Tips</div>
   <div class="panel-body"><ul>
-    <li>Ctrl(⌘)-/ でショートカットヘルプを表示します</li>
-      <li>HTML/CSS の記述時は、<a href="https://getbootstrap.com/docs/3.3/css/">Bootstrap 3</a> を利用できます</li>
+    <li>Ctrl(⌘)-/ to show quick help</li>
+    <li>You can <a href="https://getbootstrap.com/docs/3.3/css/">Bootstrap 3</a> to write HTML tags.</li>
   </ul></div>
 </div>
 
@@ -18,12 +18,12 @@ Contents
 
 |All Pages|[/Sandbox]|
 | --- | --- |
-| $lsx(/) | <div class="alert alert-success"><span style="font-size: x-large;"><i class="icon-check"></i> [Sandboxをチェック](/Sandbox)</span></div> $lsx(/Sandbox)|
+| $lsx(/) | <div class="alert alert-success"><span style="font-size: x-large;"><i class="icon-check"></i> [Go to Sandbox](/Sandbox)</span></div> $lsx(/Sandbox)|
 
 Slack
 =====
 
 <a href="https://growi-slackin.weseek.co.jp/"><img src="https://growi-slackin.weseek.co.jp/badge.svg"></a>
 
-GROWI をより良いものにするために、是非 Slack に参加してください。  
-開発に関する議論を行っている他、導入時の質問等も受け付けています。
+Please join Slack by all means to make GROWI better.
+In addition to discussing development, we also accept questions at the time of introduction.
