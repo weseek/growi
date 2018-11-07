@@ -175,10 +175,8 @@ Environment Variables
     * OAUTH_GOOGLE_CLIENT_SECRET: Google API client secret for OAuth login.
     * OAUTH_GITHUB_CLIENT_ID: GitHub API client id for OAuth login.
     * OAUTH_GITHUB_CLIENT_SECRET: GitHub API client secret for OAuth login.
-    * OAUTH_TWITTER_CLIENT_ID: Twitter API client id for OAuth login.
-    * OAUTH_TWITTER_CLIENT_SECRET: Twitter API client secret for OAuth login.
-    * OAUTH_TWITTER_CLIENT_ID: Twitter API client id for OAuth login.
-    * OAUTH_TWITTER_CLIENT_SECRET: Twitter API client secret for OAuth login.
+    * OAUTH_TWITTER_CONSUMER_KEY: Twitter consumer key(API key) for OAuth login.
+    * OAUTH_TWITTER_CONSUMER_SECRET: Twitter consumer secret(API secret) for OAuth login.
     * SAML_ENTRY_POINT: IdP entry point
     * SAML_ISSUER: Issuer string to supply to IdP
     * SAML_CERT: PEM-encoded X.509 signing certificate string to validate the response from IdP
