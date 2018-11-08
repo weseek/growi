@@ -4060,8 +4060,8 @@ gzip-size@^5.0.0:
     pify "^3.0.0"
 
 handsontable@^6.0.1:
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/handsontable/-/handsontable-6.0.1.tgz#93f07d895b42335e2882044a79bca96003a2cab2"
+  version "6.1.1"
+  resolved "https://registry.yarnpkg.com/handsontable/-/handsontable-6.1.1.tgz#4be8fbe25efd3f0b85b494967475a687007e288d"
   dependencies:
     moment "2.20.1"
     numbro "^2.0.6"
@@ -6336,8 +6336,8 @@ number-is-nan@^1.0.0:
   resolved "https://registry.yarnpkg.com/number-is-nan/-/number-is-nan-1.0.1.tgz#097b602b53422a522c1afb8790318336941a011d"
 
 numbro@^2.0.6:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/numbro/-/numbro-2.1.0.tgz#618ac6e4b2f32f2e623190ce4b05f4c8b09c3207"
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/numbro/-/numbro-2.1.1.tgz#b977fc6a769163f90e2e2d7623ff9db4d66bc661"
   dependencies:
     bignumber.js "^4.0.4"
 
@@ -6830,7 +6830,7 @@ pify@^3.0.0:
 
 pikaday@1.5.1:
   version "1.5.1"
-  resolved "https://registry.yarnpkg.com/pikaday/-/pikaday-1.5.1.tgz#0a48549bc1a14ea1d08c44074d761bc2f2bfcfd3"
+  resolved "http://registry.npmjs.org/pikaday/-/pikaday-1.5.1.tgz#0a48549bc1a14ea1d08c44074d761bc2f2bfcfd3"
   optionalDependencies:
     moment "2.x"
 

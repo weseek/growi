@@ -53,6 +53,7 @@ module.exports = function(crowi) {
       'app:confidential'  : '',
 
       'app:fileUpload'    : false,
+      'app:globalLang'    : 'en',
 
       'security:restrictGuestMode'      : 'Deny',
 
@@ -281,6 +282,11 @@ module.exports = function(crowi) {
   configSchema.statics.appTitle = function(config) {
     const key = 'app:title';
     return getValueForCrowiNS(config, key) || 'GROWI';
+  };
+
+  configSchema.statics.globalLang = function(config) {
+    const key = 'app:globalLang';
+    return getValueForCrowiNS(config, key);
   };
 
   configSchema.statics.isEnabledPassport = function(config) {
@@ -605,6 +611,7 @@ module.exports = function(crowi) {
       },
       recentCreatedLimit: Config.showRecentCreatedNumber(config),
       isAclEnabled: !Config.isPublicWikiOnly(config),
+      globalLang: Config.globalLang(config),
     };
 
     return local_config;
