@@ -24,8 +24,7 @@ module.exports = require('./webpack.common')({
     'js/dev': './src/client/js/dev',
   },
   resolve: {
-    // TODO merge in webpack.common.js
-    modules: [path.join(process.env.HOME, '.node_modules')],
+    modules: ['../node_modules'],
   },
   module: {
     rules: [
