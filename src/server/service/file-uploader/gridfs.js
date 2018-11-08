@@ -86,13 +86,14 @@ module.exports = function(crowi) {
   };
 
 
-  lib.generateUrl = function(filePath) {
-    // var config = crowi.getConfig();
-    // var baseUrl = (config.crowi['app:siteUrl:fixed'] || '');
-
-    // const url = `${baseUrl}/_api/attachments.getMongo?filePath=${filePath}`;
-    // return url;
-    return `/files/${filePath}`;
+  lib.generateUrl = async function(filePath) {
+    await AttachmentFile.find({filename: filePath},
+      function(err, file) {
+        if (err) {
+          throw new Error(err);
+        }
+        return `/files/${file[0].id}`;
+      });
   };
 
   return lib;

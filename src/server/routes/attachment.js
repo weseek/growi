@@ -68,40 +68,41 @@ module.exports = function(crowi, app) {
    * @apiName get
    * @apiGroup Attachment
    *
-   * @apiParam {String} filePath
+   * @apiParam {String} id
    */
-  api.get = function(req, res) {
-    const filePath = req.params.filePath;
+  api.get = async function(req, res) {
+    const id = req.params.id;
 
-    AttachmentFile.find({filename: filePath}, async function(err, file) {
-      if (err) {
-        throw new Error(err);
-      }
-      const id = file[0].id;
-      const contentType = file[0].contentType;
-      const readStream = new Promise((resolve, reject) => {
-        let buf;
-        const stream = AttachmentFile.readById(id);
-        stream.on('error', function(error) {
-          reject(error);
-        });
-        stream.on('data', function(data) {
-          if (buf) {
-            buf = Buffer.concat([buf, data]);
-          }
-          else {
-            buf = data;
-          }
-        });
-        stream.on('close', function() {
-          debug('GridFS readstream closed');
-          resolve(buf);
-        });
+    // AttachmentFile.find({filename: filePath}, async function(err, file) {
+    // if (err) {
+    //   throw new Error(err);
+    // }
+    // const id = file[0].id;
+    // const contentType = file[0].contentType;
+    const contentType = 'image/jpeg';
+    const readStream = new Promise((resolve, reject) => {
+      let buf;
+      const stream = AttachmentFile.readById(id);
+      stream.on('error', function(error) {
+        reject(error);
       });
-      const data = await readStream;
-      res.set('Content-Type', contentType);
-      return res.send(ApiResponse.success(data));
+      stream.on('data', function(data) {
+        if (buf) {
+          buf = Buffer.concat([buf, data]);
+        }
+        else {
+          buf = data;
+        }
+      });
+      stream.on('close', function() {
+        debug('GridFS readstream closed');
+        resolve(buf);
+      });
     });
+    const data = await readStream;
+    res.set('Content-Type', contentType);
+    return res.send(ApiResponse.success(data));
+    // });
   };
 
   /**
