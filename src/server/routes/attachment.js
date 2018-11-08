@@ -40,10 +40,10 @@ module.exports = function(crowi, app) {
             if (fileName.match(/^\/uploads/)) {
               return res.download(path.join(crowi.publicDir, fileName), data.originalName);
             }
-            // gridfs
-            else if (fileName.match(/^.*getMongo.*/)) {
-              return res.download(path.join(crowi.publicDir, fileName), data.originalName);
-            }
+            // // gridfs
+            // else if (fileName.match(/^.*getMongo.*/)) {
+            //   return res.download(path.join(crowi.publicDir, fileName), data.originalName);
+            // }
             // aws
             else {
               const options = {
@@ -64,14 +64,15 @@ module.exports = function(crowi, app) {
   };
 
   /**
-   * @api {get} /attachments.get get attachments from MongoDB
-   * @apiName getAttachments
+   * @api {get} /attachments.get get attachments from mongoDB
+   * @apiName get
    * @apiGroup Attachment
    *
    * @apiParam {String} filePath
    */
-  api.getMongoFile = function(req, res) {
-    const filePath = req.query.filePath;
+  api.get = function(req, res) {
+    const filePath = req.params.filePath;
+
     AttachmentFile.find({filename: filePath}, async function(err, file) {
       if (err) {
         throw new Error(err);

@@ -176,6 +176,7 @@ module.exports = function(crowi, app) {
   app.get( '/:id([0-9a-z]{24})'       , loginRequired(crowi, app, false) , page.api.redirector);
   app.get( '/_r/:id([0-9a-z]{24})'    , loginRequired(crowi, app, false) , page.api.redirector); // alias
   app.get( '/download/:id([0-9a-z]{24})' , loginRequired(crowi, app, false) , attachment.api.download);
+  app.get( '/files/:id([0-9a-z]{24})'  , loginRequired(crowi, app, false), attachment.api.get);
 
   app.get( '/_search'                 , loginRequired(crowi, app, false) , search.searchPage);
   app.get( '/_api/search'             , accessTokenParser , loginRequired(crowi, app, false) , search.api.search);
@@ -208,7 +209,6 @@ module.exports = function(crowi, app) {
   app.post('/_api/bookmarks.remove'   , accessTokenParser , loginRequired(crowi, app) , csrf, bookmark.api.remove);
   app.post('/_api/likes.add'          , accessTokenParser , loginRequired(crowi, app) , csrf, page.api.like);
   app.post('/_api/likes.remove'       , accessTokenParser , loginRequired(crowi, app) , csrf, page.api.unlike);
-  app.get( '/_api/attachments.getMongo'  , accessTokenParser , loginRequired(crowi, app, false) , attachment.api.getMongoFile);
   app.get( '/_api/attachments.list'   , accessTokenParser , loginRequired(crowi, app, false) , attachment.api.list);
   app.post('/_api/attachments.add'    , uploads.single('file'), accessTokenParser, loginRequired(crowi, app) ,csrf, attachment.api.add);
   app.post('/_api/attachments.remove' , accessTokenParser , loginRequired(crowi, app) , csrf, attachment.api.remove);
