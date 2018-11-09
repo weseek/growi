@@ -255,7 +255,6 @@
     "Package name": "Package name",
     "Specified version": "Specified version",
     "Installed version": "Installed version"
-
   },
 
   "app_setting": {
@@ -265,8 +264,9 @@
     "Site URL": "Site URL",
     "siteurl_help": "Site full URL beginning from <code>http://</code> or <code>https://</code>.",
     "Confidential name": "Confidential name",
-    "Language": "Language",
+    "Default Language for new users": "Default Language for new users",
     "ex): internal use only":"ex): internal use only",
+    "File Uploading": "File Uploading",
     "enable_files_except_image": "Enable file upload other than image files.",
     "attach_enable": "You can attach files other than image files if you enable this option.",
     "Update": "Update",
