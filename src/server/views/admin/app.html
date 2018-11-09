@@ -74,7 +74,8 @@
         </div>
 
         <div class="form-group">
-          <div class="col-xs-offset-3 col-xs-6">
+          <label class="col-xs-3 control-label">{{ t('app_setting.File Uploading') }}</label>
+          <div class="col-xs-6">
             <div class="checkbox checkbox-info">
               <input type="checkbox" id="cbFileUpload" name="settingForm[app:fileUpload]" value="1"
                 {% if settingForm['app:fileUpload'] %}
