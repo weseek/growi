@@ -180,7 +180,7 @@ export class Lsx extends React.Component {
     return this.addSlashOfEnd(decodeURIComponent(url.resolve(path, '../')));
   }
 
-  render() {
+  renderContents() {
     const lsxContext = this.props.lsxContext;
 
     if (this.state.isLoading) {
@@ -203,6 +203,10 @@ export class Lsx extends React.Component {
     else {
       return <ListView nodeTree={this.state.nodeTree} lsxContext={this.props.lsxContext} />
     }
+  }
+
+  render() {
+    return <div className="lsx">{this.renderContents()}</div>
   }
 }
 
