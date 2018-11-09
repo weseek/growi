@@ -85,13 +85,13 @@ class Lsx {
 
     if (optionsSort != null) {
       if (optionsSort !== 'path' && optionsSort !== 'createdAt' && optionsSort !== 'updatedAt') {
-        throw new Error(`The specified value for 'sort' is '${optionsSort}' : It must be 'path', 'createdAt' or 'updatedAt'`);
+        throw new Error(`The specified value '${optionsSort}' for the sort option is invalid. It must be 'path', 'createdAt' or 'updatedAt'.`);
       }
     }
 
     if (optionsReverse != null) {
       if (optionsReverse !== 'true' && optionsReverse !== 'false') {
-        throw new Error(`The specified value for 'reverse' is '${optionsReverse}' : It must be 'true' or 'false'`);
+        throw new Error(`The specified value '${optionsReverse}' for the reverse option is invalid. It must be 'true' or 'false'.`);
       }
       isReversed = (optionsReverse === 'true');
     }
