@@ -92,7 +92,6 @@ module.exports = function(crowi, app) {
     var userForm = req.body.userForm;
     var userData = req.user;
 
-    // console.log(req.form.isValid);
     if (req.method == 'POST' && req.form.isValid) {
       var name = userForm.name;
       var email = userForm.email;
