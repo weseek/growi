@@ -60,7 +60,10 @@ class Lsx {
   }
 
   /**
-   * add reverse condition that sort pages
+   * add sort condition(sort key & sort order)
+   *
+   * If only the reverse option is specified, the sort key is 'path'.
+   * If only the sort key is specified, the sort order is the ascending order.
    *
    * @static
    * @param {any} query
@@ -72,11 +75,23 @@ class Lsx {
    * @memberOf Lsx
    */
   static addSortCondition(query, pagePath, optionsSort, optionsReverse) {
-    let isReversed = false
+    // the default sort key
+    if (optionsSort == null) {
+      optionsSort = 'path';
+    }
+
+    // the default sort order
+    let isReversed = false;
+
+    if (optionsSort != null) {
+      if (optionsSort !== 'path' && optionsSort !== 'createdAt' && optionsSort !== 'updatedAt') {
+        throw new Error(`The specified value for 'sort' is '${optionsSort}' : It must be 'path', 'createdAt' or 'updatedAt'`);
+      }
+    }
 
     if (optionsReverse != null) {
       if (optionsReverse !== 'true' && optionsReverse !== 'false') {
-        throw new Error(`specified reverse is '${optionsReverse}' : reverse are must be 'true' or 'false'`);
+        throw new Error(`The specified value for 'reverse' is '${optionsReverse}' : It must be 'true' or 'false'`);
       }
       isReversed = (optionsReverse === 'true');
     }
@@ -116,8 +131,8 @@ module.exports = (crowi, app) => {
       if (options.num != null) {
         query = Lsx.addNumCondition(query, pagePath, options.num);
       }
-      // sort order
-      query = Lsx.addSortCondition(query, pagePath, 'path', options.reverse);
+      // sort
+      query = Lsx.addSortCondition(query, pagePath, options.sort, options.reverse);
     }
     catch (error) {
       return res.json(ApiResponse.error(error.message));
@@ -131,7 +146,7 @@ module.exports = (crowi, app) => {
         debug('Error on lsx.listPages', err);
         return res.json(ApiResponse.error(err));
       });
-  }
+  };
 
   return actions;
 };
