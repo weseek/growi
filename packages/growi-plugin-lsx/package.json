@@ -16,7 +16,8 @@
     "clean": "npm run rimraf -- lib",
     "resources": "mkdirp lib/resource/css && ncp src/resource/css lib/resource/css",
     "prebuild:watch": "npm run clean && npm run resources",
-    "prebuild": "npm run clean && npm run resources",
+    "prebuild": "npm run resources",
+    "prepublish": "npm run clean && npm run resources && npm run build",
     "rimraf": "rimraf",
     "test": ""
   },
