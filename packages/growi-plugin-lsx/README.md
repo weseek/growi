@@ -31,7 +31,7 @@ see [Pukiwiki lsx plugin](http://ukiya.sakura.ne.jp/index.php?PukiWiki%2F1.4%2F%
 TODO
 ----
 
-- [x] ensure to be `hierarchy=off` as default
+- [x] ensure to be `hierarchy=on` as default
 - [ ] impl `hierarchy` option
 - [x] impl `depth` option
 - [x] impl `num` option
