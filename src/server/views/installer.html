@@ -2,7 +2,7 @@
 
 {% block html_base_css %}installer nologin{% endblock %}
 
-{% block html_title %}{{ customTitle('セットアップ') }}{% endblock %}
+{% block html_title %}{{ customTitle(t('installer.setup')) }}{% endblock %}
 
 
 
@@ -45,12 +45,12 @@
 
     <div class="login-dialog p-t-10 p-b-10 col-sm-offset-4 col-sm-4" id="login-dialog">
       <p class="alert alert-success">
-        <strong>最初のアカウントの作成</strong><br>
-        <small>初めに作成するアカウントは、自動的に管理者権限が付与されます</small>
+        <strong>{{ t('installer.create_initial_account') }}</strong><br>
+        <small>{{ t('installer.initial_account_will_be_administrator_automatically') }}</small>
       </p>
 
       <p class="alert alert-warning p-b-10 p-t-10">
-        <small>現在の言語設定: {{ appGlobalLang() }}</small>
+        <small>{{ t('installer.current_language') }}: {{ appGlobalLang() }}</small>
       </p>
 
       <form role="form" action="/installer/createAdmin" method="post" id="register-form">
@@ -109,7 +109,7 @@ $(function() {
     $.getJSON('/_api/check_username', {username: username}, function(json) {
       if (!json.valid) {
         $('#help-block-username').html(
-          '<i class="icon-fw icon-ban"></i>このユーザーIDは利用できません。'
+          '<i class="icon-fw icon-ban"></i>{{ t("installer.unavaliable_user_id") }}'
         );
         $('#login-dialog').addClass('has-error');
         $('#input-group-username').addClass('has-error');
