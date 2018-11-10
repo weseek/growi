@@ -726,11 +726,16 @@ window.addEventListener('load', function(e) {
   if (location.hash) {
     if (location.hash === '#edit' || location.hash === '#edit-form') {
       $('a[data-toggle="tab"][href="#edit"]').tab('show');
+      $('body').addClass('on-edit');
+      $('body').addClass('builtin-editor');
+
       // focus
       Crowi.setCaretLineAndFocusToEditor();
     }
     else if (location.hash == '#hackmd') {
       $('a[data-toggle="tab"][href="#hackmd"]').tab('show');
+      $('body').addClass('on-edit');
+      $('body').addClass('hackmd');
     }
     else if (location.hash == '#revision-history') {
       $('a[data-toggle="tab"][href="#revision-history"]').tab('show');
