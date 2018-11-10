@@ -67,10 +67,12 @@ class ExternalAccount {
    * @param {object} usernameToBeRegistered the username of User entity that will be created when accountId is not found
    * @param {object} nameToBeRegistered the name of User entity that will be created when accountId is not found
    * @param {object} mailToBeRegistered the mail of User entity that will be created when accountId is not found
+   * @param {boolean} isSameUsernameTreatedAsIdenticalUser
+   * @param {boolean} isSameEmailTreatedAsIdenticalUser
    * @returns {Promise<ExternalAccount>}
    * @memberof ExternalAccount
    */
-  static findOrRegister(providerType, accountId, usernameToBeRegistered, nameToBeRegistered, mailToBeRegistered) {
+  static findOrRegister(providerType, accountId, usernameToBeRegistered, nameToBeRegistered, mailToBeRegistered, isSameUsernameTreatedAsIdenticalUser, isSameEmailTreatedAsIdenticalUser) {
 
     return this.findOne({ providerType, accountId })
       .then(account => {
@@ -82,7 +84,18 @@ class ExternalAccount {
 
         const User = ExternalAccount.crowi.model('User');
 
-        return User.findOne({username: usernameToBeRegistered})
+        let promise = User.findUserByUsername(usernameToBeRegistered);
+        if (isSameUsernameTreatedAsIdenticalUser && isSameEmailTreatedAsIdenticalUser) {
+          promise = promise
+            .then(user => {
+              if (user == null) { return User.findUserByEmail(mailToBeRegistered) }
+              return user;
+            });
+        } else if (isSameEmailTreatedAsIdenticalUser) {
+          promise = User.findUserByEmail(mailToBeRegistered);
+        }
+
+        return promise
           .then(user => {
             // when the User that have the same `username` exists
             if (user != null) {

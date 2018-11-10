@@ -118,6 +118,23 @@
     </div>
 
     <div class="form-group">
+      <div class="col-xs-6 col-xs-offset-3">
+        <div class="checkbox checkbox-info">
+          <input type="checkbox" id="bindByEmailName-SAML" name="settingForm[security:passport-saml:isSameEmailTreatedAsIdenticalUser]" value="1"
+              {% if settingForm['security:passport-saml:isSameEmailTreatedAsIdenticalUser'] %}checked{% endif %} />
+          <label for="bindByEmail-SAML">
+            {{ t("security_setting.Treat email matching as identical", "email") }}
+          </label>
+          <p class="help-block">
+            <small>
+              {{ t("security_setting.Treat email matching as identical_warn", "email") }}
+            </small>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
       <label for="settingForm[security:passport-saml:attrMapFirstName]" class="col-xs-3 control-label">{{ t("security_setting.SAML.First Name") }}</label>
       <div class="col-xs-6">
         <input class="form-control" type="text" placeholder="Default: firstName"

@@ -75,6 +75,7 @@ module.exports = function(crowi) {
       'security:passport-ldap:groupDnProperty' : undefined,
       'security:passport-ldap:isSameUsernameTreatedAsIdenticalUser': false,
       'security:passport-saml:isEnabled' : false,
+      'security:passport-saml:isSameEmailTreatedAsIdenticalUser': false,
       'security:passport-google:isEnabled' : false,
       'security:passport-github:isEnabled' : false,
       'security:passport-twitter:isEnabled' : false,
@@ -326,6 +327,11 @@ module.exports = function(crowi) {
 
   configSchema.statics.isSameUsernameTreatedAsIdenticalUser = function(config, providerType) {
     const key = `security:passport-${providerType}:isSameUsernameTreatedAsIdenticalUser`;
+    return getValueForCrowiNS(config, key);
+  };
+
+  configSchema.statics.isSameEmailTreatedAsIdenticalUser = function(config, providerType) {
+    const key = `security:passport-${providerType}:isSameEmailTreatedAsIdenticalUser`;
     return getValueForCrowiNS(config, key);
   };
 

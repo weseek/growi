@@ -471,6 +471,13 @@ module.exports = function(crowi) {
     return this.findOne({username});
   };
 
+  userSchema.statics.findUserByEmail = function(email) {
+    if (email == null) {
+      return Promise.resolve(null);
+    }
+    return this.findOne({email});
+  };
+
   userSchema.statics.findUserByApiToken = function(apiToken) {
     if (apiToken == null) {
       return Promise.resolve(null);
