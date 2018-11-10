@@ -45,7 +45,7 @@ export default class MarkdownTableDataImportForm extends React.Component {
         result = MarkdownTable.fromHTMLTableTag(this.state.data);
         break;
     }
-    return result;
+    return result.normalizeCells();
   }
 
   render() {

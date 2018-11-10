@@ -130,7 +130,7 @@ export default class HandsontableModal extends React.PureComponent {
 
   save() {
     if (this.props.onSave != null) {
-      this.props.onSave(this.state.markdownTable);
+      this.props.onSave(this.state.markdownTable.clone().normalizeCells());
     }
 
     this.hide();
