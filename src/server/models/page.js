@@ -125,6 +125,8 @@ module.exports = function(crowi) {
     return templateChecker(this.path);
   };
 
+  // TODO abolish
+  // https://weseek.myjetbrains.com/youtrack/issue/GC-1225
   pageSchema.methods.isGrantedFor = function(userData) {
     if (this.isPublic()) {
       return true;
@@ -562,6 +564,8 @@ module.exports = function(crowi) {
     return templateBody;
   };
 
+  // TODO refactor
+  // https://weseek.myjetbrains.com/youtrack/issue/GC-1185
   pageSchema.statics.findListByPageIds = function(ids, options) {
     validateCrowi();
 
@@ -803,23 +807,6 @@ module.exports = function(crowi) {
     }
 
     return q;
-  };
-
-  // Instance method でいいのでは
-  pageSchema.statics.pushToGrantedUsers = function(page, userData) {
-
-    return new Promise(function(resolve, reject) {
-      if (!page.grantedUsers || !Array.isArray(page.grantedUsers)) {
-        page.grantedUsers = [];
-      }
-      page.grantedUsers.push(userData);
-      page.save(function(err, data) {
-        if (err) {
-          return reject(err);
-        }
-        return resolve(data);
-      });
-    });
   };
 
   async function pushRevision(pageData, newRevision, user, grant, grantUserGroupId) {
