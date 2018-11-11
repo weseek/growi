@@ -6,6 +6,12 @@ const logger = require('@alias/logger')('growi:migrate:abolish-page-group-relati
 const mongoose = require('mongoose');
 const config = require('@root/config/migrate');
 
+
+async function isCollectionExists(db, collectionName) {
+  const collections = await db.listCollections({ name: collectionName }).toArray();
+  return collections.length > 0;
+}
+
 /**
  * BEFORE
  *   - 'pagegrouprelations' collection exists (related to models/page-group-relation.js)
@@ -25,6 +31,13 @@ module.exports = {
   async up(db) {
     logger.info('Apply migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
+
+    const isPagegrouprelationsExists = await isCollectionExists(db, 'pagegrouprelations');
+    if (!isPagegrouprelationsExists) {
+      logger.info("'pagegrouprelations' collection doesn't exist");   // eslint-disable-line
+      logger.info('Migration has successfully applied');
+      return;
+    }
 
     const Page = require('@server/models/page')();
     const UserGroup = require('@server/models/user-group')();
