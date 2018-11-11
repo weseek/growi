@@ -49,6 +49,10 @@
         <small>初めに作成するアカウントは、自動的に管理者権限が付与されます</small>
       </p>
 
+      <p class="alert alert-warning p-b-10 p-t-10">
+        <small>現在の言語設定: {{ appGlobalLang() }}</small>
+      </p>
+
       <form role="form" action="/installer/createAdmin" method="post" id="register-form">
 
         <div class="input-group" id="input-group-username">

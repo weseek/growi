@@ -1,11 +1,15 @@
 import markdownTable from 'markdown-table';
 import stringWidth from 'string-width';
+import csvToMarkdown from 'csv-to-markdown-table';
 
 // https://github.com/markdown-it/markdown-it/blob/d29f421927e93e88daf75f22089a3e732e195bd2/lib/rules_block/table.js#L83
 // https://regex101.com/r/7BN2fR/7
 const tableAlignmentLineRE = /^[-:|][-:|\s]*$/;
 const tableAlignmentLineNegRE = /^[^-:]*$/;  // it is need to check to ignore empty row which is matched above RE
 const linePartOfTableRE = /^\|[^\r\n]*|[^\r\n]*\|$|([^|\r\n]+\|[^|\r\n]*)+/; // own idea
+
+// set up DOMParser
+const domParser = new (window.DOMParser)();
 
 /**
  * markdown table class for markdown-table module
@@ -36,13 +40,66 @@ export default class MarkdownTable {
     return new MarkdownTable(newTable, this.options);
   }
 
-  static fromTableTag(str) {
-    // TODO impl
-    return new MarkdownTable();
+  /**
+   * normalize all cell data(trim & convert the newline character to space)
+   */
+  normalizeCells() {
+    for (let i = 0; i < this.table.length; i++) {
+      for (let j = 0; j < this.table[i].length; j++) {
+        this.table[i][j] = this.table[i][j].trim().replace(/\r?\n/g, ' ');
+      }
+    }
+
+    return this;
   }
 
   /**
-   * returns MarkdownTable instance
+   * return a MarkdownTable instance made from a string of HTML table tag
+   *
+   * If a parser error occurs, an error object with an error message is thrown.
+   * The error message is a innerHTML, so must not assign it into element.innerHTML because it can lead to Mutation-based XSS
+   */
+  static fromHTMLTableTag(str) {
+    // use DOMParser to prevent DOM based XSS (https://developer.mozilla.org/en-US/docs/Web/API/DOMParser)
+    const dom = domParser.parseFromString(str, 'application/xml');
+
+    if (dom.querySelector('parsererror')) {
+      throw new Error(dom.documentElement.innerHTML);
+    }
+
+    const tableElement = dom.querySelector('table');
+    const trElements = tableElement.querySelectorAll('tr');
+
+    let table = [];
+    let maxRowSize = 0;
+    for (let i = 0; i < trElements.length; i++) {
+      let row = [];
+      let cellElements = trElements[i].querySelectorAll('th,td');
+      for (let j = 0; j < cellElements.length; j++) {
+        row.push(cellElements[j].innerHTML);
+      }
+      table.push(row);
+
+      if (maxRowSize < row.length) maxRowSize = row.length;
+    }
+
+    let align = [];
+    for (let i = 0; i < maxRowSize; i++) {
+      align.push('');
+    }
+
+    return new MarkdownTable(table, {align: align});
+  }
+
+  /**
+   * return a MarkdownTable instance made from a string of delimiter-separated values
+   */
+  static fromDSV(str, delimiter) {
+    return MarkdownTable.fromMarkdownString(csvToMarkdown(str, delimiter, true));
+  }
+
+  /**
+   * return a MarkdownTable instance
    *   ref. https://github.com/wooorm/markdown-table
    * @param {string} str markdown string
    */

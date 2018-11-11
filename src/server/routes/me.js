@@ -117,6 +117,7 @@ module.exports = function(crowi, app) {
             Object.keys(err.errors).forEach((e) => {
               req.form.errors.push(err.errors[e].message);
             });
+
             return res.render('me/index', {});
           }
           req.i18n.changeLanguage(lang);

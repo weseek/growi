@@ -271,9 +271,6 @@
     "Package name": "パッケージ名",
     "Specified version": "指定バージョン",
     "Installed version": "インストールされているバージョン"
-
-
-
   },
 
   "app_setting": {
@@ -283,7 +280,9 @@
     "Site URL": "サイトURL",
     "siteurl_help": "<code>http://</code> または <code>https://</code> から始まるサイトのURL。",
     "Confidential name": "コンフィデンシャル表示",
+    "Default Language for new users": "新規ユーザーのデフォルト設定言語",
     "ex): internal use only": "例: 社外秘",
+    "File Uploading": "ファイルアップロード",
     "enable_files_except_image": "画像以外のファイルアップロードを許可",
     "attach_enable": "許可をしている場合、画像以外のファイルをページに添付可能になります。",
     "Update": "更新",
@@ -459,11 +458,12 @@
     "Page break setting": "改頁を設定する",
     "Preset one separator": "プリセット 1",
     "Preset one separator desc": "連続した空行3行で改頁します",
+    "Preset one separator value": "\\n\\n\\n",
     "Preset two separator": "プリセット 2",
     "Preset two separator desc": "連続したハイフン5つで改頁します",
     "Preset two separator value": "-----",
     "Custom separator": "カスタム",
-    "Custom separator desc": "任意の文字で改頁します",
+    "Custom separator desc": "正規表現を設定できます",
     "XSS_setting": "XSS(Cross Site Scripting)対策設定",
     "XSS_setting_desc": "マークダウンテキスト内の HTML タグの扱いを設定し、悪意のあるプログラムからの攻撃を防ぎます",
     "Enable XSS prevention": "XSSを抑制する",
