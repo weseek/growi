@@ -271,9 +271,6 @@
     "Package name": "パッケージ名",
     "Specified version": "指定バージョン",
     "Installed version": "インストールされているバージョン"
-
-
-
   },
 
   "app_setting": {
@@ -283,7 +280,9 @@
     "Site URL": "サイトURL",
     "siteurl_help": "<code>http://</code> または <code>https://</code> から始まるサイトのURL。",
     "Confidential name": "コンフィデンシャル表示",
+    "Default Language for new users": "新規ユーザーのデフォルト設定言語",
     "ex): internal use only": "例: 社外秘",
+    "File Uploading": "ファイルアップロード",
     "enable_files_except_image": "画像以外のファイルアップロードを許可",
     "attach_enable": "許可をしている場合、画像以外のファイルをページに添付可能になります。",
     "Update": "更新",

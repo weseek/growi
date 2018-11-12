@@ -60,7 +60,22 @@
         </div>
 
         <div class="form-group">
-          <div class="col-xs-offset-3 col-xs-6">
+          <label class="col-xs-3 control-label tbd">(TBD) {{ t('app_setting.Default Language for new users') }}</label>
+          <div class="col-xs-6">
+            <div class="radio radio-primary radio-inline">
+                <input type="radio" id="radioLangEn" name="userForm[globalLang]" value="{{ consts.language.LANG_EN_US }}" {% if user.lang == consts.language.LANG_EN_US %}checked="checked"{% endif %}>
+                <label for="radioLangEn">{{ t('English') }}</label>
+            </div>
+            <div class="radio radio-primary radio-inline">
+                <input type="radio" id="radioLangJa" name="userForm[globalLang]" value="{{ consts.language.LANG_JA }}" {% if user.lang == consts.language.LANG_JA %}checked="checked"{% endif %}>
+                <label for="radioLangJa">{{ t('Japanese') }}</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-xs-3 control-label">{{ t('app_setting.File Uploading') }}</label>
+          <div class="col-xs-6">
             <div class="checkbox checkbox-info">
               <input type="checkbox" id="cbFileUpload" name="settingForm[app:fileUpload]" value="1"
                 {% if settingForm['app:fileUpload'] %}
