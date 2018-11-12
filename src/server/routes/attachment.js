@@ -56,15 +56,15 @@ module.exports = function(crowi, app) {
    * @apiName get
    * @apiGroup Attachment
    *
-   * @apiParam {String} pageId, fileId
+   * @apiParam {String} pageId, fileName
    */
   api.get = async function(req, res) {
     if (process.env.FILE_UPLOAD != 'gridfs') {
-      return res.status(404);
+      return res.status(400);
     }
     const pageId = req.params.pageId;
-    const fileId = req.params.fileId;
-    const filePath = `attachment/${pageId}/${fileId}`;
+    const fileName = req.params.fileName;
+    const filePath = `attachment/${pageId}/${fileName}`;
     const fileData = await fileUploader.getFileData(filePath);
     res.set('Content-Type', fileData.contentType);
     return res.send(ApiResponse.success(fileData.data));
