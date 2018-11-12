@@ -31,15 +31,17 @@ module.exports = function(crowi) {
   //   });
   // };
 
-  // create or save a file
-  lib.uploadFile = async function(filePath, contentType, fileStream, options) {
+  lib.uploadFile = function(filePath, contentType, fileStream, options) {
     debug('File uploading: ' + filePath);
-    AttachmentFile.write({filename: filePath, contentType: contentType}, fileStream,
-      function(error, createdFile) {
-        if (error) {
-          throw new Error('Failed to upload ' + createdFile + 'to gridFS', error);
-        }
-      });
+    return new Promise(function(resolve, reject) {
+      AttachmentFile.write({filename: filePath, contentType: contentType}, fileStream,
+        function(error, createdFile) {
+          if (error) {
+            reject(error);
+          }
+          resolve();
+        });
+    });
   };
 
   lib.findDeliveryFile = function(fileId, filePath) {
@@ -78,22 +80,58 @@ module.exports = function(crowi) {
   //   }
   //   catch (e) {
   //     // no such file or directory
-  //     debug('Stats error', e);
+  //     debug('Stats error', e); // [TODO] error log of bunyan logger
   //     return true;
   //   }
 
   //   return false;
   };
 
+  lib.getFileData = async function(filePath) {
+    const file = await lib.getFile(filePath);
+    const id = file.id;
+    const contentType = file.contentType;
+    const data = await lib.readFileData(id);
+    return {data, contentType};
+  };
 
-  lib.generateUrl = async function(filePath) {
-    await AttachmentFile.find({filename: filePath},
-      function(err, file) {
+  lib.getFile = function(filePath) {
+    return new Promise((resolve, reject) => {
+      AttachmentFile.find({
+        filename: filePath
+      }, async function(err, file) {
         if (err) {
-          throw new Error(err);
+          reject(err);
         }
-        return `/files/${file[0].id}`;
+        resolve(file[0]);
       });
+    });
+  };
+
+  lib.readFileData = function(id) {
+    return new Promise((resolve, reject) => {
+      let buf;
+      const stream = AttachmentFile.readById(id);
+      stream.on('error', function(error) {
+        reject(error);
+      });
+      stream.on('data', function(data) {
+        if (buf) {
+          buf = Buffer.concat([buf, data]);
+        }
+        else {
+          buf = data;
+        }
+      });
+      stream.on('close', function() {
+        debug('GridFS readstream closed');
+        resolve(buf);
+      });
+    });
+  };
+
+  lib.generateUrl = function(filePath) {
+    return `/${filePath}`;
   };
 
   return lib;

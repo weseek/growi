@@ -11,19 +11,7 @@ module.exports = function(crowi, app) {
     , fileUploader = require('../service/file-uploader')(crowi, app)
     , ApiResponse = require('../util/apiResponse')
     , actions = {}
-    , api = {}
-    , AttachmentFile = {}
-    , mongoose = require('mongoose');
-
-  // instantiate mongoose-gridfs
-  var gridfs = require('mongoose-gridfs')({
-    collection: 'attachmentFiles',
-    model: 'AttachmentFile',
-    mongooseConnection: mongoose.connection
-  });
-
-  // obtain a model
-  AttachmentFile = gridfs.model;
+    , api = {};
 
   actions.api = api;
 
@@ -68,41 +56,15 @@ module.exports = function(crowi, app) {
    * @apiName get
    * @apiGroup Attachment
    *
-   * @apiParam {String} id
+   * @apiParam {String} pageId, fileId
    */
   api.get = async function(req, res) {
-    const id = req.params.id;
-
-    // AttachmentFile.find({filename: filePath}, async function(err, file) {
-    // if (err) {
-    //   throw new Error(err);
-    // }
-    // const id = file[0].id;
-    // const contentType = file[0].contentType;
-    const contentType = 'image/jpeg';
-    const readStream = new Promise((resolve, reject) => {
-      let buf;
-      const stream = AttachmentFile.readById(id);
-      stream.on('error', function(error) {
-        reject(error);
-      });
-      stream.on('data', function(data) {
-        if (buf) {
-          buf = Buffer.concat([buf, data]);
-        }
-        else {
-          buf = data;
-        }
-      });
-      stream.on('close', function() {
-        debug('GridFS readstream closed');
-        resolve(buf);
-      });
-    });
-    const data = await readStream;
-    res.set('Content-Type', contentType);
-    return res.send(ApiResponse.success(data));
-    // });
+    const pageId = req.params.pageId;
+    const fileId = req.params.fileId;
+    const filePath = `attachment/${pageId}/${fileId}`;
+    const fileData = await fileUploader.getFileData(filePath);
+    res.set('Content-Type', fileData.contentType);
+    return res.send(ApiResponse.success(fileData.data));
   };
 
   /**
