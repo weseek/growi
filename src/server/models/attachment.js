@@ -21,7 +21,8 @@ module.exports = function(crowi) {
     originalName: { type: String },
     fileFormat: { type: String, required: true },
     fileSize: { type: Number, default: 0 },
-    createdAt: { type: Date, default: Date.now }
+    createdAt: { type: Date, default: Date.now },
+    originalId: { type: ObjectId, ref: 'User', index: true}
   }, {
     toJSON: {
       virtuals: true
@@ -79,7 +80,7 @@ module.exports = function(crowi) {
     });
   };
 
-  attachmentSchema.statics.create = function(pageId, creator, filePath, originalName, fileName, fileFormat, fileSize) {
+  attachmentSchema.statics.create = function(pageId, creator, filePath, originalName, fileName, fileFormat, fileSize, originalId) { // [mongoid]
     var Attachment = this;
 
     return new Promise(function(resolve, reject) {
@@ -93,6 +94,7 @@ module.exports = function(crowi) {
       newAttachment.fileFormat = fileFormat;
       newAttachment.fileSize = fileSize;
       newAttachment.createdAt = Date.now();
+      newAttachment.originalId = originalId; // [mongoid]
 
       newAttachment.save(function(err, data) {
         if (err) {

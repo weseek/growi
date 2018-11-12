@@ -68,6 +68,27 @@ module.exports = function(crowi, app) {
   };
 
   /**
+   * @api {get} /attachments.redirector get attachments from mongoDB
+   * @apiName redirector
+   * @apiGroup Attachment
+   *
+   * @apiParam {String} id
+   */
+  api.redirector = async function(req, res, next) {
+    const id = req.params.id;
+    Attachment.findById(id, async function(err, data) {
+      const id = data.id;
+      const contentType = data.fileFormat;
+      const fileData = await fileUploader.getFileDataById(id);
+      const encodedFileName = encodeURIComponent(data.originalName);
+      res.set('Content-Type', contentType);
+      res.set('Content-Disposition', `inline;filename*=UTF-8''${encodedFileName}`);
+      return res.sendFile(ApiResponse.success(fileData.data));
+    });
+    return res.status(404).sendFile(crowi.publicDir + '/images/file-not-found.png');
+  };
+
+  /**
    * @api {get} /attachments.list Get attachments of the page
    * @apiName ListAttachments
    * @apiGroup Attachment
@@ -157,7 +178,7 @@ module.exports = function(crowi, app) {
           debug('Uploaded data is: ', data);
 
           // TODO size
-          return Attachment.create(id, req.user, filePath, originalName, fileName, fileType, fileSize, data);
+          return Attachment.create(id, req.user, filePath, originalName, fileName, fileType, fileSize, data); // [mongoid]
         }).then(function(data) {
           var fileUrl = data.fileUrl;
 

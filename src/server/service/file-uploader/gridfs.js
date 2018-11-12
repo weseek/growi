@@ -9,6 +9,7 @@ module.exports = function(crowi) {
   var path = require('path');
   var fs = require('fs');
   var lib = {};
+  var Attachment = crowi.model('Attachment');
   var AttachmentFile = {};
 
   // instantiate mongoose-gridfs
@@ -39,7 +40,8 @@ module.exports = function(crowi) {
           if (error) {
             reject(error);
           }
-          resolve();
+          resolve(createdFile._id); // [mongoid]
+          // resolve();
         });
     });
   };
@@ -92,18 +94,25 @@ module.exports = function(crowi) {
     const id = file.id;
     const contentType = file.contentType;
     const data = await lib.readFileData(id);
-    return {data, contentType};
+    return {
+      data,
+      contentType
+    };
+  };
+
+  lib.getFileDataById = async function(id) {
+    return await lib.readFileData(id);
   };
 
   lib.getFile = function(filePath) {
     return new Promise((resolve, reject) => {
-      AttachmentFile.find({
+      AttachmentFile.findOne({
         filename: filePath
       }, async function(err, file) {
         if (err) {
           reject(err);
         }
-        resolve(file[0]);
+        resolve(file);
       });
     });
   };
@@ -131,7 +140,18 @@ module.exports = function(crowi) {
   };
 
   lib.generateUrl = function(filePath) {
-    return `/${filePath}`;
+    // return `/${filePath}`; // [mongoid]
+    return new Promise((resolve, reject) => {
+      Attachment.find({
+        filePath: filePath
+      }, async function(err, file) {
+        if (err) {
+          reject(err);
+        }
+        const id = file._id;
+        resolve(`/files/${id}`);
+      });
+    });
   };
 
   return lib;
