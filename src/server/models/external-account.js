@@ -84,15 +84,16 @@ class ExternalAccount {
 
         const User = ExternalAccount.crowi.model('User');
 
-        let promise = User.findUserByUsername(usernameToBeRegistered);
+        let promise = User.findOne({username: usernameToBeRegistered});
         if (isSameUsernameTreatedAsIdenticalUser && isSameEmailTreatedAsIdenticalUser) {
           promise = promise
             .then(user => {
-              if (user == null) { return User.findUserByEmail(mailToBeRegistered) }
+              if (user == null) { return User.findOne({email: mailToBeRegistered}) }
               return user;
             });
-        } else if (isSameEmailTreatedAsIdenticalUser) {
-          promise = User.findUserByEmail(mailToBeRegistered);
+        }
+        else if (isSameEmailTreatedAsIdenticalUser) {
+          promise = User.findOne({email: mailToBeRegistered});
         }
 
         return promise
