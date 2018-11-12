@@ -40,8 +40,7 @@ module.exports = function(crowi) {
           if (error) {
             reject(error);
           }
-          resolve(createdFile._id); // [mongoid]
-          // resolve();
+          resolve();
         });
     });
   };
@@ -100,10 +99,6 @@ module.exports = function(crowi) {
     };
   };
 
-  lib.getFileDataById = async function(id) {
-    return await lib.readFileData(id);
-  };
-
   lib.getFile = function(filePath) {
     return new Promise((resolve, reject) => {
       AttachmentFile.findOne({
@@ -140,18 +135,7 @@ module.exports = function(crowi) {
   };
 
   lib.generateUrl = function(filePath) {
-    // return `/${filePath}`; // [mongoid]
-    return new Promise((resolve, reject) => {
-      Attachment.find({
-        filePath: filePath
-      }, async function(err, file) {
-        if (err) {
-          reject(err);
-        }
-        const id = file._id;
-        resolve(`/files/${id}`);
-      });
-    });
+    return `/${filePath}`;
   };
 
   return lib;

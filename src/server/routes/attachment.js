@@ -59,33 +59,15 @@ module.exports = function(crowi, app) {
    * @apiParam {String} pageId, fileId
    */
   api.get = async function(req, res) {
+    if (process.env.FILE_UPLOAD != 'gridfs') {
+      return res.status(404);
+    }
     const pageId = req.params.pageId;
     const fileId = req.params.fileId;
     const filePath = `attachment/${pageId}/${fileId}`;
     const fileData = await fileUploader.getFileData(filePath);
     res.set('Content-Type', fileData.contentType);
     return res.send(ApiResponse.success(fileData.data));
-  };
-
-  /**
-   * @api {get} /attachments.redirector get attachments from mongoDB
-   * @apiName redirector
-   * @apiGroup Attachment
-   *
-   * @apiParam {String} id
-   */
-  api.redirector = async function(req, res, next) {
-    const id = req.params.id;
-    Attachment.findById(id, async function(err, data) {
-      const id = data.id;
-      const contentType = data.fileFormat;
-      const fileData = await fileUploader.getFileDataById(id);
-      const encodedFileName = encodeURIComponent(data.originalName);
-      res.set('Content-Type', contentType);
-      res.set('Content-Disposition', `inline;filename*=UTF-8''${encodedFileName}`);
-      return res.sendFile(ApiResponse.success(fileData.data));
-    });
-    return res.status(404).sendFile(crowi.publicDir + '/images/file-not-found.png');
   };
 
   /**
@@ -178,7 +160,7 @@ module.exports = function(crowi, app) {
           debug('Uploaded data is: ', data);
 
           // TODO size
-          return Attachment.create(id, req.user, filePath, originalName, fileName, fileType, fileSize, data); // [mongoid]
+          return Attachment.create(id, req.user, filePath, originalName, fileName, fileType, fileSize);
         }).then(function(data) {
           var fileUrl = data.fileUrl;
 
