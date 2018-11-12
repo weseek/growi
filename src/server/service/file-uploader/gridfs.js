@@ -32,18 +32,30 @@ module.exports = function(crowi) {
   //   });
   // };
 
-  lib.uploadFile = function(filePath, contentType, fileStream, options) {
+  lib.uploadFile = async function(filePath, contentType, fileStream, options) {
     debug('File uploading: ' + filePath);
-    return new Promise(function(resolve, reject) {
-      AttachmentFile.write({filename: filePath, contentType: contentType}, fileStream,
-        function(error, createdFile) {
-          if (error) {
-            reject(error);
-          }
-          resolve();
-        });
+    await WriteFile(filePath, contentType, fileStream);
+  };
+
+  /**
+   * write file with GridFS (Promise wrapper)
+   */
+  const WriteFile = (filePath, contentType, fileStream) => {
+    return new Promise((resolve, reject) => {
+      AttachmentFile.write({
+        filename: filePath,
+        contentType: contentType
+      }, fileStream,
+      function(error, createdFile) {
+        if (error) {
+          reject(error);
+        }
+        resolve();
+      });
     });
   };
+
+
 
   lib.findDeliveryFile = function(fileId, filePath) {
   //   const cacheFile = lib.createCacheFileName(fileId);
@@ -99,7 +111,10 @@ module.exports = function(crowi) {
     };
   };
 
-  lib.getFile = function(filePath) {
+  /**
+   * get file id (Promise wrapper)
+   */
+  lib.getFile = (filePath) => {
     return new Promise((resolve, reject) => {
       AttachmentFile.findOne({
         filename: filePath
@@ -112,7 +127,10 @@ module.exports = function(crowi) {
     });
   };
 
-  lib.readFileData = function(id) {
+  /**
+   * read Mongo File (Promise wrapper)
+   */
+  lib.readFileData = (id) => {
     return new Promise((resolve, reject) => {
       let buf;
       const stream = AttachmentFile.readById(id);
