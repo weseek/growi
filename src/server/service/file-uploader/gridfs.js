@@ -101,10 +101,10 @@ module.exports = function(crowi) {
   };
 
   lib.getFileData = async function(filePath) {
-    const file = await lib.getFile(filePath);
+    const file = await getFile(filePath);
     const id = file.id;
     const contentType = file.contentType;
-    const data = await lib.readFileData(id);
+    const data = await readFileData(id);
     return {
       data,
       contentType
@@ -114,11 +114,11 @@ module.exports = function(crowi) {
   /**
    * get file id (Promise wrapper)
    */
-  lib.getFile = (filePath) => {
+  const getFile = (filePath) => {
     return new Promise((resolve, reject) => {
       AttachmentFile.findOne({
         filename: filePath
-      }, async function(err, file) {
+      }, function(err, file) {
         if (err) {
           reject(err);
         }
@@ -130,7 +130,7 @@ module.exports = function(crowi) {
   /**
    * read Mongo File (Promise wrapper)
    */
-  lib.readFileData = (id) => {
+  const readFileData = (id) => {
     return new Promise((resolve, reject) => {
       let buf;
       const stream = AttachmentFile.readById(id);
