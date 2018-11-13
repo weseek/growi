@@ -115,6 +115,7 @@
     "passport-saml": "^0.35.0",
     "passport-twitter": "^1.0.4",
     "rimraf": "^2.6.1",
+    "scheduler": "^0.11.1",
     "slack-node": "^0.1.8",
     "socket.io": "^2.0.3",
     "string-width": "^2.1.1",
