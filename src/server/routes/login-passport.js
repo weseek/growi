@@ -427,6 +427,9 @@ module.exports = function(crowi, app) {
   };
 
   const getOrCreateUser = async(req, res, userInfo, providerId) => {
+    // get option
+    const isSameUsernameTreatedAsIdenticalUser = Config.isSameUsernameTreatedAsIdenticalUser(config, providerId);
+    const isSameEmailTreatedAsIdenticalUser = Config.isSameEmailTreatedAsIdenticalUser(config, providerId);
     try {
       // find or register(create) user
       const externalAccount = await ExternalAccount.findOrRegister(
@@ -435,14 +438,14 @@ module.exports = function(crowi, app) {
         userInfo.username,
         userInfo.name,
         userInfo.email,
+        isSameUsernameTreatedAsIdenticalUser,
+        isSameEmailTreatedAsIdenticalUser,
       );
       return externalAccount;
     }
     catch (err) {
       if (err.name === 'DuplicatedUsernameException') {
-        // get option
-        const isSameUsernameTreatedAsIdenticalUser = Config.isSameUsernameTreatedAsIdenticalUser(config, providerId);
-        if (isSameUsernameTreatedAsIdenticalUser) {
+        if (isSameEmailTreatedAsIdenticalUser || isSameUsernameTreatedAsIdenticalUser) {
           // associate to existing user
           debug(`ExternalAccount '${userInfo.username}' will be created and bound to the exisiting User account`);
           return ExternalAccount.associate(providerId, userInfo.id, err.user);
