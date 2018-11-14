@@ -48,7 +48,7 @@ module.exports = function(crowi) {
   };
 
   /**
-   * write file with GridFS (Promise wrapper)
+   * write file to MongoDB with GridFS (Promise wrapper)
    */
   const writeFile = (filePath, contentType, fileStream) => {
     return new Promise((resolve, reject) => {
@@ -123,13 +123,23 @@ module.exports = function(crowi) {
     const fileStream = fs.createWriteStream(cacheFile);
     const file = await getFile(filePath);
     const id = file.id;
-    const data = await readFileData(id);
-    fileStream.write(data);
+    const buf = await readFileData(id);
+    await writeCacheFile(fileStream, buf);
     return cacheFile;
   };
 
   const createCacheFileName = (fileId) => {
     return path.join(crowi.cacheDir, `attachment-${fileId}`);
+  };
+
+  /**
+   * write cache file (Promise wrapper)
+   */
+  const writeCacheFile = (fileStream, data) => {
+    return new Promise((resolve, reject) => {
+      fileStream.write(data);
+      resolve();
+    });
   };
 
   lib.generateUrl = function(filePath) {
