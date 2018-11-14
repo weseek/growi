@@ -352,6 +352,8 @@
     "optional": "Optional",
     "Treat username matching as identical": "Automatically bind external accounts newly logged in to local accounts when <code>%s</code> match",
     "Treat username matching as identical_warn": "WARNING: Be aware of security because the system treats the same user as a match of <code>%s</code>.",
+    "Treat email matching as identical": "Automatically bind external accounts newly logged in to local accounts when <code>%s</code> match",
+    "Treat email matching as identical_warn": "WARNING: Be aware of security because the system treats the same user as a match of <code>%s</code>.",
     "Use env var if empty": "Use env var <code>%s</code> if empty",
     "ldap": {
       "server_url_detail": "The LDAP URL of the directory service in the format <code>ldap://host:port/DN</code> or <code>ldaps://host:port/DN</code>.",

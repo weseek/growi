@@ -376,6 +376,8 @@
     "optional": "オプション",
     "Treat username matching as identical": "新規ログイン時、<code>%s</code> が一致したローカルアカウントが存在した場合は自動的に紐付ける",
     "Treat username matching as identical_warn": "警告: <code>%s</code> の一致を以て同一ユーザーであるとみなすので、セキュリティに注意してください",
+    "Treat email matching as identical": "新規ログイン時、<code>%s</code> が一致したローカルアカウントが存在した場合は自動的に紐付ける",
+    "Treat email matching as identical_warn": "警告: <code>%s</code> の一致を以て同一ユーザーであるとみなすので、セキュリティに注意してください",
     "Use env var if empty": "空の場合、環境変数 <code>%s</code> を利用します",
     "ldap": {
       "server_url_detail": "LDAP URLを <code>ldap://host:port/DN</code> または <code>ldaps://host:port/DN</code> の形式で入力してください。",
