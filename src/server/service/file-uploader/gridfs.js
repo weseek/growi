@@ -55,51 +55,6 @@ module.exports = function(crowi) {
     });
   };
 
-
-
-  lib.findDeliveryFile = function(fileId, filePath) {
-  //   const cacheFile = lib.createCacheFileName(fileId);
-
-  //   debug('find delivery file', cacheFile);
-  //   if (!lib.shouldUpdateCacheFile(cacheFile)) {
-  //     return cacheFile;
-  //   }
-
-  //   const fileStream = fs.createWriteStream(cacheFile);
-  //   const fileUrl = lib.generateUrl(filePath);
-  //   debug('Load attachement file into local cache file', fileUrl, cacheFile);
-  //   return cacheFile;
-  // };
-
-  // // private
-  // lib.createCacheFileName = function(fileId) {
-  //   return path.join(crowi.cacheDir, `attachment-${fileId}`);
-  // };
-
-  // // private
-  // lib.shouldUpdateCacheFile = function(filePath) {
-  //   try {
-  //     const stats = fs.statSync(filePath);
-
-  //     if (!stats.isFile()) {
-  //       debug('Cache file not found or the file is not a regular fil.');
-  //       return true;
-  //     }
-
-  //     if (stats.size <= 0) {
-  //       debug('Cache file found but the size is 0');
-  //       return true;
-  //     }
-  //   }
-  //   catch (e) {
-  //     // no such file or directory
-  //     debug('Stats error', e); // [TODO] error log of bunyan logger
-  //     return true;
-  //   }
-
-  //   return false;
-  };
-
   lib.getFileData = async function(filePath) {
     const file = await getFile(filePath);
     const id = file.id;
@@ -112,7 +67,7 @@ module.exports = function(crowi) {
   };
 
   /**
-   * get file id (Promise wrapper)
+   * get file from MongoDB (Promise wrapper)
    */
   const getFile = (filePath) => {
     return new Promise((resolve, reject) => {
@@ -128,7 +83,7 @@ module.exports = function(crowi) {
   };
 
   /**
-   * read Mongo File (Promise wrapper)
+   * read File in MongoDB (Promise wrapper)
    */
   const readFileData = (id) => {
     return new Promise((resolve, reject) => {
@@ -150,6 +105,21 @@ module.exports = function(crowi) {
         resolve(buf);
       });
     });
+  };
+
+  lib.findDeliveryFile = async function(fileId, filePath) {
+    const cacheFile = createCacheFileName(fileId);
+    debug('Load attachement file into local cache file', cacheFile);
+    const fileStream = fs.createWriteStream(cacheFile);
+    const file = await getFile(filePath);
+    const id = file.id;
+    const data = await readFileData(id);
+    fileStream.write(data);
+    return cacheFile;
+  };
+
+  const createCacheFileName = (fileId) => {
+    return path.join(crowi.cacheDir, `attachment-${fileId}`);
   };
 
   lib.generateUrl = function(filePath) {

@@ -28,11 +28,7 @@ module.exports = function(crowi, app) {
             if (fileName.match(/^\/uploads/)) {
               return res.download(path.join(crowi.publicDir, fileName), data.originalName);
             }
-            // // gridfs
-            // else if (fileName.match(/^.*getMongo.*/)) {
-            //   return res.download(path.join(crowi.publicDir, fileName), data.originalName);
-            // }
-            // aws
+            // aws or gridfs
             else {
               const options = {
                 headers: {
