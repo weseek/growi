@@ -4,12 +4,10 @@ module.exports = function(crowi) {
   'use strict';
 
   var debug = require('debug')('growi:service:fileUploadergridfs')
-  var logger = require('@alias/logger')('growi:routes:attachment')
   var mongoose = require('mongoose');
   var path = require('path');
   var fs = require('fs');
   var lib = {};
-  var Attachment = crowi.model('Attachment');
   var AttachmentFile = {};
 
   // instantiate mongoose-gridfs
@@ -22,25 +20,37 @@ module.exports = function(crowi) {
   // obtain a model
   AttachmentFile = gridfs.model;
 
-  // // delete a file
-  // lib.deleteFile = async function(fileId, filePath) {
-  //   debug('File deletion: ' + fileId);
-  //   await AttachmentFile.unlinkById(fileId, function(error, unlinkedAttachment) {
-  //     if (error) {
-  //       throw new Error(error);
-  //     }
-  //   });
-  // };
+  // delete a file
+  lib.deleteFile = async function(fileId, filePath) {
+    debug('File deletion: ' + fileId);
+    const file = await getFile(filePath);
+    const id = file.id;
+    AttachmentFile.unlinkById(id, function(error, unlinkedAttachment) {
+      if (error) {
+        throw new Error(error);
+      }
+    });
+    clearCache(fileId);
+  };
+
+  const clearCache = (fileId) => {
+    const cacheFile = createCacheFileName(fileId);
+    fs.unlink(cacheFile, (err) => {
+      if (err) {
+        throw new Error('fail to delete cache file', err);
+      }
+    });
+  };
 
   lib.uploadFile = async function(filePath, contentType, fileStream, options) {
     debug('File uploading: ' + filePath);
-    await WriteFile(filePath, contentType, fileStream);
+    await writeFile(filePath, contentType, fileStream);
   };
 
   /**
    * write file with GridFS (Promise wrapper)
    */
-  const WriteFile = (filePath, contentType, fileStream) => {
+  const writeFile = (filePath, contentType, fileStream) => {
     return new Promise((resolve, reject) => {
       AttachmentFile.write({
         filename: filePath,
