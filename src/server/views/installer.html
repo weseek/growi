@@ -4,8 +4,6 @@
 
 {% block html_title %}{{ customTitle(t('installer.setup')) }}{% endblock %}
 
-
-
 {#
  # Remove default contents
  #}
@@ -17,8 +15,11 @@
 {% endblock %}
 {% block sidebar %}
 {% endblock %}
-<script src="{{ webpack_asset('js/installer.js') }}" defer></script>
 
+{% block html_additional_headers %}
+  {% parent %}
+  <script src="{{ webpack_asset('js/installer.js') }}" defer></script>
+{% endblock %}
 
 {% block layout_main %}
 
