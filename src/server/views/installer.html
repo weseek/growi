@@ -57,37 +57,6 @@
       <form role="form" action="/installer/createAdmin" method="post" id="register-form">
         <div id='installer-form'></div>
 
-        <div class="input-group" id="input-group-username">
-          <span class="input-group-addon"><i class="icon-user"></i></span>
-          <input type="text" class="form-control" placeholder="{{ t('User ID') }}" name="registerForm[username]" value="{{ req.body.registerForm.username }}" required>
-        </div>
-        <p class="help-block">
-          <span id="help-block-username"></span>
-        </p>
-
-        <div class="input-group">
-          <span class="input-group-addon"><i class="icon-tag"></i></span>
-          <input type="text" class="form-control" placeholder="{{ t('Name') }}" name="registerForm[name]" value="{{ googleName|default(req.body.registerForm.name) }}" required>
-        </div>
-
-        <div class="input-group">
-          <span class="input-group-addon"><i class="icon-envelope"></i></span>
-          <input type="email" class="form-control" placeholder="{{ t('Email') }}" name="registerForm[email]" value="{{ googleEmail|default(req.body.registerForm.email) }}" required>
-        </div>
-
-        <div class="input-group">
-          <span class="input-group-addon"><i class="icon-lock"></i></span>
-          <input type="password" class="form-control" placeholder="{{ t('Password') }}" name="registerForm[password]" required>
-        </div>
-
-        <input type="hidden" name="_csrf" value="{{ csrf() }}">
-        <div class="input-group m-t-30 m-b-20 d-flex justify-content-center">
-          <button type="submit" class="fcbtn btn btn-success btn-1b btn-register">
-            <span class="btn-label"><i class="icon-user-follow"></i></span>
-            {{ t('Create') }}
-          </button>
-        </div>
-
         <div class="input-group m-t-30 d-flex justify-content-center">
           <a href="https://growi.org" class="link-growi-org">
             <span class="growi">GROWI</span>.<span class="org">ORG
