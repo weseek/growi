@@ -24,7 +24,7 @@
     "build:dev:app:analyze": "cross-env ANALYZE=1 npm run build:dev:app:watch -- --profile",
     "build:dev:app:watch": "npm run build:dev:app -- --watch",
     "build:dev:app": "npm run clean:app && env-cmd config/env.dev.js webpack --config config/webpack.dev.js --progress",
-    "build:dev:dll": "webpack --config config/webpack.dll.js",
+    "build:dev:dll": "webpack --config config/webpack.dev.dll.js",
     "build:dev:watch": "npm-run-all -s build:dev:dll build:dev:app:watch",
     "build:dev": "npm-run-all -s build:dev:dll build:dev:app",
     "build:prod:analyze": "cross-env ANALYZE=1 npm run build:prod",
