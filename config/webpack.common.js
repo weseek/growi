@@ -58,7 +58,7 @@ module.exports = (options) => {
     },
     resolve: {
       extensions: ['.js', '.jsx', '.json'],
-      modules: [helpers.root('node_modules')],
+      modules: ((options.resolve && options.resolve.modules) || []).concat([helpers.root('node_modules')]),
       alias: {
         '@root': helpers.root('/'),
         '@commons': helpers.root('src/lib'),

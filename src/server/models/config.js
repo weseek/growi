@@ -53,6 +53,7 @@ module.exports = function(crowi) {
       'app:confidential'  : '',
 
       'app:fileUpload'    : false,
+      'app:globalLang'    : 'en',
 
       'security:restrictGuestMode'      : 'Deny',
 
@@ -74,6 +75,7 @@ module.exports = function(crowi) {
       'security:passport-ldap:groupDnProperty' : undefined,
       'security:passport-ldap:isSameUsernameTreatedAsIdenticalUser': false,
       'security:passport-saml:isEnabled' : false,
+      'security:passport-saml:isSameEmailTreatedAsIdenticalUser': false,
       'security:passport-google:isEnabled' : false,
       'security:passport-github:isEnabled' : false,
       'security:passport-twitter:isEnabled' : false,
@@ -283,6 +285,11 @@ module.exports = function(crowi) {
     return getValueForCrowiNS(config, key) || 'GROWI';
   };
 
+  configSchema.statics.globalLang = function(config) {
+    const key = 'app:globalLang';
+    return getValueForCrowiNS(config, key);
+  };
+
   configSchema.statics.isEnabledPassport = function(config) {
     // always true if growi installed cleanly
     if (Object.keys(config.crowi).length == 0) {
@@ -320,6 +327,11 @@ module.exports = function(crowi) {
 
   configSchema.statics.isSameUsernameTreatedAsIdenticalUser = function(config, providerType) {
     const key = `security:passport-${providerType}:isSameUsernameTreatedAsIdenticalUser`;
+    return getValueForCrowiNS(config, key);
+  };
+
+  configSchema.statics.isSameEmailTreatedAsIdenticalUser = function(config, providerType) {
+    const key = `security:passport-${providerType}:isSameEmailTreatedAsIdenticalUser`;
     return getValueForCrowiNS(config, key);
   };
 
@@ -605,6 +617,7 @@ module.exports = function(crowi) {
       },
       recentCreatedLimit: Config.showRecentCreatedNumber(config),
       isAclEnabled: !Config.isPublicWikiOnly(config),
+      globalLang: Config.globalLang(config),
     };
 
     return local_config;

@@ -65,12 +65,6 @@
       <form action="/_api/admin/customize/layout" method="post" class="form-horizontal" id="customlayoutSettingForm" role="form">
       <fieldset>
         <legend>{{ t('customize_page.Layout') }}</legend>
-        {% if env === 'development' %}
-          <br>
-          <div class="alert alert-warning">
-            <strong>DEBUG MESSAGE:</strong> development build では、リアルタイムプレビューが無効になります
-          </div>
-        {% endif %}
         <div class="form-group">
           <div class="col-sm-4">
             <h4>
@@ -134,6 +128,11 @@
           </div>
         </div>
         <h2>{{ t('customize_page.Theme') }}</h2>
+        {% if env === 'development' %}
+          <div class="alert alert-warning">
+            <strong>DEBUG MESSAGE:</strong> development build では、リアルタイムプレビューが無効になります
+          </div>
+        {% endif %}
         <div id="themeOptions" {% if 'kibela' == settingForm['customize:layout'] %}class="disabled"{% endif %}>
           {# Light Themes #}
           <div class="d-flex">

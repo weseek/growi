@@ -34,10 +34,13 @@ body{
 }
 
 .navbar-header{
-     background:$topbar;
+  background:$topbar;
 }
-.navbar-top-links > li > a{
+.navbar-top-links > li > a {
     color:$white;
+}
+.navbar-top-links .confidential {
+  background-color: darken($topbar, 10%);
 }
 /*
 .notify .heartbit{
