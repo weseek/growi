@@ -1,8 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import i18next from 'i18next';
 import { translate } from 'react-i18next';
 
 class InstallerForm extends React.Component {
+
+  changeLanguage(locale) {
+    i18next.changeLanguage(locale);
+  }
+
   render() {
     return (
       <form role="form" action="/installer/createAdmin" method="post" id="register-form">
@@ -31,6 +37,20 @@ class InstallerForm extends React.Component {
         </div>
 
         <input type="hidden" name="_csrf" value={ this.props.csrf } />
+
+        <div className="input-group m-t-20 m-b-20 mx-auto">
+          <div className="radio radio-primary radio-inline">
+            <input type="radio" id="radioLangEn" name="registerForm[lang]"
+                   defaultChecked={ true } onClick={() => this.changeLanguage('en')} />
+            <label htmlFor="radioLangEn">{ this.props.t('English') }</label>
+          </div>
+          <div className="radio radio-primary radio-inline">
+            <input type="radio" id="radioLangJa" name="registerForm[lang]"
+                   defaultChecked={ false } onClick={() => this.changeLanguage('ja')} />
+            <label htmlFor="radioLangJa">{ this.props.t('Japanese') }</label>
+          </div>
+        </div>
+
         <div className="input-group m-t-30 m-b-20 d-flex justify-content-center">
           <button type="submit" className="fcbtn btn btn-success btn-1b btn-register">
             <span className="btn-label"><i className="icon-user-follow"></i></span>
