@@ -50,10 +50,6 @@
         <small>{{ t('installer.initial_account_will_be_administrator_automatically') }}</small>
       </p>
 
-      <p class="alert alert-warning p-b-10 p-t-10">
-        <small>{{ t('installer.current_language') }}: {{ appGlobalLang() }}</small>
-      </p>
-
       <div id='installer-form'
         data-user-name="{{ req.body.registerForm.username }}"
         data-name="{{ googleName|default(req.body.registerForm.name) }}"
