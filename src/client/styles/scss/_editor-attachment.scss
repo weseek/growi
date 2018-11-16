@@ -14,7 +14,7 @@
 
     position: relative;   // against .overlay position: absolute
 
-    @include overlay-processing-style(overlay-dropzone-active, 2.5em);
+    @include overlay-processing-style(overlay-dropzone-active, 2.5em, 0.5em);
 
     // unuploadable or rejected
     &.dropzone-unuploadable, &.dropzone-rejected {
@@ -28,7 +28,7 @@
     }
     // uploading
     &.dropzone-uploading {
-      @include overlay-processing-style(overlay-dropzone-active, 2.5em);
+      @include overlay-processing-style(overlay-dropzone-active, 2.5em, 0.5em);
     }
 
     // unuploadable
