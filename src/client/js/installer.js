@@ -12,9 +12,13 @@ const i18n = i18nFactory(userlang);
 // render InstallerForm
 const installerFormElem = document.getElementById('installer-form');
 if (installerFormElem) {
+  const userName = installerFormElem.dataset.userName;
+  const name = installerFormElem.dataset.name;
+  const email = installerFormElem.dataset.email;
+  const csrf = installerFormElem.dataset.csrf;
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
-      <InstallerForm />
+      <InstallerForm userName={userName} name={name} email={email} csrf={csrf} />
     </I18nextProvider>,
     installerFormElem
   );
