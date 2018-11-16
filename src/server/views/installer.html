@@ -54,20 +54,12 @@
         <small>{{ t('installer.current_language') }}: {{ appGlobalLang() }}</small>
       </p>
 
-      <form role="form" action="/installer/createAdmin" method="post" id="register-form">
-        <div id='installer-form'
-          data-user-name="{{ req.body.registerForm.username }}"
-          data-name="{{ googleName|default(req.body.registerForm.name) }}"
-          data-email="{{ googleEmail|default(req.body.registerForm.email) }}"
-          data-csrf="{{ csrf() }}">
-        </div>
-
-        <div class="input-group m-t-30 d-flex justify-content-center">
-          <a href="https://growi.org" class="link-growi-org">
-            <span class="growi">GROWI</span>.<span class="org">ORG
-          </a>
-        </div>
-      </form>
+      <div id='installer-form'
+        data-user-name="{{ req.body.registerForm.username }}"
+        data-name="{{ googleName|default(req.body.registerForm.name) }}"
+        data-email="{{ googleEmail|default(req.body.registerForm.email) }}"
+        data-csrf="{{ csrf() }}">
+      </div>
     </div>
 
   </div>{# /.row #}
