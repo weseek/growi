@@ -2,9 +2,7 @@
 
 {% block html_base_css %}installer nologin{% endblock %}
 
-{% block html_title %}{{ customTitle('セットアップ') }}{% endblock %}
-
-
+{% block html_title %}{{ customTitle(t('installer.setup')) }}{% endblock %}
 
 {#
  # Remove default contents
@@ -18,7 +16,10 @@
 {% block sidebar %}
 {% endblock %}
 
-
+{% block html_additional_headers %}
+  {% parent %}
+  <script src="{{ webpack_asset('js/installer.js') }}" defer></script>
+{% endblock %}
 
 {% block layout_main %}
 
@@ -45,53 +46,16 @@
 
     <div class="login-dialog p-t-10 p-b-10 col-sm-offset-4 col-sm-4" id="login-dialog">
       <p class="alert alert-success">
-        <strong>最初のアカウントの作成</strong><br>
-        <small>初めに作成するアカウントは、自動的に管理者権限が付与されます</small>
+        <strong>{{ t('installer.create_initial_account') }}</strong><br>
+        <small>{{ t('installer.initial_account_will_be_administrator_automatically') }}</small>
       </p>
 
-      <p class="alert alert-warning p-b-10 p-t-10">
-        <small>現在の言語設定: {{ appGlobalLang() }}</small>
-      </p>
-
-      <form role="form" action="/installer/createAdmin" method="post" id="register-form">
-
-        <div class="input-group" id="input-group-username">
-          <span class="input-group-addon"><i class="icon-user"></i></span>
-          <input type="text" class="form-control" placeholder="{{ t('User ID') }}" name="registerForm[username]" value="{{ req.body.registerForm.username }}" required>
-        </div>
-        <p class="help-block">
-          <span id="help-block-username"></span>
-        </p>
-
-        <div class="input-group">
-          <span class="input-group-addon"><i class="icon-tag"></i></span>
-          <input type="text" class="form-control" placeholder="{{ t('Name') }}" name="registerForm[name]" value="{{ googleName|default(req.body.registerForm.name) }}" required>
-        </div>
-
-        <div class="input-group">
-          <span class="input-group-addon"><i class="icon-envelope"></i></span>
-          <input type="email" class="form-control" placeholder="{{ t('Email') }}" name="registerForm[email]" value="{{ googleEmail|default(req.body.registerForm.email) }}" required>
-        </div>
-
-        <div class="input-group">
-          <span class="input-group-addon"><i class="icon-lock"></i></span>
-          <input type="password" class="form-control" placeholder="{{ t('Password') }}" name="registerForm[password]" required>
-        </div>
-
-        <input type="hidden" name="_csrf" value="{{ csrf() }}">
-        <div class="input-group m-t-30 m-b-20 d-flex justify-content-center">
-          <button type="submit" class="fcbtn btn btn-success btn-1b btn-register">
-            <span class="btn-label"><i class="icon-user-follow"></i></span>
-            {{ t('Create') }}
-          </button>
-        </div>
-
-        <div class="input-group m-t-30 d-flex justify-content-center">
-          <a href="https://growi.org" class="link-growi-org">
-            <span class="growi">GROWI</span>.<span class="org">ORG
-          </a>
-        </div>
-      </form>
+      <div id='installer-form'
+        data-user-name="{{ req.body.registerForm.username }}"
+        data-name="{{ googleName|default(req.body.registerForm.name) }}"
+        data-email="{{ googleEmail|default(req.body.registerForm.email) }}"
+        data-csrf="{{ csrf() }}">
+      </div>
     </div>
 
   </div>{# /.row #}
@@ -109,7 +73,7 @@ $(function() {
     $.getJSON('/_api/check_username', {username: username}, function(json) {
       if (!json.valid) {
         $('#help-block-username').html(
-          '<i class="icon-fw icon-ban"></i>このユーザーIDは利用できません。'
+          '<i class="icon-fw icon-ban"></i>{{ t("installer.unavaliable_user_id") }}'
         );
         $('#login-dialog').addClass('has-error');
         $('#input-group-username').addClass('has-error');
