@@ -139,6 +139,12 @@ export default class HandsontableModal extends React.PureComponent {
   }
 
   afterLoadDataHandler(initialLoad) {
+
+    // FIXME: These two differ after moving the column. Why?
+    if (this.refs.hotTable) {
+      console.log(this.refs.hotTable.hotInstance.getData());
+      console.log(this.state.markdownTable.table);
+    }
     // clear 'manuallyResizedColumnIndicesSet' for the first loading
     if (initialLoad) {
       this.manuallyResizedColumnIndicesSet.clear();
@@ -189,11 +195,27 @@ export default class HandsontableModal extends React.PureComponent {
   }
 
   afterColumnMoveHandler(columns, target) {
-    console.log({columns, target});
+    const newData = this.refs.hotTable.hotInstance.getData();
+    const newAlign = [].concat(this.state.markdownTable.options.align);
+
+    const removed = newAlign.splice(columns[0], columns.length);
+    newAlign.splice.apply(newAlign, [target, 0].concat(removed));
+
+    const markdownTable = new MarkdownTable(newData, {align: newAlign});
+
+    this.setState({
+      markdownTable: markdownTable
+    });
   }
 
-  afterRowMoveHandler(rows, target) {
-    console.log({rows, target});
+  afterRowMoveHandler() {
+    const newData = this.refs.hotTable.hotInstance.getData();
+    const newAlign = [].concat(this.state.markdownTable.options.align);
+    const markdownTable = new MarkdownTable(newData, {align: newAlign});
+
+    this.setState({
+      markdownTable: markdownTable
+    });
   }
 
   /**
