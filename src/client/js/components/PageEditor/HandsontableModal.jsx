@@ -43,6 +43,8 @@ export default class HandsontableModal extends React.PureComponent {
     this.beforeColumnResizeHandler = this.beforeColumnResizeHandler.bind(this);
     this.afterColumnResizeHandler = this.afterColumnResizeHandler.bind(this);
     this.modifyColWidthHandler = this.modifyColWidthHandler.bind(this);
+    this.afterColumnMoveHandler = this.afterColumnMoveHandler.bind(this);
+    this.afterRowMoveHandler = this.afterRowMoveHandler.bind(this);
     this.synchronizeAlignment = this.synchronizeAlignment.bind(this);
     this.alignButtonHandler = this.alignButtonHandler.bind(this);
     this.toggleDataImportArea = this.toggleDataImportArea.bind(this);
@@ -186,6 +188,14 @@ export default class HandsontableModal extends React.PureComponent {
     return Math.max(80, Math.min(400, width));
   }
 
+  afterColumnMoveHandler(columns, target) {
+    console.log({columns, target});
+  }
+
+  afterRowMoveHandler(rows, target) {
+    console.log({rows, target});
+  }
+
   /**
    * change the markdownTable alignment and synchronize the handsontable alignment to it
    */
@@ -320,6 +330,8 @@ export default class HandsontableModal extends React.PureComponent {
                 beforeColumnMove={this.beforeColumnMoveHandler}
                 beforeColumnResize={this.beforeColumnResizeHandler}
                 afterColumnResize={this.afterColumnResizeHandler}
+                afterColumnMove={this.afterColumnMoveHandler}
+                afterRowMove={this.afterRowMoveHandler}
               />
           </div>
         </Modal.Body>
