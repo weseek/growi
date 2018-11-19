@@ -1,9 +1,19 @@
 CHANGES
 ========
 
-## 3.2.8-RC
+## 3.2.9-RC
 
 * 
+
+## 3.2.8
+
+* Improvement: Add an option to use email for account link when using SAML federation
+* Fix: Editor layout is sometimes broken
+* Fix: Normalize table data for Spreadsheet like GUI (Handsontable) when import
+* Support: Improve development environment
+* Support: Upgrade libs
+    * googleapis
+    * react-dropzone
 
 ## 3.2.7
 
