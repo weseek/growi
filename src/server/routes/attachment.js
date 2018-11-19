@@ -61,9 +61,14 @@ module.exports = function(crowi, app) {
     const pageId = req.params.pageId;
     const fileName = req.params.fileName;
     const filePath = `attachment/${pageId}/${fileName}`;
-    const fileData = await fileUploader.getFileData(filePath);
-    res.set('Content-Type', fileData.contentType);
-    return res.send(ApiResponse.success(fileData.data));
+    try {
+      const fileData = await fileUploader.getFileData(filePath);
+      res.set('Content-Type', fileData.contentType);
+      return res.send(ApiResponse.success(fileData.data));
+    }
+    catch (e) {
+      return res.json(ApiResponse.error('attachment not found'));
+    }
   };
 
   /**
