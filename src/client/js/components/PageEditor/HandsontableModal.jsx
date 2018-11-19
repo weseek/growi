@@ -156,6 +156,8 @@ export default class HandsontableModal extends React.PureComponent {
   beforeColumnMoveHandler(columns, target) {
     // clear 'manuallyResizedColumnIndicesSet'
     this.manuallyResizedColumnIndicesSet.clear();
+
+    this.refs.hotTable.hotInstance.getPlugin('manualColumnMove').persistentStateSave();
   }
 
   beforeColumnResizeHandler(currentColumn) {
@@ -194,6 +196,11 @@ export default class HandsontableModal extends React.PureComponent {
     return Math.max(80, Math.min(400, width));
   }
 
+  beforeRowMoveHandler() {
+    this.refs.hotTable.hotInstance.getPlugin('manualRowMove').persistentStateSave();
+  }
+
+  //FIXME: modify the highlight area after moving
   afterColumnMoveHandler(columns, target) {
     const newData = this.refs.hotTable.hotInstance.getData();
     const newAlign = [].concat(this.state.markdownTable.options.align);
@@ -202,6 +209,8 @@ export default class HandsontableModal extends React.PureComponent {
     newAlign.splice.apply(newAlign, [target, 0].concat(removed));
 
     const markdownTable = new MarkdownTable(newData, {align: newAlign});
+
+    this.refs.hotTable.hotInstance.getPlugin('manualColumnMove').persistentStateLoad();
 
     this.setState({
       markdownTable: markdownTable
@@ -212,6 +221,8 @@ export default class HandsontableModal extends React.PureComponent {
     const newData = this.refs.hotTable.hotInstance.getData();
     const newAlign = [].concat(this.state.markdownTable.options.align);
     const markdownTable = new MarkdownTable(newData, {align: newAlign});
+
+    this.refs.hotTable.hotInstance.getPlugin('manualRowMove').persistentStateLoad();
 
     this.setState({
       markdownTable: markdownTable
@@ -351,6 +362,7 @@ export default class HandsontableModal extends React.PureComponent {
                 modifyColWidth={this.modifyColWidthHandler}
                 beforeColumnMove={this.beforeColumnMoveHandler}
                 beforeColumnResize={this.beforeColumnResizeHandler}
+                beforeRowMove={this.beforeRowMoveHandler}
                 afterColumnResize={this.afterColumnResizeHandler}
                 afterColumnMove={this.afterColumnMoveHandler}
                 afterRowMove={this.afterRowMoveHandler}
@@ -393,6 +405,7 @@ export default class HandsontableModal extends React.PureComponent {
       manualColumnResize: true,
       selectionMode: 'multiple',
       outsideClickDeselects: false,
+      persistentState: true
     };
   }
 }
