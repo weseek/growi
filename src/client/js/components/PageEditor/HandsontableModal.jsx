@@ -39,11 +39,12 @@ export default class HandsontableModal extends React.PureComponent {
     this.cancel = this.cancel.bind(this);
     this.save = this.save.bind(this);
     this.afterLoadDataHandler = this.afterLoadDataHandler.bind(this);
-    this.beforeColumnMoveHandler = this.beforeColumnMoveHandler.bind(this);
     this.beforeColumnResizeHandler = this.beforeColumnResizeHandler.bind(this);
     this.afterColumnResizeHandler = this.afterColumnResizeHandler.bind(this);
     this.modifyColWidthHandler = this.modifyColWidthHandler.bind(this);
+    this.beforeColumnMoveHandler = this.beforeColumnMoveHandler.bind(this);
     this.afterColumnMoveHandler = this.afterColumnMoveHandler.bind(this);
+    this.beforeRowMoveHandler = this.beforeRowMoveHandler.bind(this);
     this.afterRowMoveHandler = this.afterRowMoveHandler.bind(this);
     this.synchronizeAlignment = this.synchronizeAlignment.bind(this);
     this.alignButtonHandler = this.alignButtonHandler.bind(this);
@@ -147,13 +148,6 @@ export default class HandsontableModal extends React.PureComponent {
     this.synchronizeAlignment();
   }
 
-  beforeColumnMoveHandler(columns, target) {
-    // clear 'manuallyResizedColumnIndicesSet'
-    this.manuallyResizedColumnIndicesSet.clear();
-
-    this.refs.hotTable.hotInstance.getPlugin('manualColumnMove').persistentStateSave();
-  }
-
   beforeColumnResizeHandler(currentColumn) {
     /*
      * The following bug disturbs to use 'beforeColumnResizeHandler' to store column index -- 2018.10.23 Yuki Takei
@@ -190,8 +184,11 @@ export default class HandsontableModal extends React.PureComponent {
     return Math.max(80, Math.min(400, width));
   }
 
-  beforeRowMoveHandler() {
-    this.refs.hotTable.hotInstance.getPlugin('manualRowMove').persistentStateSave();
+  beforeColumnMoveHandler(columns, target) {
+    // clear 'manuallyResizedColumnIndicesSet'
+    this.manuallyResizedColumnIndicesSet.clear();
+
+    this.refs.hotTable.hotInstance.getPlugin('manualColumnMove').persistentStateSave();
   }
 
   //FIXME: modify the highlight area after moving
@@ -209,6 +206,10 @@ export default class HandsontableModal extends React.PureComponent {
     this.setState({
       markdownTable: markdownTable
     });
+  }
+
+  beforeRowMoveHandler() {
+    this.refs.hotTable.hotInstance.getPlugin('manualRowMove').persistentStateSave();
   }
 
   afterRowMoveHandler() {
