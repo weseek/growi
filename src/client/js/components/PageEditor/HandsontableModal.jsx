@@ -139,12 +139,6 @@ export default class HandsontableModal extends React.PureComponent {
   }
 
   afterLoadDataHandler(initialLoad) {
-
-    // FIXME: These two differ after moving the column. Why?
-    if (this.refs.hotTable) {
-      console.log(this.refs.hotTable.hotInstance.getData());
-      console.log(this.state.markdownTable.table);
-    }
     // clear 'manuallyResizedColumnIndicesSet' for the first loading
     if (initialLoad) {
       this.manuallyResizedColumnIndicesSet.clear();
