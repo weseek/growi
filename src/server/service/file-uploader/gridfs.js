@@ -35,11 +35,14 @@ module.exports = function(crowi) {
 
   const clearCache = (fileId) => {
     const cacheFile = createCacheFileName(fileId);
-    fs.unlink(cacheFile, (err) => {
-      if (err) {
-        throw new Error('fail to delete cache file', err);
-      }
-    });
+    const stats = fs.statSync(crowi.cacheDir);
+    if (stats.isFile(`attachment-${fileId}`)) {
+      fs.unlink(cacheFile, (err) => {
+        if (err) {
+          throw new Error('fail to delete cache file', err);
+        }
+      });
+    }
   };
 
   lib.uploadFile = async function(filePath, contentType, fileStream, options) {
