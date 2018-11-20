@@ -187,6 +187,7 @@ module.exports = function(crowi, app) {
         }
 
         User.createUserByEmailAndPassword(name, username, email, password, lang, function(err, userData) {
+          const lang = Config.globalLang(config)
           if (err) {
             if (err.name === 'UserUpperLimitException') {
               req.flash('registerWarningMessage', 'Can not register more than the maximum number of users.');
