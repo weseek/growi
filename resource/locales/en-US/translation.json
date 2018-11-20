@@ -101,6 +101,13 @@
   "Deleted Pages": "Deleted Pages",
   "Sign out": "Logout",
 
+  "installer": {
+    "setup": "Setup",
+    "create_initial_account": "Create an initial account",
+    "initial_account_will_be_administrator_automatically": "The initial account will be administrator automatically.",
+    "unavaliable_user_id": "This 'User ID' is unavailable."
+  },
+
   "page_register": {
     "notice": {
       "restricted": "Admin approval required.",
