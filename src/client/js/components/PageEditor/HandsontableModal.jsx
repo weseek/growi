@@ -43,6 +43,7 @@ export default class HandsontableModal extends React.PureComponent {
     this.afterColumnResizeHandler = this.afterColumnResizeHandler.bind(this);
     this.modifyColWidthHandler = this.modifyColWidthHandler.bind(this);
     this.beforeColumnMoveHandler = this.beforeColumnMoveHandler.bind(this);
+    this.afterColumnMoveHandler = this.afterColumnMoveHandler.bind(this);
     this.synchronizeAlignment = this.synchronizeAlignment.bind(this);
     this.alignButtonHandler = this.alignButtonHandler.bind(this);
     this.toggleDataImportArea = this.toggleDataImportArea.bind(this);
@@ -191,6 +192,29 @@ export default class HandsontableModal extends React.PureComponent {
     this.manuallyResizedColumnIndicesSet.clear();
   }
 
+  afterColumnMoveHandler(columns, target) {
+    const align = [].concat(this.state.markdownTable.options.align);
+    const removed = align.splice(columns[0], columns.length);
+
+    let insertPosition = 0;
+    if (target < columns[0]) {
+      insertPosition = target;
+    }
+    else if (columns[columns.length - 1] < target) {
+      insertPosition = target - columns.length;
+    }
+    align.splice.apply(align, [insertPosition, 0].concat(removed));
+
+    this.setState((prevState) => {
+      const newMarkdownTable = prevState.markdownTable.clone();
+      newMarkdownTable.options.align = align;
+
+      return { markdownTable: newMarkdownTable };
+    }, () => {
+      this.synchronizeAlignment();
+    });
+  }
+
   /**
    * change the markdownTable alignment and synchronize the handsontable alignment to it
    */
@@ -325,6 +349,7 @@ export default class HandsontableModal extends React.PureComponent {
                 beforeColumnMove={this.beforeColumnMoveHandler}
                 beforeColumnResize={this.beforeColumnResizeHandler}
                 afterColumnResize={this.afterColumnResizeHandler}
+                afterColumnMove={this.afterColumnMoveHandler}
               />
           </div>
         </Modal.Body>
