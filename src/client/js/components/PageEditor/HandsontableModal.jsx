@@ -132,6 +132,13 @@ export default class HandsontableModal extends React.PureComponent {
     });
   }
 
+  /**
+   * Reset table data to initial value
+   *
+   * ## Note ##
+   * It may not return completely to the initial state because of the manualColumnMove operations.
+   * https://github.com/handsontable/handsontable/issues/5591
+   */
   reset() {
     this.setState({ markdownTable: this.state.markdownTableOnInit.clone() });
   }
@@ -346,6 +353,13 @@ export default class HandsontableModal extends React.PureComponent {
     this.setState({ isDataImportAreaExpanded: !this.state.isDataImportAreaExpanded });
   }
 
+  /**
+   * Import a markdowntable
+   *
+   * ## Note ##
+   * The manualColumnMove operation affects the column order of imported data.
+   * https://github.com/handsontable/handsontable/issues/5591
+   */
   importData(markdownTable) {
     this.init(markdownTable);
     this.toggleDataImportArea();
