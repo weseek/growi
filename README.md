@@ -168,6 +168,7 @@ Environment Variables
       * `mongodb` : MongoDB GridFS (Setting-less)
       * `local` : Server's Local file system (Setting-less)
       * `none` : Disable file uploading
+    * GRIDFS_LIMIT: Limit amount of uploaded file with GridFS: `20000000`
 * **Option to integrate with external systems**
     * HACKMD_URI: URI to connect to [HackMD(CodiMD)](https://hackmd.io/) server.
         * **This server must load the GROWI agent. [Here's how to prepare it](https://docs.growi.org/management-cookbook/integrate-with-hackmd).**
