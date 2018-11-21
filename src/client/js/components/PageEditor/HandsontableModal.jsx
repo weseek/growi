@@ -44,8 +44,6 @@ export default class HandsontableModal extends React.PureComponent {
     this.modifyColWidthHandler = this.modifyColWidthHandler.bind(this);
     this.beforeColumnMoveHandler = this.beforeColumnMoveHandler.bind(this);
     this.afterColumnMoveHandler = this.afterColumnMoveHandler.bind(this);
-    this.beforeRowMoveHandler = this.beforeRowMoveHandler.bind(this);
-    this.afterRowMoveHandler = this.afterRowMoveHandler.bind(this);
     this.synchronizeAlignment = this.synchronizeAlignment.bind(this);
     this.alignButtonHandler = this.alignButtonHandler.bind(this);
     this.toggleDataImportArea = this.toggleDataImportArea.bind(this);
@@ -132,8 +130,13 @@ export default class HandsontableModal extends React.PureComponent {
   }
 
   save() {
+    const markdown = new MarkdownTable(
+      this.refs.hotTable.hotInstance.getData(),
+      [].concat(this.state.markdownTable.options.align)
+    ).normalizeCells();
+
     if (this.props.onSave != null) {
-      this.props.onSave(this.state.markdownTable.clone().normalizeCells());
+      this.props.onSave(markdown);
     }
 
     this.hide();
@@ -202,22 +205,6 @@ export default class HandsontableModal extends React.PureComponent {
     const markdownTable = new MarkdownTable(newData, {align: newAlign});
 
     this.refs.hotTable.hotInstance.getPlugin('manualColumnMove').persistentStateLoad();
-
-    this.setState({
-      markdownTable: markdownTable
-    });
-  }
-
-  beforeRowMoveHandler() {
-    this.refs.hotTable.hotInstance.getPlugin('manualRowMove').persistentStateSave();
-  }
-
-  afterRowMoveHandler() {
-    const newData = this.refs.hotTable.hotInstance.getData();
-    const newAlign = [].concat(this.state.markdownTable.options.align);
-    const markdownTable = new MarkdownTable(newData, {align: newAlign});
-
-    this.refs.hotTable.hotInstance.getPlugin('manualRowMove').persistentStateLoad();
 
     this.setState({
       markdownTable: markdownTable
@@ -357,10 +344,8 @@ export default class HandsontableModal extends React.PureComponent {
                 modifyColWidth={this.modifyColWidthHandler}
                 beforeColumnMove={this.beforeColumnMoveHandler}
                 beforeColumnResize={this.beforeColumnResizeHandler}
-                beforeRowMove={this.beforeRowMoveHandler}
                 afterColumnResize={this.afterColumnResizeHandler}
                 afterColumnMove={this.afterColumnMoveHandler}
-                afterRowMove={this.afterRowMoveHandler}
               />
           </div>
         </Modal.Body>
