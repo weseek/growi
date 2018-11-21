@@ -43,7 +43,6 @@ export default class HandsontableModal extends React.PureComponent {
     this.afterColumnResizeHandler = this.afterColumnResizeHandler.bind(this);
     this.modifyColWidthHandler = this.modifyColWidthHandler.bind(this);
     this.beforeColumnMoveHandler = this.beforeColumnMoveHandler.bind(this);
-    this.afterColumnMoveHandler = this.afterColumnMoveHandler.bind(this);
     this.synchronizeAlignment = this.synchronizeAlignment.bind(this);
     this.alignButtonHandler = this.alignButtonHandler.bind(this);
     this.toggleDataImportArea = this.toggleDataImportArea.bind(this);
@@ -130,13 +129,13 @@ export default class HandsontableModal extends React.PureComponent {
   }
 
   save() {
-    const markdown = new MarkdownTable(
+    const markdownTable = new MarkdownTable(
       this.refs.hotTable.hotInstance.getData(),
-      [].concat(this.state.markdownTable.options.align)
+      {align: [].concat(this.state.markdownTable.options.align)}
     ).normalizeCells();
 
     if (this.props.onSave != null) {
-      this.props.onSave(markdown);
+      this.props.onSave(markdownTable);
     }
 
     this.hide();
@@ -190,25 +189,6 @@ export default class HandsontableModal extends React.PureComponent {
   beforeColumnMoveHandler(columns, target) {
     // clear 'manuallyResizedColumnIndicesSet'
     this.manuallyResizedColumnIndicesSet.clear();
-
-    this.refs.hotTable.hotInstance.getPlugin('manualColumnMove').persistentStateSave();
-  }
-
-  //FIXME: modify the highlight area after moving
-  afterColumnMoveHandler(columns, target) {
-    const newData = this.refs.hotTable.hotInstance.getData();
-    const newAlign = [].concat(this.state.markdownTable.options.align);
-
-    const removed = newAlign.splice(columns[0], columns.length);
-    newAlign.splice.apply(newAlign, [target, 0].concat(removed));
-
-    const markdownTable = new MarkdownTable(newData, {align: newAlign});
-
-    this.refs.hotTable.hotInstance.getPlugin('manualColumnMove').persistentStateLoad();
-
-    this.setState({
-      markdownTable: markdownTable
-    });
   }
 
   /**
@@ -345,7 +325,6 @@ export default class HandsontableModal extends React.PureComponent {
                 beforeColumnMove={this.beforeColumnMoveHandler}
                 beforeColumnResize={this.beforeColumnResizeHandler}
                 afterColumnResize={this.afterColumnResizeHandler}
-                afterColumnMove={this.afterColumnMoveHandler}
               />
           </div>
         </Modal.Body>
@@ -384,8 +363,7 @@ export default class HandsontableModal extends React.PureComponent {
       manualColumnMove: true,
       manualColumnResize: true,
       selectionMode: 'multiple',
-      outsideClickDeselects: false,
-      persistentState: true
+      outsideClickDeselects: false
     };
   }
 }
