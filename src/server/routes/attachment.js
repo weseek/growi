@@ -107,6 +107,22 @@ module.exports = function(crowi, app) {
   };
 
   /**
+   * @api {get} /attachments.limit Limit amount of uploaded file with GridFS
+   * @apiName AddAttachments
+   * @apiGroup Attachment
+   *
+   * @apiParam {int} size
+   */
+  api.limit = function(req, res) {
+    const uploadFileSize = req.query.size;
+    const isUploadable = true;
+    if (process.env.FILE_UPLOAD !== 'mongodb') {
+      return res.json(ApiResponse.success({isUploadable: isUploadable}));
+    }
+    return res.json(ApiResponse.success({isUploadable: isUploadable}));
+  };
+
+  /**
    * @api {post} /attachments.add Add attachment to the page
    * @apiName AddAttachments
    * @apiGroup Attachment

@@ -115,6 +115,12 @@ export default class PageEditor extends React.Component {
    * @param {any} files
    */
   onUpload(file) {
+    this.props.crowi.apiGet('/attachments.limit', {
+      _csrf: this.props.crowi.csrfToken, size: file.size
+    })
+    .then((res) => {
+      console.log(res.isUploadabe);
+    });
     const endpoint = '/attachments.add';
 
     // create a FromData instance
