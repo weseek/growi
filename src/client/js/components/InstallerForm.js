@@ -40,12 +40,12 @@ class InstallerForm extends React.Component {
 
         <div className="input-group m-t-20 m-b-20 mx-auto">
           <div className="radio radio-primary radio-inline">
-            <input type="radio" id="radioLangEn" name="registerForm[lang]" value="en-US"
+            <input type="radio" id="radioLangEn" name="registerForm[app:globalLang]" value="en-US"
                    defaultChecked={ true } onClick={() => this.changeLanguage('en-US')} />
             <label htmlFor="radioLangEn">{ this.props.t('English') }</label>
           </div>
           <div className="radio radio-primary radio-inline">
-            <input type="radio" id="radioLangJa" name="registerForm[lang]" value="ja"
+            <input type="radio" id="radioLangJa" name="registerForm[app:globalLang]" value="ja"
                    defaultChecked={ false } onClick={() => this.changeLanguage('ja')} />
             <label htmlFor="radioLangJa">{ this.props.t('Japanese') }</label>
           </div>
