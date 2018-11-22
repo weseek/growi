@@ -3,22 +3,21 @@
 module.exports = function(crowi) {
   'use strict';
 
-  var debug = require('debug')('growi:service:fileUploadergridfs')
-  var mongoose = require('mongoose');
-  var path = require('path');
-  var fs = require('fs');
-  var lib = {};
-  var AttachmentFile = {};
+  const debug = require('debug')('growi:service:fileUploaderGridfs');
+  const mongoose = require('mongoose');
+  const path = require('path');
+  const fs = require('fs');
+  const lib = {};
 
   // instantiate mongoose-gridfs
-  var gridfs = require('mongoose-gridfs')({
+  const gridfs = require('mongoose-gridfs')({
     collection: 'attachmentFiles',
     model: 'AttachmentFile',
     mongooseConnection: mongoose.connection
   });
 
   // obtain a model
-  AttachmentFile = gridfs.model;
+  const AttachmentFile = gridfs.model;
 
   // delete a file
   lib.deleteFile = async function(fileId, filePath) {

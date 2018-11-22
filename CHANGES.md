@@ -3,7 +3,7 @@ CHANGES
 
 ## 3.2.9-RC
 
-* 
+* Feature: Attachment Storing to MongoDB GridFS
 
 ## 3.2.8
 

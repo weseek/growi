@@ -55,7 +55,7 @@ module.exports = function(crowi, app) {
    * @apiParam {String} pageId, fileName
    */
   api.get = async function(req, res) {
-    if (process.env.FILE_UPLOAD != 'gridfs') {
+    if (process.env.FILE_UPLOAD !== 'mongodb') {
       return res.status(400);
     }
     const pageId = req.params.pageId;
