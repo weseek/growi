@@ -45,11 +45,6 @@
     </div>
 
     <div class="login-dialog p-t-10 p-b-10 col-sm-offset-4 col-sm-4" id="login-dialog">
-      <p class="alert alert-success">
-        <strong>{{ t('installer.create_initial_account') }}</strong><br>
-        <small>{{ t('installer.initial_account_will_be_administrator_automatically') }}</small>
-      </p>
-
       <div id='installer-form'
         data-user-name="{{ req.body.registerForm.username }}"
         data-name="{{ googleName|default(req.body.registerForm.name) }}"
