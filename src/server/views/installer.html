@@ -44,13 +44,11 @@
       </div>
     </div>
 
-    <div class="login-dialog p-t-10 p-b-10 col-sm-offset-4 col-sm-4" id="login-dialog">
-      <div id='installer-form'
-        data-user-name="{{ req.body.registerForm.username }}"
-        data-name="{{ googleName|default(req.body.registerForm.name) }}"
-        data-email="{{ googleEmail|default(req.body.registerForm.email) }}"
-        data-csrf="{{ csrf() }}">
-      </div>
+    <div id='installer-form'
+      data-user-name="{{ req.body.registerForm.username }}"
+      data-name="{{ googleName|default(req.body.registerForm.name) }}"
+      data-email="{{ googleEmail|default(req.body.registerForm.email) }}"
+      data-csrf="{{ csrf() }}">
     </div>
 
   </div>{# /.row #}

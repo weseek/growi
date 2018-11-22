@@ -11,7 +11,7 @@ class InstallerForm extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className="login-dialog p-t-10 p-b-10 col-sm-offset-4 col-sm-4" id="login-dialog">
         <p className="alert alert-success">
           <strong>{ this.props.t('installer.create_initial_account') }</strong><br />
           <small>{ this.props.t('installer.initial_account_will_be_administrator_automatically') }</small>
