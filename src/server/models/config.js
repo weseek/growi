@@ -209,6 +209,12 @@ module.exports = function(crowi) {
     });
   };
 
+  /**
+   * ## Note ##
+   * This method creates a config object that merge a cache into a defaults.
+   * This can be used to get the config values that reflect the database values and the default values.
+   * So, this method should be renamed to more a general name.
+   */
   configSchema.statics.setupConfigFormData = function(ns, config) {
     var defaultConfig = {};
 
