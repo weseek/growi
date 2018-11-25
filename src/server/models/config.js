@@ -207,7 +207,7 @@ module.exports = function(crowi) {
     });
   };
 
-  configSchema.statics.setupConfigFormData = function(ns, config) {
+  configSchema.statics.setupCofigFormData = function(ns, config) {
     var defaultConfig = {};
 
     // set Default Settings
