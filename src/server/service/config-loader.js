@@ -50,10 +50,10 @@ class ConfigLoader {
     const configFromDB = await this.loadFromDB();
     const configFromEnvVars = this.loadFromEnvVars();
 
-    this.configModel.setupConfigFormData('crowi', configFromDB);
+    const mergedConfigFromDB = this.configModel.setupConfigFormData('crowi', configFromDB);
 
     return {
-      fromDB: configFromDB,
+      fromDB: mergedConfigFromDB,
       fromEnvVars: configFromEnvVars
     };
   }
