@@ -79,6 +79,8 @@ Crowi.prototype.init = function() {
     }).then(function() {
       return self.setupAppConfig();
     }).then(function() {
+      return self.setupConfigManager();
+    }).then(function() {
       return self.scanRuntimeVersions();
     }).then(function() {
       return self.setupPassport();
@@ -203,6 +205,13 @@ Crowi.prototype.setupAppConfig = function() {
       return resolve();
     });
   });
+};
+
+Crowi.prototype.setupConfigManager = async function() {
+  const ConfigLoader = require('../service/config-loader');
+  const configLoader = new ConfigLoader(this.model('Config'));
+  const config = await configLoader.load();
+  console.log(config);
 };
 
 Crowi.prototype.setupModels = function() {
