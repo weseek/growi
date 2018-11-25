@@ -33,6 +33,7 @@ function Crowi(rootdir) {
   this.cacheDir    = path.join(this.tmpDir, 'cache');
 
   this.config = {};
+  this.configManager = null;
   this.searcher = null;
   this.mailer = {};
   this.passportService = null;
@@ -211,7 +212,9 @@ Crowi.prototype.setupConfigManager = async function() {
   const ConfigLoader = require('../service/config-loader');
   const configLoader = new ConfigLoader(this.model('Config'));
   const config = await configLoader.load();
-  console.log(config);
+
+  const ConfigManager = require('../service/config-manager');
+  this.configManager = new ConfigManager(config);
 };
 
 Crowi.prototype.setupModels = function() {
