@@ -1,63 +1,69 @@
-import Config from '../models/config';
-
 const debug = require('debug')('growi:models:config');
 
+/**
+ * The following env vars ignored because these are used before the configuration setup
+ *  or not suitable for storing into the database.
+ * - MONGO_URI
+ * - NODE_ENV
+ * - PORT
+ * - REDIS_URI
+ * - SESSION_NAME
+ * - PASSWORD_SEED
+ * - SECRET_TOKEN
+ */
 const ENV_VAR_NAME_TO_KEY_MAP = {
-  'MONGO_URI': 'app',
-  'NODE_ENV': 'app',
-  'PORT': 'app',
-  'ELASTICSEARCH_URI': 'app',
-  'REDIS_URI': 'app',
-  'PASSWORD_SEED': 'app',
-  'SECRET_TOKEN': 'app',
-  'SESSION_NAME': 'app',
-  'FILE_UPLOAD': 'app',
-  'HACKMD_URI': 'app',
-  'HACKMD_URI_FOR_SERVER': 'app',
-  'PLANTUML_URI': 'app',
-  'BLOCKDIAG_URI': 'app',
-  'OAUTH_GOOGLE_CLIENT_ID': 'app',
-  'OAUTH_GOOGLE_CLIENT_SECRET': 'app',
-  'OAUTH_GITHUB_CLIENT_ID': 'app',
-  'OAUTH_GITHUB_CLIENT_SECRET': 'app',
-  'OAUTH_TWITTER_CONSUMER_KEY': 'app',
-  'OAUTH_TWITTER_CONSUMER_SECRET': 'app',
-  'SAML_ENTRY_POINT': 'app',
-  'SAML_ISSUER': 'app',
-  'SAML_CERT': 'app'
+  /*
+   * The commented out item has not yet entered the migration work.
+   * So, key names of these are under consideration.
+   */
+  // 'ELASTICSEARCH_URI':             'elasticsearch:url',
+  // 'FILE_UPLOAD':                   'app:fileUpload',
+  // 'HACKMD_URI':                    'hackmd:url',
+  // 'HACKMD_URI_FOR_SERVER':         'hackmd:urlForServer',
+  // 'PLANTUML_URI':                  'plantuml:url',
+  // 'BLOCKDIAG_URI':                 'blockdiag:url',
+  // 'OAUTH_GOOGLE_CLIENT_ID':        'security:oauth:googleClientId',
+  // 'OAUTH_GOOGLE_CLIENT_SECRET':    'security:oauth:googleClientSecret',
+  // 'OAUTH_GITHUB_CLIENT_ID':        'security:oauth:githubClientId',
+  // 'OAUTH_GITHUB_CLIENT_SECRET':    'security:oauth:githubClientSecret',
+  // 'OAUTH_TWITTER_CONSUMER_KEY':    'security:oauth:twitterConsumerKey',
+  // 'OAUTH_TWITTER_CONSUMER_SECRET': 'security:oauth:twitterConsumerSecret',
+  'SAML_ENTRY_POINT':                 'security:passport-saml:entryPoint',
+  'SAML_CALLBACK_URI':                'security:passport-saml:callbackUrl',
+  'SAML_ISSUER':                      'security:passport-saml:issuer',
+  'SAML_CERT':                        'security:passport-saml:cert',
 };
 
 class ConfigLoader {
 
-  static async load() {
+  constructor(configModel) {
+    this.configModel = configModel;
+  }
+
+  async load() {
     await this.integrateEnvVars();
 
     const config = {};
-    await Config.find()
-      .sort({ns: 1, key: 1})
-      .exec((err, doc) => {
+    const docs = await this.configModel.find().sort({ns: 1, key: 1}).exec();
 
-        doc.forEach((el) => {
-          if (!config[el.ns]) {
-            config[el.ns] = {};
-          }
-          config[el.ns][el.key] = JSON.parse(el.value);
-        });
+    for (const doc of docs) {
+      if (!config[doc.ns]) {
+        config[doc.ns] = {};
+      }
+      config[doc.ns][doc.key] = JSON.parse(doc.value);
+    }
 
-        debug('Config loaded', config);
-      });
-
-    Config.setupConfigFormData('crowi', config);
+    this.configModel.setupConfigFormData('crowi', config);
 
     return config;
   }
 
-  static async integrateEnvVars() {
-    for (const ENV_VAR_NAME of ENV_VAR_NAME_TO_KEY_MAP) {
+  async integrateEnvVars() {
+    for (const ENV_VAR_NAME of Object.keys(ENV_VAR_NAME_TO_KEY_MAP)) {
       try {
-        await Config.findOneAndUpdate(
+        await this.configModel.findOneAndUpdate(
           {ns: 'crowi', key: ENV_VAR_NAME_TO_KEY_MAP[ENV_VAR_NAME]},
-          {ns: 'crowi', key: ENV_VAR_NAME, value: JSON.stringify(process.env[ENV_VAR_NAME]), from_env: true},
+          {ns: 'crowi', key: ENV_VAR_NAME_TO_KEY_MAP[ENV_VAR_NAME], value: JSON.stringify(process.env[ENV_VAR_NAME]), from_env: true},
           {upsert: true},
           (err, config) => {
             debug('Config.findAndUpdate', err, config);
