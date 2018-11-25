@@ -41,7 +41,7 @@ class ConfigLoader {
   }
 
   async load() {
-    const configFromDB = this.loadFromDB();
+    const configFromDB = await this.loadFromDB();
     const configFromEnvVars = this.loadFromEnvVars();
 
     this.configModel.setupConfigFormData('crowi', configFromDB);
