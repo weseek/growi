@@ -26,8 +26,6 @@ module.exports = function(crowi) {
     ns: 1,
     key: 1,
     from_env: 1
-  }, {
-    unique: true
   });
 
   function validateCrowi() {
