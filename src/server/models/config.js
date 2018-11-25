@@ -18,14 +18,7 @@ module.exports = function(crowi) {
   configSchema = new mongoose.Schema({
     ns: { type: String, required: true, index: true },
     key: { type: String, required: true, index: true },
-    value: { type: String, required: true },
-    from_env: {type: Boolean, required: true}
-  });
-
-  configSchema.index({
-    ns: 1,
-    key: 1,
-    from_env: 1
+    value: { type: String, required: true }
   });
 
   function validateCrowi() {
