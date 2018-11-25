@@ -265,8 +265,7 @@ module.exports = function(crowi) {
       , config = {};
     config.crowi = {}; // crowi namespace
 
-    // ignore documents that from_env is false or does not exist
-    Config.find({$or: [{from_env: false}, {from_env: {$exists: false}}]})
+    Config.find()
       .sort({ns: 1, key: 1})
       .exec(function(err, doc) {
 
