@@ -44,7 +44,7 @@ class ConfigLoader {
     await this.integrateEnvVars();
 
     const config = {};
-    const docs = await this.configModel.find().sort({ns: 1, key: 1}).exec();
+    const docs = await this.configModel.find().exec();
 
     for (const doc of docs) {
       if (!config[doc.ns]) {
