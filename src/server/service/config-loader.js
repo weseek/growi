@@ -17,13 +17,13 @@ const ENV_VAR_NAME_TO_KEY_MAP = {
    * So, key names of these are under consideration.
    */
   // 'ELASTICSEARCH_URI':             'elasticsearch:url',
-  // 'FILE_UPLOAD':                   'app:fileUpload',
+  // 'FILE_UPLOAD':                   'app:fileUploadMethod',
   // 'HACKMD_URI':                    'hackmd:url',
   // 'HACKMD_URI_FOR_SERVER':         'hackmd:urlForServer',
   // 'PLANTUML_URI':                  'plantuml:url',
   // 'BLOCKDIAG_URI':                 'blockdiag:url',
-  // 'OAUTH_GOOGLE_CLIENT_ID':        'security:oauth:googleClientId',
-  // 'OAUTH_GOOGLE_CLIENT_SECRET':    'security:oauth:googleClientSecret',
+  // 'OAUTH_GOOGLE_CLIENT_ID':        'google:clientId'     -> 'security:oauth:googleClientId',
+  // 'OAUTH_GOOGLE_CLIENT_SECRET':    'google:clientSecret' -> 'security:oauth:googleClientSecret',
   // 'OAUTH_GITHUB_CLIENT_ID':        'security:oauth:githubClientId',
   // 'OAUTH_GITHUB_CLIENT_SECRET':    'security:oauth:githubClientSecret',
   // 'OAUTH_TWITTER_CONSUMER_KEY':    'security:oauth:twitterConsumerKey',
