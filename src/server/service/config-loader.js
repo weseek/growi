@@ -22,12 +22,15 @@ const ENV_VAR_NAME_TO_CONFIG_KEY_MAP = {
   // 'HACKMD_URI_FOR_SERVER':         'hackmd:urlForServer',
   // 'PLANTUML_URI':                  'plantuml:url',
   // 'BLOCKDIAG_URI':                 'blockdiag:url',
-  // 'OAUTH_GOOGLE_CLIENT_ID':        'google:clientId'     -> 'security:oauth:googleClientId',
-  // 'OAUTH_GOOGLE_CLIENT_SECRET':    'google:clientSecret' -> 'security:oauth:googleClientSecret',
-  // 'OAUTH_GITHUB_CLIENT_ID':        'security:oauth:githubClientId',
-  // 'OAUTH_GITHUB_CLIENT_SECRET':    'security:oauth:githubClientSecret',
-  // 'OAUTH_TWITTER_CONSUMER_KEY':    'security:oauth:twitterConsumerKey',
-  // 'OAUTH_TWITTER_CONSUMER_SECRET': 'security:oauth:twitterConsumerSecret',
+  // 'OAUTH_GOOGLE_CLIENT_ID':        'security:passport-google:clientId',
+  // 'OAUTH_GOOGLE_CLIENT_SECRET':    'security:passport-google:clientSecret',
+  // 'OAUTH_GOOGLE_CALLBACK_URI':     'security:passport-google:callbackUrl'
+  // 'OAUTH_GITHUB_CLIENT_ID':        'security:passport-github:clientId',
+  // 'OAUTH_GITHUB_CLIENT_SECRET':    'security:passport-github:clientSecret',
+  // 'OAUTH_GITHUB_CALLBACK_URI':     'security:passport-github:callbackUrl'
+  // 'OAUTH_TWITTER_CONSUMER_KEY':    'security:passport-twitter:consumerKey',
+  // 'OAUTH_TWITTER_CONSUMER_SECRET': 'security:passport-twitter:consumerSecret',
+  // 'OAUTH_TWITTER_CALLBACK_URI':    'security:passport-twitter:callbackUrl'
   'SAML_ENTRY_POINT':                 'security:passport-saml:entryPoint',
   'SAML_CALLBACK_URI':                'security:passport-saml:callbackUrl',
   'SAML_ISSUER':                      'security:passport-saml:issuer',
@@ -40,6 +43,9 @@ class ConfigLoader {
     this.configModel = configModel;
   }
 
+  /**
+   * return a config object
+   */
   async load() {
     const configFromDB = await this.loadFromDB();
     const configFromEnvVars = this.loadFromEnvVars();
