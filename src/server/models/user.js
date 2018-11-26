@@ -657,6 +657,7 @@ module.exports = function(crowi) {
           newUser.setPassword(password);
           newUser.createdAt = Date.now();
           newUser.status = STATUS_INVITED;
+          newUser.lang = Config.globalLang(config);
 
           newUser.save(function(err, userData) {
             if (err) {
@@ -743,6 +744,7 @@ module.exports = function(crowi) {
     newUser.name = name;
     newUser.username = username;
     newUser.email = email;
+    newUser.lang = Config.globalLang(config);
     if (password != null) {
       newUser.setPassword(password);
     }

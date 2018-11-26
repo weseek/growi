@@ -34,7 +34,7 @@ module.exports = function(crowi, app) {
 
   actions.createAdmin = function(req, res) {
     var registerForm = req.body.registerForm || {};
-    var language = req.language || 'en-US';
+    var language = req.language || 'Config.globalLang(config)';
 
     if (req.form.isValid) {
       var name = registerForm.name;
