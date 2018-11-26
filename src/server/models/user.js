@@ -747,7 +747,7 @@ module.exports = function(crowi) {
       newUser.setPassword(password);
     }
     if (lang != null) {
-      newUser.lang = lang;
+      newUser.lang = Config.globalLang(config);
     }
     newUser.createdAt = Date.now();
     newUser.status = status || decideUserStatusOnRegistration();
