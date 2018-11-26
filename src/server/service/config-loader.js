@@ -1,4 +1,4 @@
-const debug = require('debug')('growi:models:config');
+const debug = require('debug')('growi:service:ConfigLoader');
 
 /**
  * The following env vars ignored because these are used before the configuration setup
@@ -70,6 +70,9 @@ class ConfigLoader {
       }
       config[doc.ns][doc.key] = JSON.parse(doc.value);
     }
+
+    debug('ConfigLoader#loadFromDB', config);
+
     return config;
   }
 
@@ -79,6 +82,9 @@ class ConfigLoader {
     for (const ENV_VAR_NAME of Object.keys(ENV_VAR_NAME_TO_CONFIG_KEY_MAP)) {
       config.crowi[ENV_VAR_NAME_TO_CONFIG_KEY_MAP[ENV_VAR_NAME]] = process.env[ENV_VAR_NAME];
     }
+
+    debug('ConfigLoader#loadFromEnvVars', config);
+
     return config;
   }
 }
