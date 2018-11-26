@@ -41,12 +41,17 @@ export default class MarkdownTable {
   }
 
   /**
-   * normalize all cell data(trim & convert the newline character to space)
+   * normalize all cell data(trim & convert the newline character to space or pad '' if cell data is null)
    */
   normalizeCells() {
     for (let i = 0; i < this.table.length; i++) {
       for (let j = 0; j < this.table[i].length; j++) {
-        this.table[i][j] = this.table[i][j].trim().replace(/\r?\n/g, ' ');
+        if (this.table[i][j] != null) {
+          this.table[i][j] = this.table[i][j].trim().replace(/\r?\n/g, ' ');
+        }
+        else {
+          this.table[i][j] = '';
+        }
       }
     }
 
