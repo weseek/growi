@@ -209,12 +209,9 @@ Crowi.prototype.setupAppConfig = function() {
 };
 
 Crowi.prototype.setupConfigManager = async function() {
-  const ConfigLoader = require('../service/config-loader');
-  const configLoader = new ConfigLoader(this.model('Config'));
-  const config = await configLoader.load();
-
   const ConfigManager = require('../service/config-manager');
-  this.configManager = new ConfigManager(config);
+  this.configManager = new ConfigManager(this.model('Config'));
+  return await this.configManager.loadConfigs();
 };
 
 Crowi.prototype.setupModels = function() {
