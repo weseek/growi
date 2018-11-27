@@ -96,7 +96,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   init() {
-    this.cmCdnRoot = 'https://cdn.jsdelivr.net/npm/codemirror@5.37.0';
+    this.cmCdnRoot = 'https://cdn.jsdelivr.net/npm/codemirror@5.42.0';
 
     this.interceptorManager = new InterceptorManager();
     this.interceptorManager.addInterceptors([
