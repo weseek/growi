@@ -41,19 +41,19 @@ class ConfigManager {
    * - undefined: a specified config does not exist.
    */
   defaultSearch(namespace, key) {
-    if (!this.isExistInDB(namespace, key) && !this.isExistInEnvVars(namespace, key)) {
+    if (!this.configExistsInDB(namespace, key) && !this.configExistsInEnvVars(namespace, key)) {
       return undefined;
     }
 
-    if (this.isExistInDB(namespace, key) && !this.isExistInEnvVars(namespace, key) ) {
+    if (this.configExistsInDB(namespace, key) && !this.configExistsInEnvVars(namespace, key) ) {
       return this.configObject.fromDB[namespace][key];
     }
 
-    if (!this.isExistInDB(namespace, key) && this.isExistInEnvVars(namespace, key) ) {
+    if (!this.configExistsInDB(namespace, key) && this.configExistsInEnvVars(namespace, key) ) {
       return this.configObject.fromEnvVars[namespace][key];
     }
 
-    if (this.isExistInDB(namespace, key) && this.isExistInEnvVars(namespace, key) ) {
+    if (this.configExistsInDB(namespace, key) && this.configExistsInEnvVars(namespace, key) ) {
       if (this.configObject.fromDB[namespace][key] !== null) {
         return this.configObject.fromDB[namespace][key];
       }
@@ -63,7 +63,11 @@ class ConfigManager {
     }
   }
 
-  isExistInDB(namespace, key) {
+  /**
+   * check whether a specified config exists in configs loaded from the database
+   * @returns {boolean}
+   */
+  configExistsInDB(namespace, key) {
     if (this.configObject.fromDB[namespace] === undefined) {
       return false;
     }
@@ -71,7 +75,11 @@ class ConfigManager {
     return this.configObject.fromDB[namespace][key] !== undefined;
   }
 
-  isExistInEnvVars(namespace, key) {
+  /**
+   * check whether a specified config exists in configs loaded from the environment variables
+   * @returns {boolean}
+   */
+  configExistsInEnvVars(namespace, key) {
     if (this.configObject.fromEnvVars[namespace] === undefined) {
       return false;
     }
