@@ -9,5 +9,6 @@ module.exports = form(
   field('registerForm.email').required(),
   field('registerForm.password').required().is(/^[\x20-\x7F]{6,}$/),
   field('registerForm.googleId'),
-  field('registerForm.googleImage')
+  field('registerForm.googleImage'),
+  field('registerForm[app:globalLang]')
 );
