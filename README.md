@@ -163,7 +163,11 @@ Environment Variables
     * PASSWORD_SEED: A password seed used by password hash generator.
     * SECRET_TOKEN: A secret key for verifying the integrity of signed cookies.
     * SESSION_NAME: The name of the session ID cookie to set in the response by Express. default: `connect.sid`
-    * FILE_UPLOAD: `aws` (default), `local`, `none`
+    * FILE_UPLOAD: Attached files storage. default: `aws`
+      * `aws` : AWS S3 (needs AWS settings on Admin page)
+      * `mongodb` : MongoDB GridFS (Setting-less)
+      * `local` : Server's Local file system (Setting-less)
+      * `none` : Disable file uploading
 * **Option to integrate with external systems**
     * HACKMD_URI: URI to connect to [HackMD(CodiMD)](https://hackmd.io/) server.
         * **This server must load the GROWI agent. [Here's how to prepare it](https://docs.growi.org/management-cookbook/integrate-with-hackmd).**

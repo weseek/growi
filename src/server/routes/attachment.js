@@ -28,7 +28,7 @@ module.exports = function(crowi, app) {
             if (fileName.match(/^\/uploads/)) {
               return res.download(path.join(crowi.publicDir, fileName), data.originalName);
             }
-            // aws
+            // aws or gridfs
             else {
               const options = {
                 headers: {
@@ -45,6 +45,30 @@ module.exports = function(crowi, app) {
         logger.error('download err', err);
         return res.status(404).sendFile(crowi.publicDir + '/images/file-not-found.png');
       });
+  };
+
+  /**
+   * @api {get} /attachments.get get attachments from mongoDB
+   * @apiName get
+   * @apiGroup Attachment
+   *
+   * @apiParam {String} pageId, fileName
+   */
+  api.get = async function(req, res) {
+    if (process.env.FILE_UPLOAD !== 'mongodb') {
+      return res.status(400);
+    }
+    const pageId = req.params.pageId;
+    const fileName = req.params.fileName;
+    const filePath = `attachment/${pageId}/${fileName}`;
+    try {
+      const fileData = await fileUploader.getFileData(filePath);
+      res.set('Content-Type', fileData.contentType);
+      return res.send(ApiResponse.success(fileData.data));
+    }
+    catch (e) {
+      return res.json(ApiResponse.error('attachment not found'));
+    }
   };
 
   /**

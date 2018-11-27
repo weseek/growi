@@ -3,7 +3,12 @@ CHANGES
 
 ## 3.2.9-RC
 
-* 
+* Feature: Attachment Storing to MongoDB GridFS
+* Fix: row/col moving of Spreadsheet like GUI (Handsontable) doesn't work
+* Fix: Emoji AutoComplete dialog pops up at wrong position
+* Support: Upgrade libs
+    * codemirror
+    * react-codemirror2
 
 ## 3.2.8
 

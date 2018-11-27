@@ -118,6 +118,13 @@
   "Deleted Pages": "削除済みページ",
   "Sign out": "ログアウト",
 
+  "installer": {
+    "setup": "セットアップ",
+    "create_initial_account": "最初のアカウントの作成",
+    "initial_account_will_be_administrator_automatically": "初めに作成するアカウントは、自動的に管理者権限が付与されます",
+    "unavaliable_user_id": "このユーザーIDは利用できません。"
+  },
+
   "page_register": {
     "notice": {
        "restricted": "この Wiki への新規登録は制限されています。",

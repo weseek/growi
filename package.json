@@ -1,6 +1,6 @@
 {
   "name": "growi",
-  "version": "3.2.8-RC",
+  "version": "3.2.9-RC",
   "description": "Team collaboration software using markdown",
   "tags": [
     "wiki",
@@ -140,7 +140,7 @@
     "bunyan-debug": "^2.0.0",
     "chai": "^4.1.0",
     "cli": "~1.0.1",
-    "codemirror": "^5.37.0",
+    "codemirror": "^5.42.0",
     "colors": "^1.2.5",
     "commander": "^2.11.0",
     "connect-browser-sync": "^2.1.0",
@@ -188,7 +188,7 @@
     "react-bootstrap": "^0.32.1",
     "react-bootstrap-typeahead": "^3.1.5",
     "react-clipboard.js": "^2.0.0",
-    "react-codemirror2": "^5.0.4",
+    "react-codemirror2": "^5.1.0",
     "react-dom": "^16.4.1",
     "react-dropzone": "^7.0.1",
     "react-frame-component": "^4.0.0",
