@@ -200,7 +200,7 @@ module.exports = function(crowi) {
     });
   };
 
-  configSchema.statics.setupCofigFormData = function(ns, config) {
+  configSchema.statics.setupConfigFormData = function(ns, config) {
     var defaultConfig = {};
 
     // set Default Settings
@@ -349,7 +349,7 @@ module.exports = function(crowi) {
     return method != 'none';
   };
 
-  configSchema.statics.isGuesstAllowedToRead = function(config) {
+  configSchema.statics.isGuestAllowedToRead = function(config) {
     // return true if puclic wiki mode
     if (Config.isPublicWikiOnly(config)) {
       return true;
