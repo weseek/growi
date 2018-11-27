@@ -9,6 +9,7 @@
 #   - $WERCKER_TOKEN
 #   - $GROWI_DOCKER_PIPELINE_ID
 #   - $RELEASE_VERSION
+#   - $WERCKER_GIT_COMMIT
 #
 RESPONSE=`curl -X POST \
   -H "Content-Type: application/json" \
@@ -20,6 +21,10 @@ RESPONSE=`curl -X POST \
       { \
         "key": "RELEASE_VERSION", \
         "value": "'$RELEASE_VERSION'" \
+      }, \
+      { \
+        "key": "ARCHIVE_NAME", \
+        "value": "'$WERCKER_GIT_COMMIT'" \
       } \
     ] \
   }' \
