@@ -16,7 +16,7 @@ RESPONSE=`curl -X POST \
   -H "Authorization: Bearer $WERCKER_TOKEN" \
   https://app.wercker.com/api/v3/runs -d '{ \
     "pipelineId": "'$GROWI_DOCKER_PIPELINE_ID'", \
-    "branch": "release", \
+    "branch": "master", \
     "envVars": [ \
       { \
         "key": "RELEASE_VERSION", \
