@@ -32,14 +32,51 @@ class ConfigManager {
 
   /**
    * private api
+   *
+   * Search a specified config from configs loaded from database at first
+   * and then from configs loaded from env vars.
+   *
+   * the followings are the meanings of each special return value.
+   * - null:      a specified config is not set.
+   * - undefined: a specified config does not exist.
    */
   defaultSearch(namespace, key) {
-    if (this.configObject.fromDB[namespace][key] !== undefined) {
+    if (!this.isExistInDB(namespace, key) && !this.isExistInEnvVars(namespace, key)) {
+      return undefined;
+    }
+
+    if (this.isExistInDB(namespace, key) && !this.isExistInEnvVars(namespace, key) ) {
       return this.configObject.fromDB[namespace][key];
     }
-    else {
+
+    if (!this.isExistInDB(namespace, key) && this.isExistInEnvVars(namespace, key) ) {
       return this.configObject.fromEnvVars[namespace][key];
     }
+
+    if (this.isExistInDB(namespace, key) && this.isExistInEnvVars(namespace, key) ) {
+      if (this.configObject.fromDB[namespace][key] !== null) {
+        return this.configObject.fromDB[namespace][key];
+      }
+      else {
+        return this.configObject.fromEnvVars[namespace][key];
+      }
+    }
+  }
+
+  isExistInDB(namespace, key) {
+    if (this.configObject.fromDB[namespace] === undefined) {
+      return false;
+    }
+
+    return this.configObject.fromDB[namespace][key] !== undefined;
+  }
+
+  isExistInEnvVars(namespace, key) {
+    if (this.configObject.fromEnvVars[namespace] === undefined) {
+      return false;
+    }
+
+    return this.configObject.fromEnvVars[namespace][key] !== undefined;
   }
 
   /**

@@ -1,8 +1,13 @@
 const debug = require('debug')('growi:service:ConfigLoader');
 
+const TYPES = {
+  NUMBER:  { parse: (v) => parseInt(v) },
+  STRING:  { parse: (v) => v },
+  BOOLEAN: { parse: (v) => /^(true|1)$/i.test(v) }
+};
+
 /**
- * The following env vars ignored because these are used before the configuration setup
- *  or not suitable for storing into the database.
+ * The following env vars are excluded because these are currently used before the configuration setup.
  * - MONGO_URI
  * - NODE_ENV
  * - PORT
@@ -10,31 +15,125 @@ const debug = require('debug')('growi:service:ConfigLoader');
  * - SESSION_NAME
  * - PASSWORD_SEED
  * - SECRET_TOKEN
+ *
+ *  The commented out item has not yet entered the migration work.
+ *  So, parameters of these are under consideration.
  */
-const ENV_VAR_NAME_TO_CONFIG_KEY_MAP = {
-  /*
-   * The commented out item has not yet entered the migration work.
-   * So, key names of these are under consideration.
-   */
-  // 'ELASTICSEARCH_URI':             'elasticsearch:url',
-  // 'FILE_UPLOAD':                   'app:fileUploadMethod',
-  // 'HACKMD_URI':                    'hackmd:url',
-  // 'HACKMD_URI_FOR_SERVER':         'hackmd:urlForServer',
-  // 'PLANTUML_URI':                  'plantuml:url',
-  // 'BLOCKDIAG_URI':                 'blockdiag:url',
-  // 'OAUTH_GOOGLE_CLIENT_ID':        'security:passport-google:clientId',
-  // 'OAUTH_GOOGLE_CLIENT_SECRET':    'security:passport-google:clientSecret',
-  // 'OAUTH_GOOGLE_CALLBACK_URI':     'security:passport-google:callbackUrl'
-  // 'OAUTH_GITHUB_CLIENT_ID':        'security:passport-github:clientId',
-  // 'OAUTH_GITHUB_CLIENT_SECRET':    'security:passport-github:clientSecret',
-  // 'OAUTH_GITHUB_CALLBACK_URI':     'security:passport-github:callbackUrl'
-  // 'OAUTH_TWITTER_CONSUMER_KEY':    'security:passport-twitter:consumerKey',
-  // 'OAUTH_TWITTER_CONSUMER_SECRET': 'security:passport-twitter:consumerSecret',
-  // 'OAUTH_TWITTER_CALLBACK_URI':    'security:passport-twitter:callbackUrl'
-  'SAML_ENTRY_POINT':                 'security:passport-saml:entryPoint',
-  'SAML_CALLBACK_URI':                'security:passport-saml:callbackUrl',
-  'SAML_ISSUER':                      'security:passport-saml:issuer',
-  'SAML_CERT':                        'security:passport-saml:cert',
+const ENV_VAR_NAME_TO_CONFIG_INFO = {
+  // ELASTICSEARCH_URI: {
+  //   ns:      ,
+  //   key:     ,
+  //   type:    ,
+  //   default:
+  // },
+  // FILE_UPLOAD: {
+  //   ns:      ,
+  //   key:     ,
+  //   type:    ,
+  //   default:
+  // },
+  // HACKMD_URI: {
+  //   ns:      ,
+  //   key:     ,
+  //   type:    ,
+  //   default:
+  // },
+  // HACKMD_URI_FOR_SERVER: {
+  //   ns:      ,
+  //   key:     ,
+  //   type:    ,
+  //   default:
+  // },
+  // PLANTUML_URI: {
+  //   ns:      ,
+  //   key:     ,
+  //   type:    ,
+  //   default:
+  // },
+  // BLOCKDIAG_URI: {
+  //   ns:      ,
+  //   key:     ,
+  //   type:    ,
+  //   default:
+  // },
+  // OAUTH_GOOGLE_CLIENT_ID: {
+  //   ns:      'crowi',
+  //   key:     'security:passport-google:clientId',
+  //   type:    ,
+  //   default:
+  // },
+  // OAUTH_GOOGLE_CLIENT_SECRET: {
+  //   ns:      'crowi',
+  //   key:     'security:passport-google:clientSecret',
+  //   type:    ,
+  //   default:
+  // },
+  // OAUTH_GOOGLE_CALLBACK_URI: {
+  //   ns:      'crowi',
+  //   key:     'security:passport-google:callbackUrl',
+  //   type:    ,
+  //   default:
+  // },
+  // OAUTH_GITHUB_CLIENT_ID: {
+  //   ns:      'crowi',
+  //   key:     'security:passport-github:clientId',
+  //   type:    ,
+  //   default:
+  // },
+  // OAUTH_GITHUB_CLIENT_SECRET: {
+  //   ns:      'crowi',
+  //   key:     'security:passport-github:clientSecret',
+  //   type:    ,
+  //   default:
+  // },
+  // OAUTH_GITHUB_CALLBACK_URI: {
+  //   ns:      'crowi',
+  //   key:     'security:passport-github:callbackUrl',
+  //   type:    ,
+  //   default:
+  // },
+  // OAUTH_TWITTER_CONSUMER_KEY: {
+  //   ns:      'crowi',
+  //   key:     'security:passport-twitter:consumerKey',
+  //   type:    ,
+  //   default:
+  // },
+  // OAUTH_TWITTER_CONSUMER_SECRET: {
+  //   ns:      'crowi',
+  //   key:     'security:passport-twitter:consumerSecret',
+  //   type:    ,
+  //   default:
+  // },
+  // OAUTH_TWITTER_CALLBACK_URI: {
+  //   ns:      'crowi',
+  //   key:     'security:passport-twitter:callbackUrl',
+  //   type:    ,
+  //   default:
+  // },
+  SAML_ENTRY_POINT: {
+    ns:      'crowi',
+    key:     'security:passport-saml:entryPoint',
+    type:    TYPES.STRING,
+    default: null
+  },
+  SAML_CALLBACK_URI: {
+    ns:      'crowi',
+    key:     'security:passport-saml:callbackUrl',
+    type:    TYPES.STRING,
+    default: null
+  },
+  SAML_ISSUER: {
+    ns:      'crowi',
+    key:     'security:passport-saml:issuer',
+    type:    TYPES.STRING,
+    default: null
+  },
+  SAML_CERT: {
+    ns:      'crowi',
+    key:     'security:passport-saml:cert',
+    type:    TYPES.STRING,
+    default: null
+  }
 };
 
 class ConfigLoader {
@@ -78,9 +177,18 @@ class ConfigLoader {
 
   loadFromEnvVars() {
     const config = {};
-    config.crowi = {};
-    for (const ENV_VAR_NAME of Object.keys(ENV_VAR_NAME_TO_CONFIG_KEY_MAP)) {
-      config.crowi[ENV_VAR_NAME_TO_CONFIG_KEY_MAP[ENV_VAR_NAME]] = process.env[ENV_VAR_NAME];
+    for (const ENV_VAR_NAME of Object.keys(ENV_VAR_NAME_TO_CONFIG_INFO)) {
+      const configInfo = ENV_VAR_NAME_TO_CONFIG_INFO[ENV_VAR_NAME];
+      if (config[configInfo.ns] === undefined) {
+        config[configInfo.ns] = {};
+      }
+
+      if (process.env[ENV_VAR_NAME] === undefined) {
+        config[configInfo.ns][configInfo.key] = configInfo.default;
+      }
+      else {
+        config[configInfo.ns][configInfo.key] = configInfo.type.parse(process.env[ENV_VAR_NAME]);
+      }
     }
 
     debug('ConfigLoader#loadFromEnvVars', config);
