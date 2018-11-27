@@ -23,7 +23,7 @@ RESPONSE=`curl -X POST \
         "value": "'$RELEASE_VERSION'" \
       }, \
       { \
-        "key": "ARCHIVE_NAME", \
+        "key": "GROWI_REPOS_GIT_COMMIT", \
         "value": "'$WERCKER_GIT_COMMIT'" \
       } \
     ] \
