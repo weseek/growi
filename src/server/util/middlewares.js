@@ -223,7 +223,7 @@ exports.loginRequired = function(crowi, app, isStrictly = true) {
       var Config = crowi.model('Config');
 
       // when allowed to read
-      if (Config.isGuesstAllowedToRead(config)) {
+      if (Config.isGuestAllowedToRead(config)) {
         return next();
       }
     }
