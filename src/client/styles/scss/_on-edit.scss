@@ -290,9 +290,6 @@ body.on-edit {
 
 // overwrite .CodeMirror-hints
 .CodeMirror-hints {
-  // FIXME: required because .content-main.on-edit has 'z-index:1050'
-  // z-index: 1060 !important;
-
   max-height: 30em !important;
 
   .CodeMirror-hint.crowi-emoji-autocomplete {
