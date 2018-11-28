@@ -106,13 +106,17 @@ class ConfigManager {
    * ```
    */
   async updateConfigs(configs) {
+    const results = [];
     for (const config of configs) {
-      await this.configModel.findOneAndUpdate(
-        { ns: config.ns, key: config.key },
-        { ns: config.ns, key: config.key, value: JSON.stringify(config.value) },
-        { upsert: true, }
-      ).exec();
+      results.push(
+        this.configModel.findOneAndUpdate(
+          { ns: config.ns, key: config.key },
+          { ns: config.ns, key: config.key, value: JSON.stringify(config.value) },
+          { upsert: true, }
+        ).exec()
+      );
     }
+    await Promise.all(results);
 
     await this.loadConfigs();
   }
