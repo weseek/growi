@@ -107,13 +107,11 @@ class ConfigManager {
    */
   async updateConfigs(configs) {
     for (const config of configs) {
-      this.configModel.findOneAndUpdate(
+      await this.configModel.findOneAndUpdate(
         { ns: config.ns, key: config.key },
         { ns: config.ns, key: config.key, value: JSON.stringify(config.value) },
-        { upsert: true, },
-        function(err, config) {
-          debug('ConfigManager#updateConfigs', err, config);
-        });
+        { upsert: true, }
+      ).exec();
     }
 
     await this.loadConfigs();
