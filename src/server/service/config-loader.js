@@ -110,6 +110,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
   //   type:    ,
   //   default:
   // },
+  SAML_USES_ONLY_ENV_VARS: {
+    ns:      'crowi',
+    key:     'security:passport-saml:useOnlyEnvVars',
+    type:    TYPES.BOOLEAN,
+    default: null
+  },
   SAML_ENTRY_POINT: {
     ns:      'crowi',
     key:     'security:passport-saml:entryPoint',
