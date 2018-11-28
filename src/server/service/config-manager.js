@@ -24,9 +24,17 @@ class ConfigManager {
    * Basically, search a specified config from configs loaded from database at first
    * and then from configs loaded from env vars.
    *
-   * In some case, this search method changes.(not yet implemented)
+   * In some case, this search method changes.
+   *
+   * the followings are the meanings of each special return value.
+   * - null:      a specified config is not set.
+   * - undefined: a specified config does not exist.
    */
   getConfig(namespace, key) {
+    if (this.searchOnlyFromEnvVarConfigs('crowi', 'security:passport-saml:useOnlyEnvVars')) {
+      return this.searchOnlyFromEnvVarConfigs(namespace, key);
+    }
+
     return this.defaultSearch(namespace, key);
   }
 
@@ -35,10 +43,6 @@ class ConfigManager {
    *
    * Search a specified config from configs loaded from database at first
    * and then from configs loaded from env vars.
-   *
-   * the followings are the meanings of each special return value.
-   * - null:      a specified config is not set.
-   * - undefined: a specified config does not exist.
    */
   defaultSearch(namespace, key) {
     if (!this.configExistsInDB(namespace, key) && !this.configExistsInEnvVars(namespace, key)) {
@@ -61,6 +65,19 @@ class ConfigManager {
         return this.configObject.fromEnvVars[namespace][key];
       }
     }
+  }
+
+  /**
+   * private api
+   *
+   * Search a specified config from configs loaded from env vars.
+   */
+  searchOnlyFromEnvVarConfigs(namespace, key) {
+    if (!this.configExistsInEnvVars(namespace, key)) {
+      return undefined;
+    }
+
+    return this.configObject.fromEnvVars[namespace][key];
   }
 
   /**
