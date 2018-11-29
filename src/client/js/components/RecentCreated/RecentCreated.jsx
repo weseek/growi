@@ -30,9 +30,9 @@ export default class RecentCreated extends React.Component {
     // pagesList get and pagination calculate
     this.props.crowi.apiGet('/pages.recentCreated', { page_id: pageId, user: userId, limit, offset })
       .then(res => {
-        const totalCount = res.pages[0].totalCount;
+        const totalCount = res.totalCount;
+        const pages = res.pages;
         const activePage = selectPageNumber;
-        const pages = res.pages[1];
         // pagiNation calculate function call
         const paginationNumbers = this.calculatePagination(limit, totalCount, activePage);
         this.setState({

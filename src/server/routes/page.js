@@ -1083,10 +1083,8 @@ module.exports = function(crowi, app) {
     const queryOptions = { offset: offset, limit: limit };
 
     try {
-      let pages = await Page.findListByCreator(page.creator, queryOptions, req.user);
-
-      const result = {};
-      result.pages = pagePathUtils.encodePagesPath(pages);
+      let result = await Page.findListByCreator(page.creator, req.user, queryOptions);
+      result.pages = pagePathUtils.encodePagesPath(result.pages);
 
       return res.json(ApiResponse.success(result));
     }

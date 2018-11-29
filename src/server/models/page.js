@@ -757,47 +757,40 @@ module.exports = function(crowi) {
     });
   };
 
-  pageSchema.statics.findListByCreator = async function(user, option, currentUser) {
+  pageSchema.statics.findListByCreator = async function(targetUser, currentUser, option) {
     validateCrowi();
 
-    let Page = this;
-    let User = crowi.model('User');
-    let limit = option.limit || 50;
-    let offset = option.offset || 0;
-    let conditions = setPageListConditions(user);
+    const User = crowi.model('User');
+    const limit = option.limit || 50;
+    const offset = option.offset || 0;
 
-    let pages =  await Page.find(conditions).sort({createdAt: -1}).skip(offset).limit(limit).populate('revision').exec();
-    let PagesList = await Page.populate(pages, {path: 'lastUpdateUser', model: 'User', select: User.USER_PUBLIC_FIELDS});
-    let totalCount = await Page.countListByCreator(user);
-    let PagesArray = [
-      {totalCount: totalCount}
-    ];
-    PagesArray.push(PagesList);
-    return PagesArray;
-  };
-  function setPageListConditions(user) {
-    const conditions = {
-      creator: user._id,
-      redirectTo: null,
-      $and: [
-        {$or: [
-          {status: null},
-          {status: STATUS_PUBLISHED},
-        ]},
-        {$or: [
-          {grant: GRANT_PUBLIC},
-          {grant: GRANT_USER_GROUP},
-        ]}],
-    };
+    const builder = new PageQueryBuilder(
+      this.find({
+        creator: targetUser._id,
+        redirectTo: null,
+      })
+      .populate({
+        path: 'lastUpdateUser',
+        model: 'User',
+        select: User.USER_PUBLIC_FIELDS
+      })
+    );
 
-    return conditions;
-  }
+    // add grant conditions
+    let userGroups = null;
+    if (currentUser != null) {
+      const UserGroupRelation = crowi.model('UserGroupRelation');
+      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(currentUser);
+    }
+    builder.addConditionToFilteringByViewer(currentUser, userGroups);
 
-  pageSchema.statics.countListByCreator = function(user) {
-    let Page = this;
-    let conditions = setPageListConditions(user);
+    const totalCount = await builder.query.exec('count');
+    const q = builder.query
+      .sort({createdAt: -1}).skip(offset).limit(limit);
+    const pages = await q.exec('find');
 
-    return Page.find(conditions).count();
+    const result = { pages, totalCount };
+    return result;
   };
 
 
