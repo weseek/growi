@@ -49,19 +49,15 @@ module.exports = function(crowi) {
    */
   lib.getCollectionSize = () => {
     return new Promise((resolve, reject) => {
-      // AttachmentFile.collection.stats(function(err, stats) {
-      //   resolve(stats.size);
-      // });
-      // Chunks.collection.stats(function(err, stats) {
-      //   resolve(stats.size);
-      // });
-      // console.log(AttachmentFileChunks);
-      // console.log(gridfs);
-      gridfs.mongooseConnection.db.collectionNames((e,name) => {
+      AttachmentFile.find((e, files) => {
+        let data = 0;
+        files.forEach((file) => {
+          data += file.length;
+        });
         if (e) {
           reject(e);
         }
-        resolve(name);
+        resolve(data);
       });
     });
   };
