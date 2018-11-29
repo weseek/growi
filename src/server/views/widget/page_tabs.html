@@ -29,7 +29,7 @@
     Right Tabs
   #}
   {% if !isTrashPage() %}
-    {% if page.isPortal %}
+    {% if page.isPortal() %}
     <li class="nav-main-right-tab dropdown pull-right">
       <a class="dropdown-toggle {% if not user %}dropdown-disabled{% endif %}" {% if user %}data-toggle="dropdown" href="#"{% endif %}>
         <i class="icon-options-vertical"></i>
@@ -66,7 +66,7 @@
       <i class="icon-layers"></i><span class="hidden-xs"> {{ t('History') }}</span>
     </a>
   </li>
-  {% if not isPortal %}
+  {% if not page.isPortal() %}
     <li class="nav-main-right-tab pull-right">
       <a href="?presentation=1" class="toggle-presentation">
         <i class="icon-film"></i><span class="hidden-xs"> {{ t('Presentation Mode') }}</span>
