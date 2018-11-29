@@ -646,6 +646,49 @@ module.exports = function(crowi) {
   };
 
   /**
+   * find pages that is created by targetUser
+   *
+   * @param {User} targetUser
+   * @param {User} currentUser
+   * @param {any} option
+   */
+  pageSchema.statics.findListByCreator = async function(targetUser, currentUser, option) {
+    validateCrowi();
+
+    const User = crowi.model('User');
+    const limit = option.limit || 50;
+    const offset = option.offset || 0;
+
+    const builder = new PageQueryBuilder(
+      this.find({
+        creator: targetUser._id,
+        redirectTo: null,
+      })
+      .populate({
+        path: 'lastUpdateUser',
+        model: 'User',
+        select: User.USER_PUBLIC_FIELDS
+      })
+    );
+
+    // add grant conditions
+    let userGroups = null;
+    if (currentUser != null) {
+      const UserGroupRelation = crowi.model('UserGroupRelation');
+      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(currentUser);
+    }
+    builder.addConditionToFilteringByViewer(currentUser, userGroups);
+
+    const totalCount = await builder.query.exec('count');
+    const q = builder.query
+      .sort({createdAt: -1}).skip(offset).limit(limit);
+    const pages = await q.exec('find');
+
+    const result = { pages, totalCount };
+    return result;
+  };
+
+  /**
    * find all templates applicable to the new page
    */
   pageSchema.statics.findTemplate = function(path) {
@@ -755,42 +798,6 @@ module.exports = function(crowi) {
         });
       });
     });
-  };
-
-  pageSchema.statics.findListByCreator = async function(targetUser, currentUser, option) {
-    validateCrowi();
-
-    const User = crowi.model('User');
-    const limit = option.limit || 50;
-    const offset = option.offset || 0;
-
-    const builder = new PageQueryBuilder(
-      this.find({
-        creator: targetUser._id,
-        redirectTo: null,
-      })
-      .populate({
-        path: 'lastUpdateUser',
-        model: 'User',
-        select: User.USER_PUBLIC_FIELDS
-      })
-    );
-
-    // add grant conditions
-    let userGroups = null;
-    if (currentUser != null) {
-      const UserGroupRelation = crowi.model('UserGroupRelation');
-      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(currentUser);
-    }
-    builder.addConditionToFilteringByViewer(currentUser, userGroups);
-
-    const totalCount = await builder.query.exec('count');
-    const q = builder.query
-      .sort({createdAt: -1}).skip(offset).limit(limit);
-    const pages = await q.exec('find');
-
-    const result = { pages, totalCount };
-    return result;
   };
 
 
