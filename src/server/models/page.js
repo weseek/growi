@@ -67,15 +67,102 @@ class PageQueryBuilder {
     this.query = query;
   }
 
+  /**
+   * generate the query to find the page that is match with `path` and its descendants
+   */
+  addConditionToListWithDescendants(path, option) {
+    // ignore other pages than descendants
+    path = this.addSlashOfEnd(path);
+
+    // add option to escape the regex strings
+    const combinedOption = Object.assign({isRegExpEscapedFromPath: true}, option);
+
+    this.addConditionToListByStartWith(path, combinedOption);
+
+    return this;
+  }
+
+  /**
+   * generate the query to find pages that start with `path`
+   *
+   * (GROWI) If 'isRegExpEscapedFromPath' is true, `path` should have `/` at the end
+   *   -> returns '{path}/*' and '{path}' self.
+   * (Crowi) If 'isRegExpEscapedFromPath' is false and `path` has `/` at the end
+   *   -> returns '{path}*'
+   * (Crowi) If 'isRegExpEscapedFromPath' is false and `path` doesn't have `/` at the end
+   *   -> returns '{path}*'
+   *
+   * *option*
+   *   - includeDeletedPage -- if true, search deleted pages (default: false)
+   *   - isRegExpEscapedFromPath -- if true, the regex strings included in `path` is escaped (default: false)
+   */
+  addConditionToListByStartWith(path, option) {
+    const pathCondition = [];
+    const includeDeletedPage = option.includeDeletedPage || false;
+    const isRegExpEscapedFromPath = option.isRegExpEscapedFromPath || false;
+
+    /*
+     * 1. add condition for finding the page completely match with `path` w/o last slash
+     */
+    let pathSlashOmitted = path;
+    if (path.match(/\/$/)) {
+      pathSlashOmitted = path.substr(0, path.length -1);
+      pathCondition.push({path: pathSlashOmitted});
+    }
+
+    /*
+     * 2. add decendants
+     */
+    const pattern = (isRegExpEscapedFromPath)
+      ? escapeStringRegexp(path)  // escape
+      : pathSlashOmitted;
+
+    const queryReg = new RegExp('^' + pattern);
+    pathCondition.push({path: queryReg});
+
+    this.query = this.query
+      .and({ redirectTo: null })
+      .and({
+        $or: pathCondition
+      });
+
+    if (!includeDeletedPage) {
+      this.query = this.query
+        .and({
+          $or: [
+            {status: null},
+            {status: STATUS_PUBLISHED},
+          ]
+        });
+    }
+
+    return this;
+  }
+
   addConditionToFilteringByViewer(user, userGroups) {
-    this.query = this.query.or([
+    const grantConditions = [
       {grant: null},
       {grant: GRANT_PUBLIC},
-      {grant: GRANT_RESTRICTED, grantedUsers: user._id},
-      {grant: GRANT_SPECIFIED, grantedUsers: user._id},
-      {grant: GRANT_OWNER, grantedUsers: user._id},
-      {grant: GRANT_USER_GROUP, grantedGroup: { $in: userGroups }},
-    ]);
+    ];
+
+    if (user != null) {
+      grantConditions.push(
+        {grant: GRANT_RESTRICTED, grantedUsers: user._id},
+        {grant: GRANT_SPECIFIED, grantedUsers: user._id},
+        {grant: GRANT_OWNER, grantedUsers: user._id},
+      );
+    }
+
+    if (userGroups != null) {
+      grantConditions.push(
+        {grant: GRANT_USER_GROUP, grantedGroup: { $in: userGroups }},
+      );
+    }
+
+    this.query = this.query
+      .and({
+        $or: grantConditions
+      });
 
     return this;
   }
@@ -686,10 +773,9 @@ module.exports = function(crowi) {
    *
    * see the comment of `generateQueryToListByStartWith` function
    */
-  pageSchema.statics.findListByStartWith = function(path, userData, option) {
+  pageSchema.statics.findListByStartWith = async function(path, user, option) {
     validateCrowi();
 
-    const Page = this;
     const User = crowi.model('User');
 
     if (!option) {
@@ -706,107 +792,36 @@ module.exports = function(crowi) {
 
     const isPopulateRevisionBody = option.isPopulateRevisionBody || false;
 
-    return new Promise(function(resolve, reject) {
-      let q = Page.generateQueryToListByStartWith(path, userData, option)
-        .sort(sortOpt)
-        .skip(opt.offset)
-        .limit(opt.limit);
+    const builder = new PageQueryBuilder(this.find());
+    builder.addConditionToListByStartWith(path, option);
 
-      // retrieve revision data
-      if (isPopulateRevisionBody) {
-        q = q.populate('revision');
-      }
-      else {
-        q = q.populate('revision', '-body');  // exclude body
-      }
-
-      q.exec()
-        .then(function(pages) {
-          Page.populate(pages, {path: 'lastUpdateUser', model: 'User', select: User.USER_PUBLIC_FIELDS})
-          .then(resolve)
-          .catch(reject);
-        });
-    });
-  };
-
-  /**
-   * generate the query to find the page that is match with `path` and its descendants
-   */
-  pageSchema.statics.generateQueryToListWithDescendants = function(path, userData, option) {
-    var Page = this;
-
-    // ignore other pages than descendants
-    path = Page.addSlashOfEnd(path);
-
-    // add option to escape the regex strings
-    const combinedOption = Object.assign({isRegExpEscapedFromPath: true}, option);
-
-    return Page.generateQueryToListByStartWith(path, userData, combinedOption);
-  };
-
-  /**
-   * generate the query to find pages that start with `path`
-   *
-   * (GROWI) If 'isRegExpEscapedFromPath' is true, `path` should have `/` at the end
-   *   -> returns '{path}/*' and '{path}' self.
-   * (Crowi) If 'isRegExpEscapedFromPath' is false and `path` has `/` at the end
-   *   -> returns '{path}*'
-   * (Crowi) If 'isRegExpEscapedFromPath' is false and `path` doesn't have `/` at the end
-   *   -> returns '{path}*'
-   *
-   * *option*
-   *   - includeDeletedPage -- if true, search deleted pages (default: false)
-   *   - isRegExpEscapedFromPath -- if true, the regex strings included in `path` is escaped (default: false)
-   */
-  pageSchema.statics.generateQueryToListByStartWith = function(path, userData, option) {
-    var Page = this;
-    var pathCondition = [];
-    var includeDeletedPage = option.includeDeletedPage || false;
-    var isRegExpEscapedFromPath = option.isRegExpEscapedFromPath || false;
-
-    /*
-     * 1. add condition for finding the page completely match with `path` w/o last slash
-     */
-    let pathSlashOmitted = path;
-    if (path.match(/\/$/)) {
-      pathSlashOmitted = path.substr(0, path.length -1);
-      pathCondition.push({path: pathSlashOmitted});
+    // add grant conditions
+    let userGroups = null;
+    if (user != null) {
+      const UserGroupRelation = crowi.model('UserGroupRelation');
+      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     }
+    builder.addConditionToFilteringByViewer(user, userGroups);
 
-    /*
-     * 2. add decendants
-     */
-    var pattern = (isRegExpEscapedFromPath)
-      ? escapeStringRegexp(path)  // escape
-      : pathSlashOmitted;
-
-    var queryReg = new RegExp('^' + pattern);
-    pathCondition.push({path: queryReg});
-
-    var q = Page.find({
-      redirectTo: null,
-      $or: [
-        {grant: null},
-        {grant: GRANT_PUBLIC},
-        {grant: GRANT_RESTRICTED, grantedUsers: userData._id},
-        {grant: GRANT_SPECIFIED, grantedUsers: userData._id},
-        {grant: GRANT_OWNER, grantedUsers: userData._id},
-        {grant: GRANT_USER_GROUP},
-      ], })
-      .and({
-        $or: pathCondition
+    let q = builder.query
+      .sort(sortOpt)
+      .skip(opt.offset)
+      .limit(opt.limit)
+      .populate({
+        path: 'lastUpdateUser',
+        model: 'User',
+        select: User.USER_PUBLIC_FIELDS
       });
 
-    if (!includeDeletedPage) {
-      q.and({
-        $or: [
-          {status: null},
-          {status: STATUS_PUBLISHED},
-        ],
-      });
+    // retrieve revision data
+    if (isPopulateRevisionBody) {
+      q = q.populate('revision');
+    }
+    else {
+      q = q.populate('revision', '-body');  // exclude body
     }
 
-    return q;
+    return await q.exec();
   };
 
   async function pushRevision(pageData, newRevision, user, grant, grantUserGroupId) {
