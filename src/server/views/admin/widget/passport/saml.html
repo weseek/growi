@@ -28,7 +28,7 @@
         <input id="settingForm[security:passport-saml:entryPoint]" class="form-control"
                type="text"
                name="settingForm[security:passport-saml:entryPoint]"
-               value="{{ settingForm['security:passport-saml:entryPoint'] || '' }}">
+               value="{{ getConfig('crowi', 'security:passport-saml:entryPoint') || '' }}">
         <p class="help-block">
           <small>
             {{ t("security_setting.Use env var if empty", "SAML_ENTRY_POINT") }}
