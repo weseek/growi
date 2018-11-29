@@ -69,7 +69,7 @@ module.exports = function(crowi) {
   function decideUserStatusOnRegistration() {
     validateCrowi();
 
-    let Config = crowi.model('Config'),
+    var Config = crowi.model('Config'),
       config = crowi.getConfig();
 
     if (!config.crowi) {
