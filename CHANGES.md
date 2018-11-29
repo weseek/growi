@@ -1,7 +1,11 @@
 CHANGES
 ========
 
-## 3.2.9-RC
+## 3.2.10
+
+* 
+
+## 3.2.9
 
 * Feature: Attachment Storing to MongoDB GridFS
 * Fix: row/col moving of Spreadsheet like GUI (Handsontable) doesn't work
