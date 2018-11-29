@@ -68,7 +68,7 @@ let pageContent = '';
 let markdown = '';
 let slackChannels;
 if (mainContent !== null) {
-  pageId = mainContent.getAttribute('data-page-id');
+  pageId = mainContent.getAttribute('data-page-id') || null;
   pageRevisionId = mainContent.getAttribute('data-page-revision-id');
   pageRevisionCreatedAt = +mainContent.getAttribute('data-page-revision-created');
   pageRevisionIdHackmdSynced = mainContent.getAttribute('data-page-revision-id-hackmd-synced') || null;
@@ -228,17 +228,17 @@ const saveWithSubmitButton = function() {
   options.socketClientId = socketClientId;
 
   let promise = undefined;
-  if (editorMode === 'builtin') {
-    // get markdown
-    promise = Promise.resolve(componentInstances.pageEditor.getMarkdown());
-  }
-  else {
+  if (editorMode === 'hackmd') {
     // get markdown
     promise = componentInstances.pageEditorByHackmd.getMarkdown();
     // use revisionId of PageEditorByHackmd
     revisionId = componentInstances.pageEditorByHackmd.getRevisionIdHackmdSynced();
     // set option to sync
     options.isSyncRevisionToHackmd = true;
+  }
+  else {
+    // get markdown
+    promise = Promise.resolve(componentInstances.pageEditor.getMarkdown());
   }
   // create or update
   if (pageId == null) {

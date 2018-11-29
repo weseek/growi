@@ -233,7 +233,6 @@ export default class Editor extends AbstractEditor {
         <Dropzone
             ref="dropzone"
             disableClick
-            disablePreview={true}
             accept={this.getDropzoneAccept()}
             className={this.getDropzoneClassName()}
             acceptClassName="dropzone-accepted"

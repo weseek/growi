@@ -21,10 +21,21 @@ const MARKDOWNTABLE_TO_HANDSONTABLE_ALIGNMENT_SYMBOL_MAPPING = {
 
 export default class HandsontableModal extends React.PureComponent {
 
-
   constructor(props) {
     super(props);
 
+    /*
+     * ## Note ##
+     * Currently, this component try to synchronize the cells data and alignment data of state.markdownTable with these of the HotTable.
+     * However, changes made by the following operations are not synchronized.
+     *
+     * 1. move columns: Alignment changes are synchronized but data changes are not.
+     * 2. move rows: Data changes are not synchronized.
+     * 3. insert columns or rows: Data changes are synchronized but alignment changes are not.
+     * 4. delete columns or rows: Data changes are synchronized but alignment changes are not.
+     *
+     * However, all operations are reflected in the data to be saved because the HotTable data is used when the save method is called.
+     */
     this.state = {
       show: false,
       isDataImportAreaExpanded: false,
@@ -39,10 +50,11 @@ export default class HandsontableModal extends React.PureComponent {
     this.cancel = this.cancel.bind(this);
     this.save = this.save.bind(this);
     this.afterLoadDataHandler = this.afterLoadDataHandler.bind(this);
-    this.beforeColumnMoveHandler = this.beforeColumnMoveHandler.bind(this);
     this.beforeColumnResizeHandler = this.beforeColumnResizeHandler.bind(this);
     this.afterColumnResizeHandler = this.afterColumnResizeHandler.bind(this);
     this.modifyColWidthHandler = this.modifyColWidthHandler.bind(this);
+    this.beforeColumnMoveHandler = this.beforeColumnMoveHandler.bind(this);
+    this.afterColumnMoveHandler = this.afterColumnMoveHandler.bind(this);
     this.synchronizeAlignment = this.synchronizeAlignment.bind(this);
     this.alignButtonHandler = this.alignButtonHandler.bind(this);
     this.toggleDataImportArea = this.toggleDataImportArea.bind(this);
@@ -120,6 +132,13 @@ export default class HandsontableModal extends React.PureComponent {
     });
   }
 
+  /**
+   * Reset table data to initial value
+   *
+   * ## Note ##
+   * It may not return completely to the initial state because of the manualColumnMove operations.
+   * https://github.com/handsontable/handsontable/issues/5591
+   */
   reset() {
     this.setState({ markdownTable: this.state.markdownTableOnInit.clone() });
   }
@@ -129,25 +148,44 @@ export default class HandsontableModal extends React.PureComponent {
   }
 
   save() {
+    const markdownTable = new MarkdownTable(
+      this.refs.hotTable.hotInstance.getData(),
+      {align: [].concat(this.state.markdownTable.options.align)}
+    ).normalizeCells();
+
     if (this.props.onSave != null) {
-      this.props.onSave(this.state.markdownTable.clone().normalizeCells());
+      this.props.onSave(markdownTable);
     }
 
     this.hide();
   }
 
+  /**
+   * An afterLoadData hook
+   *
+   * This performs the following operations.
+   * - clear 'manuallyResizedColumnIndicesSet' for the first loading
+   * - synchronize the handsontable alignment to the markdowntable alignment
+   *
+   * ## Note ##
+   * The afterLoadData hook is called when one of the following states of this component are passed into the setState.
+   *
+   * - markdownTable
+   * - handsontableHeight
+   *
+   * In detail, when the setState method is called with those state passed,
+   * React will start re-render process for the HotTable of this component because the HotTable receives those state values by props.
+   * HotTable#shouldComponentUpdate is called in this re-render process and calls the updateSettings method for the Handsontable instance.
+   * In updateSettings method, the loadData method is called in some case. (refs: https://github.com/handsontable/handsontable/blob/6.2.0/src/core.js#L1652-L1657)
+   * The updateSettings method calls in the HotTable always lead to call the loadData method because the HotTable passes data source by settings.data.
+   * After the loadData method is executed, afterLoadData hooks are called.
+   */
   afterLoadDataHandler(initialLoad) {
-    // clear 'manuallyResizedColumnIndicesSet' for the first loading
     if (initialLoad) {
       this.manuallyResizedColumnIndicesSet.clear();
     }
 
     this.synchronizeAlignment();
-  }
-
-  beforeColumnMoveHandler(columns, target) {
-    // clear 'manuallyResizedColumnIndicesSet'
-    this.manuallyResizedColumnIndicesSet.clear();
   }
 
   beforeColumnResizeHandler(currentColumn) {
@@ -184,6 +222,77 @@ export default class HandsontableModal extends React.PureComponent {
     }
     // return fixed width if first initializing
     return Math.max(80, Math.min(400, width));
+  }
+
+  beforeColumnMoveHandler(columns, target) {
+    // clear 'manuallyResizedColumnIndicesSet'
+    this.manuallyResizedColumnIndicesSet.clear();
+  }
+
+  /**
+   * An afterColumnMove hook.
+   *
+   * This synchronizes alignment when columns are moved by manualColumnMove
+   */
+  afterColumnMoveHandler(columns, target) {
+    const align = [].concat(this.state.markdownTable.options.align);
+    const removed = align.splice(columns[0], columns.length);
+
+    /*
+     * The following is a description of the algorithm for the alignment synchronization.
+     *
+     * Consider the case where the target is X and the columns are [2,3] and data is as follows.
+     *
+     * 0 1 2 3 4 5 (insert position number)
+     * +-+-+-+-+-+
+     * | | | | | |
+     * +-+-+-+-+-+
+     *  0 1 2 3 4  (column index number)
+     *
+     * At first, remove columns by the splice.
+     *
+     * 0 1 2   4 5
+     * +-+-+   +-+
+     * | | |   | |
+     * +-+-+   +-+
+     *  0 1     4
+     *
+     * Next, insert those columns into a new position.
+     * However the target number is a insert position number before deletion, it may be changed.
+     * These are changed as follows.
+     *
+     * Before:
+     * 0 1 2   4 5
+     * +-+-+   +-+
+     * | | |   | |
+     * +-+-+   +-+
+     *
+     * After:
+     * 0 1 2   2 3
+     * +-+-+   +-+
+     * | | |   | |
+     * +-+-+   +-+
+     *
+     * If X is 0, 1 or 2, that is, lower than columns[0], the target number is not changed.
+     * If X is 4 or 5, that is, higher than columns[columns.length - 1], the target number is modified to the original value minus columns.length.
+     *
+     */
+    let insertPosition = 0;
+    if (target <= columns[0]) {
+      insertPosition = target;
+    }
+    else if (columns[columns.length - 1] < target) {
+      insertPosition = target - columns.length;
+    }
+    align.splice.apply(align, [insertPosition, 0].concat(removed));
+
+    this.setState((prevState) => {
+      // change only align info, so share table data to avoid redundant copy
+      const newMarkdownTable = new MarkdownTable(prevState.markdownTable.table, {align: align});
+      return { markdownTable: newMarkdownTable };
+    }, () => {
+      this.synchronizeAlignment();
+    });
   }
 
   /**
@@ -244,6 +353,13 @@ export default class HandsontableModal extends React.PureComponent {
     this.setState({ isDataImportAreaExpanded: !this.state.isDataImportAreaExpanded });
   }
 
+  /**
+   * Import a markdowntable
+   *
+   * ## Note ##
+   * The manualColumnMove operation affects the column order of imported data.
+   * https://github.com/handsontable/handsontable/issues/5591
+   */
   importData(markdownTable) {
     this.init(markdownTable);
     this.toggleDataImportArea();
@@ -320,6 +436,7 @@ export default class HandsontableModal extends React.PureComponent {
                 beforeColumnMove={this.beforeColumnMoveHandler}
                 beforeColumnResize={this.beforeColumnResizeHandler}
                 afterColumnResize={this.afterColumnResizeHandler}
+                afterColumnMove={this.afterColumnMoveHandler}
               />
           </div>
         </Modal.Body>
@@ -358,7 +475,7 @@ export default class HandsontableModal extends React.PureComponent {
       manualColumnMove: true,
       manualColumnResize: true,
       selectionMode: 'multiple',
-      outsideClickDeselects: false,
+      outsideClickDeselects: false
     };
   }
 }

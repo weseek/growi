@@ -90,7 +90,7 @@ module.exports = function(crowi, app) {
   actions.app = {};
   actions.app.index = function(req, res) {
     var settingForm;
-    settingForm = Config.setupCofigFormData('crowi', req.config);
+    settingForm = Config.setupConfigFormData('crowi', req.config);
 
     return res.render('admin/app', {
       settingForm: settingForm,
@@ -103,7 +103,7 @@ module.exports = function(crowi, app) {
   // app.get('/admin/security'                  , admin.security.index);
   actions.security = {};
   actions.security.index = function(req, res) {
-    const settingForm = Config.setupCofigFormData('crowi', req.config);
+    const settingForm = Config.setupConfigFormData('crowi', req.config);
     const isAclEnabled = !Config.isPublicWikiOnly(req.config);
     return res.render('admin/security', { settingForm, isAclEnabled });
   };
@@ -112,7 +112,7 @@ module.exports = function(crowi, app) {
   actions.markdown = {};
   actions.markdown.index = function(req, res) {
     const config = crowi.getConfig();
-    const markdownSetting = Config.setupCofigFormData('markdown', config);
+    const markdownSetting = Config.setupConfigFormData('markdown', config);
 
     return res.render('admin/markdown', {
       markdownSetting: markdownSetting,
@@ -189,7 +189,7 @@ module.exports = function(crowi, app) {
   actions.customize = {};
   actions.customize.index = function(req, res) {
     var settingForm;
-    settingForm = Config.setupCofigFormData('crowi', req.config);
+    settingForm = Config.setupConfigFormData('crowi', req.config);
 
     const highlightJsCssSelectorOptions = {
       'github':           { name: '[Light] GitHub',         border: false },
@@ -215,7 +215,7 @@ module.exports = function(crowi, app) {
   actions.notification.index = async(req, res) => {
     const config = crowi.getConfig();
     const UpdatePost = crowi.model('UpdatePost');
-    let slackSetting = Config.setupCofigFormData('notification', config);
+    let slackSetting = Config.setupConfigFormData('notification', config);
     const hasSlackIwhUrl = Config.hasSlackIwhUrl(config);
     const hasSlackToken = Config.hasSlackToken(config);
 
@@ -1010,7 +1010,7 @@ module.exports = function(crowi, app) {
   actions.importer.index = function(req, res) {
 
     var settingForm;
-    settingForm = Config.setupCofigFormData('crowi', req.config);
+    settingForm = Config.setupConfigFormData('crowi', req.config);
 
     return res.render('admin/importer', {
       settingForm: settingForm,

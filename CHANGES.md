@@ -1,9 +1,30 @@
 CHANGES
 ========
 
-## 3.2.8-RC
+## 3.2.10-RC
 
-* 
+* Fix: Pages in trash are available to create
+* Fix: Couldn't create portal page under Crowi Classic Behavior
+
+
+## 3.2.9
+
+* Feature: Attachment Storing to MongoDB GridFS
+* Fix: row/col moving of Spreadsheet like GUI (Handsontable) doesn't work
+* Fix: Emoji AutoComplete dialog pops up at wrong position
+* Support: Upgrade libs
+    * codemirror
+    * react-codemirror2
+
+## 3.2.8
+
+* Improvement: Add an option to use email for account link when using SAML federation
+* Fix: Editor layout is sometimes broken
+* Fix: Normalize table data for Spreadsheet like GUI (Handsontable) when import
+* Support: Improve development environment
+* Support: Upgrade libs
+    * googleapis
+    * react-dropzone
 
 ## 3.2.7
 

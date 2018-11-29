@@ -176,6 +176,7 @@ module.exports = function(crowi, app) {
   app.get( '/:id([0-9a-z]{24})'       , loginRequired(crowi, app, false) , page.redirector);
   app.get( '/_r/:id([0-9a-z]{24})'    , loginRequired(crowi, app, false) , page.redirector); // alias
   app.get( '/download/:id([0-9a-z]{24})' , loginRequired(crowi, app, false) , attachment.api.download);
+  app.get( '/attachment/:pageId/:fileName'  , loginRequired(crowi, app, false), attachment.api.get);
 
   app.get( '/_search'                 , loginRequired(crowi, app, false) , search.searchPage);
   app.get( '/_api/search'             , accessTokenParser , loginRequired(crowi, app, false) , search.api.search);

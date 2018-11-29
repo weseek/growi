@@ -20,6 +20,7 @@ module.exports = (options) => {
     mode: options.mode,
     entry: Object.assign({
       'js/app':                       './src/client/js/app',
+      'js/installer':                 './src/client/js/installer',
       'js/legacy':                    './src/client/js/legacy/crowi',
       'js/legacy-admin':              './src/client/js/legacy/crowi-admin',
       'js/legacy-presentation':       './src/client/js/legacy/crowi-presentation',
@@ -76,6 +77,7 @@ module.exports = (options) => {
           exclude: {
             test:    helpers.root('node_modules'),
             exclude: [  // include as a result
+              helpers.root('node_modules/codemirror/src'),
               helpers.root('node_modules/string-width'),
               helpers.root('node_modules/is-fullwidth-code-point'), // depends from string-width
             ]

@@ -75,6 +75,7 @@ module.exports = function(crowi) {
       'security:passport-ldap:groupDnProperty' : undefined,
       'security:passport-ldap:isSameUsernameTreatedAsIdenticalUser': false,
       'security:passport-saml:isEnabled' : false,
+      'security:passport-saml:isSameEmailTreatedAsIdenticalUser': false,
       'security:passport-google:isEnabled' : false,
       'security:passport-github:isEnabled' : false,
       'security:passport-twitter:isEnabled' : false,
@@ -148,6 +149,20 @@ module.exports = function(crowi) {
     return config.markdown[key];
   }
 
+  /**
+   * It is deprecated to use this for anything other than ConfigLoader#load.
+   */
+  configSchema.statics.getDefaultCrowiConfigsObject = function() {
+    return getDefaultCrowiConfigs();
+  };
+
+  /**
+   * It is deprecated to use this for anything other than ConfigLoader#load.
+   */
+  configSchema.statics.getDefaultMarkdownConfigsObject = function() {
+    return getDefaultMarkdownConfigs();
+  };
+
   configSchema.statics.getRestrictGuestModeLabels = function() {
     var labels = {};
     labels[SECURITY_RESTRICT_GUEST_MODE_DENY]     = 'security_setting.guest_mode.deny';
@@ -199,7 +214,7 @@ module.exports = function(crowi) {
     });
   };
 
-  configSchema.statics.setupCofigFormData = function(ns, config) {
+  configSchema.statics.setupConfigFormData = function(ns, config) {
     var defaultConfig = {};
 
     // set Default Settings
@@ -329,6 +344,11 @@ module.exports = function(crowi) {
     return getValueForCrowiNS(config, key);
   };
 
+  configSchema.statics.isSameEmailTreatedAsIdenticalUser = function(config, providerType) {
+    const key = `security:passport-${providerType}:isSameEmailTreatedAsIdenticalUser`;
+    return getValueForCrowiNS(config, key);
+  };
+
   configSchema.statics.isUploadable = function(config) {
     const method = process.env.FILE_UPLOAD || 'aws';
 
@@ -343,7 +363,7 @@ module.exports = function(crowi) {
     return method != 'none';
   };
 
-  configSchema.statics.isGuesstAllowedToRead = function(config) {
+  configSchema.statics.isGuestAllowedToRead = function(config) {
     // return true if puclic wiki mode
     if (Config.isPublicWikiOnly(config)) {
       return true;
