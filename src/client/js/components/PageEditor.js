@@ -9,6 +9,7 @@ import { EditorOptions, PreviewOptions } from './PageEditor/OptionsSelector';
 import Editor from './PageEditor/Editor';
 import Preview from './PageEditor/Preview';
 import scrollSyncHelper from './PageEditor/ScrollSyncHelper';
+import { promise } from 'when';
 
 export default class PageEditor extends React.Component {
 
@@ -114,44 +115,47 @@ export default class PageEditor extends React.Component {
    * the upload event handler
    * @param {any} files
    */
-  onUpload(file) {
-    this.props.crowi.apiGet('/attachments.limit', {
-      _csrf: this.props.crowi.csrfToken, size: file.size
-    });
-    const endpoint = '/attachments.add';
+  async onUpload(file) {
+    const res = await this.props.crowi.apiGet('/attachments.limit', {_csrf: this.props.crowi.csrfToken, size: file.size});
+    if (!res.isUploadable) {
+      throw new Error('mongoDB for file uploading reaches the limit');
+    }
+    else {
+      const endpoint = '/attachments.add';
 
-    // create a FromData instance
-    const formData = new FormData();
-    formData.append('_csrf', this.props.crowi.csrfToken);
-    formData.append('file', file);
-    formData.append('path', this.props.pagePath);
-    formData.append('page_id', this.state.pageId || 0);
+      // create a FromData instance
+      const formData = new FormData();
+      formData.append('_csrf', this.props.crowi.csrfToken);
+      formData.append('file', file);
+      formData.append('path', this.props.pagePath);
+      formData.append('page_id', this.state.pageId || 0);
 
-    // post
-    this.props.crowi.apiPost(endpoint, formData)
-      .then((res) => {
-        const url = res.url;
-        const attachment = res.attachment;
-        const fileName = attachment.originalName;
+      // post
+      this.props.crowi.apiPost(endpoint, formData)
+        .then((res) => {
+          const url = res.url;
+          const attachment = res.attachment;
+          const fileName = attachment.originalName;
 
-        let insertText = `[${fileName}](${url})`;
-        // when image
-        if (attachment.fileFormat.startsWith('image/')) {
-          // modify to "![fileName](url)" syntax
-          insertText = '!' + insertText;
-        }
-        this.refs.editor.insertText(insertText);
+          let insertText = `[${fileName}](${url})`;
+          // when image
+          if (attachment.fileFormat.startsWith('image/')) {
+            // modify to "![fileName](url)" syntax
+            insertText = '!' + insertText;
+          }
+          this.refs.editor.insertText(insertText);
 
-        // when if created newly
-        if (res.pageCreated) {
-          // do nothing
-        }
-      })
-      .catch(this.apiErrorHandler)
-      // finally
-      .then(() => {
-        this.refs.editor.terminateUploadingState();
-      });
+          // when if created newly
+          if (res.pageCreated) {
+            // do nothing
+          }
+        })
+        .catch(this.apiErrorHandler)
+        // finally
+        .then(() => {
+          this.refs.editor.terminateUploadingState();
+        });
+    }
   }
 
   /**
