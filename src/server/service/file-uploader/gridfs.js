@@ -44,6 +44,28 @@ module.exports = function(crowi) {
     }
   };
 
+  /**
+   * get size of data uploaded files using (Promise wrapper)
+   */
+  lib.getCollectionSize = () => {
+    return new Promise((resolve, reject) => {
+      // AttachmentFile.collection.stats(function(err, stats) {
+      //   resolve(stats.size);
+      // });
+      // Chunks.collection.stats(function(err, stats) {
+      //   resolve(stats.size);
+      // });
+      // console.log(AttachmentFileChunks);
+      // console.log(gridfs);
+      gridfs.mongooseConnection.db.collectionNames((e,name) => {
+        if (e) {
+          reject(e);
+        }
+        resolve(name);
+      });
+    });
+  };
+
   lib.uploadFile = async function(filePath, contentType, fileStream, options) {
     debug('File uploading: ' + filePath);
     await writeFile(filePath, contentType, fileStream);

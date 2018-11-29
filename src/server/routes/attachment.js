@@ -113,13 +113,22 @@ module.exports = function(crowi, app) {
    *
    * @apiParam {int} size
    */
-  api.limit = function(req, res) {
+  api.limit = async function(req, res) {
     const uploadFileSize = req.query.size;
-    const isUploadable = true;
+    const usingFilesSize = await fileUploader.getCollectionSize();
+    let isUploadable = true;
     if (process.env.FILE_UPLOAD !== 'mongodb') {
       return res.json(ApiResponse.success({isUploadable: isUploadable}));
     }
-    return res.json(ApiResponse.success({isUploadable: isUploadable}));
+    else {
+      if (process.env.GRIDFS_LIMIT >= uploadFileSize + usingFilesSize) {
+        return res.json(ApiResponse.success({isUploadable: isUploadable}));
+      }
+      else {
+        isUploadable = false;
+        return res.json(ApiResponse.success({isUploadable: isUploadable}));
+      }
+    }
   };
 
   /**
