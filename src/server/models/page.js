@@ -578,6 +578,74 @@ module.exports = function(crowi) {
   };
 
   /**
+   * find the page that is match with `path` and its descendants
+   */
+  pageSchema.statics.findListWithDescendants = async function(path, userData, option) {
+    // ignore other pages than descendants
+    path = this.addSlashOfEnd(path);
+    // add option to escape the regex strings
+    const combinedOption = Object.assign({isRegExpEscapedFromPath: true}, option);
+
+    return await this.findListByStartWith(path, userData, combinedOption);
+  };
+
+  /**
+   * find pages that start with `path`
+   *
+   * see the comment of `generateQueryToListByStartWith` function
+   */
+  pageSchema.statics.findListByStartWith = async function(path, user, option) {
+    validateCrowi();
+
+    const User = crowi.model('User');
+
+    if (!option) {
+      option = {sort: 'updatedAt', desc: -1, offset: 0, limit: 50};
+    }
+    const opt = {
+      sort: option.sort || 'updatedAt',
+      desc: option.desc || -1,
+      offset: option.offset || 0,
+      limit: option.limit || 50
+    };
+    const sortOpt = {};
+    sortOpt[opt.sort] = opt.desc;
+
+    const isPopulateRevisionBody = option.isPopulateRevisionBody || false;
+
+    const builder = new PageQueryBuilder(this.find());
+    builder.addConditionToListByStartWith(path, option);
+
+    // add grant conditions
+    let userGroups = null;
+    if (user != null) {
+      const UserGroupRelation = crowi.model('UserGroupRelation');
+      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
+    }
+    builder.addConditionToFilteringByViewer(user, userGroups);
+
+    let q = builder.query
+      .sort(sortOpt)
+      .skip(opt.offset)
+      .limit(opt.limit)
+      .populate({
+        path: 'lastUpdateUser',
+        model: 'User',
+        select: User.USER_PUBLIC_FIELDS
+      });
+
+    // retrieve revision data
+    if (isPopulateRevisionBody) {
+      q = q.populate('revision');
+    }
+    else {
+      q = q.populate('revision', '-body');  // exclude body
+    }
+
+    return await q.exec();
+  };
+
+  /**
    * find all templates applicable to the new page
    */
   pageSchema.statics.findTemplate = function(path) {
@@ -754,74 +822,6 @@ module.exports = function(crowi) {
       ])
       .sort({updatedAt: -1})
       .cursor();
-  };
-
-  /**
-   * find the page that is match with `path` and its descendants
-   */
-  pageSchema.statics.findListWithDescendants = function(path, userData, option) {
-    // ignore other pages than descendants
-    path = this.addSlashOfEnd(path);
-    // add option to escape the regex strings
-    const combinedOption = Object.assign({isRegExpEscapedFromPath: true}, option);
-
-    return this.findListByStartWith(path, userData, combinedOption);
-  };
-
-  /**
-   * find pages that start with `path`
-   *
-   * see the comment of `generateQueryToListByStartWith` function
-   */
-  pageSchema.statics.findListByStartWith = async function(path, user, option) {
-    validateCrowi();
-
-    const User = crowi.model('User');
-
-    if (!option) {
-      option = {sort: 'updatedAt', desc: -1, offset: 0, limit: 50};
-    }
-    const opt = {
-      sort: option.sort || 'updatedAt',
-      desc: option.desc || -1,
-      offset: option.offset || 0,
-      limit: option.limit || 50
-    };
-    const sortOpt = {};
-    sortOpt[opt.sort] = opt.desc;
-
-    const isPopulateRevisionBody = option.isPopulateRevisionBody || false;
-
-    const builder = new PageQueryBuilder(this.find());
-    builder.addConditionToListByStartWith(path, option);
-
-    // add grant conditions
-    let userGroups = null;
-    if (user != null) {
-      const UserGroupRelation = crowi.model('UserGroupRelation');
-      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
-    }
-    builder.addConditionToFilteringByViewer(user, userGroups);
-
-    let q = builder.query
-      .sort(sortOpt)
-      .skip(opt.offset)
-      .limit(opt.limit)
-      .populate({
-        path: 'lastUpdateUser',
-        model: 'User',
-        select: User.USER_PUBLIC_FIELDS
-      });
-
-    // retrieve revision data
-    if (isPopulateRevisionBody) {
-      q = q.populate('revision');
-    }
-    else {
-      q = q.populate('revision', '-body');  // exclude body
-    }
-
-    return await q.exec();
   };
 
   async function pushRevision(pageData, newRevision, user, grant, grantUserGroupId) {
