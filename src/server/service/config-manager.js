@@ -21,8 +21,8 @@ class ConfigManager {
   /**
    * get a config specified by namespace & key
    *
-   * Basically, search a specified config from configs loaded from database at first
-   * and then from configs loaded from env vars.
+   * Basically, search a specified config from configs loaded from the database at first
+   * and then from configs loaded from the environment variables.
    *
    * In some case, this search method changes.
    *
@@ -39,69 +39,21 @@ class ConfigManager {
   }
 
   /**
-   * private api
+   * get a config specified by namespace & key from configs loaded from the database
    *
-   * Search a specified config from configs loaded from database at first
-   * and then from configs loaded from env vars.
+   * **Do not use this unless absolutely necessary. Use getConfig instead.**
    */
-  defaultSearch(namespace, key) {
-    if (!this.configExistsInDB(namespace, key) && !this.configExistsInEnvVars(namespace, key)) {
-      return undefined;
-    }
-
-    if (this.configExistsInDB(namespace, key) && !this.configExistsInEnvVars(namespace, key) ) {
-      return this.configObject.fromDB[namespace][key];
-    }
-
-    if (!this.configExistsInDB(namespace, key) && this.configExistsInEnvVars(namespace, key) ) {
-      return this.configObject.fromEnvVars[namespace][key];
-    }
-
-    if (this.configExistsInDB(namespace, key) && this.configExistsInEnvVars(namespace, key) ) {
-      if (this.configObject.fromDB[namespace][key] !== null) {
-        return this.configObject.fromDB[namespace][key];
-      }
-      else {
-        return this.configObject.fromEnvVars[namespace][key];
-      }
-    }
+  getConfigFromDB(namespace, key) {
+    return this.searchOnlyFromDBConfigs(namespace, key);
   }
 
   /**
-   * private api
+   * get a config specified by namespace & key from configs loaded from the environment variables
    *
-   * Search a specified config from configs loaded from env vars.
+   * **Do not use this unless absolutely necessary. Use getConfig instead.**
    */
-  searchOnlyFromEnvVarConfigs(namespace, key) {
-    if (!this.configExistsInEnvVars(namespace, key)) {
-      return undefined;
-    }
-
-    return this.configObject.fromEnvVars[namespace][key];
-  }
-
-  /**
-   * check whether a specified config exists in configs loaded from the database
-   * @returns {boolean}
-   */
-  configExistsInDB(namespace, key) {
-    if (this.configObject.fromDB[namespace] === undefined) {
-      return false;
-    }
-
-    return this.configObject.fromDB[namespace][key] !== undefined;
-  }
-
-  /**
-   * check whether a specified config exists in configs loaded from the environment variables
-   * @returns {boolean}
-   */
-  configExistsInEnvVars(namespace, key) {
-    if (this.configObject.fromEnvVars[namespace] === undefined) {
-      return false;
-    }
-
-    return this.configObject.fromEnvVars[namespace][key] !== undefined;
+  getConfigFromEnvVars(namespace, key) {
+    return this.searchOnlyFromEnvVarConfigs(namespace, key);
   }
 
   /**
@@ -136,6 +88,89 @@ class ConfigManager {
     await Promise.all(results);
 
     await this.loadConfigs();
+  }
+
+  /**
+   * private api
+   *
+   * Search a specified config from configs loaded from the database at first
+   * and then from configs loaded from the environment variables.
+   */
+  defaultSearch(namespace, key) {
+    if (!this.configExistsInDB(namespace, key) && !this.configExistsInEnvVars(namespace, key)) {
+      return undefined;
+    }
+
+    if (this.configExistsInDB(namespace, key) && !this.configExistsInEnvVars(namespace, key) ) {
+      return this.configObject.fromDB[namespace][key];
+    }
+
+    if (!this.configExistsInDB(namespace, key) && this.configExistsInEnvVars(namespace, key) ) {
+      return this.configObject.fromEnvVars[namespace][key];
+    }
+
+    if (this.configExistsInDB(namespace, key) && this.configExistsInEnvVars(namespace, key) ) {
+      if (this.configObject.fromDB[namespace][key] !== null) {
+        return this.configObject.fromDB[namespace][key];
+      }
+      else {
+        return this.configObject.fromEnvVars[namespace][key];
+      }
+    }
+  }
+
+  /**
+   * private api
+   *
+   * Search a specified config from configs loaded from the database
+   */
+  searchOnlyFromDBConfigs(namespace, key) {
+    if (!this.configExistsInDB(namespace, key)) {
+      return undefined;
+    }
+
+    return this.configObject.fromEnvVars[namespace][key];
+  }
+
+  /**
+   * private api
+   *
+   * Search a specified config from configs loaded from the environment variables
+   */
+  searchOnlyFromEnvVarConfigs(namespace, key) {
+    if (!this.configExistsInEnvVars(namespace, key)) {
+      return undefined;
+    }
+
+    return this.configObject.fromEnvVars[namespace][key];
+  }
+
+  /**
+   * private api
+   *
+   * check whether a specified config exists in configs loaded from the database
+   * @returns {boolean}
+   */
+  configExistsInDB(namespace, key) {
+    if (this.configObject.fromDB[namespace] === undefined) {
+      return false;
+    }
+
+    return this.configObject.fromDB[namespace][key] !== undefined;
+  }
+
+  /**
+   * private api
+   *
+   * check whether a specified config exists in configs loaded from the environment variables
+   * @returns {boolean}
+   */
+  configExistsInEnvVars(namespace, key) {
+    if (this.configObject.fromEnvVars[namespace] === undefined) {
+      return false;
+    }
+
+    return this.configObject.fromEnvVars[namespace][key] !== undefined;
   }
 }
 
