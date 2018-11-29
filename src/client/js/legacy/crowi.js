@@ -481,6 +481,7 @@ $(function() {
 
   $('#create-portal-button').on('click', function(e) {
     $('body').addClass('on-edit');
+    $('body').addClass('builtin-editor');
 
     const path = $('.content-main').data('path');
     if (path != '/' && $('.content-main').data('page-id') == '') {
@@ -493,8 +494,10 @@ $(function() {
     }
   });
   $('#portal-form-close').on('click', function(e) {
+    $('#edit').removeClass('active');
     $('body').removeClass('on-edit');
-    return false;
+    $('body').removeClass('builtin-editor');
+    location.hash = '#';
   });
 
   /*
