@@ -3,7 +3,7 @@
   <legend class="alert-anchor">{{ t("security_setting.SAML.name") }} {{ t("security_setting.configuration") }}</legend>
 
   {% set nameForIsSamlEnabled = "settingForm[security:passport-saml:isEnabled]" %}
-  {% set isSamlEnabled = settingForm['security:passport-saml:isEnabled'] %}
+  {% set isSamlEnabled = getConfig('crowi', 'security:passport-saml:isEnabled') %}
 
   <div class="form-group">
     <label class="col-xs-3 control-label">{{ t("security_setting.SAML.name") }}</label>
