@@ -1,9 +1,11 @@
 CHANGES
 ========
 
-## 3.2.10
+## 3.2.10-RC
 
-* 
+* Fix: Pages in trash are available to create
+* Fix: Couldn't create portal page under Crowi Classic Behavior
+
 
 ## 3.2.9
 
