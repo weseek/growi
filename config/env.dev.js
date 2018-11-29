@@ -11,4 +11,6 @@ module.exports = {
   // USER_UPPER_LIMIT: 0,
   // DEV_HTTPS: true,
   // PUBLIC_WIKI_ONLY: true,
+  // SAML_ENABLED: true,
+  SAML_USE_ONLY_ENV_VARS: true
 };
