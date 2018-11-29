@@ -42,7 +42,7 @@ module.exports = function(crowi, app, req, locals) {
   };
 
   locals.getConfig = function(namespace, key) {
-    crowi.configManager.getConfig(namespace, key);
+    return crowi.configManager.getConfig(namespace, key);
   };
 
   /**
