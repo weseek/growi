@@ -573,6 +573,7 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Parameters body and path are required.'));
     }
 
+    // check page existence
     const isExist = await Page.count({path: pagePath}) > 0;
     if (isExist) {
       return res.json(ApiResponse.error('Page exists'));
@@ -629,38 +630,44 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('page_id and body are required.'));
     }
 
-    let previousRevision = undefined;
-    let updatedPage = await Page.findByIdAndViewer(pageId, req.user)
-      .then(function(pageData) {
-        if (pageData && revisionId !== null && !pageData.isUpdatable(revisionId)) {
-          throw new Error('Posted param "revisionId" is outdated.');
-        }
+    // check page existence
+    const isExist = await Page.count({_id: pageId}) > 0;
+    if (!isExist) {
+      return res.json(ApiResponse.error(`Page('${pageId}' does not exist`));
+    }
 
-        const options = {isSyncRevisionToHackmd, socketClientId};
-        if (grant != null) {
-          options.grant = grant;
-        }
-        if (grantUserGroupId != null) {
-          options.grantUserGroupId = grantUserGroupId;
-        }
+    // check revision
+    let page = await Page.findByIdAndViewer(pageId, req.user);
+    if (page != null && revisionId != null && !page.isUpdatable(revisionId)) {
+      return res.json(ApiResponse.error('Posted param "revisionId" is outdated.'));
+    }
 
-        // store previous revision
-        previousRevision = pageData.revision;
+    const options = {isSyncRevisionToHackmd, socketClientId};
+    if (grant != null) {
+      options.grant = grant;
+    }
+    if (grantUserGroupId != null) {
+      options.grantUserGroupId = grantUserGroupId;
+    }
 
-        return Page.updatePage(pageData, pageBody, req.user, options);
-      })
-      .catch(function(err) {
-        logger.error('error on _api/pages.update', err);
-        res.json(ApiResponse.error(err));
-      });
+    // store previous revision
+    const previousRevision = page.revision;
 
-    const result = { page: serializeToObj(updatedPage) };
-    result.page.lastUpdateUser = User.filterToPublicFields(updatedPage.lastUpdateUser);
+    try {
+      page = await Page.updatePage(page, pageBody, req.user, options);
+    }
+    catch (err) {
+      logger.error('error on _api/pages.update', err);
+      return res.json(ApiResponse.error(err));
+    }
+
+    const result = { page: serializeToObj(page) };
+    result.page.lastUpdateUser = User.filterToPublicFields(page.lastUpdateUser);
     res.json(ApiResponse.success(result));
 
     // global notification
     try {
-      await globalNotificationService.notifyPageEdit(updatedPage);
+      await globalNotificationService.notifyPageEdit(page);
     }
     catch (err) {
       logger.error(err);
@@ -668,7 +675,7 @@ module.exports = function(crowi, app) {
 
     // user notification
     if (isSlackEnabled && slackChannels != null) {
-      await notifyToSlackByUser(updatedPage, req.user, slackChannels, 'update', previousRevision);
+      await notifyToSlackByUser(page, req.user, slackChannels, 'update', previousRevision);
     }
   };
 
