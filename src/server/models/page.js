@@ -1144,27 +1144,22 @@ module.exports = function(crowi) {
     return updatedPageData;
   };
 
-  pageSchema.statics.renameRecursively = function(pageData, newPagePathPrefix, user, options) {
+  pageSchema.statics.renameRecursively = async function(pageData, newPagePathPrefix, user, options) {
     validateCrowi();
 
-    const Page = this
-      , path = pageData.path
-      , pathRegExp = new RegExp('^' + escapeStringRegexp(path), 'i');
+    const path = pageData.path;
+    const pathRegExp = new RegExp('^' + escapeStringRegexp(path), 'i');
 
     // sanitize path
     newPagePathPrefix = crowi.xss.process(newPagePathPrefix);
 
-    return Page.generateQueryToListWithDescendants(path, user, options)
-      .then(function(pages) {
-        return Promise.all(pages.map(function(page) {
+    const pages = await this.findListWithDescendants(path, user, options);
+    await Promise.all(pages.map(page => {
           const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
-          return Page.rename(page, newPagePath, user, options);
+      return this.rename(page, newPagePath, user, options);
         }));
-      })
-      .then(function() {
         pageData.path = newPagePathPrefix;
         return pageData;
-      });
   };
 
   /**
