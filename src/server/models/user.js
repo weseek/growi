@@ -69,7 +69,7 @@ module.exports = function(crowi) {
   function decideUserStatusOnRegistration() {
     validateCrowi();
 
-    var Config = crowi.model('Config'),
+    let Config = crowi.model('Config'),
       config = crowi.getConfig();
 
     if (!config.crowi) {
@@ -744,12 +744,11 @@ module.exports = function(crowi) {
     newUser.name = name;
     newUser.username = username;
     newUser.email = email;
-    newUser.lang = Config.globalLang(config);
     if (password != null) {
       newUser.setPassword(password);
     }
     if (lang != null) {
-      newUser.lang = Config.globalLang(config);
+      newUser.lang = lang;
     }
     newUser.createdAt = Date.now();
     newUser.status = status || decideUserStatusOnRegistration();
