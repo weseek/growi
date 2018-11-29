@@ -41,6 +41,10 @@ module.exports = function(crowi, app, req, locals) {
     return fontSize;
   };
 
+  locals.getConfig = function(namespace, key) {
+    crowi.configManager.getConfig(namespace, key);
+  };
+
   /**
    * return app title
    */
