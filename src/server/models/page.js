@@ -63,8 +63,33 @@ pageSchema.plugin(uniqueValidator);
 
 
 class PageQueryBuilder {
-  constructor(query) {
+  constructor(query, option) {
+    const opt = Object.assign({
+      includeRedirect: false,
+    }, option);
+
     this.query = query;
+
+    if (!opt.includeRedirect) {
+      this.addConditionToExcludeRedirect();
+    }
+  }
+
+  addConditionToExcludeTrashed() {
+    this.query = this.query
+      .and({
+        $or: [
+          {status: null},
+          {status: STATUS_PUBLISHED},
+        ]
+      });
+
+    return this;
+  }
+
+  addConditionToExcludeRedirect() {
+    this.query = this.query.and({ redirectTo: null });
+    return this;
   }
 
   /**
@@ -591,6 +616,11 @@ module.exports = function(crowi) {
     const builder = new PageQueryBuilder(this.find());
     builder.addConditionToListByStartWith(path, option);
 
+    // exclude trashed pages
+    if (!opt.includeTrashed) {
+      builder.addConditionToExcludeTrashed();
+    }
+
     // add grant conditions
     let userGroups = null;
     if (user != null) {
@@ -631,6 +661,8 @@ module.exports = function(crowi) {
 
     const baseQuery = this.find({ creator: targetUser._id });
     const builder = new PageQueryBuilder(baseQuery)
+      .addConditionToExcludeTrashed();
+
     // add grant conditions
     let userGroups = null;
     if (currentUser != null) {
@@ -908,19 +940,18 @@ module.exports = function(crowi) {
   };
 
   pageSchema.statics.deletePage = async function(pageData, user, options = {}) {
-    const Page = this
-      , newPath = Page.getDeletedPageName(pageData.path)
+    const newPath = this.getDeletedPageName(pageData.path)
       , isTrashed = checkIfTrashed(pageData.path)
       , socketClientId = options.socketClientId || null
       ;
 
-    if (Page.isDeletableName(pageData.path)) {
+    if (this.isDeletableName(pageData.path)) {
       if (isTrashed) {
-        return Page.completelyDeletePage(pageData, user, options);
+        return this.completelyDeletePage(pageData, user, options);
       }
 
       pageData.status = STATUS_DELETED;
-      const updatedPageData = await Page.rename(pageData, newPath, user, {createRedirectPage: true});
+      const updatedPageData = await this.rename(pageData, newPath, user, {createRedirectPage: true});
 
       if (socketClientId != null) {
         pageEvent.emit('delete', updatedPageData, user, socketClientId);
@@ -936,27 +967,24 @@ module.exports = function(crowi) {
     return (path.search(/^\/trash/) !== -1);
   };
 
-  pageSchema.statics.deletePageRecursively = function(pageData, user, options) {
-    const Page = this
-      , path = pageData.path
+  pageSchema.statics.deletePageRecursively = async function(pageData, user, options) {
+    const path = pageData.path
       , isTrashed = checkIfTrashed(pageData.path)
       ;
-    options = options || {};
 
     if (isTrashed) {
-      return Page.completelyDeletePageRecursively(pageData, user, options);
+      return this.completelyDeletePageRecursively(pageData, user, options);
     }
 
-    return Page.generateQueryToListWithDescendants(path, user, options)
-      .then(function(pages) {
-        return Promise.all(pages.map(function(page) {
-          return Page.deletePage(page, user, options);
-        }));
-      })
-      .then(function(data) {
-        return pageData;
-      });
+    let pages = [pageData];
+    const result = await this.findListWithDescendants(path, user);
+    pages = pages.concat(result.pages);
 
+    await Promise.all(pages.map(page => {
+      return this.deletePage(page, user, options);
+    }));
+
+    return pageData;
   };
 
   pageSchema.statics.revertDeletedPage = async function(page, user, options) {
@@ -985,7 +1013,10 @@ module.exports = function(crowi) {
   pageSchema.statics.revertDeletedPageRecursively = async function(page, user, options = {}) {
     options = Object.assign({ includeDeletedPage: true }, options);
 
-    const pages = await this.generateQueryToListWithDescendants(page.path, user, options).exec();
+    let pages = [page];
+    const result = await this.findListWithDescendants(page.path, user, {includeTrashed: true});
+    pages = pages.concat(result.pages);
+
     const revertedPages = await Promise.all(
       pages.map(p => {
         return this.revertDeletedPage(p, user, options);
@@ -1002,7 +1033,7 @@ module.exports = function(crowi) {
     validateCrowi();
 
     // Delete Bookmarks, Attachments, Revisions, Pages and emit delete
-    const Bookmark = crowi.model('Bookmark')
+    const Bookmark = crowi.model('Bookmark');
     const Attachment = crowi.model('Attachment');
     const Comment = crowi.model('Comment');
     const Revision = crowi.model('Revision');
@@ -1025,25 +1056,21 @@ module.exports = function(crowi) {
     return pageData;
   };
 
-  pageSchema.statics.completelyDeletePageRecursively = function(pageData, user, options = {}) {
-    // Delete Bookmarks, Attachments, Revisions, Pages and emit delete
-    const Page = this
-      , path = pageData.path
-      ;
-    options = Object.assign({ includeDeletedPage: true }, options);
+  /**
+   * Delete Bookmarks, Attachments, Revisions, Pages and emit delete
+   */
+  pageSchema.statics.completelyDeletePageRecursively = async function(pageData, user, options = {}) {
+    const path = pageData.path;
 
-    return new Promise(function(resolve, reject) {
-      Page
-      .generateQueryToListWithDescendants(path, user, options)
-      .then(function(pages) {
-        Promise.all(pages.map(function(page) {
-          return Page.completelyDeletePage(page, user, options);
-        }))
-        .then(function(data) {
-          return resolve(data[0]);
-        });
-      });
-    });
+    let pages = [pageData];
+    const result = await this.findListWithDescendants(path, user, {includeTrashed: true});
+    pages = pages.concat(result.pages);
+
+    await Promise.all(pages.map(page => {
+      return this.completelyDeletePage(page, user, options);
+    }));
+
+    return pages[0];
   };
 
   pageSchema.statics.removeByPath = function(path) {
@@ -1118,8 +1145,8 @@ module.exports = function(crowi) {
     // sanitize path
     newPagePathPrefix = crowi.xss.process(newPagePathPrefix);
 
-    const pages = await this.findListWithDescendants(path, user, options);
-    await Promise.all(pages.map(page => {
+    const result = await this.findListWithDescendants(path, user, options);
+    await Promise.all(result.pages.map(page => {
       const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
       return this.rename(page, newPagePath, user, options);
     }));
