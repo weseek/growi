@@ -1,3 +1,5 @@
+import UpdateDisplayUtil from '../../util/codemirror/update-display-util.ext';
+
 class EmojiAutoCompleteHelper {
 
   constructor(emojiStrategy) {
@@ -41,6 +43,18 @@ class EmojiAutoCompleteHelper {
     else {
       return;
     }
+
+    /*
+     * https://github.com/weseek/growi/issues/703 is caused
+     * because 'editor.display.viewOffset' is zero
+     *
+     * call stack:
+     *   1. https://github.com/codemirror/CodeMirror/blob/5.42.0/addon/hint/show-hint.js#L220
+     *   2. https://github.com/codemirror/CodeMirror/blob/5.42.0/src/edit/methods.js#L189
+     *   3. https://github.com/codemirror/CodeMirror/blob/5.42.0/src/measurement/position_measurement.js#L372
+     *   4. https://github.com/codemirror/CodeMirror/blob/5.42.0/src/measurement/position_measurement.js#L315
+     */
+    UpdateDisplayUtil.forceUpdateViewOffset(editor);
 
     // see https://codemirror.net/doc/manual.html#addon_show-hint
     editor.showHint({

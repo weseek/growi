@@ -9,17 +9,22 @@
 #   - $WERCKER_TOKEN
 #   - $GROWI_DOCKER_PIPELINE_ID
 #   - $RELEASE_VERSION
+#   - $WERCKER_GIT_COMMIT
 #
 RESPONSE=`curl -X POST \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $WERCKER_TOKEN" \
   https://app.wercker.com/api/v3/runs -d '{ \
     "pipelineId": "'$GROWI_DOCKER_PIPELINE_ID'", \
-    "branch": "release", \
+    "branch": "master", \
     "envVars": [ \
       { \
         "key": "RELEASE_VERSION", \
         "value": "'$RELEASE_VERSION'" \
+      }, \
+      { \
+        "key": "GROWI_REPOS_GIT_COMMIT", \
+        "value": "'$WERCKER_GIT_COMMIT'" \
       } \
     ] \
   }' \

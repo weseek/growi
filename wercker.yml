@@ -134,7 +134,10 @@ release: # would be run on release branch
         git reset --hard
         # npm version to bump version
         npm version patch
-        # get version
+
+    - script:
+      name: get RELEASE_VERSION
+      code: |
         export RELEASE_VERSION=`npm run version --silent`
         echo "export RELEASE_VERSION=$RELEASE_VERSION"
 
@@ -158,6 +161,29 @@ release: # would be run on release branch
 
     - script:
       name: trigger growi-docker release pipeline
+      code: sh ./bin/wercker/trigger-growi-docker.sh
+
+  after-steps:
+    - slack-notifier:
+      url: $SLACK_WEBHOOK_URL
+      channel: ci
+      username: wercker
+      notify_on: "failed"
+
+
+release-rc: # would be run on rc/* branches
+  steps:
+    - install-packages:
+      packages: jq
+
+    - script:
+      name: get RELEASE_VERSION
+      code: |
+        export RELEASE_VERSION=`npm run version --silent`
+        echo "export RELEASE_VERSION=$RELEASE_VERSION"
+
+    - script:
+      name: trigger growi-docker release-rc pipeline
       code: sh ./bin/wercker/trigger-growi-docker.sh
 
   after-steps:
