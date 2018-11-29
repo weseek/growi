@@ -93,12 +93,10 @@ class PageQueryBuilder {
    *   -> returns '{path}*'
    *
    * *option*
-   *   - includeDeletedPage -- if true, search deleted pages (default: false)
    *   - isRegExpEscapedFromPath -- if true, the regex strings included in `path` is escaped (default: false)
    */
   addConditionToListByStartWith(path, option) {
     const pathCondition = [];
-    const includeDeletedPage = option.includeDeletedPage || false;
     const isRegExpEscapedFromPath = option.isRegExpEscapedFromPath || false;
 
     /*
@@ -121,20 +119,9 @@ class PageQueryBuilder {
     pathCondition.push({path: queryReg});
 
     this.query = this.query
-      .and({ redirectTo: null })
       .and({
         $or: pathCondition
       });
-
-    if (!includeDeletedPage) {
-      this.query = this.query
-        .and({
-          $or: [
-            {status: null},
-            {status: STATUS_PUBLISHED},
-          ]
-        });
-    }
 
     return this;
   }
@@ -591,27 +578,15 @@ module.exports = function(crowi) {
 
   /**
    * find pages that start with `path`
-   *
-   * see the comment of `generateQueryToListByStartWith` function
    */
   pageSchema.statics.findListByStartWith = async function(path, user, option) {
     validateCrowi();
 
     const User = crowi.model('User');
 
-    if (!option) {
-      option = {sort: 'updatedAt', desc: -1, offset: 0, limit: 50};
-    }
-    const opt = {
-      sort: option.sort || 'updatedAt',
-      desc: option.desc || -1,
-      offset: option.offset || 0,
-      limit: option.limit || 50
-    };
+    const opt = Object.assign({sort: 'updatedAt', desc: -1}, option);
     const sortOpt = {};
     sortOpt[opt.sort] = opt.desc;
-
-    const isPopulateRevisionBody = option.isPopulateRevisionBody || false;
 
     const builder = new PageQueryBuilder(this.find());
     builder.addConditionToListByStartWith(path, option);
@@ -624,25 +599,18 @@ module.exports = function(crowi) {
     }
     builder.addConditionToFilteringByViewer(user, userGroups);
 
-    let q = builder.query
-      .sort(sortOpt)
-      .skip(opt.offset)
-      .limit(opt.limit)
+    const totalCount = await builder.query.exec('count');
+    const q = builder.query
+      .sort(sortOpt).skip(opt.offset).limit(opt.limit)
       .populate({
         path: 'lastUpdateUser',
         model: 'User',
         select: User.USER_PUBLIC_FIELDS
       });
+    const pages = await q.exec('find');
 
-    // retrieve revision data
-    if (isPopulateRevisionBody) {
-      q = q.populate('revision');
-    }
-    else {
-      q = q.populate('revision', '-body');  // exclude body
-    }
-
-    return await q.exec();
+    const result = { pages, totalCount, offset: opt.offset, limit: opt.limit };
+    return result;
   };
 
   /**
@@ -656,21 +624,13 @@ module.exports = function(crowi) {
     validateCrowi();
 
     const User = crowi.model('User');
-    const limit = option.limit || 50;
-    const offset = option.offset || 0;
 
-    const builder = new PageQueryBuilder(
-      this.find({
-        creator: targetUser._id,
-        redirectTo: null,
-      })
-      .populate({
-        path: 'lastUpdateUser',
-        model: 'User',
-        select: User.USER_PUBLIC_FIELDS
-      })
-    );
+    const opt = Object.assign({sort: 'createdAt', desc: -1, offset: 0}, option);
+    const sortOpt = {};
+    sortOpt[opt.sort] = opt.desc;
 
+    const baseQuery = this.find({ creator: targetUser._id });
+    const builder = new PageQueryBuilder(baseQuery)
     // add grant conditions
     let userGroups = null;
     if (currentUser != null) {
@@ -681,10 +641,15 @@ module.exports = function(crowi) {
 
     const totalCount = await builder.query.exec('count');
     const q = builder.query
-      .sort({createdAt: -1}).skip(offset).limit(limit);
+      .sort(sortOpt).skip(opt.offset).limit(opt.limit)
+      .populate({
+        path: 'lastUpdateUser',
+        model: 'User',
+        select: User.USER_PUBLIC_FIELDS
+      });
     const pages = await q.exec('find');
 
-    const result = { pages, totalCount };
+    const result = { pages, totalCount, offset: opt.offset, limit: opt.limit };
     return result;
   };
 
@@ -1155,11 +1120,11 @@ module.exports = function(crowi) {
 
     const pages = await this.findListWithDescendants(path, user, options);
     await Promise.all(pages.map(page => {
-          const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
+      const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
       return this.rename(page, newPagePath, user, options);
-        }));
-        pageData.path = newPagePathPrefix;
-        return pageData;
+    }));
+    pageData.path = newPagePathPrefix;
+    return pageData;
   };
 
   /**

@@ -60,14 +60,9 @@ module.exports = function(crowi, app) {
     return false;
   }
 
-  // TODO: total とかでちゃんと計算する
-  function generatePager(options) {
+  function generatePager(offset, limit, totalCount) {
     let next = null,
       prev = null;
-    const offset = parseInt(options.offset, 10),
-      limit  = parseInt(options.limit, 10),
-      length = options.length || 0;
-
 
     if (offset > 0) {
       prev = offset - limit;
@@ -76,7 +71,7 @@ module.exports = function(crowi, app) {
       }
     }
 
-    if (length < limit) {
+    if (totalCount < limit) {
       next = null;
     }
     else {
@@ -139,27 +134,27 @@ module.exports = function(crowi, app) {
     const queryOptions = {
       offset: offset,
       limit: limit + 1,
-      isPopulateRevisionBody: Config.isEnabledTimeline(config),
-      includeDeletedPage: path.startsWith('/trash/'),
+      includeTrashed: path.startsWith('/trash/'),
       isRegExpEscapedFromPath,
     };
-    const pageList = await Page.findListWithDescendants(path, requestUser, queryOptions);
-    if (pageList.length > limit) {
-      pageList.pop();
+    const result = await Page.findListWithDescendants(path, requestUser, queryOptions);
+    if (result.pages.length > limit) {
+      result.pages.pop();
     }
 
-    // index page
-    const pagerOptions = {
-      offset: offset,
-      limit: limit
-    };
-    pagerOptions.length = pageList.length;
+    // populate for timeline
+    if (Config.isEnabledTimeline(config)) {
+      await Page.populate(result.pages, {
+        path: 'revision',
+        model: 'Revision',
+      });
+    }
 
     renderVars.viewConfig = {
       seener_threshold: SEENER_THRESHOLD,
     };
-    renderVars.pager = generatePager(pagerOptions);
-    renderVars.pages = pagePathUtils.encodePagesPath(pageList);
+    renderVars.pager = generatePager(result.offset, result.limit, result.totalCount);
+    renderVars.pages = pagePathUtils.encodePagesPath(result.pages);
   }
 
   function replacePlaceholdersOfTemplate(template, req) {
@@ -410,20 +405,15 @@ module.exports = function(crowi, app) {
     return res.render(view, renderVars);
   };
 
-  actions.deletedPageListShow = function(req, res) {
+  actions.deletedPageListShow = async function(req, res) {
     const path = '/trash' + getPathFromRequest(req);
     const limit = 50;
     const offset = parseInt(req.query.offset)  || 0;
 
-    // index page
-    const pagerOptions = {
-      offset: offset,
-      limit: limit
-    };
     const queryOptions = {
       offset: offset,
       limit: limit + 1,
-      includeDeletedPage: true,
+      includeTrashed: true,
     };
 
     const renderVars = {
@@ -432,21 +422,16 @@ module.exports = function(crowi, app) {
       pages: [],
     };
 
-    Page.findListWithDescendants(path, req.user, queryOptions)
-    .then(function(pageList) {
+    const result = await Page.findListWithDescendants(path, req.user, queryOptions);
 
-      if (pageList.length > limit) {
-        pageList.pop();
-      }
+    if (result.pages.length > limit) {
+      result.pages.pop();
+    }
 
-      pagerOptions.length = pageList.length;
+    renderVars.pager = generatePager(result.offset, result.limit, result.totalCount);
+    renderVars.pages = pagePathUtils.encodePagesPath(result.pages);
+    res.render('customlayout-selector/page_list', renderVars);
 
-      renderVars.pager = generatePager(pagerOptions);
-      renderVars.pages = pagePathUtils.encodePagesPath(pageList);
-      res.render('customlayout-selector/page_list', renderVars);
-    }).catch(function(err) {
-      debug('Error on rendering deletedPageListShow', err);
-    });
   };
 
   actions.search = function(req, res) {
@@ -472,7 +457,7 @@ module.exports = function(crowi, app) {
       res.render('customlayout-selector/page_list', {
         path: '/',
         pages: pagePathUtils.encodePagesPath(pages),
-        pager: generatePager({offset: 0, limit: 50})
+        pager: generatePager(0, 50)
       });
     }).catch(function(err) {
       debug('search error', err);
@@ -505,14 +490,13 @@ module.exports = function(crowi, app) {
    * @apiParam {String} path
    * @apiParam {String} user
    */
-  api.list = function(req, res) {
+  api.list = async function(req, res) {
     const username = req.query.user || null;
     const path = req.query.path || null;
     const limit = + req.query.limit || 50;
     const offset = parseInt(req.query.offset) || 0;
 
-    const pagerOptions = { offset: offset, limit: limit };
-    const queryOptions = { offset: offset, limit: limit + 1};
+    const queryOptions = { offset, limit: limit + 1 };
 
     // Accepts only one of these
     if (username === null && path === null) {
@@ -522,33 +506,29 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Parameter user or path is required.'));
     }
 
-    let pageFetcher;
-    if (path === null) {
-      pageFetcher = User.findUserByUsername(username)
-      .then(function(user) {
+    try {
+      let result = null;
+      if (path == null) {
+        const user = await User.findUserByUsername(username);
         if (user === null) {
           throw new Error('The user not found.');
         }
-        return Page.findListByCreator(user, queryOptions, req.user);
-      });
-    }
-    else {
-      pageFetcher = Page.findListByStartWith(path, req.user, queryOptions);
-    }
-
-    pageFetcher
-    .then(function(pages) {
-      if (pages.length > limit) {
-        pages.pop();
+        result = await Page.findListByCreator(user, req.user, queryOptions);
       }
-      pagerOptions.length = pages.length;
+      else {
+        result = await Page.findListByStartWith(path, req.user, queryOptions);
+      }
 
-      const result = {};
-      result.pages = pagePathUtils.encodePagesPath(pages);
+      if (result.pages.length > limit) {
+        result.pages.pop();
+      }
+
+      result.pages = pagePathUtils.encodePagesPath(result.pages);
       return res.json(ApiResponse.success(result));
-    }).catch(function(err) {
+    }
+    catch (err) {
       return res.json(ApiResponse.error(err));
-    });
+    }
   };
 
   /**
@@ -983,7 +963,7 @@ module.exports = function(crowi, app) {
     const isExist = await Page.count({ path: newPagePath }) > 0;
     if (isExist) {
       // if page found, cannot cannot rename to that path
-      return res.json(ApiResponse.error(`このページ名は作成できません (${newPagePath})。ページが存在します。`));
+      return res.json(ApiResponse.error('The page already exists'));
     }
 
     let page;
