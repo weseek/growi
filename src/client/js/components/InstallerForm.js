@@ -37,7 +37,7 @@ class InstallerForm extends React.Component {
           <div className={'input-group' + hasErrorClass}>
             <span className="input-group-addon"><i className="icon-user" /></span>
             <input type="text" className="form-control" placeholder={ this.props.t('User ID') }
-              name="registerForm[username]" defaultValue={this.props.userName} onChange={this.checkUserName} required />
+              name="registerForm[username]" defaultValue={this.props.userName} onBlur={this.checkUserName} required />
           </div>
           <p className="help-block">{ unavailableUserId }</p>
 
