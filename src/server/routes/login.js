@@ -141,7 +141,7 @@ module.exports = function(crowi, app) {
 
   actions.register = function(req, res) {
     var googleAuth = require('../util/googleAuth')(config);
-    var lang= Config.globalLang(config);
+    var lang= req.lang || User.LANG_EN_US;
 
     // ログイン済みならさようなら
     if (req.user) {
