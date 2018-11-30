@@ -5,6 +5,20 @@
   {% set nameForIsSamlEnabled = "settingForm[security:passport-saml:isEnabled]" %}
   {% set isSamlEnabled = getConfig('crowi', 'security:passport-saml:isEnabled') %}
 
+  <style>
+    .authentication-settings-table {
+      table-layout: fixed;
+    }
+
+    .authentication-settings-table .item-name{
+      width: 150px;
+    }
+
+    .authentication-settings-table.use-only-env-vars .from-env-vars {
+      background-color: rgba(0, 159, 187, 0.1);
+    }
+  </style>
+
   <div class="form-group">
     <label class="col-xs-3 control-label">{{ t("security_setting.SAML.name") }}</label>
     <div class="col-xs-6">
@@ -20,10 +34,32 @@
       </div>
     </div>
   </div>
+
+  <div class="form-group">
+    <label class="col-xs-3 control-label">{{ t("security_setting.callback_URL") }}</label>
+    <div class="col-xs-6">
+      <input class="form-control"
+             type="text"
+             value="{% if settingForm['app:siteUrl'] %}{{ settingForm['app:siteUrl'] }}{% else %}[INVALID] {% endif %}/passport/saml/callback"
+             readonly>
+      <p class="help-block small">{{ t("security_setting.desc_of_callback_URL", 'SAML Identity') }}</p>
+      {% if !settingForm['app:siteUrl'] %}
+      <div class="alert alert-danger">
+        <i class="icon-exclamation"></i> {{ t("security_setting.alert_siteUrl_is_not_set", '<a href="/admin/app">' + t('App settings') + '<i class="icon-login"></i></a>') }}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
   <fieldset id="passport-saml-hide-when-disabled" {%if !isSamlEnabled %}style="display: none;"{% endif %}>
 
     <h4>Basic Settings</h4>
-    <table class="table">
+    <table class="table authentication-settings-table">
+      <colgroup>
+        <col class="item-name">
+        <col class="from-db">
+        <col class="from-env-vars">
+      </colgroup>
       <thead>
         <tr><th></th><th>Database</th><th>Environment variables</th></tr>
       </thead>
@@ -46,24 +82,6 @@
                    type="text"
                    value="{{ getConfigFromEnvVars('crowi', 'security:passport-saml:entryPoint') || '' }}"
                    readonly>
-          </td>
-        </tr>
-        <tr>
-          <th>{{ t("security_setting.callback_URL") }}</th>
-          <td>
-            <input class="form-control"
-                   type="text"
-                   value="{% if settingForm['app:siteUrl'] %}{{ settingForm['app:siteUrl'] }}{% else %}[INVALID] {% endif %}/passport/saml/callback"
-                   readonly>
-            <p class="help-block small">{{ t("security_setting.desc_of_callback_URL", 'SAML Identity') }}</p>
-            {% if !settingForm['app:siteUrl'] %}
-            <div class="alert alert-danger">
-              <i class="icon-exclamation"></i> {{ t("security_setting.alert_siteUrl_is_not_set", '<a href="/admin/app">' + t('App settings') + '<i class="icon-login"></i></a>') }}
-            </div>
-            {% endif %}
-          </td>
-          <td>
-            Deprecated
           </td>
         </tr>
         <tr>
@@ -91,7 +109,12 @@
 
     <h4>Attribute Mapping</h4>
 
-    <table class="table">
+    <table class="table authentication-settings-table">
+      <colgroup>
+        <col class="item-name">
+        <col class="from-db">
+        <col class="from-env-vars">
+      </colgroup>
       <thead>
         <tr><th></th><th>Database</th><th>Environment variables</th></tr>
       </thead>
@@ -244,7 +267,12 @@
 
     <h4>Options</h4>
 
-    <table class="table">
+    <table class="table authentication-settings-table">
+      <colgroup>
+        <col class="item-name">
+        <col class="from-db">
+        <col class="from-env-vars">
+      </colgroup>
       <thead>
         <tr><th></th><th>Database</th><th>Environment variables</th></tr>
       </thead>
