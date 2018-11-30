@@ -336,66 +336,53 @@ describe('Page', () => {
     });
   });
 
-  context('generateQueryToListByStartWith', () => {
-    it('should return only /page/', done => {
+  context('findListWithDescendants', () => {
+    it('should return only /page/', async() => {
       const user = createdUsers[0];
-      Page.generateQueryToListByStartWith('/page/', user, { isRegExpEscapedFromPath: true })
-      .then(pages => {
-        // assert length
-        expect(pages.length).to.equal(1);
-        // assert paths
-        const pagePaths = pages.map(page => page.path);
-        expect(pagePaths).to.include.members(['/page/for/extended'])
-        done();
-      })
-      .catch((err) => {
-        done(err);
-      });
+
+      const result = await Page.findListWithDescendants('/page/', user, { isRegExpEscapedFromPath: true });
+
+      // assert totalCount
+      expect(result.totalCount).to.equal(1);
+      // assert paths
+      const pagePaths = result.pages.map(page => page.path);
+      expect(pagePaths).to.include.members(['/page/for/extended']);
     });
-    it('should return only /page1/', done => {
+    it('should return only /page1/', async() => {
       const user = createdUsers[0];
-      Page.generateQueryToListByStartWith('/page1/', user, { isRegExpEscapedFromPath: true })
-      .then(pages => {
-        // assert length
-        expect(pages.length).to.equal(2);
-        // assert paths
-        const pagePaths = pages.map(page => page.path);
-        expect(pagePaths).to.include.members(['/page1', '/page1/child1'])
-        done();
-      })
-      .catch((err) => {
-        done(err);
-      });
+
+      const result = await Page.findListWithDescendants('/page1/', user, { isRegExpEscapedFromPath: true });
+
+      // assert totalCount
+      expect(result.totalCount).to.equal(2);
+      // assert paths
+      const pagePaths = result.pages.map(page => page.path);
+      expect(pagePaths).to.include.members(['/page1', '/page1/child1']);
     });
-    it('should return pages which starts with /page', done => {
+  });
+
+  context('findListByStartWith', () => {
+    it('should return pages which starts with /page', async() => {
       const user = createdUsers[0];
-      Page.generateQueryToListByStartWith('/page', user, {})
-      .then(pages => {
-        // assert length
-        expect(pages.length).to.equal(4);
-        // assert paths
-        const pagePaths = pages.map(page => page.path);
-        expect(pagePaths).to.include.members(['/page/for/extended', '/page1', '/page1/child1', '/page2'])
-        done();
-      })
-      .catch((err) => {
-        done(err);
-      });
+
+      const result = await Page.findListByStartWith('/page', user, {});
+
+      // assert totalCount
+      expect(result.totalCount).to.equal(4);
+      // assert paths
+      const pagePaths = result.pages.map(page => page.path);
+      expect(pagePaths).to.include.members(['/page/for/extended', '/page1', '/page1/child1', '/page2']);
     });
-    it('should process with regexp', done => {
+    it('should process with regexp', async() => {
       const user = createdUsers[0];
-      Page.generateQueryToListByStartWith('/page\\d{1}/', user, {})
-      .then(pages => {
-        // assert length
-        expect(pages.length).to.equal(3);
-        // assert paths
-        const pagePaths = pages.map(page => page.path);
-        expect(pagePaths).to.include.members(['/page1', '/page1/child1', '/page2'])
-        done();
-      })
-      .catch((err) => {
-        done(err);
-      });
+
+      const result = await Page.findListByStartWith('/page\\d{1}/', user, {});
+
+      // assert totalCount
+      expect(result.totalCount).to.equal(3);
+      // assert paths
+      const pagePaths = result.pages.map(page => page.path);
+      expect(pagePaths).to.include.members(['/page1', '/page1/child1', '/page2']);
     });
   });
 
