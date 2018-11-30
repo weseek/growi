@@ -516,17 +516,6 @@ module.exports = function(crowi) {
     });
   };
 
-  pageSchema.statics.findUpdatedList = function(offset, limit, cb) {
-    this
-    .find({})
-    .sort({updatedAt: -1})
-    .skip(offset)
-    .limit(limit)
-    .exec(function(err, data) {
-      cb(err, data);
-    });
-  };
-
   /**
    * @param {string} id ObjectId
    * @param {User} user User instance
