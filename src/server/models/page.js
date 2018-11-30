@@ -63,16 +63,8 @@ pageSchema.plugin(uniqueValidator);
 
 
 class PageQueryBuilder {
-  constructor(query, option) {
-    const opt = Object.assign({
-      includeRedirect: false,
-    }, option);
-
+  constructor(query) {
     this.query = query;
-
-    if (!opt.includeRedirect) {
-      this.addConditionToExcludeRedirect();
-    }
   }
 
   addConditionToExcludeTrashed() {
@@ -620,6 +612,10 @@ module.exports = function(crowi) {
     if (!opt.includeTrashed) {
       builder.addConditionToExcludeTrashed();
     }
+    // exclude redirect pages
+    if (!opt.includeRedirect) {
+      builder.addConditionToExcludeRedirect();
+    }
 
     // add grant conditions
     let userGroups = null;
@@ -661,7 +657,8 @@ module.exports = function(crowi) {
 
     const baseQuery = this.find({ creator: targetUser._id });
     const builder = new PageQueryBuilder(baseQuery)
-      .addConditionToExcludeTrashed();
+      .addConditionToExcludeTrashed()
+      .addConditionToExcludeRedirect();
 
     // add grant conditions
     let userGroups = null;
@@ -967,27 +964,31 @@ module.exports = function(crowi) {
     return (path.search(/^\/trash/) !== -1);
   };
 
-  pageSchema.statics.deletePageRecursively = async function(pageData, user, options) {
-    const path = pageData.path
-      , isTrashed = checkIfTrashed(pageData.path)
-      ;
+  pageSchema.statics.deletePageRecursively = async function(targetPage, user, options = {}) {
+    const isTrashed = checkIfTrashed(targetPage.path);
 
     if (isTrashed) {
-      return this.completelyDeletePageRecursively(pageData, user, options);
+      return this.completelyDeletePageRecursively(targetPage, user, options);
     }
 
-    let pages = [pageData];
-    const result = await this.findListWithDescendants(path, user);
-    pages = pages.concat(result.pages);
+    const findOpts = { includeRedirect: true };
+    const result = await this.findListWithDescendants(targetPage.path, user, findOpts);
+    const pages = result.pages;
 
+    let updatedPage = null;
     await Promise.all(pages.map(page => {
-      return this.deletePage(page, user, options);
+      const isParent = (page.path === targetPage.path);
+      const p = this.deletePage(page, user, options);
+      if (isParent) {
+        updatedPage = p;
+      }
+      return p;
     }));
 
-    return pageData;
+    return updatedPage;
   };
 
-  pageSchema.statics.revertDeletedPage = async function(page, user, options) {
+  pageSchema.statics.revertDeletedPage = async function(page, user, options = {}) {
     const newPath = this.getRevertDeletedPageName(page.path);
 
     const originPage = await this.findByPath(newPath);
@@ -1010,18 +1011,22 @@ module.exports = function(crowi) {
     return updatedPage;
   };
 
-  pageSchema.statics.revertDeletedPageRecursively = async function(page, user, options = {}) {
-    let pages = [page];
-    const result = await this.findListWithDescendants(page.path, user, {includeTrashed: true});
-    pages = pages.concat(result.pages);
+  pageSchema.statics.revertDeletedPageRecursively = async function(targetPage, user, options = {}) {
+    const findOpts = { includeRedirect: true, includeTrashed: true };
+    const result = await this.findListWithDescendants(targetPage.path, user, findOpts);
+    const pages = result.pages;
 
-    const revertedPages = await Promise.all(
-      pages.map(p => {
-        return this.revertDeletedPage(p, user, options);
-      })
-    );
+    let updatedPage = null;
+    await Promise.all(pages.map(page => {
+      const isParent = (page.path === targetPage.path);
+      const p = this.revertDeletedPage(page, user, options);
+      if (isParent) {
+        updatedPage = p;
+      }
+      return p;
+    }));
 
-    return revertedPages[0];
+    return updatedPage;
   };
 
   /**
@@ -1060,15 +1065,15 @@ module.exports = function(crowi) {
   pageSchema.statics.completelyDeletePageRecursively = async function(pageData, user, options = {}) {
     const path = pageData.path;
 
-    let pages = [pageData];
-    const result = await this.findListWithDescendants(path, user, {includeTrashed: true});
-    pages = pages.concat(result.pages);
+    const findOpts = { includeRedirect: true, includeTrashed: true };
+    const result = await this.findListWithDescendants(path, user, findOpts);
+    const pages = result.pages;
 
     await Promise.all(pages.map(page => {
       return this.completelyDeletePage(page, user, options);
     }));
 
-    return pages[0];
+    return pageData;
   };
 
   pageSchema.statics.removeByPath = function(path) {
