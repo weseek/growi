@@ -657,7 +657,11 @@ module.exports = function(crowi) {
           newUser.setPassword(password);
           newUser.createdAt = Date.now();
           newUser.status = STATUS_INVITED;
-          newUser.lang = Config.globalLang(config);
+
+          const globalLang = Config.globalLang(config);
+          if (globalLang != null) {
+            newUser.lang = globalLang;
+          }
 
           newUser.save(function(err, userData) {
             if (err) {
@@ -747,9 +751,19 @@ module.exports = function(crowi) {
     if (password != null) {
       newUser.setPassword(password);
     }
+
+
+    let Config = crowi.model('Config')
+    const globalLang = Config.globalLang(config);
+    if (globalLang != null) {
+      newUser.lang = globalLang;
+    }
     if (lang != null) {
       newUser.lang = lang;
     }
+
+
+
     newUser.createdAt = Date.now();
     newUser.status = status || decideUserStatusOnRegistration();
 
