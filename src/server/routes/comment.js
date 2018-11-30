@@ -1,8 +1,7 @@
 module.exports = function(crowi, app) {
   'use strict';
 
-  const debug = require('debug')('growi:routs:comment')
-    , logger = require('@alias/logger')('growi:routes:comment')
+  const logger = require('@alias/logger')('growi:routes:comment')
     , Comment = crowi.model('Comment')
     , User = crowi.model('User')
     , Page = crowi.model('Page')
@@ -21,25 +20,25 @@ module.exports = function(crowi, app) {
    * @apiParam {String} page_id Page Id.
    * @apiParam {String} revision_id Revision Id.
    */
-  api.get = function(req, res) {
+  api.get = async function(req, res) {
     const pageId = req.query.page_id;
     const revisionId = req.query.revision_id;
 
-    if (revisionId) {
-      return Comment.getCommentsByRevisionId(revisionId)
-        .then(function(comments) {
-          res.json(ApiResponse.success({comments}));
-        }).catch(function(err) {
-          res.json(ApiResponse.error(err));
-        });
+    let comments = null;
+
+    try {
+      if (revisionId) {
+        comments = await Comment.getCommentsByRevisionId(revisionId);
+      }
+      else {
+        comments = await Comment.getCommentsByPageId(pageId);
+      }
+    }
+    catch (err) {
+      return res.json(ApiResponse.error(err));
     }
 
-    return Comment.getCommentsByPageId(pageId)
-      .then(function(comments) {
-        res.json(ApiResponse.success({comments}));
-      }).catch(function(err) {
-        res.json(ApiResponse.error(err));
-      });
+    res.json(ApiResponse.success({comments}));
   };
 
   /**
@@ -114,26 +113,22 @@ module.exports = function(crowi, app) {
    *
    * @apiParam {String} comment_id Comment Id.
    */
-  api.remove = function(req, res) {
+  api.remove = async function(req, res) {
     const commentId = req.body.comment_id;
     if (!commentId) {
       return Promise.resolve(res.json(ApiResponse.error('\'comment_id\' is undefined')));
     }
 
-    return Comment.findById(commentId).exec()
-      .then(function(comment) {
-        return comment.remove()
-        .then(function() {
-          return Page.updateCommentCount(comment.page);
-        })
-        .then(function() {
-          return res.json(ApiResponse.success({}));
-        });
-      })
-      .catch(function(err) {
-        return res.json(ApiResponse.error(err));
-      });
+    try {
+      const comment = await Comment.findById(commentId).exec();
+      await comment.remove();
+      await Page.updateCommentCount(comment.page);
+    }
+    catch (err) {
+      return res.json(ApiResponse.error(err));
+    }
 
+    return res.json(ApiResponse.success({}));
   };
 
   return actions;
