@@ -12,6 +12,7 @@ module.exports = function(crowi, app) {
 
   actions.api = api;
 
+
   /**
    * @api {get} /comments.get Get comments of the page of the revision
    * @apiName GetComments
@@ -23,6 +24,12 @@ module.exports = function(crowi, app) {
   api.get = async function(req, res) {
     const pageId = req.query.page_id;
     const revisionId = req.query.revision_id;
+
+    // check whether accessible
+    const isAccessible = await Page.isAccessiblePageByViewer(pageId, req.user);
+    if (!isAccessible) {
+      return res.json(ApiResponse.error('Current user is not accessible to this page.'));
+    }
 
     let comments = null;
 
@@ -65,6 +72,12 @@ module.exports = function(crowi, app) {
     const comment = commentForm.comment;
     const position = commentForm.comment_position || -1;
     const isMarkdown = commentForm.is_markdown;
+
+    // check whether accessible
+    const isAccessible = await Page.isAccessiblePageByViewer(pageId, req.user);
+    if (!isAccessible) {
+      return res.json(ApiResponse.error('Current user is not accessible to this page.'));
+    }
 
     const createdComment = await Comment.create(pageId, req.user._id, revisionId, comment, position, isMarkdown)
       .catch(function(err) {
@@ -121,6 +134,18 @@ module.exports = function(crowi, app) {
 
     try {
       const comment = await Comment.findById(commentId).exec();
+
+      if (comment == null) {
+        throw new Error('This comment does not exist.');
+      }
+
+      // check whether accessible
+      const pageId = comment.page;
+      const isAccessible = await Page.isAccessiblePageByViewer(pageId, req.user);
+      if (!isAccessible) {
+        throw new Error('Current user is not accessible to this page.');
+      }
+
       await comment.remove();
       await Page.updateCommentCount(comment.page);
     }

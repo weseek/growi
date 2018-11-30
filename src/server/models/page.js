@@ -517,18 +517,37 @@ module.exports = function(crowi) {
   };
 
   /**
+   * return whether the user is accessible to the page
+   * @param {string} id ObjectId
+   * @param {User} user
+   */
+  pageSchema.statics.isAccessiblePageByViewer = async function(id, user) {
+    const baseQuery = this.count({_id: id});
+
+    let userGroups = [];
+    if (user != null) {
+      validateCrowi();
+      const UserGroupRelation = crowi.model('UserGroupRelation');
+      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
+    }
+
+    const queryBuilder = new PageQueryBuilder(baseQuery);
+    queryBuilder.addConditionToFilteringByViewer(user, userGroups);
+
+    return await queryBuilder.query.exec();
+  };
+
+  /**
    * @param {string} id ObjectId
    * @param {User} user User instance
    */
   pageSchema.statics.findByIdAndViewer = async function(id, user) {
-    validateCrowi();
-
-    // const Page = this;
     const baseQuery = this.findOne({_id: id});
 
-    const UserGroupRelation = crowi.model('UserGroupRelation');
     let userGroups = [];
     if (user != null) {
+      validateCrowi();
+      const UserGroupRelation = crowi.model('UserGroupRelation');
       userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     }
 
@@ -547,8 +566,6 @@ module.exports = function(crowi) {
   };
 
   pageSchema.statics.findByPathAndViewer = async function(path, user) {
-    validateCrowi();
-
     if (path == null) {
       throw new Error('path is required.');
     }
@@ -558,6 +575,7 @@ module.exports = function(crowi) {
     const queryBuilder = new PageQueryBuilder(baseQuery);
 
     if (user != null) {
+      validateCrowi();
       const UserGroupRelation = crowi.model('UserGroupRelation');
       const userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
       queryBuilder.addConditionToFilteringByViewer(user, userGroups);
