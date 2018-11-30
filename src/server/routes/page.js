@@ -684,8 +684,7 @@ module.exports = function(crowi, app) {
       else if (pagePath) {
         page = await Page.findByPathAndViewer(pagePath, req.user);
       }
-      // https://weseek.myjetbrains.com/youtrack/issue/GC-1224
-      // TODO populate for backward compatibility
+      page.populateDataToShow();
     }
     catch (err) {
       return res.json(ApiResponse.error(err));
