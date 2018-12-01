@@ -140,6 +140,36 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.STRING,
     default: null
   },
+  SAML_ATTR_MAPPING_ID: {
+    ns:      'crowi',
+    key:     'security:passport-saml:attrMapId',
+    type:    TYPES.STRING,
+    default: null
+  },
+  SAML_ATTR_MAPPING_USERNAME: {
+    ns:      'crowi',
+    key:     'security:passport-saml:attrMapUsername',
+    type:    TYPES.STRING,
+    default: null
+  },
+  SAML_ATTR_MAPPING_MAIL: {
+    ns:      'crowi',
+    key:     'security:passport-saml:attrMapMail',
+    type:    TYPES.STRING,
+    default: null
+  },
+  SAML_ATTR_MAPPING_FIRST_NAME: {
+    ns:      'crowi',
+    key:     'security:passport-saml:attrMapFirstName',
+    type:    TYPES.STRING,
+    default: null
+  },
+  SAML_ATTR_MAPPING_LAST_NAME: {
+    ns:      'crowi',
+    key:     'security:passport-saml:attrMapLastName',
+    type:    TYPES.STRING,
+    default: null
+  },
   SAML_CERT: {
     ns:      'crowi',
     key:     'security:passport-saml:cert',

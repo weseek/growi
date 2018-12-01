@@ -71,17 +71,17 @@
                    type="text"
                    name="settingForm[security:passport-saml:entryPoint]"
                    value="{{ getConfigFromDB('crowi', 'security:passport-saml:entryPoint') || '' }}">
-            <p class="help-block">
-              <small>
-                {{ t("security_setting.Use env var if empty", "SAML_ENTRY_POINT") }}
-              </small>
-            </p>
           </td>
           <td>
             <input class="form-control"
                    type="text"
                    value="{{ getConfigFromEnvVars('crowi', 'security:passport-saml:entryPoint') || '' }}"
                    readonly>
+            <p class="help-block">
+              <small>
+                {{ t("security_setting.SAML.Use env var if empty", "SAML_ENTRY_POINT") }}
+              </small>
+            </p>
           </td>
         </tr>
         <tr>
@@ -91,17 +91,17 @@
                    type="text"
                    name="settingForm[security:passport-saml:issuer]"
                    value="{{ getConfigFromDB('crowi', 'security:passport-saml:issuer') || '' }}">
-            <p class="help-block">
-              <small>
-                {{ t("security_setting.Use env var if empty", "SAML_ISSUER") }}
-              </small>
-            </p>
           </td>
           <td>
             <input class="form-control"
                    type="text"
                    value="{{ getConfigFromEnvVars('crowi', 'security:passport-saml:issuer') || '' }}"
                    readonly>
+            <p class="help-block">
+              <small>
+                {{ t("security_setting.SAML.Use env var if empty", "SAML_ISSUER") }}
+              </small>
+            </p>
           </td>
         </tr>
       </tbody>
@@ -125,7 +125,7 @@
           <input class="form-control"
                  type="text"
                  name="settingForm[security:passport-saml:attrMapId]"
-                 value="{{ getConfigFromDB('security:passport-saml:attrMapId') || '' }}">
+                 value="{{ getConfigFromDB('crowi', 'security:passport-saml:attrMapId') || '' }}">
           <p class="help-block">
             <small>
               {{ t("security_setting.SAML.id_detail") }}
@@ -135,8 +135,13 @@
         <td>
           <input class="form-control"
                  type="text"
-                 value="{{ getConfigFromEnvVars('security:passport-saml:attrMapId') || '' }}"
+                 value="{{ getConfigFromEnvVars('crowi', 'security:passport-saml:attrMapId') || '' }}"
                  readonly>
+          <p class="help-block">
+            <small>
+              {{ t("security_setting.SAML.Use env var if empty", "SAML_ATTR_MAPPING_ID") }}
+            </small>
+          </p>
         </td>
       </tr>
       <tr>
@@ -145,7 +150,7 @@
           <input class="form-control"
                  type="text"
                  name="settingForm[security:passport-saml:attrMapUsername]"
-                 value="{{ getConfigFromDB('security:passport-saml:attrMapUsername') || '' }}">
+                 value="{{ getConfigFromDB('crowi', 'security:passport-saml:attrMapUsername') || '' }}">
           <p class="help-block">
             <small>
               {{ t("security_setting.SAML.username_detail") }}
@@ -155,8 +160,13 @@
         <td>
           <input class="form-control"
                  type="text"
-                 value="{{ getConfigFromEnvVars('security:passport-saml:attrMapUsername') || '' }}"
+                 value="{{ getConfigFromEnvVars('crowi', 'security:passport-saml:attrMapUsername') || '' }}"
                  readonly>
+          <p class="help-block">
+            <small>
+              {{ t("security_setting.SAML.Use env var if empty", "SAML_ATTR_MAPPING_USERNAME") }}
+            </small>
+          </p>
         </td>
       </tr>
       <tr>
@@ -165,7 +175,7 @@
           <input class="form-control"
                  type="text"
                  name="settingForm[security:passport-saml:attrMapMail]"
-                 value="{{ getConfigFromDB('security:passport-saml:attrMapMail') || '' }}">
+                 value="{{ getConfigFromDB('crowi', 'security:passport-saml:attrMapMail') || '' }}">
           <p class="help-block">
             <small>
               {{ t("security_setting.SAML.mapping_detail", t("Email")) }}
@@ -174,8 +184,13 @@
         <td>
           <input class="form-control"
                  type="text"
-                 value="{{ getConfigFromEnvVars('security:passport-saml:attrMapMail') || '' }}"
+                 value="{{ getConfigFromEnvVars('crowi', 'security:passport-saml:attrMapMail') || '' }}"
                  readonly>
+          <p class="help-block">
+            <small>
+              {{ t("security_setting.SAML.Use env var if empty", "SAML_ATTR_MAPPING_MAIL") }}
+            </small>
+          </p>
         </td>
       </tr>
       <tr>
@@ -183,9 +198,8 @@
         <td>
           <input class="form-control"
                  type="text"
-                 placeholder="Default: firstName"
                  name="settingForm[security:passport-saml:attrMapFirstName]"
-                 value="{{ getConfigFromDB('security:passport-saml:attrMapFirstName') || '' }}">
+                 value="{{ getConfigFromDB('crowi', 'security:passport-saml:attrMapFirstName') || '' }}">
           <p class="help-block">
             <small>
               {{ t("security_setting.SAML.mapping_detail", t("security_setting.SAML.First Name")) }}
@@ -195,8 +209,14 @@
         <td>
           <input class="form-control"
                  type="text"
-                 value="{{ getConfigFromEnvVars('security:passport-saml:attrMapFirstName') || '' }}"
+                 value="{{ getConfigFromEnvVars('crowi', 'security:passport-saml:attrMapFirstName') || '' }}"
                  readonly>
+          <p class="help-block">
+            <small>
+              {{ t("security_setting.SAML.Use env var if empty", "SAML_ATTR_MAPPING_FIRST_NAME") }}<br>
+              {{ t("security_setting.Use default if both are empty", "firstName") }}
+            </small>
+          </p>
         </td>
       </tr>
       <tr>
@@ -204,9 +224,8 @@
         <td>
           <input class="form-control"
                  type="text"
-                 placeholder="Default: lastName"
                  name="settingForm[security:passport-saml:attrMapLastName]"
-                 value="{{　getConfigFromDB('security:passport-saml:attrMapLastName') || '' }}">
+                 value="{{　getConfigFromDB('crowi', 'security:passport-saml:attrMapLastName') || '' }}">
           <p class="help-block">
             <small>
               {{ t("security_setting.SAML.mapping_detail", t("security_setting.SAML.Last Name")) }}
@@ -216,8 +235,14 @@
         <td>
           <input class="form-control"
                  type="text"
-                 value="{{　getConfigFromEnvVars('security:passport-saml:attrMapLastName') || '' }}"
+                 value="{{　getConfigFromEnvVars('crowi', 'security:passport-saml:attrMapLastName') || '' }}"
                  readonly>
+          <p class="help-block">
+            <small>
+              {{ t("security_setting.SAML.Use env var if empty", "SAML_ATTR_MAPPING_LAST_NAME") }}<br>
+              {{ t("security_setting.Use default if both are empty", "lastName") }}
+            </small>
+          </p>
         </td>
       </tr>
       </tbody>
@@ -281,14 +306,13 @@
           <th>Certificate</th>
           <td>
             <textarea class="form-control input-sm"
-                       type="text"
-                       rows="5"
-                       name="settingForm[security:passport-saml:cert]"
-            >{{ getConfigFromDB('security:passport-saml:cert') || '' }}</textarea>
+                      type="text"
+                      rows="5"
+                      name="settingForm[security:passport-saml:cert]"
+            >{{ getConfigFromDB('crowi', 'security:passport-saml:cert') || '' }}</textarea>
             <p class="help-block">
               <small>
-                {{ t("security_setting.SAML.cert_detail1") }}<br>
-                {{ t("security_setting.SAML.cert_detail2") }}
+                {{ t("security_setting.SAML.cert_detail1") }}
               </small>
             </p>
             <p>
@@ -305,12 +329,17 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
             </p>
           </td>
           <td>
-             <textarea class="form-control input-sm"
-                       type="text"
-                       rows="5"
-                       readonly>
-               {{ getConfigFromEnvVars('security:passport-saml:cert') || '' }}
-             </textarea>
+            <textarea class="form-control input-sm"
+                      type="text"
+                      rows="5"
+                      readonly
+            >{{ getConfigFromEnvVars('crowi', 'security:passport-saml:cert') || '' }}</textarea>
+            <p class="help-block">
+              <small>
+                {{ t("security_setting.SAML.Use env var if empty", "SAML_CERT") }}<br>
+                {{ t("security_setting.SAML.cert_detail2") }}
+              </small>
+            </p>
           </td>
         </tr>
       </tbody>
