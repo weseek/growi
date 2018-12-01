@@ -3,7 +3,8 @@
   <legend class="alert-anchor">{{ t("security_setting.SAML.name") }} {{ t("security_setting.configuration") }}</legend>
 
   {% set nameForIsSamlEnabled = "settingForm[security:passport-saml:isEnabled]" %}
-  {% set isSamlEnabled = getConfig('crowi', 'security:passport-saml:isEnabled') %}
+  {% set isSamlEnabled  = getConfig('crowi', 'security:passport-saml:isEnabled') %}
+  {% set useOnlyEnvVars = getConfig('crowi', 'security:passport-saml:useOnlyEnvVars') %}
 
   <style>
     .authentication-settings-table {
@@ -21,19 +22,37 @@
     .authentication-settings-table td.unused {
       opacity: 0.5;
     }
+
+    .btn-group-disabled .btn:hover {
+      background-color: unset;
+      cursor: not-allowed;
+    }
   </style>
+
+  {% if useOnlyEnvVars %}
+    <p class="alert alert-info">
+      現在SAML認証の各種設定値は環境変数の値のみを使用するようになっています<br>
+      この設定を変更する場合は <code>SAML_USES_ONLY_ENV_VARS</code> の値をfalseに変更もしくは削除してください
+    </p>
+  {% endif %}
 
   <div class="form-group">
     <label class="col-xs-3 control-label">{{ t("security_setting.SAML.name") }}</label>
     <div class="col-xs-6">
-      <div class="btn-group btn-toggle" data-toggle="buttons">
+      <div class="btn-group btn-toggle {% if useOnlyEnvVars %}btn-group-disabled{% endif %}" data-toggle="buttons">
         <label class="btn btn-default btn-rounded btn-outline {% if isSamlEnabled %}active{% endif %}" data-active-class="primary">
-          <input name="{{nameForIsSamlEnabled}}" value="true" type="radio"
-              {% if true === isSamlEnabled %}checked{% endif %}> ON
+          <input name="{{nameForIsSamlEnabled}}"
+                 value="true"
+                 type="radio"
+                 {% if true === isSamlEnabled %}checked{% endif %}
+                 {% if useOnlyEnvVars %}disabled{% endif %}> ON
         </label>
         <label class="btn btn-default btn-rounded btn-outline {% if !isSamlEnabled %}active{% endif %}" data-active-class="default">
-          <input name="{{nameForIsSamlEnabled}}" value="false" type="radio"
-              {% if !isSamlEnabled %}checked{% endif %}> OFF
+          <input name="{{nameForIsSamlEnabled}}"
+                 value="false"
+                 type="radio"
+                 {% if !isSamlEnabled %}checked{% endif %}
+                 {% if useOnlyEnvVars %}disabled{% endif %}> OFF
         </label>
       </div>
     </div>
@@ -58,7 +77,7 @@
   <fieldset id="passport-saml-hide-when-disabled" {%if !isSamlEnabled %}style="display: none;"{% endif %}>
 
     <h4>Basic Settings</h4>
-    <table class="table authentication-settings-table">
+    <table class="table authentication-settings-table {% if useOnlyEnvVars %}use-only-env-vars{% endif %}">
       <colgroup>
         <col class="item-name">
         <col class="from-db">
@@ -74,7 +93,8 @@
             <input class="form-control"
                    type="text"
                    name="settingForm[security:passport-saml:entryPoint]"
-                   value="{{ getConfigFromDB('crowi', 'security:passport-saml:entryPoint') || '' }}">
+                   value="{{ getConfigFromDB('crowi', 'security:passport-saml:entryPoint') || '' }}"
+                   {% if useOnlyEnvVars %}disabled{% endif %}>
           </td>
           <td>
             <input class="form-control"
@@ -94,7 +114,8 @@
             <input class="form-control"
                    type="text"
                    name="settingForm[security:passport-saml:issuer]"
-                   value="{{ getConfigFromDB('crowi', 'security:passport-saml:issuer') || '' }}">
+                   value="{{ getConfigFromDB('crowi', 'security:passport-saml:issuer') || '' }}"
+                   {% if useOnlyEnvVars %}disabled{% endif %}>
           </td>
           <td>
             <input class="form-control"
@@ -113,7 +134,7 @@
 
     <h4>Attribute Mapping</h4>
 
-    <table class="table authentication-settings-table">
+    <table class="table authentication-settings-table {% if useOnlyEnvVars %}use-only-env-vars{% endif %}">
       <colgroup>
         <col class="item-name">
         <col class="from-db">
@@ -129,7 +150,8 @@
           <input class="form-control"
                  type="text"
                  name="settingForm[security:passport-saml:attrMapId]"
-                 value="{{ getConfigFromDB('crowi', 'security:passport-saml:attrMapId') || '' }}">
+                 value="{{ getConfigFromDB('crowi', 'security:passport-saml:attrMapId') || '' }}"
+                 {% if useOnlyEnvVars %}disabled{% endif %}>
           <p class="help-block">
             <small>
               {{ t("security_setting.SAML.id_detail") }}
@@ -154,7 +176,8 @@
           <input class="form-control"
                  type="text"
                  name="settingForm[security:passport-saml:attrMapUsername]"
-                 value="{{ getConfigFromDB('crowi', 'security:passport-saml:attrMapUsername') || '' }}">
+                 value="{{ getConfigFromDB('crowi', 'security:passport-saml:attrMapUsername') || '' }}"
+                 {% if useOnlyEnvVars %}disabled{% endif %}>
           <p class="help-block">
             <small>
               {{ t("security_setting.SAML.username_detail") }}
@@ -179,7 +202,8 @@
           <input class="form-control"
                  type="text"
                  name="settingForm[security:passport-saml:attrMapMail]"
-                 value="{{ getConfigFromDB('crowi', 'security:passport-saml:attrMapMail') || '' }}">
+                 value="{{ getConfigFromDB('crowi', 'security:passport-saml:attrMapMail') || '' }}"
+                 {% if useOnlyEnvVars %}disabled{% endif %}>
           <p class="help-block">
             <small>
               {{ t("security_setting.SAML.mapping_detail", t("Email")) }}
@@ -203,7 +227,8 @@
           <input class="form-control"
                  type="text"
                  name="settingForm[security:passport-saml:attrMapFirstName]"
-                 value="{{ getConfigFromDB('crowi', 'security:passport-saml:attrMapFirstName') || '' }}">
+                 value="{{ getConfigFromDB('crowi', 'security:passport-saml:attrMapFirstName') || '' }}"
+                 {% if useOnlyEnvVars %}disabled{% endif %}>
           <p class="help-block">
             <small>
               {{ t("security_setting.SAML.mapping_detail", t("security_setting.SAML.First Name")) }}
@@ -229,7 +254,8 @@
           <input class="form-control"
                  type="text"
                  name="settingForm[security:passport-saml:attrMapLastName]"
-                 value="{{　getConfigFromDB('crowi', 'security:passport-saml:attrMapLastName') || '' }}">
+                 value="{{　getConfigFromDB('crowi', 'security:passport-saml:attrMapLastName') || '' }}"
+                 {% if useOnlyEnvVars %}disabled{% endif %}>
           <p class="help-block">
             <small>
               {{ t("security_setting.SAML.mapping_detail", t("security_setting.SAML.Last Name")) }}
@@ -296,7 +322,7 @@
 
     <h4>Options</h4>
 
-    <table class="table authentication-settings-table">
+    <table class="table authentication-settings-table {% if useOnlyEnvVars %}use-only-env-vars{% endif %}">
       <colgroup>
         <col class="item-name">
         <col class="from-db">
@@ -313,6 +339,7 @@
                       type="text"
                       rows="5"
                       name="settingForm[security:passport-saml:cert]"
+                      {% if useOnlyEnvVars %}disabled{% endif %}
             >{{ getConfigFromDB('crowi', 'security:passport-saml:cert') || '' }}</textarea>
             <p class="help-block">
               <small>
@@ -351,16 +378,22 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
 
   </fieldset>
 
+  {% if !useOnlyEnvVars %}
   <div class="form-group" id="btn-update">
     <div class="col-xs-offset-3 col-xs-6">
       <input type="hidden" name="_csrf" value="{{ csrf() }}">
       <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
     </div>
   </div>
+  {% endif %}
 
 </form>
 
 <script>
+  $('.btn-group-disabled').on('click', '.btn', function() {
+    return false;
+  });
+
   $('input[name="settingForm[security:passport-saml:isEnabled]"]').change(function() {
     const isEnabled = ($(this).val() === "true");
 
