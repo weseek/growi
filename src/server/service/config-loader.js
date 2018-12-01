@@ -209,7 +209,19 @@ class ConfigLoader {
       if (!config[doc.ns]) {
         config[doc.ns] = {};
       }
-      config[doc.ns][doc.key] = JSON.parse(doc.value);
+
+      let value = JSON.parse(doc.value);
+
+      /*
+       * In the new API, only null is used as a value to indicate that a config is not set.
+       * In the old API, however, an empty character string is also used for the same purpose.
+       * So, a empty string is converted to null to ensure compatibility.
+       */
+      if (value === '') {
+        value = null;
+      }
+
+      config[doc.ns][doc.key] = value;
     }
 
     debug('ConfigLoader#loadFromDB', config);
