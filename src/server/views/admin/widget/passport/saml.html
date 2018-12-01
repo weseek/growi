@@ -17,6 +17,10 @@
     .authentication-settings-table.use-only-env-vars .from-env-vars {
       background-color: rgba(0, 159, 187, 0.1);
     }
+
+    .authentication-settings-table td.unused {
+      opacity: 0.5;
+    }
   </style>
 
   <div class="form-group">
@@ -366,6 +370,24 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
     else {
       $('#passport-saml-hide-when-disabled').hide(400);
     }
+  });
+
+  $('.authentication-settings-table:not(.use-only-env-vars) tbody tr').each(function(_, element) {
+    const inputElemFromDB = $('td:nth-of-type(1) input', element);
+    const inputElemFromEnvVars = $('td:nth-of-type(2) input', element);
+
+    const addClassToUsedInputElem = function() {
+      console.log(inputElemFromDB.val());
+      if (inputElemFromDB.val() === '') {
+        inputElemFromEnvVars.parent().removeClass('unused');
+      }
+      else {
+        inputElemFromEnvVars.parent().addClass('unused');
+      }
+    };
+
+    addClassToUsedInputElem();
+    inputElemFromDB.keyup(addClassToUsedInputElem);
   });
 </script>
 
