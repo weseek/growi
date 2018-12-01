@@ -280,12 +280,11 @@
         <tr>
           <th>Certificate</th>
           <td>
-             <textarea class="form-control input-sm"
+            <textarea class="form-control input-sm"
                        type="text"
                        rows="5"
-                       name="settingForm[security:passport-saml:cert]">
-               {{ getConfigFromDB('security:passport-saml:cert') || '' }}
-             </textarea>
+                       name="settingForm[security:passport-saml:cert]"
+            >{{ getConfigFromDB('security:passport-saml:cert') || '' }}</textarea>
             <p class="help-block">
               <small>
                 {{ t("security_setting.SAML.cert_detail1") }}<br>
