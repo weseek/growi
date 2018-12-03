@@ -1241,5 +1241,7 @@ module.exports = function(crowi) {
   pageSchema.statics.GRANT_USER_GROUP = GRANT_USER_GROUP;
   pageSchema.statics.PAGE_GRANT_ERROR = PAGE_GRANT_ERROR;
 
+  pageSchema.statics.PageQueryBuilder = PageQueryBuilder;
+
   return mongoose.model('Page', pageSchema);
 };
