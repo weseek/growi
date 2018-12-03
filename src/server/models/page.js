@@ -62,6 +62,16 @@ const pageSchema = new mongoose.Schema({
 pageSchema.plugin(uniqueValidator);
 
 
+
+const addSlashOfEnd = (path) => {
+  let returnPath = path;
+  if (!path.match(/\/$/)) {
+    returnPath += '/';
+  }
+  return returnPath;
+};
+
+
 class PageQueryBuilder {
   constructor(query) {
     this.query = query;
@@ -89,7 +99,7 @@ class PageQueryBuilder {
    */
   addConditionToListWithDescendants(path, option) {
     // ignore other pages than descendants
-    path = this.addSlashOfEnd(path);
+    path = addSlashOfEnd(path);
 
     // add option to escape the regex strings
     const combinedOption = Object.assign({isRegExpEscapedFromPath: true}, option);
@@ -167,6 +177,13 @@ class PageQueryBuilder {
       .and({
         $or: grantConditions
       });
+
+    return this;
+  }
+
+  addConditionToPagenate(offset, limit, sortOpt) {
+    this.query = this.query
+      .sort(sortOpt).skip(offset).limit(limit);
 
     return this;
   }
@@ -589,31 +606,37 @@ module.exports = function(crowi) {
   };
 
   /**
-   * find the page that is match with `path` and its descendants
+   * find pages that is match with `path` and its descendants
    */
-  pageSchema.statics.findListWithDescendants = async function(path, userData, option) {
-    // ignore other pages than descendants
-    path = this.addSlashOfEnd(path);
-    // add option to escape the regex strings
-    const combinedOption = Object.assign({isRegExpEscapedFromPath: true}, option);
+  pageSchema.statics.findListWithDescendants = async function(path, user, option) {
+    const builder = new PageQueryBuilder(this.find());
+    builder.addConditionToListWithDescendants(path, option);
 
-    return await this.findListByStartWith(path, userData, combinedOption);
+    return await findListFromBuilderAndViewer(builder, user, option);
   };
 
   /**
    * find pages that start with `path`
    */
   pageSchema.statics.findListByStartWith = async function(path, user, option) {
-    validateCrowi();
+    const builder = new PageQueryBuilder(this.find());
+    builder.addConditionToListByStartWith(path, option);
 
-    const User = crowi.model('User');
+    return await findListFromBuilderAndViewer(builder, user, option);
+  };
+
+  /**
+   * find pages by PageQueryBuilder
+   * @param {PageQueryBuilder} builder
+   * @param {User} user
+   * @param {any} option
+   */
+  async function findListFromBuilderAndViewer(builder, user, option) {
+    validateCrowi();
 
     const opt = Object.assign({sort: 'updatedAt', desc: -1}, option);
     const sortOpt = {};
     sortOpt[opt.sort] = opt.desc;
-
-    const builder = new PageQueryBuilder(this.find());
-    builder.addConditionToListByStartWith(path, option);
 
     // exclude trashed pages
     if (!opt.includeTrashed) {
@@ -632,9 +655,11 @@ module.exports = function(crowi) {
     }
     builder.addConditionToFilteringByViewer(user, userGroups);
 
+    builder.addConditionToPagenate(opt.offset, opt.limit, sortOpt);
+
+    const User = crowi.model('User');
     const totalCount = await builder.query.exec('count');
     const q = builder.query
-      .sort(sortOpt).skip(opt.offset).limit(opt.limit)
       .populate({
         path: 'lastUpdateUser',
         model: 'User',
@@ -644,7 +669,8 @@ module.exports = function(crowi) {
 
     const result = { pages, totalCount, offset: opt.offset, limit: opt.limit };
     return result;
-  };
+  }
+
 
   /**
    * Throw error for growi-lsx-plugin (v1.x)
@@ -1234,11 +1260,7 @@ module.exports = function(crowi) {
    * return path that added slash to the end for specified path
    */
   pageSchema.statics.addSlashOfEnd = function(path) {
-    let returnPath = path;
-    if (!path.match(/\/$/)) {
-      returnPath += '/';
-    }
-    return returnPath;
+    return addSlashOfEnd(path);
   };
 
   pageSchema.statics.GRANT_PUBLIC = GRANT_PUBLIC;
