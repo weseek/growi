@@ -35,7 +35,7 @@ module.exports = function(crowi) {
     //   2. ensure backward compatibility of data
 
     // return `/files/${this._id}`;
-    return fileUploader.generateUrl(this.filePath);
+     return fileUploader.generateUrl(this.filePath);
   });
 
   attachmentSchema.statics.findById = function(id) {

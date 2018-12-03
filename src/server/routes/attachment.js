@@ -140,8 +140,9 @@ module.exports = function(crowi, app) {
 
     var tmpFile = req.file || null;
     const usingFilesSize = await fileUploader.getCollectionSize();
-    if (tmpFile.size > usingFilesSize) {
-      throw new Error('mongoDB for file uploading reaches the limit');
+    const usableCapacity = +process.env.GRIDFS_LIMIT - usingFilesSize;
+    if (tmpFile.size > usableCapacity) {
+      throw new Error('mongoDB for file uploading reaches limit');
     }
     debug('Uploaded tmpFile: ', tmpFile);
     if (!tmpFile) {
