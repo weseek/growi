@@ -130,7 +130,7 @@ module.exports = function(crowi, app) {
    * @apiParam {String} page_id
    * @apiParam {File} file
    */
-  api.add = function(req, res) {
+  api.add = async function(req, res) {
     var id = req.body.page_id || 0,
       path = decodeURIComponent(req.body.path) || null,
       pageCreated = false,
@@ -139,6 +139,10 @@ module.exports = function(crowi, app) {
     debug('id and path are: ', id, path);
 
     var tmpFile = req.file || null;
+    const usingFilesSize = await fileUploader.getCollectionSize();
+    if (tmpFile.size > usingFilesSize) {
+      throw new Error('mongoDB for file uploading reaches the limit');
+    }
     debug('Uploaded tmpFile: ', tmpFile);
     if (!tmpFile) {
       return res.json(ApiResponse.error('File error.'));
