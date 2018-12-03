@@ -123,6 +123,9 @@ module.exports = (crowi, app) => {
       else if (Page.generateQueryToListByStartWith != null) { // for Backward compatibility (<= crowi-plus v2.0.7)
         baseQuery = Page.generateQueryToListByStartWith(pagePath, user, {});
       }
+
+      // return dummy PageQueryBuilder object
+      return Promise.resolve({ query: baseQuery });
     }
 
     const builder = new Page.PageQueryBuilder(baseQuery);
