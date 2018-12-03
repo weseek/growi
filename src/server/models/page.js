@@ -647,6 +647,19 @@ module.exports = function(crowi) {
   };
 
   /**
+   * Throw error for growi-lsx-plugin (v1.x)
+   */
+  pageSchema.statics.generateQueryToListByStartWith = function(path, user, option) {
+    const dummyQuery = this.find();
+    dummyQuery.exec = async() => {
+      throw new Error('Plugin version mismatch. Upgrade growi-lsx-plugin to v2.0.0 or above.');
+    };
+    return dummyQuery;
+  };
+  pageSchema.statics.generateQueryToListWithDescendants = pageSchema.statics.generateQueryToListByStartWith;
+
+
+  /**
    * find pages that is created by targetUser
    *
    * @param {User} targetUser
