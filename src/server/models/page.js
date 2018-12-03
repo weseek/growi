@@ -626,6 +626,20 @@ module.exports = function(crowi) {
   };
 
   /**
+   * find pages that is created by targetUser
+   *
+   * @param {User} targetUser
+   * @param {User} currentUser
+   * @param {any} option
+   */
+  pageSchema.statics.findListByCreator = async function(targetUser, currentUser, option) {
+    const opt = Object.assign({sort: 'createdAt', desc: -1}, option);
+    const builder = new PageQueryBuilder(this.find({ creator: targetUser._id }));
+
+    return await findListFromBuilderAndViewer(builder, currentUser, opt);
+  };
+
+  /**
    * find pages by PageQueryBuilder
    * @param {PageQueryBuilder} builder
    * @param {User} user
@@ -684,49 +698,6 @@ module.exports = function(crowi) {
   };
   pageSchema.statics.generateQueryToListWithDescendants = pageSchema.statics.generateQueryToListByStartWith;
 
-
-  /**
-   * find pages that is created by targetUser
-   *
-   * @param {User} targetUser
-   * @param {User} currentUser
-   * @param {any} option
-   */
-  pageSchema.statics.findListByCreator = async function(targetUser, currentUser, option) {
-    validateCrowi();
-
-    const User = crowi.model('User');
-
-    const opt = Object.assign({sort: 'createdAt', desc: -1, offset: 0}, option);
-    const sortOpt = {};
-    sortOpt[opt.sort] = opt.desc;
-
-    const baseQuery = this.find({ creator: targetUser._id });
-    const builder = new PageQueryBuilder(baseQuery)
-      .addConditionToExcludeTrashed()
-      .addConditionToExcludeRedirect();
-
-    // add grant conditions
-    let userGroups = null;
-    if (currentUser != null) {
-      const UserGroupRelation = crowi.model('UserGroupRelation');
-      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(currentUser);
-    }
-    builder.addConditionToFilteringByViewer(currentUser, userGroups);
-
-    const totalCount = await builder.query.exec('count');
-    const q = builder.query
-      .sort(sortOpt).skip(opt.offset).limit(opt.limit)
-      .populate({
-        path: 'lastUpdateUser',
-        model: 'User',
-        select: User.USER_PUBLIC_FIELDS
-      });
-    const pages = await q.exec('find');
-
-    const result = { pages, totalCount, offset: opt.offset, limit: opt.limit };
-    return result;
-  };
 
   /**
    * find all templates applicable to the new page
