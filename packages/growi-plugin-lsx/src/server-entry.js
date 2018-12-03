@@ -1,4 +1,4 @@
-export default (crowi, app) => {
+module.exports = (crowi, app) => {
   // add routes
   require('./lib/routes')(crowi, app);
 }

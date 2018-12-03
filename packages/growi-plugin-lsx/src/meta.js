@@ -1,6 +1,6 @@
 const path = require('path');
 
-export default {
+module.exports = {
   pluginSchemaVersion: 2,
   serverEntries: [
     path.join(__dirname, 'server-entry.js')
