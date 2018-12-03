@@ -103,43 +103,73 @@ class Lsx {
 }
 
 module.exports = (crowi, app) => {
-  var Page = crowi.model('Page')
+  const Page = crowi.model('Page')
     , ApiResponse = crowi.require('../util/apiResponse')
     , actions = {};
+
+  /**
+   *
+   * @param {*} pagePath
+   * @param {*} user
+   *
+   * @return {Promise<Query>} query
+   */
+  function generateBaseQueryBuilder(pagePath, user) {
+    let baseQuery = Page.find();
+    if (Page.PageQueryBuilder == null) {
+      if (Page.generateQueryToListWithDescendants != null) {  // for Backward compatibility (<= GROWI v3.2.x)
+        baseQuery = Page.generateQueryToListWithDescendants(pagePath, user, {});
+      }
+      else if (Page.generateQueryToListByStartWith != null) { // for Backward compatibility (<= crowi-plus v2.0.7)
+        baseQuery = Page.generateQueryToListByStartWith(pagePath, user, {});
+      }
+    }
+
+    const builder = new Page.PageQueryBuilder(baseQuery);
+    builder.addConditionToListWithDescendants(pagePath, {})
+      .addConditionToExcludeTrashed()
+      .addConditionToExcludeRedirect();
+
+    let promisifiedBuilder = Promise.resolve(builder);
+
+    // add grant conditions
+    if (user != null) {
+      const UserGroupRelation = crowi.model('UserGroupRelation');
+      promisifiedBuilder = UserGroupRelation.findAllUserGroupIdsRelatedToUser(user)
+        .then(userGroups => {
+          return builder.addConditionToFilteringByViewer(user, userGroups);
+        });
+    }
+
+    return promisifiedBuilder;
+  }
 
   actions.listPages = (req, res) => {
     let user = req.user;
     let pagePath = req.query.pagePath;
     let options = JSON.parse(req.query.options);
 
-    // find pages
-    let query = (Page.generateQueryToListWithDescendants != null)
-      ? Page.generateQueryToListWithDescendants(pagePath, user, {})     // defined above crowi-plus v2.0.8
-                                                                        //   1. `/` will be added to the end of `path`
-                                                                        //   2. the regex strings included in `path` will be escaped
-      : Page.generateQueryToListByStartWith(pagePath, user, {});        // for Backward compatibility (<= crowi-plus v2.0.7)
-
-    // exclude body
-    query = query.populate('revision', '-body');
-
-    try {
-      // depth
-      if (options.depth != null) {
-        query = Lsx.addDepthCondition(query, pagePath, options.depth);
-      }
-      // num
-      if (options.num != null) {
-        query = Lsx.addNumCondition(query, pagePath, options.num);
-      }
-      // sort
-      query = Lsx.addSortCondition(query, pagePath, options.sort, options.reverse);
-    }
-    catch (error) {
-      return res.json(ApiResponse.error(error.message));
-    }
-
-    query.exec()
-      .then((pages) => {
+    generateBaseQueryBuilder(pagePath, user)
+      .then(builder => {
+        let query = builder.query;
+        try {
+          // depth
+          if (options.depth != null) {
+            query = Lsx.addDepthCondition(query, pagePath, options.depth);
+          }
+          // num
+          if (options.num != null) {
+            query = Lsx.addNumCondition(query, pagePath, options.num);
+          }
+          // sort
+          query = Lsx.addSortCondition(query, pagePath, options.sort, options.reverse);
+        }
+        catch (error) {
+          return res.json(ApiResponse.error(error.message));
+        }
+        return query.exec();
+      })
+      .then(pages => {
         res.json(ApiResponse.success({pages}));
       })
       .catch((err) => {
