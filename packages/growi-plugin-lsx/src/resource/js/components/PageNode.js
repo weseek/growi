@@ -1,9 +1,5 @@
 export class PageNode {
 
-  pagePath;
-  page;
-  children;
-
   constructor(pagePath) {
     this.pagePath = pagePath;
     this.children = [];

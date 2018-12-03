@@ -8,8 +8,6 @@
     "react"
   ],
   "plugins": [
-    "add-module-exports",
-    "transform-class-properties"
   ],
   "env": {
     "development": {
