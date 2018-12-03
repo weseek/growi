@@ -42,6 +42,8 @@
     "babel-preset-power-assert": "^2.0.0",
     "babel-preset-react": "^6.24.1",
     "babel-register": "^6.23.0",
+    "eslint": "^5.9.0",
+    "eslint-plugin-react": "^7.11.1",
     "mkdirp": "^0.5.1",
     "mocha": "^5.0.4",
     "ncp": "^2.0.0",
