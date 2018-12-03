@@ -18,6 +18,7 @@ module.exports = function(crowi) {
 
   // obtain a model
   const AttachmentFile = gridfs.model;
+  const Chunks = mongoose.model('Chunks', gridfs.schema, 'attachmentFiles.chunks');
 
   // delete a file
   lib.deleteFile = async function(fileId, filePath) {
@@ -49,15 +50,8 @@ module.exports = function(crowi) {
    */
   lib.getCollectionSize = () => {
     return new Promise((resolve, reject) => {
-      AttachmentFile.find((e, files) => {
-        let data = 0;
-        files.forEach((file) => {
-          data += file.length;
-        });
-        if (e) {
-          reject(e);
-        }
-        resolve(data);
+      Chunks.collection.stats((e, data) => {
+        resolve(data.size);
       });
     });
   };

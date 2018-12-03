@@ -139,16 +139,17 @@ module.exports = function(crowi, app) {
     debug('id and path are: ', id, path);
 
     var tmpFile = req.file || null;
-    const usingFilesSize = await fileUploader.getCollectionSize();
-    const usableCapacity = +process.env.GRIDFS_LIMIT - usingFilesSize;
-    if (tmpFile.size > usableCapacity) {
-      throw new Error('mongoDB for file uploading reaches limit');
+    if (process.env.FILE_UPLOAD == 'mongodb') {
+      const usingFilesSize = await fileUploader.getCollectionSize();
+      const usableCapacity = +process.env.GRIDFS_LIMIT - usingFilesSize;
+      if (tmpFile.size > usableCapacity) {
+        return res.json(ApiResponse.error('mongoDB for file uploading reaches limit'));
+      }
     }
     debug('Uploaded tmpFile: ', tmpFile);
     if (!tmpFile) {
       return res.json(ApiResponse.error('File error.'));
     }
-
     new Promise(function(resolve, reject) {
       if (id == 0) {
         if (path === null) {
