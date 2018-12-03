@@ -149,6 +149,20 @@ module.exports = function(crowi) {
     return config.markdown[key];
   }
 
+  /**
+   * It is deprecated to use this for anything other than ConfigLoader#load.
+   */
+  configSchema.statics.getDefaultCrowiConfigsObject = function() {
+    return getDefaultCrowiConfigs();
+  };
+
+  /**
+   * It is deprecated to use this for anything other than ConfigLoader#load.
+   */
+  configSchema.statics.getDefaultMarkdownConfigsObject = function() {
+    return getDefaultMarkdownConfigs();
+  };
+
   configSchema.statics.getRestrictGuestModeLabels = function() {
     var labels = {};
     labels[SECURITY_RESTRICT_GUEST_MODE_DENY]     = 'security_setting.guest_mode.deny';
