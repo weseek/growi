@@ -1,7 +1,7 @@
 module.exports = {
   NODE_ENV: 'development',
   FILE_UPLOAD: 'mongodb',
-  GRIDFS_LIMIT: 2000000000,
+  GRIDFS_LIMIT: Infinity,
   // MATHJAX: 1,
   ELASTICSEARCH_URI: 'http://localhost:9200/growi',
   HACKMD_URI: 'http://localhost:3010',
