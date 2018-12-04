@@ -60,6 +60,9 @@ module.exports = function(crowi) {
       'security:registrationMode'      : 'Open',
       'security:registrationWhiteList' : [],
 
+      'security:list-policy:showRestrictedByOwner' : true,
+      'security:list-policy:showRestrictedByGroup' : true,
+
       'security:isEnabledPassport' : false,
       'security:passport-ldap:isEnabled' : false,
       'security:passport-ldap:serverUrl' : undefined,

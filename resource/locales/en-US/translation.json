@@ -314,7 +314,12 @@
     "restrict_emails": "You can restrict registerable e-mail address.",
 		"for_instance": " For instance, if you use growi within a company, you can write ",
 		"only_those": " Only those whose e-mail address including the company address can register.",
-		"insert_single": "Please insert single e-mail address per line.",
+    "insert_single": "Please insert single e-mail address per line.",
+    "page_listing_1": "Page listing<br>restricted by 'Just Me'",
+    "page_listing_1_desc": "Show pages that are restricted by 'Just Me' option when listing",
+    "page_listing_2": "Page listing<br>restricted by User Group",
+    "page_listing_2_desc": "Show pages that are restricted by User Group when listing",
+
 		"Authentication mechanism settings": "Authentication mechanism settings",
     "note": "Note",
     "require_server_restart_change_auth": "Restarting the server is required if you switch the auth mechanism.",
