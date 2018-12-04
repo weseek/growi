@@ -63,6 +63,7 @@ module.exports = (options) => {
       alias: {
         '@root': helpers.root('/'),
         '@commons': helpers.root('src/lib'),
+        '@client': helpers.root('src/client'),
         '@tmp': helpers.root('tmp'),
         '@alias/logger': helpers.root('src/lib/service/logger'),
         '@alias/locales': helpers.root('resource/locales'),
