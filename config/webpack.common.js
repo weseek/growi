@@ -63,6 +63,7 @@ module.exports = (options) => {
       alias: {
         '@root': helpers.root('/'),
         '@commons': helpers.root('src/lib'),
+        '@client': helpers.root('src/client'),
         '@tmp': helpers.root('tmp'),
         '@alias/logger': helpers.root('src/lib/service/logger'),
         '@alias/locales': helpers.root('resource/locales'),
@@ -77,6 +78,7 @@ module.exports = (options) => {
           exclude: {
             test:    helpers.root('node_modules'),
             exclude: [  // include as a result
+              { test: helpers.root('node_modules', 'growi-plugin-') },
               helpers.root('node_modules/codemirror/src'),
               helpers.root('node_modules/string-width'),
               helpers.root('node_modules/is-fullwidth-code-point'), // depends from string-width
