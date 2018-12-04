@@ -119,7 +119,7 @@ export default class PageEditor extends React.Component {
    */
   async onUpload(file) {
     const res  = await this.props.crowi.apiGet('/attachments.limit', {_csrf: this.props.crowi.csrfToken});
-    if (file.size > res.usableCapacity) {
+    if (res.usableCapacity && file.size > res.usableCapacity) {
       toastr.error(undefined, 'MongoDB for uploading files reaches limit', {
         closeButton: true,
         progressBar: true,

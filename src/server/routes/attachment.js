@@ -113,7 +113,7 @@ module.exports = function(crowi, app) {
    */
   api.limit = async function(req, res) {
     if (process.env.FILE_UPLOAD !== 'mongodb') {
-      return res.json(ApiResponse.success({usableCapacity: Infinity}));
+      return res.json(ApiResponse.success({usableCapacity: null}));
     }
     else {
       const usingFilesSize = await fileUploader.getCollectionSize();
