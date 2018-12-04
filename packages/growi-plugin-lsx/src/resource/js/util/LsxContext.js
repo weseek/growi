@@ -2,15 +2,17 @@ import * as url from 'url';
 
 export class LsxContext {
 
-  currentPagePath;
-  tagExpression;
-  fromPagePath;
-  lsxArgs;
+  constructor() {
+    this.currentPagePath = null;
+    this.tagExpression = null;
+    this.fromPagePath = null;
+    this.lsxArgs = null;
 
-  // initialized after parse()
-  isParsed;
-  pagePath;
-  options;
+    // initialized after parse()
+    this.isParsed = null;
+    this.pagePath = null;
+    this.options = null;
+  }
 
   parse() {
     if (this.isParsed) {
@@ -60,8 +62,8 @@ export class LsxContext {
     //   when `fromPagePath`=/hoge and `specifiedPath`=undefined,
     //        `pagePath` to be /hoge
     this.pagePath = (specifiedPath !== undefined) ?
-        decodeURIComponent(url.resolve(this.addSlashOfEnd(this.fromPagePath), specifiedPath)):
-        this.fromPagePath;
+      decodeURIComponent(url.resolve(this.addSlashOfEnd(this.fromPagePath), specifiedPath)):
+      this.fromPagePath;
 
     this.isParsed = true;
   }
@@ -86,7 +88,7 @@ export class LsxContext {
     if (this.options.depth == undefined) {
       return undefined;
     }
-    return this.parseNum(this.options.depth)
+    return this.parseNum(this.options.depth);
   }
 
   parseNum(str) {

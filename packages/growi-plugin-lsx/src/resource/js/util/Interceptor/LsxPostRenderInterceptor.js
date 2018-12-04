@@ -4,7 +4,6 @@ import ReactDOM from 'react-dom';
 import { BasicInterceptor } from 'growi-pluginkit';
 
 import { Lsx } from '../../components/Lsx';
-import { LsxContext } from '../LsxContext';
 import { LsxCacheHelper } from '../LsxCacheHelper';
 
 /**

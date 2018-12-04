@@ -206,7 +206,7 @@ export class Lsx extends React.Component {
   }
 
   render() {
-    return <div className="lsx">{this.renderContents()}</div>
+    return <div className="lsx">{this.renderContents()}</div>;
   }
 }
 
