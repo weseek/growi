@@ -50,7 +50,10 @@ module.exports = function(crowi) {
    */
   lib.getCollectionSize = () => {
     return new Promise((resolve, reject) => {
-      Chunks.collection.stats((e, data) => {
+      Chunks.collection.stats((err, data) => {
+        if (err) {
+          reject(err);
+        }
         resolve(data.size);
       });
     });

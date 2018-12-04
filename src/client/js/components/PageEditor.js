@@ -10,6 +10,8 @@ import Editor from './PageEditor/Editor';
 import Preview from './PageEditor/Preview';
 import scrollSyncHelper from './PageEditor/ScrollSyncHelper';
 import { promise } from 'when';
+import * as toastr from 'toastr';
+
 
 export default class PageEditor extends React.Component {
 
@@ -118,7 +120,15 @@ export default class PageEditor extends React.Component {
   async onUpload(file) {
     const res  = await this.props.crowi.apiGet('/attachments.limit', {_csrf: this.props.crowi.csrfToken});
     if (file.size > res.usableCapacity) {
-      throw new Error('mongoDB for file uploading reaches limit');
+      toastr.error(undefined, 'MongoDB for uploading files reaches limit', {
+        closeButton: true,
+        progressBar: true,
+        newestOnTop: false,
+        showDuration: '100',
+        hideDuration: '100',
+        timeOut: '5000',
+      });
+      throw new Error('MongoDB for uploading files reaches limit');
     }
     else {
       const endpoint = '/attachments.add';
