@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import PageListMeta from '@client/js/components/PageList/PageListMeta';
 
 import { LsxContext } from '../../util/LsxContext';
-import { PagePath } from './PagePath';
+import { PagePathWrapper } from './PagePathWrapper';
 import { PageNode } from '../PageNode';
 
 export class Page extends React.Component {
@@ -89,7 +89,7 @@ export class Page extends React.Component {
     const pageNode = this.props.pageNode;
 
     // create PagePath element
-    let pagePathNode = <PagePath pagePath={pageNode.pagePath} isExists={this.state.isExists} />;
+    let pagePathNode = <PagePathWrapper pagePath={pageNode.pagePath} isExists={this.state.isExists} />;
     if (this.state.isLinkable) {
       pagePathNode = <a className="page-list-link" href={this.omitSlashOfEnd(pageNode.pagePath)}>{pagePathNode}</a>;
     }
