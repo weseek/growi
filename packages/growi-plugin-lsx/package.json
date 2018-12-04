@@ -26,14 +26,11 @@
   },
   "devDependencies": {
     "babel-preset-env": "^1.6.0",
-    "babel-preset-power-assert": "^2.0.0",
     "babel-preset-react": "^6.24.1",
     "eslint": "^5.9.0",
     "eslint-plugin-react": "^7.11.1",
-    "mocha": "^5.0.4",
-    "power-assert": "^1.4.2",
-    "react": "^16.2.0",
-    "react-dom": "^16.2.0"
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1"
   },
   "engines": {
     "node": ">=8.11.1 <9",
