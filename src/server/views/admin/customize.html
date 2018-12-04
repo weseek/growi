@@ -216,96 +216,96 @@
       </form>
 
       <form action="/_api/admin/customize/features" method="post" class="form-horizontal" id="customfeaturesSettingForm" role="form">
-      <fieldset>
-      <legend>{{ t('customize_page.Function') }}</legend>
-        <p class="well">{{ t("customize_page.function_choose") }}</p>
+        <fieldset>
+        <legend>{{ t('customize_page.Function') }}</legend>
+          <p class="well">{{ t("customize_page.function_choose") }}</p>
 
-        <div class="form-group">
-          <label for="settingForm[customize:isEnabledTimeline]" class="col-xs-3 control-label">{{ t('customize_page.Timeline function') }}</label>
-          <div class="col-xs-9">
-            <div class="btn-group btn-toggle" data-toggle="buttons">
-              <label class="btn btn-default btn-rounded btn-outline {% if settingForm['customize:isEnabledTimeline'] %}active{% endif %}" data-active-class="primary">
-                <input name="settingForm[customize:isEnabledTimeline]" value="true" type="radio"
-                    {% if true === settingForm['customize:isEnabledTimeline'] %}checked{% endif %}> ON
-              </label>
-              <label class="btn btn-default btn-rounded btn-outline {% if !settingForm['customize:isEnabledTimeline'] %}active{% endif %}" data-active-class="default">
-                <input name="settingForm[customize:isEnabledTimeline]" value="false" type="radio"
-                    {% if !settingForm['customize:isEnabledTimeline'] %}checked{% endif %}> OFF
-              </label>
+          <div class="form-group">
+            <label for="settingForm[customize:isEnabledTimeline]" class="col-xs-3 control-label">{{ t('customize_page.Timeline function') }}</label>
+            <div class="col-xs-9">
+              <div class="btn-group btn-toggle" data-toggle="buttons">
+                <label class="btn btn-default btn-rounded btn-outline {% if settingForm['customize:isEnabledTimeline'] %}active{% endif %}" data-active-class="primary">
+                  <input name="settingForm[customize:isEnabledTimeline]" value="true" type="radio"
+                      {% if true === settingForm['customize:isEnabledTimeline'] %}checked{% endif %}> ON
+                </label>
+                <label class="btn btn-default btn-rounded btn-outline {% if !settingForm['customize:isEnabledTimeline'] %}active{% endif %}" data-active-class="default">
+                  <input name="settingForm[customize:isEnabledTimeline]" value="false" type="radio"
+                      {% if !settingForm['customize:isEnabledTimeline'] %}checked{% endif %}> OFF
+                </label>
+              </div>
+
+              <p class="help-block">
+                {{ t("customize_page.subpage_display") }}
+              </p>
+              <p class="help-block">
+                {{ t("customize_page.performance_decrease") }}<br>
+                {{ t("customize_page.list_page_display") }}
+              </p>
             </div>
-
-            <p class="help-block">
-              {{ t("customize_page.subpage_display") }}
-            </p>
-            <p class="help-block">
-              {{ t("customize_page.performance_decrease") }}<br>
-              {{ t("customize_page.list_page_display") }}
-            </p>
           </div>
-        </div>
 
-        <div class="form-group">
-          <label for="settingForm[customize:isSavedStatesOfTabChanges]" class="col-xs-3 control-label">{{ t("customize_page.tab_switch") }}</label>
-          <div class="col-xs-9">
-            <div class="btn-group btn-toggle" data-toggle="buttons">
-              <label class="btn btn-default btn-rounded btn-outline {% if settingForm['customize:isSavedStatesOfTabChanges'] %}active{% endif %}" data-active-class="primary">
-                <input name="settingForm[customize:isSavedStatesOfTabChanges]" value="true" type="radio"
-                    {% if true === settingForm['customize:isSavedStatesOfTabChanges'] %}checked{% endif %}> ON
-              </label>
-              <label class="btn btn-default btn-rounded btn-outline {% if !settingForm['customize:isSavedStatesOfTabChanges'] %}active{% endif %}" data-active-class="default">
-                <input name="settingForm[customize:isSavedStatesOfTabChanges]" value="false" type="radio"
-                    {% if !settingForm['customize:isSavedStatesOfTabChanges'] %}checked{% endif %}> OFF
-              </label>
+          <div class="form-group">
+            <label for="settingForm[customize:isSavedStatesOfTabChanges]" class="col-xs-3 control-label">{{ t("customize_page.tab_switch") }}</label>
+            <div class="col-xs-9">
+              <div class="btn-group btn-toggle" data-toggle="buttons">
+                <label class="btn btn-default btn-rounded btn-outline {% if settingForm['customize:isSavedStatesOfTabChanges'] %}active{% endif %}" data-active-class="primary">
+                  <input name="settingForm[customize:isSavedStatesOfTabChanges]" value="true" type="radio"
+                      {% if true === settingForm['customize:isSavedStatesOfTabChanges'] %}checked{% endif %}> ON
+                </label>
+                <label class="btn btn-default btn-rounded btn-outline {% if !settingForm['customize:isSavedStatesOfTabChanges'] %}active{% endif %}" data-active-class="default">
+                  <input name="settingForm[customize:isSavedStatesOfTabChanges]" value="false" type="radio"
+                      {% if !settingForm['customize:isSavedStatesOfTabChanges'] %}checked{% endif %}> OFF
+                </label>
+              </div>
+
+              <p class="help-block">
+                {{ t("customize_page.save_edit") }}<br>
+                {{ t("customize_page.by_invalidating") }}
+              </p>
             </div>
-
-            <p class="help-block">
-              {{ t("customize_page.save_edit") }}<br>
-              {{ t("customize_page.by_invalidating") }}
-            </p>
           </div>
-        </div>
 
-        <div class="form-group">
-          <label for="settingForm[customize:isEnabledAttachTitleHeader]" class="col-xs-3 control-label">{{ t("customize_page.attach_title_header") }}</label>
-          <div class="col-xs-9">
-            <div class="btn-group btn-toggle" data-toggle="buttons">
-              <label class="btn btn-default btn-rounded btn-outline {% if settingForm['customize:isEnabledAttachTitleHeader'] %}active{% endif %}" data-active-class="primary">
-                <input name="settingForm[customize:isEnabledAttachTitleHeader]" value="true" type="radio" {% if true===settingForm['customize:isEnabledAttachTitleHeader'] %}checked{% endif %}> ON
-              </label>
-              <label class="btn btn-default btn-rounded btn-outline {% if !settingForm['customize:isEnabledAttachTitleHeader'] %}active{% endif %}" data-active-class="default">
-                <input name="settingForm[customize:isEnabledAttachTitleHeader]" value="false" type="radio" {% if !settingForm['customize:isEnabledAttachTitleHeader'] %}checked{% endif %}> OFF
-              </label>
+          <div class="form-group">
+            <label for="settingForm[customize:isEnabledAttachTitleHeader]" class="col-xs-3 control-label">{{ t("customize_page.attach_title_header") }}</label>
+            <div class="col-xs-9">
+              <div class="btn-group btn-toggle" data-toggle="buttons">
+                <label class="btn btn-default btn-rounded btn-outline {% if settingForm['customize:isEnabledAttachTitleHeader'] %}active{% endif %}" data-active-class="primary">
+                  <input name="settingForm[customize:isEnabledAttachTitleHeader]" value="true" type="radio" {% if true===settingForm['customize:isEnabledAttachTitleHeader'] %}checked{% endif %}> ON
+                </label>
+                <label class="btn btn-default btn-rounded btn-outline {% if !settingForm['customize:isEnabledAttachTitleHeader'] %}active{% endif %}" data-active-class="default">
+                  <input name="settingForm[customize:isEnabledAttachTitleHeader]" value="false" type="radio" {% if !settingForm['customize:isEnabledAttachTitleHeader'] %}checked{% endif %}> OFF
+                </label>
+              </div>
+
+              <p class="help-block">
+                {{ t("customize_page.attach_title_header_desc") }}
+              </p>
             </div>
-
-            <p class="help-block">
-              {{ t("customize_page.attach_title_header_desc") }}
-            </p>
           </div>
-        </div>
 
-        <div class="form-group">
-          <label for="settingForm[customize:showRecentCreatedNumber]" class="col-xs-3 control-label">{{ t("customize_page.show_document_number") }}</label>
-          <div class="col-xs-5">
-            <select class="form-control selectpicker" name="settingForm[customize:showRecentCreatedNumber]" value="{{ settingForm['customize:showRecentCreatedNumber'] }}">
-              <option value="10" {% if 10 == settingForm['customize:showRecentCreatedNumber'] %}selected{% endif %}>10</option>
-              <option value="30" {% if 30 == settingForm['customize:showRecentCreatedNumber'] %}selected{% endif %}>30</option>
-              <option value="50" {% if 50 == settingForm['customize:showRecentCreatedNumber'] %}selected{% endif %}>50</option>
-            </select>
+          <div class="form-group">
+            <label for="settingForm[customize:showRecentCreatedNumber]" class="col-xs-3 control-label">{{ t("customize_page.recent_created_page_num") }}</label>
+            <div class="col-xs-5">
+              <select class="form-control selectpicker" name="settingForm[customize:showRecentCreatedNumber]" value="{{ settingForm['customize:showRecentCreatedNumber'] }}">
+                <option value="10" {% if 10 == settingForm['customize:showRecentCreatedNumber'] %}selected{% endif %}>10</option>
+                <option value="30" {% if 30 == settingForm['customize:showRecentCreatedNumber'] %}selected{% endif %}>30</option>
+                <option value="50" {% if 50 == settingForm['customize:showRecentCreatedNumber'] %}selected{% endif %}>50</option>
+              </select>
 
-            <p class="help-block">
-              {{ t("customize_page.show_document_number_desc") }}
-            </p>
+              <p class="help-block">
+                {{ t("customize_page.recent_created_page_num_desc") }}
+              </p>
+            </div>
           </div>
-        </div>
 
-        <div class="form-group">
-          <div class="col-xs-offset-3 col-xs-6">
-            <input type="hidden" name="_csrf" value="{{ csrf() }}">
-            <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
+          <div class="form-group">
+            <div class="col-xs-offset-3 col-xs-6">
+              <input type="hidden" name="_csrf" value="{{ csrf() }}">
+              <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
+            </div>
           </div>
-        </div>
 
-      </fieldset>
+        </fieldset>
       </form>
 
       <form action="/_api/admin/customize/highlightJsStyle" method="post" class="form-horizontal" id="customhighlightJsStyleSettingForm" role="form">
