@@ -51,7 +51,7 @@ export class LsxCacheHelper {
       // instanciate PageNode
       stateCache.nodeTree = stateCache.nodeTree.map((obj) => {
         return PageNode.instanciateFrom(obj);
-      })
+      });
     }
 
     return stateCache;

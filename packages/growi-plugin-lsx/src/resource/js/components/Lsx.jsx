@@ -10,6 +10,7 @@ import { LsxCacheHelper } from '../util/LsxCacheHelper';
 import { PageNode } from './PageNode';
 import { ListView } from './PageList/ListView';
 
+
 export class Lsx extends React.Component {
 
   constructor(props) {
@@ -62,7 +63,7 @@ export class Lsx extends React.Component {
         // store to sessionStorage
         const cacheKey = LsxCacheHelper.generateCacheKeyFromContext(lsxContext);
         LsxCacheHelper.cacheState(cacheKey, this.state);
-      })
+      });
   }
 
   /**
@@ -197,11 +198,11 @@ export class Lsx extends React.Component {
           <i className="fa fa-exclamation-triangle fa-fw"></i>
           {lsxContext.tagExpression} (-> <small>{this.state.errorMessage}</small>)
         </div>
-      )
+      );
     }
     // render tree
     else {
-      return <ListView nodeTree={this.state.nodeTree} lsxContext={this.props.lsxContext} />
+      return <ListView nodeTree={this.state.nodeTree} lsxContext={this.props.lsxContext} />;
     }
   }
 
