@@ -1,17 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Page } from './Page';
 import { PageNode } from '../PageNode';
-
 import { LsxContext } from '../../util/LsxContext';
+import { LsxPage } from './LsxPage';
 
-export class ListView extends React.Component {
+export class LsxListView extends React.Component {
 
   render() {
     const listView = this.props.nodeTree.map((pageNode) => {
       return (
-        <Page key={pageNode.pagePath} depth={1}
+        <LsxPage key={pageNode.pagePath} depth={1}
           pageNode={pageNode}
           lsxContext={this.props.lsxContext}
         />
@@ -38,7 +37,7 @@ export class ListView extends React.Component {
   }
 }
 
-ListView.propTypes = {
+LsxListView.propTypes = {
   nodeTree: PropTypes.arrayOf(PropTypes.instanceOf(PageNode)).isRequired,
   lsxContext: PropTypes.instanceOf(LsxContext).isRequired,
 };

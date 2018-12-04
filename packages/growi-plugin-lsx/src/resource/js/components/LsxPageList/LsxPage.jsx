@@ -4,10 +4,11 @@ import PropTypes from 'prop-types';
 import PageListMeta from '@client/js/components/PageList/PageListMeta';
 
 import { LsxContext } from '../../util/LsxContext';
-import { PagePathWrapper } from './PagePathWrapper';
 import { PageNode } from '../PageNode';
 
-export class Page extends React.Component {
+import { PagePathWrapper } from './PagePathWrapper';
+
+export class LsxPage extends React.Component {
 
   constructor(props) {
     super(props);
@@ -54,7 +55,7 @@ export class Page extends React.Component {
     if (this.state.hasChildren) {
       const pages = pageNode.children.map((pageNode) => {
         return (
-          <Page key={pageNode.pagePath} depth={this.props.depth + 1}
+          <LsxPage key={pageNode.pagePath} depth={this.props.depth + 1}
             pageNode={pageNode}
             lsxContext={this.props.lsxContext}
           />
@@ -64,13 +65,13 @@ export class Page extends React.Component {
       element = <ul className="page-list-ul">{pages}</ul>;
     }
 
-    return element
+    return element;
   }
 
   getIconElement() {
     return (this.state.isExists)
-        ? <i className="ti-agenda" aria-hidden="true"></i>
-        : <i className="ti-file lsx-page-not-exist" aria-hidden="true"></i>;
+      ? <i className="ti-agenda" aria-hidden="true"></i>
+      : <i className="ti-file lsx-page-not-exist" aria-hidden="true"></i>;
   }
 
   /**
@@ -106,7 +107,7 @@ export class Page extends React.Component {
   }
 }
 
-Page.propTypes = {
+LsxPage.propTypes = {
   pageNode: PropTypes.instanceOf(PageNode).isRequired,
   lsxContext: PropTypes.instanceOf(LsxContext).isRequired,
   depth: PropTypes.number,

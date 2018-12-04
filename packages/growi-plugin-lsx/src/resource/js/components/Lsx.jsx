@@ -8,7 +8,7 @@ import styles from '../../css/index.css';
 import { LsxContext } from '../util/LsxContext';
 import { LsxCacheHelper } from '../util/LsxCacheHelper';
 import { PageNode } from './PageNode';
-import { ListView } from './PageList/ListView';
+import { LsxListView } from './LsxPageList/LsxListView';
 
 
 export class Lsx extends React.Component {
@@ -202,7 +202,7 @@ export class Lsx extends React.Component {
     }
     // render tree
     else {
-      return <ListView nodeTree={this.state.nodeTree} lsxContext={this.props.lsxContext} />;
+      return <LsxListView nodeTree={this.state.nodeTree} lsxContext={this.props.lsxContext} />;
     }
   }
 
