@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import PageListMeta from '@client/js/components/PageList/PageListMeta';
+
 import { LsxContext } from '../../util/LsxContext';
-import { PageListMeta } from './PageListMeta';
 import { PagePath } from './PagePath';
 import { PageNode } from '../PageNode';
 
