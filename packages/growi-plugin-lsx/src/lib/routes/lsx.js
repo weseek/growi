@@ -114,7 +114,7 @@ module.exports = (crowi, app) => {
    *
    * @return {Promise<Query>} query
    */
-  function generateBaseQueryBuilder(pagePath, user) {
+  async function generateBaseQueryBuilder(pagePath, user) {
     let baseQuery = Page.find();
     if (Page.PageQueryBuilder == null) {
       if (Page.generateQueryToListWithDescendants != null) {  // for Backward compatibility (<= GROWI v3.2.x)
@@ -135,50 +135,41 @@ module.exports = (crowi, app) => {
 
     let promisifiedBuilder = Promise.resolve(builder);
 
-    // add grant conditions
     if (user != null) {
       const UserGroupRelation = crowi.model('UserGroupRelation');
-      promisifiedBuilder = UserGroupRelation.findAllUserGroupIdsRelatedToUser(user)
-        .then(userGroups => {
-          return builder.addConditionToFilteringByViewer(user, userGroups);
-        });
+      const userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
+      promisifiedBuilder = builder.addConditionToFilteringByViewer(user, userGroups);
     }
 
     return promisifiedBuilder;
   }
 
-  actions.listPages = (req, res) => {
+  actions.listPages = async(req, res) => {
     let user = req.user;
     let pagePath = req.query.pagePath;
     let options = JSON.parse(req.query.options);
 
-    generateBaseQueryBuilder(pagePath, user)
-      .then(builder => {
-        let query = builder.query;
-        try {
-          // depth
-          if (options.depth != null) {
-            query = Lsx.addDepthCondition(query, pagePath, options.depth);
-          }
-          // num
-          if (options.num != null) {
-            query = Lsx.addNumCondition(query, pagePath, options.num);
-          }
-          // sort
-          query = Lsx.addSortCondition(query, pagePath, options.sort, options.reverse);
-        }
-        catch (error) {
-          return res.json(ApiResponse.error(error.message));
-        }
-        return query.exec();
-      })
-      .then(pages => {
-        res.json(ApiResponse.success({pages}));
-      })
-      .catch((err) => {
-        debug('Error on lsx.listPages', err);
-        return res.json(ApiResponse.error(err));
-      });
+    const builder = await generateBaseQueryBuilder(pagePath, user);
+
+    let query = builder.query;
+    try {
+      // depth
+      if (options.depth != null) {
+        query = Lsx.addDepthCondition(query, pagePath, options.depth);
+      }
+      // num
+      if (options.num != null) {
+        query = Lsx.addNumCondition(query, pagePath, options.num);
+      }
+      // sort
+      query = Lsx.addSortCondition(query, pagePath, options.sort, options.reverse);
+
+      const pages = await query.exec();
+      res.json(ApiResponse.success({pages}));
+    }
+    catch (error) {
+      return res.json(ApiResponse.error(error));
+    }
   };
 
   return actions;
