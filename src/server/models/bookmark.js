@@ -13,6 +13,10 @@ module.exports = function(crowi) {
   });
   bookmarkSchema.index({page: 1, user: 1}, {unique: true});
 
+  bookmarkSchema.statics.countByPageId = async function(pageId) {
+    return await this.count({ page: pageId });
+  };
+
   bookmarkSchema.statics.populatePage = async function(bookmarks) {
     const Bookmark = this;
     const User = crowi.model('User');

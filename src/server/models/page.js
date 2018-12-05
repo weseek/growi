@@ -845,22 +845,17 @@ module.exports = function(crowi) {
    * Bulk get (for internal only)
    */
   pageSchema.statics.getStreamOfFindAll = function(options) {
-    var Page = this
-      , options = options || {}
-      , publicOnly = options.publicOnly || true
-      , criteria = {redirectTo: null, }
-      ;
+    const opt = options || {};
+    const publicOnly = opt.publicOnly || true;
+    const criteria = { redirectTo: null };
 
     if (publicOnly) {
       criteria.grant = GRANT_PUBLIC;
     }
 
     return this.find(criteria)
-      .populate([
-        {path: 'creator', model: 'User'},
-        {path: 'revision', model: 'Revision'},
-      ])
-      .sort({updatedAt: -1})
+      .populate([{ path: 'creator', model: 'User' }, { path: 'revision', model: 'Revision' }])
+      .lean()
       .cursor();
   };
 
@@ -1261,6 +1256,10 @@ module.exports = function(crowi) {
    */
   pageSchema.statics.addSlashOfEnd = function(path) {
     return addSlashOfEnd(path);
+  };
+
+  pageSchema.statics.allPageCount = function() {
+    return this.count({ redirectTo: null });
   };
 
   pageSchema.statics.GRANT_PUBLIC = GRANT_PUBLIC;
