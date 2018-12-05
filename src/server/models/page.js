@@ -159,7 +159,14 @@ class PageQueryBuilder {
       {grant: GRANT_PUBLIC},
     ];
 
-    if (user != null) {
+    if (user == null) {
+      grantConditions.push(
+        {grant: GRANT_RESTRICTED},
+        {grant: GRANT_SPECIFIED},
+        {grant: GRANT_OWNER},
+      );
+    }
+    else {
       grantConditions.push(
         {grant: GRANT_RESTRICTED, grantedUsers: user._id},
         {grant: GRANT_SPECIFIED, grantedUsers: user._id},
@@ -167,7 +174,12 @@ class PageQueryBuilder {
       );
     }
 
-    if (userGroups != null) {
+    if (userGroups == null) {
+      grantConditions.push(
+        {grant: GRANT_USER_GROUP},
+      );
+    }
+    else {
       grantConditions.push(
         {grant: GRANT_USER_GROUP, grantedGroup: { $in: userGroups }},
       );
@@ -648,6 +660,8 @@ module.exports = function(crowi) {
   async function findListFromBuilderAndViewer(builder, user, option) {
     validateCrowi();
 
+    const User = crowi.model('User');
+
     const opt = Object.assign({sort: 'updatedAt', desc: -1}, option);
     const sortOpt = {};
     sortOpt[opt.sort] = opt.desc;
@@ -662,16 +676,10 @@ module.exports = function(crowi) {
     }
 
     // add grant conditions
-    let userGroups = null;
-    if (user != null) {
-      const UserGroupRelation = crowi.model('UserGroupRelation');
-      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
-    }
-    builder.addConditionToFilteringByViewer(user, userGroups);
+    await addConditionToFilteringByViewerForList(builder, user);
 
     builder.addConditionToPagenate(opt.offset, opt.limit, sortOpt);
 
-    const User = crowi.model('User');
     const totalCount = await builder.query.exec('count');
     const q = builder.query
       .populate({
@@ -685,6 +693,40 @@ module.exports = function(crowi) {
     return result;
   }
 
+  /**
+   * Add condition that filter pages by viewer
+   *  by considering Config
+   *
+   * @param {PageQueryBuilder} builder
+   * @param {User} user
+   */
+  async function addConditionToFilteringByViewerForList(builder, user) {
+    validateCrowi();
+
+    const Config = crowi.model('Config');
+    const config = crowi.getConfig();
+
+    // determine User condition
+    const hidePagesRestrictedByOwner = Config.hidePagesRestrictedByOwnerInList(config);
+    const userCondition = hidePagesRestrictedByOwner ? user : null;
+
+    // determine UserGroup condition
+    let groupCondition = null;
+    const hidePagesRestrictedByGroup = Config.hidePagesRestrictedByGroupInList(config);
+    if (hidePagesRestrictedByGroup && user != null) {
+      const UserGroupRelation = crowi.model('UserGroupRelation');
+      groupCondition = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
+    }
+
+    return builder.addConditionToFilteringByViewer(userCondition, groupCondition);
+  }
+
+  /**
+   * export addConditionToFilteringByViewerForList as static method
+   */
+  pageSchema.statics.addConditionToFilteringByViewerForList = async function(builder, user) {
+    return addConditionToFilteringByViewerForList(builder, user);
+  };
 
   /**
    * Throw error for growi-lsx-plugin (v1.x)
