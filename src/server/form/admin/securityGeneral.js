@@ -11,6 +11,6 @@ module.exports = form(
   field('settingForm[security:restrictGuestMode]').required(),
   field('settingForm[security:registrationMode]').required(),
   field('settingForm[security:registrationWhiteList]').custom(normalizeCRLF).custom(stringToArray),
-  field('settingForm[security:list-policy:showRestrictedByOwner]').trim().toBooleanStrict(),
-  field('settingForm[security:list-policy:showRestrictedByGroup]').trim().toBooleanStrict(),
+  field('settingForm[security:list-policy:hideRestrictedByOwner]').trim().toBooleanStrict(),
+  field('settingForm[security:list-policy:hideRestrictedByGroup]').trim().toBooleanStrict(),
 );

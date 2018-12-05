@@ -95,16 +95,17 @@
           </div>
 
           <div class="form-group">
-            {% set configName = 'settingForm[security:list-policy:showRestrictedByOwner]' %}
-            {% set configValue = settingForm['security:list-policy:showRestrictedByOwner'] %}
+            {% set configName = 'settingForm[security:list-policy:hideRestrictedByOwner]' %}
+            {% set configValue = settingForm['security:list-policy:hideRestrictedByOwner'] %}
+            {% set isEnabled = !configValue %}
             <label for="{{configName}}" class="col-xs-3 control-label">{{ t("security_setting.page_listing_1") }}</label>
             <div class="col-xs-9">
               <div class="btn-group btn-toggle" data-toggle="buttons">
-                <label class="btn btn-default btn-rounded btn-outline {% if configValue %}active{% endif %}" data-active-class="primary">
-                  <input name="{{configName}}" value="true" type="radio" {% if true === configValue %}checked{% endif %}> ON
+                <label class="btn btn-default btn-rounded btn-outline {% if isEnabled %}active{% endif %}" data-active-class="primary">
+                  <input name="{{configName}}" value="false" type="radio" {% if isEnabled %}checked{% endif %}> ON
                 </label>
-                <label class="btn btn-default btn-rounded btn-outline {% if !configValue %}active{% endif %}" data-active-class="default">
-                  <input name="{{configName}}" value="false" type="radio" {% if !configValue %}checked{% endif %}> OFF
+                <label class="btn btn-default btn-rounded btn-outline {% if !isEnabled %}active{% endif %}" data-active-class="default">
+                  <input name="{{configName}}" value="true" type="radio" {% if !isEnabled %}checked{% endif %}> OFF
                 </label>
               </div>
 
@@ -115,16 +116,17 @@
           </div>
 
           <div class="form-group">
-              {% set configName = 'settingForm[security:list-policy:showRestrictedByGroup]' %}
-              {% set configValue = settingForm['security:list-policy:showRestrictedByGroup'] %}
+            {% set configName = 'settingForm[security:list-policy:hideRestrictedByGroup]' %}
+            {% set configValue = settingForm['security:list-policy:hideRestrictedByGroup'] %}
+            {% set isEnabled = !configValue %}
             <label for="{{configName}}" class="col-xs-3 control-label">{{ t("security_setting.page_listing_2") }}</label>
             <div class="col-xs-9">
               <div class="btn-group btn-toggle" data-toggle="buttons">
-                <label class="btn btn-default btn-rounded btn-outline {% if configValue %}active{% endif %}" data-active-class="primary">
-                  <input name="{{configName}}" value="true" type="radio" {% if true === configValue %}checked{% endif %}> ON
+                <label class="btn btn-default btn-rounded btn-outline {% if isEnabled %}active{% endif %}" data-active-class="primary">
+                  <input name="{{configName}}" value="false" type="radio" {% if isEnabled %}checked{% endif %}> ON
                 </label>
-                <label class="btn btn-default btn-rounded btn-outline {% if !configValue %}active{% endif %}" data-active-class="default">
-                  <input name="{{configName}}" value="false" type="radio" {% if !configValue %}checked{% endif %}> OFF
+                <label class="btn btn-default btn-rounded btn-outline {% if !isEnabled %}active{% endif %}" data-active-class="default">
+                  <input name="{{configName}}" value="true" type="radio" {% if !isEnabled %}checked{% endif %}> OFF
                 </label>
               </div>
 
