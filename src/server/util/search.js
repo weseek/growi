@@ -55,6 +55,10 @@ function SearchClient(crowi, esUri) {
   this.mappingFile = crowi.resourceDir + 'search/mappings.json';
 }
 
+SearchClient.prototype.getInfo = function() {
+  return this.client.info({});
+};
+
 SearchClient.prototype.checkESVersion = async function() {
   try {
     const nodes = await this.client.nodes.info();
