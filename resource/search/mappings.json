@@ -24,13 +24,6 @@
         }
       },
       "analyzer": {
-        "autocomplete": {
-          "tokenizer":  "keyword",
-          "filter": [
-            "lowercase",
-            "nGram"
-          ]
-        },
         "japanese": {
           "tokenizer": "kuromoji_tokenizer",
           "char_filter" : ["icu_normalizer"]
@@ -48,52 +41,40 @@
     }
   },
   "mappings": {
-    "users": {
-      "properties" : {
-        "name": {
-          "type": "text",
-          "analyzer": "autocomplete"
-        }
-      }
-    },
     "pages": {
       "properties" : {
         "path": {
           "type": "text",
-          "copy_to": ["path_raw", "path_ja", "path_en"],
-          "index": "false"
-        },
-        "path_raw": {
-          "type": "text",
-          "analyzer": "standard"
-        },
-        "path_ja": {
-          "type": "text",
-          "analyzer": "japanese"
-        },
-        "path_en": {
-          "type": "text",
-          "analyzer": "english"
+          "fields": {
+            "raw": {
+              "type": "text",
+              "analyzer": "keyword"
+            },
+            "ja": {
+              "type": "text",
+              "analyzer": "japanese"
+            },
+            "en": {
+              "type": "text",
+              "analyzer": "english"
+            }
+          }
         },
         "body": {
           "type": "text",
-          "copy_to": ["body_raw", "body_ja", "body_en"],
-          "index": "false"
-        },
-        "body_raw": {
-          "type": "text",
-          "analyzer": "standard"
-        },
-        "body_ja": {
-          "type": "text",
-          "analyzer": "japanese"
-        },
-        "body_en": {
-          "type": "text",
-          "analyzer": "english"
+          "fields": {
+            "ja": {
+              "type": "text",
+              "analyzer": "japanese"
+            },
+            "en": {
+              "type": "text",
+              "analyzer": "english"
+            }
+          }
         },
         "username": {
-          "type": "text"
+          "type": "keyword"
         },
         "comment_count": {
           "type": "integer"
