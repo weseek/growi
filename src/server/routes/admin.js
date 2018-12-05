@@ -470,15 +470,15 @@ module.exports = function(crowi, app) {
     search
       .addAllPages()
       .then(() => {
-        debug('Data is successfully indexed. ------------------ ✧✧')
+        debug('Data is successfully indexed. ------------------ ✧✧');
       })
       .catch(err => {
         debug('Error', err);
       });
 
-    req.flash('successMessage', 'Now re-building index ... this takes a while.')
+    req.flash('successMessage', 'Now re-building index ... this takes a while.');
     return res.redirect('/admin/search');
-  }
+  };
 
   actions.user = {};
   actions.user.index = async function(req, res) {
