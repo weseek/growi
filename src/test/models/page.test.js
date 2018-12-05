@@ -209,49 +209,34 @@ describe('Page', () => {
     });
   });
 
-  describe('.isGrantedFor', () => {
+  describe('.isAccessiblePageByViewer', () => {
     context('with a granted user', () => {
-      it('should return true', done => {
-        User.findOne({email: 'anonymous0@example.com'}, (err, user) => {
-          if (err) { done(err); }
+      it('should return true', async() => {
+        const user = await User.findOne({email: 'anonymous0@example.com'});
+        const page = await Page.findOne({path: '/user/anonymous0/memo'});
 
-          Page.findOne({path: '/user/anonymous0/memo'}, (err, page) => {
-            if (err) { done(err); }
-
-            expect(page.isGrantedFor(user)).to.be.equal(true);
-            done();
-          });
-        });
+        const bool = await Page.isAccessiblePageByViewer(page.id, user);
+        expect(bool).to.be.equal(true);
       });
     });
 
     context('with a public page', () => {
-      it('should return true', done => {
-        User.findOne({email: 'anonymous1@example.com'}, (err, user) => {
-          if (err) { done(err); }
+      it('should return true', async() => {
+        const user = await User.findOne({email: 'anonymous1@example.com'});
+        const page = await Page.findOne({path: '/grant/public'});
 
-          Page.findOne({path: '/grant/public'}, (err, page) => {
-            if (err) { done(err); }
-
-            expect(page.isGrantedFor(user)).to.be.equal(true);
-            done();
-          });
-        });
+        const bool = await Page.isAccessiblePageByViewer(page.id, user);
+        expect(bool).to.be.equal(true);
       });
     });
 
     context('with a restricted page and an user who has no grant', () => {
-      it('should return false', done => {
-        User.findOne({email: 'anonymous1@example.com'}, (err, user) => {
-          if (err) { done(err); }
+      it('should return false', async() => {
+        const user = await User.findOne({email: 'anonymous1@example.com'});
+        const page = await Page.findOne({path: '/grant/restricted'});
 
-          Page.findOne({path: '/grant/restricted'}, (err, page) => {
-            if (err) { done(err); }
-
-            expect(page.isGrantedFor(user)).to.be.equal(false);
-            done();
-          });
-        });
+        const bool = await Page.isAccessiblePageByViewer(page.id, user);
+        expect(bool).to.be.equal(false);
       });
     });
   });

@@ -245,20 +245,6 @@ module.exports = function(crowi) {
     return templateChecker(this.path);
   };
 
-  // TODO abolish
-  // https://weseek.myjetbrains.com/youtrack/issue/GC-1225
-  pageSchema.methods.isGrantedFor = function(userData) {
-    if (this.isPublic()) {
-      return true;
-    }
-
-    if (userData != null && this.grantedUsers.indexOf(userData._id) >= 0) {
-      return true;
-    }
-
-    return false;
-  };
-
   pageSchema.methods.isLatestRevision = function() {
     // populate されていなくて判断できない
     if (!this.latestRevision || !this.revision) {
@@ -563,7 +549,8 @@ module.exports = function(crowi) {
     const queryBuilder = new PageQueryBuilder(baseQuery);
     queryBuilder.addConditionToFilteringByViewer(user, userGroups);
 
-    return await queryBuilder.query.exec();
+    const count = await queryBuilder.query.exec();
+    return count > 0;
   };
 
   /**
