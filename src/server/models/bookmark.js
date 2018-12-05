@@ -13,28 +13,14 @@ module.exports = function(crowi) {
   });
   bookmarkSchema.index({page: 1, user: 1}, {unique: true});
 
-  bookmarkSchema.statics.populatePage = function(bookmarks, requestUser) {
+  bookmarkSchema.statics.populatePage = async function(bookmarks) {
     const Bookmark = this;
     const User = crowi.model('User');
 
-    requestUser = requestUser || null;
-
-    return Bookmark.populate(bookmarks, {path: 'page'})
-      .then(function(bookmarks) {
-        return Bookmark.populate(bookmarks, {path: 'page.revision', model: 'Revision'});
-      }).then(function(bookmarks) {
-        // hmm...
-        bookmarks = bookmarks.filter(function(bookmark) {
-          // requestUser を指定しない場合 public のみを返す
-          if (requestUser === null) {
-            return bookmark.page.isPublic();
-          }
-
-          return bookmark.page.isGrantedFor(requestUser);
-        });
-
-        return Bookmark.populate(bookmarks, {path: 'lastUpdateUser', model: 'User', select: User.USER_PUBLIC_FIELDS});
-      });
+    return Bookmark.populate(bookmarks, [
+      {path: 'page'},
+      {path: 'lastUpdateUser', model: 'User', select: User.USER_PUBLIC_FIELDS},
+    ]);
   };
 
   // bookmark チェック用
