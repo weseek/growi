@@ -92,22 +92,7 @@ SearchClient.prototype.registerUpdateEvent = function() {
 };
 
 SearchClient.prototype.shouldIndexed = function(page) {
-  // FIXME: Magic Number
-  if (page.grant !== 1) {
-    return false;
-  }
-
-  if (page.redirectTo !== null) {
-    return false;
-  }
-
-  // FIXME: use STATUS_DELETED
-  // isDeleted() couldn't use here because of lean()
-  if (page.status === 'deleted') {
-    return false;
-  }
-
-  return true;
+  return (page.redirectTo !== null);
 };
 
 // BONSAI_URL is following format:
