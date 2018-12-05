@@ -3,6 +3,7 @@
  */
 
 import axios from 'axios';
+import io from 'socket.io-client';
 
 import InterceptorManager from '@commons/service/interceptor-manager';
 
@@ -50,6 +51,8 @@ export default class Crowi {
     this.editorOptions = {};
 
     this.recoverData();
+
+    this.socket = io();
   }
 
   /**
@@ -73,6 +76,10 @@ export default class Crowi {
 
   setPageEditor(pageEditor) {
     this.pageEditor = pageEditor;
+  }
+
+  getWebSocket() {
+    return this.socket;
   }
 
   getSocketClientId() {
