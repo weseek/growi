@@ -31,6 +31,7 @@ module.exports = function(crowi, app) {
    * @apiParam {String} limit
    */
   api.search = async function(req, res) {
+    const user = req.user;
     const { q: keyword = null, tree = null, type = null } = req.query;
     let paginateOpts;
 
@@ -50,16 +51,22 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Configuration of ELASTICSEARCH_URI is required.'));
     }
 
+    let userGroups = [];
+    if (user != null) {
+      const UserGroupRelation = crowi.model('UserGroupRelation');
+      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
+    }
+
     const searchOpts = { ...paginateOpts, type };
 
     const result = {};
     try {
       let esResult;
       if (tree) {
-        esResult = await search.searchKeywordUnderPath(keyword, tree, searchOpts);
+        esResult = await search.searchKeywordUnderPath(keyword, tree, user, userGroups, searchOpts);
       }
       else {
-        esResult = await search.searchKeyword(keyword, searchOpts);
+        esResult = await search.searchKeyword(keyword, user, userGroups, searchOpts);
       }
 
       const findResult = await Page.findListByPageIds(esResult.data, { limit: 50 });

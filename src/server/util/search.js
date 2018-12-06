@@ -342,8 +342,19 @@ SearchClient.prototype.addAllPages = async function() {
  *   data: [ pages ...],
  * }
  */
-SearchClient.prototype.search = function(query) {
+SearchClient.prototype.search = async function(query) {
   let self = this;
+
+  // for debug
+  if (process.env.NODE_ENV === 'development') {
+    const result = await this.client.indices.validateQuery({
+      explain: true,
+      body: {
+        query: query.body.query
+      },
+    });
+    logger.info('ES returns explanations: ', result.explanations);
+  }
 
   return new Promise(function(resolve, reject) {
     self.client
@@ -527,6 +538,52 @@ SearchClient.prototype.appendCriteriaForPathFilter = function(query, path) {
   });
 };
 
+SearchClient.prototype.filterPagesByViewer = function(query, user, userGroups) {
+  query = this.initializeBoolQuery(query);
+
+  const Page = this.crowi.model('Page');
+  const { GRANT_PUBLIC, GRANT_RESTRICTED, GRANT_SPECIFIED, GRANT_OWNER, GRANT_USER_GROUP } = Page;
+
+  const grantConditions = [
+    // { term: { grant: null } },
+    { term: { grant: GRANT_PUBLIC } },
+  ];
+
+  // if (user == null) {
+  //   grantConditions.push(
+  //     { should: [
+  //       { term: { grant: GRANT_RESTRICTED } },
+  //       { term: { grant: GRANT_SPECIFIED } },
+  //       { term: { grant: GRANT_OWNER } },
+  //     ] }
+  //   );
+  // }
+  // else {
+  //   grantConditions.push(
+  //     { must: [
+  //       { should: [
+  //         { term: { grant: GRANT_RESTRICTED } },
+  //         { term: { grant: GRANT_SPECIFIED } },
+  //         { term: { grant: GRANT_OWNER } },
+  //       ] },
+  //       { term: { grantedUsers: user._id.toString() } }
+  //     ] },
+  //   );
+  // }
+
+  // if (userGroups != null && userGroups.length > 0) {
+  //   const userGroupIds = userGroups.map(group => group._id.toString() );
+  //   grantConditions.push(
+  //     { must: [
+  //       { term: { grant: GRANT_USER_GROUP } },
+  //       { terms: { grantedGroup: userGroupIds } }
+  //     ] },
+  //   );
+  // }
+
+  query.body.query.bool.filter.push({ bool: { should: grantConditions } });
+};
+
 SearchClient.prototype.filterPortalPages = function(query) {
   query = this.initializeBoolQuery(query);
 
@@ -580,25 +637,19 @@ SearchClient.prototype.appendFunctionScore = function(query) {
   };
 };
 
-SearchClient.prototype.searchKeyword = function(keyword, option) {
+SearchClient.prototype.searchKeyword = function(keyword, user, userGroups, option) {
   const from = option.offset || null;
   const size = option.limit || null;
   const type = option.type || null;
   const query = this.createSearchQuerySortedByScore();
   this.appendCriteriaForKeywordContains(query, keyword);
 
-  this.filterPagesByType(query, type);
+  // this.filterPagesByType(query, type);
+  this.filterPagesByViewer(query, user, userGroups);
 
   this.appendResultSize(query, from, size);
 
   this.appendFunctionScore(query);
-
-  const bool = query.body.query.function_score.query.bool;
-
-  debug('searching ...', keyword, type);
-  debug('filter', bool.filter);
-  debug('must', bool.must);
-  debug('must_not', bool.must_not);
 
   return this.search(query);
 };
@@ -607,7 +658,7 @@ SearchClient.prototype.searchByPath = function(keyword, prefix) {
   // TODO path 名だけから検索
 };
 
-SearchClient.prototype.searchKeywordUnderPath = function(keyword, path, option) {
+SearchClient.prototype.searchKeywordUnderPath = function(keyword, path, user, userGroups, option) {
   const from = option.offset || null;
   const size = option.limit || null;
   const type = option.type || null;
@@ -615,7 +666,8 @@ SearchClient.prototype.searchKeywordUnderPath = function(keyword, path, option) 
   this.appendCriteriaForKeywordContains(query, keyword);
   this.appendCriteriaForPathFilter(query, path);
 
-  this.filterPagesByType(query, type);
+  // this.filterPagesByType(query, type);
+  this.filterPagesByViewer(query, user, userGroups);
 
   this.appendResultSize(query, from, size);
 
