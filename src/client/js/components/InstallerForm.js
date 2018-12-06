@@ -13,8 +13,8 @@ class InstallerForm extends React.Component {
     this.checkUserName = this.checkUserName.bind(this);
   }
 
-  checkUserName(e) {
-    $.getJSON('/_api/check_username', {username: e.target.value}, function(json) {
+  checkUserName(event) {
+    $.getJSON('/_api/check_username', {username: event.target.value}, function(json) {
       this.setState({ isValidUserName: json.valid });
     }.bind(this));
   }
