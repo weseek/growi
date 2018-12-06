@@ -92,7 +92,7 @@ SearchClient.prototype.registerUpdateEvent = function() {
 };
 
 SearchClient.prototype.shouldIndexed = function(page) {
-  return (page.redirectTo !== null);
+  return (page.redirectTo == null);
 };
 
 // BONSAI_URL is following format:
