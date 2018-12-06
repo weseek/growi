@@ -55,29 +55,5 @@
 
 </div>{# /.main #}
 
-<!-- TODO: エラー表示の日英切替 & GC-303によってエラー自体が表示されなくなっているので修正. -->
-<!-- 作成ボタン押下時のエラー表示の日英対応も可能なら行う. -->
-<!-- https://weseek.myjetbrains.com/youtrack/issue/GC-1305 -->
-<script>
-$(function() {
-  $('#register-form input[name="registerForm[username]"]').change(function(e) {
-    var username = $(this).val();
-    $('#login-dialog').removeClass('has-error');
-    $('#input-group-username').removeClass('has-error');
-    $('#help-block-username').html("");
-
-    $.getJSON('/_api/check_username', {username: username}, function(json) {
-      if (!json.valid) {
-        $('#help-block-username').html(
-          '<i class="icon-fw icon-ban"></i>{{ t("installer.unavaliable_user_id") }}'
-        );
-        $('#login-dialog').addClass('has-error');
-        $('#input-group-username').addClass('has-error');
-      }
-    });
-  });
-});
-</script>
-
 {% endblock %}
 
