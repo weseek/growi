@@ -85,6 +85,15 @@
         "like_count": {
           "type": "integer"
         },
+        "grant": {
+          "type": "integer"
+        },
+        "granted_users": {
+          "type": "keyword"
+        },
+        "granted_group": {
+          "type": "keyword"
+        },
         "created_at": {
           "type": "date",
           "format": "dateOptionalTime"

@@ -125,6 +125,29 @@ SearchClient.prototype.deleteIndex = function(uri) {
   });
 };
 
+/**
+ *
+ */
+function generateDocContentsRelatedToRestriction(page) {
+  let grantedUsers = null;
+  if (page.grantedUsers != null) {
+    grantedUsers = page.grantedUsers.map(user => {
+      return (user._id == null) ? user.toString() : user._id.toString();
+    });
+  }
+
+  let grantedGroup = null;
+  if (page.grantedGroup != null) {
+    grantedGroup = (page.grantedGroup._id == null) ? page.grantedGroup.toString() : page.grantedGroup._id.toString();
+  }
+
+  return {
+    grant: page.grant,
+    granted_users: grantedUsers,
+    granted_group: grantedGroup,
+  };
+}
+
 SearchClient.prototype.prepareBodyForUpdate = function(body, page) {
   if (!Array.isArray(body)) {
     throw new Error('Body must be an array.');
@@ -139,19 +162,21 @@ SearchClient.prototype.prepareBodyForUpdate = function(body, page) {
   };
 
   let document = {
-    doc: {
-      path: page.path,
-      body: page.revision.body,
-      comment_count: page.commentCount,
-      bookmark_count: page.bookmarkCount || 0,
-      like_count: page.liker.length || 0,
-      updated_at: page.updatedAt,
-    },
-    doc_as_upsert: true,
+    path: page.path,
+    body: page.revision.body,
+    comment_count: page.commentCount,
+    bookmark_count: page.bookmarkCount || 0,
+    like_count: page.liker.length || 0,
+    updated_at: page.updatedAt,
   };
 
+  document = Object.assign(document, generateDocContentsRelatedToRestriction(page));
+
   body.push(command);
-  body.push(document);
+  body.push({
+    doc: document,
+    doc_as_upsert: true,
+  });
 };
 
 SearchClient.prototype.prepareBodyForCreate = function(body, page) {
@@ -178,6 +203,8 @@ SearchClient.prototype.prepareBodyForCreate = function(body, page) {
     created_at: page.createdAt,
     updated_at: page.updatedAt,
   };
+
+  document = Object.assign(document, generateDocContentsRelatedToRestriction(page));
 
   body.push(command);
   body.push(document);
