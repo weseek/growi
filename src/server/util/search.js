@@ -126,19 +126,21 @@ SearchClient.prototype.deleteIndex = function(uri) {
 };
 
 /**
- *
+ * generate object that is related to page.grant*
  */
 function generateDocContentsRelatedToRestriction(page) {
   let grantedUsers = null;
   if (page.grantedUsers != null) {
     grantedUsers = page.grantedUsers.map(user => {
-      return (user._id == null) ? user.toString() : user._id.toString();
+      const userId = (user._id == null) ? user : user._id;
+      return userId.toString();
     });
   }
 
   let grantedGroup = null;
   if (page.grantedGroup != null) {
-    grantedGroup = (page.grantedGroup._id == null) ? page.grantedGroup.toString() : page.grantedGroup._id.toString();
+    const groupId = (page.grantedGroup._id == null) ? page.grantedGroup : page.grantedGroup._id;
+    return groupId.toString();
   }
 
   return {
