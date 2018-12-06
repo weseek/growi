@@ -34,13 +34,16 @@ module.exports = function(crowi, app) {
 
   actions.createAdmin = function(req, res) {
     var registerForm = req.body.registerForm || {};
-    var language = req.language || 'en-US';
 
     if (req.form.isValid) {
       var name = registerForm.name;
       var username = registerForm.username;
       var email = registerForm.email;
       var password = registerForm.password;
+      var language = registerForm['app:globalLang'] || (req.language || 'en-US');
+      // for config.globalLang setting.
+      var langForm = {};
+      langForm['app:globalLang'] = language;
 
       User.createUserByEmailAndPassword(name, username, email, password, language, function(err, userData) {
         if (err) {
@@ -68,6 +71,11 @@ module.exports = function(crowi, app) {
 
           // create initial pages
           createInitialPages(userData, language);
+        });
+
+        // save config settings, and update config cache
+        Config.updateNamespaceByArray('crowi', langForm, function(err, config) {
+          Config.updateConfigCache('crowi', config);
         });
       });
     }
