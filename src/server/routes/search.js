@@ -30,7 +30,7 @@ module.exports = function(crowi, app) {
    * @apiParam {String} offset
    * @apiParam {String} limit
    */
-  api.search = function(req, res) {
+  api.search = async function(req, res) {
     const { q: keyword = null, tree = null, type = null } = req.query;
     let paginateOpts;
 
@@ -51,38 +51,38 @@ module.exports = function(crowi, app) {
     }
 
     const searchOpts = { ...paginateOpts, type };
-    let doSearch;
-    if (tree) {
-      doSearch = search.searchKeywordUnderPath(keyword, tree, searchOpts);
-    }
-    else {
-      doSearch = search.searchKeyword(keyword, searchOpts);
-    }
-    const result = {};
-    doSearch
-      .then(function(data) {
-        result.meta = data.meta;
-        result.searchResult = data.data;
 
-        return Page.populatePageListToAnyObjects(data.data);
-      })
-      .then(function(pages) {
-        result.data = pages
-          .filter(page => {
-            if (Object.keys(page).length < 12) {
-              // FIXME: 12 is a number of columns.
-              return false;
-            }
-            return true;
-          })
-          .map(page => {
-            return { ...page, bookmarkCount: (page._source && page._source.bookmark_count) || 0 };
-          });
-        return res.json(ApiResponse.success(result));
-      })
-      .catch(function(err) {
-        return res.json(ApiResponse.error(err));
-      });
+    const result = {};
+    try {
+      let esResult;
+      if (tree) {
+        esResult = await search.searchKeywordUnderPath(keyword, tree, searchOpts);
+      }
+      else {
+        esResult = await search.searchKeyword(keyword, searchOpts);
+      }
+
+      const pages = await Page.populatePageListToAnyObjects(esResult.data);
+
+      result.meta = esResult.meta;
+      result.searchResult = esResult.data;
+      result.data = pages
+        .filter(page => {
+          if (Object.keys(page).length < 12) {
+            // FIXME: 12 is a number of columns.
+            return false;
+          }
+          return true;
+        })
+        .map(page => {
+          return { ...page, bookmarkCount: (page._source && page._source.bookmark_count) || 0 };
+        });
+    }
+    catch (err) {
+      return res.json(ApiResponse.error(err));
+    }
+
+    return res.json(ApiResponse.success(result));
   };
 
   return actions;
