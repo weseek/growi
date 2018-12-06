@@ -112,14 +112,8 @@ module.exports = function(crowi, app) {
    * @apiGroup Attachment
    */
   api.limit = async function(req, res) {
-    if (process.env.FILE_UPLOAD !== 'mongodb') {
-      return res.json(ApiResponse.success({usableCapacity: null}));
-    }
-    else {
-      const usingFilesSize = await fileUploader.getCollectionSize();
-      const usableCapacity = +process.env.GRIDFS_LIMIT - usingFilesSize;
-      return res.json(ApiResponse.success({usableCapacity: usableCapacity}));
-    }
+    const isUploadable = await fileUploader.checkCapacity(req.query.fileSize);
+    return res.json(ApiResponse.success({isUploadable: isUploadable}));
   };
 
   /**
@@ -139,12 +133,9 @@ module.exports = function(crowi, app) {
     debug('id and path are: ', id, path);
 
     var tmpFile = req.file || null;
-    if (process.env.FILE_UPLOAD == 'mongodb') {
-      const usingFilesSize = await fileUploader.getCollectionSize();
-      const usableCapacity = +process.env.GRIDFS_LIMIT - usingFilesSize;
-      if (tmpFile.size > usableCapacity) {
-        return res.json(ApiResponse.error('MongoDB for uploading files reaches limit'));
-      }
+    const isUploadable = await fileUploader.checkCapacity(tmpFile.size);
+    if (!isUploadable) {
+      return res.json(ApiResponse.error('MongoDB for uploading files reaches limit'));
     }
     debug('Uploaded tmpFile: ', tmpFile);
     if (!tmpFile) {

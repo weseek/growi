@@ -48,7 +48,7 @@ module.exports = function(crowi) {
   /**
    * get size of data uploaded files using (Promise wrapper)
    */
-  lib.getCollectionSize = () => {
+  const getCollectionSize = () => {
     return new Promise((resolve, reject) => {
       Chunks.collection.stats((err, data) => {
         if (err) {
@@ -57,6 +57,17 @@ module.exports = function(crowi) {
         resolve(data.size);
       });
     });
+  };
+
+  /**
+   * chech storage for fileUpload reaches MONGODB_GRIDFS_LIMIT (for gridfs)
+   */
+  lib.checkCapacity = async(uploadFileSize) => {
+    const usingFilesSize = await getCollectionSize();
+    if (+process.env.MONGODB_GRIDFS_LIMIT > usingFilesSize + +uploadFileSize) {
+      return true;
+    }
+    return false;
   };
 
   lib.uploadFile = async function(filePath, contentType, fileStream, options) {

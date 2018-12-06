@@ -55,6 +55,13 @@ module.exports = function(crowi) {
     return Promise.resolve(lib.generateUrl(filePath));
   };
 
+  /**
+   * chech storage for fileUpload reaches MONGODB_GRIDFS_LIMIT (for gridfs)
+   */
+  lib.checkCapacity = async(uploadFileSize) => {
+    return true;
+  };
+
   return lib;
 };
 
