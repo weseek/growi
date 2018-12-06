@@ -99,12 +99,12 @@ export default class GrowiRenderer {
           new TableConfigurer(crowi)
         ]);
         break;
-      case 'comment':
+      // case 'comment':
+      //   break;
+      default:
         this.markdownItConfigurers = this.markdownItConfigurers.concat([
           new TableConfigurer(crowi)
         ]);
-        break;
-      default:
         break;
     }
   }
