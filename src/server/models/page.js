@@ -808,13 +808,7 @@ module.exports = function(crowi) {
    * Bulk get (for internal only)
    */
   pageSchema.statics.getStreamOfFindAll = function(options) {
-    const opt = options || {};
-    const publicOnly = opt.publicOnly || true;
     const criteria = { redirectTo: null };
-
-    if (publicOnly) {
-      criteria.grant = GRANT_PUBLIC;
-    }
 
     return this.find(criteria)
       .populate([{ path: 'creator', model: 'User' }, { path: 'revision', model: 'Revision' }])
