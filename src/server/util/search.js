@@ -129,24 +129,24 @@ SearchClient.prototype.deleteIndex = function(uri) {
  * generate object that is related to page.grant*
  */
 function generateDocContentsRelatedToRestriction(page) {
-  let grantedUsers = null;
-  if (page.grantedUsers != null) {
-    grantedUsers = page.grantedUsers.map(user => {
+  let grantedUserIds = null;
+  if (page.grantedUsers != null && page.grantedUsers.length > 0) {
+    grantedUserIds = page.grantedUsers.map(user => {
       const userId = (user._id == null) ? user : user._id;
       return userId.toString();
     });
   }
 
-  let grantedGroup = null;
+  let grantedGroupId = null;
   if (page.grantedGroup != null) {
     const groupId = (page.grantedGroup._id == null) ? page.grantedGroup : page.grantedGroup._id;
-    return groupId.toString();
+    grantedGroupId = groupId.toString();
   }
 
   return {
     grant: page.grant,
-    granted_users: grantedUsers,
-    granted_group: grantedGroup,
+    granted_users: grantedUserIds,
+    granted_group: grantedGroupId,
   };
 }
 
