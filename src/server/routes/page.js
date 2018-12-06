@@ -434,36 +434,6 @@ module.exports = function(crowi, app) {
 
   };
 
-  actions.search = function(req, res) {
-    // spec: ?q=query&sort=sort_order&author=author_filter
-    const query = req.query.q;
-    const search = require('../util/search')(crowi);
-
-    search.searchPageByKeyword(query)
-    .then(function(pages) {
-      debug('pages', pages);
-
-      if (pages.hits.total <= 0) {
-        return Promise.resolve([]);
-      }
-
-      const ids = pages.hits.hits.map(function(page) {
-        return page._id;
-      });
-
-      return Page.findListByPageIds(ids);
-    }).then(function(pages) {
-
-      res.render('customlayout-selector/page_list', {
-        path: '/',
-        pages: pagePathUtils.encodePagesPath(pages),
-        pager: generatePager(0, 50)
-      });
-    }).catch(function(err) {
-      debug('search error', err);
-    });
-  };
-
   /**
    * redirector
    */

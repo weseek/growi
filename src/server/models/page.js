@@ -398,31 +398,6 @@ module.exports = function(crowi) {
     return this.populate('revision').execPopulate();
   };
 
-  // TODO abolish or migrate
-  // https://weseek.myjetbrains.com/youtrack/issue/GC-1185
-  pageSchema.statics.populatePageListToAnyObjects = function(pageIdObjectArray) {
-    var Page = this;
-    var pageIdMappings = {};
-    var pageIds = pageIdObjectArray.map(function(page, idx) {
-      if (!page._id) {
-        throw new Error('Pass the arg of populatePageListToAnyObjects() must have _id on each element.');
-      }
-
-      pageIdMappings[String(page._id)] = idx;
-      return page._id;
-    });
-
-    return new Promise(function(resolve, reject) {
-      Page.findListByPageIds(pageIds, {limit: 100}) // limit => if the pagIds is greater than 100, ignore
-      .then(function(pages) {
-        pages.forEach(function(page) {
-          Object.assign(pageIdObjectArray[pageIdMappings[String(page._id)]], page._doc);
-        });
-
-        resolve(pageIdObjectArray);
-      });
-    });
-  };
 
   pageSchema.statics.updateCommentCount = function(pageId) {
     validateCrowi();
@@ -638,6 +613,34 @@ module.exports = function(crowi) {
     return await findListFromBuilderAndViewer(builder, currentUser, opt);
   };
 
+  pageSchema.statics.findListByPageIds = async function(ids, user, option) {
+    const User = crowi.model('User');
+
+    const opt = Object.assign({}, option);
+    const builder = new PageQueryBuilder(this.find({ _id: { $in: ids } }));
+
+    builder.addConditionToExcludeRedirect();
+    builder.addConditionToPagenate(opt.offset, opt.limit);
+
+    const totalCount = await builder.query.exec('count');
+    const q = builder.query
+      .populate([
+        {path: 'lastUpdateUser', model: 'User', select: User.USER_PUBLIC_FIELDS},
+        {path: 'creator', model: 'User', select: User.USER_PUBLIC_FIELDS},
+        {path: 'revision', model: 'Revision', populate: {
+          path: 'author', model: 'User', select: User.USER_PUBLIC_FIELDS
+        }},
+        //{path: 'liker', options: { limit: 11 }},
+        //{path: 'seenUsers', options: { limit: 11 }},
+      ]);
+    const pages = await q.exec('find');
+
+    const result = { pages, totalCount, offset: opt.offset, limit: opt.limit };
+    return result;
+
+  };
+
+
   /**
    * find pages by PageQueryBuilder
    * @param {PageQueryBuilder} builder
@@ -801,45 +804,6 @@ module.exports = function(crowi) {
 
     return templateBody;
   };
-
-  // TODO refactor
-  // https://weseek.myjetbrains.com/youtrack/issue/GC-1185
-  pageSchema.statics.findListByPageIds = function(ids, options) {
-    validateCrowi();
-
-    const Page = this;
-    const User = crowi.model('User');
-    const limit = options.limit || 50
-      , offset = options.skip || 0
-      ;
-    options = options || {};
-
-    return new Promise(function(resolve, reject) {
-      Page
-      .find({ _id: { $in: ids }, grant: GRANT_PUBLIC })
-      //.sort({createdAt: -1}) // TODO optionize
-      .skip(offset)
-      .limit(limit)
-      .populate([
-        {path: 'creator', model: 'User', select: User.USER_PUBLIC_FIELDS},
-        {path: 'revision', model: 'Revision'},
-      ])
-      .exec(function(err, pages) {
-        if (err) {
-          return reject(err);
-        }
-
-        Page.populate(pages, {path: 'lastUpdateUser', model: 'User', select: User.USER_PUBLIC_FIELDS}, function(err, data) {
-          if (err) {
-            return reject(err);
-          }
-
-          return resolve(data);
-        });
-      });
-    });
-  };
-
 
   /**
    * Bulk get (for internal only)

@@ -62,20 +62,14 @@ module.exports = function(crowi, app) {
         esResult = await search.searchKeyword(keyword, searchOpts);
       }
 
-      const pages = await Page.populatePageListToAnyObjects(esResult.data);
+      const findResult = await Page.findListByPageIds(esResult.data, { limit: 50 });
 
       result.meta = esResult.meta;
-      result.searchResult = esResult.data;
-      result.data = pages
-        .filter(page => {
-          if (Object.keys(page).length < 12) {
-            // FIXME: 12 is a number of columns.
-            return false;
-          }
-          return true;
-        })
+      result.totalCount = findResult.totalCount;
+      result.data = findResult.pages
         .map(page => {
-          return { ...page, bookmarkCount: (page._source && page._source.bookmark_count) || 0 };
+          page.bookmarkCount = (page._source && page._source.bookmark_count) || 0;
+          return page;
         });
     }
     catch (err) {
