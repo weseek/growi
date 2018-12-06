@@ -78,11 +78,12 @@ const addSlashOfEnd = (path) => {
  */
 const populateDataToShowRevision = (page, userPublicFields) => {
   return page
-    .populate({path: 'lastUpdateUser', model: 'User', select: userPublicFields})
-    .populate({path: 'creator', model: 'User', select: userPublicFields})
-    .populate({path: 'revision', model: 'Revision', populate: {
+    .populate({ path: 'lastUpdateUser', model: 'User', select: userPublicFields })
+    .populate({ path: 'creator', model: 'User', select: userPublicFields })
+    .populate({ path: 'grantedGroup', model: 'UserGroup' })
+    .populate({ path: 'revision', model: 'Revision', populate: {
       path: 'author', model: 'User', select: userPublicFields
-    }});
+    } });
 };
 
 
@@ -811,7 +812,10 @@ module.exports = function(crowi) {
     const criteria = { redirectTo: null };
 
     return this.find(criteria)
-      .populate([{ path: 'creator', model: 'User' }, { path: 'revision', model: 'Revision' }])
+      .populate([
+        { path: 'creator', model: 'User' },
+        { path: 'revision', model: 'Revision' },
+      ])
       .lean()
       .cursor();
   };
