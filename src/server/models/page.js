@@ -71,6 +71,20 @@ const addSlashOfEnd = (path) => {
   return returnPath;
 };
 
+/**
+ * populate page (Query or Document) to show revision
+ * @param {any} page Query or Document
+ * @param {string} userPublicFields string to set to select
+ */
+const populateDataToShowRevision = (page, userPublicFields) => {
+  return page
+    .populate({path: 'lastUpdateUser', model: 'User', select: userPublicFields})
+    .populate({path: 'creator', model: 'User', select: userPublicFields})
+    .populate({path: 'revision', model: 'Revision', populate: {
+      path: 'author', model: 'User', select: userPublicFields
+    }});
+};
+
 
 class PageQueryBuilder {
   constructor(query) {
@@ -199,6 +213,12 @@ class PageQueryBuilder {
 
     return this;
   }
+
+  populateDataToShowRevision(userPublicFields) {
+    this.query = populateDataToShowRevision(this.query, userPublicFields);
+    return this;
+  }
+
 }
 
 module.exports = function(crowi) {
@@ -365,28 +385,18 @@ module.exports = function(crowi) {
     });
   };
 
-  pageSchema.methods.populateDataToShow = async function(revisionId) {
-    validateCrowi();
-
-    const User = crowi.model('User');
-
+  pageSchema.methods.initLatestRevisionField = async function(revisionId) {
     this.latestRevision = this.revision;
     if (revisionId != null) {
       this.revision = revisionId;
     }
-    this.likerCount = this.liker.length || 0;
-    this.seenUsersCount = this.seenUsers.length || 0;
+  };
 
-    return this
-      .populate([
-        {path: 'lastUpdateUser', model: 'User', select: User.USER_PUBLIC_FIELDS},
-        {path: 'creator', model: 'User', select: User.USER_PUBLIC_FIELDS},
-        {path: 'revision', model: 'Revision', populate: {
-          path: 'author', model: 'User', select: User.USER_PUBLIC_FIELDS
-        }},
-        //{path: 'liker', options: { limit: 11 }},
-        //{path: 'seenUsers', options: { limit: 11 }},
-      ])
+  pageSchema.methods.populateDataToShowRevision = async function() {
+    validateCrowi();
+
+    const User = crowi.model('User');
+    return populateDataToShowRevision(this, User.USER_PUBLIC_FIELDS)
       .execPopulate();
   };
 
@@ -621,18 +631,11 @@ module.exports = function(crowi) {
 
     builder.addConditionToExcludeRedirect();
     builder.addConditionToPagenate(opt.offset, opt.limit);
+    builder.populateDataToShowRevision(User.USER_PUBLIC_FIELDS);  // TODO omit this line after fixing GC-1323
+                                                                  // https://weseek.myjetbrains.com/youtrack/issue/GC-1323
 
     const totalCount = await builder.query.exec('count');
-    const q = builder.query
-      .populate([
-        {path: 'lastUpdateUser', model: 'User', select: User.USER_PUBLIC_FIELDS},
-        {path: 'creator', model: 'User', select: User.USER_PUBLIC_FIELDS},
-        {path: 'revision', model: 'Revision', populate: {
-          path: 'author', model: 'User', select: User.USER_PUBLIC_FIELDS
-        }},
-        //{path: 'liker', options: { limit: 11 }},
-        //{path: 'seenUsers', options: { limit: 11 }},
-      ]);
+    const q = builder.query;
     const pages = await q.exec('find');
 
     const result = { pages, totalCount, offset: opt.offset, limit: opt.limit };
@@ -672,11 +675,7 @@ module.exports = function(crowi) {
 
     const totalCount = await builder.query.exec('count');
     const q = builder.query
-      .populate({
-        path: 'lastUpdateUser',
-        model: 'User',
-        select: User.USER_PUBLIC_FIELDS
-      });
+      .populate({ path: 'lastUpdateUser', model: 'User', select: User.USER_PUBLIC_FIELDS });
     const pages = await q.exec('find');
 
     const result = { pages, totalCount, offset: opt.offset, limit: opt.limit };

@@ -201,9 +201,12 @@ module.exports = function(crowi, app) {
       return next();
     }
     else if (portalPageStatus === PORTAL_STATUS_EXISTS) {
-      // populate
       let portalPage = await Page.findByPathAndViewer(path, req.user);
-      portalPage = await portalPage.populateDataToShow(revisionId);
+      portalPage.initLatestRevisionField(revisionId);
+
+      // populate
+      portalPage = await portalPage.populateDataToShowRevision();
+
       addRendarVarsForPage(renderVars, portalPage);
       await addRenderVarsForSlack(renderVars, portalPage);
     }
@@ -241,8 +244,10 @@ module.exports = function(crowi, app) {
 
     let view = 'customlayout-selector/page';
 
+    page.initLatestRevisionField(revisionId);
+
     // populate
-    page = await page.populateDataToShow(revisionId);
+    page = await page.populateDataToShowRevision();
     addRendarVarsForPage(renderVars, page);
 
     await addRenderVarsForSlack(renderVars, page);
@@ -654,7 +659,10 @@ module.exports = function(crowi, app) {
       else if (pagePath) {
         page = await Page.findByPathAndViewer(pagePath, req.user);
       }
-      page.populateDataToShow();
+      page.initLatestRevisionField();
+
+      // populate
+      page = await page.populateDataToShowRevision();
     }
     catch (err) {
       return res.json(ApiResponse.error(err));
