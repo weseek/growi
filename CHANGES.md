@@ -5,6 +5,7 @@ CHANGES
 
 * Fix: Pages in trash are available to create
 * Fix: Couldn't create portal page under Crowi Classic Behavior
+* Fix: Table tag in Timeline/SearchResult missed border and BS3 styles
 
 
 ## 3.2.9
