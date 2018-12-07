@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import PageLoader from './Page/PageLoader';
+import RevisionRenderer from './Page/RevisionRenderer';
 import HandsontableModal from './PageEditor/HandsontableModal';
 import MarkdownTable from '../models/MarkdownTable';
 import mtu from './PageEditor/MarkdownTableUtil';
@@ -44,11 +44,10 @@ export default class Page extends React.Component {
     const isMobile = this.props.crowi.isMobile;
 
     return <div className={isMobile ? 'page-mobile' : ''}>
-      <PageLoader
+      <RevisionRenderer
           crowi={this.props.crowi} crowiRenderer={this.props.crowiRenderer}
           markdown={this.state.markdown}
           pagePath={this.props.pagePath}
-          highlightKeywords={this.props.highlightKeywords}
       />
       <HandsontableModal ref='handsontableModal' onSave={this.saveHandlerForHandsontableModal} />
     </div>;
@@ -61,6 +60,5 @@ Page.propTypes = {
   onSaveWithShortcut: PropTypes.func.isRequired,
   markdown: PropTypes.string.isRequired,
   pagePath: PropTypes.string.isRequired,
-  highlightKeywords: PropTypes.string,
   showHeadEditButton: PropTypes.bool,
 };

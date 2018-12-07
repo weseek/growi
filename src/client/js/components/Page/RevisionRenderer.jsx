@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import RevisionBody from './RevisionBody';
 
-export default class PageLoader extends React.Component {
+export default class RevisionRenderer extends React.Component {
 
   constructor(props) {
     super(props);
@@ -99,7 +99,7 @@ export default class PageLoader extends React.Component {
   }
 }
 
-PageLoader.propTypes = {
+RevisionRenderer.propTypes = {
   crowi: PropTypes.object.isRequired,
   crowiRenderer: PropTypes.object.isRequired,
   markdown: PropTypes.string.isRequired,

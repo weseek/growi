@@ -17,7 +17,7 @@ require('jquery.cookie');
 require('bootstrap-select');
 
 import GrowiRenderer from '../util/GrowiRenderer';
-import Page from '../components/Page';
+import RevisionRenderer from '../components/Page/RevisionRenderer';
 
 require('./thirdparty-js/agile-admin');
 
@@ -544,7 +544,7 @@ $(function() {
         const pagePath = document.getElementById(id).getAttribute('data-page-path');
         const markdown = entities.decodeHTML($(contentId).html());
 
-        ReactDOM.render(<Page crowi={crowi} crowiRenderer={growiRendererForTimeline} markdown={markdown} pagePath={pagePath} />, revisionBodyElem);
+        ReactDOM.render(<RevisionRenderer crowi={crowi} crowiRenderer={growiRendererForTimeline} markdown={markdown} pagePath={pagePath} />, revisionBodyElem);
       });
 
       $('#view-timeline').data('shown', 1);
@@ -840,6 +840,6 @@ window.addEventListener('keydown', (event) => {
 });
 
 // adjust min-height of page for print temporarily
-window.onbeforeprint = function () {
-  $("#page-wrapper").css("min-height", "0px");
+window.onbeforeprint = function() {
+  $('#page-wrapper').css('min-height', '0px');
 };
