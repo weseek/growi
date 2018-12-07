@@ -31,8 +31,8 @@
 
   {% if useOnlyEnvVars %}
     <p class="alert alert-info">
-      現在SAML認証の各種設定値は環境変数の値のみを使用するようになっています<br>
-      この設定を変更する場合は <code>SAML_USES_ONLY_ENV_VARS</code> の値をfalseに変更もしくは削除してください
+      現在SAML認証の一部の設定値は環境変数の値のみを使用するようになっています (ハイライトされているものが対象の項目です)<br>
+      この設定を変更する場合は環境変数 <code>SAML_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS</code> の値をfalseに変更もしくは削除してください
     </p>
   {% endif %}
 
@@ -378,14 +378,12 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
 
   </fieldset>
 
-  {% if !useOnlyEnvVars %}
   <div class="form-group" id="btn-update">
     <div class="col-xs-offset-3 col-xs-6">
       <input type="hidden" name="_csrf" value="{{ csrf() }}">
       <button type="submit" class="btn btn-primary">{{ t('Update') }}</button>
     </div>
   </div>
-  {% endif %}
 
 </form>
 
