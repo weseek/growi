@@ -142,14 +142,6 @@ module.exports = function(crowi, app) {
       result.pages.pop();
     }
 
-    // populate for timeline
-    if (Config.isEnabledTimeline(config)) {
-      await Page.populate(result.pages, {
-        path: 'revision',
-        model: 'Revision',
-      });
-    }
-
     renderVars.viewConfig = {
       seener_threshold: SEENER_THRESHOLD,
     };

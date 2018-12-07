@@ -624,16 +624,12 @@ module.exports = function(crowi) {
     return await findListFromBuilderAndViewer(builder, currentUser, opt);
   };
 
-  pageSchema.statics.findListByPageIds = async function(ids, user, option) {
-    const User = crowi.model('User');
-
+  pageSchema.statics.findListByPageIds = async function(ids, option) {
     const opt = Object.assign({}, option);
     const builder = new PageQueryBuilder(this.find({ _id: { $in: ids } }));
 
     builder.addConditionToExcludeRedirect();
     builder.addConditionToPagenate(opt.offset, opt.limit);
-    builder.populateDataToShowRevision(User.USER_PUBLIC_FIELDS);  // TODO omit this line after fixing GC-1323
-                                                                  // https://weseek.myjetbrains.com/youtrack/issue/GC-1323
 
     const totalCount = await builder.query.exec('count');
     const q = builder.query;
@@ -641,7 +637,6 @@ module.exports = function(crowi) {
 
     const result = { pages, totalCount, offset: opt.offset, limit: opt.limit };
     return result;
-
   };
 
 

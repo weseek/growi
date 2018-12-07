@@ -343,8 +343,6 @@ SearchClient.prototype.addAllPages = async function() {
  * }
  */
 SearchClient.prototype.search = async function(query) {
-  let self = this;
-
   // for debug
   if (process.env.NODE_ENV === 'development') {
     const result = await this.client.indices.validateQuery({
@@ -356,28 +354,19 @@ SearchClient.prototype.search = async function(query) {
     logger.info('ES returns explanations: ', result.explanations);
   }
 
-  return new Promise(function(resolve, reject) {
-    self.client
-      .search(query)
-      .then(function(data) {
-        let result = {
-          meta: {
-            took: data.took,
-            total: data.hits.total,
-            results: data.hits.hits.length,
-          },
-          data: data.hits.hits.map(function(elm) {
-            return { _id: elm._id, _score: elm._score, _source: elm._source };
-          }),
-        };
+  const result = await this.client.search(query);
 
-        resolve(result);
-      })
-      .catch(function(err) {
-        logger.error('Search error', err);
-        reject(err);
-      });
-  });
+  return {
+    meta: {
+      took: result.took,
+      total: result.hits.total,
+      results: result.hits.hits.length,
+    },
+    data: result.hits.hits.map(function(elm) {
+      return { _id: elm._id, _score: elm._score, _source: elm._source };
+    }),
+  };
+
 };
 
 SearchClient.prototype.createSearchQuerySortedByUpdatedAt = function(option) {
