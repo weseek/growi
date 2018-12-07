@@ -10,15 +10,16 @@ export default class RevisionRenderer extends React.Component {
 
     this.state = {
       html: '',
-      markdown: '',
     };
 
     this.renderHtml = this.renderHtml.bind(this);
     this.getHighlightedBody = this.getHighlightedBody.bind(this);
+
+    this.setMarkdown(this.props.markdown);
   }
 
-  componentWillMount() {
-    this.renderHtml(this.props.markdown, this.props.highlightKeywords);
+  componentWillReceiveProps(nextProps) {
+    this.renderHtml(nextProps.markdown, this.props.highlightKeywords);
   }
 
   setMarkdown(markdown) {
@@ -50,7 +51,6 @@ export default class RevisionRenderer extends React.Component {
   renderHtml(markdown, highlightKeywords) {
     let context = {
       markdown,
-      dom: this.revisionBodyElement,
       currentPagePath: this.props.pagePath,
     };
 
@@ -67,7 +67,7 @@ export default class RevisionRenderer extends React.Component {
       })
       .then(() => interceptorManager.process('prePostProcess', context))
       .then(() => {
-        context.parsedHTML = crowiRenderer.postProcess(context.parsedHTML, context.dom);
+        context.parsedHTML = crowiRenderer.postProcess(context.parsedHTML);
 
         // highlight
         if (highlightKeywords != null) {
@@ -91,7 +91,6 @@ export default class RevisionRenderer extends React.Component {
     return (
       <RevisionBody
           html={this.state.html}
-          inputRef={el => this.revisionBodyElement = el}
           isMathJaxEnabled={isMathJaxEnabled}
           renderMathJaxOnInit={true}
       />

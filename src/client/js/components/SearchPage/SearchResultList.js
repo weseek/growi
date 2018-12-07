@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import GrowiRenderer from '../../util/GrowiRenderer';
 
-import RevisionRenderer from '../Page/RevisionRenderer';
+import RevisionLoader from '../Page/RevisionLoader';
 
 export default class SearchResultList extends React.Component {
 
@@ -15,15 +15,16 @@ export default class SearchResultList extends React.Component {
 
   render() {
     const resultList = this.props.pages.map((page) => {
-      const pageBody = page.revision.body;
       return (
         <div id={page._id} key={page._id} className="search-result-page">
           <h2><a href={page.path}>{page.path}</a></h2>
-          <RevisionRenderer
+          <RevisionLoader
             crowi={this.props.crowi}
             crowiRenderer={this.growiRenderer}
-            markdown={pageBody}
+            pageId={page._id}
             pagePath={page.path}
+            revisionId={page.revision}
+            lazy={true}
             highlightKeywords={this.props.searchingKeyword}
           />
         </div>
