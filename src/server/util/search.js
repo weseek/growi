@@ -527,7 +527,21 @@ SearchClient.prototype.appendCriteriaForPathFilter = function(query, path) {
   });
 };
 
-SearchClient.prototype.filterPagesByViewer = function(query, user, userGroups) {
+SearchClient.prototype.filterPagesByViewer = async function(query, user, userGroups) {
+  const Config = this.crowi.model('Config');
+  const config = this.crowi.getConfig();
+
+  // determine User condition
+  const hidePagesRestrictedByOwner = Config.hidePagesRestrictedByOwnerInList(config);
+  user = hidePagesRestrictedByOwner ? user : null;
+
+  // determine UserGroup condition
+  const hidePagesRestrictedByGroup = Config.hidePagesRestrictedByGroupInList(config);
+  if (hidePagesRestrictedByGroup && user != null) {
+    const UserGroupRelation = this.crowi.model('UserGroupRelation');
+    userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
+  }
+
   query = this.initializeBoolQuery(query);
 
   const Page = this.crowi.model('Page');
@@ -567,7 +581,12 @@ SearchClient.prototype.filterPagesByViewer = function(query, user, userGroups) {
     );
   }
 
-  if (userGroups != null && userGroups.length > 0) {
+  if (userGroups == null) {
+    grantConditions.push(
+      { term: { grant: GRANT_USER_GROUP } },
+    );
+  }
+  else if (userGroups.length > 0) {
     const userGroupIds = userGroups.map(group => group._id.toString() );
     grantConditions.push(
       { bool: {
@@ -635,7 +654,7 @@ SearchClient.prototype.appendFunctionScore = function(query) {
   };
 };
 
-SearchClient.prototype.searchKeyword = function(keyword, user, userGroups, option) {
+SearchClient.prototype.searchKeyword = async function(keyword, user, userGroups, option) {
   const from = option.offset || null;
   const size = option.limit || null;
   const type = option.type || null;
@@ -643,7 +662,7 @@ SearchClient.prototype.searchKeyword = function(keyword, user, userGroups, optio
   this.appendCriteriaForKeywordContains(query, keyword);
 
   this.filterPagesByType(query, type);
-  this.filterPagesByViewer(query, user, userGroups);
+  await this.filterPagesByViewer(query, user, userGroups);
 
   this.appendResultSize(query, from, size);
 
@@ -652,11 +671,11 @@ SearchClient.prototype.searchKeyword = function(keyword, user, userGroups, optio
   return this.search(query);
 };
 
-SearchClient.prototype.searchByPath = function(keyword, prefix) {
+SearchClient.prototype.searchByPath = async function(keyword, prefix) {
   // TODO path 名だけから検索
 };
 
-SearchClient.prototype.searchKeywordUnderPath = function(keyword, path, user, userGroups, option) {
+SearchClient.prototype.searchKeywordUnderPath = async function(keyword, path, user, userGroups, option) {
   const from = option.offset || null;
   const size = option.limit || null;
   const type = option.type || null;
@@ -665,7 +684,7 @@ SearchClient.prototype.searchKeywordUnderPath = function(keyword, path, user, us
   this.appendCriteriaForPathFilter(query, path);
 
   this.filterPagesByType(query, type);
-  this.filterPagesByViewer(query, user, userGroups);
+  await this.filterPagesByViewer(query, user, userGroups);
 
   this.appendResultSize(query, from, size);
 
