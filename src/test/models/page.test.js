@@ -1,140 +1,120 @@
-var chai = require('chai')
+const chai = require('chai')
   , expect = chai.expect
-  , sinon = require('sinon')
   , sinonChai = require('sinon-chai')
   , utils = require('../utils.js')
   ;
 chai.use(sinonChai);
 
 describe('Page', () => {
-  var Page = utils.models.Page,
+  const Page = utils.models.Page,
     User   = utils.models.User,
-    UserGroup = utils.models.UserGroup,
-    UserGroupRelation = utils.models.UserGroupRelation,
-    PageGroupRelation = utils.models.PageGroupRelation,
-    conn   = utils.mongoose.connection,
-    createdPages,
+    conn   = utils.mongoose.connection;
+
+  let createdPages,
     createdUsers,
     createdUserGroups;
 
-  before(done => {
-    conn.collection('pages').remove().then(() => {
-      var userFixture = [
-        { name: 'Anon 0', username: 'anonymous0', email: 'anonymous0@example.com' },
-        { name: 'Anon 1', username: 'anonymous1', email: 'anonymous1@example.com' },
-        { name: 'Anon 2', username: 'anonymous2', email: 'anonymous2@example.com' },
-      ];
+  before(async() => {
+    await conn.collection('pages').remove();
 
-      return testDBUtil.generateFixture(conn, 'User', userFixture);
-    }).then(testUsers => {
-      createdUsers = testUsers;
-      var testUser0 = testUsers[0];
-      var testUser1 = testUsers[1];
+    const userFixture = [
+      { name: 'Anon 0', username: 'anonymous0', email: 'anonymous0@example.com' },
+      { name: 'Anon 1', username: 'anonymous1', email: 'anonymous1@example.com' },
+      { name: 'Anon 2', username: 'anonymous2', email: 'anonymous2@example.com' },
+    ];
 
-      var fixture = [
-        {
-          path: '/user/anonymous0/memo',
-          grant: Page.GRANT_RESTRICTED,
-          grantedUsers: [testUser0],
-          creator: testUser0
-        },
-        {
-          path: '/grant/public',
-          grant: Page.GRANT_PUBLIC,
-          grantedUsers: [testUser0],
-          creator: testUser0
-        },
-        {
-          path: '/grant/restricted',
-          grant: Page.GRANT_RESTRICTED,
-          grantedUsers: [testUser0],
-          creator: testUser0
-        },
-        {
-          path: '/grant/specified',
-          grant: Page.GRANT_SPECIFIED,
-          grantedUsers: [testUser0],
-          creator: testUser0
-        },
-        {
-          path: '/grant/owner',
-          grant: Page.GRANT_OWNER,
-          grantedUsers: [testUser0],
-          creator: testUser0,
-        },
-        {
-          path: '/page/for/extended',
-          grant: Page.GRANT_PUBLIC,
-          creator: testUser0,
-          extended: {hoge: 1}
-        },
-        {
-          path: '/grant/groupacl',
-          grant: 5,
-          grantedUsers: [],
-          creator: testUser1,
-        },
-        {
-          path: '/page1',
-          grant: Page.GRANT_PUBLIC,
-          creator: testUser0,
-        },
-        {
-          path: '/page1/child1',
-          grant: Page.GRANT_PUBLIC,
-          creator: testUser0,
-        },
-        {
-          path: '/page2',
-          grant: Page.GRANT_PUBLIC,
-          creator: testUser0,
-        },
-      ];
+    createdUsers = await testDBUtil.generateFixture(conn, 'User', userFixture);
 
-      return testDBUtil.generateFixture(conn, 'Page', fixture);
-    })
-    .then(pages => {
-      createdPages = pages;
-      groupFixture = [
-        {
-          image: '',
-          name: 'TestGroup0',
-        },
-        {
-          image: '',
-          name: 'TestGroup1',
-        },
-      ];
+    const testUser0 = createdUsers[0];
+    const testUser1 = createdUsers[1];
 
-      return testDBUtil.generateFixture(conn, 'UserGroup', groupFixture);
-    })
-    .then(userGroups => {
-      createdUserGroups = userGroups;
-      testGroup0 = createdUserGroups[0];
-      testUser0 = createdUsers[0];
-      userGroupRelationFixture = [
-        {
-          relatedGroup: testGroup0,
-          relatedUser: testUser0,
-        }
-      ];
-      return testDBUtil.generateFixture(conn, 'UserGroupRelation', userGroupRelationFixture);
-    })
-    .then(userGroupRelations => {
-      testGroup0 = createdUserGroups[0];
-      testPage = createdPages[6];
-      pageGroupRelationFixture = [
-        {
-          relatedGroup: testGroup0,
-          targetPage: testPage,
-        }
-      ];
+    const groupFixture = [
+      {
+        image: '',
+        name: 'TestGroup0',
+      },
+      {
+        image: '',
+        name: 'TestGroup1',
+      },
+    ];
+    createdUserGroups = await testDBUtil.generateFixture(conn, 'UserGroup', groupFixture);
 
-      return testDBUtil.generateFixture(conn, 'PageGroupRelation', pageGroupRelationFixture)
-      .then(pageGroupRelations => {
-        done();
-      });
-    });
+    const testGroup0 = createdUserGroups[0];
+    const userGroupRelationFixture = [
+      {
+        relatedGroup: testGroup0,
+        relatedUser: testUser0,
+      },
+      {
+        relatedGroup: testGroup0,
+        relatedUser: testUser1,
+      }
+    ];
+    await testDBUtil.generateFixture(conn, 'UserGroupRelation', userGroupRelationFixture);
+
+    const fixture = [
+      {
+        path: '/user/anonymous0/memo',
+        grant: Page.GRANT_RESTRICTED,
+        grantedUsers: [testUser0],
+        creator: testUser0
+      },
+      {
+        path: '/grant/public',
+        grant: Page.GRANT_PUBLIC,
+        grantedUsers: [testUser0],
+        creator: testUser0
+      },
+      {
+        path: '/grant/restricted',
+        grant: Page.GRANT_RESTRICTED,
+        grantedUsers: [testUser0],
+        creator: testUser0
+      },
+      {
+        path: '/grant/specified',
+        grant: Page.GRANT_SPECIFIED,
+        grantedUsers: [testUser0],
+        creator: testUser0
+      },
+      {
+        path: '/grant/owner',
+        grant: Page.GRANT_OWNER,
+        grantedUsers: [testUser0],
+        creator: testUser0,
+      },
+      {
+        path: '/page/for/extended',
+        grant: Page.GRANT_PUBLIC,
+        creator: testUser0,
+        extended: {hoge: 1}
+      },
+      {
+        path: '/grant/groupacl',
+        grant: 5,
+        grantedUsers: [],
+        grantedGroup: testGroup0,
+        creator: testUser1,
+      },
+      {
+        path: '/page1',
+        grant: Page.GRANT_PUBLIC,
+        creator: testUser0,
+      },
+      {
+        path: '/page1/child1',
+        grant: Page.GRANT_PUBLIC,
+        creator: testUser0,
+      },
+      {
+        path: '/page2',
+        grant: Page.GRANT_PUBLIC,
+        creator: testUser0,
+      },
+    ];
+    createdPages = await testDBUtil.generateFixture(conn, 'Page', fixture);
+
   });
 
   describe('.isPublic', () => {
@@ -229,77 +209,34 @@ describe('Page', () => {
     });
   });
 
-  describe('.isCreator', () => {
-    context('with creator', () => {
-      it('should return true', done => {
-        User.findOne({email: 'anonymous0@example.com'}, (err, user) => {
-          if (err) { done(err); }
-
-          Page.findOne({path: '/user/anonymous0/memo'}, (err, page) => {
-            expect(page.isCreator(user)).to.be.equal(true);
-            done();
-          })
-        });
-      });
-    });
-
-    context('with non-creator', () => {
-      it('should return false', done => {
-        User.findOne({email: 'anonymous1@example.com'}, (err, user) => {
-          if (err) { done(err); }
-
-          Page.findOne({path: '/user/anonymous0/memo'}, (err, page) => {
-            expect(page.isCreator(user)).to.be.equal(false);
-            done();
-          })
-        });
-      });
-    });
-  });
-
-  describe('.isGrantedFor', () => {
+  describe('.isAccessiblePageByViewer', () => {
     context('with a granted user', () => {
-      it('should return true', done => {
-        User.findOne({email: 'anonymous0@example.com'}, (err, user) => {
-          if (err) { done(err); }
+      it('should return true', async() => {
+        const user = await User.findOne({email: 'anonymous0@example.com'});
+        const page = await Page.findOne({path: '/user/anonymous0/memo'});
 
-          Page.findOne({path: '/user/anonymous0/memo'}, (err, page) => {
-            if (err) { done(err); }
-
-            expect(page.isGrantedFor(user)).to.be.equal(true);
-            done();
-          });
-        });
+        const bool = await Page.isAccessiblePageByViewer(page.id, user);
+        expect(bool).to.be.equal(true);
       });
     });
 
     context('with a public page', () => {
-      it('should return true', done => {
-        User.findOne({email: 'anonymous1@example.com'}, (err, user) => {
-          if (err) { done(err); }
+      it('should return true', async() => {
+        const user = await User.findOne({email: 'anonymous1@example.com'});
+        const page = await Page.findOne({path: '/grant/public'});
 
-          Page.findOne({path: '/grant/public'}, (err, page) => {
-            if (err) { done(err); }
-
-            expect(page.isGrantedFor(user)).to.be.equal(true);
-            done();
-          });
-        });
+        const bool = await Page.isAccessiblePageByViewer(page.id, user);
+        expect(bool).to.be.equal(true);
       });
     });
 
     context('with a restricted page and an user who has no grant', () => {
-      it('should return false', done => {
-        User.findOne({email: 'anonymous1@example.com'}, (err, user) => {
-          if (err) { done(err); }
+      it('should return false', async() => {
+        const user = await User.findOne({email: 'anonymous1@example.com'});
+        const page = await Page.findOne({path: '/grant/restricted'});
 
-          Page.findOne({path: '/grant/restricted'}, (err, page) => {
-            if (err) { done(err); }
-
-            expect(page.isGrantedFor(user)).to.be.equal(false);
-            done();
-          });
-        });
+        const bool = await Page.isAccessiblePageByViewer(page.id, user);
+        expect(bool).to.be.equal(false);
       });
     });
   });
@@ -345,132 +282,92 @@ describe('Page', () => {
   });
 
   describe('.findPage', () => {
-    context('findPageById', () => {
-      it('should find page', done => {
-        const pageToFind = createdPages[0];
-        Page.findPageById(pageToFind._id)
-        .then(pageData => {
-          expect(pageData.path).to.equal(pageToFind.path);
-          done();
-        });
-      });
-    });
-
-    context('findPageByIdAndGrantedUser', () => {
-      it('should find page', done => {
+    context('findByIdAndViewer', () => {
+      it('should find page', async() => {
         const pageToFind = createdPages[0];
         const grantedUser = createdUsers[0];
-        Page.findPageByIdAndGrantedUser(pageToFind._id, grantedUser)
-        .then((pageData) => {
-          expect(pageData.path).to.equal(pageToFind.path);
-          done();
-        })
-        .catch((err) => {
-          done(err);
-        });
+
+        const page = await Page.findByIdAndViewer(pageToFind._id, grantedUser);
+        expect(page).to.be.not.null;
+        expect(page.path).to.equal(pageToFind.path);
       });
 
-      it('should error by grant', done => {
+      it('should not be found by grant', async() => {
         const pageToFind = createdPages[0];
         const grantedUser = createdUsers[1];
-        Page.findPageByIdAndGrantedUser(pageToFind._id, grantedUser)
-        .then(pageData => {
-          done(new Error());
-        }).catch(err => {
-          expect(err).to.instanceof(Error);
-          done();
-        });
+
+        const page = await Page.findByIdAndViewer(pageToFind._id, grantedUser);
+        expect(page).to.be.null;
       });
     });
 
-    context('findPageByIdAndGrantedUser granted userGroup', () => {
-      it('should find page', done => {
+    context('findByIdAndViewer granted userGroup', () => {
+      it('should find page', async() => {
         const pageToFind = createdPages[6];
         const grantedUser = createdUsers[0];
-        Page.findPageByIdAndGrantedUser(pageToFind._id, grantedUser)
-        .then(pageData => {
-          expect(pageData.path).to.equal(pageToFind.path);
-          done();
-        })
-        .catch((err) => {
-          done(err);
-        });
+
+        const page = await Page.findByIdAndViewer(pageToFind._id, grantedUser);
+        expect(page).to.be.not.null;
+        expect(page.path).to.equal(pageToFind.path);
       });
 
-      it('should error by grant userGroup', done => {
+      it('should not be found by grant', async() => {
         const pageToFind = createdPages[6];
         const grantedUser = createdUsers[2];
-        Page.findPageByIdAndGrantedUser(pageToFind._id, grantedUser)
-          .then(pageData => {
-            done(new Error());
-          }).catch(err => {
-            expect(err).to.instanceof(Error);
-            done();
-          });
+
+        const page = await Page.findByIdAndViewer(pageToFind._id, grantedUser);
+        expect(page).to.be.null;
       });
     });
   });
 
-  context('generateQueryToListByStartWith', () => {
-    it('should return only /page/', done => {
+  context('findListWithDescendants', () => {
+    it('should return only /page/', async() => {
       const user = createdUsers[0];
-      Page.generateQueryToListByStartWith('/page/', user, { isRegExpEscapedFromPath: true })
-      .then(pages => {
-        // assert length
-        expect(pages.length).to.equal(1);
-        // assert paths
-        const pagePaths = pages.map(page => page.path);
-        expect(pagePaths).to.include.members(['/page/for/extended'])
-        done();
-      })
-      .catch((err) => {
-        done(err);
-      });
+
+      const result = await Page.findListWithDescendants('/page/', user, { isRegExpEscapedFromPath: true });
+
+      // assert totalCount
+      expect(result.totalCount).to.equal(1);
+      // assert paths
+      const pagePaths = result.pages.map(page => page.path);
+      expect(pagePaths).to.include.members(['/page/for/extended']);
     });
-    it('should return only /page1/', done => {
+    it('should return only /page1/', async() => {
       const user = createdUsers[0];
-      Page.generateQueryToListByStartWith('/page1/', user, { isRegExpEscapedFromPath: true })
-      .then(pages => {
-        // assert length
-        expect(pages.length).to.equal(2);
-        // assert paths
-        const pagePaths = pages.map(page => page.path);
-        expect(pagePaths).to.include.members(['/page1', '/page1/child1'])
-        done();
-      })
-      .catch((err) => {
-        done(err);
-      });
+
+      const result = await Page.findListWithDescendants('/page1/', user, { isRegExpEscapedFromPath: true });
+
+      // assert totalCount
+      expect(result.totalCount).to.equal(2);
+      // assert paths
+      const pagePaths = result.pages.map(page => page.path);
+      expect(pagePaths).to.include.members(['/page1', '/page1/child1']);
     });
-    it('should return pages which starts with /page', done => {
+  });
+
+  context('findListByStartWith', () => {
+    it('should return pages which starts with /page', async() => {
       const user = createdUsers[0];
-      Page.generateQueryToListByStartWith('/page', user, {})
-      .then(pages => {
-        // assert length
-        expect(pages.length).to.equal(4);
-        // assert paths
-        const pagePaths = pages.map(page => page.path);
-        expect(pagePaths).to.include.members(['/page/for/extended', '/page1', '/page1/child1', '/page2'])
-        done();
-      })
-      .catch((err) => {
-        done(err);
-      });
+
+      const result = await Page.findListByStartWith('/page', user, {});
+
+      // assert totalCount
+      expect(result.totalCount).to.equal(4);
+      // assert paths
+      const pagePaths = result.pages.map(page => page.path);
+      expect(pagePaths).to.include.members(['/page/for/extended', '/page1', '/page1/child1', '/page2']);
     });
-    it('should process with regexp', done => {
+    it('should process with regexp', async() => {
       const user = createdUsers[0];
-      Page.generateQueryToListByStartWith('/page\\d{1}/', user, {})
-      .then(pages => {
-        // assert length
-        expect(pages.length).to.equal(3);
-        // assert paths
-        const pagePaths = pages.map(page => page.path);
-        expect(pagePaths).to.include.members(['/page1', '/page1/child1', '/page2'])
-        done();
-      })
-      .catch((err) => {
-        done(err);
-      });
+
+      const result = await Page.findListByStartWith('/page\\d{1}/', user, {});
+
+      // assert totalCount
+      expect(result.totalCount).to.equal(3);
+      // assert paths
+      const pagePaths = result.pages.map(page => page.path);
+      expect(pagePaths).to.include.members(['/page1', '/page1/child1', '/page2']);
     });
   });
 

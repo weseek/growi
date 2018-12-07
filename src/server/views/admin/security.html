@@ -51,7 +51,7 @@
               <input class="form-control" type="text" name="settingForm[security:basicSecret]" value="{{ settingForm['security:basicSecret']|default('') }}" {% if not isAclEnabled  %}readonly{% endif%}>
             </div>
             <div class="col-xs-offset-3 col-xs-9">
-              <p class="help-block">
+              <p class="help-block small">
                 {% if not isAclEnabled %}
                   {{ t("security_setting.basic_acl_disable") }}<br>
                 {% else %}
@@ -81,7 +81,7 @@
                 <option value="{{ t(modeValue) }}" {% if modeValue == settingForm['security:registrationMode'] %}selected{% endif %} >{{ t(modeLabel) }}</option>
                 {% endfor %}
               </select>
-              <p class="help-block">{{ t('The contents entered here will be shown in the header etc') }}</p>
+              <p class="help-block small">{{ t('The contents entered here will be shown in the header etc') }}</p>
             </div>
           </div>
 
@@ -89,8 +89,50 @@
             <label for="settingForm[security:registrationWhiteList]" class="col-xs-3 control-label">{{ t('The whitelist of registration permission E-mail address') }}</label>
             <div class="col-xs-8">
               <textarea class="form-control" type="textarea" name="settingForm[security:registrationWhiteList]" placeholder="{{ t('security_setting.example') }}: @growi.org">{{ settingForm['security:registrationWhiteList']|join('&#13')|raw }}</textarea>
-              <p class="help-block">{{ t("security_setting.restrict_emails") }}{{ t("security_setting.for_instance") }}<code>@growi.org</code>{{ t("security_setting.only_those") }}<br>
+              <p class="help-block small">{{ t("security_setting.restrict_emails") }}{{ t("security_setting.for_instance") }}<code>@growi.org</code>{{ t("security_setting.only_those") }}<br>
               {{ t("security_setting.insert_single") }}</p>
+            </div>
+          </div>
+
+          <div class="form-group">
+            {% set configName = 'settingForm[security:list-policy:hideRestrictedByOwner]' %}
+            {% set configValue = settingForm['security:list-policy:hideRestrictedByOwner'] %}
+            {% set isEnabled = !configValue %}
+            <label for="{{configName}}" class="col-xs-3 control-label">{{ t("security_setting.page_listing_1") }}</label>
+            <div class="col-xs-9">
+              <div class="btn-group btn-toggle" data-toggle="buttons">
+                <label class="btn btn-default btn-rounded btn-outline {% if isEnabled %}active{% endif %}" data-active-class="primary">
+                  <input name="{{configName}}" value="false" type="radio" {% if isEnabled %}checked{% endif %}> ON
+                </label>
+                <label class="btn btn-default btn-rounded btn-outline {% if !isEnabled %}active{% endif %}" data-active-class="default">
+                  <input name="{{configName}}" value="true" type="radio" {% if !isEnabled %}checked{% endif %}> OFF
+                </label>
+              </div>
+
+              <p class="help-block small">
+                {{ t("security_setting.page_listing_1_desc") }}
+              </p>
+            </div>
+          </div>
+
+          <div class="form-group">
+            {% set configName = 'settingForm[security:list-policy:hideRestrictedByGroup]' %}
+            {% set configValue = settingForm['security:list-policy:hideRestrictedByGroup'] %}
+            {% set isEnabled = !configValue %}
+            <label for="{{configName}}" class="col-xs-3 control-label">{{ t("security_setting.page_listing_2") }}</label>
+            <div class="col-xs-9">
+              <div class="btn-group btn-toggle" data-toggle="buttons">
+                <label class="btn btn-default btn-rounded btn-outline {% if isEnabled %}active{% endif %}" data-active-class="primary">
+                  <input name="{{configName}}" value="false" type="radio" {% if isEnabled %}checked{% endif %}> ON
+                </label>
+                <label class="btn btn-default btn-rounded btn-outline {% if !isEnabled %}active{% endif %}" data-active-class="default">
+                  <input name="{{configName}}" value="true" type="radio" {% if !isEnabled %}checked{% endif %}> OFF
+                </label>
+              </div>
+
+              <p class="help-block small">
+                {{ t("security_setting.page_listing_2_desc") }}
+              </p>
             </div>
           </div>
 

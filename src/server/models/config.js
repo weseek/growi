@@ -60,6 +60,9 @@ module.exports = function(crowi) {
       'security:registrationMode'      : 'Open',
       'security:registrationWhiteList' : [],
 
+      'security:list-policy:hideRestrictedByOwner' : false,
+      'security:list-policy:hideRestrictedByGroup' : false,
+
       'security:isEnabledPassport' : false,
       'security:passport-ldap:isEnabled' : false,
       'security:passport-ldap:serverUrl' : undefined,
@@ -375,6 +378,16 @@ module.exports = function(crowi) {
     }
 
     return SECURITY_RESTRICT_GUEST_MODE_READONLY === config.crowi['security:restrictGuestMode'];
+  };
+
+  configSchema.statics.hidePagesRestrictedByOwnerInList = function(config) {
+    const key = 'security:list-policy:hideRestrictedByOwner';
+    return getValueForCrowiNS(config, key);
+  };
+
+  configSchema.statics.hidePagesRestrictedByGroupInList = function(config) {
+    const key = 'security:list-policy:hideRestrictedByGroup';
+    return getValueForCrowiNS(config, key);
   };
 
   configSchema.statics.isEnabledPlugins = function(config) {

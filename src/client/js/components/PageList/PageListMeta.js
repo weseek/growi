@@ -17,34 +17,39 @@ export default class PageListMeta extends React.Component {
     const page = this.props.page;
 
     // portal check
-    let PortalLabel;
+    let portalLabel;
     if (this.isPortalPath(page.path)) {
-      PortalLabel = <span className="label label-info">PORTAL</span>;
+      portalLabel = <span className="label label-info">PORTAL</span>;
     }
 
     // template check
-    let TemplateLabel;
+    let templateLabel;
     if (templateChecker(page.path)) {
-      TemplateLabel = <span className="label label-info">TMPL</span>;
+      templateLabel = <span className="label label-info">TMPL</span>;
     }
 
-    let CommentCount;
+    let commentCount;
     if (page.commentCount > 0) {
-      CommentCount = <span><i className="icon-bubble" />{page.commentCount}</span>;
+      commentCount = <span><i className="icon-bubble" />{page.commentCount}</span>;
     }
 
-    let LikerCount;
+    let likerCount;
     if (page.liker.length > 0) {
-      LikerCount = <span><i className="icon-like" />{page.liker.length}</span>;
+      likerCount = <span><i className="icon-like" />{page.liker.length}</span>;
     }
 
+    let locked;
+    if (page.grant != 1) {
+      locked = <span><i className="icon-lock" /></span>;
+    }
 
     return (
       <span className="page-list-meta">
-        {PortalLabel}
-        {TemplateLabel}
-        {CommentCount}
-        {LikerCount}
+        {portalLabel}
+        {templateLabel}
+        {commentCount}
+        {likerCount}
+        {locked}
       </span>
     );
   }

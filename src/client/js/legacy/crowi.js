@@ -471,8 +471,7 @@ $(function() {
         $('#delete-errors').addClass('alert-danger');
       }
       else {
-        const page = res.page;
-        top.location.href = page.path + '?unlinked=true';
+        top.location.href = res.path + '?unlinked=true';
       }
     });
 
@@ -480,6 +479,8 @@ $(function() {
   });
 
   $('#create-portal-button').on('click', function(e) {
+    $('a[data-toggle="tab"][href="#edit"]').tab('show');
+
     $('body').addClass('on-edit');
     $('body').addClass('builtin-editor');
 

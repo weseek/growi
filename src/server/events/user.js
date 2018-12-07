@@ -1,6 +1,6 @@
-var debug = require('debug')('growi:events:user');
-var util = require('util');
-var events = require('events');
+const debug = require('debug')('growi:events:user');
+const util = require('util');
+const events = require('events');
 
 function UserEvent(crowi) {
   this.crowi = crowi;
@@ -9,25 +9,27 @@ function UserEvent(crowi) {
 }
 util.inherits(UserEvent, events.EventEmitter);
 
-UserEvent.prototype.onActivated = function(user) {
-  var User = this.crowi.model('User');
-  var Page = this.crowi.model('Page');
+UserEvent.prototype.onActivated = async function(user) {
+  const Page = this.crowi.model('Page');
 
-  var userPagePath = Page.getUserPagePath(user);
-  Page.findPage(userPagePath, user, {}, false)
-  .then(function(page) {
-    // do nothing because user page is already exists.
-  }).catch(function(err) {
-    var body = `# ${user.username}\nThis is ${user.username}\'s page`;
+  const userPagePath = Page.getUserPagePath(user);
+
+  const page = await Page.findByPathAndViewer(userPagePath, user);
+
+  if (page == null) {
+    const body = `# ${user.username}\nThis is ${user.username}'s page`;
+
     // create user page
-    Page.create(userPagePath, body, user, {})
-    .then(function(page) {
+    try {
+      await Page.create(userPagePath, body, user, {});
+
       // page created
       debug('User page created', page);
-    }).catch(function(err) {
+    }
+    catch (err) {
       debug('Failed to create user page', err);
-    });
-  });
+    }
+  }
 };
 
 module.exports = UserEvent;

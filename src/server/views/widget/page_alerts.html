@@ -7,7 +7,7 @@
       {% elseif page.grant == 4 %}
         <i class="icon-fw icon-lock"></i><strong>{{ consts.pageGrants[page.grant] }}</strong> ({{ t('Browsing of this page is restricted') }})
       {% elseif page.grant == 5 %}
-        <i class="icon-fw icon-organization"></i><strong>'{{ pageRelatedGroup.name | preventXss }}' only</strong> ({{ t('Browsing of this page is restricted') }})
+        <i class="icon-fw icon-organization"></i><strong>'{{ page.grantedGroup.name | preventXss }}' only</strong> ({{ t('Browsing of this page is restricted') }})
       {% endif %}
       </p>
     {% endif %}
@@ -34,24 +34,19 @@
     </div>
     {% endif %}
 
-    {% if req.query.renamed and not page.isDeleted() %}
-    <div class="alert alert-info alert-moved">
-      <span>
-        <strong>{{ t('Moved') }}: </strong> {{ t('page_page.notice.moved', req.sanitize(req.query.renamed)) }}
-      </span>
-    </div>
-    {% endif %}
-
-    {% if req.query.redirectFrom and not page.isDeleted() %}
+    {% if not page.isDeleted() and (req.query.renamed or req.query.redirectFrom) %}
     <div class="alert alert-info alert-moved d-flex align-items-center justify-content-between">
       <span>
-        <strong>{{ t('Moved') }}: </strong> {{ t('page_page.notice.moved', req.sanitize(req.query.redirectFrom)) }}
+        {% if req.query.renamed %}
+          <strong>{{ t('Moved') }}: </strong> {{ t('page_page.notice.moved', req.sanitize(req.query.renamed)) }}
+        {% else %}
+          <strong>{{ t('Moved') }}: </strong> {{ t('page_page.notice.moved', req.sanitize(req.query.redirectFrom)) }}
+        {% endif %}
       </span>
       {% if user %}
       <form role="form" id="unlink-page-form" onsubmit="return false;">
         <input type="hidden" name="_csrf" value="{{ csrf() }}">
-        <input type="hidden" name="path" value="{{ page.path }}">
-        <input type="hidden" name="page_id" value="{{ page._id.toString() }}">
+        <input type="hidden" name="path" value="{{ path }}">
         <button type="submit" class="btn btn-default btn-sm pull-right">
           <i class="ti-unlink" aria-hidden="true"></i>
           Unlink

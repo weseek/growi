@@ -27,7 +27,7 @@ module.exports = function(crowi, app) {
 
   /* eslint-disable comma-spacing */
 
-  app.get('/'                        , middleware.applicationInstalled(), loginRequired(crowi, app, false) , page.pageListShow);
+  app.get('/'                        , middleware.applicationInstalled(), loginRequired(crowi, app, false) , page.showTopPage);
 
   app.get('/installer'               , middleware.applicationNotInstalled() , middleware.checkSearchIndicesGenerated(crowi, app) , installer.index);
   app.post('/installer/createAdmin'  , middleware.applicationNotInstalled() , form.register , csrf, installer.createAdmin);
@@ -102,7 +102,7 @@ module.exports = function(crowi, app) {
 
   // search admin
   app.get('/admin/search'              , loginRequired(crowi, app) , middleware.adminRequired() , admin.search.index);
-  app.post('/admin/search/build'       , loginRequired(crowi, app) , middleware.adminRequired() , csrf, admin.search.buildIndex);
+  app.post('/_api/admin/search/build'  , loginRequired(crowi, app) , middleware.adminRequired() , csrf, admin.api.searchBuildIndex);
 
   // notification admin
   app.get('/admin/notification'              , loginRequired(crowi, app) , middleware.adminRequired() , admin.notification.index);
@@ -173,8 +173,8 @@ module.exports = function(crowi, app) {
   app.post('/me/auth/google'          , loginRequired(crowi, app) , me.authGoogle);
   app.get( '/me/auth/google/callback' , loginRequired(crowi, app) , me.authGoogleCallback);
 
-  app.get( '/:id([0-9a-z]{24})'       , loginRequired(crowi, app, false) , page.api.redirector);
-  app.get( '/_r/:id([0-9a-z]{24})'    , loginRequired(crowi, app, false) , page.api.redirector); // alias
+  app.get( '/:id([0-9a-z]{24})'       , loginRequired(crowi, app, false) , page.redirector);
+  app.get( '/_r/:id([0-9a-z]{24})'    , loginRequired(crowi, app, false) , page.redirector); // alias
   app.get( '/download/:id([0-9a-z]{24})' , loginRequired(crowi, app, false) , attachment.api.download);
   app.get( '/attachment/:pageId/:fileName'  , loginRequired(crowi, app, false), attachment.api.get);
 
@@ -229,6 +229,6 @@ module.exports = function(crowi, app) {
   // API v3
   app.use('/_api/v3', require('./apiv3')(crowi));
 
-  app.get('/*/$'                   , loginRequired(crowi, app, false) , page.pageListShowWrapper);
-  app.get('/*'                     , loginRequired(crowi, app, false) , page.pageShowWrapper);
+  app.get('/*/$'                   , loginRequired(crowi, app, false) , page.showPageWithEndOfSlash, page.notFound);
+  app.get('/*'                     , loginRequired(crowi, app, false) , page.showPage, page.notFound);
 };
