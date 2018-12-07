@@ -122,6 +122,8 @@ function connectToParentWithPenpal() {
   });
   connection.promise.then(parent => {
     window.growi = parent;
+  }).catch(err => {
+    console.log(err);
   });
 }
 
