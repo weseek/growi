@@ -69,7 +69,7 @@ module.exports = function(crowi, app) {
         esResult = await search.searchKeyword(keyword, user, userGroups, searchOpts);
       }
 
-      const findResult = await Page.findListByPageIds(esResult.data, { limit: 50 });
+      const findResult = await Page.findListByPageIds(esResult.data);
 
       result.meta = esResult.meta;
       result.totalCount = findResult.totalCount;
