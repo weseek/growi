@@ -653,7 +653,7 @@ SearchClient.prototype.searchKeyword = function(keyword, user, userGroups, optio
   const query = this.createSearchQuerySortedByScore();
   this.appendCriteriaForKeywordContains(query, keyword);
 
-  // this.filterPagesByType(query, type);
+  this.filterPagesByType(query, type);
   this.filterPagesByViewer(query, user, userGroups);
 
   this.appendResultSize(query, from, size);
@@ -675,7 +675,7 @@ SearchClient.prototype.searchKeywordUnderPath = function(keyword, path, user, us
   this.appendCriteriaForKeywordContains(query, keyword);
   this.appendCriteriaForPathFilter(query, path);
 
-  // this.filterPagesByType(query, type);
+  this.filterPagesByType(query, type);
   this.filterPagesByViewer(query, user, userGroups);
 
   this.appendResultSize(query, from, size);
