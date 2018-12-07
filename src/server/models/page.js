@@ -625,6 +625,8 @@ module.exports = function(crowi) {
   };
 
   pageSchema.statics.findListByPageIds = async function(ids, option) {
+    const User = crowi.model('User');
+
     const opt = Object.assign({}, option);
     const builder = new PageQueryBuilder(this.find({ _id: { $in: ids } }));
 
@@ -632,7 +634,8 @@ module.exports = function(crowi) {
     builder.addConditionToPagenate(opt.offset, opt.limit);
 
     const totalCount = await builder.query.exec('count');
-    const q = builder.query;
+    const q = builder.query
+      .populate({ path: 'lastUpdateUser', model: 'User', select: User.USER_PUBLIC_FIELDS });
     const pages = await q.exec('find');
 
     const result = { pages, totalCount, offset: opt.offset, limit: opt.limit };
