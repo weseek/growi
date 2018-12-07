@@ -237,7 +237,7 @@ SearchClient.prototype.addPages = async function(pages) {
     this.prepareBodyForCreate(body, page);
   }
 
-  logger.info('addPages(): Sending Request to ES', body);
+  logger.debug('addPages(): Sending Request to ES', body);
   return this.client.bulk({
     body: body,
   });
@@ -251,7 +251,7 @@ SearchClient.prototype.updatePages = function(pages) {
     self.prepareBodyForUpdate(body, page);
   });
 
-  logger.info('updatePages(): Sending Request to ES', body);
+  logger.debug('updatePages(): Sending Request to ES', body);
   return this.client.bulk({
     body: body,
   });
@@ -265,7 +265,7 @@ SearchClient.prototype.deletePages = function(pages) {
     self.prepareBodyForDelete(body, page);
   });
 
-  logger.info('deletePages(): Sending Request to ES', body);
+  logger.debug('deletePages(): Sending Request to ES', body);
   return this.client.bulk({
     body: body,
   });
