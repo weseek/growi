@@ -545,41 +545,50 @@ SearchClient.prototype.filterPagesByViewer = function(query, user, userGroups) {
   const { GRANT_PUBLIC, GRANT_RESTRICTED, GRANT_SPECIFIED, GRANT_OWNER, GRANT_USER_GROUP } = Page;
 
   const grantConditions = [
-    // { term: { grant: null } },
     { term: { grant: GRANT_PUBLIC } },
   ];
 
-  // if (user == null) {
-  //   grantConditions.push(
-  //     { should: [
-  //       { term: { grant: GRANT_RESTRICTED } },
-  //       { term: { grant: GRANT_SPECIFIED } },
-  //       { term: { grant: GRANT_OWNER } },
-  //     ] }
-  //   );
-  // }
-  // else {
-  //   grantConditions.push(
-  //     { must: [
-  //       { should: [
-  //         { term: { grant: GRANT_RESTRICTED } },
-  //         { term: { grant: GRANT_SPECIFIED } },
-  //         { term: { grant: GRANT_OWNER } },
-  //       ] },
-  //       { term: { grantedUsers: user._id.toString() } }
-  //     ] },
-  //   );
-  // }
+  if (user == null) {
+    grantConditions.push(
+      { term: { grant: GRANT_RESTRICTED } },
+      { term: { grant: GRANT_SPECIFIED } },
+      { term: { grant: GRANT_OWNER } },
+    );
+  }
+  else {
+    grantConditions.push(
+      { bool: {
+        must: [
+          { term: { grant: GRANT_RESTRICTED } },
+          { term: { granted_users: user._id.toString() } }
+        ]
+      } },
+      { bool: {
+        must: [
+          { term: { grant: GRANT_SPECIFIED } },
+          { term: { granted_users: user._id.toString() } }
+        ]
+      } },
+      { bool: {
+        must: [
+          { term: { grant: GRANT_OWNER } },
+          { term: { granted_users: user._id.toString() } }
+        ]
+      } },
+    );
+  }
 
-  // if (userGroups != null && userGroups.length > 0) {
-  //   const userGroupIds = userGroups.map(group => group._id.toString() );
-  //   grantConditions.push(
-  //     { must: [
-  //       { term: { grant: GRANT_USER_GROUP } },
-  //       { terms: { grantedGroup: userGroupIds } }
-  //     ] },
-  //   );
-  // }
+  if (userGroups != null && userGroups.length > 0) {
+    const userGroupIds = userGroups.map(group => group._id.toString() );
+    grantConditions.push(
+      { bool: {
+        must: [
+          { term: { grant: GRANT_USER_GROUP } },
+          { terms: { granted_group: userGroupIds } }
+        ]
+      } },
+    );
+  }
 
   query.body.query.bool.filter.push({ bool: { should: grantConditions } });
 };
