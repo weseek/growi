@@ -1,28 +1,33 @@
 module.exports = function(crowi, app) {
   'use strict';
 
-  const debug = require('debug')('growi:routes:admin')
-    , logger = require('@alias/logger')('growi:routes:admin')
-    , fs = require('fs')
-    , models = crowi.models
-    , Page = models.Page
-    , PageGroupRelation = models.PageGroupRelation
-    , User = models.User
-    , ExternalAccount = models.ExternalAccount
-    , UserGroup = models.UserGroup
-    , UserGroupRelation = models.UserGroupRelation
-    , Config = models.Config
-    , GlobalNotificationSetting = models.GlobalNotificationSetting
-    , GlobalNotificationMailSetting = models.GlobalNotificationMailSetting
-    , GlobalNotificationSlackSetting = models.GlobalNotificationSlackSetting  // eslint-disable-line no-unused-vars
-    , PluginUtils = require('../plugins/plugin-utils')
-    , pluginUtils = new PluginUtils()
-    , ApiResponse = require('../util/apiResponse')
-    , recommendedXssWhiteList = require('@commons/service/xss/recommendedXssWhiteList')
-    , importer = require('../util/importer')(crowi)
+  const debug = require('debug')('growi:routes:admin');
+  const logger = require('@alias/logger')('growi:routes:admin');
+  const fs = require('fs');
 
-    , MAX_PAGE_LIST = 50
-    , actions = {};
+  const models = crowi.models;
+  const Page = models.Page;
+  const PageGroupRelation = models.PageGroupRelation;
+  const User = models.User;
+  const ExternalAccount = models.ExternalAccount;
+  const UserGroup = models.UserGroup;
+  const UserGroupRelation = models.UserGroupRelation;
+  const Config = models.Config;
+  const GlobalNotificationSetting = models.GlobalNotificationSetting;
+  const GlobalNotificationMailSetting = models.GlobalNotificationMailSetting;
+  const GlobalNotificationSlackSetting = models.GlobalNotificationSlackSetting; // eslint-disable-line no-unused-vars
+
+  const recommendedXssWhiteList = require('@commons/service/xss/recommendedXssWhiteList');
+  const PluginUtils = require('../plugins/plugin-utils');
+  const ApiResponse = require('../util/apiResponse');
+  const importer = require('../util/importer')(crowi);
+
+  const searchEvent = crowi.event('search');
+  const pluginUtils = new PluginUtils();
+
+  const MAX_PAGE_LIST = 50;
+  const actions = {};
+
 
   function createPager(total, limit, page, pagesCount, maxPageList) {
     const pager = {
@@ -294,12 +299,6 @@ module.exports = function(crowi, app) {
     });
   };
 
-  actions.search = {};
-  actions.search.index = function(req, res) {
-    return res.render('admin/search', {
-    });
-  };
-
   // app.post('/admin/notification/slackIwhSetting' , admin.notification.slackIwhSetting);
   actions.notification.slackIwhSetting = function(req, res) {
     var slackIwhSetting = req.form.slackIwhSetting;
@@ -425,47 +424,14 @@ module.exports = function(crowi, app) {
     return triggerEvents;
   };
 
-  actions.search.buildIndex = function(req, res) {
-    var search = crowi.getSearcher();
+  actions.search = {}
+  actions.search.index = function(req, res) {
+    const search = crowi.getSearcher();
     if (!search) {
       return res.redirect('/admin');
     }
 
-    return new Promise(function(resolve, reject) {
-      search.deleteIndex()
-        .then(function(data) {
-          debug('Index deleted.');
-          resolve();
-        }).catch(function(err) {
-          debug('Delete index Error, but if it is initialize, its ok.', err);
-          resolve();
-        });
-    })
-    .then(function() {
-      return search.buildIndex();
-    })
-    .then(function(data) {
-      if (!data.errors) {
-        debug('Index created.');
-      }
-      return search.addAllPages();
-    })
-    .then(function(data) {
-      if (!data.errors) {
-        debug('Data is successfully indexed.');
-        req.flash('successMessage', 'Data is successfully indexed.');
-      }
-      else {
-        debug('Data index error.', data.errors);
-        req.flash('errorMessage', `Data index error: ${data.errors}`);
-      }
-      return res.redirect('/admin/search');
-    })
-    .catch(function(err) {
-      debug('Error', err);
-      req.flash('errorMessage', `Error: ${err}`);
-      return res.redirect('/admin/search');
-    });
+    return res.render('admin/search', {});
   };
 
   actions.user = {};
@@ -1414,6 +1380,49 @@ module.exports = function(crowi, app) {
     catch (err) {
       return res.json({ status: false, message: `${err}` });
     }
+  };
+
+
+  actions.api.searchBuildIndex = async function(req, res) {
+    const search = crowi.getSearcher();
+    if (!search) {
+      return res.json(ApiResponse.error('ElasticSearch Integration is not set up.'));
+    }
+
+    // first, delete index
+    try {
+      await search.deleteIndex();
+    }
+    catch (err) {
+      logger.warn('Delete index Error, but if it is initialize, its ok.', err);
+    }
+
+    // second, create index
+    try {
+      await search.buildIndex();
+    }
+    catch (err) {
+      logger.error('Error', err);
+      return res.json(ApiResponse.error(err));
+    }
+
+    searchEvent.on('addPageProgress', (total, current, skip) => {
+      crowi.getIo().sockets.emit('admin:addPageProgress', { total, current, skip });
+    });
+    searchEvent.on('finishAddPage', (total, current, skip) => {
+      crowi.getIo().sockets.emit('admin:finishAddPage', { total, current, skip });
+    });
+    // add all page
+    search
+      .addAllPages()
+      .then(() => {
+        debug('Data is successfully indexed. ------------------ ✧✧');
+      })
+      .catch(err => {
+        logger.error('Error', err);
+      });
+
+    return res.json(ApiResponse.success());
   };
 
   /**

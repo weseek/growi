@@ -3,8 +3,6 @@ import ReactDOM from 'react-dom';
 import { I18nextProvider } from 'react-i18next';
 import * as toastr from 'toastr';
 
-import io from 'socket.io-client';
-
 import i18nFactory from './i18n';
 
 import loggerFactory from '@alias/logger';
@@ -38,6 +36,7 @@ import RecentCreated from './components/RecentCreated/RecentCreated';
 import CustomCssEditor  from './components/Admin/CustomCssEditor';
 import CustomScriptEditor from './components/Admin/CustomScriptEditor';
 import CustomHeaderEditor from './components/Admin/CustomHeaderEditor';
+import AdminRebuildSearch from './components/Admin/AdminRebuildSearch';
 
 import * as entities from 'entities';
 
@@ -49,8 +48,6 @@ if (!window) {
 
 const userlang = $('body').data('userlang');
 const i18n = i18nFactory(userlang);
-
-const socket = io();
 
 // setup xss library
 const xss = new Xss();
@@ -95,6 +92,7 @@ crowi.setConfig(JSON.parse(document.getElementById('crowi-context-hydrate').text
 if (isLoggedin) {
   crowi.fetchUsers();
 }
+const socket = crowi.getWebSocket();
 const socketClientId = crowi.getSocketClientId();
 
 const crowiRenderer = new GrowiRenderer(crowi, null, {
@@ -473,6 +471,13 @@ if (customHeaderEditorElem != null) {
   ReactDOM.render(
     <CustomHeaderEditor inputElem={customHeaderInputElem} />,
     customHeaderEditorElem
+  );
+}
+const adminRebuildSearchElem = document.getElementById('admin-rebuild-search');
+if (adminRebuildSearchElem != null) {
+  ReactDOM.render(
+    <AdminRebuildSearch crowi={crowi} />,
+    adminRebuildSearchElem
   );
 }
 

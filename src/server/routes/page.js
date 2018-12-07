@@ -201,9 +201,12 @@ module.exports = function(crowi, app) {
       return next();
     }
     else if (portalPageStatus === PORTAL_STATUS_EXISTS) {
-      // populate
       let portalPage = await Page.findByPathAndViewer(path, req.user);
-      portalPage = await portalPage.populateDataToShow(revisionId);
+      portalPage.initLatestRevisionField(revisionId);
+
+      // populate
+      portalPage = await portalPage.populateDataToShowRevision();
+
       addRendarVarsForPage(renderVars, portalPage);
       await addRenderVarsForSlack(renderVars, portalPage);
     }
@@ -241,8 +244,10 @@ module.exports = function(crowi, app) {
 
     let view = 'customlayout-selector/page';
 
+    page.initLatestRevisionField(revisionId);
+
     // populate
-    page = await page.populateDataToShow(revisionId);
+    page = await page.populateDataToShowRevision();
     addRendarVarsForPage(renderVars, page);
 
     await addRenderVarsForSlack(renderVars, page);
@@ -432,36 +437,6 @@ module.exports = function(crowi, app) {
     renderVars.pages = pagePathUtils.encodePagesPath(result.pages);
     res.render('customlayout-selector/page_list', renderVars);
 
-  };
-
-  actions.search = function(req, res) {
-    // spec: ?q=query&sort=sort_order&author=author_filter
-    const query = req.query.q;
-    const search = require('../util/search')(crowi);
-
-    search.searchPageByKeyword(query)
-    .then(function(pages) {
-      debug('pages', pages);
-
-      if (pages.hits.total <= 0) {
-        return Promise.resolve([]);
-      }
-
-      const ids = pages.hits.hits.map(function(page) {
-        return page._id;
-      });
-
-      return Page.findListByPageIds(ids);
-    }).then(function(pages) {
-
-      res.render('customlayout-selector/page_list', {
-        path: '/',
-        pages: pagePathUtils.encodePagesPath(pages),
-        pager: generatePager(0, 50)
-      });
-    }).catch(function(err) {
-      debug('search error', err);
-    });
   };
 
   /**
@@ -684,7 +659,10 @@ module.exports = function(crowi, app) {
       else if (pagePath) {
         page = await Page.findByPathAndViewer(pagePath, req.user);
       }
-      page.populateDataToShow();
+      page.initLatestRevisionField();
+
+      // populate
+      page = await page.populateDataToShowRevision();
     }
     catch (err) {
       return res.json(ApiResponse.error(err));

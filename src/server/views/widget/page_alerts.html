@@ -7,7 +7,7 @@
       {% elseif page.grant == 4 %}
         <i class="icon-fw icon-lock"></i><strong>{{ consts.pageGrants[page.grant] }}</strong> ({{ t('Browsing of this page is restricted') }})
       {% elseif page.grant == 5 %}
-        <i class="icon-fw icon-organization"></i><strong>'{{ pageRelatedGroup.name | preventXss }}' only</strong> ({{ t('Browsing of this page is restricted') }})
+        <i class="icon-fw icon-organization"></i><strong>'{{ page.grantedGroup.name | preventXss }}' only</strong> ({{ t('Browsing of this page is restricted') }})
       {% endif %}
       </p>
     {% endif %}
