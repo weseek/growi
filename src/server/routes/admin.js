@@ -434,52 +434,6 @@ module.exports = function(crowi, app) {
     return res.render('admin/search', {});
   };
 
-  actions.search.buildIndex = async function(req, res) {
-    const search = crowi.getSearcher();
-    if (!search) {
-      return res.redirect('/admin');
-    }
-
-    // first, delete index
-    try {
-      await search.deleteIndex();
-      debug('Index deleted.');
-    }
-    catch (err) {
-      debug('Delete index Error, but if it is initialize, its ok.', err);
-    }
-
-    // second, create index
-    try {
-      await search.buildIndex();
-      debug('Index created.');
-    }
-    catch (err) {
-      debug('Error', err);
-      req.flash('errorMessage', 'Error while building index.');
-      return res.redirect('/admin/search');
-    }
-
-    searchEvent.on('addPageProgress', (total, current, skip) => {
-      crowi.getIo().sockets.emit('admin:addPageProgress', { total, current, skip });
-    });
-    searchEvent.on('finishAddPage', (total, current, skip) => {
-      crowi.getIo().sockets.emit('admin:finishAddPage', { total, current, skip });
-    });
-    // add all page
-    search
-      .addAllPages()
-      .then(() => {
-        debug('Data is successfully indexed. ------------------ ✧✧');
-      })
-      .catch(err => {
-        debug('Error', err);
-      });
-
-    req.flash('successMessage', 'Now re-building index ... this takes a while.');
-    return res.redirect('/admin/search');
-  };
-
   actions.user = {};
   actions.user.index = async function(req, res) {
     const activeUsers = await User.countListByStatus(User.STATUS_ACTIVE);
@@ -1426,6 +1380,49 @@ module.exports = function(crowi, app) {
     catch (err) {
       return res.json({ status: false, message: `${err}` });
     }
+  };
+
+
+  actions.api.searchBuildIndex = async function(req, res) {
+    const search = crowi.getSearcher();
+    if (!search) {
+      return res.json(ApiResponse.error('ElasticSearch Integration is not set up.'));
+    }
+
+    // first, delete index
+    try {
+      await search.deleteIndex();
+    }
+    catch (err) {
+      logger.warn('Delete index Error, but if it is initialize, its ok.', err);
+    }
+
+    // second, create index
+    try {
+      await search.buildIndex();
+    }
+    catch (err) {
+      logger.error('Error', err);
+      return res.json(ApiResponse.error(err));
+    }
+
+    searchEvent.on('addPageProgress', (total, current, skip) => {
+      crowi.getIo().sockets.emit('admin:addPageProgress', { total, current, skip });
+    });
+    searchEvent.on('finishAddPage', (total, current, skip) => {
+      crowi.getIo().sockets.emit('admin:finishAddPage', { total, current, skip });
+    });
+    // add all page
+    search
+      .addAllPages()
+      .then(() => {
+        debug('Data is successfully indexed. ------------------ ✧✧');
+      })
+      .catch(err => {
+        logger.error('Error', err);
+      });
+
+    return res.json(ApiResponse.success());
   };
 
   /**

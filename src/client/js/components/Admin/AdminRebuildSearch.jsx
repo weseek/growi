@@ -33,25 +33,28 @@ export default class AdminRebuildSearch extends React.Component {
       return null;
     }
 
-    if (isCompleted) {
-      return (
-        <div className="progress">
-          <div className="progress-bar progress-bar-striped" style={{ width: '100%' }} />
-        </div>
-      );
-    }
+    const progressBarLabel = isCompleted ? 'Completed' : `Processing.. ${current}/${total} (${skip} skips)`;
+    const progressBarWidth = isCompleted ? '100%' : `${(current / total) * 100}%`;
+    const progressBarClassNames = isCompleted
+      ? 'progress-bar progress-bar-success'
+      : 'progress-bar progress-bar-striped progress-bar-animated active';
 
     return (
-      <div className="progress">
-        <div
-          className="progress-bar progress-bar-striped progress-bar-animated active"
-          role="progressbar"
-          aria-valuemin="0"
-          aria-valuenow={current}
-          aria-valuemax={total}
-          style={{ width: `${(current / total) * 100}%` }}
-        >
-          {current}/{total} ({skip} skips)
+      <div>
+        <h5>
+          {progressBarLabel}
+          <span className="pull-right">{progressBarWidth}</span>
+        </h5>
+        <div className="progress progress-sm">
+          <div
+            className={progressBarClassNames}
+            role="progressbar"
+            aria-valuemin="0"
+            aria-valuenow={current}
+            aria-valuemax={total}
+            style={{ width: progressBarWidth }}
+          >
+          </div>
         </div>
       </div>
     );

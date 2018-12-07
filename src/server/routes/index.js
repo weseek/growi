@@ -102,7 +102,7 @@ module.exports = function(crowi, app) {
 
   // search admin
   app.get('/admin/search'              , loginRequired(crowi, app) , middleware.adminRequired() , admin.search.index);
-  app.post('/admin/search/build'       , loginRequired(crowi, app) , middleware.adminRequired() , csrf, admin.search.buildIndex);
+  app.post('/_api/admin/search/build'  , loginRequired(crowi, app) , middleware.adminRequired() , csrf, admin.api.searchBuildIndex);
 
   // notification admin
   app.get('/admin/notification'              , loginRequired(crowi, app) , middleware.adminRequired() , admin.notification.index);

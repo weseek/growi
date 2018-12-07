@@ -45,7 +45,7 @@
         </div>
         {% endif %}
 
-        <form action="/admin/search/build" method="post" class="form-horizontal" id="appSettingForm" role="form">
+        <form action="/_api/admin/search/build" method="post" class="form-horizontal" id="buildIndexForm" role="form">
           <fieldset>
             <legend>Index Build</legend>
             <div class="form-group">
@@ -71,6 +71,72 @@
   </div>
 
 </div>
+
+<script>
+  /**
+   * show flash message
+   */
+  function showMessage(formId, msg, status) {
+    $('#' + formId + ' .alert').remove();
+
+    if (!status) {
+      status = 'success';
+    }
+    var $message = $('<p class="alert"></p>');
+    $message.addClass('alert-' + status);
+    $message.html(msg.replace('\n', '<br>'));
+    $message.insertAfter('#' + formId + ' legend');
+
+    if (status == 'success') {
+      setTimeout(function()
+      {
+        $message.fadeOut({
+          complete: function() {
+            $message.remove();
+          }
+        });
+      }, 5000);
+    }
+  }
+
+  /**
+   * Post form data and process UI
+   */
+  function postData(form, button, action) {
+    var id = form.attr('id');
+    button.attr('disabled', 'disabled');
+    var jqxhr = $.post(action, form.serialize(), function(res)
+      {
+        if (!res.ok) {
+          showMessage(id, `Error: ${res.message}`, 'danger');
+        }
+        else {
+          showMessage(id, 'Building request is successfully posted.');
+        }
+      })
+      .fail(function() {
+        showMessage(id, "エラーが発生しました", 'danger');
+      })
+      .always(function() {
+        button.prop('disabled', false);
+      });
+    return false;
+  }
+
+  /**
+   * Handle submit button esa
+   */
+  $('#buildIndexForm').each(function() {
+    var $form = $(this);
+    var $button = $("#buildIndexForm" + $(this).attr('name') + " button[type='submit']");
+    var $action = $form.attr('action');
+    var $success_msg = $button.attr('data-success-message');
+    var $error_msg = $button.attr('data-error-message');
+    $form.submit(function() { return postData($form, $button, $action, $success_msg, $error_msg) });
+  });
+
+</script>
+
 {% endblock content_main %}
 
 {% block content_footer %}
