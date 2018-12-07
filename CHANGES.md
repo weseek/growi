@@ -1,7 +1,14 @@
 CHANGES
 ========
 
-## 3.2.9-RC
+## 3.2.10-RC
+
+* Fix: Pages in trash are available to create
+* Fix: Couldn't create portal page under Crowi Classic Behavior
+* Fix: Table tag in Timeline/SearchResult missed border and BS3 styles
+
+
+## 3.2.9
 
 * Feature: Attachment Storing to MongoDB GridFS
 * Fix: row/col moving of Spreadsheet like GUI (Handsontable) doesn't work

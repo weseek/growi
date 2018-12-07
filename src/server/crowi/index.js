@@ -33,6 +33,7 @@ function Crowi(rootdir) {
   this.cacheDir    = path.join(this.tmpDir, 'cache');
 
   this.config = {};
+  this.configManager = null;
   this.searcher = null;
   this.mailer = {};
   this.passportService = null;
@@ -78,6 +79,8 @@ Crowi.prototype.init = function() {
       return self.setupSessionConfig();
     }).then(function() {
       return self.setupAppConfig();
+    }).then(function() {
+      return self.setupConfigManager();
     }).then(function() {
       return self.scanRuntimeVersions();
     }).then(function() {
@@ -203,6 +206,12 @@ Crowi.prototype.setupAppConfig = function() {
       return resolve();
     });
   });
+};
+
+Crowi.prototype.setupConfigManager = async function() {
+  const ConfigManager = require('../service/config-manager');
+  this.configManager = new ConfigManager(this.model('Config'));
+  return await this.configManager.loadConfigs();
 };
 
 Crowi.prototype.setupModels = function() {

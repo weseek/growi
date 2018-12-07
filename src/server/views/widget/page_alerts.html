@@ -12,14 +12,16 @@
       </p>
     {% endif %}
 
-    {% if page.isDeleted() %}
+    {% if isTrashPage() %}
     <div class="alert alert-warning alert-trash d-flex align-items-center justify-content-between">
       <div>
         <i class="icon-trash" aria-hidden="true"></i>
-        This page is in the trash.<br>
-        Deleted by <img src="{{ page.lastUpdateUser|picture }}" class="picture picture-sm img-circle"> {{ page.lastUpdateUser.name }} at {{ page.updatedAt|datetz('Y-m-d H:i:s') }}
+        This page is in the trash.
+        {% if page.isDeleted() %}
+        <br>Deleted by <img src="{{ page.lastUpdateUser|picture }}" class="picture picture-sm img-circle"> {{ page.lastUpdateUser.name }} at {{ page.updatedAt|datetz('Y-m-d H:i:s') }}
+        {% endif %}
       </div>
-      {% if user %}
+      {% if page.isDeleted() and user %}
       <ul class="list-inline">
         <li>
           <a href="#" class="btn btn-default btn-rounded btn-sm" data-target="#putBackPage" data-toggle="modal"><i class="icon-action-undo" aria-hidden="true"></i> {{ t('Put Back') }}</a>
