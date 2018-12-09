@@ -380,7 +380,7 @@ module.exports = function(crowi, app) {
   };
 
   actions.notFound = async function(req, res) {
-    const path = req.path;
+    const path = getPathFromRequest(req);
 
     let view;
     const renderVars = { path };
