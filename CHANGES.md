@@ -7,6 +7,9 @@ CHANGES
 * Improvement: Refactor Access Control
 * Improvement: Checkbox behavior of task list
 * Fix: Hide restricted pages contents in timeline
+* Support: Upgrade libs
+    * googleapis
+    * passport-saml
 
 ## 3.2.10
 
