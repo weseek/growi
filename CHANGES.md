@@ -1,9 +1,12 @@
 CHANGES
 ========
 
-## 3.3.0
+## 3.3.0-RC
 
-* 
+* Feature: Add option to show/hide restricted pages in list
+* Improvement: Refactor Access Control
+* Improvement: Checkbox behavior of task list
+* Fix: Hide restricted pages contents in timeline
 
 ## 3.2.10
 
