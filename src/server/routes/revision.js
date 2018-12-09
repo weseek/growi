@@ -1,12 +1,13 @@
 module.exports = function(crowi, app) {
   'use strict';
 
-  var debug = require('debug')('growi:routes:revision')
-    , Page = crowi.model('Page')
-    , Revision = crowi.model('Revision')
-    , ApiResponse = require('../util/apiResponse')
-    , actions = {}
-  ;
+  const debug = require('debug')('growi:routes:revision');
+  const logger = require('@alias/logger')('growi:routes:revision');
+  const Page = crowi.model('Page');
+  const Revision = crowi.model('Revision');
+  const ApiResponse = require('../util/apiResponse');
+
+  const actions = {};
   actions.api = {};
 
   /**
@@ -14,23 +15,31 @@ module.exports = function(crowi, app) {
    * @apiName GetRevision
    * @apiGroup Revision
    *
+   * @apiParam {String} page_id Page Id.
    * @apiParam {String} revision_id Revision Id.
    */
-  actions.api.get = function(req, res) {
-    var revisionId = req.query.revision_id;
+  actions.api.get = async function(req, res) {
+    const pageId = req.query.page_id;
+    const revisionId = req.query.revision_id;
 
-    Revision
-      .findRevision(revisionId)
-      .then(function(revisionData) {
-        var result = {
-          revision: revisionData,
-        };
-        return res.json(ApiResponse.success(result));
-      })
-      .catch(function(err) {
-        debug('Error revisios.get', err);
-        return res.json(ApiResponse.error(err));
-      });
+    if (!pageId || !revisionId) {
+      return res.json(ApiResponse.error('Parameter page_id and revision_id are required.'));
+    }
+
+    // check whether accessible
+    const isAccessible = await Page.isAccessiblePageByViewer(pageId, req.user);
+    if (!isAccessible) {
+      return res.json(ApiResponse.error('Current user is not accessible to this page.'));
+    }
+
+    try {
+      const revision = await Revision.findById(revisionId);
+      return res.json(ApiResponse.success({ revision }));
+    }
+    catch (err) {
+      logger.error('Error revisios.get', err);
+      return res.json(ApiResponse.error(err));
+    }
   };
 
   /**
