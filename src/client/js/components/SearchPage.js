@@ -91,11 +91,12 @@ export default class SearchPage extends React.Component {
   render() {
     return (
       <div>
-        <SearchForm
-          onSearchFormChanged={this.search}
-          keyword={this.state.searchingKeyword}
-          />
-
+        <div className="search-page-input">
+          <SearchForm
+            onSearchFormChanged={this.search}
+            keyword={this.state.searchingKeyword}
+            />
+        </div>
         <SearchResult
           crowi={this.props.crowi} crowiRenderer={this.props.crowiRenderer}
           pages={this.state.searchedPages}
