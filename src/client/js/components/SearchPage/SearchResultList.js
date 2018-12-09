@@ -24,7 +24,6 @@ export default class SearchResultList extends React.Component {
             pageId={page._id}
             pagePath={page.path}
             revisionId={page.revision}
-            lazy={true}
             highlightKeywords={this.props.searchingKeyword}
           />
         </div>
