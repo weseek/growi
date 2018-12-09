@@ -26,7 +26,7 @@
     {% if isEnabledTimeline() %}
     <div class="tab-pane m-t-30" id="view-timeline" data-shown=0>
       {% for page in pages %}
-      <div class="timeline-body" id="id-{{ page.id }}" data-page-path="{{ page.path }}">
+      <div class="timeline-body" id="id-{{ page.id }}" data-page-id="{{ page.id }}" data-page-path="{{ page.path }}" data-revision="{{ page.revision.toString() }}">
         <div class="panel panel-timeline">
           <div class="panel-heading"><a href="{{ page.path }}">{{ decodeURIComponent(page.path) }}</a></div>
           <div class="panel-body">

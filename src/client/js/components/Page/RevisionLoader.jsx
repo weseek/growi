@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import VisibilitySensor from 'react-visibility-sensor';
+import Waypoint  from 'react-waypoint';
 
 import RevisionRenderer from './RevisionRenderer';
 
@@ -22,7 +22,13 @@ export default class RevisionLoader extends React.Component {
     };
 
     this.loadData = this.loadData.bind(this);
-    this.onVisibilityChanged = this.onVisibilityChanged.bind(this);
+    this.onWaypointChange = this.onWaypointChange.bind(this);
+  }
+
+  componentWillMount() {
+    if (!this.props.lazy) {
+      this.loadData();
+    }
   }
 
   loadData() {
@@ -55,26 +61,22 @@ export default class RevisionLoader extends React.Component {
       });
   }
 
-  onVisibilityChanged(isVisible) {
-    this.logger.info(this.props.pagePath, isVisible);
-
-    if (!isVisible) {
-      return;
+  onWaypointChange(event) {
+    if (event.currentPosition === Waypoint.above || event.currentPosition === Waypoint.inside) {
+      this.loadData();
     }
-
-    this.loadData();
   }
 
   render() {
     // ----- before load -----
-    if (!this.state.isLoaded) {
-      return <VisibilitySensor onChange={this.onVisibilityChanged} delayedCall={true}>
+    if (this.props.lazy && !this.state.isLoaded) {
+      return <Waypoint onPositionChange={this.onWaypointChange} bottomOffset='-100px'>
         <div className="wiki"></div>
-      </VisibilitySensor>;
+      </Waypoint>;
     }
 
     // ----- loading -----
-    if (!this.state.isLoaded) {
+    if (this.state.isLoading) {
       return (
         <div className="wiki">
           <div className="text-muted text-center">
@@ -107,6 +109,6 @@ RevisionLoader.propTypes = {
   pageId: PropTypes.string.isRequired,
   pagePath: PropTypes.string.isRequired,
   revisionId: PropTypes.string.isRequired,
-  lazy: PropTypes.bool.isRequired,
+  lazy: PropTypes.bool,
   highlightKeywords: PropTypes.string,
 };
