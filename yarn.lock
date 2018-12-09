@@ -5504,9 +5504,9 @@ markdown-it-plantuml@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/markdown-it-plantuml/-/markdown-it-plantuml-1.0.0.tgz#7b6a351a1d9275705c09626b02d873301e5899c2"
 
-markdown-it-task-lists@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/markdown-it-task-lists/-/markdown-it-task-lists-2.1.0.tgz#4594f750f70df053d1dad68024388007c1d20783"
+markdown-it-task-checkbox@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/markdown-it-task-checkbox/-/markdown-it-task-checkbox-1.0.6.tgz#9ebd7b6382e99162264605bc580f2ac118be4242"
 
 markdown-it-toc-and-anchor-with-slugid@^1.1.4:
   version "1.1.4"

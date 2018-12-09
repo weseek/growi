@@ -79,17 +79,32 @@ div.body {
     }
   }
 
-  // borrowed from https://www.npmjs.com/package/github-markdown-css
-  .contains-task-list {
+  .task-list {
     .task-list-item {
       list-style-type: none;
-    }
-    .task-list-item+.task-list-item {
-      margin-top: 3px;
-    }
-    .task-list-item input {
       margin: 0 0.2em 0.25em -1.6em;
-      vertical-align: middle;
+    }
+    .task-list-item > .task-list {
+      margin-left: 30px;
+    }
+    // use awesome-bootstrap-checkbox
+    .task-list-item .checkbox input[type="checkbox"] {
+      // layout
+      +label {
+        padding-left: 0.3em;
+        &:before {
+          margin-top: 0.4em;
+        }
+      }
+      // styles
+      cursor: default;
+      +label {
+        cursor: default;
+        opacity: 1;
+        &:before, &:after {
+          cursor: default;
+        }
+      }
     }
   }
 
@@ -187,13 +202,6 @@ div.body {
 
       li {
         line-height: 1.1em;
-      }
-    }
-
-    // borrowed from https://www.npmjs.com/package/github-markdown-css
-    .contains-task-list {
-      .task-list-item input {
-        margin: 0 0.2em * $ratio 0.25em * $ratio -1.6em * $ratio;
       }
     }
 
