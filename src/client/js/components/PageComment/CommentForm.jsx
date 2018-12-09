@@ -129,6 +129,7 @@ export default class CommentForm extends React.Component {
   getCommentHtml() {
     return (
       <CommentPreview
+        inputRef={el => this.previewElement = el}
         html={this.state.html} />
     );
   }
