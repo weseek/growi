@@ -658,6 +658,11 @@ module.exports = function(crowi) {
           newUser.createdAt = Date.now();
           newUser.status = STATUS_INVITED;
 
+          const globalLang = Config.globalLang(config);
+          if (globalLang != null) {
+            newUser.lang = globalLang;
+          }
+
           newUser.save(function(err, userData) {
             if (err) {
               createdUserList.push({
