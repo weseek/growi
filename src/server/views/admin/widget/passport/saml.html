@@ -4,7 +4,7 @@
 
   {% set nameForIsSamlEnabled = "settingForm[security:passport-saml:isEnabled]" %}
   {% set isSamlEnabled  = getConfig('crowi', 'security:passport-saml:isEnabled') %}
-  {% set useOnlyEnvVars = getConfig('crowi', 'security:passport-saml:useOnlyEnvVars') %}
+  {% set useOnlyEnvVars = getConfig('crowi', 'security:passport-saml:useOnlyEnvVarsForSomeOptions') %}
 
   <style>
     .authentication-settings-table {
@@ -31,8 +31,7 @@
 
   {% if useOnlyEnvVars %}
     <p class="alert alert-info">
-      現在SAML認証の一部の設定値は環境変数の値のみを使用するようになっています (ハイライトされているものが対象の項目です)<br>
-      この設定を変更する場合は環境変数 <code>SAML_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS</code> の値をfalseに変更もしくは削除してください
+      {{ t("security_setting.SAML.note for the only env option", "SAML_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS") }}
     </p>
   {% endif %}
 
