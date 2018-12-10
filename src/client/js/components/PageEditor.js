@@ -44,6 +44,7 @@ export default class PageEditor extends React.Component {
     this.onPreviewScroll = this.onPreviewScroll.bind(this);
     this.saveDraft = this.saveDraft.bind(this);
     this.clearDraft = this.clearDraft.bind(this);
+    this.apiErrorHandler = this.apiErrorHandler.bind(this);
 
     // for scrolling
     this.lastScrolledDateWithCursor = null;
@@ -159,7 +160,7 @@ export default class PageEditor extends React.Component {
       }
     }
     catch (e) {
-      // do nothing
+      this.apiErrorHandler(e);
     }
     finally {
       this.refs.editor.terminateUploadingState();
@@ -305,6 +306,17 @@ export default class PageEditor extends React.Component {
       // process interceptors for post rendering
       .then(() => interceptorManager.process('postRenderPreviewHtml', context));
 
+  }
+
+  apiErrorHandler(error) {
+    toastr.error(error.message, 'Error occured', {
+      closeButton: true,
+      progressBar: true,
+      newestOnTop: false,
+      showDuration: '100',
+      hideDuration: '100',
+      timeOut: '3000',
+    });
   }
 
   render() {
