@@ -31,7 +31,8 @@ class ConfigManager {
    * - undefined: a specified config does not exist.
    */
   getConfig(namespace, key) {
-    if (this.searchOnlyFromEnvVarConfigs('crowi', 'security:passport-saml:useOnlyEnvVars')) {
+    if (this.searchOnlyFromEnvVarConfigs('crowi', 'security:passport-saml:useOnlyEnvVarsForSomeOptions')) {
+      // TODO create a method to delegate this process
       return this.searchOnlyFromEnvVarConfigs(namespace, key);
     }
 
