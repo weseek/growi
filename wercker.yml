@@ -147,12 +147,12 @@ release: # would be run on release branch
         TMP_RELEASE_BRANCH=tmp/release-$RELEASE_VERSION
         git checkout -B $TMP_RELEASE_BRANCH
         git push -u origin HEAD:$TMP_RELEASE_BRANCH
-        TARGET_COMMITISH=`git rev-parse HEAD`
+        export RELEASE_GIT_COMMIT=`git rev-parse HEAD`
 
     - github-create-release:
       token: $GITHUB_TOKEN
       tag: v$RELEASE_VERSION
-      target-commitish: $TARGET_COMMITISH
+      target-commitish: $RELEASE_GIT_COMMIT
 
     - script:
       name: remove temporary release branch
@@ -180,7 +180,9 @@ release-rc: # would be run on rc/* branches
       name: get RELEASE_VERSION
       code: |
         export RELEASE_VERSION=`npm run version --silent`
+        export RELEASE_GIT_COMMIT=$WERCKER_GIT_COMMIT
         echo "export RELEASE_VERSION=$RELEASE_VERSION"
+        echo "export RELEASE_GIT_COMMIT=$RELEASE_GIT_COMMIT"
 
     - script:
       name: trigger growi-docker release-rc pipeline

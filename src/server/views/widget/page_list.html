@@ -11,8 +11,7 @@
   <img src="{{ page.lastUpdateUser|picture }}" class="picture img-circle">
   <a href="{{ page.path }}"
     class="page-list-link"
-    data-path="{{ page.path }}"
-    data-short-path="{{ page.path|path2name }}">{{ decodeURIComponent(page.path) }}
+    data-path="{{ page.path }}">{{ decodeURIComponent(page.path) }}
   </a>
   <span class="page-list-meta">
     {% if page.isPortal() %}

@@ -129,15 +129,14 @@ export default class CommentForm extends React.Component {
   getCommentHtml() {
     return (
       <CommentPreview
-        html={this.state.html}
-        inputRef={el => this.previewElement = el}/>
+        inputRef={el => this.previewElement = el}
+        html={this.state.html} />
     );
   }
 
   renderHtml(markdown) {
     const context = {
       markdown,
-      dom: this.previewElement,
     };
 
     const growiRenderer = this.growiRenderer;
@@ -154,7 +153,7 @@ export default class CommentForm extends React.Component {
       })
       .then(() => interceptorManager.process('prePostProcess', context))
       .then(() => {
-        context.parsedHTML = growiRenderer.postProcess(context.parsedHTML, context.dom);
+        context.parsedHTML = growiRenderer.postProcess(context.parsedHTML);
       })
       .then(() => interceptorManager.process('postPostProcess', context))
       .then(() => interceptorManager.process('preRenderCommentPreviewHtml', context))

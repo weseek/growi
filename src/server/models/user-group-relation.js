@@ -129,6 +129,21 @@ class UserGroupRelation {
   }
 
   /**
+   * find all UserGroup IDs that related to specified User
+   *
+   * @static
+   * @param {User} user
+   * @returns {Promise<ObjectId[]>}
+   */
+  static async findAllUserGroupIdsRelatedToUser(user) {
+    const relations = await this.find({ relatedUser: user.id })
+      .select('relatedGroup')
+      .exec();
+
+    return relations.map(relation => relation.relatedGroup);
+  }
+
+  /**
    * find all entities with pagination
    *
    * @see https://github.com/edwardhotchkiss/mongoose-paginate
@@ -156,25 +171,20 @@ class UserGroupRelation {
   }
 
   /**
-   * find one result by related group id and related user
+   * count by related group id and related user
    *
    * @static
    * @param {string} userGroupId find query param for relatedGroup
    * @param {User} userData find query param for relatedUser
-   * @returns {Promise<UserGroupRelation>}
-   * @memberof UserGroupRelation
+   * @returns {Promise<number>}
    */
-  static findByGroupIdAndUser(userGroupId, userData) {
+  static async countByGroupIdAndUser(userGroupId, userData) {
     const query = {
       relatedGroup: userGroupId,
       relatedUser: userData.id
     };
 
-    return this
-      .findOne(query)
-      .populate('relatedUser')
-      .populate('relatedGroup')
-      .exec();
+    return this.count(query);
   }
 
   /**

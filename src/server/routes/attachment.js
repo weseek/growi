@@ -155,7 +155,7 @@ module.exports = function(crowi, app) {
           .catch(reject);
       }
       else {
-        Page.findPageById(id).then(resolve).catch(reject);
+        Page.findById(id).then(resolve).catch(reject);
       }
     }).then(function(pageData) {
       page = pageData;

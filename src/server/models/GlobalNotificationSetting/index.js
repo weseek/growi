@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const nodePath = require('path');
 
 /**
  * parent schema for GlobalNotificationSetting model
@@ -74,22 +75,14 @@ class GlobalNotificationSetting {
   }
 }
 
-
-// move this to util
-// remove this from models/page
-const cutOffLastSlash = path => {
-  const lastSlash = path.lastIndexOf('/');
-  return path.substr(0, lastSlash);
-};
-
 const generatePathsOnTree = (path, pathList) => {
   pathList.push(path);
 
-  if (path === '') {
+  if (path === '/') {
     return pathList;
   }
 
-  const newPath = cutOffLastSlash(path);
+  const newPath = nodePath.posix.dirname(path);
 
   return generatePathsOnTree(newPath, pathList);
 };

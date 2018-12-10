@@ -54,6 +54,8 @@ function Crowi(rootdir) {
   this.events = {
     user: new (require(self.eventsDir + 'user'))(this),
     page: new (require(self.eventsDir + 'page'))(this),
+    search: new (require(self.eventsDir + 'search'))(this),
+    bookmark: new (require(self.eventsDir + 'bookmark'))(this),
   };
 
 }

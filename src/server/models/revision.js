@@ -40,22 +40,6 @@ module.exports = function(crowi) {
       });
   };
 
-  revisionSchema.statics.findRevision = function(id) {
-    const Revision = this;
-
-    return new Promise(function(resolve, reject) {
-      Revision.findById(id)
-        .populate('author')
-        .exec(function(err, data) {
-          if (err) {
-            return reject(err);
-          }
-
-          return resolve(data);
-        });
-    });
-  };
-
   revisionSchema.statics.findRevisions = function(ids) {
     const Revision = this,
       User = crowi.model('User');

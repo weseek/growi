@@ -17,7 +17,7 @@ require('jquery.cookie');
 require('bootstrap-select');
 
 import GrowiRenderer from '../util/GrowiRenderer';
-import Page from '../components/Page';
+import RevisionLoader from '../components/Page/RevisionLoader';
 
 require('./thirdparty-js/agile-admin');
 
@@ -471,8 +471,7 @@ $(function() {
         $('#delete-errors').addClass('alert-danger');
       }
       else {
-        const page = res.page;
-        top.location.href = page.path + '?unlinked=true';
+        top.location.href = res.path + '?unlinked=true';
       }
     });
 
@@ -480,6 +479,8 @@ $(function() {
   });
 
   $('#create-portal-button').on('click', function(e) {
+    $('a[data-toggle="tab"][href="#edit"]').tab('show');
+
     $('body').addClass('on-edit');
     $('body').addClass('builtin-editor');
 
@@ -524,7 +525,7 @@ $(function() {
 
   // for list page
   let growiRendererForTimeline = null;
-  $('a[data-toggle="tab"][href="#view-timeline"]').on('show.bs.tab', function() {
+  $('a[data-toggle="tab"][href="#view-timeline"]').on('shown.bs.tab', function() {
     const isShown = $('#view-timeline').data('shown');
 
     if (growiRendererForTimeline == null) {
@@ -534,16 +535,21 @@ $(function() {
     if (isShown == 0) {
       $('#view-timeline .timeline-body').each(function() {
         const id = $(this).attr('id');
-        const contentId = '#' + id + ' > script';
         const revisionBody = '#' + id + ' .revision-body';
         const revisionBodyElem = document.querySelector(revisionBody);
         /* eslint-disable no-unused-vars */
         const revisionPath = '#' + id + ' .revision-path';
         /* eslint-enable */
-        const pagePath = document.getElementById(id).getAttribute('data-page-path');
-        const markdown = entities.decodeHTML($(contentId).html());
+        const timelineElm = document.getElementById(id);
+        const pageId = timelineElm.getAttribute('data-page-id');
+        const pagePath = timelineElm.getAttribute('data-page-path');
+        const revisionId = timelineElm.getAttribute('data-revision');
 
-        ReactDOM.render(<Page crowi={crowi} crowiRenderer={growiRendererForTimeline} markdown={markdown} pagePath={pagePath} />, revisionBodyElem);
+        ReactDOM.render(
+          <RevisionLoader lazy={true}
+            crowi={crowi} crowiRenderer={growiRendererForTimeline}
+            pageId={pageId} pagePath={pagePath} revisionId={revisionId} />,
+          revisionBodyElem);
       });
 
       $('#view-timeline').data('shown', 1);
@@ -839,6 +845,6 @@ window.addEventListener('keydown', (event) => {
 });
 
 // adjust min-height of page for print temporarily
-window.onbeforeprint = function () {
-  $("#page-wrapper").css("min-height", "0px");
+window.onbeforeprint = function() {
+  $('#page-wrapper').css('min-height', '0px');
 };
