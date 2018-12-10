@@ -79,6 +79,14 @@
     .btn.active[data-active-class="primary"] {
       @include active-color($btn-primary-color, $btn-primary-bg, $btn-primary-border);
     }
+
+    // disabled btn-group styles
+    &.btn-group-disabled {
+      .btn:hover {
+        background-color: unset;
+        cursor: not-allowed;
+      }
+    }
   }
 
   // theme selector
@@ -115,6 +123,22 @@
       .theme-option-name {
         opacity: 1;
       }
+    }
+  }
+
+  .authentication-settings-table {
+    table-layout: fixed;
+
+    .item-name {
+      width: 150px;
+    }
+
+    td.unused {
+      opacity: 0.5;
+    }
+
+    &.use-only-env-vars .from-env-vars {
+      background-color: rgba(0, 159, 187, 0.1);
     }
   }
 }

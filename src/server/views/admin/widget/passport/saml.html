@@ -5,30 +5,7 @@
   {% set nameForIsSamlEnabled = "settingForm[security:passport-saml:isEnabled]" %}
   {% set isSamlEnabled  = getConfig('crowi', 'security:passport-saml:isEnabled') %}
   {% set useOnlyEnvVars = getConfig('crowi', 'security:passport-saml:useOnlyEnvVarsForSomeOptions') %}
-
-  <style>
-    .authentication-settings-table {
-      table-layout: fixed;
-    }
-
-    .authentication-settings-table .item-name{
-      width: 150px;
-    }
-
-    .authentication-settings-table.use-only-env-vars .from-env-vars {
-      background-color: rgba(0, 159, 187, 0.1);
-    }
-
-    .authentication-settings-table td.unused {
-      opacity: 0.5;
-    }
-
-    .btn-group-disabled .btn:hover {
-      background-color: unset;
-      cursor: not-allowed;
-    }
-  </style>
-
+  
   {% if useOnlyEnvVars %}
     <p class="alert alert-info">
       {{ t("security_setting.SAML.note for the only env option", "SAML_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS") }}
