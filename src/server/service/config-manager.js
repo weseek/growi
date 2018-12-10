@@ -1,6 +1,18 @@
 const ConfigLoader = require('../service/config-loader')
   , debug = require('debug')('growi:service:ConfigManager');
 
+const KEYS_FOR_SAML_USE_ONLY_ENV_OPTION = [
+  'security:passport-saml:isEnabled',
+  'security:passport-saml:entryPoint',
+  'security:passport-saml:issuer',
+  'security:passport-saml:attrMapId',
+  'security:passport-saml:attrMapUsername',
+  'security:passport-saml:attrMapMail',
+  'security:passport-saml:attrMapFirstName',
+  'security:passport-saml:attrMapLastName',
+  'security:passport-saml:cert'
+];
+
 class ConfigManager {
 
   constructor(configModel) {
@@ -21,7 +33,7 @@ class ConfigManager {
   /**
    * get a config specified by namespace & key
    *
-   * Basically, search a specified config from configs loaded from the database at first
+   * Basically, this searches a specified config from configs loaded from the database at first
    * and then from configs loaded from the environment variables.
    *
    * In some case, this search method changes.
@@ -32,8 +44,7 @@ class ConfigManager {
    */
   getConfig(namespace, key) {
     if (this.searchOnlyFromEnvVarConfigs('crowi', 'security:passport-saml:useOnlyEnvVarsForSomeOptions')) {
-      // TODO create a method to delegate this process
-      return this.searchOnlyFromEnvVarConfigs(namespace, key);
+      return this.searchInSAMLUseOnlyEnvMode(namespace, key);
     }
 
     return this.defaultSearch(namespace, key);
@@ -94,8 +105,8 @@ class ConfigManager {
   /**
    * private api
    *
-   * Search a specified config from configs loaded from the database at first
-   * and then from configs loaded from the environment variables.
+   * search a specified config from configs loaded from the database at first
+   * and then from configs loaded from the environment variables
    */
   defaultSearch(namespace, key) {
     if (!this.configExistsInDB(namespace, key) && !this.configExistsInEnvVars(namespace, key)) {
@@ -123,7 +134,23 @@ class ConfigManager {
   /**
    * private api
    *
-   * Search a specified config from configs loaded from the database
+   * For the configs specified by KEYS_FOR_SAML_USE_ONLY_ENV_OPTION,
+   * this searches only from configs loaded from the environment variables.
+   * For the other configs, this searches as the same way to defaultSearch.
+   */
+  searchInSAMLUseOnlyEnvMode(namespace, key) {
+    if (KEYS_FOR_SAML_USE_ONLY_ENV_OPTION.includes(key)) {
+      return this.searchOnlyFromEnvVarConfigs(namespace, key);
+    }
+    else {
+      return this.defaultSearch(namespace, key);
+    }
+  }
+
+  /**
+   * private api
+   *
+   * search a specified config from configs loaded from the database
    */
   searchOnlyFromDBConfigs(namespace, key) {
     if (!this.configExistsInDB(namespace, key)) {
@@ -136,7 +163,7 @@ class ConfigManager {
   /**
    * private api
    *
-   * Search a specified config from configs loaded from the environment variables
+   * search a specified config from configs loaded from the environment variables
    */
   searchOnlyFromEnvVarConfigs(namespace, key) {
     if (!this.configExistsInEnvVars(namespace, key)) {
