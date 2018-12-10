@@ -139,7 +139,7 @@ class ConfigManager {
    * For the other configs, this searches as the same way to defaultSearch.
    */
   searchInSAMLUseOnlyEnvMode(namespace, key) {
-    if (KEYS_FOR_SAML_USE_ONLY_ENV_OPTION.includes(key)) {
+    if (namespace === 'crowi' && KEYS_FOR_SAML_USE_ONLY_ENV_OPTION.includes(key)) {
       return this.searchOnlyFromEnvVarConfigs(namespace, key);
     }
     else {
