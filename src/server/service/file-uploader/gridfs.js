@@ -67,6 +67,9 @@ module.exports = function(crowi) {
     if (+process.env.MONGODB_GRIDFS_LIMIT > usingFilesSize + +uploadFileSize) {
       return true;
     }
+    if (!process.env.MONGODB_GRIDFS_LIMIT && Infinity > usingFilesSize + +uploadFileSize) {
+      return true;
+    }
     return false;
   };
 
