@@ -3,6 +3,7 @@ const path = require('path');
 const { URL } = require('url');
 const urljoin = require('url-join');
 const fs = require('graceful-fs');
+const mkdirp = require('mkdirp');
 const replaceStream = require('replacestream');
 const streamToPromise = require('stream-to-promise');
 
@@ -39,7 +40,8 @@ class CdnResourcesDownloader {
 
       return this.downloadAndWriteToFS(
         cdnResource.url,
-        path.join(cdnResource.outDir, `${cdnResource.name}.${ext}`));
+        cdnResource.outDir,
+        `${cdnResource.name}.${ext}`);
     });
 
     return Promise.all(promises);
@@ -71,7 +73,8 @@ class CdnResourcesDownloader {
 
       return this.downloadAndWriteToFS(
         cdnResource.url,
-        path.join(cdnResource.outDir, `${cdnResource.name}.${ext}`),
+        cdnResource.outDir,
+        `${cdnResource.name}.${ext}`,
         urlReplacer);
     });
 
@@ -84,14 +87,10 @@ class CdnResourcesDownloader {
     const promisesForAssets = assetsResourcesStore.map(cdnResource => {
       this.logger.info(`Processing assts in css '${cdnResource.name}'`);
 
-      // create dir if dir does not exist
-      if (!fs.existsSync(cdnResource.outDir)) {
-        fs.mkdirSync(cdnResource.outDir);
-      }
-
       return this.downloadAndWriteToFS(
         cdnResource.url,
-        path.join(cdnResource.outDir, cdnResource.name));
+        cdnResource.outDir,
+        cdnResource.name);
     });
 
     return Promise.all(promisesForAssets);
@@ -134,14 +133,18 @@ class CdnResourcesDownloader {
       });
   }
 
-  async downloadAndWriteToFS(url, file, replacestream) {
+  async downloadAndWriteToFS(url, outDir, fileName, replacestream) {
     // get
     const response = await axios.get(url, { responseType: 'stream' });
+    // mkdir -p
+    mkdirp.sync(outDir);
+
     // replace and write
     let stream = response.data;
     if (replacestream != null) {
       stream = stream.pipe(replacestream);
     }
+    const file = path.join(outDir, fileName);
     stream = stream.pipe(fs.createWriteStream(file));
 
     return streamToPromise(stream);
