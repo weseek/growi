@@ -147,9 +147,9 @@
     padding-bottom: 32px;
 
     .search-result-page {
-      // adjust for fixed .search-page-input
-      margin-top: -60px;
-      padding-top: 60px;
+      // adjust for anchor links by the height of fixed .search-page-input
+      margin-top: -48px;
+      padding-top: 48px;
 
       > h2 {
         font-size: 20px;
