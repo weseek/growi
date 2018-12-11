@@ -1,5 +1,5 @@
 const axios = require('axios');
-const path = require('path');
+const urljoin = require('url-join');
 const fs = require('graceful-fs');
 
 const helpers = require('@commons/util/helpers');
@@ -59,7 +59,7 @@ class CdnResourcesService {
     // TODO process integrity
 
     const url = noCdn
-      ? path.join(cdnLocalScriptWebRoot, resource.name) + '.js'
+      ? urljoin(cdnLocalScriptWebRoot, resource.name) + '.js'
       : resource.url;
     return `<script src="${url}" ${attrs.join(' ')}></script>`;
   }
@@ -90,7 +90,7 @@ class CdnResourcesService {
     // TODO process integrity
 
     const url = noCdn
-      ? path.join(cdnLocalStyleWebRoot, resource.name) + '.css'
+      ? urljoin(cdnLocalStyleWebRoot, resource.name) + '.css'
       : resource.url;
 
     return `<link href="${url}" ${attrs.join(' ')}>`;
