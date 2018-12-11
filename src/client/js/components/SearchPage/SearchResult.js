@@ -251,7 +251,7 @@ export default class SearchResult extends React.Component {
 
     // TODO あとでなんとかする
     setTimeout(() => {
-      $('#search-result-list > nav').affix({ offset: { top: 120 }});
+      $('#search-result-list > nav').affix({ offset: { top: 50 }});
     }, 1200);
 
     /*
@@ -262,7 +262,7 @@ export default class SearchResult extends React.Component {
       <div className="content-main">
         <div className="search-result row" id="search-result">
           <div className="col-md-4 hidden-xs hidden-sm page-list search-result-list" id="search-result-list">
-            <nav data-spy="affix" data-offset-top="120">
+            <nav data-spy="affix" data-offset-top="50">
               <div className="pull-right">
                 {deletionModeButtons}
                 {allSelectCheck}

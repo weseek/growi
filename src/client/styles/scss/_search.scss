@@ -114,7 +114,7 @@
     nav {
       padding-right: 0;
       &.affix {
-        top: 8px;
+        top: 58px;
         width: 33%;
         padding-right: 5px;
         padding-bottom: 50px;
@@ -161,6 +161,22 @@
         border-radius: 3px;
         font-size: 13px;
       }
+    }
+  }
+}
+
+.search-page-input{
+  padding: 10px 0;
+  position: sticky;
+  top: 0;
+  z-index: 99;
+  .form{
+    margin: 0;
+    .input-group .form-control{
+      height: 100%;
+    }
+    .input-group-btn .btn{
+      height: 34px;
     }
   }
 }
