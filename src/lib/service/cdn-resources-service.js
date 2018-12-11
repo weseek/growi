@@ -5,15 +5,15 @@ const helpers = require('@commons/util/helpers');
 const cdnLocalScriptRoot = 'public/js/cdn';
 const cdnLocalStyleRoot = 'public/styles/cdn';
 
-class CdnResourcesResolver {
+class CdnResourcesService {
   constructor() {
-    this.logger = require('@alias/logger')('growi:service:CdnResourcesResolver');
+    this.logger = require('@alias/logger')('growi:service:CdnResourcesService');
     this.loadMetaData();
   }
 
   loadMetaData() {
     this.cdnResources = require('@root/resource/cdn-resources');
-    this.logger.info('meta data loaded : ', this.cdnResources);
+    this.logger.debug('meta data loaded : ', this.cdnResources);
   }
 
   async downloadAndWrite(url, file) {
@@ -35,4 +35,4 @@ class CdnResourcesResolver {
   }
 }
 
-module.exports = CdnResourcesResolver;
+module.exports = CdnResourcesService;

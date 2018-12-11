@@ -7,13 +7,13 @@
 require('module-alias/register');
 
 const logger = require('@alias/logger')('growi:bin:download-resources');
-const CdnResourcesResolver = require('@commons/service/cdn-resources-resolver');
+const CdnResourcesService = require('@commons/service/cdn-resources-service');
 
-const resolver = new CdnResourcesResolver();
+const service = new CdnResourcesService();
 
 logger.info('Start to download.');
 
-resolver.downloadAndWriteAll()
+service.downloadAndWriteAll()
   .then(() => {
     logger.info('Download is terminated successfully');
   })
