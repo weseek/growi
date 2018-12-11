@@ -3,6 +3,7 @@ module.exports = {
   FILE_UPLOAD: 'mongodb',
   // MONGODB_GRIDFS_LIMIT: 10485760,   // 10MB
   // MATHJAX: 1,
+  // NO_CDN: true,
   ELASTICSEARCH_URI: 'http://localhost:9200/growi',
   HACKMD_URI: 'http://localhost:3010',
   PLUGIN_NAMES_TOBE_LOADED: [
