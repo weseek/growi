@@ -18,7 +18,7 @@ $wikilinktext: lighten($themecolor, 5%);
 $wikilinktext-hover: lighten($wikilinktext, 15%);
 $inline-code-color: darken($subthemecolor, 5%);
 $inline-code-bg: lighten($subthemecolor, 70%);
-$active-nav-tabs-bgcolor: #017e20;
+$active-nav-tabs-bgcolor: $subthemecolor;
 
 @import 'apply-colors';
 @import 'apply-colors-light';
