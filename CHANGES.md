@@ -6,6 +6,8 @@ CHANGES
 * Feature: Add option to show/hide restricted pages in list
 * Improvement: Refactor Access Control
 * Improvement: Checkbox behavior of task list
+* Improvement: Fixed search input on search result page
+* Improvement: Add 'christmas' theme
 * Fix: Hide restricted pages contents in timeline
 * Support: Upgrade libs
     * googleapis
