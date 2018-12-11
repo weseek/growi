@@ -6,7 +6,7 @@ $subthemecolor:	#dc3d2a;
 $topbar: $themecolor;
 $sidebar: $themelight;
 $bodycolor: $themelight;
-$headingtext: #00b32c;
+$headingtext: #017e20;
 $bodytext: #dc3d2a;
 $linktext: lighten(#0d5901, 5%);
 $linktext-hover: lighten($linktext, 12%);
@@ -18,7 +18,7 @@ $wikilinktext: lighten($themecolor, 5%);
 $wikilinktext-hover: lighten($wikilinktext, 15%);
 $inline-code-color: darken($themecolor, 20%);
 $inline-code-bg: lighten($subthemecolor, 70%);
-$active-nav-tabs-bgcolor: #00b32c;
+$active-nav-tabs-bgcolor: #017e20;
 
 @import 'apply-colors';
 @import 'apply-colors-light';
@@ -37,7 +37,7 @@ $active-nav-tabs-bgcolor: #00b32c;
 }
 
 .sidebar{
-  background: #b3000c;
+  background: $themecolor;
 }
 
 .rbt-menu {
