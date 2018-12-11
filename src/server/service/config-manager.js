@@ -157,7 +157,7 @@ class ConfigManager {
       return undefined;
     }
 
-    return this.configObject.fromEnvVars[namespace][key];
+    return this.configObject.fromDB[namespace][key];
   }
 
   /**
