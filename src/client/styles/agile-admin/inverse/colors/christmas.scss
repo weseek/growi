@@ -2,12 +2,12 @@
 
 $themecolor: #b3000c;
 $themelight: #ffffff;
-$subthemecolor:	#dc3d2a;
+$subthemecolor:	#017e20;
 $topbar: $themecolor;
 $sidebar: $themelight;
 $bodycolor: $themelight;
-$headingtext: #017e20;
-$bodytext: #dc3d2a;
+$headingtext: $subthemecolor;
+$bodytext: #bd3425;
 $linktext: lighten(#0d5901, 5%);
 $linktext-hover: lighten($linktext, 12%);
 $sidebar-text: #ffffff;
@@ -16,7 +16,7 @@ $info: lighten($themecolor, 10%);
 $logo-mark-fill: lighten(desaturate($topbar, 50%), 50%);
 $wikilinktext: lighten($themecolor, 5%);
 $wikilinktext-hover: lighten($wikilinktext, 15%);
-$inline-code-color: darken($themecolor, 20%);
+$inline-code-color: darken($subthemecolor, 5%);
 $inline-code-bg: lighten($subthemecolor, 70%);
 $active-nav-tabs-bgcolor: #017e20;
 
@@ -57,6 +57,7 @@ $active-nav-tabs-bgcolor: #017e20;
 
 #wrapper > .navbar > .navbar-header {
   background-image: url("/images/themes/christmas/christmas-navbar.jpg");
+  border-bottom: 3px solid $active-nav-tabs-bgcolor;
 }
 
 /*
@@ -90,4 +91,12 @@ body:not(.on-edit) .nav.nav-tabs {
       color: $bodytext;
     }
   }
+}
+
+/*
+ * Modal
+ */
+.modal-dialog .modal-header.bg-primary {
+  background-image: url("/images/themes/christmas/christmas-navbar.jpg");
+  border-bottom: 2px solid $active-nav-tabs-bgcolor;
 }
