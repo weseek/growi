@@ -52,6 +52,18 @@
 
   <fieldset id="passport-saml-hide-when-disabled" {%if !isSamlEnabled %}style="display: none;"{% endif %}>
 
+    {% set missingRequiredConfigs = getSAMLMissingRequireds() %}
+    {% if isSamlEnabled && missingRequiredConfigs.length !== 0 %}
+    <div class="alert alert-danger">
+      Currently, the following mandatory items are not set in either database nor environment variables.
+      <ul>
+        {% for missingRequiredConfig in missingRequiredConfigs %}
+        <li>{{ missingRequiredConfig }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
     <h4>Basic Settings</h4>
     <table class="table authentication-settings-table {% if useOnlyEnvVars %}use-only-env-vars{% endif %}">
       <colgroup>

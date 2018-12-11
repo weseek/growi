@@ -53,6 +53,15 @@ class PassportService {
      * the flag whether serializer/deserializer are set up successfully
      */
     this.isSerializerSetup = false;
+
+    this.requiredSAMLConfigKeys = [
+      'security:passport-saml:isEnabled',
+      'security:passport-saml:entryPoint',
+      'security:passport-saml:issuer',
+      'security:passport-saml:attrMapId',
+      'security:passport-saml:attrMapUsername',
+      'security:passport-saml:attrMapMail'
+    ];
   }
 
   /**
@@ -465,6 +474,25 @@ class PassportService {
     debug('SamlStrategy: reset');
     passport.unuse('saml');
     this.isSamlStrategySetup = false;
+  }
+
+  getSAMLMissingRequiredConfigs() {
+    const missingRequireds = [];
+    for (const key of this.requiredSAMLConfigKeys) {
+      if (this.crowi.configManager.getConfig('crowi', key) === null) {
+        missingRequireds.push(key);
+      }
+    }
+    return missingRequireds;
+  }
+
+  validateSAMLSettingForm(form) {
+    for (const key of this.requiredSAMLConfigKeys) {
+      const formValue = form.settingForm[key];
+      if (this.crowi.configManager.getConfigFromEnvVars('crowi', key) === null && formValue === '') {
+        form.errors.push(`${key} is required`);
+      }
+    }
   }
 
   /**
