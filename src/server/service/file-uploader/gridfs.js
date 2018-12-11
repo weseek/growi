@@ -63,14 +63,13 @@ module.exports = function(crowi) {
    * chech storage for fileUpload reaches MONGODB_GRIDFS_LIMIT (for gridfs)
    */
   lib.checkCapacity = async(uploadFileSize) => {
+    // skip checking if env var is undefined
+    if (process.env.MONGODB_GRIDFS_LIMIT == null) {
+      return true;
+    }
+
     const usingFilesSize = await getCollectionSize();
-    if (process.env.MONGODB_GRIDFS_LIMIT != false) {
-      return true;
-    }
-    else if (+process.env.MONGODB_GRIDFS_LIMIT > usingFilesSize + +uploadFileSize) {
-      return true;
-    }
-    return false;
+    return (+process.env.MONGODB_GRIDFS_LIMIT > usingFilesSize + +uploadFileSize);
   };
 
   lib.uploadFile = async function(filePath, contentType, fileStream, options) {
