@@ -82,5 +82,12 @@ module.exports = {
         integrity: ''
       },
     },
+    {
+      name: 'jquery-ui',
+      url: 'https://cdn.jsdelivr.net/jquery.ui/1.11.4/jquery-ui.min.css',
+      args: {
+        integrity: ''
+      },
+    }
   ]
 };

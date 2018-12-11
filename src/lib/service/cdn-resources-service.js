@@ -1,6 +1,9 @@
 const axios = require('axios');
+const path = require('path');
+const URL = require('url');
 const urljoin = require('url-join');
 const fs = require('graceful-fs');
+const replaceStream = require('replacestream');
 
 const helpers = require('@commons/util/helpers');
 const cdnLocalScriptRoot = 'public/js/cdn';
@@ -21,22 +24,44 @@ class CdnResourcesService {
     this.logger.debug('meta data loaded : ', this.cdnResources);
   }
 
-  async downloadAndWrite(url, file) {
+  async downloadAndWrite(url, file, replacestream) {
     // get
     const response = await axios.get(url, { responseType: 'stream' });
-    // write
-    await response.data.pipe(fs.createWriteStream(file));
+    // replace and write
+    let stream = response.data;
+    if (replacestream != null) {
+      stream = response.data.pipe(replacestream);
+    }
+    return stream.pipe(fs.createWriteStream(file));
   }
 
   async downloadAndWriteAll() {
+    // scripts
     const promisesForScript = this.cdnResources.js.map(resource => {
-      return this.downloadAndWrite(resource.url, helpers.root(cdnLocalScriptRoot, `${resource.name}.js`));
+      return this.downloadAndWrite(
+        resource.url,
+        helpers.root(cdnLocalScriptRoot, `${resource.name}.js`));
     });
+    // styles
     const promisesForStyle = this.cdnResources.style.map(resource => {
-      return this.downloadAndWrite(resource.url, helpers.root(cdnLocalStyleRoot, `${resource.name}.css`));
+      return this.downloadAndWrite(
+        resource.url,
+        helpers.root(cdnLocalStyleRoot, `${resource.name}.css`),
+        replaceStream(
+          /url\((?!"data:)["']?(.+?)["']?\)/g, (match, m1) => {   // https://regex101.com/r/Sds38A/2
+            const url = new URL(m1);
+            const basename = path.basename(url.pathname(m1));
+            console.log(m1, basename);
+            return `url()`;
+          })
+      );
     });
 
     return Promise.all([promisesForScript, promisesForStyle]);
+  }
+
+  async downloadAssets() {
+
   }
 
   /**
@@ -106,7 +131,7 @@ class CdnResourcesService {
       ? urljoin(cdnLocalStyleWebRoot, resource.name) + '.css'
       : resource.url;
 
-    return `<link href="${url}" ${attrs.join(' ')}>`;
+    return `<link rel="stylesheet" href="${url}" ${attrs.join(' ')}>`;
   }
 
   getStyleTagByName(name) {
