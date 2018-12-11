@@ -1100,7 +1100,7 @@ module.exports = function(crowi, app) {
   actions.api.securityPassportSamlSetting = async(req, res) => {
     const form = req.form.settingForm;
 
-    crowi.passportService.validateSAMLSettingForm(req.form);
+    crowi.passportService.validateSamlSettingForm(req.form);
 
     if (!req.form.isValid) {
       return res.json({status: false, message: req.form.errors.join('\n')});

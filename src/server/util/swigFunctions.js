@@ -114,8 +114,8 @@ module.exports = function(crowi, app, req, locals) {
     return locals.isEnabledPassport() && config.crowi['security:passport-saml:isEnabled'];
   };
 
-  locals.getSAMLMissingRequireds = function() {
-    return crowi.passportService.getSAMLMissingRequiredConfigs();
+  locals.getSamlMissingMandatoryConfigKeys = function() {
+    return crowi.passportService.getSamlMissingMandatoryConfigKeys();
   };
 
   locals.googleLoginEnabled = function() {

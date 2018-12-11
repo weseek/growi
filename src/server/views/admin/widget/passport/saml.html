@@ -52,13 +52,13 @@
 
   <fieldset id="passport-saml-hide-when-disabled" {%if !isSamlEnabled %}style="display: none;"{% endif %}>
 
-    {% set missingRequiredConfigs = getSAMLMissingRequireds() %}
-    {% if isSamlEnabled && missingRequiredConfigs.length !== 0 %}
+    {% set missingMandatoryConfigKeys = getSamlMissingMandatoryConfigKeys() %}
+    {% if isSamlEnabled && missingMandatoryConfigKeys.length !== 0 %}
     <div class="alert alert-danger">
       Currently, the following mandatory items are not set in either database nor environment variables.
       <ul>
-        {% for missingRequiredConfig in missingRequiredConfigs %}
-        <li>{{ missingRequiredConfig }}</li>
+        {% for missingMandatoryConfigKey in missingMandatoryConfigKeys %}
+        <li>{{ missingMandatoryConfigKey }}</li>
         {% endfor %}
       </ul>
     </div>

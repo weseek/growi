@@ -54,7 +54,10 @@ class PassportService {
      */
     this.isSerializerSetup = false;
 
-    this.requiredSAMLConfigKeys = [
+    /**
+     * the keys of mandatory configs for SAML
+     */
+    this.mandatoryConfigKeysForSaml = [
       'security:passport-saml:isEnabled',
       'security:passport-saml:entryPoint',
       'security:passport-saml:issuer',
@@ -476,9 +479,12 @@ class PassportService {
     this.isSamlStrategySetup = false;
   }
 
-  getSAMLMissingRequiredConfigs() {
+  /**
+   * return the keys of the configs mandatory for SAML whose value are empty.
+   */
+  getSamlMissingMandatoryConfigKeys() {
     const missingRequireds = [];
-    for (const key of this.requiredSAMLConfigKeys) {
+    for (const key of this.mandatoryConfigKeysForSaml) {
       if (this.crowi.configManager.getConfig('crowi', key) === null) {
         missingRequireds.push(key);
       }
@@ -486,8 +492,11 @@ class PassportService {
     return missingRequireds;
   }
 
-  validateSAMLSettingForm(form) {
-    for (const key of this.requiredSAMLConfigKeys) {
+  /**
+   * validate setting form values for SAML
+   */
+  validateSamlSettingForm(form) {
+    for (const key of this.mandatoryConfigKeysForSaml) {
       const formValue = form.settingForm[key];
       if (this.crowi.configManager.getConfigFromEnvVars('crowi', key) === null && formValue === '') {
         form.errors.push(`${key} is required`);
