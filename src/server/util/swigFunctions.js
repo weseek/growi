@@ -5,6 +5,7 @@ module.exports = function(crowi, app, req, locals) {
     , Config = crowi.model('Config')
     , User = crowi.model('User')
     , passportService = crowi.passportService
+    , cdnResourcesService = crowi.cdnResourcesService
   ;
 
   debug('initializing swigFunctions');
@@ -55,6 +56,18 @@ module.exports = function(crowi, app, req, locals) {
   locals.appGlobalLang = function() {
     const config = crowi.getConfig();
     return Config.globalLang(config);
+  };
+
+  locals.cdnScriptTags = function() {
+    console.log(new Date());
+    const tags = cdnResourcesService.getAllScriptTags();
+    console.log(new Date());
+    return tags.join('\n');
+  };
+
+  locals.cdnStyleTags = function() {
+    const tags = cdnResourcesService.getAllStyleTags();
+    return tags.join('\n');
   };
 
   /**

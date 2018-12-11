@@ -5,6 +5,7 @@ const debug = require('debug')('growi:crowi')
   , logger = require('@alias/logger')('growi:crowi')
   , pkg = require('@root/package.json')
   , InterceptorManager = require('@commons/service/interceptor-manager')
+  , CdnResourcesService = require('@commons/service/cdn-resources-service')
   , Xss = require('@commons/service/xss')
   , path = require('path')
   , sep = path.sep
@@ -39,6 +40,7 @@ function Crowi(rootdir) {
   this.passportService = null;
   this.globalNotificationService = null;
   this.restQiitaAPIService = null;
+  this.cdnResourcesService = new CdnResourcesService();
   this.interceptorManager = new InterceptorManager();
   this.xss = new Xss();
 
