@@ -1,6 +1,6 @@
 const axios = require('axios');
 const path = require('path');
-const url = require('url');
+const { URL } = require('url');
 const urljoin = require('url-join');
 const fs = require('graceful-fs');
 const replaceStream = require('replacestream');
@@ -35,31 +35,36 @@ class CdnResourcesService {
     return stream.pipe(fs.createWriteStream(file));
   }
 
-  async downloadAndWriteAll() {
-    // scripts
+  async downloadAndWriteScripts() {
     const promisesForScript = this.cdnResources.js.map(resource => {
       return this.downloadAndWrite(
         resource.url,
         helpers.root(cdnLocalScriptRoot, `${resource.name}.js`));
     });
 
+    return Promise.all(promisesForScript);
+  }
+
+  async downloadAndWriteStyles() {
     // styles
     const assets = [];
     const promisesForStyle = this.cdnResources.style.map(resource => {
       const urlReplacer = replaceStream(
         /url\((?!"data:)["']?(.+?)["']?\)/g,    // https://regex101.com/r/Sds38A/2
-        (match, m1) => {
+        (match, relativeUrl) => {
           // get basename
-          const parsedUrl = url.parse(m1);
+          const parsedUrl = new URL(relativeUrl, resource.url);
           const basename = path.basename(parsedUrl.pathname);
 
           // add assets metadata to download later
           assets.push({
-            url: url,
-            file: helpers.root(cdnLocalStyleRoot, resource.name, basename),
+            url: parsedUrl.toString(),
+            dir: helpers.root(cdnLocalStyleRoot, resource.name),
+            basename: basename,
           });
 
-          return `url(${urljoin(cdnLocalStyleWebRoot, resource.name, basename)})`;
+          const replaceUrl = urljoin(cdnLocalStyleWebRoot, resource.name, basename);
+          return `url(${replaceUrl})`;
         });
 
       return this.downloadAndWrite(
@@ -68,11 +73,28 @@ class CdnResourcesService {
         urlReplacer);
     });
 
-    return Promise.all([promisesForScript, promisesForStyle]);
+    await Promise.all(promisesForStyle);
+
+    // assets in css
+    const promisesForAssets = assets.map(resource => {
+      // create dir if dir does not exist
+      if (!fs.existsSync(resource.dir)) {
+        fs.mkdirSync(resource.dir);
+      }
+
+      return this.downloadAndWrite(
+        resource.url,
+        path.join(resource.dir, resource.basename));
+    });
+
+    return Promise.all(promisesForAssets);
   }
 
-  async downloadAssets() {
-
+  async downloadAndWriteAll() {
+    return Promise.all([
+      this.downloadAndWriteScripts(),
+      this.downloadAndWriteStyles(),
+    ]);
   }
 
   /**
