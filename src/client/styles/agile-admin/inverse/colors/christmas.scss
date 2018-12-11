@@ -7,7 +7,7 @@ $topbar: $themecolor;
 $sidebar: $themelight;
 $bodycolor: $themelight;
 $headingtext: $subthemecolor;
-$bodytext: #bd3425;
+$bodytext: black;
 $linktext: lighten(#0d5901, 5%);
 $linktext-hover: lighten($linktext, 12%);
 $sidebar-text: #ffffff;
@@ -90,7 +90,7 @@ body:not(.on-edit) .nav.nav-tabs {
       background-color: rgba(#ccc, 0.5);
     }
     .link-switch {
-      color: $bodytext;
+      color: #bd3425;
     }
   }
 }
@@ -107,7 +107,7 @@ body:not(.on-edit) .nav.nav-tabs {
  * Panel
  */
 .panel.panel-default {
-  border-color: $bodytext;
+  border-color: #bd3425;
   .panel-heading {
     color: white;
     background-image: url("/images/themes/christmas/christmas-navbar.jpg");
