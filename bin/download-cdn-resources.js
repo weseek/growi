@@ -19,7 +19,7 @@ const CdnResourcesService = require('@commons/service/cdn-resources-service');
 
 const service = new CdnResourcesService();
 
-logger.info('Start to download.');
+logger.info('This is NO_CDN mode. Start to download resources.');
 
 service.downloadAndWriteAll()
   .then(() => {
