@@ -25,7 +25,7 @@
 {% block html_additional_headers %}
   {% parent %}
   <!-- CodeMirror -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/jquery.ui/1.11.4/jquery-ui.min.css">
+  {{ cdnStyleTag('jquery-ui') }}
   <style>
     .CodeMirror {
       border: 1px solid #eee;
