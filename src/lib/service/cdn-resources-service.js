@@ -1,6 +1,6 @@
 const axios = require('axios');
 const path = require('path');
-const URL = require('url');
+const url = require('url');
 const urljoin = require('url-join');
 const fs = require('graceful-fs');
 const replaceStream = require('replacestream');
@@ -42,19 +42,30 @@ class CdnResourcesService {
         resource.url,
         helpers.root(cdnLocalScriptRoot, `${resource.name}.js`));
     });
+
     // styles
+    const assets = [];
     const promisesForStyle = this.cdnResources.style.map(resource => {
+      const urlReplacer = replaceStream(
+        /url\((?!"data:)["']?(.+?)["']?\)/g,    // https://regex101.com/r/Sds38A/2
+        (match, m1) => {
+          // get basename
+          const parsedUrl = url.parse(m1);
+          const basename = path.basename(parsedUrl.pathname);
+
+          // add assets metadata to download later
+          assets.push({
+            url: url,
+            file: helpers.root(cdnLocalStyleRoot, resource.name, basename),
+          });
+
+          return `url(${urljoin(cdnLocalStyleWebRoot, resource.name, basename)})`;
+        });
+
       return this.downloadAndWrite(
         resource.url,
         helpers.root(cdnLocalStyleRoot, `${resource.name}.css`),
-        replaceStream(
-          /url\((?!"data:)["']?(.+?)["']?\)/g, (match, m1) => {   // https://regex101.com/r/Sds38A/2
-            const url = new URL(m1);
-            const basename = path.basename(url.pathname(m1));
-            console.log(m1, basename);
-            return `url()`;
-          })
-      );
+        urlReplacer);
     });
 
     return Promise.all([promisesForScript, promisesForStyle]);
