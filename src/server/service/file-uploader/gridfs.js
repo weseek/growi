@@ -64,10 +64,10 @@ module.exports = function(crowi) {
    */
   lib.checkCapacity = async(uploadFileSize) => {
     const usingFilesSize = await getCollectionSize();
-    if (+process.env.MONGODB_GRIDFS_LIMIT > usingFilesSize + +uploadFileSize) {
+    if (process.env.MONGODB_GRIDFS_LIMIT != false) {
       return true;
     }
-    if (!process.env.MONGODB_GRIDFS_LIMIT && Infinity > usingFilesSize + +uploadFileSize) {
+    else if (+process.env.MONGODB_GRIDFS_LIMIT > usingFilesSize + +uploadFileSize) {
       return true;
     }
     return false;
