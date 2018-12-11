@@ -1,7 +1,7 @@
 @import '../variables';
 
 $themecolor: #b3000c;
-$themelight: #ffffff;
+$themelight: white;
 $subthemecolor:	#017e20;
 $topbar: $themecolor;
 $sidebar: $themelight;
@@ -18,7 +18,9 @@ $wikilinktext: lighten($themecolor, 5%);
 $wikilinktext-hover: lighten($wikilinktext, 15%);
 $inline-code-color: darken($subthemecolor, 5%);
 $inline-code-bg: lighten($subthemecolor, 70%);
-$active-nav-tabs-bgcolor: $subthemecolor;
+$border: $subthemecolor;
+$navbar-border: $themecolor;
+$active-nav-tabs-bgcolor: white;
 
 @import 'apply-colors';
 @import 'apply-colors-light';
