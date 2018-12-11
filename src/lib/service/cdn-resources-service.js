@@ -64,10 +64,23 @@ class CdnResourcesService {
     return `<script src="${url}" ${attrs.join(' ')}></script>`;
   }
 
-  getAllScriptTags() {
-    return this.cdnResources.js.map(resource => {
-      return this.generateScriptTag(resource, this.noCdn);
-    });
+  getScriptTagByName(name) {
+    const tags = this.cdnResources.js
+      .filter(resource => resource.name === name)
+      .map(resource => {
+        return this.generateScriptTag(resource, this.noCdn);
+      });
+    return tags[0];
+  }
+
+  getScriptTagsByGroup(group) {
+    return this.cdnResources.js
+      .filter(resource => {
+        return resource.groups != null && resource.groups.includes(group);
+      })
+      .map(resource => {
+        return this.generateScriptTag(resource, this.noCdn);
+      });
   }
 
   /**
@@ -96,10 +109,23 @@ class CdnResourcesService {
     return `<link href="${url}" ${attrs.join(' ')}>`;
   }
 
-  getAllStyleTags() {
-    return this.cdnResources.style.map(resource => {
-      return this.generateStyleTag(resource, this.noCdn);
-    });
+  getStyleTagByName(name) {
+    const tags = this.cdnResources.style
+      .filter(resource => resource.name === name)
+      .map(resource => {
+        return this.generateStyleTag(resource, this.noCdn);
+      });
+    return tags[0];
+  }
+
+  getStyleTagsByGroup(group) {
+    return this.cdnResources.style
+      .filter(resource => {
+        return resource.groups != null && resource.groups.includes(group);
+      })
+      .map(resource => {
+        return this.generateStyleTag(resource, this.noCdn);
+      });
   }
 }
 

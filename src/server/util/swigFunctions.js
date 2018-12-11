@@ -58,13 +58,20 @@ module.exports = function(crowi, app, req, locals) {
     return Config.globalLang(config);
   };
 
-  locals.cdnScriptTags = function() {
-    const tags = cdnResourcesService.getAllScriptTags();
+  locals.cdnScriptTag = function(name) {
+    return cdnResourcesService.getScriptTagByName(name);
+  };
+  locals.cdnScriptTagsByGroup = function(group) {
+    const tags = cdnResourcesService.getScriptTagsByGroup(group);
     return tags.join('\n');
   };
 
-  locals.cdnStyleTags = function() {
-    const tags = cdnResourcesService.getAllStyleTags();
+  locals.cdnStyleTags = function(name) {
+    return cdnResourcesService.getStyleTagByName(name);
+  };
+
+  locals.cdnStyleTagsByGroup = function(group) {
+    const tags = cdnResourcesService.getStyleTagsByGroup(group);
     return tags.join('\n');
   };
 

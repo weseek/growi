@@ -3,6 +3,7 @@ module.exports = {
     {
       name: 'basis',
       url: 'https://cdn.jsdelivr.net/combine/npm/emojione@3.1.2,npm/jquery@3.3.1,npm/bootstrap@3.3.7/dist/js/bootstrap.min.js',
+      groups: ['basis'],
       args: {
         integrity: '',
       }
@@ -10,6 +11,7 @@ module.exports = {
     {
       name: 'highlight',
       url: 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/highlight.min.js',
+      groups: ['basis'],
       args: {
         integrity: '',
       }
@@ -26,7 +28,7 @@ module.exports = {
 'gh/highlightjs/cdn-release@9.12.0/build/languages/typescript.min.js,' +
 'gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js',
       args: {
-        defer: true,
+        async: true,
         integrity: '',
       }
     },
@@ -41,8 +43,44 @@ module.exports = {
   ],
   style: [
     {
+      name: 'lato',
+      url: 'https://fonts.googleapis.com/css?family=Lato:400,700',
+      groups: ['basis'],
+      args: {
+        integrity: ''
+      },
+    },
+    {
       name: 'font-awesome',
       url: 'https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css',
+      groups: ['basis'],
+      args: {
+        integrity: '',
+      }
+    },
+    {
+      name: 'themify-icons',
+      url: 'https://cdn.jsdelivr.net/npm/cd-themify-icons@0.0.1/index.min.css',
+      groups: ['basis'],
+      args: {
+        integrity: ''
+      },
+    },
+    {
+      name: 'simple-line-icons',
+      url: 'https://cdn.jsdelivr.net/npm/simple-line-icons@2.4.1/css/simple-line-icons.min.css',
+      groups: ['basis'],
+      args: {
+        integrity: ''
+      },
+    },
+    {
+      name: 'emojione',
+      url: 'https://cdn.jsdelivr.net/npm/emojione@3.1.2/extras/css/emojione.min.css',
+      groups: ['basis'],
+      args: {
+        integrity: ''
+      },
     },
   ]
 };
