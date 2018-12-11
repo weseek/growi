@@ -70,38 +70,23 @@ function getMongoUrl(env) {
     ((process.env.NODE_ENV === 'test') ? 'mongodb://localhost/growi_test' : 'mongodb://localhost/growi');
 }
 
-Crowi.prototype.init = function() {
-  var self = this;
+Crowi.prototype.init = async function() {
+  await this.setupDatabase();
+  await this.setupModels();
+  await this.setupSessionConfig();
+  await this.setupAppConfig();
+  await this.setupConfigManager();
 
-  return Promise.resolve()
-    .then(function() {
-      // setup database server and load all modesl
-      return self.setupDatabase();
-    }).then(function() {
-      return self.setupModels();
-    }).then(function() {
-      return self.setupSessionConfig();
-    }).then(function() {
-      return self.setupAppConfig();
-    }).then(function() {
-      return self.setupConfigManager();
-    }).then(function() {
-      return self.scanRuntimeVersions();
-    }).then(function() {
-      return self.setupPassport();
-    }).then(function() {
-      return self.setupSearcher();
-    }).then(function() {
-      return self.setupMailer();
-    }).then(function() {
-      return self.setupSlack();
-    }).then(function() {
-      return self.setupCsrf();
-    }).then(function() {
-      return self.setUpGlobalNotification();
-    }).then(function() {
-      return self.setUpRestQiitaAPI();
-    });
+  await Promise.all([
+    this.scanRuntimeVersions(),
+    this.setupPassport(),
+    this.setupSearcher(),
+    this.setupMailer(),
+    this.setupSlack(),
+    this.setupCsrf(),
+    this.setUpGlobalNotification(),
+    this.setUpRestQiitaAPI(),
+  ]);
 };
 
 Crowi.prototype.isPageId = function(pageId) {

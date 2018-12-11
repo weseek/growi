@@ -59,9 +59,7 @@ module.exports = function(crowi, app, req, locals) {
   };
 
   locals.cdnScriptTags = function() {
-    console.log(new Date());
     const tags = cdnResourcesService.getAllScriptTags();
-    console.log(new Date());
     return tags.join('\n');
   };
 
