@@ -66,7 +66,7 @@ module.exports = function(crowi, app, req, locals) {
     return tags.join('\n');
   };
 
-  locals.cdnStyleTags = function(name) {
+  locals.cdnStyleTag = function(name) {
     return cdnResourcesService.getStyleTagByName(name);
   };
 
