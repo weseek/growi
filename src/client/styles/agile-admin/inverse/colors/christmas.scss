@@ -59,7 +59,7 @@ $active-nav-tabs-bgcolor: white;
 
 #wrapper > .navbar > .navbar-header {
   background-image: url("/images/themes/christmas/christmas-navbar.jpg");
-  border-bottom: 3px solid $active-nav-tabs-bgcolor;
+  border-bottom: 3px solid $subthemecolor;
 }
 
 /*
@@ -100,5 +100,17 @@ body:not(.on-edit) .nav.nav-tabs {
  */
 .modal-dialog .modal-header.bg-primary {
   background-image: url("/images/themes/christmas/christmas-navbar.jpg");
-  border-bottom: 2px solid $active-nav-tabs-bgcolor;
+  border-bottom: 2px solid $subthemecolor;
+}
+
+/*
+ * Panel
+ */
+.panel.panel-default {
+  border-color: $bodytext;
+  .panel-heading {
+    color: white;
+    background-image: url("/images/themes/christmas/christmas-navbar.jpg");
+    background-color: $themecolor;
+  }
 }
