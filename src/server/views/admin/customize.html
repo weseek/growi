@@ -25,7 +25,7 @@
 {% block html_additional_headers %}
   {% parent %}
   <!-- CodeMirror -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/jquery.ui/1.11.4/jquery-ui.min.css">
+  {{ cdnStyleTag('jquery-ui') }}
   <style>
     .CodeMirror {
       border: 1px solid #eee;
@@ -315,11 +315,12 @@
           <div class="form-group">
             <label for="settingForm[customize:highlightJsStyle]" class="col-xs-3 control-label">{{ t('customize_page.Theme') }}</label>
             <div class="col-xs-9">
-              <select class="form-control selectpicker" name="settingForm[customize:highlightJsStyle]" onChange="selectHighlightJsStyle(event)">
+              <select class="form-control selectpicker" name="settingForm[customize:highlightJsStyle]" onChange="selectHighlightJsStyle(event)" {% if noCdn() %}disabled{% endif %}>
                 {% for key in Object.keys(highlightJsCssSelectorOptions) %}
                   <option value={{key}} {% if key == highlightJsStyle() %} selected {% endif %}>{{highlightJsCssSelectorOptions[key].name}}</option>
                 {% endfor %}
               </select>
+              <p class="help-block text-warning">{{ t('customize_page.nocdn_desc') }}</p>
             </div>
           </div>
 
@@ -339,7 +340,9 @@
             </div>
           </div>
 
-          <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/{{ highlightJsStyle() }}.css" class="highlightJsCss">
+          <div id="highlightJsCssContainer">
+            {{ cdnHighlightJsStyleTag(highlightJsStyle()) }}
+          </div>
 
           <p class="help-block">
             Examples:
@@ -591,7 +594,7 @@ window.addEventListener('load', (event) => {
     hljs.initHighlightingOnLoad()
 
     function selectHighlightJsStyle(event) {
-      var highlightJsCssDOM = $(".highlightJsCss")[0]
+      var highlightJsCssDOM = $("#highlightJsCssContainer link")[0]
       // selected value
       var val = event.target.value
       // replace css url
