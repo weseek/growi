@@ -3,6 +3,7 @@ CHANGES
 
 ## 3.3.0-RC
 
+* Feature: NO_CDN Mode
 * Feature: Add option to show/hide restricted pages in list
 * Improvement: Refactor Access Control
 * Improvement: Checkbox behavior of task list
