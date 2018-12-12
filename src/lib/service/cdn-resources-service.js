@@ -24,6 +24,20 @@ class CdnResourcesService {
     this.logger.debug('manifest data loaded : ', this.cdnManifests);
   }
 
+  getScriptManifestByName(name) {
+    const manifests = this.cdnManifests.js
+      .filter(manifest => manifest.name === name);
+
+    return (manifests.length > 0) ? manifests[0] : null;
+  }
+
+  getStyleManifestByName(name) {
+    const manifests = this.cdnManifests.style
+      .filter(manifest => manifest.name === name);
+
+    return (manifests.length > 0) ? manifests[0] : null;
+  }
+
   async downloadAndWriteAll() {
     const downloader = new CdnResourcesDownloader();
 
@@ -74,12 +88,8 @@ class CdnResourcesService {
   }
 
   getScriptTagByName(name) {
-    const tags = this.cdnManifests.js
-      .filter(manifest => manifest.name === name)
-      .map(manifest => {
+    const manifest = this.getScriptManifestByName(name);
         return this.generateScriptTag(manifest, this.noCdn);
-      });
-    return tags[0];
   }
 
   getScriptTagsByGroup(group) {
@@ -119,12 +129,8 @@ class CdnResourcesService {
   }
 
   getStyleTagByName(name) {
-    const tags = this.cdnManifests.style
-      .filter(manifest => manifest.name === name)
-      .map(manifest => {
+    const manifest = this.getStyleManifestByName(name);
         return this.generateStyleTag(manifest, this.noCdn);
-      });
-    return tags[0];
   }
 
   getStyleTagsByGroup(group) {
