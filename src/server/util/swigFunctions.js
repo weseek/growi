@@ -75,6 +75,10 @@ module.exports = function(crowi, app, req, locals) {
     return tags.join('\n');
   };
 
+  locals.cdnHighlightJsStyleTag = function(styleName) {
+    return cdnResourcesService.getHighlightJsStyleTag(styleName);
+  };
+
   /**
    * return true if enabled
    */

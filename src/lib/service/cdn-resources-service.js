@@ -1,3 +1,4 @@
+const { URL } = require('url');
 const urljoin = require('url-join');
 
 const helpers = require('@commons/util/helpers');
@@ -89,7 +90,7 @@ class CdnResourcesService {
 
   getScriptTagByName(name) {
     const manifest = this.getScriptManifestByName(name);
-        return this.generateScriptTag(manifest, this.noCdn);
+    return this.generateScriptTag(manifest, this.noCdn);
   }
 
   getScriptTagsByGroup(group) {
@@ -130,7 +131,7 @@ class CdnResourcesService {
 
   getStyleTagByName(name) {
     const manifest = this.getStyleManifestByName(name);
-        return this.generateStyleTag(manifest, this.noCdn);
+    return this.generateStyleTag(manifest, this.noCdn);
   }
 
   getStyleTagsByGroup(group) {
@@ -142,6 +143,21 @@ class CdnResourcesService {
         return this.generateStyleTag(manifest, this.noCdn);
       });
   }
+
+  getHighlightJsStyleTag(styleName) {
+    let manifest = this.getStyleManifestByName('highlight-theme-github');
+
+    // replace style
+    if (!this.noCdn) {
+      const url = new URL(`${styleName}.css`, manifest.url);  // resolve `${styleName}.css` from manifest.url
+
+      // clone manifest
+      manifest = Object.assign(manifest, { url: url.toString() });
+    }
+
+    return this.generateStyleTag(manifest, this.noCdn);
+  }
+
 }
 
 module.exports = CdnResourcesService;

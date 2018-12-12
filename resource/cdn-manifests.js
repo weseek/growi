@@ -88,6 +88,13 @@ module.exports = {
       args: {
         integrity: ''
       },
+    },
+    {
+      name: 'highlight-theme-github',
+      url: 'https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/github.css',
+      args: {
+        integrity: ''
+      },
     }
   ]
 };
