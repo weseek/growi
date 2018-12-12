@@ -97,6 +97,8 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
   init() {
     this.cmCdnRoot = 'https://cdn.jsdelivr.net/npm/codemirror@5.42.0';
+    this.cmNoCdnScriptRoot = '/js/cdn';
+    this.cmNoCdnStyleRoot = '/styles/cdn';
 
     this.interceptorManager = new InterceptorManager();
     this.interceptorManager.addInterceptors([
@@ -308,7 +310,11 @@ export default class CodeMirrorEditor extends AbstractEditor {
    */
   loadTheme(theme) {
     if (!this.loadedThemeSet.has(theme)) {
-      this.loadCss(urljoin(this.cmCdnRoot, `theme/${theme}.min.css`));
+      const url = this.props.noCdn
+        ? urljoin(this.cmNoCdnStyleRoot, `codemirror-theme-${theme}.css`)
+        : urljoin(this.cmCdnRoot, `theme/${theme}.min.css`);
+
+      this.loadCss(url);
 
       // update Set
       this.loadedThemeSet.add(theme);
@@ -326,12 +332,22 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
     // add dependencies
     if (this.loadedKeymapSet.size == 0) {
-      scriptList.push(loadScript(urljoin(this.cmCdnRoot, 'addon/dialog/dialog.min.js')));
-      cssList.push(loadCss(urljoin(this.cmCdnRoot, 'addon/dialog/dialog.min.css')));
+      const dialogScriptUrl = this.props.noCdn
+        ? urljoin(this.cmNoCdnScriptRoot, 'codemirror-dialog.js')
+        : urljoin(this.cmCdnRoot, 'addon/dialog/dialog.min.js');
+      const dialogStyleUrl = this.props.noCdn
+        ? urljoin(this.cmNoCdnStyleRoot, 'codemirror-dialog.css')
+        : urljoin(this.cmCdnRoot, 'addon/dialog/dialog.min.css');
+
+      scriptList.push(loadScript(dialogScriptUrl));
+      cssList.push(loadCss(dialogStyleUrl));
     }
     // load keymap
     if (!this.loadedKeymapSet.has(keymapMode)) {
-      scriptList.push(loadScript(urljoin(this.cmCdnRoot, `keymap/${keymapMode}.min.js`)));
+      const keymapScriptUrl = this.props.noCdn
+        ? urljoin(this.cmNoCdnScriptRoot, `codemirror-keymap-${keymapMode}.js`)
+        : urljoin(this.cmCdnRoot, `keymap/${keymapMode}.min.js`);
+      scriptList.push(loadScript(keymapScriptUrl));
       // update Set
       this.loadedKeymapSet.add(keymapMode);
     }

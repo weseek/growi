@@ -39,7 +39,35 @@ module.exports = {
         async: true,
         integrity: '',
       }
-    }
+    },
+    {
+      name: 'codemirror-dialog',
+      url: 'https://cdn.jsdelivr.net/npm/codemirror@5.42.0/addon/dialog/dialog.min.js',
+      args: {
+        integrity: '',
+      }
+    },
+    {
+      name: 'codemirror-keymap-vim',
+      url: 'https://cdn.jsdelivr.net/npm/codemirror@5.42.0/keymap/vim.min.js',
+      args: {
+        integrity: '',
+      }
+    },
+    {
+      name: 'codemirror-keymap-emacs',
+      url: 'https://cdn.jsdelivr.net/npm/codemirror@5.42.0/keymap/emacs.min.js',
+      args: {
+        integrity: '',
+      }
+    },
+    {
+      name: 'codemirror-keymap-sublime',
+      url: 'https://cdn.jsdelivr.net/npm/codemirror@5.42.0/keymap/sublime.min.js',
+      args: {
+        integrity: '',
+      }
+    },
   ],
   style: [
     {
@@ -95,6 +123,69 @@ module.exports = {
       args: {
         integrity: ''
       },
-    }
+    },
+    {
+      name: 'codemirror-dialog',
+      url: 'https://cdn.jsdelivr.net/npm/codemirror@5.42.0/addon/dialog/dialog.min.css',
+      args: {
+        integrity: '',
+      }
+    },
+    {
+      name: 'codemirror-theme-eclipse',
+      url: 'https://cdn.jsdelivr.net/npm/codemirror@5.42.0/theme/eclipse.min.css',
+      args: {
+        integrity: ''
+      },
+    },
+    {
+      name: 'codemirror-theme-elegant',
+      url: 'https://cdn.jsdelivr.net/npm/codemirror@5.42.0/theme/elegant.min.css',
+      args: {
+        integrity: ''
+      },
+    },
+    {
+      name: 'codemirror-theme-neo',
+      url: 'https://cdn.jsdelivr.net/npm/codemirror@5.42.0/theme/neo.min.css',
+      args: {
+        integrity: ''
+      },
+    },
+    {
+      name: 'codemirror-theme-mdn-like',
+      url: 'https://cdn.jsdelivr.net/npm/codemirror@5.42.0/theme/mdn-like.min.css',
+      args: {
+        integrity: ''
+      },
+    },
+    {
+      name: 'codemirror-theme-material',
+      url: 'https://cdn.jsdelivr.net/npm/codemirror@5.42.0/theme/material.min.css',
+      args: {
+        integrity: ''
+      },
+    },
+    {
+      name: 'codemirror-theme-dracula',
+      url: 'https://cdn.jsdelivr.net/npm/codemirror@5.42.0/theme/dracula.min.css',
+      args: {
+        integrity: ''
+      },
+    },
+    {
+      name: 'codemirror-theme-monokai',
+      url: 'https://cdn.jsdelivr.net/npm/codemirror@5.42.0/theme/monokai.min.css',
+      args: {
+        integrity: ''
+      },
+    },
+    {
+      name: 'codemirror-theme-twilight',
+      url: 'https://cdn.jsdelivr.net/npm/codemirror@5.42.0/theme/twilight.min.css',
+      args: {
+        integrity: ''
+      },
+    },
   ]
 };
