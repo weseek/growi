@@ -493,18 +493,6 @@ class PassportService {
   }
 
   /**
-   * validate setting form values for SAML
-   */
-  validateSamlSettingForm(form) {
-    for (const key of this.mandatoryConfigKeysForSaml) {
-      const formValue = form.settingForm[key];
-      if (this.crowi.configManager.getConfigFromEnvVars('crowi', key) === null && formValue === '') {
-        form.errors.push(`${key} is required`);
-      }
-    }
-  }
-
-  /**
    * setup serializer and deserializer
    *
    * @memberof PassportService

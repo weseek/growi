@@ -1100,7 +1100,7 @@ module.exports = function(crowi, app) {
   actions.api.securityPassportSamlSetting = async(req, res) => {
     const form = req.form.settingForm;
 
-    crowi.passportService.validateSamlSettingForm(req.form);
+    validateSamlSettingForm(req.form);
 
     if (!req.form.isValid) {
       return res.json({status: false, message: req.form.errors.join('\n')});
@@ -1476,6 +1476,21 @@ module.exports = function(crowi, app) {
       subject: 'Wiki管理設定のアップデートによるメール通知',
       text: 'このメールは、WikiのSMTP設定のアップデートにより送信されています。'
     }, callback);
+  }
+
+  /**
+   * validate setting form values for SAML
+   *
+   * This validation checks for the value of each mandatory items
+   * whether the value from the environment variables is empty and form value to update it is empty.
+   */
+  function validateSamlSettingForm(form) {
+    for (const key of crowi.passportService.mandatoryConfigKeysForSaml) {
+      const formValue = form.settingForm[key];
+      if (crowi.configManager.getConfigFromEnvVars('crowi', key) === null && formValue === '') {
+        form.errors.push(`${key} is required`);
+      }
+    }
   }
 
   return actions;
