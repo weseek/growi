@@ -58,6 +58,10 @@ module.exports = function(crowi, app, req, locals) {
     return Config.globalLang(config);
   };
 
+  locals.noCdn = function() {
+    return !!process.env.NO_CDN;
+  };
+
   locals.cdnScriptTag = function(name) {
     return cdnResourcesService.getScriptTagByName(name);
   };

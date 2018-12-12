@@ -315,11 +315,12 @@
           <div class="form-group">
             <label for="settingForm[customize:highlightJsStyle]" class="col-xs-3 control-label">{{ t('customize_page.Theme') }}</label>
             <div class="col-xs-9">
-              <select class="form-control selectpicker" name="settingForm[customize:highlightJsStyle]" onChange="selectHighlightJsStyle(event)">
+              <select class="form-control selectpicker" name="settingForm[customize:highlightJsStyle]" onChange="selectHighlightJsStyle(event)" {% if noCdn() %}disabled{% endif %}>
                 {% for key in Object.keys(highlightJsCssSelectorOptions) %}
                   <option value={{key}} {% if key == highlightJsStyle() %} selected {% endif %}>{{highlightJsCssSelectorOptions[key].name}}</option>
                 {% endfor %}
               </select>
+              <p class="help-block text-warning">{{ t('customize_page.nocdn_desc') }}</p>
             </div>
           </div>
 
