@@ -399,6 +399,10 @@ module.exports = function(crowi, app) {
       }
     }
 
+    const limit = 50;
+    const offset = parseInt(req.query.offset)  || 0;
+    await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit);
+
     return res.render(view, renderVars);
   };
 
