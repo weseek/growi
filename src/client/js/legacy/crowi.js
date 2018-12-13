@@ -371,6 +371,7 @@ $(function() {
     .done(function(res) {
       // error
       if (!res.ok) {
+        $('#renamePage .msg, #unportalize .msg').hide();
         $(`#renamePage .msg-${res.code}, #unportalize .msg-${res.code}`).show();
         $('#renamePage #linkToNewPage, #unportalize #linkToNewPage').html(`
           <a href="${nameValueMap.new_path}">${nameValueMap.new_path} <i class="icon-login"></i></a>
@@ -405,6 +406,7 @@ $(function() {
     }).done(function(res) {
       // error
       if (!res.ok) {
+        $('#duplicatePage .msg').hide();
         $(`#duplicatePage .msg-${res.code}`).show();
         $('#duplicatePage #linkToNewPage').html(`
           <a href="${nameValueMap.new_path}">${nameValueMap.new_path} <i class="icon-login"></i></a>
@@ -432,6 +434,7 @@ $(function() {
     }).done(function(res) {
       // error
       if (!res.ok) {
+        $('#deletePage .msg').hide();
         $(`#deletePage .msg-${res.code}`).show();
       }
       else {
