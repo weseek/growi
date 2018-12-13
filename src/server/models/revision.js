@@ -31,15 +31,6 @@ module.exports = function(crowi) {
   //   next();
   // });
 
-  revisionSchema.statics.findLatestRevision = function(path, cb) {
-    this.find({path: path})
-      .sort({createdAt: -1})
-      .limit(1)
-      .exec(function(err, data) {
-        cb(err, data.shift());
-      });
-  };
-
   revisionSchema.statics.findRevisions = function(ids) {
     const Revision = this,
       User = crowi.model('User');
@@ -139,9 +130,6 @@ module.exports = function(crowi) {
         return resolve(data);
       });
     });
-  };
-
-  revisionSchema.statics.updatePath = function(pathName) {
   };
 
   return mongoose.model('Revision', revisionSchema);
