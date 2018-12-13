@@ -752,8 +752,8 @@ module.exports = function(crowi) {
       newUser.setPassword(password);
     }
 
-    let Config = crowi.model('Config')
-      , config = crowi.getConfig();
+    const Config = crowi.model('Config');
+    const config = crowi.getConfig();
     const globalLang = Config.globalLang(config);
     if (globalLang != null) {
       newUser.lang = globalLang;
