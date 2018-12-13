@@ -5,7 +5,7 @@
  */
 require('module-alias/register');
 
-const logger = require('@alias/logger')('growi:bin:download-resources');
+const logger = require('@alias/logger')('growi:bin:download-cdn-resources');
 
 // check env var
 const noCdn = !!process.env.NO_CDN;
