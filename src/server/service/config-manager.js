@@ -85,7 +85,7 @@ class ConfigManager {
    */
   async updateConfigsInTheSameNamespace(namespace, configs) {
     const results = [];
-    for (const key in Object.keys(configs)) {
+    for (const key of Object.keys(configs)) {
       results.push(
         this.configModel.findOneAndUpdate(
           { ns: namespace, key: key },
