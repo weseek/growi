@@ -60,16 +60,16 @@ module.exports = function(crowi) {
   };
 
   /**
-   * chech storage for fileUpload reaches MONGODB_GRIDFS_LIMIT (for gridfs)
+   * chech storage for fileUpload reaches MONGO_GRIDFS_TOTAL_LIMIT (for gridfs)
    */
   lib.checkCapacity = async(uploadFileSize) => {
     // skip checking if env var is undefined
-    if (process.env.MONGODB_GRIDFS_LIMIT == null) {
+    if (process.env.MONGO_GRIDFS_TOTAL_LIMIT == null) {
       return true;
     }
 
     const usingFilesSize = await getCollectionSize();
-    return (+process.env.MONGODB_GRIDFS_LIMIT > usingFilesSize + +uploadFileSize);
+    return (+process.env.MONGO_GRIDFS_TOTAL_LIMIT > usingFilesSize + +uploadFileSize);
   };
 
   lib.uploadFile = async function(filePath, contentType, fileStream, options) {
