@@ -1481,8 +1481,8 @@ module.exports = function(crowi, app) {
   /**
    * validate setting form values for SAML
    *
-   * This validation checks for the value of each mandatory items
-   * whether the value from the environment variables is empty and form value to update it is empty.
+   * This validation checks, for the value of each mandatory items,
+   * whether it from the environment variables is empty and form value to update it is empty.
    */
   function validateSamlSettingForm(form) {
     for (const key of crowi.passportService.mandatoryConfigKeysForSaml) {
