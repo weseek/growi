@@ -6,48 +6,39 @@
 
         <div class="modal-header bg-primary">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <div class="modal-title">{{ t('Rename page') }}</div>
+          <div class="modal-title">{{ t('modal_rename.label.Rename page') }}</div>
         </div>
         <div class="modal-body">
-            <div class="form-group">
-              <label for="">{{ t('Current page name') }}</label><br>
-              <code>{{ page.path }}</code>
+          <div class="form-group">
+            <label for="">{{ t('modal_rename.label.Current page name') }}</label><br>
+            <code>{{ page.path }}</code>
+          </div>
+          <div class="form-group">
+            <label for="newPageName">{{ t('modal_rename.label.New page name') }}</label><br>
+            <div class="input-group">
+              <span class="input-group-addon">{{ config.crowi['app:siteUrl:fixed'] }}</span>
+              <input type="text" class="form-control" name="new_path" id="newPageName" value="{{ page.path }}">
             </div>
-            <div class="form-group">
-              <label for="newPageName">{{ t('New page name') }}</label><br>
-              <div class="input-group">
-                <span class="input-group-addon">{{ config.crowi['app:siteUrl:fixed'] }}</span>
-                <input type="text" class="form-control" name="new_path" id="newPageName" value="{{ page.path }}">
-              </div>
-            </div>
-            <div class="checkbox checkbox-info">
-              <input name="move_recursively" id="cbRecursively" value="1" type="checkbox" checked>
-              <label for="cbRecursively">{{ t('modal_rename.label.Move recursively') }}</label>
-              <p class="help-block"> {{ t('modal_rename.help.recursive', page.path) }}
+          </div>
+
+          <hr>
+
+          <div class="checkbox checkbox-warning">
+            <input name="recursively" id="cbRenameRecursively" value="1" type="checkbox" checked>
+            <label for="cbRenameRecursively">{{ t('modal_rename.label.Move recursively') }}</label>
+            <p class="help-block"> {{ t('modal_rename.help.recursive', page.path) }}
+            </p>
+          </div>
+          <div class="checkbox checkbox-info">
+            <input name="create_redirect" id="cbRenameRedirect" value="1"  type="checkbox">
+              <label for="cbRenameRedirect">{{ t('modal_rename.label.Redirect') }}</label>
+              <p class="help-block"> {{ t('modal_rename.help.redirect', page.path) }}
               </p>
-            </div>
-            <div class="checkbox checkbox-info">
-              <input name="create_redirect" id="cbRedirect" value="1"  type="checkbox">
-               <label for="cbRedirect">{{ t('modal_rename.label.Redirect') }}</label>
-               <p class="help-block"> {{ t('modal_rename.help.redirect', page.path) }}
-               </p>
-            </div>
-            {# <div class="checkbox"> #}
-            {#    <label> #}
-            {#      <input name="moveUnderTrees" value="1" type="checkbox"> 下層ページも全部移動する #}
-            {#    </label> #}
-            {#    <p class="help-block">チェックを入れると、<code>{{ page.path }}</code>以下の階層以下もすべて移動します。</p> #}
-            {#    <p class="help-block">例: <code>/hoge/fuga/move</code> を <code>/foo/bar/move</code> に移動すると、<code>/hoge/fuga/move/page1</code> も <code>/foo/bar/move/page1</code> に。</p> #}
-            {# </div> #}
+          </div>
         </div>
         <div class="modal-footer">
           <div class="d-flex justify-content-between">
-            <p>
-              <span class="text-danger msg-already-exists">
-                <strong><i class="icon-fw icon-ban"></i>{{ t('Page is already exists.') }}</strong>
-              </span>
-              <small id="linkToNewPage" class="msg-already-exists"></small>
-            </p>
+            {% include '../widget/modal/page-api-error-messages.html' %}
             <div>
               <input type="hidden" name="_csrf" value="{{ csrf() }}">
               <input type="hidden" name="path" value="{{ page.path }}">

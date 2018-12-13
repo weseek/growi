@@ -31,15 +31,6 @@ module.exports = function(crowi) {
   //   next();
   // });
 
-  revisionSchema.statics.findLatestRevision = function(path, cb) {
-    this.find({path: path})
-      .sort({createdAt: -1})
-      .limit(1)
-      .exec(function(err, data) {
-        cb(err, data.shift());
-      });
-  };
-
   revisionSchema.statics.findRevisions = function(ids) {
     const Revision = this,
       User = crowi.model('User');
@@ -102,7 +93,7 @@ module.exports = function(crowi) {
     });
   };
 
-  revisionSchema.statics.prepareRevision = function(pageData, body, user, options) {
+  revisionSchema.statics.prepareRevision = function(pageData, body, previousBody, user, options) {
     const Revision = this;
 
     if (!options) {
@@ -121,7 +112,7 @@ module.exports = function(crowi) {
     newRevision.author = user._id;
     newRevision.createdAt = Date.now();
     if (pageData.revision != null) {
-      newRevision.hasDiffToPrev = body !== pageData.revision.body;
+      newRevision.hasDiffToPrev = body !== previousBody;
     }
 
     return newRevision;
@@ -139,9 +130,6 @@ module.exports = function(crowi) {
         return resolve(data);
       });
     });
-  };
-
-  revisionSchema.statics.updatePath = function(pathName) {
   };
 
   return mongoose.model('Revision', revisionSchema);

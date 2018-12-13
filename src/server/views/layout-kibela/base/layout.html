@@ -1,5 +1,10 @@
 {% extends '../../layout/layout.html' %}
 
+{% block html_additional_headers %}
+  {% parent %}
+  {{ cdnScriptTag('highlight-addons') }}
+{% endblock %}
+
 {% block layout_main %}
 <div class="container-fluid">
 

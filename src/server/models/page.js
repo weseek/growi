@@ -897,7 +897,7 @@ module.exports = function(crowi) {
         savedPage = newPage;
       })
       .then(() => {
-        const newRevision = Revision.prepareRevision(savedPage, body, user, {format: format});
+        const newRevision = Revision.prepareRevision(savedPage, body, null, user, {format: format});
         return pushRevision(savedPage, newRevision, user);
       })
       .then(() => {
@@ -908,7 +908,7 @@ module.exports = function(crowi) {
       });
   };
 
-  pageSchema.statics.updatePage = async function(pageData, body, user, options = {}) {
+  pageSchema.statics.updatePage = async function(pageData, body, previousBody, user, options = {}) {
     validateCrowi();
 
     const Page = this
@@ -922,7 +922,7 @@ module.exports = function(crowi) {
     // update existing page
     applyGrant(pageData, user, grant, grantUserGroupId);
     let savedPage = await pageData.save();
-    const newRevision = await Revision.prepareRevision(pageData, body, user);
+    const newRevision = await Revision.prepareRevision(pageData, body, previousBody, user);
     const revision = await pushRevision(savedPage, newRevision, user, grant, grantUserGroupId);
     savedPage = await Page.findByPath(revision.path).populate('revision').populate('creator');
 

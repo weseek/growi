@@ -56,7 +56,7 @@ module.exports = function(crowi) {
   };
 
   /**
-   * chech storage for fileUpload reaches MONGODB_GRIDFS_LIMIT (for gridfs)
+   * chech storage for fileUpload reaches MONGO_GRIDFS_TOTAL_LIMIT (for gridfs)
    */
   lib.checkCapacity = async(uploadFileSize) => {
     return true;

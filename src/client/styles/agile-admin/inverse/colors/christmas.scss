@@ -7,17 +7,17 @@ $topbar: $themecolor;
 $sidebar: $themelight;
 $bodycolor: $themelight;
 $headingtext: $subthemecolor;
-$bodytext: #bd3425;
+$bodytext: black;
 $linktext: lighten(#0d5901, 5%);
 $linktext-hover: lighten($linktext, 12%);
 $sidebar-text: #ffffff;
 $primary: $themecolor;
-$info: lighten($themecolor, 10%);
 $logo-mark-fill: lighten(desaturate($topbar, 50%), 50%);
 $wikilinktext: lighten($themecolor, 5%);
 $wikilinktext-hover: lighten($wikilinktext, 15%);
 $inline-code-color: darken($subthemecolor, 5%);
 $inline-code-bg: lighten($subthemecolor, 70%);
+$border-original: $border;
 $border: $subthemecolor;
 $navbar-border: $themecolor;
 $active-nav-tabs-bgcolor: white;
@@ -59,7 +59,7 @@ $active-nav-tabs-bgcolor: white;
 
 #wrapper > .navbar > .navbar-header {
   background-image: url("/images/themes/christmas/christmas-navbar.jpg");
-  border-bottom: 3px solid $subthemecolor;
+  border-bottom: 4px solid $subthemecolor;
 }
 
 /*
@@ -90,7 +90,7 @@ body:not(.on-edit) .nav.nav-tabs {
       background-color: rgba(#ccc, 0.5);
     }
     .link-switch {
-      color: $bodytext;
+      color: #bd3425;
     }
   }
 }
@@ -106,8 +106,19 @@ body:not(.on-edit) .nav.nav-tabs {
 /*
  * Panel
  */
-.panel.panel-default {
-  border-color: $bodytext;
+.panel {
+  &.panel-white, &.panel-default {
+    border-color: $border-original;
+    .panel-heading {
+        color: $dark;
+        background-color: $border-original;
+        border-bottom:1px solid $border-original;
+    }
+  }
+}
+
+.panel.panel-primary {
+  border-color: #bd3425;
   .panel-heading {
     color: white;
     background-image: url("/images/themes/christmas/christmas-navbar.jpg");
