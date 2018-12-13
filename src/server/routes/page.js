@@ -989,18 +989,23 @@ module.exports = function(crowi, app) {
    * @apiParam {String} page_id Page Id.
    * @apiParam {String} new_path
    */
-  api.duplicate = function(req, res) {
+  api.duplicate = async function(req, res) {
     const pageId = req.body.page_id;
     const newPagePath = Page.normalizePath(req.body.new_path);
 
-    Page.findById(pageId)
-      .then(function(pageData) {
-        req.body.path = newPagePath;
-        req.body.body = pageData.revision.body;
-        req.body.grant = pageData.grant;
+    const page = await Page.findByIdAndViewer(pageId, req.user);
 
-        return api.create(req, res);
-      });
+    if (page == null) {
+      throw new Error(`Page '${pageId}' is not found or forbidden`);
+    }
+
+    await page.populateDataToShowRevision();
+
+    req.body.path = newPagePath;
+    req.body.body = page.revision.body;
+    req.body.grant = page.grant;
+
+    return api.create(req, res);
   };
 
   /**
