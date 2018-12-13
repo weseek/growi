@@ -376,8 +376,8 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
   });
 
   $('.authentication-settings-table:not(.use-only-env-vars) tbody tr').each(function(_, element) {
-    const inputElemFromDB = $('td:nth-of-type(1) input', element);
-    const inputElemFromEnvVars = $('td:nth-of-type(2) input', element);
+    const inputElemFromDB      = $('td:nth-of-type(1) input[type="text"], td:nth-of-type(1) textarea', element);
+    const inputElemFromEnvVars = $('td:nth-of-type(2) input[type="text"], td:nth-of-type(2) textarea', element);
 
     const addClassToUsedInputElem = function() {
       console.log(inputElemFromDB.val());
