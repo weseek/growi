@@ -9,6 +9,8 @@ import { EditorOptions, PreviewOptions } from './PageEditor/OptionsSelector';
 import Editor from './PageEditor/Editor';
 import Preview from './PageEditor/Preview';
 import scrollSyncHelper from './PageEditor/ScrollSyncHelper';
+import * as toastr from 'toastr';
+
 
 export default class PageEditor extends React.Component {
 
@@ -42,6 +44,7 @@ export default class PageEditor extends React.Component {
     this.onPreviewScroll = this.onPreviewScroll.bind(this);
     this.saveDraft = this.saveDraft.bind(this);
     this.clearDraft = this.clearDraft.bind(this);
+    this.apiErrorHandler = this.apiErrorHandler.bind(this);
 
     // for scrolling
     this.lastScrolledDateWithCursor = null;
@@ -114,41 +117,54 @@ export default class PageEditor extends React.Component {
    * the upload event handler
    * @param {any} files
    */
-  onUpload(file) {
-    const endpoint = '/attachments.add';
+  async onUpload(file) {
+    try {
+      let res  = await this.props.crowi.apiGet('/attachments.limit', {_csrf: this.props.crowi.csrfToken, fileSize: file.size});
+      if (!res.isUploadable) {
+        toastr.error(undefined, 'MongoDB for uploading files reaches limit', {
+          closeButton: true,
+          progressBar: true,
+          newestOnTop: false,
+          showDuration: '100',
+          hideDuration: '100',
+          timeOut: '5000',
+        });
+        throw new Error('MongoDB for uploading files reaches limit');
+      }
+      const endpoint = '/attachments.add';
 
-    // create a FromData instance
-    const formData = new FormData();
-    formData.append('_csrf', this.props.crowi.csrfToken);
-    formData.append('file', file);
-    formData.append('path', this.props.pagePath);
-    formData.append('page_id', this.state.pageId || 0);
+      // create a FromData instance
+      const formData = new FormData();
+      formData.append('_csrf', this.props.crowi.csrfToken);
+      formData.append('file', file);
+      formData.append('path', this.props.pagePath);
+      formData.append('page_id', this.state.pageId || 0);
 
-    // post
-    this.props.crowi.apiPost(endpoint, formData)
-      .then((res) => {
-        const url = res.url;
-        const attachment = res.attachment;
-        const fileName = attachment.originalName;
+      // post
+      res = await this.props.crowi.apiPost(endpoint, formData)
+      const url = res.url;
+      const attachment = res.attachment;
+      const fileName = attachment.originalName;
 
-        let insertText = `[${fileName}](${url})`;
-        // when image
-        if (attachment.fileFormat.startsWith('image/')) {
-          // modify to "![fileName](url)" syntax
-          insertText = '!' + insertText;
-        }
-        this.refs.editor.insertText(insertText);
+      let insertText = `[${fileName}](${url})`;
+      // when image
+      if (attachment.fileFormat.startsWith('image/')) {
+        // modify to "![fileName](url)" syntax
+        insertText = '!' + insertText;
+      }
+      this.refs.editor.insertText(insertText);
 
-        // when if created newly
-        if (res.pageCreated) {
-          // do nothing
-        }
-      })
-      .catch(this.apiErrorHandler)
-      // finally
-      .then(() => {
-        this.refs.editor.terminateUploadingState();
-      });
+      // when if created newly
+      if (res.pageCreated) {
+        // do nothing
+      }
+    }
+    catch (e) {
+      this.apiErrorHandler(e);
+    }
+    finally {
+      this.refs.editor.terminateUploadingState();
+    }
   }
 
   /**
@@ -292,7 +308,20 @@ export default class PageEditor extends React.Component {
 
   }
 
+  apiErrorHandler(error) {
+    toastr.error(error.message, 'Error occured', {
+      closeButton: true,
+      progressBar: true,
+      newestOnTop: false,
+      showDuration: '100',
+      hideDuration: '100',
+      timeOut: '3000',
+    });
+  }
+
   render() {
+    const config = this.props.crowi.getConfig();
+    const noCdn = !!config.env.NO_CDN;
     const emojiStrategy = this.props.crowi.getEmojiStrategy();
 
     return (
@@ -300,6 +329,7 @@ export default class PageEditor extends React.Component {
         <div className="col-md-6 col-sm-12 page-editor-editor-container">
           <Editor ref="editor" value={this.state.markdown}
             editorOptions={this.state.editorOptions}
+            noCdn={noCdn}
             isMobile={this.props.crowi.isMobile}
             isUploadable={this.state.isUploadable}
             isUploadableFile={this.state.isUploadableFile}

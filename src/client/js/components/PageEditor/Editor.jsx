@@ -286,6 +286,7 @@ export default class Editor extends AbstractEditor {
 }
 
 Editor.propTypes = Object.assign({
+  noCdn: PropTypes.bool,
   isMobile: PropTypes.bool,
   isUploadable: PropTypes.bool,
   isUploadableFile: PropTypes.bool,

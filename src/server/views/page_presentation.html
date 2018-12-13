@@ -19,20 +19,7 @@
       }
     </script>
 
-    <!-- jQuery, emojione (expect to hit the cache) -->
-    <script src="https://cdn.jsdelivr.net/combine/npm/emojione@3.1.2,npm/jquery@3.3.1"></script>
-    <!-- highlight.js -->
-    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/highlight.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/combine/
-gh/highlightjs/cdn-release@9.12.0/build/languages/dockerfile.min.js,
-gh/highlightjs/cdn-release@9.12.0/build/languages/go.min.js,
-gh/highlightjs/cdn-release@9.12.0/build/languages/gradle.min.js,
-gh/highlightjs/cdn-release@9.12.0/build/languages/json.min.js,
-gh/highlightjs/cdn-release@9.12.0/build/languages/less.min.js,
-gh/highlightjs/cdn-release@9.12.0/build/languages/scss.min.js,
-gh/highlightjs/cdn-release@9.12.0/build/languages/typescript.min.js,
-gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js
-" defer></script>
+    {{ cdnScriptTagsByGroup('basis') }}
 
     {% if env === 'development' %}
       <script src="/dll/dll.js"></script>
@@ -46,8 +33,7 @@ gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js
     <!-- styles -->
     <link rel="stylesheet" href="{{ webpack_asset('styles/style-presentation.css') }}">
 
-    <!-- Google Fonts -->
-    <link href='https://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
+    {{ cdnStyleTagsByGroup('basis') }}
 
     <style>
       {{ customCss() }}
