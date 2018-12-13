@@ -3,9 +3,6 @@ const urljoin = require('url-join');
 
 const helpers = require('@commons/util/helpers');
 
-const CdnResourcesDownloader = require('./cdn-resources-downloader');
-const CdnResource = CdnResourcesDownloader.CdnResource;
-
 const cdnLocalScriptRoot = 'public/js/cdn';
 const cdnLocalScriptWebRoot = '/js/cdn';
 const cdnLocalStyleRoot = 'public/styles/cdn';
@@ -39,8 +36,15 @@ class CdnResourcesService {
     return (manifests.length > 0) ? manifests[0] : null;
   }
 
-  async downloadAndWriteAll() {
-    const downloader = new CdnResourcesDownloader();
+  /**
+   * download all resources from CDN and write to FS
+   *
+   * !! This method should be invoked only by /bin/download-cdn-resources when build client !!
+   *
+   * @param {CdnResourceDownloader} cdnResourceDownloader
+   */
+  async downloadAndWriteAll(cdnResourceDownloader) {
+    const CdnResource = require('@commons/models/cdn-resource');
 
     const cdnScriptResources = this.cdnManifests.js.map(manifest => {
       const outDir = helpers.root(cdnLocalScriptRoot);
@@ -58,8 +62,8 @@ class CdnResourcesService {
     };
 
     return Promise.all([
-      downloader.downloadScripts(cdnScriptResources),
-      downloader.downloadStyles(cdnStyleResources, dlStylesOptions),
+      cdnResourceDownloader.downloadScripts(cdnScriptResources),
+      cdnResourceDownloader.downloadStyles(cdnStyleResources, dlStylesOptions),
     ]);
   }
 

@@ -7,17 +7,8 @@ const mkdirp = require('mkdirp');
 const replaceStream = require('replacestream');
 const streamToPromise = require('stream-to-promise');
 
+const CdnResource = require('../models/cdn-resource');
 
-/**
- * Value Object
- */
-class CdnResource {
-  constructor(name, url, outDir) {
-    this.name = name;
-    this.url = url;
-    this.outDir = outDir;
-  }
-}
 
 class CdnResourcesDownloader {
   constructor() {
@@ -152,5 +143,4 @@ class CdnResourcesDownloader {
 
 }
 
-CdnResourcesDownloader.CdnResource = CdnResource;
 module.exports = CdnResourcesDownloader;
