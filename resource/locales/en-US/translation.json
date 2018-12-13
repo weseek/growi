@@ -363,6 +363,7 @@
     "Treat email matching as identical_warn": "WARNING: Be aware of security because the system treats the same user as a match of <code>%s</code>.",
     "Use env var if empty": "Use env var <code>%s</code> if empty",
     "Use default if both are empty": "If both ​​are empty, the default value <code>%s</code> is used.",
+    "missing mandatory configs": "The following mandatory items are not set in either database nor environment variables.",
     "ldap": {
       "server_url_detail": "The LDAP URL of the directory service in the format <code>ldap://host:port/DN</code> or <code>ldaps://host:port/DN</code>.",
       "bind_mode": "Binding Mode",
@@ -405,7 +406,7 @@
       "cert_detail1": "PEM-encoded X.509 signing certificate to validate the response from IdP",
       "cert_detail2": "If both are empty, no validation is processed.",
       "Use env var if empty": "If the value in the database is empty, the value of the environment variable <code>%s</code> is used.",
-      "note for the only env option": "Currently, the setting item that enables or disables the SAML authentication and the highlighted setting items use only the value of environment variables.<br>To change this setting, please change to false or delete the value of the environment variable <code>%s</code> ."
+      "note for the only env option": "The setting item that enables or disables the SAML authentication and the highlighted setting items use only the value of environment variables.<br>To change this setting, please change to false or delete the value of the environment variable <code>%s</code> ."
     },
     "OAuth": {
       "register": "Register for %s",

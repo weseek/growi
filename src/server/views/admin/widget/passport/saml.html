@@ -55,7 +55,7 @@
     {% set missingMandatoryConfigKeys = getSamlMissingMandatoryConfigKeys() %}
     {% if isSamlEnabled && missingMandatoryConfigKeys.length !== 0 %}
     <div class="alert alert-danger">
-      Currently, the following mandatory items are not set in either database nor environment variables.
+      {{ t("security_setting.missing mandatory configs") }}
       <ul>
         {% for missingMandatoryConfigKey in missingMandatoryConfigKeys %}
         <li>{{ missingMandatoryConfigKey }}</li>
