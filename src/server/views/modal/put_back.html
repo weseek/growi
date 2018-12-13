@@ -6,26 +6,33 @@
 
         <div class="modal-header bg-info">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <div class="modal-title"><i class="icon-action-undo"></i> {{ t('modal_putBack.label.Put Back Page') }}</div>
+          <div class="modal-title"><i class="icon-action-undo"></i> {{ t('modal_putback.label.Put Back Page') }}</div>
         </div>
         <div class="modal-body">
           <div class="form-group">
             <label for="">Put back page:</label><br>
             <code>{{ page.path }}</code>
           </div>
+          <div class="checkbox checkbox-warning">
+            <input name="recursively" id="cbPutbackRecursively" value="1" type="checkbox" checked>
+            <label for="cbPutbackRecursively">{{ t('modal_putback.label.recursively') }}</label>
+            <p class="help-block"> {{ t('modal_putback.help.recursively', page.path) }}
+            </p>
+          </div>
         </div>
         <div class="modal-footer">
-          <p><small class="pull-left" id="put_back-errors"></small></p>
-          <input type="hidden" name="_csrf" value="{{ csrf() }}">
-          <input type="hidden" name="path" value="{{ page.path }}">
-          <input type="hidden" name="page_id" value="{{ page._id.toString() }}">
-          <label class="checkbox-inline">
-            <input type="checkbox" name="recursively" checked> {{ t('modal_putBack.label.recursively') }}
-          </label>
-          <button type="submit" class="btn btn-sm btn-info putBack-button">
-            <i class="icon-action-undo" aria-hidden="true"></i>
-            {{ t('Put Back') }}
-          </button>
+          <div class="d-flex justify-content-between">
+            {% include '../widget/modal/page-api-error-messages.html' %}
+            <div>
+              <input type="hidden" name="_csrf" value="{{ csrf() }}">
+              <input type="hidden" name="path" value="{{ page.path }}">
+              <input type="hidden" name="page_id" value="{{ page._id.toString() }}">
+              <button type="submit" class="btn btn-sm btn-info putBack-button">
+                <i class="icon-action-undo" aria-hidden="true"></i>
+                {{ t('Put Back') }}
+              </button>
+            </div>
+          </div>
         </div>
 
       </form>

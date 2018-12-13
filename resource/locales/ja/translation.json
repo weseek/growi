@@ -233,10 +233,13 @@
     }
   },
 
-  "modal_putBack": {
+  "modal_putback": {
     "label": {
       "Put Back Page": "ページを元に戻す",
-      "recursively": "全ての子ページも処理"
+      "recursively": "全ての子ページも元に戻す"
+    },
+    "help": {
+      "recursively": "<code>%s</code> 配下のページも元に戻します"
     }
   },
 

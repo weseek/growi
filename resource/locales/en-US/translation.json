@@ -217,10 +217,13 @@
     }
   },
 
-  "modal_putBack": {
+  "modal_putback": {
     "label": {
       "Put Back Page": "Put Back Page",
-      "recursively": "Process recursively"
+      "recursively": "Put Back recursively"
+    },
+    "help": {
+      "recursively": "Put Back children of under <code>%s</code> recursively"
     }
   },
 
