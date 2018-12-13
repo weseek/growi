@@ -195,6 +195,20 @@ class ConfigLoader {
     let mergedConfigFromDB = Object.assign({'crowi': this.configModel.getDefaultCrowiConfigsObject()}, configFromDB);
     mergedConfigFromDB = Object.assign({'markdown': this.configModel.getDefaultMarkdownConfigsObject()}, mergedConfigFromDB);
 
+
+    // In getConfig API, only null is used as a value to indicate that a config is not set.
+    // So, if a value loaded from the database is emtpy,
+    // it is converted to null because an empty string is used as the same meaning in the config model.
+    // By this processing, whether a value is loaded from the database or from the environment variable,
+    // only null indicates a config is not set.
+    for (const namespace of Object.keys(mergedConfigFromDB)) {
+      for (const key of Object.keys(mergedConfigFromDB[namespace])) {
+        if (mergedConfigFromDB[namespace][key] === '') {
+          mergedConfigFromDB[namespace][key] = null;
+        }
+      }
+    }
+
     return {
       fromDB: mergedConfigFromDB,
       fromEnvVars: configFromEnvVars
@@ -209,19 +223,7 @@ class ConfigLoader {
       if (!config[doc.ns]) {
         config[doc.ns] = {};
       }
-
-      let value = JSON.parse(doc.value);
-
-      /*
-       * In the new API, only null is used as a value to indicate that a config is not set.
-       * In the old API, however, an empty character string is also used for the same purpose.
-       * So, a empty string is converted to null to ensure compatibility.
-       */
-      if (value === '') {
-        value = null;
-      }
-
-      config[doc.ns][doc.key] = value;
+      config[doc.ns][doc.key] = JSON.parse(doc.value);
     }
 
     debug('ConfigLoader#loadFromDB', config);

@@ -71,6 +71,9 @@ class ConfigManager {
   /**
    * update configs in the same namespace
    *
+   * Specified values are encoded by convertInsertValue.
+   * In it, an empty string is converted to null that indicates a config is not set.
+   *
    * For example:
    * ```
    *  updateConfigsInTheSameNamespace(
@@ -89,7 +92,7 @@ class ConfigManager {
       results.push(
         this.configModel.findOneAndUpdate(
           { ns: namespace, key: key },
-          { ns: namespace, key: key, value: JSON.stringify(configs[key]) },
+          { ns: namespace, key: key, value: this.convertInsertValue(configs[key]) },
           { upsert: true, }
         ).exec()
       );
@@ -99,9 +102,11 @@ class ConfigManager {
     await this.loadConfigs();
   }
 
+  /*
+   * All of the methods below are private APIs.
+   */
+
   /**
-   * private api
-   *
    * search a specified config from configs loaded from the database at first
    * and then from configs loaded from the environment variables
    */
@@ -129,8 +134,6 @@ class ConfigManager {
   }
 
   /**
-   * private api
-   *
    * For the configs specified by KEYS_FOR_SAML_USE_ONLY_ENV_OPTION,
    * this searches only from configs loaded from the environment variables.
    * For the other configs, this searches as the same way to defaultSearch.
@@ -145,8 +148,6 @@ class ConfigManager {
   }
 
   /**
-   * private api
-   *
    * search a specified config from configs loaded from the database
    */
   searchOnlyFromDBConfigs(namespace, key) {
@@ -158,8 +159,6 @@ class ConfigManager {
   }
 
   /**
-   * private api
-   *
    * search a specified config from configs loaded from the environment variables
    */
   searchOnlyFromEnvVarConfigs(namespace, key) {
@@ -171,10 +170,7 @@ class ConfigManager {
   }
 
   /**
-   * private api
-   *
    * check whether a specified config exists in configs loaded from the database
-   * @returns {boolean}
    */
   configExistsInDB(namespace, key) {
     if (this.configObject.fromDB[namespace] === undefined) {
@@ -185,10 +181,7 @@ class ConfigManager {
   }
 
   /**
-   * private api
-   *
    * check whether a specified config exists in configs loaded from the environment variables
-   * @returns {boolean}
    */
   configExistsInEnvVars(namespace, key) {
     if (this.configObject.fromEnvVars[namespace] === undefined) {
@@ -196,6 +189,10 @@ class ConfigManager {
     }
 
     return this.configObject.fromEnvVars[namespace][key] !== undefined;
+  }
+
+  convertInsertValue(value) {
+    return JSON.stringify(value === '' ? null : value);
   }
 }
 
