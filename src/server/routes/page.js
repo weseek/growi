@@ -852,7 +852,7 @@ module.exports = function(crowi, app) {
       }
       else {
         if (!page.isUpdatable(previousRevision)) {
-          throw new Error('Someone could update this page, so couldn\'t delete.', 'outdated');
+          return res.json(ApiResponse.error('Someone could update this page, so couldn\'t delete.', 'outdated'));
         }
 
         if (isRecursively) {
@@ -865,7 +865,7 @@ module.exports = function(crowi, app) {
     }
     catch (err) {
       logger.error('Error occured while get setting', err);
-      return res.json(ApiResponse.error('Failed to delete page.'));
+      return res.json(ApiResponse.error('Failed to delete page.', 'unknown'));
     }
 
     debug('Page deleted', page.path);

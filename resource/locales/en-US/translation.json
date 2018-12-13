@@ -176,7 +176,8 @@
 
   "page_api_error": {
     "notfound_or_forbidden": "Original page is not found or forbidden.",
-    "already_exists": "New page is already exists."
+    "already_exists": "New page is already exists.",
+    "outdated": "Page is updated someone and now outdated. "
   },
 
   "modal_rename": {
@@ -199,8 +200,12 @@
   "modal_delete": {
     "label": {
       "Delete Page": "Delete Page",
-      "recursively": "Process recursively",
-      "completely": "Delete completely"
+      "Delete recursively": "Delete recursively",
+      "Delete completely": "Delete completely"
+    },
+    "help": {
+      "recursively": "Delete children of under <code>%s</code> recursively",
+      "completely": "Delete completely instead of putting it into trash"
     }
   },
 

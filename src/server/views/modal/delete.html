@@ -19,18 +19,42 @@
             <label for="">Deleting page:</label><br>
             <code>{{ page.path }}</code>
           </div>
+          <div class="checkbox checkbox-warning">
+            <input name="delete_recursively" id="cbDeleteRecursively" value="1" type="checkbox" checked>
+            <label for="cbDeleteRecursively">{{ t('modal_delete.label.Delete recursively') }}</label>
+            <p class="help-block"> {{ t('modal_delete.help.recursively', page.path) }}
+            </p>
+          </div>
+          {% if not page.isDeleted() %}
+          <div class="checkbox checkbox-danger">
+            <input name="delete_completely" id="cbDeleteCompletely" value="1"  type="checkbox">
+              <label for="cbDeleteCompletely" class="text-danger">{{ t('modal_delete.label.Delete completely') }}</label>
+              <p class="help-block"> {{ t('modal_delete.help.completely') }}
+              </p>
+          </div>
+          {% endif %}
         </div>
         <div class="modal-footer">
           <div class="d-flex justify-content-between">
-            <p><small id="delete-errors"></small></p>
+            <p>
+              <span class="text-danger msg msg-notfound_or_forbidden">
+                <strong><i class="icon-fw icon-ban"></i> {{ t('page_api_error.notfound_or_forbidden') }}</strong>
+              </span>
+              <span class="text-warning msg msg-outdated">
+                <strong><i class="icon-fw icon-bulb"></i> {{ t('page_api_error.outdated') }}</strong>
+                <a href="javascript:location.reload();">
+                  <i class="fa fa-angle-double-right"></i> {{ t('Load latest') }}
+                </a>
+              </span>
+              <span class="text-danger msg msg-unknown">
+                <strong><i class="icon-fw icon-ban"></i> Unknown error occured</strong>
+              </span>
+            </p>
             <div>
               <input type="hidden" name="_csrf" value="{{ csrf() }}">
               <input type="hidden" name="path" value="{{ page.path }}">
               <input type="hidden" name="page_id" value="{{ page._id.toString() }}">
               <input type="hidden" name="revision_id" value="{{ page.revision._id.toString() }}">
-              <label class="checkbox-inline">
-                <input type="checkbox" name="recursively">{{ t('modal_delete.label.recursively') }}
-              </label>
               {% if page.isDeleted() %}
                 <input type="hidden" name="completely" value="true">
                 <button type="submit" class="m-l-10 btn btn-sm btn-danger delete-button">
@@ -38,9 +62,6 @@
                   {{ t('Delete Completely') }}
                 </button>
               {% else %}
-                <label class="checkbox-inline text-danger">
-                  <input type="checkbox" name="completely">{{ t('modal_delete.label.completely') }}
-                </label>
                 <button type="submit" class="m-l-10 btn btn-sm btn-default delete-button">
                   <i class="icon-trash" aria-hidden="true"></i>
                   {{ t('Delete') }}
