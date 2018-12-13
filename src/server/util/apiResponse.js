@@ -3,12 +3,11 @@
 function ApiResponse() {
 }
 
-ApiResponse.error = function(err) {
-  var result = {};
+ApiResponse.error = function(err, code) {
+  const result = {};
 
-  result = {
-    ok: false
-  };
+  result.ok = false;
+  result.code = code;
 
   if (err instanceof Error) {
     result.error = err.toString();
@@ -21,7 +20,7 @@ ApiResponse.error = function(err) {
 };
 
 ApiResponse.success = function(data) {
-  var result = data || {};
+  const result = data || {};
 
   result.ok = true;
   return result;
