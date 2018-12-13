@@ -69,30 +69,27 @@ class ConfigManager {
   }
 
   /**
-   * update configs by a iterable object consisting of several objects with ns, key, value fields
+   * update configs in the same namespace
    *
    * For example:
    * ```
-   *  updateConfigs(
-   *   [{
-   *     ns:    'some namespace 1',
-   *     key:   'some key 1',
-   *     value: 'some value 1'
-   *   }, {
-   *     ns:    'some namespace 2',
-   *     key:   'some key 2',
-   *     value: 'some value 2'
-   *   }]
+   *  updateConfigsInTheSameNamespace(
+   *   'some namespace',
+   *   {
+   *    'some key 1': 'value 1',
+   *    'some key 2': 'value 2',
+   *    ...
+   *   }
    *  );
    * ```
    */
-  async updateConfigs(configs) {
+  async updateConfigsInTheSameNamespace(namespace, configs) {
     const results = [];
-    for (const config of configs) {
+    for (const key in Object.keys(configs)) {
       results.push(
         this.configModel.findOneAndUpdate(
-          { ns: config.ns, key: config.key },
-          { ns: config.ns, key: config.key, value: JSON.stringify(config.value) },
+          { ns: namespace, key: key },
+          { ns: namespace, key: key, value: JSON.stringify(configs[key]) },
           { upsert: true, }
         ).exec()
       );
