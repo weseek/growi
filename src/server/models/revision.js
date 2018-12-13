@@ -93,7 +93,7 @@ module.exports = function(crowi) {
     });
   };
 
-  revisionSchema.statics.prepareRevision = function(pageData, body, user, options) {
+  revisionSchema.statics.prepareRevision = function(pageData, body, previousBody, user, options) {
     const Revision = this;
 
     if (!options) {
@@ -112,7 +112,7 @@ module.exports = function(crowi) {
     newRevision.author = user._id;
     newRevision.createdAt = Date.now();
     if (pageData.revision != null) {
-      newRevision.hasDiffToPrev = body !== pageData.revision.body;
+      newRevision.hasDiffToPrev = body !== previousBody;
     }
 
     return newRevision;

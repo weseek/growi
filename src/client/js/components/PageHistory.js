@@ -97,7 +97,9 @@ class PageHistory extends React.Component {
       return ;
     }
 
-    this.props.crowi.apiGet('/revisions.get', {revision_id: revision._id})
+    this.props.crowi.apiGet('/revisions.get',
+      { page_id: this.props.pageId, revision_id: revision._id}
+    )
     .then(res => {
       if (res.ok) {
         this.setState({
@@ -110,10 +112,10 @@ class PageHistory extends React.Component {
           })
         });
       }
-    }).catch(err => {
+    })
+    .catch(err => {
 
     });
-
   }
 
   render() {
