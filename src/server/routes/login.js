@@ -141,7 +141,6 @@ module.exports = function(crowi, app) {
 
   actions.register = function(req, res) {
     var googleAuth = require('../util/googleAuth')(config);
-    var lang = req.language || User.LANG_EN_US;
 
     // ログイン済みならさようなら
     if (req.user) {
@@ -186,7 +185,7 @@ module.exports = function(crowi, app) {
           return res.redirect('/register');
         }
 
-        User.createUserByEmailAndPassword(name, username, email, password, lang, function(err, userData) {
+        User.createUserByEmailAndPassword(name, username, email, password, undefined, function(err, userData) {
           if (err) {
             if (err.name === 'UserUpperLimitException') {
               req.flash('registerWarningMessage', 'Can not register more than the maximum number of users.');
