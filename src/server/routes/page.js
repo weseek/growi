@@ -527,7 +527,7 @@ module.exports = function(crowi, app) {
     // check page existence
     const isExist = await Page.count({path: pagePath}) > 0;
     if (isExist) {
-      return res.json(ApiResponse.error('Page exists'));
+      return res.json(ApiResponse.error('Page exists', 'already_exists'));
     }
 
     const options = {grant, grantUserGroupId, socketClientId};
@@ -584,13 +584,13 @@ module.exports = function(crowi, app) {
     // check page existence
     const isExist = await Page.count({_id: pageId}) > 0;
     if (!isExist) {
-      return res.json(ApiResponse.error(`Page('${pageId}' is not found or forbidden`));
+      return res.json(ApiResponse.error(`Page('${pageId}' is not found or forbidden`, 'notfound_or_forbidden'));
     }
 
     // check revision
     let page = await Page.findByIdAndViewer(pageId, req.user);
     if (page != null && revisionId != null && !page.isUpdatable(revisionId)) {
-      return res.json(ApiResponse.error('Posted param "revisionId" is outdated.'));
+      return res.json(ApiResponse.error('Posted param "revisionId" is outdated.', 'outdated'));
     }
 
     const options = {isSyncRevisionToHackmd, socketClientId};
@@ -656,7 +656,7 @@ module.exports = function(crowi, app) {
       }
 
       if (page == null) {
-        throw new Error(`Page '${pageId || pagePath}' is not found or forbidden`);
+        throw new Error(`Page '${pageId || pagePath}' is not found or forbidden`, 'notfound_or_forbidden');
       }
 
       page.initLatestRevisionField();
@@ -836,7 +836,7 @@ module.exports = function(crowi, app) {
     let page = await Page.findByIdAndViewer(pageId, req.user);
 
     if (page == null) {
-      return res.json(ApiResponse.error(`Page '${pageId}' is not found or forbidden`));
+      return res.json(ApiResponse.error(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'));
     }
 
     debug('Delete page', page._id, page.path);
@@ -852,7 +852,7 @@ module.exports = function(crowi, app) {
       }
       else {
         if (!page.isUpdatable(previousRevision)) {
-          throw new Error('Someone could update this page, so couldn\'t delete.');
+          throw new Error('Someone could update this page, so couldn\'t delete.', 'outdated');
         }
 
         if (isRecursively) {
@@ -896,7 +896,7 @@ module.exports = function(crowi, app) {
     try {
       page = await Page.findByIdAndViewer(pageId, req.user);
       if (page == null) {
-        throw new Error(`Page '${pageId}' is not found or forbidden`);
+        throw new Error(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden');
       }
 
       if (isRecursively) {
@@ -940,13 +940,13 @@ module.exports = function(crowi, app) {
     const isRecursiveMove = req.body.move_recursively || 0;
 
     if (!Page.isCreatableName(newPagePath)) {
-      return res.json(ApiResponse.error(`このページ名は作成できません (${newPagePath})`));
+      return res.json(ApiResponse.error(`Could not use the path '${newPagePath})'`, 'invalid_path'));
     }
 
     const isExist = await Page.count({ path: newPagePath }) > 0;
     if (isExist) {
       // if page found, cannot cannot rename to that path
-      return res.json(ApiResponse.error(`'new_path=${newPagePath}' already exists`));
+      return res.json(ApiResponse.error(`'new_path=${newPagePath}' already exists`, 'already_exists'));
     }
 
     let page;
@@ -955,11 +955,11 @@ module.exports = function(crowi, app) {
       page = await Page.findByIdAndViewer(pageId, req.user);
 
       if (page == null) {
-        throw new Error(`Page '${pageId}' is not found or forbidden`);
+        throw new Error(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden');
       }
 
       if (!page.isUpdatable(previousRevision)) {
-        throw new Error('Someone could update this page, so couldn\'t delete.');
+        throw new Error('Someone could update this page, so couldn\'t delete.', 'outdated');
       }
 
       if (isRecursiveMove) {
@@ -1000,7 +1000,7 @@ module.exports = function(crowi, app) {
     const page = await Page.findByIdAndViewer(pageId, req.user);
 
     if (page == null) {
-      throw new Error(`Page '${pageId}' is not found or forbidden`);
+      return res.json(ApiResponse.error(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'));
     }
 
     await page.populateDataToShowRevision();
