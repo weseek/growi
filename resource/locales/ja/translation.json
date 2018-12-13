@@ -190,8 +190,10 @@
       }
   },
 
-
-
+  "page_api_error": {
+    "notfound_or_forbidden": "元のページが見つからないか、アクセス権がありません。",
+    "already_exists": "新しいページが既に存在しています。"
+  },
 
   "modal_rename": {
     "label": {

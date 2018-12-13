@@ -24,10 +24,13 @@
         <div class="modal-footer">
           <div class="d-flex justify-content-between">
             <p>
-              <span class="text-danger msg-already-exists">
-                <strong><i class="icon-fw icon-ban"></i>{{ t('Page is already exists.') }}</strong>
+              <span class="text-danger msg msg-notfound_or_forbidden">
+                <strong><i class="icon-fw icon-ban"></i>{{ t('Original page is not found or forbidden.') }}</strong>
               </span>
-              <small id="linkToNewPage" class="msg-already-exists"></small>
+              <span class="text-danger msg msg-already_exists">
+                <strong><i class="icon-fw icon-ban"></i>{{ t('New page path is already exists.') }}</strong>
+                <small id="linkToNewPage"></small>
+              </span>
             </p>
             <div>
               <input type="hidden" name="_csrf" value="{{ csrf() }}">

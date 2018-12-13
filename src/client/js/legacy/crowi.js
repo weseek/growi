@@ -351,7 +351,7 @@ $(function() {
   // rename/unportalize
   $('#renamePage, #unportalize').on('shown.bs.modal', function(e) {
     $('#renamePage #newPageName').focus();
-    $('#renamePage .msg-already-exists, #unportalize .msg-already-exists').hide();
+    $('#renamePage .msg, #unportalize .msg').hide();
   });
   $('#renamePageForm, #unportalize-form').submit(function(e) {
     // create name-value map
@@ -369,9 +369,9 @@ $(function() {
       dataType: 'json'
     })
     .done(function(res) {
+      // error
       if (!res.ok) {
-        // if already exists
-        $('#renamePage .msg-already-exists, #unportalize .msg-already-exists').show();
+        $(`#renamePage .msg-${res.code}, #unportalize .msg-${res.code}`).show();
         $('#renamePage #linkToNewPage, #unportalize #linkToNewPage').html(`
           <a href="${nameValueMap.new_path}">${nameValueMap.new_path} <i class="icon-login"></i></a>
         `);
@@ -388,7 +388,7 @@ $(function() {
   // duplicate
   $('#duplicatePage').on('shown.bs.modal', function(e) {
     $('#duplicatePage #duplicatePageName').focus();
-    $('#duplicatePage .msg-already-exists').hide();
+    $('#duplicatePage .msg').hide();
   });
   $('#duplicatePageForm, #unportalize-form').submit(function(e) {
     // create name-value map
@@ -403,9 +403,9 @@ $(function() {
       data: $(this).serialize(),
       dataType: 'json'
     }).done(function(res) {
+      // error
       if (!res.ok) {
-        // if already exists
-        $('#duplicatePage .msg-already-exists').show();
+        $(`#duplicatePage .msg-${res.code}`).show();
         $('#duplicatePage #linkToNewPage').html(`
           <a href="${nameValueMap.new_path}">${nameValueMap.new_path} <i class="icon-login"></i></a>
         `);
@@ -420,6 +420,9 @@ $(function() {
   });
 
   // delete
+  $('#deletePage').on('shown.bs.modal', function(e) {
+    $('#deletePage .msg').hide();
+  });
   $('#delete-page-form').submit(function(e) {
     $.ajax({
       type: 'POST',
@@ -427,9 +430,9 @@ $(function() {
       data: $('#delete-page-form').serialize(),
       dataType: 'json'
     }).done(function(res) {
+      // error
       if (!res.ok) {
-        $('#delete-errors').html('<i class="fa fa-times-circle"></i> ' + res.error);
-        $('#delete-errors').addClass('alert-danger');
+        $(`#deletePage .msg-${res.code}`).show();
       }
       else {
         const page = res.page;

@@ -9,44 +9,40 @@
           <div class="modal-title">{{ t('Rename page') }}</div>
         </div>
         <div class="modal-body">
-            <div class="form-group">
-              <label for="">{{ t('Current page name') }}</label><br>
-              <code>{{ page.path }}</code>
+          <div class="form-group">
+            <label for="">{{ t('Current page name') }}</label><br>
+            <code>{{ page.path }}</code>
+          </div>
+          <div class="form-group">
+            <label for="newPageName">{{ t('New page name') }}</label><br>
+            <div class="input-group">
+              <span class="input-group-addon">{{ config.crowi['app:siteUrl:fixed'] }}</span>
+              <input type="text" class="form-control" name="new_path" id="newPageName" value="{{ page.path }}">
             </div>
-            <div class="form-group">
-              <label for="newPageName">{{ t('New page name') }}</label><br>
-              <div class="input-group">
-                <span class="input-group-addon">{{ config.crowi['app:siteUrl:fixed'] }}</span>
-                <input type="text" class="form-control" name="new_path" id="newPageName" value="{{ page.path }}">
-              </div>
-            </div>
-            <div class="checkbox checkbox-info">
-              <input name="move_recursively" id="cbRecursively" value="1" type="checkbox" checked>
-              <label for="cbRecursively">{{ t('modal_rename.label.Move recursively') }}</label>
-              <p class="help-block"> {{ t('modal_rename.help.recursive', page.path) }}
+          </div>
+          <div class="checkbox checkbox-warning">
+            <input name="move_recursively" id="cbRecursively" value="1" type="checkbox" checked>
+            <label for="cbRecursively">{{ t('modal_rename.label.Move recursively') }}</label>
+            <p class="help-block"> {{ t('modal_rename.help.recursive', page.path) }}
+            </p>
+          </div>
+          <div class="checkbox checkbox-info">
+            <input name="create_redirect" id="cbRedirect" value="1"  type="checkbox">
+              <label for="cbRedirect">{{ t('modal_rename.label.Redirect') }}</label>
+              <p class="help-block"> {{ t('modal_rename.help.redirect', page.path) }}
               </p>
-            </div>
-            <div class="checkbox checkbox-info">
-              <input name="create_redirect" id="cbRedirect" value="1"  type="checkbox">
-               <label for="cbRedirect">{{ t('modal_rename.label.Redirect') }}</label>
-               <p class="help-block"> {{ t('modal_rename.help.redirect', page.path) }}
-               </p>
-            </div>
-            {# <div class="checkbox"> #}
-            {#    <label> #}
-            {#      <input name="moveUnderTrees" value="1" type="checkbox"> 下層ページも全部移動する #}
-            {#    </label> #}
-            {#    <p class="help-block">チェックを入れると、<code>{{ page.path }}</code>以下の階層以下もすべて移動します。</p> #}
-            {#    <p class="help-block">例: <code>/hoge/fuga/move</code> を <code>/foo/bar/move</code> に移動すると、<code>/hoge/fuga/move/page1</code> も <code>/foo/bar/move/page1</code> に。</p> #}
-            {# </div> #}
+          </div>
         </div>
         <div class="modal-footer">
           <div class="d-flex justify-content-between">
             <p>
-              <span class="text-danger msg-already-exists">
-                <strong><i class="icon-fw icon-ban"></i>{{ t('Page is already exists.') }}</strong>
+              <span class="text-danger msg msg-notfound_or_forbidden">
+                <strong><i class="icon-fw icon-ban"></i>{{ t('page_api_error.notfound_or_forbidden') }}</strong>
               </span>
-              <small id="linkToNewPage" class="msg-already-exists"></small>
+              <span class="text-danger msg msg-already_exists">
+                <strong><i class="icon-fw icon-ban"></i>{{ t('page_api_error.already_exists') }}</strong>
+                <small id="linkToNewPage"></small>
+              </span>
             </p>
             <div>
               <input type="hidden" name="_csrf" value="{{ csrf() }}">
