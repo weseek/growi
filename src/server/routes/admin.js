@@ -1073,13 +1073,12 @@ module.exports = function(crowi, app) {
     }
 
     debug('form content', form);
-    await saveSettingAsync(form);
-    const config = await crowi.getConfig();
+    await crowi.configManager.updateConfigsInTheSameNamespace('crowi', form);
 
     // reset strategy
     await crowi.passportService.resetSamlStrategy();
     // setup strategy
-    if (Config.isEnabledPassportSaml(config)) {
+    if (crowi.configManager.getConfig('security:passport-saml:isEnabled')) {
       try {
         await crowi.passportService.setupSamlStrategy(true);
       }
