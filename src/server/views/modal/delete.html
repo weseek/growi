@@ -19,15 +19,18 @@
             <label for="">Deleting page:</label><br>
             <code>{{ page.path }}</code>
           </div>
+
+          <hr>
+
           <div class="checkbox checkbox-warning">
-            <input name="delete_recursively" id="cbDeleteRecursively" value="1" type="checkbox" checked>
+            <input name="recursively" id="cbDeleteRecursively" value="1" type="checkbox" checked>
             <label for="cbDeleteRecursively">{{ t('modal_delete.label.Delete recursively') }}</label>
             <p class="help-block"> {{ t('modal_delete.help.recursively', page.path) }}
             </p>
           </div>
           {% if not page.isDeleted() %}
           <div class="checkbox checkbox-danger">
-            <input name="delete_completely" id="cbDeleteCompletely" value="1"  type="checkbox">
+            <input name="completely" id="cbDeleteCompletely" value="1"  type="checkbox">
               <label for="cbDeleteCompletely" class="text-danger">{{ t('modal_delete.label.Delete completely') }}</label>
               <p class="help-block"> {{ t('modal_delete.help.completely') }}
               </p>
@@ -36,20 +39,7 @@
         </div>
         <div class="modal-footer">
           <div class="d-flex justify-content-between">
-            <p>
-              <span class="text-danger msg msg-notfound_or_forbidden">
-                <strong><i class="icon-fw icon-ban"></i> {{ t('page_api_error.notfound_or_forbidden') }}</strong>
-              </span>
-              <span class="text-warning msg msg-outdated">
-                <strong><i class="icon-fw icon-bulb"></i> {{ t('page_api_error.outdated') }}</strong>
-                <a href="javascript:location.reload();">
-                  <i class="fa fa-angle-double-right"></i> {{ t('Load latest') }}
-                </a>
-              </span>
-              <span class="text-danger msg msg-unknown">
-                <strong><i class="icon-fw icon-ban"></i> Unknown error occured</strong>
-              </span>
-            </p>
+            {% include '../widget/modal/page-api-error-messages.html' %}
             <div>
               <input type="hidden" name="_csrf" value="{{ csrf() }}">
               <input type="hidden" name="path" value="{{ page.path }}">

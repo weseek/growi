@@ -33,15 +33,7 @@
         </div>
         <div class="modal-footer">
           <div class="d-flex justify-content-between">
-            <p>
-              <span class="text-danger msg msg-notfound_or_forbidden">
-                <strong><i class="icon-fw icon-ban"></i>{{ t('Original page is not found or forbidden.') }}</strong>
-              </span>
-              <span class="text-danger msg msg-already_exists">
-                <strong><i class="icon-fw icon-ban"></i>{{ t('New page path is already exists.') }}</strong>
-                <small id="linkToNewPage"></small>
-              </span>
-            </p>
+            {% include '../widget/modal/page-api-error-messages.html' %}
             <div>
               <input type="hidden" name="_csrf" value="{{ csrf() }}">
               <input type="hidden" name="path" value="{{ page.path }}">

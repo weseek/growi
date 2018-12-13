@@ -937,7 +937,7 @@ module.exports = function(crowi, app) {
       moveUnderTrees: req.body.move_trees || 0,
       socketClientId: +req.body.socketClientId || undefined,
     };
-    const isRecursiveMove = req.body.move_recursively || 0;
+    const isRecursively = req.body.recursively || 0;
 
     if (!Page.isCreatableName(newPagePath)) {
       return res.json(ApiResponse.error(`Could not use the path '${newPagePath})'`, 'invalid_path'));
@@ -962,7 +962,7 @@ module.exports = function(crowi, app) {
         return res.json(ApiResponse.error('Someone could update this page, so couldn\'t delete.', 'outdated'));
       }
 
-      if (isRecursiveMove) {
+      if (isRecursively) {
         page = await Page.renameRecursively(page, newPagePath, req.user, options);
       }
       else {
