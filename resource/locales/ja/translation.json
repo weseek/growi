@@ -419,6 +419,7 @@
       "name": "SAML",
       "entry_point": "エントリーポイント",
       "issuer": "発行者",
+      "cert": "証明書",
       "First Name": "姓",
       "Last Name": "名",
       "id_detail": "SAML Identity プロバイダ内で一意に識別可能な値を格納している属性",

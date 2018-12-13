@@ -403,6 +403,7 @@
       "name": "SAML",
       "entry_point": "Entry Point",
       "issuer": "Issuer",
+      "cert": "Certificate",
       "First Name": "First Name",
       "Last Name": "Last Name",
       "id_detail": "Specification of the name of attribute which can identify the user in SAML Identity Provider",
