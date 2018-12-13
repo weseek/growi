@@ -21,14 +21,14 @@
                  value="true"
                  type="radio"
                  {% if true === isSamlEnabled %}checked{% endif %}
-                 {% if useOnlyEnvVars %}disabled{% endif %}> ON
+                 {% if useOnlyEnvVars %}readonly{% endif %}> ON
         </label>
         <label class="btn btn-default btn-rounded btn-outline {% if !isSamlEnabled %}active{% endif %}" data-active-class="default">
           <input name="{{nameForIsSamlEnabled}}"
                  value="false"
                  type="radio"
                  {% if !isSamlEnabled %}checked{% endif %}
-                 {% if useOnlyEnvVars %}disabled{% endif %}> OFF
+                 {% if useOnlyEnvVars %}readonly{% endif %}> OFF
         </label>
       </div>
     </div>
@@ -52,6 +52,18 @@
 
   <fieldset id="passport-saml-hide-when-disabled" {%if !isSamlEnabled %}style="display: none;"{% endif %}>
 
+    {% set missingMandatoryConfigKeys = getSamlMissingMandatoryConfigKeys() %}
+    {% if isSamlEnabled && missingMandatoryConfigKeys.length !== 0 %}
+    <div class="alert alert-danger">
+      {{ t("security_setting.missing mandatory configs") }}
+      <ul>
+        {% for missingMandatoryConfigKey in missingMandatoryConfigKeys %}
+        <li>{{ missingMandatoryConfigKey }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
     <h4>Basic Settings</h4>
     <table class="table authentication-settings-table {% if useOnlyEnvVars %}use-only-env-vars{% endif %}">
       <colgroup>
@@ -70,7 +82,7 @@
                    type="text"
                    name="settingForm[security:passport-saml:entryPoint]"
                    value="{{ getConfigFromDB('crowi', 'security:passport-saml:entryPoint') || '' }}"
-                   {% if useOnlyEnvVars %}disabled{% endif %}>
+                   {% if useOnlyEnvVars %}readonly{% endif %}>
           </td>
           <td>
             <input class="form-control"
@@ -91,7 +103,7 @@
                    type="text"
                    name="settingForm[security:passport-saml:issuer]"
                    value="{{ getConfigFromDB('crowi', 'security:passport-saml:issuer') || '' }}"
-                   {% if useOnlyEnvVars %}disabled{% endif %}>
+                   {% if useOnlyEnvVars %}readonly{% endif %}>
           </td>
           <td>
             <input class="form-control"
@@ -127,7 +139,7 @@
                  type="text"
                  name="settingForm[security:passport-saml:attrMapId]"
                  value="{{ getConfigFromDB('crowi', 'security:passport-saml:attrMapId') || '' }}"
-                 {% if useOnlyEnvVars %}disabled{% endif %}>
+                 {% if useOnlyEnvVars %}readonly{% endif %}>
           <p class="help-block">
             <small>
               {{ t("security_setting.SAML.id_detail") }}
@@ -153,7 +165,7 @@
                  type="text"
                  name="settingForm[security:passport-saml:attrMapUsername]"
                  value="{{ getConfigFromDB('crowi', 'security:passport-saml:attrMapUsername') || '' }}"
-                 {% if useOnlyEnvVars %}disabled{% endif %}>
+                 {% if useOnlyEnvVars %}readonly{% endif %}>
           <p class="help-block">
             <small>
               {{ t("security_setting.SAML.username_detail") }}
@@ -179,7 +191,7 @@
                  type="text"
                  name="settingForm[security:passport-saml:attrMapMail]"
                  value="{{ getConfigFromDB('crowi', 'security:passport-saml:attrMapMail') || '' }}"
-                 {% if useOnlyEnvVars %}disabled{% endif %}>
+                 {% if useOnlyEnvVars %}readonly{% endif %}>
           <p class="help-block">
             <small>
               {{ t("security_setting.SAML.mapping_detail", t("Email")) }}
@@ -204,7 +216,7 @@
                  type="text"
                  name="settingForm[security:passport-saml:attrMapFirstName]"
                  value="{{ getConfigFromDB('crowi', 'security:passport-saml:attrMapFirstName') || '' }}"
-                 {% if useOnlyEnvVars %}disabled{% endif %}>
+                 {% if useOnlyEnvVars %}readonly{% endif %}>
           <p class="help-block">
             <small>
               {{ t("security_setting.SAML.mapping_detail", t("security_setting.SAML.First Name")) }}
@@ -231,7 +243,7 @@
                  type="text"
                  name="settingForm[security:passport-saml:attrMapLastName]"
                  value="{{　getConfigFromDB('crowi', 'security:passport-saml:attrMapLastName') || '' }}"
-                 {% if useOnlyEnvVars %}disabled{% endif %}>
+                 {% if useOnlyEnvVars %}readonly{% endif %}>
           <p class="help-block">
             <small>
               {{ t("security_setting.SAML.mapping_detail", t("security_setting.SAML.Last Name")) }}
@@ -315,7 +327,7 @@
                       type="text"
                       rows="5"
                       name="settingForm[security:passport-saml:cert]"
-                      {% if useOnlyEnvVars %}disabled{% endif %}
+                      {% if useOnlyEnvVars %}readonly{% endif %}
             >{{ getConfigFromDB('crowi', 'security:passport-saml:cert') || '' }}</textarea>
             <p class="help-block">
               <small>

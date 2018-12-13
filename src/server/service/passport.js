@@ -53,6 +53,18 @@ class PassportService {
      * the flag whether serializer/deserializer are set up successfully
      */
     this.isSerializerSetup = false;
+
+    /**
+     * the keys of mandatory configs for SAML
+     */
+    this.mandatoryConfigKeysForSaml = [
+      'security:passport-saml:isEnabled',
+      'security:passport-saml:entryPoint',
+      'security:passport-saml:issuer',
+      'security:passport-saml:attrMapId',
+      'security:passport-saml:attrMapUsername',
+      'security:passport-saml:attrMapMail'
+    ];
   }
 
   /**
@@ -465,6 +477,19 @@ class PassportService {
     debug('SamlStrategy: reset');
     passport.unuse('saml');
     this.isSamlStrategySetup = false;
+  }
+
+  /**
+   * return the keys of the configs mandatory for SAML whose value are empty.
+   */
+  getSamlMissingMandatoryConfigKeys() {
+    const missingRequireds = [];
+    for (const key of this.mandatoryConfigKeysForSaml) {
+      if (this.crowi.configManager.getConfig('crowi', key) === null) {
+        missingRequireds.push(key);
+      }
+    }
+    return missingRequireds;
   }
 
   /**
