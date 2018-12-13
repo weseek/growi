@@ -39,7 +39,6 @@
     "migrate:status": "migrate-mongo status -f config/migrate.js",
     "migrate:up": "migrate-mongo up -f config/migrate.js",
     "migrate:down": "migrate-mongo down -f config/migrate.js",
-    "mkdirp": "mkdirp",
     "plugin:def": "node bin/generate-plugin-definitions-source.js",
     "prebuild:dev:watch": "npm run prebuild:dev",
     "prebuild:dev": "npm run clean:app && env-cmd config/env.dev.js npm run plugin:def && env-cmd config/env.dev.js npm run resource",
