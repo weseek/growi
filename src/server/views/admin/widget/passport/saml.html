@@ -315,7 +315,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                  type="checkbox"
                  name="settingForm[security:passport-saml:isSameUsernameTreatedAsIdenticalUser]"
                  value="1"
-                 {% if settingForm['security:passport-saml:isSameUsernameTreatedAsIdenticalUser'] %}checked{% endif %} />
+                 {% if getConfig('crowi', 'security:passport-saml:isSameUsernameTreatedAsIdenticalUser') %}checked{% endif %} />
           <label for="bindByUserName-SAML">
             {{ t("security_setting.Treat username matching as identical", "username") }}
           </label>
@@ -335,7 +335,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                  type="checkbox"
                  name="settingForm[security:passport-saml:isSameEmailTreatedAsIdenticalUser]"
                  value="1"
-                 {% if settingForm['security:passport-saml:isSameEmailTreatedAsIdenticalUser'] %}checked{% endif %} />
+                 {% if getConfig('crowi', 'security:passport-saml:isSameEmailTreatedAsIdenticalUser') %}checked{% endif %} />
           <label for="bindByEmail-SAML">
             {{ t("security_setting.Treat email matching as identical", "email") }}
           </label>
