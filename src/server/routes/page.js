@@ -580,7 +580,7 @@ module.exports = function(crowi, app) {
     // check page existence
     const isExist = await Page.count({_id: pageId}) > 0;
     if (!isExist) {
-      return res.json(ApiResponse.error(`Page('${pageId}' does not exist`));
+      return res.json(ApiResponse.error(`Page('${pageId}' is not found or forbidden`));
     }
 
     // check revision
@@ -650,6 +650,11 @@ module.exports = function(crowi, app) {
       else if (pagePath) {
         page = await Page.findByPathAndViewer(pagePath, req.user);
       }
+
+      if (page == null) {
+        throw new Error(`Page '${pageId || pagePath}' is not found or forbidden`);
+      }
+
       page.initLatestRevisionField();
 
       // populate
@@ -718,6 +723,9 @@ module.exports = function(crowi, app) {
     let page;
     try {
       page = await Page.findByIdAndViewer(pageId, req.user);
+      if (page == null) {
+        throw new Error(`Page '${pageId}' is not found or forbidden`);
+      }
       page = await page.like(req.user);
     }
     catch (err) {
@@ -757,6 +765,9 @@ module.exports = function(crowi, app) {
     let page;
     try {
       page = await Page.findByIdAndViewer(pageId, req.user);
+      if (page == null) {
+        throw new Error(`Page '${pageId}' is not found or forbidden`);
+      }
       page = await page.unlike(req.user);
     }
     catch (err) {
@@ -821,7 +832,7 @@ module.exports = function(crowi, app) {
     let page = await Page.findByIdAndViewer(pageId, req.user);
 
     if (page == null) {
-      return res.json(ApiResponse.error('The page does not exist.'));
+      return res.json(ApiResponse.error(`Page '${pageId}' is not found or forbidden`));
     }
 
     debug('Delete page', page._id, page.path);
@@ -881,7 +892,7 @@ module.exports = function(crowi, app) {
     try {
       page = await Page.findByIdAndViewer(pageId, req.user);
       if (page == null) {
-        throw new Error('The page is not found or the user does not have permission');
+        throw new Error(`Page '${pageId}' is not found or forbidden`);
       }
 
       if (isRecursively) {
@@ -931,13 +942,18 @@ module.exports = function(crowi, app) {
     const isExist = await Page.count({ path: newPagePath }) > 0;
     if (isExist) {
       // if page found, cannot cannot rename to that path
-      return res.json(ApiResponse.error('The page already exists'));
+      return res.json(ApiResponse.error(`'new_path=${newPagePath}' already exists`));
     }
 
     let page;
 
     try {
-      page = await Page.findById(pageId);
+      page = await Page.findByIdAndViewer(pageId, req.user);
+
+      if (page == null) {
+        throw new Error(`Page '${pageId}' is not found or forbidden`);
+      }
+
       if (!page.isUpdatable(previousRevision)) {
         throw new Error('Someone could update this page, so couldn\'t delete.');
       }
