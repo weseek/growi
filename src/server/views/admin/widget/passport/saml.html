@@ -117,6 +117,47 @@
             </p>
           </td>
         </tr>
+        <tr>
+          <th>Certificate</th>
+          <td>
+            <textarea class="form-control input-sm"
+                      type="text"
+                      rows="5"
+                      name="settingForm[security:passport-saml:cert]"
+                      {% if useOnlyEnvVars %}readonly{% endif %}
+            >{{ getConfigFromDB('crowi', 'security:passport-saml:cert') || '' }}</textarea>
+            <p class="help-block">
+              <small>
+                {{ t("security_setting.SAML.cert_detail1") }}
+              </small>
+            </p>
+            <p>
+              <small>
+                e.g.
+                <pre>-----BEGIN CERTIFICATE-----
+MIICBzCCAXACCQD4US7+0A/b/zANBgkqhkiG9w0BAQsFADBIMQswCQYDVQQGEwJK
+UDEOMAwGA1UECAwFVG9reW8xFTATBgNVBAoMDFdFU0VFSywgSW5jLjESMBAGA1UE
+...
+crmVwBzbloUO2l6k1ibwD2WVwpdxMKIF5z58HfKAvxZAzCHE7kMEZr1ge30WRXQA
+pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
+-----END CERTIFICATE-----</pre>
+              </small>
+            </p>
+          </td>
+          <td>
+            <textarea class="form-control input-sm"
+                      type="text"
+                      rows="5"
+                      readonly
+            >{{ getConfigFromEnvVars('crowi', 'security:passport-saml:cert') || '' }}</textarea>
+            <p class="help-block">
+              <small>
+                {{ t("security_setting.SAML.Use env var if empty", "SAML_CERT") }}<br>
+                {{ t("security_setting.SAML.cert_detail2") }}
+              </small>
+            </p>
+          </td>
+        </tr>
       </tbody>
     </table>
 
@@ -307,62 +348,6 @@
         </div>
       </div>
     </div>
-
-    <h4>Options</h4>
-
-    <table class="table authentication-settings-table {% if useOnlyEnvVars %}use-only-env-vars{% endif %}">
-      <colgroup>
-        <col class="item-name">
-        <col class="from-db">
-        <col class="from-env-vars">
-      </colgroup>
-      <thead>
-        <tr><th></th><th>Database</th><th>Environment variables</th></tr>
-      </thead>
-      <tbody>
-        <tr>
-          <th>Certificate</th>
-          <td>
-            <textarea class="form-control input-sm"
-                      type="text"
-                      rows="5"
-                      name="settingForm[security:passport-saml:cert]"
-                      {% if useOnlyEnvVars %}readonly{% endif %}
-            >{{ getConfigFromDB('crowi', 'security:passport-saml:cert') || '' }}</textarea>
-            <p class="help-block">
-              <small>
-                {{ t("security_setting.SAML.cert_detail1") }}
-              </small>
-            </p>
-            <p>
-              <small>
-                e.g.
-                <pre>-----BEGIN CERTIFICATE-----
-MIICBzCCAXACCQD4US7+0A/b/zANBgkqhkiG9w0BAQsFADBIMQswCQYDVQQGEwJK
-UDEOMAwGA1UECAwFVG9reW8xFTATBgNVBAoMDFdFU0VFSywgSW5jLjESMBAGA1UE
-...
-crmVwBzbloUO2l6k1ibwD2WVwpdxMKIF5z58HfKAvxZAzCHE7kMEZr1ge30WRXQA
-pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
------END CERTIFICATE-----</pre>
-              </small>
-            </p>
-          </td>
-          <td>
-            <textarea class="form-control input-sm"
-                      type="text"
-                      rows="5"
-                      readonly
-            >{{ getConfigFromEnvVars('crowi', 'security:passport-saml:cert') || '' }}</textarea>
-            <p class="help-block">
-              <small>
-                {{ t("security_setting.SAML.Use env var if empty", "SAML_CERT") }}<br>
-                {{ t("security_setting.SAML.cert_detail2") }}
-              </small>
-            </p>
-          </td>
-        </tr>
-      </tbody>
-    </table>
 
   </fieldset>
 
