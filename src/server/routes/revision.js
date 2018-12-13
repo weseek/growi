@@ -33,7 +33,7 @@ module.exports = function(crowi, app) {
     }
 
     try {
-      const revision = await Revision.findById(revisionId);
+      const revision = await Revision.findById(revisionId).populate('author', 'User');
       return res.json(ApiResponse.success({ revision }));
     }
     catch (err) {
