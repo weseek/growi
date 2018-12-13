@@ -520,6 +520,15 @@ class PassportService {
     this.isSerializerSetup = true;
   }
 
+  isSameUsernameTreatedAsIdenticalUser(providerType) {
+    const key = `security:passport-${providerType}:isSameUsernameTreatedAsIdenticalUser`;
+    return this.crowi.configManager.getConfig('crowi', key);
+  }
+
+  isSameEmailTreatedAsIdenticalUser(providerType) {
+    const key = `security:passport-${providerType}:isSameEmailTreatedAsIdenticalUser`;
+    return this.crowi.configManager.getConfig('crowi', key);
+  }
 }
 
 module.exports = PassportService;
