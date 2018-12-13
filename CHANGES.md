@@ -5,10 +5,12 @@ CHANGES
 
 * Feature: NO_CDN Mode
 * Feature: Add option to show/hide restricted pages in list
+* Feature: MongoDB GridFS quota
 * Improvement: Refactor Access Control
 * Improvement: Checkbox behavior of task list
 * Improvement: Fixed search input on search result page
 * Improvement: Add 'christmas' theme
+* Improvement: Select default language of new users
 * Fix: Hide restricted pages contents in timeline
 * Support: Upgrade libs
     * googleapis
