@@ -128,7 +128,7 @@
             >{{ getConfigFromDB('crowi', 'security:passport-saml:cert') || '' }}</textarea>
             <p class="help-block">
               <small>
-                {{ t("security_setting.SAML.cert_detail1") }}
+                {{ t("security_setting.SAML.cert_detail") }}
               </small>
             </p>
             <p>
@@ -152,8 +152,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
             >{{ getConfigFromEnvVars('crowi', 'security:passport-saml:cert') || '' }}</textarea>
             <p class="help-block">
               <small>
-                {{ t("security_setting.SAML.Use env var if empty", "SAML_CERT") }}<br>
-                {{ t("security_setting.SAML.cert_detail2") }}
+                {{ t("security_setting.SAML.Use env var if empty", "SAML_CERT") }}
               </small>
             </p>
           </td>
