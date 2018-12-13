@@ -354,11 +354,11 @@ module.exports = function(crowi, app) {
   const loginPassportSamlCallback = async(req, res) => {
     const providerId = 'saml';
     const strategyName = 'saml';
-    const attrMapId = config.crowi['security:passport-saml:attrMapId'];
-    const attrMapUsername = config.crowi['security:passport-saml:attrMapUsername'];
-    const attrMapMail = config.crowi['security:passport-saml:attrMapMail'];
-    const attrMapFirstName = config.crowi['security:passport-saml:attrMapFirstName'] || 'firstName';
-    const attrMapLastName = config.crowi['security:passport-saml:attrMapLastName'] || 'lastName';
+    const attrMapId = crowi.configManager.getConfig('crowi', 'security:passport-saml:attrMapId');
+    const attrMapUsername = crowi.configManager.getConfig('crowi', 'security:passport-saml:attrMapUsername');
+    const attrMapMail = crowi.configManager.getConfig('crowi', 'security:passport-saml:attrMapMail');
+    const attrMapFirstName = crowi.configManager.getConfig('crowi', 'security:passport-saml:attrMapFirstName') || 'firstName';
+    const attrMapLastName = crowi.configManager.getConfig('crowi', 'security:passport-saml:attrMapLastName') || 'lastName';
 
     let response;
     try {
