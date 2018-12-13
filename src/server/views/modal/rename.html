@@ -21,14 +21,14 @@
             </div>
           </div>
           <div class="checkbox checkbox-warning">
-            <input name="move_recursively" id="cbRecursively" value="1" type="checkbox" checked>
-            <label for="cbRecursively">{{ t('modal_rename.label.Move recursively') }}</label>
+            <input name="move_recursively" id="cbRenameRecursively" value="1" type="checkbox" checked>
+            <label for="cbRenameRecursively">{{ t('modal_rename.label.Move recursively') }}</label>
             <p class="help-block"> {{ t('modal_rename.help.recursive', page.path) }}
             </p>
           </div>
           <div class="checkbox checkbox-info">
-            <input name="create_redirect" id="cbRedirect" value="1"  type="checkbox">
-              <label for="cbRedirect">{{ t('modal_rename.label.Redirect') }}</label>
+            <input name="create_redirect" id="cbRenameRedirect" value="1"  type="checkbox">
+              <label for="cbRenameRedirect">{{ t('modal_rename.label.Redirect') }}</label>
               <p class="help-block"> {{ t('modal_rename.help.redirect', page.path) }}
               </p>
           </div>
@@ -42,6 +42,18 @@
               <span class="text-danger msg msg-already_exists">
                 <strong><i class="icon-fw icon-ban"></i>{{ t('page_api_error.already_exists') }}</strong>
                 <small id="linkToNewPage"></small>
+              </span>
+              <span class="text-warning msg msg-outdated">
+                <strong><i class="icon-fw icon-bulb"></i> {{ t('page_api_error.outdated') }}</strong>
+                <a href="javascript:location.reload();">
+                  <i class="fa fa-angle-double-right"></i> {{ t('Load latest') }}
+                </a>
+              </span>
+              <span class="text-danger msg msg-invalid_path">
+                <strong><i class="icon-fw icon-ban"></i> Invalid path</strong>
+              </span>
+              <span class="text-danger msg msg-unknown">
+                <strong><i class="icon-fw icon-ban"></i> Unknown error occured</strong>
               </span>
             </p>
             <div>

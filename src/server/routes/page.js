@@ -955,11 +955,11 @@ module.exports = function(crowi, app) {
       page = await Page.findByIdAndViewer(pageId, req.user);
 
       if (page == null) {
-        throw new Error(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden');
+        return res.json(ApiResponse.error(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'));
       }
 
       if (!page.isUpdatable(previousRevision)) {
-        throw new Error('Someone could update this page, so couldn\'t delete.', 'outdated');
+        return res.json(ApiResponse.error('Someone could update this page, so couldn\'t delete.', 'outdated'));
       }
 
       if (isRecursiveMove) {
@@ -971,7 +971,7 @@ module.exports = function(crowi, app) {
     }
     catch (err) {
       logger.error(err);
-      return res.json(ApiResponse.error('Failed to update page.'));
+      return res.json(ApiResponse.error('Failed to update page.', 'unknown'));
     }
 
     const result = {};
