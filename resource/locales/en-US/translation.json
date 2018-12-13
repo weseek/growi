@@ -408,8 +408,7 @@
       "id_detail": "Specification of the name of attribute which can identify the user in SAML Identity Provider",
       "username_detail": "Specification of mappings for <code>username</code> when creating new users",
       "mapping_detail": "Specification of mappings for %s when creating new users",
-      "cert_detail1": "PEM-encoded X.509 signing certificate to validate the response from IdP",
-      "cert_detail2": "If both are empty, no validation is processed.",
+      "cert_detail": "PEM-encoded X.509 signing certificate to validate the response from IdP",
       "Use env var if empty": "If the value in the database is empty, the value of the environment variable <code>%s</code> is used.",
       "note for the only env option": "The setting item that enables or disables the SAML authentication and the highlighted setting items use only the value of environment variables.<br>To change this setting, please change to false or delete the value of the environment variable <code>%s</code> ."
     },
