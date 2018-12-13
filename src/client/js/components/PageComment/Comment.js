@@ -74,7 +74,6 @@ export default class Comment extends React.Component {
     const isMathJaxEnabled = !!config.env.MATHJAX;
     return (
       <RevisionBody html={this.state.html}
-          inputRef={el => this.revisionBodyElement = el}
           isMathJaxEnabled={isMathJaxEnabled}
           renderMathJaxOnInit={true}
           additionalClassName="comment" />
@@ -82,9 +81,8 @@ export default class Comment extends React.Component {
   }
 
   renderHtml(markdown) {
-    var context = {
+    const context = {
       markdown,
-      dom: this.revisionBodyElement,
     };
 
     const crowiRenderer = this.props.crowiRenderer;
@@ -101,7 +99,7 @@ export default class Comment extends React.Component {
       })
       .then(() => interceptorManager.process('prePostProcess', context))
       .then(() => {
-        context.parsedHTML = crowiRenderer.postProcess(context.parsedHTML, context.dom);
+        context.parsedHTML = crowiRenderer.postProcess(context.parsedHTML);
       })
       .then(() => interceptorManager.process('postPostProcess', context))
       .then(() => interceptorManager.process('preRenderCommentHtml', context))

@@ -1,29 +1,25 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import RevisionBody from './Page/RevisionBody';
-import HandsontableModal from './PageEditor/HandsontableModal';
-import MarkdownTable from '../models/MarkdownTable';
-import mtu from './PageEditor/MarkdownTableUtil';
+import RevisionBody from './RevisionBody';
 
-export default class Page extends React.Component {
+export default class RevisionRenderer extends React.Component {
 
   constructor(props) {
     super(props);
 
     this.state = {
       html: '',
-      markdown: '',
-      currentTargetTableArea: null
     };
 
     this.renderHtml = this.renderHtml.bind(this);
     this.getHighlightedBody = this.getHighlightedBody.bind(this);
-    this.saveHandlerForHandsontableModal = this.saveHandlerForHandsontableModal.bind(this);
+
+    this.setMarkdown(this.props.markdown);
   }
 
-  componentWillMount() {
-    this.renderHtml(this.props.markdown, this.props.highlightKeywords);
+  componentWillReceiveProps(nextProps) {
+    this.renderHtml(nextProps.markdown, this.props.highlightKeywords);
   }
 
   setMarkdown(markdown) {
@@ -52,27 +48,9 @@ export default class Page extends React.Component {
     return returnBody;
   }
 
-  /**
-   * launch HandsontableModal with data specified by arguments
-   * @param beginLineNumber
-   * @param endLineNumber
-   */
-  launchHandsontableModal(beginLineNumber, endLineNumber) {
-    const tableLines = this.state.markdown.split(/\r\n|\r|\n/).slice(beginLineNumber - 1, endLineNumber).join('\n');
-    this.setState({currentTargetTableArea: {beginLineNumber, endLineNumber}});
-    this.refs.handsontableModal.show(MarkdownTable.fromMarkdownString(tableLines));
-  }
-
-  saveHandlerForHandsontableModal(markdownTable) {
-    const newMarkdown = mtu.replaceMarkdownTableInMarkdown(markdownTable, this.state.markdown, this.state.currentTargetTableArea.beginLineNumber, this.state.currentTargetTableArea.endLineNumber);
-    this.props.onSaveWithShortcut(newMarkdown);
-    this.setState({currentTargetTableArea: null});
-  }
-
   renderHtml(markdown, highlightKeywords) {
     let context = {
       markdown,
-      dom: this.revisionBodyElement,
       currentPagePath: this.props.pagePath,
     };
 
@@ -89,7 +67,7 @@ export default class Page extends React.Component {
       })
       .then(() => interceptorManager.process('prePostProcess', context))
       .then(() => {
-        context.parsedHTML = crowiRenderer.postProcess(context.parsedHTML, context.dom);
+        context.parsedHTML = crowiRenderer.postProcess(context.parsedHTML);
 
         // highlight
         if (highlightKeywords != null) {
@@ -108,27 +86,22 @@ export default class Page extends React.Component {
 
   render() {
     const config = this.props.crowi.getConfig();
-    const isMobile = this.props.crowi.isMobile;
     const isMathJaxEnabled = !!config.env.MATHJAX;
 
-    return <div className={isMobile ? 'page-mobile' : ''}>
+    return (
       <RevisionBody
           html={this.state.html}
-          inputRef={el => this.revisionBodyElement = el}
           isMathJaxEnabled={isMathJaxEnabled}
           renderMathJaxOnInit={true}
       />
-      <HandsontableModal ref='handsontableModal' onSave={this.saveHandlerForHandsontableModal} />
-    </div>;
+    );
   }
 }
 
-Page.propTypes = {
+RevisionRenderer.propTypes = {
   crowi: PropTypes.object.isRequired,
   crowiRenderer: PropTypes.object.isRequired,
-  onSaveWithShortcut: PropTypes.func.isRequired,
   markdown: PropTypes.string.isRequired,
   pagePath: PropTypes.string.isRequired,
-  showHeadEditButton: PropTypes.bool,
   highlightKeywords: PropTypes.string,
 };

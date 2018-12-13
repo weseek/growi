@@ -332,6 +332,11 @@
     "for_instance":"例えば、",
     "only_those":"と記載することで、そのドメインのメールアドレスを持っている人のみ登録可能になります。",
     "insert_single":"1行に1メールアドレス入力してください。",
+    "page_listing_1": "ページのリスト表示<br>'自分のみ'に閲覧制限しているページ",
+    "page_listing_1_desc": "ページのリスト表示時、'自分のみ'に閲覧制限をしているページをアクセス権のないユーザーにも表示します。",
+    "page_listing_2": "ページのリスト表示<br>特定グループに閲覧制限しているページ",
+    "page_listing_2_desc": "ページのリスト表示時、特定グループにのみ閲覧制限をしているページをアクセス権のないユーザーにも表示します。",
+
     "Authentication mechanism settings":"認証機構設定",
     "note": "メモ",
     "require_server_restart_change_auth": "認証機構の変更後はサーバーを再起動してください。",
@@ -523,6 +528,7 @@
     "tab_switch": "タブ変更をブラウザ履歴に保存",
     "save_edit": "編集タブやヒストリータブ等の切り替えをブラウザ履歴に保存し、ブラウザの戻る/進む操作の対象にします。",
     "by_invalidating": "無効化することで、ページ遷移のみを戻る/進む操作の対象にすることができます。",
+    "nocdn_desc": "この機能は、環境変数 <code>NO_CDN=true</code> の時は無効化されます。<br>GitHub スタイルが適用されています。",
     "Custom CSS": "カスタム CSS",
     "write_CSS": " システム全体に適用されるCSSを記述できます。",
     "reflect_change": "変更の反映はページの更新が必要です。",
@@ -531,8 +537,8 @@
     "write_java": "システム全体に適用されるJavaScriptを記述できます。",
     "attach_title_header": "新規ページ作成時の h1 セクション自動挿入",
     "attach_title_header_desc": "新規作成したページの1行目に、ページのパスを h1 セクションとして挿入します。",
-    "show_document_number": "表示ドキュメント数管理",
-    "show_document_number_desc": "ホーム画面の Recent Created で、1ページに表示する件数を設定します。"
+    "recent_created_page_num": "Recent Created ページングサイズ",
+    "recent_created_page_num_desc": "ホーム画面の Recent Created で、1ページに表示する件数を設定します。"
   },
 
   "user_management": {

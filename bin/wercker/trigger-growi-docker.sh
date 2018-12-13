@@ -24,7 +24,7 @@ RESPONSE=`curl -X POST \
       }, \
       { \
         "key": "GROWI_REPOS_GIT_COMMIT", \
-        "value": "'$WERCKER_GIT_COMMIT'" \
+        "value": "'$RELEASE_GIT_COMMIT'" \
       } \
     ] \
   }' \

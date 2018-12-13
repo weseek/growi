@@ -29,7 +29,7 @@
     Right Tabs
   #}
   {% if !isTrashPage() %}
-    {% if isPortal %}
+    {% if page.isPortal() %}
     <li class="nav-main-right-tab dropdown pull-right">
       <a class="dropdown-toggle {% if not user %}dropdown-disabled{% endif %}" {% if user %}data-toggle="dropdown" href="#"{% endif %}>
         <i class="icon-options-vertical"></i>
@@ -66,7 +66,7 @@
       <i class="icon-layers"></i><span class="hidden-xs"> {{ t('History') }}</span>
     </a>
   </li>
-  {% if not isPortal %}
+  {% if not page.isPortal() %}
     <li class="nav-main-right-tab pull-right">
       <a href="?presentation=1" class="toggle-presentation">
         <i class="icon-film"></i><span class="hidden-xs"> {{ t('Presentation Mode') }}</span>
@@ -81,13 +81,13 @@
 <ul class="nav nav-tabs nav-tabs-create-portal hidden-print">
 
   <li class="nav-main-left-tab">
-    <a id="portal-form-close" href="#">
+    <a id="portal-form-close" data-toggle="tab" href="#cancel-creating-portal">
       <i class="icon-action-undo"></i> {{ t('Cancel') }}
     </a>
   </li>
 
-  <li class="nav-main-left-tab active">
-    <a>
+  <li class="nav-main-left-tab">
+    <a {% if user %}href="#edit" data-toggle="tab"{% endif %} class="edit-button {% if not user %}edit-button-disabled{% endif %}">
       <i class="icon-note"></i> {{ t('Create') }}
     </a>
   </li>

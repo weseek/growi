@@ -3,8 +3,6 @@ import ReactDOM from 'react-dom';
 import { I18nextProvider } from 'react-i18next';
 import * as toastr from 'toastr';
 
-import io from 'socket.io-client';
-
 import i18nFactory from './i18n';
 
 import loggerFactory from '@alias/logger';
@@ -38,6 +36,7 @@ import RecentCreated from './components/RecentCreated/RecentCreated';
 import CustomCssEditor  from './components/Admin/CustomCssEditor';
 import CustomScriptEditor from './components/Admin/CustomScriptEditor';
 import CustomHeaderEditor from './components/Admin/CustomHeaderEditor';
+import AdminRebuildSearch from './components/Admin/AdminRebuildSearch';
 
 import * as entities from 'entities';
 
@@ -49,8 +48,6 @@ if (!window) {
 
 const userlang = $('body').data('userlang');
 const i18n = i18nFactory(userlang);
-
-const socket = io();
 
 // setup xss library
 const xss = new Xss();
@@ -68,7 +65,7 @@ let pageContent = '';
 let markdown = '';
 let slackChannels;
 if (mainContent !== null) {
-  pageId = mainContent.getAttribute('data-page-id');
+  pageId = mainContent.getAttribute('data-page-id') || null;
   pageRevisionId = mainContent.getAttribute('data-page-revision-id');
   pageRevisionCreatedAt = +mainContent.getAttribute('data-page-revision-created');
   pageRevisionIdHackmdSynced = mainContent.getAttribute('data-page-revision-id-hackmd-synced') || null;
@@ -95,6 +92,7 @@ crowi.setConfig(JSON.parse(document.getElementById('crowi-context-hydrate').text
 if (isLoggedin) {
   crowi.fetchUsers();
 }
+const socket = crowi.getWebSocket();
 const socketClientId = crowi.getSocketClientId();
 
 const crowiRenderer = new GrowiRenderer(crowi, null, {
@@ -228,17 +226,17 @@ const saveWithSubmitButton = function() {
   options.socketClientId = socketClientId;
 
   let promise = undefined;
-  if (editorMode === 'builtin') {
-    // get markdown
-    promise = Promise.resolve(componentInstances.pageEditor.getMarkdown());
-  }
-  else {
+  if (editorMode === 'hackmd') {
     // get markdown
     promise = componentInstances.pageEditorByHackmd.getMarkdown();
     // use revisionId of PageEditorByHackmd
     revisionId = componentInstances.pageEditorByHackmd.getRevisionIdHackmdSynced();
     // set option to sync
     options.isSyncRevisionToHackmd = true;
+  }
+  else {
+    // get markdown
+    promise = Promise.resolve(componentInstances.pageEditor.getMarkdown());
   }
   // create or update
   if (pageId == null) {
@@ -331,7 +329,6 @@ if (savePageControlsElem) {
   componentInstances.savePageControls = savePageControls;
 }
 
-// RecentCreated dev GC-939 start
 const recentCreatedControlsElem = document.getElementById('user-created-list');
 if (recentCreatedControlsElem) {
   let limit = crowi.getConfig().recentCreatedLimit;
@@ -344,7 +341,6 @@ if (recentCreatedControlsElem) {
     </RecentCreated>, document.getElementById('user-created-list')
   );
 }
-// RecentCreated dev GC-939 end
 
 /*
  * HackMD Editor
@@ -475,6 +471,13 @@ if (customHeaderEditorElem != null) {
   ReactDOM.render(
     <CustomHeaderEditor inputElem={customHeaderInputElem} />,
     customHeaderEditorElem
+  );
+}
+const adminRebuildSearchElem = document.getElementById('admin-rebuild-search');
+if (adminRebuildSearchElem != null) {
+  ReactDOM.render(
+    <AdminRebuildSearch crowi={crowi} />,
+    adminRebuildSearchElem
   );
 }
 

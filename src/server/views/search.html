@@ -1,5 +1,10 @@
 {% extends 'layout/layout.html' %}
 
+{% block html_additional_headers %}
+  {% parent %}
+  {{ cdnScriptTag('highlight-addons') }}
+{% endblock %}
+
 {% block html_base_attr %}
   data-spy="scroll"
   data-target="#search-result-list"

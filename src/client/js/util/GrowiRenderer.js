@@ -99,12 +99,12 @@ export default class GrowiRenderer {
           new TableConfigurer(crowi)
         ]);
         break;
-      case 'comment':
+      // case 'comment':
+      //   break;
+      default:
         this.markdownItConfigurers = this.markdownItConfigurers.concat([
           new TableConfigurer(crowi)
         ]);
-        break;
-      default:
         break;
     }
   }
@@ -151,12 +151,12 @@ export default class GrowiRenderer {
     return this.md.render(markdown);
   }
 
-  postProcess(html, dom) {
+  postProcess(html) {
     for (let i = 0; i < this.postProcessors.length; i++) {
       if (!this.postProcessors[i].process) {
         continue;
       }
-      html = this.postProcessors[i].process(html, dom);
+      html = this.postProcessors[i].process(html);
     }
 
     return html;

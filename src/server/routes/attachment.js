@@ -107,6 +107,16 @@ module.exports = function(crowi, app) {
   };
 
   /**
+   * @api {get} /attachments.limit get available capacity of uploaded file with GridFS
+   * @apiName AddAttachments
+   * @apiGroup Attachment
+   */
+  api.limit = async function(req, res) {
+    const isUploadable = await fileUploader.checkCapacity(req.query.fileSize);
+    return res.json(ApiResponse.success({isUploadable: isUploadable}));
+  };
+
+  /**
    * @api {post} /attachments.add Add attachment to the page
    * @apiName AddAttachments
    * @apiGroup Attachment
@@ -114,7 +124,7 @@ module.exports = function(crowi, app) {
    * @apiParam {String} page_id
    * @apiParam {File} file
    */
-  api.add = function(req, res) {
+  api.add = async function(req, res) {
     var id = req.body.page_id || 0,
       path = decodeURIComponent(req.body.path) || null,
       pageCreated = false,
@@ -123,11 +133,14 @@ module.exports = function(crowi, app) {
     debug('id and path are: ', id, path);
 
     var tmpFile = req.file || null;
+    const isUploadable = await fileUploader.checkCapacity(tmpFile.size);
+    if (!isUploadable) {
+      return res.json(ApiResponse.error('MongoDB for uploading files reaches limit'));
+    }
     debug('Uploaded tmpFile: ', tmpFile);
     if (!tmpFile) {
       return res.json(ApiResponse.error('File error.'));
     }
-
     new Promise(function(resolve, reject) {
       if (id == 0) {
         if (path === null) {
@@ -142,7 +155,7 @@ module.exports = function(crowi, app) {
           .catch(reject);
       }
       else {
-        Page.findPageById(id).then(resolve).catch(reject);
+        Page.findById(id).then(resolve).catch(reject);
       }
     }).then(function(pageData) {
       page = pageData;
