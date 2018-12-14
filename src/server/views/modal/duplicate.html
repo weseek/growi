@@ -23,12 +23,7 @@
         </div>
         <div class="modal-footer">
           <div class="d-flex justify-content-between">
-            <p>
-              <span class="text-danger msg-already-exists">
-                <strong><i class="icon-fw icon-ban"></i>{{ t('Page is already exists.') }}</strong>
-              </span>
-              <small id="linkToNewPage" class="msg-already-exists"></small>
-            </p>
+            {% include '../widget/modal/page-api-error-messages.html' %}
             <div>
               <input type="hidden" name="_csrf" value="{{ csrf() }}">
               <input type="hidden" name="path" value="{{ page.path }}">

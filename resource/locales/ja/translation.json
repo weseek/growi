@@ -190,8 +190,11 @@
       }
   },
 
-
-
+  "page_api_error": {
+    "notfound_or_forbidden": "元のページが見つからないか、アクセス権がありません。",
+    "already_exists": "新しいページが既に存在しています。",
+    "outdated": "ページが他のユーザーによって更新されました。"
+  },
 
   "modal_rename": {
     "label": {
@@ -213,8 +216,12 @@
   "modal_delete": {
     "label": {
       "Delete Page": "ページを削除する",
-      "recursively": "全ての子ページも処理",
-      "completely": "完全削除"
+      "Delete recursively": "全ての子ページも削除",
+      "Delete completely": "完全削除"
+    },
+    "help": {
+      "recursively": "<code>%s</code> 配下のページも削除します",
+      "completely": "ゴミ箱を経由せず、完全に削除します"
     }
   },
 
@@ -226,10 +233,13 @@
     }
   },
 
-  "modal_putBack": {
+  "modal_putback": {
     "label": {
       "Put Back Page": "ページを元に戻す",
-      "recursively": "全ての子ページも処理"
+      "recursively": "全ての子ページも元に戻す"
+    },
+    "help": {
+      "recursively": "<code>%s</code> 配下のページも元に戻します"
     }
   },
 
