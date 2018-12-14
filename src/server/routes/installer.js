@@ -56,7 +56,8 @@ module.exports = function(crowi, app) {
           Config.applicationInstall(function(err, configs) {
             if (err) {
               // TODO
-              return ;
+              console.log(err);
+              return;
             }
 
             // login with passport
