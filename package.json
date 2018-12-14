@@ -42,7 +42,7 @@
     "plugin:def": "node bin/generate-plugin-definitions-source.js",
     "prebuild:dev:watch": "npm run prebuild:dev",
     "prebuild:dev": "npm run clean:app && env-cmd config/env.dev.js npm run plugin:def && env-cmd config/env.dev.js npm run resource",
-    "prebuild:prod": "npm run clean && env-cmd config/env.prod.js npm run plugin:def && env-cmd config/env.dev.js npm run resource",
+    "prebuild:prod": "npm run clean && env-cmd config/env.prod.js npm run plugin:def && env-cmd config/env.prod.js npm run resource",
     "preserver:prod": "npm run migrate",
     "prestart": "npm run build:prod",
     "resource": "node bin/download-cdn-resources.js",
