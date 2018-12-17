@@ -1,15 +1,15 @@
 module.exports = function(crowi, app) {
   'use strict';
 
-  var debug = require('debug')('growi:routes:installer')
-    , path = require('path')
-    , fs = require('graceful-fs')
-    , models = crowi.models
-    , Config = models.Config
-    , User = models.User
-    , Page = models.Page
+  const logger = require('@alias/logger')('growi:routes:installer');
+  const path = require('path');
+  const fs = require('graceful-fs');
+  const models = crowi.models;
+  const Config = models.Config;
+  const User = models.User;
+  const Page = models.Page;
 
-    , actions = {};
+  const actions = {};
 
   function createInitialPages(owner, lang) {
     // create portal page for '/'
@@ -32,8 +32,8 @@ module.exports = function(crowi, app) {
     return res.render('installer');
   };
 
-  actions.createAdmin = function(req, res) {
-    var registerForm = req.body.registerForm || {};
+  actions.createAdmin = function(req, res, next) {
+    const registerForm = req.body.registerForm || {};
 
     if (req.form.isValid) {
       var name = registerForm.name;
