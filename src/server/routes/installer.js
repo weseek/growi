@@ -52,8 +52,7 @@ module.exports = function(crowi, app) {
         userData.makeAdmin(function(err, userData) {
           Config.applicationInstall(function(err, configs) {
             if (err) {
-              // TODO
-              console.log(err);
+            logger.error(err);
               return;
             }
 
