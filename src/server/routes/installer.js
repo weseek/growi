@@ -41,9 +41,6 @@ module.exports = function(crowi, app) {
       var email = registerForm.email;
       var password = registerForm.password;
       var language = registerForm['app:globalLang'] || (req.language || 'en-US');
-      // for config.globalLang setting.
-      var langForm = {};
-      langForm['app:globalLang'] = language;
 
       User.createUserByEmailAndPassword(name, username, email, password, language, function(err, userData) {
         if (err) {
@@ -56,8 +53,14 @@ module.exports = function(crowi, app) {
           Config.applicationInstall(function(err, configs) {
             if (err) {
               // TODO
-              return ;
+              console.log(err);
+              return;
             }
+
+            // save the globalLang config, and update the config cache
+            Config.updateNamespaceByArray('crowi', {'app:globalLang': language}, function(err, config) {
+              Config.updateConfigCache('crowi', config);
+            });
 
             // login with passport
             req.logIn(userData, (err) => {
@@ -71,11 +74,6 @@ module.exports = function(crowi, app) {
 
           // create initial pages
           createInitialPages(userData, language);
-        });
-
-        // save config settings, and update config cache
-        Config.updateNamespaceByArray('crowi', langForm, function(err, config) {
-          Config.updateConfigCache('crowi', config);
         });
       });
     }
