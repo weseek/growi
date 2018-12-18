@@ -1,8 +1,9 @@
 module.exports = function(crowi) {
-  var debug = require('debug')('growi:models:bookmark')
-    , mongoose = require('mongoose')
-    , ObjectId = mongoose.Schema.Types.ObjectId
-    , bookmarkSchema;
+  const debug = require('debug')('growi:models:bookmark');
+  const mongoose = require('mongoose');
+  const ObjectId = mongoose.Schema.Types.ObjectId;
+
+  let bookmarkSchema = null;
 
 
   bookmarkSchema = new mongoose.Schema({
@@ -12,32 +13,18 @@ module.exports = function(crowi) {
   });
   bookmarkSchema.index({page: 1, user: 1}, {unique: true});
 
-  bookmarkSchema.statics.populatePage = function(bookmarks, requestUser) {
+  bookmarkSchema.statics.countByPageId = async function(pageId) {
+    return await this.count({ page: pageId });
+  };
+
+  bookmarkSchema.statics.populatePage = async function(bookmarks) {
     const Bookmark = this;
     const User = crowi.model('User');
-    const Page = crowi.model('Page');
 
-    requestUser = requestUser || null;
-
-    // mongoose promise に置き換えてみたものの、こいつは not native promise but original promise だったので
-    // これ以上は置き換えないことにする ...
-    // @see http://eddywashere.com/blog/switching-out-callbacks-with-promises-in-mongoose/
-    return Bookmark.populate(bookmarks, {path: 'page'})
-      .then(function(bookmarks) {
-        return Bookmark.populate(bookmarks, {path: 'page.revision', model: 'Revision'});
-      }).then(function(bookmarks) {
-        // hmm...
-        bookmarks = bookmarks.filter(function(bookmark) {
-          // requestUser を指定しない場合 public のみを返す
-          if (requestUser === null) {
-            return bookmark.page.isPublic();
-          }
-
-          return bookmark.page.isGrantedFor(requestUser);
-        });
-
-        return Bookmark.populate(bookmarks, {path: 'lastUpdateUser', model: 'User', select: User.USER_PUBLIC_FIELDS});
-      });
+    return Bookmark.populate(bookmarks, [
+      {path: 'page'},
+      {path: 'lastUpdateUser', model: 'User', select: User.USER_PUBLIC_FIELDS},
+    ]);
   };
 
   // bookmark チェック用
@@ -63,15 +50,14 @@ module.exports = function(crowi) {
    * }
    */
   bookmarkSchema.statics.findByUser = function(user, option) {
-    var User = crowi.model('User');
-    var Bookmark = this;
-    var requestUser = option.requestUser || null;
+    const Bookmark = this;
+    const requestUser = option.requestUser || null;
 
     debug('Finding bookmark with requesting user:', requestUser);
 
-    var limit = option.limit || 50;
-    var offset = option.offset || 0;
-    var populatePage = option.populatePage || false;
+    const limit = option.limit || 50;
+    const offset = option.offset || 0;
+    const populatePage = option.populatePage || false;
 
     return new Promise(function(resolve, reject) {
       Bookmark
@@ -94,10 +80,10 @@ module.exports = function(crowi) {
   };
 
   bookmarkSchema.statics.add = function(page, user) {
-    var Bookmark = this;
+    const Bookmark = this;
 
     return new Promise(function(resolve, reject) {
-      var newBookmark = new Bookmark;
+      const newBookmark = new Bookmark;
 
       newBookmark.page = page;
       newBookmark.user = user;
@@ -116,8 +102,13 @@ module.exports = function(crowi) {
     });
   };
 
+  /**
+   * Remove bookmark
+   * used only when removing the page
+   * @param {string} pageId
+   */
   bookmarkSchema.statics.removeBookmarksByPageId = function(pageId) {
-    var Bookmark = this;
+    const Bookmark = this;
 
     return new Promise(function(resolve, reject) {
       Bookmark.remove({page: pageId}, function(err, data) {
@@ -132,7 +123,7 @@ module.exports = function(crowi) {
   };
 
   bookmarkSchema.statics.removeBookmark = function(page, user) {
-    var Bookmark = this;
+    const Bookmark = this;
 
     return new Promise(function(resolve, reject) {
       Bookmark.findOneAndRemove({page: page, user: user}, function(err, data) {

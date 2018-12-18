@@ -4,10 +4,9 @@ import { I18nextProvider } from 'react-i18next';
 
 import i18nFactory from './i18n';
 
-import InstallerForm    from './components/InstallerForm';
+import InstallerForm from './components/InstallerForm';
 
-const userlang = $('body').data('userlang');
-const i18n = i18nFactory(userlang);
+const i18n = i18nFactory();
 
 // render InstallerForm
 const installerFormElem = document.getElementById('installer-form');

@@ -1,38 +1,236 @@
-/**
- * The Exception class thrown when the user has no grant to see the page
- *
- * @class UserHasNoGrantException
+const debug = require('debug')('growi:models:page');
+const nodePath = require('path');
+const mongoose = require('mongoose');
+const uniqueValidator = require('mongoose-unique-validator');
+const ObjectId = mongoose.Schema.Types.ObjectId;
+
+const escapeStringRegexp = require('escape-string-regexp');
+
+const templateChecker = require('@commons/util/template-checker');
+
+/*
+ * define schema
  */
-class UserHasNoGrantException {
-  constructor(message, user) {
-    this.name = this.constructor.name;
-    this.message = message;
-    this.user = user;
+const GRANT_PUBLIC = 1
+  , GRANT_RESTRICTED = 2
+  , GRANT_SPECIFIED = 3
+  , GRANT_OWNER = 4
+  , GRANT_USER_GROUP = 5
+  , PAGE_GRANT_ERROR = 1
+
+  , STATUS_PUBLISHED  = 'published'
+  , STATUS_DELETED    = 'deleted'
+;
+const pageSchema = new mongoose.Schema({
+  path: { type: String, required: true, index: true, unique: true },
+  revision: { type: ObjectId, ref: 'Revision' },
+  redirectTo: { type: String, index: true },
+  status: { type: String, default: STATUS_PUBLISHED, index: true },
+  grant: { type: Number, default: GRANT_PUBLIC, index: true },
+  grantedUsers: [{ type: ObjectId, ref: 'User' }],
+  grantedGroup: { type: ObjectId, ref: 'UserGroup', index: true },
+  creator: { type: ObjectId, ref: 'User', index: true },
+  lastUpdateUser: { type: ObjectId, ref: 'User', index: true },
+  liker: [{ type: ObjectId, ref: 'User', index: true }],
+  seenUsers: [{ type: ObjectId, ref: 'User', index: true }],
+  commentCount: { type: Number, default: 0 },
+  extended: {
+    type: String,
+    default: '{}',
+    get: function(data) {
+      try {
+        return JSON.parse(data);
+      }
+      catch (e) {
+        return data;
+      }
+    },
+    set: function(data) {
+      return JSON.stringify(data);
+    }
+  },
+  pageIdOnHackmd: String,
+  revisionHackmdSynced: { type: ObjectId, ref: 'Revision' },  // the revision that is synced to HackMD
+  hasDraftOnHackmd: { type: Boolean },                        // set true if revision and revisionHackmdSynced are same but HackMD document has modified
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: Date
+}, {
+  toJSON: {getters: true},
+  toObject: {getters: true}
+});
+// apply plugins
+pageSchema.plugin(uniqueValidator);
+
+
+
+const addSlashOfEnd = (path) => {
+  let returnPath = path;
+  if (!path.match(/\/$/)) {
+    returnPath += '/';
   }
+  return returnPath;
+};
+
+/**
+ * populate page (Query or Document) to show revision
+ * @param {any} page Query or Document
+ * @param {string} userPublicFields string to set to select
+ */
+const populateDataToShowRevision = (page, userPublicFields) => {
+  return page
+    .populate({ path: 'lastUpdateUser', model: 'User', select: userPublicFields })
+    .populate({ path: 'creator', model: 'User', select: userPublicFields })
+    .populate({ path: 'grantedGroup', model: 'UserGroup' })
+    .populate({ path: 'revision', model: 'Revision', populate: {
+      path: 'author', model: 'User', select: userPublicFields
+    } });
+};
+
+
+class PageQueryBuilder {
+  constructor(query) {
+    this.query = query;
+  }
+
+  addConditionToExcludeTrashed() {
+    this.query = this.query
+      .and({
+        $or: [
+          {status: null},
+          {status: STATUS_PUBLISHED},
+        ]
+      });
+
+    return this;
+  }
+
+  addConditionToExcludeRedirect() {
+    this.query = this.query.and({ redirectTo: null });
+    return this;
+  }
+
+  /**
+   * generate the query to find the page that is match with `path` and its descendants
+   */
+  addConditionToListWithDescendants(path, option) {
+    // ignore other pages than descendants
+    path = addSlashOfEnd(path);
+
+    // add option to escape the regex strings
+    const combinedOption = Object.assign({isRegExpEscapedFromPath: true}, option);
+
+    this.addConditionToListByStartWith(path, combinedOption);
+
+    return this;
+  }
+
+  /**
+   * generate the query to find pages that start with `path`
+   *
+   * (GROWI) If 'isRegExpEscapedFromPath' is true, `path` should have `/` at the end
+   *   -> returns '{path}/*' and '{path}' self.
+   * (Crowi) If 'isRegExpEscapedFromPath' is false and `path` has `/` at the end
+   *   -> returns '{path}*'
+   * (Crowi) If 'isRegExpEscapedFromPath' is false and `path` doesn't have `/` at the end
+   *   -> returns '{path}*'
+   *
+   * *option*
+   *   - isRegExpEscapedFromPath -- if true, the regex strings included in `path` is escaped (default: false)
+   */
+  addConditionToListByStartWith(path, option) {
+    const pathCondition = [];
+    const isRegExpEscapedFromPath = option.isRegExpEscapedFromPath || false;
+
+    /*
+     * 1. add condition for finding the page completely match with `path` w/o last slash
+     */
+    let pathSlashOmitted = path;
+    if (path.match(/\/$/)) {
+      pathSlashOmitted = path.substr(0, path.length -1);
+      pathCondition.push({path: pathSlashOmitted});
+    }
+
+    /*
+     * 2. add decendants
+     */
+    const pattern = (isRegExpEscapedFromPath)
+      ? escapeStringRegexp(path)  // escape
+      : pathSlashOmitted;
+
+    const queryReg = new RegExp('^' + pattern);
+    pathCondition.push({path: queryReg});
+
+    this.query = this.query
+      .and({
+        $or: pathCondition
+      });
+
+    return this;
+  }
+
+  addConditionToFilteringByViewer(user, userGroups) {
+    const grantConditions = [
+      {grant: null},
+      {grant: GRANT_PUBLIC},
+    ];
+
+    if (user == null) {
+      grantConditions.push(
+        {grant: GRANT_RESTRICTED},
+        {grant: GRANT_SPECIFIED},
+        {grant: GRANT_OWNER},
+      );
+    }
+    else {
+      grantConditions.push(
+        {grant: GRANT_RESTRICTED, grantedUsers: user._id},
+        {grant: GRANT_SPECIFIED, grantedUsers: user._id},
+        {grant: GRANT_OWNER, grantedUsers: user._id},
+      );
+    }
+
+    if (userGroups == null) {
+      grantConditions.push(
+        {grant: GRANT_USER_GROUP},
+      );
+    }
+    else {
+      grantConditions.push(
+        {grant: GRANT_USER_GROUP, grantedGroup: { $in: userGroups }},
+      );
+    }
+
+    this.query = this.query
+      .and({
+        $or: grantConditions
+      });
+
+    return this;
+  }
+
+  addConditionToPagenate(offset, limit, sortOpt) {
+    this.query = this.query
+      .sort(sortOpt).skip(offset).limit(limit);
+
+    return this;
+  }
+
+  populateDataToShowRevision(userPublicFields) {
+    this.query = populateDataToShowRevision(this.query, userPublicFields);
+    return this;
+  }
+
 }
 
 module.exports = function(crowi) {
-  const debug = require('debug')('growi:models:page')
-    , mongoose = require('mongoose')
-    , escapeStringRegexp = require('escape-string-regexp')
-    , templateChecker = require('@commons/util/template-checker')
-    , ObjectId = mongoose.Schema.Types.ObjectId
-    , GRANT_PUBLIC = 1
-    , GRANT_RESTRICTED = 2
-    , GRANT_SPECIFIED = 3
-    , GRANT_OWNER = 4
-    , GRANT_USER_GROUP = 5
-    , PAGE_GRANT_ERROR = 1
+  let pageEvent;
 
-    , STATUS_WIP        = 'wip'
-    , STATUS_PUBLISHED  = 'published'
-    , STATUS_DELETED    = 'deleted'
-    , STATUS_DEPRECATED = 'deprecated'
-
-    , pageEvent = crowi.event('page')
-  ;
-
-  let pageSchema;
+  // init event
+  if (crowi != null) {
+    pageEvent = crowi.event('page');
+    pageEvent.on('create', pageEvent.onCreate);
+    pageEvent.on('update', pageEvent.onUpdate);
+  }
 
   function isPortalPath(path) {
     if (path.match(/.*\/$/)) {
@@ -42,61 +240,14 @@ module.exports = function(crowi) {
     return false;
   }
 
-  pageSchema = new mongoose.Schema({
-    path: { type: String, required: true, index: true, unique: true },
-    revision: { type: ObjectId, ref: 'Revision' },
-    redirectTo: { type: String, index: true },
-    status: { type: String, default: STATUS_PUBLISHED, index: true },
-    grant: { type: Number, default: GRANT_PUBLIC, index: true },
-    grantedUsers: [{ type: ObjectId, ref: 'User' }],
-    creator: { type: ObjectId, ref: 'User', index: true },
-    lastUpdateUser: { type: ObjectId, ref: 'User', index: true },
-    liker: [{ type: ObjectId, ref: 'User', index: true }],
-    seenUsers: [{ type: ObjectId, ref: 'User', index: true }],
-    commentCount: { type: Number, default: 0 },
-    extended: {
-      type: String,
-      default: '{}',
-      get: function(data) {
-        try {
-          return JSON.parse(data);
-        }
-        catch (e) {
-          return data;
-        }
-      },
-      set: function(data) {
-        return JSON.stringify(data);
-      }
-    },
-    pageIdOnHackmd: String,
-    revisionHackmdSynced: { type: ObjectId, ref: 'Revision' },  // the revision that is synced to HackMD
-    hasDraftOnHackmd: { type: Boolean },                        // set true if revision and revisionHackmdSynced are same but HackMD document has modified
-    createdAt: { type: Date, default: Date.now },
-    updatedAt: Date
-  }, {
-    toJSON: {getters: true},
-    toObject: {getters: true}
-  });
-
-  pageEvent.on('create', pageEvent.onCreate);
-  pageEvent.on('update', pageEvent.onUpdate);
-
-  pageSchema.methods.isWIP = function() {
-    return this.status === STATUS_WIP;
-  };
-
-  pageSchema.methods.isPublished = function() {
-    // null: this is for B.C.
-    return this.status === null || this.status === STATUS_PUBLISHED;
-  };
+  function validateCrowi() {
+    if (crowi == null) {
+      throw new Error('"crowi" is null. Init User model with "crowi" argument first.');
+    }
+  }
 
   pageSchema.methods.isDeleted = function() {
-    return this.status === STATUS_DELETED;
-  };
-
-  pageSchema.methods.isDeprecated = function() {
-    return this.status === STATUS_DEPRECATED;
+    return (this.status === STATUS_DELETED) || checkIfTrashed(this.path);
   };
 
   pageSchema.methods.isPublic = function() {
@@ -113,34 +264,6 @@ module.exports = function(crowi) {
 
   pageSchema.methods.isTemplate = function() {
     return templateChecker(this.path);
-  };
-
-  pageSchema.methods.isCreator = function(userData) {
-    // ゲスト閲覧の場合は userData に false が入る
-    if (!userData) {
-      return false;
-    }
-
-    if (this.populated('creator') && this.creator._id.toString() === userData._id.toString()) {
-      return true;
-    }
-    else if (this.creator.toString() === userData._id.toString()) {
-      return true;
-    }
-
-    return false;
-  };
-
-  pageSchema.methods.isGrantedFor = function(userData) {
-    if (this.isPublic() || this.isCreator(userData)) {
-      return true;
-    }
-
-    if (this.grantedUsers.indexOf(userData._id) >= 0) {
-      return true;
-    }
-
-    return false;
   };
 
   pageSchema.methods.isLatestRevision = function() {
@@ -213,38 +336,25 @@ module.exports = function(crowi) {
   };
 
   pageSchema.methods.isSeenUser = function(userData) {
-    var self = this,
-      Page = self;
-
-    return this.seenUsers.some(function(seenUser) {
-      return seenUser.equals(userData._id);
-    });
+    return this.seenUsers.includes(userData._id);
   };
 
-  pageSchema.methods.seen = function(userData) {
-    var self = this,
-      Page = self;
-
+  pageSchema.methods.seen = async function(userData) {
     if (this.isSeenUser(userData)) {
       debug('seenUsers not updated');
-      return Promise.resolve(this);
+      return this;
     }
 
-    return new Promise(function(resolve, reject) {
-      if (!userData || !userData._id) {
-        reject(new Error('User data is not valid'));
-      }
+    if (!userData || !userData._id) {
+      throw new Error('User data is not valid');
+    }
 
-      var added = self.seenUsers.addToSet(userData);
-      self.save(function(err, data) {
-        if (err) {
-          return reject(err);
-        }
+    const added = this.seenUsers.addToSet(userData);
+    const saved = await this.save();
 
-        debug('seenUsers updated!', added);
-        return resolve(self);
-      });
-    });
+    debug('seenUsers updated!', added);
+
+    return saved;
   };
 
   pageSchema.methods.getSlackChannel = function() {
@@ -276,63 +386,35 @@ module.exports = function(crowi) {
     });
   };
 
-  pageSchema.statics.populatePageData = function(pageData, revisionId) {
-    const Page = crowi.model('Page');
-    const User = crowi.model('User');
-
-    pageData.latestRevision = pageData.revision;
-    if (revisionId) {
-      pageData.revision = revisionId;
+  pageSchema.methods.initLatestRevisionField = async function(revisionId) {
+    this.latestRevision = this.revision;
+    if (revisionId != null) {
+      this.revision = revisionId;
     }
-    pageData.likerCount = pageData.liker.length || 0;
-    pageData.seenUsersCount = pageData.seenUsers.length || 0;
-
-    return new Promise(function(resolve, reject) {
-      pageData.populate([
-        {path: 'lastUpdateUser', model: 'User', select: User.USER_PUBLIC_FIELDS},
-        {path: 'creator', model: 'User', select: User.USER_PUBLIC_FIELDS},
-        {path: 'revision', model: 'Revision'},
-        //{path: 'liker', options: { limit: 11 }},
-        //{path: 'seenUsers', options: { limit: 11 }},
-      ], function(err, pageData) {
-        Page.populate(pageData, {path: 'revision.author', model: 'User', select: User.USER_PUBLIC_FIELDS}, function(err, data) {
-          if (err) {
-            return reject(err);
-          }
-
-          return resolve(data);
-        });
-      });
-    });
   };
 
-  pageSchema.statics.populatePageListToAnyObjects = function(pageIdObjectArray) {
-    var Page = this;
-    var pageIdMappings = {};
-    var pageIds = pageIdObjectArray.map(function(page, idx) {
-      if (!page._id) {
-        throw new Error('Pass the arg of populatePageListToAnyObjects() must have _id on each element.');
-      }
+  pageSchema.methods.populateDataToShowRevision = async function() {
+    validateCrowi();
 
-      pageIdMappings[String(page._id)] = idx;
-      return page._id;
-    });
-
-    return new Promise(function(resolve, reject) {
-      Page.findListByPageIds(pageIds, {limit: 100}) // limit => if the pagIds is greater than 100, ignore
-      .then(function(pages) {
-        pages.forEach(function(page) {
-          Object.assign(pageIdObjectArray[pageIdMappings[String(page._id)]], page._doc);
-        });
-
-        resolve(pageIdObjectArray);
-      });
-    });
+    const User = crowi.model('User');
+    return populateDataToShowRevision(this, User.USER_PUBLIC_FIELDS)
+      .execPopulate();
   };
+
+  pageSchema.methods.populateDataToMakePresentation = async function(revisionId) {
+    this.latestRevision = this.revision;
+    if (revisionId != null) {
+      this.revision = revisionId;
+    }
+    return this.populate('revision').execPopulate();
+  };
+
 
   pageSchema.statics.updateCommentCount = function(pageId) {
-    var self = this;
-    var Comment = crowi.model('Comment');
+    validateCrowi();
+
+    const self = this;
+    const Comment = crowi.model('Comment');
     return Comment.countCommentByPageId(pageId)
     .then(function(count) {
       self.update({_id: pageId}, {commentCount: count}, {}, function(err, data) {
@@ -342,18 +424,6 @@ module.exports = function(crowi) {
         }
 
         return data;
-      });
-    });
-  };
-
-  pageSchema.statics.hasPortalPage = function(path, user, revisionId) {
-    var self = this;
-    return new Promise(function(resolve, reject) {
-      self.findPage(path, user, revisionId)
-      .then(function(page) {
-        resolve(page);
-      }).catch(function(err) {
-        resolve(null); // check only has portal page, through error
       });
     });
   };
@@ -447,103 +517,227 @@ module.exports = function(crowi) {
     });
   };
 
-  pageSchema.statics.findUpdatedList = function(offset, limit, cb) {
-    this
-    .find({})
-    .sort({updatedAt: -1})
-    .skip(offset)
-    .limit(limit)
-    .exec(function(err, data) {
-      cb(err, data);
-    });
-  };
+  /**
+   * return whether the user is accessible to the page
+   * @param {string} id ObjectId
+   * @param {User} user
+   */
+  pageSchema.statics.isAccessiblePageByViewer = async function(id, user) {
+    const baseQuery = this.count({_id: id});
 
-  pageSchema.statics.findPageById = function(id) {
-    var Page = this;
-
-    return new Promise(function(resolve, reject) {
-      Page.findOne({_id: id}, function(err, pageData) {
-        if (err) {
-          return reject(err);
-        }
-
-        if (pageData == null) {
-          return reject(new Error('Page not found'));
-        }
-        return Page.populatePageData(pageData, null).then(resolve);
-      });
-    });
-  };
-
-  pageSchema.statics.findPageByIdAndGrantedUser = function(id, userData) {
-    var Page = this;
-    var PageGroupRelation = crowi.model('PageGroupRelation');
-    var pageData = null;
-
-    return new Promise(function(resolve, reject) {
-      Page.findPageById(id)
-      .then(function(result) {
-        pageData = result;
-        if (userData && !pageData.isGrantedFor(userData)) {
-          return PageGroupRelation.isExistsGrantedGroupForPageAndUser(pageData, userData);
-        }
-        else {
-          return true;
-        }
-      }).then((checkResult) => {
-        console.log(checkResult);
-        if (checkResult) {
-          return resolve(pageData);
-        }
-        else  {
-          return reject(new Error('Page is not granted for the user')); //PAGE_GRANT_ERROR, null);
-        }
-      }).catch(function(err) {
-        return reject(err);
-      });
-    });
-  };
-
-  // find page and check if granted user
-  pageSchema.statics.findPage = async function(path, userData, revisionId, ignoreNotFound) {
-    const PageGroupRelation = crowi.model('PageGroupRelation');
-
-    const pageData = await this.findOne({path: path});
-
-    if (pageData == null) {
-      if (ignoreNotFound) {
-        return null;
-      }
-
-      const pageNotFoundError = new Error('Page Not Found');
-      pageNotFoundError.name = 'Crowi:Page:NotFound';
-      throw new Error(pageNotFoundError);
+    let userGroups = [];
+    if (user != null) {
+      validateCrowi();
+      const UserGroupRelation = crowi.model('UserGroupRelation');
+      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     }
 
-    if (!pageData.isGrantedFor(userData)) {
-      const isRelationExists = await PageGroupRelation.isExistsGrantedGroupForPageAndUser(pageData, userData);
-      if (isRelationExists) {
-        return await this.populatePageData(pageData, revisionId || null);
-      }
-      else {
-        throw new UserHasNoGrantException('Page is not granted for the user', userData);
-      }
-    }
-    else {
-      return await this.populatePageData(pageData, revisionId || null);
-    }
+    const queryBuilder = new PageQueryBuilder(baseQuery);
+    queryBuilder.addConditionToFilteringByViewer(user, userGroups);
+
+    const count = await queryBuilder.query.exec();
+    return count > 0;
   };
+
+  /**
+   * @param {string} id ObjectId
+   * @param {User} user User instance
+   */
+  pageSchema.statics.findByIdAndViewer = async function(id, user) {
+    const baseQuery = this.findOne({_id: id});
+
+    let userGroups = [];
+    if (user != null) {
+      validateCrowi();
+      const UserGroupRelation = crowi.model('UserGroupRelation');
+      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
+    }
+
+    const queryBuilder = new PageQueryBuilder(baseQuery);
+    queryBuilder.addConditionToFilteringByViewer(user, userGroups);
+
+    return await queryBuilder.query.exec();
+  };
+
+  // find page by path
+  pageSchema.statics.findByPath = function(path) {
+    if (path == null) {
+      return null;
+    }
+    return this.findOne({path});
+  };
+
+  pageSchema.statics.findByPathAndViewer = async function(path, user) {
+    if (path == null) {
+      throw new Error('path is required.');
+    }
+
+    // const Page = this;
+    const baseQuery = this.findOne({path});
+    const queryBuilder = new PageQueryBuilder(baseQuery);
+
+    if (user != null) {
+      validateCrowi();
+      const UserGroupRelation = crowi.model('UserGroupRelation');
+      const userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
+      queryBuilder.addConditionToFilteringByViewer(user, userGroups);
+    }
+
+    return await queryBuilder.query.exec();
+  };
+
+  pageSchema.statics.findByRedirectTo = function(path) {
+    return this.findOne({redirectTo: path});
+  };
+
+  /**
+   * find pages that is match with `path` and its descendants
+   */
+  pageSchema.statics.findListWithDescendants = async function(path, user, option) {
+    const builder = new PageQueryBuilder(this.find());
+    builder.addConditionToListWithDescendants(path, option);
+
+    return await findListFromBuilderAndViewer(builder, user, option);
+  };
+
+  /**
+   * find pages that start with `path`
+   */
+  pageSchema.statics.findListByStartWith = async function(path, user, option) {
+    const builder = new PageQueryBuilder(this.find());
+    builder.addConditionToListByStartWith(path, option);
+
+    return await findListFromBuilderAndViewer(builder, user, option);
+  };
+
+  /**
+   * find pages that is created by targetUser
+   *
+   * @param {User} targetUser
+   * @param {User} currentUser
+   * @param {any} option
+   */
+  pageSchema.statics.findListByCreator = async function(targetUser, currentUser, option) {
+    const opt = Object.assign({sort: 'createdAt', desc: -1}, option);
+    const builder = new PageQueryBuilder(this.find({ creator: targetUser._id }));
+
+    return await findListFromBuilderAndViewer(builder, currentUser, opt);
+  };
+
+  pageSchema.statics.findListByPageIds = async function(ids, option) {
+    const User = crowi.model('User');
+
+    const opt = Object.assign({}, option);
+    const builder = new PageQueryBuilder(this.find({ _id: { $in: ids } }));
+
+    builder.addConditionToExcludeRedirect();
+    builder.addConditionToPagenate(opt.offset, opt.limit);
+
+    const totalCount = await builder.query.exec('count');
+    const q = builder.query
+      .populate({ path: 'lastUpdateUser', model: 'User', select: User.USER_PUBLIC_FIELDS });
+    const pages = await q.exec('find');
+
+    const result = { pages, totalCount, offset: opt.offset, limit: opt.limit };
+    return result;
+  };
+
+
+  /**
+   * find pages by PageQueryBuilder
+   * @param {PageQueryBuilder} builder
+   * @param {User} user
+   * @param {any} option
+   */
+  async function findListFromBuilderAndViewer(builder, user, option) {
+    validateCrowi();
+
+    const User = crowi.model('User');
+
+    const opt = Object.assign({sort: 'updatedAt', desc: -1}, option);
+    const sortOpt = {};
+    sortOpt[opt.sort] = opt.desc;
+
+    // exclude trashed pages
+    if (!opt.includeTrashed) {
+      builder.addConditionToExcludeTrashed();
+    }
+    // exclude redirect pages
+    if (!opt.includeRedirect) {
+      builder.addConditionToExcludeRedirect();
+    }
+
+    // add grant conditions
+    await addConditionToFilteringByViewerForList(builder, user);
+
+    builder.addConditionToPagenate(opt.offset, opt.limit, sortOpt);
+
+    const totalCount = await builder.query.exec('count');
+    const q = builder.query
+      .populate({ path: 'lastUpdateUser', model: 'User', select: User.USER_PUBLIC_FIELDS });
+    const pages = await q.exec('find');
+
+    const result = { pages, totalCount, offset: opt.offset, limit: opt.limit };
+    return result;
+  }
+
+  /**
+   * Add condition that filter pages by viewer
+   *  by considering Config
+   *
+   * @param {PageQueryBuilder} builder
+   * @param {User} user
+   */
+  async function addConditionToFilteringByViewerForList(builder, user) {
+    validateCrowi();
+
+    const Config = crowi.model('Config');
+    const config = crowi.getConfig();
+
+    // determine User condition
+    const hidePagesRestrictedByOwner = Config.hidePagesRestrictedByOwnerInList(config);
+    const userCondition = hidePagesRestrictedByOwner ? user : null;
+
+    // determine UserGroup condition
+    let groupCondition = null;
+    const hidePagesRestrictedByGroup = Config.hidePagesRestrictedByGroupInList(config);
+    if (hidePagesRestrictedByGroup && user != null) {
+      const UserGroupRelation = crowi.model('UserGroupRelation');
+      groupCondition = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
+    }
+
+    return builder.addConditionToFilteringByViewer(userCondition, groupCondition);
+  }
+
+  /**
+   * export addConditionToFilteringByViewerForList as static method
+   */
+  pageSchema.statics.addConditionToFilteringByViewerForList = async function(builder, user) {
+    return addConditionToFilteringByViewerForList(builder, user);
+  };
+
+  /**
+   * Throw error for growi-lsx-plugin (v1.x)
+   */
+  pageSchema.statics.generateQueryToListByStartWith = function(path, user, option) {
+    const dummyQuery = this.find();
+    dummyQuery.exec = async() => {
+      throw new Error('Plugin version mismatch. Upgrade growi-lsx-plugin to v2.0.0 or above.');
+    };
+    return dummyQuery;
+  };
+  pageSchema.statics.generateQueryToListWithDescendants = pageSchema.statics.generateQueryToListByStartWith;
+
 
   /**
    * find all templates applicable to the new page
    */
   pageSchema.statics.findTemplate = function(path) {
-    const Page = this;
-    const templatePath = cutOffLastSlash(path);
-    const pathList = generatePathsOnTree(templatePath, []);
+    const templatePath = nodePath.posix.dirname(path);
+    const pathList = generatePathsOnTree(path, []);
     const regexpList = pathList.map(path => new RegExp(`^${escapeStringRegexp(path)}/_{1,2}template$`));
 
-    return Page
+    return this
       .find({path: {$in: regexpList}})
       .populate({path: 'revision', model: 'Revision'})
       .then(templates => {
@@ -551,19 +745,14 @@ module.exports = function(crowi) {
       });
   };
 
-  const cutOffLastSlash = path => {
-    const lastSlash = path.lastIndexOf('/');
-    return path.substr(0, lastSlash);
-  };
-
   const generatePathsOnTree = (path, pathList) => {
     pathList.push(path);
 
-    if (path === '') {
+    if (path === '/') {
       return pathList;
     }
 
-    const newPath = cutOffLastSlash(path);
+    const newPath = nodePath.posix.dirname(path);
 
     return generatePathsOnTree(newPath, pathList);
   };
@@ -582,11 +771,11 @@ module.exports = function(crowi) {
       return decendantsTemplate;
     }
 
-    if (path === '') {
+    if (path === '/') {
       return;
     }
 
-    const newPath = cutOffLastSlash(path);
+    const newPath = nodePath.posix.dirname(path);
     return assignDecendantsTemplate(decendantsTemplates, newPath);
   };
 
@@ -614,354 +803,22 @@ module.exports = function(crowi) {
     return templateBody;
   };
 
-  // find page by path
-  pageSchema.statics.findPageByPath = function(path) {
-    if (path == null) {
-      return null;
-    }
-    return this.findOne({path});
-  };
-
-  pageSchema.statics.findListByPageIds = function(ids, options) {
-    const Page = this;
-    const User = crowi.model('User');
-    const limit = options.limit || 50
-      , offset = options.skip || 0
-      ;
-    options = options || {};
-
-    return new Promise(function(resolve, reject) {
-      Page
-      .find({ _id: { $in: ids }, grant: GRANT_PUBLIC })
-      //.sort({createdAt: -1}) // TODO optionize
-      .skip(offset)
-      .limit(limit)
-      .populate([
-        {path: 'creator', model: 'User', select: User.USER_PUBLIC_FIELDS},
-        {path: 'revision', model: 'Revision'},
-      ])
-      .exec(function(err, pages) {
-        if (err) {
-          return reject(err);
-        }
-
-        Page.populate(pages, {path: 'lastUpdateUser', model: 'User', select: User.USER_PUBLIC_FIELDS}, function(err, data) {
-          if (err) {
-            return reject(err);
-          }
-
-          return resolve(data);
-        });
-      });
-    });
-  };
-
-  pageSchema.statics.findPageByRedirectTo = function(path) {
-    var Page = this;
-
-    return new Promise(function(resolve, reject) {
-      Page.findOne({redirectTo: path}, function(err, pageData) {
-        if (err || pageData === null) {
-          return reject(err);
-        }
-
-        return resolve(pageData);
-      });
-    });
-  };
-
-  pageSchema.statics.findListByCreator = async function(user, option, currentUser) {
-    let Page = this;
-    let User = crowi.model('User');
-    let limit = option.limit || 50;
-    let offset = option.offset || 0;
-    let conditions = setPageListConditions(user);
-
-    let pages =  await Page.find(conditions).sort({createdAt: -1}).skip(offset).limit(limit).populate('revision').exec();
-    let PagesList = await Page.populate(pages, {path: 'lastUpdateUser', model: 'User', select: User.USER_PUBLIC_FIELDS});
-    let totalCount = await Page.countListByCreator(user);
-    let PagesArray = [
-      {totalCount: totalCount}
-    ];
-    PagesArray.push(PagesList);
-    return PagesArray;
-  };
-  function setPageListConditions(user) {
-    const conditions = {
-      creator: user._id,
-      redirectTo: null,
-      $and: [
-        {$or: [
-          {status: null},
-          {status: STATUS_PUBLISHED},
-        ]},
-        {$or: [
-          {grant: GRANT_PUBLIC},
-          {grant: GRANT_USER_GROUP},
-        ]}],
-    };
-
-    return conditions;
-  }
-
-  pageSchema.statics.countListByCreator = function(user) {
-    let Page = this;
-    let conditions = setPageListConditions(user);
-
-    return Page.find(conditions).count();
-  };
-
-
   /**
    * Bulk get (for internal only)
    */
   pageSchema.statics.getStreamOfFindAll = function(options) {
-    var Page = this
-      , options = options || {}
-      , publicOnly = options.publicOnly || true
-      , criteria = {redirectTo: null, }
-      ;
-
-    if (publicOnly) {
-      criteria.grant = GRANT_PUBLIC;
-    }
+    const criteria = { redirectTo: null };
 
     return this.find(criteria)
       .populate([
-        {path: 'creator', model: 'User'},
-        {path: 'revision', model: 'Revision'},
+        { path: 'creator', model: 'User' },
+        { path: 'revision', model: 'Revision' },
       ])
-      .sort({updatedAt: -1})
+      .lean()
       .cursor();
   };
 
-  /**
-   * find the page that is match with `path` and its descendants
-   */
-  pageSchema.statics.findListWithDescendants = function(path, userData, option) {
-    var Page = this;
-
-    // ignore other pages than descendants
-    path = Page.addSlashOfEnd(path);
-    // add option to escape the regex strings
-    const combinedOption = Object.assign({isRegExpEscapedFromPath: true}, option);
-
-    return Page.findListByStartWith(path, userData, combinedOption);
-  };
-
-  /**
-   * find pages that start with `path`
-   *
-   * see the comment of `generateQueryToListByStartWith` function
-   */
-  pageSchema.statics.findListByStartWith = function(path, userData, option) {
-    var Page = this;
-    var User = crowi.model('User');
-
-    if (!option) {
-      option = {sort: 'updatedAt', desc: -1, offset: 0, limit: 50};
-    }
-    var opt = {
-      sort: option.sort || 'updatedAt',
-      desc: option.desc || -1,
-      offset: option.offset || 0,
-      limit: option.limit || 50
-    };
-    var sortOpt = {};
-    sortOpt[opt.sort] = opt.desc;
-
-    var isPopulateRevisionBody = option.isPopulateRevisionBody || false;
-
-    return new Promise(function(resolve, reject) {
-      var q = Page.generateQueryToListByStartWith(path, userData, option)
-        .sort(sortOpt)
-        .skip(opt.offset)
-        .limit(opt.limit);
-
-      // retrieve revision data
-      if (isPopulateRevisionBody) {
-        q = q.populate('revision');
-      }
-      else {
-        q = q.populate('revision', '-body');  // exclude body
-      }
-
-      q.exec()
-        .then(function(pages) {
-          Page.populate(pages, {path: 'lastUpdateUser', model: 'User', select: User.USER_PUBLIC_FIELDS})
-          .then(resolve)
-          .catch(reject);
-        });
-    });
-  };
-
-  /**
-   * generate the query to find the page that is match with `path` and its descendants
-   */
-  pageSchema.statics.generateQueryToListWithDescendants = function(path, userData, option) {
-    var Page = this;
-
-    // ignore other pages than descendants
-    path = Page.addSlashOfEnd(path);
-
-    // add option to escape the regex strings
-    const combinedOption = Object.assign({isRegExpEscapedFromPath: true}, option);
-
-    return Page.generateQueryToListByStartWith(path, userData, combinedOption);
-  };
-
-  /**
-   * generate the query to find pages that start with `path`
-   *
-   * (GROWI) If 'isRegExpEscapedFromPath' is true, `path` should have `/` at the end
-   *   -> returns '{path}/*' and '{path}' self.
-   * (Crowi) If 'isRegExpEscapedFromPath' is false and `path` has `/` at the end
-   *   -> returns '{path}*'
-   * (Crowi) If 'isRegExpEscapedFromPath' is false and `path` doesn't have `/` at the end
-   *   -> returns '{path}*'
-   *
-   * *option*
-   *   - includeDeletedPage -- if true, search deleted pages (default: false)
-   *   - isRegExpEscapedFromPath -- if true, the regex strings included in `path` is escaped (default: false)
-   */
-  pageSchema.statics.generateQueryToListByStartWith = function(path, userData, option) {
-    var Page = this;
-    var pathCondition = [];
-    var includeDeletedPage = option.includeDeletedPage || false;
-    var isRegExpEscapedFromPath = option.isRegExpEscapedFromPath || false;
-
-    /*
-     * 1. add condition for finding the page completely match with `path` w/o last slash
-     */
-    let pathSlashOmitted = path;
-    if (path.match(/\/$/)) {
-      pathSlashOmitted = path.substr(0, path.length -1);
-      pathCondition.push({path: pathSlashOmitted});
-    }
-
-    /*
-     * 2. add decendants
-     */
-    var pattern = (isRegExpEscapedFromPath)
-      ? escapeStringRegexp(path)  // escape
-      : pathSlashOmitted;
-
-    var queryReg = new RegExp('^' + pattern);
-    pathCondition.push({path: queryReg});
-
-    var q = Page.find({
-      redirectTo: null,
-      $or: [
-        {grant: null},
-        {grant: GRANT_PUBLIC},
-        {grant: GRANT_RESTRICTED, grantedUsers: userData._id},
-        {grant: GRANT_SPECIFIED, grantedUsers: userData._id},
-        {grant: GRANT_OWNER, grantedUsers: userData._id},
-        {grant: GRANT_USER_GROUP},
-      ], })
-      .and({
-        $or: pathCondition
-      });
-
-    if (!includeDeletedPage) {
-      q.and({
-        $or: [
-          {status: null},
-          {status: STATUS_PUBLISHED},
-        ],
-      });
-    }
-
-    return q;
-  };
-
-  pageSchema.statics.updatePageProperty = function(page, updateData) {
-    var Page = this;
-    return new Promise(function(resolve, reject) {
-      // TODO foreach して save
-      Page.update({_id: page._id}, {$set: updateData}, function(err, data) {
-        if (err) {
-          return reject(err);
-        }
-
-        return resolve(data);
-      });
-    });
-  };
-
-  pageSchema.statics.updateGrant = function(page, grant, userData, grantUserGroupId) {
-    var Page = this;
-
-    return new Promise(function(resolve, reject) {
-      if (grant == GRANT_USER_GROUP && grantUserGroupId == null) {
-        reject('grant userGroupId is not specified');
-      }
-
-      page.grant = grant;
-      if (grant == GRANT_PUBLIC || grant == GRANT_USER_GROUP) {
-        page.grantedUsers = [];
-      }
-      else {
-        page.grantedUsers = [];
-        page.grantedUsers.push(userData._id);
-      }
-
-      page.save(function(err, data) {
-        debug('Page.updateGrant, saved grantedUsers.', err, data);
-        if (err) {
-          return reject(err);
-        }
-
-        Page.updateGrantUserGroup(page, grant, grantUserGroupId, userData)
-        .then(() => {
-          return resolve(data);
-        });
-      });
-    });
-  };
-
-  pageSchema.statics.updateGrantUserGroup = function(page, grant, grantUserGroupId, userData) {
-    var UserGroupRelation = crowi.model('UserGroupRelation');
-    var PageGroupRelation = crowi.model('PageGroupRelation');
-
-    // グループの場合
-    if (grant == GRANT_USER_GROUP) {
-      debug('grant is usergroup', grantUserGroupId);
-      return UserGroupRelation.findByGroupIdAndUser(grantUserGroupId, userData)
-      .then((relation) => {
-        if (relation == null) {
-          return new Error('no relations were exist for group and user.');
-        }
-        return PageGroupRelation.findOrCreateRelationForPageAndGroup(page, relation.relatedGroup);
-      })
-      .catch((err) => {
-        return new Error('No UserGroup is exists. userGroupId : ', grantUserGroupId);
-      });
-    }
-    else {
-      return PageGroupRelation.removeAllByPage(page);
-    }
-
-  };
-
-  // Instance method でいいのでは
-  pageSchema.statics.pushToGrantedUsers = function(page, userData) {
-
-    return new Promise(function(resolve, reject) {
-      if (!page.grantedUsers || !Array.isArray(page.grantedUsers)) {
-        page.grantedUsers = [];
-      }
-      page.grantedUsers.push(userData);
-      page.save(function(err, data) {
-        if (err) {
-          return reject(err);
-        }
-        return resolve(data);
-      });
-    });
-  };
-
-  pageSchema.statics.pushRevision = async function(pageData, newRevision, user) {
+  async function pushRevision(pageData, newRevision, user, grant, grantUserGroupId) {
     await newRevision.save();
     debug('Successfully saved new revision', newRevision);
 
@@ -970,9 +827,35 @@ module.exports = function(crowi) {
     pageData.updatedAt = Date.now();
 
     return pageData.save();
-  };
+  }
+
+  async function applyGrant(page, user, grant, grantUserGroupId) {
+    if (grant == GRANT_USER_GROUP && grantUserGroupId == null) {
+      throw new Error('grant userGroupId is not specified');
+    }
+
+    page.grant = grant;
+    if (grant == GRANT_PUBLIC || grant == GRANT_USER_GROUP) {
+      page.grantedUsers = [];
+    }
+    else {
+      page.grantedUsers = [];
+      page.grantedUsers.push(user._id);
+    }
+
+    if (grant == GRANT_USER_GROUP) {
+      const UserGroupRelation = crowi.model('UserGroupRelation');
+      const count = await UserGroupRelation.countByGroupIdAndUser(grantUserGroupId, user);
+
+      if (count === 0) {
+        throw new Error('no relations were exist for group and user.');
+      }
+    }
+  }
 
   pageSchema.statics.create = function(path, body, user, options = {}) {
+    validateCrowi();
+
     const Page = this
       , Revision = crowi.model('Revision')
       , format = options.format || 'markdown'
@@ -1005,10 +888,8 @@ module.exports = function(crowi) {
         newPage.createdAt = Date.now();
         newPage.updatedAt = Date.now();
         newPage.redirectTo = redirectTo;
-        newPage.grant = grant;
         newPage.status = STATUS_PUBLISHED;
-        newPage.grantedUsers = [];
-        newPage.grantedUsers.push(user);
+        applyGrant(newPage, user, grant, grantUserGroupId);
 
         return newPage.save();
       })
@@ -1016,11 +897,8 @@ module.exports = function(crowi) {
         savedPage = newPage;
       })
       .then(() => {
-        const newRevision = Revision.prepareRevision(savedPage, body, user, {format: format});
-        return Page.pushRevision(savedPage, newRevision, user);
-      })
-      .then(() => {
-        return Page.updateGrantUserGroup(savedPage, grant, grantUserGroupId, user);
+        const newRevision = Revision.prepareRevision(savedPage, body, null, user, {format: format});
+        return pushRevision(savedPage, newRevision, user);
       })
       .then(() => {
         if (socketClientId != null) {
@@ -1030,7 +908,9 @@ module.exports = function(crowi) {
       });
   };
 
-  pageSchema.statics.updatePage = async function(pageData, body, user, options = {}) {
+  pageSchema.statics.updatePage = async function(pageData, body, previousBody, user, options = {}) {
+    validateCrowi();
+
     const Page = this
       , Revision = crowi.model('Revision')
       , grant = options.grant || null
@@ -1040,14 +920,11 @@ module.exports = function(crowi) {
       ;
 
     // update existing page
-    const newRevision = await Revision.prepareRevision(pageData, body, user);
-
-    const revision = await Page.pushRevision(pageData, newRevision, user);
-    let savedPage = await Page.findPageByPath(revision.path).populate('revision').populate('creator');
-    if (grant != null) {
-      const grantData = await Page.updateGrant(savedPage, grant, user, grantUserGroupId);
-      debug('Page grant update:', grantData);
-    }
+    applyGrant(pageData, user, grant, grantUserGroupId);
+    let savedPage = await pageData.save();
+    const newRevision = await Revision.prepareRevision(pageData, body, previousBody, user);
+    const revision = await pushRevision(savedPage, newRevision, user, grant, grantUserGroupId);
+    savedPage = await Page.findByPath(revision.path).populate('revision').populate('creator');
 
     if (isSyncRevisionToHackmd) {
       savedPage = await Page.syncRevisionToHackmd(savedPage);
@@ -1060,19 +937,18 @@ module.exports = function(crowi) {
   };
 
   pageSchema.statics.deletePage = async function(pageData, user, options = {}) {
-    const Page = this
-      , newPath = Page.getDeletedPageName(pageData.path)
+    const newPath = this.getDeletedPageName(pageData.path)
       , isTrashed = checkIfTrashed(pageData.path)
       , socketClientId = options.socketClientId || null
       ;
 
-    if (Page.isDeletableName(pageData.path)) {
+    if (this.isDeletableName(pageData.path)) {
       if (isTrashed) {
-        return Page.completelyDeletePage(pageData, user, options);
+        return this.completelyDeletePage(pageData, user, options);
       }
 
-      let updatedPageData = await Page.rename(pageData, newPath, user, {createRedirectPage: true});
-      await Page.updatePageProperty(updatedPageData, {status: STATUS_DELETED, lastUpdateUser: user});
+      pageData.status = STATUS_DELETED;
+      const updatedPageData = await this.rename(pageData, newPath, user, {createRedirectPage: true});
 
       if (socketClientId != null) {
         pageEvent.emit('delete', updatedPageData, user, socketClientId);
@@ -1088,164 +964,123 @@ module.exports = function(crowi) {
     return (path.search(/^\/trash/) !== -1);
   };
 
-  pageSchema.statics.deletePageRecursively = function(pageData, user, options) {
-    const Page = this
-      , path = pageData.path
-      , isTrashed = checkIfTrashed(pageData.path)
-      ;
-    options = options || {};
+  pageSchema.statics.deletePageRecursively = async function(targetPage, user, options = {}) {
+    const isTrashed = checkIfTrashed(targetPage.path);
 
     if (isTrashed) {
-      return Page.completelyDeletePageRecursively(pageData, user, options);
+      return this.completelyDeletePageRecursively(targetPage, user, options);
     }
 
-    return Page.generateQueryToListWithDescendants(path, user, options)
-      .then(function(pages) {
-        return Promise.all(pages.map(function(page) {
-          return Page.deletePage(page, user, options);
-        }));
-      })
-      .then(function(data) {
-        return pageData;
-      });
+    const findOpts = { includeRedirect: true };
+    const result = await this.findListWithDescendants(targetPage.path, user, findOpts);
+    const pages = result.pages;
 
+    let updatedPage = null;
+    await Promise.all(pages.map(page => {
+      const isParent = (page.path === targetPage.path);
+      const p = this.deletePage(page, user, options);
+      if (isParent) {
+        updatedPage = p;
+      }
+      return p;
+    }));
+
+    return updatedPage;
   };
 
-  pageSchema.statics.revertDeletedPage = function(pageData, user, options) {
-    const Page = this
-      , newPath = Page.getRevertDeletedPageName(pageData.path)
-      ;
+  pageSchema.statics.revertDeletedPage = async function(page, user, options = {}) {
+    const newPath = this.getRevertDeletedPageName(page.path);
 
-    // 削除時、元ページの path には必ず redirectTo 付きで、ページが作成される。
-    // そのため、そいつは削除してOK
-    // が、redirectTo ではないページが存在している場合それは何かがおかしい。(データ補正が必要)
-    return new Promise(function(resolve, reject) {
-      Page.findPageByPath(newPath)
-      .then(function(originPageData) {
-        if (originPageData.redirectTo !== pageData.path) {
-          throw new Error('The new page of to revert is exists and the redirect path of the page is not the deleted page.');
-        }
+    const originPage = await this.findByPath(newPath);
+    if (originPage != null) {
+      // 削除時、元ページの path には必ず redirectTo 付きで、ページが作成される。
+      // そのため、そいつは削除してOK
+      // が、redirectTo ではないページが存在している場合それは何かがおかしい。(データ補正が必要)
+      if (originPage.redirectTo !== page.path) {
+        throw new Error('The new page of to revert is exists and the redirect path of the page is not the deleted page.');
+      }
 
-        return Page.completelyDeletePage(originPageData, options);
-      }).then(function(done) {
-        return Page.updatePageProperty(pageData, {status: STATUS_PUBLISHED, lastUpdateUser: user});
-      }).then(function(done) {
-        pageData.status = STATUS_PUBLISHED;
+      await this.completelyDeletePage(originPage, options);
+    }
 
-        debug('Revert deleted the page, and rename again it', pageData, newPath);
-        return Page.rename(pageData, newPath, user, {});
-      }).then(function(done) {
-        pageData.path = newPath;
-        resolve(pageData);
-      }).catch(reject);
-    });
+    page.status = STATUS_PUBLISHED;
+    page.lastUpdateUser = user;
+    debug('Revert deleted the page', page, newPath);
+    const updatedPage = await this.rename(page, newPath, user, {});
+
+    return updatedPage;
   };
 
-  pageSchema.statics.revertDeletedPageRecursively = function(pageData, user, options = {}) {
-    const Page = this
-      , path = pageData.path
-      ;
-    options = Object.assign({ includeDeletedPage: true }, options);
+  pageSchema.statics.revertDeletedPageRecursively = async function(targetPage, user, options = {}) {
+    const findOpts = { includeRedirect: true, includeTrashed: true };
+    const result = await this.findListWithDescendants(targetPage.path, user, findOpts);
+    const pages = result.pages;
 
-    return new Promise(function(resolve, reject) {
-      Page
-        .generateQueryToListWithDescendants(path, user, options)
-        .exec()
-        .then(function(pages) {
-          Promise.all(pages.map(function(page) {
-            return Page.revertDeletedPage(page, user, options);
-          }))
-          .then(function(data) {
-            return resolve(data[0]);
-          });
-        });
-    });
+    let updatedPage = null;
+    await Promise.all(pages.map(page => {
+      const isParent = (page.path === targetPage.path);
+      const p = this.revertDeletedPage(page, user, options);
+      if (isParent) {
+        updatedPage = p;
+      }
+      return p;
+    }));
+
+    return updatedPage;
   };
 
   /**
    * This is danger.
    */
-  pageSchema.statics.completelyDeletePage = function(pageData, user, options = {}) {
+  pageSchema.statics.completelyDeletePage = async function(pageData, user, options = {}) {
+    validateCrowi();
+
     // Delete Bookmarks, Attachments, Revisions, Pages and emit delete
-    const Bookmark = crowi.model('Bookmark')
-      , Attachment = crowi.model('Attachment')
-      , Comment = crowi.model('Comment')
-      , Revision = crowi.model('Revision')
-      , PageGroupRelation = crowi.model('PageGroupRelation')
-      , Page = this
-      , pageId = pageData._id
-      , socketClientId = options.socketClientId || null
-      ;
+    const Bookmark = crowi.model('Bookmark');
+    const Attachment = crowi.model('Attachment');
+    const Comment = crowi.model('Comment');
+    const Revision = crowi.model('Revision');
+    const PageGroupRelation = crowi.model('PageGroupRelation');
+    const pageId = pageData._id;
+    const socketClientId = options.socketClientId || null;
 
     debug('Completely delete', pageData.path);
 
-    return new Promise(function(resolve, reject) {
-      Bookmark.removeBookmarksByPageId(pageId)
-      .then(function(done) {
-      }).then(function(done) {
-        return Attachment.removeAttachmentsByPageId(pageId);
-      }).then(function(done) {
-        return Comment.removeCommentsByPageId(pageId);
-      }).then(function(done) {
-        return Revision.removeRevisionsByPath(pageData.path);
-      }).then(function(done) {
-        return Page.removePageById(pageId);
-      }).then(function(done) {
-        return Page.removeRedirectOriginPageByPath(pageData.path);
-      }).then(function(done) {
-        return PageGroupRelation.removeAllByPage(pageData);
-      }).then(function(done) {
-        if (socketClientId != null) {
-          pageEvent.emit('delete', pageData, user, socketClientId); // update as renamed page
-        }
-        resolve(pageData);
-      }).catch(reject);
-    });
+    await Bookmark.removeBookmarksByPageId(pageId);
+    await Attachment.removeAttachmentsByPageId(pageId);
+    await Comment.removeCommentsByPageId(pageId);
+    await Revision.removeRevisionsByPath(pageData.path);
+    await this.findByIdAndRemove(pageId);
+    await this.removeRedirectOriginPageByPath(pageData.path);
+    await PageGroupRelation.removeAllByPage(pageData);
+    if (socketClientId != null) {
+      pageEvent.emit('delete', pageData, user, socketClientId); // update as renamed page
+    }
+    return pageData;
   };
 
-  pageSchema.statics.completelyDeletePageRecursively = function(pageData, user, options = {}) {
-    // Delete Bookmarks, Attachments, Revisions, Pages and emit delete
-    const Page = this
-      , path = pageData.path
-      ;
-    options = Object.assign({ includeDeletedPage: true }, options);
+  /**
+   * Delete Bookmarks, Attachments, Revisions, Pages and emit delete
+   */
+  pageSchema.statics.completelyDeletePageRecursively = async function(pageData, user, options = {}) {
+    const path = pageData.path;
 
-    return new Promise(function(resolve, reject) {
-      Page
-      .generateQueryToListWithDescendants(path, user, options)
-      .then(function(pages) {
-        Promise.all(pages.map(function(page) {
-          return Page.completelyDeletePage(page, user, options);
-        }))
-        .then(function(data) {
-          return resolve(data[0]);
-        });
-      });
-    });
+    const findOpts = { includeRedirect: true, includeTrashed: true };
+    const result = await this.findListWithDescendants(path, user, findOpts);
+    const pages = result.pages;
+
+    await Promise.all(pages.map(page => {
+      return this.completelyDeletePage(page, user, options);
+    }));
+
+    return pageData;
   };
 
-  pageSchema.statics.removePageById = function(pageId) {
-    var Page = this;
-
-    return new Promise(function(resolve, reject) {
-      Page.remove({_id: pageId}, function(err, done) {
-        debug('Remove phisiaclly, the page', pageId, err, done);
-        if (err) {
-          return reject(err);
-        }
-
-        resolve(done);
-      });
-    });
-  };
-
-  pageSchema.statics.removePageByPath = function(pagePath) {
-    var Page = this;
-
-    return Page.findPageByPath(pagePath)
-      .then(function(pageData) {
-        return Page.removePageById(pageData.id);
-      });
+  pageSchema.statics.removeByPath = function(path) {
+    if (path == null) {
+      throw new Error('path is required');
+    }
+    return this.findOneAndRemove({ path }).exec();
   };
 
   /**
@@ -1258,25 +1093,22 @@ module.exports = function(crowi) {
    *
    * @param {string} pagePath
    */
-  pageSchema.statics.removeRedirectOriginPageByPath = function(pagePath) {
-    var Page = this;
+  pageSchema.statics.removeRedirectOriginPageByPath = async function(pagePath) {
+    const redirectPage = await this.findByRedirectTo(pagePath);
 
-    return Page.findPageByRedirectTo(pagePath)
-      .then((redirectOriginPageData) => {
-        // remove
-        return Page.removePageById(redirectOriginPageData.id)
-          // remove recursive
-          .then(() => {
-            return Page.removeRedirectOriginPageByPath(redirectOriginPageData.path);
-          });
-      })
-      .catch((err) => {
-        // do nothing if origin page doesn't exist
-        return Promise.resolve();
-      });
+    if (redirectPage == null) {
+      return;
+    }
+
+    // remove
+    await this.findByIdAndRemove(redirectPage.id);
+    // remove recursive
+    await this.removeRedirectOriginPageByPath(redirectPage.path);
   };
 
   pageSchema.statics.rename = async function(pageData, newPagePath, user, options) {
+    validateCrowi();
+
     const Page = this
       , Revision = crowi.model('Revision')
       , path = pageData.path
@@ -1287,41 +1119,42 @@ module.exports = function(crowi) {
     // sanitize path
     newPagePath = crowi.xss.process(newPagePath);
 
-    await Page.updatePageProperty(pageData, {updatedAt: Date.now(), path: newPagePath, lastUpdateUser: user});
-        // reivisions の path を変更
+    // update Page
+    pageData.path = newPagePath;
+    pageData.lastUpdateUser = user;
+    pageData.updatedAt = Date.now();
+    const updatedPageData = await pageData.save();
+
+    // update Rivisions
     await Revision.updateRevisionListByPath(path, {path: newPagePath}, {});
 
-        if (createRedirectPage) {
-          const body = 'redirect ' + newPagePath;
+    if (createRedirectPage) {
+      const body = 'redirect ' + newPagePath;
       await Page.create(path, body, user, {redirectTo: newPagePath});
-        }
+    }
 
-    let updatedPageData = await Page.findOne({path: newPagePath});
     pageEvent.emit('delete', pageData, user, socketClientId);
     pageEvent.emit('create', updatedPageData, user, socketClientId);
 
     return updatedPageData;
   };
 
-  pageSchema.statics.renameRecursively = function(pageData, newPagePathPrefix, user, options) {
-    const Page = this
-      , path = pageData.path
-      , pathRegExp = new RegExp('^' + escapeStringRegexp(path), 'i');
+  pageSchema.statics.renameRecursively = async function(pageData, newPagePathPrefix, user, options) {
+    validateCrowi();
+
+    const path = pageData.path;
+    const pathRegExp = new RegExp('^' + escapeStringRegexp(path), 'i');
 
     // sanitize path
     newPagePathPrefix = crowi.xss.process(newPagePathPrefix);
 
-    return Page.generateQueryToListWithDescendants(path, user, options)
-      .then(function(pages) {
-        return Promise.all(pages.map(function(page) {
-          const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
-          return Page.rename(page, newPagePath, user, options);
-        }));
-      })
-      .then(function() {
-        pageData.path = newPagePathPrefix;
-        return pageData;
-      });
+    const result = await this.findListWithDescendants(path, user, options);
+    await Promise.all(result.pages.map(page => {
+      const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
+      return this.rename(page, newPagePath, user, options);
+    }));
+    pageData.path = newPagePathPrefix;
+    return pageData;
   };
 
   /**
@@ -1381,18 +1214,21 @@ module.exports = function(crowi) {
    * return path that added slash to the end for specified path
    */
   pageSchema.statics.addSlashOfEnd = function(path) {
-    let returnPath = path;
-    if (!path.match(/\/$/)) {
-      returnPath += '/';
-    }
-    return returnPath;
+    return addSlashOfEnd(path);
+  };
+
+  pageSchema.statics.allPageCount = function() {
+    return this.count({ redirectTo: null });
   };
 
   pageSchema.statics.GRANT_PUBLIC = GRANT_PUBLIC;
   pageSchema.statics.GRANT_RESTRICTED = GRANT_RESTRICTED;
   pageSchema.statics.GRANT_SPECIFIED = GRANT_SPECIFIED;
   pageSchema.statics.GRANT_OWNER = GRANT_OWNER;
+  pageSchema.statics.GRANT_USER_GROUP = GRANT_USER_GROUP;
   pageSchema.statics.PAGE_GRANT_ERROR = PAGE_GRANT_ERROR;
+
+  pageSchema.statics.PageQueryBuilder = PageQueryBuilder;
 
   return mongoose.model('Page', pageSchema);
 };

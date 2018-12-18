@@ -808,7 +808,6 @@ border-radius:$radius;
 */
 
 /*Progressbars*/
-/*
 .progress {
 -webkit-box-shadow: none !important;
 background-color: $border;
@@ -894,10 +893,9 @@ animation-duration: 5s;
 animation-name: myanimation;
 transition: 5s all;
 }
-*/
+
 
 /* Progressbar Animated */
-/*
 @-webkit-keyframes myanimation {
 from {
   width:0;
@@ -908,7 +906,6 @@ from {
   width:0;
 }
 }
-*/
 
 /* Progressbar Vertical */
 /*
@@ -1296,11 +1293,12 @@ background:$white;
   box-shadow: none !important;
 }
 }
-
+/*
 .input-group-addon {
 border-radius: $radius;
 border: 1px solid $border;
 }
+*/
 /*
 .input-daterange input:first-child, .input-daterange input:last-child{border-radius:$radius;}
 */

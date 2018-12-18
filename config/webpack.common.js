@@ -41,6 +41,7 @@ module.exports = (options) => {
       'styles/theme-kibela':          './src/client/styles/scss/theme/kibela.scss',
       'styles/theme-halloween':       './src/client/styles/scss/theme/halloween.scss',
       'styles/theme-wood':          './src/client/styles/scss/theme/wood.scss',
+      'styles/theme-christmas':          './src/client/styles/scss/theme/christmas.scss',
       'styles/theme-island':      './src/client/styles/scss/theme/island.scss',
       // styles for external services
       'styles/style-hackmd':          './src/client/styles/hackmd/style.scss',
@@ -63,6 +64,7 @@ module.exports = (options) => {
       alias: {
         '@root': helpers.root('/'),
         '@commons': helpers.root('src/lib'),
+        '@client': helpers.root('src/client'),
         '@tmp': helpers.root('tmp'),
         '@alias/logger': helpers.root('src/lib/service/logger'),
         '@alias/locales': helpers.root('resource/locales'),
@@ -77,6 +79,7 @@ module.exports = (options) => {
           exclude: {
             test:    helpers.root('node_modules'),
             exclude: [  // include as a result
+              { test: helpers.root('node_modules', 'growi-plugin-') },
               helpers.root('node_modules/codemirror/src'),
               helpers.root('node_modules/string-width'),
               helpers.root('node_modules/is-fullwidth-code-point'), // depends from string-width

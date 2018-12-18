@@ -114,7 +114,7 @@
     nav {
       padding-right: 0;
       &.affix {
-        top: 8px;
+        top: 58px;
         width: 33%;
         padding-right: 5px;
         padding-bottom: 50px;
@@ -147,6 +147,10 @@
     padding-bottom: 32px;
 
     .search-result-page {
+      // adjust for anchor links by the height of fixed .search-page-input
+      margin-top: -48px;
+      padding-top: 48px;
+
       > h2 {
         font-size: 20px;
         line-height: 1em;
@@ -161,6 +165,22 @@
         border-radius: 3px;
         font-size: 13px;
       }
+    }
+  }
+}
+
+.search-page-input{
+  padding: 10px 0;
+  position: sticky;
+  top: 0;
+  z-index: 99;
+  .form{
+    margin: 0;
+    .input-group .form-control{
+      height: 100%;
+    }
+    .input-group-btn .btn{
+      height: 34px;
     }
   }
 }

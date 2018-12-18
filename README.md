@@ -158,6 +158,7 @@ Environment Variables
 * **Option**
     * NODE_ENV: `production` OR `development`.
     * PORT: Server port. default: `3000`.
+    * NO_CDN: If `true`, system doesn't use CDN, all resources will be downloaded from CDN when build client, and served by the GROWI Express server. default: `false`.
     * ELASTICSEARCH_URI: URI to connect to Elasticearch.
     * REDIS_URI: URI to connect to Redis (use it as a session store instead of MongoDB).
     * PASSWORD_SEED: A password seed used by password hash generator.
@@ -168,6 +169,7 @@ Environment Variables
       * `mongodb` : MongoDB GridFS (Setting-less)
       * `local` : Server's Local file system (Setting-less)
       * `none` : Disable file uploading
+    * MONGO_GRIDFS_TOTAL_LIMIT: Total capacity limit of MongoDB GridFS (bytes). default: `Infinity`
 * **Option to integrate with external systems**
     * HACKMD_URI: URI to connect to [HackMD(CodiMD)](https://hackmd.io/) server.
         * **This server must load the GROWI agent. [Here's how to prepare it](https://docs.growi.org/management-cookbook/integrate-with-hackmd).**

@@ -17,7 +17,7 @@ require('jquery.cookie');
 require('bootstrap-select');
 
 import GrowiRenderer from '../util/GrowiRenderer';
-import Page from '../components/Page';
+import RevisionLoader from '../components/Page/RevisionLoader';
 
 require('./thirdparty-js/agile-admin');
 
@@ -351,7 +351,7 @@ $(function() {
   // rename/unportalize
   $('#renamePage, #unportalize').on('shown.bs.modal', function(e) {
     $('#renamePage #newPageName').focus();
-    $('#renamePage .msg-already-exists, #unportalize .msg-already-exists').hide();
+    $('#renamePage .msg, #unportalize .msg').hide();
   });
   $('#renamePageForm, #unportalize-form').submit(function(e) {
     // create name-value map
@@ -369,9 +369,10 @@ $(function() {
       dataType: 'json'
     })
     .done(function(res) {
+      // error
       if (!res.ok) {
-        // if already exists
-        $('#renamePage .msg-already-exists, #unportalize .msg-already-exists').show();
+        $('#renamePage .msg, #unportalize .msg').hide();
+        $(`#renamePage .msg-${res.code}, #unportalize .msg-${res.code}`).show();
         $('#renamePage #linkToNewPage, #unportalize #linkToNewPage').html(`
           <a href="${nameValueMap.new_path}">${nameValueMap.new_path} <i class="icon-login"></i></a>
         `);
@@ -388,7 +389,7 @@ $(function() {
   // duplicate
   $('#duplicatePage').on('shown.bs.modal', function(e) {
     $('#duplicatePage #duplicatePageName').focus();
-    $('#duplicatePage .msg-already-exists').hide();
+    $('#duplicatePage .msg').hide();
   });
   $('#duplicatePageForm, #unportalize-form').submit(function(e) {
     // create name-value map
@@ -403,9 +404,10 @@ $(function() {
       data: $(this).serialize(),
       dataType: 'json'
     }).done(function(res) {
+      // error
       if (!res.ok) {
-        // if already exists
-        $('#duplicatePage .msg-already-exists').show();
+        $('#duplicatePage .msg').hide();
+        $(`#duplicatePage .msg-${res.code}`).show();
         $('#duplicatePage #linkToNewPage').html(`
           <a href="${nameValueMap.new_path}">${nameValueMap.new_path} <i class="icon-login"></i></a>
         `);
@@ -420,6 +422,9 @@ $(function() {
   });
 
   // delete
+  $('#deletePage').on('shown.bs.modal', function(e) {
+    $('#deletePage .msg').hide();
+  });
   $('#delete-page-form').submit(function(e) {
     $.ajax({
       type: 'POST',
@@ -427,9 +432,10 @@ $(function() {
       data: $('#delete-page-form').serialize(),
       dataType: 'json'
     }).done(function(res) {
+      // error
       if (!res.ok) {
-        $('#delete-errors').html('<i class="fa fa-times-circle"></i> ' + res.error);
-        $('#delete-errors').addClass('alert-danger');
+        $('#deletePage .msg').hide();
+        $(`#deletePage .msg-${res.code}`).show();
       }
       else {
         const page = res.page;
@@ -439,6 +445,11 @@ $(function() {
 
     return false;
   });
+
+  // Put Back
+  $('#putBackPage').on('shown.bs.modal', function(e) {
+    $('#putBackPage .msg').hide();
+  });
   $('#revert-delete-page-form').submit(function(e) {
     $.ajax({
       type: 'POST',
@@ -446,9 +457,10 @@ $(function() {
       data: $('#revert-delete-page-form').serialize(),
       dataType: 'json'
     }).done(function(res) {
+      // error
       if (!res.ok) {
-        $('#delete-errors').html('<i class="fa fa-times-circle"></i> ' + res.error);
-        $('#delete-errors').addClass('alert-danger');
+        $('#putBackPage .msg').hide();
+        $(`#putBackPage .msg-${res.code}`).show();
       }
       else {
         const page = res.page;
@@ -471,8 +483,7 @@ $(function() {
         $('#delete-errors').addClass('alert-danger');
       }
       else {
-        const page = res.page;
-        top.location.href = page.path + '?unlinked=true';
+        top.location.href = res.path + '?unlinked=true';
       }
     });
 
@@ -480,6 +491,8 @@ $(function() {
   });
 
   $('#create-portal-button').on('click', function(e) {
+    $('a[data-toggle="tab"][href="#edit"]').tab('show');
+
     $('body').addClass('on-edit');
     $('body').addClass('builtin-editor');
 
@@ -524,7 +537,7 @@ $(function() {
 
   // for list page
   let growiRendererForTimeline = null;
-  $('a[data-toggle="tab"][href="#view-timeline"]').on('show.bs.tab', function() {
+  $('a[data-toggle="tab"][href="#view-timeline"]').on('shown.bs.tab', function() {
     const isShown = $('#view-timeline').data('shown');
 
     if (growiRendererForTimeline == null) {
@@ -534,16 +547,21 @@ $(function() {
     if (isShown == 0) {
       $('#view-timeline .timeline-body').each(function() {
         const id = $(this).attr('id');
-        const contentId = '#' + id + ' > script';
         const revisionBody = '#' + id + ' .revision-body';
         const revisionBodyElem = document.querySelector(revisionBody);
         /* eslint-disable no-unused-vars */
         const revisionPath = '#' + id + ' .revision-path';
         /* eslint-enable */
-        const pagePath = document.getElementById(id).getAttribute('data-page-path');
-        const markdown = entities.decodeHTML($(contentId).html());
+        const timelineElm = document.getElementById(id);
+        const pageId = timelineElm.getAttribute('data-page-id');
+        const pagePath = timelineElm.getAttribute('data-page-path');
+        const revisionId = timelineElm.getAttribute('data-revision');
 
-        ReactDOM.render(<Page crowi={crowi} crowiRenderer={growiRendererForTimeline} markdown={markdown} pagePath={pagePath} />, revisionBodyElem);
+        ReactDOM.render(
+          <RevisionLoader lazy={true}
+            crowi={crowi} crowiRenderer={growiRendererForTimeline}
+            pageId={pageId} pagePath={pagePath} revisionId={revisionId} />,
+          revisionBodyElem);
       });
 
       $('#view-timeline').data('shown', 1);
@@ -839,6 +857,6 @@ window.addEventListener('keydown', (event) => {
 });
 
 // adjust min-height of page for print temporarily
-window.onbeforeprint = function () {
-  $("#page-wrapper").css("min-height", "0px");
+window.onbeforeprint = function() {
+  $('#page-wrapper').css('min-height', '0px');
 };

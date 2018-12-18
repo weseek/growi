@@ -3,6 +3,7 @@
  */
 
 import axios from 'axios';
+import io from 'socket.io-client';
 
 import InterceptorManager from '@commons/service/interceptor-manager';
 
@@ -50,6 +51,8 @@ export default class Crowi {
     this.editorOptions = {};
 
     this.recoverData();
+
+    this.socket = io();
   }
 
   /**
@@ -75,6 +78,10 @@ export default class Crowi {
     this.pageEditor = pageEditor;
   }
 
+  getWebSocket() {
+    return this.socket;
+  }
+
   getSocketClientId() {
     return this.socketClientId;
   }
@@ -94,9 +101,10 @@ export default class Crowi {
     ];
 
     keys.forEach(key => {
-      if (this.localStorage[key]) {
+      const keyContent = this.localStorage[key];
+      if (keyContent) {
         try {
-          this[key] = JSON.parse(this.localStorage[key]);
+          this[key] = JSON.parse(keyContent);
         }
         catch (e) {
           this.localStorage.removeItem(key);

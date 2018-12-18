@@ -18,6 +18,7 @@ module.exports = function(crowi) {
 
   // obtain a model
   const AttachmentFile = gridfs.model;
+  const Chunks = mongoose.model('Chunks', gridfs.schema, 'attachmentFiles.chunks');
 
   // delete a file
   lib.deleteFile = async function(fileId, filePath) {
@@ -42,6 +43,33 @@ module.exports = function(crowi) {
         }
       });
     }
+  };
+
+  /**
+   * get size of data uploaded files using (Promise wrapper)
+   */
+  const getCollectionSize = () => {
+    return new Promise((resolve, reject) => {
+      Chunks.collection.stats((err, data) => {
+        if (err) {
+          reject(err);
+        }
+        resolve(data.size);
+      });
+    });
+  };
+
+  /**
+   * chech storage for fileUpload reaches MONGO_GRIDFS_TOTAL_LIMIT (for gridfs)
+   */
+  lib.checkCapacity = async(uploadFileSize) => {
+    // skip checking if env var is undefined
+    if (process.env.MONGO_GRIDFS_TOTAL_LIMIT == null) {
+      return true;
+    }
+
+    const usingFilesSize = await getCollectionSize();
+    return (+process.env.MONGO_GRIDFS_TOTAL_LIMIT > usingFilesSize + +uploadFileSize);
   };
 
   lib.uploadFile = async function(filePath, contentType, fileStream, options) {

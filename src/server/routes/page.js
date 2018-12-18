@@ -8,9 +8,7 @@ module.exports = function(crowi, app) {
     , User = crowi.model('User')
     , Config   = crowi.model('Config')
     , config   = crowi.getConfig()
-    , Revision = crowi.model('Revision')
     , Bookmark = crowi.model('Bookmark')
-    , PageGroupRelation = crowi.model('PageGroupRelation')
     , UpdatePost = crowi.model('UpdatePost')
     , ApiResponse = require('../util/apiResponse')
     , interceptorManager = crowi.getInterceptorManager()
@@ -19,6 +17,10 @@ module.exports = function(crowi, app) {
     , globalNotificationService = crowi.getGlobalNotificationService()
 
     , actions = {};
+
+  const PORTAL_STATUS_NOT_EXISTS = 0;
+  const PORTAL_STATUS_EXISTS = 1;
+  const PORTAL_STATUS_FORBIDDEN = 2;
 
   // register page events
 
@@ -58,14 +60,9 @@ module.exports = function(crowi, app) {
     return false;
   }
 
-  // TODO: total とかでちゃんと計算する
-  function generatePager(options) {
+  function generatePager(offset, limit, totalCount) {
     let next = null,
       prev = null;
-    const offset = parseInt(options.offset, 10),
-      limit  = parseInt(options.limit, 10),
-      length = options.length || 0;
-
 
     if (offset > 0) {
       prev = offset - limit;
@@ -74,7 +71,7 @@ module.exports = function(crowi, app) {
       }
     }
 
-    if (length < limit) {
+    if (totalCount < limit) {
       next = null;
     }
     else {
@@ -108,31 +105,232 @@ module.exports = function(crowi, app) {
     }
   }
 
+  function addRendarVarsForPage(renderVars, page) {
+    renderVars.page = page;
+    renderVars.path = page.path;
+    renderVars.revision = page.revision;
+    renderVars.author = page.revision.author;
+    renderVars.pageIdOnHackmd = page.pageIdOnHackmd;
+    renderVars.revisionHackmdSynced = page.revisionHackmdSynced;
+    renderVars.hasDraftOnHackmd = page.hasDraftOnHackmd;
+  }
+
+  async function addRenderVarsForUserPage(renderVars, page, requestUser) {
+    const userData = await User.findUserByUsername(User.getUsernameByPath(page.path));
+    if (userData != null) {
+      renderVars.pageUser = userData;
+      renderVars.bookmarkList = await Bookmark.findByUser(userData, {limit: 10, populatePage: true, requestUser: requestUser});
+      renderVars.createdList = await Page.findListByCreator(userData, {limit: 10}, requestUser);
+    }
+  }
+
+  async function addRenderVarsForSlack(renderVars, page) {
+    renderVars.slack = await getSlackChannels(page);
+  }
+
+  async function addRenderVarsForDescendants(renderVars, path, requestUser, offset, limit, isRegExpEscapedFromPath) {
+    const SEENER_THRESHOLD = 10;
+
+    const queryOptions = {
+      offset: offset,
+      limit: limit + 1,
+      includeTrashed: path.startsWith('/trash/'),
+      isRegExpEscapedFromPath,
+    };
+    const result = await Page.findListWithDescendants(path, requestUser, queryOptions);
+    if (result.pages.length > limit) {
+      result.pages.pop();
+    }
+
+    renderVars.viewConfig = {
+      seener_threshold: SEENER_THRESHOLD,
+    };
+    renderVars.pager = generatePager(result.offset, result.limit, result.totalCount);
+    renderVars.pages = pagePathUtils.encodePagesPath(result.pages);
+  }
+
+  function replacePlaceholdersOfTemplate(template, req) {
+    const definitions = {
+      pagepath: getPathFromRequest(req),
+      username: req.user.name,
+      today: getToday(),
+    };
+    const compiledTemplate = swig.compile(template);
+
+    return compiledTemplate(definitions);
+  }
+
+  async function showPageForPresentation(req, res, next) {
+    let path = getPathFromRequest(req);
+    const revisionId = req.query.revision;
+
+    let page = await Page.findByPathAndViewer(path, req.user);
+
+    if (page == null) {
+      next();
+    }
+
+    const renderVars = {};
+
+    // populate
+    page = await page.populateDataToMakePresentation(revisionId);
+    addRendarVarsForPage(renderVars, page);
+    return res.render('page_presentation', renderVars);
+  }
+
+  async function showPageListForCrowiBehavior(req, res, next) {
+    const path = Page.addSlashOfEnd(getPathFromRequest(req));
+    const revisionId = req.query.revision;
+
+    // check whether this page has portal page
+    const portalPageStatus = await getPortalPageState(path, req.user);
+
+    const renderVars = { path };
+
+    if (portalPageStatus === PORTAL_STATUS_FORBIDDEN) {
+      // inject to req
+      req.isForbidden = true;
+      return next();
+    }
+    else if (portalPageStatus === PORTAL_STATUS_EXISTS) {
+      let portalPage = await Page.findByPathAndViewer(path, req.user);
+      portalPage.initLatestRevisionField(revisionId);
+
+      // populate
+      portalPage = await portalPage.populateDataToShowRevision();
+
+      addRendarVarsForPage(renderVars, portalPage);
+      await addRenderVarsForSlack(renderVars, portalPage);
+    }
+
+    const limit = 50;
+    const offset = parseInt(req.query.offset)  || 0;
+
+    await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit);
+
+    await interceptorManager.process('beforeRenderPage', req, res, renderVars);
+    return res.render('customlayout-selector/page_list', renderVars);
+  }
+
+  async function showPageForGrowiBehavior(req, res, next) {
+    const path = getPathFromRequest(req);
+    const revisionId = req.query.revision;
+
+    let page = await Page.findByPathAndViewer(path, req.user);
+
+    if (page == null) {
+      // check the page is forbidden or just does not exist.
+      req.isForbidden = await Page.count({path}) > 0;
+      return next();
+    }
+    else if (page.redirectTo) {
+      debug(`Redirect to '${page.redirectTo}'`);
+      return res.redirect(encodeURI(page.redirectTo + '?redirectFrom=' + pagePathUtils.encodePagePath(page.path)));
+    }
+
+    logger.debug('Page is found when processing pageShowForGrowiBehavior', page._id, page.path);
+
+    const limit = 50;
+    const offset = parseInt(req.query.offset)  || 0;
+    const renderVars = {};
+
+    let view = 'customlayout-selector/page';
+
+    page.initLatestRevisionField(revisionId);
+
+    // populate
+    page = await page.populateDataToShowRevision();
+    addRendarVarsForPage(renderVars, page);
+
+    await addRenderVarsForSlack(renderVars, page);
+    await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit);
+
+    if (isUserPage(page.path)) {
+      // change template
+      view = 'customlayout-selector/user_page';
+      await addRenderVarsForUserPage(renderVars, page, req.user);
+    }
+
+    await interceptorManager.process('beforeRenderPage', req, res, renderVars);
+    return res.render(view, renderVars);
+  }
+
+  const getSlackChannels = async page => {
+    if (page.extended.slack) {
+      return page.extended.slack;
+    }
+    else {
+      const data = await UpdatePost.findSettingsByPath(page.path);
+      const channels = data.map(e => e.channel).join(', ');
+      return channels;
+    }
+  };
+
+  /**
+   *
+   * @param {string} path
+   * @param {User} user
+   * @returns {number} PORTAL_STATUS_NOT_EXISTS(0) or PORTAL_STATUS_EXISTS(1) or PORTAL_STATUS_FORBIDDEN(2)
+   */
+  async function getPortalPageState(path, user) {
+    const portalPath = Page.addSlashOfEnd(path);
+    let page = await Page.findByPathAndViewer(portalPath, user);
+
+    if (page == null) {
+      // check the page is forbidden or just does not exist.
+      const isForbidden = await Page.count({ path: portalPath }) > 0;
+      return isForbidden ? PORTAL_STATUS_FORBIDDEN : PORTAL_STATUS_NOT_EXISTS;
+    }
+    return PORTAL_STATUS_EXISTS;
+  }
+
+
+
+  actions.showTopPage = function(req, res) {
+    return showPageListForCrowiBehavior(req, res);
+  };
+
   /**
    * switch action by behaviorType
    */
-  actions.pageListShowWrapper = function(req, res) {
+  actions.showPageWithEndOfSlash = function(req, res, next) {
     const behaviorType = Config.behaviorType(config);
 
     if (!behaviorType || 'crowi' === behaviorType) {
-      return actions.pageListShow(req, res);
+      return showPageListForCrowiBehavior(req, res, next);
     }
     else {
-      return actions.pageListShowForCrowiPlus(req, res);
+      let path = getPathFromRequest(req);   // end of slash should be omitted
+      // redirect and showPage action will be triggered
+      return res.redirect(path);
     }
   };
   /**
-   * switch action by behaviorType
+   * switch action
+   *   - presentation mode
+   *   - by behaviorType
    */
-  actions.pageShowWrapper = function(req, res) {
+  actions.showPage = async function(req, res, next) {
+    // presentation mode
+    if (req.query.presentation) {
+      return showPageForPresentation(req, res, next);
+    }
+
     const behaviorType = Config.behaviorType(config);
 
+    // check whether this page has portal page
     if (!behaviorType || 'crowi' === behaviorType) {
-      return actions.pageShow(req, res);
+      const portalPagePath = Page.addSlashOfEnd(getPathFromRequest(req));
+      let hasPortalPage = await Page.count({ path: portalPagePath }) > 0;
+
+      if (hasPortalPage) {
+        logger.debug('The portal page is found', portalPagePath);
+        return res.redirect(portalPagePath);
+      }
     }
-    else {
-      return actions.pageShowForCrowiPlus(req, res);
-    }
+
+    // delegate to showPageForGrowiBehavior
+    return showPageForGrowiBehavior(req, res, next);
   };
   /**
    * switch action by behaviorType
@@ -181,293 +379,42 @@ module.exports = function(crowi, app) {
     }
   };
 
-
-  actions.pageListShow = function(req, res) {
-    let path = getPathFromRequest(req);
-    const limit = 50;
-    const offset = parseInt(req.query.offset)  || 0;
-    const SEENER_THRESHOLD = 10;
-    // add slash if root
-    path = path + (path == '/' ? '' : '/');
-
-    debug('Page list show', path);
-    // index page
-    const pagerOptions = {
-      offset: offset,
-      limit: limit
-    };
-    const queryOptions = {
-      offset: offset,
-      limit: limit + 1,
-      isPopulateRevisionBody: Config.isEnabledTimeline(config),
-    };
-
-    const renderVars = {
-      page: null,
-      path: path,
-      isPortal: false,
-      pages: [],
-      tree: [],
-    };
-
-    Page.hasPortalPage(path, req.user, req.query.revision)
-    .then(function(portalPage) {
-      renderVars.page = portalPage;
-      renderVars.isPortal = (portalPage != null);
-
-      if (portalPage) {
-        renderVars.revision = portalPage.revision;
-        renderVars.pageIdOnHackmd = portalPage.pageIdOnHackmd;
-        renderVars.revisionHackmdSynced = portalPage.revisionHackmdSynced;
-        renderVars.hasDraftOnHackmd = portalPage.hasDraftOnHackmd;
-        return Revision.findRevisionList(portalPage.path, {});
-      }
-      else {
-        return Promise.resolve([]);
-      }
-    })
-    .then(function(tree) {
-      renderVars.tree = tree;
-
-      return Page.findListByStartWith(path, req.user, queryOptions);
-    })
-    .then(function(pageList) {
-
-      if (pageList.length > limit) {
-        pageList.pop();
-      }
-
-      pagerOptions.length = pageList.length;
-
-      renderVars.viewConfig = {
-        seener_threshold: SEENER_THRESHOLD,
-      };
-      renderVars.pager = generatePager(pagerOptions);
-      renderVars.pages = pagePathUtils.encodePagesPath(pageList);
-    })
-    .then(() => {
-      return PageGroupRelation.findByPage(renderVars.page);
-    })
-    .then((pageGroupRelation) => {
-      if (pageGroupRelation != null) {
-        renderVars.pageRelatedGroup = pageGroupRelation.relatedGroup;
-      }
-    })
-    .then(() => {
-      res.render('customlayout-selector/page_list', renderVars);
-    }).catch(function(err) {
-      debug('Error on rendering pageListShow', err);
-    });
-  };
-
-  actions.pageListShowForCrowiPlus = function(req, res) {
-    let path = getPathFromRequest(req);
-    // omit the slash of the last
-    path = path.replace((/\/$/), '');
-    // redirect
-    return res.redirect(path);
-  };
-
-  actions.pageShowForCrowiPlus = function(req, res) {
+  actions.notFound = async function(req, res) {
     const path = getPathFromRequest(req);
 
-    const limit = 50;
-    const offset = parseInt(req.query.offset)  || 0;
-    const SEENER_THRESHOLD = 10;
+    let view;
+    const renderVars = { path };
 
-    // index page
-    const pagerOptions = {
-      offset: offset,
-      limit: limit
-    };
-    const queryOptions = {
-      offset: offset,
-      limit: limit + 1,
-      isPopulateRevisionBody: Config.isEnabledTimeline(config),
-      includeDeletedPage: path.startsWith('/trash/'),
-    };
-
-    const renderVars = {
-      path: path,
-      page: null,
-      revision: {},
-      author: false,
-      pages: [],
-      tree: [],
-      pageRelatedGroup: null,
-      template: null,
-      revisionHackmdSynced: null,
-      hasDraftOnHackmd: false,
-      slack: '',
-    };
-
-    let view = 'customlayout-selector/page';
-
-    let isRedirect = false;
-    Page.findPage(path, req.user, req.query.revision)
-    .then(function(page) {
-      debug('Page found', page._id, page.path);
-
-      // redirect
-      if (page.redirectTo) {
-        debug(`Redirect to '${page.redirectTo}'`);
-        isRedirect = true;
-        return res.redirect(encodeURI(page.redirectTo + '?redirectFrom=' + pagePathUtils.encodePagePath(page.path)));
-      }
-
-      renderVars.page = page;
-
-      if (page) {
-        renderVars.path = page.path;
-        renderVars.revision = page.revision;
-        renderVars.author = page.revision.author;
-        renderVars.pageIdOnHackmd = page.pageIdOnHackmd;
-        renderVars.revisionHackmdSynced = page.revisionHackmdSynced;
-        renderVars.hasDraftOnHackmd = page.hasDraftOnHackmd;
-
-        return Revision.findRevisionList(page.path, {})
-        .then(function(tree) {
-          renderVars.tree = tree;
-        })
-        .then(() => {
-          return PageGroupRelation.findByPage(renderVars.page);
-        })
-        .then((pageGroupRelation) => {
-          if (pageGroupRelation != null) {
-            renderVars.pageRelatedGroup = pageGroupRelation.relatedGroup;
-          }
-        })
-        .then(() => {
-          return getSlackChannels(page);
-        })
-        .then((channels) => {
-          renderVars.slack = channels;
-        })
-        .then(function() {
-          const userPage = isUserPage(page.path);
-          let userData = null;
-
-          if (userPage) {
-            // change template
-            view = 'customlayout-selector/user_page';
-
-            return User.findUserByUsername(User.getUsernameByPath(page.path))
-            .then(function(data) {
-              if (data === null) {
-                throw new Error('The user not found.');
-              }
-              userData = data;
-              renderVars.pageUser = userData;
-
-              return Bookmark.findByUser(userData, {limit: 10, populatePage: true, requestUser: req.user});
-            }).then(function(bookmarkList) {
-              renderVars.bookmarkList = bookmarkList;
-
-              return Page.findListByCreator(userData, {limit: 10}, req.user);
-            }).then(function(createdList) {
-              renderVars.createdList = createdList;
-              return Promise.resolve();
-            }).catch(function(err) {
-              debug('Error on finding user related entities', err);
-              // pass
-            });
-          }
-        });
-      }
-    })
-    // page is not found or user is forbidden
-    .catch(function(err) {
-      let isForbidden = false;
-      if (err.name === 'UserHasNoGrantException') {
-        isForbidden = true;
-      }
-
-      if (isForbidden) {
-        view = 'customlayout-selector/forbidden';
-        return;
-      }
-      else {
-        view = 'customlayout-selector/not_found';
-
-        // look for templates
-        return Page.findTemplate(path)
-          .then(template => {
-            if (template) {
-              template = replacePlaceholders(template, req);
-            }
-
-            renderVars.template = template;
-          });
-      }
-    })
-    // get list pages
-    .then(function() {
-      if (!isRedirect) {
-        Page.findListWithDescendants(path, req.user, queryOptions)
-          .then(function(pageList) {
-            if (pageList.length > limit) {
-              pageList.pop();
-            }
-
-            pagerOptions.length = pageList.length;
-
-            renderVars.viewConfig = {
-              seener_threshold: SEENER_THRESHOLD,
-            };
-            renderVars.pager = generatePager(pagerOptions);
-            renderVars.pages = pagePathUtils.encodePagesPath(pageList);
-
-            return;
-          })
-          .then(function() {
-            return interceptorManager.process('beforeRenderPage', req, res, renderVars);
-          })
-          .then(function() {
-            res.render(req.query.presentation ? 'page_presentation' : view, renderVars);
-          })
-          .catch(function(err) {
-            logger.error('Error on rendering pageListShowForCrowiPlus', err);
-          });
-      }
-    });
-  };
-
-  const getSlackChannels = async page => {
-    if (page.extended.slack) {
-      return page.extended.slack;
+    if (req.isForbidden) {
+      view = 'customlayout-selector/forbidden';
     }
     else {
-      const data = await UpdatePost.findSettingsByPath(page.path);
-      const channels = data.map(e => e.channel).join(', ');
-      return channels;
+      view = 'customlayout-selector/not_found';
+
+      // retrieve templates
+      let template = await Page.findTemplate(path);
+      if (template != null) {
+        template = replacePlaceholdersOfTemplate(template, req);
+        renderVars.template = template;
+      }
     }
+
+    const limit = 50;
+    const offset = parseInt(req.query.offset)  || 0;
+    await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit);
+
+    return res.render(view, renderVars);
   };
 
-  const replacePlaceholders = (template, req) => {
-    const definitions = {
-      pagepath: getPathFromRequest(req),
-      username: req.user.name,
-      today: getToday(),
-    };
-    const compiledTemplate = swig.compile(template);
-
-    return compiledTemplate(definitions);
-  };
-
-  actions.deletedPageListShow = function(req, res) {
+  actions.deletedPageListShow = async function(req, res) {
     const path = '/trash' + getPathFromRequest(req);
     const limit = 50;
     const offset = parseInt(req.query.offset)  || 0;
 
-    // index page
-    const pagerOptions = {
-      offset: offset,
-      limit: limit
-    };
     const queryOptions = {
       offset: offset,
       limit: limit + 1,
-      includeDeletedPage: true,
+      includeTrashed: true,
     };
 
     const renderVars = {
@@ -476,252 +423,35 @@ module.exports = function(crowi, app) {
       pages: [],
     };
 
-    Page.findListWithDescendants(path, req.user, queryOptions)
-    .then(function(pageList) {
+    const result = await Page.findListWithDescendants(path, req.user, queryOptions);
 
-      if (pageList.length > limit) {
-        pageList.pop();
-      }
-
-      pagerOptions.length = pageList.length;
-
-      renderVars.pager = generatePager(pagerOptions);
-      renderVars.pages = pagePathUtils.encodePagesPath(pageList);
-      res.render('customlayout-selector/page_list', renderVars);
-    }).catch(function(err) {
-      debug('Error on rendering deletedPageListShow', err);
-    });
-  };
-
-  actions.search = function(req, res) {
-    // spec: ?q=query&sort=sort_order&author=author_filter
-    const query = req.query.q;
-    const search = require('../util/search')(crowi);
-
-    search.searchPageByKeyword(query)
-    .then(function(pages) {
-      debug('pages', pages);
-
-      if (pages.hits.total <= 0) {
-        return Promise.resolve([]);
-      }
-
-      const ids = pages.hits.hits.map(function(page) {
-        return page._id;
-      });
-
-      return Page.findListByPageIds(ids);
-    }).then(function(pages) {
-
-      res.render('customlayout-selector/page_list', {
-        path: '/',
-        pages: pagePathUtils.encodePagesPath(pages),
-        pager: generatePager({offset: 0, limit: 50})
-      });
-    }).catch(function(err) {
-      debug('search error', err);
-    });
-  };
-
-  async function renderPage(pageData, req, res, isForbidden) {
-    if (!pageData) {
-      let view = 'customlayout-selector/not_found';
-      let template = undefined;
-
-      // forbidden
-      if (isForbidden) {
-        view = 'customlayout-selector/forbidden';
-      }
-      else {
-        const path = getPathFromRequest(req);
-        template = await Page.findTemplate(path);
-        if (template != null) {
-          template = replacePlaceholders(template, req);
-        }
-      }
-
-      return res.render(view, {
-        author: {},
-        page: false,
-        template,
-      });
+    if (result.pages.length > limit) {
+      result.pages.pop();
     }
 
+    renderVars.pager = generatePager(result.offset, result.limit, result.totalCount);
+    renderVars.pages = pagePathUtils.encodePagesPath(result.pages);
+    res.render('customlayout-selector/page_list', renderVars);
 
-    if (pageData.redirectTo) {
-      return res.redirect(encodeURI(pageData.redirectTo + '?redirectFrom=' + pagePathUtils.encodePagePath(pageData.path)));
-    }
-
-    const renderVars = {
-      path: pageData.path,
-      page: pageData,
-      revision: pageData.revision || {},
-      author: pageData.revision.author || false,
-      slack: '',
-    };
-    const userPage = isUserPage(pageData.path);
-    let userData = null;
-
-    Revision.findRevisionList(pageData.path, {})
-    .then(function(tree) {
-      renderVars.tree = tree;
-    })
-    .then(() => {
-      return PageGroupRelation.findByPage(renderVars.page);
-    })
-    .then((pageGroupRelation) => {
-      if (pageGroupRelation != null) {
-        renderVars.pageRelatedGroup = pageGroupRelation.relatedGroup;
-      }
-    })
-    .then(() => {
-      return getSlackChannels(pageData);
-    })
-    .then(channels => {
-      renderVars.slack = channels;
-    })
-    .then(function() {
-      if (userPage) {
-        return User.findUserByUsername(User.getUsernameByPath(pageData.path))
-        .then(function(data) {
-          if (data === null) {
-            throw new Error('The user not found.');
-          }
-          userData = data;
-          renderVars.pageUser = userData;
-
-          return Bookmark.findByUser(userData, {limit: 10, populatePage: true, requestUser: req.user});
-        }).then(function(bookmarkList) {
-          renderVars.bookmarkList = bookmarkList;
-
-          return Page.findListByCreator(userData, {limit: 10}, req.user);
-        }).then(function(createdList) {
-          renderVars.createdList = createdList;
-          return Promise.resolve();
-        }).catch(function(err) {
-          debug('Error on finding user related entities', err);
-          // pass
-        });
-      }
-      else {
-        return Promise.resolve();
-      }
-    }).then(function() {
-      return interceptorManager.process('beforeRenderPage', req, res, renderVars);
-    }).then(function() {
-      let view = 'customlayout-selector/page';
-      if (userData) {
-        view = 'customlayout-selector/user_page';
-      }
-      res.render(req.query.presentation ? 'page_presentation' : view, renderVars);
-    }).catch(function(err) {
-      debug('Error: renderPage()', err);
-      if (err) {
-        res.redirect('/');
-      }
-    });
-  }
-
-  actions.pageShow = function(req, res) {
-    const path = getPathFromRequest(req);
-
-    // FIXME: せっかく getPathFromRequest になってるのにここが生 params[0] だとダサイ
-    const isMarkdown = req.params[0].match(/.+\.md$/) || false;
-
-    res.locals.path = path;
-
-    Page.findPage(path, req.user, req.query.revision)
-    .then(function(page) {
-      debug('Page found', page._id, page.path);
-
-      if (isMarkdown) {
-        res.set('Content-Type', 'text/plain');
-        return res.send(page.revision.body);
-      }
-
-      return renderPage(page, req, res);
-    })
-    // page is not found or the user is forbidden
-    .catch(function(err) {
-
-      let isForbidden = false;
-      if (err.name === 'UserHasNoGrantException') {
-        isForbidden = true;
-      }
-
-      const normalizedPath = Page.normalizePath(path);
-      if (normalizedPath !== path) {
-        return res.redirect(normalizedPath);
-      }
-
-      // pageShow は /* にマッチしてる最後の砦なので、creatableName でない routing は
-      // これ以前に定義されているはずなので、こうしてしまって問題ない。
-      if (!Page.isCreatableName(path)) {
-        // 削除済みページの場合 /trash 以下に移動しているので creatableName になっていないので、表示を許可
-        logger.warn('Page is not creatable name.', path);
-        res.redirect('/');
-        return ;
-      }
-      if (req.query.revision) {
-        return res.redirect(pagePathUtils.encodePagePath(path));
-      }
-
-      if (isMarkdown) {
-        return res.redirect('/');
-      }
-
-      Page.hasPortalPage(path + '/', req.user)
-      .then(function(page) {
-        if (page) {
-          return res.redirect(pagePathUtils.encodePagePath(path) + '/');
-        }
-        else {
-          const fixed = Page.fixToCreatableName(path);
-          if (fixed !== path) {
-            logger.warn('fixed page name', fixed);
-            res.redirect(pagePathUtils.encodePagePath(fixed));
-            return ;
-          }
-
-          // if guest user
-          if (!req.user) {
-            res.redirect('/');
-          }
-
-          // render editor
-          debug('Catch pageShow', err);
-          return renderPage(null, req, res, isForbidden);
-        }
-      }).catch(function(err) {
-        debug('Error on rendering pageShow (redirect to portal)', err);
-      });
-    });
   };
-
-
-  const api = actions.api = {};
 
   /**
    * redirector
    */
-  api.redirector = function(req, res) {
+  actions.redirector = async function(req, res) {
     const id = req.params.id;
 
-    Page.findPageById(id)
-    .then(function(pageData) {
+    const page = await Page.findByIdAndViewer(id, req.user);
 
-      if (pageData.grant == Page.GRANT_RESTRICTED && !pageData.isGrantedFor(req.user)) {
-        return Page.pushToGrantedUsers(pageData, req.user);
-      }
-
-      return Promise.resolve(pageData);
-    }).then(function(page) {
-
+    if (page != null) {
       return res.redirect(pagePathUtils.encodePagePath(page.path));
-    }).catch(function(err) {
-      return res.redirect('/');
-    });
+    }
+
+    return res.redirect('/');
   };
+
+
+  const api = actions.api = {};
 
   /**
    * @api {get} /pages.list List pages by user
@@ -731,14 +461,13 @@ module.exports = function(crowi, app) {
    * @apiParam {String} path
    * @apiParam {String} user
    */
-  api.list = function(req, res) {
+  api.list = async function(req, res) {
     const username = req.query.user || null;
     const path = req.query.path || null;
     const limit = + req.query.limit || 50;
     const offset = parseInt(req.query.offset) || 0;
 
-    const pagerOptions = { offset: offset, limit: limit };
-    const queryOptions = { offset: offset, limit: limit + 1};
+    const queryOptions = { offset, limit: limit + 1 };
 
     // Accepts only one of these
     if (username === null && path === null) {
@@ -748,33 +477,29 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Parameter user or path is required.'));
     }
 
-    let pageFetcher;
-    if (path === null) {
-      pageFetcher = User.findUserByUsername(username)
-      .then(function(user) {
+    try {
+      let result = null;
+      if (path == null) {
+        const user = await User.findUserByUsername(username);
         if (user === null) {
           throw new Error('The user not found.');
         }
-        return Page.findListByCreator(user, queryOptions, req.user);
-      });
-    }
-    else {
-      pageFetcher = Page.findListByStartWith(path, req.user, queryOptions);
-    }
-
-    pageFetcher
-    .then(function(pages) {
-      if (pages.length > limit) {
-        pages.pop();
+        result = await Page.findListByCreator(user, req.user, queryOptions);
       }
-      pagerOptions.length = pages.length;
+      else {
+        result = await Page.findListByStartWith(path, req.user, queryOptions);
+      }
 
-      const result = {};
-      result.pages = pagePathUtils.encodePagesPath(pages);
+      if (result.pages.length > limit) {
+        result.pages.pop();
+      }
+
+      result.pages = pagePathUtils.encodePagesPath(result.pages);
       return res.json(ApiResponse.success(result));
-    }).catch(function(err) {
+    }
+    catch (err) {
       return res.json(ApiResponse.error(err));
-    });
+    }
   };
 
   /**
@@ -799,19 +524,14 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Parameters body and path are required.'));
     }
 
-    const ignoreNotFound = true;
-    const createdPage = await Page.findPage(pagePath, req.user, null, ignoreNotFound)
-      .then(function(data) {
-        if (data !== null) {
-          throw new Error('Page exists');
-        }
+    // check page existence
+    const isExist = await Page.count({path: pagePath}) > 0;
+    if (isExist) {
+      return res.json(ApiResponse.error('Page exists', 'already_exists'));
+    }
 
-        const options = {grant, grantUserGroupId, socketClientId};
-        return Page.create(pagePath, body, req.user, options);
-      })
-      .catch(function(err) {
-        return res.json(ApiResponse.error(err));
-      });
+    const options = {grant, grantUserGroupId, socketClientId};
+    const createdPage = await Page.create(pagePath, body, req.user, options);
 
     const result = { page: serializeToObj(createdPage) };
     result.page.lastUpdateUser = User.filterToPublicFields(createdPage.lastUpdateUser);
@@ -861,38 +581,43 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('page_id and body are required.'));
     }
 
-    let previousRevision = undefined;
-    let updatedPage = await Page.findPageByIdAndGrantedUser(pageId, req.user)
-      .then(function(pageData) {
-        if (pageData && revisionId !== null && !pageData.isUpdatable(revisionId)) {
-          throw new Error('Posted param "revisionId" is outdated.');
-        }
+    // check page existence
+    const isExist = await Page.count({_id: pageId}) > 0;
+    if (!isExist) {
+      return res.json(ApiResponse.error(`Page('${pageId}' is not found or forbidden`, 'notfound_or_forbidden'));
+    }
 
-        const options = {isSyncRevisionToHackmd, socketClientId};
-        if (grant != null) {
-          options.grant = grant;
-        }
-        if (grantUserGroupId != null) {
-          options.grantUserGroupId = grantUserGroupId;
-        }
+    // check revision
+    let page = await Page.findByIdAndViewer(pageId, req.user);
+    if (page != null && revisionId != null && !page.isUpdatable(revisionId)) {
+      return res.json(ApiResponse.error('Posted param "revisionId" is outdated.', 'outdated'));
+    }
 
-        // store previous revision
-        previousRevision = pageData.revision;
+    const options = {isSyncRevisionToHackmd, socketClientId};
+    if (grant != null) {
+      options.grant = grant;
+    }
+    if (grantUserGroupId != null) {
+      options.grantUserGroupId = grantUserGroupId;
+    }
 
-        return Page.updatePage(pageData, pageBody, req.user, options);
-      })
-      .catch(function(err) {
-        logger.error('error on _api/pages.update', err);
-        res.json(ApiResponse.error(err));
-      });
+    try {
+      const Revision = crowi.model('Revision');
+      const previousRevision = await Revision.findById(revisionId);
+      page = await Page.updatePage(page, pageBody, previousRevision.body, req.user, options);
+    }
+    catch (err) {
+      logger.error('error on _api/pages.update', err);
+      return res.json(ApiResponse.error(err));
+    }
 
-    const result = { page: serializeToObj(updatedPage) };
-    result.page.lastUpdateUser = User.filterToPublicFields(updatedPage.lastUpdateUser);
+    const result = { page: serializeToObj(page) };
+    result.page.lastUpdateUser = User.filterToPublicFields(page.lastUpdateUser);
     res.json(ApiResponse.success(result));
 
     // global notification
     try {
-      await globalNotificationService.notifyPageEdit(updatedPage);
+      await globalNotificationService.notifyPageEdit(page);
     }
     catch (err) {
       logger.error(err);
@@ -900,7 +625,9 @@ module.exports = function(crowi, app) {
 
     // user notification
     if (isSlackEnabled && slackChannels != null) {
-      await notifyToSlackByUser(updatedPage, req.user, slackChannels, 'update', previousRevision);
+      const Revision = crowi.model('Revision');
+      const previousRevision = await Revision.findById(page.revision);
+      await notifyToSlackByUser(page, req.user, slackChannels, 'update', previousRevision);
     }
   };
 
@@ -913,31 +640,40 @@ module.exports = function(crowi, app) {
    * @apiParam {String} path
    * @apiParam {String} revision_id
    */
-  api.get = function(req, res) {
+  api.get = async function(req, res) {
     const pagePath = req.query.path || null;
     const pageId = req.query.page_id || null; // TODO: handling
-    const revisionId = req.query.revision_id || null;
 
     if (!pageId && !pagePath) {
       return res.json(ApiResponse.error(new Error('Parameter path or page_id is required.')));
     }
 
-    let pageFinder;
-    if (pageId) { // prioritized
-      pageFinder = Page.findPageByIdAndGrantedUser(pageId, req.user);
-    }
-    else if (pagePath) {
-      pageFinder = Page.findPage(pagePath, req.user, revisionId);
-    }
+    let page;
+    try {
+      if (pageId) { // prioritized
+        page = await Page.findByIdAndViewer(pageId, req.user);
+      }
+      else if (pagePath) {
+        page = await Page.findByPathAndViewer(pagePath, req.user);
+      }
 
-    pageFinder.then(function(pageData) {
-      const result = {};
-      result.page = pageData;   // TODO consider to use serializeToObj method -- 2018.08.06 Yuki Takei
+      if (page == null) {
+        throw new Error(`Page '${pageId || pagePath}' is not found or forbidden`, 'notfound_or_forbidden');
+      }
 
-      return res.json(ApiResponse.success(result));
-    }).catch(function(err) {
+      page.initLatestRevisionField();
+
+      // populate
+      page = await page.populateDataToShowRevision();
+    }
+    catch (err) {
       return res.json(ApiResponse.error(err));
-    });
+    }
+
+    const result = {};
+    result.page = page;   // TODO consider to use serializeToObj method -- 2018.08.06 Yuki Takei
+
+    return res.json(ApiResponse.success(result));
   };
 
   /**
@@ -947,24 +683,31 @@ module.exports = function(crowi, app) {
    *
    * @apiParam {String} page_id Page Id.
    */
-  api.seen = function(req, res) {
+  api.seen = async function(req, res) {
     const pageId = req.body.page_id;
     if (!pageId) {
       return res.json(ApiResponse.error('page_id required'));
     }
+    else if (!req.user) {
+      return res.json(ApiResponse.error('user required'));
+    }
 
-    Page.findPageByIdAndGrantedUser(pageId, req.user)
-    .then(function(page) {
-      return page.seen(req.user);
-    }).then(function(user) {
-      const result = {};
-      result.seenUser = user;
-
-      return res.json(ApiResponse.success(result));
-    }).catch(function(err) {
+    let page;
+    try {
+      page = await Page.findByIdAndViewer(pageId, req.user);
+      if (req.user != null) {
+        page = await page.seen(req.user);
+      }
+    }
+    catch (err) {
       debug('Seen user update error', err);
       return res.json(ApiResponse.error(err));
-    });
+    }
+
+    const result = {};
+    result.seenUser = page.seenUsers;
+
+    return res.json(ApiResponse.success(result));
   };
 
   /**
@@ -974,26 +717,39 @@ module.exports = function(crowi, app) {
    *
    * @apiParam {String} page_id Page Id.
    */
-  api.like = function(req, res) {
-    const id = req.body.page_id;
+  api.like = async function(req, res) {
+    const pageId = req.body.page_id;
+    if (!pageId) {
+      return res.json(ApiResponse.error('page_id required'));
+    }
+    else if (!req.user) {
+      return res.json(ApiResponse.error('user required'));
+    }
 
-    Page.findPageByIdAndGrantedUser(id, req.user)
-    .then(function(pageData) {
-      return pageData.like(req.user);
-    })
-    .then(function(page) {
-      const result = {page: page};
-      res.json(ApiResponse.success(result));
-      return page;
-    })
-    .then((page) => {
+    let page;
+    try {
+      page = await Page.findByIdAndViewer(pageId, req.user);
+      if (page == null) {
+        throw new Error(`Page '${pageId}' is not found or forbidden`);
+      }
+      page = await page.like(req.user);
+    }
+    catch (err) {
+      debug('Seen user update error', err);
+      return res.json(ApiResponse.error(err));
+    }
+
+    const result = { page };
+    result.seenUser = page.seenUsers;
+    res.json(ApiResponse.success(result));
+
+    try {
       // global notification
-      return globalNotificationService.notifyPageLike(page, req.user);
-    })
-    .catch(function(err) {
-      debug('Like failed', err);
-      return res.json(ApiResponse.error({}));
-    });
+      globalNotificationService.notifyPageLike(page, req.user);
+    }
+    catch (err) {
+      logger.error('Like failed', err);
+    }
   };
 
   /**
@@ -1003,19 +759,31 @@ module.exports = function(crowi, app) {
    *
    * @apiParam {String} page_id Page Id.
    */
-  api.unlike = function(req, res) {
-    const id = req.body.page_id;
+  api.unlike = async function(req, res) {
+    const pageId = req.body.page_id;
+    if (!pageId) {
+      return res.json(ApiResponse.error('page_id required'));
+    }
+    else if (req.user == null) {
+      return res.json(ApiResponse.error('user required'));
+    }
 
-    Page.findPageByIdAndGrantedUser(id, req.user)
-    .then(function(pageData) {
-      return pageData.unlike(req.user);
-    }).then(function(data) {
-      const result = {page: data};
-      return res.json(ApiResponse.success(result));
-    }).catch(function(err) {
-      debug('Unlike failed', err);
-      return res.json(ApiResponse.error({}));
-    });
+    let page;
+    try {
+      page = await Page.findByIdAndViewer(pageId, req.user);
+      if (page == null) {
+        throw new Error(`Page '${pageId}' is not found or forbidden`);
+      }
+      page = await page.unlike(req.user);
+    }
+    catch (err) {
+      debug('Seen user update error', err);
+      return res.json(ApiResponse.error(err));
+    }
+
+    const result = { page };
+    result.seenUser = page.seenUsers;
+    return res.json(ApiResponse.success(result));
   };
 
   /**
@@ -1055,7 +823,7 @@ module.exports = function(crowi, app) {
    * @apiParam {String} page_id Page Id.
    * @apiParam {String} revision_id
    */
-  api.remove = function(req, res) {
+  api.remove = async function(req, res) {
     const pageId = req.body.page_id;
     const previousRevision = req.body.revision_id || null;
     const socketClientId = req.body.socketClientId || undefined;
@@ -1067,48 +835,49 @@ module.exports = function(crowi, app) {
 
     const options = {socketClientId};
 
-    Page.findPageByIdAndGrantedUser(pageId, req.user)
-      .then(function(pageData) {
-        debug('Delete page', pageData._id, pageData.path);
+    let page = await Page.findByIdAndViewer(pageId, req.user);
 
-        if (isCompletely) {
-          if (isRecursively) {
-            return Page.completelyDeletePageRecursively(pageData, req.user, options);
-          }
-          else {
-            return Page.completelyDeletePage(pageData, req.user, options);
-          }
+    if (page == null) {
+      return res.json(ApiResponse.error(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'));
+    }
+
+    debug('Delete page', page._id, page.path);
+
+    try {
+      if (isCompletely) {
+        if (isRecursively) {
+          page = await Page.completelyDeletePageRecursively(page, req.user, options);
         }
-
-        // else
-
-        if (!pageData.isUpdatable(previousRevision)) {
-          throw new Error('Someone could update this page, so couldn\'t delete.');
+        else {
+          page = await Page.completelyDeletePage(page, req.user, options);
+        }
+      }
+      else {
+        if (!page.isUpdatable(previousRevision)) {
+          return res.json(ApiResponse.error('Someone could update this page, so couldn\'t delete.', 'outdated'));
         }
 
         if (isRecursively) {
-          return Page.deletePageRecursively(pageData, req.user, options);
+          page = await Page.deletePageRecursively(page, req.user, options);
         }
         else {
-          return Page.deletePage(pageData, req.user, options);
+          page = await Page.deletePage(page, req.user, options);
         }
-      })
-      .then(function(data) {
-        debug('Page deleted', data.path);
-        const result = {};
-        result.page = data;   // TODO consider to use serializeToObj method -- 2018.08.06 Yuki Takei
+      }
+    }
+    catch (err) {
+      logger.error('Error occured while get setting', err);
+      return res.json(ApiResponse.error('Failed to delete page.', 'unknown'));
+    }
 
-        res.json(ApiResponse.success(result));
-        return data;
-      })
-      .then((page) => {
-        // global notification
-        return globalNotificationService.notifyPageDelete(page);
-      })
-      .catch(function(err) {
-        logger.error('Error occured while get setting', err, err.stack);
-        return res.json(ApiResponse.error('Failed to delete page.'));
-      });
+    debug('Page deleted', page.path);
+    const result = {};
+    result.page = page;   // TODO consider to use serializeToObj method -- 2018.08.06 Yuki Takei
+
+    res.json(ApiResponse.success(result));
+
+    // global notification
+    return globalNotificationService.notifyPageDelete(page);
   };
 
   /**
@@ -1118,31 +887,36 @@ module.exports = function(crowi, app) {
    *
    * @apiParam {String} page_id Page Id.
    */
-  api.revertRemove = function(req, res, options) {
+  api.revertRemove = async function(req, res, options) {
     const pageId = req.body.page_id;
     const socketClientId = req.body.socketClientId || undefined;
 
     // get recursively flag
     const isRecursively = (req.body.recursively !== undefined);
 
-    Page.findPageByIdAndGrantedUser(pageId, req.user)
-    .then(function(pageData) {
+    let page;
+    try {
+      page = await Page.findByIdAndViewer(pageId, req.user);
+      if (page == null) {
+        throw new Error(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden');
+      }
 
       if (isRecursively) {
-        return Page.revertDeletedPageRecursively(pageData, req.user, {socketClientId});
+        page = await Page.revertDeletedPageRecursively(page, req.user, {socketClientId});
       }
       else {
-        return Page.revertDeletedPage(pageData, req.user, {socketClientId});
+        page = await Page.revertDeletedPage(page, req.user, {socketClientId});
       }
-    }).then(function(data) {
-      const result = {};
-      result.page = data;   // TODO consider to use serializeToObj method -- 2018.08.06 Yuki Takei
-
-      return res.json(ApiResponse.success(result));
-    }).catch(function(err) {
-      logger.error('Error occured while get setting', err, err.stack);
+    }
+    catch (err) {
+      logger.error('Error occured while get setting', err);
       return res.json(ApiResponse.error('Failed to revert deleted page.'));
-    });
+    }
+
+    const result = {};
+    result.page = page;   // TODO consider to use serializeToObj method -- 2018.08.06 Yuki Takei
+
+    return res.json(ApiResponse.success(result));
   };
 
   /**
@@ -1156,7 +930,7 @@ module.exports = function(crowi, app) {
    * @apiParam {String} new_path
    * @apiParam {Bool} create_redirect
    */
-  api.rename = function(req, res) {
+  api.rename = async function(req, res) {
     const pageId = req.body.page_id;
     const previousRevision = req.body.revision_id || null;
     const newPagePath = Page.normalizePath(req.body.new_path);
@@ -1165,50 +939,52 @@ module.exports = function(crowi, app) {
       moveUnderTrees: req.body.move_trees || 0,
       socketClientId: +req.body.socketClientId || undefined,
     };
-    const isRecursiveMove = req.body.move_recursively || 0;
+    const isRecursively = req.body.recursively || 0;
 
     if (!Page.isCreatableName(newPagePath)) {
-      return res.json(ApiResponse.error(`このページ名は作成できません (${newPagePath})`));
+      return res.json(ApiResponse.error(`Could not use the path '${newPagePath})'`, 'invalid_path'));
     }
 
-    Page.findPageByPath(newPagePath)
-    .then(function(page) {
-      if (page != null) {
-        // if page found, cannot cannot rename to that path
-        return res.json(ApiResponse.error(`このページ名は作成できません (${newPagePath})。ページが存在します。`));
+    const isExist = await Page.count({ path: newPagePath }) > 0;
+    if (isExist) {
+      // if page found, cannot cannot rename to that path
+      return res.json(ApiResponse.error(`'new_path=${newPagePath}' already exists`, 'already_exists'));
+    }
+
+    let page;
+
+    try {
+      page = await Page.findByIdAndViewer(pageId, req.user);
+
+      if (page == null) {
+        return res.json(ApiResponse.error(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'));
       }
 
-      Page.findPageById(pageId)
-      .then(function(pageData) {
-        page = pageData;
-        if (!pageData.isUpdatable(previousRevision)) {
-          throw new Error('Someone could update this page, so couldn\'t delete.');
-        }
+      if (!page.isUpdatable(previousRevision)) {
+        return res.json(ApiResponse.error('Someone could update this page, so couldn\'t delete.', 'outdated'));
+      }
 
-        if (isRecursiveMove) {
-          return Page.renameRecursively(pageData, newPagePath, req.user, options);
-        }
-        else {
-          return Page.rename(pageData, newPagePath, req.user, options);
-        }
+      if (isRecursively) {
+        page = await Page.renameRecursively(page, newPagePath, req.user, options);
+      }
+      else {
+        page = await Page.rename(page, newPagePath, req.user, options);
+      }
+    }
+    catch (err) {
+      logger.error(err);
+      return res.json(ApiResponse.error('Failed to update page.', 'unknown'));
+    }
 
-      })
-      .then(function() {
-        const result = {};
-        result.page = page;   // TODO consider to use serializeToObj method -- 2018.08.06 Yuki Takei
+    const result = {};
+    result.page = page;   // TODO consider to use serializeToObj method -- 2018.08.06 Yuki Takei
 
-        return res.json(ApiResponse.success(result));
-      })
-      .then(() => {
-        // global notification
-        globalNotificationService.notifyPageMove(page, req.body.path, req.user);
-      })
-      .catch(function(err) {
-        logger.error(err);
-        return res.json(ApiResponse.error('Failed to update page.'));
-      });
-    });
+    res.json(ApiResponse.success(result));
 
+    // global notification
+    globalNotificationService.notifyPageMove(page, req.body.path, req.user);
+
+    return page;
   };
 
   /**
@@ -1219,18 +995,23 @@ module.exports = function(crowi, app) {
    * @apiParam {String} page_id Page Id.
    * @apiParam {String} new_path
    */
-  api.duplicate = function(req, res) {
+  api.duplicate = async function(req, res) {
     const pageId = req.body.page_id;
     const newPagePath = Page.normalizePath(req.body.new_path);
 
-    Page.findPageById(pageId)
-      .then(function(pageData) {
-        req.body.path = newPagePath;
-        req.body.body = pageData.revision.body;
-        req.body.grant = pageData.grant;
+    const page = await Page.findByIdAndViewer(pageId, req.user);
 
-        return api.create(req, res);
-      });
+    if (page == null) {
+      return res.json(ApiResponse.error(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'));
+    }
+
+    await page.populateDataToShowRevision();
+
+    req.body.path = newPagePath;
+    req.body.body = page.revision.body;
+    req.body.grant = page.grant;
+
+    return api.create(req, res);
   };
 
   /**
@@ -1241,25 +1022,20 @@ module.exports = function(crowi, app) {
    * @apiParam {String} page_id Page Id.
    * @apiParam {String} revision_id
    */
-  api.unlink = function(req, res) {
-    const pageId = req.body.page_id;
+  api.unlink = async function(req, res) {
+    const path = req.body.path;
 
-    Page.findPageByIdAndGrantedUser(pageId, req.user)
-    .then(function(pageData) {
-      debug('Unlink page', pageData._id, pageData.path);
-
-      return Page.removeRedirectOriginPageByPath(pageData.path)
-        .then(() => pageData);
-    }).then(function(data) {
-      debug('Redirect Page deleted', data.path);
-      const result = {};
-      result.page = data;   // TODO consider to use serializeToObj method -- 2018.08.06 Yuki Takei
-
-      return res.json(ApiResponse.success(result));
-    }).catch(function(err) {
-      debug('Error occured while get setting', err, err.stack);
+    try {
+      await Page.removeRedirectOriginPageByPath(path);
+      logger.debug('Redirect Page deleted', path);
+    }
+    catch (err) {
+      logger.error('Error occured while get setting', err);
       return res.json(ApiResponse.error('Failed to delete redirect page.'));
-    });
+    }
+
+    const result = { path };
+    return res.json(ApiResponse.success(result));
   };
 
   api.recentCreated = async function(req, res) {
@@ -1269,7 +1045,7 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('param \'pageId\' must not be null'));
     }
 
-    const page = await Page.findPageById(pageId);
+    const page = await Page.findById(pageId);
     if (page == null) {
       return res.json(ApiResponse.error(`Page (id='${pageId}') does not exist`));
     }
@@ -1282,10 +1058,8 @@ module.exports = function(crowi, app) {
     const queryOptions = { offset: offset, limit: limit };
 
     try {
-      let pages = await Page.findListByCreator(page.creator, queryOptions, req.user);
-
-      const result = {};
-      result.pages = pagePathUtils.encodePagesPath(pages);
+      let result = await Page.findListByCreator(page.creator, req.user, queryOptions);
+      result.pages = pagePathUtils.encodePagesPath(result.pages);
 
       return res.json(ApiResponse.success(result));
     }

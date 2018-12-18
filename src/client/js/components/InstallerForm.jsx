@@ -13,6 +13,10 @@ class InstallerForm extends React.Component {
     this.checkUserName = this.checkUserName.bind(this);
   }
 
+  componentWillMount() {
+    this.changeLanguage('en-US');
+  }
+
   checkUserName(event) {
     const axios = require('axios').create({
       headers: {
@@ -40,6 +44,19 @@ class InstallerForm extends React.Component {
         </p>
 
         <form role="form" action="/installer/createAdmin" method="post" id="register-form">
+          <div className="input-group m-t-20 m-b-20 mx-auto">
+            <div className="radio radio-primary radio-inline">
+              <input type="radio" id="radioLangEn" name="registerForm[app:globalLang]" value="en-US"
+                     defaultChecked={ true } onClick={() => this.changeLanguage('en-US')} />
+              <label htmlFor="radioLangEn">English</label>
+            </div>
+            <div className="radio radio-primary radio-inline">
+              <input type="radio" id="radioLangJa" name="registerForm[app:globalLang]" value="ja"
+                     defaultChecked={ false } onClick={() => this.changeLanguage('ja')} />
+              <label htmlFor="radioLangJa">日本語</label>
+            </div>
+          </div>
+
           <div className={'input-group' + hasErrorClass}>
             <span className="input-group-addon"><i className="icon-user" /></span>
             <input type="text" className="form-control" placeholder={ this.props.t('User ID') }
@@ -66,19 +83,6 @@ class InstallerForm extends React.Component {
           </div>
 
           <input type="hidden" name="_csrf" value={ this.props.csrf } />
-
-          <div className="input-group m-t-20 m-b-20 mx-auto">
-            <div className="radio radio-primary radio-inline">
-              <input type="radio" id="radioLangEn" name="registerForm[app:globalLang]" value="en-US"
-                     defaultChecked={ true } onClick={() => this.changeLanguage('en-US')} />
-              <label htmlFor="radioLangEn">{ this.props.t('English') }</label>
-            </div>
-            <div className="radio radio-primary radio-inline">
-              <input type="radio" id="radioLangJa" name="registerForm[app:globalLang]" value="ja"
-                     defaultChecked={ false } onClick={() => this.changeLanguage('ja')} />
-              <label htmlFor="radioLangJa">{ this.props.t('Japanese') }</label>
-            </div>
-          </div>
 
           <div className="input-group m-t-30 m-b-20 d-flex justify-content-center">
             <button type="submit" className="fcbtn btn btn-success btn-1b btn-register">

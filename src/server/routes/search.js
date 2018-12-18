@@ -1,17 +1,16 @@
 module.exports = function(crowi, app) {
   'use strict';
 
-  var debug = require('debug')('growi:routes:search')
-    , Page = crowi.model('Page')
-    , User = crowi.model('User')
-    , ApiResponse = require('../util/apiResponse')
-
-    , actions = {};
-  var api = actions.api = {};
+  // var debug = require('debug')('growi:routes:search')
+  const Page = crowi.model('Page');
+  const ApiResponse = require('../util/apiResponse');
+  const ApiPaginate = require('../util/apiPaginate');
+  const actions = {};
+  const api = (actions.api = {});
 
   actions.searchPage = function(req, res) {
-    var keyword = req.query.q || null;
-    var search = crowi.getSearcher();
+    const keyword = req.query.q || null;
+    const search = crowi.getSearcher();
     if (!search) {
       return res.json(ApiResponse.error('Configuration of ELASTICSEARCH_URI is required.'));
     }
@@ -28,47 +27,64 @@ module.exports = function(crowi, app) {
    *
    * @apiParam {String} q keyword
    * @apiParam {String} path
+   * @apiParam {String} offset
+   * @apiParam {String} limit
    */
-  api.search = function(req, res) {
-    var keyword = req.query.q || null;
-    var tree = req.query.tree || null;
+  api.search = async function(req, res) {
+    const user = req.user;
+    const { q: keyword = null, tree = null, type = null } = req.query;
+    let paginateOpts;
+
+    try {
+      paginateOpts = ApiPaginate.parseOptionsForElasticSearch(req.query);
+    }
+    catch (e) {
+      res.json(ApiResponse.error(e));
+    }
+
     if (keyword === null || keyword === '') {
       return res.json(ApiResponse.error('keyword should not empty.'));
     }
 
-    var search = crowi.getSearcher();
+    const search = crowi.getSearcher();
     if (!search) {
       return res.json(ApiResponse.error('Configuration of ELASTICSEARCH_URI is required.'));
     }
 
-
-    var doSearch;
-    if (tree) {
-      doSearch = search.searchKeywordUnderPath(keyword, tree, {});
+    let userGroups = [];
+    if (user != null) {
+      const UserGroupRelation = crowi.model('UserGroupRelation');
+      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     }
-    else {
-      doSearch = search.searchKeyword(keyword, {});
-    }
-    var result = {};
-    doSearch
-      .then(function(data) {
-        result.meta = data.meta;
 
-        return Page.populatePageListToAnyObjects(data.data);
-      }).then(function(pages) {
-        result.data = pages.filter(function(page) {
-          if (Object.keys(page).length < 12) { // FIXME: 12 is a number of columns.
-            return false;
-          }
-          return true;
+    const searchOpts = { ...paginateOpts, type };
+
+    const result = {};
+    try {
+      let esResult;
+      if (tree) {
+        esResult = await search.searchKeywordUnderPath(keyword, tree, user, userGroups, searchOpts);
+      }
+      else {
+        esResult = await search.searchKeyword(keyword, user, userGroups, searchOpts);
+      }
+
+      const findResult = await Page.findListByPageIds(esResult.data);
+
+      result.meta = esResult.meta;
+      result.totalCount = findResult.totalCount;
+      result.data = findResult.pages
+        .map(page => {
+          page.bookmarkCount = (page._source && page._source.bookmark_count) || 0;
+          return page;
         });
-        return res.json(ApiResponse.success(result));
-      })
-      .catch(function(err) {
-        return res.json(ApiResponse.error(err));
-      });
-  };
+    }
+    catch (err) {
+      return res.json(ApiResponse.error(err));
+    }
 
+    return res.json(ApiResponse.success(result));
+  };
 
   return actions;
 };
