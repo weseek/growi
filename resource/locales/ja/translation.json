@@ -118,6 +118,10 @@
   "Deleted Pages": "削除済みページ",
   "Sign out": "ログアウト",
 
+  "form_validation": {
+    "required": "<code>%s</code> に値を入力してください"
+  },
+
   "installer": {
     "setup": "セットアップ",
     "create_initial_account": "最初のアカウントの作成",
@@ -427,11 +431,6 @@
     },
     "SAML": {
       "name": "SAML",
-      "entry_point": "エントリーポイント",
-      "issuer": "発行者",
-      "cert": "証明書",
-      "First Name": "姓",
-      "Last Name": "名",
       "id_detail": "SAML Identity プロバイダ内で一意に識別可能な値を格納している属性",
       "username_detail": "新規ユーザーのアカウント名(<code>username</code>)に関連付ける属性",
       "mapping_detail": "新規ユーザーの%sに関連付ける属性",
@@ -472,6 +471,16 @@
         "github": "GitHub OAuth の設定方法",
         "twitter": "Twitter OAuth の設定方法"
       }
+    },
+    "form_item_name": {
+      "security:passport-saml:entryPoint": "エントリーポイント",
+      "security:passport-saml:issuer": "発行者",
+      "security:passport-saml:cert": "証明書",
+      "security:passport-saml:attrMapId": "ID",
+      "security:passport-saml:attrMapUsername": "ユーザー名",
+      "security:passport-saml:attrMapMail": "メールアドレス",
+      "security:passport-saml:attrMapFirstName": "姓",
+      "security:passport-saml:attrMapLastName": "名"
     }
   },
   "markdown_setting": {
