@@ -60,8 +60,8 @@ class PassportService {
     this.mandatoryConfigKeysForSaml = [
       'security:passport-saml:isEnabled',
       'security:passport-saml:entryPoint',
-      'security:passport-saml:cert',
       'security:passport-saml:issuer',
+      'security:passport-saml:cert',
       'security:passport-saml:attrMapId',
       'security:passport-saml:attrMapUsername',
       'security:passport-saml:attrMapMail'
