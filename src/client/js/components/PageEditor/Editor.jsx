@@ -202,7 +202,7 @@ export default class Editor extends AbstractEditor {
   renderNavbar() {
     return (
       <div className="m-0 navbar navbar-default navbar-editor" style={{ minHeight: 'unset' }}>
-        <ul className="pr-4 nav nav-navbar navbar-right">
+        <ul className="pl-2 nav nav-navbar">
           { this.getNavbarItems() != null && this.getNavbarItems().map((item, idx) => {
             return <li key={idx}>{item}</li>;
           }) }

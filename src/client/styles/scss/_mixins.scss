@@ -18,7 +18,7 @@
   $header-plus-footer: $header-plus-footer + 2px;   // add .main padding-top
   $editor-margin: $header-plus-footer
                   + 25px        // add .btn-open-dropzone height
-                  + 30px;       // add .navbar-editor height
+                  + 28px;       // add .navbar-editor height
 
   .main {
     width: 100%;
@@ -51,9 +51,21 @@
         }
 
         .navbar-editor {
+          li {
+            display: inline-block;
+          }
+
           button {
-            padding: 7px 8px;
+            margin: 0 2px;
+            padding: 7px;
+            border: none;
+            background-color: transparent;
+            font-size: 14px;
             line-height: 1;
+          }
+
+          i {
+            font-size: 14px;
           }
 
           img {

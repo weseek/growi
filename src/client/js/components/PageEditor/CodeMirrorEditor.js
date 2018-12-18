@@ -92,6 +92,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.renderLoadingKeymapOverlay = this.renderLoadingKeymapOverlay.bind(this);
     this.renderCheatsheetModalButton = this.renderCheatsheetModalButton.bind(this);
 
+    this.makeHeaderHandler = this.makeHeaderHandler.bind(this);
     this.showHandsonTableHandler = this.showHandsonTableHandler.bind(this);
   }
 
@@ -661,12 +662,57 @@ export default class CodeMirrorEditor extends AbstractEditor {
     );
   }
 
+  createReplaceSelectionHandler(prefix, suffix) {
+    return () => {
+      const selection = this.getCodeMirror().getDoc().getSelection();
+      this.getCodeMirror().getDoc().replaceSelection(prefix + selection + suffix);
+    };
+  }
+
+  createAddPrefixToEachLinesHandler(prefix) {
+    return () => {
+      const startLineNum = this.getCodeMirror().getCursor('from').line;
+      const endLineNum = this.getCodeMirror().getCursor('to').line;
+
+      const lines = [];
+      for (let i = startLineNum; i <= endLineNum; i++) {
+        lines.push(prefix + this.getCodeMirror().getDoc().getLine(i));
+      }
+
+      const replacement = lines.join('\n') + '\n';
+      this.getCodeMirror().getDoc().replaceRange(replacement, {line: startLineNum, ch: 0}, {line: endLineNum + 1, ch: 0});
+    };
+  }
+
+  makeHeaderHandler() {
+    const lineNum = this.getCodeMirror().getCursor('from').line;
+    const line = this.getCodeMirror().getDoc().getLine(lineNum);
+    let prefix = '#';
+    if (!line.startsWith('#')) {
+      prefix += ' ';
+    }
+    this.getCodeMirror().getDoc().replaceRange(prefix, {line: lineNum, ch: 0}, {line: lineNum, ch: 0});
+  }
+
   showHandsonTableHandler() {
     this.refs.handsontableModal.show(mtu.getMarkdownTable(this.getCodeMirror()));
   }
 
   getNavbarItems() {
-    return <Button bsSize="small" onClick={ this.showHandsonTableHandler }><img src="/images/icons/editor/table.svg" width="14" /></Button>;
+    return [
+      <Button key='nav-item-bold' bsSize="small" onClick={ this.createReplaceSelectionHandler('**', '**') }><i className={'fa fa-bold'}></i></Button>,
+      <Button key='nav-item-italic' bsSize="small" onClick={ this.createReplaceSelectionHandler('*', '*') }><i className={'fa fa-italic'}></i></Button>,
+      <Button key='nav-item-strikethough' bsSize="small" onClick={ this.createReplaceSelectionHandler('~~', '~~') }><i className={'fa fa-strikethrough'}></i></Button>,
+      <Button key='nav-item-header' bsSize="small" onClick={ this.makeHeaderHandler }>H</Button>,
+      <Button key='nav-item-code' bsSize="small" onClick={ this.createReplaceSelectionHandler('`', '`') }><i className={'fa fa-code'}></i></Button>,
+      <Button key='nav-item-quote' bsSize="small" onClick={ this.createAddPrefixToEachLinesHandler('> ') }><i className={'fa fa-quote-right'}></i></Button>,
+      <Button key='nav-item-ul' bsSize="small" onClick={ this.createAddPrefixToEachLinesHandler('- ') }><i className={'fa fa-list'}></i></Button>,
+      <Button key='nav-item-ol' bsSize="small" onClick={ this.createAddPrefixToEachLinesHandler('1. ') }><i className={'fa fa-list-ol'}></i></Button>,
+      <Button key='nav-item-checkbox' bsSize="small" onClick={ this.createAddPrefixToEachLinesHandler('- [ ] ') }><i className={'fa fa-check-square'}></i></Button>,
+      <Button key='nav-item-link' bsSize="small" onClick={ this.createReplaceSelectionHandler('[', ']()') }><i className={'fa fa-link'}></i></Button>,
+      <Button key='nav-item-image' bsSize="small" onClick={ this.createReplaceSelectionHandler('![', ']()') }><i className={'fa fa-image'}></i></Button>,
+      <Button key='nav-item-table' bsSize="small" onClick={ this.showHandsonTableHandler }><img src="/images/icons/editor/table.svg" width="14" height="14" /></Button>
+    ];
   }
 
   render() {
