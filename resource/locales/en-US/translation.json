@@ -101,6 +101,10 @@
   "Deleted Pages": "Deleted Pages",
   "Sign out": "Logout",
 
+  "form_validation": {
+    "required": "<code>%s</code> is required"
+  },
+
   "installer": {
     "setup": "Setup",
     "create_initial_account": "Create an initial account",

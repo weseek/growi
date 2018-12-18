@@ -118,6 +118,10 @@
   "Deleted Pages": "削除済みページ",
   "Sign out": "ログアウト",
 
+  "form_validation": {
+    "required": "<code>%s</code> に値を入力してください"
+  },
+
   "installer": {
     "setup": "セットアップ",
     "create_initial_account": "最初のアカウントの作成",
