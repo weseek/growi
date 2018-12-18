@@ -102,8 +102,8 @@
           </label>
 
           <div class="col-xs-3 radio radio-primary">
-            <input type="radio" id="option1" name="{{nameForPageBreakOption}}" value="1" {% if pageBreakSeparator === 1 %}checked{% endif %}>
-            <label for="option1">
+            <input type="radio" id="pageBreakOption1" name="{{nameForPageBreakOption}}" value="1" {% if pageBreakSeparator === 1 %}checked{% endif %}>
+            <label for="pageBreakOption1">
               <p class="font-weight-bold">{{ t('markdown_setting.Preset one separator') }}</p>
               <p class="mt-3">
                 {{ t('markdown_setting.Preset one separator desc') }}
@@ -113,8 +113,8 @@
           </div>
 
           <div class="col-xs-3 radio radio-primary">
-            <input type="radio" id="option2" name="{{nameForPageBreakOption}}" value="2" {% if pageBreakSeparator === 2 %}checked{% endif %}>
-            <label for="option2">
+            <input type="radio" id="pageBreakOption2" name="{{nameForPageBreakOption}}" value="2" {% if pageBreakSeparator === 2 %}checked{% endif %}>
+            <label for="pageBreakOption2">
               <p class="font-weight-bold">{{ t('markdown_setting.Preset two separator') }}</p>
               <p class="mt-3">
                 {{ t('markdown_setting.Preset two separator desc') }}
@@ -124,8 +124,8 @@
           </div>
 
           <div class="col-xs-3 radio radio-primary">
-            <input type="radio" id="option3" name="{{nameForPageBreakOption}}" value="3" {% if pageBreakSeparator === 3 %}checked{% endif %}>
-            <label for="option3">
+            <input type="radio" id="pageBreakOption3" name="{{nameForPageBreakOption}}" value="3" {% if pageBreakSeparator === 3 %}checked{% endif %}>
+            <label for="pageBreakOption3">
               <p class="font-weight-bold">{{ t('markdown_setting.Custom separator') }}</p>
               <p class="mt-3">
                 {{ t('markdown_setting.Custom separator desc') }}
@@ -178,8 +178,8 @@
           {% set xssOption = markdownSetting['markdown:xss:option'] %}
 
           <div class="col-xs-4 radio radio-primary">
-            <input type="radio" id="option1" name="{{nameForXssOption}}" value="1" {% if xssOption === 1 %}checked{% endif %}>
-            <label for="option1">
+            <input type="radio" id="xssOption1" name="{{nameForXssOption}}" value="1" {% if xssOption === 1 %}checked{% endif %}>
+            <label for="xssOption1">
               <p class="font-weight-bold">{{ t('markdown_setting.Ignore all tags') }}</p>
               <div class="m-t-15">
                   {{ t('markdown_setting.Ignore all tags desc') }}
@@ -188,8 +188,8 @@
           </div>
 
           <div class="col-xs-4 radio radio-primary">
-            <input type="radio" id="option2" name="{{nameForXssOption}}" value="2" {% if xssOption === 2 %}checked{% endif %}>
-            <label for="option2">
+            <input type="radio" id="xssOption2" name="{{nameForXssOption}}" value="2" {% if xssOption === 2 %}checked{% endif %}>
+            <label for="xssOption2">
               <p class="font-weight-bold">{{ t('markdown_setting.Recommended setting') }}</p>
               <div class="m-t-15">
                 {{ t('markdown_setting.Tag names') }}
@@ -203,8 +203,8 @@
           </div>
 
           <div class="col-xs-4 radio radio-primary">
-            <input type="radio" id="option3" name="{{nameForXssOption}}" value="3" {% if xssOption === 3 %}checked{% endif %}>
-            <label for="option3">
+            <input type="radio" id="xssOption3" name="{{nameForXssOption}}" value="3" {% if xssOption === 3 %}checked{% endif %}>
+            <label for="xssOption3">
               <p class="font-weight-bold">{{ t('markdown_setting.Custom Whitelist') }}</p>
               <div class="m-t-15">
                 <div class="d-flex justify-content-between">

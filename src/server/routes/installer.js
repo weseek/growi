@@ -1,15 +1,15 @@
 module.exports = function(crowi, app) {
   'use strict';
 
-  var debug = require('debug')('growi:routes:installer')
-    , path = require('path')
-    , fs = require('graceful-fs')
-    , models = crowi.models
-    , Config = models.Config
-    , User = models.User
-    , Page = models.Page
+  const logger = require('@alias/logger')('growi:routes:installer');
+  const path = require('path');
+  const fs = require('graceful-fs');
+  const models = crowi.models;
+  const Config = models.Config;
+  const User = models.User;
+  const Page = models.Page;
 
-    , actions = {};
+  const actions = {};
 
   function createInitialPages(owner, lang) {
     // create portal page for '/'
@@ -32,56 +32,52 @@ module.exports = function(crowi, app) {
     return res.render('installer');
   };
 
-  actions.createAdmin = function(req, res) {
-    var registerForm = req.body.registerForm || {};
+  actions.createAdmin = function(req, res, next) {
+    const registerForm = req.body.registerForm || {};
 
-    if (req.form.isValid) {
-      var name = registerForm.name;
-      var username = registerForm.username;
-      var email = registerForm.email;
-      var password = registerForm.password;
-      var language = registerForm['app:globalLang'] || (req.language || 'en-US');
-      // for config.globalLang setting.
-      var langForm = {};
-      langForm['app:globalLang'] = language;
-
-      User.createUserByEmailAndPassword(name, username, email, password, language, function(err, userData) {
-        if (err) {
-          req.form.errors.push('管理ユーザーの作成に失敗しました。' + err.message);
-          // TODO
-          return res.render('installer');
-        }
-
-        userData.makeAdmin(function(err, userData) {
-          Config.applicationInstall(function(err, configs) {
-            if (err) {
-              // TODO
-              return ;
-            }
-
-            // login with passport
-            req.logIn(userData, (err) => {
-              if (err) { return next() }
-              else {
-                req.flash('successMessage', 'GROWI のインストールが完了しました！はじめに、このページで各種設定を確認してください。');
-                return res.redirect('/admin/app');
-              }
-            });
-          });
-
-          // create initial pages
-          createInitialPages(userData, language);
-        });
-
-        // save config settings, and update config cache
-        Config.updateNamespaceByArray('crowi', langForm, function(err, config) {
-          Config.updateConfigCache('crowi', config);
-        });
-      });
-    }
-    else {
+    if (!req.form.isValid) {
       return res.render('installer');
     }
+
+    const name = registerForm.name;
+    const username = registerForm.username;
+    const email = registerForm.email;
+    const password = registerForm.password;
+    const language = registerForm['app:globalLang'] || 'en-US';
+
+    User.createUserByEmailAndPassword(name, username, email, password, language, function(err, userData) {
+      if (err) {
+        req.form.errors.push('管理ユーザーの作成に失敗しました。' + err.message);
+        // TODO
+        return res.render('installer');
+      }
+
+      userData.makeAdmin(function(err, userData) {
+        Config.applicationInstall(function(err, configs) {
+          if (err) {
+            logger.error(err);
+            return;
+          }
+
+          // save the globalLang config, and update the config cache
+          Config.updateNamespaceByArray('crowi', {'app:globalLang': language}, function(err, config) {
+            Config.updateConfigCache('crowi', config);
+          });
+
+          // login with passport
+          req.logIn(userData, (err) => {
+            if (err) { return next() }
+            else {
+              req.flash('successMessage', 'GROWI のインストールが完了しました！はじめに、このページで各種設定を確認してください。');
+              return res.redirect('/admin/app');
+            }
+          });
+        });
+
+        // create initial pages
+        createInitialPages(userData, language);
+      });
+    });
   };
 
   return actions;
