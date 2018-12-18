@@ -76,7 +76,7 @@
       </thead>
       <tbody>
         <tr>
-          <th>{{ t("security_setting.SAML.entry_point") }}</th>
+          <th>{{ t("security_setting.form_item_name.security:passport-saml:entryPoint") }}</th>
           <td>
             <input class="form-control"
                    type="text"
@@ -97,7 +97,7 @@
           </td>
         </tr>
         <tr>
-          <th>{{ t("security_setting.SAML.issuer") }}</th>
+          <th>{{ t("security_setting.form_item_name.security:passport-saml:issuer") }}</th>
           <td>
             <input class="form-control"
                    type="text"
@@ -118,7 +118,7 @@
           </td>
         </tr>
         <tr>
-          <th>{{ t("security_setting.SAML.cert") }}</th>
+          <th>{{ t("security_setting.form_item_name.security:passport-saml:cert") }}</th>
           <td>
             <textarea class="form-control input-sm"
                       type="text"
@@ -173,7 +173,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
       </thead>
       <tbody>
       <tr>
-        <th>Identifier</th>
+        <th>{{ t("security_setting.form_item_name.security:passport-saml:attrMapId") }}</th>
         <td>
           <input class="form-control"
                  type="text"
@@ -199,7 +199,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
         </td>
       </tr>
       <tr>
-        <th>Username</th>
+        <th>{{ t("security_setting.form_item_name.security:passport-saml:attrMapUsername") }}</th>
         <td>
           <input class="form-control"
                  type="text"
@@ -225,7 +225,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
         </td>
       </tr>
       <tr>
-        <th>Mail</th>
+        <th>{{ t("security_setting.form_item_name.security:passport-saml:attrMapMail") }}</th>
         <td>
           <input class="form-control"
                  type="text"
@@ -250,7 +250,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
         </td>
       </tr>
       <tr>
-        <th>{{ t("security_setting.SAML.First Name") }}</th>
+        <th>{{ t("security_setting.form_item_name.security:passport-saml:attrMapFirstName") }}</th>
         <td>
           <input class="form-control"
                  type="text"
@@ -259,7 +259,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                  {% if useOnlyEnvVars %}readonly{% endif %}>
           <p class="help-block">
             <small>
-              {{ t("security_setting.SAML.mapping_detail", t("security_setting.SAML.First Name")) }}
+              {{ t("security_setting.SAML.mapping_detail", t("security_setting.form_item_name.security:passport-saml:attrMapFirstName")) }}
             </small>
           </p>
         </td>
@@ -277,7 +277,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
         </td>
       </tr>
       <tr>
-        <th>{{ t("security_setting.SAML.Last Name") }}</th>
+        <th>{{ t("security_setting.form_item_name.security:passport-saml:attrMapLastName") }}</th>
         <td>
           <input class="form-control"
                  type="text"
@@ -286,7 +286,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                  {% if useOnlyEnvVars %}readonly{% endif %}>
           <p class="help-block">
             <small>
-              {{ t("security_setting.SAML.mapping_detail", t("security_setting.SAML.Last Name")) }}
+              {{ t("security_setting.SAML.mapping_detail", t("security_setting.form_item_name.security:passport-saml:attrMapLastName")) }}
             </small>
           </p>
         </td>
