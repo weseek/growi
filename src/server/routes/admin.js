@@ -631,20 +631,24 @@ module.exports = function(crowi, app) {
       });
   };
 
-  actions.externalAccount.remove = function(req, res) {
-    const accountId = req.params.id;
+  actions.externalAccount.remove = async function(req, res) {
+    const id = req.params.id;
 
-    ExternalAccount.findOneAndRemove({accountId})
-      .then((result) => {
-        if (result == null) {
-          req.flash('errorMessage', '削除に失敗しました。');
-          return res.redirect('/admin/users/external-accounts');
-        }
-        else {
-          req.flash('successMessage', `外部アカウント '${accountId}' を削除しました`);
-          return res.redirect('/admin/users/external-accounts');
-        }
-      });
+    let account = null;
+
+    try {
+      account = await ExternalAccount.findByIdAndRemove(id);
+      if (account == null) {
+        throw new Error('削除に失敗しました。');
+      }
+    }
+    catch (err) {
+      req.flash('errorMessage', err.message);
+      return res.redirect('/admin/users/external-accounts');
+    }
+
+    req.flash('successMessage', `外部アカウント '${account.providerType}/${account.accountId}' を削除しました`);
+    return res.redirect('/admin/users/external-accounts');
   };
 
   actions.userGroup = {};
