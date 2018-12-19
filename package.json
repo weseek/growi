@@ -1,6 +1,6 @@
 {
   "name": "growi",
-  "version": "3.3.0-RC",
+  "version": "3.3.1-RC",
   "description": "Team collaboration software using markdown",
   "tags": [
     "wiki",
@@ -117,6 +117,7 @@
     "string-width": "^2.1.1",
     "swig-templates": "^2.0.2",
     "uglifycss": "^0.0.29",
+    "url-join": "^4.0.0",
     "xss": "^1.0.3"
   },
   "devDependencies": {
@@ -203,7 +204,6 @@
     "throttle-debounce": "^2.0.0",
     "toastr": "^2.1.2",
     "uglifyjs-webpack-plugin": "^2.0.1",
-    "url-join": "^4.0.0",
     "webpack": "^4.12.0",
     "webpack-assets-manifest": "^3.0.1",
     "webpack-bundle-analyzer": "^3.0.2",

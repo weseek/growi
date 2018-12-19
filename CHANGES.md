@@ -1,7 +1,11 @@
 CHANGES
 ========
 
-## 3.3.0-RC
+## 3.3.1-RC
+
+* Fix: Missing dependencies for production (url-join)
+
+## 3.3.0
 
 * Feature: NO_CDN Mode
 * Feature: Add option to show/hide restricted pages in list
