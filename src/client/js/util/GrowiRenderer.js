@@ -174,7 +174,9 @@ export default class GrowiRenderer {
       const citeTag = (langFn) ? `<cite>${langFn}</cite>` : '';
       if (hljs.getLanguage(lang)) {
         try {
-          return `<pre class="hljs ${noborder}">${citeTag}<code class="language-${lang}">${hljs.lineNumbersValue(hljs.highlight(lang, code, true).value)}</code></pre>`;
+          //// TODO activate `hljs.lineNumbersValue` when https://github.com/weseek/growi/issues/457 is fixed
+          // return `<pre class="hljs ${noborder}">${citeTag}<code class="language-${lang}">${hljs.lineNumbersValue(hljs.highlight(lang, code, true).value)}</code></pre>`;
+          return `<pre class="hljs ${noborder}">${citeTag}<code class="language-${lang}">${hljs.highlight(lang, code, true).value}</code></pre>`;
         }
         catch (__) {
           return `<pre class="hljs ${noborder}">${citeTag}<code class="language-${lang}">${code}}</code></pre>`;
