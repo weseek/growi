@@ -1,11 +1,11 @@
 CHANGES
 ========
 
-## 3.3.1-RC
+## 3.3.2-RC
 
-* Fix: Missing dependencies for production (url-join)
+* 
 
-## 3.3.0
+## 3.3.1
 
 * Feature: NO_CDN Mode
 * Feature: Add option to show/hide restricted pages in list
@@ -19,6 +19,8 @@ CHANGES
 * Support: Upgrade libs
     * googleapis
     * passport-saml
+
+## 3.3.0 (Missing number)
 
 ## 3.2.10
 

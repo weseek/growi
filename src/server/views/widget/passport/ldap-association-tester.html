@@ -38,7 +38,7 @@
 
         var $message = $('<p class="alert"></p>');
         $message.addClass('alert-' + status);
-        $message.html(msg.replace('\n', '<br>'));
+        $message.html(msg.replace(/\n/g, '<br>'));
         $message.appendTo('#' + formId + '> .alert-container');
 
         if (status == 'success') {
