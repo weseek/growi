@@ -218,13 +218,13 @@ export default class TextAreaEditor extends AbstractEditor {
   pasteHandler(event) {
     const types = event.clipboardData.types;
 
-    // text
-    if (types.includes('text/plain')) {
-      pasteHelper.pasteText(this, event);
-    }
     // files
-    else if (types.includes('Files')) {
+    if (types.includes('Files')) {
       this.dispatchPasteFiles(event);
+    }
+    // text
+    else if (types.includes('text/plain')) {
+      pasteHelper.pasteText(this, event);
     }
   }
 
