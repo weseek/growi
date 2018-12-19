@@ -3,7 +3,11 @@ CHANGES
 
 ## 3.3.3-RC
 
-* 
+* Fix: Possibility that ExternalAccount deletion processing selects incorrect data
+* Support: Upgrade libs
+    * i18next
+    * migrate-mongo
+    * string-width
 
 ## 3.3.2
 
