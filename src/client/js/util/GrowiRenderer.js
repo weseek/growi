@@ -168,15 +168,20 @@ export default class GrowiRenderer {
 
     if (langExt) {
       const langAndFn = langExt.split(':');
-      const lang = langAndFn[0];
+      let lang = langAndFn[0];
       const langFn = langAndFn[1] || null;
 
       const citeTag = (langFn) ? `<cite>${langFn}</cite>` : '';
+
+      const showLinenumbers = /=$|=\d+$|=\+$/.exec(lang)
+      if (showLinenumbers) {
+        lang = lang.substring(0, showLinenumbers.index);
+      }
+
       if (hljs.getLanguage(lang)) {
         try {
-          //// TODO activate `hljs.lineNumbersValue` when https://github.com/weseek/growi/issues/457 is fixed
-          // return `<pre class="hljs ${noborder}">${citeTag}<code class="language-${lang}">${hljs.lineNumbersValue(hljs.highlight(lang, code, true).value)}</code></pre>`;
-          return `<pre class="hljs ${noborder}">${citeTag}<code class="language-${lang}">${hljs.highlight(lang, code, true).value}</code></pre>`;
+          const highlightCode = showLinenumbers ? hljs.lineNumbersValue(hljs.highlight(lang, code, true).value) : hljs.highlight(lang, code, true).value;
+          return `<pre class="hljs ${noborder}">${citeTag}<code class="language-${lang}">${highlightCode}</code></pre>`;
         }
         catch (__) {
           return `<pre class="hljs ${noborder}">${citeTag}<code class="language-${lang}">${code}}</code></pre>`;
