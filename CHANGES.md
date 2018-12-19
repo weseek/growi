@@ -1,9 +1,14 @@
 CHANGES
 ========
 
-## 3.3.2-RC
+## 3.3.3-RC
 
 * 
+
+## 3.3.2
+
+* Fix: Specified Group ACL is not persisted correctly
+    * Introduced 3.3.0
 
 ## 3.3.1
 
