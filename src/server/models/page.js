@@ -850,6 +850,8 @@ module.exports = function(crowi) {
       if (count === 0) {
         throw new Error('no relations were exist for group and user.');
       }
+
+      page.grantedGroup = grantUserGroupId;
     }
   }
 
