@@ -558,19 +558,20 @@ module.exports = function(crowi) {
   /**
    * @param {string} id ObjectId
    * @param {User} user User instance
+   * @param {UserGroup[]} userGroups List of UserGroup instances
    */
-  pageSchema.statics.findByIdAndViewer = async function(id, user) {
+  pageSchema.statics.findByIdAndViewer = async function(id, user, userGroups) {
     const baseQuery = this.findOne({_id: id});
 
-    let userGroups = [];
-    if (user != null) {
+    let relatedUserGroups = userGroups;
+    if (user != null && relatedUserGroups == null) {
       validateCrowi();
       const UserGroupRelation = crowi.model('UserGroupRelation');
-      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
+      relatedUserGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     }
 
     const queryBuilder = new PageQueryBuilder(baseQuery);
-    queryBuilder.addConditionToFilteringByViewer(user, userGroups);
+    queryBuilder.addConditionToFilteringByViewer(user, relatedUserGroups);
 
     return await queryBuilder.query.exec();
   };
@@ -583,21 +584,27 @@ module.exports = function(crowi) {
     return this.findOne({path});
   };
 
-  pageSchema.statics.findByPathAndViewer = async function(path, user) {
+  /**
+   * @param {string} path Page path
+   * @param {User} user User instance
+   * @param {UserGroup[]} userGroups List of UserGroup instances
+   */
+  pageSchema.statics.findByPathAndViewer = async function(path, user, userGroups) {
     if (path == null) {
       throw new Error('path is required.');
     }
 
-    // const Page = this;
     const baseQuery = this.findOne({path});
-    const queryBuilder = new PageQueryBuilder(baseQuery);
 
-    if (user != null) {
+    let relatedUserGroups = userGroups;
+    if (user != null && relatedUserGroups == null) {
       validateCrowi();
       const UserGroupRelation = crowi.model('UserGroupRelation');
-      const userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
-      queryBuilder.addConditionToFilteringByViewer(user, userGroups);
+      relatedUserGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     }
+
+    const queryBuilder = new PageQueryBuilder(baseQuery);
+    queryBuilder.addConditionToFilteringByViewer(user, relatedUserGroups);
 
     return await queryBuilder.query.exec();
   };
