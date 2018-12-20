@@ -124,6 +124,12 @@ module.exports = function(crowi, app) {
     }
   }
 
+  function addRendarVarsForScope(renderVars, page) {
+    renderVars.grant = page.grant;
+    renderVars.grantedGroupId = page.grantedGroup ? page.grantedGroup.id : null;
+    renderVars.grantedGroupName = page.grantedGroup ? page.grantedGroup.name : null;
+  }
+
   async function addRenderVarsForSlack(renderVars, page) {
     renderVars.slack = await getSlackChannels(page);
   }
@@ -241,6 +247,7 @@ module.exports = function(crowi, app) {
     // populate
     page = await page.populateDataToShowRevision();
     addRendarVarsForPage(renderVars, page);
+    addRendarVarsForScope(renderVars, page);
 
     await addRenderVarsForSlack(renderVars, page);
     await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit);
