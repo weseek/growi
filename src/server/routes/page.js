@@ -595,7 +595,7 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Posted param "revisionId" is outdated.', 'outdated'));
     }
 
-    const options = {overwriteScopesOfDescendants, isSyncRevisionToHackmd, socketClientId};
+    const options = {isSyncRevisionToHackmd, socketClientId};
     if (grant != null) {
       options.grant = grant;
     }
@@ -616,6 +616,11 @@ module.exports = function(crowi, app) {
     const result = { page: serializeToObj(page) };
     result.page.lastUpdateUser = User.filterToPublicFields(page.lastUpdateUser);
     res.json(ApiResponse.success(result));
+
+    // update scopes for descendants
+    if (overwriteScopesOfDescendants) {
+      Page.applyScopesToDescendantsAsyncronously(page, req.user);
+    }
 
     // global notification
     try {

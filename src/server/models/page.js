@@ -859,29 +859,6 @@ module.exports = function(crowi) {
     }
   }
 
-  async function applyScopesToDescendantsAsyncronously(parentPage, user) {
-    const builder = new PageQueryBuilder(this.find());
-    builder.addConditionToListWithDescendants(parentPage.path);
-
-    builder.addConditionToExcludeRedirect();
-
-    // add grant conditions
-    await addConditionToFilteringByViewerForList(builder, user);
-
-    // get all pages that the specified user can update
-    const pages = builder.query.exec();
-
-    for (const page in pages) {
-      // skip parentPage
-      if (page._id === parentPage._id) {
-        continue;
-      }
-
-      applyScope(page, user, parentPage.grant, parentPage.grantedGroup);
-      page.save();
-    }
-  }
-
   pageSchema.statics.create = function(path, body, user, options = {}) {
     validateCrowi();
 
@@ -968,6 +945,29 @@ module.exports = function(crowi) {
       pageEvent.emit('update', savedPage, user, socketClientId);
     }
     return savedPage;
+  };
+
+  pageSchema.statics.applyScopesToDescendantsAsyncronously = async function(parentPage, user) {
+    const builder = new PageQueryBuilder(this.find());
+    builder.addConditionToListWithDescendants(parentPage.path);
+
+    builder.addConditionToExcludeRedirect();
+
+    // add grant conditions
+    await addConditionToFilteringByViewerForList(builder, user);
+
+    // get all pages that the specified user can update
+    const pages = await builder.query.exec();
+
+    for (const page of pages) {
+      // skip parentPage
+      if (page.id === parentPage.id) {
+        continue;
+      }
+
+      applyScope(page, user, parentPage.grant, parentPage.grantedGroup);
+      page.save();
+    }
   };
 
   pageSchema.statics.deletePage = async function(pageData, user, options = {}) {
