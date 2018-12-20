@@ -408,6 +408,7 @@ if (writeCommentElem) {
 const pageEditorOptionsSelectorElem = document.getElementById('page-editor-options-selector');
 if (pageEditorOptionsSelectorElem) {
   ReactDOM.render(
+    <I18nextProvider i18n={i18n}>
     <OptionsSelector crowi={crowi}
         editorOptions={editorOptions} previewOptions={previewOptions}
         onChange={(newEditorOptions, newPreviewOptions) => { // set onChange event handler
@@ -417,8 +418,8 @@ if (pageEditorOptionsSelectorElem) {
           // save
           crowi.saveEditorOptions(newEditorOptions);
           crowi.savePreviewOptions(newPreviewOptions);
-        }}
-      />,
+        }} />
+    </I18nextProvider>,
     pageEditorOptionsSelectorElem
   );
 }

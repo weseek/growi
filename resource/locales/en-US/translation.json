@@ -169,9 +169,10 @@
   },
 
   "page_edit": {
-      "notice": {
-          "conflict": "Couldn't save the changes you made because someone else was editing this page. Please re-edit the affected section after reloading the page."
-      }
+    "Show active line": "Show active line",
+    "notice": {
+      "conflict": "Couldn't save the changes you made because someone else was editing this page. Please re-edit the affected section after reloading the page."
+    }
   },
 
   "page_api_error": {
