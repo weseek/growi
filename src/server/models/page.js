@@ -609,6 +609,36 @@ module.exports = function(crowi) {
     return await queryBuilder.query.exec();
   };
 
+  /**
+   * @param {string} path Page path
+   * @param {User} user User instance
+   * @param {UserGroup[]} userGroups List of UserGroup instances
+   */
+  pageSchema.statics.findAncestorByPathAndViewer = async function(path, user, userGroups) {
+    if (path == null) {
+      throw new Error('path is required.');
+    }
+
+    if (path === '/') {
+      return null;
+    }
+
+    const parentPath = nodePath.dirname(path);
+
+    let relatedUserGroups = userGroups;
+    if (user != null && relatedUserGroups == null) {
+      validateCrowi();
+      const UserGroupRelation = crowi.model('UserGroupRelation');
+      relatedUserGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
+    }
+
+    const page = await this.findByPathAndViewer(parentPath, user, relatedUserGroups);
+
+    return (page != null)
+      ? page
+      : this.findAncestorByPathAndViewer(parentPath, user, relatedUserGroups);
+  };
+
   pageSchema.statics.findByRedirectTo = function(path) {
     return this.findOne({redirectTo: path});
   };

@@ -404,6 +404,13 @@ module.exports = function(crowi, app) {
         template = replacePlaceholdersOfTemplate(template, req);
         renderVars.template = template;
       }
+
+      // add scope variables by ancestor page
+      const ancestor = await Page.findAncestorByPathAndViewer(path, req.user);
+      if (ancestor != null) {
+        await ancestor.populate('grantedGroup').execPopulate();
+        addRendarVarsForScope(renderVars, ancestor);
+      }
     }
 
     const limit = 50;
