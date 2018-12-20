@@ -20,6 +20,7 @@ class SavePageControls extends React.PureComponent {
 
     this.getCurrentOptionsToSave = this.getCurrentOptionsToSave.bind(this);
     this.submit = this.submit.bind(this);
+    this.submitAndOverwriteScopesOfDescendants = this.submitAndOverwriteScopesOfDescendants.bind(this);
   }
 
   componentWillMount() {
@@ -43,12 +44,17 @@ class SavePageControls extends React.PureComponent {
     this.props.onSubmit();
   }
 
+  submitAndOverwriteScopesOfDescendants() {
+    this.props.onSubmit({ overwriteScopesOfDescendants: true });
+  }
+
   render() {
     const { t } = this.props;
 
     const config = this.props.crowi.getConfig();
     const isAclEnabled = config.isAclEnabled;
-    const label = this.state.pageId == null ? t('Create') : t('Update');
+    const labelSubmitButton = this.state.pageId == null ? t('Create') : t('Update');
+    const labelOverwriteScopes = t('page_edit.overwrite_scopes', { operation: labelSubmitButton });
 
     return (
       <div className="d-flex align-items-center form-inline">
@@ -78,8 +84,8 @@ class SavePageControls extends React.PureComponent {
 
         <ButtonToolbar>
           <SplitButton id="spl-btn-submit" bsStyle="primary" className="btn-submit" dropup pullRight onClick={this.submit}
-              title={label}>
-            <MenuItem eventKey="1">Action</MenuItem>
+              title={labelSubmitButton}>
+            <MenuItem eventKey="1" onClick={this.submitAndOverwriteScopesOfDescendants}>{labelOverwriteScopes}</MenuItem>
             {/* <MenuItem divider /> */}
           </SplitButton>
         </ButtonToolbar>
