@@ -409,6 +409,22 @@ module.exports = function(crowi) {
     return this.populate('revision').execPopulate();
   };
 
+  pageSchema.methods.applyScope = function(user, grant, grantUserGroupId) {
+    this.grant = grant;
+
+    // reset
+    this.grantedUsers = [];
+    this.grantedGroup = null;
+
+    if (grant !== GRANT_PUBLIC && grant !== GRANT_USER_GROUP) {
+      this.grantedUsers.push(user._id);
+    }
+
+    if (grant === GRANT_USER_GROUP) {
+      this.grantedGroup = grantUserGroupId;
+    }
+  }
+
 
   pageSchema.statics.updateCommentCount = function(pageId) {
     validateCrowi();
@@ -844,22 +860,6 @@ module.exports = function(crowi) {
     }
   }
 
-  function applyScope(page, user, grant, grantUserGroupId) {
-    page.grant = grant;
-
-    // reset
-    page.grantedUsers = [];
-    page.grantedGroup = null;
-
-    if (grant !== GRANT_PUBLIC && grant !== GRANT_USER_GROUP) {
-      page.grantedUsers.push(user._id);
-    }
-
-    if (grant === GRANT_USER_GROUP) {
-      page.grantedGroup = grantUserGroupId;
-    }
-  }
-
   pageSchema.statics.create = async function(path, body, user, options = {}) {
     validateCrowi();
 
@@ -893,7 +893,7 @@ module.exports = function(crowi) {
     page.status = STATUS_PUBLISHED;
 
     await validateAppliedScope(user, grant, grantUserGroupId);
-    applyScope(page, user, grant, grantUserGroupId);
+    page.applyScope(user, grant, grantUserGroupId);
 
     let savedPage = await page.save();
     const newRevision = Revision.prepareRevision(savedPage, body, null, user, {format: format});
@@ -916,9 +916,9 @@ module.exports = function(crowi) {
     const socketClientId = options.socketClientId || null;
 
     await validateAppliedScope(user, grant, grantUserGroupId);
+    pageData.applyScope(user, grant, grantUserGroupId);
 
     // update existing page
-    applyScope(pageData, user, grant, grantUserGroupId);
     let savedPage = await pageData.save();
     const newRevision = await Revision.prepareRevision(pageData, body, previousBody, user);
     const revision = await pushRevision(savedPage, newRevision, user, grant, grantUserGroupId);
@@ -952,7 +952,7 @@ module.exports = function(crowi) {
         continue;
       }
 
-      applyScope(page, user, parentPage.grant, parentPage.grantedGroup);
+      page.applyScope(user, parentPage.grant, parentPage.grantedGroup);
       page.save();
     }
   };
