@@ -2,6 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { translate } from 'react-i18next';
 
+import ButtonToolbar from 'react-bootstrap/es/ButtonToolbar';
+import SplitButton  from 'react-bootstrap/es/SplitButton';
+import MenuItem from 'react-bootstrap/es/MenuItem';
+
 import SlackNotification from './SlackNotification';
 import GrantSelector from './SavePageControls/GrantSelector';
 
@@ -58,7 +62,6 @@ class SavePageControls extends React.PureComponent {
               slackChannels={this.props.slackChannels} />
         </div>
 
-
         {isAclEnabled &&
           <div className="mr-2">
             <GrantSelector crowi={this.props.crowi}
@@ -73,7 +76,13 @@ class SavePageControls extends React.PureComponent {
           </div>
         }
 
-        <button className="btn btn-primary btn-submit" onClick={this.submit}>{label}</button>
+        <ButtonToolbar>
+          <SplitButton id="spl-btn-submit" bsStyle="primary" className="btn-submit" dropup pullRight onClick={this.submit}
+              title={label}>
+            <MenuItem eventKey="1">Action</MenuItem>
+            {/* <MenuItem divider /> */}
+          </SplitButton>
+        </ButtonToolbar>
       </div>
     );
   }
