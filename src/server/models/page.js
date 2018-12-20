@@ -849,6 +849,7 @@ module.exports = function(crowi) {
 
     // reset
     page.grantedUsers = [];
+    page.grantedGroup = null;
 
     if (grant !== GRANT_PUBLIC && grant !== GRANT_USER_GROUP) {
       page.grantedUsers.push(user._id);
