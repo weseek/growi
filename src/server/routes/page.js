@@ -539,6 +539,11 @@ module.exports = function(crowi, app) {
     result.page.creator = User.filterToPublicFields(createdPage.creator);
     res.json(ApiResponse.success(result));
 
+    // update scopes for descendants
+    if (overwriteScopesOfDescendants) {
+      Page.applyScopesToDescendantsAsyncronously(createdPage, req.user);
+    }
+
     // global notification
     try {
       await globalNotificationService.notifyPageCreate(createdPage);

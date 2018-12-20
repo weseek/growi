@@ -52,8 +52,8 @@ const pageSchema = new mongoose.Schema({
   pageIdOnHackmd: String,
   revisionHackmdSynced: { type: ObjectId, ref: 'Revision' },  // the revision that is synced to HackMD
   hasDraftOnHackmd: { type: Boolean },                        // set true if revision and revisionHackmdSynced are same but HackMD document has modified
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: Date
+  createdAt: { type: Date, default: Date.now() },
+  updatedAt: { type: Date, default: Date.now() },
 }, {
   toJSON: {getters: true},
   toObject: {getters: true}
@@ -859,74 +859,60 @@ module.exports = function(crowi) {
     }
   }
 
-  pageSchema.statics.create = function(path, body, user, options = {}) {
+  pageSchema.statics.create = async function(path, body, user, options = {}) {
     validateCrowi();
 
-    const Page = this
-      , Revision = crowi.model('Revision')
-      , format = options.format || 'markdown'
-      , redirectTo = options.redirectTo || null
-      , grantUserGroupId = options.grantUserGroupId || null
-      , socketClientId = options.socketClientId || null
-      ;
-
-    let grant = options.grant || GRANT_PUBLIC;
+    const Page = this;
+    const Revision = crowi.model('Revision');
+    const format = options.format || 'markdown';
+    const redirectTo = options.redirectTo || null;
+    const grantUserGroupId = options.grantUserGroupId || null;
+    const socketClientId = options.socketClientId || null;
 
     // sanitize path
     path = crowi.xss.process(path);
 
+    let grant = options.grant || GRANT_PUBLIC;
     // force public
     if (isPortalPath(path)) {
       grant = GRANT_PUBLIC;
     }
 
-    let savedPage = undefined;
-    return Page.findOne({path: path})
-      .then(pageData => {
-        if (pageData) {
-          throw new Error('Cannot create new page to existed path');
-        }
+    const isExist = await this.count({path: path});
 
-        const newPage = new Page();
-        newPage.path = path;
-        newPage.creator = user;
-        newPage.lastUpdateUser = user;
-        newPage.createdAt = Date.now();
-        newPage.updatedAt = Date.now();
-        newPage.redirectTo = redirectTo;
-        newPage.status = STATUS_PUBLISHED;
+    if (isExist) {
+      throw new Error('Cannot create new page to existed path');
+    }
 
-        // TODO await
-        validateAppliedScope(user, grant, grantUserGroupId);
-        applyScope(newPage, user, grant, grantUserGroupId);
+    const page = new Page();
+    page.path = path;
+    page.creator = user;
+    page.lastUpdateUser = user;
+    page.redirectTo = redirectTo;
+    page.status = STATUS_PUBLISHED;
 
-        return newPage.save();
-      })
-      .then((newPage) => {
-        savedPage = newPage;
-      })
-      .then(() => {
-        const newRevision = Revision.prepareRevision(savedPage, body, null, user, {format: format});
-        return pushRevision(savedPage, newRevision, user);
-      })
-      .then(() => {
-        if (socketClientId != null) {
-          pageEvent.emit('create', savedPage, user, socketClientId);
-        }
-        return savedPage;
-      });
+    await validateAppliedScope(user, grant, grantUserGroupId);
+    applyScope(page, user, grant, grantUserGroupId);
+
+    let savedPage = await page.save();
+    const newRevision = Revision.prepareRevision(savedPage, body, null, user, {format: format});
+    const revision = await pushRevision(savedPage, newRevision, user, grant, grantUserGroupId);
+    savedPage = await this.findByPath(revision.path).populate('revision').populate('creator');
+
+    if (socketClientId != null) {
+      pageEvent.emit('create', savedPage, user, socketClientId);
+    }
+    return savedPage;
   };
 
   pageSchema.statics.updatePage = async function(pageData, body, previousBody, user, options = {}) {
     validateCrowi();
 
-    const Page = this
-      , Revision = crowi.model('Revision')
-      , grant = options.grant || null
-      , grantUserGroupId = options.grantUserGroupId || null
-      , isSyncRevisionToHackmd = options.isSyncRevisionToHackmd
-      , socketClientId = options.socketClientId || null
-      ;
+    const Revision = crowi.model('Revision');
+    const grant = options.grant || null;
+    const grantUserGroupId = options.grantUserGroupId || null;
+    const isSyncRevisionToHackmd = options.isSyncRevisionToHackmd;
+    const socketClientId = options.socketClientId || null;
 
     await validateAppliedScope(user, grant, grantUserGroupId);
 
@@ -935,10 +921,10 @@ module.exports = function(crowi) {
     let savedPage = await pageData.save();
     const newRevision = await Revision.prepareRevision(pageData, body, previousBody, user);
     const revision = await pushRevision(savedPage, newRevision, user, grant, grantUserGroupId);
-    savedPage = await Page.findByPath(revision.path).populate('revision').populate('creator');
+    savedPage = await this.findByPath(revision.path).populate('revision').populate('creator');
 
     if (isSyncRevisionToHackmd) {
-      savedPage = await Page.syncRevisionToHackmd(savedPage);
+      savedPage = await this.syncRevisionToHackmd(savedPage);
     }
 
     if (socketClientId != null) {
