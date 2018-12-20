@@ -516,6 +516,7 @@ module.exports = function(crowi, app) {
     const pagePath = req.body.path || null;
     const grant = req.body.grant || null;
     const grantUserGroupId = req.body.grantUserGroupId || null;
+    const overwriteScopesOfDescendants = req.body.overwriteScopesOfDescendants || null;
     const isSlackEnabled = !!req.body.isSlackEnabled;   // cast to boolean
     const slackChannels = req.body.slackChannels || null;
     const socketClientId = req.body.socketClientId || undefined;
@@ -530,7 +531,7 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Page exists', 'already_exists'));
     }
 
-    const options = {grant, grantUserGroupId, socketClientId};
+    const options = {grant, grantUserGroupId, overwriteScopesOfDescendants, socketClientId};
     const createdPage = await Page.create(pagePath, body, req.user, options);
 
     const result = { page: serializeToObj(createdPage) };
@@ -572,6 +573,7 @@ module.exports = function(crowi, app) {
     const revisionId = req.body.revision_id || null;
     const grant = req.body.grant || null;
     const grantUserGroupId = req.body.grantUserGroupId || null;
+    const overwriteScopesOfDescendants = req.body.overwriteScopesOfDescendants || null;
     const isSlackEnabled = !!req.body.isSlackEnabled;                     // cast to boolean
     const slackChannels = req.body.slackChannels || null;
     const isSyncRevisionToHackmd = !!req.body.isSyncRevisionToHackmd;     // cast to boolean
@@ -593,7 +595,7 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Posted param "revisionId" is outdated.', 'outdated'));
     }
 
-    const options = {isSyncRevisionToHackmd, socketClientId};
+    const options = {overwriteScopesOfDescendants, isSyncRevisionToHackmd, socketClientId};
     if (grant != null) {
       options.grant = grant;
     }

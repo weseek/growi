@@ -829,18 +829,9 @@ module.exports = function(crowi) {
     return pageData.save();
   }
 
-  async function applyGrant(page, user, grant, grantUserGroupId) {
+  async function validateAppliedScope(user, grant, grantUserGroupId) {
     if (grant == GRANT_USER_GROUP && grantUserGroupId == null) {
       throw new Error('grant userGroupId is not specified');
-    }
-
-    page.grant = grant;
-    if (grant == GRANT_PUBLIC || grant == GRANT_USER_GROUP) {
-      page.grantedUsers = [];
-    }
-    else {
-      page.grantedUsers = [];
-      page.grantedUsers.push(user._id);
     }
 
     if (grant == GRANT_USER_GROUP) {
@@ -850,8 +841,44 @@ module.exports = function(crowi) {
       if (count === 0) {
         throw new Error('no relations were exist for group and user.');
       }
+    }
+  }
 
+  function applyScope(page, user, grant, grantUserGroupId) {
+    page.grant = grant;
+
+    // reset
+    page.grantedUsers = [];
+
+    if (grant !== GRANT_PUBLIC && grant !== GRANT_USER_GROUP) {
+      page.grantedUsers.push(user._id);
+    }
+
+    if (grant === GRANT_USER_GROUP) {
       page.grantedGroup = grantUserGroupId;
+    }
+  }
+
+  async function applyScopesToDescendantsAsyncronously(parentPage, user) {
+    const builder = new PageQueryBuilder(this.find());
+    builder.addConditionToListWithDescendants(parentPage.path);
+
+    builder.addConditionToExcludeRedirect();
+
+    // add grant conditions
+    await addConditionToFilteringByViewerForList(builder, user);
+
+    // get all pages that the specified user can update
+    const pages = builder.query.exec();
+
+    for (const page in pages) {
+      // skip parentPage
+      if (page._id === parentPage._id) {
+        continue;
+      }
+
+      applyScope(page, user, parentPage.grant, parentPage.grantedGroup);
+      page.save();
     }
   }
 
@@ -891,7 +918,10 @@ module.exports = function(crowi) {
         newPage.updatedAt = Date.now();
         newPage.redirectTo = redirectTo;
         newPage.status = STATUS_PUBLISHED;
-        applyGrant(newPage, user, grant, grantUserGroupId);
+
+        // TODO await
+        validateAppliedScope(user, grant, grantUserGroupId);
+        applyScope(newPage, user, grant, grantUserGroupId);
 
         return newPage.save();
       })
@@ -921,8 +951,10 @@ module.exports = function(crowi) {
       , socketClientId = options.socketClientId || null
       ;
 
+    await validateAppliedScope(user, grant, grantUserGroupId);
+
     // update existing page
-    applyGrant(pageData, user, grant, grantUserGroupId);
+    applyScope(pageData, user, grant, grantUserGroupId);
     let savedPage = await pageData.save();
     const newRevision = await Revision.prepareRevision(pageData, body, previousBody, user);
     const revision = await pushRevision(savedPage, newRevision, user, grant, grantUserGroupId);
