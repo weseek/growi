@@ -167,16 +167,14 @@ export default class GrowiRenderer {
     const noborder = (!config.highlightJsStyleBorder) ? 'hljs-no-border' : '';
 
     if (langExt) {
-      const langAndFn = langExt.split(':');
-      let lang = langAndFn[0];
-      const langFn = langAndFn[1] || null;
+      // https://regex101.com/r/qGs7eZ/1
+      const match = langExt.match(/^([^:=\n]+)(=([^:=\n]*))?(:([^:=\n]+))?(=([^:=\n]*))?$/);
 
-      const citeTag = (langFn) ? `<cite>${langFn}</cite>` : '';
+      const lang = match[1];
+      const fileName = match[5] || null;
+      const showLinenumbers = (match[2] != null) || (match[6] != null);
 
-      const showLinenumbers = /=$|=\d+$|=\+$/.exec(lang)
-      if (showLinenumbers) {
-        lang = lang.substring(0, showLinenumbers.index);
-      }
+      const citeTag = (fileName) ? `<cite>${fileName}</cite>` : '';
 
       if (hljs.getLanguage(lang)) {
         try {
