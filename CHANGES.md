@@ -3,8 +3,10 @@ CHANGES
 
 ## 3.3.3-RC
 
+* Feature: Show line numbers to a code block
 * Fix: Possibility that ExternalAccount deletion processing selects incorrect data
 * Support: Upgrade libs
+    * bootstrap-sass
     * i18next
     * migrate-mongo
     * string-width
