@@ -63,7 +63,7 @@
           <label class="col-xs-3 control-label">{{ t('app_setting.Default Language for new users') }}</label>
           <div class="col-xs-6">
             <div class="radio radio-primary radio-inline">
-                <input type="radio" id="radioLangEn" name="settingForm[app:globalLang]" value="{{ consts.language.LANG_EN }}" {% if appGlobalLang() == consts.language.LANG_EN %}checked="checked"{% endif %}>
+                <input type="radio" id="radioLangEn" name="settingForm[app:globalLang]" value="{{ consts.language.LANG_EN_US }}" {% if appGlobalLang() == consts.language.LANG_EN_US %}checked="checked"{% endif %}>
                 <label for="radioLangEn">{{ t('English') }}</label>
             </div>
             <div class="radio radio-primary radio-inline">
@@ -248,7 +248,7 @@
           }
           var $message = $('<p class="alert"></p>');
           $message.addClass('alert-' + status);
-          $message.html(msg.replace('\n', '<br>'));
+          $message.html(msg.replace(/\n/g, '<br>'));
           $message.insertAfter('#' + formId + ' legend');
 
           if (status == 'success') {

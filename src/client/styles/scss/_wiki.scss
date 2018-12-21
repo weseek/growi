@@ -122,7 +122,21 @@ div.body {
       font-weight: bold;
       opacity: 0.6;
     }
-  };
+  }
+
+  // styles for highlightjs-line-numbers
+  .hljs-ln td.hljs-ln-numbers {
+    user-select: none;
+
+    text-align: center;
+    color: #ccc;
+    border-right: 1px solid #CCC;
+    vertical-align: top;
+    padding-right: 5px;
+  }
+  .hljs-ln td.hljs-ln-code {
+    padding-left: 10px;
+  }
 
   p code {  // only inline code blocks
     font-family: $font-family-monospace-not-strictly;

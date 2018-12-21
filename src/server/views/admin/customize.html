@@ -346,7 +346,8 @@
 
           <p class="help-block">
             Examples:
-            <pre class="hljs {% if !settingForm['customize:highlightJsStyleBorder'] %}hljs-no-border{% endif %}"><code class="highlightjs-demo">function $initHighlight(block, cls) {
+            <div class="wiki">
+              <pre class="hljs {% if !settingForm['customize:highlightJsStyleBorder'] %}hljs-no-border{% endif %}"><code class="highlightjs-demo">function $initHighlight(block, cls) {
   try {
     if (cls.search(/\bno\-highlight\b/) != -1)
       return process(block, true, 0x0F) +
@@ -361,6 +362,7 @@
 }
 
 export  $initHighlight;</code></pre>
+            </div>
           </p>
 
           <div class="form-group">
@@ -551,7 +553,7 @@ window.addEventListener('load', (event) => {
           }
           var $message = $('<p id="alert-results" class="alert"></p>');
           $message.addClass('alert-' + status);
-          $message.html(msg.replace('\n', '<br>'));
+          $message.html(msg.replace(/\n/g, '<br>'));
           $message.insertAfter('#' + formId + ' legend');
 
           if (status == 'success') {
@@ -592,6 +594,7 @@ window.addEventListener('load', (event) => {
      * highlight.js style switcher
      */
     hljs.initHighlightingOnLoad()
+    hljs.initLineNumbersOnLoad()
 
     function selectHighlightJsStyle(event) {
       var highlightJsCssDOM = $("#highlightJsCssContainer link")[0]

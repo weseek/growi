@@ -32,7 +32,7 @@ exports.loginChecker = function(crowi, app) {
       });
     }
     else {
-      req.user = req.session.user = false;
+      req.user = req.session.user = null;
       res.locals.user = req.user;
       next();
     }
@@ -41,9 +41,6 @@ exports.loginChecker = function(crowi, app) {
 
 exports.loginCheckerForPassport = function(crowi, app) {
   return function(req, res, next) {
-    if (req.user == null) {
-      req.user = false;
-    }
     res.locals.user = req.user;
     next();
   };
