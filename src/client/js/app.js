@@ -213,7 +213,7 @@ const saveWithSubmitButtonSuccessHandler = function() {
   location.href = pagePath;
 };
 
-const saveWithSubmitButton = function() {
+const saveWithSubmitButton = function(submitOpts) {
   const editorMode = crowi.getCrowiForJquery().getCurrentEditorMode();
   if (editorMode == null) {
     // do nothing
@@ -224,6 +224,9 @@ const saveWithSubmitButton = function() {
   // get options
   const options = componentInstances.savePageControls.getCurrentOptionsToSave();
   options.socketClientId = socketClientId;
+
+  // set 'submitOpts.overwriteScopesOfDescendants' to options
+  options.overwriteScopesOfDescendants = submitOpts ? !!submitOpts.overwriteScopesOfDescendants : false;
 
   let promise = undefined;
   if (editorMode === 'hackmd') {
@@ -409,7 +412,7 @@ const pageEditorOptionsSelectorElem = document.getElementById('page-editor-optio
 if (pageEditorOptionsSelectorElem) {
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
-    <OptionsSelector crowi={crowi}
+      <OptionsSelector crowi={crowi}
         editorOptions={editorOptions} previewOptions={previewOptions}
         onChange={(newEditorOptions, newPreviewOptions) => { // set onChange event handler
           // set options
