@@ -684,6 +684,7 @@ module.exports = function(crowi, app) {
    * @apiParam {String} page_id Page Id.
    */
   api.seen = async function(req, res) {
+    const user = req.user;
     const pageId = req.body.page_id;
     if (!pageId) {
       return res.json(ApiResponse.error('page_id required'));
@@ -694,9 +695,9 @@ module.exports = function(crowi, app) {
 
     let page;
     try {
-      page = await Page.findByIdAndViewer(pageId, req.user);
-      if (req.user != null) {
-        page = await page.seen(req.user);
+      page = await Page.findByIdAndViewer(pageId, user);
+      if (user != null) {
+        page = await page.seen(user);
       }
     }
     catch (err) {
