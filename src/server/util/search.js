@@ -531,8 +531,8 @@ SearchClient.prototype.filterPagesByViewer = async function(query, user, userGro
   const Config = this.crowi.model('Config');
   const config = this.crowi.getConfig();
 
-  const hidePagesRestrictedByOwner = Config.hidePagesRestrictedByOwnerInList(config);
-  const hidePagesRestrictedByGroup = Config.hidePagesRestrictedByGroupInList(config);
+  const showPagesRestrictedByOwner = !Config.hidePagesRestrictedByOwnerInList(config);
+  const showPagesRestrictedByGroup = !Config.hidePagesRestrictedByGroupInList(config);
 
   query = this.initializeBoolQuery(query);
 
@@ -543,7 +543,7 @@ SearchClient.prototype.filterPagesByViewer = async function(query, user, userGro
     { term: { grant: GRANT_PUBLIC } },
   ];
 
-  if (!hidePagesRestrictedByOwner) {
+  if (showPagesRestrictedByOwner) {
     grantConditions.push(
       { term: { grant: GRANT_RESTRICTED } },
       { term: { grant: GRANT_SPECIFIED } },
@@ -573,7 +573,7 @@ SearchClient.prototype.filterPagesByViewer = async function(query, user, userGro
     );
   }
 
-  if (!hidePagesRestrictedByGroup) {
+  if (showPagesRestrictedByGroup) {
     grantConditions.push(
       { term: { grant: GRANT_USER_GROUP } },
     );
