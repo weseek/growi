@@ -101,6 +101,10 @@
   "Deleted Pages": "Deleted Pages",
   "Sign out": "Logout",
 
+  "form_validation": {
+    "required": "<code>%s</code> is required"
+  },
+
   "installer": {
     "setup": "Setup",
     "create_initial_account": "Create an initial account",
@@ -416,11 +420,6 @@
     },
     "SAML": {
       "name": "SAML",
-      "entry_point": "Entry Point",
-      "issuer": "Issuer",
-      "cert": "Certificate",
-      "First Name": "First Name",
-      "Last Name": "Last Name",
       "id_detail": "Specification of the name of attribute which can identify the user in SAML Identity Provider",
       "username_detail": "Specification of mappings for <code>username</code> when creating new users",
       "mapping_detail": "Specification of mappings for %s when creating new users",
@@ -461,6 +460,16 @@
         "github": "How to configure GitHub OAuth?",
         "twitter": "How to configure Twitter OAuth?"
       }
+    },
+    "form_item_name": {
+      "security:passport-saml:entryPoint": "Entry point",
+      "security:passport-saml:issuer": "Issuer",
+      "security:passport-saml:cert": "Certificate",
+      "security:passport-saml:attrMapId": "ID",
+      "security:passport-saml:attrMapUsername": "Username",
+      "security:passport-saml:attrMapMail": "Mail Address",
+      "security:passport-saml:attrMapFirstName": "First Name",
+      "security:passport-saml:attrMapLastName": "Last Name"
     }
 	},
 

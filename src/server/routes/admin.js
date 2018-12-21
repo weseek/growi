@@ -1500,7 +1500,8 @@ module.exports = function(crowi, app) {
     for (const key of crowi.passportService.mandatoryConfigKeysForSaml) {
       const formValue = form.settingForm[key];
       if (crowi.configManager.getConfigFromEnvVars('crowi', key) === null && formValue === '') {
-        form.errors.push(`${key} is required`);
+        const formItemName = crowi.t(`security_setting.form_item_name.${key}`);
+        form.errors.push(crowi.t('form_validation.required', formItemName));
       }
     }
   }

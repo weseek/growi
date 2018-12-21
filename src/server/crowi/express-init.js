@@ -45,7 +45,10 @@ module.exports = function(crowi, app) {
       detection: {
         order: ['userSettingDetector', 'header', 'navigator'],
       },
-      overloadTranslationOptionHandler: i18nSprintf.overloadTranslationOptionHandler
+      overloadTranslationOptionHandler: i18nSprintf.overloadTranslationOptionHandler,
+
+      // change nsSeparator from ':' to '::' because ':' is used in config keys and these are used in i18n keys
+      nsSeparator: '::'
     });
 
   app.use(helmet());
@@ -150,4 +153,9 @@ module.exports = function(crowi, app) {
   }
 
   app.use(i18nMiddleware.handle(i18next));
+
+  app.use(function(req, res, next) {
+    crowi.t = req.t;
+    next();
+  });
 };
