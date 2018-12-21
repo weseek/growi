@@ -427,8 +427,9 @@ module.exports = function(crowi, app) {
 
   const getOrCreateUser = async(req, res, userInfo, providerId) => {
     // get option
-    const isSameUsernameTreatedAsIdenticalUser = crowi.passportService.isSameUsernameTreatedAsIdenticalUser(config, providerId);
-    const isSameEmailTreatedAsIdenticalUser = crowi.passportService.isSameEmailTreatedAsIdenticalUser(config, providerId);
+    const isSameUsernameTreatedAsIdenticalUser = crowi.passportService.isSameUsernameTreatedAsIdenticalUser(providerId);
+    const isSameEmailTreatedAsIdenticalUser = crowi.passportService.isSameEmailTreatedAsIdenticalUser(providerId);
+
     try {
       // find or register(create) user
       const externalAccount = await ExternalAccount.findOrRegister(
