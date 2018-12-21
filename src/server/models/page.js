@@ -168,20 +168,20 @@ class PageQueryBuilder {
     return this;
   }
 
-  addConditionToFilteringByViewer(user, userGroups) {
+  addConditionToFilteringByViewer(user, userGroups, showPagesRestrictedByOwner, showPagesRestrictedByGroup) {
     const grantConditions = [
       {grant: null},
       {grant: GRANT_PUBLIC},
     ];
 
-    if (user == null) {
+    if (showPagesRestrictedByOwner) {
       grantConditions.push(
         {grant: GRANT_RESTRICTED},
         {grant: GRANT_SPECIFIED},
         {grant: GRANT_OWNER},
       );
     }
-    else {
+    else if (user != null) {
       grantConditions.push(
         {grant: GRANT_RESTRICTED, grantedUsers: user._id},
         {grant: GRANT_SPECIFIED, grantedUsers: user._id},
@@ -189,12 +189,12 @@ class PageQueryBuilder {
       );
     }
 
-    if (userGroups == null) {
+    if (showPagesRestrictedByGroup) {
       grantConditions.push(
         {grant: GRANT_USER_GROUP},
       );
     }
-    else {
+    else if (userGroups != null && userGroups.length > 0) {
       grantConditions.push(
         {grant: GRANT_USER_GROUP, grantedGroup: { $in: userGroups }},
       );
@@ -696,25 +696,22 @@ module.exports = function(crowi) {
 
     // determine User condition
     const hidePagesRestrictedByOwner = Config.hidePagesRestrictedByOwnerInList(config);
-    const userCondition = hidePagesRestrictedByOwner ? user : null;
+    const hidePagesRestrictedByGroup = Config.hidePagesRestrictedByGroupInList(config);
 
     // determine UserGroup condition
-    let groupCondition = null;
-    const hidePagesRestrictedByGroup = Config.hidePagesRestrictedByGroupInList(config);
-    if (hidePagesRestrictedByGroup && user != null) {
+    let userGroups = null;
+    if (user != null) {
       const UserGroupRelation = crowi.model('UserGroupRelation');
-      groupCondition = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
+      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     }
 
-    return builder.addConditionToFilteringByViewer(userCondition, groupCondition);
+    return builder.addConditionToFilteringByViewer(user, userGroups, !hidePagesRestrictedByOwner, !hidePagesRestrictedByGroup);
   }
 
   /**
    * export addConditionToFilteringByViewerForList as static method
    */
-  pageSchema.statics.addConditionToFilteringByViewerForList = async function(builder, user) {
-    return addConditionToFilteringByViewerForList(builder, user);
-  };
+  pageSchema.statics.addConditionToFilteringByViewerForList = addConditionToFilteringByViewerForList;
 
   /**
    * Throw error for growi-lsx-plugin (v1.x)
