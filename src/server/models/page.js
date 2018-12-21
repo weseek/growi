@@ -52,8 +52,8 @@ const pageSchema = new mongoose.Schema({
   pageIdOnHackmd: String,
   revisionHackmdSynced: { type: ObjectId, ref: 'Revision' },  // the revision that is synced to HackMD
   hasDraftOnHackmd: { type: Boolean },                        // set true if revision and revisionHackmdSynced are same but HackMD document has modified
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: Date
+  createdAt: { type: Date, default: Date.now() },
+  updatedAt: { type: Date, default: Date.now() },
 }, {
   toJSON: {getters: true},
   toObject: {getters: true}
@@ -168,20 +168,20 @@ class PageQueryBuilder {
     return this;
   }
 
-  addConditionToFilteringByViewer(user, userGroups) {
+  addConditionToFilteringByViewer(user, userGroups, showPagesRestrictedByOwner, showPagesRestrictedByGroup) {
     const grantConditions = [
       {grant: null},
       {grant: GRANT_PUBLIC},
     ];
 
-    if (user == null) {
+    if (showPagesRestrictedByOwner) {
       grantConditions.push(
         {grant: GRANT_RESTRICTED},
         {grant: GRANT_SPECIFIED},
         {grant: GRANT_OWNER},
       );
     }
-    else {
+    else if (user != null) {
       grantConditions.push(
         {grant: GRANT_RESTRICTED, grantedUsers: user._id},
         {grant: GRANT_SPECIFIED, grantedUsers: user._id},
@@ -189,12 +189,12 @@ class PageQueryBuilder {
       );
     }
 
-    if (userGroups == null) {
+    if (showPagesRestrictedByGroup) {
       grantConditions.push(
         {grant: GRANT_USER_GROUP},
       );
     }
-    else {
+    else if (userGroups != null && userGroups.length > 0) {
       grantConditions.push(
         {grant: GRANT_USER_GROUP, grantedGroup: { $in: userGroups }},
       );
@@ -409,6 +409,22 @@ module.exports = function(crowi) {
     return this.populate('revision').execPopulate();
   };
 
+  pageSchema.methods.applyScope = function(user, grant, grantUserGroupId) {
+    this.grant = grant;
+
+    // reset
+    this.grantedUsers = [];
+    this.grantedGroup = null;
+
+    if (grant !== GRANT_PUBLIC && grant !== GRANT_USER_GROUP) {
+      this.grantedUsers.push(user._id);
+    }
+
+    if (grant === GRANT_USER_GROUP) {
+      this.grantedGroup = grantUserGroupId;
+    }
+  }
+
 
   pageSchema.statics.updateCommentCount = function(pageId) {
     validateCrowi();
@@ -542,19 +558,20 @@ module.exports = function(crowi) {
   /**
    * @param {string} id ObjectId
    * @param {User} user User instance
+   * @param {UserGroup[]} userGroups List of UserGroup instances
    */
-  pageSchema.statics.findByIdAndViewer = async function(id, user) {
+  pageSchema.statics.findByIdAndViewer = async function(id, user, userGroups) {
     const baseQuery = this.findOne({_id: id});
 
-    let userGroups = [];
-    if (user != null) {
+    let relatedUserGroups = userGroups;
+    if (user != null && relatedUserGroups == null) {
       validateCrowi();
       const UserGroupRelation = crowi.model('UserGroupRelation');
-      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
+      relatedUserGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     }
 
     const queryBuilder = new PageQueryBuilder(baseQuery);
-    queryBuilder.addConditionToFilteringByViewer(user, userGroups);
+    queryBuilder.addConditionToFilteringByViewer(user, relatedUserGroups);
 
     return await queryBuilder.query.exec();
   };
@@ -567,23 +584,59 @@ module.exports = function(crowi) {
     return this.findOne({path});
   };
 
-  pageSchema.statics.findByPathAndViewer = async function(path, user) {
+  /**
+   * @param {string} path Page path
+   * @param {User} user User instance
+   * @param {UserGroup[]} userGroups List of UserGroup instances
+   */
+  pageSchema.statics.findByPathAndViewer = async function(path, user, userGroups) {
     if (path == null) {
       throw new Error('path is required.');
     }
 
-    // const Page = this;
     const baseQuery = this.findOne({path});
-    const queryBuilder = new PageQueryBuilder(baseQuery);
 
-    if (user != null) {
+    let relatedUserGroups = userGroups;
+    if (user != null && relatedUserGroups == null) {
       validateCrowi();
       const UserGroupRelation = crowi.model('UserGroupRelation');
-      const userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
-      queryBuilder.addConditionToFilteringByViewer(user, userGroups);
+      relatedUserGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     }
 
+    const queryBuilder = new PageQueryBuilder(baseQuery);
+    queryBuilder.addConditionToFilteringByViewer(user, relatedUserGroups);
+
     return await queryBuilder.query.exec();
+  };
+
+  /**
+   * @param {string} path Page path
+   * @param {User} user User instance
+   * @param {UserGroup[]} userGroups List of UserGroup instances
+   */
+  pageSchema.statics.findAncestorByPathAndViewer = async function(path, user, userGroups) {
+    if (path == null) {
+      throw new Error('path is required.');
+    }
+
+    if (path === '/') {
+      return null;
+    }
+
+    const parentPath = nodePath.dirname(path);
+
+    let relatedUserGroups = userGroups;
+    if (user != null && relatedUserGroups == null) {
+      validateCrowi();
+      const UserGroupRelation = crowi.model('UserGroupRelation');
+      relatedUserGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
+    }
+
+    const page = await this.findByPathAndViewer(parentPath, user, relatedUserGroups);
+
+    return (page != null)
+      ? page
+      : this.findAncestorByPathAndViewer(parentPath, user, relatedUserGroups);
   };
 
   pageSchema.statics.findByRedirectTo = function(path) {
@@ -696,25 +749,22 @@ module.exports = function(crowi) {
 
     // determine User condition
     const hidePagesRestrictedByOwner = Config.hidePagesRestrictedByOwnerInList(config);
-    const userCondition = hidePagesRestrictedByOwner ? user : null;
+    const hidePagesRestrictedByGroup = Config.hidePagesRestrictedByGroupInList(config);
 
     // determine UserGroup condition
-    let groupCondition = null;
-    const hidePagesRestrictedByGroup = Config.hidePagesRestrictedByGroupInList(config);
-    if (hidePagesRestrictedByGroup && user != null) {
+    let userGroups = null;
+    if (user != null) {
       const UserGroupRelation = crowi.model('UserGroupRelation');
-      groupCondition = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
+      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     }
 
-    return builder.addConditionToFilteringByViewer(userCondition, groupCondition);
+    return builder.addConditionToFilteringByViewer(user, userGroups, !hidePagesRestrictedByOwner, !hidePagesRestrictedByGroup);
   }
 
   /**
    * export addConditionToFilteringByViewerForList as static method
    */
-  pageSchema.statics.addConditionToFilteringByViewerForList = async function(builder, user) {
-    return addConditionToFilteringByViewerForList(builder, user);
-  };
+  pageSchema.statics.addConditionToFilteringByViewerForList = addConditionToFilteringByViewerForList;
 
   /**
    * Throw error for growi-lsx-plugin (v1.x)
@@ -829,18 +879,9 @@ module.exports = function(crowi) {
     return pageData.save();
   }
 
-  async function applyGrant(page, user, grant, grantUserGroupId) {
+  async function validateAppliedScope(user, grant, grantUserGroupId) {
     if (grant == GRANT_USER_GROUP && grantUserGroupId == null) {
       throw new Error('grant userGroupId is not specified');
-    }
-
-    page.grant = grant;
-    if (grant == GRANT_PUBLIC || grant == GRANT_USER_GROUP) {
-      page.grantedUsers = [];
-    }
-    else {
-      page.grantedUsers = [];
-      page.grantedUsers.push(user._id);
     }
 
     if (grant == GRANT_USER_GROUP) {
@@ -850,92 +891,104 @@ module.exports = function(crowi) {
       if (count === 0) {
         throw new Error('no relations were exist for group and user.');
       }
-
-      page.grantedGroup = grantUserGroupId;
     }
   }
 
-  pageSchema.statics.create = function(path, body, user, options = {}) {
+  pageSchema.statics.create = async function(path, body, user, options = {}) {
     validateCrowi();
 
-    const Page = this
-      , Revision = crowi.model('Revision')
-      , format = options.format || 'markdown'
-      , redirectTo = options.redirectTo || null
-      , grantUserGroupId = options.grantUserGroupId || null
-      , socketClientId = options.socketClientId || null
-      ;
-
-    let grant = options.grant || GRANT_PUBLIC;
+    const Page = this;
+    const Revision = crowi.model('Revision');
+    const format = options.format || 'markdown';
+    const redirectTo = options.redirectTo || null;
+    const grantUserGroupId = options.grantUserGroupId || null;
+    const socketClientId = options.socketClientId || null;
 
     // sanitize path
     path = crowi.xss.process(path);
 
+    let grant = options.grant || GRANT_PUBLIC;
     // force public
     if (isPortalPath(path)) {
       grant = GRANT_PUBLIC;
     }
 
-    let savedPage = undefined;
-    return Page.findOne({path: path})
-      .then(pageData => {
-        if (pageData) {
-          throw new Error('Cannot create new page to existed path');
-        }
+    const isExist = await this.count({path: path});
 
-        const newPage = new Page();
-        newPage.path = path;
-        newPage.creator = user;
-        newPage.lastUpdateUser = user;
-        newPage.createdAt = Date.now();
-        newPage.updatedAt = Date.now();
-        newPage.redirectTo = redirectTo;
-        newPage.status = STATUS_PUBLISHED;
-        applyGrant(newPage, user, grant, grantUserGroupId);
+    if (isExist) {
+      throw new Error('Cannot create new page to existed path');
+    }
 
-        return newPage.save();
-      })
-      .then((newPage) => {
-        savedPage = newPage;
-      })
-      .then(() => {
-        const newRevision = Revision.prepareRevision(savedPage, body, null, user, {format: format});
-        return pushRevision(savedPage, newRevision, user);
-      })
-      .then(() => {
-        if (socketClientId != null) {
-          pageEvent.emit('create', savedPage, user, socketClientId);
-        }
-        return savedPage;
-      });
+    const page = new Page();
+    page.path = path;
+    page.creator = user;
+    page.lastUpdateUser = user;
+    page.redirectTo = redirectTo;
+    page.status = STATUS_PUBLISHED;
+
+    await validateAppliedScope(user, grant, grantUserGroupId);
+    page.applyScope(user, grant, grantUserGroupId);
+
+    let savedPage = await page.save();
+    const newRevision = Revision.prepareRevision(savedPage, body, null, user, {format: format});
+    const revision = await pushRevision(savedPage, newRevision, user, grant, grantUserGroupId);
+    savedPage = await this.findByPath(revision.path).populate('revision').populate('creator');
+
+    if (socketClientId != null) {
+      pageEvent.emit('create', savedPage, user, socketClientId);
+    }
+    return savedPage;
   };
 
   pageSchema.statics.updatePage = async function(pageData, body, previousBody, user, options = {}) {
     validateCrowi();
 
-    const Page = this
-      , Revision = crowi.model('Revision')
-      , grant = options.grant || null
-      , grantUserGroupId = options.grantUserGroupId || null
-      , isSyncRevisionToHackmd = options.isSyncRevisionToHackmd
-      , socketClientId = options.socketClientId || null
-      ;
+    const Revision = crowi.model('Revision');
+    const grant = options.grant || null;
+    const grantUserGroupId = options.grantUserGroupId || null;
+    const isSyncRevisionToHackmd = options.isSyncRevisionToHackmd;
+    const socketClientId = options.socketClientId || null;
+
+    await validateAppliedScope(user, grant, grantUserGroupId);
+    pageData.applyScope(user, grant, grantUserGroupId);
 
     // update existing page
-    applyGrant(pageData, user, grant, grantUserGroupId);
     let savedPage = await pageData.save();
     const newRevision = await Revision.prepareRevision(pageData, body, previousBody, user);
     const revision = await pushRevision(savedPage, newRevision, user, grant, grantUserGroupId);
-    savedPage = await Page.findByPath(revision.path).populate('revision').populate('creator');
+    savedPage = await this.findByPath(revision.path).populate('revision').populate('creator');
 
     if (isSyncRevisionToHackmd) {
-      savedPage = await Page.syncRevisionToHackmd(savedPage);
+      savedPage = await this.syncRevisionToHackmd(savedPage);
     }
 
     if (socketClientId != null) {
       pageEvent.emit('update', savedPage, user, socketClientId);
     }
     return savedPage;
+  };
+
+  pageSchema.statics.applyScopesToDescendantsAsyncronously = async function(parentPage, user) {
+    const builder = new PageQueryBuilder(this.find());
+    builder.addConditionToListWithDescendants(parentPage.path);
+
+    builder.addConditionToExcludeRedirect();
+
+    // add grant conditions
+    await addConditionToFilteringByViewerForList(builder, user);
+
+    // get all pages that the specified user can update
+    const pages = await builder.query.exec();
+
+    for (const page of pages) {
+      // skip parentPage
+      if (page.id === parentPage.id) {
+        continue;
+      }
+
+      page.applyScope(user, parentPage.grant, parentPage.grantedGroup);
+      page.save();
+    }
   };
 
   pageSchema.statics.deletePage = async function(pageData, user, options = {}) {

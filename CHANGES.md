@@ -1,9 +1,23 @@
 CHANGES
 ========
 
-## 3.3.2-RC
+## 3.3.3-RC
 
-* 
+* Feature: Show line numbers to a code block
+* Fix: Possibility that ExternalAccount deletion processing selects incorrect data
+* Fix: Pages that is restricted by groups couldn't be shown in search result page
+* Fix: Pages order in search result page was wrong
+* Fix: Guest user can't search
+* Support: Upgrade libs
+    * bootstrap-sass
+    * i18next
+    * migrate-mongo
+    * string-width
+
+## 3.3.2
+
+* Fix: Specified Group ACL is not persisted correctly
+    * Introduced 3.3.0
 
 ## 3.3.1
 
