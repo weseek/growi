@@ -338,11 +338,11 @@ module.exports = function(crowi, app) {
     }
 
     if (req.method == 'POST' && req.form.isValid) {
-      var user = req.user;
-      var invitedForm = req.form.invitedForm || {};
-      var username = invitedForm.username;
-      var name = invitedForm.name;
-      var password = invitedForm.password;
+      const user = req.user;
+      const invitedForm = req.form.invitedForm || {};
+      const username = invitedForm.username;
+      const name = invitedForm.name;
+      const password = invitedForm.password;
 
       // check user upper limit
       const isUserCountExceedsUpperLimit = await User.isUserCountExceedsUpperLimit();

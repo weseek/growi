@@ -69,6 +69,13 @@ module.exports = function(crowi, app) {
         esResult = await search.searchKeyword(keyword, user, userGroups, searchOpts);
       }
 
+      // create score map for sorting
+      // key: id , value: score
+      const scoreMap = {};
+      for (const esPage of esResult.data) {
+        scoreMap[esPage._id] = esPage._score;
+      }
+
       const findResult = await Page.findListByPageIds(esResult.data);
 
       result.meta = esResult.meta;
@@ -77,6 +84,10 @@ module.exports = function(crowi, app) {
         .map(page => {
           page.bookmarkCount = (page._source && page._source.bookmark_count) || 0;
           return page;
+        })
+        .sort((page1, page2) => {
+          // note: this do not consider NaN
+          return scoreMap[page2._id] - scoreMap[page1._id];
         });
     }
     catch (err) {

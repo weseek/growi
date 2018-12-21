@@ -161,7 +161,11 @@ release: # would be run on release branch
 
     - script:
       name: trigger growi-docker release pipeline
-      code: sh ./bin/wercker/trigger-growi-docker.sh
+      code: GROWI_DOCKER_PIPELINE_ID=$GROWI_DOCKER_PIPELINE_ID_CDN sh ./bin/wercker/trigger-growi-docker.sh
+
+    - script:
+      name: trigger growi-docker release-nocdn pipeline
+      code: GROWI_DOCKER_PIPELINE_ID=$GROWI_DOCKER_PIPELINE_ID_NOCDN sh ./bin/wercker/trigger-growi-docker.sh
 
   after-steps:
     - slack-notifier:

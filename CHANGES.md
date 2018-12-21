@@ -1,7 +1,31 @@
 CHANGES
 ========
 
-## 3.3.0-RC
+## 3.3.4-RC
+
+* 
+
+## 3.3.3
+
+* Feature: Show line numbers to a code block
+* Feature: Bulk update the scope of descendant pages when create/update page
+* Improvement: The scope of ascendant page will be retrieved and set to controls in advance when creating a new page
+* Fix: Pages that is restricted by groups couldn't be shown in search result page
+* Fix: Pages order in search result page was wrong
+* Fix: Guest user can't search
+* Fix: Possibility that ExternalAccount deletion processing selects incorrect data
+* Support: Upgrade libs
+    * bootstrap-sass
+    * i18next
+    * migrate-mongo
+    * string-width
+
+## 3.3.2
+
+* Fix: Specified Group ACL is not persisted correctly
+    * Introduced 3.3.0
+
+## 3.3.1
 
 * Feature: NO_CDN Mode
 * Feature: Add option to show/hide restricted pages in list
@@ -15,6 +39,8 @@ CHANGES
 * Support: Upgrade libs
     * googleapis
     * passport-saml
+
+## 3.3.0 (Missing number)
 
 ## 3.2.10
 

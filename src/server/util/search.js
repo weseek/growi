@@ -531,16 +531,8 @@ SearchClient.prototype.filterPagesByViewer = async function(query, user, userGro
   const Config = this.crowi.model('Config');
   const config = this.crowi.getConfig();
 
-  // determine User condition
-  const hidePagesRestrictedByOwner = Config.hidePagesRestrictedByOwnerInList(config);
-  user = hidePagesRestrictedByOwner ? user : null;
-
-  // determine UserGroup condition
-  const hidePagesRestrictedByGroup = Config.hidePagesRestrictedByGroupInList(config);
-  if (hidePagesRestrictedByGroup && user != null) {
-    const UserGroupRelation = this.crowi.model('UserGroupRelation');
-    userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
-  }
+  const showPagesRestrictedByOwner = !Config.hidePagesRestrictedByOwnerInList(config);
+  const showPagesRestrictedByGroup = !Config.hidePagesRestrictedByGroupInList(config);
 
   query = this.initializeBoolQuery(query);
 
@@ -551,14 +543,14 @@ SearchClient.prototype.filterPagesByViewer = async function(query, user, userGro
     { term: { grant: GRANT_PUBLIC } },
   ];
 
-  if (user == null) {
+  if (showPagesRestrictedByOwner) {
     grantConditions.push(
       { term: { grant: GRANT_RESTRICTED } },
       { term: { grant: GRANT_SPECIFIED } },
       { term: { grant: GRANT_OWNER } },
     );
   }
-  else {
+  else if (user != null) {
     grantConditions.push(
       { bool: {
         must: [
@@ -581,12 +573,12 @@ SearchClient.prototype.filterPagesByViewer = async function(query, user, userGro
     );
   }
 
-  if (userGroups == null) {
+  if (showPagesRestrictedByGroup) {
     grantConditions.push(
       { term: { grant: GRANT_USER_GROUP } },
     );
   }
-  else if (userGroups.length > 0) {
+  else if (userGroups != null && userGroups.length > 0) {
     const userGroupIds = userGroups.map(group => group._id.toString() );
     grantConditions.push(
       { bool: {
