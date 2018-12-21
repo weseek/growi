@@ -4,10 +4,12 @@ CHANGES
 ## 3.3.3-RC
 
 * Feature: Show line numbers to a code block
-* Fix: Possibility that ExternalAccount deletion processing selects incorrect data
+* Feature: Bulk update the scope of descendant pages when create/update page
+* Improvement: The scope of ascendant page will be retrieved and set to controls in advance when creating a new page
 * Fix: Pages that is restricted by groups couldn't be shown in search result page
 * Fix: Pages order in search result page was wrong
 * Fix: Guest user can't search
+* Fix: Possibility that ExternalAccount deletion processing selects incorrect data
 * Support: Upgrade libs
     * bootstrap-sass
     * i18next
