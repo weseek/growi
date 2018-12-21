@@ -5,6 +5,9 @@ CHANGES
 
 * Feature: Show line numbers to a code block
 * Fix: Possibility that ExternalAccount deletion processing selects incorrect data
+* Fix: Pages that is restricted by groups couldn't be shown in search result page
+* Fix: Pages order in search result page was wrong
+* Fix: Guest user can't search
 * Support: Upgrade libs
     * bootstrap-sass
     * i18next
