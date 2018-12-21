@@ -1,7 +1,11 @@
 CHANGES
 ========
 
-## 3.3.3-RC
+## 3.3.4-RC
+
+* 
+
+## 3.3.3
 
 * Feature: Show line numbers to a code block
 * Feature: Bulk update the scope of descendant pages when create/update page
