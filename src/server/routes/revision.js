@@ -5,6 +5,7 @@ module.exports = function(crowi, app) {
   const logger = require('@alias/logger')('growi:routes:revision');
   const Page = crowi.model('Page');
   const Revision = crowi.model('Revision');
+  const User = crowi.model('User');
   const ApiResponse = require('../util/apiResponse');
 
   const actions = {};
@@ -33,7 +34,7 @@ module.exports = function(crowi, app) {
     }
 
     try {
-      const revision = await Revision.findById(revisionId).populate('author', 'User');
+      const revision = await Revision.findById(revisionId).populate('author', User.USER_PUBLIC_FIELDS);
       return res.json(ApiResponse.success({ revision }));
     }
     catch (err) {
