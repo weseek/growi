@@ -3,7 +3,7 @@ CHANGES
 
 ## 3.3.4-RC
 
-* 
+* Fix: `/_api/revisions.get` doesn't populate author data correctly
 
 ## 3.3.3
 
