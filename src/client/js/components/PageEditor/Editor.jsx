@@ -109,11 +109,11 @@ export default class Editor extends AbstractEditor {
     const items = event.clipboardData.items || event.clipboardData.files || [];
 
     // abort if length is not 1
-    if (items.length != 1) {
+    if (items.length < 1) {
       return;
     }
 
-    const file = items[0].getAsFile();
+    const file = items[items.length-1].getAsFile();
     // check type and size
     if (pasteHelper.fileAccepted(file, dropzone.props.accept) &&
         pasteHelper.fileMatchSize(file, dropzone.props.maxSize, dropzone.props.minSize)) {
