@@ -167,14 +167,19 @@ export default class GrowiRenderer {
     const noborder = (!config.highlightJsStyleBorder) ? 'hljs-no-border' : '';
 
     if (langExt) {
-      const langAndFn = langExt.split(':');
-      const lang = langAndFn[0];
-      const langFn = langAndFn[1] || null;
+      // https://regex101.com/r/qGs7eZ/1
+      const match = langExt.match(/^([^:=\n]+)(=([^:=\n]*))?(:([^:=\n]+))?(=([^:=\n]*))?$/);
 
-      const citeTag = (langFn) ? `<cite>${langFn}</cite>` : '';
+      const lang = match[1];
+      const fileName = match[5] || null;
+      const showLinenumbers = (match[2] != null) || (match[6] != null);
+
+      const citeTag = (fileName) ? `<cite>${fileName}</cite>` : '';
+
       if (hljs.getLanguage(lang)) {
         try {
-          return `<pre class="hljs ${noborder}">${citeTag}<code class="language-${lang}">${hljs.lineNumbersValue(hljs.highlight(lang, code, true).value)}</code></pre>`;
+          const highlightCode = showLinenumbers ? hljs.lineNumbersValue(hljs.highlight(lang, code, true).value) : hljs.highlight(lang, code, true).value;
+          return `<pre class="hljs ${noborder}">${citeTag}<code class="language-${lang}">${highlightCode}</code></pre>`;
         }
         catch (__) {
           return `<pre class="hljs ${noborder}">${citeTag}<code class="language-${lang}">${code}}</code></pre>`;

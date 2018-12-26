@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { translate } from 'react-i18next';
 
 import FormGroup from 'react-bootstrap/es/FormGroup';
 import FormControl from 'react-bootstrap/es/FormControl';
@@ -8,7 +9,7 @@ import ControlLabel from 'react-bootstrap/es/ControlLabel';
 import Dropdown from 'react-bootstrap/es/Dropdown';
 import MenuItem from 'react-bootstrap/es/MenuItem';
 
-export default class OptionsSelector extends React.Component {
+class OptionsSelector extends React.Component {
 
   constructor(props) {
     super(props);
@@ -184,6 +185,7 @@ export default class OptionsSelector extends React.Component {
   }
 
   renderActiveLineMenuItem() {
+    const { t } = this.props;
     const isActive = this.state.editorOptions.styleActiveLine;
 
     const iconClasses = ['text-info'];
@@ -195,7 +197,7 @@ export default class OptionsSelector extends React.Component {
     return (
       <MenuItem onClick={this.onClickStyleActiveLine}>
         <span className="icon-container"></span>
-        <span className="menuitem-label">Show active line</span>
+        <span className="menuitem-label">{ t('page_edit.Show active line') }</span>
         <span className="icon-container"><i className={iconClassName}></i></span>
       </MenuItem>
     );
@@ -252,8 +254,11 @@ export class PreviewOptions {
 }
 
 OptionsSelector.propTypes = {
+  t: PropTypes.func.isRequired,               // i18next
   crowi: PropTypes.object.isRequired,
   editorOptions: PropTypes.instanceOf(EditorOptions).isRequired,
   previewOptions: PropTypes.instanceOf(PreviewOptions).isRequired,
   onChange: PropTypes.func.isRequired,
 };
+
+export default translate()(OptionsSelector);
