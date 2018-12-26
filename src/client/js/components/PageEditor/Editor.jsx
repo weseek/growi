@@ -113,13 +113,20 @@ export default class Editor extends AbstractEditor {
       return;
     }
 
-    const file = items[items.length-1].getAsFile();
-    // check type and size
-    if (pasteHelper.fileAccepted(file, dropzone.props.accept) &&
-        pasteHelper.fileMatchSize(file, dropzone.props.maxSize, dropzone.props.minSize)) {
+    for (let i = 0; i < items.length; i++) {
+      try {
+        const file = items[i].getAsFile();
+        // check type and size
+        if (pasteHelper.fileAccepted(file, dropzone.props.accept) &&
+            pasteHelper.fileMatchSize(file, dropzone.props.maxSize, dropzone.props.minSize)) {
 
-      this.dispatchUpload(file);
-      this.setState({ isUploading: true });
+          this.dispatchUpload(file);
+          this.setState({ isUploading: true });
+        }
+      }
+      catch (e) {
+        // do nothing
+      }
     }
   }
 
