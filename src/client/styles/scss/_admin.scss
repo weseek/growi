@@ -138,7 +138,7 @@
     }
 
     &.use-only-env-vars .from-env-vars {
-      background-color: rgba(0, 159, 187, 0.1);
+      background-color: rgba($info, 0.1);
     }
   }
 }
