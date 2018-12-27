@@ -191,7 +191,7 @@ Environment Variables
 Documentation
 ==============
 
-- [GROWI Docs](https://docs.growi.org/en/)
+- [GROWI Docs](https://docs.growi.org/)
 
 
 Contribution
