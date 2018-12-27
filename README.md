@@ -74,7 +74,7 @@ See also [weseek/growi-docker-compose][docker-compose]
 On-premise
 ----------
 
-[**Migration Guide from Crowi** is here](https://github.com/weseek/growi/wiki/Migration-Guide-from-Crowi).
+[**Migration Guide from Crowi** is here](https://docs.growi.org/guide/migration-guide/from-crowi-onpremise.html).
 
 ### Dependencies
 
@@ -83,7 +83,7 @@ On-premise
 - yarn
 - MongoDB 3.x
 
-See [confirmed versions](https://github.com/weseek/growi/wiki/Developers-Guide#versions-confirmed-to-work).
+See [confirmed versions](https://docs.growi.org/dev/startup/dev-env.html#versions-confirmed-to-work).
 
 #### Optional Dependencies
 
@@ -114,7 +114,7 @@ export ELASTICSEARCH_URI=http://ELASTICSEARCH_HOST:ELASTICSEARCH_PORT/growi
 npm start
 ```
 
-For more info, see [Developers Guide](https://github.com/weseek/growi/wiki/Developers-Guide) and [Crowi documents](https://github.com/crowi/crowi/wiki/Install-and-Configuration#env-parameters).
+For more info, see [Developers Guide](https://docs.growi.org/dev/).
 
 #### Command details
 
@@ -144,8 +144,6 @@ npm start
 yarn add growi-plugin-lsx
 npm start
 ```
-
-
 
 For more info, see [Developers Guide](https://docs.growi.org/dev/) on docs.growi.org.
 
