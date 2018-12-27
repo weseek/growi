@@ -147,7 +147,7 @@ npm start
 
 
 
-For more info, see [Developers Guide](https://github.com/weseek/growi/wiki/Developers-Guide) on Wiki.
+For more info, see [Developers Guide](https://docs.growi.org/dev/) on docs.growi.org.
 
 
 Environment Variables
@@ -191,10 +191,8 @@ Environment Variables
 Documentation
 ==============
 
-* [github wiki pages](https://github.com/weseek/growi/wiki)
-  * [Questions and Answers](https://github.com/weseek/growi/wiki/Questions-and-Answers)
-  * [Migration Guide from Crowi](https://github.com/weseek/growi/wiki/Migration-Guide-from-Crowi)
-  * [Developers Guide](https://github.com/weseek/growi/wiki/Developers-Guide)
+- [GROWI Docs](https://docs.growi.org/en/)
+
 
 Contribution
 ============
@@ -219,17 +217,13 @@ It also allows us to coordinate better, prevent duplication of work and help you
 Translation
 --------------
 
-### for GROWI system
+We have some Transifex Projects.
 
-We have [the Transifex Project for GROWI](https://www.transifex.com/weseek-inc/growi).  
+* [GROWI (Internationalize)](https://www.transifex.com/weseek-inc/growi)
+* [GROWI Docs (Internationalize)](https://www.transifex.com/weseek-inc/growi-docs)
+
 Please join to our team!
 
-### for documents
-
-*We have [Gitbook site](https://docs.growi.org), but currently Gitbook doesn't support Multi-langage.*  
--> https://docs.gitbook.com/v2-changes/important-differences#multi-language-books
-
-*We have to wait until it is implemented.*
 
 Language on GitHub
 ------------------
