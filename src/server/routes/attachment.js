@@ -91,17 +91,21 @@ module.exports = function(crowi, app) {
     if (process.env.FILE_UPLOAD !== 'mongodb') {
       return res.status(400);
     }
+
     const pageId = req.params.pageId;
     const fileName = req.params.fileName;
     const filePath = `attachment/${pageId}/${fileName}`;
-    try {
-      const fileData = await fileUploader.getFileData(filePath);
-      res.set('Content-Type', fileData.contentType);
-      return res.send(ApiResponse.success(fileData.data));
-    }
-    catch (e) {
+
+    const attachment = await Attachment.findOne({ filePath });
+
+    if (attachment == null) {
       return res.json(ApiResponse.error('attachment not found'));
     }
+
+    req.params.id = attachment._id.toString();
+
+    // delegate to 'get' method
+    return api.get(req, res);
   };
 
   /**
