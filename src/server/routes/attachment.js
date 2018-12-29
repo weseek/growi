@@ -140,15 +140,7 @@ module.exports = function(crowi, app) {
       .sort({'updatedAt': 1})
       .populate('creator', User.USER_PUBLIC_FIELDS);
 
-    // toJSON
-    attachments = attachments.map(attachment => {
-      const json = attachment.toJSON({ virtuals: true});
-
-      // omit unnecessary property
-      json.filePathOnStorage = undefined;
-
-      return json;
-    });
+    attachments = attachments.map(attachment => attachment.toObject({ virtuals: true }));
 
     return res.json(ApiResponse.success({ attachments }));
   };

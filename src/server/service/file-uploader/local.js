@@ -55,7 +55,7 @@ module.exports = function(crowi) {
    */
   lib.findDeliveryFile = async function(attachment) {
     const uploadDir = path.posix.join(crowi.publicDir, 'uploads');
-    const filePath = path.posix.join(uploadDir, attachment.filePathOnStorage);
+    const filePath = path.posix.join(uploadDir, attachment.getFilePathOnStorage());
 
     // check file exists
     try {

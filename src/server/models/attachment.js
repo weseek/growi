@@ -16,6 +16,7 @@ module.exports = function(crowi) {
     return hash.digest('hex');
   }
 
+
   attachmentSchema = new mongoose.Schema({
     page: { type: ObjectId, ref: 'Page', index: true },
     creator: { type: ObjectId, ref: 'User', index: true  },
@@ -24,10 +25,7 @@ module.exports = function(crowi) {
     originalName: { type: String },
     fileFormat: { type: String, required: true },
     fileSize: { type: Number, default: 0 },
-    createdAt: { type: Date, default: Date.now },
-  }, {
-    toJSON: {
-    },
+    createdAt: { type: Date, default: Date.now() },
   });
 
   attachmentSchema.virtual('filePathProxied').get(function() {
@@ -38,7 +36,7 @@ module.exports = function(crowi) {
     return `/download/${this._id}`;
   });
 
-  attachmentSchema.virtual('filePathOnStorage').get(function() {
+  attachmentSchema.methods.getFilePathOnStorage = function() {
     if (this.filePath != null) {
       return this.filePath;
     }

@@ -92,7 +92,7 @@ module.exports = function(crowi) {
     // construct url
     const awsConfig = getAwsConfig();
     const baseUrl = `https://${awsConfig.bucket}.s3.amazonaws.com`;
-    const url = urljoin(baseUrl, attachment.filePathOnStorage);
+    const url = urljoin(baseUrl, attachment.getFilePathOnStorage());
 
     let response;
     try {
