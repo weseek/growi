@@ -13,6 +13,13 @@ module.exports = function(crowi, app) {
   const fileUploader = require('../service/file-uploader')(crowi, app);
 
 
+  /**
+   * Common method to response
+   *
+   * @param {Response} res
+   * @param {Attachment} attachment
+   * @param {boolean} forceDownload
+   */
   async function responseForAttachment(res, attachment, forceDownload) {
     let fileStream;
     try {
@@ -27,6 +34,13 @@ module.exports = function(crowi, app) {
     return fileStream.pipe(res);
   }
 
+  /**
+   * set http response header
+   *
+   * @param {Response} res
+   * @param {Attachment} attachment
+   * @param {boolean} forceDownload
+   */
   function setHeaderToRes(res, attachment, forceDownload) {
     // download
     if (forceDownload) {
