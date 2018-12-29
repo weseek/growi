@@ -1,5 +1,7 @@
 const debug = require('debug')('growi:service:fileUploaderAws');
+const logger = require('@alias/logger')('growi:service:fileUploaderAws');
 
+const axios = require('axios');
 const urljoin = require('url-join');
 const aws = require('aws-sdk');
 
@@ -81,14 +83,28 @@ module.exports = function(crowi) {
   };
 
   /**
-   * return local file path string
+   * Find data substance
+   *
+   * @param {Attachment} attachment
+   * @return {stream.Readable} readable stream
    */
-  lib.findDeliveryFile = async function(attachmentId, filePath) {
+  lib.findDeliveryFile = async function(attachment) {
+    // construct url
     const awsConfig = getAwsConfig();
     const baseUrl = `https://${awsConfig.bucket}.s3.amazonaws.com`;
-    const url = urljoin(baseUrl, filePath);
+    const url = urljoin(baseUrl, attachment.filePathOnStorage);
 
-    return url;
+    let response;
+    try {
+      response = await axios.get(url, { responseType: 'stream' });
+    }
+    catch (err) {
+      logger.error(err);
+      throw new Error(`Coudn't get file from AWS for the Attachment (${attachment._id.toString()})`);
+    }
+
+    // return stream.Readable
+    return response.data;
   };
 
   /**

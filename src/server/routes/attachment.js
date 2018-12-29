@@ -3,10 +3,6 @@ const logger = require('@alias/logger')('growi:routes:attachment');
 
 const path = require('path');
 const fs = require('fs');
-const util = require('util');
-const https = require('https');
-const httpsGet = util.promisify(https.get);
-const urljoin = require('url-join');
 
 const ApiResponse = require('../util/apiResponse');
 
@@ -18,13 +14,6 @@ module.exports = function(crowi, app) {
 
   const actions = {};
   const api = {};
-
-  async function findDeliveryFile(attachment) {
-    const pageId = attachment.page._id || attachment.page;
-    const filePath = urljoin('/attachment', pageId.toString(), attachment.fileName);
-
-    return fileUploader.findDeliveryFile(attachment._id, filePath);
-  }
 
   actions.api = api;
 
@@ -78,23 +67,17 @@ module.exports = function(crowi, app) {
 
     // TODO consider page restrection
 
-    res.set('Content-Type', attachment.fileFormat);
-
+    let fileStream;
     try {
-      const file = await findDeliveryFile(attachment);
-
-      // redirect if string
-      if (typeof file === 'string') {
-        const httpsGetResponse = await httpsGet(file);
-        return res.pipe(httpsGetResponse);
-      }
-
-      return res.send(ApiResponse.success(file.data));
+      fileStream = await fileUploader.findDeliveryFile(attachment);
     }
     catch (e) {
       // TODO handle errors
       return res.json(ApiResponse.error(e.message));
     }
+
+    res.set('Content-Type', attachment.fileFormat);
+    return fileStream.pipe(res);
   };
 
   /**

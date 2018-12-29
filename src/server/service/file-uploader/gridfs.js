@@ -1,12 +1,9 @@
-// crowi-fileupload-gridFS
+const debug = require('debug')('growi:service:fileUploaderGridfs');
+const mongoose = require('mongoose');
 
 module.exports = function(crowi) {
   'use strict';
 
-  const debug = require('debug')('growi:service:fileUploaderGridfs');
-  const mongoose = require('mongoose');
-  const path = require('path');
-  const fs = require('fs');
   const lib = {};
 
   // instantiate mongoose-gridfs
@@ -30,19 +27,7 @@ module.exports = function(crowi) {
         throw new Error(error);
       }
     });
-    clearCache(fileId);
-  };
-
-  const clearCache = (fileId) => {
-    const cacheFile = createCacheFileName(fileId);
-    const stats = fs.statSync(crowi.cacheDir);
-    if (stats.isFile(`attachment-${fileId}`)) {
-      fs.unlink(cacheFile, (err) => {
-        if (err) {
-          throw new Error('fail to delete cache file', err);
-        }
-      });
-    }
+    // clearCache(fileId);
   };
 
   /**
@@ -95,85 +80,21 @@ module.exports = function(crowi) {
     });
   };
 
-  lib.getFileData = async function(filePath) {
-    const file = await getFile(filePath);
-    const id = file.id;
-    const contentType = file.contentType;
-    const data = await readFileData(id);
-    return {
-      data,
-      contentType
-    };
-  };
-
   /**
-   * get file from MongoDB (Promise wrapper)
+   * Find data substance
+   *
+   * @param {Attachment} attachment
+   * @return {stream.Readable} readable stream
    */
-  const getFile = (filePath) => {
-    return new Promise((resolve, reject) => {
-      AttachmentFile.findOne({
-        filename: filePath
-      }, function(err, file) {
-        if (err) {
-          reject(err);
-        }
-        resolve(file);
-      });
-    });
-  };
+  lib.findDeliveryFile = async function(attachment) {
+    const attachmentFile = await AttachmentFile.findOne({ fileName: attachment.fileName });
 
-  /**
-   * read File in MongoDB (Promise wrapper)
-   */
-  const readFileData = (id) => {
-    return new Promise((resolve, reject) => {
-      let buf;
-      const stream = AttachmentFile.readById(id);
-      stream.on('error', function(error) {
-        reject(error);
-      });
-      stream.on('data', function(data) {
-        if (buf) {
-          buf = Buffer.concat([buf, data]);
-        }
-        else {
-          buf = data;
-        }
-      });
-      stream.on('close', function() {
-        debug('GridFS readstream closed');
-        resolve(buf);
-      });
-    });
-  };
+    if (attachmentFile == null) {
+      throw new Error(`Any AttachmentFile that relate to the Attachment (${attachment._id.toString()}) does not exist in GridFS`);
+    }
 
-  lib.findDeliveryFile = async function(fileId, filePath) {
-    const cacheFile = createCacheFileName(fileId);
-    debug('Load attachement file into local cache file', cacheFile);
-    const fileStream = fs.createWriteStream(cacheFile);
-    const file = await getFile(filePath);
-    const id = file.id;
-    const buf = await readFileData(id);
-    await writeCacheFile(fileStream, buf);
-    return cacheFile;
-  };
-
-  const createCacheFileName = (fileId) => {
-    return path.join(crowi.cacheDir, `attachment-${fileId}`);
-  };
-
-  /**
-   * write cache file (Promise wrapper)
-   */
-  const writeCacheFile = (fileStream, data) => {
-    return new Promise((resolve, reject) => {
-      fileStream.write(data);
-      resolve();
-    });
-  };
-
-  lib.generateUrl = function(filePath) {
-    return `/${filePath}`;
+    // return stream.Readable
+    return AttachmentFile.readById(attachmentFile.id);
   };
 
   return lib;

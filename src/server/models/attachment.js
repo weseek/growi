@@ -3,6 +3,8 @@ module.exports = function(crowi) {
   const mongoose = require('mongoose');
   const ObjectId = mongoose.Schema.Types.ObjectId;
 
+  const urljoin = require('url-join');
+
   const fileUploader = require('../service/file-uploader')(crowi);
 
   let attachmentSchema;
@@ -31,6 +33,17 @@ module.exports = function(crowi) {
 
   attachmentSchema.virtual('fileUrl').get(function() {
     return `/files/${this._id}`;
+  });
+
+  attachmentSchema.virtual('filePathOnStorage').get(function() {
+    if (this.filePath != null) {
+      return this.filePath;
+    }
+
+    const pageId = this.page._id || this.page;
+    const filePath = urljoin('/attachment', pageId.toString(), this.fileName);
+
+    return filePath;
   });
 
   attachmentSchema.statics.findById = function(id) {

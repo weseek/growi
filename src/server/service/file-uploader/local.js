@@ -1,14 +1,14 @@
-// crowi-fileupload-local
+const debug = require('debug')('growi:service:fileUploaderLocal');
+
+const fs = require('fs');
+const path = require('path');
+const mkdir = require('mkdirp');
 
 module.exports = function(crowi) {
   'use strict';
 
-  var debug = require('debug')('growi:service:fileUploaderLocal')
-    , fs = require('fs')
-    , path = require('path')
-    , mkdir = require('mkdirp')
-    , lib = {}
-    , basePath = path.posix.join(crowi.publicDir, 'uploads'); // TODO: to configurable
+  const lib = {};
+  const basePath = path.posix.join(crowi.publicDir, 'uploads'); // TODO: to configurable
 
   lib.deleteFile = function(fileId, filePath) {
     debug('File deletion: ' + filePath);
@@ -48,10 +48,25 @@ module.exports = function(crowi) {
   };
 
   /**
-   * return local file path string
+   * Find data substance
+   *
+   * @param {Attachment} attachment
+   * @return {stream.Readable} readable stream
    */
-  lib.findDeliveryFile = async function(attachmentId, filePath) {
-    return path.posix.join('/uploads', filePath);
+  lib.findDeliveryFile = async function(attachment) {
+    const uploadDir = path.posix.join(crowi.publicDir, 'uploads');
+    const filePath = path.posix.join(uploadDir, attachment.filePathOnStorage);
+
+    // check file exists
+    try {
+      fs.statSync(filePath);
+    }
+    catch (err) {
+      throw new Error(`Any AttachmentFile that relate to the Attachment (${attachment._id.toString()}) does not exist in local fs`);
+    }
+
+    // return stream.Readable
+    return fs.createReadStream(filePath);
   };
 
   /**
