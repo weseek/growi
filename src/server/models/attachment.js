@@ -1,22 +1,23 @@
 module.exports = function(crowi) {
-  var debug = require('debug')('growi:models:attachment')
-    , mongoose = require('mongoose')
-    , ObjectId = mongoose.Schema.Types.ObjectId
-    , fileUploader = require('../service/file-uploader')(crowi)
-    , attachmentSchema
-  ;
+  const debug = require('debug')('growi:models:attachment');
+  const mongoose = require('mongoose');
+  const ObjectId = mongoose.Schema.Types.ObjectId;
+
+  const fileUploader = require('../service/file-uploader')(crowi);
+
+  let attachmentSchema;
 
   function generateFileHash(fileName) {
-    var hasher = require('crypto').createHash('md5');
-    hasher.update(fileName);
+    const hash = require('crypto').createHash('md5');
+    hash.update(`${fileName}_${Date.now()}`);
 
-    return hasher.digest('hex');
+    return hash.digest('hex');
   }
 
   attachmentSchema = new mongoose.Schema({
     page: { type: ObjectId, ref: 'Page', index: true },
     creator: { type: ObjectId, ref: 'User', index: true  },
-    filePath: { type: String, required: true },
+    filePath: { type: String },   // DEPRECATED: remains for backward compatibility for v3.3.3 or below
     fileName: { type: String, required: true },
     originalName: { type: String },
     fileFormat: { type: String, required: true },
@@ -29,13 +30,7 @@ module.exports = function(crowi) {
   });
 
   attachmentSchema.virtual('fileUrl').get(function() {
-    // NOTE: use original generated Url directly (not proxy) -- 2017.05.08 Yuki Takei
-    // reason:
-    //   1. this is buggy (doesn't work on Win)
-    //   2. ensure backward compatibility of data
-
-    // return `/files/${this._id}`;
-    return fileUploader.generateUrl(this.filePath);
+    return `/files/${this._id}`;
   });
 
   attachmentSchema.statics.findById = function(id) {
@@ -154,13 +149,6 @@ module.exports = function(crowi) {
       });
     });
 
-  };
-
-  attachmentSchema.statics.findDeliveryFile = function(attachment, forceUpdate) {
-    // TODO force update
-    // var forceUpdate = forceUpdate || false;
-
-    return fileUploader.findDeliveryFile(attachment._id, attachment.filePath);
   };
 
   attachmentSchema.statics.removeAttachment = function(attachment) {

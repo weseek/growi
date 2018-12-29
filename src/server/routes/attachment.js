@@ -1,17 +1,27 @@
-module.exports = function(crowi, app) {
-  'use strict';
+const debug = require('debug')('growi:routss:attachment');
+const logger = require('@alias/logger')('growi:routes:attachment');
 
-  var debug = require('debug')('growi:routss:attachment')
-    , logger = require('@alias/logger')('growi:routes:attachment')
-    , Attachment = crowi.model('Attachment')
-    , User = crowi.model('User')
-    , Page = crowi.model('Page')
-    , path = require('path')
-    , fs = require('fs')
-    , fileUploader = require('../service/file-uploader')(crowi, app)
-    , ApiResponse = require('../util/apiResponse')
-    , actions = {}
-    , api = {};
+const path = require('path');
+const fs = require('fs');
+const urljoin = require('url-join');
+
+const ApiResponse = require('../util/apiResponse');
+
+module.exports = function(crowi, app) {
+  const Attachment = crowi.model('Attachment');
+  const User = crowi.model('User');
+  const Page = crowi.model('Page');
+  const fileUploader = require('../service/file-uploader')(crowi, app);
+
+  const actions = {};
+  const api = {};
+
+  async function findDeliveryFile(attachment) {
+    const pageId = attachment.page._id || attachment.page;
+    const filePath = urljoin('/attachment', pageId.toString(), attachment.fileName);
+
+    return fileUploader.findDeliveryFile(attachment._id, filePath);
+  }
 
   actions.api = api;
 
@@ -21,7 +31,7 @@ module.exports = function(crowi, app) {
     Attachment.findById(id)
       .then(function(data) {
 
-        Attachment.findDeliveryFile(data)
+        findDeliveryFile(data)
           .then(fileName => {
 
             // local
@@ -48,13 +58,48 @@ module.exports = function(crowi, app) {
   };
 
   /**
-   * @api {get} /attachments.get get attachments from mongoDB
+   * @api {get} /attachments.get get attachments
+   * @apiName get
+   * @apiGroup Attachment
+   *
+   * @apiParam {String} id
+   */
+  api.get = async function(req, res) {
+    const id = req.params.id;
+
+    const attachment = await Attachment.findById(id);
+
+    if (attachment == null) {
+      return res.json(ApiResponse.error('attachment not found'));
+    }
+
+    // TODO consider page restrection
+
+    try {
+      const file = await findDeliveryFile(attachment);
+
+      // redirect if string
+      if (typeof file === 'string') {
+        return res.redirect(file);
+      }
+
+      res.set('Content-Type', file.contentType);
+      return res.send(ApiResponse.success(file.data));
+    }
+    catch (e) {
+      // TODO handle errors
+      return res.json(ApiResponse.error(e.message));
+    }
+  };
+
+  /**
+   * @api {get} /attachments.obsoletedGetForMongoDB get attachments from mongoDB
    * @apiName get
    * @apiGroup Attachment
    *
    * @apiParam {String} pageId, fileName
    */
-  api.get = async function(req, res) {
+  api.obsoletedGetForMongoDB = async function(req, res) {
     if (process.env.FILE_UPLOAD !== 'mongodb') {
       return res.status(400);
     }

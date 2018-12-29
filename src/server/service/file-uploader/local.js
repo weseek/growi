@@ -47,12 +47,11 @@ module.exports = function(crowi) {
     });
   };
 
-  lib.generateUrl = function(filePath) {
+  /**
+   * return local file path string
+   */
+  lib.findDeliveryFile = async function(attachmentId, filePath) {
     return path.posix.join('/uploads', filePath);
-  };
-
-  lib.findDeliveryFile = function(fileId, filePath) {
-    return Promise.resolve(lib.generateUrl(filePath));
   };
 
   /**
