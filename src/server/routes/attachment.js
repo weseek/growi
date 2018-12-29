@@ -3,6 +3,9 @@ const logger = require('@alias/logger')('growi:routes:attachment');
 
 const path = require('path');
 const fs = require('fs');
+const util = require('util');
+const https = require('https');
+const httpsGet = util.promisify(https.get);
 const urljoin = require('url-join');
 
 const ApiResponse = require('../util/apiResponse');
@@ -75,15 +78,17 @@ module.exports = function(crowi, app) {
 
     // TODO consider page restrection
 
+    res.set('Content-Type', attachment.fileFormat);
+
     try {
       const file = await findDeliveryFile(attachment);
 
       // redirect if string
       if (typeof file === 'string') {
-        return res.redirect(file);
+        const httpsGetResponse = await httpsGet(file);
+        return res.pipe(httpsGetResponse);
       }
 
-      res.set('Content-Type', file.contentType);
       return res.send(ApiResponse.success(file.data));
     }
     catch (e) {
