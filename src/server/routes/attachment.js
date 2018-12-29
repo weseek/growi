@@ -72,7 +72,7 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('attachment not found'));
     }
 
-    // TODO consider page restriction
+    // TODO for GC-1359: consider restriction
 
     return responseForAttachment(res, attachment, true);
   };
@@ -93,7 +93,7 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('attachment not found'));
     }
 
-    // TODO consider page restriction
+    // TODO for GC-1359: consider restriction
 
     return responseForAttachment(res, attachment);
   };
@@ -119,6 +119,8 @@ module.exports = function(crowi, app) {
     if (attachment == null) {
       return res.json(ApiResponse.error('attachment not found'));
     }
+
+    // TODO for GC-1359: consider restriction
 
     return responseForAttachment(res, attachment);
   };
@@ -166,8 +168,9 @@ module.exports = function(crowi, app) {
   api.add = async function(req, res) {
     const pageId = req.body.page_id || null;
     const pagePath = decodeURIComponent(req.body.path) || null;
-    const pageCreated = false;
+    let pageCreated = false;
 
+    // check params
     if (pageId == null && pagePath == null) {
       return res.json(ApiResponse.error('Either page_id or path is required.'));
     }
@@ -175,69 +178,48 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('File error.'));
     }
 
-    const tmpFile = req.file;
-    const isUploadable = await fileUploader.checkCapacity(tmpFile.size);
+    const file = req.file;
+
+    // check capacity
+    const isUploadable = await fileUploader.checkCapacity(file.size);
     if (!isUploadable) {
       return res.json(ApiResponse.error('MongoDB for uploading files reaches limit'));
     }
 
-    debug('Uploaded tmpFile: ', tmpFile);
+    // TODO for GC-1359: consider restriction
+    let page;
+    if (pageId == null) {
+      debug('Create page before file upload');
+      page = await Page.create(path, '# '  + path, req.user, {grant: Page.GRANT_OWNER});
+      pageCreated = true;
+    }
+    else {
+      page = await Page.findById(pageId);
+    }
 
-    new Promise(function(resolve, reject) {
-      if (pageId == null) {
-        if (pagePath == null) {
-          throw new Error('path required if page_id is not specified.');
-        }
-        debug('Create page before file upload');
-        Page.create(path, '# '  + path, req.user, {grant: Page.GRANT_OWNER})
-          .then(function(page) {
-            pageCreated = true;
-            resolve(page);
-          })
-          .catch(reject);
-      }
-      else {
-        Page.findById(pageId).then(resolve).catch(reject);
-      }
-    }).then(function(pageData) {
-      const page = pageData;
+    const fileStream = fs.createReadStream(file.path, {flags: 'r', encoding: null, fd: null, mode: '0666', autoClose: true });
 
-      const tmpPath = tmpFile.path;
-      const originalName = tmpFile.originalname;
-      const fileType = tmpFile.mimetype;
-      const fileSize = tmpFile.size;
-      const tmpFileStream = fs.createReadStream(tmpPath, {flags: 'r', encoding: null, fd: null, mode: '0666', autoClose: true });
+    // create an Attachment document and upload file
+    let attachment;
+    try {
+      attachment = await Attachment.create(pageId, req.user, fileStream, file.originalname, file.mimetype, file.size);
+    }
+    catch (err) {
+      logger.error(err);
 
-      return Attachment.create(pageId, req.user, tmpFileStream, originalName, fileType, fileSize)
-        .then(function(attachment) {
-          const result = {
-            page: page.toObject(),
-            attachment: attachment.toObject({ virtuals: true }),
-            pageCreated: pageCreated,
-          };
+      // delete anyway
+      fs.unlink(file.path, function(err) { if (err) { logger.error('Error while deleting tmp file.') } });
 
-          result.page.creator = User.filterToPublicFields(result.page.creator);
-          result.attachment.creator = User.filterToPublicFields(result.attachment.creator);
+      return res.json(ApiResponse.error('Error while uploading'));
+    }
 
-          // delete anyway
-          fs.unlink(tmpPath, function(err) { if (err) { debug('Error while deleting tmp file.') } });
+    const result = {
+      page: page.toObject(),
+      attachment: attachment.toObject({ virtuals: true }),
+      pageCreated: pageCreated,
+    };
 
-          return res.json(ApiResponse.success(result));
-        }).catch(function(err) {
-          logger.error('Error on saving attachment data', err);
-          // @TODO
-          // Remove from S3
-
-          // delete anyway
-          fs.unlink(tmpPath, function(err) { if (err) { logger.error('Error while deleting tmp file.') } });
-
-          return res.json(ApiResponse.error('Error while uploading.'));
-        });
-
-    }).catch(function(err) {
-      logger.error('Attachement upload error', err);
-      return res.json(ApiResponse.error('Error.'));
-    });
+    return res.json(ApiResponse.success(result));
   };
 
   /**
