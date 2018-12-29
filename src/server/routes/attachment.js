@@ -164,25 +164,28 @@ module.exports = function(crowi, app) {
    * @apiParam {File} file
    */
   api.add = async function(req, res) {
-    var id = req.body.page_id || 0,
-      path = decodeURIComponent(req.body.path) || null,
-      pageCreated = false,
-      page = {};
+    const pageId = req.body.page_id || null;
+    const pagePath = decodeURIComponent(req.body.path) || null;
+    const pageCreated = false;
 
-    debug('id and path are: ', id, path);
+    if (pageId == null && pagePath == null) {
+      return res.json(ApiResponse.error('Either page_id or path is required.'));
+    }
+    if (!req.file) {
+      return res.json(ApiResponse.error('File error.'));
+    }
 
-    var tmpFile = req.file || null;
+    const tmpFile = req.file;
     const isUploadable = await fileUploader.checkCapacity(tmpFile.size);
     if (!isUploadable) {
       return res.json(ApiResponse.error('MongoDB for uploading files reaches limit'));
     }
+
     debug('Uploaded tmpFile: ', tmpFile);
-    if (!tmpFile) {
-      return res.json(ApiResponse.error('File error.'));
-    }
+
     new Promise(function(resolve, reject) {
-      if (id == 0) {
-        if (path === null) {
+      if (pageId == null) {
+        if (pagePath == null) {
           throw new Error('path required if page_id is not specified.');
         }
         debug('Create page before file upload');
@@ -194,33 +197,22 @@ module.exports = function(crowi, app) {
           .catch(reject);
       }
       else {
-        Page.findById(id).then(resolve).catch(reject);
+        Page.findById(pageId).then(resolve).catch(reject);
       }
     }).then(function(pageData) {
-      page = pageData;
-      id = pageData._id;
+      const page = pageData;
 
-      var tmpPath = tmpFile.path,
-        originalName = tmpFile.originalname,
-        fileName = tmpFile.filename + tmpFile.originalname,
-        fileType = tmpFile.mimetype,
-        fileSize = tmpFile.size,
-        filePath = Attachment.createAttachmentFilePath(id, fileName, fileType),
-        tmpFileStream = fs.createReadStream(tmpPath, {flags: 'r', encoding: null, fd: null, mode: '0666', autoClose: true });
+      const tmpPath = tmpFile.path;
+      const originalName = tmpFile.originalname;
+      const fileType = tmpFile.mimetype;
+      const fileSize = tmpFile.size;
+      const tmpFileStream = fs.createReadStream(tmpPath, {flags: 'r', encoding: null, fd: null, mode: '0666', autoClose: true });
 
-      return fileUploader.uploadFile(filePath, fileType, tmpFileStream, {})
-        .then(function(data) {
-          debug('Uploaded data is: ', data);
-
-          // TODO size
-          return Attachment.create(id, req.user, filePath, originalName, fileName, fileType, fileSize);
-        }).then(function(data) {
-          var fileUrl = data.fileUrl;
-
-          var result = {
+      return Attachment.create(pageId, req.user, tmpFileStream, originalName, fileType, fileSize)
+        .then(function(attachment) {
+          const result = {
             page: page.toObject(),
-            attachment: data.toObject(),
-            url: fileUrl,
+            attachment: attachment.toObject({ virtuals: true }),
             pageCreated: pageCreated,
           };
 

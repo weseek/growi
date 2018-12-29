@@ -45,61 +45,26 @@ module.exports = function(crowi) {
     const filePath = urljoin('/attachment', pageId.toString(), this.fileName);
 
     return filePath;
-  });
-
-  attachmentSchema.statics.create = function(pageId, creator, filePath, originalName, fileName, fileFormat, fileSize) {
-    var Attachment = this;
-
-    return new Promise(function(resolve, reject) {
-      var newAttachment = new Attachment();
-
-      newAttachment.page = pageId;
-      newAttachment.creator = creator._id;
-      newAttachment.filePath = filePath;
-      newAttachment.originalName = originalName;
-      newAttachment.fileName = fileName;
-      newAttachment.fileFormat = fileFormat;
-      newAttachment.fileSize = fileSize;
-      newAttachment.createdAt = Date.now();
-
-      newAttachment.save(function(err, data) {
-        if (err) {
-          debug('Error on saving attachment.', err);
-          return reject(err);
-        }
-        debug('Attachment saved.', data);
-        return resolve(data);
-      });
-    });
   };
 
-  attachmentSchema.statics.guessExtByFileType = function(fileType) {
-    let ext = '';
-    const isImage = fileType.match(/^image\/(.+)/i);
-
-    if (isImage) {
-      ext = isImage[1].toLowerCase();
-    }
-
-    return ext;
-  };
-
-  attachmentSchema.statics.createAttachmentFilePath = function(pageId, fileName, fileType) {
+  attachmentSchema.statics.create = async function(pageId, user, fileStream, originalName, fileFormat, fileSize) {
     const Attachment = this;
-    let ext = '';
-    const fnExt = fileName.match(/(.*)(?:\.([^.]+$))/);
 
-    if (fnExt) {
-      ext = '.' + fnExt[2];
-    }
-    else {
-      ext = Attachment.guessExtByFileType(fileType);
-      if (ext !== '') {
-        ext = '.' + ext;
-      }
-    }
+    const fileName = generateFileHash(originalName);
 
-    return 'attachment/' + pageId + '/' + generateFileHash(fileName) + ext;
+    // upload file
+    await fileUploader.uploadFile(fileStream, fileName, fileFormat);
+
+    let attachment = new Attachment();
+    attachment.page = pageId;
+    attachment.creator = user._id;
+    attachment.originalName = originalName;
+    attachment.fileName = fileName;
+    attachment.fileFormat = fileFormat;
+    attachment.fileSize = fileSize;
+    attachment.createdAt = Date.now();
+
+    return await attachment.save();
   };
 
   attachmentSchema.statics.removeAttachmentsByPageId = function(pageId) {
