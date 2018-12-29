@@ -46,23 +46,6 @@ module.exports = function(crowi) {
     return filePath;
   });
 
-  attachmentSchema.statics.findById = function(id) {
-    var Attachment = this;
-
-    return new Promise(function(resolve, reject) {
-      Attachment.findOne({_id: id}, function(err, data) {
-        if (err) {
-          return reject(err);
-        }
-
-        if (data === null) {
-          return reject(new Error('Attachment not found'));
-        }
-        return resolve(data);
-      });
-    });
-  };
-
   attachmentSchema.statics.getListByPageId = function(id) {
     var self = this;
 
