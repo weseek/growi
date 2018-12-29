@@ -12,41 +12,55 @@ module.exports = function(crowi, app) {
   const Page = crowi.model('Page');
   const fileUploader = require('../service/file-uploader')(crowi, app);
 
+
+  async function responseForAttachment(res, attachment, forceDownload) {
+    let fileStream;
+    try {
+      fileStream = await fileUploader.findDeliveryFile(attachment);
+    }
+    catch (e) {
+      logger.error(e);
+      return res.json(ApiResponse.error(e.message));
+    }
+
+    setHeaderToRes(res, attachment, forceDownload);
+    return fileStream.pipe(res);
+  }
+
+  function setHeaderToRes(res, attachment, forceDownload) {
+    // download
+    if (forceDownload) {
+      const headers = {
+        'Content-Type': 'application/force-download',
+        'Content-Disposition': `inline;filename*=UTF-8''${encodeURIComponent(attachment.originalName)}`,
+      };
+
+      res.writeHead(200, headers);
+    }
+    // reference
+    else {
+      res.set('Content-Type', attachment.fileFormat);
+    }
+  }
+
+
   const actions = {};
   const api = {};
 
   actions.api = api;
 
-  api.download = function(req, res) {
+  api.download = async function(req, res) {
     const id = req.params.id;
 
-    Attachment.findById(id)
-      .then(function(data) {
+    const attachment = await Attachment.findById(id);
 
-        findDeliveryFile(data)
-          .then(fileName => {
+    if (attachment == null) {
+      return res.json(ApiResponse.error('attachment not found'));
+    }
 
-            // local
-            if (fileName.match(/^\/uploads/)) {
-              return res.download(path.join(crowi.publicDir, fileName), data.originalName);
-            }
-            // aws or gridfs
-            else {
-              const options = {
-                headers: {
-                  'Content-Type': 'application/force-download',
-                  'Content-Disposition': `inline;filename*=UTF-8''${encodeURIComponent(data.originalName)}`,
-                }
-              };
-              return res.sendFile(fileName, options);
-            }
-          });
-      })
-      // not found
-      .catch((err) => {
-        logger.error('download err', err);
-        return res.status(404).sendFile(crowi.publicDir + '/images/file-not-found.png');
-      });
+    // TODO consider page restriction
+
+    return responseForAttachment(res, attachment, true);
   };
 
   /**
@@ -65,19 +79,9 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('attachment not found'));
     }
 
-    // TODO consider page restrection
+    // TODO consider page restriction
 
-    let fileStream;
-    try {
-      fileStream = await fileUploader.findDeliveryFile(attachment);
-    }
-    catch (e) {
-      // TODO handle errors
-      return res.json(ApiResponse.error(e.message));
-    }
-
-    res.set('Content-Type', attachment.fileFormat);
-    return fileStream.pipe(res);
+    return responseForAttachment(res, attachment);
   };
 
   /**
@@ -102,10 +106,7 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('attachment not found'));
     }
 
-    req.params.id = attachment._id.toString();
-
-    // delegate to 'get' method
-    return api.get(req, res);
+    return responseForAttachment(res, attachment);
   };
 
   /**
