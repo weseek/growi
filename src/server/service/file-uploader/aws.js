@@ -1,22 +1,21 @@
-// crowi-fileupload-aws
+const debug = require('debug')('growi:service:fileUploaderAws');
+
+const urljoin = require('url-join');
+const aws = require('aws-sdk');
 
 module.exports = function(crowi) {
-  'use strict';
 
-  var aws = require('aws-sdk')
-    , fs = require('fs')
-    , path = require('path')
-    , debug = require('debug')('growi:service:fileUploaderAws')
-    , lib = {}
-    , getAwsConfig = function() {
-      var config = crowi.getConfig();
-      return {
-        accessKeyId: config.crowi['aws:accessKeyId'],
-        secretAccessKey: config.crowi['aws:secretAccessKey'],
-        region: config.crowi['aws:region'],
-        bucket: config.crowi['aws:bucket']
-      };
+  const lib = {};
+
+  function getAwsConfig() {
+    const config = crowi.getConfig();
+    return {
+      accessKeyId: config.crowi['aws:accessKeyId'],
+      secretAccessKey: config.crowi['aws:secretAccessKey'],
+      region: config.crowi['aws:region'],
+      bucket: config.crowi['aws:bucket']
     };
+  }
 
   function S3Factory() {
     const awsConfig = getAwsConfig();
@@ -81,84 +80,15 @@ module.exports = function(crowi) {
     });
   };
 
-  lib.generateUrl = function(filePath) {
-    var awsConfig = getAwsConfig()
-      , url = 'https://' + awsConfig.bucket +'.s3.amazonaws.com/' + filePath;
+  /**
+   * return local file path string
+   */
+  lib.findDeliveryFile = async function(attachmentId, filePath) {
+    const awsConfig = getAwsConfig();
+    const baseUrl = `https://${awsConfig.bucket}.s3.amazonaws.com`;
+    const url = urljoin(baseUrl, filePath);
 
     return url;
-  };
-
-  lib.findDeliveryFile = function(fileId, filePath) {
-    var cacheFile = lib.createCacheFileName(fileId);
-
-    return new Promise((resolve, reject) => {
-      debug('find delivery file', cacheFile);
-      if (!lib.shouldUpdateCacheFile(cacheFile)) {
-        return resolve(cacheFile);
-      }
-
-      var loader = require('https');
-
-      var fileStream = fs.createWriteStream(cacheFile);
-      var fileUrl = lib.generateUrl(filePath);
-      debug('Load attachement file into local cache file', fileUrl, cacheFile);
-      loader.get(fileUrl, function(response) {
-        response.pipe(fileStream, { end: false });
-        response.on('end', () => {
-          fileStream.end();
-          resolve(cacheFile);
-        });
-      });
-    });
-  };
-
-  lib.clearCache = function(fileId) {
-    const cacheFile = lib.createCacheFileName(fileId);
-
-    (new Promise((resolve, reject) => {
-      fs.unlink(cacheFile, (err) => {
-        if (err) {
-          debug('Failed to delete cache file', err);
-          // through
-        }
-
-        resolve();
-      });
-    })).then(data => {
-      // success
-    }).catch(err => {
-      debug('Failed to delete cache file (file may not exists).', err);
-      // through
-    });
-  };
-
-  // private
-  lib.createCacheFileName = function(fileId) {
-    return path.join(crowi.cacheDir, `attachment-${fileId}`);
-  };
-
-  // private
-  lib.shouldUpdateCacheFile = function(filePath) {
-    try {
-      var stats = fs.statSync(filePath);
-
-      if (!stats.isFile()) {
-        debug('Cache file not found or the file is not a regular fil.');
-        return true;
-      }
-
-      if (stats.size <= 0) {
-        debug('Cache file found but the size is 0');
-        return true;
-      }
-    }
-    catch (e) {
-      // no such file or directory
-      debug('Stats error', e);
-      return true;
-    }
-
-    return false;
   };
 
   /**
