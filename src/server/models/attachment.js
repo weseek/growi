@@ -27,12 +27,15 @@ module.exports = function(crowi) {
     createdAt: { type: Date, default: Date.now },
   }, {
     toJSON: {
-      virtuals: true
     },
   });
 
-  attachmentSchema.virtual('fileUrl').get(function() {
-    return `/files/${this._id}`;
+  attachmentSchema.virtual('filePathProxied').get(function() {
+    return `/attachment/${this._id}`;
+  });
+
+  attachmentSchema.virtual('downloadPathProxied').get(function() {
+    return `/download/${this._id}`;
   });
 
   attachmentSchema.virtual('filePathOnStorage').get(function() {
@@ -45,30 +48,6 @@ module.exports = function(crowi) {
 
     return filePath;
   });
-
-  attachmentSchema.statics.getListByPageId = function(id) {
-    var self = this;
-
-    return new Promise(function(resolve, reject) {
-
-      self
-        .find({page: id})
-        .sort({'updatedAt': 1})
-        .populate('creator')
-        .exec(function(err, data) {
-          if (err) {
-            return reject(err);
-          }
-
-          if (data.length < 1) {
-            return resolve([]);
-          }
-
-          debug(data);
-          return resolve(data);
-        });
-    });
-  };
 
   attachmentSchema.statics.create = function(pageId, creator, filePath, originalName, fileName, fileFormat, fileSize) {
     var Attachment = this;
@@ -129,7 +108,7 @@ module.exports = function(crowi) {
     var Attachment = this;
 
     return new Promise((resolve, reject) => {
-      Attachment.getListByPageId(pageId)
+      Attachment.find({ page: pageId})
       .then((attachments) => {
         for (let attachment of attachments) {
           Attachment.removeAttachment(attachment).then((res) => {

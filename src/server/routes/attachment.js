@@ -115,32 +115,27 @@ module.exports = function(crowi, app) {
    *
    * @apiParam {String} page_id
    */
-  api.list = function(req, res) {
+  api.list = async function(req, res) {
     const id = req.query.page_id || null;
     if (!id) {
       return res.json(ApiResponse.error('Parameters page_id is required.'));
     }
 
-    Attachment.getListByPageId(id)
-    .then(function(attachments) {
+    let attachments = await Attachment.find({page: id})
+      .sort({'updatedAt': 1})
+      .populate('creator', User.USER_PUBLIC_FIELDS);
 
-      // NOTE: use original fileUrl directly (not proxy) -- 2017.05.08 Yuki Takei
-      // reason:
-      //   1. this is buggy (doesn't work on Win)
-      //   2. ensure backward compatibility of data
+    // toJSON
+    attachments = attachments.map(attachment => {
+      const json = attachment.toJSON({ virtuals: true});
 
-      // var config = crowi.getConfig();
-      // var baseUrl = (config.crowi['app:siteUrl:fixed'] || '');
-      return res.json(ApiResponse.success({
-        attachments: attachments.map(at => {
-          const fileUrl = at.fileUrl;
-          at = at.toObject();
-          // at.url = baseUrl + fileUrl;
-          at.url = fileUrl;
-          return at;
-        })
-      }));
+      // omit unnecessary property
+      json.filePathOnStorage = undefined;
+
+      return json;
     });
+
+    return res.json(ApiResponse.success({ attachments }));
   };
 
   /**
