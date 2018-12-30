@@ -375,22 +375,31 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
     }
   });
 
+
+  /**
+   * The following script sets the class name 'unused' to the cell in from-env-vars column
+   * when the value of the corresponding cell from the database is not empty.
+   * It is used to indicate that the system does not use a value from the environment variables by setting a css style.
+   * This behavior is disabled when the system is in the use-only-env-vars mode.
+   */
   $('.authentication-settings-table:not(.use-only-env-vars) tbody tr').each(function(_, element) {
     const inputElemFromDB      = $('td:nth-of-type(1) input[type="text"], td:nth-of-type(1) textarea', element);
     const inputElemFromEnvVars = $('td:nth-of-type(2) input[type="text"], td:nth-of-type(2) textarea', element);
 
-    const addClassToUsedInputElem = function() {
-      console.log(inputElemFromDB.val());
-      if (inputElemFromDB.val() === '') {
-        inputElemFromEnvVars.parent().removeClass('unused');
-      }
-      else {
-        inputElemFromEnvVars.parent().addClass('unused');
-      }
-    };
+    // initialize
+    addClassToUnusedInputElemFromEnvVars(inputElemFromDB, inputElemFromEnvVars);
 
-    addClassToUsedInputElem();
-    inputElemFromDB.keyup(addClassToUsedInputElem);
+    // set keyup event handler
+    inputElemFromDB.keyup(function () { addClassToUnusedInputElemFromEnvVars(inputElemFromDB, inputElemFromEnvVars) });
   });
+
+  function addClassToUnusedInputElemFromEnvVars(inputElemFromDB, inputElemFromEnvVars) {
+    if (inputElemFromDB.val() === '') {
+      inputElemFromEnvVars.parent().removeClass('unused');
+    }
+    else {
+      inputElemFromEnvVars.parent().addClass('unused');
+    }
+  };
 </script>
 
