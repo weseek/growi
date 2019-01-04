@@ -125,7 +125,7 @@ export default class Editor extends AbstractEditor {
         }
       }
       catch (e) {
-        // do nothing
+        this.logger.error(e);
       }
     }
   }
