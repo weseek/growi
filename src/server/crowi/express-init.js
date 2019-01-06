@@ -153,9 +153,4 @@ module.exports = function(crowi, app) {
   }
 
   app.use(i18nMiddleware.handle(i18next));
-
-  app.use(function(req, res, next) {
-    crowi.t = req.t;
-    next();
-  });
 };

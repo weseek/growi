@@ -1070,7 +1070,7 @@ module.exports = function(crowi, app) {
   actions.api.securityPassportSamlSetting = async(req, res) => {
     const form = req.form.settingForm;
 
-    validateSamlSettingForm(req.form);
+    validateSamlSettingForm(req.form, req.t);
 
     if (!req.form.isValid) {
       return res.json({status: false, message: req.form.errors.join('\n')});
@@ -1496,12 +1496,12 @@ module.exports = function(crowi, app) {
    * This validation checks, for the value of each mandatory items,
    * whether it from the environment variables is empty and form value to update it is empty.
    */
-  function validateSamlSettingForm(form) {
+  function validateSamlSettingForm(form, t) {
     for (const key of crowi.passportService.mandatoryConfigKeysForSaml) {
       const formValue = form.settingForm[key];
       if (crowi.configManager.getConfigFromEnvVars('crowi', key) === null && formValue === '') {
-        const formItemName = crowi.t(`security_setting.form_item_name.${key}`);
-        form.errors.push(crowi.t('form_validation.required', formItemName));
+        const formItemName = t(`security_setting.form_item_name.${key}`);
+        form.errors.push(t('form_validation.required', formItemName));
       }
     }
   }
