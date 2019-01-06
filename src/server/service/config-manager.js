@@ -87,17 +87,17 @@ class ConfigManager {
    * ```
    */
   async updateConfigsInTheSameNamespace(namespace, configs) {
-    const results = [];
+    let queries = [];
     for (const key of Object.keys(configs)) {
-      results.push(
-        this.configModel.findOneAndUpdate(
-          { ns: namespace, key: key },
-          { ns: namespace, key: key, value: this.convertInsertValue(configs[key]) },
-          { upsert: true, }
-        ).exec()
-      );
+      queries.push({
+        updateOne: {
+          filter: { ns: namespace, key: key },
+          update: { ns: namespace, key: key, value: this.convertInsertValue(configs[key]) },
+          upsert: true
+        }
+      });
     }
-    await Promise.all(results);
+    await this.configModel.bulkWrite(queries);
 
     await this.loadConfigs();
   }
