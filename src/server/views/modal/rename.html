@@ -17,7 +17,11 @@
             <label for="newPageName">{{ t('modal_rename.label.New page name') }}</label><br>
             <div class="input-group">
               <span class="input-group-addon">{{ config.crowi['app:siteUrl:fixed'] }}</span>
+              {% if searchConfigured() %}
+              <div id="rename-page-name-input"></div>
+              {% else %}
               <input type="text" class="form-control" name="new_path" id="newPageName" value="{{ page.path }}">
+              {% endif %}
             </div>
           </div>
 
