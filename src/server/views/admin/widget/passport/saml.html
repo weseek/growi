@@ -5,7 +5,9 @@
   {% set nameForIsSamlEnabled = "settingForm[security:passport-saml:isEnabled]" %}
   {% set isSamlEnabled  = getConfig('crowi', 'security:passport-saml:isEnabled') %}
   {% set useOnlyEnvVars = getConfig('crowi', 'security:passport-saml:useOnlyEnvVarsForSomeOptions') %}
-  
+  {% set siteUrl = settingForm['app:siteUrl'] || '[INVALID]' %}
+  {% set callbackUrl = siteUrl + '/passport/saml/callback' %}
+
   {% if useOnlyEnvVars %}
     <p class="alert alert-info">
       {{ t("security_setting.SAML.note for the only env option", "SAML_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS") }}
@@ -39,7 +41,7 @@
     <div class="col-xs-6">
       <input class="form-control"
              type="text"
-             value="{% if settingForm['app:siteUrl'] %}{{ settingForm['app:siteUrl'] }}{% else %}[INVALID] {% endif %}/passport/saml/callback"
+             value="{{ callbackUrl }}"
              readonly>
       <p class="help-block small">{{ t("security_setting.desc_of_callback_URL", 'SAML Identity') }}</p>
       {% if !settingForm['app:siteUrl'] %}

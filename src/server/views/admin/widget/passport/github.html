@@ -4,7 +4,8 @@
 
   {% set nameForIsGitHubEnabled = "settingForm[security:passport-github:isEnabled]" %}
   {% set isGitHubEnabled = settingForm['security:passport-github:isEnabled'] %}
-  {% set callbackUrl = settingForm['app:siteUrl'] || '[INVALID]' + '/passport/github/callback' %}
+  {% set siteUrl = settingForm['app:siteUrl'] || '[INVALID]' %}
+  {% set callbackUrl = siteUrl + '/passport/github/callback' %}
 
   <div class="form-group">
     <label for="{{nameForIsGitHubEnabled}}" class="col-xs-3 control-label">{{ t("security_setting.OAuth.GitHub.name") }}</label>

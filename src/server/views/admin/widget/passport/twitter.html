@@ -4,7 +4,8 @@
 
   {% set nameForIsTwitterEnabled = "settingForm[security:passport-twitter:isEnabled]" %}
   {% set isTwitterEnabled = settingForm['security:passport-twitter:isEnabled'] %}
-  {% set callbackUrl = settingForm['app:siteUrl'] || '[INVALID]' + '/passport/twitter/callback' %}
+  {% set siteUrl = settingForm['app:siteUrl'] || '[INVALID]' %}
+  {% set callbackUrl = siteUrl + '/passport/twitter/callback' %}
 
   <div class="form-group">
     <label for="{{nameForIsTwitterEnabled}}" class="col-xs-3 control-label">{{ t("security_setting.OAuth.Twitter.name") }}</label>
