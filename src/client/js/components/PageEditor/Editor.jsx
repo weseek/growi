@@ -117,7 +117,8 @@ export default class Editor extends AbstractEditor {
       try {
         const file = items[i].getAsFile();
         // check type and size
-        if (pasteHelper.fileAccepted(file, dropzone.props.accept) &&
+        if (file != null &&
+            pasteHelper.fileAccepted(file, dropzone.props.accept) &&
             pasteHelper.fileMatchSize(file, dropzone.props.maxSize, dropzone.props.minSize)) {
 
           this.dispatchUpload(file);
