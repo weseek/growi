@@ -463,6 +463,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
     // files
     if (types.includes('Files')) {
+      event.preventDefault();
       this.dispatchPasteFiles(event);
     }
     // text
