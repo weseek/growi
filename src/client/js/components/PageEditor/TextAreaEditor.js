@@ -220,6 +220,7 @@ export default class TextAreaEditor extends AbstractEditor {
 
     // files
     if (types.includes('Files')) {
+      event.preventDefault();
       this.dispatchPasteFiles(event);
     }
     // text
