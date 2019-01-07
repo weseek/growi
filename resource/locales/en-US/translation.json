@@ -101,6 +101,10 @@
   "Deleted Pages": "Deleted Pages",
   "Sign out": "Logout",
 
+  "form_validation": {
+    "required": "<code>%s</code> is required"
+  },
+
   "installer": {
     "setup": "Setup",
     "create_initial_account": "Create an initial account",
@@ -382,6 +386,8 @@
     "Treat email matching as identical": "Automatically bind external accounts newly logged in to local accounts when <code>%s</code> match",
     "Treat email matching as identical_warn": "WARNING: Be aware of security because the system treats the same user as a match of <code>%s</code>.",
     "Use env var if empty": "Use env var <code>%s</code> if empty",
+    "Use default if both are empty": "If both ​​are empty, the default value <code>%s</code> is used.",
+    "missing mandatory configs": "The following mandatory items are not set in either database nor environment variables.",
     "ldap": {
       "server_url_detail": "The LDAP URL of the directory service in the format <code>ldap://host:port/DN</code> or <code>ldaps://host:port/DN</code>.",
       "bind_mode": "Binding Mode",
@@ -414,15 +420,12 @@
     },
     "SAML": {
       "name": "SAML",
-      "entry_point": "Entry Point",
-      "issuer": "Issuer",
-      "First Name": "First Name",
-      "Last Name": "Last Name",
       "id_detail": "Specification of the name of attribute which can identify the user in SAML Identity Provider",
       "username_detail": "Specification of mappings for <code>username</code> when creating new users",
       "mapping_detail": "Specification of mappings for %s when creating new users",
-      "cert_detail1": "PEM-encoded X.509 signing certificate to validate the response from IdP",
-      "cert_detail2": "Use env var <code>SAML_CERT</code> if empty, and no validation is processed if the variable is also undefined"
+      "cert_detail": "PEM-encoded X.509 signing certificate to validate the response from IdP",
+      "Use env var if empty": "If the value in the database is empty, the value of the environment variable <code>%s</code> is used.",
+      "note for the only env option": "The setting item that enables or disables the SAML authentication and the highlighted setting items use only the value of environment variables.<br>To change this setting, please change to false or delete the value of the environment variable <code>%s</code> ."
     },
     "OAuth": {
       "register": "Register for %s",
@@ -457,6 +460,16 @@
         "github": "How to configure GitHub OAuth?",
         "twitter": "How to configure Twitter OAuth?"
       }
+    },
+    "form_item_name": {
+      "security:passport-saml:entryPoint": "Entry point",
+      "security:passport-saml:issuer": "Issuer",
+      "security:passport-saml:cert": "Certificate",
+      "security:passport-saml:attrMapId": "ID",
+      "security:passport-saml:attrMapUsername": "Username",
+      "security:passport-saml:attrMapMail": "Mail Address",
+      "security:passport-saml:attrMapFirstName": "First Name",
+      "security:passport-saml:attrMapLastName": "Last Name"
     }
 	},
 

@@ -1,6 +1,18 @@
 const ConfigLoader = require('../service/config-loader')
   , debug = require('debug')('growi:service:ConfigManager');
 
+const KEYS_FOR_SAML_USE_ONLY_ENV_OPTION = [
+  'security:passport-saml:isEnabled',
+  'security:passport-saml:entryPoint',
+  'security:passport-saml:issuer',
+  'security:passport-saml:attrMapId',
+  'security:passport-saml:attrMapUsername',
+  'security:passport-saml:attrMapMail',
+  'security:passport-saml:attrMapFirstName',
+  'security:passport-saml:attrMapLastName',
+  'security:passport-saml:cert'
+];
+
 class ConfigManager {
 
   constructor(configModel) {
@@ -21,24 +33,82 @@ class ConfigManager {
   /**
    * get a config specified by namespace & key
    *
-   * Basically, search a specified config from configs loaded from database at first
-   * and then from configs loaded from env vars.
+   * Basically, this searches a specified config from configs loaded from the database at first
+   * and then from configs loaded from the environment variables.
    *
-   * In some case, this search method changes.(not yet implemented)
-   */
-  getConfig(namespace, key) {
-    return this.defaultSearch(namespace, key);
-  }
-
-  /**
-   * private api
-   *
-   * Search a specified config from configs loaded from database at first
-   * and then from configs loaded from env vars.
+   * In some case, this search method changes.
    *
    * the followings are the meanings of each special return value.
    * - null:      a specified config is not set.
    * - undefined: a specified config does not exist.
+   */
+  getConfig(namespace, key) {
+    if (this.searchOnlyFromEnvVarConfigs('crowi', 'security:passport-saml:useOnlyEnvVarsForSomeOptions')) {
+      return this.searchInSAMLUseOnlyEnvMode(namespace, key);
+    }
+
+    return this.defaultSearch(namespace, key);
+  }
+
+  /**
+   * get a config specified by namespace & key from configs loaded from the database
+   *
+   * **Do not use this unless absolutely necessary. Use getConfig instead.**
+   */
+  getConfigFromDB(namespace, key) {
+    return this.searchOnlyFromDBConfigs(namespace, key);
+  }
+
+  /**
+   * get a config specified by namespace & key from configs loaded from the environment variables
+   *
+   * **Do not use this unless absolutely necessary. Use getConfig instead.**
+   */
+  getConfigFromEnvVars(namespace, key) {
+    return this.searchOnlyFromEnvVarConfigs(namespace, key);
+  }
+
+  /**
+   * update configs in the same namespace
+   *
+   * Specified values are encoded by convertInsertValue.
+   * In it, an empty string is converted to null that indicates a config is not set.
+   *
+   * For example:
+   * ```
+   *  updateConfigsInTheSameNamespace(
+   *   'some namespace',
+   *   {
+   *    'some key 1': 'value 1',
+   *    'some key 2': 'value 2',
+   *    ...
+   *   }
+   *  );
+   * ```
+   */
+  async updateConfigsInTheSameNamespace(namespace, configs) {
+    let queries = [];
+    for (const key of Object.keys(configs)) {
+      queries.push({
+        updateOne: {
+          filter: { ns: namespace, key: key },
+          update: { ns: namespace, key: key, value: this.convertInsertValue(configs[key]) },
+          upsert: true
+        }
+      });
+    }
+    await this.configModel.bulkWrite(queries);
+
+    await this.loadConfigs();
+  }
+
+  /*
+   * All of the methods below are private APIs.
+   */
+
+  /**
+   * search a specified config from configs loaded from the database at first
+   * and then from configs loaded from the environment variables
    */
   defaultSearch(namespace, key) {
     if (!this.configExistsInDB(namespace, key) && !this.configExistsInEnvVars(namespace, key)) {
@@ -64,8 +134,43 @@ class ConfigManager {
   }
 
   /**
+   * For the configs specified by KEYS_FOR_SAML_USE_ONLY_ENV_OPTION,
+   * this searches only from configs loaded from the environment variables.
+   * For the other configs, this searches as the same way to defaultSearch.
+   */
+  searchInSAMLUseOnlyEnvMode(namespace, key) {
+    if (namespace === 'crowi' && KEYS_FOR_SAML_USE_ONLY_ENV_OPTION.includes(key)) {
+      return this.searchOnlyFromEnvVarConfigs(namespace, key);
+    }
+    else {
+      return this.defaultSearch(namespace, key);
+    }
+  }
+
+  /**
+   * search a specified config from configs loaded from the database
+   */
+  searchOnlyFromDBConfigs(namespace, key) {
+    if (!this.configExistsInDB(namespace, key)) {
+      return undefined;
+    }
+
+    return this.configObject.fromDB[namespace][key];
+  }
+
+  /**
+   * search a specified config from configs loaded from the environment variables
+   */
+  searchOnlyFromEnvVarConfigs(namespace, key) {
+    if (!this.configExistsInEnvVars(namespace, key)) {
+      return undefined;
+    }
+
+    return this.configObject.fromEnvVars[namespace][key];
+  }
+
+  /**
    * check whether a specified config exists in configs loaded from the database
-   * @returns {boolean}
    */
   configExistsInDB(namespace, key) {
     if (this.configObject.fromDB[namespace] === undefined) {
@@ -77,7 +182,6 @@ class ConfigManager {
 
   /**
    * check whether a specified config exists in configs loaded from the environment variables
-   * @returns {boolean}
    */
   configExistsInEnvVars(namespace, key) {
     if (this.configObject.fromEnvVars[namespace] === undefined) {
@@ -87,38 +191,8 @@ class ConfigManager {
     return this.configObject.fromEnvVars[namespace][key] !== undefined;
   }
 
-  /**
-   * update configs by a iterable object consisting of several objects with ns, key, value fields
-   *
-   * For example:
-   * ```
-   *  updateConfigs(
-   *   [{
-   *     ns:    'some namespace 1',
-   *     key:   'some key 1',
-   *     value: 'some value 1'
-   *   }, {
-   *     ns:    'some namespace 2',
-   *     key:   'some key 2',
-   *     value: 'some value 2'
-   *   }]
-   *  );
-   * ```
-   */
-  async updateConfigs(configs) {
-    const results = [];
-    for (const config of configs) {
-      results.push(
-        this.configModel.findOneAndUpdate(
-          { ns: config.ns, key: config.key },
-          { ns: config.ns, key: config.key, value: JSON.stringify(config.value) },
-          { upsert: true, }
-        ).exec()
-      );
-    }
-    await Promise.all(results);
-
-    await this.loadConfigs();
+  convertInsertValue(value) {
+    return JSON.stringify(value === '' ? null : value);
   }
 }
 

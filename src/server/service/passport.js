@@ -53,6 +53,19 @@ class PassportService {
      * the flag whether serializer/deserializer are set up successfully
      */
     this.isSerializerSetup = false;
+
+    /**
+     * the keys of mandatory configs for SAML
+     */
+    this.mandatoryConfigKeysForSaml = [
+      'security:passport-saml:isEnabled',
+      'security:passport-saml:entryPoint',
+      'security:passport-saml:issuer',
+      'security:passport-saml:cert',
+      'security:passport-saml:attrMapId',
+      'security:passport-saml:attrMapUsername',
+      'security:passport-saml:attrMapMail'
+    ];
   }
 
   /**
@@ -427,8 +440,8 @@ class PassportService {
     }
 
     const config = this.crowi.config;
-    const Config = this.crowi.model('Config');
-    const isSamlEnabled = Config.isEnabledPassportSaml(config);
+    const configManager = this.crowi.configManager;
+    const isSamlEnabled = configManager.getConfig('crowi', 'security:passport-saml:isEnabled');
 
     // when disabled
     if (!isSamlEnabled) {
@@ -437,12 +450,13 @@ class PassportService {
 
     debug('SamlStrategy: setting up..');
     passport.use(new SamlStrategy({
-      entryPoint: config.crowi['security:passport-saml:entryPoint'] || process.env.SAML_ENTRY_POINT,
-      callbackUrl: (config.crowi['app:siteUrl'] != null)
-        ? `${config.crowi['app:siteUrl']}/passport/saml/callback`                                 // auto-generated with v3.2.4 and above
-        : config.crowi['security:passport-saml:callbackUrl'] || process.env.SAML_CALLBACK_URI,    // DEPRECATED: backward compatible with v3.2.3 and below
-      issuer: config.crowi['security:passport-saml:issuer'] || process.env.SAML_ISSUER,
-      cert: config.crowi['security:passport-saml:cert'] || process.env.SAML_CERT,
+      entryPoint: configManager.getConfig('crowi', 'security:passport-saml:entryPoint'),
+      callbackUrl:
+        (config.crowi['app:siteUrl'] != null)
+          ? `${config.crowi['app:siteUrl']}/passport/saml/callback`                 // auto-generated with v3.2.4 and above
+          : configManager.getConfig('crowi', 'security:passport-saml:callbackUrl'),    // DEPRECATED: backward compatible with v3.2.3 and below
+      issuer: configManager.getConfig('crowi', 'security:passport-saml:issuer'),
+      cert: configManager.getConfig('crowi', 'security:passport-saml:cert'),
     }, function(profile, done) {
       if (profile) {
         return done(null, profile);
@@ -465,6 +479,19 @@ class PassportService {
     debug('SamlStrategy: reset');
     passport.unuse('saml');
     this.isSamlStrategySetup = false;
+  }
+
+  /**
+   * return the keys of the configs mandatory for SAML whose value are empty.
+   */
+  getSamlMissingMandatoryConfigKeys() {
+    const missingRequireds = [];
+    for (const key of this.mandatoryConfigKeysForSaml) {
+      if (this.crowi.configManager.getConfig('crowi', key) === null) {
+        missingRequireds.push(key);
+      }
+    }
+    return missingRequireds;
   }
 
   /**
@@ -494,6 +521,15 @@ class PassportService {
     this.isSerializerSetup = true;
   }
 
+  isSameUsernameTreatedAsIdenticalUser(providerType) {
+    const key = `security:passport-${providerType}:isSameUsernameTreatedAsIdenticalUser`;
+    return this.crowi.configManager.getConfig('crowi', key);
+  }
+
+  isSameEmailTreatedAsIdenticalUser(providerType) {
+    const key = `security:passport-${providerType}:isSameEmailTreatedAsIdenticalUser`;
+    return this.crowi.configManager.getConfig('crowi', key);
+  }
 }
 
 module.exports = PassportService;
