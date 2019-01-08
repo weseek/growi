@@ -4,7 +4,8 @@
 
   {% set nameForIsGoogleEnabled = "settingForm[security:passport-google:isEnabled]" %}
   {% set isGoogleEnabled = settingForm['security:passport-google:isEnabled'] %}
-  {% set callbackUrl = settingForm['app:siteUrl'] || '[INVALID]' + '/passport/google/callback' %}
+  {% set siteUrl = settingForm['app:siteUrl'] || '[INVALID]' %}
+  {% set callbackUrl = siteUrl + '/passport/google/callback' %}
 
   <div class="form-group">
     <label for="{{nameForIsGoogleEnabled}}" class="col-xs-3 control-label">{{ t("security_setting.OAuth.Google.name") }}</label>

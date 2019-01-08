@@ -109,17 +109,25 @@ export default class Editor extends AbstractEditor {
     const items = event.clipboardData.items || event.clipboardData.files || [];
 
     // abort if length is not 1
-    if (items.length != 1) {
+    if (items.length < 1) {
       return;
     }
 
-    const file = items[0].getAsFile();
-    // check type and size
-    if (pasteHelper.fileAccepted(file, dropzone.props.accept) &&
-        pasteHelper.fileMatchSize(file, dropzone.props.maxSize, dropzone.props.minSize)) {
+    for (let i = 0; i < items.length; i++) {
+      try {
+        const file = items[i].getAsFile();
+        // check type and size
+        if (file != null &&
+            pasteHelper.fileAccepted(file, dropzone.props.accept) &&
+            pasteHelper.fileMatchSize(file, dropzone.props.maxSize, dropzone.props.minSize)) {
 
-      this.dispatchUpload(file);
-      this.setState({ isUploading: true });
+          this.dispatchUpload(file);
+          this.setState({ isUploading: true });
+        }
+      }
+      catch (e) {
+        this.logger.error(e);
+      }
     }
   }
 

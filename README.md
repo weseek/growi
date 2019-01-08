@@ -74,7 +74,7 @@ See also [weseek/growi-docker-compose][docker-compose]
 On-premise
 ----------
 
-[**Migration Guide from Crowi** is here](https://github.com/weseek/growi/wiki/Migration-Guide-from-Crowi).
+[**Migration Guide from Crowi** is here](https://docs.growi.org/guide/migration-guide/from-crowi-onpremise.html).
 
 ### Dependencies
 
@@ -83,7 +83,7 @@ On-premise
 - yarn
 - MongoDB 3.x
 
-See [confirmed versions](https://github.com/weseek/growi/wiki/Developers-Guide#versions-confirmed-to-work).
+See [confirmed versions](https://docs.growi.org/dev/startup/dev-env.html#versions-confirmed-to-work).
 
 #### Optional Dependencies
 
@@ -114,7 +114,7 @@ export ELASTICSEARCH_URI=http://ELASTICSEARCH_HOST:ELASTICSEARCH_PORT/growi
 npm start
 ```
 
-For more info, see [Developers Guide](https://github.com/weseek/growi/wiki/Developers-Guide) and [Crowi documents](https://github.com/crowi/crowi/wiki/Install-and-Configuration#env-parameters).
+For more info, see [Developers Guide](https://docs.growi.org/dev/).
 
 #### Command details
 
@@ -145,9 +145,7 @@ yarn add growi-plugin-lsx
 npm start
 ```
 
-
-
-For more info, see [Developers Guide](https://github.com/weseek/growi/wiki/Developers-Guide) on Wiki.
+For more info, see [Developers Guide](https://docs.growi.org/dev/) on docs.growi.org.
 
 
 Environment Variables
@@ -172,7 +170,7 @@ Environment Variables
     * MONGO_GRIDFS_TOTAL_LIMIT: Total capacity limit of MongoDB GridFS (bytes). default: `Infinity`
 * **Option to integrate with external systems**
     * HACKMD_URI: URI to connect to [HackMD(CodiMD)](https://hackmd.io/) server.
-        * **This server must load the GROWI agent. [Here's how to prepare it](https://docs.growi.org/management-cookbook/integrate-with-hackmd).**
+        * **This server must load the GROWI agent. [Here's how to prepare it](https://docs.growi.org/guide/admin-cookbook/integrate-with-hackmd.html).**
     * HACKMD_URI_FOR_SERVER: URI to connect to [HackMD(CodiMD)](https://hackmd.io/) server from GROWI Express server. If not set, `HACKMD_URI` will be used.
     * PLANTUML_URI: URI to connect to [PlantUML](http://plantuml.com/) server.
     * BLOCKDIAG_URI: URI to connect to [blockdiag](http://http://blockdiag.com/) server.
@@ -191,10 +189,8 @@ Environment Variables
 Documentation
 ==============
 
-* [github wiki pages](https://github.com/weseek/growi/wiki)
-  * [Questions and Answers](https://github.com/weseek/growi/wiki/Questions-and-Answers)
-  * [Migration Guide from Crowi](https://github.com/weseek/growi/wiki/Migration-Guide-from-Crowi)
-  * [Developers Guide](https://github.com/weseek/growi/wiki/Developers-Guide)
+- [GROWI Docs](https://docs.growi.org/)
+
 
 Contribution
 ============
@@ -212,24 +208,20 @@ Missing a Feature?
 You can *request* a new feature by [submitting an issue][issues] to our GitHub
 Repository. If you would like to *implement* a new feature, firstly please submit the issue with your proposal to make sure we can confirm it. Please clarify what kind of change you would like to propose.
 
-* For a **Major Feature**, firstly open an issue and outline your proposal so it can be discussed. 
+* For a **Major Feature**, firstly open an issue and outline your proposal so it can be discussed.  
 It also allows us to coordinate better, prevent duplication of work and help you to create the change so it can be successfully accepted into the project.
 * **Small Features** can be created and directly [submitted as a Pull Request][pulls].
 
 Translation
 --------------
 
-### for GROWI system
+We have some Transifex Projects.
 
-We have [the Transifex Project for GROWI](https://www.transifex.com/weseek-inc/growi).  
+* [GROWI (Internationalize)](https://www.transifex.com/weseek-inc/growi)
+* [GROWI Docs (Internationalize)](https://www.transifex.com/weseek-inc/growi-docs)
+
 Please join to our team!
 
-### for documents
-
-*We have [Gitbook site](https://docs.growi.org), but currently Gitbook doesn't support Multi-langage.*  
--> https://docs.gitbook.com/v2-changes/important-differences#multi-language-books
-
-*We have to wait until it is implemented.*
 
 Language on GitHub
 ------------------
