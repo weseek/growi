@@ -1,5 +1,4 @@
 import MarkdownIt from 'markdown-it';
-import xss from 'xss';
 
 import Linker        from './PreProcessor/Linker';
 import CsvToTable    from './PreProcessor/CsvToTable';
@@ -33,8 +32,6 @@ export default class GrowiRenderer {
     this.options = Object.assign( // merge options
       { isAutoSetup: true },      // default options
       options || {});             // specified options
-
-    this.xssFilterForCode = new xss.FilterXSS();
 
     // initialize processors
     //  that will be retrieved if originRenderer exists
@@ -186,12 +183,12 @@ export default class GrowiRenderer {
         }
       }
       else {
-        const escapedCode = this.xssFilterForCode.process(code);
+        const escapedCode = hljs.highlight('plaintext', code, true).value;
         return `<pre class="hljs ${noborder}">${citeTag}<code>${escapedCode}</code></pre>`;
       }
     }
 
-    const escapedCode = this.xssFilterForCode.process(code);
+    const escapedCode = hljs.highlight('plaintext', code, true).value;
     return `<pre class="hljs ${noborder}"><code>${escapedCode}</code></pre>`;
   }
 
