@@ -3,8 +3,10 @@ CHANGES
 
 ## 3.3.4-RC
 
+* Improvement: Upload file with pasting from clipboard
 * Fix: `/_api/revisions.get` doesn't populate author data correctly
 * Fix: Wrong OAuth callback url are shown at admin page
+* Fix: Connecting to MongoDB failed when processing migration
 
 ## 3.3.3
 
