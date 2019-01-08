@@ -18,7 +18,7 @@ const match = mongoUri.match(/^(.+)\/([^/]+)$/);
 module.exports = {
   mongoUri,
   mongodb: {
-    url: match[1],
+    url: match[0],
     databaseName: match[2],
     options: {
       useNewUrlParser: true, // removes a deprecation warning when connecting
