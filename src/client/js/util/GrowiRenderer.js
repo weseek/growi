@@ -18,6 +18,9 @@ import BlockdiagConfigurer from './markdown-it/blockdiag';
 import TableWithHandsontableButtonConfigurer from './markdown-it/table-with-handsontable-button';
 import HeaderWithEditLinkConfigurer from './markdown-it/header-with-edit-link';
 
+const logger = require('@alias/logger')('growi:util:GrowiRenderer');
+
+
 export default class GrowiRenderer {
 
   /**
@@ -163,33 +166,43 @@ export default class GrowiRenderer {
     const config = this.crowi.getConfig();
     const noborder = (!config.highlightJsStyleBorder) ? 'hljs-no-border' : '';
 
+    let citeTag = '';
+    let hljsLang = 'plaintext';
+    let showLinenumbers = false;
+
     if (langExt) {
-      // https://regex101.com/r/qGs7eZ/1
-      const match = langExt.match(/^([^:=\n]+)(=([^:=\n]*))?(:([^:=\n]+))?(=([^:=\n]*))?$/);
+      // https://regex101.com/r/qGs7eZ/3
+      const match = langExt.match(/^([^:=\n]+)?(=([^:=\n]*))?(:([^:=\n]*))?(=([^:=\n]*))?$/);
 
       const lang = match[1];
       const fileName = match[5] || null;
-      const showLinenumbers = (match[2] != null) || (match[6] != null);
+      showLinenumbers = (match[2] != null) || (match[6] != null);
 
-      const citeTag = (fileName) ? `<cite>${fileName}</cite>` : '';
-
-      if (hljs.getLanguage(lang)) {
-        try {
-          const highlightCode = showLinenumbers ? hljs.lineNumbersValue(hljs.highlight(lang, code, true).value) : hljs.highlight(lang, code, true).value;
-          return `<pre class="hljs ${noborder}">${citeTag}<code class="language-${lang}">${highlightCode}</code></pre>`;
-        }
-        catch (__) {
-          return `<pre class="hljs ${noborder}">${citeTag}<code class="language-${lang}">${code}}</code></pre>`;
-        }
+      if (fileName != null) {
+        citeTag = `<cite>${fileName}</cite>`;
       }
-      else {
-        const escapedCode = hljs.highlight('plaintext', code, true).value;
-        return `<pre class="hljs ${noborder}">${citeTag}<code>${escapedCode}</code></pre>`;
+      if (hljs.getLanguage(lang)) {
+        hljsLang = lang;
       }
     }
 
-    const escapedCode = hljs.highlight('plaintext', code, true).value;
-    return `<pre class="hljs ${noborder}"><code>${escapedCode}</code></pre>`;
+    let highlightCode = code;
+    try {
+      highlightCode = hljs.highlight(hljsLang, code, true).value;
+
+      // add line numbers
+      if (showLinenumbers) {
+        highlightCode = hljs.lineNumbersValue((highlightCode));
+      }
+    }
+    catch (err) {
+      logger.error(err);
+    }
+
+    return `<pre class="hljs ${noborder}">${citeTag}<code>${highlightCode}</code></pre>`;
+  }
+
+  highlightCode(code, lang) {
   }
 
 }
