@@ -93,6 +93,7 @@ export default class SearchPage extends React.Component {
       <div>
         <div className="search-page-input">
           <SearchForm
+            crowi={this.props.crowi}
             onSearchFormChanged={this.search}
             keyword={this.state.searchingKeyword}
             />
