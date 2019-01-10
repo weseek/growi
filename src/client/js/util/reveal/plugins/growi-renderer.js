@@ -1,8 +1,8 @@
 /**
  * reveal.js growi-renderer plugin.
  */
-(function() {
-  const GrowiRenderer = require('../../GrowiRenderer');
-  let growiRenderer = new GrowiRenderer(null, null, null);
-  growiRenderer.setup();
-});
+(function(root) {
+  // const GrowiRenderer = require('../../GrowiRenderer');
+  // let growiRenderer = new GrowiRenderer(root.crowi, root.crowiRenderer, {mode: 'editor'});
+  // growiRenderer.setup();
+}(this));
