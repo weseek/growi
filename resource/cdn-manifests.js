@@ -10,7 +10,7 @@ module.exports = {
     },
     {
       name: 'highlight',
-      url: 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/highlight.min.js',
+      url: 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.13.0/build/highlight.min.js',
       groups: ['basis'],
       args: {
         integrity: '',
@@ -19,14 +19,15 @@ module.exports = {
     {
       name: 'highlight-addons',
       url: 'https://cdn.jsdelivr.net/combine/' +
-'gh/highlightjs/cdn-release@9.12.0/build/languages/dockerfile.min.js,' +
-'gh/highlightjs/cdn-release@9.12.0/build/languages/go.min.js,' +
-'gh/highlightjs/cdn-release@9.12.0/build/languages/gradle.min.js,' +
-'gh/highlightjs/cdn-release@9.12.0/build/languages/json.min.js,' +
-'gh/highlightjs/cdn-release@9.12.0/build/languages/less.min.js,' +
-'gh/highlightjs/cdn-release@9.12.0/build/languages/scss.min.js,' +
-'gh/highlightjs/cdn-release@9.12.0/build/languages/typescript.min.js,' +
-'gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js,' +
+'gh/highlightjs/cdn-release@9.13.0/build/languages/dockerfile.min.js,' +
+'gh/highlightjs/cdn-release@9.13.0/build/languages/go.min.js,' +
+'gh/highlightjs/cdn-release@9.13.0/build/languages/gradle.min.js,' +
+'gh/highlightjs/cdn-release@9.13.0/build/languages/json.min.js,' +
+'gh/highlightjs/cdn-release@9.13.0/build/languages/less.min.js,' +
+'gh/highlightjs/cdn-release@9.13.0/build/languages/plaintext.min.js,' +
+'gh/highlightjs/cdn-release@9.13.0/build/languages/scss.min.js,' +
+'gh/highlightjs/cdn-release@9.13.0/build/languages/typescript.min.js,' +
+'gh/highlightjs/cdn-release@9.13.0/build/languages/yaml.min.js,' +
 'npm/highlightjs-line-numbers.js@2.6.0/dist/highlightjs-line-numbers.min.js',
       args: {
         async: true,
@@ -120,7 +121,7 @@ module.exports = {
     },
     {
       name: 'highlight-theme-github',
-      url: 'https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/github.css',
+      url: 'https://cdn.jsdelivr.net/npm/highlight.js@9.13.0/styles/github.css',
       args: {
         integrity: ''
       },
