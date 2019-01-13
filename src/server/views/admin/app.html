@@ -46,7 +46,7 @@
         <div class="form-group">
           <label for="settingForm[app:siteUrl]" class="col-xs-3 control-label">{{ t('app_setting.Site URL') }}</label>
           <div class="col-xs-6">
-            <input class="form-control" type="text" name="settingForm[app:siteUrl]" value="{{ settingForm['app:siteUrl'] | default('') }}" placeholder="e.g. https://my.growi.org">
+            <input class="form-control" type="text" name="settingForm[app:siteUrl]" value="{{ settingForm['app:siteUrl'] | default('') }}" placeholder="{{ t('eg') }} https://my.growi.org">
             <p class="help-block">{{ t("app_setting.siteurl_help") }}</p>
           </div>
         </div>
@@ -115,7 +115,7 @@
         <div class="form-group">
           <label for="settingForm[mail.from]" class="col-xs-3 control-label">{{ t('app_setting.From e-mail address') }}</label>
           <div class="col-xs-6">
-            <input class="form-control" type="text" name="settingForm[mail:from]" placeholder="例: mail@growi.org" value="{{ settingForm['mail:from'] }}">
+            <input class="form-control" type="text" name="settingForm[mail:from]" placeholder="{{ t('eg') }} mail@growi.org" value="{{ settingForm['mail:from'] }}">
           </div>
         </div>
 
