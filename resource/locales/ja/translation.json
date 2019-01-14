@@ -286,6 +286,37 @@
     }
   },
 
+  "sandbox": {
+    "header": "見出し {{index}}",
+    "block": "ブロック",
+    "block_detail": "を挟むことで段落になります",
+    "empty_line": "空白行",
+    "line_break": "改行",
+    "line_break_detail": "(スペース2つ) で改行されます",
+    "typography": "タイポグラフィー",
+    "italics": "斜体",
+    "bold": "強調",
+    "italic_bold": "イタリックボールド",
+    "strikethrough": "取り消し線",
+    "link": "リンク",
+    "code_highlight": "コードハイライト",
+    "list": "リスト",
+    "unordered_list": "リスト {{index}}",
+    "ordered_list": "番号付きリスト {{index}}",
+    "task": "タスク",
+    "task_checked": "チェック付き",
+    "task_unchecked": "チェックなし",
+    "quote": "引用",
+    "quote1": "複数行の引用文を",
+    "quote2": "書くことができます",
+    "table": "テーブル",
+    "quote_nested": "多重引用",
+    "image": "画像",
+    "alt_text": "Alt文字列",
+    "insert_image": "で画像を挿入できます",
+    "open_sandbox": "Sandbox を開く"
+  },
+
   "admin_top": {
     "Management Wiki": "Wiki管理",
     "System Information": "システム情報",

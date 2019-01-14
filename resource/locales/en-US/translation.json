@@ -273,6 +273,37 @@
     }
   },
 
+  "sandbox": {
+    "header": "Header {{index}}",
+    "block": "Paragraph",
+    "block_detail": "makes a paragraph",
+    "empty_line": "Empty Line",
+    "line_break": "Line Break",
+    "line_break_detail": "(2 spaces) make a line break",
+    "typography": "Typography",
+    "italics": "Italics",
+    "bold": "Bold",
+    "italic_bold": "Italic Bold",
+    "strikethrough": "strikethrough",
+    "link": "Link",
+    "code_highlight": "Code Highlight",
+    "list": "List",
+    "unordered_list": "Unordered List {{index}}",
+    "ordered_list": "Ordered List {{index}}",
+    "task": "Task",
+    "task_checked": "Checked",
+    "task_unchecked": "Unchecked",
+    "quote": "Quote",
+    "quote1": "You can write",
+    "quote2": "multi-line quotations",
+    "quote_nested": "Nested Quote",
+    "table": "Table",
+    "image": "Image",
+    "alt_text": "Alt Text",
+    "insert_image": "inserts an image",
+    "open_sandbox": "Open Sandbox"
+  },
+
   "admin_top": {
     "Management Wiki": "Management Wiki",
     "System Information": "System Information",
