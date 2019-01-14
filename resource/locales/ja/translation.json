@@ -287,7 +287,8 @@
   },
 
   "sandbox": {
-    "header": "見出し {{index}}",
+    "header": "見出し",
+    "header_x": "見出し {{index}}",
     "block": "ブロック",
     "block_detail": "を挟むことで段落になります",
     "empty_line": "空白行",
@@ -301,8 +302,8 @@
     "link": "リンク",
     "code_highlight": "コードハイライト",
     "list": "リスト",
-    "unordered_list": "リスト {{index}}",
-    "ordered_list": "番号付きリスト {{index}}",
+    "unordered_list_x": "リスト {{index}}",
+    "ordered_list_x": "番号付きリスト {{index}}",
     "task": "タスク",
     "task_checked": "チェック付き",
     "task_unchecked": "チェックなし",

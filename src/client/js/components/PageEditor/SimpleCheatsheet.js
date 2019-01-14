@@ -12,8 +12,8 @@ class SimpleCheatsheet extends React.Component {
           <div className="row">
             <div className="col-xs-6">
               <p>
-                # {t('sandbox.header', {index: '1'})}<br />
-                ## {t('sandbox.header', {index: '2'})}
+                # {t('sandbox.header_x', {index: '1'})}<br />
+                ## {t('sandbox.header_x', {index: '2'})}
               </p>
               <p><i>*{t('sandbox.italics')}*</i>&nbsp;&nbsp;<b>**{t('sandbox.bold')}**</b></p>
               <p>
@@ -28,11 +28,11 @@ class SimpleCheatsheet extends React.Component {
             </div>
             <div className="col-xs-6">
               <p>
-                - {t('sandbox.unordered_list', {index: '1'})}<br />
-                &nbsp;&nbsp;&nbsp;- {t('sandbox.unordered_list', {index: '1_1'})}<br />
-                - {t('sandbox.unordered_list', {index: '2'})}<br />
-                1. {t('sandbox.ordered_list', {index: '1'})}<br />
-                1. {t('sandbox.ordered_list', {index: '2'})}
+                - {t('sandbox.unordered_list_x', {index: '1'})}<br />
+                &nbsp;&nbsp;&nbsp;- {t('sandbox.unordered_list_x', {index: '1.1'})}<br />
+                - {t('sandbox.unordered_list_x', {index: '2'})}<br />
+                1. {t('sandbox.ordered_list_x', {index: '1'})}<br />
+                1. {t('sandbox.ordered_list_x', {index: '2'})}
               </p>
               <hr />
               <p>[ ][ ] {t('sandbox.block_detail')}</p>

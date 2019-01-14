@@ -11,9 +11,9 @@ class Cheatsheet extends React.Component {
         <div className="col-sm-6">
           <h4>{t('sandbox.header')}</h4>
           <ul className="hljs">
-            <li><code># </code>{t('sandbox.header', {index: '1'})}</li>
-            <li><code>## </code>{t('sandbox.header', {index: '2'})}</li>
-            <li><code>### </code>{t('sandbox.header', {index: '3'})}</li>
+            <li><code># </code>{t('sandbox.header_x', {index: '1'})}</li>
+            <li><code>## </code>{t('sandbox.header_x', {index: '2'})}</li>
+            <li><code>### </code>{t('sandbox.header_x', {index: '3'})}</li>
           </ul>
           <h4>{t('sandbox.block')}</h4>
           <p className="mb-1"><code>[{t('sandbox.empty_line')}]</code>{t('sandbox.block_detail')}</p>
@@ -50,13 +50,13 @@ class Cheatsheet extends React.Component {
         <div className="col-sm-6">
           <h4>{t('sandbox.list')}</h4>
           <ul className="hljs">
-            <li>- {t('sandbox.unordered_list', {index: '1'})}</li>
-            <li>&nbsp;&nbsp;- {t('sandbox.unordered_list', {index: '1_1'})}</li>
-            <li>- {t('sandbox.unordered_list', {index: '2'})}</li>
+            <li>- {t('sandbox.unordered_list_x', {index: '1'})}</li>
+            <li>&nbsp;&nbsp;- {t('sandbox.unordered_list_x', {index: '1.1'})}</li>
+            <li>- {t('sandbox.unordered_list_x', {index: '2'})}</li>
           </ul>
           <ul className="hljs">
-            <li>1. {t('sandbox.ordered_list', {index: '1'})}</li>
-            <li>1. {t('sandbox.ordered_list', {index: '2'})}</li>
+            <li>1. {t('sandbox.ordered_list_x', {index: '1'})}</li>
+            <li>1. {t('sandbox.ordered_list_x', {index: '2'})}</li>
           </ul>
           <ul className="hljs">
             <li>- [ ] {t('sandbox.task')}({t('sandbox.task_unchecked')})</li>

@@ -274,7 +274,8 @@
   },
 
   "sandbox": {
-    "header": "Header {{index}}",
+    "header": "Header",
+    "header_x": "Header {{index}}",
     "block": "Paragraph",
     "block_detail": "makes a paragraph",
     "empty_line": "Empty Line",
@@ -288,8 +289,8 @@
     "link": "Link",
     "code_highlight": "Code Highlight",
     "list": "List",
-    "unordered_list": "Unordered List {{index}}",
-    "ordered_list": "Ordered List {{index}}",
+    "unordered_list_x": "Unordered List {{index}}",
+    "ordered_list_x": "Ordered List {{index}}",
     "task": "Task",
     "task_checked": "Checked",
     "task_unchecked": "Unchecked",
