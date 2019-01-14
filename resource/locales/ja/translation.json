@@ -14,6 +14,7 @@
   "New": "作成",
   "Shortcuts": "ショートカット",
   "eg": "例:",
+  "Undo": "元に戻す",
 
   "Update": "更新",
   "Update Page": "ページを更新",
@@ -602,6 +603,11 @@
   "user_management": {
     "User management": "ユーザー管理",
     "invite_users": "新規ユーザーの招待",
+    "emails": "メールアドレス (複数行入力で複数人招待可能)",
+    "invite_thru_email": "招待をメールで送信",
+    "invite": "招待する",
+    "give_admin_access": "管理者にする",
+    "remove_admin_access": "管理者から外す",
     "external_account": "外部アカウントの管理",
     "user_list": "ユーザー一覧",
     "external_account_list": "外部アカウント一覧",
@@ -618,6 +624,7 @@
     "Reissue password": "パスワードの再発行",
     "related_username": "関連付けられているユーザーの <code>%s</code>",
     "Status": "ステータス",
+    "accept": "承認する",
     "Deactivate account": "アカウント停止",
     "your_own": "自分自身のアカウントを停止することはできません",
     "Administrator menu": "管理者メニュー",

@@ -14,6 +14,7 @@
   "New": "New",
   "Shortcuts": "Shortcuts",
   "eg": "e.g.",
+  "Undo": "Undo",
 
   "Update": "Update",
   "Update Page": "Update Page",
@@ -590,6 +591,11 @@
   "user_management": {
     "User management": "User management",
     "invite_users": "Invite new users",
+    "emails": "Emails",
+    "invite_thru_email": "Send Invitation Email",
+    "invite": "Invite",
+    "give_admin_access": "Give admin access",
+    "remove_admin_access": "Remove admin access",
     "external_account": "External account management",
     "user_list": "List of users",
     "external_account_list": "External Account List",
@@ -606,6 +612,7 @@
     "Reissue password": "Reissue password",
     "related_username": "Related user's <code>%s</code>",
     "Status":"Status",
+    "accept": "Accept",
     "Deactivate account":"Deactivate account",
     "your_own":"You cannot deactivate your own account",
     "Administrator menu":"Administrator menu",
