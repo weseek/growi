@@ -117,7 +117,10 @@
       <form action="/_api/admin/settings/siteUrl" method="post" class="form-horizontal" id="siteUrlSettingForm" role="form">
         <fieldset>
           <legend>{{ t('Site URL settings') }}</legend>
-          <p class="well">{{ t('app_setting.Site URL') }}</p>
+          <p class="well">
+            {{ t('app_setting.Site URL') }}を明示的に指定します。
+            この設定が行われていない場合はサイトURLがHTTPリクエストの情報から自動的生成されたものが使用されますが、SAML認証やOAuth認証等の一部機能を有効にするには設定が必要です。
+          </p>
 
           <div class="col-xs-offset-3">
             <table class="table">
@@ -143,6 +146,9 @@
                            type="text"
                            value="{{ getConfigFromEnvVars('crowi', 'app:siteUrl') | default('') }}"
                            readonly>
+                    <p class="help-block">
+                      {{ t("security_setting.SAML.Use env var if empty", "APP_SITE_URL") }}
+                    </p>
                   </td>
                 </tr>
               </tbody>
