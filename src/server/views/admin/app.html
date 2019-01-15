@@ -117,18 +117,36 @@
       <form action="/_api/admin/settings/siteUrl" method="post" class="form-horizontal" id="siteUrlSettingForm" role="form">
         <fieldset>
           <legend>{{ t('Site URL settings') }}</legend>
+          <p class="well">{{ t('app_setting.Site URL') }}</p>
 
-          <div class="form-group">
-            <label for="settingForm[app:siteUrl]" class="col-xs-3 control-label">{{ t('app_setting.Site URL') }}</label>
-            <div class="col-xs-6">
-              <input class="form-control"
-                     id="settingForm[app:siteUrl]"
-                     type="text"
-                     name="settingForm[app:siteUrl]"
-                     value="{{ settingForm['app:siteUrl'] | default('') }}"
-                     placeholder="e.g. https://my.growi.org">
-              <p class="help-block">{{ t("app_setting.siteurl_help") }}</p>
-            </div>
+          <div class="col-xs-offset-3">
+            <table class="table">
+              <colgroup>
+                <col class="from-db">
+                <col class="from-env-vars">
+              </colgroup>
+              <thead>
+              <tr><th>Database</th><th>Environment variables</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <input class="form-control"
+                           type="text"
+                           name="settingForm[app:siteUrl]"
+                           value="{{ getConfigFromDB('crowi', 'app:siteUrl') | default('') }}"
+                           placeholder="e.g. https://my.growi.org">
+                    <p class="help-block">{{ t("app_setting.siteurl_help") }}</p>
+                  </td>
+                  <td>
+                    <input class="form-control"
+                           type="text"
+                           value="{{ getConfigFromEnvVars('crowi', 'app:siteUrl') | default('') }}"
+                           readonly>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
           <div class="form-group">
