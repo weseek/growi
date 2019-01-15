@@ -301,8 +301,8 @@
     "Site Name": "サイト名",
     "sitename_change": "ヘッダーや HTML タイトルに使用されるサイト名を変更できます。",
     "header_content": "ここに入力した内容は、ヘッダー等に表示されます。",
-    "Site URL": "サイトURL",
-    "siteurl_help": "<code>http://</code> または <code>https://</code> から始まるサイトのURL。",
+    "Site URL": "サイトURLを明示的に指定します。この設定が行われていない場合はサイトURLがHTTPリクエストの情報から自動的生成されたものが使用されますが、SAML認証やOAuth認証等の一部機能を有効にするには設定が必要です。",
+    "siteurl_help": "<code>http://</code> または <code>https://</code> から始まるサイトのURL",
     "Confidential name": "コンフィデンシャル表示",
     "Default Language for new users": "新規ユーザーのデフォルト設定言語",
     "ex): internal use only": "例: 社外秘",
@@ -329,8 +329,8 @@
     "Enable plugin loading": "プラグインの読み込みを有効にします。",
     "Load plugins": "プラグインを読み込む",
     "Enable": "有効",
-    "Disable": "無効"
-
+    "Disable": "無効",
+    "Use env var if empty": "データベース側の値が空の場合、環境変数 <code>%s</code> の値を利用します"
    },
 
   "security_setting": {
