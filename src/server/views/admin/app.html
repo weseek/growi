@@ -49,19 +49,6 @@
         </div>
 
         <div class="form-group">
-          <label for="settingForm[app:siteUrl]" class="col-xs-3 control-label">{{ t('app_setting.Site URL') }}</label>
-          <div class="col-xs-6">
-            <input class="form-control"
-                   id="settingForm[app:siteUrl]"
-                   type="text"
-                   name="settingForm[app:siteUrl]"
-                   value="{{ settingForm['app:siteUrl'] | default('') }}"
-                   placeholder="e.g. https://my.growi.org">
-            <p class="help-block">{{ t("app_setting.siteurl_help") }}</p>
-          </div>
-        </div>
-
-        <div class="form-group">
           <label for="settingForm[app:confidential]" class="col-xs-3 control-label">{{ t('app_setting.Confidential name') }}</label>
           <div class="col-xs-6">
             <input class="form-control"
@@ -126,6 +113,33 @@
         </div>
       </fieldset>
       </form>
+
+      <form action="/_api/admin/settings/siteUrl" method="post" class="form-horizontal" id="siteUrlSettingForm" role="form">
+        <fieldset>
+          <legend>{{ t('Site URL settings') }}</legend>
+
+          <div class="form-group">
+            <label for="settingForm[app:siteUrl]" class="col-xs-3 control-label">{{ t('app_setting.Site URL') }}</label>
+            <div class="col-xs-6">
+              <input class="form-control"
+                     id="settingForm[app:siteUrl]"
+                     type="text"
+                     name="settingForm[app:siteUrl]"
+                     value="{{ settingForm['app:siteUrl'] | default('') }}"
+                     placeholder="e.g. https://my.growi.org">
+              <p class="help-block">{{ t("app_setting.siteurl_help") }}</p>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="col-xs-offset-3 col-xs-6">
+              <input type="hidden" name="_csrf" value="{{ csrf() }}">
+              <button type="submit" class="btn btn-primary">{{ t('app_setting.Update') }}</button>
+            </div>
+          </div>
+        </fieldset>
+      </form>
+
 
       <form action="/_api/admin/settings/mail" method="post" class="form-horizontal" id="mailSettingForm" role="form">
       <fieldset>
@@ -298,7 +312,7 @@
   </div>
 
   <script>
-    $('#appSettingForm, #mailSettingForm, #awsSettingForm, #pluginSettingForm').each(function() {
+    $('#appSettingForm, #siteUrlSettingForm, #mailSettingForm, #awsSettingForm, #pluginSettingForm').each(function() {
       $(this).submit(function()
       {
         function showMessage(formId, msg, status) {
