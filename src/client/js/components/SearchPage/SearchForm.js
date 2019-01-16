@@ -50,7 +50,6 @@ export default class SearchForm extends React.Component {
 
   onChange(selected) {
     const page = selected[0];
-    this.search({keyword: page});
 
     // navigate to page
     if (page != null) {
