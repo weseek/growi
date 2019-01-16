@@ -15,8 +15,19 @@ export default class SearchForm extends React.Component {
     };
 
     this.onSearchError = this.onSearchError.bind(this);
-    this.handleChange = this.handleChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+    this.onChange = this.onChange.bind(this);
+  }
+
+  search() {
+    if (this.state.searchedKeyword != this.state.keyword) {
+      this.props.onSearchFormChanged({
+        keyword: this.state.keyword
+      });
+      this.setState({
+        searchedKeyword: this.state.keyword
+      });
+    }
   }
 
   onSearchError(err) {
@@ -25,20 +36,26 @@ export default class SearchForm extends React.Component {
     });
   }
 
-  handleChange(selected) {
-    const page = selected[0];  // should be single page selected
+  onSubmit(event) {
+    // // get the closest form element
+    // const elem = this.refs.form;
+    // const form = elem.closest('form');
+    // // submit with jQuery
+    // $(form).submit();
+    if (event !== '') {
+      event.preventDefault();
+    }
+    console.log(event);
+  }
+
+  onChange(selected) {
+    const page = selected[0];
+    this.search({keyword: page});
+
     // navigate to page
     if (page != null) {
       window.location = page.path;
     }
-  }
-
-  onSubmit(query) {
-    // get the closest form element
-    const elem = this.refs.form;
-    const form = elem.closest('form');
-    // submit with jQuery
-    $(form).submit();
   }
 
   getHelpElement() {
@@ -74,10 +91,11 @@ export default class SearchForm extends React.Component {
       <form ref='form' className="form form-group input-group" onSubmit={this.onSubmit}>
         <SearchTypeahead
           crowi={this.props.crowi}
-          onChange={this.handleChange}
+          onChange={this.onChange}
           onSubmit={this.onSubmit}
           onSearchError={this.onSearchError}
           emptyLabel={emptyLabel}
+          promptText={this.getHelpElement()}
           keywordOnInit={this.state.keyword}
         />
           <span className="input-group-btn">
