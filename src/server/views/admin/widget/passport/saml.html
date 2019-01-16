@@ -67,7 +67,7 @@
     {% endif %}
 
     <h4>Basic Settings</h4>
-    <table class="table authentication-settings-table {% if useOnlyEnvVars %}use-only-env-vars{% endif %}">
+    <table class="table settings-table {% if useOnlyEnvVars %}use-only-env-vars{% endif %}">
       <colgroup>
         <col class="item-name">
         <col class="from-db">
@@ -164,7 +164,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
 
     <h4>Attribute Mapping</h4>
 
-    <table class="table authentication-settings-table {% if useOnlyEnvVars %}use-only-env-vars{% endif %}">
+    <table class="table settings-table {% if useOnlyEnvVars %}use-only-env-vars{% endif %}">
       <colgroup>
         <col class="item-name">
         <col class="from-db">
@@ -384,7 +384,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
    * It is used to indicate that the system does not use a value from the environment variables by setting a css style.
    * This behavior is disabled when the system is in the use-only-env-vars mode.
    */
-  $('.authentication-settings-table:not(.use-only-env-vars) tbody tr').each(function(_, element) {
+  $('.settings-table:not(.use-only-env-vars) tbody tr').each(function(_, element) {
     const inputElemFromDB      = $('td:nth-of-type(1) input[type="text"], td:nth-of-type(1) textarea', element);
     const inputElemFromEnvVars = $('td:nth-of-type(2) input[type="text"], td:nth-of-type(2) textarea', element);
 
