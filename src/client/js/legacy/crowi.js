@@ -355,12 +355,13 @@ $(function() {
   });
   $('#renamePageForm, #unportalize-form').submit(function(e) {
     // create name-value map
+    let name = $('input', this).val();
     let nameValueMap = {};
     $(this).serializeArray().forEach((obj) => {
       nameValueMap[obj.name] = obj.value;
     });
 
-    const data = $(this).serialize() + `&socketClientId=${crowi.getSocketClientId()}`;
+    const data = $(this).serialize() + `&new_path=${name}&socketClientId=${crowi.getSocketClientId()}`;
 
     $.ajax({
       type: 'POST',
@@ -393,6 +394,7 @@ $(function() {
   });
   $('#duplicatePageForm, #unportalize-form').submit(function(e) {
     // create name-value map
+    let name = $('input', this).val();
     let nameValueMap = {};
     $(this).serializeArray().forEach((obj) => {
       nameValueMap[obj.name] = obj.value;
@@ -401,7 +403,7 @@ $(function() {
     $.ajax({
       type: 'POST',
       url: '/_api/pages.duplicate',
-      data: $(this).serialize(),
+      data: $(this).serialize() + `&new_path=${name}`,
       dataType: 'json'
     }).done(function(res) {
       // error
