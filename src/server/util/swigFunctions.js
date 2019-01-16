@@ -141,6 +141,12 @@ module.exports = function(crowi, app, req, locals) {
   };
 
   locals.getSamlMissingMandatoryConfigKeys = function() {
+    // return an empty array if Passport is not enabled
+    // because crowi.passportService is null.
+    if (!locals.isEnabledPassport()) {
+      return [];
+    }
+
     return crowi.passportService.getSamlMissingMandatoryConfigKeys();
   };
 

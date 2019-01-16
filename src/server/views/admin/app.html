@@ -38,7 +38,12 @@
         <div class="form-group">
           <label for="settingForm[app:title]" class="col-xs-3 control-label">{{ t('app_setting.Site Name') }}</label>
           <div class="col-xs-6">
-            <input class="form-control" type="text" name="settingForm[app:title]" value="{{ settingForm['app:title'] | default('') }}" placeholder="GROWI">
+            <input class="form-control"
+                   id="settingForm[app:title]"
+                   type="text"
+                   name="settingForm[app:title]"
+                   value="{{ settingForm['app:title'] | default('') }}"
+                   placeholder="GROWI">
             <p class="help-block">{{ t("app_setting.sitename_change") }}</p>
           </div>
         </div>
@@ -46,7 +51,12 @@
         <div class="form-group">
           <label for="settingForm[app:siteUrl]" class="col-xs-3 control-label">{{ t('app_setting.Site URL') }}</label>
           <div class="col-xs-6">
-            <input class="form-control" type="text" name="settingForm[app:siteUrl]" value="{{ settingForm['app:siteUrl'] | default('') }}" placeholder="e.g. https://my.growi.org">
+            <input class="form-control"
+                   id="settingForm[app:siteUrl]"
+                   type="text"
+                   name="settingForm[app:siteUrl]"
+                   value="{{ settingForm['app:siteUrl'] | default('') }}"
+                   placeholder="e.g. https://my.growi.org">
             <p class="help-block">{{ t("app_setting.siteurl_help") }}</p>
           </div>
         </div>
@@ -54,7 +64,12 @@
         <div class="form-group">
           <label for="settingForm[app:confidential]" class="col-xs-3 control-label">{{ t('app_setting.Confidential name') }}</label>
           <div class="col-xs-6">
-            <input class="form-control" type="text" name="settingForm[app:confidential]" value="{{ settingForm['app:confidential'] }}" placeholder="{{ t('app_setting. ex): internal use only') }}">
+            <input class="form-control"
+                   id="settingForm[app:confidential]"
+                   type="text"
+                   name="settingForm[app:confidential]"
+                   value="{{ settingForm['app:confidential'] }}"
+                   placeholder="{{ t('app_setting. ex): internal use only') }}">
             <p class="help-block">{{ t("app_setting.header_content") }}</p>
           </div>
         </div>
@@ -63,11 +78,19 @@
           <label class="col-xs-3 control-label">{{ t('app_setting.Default Language for new users') }}</label>
           <div class="col-xs-6">
             <div class="radio radio-primary radio-inline">
-                <input type="radio" id="radioLangEn" name="settingForm[app:globalLang]" value="{{ consts.language.LANG_EN_US }}" {% if appGlobalLang() == consts.language.LANG_EN_US %}checked="checked"{% endif %}>
+                <input type="radio"
+                       id="radioLangEn"
+                       name="settingForm[app:globalLang]"
+                       value="{{ consts.language.LANG_EN_US }}"
+                       {% if appGlobalLang() == consts.language.LANG_EN_US %}checked="checked"{% endif %}>
                 <label for="radioLangEn">{{ t('English') }}</label>
             </div>
             <div class="radio radio-primary radio-inline">
-                <input type="radio" id="radioLangJa" name="settingForm[app:globalLang]" value="{{ consts.language.LANG_JA }}" {% if appGlobalLang() == consts.language.LANG_JA %}checked="checked"{% endif %}>
+                <input type="radio"
+                       id="radioLangJa"
+                       name="settingForm[app:globalLang]"
+                       value="{{ consts.language.LANG_JA }}"
+                       {% if appGlobalLang() == consts.language.LANG_JA %}checked="checked"{% endif %}>
                 <label for="radioLangJa">{{ t('Japanese') }}</label>
             </div>
           </div>
@@ -77,15 +100,12 @@
           <label class="col-xs-3 control-label">{{ t('app_setting.File Uploading') }}</label>
           <div class="col-xs-6">
             <div class="checkbox checkbox-info">
-              <input type="checkbox" id="cbFileUpload" name="settingForm[app:fileUpload]" value="1"
-                {% if settingForm['app:fileUpload'] %}
-                checked
-                {% endif %}
-                {% if not isUploadable() %}
-                disabled="disabled"
-                {% else %}
-                {% endif %}
-                >
+              <input type="checkbox"
+                     id="cbFileUpload"
+                     name="settingForm[app:fileUpload]"
+                     value="1"
+                     {% if settingForm['app:fileUpload'] %}checked{% endif %}
+                     {% if not isUploadable() %}disabled="disabled"{% endif %}>
               <label for="cbFileUpload">
                 {{ t("app_setting.enable_files_except_image") }}
               </label>
@@ -115,30 +135,47 @@
         <div class="form-group">
           <label for="settingForm[mail.from]" class="col-xs-3 control-label">{{ t('app_setting.From e-mail address') }}</label>
           <div class="col-xs-6">
-            <input class="form-control" type="text" name="settingForm[mail:from]" placeholder="例: mail@growi.org" value="{{ settingForm['mail:from'] }}">
+            <input class="form-control"
+                   id="settingForm[mail.from]"
+                   type="text"
+                   name="settingForm[mail:from]"
+                   placeholder="例: mail@growi.org"
+                   value="{{ settingForm['mail:from'] }}">
           </div>
         </div>
 
         <div class="form-group">
           <label class="col-xs-3 control-label">{{ t('app_setting.SMTP settings') }}</label>
           <div class="col-xs-4">
-            <label for="">{{ t('app_setting.Host') }}</label>
-            <input class="form-control" type="text" name="settingForm[mail:smtpHost]"   value="{{ settingForm['mail:smtpHost']|default('') }}">
+            <label>{{ t('app_setting.Host') }}</label>
+            <input class="form-control"
+                   type="text"
+                   name="settingForm[mail:smtpHost]"
+                   value="{{ settingForm['mail:smtpHost']|default('') }}">
           </div>
           <div class="col-xs-2">
-            <label for="">{{ t('app_setting.Port') }}</label>
-            <input class="form-control" type="text" name="settingForm[mail:smtpPort]" value="{{ settingForm['mail:smtpPort']|default('') }}">
+            <label>{{ t('app_setting.Port') }}</label>
+            <input class="form-control"
+                   type="text"
+                   name="settingForm[mail:smtpPort]"
+                   value="{{ settingForm['mail:smtpPort']|default('') }}">
           </div>
         </div>
 
         <div class="form-group">
           <div class="col-xs-3 col-xs-offset-3">
-            <label for="">{{ t('app_setting.User') }}</label>
-            <input class="form-control" type="text" name="settingForm[mail:smtpUser]"   value="{{ settingForm['mail:smtpUser']|default('') }}">
+            <label>{{ t('app_setting.User') }}</label>
+            <input class="form-control"
+                   type="text"
+                   name="settingForm[mail:smtpUser]"
+                   value="{{ settingForm['mail:smtpUser']|default('') }}">
           </div>
           <div class="col-xs-3">
-            <label for="">{{ t('Password') }}</label>
-            <input class="form-control" type="password" name="settingForm[mail:smtpPassword]" value="{{ settingForm['mail:smtpPassword']|default('') }}">
+            <label>{{ t('Password') }}</label>
+            <input class="form-control"
+                   type="password"
+                   name="settingForm[mail:smtpPassword]"
+                   value="{{ settingForm['mail:smtpPassword']|default('') }}">
           </div>
         </div>
 
@@ -163,23 +200,37 @@
         </p>
 
         <div class="form-group">
-          <label for="settingForm[app.region]" class="col-xs-3 control-label">{{ t('app_setting.region') }}</label>
+          <label for="settingForm[app:region]" class="col-xs-3 control-label">{{ t('app_setting.region') }}</label>
           <div class="col-xs-6">
-            <input class="form-control" type="text" name="settingForm[aws:region]" placeholder="例: ap-northeast-1" value="{{ settingForm['aws:region'] }}">
+            <input class="form-control"
+                   id="settingForm[app:region]"
+                   type="text"
+                   name="settingForm[aws:region]"
+                   placeholder="例: ap-northeast-1"
+                   value="{{ settingForm['aws:region'] }}">
           </div>
         </div>
 
         <div class="form-group">
           <label for="settingForm[aws:bucket]" class="col-xs-3 control-label">{{ t('app_setting.bucket name') }}</label>
           <div class="col-xs-6">
-            <input class="form-control" type="text" name="settingForm[aws:bucket]" placeholder="例: crowi"  value="{{ settingForm['aws:bucket'] }}">
+            <input class="form-control"
+                   id="settingForm[aws:bucket]"
+                   type="text"
+                   name="settingForm[aws:bucket]"
+                   placeholder="例: crowi"
+                   value="{{ settingForm['aws:bucket'] }}">
           </div>
         </div>
 
         <div class="form-group">
           <label for="settingForm[aws:accessKeyId]" class="col-xs-3 control-label">Access Key ID</label>
           <div class="col-xs-6">
-            <input class="form-control" type="text" name="settingForm[aws:accessKeyId]" value="{{ settingForm['aws:accessKeyId'] }}">
+            <input class="form-control"
+                   id="settingForm[aws:accessKeyId]"
+                   type="text"
+                   name="settingForm[aws:accessKeyId]"
+                   value="{{ settingForm['aws:accessKeyId'] }}">
           </div>
 
         </div>
@@ -187,7 +238,11 @@
         <div class="form-group">
           <label for="settingForm[aws:secretAccessKey]" class="col-xs-3 control-label">Secret Access Key</label>
           <div class="col-xs-6">
-            <input class="form-control" type="text" name="settingForm[aws:secretAccessKey]" value="{{ settingForm['aws:secretAccessKey'] }}">
+            <input class="form-control"
+                   id="settingForm[aws:secretAccessKey]"
+                   type="text"
+                   name="settingForm[aws:secretAccessKey]"
+                   value="{{ settingForm['aws:secretAccessKey'] }}">
           </div>
         </div>
 
@@ -207,17 +262,23 @@
         <p class="well">{{ t('app_setting.Enable plugin loading') }}</p>
 
         <div class="form-group">
-          <label for="settingForm[plugin:isEnabledPlugins]" class="col-xs-3 control-label">{{ t('app_setting.Load plugins') }}</label>
+          <label class="col-xs-3 control-label">{{ t('app_setting.Load plugins') }}</label>
           <div class="col-xs-6">
 
             <div class="btn-group btn-toggle" data-toggle="buttons">
               <label class="btn btn-default btn-rounded btn-outline {% if settingForm['plugin:isEnabledPlugins'] %}active{% endif %}" data-active-class="primary">
-                <input name="settingForm[plugin:isEnabledPlugins]" value="true" type="radio"
-                    {% if true === settingForm['plugin:isEnabledPlugins'] %}checked{% endif %}> ON
+                <input name="settingForm[plugin:isEnabledPlugins]"
+                       value="true"
+                       type="radio"
+                       {% if true === settingForm['plugin:isEnabledPlugins'] %}checked{% endif %}>
+                ON
               </label>
               <label class="btn btn-default btn-rounded btn-outline {% if !settingForm['plugin:isEnabledPlugins'] %}active{% endif %}" data-active-class="default">
-                <input name="settingForm[plugin:isEnabledPlugins]" value="false" type="radio"
-                    {% if !settingForm['plugin:isEnabledPlugins'] %}checked{% endif %}> OFF
+                <input name="settingForm[plugin:isEnabledPlugins]"
+                       value="false"
+                       type="radio"
+                       {% if !settingForm['plugin:isEnabledPlugins'] %}checked{% endif %}>
+                OFF
               </label>
             </div>
           </div>

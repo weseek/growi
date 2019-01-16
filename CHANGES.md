@@ -1,12 +1,19 @@
 CHANGES
 ========
 
-## 3.3.4-RC
+## 3.3.5-RC
 
+* Fix: Prevent XSS by DetachCodeBlockInterceptor
+* Fix: NPE occured on /admin/security when Crowi Classic Auth Mechanism is set
+
+## 3.3.4
+
+* Improvement: SAML configuration with environment variables
 * Improvement: Upload file with pasting from clipboard
 * Fix: `/_api/revisions.get` doesn't populate author data correctly
 * Fix: Wrong OAuth callback url are shown at admin page
 * Fix: Connecting to MongoDB failed when processing migration
+* Support: Get ready to use new config management system
 
 ## 3.3.3
 
