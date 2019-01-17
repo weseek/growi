@@ -6,7 +6,12 @@
   let sections = document.querySelectorAll( '[data-markdown]'), section;
   for (let i = 0, len = sections.length; i < len; i++ ) {
     section = sections[i];
-    section.innerHTML = '<h1>hoge</h1>';
+    // remove all existing children.
+    while (section.firstChild) section.removeChild(section.firstChild);
+    // add h1 DOM 'Hoge'.
+    let h1 = document.createElement('h1');
+    h1.appendChild(document.createTextNode('Hoge'));
+    section.appendChild(h1);
   }
   const GrowiRenderer = require('../../GrowiRenderer');
   let growiRenderer = new GrowiRenderer(root.crowi, root.crowiRenderer, {mode: 'editor'});
