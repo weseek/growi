@@ -44,7 +44,7 @@ module.exports = function(crowi) {
     });
   };
 
-  const convertMarkdownToMrkdwn = function(body) {
+  const convertMarkdownToMarkdown = function(body) {
     var url = '';
     if (config.crowi && config.crowi['app:siteUrl:fixed']) {
       url = config.crowi['app:siteUrl:fixed'];
@@ -66,7 +66,7 @@ module.exports = function(crowi) {
       body = body.substr(0, 2000) + '...';
     }
 
-    return convertMarkdownToMrkdwn(body);
+    return convertMarkdownToMarkdown(body);
   };
 
   const prepareAttachmentTextForUpdate = function(page, user, previousRevision) {
@@ -105,7 +105,7 @@ module.exports = function(crowi) {
     }
 
     if (comment.isMarkdown) {
-      return convertMarkdownToMrkdwn(body);
+      return convertMarkdownToMarkdown(body);
     }
     else {
       return body;
