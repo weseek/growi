@@ -57,7 +57,7 @@ module.exports = function(crowi, app) {
   app.get('/admin'                          , loginRequired(crowi, app) , middleware.adminRequired() , admin.index);
   app.get('/admin/app'                      , loginRequired(crowi, app) , middleware.adminRequired() , admin.app.index);
   app.post('/_api/admin/settings/app'       , loginRequired(crowi, app) , middleware.adminRequired() , csrf, form.admin.app, admin.api.appSetting);
-  app.post('/_api/admin/settings/siteUrl'   , loginRequired(crowi, app) , middleware.adminRequired() , csrf, form.admin.siteUrl, admin.api.appSetting);
+  app.post('/_api/admin/settings/siteUrl'   , loginRequired(crowi, app) , middleware.adminRequired() , csrf, form.admin.siteUrl, admin.api.asyncAppSetting);
   app.post('/_api/admin/settings/mail'      , loginRequired(crowi, app) , middleware.adminRequired() , csrf, form.admin.mail, admin.api.appSetting);
   app.post('/_api/admin/settings/aws'       , loginRequired(crowi, app) , middleware.adminRequired() , csrf, form.admin.aws, admin.api.appSetting);
   app.post('/_api/admin/settings/plugin'    , loginRequired(crowi, app) , middleware.adminRequired() , csrf, form.admin.plugin, admin.api.appSetting);
