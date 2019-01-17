@@ -3,6 +3,8 @@ CHANGES
 
 ## 3.3.5-RC
 
+* Fix: "Anyone with the link" ACL doesn't work correctly
+    * Introduced 3.3.0
 * Fix: NPE occured on /admin/security when Crowi Classic Auth Mechanism is set
 * I18n: Cheatsheet for editor
 * I18n: Some admin pages
