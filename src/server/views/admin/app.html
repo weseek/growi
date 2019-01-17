@@ -56,7 +56,7 @@
                    type="text"
                    name="settingForm[app:siteUrl]"
                    value="{{ settingForm['app:siteUrl'] | default('') }}"
-                   placeholder="e.g. https://my.growi.org">
+                   placeholder="{{ t('eg') }} https://my.growi.org">
             <p class="help-block">{{ t("app_setting.siteurl_help") }}</p>
           </div>
         </div>
@@ -139,7 +139,7 @@
                    id="settingForm[mail.from]"
                    type="text"
                    name="settingForm[mail:from]"
-                   placeholder="例: mail@growi.org"
+                   placeholder="{{ t('eg') }} mail@growi.org"
                    value="{{ settingForm['mail:from'] }}">
           </div>
         </div>
