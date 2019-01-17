@@ -62,6 +62,26 @@ const pageSchema = new mongoose.Schema({
 pageSchema.plugin(uniqueValidator);
 
 
+/**
+ * return an array of ancestors paths that is extracted from specified pagePath
+ * e.g.
+ *  when `pagePath` is `/foo/bar/baz`,
+ *  this method returns [`/foo/bar/baz`, `/foo/bar`, `/foo`, `/`]
+ *
+ * @param {string} pagePath
+ * @return {string[]} ancestors paths
+ */
+const extractToAncestorsPaths = (pagePath) => {
+  const ancestorsPaths = [];
+
+  let parentPath;
+  while (parentPath !== '/') {
+    parentPath = nodePath.dirname(parentPath || pagePath);
+    ancestorsPaths.push(parentPath);
+  }
+
+  return ancestorsPaths;
+};
 
 const addSlashOfEnd = (path) => {
   let returnPath = path;
@@ -625,7 +645,10 @@ module.exports = function(crowi) {
       return null;
     }
 
-    const parentPath = nodePath.dirname(path);
+    const ancestorsPaths = extractToAncestorsPaths(path);
+
+    // pick the longest one
+    const baseQuery = this.findOne({path: { $in: ancestorsPaths }}).sort({path: -1});
 
     let relatedUserGroups = userGroups;
     if (user != null && relatedUserGroups == null) {
@@ -634,11 +657,10 @@ module.exports = function(crowi) {
       relatedUserGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     }
 
-    const page = await this.findByPathAndViewer(parentPath, user, relatedUserGroups);
+    const queryBuilder = new PageQueryBuilder(baseQuery);
+    queryBuilder.addConditionToFilteringByViewer(user, relatedUserGroups);
 
-    return (page != null)
-      ? page
-      : this.findAncestorByPathAndViewer(parentPath, user, relatedUserGroups);
+    return await queryBuilder.query.exec();
   };
 
   pageSchema.statics.findByRedirectTo = function(path) {
