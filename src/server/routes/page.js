@@ -120,7 +120,6 @@ module.exports = function(crowi, app) {
     if (userData != null) {
       renderVars.pageUser = userData;
       renderVars.bookmarkList = await Bookmark.findByUser(userData, {limit: 10, populatePage: true, requestUser: requestUser});
-      renderVars.createdList = await Page.findListByCreator(userData, {limit: 10}, requestUser);
     }
   }
 
