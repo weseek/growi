@@ -31,33 +31,34 @@
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@handsontable/react/-/react-2.0.0.tgz#30d9c2bd05421588a6ed1b3050b1f7dc476b35d3"
 
-"@lykmapipo/gridfs-stream@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@lykmapipo/gridfs-stream/-/gridfs-stream-1.2.0.tgz#0f74826816b4f7414ae36862d67ce4849a224d91"
-  dependencies:
-    flushwritable "^1.0.0"
-
 "@sinonjs/commons@^1.0.2":
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/@sinonjs/commons/-/commons-1.0.2.tgz#3e0ac737781627b8844257fadc3d803997d0526e"
   dependencies:
     type-detect "4.0.8"
 
-"@sinonjs/formatio@3.0.0", "@sinonjs/formatio@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@sinonjs/formatio/-/formatio-3.0.0.tgz#9d282d81030a03a03fa0c5ce31fd8786a4da311a"
+"@sinonjs/commons@^1.2.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@sinonjs/commons/-/commons-1.3.0.tgz#50a2754016b6f30a994ceda6d9a0a8c36adda849"
+  integrity sha512-j4ZwhaHmwsCb4DlDOIWnI5YyKDNMoNThsmwEpfHx6a1EpsGZ9qYLxP++LMlmBRjtGptGHFsGItJ768snllFWpA==
   dependencies:
-    "@sinonjs/samsam" "2.1.0"
+    type-detect "4.0.8"
 
-"@sinonjs/samsam@2.1.0":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@sinonjs/samsam/-/samsam-2.1.0.tgz#b8b8f5b819605bd63601a6ede459156880f38ea3"
+"@sinonjs/formatio@^3.1.0":
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@sinonjs/formatio/-/formatio-3.1.0.tgz#6ac9d1eb1821984d84c4996726e45d1646d8cce5"
+  integrity sha512-ZAR2bPHOl4Xg6eklUGpsdiIJ4+J1SNag1DHHrG/73Uz/nVwXqjgUtRPLoS+aVyieN9cSbc0E4LsU984tWcDyNg==
   dependencies:
+    "@sinonjs/samsam" "^2 || ^3"
+
+"@sinonjs/samsam@^2 || ^3", "@sinonjs/samsam@^3.0.2":
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/@sinonjs/samsam/-/samsam-3.0.2.tgz#304fb33bd5585a0b2df8a4c801fcb47fa84d8e43"
+  integrity sha512-m08g4CS3J6lwRQk1pj1EO+KEVWbrbXsmi9Pw0ySmrIbcVxVaedoFgLvFsV8wHLwh01EpROVz3KvVcD1Jmks9FQ==
+  dependencies:
+    "@sinonjs/commons" "^1.0.2"
     array-from "^2.1.1"
-
-"@sinonjs/samsam@^2.1.2":
-  version "2.1.2"
-  resolved "https://registry.yarnpkg.com/@sinonjs/samsam/-/samsam-2.1.2.tgz#16947fce5f57258d01f1688fdc32723093c55d3f"
+    lodash.get "^4.4.2"
 
 "@types/body-parser@*":
   version "1.16.8"
@@ -1570,17 +1571,13 @@ bs-recipes@1.3.4:
   version "1.3.4"
   resolved "https://registry.yarnpkg.com/bs-recipes/-/bs-recipes-1.3.4.tgz#0d2d4d48a718c8c044769fdc4f89592dc8b69585"
 
-bson@^1.1.0:
+bson@^1.1.0, bson@~1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/bson/-/bson-1.1.0.tgz#bee57d1fb6a87713471af4e32bcae36de814b5b0"
 
 bson@~1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/bson/-/bson-1.0.4.tgz#93c10d39eaa5b58415cbc4052f3e53e562b0b72c"
-
-bson@~1.0.5:
-  version "1.0.9"
-  resolved "https://registry.yarnpkg.com/bson/-/bson-1.0.9.tgz#12319f8323b1254739b7c6bef8d3e89ae05a2f57"
 
 buffer-equal-constant-time@1.0.1:
   version "1.0.1"
@@ -2762,6 +2759,11 @@ diff@^3.3.1:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/diff/-/diff-3.4.0.tgz#b1d85507daf3964828de54b37d0d73ba67dda56c"
 
+diff@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/diff/-/diff-4.0.1.tgz#0c667cb467ebbb5cea7f14f135cc2dba7780a8ff"
+  integrity sha512-s2+XdvhPCOF01LRQBC8hf4vhbVmI2CGS5aZnxLJlT5FtdhPCDFq80q++zK2KlrVorVDdL5BOGZ/VfLrVtYNF+Q==
+
 diffie-hellman@^5.0.0:
   version "5.0.2"
   resolved "https://registry.yarnpkg.com/diffie-hellman/-/diffie-hellman-5.0.2.tgz#b5835739270cfe26acf632099fded2a07f209e5e"
@@ -3660,10 +3662,6 @@ flush-write-stream@^1.0.0:
   dependencies:
     inherits "^2.0.1"
     readable-stream "^2.0.4"
-
-flushwritable@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/flushwritable/-/flushwritable-1.0.0.tgz#3e328d8fde412ad47e738e3be750b4d290043498"
 
 fn-args@3.0.0:
   version "3.0.0"
@@ -5068,9 +5066,10 @@ jsx-ast-utils@^2.0.1:
   dependencies:
     array-includes "^3.0.3"
 
-just-extend@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/just-extend/-/just-extend-3.0.0.tgz#cee004031eaabf6406da03a7b84e4fe9d78ef288"
+just-extend@^4.0.2:
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/just-extend/-/just-extend-4.0.2.tgz#f3f47f7dfca0f989c55410a7ebc8854b07108afc"
+  integrity sha512-FrLwOgm+iXrPV+5zDU6Jqu4gCRXbWEQg2O3SKONsWE4w7AXFRkryS53bpWdaL9cNol+AmR3AEYz6kn+o0fCPnw==
 
 jwa@^1.1.4:
   version "1.1.5"
@@ -5335,7 +5334,7 @@ lodash.foreach@^4.1.0:
   version "4.5.0"
   resolved "https://registry.yarnpkg.com/lodash.foreach/-/lodash.foreach-4.5.0.tgz#1a6a35eace401280c7f06dddec35165ab27e3e53"
 
-lodash.get@4.4.2, lodash.get@^4.0, lodash.get@^4.0.2, lodash.get@^4.4.2:
+lodash.get@^4.0, lodash.get@^4.0.2, lodash.get@^4.4.2:
   version "4.4.2"
   resolved "https://registry.yarnpkg.com/lodash.get/-/lodash.get-4.4.2.tgz#2d177f652fa31e939b4438d5341499dfa3825e99"
 
@@ -5395,7 +5394,7 @@ lodash.uniq@^4.5.0:
   version "4.5.0"
   resolved "https://registry.yarnpkg.com/lodash.uniq/-/lodash.uniq-4.5.0.tgz#d0225373aeb652adc1bc82e4945339a842754773"
 
-lodash@4.17.11, lodash@^4.17.11:
+lodash@4.17.11, lodash@>=4.17.11, lodash@^4.17.11:
   version "4.17.11"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.11.tgz#b39ea6229ef607ecd89e2c8df12536891cac9b8d"
 
@@ -5877,16 +5876,6 @@ mongodb-core@2.1.19:
     bson "~1.0.4"
     require_optional "~1.0.0"
 
-mongodb-core@3.1.5:
-  version "3.1.5"
-  resolved "https://registry.yarnpkg.com/mongodb-core/-/mongodb-core-3.1.5.tgz#59ca67d7f6cea570d5437624a7afec8d752d477a"
-  dependencies:
-    bson "^1.1.0"
-    require_optional "^1.0.1"
-    safe-buffer "^5.1.2"
-  optionalDependencies:
-    saslprep "^1.0.0"
-
 mongodb-core@3.1.9:
   version "3.1.9"
   resolved "https://registry.yarnpkg.com/mongodb-core/-/mongodb-core-3.1.9.tgz#c31ee407bf932b0149eaed775c17ee09974e4ca3"
@@ -5904,13 +5893,6 @@ mongodb@3.1.10:
     mongodb-core "3.1.9"
     safe-buffer "^5.1.2"
 
-mongodb@3.1.6:
-  version "3.1.6"
-  resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-3.1.6.tgz#6054641973b5bf5b5ae1c67dcbcf8fa88280273d"
-  dependencies:
-    mongodb-core "3.1.5"
-    safe-buffer "^5.1.2"
-
 mongodb@^2.0.36:
   version "2.2.35"
   resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-2.2.35.tgz#cd1b5af8a9463e3f9a787fa5b3d05565579730f9"
@@ -5919,13 +5901,13 @@ mongodb@^2.0.36:
     mongodb-core "2.1.19"
     readable-stream "2.2.7"
 
-mongoose-gridfs@^0.5.0:
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/mongoose-gridfs/-/mongoose-gridfs-0.5.0.tgz#626e12ab605c2ed2a205a5953cd5aa8615f44feb"
+mongoose-gridfs@^0.6.2:
+  version "0.6.2"
+  resolved "https://registry.yarnpkg.com/mongoose-gridfs/-/mongoose-gridfs-0.6.2.tgz#b144219af01c51b14c58e5cdf7f58293d2ce1d67"
+  integrity sha512-fW6+D1Pn+qtpuYK3lYl1OMd3wenNIJ0/KhpOAoiRZWdzHjABiUQrtZSCyLEjmVgsxuTqIsUqvS1KeMUvUmtO2A==
   dependencies:
-    "@lykmapipo/gridfs-stream" "^1.2.0"
-    lodash "^4.17.10"
-    stream-read "^1.1.2"
+    lodash ">=4.17.11"
+    stream-read ">=1.1.2"
 
 mongoose-legacy-pluralize@1.0.2:
   version "1.0.2"
@@ -5944,16 +5926,16 @@ mongoose-unique-validator@^2.0.2:
     lodash.foreach "^4.1.0"
     lodash.get "^4.0.2"
 
-mongoose@^5.3.1:
-  version "5.3.1"
-  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-5.3.1.tgz#52d5bfb67788a2194e5f7a2a5c0d597e4b86fd7a"
+mongoose@^5.4.4:
+  version "5.4.4"
+  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-5.4.4.tgz#923923cd39a03b970c269f828322990ea163f9a8"
+  integrity sha512-KoYUFtgrXQ9Sxuf5IEE0Y2LswWGhHiN27bxtObANxMgXbuNLTtLB3xaep8jITUDitG4kkI+FKElUJH4uY8G2Bw==
   dependencies:
     async "2.6.1"
-    bson "~1.0.5"
+    bson "~1.1.0"
     kareem "2.3.0"
-    lodash.get "4.4.2"
-    mongodb "3.1.6"
-    mongodb-core "3.1.5"
+    mongodb "3.1.10"
+    mongodb-core "3.1.9"
     mongoose-legacy-pluralize "1.0.2"
     mpath "0.5.1"
     mquery "3.2.0"
@@ -6095,12 +6077,13 @@ nice-try@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/nice-try/-/nice-try-1.0.4.tgz#d93962f6c52f2c1558c0fbda6d512819f1efe1c4"
 
-nise@^1.4.5:
-  version "1.4.6"
-  resolved "https://registry.yarnpkg.com/nise/-/nise-1.4.6.tgz#76cc3915925056ae6c405dd8ad5d12bde570c19f"
+nise@^1.4.7:
+  version "1.4.8"
+  resolved "https://registry.yarnpkg.com/nise/-/nise-1.4.8.tgz#ce91c31e86cf9b2c4cac49d7fcd7f56779bfd6b0"
+  integrity sha512-kGASVhuL4tlAV0tvA34yJYZIVihrUt/5bDwpp4tTluigxUr2bBlJeDXmivb6NuEdFkqvdv/Ybb9dm16PSKUhtw==
   dependencies:
-    "@sinonjs/formatio" "3.0.0"
-    just-extend "^3.0.0"
+    "@sinonjs/formatio" "^3.1.0"
+    just-extend "^4.0.2"
     lolex "^2.3.2"
     path-to-regexp "^1.7.0"
     text-encoding "^0.6.4"
@@ -6270,9 +6253,10 @@ nodemailer-ses-transport@~1.5.0:
   dependencies:
     aws-sdk "^2.2.36"
 
-nodemailer@^4.0.1:
-  version "4.4.1"
-  resolved "https://registry.yarnpkg.com/nodemailer/-/nodemailer-4.4.1.tgz#ce480eb3db7b949b3366e301b8f0af1c1248025e"
+nodemailer@^5.1.1:
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/nodemailer/-/nodemailer-5.1.1.tgz#0c48d1ecab02e86d9ff6c620ee75ed944b763505"
+  integrity sha512-hKGCoeNdFL2W7S76J/Oucbw0/qRlfG815tENdhzcqTpSjKgAN91mFOqU2lQUflRRxFM7iZvCyaFcAR9noc/CqQ==
 
 nopt@1.0.10:
   version "1.0.10"
@@ -8419,23 +8403,23 @@ simple-swizzle@^0.2.2:
   dependencies:
     is-arrayish "^0.3.1"
 
-sinon-chai@^3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/sinon-chai/-/sinon-chai-3.2.0.tgz#ed995e13a8a3cfccec18f218d9b767edc47e0715"
+sinon-chai@^3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/sinon-chai/-/sinon-chai-3.3.0.tgz#8084ff99451064910fbe2c2cb8ab540c00b740ea"
+  integrity sha512-r2JhDY7gbbmh5z3Q62pNbrjxZdOAjpsqW/8yxAZRSqLZqowmfGZPGUZPFf3UX36NLis0cv8VEM5IJh9HgkSOAA==
 
-sinon@^7.0.0:
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/sinon/-/sinon-7.0.0.tgz#99f2e5198d90a01ccbcebd4dc181a24827cb90dd"
+sinon@^7.2.2:
+  version "7.2.2"
+  resolved "https://registry.yarnpkg.com/sinon/-/sinon-7.2.2.tgz#388ecabd42fa93c592bfc71d35a70894d5a0ca07"
+  integrity sha512-WLagdMHiEsrRmee3jr6IIDntOF4kbI6N2pfbi8wkv50qaUQcBglkzkjtoOEbeJ2vf1EsrHhLI+5Ny8//WHdMoA==
   dependencies:
-    "@sinonjs/commons" "^1.0.2"
-    "@sinonjs/formatio" "^3.0.0"
-    "@sinonjs/samsam" "^2.1.2"
+    "@sinonjs/commons" "^1.2.0"
+    "@sinonjs/formatio" "^3.1.0"
+    "@sinonjs/samsam" "^3.0.2"
     diff "^3.5.0"
-    lodash.get "^4.4.2"
     lolex "^3.0.0"
-    nise "^1.4.5"
+    nise "^1.4.7"
     supports-color "^5.5.0"
-    type-detect "^4.0.8"
 
 slack-node@^0.1.8:
   version "0.1.8"
@@ -8696,9 +8680,10 @@ stream-http@^2.7.2:
     to-arraybuffer "^1.0.0"
     xtend "^4.0.0"
 
-stream-read@^1.1.2:
+stream-read@>=1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/stream-read/-/stream-read-1.1.2.tgz#3137110d7aa80ba54e4b829c4cd33ca106b9564d"
+  integrity sha1-MTcRDXqoC6VOS4KcTNM8oQa5Vk0=
   dependencies:
     dezalgo "^1.0.1"
 
@@ -9135,7 +9120,7 @@ type-check@~0.3.2:
   dependencies:
     prelude-ls "~1.1.2"
 
-type-detect@4.0.8, type-detect@^4.0.8:
+type-detect@4.0.8:
   version "4.0.8"
   resolved "https://registry.yarnpkg.com/type-detect/-/type-detect-4.0.8.tgz#7646fb5f18871cfbb7749e69bd39a6388eb7450c"
 
