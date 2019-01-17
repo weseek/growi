@@ -168,22 +168,24 @@ class PageQueryBuilder {
     return this;
   }
 
-  addConditionToFilteringByViewer(user, userGroups, showPagesRestrictedByOwner, showPagesRestrictedByGroup) {
+  addConditionToFilteringByViewer(user, userGroups, showAnyoneKnowsLink, showPagesRestrictedByOwner, showPagesRestrictedByGroup) {
     const grantConditions = [
       {grant: null},
       {grant: GRANT_PUBLIC},
     ];
 
+    if (showAnyoneKnowsLink) {
+      grantConditions.push({grant: GRANT_RESTRICTED});
+    }
+
     if (showPagesRestrictedByOwner) {
       grantConditions.push(
-        {grant: GRANT_RESTRICTED},
         {grant: GRANT_SPECIFIED},
         {grant: GRANT_OWNER},
       );
     }
     else if (user != null) {
       grantConditions.push(
-        {grant: GRANT_RESTRICTED, grantedUsers: user._id},
         {grant: GRANT_SPECIFIED, grantedUsers: user._id},
         {grant: GRANT_OWNER, grantedUsers: user._id},
       );
@@ -549,7 +551,7 @@ module.exports = function(crowi) {
     }
 
     const queryBuilder = new PageQueryBuilder(baseQuery);
-    queryBuilder.addConditionToFilteringByViewer(user, userGroups);
+    queryBuilder.addConditionToFilteringByViewer(user, userGroups, true);
 
     const count = await queryBuilder.query.exec();
     return count > 0;
@@ -571,7 +573,7 @@ module.exports = function(crowi) {
     }
 
     const queryBuilder = new PageQueryBuilder(baseQuery);
-    queryBuilder.addConditionToFilteringByViewer(user, relatedUserGroups);
+    queryBuilder.addConditionToFilteringByViewer(user, relatedUserGroups, true);
 
     return await queryBuilder.query.exec();
   };
@@ -604,7 +606,7 @@ module.exports = function(crowi) {
     }
 
     const queryBuilder = new PageQueryBuilder(baseQuery);
-    queryBuilder.addConditionToFilteringByViewer(user, relatedUserGroups);
+    queryBuilder.addConditionToFilteringByViewer(user, relatedUserGroups, true);
 
     return await queryBuilder.query.exec();
   };
@@ -650,7 +652,7 @@ module.exports = function(crowi) {
     const builder = new PageQueryBuilder(this.find());
     builder.addConditionToListWithDescendants(path, option);
 
-    return await findListFromBuilderAndViewer(builder, user, option);
+    return await findListFromBuilderAndViewer(builder, user, false, option);
   };
 
   /**
@@ -660,7 +662,7 @@ module.exports = function(crowi) {
     const builder = new PageQueryBuilder(this.find());
     builder.addConditionToListByStartWith(path, option);
 
-    return await findListFromBuilderAndViewer(builder, user, option);
+    return await findListFromBuilderAndViewer(builder, user, false, option);
   };
 
   /**
@@ -674,7 +676,12 @@ module.exports = function(crowi) {
     const opt = Object.assign({sort: 'createdAt', desc: -1}, option);
     const builder = new PageQueryBuilder(this.find({ creator: targetUser._id }));
 
-    return await findListFromBuilderAndViewer(builder, currentUser, opt);
+    let showAnyoneKnowsLink = null;
+    if (targetUser != null && currentUser != null) {
+      showAnyoneKnowsLink = targetUser._id.equals(currentUser._id);
+    }
+
+    return await findListFromBuilderAndViewer(builder, currentUser, showAnyoneKnowsLink, opt);
   };
 
   pageSchema.statics.findListByPageIds = async function(ids, option) {
@@ -700,9 +707,10 @@ module.exports = function(crowi) {
    * find pages by PageQueryBuilder
    * @param {PageQueryBuilder} builder
    * @param {User} user
+   * @param {boolean} showAnyoneKnowsLink
    * @param {any} option
    */
-  async function findListFromBuilderAndViewer(builder, user, option) {
+  async function findListFromBuilderAndViewer(builder, user, showAnyoneKnowsLink, option) {
     validateCrowi();
 
     const User = crowi.model('User');
@@ -721,7 +729,7 @@ module.exports = function(crowi) {
     }
 
     // add grant conditions
-    await addConditionToFilteringByViewerForList(builder, user);
+    await addConditionToFilteringByViewerForList(builder, user, showAnyoneKnowsLink);
 
     builder.addConditionToPagenate(opt.offset, opt.limit, sortOpt);
 
@@ -740,8 +748,9 @@ module.exports = function(crowi) {
    *
    * @param {PageQueryBuilder} builder
    * @param {User} user
+   * @param {boolean} showAnyoneKnowsLink
    */
-  async function addConditionToFilteringByViewerForList(builder, user) {
+  async function addConditionToFilteringByViewerForList(builder, user, showAnyoneKnowsLink) {
     validateCrowi();
 
     const Config = crowi.model('Config');
@@ -758,7 +767,7 @@ module.exports = function(crowi) {
       userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     }
 
-    return builder.addConditionToFilteringByViewer(user, userGroups, !hidePagesRestrictedByOwner, !hidePagesRestrictedByGroup);
+    return builder.addConditionToFilteringByViewer(user, userGroups, showAnyoneKnowsLink, !hidePagesRestrictedByOwner, !hidePagesRestrictedByGroup);
   }
 
   /**
