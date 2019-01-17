@@ -21,7 +21,7 @@ module.exports = function(crowi) {
   }
 
   lib.createAuthUrl = function(req, callback) {
-    var callbackUrl = config.crowi['app:siteUrl:fixed'] + '/google/callback';
+    var callbackUrl = crowi.configManager.getSiteUrl() + '/google/callback';
     var oauth2Client = createOauth2Client(callbackUrl);
     google.options({auth: oauth2Client});
 
@@ -34,7 +34,7 @@ module.exports = function(crowi) {
   };
 
   lib.handleCallback = function(req, callback) {
-    var callbackUrl = config.crowi['app:siteUrl:fixed'] + '/google/callback';
+    var callbackUrl = crowi.configManager.getSiteUrl() + '/google/callback';
     var oauth2Client = createOauth2Client(callbackUrl);
     google.options({auth: oauth2Client});
 
