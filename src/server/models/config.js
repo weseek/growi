@@ -604,7 +604,7 @@ module.exports = function(crowi) {
     const local_config = {
       crowi: {
         title: Config.appTitle(crowi),
-        url: config.crowi['app:siteUrl:fixed'] || '',
+        url: crowi.configManager.getSiteUrl(),
       },
       upload: {
         image: Config.isUploadable(config),
