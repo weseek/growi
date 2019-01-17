@@ -45,7 +45,7 @@ module.exports = function(crowi) {
   };
 
   const convertMarkdownToMrkdwn = function(body) {
-    var url = '';
+    let url = '';
     if (config.crowi && config.crowi['app:siteUrl:fixed']) {
       url = config.crowi['app:siteUrl:fixed'];
     }
@@ -61,7 +61,7 @@ module.exports = function(crowi) {
   };
 
   const prepareAttachmentTextForCreate = function(page, user) {
-    var body = page.revision.body;
+    let body = page.revision.body;
     if (body.length > 2000) {
       body = body.substr(0, 2000) + '...';
     }
@@ -70,13 +70,13 @@ module.exports = function(crowi) {
   };
 
   const prepareAttachmentTextForUpdate = function(page, user, previousRevision) {
-    var diff = require('diff');
-    var diffText = '';
+    const diff = require('diff');
+    let diffText = '';
 
     diff.diffLines(previousRevision.body, page.revision.body).forEach(function(line) {
       debug('diff line', line);
       /* eslint-disable no-unused-vars */
-      var value = line.value.replace(/\r\n|\r/g, '\n');
+      const value = line.value.replace(/\r\n|\r/g, '\n');
       /* eslint-enable */
       if (line.added) {
         diffText += `${line.value} ... :lower_left_fountain_pen:`;
