@@ -3,8 +3,9 @@ CHANGES
 
 ## 3.3.5-RC
 
-* Fix: Prevent XSS by DetachCodeBlockInterceptor
 * Fix: NPE occured on /admin/security when Crowi Classic Auth Mechanism is set
+* I18n: Cheatsheet for editor
+* I18n: Some admin pages
 
 ## 3.3.4
 
