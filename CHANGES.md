@@ -3,7 +3,8 @@ CHANGES
 
 ## 3.3.5-RC
 
-* 
+* Fix: Prevent XSS by DetachCodeBlockInterceptor
+* Fix: NPE occured on /admin/security when Crowi Classic Auth Mechanism is set
 
 ## 3.3.4
 

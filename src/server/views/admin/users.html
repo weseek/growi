@@ -44,14 +44,14 @@
       <form role="form" action="/admin/user/invite" method="post">
         <div id="inviteUserForm" class="collapse">
           <div class="form-group">
-            <label for="inviteForm[emailList]">メールアドレス (複数行入力で複数人招待可能)</label>
-            <textarea class="form-control" name="inviteForm[emailList]" placeholder="例: user@growi.org"></textarea>
+            <label for="inviteForm[emailList]">{{ t('user_management.emails') }}</label>
+            <textarea class="form-control" name="inviteForm[emailList]" placeholder="{{ t('eg') }} user@growi.org"></textarea>
           </div>
           <div class="checkbox checkbox-info">
             <input type="checkbox" id="inviteWithEmail" name="inviteForm[sendEmail]" checked>
-            <label for="inviteWithEmail">招待をメールで送信</label>
+            <label for="inviteWithEmail">{{ t('user_management.invite_thru_email') }}</label>
           </div>
-          <button type="submit" class="btn btn-primary">招待する</button>
+          <button type="submit" class="btn btn-primary">{{ t('user_management.invite') }}</button>
         </div>
         <input type="hidden" name="_csrf" value="{{ csrf() }}">
       </form>
@@ -150,7 +150,7 @@
         <thead>
           <tr>
             <th width="100px">#</th>
-            <th>Status</th>
+            <th>{{ t('user_management.Status') }}</th>
             <th><code>username</code></th>
             <th>{{ t('Name') }}</th>
             <th>{{ t('Email') }}</th>
@@ -213,7 +213,7 @@
                   </form>
                   <li>
                     <a href="javascript:form_activate_{{ sUserId }}.submit()">
-                      <i class="icon-fw icon-user-following"></i> 承認する
+                      <i class="icon-fw icon-user-following"></i> {{ t('user_management.accept') }}
                     </a>
                   </li>
                   {% endif  %}
@@ -247,13 +247,13 @@
                   </form>
                   <li>
                     <a href="javascript:form_activate_{{ sUserId }}.submit()">
-                      <i class="icon-fw icon-action-redo"></i> 元に戻す
+                      <i class="icon-fw icon-action-redo"></i> {{ t('Undo') }}
                     </a>
                   </li>
                   <li>
                     {# label は同じだけど、こっちは論理削除 #}
                     <a href="javascript:form_remove_{{ sUserId }}.submit()">
-                      <i class="icon-fw icon-fire text-danger"></i> 削除する
+                      <i class="icon-fw icon-fire text-danger"></i> {{ t('Delete') }}
                     </a>
                   </li>
                   {% endif  %}
@@ -265,7 +265,7 @@
                   <li class="dropdown-button">
                     {# label は同じだけど、こっちは物理削除 #}
                     <a href="javascript:form_removeCompletely_{{ sUserId }}.submit()">
-                      <i class="icon-fw icon-fire text-danger"></i> 削除する
+                      <i class="icon-fw icon-fire text-danger"></i> {{ t('Delete') }}
                     </a>
                   </li>
                   {% endif  %}
@@ -281,11 +281,11 @@
                   <li>
                     {% if sUser.username != user.username %}
                       <a href="javascript:form_removeFromAdmin_{{ sUserId }}.submit()">
-                        <i class="icon-fw icon-user-unfollow"></i> 管理者からはずす
+                        <i class="icon-fw icon-user-unfollow"></i> {{ t("user_management.remove_admin_access") }}
                       </a>
                     {% else %}
                       <a disabled>
-                        <i class="icon-fw icon-user-unfollow"></i> 管理者からはずす
+                        <i class="icon-fw icon-user-unfollow"></i> {{ t("user_management.remove_admin_access") }}
                       </a>
                       <p class="alert alert-danger m-l-10 m-r-10 p-10">{{ t("user_management.cannot_remove") }}</p>
                     {% endif %}
@@ -296,7 +296,7 @@
                   </form>
                   <li>
                     <a href="javascript:form_makeAdmin_{{ sUserId }}.submit()">
-                      <i class="icon-fw icon-magic-wand"></i> 管理者にする
+                      <i class="icon-fw icon-magic-wand"></i> {{ t("user_management.give_admin_access") }}
                     </a>
                   </li>
                   {% endif %}

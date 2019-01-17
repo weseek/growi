@@ -1,5 +1,6 @@
 module.exports = function(crowi) {
   const debug = require('debug')('growi:models:user')
+    , logger = require('@alias/logger')('growi:models:user')
     , path = require('path')
     , mongoose = require('mongoose')
     , mongoosePaginate = require('mongoose-paginate')
@@ -767,7 +768,7 @@ module.exports = function(crowi) {
 
     newUser.save(function(err, userData) {
       if (err) {
-        debug('createUserByEmailAndPassword failed: ', err);
+        logger.error('createUserByEmailAndPasswordAndStatus failed: ', err);
         return callback(err);
       }
 

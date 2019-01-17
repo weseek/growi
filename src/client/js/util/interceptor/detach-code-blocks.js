@@ -50,8 +50,8 @@ export class DetachCodeBlockInterceptor extends BasicInterceptor {
 
     context.dcbContextMap = {};
 
-    // see: https://regex101.com/r/8PAEcC/4
-    context[targetKey] = context[targetKey].replace(/((```|~~~)(.|[\r\n])*?(```|~~~))|(`[^\r\n]*?`)|(<pre>(.|[\r\n])*?<\/pre>)|(<pre\s[^>]*>(.|[\r\n])*?<\/pre>)/gm, (all) => {
+    // see: https://regex101.com/r/8PAEcC/5
+    context[targetKey] = context[targetKey].replace(/(^(```|~~~)(.|[\r\n])*?(```|~~~)$)|(`[^\r\n]*?`)|(<pre>(.|[\r\n])*?<\/pre>)|(<pre\s[^>]*>(.|[\r\n])*?<\/pre>)/gm, (all) => {
       // create ID
       const replaceId = 'dcb-' + this.createRandomStr(8);
       this.logger.debug(`'replaceId'=${replaceId} : `, all);
