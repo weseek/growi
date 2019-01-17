@@ -1015,6 +1015,25 @@ module.exports = function(crowi, app) {
     }
   };
 
+  actions.api.asyncAppSetting = async(req, res) => {
+    const form = req.form.settingForm;
+
+    if (!req.form.isValid) {
+      return res.json({status: false, message: req.form.errors.join('\n')});
+    }
+
+    debug('form content', form);
+
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', form);
+      return res.json({status: true});
+    }
+    catch (err) {
+      logger.error(err);
+      return res.json({status: false});
+    }
+  };
+
   actions.api.securitySetting = function(req, res) {
     const form = req.form.settingForm;
     const config = crowi.getConfig();
