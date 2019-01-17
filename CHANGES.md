@@ -5,6 +5,7 @@ CHANGES
 
 * Fix: "Anyone with the link" ACL doesn't work correctly
     * Introduced 3.3.0
+* Fix: Diff of revision contents doesn't appeared when notifing with slack
 * Fix: NPE occured on /admin/security when Crowi Classic Auth Mechanism is set
 * I18n: Cheatsheet for editor
 * I18n: Some admin pages

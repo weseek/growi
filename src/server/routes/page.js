@@ -621,9 +621,9 @@ module.exports = function(crowi, app) {
       options.grantUserGroupId = grantUserGroupId;
     }
 
-    try {
       const Revision = crowi.model('Revision');
       const previousRevision = await Revision.findById(revisionId);
+    try {
       page = await Page.updatePage(page, pageBody, previousRevision.body, req.user, options);
     }
     catch (err) {
@@ -650,8 +650,6 @@ module.exports = function(crowi, app) {
 
     // user notification
     if (isSlackEnabled && slackChannels != null) {
-      const Revision = crowi.model('Revision');
-      const previousRevision = await Revision.findById(page.revision);
       await notifyToSlackByUser(page, req.user, slackChannels, 'update', previousRevision);
     }
   };
