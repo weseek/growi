@@ -106,7 +106,7 @@ module.exports = function(crowi, app) {
   };
 
   actions.loginGoogle = function(req, res) {
-    var googleAuth = require('../util/googleAuth')(config);
+    var googleAuth = require('../util/googleAuth')(crowi);
     var code = req.session.googleAuthCode || null;
 
     if (!code) {
@@ -140,7 +140,7 @@ module.exports = function(crowi, app) {
   };
 
   actions.register = function(req, res) {
-    var googleAuth = require('../util/googleAuth')(config);
+    var googleAuth = require('../util/googleAuth')(crowi);
 
     // ログイン済みならさようなら
     if (req.user) {
@@ -321,7 +321,7 @@ module.exports = function(crowi, app) {
   };
 
   actions.registerGoogle = function(req, res) {
-    var googleAuth = require('../util/googleAuth')(config);
+    var googleAuth = require('../util/googleAuth')(crowi);
     googleAuth.createAuthUrl(req, function(err, redirectUrl) {
       if (err) {
         // TODO

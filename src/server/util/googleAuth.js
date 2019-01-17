@@ -2,12 +2,13 @@
  * googleAuth utility
  */
 
-module.exports = function(config) {
+module.exports = function(crowi) {
   'use strict';
 
   const { GoogleApis } = require('googleapis');
   var google = new GoogleApis()
     , debug = require('debug')('growi:lib:googleAuth')
+    , config = crowi.getConfig()
     , lib = {}
     ;
 
