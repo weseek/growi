@@ -76,7 +76,7 @@ describe('Page', () => {
         path: '/grant/specified',
         grant: Page.GRANT_SPECIFIED,
         grantedUsers: [testUser0],
-        creator: testUser0
+        creator: testUser0,
       },
       {
         path: '/grant/owner',
@@ -92,7 +92,7 @@ describe('Page', () => {
       },
       {
         path: '/grant/groupacl',
-        grant: 5,
+        grant: Page.GRANT_USER_GROUP,
         grantedUsers: [],
         grantedGroup: testGroup0,
         creator: testUser1,
@@ -233,7 +233,7 @@ describe('Page', () => {
     context('with a restricted page and an user who has no grant', () => {
       it('should return false', async() => {
         const user = await User.findOne({email: 'anonymous1@example.com'});
-        const page = await Page.findOne({path: '/grant/restricted'});
+        const page = await Page.findOne({path: '/grant/owner'});
 
         const bool = await Page.isAccessiblePageByViewer(page.id, user);
         expect(bool).to.be.equal(false);
@@ -283,8 +283,8 @@ describe('Page', () => {
 
   describe('.findPage', () => {
     context('findByIdAndViewer', () => {
-      it('should find page', async() => {
-        const pageToFind = createdPages[0];
+      it('should find page (public)', async() => {
+        const pageToFind = createdPages[1];
         const grantedUser = createdUsers[0];
 
         const page = await Page.findByIdAndViewer(pageToFind._id, grantedUser);
@@ -292,8 +292,26 @@ describe('Page', () => {
         expect(page.path).to.equal(pageToFind.path);
       });
 
-      it('should not be found by grant', async() => {
-        const pageToFind = createdPages[0];
+      it('should find page (anyone knows link)', async() => {
+        const pageToFind = createdPages[2];
+        const grantedUser = createdUsers[1];
+
+        const page = await Page.findByIdAndViewer(pageToFind._id, grantedUser);
+        expect(page).to.be.not.null;
+        expect(page.path).to.equal(pageToFind.path);
+      });
+
+      it('should find page (just me)', async() => {
+        const pageToFind = createdPages[4];
+        const grantedUser = createdUsers[0];
+
+        const page = await Page.findByIdAndViewer(pageToFind._id, grantedUser);
+        expect(page).to.be.not.null;
+        expect(page.path).to.equal(pageToFind.path);
+      });
+
+      it('should not be found by grant (just me)', async() => {
+        const pageToFind = createdPages[4];
         const grantedUser = createdUsers[1];
 
         const page = await Page.findByIdAndViewer(pageToFind._id, grantedUser);
