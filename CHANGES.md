@@ -7,8 +7,17 @@ CHANGES
     * Introduced 3.3.0
 * Fix: Diff of revision contents doesn't appeared when notifing with slack
 * Fix: NPE occured on /admin/security when Crowi Classic Auth Mechanism is set
+* Fix: Coudn't render Timing Diagram with PlantUML
 * I18n: Cheatsheet for editor
 * I18n: Some admin pages
+* Support: Upgrade libs
+    * diff
+    * markdown-it-plantuml
+    * mongoose
+    * nodemailer
+    * mongoose-gridfs
+    * sinon
+    * sinon-chai
 
 ## 3.3.4
 
