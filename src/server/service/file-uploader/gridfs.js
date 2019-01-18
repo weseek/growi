@@ -82,7 +82,7 @@ module.exports = function(crowi) {
     }
 
     // return stream.Readable
-    return AttachmentFile.readById(attachmentFile.id);
+    return AttachmentFile.readById(attachmentFile._id);
   };
 
   return lib;
