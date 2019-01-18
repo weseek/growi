@@ -42,8 +42,9 @@ Features
 * **Features**
   * Create hierarchical pages with markdown
   * Simultaneously edit with multiple people by [HackMD(CodiMD)](https://hackmd.io/) integration
-  * Support Authentication with LDAP / Active Directory
-  * Slack Incoming Webhooks Integration
+  * Support Authentication with LDAP / Active Directory, OAuth
+  * SSO(Single Sign On) with SAML
+  * Slack/Mattermost, IFTTT Integration
   * [Miscellaneous features](https://github.com/weseek/growi/wiki/Additional-Features)
 * **[Docker Ready][dockerhub]**
 * **[Docker Compose Ready][docker-compose]**
@@ -58,7 +59,7 @@ Using Heroku
 ------------
 
 1. Go to https://heroku.com/deploy
-1. (Optional) Input INSTALL_PLUGINS to install plugins
+2. (Optional) Input INSTALL_PLUGINS to install plugins
 
 Using docker-compose
 ---------------------
@@ -157,7 +158,6 @@ Environment Variables
     * NODE_ENV: `production` OR `development`.
     * PORT: Server port. default: `3000`.
     * NO_CDN: If `true`, system doesn't use CDN, all resources will be downloaded from CDN when build client, and served by the GROWI Express server. default: `false`.
-    * APP_SITE_URL: Site URL. e.g. `https://example.com`, `https://example.com:8080`
     * ELASTICSEARCH_URI: URI to connect to Elasticearch.
     * REDIS_URI: URI to connect to Redis (use it as a session store instead of MongoDB).
     * PASSWORD_SEED: A password seed used by password hash generator.
@@ -176,6 +176,7 @@ Environment Variables
     * PLANTUML_URI: URI to connect to [PlantUML](http://plantuml.com/) server.
     * BLOCKDIAG_URI: URI to connect to [blockdiag](http://http://blockdiag.com/) server.
 * **Option (Overwritable in admin page)**
+    * APP_SITE_URL: Site URL. e.g. `https://example.com`, `https://example.com:8080`
     * OAUTH_GOOGLE_CLIENT_ID: Google API client id for OAuth login.
     * OAUTH_GOOGLE_CLIENT_SECRET: Google API client secret for OAuth login.
     * OAUTH_GITHUB_CLIENT_ID: GitHub API client id for OAuth login.
