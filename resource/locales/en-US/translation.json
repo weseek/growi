@@ -345,7 +345,7 @@
     "auth_mechanism": "authentication mechanism",
     "recommended": "Recommended",
     "username_email_password": "Username, Email and Password authentication",
-    "alert_siteUrl_is_not_set": "'Site URL' is NOT set. Define it from %s",
+    "alert_siteUrl_is_not_set": "'Site URL' is NOT set. Set it from the %s",
     "ldap_auth": "LDAP authentication",
     "saml_auth": "SAML authentication",
     "google_auth2": "Google OAuth authentication",
