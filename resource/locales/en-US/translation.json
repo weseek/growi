@@ -340,7 +340,7 @@
     "Port": "Port",
     "User": "User",
     "AWS settings": "AWS settings",
-    "AWS_access": "This is for AWS settings. If you complete AWS settings, file upload function, progile picture function etc will be enabled.",
+    "AWS_access": "This is for AWS settings. If you complete AWS settings, file upload function, profile picture function etc will be enabled.",
     "No_SMTP_setting": "If you do not have SMTP settings, e-mails will be sent via SES. You need to verify from e-mail address and production settings.",
     "change_setting": "Caution:if you change this setting not completed, you will not be able to access files you have uploaded so far.",
     "region": "Region",
