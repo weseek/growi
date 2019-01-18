@@ -37,6 +37,17 @@ module.exports = function(crowi) {
     return new aws.S3();
   }
 
+  function getFilePathOnStorage(attachment) {
+    if (attachment.filePath != null) {  // remains for backward compatibility for v3.3.4 or below
+      return attachment.filePath;
+    }
+
+    const pageId = attachment.page._id || attachment.page;
+    const filePath = urljoin('/attachment', pageId.toString(), attachment.fileName);
+
+    return filePath;
+  }
+
   lib.deleteFile = function(fileId, filePath) {
     const s3 = S3Factory();
     const awsConfig = getAwsConfig();
@@ -92,7 +103,7 @@ module.exports = function(crowi) {
     // construct url
     const awsConfig = getAwsConfig();
     const baseUrl = `https://${awsConfig.bucket}.s3.amazonaws.com`;
-    const url = urljoin(baseUrl, attachment.getFilePathOnStorage());
+    const url = urljoin(baseUrl, getFilePathOnStorage(attachment));
 
     let response;
     try {

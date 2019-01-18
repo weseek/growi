@@ -3,8 +3,6 @@ module.exports = function(crowi) {
   const mongoose = require('mongoose');
   const ObjectId = mongoose.Schema.Types.ObjectId;
 
-  const urljoin = require('url-join');
-
   const fileUploader = require('../service/file-uploader')(crowi);
 
   let attachmentSchema;
@@ -20,7 +18,7 @@ module.exports = function(crowi) {
   attachmentSchema = new mongoose.Schema({
     page: { type: ObjectId, ref: 'Page', index: true },
     creator: { type: ObjectId, ref: 'User', index: true  },
-    filePath: { type: String },   // DEPRECATED: remains for backward compatibility for v3.3.3 or below
+    filePath: { type: String },   // DEPRECATED: remains for backward compatibility for v3.3.5 or below
     fileName: { type: String, required: true },
     originalName: { type: String },
     fileFormat: { type: String, required: true },
@@ -35,17 +33,6 @@ module.exports = function(crowi) {
   attachmentSchema.virtual('downloadPathProxied').get(function() {
     return `/download/${this._id}`;
   });
-
-  attachmentSchema.methods.getFilePathOnStorage = function() {
-    if (this.filePath != null) {
-      return this.filePath;
-    }
-
-    const pageId = this.page._id || this.page;
-    const filePath = urljoin('/attachment', pageId.toString(), this.fileName);
-
-    return filePath;
-  };
 
   attachmentSchema.statics.create = async function(pageId, user, fileStream, originalName, fileFormat, fileSize) {
     const Attachment = this;

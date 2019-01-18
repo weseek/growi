@@ -8,7 +8,18 @@ module.exports = function(crowi) {
   'use strict';
 
   const lib = {};
-  const basePath = path.posix.join(crowi.publicDir, 'uploads'); // TODO: to configurable
+  const basePath = path.posix.join(crowi.publicDir, 'uploads');
+
+  function getFilePathOnStorage(attachment) {
+    if (attachment.filePath != null) {  // remains for backward compatibility for v3.3.5 or below
+      return attachment.filePath;
+    }
+
+    const pageId = attachment.page._id || attachment.page;
+    const filePath = path.posix.join(basePath, pageId.toString(), attachment.fileName);
+
+    return filePath;
+  }
 
   lib.deleteFile = function(fileId, filePath) {
     debug('File deletion: ' + filePath);
@@ -54,8 +65,7 @@ module.exports = function(crowi) {
    * @return {stream.Readable} readable stream
    */
   lib.findDeliveryFile = async function(attachment) {
-    const uploadDir = path.posix.join(crowi.publicDir, 'uploads');
-    const filePath = path.posix.join(uploadDir, attachment.getFilePathOnStorage());
+    const filePath = getFilePathOnStorage(attachment);
 
     // check file exists
     try {
