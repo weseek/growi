@@ -3,6 +3,8 @@ CHANGES
 
 ## 3.3.5-RC
 
+* Improvement: Site URL settings must be set
+* Improvement: Site URL settings can be set with environment variable
 * Fix: "Anyone with the link" ACL doesn't work correctly
     * Introduced 3.3.0
 * Fix: Related pages list of /admin/user-group-detail/xxx doesn't show anything
