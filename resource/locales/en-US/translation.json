@@ -287,7 +287,7 @@
     "Site Name": "Site name",
     "sitename_change": "You can change Site Name which is used for header and HTML title.",
     "header_content": "The contents entered here will be shown in the header etc.",
-    "Site URL": "This is for the site URL setting. If this setting is not done, the site URL automatically generated from the information of the HTTP request will be used, but setting is necessary to enable some functions such as SAML authentication and OAuth authentication.",
+    "Site URL": "This is for the site URL setting. If this setting is not done, some features don't work.",
     "siteurl_help": "Site full URL beginning from <code>http://</code> or <code>https://</code>.",
     "Confidential name": "Confidential name",
     "Default Language for new users": "Default Language for new users",
