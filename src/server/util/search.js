@@ -541,23 +541,22 @@ SearchClient.prototype.filterPagesByViewer = async function(query, user, userGro
 
   const grantConditions = [
     { term: { grant: GRANT_PUBLIC } },
+    { bool: {
+      must: [
+        { term: { grant: GRANT_RESTRICTED } },
+        { term: { granted_users: user._id.toString() } }
+      ]
+    } },
   ];
 
   if (showPagesRestrictedByOwner) {
     grantConditions.push(
-      { term: { grant: GRANT_RESTRICTED } },
       { term: { grant: GRANT_SPECIFIED } },
       { term: { grant: GRANT_OWNER } },
     );
   }
   else if (user != null) {
     grantConditions.push(
-      { bool: {
-        must: [
-          { term: { grant: GRANT_RESTRICTED } },
-          { term: { granted_users: user._id.toString() } }
-        ]
-      } },
       { bool: {
         must: [
           { term: { grant: GRANT_SPECIFIED } },

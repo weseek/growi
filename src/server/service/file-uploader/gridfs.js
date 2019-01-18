@@ -97,7 +97,7 @@ module.exports = function(crowi) {
 
   lib.getFileData = async function(filePath) {
     const file = await getFile(filePath);
-    const id = file.id;
+    const id = file._id;
     const contentType = file.contentType;
     const data = await readFileData(id);
     return {
