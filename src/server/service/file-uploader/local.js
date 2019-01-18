@@ -12,7 +12,7 @@ module.exports = function(crowi) {
 
   function getFilePathOnStorage(attachment) {
     if (attachment.filePath != null) {  // remains for backward compatibility for v3.3.5 or below
-      return attachment.filePath;
+      return path.posix.join(basePath, attachment.filePath);
     }
 
     const pageId = attachment.page._id || attachment.page;
