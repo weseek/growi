@@ -321,7 +321,7 @@
     "Site Name": "Site name",
     "sitename_change": "You can change Site Name which is used for header and HTML title.",
     "header_content": "The contents entered here will be shown in the header etc.",
-    "Site URL": "Site URL",
+    "Site URL": "This is for the site URL setting. If this setting is not done, some features don't work.",
     "siteurl_help": "Site full URL beginning from <code>http://</code> or <code>https://</code>.",
     "Confidential name": "Confidential name",
     "Default Language for new users": "Default Language for new users",
@@ -349,8 +349,8 @@
     "Enable plugin loading": "Enable plugin loading",
     "Load plugins": "Load plugins",
     "Enable": "Enable",
-    "Disable": "Disable"
-
+    "Disable": "Disable",
+    "Use env var if empty": "If the value in the database is empty, the value of the environment variable <code>%s</code> is used."
   },
   "security_setting": {
 		"Basic authentication": "Basic authentication",
@@ -379,7 +379,7 @@
     "auth_mechanism": "authentication mechanism",
     "recommended": "Recommended",
     "username_email_password": "Username, Email and Password authentication",
-    "alert_siteUrl_is_not_set": "'Site URL' is NOT set. Define it from %s",
+    "alert_siteUrl_is_not_set": "'Site URL' is NOT set. Set it from the %s",
     "ldap_auth": "LDAP authentication",
     "saml_auth": "SAML authentication",
     "google_auth2": "Google OAuth authentication",

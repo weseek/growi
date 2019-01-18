@@ -49,19 +49,6 @@
         </div>
 
         <div class="form-group">
-          <label for="settingForm[app:siteUrl]" class="col-xs-3 control-label">{{ t('app_setting.Site URL') }}</label>
-          <div class="col-xs-6">
-            <input class="form-control"
-                   id="settingForm[app:siteUrl]"
-                   type="text"
-                   name="settingForm[app:siteUrl]"
-                   value="{{ settingForm['app:siteUrl'] | default('') }}"
-                   placeholder="{{ t('eg') }} https://my.growi.org">
-            <p class="help-block">{{ t("app_setting.siteurl_help") }}</p>
-          </div>
-        </div>
-
-        <div class="form-group">
           <label for="settingForm[app:confidential]" class="col-xs-3 control-label">{{ t('app_setting.Confidential name') }}</label>
           <div class="col-xs-6">
             <input class="form-control"
@@ -126,6 +113,54 @@
         </div>
       </fieldset>
       </form>
+
+      <form action="/_api/admin/settings/siteUrl" method="post" class="form-horizontal" id="siteUrlSettingForm" role="form">
+        <fieldset>
+          <legend>{{ t('Site URL settings') }}</legend>
+          <p class="well">{{ t('app_setting.Site URL') }}</p>
+
+          <div class="col-xs-offset-3">
+            <table class="table settings-table">
+              <colgroup>
+                <col class="from-db">
+                <col class="from-env-vars">
+              </colgroup>
+              <thead>
+              <tr><th>Database</th><th>Environment variables</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <input class="form-control"
+                           type="text"
+                           name="settingForm[app:siteUrl]"
+                           value="{{ getConfigFromDB('crowi', 'app:siteUrl') | default('') }}"
+                           placeholder="e.g. https://my.growi.org">
+                    <p class="help-block">{{ t("app_setting.siteurl_help") }}</p>
+                  </td>
+                  <td>
+                    <input class="form-control"
+                           type="text"
+                           value="{{ getConfigFromEnvVars('crowi', 'app:siteUrl') | default('') }}"
+                           readonly>
+                    <p class="help-block">
+                      {{ t("app_setting.Use env var if empty", "APP_SITE_URL") }}
+                    </p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="form-group">
+            <div class="col-xs-offset-3 col-xs-6">
+              <input type="hidden" name="_csrf" value="{{ csrf() }}">
+              <button type="submit" class="btn btn-primary">{{ t('app_setting.Update') }}</button>
+            </div>
+          </div>
+        </fieldset>
+      </form>
+
 
       <form action="/_api/admin/settings/mail" method="post" class="form-horizontal" id="mailSettingForm" role="form">
       <fieldset>
@@ -298,7 +333,7 @@
   </div>
 
   <script>
-    $('#appSettingForm, #mailSettingForm, #awsSettingForm, #pluginSettingForm').each(function() {
+    $('#appSettingForm, #siteUrlSettingForm, #mailSettingForm, #awsSettingForm, #pluginSettingForm').each(function() {
       $(this).submit(function()
       {
         function showMessage(formId, msg, status) {
@@ -346,6 +381,32 @@
       });
     });
 
+    /**
+     * The following script sets the class name 'unused' to the cell in from-env-vars column
+     * when the value of the corresponding cell from the database is not empty.
+     * It is used to indicate that the system does not use a value from the environment variables by setting a css style.
+     *
+     * TODO The following script is duplicated from saml.html. It is desirable to integrate those in the future.
+     */
+    $('.settings-table tbody tr').each(function(_, element) {
+      const inputElemFromDB      = $('td:nth-of-type(1) input[type="text"], td:nth-of-type(1) textarea', element);
+      const inputElemFromEnvVars = $('td:nth-of-type(2) input[type="text"], td:nth-of-type(2) textarea', element);
+
+      // initialize
+      addClassToUnusedInputElemFromEnvVars(inputElemFromDB, inputElemFromEnvVars);
+
+      // set keyup event handler
+      inputElemFromDB.keyup(function () { addClassToUnusedInputElemFromEnvVars(inputElemFromDB, inputElemFromEnvVars) });
+    });
+
+    function addClassToUnusedInputElemFromEnvVars(inputElemFromDB, inputElemFromEnvVars) {
+      if (inputElemFromDB.val() === '') {
+        inputElemFromEnvVars.parent().removeClass('unused');
+      }
+      else {
+        inputElemFromEnvVars.parent().addClass('unused');
+      }
+    };
   </script>
 
 </div>
