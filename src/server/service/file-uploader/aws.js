@@ -1,4 +1,3 @@
-const debug = require('debug')('growi:service:fileUploaderAws');
 const logger = require('@alias/logger')('growi:service:fileUploaderAws');
 
 const axios = require('axios');
@@ -38,12 +37,14 @@ module.exports = function(crowi) {
   }
 
   function getFilePathOnStorage(attachment) {
-    if (attachment.filePath != null) {  // remains for backward compatibility for v3.3.4 or below
+    if (attachment.filePath != null) {  // backward compatibility for v3.3.5 or below
       return attachment.filePath;
     }
 
-    const pageId = attachment.page._id || attachment.page;
-    const filePath = urljoin('/attachment', pageId.toString(), attachment.fileName);
+    const dirName = (attachment.page != null)
+      ? 'attachment'
+      : 'user';
+    const filePath = urljoin(dirName, attachment.fileName);
 
     return filePath;
   }
@@ -60,7 +61,7 @@ module.exports = function(crowi) {
     return new Promise((resolve, reject) => {
       s3.deleteObject(params, (err, data) => {
         if (err) {
-          debug('Failed to delete object from s3', err);
+          logger.debug('Failed to delete object from s3', err);
           return reject(err);
         }
 
@@ -72,25 +73,22 @@ module.exports = function(crowi) {
     });
   };
 
-  lib.uploadFile = function(filePath, contentType, fileStream, options) {
+  lib.uploadFile = function(fileStream, attachment) {
+    logger.debug(`File uploading: fileName=${attachment.fileName}`);
+
     const s3 = S3Factory();
     const awsConfig = getAwsConfig();
 
-    var params = {Bucket: awsConfig.bucket};
-    params.ContentType = contentType;
-    params.Key = filePath;
-    params.Body = fileStream;
-    params.ACL = 'public-read';
+    const filePath = getFilePathOnStorage(attachment);
+    const params = {
+      Bucket: awsConfig.bucket,
+      ContentType: attachment.fileFormat,
+      Key: filePath,
+      Body: fileStream,
+      ACL: 'public-read',
+    };
 
-    return new Promise(function(resolve, reject) {
-      s3.putObject(params, function(err, data) {
-        if (err) {
-          return reject(err);
-        }
-
-        return resolve(data);
-      });
-    });
+    return s3.upload(params).promise();
   };
 
   /**

@@ -1,4 +1,3 @@
-const debug = require('debug')('growi:service:fileUploaderGridfs');
 const logger = require('@alias/logger')('growi:service:fileUploaderGridfs');
 const mongoose = require('mongoose');
 const util = require('util');
@@ -24,7 +23,7 @@ module.exports = function(crowi) {
 
   // delete a file
   lib.deleteFile = async function(fileId, filePath) {
-    debug('File deletion: ' + fileId);
+    logger.debug('File deletion: ' + fileId);
     const file = await getFile(filePath);
     const id = file.id;
     AttachmentFile.unlinkById(id, function(error, unlinkedAttachment) {
@@ -62,10 +61,15 @@ module.exports = function(crowi) {
     return (+process.env.MONGO_GRIDFS_TOTAL_LIMIT > usingFilesSize + +uploadFileSize);
   };
 
-  lib.uploadFile = async function(fileStream, fileName, contentType) {
-    logger.debug(`File uploading: fileName=${fileName}`);
+  lib.uploadFile = async function(fileStream, attachment) {
+    logger.debug(`File uploading: fileName=${attachment.fileName}`);
 
-    AttachmentFile.promisifiedWrite({ filename: fileName, contentType }, fileStream);
+    return AttachmentFile.promisifiedWrite(
+      {
+        filename: attachment.fileName,
+        contentType: attachment.fileFormat
+      },
+      fileStream);
   };
 
   /**

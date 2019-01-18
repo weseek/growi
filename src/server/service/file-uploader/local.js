@@ -1,8 +1,9 @@
-const debug = require('debug')('growi:service:fileUploaderLocal');
+const logger = require('@alias/logger')('growi:service:fileUploaderLocal');
 
 const fs = require('fs');
 const path = require('path');
 const mkdir = require('mkdirp');
+const streamToPromise = require('stream-to-promise');
 
 module.exports = function(crowi) {
   'use strict';
@@ -11,18 +12,20 @@ module.exports = function(crowi) {
   const basePath = path.posix.join(crowi.publicDir, 'uploads');
 
   function getFilePathOnStorage(attachment) {
-    if (attachment.filePath != null) {  // remains for backward compatibility for v3.3.5 or below
-      return path.posix.join(basePath, attachment.filePath);
+    if (attachment.filePath != null) {  // backward compatibility for v3.3.5 or below
+      return attachment.filePath;
     }
 
-    const pageId = attachment.page._id || attachment.page;
-    const filePath = path.posix.join(basePath, pageId.toString(), attachment.fileName);
+    const dirName = (attachment.page != null)
+      ? 'attachment'
+      : 'user';
+    const filePath = path.posix.join(basePath, dirName, attachment.fileName);
 
     return filePath;
   }
 
   lib.deleteFile = function(fileId, filePath) {
-    debug('File deletion: ' + filePath);
+    logger.debug('File deletion: ' + filePath);
     return new Promise(function(resolve, reject) {
       fs.unlink(path.posix.join(basePath, filePath), function(err) {
         if (err) {
@@ -34,28 +37,17 @@ module.exports = function(crowi) {
     });
   };
 
-  lib.uploadFile = function(filePath, contentType, fileStream, options) {
-    debug('File uploading: ' + filePath);
-    return new Promise(function(resolve, reject) {
-      var localFilePath = path.posix.join(basePath, filePath)
-        , dirpath = path.posix.dirname(localFilePath);
+  lib.uploadFile = async function(fileStream, attachment) {
+    logger.debug(`File uploading: fileName=${attachment.fileName}`);
 
-      mkdir(dirpath, function(err) {
-        if (err) {
-          return reject(err);
-        }
+    const filePath = getFilePathOnStorage(attachment);
+    const dirpath = path.posix.dirname(filePath);
 
-        var writer = fs.createWriteStream(localFilePath);
+    // mkdir -p
+    mkdir.sync(dirpath);
 
-        writer.on('error', function(err) {
-          reject(err);
-        }).on('finish', function() {
-          resolve();
-        });
-
-        fileStream.pipe(writer);
-      });
-    });
+    const stream = fileStream.pipe(fs.createWriteStream(filePath));
+    return streamToPromise(stream);
   };
 
   /**

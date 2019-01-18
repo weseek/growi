@@ -1,8 +1,11 @@
-module.exports = function(crowi) {
-  const debug = require('debug')('growi:models:attachment');
-  const mongoose = require('mongoose');
-  const ObjectId = mongoose.Schema.Types.ObjectId;
+const debug = require('debug')('growi:models:attachment');
+const logger = require('@alias/logger')('growi:models:attachment');
+const path = require('path');
 
+const mongoose = require('mongoose');
+const ObjectId = mongoose.Schema.Types.ObjectId;
+
+module.exports = function(crowi) {
   const fileUploader = require('../service/file-uploader')(crowi);
 
   let attachmentSchema;
@@ -37,10 +40,11 @@ module.exports = function(crowi) {
   attachmentSchema.statics.create = async function(pageId, user, fileStream, originalName, fileFormat, fileSize) {
     const Attachment = this;
 
-    const fileName = generateFileHash(originalName);
-
-    // upload file
-    await fileUploader.uploadFile(fileStream, fileName, fileFormat);
+    const extname = path.extname(originalName);
+    let fileName = generateFileHash(originalName);
+    if (extname.length > 1) {   // ignore if empty or '.' only
+      fileName = `${fileName}${extname}`;
+    }
 
     let attachment = new Attachment();
     attachment.page = pageId;
@@ -51,7 +55,12 @@ module.exports = function(crowi) {
     attachment.fileSize = fileSize;
     attachment.createdAt = Date.now();
 
-    return await attachment.save();
+    // upload file
+    await fileUploader.uploadFile(fileStream, attachment);
+    // save attachment
+    attachment = await attachment.save();
+
+    return attachment;
   };
 
   attachmentSchema.statics.removeAttachmentsByPageId = function(pageId) {
