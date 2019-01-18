@@ -12,6 +12,7 @@ module.exports = {
   },
   admin: {
     app: require('./admin/app'),
+    siteUrl: require('./admin/siteUrl'),
     mail: require('./admin/mail'),
     aws: require('./admin/aws'),
     importerEsa: require('./admin/importerEsa'),

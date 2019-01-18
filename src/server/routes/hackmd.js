@@ -39,13 +39,7 @@ module.exports = function(crowi, app) {
       agentScriptContentTpl = swig.compileFile(agentScriptPath);
     }
 
-    let origin = `${req.protocol}://${req.get('host')}`;
-
-    // use config.crowi['app:siteUrl:fixed'] when exist req.headers['x-forwarded-proto'].
-    // refs: lib/crowi/express-init.js
-    if (config.crowi && config.crowi['app:siteUrl:fixed']) {
-      origin = config.crowi['app:siteUrl:fixed'];
-    }
+    const origin = crowi.configManager.getSiteUrl();
 
     // generate definitions to replace
     const definitions = {

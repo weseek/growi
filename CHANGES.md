@@ -1,12 +1,36 @@
 CHANGES
 ========
 
-## 3.3.4-RC
+## 3.3.5-RC
 
+* Improvement: Site URL settings must be set
+* Improvement: Site URL settings can be set with environment variable
+* Fix: "Anyone with the link" ACL doesn't work correctly
+    * Introduced 3.3.0
+* Fix: Related pages list of /admin/user-group-detail/xxx doesn't show anything
+    * Introduced 3.3.0
+* Fix: Diff of revision contents doesn't appeared when notifing with slack
+* Fix: NPE occured on /admin/security when Crowi Classic Auth Mechanism is set
+* Fix: Coudn't render Timing Diagram with PlantUML
+* I18n: Cheatsheet for editor
+* I18n: Some admin pages
+* Support: Upgrade libs
+    * diff
+    * markdown-it-plantuml
+    * mongoose
+    * nodemailer
+    * mongoose-gridfs
+    * sinon
+    * sinon-chai
+
+## 3.3.4
+
+* Improvement: SAML configuration with environment variables
 * Improvement: Upload file with pasting from clipboard
 * Fix: `/_api/revisions.get` doesn't populate author data correctly
 * Fix: Wrong OAuth callback url are shown at admin page
 * Fix: Connecting to MongoDB failed when processing migration
+* Support: Get ready to use new config management system
 
 ## 3.3.3
 

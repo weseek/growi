@@ -120,7 +120,6 @@ module.exports = function(crowi, app) {
     if (userData != null) {
       renderVars.pageUser = userData;
       renderVars.bookmarkList = await Bookmark.findByUser(userData, {limit: 10, populatePage: true, requestUser: requestUser});
-      renderVars.createdList = await Page.findListByCreator(userData, {limit: 10}, requestUser);
     }
   }
 
@@ -622,9 +621,9 @@ module.exports = function(crowi, app) {
       options.grantUserGroupId = grantUserGroupId;
     }
 
-    try {
       const Revision = crowi.model('Revision');
       const previousRevision = await Revision.findById(revisionId);
+    try {
       page = await Page.updatePage(page, pageBody, previousRevision.body, req.user, options);
     }
     catch (err) {
@@ -651,8 +650,6 @@ module.exports = function(crowi, app) {
 
     // user notification
     if (isSlackEnabled && slackChannels != null) {
-      const Revision = crowi.model('Revision');
-      const previousRevision = await Revision.findById(page.revision);
       await notifyToSlackByUser(page, req.user, slackChannels, 'update', previousRevision);
     }
   };
