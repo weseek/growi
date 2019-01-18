@@ -117,7 +117,10 @@
       <form action="/_api/admin/settings/siteUrl" method="post" class="form-horizontal" id="siteUrlSettingForm" role="form">
         <fieldset>
           <legend>{{ t('Site URL settings') }}</legend>
-          <p class="well">{{ t('app_setting.Site URL') }}</p>
+          <p class="well">{{ t('app_setting.Site URL desc') }}</p>
+          {% if !getConfig('crowi', 'app:siteUrl') %}
+            <p class="alert alert-danger"><i class="icon-exclamation"></i> {{ t('app_setting.Site URL warn') }}</p>
+          {% endif %}
 
           <div class="col-xs-offset-3">
             <table class="table settings-table">
