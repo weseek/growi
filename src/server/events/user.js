@@ -14,7 +14,7 @@ UserEvent.prototype.onActivated = async function(user) {
 
   const userPagePath = Page.getUserPagePath(user);
 
-  const page = await Page.findByPathAndViewer(userPagePath, user);
+  const page = await Page.findByPath(userPagePath, user);
 
   if (page == null) {
     const body = `# ${user.username}\nThis is ${user.username}'s page`;

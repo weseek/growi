@@ -42,25 +42,26 @@
       <p>
         <a class="btn btn-default" href="/admin/users">
           <i class="icon-fw ti-arrow-left" aria-hidden="true"></i>
-          ユーザー管理に戻る
+          {{ t('user_management.back_to_user_management') }}
         </a>
       </p>
 
-      <h2>外部アカウント一覧</h2>
+      <h2>{{ t('user_management.external_account_list') }}</h2>
 
       <table class="table table-bordered table-user-list">
         <thead>
           <tr>
-            <th width="120px">Authentication Provider</th>
+            <th width="120px">{{ t('user_management.authentication_provider') }}</th>
             <th><code>accountId</code></th>
-            <th>関連付けられているユーザーの <code>username</code></th>
+            <th>{{ t('user_management.related_username', 'username') }}</th>
+
             <th>
-              パスワード設定
+              {{ t('user_management.password_setting') }}
               <a class="text-muted"
                   data-toggle="popover" data-placement="top"
                   data-trigger="hover focus" tabindex="0" role="button" {# dismiss settings #}
                   data-animation="false" data-html="true"
-                  data-content="<small>関連付けられているユーザーがパスワードを設定しているかどうかを表示します</small>">
+                  data-content="<small>{{ t('user_management.password_setting_help') }}</small>">
                 <small>
                   <i class="icon-question" aria-hidden="true"></i>
                 </small>
@@ -83,11 +84,11 @@
             <td>
               {% if account.user.password != null %}
               <span class="label label-info">
-                設定済み
+                {{ t('user_management.set') }}
               </span>
               {% else %}
               <span class="label label-warning">
-                未設定
+                {{ t('user_management.unset') }}
               </span>
               {% endif %}
             </td>
@@ -106,7 +107,7 @@
                   <li>
                     <a href="javascript:form_remove_{{ loop.index }}.submit()">
                       <i class="icon-fw icon-fire text-danger"></i>
-                      削除する
+                      {{ t('Delete') }}
                     </a>
                   </li>
                 </ul>{# end of .dropdown-menu #}

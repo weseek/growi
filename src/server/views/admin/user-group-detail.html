@@ -234,8 +234,10 @@
 
       <legend class="m-t-20">ページ一覧</legend>
 
-      {% if pageGroupRelations.length == 0 %}<p>グループが閲覧権限を保有するページはありません</p>{% endif %}
-      {% include '../widget/page_list.html' with { pages: pageGroupRelations, pagePropertyName: 'targetPage' } %}
+      <div class="page-list">
+        {% if relatedPages.length == 0 %}<p>グループが閲覧権限を保有するページはありません</p>{% endif %}
+        {% include '../widget/page_list.html' with { pages: relatedPages } %}
+      </div>
 
     </div>
   </div>
