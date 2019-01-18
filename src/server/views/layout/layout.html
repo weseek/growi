@@ -117,7 +117,7 @@
 <div id="wrapper">
   <!-- Navigation -->
   {% block layout_head_nav %}
-  <nav class="navbar navbar-default navbar-static-top m-b-0">
+  <nav class="navbar navbar-default navbar-static-top mb-0">
     <div class="navbar-header">
       <a class="navbar-toggle hidden-sm hidden-md hidden-lg " href="javascript:void(0)" data-toggle="collapse" data-target=".navbar-collapse">
         <i class="ti-menu"></i>
@@ -194,6 +194,12 @@
   </nav>
   {% include '../modal/create_page.html' %}
   {% endblock  %} {# layout_head_nav #}
+
+  {% if !getConfig('crowi', 'app:siteUrl') %}
+  <div class="alert alert-warning m-b-0">
+    {{ t("security_setting.alert_siteUrl_is_not_set", '<a href="/admin/app">' + t('App settings') + '<i class="icon-login"></i></a>') }}
+  </div>
+  {% endif %}
 
   {% block sidebar %}
   <!-- Left navbar-header -->

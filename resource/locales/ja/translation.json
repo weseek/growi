@@ -335,7 +335,7 @@
     "Site Name": "サイト名",
     "sitename_change": "ヘッダーや HTML タイトルに使用されるサイト名を変更できます。",
     "header_content": "ここに入力した内容は、ヘッダー等に表示されます。",
-    "Site URL": "サイトURLを明示的に指定します。この設定が行われていない場合はサイトURLがHTTPリクエストの情報から自動的生成されたものが使用されますが、SAML認証やOAuth認証等の一部機能を有効にするには設定が必要です。",
+    "Site URL": "サイトURLを設定します。この設定が行われていない場合は一部機能が動作しません。",
     "siteurl_help": "<code>http://</code> または <code>https://</code> から始まるサイトのURL",
     "Confidential name": "コンフィデンシャル表示",
     "Default Language for new users": "新規ユーザーのデフォルト設定言語",
