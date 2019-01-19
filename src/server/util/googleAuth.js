@@ -2,12 +2,13 @@
  * googleAuth utility
  */
 
-module.exports = function(config) {
+module.exports = function(crowi) {
   'use strict';
 
   const { GoogleApis } = require('googleapis');
   var google = new GoogleApis()
     , debug = require('debug')('growi:lib:googleAuth')
+    , config = crowi.getConfig()
     , lib = {}
     ;
 
@@ -20,7 +21,7 @@ module.exports = function(config) {
   }
 
   lib.createAuthUrl = function(req, callback) {
-    var callbackUrl = config.crowi['app:siteUrl:fixed'] + '/google/callback';
+    var callbackUrl = crowi.configManager.getSiteUrl() + '/google/callback';
     var oauth2Client = createOauth2Client(callbackUrl);
     google.options({auth: oauth2Client});
 
@@ -33,7 +34,7 @@ module.exports = function(config) {
   };
 
   lib.handleCallback = function(req, callback) {
-    var callbackUrl = config.crowi['app:siteUrl:fixed'] + '/google/callback';
+    var callbackUrl = crowi.configManager.getSiteUrl() + '/google/callback';
     var oauth2Client = createOauth2Client(callbackUrl);
     google.options({auth: oauth2Client});
 

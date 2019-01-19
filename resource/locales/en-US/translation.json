@@ -321,7 +321,8 @@
     "Site Name": "Site name",
     "sitename_change": "You can change Site Name which is used for header and HTML title.",
     "header_content": "The contents entered here will be shown in the header etc.",
-    "Site URL": "Site URL",
+    "Site URL desc": "This is for the site URL setting.",
+    "Site URL warn": "Some features don't work because the site URL is not set.",
     "siteurl_help": "Site full URL beginning from <code>http://</code> or <code>https://</code>.",
     "Confidential name": "Confidential name",
     "Default Language for new users": "Default Language for new users",
@@ -340,7 +341,7 @@
     "Port": "Port",
     "User": "User",
     "AWS settings": "AWS settings",
-    "AWS_access": "This is for AWS settings. If you complete AWS settings, file upload function, progile picture function etc will be enabled.",
+    "AWS_access": "This is for AWS settings. If you complete AWS settings, file upload function, profile picture function etc will be enabled.",
     "No_SMTP_setting": "If you do not have SMTP settings, e-mails will be sent via SES. You need to verify from e-mail address and production settings.",
     "change_setting": "Caution:if you change this setting not completed, you will not be able to access files you have uploaded so far.",
     "region": "Region",
@@ -349,8 +350,8 @@
     "Enable plugin loading": "Enable plugin loading",
     "Load plugins": "Load plugins",
     "Enable": "Enable",
-    "Disable": "Disable"
-
+    "Disable": "Disable",
+    "Use env var if empty": "If the value in the database is empty, the value of the environment variable <code>%s</code> is used."
   },
   "security_setting": {
 		"Basic authentication": "Basic authentication",
@@ -379,7 +380,7 @@
     "auth_mechanism": "authentication mechanism",
     "recommended": "Recommended",
     "username_email_password": "Username, Email and Password authentication",
-    "alert_siteUrl_is_not_set": "'Site URL' is NOT set. Define it from %s",
+    "alert_siteUrl_is_not_set": "'Site URL' is NOT set. Set it from the %s",
     "ldap_auth": "LDAP authentication",
     "saml_auth": "SAML authentication",
     "google_auth2": "Google OAuth authentication",

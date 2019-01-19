@@ -92,8 +92,7 @@ module.exports = function(crowi, app) {
       //   1. this is buggy (doesn't work on Win)
       //   2. ensure backward compatibility of data
 
-      // var config = crowi.getConfig();
-      // var baseUrl = (config.crowi['app:siteUrl:fixed'] || '');
+      // var baseUrl = crowi.configManager.getSiteUrl();
       return res.json(ApiResponse.success({
         attachments: attachments.map(at => {
           const fileUrl = at.fileUrl;
