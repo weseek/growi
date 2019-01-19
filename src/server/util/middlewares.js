@@ -1,4 +1,5 @@
 const debug = require('debug')('growi:lib:middlewares');
+const logger = require('@alias/logger')('growi:lib:middlewares');
 const md5 = require('md5');
 const entities = require('entities');
 
@@ -62,7 +63,7 @@ exports.csrfVerify = function(crowi, app) {
       return next();
     }
 
-    debug('csrf verification failed. return 403', csrfKey, token);
+    logger.warn('csrf verification failed. return 403', csrfKey, token);
     return res.sendStatus(403);
   };
 };
