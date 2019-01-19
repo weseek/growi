@@ -172,8 +172,9 @@
           </label>
           <div class="col-sm-8">
             {% if isUploadable() %}
-            <form action="/_api/me/picture/upload" id="pictureUploadForm" method="post" class="form-horizontal" role="form" enctype="multipart/form-data">
-              <input name="userPicture" type="file" accept="image/*">
+            <form action="/_api/attachments.uploadProfileImage" id="pictureUploadForm" method="post" class="form-horizontal" role="form">
+              <input type="hidden" name="_csrf" value="{{ csrf() }}">
+              <input type="file" name="profileImage" accept="image/*">
               <div id="pictureUploadFormProgress" class="d-flex align-items-center">
               </div>
             </form>
@@ -196,39 +197,46 @@
   </div><!-- /.form-box -->
 
   <script>
-  $(function()
-  {
-    $("#pictureUploadForm input[name=userPicture]").on('change', function(){
-      var $form = $('#pictureUploadForm');
-      var fd = new FormData($form[0]);
+    $("#pictureUploadForm input[name=profileImage]").on('change', function(){
       if ($(this).val() == '') {
         return false;
       }
+
+      var $form = $('#pictureUploadForm');
+      var formData = new FormData();
+      formData.append('file', this.files[0]);
+      formData.append('_csrf', document.getElementsByName("_csrf")[0].value);
 
       $('#pictureUploadFormProgress').html('<div class="speeding-wheel-sm m-r-5"></div> アップロード中...');
       $.ajax($form.attr("action"), {
         type: 'post',
         processData: false,
         contentType: false,
-        data: fd,
-        dataType: 'json',
-        success: function(data){
-          if (data.status) {
-            $('#settingUserPicture').attr('src', data.url + '?time=' + (new Date()));
-            $('#pictureUploadFormMessage')
-              .addClass('alert alert-success')
-              .html('変更しました');
-          } else {
-            $('#pictureUploadFormMessage')
-              .addClass('alert alert-danger')
-              .html('変更中にエラーが発生しました。');
-          }
-          $('#pictureUploadFormProgress').html('');
+        data: formData
+      })
+      .then(function(data) {
+        if (data.ok) {
+          var attachment = data.attachment;
+          $('#settingUserPicture').attr('src', attachment.filePathProxied + '?time=' + (new Date()));
+          $('#pictureUploadFormMessage')
+            .addClass('alert alert-success')
+            .html('変更しました');
         }
+        else {
+          throw new Error('statis is invalid');
+        }
+      })
+      .catch(function(err) {
+        $('#pictureUploadFormMessage')
+          .addClass('alert alert-danger')
+          .html('変更中にエラーが発生しました。');
+      })
+      // finally
+      .then(function() {
+        $('#pictureUploadFormProgress').html('');
       });
       return false;
     });
-  });
   </script>
 
   {% if googleLoginEnabled() %}

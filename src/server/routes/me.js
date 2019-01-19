@@ -16,66 +16,6 @@ module.exports = function(crowi, app) {
 
   actions.api = api;
 
-  api.uploadPicture = function(req, res) {
-    var fileUploader = require('../service/file-uploader')(crowi, app);
-    //var storagePlugin = new pluginService('storage');
-    //var storage = require('../service/storage').StorageService(config);
-
-    var tmpFile = req.file || null;
-    if (!tmpFile) {
-      return res.json({
-        'status': false,
-        'message': 'File type error.'
-      });
-    }
-
-    var tmpPath = tmpFile.path;
-    var filePath = User.createUserPictureFilePath(req.user, tmpFile.filename + tmpFile.originalname);
-    var acceptableFileType = /image\/.+/;
-
-    if (!tmpFile.mimetype.match(acceptableFileType)) {
-      return res.json({
-        'status': false,
-        'message': 'File type error. Only image files is allowed to set as user picture.',
-      });
-    }
-
-    //debug('tmpFile Is', tmpFile, tmpFile.constructor, tmpFile.prototype);
-    //var imageUrl = storage.writeSync(storage.tofs(tmpFile), filePath, {mime: tmpFile.mimetype});
-    //return return res.json({
-    //  'status': true,
-    //  'url': imageUrl,
-    //  'message': '',
-    //});
-    var tmpFileStream = fs.createReadStream(tmpPath, {flags: 'r', encoding: null, fd: null, mode: '0666', autoClose: true });
-
-    fileUploader.uploadFile(filePath, tmpFile.mimetype, tmpFileStream, {})
-    .then(function(data) {
-      var imageUrl = fileUploader.generateUrl(filePath);
-      req.user.updateImage(imageUrl, function(err, data) {
-        fs.unlink(tmpPath, function(err) {
-          // エラー自体は無視
-          if (err) {
-            debug('Error while deleting tmp file.', err);
-          }
-
-          return res.json({
-            'status': true,
-            'url': imageUrl,
-            'message': '',
-          });
-        });
-      });
-    }).catch(function(err) {
-      debug('Uploading error', err);
-
-      return res.json({
-        'status': false,
-        'message': 'Error while uploading to ',
-      });
-    });
-  };
-
   /**
    * retrieve user-group-relation documents
    * @param {object} req

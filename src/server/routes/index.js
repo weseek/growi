@@ -184,7 +184,6 @@ module.exports = function(crowi, app) {
   app.get( '/_api/search'             , accessTokenParser , loginRequired(crowi, app, false) , search.api.search);
 
   app.get( '/_api/check_username'           , user.api.checkUsername);
-  app.post('/_api/me/picture/upload'        , loginRequired(crowi, app) , uploads.single('userPicture'), me.api.uploadPicture);
   app.get( '/_api/me/user-group-relations'  , accessTokenParser , loginRequired(crowi, app) , me.api.userGroupRelations);
   app.get( '/_api/user/bookmarks'           , loginRequired(crowi, app, false) , user.api.bookmarks);
 
@@ -212,9 +211,10 @@ module.exports = function(crowi, app) {
   app.post('/_api/likes.add'          , accessTokenParser , loginRequired(crowi, app) , csrf, page.api.like);
   app.post('/_api/likes.remove'       , accessTokenParser , loginRequired(crowi, app) , csrf, page.api.unlike);
   app.get( '/_api/attachments.list'   , accessTokenParser , loginRequired(crowi, app, false) , attachment.api.list);
-  app.post('/_api/attachments.add'    , uploads.single('file'), accessTokenParser, loginRequired(crowi, app) ,csrf, attachment.api.add);
+  app.post('/_api/attachments.add'                  , uploads.single('file'), accessTokenParser, loginRequired(crowi, app) ,csrf, attachment.api.add);
+  app.post('/_api/attachments.uploadProfileImage'   , uploads.single('file'), accessTokenParser, loginRequired(crowi, app) ,csrf, attachment.api.uploadProfileImage);
   app.post('/_api/attachments.remove' , accessTokenParser , loginRequired(crowi, app) , csrf, attachment.api.remove);
-  app.get( '/_api/attachments.limit' , accessTokenParser , loginRequired(crowi, app) , csrf, attachment.api.limit);
+  app.get( '/_api/attachments.limit'  , accessTokenParser , loginRequired(crowi, app) , csrf, attachment.api.limit);
 
   app.get( '/_api/revisions.get'      , accessTokenParser , loginRequired(crowi, app, false) , revision.api.get);
   app.get( '/_api/revisions.ids'      , accessTokenParser , loginRequired(crowi, app, false) , revision.api.ids);

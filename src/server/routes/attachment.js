@@ -57,6 +57,29 @@ module.exports = function(crowi, app) {
     }
   }
 
+  async function createAttachment(file, user, pageId = null) {
+    // check capacity
+    const isUploadable = await fileUploader.checkCapacity(file.size);
+    if (!isUploadable) {
+      throw new Error('File storage reaches limit');
+    }
+
+    const fileStream = fs.createReadStream(file.path, {flags: 'r', encoding: null, fd: null, mode: '0666', autoClose: true });
+
+    // create an Attachment document and upload file
+    let attachment;
+    try {
+      attachment = await Attachment.create(pageId, user, fileStream, file.originalname, file.mimetype, file.size);
+    }
+    catch (err) {
+      // delete temporary file
+      fs.unlink(file.path, function(err) { if (err) { logger.error('Error while deleting tmp file.') } });
+      throw err;
+    }
+
+    return attachment;
+  }
+
 
   const actions = {};
   const api = {};
@@ -166,7 +189,7 @@ module.exports = function(crowi, app) {
    * @apiParam {File} file
    */
   api.add = async function(req, res) {
-    const pageId = req.body.page_id || null;
+    let pageId = req.body.page_id || null;
     const pagePath = decodeURIComponent(req.body.path) || null;
     let pageCreated = false;
 
@@ -180,43 +203,69 @@ module.exports = function(crowi, app) {
 
     const file = req.file;
 
-    // check capacity
-    const isUploadable = await fileUploader.checkCapacity(file.size);
-    if (!isUploadable) {
-      return res.json(ApiResponse.error('MongoDB for uploading files reaches limit'));
-    }
-
     // TODO for GC-1359: consider restriction
     let page;
     if (pageId == null) {
-      debug('Create page before file upload');
+      logger.debug('Create page before file upload');
+
       page = await Page.create(path, '# '  + path, req.user, {grant: Page.GRANT_OWNER});
       pageCreated = true;
+      pageId = page._id;
     }
     else {
       page = await Page.findById(pageId);
     }
 
-    const fileStream = fs.createReadStream(file.path, {flags: 'r', encoding: null, fd: null, mode: '0666', autoClose: true });
-
-    // create an Attachment document and upload file
     let attachment;
     try {
-      attachment = await Attachment.create(pageId, req.user, fileStream, file.originalname, file.mimetype, file.size);
+      attachment = await createAttachment(file, req.user, pageId);
     }
     catch (err) {
       logger.error(err);
-
-      // delete anyway
-      fs.unlink(file.path, function(err) { if (err) { logger.error('Error while deleting tmp file.') } });
-
-      return res.json(ApiResponse.error('Error while uploading'));
+      return res.json(ApiResponse.error(err.message));
     }
 
     const result = {
       page: page.toObject(),
       attachment: attachment.toObject({ virtuals: true }),
       pageCreated: pageCreated,
+    };
+
+    return res.json(ApiResponse.success(result));
+  };
+
+  /**
+   * @api {post} /attachments.uploadProfileImage Add attachment for profile image
+   * @apiName UploadProfileImage
+   * @apiGroup Attachment
+   *
+   * @apiParam {File} file
+   */
+  api.uploadProfileImage = async function(req, res) {
+    // check params
+    if (!req.file) {
+      return res.json(ApiResponse.error('File error.'));
+    }
+
+    const file = req.file;
+
+    // check type
+    const acceptableFileType = /image\/.+/;
+    if (!file.mimetype.match(acceptableFileType)) {
+      return res.json(ApiResponse.error('File type error. Only image files is allowed to set as user picture.'));
+    }
+
+    let attachment;
+    try {
+      attachment = await createAttachment(file, req.user);
+    }
+    catch (err) {
+      logger.error(err);
+      return res.json(ApiResponse.error(err.message));
+    }
+
+    const result = {
+      attachment: attachment.toObject({ virtuals: true }),
     };
 
     return res.json(ApiResponse.success(result));
