@@ -2,6 +2,9 @@
 
 {% block html_title %}{{ customTitle(t('App settings')) }}{% endblock %}
 
+{% block head_warn %} {# remove including block for './widget/alert_siteurl_undefined.html' #}
+{% endblock %}
+
 {% block content_header %}
 <div class="header-wrap">
   <header id="page-header">
