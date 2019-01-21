@@ -548,36 +548,71 @@ export default class CodeMirrorEditor extends AbstractEditor {
     );
   }
 
+  /**
+   * return a function to replace a selected range with prefix + selection + suffix
+   *
+   * The cursor after replacing is inserted between the selection and the suffix.
+   */
   createReplaceSelectionHandler(prefix, suffix) {
     return () => {
-      const selection = this.getCodeMirror().getDoc().getSelection();
-      this.getCodeMirror().getDoc().replaceSelection(prefix + selection + suffix);
+      const cm = this.getCodeMirror();
+      const selection = cm.getDoc().getSelection();
+      const curStartPos = cm.getCursor('from');
+      const curEndPos = cm.getCursor('to');
+
+      const curPosAfterReplacing = {};
+      curPosAfterReplacing.line = curEndPos.line;
+      if (curStartPos.line === curEndPos.line) {
+        curPosAfterReplacing.ch = curEndPos.ch + prefix.length;
+      }
+      else {
+        curPosAfterReplacing.ch = curEndPos.ch;
+      }
+
+      cm.getDoc().replaceSelection(prefix + selection + suffix);
+      cm.setCursor(curPosAfterReplacing);
+      cm.focus();
     };
   }
 
+  /**
+   * return a function to add prefix to selected each lines
+   *
+   * The cursor after editing is inserted between the end of the selection.
+   */
   createAddPrefixToEachLinesHandler(prefix) {
     return () => {
-      const startLineNum = this.getCodeMirror().getCursor('from').line;
-      const endLineNum = this.getCodeMirror().getCursor('to').line;
+      const cm = this.getCodeMirror();
+      const startLineNum = cm.getCursor('from').line;
+      const endLineNum = cm.getCursor('to').line;
 
       const lines = [];
       for (let i = startLineNum; i <= endLineNum; i++) {
-        lines.push(prefix + this.getCodeMirror().getDoc().getLine(i));
+        lines.push(prefix + cm.getDoc().getLine(i));
       }
-
       const replacement = lines.join('\n') + '\n';
-      this.getCodeMirror().getDoc().replaceRange(replacement, {line: startLineNum, ch: 0}, {line: endLineNum + 1, ch: 0});
+      cm.getDoc().replaceRange(replacement, {line: startLineNum, ch: 0}, {line: endLineNum + 1, ch: 0});
+
+      cm.setCursor(endLineNum, cm.getDoc().getLine(endLineNum).length);
+      cm.focus();
     };
   }
 
+  /**
+   * make a selected line a header
+   *
+   * The cursor after editing is inserted between the end of the line.
+   */
   makeHeaderHandler() {
-    const lineNum = this.getCodeMirror().getCursor('from').line;
-    const line = this.getCodeMirror().getDoc().getLine(lineNum);
+    const cm = this.getCodeMirror();
+    const lineNum = cm.getCursor('from').line;
+    const line = cm.getDoc().getLine(lineNum);
     let prefix = '#';
     if (!line.startsWith('#')) {
       prefix += ' ';
     }
-    this.getCodeMirror().getDoc().replaceRange(prefix, {line: lineNum, ch: 0}, {line: lineNum, ch: 0});
+    cm.getDoc().replaceRange(prefix, {line: lineNum, ch: 0}, {line: lineNum, ch: 0});
+    cm.focus();
   }
 
   showHandsonTableHandler() {
@@ -589,7 +624,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       <Button key='nav-item-bold' bsSize="small" onClick={ this.createReplaceSelectionHandler('**', '**') }><i className={'fa fa-bold'}></i></Button>,
       <Button key='nav-item-italic' bsSize="small" onClick={ this.createReplaceSelectionHandler('*', '*') }><i className={'fa fa-italic'}></i></Button>,
       <Button key='nav-item-strikethough' bsSize="small" onClick={ this.createReplaceSelectionHandler('~~', '~~') }><i className={'fa fa-strikethrough'}></i></Button>,
-      <Button key='nav-item-header' bsSize="small" onClick={ this.makeHeaderHandler }>H</Button>,
+      <Button key='nav-item-header' bsSize="small" onClick={ this.makeHeaderHandler }><i className={'fa fa-header'}></i></Button>,
       <Button key='nav-item-code' bsSize="small" onClick={ this.createReplaceSelectionHandler('`', '`') }><i className={'fa fa-code'}></i></Button>,
       <Button key='nav-item-quote' bsSize="small" onClick={ this.createAddPrefixToEachLinesHandler('> ') }><i className={'fa fa-quote-right'}></i></Button>,
       <Button key='nav-item-ul' bsSize="small" onClick={ this.createAddPrefixToEachLinesHandler('- ') }><i className={'fa fa-list'}></i></Button>,
