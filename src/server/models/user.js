@@ -707,7 +707,7 @@ module.exports = function(crowi) {
                 vars: {
                   email: user.email,
                   password: user.password,
-                  url: config.crowi['app:siteUrl:fixed'],
+                  url: crowi.configManager.getSiteUrl(),
                   appTitle: Config.appTitle(config),
                 }
               },

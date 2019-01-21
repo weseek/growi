@@ -384,7 +384,7 @@ module.exports = function(crowi, app) {
   };
 
   actions.authGoogle = function(req, res) {
-    var googleAuth = require('../util/googleAuth')(config);
+    var googleAuth = require('../util/googleAuth')(crowi);
 
     var userData = req.user;
 
@@ -413,7 +413,7 @@ module.exports = function(crowi, app) {
   };
 
   actions.authGoogleCallback = function(req, res) {
-    var googleAuth = require('../util/googleAuth')(config);
+    var googleAuth = require('../util/googleAuth')(crowi);
     var userData = req.user;
 
     googleAuth.handleCallback(req, function(err, tokenInfo) {
