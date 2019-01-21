@@ -626,18 +626,54 @@ export default class CodeMirrorEditor extends AbstractEditor {
     const fontSize18 = {'fontSize': '18px'};
 
     return [
-      <Button key='nav-item-bold' bsSize="small" onClick={ this.createReplaceSelectionHandler('**', '**') }><i className={'fa fa-bold'}></i></Button>,
-      <Button key='nav-item-italic' bsSize="small" onClick={ this.createReplaceSelectionHandler('*', '*') }><i className={'fa fa-italic'}></i></Button>,
-      <Button key='nav-item-strikethough' bsSize="small" onClick={ this.createReplaceSelectionHandler('~~', '~~') }><i className={'fa fa-strikethrough'}></i></Button>,
-      <Button key='nav-item-header' bsSize="small" onClick={ this.makeHeaderHandler }><i className={'fa fa-header'}></i></Button>,
-      <Button key='nav-item-code' bsSize="small" onClick={ this.createReplaceSelectionHandler('`', '`') }><i className={'fa fa-code'}></i></Button>,
-      <Button key='nav-item-quote' bsSize="small" onClick={ this.createAddPrefixToEachLinesHandler('> ') } style={paddingBottom6}><i className={'ti-quote-right'}></i></Button>,
-      <Button key='nav-item-ul' bsSize="small" onClick={ this.createAddPrefixToEachLinesHandler('- ') } style={paddingTopBottom54}><i className={'ti-list'} style={fontSize18}></i></Button>,
-      <Button key='nav-item-ol' bsSize="small" onClick={ this.createAddPrefixToEachLinesHandler('1. ') } style={paddingTopBottom54}><i className={'ti-list-ol'} style={fontSize18}></i></Button>,
-      <Button key='nav-item-checkbox' bsSize="small" onClick={ this.createAddPrefixToEachLinesHandler('- [ ] ') } style={paddingBottom6}><i className={'ti-check-box'}></i></Button>,
-      <Button key='nav-item-link' bsSize="small" onClick={ this.createReplaceSelectionHandler('[', ']()') } style={paddingBottom6}><i className={'icon-link'}></i></Button>,
-      <Button key='nav-item-image' bsSize="small" onClick={ this.createReplaceSelectionHandler('![', ']()') } style={paddingBottom6}><i className={'icon-picture'}></i></Button>,
-      <Button key='nav-item-table' bsSize="small" onClick={ this.showHandsonTableHandler }><img src="/images/icons/editor/table.svg" width="14" height="14" /></Button>
+      <Button key='nav-item-bold' bsSize="small" title={'Bold'}
+              onClick={ this.createReplaceSelectionHandler('**', '**') }>
+        <i className={'fa fa-bold'}></i>
+      </Button>,
+      <Button key='nav-item-italic' bsSize="small" title={'Italic'}
+              onClick={ this.createReplaceSelectionHandler('*', '*') }>
+        <i className={'fa fa-italic'}></i>
+      </Button>,
+      <Button key='nav-item-strikethough' bsSize="small" title={'Strikethrough'}
+              onClick={ this.createReplaceSelectionHandler('~~', '~~') }>
+        <i className={'fa fa-strikethrough'}></i>
+      </Button>,
+      <Button key='nav-item-header' bsSize="small" title={'Heading'}
+              onClick={ this.makeHeaderHandler }>
+        <i className={'fa fa-header'}></i>
+      </Button>,
+      <Button key='nav-item-code' bsSize="small" title={'Inline Code'}
+              onClick={ this.createReplaceSelectionHandler('`', '`') }>
+        <i className={'fa fa-code'}></i>
+      </Button>,
+      <Button key='nav-item-quote' bsSize="small" title={'Quote'}
+              onClick={ this.createAddPrefixToEachLinesHandler('> ') } style={paddingBottom6}>
+        <i className={'ti-quote-right'}></i>
+      </Button>,
+      <Button key='nav-item-ul' bsSize="small" title={'List'}
+              onClick={ this.createAddPrefixToEachLinesHandler('- ') } style={paddingTopBottom54}>
+        <i className={'ti-list'} style={fontSize18}></i>
+      </Button>,
+      <Button key='nav-item-ol' bsSize="small" title={'Numbered List'}
+              onClick={ this.createAddPrefixToEachLinesHandler('1. ') } style={paddingTopBottom54}>
+        <i className={'ti-list-ol'} style={fontSize18}></i>
+      </Button>,
+      <Button key='nav-item-checkbox' bsSize="small" title={'Check List'}
+              onClick={ this.createAddPrefixToEachLinesHandler('- [ ] ') } style={paddingBottom6}>
+        <i className={'ti-check-box'}></i>
+      </Button>,
+      <Button key='nav-item-link' bsSize="small" title={'Link'}
+              onClick={ this.createReplaceSelectionHandler('[', ']()') } style={paddingBottom6}>
+        <i className={'icon-link'}></i>
+      </Button>,
+      <Button key='nav-item-image' bsSize="small" title={'Image'}
+              onClick={ this.createReplaceSelectionHandler('![', ']()') } style={paddingBottom6}>
+        <i className={'icon-picture'}></i>
+      </Button>,
+      <Button key='nav-item-table' bsSize="small" title={'Table'}
+              onClick={ this.showHandsonTableHandler }>
+        <img src="/images/icons/editor/table.svg" width="14" height="14" />
+      </Button>
     ];
   }
 
