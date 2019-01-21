@@ -18,7 +18,7 @@
               <div class="input-group">
                 <span class="input-group-addon">{{ baseUrl }}</span>
                 {% if searchConfigured() %}
-                <div id="duplicate-page-name-input"></div>
+                <div id="duplicate-page-name-input" class="page-name-input"></div>
                 {% else %}
                 <input type="text" class="form-control" name="new_path" id="duplicatePageName" value="{{ page.path }}">
                 {% endif %}

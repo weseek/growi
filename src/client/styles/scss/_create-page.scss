@@ -51,7 +51,7 @@
         margin-left: 5px;
       }
 
-      #create-page-name-input, #rename-page-name-input, #duplicate-page-name-input {
+      .page-name-input {
         flex: 1;
         input {
           min-width: 300px; // Workaround to display placeholder.

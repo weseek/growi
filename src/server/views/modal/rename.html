@@ -19,7 +19,7 @@
               <span class="input-group-addon">{{ config.crowi['app:siteUrl:fixed'] }}</span>
               <span class="input-group-addon">{{ baseUrl }}</span>
               {% if searchConfigured() %}
-              <div id="rename-page-name-input"></div>
+              <div id="rename-page-name-input" class="page-name-input"></div>
               {% else %}
               <span class="input-group-addon">{{ baseUrl }}</span>
               <input type="text" class="form-control" name="new_path" id="newPageName" value="{{ page.path }}">
