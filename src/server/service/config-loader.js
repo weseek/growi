@@ -110,6 +110,24 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
   //   type:    ,
   //   default:
   // },
+  APP_SITE_URL: {
+    ns:      'crowi',
+    key:     'app:siteUrl',
+    type:    TYPES.STRING,
+    default: null
+  },
+  SAML_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS: {
+    ns:      'crowi',
+    key:     'security:passport-saml:useOnlyEnvVarsForSomeOptions',
+    type:    TYPES.BOOLEAN,
+    default: false
+  },
+  SAML_ENABLED: {
+    ns:      'crowi',
+    key:     'security:passport-saml:isEnabled',
+    type:    TYPES.BOOLEAN,
+    default: null
+  },
   SAML_ENTRY_POINT: {
     ns:      'crowi',
     key:     'security:passport-saml:entryPoint',
@@ -125,6 +143,36 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
   SAML_ISSUER: {
     ns:      'crowi',
     key:     'security:passport-saml:issuer',
+    type:    TYPES.STRING,
+    default: null
+  },
+  SAML_ATTR_MAPPING_ID: {
+    ns:      'crowi',
+    key:     'security:passport-saml:attrMapId',
+    type:    TYPES.STRING,
+    default: null
+  },
+  SAML_ATTR_MAPPING_USERNAME: {
+    ns:      'crowi',
+    key:     'security:passport-saml:attrMapUsername',
+    type:    TYPES.STRING,
+    default: null
+  },
+  SAML_ATTR_MAPPING_MAIL: {
+    ns:      'crowi',
+    key:     'security:passport-saml:attrMapMail',
+    type:    TYPES.STRING,
+    default: null
+  },
+  SAML_ATTR_MAPPING_FIRST_NAME: {
+    ns:      'crowi',
+    key:     'security:passport-saml:attrMapFirstName',
+    type:    TYPES.STRING,
+    default: null
+  },
+  SAML_ATTR_MAPPING_LAST_NAME: {
+    ns:      'crowi',
+    key:     'security:passport-saml:attrMapLastName',
     type:    TYPES.STRING,
     default: null
   },
@@ -152,6 +200,20 @@ class ConfigLoader {
     // merge defaults
     let mergedConfigFromDB = Object.assign({'crowi': this.configModel.getDefaultCrowiConfigsObject()}, configFromDB);
     mergedConfigFromDB = Object.assign({'markdown': this.configModel.getDefaultMarkdownConfigsObject()}, mergedConfigFromDB);
+
+
+    // In getConfig API, only null is used as a value to indicate that a config is not set.
+    // So, if a value loaded from the database is emtpy,
+    // it is converted to null because an empty string is used as the same meaning in the config model.
+    // By this processing, whether a value is loaded from the database or from the environment variable,
+    // only null indicates a config is not set.
+    for (const namespace of Object.keys(mergedConfigFromDB)) {
+      for (const key of Object.keys(mergedConfigFromDB[namespace])) {
+        if (mergedConfigFromDB[namespace][key] === '') {
+          mergedConfigFromDB[namespace][key] = null;
+        }
+      }
+    }
 
     return {
       fromDB: mergedConfigFromDB,

@@ -45,7 +45,10 @@ module.exports = function(crowi, app) {
       detection: {
         order: ['userSettingDetector', 'header', 'navigator'],
       },
-      overloadTranslationOptionHandler: i18nSprintf.overloadTranslationOptionHandler
+      overloadTranslationOptionHandler: i18nSprintf.overloadTranslationOptionHandler,
+
+      // change nsSeparator from ':' to '::' because ':' is used in config keys and these are used in i18n keys
+      nsSeparator: '::'
     });
 
   app.use(helmet());
@@ -63,12 +66,8 @@ module.exports = function(crowi, app) {
     req.config = config;
     req.csrfToken = null;
 
-    config.crowi['app:siteUrl:fixed'] = (config.crowi['app:siteUrl'] != null)
-      ? config.crowi['app:siteUrl']                                                                         // prioritized with v3.2.4 and above
-      : (req.headers['x-forwarded-proto'] == 'https' ? 'https' : req.protocol) + '://' + req.get('host');   // auto generate (default with v3.2.3 and below)
-
     res.locals.req      = req;
-    res.locals.baseUrl  = config.crowi['app:siteUrl:fixed'];
+    res.locals.baseUrl  = crowi.configManager.getSiteUrl();
     res.locals.config   = config;
     res.locals.env      = env;
     res.locals.now      = now;

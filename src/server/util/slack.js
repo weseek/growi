@@ -44,11 +44,8 @@ module.exports = function(crowi) {
     });
   };
 
-  const convertMarkdownToMrkdwn = function(body) {
-    var url = '';
-    if (config.crowi && config.crowi['app:siteUrl:fixed']) {
-      url = config.crowi['app:siteUrl:fixed'];
-    }
+  const convertMarkdownToMarkdown = function(body) {
+    const url = crowi.configManager.getSiteUrl();
 
     body = body
       .replace(/\n\*\s(.+)/g, '\n• $1')
@@ -61,22 +58,22 @@ module.exports = function(crowi) {
   };
 
   const prepareAttachmentTextForCreate = function(page, user) {
-    var body = page.revision.body;
+    let body = page.revision.body;
     if (body.length > 2000) {
       body = body.substr(0, 2000) + '...';
     }
 
-    return convertMarkdownToMrkdwn(body);
+    return convertMarkdownToMarkdown(body);
   };
 
   const prepareAttachmentTextForUpdate = function(page, user, previousRevision) {
-    var diff = require('diff');
-    var diffText = '';
+    const diff = require('diff');
+    let diffText = '';
 
     diff.diffLines(previousRevision.body, page.revision.body).forEach(function(line) {
       debug('diff line', line);
       /* eslint-disable no-unused-vars */
-      var value = line.value.replace(/\r\n|\r/g, '\n');
+      const value = line.value.replace(/\r\n|\r/g, '\n');
       /* eslint-enable */
       if (line.added) {
         diffText += `${line.value} ... :lower_left_fountain_pen:`;
@@ -105,7 +102,7 @@ module.exports = function(crowi) {
     }
 
     if (comment.isMarkdown) {
-      return convertMarkdownToMrkdwn(body);
+      return convertMarkdownToMarkdown(body);
     }
     else {
       return body;
@@ -113,7 +110,7 @@ module.exports = function(crowi) {
   };
 
   const prepareSlackMessageForPage = function(page, user, channel, updateType, previousRevision) {
-    const url = config.crowi['app:siteUrl:fixed'] || '';
+    const url = crowi.configManager.getSiteUrl();
     let body = page.revision.body;
 
     if (updateType == 'create') {
@@ -148,7 +145,7 @@ module.exports = function(crowi) {
   };
 
   const prepareSlackMessageForComment = function(comment, user, channel, path) {
-    const url = config.crowi['app:siteUrl:fixed'] || '';
+    const url = crowi.configManager.getSiteUrl();
     const body = prepareAttachmentTextForComment(comment);
 
     const attachment = {
@@ -175,7 +172,7 @@ module.exports = function(crowi) {
 
   const getSlackMessageTextForPage = function(path, user, updateType) {
     let text;
-    const url = config.crowi['app:siteUrl:fixed'] || '';
+    const url = crowi.configManager.getSiteUrl();
 
     const pageUrl = `<${url}${path}|${path}>`;
     if (updateType == 'create') {
@@ -189,7 +186,7 @@ module.exports = function(crowi) {
   };
 
   const getSlackMessageTextForComment = function(path, user) {
-    const url = config.crowi['app:siteUrl:fixed'] || '';
+    const url = crowi.configManager.getSiteUrl();
     const pageUrl = `<${url}${path}|${path}>`;
     const text = `:speech_balloon: ${user.username} commented on ${pageUrl}`;
 

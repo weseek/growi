@@ -13,6 +13,8 @@
   "Admin": "管理",
   "New": "作成",
   "Shortcuts": "ショートカット",
+  "eg": "例:",
+  "Undo": "元に戻す",
 
   "Update": "更新",
   "Update Page": "ページを更新",
@@ -86,6 +88,7 @@
   "Table of Contents": "目次",
   "Management Wiki Home": "Wiki管理トップ",
   "App settings": "アプリ設定",
+  "Site URL settings": "サイトURL設定",
   "Markdown settings": "マークダウン設定",
   "Customize": "カスタマイズ",
   "Notification settings": "通知設定",
@@ -117,6 +120,10 @@
 
   "Deleted Pages": "削除済みページ",
   "Sign out": "ログアウト",
+
+  "form_validation": {
+    "required": "<code>%s</code> に値を入力してください"
+  },
 
   "installer": {
     "setup": "セットアップ",
@@ -281,6 +288,38 @@
     }
   },
 
+  "sandbox": {
+    "header": "見出し",
+    "header_x": "見出し {{index}}",
+    "block": "ブロック",
+    "block_detail": "を挟むことで段落になります",
+    "empty_line": "空白行",
+    "line_break": "改行",
+    "line_break_detail": "(スペース2つ) で改行されます",
+    "typography": "タイポグラフィー",
+    "italics": "斜体",
+    "bold": "強調",
+    "italic_bold": "イタリックボールド",
+    "strikethrough": "取り消し線",
+    "link": "リンク",
+    "code_highlight": "コードハイライト",
+    "list": "リスト",
+    "unordered_list_x": "リスト {{index}}",
+    "ordered_list_x": "番号付きリスト {{index}}",
+    "task": "タスク",
+    "task_checked": "チェック付き",
+    "task_unchecked": "チェックなし",
+    "quote": "引用",
+    "quote1": "複数行の引用文を",
+    "quote2": "書くことができます",
+    "table": "テーブル",
+    "quote_nested": "多重引用",
+    "image": "画像",
+    "alt_text": "Alt文字列",
+    "insert_image": "で画像を挿入できます",
+    "open_sandbox": "Sandbox を開く"
+  },
+
   "admin_top": {
     "Management Wiki": "Wiki管理",
     "System Information": "システム情報",
@@ -296,8 +335,9 @@
     "Site Name": "サイト名",
     "sitename_change": "ヘッダーや HTML タイトルに使用されるサイト名を変更できます。",
     "header_content": "ここに入力した内容は、ヘッダー等に表示されます。",
-    "Site URL": "サイトURL",
-    "siteurl_help": "<code>http://</code> または <code>https://</code> から始まるサイトのURL。",
+    "Site URL desc": "サイトURLを設定します。",
+    "Site URL warn": "サイトURLが設定されていないため、一部機能が動作しない状態になっています。",
+    "siteurl_help": "<code>http://</code> または <code>https://</code> から始まるサイトのURL",
     "Confidential name": "コンフィデンシャル表示",
     "Default Language for new users": "新規ユーザーのデフォルト設定言語",
     "ex): internal use only": "例: 社外秘",
@@ -324,8 +364,8 @@
     "Enable plugin loading": "プラグインの読み込みを有効にします。",
     "Load plugins": "プラグインを読み込む",
     "Enable": "有効",
-    "Disable": "無効"
-
+    "Disable": "無効",
+    "Use env var if empty": "データベース側の値が空の場合、環境変数 <code>%s</code> の値を利用します"
    },
 
   "security_setting": {
@@ -395,6 +435,8 @@
     "Treat email matching as identical": "新規ログイン時、<code>%s</code> が一致したローカルアカウントが存在した場合は自動的に紐付ける",
     "Treat email matching as identical_warn": "警告: <code>%s</code> の一致を以て同一ユーザーであるとみなすので、セキュリティに注意してください",
     "Use env var if empty": "空の場合、環境変数 <code>%s</code> を利用します",
+    "Use default if both are empty": "どちらの値も空の場合、デフォルト値 <code>%s</code> を利用します",
+    "missing mandatory configs": "以下の必須項目の値がデータベースと環境変数のどちらにも設定されていません",
     "ldap": {
       "server_url_detail": "LDAP URLを <code>ldap://host:port/DN</code> または <code>ldaps://host:port/DN</code> の形式で入力してください。",
       "bind_mode": "Bind モード",
@@ -427,15 +469,12 @@
     },
     "SAML": {
       "name": "SAML",
-      "entry_point": "エントリーポイント",
-      "issuer": "発行者",
-      "First Name": "姓",
-      "Last Name": "名",
       "id_detail": "SAML Identity プロバイダ内で一意に識別可能な値を格納している属性",
       "username_detail": "新規ユーザーのアカウント名(<code>username</code>)に関連付ける属性",
       "mapping_detail": "新規ユーザーの%sに関連付ける属性",
-      "cert_detail1": "IdP からのレスポンスの validation を行うための、PEMエンコードされた X.509 証明書",
-      "cert_detail2": "空の場合は環境変数 <code>SAML_CERT</code> を利用し、そちらも存在しない場合は validation 自体を行いません"
+      "cert_detail": "IdP からのレスポンスの validation を行うためのPEMエンコードされた X.509 証明書",
+      "Use env var if empty": "データベース側の値が空の場合、環境変数 <code>%s</code> の値を利用します",
+      "note for the only env option": "現在SAML認証のON/OFFの設定値及びハイライトされている設定値は環境変数の値のみを使用するようになっています<br>この設定を変更する場合は環境変数 <code>%s</code> の値をfalseに変更もしくは削除してください"
     },
     "OAuth": {
       "register": "%sに登録",
@@ -470,6 +509,16 @@
         "github": "GitHub OAuth の設定方法",
         "twitter": "Twitter OAuth の設定方法"
       }
+    },
+    "form_item_name": {
+      "security:passport-saml:entryPoint": "エントリーポイント",
+      "security:passport-saml:issuer": "発行者",
+      "security:passport-saml:cert": "証明書",
+      "security:passport-saml:attrMapId": "ID",
+      "security:passport-saml:attrMapUsername": "ユーザー名",
+      "security:passport-saml:attrMapMail": "メールアドレス",
+      "security:passport-saml:attrMapFirstName": "姓",
+      "security:passport-saml:attrMapLastName": "名"
     }
   },
   "markdown_setting": {
@@ -537,6 +586,10 @@
     "save_edit": "編集タブやヒストリータブ等の切り替えをブラウザ履歴に保存し、ブラウザの戻る/進む操作の対象にします。",
     "by_invalidating": "無効化することで、ページ遷移のみを戻る/進む操作の対象にすることができます。",
     "nocdn_desc": "この機能は、環境変数 <code>NO_CDN=true</code> の時は無効化されます。<br>GitHub スタイルが適用されています。",
+    "custom_title": "カスタム Title",
+    "custom_title_detail": "<code>%s</code>タグのコンテンツをカスタマイズできます。<br><code>%s</code>がサイト名、<code>%s</code>がページ名またはページパスに置換されます。",
+    "custom_header": "カスタム HTML Header",
+    "custom_header_detail": "システム全体に適用される HTML を記述できます。<code>%s</code> タグ内の他の <code>%s</code> タグ読み込み前に展開されます。<br>変更の反映はページの更新が必要です。",
     "Custom CSS": "カスタム CSS",
     "write_CSS": " システム全体に適用されるCSSを記述できます。",
     "reflect_change": "変更の反映はページの更新が必要です。",
@@ -552,14 +605,28 @@
   "user_management": {
     "User management": "ユーザー管理",
     "invite_users": "新規ユーザーの招待",
+    "emails": "メールアドレス (複数行入力で複数人招待可能)",
+    "invite_thru_email": "招待をメールで送信",
+    "invite": "招待する",
+    "give_admin_access": "管理者にする",
+    "remove_admin_access": "管理者から外す",
     "external_account": "外部アカウントの管理",
     "user_list": "ユーザー一覧",
+    "external_account_list": "外部アカウント一覧",
+    "back_to_user_management": "ユーザー管理に戻る",
+    "authentication_provider": "認証情報プロバイダ",
     "Date created": "作成日",
     "Last login": "最終ログイン",
     "Manage": "操作",
     "Edit menu": "編集メニュー",
+    "password_setting": "パスワード設定",
+    "password_setting_help": "関連付けられているユーザーがパスワードを設定しているかどうかを表示します",
+    "set": "設定済み",
+    "unset": "未設定",
     "Reissue password": "パスワードの再発行",
+    "related_username": "関連付けられているユーザーの <code>%s</code>",
     "Status": "ステータス",
+    "accept": "承認する",
     "Deactivate account": "アカウント停止",
     "your_own": "自分自身のアカウントを停止することはできません",
     "Administrator menu": "管理者メニュー",

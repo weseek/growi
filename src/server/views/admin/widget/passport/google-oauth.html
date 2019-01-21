@@ -4,7 +4,8 @@
 
   {% set nameForIsGoogleEnabled = "settingForm[security:passport-google:isEnabled]" %}
   {% set isGoogleEnabled = settingForm['security:passport-google:isEnabled'] %}
-  {% set callbackUrl = settingForm['app:siteUrl'] || '[INVALID]' + '/passport/google/callback' %}
+  {% set siteUrl = getConfig('crowi', 'app:siteUrl') || '[INVALID]' %}
+  {% set callbackUrl = siteUrl + '/passport/google/callback' %}
 
   <div class="form-group">
     <label for="{{nameForIsGoogleEnabled}}" class="col-xs-3 control-label">{{ t("security_setting.OAuth.Google.name") }}</label>
@@ -52,7 +53,7 @@
       <div class="col-xs-6">
           <input class="form-control" type="text" value="{{ callbackUrl }}" readonly>
         <p class="help-block small">{{ t("security_setting.desc_of_callback_URL", 'OAuth') }}</p>
-        {% if !settingForm['app:siteUrl'] %}
+        {% if !getConfig('crowi', 'app:siteUrl') %}
         <div class="alert alert-danger">
           <i class="icon-exclamation"></i> {{ t("security_setting.alert_siteUrl_is_not_set", '<a href="/admin/app">' + t('App settings') + '<i class="icon-login"></i></a>') }}
         </div>

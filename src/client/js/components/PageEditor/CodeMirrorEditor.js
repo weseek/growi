@@ -44,6 +44,9 @@ require('../../util/codemirror/autorefresh.ext');
 
 import AbstractEditor from './AbstractEditor';
 
+import SimpleCheatsheet from './SimpleCheatsheet';
+import Cheatsheet from './Cheatsheet';
+
 import pasteHelper from './PasteHelper';
 import EmojiAutoCompleteHelper from './EmojiAutoCompleteHelper';
 
@@ -462,14 +465,16 @@ export default class CodeMirrorEditor extends AbstractEditor {
   pasteHandler(editor, event) {
     const types = event.clipboardData.types;
 
-    // text
-    if (types.includes('text/plain')) {
-      pasteHelper.pasteText(this, event);
-    }
     // files
-    else if (types.includes('Files')) {
+    if (types.includes('Files')) {
+      event.preventDefault();
       this.dispatchPasteFiles(event);
     }
+    // text
+    else if (types.includes('text/plain')) {
+      pasteHelper.pasteText(this, event);
+    }
+
   }
 
   /**
@@ -509,130 +514,11 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   renderSimpleCheatsheet() {
-    return (
-      <div className="panel panel-default gfm-cheatsheet mb-0">
-        <div className="panel-body small p-b-0">
-          <div className="row">
-            <div className="col-xs-6">
-              <p>
-                # 見出し1<br />
-                ## 見出し2
-              </p>
-              <p><i>*斜体*</i>&nbsp;&nbsp;<b>**強調**</b></p>
-              <p>
-                [リンク](http://..)<br />
-                [/ページ名/子ページ名]
-              </p>
-              <p>
-                ```javascript:index.js<br />
-                writeCode();<br />
-                ```
-              </p>
-            </div>
-            <div className="col-xs-6">
-              <p>
-                - リスト 1<br />
-                &nbsp;&nbsp;&nbsp;&nbsp;- リスト 1_1<br />
-                - リスト 2<br />
-                1. 番号付きリスト 1<br />
-                1. 番号付きリスト 2
-              </p>
-              <hr />
-              <p>行末にスペース2つ[ ][ ]<br />で改行</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+    return <SimpleCheatsheet />;
   }
 
   renderCheatsheetModalBody() {
-    return (
-      <div className="row small">
-        <div className="col-sm-6">
-          <h4>Header</h4>
-          <ul className="hljs">
-            <li><code># </code>見出し1</li>
-            <li><code>## </code>見出し2</li>
-            <li><code>### </code>見出し3</li>
-          </ul>
-          <h4>Block</h4>
-          <p className="mb-1"><code>[空白行]</code>を挟むことで段落になります</p>
-          <ul className="hljs">
-            <li>text</li>
-            <li></li>
-            <li>text</li>
-          </ul>
-          <h4>Line breaks</h4>
-          <p className="mb-1">段落中、<code>[space][space]</code>(スペース2つ) で改行されます</p>
-          <ul className="hljs">
-            <li>text<code> </code><code> </code></li>
-            <li>text</li>
-          </ul>
-          <h4>Typography</h4>
-          <ul className="hljs">
-            <li><i>*イタリック*</i></li>
-            <li><b>**ボールド**</b></li>
-            <li><i><b>***イタリックボールド***</b></i></li>
-            <li>~~取り消し線~~ => <s>striked text</s></li>
-          </ul>
-          <h4>Link</h4>
-          <ul className="hljs">
-            <li>[Google](https://www.google.co.jp/)</li>
-            <li>[/Page1/ChildPage1]</li>
-          </ul>
-          <h4>コードハイライト</h4>
-          <ul className="hljs">
-            <li>```javascript:index.js</li>
-            <li>writeCode();</li>
-            <li>```</li>
-          </ul>
-        </div>
-        <div className="col-sm-6">
-          <h4>リスト</h4>
-          <ul className="hljs">
-            <li>- リスト 1</li>
-            <li>&nbsp;&nbsp;- リスト 1_1</li>
-            <li>- リスト 2</li>
-          </ul>
-          <ul className="hljs">
-            <li>1. 番号付きリスト 1</li>
-            <li>1. 番号付きリスト 2</li>
-          </ul>
-          <ul className="hljs">
-            <li>- [ ] タスク(チェックなし)</li>
-            <li>- [x] タスク(チェック付き)</li>
-          </ul>
-          <h4>引用</h4>
-          <ul className="hljs">
-            <li>> 複数行の引用文を</li>
-            <li>> 書くことができます</li>
-          </ul>
-          <ul className="hljs">
-            <li>>> 多重引用</li>
-            <li>>>> 多重引用</li>
-            <li>>>>> 多重引用</li>
-          </ul>
-          <h4>Table</h4>
-          <ul className="hljs text-center">
-            <li>|&nbsp;&nbsp;&nbsp;左寄せ&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;中央寄せ&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;右寄せ&nbsp;&nbsp;&nbsp;|</li>
-            <li>|:-----------|:----------:|-----------:|</li>
-            <li>|column 1&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;column 2&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;column 3|</li>
-            <li>|column 1&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;column 2&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;column 3|</li>
-          </ul>
-          <h4>Images</h4>
-          <p className="mb-1"><code> ![Alt文字列](URL)</code> で<span className="text-info">&lt;img&gt;</span>タグを挿入できます</p>
-          <ul className="hljs">
-            <li>![ex](https://example.com/images/a.png)</li>
-          </ul>
-
-          <hr />
-          <a href="/Sandbox" className="btn btn-info btn-block" target="_blank">
-            <i className="icon-share-alt"/> Sandbox を開く
-          </a>
-        </div>
-      </div>
-    );
+    return <Cheatsheet />;
   }
 
   renderCheatsheetModalButton() {

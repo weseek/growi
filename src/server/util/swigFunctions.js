@@ -43,6 +43,26 @@ module.exports = function(crowi, app, req, locals) {
   };
 
   /**
+   * @see ConfigManager#getConfig
+   */
+  locals.getConfig = function(namespace, key) {
+    return crowi.configManager.getConfig(namespace, key);
+  };
+
+  /**
+   * **Do not use this unless absolutely necessary. Use getConfig instead.**
+   */
+  locals.getConfigFromDB = function(namespace, key) {
+    return crowi.configManager.getConfigFromDB(namespace, key);
+  };
+  /**
+   * **Do not use this unless absolutely necessary. Use getConfig instead.**
+   */
+  locals.getConfigFromEnvVars = function(namespace, key) {
+    return crowi.configManager.getConfigFromEnvVars(namespace, key);
+  };
+
+  /**
    * return app title
    */
   locals.appTitle = function() {
@@ -118,6 +138,16 @@ module.exports = function(crowi, app, req, locals) {
   locals.passportSamlLoginEnabled = function() {
     let config = crowi.getConfig();
     return locals.isEnabledPassport() && config.crowi['security:passport-saml:isEnabled'];
+  };
+
+  locals.getSamlMissingMandatoryConfigKeys = function() {
+    // return an empty array if Passport is not enabled
+    // because crowi.passportService is null.
+    if (!locals.isEnabledPassport()) {
+      return [];
+    }
+
+    return crowi.passportService.getSamlMissingMandatoryConfigKeys();
   };
 
   locals.googleLoginEnabled = function() {

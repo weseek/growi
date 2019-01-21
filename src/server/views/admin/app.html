@@ -2,6 +2,9 @@
 
 {% block html_title %}{{ customTitle(t('App settings')) }}{% endblock %}
 
+{% block head_warn %} {# remove including block for './widget/alert_siteurl_undefined.html' #}
+{% endblock %}
+
 {% block content_header %}
 <div class="header-wrap">
   <header id="page-header">
@@ -38,23 +41,25 @@
         <div class="form-group">
           <label for="settingForm[app:title]" class="col-xs-3 control-label">{{ t('app_setting.Site Name') }}</label>
           <div class="col-xs-6">
-            <input class="form-control" type="text" name="settingForm[app:title]" value="{{ settingForm['app:title'] | default('') }}" placeholder="GROWI">
+            <input class="form-control"
+                   id="settingForm[app:title]"
+                   type="text"
+                   name="settingForm[app:title]"
+                   value="{{ settingForm['app:title'] | default('') }}"
+                   placeholder="GROWI">
             <p class="help-block">{{ t("app_setting.sitename_change") }}</p>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="settingForm[app:siteUrl]" class="col-xs-3 control-label">{{ t('app_setting.Site URL') }}</label>
-          <div class="col-xs-6">
-            <input class="form-control" type="text" name="settingForm[app:siteUrl]" value="{{ settingForm['app:siteUrl'] | default('') }}" placeholder="e.g. https://my.growi.org">
-            <p class="help-block">{{ t("app_setting.siteurl_help") }}</p>
           </div>
         </div>
 
         <div class="form-group">
           <label for="settingForm[app:confidential]" class="col-xs-3 control-label">{{ t('app_setting.Confidential name') }}</label>
           <div class="col-xs-6">
-            <input class="form-control" type="text" name="settingForm[app:confidential]" value="{{ settingForm['app:confidential'] }}" placeholder="{{ t('app_setting. ex): internal use only') }}">
+            <input class="form-control"
+                   id="settingForm[app:confidential]"
+                   type="text"
+                   name="settingForm[app:confidential]"
+                   value="{{ settingForm['app:confidential'] }}"
+                   placeholder="{{ t('app_setting. ex): internal use only') }}">
             <p class="help-block">{{ t("app_setting.header_content") }}</p>
           </div>
         </div>
@@ -63,11 +68,19 @@
           <label class="col-xs-3 control-label">{{ t('app_setting.Default Language for new users') }}</label>
           <div class="col-xs-6">
             <div class="radio radio-primary radio-inline">
-                <input type="radio" id="radioLangEn" name="settingForm[app:globalLang]" value="{{ consts.language.LANG_EN_US }}" {% if appGlobalLang() == consts.language.LANG_EN_US %}checked="checked"{% endif %}>
+                <input type="radio"
+                       id="radioLangEn"
+                       name="settingForm[app:globalLang]"
+                       value="{{ consts.language.LANG_EN_US }}"
+                       {% if appGlobalLang() == consts.language.LANG_EN_US %}checked="checked"{% endif %}>
                 <label for="radioLangEn">{{ t('English') }}</label>
             </div>
             <div class="radio radio-primary radio-inline">
-                <input type="radio" id="radioLangJa" name="settingForm[app:globalLang]" value="{{ consts.language.LANG_JA }}" {% if appGlobalLang() == consts.language.LANG_JA %}checked="checked"{% endif %}>
+                <input type="radio"
+                       id="radioLangJa"
+                       name="settingForm[app:globalLang]"
+                       value="{{ consts.language.LANG_JA }}"
+                       {% if appGlobalLang() == consts.language.LANG_JA %}checked="checked"{% endif %}>
                 <label for="radioLangJa">{{ t('Japanese') }}</label>
             </div>
           </div>
@@ -77,15 +90,12 @@
           <label class="col-xs-3 control-label">{{ t('app_setting.File Uploading') }}</label>
           <div class="col-xs-6">
             <div class="checkbox checkbox-info">
-              <input type="checkbox" id="cbFileUpload" name="settingForm[app:fileUpload]" value="1"
-                {% if settingForm['app:fileUpload'] %}
-                checked
-                {% endif %}
-                {% if not isUploadable() %}
-                disabled="disabled"
-                {% else %}
-                {% endif %}
-                >
+              <input type="checkbox"
+                     id="cbFileUpload"
+                     name="settingForm[app:fileUpload]"
+                     value="1"
+                     {% if settingForm['app:fileUpload'] %}checked{% endif %}
+                     {% if not isUploadable() %}disabled="disabled"{% endif %}>
               <label for="cbFileUpload">
                 {{ t("app_setting.enable_files_except_image") }}
               </label>
@@ -107,6 +117,57 @@
       </fieldset>
       </form>
 
+      <form action="/_api/admin/settings/siteUrl" method="post" class="form-horizontal" id="siteUrlSettingForm" role="form">
+        <fieldset>
+          <legend>{{ t('Site URL settings') }}</legend>
+          <p class="well">{{ t('app_setting.Site URL desc') }}</p>
+          {% if !getConfig('crowi', 'app:siteUrl') %}
+            <p class="alert alert-danger"><i class="icon-exclamation"></i> {{ t('app_setting.Site URL warn') }}</p>
+          {% endif %}
+
+          <div class="col-xs-offset-3">
+            <table class="table settings-table">
+              <colgroup>
+                <col class="from-db">
+                <col class="from-env-vars">
+              </colgroup>
+              <thead>
+              <tr><th>Database</th><th>Environment variables</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <input class="form-control"
+                           type="text"
+                           name="settingForm[app:siteUrl]"
+                           value="{{ getConfigFromDB('crowi', 'app:siteUrl') | default('') }}"
+                           placeholder="e.g. https://my.growi.org">
+                    <p class="help-block">{{ t("app_setting.siteurl_help") }}</p>
+                  </td>
+                  <td>
+                    <input class="form-control"
+                           type="text"
+                           value="{{ getConfigFromEnvVars('crowi', 'app:siteUrl') | default('') }}"
+                           readonly>
+                    <p class="help-block">
+                      {{ t("app_setting.Use env var if empty", "APP_SITE_URL") }}
+                    </p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="form-group">
+            <div class="col-xs-offset-3 col-xs-6">
+              <input type="hidden" name="_csrf" value="{{ csrf() }}">
+              <button type="submit" class="btn btn-primary">{{ t('app_setting.Update') }}</button>
+            </div>
+          </div>
+        </fieldset>
+      </form>
+
+
       <form action="/_api/admin/settings/mail" method="post" class="form-horizontal" id="mailSettingForm" role="form">
       <fieldset>
       <legend>{{ t('app_setting.Mail settings') }}</legend>
@@ -115,30 +176,47 @@
         <div class="form-group">
           <label for="settingForm[mail.from]" class="col-xs-3 control-label">{{ t('app_setting.From e-mail address') }}</label>
           <div class="col-xs-6">
-            <input class="form-control" type="text" name="settingForm[mail:from]" placeholder="例: mail@growi.org" value="{{ settingForm['mail:from'] }}">
+            <input class="form-control"
+                   id="settingForm[mail.from]"
+                   type="text"
+                   name="settingForm[mail:from]"
+                   placeholder="{{ t('eg') }} mail@growi.org"
+                   value="{{ settingForm['mail:from'] }}">
           </div>
         </div>
 
         <div class="form-group">
           <label class="col-xs-3 control-label">{{ t('app_setting.SMTP settings') }}</label>
           <div class="col-xs-4">
-            <label for="">{{ t('app_setting.Host') }}</label>
-            <input class="form-control" type="text" name="settingForm[mail:smtpHost]"   value="{{ settingForm['mail:smtpHost']|default('') }}">
+            <label>{{ t('app_setting.Host') }}</label>
+            <input class="form-control"
+                   type="text"
+                   name="settingForm[mail:smtpHost]"
+                   value="{{ settingForm['mail:smtpHost']|default('') }}">
           </div>
           <div class="col-xs-2">
-            <label for="">{{ t('app_setting.Port') }}</label>
-            <input class="form-control" type="text" name="settingForm[mail:smtpPort]" value="{{ settingForm['mail:smtpPort']|default('') }}">
+            <label>{{ t('app_setting.Port') }}</label>
+            <input class="form-control"
+                   type="text"
+                   name="settingForm[mail:smtpPort]"
+                   value="{{ settingForm['mail:smtpPort']|default('') }}">
           </div>
         </div>
 
         <div class="form-group">
           <div class="col-xs-3 col-xs-offset-3">
-            <label for="">{{ t('app_setting.User') }}</label>
-            <input class="form-control" type="text" name="settingForm[mail:smtpUser]"   value="{{ settingForm['mail:smtpUser']|default('') }}">
+            <label>{{ t('app_setting.User') }}</label>
+            <input class="form-control"
+                   type="text"
+                   name="settingForm[mail:smtpUser]"
+                   value="{{ settingForm['mail:smtpUser']|default('') }}">
           </div>
           <div class="col-xs-3">
-            <label for="">{{ t('Password') }}</label>
-            <input class="form-control" type="password" name="settingForm[mail:smtpPassword]" value="{{ settingForm['mail:smtpPassword']|default('') }}">
+            <label>{{ t('Password') }}</label>
+            <input class="form-control"
+                   type="password"
+                   name="settingForm[mail:smtpPassword]"
+                   value="{{ settingForm['mail:smtpPassword']|default('') }}">
           </div>
         </div>
 
@@ -163,23 +241,37 @@
         </p>
 
         <div class="form-group">
-          <label for="settingForm[app.region]" class="col-xs-3 control-label">{{ t('app_setting.region') }}</label>
+          <label for="settingForm[app:region]" class="col-xs-3 control-label">{{ t('app_setting.region') }}</label>
           <div class="col-xs-6">
-            <input class="form-control" type="text" name="settingForm[aws:region]" placeholder="例: ap-northeast-1" value="{{ settingForm['aws:region'] }}">
+            <input class="form-control"
+                   id="settingForm[app:region]"
+                   type="text"
+                   name="settingForm[aws:region]"
+                   placeholder="例: ap-northeast-1"
+                   value="{{ settingForm['aws:region'] }}">
           </div>
         </div>
 
         <div class="form-group">
           <label for="settingForm[aws:bucket]" class="col-xs-3 control-label">{{ t('app_setting.bucket name') }}</label>
           <div class="col-xs-6">
-            <input class="form-control" type="text" name="settingForm[aws:bucket]" placeholder="例: crowi"  value="{{ settingForm['aws:bucket'] }}">
+            <input class="form-control"
+                   id="settingForm[aws:bucket]"
+                   type="text"
+                   name="settingForm[aws:bucket]"
+                   placeholder="例: crowi"
+                   value="{{ settingForm['aws:bucket'] }}">
           </div>
         </div>
 
         <div class="form-group">
           <label for="settingForm[aws:accessKeyId]" class="col-xs-3 control-label">Access Key ID</label>
           <div class="col-xs-6">
-            <input class="form-control" type="text" name="settingForm[aws:accessKeyId]" value="{{ settingForm['aws:accessKeyId'] }}">
+            <input class="form-control"
+                   id="settingForm[aws:accessKeyId]"
+                   type="text"
+                   name="settingForm[aws:accessKeyId]"
+                   value="{{ settingForm['aws:accessKeyId'] }}">
           </div>
 
         </div>
@@ -187,7 +279,11 @@
         <div class="form-group">
           <label for="settingForm[aws:secretAccessKey]" class="col-xs-3 control-label">Secret Access Key</label>
           <div class="col-xs-6">
-            <input class="form-control" type="text" name="settingForm[aws:secretAccessKey]" value="{{ settingForm['aws:secretAccessKey'] }}">
+            <input class="form-control"
+                   id="settingForm[aws:secretAccessKey]"
+                   type="text"
+                   name="settingForm[aws:secretAccessKey]"
+                   value="{{ settingForm['aws:secretAccessKey'] }}">
           </div>
         </div>
 
@@ -207,17 +303,23 @@
         <p class="well">{{ t('app_setting.Enable plugin loading') }}</p>
 
         <div class="form-group">
-          <label for="settingForm[plugin:isEnabledPlugins]" class="col-xs-3 control-label">{{ t('app_setting.Load plugins') }}</label>
+          <label class="col-xs-3 control-label">{{ t('app_setting.Load plugins') }}</label>
           <div class="col-xs-6">
 
             <div class="btn-group btn-toggle" data-toggle="buttons">
               <label class="btn btn-default btn-rounded btn-outline {% if settingForm['plugin:isEnabledPlugins'] %}active{% endif %}" data-active-class="primary">
-                <input name="settingForm[plugin:isEnabledPlugins]" value="true" type="radio"
-                    {% if true === settingForm['plugin:isEnabledPlugins'] %}checked{% endif %}> ON
+                <input name="settingForm[plugin:isEnabledPlugins]"
+                       value="true"
+                       type="radio"
+                       {% if true === settingForm['plugin:isEnabledPlugins'] %}checked{% endif %}>
+                ON
               </label>
               <label class="btn btn-default btn-rounded btn-outline {% if !settingForm['plugin:isEnabledPlugins'] %}active{% endif %}" data-active-class="default">
-                <input name="settingForm[plugin:isEnabledPlugins]" value="false" type="radio"
-                    {% if !settingForm['plugin:isEnabledPlugins'] %}checked{% endif %}> OFF
+                <input name="settingForm[plugin:isEnabledPlugins]"
+                       value="false"
+                       type="radio"
+                       {% if !settingForm['plugin:isEnabledPlugins'] %}checked{% endif %}>
+                OFF
               </label>
             </div>
           </div>
@@ -237,7 +339,7 @@
   </div>
 
   <script>
-    $('#appSettingForm, #mailSettingForm, #awsSettingForm, #pluginSettingForm').each(function() {
+    $('#appSettingForm, #siteUrlSettingForm, #mailSettingForm, #awsSettingForm, #pluginSettingForm').each(function() {
       $(this).submit(function()
       {
         function showMessage(formId, msg, status) {
@@ -285,6 +387,32 @@
       });
     });
 
+    /**
+     * The following script sets the class name 'unused' to the cell in from-env-vars column
+     * when the value of the corresponding cell from the database is not empty.
+     * It is used to indicate that the system does not use a value from the environment variables by setting a css style.
+     *
+     * TODO The following script is duplicated from saml.html. It is desirable to integrate those in the future.
+     */
+    $('.settings-table tbody tr').each(function(_, element) {
+      const inputElemFromDB      = $('td:nth-of-type(1) input[type="text"], td:nth-of-type(1) textarea', element);
+      const inputElemFromEnvVars = $('td:nth-of-type(2) input[type="text"], td:nth-of-type(2) textarea', element);
+
+      // initialize
+      addClassToUnusedInputElemFromEnvVars(inputElemFromDB, inputElemFromEnvVars);
+
+      // set keyup event handler
+      inputElemFromDB.keyup(function () { addClassToUnusedInputElemFromEnvVars(inputElemFromDB, inputElemFromEnvVars) });
+    });
+
+    function addClassToUnusedInputElemFromEnvVars(inputElemFromDB, inputElemFromEnvVars) {
+      if (inputElemFromDB.val() === '') {
+        inputElemFromEnvVars.parent().removeClass('unused');
+      }
+      else {
+        inputElemFromEnvVars.parent().addClass('unused');
+      }
+    };
   </script>
 
 </div>

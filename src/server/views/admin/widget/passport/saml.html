@@ -3,95 +3,321 @@
   <legend class="alert-anchor">{{ t("security_setting.SAML.name") }} {{ t("security_setting.configuration") }}</legend>
 
   {% set nameForIsSamlEnabled = "settingForm[security:passport-saml:isEnabled]" %}
-  {% set isSamlEnabled = settingForm['security:passport-saml:isEnabled'] %}
+  {% set isSamlEnabled  = getConfig('crowi', 'security:passport-saml:isEnabled') %}
+  {% set useOnlyEnvVars = getConfig('crowi', 'security:passport-saml:useOnlyEnvVarsForSomeOptions') %}
+  {% set siteUrl = getConfig('crowi', 'app:siteUrl') || '[INVALID]' %}
+  {% set callbackUrl = siteUrl + '/passport/saml/callback' %}
+
+  {% if useOnlyEnvVars %}
+    <p class="alert alert-info">
+      {{ t("security_setting.SAML.note for the only env option", "SAML_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS") }}
+    </p>
+  {% endif %}
 
   <div class="form-group">
-    <label for="{{nameForIsSamlEnabled}}" class="col-xs-3 control-label">{{ t("security_setting.SAML.name") }}</label>
+    <label class="col-xs-3 control-label">{{ t("security_setting.SAML.name") }}</label>
     <div class="col-xs-6">
-      <div class="btn-group btn-toggle" data-toggle="buttons">
+      <div class="btn-group btn-toggle {% if useOnlyEnvVars %}btn-group-disabled{% endif %}" data-toggle="buttons">
         <label class="btn btn-default btn-rounded btn-outline {% if isSamlEnabled %}active{% endif %}" data-active-class="primary">
-          <input name="{{nameForIsSamlEnabled}}" value="true" type="radio"
-              {% if true === isSamlEnabled %}checked{% endif %}> ON
+          <input name="{{nameForIsSamlEnabled}}"
+                 value="true"
+                 type="radio"
+                 {% if true === isSamlEnabled %}checked{% endif %}
+                 {% if useOnlyEnvVars %}readonly{% endif %}> ON
         </label>
         <label class="btn btn-default btn-rounded btn-outline {% if !isSamlEnabled %}active{% endif %}" data-active-class="default">
-          <input name="{{nameForIsSamlEnabled}}" value="false" type="radio"
-              {% if !isSamlEnabled %}checked{% endif %}> OFF
+          <input name="{{nameForIsSamlEnabled}}"
+                 value="false"
+                 type="radio"
+                 {% if !isSamlEnabled %}checked{% endif %}
+                 {% if useOnlyEnvVars %}readonly{% endif %}> OFF
         </label>
       </div>
     </div>
   </div>
+
+  <div class="form-group">
+    <label class="col-xs-3 control-label">{{ t("security_setting.callback_URL") }}</label>
+    <div class="col-xs-6">
+      <input class="form-control"
+             type="text"
+             value="{{ callbackUrl }}"
+             readonly>
+      <p class="help-block small">{{ t("security_setting.desc_of_callback_URL", 'SAML Identity') }}</p>
+      {% if !getConfig('crowi', 'app:siteUrl') %}
+      <div class="alert alert-danger">
+        <i class="icon-exclamation"></i> {{ t("security_setting.alert_siteUrl_is_not_set", '<a href="/admin/app">' + t('App settings') + '<i class="icon-login"></i></a>') }}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
   <fieldset id="passport-saml-hide-when-disabled" {%if !isSamlEnabled %}style="display: none;"{% endif %}>
 
-    <div class="form-group">
-      <label for="settingForm[security:passport-saml:entryPoint]" class="col-xs-3 control-label">{{ t("security_setting.SAML.entry_point") }}</label>
-      <div class="col-xs-6">
-        <input class="form-control" type="text" name="settingForm[security:passport-saml:entryPoint]" value="{{ settingForm['security:passport-saml:entryPoint'] || '' }}">
-        <p class="help-block">
-          <small>
-            {{ t("security_setting.Use env var if empty", "SAML_ENTRY_POINT") }}
-          </small>
-        </p>
-      </div>
+    {% set missingMandatoryConfigKeys = getSamlMissingMandatoryConfigKeys() %}
+    {% if missingMandatoryConfigKeys.length !== 0 %}
+    <div class="alert alert-danger">
+      {{ t("security_setting.missing mandatory configs") }}
+      <ul>
+        {% for missingMandatoryConfigKey in missingMandatoryConfigKeys %}
+        <li>{{ t("security_setting.form_item_name." + missingMandatoryConfigKey) }}</li>
+        {% endfor %}
+      </ul>
     </div>
+    {% endif %}
 
-    <div class="form-group">
-      <label class="col-xs-3 control-label">{{ t("security_setting.callback_URL") }}</label>
-      <div class="col-xs-6">
-        <input class="form-control" type="text" value="{% if settingForm['app:siteUrl'] %}{{ settingForm['app:siteUrl'] }}{% else %}[INVALID] {% endif %}/passport/saml/callback" readonly>
-        <p class="help-block small">{{ t("security_setting.desc_of_callback_URL", 'SAML Identity') }}</p>
-        {% if !settingForm['app:siteUrl'] %}
-        <div class="alert alert-danger">
-          <i class="icon-exclamation"></i> {{ t("security_setting.alert_siteUrl_is_not_set", '<a href="/admin/app">' + t('App settings') + '<i class="icon-login"></i></a>') }}
-        </div>
-        {% endif %}
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label for="settingForm[security:passport-saml:issuer]" class="col-xs-3 control-label">{{ t("security_setting.SAML.issuer") }}</label>
-      <div class="col-xs-6">
-        <input class="form-control" type="text" name="settingForm[security:passport-saml:issuer]" value="{{ settingForm['security:passport-saml:issuer'] || '' }}">
-        <p class="help-block">
-          <small>
-            {{ t("security_setting.Use env var if empty", "SAML_ISSUER") }}
-          </small>
-        </p>
-      </div>
-    </div>
+    <h4>Basic Settings</h4>
+    <table class="table settings-table {% if useOnlyEnvVars %}use-only-env-vars{% endif %}">
+      <colgroup>
+        <col class="item-name">
+        <col class="from-db">
+        <col class="from-env-vars">
+      </colgroup>
+      <thead>
+        <tr><th></th><th>Database</th><th>Environment variables</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>{{ t("security_setting.form_item_name.security:passport-saml:entryPoint") }}</th>
+          <td>
+            <input class="form-control"
+                   type="text"
+                   name="settingForm[security:passport-saml:entryPoint]"
+                   value="{{ getConfigFromDB('crowi', 'security:passport-saml:entryPoint') || '' }}"
+                   {% if useOnlyEnvVars %}readonly{% endif %}>
+          </td>
+          <td>
+            <input class="form-control"
+                   type="text"
+                   value="{{ getConfigFromEnvVars('crowi', 'security:passport-saml:entryPoint') || '' }}"
+                   readonly>
+            <p class="help-block">
+              <small>
+                {{ t("security_setting.SAML.Use env var if empty", "SAML_ENTRY_POINT") }}
+              </small>
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <th>{{ t("security_setting.form_item_name.security:passport-saml:issuer") }}</th>
+          <td>
+            <input class="form-control"
+                   type="text"
+                   name="settingForm[security:passport-saml:issuer]"
+                   value="{{ getConfigFromDB('crowi', 'security:passport-saml:issuer') || '' }}"
+                   {% if useOnlyEnvVars %}readonly{% endif %}>
+          </td>
+          <td>
+            <input class="form-control"
+                   type="text"
+                   value="{{ getConfigFromEnvVars('crowi', 'security:passport-saml:issuer') || '' }}"
+                   readonly>
+            <p class="help-block">
+              <small>
+                {{ t("security_setting.SAML.Use env var if empty", "SAML_ISSUER") }}
+              </small>
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <th>{{ t("security_setting.form_item_name.security:passport-saml:cert") }}</th>
+          <td>
+            <textarea class="form-control input-sm"
+                      type="text"
+                      rows="5"
+                      name="settingForm[security:passport-saml:cert]"
+                      {% if useOnlyEnvVars %}readonly{% endif %}
+            >{{ getConfigFromDB('crowi', 'security:passport-saml:cert') || '' }}</textarea>
+            <p class="help-block">
+              <small>
+                {{ t("security_setting.SAML.cert_detail") }}
+              </small>
+            </p>
+            <p>
+              <small>
+                e.g.
+                <pre>-----BEGIN CERTIFICATE-----
+MIICBzCCAXACCQD4US7+0A/b/zANBgkqhkiG9w0BAQsFADBIMQswCQYDVQQGEwJK
+UDEOMAwGA1UECAwFVG9reW8xFTATBgNVBAoMDFdFU0VFSywgSW5jLjESMBAGA1UE
+...
+crmVwBzbloUO2l6k1ibwD2WVwpdxMKIF5z58HfKAvxZAzCHE7kMEZr1ge30WRXQA
+pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
+-----END CERTIFICATE-----</pre>
+              </small>
+            </p>
+          </td>
+          <td>
+            <textarea class="form-control input-sm"
+                      type="text"
+                      rows="5"
+                      readonly
+            >{{ getConfigFromEnvVars('crowi', 'security:passport-saml:cert') || '' }}</textarea>
+            <p class="help-block">
+              <small>
+                {{ t("security_setting.SAML.Use env var if empty", "SAML_CERT") }}
+              </small>
+            </p>
+          </td>
+        </tr>
+      </tbody>
+    </table>
 
     <h4>Attribute Mapping</h4>
 
-    <div class="form-group">
-      <label for="settingForm[security:passport-saml:attrMapId]" class="col-xs-3 control-label">Identifier</label>
-      <div class="col-xs-6">
-        <input class="form-control" type="text"
-            name="settingForm[security:passport-saml:attrMapId]" value="{{ settingForm['security:passport-saml:attrMapId'] || '' }}">
-        <p class="help-block">
-          <small>
-            {{ t("security_setting.SAML.id_detail") }}
-          </small>
-        </p>
-      </div>
-    </div>
+    <table class="table settings-table {% if useOnlyEnvVars %}use-only-env-vars{% endif %}">
+      <colgroup>
+        <col class="item-name">
+        <col class="from-db">
+        <col class="from-env-vars">
+      </colgroup>
+      <thead>
+        <tr><th></th><th>Database</th><th>Environment variables</th></tr>
+      </thead>
+      <tbody>
+      <tr>
+        <th>{{ t("security_setting.form_item_name.security:passport-saml:attrMapId") }}</th>
+        <td>
+          <input class="form-control"
+                 type="text"
+                 name="settingForm[security:passport-saml:attrMapId]"
+                 value="{{ getConfigFromDB('crowi', 'security:passport-saml:attrMapId') || '' }}"
+                 {% if useOnlyEnvVars %}readonly{% endif %}>
+          <p class="help-block">
+            <small>
+              {{ t("security_setting.SAML.id_detail") }}
+            </small>
+          </p>
+        </td>
+        <td>
+          <input class="form-control"
+                 type="text"
+                 value="{{ getConfigFromEnvVars('crowi', 'security:passport-saml:attrMapId') || '' }}"
+                 readonly>
+          <p class="help-block">
+            <small>
+              {{ t("security_setting.SAML.Use env var if empty", "SAML_ATTR_MAPPING_ID") }}
+            </small>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <th>{{ t("security_setting.form_item_name.security:passport-saml:attrMapUsername") }}</th>
+        <td>
+          <input class="form-control"
+                 type="text"
+                 name="settingForm[security:passport-saml:attrMapUsername]"
+                 value="{{ getConfigFromDB('crowi', 'security:passport-saml:attrMapUsername') || '' }}"
+                 {% if useOnlyEnvVars %}readonly{% endif %}>
+          <p class="help-block">
+            <small>
+              {{ t("security_setting.SAML.username_detail") }}
+            </small>
+          </p>
+        </td>
+        <td>
+          <input class="form-control"
+                 type="text"
+                 value="{{ getConfigFromEnvVars('crowi', 'security:passport-saml:attrMapUsername') || '' }}"
+                 readonly>
+          <p class="help-block">
+            <small>
+              {{ t("security_setting.SAML.Use env var if empty", "SAML_ATTR_MAPPING_USERNAME") }}
+            </small>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <th>{{ t("security_setting.form_item_name.security:passport-saml:attrMapMail") }}</th>
+        <td>
+          <input class="form-control"
+                 type="text"
+                 name="settingForm[security:passport-saml:attrMapMail]"
+                 value="{{ getConfigFromDB('crowi', 'security:passport-saml:attrMapMail') || '' }}"
+                 {% if useOnlyEnvVars %}readonly{% endif %}>
+          <p class="help-block">
+            <small>
+              {{ t("security_setting.SAML.mapping_detail", t("Email")) }}
+            </small>
+        </td>
+        <td>
+          <input class="form-control"
+                 type="text"
+                 value="{{ getConfigFromEnvVars('crowi', 'security:passport-saml:attrMapMail') || '' }}"
+                 readonly>
+          <p class="help-block">
+            <small>
+              {{ t("security_setting.SAML.Use env var if empty", "SAML_ATTR_MAPPING_MAIL") }}
+            </small>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <th>{{ t("security_setting.form_item_name.security:passport-saml:attrMapFirstName") }}</th>
+        <td>
+          <input class="form-control"
+                 type="text"
+                 name="settingForm[security:passport-saml:attrMapFirstName]"
+                 value="{{ getConfigFromDB('crowi', 'security:passport-saml:attrMapFirstName') || '' }}"
+                 {% if useOnlyEnvVars %}readonly{% endif %}>
+          <p class="help-block">
+            <small>
+              {{ t("security_setting.SAML.mapping_detail", t("security_setting.form_item_name.security:passport-saml:attrMapFirstName")) }}
+            </small>
+          </p>
+        </td>
+        <td>
+          <input class="form-control"
+                 type="text"
+                 value="{{ getConfigFromEnvVars('crowi', 'security:passport-saml:attrMapFirstName') || '' }}"
+                 readonly>
+          <p class="help-block">
+            <small>
+              {{ t("security_setting.SAML.Use env var if empty", "SAML_ATTR_MAPPING_FIRST_NAME") }}<br>
+              {{ t("security_setting.Use default if both are empty", "firstName") }}
+            </small>
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <th>{{ t("security_setting.form_item_name.security:passport-saml:attrMapLastName") }}</th>
+        <td>
+          <input class="form-control"
+                 type="text"
+                 name="settingForm[security:passport-saml:attrMapLastName]"
+                 value="{{　getConfigFromDB('crowi', 'security:passport-saml:attrMapLastName') || '' }}"
+                 {% if useOnlyEnvVars %}readonly{% endif %}>
+          <p class="help-block">
+            <small>
+              {{ t("security_setting.SAML.mapping_detail", t("security_setting.form_item_name.security:passport-saml:attrMapLastName")) }}
+            </small>
+          </p>
+        </td>
+        <td>
+          <input class="form-control"
+                 type="text"
+                 value="{{　getConfigFromEnvVars('crowi', 'security:passport-saml:attrMapLastName') || '' }}"
+                 readonly>
+          <p class="help-block">
+            <small>
+              {{ t("security_setting.SAML.Use env var if empty", "SAML_ATTR_MAPPING_LAST_NAME") }}<br>
+              {{ t("security_setting.Use default if both are empty", "lastName") }}
+            </small>
+          </p>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+    <h4>Attribute Mapping Options</h4>
 
     <div class="form-group">
-      <label for="settingForm[security:passport-saml:attrMapUsername]" class="col-xs-3 control-label">Username</label>
-      <div class="col-xs-6">
-        <input class="form-control" type="text"
-            name="settingForm[security:passport-saml:attrMapUsername]" value="{{ settingForm['security:passport-saml:attrMapUsername'] || '' }}">
-        <p class="help-block">
-          <small>
-            {{ t("security_setting.SAML.username_detail") }}
-          </small>
-        </p>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <div class="col-xs-6 col-xs-offset-3">
+      <div class="col-xs-offset-1">
         <div class="checkbox checkbox-info">
-          <input type="checkbox" id="bindByUserName-SAML" name="settingForm[security:passport-saml:isSameUsernameTreatedAsIdenticalUser]" value="1"
-              {% if settingForm['security:passport-saml:isSameUsernameTreatedAsIdenticalUser'] %}checked{% endif %} />
+          <input id="bindByUserName-SAML"
+                 type="checkbox"
+                 name="settingForm[security:passport-saml:isSameUsernameTreatedAsIdenticalUser]"
+                 value="1"
+                 {% if getConfig('crowi', 'security:passport-saml:isSameUsernameTreatedAsIdenticalUser') %}checked{% endif %} />
           <label for="bindByUserName-SAML">
             {{ t("security_setting.Treat username matching as identical", "username") }}
           </label>
@@ -105,23 +331,13 @@
     </div>
 
     <div class="form-group">
-      <label for="settingForm[security:passport-saml:attrMapMail]" class="col-xs-3 control-label">Mail</label>
-      <div class="col-xs-6">
-        <input class="form-control" type="text"
-            name="settingForm[security:passport-saml:attrMapMail]" value="{{ settingForm['security:passport-saml:attrMapMail'] || '' }}">
-        <p class="help-block">
-          <small>
-            {{ t("security_setting.SAML.mapping_detail", t("Email")) }}
-          </small>
-        </p>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <div class="col-xs-6 col-xs-offset-3">
+      <div class="col-xs-offset-1">
         <div class="checkbox checkbox-info">
-          <input type="checkbox" id="bindByEmail-SAML" name="settingForm[security:passport-saml:isSameEmailTreatedAsIdenticalUser]" value="1"
-              {% if settingForm['security:passport-saml:isSameEmailTreatedAsIdenticalUser'] %}checked{% endif %} />
+          <input id="bindByEmail-SAML"
+                 type="checkbox"
+                 name="settingForm[security:passport-saml:isSameEmailTreatedAsIdenticalUser]"
+                 value="1"
+                 {% if getConfig('crowi', 'security:passport-saml:isSameEmailTreatedAsIdenticalUser') %}checked{% endif %} />
           <label for="bindByEmail-SAML">
             {{ t("security_setting.Treat email matching as identical", "email") }}
           </label>
@@ -131,59 +347,6 @@
             </small>
           </p>
         </div>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label for="settingForm[security:passport-saml:attrMapFirstName]" class="col-xs-3 control-label">{{ t("security_setting.SAML.First Name") }}</label>
-      <div class="col-xs-6">
-        <input class="form-control" type="text" placeholder="Default: firstName"
-            name="settingForm[security:passport-saml:attrMapFirstName]" value="{{ settingForm['security:passport-saml:attrMapFirstName'] || '' }}">
-        <p class="help-block">
-          <small>
-            {{ t("security_setting.SAML.mapping_detail", t("security_setting.SAML.First Name")) }}
-          </small>
-        </p>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label for="settingForm[security:passport-saml:attrMapLastName]" class="col-xs-3 control-label">{{ t("security_setting.SAML.Last Name") }}</label>
-      <div class="col-xs-6">
-        <input class="form-control" type="text" placeholder="Default: lastName"
-            name="settingForm[security:passport-saml:attrMapLastName]" value="{{ settingForm['security:passport-saml:attrMapLastName'] || '' }}">
-        <p class="help-block">
-          <small>
-            {{ t("security_setting.SAML.mapping_detail", t("security_setting.SAML.Last Name")) }}
-          </small>
-        </p>
-      </div>
-    </div>
-
-    <h4>Options</h4>
-
-    <div class="form-group">
-      <label for="settingForm[security:passport-saml:cert]" class="col-xs-3 control-label">Certificate</label>
-      <div class="col-xs-6">
-        <textarea class="form-control input-sm" type="text" rows="5" name="settingForm[security:passport-saml:cert]">{{ settingForm['security:passport-saml:cert'] || '' }}</textarea>
-        <p class="help-block">
-          <small>
-            {{ t("security_setting.SAML.cert_detail1") }}<br>
-            {{ t("security_setting.SAML.cert_detail2") }}
-          </small>
-        </p>
-        <p>
-          <small>
-            e.g.
-            <pre>-----BEGIN CERTIFICATE-----
-MIICBzCCAXACCQD4US7+0A/b/zANBgkqhkiG9w0BAQsFADBIMQswCQYDVQQGEwJK
-UDEOMAwGA1UECAwFVG9reW8xFTATBgNVBAoMDFdFU0VFSywgSW5jLjESMBAGA1UE
-...
-crmVwBzbloUO2l6k1ibwD2WVwpdxMKIF5z58HfKAvxZAzCHE7kMEZr1ge30WRXQA
-pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
------END CERTIFICATE-----</pre>
-          </small>
-        </p>
       </div>
     </div>
 
@@ -199,6 +362,10 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
 </form>
 
 <script>
+  $('.btn-group-disabled').on('click', '.btn', function() {
+    return false;
+  });
+
   $('input[name="settingForm[security:passport-saml:isEnabled]"]').change(function() {
     const isEnabled = ($(this).val() === "true");
 
@@ -209,5 +376,32 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
       $('#passport-saml-hide-when-disabled').hide(400);
     }
   });
+
+
+  /**
+   * The following script sets the class name 'unused' to the cell in from-env-vars column
+   * when the value of the corresponding cell from the database is not empty.
+   * It is used to indicate that the system does not use a value from the environment variables by setting a css style.
+   * This behavior is disabled when the system is in the use-only-env-vars mode.
+   */
+  $('.settings-table:not(.use-only-env-vars) tbody tr').each(function(_, element) {
+    const inputElemFromDB      = $('td:nth-of-type(1) input[type="text"], td:nth-of-type(1) textarea', element);
+    const inputElemFromEnvVars = $('td:nth-of-type(2) input[type="text"], td:nth-of-type(2) textarea', element);
+
+    // initialize
+    addClassToUnusedInputElemFromEnvVars(inputElemFromDB, inputElemFromEnvVars);
+
+    // set keyup event handler
+    inputElemFromDB.keyup(function () { addClassToUnusedInputElemFromEnvVars(inputElemFromDB, inputElemFromEnvVars) });
+  });
+
+  function addClassToUnusedInputElemFromEnvVars(inputElemFromDB, inputElemFromEnvVars) {
+    if (inputElemFromDB.val() === '') {
+      inputElemFromEnvVars.parent().removeClass('unused');
+    }
+    else {
+      inputElemFromEnvVars.parent().addClass('unused');
+    }
+  };
 </script>
 

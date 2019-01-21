@@ -377,11 +377,10 @@ export  $initHighlight;</code></pre>
 
       <form action="/_api/admin/customize/title" method="post" class="form-horizontal" id="customtitleSettingForm" role="form">
         <fieldset>
-          <legend>カスタム Title</legend>
+          <legend>{{ t('customize_page.custom_title') }}</legend>
 
           <p class="well">
-            <code>&lt;title&gt;</code>タグのコンテンツをカスタマイズできます。<br>
-            <code>&#123;&#123;sitename&#125;&#125;</code>がサイト名、<code>&#123;&#123;page&#125;&#125;</code>がページ名またはページパスに置換されます
+            {{ t('customize_page.custom_title_detail', '&lt;title&gt;', '&#123;&#123;sitename&#125;&#125;', '&#123;&#123;page&#125;&#125;') }}
           </p>
 
           <p class="help-block">
@@ -408,16 +407,15 @@ export  $initHighlight;</code></pre>
 
       <form action="/_api/admin/customize/header" method="post" class="form-horizontal" id="customheaderSettingForm" role="form">
       <fieldset>
-        <legend>カスタムヘッダーHTML</legend>
+        <legend>{{ t('customize_page.custom_header') }}</legend>
 
         <p class="well">
-          システム全体に適用される HTML を記述できます。<code>&lt;header&gt;</code> タグ内の他の <code>&lt;script&gt;</code> タグ読み込み前に展開されます。<br>
-          変更の反映はページの更新が必要です。
+          {{ t('customize_page.custom_header_detail', '&lt;header&gt;', '&lt;script&gt;') }}
         </p>
 
         <p class="help-block">
-          Examples:
-          <pre class="hljs"><code>&lt;script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/languages/yaml.min.js" defer&gt;&lt;/script&gt;</code></pre>
+          {{ t('Example') }}:
+          <pre class="hljs"><code>&lt;script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.13.0/build/languages/yaml.min.js" defer&gt;&lt;/script&gt;</code></pre>
         </p>
 
         <div class="form-group">
@@ -428,7 +426,7 @@ export  $initHighlight;</code></pre>
           <div class="col-xs-12">
             <p class="help-block text-right">
               <i class="fa fa-fw fa-keyboard-o" aria-hidden="true"></i>
-              Ctrl+Space でコード補完
+              {{ t("customize_page.ctrl_space") }}
             </p>
           </div>
         </div>
