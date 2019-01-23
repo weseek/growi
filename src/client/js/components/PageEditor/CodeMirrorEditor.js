@@ -621,8 +621,8 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
   getNavbarItems() {
     // The following styles will be removed after creating icons for the editor navigation bar.
-    const paddingTopBottom54 = {'paddingTop': '5px', 'paddingBottom': '4px'};
-    const paddingBottom6 = {'paddingBottom': '6px'};
+    const paddingTopBottom54 = {'paddingTop': '6px', 'paddingBottom': '5px'};
+    const paddingBottom6 = {'paddingBottom': '7px'};
     const fontSize18 = {'fontSize': '18px'};
 
     return [
