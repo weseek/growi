@@ -1,7 +1,11 @@
 CHANGES
 ========
 
-## 3.3.5-RC
+## 3.3.7-RC
+
+* 
+
+## 3.3.6
 
 * Improvement: Site URL settings must be set
 * Improvement: Site URL settings can be set with environment variable
@@ -22,6 +26,8 @@ CHANGES
     * mongoose-gridfs
     * sinon
     * sinon-chai
+
+## 3.3.5 (Missing number)
 
 ## 3.3.4
 
