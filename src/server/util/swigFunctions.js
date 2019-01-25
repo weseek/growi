@@ -136,8 +136,7 @@ module.exports = function(crowi, app, req, locals) {
   };
 
   locals.passportSamlLoginEnabled = function() {
-    let config = crowi.getConfig();
-    return locals.isEnabledPassport() && config.crowi['security:passport-saml:isEnabled'];
+    return locals.isEnabledPassport() && locals.getConfig('crowi', 'security:passport-saml:isEnabled');
   };
 
   locals.getSamlMissingMandatoryConfigKeys = function() {

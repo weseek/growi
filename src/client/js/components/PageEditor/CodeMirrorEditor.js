@@ -95,6 +95,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.renderLoadingKeymapOverlay = this.renderLoadingKeymapOverlay.bind(this);
     this.renderCheatsheetModalButton = this.renderCheatsheetModalButton.bind(this);
 
+    this.makeHeaderHandler = this.makeHeaderHandler.bind(this);
     this.showHandsonTableHandler = this.showHandsonTableHandler.bind(this);
   }
 
@@ -547,12 +548,133 @@ export default class CodeMirrorEditor extends AbstractEditor {
     );
   }
 
+  /**
+   * return a function to replace a selected range with prefix + selection + suffix
+   *
+   * The cursor after replacing is inserted between the selection and the suffix.
+   */
+  createReplaceSelectionHandler(prefix, suffix) {
+    return () => {
+      const cm = this.getCodeMirror();
+      const selection = cm.getDoc().getSelection();
+      const curStartPos = cm.getCursor('from');
+      const curEndPos = cm.getCursor('to');
+
+      const curPosAfterReplacing = {};
+      curPosAfterReplacing.line = curEndPos.line;
+      if (curStartPos.line === curEndPos.line) {
+        curPosAfterReplacing.ch = curEndPos.ch + prefix.length;
+      }
+      else {
+        curPosAfterReplacing.ch = curEndPos.ch;
+      }
+
+      cm.getDoc().replaceSelection(prefix + selection + suffix);
+      cm.setCursor(curPosAfterReplacing);
+      cm.focus();
+    };
+  }
+
+  /**
+   * return a function to add prefix to selected each lines
+   *
+   * The cursor after editing is inserted between the end of the selection.
+   */
+  createAddPrefixToEachLinesHandler(prefix) {
+    return () => {
+      const cm = this.getCodeMirror();
+      const startLineNum = cm.getCursor('from').line;
+      const endLineNum = cm.getCursor('to').line;
+
+      const lines = [];
+      for (let i = startLineNum; i <= endLineNum; i++) {
+        lines.push(prefix + cm.getDoc().getLine(i));
+      }
+      const replacement = lines.join('\n') + '\n';
+      cm.getDoc().replaceRange(replacement, {line: startLineNum, ch: 0}, {line: endLineNum + 1, ch: 0});
+
+      cm.setCursor(endLineNum, cm.getDoc().getLine(endLineNum).length);
+      cm.focus();
+    };
+  }
+
+  /**
+   * make a selected line a header
+   *
+   * The cursor after editing is inserted between the end of the line.
+   */
+  makeHeaderHandler() {
+    const cm = this.getCodeMirror();
+    const lineNum = cm.getCursor('from').line;
+    const line = cm.getDoc().getLine(lineNum);
+    let prefix = '#';
+    if (!line.startsWith('#')) {
+      prefix += ' ';
+    }
+    cm.getDoc().replaceRange(prefix, {line: lineNum, ch: 0}, {line: lineNum, ch: 0});
+    cm.focus();
+  }
+
   showHandsonTableHandler() {
     this.refs.handsontableModal.show(mtu.getMarkdownTable(this.getCodeMirror()));
   }
 
   getNavbarItems() {
-    return <Button bsSize="small" onClick={ this.showHandsonTableHandler }><img src="/images/icons/editor/table.svg" width="14" /></Button>;
+    // The following styles will be removed after creating icons for the editor navigation bar.
+    const paddingTopBottom54 = {'paddingTop': '6px', 'paddingBottom': '5px'};
+    const paddingBottom6 = {'paddingBottom': '7px'};
+    const fontSize18 = {'fontSize': '18px'};
+
+    return [
+      <Button key='nav-item-bold' bsSize="small" title={'Bold'}
+              onClick={ this.createReplaceSelectionHandler('**', '**') }>
+        <i className={'fa fa-bold'}></i>
+      </Button>,
+      <Button key='nav-item-italic' bsSize="small" title={'Italic'}
+              onClick={ this.createReplaceSelectionHandler('*', '*') }>
+        <i className={'fa fa-italic'}></i>
+      </Button>,
+      <Button key='nav-item-strikethough' bsSize="small" title={'Strikethrough'}
+              onClick={ this.createReplaceSelectionHandler('~~', '~~') }>
+        <i className={'fa fa-strikethrough'}></i>
+      </Button>,
+      <Button key='nav-item-header' bsSize="small" title={'Heading'}
+              onClick={ this.makeHeaderHandler }>
+        <i className={'fa fa-header'}></i>
+      </Button>,
+      <Button key='nav-item-code' bsSize="small" title={'Inline Code'}
+              onClick={ this.createReplaceSelectionHandler('`', '`') }>
+        <i className={'fa fa-code'}></i>
+      </Button>,
+      <Button key='nav-item-quote' bsSize="small" title={'Quote'}
+              onClick={ this.createAddPrefixToEachLinesHandler('> ') } style={paddingBottom6}>
+        <i className={'ti-quote-right'}></i>
+      </Button>,
+      <Button key='nav-item-ul' bsSize="small" title={'List'}
+              onClick={ this.createAddPrefixToEachLinesHandler('- ') } style={paddingTopBottom54}>
+        <i className={'ti-list'} style={fontSize18}></i>
+      </Button>,
+      <Button key='nav-item-ol' bsSize="small" title={'Numbered List'}
+              onClick={ this.createAddPrefixToEachLinesHandler('1. ') } style={paddingTopBottom54}>
+        <i className={'ti-list-ol'} style={fontSize18}></i>
+      </Button>,
+      <Button key='nav-item-checkbox' bsSize="small" title={'Check List'}
+              onClick={ this.createAddPrefixToEachLinesHandler('- [ ] ') } style={paddingBottom6}>
+        <i className={'ti-check-box'}></i>
+      </Button>,
+      <Button key='nav-item-link' bsSize="small" title={'Link'}
+              onClick={ this.createReplaceSelectionHandler('[', ']()') } style={paddingBottom6}>
+        <i className={'icon-link'}></i>
+      </Button>,
+      <Button key='nav-item-image' bsSize="small" title={'Image'}
+              onClick={ this.createReplaceSelectionHandler('![', ']()') } style={paddingBottom6}>
+        <i className={'icon-picture'}></i>
+      </Button>,
+      <Button key='nav-item-table' bsSize="small" title={'Table'}
+              onClick={ this.showHandsonTableHandler }>
+        <img src="/images/icons/editor/table.svg" width="14" height="14" />
+      </Button>
+    ];
   }
 
   render() {
