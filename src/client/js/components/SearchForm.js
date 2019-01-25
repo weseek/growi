@@ -1,6 +1,6 @@
 import React from 'react';
 
-import SearchTypeahead from '../SearchTypeahead';
+import SearchTypeahead from './SearchTypeahead';
 
 // SearchTypeahead wrapper
 export default class SearchForm extends React.Component {
