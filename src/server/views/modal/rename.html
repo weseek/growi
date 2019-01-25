@@ -20,7 +20,6 @@
               {% if searchConfigured() %}
               <div id="rename-page-name-input" class="page-name-input"></div>
               {% else %}
-              <span class="input-group-addon">{{ baseUrl }}</span>
               <input type="text" class="form-control" name="new_path" id="newPageName" value="{{ page.path }}">
               {% endif %}
             </div>
