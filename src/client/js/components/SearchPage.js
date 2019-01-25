@@ -3,7 +3,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import SearchForm from './SearchPage/SearchForm';
+import SearchPageForm from './SearchPage/SearchPageForm';
 import SearchResult from './SearchPage/SearchResult';
 
 export default class SearchPage extends React.Component {
@@ -92,7 +92,7 @@ export default class SearchPage extends React.Component {
     return (
       <div>
         <div className="search-page-input">
-          <SearchForm
+          <SearchPageForm
             crowi={this.props.crowi}
             onSearchFormChanged={this.search}
             keyword={this.state.searchingKeyword}
