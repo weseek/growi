@@ -284,7 +284,7 @@ exports.applicationNotInstalled = function() {
   return function(req, res, next) {
     var config = req.config;
 
-    if (Object.keys(config.crowi).length !== 1) {
+    if (Object.keys(config.crowi).length !== 0) {
       req.flash('errorMessage', 'Application already installed.');
       return res.redirect('admin'); // admin以外はadminRequiredで'/'にリダイレクトされる
     }
@@ -324,7 +324,7 @@ exports.applicationInstalled = function() {
   return function(req, res, next) {
     var config = req.config;
 
-    if (Object.keys(config.crowi).length === 1) { // app:url is set by process
+    if (Object.keys(config.crowi).length === 0) {
       return res.redirect('/installer');
     }
 

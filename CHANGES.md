@@ -1,14 +1,23 @@
 CHANGES
 ========
 
-## 3.3.5-RC
+## 3.3.7-RC
+
+* Feature: Editor toolbar
+* Fix: Anonymous users couldn't search
+    * Introduced by 3.3.6
+* Support: Prepare to suppoert Node.js v10
+* Support: Upgrade libs
+    * node-sass
+
+## 3.3.6
 
 * Improvement: Site URL settings must be set
 * Improvement: Site URL settings can be set with environment variable
 * Fix: "Anyone with the link" ACL doesn't work correctly
-    * Introduced 3.3.0
+    * Introduced by 3.3.0
 * Fix: Related pages list of /admin/user-group-detail/xxx doesn't show anything
-    * Introduced 3.3.0
+    * Introduced by 3.3.0
 * Fix: Diff of revision contents doesn't appeared when notifing with slack
 * Fix: NPE occured on /admin/security when Crowi Classic Auth Mechanism is set
 * Fix: Coudn't render Timing Diagram with PlantUML
@@ -22,6 +31,8 @@ CHANGES
     * mongoose-gridfs
     * sinon
     * sinon-chai
+
+## 3.3.5 (Missing number)
 
 ## 3.3.4
 
@@ -50,7 +61,7 @@ CHANGES
 ## 3.3.2
 
 * Fix: Specified Group ACL is not persisted correctly
-    * Introduced 3.3.0
+    * Introduced by 3.3.0
 
 ## 3.3.1
 

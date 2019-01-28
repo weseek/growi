@@ -195,12 +195,7 @@
   {% include '../modal/create_page.html' %}
   {% endblock  %} {# layout_head_nav #}
 
-  {% if !getConfig('crowi', 'app:siteUrl') %}
-  <div class="alert alert-danger mb-0">
-    <i class="icon-exclamation"></i>
-    {{ t("security_setting.alert_siteUrl_is_not_set", '<a href="/admin/app">' + t('App settings') + '<i class="icon-login"></i></a>') }}
-  </div>
-  {% endif %}
+  {% block head_warn %}{% endblock %}
 
   {% block sidebar %}
   <!-- Left navbar-header -->
