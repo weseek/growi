@@ -9,10 +9,13 @@ export default class SearchPageForm extends React.Component {
     super(props);
 
     this.state = {
+      keyword: this.props.keyword,
       searchedKeyword: this.props.keyword,
     };
 
     this.search = this.search.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
+    this.onInputChange = this.onInputChange.bind(this);
   }
 
   search(keyword) {
@@ -22,6 +25,15 @@ export default class SearchPageForm extends React.Component {
     }
   }
 
+  onSubmit(event) { // submit with button
+    event.preventDefault(); // prevent refreshing page
+    this.search(this.state.keyword);
+  }
+
+  onInputChange(input) {
+    this.setState({keyword: input});
+  }
+
   render() {
     return (
       <form ref='form'
@@ -29,10 +41,10 @@ export default class SearchPageForm extends React.Component {
         onSubmit={this.onSubmit}
       >
         <SearchForm
-          ref='searchForm'
           crowi={this.props.crowi}
           onSubmit={this.search}
           keyword={this.state.searchedKeyword}
+          onInputChange={this.onInputChange}
         />
         <span className="input-group-btn">
           <button type="submit" className="btn btn-default">

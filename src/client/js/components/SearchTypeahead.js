@@ -92,6 +92,7 @@ export default class SearchTypeahead extends React.Component {
 
   onInputChange(text) {
     this.setState({input: text});
+    this.props.onInputChange(text);
     if (text === '') {
       this.setState({pages: []});
     }
@@ -186,6 +187,7 @@ SearchTypeahead.propTypes = {
   onSearchError:   PropTypes.func,
   onChange:        PropTypes.func,
   onSubmit:        PropTypes.func,
+  onInputChange:   PropTypes.func,
   emptyLabel:      PropTypes.string,
   placeholder:     PropTypes.string,
   keywordOnInit:   PropTypes.string,

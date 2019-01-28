@@ -68,10 +68,10 @@ export default class SearchForm extends React.Component {
 
     return (
       <SearchTypeahead
-        ref = 'searchTypeahead'
         crowi={this.props.crowi}
         onChange={this.onChange}
         onSubmit={this.props.onSubmit}
+        onInputChange={this.props.onInputChange}
         onSearchError={this.onSearchError}
         emptyLabel={emptyLabel}
         placeholder="Search ..."
@@ -86,6 +86,7 @@ SearchForm.propTypes = {
   crowi: PropTypes.object.isRequired,
   keyword: PropTypes.string,
   onSubmit: PropTypes.func.isRequired,
+  onInputChange: PropTypes.func,
 };
 
 SearchForm.defaultProps = {
