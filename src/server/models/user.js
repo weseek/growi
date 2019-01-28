@@ -14,7 +14,7 @@ module.exports = function(crowi) {
   const STATUS_SUSPENDED  = 3;
   const STATUS_DELETED    = 4;
   const STATUS_INVITED    = 5;
-  const USER_PUBLIC_FIELDS = '_id image imageAttachment isEmailPublished isGravatarEnabled googleId name username email introduction status lang createdAt admin';
+  const USER_PUBLIC_FIELDS = '_id image isEmailPublished isGravatarEnabled googleId name username email introduction status lang createdAt admin';
 
   const LANG_EN    = 'en';
   const LANG_EN_US = 'en-US';
@@ -377,55 +377,33 @@ module.exports = function(crowi) {
   };
 
   userSchema.statics.findAllUsers = function(option) {
-    var User = this;
-    var option = option || {}
-      , sort = option.sort || {createdAt: -1}
-      , status = option.status || [STATUS_ACTIVE, STATUS_SUSPENDED]
-      , fields = option.fields || USER_PUBLIC_FIELDS
-      ;
+    option = option || {};
 
+    const sort = option.sort || {createdAt: -1};
+    const fields = option.fields || USER_PUBLIC_FIELDS;
+
+    let status = option.status || [STATUS_ACTIVE, STATUS_SUSPENDED];
     if (!Array.isArray(status)) {
       status = [status];
     }
 
-    return new Promise(function(resolve, reject) {
-      User
-        .find()
-        .or(status.map(s => { return {status: s} }))
-        .select(fields)
-        .sort(sort)
-        .exec(function(err, userData) {
-          if (err) {
-            return reject(err);
-          }
-
-          return resolve(userData);
-        });
-    });
+    return this.find()
+      .or(status.map(s => { return {status: s} }))
+      .select(fields)
+      .sort(sort);
   };
 
   userSchema.statics.findUsersByIds = function(ids, option) {
-    var User = this;
-    var option = option || {}
-      , sort = option.sort || {createdAt: -1}
+    option = option || {};
+
+    const sort = option.sort || {createdAt: -1}
       , status = option.status || STATUS_ACTIVE
       , fields = option.fields || USER_PUBLIC_FIELDS
       ;
 
-
-    return new Promise(function(resolve, reject) {
-      User
-        .find({ _id: { $in: ids }, status: status })
-        .select(fields)
-        .sort(sort)
-        .exec(function(err, userData) {
-          if (err) {
-            return reject(err);
-          }
-
-          return resolve(userData);
-        });
-    });
+    return this.find({ _id: { $in: ids }, status: status })
+      .select(fields)
+      .sort(sort);
   };
 
   userSchema.statics.findAdmins = function(callback) {
