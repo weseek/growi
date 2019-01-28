@@ -2,12 +2,14 @@
  * reveal.js growi-renderer plugin.
  */
 (function() {
+  let DEFAULT_SLIDE_SEPARATOR = '^\r?\n---\r?\n$';
+  let DEFAULT_NOTES_SEPARATOR = 'notes?:';
   let SCRIPT_END_PLACEHOLDER = '__SCRIPT_END__';
 
   /**
    * Retrieves the markdown contents of a slide section
    * element. Normalizes leading tabs/whitespace.
-   * Refered from The reveal.js markdown plugin.
+   * Referred from The reveal.js markdown plugin.
    * https://github.com/hakimel/reveal.js/blob/master/plugin/markdown/markdown.js
    */
   function getMarkdownFromSlide( section ) {
@@ -34,13 +36,58 @@
   }
 
   /**
+   * Inspects the given options and fills out default
+   * values for what's not defined.
+   * Referred from The reveal.js markdown plugin.
+   * https://github.com/hakimel/reveal.js/blob/master/plugin/markdown/markdown.js
+   */
+  function getSlidifyOptions( options ) {
+    options = options || {};
+    options.separator = options.separator || DEFAULT_SLIDE_SEPARATOR;
+    options.notesSeparator = options.notesSeparator || DEFAULT_NOTES_SEPARATOR;
+    options.attributes = options.attributes || '';
+
+    return options;
+  }
+
+  /**
+   * Helper function for constructing a markdown slide.
+   * Referred from The reveal.js markdown plugin.
+   * https://github.com/hakimel/reveal.js/blob/master/plugin/markdown/markdown.js
+   */
+  function createMarkdownSlide( content, options ) {
+    options = getSlidifyOptions( options );
+
+    // var notesMatch = content.split( new RegExp( options.notesSeparator, 'mgi' ) );
+
+    // if( notesMatch.length === 2 ) {
+    //   content = notesMatch[0] + '<aside class="notes">' + marked(notesMatch[1].trim()) + '</aside>';
+    // }
+
+    // prevent script end tags in the content from interfering
+    // with parsing
+    content = content.replace( /<\/script>/g, SCRIPT_END_PLACEHOLDER );
+
+    return '<script type="text/template">' + content + '</script>';
+  }
+
+  function processSlides() {
+    let sections = document.querySelectorAll( '[data-markdown]');
+    let section;
+    for (let i = 0, len = sections.length; i < len; i++) {
+      section = sections[i];
+      section.innerHTML = createMarkdownSlide( getMarkdownFromSlide( section ) );
+    }
+  }
+
+  /**
    * Converts data-markdown slides to HTML slides by GrowiRenderer.
    */
   function convertSlides() {
     let sections = document.querySelectorAll( '[data-markdown]');
     let section;
     let markdown;
-    for (let i = 0, len = sections.length; i < len; i++ ) {
+    for (let i = 0, len = sections.length; i < len; i++) {
       section = sections[i];
 
       // Only parse the same slide once
@@ -63,5 +110,6 @@
   let growiRenderer = new GrowiRenderer(parentWindow.crowi, parentWindow.crowiRenderer, {mode: 'editor'});
   growiRenderer.setup();
   // TODO: retract code block by GrowiRenderer in GC-1354.
+  processSlides();
   convertSlides();
 }());
