@@ -24,7 +24,7 @@
     let leadingTabs = text.match( /^\n?(\t*)/ )[1].length;
 
     if (leadingTabs > 0) {
-      text = text.replace( new RegExp('\\n?\\t{' + leadingTabs + '}','g'), '\n' );
+      text = text.replace( new RegExp('\\n?\\t{' + leadingTabs + '}', 'g'), '\n' );
     }
     else if (leadingWs > 1) {
       text = text.replace( new RegExp('\\n? {' + leadingWs + '}', 'g'), '\n' );
@@ -48,7 +48,9 @@
         section.setAttribute('data-markdown-parsed', 'true');
         markdown = getMarkdownFromSlide(section);
 
+        markdown = growiRenderer.preProcess(markdown);
         section.innerHTML = growiRenderer.process(markdown);
+        section.innerHTML = growiRenderer.postProcess(section.innerHTML);
       }
     }
   }
