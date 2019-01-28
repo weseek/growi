@@ -246,6 +246,9 @@ module.exports = function(crowi, app) {
     if (!req.file) {
       return res.json(ApiResponse.error('File error.'));
     }
+    if (!req.user) {
+      return res.json(ApiResponse.error('param "user" must be set.'));
+    }
 
     const file = req.file;
 
@@ -258,6 +261,7 @@ module.exports = function(crowi, app) {
     let attachment;
     try {
       attachment = await createAttachment(file, req.user);
+      await req.user.updateImage(attachment);
     }
     catch (err) {
       logger.error(err);

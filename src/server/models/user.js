@@ -1,26 +1,27 @@
+const debug = require('debug')('growi:models:user');
+const logger = require('@alias/logger')('growi:models:user');
+const path = require('path');
+const mongoose = require('mongoose');
+const uniqueValidator = require('mongoose-unique-validator');
+const mongoosePaginate = require('mongoose-paginate');
+const ObjectId = mongoose.Schema.Types.ObjectId;
+const crypto = require('crypto');
+const async = require('async');
+
 module.exports = function(crowi) {
-  const debug = require('debug')('growi:models:user')
-    , logger = require('@alias/logger')('growi:models:user')
-    , path = require('path')
-    , mongoose = require('mongoose')
-    , mongoosePaginate = require('mongoose-paginate')
-    , uniqueValidator = require('mongoose-unique-validator')
-    , crypto = require('crypto')
-    , async = require('async')
+  const STATUS_REGISTERED = 1;
+  const STATUS_ACTIVE     = 2;
+  const STATUS_SUSPENDED  = 3;
+  const STATUS_DELETED    = 4;
+  const STATUS_INVITED    = 5;
+  const USER_PUBLIC_FIELDS = '_id image imageAttachment isEmailPublished isGravatarEnabled googleId name username email introduction status lang createdAt admin';
 
-    , STATUS_REGISTERED = 1
-    , STATUS_ACTIVE     = 2
-    , STATUS_SUSPENDED  = 3
-    , STATUS_DELETED    = 4
-    , STATUS_INVITED    = 5
-    , USER_PUBLIC_FIELDS = '_id image isEmailPublished isGravatarEnabled googleId name username email introduction status lang createdAt admin' // TODO: どこか別の場所へ...
+  const LANG_EN    = 'en';
+  const LANG_EN_US = 'en-US';
+  const LANG_EN_GB = 'en-GB';
+  const LANG_JA    = 'ja';
 
-    , LANG_EN    = 'en'
-    , LANG_EN_US = 'en-US'
-    , LANG_EN_GB = 'en-GB'
-    , LANG_JA    = 'ja'
-
-    , PAGE_ITEMS        = 50
+  const PAGE_ITEMS = 50;
 
   let userSchema;
   let userEvent;
@@ -34,6 +35,7 @@ module.exports = function(crowi) {
   userSchema = new mongoose.Schema({
     userId: String,
     image: String,
+    imageAttachment: { type: ObjectId, ref: 'Attachment' },
     isGravatarEnabled: { type: Boolean, default: false },
     isEmailPublished: { type: Boolean, default: true },
     googleId: String,
@@ -202,15 +204,23 @@ module.exports = function(crowi) {
     });
   };
 
-  userSchema.methods.updateImage = function(image, callback) {
-    this.image = image;
-    this.save(function(err, userData) {
-      return callback(err, userData);
-    });
+  userSchema.methods.updateImage = async function(attachment) {
+    await this.deleteImage();
+
+    this.imageAttachment = attachment;
+    return this.save();
   };
 
-  userSchema.methods.deleteImage = function(callback) {
-    return this.updateImage(null, callback);
+  userSchema.methods.deleteImage = async function() {
+    // the 'image' field became DEPRECATED in v3.3.7
+    this.image = undefined;
+
+    if (this.imageAttachment != null) {
+      this.imageAttachment.removeWithSubstance();
+    }
+
+    this.imageAttachment = undefined;
+    return this.save();
   };
 
   userSchema.methods.updateGoogleId = function(googleId, callback) {
