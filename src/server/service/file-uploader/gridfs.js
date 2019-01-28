@@ -21,17 +21,14 @@ module.exports = function(crowi) {
   // create promisified method
   AttachmentFile.promisifiedWrite = util.promisify(AttachmentFile.write).bind(AttachmentFile);
 
-  // delete a file
-  lib.deleteFile = async function(fileId, filePath) {
-    logger.debug('File deletion: ' + fileId);
-    const file = await getFile(filePath);
-    const id = file.id;
-    AttachmentFile.unlinkById(id, function(error, unlinkedAttachment) {
+  lib.deleteFile = async function(attachment) {
+    const attachmentFile = await AttachmentFile.findOne({ filename: attachment.fileName });
+
+    AttachmentFile.unlinkById(attachmentFile._id, function(error, unlinkedFile) {
       if (error) {
         throw new Error(error);
       }
     });
-    // clearCache(fileId);
   };
 
   /**

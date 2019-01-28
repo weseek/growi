@@ -70,7 +70,7 @@ module.exports = function(crowi) {
       Attachment.find({ page: pageId})
       .then((attachments) => {
         for (let attachment of attachments) {
-          Attachment.removeAttachment(attachment).then((res) => {
+          attachment.removeWithSubstance().then((res) => {
             // do nothing
           }).catch((err) => {
             debug('Attachment remove error', err);
@@ -85,24 +85,9 @@ module.exports = function(crowi) {
 
   };
 
-  attachmentSchema.statics.removeAttachment = function(attachment) {
-    const Attachment = this;
-    const filePath = attachment.filePath;
-
-    return new Promise((resolve, reject) => {
-      Attachment.remove({_id: attachment._id}, (err, data) => {
-        if (err) {
-          return reject(err);
-        }
-
-        fileUploader.deleteFile(attachment._id, filePath)
-        .then(data => {
-          resolve(data); // this may null
-        }).catch(err => {
-          reject(err);
-        });
-      });
-    });
+  attachmentSchema.methods.removeWithSubstance = async function() {
+    await fileUploader.deleteFile(this);
+    return await this.remove();
   };
 
   return mongoose.model('Attachment', attachmentSchema);

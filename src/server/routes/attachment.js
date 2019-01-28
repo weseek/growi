@@ -285,7 +285,7 @@ module.exports = function(crowi, app) {
     .then(function(data) {
       const attachment = data;
 
-      Attachment.removeAttachment(attachment)
+      attachment.removeWithSubstance()
       .then(data => {
         debug('removeAttachment', data);
         return res.json(ApiResponse.success({}));

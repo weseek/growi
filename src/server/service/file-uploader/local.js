@@ -17,26 +17,22 @@ module.exports = function(crowi) {
       filePath = path.posix.join(basePath, attachment.filePath);
     }
     else {
-    const dirName = (attachment.page != null)
-      ? 'attachment'
-      : 'user';
+      const dirName = (attachment.page != null)
+        ? 'attachment'
+        : 'user';
       filePath = path.posix.join(basePath, dirName, attachment.fileName);
     }
 
     return filePath;
   }
 
-  lib.deleteFile = function(fileId, filePath) {
-    logger.debug('File deletion: ' + filePath);
-    return new Promise(function(resolve, reject) {
-      fs.unlink(path.posix.join(basePath, filePath), function(err) {
-        if (err) {
-          return reject(err);
-        }
+  lib.deleteFile = async function(attachment) {
+    const filePath = getFilePathOnStorage(attachment);
+    return lib.deleteFileByFilePath(filePath);
+  };
 
-        resolve();
-      });
-    });
+  lib.deleteFileByFilePath = async function(filePath) {
+    return fs.unlinkSync(filePath);
   };
 
   lib.uploadFile = async function(fileStream, attachment) {

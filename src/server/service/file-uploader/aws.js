@@ -49,7 +49,12 @@ module.exports = function(crowi) {
     return filePath;
   }
 
-  lib.deleteFile = function(fileId, filePath) {
+  lib.deleteFile = async function(attachment) {
+    const filePath = getFilePathOnStorage(attachment);
+    return lib.deleteFileByFilePath(filePath);
+  };
+
+  lib.deleteFileByFilePath = async function(filePath) {
     const s3 = S3Factory();
     const awsConfig = getAwsConfig();
 
@@ -58,19 +63,7 @@ module.exports = function(crowi) {
       Key: filePath,
     };
 
-    return new Promise((resolve, reject) => {
-      s3.deleteObject(params, (err, data) => {
-        if (err) {
-          logger.debug('Failed to delete object from s3', err);
-          return reject(err);
-        }
-
-        // asynclonousely delete cache
-        lib.clearCache(fileId);
-
-        resolve(data);
-      });
-    });
+    return s3.deleteObject(params).promise();
   };
 
   lib.uploadFile = function(fileStream, attachment) {
