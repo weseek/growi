@@ -355,13 +355,12 @@ $(function() {
   });
   $('#renamePageForm, #unportalize-form').submit(function(e) {
     // create name-value map
-    let newPagePath = $('input', this).val();
     let nameValueMap = {};
     $(this).serializeArray().forEach((obj) => {
-      nameValueMap[obj.name] = obj.value;
+      nameValueMap[obj.name] = obj.value; // nameValueMap['q'] is renamed page path
     });
 
-    const data = $(this).serialize() + `&new_path=${newPagePath}&socketClientId=${crowi.getSocketClientId()}`;
+    const data = $(this).serialize() + `&socketClientId=${crowi.getSocketClientId()}`;
 
     $.ajax({
       type: 'POST',
@@ -375,7 +374,7 @@ $(function() {
         $('#renamePage .msg, #unportalize .msg').hide();
         $(`#renamePage .msg-${res.code}, #unportalize .msg-${res.code}`).show();
         $('#renamePage #linkToNewPage, #unportalize #linkToNewPage').html(`
-          <a href="${nameValueMap.new_path}">${nameValueMap.new_path} <i class="icon-login"></i></a>
+          <a href="${nameValueMap.q}">${nameValueMap.q} <i class="icon-login"></i></a>
         `);
       }
       else {
@@ -394,16 +393,15 @@ $(function() {
   });
   $('#duplicatePageForm, #unportalize-form').submit(function(e) {
     // create name-value map
-    let newPagePath = $('input', this).val();
     let nameValueMap = {};
     $(this).serializeArray().forEach((obj) => {
-      nameValueMap[obj.name] = obj.value;
+      nameValueMap[obj.name] = obj.value; // nameValueMap['q'] is duplicated page path
     });
 
     $.ajax({
       type: 'POST',
       url: '/_api/pages.duplicate',
-      data: $(this).serialize() + `&new_path=${newPagePath}`,
+      data: $(this).serialize(),
       dataType: 'json'
     }).done(function(res) {
       // error
@@ -411,7 +409,7 @@ $(function() {
         $('#duplicatePage .msg').hide();
         $(`#duplicatePage .msg-${res.code}`).show();
         $('#duplicatePage #linkToNewPage').html(`
-          <a href="${nameValueMap.new_path}">${nameValueMap.new_path} <i class="icon-login"></i></a>
+          <a href="${nameValueMap.q}">${nameValueMap.q} <i class="icon-login"></i></a>
         `);
       }
       else {
