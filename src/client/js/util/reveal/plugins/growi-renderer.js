@@ -6,12 +6,11 @@
   let sections = document.querySelectorAll( '[data-markdown]'), section;
   for (let i = 0, len = sections.length; i < len; i++ ) {
     section = sections[i];
-    // remove all existing children.
-    while (section.firstChild) section.removeChild(section.firstChild);
-    // add h1 DOM 'Hoge'.
-    let h1 = document.createElement('h1');
-    h1.appendChild(document.createTextNode('Hoge'));
-    section.appendChild(h1);
+    let divElement = document.createElement('div');
+    divElement.appendChild(
+      document.createTextNode(section.getElementsByTagName('script')[0].innerText)
+    );
+    section.appendChild(divElement);
   }
   const GrowiRenderer = require('../../GrowiRenderer').default;
   // parent window DOM (crowi.js) of presentation window.
