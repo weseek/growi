@@ -30,7 +30,7 @@ export default class SearchPageForm extends React.Component {
     this.search(this.state.keyword);
   }
 
-  onInputChange(input) {
+  onInputChange(input) { // for only submitting with button
     this.setState({keyword: input});
   }
 

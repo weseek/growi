@@ -204,4 +204,5 @@ SearchTypeahead.defaultProps = {
   emptyLabel:      null,
   placeholder:     '',
   keywordOnInit:   '',
+  onInputChange: () => {},
 };

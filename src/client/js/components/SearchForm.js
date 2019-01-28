@@ -90,4 +90,5 @@ SearchForm.propTypes = {
 };
 
 SearchForm.defaultProps = {
+  onInputChange: () => {},
 };
