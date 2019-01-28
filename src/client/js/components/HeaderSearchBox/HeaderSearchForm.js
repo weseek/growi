@@ -24,8 +24,8 @@ export default class HeaderSearchForm extends React.Component {
   componentWillUnmount() {
   }
 
-  onSubmit(query) {
-    this.refs.form.submit(query);
+  onSubmit() {
+    this.refs.form.submit();
   }
 
   render() {
@@ -41,7 +41,6 @@ export default class HeaderSearchForm extends React.Component {
               crowi={this.crowi}
               onSubmit={this.onSubmit}
               placeholder="Search ..."
-              keyword=''
             />
             <InputGroup.Button>
               <Button type="submit" bsStyle="link">

@@ -9,12 +9,10 @@ export default class SearchPageForm extends React.Component {
     super(props);
 
     this.state = {
-      keyword: this.props.keyword,
       searchedKeyword: this.props.keyword,
-      searchError: null,
     };
 
-    this.onSubmit = this.onSubmit.bind(this);
+    this.search = this.search.bind(this);
   }
 
   search(keyword) {
@@ -24,31 +22,23 @@ export default class SearchPageForm extends React.Component {
     }
   }
 
-  onSubmit(event) {
-    if (event !== '') {
-      event.preventDefault(); // prevent refreshing page of form tag
-    }
-    const input = this.refs.searchTypeahead.state.input;
-    this.setState({keyword: input});
-    this.search(input);
-  }
-
   render() {
     return (
       <form ref='form'
-      className="form form-group input-group"
-       onSubmit={this.onSubmit}>
+        className="form form-group input-group"
+        onSubmit={this.onSubmit}
+      >
         <SearchForm
-          ref='searchTypeahead'
+          ref='searchForm'
           crowi={this.props.crowi}
-          onSubmit={this.onSubmit}
-          keyword={this.state.keyword}
+          onSubmit={this.search}
+          keyword={this.state.searchedKeyword}
         />
-          <span className="input-group-btn">
-            <button type="submit" className="btn btn-default">
-              <i className="search-top-icon icon-magnifier"></i>
-            </button>
-          </span>
+        <span className="input-group-btn">
+          <button type="submit" className="btn btn-default">
+            <i className="search-top-icon icon-magnifier"></i>
+          </button>
+        </span>
       </form>
     );
   }

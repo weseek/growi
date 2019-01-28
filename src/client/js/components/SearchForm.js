@@ -1,5 +1,5 @@
 import React from 'react';
-
+import PropTypes from 'prop-types';
 import SearchTypeahead from './SearchTypeahead';
 
 // SearchTypeahead wrapper
@@ -9,7 +9,6 @@ export default class SearchForm extends React.Component {
     super(props);
 
     this.state = {
-      keyword: this.props.keyword,
       searchError: null,
     };
 
@@ -69,6 +68,7 @@ export default class SearchForm extends React.Component {
 
     return (
       <SearchTypeahead
+        ref = 'searchTypeahead'
         crowi={this.props.crowi}
         onChange={this.onChange}
         onSubmit={this.props.onSubmit}
@@ -76,13 +76,16 @@ export default class SearchForm extends React.Component {
         emptyLabel={emptyLabel}
         placeholder="Search ..."
         promptText={this.getHelpElement()}
-        keywordOnInit={this.state.keyword}
+        keywordOnInit={this.props.keyword}
       />
     );
   }
 }
 
 SearchForm.propTypes = {
+  crowi: PropTypes.object.isRequired,
+  keyword: PropTypes.string,
+  onSubmit: PropTypes.func.isRequired,
 };
 
 SearchForm.defaultProps = {

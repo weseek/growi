@@ -28,7 +28,6 @@ export default class SearchTypeahead extends React.Component {
     this.search = this.search.bind(this);
     this.onInputChange = this.onInputChange.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
-    this.onChange = this.onChange.bind(this);
     this.dispatchSubmit = this.dispatchSubmit.bind(this);
     this.getRestoreFormButton = this.getRestoreFormButton.bind(this);
     this.renderMenuItemChildren = this.renderMenuItemChildren.bind(this);
@@ -104,18 +103,9 @@ export default class SearchTypeahead extends React.Component {
     }
   }
 
-  onChange(selected) {
-    const page = selected[0];  // should be single page selected
-
-    // navigate to page
-    if (page != null) {
-      window.location = page.path;
-    }
-  }
-
   dispatchSubmit() {
     if (this.props.onSubmit != null) {
-      this.props.onSubmit(this.state.keyword);
+      this.props.onSubmit(this.state.input);
     }
   }
 
