@@ -24,24 +24,24 @@ import GrowiRenderer from '../../GrowiRenderer';
    * Referred from The reveal.js markdown plugin.
    * https://github.com/hakimel/reveal.js/blob/master/plugin/markdown/markdown.js
    */
-  function getMarkdownFromSlide( section ) {
+  function getMarkdownFromSlide(section) {
     // look for a <script> or <textarea data-template> wrapper
-    let template = section.querySelector( '[data-template]' ) || section.querySelector( 'script' );
+    let template = section.querySelector('[data-template]') || section.querySelector('script');
 
     // strip leading whitespace so it isn't evaluated as code
-    let text = ( template || section ).textContent;
+    let text = (template || section).textContent;
 
     // restore script end tags
-    text = text.replace( new RegExp( SCRIPT_END_PLACEHOLDER, 'g' ), '</script>' );
+    text = text.replace(new RegExp(SCRIPT_END_PLACEHOLDER, 'g'), '</script>');
 
-    let leadingWs = text.match( /^\n?(\s*)/ )[1].length;
-    let leadingTabs = text.match( /^\n?(\t*)/ )[1].length;
+    let leadingWs = text.match(/^\n?(\s*)/)[1].length;
+    let leadingTabs = text.match(/^\n?(\t*)/)[1].length;
 
     if (leadingTabs > 0) {
-      text = text.replace( new RegExp('\\n?\\t{' + leadingTabs + '}', 'g'), '\n' );
+      text = text.replace(new RegExp('\\n?\\t{' + leadingTabs + '}', 'g'), '\n');
     }
     else if (leadingWs > 1) {
-      text = text.replace( new RegExp('\\n? {' + leadingWs + '}', 'g'), '\n' );
+      text = text.replace(new RegExp('\\n? {' + leadingWs + '}', 'g'), '\n');
     }
 
     return text;
@@ -53,7 +53,7 @@ import GrowiRenderer from '../../GrowiRenderer';
    * Referred from The reveal.js markdown plugin.
    * https://github.com/hakimel/reveal.js/blob/master/plugin/markdown/markdown.js
    */
-  function getSlidifyOptions( options ) {
+  function getSlidifyOptions(options) {
     options = options || {};
     options.separator = options.separator || DEFAULT_SLIDE_SEPARATOR;
     options.notesSeparator = options.notesSeparator || DEFAULT_NOTES_SEPARATOR;
@@ -67,28 +67,28 @@ import GrowiRenderer from '../../GrowiRenderer';
    * Referred from The reveal.js markdown plugin.
    * https://github.com/hakimel/reveal.js/blob/master/plugin/markdown/markdown.js
    */
-  function createMarkdownSlide( content, options ) {
-    options = getSlidifyOptions( options );
+  function createMarkdownSlide(content, options) {
+    options = getSlidifyOptions(options);
 
-    // var notesMatch = content.split( new RegExp( options.notesSeparator, 'mgi' ) );
+    // let notesMatch = content.split(new RegExp(options.notesSeparator, 'mgi'));
 
-    // if( notesMatch.length === 2 ) {
-    //   content = notesMatch[0] + '<aside class="notes">' + marked(notesMatch[1].trim()) + '</aside>';
+    // if (notesMatch.length === 2) {
+    //   content = notesMatch[0] + '<aside class="notes">' + growiRenderer.process(notesMatch[1].trim()) + '</aside>';
     // }
 
     // prevent script end tags in the content from interfering
     // with parsing
-    content = content.replace( /<\/script>/g, SCRIPT_END_PLACEHOLDER );
+    content = content.replace(/<\/script>/g, SCRIPT_END_PLACEHOLDER);
 
     return '<script type="text/template">' + content + '</script>';
   }
 
   function processSlides() {
-    let sections = document.querySelectorAll( '[data-markdown]');
+    let sections = document.querySelectorAll('[data-markdown]');
     let section;
     for (let i = 0, len = sections.length; i < len; i++) {
       section = sections[i];
-      section.innerHTML = createMarkdownSlide( getMarkdownFromSlide( section ) );
+      section.innerHTML = createMarkdownSlide(getMarkdownFromSlide(section));
     }
   }
 
@@ -96,7 +96,7 @@ import GrowiRenderer from '../../GrowiRenderer';
    * Converts data-markdown slides to HTML slides by GrowiRenderer.
    */
   function convertSlides() {
-    let sections = document.querySelectorAll( '[data-markdown]');
+    let sections = document.querySelectorAll('[data-markdown]');
     let section;
     let markdown;
     for (let i = 0, len = sections.length; i < len; i++) {
