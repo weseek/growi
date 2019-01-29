@@ -1,3 +1,5 @@
+import GrowiRenderer from '../../GrowiRenderer';
+
 /**
  * reveal.js growi-renderer plugin.
  */
@@ -6,7 +8,6 @@
   let parentWindow = window.parent;
 
   // create GrowiRenderer instance and setup.
-  const GrowiRenderer = require('../../GrowiRenderer').default;
   let growiRenderer = new GrowiRenderer(parentWindow.crowi, parentWindow.crowiRenderer, {mode: 'editor'});
   growiRenderer.setup();
 
