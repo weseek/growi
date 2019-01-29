@@ -1,10 +1,21 @@
 /**
  * reveal.js growi-renderer plugin.
  */
-(function() {
-  let DEFAULT_SLIDE_SEPARATOR = '^\r?\n---\r?\n$';
-  let DEFAULT_NOTES_SEPARATOR = 'notes?:';
-  let SCRIPT_END_PLACEHOLDER = '__SCRIPT_END__';
+(function(root, factory) {
+  // parent window DOM (crowi.js) of presentation window.
+  let parentWindow = window.parent;
+
+  // create GrowiRenderer instance and setup.
+  const GrowiRenderer = require('../../GrowiRenderer').default;
+  let growiRenderer = new GrowiRenderer(parentWindow.crowi, parentWindow.crowiRenderer, {mode: 'editor'});
+  growiRenderer.setup();
+
+  let growiRendererPlugin = factory(growiRenderer);
+  growiRendererPlugin.initialize();
+}(this, function(growiRenderer) {
+  const DEFAULT_SLIDE_SEPARATOR = '^\r?\n---\r?\n$';
+  const DEFAULT_NOTES_SEPARATOR = 'notes?:';
+  const SCRIPT_END_PLACEHOLDER = '__SCRIPT_END__';
 
   /**
    * Retrieves the markdown contents of a slide section
@@ -102,14 +113,11 @@
     }
   }
 
-  const GrowiRenderer = require('../../GrowiRenderer').default;
-  // parent window DOM (crowi.js) of presentation window.
-  let parentWindow = window.parent;
-
-  // create GrowiRenderer instance and setup.
-  let growiRenderer = new GrowiRenderer(parentWindow.crowi, parentWindow.crowiRenderer, {mode: 'editor'});
-  growiRenderer.setup();
-  // TODO: retract code block by GrowiRenderer in GC-1354.
-  processSlides();
-  convertSlides();
-}());
+  // API
+  return {
+    initialize: function() {
+      processSlides();
+      convertSlides();
+    }
+  };
+}));
