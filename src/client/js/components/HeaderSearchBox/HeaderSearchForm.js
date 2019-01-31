@@ -15,8 +15,14 @@ export default class HeaderSearchForm extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      isScopeChildren: false,
+    };
+
     this.crowi = window.crowi; // FIXME
 
+    this.onClickAllPages = this.onClickAllPages.bind(this);
+    this.onClickChildren = this.onClickChildren.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
   }
 
@@ -26,11 +32,22 @@ export default class HeaderSearchForm extends React.Component {
   componentWillUnmount() {
   }
 
+  onClickAllPages() {
+    this.setState({ isScopeChildren: false });
+  }
+
+  onClickChildren() {
+    this.setState({ isScopeChildren: true });
+  }
+
   onSubmit() {
     this.refs.form.submit();
   }
 
   render() {
+
+    const scopeLabel = this.state.isScopeChildren ? 'Children' : 'All pages';
+
     return (
       <form
         ref='form'
@@ -40,9 +57,9 @@ export default class HeaderSearchForm extends React.Component {
         <FormGroup>
           <InputGroup>
           <InputGroup.Button className="btn-group-dropdown-scope">
-            <DropdownButton id="dbScope" title="All pages">
-              <MenuItem href="#">All pages</MenuItem>
-              <MenuItem href="#">Under this page</MenuItem>
+            <DropdownButton id="dbScope" title={scopeLabel}>
+              <MenuItem onClick={this.onClickAllPages}>All pages</MenuItem>
+              <MenuItem onClick={this.onClickChildren}>Children</MenuItem>
             </DropdownButton>
           </InputGroup.Button>
             <SearchForm
