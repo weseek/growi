@@ -28,6 +28,9 @@
  * GROWI search-top
  */
 .search-top {
+  .btn-group-dropdown-scope .dropdown-toggle {
+    background-color: rgba($bodycolor, 0.8);
+  }
   .rbt-input.form-control {
     background-color: rgba($bodycolor, 0.9);
   }

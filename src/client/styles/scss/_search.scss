@@ -55,11 +55,13 @@
   }
 
   .btn-group-dropdown-scope .dropdown-toggle {
+    min-width: 95px;
+    height: 30px;
     border-top-left-radius: 40px;
     border-bottom-left-radius: 40px;
-    height: 30px;
     padding-top: 4px;
     padding-bottom: 4px;
+    padding-right: 4px;
   }
   // using react-bootstrap-typeahead
   // see: https://github.com/ericgio/react-bootstrap-typeahead
@@ -67,7 +69,6 @@
     border: none;
     border-top-right-radius: 40px;
     border-bottom-right-radius: 40px;
-    padding-top: 6px;
     height: 30px;
 
     .rbt-input-wrapper {
@@ -91,7 +92,7 @@
   margin-bottom: 10px;
 
   .rbt-input.form-control {
-    width: 230px;
+    width: 200px;
     transition: 0.3s ease-out;
     // focus
     &.focus {
