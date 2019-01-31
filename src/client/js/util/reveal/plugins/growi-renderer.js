@@ -86,6 +86,8 @@ import GrowiRenderer from '../../GrowiRenderer';
   /**
    * Parses a data string into multiple slides based
    * on the passed in separator arguments.
+   * Referred from The reveal.js markdown plugin.
+   * https://github.com/hakimel/reveal.js/blob/master/plugin/markdown/markdown.js
    */
   function slidify(markdown, options) {
     options = getSlidifyOptions(options);
