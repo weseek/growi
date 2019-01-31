@@ -9,7 +9,6 @@ import GrowiRenderer from '../../GrowiRenderer';
 
   // create GrowiRenderer instance and setup.
   let growiRenderer = new GrowiRenderer(parentWindow.crowi, parentWindow.crowiRenderer, {mode: 'editor'});
-  growiRenderer.setup();
 
   let growiRendererPlugin = factory(growiRenderer);
   growiRendererPlugin.initialize();
@@ -182,6 +181,8 @@ import GrowiRenderer from '../../GrowiRenderer';
     let sections = document.querySelectorAll('[data-markdown]');
     let section;
     let markdown;
+    const interceptorManager = growiRenderer.crowi.interceptorManager;
+
     for (let i = 0, len = sections.length; i < len; i++) {
       section = sections[i];
 
@@ -189,9 +190,13 @@ import GrowiRenderer from '../../GrowiRenderer';
       if (!section.getAttribute('data-markdown-parsed')) {
         section.setAttribute('data-markdown-parsed', 'true');
         markdown = getMarkdownFromSlide(section);
+        let context = { markdown };
 
-        markdown = growiRenderer.preProcess(markdown);
-        section.innerHTML = growiRenderer.process(markdown);
+        interceptorManager.process('preRender', context);
+        interceptorManager.process('prePreProcess', context);
+        context.markdown = growiRenderer.preProcess(context.markdown);
+        interceptorManager.process('postPreProcess', context);
+        section.innerHTML = growiRenderer.process(context.markdown);
         section.innerHTML = growiRenderer.postProcess(section.innerHTML);
       }
     }
@@ -200,6 +205,7 @@ import GrowiRenderer from '../../GrowiRenderer';
   // API
   return {
     initialize: function() {
+      growiRenderer.setup();
       processSlides();
       convertSlides();
     }
