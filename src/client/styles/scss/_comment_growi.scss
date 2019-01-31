@@ -100,7 +100,6 @@
     }
 
 
-
     position: relative;
     margin-top: 2em;
     // user icon
@@ -117,15 +116,15 @@
     .comment-write {
       margin-bottom: 0.5em;
     }
-    .tab-content{
-      padding-top: 10px;
-    }
     .comment-form-comment {
       height: 80px;
       &:focus, &:not(:invalid) {
         transition: height 0.2s ease-out;
         height: 180px;
       }
+    }
+    .comment-form-preview {
+      padding-top: 0.5em;
     }
   }
 }
