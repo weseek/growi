@@ -4,6 +4,7 @@ CHANGES
 ## 3.3.7-RC
 
 * Feature: Editor toolbar
+* Improvement: Suggest page path when moving/duplicating/searching
 * Fix: Anonymous users couldn't search
     * Introduced by 3.3.6
 * Support: Prepare to suppoert Node.js v10
