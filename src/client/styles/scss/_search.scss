@@ -54,20 +54,17 @@
     right: 26px;
   }
 
-  .input-group-btn {
-    position: absolute;
-    top: 0;
-    right: 0;
-    .btn {
-      padding: 4px 10px;
-    }
+  .btn-group-dropdown-scope .dropdown-toggle {
+    border-top-left-radius: 40px;
+    border-bottom-left-radius: 40px;
+    height: 30px;
+    padding-top: 4px;
+    padding-bottom: 4px;
   }
-
   // using react-bootstrap-typeahead
   // see: https://github.com/ericgio/react-bootstrap-typeahead
   .rbt-input.form-control {
     border: none;
-    border-radius: 40px;
     border-top-right-radius: 40px;
     border-bottom-right-radius: 40px;
     padding-top: 6px;
@@ -77,6 +74,15 @@
       margin-left: 8px;
     }
   }
+  .btn-group-submit-search {
+    position: absolute;
+    top: 0;
+    right: 0;
+    .btn {
+      padding: 4px 10px;
+    }
+    z-index: 3;
+  }
 }
 
 // layout
@@ -85,7 +91,7 @@
   margin-bottom: 10px;
 
   .rbt-input.form-control {
-    width: 180px;
+    width: 230px;
     transition: 0.3s ease-out;
     // focus
     &.focus {
@@ -103,7 +109,7 @@
   .search-form, .form-group, .rbt-input.form-control, .input-group {
     width: 100%;
   }
-  .input-group-btn {
+  .btn-group-submit-search {
     right: 30px;
   }
 }
