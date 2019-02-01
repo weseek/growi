@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import SearchForm from './HeaderSearchBox/SearchForm';
+import HeaderSearchForm from './HeaderSearchBox/HeaderSearchForm';
 // import SearchSuggest from './HeaderSearchBox/SearchSuggest'; // omit since using react-bootstrap-typeahead in SearchForm
 
 export default class SearchBox extends React.Component {
@@ -14,7 +14,7 @@ export default class SearchBox extends React.Component {
   render() {
     return (
       <div className="search-box">
-        <SearchForm />
+        <HeaderSearchForm />
         {/* omit since using react-bootstrap-typeahead in SearchForm
         <SearchSuggest
           searchingKeyword={this.state.searchingKeyword}

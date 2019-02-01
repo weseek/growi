@@ -1,19 +1,12 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import SearchTypeahead from './SearchTypeahead';
 
-import FormGroup from 'react-bootstrap/es/FormGroup';
-import Button from 'react-bootstrap/es/Button';
-import InputGroup from 'react-bootstrap/es/InputGroup';
-
-import SearchTypeahead from '../SearchTypeahead';
-
-
-// Header.SearchForm
+// SearchTypeahead wrapper
 export default class SearchForm extends React.Component {
 
   constructor(props) {
     super(props);
-
-    this.crowi = window.crowi; // FIXME
 
     this.state = {
       searchError: null,
@@ -21,7 +14,6 @@ export default class SearchForm extends React.Component {
 
     this.onSearchError = this.onSearchError.bind(this);
     this.onChange = this.onChange.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
   }
 
   componentDidMount() {
@@ -69,47 +61,34 @@ export default class SearchForm extends React.Component {
     );
   }
 
-  onSubmit(query) {
-    this.refs.form.submit(query);
-  }
-
   render() {
     const emptyLabel = (this.state.searchError !== null)
       ? 'Error on searching.'
       : 'No matches found on title... Hit [Enter] key so that search on contents.';
 
     return (
-      <form
-        ref='form'
-        action='/_search'
-        className='search-form form-group input-group search-input-group hidden-print'
-      >
-        <FormGroup>
-          <InputGroup>
-            <SearchTypeahead
-              crowi={this.crowi}
-              onChange={this.onChange}
-              onSubmit={this.onSubmit}
-              emptyLabel={emptyLabel}
-              placeholder="Search ..."
-              promptText={this.getHelpElement()}
-            />
-            <InputGroup.Button>
-              <Button type="submit" bsStyle="link">
-                <i className="icon-magnifier"></i>
-              </Button >
-            </InputGroup.Button>
-          </InputGroup>
-        </FormGroup>
-
-      </form>
-
+      <SearchTypeahead
+        crowi={this.props.crowi}
+        onChange={this.onChange}
+        onSubmit={this.props.onSubmit}
+        onInputChange={this.props.onInputChange}
+        onSearchError={this.onSearchError}
+        emptyLabel={emptyLabel}
+        placeholder="Search ..."
+        promptText={this.getHelpElement()}
+        keywordOnInit={this.props.keyword}
+      />
     );
   }
 }
 
 SearchForm.propTypes = {
+  crowi: PropTypes.object.isRequired,
+  keyword: PropTypes.string,
+  onSubmit: PropTypes.func.isRequired,
+  onInputChange: PropTypes.func,
 };
 
 SearchForm.defaultProps = {
+  onInputChange: () => {},
 };

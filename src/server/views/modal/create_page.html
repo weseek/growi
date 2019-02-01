@@ -32,7 +32,7 @@
             <div class="d-flex create-page-input-container">
               <div class="create-page-input-row d-flex align-items-center">
                 {% if searchConfigured() %}
-                <div id="page-name-input"></div>
+                <div id="create-page-name-input" class="page-name-input"></div>
                 {% else %}
                 <input type="text" value="{{ parentPath(path) }}" class="page-name-input form-control " placeholder="{{ t('Input page name') }}" required />
                 {% endif %}
