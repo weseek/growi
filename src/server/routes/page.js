@@ -951,13 +951,13 @@ module.exports = function(crowi, app) {
    * @apiParam {String} page_id Page Id.
    * @apiParam {String} path
    * @apiParam {String} revision_id
-   * @apiParam {String} new_path
+   * @apiParam {String} q New path name.
    * @apiParam {Bool} create_redirect
    */
   api.rename = async function(req, res) {
     const pageId = req.body.page_id;
     const previousRevision = req.body.revision_id || null;
-    const newPagePath = Page.normalizePath(req.body.new_path);
+    const newPagePath = Page.normalizePath(req.body.q);
     const options = {
       createRedirectPage: req.body.create_redirect || 0,
       moveUnderTrees: req.body.move_trees || 0,
@@ -1017,11 +1017,11 @@ module.exports = function(crowi, app) {
    * @apiGroup Page
    *
    * @apiParam {String} page_id Page Id.
-   * @apiParam {String} new_path
+   * @apiParam {String} q New path name.
    */
   api.duplicate = async function(req, res) {
     const pageId = req.body.page_id;
-    const newPagePath = Page.normalizePath(req.body.new_path);
+    const newPagePath = Page.normalizePath(req.body.q);
 
     const page = await Page.findByIdAndViewer(pageId, req.user);
 

@@ -283,7 +283,9 @@ const componentMappings = {
   'bookmark-button': <BookmarkButton pageId={pageId} crowi={crowi} />,
   'bookmark-button-lg': <BookmarkButton pageId={pageId} crowi={crowi} size="lg" />,
 
-  'page-name-input': <NewPageNameInput crowi={crowi} parentPageName={pagePath} />,
+  'create-page-name-input': <NewPageNameInput crowi={crowi} parentPageName={pagePath} />,
+  'rename-page-name-input': <NewPageNameInput crowi={crowi} parentPageName={pagePath} />,
+  'duplicate-page-name-input': <NewPageNameInput crowi={crowi} parentPageName={pagePath} />,
 
 };
 // additional definitions if data exists
