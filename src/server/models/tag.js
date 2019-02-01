@@ -1,7 +1,7 @@
-// const debug = require('debug')('growi:models:tag');
+const debug = require('debug')('growi:models:tag');
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate');
-// const ObjectId = mongoose.Schema.Types.ObjectId;
+const ObjectId = mongoose.Schema.Types.ObjectId;
 
 
 /*
@@ -22,7 +22,7 @@ class Tag {
    * @memberof Tag
    */
   static get TAG_PUBLIC_FIELDS() {
-    return 'name';
+    return '_id name';
   }
 
   // /**
@@ -40,10 +40,10 @@ class Tag {
    * model static methods
    */
 
-  // すべてのタグを取得（オプション指定可）
-  static findAllTags(option) {
-    return this.find().exec();
-  }
+  // // すべてのタグを取得（オプション指定可）
+  // static findAllTags(option) {
+  //   return this.find().exec();
+  // }
 
   // /**
   //  * find all entities with pagination
@@ -105,7 +105,7 @@ class Tag {
   // }
 
   // タグ生成
-  static createTag(name) {
+  static create(name) {
     return this.create({name: name});
   }
 }

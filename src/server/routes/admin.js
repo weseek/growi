@@ -12,6 +12,7 @@ module.exports = function(crowi, app) {
   const ExternalAccount = models.ExternalAccount;
   const UserGroup = models.UserGroup;
   const UserGroupRelation = models.UserGroupRelation;
+  const Tag = models.Tag;
   const Config = models.Config;
   const GlobalNotificationSetting = models.GlobalNotificationSetting;
   const GlobalNotificationMailSetting = models.GlobalNotificationMailSetting;
