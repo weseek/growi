@@ -672,29 +672,13 @@ SearchClient.prototype.searchByPath = async function(keyword, prefix) {
   // TODO path 名だけから検索
 };
 
-SearchClient.prototype.searchKeywordUnderPath = async function(keyword, path, user, userGroups, option) {
-  const from = option.offset || null;
-  const size = option.limit || null;
-  const type = option.type || null;
-  const query = this.createSearchQuerySortedByScore();
-  this.appendCriteriaForKeywordContains(query, keyword);
-  this.appendCriteriaForPathFilter(query, path);
-
-  this.filterPagesByType(query, type);
-  await this.filterPagesByViewer(query, user, userGroups);
-
-  this.appendResultSize(query, from, size);
-
-  this.appendFunctionScore(query);
-
-  return this.search(query);
-};
-
 SearchClient.prototype.getParsedKeywords = function(keyword) {
   let matchWords = [];
   let notMatchWords = [];
   let phraseWords = [];
   let notPhraseWords = [];
+  let prefixPaths = [];
+  let notPrefixPaths = [];
 
   keyword.trim();
   keyword = keyword.replace(/\s+/g, ' ');
@@ -723,11 +707,28 @@ SearchClient.prototype.getParsedKeywords = function(keyword) {
       return;
     }
 
-    if (word.match(/^-(.+)$/)) {
-      notMatchWords.push(RegExp.$1);
+    // https://regex101.com/r/lN4LIV/1
+    const matchNegative = word.match(/^-(prefix:)?(.+)$/);
+    // https://regex101.com/r/gVssZe/1
+    const matchPositive = word.match(/^(prefix:)?(.+)$/);
+
+    if (matchNegative != null) {
+      const isPrefixCondition = (matchNegative[1] != null);
+      if (isPrefixCondition) {
+        notPrefixPaths.push(matchNegative[2]);
+      }
+      else {
+        notMatchWords.push(matchNegative[2]);
+      }
     }
-    else {
-      matchWords.push(word);
+    else if (matchPositive != null) {
+      const isPrefixCondition = (matchPositive[1] != null);
+      if (isPrefixCondition) {
+        prefixPaths.push(matchPositive[2]);
+      }
+      else {
+        matchWords.push(matchPositive[2]);
+      }
     }
   });
 
@@ -736,6 +737,8 @@ SearchClient.prototype.getParsedKeywords = function(keyword) {
     not_match: notMatchWords,
     phrase: phraseWords,
     not_phrase: notPhraseWords,
+    prefix: prefixPaths,
+    not_prefix: notPrefixPaths,
   };
 };
 
