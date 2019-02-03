@@ -156,7 +156,7 @@ export default class SearchTypeahead extends React.Component {
         <AsyncTypeahead
           {...this.props}
           ref="typeahead"
-          inputProps={{name: 'q', autoComplete: 'off'}}
+          inputProps={{autoComplete: 'off'}}
           isLoading={this.state.isLoading}
           labelKey="path"
           minLength={0}
