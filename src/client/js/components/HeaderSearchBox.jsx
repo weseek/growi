@@ -16,18 +16,24 @@ export default class HeaderSearchBox extends React.Component {
     super(props);
 
     this.state = {
+      text: '',
       isScopeChildren: false,
     };
 
+    this.onInputChange = this.onInputChange.bind(this);
     this.onClickAllPages = this.onClickAllPages.bind(this);
     this.onClickChildren = this.onClickChildren.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
+    this.search = this.search.bind(this);
   }
 
   componentDidMount() {
   }
 
   componentWillUnmount() {
+  }
+
+  onInputChange(text) {
+    this.setState({ text });
   }
 
   onClickAllPages() {
@@ -38,8 +44,18 @@ export default class HeaderSearchBox extends React.Component {
     this.setState({ isScopeChildren: true });
   }
 
-  onSubmit() {
-    this.refs.form.submit();
+  search() {
+    const url = new URL(location.href);
+    url.pathname = '/_search';
+
+    // construct search query
+    let q = this.state.text;
+    if (this.state.isScopeChildren) {
+      q += ` prefix:${location.pathname}`;
+    }
+    url.searchParams.append('q', q);
+
+    location.href = url.href;
   }
 
   render() {
@@ -47,34 +63,27 @@ export default class HeaderSearchBox extends React.Component {
     const scopeLabel = this.state.isScopeChildren ? 'Children' : 'All pages';
 
     return (
-      <form
-        ref='form'
-        action='/_search'
-        className='search-form form-group input-group search-input-group hidden-print'
-      >
-        <FormGroup>
-          <InputGroup>
-          <InputGroup.Button className="btn-group-dropdown-scope">
-            <DropdownButton id="dbScope" title={scopeLabel}>
-              <MenuItem onClick={this.onClickAllPages}>All pages</MenuItem>
-              <MenuItem onClick={this.onClickChildren}>Children</MenuItem>
-            </DropdownButton>
+      <FormGroup>
+        <InputGroup>
+        <InputGroup.Button className="btn-group-dropdown-scope">
+          <DropdownButton id="dbScope" title={scopeLabel}>
+            <MenuItem onClick={this.onClickAllPages}>All pages</MenuItem>
+            <MenuItem onClick={this.onClickChildren}>Children</MenuItem>
+          </DropdownButton>
+        </InputGroup.Button>
+          <SearchForm
+            crowi={this.props.crowi}
+            onInputChange={this.onInputChange}
+            onSubmit={this.search}
+            placeholder="Search ..."
+          />
+          <InputGroup.Button className="btn-group-submit-search">
+            <Button bsStyle="link" onClick={this.search}>
+              <i className="icon-magnifier"></i>
+            </Button >
           </InputGroup.Button>
-            <SearchForm
-              crowi={this.props.crowi}
-              onSubmit={this.onSubmit}
-              placeholder="Search ..."
-            />
-            <InputGroup.Button className="btn-group-submit-search">
-              <Button type="submit" bsStyle="link">
-                <i className="icon-magnifier"></i>
-              </Button >
-            </InputGroup.Button>
-          </InputGroup>
-        </FormGroup>
-
-      </form>
-
+        </InputGroup>
+      </FormGroup>
     );
   }
 }
