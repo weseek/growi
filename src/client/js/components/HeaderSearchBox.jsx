@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { translate } from 'react-i18next';
 
 import FormGroup from 'react-bootstrap/es/FormGroup';
 import Button from 'react-bootstrap/es/Button';
@@ -10,7 +11,7 @@ import InputGroup from 'react-bootstrap/es/InputGroup';
 import SearchForm from './SearchForm';
 
 
-export default class HeaderSearchBox extends React.Component {
+class HeaderSearchBox extends React.Component {
 
   constructor(props) {
     super(props);
@@ -59,8 +60,10 @@ export default class HeaderSearchBox extends React.Component {
   }
 
   render() {
-
-    const scopeLabel = this.state.isScopeChildren ? 'Children' : 'All pages';
+    const t = this.props.t;
+    const scopeLabel = this.state.isScopeChildren
+      ? t('header_search_box.label.This tree')
+      : 'All pages';
 
     return (
       <FormGroup>
@@ -68,10 +71,10 @@ export default class HeaderSearchBox extends React.Component {
         <InputGroup.Button className="btn-group-dropdown-scope">
           <DropdownButton id="dbScope" title={scopeLabel}>
             <MenuItem onClick={this.onClickAllPages}>All pages</MenuItem>
-            <MenuItem onClick={this.onClickChildren}>Children</MenuItem>
+            <MenuItem onClick={this.onClickChildren}>{ t('header_search_box.item_label.This tree') }</MenuItem>
           </DropdownButton>
         </InputGroup.Button>
-          <SearchForm
+          <SearchForm t={this.props.t}
             crowi={this.props.crowi}
             onInputChange={this.onInputChange}
             onSubmit={this.search}
@@ -89,5 +92,8 @@ export default class HeaderSearchBox extends React.Component {
 }
 
 HeaderSearchBox.propTypes = {
+  t: PropTypes.func.isRequired,               // i18next
   crowi: PropTypes.object.isRequired,
 };
+
+export default translate()(HeaderSearchBox);

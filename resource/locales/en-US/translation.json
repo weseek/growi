@@ -163,6 +163,14 @@
 
   "Security settings": "Security settings",
 
+  "header_search_box": {
+    "label": {
+      "This tree": "This tree"
+    },
+    "item_label": {
+      "This tree": "Only children of this tree"
+    }
+  },
 
   "page_page": {
       "notice": {

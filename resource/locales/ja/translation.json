@@ -181,6 +181,15 @@
   "Current API Token": "現在のAPI Token",
   "Update API Token": "API Tokenを更新",
 
+  "header_search_box": {
+    "label": {
+      "This tree": "この階層"
+    },
+    "item_label": {
+      "This tree": "この階層下の子ページのみ"
+    }
+  },
+
   "page_page": {
       "notice": {
           "version": "これは現在の版ではありません。",

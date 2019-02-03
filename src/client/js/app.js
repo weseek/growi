@@ -272,7 +272,7 @@ if (!pageRevisionId && draft != null) {
  *  value: React Element
  */
 const componentMappings = {
-  'search-top': <HeaderSearchBox crowi={crowi} />,
+  'search-top': <I18nextProvider i18n={i18n}><HeaderSearchBox crowi={crowi} /></I18nextProvider>,
   'search-sidebar': <HeaderSearchBox crowi={crowi} />,
   'search-page': <SearchPage crowi={crowi} crowiRenderer={crowiRenderer} />,
 
