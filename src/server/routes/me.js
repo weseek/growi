@@ -315,14 +315,6 @@ module.exports = function(crowi, app) {
     });
   };
 
-  actions.deletePicture = function(req, res) {
-    // TODO: S3 からの削除
-    req.user.deleteImage(function(err, data) {
-      req.flash('successMessage', 'Deleted profile picture');
-      res.redirect('/me');
-    });
-  };
-
   actions.authGoogle = function(req, res) {
     var googleAuth = require('../util/googleAuth')(crowi);
 

@@ -170,7 +170,6 @@ module.exports = function(crowi, app) {
   app.post('/me/password'             , form.me.password          , loginRequired(crowi, app) , me.password);
   app.post('/me/imagetype'            , form.me.imagetype         , loginRequired(crowi, app) , me.imagetype);
   app.post('/me/apiToken'             , form.me.apiToken          , loginRequired(crowi, app) , me.apiToken);
-  app.post('/me/picture/delete'       , loginRequired(crowi, app) , me.deletePicture);
   app.post('/me/auth/google'          , loginRequired(crowi, app) , me.authGoogle);
   app.get( '/me/auth/google/callback' , loginRequired(crowi, app) , me.authGoogleCallback);
 

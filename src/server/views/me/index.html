@@ -157,11 +157,13 @@
             <img src="{{ user|uploadedpicture }}" class="picture picture-lg img-circle" id="settingUserPicture"><br>
             </p>
             <p>
-            {% if user.imageAttachment %}
-            <form action="/me/picture/delete" method="post" class="form-horizontal" role="form" onsubmit="return window.confirm('{{ t('Delete this image?') }}');">
+            <form id="remove-attachment" action="/_api/attachments.remove" method="post" class="form-horizontal"
+                style="{% if not user.imageAttachment %}display: none{% endif %}"
+                onsubmit="return window.confirm('{{ t('Delete this image?') }}');">
+              <input type="hidden" name="_csrf" value="{{ csrf() }}">
+              <input type="hidden" name="attachment_id" value="{{ user.imageAttachment.id }}">
               <button type="submit" class="btn btn-danger">{{ t('Delete Image') }}</button>
             </form>
-            {% endif %}
             </p>
           </div>
         </div><!-- /.form-group -->
@@ -218,6 +220,8 @@
         if (data.ok) {
           var attachment = data.attachment;
           $('#settingUserPicture').attr('src', attachment.filePathProxied + '?time=' + (new Date()));
+          $('form#remove-attachment').show();
+          $('form#remove-attachment input[name=attachment_id]').val(attachment.id);
           $('#pictureUploadFormMessage')
             .addClass('alert alert-success')
             .html('変更しました');
@@ -236,6 +240,27 @@
         $('#pictureUploadFormProgress').html('');
       });
       return false;
+    });
+
+    $('form#remove-attachment').on('submit', function(event) {
+      // process with jQuery
+      event.preventDefault();
+
+      $.post($(this).attr('action'), $(this).serializeArray())
+      .then(function(data) {
+        if (data.ok) {
+          $('#settingUserPicture').attr('src', '/images/icons/user.svg');
+          $('form#remove-attachment').hide();
+        }
+        else {
+          throw new Error('statis is invalid');
+        }
+      })
+      .catch(function(err) {
+        $('#pictureUploadFormMessage')
+          .addClass('alert alert-danger')
+          .html('変更中にエラーが発生しました。');
+      })
     });
   </script>
 
