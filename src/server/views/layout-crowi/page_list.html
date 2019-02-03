@@ -18,20 +18,6 @@
       <div class="title-container">
         <div class="d-flex">
           <h1 class="title" id="revision-path"></h1>
-          {% if false %} {# Disable temporaly -- 2018.03.08 Yuki Takei #}
-          {% if searchConfigured() && !isTopPage() && !isTrashPage() %}
-          <form id="search-listpage-form" class="m-l-10 input-group search-input-group hidden-xs hidden-sm"
-              data-toggle="tooltip" data-placement="bottom" title="{{ path }} 以下から検索" data-container="body">
-            <div class="input-group">
-              <input id="search-listpage-input" type="text" class="form-control input-sm" data-path="{{ path }}" placeholder="Search for...">
-              <span class="input-group-btn">
-                <button class="btn btn-default btn-sm"><i class="icon-magnifier"></i></button>
-              </span>
-            </div><!-- /input-group -->
-            <a class="search-listpage-clear" id="search-listpage-clear"><i class="fa fa-times-circle"></i></a>
-          </form>
-          {% endif %}
-          {% endif %}
         </div>
         <div id="revision-url" class="url-line"></div>
       </div>

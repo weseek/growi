@@ -2,11 +2,12 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import { translate } from 'react-i18next';
 
-import SearchForm from './SearchPage/SearchForm';
+import SearchPageForm from './SearchPage/SearchPageForm';
 import SearchResult from './SearchPage/SearchResult';
 
-export default class SearchPage extends React.Component {
+class SearchPage extends React.Component {
 
   constructor(props) {
     super(props);
@@ -92,7 +93,8 @@ export default class SearchPage extends React.Component {
     return (
       <div>
         <div className="search-page-input">
-          <SearchForm
+          <SearchPageForm t={this.props.t}
+            crowi={this.props.crowi}
             onSearchFormChanged={this.search}
             keyword={this.state.searchingKeyword}
             />
@@ -109,6 +111,7 @@ export default class SearchPage extends React.Component {
 }
 
 SearchPage.propTypes = {
+  t: PropTypes.func.isRequired,               // i18next
   crowi: PropTypes.object.isRequired,
   crowiRenderer: PropTypes.object.isRequired,
   query: PropTypes.object,
@@ -119,3 +122,4 @@ SearchPage.defaultProps = {
   searchError: null,
 };
 
+export default translate()(SearchPage);

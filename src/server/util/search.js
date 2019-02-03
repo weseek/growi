@@ -437,42 +437,31 @@ SearchClient.prototype.initializeBoolQuery = function(query) {
   return query;
 };
 
-SearchClient.prototype.appendCriteriaForKeywordContains = function(query, keyword) {
+SearchClient.prototype.appendCriteriaForQueryString = function(query, queryString) {
   query = this.initializeBoolQuery(query);
 
-  const appendMultiMatchQuery = function(query, type, keywords) {
-    let target;
-    let operator = 'and';
-    switch (type) {
-      case 'not_match':
-        target = query.body.query.bool.must_not;
-        operator = 'or';
-        break;
-      case 'match':
-      default:
-        target = query.body.query.bool.must;
-    }
-
-    target.push({
-      multi_match: {
-        query: keywords.join(' '),
-        // TODO: By user's i18n setting, change boost or search target fields
-        fields: ['path.ja^2', 'path.en^2', 'body.ja', 'body.en'],
-        operator: operator,
-      },
-    });
-
-    return query;
-  };
-
-  let parsedKeywords = this.getParsedKeywords(keyword);
+  // parse
+  let parsedKeywords = this.parseQueryString(queryString);
 
   if (parsedKeywords.match.length > 0) {
-    query = appendMultiMatchQuery(query, 'match', parsedKeywords.match);
+    const q = {
+      multi_match: {
+        query: parsedKeywords.match.join(' '),
+        fields: ['path.ja^2', 'path.en^2', 'body.ja', 'body.en'],
+      },
+    };
+    query.body.query.bool.must.push(q);
   }
 
   if (parsedKeywords.not_match.length > 0) {
-    query = appendMultiMatchQuery(query, 'not_match', parsedKeywords.not_match);
+    const q = {
+      multi_match: {
+        query: parsedKeywords.not_match.join(' '),
+        fields: ['path.ja^2', 'path.en^2', 'body.ja', 'body.en'],
+        operator: 'or'
+      },
+    };
+    query.body.query.bool.must_not.push(q);
   }
 
   if (parsedKeywords.phrase.length > 0) {
@@ -512,19 +501,21 @@ SearchClient.prototype.appendCriteriaForKeywordContains = function(query, keywor
 
     query.body.query.bool.must_not.push(notPhraseQueries);
   }
-};
 
-SearchClient.prototype.appendCriteriaForPathFilter = function(query, path) {
-  query = this.initializeBoolQuery(query);
-
-  if (path.match(/\/$/)) {
-    path = path.substr(0, path.length - 1);
+  if (parsedKeywords.prefix.length > 0) {
+    const queries = parsedKeywords.prefix.map(path => {
+      return { prefix: { 'path.raw': path } };
+    });
+    query.body.query.bool.filter.push({ bool: { should: queries } });
   }
-  query.body.query.bool.filter.push({
-    wildcard: {
-      'path.raw': path + '/*',
-    },
-  });
+
+  if (parsedKeywords.not_prefix.length > 0) {
+    const queries = parsedKeywords.not_prefix.map(path => {
+      return { prefix: { 'path.raw': path } };
+    });
+    query.body.query.bool.filter.push({ bool: { must_not: queries } });
+  }
+
 };
 
 SearchClient.prototype.filterPagesByViewer = async function(query, user, userGroups) {
@@ -651,12 +642,12 @@ SearchClient.prototype.appendFunctionScore = function(query) {
   };
 };
 
-SearchClient.prototype.searchKeyword = async function(keyword, user, userGroups, option) {
+SearchClient.prototype.searchKeyword = async function(queryString, user, userGroups, option) {
   const from = option.offset || null;
   const size = option.limit || null;
   const type = option.type || null;
   const query = this.createSearchQuerySortedByScore();
-  this.appendCriteriaForKeywordContains(query, keyword);
+  this.appendCriteriaForQueryString(query, queryString);
 
   this.filterPagesByType(query, type);
   await this.filterPagesByViewer(query, user, userGroups);
@@ -668,43 +659,23 @@ SearchClient.prototype.searchKeyword = async function(keyword, user, userGroups,
   return this.search(query);
 };
 
-SearchClient.prototype.searchByPath = async function(keyword, prefix) {
-  // TODO path 名だけから検索
-};
-
-SearchClient.prototype.searchKeywordUnderPath = async function(keyword, path, user, userGroups, option) {
-  const from = option.offset || null;
-  const size = option.limit || null;
-  const type = option.type || null;
-  const query = this.createSearchQuerySortedByScore();
-  this.appendCriteriaForKeywordContains(query, keyword);
-  this.appendCriteriaForPathFilter(query, path);
-
-  this.filterPagesByType(query, type);
-  await this.filterPagesByViewer(query, user, userGroups);
-
-  this.appendResultSize(query, from, size);
-
-  this.appendFunctionScore(query);
-
-  return this.search(query);
-};
-
-SearchClient.prototype.getParsedKeywords = function(keyword) {
+SearchClient.prototype.parseQueryString = function(queryString) {
   let matchWords = [];
   let notMatchWords = [];
   let phraseWords = [];
   let notPhraseWords = [];
+  let prefixPaths = [];
+  let notPrefixPaths = [];
 
-  keyword.trim();
-  keyword = keyword.replace(/\s+/g, ' ');
+  queryString.trim();
+  queryString = queryString.replace(/\s+/g, ' ');
 
   // First: Parse phrase keywords
   let phraseRegExp = new RegExp(/(-?"[^"]+")/g);
-  let phrases = keyword.match(phraseRegExp);
+  let phrases = queryString.match(phraseRegExp);
 
   if (phrases !== null) {
-    keyword = keyword.replace(phraseRegExp, '');
+    queryString = queryString.replace(phraseRegExp, '');
 
     phrases.forEach(function(phrase) {
       phrase.trim();
@@ -718,16 +689,33 @@ SearchClient.prototype.getParsedKeywords = function(keyword) {
   }
 
   // Second: Parse other keywords (include minus keywords)
-  keyword.split(' ').forEach(function(word) {
+  queryString.split(' ').forEach(function(word) {
     if (word === '') {
       return;
     }
 
-    if (word.match(/^-(.+)$/)) {
-      notMatchWords.push(RegExp.$1);
+    // https://regex101.com/r/lN4LIV/1
+    const matchNegative = word.match(/^-(prefix:)?(.+)$/);
+    // https://regex101.com/r/gVssZe/1
+    const matchPositive = word.match(/^(prefix:)?(.+)$/);
+
+    if (matchNegative != null) {
+      const isPrefixCondition = (matchNegative[1] != null);
+      if (isPrefixCondition) {
+        notPrefixPaths.push(matchNegative[2]);
+      }
+      else {
+        notMatchWords.push(matchNegative[2]);
+      }
     }
-    else {
-      matchWords.push(word);
+    else if (matchPositive != null) {
+      const isPrefixCondition = (matchPositive[1] != null);
+      if (isPrefixCondition) {
+        prefixPaths.push(matchPositive[2]);
+      }
+      else {
+        matchWords.push(matchPositive[2]);
+      }
     }
   });
 
@@ -736,6 +724,8 @@ SearchClient.prototype.getParsedKeywords = function(keyword) {
     not_match: notMatchWords,
     phrase: phraseWords,
     not_phrase: notPhraseWords,
+    prefix: prefixPaths,
+    not_prefix: notPrefixPaths,
   };
 };
 

@@ -20,7 +20,6 @@ import { EditorOptions, PreviewOptions } from './components/PageEditor/OptionsSe
 import SavePageControls from './components/SavePageControls';
 import PageEditorByHackmd from './components/PageEditorByHackmd';
 import Page             from './components/Page';
-import PageListSearch   from './components/PageListSearch';
 import PageHistory      from './components/PageHistory';
 import PageComments     from './components/PageComments';
 import CommentForm from './components/PageComment/CommentForm';
@@ -273,17 +272,18 @@ if (!pageRevisionId && draft != null) {
  *  value: React Element
  */
 const componentMappings = {
-  'search-top': <HeaderSearchBox crowi={crowi} />,
+  'search-top': <I18nextProvider i18n={i18n}><HeaderSearchBox crowi={crowi} /></I18nextProvider>,
   'search-sidebar': <HeaderSearchBox crowi={crowi} />,
-  'search-page': <SearchPage crowi={crowi} crowiRenderer={crowiRenderer} />,
-  'page-list-search': <PageListSearch crowi={crowi} />,
+  'search-page': <I18nextProvider i18n={i18n}><SearchPage crowi={crowi} crowiRenderer={crowiRenderer} /></I18nextProvider>,
 
   //'revision-history': <PageHistory pageId={pageId} />,
   'seen-user-list': <SeenUserList pageId={pageId} crowi={crowi} />,
   'bookmark-button': <BookmarkButton pageId={pageId} crowi={crowi} />,
   'bookmark-button-lg': <BookmarkButton pageId={pageId} crowi={crowi} size="lg" />,
 
-  'page-name-input': <NewPageNameInput crowi={crowi} parentPageName={pagePath} />,
+  'create-page-name-input': <NewPageNameInput crowi={crowi} parentPageName={pagePath} />,
+  'rename-page-name-input': <NewPageNameInput crowi={crowi} parentPageName={pagePath} />,
+  'duplicate-page-name-input': <NewPageNameInput crowi={crowi} parentPageName={pagePath} />,
 
 };
 // additional definitions if data exists

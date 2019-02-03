@@ -1,0 +1,20 @@
+.editor-container {
+  .navbar-editor {
+    li {
+      display: inline-block;
+    }
+
+    button {
+      margin: 0 2px;
+      padding: 8px;
+      border: none;
+      background-color: transparent;
+      font-size: 14px;
+      line-height: 1;
+    }
+
+    img {
+      vertical-align: bottom;
+    }
+  }
+}

@@ -28,7 +28,6 @@ export default class SearchTypeahead extends React.Component {
     this.search = this.search.bind(this);
     this.onInputChange = this.onInputChange.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
-    this.onChange = this.onChange.bind(this);
     this.dispatchSubmit = this.dispatchSubmit.bind(this);
     this.getRestoreFormButton = this.getRestoreFormButton.bind(this);
     this.renderMenuItemChildren = this.renderMenuItemChildren.bind(this);
@@ -93,6 +92,7 @@ export default class SearchTypeahead extends React.Component {
 
   onInputChange(text) {
     this.setState({input: text});
+    this.props.onInputChange(text);
     if (text === '') {
       this.setState({pages: []});
     }
@@ -104,18 +104,9 @@ export default class SearchTypeahead extends React.Component {
     }
   }
 
-  onChange(selected) {
-    const page = selected[0];  // should be single page selected
-
-    // navigate to page
-    if (page != null) {
-      window.location = page.path;
-    }
-  }
-
   dispatchSubmit() {
     if (this.props.onSubmit != null) {
-      this.props.onSubmit(this.state.keyword);
+      this.props.onSubmit(this.state.input);
     }
   }
 
@@ -165,7 +156,7 @@ export default class SearchTypeahead extends React.Component {
         <AsyncTypeahead
           {...this.props}
           ref="typeahead"
-          inputProps={{name: 'q', autoComplete: 'off'}}
+          inputProps={{autoComplete: 'off'}}
           isLoading={this.state.isLoading}
           labelKey="path"
           minLength={0}
@@ -196,6 +187,7 @@ SearchTypeahead.propTypes = {
   onSearchError:   PropTypes.func,
   onChange:        PropTypes.func,
   onSubmit:        PropTypes.func,
+  onInputChange:   PropTypes.func,
   emptyLabel:      PropTypes.string,
   placeholder:     PropTypes.string,
   keywordOnInit:   PropTypes.string,
@@ -212,4 +204,5 @@ SearchTypeahead.defaultProps = {
   emptyLabel:      null,
   placeholder:     '',
   keywordOnInit:   '',
+  onInputChange: () => {},
 };

@@ -47,6 +47,7 @@
   }
 }
 
+
 // top and sidebar input styles
 .search-top, .search-sidebar {
   .search-clear {
@@ -54,28 +55,35 @@
     right: 26px;
   }
 
-  .input-group-btn {
+  .btn-group-dropdown-scope .dropdown-toggle {
+    min-width: 95px;
+    height: 30px;
+    border-top-left-radius: 40px;
+    border-bottom-left-radius: 40px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-right: 4px;
+  }
+  // using react-bootstrap-typeahead
+  // see: https://github.com/ericgio/react-bootstrap-typeahead
+  .rbt-input.form-control {
+    border: none;
+    border-top-right-radius: 40px;
+    border-bottom-right-radius: 40px;
+    height: 30px;
+
+    .rbt-input-wrapper {
+      margin-left: 8px;
+    }
+  }
+  .btn-group-submit-search {
     position: absolute;
     top: 0;
     right: 0;
     .btn {
       padding: 4px 10px;
     }
-  }
-
-  // using react-bootstrap-typeahead
-  // see: https://github.com/ericgio/react-bootstrap-typeahead
-  .rbt-input.form-control {
-    border: none;
-    border-radius: 40px;
-    border-top-right-radius: 40px;
-    border-bottom-right-radius: 40px;
-    padding-top: 6px;
-    height: 30px;
-
-    .rbt-input-wrapper {
-      margin-left: 8px;
-    }
+    z-index: 3;
   }
 }
 
@@ -85,17 +93,11 @@
   margin-bottom: 10px;
 
   .rbt-input.form-control {
-    width: 180px;
+    width: 200px;
     transition: 0.3s ease-out;
     // focus
     &.focus {
       width: 300px;
-    }
-  }
-
-  table.search-help {
-    th, td {
-      border: none;
     }
   }
 }
@@ -103,7 +105,7 @@
   .search-form, .form-group, .rbt-input.form-control, .input-group {
     width: 100%;
   }
-  .input-group-btn {
+  .btn-group-submit-search {
     right: 30px;
   }
 }
@@ -169,18 +171,13 @@
   }
 }
 
-.search-page-input{
+.search-page-input {
   padding: 10px 0;
   position: sticky;
   top: 0;
   z-index: 99;
-  .form{
-    margin: 0;
-    .input-group .form-control{
-      height: 100%;
-    }
-    .input-group-btn .btn{
-      height: 34px;
-    }
+  .input-group-btn .btn{
+    padding: 0px 10px;
+    height: 34px;
   }
 }
