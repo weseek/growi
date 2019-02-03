@@ -6,16 +6,11 @@
     "growi",
     "growi-plugin"
   ],
-  "main": "lib/index.js",
+  "main": "src/index.js",
   "files": [
-    "lib"
+    "src"
   ],
   "scripts": {
-    "build": "babel src --out-dir lib --source-maps inline",
-    "clean": "npm run rimraf -- lib",
-    "prebuild": "npm run clean",
-    "watch": "babel src --out-dir lib --watch --source-maps inline",
-    "rimraf": "rimraf",
     "test": ""
   },
   "repository": {
@@ -31,15 +26,10 @@
   "dependencies": {
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-plugin-add-module-exports": "^0.2.1",
-    "babel-plugin-transform-class-properties": "^6.24.0",
     "babel-preset-env": "^1.6.0",
-    "babel-preset-power-assert": "^2.0.0",
-    "babel-register": "^6.23.0",
-    "mocha": "^5.0.4",
-    "power-assert": "^1.4.2",
-    "rimraf": "^2.6.1"
+    "babel-preset-react": "^6.24.1",
+    "eslint": "^5.9.0",
+    "eslint-plugin-react": "^7.11.1"
   },
   "engines": {
     "node": ">=6.11 <9",
