@@ -357,7 +357,7 @@ $(function() {
     // create name-value map
     let nameValueMap = {};
     $(this).serializeArray().forEach((obj) => {
-      nameValueMap[obj.name] = obj.value;
+      nameValueMap[obj.name] = obj.value; // nameValueMap['q'] is renamed page path
     });
 
     const data = $(this).serialize() + `&socketClientId=${crowi.getSocketClientId()}`;
@@ -374,7 +374,7 @@ $(function() {
         $('#renamePage .msg, #unportalize .msg').hide();
         $(`#renamePage .msg-${res.code}, #unportalize .msg-${res.code}`).show();
         $('#renamePage #linkToNewPage, #unportalize #linkToNewPage').html(`
-          <a href="${nameValueMap.new_path}">${nameValueMap.new_path} <i class="icon-login"></i></a>
+          <a href="${nameValueMap.q}">${nameValueMap.q} <i class="icon-login"></i></a>
         `);
       }
       else {
@@ -395,7 +395,7 @@ $(function() {
     // create name-value map
     let nameValueMap = {};
     $(this).serializeArray().forEach((obj) => {
-      nameValueMap[obj.name] = obj.value;
+      nameValueMap[obj.name] = obj.value; // nameValueMap['q'] is duplicated page path
     });
 
     $.ajax({
@@ -409,7 +409,7 @@ $(function() {
         $('#duplicatePage .msg').hide();
         $(`#duplicatePage .msg-${res.code}`).show();
         $('#duplicatePage #linkToNewPage').html(`
-          <a href="${nameValueMap.new_path}">${nameValueMap.new_path} <i class="icon-login"></i></a>
+          <a href="${nameValueMap.q}">${nameValueMap.q} <i class="icon-login"></i></a>
         `);
       }
       else {

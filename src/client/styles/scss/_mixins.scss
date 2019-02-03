@@ -50,17 +50,6 @@
           height: calc(100vh - #{$header-plus-footer});
         }
 
-        .navbar-editor {
-          button {
-            padding: 7px 8px;
-            line-height: 1;
-          }
-
-          img {
-            vertical-align: bottom;
-          }
-        }
-
         // left(editor)
         .page-editor-editor-container {
           min-height: calc(100vh - #{$header-plus-footer});   // for IE11
