@@ -274,7 +274,7 @@ if (!pageRevisionId && draft != null) {
 const componentMappings = {
   'search-top': <I18nextProvider i18n={i18n}><HeaderSearchBox crowi={crowi} /></I18nextProvider>,
   'search-sidebar': <HeaderSearchBox crowi={crowi} />,
-  'search-page': <SearchPage crowi={crowi} crowiRenderer={crowiRenderer} />,
+  'search-page': <I18nextProvider i18n={i18n}><SearchPage crowi={crowi} crowiRenderer={crowiRenderer} /></I18nextProvider>,
 
   //'revision-history': <PageHistory pageId={pageId} />,
   'seen-user-list': <SeenUserList pageId={pageId} crowi={crowi} />,

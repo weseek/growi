@@ -190,6 +190,30 @@
     }
   },
 
+  "search_help": {
+    "title": "検索のヘルプ",
+    "and": {
+      "syntax help": "スペース区切り",
+      "desc": "ページ名 or 本文に {{word1}}, {{word2}} の両方を含むページを検索"
+    },
+    "exclude": {
+      "desc": "ページ名 or 本文に {{word}} を含むページを除外"
+    },
+    "phrase": {
+      "syntax help": "ダブルクォートで囲う",
+      "desc": "{{phrase}} という文章を含むページを検索"
+    },
+    "prefix": {
+      "desc": "ページ名が {{path}} から始まるページに絞る"
+    },
+    "exclude_prefix": {
+      "desc": "ページ名が {{path}} から始まるページを除外"
+    }
+  },
+  "search": {
+    "search page bodies": "[Enter] キー押下で全文検索"
+  },
+
   "page_page": {
       "notice": {
           "version": "これは現在の版ではありません。",

@@ -35,7 +35,7 @@ export default class SearchPageForm extends React.Component {
   render() {
     return <FormGroup>
       <InputGroup>
-        <SearchForm
+        <SearchForm t={this.props.t}
           crowi={this.props.crowi}
           onSubmit={this.search}
           keyword={this.state.searchedKeyword}
@@ -52,6 +52,7 @@ export default class SearchPageForm extends React.Component {
 }
 
 SearchPageForm.propTypes = {
+  t: PropTypes.func.isRequired,               // i18next
   crowi: PropTypes.object.isRequired,
   keyword: PropTypes.string,
   onSearchFormChanged: PropTypes.func.isRequired,

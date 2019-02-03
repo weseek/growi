@@ -172,6 +172,30 @@
     }
   },
 
+  "search_help": {
+    "title": "Searching Help",
+    "and": {
+      "syntax help": "divide with space",
+      "desc": "Search pages that include both {{word1}}, {{word2}} in the title or body"
+    },
+    "exclude": {
+      "desc": "Exclude pages that include {{word}} in the title or body"
+    },
+    "phrase": {
+      "syntax help": "surround with double quotes",
+      "desc": "Search pages that include the phrase \"{{phrase}}\""
+    },
+    "prefix": {
+      "desc": "Search only the pages that the title start with {{path}}"
+    },
+    "exclude_prefix": {
+      "desc": "Exclude the pages that the title start with {{path}}"
+    }
+  },
+  "search": {
+    "search page bodies": "Hit [Enter] key to full-text search"
+  },
+
   "page_page": {
       "notice": {
           "version": "This is not the current version.",
