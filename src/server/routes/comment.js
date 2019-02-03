@@ -31,19 +31,23 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Current user is not accessible to this page.'));
     }
 
-    let comments = null;
+    let fetcher = null;
 
     try {
       if (revisionId) {
-        comments = await Comment.getCommentsByRevisionId(revisionId);
+        fetcher = Comment.getCommentsByRevisionId(revisionId);
       }
       else {
-        comments = await Comment.getCommentsByPageId(pageId);
+        fetcher = Comment.getCommentsByPageId(pageId);
       }
     }
     catch (err) {
       return res.json(ApiResponse.error(err));
     }
+
+    const comments = await fetcher.populate(
+      { path: 'creator', select: User.USER_PUBLIC_FIELDS, populate: { path: 'imageAttachment', select: 'filePathProxied' } }
+    );
 
     res.json(ApiResponse.success({comments}));
   };
