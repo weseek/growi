@@ -1,7 +1,11 @@
 CHANGES
 ========
 
-## 3.3.7-RC
+## 3.3.8-RC
+
+* 
+
+## 3.3.7
 
 * Feature: Editor toolbar
 * Feature: `prefix:/path` searching syntax to filter with page path prefix
