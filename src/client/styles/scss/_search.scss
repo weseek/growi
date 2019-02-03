@@ -176,18 +176,13 @@
   }
 }
 
-.search-page-input{
+.search-page-input {
   padding: 10px 0;
   position: sticky;
   top: 0;
   z-index: 99;
-  .form{
-    margin: 0;
-    .input-group .form-control{
-      height: 100%;
-    }
-    .input-group-btn .btn{
-      height: 34px;
-    }
+  .input-group-btn .btn{
+    padding: 0px 10px;
+    height: 34px;
   }
 }
