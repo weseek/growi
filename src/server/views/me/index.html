@@ -157,7 +157,7 @@
             <img src="{{ user|uploadedpicture }}" class="picture picture-lg img-circle" id="settingUserPicture"><br>
             </p>
             <p>
-            {% if user.image %}
+            {% if user.imageAttachment %}
             <form action="/me/picture/delete" method="post" class="form-horizontal" role="form" onsubmit="return window.confirm('{{ t('Delete this image?') }}');">
               <button type="submit" class="btn btn-danger">{{ t('Delete Image') }}</button>
             </form>

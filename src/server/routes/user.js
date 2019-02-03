@@ -57,9 +57,7 @@ module.exports = function(crowi, app) {
 
     const data = {};
     try {
-      const users = await userFetcher.populate({
-        path: 'imageAttachment', select: 'filePathProxied'
-      });
+      const users = await userFetcher.populate(User.IMAGE_POPULATION);
       data.users = users.map(user => {
         // omit email
         if (true !== user.isEmailPublished) { // compare to 'true' because Crowi original data doesn't have 'isEmailPublished'

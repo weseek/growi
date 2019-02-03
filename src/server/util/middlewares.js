@@ -16,26 +16,22 @@ exports.csrfKeyGenerator = function(crowi, app) {
 };
 
 exports.loginChecker = function(crowi, app) {
-  return function(req, res, next) {
-    var User = crowi.model('User');
+  const User = crowi.model('User');
+  return async function(req, res, next) {
+    let user = null;
 
-    // session に user object が入ってる
-    if (req.session.user && '_id' in req.session.user) {
-      User.findById(req.session.user._id, function(err, userData) {
-        if (err) {
-          next();
-        }
-        else {
-          req.user = req.session.user = userData;
-          res.locals.user = req.user;
-          next();
-        }
-      });
-    }
-    else {
-      req.user = req.session.user = null;
+    try {
+      // session に user object が入ってる
+      if (req.session.user && '_id' in req.session.user) {
+        user = await User.findById(req.session.user._id).populate(User.IMAGE_POPULATION);
+      }
+
+      req.user = req.session.user = user;
       res.locals.user = req.user;
       next();
+    }
+    catch (err) {
+      next(err);
     }
   };
 };

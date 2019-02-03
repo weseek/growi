@@ -46,7 +46,7 @@ module.exports = function(crowi, app) {
     }
 
     const comments = await fetcher.populate(
-      { path: 'creator', select: User.USER_PUBLIC_FIELDS, populate: { path: 'imageAttachment', select: 'filePathProxied' } }
+      { path: 'creator', select: User.USER_PUBLIC_FIELDS, populate: User.IMAGE_POPULATION }
     );
 
     res.json(ApiResponse.success({comments}));

@@ -260,6 +260,7 @@ module.exports = function(crowi, app) {
 
     let attachment;
     try {
+      req.user.deleteImage();
       attachment = await createAttachment(file, req.user);
       await req.user.updateImage(attachment);
     }

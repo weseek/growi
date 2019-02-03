@@ -96,14 +96,14 @@ const addSlashOfEnd = (path) => {
  * @param {any} page Query or Document
  * @param {string} userPublicFields string to set to select
  */
-const populateDataToShowRevision = (page, userPublicFields) => {
+const populateDataToShowRevision = (page, userPublicFields, imagePopulation) => {
   return page
     .populate([
-      { path: 'lastUpdateUser', model: 'User', select: userPublicFields, populate: { path: 'imageAttachment', select: 'filePathProxied' } },
-      { path: 'creator', model: 'User', select: userPublicFields, populate: { path: 'imageAttachment', select: 'filePathProxied' } },
+      { path: 'lastUpdateUser', model: 'User', select: userPublicFields, populate: imagePopulation },
+      { path: 'creator', model: 'User', select: userPublicFields, populate: imagePopulation },
       { path: 'grantedGroup', model: 'UserGroup' },
       { path: 'revision', model: 'Revision', populate: {
-        path: 'author', model: 'User', select: userPublicFields, populate: { path: 'imageAttachment', select: 'filePathProxied' }
+        path: 'author', model: 'User', select: userPublicFields, populate: imagePopulation
       }}
     ]);
 };
@@ -239,17 +239,18 @@ class PageQueryBuilder {
     return this;
   }
 
-  populateDataToList(userPublicFields) {
+  populateDataToList(userPublicFields, imagePopulation) {
     this.query = this.query
       .populate({
         path: 'lastUpdateUser',
         select: userPublicFields,
-        populate: { path: 'imageAttachment', select: 'filePathProxied' }
+        populate: imagePopulation
       });
+    return this;
   }
 
-  populateDataToShowRevision(userPublicFields) {
-    this.query = populateDataToShowRevision(this.query, userPublicFields);
+  populateDataToShowRevision(userPublicFields, imagePopulation) {
+    this.query = populateDataToShowRevision(this.query, userPublicFields, imagePopulation);
     return this;
   }
 
@@ -430,7 +431,7 @@ module.exports = function(crowi) {
     validateCrowi();
 
     const User = crowi.model('User');
-    return populateDataToShowRevision(this, User.USER_PUBLIC_FIELDS)
+    return populateDataToShowRevision(this, User.USER_PUBLIC_FIELDS, User.IMAGE_POPULATION)
       .execPopulate();
   };
 
@@ -730,7 +731,7 @@ module.exports = function(crowi) {
     const totalCount = await builder.query.exec('count');
 
     // find
-    builder.populateDataToList(User.USER_PUBLIC_FIELDS);
+    builder.populateDataToList(User.USER_PUBLIC_FIELDS, User.IMAGE_POPULATION);
     const pages = await builder.query.exec('find');
 
     const result = { pages, totalCount, offset: opt.offset, limit: opt.limit };
@@ -771,7 +772,7 @@ module.exports = function(crowi) {
 
     // find
     builder.addConditionToPagenate(opt.offset, opt.limit, sortOpt);
-    builder.populateDataToList(User.USER_PUBLIC_FIELDS);
+    builder.populateDataToList(User.USER_PUBLIC_FIELDS, User.IMAGE_POPULATION);
     const pages = await builder.query.exec('find');
 
     const result = { pages, totalCount, offset: opt.offset, limit: opt.limit };
