@@ -37,6 +37,10 @@ module.exports = function(crowi) {
     return `/download/${this._id}`;
   });
 
+  attachmentSchema.set('toObject', { virtuals: true });
+  attachmentSchema.set('toJSON', { virtuals: true });
+
+
   attachmentSchema.statics.create = async function(pageId, user, fileStream, originalName, fileFormat, fileSize) {
     const Attachment = this;
 
