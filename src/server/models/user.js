@@ -212,7 +212,7 @@ module.exports = function(crowi) {
   };
 
   userSchema.methods.deleteImage = async function() {
-    // the 'image' field became DEPRECATED in v3.3.7
+    // the 'image' field became DEPRECATED in v3.3.8
     this.image = undefined;
 
     if (this.imageAttachment != null) {

@@ -21,7 +21,7 @@ module.exports = function(crowi) {
   attachmentSchema = new mongoose.Schema({
     page: { type: ObjectId, ref: 'Page', index: true },
     creator: { type: ObjectId, ref: 'User', index: true  },
-    filePath: { type: String },   // DEPRECATED: remains for backward compatibility for v3.3.5 or below
+    filePath: { type: String },   // DEPRECATED: remains for backward compatibility for v3.3.7 or below
     fileName: { type: String, required: true },
     originalName: { type: String },
     fileFormat: { type: String, required: true },
