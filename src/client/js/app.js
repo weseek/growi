@@ -20,7 +20,6 @@ import { EditorOptions, PreviewOptions } from './components/PageEditor/OptionsSe
 import SavePageControls from './components/SavePageControls';
 import PageEditorByHackmd from './components/PageEditorByHackmd';
 import Page             from './components/Page';
-import PageListSearch   from './components/PageListSearch';
 import PageHistory      from './components/PageHistory';
 import PageComments     from './components/PageComments';
 import CommentForm from './components/PageComment/CommentForm';
@@ -276,7 +275,6 @@ const componentMappings = {
   'search-top': <HeaderSearchBox crowi={crowi} />,
   'search-sidebar': <HeaderSearchBox crowi={crowi} />,
   'search-page': <SearchPage crowi={crowi} crowiRenderer={crowiRenderer} />,
-  'page-list-search': <PageListSearch crowi={crowi} />,
 
   //'revision-history': <PageHistory pageId={pageId} />,
   'seen-user-list': <SeenUserList pageId={pageId} crowi={crowi} />,
