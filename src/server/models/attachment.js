@@ -74,7 +74,7 @@ module.exports = function(crowi) {
       Attachment.find({ page: pageId})
       .then((attachments) => {
         for (let attachment of attachments) {
-          Attachment.removeWithSubstance(attachment).then((res) => {
+          Attachment.removeWithSubstanceById(attachment._id).then((res) => {
             // do nothing
           }).catch((err) => {
             debug('Attachment remove error', err);
@@ -89,11 +89,11 @@ module.exports = function(crowi) {
 
   };
 
-  attachmentSchema.statics.removeWithSubstance = async function(attachment) {
+  attachmentSchema.statics.removeWithSubstanceById = async function(id) {
     // retrieve data from DB
     // because this instance fields are only partially populated
-    const att = await this.findById(attachment._id);
-    await fileUploader.deleteFile(att);
+    const attachment = await this.findById(id);
+    await fileUploader.deleteFile(attachment);
     return await this.remove();
   };
 

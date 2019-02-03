@@ -283,25 +283,17 @@ module.exports = function(crowi, app) {
    *
    * @apiParam {String} attachment_id
    */
-  api.remove = function(req, res) {
+  api.remove = async function(req, res) {
     const id = req.body.attachment_id;
 
-    Attachment.findById(id)
-    .then(function(data) {
-      const attachment = data;
+    try {
+      await Attachment.removeWithSubstanceById(id);
+    }
+    catch (err) {
+      return res.status(500).json(ApiResponse.error('Error while deleting file'));
+    }
 
-      attachment.removeWithSubstance()
-      .then(data => {
-        debug('removeAttachment', data);
-        return res.json(ApiResponse.success({}));
-      }).catch(err => {
-        logger.error('Error', err);
-        return res.status(500).json(ApiResponse.error('Error while deleting file'));
-      });
-    }).catch(err => {
-      logger.error('Error', err);
-      return res.status(404);
-    });
+    return res.json(ApiResponse.success({}));
   };
 
   return actions;
