@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import FormGroup from 'react-bootstrap/es/FormGroup';
 import Button from 'react-bootstrap/es/Button';
@@ -6,11 +7,10 @@ import DropdownButton from 'react-bootstrap/es/DropdownButton';
 import MenuItem from 'react-bootstrap/es/MenuItem';
 import InputGroup from 'react-bootstrap/es/InputGroup';
 
-import SearchForm from '../SearchForm';
+import SearchForm from './SearchForm';
 
 
-// Header.SearchForm
-export default class HeaderSearchForm extends React.Component {
+export default class HeaderSearchBox extends React.Component {
 
   constructor(props) {
     super(props);
@@ -18,8 +18,6 @@ export default class HeaderSearchForm extends React.Component {
     this.state = {
       isScopeChildren: false,
     };
-
-    this.crowi = window.crowi; // FIXME
 
     this.onClickAllPages = this.onClickAllPages.bind(this);
     this.onClickChildren = this.onClickChildren.bind(this);
@@ -63,7 +61,7 @@ export default class HeaderSearchForm extends React.Component {
             </DropdownButton>
           </InputGroup.Button>
             <SearchForm
-              crowi={this.crowi}
+              crowi={this.props.crowi}
               onSubmit={this.onSubmit}
               placeholder="Search ..."
             />
@@ -81,8 +79,6 @@ export default class HeaderSearchForm extends React.Component {
   }
 }
 
-HeaderSearchForm.propTypes = {
-};
-
-HeaderSearchForm.defaultProps = {
+HeaderSearchBox.propTypes = {
+  crowi: PropTypes.object.isRequired,
 };
