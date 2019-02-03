@@ -798,12 +798,6 @@ module.exports = function(crowi) {
     });
   };
 
-  userSchema.statics.createUserPictureFilePath = function(user, name) {
-    var ext = '.' + name.match(/(.*)(?:\.([^.]+$))/)[2];
-
-    return 'user/' + user._id + ext;
-  };
-
   userSchema.statics.getUsernameByPath = function(path) {
     var username = null;
     if (m = path.match(/^\/user\/([^\/]+)\/?/)) {
