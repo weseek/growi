@@ -89,6 +89,9 @@ exports.swigFilters = function(crowi, app, swig) {
     if (user.image) {
       return user.image;
     }
+    else if (user.imageAttachment != null) {
+      return user.imageAttachment.filePathProxied;
+    }
     else {
       return '/images/icons/user.svg';
     }

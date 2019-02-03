@@ -98,12 +98,14 @@ const addSlashOfEnd = (path) => {
  */
 const populateDataToShowRevision = (page, userPublicFields) => {
   return page
-    .populate({ path: 'lastUpdateUser', model: 'User', select: userPublicFields })
-    .populate({ path: 'creator', model: 'User', select: userPublicFields })
-    .populate({ path: 'grantedGroup', model: 'UserGroup' })
-    .populate({ path: 'revision', model: 'Revision', populate: {
-      path: 'author', model: 'User', select: userPublicFields
-    } });
+    .populate([
+      { path: 'lastUpdateUser', model: 'User', select: userPublicFields, populate: { path: 'imageAttachment', select: 'filePathProxied' } },
+      { path: 'creator', model: 'User', select: userPublicFields, populate: { path: 'imageAttachment', select: 'filePathProxied' } },
+      { path: 'grantedGroup', model: 'UserGroup' },
+      { path: 'revision', model: 'Revision', populate: {
+        path: 'author', model: 'User', select: userPublicFields, populate: { path: 'imageAttachment', select: 'filePathProxied' }
+      }}
+    ]);
 };
 
 
@@ -235,6 +237,15 @@ class PageQueryBuilder {
       .sort(sortOpt).skip(offset).limit(limit);
 
     return this;
+  }
+
+  populateDataToList(userPublicFields) {
+    this.query = this.query
+      .populate({
+        path: 'lastUpdateUser',
+        select: userPublicFields,
+        populate: { path: 'imageAttachment', select: 'filePathProxied' }
+      });
   }
 
   populateDataToShowRevision(userPublicFields) {
@@ -715,10 +726,12 @@ module.exports = function(crowi) {
     builder.addConditionToExcludeRedirect();
     builder.addConditionToPagenate(opt.offset, opt.limit);
 
+    // count
     const totalCount = await builder.query.exec('count');
-    const q = builder.query
-      .populate({ path: 'lastUpdateUser', model: 'User', select: User.USER_PUBLIC_FIELDS });
-    const pages = await q.exec('find');
+
+    // find
+    builder.populateDataToList(User.USER_PUBLIC_FIELDS);
+    const pages = await builder.query.exec('find');
 
     const result = { pages, totalCount, offset: opt.offset, limit: opt.limit };
     return result;
@@ -753,12 +766,13 @@ module.exports = function(crowi) {
     // add grant conditions
     await addConditionToFilteringByViewerForList(builder, user, showAnyoneKnowsLink);
 
-    builder.addConditionToPagenate(opt.offset, opt.limit, sortOpt);
-
+    // count
     const totalCount = await builder.query.exec('count');
-    const q = builder.query
-      .populate({ path: 'lastUpdateUser', model: 'User', select: User.USER_PUBLIC_FIELDS });
-    const pages = await q.exec('find');
+
+    // find
+    builder.addConditionToPagenate(opt.offset, opt.limit, sortOpt);
+    builder.populateDataToList(User.USER_PUBLIC_FIELDS);
+    const pages = await builder.query.exec('find');
 
     const result = { pages, totalCount, offset: opt.offset, limit: opt.limit };
     return result;
