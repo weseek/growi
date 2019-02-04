@@ -29,6 +29,10 @@ function isEndWithSlash(path) {
 }
 
 function addSlashToTheEnd(path) {
+  if (path === '/') {
+    return path;
+  }
+
   if (!isEndWithSlash(path)) {
     return `${path}/`;
   }
