@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import * as pagePathUtils from '@commons/util/page-path-utils';
 import SearchTypeahead from './SearchTypeahead';
 
 export default class NewPageNameInput extends React.Component {
@@ -16,7 +17,7 @@ export default class NewPageNameInput extends React.Component {
 
     this.onSearchError = this.onSearchError.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
-    this.getParentPageName = this.getParentPageName.bind(this);
+    this.getKeywordOnInit = this.getKeywordOnInit.bind(this);
   }
 
   componentDidMount() {
@@ -39,16 +40,10 @@ export default class NewPageNameInput extends React.Component {
     $(form).submit();
   }
 
-  getParentPageName(path) {
-    if (path == '/') {
-      return path;
-    }
-
-    if (path.match(/.+\/$/)) {
-      return path;
-    }
-
-    return path + '/';
+  getKeywordOnInit(path) {
+    return this.props.addSlashToTheEnd
+      ? pagePathUtils.addSlashToTheEnd(path)
+      : pagePathUtils.removeLastSlash(path);
   }
 
   render() {
@@ -63,9 +58,10 @@ export default class NewPageNameInput extends React.Component {
           crowi={this.crowi}
           onSearchError={this.onSearchError}
           onSubmit={this.onSubmit}
+          inputName='new_path'
           emptyLabel={emptyLabel}
           placeholder="Input page name"
-          keywordOnInit={this.getParentPageName(this.props.parentPageName)}
+          keywordOnInit={this.getKeywordOnInit(this.props.initializedPath)}
         />
       </div>
     );
@@ -73,10 +69,11 @@ export default class NewPageNameInput extends React.Component {
 }
 
 NewPageNameInput.propTypes = {
-  crowi:          PropTypes.object.isRequired,
-  parentPageName: PropTypes.string,
+  crowi:            PropTypes.object.isRequired,
+  initializedPath:  PropTypes.string,
+  addSlashToTheEnd: PropTypes.bool,
 };
 
 NewPageNameInput.defaultProps = {
-  parentPageName: '',
+  initializedPath: '/',
 };

@@ -150,13 +150,17 @@ export default class SearchTypeahead extends React.Component {
     const defaultSelected = (this.props.keywordOnInit != '')
       ? [{path: this.props.keywordOnInit}]
       : [];
+    const inputProps = { autoComplete: 'off' };
+    if (this.props.inputName != null) {
+      inputProps.name = this.props.inputName;
+    }
 
     return (
       <div className="search-typeahead">
         <AsyncTypeahead
           {...this.props}
           ref="typeahead"
-          inputProps={{autoComplete: 'off'}}
+          inputProps={inputProps}
           isLoading={this.state.isLoading}
           labelKey="path"
           minLength={0}
@@ -188,6 +192,7 @@ SearchTypeahead.propTypes = {
   onChange:        PropTypes.func,
   onSubmit:        PropTypes.func,
   onInputChange:   PropTypes.func,
+  inputName:       PropTypes.string,
   emptyLabel:      PropTypes.string,
   placeholder:     PropTypes.string,
   keywordOnInit:   PropTypes.string,
