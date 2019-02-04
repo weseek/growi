@@ -20,7 +20,7 @@
   position: relative;
   .search-clear {
     position: absolute;
-    z-index: 2;
+    z-index: 3;
     top: 4px;
     right: 4px;
     width: 24px;
@@ -99,6 +99,11 @@
     &.focus {
       width: 300px;
     }
+  }
+  .rbt-menu {
+    margin-top: 33px;   // DIRTY HACK
+                        //   note: 'transform: translate3d(0px, XXpx, 0px)' calculation has failed on .search-top
+                        //         since upgrade react-bootstrap-typeahead to v3.3.2 -- 2019.02.05 Yuki Takei
   }
 }
 .search-sidebar {

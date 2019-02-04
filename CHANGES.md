@@ -1,7 +1,17 @@
 CHANGES
 ========
 
-## 3.3.7-RC
+## 3.3.8-RC
+
+* Fix: Typeahead shows autocomplete wrongly
+* Fix: Move/Duplicate don't work
+    * Introduced by 3.3.7
+* Fix: Server doesn't respond when root page is restricted
+* Support: Upgrade libs
+    * react
+    * react-bootstrap-typeahead
+
+## 3.3.7
 
 * Feature: Editor toolbar
 * Feature: `prefix:/path` searching syntax to filter with page path prefix
