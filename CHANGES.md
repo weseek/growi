@@ -6,6 +6,7 @@ CHANGES
 * Fix: Typeahead shows autocomplete wrongly
 * Fix: Move/Duplicate don't work
     * Introduced by 3.3.7
+* Fix: Couldn't show root page if restricted
 * Support: Upgrade libs
     * react
     * react-bootstrap-typeahead

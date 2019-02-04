@@ -190,12 +190,13 @@ module.exports = function(crowi, app) {
     // check whether this page has portal page
     const portalPageStatus = await getPortalPageState(path, req.user);
 
+    let view = 'customlayout-selector/page_list';
     const renderVars = { path };
 
     if (portalPageStatus === PORTAL_STATUS_FORBIDDEN) {
       // inject to req
       req.isForbidden = true;
-      return next();
+      view = 'customlayout-selector/forbidden';
     }
     else if (portalPageStatus === PORTAL_STATUS_EXISTS) {
       let portalPage = await Page.findByPathAndViewer(path, req.user);
@@ -214,7 +215,7 @@ module.exports = function(crowi, app) {
     await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit);
 
     await interceptorManager.process('beforeRenderPage', req, res, renderVars);
-    return res.render('customlayout-selector/page_list', renderVars);
+    return res.render(view, renderVars);
   }
 
   async function showPageForGrowiBehavior(req, res, next) {
@@ -621,8 +622,8 @@ module.exports = function(crowi, app) {
       options.grantUserGroupId = grantUserGroupId;
     }
 
-      const Revision = crowi.model('Revision');
-      const previousRevision = await Revision.findById(revisionId);
+    const Revision = crowi.model('Revision');
+    const previousRevision = await Revision.findById(revisionId);
     try {
       page = await Page.updatePage(page, pageBody, previousRevision.body, req.user, options);
     }
