@@ -52,8 +52,11 @@ export default class SearchTypeahead extends React.Component {
    * Initialize keyword
    */
   restoreInitialData() {
-    this.refs.typeahead.getInstance().clear();
-    this.refs.typeahead.getInstance()._updateText(this.props.keywordOnInit);
+    // see https://github.com/ericgio/react-bootstrap-typeahead/issues/266#issuecomment-414987723
+    const text = this.props.keywordOnInit;
+    const instance = this.refs.typeahead.getInstance();
+    instance.clear();
+    instance.setState({ text });
   }
 
   search(keyword) {
@@ -180,6 +183,10 @@ export default class SearchTypeahead extends React.Component {
           minLength={0}
           options={this.state.pages} // Search result (Some page names)
           emptyLabel={this.getEmptyLabel()}
+          searchText={(this.state.isLoading ? 'Searching...' : this.getEmptyLabel())}
+              // DIRTY HACK
+              //  note: The default searchText string has been shown wrongly even if isLoading is false
+              //        since upgrade react-bootstrap-typeahead to v3.3.2 -- 2019.02.05 Yuki Takei
           align='left'
           submitFormOnEnter={true}
           onSearch={this.search}
