@@ -1,7 +1,11 @@
 CHANGES
 ========
 
-## 3.3.8-RC
+## 3.3.9
+
+* 
+
+## 3.3.8
 
 * Fix: Typeahead shows autocomplete wrongly
 * Fix: Move/Duplicate don't work
