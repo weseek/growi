@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import * as pagePathUtils from '@commons/util/page-path-utils';
 import SearchTypeahead from './SearchTypeahead';
 
-export default class NewPageNameInput extends React.Component {
+export default class PagePathAutoComplete extends React.Component {
 
   constructor(props) {
 
@@ -59,8 +59,8 @@ export default class NewPageNameInput extends React.Component {
           onSearchError={this.onSearchError}
           onSubmit={this.onSubmit}
           inputName='new_path'
-          emptyLabel={emptyLabel}
-          placeholder="Input page name"
+          emptyLabel={null}
+          placeholder="Input page path"
           keywordOnInit={this.getKeywordOnInit(this.props.initializedPath)}
         />
       </div>
@@ -68,12 +68,12 @@ export default class NewPageNameInput extends React.Component {
   }
 }
 
-NewPageNameInput.propTypes = {
+PagePathAutoComplete.propTypes = {
   crowi:            PropTypes.object.isRequired,
   initializedPath:  PropTypes.string,
   addSlashToTheEnd: PropTypes.bool,
 };
 
-NewPageNameInput.defaultProps = {
+PagePathAutoComplete.defaultProps = {
   initializedPath: '/',
 };
