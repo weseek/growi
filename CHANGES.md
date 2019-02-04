@@ -3,7 +3,12 @@ CHANGES
 
 ## 3.3.8-RC
 
-* 
+* Fix: Typeahead shows autocomplete wrongly
+* Fix: Move/Duplicate don't work
+    * Introduced by 3.3.7
+* Support: Upgrade libs
+    * react
+    * react-bootstrap-typeahead
 
 ## 3.3.7
 
