@@ -15,7 +15,6 @@ export default class PagePathAutoComplete extends React.Component {
     };
     this.crowi = this.props.crowi;
 
-    this.onSearchError = this.onSearchError.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.getKeywordOnInit = this.getKeywordOnInit.bind(this);
   }
@@ -24,12 +23,6 @@ export default class PagePathAutoComplete extends React.Component {
   }
 
   componentWillUnmount() {
-  }
-
-  onSearchError(err) {
-    this.setState({
-      searchError: err,
-    });
   }
 
   onSubmit(query) {
@@ -47,19 +40,14 @@ export default class PagePathAutoComplete extends React.Component {
   }
 
   render() {
-    const emptyLabel = (this.state.searchError !== null)
-      ? 'Error on searching.'
-      : 'No matches found on title...';
-
     return (
       <div ref='rootDom'>
         <SearchTypeahead
           ref={this.searchTypeaheadDom}
           crowi={this.crowi}
-          onSearchError={this.onSearchError}
           onSubmit={this.onSubmit}
           inputName='new_path'
-          emptyLabel={null}
+          emptyLabelExceptError={null}
           placeholder="Input page path"
           keywordOnInit={this.getKeywordOnInit(this.props.initializedPath)}
         />
