@@ -199,12 +199,11 @@ import GrowiRenderer from '../../GrowiRenderer';
    */
   function convertSlides() {
     let sections = document.querySelectorAll('[data-markdown]');
-    let section;
     let markdown;
     const interceptorManager = growiRenderer.crowi.interceptorManager;
 
     for (let i = 0, len = sections.length; i < len; i++) {
-      section = sections[i];
+      let section = sections[i];
 
       // Only parse the same slide once
       if (!section.getAttribute('data-markdown-parsed')) {
@@ -212,17 +211,25 @@ import GrowiRenderer from '../../GrowiRenderer';
         markdown = getMarkdownFromSlide(section);
         let context = { markdown };
 
-        interceptorManager.process('preRender', context);
-        interceptorManager.process('prePreProcess', context);
-        context.markdown = growiRenderer.preProcess(context.markdown);
-        interceptorManager.process('postPreProcess', context);
-        context['parsedHTML'] = growiRenderer.process(context.markdown);
-        interceptorManager.process('prePostProcess', context);
-        context.parsedHTML = growiRenderer.postProcess(context.parsedHTML);
-        interceptorManager.process('postPostProcess', context);
-        interceptorManager.process('preRenderHtml', context);
-        interceptorManager.process('postRenderHtml', context);
-        section.innerHTML = context.parsedHTML;
+        interceptorManager.process('preRender', context)
+          .then(() => interceptorManager.process('prePreProcess', context))
+          .then(() => {
+            context.markdown = growiRenderer.preProcess(context.markdown);
+          })
+          .then(() => interceptorManager.process('postPreProcess', context))
+          .then(() => {
+            context['parsedHTML'] = growiRenderer.process(context.markdown);
+          })
+          .then(() => interceptorManager.process('prePostProcess', context))
+          .then(() => {
+            context.parsedHTML = growiRenderer.postProcess(context.parsedHTML);
+          })
+          .then(() => interceptorManager.process('postPostProcess', context))
+          .then(() => interceptorManager.process('preRenderHtml', context))
+          .then(() => interceptorManager.process('postRenderHtml', context))
+          .then(() => {
+            section.innerHTML = context.parsedHTML;
+          });
       }
     }
   }
