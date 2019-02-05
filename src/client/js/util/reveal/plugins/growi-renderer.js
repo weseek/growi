@@ -216,8 +216,13 @@ import GrowiRenderer from '../../GrowiRenderer';
         interceptorManager.process('prePreProcess', context);
         context.markdown = growiRenderer.preProcess(context.markdown);
         interceptorManager.process('postPreProcess', context);
-        section.innerHTML = growiRenderer.process(context.markdown);
-        section.innerHTML = growiRenderer.postProcess(section.innerHTML);
+        context['parsedHTML'] = growiRenderer.process(context.markdown);
+        interceptorManager.process('prePostProcess', context);
+        context.parsedHTML = growiRenderer.postProcess(context.parsedHTML);
+        interceptorManager.process('postPostProcess', context);
+        interceptorManager.process('preRenderHtml', context);
+        interceptorManager.process('postRenderHtml', context);
+        section.innerHTML = context.parsedHTML;
       }
     }
   }
