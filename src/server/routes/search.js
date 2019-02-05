@@ -32,7 +32,7 @@ module.exports = function(crowi, app) {
    */
   api.search = async function(req, res) {
     const user = req.user;
-    const { q: keyword = null, tree = null, type = null } = req.query;
+    const { q: keyword = null, type = null } = req.query;
     let paginateOpts;
 
     try {
@@ -61,13 +61,7 @@ module.exports = function(crowi, app) {
 
     const result = {};
     try {
-      let esResult;
-      if (tree) {
-        esResult = await search.searchKeywordUnderPath(keyword, tree, user, userGroups, searchOpts);
-      }
-      else {
-        esResult = await search.searchKeyword(keyword, user, userGroups, searchOpts);
-      }
+      const esResult = await search.searchKeyword(keyword, user, userGroups, searchOpts);
 
       // create score map for sorting
       // key: id , value: score

@@ -1,5 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
+import FormGroup from 'react-bootstrap/es/FormGroup';
+import Button from 'react-bootstrap/es/Button';
+import InputGroup from 'react-bootstrap/es/InputGroup';
+
 import SearchForm from '../SearchForm';
 
 // Search.SearchForm
@@ -14,20 +19,13 @@ export default class SearchPageForm extends React.Component {
     };
 
     this.search = this.search.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
     this.onInputChange = this.onInputChange.bind(this);
   }
 
-  search(keyword) {
-    if (this.state.searchedKeyword != keyword) {
-      this.props.onSearchFormChanged({keyword: keyword});
-      this.setState({searchedKeyword: keyword});
-    }
-  }
-
-  onSubmit(event) { // submit with button
-    event.preventDefault(); // prevent refreshing page
-    this.search(this.state.keyword);
+  search() {
+    const keyword = this.state.keyword;
+    this.props.onSearchFormChanged({keyword: keyword});
+    this.setState({searchedKeyword: keyword});
   }
 
   onInputChange(input) { // for only submitting with button
@@ -35,28 +33,26 @@ export default class SearchPageForm extends React.Component {
   }
 
   render() {
-    return (
-      <form ref='form'
-        className="form form-group input-group"
-        onSubmit={this.onSubmit}
-      >
-        <SearchForm
+    return <FormGroup>
+      <InputGroup>
+        <SearchForm t={this.props.t}
           crowi={this.props.crowi}
           onSubmit={this.search}
           keyword={this.state.searchedKeyword}
           onInputChange={this.onInputChange}
         />
-        <span className="input-group-btn">
-          <button type="submit" className="btn btn-default">
-            <i className="search-top-icon icon-magnifier"></i>
-          </button>
-        </span>
-      </form>
-    );
+        <InputGroup.Button className="">
+          <Button onClick={this.search}>
+            <i className="icon-magnifier"></i>
+          </Button >
+        </InputGroup.Button>
+      </InputGroup>
+    </FormGroup>;
   }
 }
 
 SearchPageForm.propTypes = {
+  t: PropTypes.func.isRequired,               // i18next
   crowi: PropTypes.object.isRequired,
   keyword: PropTypes.string,
   onSearchFormChanged: PropTypes.func.isRequired,
