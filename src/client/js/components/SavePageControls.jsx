@@ -7,6 +7,7 @@ import SplitButton  from 'react-bootstrap/es/SplitButton';
 import MenuItem from 'react-bootstrap/es/MenuItem';
 
 import SlackNotification from './SlackNotification';
+import PageTagForm from './PageTagForm';
 import GrantSelector from './SavePageControls/GrantSelector';
 
 class SavePageControls extends React.PureComponent {
@@ -28,8 +29,10 @@ class SavePageControls extends React.PureComponent {
 
   getCurrentOptionsToSave() {
     const slackNotificationOptions = this.refs.slackNotification.getCurrentOptionsToSave();
+    // const pageTagOptions = this.refs.pageTagForm.getCurrentOptionsToSave();
+    const pageTagOptions = '';
     const grantSelectorOptions = this.refs.grantSelector.getCurrentOptionsToSave();
-    return Object.assign(slackNotificationOptions, grantSelectorOptions);
+    return Object.assign(slackNotificationOptions, pageTagOptions, grantSelectorOptions);
   }
 
   /**
@@ -58,6 +61,14 @@ class SavePageControls extends React.PureComponent {
 
     return (
       <div className="d-flex align-items-center form-inline">
+        <div className="mr-2">
+          <PageTagForm
+            ref='PageTagForm'
+            crowi={this.props.crowi}
+            pageId={this.props.pageId}
+            pagePath={this.props.pagePath}
+            pageTags={this.props.pageTags} />
+      </div>
         <div className="mr-2">
           <SlackNotification
               ref='slackNotification'
@@ -102,6 +113,7 @@ SavePageControls.propTypes = {
   // for SlackNotification
   pagePath: PropTypes.string,
   slackChannels: PropTypes.string,
+  pageTags: PropTypes.string,
   // for GrantSelector
   grant: PropTypes.number,
   grantGroupId: PropTypes.string,
