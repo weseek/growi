@@ -107,7 +107,7 @@ module.exports = function(crowi, app) {
   }
 
   function updateTags(page, user, pageTags, updateOrCreate, previousRevision) {
-    Tag.createTag(pageTags);
+    Tag.settingTags(page, pageTags);
   }
 
   function addRendarVarsForPage(renderVars, page) {
