@@ -69,11 +69,11 @@ import GrowiRenderer from '../../GrowiRenderer';
   function createMarkdownSlide(content, options) {
     options = getSlidifyOptions(options);
 
-    // let notesMatch = content.split(new RegExp(options.notesSeparator, 'mgi'));
+    let notesMatch = content.split(new RegExp(options.notesSeparator, 'mgi'));
 
-    // if (notesMatch.length === 2) {
-    //   content = notesMatch[0] + '<aside class="notes">' + growiRenderer.process(notesMatch[1].trim()) + '</aside>';
-    // }
+    if (notesMatch.length === 2) {
+      content = notesMatch[0] + '<aside class="notes">' + growiRenderer.process(notesMatch[1].trim()) + '</aside>';
+    }
 
     // prevent script end tags in the content from interfering
     // with parsing
