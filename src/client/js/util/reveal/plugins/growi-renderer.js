@@ -153,15 +153,32 @@ import GrowiRenderer from '../../GrowiRenderer';
     return markdownSections;
   }
 
+  /**
+   * Add data separator before lines
+   * starting with '#' to markdown.
+   */
+  function divideSlides(markdown) {
+    const interceptorManager = growiRenderer.crowi.interceptorManager;
+    let context = { markdown };
+    interceptorManager.process('preRender', context);
+    interceptorManager.process('prePreProcess', context);
+    context.markdown = context.markdown.replace(/[\n]+#/g, '\n\n\n#');
+    interceptorManager.process('postPreProcess', context);
+    return context.markdown;
+  }
+
   function processSlides() {
     let sections = document.querySelectorAll('[data-markdown]');
-    let section;
+    let section, markdown;
     for (let i = 0, len = sections.length; i < len; i++) {
       section = sections[i];
+      // add data separator '\n\n\n' to markdown.
+      markdown = divideSlides(getMarkdownFromSlide(section));
+
       if (section.getAttribute('data-separator')
         || section.getAttribute('data-separator-vertical')
         || section.getAttribute('data-separator-notes')) {
-        section.outerHTML = slidify(getMarkdownFromSlide(section), {
+        section.outerHTML = slidify(markdown, {
           separator: section.getAttribute('data-separator'),
           verticalSeparator: section.getAttribute('data-separator-vertical'),
           notesSeparator: section.getAttribute('data-separator-notes')
@@ -169,7 +186,7 @@ import GrowiRenderer from '../../GrowiRenderer';
         });
       }
       else {
-        section.innerHTML = createMarkdownSlide(getMarkdownFromSlide(section));
+        section.innerHTML = createMarkdownSlide(markdown);
       }
     }
   }
