@@ -29,8 +29,7 @@ class SavePageControls extends React.PureComponent {
 
   getCurrentOptionsToSave() {
     const slackNotificationOptions = this.refs.slackNotification.getCurrentOptionsToSave();
-    // const pageTagOptions = this.refs.pageTagForm.getCurrentOptionsToSave();
-    const pageTagOptions = '';
+    const pageTagOptions = this.refs.pageTagForm.getCurrentOptionsToSave();
     const grantSelectorOptions = this.refs.grantSelector.getCurrentOptionsToSave();
     return Object.assign(slackNotificationOptions, pageTagOptions, grantSelectorOptions);
   }
@@ -63,7 +62,7 @@ class SavePageControls extends React.PureComponent {
       <div className="d-flex align-items-center form-inline">
         <div className="mr-2">
           <PageTagForm
-            ref='PageTagForm'
+            ref='pageTagForm'
             crowi={this.props.crowi}
             pageId={this.props.pageId}
             pagePath={this.props.pagePath}

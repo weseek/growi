@@ -595,6 +595,7 @@ module.exports = function(crowi, app) {
     const overwriteScopesOfDescendants = req.body.overwriteScopesOfDescendants || null;
     const isSlackEnabled = !!req.body.isSlackEnabled;                     // cast to boolean
     const slackChannels = req.body.slackChannels || null;
+    const pageTags = req.body.pageTags || null;
     const isSyncRevisionToHackmd = !!req.body.isSyncRevisionToHackmd;     // cast to boolean
     const socketClientId = req.body.socketClientId || undefined;
 

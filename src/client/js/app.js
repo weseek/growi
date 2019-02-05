@@ -63,6 +63,7 @@ let pagePath;
 let pageContent = '';
 let markdown = '';
 let slackChannels;
+let pageTags = '';
 if (mainContent !== null) {
   pageId = mainContent.getAttribute('data-page-id') || null;
   pageRevisionId = mainContent.getAttribute('data-page-revision-id');
@@ -72,6 +73,7 @@ if (mainContent !== null) {
   hasDraftOnHackmd = !!mainContent.getAttribute('data-page-has-draft-on-hackmd');
   pagePath = mainContent.attributes['data-path'].value;
   slackChannels = mainContent.getAttribute('data-slack-channels') || '';
+  // pageTags = mainContent.getAttribute('data-page-tags') || '';
   const rawText = document.getElementById('raw-text-original');
   if (rawText) {
     pageContent = rawText.innerHTML;
@@ -324,7 +326,7 @@ if (savePageControlsElem) {
               savePageControls = elem.getWrappedInstance();
             }
           }}
-          pageId={pageId} pagePath={pagePath} slackChannels={slackChannels}
+          pageId={pageId} pagePath={pagePath} slackChannels={slackChannels} pageTags={pageTags}
           grant={grant} grantGroupId={grantGroupId} grantGroupName={grantGroupName} />
     </I18nextProvider>,
     savePageControlsElem
