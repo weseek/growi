@@ -1,118 +1,144 @@
-const debug = require('debug')('growi:models:tag');
-const mongoose = require('mongoose');
-const mongoosePaginate = require('mongoose-paginate');
-const ObjectId = mongoose.Schema.Types.ObjectId;
+module.exports = function (crowi) {
+  var debug = require('debug')('growi:models:tag'),
+    mongoose = require('mongoose'),
+    ObjectId = mongoose.Schema.Types.ObjectId,
+    // USER_PUBLIC_FIELDS = '_id name username createdAt',
+    USER_PUBLIC_FIELDS = '_id name',
+    tagSchema;
 
+  tagSchema = new mongoose.Schema({
+    // page: {
+    //   type: ObjectId,
+    //   ref: 'Page',
+    //   index: true
+    // },
+    // creator: {
+    //   type: ObjectId,
+    //   ref: 'User',
+    //   index: true
+    // },
+    // revision: {
+    //   type: ObjectId,
+    //   ref: 'Revision',
+    //   index: true
+    // },
+    name: {
+      type: String,
+      required: true
+    },
+    // createdAt: {
+    //   type: Date,
+    //   default: Date.now
+    // },
+  });
 
-/*
- * define schema
- */
-const schema = new mongoose.Schema({
-  name: { type: String, required: true, unique: true },
-});
-schema.plugin(mongoosePaginate);
+  tagSchema.statics.settingTags = function(page, tag) {
+    const PageTagRelation = crowi.model('PageTagRelation');
+    return this.create({name: tag}, function(err, createdTag) {
+      // console.log(createdTag);
+      // Relation を作成
+      PageTagRelation.createRelation(page.id, createdTag.id);
+    });
+  };
 
-class Tag {
+//   commentSchema.statics.getCommentsByPageId = function (id) {
+//     var self = this;
 
-  /**
-   * public fields for Tag model
-   *
-   * @readonly
-   * @static
-   * @memberof Tag
-   */
-  static get TAG_PUBLIC_FIELDS() {
-    return '_id name';
-  }
+//     return new Promise(function (resolve, reject) {
+//       self
+//         .find({
+//           page: id
+//         })
+//         .sort({
+//           'createdAt': -1
+//         })
+//         .populate('creator', USER_PUBLIC_FIELDS)
+//         .exec(function (err, data) {
+//           if (err) {
+//             return reject(err);
+//           }
 
-  // /**
-  //  * limit items num for pagination
-  //  *
-  //  * @readonly
-  //  * @static
-  //  * @memberof UserGroup
-  //  */
-  // static get PAGE_ITEMS() {
-  //   return 10;
-  // }
+//           if (data.length < 1) {
+//             return resolve([]);
+//           }
 
-  /*
-   * model static methods
-   */
+//           //debug('Comment loaded', data);
+//           return resolve(data);
+//         });
+//     });
+//   };
 
-  // // すべてのタグを取得（オプション指定可）
-  // static findAllTags(option) {
-  //   return this.find().exec();
-  // }
+//   commentSchema.statics.getCommentsByRevisionId = function (id) {
+//     var self = this;
 
-  // /**
-  //  * find all entities with pagination
-  //  *
-  //  * @see https://github.com/edwardhotchkiss/mongoose-paginate
-  //  *
-  //  * @static
-  //  * @param {any} opts mongoose-paginate options object
-  //  * @returns {Promise<any>} mongoose-paginate result object
-  //  * @memberof Tag
-  //  */
-  // static findTagsWithPagination(opts) {
-  //   const query = {};
-  //   const options = Object.assign({}, opts);
-  //   if (options.page == null) {
-  //     options.page = 1;
-  //   }
-  //   if (options.limit == null) {
-  //     options.limit = Tag.PAGE_ITEMS;
-  //   }
+//     return new Promise(function (resolve, reject) {
+//       self
+//         .find({
+//           revision: id
+//         })
+//         .sort({
+//           'createdAt': -1
+//         })
+//         .populate('creator', USER_PUBLIC_FIELDS)
+//         .exec(function (err, data) {
+//           if (err) {
+//             return reject(err);
+//           }
 
-  //   return this.paginate(query, options)
-  //     .catch((err) => {
-  //       debug('Error on pagination:', err);
-  //     });
-  // }
+//           if (data.length < 1) {
+//             return resolve([]);
+//           }
 
-  // // 作成可能なタグ名かの判別
-  // static isRegisterableName(name) {
-  //   const query = { name: name };
+//           debug('Comment loaded', data);
+//           return resolve(data);
+//         });
+//     });
+//   };
 
-  //   return this.findOne(query)
-  //     .then((userGroupData) => {
-  //       return (userGroupData == null);
-  //     });
-  // }
+//   commentSchema.statics.countCommentByPageId = function (page) {
+//     var self = this;
 
-  // // タグ削除
-  // static removeTag(name) {
-  //   const PageTagRelation = mongoose.model('PageTagRelation');
+//     return new Promise(function (resolve, reject) {
+//       self.count({
+//         page: page
+//       }, function (err, data) {
+//         if (err) {
+//           return reject(err);
+//         }
 
-  //   let removed = undefined;
-  //   return this.find({name: name})
-  //     .then(pageTagData => {
-  //       if (pageTagData == null) {
-  //         throw new Exception('UserGroup data is not exists. id:', id);
-  //       }
-  //       return pageTagData.remove();
-  //     })
-  //     .then(removedPageTagData => {
-  //       removed = removedPageTagData;
-  //     })
-  //     // remove relations
-  //     .then(() => {
-  //       return Promise.all([
-  //         PageTagRelation.removeAllByUserGroup(removed),
-  //       ]);
-  //     });
-  // }
+//         return resolve(data);
+//       });
+//     });
+//   };
 
-  // タグ生成
-  static createTag(name) {
-    return this.create({name: name});
-  }
-}
+//   commentSchema.statics.removeCommentsByPageId = function (pageId) {
+//     var Comment = this;
 
-module.exports = function(crowi) {
-  Tag.crowi = crowi;
-  schema.loadClass(Tag);
-  return mongoose.model('Tag', schema);
+//     return new Promise(function (resolve, reject) {
+//       Comment.remove({
+//         page: pageId
+//       }, function (err, done) {
+//         if (err) {
+//           return reject(err);
+//         }
+
+//         resolve(done);
+//       });
+//     });
+//   };
+
+//   /**
+//    * post save hook
+//    */
+//   commentSchema.post('save', function (savedComment) {
+//     var Page = crowi.model('Page'),
+//       Comment = crowi.model('Comment');
+
+//     Page.updateCommentCount(savedComment.page)
+//       .then(function (page) {
+//         debug('CommentCount Updated', page);
+//       }).catch(function () {});
+//   });
+
+  return mongoose.model('Tag', tagSchema);
 };
-
