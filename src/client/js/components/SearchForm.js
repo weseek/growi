@@ -38,23 +38,39 @@ export default class SearchForm extends React.Component {
   }
 
   getHelpElement() {
+    const t = this.props.t;
+
     return (
       <table className="table m-1 search-help">
         <caption className="text-left text-primary p-2 mb-2">
-          <h5 className="m-1"><i className="icon-magnifier pr-2 mb-2"/>Search Help</h5>
+          <h5 className="m-1"><i className="icon-magnifier pr-2 mb-2"/>{ t('search_help.title') }</h5>
         </caption>
         <tbody>
           <tr>
-            <td className="text-right mt-0 pr-2 p-1"><code>keyword</code></td>
-            <th className="mr-2"><h6 className="pr-2 m-0 pt-1">記事名 or 本文に<samp>"keyword"</samp>を含む</h6></th>
+            <th className="text-right pt-2">
+              <code>word1</code> <code>word2</code><br></br>
+              <small>({ t('search_help.and.syntax help') })</small>
+            </th>
+            <td><h6 className="m-0 pt-1">{ t('search_help.and.desc', { word1: 'word1', word2: 'word2' }) }</h6></td>
           </tr>
           <tr>
-            <td className="text-right mt-0 pr-2 p-1"><code>a b</code></td>
-            <th><h6 className="m-0 pt-1">文字列<samp>"a"</samp>と<samp>"b"</samp>を含む (スペース区切り)</h6></th>
+            <th className="text-right pt-2">
+              <code>"This is GROWI"</code><br></br>
+              <small>({ t('search_help.phrase.syntax help') })</small>
+            </th>
+            <td><h6 className="m-0 pt-1">{ t('search_help.phrase.desc', { phrase: 'This is GROWI' }) }</h6></td>
           </tr>
           <tr>
-            <td className="text-right mt-0 pr-2 p-1"><code>-keyword</code></td>
-            <th><h6 className="m-0 pt-1">文字列<samp>"keyword"</samp>を含まない</h6></th>
+            <th className="text-right pt-2"><code>-keyword</code></th>
+            <td><h6 className="m-0 pt-1">{ t('search_help.exclude.desc', { word: 'keyword' }) }</h6></td>
+          </tr>
+          <tr>
+            <th className="text-right pt-2"><code>prefix:/user/</code></th>
+            <td><h6 className="m-0 pt-1">{ t('search_help.prefix.desc', { path: '/user/' }) }</h6></td>
+          </tr>
+          <tr>
+            <th className="text-right pt-2"><code>-prefix:/user/</code></th>
+            <td><h6 className="m-0 pt-1">{ t('search_help.exclude_prefix.desc', { path: '/user/' }) }</h6></td>
           </tr>
         </tbody>
       </table>
@@ -62,9 +78,10 @@ export default class SearchForm extends React.Component {
   }
 
   render() {
+    const t = this.props.t;
     const emptyLabel = (this.state.searchError !== null)
       ? 'Error on searching.'
-      : 'No matches found on title... Hit [Enter] key so that search on contents.';
+      : t('search.search page bodies');
 
     return (
       <SearchTypeahead
@@ -83,6 +100,7 @@ export default class SearchForm extends React.Component {
 }
 
 SearchForm.propTypes = {
+  t: PropTypes.func.isRequired,               // i18next
   crowi: PropTypes.object.isRequired,
   keyword: PropTypes.string,
   onSubmit: PropTypes.func.isRequired,
