@@ -6,6 +6,7 @@ module.exports = function(crowi, app) {
     , pagePathUtils = require('@commons/util/page-path-utils')
     , Page = crowi.model('Page')
     , User = crowi.model('User')
+    , Tag = crowi.model('Tag')
     , Config   = crowi.model('Config')
     , config   = crowi.getConfig()
     , Bookmark = crowi.model('Bookmark')
@@ -103,6 +104,10 @@ module.exports = function(crowi, app) {
         logger.error('Error occured in sending slack notification: ', err);
       });
     }
+  }
+
+  function updateTags(page, user, pageTags, updateOrCreate, previousRevision) {
+    Tag.createTag(pageTags);
   }
 
   function addRendarVarsForPage(renderVars, page) {
@@ -653,6 +658,11 @@ module.exports = function(crowi, app) {
     // user notification
     if (isSlackEnabled && slackChannels != null) {
       await notifyToSlackByUser(page, req.user, slackChannels, 'update', previousRevision);
+    }
+
+    // set page tag
+    if (pageTags != null) {
+      await updateTags(page, req.user, pageTags, 'update', previousRevision);
     }
   };
 

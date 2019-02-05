@@ -105,7 +105,7 @@ class Tag {
   // }
 
   // タグ生成
-  static create(name) {
+  static createTag(name) {
     return this.create({name: name});
   }
 }
