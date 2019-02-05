@@ -8,6 +8,7 @@ module.exports = function(crowi, app) {
   const models = crowi.models;
   const Page = models.Page;
   const PageGroupRelation = models.PageGroupRelation;
+  const PageTagRelation = models.PageTagRelation;
   const User = models.User;
   const ExternalAccount = models.ExternalAccount;
   const UserGroup = models.UserGroup;
