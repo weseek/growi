@@ -160,9 +160,12 @@ import GrowiRenderer from '../../GrowiRenderer';
   function divideSlides(markdown) {
     const interceptorManager = growiRenderer.crowi.interceptorManager;
     let context = { markdown };
-    interceptorManager.process('preRender', context);
+    // detach code block.
     interceptorManager.process('prePreProcess', context);
+    // if there is only '\n' in the first line, replace it.
+    context.markdown = context.markdown.replace(/^\n/, '');
     context.markdown = context.markdown.replace(/[\n]+#/g, '\n\n\n#');
+    // restore code block.
     interceptorManager.process('postPreProcess', context);
     return context.markdown;
   }
