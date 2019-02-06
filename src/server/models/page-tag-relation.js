@@ -192,22 +192,22 @@ class PageTagRelation {
   //     });
   // }
 
-  /**
-   * count by related page id and related tag
-   *
-   * @static
-   * @param {string} userPageId find query param for relatedPage
-   * @param {User} tagName find query param for relatedTag
-   * @returns {Promise<number>}
-   */
-  static async countByPageIdAndTag(pageId, tagName) {
-    const query = {
-      relatedPage: pageId,
-      relatedTag: tagName
-    };
+  // /**
+  //  * count by related page id and related tag
+  //  *
+  //  * @static
+  //  * @param {string} userPageId find query param for relatedPage
+  //  * @param {User} tagId find query param for relatedTag
+  //  * @returns {Promise<number>}
+  //  */
+  // static async countByPageIdAndTag(pageId, tagId) {
+  //   const query = {
+  //     relatedPage: pageId,
+  //     relatedTag: tagId
+  //   };
 
-    return this.count(query);
-  }
+  //   return this.count(query);
+  // }
 
   // /**
   //  * find all "not" related user for UserGroup
@@ -265,15 +265,15 @@ class PageTagRelation {
    * create tag and page relation
    *
    * @static
-   * @param {Tag} tag
    * @param {Page} page
+   * @param {Tag} tag
    * @returns {Promise<PageTagRelation>} created relation
    * @memberof PageTagRelation
    */
   static createRelation(page, tag) {
     return this.create({
-      relatedGroup: page.id,
-      relatedUser: tag.id
+      relatedPage: page.id,
+      relatedTag: tag.id
     });
   }
 

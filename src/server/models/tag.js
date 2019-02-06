@@ -37,7 +37,7 @@ module.exports = function (crowi) {
     return this.create({name: tag}, function(err, createdTag) {
       // console.log(createdTag);
       // Relation を作成
-      PageTagRelation.createRelation(page.id, createdTag.id);
+      PageTagRelation.createRelation(page, createdTag);
     });
   };
 
