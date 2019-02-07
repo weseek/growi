@@ -192,12 +192,13 @@ module.exports = function(crowi, app) {
     // check whether this page has portal page
     const portalPageStatus = await getPortalPageState(path, req.user);
 
+    let view = 'customlayout-selector/page_list';
     const renderVars = { path };
 
     if (portalPageStatus === PORTAL_STATUS_FORBIDDEN) {
       // inject to req
       req.isForbidden = true;
-      return next();
+      view = 'customlayout-selector/forbidden';
     }
     else if (portalPageStatus === PORTAL_STATUS_EXISTS) {
       let portalPage = await Page.findByPathAndViewer(path, req.user);
@@ -216,7 +217,7 @@ module.exports = function(crowi, app) {
     await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit);
 
     await interceptorManager.process('beforeRenderPage', req, res, renderVars);
-    return res.render('customlayout-selector/page_list', renderVars);
+    return res.render(view, renderVars);
   }
 
   async function showPageForGrowiBehavior(req, res, next) {
@@ -623,8 +624,8 @@ module.exports = function(crowi, app) {
       options.grantUserGroupId = grantUserGroupId;
     }
 
-      const Revision = crowi.model('Revision');
-      const previousRevision = await Revision.findById(revisionId);
+    const Revision = crowi.model('Revision');
+    const previousRevision = await Revision.findById(revisionId);
     try {
       page = await Page.updatePage(page, pageBody, previousRevision.body, req.user, options);
     }
@@ -953,13 +954,13 @@ module.exports = function(crowi, app) {
    * @apiParam {String} page_id Page Id.
    * @apiParam {String} path
    * @apiParam {String} revision_id
-   * @apiParam {String} q New path name.
+   * @apiParam {String} new_path New path name.
    * @apiParam {Bool} create_redirect
    */
   api.rename = async function(req, res) {
     const pageId = req.body.page_id;
     const previousRevision = req.body.revision_id || null;
-    const newPagePath = Page.normalizePath(req.body.q);
+    const newPagePath = Page.normalizePath(req.body.new_path);
     const options = {
       createRedirectPage: req.body.create_redirect || 0,
       moveUnderTrees: req.body.move_trees || 0,
@@ -1019,11 +1020,11 @@ module.exports = function(crowi, app) {
    * @apiGroup Page
    *
    * @apiParam {String} page_id Page Id.
-   * @apiParam {String} q New path name.
+   * @apiParam {String} new_path New path name.
    */
   api.duplicate = async function(req, res) {
     const pageId = req.body.page_id;
-    const newPagePath = Page.normalizePath(req.body.q);
+    const newPagePath = Page.normalizePath(req.body.new_path);
 
     const page = await Page.findByIdAndViewer(pageId, req.user);
 

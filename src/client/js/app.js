@@ -29,7 +29,7 @@ import SeenUserList     from './components/SeenUserList';
 import RevisionPath     from './components/Page/RevisionPath';
 import RevisionUrl      from './components/Page/RevisionUrl';
 import BookmarkButton   from './components/BookmarkButton';
-import NewPageNameInput from './components/NewPageNameInput';
+import PagePathAutoComplete from './components/PagePathAutoComplete';
 import RecentCreated from './components/RecentCreated/RecentCreated';
 
 import CustomCssEditor  from './components/Admin/CustomCssEditor';
@@ -281,9 +281,9 @@ const componentMappings = {
   'bookmark-button': <BookmarkButton pageId={pageId} crowi={crowi} />,
   'bookmark-button-lg': <BookmarkButton pageId={pageId} crowi={crowi} size="lg" />,
 
-  'create-page-name-input': <NewPageNameInput crowi={crowi} parentPageName={pagePath} />,
-  'rename-page-name-input': <NewPageNameInput crowi={crowi} parentPageName={pagePath} />,
-  'duplicate-page-name-input': <NewPageNameInput crowi={crowi} parentPageName={pagePath} />,
+  'create-page-name-input': <PagePathAutoComplete crowi={crowi} initializedPath={pagePath} addSlashToTheEnd={true} />,
+  'rename-page-name-input': <PagePathAutoComplete crowi={crowi} initializedPath={pagePath} />,
+  'duplicate-page-name-input': <PagePathAutoComplete crowi={crowi} initializedPath={pagePath} />,
 
 };
 // additional definitions if data exists
