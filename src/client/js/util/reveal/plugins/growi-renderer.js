@@ -21,84 +21,22 @@ import GrowiRenderer from '../../GrowiRenderer';
    * Add data separator before lines
    * starting with '#' to markdown.
    */
-  function divideSlides(markdown) {
-    const interceptorManager = growiRenderer.crowi.interceptorManager;
-    let context = { markdown };
-    // detach code block.
-    interceptorManager.process('prePreProcess', context);
-    // if there is only '\n' in the first line, replace it.
-    context.markdown = context.markdown.replace(/^\n/, '');
-    context.markdown = context.markdown.replace(/[\n]+#/g, '\n\n\n#');
-    // restore code block.
-    interceptorManager.process('postPreProcess', context);
-    return context.markdown;
-  }
-
-  function processSlides() {
+  function divideSlides() {
     let sections = document.querySelectorAll('[data-markdown]');
-    let section, markdown;
     for (let i = 0, len = sections.length; i < len; i++) {
-      section = sections[i];
+      let section = sections[i];
+      let markdown = marked.getMarkdownFromSlide(section);
+      let context = {markdown};
+      const interceptorManager = growiRenderer.crowi.interceptorManager;
+      // detach code block.
+      interceptorManager.process('prePreProcess', context);
+      // if there is only '\n' in the first line, replace it.
+      context.markdown = context.markdown.replace(/^\n/, '');
       // add data separator '\n\n\n' to markdown.
-      markdown = divideSlides(marked.getMarkdownFromSlide(section));
-      if ( section.getAttribute( 'data-markdown' ).length ) {
-        let xhr = new XMLHttpRequest(),
-          url = section.getAttribute( 'data-markdown' );
-
-        let datacharset = section.getAttribute( 'data-charset' );
-
-        // see https://developer.mozilla.org/en-US/docs/Web/API/element.getAttribute#Notes
-        if ( datacharset != null && datacharset !== '' ) {
-          xhr.overrideMimeType( 'text/html; charset=' + datacharset );
-        }
-
-        xhr.onreadystatechange = function() {
-          if ( xhr.readyState === 4 ) {
-            // file protocol yields status code 0 (useful for local debug, mobile applications etc.)
-            if ( ( xhr.status >= 200 && xhr.status < 300 ) || xhr.status === 0 ) {
-
-              section.outerHTML = marked.slidify( xhr.responseText, {
-                separator: section.getAttribute( 'data-separator' ),
-                verticalSeparator: section.getAttribute( 'data-separator-vertical' ),
-                notesSeparator: section.getAttribute( 'data-separator-notes' ),
-                attributes: marked.getForwardedAttributes( section )
-              });
-
-            }
-            else {
-
-              section.outerHTML = '<section data-state="alert">' +
-                'ERROR: The attempt to fetch ' + url + ' failed with HTTP status ' + xhr.status + '.' +
-                'Check your browser\'s JavaScript console for more details.' +
-                '<p>Remember that you need to serve the presentation HTML from a HTTP server.</p>' +
-                '</section>';
-
-            }
-          }
-        };
-
-        xhr.open( 'GET', url, false );
-
-        try {
-          xhr.send();
-        }
-        catch ( e ) {
-          alert( 'Failed to get the Markdown file ' + url + '. Make sure that the presentation and the file are served by a HTTP server and the file can be found there. ' + e );
-        }
-      }
-      else if (section.getAttribute('data-separator')
-        || section.getAttribute('data-separator-vertical')
-        || section.getAttribute('data-separator-notes')) {
-        section.outerHTML = marked.slidify(markdown, {
-          separator: section.getAttribute('data-separator'),
-          verticalSeparator: section.getAttribute('data-separator-vertical'),
-          notesSeparator: section.getAttribute('data-separator-notes'),
-          attributes: marked.getForwardedAttributes(section)
-        });
-      }
-      else {
-        section.innerHTML = marked.createMarkdownSlide(markdown);
-      }
+      context.markdown = context.markdown.replace(/[\n]+#/g, '\n\n\n#');
+      // restore code block.
+      interceptorManager.process('postPreProcess', context);
+      section.innerHTML = marked.createMarkdownSlide(context.markdown);
     }
   }
 
@@ -157,10 +95,11 @@ import GrowiRenderer from '../../GrowiRenderer';
 
   // API
   return {
-    initialize: function() {
+    initialize: async function() {
       growiRenderer.setup();
       marked = require('./markdown').default(growiRenderer.process);
-      processSlides();
+      divideSlides();
+      marked.processSlides();
       convertSlides();
     }
   };

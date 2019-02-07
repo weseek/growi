@@ -371,9 +371,7 @@ export default function( marked ) {
   // API
   return {
     getMarkdownFromSlide: getMarkdownFromSlide,
-    getForwardedAttributes: getForwardedAttributes,
     createMarkdownSlide: createMarkdownSlide,
-    slidify: slidify,
     processSlides: processSlides,
     addAttributes: addAttributes,
     convertSlides: convertSlides
