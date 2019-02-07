@@ -70,6 +70,7 @@ import GrowiRenderer from '../../GrowiRenderer';
       // Only parse the same slide once
       if (!section.getAttribute('data-markdown-parsed')) {
         section.setAttribute('data-markdown-parsed', 'true');
+        let notes = section.querySelector( 'aside.notes' );
         markdown = marked.getMarkdownFromSlide(section);
         let context = { markdown };
 
@@ -92,6 +93,12 @@ import GrowiRenderer from '../../GrowiRenderer';
           .then(() => {
             section.innerHTML = context.parsedHTML;
           });
+
+        // If there were notes, we need to re-add them after
+        // having overwritten the section's HTML
+        if ( notes ) {
+          section.appendChild( notes );
+        }
       }
     }
   }
