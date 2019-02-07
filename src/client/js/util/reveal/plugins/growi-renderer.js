@@ -46,8 +46,8 @@ import GrowiRenderer from '../../GrowiRenderer';
         section.outerHTML = marked.slidify(markdown, {
           separator: section.getAttribute('data-separator'),
           verticalSeparator: section.getAttribute('data-separator-vertical'),
-          notesSeparator: section.getAttribute('data-separator-notes')
-          // attributes: getForwardedAttributes(section)
+          notesSeparator: section.getAttribute('data-separator-notes'),
+          attributes: marked.getForwardedAttributes(section)
         });
       }
       else {
