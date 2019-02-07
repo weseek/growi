@@ -90,8 +90,7 @@ module.exports = function(crowi) {
   };
 
   attachmentSchema.statics.removeWithSubstanceById = async function(id) {
-    // retrieve data from DB
-    // because this instance fields are only partially populated
+    // retrieve data from DB to get a completely populated instance
     const attachment = await this.findById(id);
     await fileUploader.deleteFile(attachment);
     return await this.remove();
