@@ -93,7 +93,7 @@ module.exports = function(crowi) {
     // retrieve data from DB to get a completely populated instance
     const attachment = await this.findById(id);
     await fileUploader.deleteFile(attachment);
-    return await this.remove();
+    return await attachment.remove();
   };
 
   return mongoose.model('Attachment', attachmentSchema);
