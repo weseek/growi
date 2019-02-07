@@ -35,6 +35,10 @@ module.exports = function(crowi, app) {
    * @param {boolean} forceDownload
    */
   async function responseForAttachment(res, user, attachment, forceDownload) {
+    if (attachment == null) {
+      return res.json(ApiResponse.error('attachment not found'));
+    }
+
     const isAccessible = await isAccessibleByViewer(user, attachment);
     if (!isAccessible) {
       return res.json(ApiResponse.error(`Forbidden to access to the attachment '${attachment.id}'`));
