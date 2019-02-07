@@ -215,6 +215,12 @@ module.exports = function(crowi, app) {
     }
     else {
       page = await Page.findById(pageId);
+
+      // check the user is accessible
+      const isAccessible = await Page.isAccessiblePageByViewer(page.id, req.user);
+      if (!isAccessible) {
+        return res.json(ApiResponse.error(`Forbidden to access to the page '${page.id}'`));
+      }
     }
 
     let attachment;
