@@ -27,6 +27,22 @@ module.exports = function(crowi, app) {
   }
 
   /**
+   * Check the user is accessible to the related page
+   *
+   * @param {User} user
+   * @param {Attachment} attachment
+   */
+  async function isDeletableByUser(user, attachment) {
+    const ownerId = attachment.creator._id || attachment.creator;
+    if (attachment.page == null) {  // when profile image
+      return user.id === ownerId.toString();
+    }
+    else {
+      return await Page.isAccessiblePageByViewer(attachment.page, user);
+    }
+  }
+
+  /**
    * Common method to response
    *
    * @param {Response} res
@@ -303,9 +319,9 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('attachment not found'));
     }
 
-    const isAccessible = await isAccessibleByViewer(req.user, attachment);
-    if (!isAccessible) {
-      return res.json(ApiResponse.error(`Forbidden to access to the attachment '${attachment.id}'`));
+    const isDeletable = await isDeletableByUser(req.user, attachment);
+    if (!isDeletable) {
+      return res.json(ApiResponse.error(`Forbidden to remove the attachment '${attachment.id}'`));
     }
 
     try {
