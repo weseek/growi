@@ -375,6 +375,7 @@ export default function( marked ) {
     createMarkdownSlide: createMarkdownSlide,
     slidify: slidify,
     processSlides: processSlides,
+    addAttributes: addAttributes,
     convertSlides: convertSlides
   };
 }

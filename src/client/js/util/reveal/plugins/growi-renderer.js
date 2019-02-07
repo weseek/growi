@@ -13,6 +13,8 @@ import GrowiRenderer from '../../GrowiRenderer';
   let growiRendererPlugin = factory(growiRenderer);
   growiRendererPlugin.initialize();
 }(this, function(growiRenderer) {
+  const DEFAULT_ELEMENT_ATTRIBUTES_SEPARATOR = '\\\.element\\\s*?(.+?)$',
+    DEFAULT_SLIDE_ATTRIBUTES_SEPARATOR = '\\\.slide:\\\s*?(\\\S.+?)$';
   let marked;
 
   /**
@@ -93,6 +95,12 @@ import GrowiRenderer from '../../GrowiRenderer';
           .then(() => {
             section.innerHTML = context.parsedHTML;
           });
+        marked.addAttributes(   section, section, null, section.getAttribute( 'data-element-attributes' ) ||
+          section.parentNode.getAttribute( 'data-element-attributes' ) ||
+          DEFAULT_ELEMENT_ATTRIBUTES_SEPARATOR,
+        section.getAttribute( 'data-attributes' ) ||
+          section.parentNode.getAttribute( 'data-attributes' ) ||
+          DEFAULT_SLIDE_ATTRIBUTES_SEPARATOR);
 
         // If there were notes, we need to re-add them after
         // having overwritten the section's HTML
