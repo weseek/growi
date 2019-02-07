@@ -1,7 +1,6 @@
 const debug = require('debug')('growi:models:userGroup');
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate');
-const ObjectId = mongoose.Schema.Types.ObjectId;
 
 
 /*
@@ -9,7 +8,6 @@ const ObjectId = mongoose.Schema.Types.ObjectId;
  */
 const schema = new mongoose.Schema({
   userGroupId: String,
-  image: String,
   name: { type: String, required: true, unique: true },
   createdAt: { type: Date, default: Date.now },
 });
@@ -25,7 +23,7 @@ class UserGroup {
    * @memberof UserGroup
    */
   static get USER_GROUP_PUBLIC_FIELDS() {
-    return '_id image name createdAt';
+    return '_id name createdAt';
   }
 
   /**
@@ -123,21 +121,6 @@ class UserGroup {
   // グループ生成（名前が要る）
   static createGroupByName(name) {
     return this.create({name: name});
-  }
-
-  /*
-   * instance methods
-   */
-
-  // グループ画像の更新
-  updateImage(image) {
-    this.image = image;
-    return this.save();
-  }
-
-  // グループ画像の削除
-  deleteImage() {
-    return this.updateImage(null);
   }
 
   // グループ名の更新

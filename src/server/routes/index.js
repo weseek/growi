@@ -140,9 +140,7 @@ module.exports = function(crowi, app) {
   app.get('/admin/user-group-detail/:id'          , loginRequired(crowi, app), middleware.adminRequired(), admin.userGroup.detail);
   app.post('/admin/user-group/create'      , form.admin.userGroupCreate, loginRequired(crowi, app), middleware.adminRequired(), csrf, admin.userGroup.create);
   app.post('/admin/user-group/:userGroupId/update', loginRequired(crowi, app), middleware.adminRequired(), csrf, admin.userGroup.update);
-  app.post('/admin/user-group/:userGroupId/picture/delete', loginRequired(crowi, app), admin.userGroup.deletePicture);
   app.post('/admin/user-group.remove' , loginRequired(crowi, app), middleware.adminRequired(), csrf, admin.userGroup.removeCompletely);
-  app.post('/_api/admin/user-group/:userGroupId/picture/upload', loginRequired(crowi, app), uploads.single('userGroupPicture'), admin.userGroup.uploadGroupPicture);
 
   // user-group-relations admin
   app.post('/admin/user-group-relation/create', loginRequired(crowi, app), middleware.adminRequired(), csrf, admin.userGroupRelation.create);
