@@ -128,7 +128,7 @@ export default function( marked ) {
 
     // iterate until all blocks between separators are stacked up
     while( matches = separatorRegex.exec( markdown ) ) {
-      notes = null;
+      // notes = null;
 
       // determine direction (horizontal by default)
       isHorizontal = horizontalSeparatorRegex.test( matches[0] );
