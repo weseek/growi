@@ -14,13 +14,52 @@ module.exports = function(crowi, app) {
 
 
   /**
+   * Check the user is accessible to the related page
+   *
+   * @param {User} user
+   * @param {Attachment} attachment
+   */
+  async function isAccessibleByViewer(user, attachment) {
+    if (attachment.page != null) {
+      return await Page.isAccessiblePageByViewer(attachment.page, user);
+    }
+    return true;
+  }
+
+  /**
+   * Check the user is accessible to the related page
+   *
+   * @param {User} user
+   * @param {Attachment} attachment
+   */
+  async function isDeletableByUser(user, attachment) {
+    const ownerId = attachment.creator._id || attachment.creator;
+    if (attachment.page == null) {  // when profile image
+      return user.id === ownerId.toString();
+    }
+    else {
+      return await Page.isAccessiblePageByViewer(attachment.page, user);
+    }
+  }
+
+  /**
    * Common method to response
    *
    * @param {Response} res
+   * @param {User} user
    * @param {Attachment} attachment
    * @param {boolean} forceDownload
    */
-  async function responseForAttachment(res, attachment, forceDownload) {
+  async function responseForAttachment(res, user, attachment, forceDownload) {
+    if (attachment == null) {
+      return res.json(ApiResponse.error('attachment not found'));
+    }
+
+    const isAccessible = await isAccessibleByViewer(user, attachment);
+    if (!isAccessible) {
+      return res.json(ApiResponse.error(`Forbidden to access to the attachment '${attachment.id}'`));
+    }
+
     let fileStream;
     try {
       fileStream = await fileUploader.findDeliveryFile(attachment);
@@ -91,13 +130,7 @@ module.exports = function(crowi, app) {
 
     const attachment = await Attachment.findById(id);
 
-    if (attachment == null) {
-      return res.json(ApiResponse.error('attachment not found'));
-    }
-
-    // TODO for GC-1359: consider restriction
-
-    return responseForAttachment(res, attachment, true);
+    return responseForAttachment(res, req.user, attachment, true);
   };
 
   /**
@@ -112,13 +145,7 @@ module.exports = function(crowi, app) {
 
     const attachment = await Attachment.findById(id);
 
-    if (attachment == null) {
-      return res.json(ApiResponse.error('attachment not found'));
-    }
-
-    // TODO for GC-1359: consider restriction
-
-    return responseForAttachment(res, attachment);
+    return responseForAttachment(res, req.user, attachment);
   };
 
   /**
@@ -139,13 +166,7 @@ module.exports = function(crowi, app) {
 
     const attachment = await Attachment.findOne({ filePath });
 
-    if (attachment == null) {
-      return res.json(ApiResponse.error('attachment not found'));
-    }
-
-    // TODO for GC-1359: consider restriction
-
-    return responseForAttachment(res, attachment);
+    return responseForAttachment(res, req.user, attachment);
   };
 
   /**
@@ -214,6 +235,12 @@ module.exports = function(crowi, app) {
     }
     else {
       page = await Page.findById(pageId);
+
+      // check the user is accessible
+      const isAccessible = await Page.isAccessiblePageByViewer(page.id, req.user);
+      if (!isAccessible) {
+        return res.json(ApiResponse.error(`Forbidden to access to the page '${page.id}'`));
+      }
     }
 
     let attachment;
@@ -285,6 +312,17 @@ module.exports = function(crowi, app) {
    */
   api.remove = async function(req, res) {
     const id = req.body.attachment_id;
+
+    const attachment = await Attachment.findById(id);
+
+    if (attachment == null) {
+      return res.json(ApiResponse.error('attachment not found'));
+    }
+
+    const isDeletable = await isDeletableByUser(req.user, attachment);
+    if (!isDeletable) {
+      return res.json(ApiResponse.error(`Forbidden to remove the attachment '${attachment.id}'`));
+    }
 
     try {
       await Attachment.removeWithSubstanceById(id);

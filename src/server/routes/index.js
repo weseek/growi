@@ -1,6 +1,9 @@
+const multer = require('multer')
+const autoReap  = require('multer-autoreap');
+autoReap.options.reapOnError = true;  // continue reaping the file even if an error occurs
+
 module.exports = function(crowi, app) {
   const middleware = require('../util/middlewares')
-    , multer    = require('multer')
     , uploads   = multer({dest: crowi.tmpDir + 'uploads'})
     , form      = require('../form')
     , page      = require('./page')(crowi, app)
@@ -208,8 +211,8 @@ module.exports = function(crowi, app) {
   app.post('/_api/likes.add'          , accessTokenParser , loginRequired(crowi, app) , csrf, page.api.like);
   app.post('/_api/likes.remove'       , accessTokenParser , loginRequired(crowi, app) , csrf, page.api.unlike);
   app.get( '/_api/attachments.list'   , accessTokenParser , loginRequired(crowi, app, false) , attachment.api.list);
-  app.post('/_api/attachments.add'                  , uploads.single('file'), accessTokenParser, loginRequired(crowi, app) ,csrf, attachment.api.add);
-  app.post('/_api/attachments.uploadProfileImage'   , uploads.single('file'), accessTokenParser, loginRequired(crowi, app) ,csrf, attachment.api.uploadProfileImage);
+  app.post('/_api/attachments.add'                  , uploads.single('file'), autoReap, accessTokenParser, loginRequired(crowi, app) ,csrf, attachment.api.add);
+  app.post('/_api/attachments.uploadProfileImage'   , uploads.single('file'), autoReap, accessTokenParser, loginRequired(crowi, app) ,csrf, attachment.api.uploadProfileImage);
   app.post('/_api/attachments.remove' , accessTokenParser , loginRequired(crowi, app) , csrf, attachment.api.remove);
   app.get( '/_api/attachments.limit'  , accessTokenParser , loginRequired(crowi, app) , csrf, attachment.api.limit);
 
