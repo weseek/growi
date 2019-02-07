@@ -297,6 +297,17 @@ module.exports = function(crowi, app) {
   api.remove = async function(req, res) {
     const id = req.body.attachment_id;
 
+    const attachment = await Attachment.findById(id);
+
+    if (attachment == null) {
+      return res.json(ApiResponse.error('attachment not found'));
+    }
+
+    const isAccessible = await isAccessibleByViewer(req.user, attachment);
+    if (!isAccessible) {
+      return res.json(ApiResponse.error(`Forbidden to access to the attachment '${attachment.id}'`));
+    }
+
     try {
       await Attachment.removeWithSubstanceById(id);
     }
