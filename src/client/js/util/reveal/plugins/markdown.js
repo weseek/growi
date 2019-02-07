@@ -368,12 +368,9 @@ export default function( marked ) {
   return {
     getMarkdownFromSlide: getMarkdownFromSlide,
     getForwardedAttributes: getForwardedAttributes,
-    getSlidifyOptions: getSlidifyOptions,
     createMarkdownSlide: createMarkdownSlide,
     slidify: slidify,
     processSlides: processSlides,
-    addAttributeInElement: addAttributeInElement,
-    addAttributes: addAttributes,
     convertSlides: convertSlides
   };
 
