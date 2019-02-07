@@ -187,27 +187,27 @@ export default function( marked ) {
    */
   function processSlides() {
 
-    var sections = document.querySelectorAll( '[data-markdown]'),
+    let sections = document.querySelectorAll( '[data-markdown]'),
       section;
 
-    for( var i = 0, len = sections.length; i < len; i++ ) {
+    for ( let i = 0, len = sections.length; i < len; i++ ) {
 
       section = sections[i];
 
-      if( section.getAttribute( 'data-markdown' ).length ) {
+      if ( section.getAttribute( 'data-markdown' ).length ) {
 
-        var xhr = new XMLHttpRequest(),
+        let xhr = new XMLHttpRequest(),
           url = section.getAttribute( 'data-markdown' );
 
-        datacharset = section.getAttribute( 'data-charset' );
+        let datacharset = section.getAttribute( 'data-charset' );
 
         // see https://developer.mozilla.org/en-US/docs/Web/API/element.getAttribute#Notes
-        if( datacharset != null && datacharset != '' ) {
+        if ( datacharset != null && datacharset != '' ) {
           xhr.overrideMimeType( 'text/html; charset=' + datacharset );
         }
 
         xhr.onreadystatechange = function() {
-          if( xhr.readyState === 4 ) {
+          if ( xhr.readyState === 4 ) {
             // file protocol yields status code 0 (useful for local debug, mobile applications etc.)
             if ( ( xhr.status >= 200 && xhr.status < 300 ) || xhr.status === 0 ) {
 
@@ -269,15 +269,15 @@ export default function( marked ) {
    */
   function addAttributeInElement( node, elementTarget, separator ) {
 
-    var mardownClassesInElementsRegex = new RegExp( separator, 'mg' );
-    var mardownClassRegex = new RegExp( "([^\"= ]+?)=\"([^\"=]+?)\"", 'mg' );
-    var nodeValue = node.nodeValue;
-    if( matches = mardownClassesInElementsRegex.exec( nodeValue ) ) {
+    let mardownClassesInElementsRegex = new RegExp( separator, 'mg' );
+    let mardownClassRegex = new RegExp( "([^\"= ]+?)=\"([^\"=]+?)\"", 'mg' );
+    let nodeValue = node.nodeValue;
+    if ( matches = mardownClassesInElementsRegex.exec( nodeValue ) ) {
 
-      var classes = matches[1];
+      let classes = matches[1];
       nodeValue = nodeValue.substring( 0, matches.index ) + nodeValue.substring( mardownClassesInElementsRegex.lastIndex );
       node.nodeValue = nodeValue;
-      while( matchesClass = mardownClassRegex.exec( classes ) ) {
+      while ( matchesClass = mardownClassRegex.exec( classes ) ) {
         elementTarget.setAttribute( matchesClass[1], matchesClass[2] );
       }
       return true;
@@ -292,13 +292,13 @@ export default function( marked ) {
   function addAttributes( section, element, previousElement, separatorElementAttributes, separatorSectionAttributes ) {
 
     if ( element != null && element.childNodes != undefined && element.childNodes.length > 0 ) {
-      previousParentElement = element;
-      for( var i = 0; i < element.childNodes.length; i++ ) {
-        childElement = element.childNodes[i];
+      let previousParentElement = element;
+      for ( let i = 0; i < element.childNodes.length; i++ ) {
+        let childElement = element.childNodes[i];
         if ( i > 0 ) {
-          j = i - 1;
+          let j = i - 1;
           while ( j >= 0 ) {
-            aPreviousChildElement = element.childNodes[j];
+            let aPreviousChildElement = element.childNodes[j];
             if ( typeof aPreviousChildElement.setAttribute == 'function' && aPreviousChildElement.tagName != "BR" ) {
               previousParentElement = aPreviousChildElement;
               break;
@@ -306,8 +306,8 @@ export default function( marked ) {
             j = j - 1;
           }
         }
-        parentSection = section;
-        if( childElement.nodeName ==  "section" ) {
+        let parentSection = section;
+        if ( childElement.nodeName ==  "section" ) {
           parentSection = childElement ;
           previousParentElement = childElement ;
         }
@@ -330,14 +330,14 @@ export default function( marked ) {
    */
   function convertSlides() {
 
-    var sections = document.querySelectorAll( '[data-markdown]');
+    let sections = document.querySelectorAll( '[data-markdown]');
 
-    for( var i = 0, len = sections.length; i < len; i++ ) {
+    for ( let i = 0, len = sections.length; i < len; i++ ) {
 
-      var section = sections[i];
+      let section = sections[i];
 
       // Only parse the same slide once
-      if( !section.getAttribute( 'data-markdown-parsed' ) ) {
+      if ( !section.getAttribute( 'data-markdown-parsed' ) ) {
 
         section.setAttribute( 'data-markdown-parsed', true )
 
