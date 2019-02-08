@@ -13,7 +13,8 @@ import GrowiRenderer from '../../GrowiRenderer';
   let growiRendererPlugin = factory(growiRenderer);
   growiRendererPlugin.initialize();
 }(this, function(growiRenderer) {
-  const DEFAULT_ELEMENT_ATTRIBUTES_SEPARATOR = '\\\.element\\\s*?(.+?)$',
+  const DEFAULT_SLIDE_SEPARATOR = '^\r?\n---\r?\n$',
+    DEFAULT_ELEMENT_ATTRIBUTES_SEPARATOR = '\\\.element\\\s*?(.+?)$',
     DEFAULT_SLIDE_ATTRIBUTES_SEPARATOR = '\\\.slide:\\\s*?(\\\S.+?)$';
   let marked;
 
@@ -28,12 +29,16 @@ import GrowiRenderer from '../../GrowiRenderer';
       let markdown = marked.getMarkdownFromSlide(section);
       let context = {markdown};
       const interceptorManager = growiRenderer.crowi.interceptorManager;
+      let dataSeparator = section.getAttribute( 'data-separator' ) || DEFAULT_SLIDE_SEPARATOR;
+      // replace string '\n' to LF code.
+      dataSeparator = dataSeparator.replace(/\\n/g, '\n');
+      const replaceValue = dataSeparator + '#';
       // detach code block.
       interceptorManager.process('prePreProcess', context);
       // if there is only '\n' in the first line, replace it.
       context.markdown = context.markdown.replace(/^\n/, '');
-      // add data separator '\n\n\n' to markdown.
-      context.markdown = context.markdown.replace(/[\n]+#/g, '\n\n\n#');
+      // add data separator to markdown.
+      context.markdown = context.markdown.replace(/[\n]+#/g, replaceValue);
       // restore code block.
       interceptorManager.process('postPreProcess', context);
       section.innerHTML = marked.createMarkdownSlide(context.markdown);
