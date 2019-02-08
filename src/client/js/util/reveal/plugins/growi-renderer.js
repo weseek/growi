@@ -30,12 +30,6 @@ import GrowiRenderer from '../../GrowiRenderer';
       let context = {markdown};
       const interceptorManager = growiRenderer.crowi.interceptorManager;
       let dataSeparator = section.getAttribute( 'data-separator' ) || DEFAULT_SLIDE_SEPARATOR;
-      if (dataSeparator !== DEFAULT_SLIDE_SEPARATOR) {
-        // for custom data-separator '^-----$'.
-        dataSeparator = dataSeparator.replace(/^\^/, '\n');
-        dataSeparator = dataSeparator.replace(/\$$/, '\n');
-        section.setAttribute('data-separator', dataSeparator);
-      }
       // replace string '\n' to LF code.
       dataSeparator = dataSeparator.replace(/\\n/g, '\n');
       const replaceValue = dataSeparator + '#';

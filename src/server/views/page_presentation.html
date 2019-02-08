@@ -48,7 +48,7 @@
         {% if 3 === pageBreakSeparator %}
           {% set dataSeparator = pageBreakCustomSeparator %}
         {% elseif 2 === pageBreakSeparator %}
-          {% set dataSeparator = "^-----$" %}
+          {% set dataSeparator = "\n-----\n" %}
         {% else %}
           {% set dataSeparator = "\n\n\n" %}
         {% endif %}
