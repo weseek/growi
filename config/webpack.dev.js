@@ -29,16 +29,17 @@ module.exports = require('./webpack.common')({
   module: {
     rules: [
       {
-        test: /\.scss$/,
+        test: /\.(sc|sa|c)ss$/,
         use: [
           'style-loader',
           { loader: 'css-loader', options: { sourceMap: true } },
           { loader: 'sass-loader', options: { sourceMap: true } },
         ],
-        include: [helpers.root('src/client/styles/scss')]
+        include: [helpers.root('src/client')],
+        exclude: [helpers.root('src/client/styles/hackmd')],
       },
       { // Dump CSS for HackMD
-        test: /\.scss$/,
+        test: /\.(sc|sa|c)ss$/,
         use: ExtractTextPlugin.extract({
           use: [
             'css-loader',

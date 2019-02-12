@@ -101,14 +101,10 @@ module.exports = (options) => {
           loader: 'imports-loader?module=>false,exports=>false,define=>false,this=>window'
         },
         {
-          test: /\.css$/,
-          use: ['style-loader', 'css-loader'],
-          exclude: [helpers.root('src/client/styles')]
-        },
-        {
-          test: /\.scss$/,
+          test: /\.(sc|sa|c)ss$/,
           use: ['style-loader', 'css-loader', 'sass-loader'],
-          exclude: [helpers.root('src/client/styles')]
+          exclude: [helpers.root('src/client')]
+
         },
         /*
          * File loader for supporting images, for example, in CSS files.

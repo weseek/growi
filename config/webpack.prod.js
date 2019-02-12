@@ -26,7 +26,7 @@ module.exports = require('./webpack.common')({
   module: {
     rules: [
       {
-        test: /\.scss$/,
+        test: /\.(sc|sa|c)ss$/,
         use: ExtractTextPlugin.extract({
           use: [
             'css-loader',
@@ -39,7 +39,7 @@ module.exports = require('./webpack.common')({
             'sass-loader'
           ]
         }),
-        include: [helpers.root('src/client/styles/scss'), helpers.root('src/client/styles/hackmd')]
+        include: [helpers.root('src/client')]
       }
     ]
   },
