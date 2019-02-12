@@ -104,7 +104,6 @@ module.exports = (options) => {
           test: /\.(sc|sa|c)ss$/,
           use: ['style-loader', 'css-loader', 'sass-loader'],
           exclude: [helpers.root('src/client')]
-
         },
         /*
          * File loader for supporting images, for example, in CSS files.

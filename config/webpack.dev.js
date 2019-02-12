@@ -2,14 +2,13 @@
  * @author: Yuki Takei <yuki@weseek.co.jp>
  */
 
-const path = require('path');
 const webpack = require('webpack');
 const helpers = require('../src/lib/util/helpers');
 
 /*
  * Webpack Plugins
  */
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 /**
@@ -40,19 +39,18 @@ module.exports = require('./webpack.common')({
       },
       { // Dump CSS for HackMD
         test: /\.(sc|sa|c)ss$/,
-        use: ExtractTextPlugin.extract({
-          use: [
-            'css-loader',
-            'sass-loader'
-          ]
-        }),
+        use: [
+          MiniCssExtractPlugin.loader,
+          'css-loader',
+          'sass-loader'
+        ],
         include: [helpers.root('src/client/styles/hackmd')]
       },
     ],
   },
   plugins: [
 
-    new ExtractTextPlugin({
+    new MiniCssExtractPlugin({
       filename: '[name].bundle.css',
     }),
 
