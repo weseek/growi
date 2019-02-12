@@ -288,6 +288,11 @@ body.on-edit {
   display: block;
 }
 
+// overwrite .CodeMirror pre
+.CodeMirror pre {
+  font-family: $font-family-monospace;
+}
+
 // overwrite .CodeMirror-hints
 .CodeMirror-hints {
   max-height: 30em !important;
