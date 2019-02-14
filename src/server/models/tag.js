@@ -32,12 +32,17 @@ module.exports = function (crowi) {
     // },
   });
 
-  tagSchema.statics.settingTags = function(page, tag) {
-    const PageTagRelation = crowi.model('PageTagRelation');
-    return this.create({name: tag}, function(err, createdTag) {
-      // console.log(createdTag);
-      // Relation を作成
-      PageTagRelation.createRelation(page, createdTag);
+  /**
+   * create a tag (Promise wrapper)
+   */
+  tagSchema.statics.createTag = function(tag) {
+    return new Promise((resolve, reject) => {
+      this.create({name: tag}, function(err, createdTag) {
+        if (err) {
+          reject(err);
+        }
+        resolve(createdTag);
+      });
     });
   };
 
@@ -111,21 +116,14 @@ module.exports = function (crowi) {
 //     });
 //   };
 
-//   commentSchema.statics.removeCommentsByPageId = function (pageId) {
-//     var Comment = this;
-
-//     return new Promise(function (resolve, reject) {
-//       Comment.remove({
-//         page: pageId
-//       }, function (err, done) {
-//         if (err) {
-//           return reject(err);
-//         }
-
-//         resolve(done);
-//       });
-//     });
-//   };
+  tagSchema.statics.removeTagById = function(tagId) {
+    const Tag = this;
+    Tag.remove({_id: tagId}, function(err, done) {
+      if (err) {
+        throw new Error(err);
+      }
+    });
+  };
 
 //   /**
 //    * post save hook

@@ -272,8 +272,8 @@ class PageTagRelation {
    */
   static createRelation(page, tag) {
     return this.create({
-      relatedPage: page.id,
-      relatedTag: tag.id
+      relatedPage: page._id,
+      relatedTag: tag._id
     });
   }
 

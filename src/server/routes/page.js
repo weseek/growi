@@ -7,6 +7,7 @@ module.exports = function(crowi, app) {
     , Page = crowi.model('Page')
     , User = crowi.model('User')
     , Tag = crowi.model('Tag')
+    , PageTagRelation = crowi.model('PageTagRelation')
     , Config   = crowi.model('Config')
     , config   = crowi.getConfig()
     , Bookmark = crowi.model('Bookmark')
@@ -106,8 +107,13 @@ module.exports = function(crowi, app) {
     }
   }
 
-  function updateTags(page, user, pageTags, updateOrCreate, previousRevision) {
-    Tag.settingTags(page, pageTags);
+  async function updateTags(page, user, pageTags, updateOrCreate, previousRevision) {
+    // if (pageTags == null) {
+    //   Tag.removeTagById(tag.id);
+    // }
+    const createdTag = await Tag.createTag(pageTags);
+    // Relation を作成
+    PageTagRelation.createRelation(page, createdTag);
   }
 
   function addRendarVarsForPage(renderVars, page) {
@@ -660,10 +666,8 @@ module.exports = function(crowi, app) {
       await notifyToSlackByUser(page, req.user, slackChannels, 'update', previousRevision);
     }
 
-    // set page tag
-    if (pageTags != null) {
-      await updateTags(page, req.user, pageTags, 'update', previousRevision);
-    }
+    // update page tag
+    await updateTags(page, req.user, pageTags, 'update', previousRevision);
   };
 
   /**
