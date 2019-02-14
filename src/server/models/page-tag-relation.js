@@ -87,23 +87,24 @@ class PageTagRelation {
       .exec();
   }
 
-  // /**
-  //  * find all user and group relation of UserGroup
-  //  *
-  //  * @static
-  //  * @param {UserGroup} userGroup
-  //  * @returns {Promise<UserGroupRelation[]>}
-  //  * @memberof UserGroupRelation
-  //  */
-  // static findAllRelationForUserGroup(userGroup) {
-  //   debug('findAllRelationForUserGroup is called', userGroup);
-  //   return this
-  //     .find({
-  //       relatedGroup: userGroup
-  //     })
-  //     .populate('relatedUser')
-  //     .exec();
-  // }
+  /**
+   * find all tag of page
+   *
+   * @static
+   * @param {page} page
+   * @returns {Tag[]}
+   * @memberof PageTagRelation
+   */
+  static findAllTagForPage(page) {
+    return new Promise((resolve, reject) => {
+      this.find({relatedPage: page._id}, function(err, tags) {
+        if (err) {
+          reject(err);
+        }
+        resolve(tags);
+      });
+    });
+  }
 
   // /**
   //  * find all user and group relation of UserGroups

@@ -107,10 +107,11 @@ module.exports = function(crowi, app) {
     }
   }
 
-  function updateTags(page, user, pageTags, updateOrCreate, previousRevision) {
+  async function updateTags(page, user, pageTags, updateOrCreate, previousRevision) {
     // if (pageTags == null) {
     //   Tag.removeTagById(tag.id);
     // }
+    const relatedTags = await PageTagRelation.findAllTagForPage(page);
     Tag.find({name: pageTags}, async function(err, tag) {
       let settingTag;
       if (tag.length == 0) {
@@ -122,8 +123,6 @@ module.exports = function(crowi, app) {
       // Relation を作成
       PageTagRelation.createRelation(page, settingTag);
     });
-
-    // PageTagRelation.createRelation(page, pageTag);
   }
 
   function addRendarVarsForPage(renderVars, page) {
