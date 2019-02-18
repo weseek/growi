@@ -1,7 +1,11 @@
 CHANGES
 ========
 
-## 3.3.9-RC
+## 3.3.10-RC
+
+* 
+
+## 3.3.9
 
 * Fix: Import from Qiita:Team doesn't work
     * Introduced by 3.3.0
