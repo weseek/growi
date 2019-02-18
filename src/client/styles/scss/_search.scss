@@ -30,6 +30,7 @@
   }
   .rbt-menu {
     margin-top: 3px;
+
     li a span {
       .page-path {
         display: inline;
@@ -100,11 +101,6 @@
       width: 300px;
     }
   }
-  .rbt-menu {
-    margin-top: 33px;   // DIRTY HACK
-                        //   note: 'transform: translate3d(0px, XXpx, 0px)' calculation has failed on .search-top
-                        //         since upgrade react-bootstrap-typeahead to v3.3.2 -- 2019.02.05 Yuki Takei
-  }
 }
 .search-sidebar {
   .search-form, .form-group, .rbt-input.form-control, .input-group {
@@ -113,6 +109,17 @@
   .btn-group-submit-search {
     right: 30px;
   }
+}
+
+@mixin search-typeahead-rbtmenu-mt($margin-top) {
+  .search-typeahead .rbt-menu {
+    margin-top: $margin-top;    // DIRTY HACK
+                                //   note: 'transform: translate3d(0px, XXpx, 0px)' calculation has failed
+                                //         since upgrade react-bootstrap-typeahead to v3.3.2 -- 2019.02.05 Yuki Takei
+  }
+}
+#search-top, #renamePage, #duplicatePage, .search-page-input {
+  @include search-typeahead-rbtmenu-mt(36px);
 }
 
 .search-result {
