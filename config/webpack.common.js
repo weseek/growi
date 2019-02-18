@@ -148,6 +148,16 @@ module.exports = (options) => {
       namedModules: true,
       splitChunks: {
         cacheGroups: {
+          combined_styles: {
+            test: /\.(sc|sa|c)ss$/,
+            chunks: (chunk) => {
+              // ignore patterns
+              return chunk.name != null && !chunk.name.match(/style-|theme-|legacy-admin|legacy-presentation/);
+            },
+            name: 'styles/styles',
+            priority: 30,
+            enforce: true
+          },
           commons: {
             test: /src/,
             chunks: 'initial',
@@ -167,7 +177,7 @@ module.exports = (options) => {
             minSize: 1,
             priority: 10,
             enforce: true
-          }
+          },
         }
       },
       minimizer: options.optimization.minimizer || [],

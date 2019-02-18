@@ -73,18 +73,18 @@
   {% block style_css_block %}
     {% if 'kibela' === layoutType() %}
       {% if env === 'development' %}
-        <script src="{{ webpack_asset('styles/style.js') }}"></script>
+        <script src="{{ webpack_asset('styles/styles.js') }}"></script>
         <script src="{{ webpack_asset('styles/theme-kibela.js') }}"></script>
       {% else %}
-        <link rel="stylesheet" href="{{ webpack_asset('styles/style.css') }}">
+        <link rel="stylesheet" href="{{ webpack_asset('styles/styles.css') }}">
         <link rel="stylesheet" href="{{ webpack_asset('styles/theme-kibela.css') }}">
       {% endif %}
     {% else %}
       {% if env === 'development' %}
-        <script src="{{ webpack_asset('styles/style.js') }}"></script>
+        <script src="{{ webpack_asset('styles/styles.js') }}"></script>
         <script src="{{ webpack_asset('styles/theme-' + theme() + '.js') }}"></script>
       {% else %}
-        <link rel="stylesheet" href="{{ webpack_asset('styles/style.css') }}">
+        <link rel="stylesheet" href="{{ webpack_asset('styles/styles.css') }}">
         <link rel="stylesheet" href="{{ webpack_asset('styles/theme-' + theme() + '.css') }}">
       {% endif %}
     {% endif %}
