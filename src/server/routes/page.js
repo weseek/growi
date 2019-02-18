@@ -107,21 +107,33 @@ module.exports = function(crowi, app) {
     }
   }
 
-  async function updateTags(page, user, pageTags, updateOrCreate, previousRevision) {
+  async function updateTags(page, user, newTags, updateOrCreate, previousRevision) {
     // if (pageTags == null) {
     //   Tag.removeTagById(tag.id);
     // }
-    const relatedTags = await PageTagRelation.findAllTagForPage(page);
-    Tag.find({name: pageTags}, async function(err, tag) {
-      let settingTag;
-      if (tag.length == 0) {
-        settingTag = await Tag.createTag(pageTags);
-      }
-      else {
-        settingTag = tag[0];
-      }
-      // Relation を作成
-      PageTagRelation.createRelation(page, settingTag);
+    const tagList = [newTags];
+    const relations = await PageTagRelation.findAllTagForPage(page);
+    relations.map((relation) => {
+      const tagId = relation.relatedTag;
+      Tag.findById(tagId, async function(err, tag) {
+        if (tagList.indexOf(tag.name) >= 0) {
+          tagList.filter(relatedTag => relatedTag !== tag.name);
+        }
+        else {
+          PageTagRelation.removeByTagId(tag._id);
+          // 不要なタグ削除も走らせる
+        }
+      // Tag.findById(tagId, async function(err, tag) {
+      //   let matchedTag;
+      //   if (tag.length == 0) {
+      //     settingTag = await Tag.createTag(pageTags);
+      //   }
+      //   else {
+      //     settingTag = tag[0];
+      //   }
+      //   // Relation を作成
+      //   PageTagRelation.createRelation(page, settingTag);
+      });
     });
   }
 

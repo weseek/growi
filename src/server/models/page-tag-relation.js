@@ -278,19 +278,19 @@ class PageTagRelation {
     });
   }
 
-  /**
-   * remove all relation for Page
-   *
-   * @static
-   * @param {Page} page related page for remove
-   * @returns {Promise<any>}
-   * @memberof PageTagRelation
-   */
-  static removeAllByPage(page) {
-    return this.deleteMany({
-      relatedPage: page
-    });
-  }
+  // /**
+  //  * remove all relation for Page
+  //  *
+  //  * @static
+  //  * @param {Page} page related page for remove
+  //  * @returns {Promise<any>}
+  //  * @memberof PageTagRelation
+  //  */
+  // static removeAllByPage(page) {
+  //   return this.deleteMany({
+  //     relatedPage: page
+  //   });
+  // }
 
   /**
    * remove relation by id
@@ -298,20 +298,36 @@ class PageTagRelation {
    * @static
    * @param {ObjectId} id
    * @returns {Promise<any>}
-   * @memberof UserGroupRelation
+   * @memberof PageTagRelation
    */
-  static removeById(id) {
-
-    return this.findById(id)
-      .then((relationData) => {
-        if (relationData == null) {
-          throw new Error('PageTagRelation data is not exists. id:', id);
-        }
-        else {
-          relationData.remove();
-        }
-      });
+  static removeByTagId(tagId) {
+    return this.remove({relatedTag: tagId}, function(err, removedData) {
+      if (err) {
+        throw new Error('PageTagRelation data is not exists. tag_id:', tagId);
+      }
+    });
   }
+
+  // /**
+  //  * remove relation by id
+  //  *
+  //  * @static
+  //  * @param {ObjectId} id
+  //  * @returns {Promise<any>}
+  //  * @memberof UserGroupRelation
+  //  */
+  // static removeById(id) {
+
+  //   return this.findById(id)
+  //     .then((relationData) => {
+  //       if (relationData == null) {
+  //         throw new Error('PageTagRelation data is not exists. id:', id);
+  //       }
+  //       else {
+  //         relationData.remove();
+  //       }
+  //     });
+  // }
 
 }
 
