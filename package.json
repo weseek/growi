@@ -184,7 +184,7 @@
     "postcss-loader": "^3.0.0",
     "react": "^16.7.0",
     "react-bootstrap": "^0.32.1",
-    "react-bootstrap-typeahead": "^3.3.2",
+    "react-bootstrap-typeahead": "^3.3.4",
     "react-clipboard.js": "^2.0.0",
     "react-codemirror2": "^5.1.0",
     "react-dom": "^16.4.1",
