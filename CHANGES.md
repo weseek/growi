@@ -1,14 +1,21 @@
 CHANGES
 ========
 
+## 3.3.10-RC
+
+* 
+
 ## 3.3.9
 
 * Fix: Import from Qiita:Team doesn't work
     * Introduced by 3.3.0
+* Fix: Typeahead shows autocomplete wrongly
+    * Introduced by 3.3.8
+* Support: Upgrade libs
+    * react-bootstrap-typeahead
 
 ## 3.3.8
 
-* Fix: Typeahead shows autocomplete wrongly
 * Fix: Move/Duplicate don't work
     * Introduced by 3.3.7
 * Fix: Server doesn't respond when root page is restricted
