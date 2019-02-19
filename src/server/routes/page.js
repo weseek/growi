@@ -114,17 +114,17 @@ module.exports = function(crowi, app) {
       return await Tag.getOneById(id);
     })
     ).then(tags => {
-      const relatedTagList = tags.map(async relatedTag => {
+      let relatedTagList = [];
+      tags.map(async relatedTag => {
         if (!setTagList.includes(relatedTag.name)) {
           await PageTagRelation.removeByEachId(page._id, relatedTag._id);
           const pagesRelateTag = await PageTagRelation.findAllPageIdForTag(relatedTag);
           if (pagesRelateTag.length == 0) {
             Tag.removeById(relatedTag._id);
           }
-          return;
         }
         else {
-          return relatedTag.name;
+          relatedTagList.push(relatedTag.name);
         }
       });
       const newTagList = setTagList.map(setTag => {
