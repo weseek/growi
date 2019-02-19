@@ -130,7 +130,16 @@ module.exports = function (crowi) {
 //     });
 //   };
 
-  tagSchema.statics.removeTagById = function(tagId) {
+  tagSchema.statics.removeById = function(tagId) {
+    const Tag = this;
+    Tag.remove({_id: tagId}, function(err, done) {
+      if (err) {
+        throw new Error(err);
+      }
+    });
+  };
+
+  tagSchema.statics.removeInactiveTag = function(tagId) {
     const Tag = this;
     Tag.remove({_id: tagId}, function(err, done) {
       if (err) {
