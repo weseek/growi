@@ -108,16 +108,17 @@ module.exports = function(crowi, app) {
   }
 
   async function updateTags(page, user, newTags, updateOrCreate, previousRevision) {
-    const setTagList = ['On-On', 'Off-On']; // [TODO] listing requested Tags on client side
+    const setTagList = [newTags]; // [TODO] listing requested Tags on client side
     const relatedTagIdList = await PageTagRelation.findAllTagIdForPage(page);
     Promise.all(relatedTagIdList.map(async id => {
       return await Tag.getOneById(id);
     })
     ).then(tags => {
-      const relatedTagList = tags.map(relatedTag => {
+      const relatedTagList = tags.map(async relatedTag => {
         if (!setTagList.includes(relatedTag.name)) {
-          PageTagRelation.removeByTagId(relatedTag._id);
-          if (!PageTagRelation.findAllPageForTag) {
+          await PageTagRelation.removeByEachId(page._id, relatedTag._id);
+          const pagesRelateTag = await PageTagRelation.findAllPageIdForTag(relatedTag);
+          if (pagesRelateTag.length == 0) {
             Tag.removeById(relatedTag._id);
           }
           return;
