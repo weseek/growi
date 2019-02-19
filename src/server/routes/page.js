@@ -108,7 +108,7 @@ module.exports = function(crowi, app) {
   }
 
   async function updateTags(page, user, newTags, updateOrCreate, previousRevision) {
-    const setTagList = ['On-On', 'Off-On']; // クライアント側で newTags をリスト化後、消去予定
+    const setTagList = ['On-On', 'Off-On']; // [TODO] listing requested Tags on client side
     const relatedTagIdList = await PageTagRelation.findAllTagIdForPage(page);
     Promise.all(relatedTagIdList.map(async id => {
       return await Tag.getOneById(id);
@@ -144,7 +144,7 @@ module.exports = function(crowi, app) {
               else {
                 settingTag = tag[0];
               }
-              // Relation を作成
+              // make a relation
               PageTagRelation.createRelation(page, settingTag);
             });
           }
