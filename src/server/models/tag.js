@@ -46,6 +46,20 @@ module.exports = function (crowi) {
     });
   };
 
+  /**
+   * get a tag by Id (findById promise wrapper)
+   */
+  tagSchema.statics.getOneById = function(id) {
+    return new Promise((resolve, reject) => {
+      resolve('hoge');
+      this.findById(id, function(err, tag) {
+        if (err) {
+          reject(err);
+        }
+        resolve(tag);
+      });
+    });
+  };
 //   commentSchema.statics.getCommentsByPageId = function (id) {
 //     var self = this;
 
