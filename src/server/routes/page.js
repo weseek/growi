@@ -108,56 +108,48 @@ module.exports = function(crowi, app) {
   }
 
   async function updateTags(page, user, newTags, updateOrCreate, previousRevision) {
-    // if (pageTags == null) {
-    //   Tag.removeTagById(tag.id);
-    // }
-    const tagList = [newTags]; // クライアント側でリスト化後、消去予定
-    const relations = await PageTagRelation.findAllTagForPage(page);
-
-    let newTagList;
-    if (relations) {
-      console.log(relations);
-      newTagList = await shaveTagList(relations, tagList);
-    }
-    if (newTagList) {
-      newTagList.map((newTag) => {
-        Tag.find({name: newTag}, async function(err, tag) {
-          let settingTag;
-          if (tag.length == 0) {
-            settingTag = await Tag.createTag(newTag);
+    const setTagList = ['On-On', 'Off-On']; // クライアント側でリスト化後、消去予定
+    const relatedTagIdList = await PageTagRelation.findAllTagIdForPage(page);
+    if (relatedTagIdList.length > 0) {
+      Promise.all(relatedTagIdList.map(async id => {
+        return await Tag.getOneById(id);
+      })
+      ).then(tags => {
+        const relatedTagList = tags.map(relatedTag => {
+          if (!setTagList.includes(relatedTag.name)) {
+            PageTagRelation.removeByTagId(relatedTag._id);
+            return;
           }
           else {
-            settingTag = tag[0];
+            return relatedTag.name;
           }
-          // Relation を作成
-          PageTagRelation.createRelation(page, settingTag);
         });
+        const newTagList = setTagList.map(setTag => {
+          if (!relatedTagList.includes(setTag)) {
+            return setTag;
+          }
+        });
+        if (newTagList.length > 0) {
+          newTagList.map((newTag) => {
+            if (newTag) {
+              Tag.find({
+                name: newTag
+              }, async function(err, tag) {
+                let settingTag;
+                if (tag.length == 0) {
+                  settingTag = await Tag.createTag(newTag);
+                }
+                else {
+                  settingTag = tag[0];
+                }
+                // Relation を作成
+                PageTagRelation.createRelation(page, settingTag);
+              });
+            }
+          });
+        }
       });
     }
-  }
-
-  // 既存のタグを新規タグリストから削除、および外されるタグの削除
-  async function shaveTagList(relations, tagList) {
-    relations.map((relation) => {
-      const tagId = relation.relatedTag;
-      Tag.findById(tagId, async function(err, tag) {
-        if (tagList.indexOf(tag.name) >= 0) {
-          tagList = await tagListFilter(tagList, tag.name);
-        }
-        else {
-          PageTagRelation.removeByTagId(tag._id);
-          // 不要なタグ削除も走らせる
-        }
-      });
-      console.log(tagList);
-    });
-  }
-
-  // array.filter promise wrapper
-  function tagListFilter(list, tag) {
-    return new Promise((resolve, reject) => {
-      resolve(list.filter(relatedTag => relatedTag !== tag));
-    });
   }
 
   function addRendarVarsForPage(renderVars, page) {

@@ -92,16 +92,16 @@ class PageTagRelation {
    *
    * @static
    * @param {page} page
-   * @returns {Tag[]}
+   * @returns {ObjectId}
    * @memberof PageTagRelation
    */
-  static findAllTagForPage(page) {
+  static findAllTagIdForPage(page) {
     return new Promise((resolve, reject) => {
-      this.find({relatedPage: page._id}, function(err, tags) {
+      this.find({relatedPage: page._id}, function(err, relations) {
         if (err) {
           reject(err);
         }
-        resolve(tags);
+        resolve(relations.map(rel => rel.relatedTag));
       });
     });
   }

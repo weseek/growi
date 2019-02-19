@@ -46,20 +46,20 @@ module.exports = function (crowi) {
     });
   };
 
-  /**
-   * get a tag by Id (findById promise wrapper)
-   */
+  // get a tag by id (Promise wrpper)
   tagSchema.statics.getOneById = function(id) {
     return new Promise((resolve, reject) => {
-      resolve('hoge');
-      this.findById(id, function(err, tag) {
+      this.find({
+        _id: id
+      }, function(err, tags) {
         if (err) {
           reject(err);
         }
-        resolve(tag);
+        resolve(tags[0]);
       });
     });
   };
+
 //   commentSchema.statics.getCommentsByPageId = function (id) {
 //     var self = this;
 
