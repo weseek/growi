@@ -7,7 +7,6 @@ import SplitButton  from 'react-bootstrap/es/SplitButton';
 import MenuItem from 'react-bootstrap/es/MenuItem';
 
 import SlackNotification from './SlackNotification';
-import PageTagForm from './PageTagForm';
 import GrantSelector from './SavePageControls/GrantSelector';
 
 class SavePageControls extends React.PureComponent {
@@ -60,14 +59,6 @@ class SavePageControls extends React.PureComponent {
 
     return (
       <div className="d-flex align-items-center form-inline">
-        <div className="mr-2">
-          <PageTagForm
-            ref='pageTagForm'
-            crowi={this.props.crowi}
-            pageId={this.props.pageId}
-            pagePath={this.props.pagePath}
-            pageTags={this.props.pageTags} />
-      </div>
         <div className="mr-2">
           <SlackNotification
               ref='slackNotification'

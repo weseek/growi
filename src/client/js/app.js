@@ -27,6 +27,7 @@ import PageAttachment   from './components/PageAttachment';
 import PageStatusAlert  from './components/PageStatusAlert';
 import SeenUserList     from './components/SeenUserList';
 import RevisionPath     from './components/Page/RevisionPath';
+import PageTagForm      from './components/PageTagForm';
 import RevisionUrl      from './components/Page/RevisionUrl';
 import BookmarkButton   from './components/BookmarkButton';
 import PagePathAutoComplete from './components/PagePathAutoComplete';
@@ -72,8 +73,8 @@ if (mainContent !== null) {
   pageIdOnHackmd = mainContent.getAttribute('data-page-id-on-hackmd') || null;
   hasDraftOnHackmd = !!mainContent.getAttribute('data-page-has-draft-on-hackmd');
   pagePath = mainContent.attributes['data-path'].value;
+  pageTags = mainContent.getAttribute('data-page-tags') || '';
   slackChannels = mainContent.getAttribute('data-slack-channels') || '';
-  // pageTags = mainContent.getAttribute('data-page-tags') || '';
   const rawText = document.getElementById('raw-text-original');
   if (rawText) {
     pageContent = rawText.innerHTML;
@@ -296,6 +297,7 @@ if (pageId) {
 if (pagePath) {
   componentMappings['page'] = <Page crowi={crowi} crowiRenderer={crowiRenderer} markdown={markdown} pagePath={pagePath} showHeadEditButton={true} onSaveWithShortcut={saveWithShortcut} />;
   componentMappings['revision-path'] = <RevisionPath pagePath={pagePath} crowi={crowi} />;
+  componentMappings['page-tag'] = <PageTagForm pageId={pageId} pageTags={pageTags} pagePath={pagePath} crowi={crowi} />;
   componentMappings['revision-url'] = <RevisionUrl pageId={pageId} pagePath={pagePath} />;
 }
 
