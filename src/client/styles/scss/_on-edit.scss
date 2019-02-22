@@ -103,6 +103,7 @@ body.on-edit {
     h1#revision-path {
       @include variable-font-size(20px);
       line-height: 1em;
+      float: left;
 
       // nowrap even if the path is too long
       .d-flex {
@@ -111,6 +112,9 @@ body.on-edit {
       .path-segment {
         white-space: nowrap;
       }
+    }
+    div#page-tag {
+      float: right;
     }
 
     // hide if screen size is less than tablet
