@@ -20,6 +20,7 @@ export default class PageTagForm extends React.Component {
     };
 
     this.updateState = this.updateState.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -28,8 +29,9 @@ export default class PageTagForm extends React.Component {
     });
   }
 
-  getCurrentOptionsToSave() {
-    return Object.assign({}, this.state);
+  handleSubmit() {
+    this.props.submitTags(this.state.pageTags);
+
   }
 
   updateState(value) {
@@ -38,7 +40,7 @@ export default class PageTagForm extends React.Component {
 
   render() {
     return (
-      <div className="input-group-sm extended-setting">
+      <form onSubmit={this.handleSubmit}>
         <label className="mr-2">Tag:</label>
         <input className="form-control" type="text" value={this.state.pageTags} placeholder="input tag name"
           data-toggle="popover"
@@ -48,7 +50,7 @@ export default class PageTagForm extends React.Component {
           data-placement="top"
           onChange={e => this.updateState(e.target.value)}
           />
-      </div>
+      </form>
     );
   }
 }
@@ -58,6 +60,7 @@ PageTagForm.propTypes = {
   pageId: PropTypes.string,
   pagePath: PropTypes.string,
   pageTags: PropTypes.string,
+  submitTags: PropTypes.func,
 };
 
 PageTagForm.defaultProps = {

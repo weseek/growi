@@ -64,7 +64,8 @@ let pagePath;
 let pageContent = '';
 let markdown = '';
 let slackChannels;
-let pageTags = '';
+let currentPageTags = '';
+let newPageTags = '';
 if (mainContent !== null) {
   pageId = mainContent.getAttribute('data-page-id') || null;
   pageRevisionId = mainContent.getAttribute('data-page-revision-id');
@@ -73,7 +74,7 @@ if (mainContent !== null) {
   pageIdOnHackmd = mainContent.getAttribute('data-page-id-on-hackmd') || null;
   hasDraftOnHackmd = !!mainContent.getAttribute('data-page-has-draft-on-hackmd');
   pagePath = mainContent.attributes['data-path'].value;
-  pageTags = mainContent.getAttribute('data-page-tags') || '';
+  currentPageTags = mainContent.getAttribute('data-page-tags') || '';
   slackChannels = mainContent.getAttribute('data-slack-channels') || '';
   const rawText = document.getElementById('raw-text-original');
   if (rawText) {
@@ -110,6 +111,11 @@ if (isEnabledPlugins) {
   const crowiPlugin = window.crowiPlugin;
   crowiPlugin.installAll(crowi, crowiRenderer);
 }
+
+// get new page tag
+const getNewPageTags = function(tags) {
+  newPageTags = tags;
+};
 
 /**
  * component store
@@ -189,7 +195,7 @@ const saveWithShortcut = function(markdown) {
   // get options
   const options = componentInstances.savePageControls.getCurrentOptionsToSave();
   options.socketClientId = socketClientId;
-  options.pageTags = 'hoge';
+  options.pageTags = newPageTags;
 
   if (editorMode === 'hackmd') {
     // set option to sync
@@ -227,7 +233,7 @@ const saveWithSubmitButton = function(submitOpts) {
   // get options
   const options = componentInstances.savePageControls.getCurrentOptionsToSave();
   options.socketClientId = socketClientId;
-  options.pageTags = 'hoge';
+  options.pageTags = newPageTags;
 
   // set 'submitOpts.overwriteScopesOfDescendants' to options
   options.overwriteScopesOfDescendants = submitOpts ? !!submitOpts.overwriteScopesOfDescendants : false;
@@ -299,7 +305,7 @@ if (pageId) {
 if (pagePath) {
   componentMappings['page'] = <Page crowi={crowi} crowiRenderer={crowiRenderer} markdown={markdown} pagePath={pagePath} showHeadEditButton={true} onSaveWithShortcut={saveWithShortcut} />;
   componentMappings['revision-path'] = <RevisionPath pagePath={pagePath} crowi={crowi} />;
-  componentMappings['page-tag'] = <PageTagForm pageId={pageId} pageTags={pageTags} pagePath={pagePath} crowi={crowi} />;
+  componentMappings['page-tag'] = <PageTagForm pageId={pageId} pageTags={currentPageTags} pagePath={pagePath} crowi={crowi} submitTags={getNewPageTags} />;
   componentMappings['revision-url'] = <RevisionUrl pageId={pageId} pagePath={pagePath} />;
 }
 
@@ -330,7 +336,7 @@ if (savePageControlsElem) {
               savePageControls = elem.getWrappedInstance();
             }
           }}
-          pageId={pageId} pagePath={pagePath} slackChannels={slackChannels} pageTags={pageTags}
+          pageId={pageId} pagePath={pagePath} slackChannels={slackChannels}
           grant={grant} grantGroupId={grantGroupId} grantGroupName={grantGroupName} />
     </I18nextProvider>,
     savePageControlsElem
