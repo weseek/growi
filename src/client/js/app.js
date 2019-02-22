@@ -189,6 +189,7 @@ const saveWithShortcut = function(markdown) {
   // get options
   const options = componentInstances.savePageControls.getCurrentOptionsToSave();
   options.socketClientId = socketClientId;
+  options.pageTags = 'hoge';
 
   if (editorMode === 'hackmd') {
     // set option to sync
@@ -226,6 +227,7 @@ const saveWithSubmitButton = function(submitOpts) {
   // get options
   const options = componentInstances.savePageControls.getCurrentOptionsToSave();
   options.socketClientId = socketClientId;
+  options.pageTags = 'hoge';
 
   // set 'submitOpts.overwriteScopesOfDescendants' to options
   options.overwriteScopesOfDescendants = submitOpts ? !!submitOpts.overwriteScopesOfDescendants : false;

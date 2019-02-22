@@ -28,9 +28,8 @@ class SavePageControls extends React.PureComponent {
 
   getCurrentOptionsToSave() {
     const slackNotificationOptions = this.refs.slackNotification.getCurrentOptionsToSave();
-    const pageTagOptions = this.refs.pageTagForm.getCurrentOptionsToSave();
     const grantSelectorOptions = this.refs.grantSelector.getCurrentOptionsToSave();
-    return Object.assign(slackNotificationOptions, pageTagOptions, grantSelectorOptions);
+    return Object.assign(slackNotificationOptions, grantSelectorOptions);
   }
 
   /**
@@ -103,7 +102,6 @@ SavePageControls.propTypes = {
   // for SlackNotification
   pagePath: PropTypes.string,
   slackChannels: PropTypes.string,
-  pageTags: PropTypes.string,
   // for GrantSelector
   grant: PropTypes.number,
   grantGroupId: PropTypes.string,
