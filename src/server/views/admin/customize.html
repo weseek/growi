@@ -2,22 +2,18 @@
 
 {% block html_title %}{{ customTitle(t('Customize')) }} {% endblock %}
 
-{% block style_css_block %}
+{% block theme_css_block %}
   {% if 'kibela' === layoutType() %}
     {% if env === 'development' %}
-      <script src="{{ webpack_asset('styles/style.js') }}"></script>
       <script src="{{ webpack_asset('styles/theme-kibela.js') }}"></script>
     {% else %}
-      <link rel="stylesheet" href="{{ webpack_asset('styles/style.css') }}">
-      <link rel="stylesheet" id="jssDefault" {# append id for theme selector #} href="{{ webpack_asset('styles/theme-kibela.css') }}">
+      <link rel="stylesheet" href="{{ webpack_asset('styles/theme-kibela.css') }}">
     {% endif %}
   {% else %}
     {% if env === 'development' %}
-      <script src="{{ webpack_asset('styles/style.js') }}"></script>
       <script src="{{ webpack_asset('styles/theme-' + theme() + '.js') }}"></script>
     {% else %}
-      <link rel="stylesheet" href="{{ webpack_asset('styles/style.css') }}">
-      <link rel="stylesheet" id="jssDefault" {# append id for theme selector #} href="{{ webpack_asset('styles/theme-' + theme() + '.css') }}">
+    <link rel="stylesheet" id="jssDefault" {# append id for theme selector #} href="{{ webpack_asset('styles/theme-' + theme() + '.css') }}">
     {% endif %}
   {% endif %}
 {% endblock %}
