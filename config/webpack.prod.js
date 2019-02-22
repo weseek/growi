@@ -38,8 +38,13 @@ module.exports = require('./webpack.common')({
           } },
           'sass-loader'
         ],
-        include: [helpers.root('src/client')]
-      }
+        exclude: [helpers.root('src/client/js/legacy')]
+      },
+      {
+        test: /\.(sc|sa|c)ss$/,
+        use: ['style-loader', 'css-loader', 'sass-loader'],
+        include: [helpers.root('src/client/js/legacy')]
+      },
     ]
   },
   plugins: [

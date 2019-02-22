@@ -29,7 +29,7 @@ module.exports = (options) => {
       'js/hackmd-agent':              './src/client/js/hackmd-agent',
       'js/hackmd-styles':             './src/client/js/hackmd-styles',
       // styles
-      'styles/style':                 './src/client/styles/scss/style.scss',
+      'styles/style-app':             './src/client/styles/scss/style-app.scss',
       'styles/style-presentation':    './src/client/styles/scss/style-presentation.scss',
       // themes
       'styles/theme-default':         './src/client/styles/scss/theme/default.scss',
@@ -100,11 +100,6 @@ module.exports = (options) => {
           test: /switchery\.js$/,
           loader: 'imports-loader?module=>false,exports=>false,define=>false,this=>window'
         },
-        {
-          test: /\.(sc|sa|c)ss$/,
-          use: ['style-loader', 'css-loader', 'sass-loader'],
-          exclude: [helpers.root('src/client')]
-        },
         /*
          * File loader for supporting images, for example, in CSS files.
          */
@@ -148,18 +143,19 @@ module.exports = (options) => {
       namedModules: true,
       splitChunks: {
         cacheGroups: {
-          combined_styles: {
+          style_commons: {
             test: /\.(sc|sa|c)ss$/,
             chunks: (chunk) => {
               // ignore patterns
               return chunk.name != null && !chunk.name.match(/style-|theme-|legacy-admin|legacy-presentation/);
             },
-            name: 'styles/styles',
+            name: 'styles/style-commons',
+            minSize: 1,
             priority: 30,
             enforce: true
           },
           commons: {
-            test: /src/,
+            test: /src[\\/].*\.jsx?$/,
             chunks: 'initial',
             name: 'js/commons',
             minChunks: 2,
@@ -167,13 +163,12 @@ module.exports = (options) => {
             priority: 20
           },
           vendors: {
-            test: /node_modules/,
+            test: /node_modules[\\/].*\.jsx?$/,
             chunks: (chunk) => {
               // ignore patterns
               return chunk.name != null && !chunk.name.match(/legacy-presentation|ie11-polyfill|hackmd-/);
             },
             name: 'js/vendors',
-            // minChunks: 2,
             minSize: 1,
             priority: 10,
             enforce: true

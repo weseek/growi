@@ -34,8 +34,13 @@ module.exports = require('./webpack.common')({
           { loader: 'css-loader', options: { sourceMap: true } },
           { loader: 'sass-loader', options: { sourceMap: true } },
         ],
-        include: [helpers.root('src/client')],
+        include: [helpers.root('src/client/styles')],
         exclude: [helpers.root('src/client/styles/hackmd')],
+      },
+      {
+        test: /\.(sc|sa|c)ss$/,
+        use: ['style-loader', 'css-loader', 'sass-loader'],
+        exclude: [helpers.root('src/client/styles')]
       },
       { // Dump CSS for HackMD
         test: /\.(sc|sa|c)ss$/,
