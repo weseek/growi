@@ -26,7 +26,7 @@ module.exports = require('./webpack.common')({
   module: {
     rules: [
       {
-        test: /\.(sc|sa|c)ss$/,
+        test: /\.(css|scss)$/,
         use: [
           MiniCssExtractPlugin.loader,
           'css-loader',
@@ -41,7 +41,7 @@ module.exports = require('./webpack.common')({
         exclude: [helpers.root('src/client/js/legacy')]
       },
       {
-        test: /\.(sc|sa|c)ss$/,
+        test: /\.(css|scss)$/,
         use: ['style-loader', 'css-loader', 'sass-loader'],
         include: [helpers.root('src/client/js/legacy')]
       },

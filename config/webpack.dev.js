@@ -28,7 +28,7 @@ module.exports = require('./webpack.common')({
   module: {
     rules: [
       { // disable sourceMap for vendor styles
-        test: /\.(sc|sa|c)ss$/,
+        test: /\.(css|scss)$/,
         use: ['style-loader', 'css-loader', 'sass-loader'],
         exclude: [
           helpers.root('src/client/styles'),
@@ -37,7 +37,7 @@ module.exports = require('./webpack.common')({
         ]
       },
       { // enable sourceMap for app styles
-        test: /\.(sc|sa|c)ss$/,
+        test: /\.(css|scss)$/,
         use: [
           'style-loader',
           { loader: 'css-loader', options: { sourceMap: true } },
@@ -50,7 +50,7 @@ module.exports = require('./webpack.common')({
         exclude: [helpers.root('src/client/styles/hackmd')],
       },
       { // Dump CSS for HackMD
-        test: /\.(sc|sa|c)ss$/,
+        test: /\.(css|scss)$/,
         use: [
           MiniCssExtractPlugin.loader,
           'css-loader',
