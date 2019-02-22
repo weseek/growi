@@ -27,27 +27,17 @@ module.exports = require('./webpack.common')({
   },
   module: {
     rules: [
-      { // disable sourceMap for vendor styles
-        test: /\.(css|scss)$/,
-        use: ['style-loader', 'css-loader', 'sass-loader'],
-        exclude: [
-          helpers.root('src/client/styles'),
-          helpers.root('src/client/js/legacy'),
-          helpers.root('src/client/styles/hackmd')
-        ]
-      },
-      { // enable sourceMap for app styles
+      {
         test: /\.(css|scss)$/,
         use: [
           'style-loader',
           { loader: 'css-loader', options: { sourceMap: true } },
           { loader: 'sass-loader', options: { sourceMap: true } },
         ],
-        include: [
-          helpers.root('src/client/styles'),
-          helpers.root('src/client/js/legacy'),
-        ],
-        exclude: [helpers.root('src/client/styles/hackmd')],
+        exclude: [
+          helpers.root('src/client/styles/hackmd'),
+          helpers.root('src/client/styles/scss/style-presentation.scss'),
+        ]
       },
       { // Dump CSS for HackMD
         test: /\.(css|scss)$/,
@@ -56,7 +46,10 @@ module.exports = require('./webpack.common')({
           'css-loader',
           'sass-loader'
         ],
-        include: [helpers.root('src/client/styles/hackmd')]
+        include: [
+          helpers.root('src/client/styles/hackmd'),
+          helpers.root('src/client/styles/scss/style-presentation.scss'),
+        ]
       },
     ],
   },
