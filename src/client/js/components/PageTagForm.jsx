@@ -40,7 +40,7 @@ export default class PageTagForm extends React.Component {
   render() {
     return (
       <div className="input-group-sm mx-1">
-        <input className="form-control" type="text" value={this.state.pageTags} placeholder="tag name"
+        <input className="form-control page-tag-form" type="text" value={this.state.pageTags} placeholder="tag name"
           data-toggle="popover"
           title="タグ"
           data-content="タグ付けによりページをカテゴライズすることができます。"

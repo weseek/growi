@@ -11,10 +11,11 @@
     // the container of h1
     div.title-container {
       margin-right: auto;
-      // hide unnecessary element
-      div#page-tag {
-        display: none;
-      }
+    }
+
+    // hide unnecessary element
+    div#page-tag {
+      display: none;
     }
 
     .btn-copy, .btn-copy-link, .btn-edit {
