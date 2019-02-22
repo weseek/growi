@@ -32,6 +32,7 @@
     <title>{{ path|path2name }} | {{ path }}</title>
 
     {{ cdnStyleTagsByGroup('basis') }}
+    {{ cdnHighlightJsStyleTag(highlightJsStyle()) }}
 
     <style>
       {{ customCss() }}

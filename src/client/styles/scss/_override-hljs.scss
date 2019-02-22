@@ -1,9 +1,0 @@
-// override Highlight Js Style Border
-.wiki, .admin-customize {
-  pre.hljs {
-    border-radius: 3px;
-    &.hljs-no-border {
-      border: none;
-    }
-  }
-}

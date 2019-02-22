@@ -4,6 +4,11 @@
 @import "~reveal.js/css/reveal.css";
 @import "~reveal.js/css/theme/black.css";
 
+// hljs
+.reveal {
+  @import 'hljs';
+}
+
 .reveal {
   font-size: 32px;
   section * {
