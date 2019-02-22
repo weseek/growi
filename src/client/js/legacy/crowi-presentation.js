@@ -1,7 +1,5 @@
 const Reveal = require('reveal.js');
 
-require('reveal.js/css/reveal.css');
-require('reveal.js/css/theme/black.css');
 require('reveal.js/lib/js/head.min.js');
 require('reveal.js/lib/js/html5shiv.js');
 
