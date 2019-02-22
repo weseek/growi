@@ -29,9 +29,9 @@ export default class PageTagForm extends React.Component {
     });
   }
 
-  handleSubmit() {
+  handleSubmit(e) {
     this.props.submitTags(this.state.pageTags);
-
+    e.preventDefault();
   }
 
   updateState(value) {
