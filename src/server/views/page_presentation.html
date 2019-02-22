@@ -30,8 +30,12 @@
 
     <title>{{ path|path2name }} | {{ path }}</title>
 
-    <!-- styles -->
-    <link rel="stylesheet" href="{{ webpack_asset('styles/style-presentation.css') }}">
+    {% if env === 'development' %}
+      <script src="{{ webpack_asset('styles/style-presentation.js') }}"></script>
+    {% else %}
+      <link rel="stylesheet" href="{{ webpack_asset('js/legacy-presentation.css') }}">
+      <link rel="stylesheet" href="{{ webpack_asset('styles/style-presentation.css') }}">
+    {% endif %}
 
     {{ cdnStyleTagsByGroup('basis') }}
 
