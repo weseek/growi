@@ -224,7 +224,6 @@ module.exports = function(crowi, app) {
 
     const file = req.file;
 
-    // TODO for GC-1359: consider restriction
     let page;
     if (pageId == null) {
       logger.debug('Create page before file upload');
