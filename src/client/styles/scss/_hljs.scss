@@ -1,0 +1,35 @@
+pre.hljs {
+  // override Highlight Js Style Border
+  border-radius: 3px;
+  &.hljs-no-border {
+    border: none;
+  }
+
+  position: relative;
+
+  cite {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0 4px;
+    background: #ccc;
+    color: #333;
+    font-style: normal;
+    font-weight: bold;
+    opacity: 0.6;
+  }
+}
+
+// styles for highlightjs-line-numbers
+.hljs-ln td.hljs-ln-numbers {
+  user-select: none;
+
+  text-align: center;
+  color: #ccc;
+  border-right: 1px solid #CCC;
+  vertical-align: top;
+  padding-right: 5px;
+}
+.hljs-ln td.hljs-ln-code {
+  padding-left: 10px;
+}

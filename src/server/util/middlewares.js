@@ -156,7 +156,6 @@ exports.swigFilters = function(crowi, app, swig) {
     swig.setFilter('presentation', function(string) {
       // 手抜き
       return string
-        .replace(/[\n]+#/g, '\n\n\n#')
         .replace(/\s(https?.+(jpe?g|png|gif))\s/, '\n\n\n![]($1)\n\n\n');
     });
 

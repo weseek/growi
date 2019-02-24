@@ -786,7 +786,7 @@ SearchClient.prototype.syncPageDeleted = function(page, user) {
 SearchClient.prototype.syncBookmarkChanged = async function(pageId) {
   const Page = this.crowi.model('Page');
   const Bookmark = this.crowi.model('Bookmark');
-  const page = await Page.findPageById(pageId);
+  const page = await Page.findById(pageId);
   const bookmarkCount = await Bookmark.countByPageId(pageId);
 
   page.bookmarkCount = bookmarkCount;

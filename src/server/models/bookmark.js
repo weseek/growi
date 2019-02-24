@@ -2,6 +2,7 @@ module.exports = function(crowi) {
   const debug = require('debug')('growi:models:bookmark');
   const mongoose = require('mongoose');
   const ObjectId = mongoose.Schema.Types.ObjectId;
+  const bookmarkEvent = crowi.event('bookmark');
 
   let bookmarkSchema = null;
 
@@ -79,27 +80,24 @@ module.exports = function(crowi) {
     });
   };
 
-  bookmarkSchema.statics.add = function(page, user) {
+  bookmarkSchema.statics.add = async function(page, user) {
     const Bookmark = this;
 
-    return new Promise(function(resolve, reject) {
-      const newBookmark = new Bookmark;
+    const newBookmark = new Bookmark({ page, user, createdAt: Date.now() });
 
-      newBookmark.page = page;
-      newBookmark.user = user;
-      newBookmark.createdAt = Date.now();
-      newBookmark.save(function(err, bookmark) {
-        debug('Bookmark.save', err, bookmark);
-        if (err) {
-          if (err.code === 11000) { // duplicate key (dummy reesponse of new object)
-            return resolve(newBookmark);
-          }
-          return reject(err);
-        }
-
-        resolve(bookmark);
-      });
-    });
+    try {
+      const bookmark = await newBookmark.save();
+      bookmarkEvent.emit('create', page._id);
+      return bookmark;
+    }
+    catch (err) {
+      if (err.code === 11000) {
+        // duplicate key (dummy response of new object)
+        return newBookmark;
+      }
+      debug('Bookmark.save failed', err);
+      throw err;
+    }
   };
 
   /**
@@ -107,34 +105,32 @@ module.exports = function(crowi) {
    * used only when removing the page
    * @param {string} pageId
    */
-  bookmarkSchema.statics.removeBookmarksByPageId = function(pageId) {
+  bookmarkSchema.statics.removeBookmarksByPageId = async function(pageId) {
     const Bookmark = this;
 
-    return new Promise(function(resolve, reject) {
-      Bookmark.remove({page: pageId}, function(err, data) {
-        if (err) {
-          debug('Bookmark.remove failed (removeBookmarkByPage)', err);
-          return reject(err);
-        }
-
-        return resolve(data);
-      });
-    });
+    try {
+      const data = await Bookmark.remove({ page: pageId });
+      bookmarkEvent.emit('delete', pageId);
+      return data;
+    }
+    catch (err) {
+      debug('Bookmark.remove failed (removeBookmarkByPage)', err);
+      throw err;
+    }
   };
 
-  bookmarkSchema.statics.removeBookmark = function(page, user) {
+  bookmarkSchema.statics.removeBookmark = async function(page, user) {
     const Bookmark = this;
 
-    return new Promise(function(resolve, reject) {
-      Bookmark.findOneAndRemove({page: page, user: user}, function(err, data) {
-        if (err) {
-          debug('Bookmark.findOneAndRemove failed', err);
-          return reject(err);
-        }
-
-        return resolve(data);
-      });
-    });
+    try {
+      const data = await Bookmark.findOneAndRemove({ page, user });
+      bookmarkEvent.emit('delete', page);
+      return data;
+    }
+    catch (err) {
+      debug('Bookmark.findOneAndRemove failed', err);
+      throw err;
+    }
   };
 
   return mongoose.model('Bookmark', bookmarkSchema);

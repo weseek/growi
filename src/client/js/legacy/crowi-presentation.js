@@ -1,7 +1,5 @@
 const Reveal = require('reveal.js');
 
-require('reveal.js/css/reveal.css');
-require('reveal.js/css/theme/black.css');
 require('reveal.js/lib/js/head.min.js');
 require('reveal.js/lib/js/html5shiv.js');
 
@@ -33,10 +31,9 @@ Reveal.initialize({
 
 require.ensure([], () => {
   require('reveal.js/lib/js/classList.js');
-  require('reveal.js/plugin/markdown/marked.js');
-  require('reveal.js/plugin/markdown/markdown.js');
   require('reveal.js/plugin/zoom-js/zoom.js');
   require('reveal.js/plugin/notes/notes.js');
+  require('../util/reveal/plugins/growi-renderer.js');
 
   // fix https://github.com/weseek/crowi-plus/issues/96
   Reveal.slide(0, 0);
