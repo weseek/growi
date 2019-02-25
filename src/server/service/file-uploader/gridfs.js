@@ -76,7 +76,13 @@ module.exports = function(crowi) {
    * @return {stream.Readable} readable stream
    */
   lib.findDeliveryFile = async function(attachment) {
-    const attachmentFile = await AttachmentFile.findOne({ filename: attachment.fileName });
+    let filenameValue = attachment.fileName;
+
+    if (attachment.filePath != null) {  // backward compatibility for v3.3.x or below
+      filenameValue = attachment.filePath;
+    }
+
+    const attachmentFile = await AttachmentFile.findOne({ filename: filenameValue });
 
     if (attachmentFile == null) {
       throw new Error(`Any AttachmentFile that relate to the Attachment (${attachment._id.toString()}) does not exist in GridFS`);
