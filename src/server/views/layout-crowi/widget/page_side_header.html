@@ -24,16 +24,12 @@
         <i class="icon-like"></i> {{ t('Like!') }}
       </dt>
       <dd>
-        <p class="liker-count">
-          <span id="like-count">{{ page.liker.length }}</span>
-        </p>
-        <p id="liker-list" class="liker-list" data-likers="{{ page.liker|default([])|join(',') }}">
-        </p>
+        <div id="liker-list" data-user-ids="{{ page.liker|default([])|join(',') }}"></div>
       </dd>
 
       <dt><i class="fa fa-paw"></i> {{ t('Seen by') }}</dt>
       <dd>
-        <div id="seen-user-list" data-seen-users="{{ page.seenUsers|default([])|join(',') }}"></div>
+        <div id="seen-user-list" data-user-ids="{{ page.seenUsers|default([])|join(',') }}"></div>
       </dd>
     </dl>
   </div>

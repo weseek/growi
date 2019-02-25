@@ -56,12 +56,12 @@
       }
     }
 
-    .liker-count, .contributor-count, .seen-user-count {
-      font-size: 1.2em;
-      font-weight: bold;
-      margin-bottom: 5px;
-    }
-    .contributor-list, .seen-user-list {
+    #liker-list, #seen-user-list {
+      .user-count {
+        font-size: 1.2em;
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
     }
   }
 

@@ -581,37 +581,6 @@ $(function() {
       top.location.href = `${path}#edit`;
     });
 
-    const $likerList = $('#liker-list');
-    const likers = $likerList.data('likers');
-    if (likers && likers.length > 0) {
-      const users = crowi.findUserByIds(likers.split(','));
-      if (users) {
-        AddToLikers(users);
-      }
-    }
-
-    /* eslint-disable no-inner-declarations */
-    function AddToLikers(users) {
-      $.each(users, function(i, user) {
-        $likerList.append(CreateUserLinkWithPicture(user));
-      });
-    }
-
-    function CreateUserLinkWithPicture(user) {
-      const $userHtml = $('<a>');
-      $userHtml.data('user-id', user._id);
-      $userHtml.attr('href', '/user/' + user.username);
-      $userHtml.attr('title', user.name);
-
-      const $userPicture = $('<img class="picture picture-xs img-circle">');
-      $userPicture.attr('alt', user.name);
-      $userPicture.attr('src',  Crowi.userPicture(user));
-
-      $userHtml.append($userPicture);
-      return $userHtml;
-    }
-    /* eslint-enable */
-
     if (!isSeen) {
       $.post('/_api/pages.seen', {page_id: pageId}, function(res) {
         // ignore unless response has error

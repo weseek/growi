@@ -25,13 +25,13 @@ import PageComments     from './components/PageComments';
 import CommentForm from './components/PageComment/CommentForm';
 import PageAttachment   from './components/PageAttachment';
 import PageStatusAlert  from './components/PageStatusAlert';
-import SeenUserList     from './components/SeenUserList';
 import RevisionPath     from './components/Page/RevisionPath';
 import RevisionUrl      from './components/Page/RevisionUrl';
 import BookmarkButton   from './components/BookmarkButton';
 import LikeButton       from './components/LikeButton';
 import PagePathAutoComplete from './components/PagePathAutoComplete';
 import RecentCreated from './components/RecentCreated/RecentCreated';
+import UserCountAndList from './components/UserCountAndList';
 
 import CustomCssEditor  from './components/Admin/CustomCssEditor';
 import CustomScriptEditor from './components/Admin/CustomScriptEditor';
@@ -319,14 +319,24 @@ if (likeButtonElem) {
   );
 }
 
-// render SeenUserList
+// render UserCountAndList for seen-user-list
 const seenUserListElem = document.getElementById('seen-user-list');
 if (seenUserListElem) {
-  const seenUserIdsStr = seenUserListElem.dataset.seenUsers;
-  const seenUserIds = seenUserIdsStr.split(',');
+  const userIdsStr = seenUserListElem.dataset.userIds;
+  const userIds = userIdsStr.split(',');
   ReactDOM.render(
-    <SeenUserList crowi={crowi} seenUserIds={seenUserIds} />,
+    <UserCountAndList crowi={crowi} userIds={userIds} />,
     seenUserListElem
+  );
+}
+// render UserCountAndList for liker-list
+const likerListElem = document.getElementById('liker-list');
+if (likerListElem) {
+  const userIdsStr = likerListElem.dataset.userIds;
+  const userIds = userIdsStr.split(',');
+  ReactDOM.render(
+    <UserCountAndList crowi={crowi} userIds={userIds} />,
+    likerListElem
   );
 }
 
