@@ -1,147 +1,80 @@
+const debug = require('debug')('growi:models:attachment');
+const logger = require('@alias/logger')('growi:models:attachment');
+const path = require('path');
+
+const mongoose = require('mongoose');
+const ObjectId = mongoose.Schema.Types.ObjectId;
+
 module.exports = function(crowi) {
-  var debug = require('debug')('growi:models:attachment')
-    , mongoose = require('mongoose')
-    , ObjectId = mongoose.Schema.Types.ObjectId
-    , fileUploader = require('../service/file-uploader')(crowi)
-    , attachmentSchema
-  ;
+  const fileUploader = require('../service/file-uploader')(crowi);
+
+  let attachmentSchema;
 
   function generateFileHash(fileName) {
-    var hasher = require('crypto').createHash('md5');
-    hasher.update(fileName);
+    const hash = require('crypto').createHash('md5');
+    hash.update(`${fileName}_${Date.now()}`);
 
-    return hasher.digest('hex');
+    return hash.digest('hex');
   }
+
 
   attachmentSchema = new mongoose.Schema({
     page: { type: ObjectId, ref: 'Page', index: true },
     creator: { type: ObjectId, ref: 'User', index: true  },
-    filePath: { type: String, required: true },
+    filePath: { type: String },   // DEPRECATED: remains for backward compatibility for v3.3.x or below
     fileName: { type: String, required: true },
     originalName: { type: String },
     fileFormat: { type: String, required: true },
     fileSize: { type: Number, default: 0 },
-    createdAt: { type: Date, default: Date.now },
-  }, {
-    toJSON: {
-      virtuals: true
-    },
+    createdAt: { type: Date, default: Date.now() },
   });
 
-  attachmentSchema.virtual('fileUrl').get(function() {
-    // NOTE: use original generated Url directly (not proxy) -- 2017.05.08 Yuki Takei
-    // reason:
-    //   1. this is buggy (doesn't work on Win)
-    //   2. ensure backward compatibility of data
-
-    // return `/files/${this._id}`;
-    return fileUploader.generateUrl(this.filePath);
+  attachmentSchema.virtual('filePathProxied').get(function() {
+    return `/attachment/${this._id}`;
   });
 
-  attachmentSchema.statics.findById = function(id) {
-    var Attachment = this;
+  attachmentSchema.virtual('downloadPathProxied').get(function() {
+    return `/download/${this._id}`;
+  });
 
-    return new Promise(function(resolve, reject) {
-      Attachment.findOne({_id: id}, function(err, data) {
-        if (err) {
-          return reject(err);
-        }
+  attachmentSchema.set('toObject', { virtuals: true });
+  attachmentSchema.set('toJSON', { virtuals: true });
 
-        if (data === null) {
-          return reject(new Error('Attachment not found'));
-        }
-        return resolve(data);
-      });
-    });
-  };
 
-  attachmentSchema.statics.getListByPageId = function(id) {
-    var self = this;
-
-    return new Promise(function(resolve, reject) {
-
-      self
-        .find({page: id})
-        .sort({'updatedAt': 1})
-        .populate('creator')
-        .exec(function(err, data) {
-          if (err) {
-            return reject(err);
-          }
-
-          if (data.length < 1) {
-            return resolve([]);
-          }
-
-          debug(data);
-          return resolve(data);
-        });
-    });
-  };
-
-  attachmentSchema.statics.create = function(pageId, creator, filePath, originalName, fileName, fileFormat, fileSize) {
-    var Attachment = this;
-
-    return new Promise(function(resolve, reject) {
-      var newAttachment = new Attachment();
-
-      newAttachment.page = pageId;
-      newAttachment.creator = creator._id;
-      newAttachment.filePath = filePath;
-      newAttachment.originalName = originalName;
-      newAttachment.fileName = fileName;
-      newAttachment.fileFormat = fileFormat;
-      newAttachment.fileSize = fileSize;
-      newAttachment.createdAt = Date.now();
-
-      newAttachment.save(function(err, data) {
-        if (err) {
-          debug('Error on saving attachment.', err);
-          return reject(err);
-        }
-        debug('Attachment saved.', data);
-        return resolve(data);
-      });
-    });
-  };
-
-  attachmentSchema.statics.guessExtByFileType = function(fileType) {
-    let ext = '';
-    const isImage = fileType.match(/^image\/(.+)/i);
-
-    if (isImage) {
-      ext = isImage[1].toLowerCase();
-    }
-
-    return ext;
-  };
-
-  attachmentSchema.statics.createAttachmentFilePath = function(pageId, fileName, fileType) {
+  attachmentSchema.statics.create = async function(pageId, user, fileStream, originalName, fileFormat, fileSize) {
     const Attachment = this;
-    let ext = '';
-    const fnExt = fileName.match(/(.*)(?:\.([^.]+$))/);
 
-    if (fnExt) {
-      ext = '.' + fnExt[2];
-    }
-    else {
-      ext = Attachment.guessExtByFileType(fileType);
-      if (ext !== '') {
-        ext = '.' + ext;
-      }
+    const extname = path.extname(originalName);
+    let fileName = generateFileHash(originalName);
+    if (extname.length > 1) {   // ignore if empty or '.' only
+      fileName = `${fileName}${extname}`;
     }
 
-    return 'attachment/' + pageId + '/' + generateFileHash(fileName) + ext;
+    let attachment = new Attachment();
+    attachment.page = pageId;
+    attachment.creator = user._id;
+    attachment.originalName = originalName;
+    attachment.fileName = fileName;
+    attachment.fileFormat = fileFormat;
+    attachment.fileSize = fileSize;
+    attachment.createdAt = Date.now();
+
+    // upload file
+    await fileUploader.uploadFile(fileStream, attachment);
+    // save attachment
+    attachment = await attachment.save();
+
+    return attachment;
   };
 
   attachmentSchema.statics.removeAttachmentsByPageId = function(pageId) {
     var Attachment = this;
 
     return new Promise((resolve, reject) => {
-      Attachment.getListByPageId(pageId)
+      Attachment.find({ page: pageId})
       .then((attachments) => {
         for (let attachment of attachments) {
-          Attachment.removeAttachment(attachment).then((res) => {
+          Attachment.removeWithSubstanceById(attachment._id).then((res) => {
             // do nothing
           }).catch((err) => {
             debug('Attachment remove error', err);
@@ -156,31 +89,11 @@ module.exports = function(crowi) {
 
   };
 
-  attachmentSchema.statics.findDeliveryFile = function(attachment, forceUpdate) {
-    // TODO force update
-    // var forceUpdate = forceUpdate || false;
-
-    return fileUploader.findDeliveryFile(attachment._id, attachment.filePath);
-  };
-
-  attachmentSchema.statics.removeAttachment = function(attachment) {
-    const Attachment = this;
-    const filePath = attachment.filePath;
-
-    return new Promise((resolve, reject) => {
-      Attachment.remove({_id: attachment._id}, (err, data) => {
-        if (err) {
-          return reject(err);
-        }
-
-        fileUploader.deleteFile(attachment._id, filePath)
-        .then(data => {
-          resolve(data); // this may null
-        }).catch(err => {
-          reject(err);
-        });
-      });
-    });
+  attachmentSchema.statics.removeWithSubstanceById = async function(id) {
+    // retrieve data from DB to get a completely populated instance
+    const attachment = await this.findById(id);
+    await fileUploader.deleteFile(attachment);
+    return await attachment.remove();
   };
 
   return mongoose.model('Attachment', attachmentSchema);

@@ -785,120 +785,12 @@ module.exports = function(crowi, app) {
     });
   };
 
-  actions.userGroup.uploadGroupPicture = function(req, res) {
-    var fileUploader = require('../service/file-uploader')(crowi, app);
-    //var storagePlugin = new pluginService('storage');
-    //var storage = require('../service/storage').StorageService(config);
-
-    var userGroupId = req.params.userGroupId;
-
-    var tmpFile = req.file || null;
-    if (!tmpFile) {
-      return res.json({
-        'status': false,
-        'message': 'File type error.'
-      });
-    }
-
-    UserGroup.findById(userGroupId, function(err, userGroupData) {
-      if (!userGroupData) {
-        return res.json({
-          'status': false,
-          'message': 'UserGroup error.'
-        });
-      }
-
-      var tmpPath = tmpFile.path;
-      var filePath = UserGroup.createUserGroupPictureFilePath(userGroupData, tmpFile.filename + tmpFile.originalname);
-      var acceptableFileType = /image\/.+/;
-
-      if (!tmpFile.mimetype.match(acceptableFileType)) {
-        return res.json({
-          'status': false,
-          'message': 'File type error. Only image files is allowed to set as user picture.',
-        });
-      }
-
-      var tmpFileStream = fs.createReadStream(tmpPath, { flags: 'r', encoding: null, fd: null, mode: '0666', autoClose: true });
-
-      fileUploader.uploadFile(filePath, tmpFile.mimetype, tmpFileStream, {})
-        .then(function(data) {
-          var imageUrl = fileUploader.generateUrl(filePath);
-          userGroupData.updateImage(imageUrl)
-          .then(() => {
-            fs.unlink(tmpPath, function(err) {
-              if (err) {
-                debug('Error while deleting tmp file.', err);
-              }
-
-              return res.json({
-                'status': true,
-                'url': imageUrl,
-                'message': '',
-              });
-            });
-          });
-        }).catch(function(err) {
-          debug('Uploading error', err);
-
-          return res.json({
-            'status': false,
-            'message': 'Error while uploading to ',
-          });
-        });
-    });
-
-  };
-
-  actions.userGroup.deletePicture = function(req, res) {
-
-    const userGroupId = req.params.userGroupId;
-    let userGroupName = null;
-
-    UserGroup.findById(userGroupId)
-    .then((userGroupData) => {
-      if (userGroupData == null) {
-        return Promise.reject();
-      }
-      else {
-        userGroupName = userGroupData.name;
-        return userGroupData.deleteImage();
-      }
-    })
-    .then((updated) => {
-      req.flash('successMessage', 'Deleted group picture');
-
-      return res.redirect('/admin/user-group-detail/' + userGroupId);
-    })
-    .catch((err) => {
-      debug('An error occured.', err);
-
-      req.flash('errorMessage', 'Error while deleting group picture');
-      if (userGroupName == null) {
-        return res.redirect('/admin/user-groups/');
-      }
-      else {
-        return res.redirect('/admin/user-group-detail/' + userGroupId);
-      }
-    });
-  };
 
   // app.post('/_api/admin/user-group/delete' , admin.userGroup.removeCompletely);
   actions.userGroup.removeCompletely = function(req, res) {
     const id = req.body.user_group_id;
 
-    const fileUploader = require('../service/file-uploader')(crowi, app);
-
     UserGroup.removeCompletelyById(id)
-      //// TODO remove attachments
-      // couldn't remove because filePath includes '/uploads/uploads'
-      // Error: ENOENT: no such file or directory, unlink 'C:\dev\growi\public\uploads\uploads\userGroup\5b1df18ab69611651cc71495.png
-      //
-      // .then(removed => {
-      //   if (removed.image != null) {
-      //     fileUploader.deleteFile(null, removed.image);
-      //   }
-      // })
       .then(() => {
         req.flash('successMessage', '削除しました');
         return res.redirect('/admin/user-groups');

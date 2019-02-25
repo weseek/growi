@@ -35,7 +35,7 @@ export default class Attachment extends React.Component {
 
     const btnDownload = (this.props.isUserLoggedIn)
       ? (
-        <a className="attachment-download" href={`/download/${attachment._id}`}>
+        <a className="attachment-download" href={attachment.downloadPathProxied}>
           <i className="icon-cloud-download"></i>
         </a>)
       : '';
@@ -50,9 +50,8 @@ export default class Attachment extends React.Component {
     return (
       <li>
         <User user={attachment.creator} />
-        <i className={formatIcon}></i>
 
-        <a href={attachment.url}> {attachment.originalName}</a>
+        <a href={attachment.filePathProxied}><i className={formatIcon}></i> {attachment.originalName}</a>
 
         {fileType}
 

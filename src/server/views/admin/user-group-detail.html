@@ -114,55 +114,6 @@
         </form>
       </div>
 
-      <div class="m-t-20 form-box">
-        <fieldset>
-          <legend>グループ画像の設定</legend>
-          <div class="form-group col-sm-8">
-            <h4>
-              {{ t('Upload Image') }}
-            </h4>
-            <div class="form-group">
-              <div id="pictureUploadFormMessage"></div>
-              <label for="" class="col-sm-4 control-label">
-                {{ t('Current Image') }}
-              </label>
-              <div class="col-sm-8">
-                <p>
-                  <img src="{{ userGroup|uploadedpicture }}" id="settingUserPicture" class="picture picture-lg img-circle">
-                  <br>
-                </p>
-                <p>
-                  {% if userGroup.image %}
-                  <form action="/admin/user-group/{{userGroup.id}}/picture/delete" method="post" class="form-horizontal" role="form" onsubmit="return window.confirm('{{ t('Delete this image?') }}');">
-                    <button type="submit" class="btn btn-danger">{{ t('Delete Image') }}</button>
-                  </form>
-                  {% endif %}
-                </p>
-              </div>
-            </div><!-- /.form-group -->
-
-            <div class="form-group">
-              <label for="" class="col-sm-4 control-label">
-                {{ t('Upload new image') }}
-              </label>
-              <div class="col-sm-8">
-                {% if isUploadable() %}
-                <form action="/_api/admin/user-group/{{userGroup.id}}/picture/upload" id="pictureUploadForm" method="post" class="form-horizontal" role="form" enctype="multipart/form-data">
-                  <input name="userGroupPicture" type="file" accept="image/*">
-                  <div id="pictureUploadFormProgress">
-                  </div>
-                </form>
-                {% else %} * {{ t('page_me.form_help.profile_image1') }}
-                <br> * {{ t('page_me.form_help.profile_image2') }}
-                <br> {% endif %}
-              </div>
-            </div><!-- /.form-group -->
-
-          </div><!-- /.col-sm- -->
-
-        </fieldset>
-      </div><!-- /.form-box -->
-
       <legend class="m-t-20">ユーザー一覧</legend>
 
       <table class="table table-bordered table-user-list">

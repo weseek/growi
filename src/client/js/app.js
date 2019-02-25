@@ -25,12 +25,13 @@ import PageComments     from './components/PageComments';
 import CommentForm from './components/PageComment/CommentForm';
 import PageAttachment   from './components/PageAttachment';
 import PageStatusAlert  from './components/PageStatusAlert';
-import SeenUserList     from './components/SeenUserList';
 import RevisionPath     from './components/Page/RevisionPath';
 import RevisionUrl      from './components/Page/RevisionUrl';
 import BookmarkButton   from './components/BookmarkButton';
+import LikeButton       from './components/LikeButton';
 import PagePathAutoComplete from './components/PagePathAutoComplete';
 import RecentCreated from './components/RecentCreated/RecentCreated';
+import UserPictureList  from './components/Common/UserPictureList';
 
 import CustomCssEditor  from './components/Admin/CustomCssEditor';
 import CustomScriptEditor from './components/Admin/CustomScriptEditor';
@@ -277,7 +278,6 @@ const componentMappings = {
   'search-page': <I18nextProvider i18n={i18n}><SearchPage crowi={crowi} crowiRenderer={crowiRenderer} /></I18nextProvider>,
 
   //'revision-history': <PageHistory pageId={pageId} />,
-  'seen-user-list': <SeenUserList pageId={pageId} crowi={crowi} />,
   'bookmark-button': <BookmarkButton pageId={pageId} crowi={crowi} />,
   'bookmark-button-lg': <BookmarkButton pageId={pageId} crowi={crowi} size="lg" />,
 
@@ -289,7 +289,7 @@ const componentMappings = {
 // additional definitions if data exists
 if (pageId) {
   componentMappings['page-comments-list'] = <PageComments pageId={pageId} revisionId={pageRevisionId} revisionCreatedAt={pageRevisionCreatedAt} crowi={crowi} crowiOriginRenderer={crowiRenderer} />;
-  componentMappings['page-attachment'] = <PageAttachment pageId={pageId} pageContent={pageContent} crowi={crowi} />;
+  componentMappings['page-attachment'] = <PageAttachment pageId={pageId} markdown={markdown} crowi={crowi} />;
 }
 if (pagePath) {
   componentMappings['page'] = <Page crowi={crowi} crowiRenderer={crowiRenderer} markdown={markdown} pagePath={pagePath} showHeadEditButton={true} onSaveWithShortcut={saveWithShortcut} />;
@@ -307,6 +307,37 @@ Object.keys(componentMappings).forEach((key) => {
 // set page if exists
 if (componentInstances['page'] != null) {
   crowi.setPage(componentInstances['page']);
+}
+
+// render LikeButton
+const likeButtonElem = document.getElementById('like-button');
+if (likeButtonElem) {
+  const isLiked = likeButtonElem.dataset.liked === 'true';
+  ReactDOM.render(
+    <LikeButton crowi={crowi} pageId={pageId} isLiked={isLiked} />,
+    likeButtonElem
+  );
+}
+
+// render UserPictureList for seen-user-list
+const seenUserListElem = document.getElementById('seen-user-list');
+if (seenUserListElem) {
+  const userIdsStr = seenUserListElem.dataset.userIds;
+  const userIds = userIdsStr.split(',');
+  ReactDOM.render(
+    <UserPictureList crowi={crowi} userIds={userIds} />,
+    seenUserListElem
+  );
+}
+// render UserPictureList for liker-list
+const likerListElem = document.getElementById('liker-list');
+if (likerListElem) {
+  const userIdsStr = likerListElem.dataset.userIds;
+  const userIds = userIdsStr.split(',');
+  ReactDOM.render(
+    <UserPictureList crowi={crowi} userIds={userIds} />,
+    likerListElem
+  );
 }
 
 // render SavePageControls

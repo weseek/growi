@@ -44,10 +44,10 @@ module.exports = function(crowi, app) {
    *
    * @apiParam {String} user_ids
    */
-  api.list = function(req, res) {
-    var userIds = req.query.user_ids || null; // TODO: handling
+  api.list = async function(req, res) {
+    const userIds = req.query.user_ids || null; // TODO: handling
 
-    var userFetcher;
+    let userFetcher;
     if (!userIds || userIds.split(',').length <= 0) {
       userFetcher = User.findAllUsers();
     }
@@ -55,25 +55,22 @@ module.exports = function(crowi, app) {
       userFetcher = User.findUsersByIds(userIds.split(','));
     }
 
-    userFetcher
-    .then(function(userList) {
-      return userList.map((user) => {
+    const data = {};
+    try {
+      const users = await userFetcher.populate(User.IMAGE_POPULATION);
+      data.users = users.map(user => {
         // omit email
         if (true !== user.isEmailPublished) { // compare to 'true' because Crowi original data doesn't have 'isEmailPublished'
           user.email = undefined;
         }
-        return user;
+        return user.toObject({ virtuals: true });
       });
-    })
-    .then(function(userList) {
-      var result = {
-        users: userList,
-      };
-
-      return res.json(ApiResponse.success(result));
-    }).catch(function(err) {
+    }
+    catch (err) {
       return res.json(ApiResponse.error(err));
-    });
+    }
+
+    return res.json(ApiResponse.success(data));
   };
 
   return actions;

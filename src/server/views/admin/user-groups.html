@@ -114,7 +114,6 @@
       <table class="table table-bordered table-user-list">
         <thead>
           <tr>
-            <th width="60px">#</th>
             <th>{{ t('Name') }}</th>
             <th>ユーザ一覧</th>
             <th width="100px">作成日</th>
@@ -125,9 +124,6 @@
           {% for sGroup in userGroups %}
           {% set sGroupDetailPageUrl = '/admin/user-group-detail/' + sGroup._id.toString() %}
           <tr>
-            <td>
-              <img src="{{ sGroup|picture }}" class="picture img-circle" />
-            </td>
             {% if isAclEnabled %}
               <td><a href="{{ sGroupDetailPageUrl }}">{{ sGroup.name | preventXss }}</a></td>
             {% else %}

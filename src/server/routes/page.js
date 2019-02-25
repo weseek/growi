@@ -116,7 +116,9 @@ module.exports = function(crowi, app) {
   }
 
   async function addRenderVarsForUserPage(renderVars, page, requestUser) {
-    const userData = await User.findUserByUsername(User.getUsernameByPath(page.path));
+    const userData = await User.findUserByUsername(User.getUsernameByPath(page.path))
+      .populate(User.IMAGE_POPULATION);
+
     if (userData != null) {
       renderVars.pageUser = userData;
       renderVars.bookmarkList = await Bookmark.findByUser(userData, {limit: 10, populatePage: true, requestUser: requestUser});

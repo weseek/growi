@@ -2,7 +2,9 @@ const envToModuleMappings = {
   aws:     'aws',
   local:   'local',
   none:    'none',
+  mongo:   'gridfs',
   mongodb: 'gridfs',
+  gridfs:  'gridfs',
 };
 
 class FileUploaderFactory {

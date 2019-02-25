@@ -1,6 +1,6 @@
 {
   "name": "growi",
-  "version": "3.3.11-RC",
+  "version": "3.4.0-RC",
   "description": "Team collaboration software using markdown",
   "tags": [
     "wiki",
@@ -101,6 +101,7 @@
     "mongoose-paginate": "^5.0.3",
     "mongoose-unique-validator": "^2.0.2",
     "multer": "~1.4.0",
+    "multer-autoreap": "^1.0.3",
     "nodemailer": "^5.1.1",
     "nodemailer-ses-transport": "~1.5.0",
     "npm-run-all": "^4.1.2",
