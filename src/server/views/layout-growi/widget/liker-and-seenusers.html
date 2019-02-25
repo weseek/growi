@@ -1,0 +1,10 @@
+<div class="liker-and-seenusers">
+  <div class="text-right text-info">
+    <span id="liker-list" class="mr-3" data-user-ids="{{ page.liker|default([])|join(',') }}"></span>
+    <i class="icon-fw icon-like"></i><span class="liker-user-count">{{ page.liker.length|default(0) }}</span>
+  </div>
+  <div class="text-right text-danger">
+    <span id="seen-user-list" class="mr-3" data-user-ids="{{ page.seenUsers|default([])|join(',') }}"></span>
+    <i class="icon-fw fa fa-paw"></i><span class="seen-user-count">{{ page.seenUsers.length|default(0) }}</span>
+  </div>
+</div>

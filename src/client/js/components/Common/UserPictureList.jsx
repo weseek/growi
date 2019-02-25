@@ -31,9 +31,9 @@ export default class UserPictureList extends React.Component {
     });
 
     return (
-      <p>
+      <span>
         {users}
-      </p>
+      </span>
     );
   }
 }

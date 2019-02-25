@@ -3,6 +3,15 @@
     padding: 0;
   }
 
+  .liker-and-seenusers {
+    height: 42px;   // .nav height
+    border-bottom: 1px solid $border;
+
+    .liker-user-count, .seen-user-count {
+      font-weight: bold;
+    }
+  }
+
   .revision-toc {
     &.affix {
       margin-top: 5px;
