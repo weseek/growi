@@ -37,7 +37,7 @@
             <div>
               <input type="hidden" name="_csrf" value="{{ csrf() }}">
               <input type="hidden" name="path" value="{{ page.path }}">
-              <input type="hidden" class="form-control" name="q" id="newPageName" value="{{ unportalizedPath }}">
+              <input type="hidden" name="new_path" value="{{ unportalizedPath }}">
               <input type="hidden" name="page_id" value="{{ page._id.toString() }}">
               <input type="hidden" name="revision_id" value="{{ page.revision._id.toString() }}">
               <button type="submit" class="btn btn-warning">Unportalize</button>
