@@ -10,7 +10,9 @@ CHANGES
 * Support: Use terser-webpack-plugin instead of uglifyjs-webpack-plugin
 * Support: Upgrade libs
     * csv-to-markdown-table
+    * file-loader
     * googleapis
+    * i18next-browser-languagedetector
     * mocha
     * react-waypoint
     * webpack
