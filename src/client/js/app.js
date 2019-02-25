@@ -278,7 +278,6 @@ const componentMappings = {
   'search-page': <I18nextProvider i18n={i18n}><SearchPage crowi={crowi} crowiRenderer={crowiRenderer} /></I18nextProvider>,
 
   //'revision-history': <PageHistory pageId={pageId} />,
-  'seen-user-list': <SeenUserList pageId={pageId} crowi={crowi} />,
   'bookmark-button': <BookmarkButton pageId={pageId} crowi={crowi} />,
   'bookmark-button-lg': <BookmarkButton pageId={pageId} crowi={crowi} size="lg" />,
 
@@ -318,7 +317,17 @@ if (likeButtonElem) {
     <LikeButton crowi={crowi} pageId={pageId} isLiked={isLiked} />,
     likeButtonElem
   );
-  componentInstances.likeButtonElem = likeButtonElem;
+}
+
+// render SeenUserList
+const seenUserListElem = document.getElementById('seen-user-list');
+if (seenUserListElem) {
+  const seenUserIdsStr = seenUserListElem.dataset.seenUsers;
+  const seenUserIds = seenUserIdsStr.split(',');
+  ReactDOM.render(
+    <SeenUserList crowi={crowi} seenUserIds={seenUserIds} />,
+    seenUserListElem
+  );
 }
 
 // render SavePageControls

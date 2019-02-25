@@ -14,25 +14,12 @@ export default class SeenUserList extends React.Component {
   }
 
   componentDidMount() {
-    const seenUserIds = this.getSeenUserIds();
+    const seenUserIds = this.props.seenUserIds;
 
     if (seenUserIds.length > 0) {
       // FIXME: user data cache
       this.setState({seenUsers: this.props.crowi.findUserByIds(seenUserIds)});
     }
-  }
-
-  getSeenUserIds() {
-    // FIXME: Consider another way to bind values.
-    const $seenUserList = $('#seen-user-list');
-    if ($seenUserList.length > 0) {
-      const seenUsers = $seenUserList.data('seen-users');
-      if (seenUsers) {
-        return seenUsers.split(',');
-      }
-    }
-
-    return [];
   }
 
   render() {
@@ -49,4 +36,8 @@ export default class SeenUserList extends React.Component {
 
 SeenUserList.propTypes = {
   crowi: PropTypes.object.isRequired,
+  seenUserIds: PropTypes.arrayOf(PropTypes.string),
+};
+SeenUserList.defaultProps = {
+  seenUserIds: [],
 };
