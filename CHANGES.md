@@ -1,7 +1,9 @@
 CHANGES
 ========
 
-## 3.3.10-RC
+## 3.3.11-RC
+
+## 3.3.10
 
 * Feature: PlantUML and Blockdiag on presentation
 * Improvement: Render slides of presentation with GrowiRenderer
