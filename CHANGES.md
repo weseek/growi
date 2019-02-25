@@ -1,13 +1,22 @@
 CHANGES
 ========
 
-## 3.3.10-RC
+## 3.3.11-RC
+
+## 3.3.10
 
 * Feature: PlantUML and Blockdiag on presentation
 * Improvement: Render slides of presentation with GrowiRenderer
+* Fix: Unportalizing doesn't work
 * Support: Use mini-css-extract-plugin instead of extract extract-text-webpack-plugin
 * Support: Use terser-webpack-plugin instead of uglifyjs-webpack-plugin
 * Support: Upgrade libs
+    * csv-to-markdown-table
+    * file-loader
+    * googleapis
+    * i18next-browser-languagedetector
+    * mocha
+    * react-waypoint
     * webpack
     * webpack-assets-manifest
     * webpack-cli
