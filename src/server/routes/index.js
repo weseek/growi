@@ -176,7 +176,7 @@ module.exports = function(crowi, app) {
 
   app.get( '/:id([0-9a-z]{24})'       , loginRequired(crowi, app, false) , page.redirector);
   app.get( '/_r/:id([0-9a-z]{24})'    , loginRequired(crowi, app, false) , page.redirector); // alias
-  app.get( '/attachment/:pageId/:fileName'  , loginRequired(crowi, app, false), attachment.api.obsoletedGetForMongoDB); // DEPRECATED: remains for backward compatibility for v3.3.3 or below
+  app.get( '/attachment/:pageId/:fileName'  , loginRequired(crowi, app, false), attachment.api.obsoletedGetForMongoDB); // DEPRECATED: remains for backward compatibility for v3.3.x or below
   app.get( '/attachment/:id([0-9a-z]{24})'  , loginRequired(crowi, app, false), attachment.api.get);
   app.get( '/download/:id([0-9a-z]{24})'    , loginRequired(crowi, app, false), attachment.api.download);
 
