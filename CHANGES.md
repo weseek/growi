@@ -1,7 +1,10 @@
 CHANGES
 ========
 
-## 3.3.11-RC
+## 3.4.0-RC
+
+* Improvement: Restrict to access attachments when the user is not allowed to see page
+* Fix: Profile image is not displayed when `FILE_UPLOAD=mongodb`
 
 ## 3.3.10
 
