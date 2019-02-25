@@ -1,7 +1,26 @@
 CHANGES
 ========
 
-## 3.3.9-RC
+## 3.3.10-RC
+
+* Feature: PlantUML and Blockdiag on presentation
+* Improvement: Render slides of presentation with GrowiRenderer
+* Fix: Unportalizing doesn't work
+* Support: Use mini-css-extract-plugin instead of extract extract-text-webpack-plugin
+* Support: Use terser-webpack-plugin instead of uglifyjs-webpack-plugin
+* Support: Upgrade libs
+    * csv-to-markdown-table
+    * file-loader
+    * googleapis
+    * i18next-browser-languagedetector
+    * mocha
+    * react-waypoint
+    * webpack
+    * webpack-assets-manifest
+    * webpack-cli
+    * webpack-merge
+
+## 3.3.9
 
 * Fix: Import from Qiita:Team doesn't work
     * Introduced by 3.3.0

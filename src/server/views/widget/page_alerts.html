@@ -34,14 +34,11 @@
     </div>
     {% endif %}
 
-    {% if not page.isDeleted() and (req.query.renamed or req.query.redirectFrom) %}
+    {% if not page.isDeleted() and (redirectFrom or req.query.renamed or req.query.redirectFrom) %}
     <div class="alert alert-info alert-moved d-flex align-items-center justify-content-between">
       <span>
-        {% if req.query.renamed %}
-          <strong>{{ t('Moved') }}: </strong> {{ t('page_page.notice.moved', req.sanitize(req.query.renamed)) }}
-        {% else %}
-          <strong>{{ t('Moved') }}: </strong> {{ t('page_page.notice.moved', req.sanitize(req.query.redirectFrom)) }}
-        {% endif %}
+        {% set fromPath = req.query.renamed or req.query.redirectFrom %}
+        <strong>{{ t('Moved') }}: </strong> {{ t('page_page.notice.moved', req.sanitize(fromPath)) }}
       </span>
       {% if user %}
       <form role="form" id="unlink-page-form" onsubmit="return false;">

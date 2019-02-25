@@ -2,9 +2,6 @@
 /* Author: Sotaro KARASAWA <sotarok@crocos.co.jp>
 */
 
-/* global crowi: true */
-/* global crowiRenderer: true */
-
 import React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -58,6 +55,7 @@ Crowi.setCaretLineAndFocusToEditor = function() {
     return;
   }
 
+  const crowi = window.crowi;
   const line = pageEditorDom.getAttribute('data-caret-line') || 0;
   crowi.setCaretLine(+line);
   // reset data-caret-line attribute
@@ -272,6 +270,7 @@ Crowi.getCurrentEditorMode = function() {
 };
 
 $(function() {
+  const crowi = window.crowi;
   const config = JSON.parse(document.getElementById('crowi-context-hydrate').textContent || '{}');
 
   const pageId = $('#content-main').data('page-id');
@@ -374,7 +373,7 @@ $(function() {
         $('#renamePage .msg, #unportalize .msg').hide();
         $(`#renamePage .msg-${res.code}, #unportalize .msg-${res.code}`).show();
         $('#renamePage #linkToNewPage, #unportalize #linkToNewPage').html(`
-          <a href="${nameValueMap.q}">${nameValueMap.q} <i class="icon-login"></i></a>
+          <a href="${nameValueMap.new_path}">${nameValueMap.new_path} <i class="icon-login"></i></a>
         `);
       }
       else {
@@ -541,6 +540,8 @@ $(function() {
     const isShown = $('#view-timeline').data('shown');
 
     if (growiRendererForTimeline == null) {
+      const crowi = window.crowi;
+      const crowiRenderer = window.crowiRenderer;
       growiRendererForTimeline = new GrowiRenderer(crowi, crowiRenderer, {mode: 'timeline'});
     }
 
@@ -763,7 +764,8 @@ window.addEventListener('load', function(e) {
     }
   }
 
-  if (crowi && crowi.users || crowi.users.length == 0) {
+  const crowi = window.crowi;
+  if (crowi && crowi.users && crowi.users.length != 0) {
     const totalUsers = crowi.users.length;
     const $listLiker = $('.page-list-liker');
     $listLiker.each(function(i, liker) {
