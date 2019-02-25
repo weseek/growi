@@ -332,7 +332,7 @@ module.exports = function(crowi, app) {
 
       if (hasPortalPage) {
         logger.debug('The portal page is found', portalPagePath);
-        return res.redirect(portalPagePath);
+        return res.redirect(encodeURI(portalPagePath + '?redirectFrom=' + pagePathUtils.encodePagePath(req.path)));
       }
     }
 
