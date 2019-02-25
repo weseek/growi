@@ -5,6 +5,7 @@ CHANGES
 
 * Feature: PlantUML and Blockdiag on presentation
 * Improvement: Render slides of presentation with GrowiRenderer
+* Fix: Unportalizing doesn't work
 * Support: Use mini-css-extract-plugin instead of extract extract-text-webpack-plugin
 * Support: Use terser-webpack-plugin instead of uglifyjs-webpack-plugin
 * Support: Upgrade libs
