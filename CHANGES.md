@@ -9,6 +9,10 @@ CHANGES
 * Support: Use mini-css-extract-plugin instead of extract extract-text-webpack-plugin
 * Support: Use terser-webpack-plugin instead of uglifyjs-webpack-plugin
 * Support: Upgrade libs
+    * csv-to-markdown-table
+    * googleapis
+    * mocha
+    * react-waypoint
     * webpack
     * webpack-assets-manifest
     * webpack-cli

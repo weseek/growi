@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Waypoint  from 'react-waypoint';
+import { Waypoint } from 'react-waypoint';
 
 import RevisionRenderer from './RevisionRenderer';
 
