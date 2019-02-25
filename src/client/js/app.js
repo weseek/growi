@@ -31,7 +31,7 @@ import BookmarkButton   from './components/BookmarkButton';
 import LikeButton       from './components/LikeButton';
 import PagePathAutoComplete from './components/PagePathAutoComplete';
 import RecentCreated from './components/RecentCreated/RecentCreated';
-import UserCountAndList from './components/UserCountAndList';
+import UserPictureList  from './components/Common/UserPictureList';
 
 import CustomCssEditor  from './components/Admin/CustomCssEditor';
 import CustomScriptEditor from './components/Admin/CustomScriptEditor';
@@ -319,23 +319,23 @@ if (likeButtonElem) {
   );
 }
 
-// render UserCountAndList for seen-user-list
+// render UserPictureList for seen-user-list
 const seenUserListElem = document.getElementById('seen-user-list');
 if (seenUserListElem) {
   const userIdsStr = seenUserListElem.dataset.userIds;
   const userIds = userIdsStr.split(',');
   ReactDOM.render(
-    <UserCountAndList crowi={crowi} userIds={userIds} />,
+    <UserPictureList crowi={crowi} userIds={userIds} />,
     seenUserListElem
   );
 }
-// render UserCountAndList for liker-list
+// render UserPictureList for liker-list
 const likerListElem = document.getElementById('liker-list');
 if (likerListElem) {
   const userIdsStr = likerListElem.dataset.userIds;
   const userIds = userIdsStr.split(',');
   ReactDOM.render(
-    <UserCountAndList crowi={crowi} userIds={userIds} />,
+    <UserPictureList crowi={crowi} userIds={userIds} />,
     likerListElem
   );
 }
