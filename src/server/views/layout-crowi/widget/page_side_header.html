@@ -25,14 +25,7 @@
       </dt>
       <dd>
         <p class="liker-count">
-        <span id="like-count">{{ page.liker.length }}</span>
-        {% if user %}
-        <button
-          data-csrftoken="{{ csrf() }}"
-          data-liked="{% if page.isLiked(user) %}1{% else %}0{% endif %}"
-          class="like-button btn btn-xs btn-default btn-outline btn-rounded {% if page.isLiked(user) %}active btn-info{% endif %}"
-          ><i class="icon-like"></i> {{ t('Like!') }}</button>
-        {% endif %}
+          <span id="like-count">{{ page.liker.length }}</span>
         </p>
         <p id="liker-list" class="liker-list" data-likers="{{ page.liker|default([])|join(',') }}">
         </p>

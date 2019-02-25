@@ -29,6 +29,7 @@ import SeenUserList     from './components/SeenUserList';
 import RevisionPath     from './components/Page/RevisionPath';
 import RevisionUrl      from './components/Page/RevisionUrl';
 import BookmarkButton   from './components/BookmarkButton';
+import LikeButton       from './components/LikeButton';
 import PagePathAutoComplete from './components/PagePathAutoComplete';
 import RecentCreated from './components/RecentCreated/RecentCreated';
 
@@ -307,6 +308,17 @@ Object.keys(componentMappings).forEach((key) => {
 // set page if exists
 if (componentInstances['page'] != null) {
   crowi.setPage(componentInstances['page']);
+}
+
+// render LikeButton
+const likeButtonElem = document.getElementById('like-button');
+if (likeButtonElem) {
+  const isLiked = likeButtonElem.dataset.liked === 'true';
+  ReactDOM.render(
+    <LikeButton crowi={crowi} pageId={pageId} isLiked={isLiked} />,
+    likeButtonElem
+  );
+  componentInstances.likeButtonElem = likeButtonElem;
 }
 
 // render SavePageControls

@@ -581,29 +581,6 @@ $(function() {
       top.location.href = `${path}#edit`;
     });
 
-    // Like
-    const $likeButton = $('.like-button');
-    const $likeCount = $('#like-count');
-    $likeButton.click(function() {
-      const liked = $likeButton.data('liked');
-      const token = $likeButton.data('csrftoken');
-      if (!liked) {
-        $.post('/_api/likes.add', {_csrf: token, page_id: pageId}, function(res) {
-          if (res.ok) {
-            MarkLiked();
-          }
-        });
-      }
-      else {
-        $.post('/_api/likes.remove', {_csrf: token, page_id: pageId}, function(res) {
-          if (res.ok) {
-            MarkUnLiked();
-          }
-        });
-      }
-
-      return false;
-    });
     const $likerList = $('#liker-list');
     const likers = $likerList.data('likers');
     if (likers && likers.length > 0) {
@@ -618,18 +595,6 @@ $(function() {
       $.each(users, function(i, user) {
         $likerList.append(CreateUserLinkWithPicture(user));
       });
-    }
-
-    function MarkLiked() {
-      $likeButton.addClass('active');
-      $likeButton.data('liked', 1);
-      $likeCount.text(parseInt($likeCount.text()) + 1);
-    }
-
-    function MarkUnLiked() {
-      $likeButton.removeClass('active');
-      $likeButton.data('liked', 0);
-      $likeCount.text(parseInt($likeCount.text()) - 1);
     }
 
     function CreateUserLinkWithPicture(user) {
