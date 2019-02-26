@@ -4,6 +4,7 @@ CHANGES
 ## 3.4.0-RC
 
 * Improvement: Restrict to access attachments when the user is not allowed to see page
+* Improvement: Show fans and visitors of page
 * Fix: Profile image is not displayed when `FILE_UPLOAD=mongodb`
 * Support: Launch with Node.js v10
 * Support: Launch with MongoDB 3.6

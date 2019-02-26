@@ -18,7 +18,7 @@
     </div>
   </div>
 
-  <div class="like-box">
+  <span class="like-box">
     <dl class="dl-horizontal">
       <dt class="text-info">
         <i class="icon-like"></i> {{ t('Like!') }}
@@ -26,7 +26,7 @@
       <dd>
         <p class="liker-user-count">{{ page.liker.length|default(0) }}</p>
         {% if page.liker.length > 15 %}<span class="text-muted">..</span>{% endif %}
-        <span id="liker-list" data-user-ids="{{ page.liker|slice(-15)|default([])|join(',') }}"></div>
+        <span id="liker-list" data-user-ids="{{ page.liker|slice(-15)|default([])|join(',') }}"></span>
       </dd>
 
       <dt class="text-danger">
