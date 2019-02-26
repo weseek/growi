@@ -14,7 +14,8 @@
     },
     "FILE_UPLOAD": {
       "description": "Attached files storage. - mongodb | aws | local | none",
-      "value": "mongodb"
+      "value": "mongodb",
+      "required": false
     },
     "SECRET_TOKEN": {
       "description": "A secret key for verifying the integrity of signed cookies.",
