@@ -2,9 +2,6 @@
 /* Author: Sotaro KARASAWA <sotarok@crocos.co.jp>
 */
 
-/* global crowi: true */
-/* global crowiRenderer: true */
-
 import React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -58,6 +55,7 @@ Crowi.setCaretLineAndFocusToEditor = function() {
     return;
   }
 
+  const crowi = window.crowi;
   const line = pageEditorDom.getAttribute('data-caret-line') || 0;
   crowi.setCaretLine(+line);
   // reset data-caret-line attribute
@@ -272,6 +270,7 @@ Crowi.getCurrentEditorMode = function() {
 };
 
 $(function() {
+  const crowi = window.crowi;
   const config = JSON.parse(document.getElementById('crowi-context-hydrate').textContent || '{}');
 
   const pageId = $('#content-main').data('page-id');
@@ -374,7 +373,7 @@ $(function() {
         $('#renamePage .msg, #unportalize .msg').hide();
         $(`#renamePage .msg-${res.code}, #unportalize .msg-${res.code}`).show();
         $('#renamePage #linkToNewPage, #unportalize #linkToNewPage').html(`
-          <a href="${nameValueMap.q}">${nameValueMap.q} <i class="icon-login"></i></a>
+          <a href="${nameValueMap.new_path}">${nameValueMap.new_path} <i class="icon-login"></i></a>
         `);
       }
       else {
@@ -541,6 +540,8 @@ $(function() {
     const isShown = $('#view-timeline').data('shown');
 
     if (growiRendererForTimeline == null) {
+      const crowi = window.crowi;
+      const crowiRenderer = window.crowiRenderer;
       growiRendererForTimeline = new GrowiRenderer(crowi, crowiRenderer, {mode: 'timeline'});
     }
 
@@ -579,72 +580,6 @@ $(function() {
       crowi.saveDraft(path, template);
       top.location.href = `${path}#edit`;
     });
-
-    // Like
-    const $likeButton = $('.like-button');
-    const $likeCount = $('#like-count');
-    $likeButton.click(function() {
-      const liked = $likeButton.data('liked');
-      const token = $likeButton.data('csrftoken');
-      if (!liked) {
-        $.post('/_api/likes.add', {_csrf: token, page_id: pageId}, function(res) {
-          if (res.ok) {
-            MarkLiked();
-          }
-        });
-      }
-      else {
-        $.post('/_api/likes.remove', {_csrf: token, page_id: pageId}, function(res) {
-          if (res.ok) {
-            MarkUnLiked();
-          }
-        });
-      }
-
-      return false;
-    });
-    const $likerList = $('#liker-list');
-    const likers = $likerList.data('likers');
-    if (likers && likers.length > 0) {
-      const users = crowi.findUserByIds(likers.split(','));
-      if (users) {
-        AddToLikers(users);
-      }
-    }
-
-    /* eslint-disable no-inner-declarations */
-    function AddToLikers(users) {
-      $.each(users, function(i, user) {
-        $likerList.append(CreateUserLinkWithPicture(user));
-      });
-    }
-
-    function MarkLiked() {
-      $likeButton.addClass('active');
-      $likeButton.data('liked', 1);
-      $likeCount.text(parseInt($likeCount.text()) + 1);
-    }
-
-    function MarkUnLiked() {
-      $likeButton.removeClass('active');
-      $likeButton.data('liked', 0);
-      $likeCount.text(parseInt($likeCount.text()) - 1);
-    }
-
-    function CreateUserLinkWithPicture(user) {
-      const $userHtml = $('<a>');
-      $userHtml.data('user-id', user._id);
-      $userHtml.attr('href', '/user/' + user.username);
-      $userHtml.attr('title', user.name);
-
-      const $userPicture = $('<img class="picture picture-xs img-circle">');
-      $userPicture.attr('alt', user.name);
-      $userPicture.attr('src',  Crowi.userPicture(user));
-
-      $userHtml.append($userPicture);
-      return $userHtml;
-    }
-    /* eslint-enable */
 
     if (!isSeen) {
       $.post('/_api/pages.seen', {page_id: pageId}, function(res) {
@@ -763,7 +698,8 @@ window.addEventListener('load', function(e) {
     }
   }
 
-  if (crowi && crowi.users || crowi.users.length == 0) {
+  const crowi = window.crowi;
+  if (crowi && crowi.users && crowi.users.length != 0) {
     const totalUsers = crowi.users.length;
     const $listLiker = $('.page-list-liker');
     $listLiker.each(function(i, liker) {

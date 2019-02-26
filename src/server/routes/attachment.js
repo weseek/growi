@@ -1,74 +1,172 @@
-module.exports = function(crowi, app) {
-  'use strict';
+const debug = require('debug')('growi:routss:attachment');
+const logger = require('@alias/logger')('growi:routes:attachment');
 
-  var debug = require('debug')('growi:routss:attachment')
-    , logger = require('@alias/logger')('growi:routes:attachment')
-    , Attachment = crowi.model('Attachment')
-    , User = crowi.model('User')
-    , Page = crowi.model('Page')
-    , path = require('path')
-    , fs = require('fs')
-    , fileUploader = require('../service/file-uploader')(crowi, app)
-    , ApiResponse = require('../util/apiResponse')
-    , actions = {}
-    , api = {};
+const path = require('path');
+const fs = require('fs');
+
+const ApiResponse = require('../util/apiResponse');
+
+module.exports = function(crowi, app) {
+  const Attachment = crowi.model('Attachment');
+  const User = crowi.model('User');
+  const Page = crowi.model('Page');
+  const fileUploader = require('../service/file-uploader')(crowi, app);
+
+
+  /**
+   * Check the user is accessible to the related page
+   *
+   * @param {User} user
+   * @param {Attachment} attachment
+   */
+  async function isAccessibleByViewer(user, attachment) {
+    if (attachment.page != null) {
+      return await Page.isAccessiblePageByViewer(attachment.page, user);
+    }
+    return true;
+  }
+
+  /**
+   * Check the user is accessible to the related page
+   *
+   * @param {User} user
+   * @param {Attachment} attachment
+   */
+  async function isDeletableByUser(user, attachment) {
+    const ownerId = attachment.creator._id || attachment.creator;
+    if (attachment.page == null) {  // when profile image
+      return user.id === ownerId.toString();
+    }
+    else {
+      return await Page.isAccessiblePageByViewer(attachment.page, user);
+    }
+  }
+
+  /**
+   * Common method to response
+   *
+   * @param {Response} res
+   * @param {User} user
+   * @param {Attachment} attachment
+   * @param {boolean} forceDownload
+   */
+  async function responseForAttachment(res, user, attachment, forceDownload) {
+    if (attachment == null) {
+      return res.json(ApiResponse.error('attachment not found'));
+    }
+
+    const isAccessible = await isAccessibleByViewer(user, attachment);
+    if (!isAccessible) {
+      return res.json(ApiResponse.error(`Forbidden to access to the attachment '${attachment.id}'`));
+    }
+
+    let fileStream;
+    try {
+      fileStream = await fileUploader.findDeliveryFile(attachment);
+    }
+    catch (e) {
+      logger.error(e);
+      return res.json(ApiResponse.error(e.message));
+    }
+
+    setHeaderToRes(res, attachment, forceDownload);
+    return fileStream.pipe(res);
+  }
+
+  /**
+   * set http response header
+   *
+   * @param {Response} res
+   * @param {Attachment} attachment
+   * @param {boolean} forceDownload
+   */
+  function setHeaderToRes(res, attachment, forceDownload) {
+    // download
+    if (forceDownload) {
+      const headers = {
+        'Content-Type': 'application/force-download',
+        'Content-Disposition': `inline;filename*=UTF-8''${encodeURIComponent(attachment.originalName)}`,
+      };
+
+      res.writeHead(200, headers);
+    }
+    // reference
+    else {
+      res.set('Content-Type', attachment.fileFormat);
+    }
+  }
+
+  async function createAttachment(file, user, pageId = null) {
+    // check capacity
+    const isUploadable = await fileUploader.checkCapacity(file.size);
+    if (!isUploadable) {
+      throw new Error('File storage reaches limit');
+    }
+
+    const fileStream = fs.createReadStream(file.path, {flags: 'r', encoding: null, fd: null, mode: '0666', autoClose: true });
+
+    // create an Attachment document and upload file
+    let attachment;
+    try {
+      attachment = await Attachment.create(pageId, user, fileStream, file.originalname, file.mimetype, file.size);
+    }
+    catch (err) {
+      // delete temporary file
+      fs.unlink(file.path, function(err) { if (err) { logger.error('Error while deleting tmp file.') } });
+      throw err;
+    }
+
+    return attachment;
+  }
+
+
+  const actions = {};
+  const api = {};
 
   actions.api = api;
 
-  api.download = function(req, res) {
+  api.download = async function(req, res) {
     const id = req.params.id;
 
-    Attachment.findById(id)
-      .then(function(data) {
+    const attachment = await Attachment.findById(id);
 
-        Attachment.findDeliveryFile(data)
-          .then(fileName => {
-
-            // local
-            if (fileName.match(/^\/uploads/)) {
-              return res.download(path.join(crowi.publicDir, fileName), data.originalName);
-            }
-            // aws or gridfs
-            else {
-              const options = {
-                headers: {
-                  'Content-Type': 'application/force-download',
-                  'Content-Disposition': `inline;filename*=UTF-8''${encodeURIComponent(data.originalName)}`,
-                }
-              };
-              return res.sendFile(fileName, options);
-            }
-          });
-      })
-      // not found
-      .catch((err) => {
-        logger.error('download err', err);
-        return res.status(404).sendFile(crowi.publicDir + '/images/file-not-found.png');
-      });
+    return responseForAttachment(res, req.user, attachment, true);
   };
 
   /**
-   * @api {get} /attachments.get get attachments from mongoDB
+   * @api {get} /attachments.get get attachments
+   * @apiName get
+   * @apiGroup Attachment
+   *
+   * @apiParam {String} id
+   */
+  api.get = async function(req, res) {
+    const id = req.params.id;
+
+    const attachment = await Attachment.findById(id);
+
+    return responseForAttachment(res, req.user, attachment);
+  };
+
+  /**
+   * @api {get} /attachments.obsoletedGetForMongoDB get attachments from mongoDB
    * @apiName get
    * @apiGroup Attachment
    *
    * @apiParam {String} pageId, fileName
    */
-  api.get = async function(req, res) {
+  api.obsoletedGetForMongoDB = async function(req, res) {
     if (process.env.FILE_UPLOAD !== 'mongodb') {
       return res.status(400);
     }
+
     const pageId = req.params.pageId;
     const fileName = req.params.fileName;
     const filePath = `attachment/${pageId}/${fileName}`;
-    try {
-      const fileData = await fileUploader.getFileData(filePath);
-      res.set('Content-Type', fileData.contentType);
-      return res.send(ApiResponse.success(fileData.data));
-    }
-    catch (e) {
-      return res.json(ApiResponse.error('attachment not found'));
-    }
+
+    const attachment = await Attachment.findOne({ filePath });
+
+    return responseForAttachment(res, req.user, attachment);
   };
 
   /**
@@ -78,31 +176,19 @@ module.exports = function(crowi, app) {
    *
    * @apiParam {String} page_id
    */
-  api.list = function(req, res) {
+  api.list = async function(req, res) {
     const id = req.query.page_id || null;
     if (!id) {
       return res.json(ApiResponse.error('Parameters page_id is required.'));
     }
 
-    Attachment.getListByPageId(id)
-    .then(function(attachments) {
+    let attachments = await Attachment.find({page: id})
+      .sort({'updatedAt': 1})
+      .populate({ path: 'creator', select: User.USER_PUBLIC_FIELDS, populate: User.IMAGE_POPULATION });
 
-      // NOTE: use original fileUrl directly (not proxy) -- 2017.05.08 Yuki Takei
-      // reason:
-      //   1. this is buggy (doesn't work on Win)
-      //   2. ensure backward compatibility of data
+    attachments = attachments.map(attachment => attachment.toObject({ virtuals: true }));
 
-      // var baseUrl = crowi.configManager.getSiteUrl();
-      return res.json(ApiResponse.success({
-        attachments: attachments.map(at => {
-          const fileUrl = at.fileUrl;
-          at = at.toObject();
-          // at.url = baseUrl + fileUrl;
-          at.url = fileUrl;
-          return at;
-        })
-      }));
-    });
+    return res.json(ApiResponse.success({ attachments }));
   };
 
   /**
@@ -124,88 +210,96 @@ module.exports = function(crowi, app) {
    * @apiParam {File} file
    */
   api.add = async function(req, res) {
-    var id = req.body.page_id || 0,
-      path = decodeURIComponent(req.body.path) || null,
-      pageCreated = false,
-      page = {};
+    let pageId = req.body.page_id || null;
+    const pagePath = decodeURIComponent(req.body.path) || null;
+    let pageCreated = false;
 
-    debug('id and path are: ', id, path);
-
-    var tmpFile = req.file || null;
-    const isUploadable = await fileUploader.checkCapacity(tmpFile.size);
-    if (!isUploadable) {
-      return res.json(ApiResponse.error('MongoDB for uploading files reaches limit'));
+    // check params
+    if (pageId == null && pagePath == null) {
+      return res.json(ApiResponse.error('Either page_id or path is required.'));
     }
-    debug('Uploaded tmpFile: ', tmpFile);
-    if (!tmpFile) {
+    if (!req.file) {
       return res.json(ApiResponse.error('File error.'));
     }
-    new Promise(function(resolve, reject) {
-      if (id == 0) {
-        if (path === null) {
-          throw new Error('path required if page_id is not specified.');
-        }
-        debug('Create page before file upload');
-        Page.create(path, '# '  + path, req.user, {grant: Page.GRANT_OWNER})
-          .then(function(page) {
-            pageCreated = true;
-            resolve(page);
-          })
-          .catch(reject);
+
+    const file = req.file;
+
+    let page;
+    if (pageId == null) {
+      logger.debug('Create page before file upload');
+
+      page = await Page.create(path, '# '  + path, req.user, {grant: Page.GRANT_OWNER});
+      pageCreated = true;
+      pageId = page._id;
+    }
+    else {
+      page = await Page.findById(pageId);
+
+      // check the user is accessible
+      const isAccessible = await Page.isAccessiblePageByViewer(page.id, req.user);
+      if (!isAccessible) {
+        return res.json(ApiResponse.error(`Forbidden to access to the page '${page.id}'`));
       }
-      else {
-        Page.findById(id).then(resolve).catch(reject);
-      }
-    }).then(function(pageData) {
-      page = pageData;
-      id = pageData._id;
+    }
 
-      var tmpPath = tmpFile.path,
-        originalName = tmpFile.originalname,
-        fileName = tmpFile.filename + tmpFile.originalname,
-        fileType = tmpFile.mimetype,
-        fileSize = tmpFile.size,
-        filePath = Attachment.createAttachmentFilePath(id, fileName, fileType),
-        tmpFileStream = fs.createReadStream(tmpPath, {flags: 'r', encoding: null, fd: null, mode: '0666', autoClose: true });
+    let attachment;
+    try {
+      attachment = await createAttachment(file, req.user, pageId);
+    }
+    catch (err) {
+      logger.error(err);
+      return res.json(ApiResponse.error(err.message));
+    }
 
-      return fileUploader.uploadFile(filePath, fileType, tmpFileStream, {})
-        .then(function(data) {
-          debug('Uploaded data is: ', data);
+    const result = {
+      page: page.toObject(),
+      attachment: attachment.toObject({ virtuals: true }),
+      pageCreated: pageCreated,
+    };
 
-          // TODO size
-          return Attachment.create(id, req.user, filePath, originalName, fileName, fileType, fileSize);
-        }).then(function(data) {
-          var fileUrl = data.fileUrl;
+    return res.json(ApiResponse.success(result));
+  };
 
-          var result = {
-            page: page.toObject(),
-            attachment: data.toObject(),
-            url: fileUrl,
-            pageCreated: pageCreated,
-          };
+  /**
+   * @api {post} /attachments.uploadProfileImage Add attachment for profile image
+   * @apiName UploadProfileImage
+   * @apiGroup Attachment
+   *
+   * @apiParam {File} file
+   */
+  api.uploadProfileImage = async function(req, res) {
+    // check params
+    if (!req.file) {
+      return res.json(ApiResponse.error('File error.'));
+    }
+    if (!req.user) {
+      return res.json(ApiResponse.error('param "user" must be set.'));
+    }
 
-          result.page.creator = User.filterToPublicFields(result.page.creator);
-          result.attachment.creator = User.filterToPublicFields(result.attachment.creator);
+    const file = req.file;
 
-          // delete anyway
-          fs.unlink(tmpPath, function(err) { if (err) { debug('Error while deleting tmp file.') } });
+    // check type
+    const acceptableFileType = /image\/.+/;
+    if (!file.mimetype.match(acceptableFileType)) {
+      return res.json(ApiResponse.error('File type error. Only image files is allowed to set as user picture.'));
+    }
 
-          return res.json(ApiResponse.success(result));
-        }).catch(function(err) {
-          logger.error('Error on saving attachment data', err);
-          // @TODO
-          // Remove from S3
+    let attachment;
+    try {
+      req.user.deleteImage();
+      attachment = await createAttachment(file, req.user);
+      await req.user.updateImage(attachment);
+    }
+    catch (err) {
+      logger.error(err);
+      return res.json(ApiResponse.error(err.message));
+    }
 
-          // delete anyway
-          fs.unlink(tmpPath, function(err) { if (err) { logger.error('Error while deleting tmp file.') } });
+    const result = {
+      attachment: attachment.toObject({ virtuals: true }),
+    };
 
-          return res.json(ApiResponse.error('Error while uploading.'));
-        });
-
-    }).catch(function(err) {
-      logger.error('Attachement upload error', err);
-      return res.json(ApiResponse.error('Error.'));
-    });
+    return res.json(ApiResponse.success(result));
   };
 
   /**
@@ -215,25 +309,28 @@ module.exports = function(crowi, app) {
    *
    * @apiParam {String} attachment_id
    */
-  api.remove = function(req, res) {
+  api.remove = async function(req, res) {
     const id = req.body.attachment_id;
 
-    Attachment.findById(id)
-    .then(function(data) {
-      const attachment = data;
+    const attachment = await Attachment.findById(id);
 
-      Attachment.removeAttachment(attachment)
-      .then(data => {
-        debug('removeAttachment', data);
-        return res.json(ApiResponse.success({}));
-      }).catch(err => {
-        logger.error('Error', err);
-        return res.status(500).json(ApiResponse.error('Error while deleting file'));
-      });
-    }).catch(err => {
-      logger.error('Error', err);
-      return res.status(404);
-    });
+    if (attachment == null) {
+      return res.json(ApiResponse.error('attachment not found'));
+    }
+
+    const isDeletable = await isDeletableByUser(req.user, attachment);
+    if (!isDeletable) {
+      return res.json(ApiResponse.error(`Forbidden to remove the attachment '${attachment.id}'`));
+    }
+
+    try {
+      await Attachment.removeWithSubstanceById(id);
+    }
+    catch (err) {
+      return res.status(500).json(ApiResponse.error('Error while deleting file'));
+    }
+
+    return res.json(ApiResponse.success({}));
   };
 
   return actions;

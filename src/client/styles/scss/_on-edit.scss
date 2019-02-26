@@ -40,7 +40,7 @@ body.on-edit {
   .portal-form-button,
   .alert-info.alert-moved,
   .alert-info.alert-unlinked,
-  .like-button, .bookmark-link, .btn-edit,
+  .btn-like, .btn-bookmark, .btn-edit,
   .authors,
   footer {
     display: none !important;
@@ -296,6 +296,11 @@ body.on-edit {
 }
 .on-edit .nav-tabs-create-portal {
   display: block;
+}
+
+// overwrite .CodeMirror pre
+.CodeMirror pre {
+  font-family: $font-family-monospace;
 }
 
 // overwrite .CodeMirror-hints

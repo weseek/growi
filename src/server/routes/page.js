@@ -165,7 +165,9 @@ module.exports = function(crowi, app) {
   }
 
   async function addRenderVarsForUserPage(renderVars, page, requestUser) {
-    const userData = await User.findUserByUsername(User.getUsernameByPath(page.path));
+    const userData = await User.findUserByUsername(User.getUsernameByPath(page.path))
+      .populate(User.IMAGE_POPULATION);
+
     if (userData != null) {
       renderVars.pageUser = userData;
       renderVars.bookmarkList = await Bookmark.findByUser(userData, {limit: 10, populatePage: true, requestUser: requestUser});
@@ -233,14 +235,14 @@ module.exports = function(crowi, app) {
   }
 
   async function showPageListForCrowiBehavior(req, res, next) {
-    const path = Page.addSlashOfEnd(getPathFromRequest(req));
+    const portalPath = Page.addSlashOfEnd(getPathFromRequest(req));
     const revisionId = req.query.revision;
 
     // check whether this page has portal page
-    const portalPageStatus = await getPortalPageState(path, req.user);
+    const portalPageStatus = await getPortalPageState(portalPath, req.user);
 
     let view = 'customlayout-selector/page_list';
-    const renderVars = { path };
+    const renderVars = { path: portalPath };
 
     if (portalPageStatus === PORTAL_STATUS_FORBIDDEN) {
       // inject to req
@@ -248,7 +250,7 @@ module.exports = function(crowi, app) {
       view = 'customlayout-selector/forbidden';
     }
     else if (portalPageStatus === PORTAL_STATUS_EXISTS) {
-      let portalPage = await Page.findByPathAndViewer(path, req.user);
+      let portalPage = await Page.findByPathAndViewer(portalPath, req.user);
       portalPage.initLatestRevisionField(revisionId);
 
       // populate
@@ -261,7 +263,7 @@ module.exports = function(crowi, app) {
     const limit = 50;
     const offset = parseInt(req.query.offset)  || 0;
 
-    await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit);
+    await addRenderVarsForDescendants(renderVars, portalPath, req.user, offset, limit);
 
     await interceptorManager.process('beforeRenderPage', req, res, renderVars);
     return res.render(view, renderVars);
@@ -280,7 +282,7 @@ module.exports = function(crowi, app) {
     }
     else if (page.redirectTo) {
       debug(`Redirect to '${page.redirectTo}'`);
-      return res.redirect(encodeURI(page.redirectTo + '?redirectFrom=' + pagePathUtils.encodePagePath(page.path)));
+      return res.redirect(encodeURI(page.redirectTo + '?redirectFrom=' + pagePathUtils.encodePagePath(path)));
     }
 
     logger.debug('Page is found when processing pageShowForGrowiBehavior', page._id, page.path);
@@ -381,7 +383,7 @@ module.exports = function(crowi, app) {
 
       if (hasPortalPage) {
         logger.debug('The portal page is found', portalPagePath);
-        return res.redirect(portalPagePath);
+        return res.redirect(encodeURI(portalPagePath + '?redirectFrom=' + pagePathUtils.encodePagePath(req.path)));
       }
     }
 

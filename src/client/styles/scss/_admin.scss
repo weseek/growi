@@ -16,6 +16,8 @@
   }
 
   .admin-customize {
+    @import 'hljs';
+
     .ss-container img {
       padding: .5em;
       background-color: #ddd;

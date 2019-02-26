@@ -25,7 +25,7 @@ export default class DeleteAttachmentModal extends React.Component {
 
   renderByFileFormat(attachment) {
     const content = (attachment.fileFormat.match(/image\/.+/i))
-      ? <img src={attachment.url} />
+      ? <img src={attachment.filePathProxied} />
       : '';
 
 

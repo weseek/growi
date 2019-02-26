@@ -181,11 +181,10 @@ export default class CommentForm extends React.Component {
     // post
     this.props.crowi.apiPost(endpoint, formData)
       .then((res) => {
-        const url = res.url;
         const attachment = res.attachment;
         const fileName = attachment.originalName;
 
-        let insertText = `[${fileName}](${url})`;
+        let insertText = `[${fileName}](${attachment.filePathProxied})`;
         // when image
         if (attachment.fileFormat.startsWith('image/')) {
           // modify to "![fileName](url)" syntax

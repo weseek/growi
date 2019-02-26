@@ -43,49 +43,11 @@ module.exports = function(crowi) {
   };
 
   commentSchema.statics.getCommentsByPageId = function(id) {
-    var self = this;
-
-    return new Promise(function(resolve, reject) {
-      self
-        .find({page: id})
-        .sort({'createdAt': -1})
-        .populate('creator', USER_PUBLIC_FIELDS)
-        .exec(function(err, data) {
-          if (err) {
-            return reject(err);
-          }
-
-          if (data.length < 1) {
-            return resolve([]);
-          }
-
-          //debug('Comment loaded', data);
-          return resolve(data);
-        });
-    });
+    return this.find({page: id}).sort({'createdAt': -1});
   };
 
   commentSchema.statics.getCommentsByRevisionId = function(id) {
-    var self = this;
-
-    return new Promise(function(resolve, reject) {
-      self
-        .find({revision: id})
-        .sort({'createdAt': -1})
-        .populate('creator', USER_PUBLIC_FIELDS)
-        .exec(function(err, data) {
-          if (err) {
-            return reject(err);
-          }
-
-          if (data.length < 1) {
-            return resolve([]);
-          }
-
-          debug('Comment loaded', data);
-          return resolve(data);
-        });
-    });
+    return this.find({revision: id}).sort({'createdAt': -1});
   };
 
   commentSchema.statics.countCommentByPageId = function(page) {

@@ -2,6 +2,11 @@ div.body {
   padding: 10px;
 }
 
+// hljs
+.wiki {
+  @import 'hljs';
+}
+
 .wiki {
   line-height: 1.8em;
   font-size: 15px;
@@ -106,36 +111,6 @@ div.body {
         }
       }
     }
-  }
-
-  pre.hljs {
-    position: relative;
-
-    cite {
-      position: absolute;
-      top: 0;
-      right: 0;
-      padding: 0 4px;
-      background: #ccc;
-      color: #333;
-      font-style: normal;
-      font-weight: bold;
-      opacity: 0.6;
-    }
-  }
-
-  // styles for highlightjs-line-numbers
-  .hljs-ln td.hljs-ln-numbers {
-    user-select: none;
-
-    text-align: center;
-    color: #ccc;
-    border-right: 1px solid #CCC;
-    vertical-align: top;
-    padding-right: 5px;
-  }
-  .hljs-ln td.hljs-ln-code {
-    padding-left: 10px;
   }
 
   p code {  // only inline code blocks

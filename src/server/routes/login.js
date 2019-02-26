@@ -235,37 +235,6 @@ module.exports = function(crowi, app) {
                 }
                 return loginSuccess(req, res, userData);
               });
-
-              if (googleImage) {
-                var axios = require('axios');
-                var fileUploader = require('../service/file-uploader')(crowi, app);
-                var filePath = User.createUserPictureFilePath(
-                  userData,
-                  googleImage.replace(/^.+\/(.+\..+)$/, '$1')
-                );
-
-                axios.get(googleImage, {responseType: 'stream'})
-                .then(function(response) {
-                  var type = response.headers['content-type'];
-                  var fileStream = response.data;
-                  fileStream.length = parseInt(response.headers['content-length']);
-
-                  fileUploader.uploadFile(filePath, type, fileStream, {})
-                  .then(function(data) {
-                    var imageUrl = fileUploader.generateUrl(filePath);
-                    debug('user picture uploaded', imageUrl);
-                    userData.updateImage(imageUrl, function(err, data) {
-                      if (err) {
-                        debug('Error on update user image', err);
-                      }
-                      // DONE
-                    });
-                  }).catch(function(err) { // ignore
-                    debug('Upload error', err);
-                  });
-                }).catch(function() { // ignore
-                });
-              }
             }
             else {
               // add a flash message to inform the user that processing was successful -- 2017.09.23 Yuki Takei

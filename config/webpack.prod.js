@@ -6,8 +6,8 @@ const helpers = require('../src/lib/util/helpers');
 /**
  * Webpack Plugins
  */
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
@@ -26,26 +26,30 @@ module.exports = require('./webpack.common')({
   module: {
     rules: [
       {
-        test: /\.scss$/,
-        use: ExtractTextPlugin.extract({
-          use: [
-            'css-loader',
-            { loader: 'postcss-loader', options: {
-              sourceMap: false,
-              plugins: (loader) => [
-                require('autoprefixer')()
-              ]
-            } },
-            'sass-loader'
-          ]
-        }),
-        include: [helpers.root('src/client/styles/scss'), helpers.root('src/client/styles/hackmd')]
-      }
+        test: /\.(css|scss)$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          'css-loader',
+          { loader: 'postcss-loader', options: {
+            sourceMap: false,
+            plugins: (loader) => [
+              require('autoprefixer')()
+            ]
+          } },
+          'sass-loader'
+        ],
+        exclude: [helpers.root('src/client/js/legacy')]
+      },
+      {
+        test: /\.(css|scss)$/,
+        use: ['style-loader', 'css-loader', 'sass-loader'],
+        include: [helpers.root('src/client/js/legacy')]
+      },
     ]
   },
   plugins: [
 
-    new ExtractTextPlugin({
+    new MiniCssExtractPlugin({
       filename: '[name].[hash].css',
     }),
 
@@ -58,10 +62,7 @@ module.exports = require('./webpack.common')({
   ],
   optimization: {
     minimizer: [
-      new UglifyJsPlugin({
-        cache: true,
-        parallel: true,
-      }),
+      new TerserPlugin({}),
       new OptimizeCSSAssetsPlugin({})
     ],
   },

@@ -1,7 +1,6 @@
-<button
-    data-csrftoken="{{ csrf() }}"
-    data-liked="{% if page.isLiked(user) %}1{% else %}0{% endif %}"
-    class="like-button btn btn-default btn-outline btn-circle
-          {% if not size == null %}btn-{{size}}{% endif %}
-          {% if page.isLiked(user) %}active{% endif %}"
-><i class="icon-like"></i></button>
+{# This widget will be rendered by React #}
+{% if not size == null %}
+  <span id="like-button-{{size}}" data-liked="{% if page.isLiked(user) %}true{% else %}false{% endif %}"></span>
+{% else %}
+  <span id="like-button" data-liked="{% if page.isLiked(user) %}true{% else %}false{% endif %}"></span>
+{% endif %}

@@ -33,7 +33,7 @@
       }
     }
 
-    .like-button, .bookmark-link {
+    .btn-like, .btn-bookmark {
       border: none;
       font-size: 1.2em;
       line-height: 0.8em;
@@ -41,12 +41,12 @@
         background-color: transparent;
       }
     }
-    .like-button {
+    .btn-like {
       &.active {
         @extend .btn-info;
       }
     }
-    .bookmark-link {
+    .btn-bookmark {
       &.active {
         @extend .btn-warning;
       }

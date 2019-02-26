@@ -7,7 +7,6 @@ const axios = require('axios');
 const ApiResponse = require('../util/apiResponse');
 
 module.exports = function(crowi, app) {
-  const config = crowi.getConfig();
   const Page = crowi.models.Page;
   const pageEvent = crowi.event('page');
 
@@ -72,7 +71,7 @@ module.exports = function(crowi, app) {
 
     // generate definitions to replace
     const definitions = {
-      styles,
+      styles: escape(styles),
     };
     // inject
     const script = stylesScriptContentTpl(definitions);

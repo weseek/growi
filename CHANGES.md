@@ -1,9 +1,29 @@
 CHANGES
 ========
 
-## 3.3.10-RC
+## 3.4.0-RC
 
-* 
+* Improvement: Restrict to access attachments when the user is not allowed to see page
+* Fix: Profile image is not displayed when `FILE_UPLOAD=mongodb`
+
+## 3.3.10
+
+* Feature: PlantUML and Blockdiag on presentation
+* Improvement: Render slides of presentation with GrowiRenderer
+* Fix: Unportalizing doesn't work
+* Support: Use mini-css-extract-plugin instead of extract extract-text-webpack-plugin
+* Support: Use terser-webpack-plugin instead of uglifyjs-webpack-plugin
+* Support: Upgrade libs
+    * csv-to-markdown-table
+    * file-loader
+    * googleapis
+    * i18next-browser-languagedetector
+    * mocha
+    * react-waypoint
+    * webpack
+    * webpack-assets-manifest
+    * webpack-cli
+    * webpack-merge
 
 ## 3.3.9
 
