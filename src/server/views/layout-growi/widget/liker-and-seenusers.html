@@ -1,10 +1,16 @@
 <div class="liker-and-seenusers">
-  <div class="text-right text-info">
-    <span id="liker-list" class="mr-3" data-user-ids="{{ page.liker|default([])|join(',') }}"></span>
-    <i class="icon-fw icon-like"></i><span class="liker-user-count">{{ page.liker.length|default(0) }}</span>
+  <div class="text-right">
+    {% if page.liker.length > 10 %}<span class="text-muted">..</span>{% endif %}
+    <span id="liker-list" class="mr-3" data-user-ids="{{ page.liker|slice(-10)|default([])|join(',') }}"></span>
+    <span class="text-info">
+      <i class="icon-fw icon-like"></i><span class="liker-user-count">{{ page.liker.length|default(0) }}</span>
+    </span>
   </div>
-  <div class="text-right text-danger">
-    <span id="seen-user-list" class="mr-3" data-user-ids="{{ page.seenUsers|default([])|join(',') }}"></span>
-    <i class="icon-fw fa fa-paw"></i><span class="seen-user-count">{{ page.seenUsers.length|default(0) }}</span>
+  <div class="text-right">
+    {% if page.seenUsers.length > 10 %}<span class="text-muted">..</span>{% endif %}
+    <span id="seen-user-list" class="mr-3" data-user-ids="{{ page.seenUsers|slice(-10)|default([])|join(',') }}"></span>
+    <span class="text-danger">
+      <i class="icon-fw fa fa-paw"></i><span class="seen-user-count">{{ page.seenUsers.length|default(0) }}</span>
+    </span>
   </div>
 </div>

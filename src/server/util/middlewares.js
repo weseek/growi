@@ -183,6 +183,10 @@ exports.swigFilters = function(crowi, app, swig) {
       return crowi.xss.process(string);
     });
 
+    swig.setFilter('slice', function(list, start, end) {
+      return list.slice(start, end);
+    });
+
     next();
   };
 };
