@@ -113,7 +113,10 @@ if (isEnabledPlugins) {
   crowiPlugin.installAll(crowi, crowiRenderer);
 }
 
-// get new page tag
+/**
+ * get new tags from page tag form
+ * @param {String} tags new tags [TODO] String -> Array
+ */
 const getNewPageTags = function(tags) {
   newPageTags = tags;
 };
@@ -305,7 +308,7 @@ if (pageId) {
 if (pagePath) {
   componentMappings['page'] = <Page crowi={crowi} crowiRenderer={crowiRenderer} markdown={markdown} pagePath={pagePath} showHeadEditButton={true} onSaveWithShortcut={saveWithShortcut} />;
   componentMappings['revision-path'] = <RevisionPath pagePath={pagePath} crowi={crowi} />;
-  componentMappings['page-tag'] = <PageTagForm pageId={pageId} pageTags={currentPageTags} pagePath={pagePath} crowi={crowi} submitTags={getNewPageTags} />;
+  componentMappings['page-tag'] = <PageTagForm pageTags={currentPageTags} submitTags={getNewPageTags} />;
   componentMappings['revision-url'] = <RevisionUrl pageId={pageId} pagePath={pagePath} />;
 }
 

@@ -29,7 +29,7 @@ export default class PageTagForm extends React.Component {
     });
   }
 
-  handleSubmit(e) {
+  handleSubmit() {
     this.props.submitTags(this.state.pageTags);
   }
 
@@ -55,9 +55,6 @@ export default class PageTagForm extends React.Component {
 }
 
 PageTagForm.propTypes = {
-  crowi: PropTypes.object.isRequired,
-  pageId: PropTypes.string,
-  pagePath: PropTypes.string,
   pageTags: PropTypes.string,
   submitTags: PropTypes.func,
 };
