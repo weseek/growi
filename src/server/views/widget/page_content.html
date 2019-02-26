@@ -10,7 +10,6 @@
   data-page-has-draft-on-hackmd="{% if hasDraftOnHackmd %}{{ hasDraftOnHackmd.toString() }}{% endif %}"
   data-page-is-seen="{% if page and page.isSeenUser(user) %}1{% else %}0{% endif %}"
   data-slack-channels="{{ slack|default('') }}"
-  data-page-tags="{{ tags|default('') }}"
   >
 {% else %}
 <div id="content-main" class="content-main"

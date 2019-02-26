@@ -75,7 +75,6 @@ if (mainContent !== null) {
   pageIdOnHackmd = mainContent.getAttribute('data-page-id-on-hackmd') || null;
   hasDraftOnHackmd = !!mainContent.getAttribute('data-page-has-draft-on-hackmd');
   pagePath = mainContent.attributes['data-path'].value;
-  currentPageTags = mainContent.getAttribute('data-page-tags') || '';
   slackChannels = mainContent.getAttribute('data-slack-channels') || '';
   const rawText = document.getElementById('raw-text-original');
   if (rawText) {

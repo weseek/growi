@@ -107,7 +107,7 @@ module.exports = function(crowi, app) {
     }
   }
 
-  async function updateTags(page, user, newTags, updateOrCreate, previousRevision) {
+  async function updateTags(page, newTags) {
     const setTagList = [newTags]; // [TODO] listing requested Tags on client side
     const relatedTagIdList = await PageTagRelation.findAllTagIdForPage(page);
     Promise.all(relatedTagIdList.map(async id => {
@@ -707,7 +707,7 @@ module.exports = function(crowi, app) {
     }
 
     // update page tag
-    await updateTags(page, req.user, pageTags, 'update', previousRevision);
+    await updateTags(page, pageTags);
   };
 
   /**
