@@ -12,6 +12,11 @@
       "description": "DO NOT CHANGE - 'yarn' needs this to install devDependencies",
       "value": "development"
     },
+    "FILE_UPLOAD": {
+      "description": "Attached files storage. - mongodb | aws | local | none",
+      "value": "mongodb",
+      "required": false
+    },
     "SECRET_TOKEN": {
       "description": "A secret key for verifying the integrity of signed cookies.",
       "generator": "secret"
@@ -31,7 +36,7 @@
     {
       "plan": "bonsai:sandbox-6",
       "options": {
-        "version": "5.4.3"
+        "version": "6.5.4"
       }
     }
   ]
