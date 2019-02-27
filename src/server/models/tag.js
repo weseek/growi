@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate');
-const ObjectId = mongoose.Schema.Types.ObjectId;
 
 /*
  * define schema
@@ -21,8 +20,7 @@ schema.plugin(mongoosePaginate);
 class Tag {
 }
 
-module.exports = function(crowi) {
-  Tag.crowi = crowi;
+module.exports = function() {
   schema.loadClass(Tag);
   const model = mongoose.model('Tag', schema);
   return model;

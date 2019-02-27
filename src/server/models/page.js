@@ -314,14 +314,6 @@ module.exports = function(crowi) {
       }
     });
 
-    // creat set tag list
-    const setTagNameList = [];
-    newTagNameList.map(function(newTagName) {
-      if (!relatedTagNameList.includes(newTagName)) {
-        setTagNameList.push(newTagName);
-      }
-    });
-
     // unlinked page-tag-relations
     unlinkedTagNameList.map(function(tagName) {
       Tag.findOne({name: tagName}, function(err, tag) {
@@ -332,6 +324,14 @@ module.exports = function(crowi) {
           debug('remove tag relation: ', tag.name);
         });
       });
+    });
+
+    // creat set tag list
+    const setTagNameList = [];
+    newTagNameList.map(function(newTagName) {
+      if (!relatedTagNameList.includes(newTagName)) {
+        setTagNameList.push(newTagName);
+      }
     });
 
     // set tags
