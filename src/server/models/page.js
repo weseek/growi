@@ -329,7 +329,7 @@ module.exports = function(crowi) {
           if (err) {
             throw new Error(err);
           }
-          debug('remove tag relation:', tag.name);
+          debug('remove tag relation: ', tag.name);
         });
       });
     });
@@ -341,7 +341,12 @@ module.exports = function(crowi) {
           tag = await Tag.create({name: tagName});
         }
         // make a relation
-        PageTagRelation.create({relatedPage: page._id, relatedTag: tag._id});
+        PageTagRelation.create({relatedPage: page._id, relatedTag: tag._id}, function(err, relation) {
+          if (err) {
+            throw new Error(err);
+          }
+          debug('tag linked this page: ', tag.name);
+        });
       });
     });
   };
