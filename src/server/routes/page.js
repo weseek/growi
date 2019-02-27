@@ -6,8 +6,6 @@ module.exports = function(crowi, app) {
     , pagePathUtils = require('@commons/util/page-path-utils')
     , Page = crowi.model('Page')
     , User = crowi.model('User')
-    , Tag = crowi.model('Tag')
-    , PageTagRelation = crowi.model('PageTagRelation')
     , Config   = crowi.model('Config')
     , config   = crowi.getConfig()
     , Bookmark = crowi.model('Bookmark')
@@ -105,53 +103,6 @@ module.exports = function(crowi, app) {
         logger.error('Error occured in sending slack notification: ', err);
       });
     }
-  }
-
-  async function updateTags(page, newTags) {
-    const setTagList = [newTags]; // [TODO] listing requested Tags on client side
-    const relatedTagIdList = await PageTagRelation.findAllTagIdForPage(page);
-    Promise.all(relatedTagIdList.map(async id => {
-      return await Tag.getOneById(id);
-    })
-    ).then(tags => {
-      let relatedTagList = [];
-      tags.map(async relatedTag => {
-        if (!setTagList.includes(relatedTag.name)) {
-          await PageTagRelation.removeByEachId(page._id, relatedTag._id);
-          const pagesRelateTag = await PageTagRelation.findAllPageIdForTag(relatedTag);
-          if (pagesRelateTag.length == 0) {
-            Tag.removeById(relatedTag._id);
-          }
-        }
-        else {
-          relatedTagList.push(relatedTag.name);
-        }
-      });
-      const newTagList = setTagList.map(setTag => {
-        if (!relatedTagList.includes(setTag)) {
-          return setTag;
-        }
-      });
-      if (newTagList.length > 0) {
-        newTagList.map((newTag) => {
-          if (newTag) {
-            Tag.find({
-              name: newTag
-            }, async function(err, tag) {
-              let settingTag;
-              if (tag.length == 0) {
-                settingTag = await Tag.createTag(newTag);
-              }
-              else {
-                settingTag = tag[0];
-              }
-              // make a relation
-              PageTagRelation.createRelation(page, settingTag);
-            });
-          }
-        });
-      }
-    });
   }
 
   function addRendarVarsForPage(renderVars, page) {
@@ -707,7 +658,7 @@ module.exports = function(crowi, app) {
     }
 
     // update page tag
-    await updateTags(page, pageTags);
+    await page.updateTags(pageTags);
   };
 
   /**

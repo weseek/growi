@@ -292,6 +292,52 @@ module.exports = function(crowi) {
     return false;
   };
 
+  pageSchema.methods.updateTags = async function(newTags) {
+    const setTagList = [newTags]; // [TODO] listing requested Tags on client side
+    const PageTagRelation = mongoose.model('PageTagRelation');
+    const relations = await PageTagRelation.find({relatedPage: this._id});
+    console.log(relations);
+    // Promise.all(relations.map(async relation => {
+    //   return await Tag.getOneById(relation.relatedTag); // tagId からタグ名を取得
+    // })).then(tags => {
+    //   let relatedTagList = []; // relatedTagList -> stayTagList
+    //   tags.map(async relatedTag => {
+    //     if (!setTagList.includes(relatedTag.name)) { // 紐付け済みのタグが新タグになければそのリレーションを削除
+    //       await PageTagRelation.removeByEachId(page._id, relatedTag._id);
+    //       const pagesRelateTag = await PageTagRelation.findAllPageIdForTag(relatedTag);
+    //       if (pagesRelateTag.length == 0) { // 今リレーションを消したタグに紐づくページがなければタグ自体削除
+    //         Tag.removeById(relatedTag._id);
+    //       }
+    //     } else {
+    //       relatedTagList.push(relatedTag.name); // 紐付け済みのタグが新タグにも含まれていれば 維持リストに追加
+    //     }
+    //   });
+    //   const newTagList = setTagList.map(setTag => {
+    //     if (!relatedTagList.includes(setTag)) { // 新タグのうち維持リストにあるものを除く
+    //       return setTag;
+    //     }
+    //   });
+    //   if (newTagList.length > 0) {
+    //     newTagList.map((newTag) => {
+    //       if (newTag) {
+    //         Tag.find({
+    //           name: newTag
+    //         }, async function (err, tag) {
+    //           let settingTag;
+    //           if (tag.length == 0) { // 初使用のタグの場合新規作成
+    //             settingTag = await Tag.createTag(newTag);
+    //           } else { // 他のページで使っているタグの場合それを利用
+    //             settingTag = tag[0];
+    //           }
+    //           // make a relation
+    //           PageTagRelation.createRelation(page, settingTag); // リレーションを作成
+    //         });
+    //       }
+    //     });
+    //   }
+    // });
+  };
+
   pageSchema.methods.isPortal = function() {
     return isPortalPath(this.path);
   };
