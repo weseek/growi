@@ -292,71 +292,60 @@ module.exports = function(crowi) {
     return false;
   };
 
-  pageSchema.methods.updateTags = async function(newTags) {
+  pageSchema.methods.updateTags = async function(newTagsName) {
+    const page = this;
     const PageTagRelation = mongoose.model('PageTagRelation');
     const Tag = mongoose.model('Tag');
 
-    const newTagList = [newTags]; // [TODO] listing requested Tags on client side
+    const newTagNameList = [newTagsName]; // [TODO] listing requested Tags on client side
 
     // get tags relate this page
-    const relations = await PageTagRelation.find({relatedPage: this._id});
-    const relatedTagList = await Promise.all(relations.map(async function(relation) {
-      const relatedTag =  await Tag.findOne({_id: relation.relatedTag}, 'name');
+    const relations = await PageTagRelation.find({relatedPage: page._id});
+    const relatedTagNameList = await Promise.all(relations.map(async function(relation) {
+      const relatedTag =  await Tag.findOne({_id: relation.relatedTag});
       return relatedTag.name;
     }));
 
-    // creat set tag list
-    const setTagList = [];
-    newTagList.map(async function(newTag) {
-      if (!relatedTagList.includes(newTag)) {
-        setTagList.push(newTag);
-      }
-    });
-
     // creat unlinked tag list
-    const unlinkedTagList = [];
-    relatedTagList.map(async function(relatedTag) {
-      if (!newTagList.includes(relatedTag)) {
-        unlinkedTagList.push(relatedTag);
+    const unlinkedTagNameList = [];
+    relatedTagNameList.map(function(relatedTagName) {
+      if (!newTagNameList.includes(relatedTagName)) {
+        unlinkedTagNameList.push(relatedTagName);
       }
     });
 
-      // if (newTagList.length > 0) {
-      //   newTagList.map((newTag) => {
-      //     if (newTag) {
-      //       Tag.find({
-      //         name: newTag
-      //       }, async function (err, tag) {
-      //         let settingTag;
-      //         if (tag.length == 0) { // 初使用のタグの場合新規作成
-      //           settingTag = await Tag.createTag(newTag);
-      //         } else { // 他のページで使っているタグの場合それを利用
-      //           settingTag = tag[0];
-      //         }
-      //         // make a relation
-      //         PageTagRelation.createRelation(page, settingTag); // リレーションを作成
-      //       });
-      //     }
-      //   });
-      // }
+    // creat set tag list
+    const setTagNameList = [];
+    newTagNameList.map(function(newTagName) {
+      if (!relatedTagNameList.includes(newTagName)) {
+        setTagNameList.push(newTagName);
+      }
+    });
 
-        // await PageTagRelation.removeByEachId(page._id, relatedTag._id);
-        // const pagesRelateTag = await PageTagRelation.findAllPageIdForTag(relatedTag);
-        // if (pagesRelateTag.length == 0) { // 今リレーションを消したタグに紐づくページがなければタグ自体削除
-        //   Tag.removeById(relatedTag._id);
-        // }
-    //     } else {
-    //       relatedTagList.push(relatedTag.name); // 紐付け済みのタグが新タグにも含まれていれば 維持リストに追加
-    //     }
-    //   });
-    //   const newTagList = setTagList.map(setTag => {
-    //     if (!relatedTagList.includes(setTag)) { // 新タグのうち維持リストにあるものを除く
-    //       return setTag;
-    //     }
-    //   });
+    // unlinked page-tag-relations
+    unlinkedTagNameList.map(function(tagName) {
+      Tag.findOne({name: tagName}, function(err, tag) {
+        PageTagRelation.remove({relatedPage: page._id, relatedTag: tag._id}, function(err, relation) {
+          if (err) {
+            throw new Error(err);
+          }
+          debug('remove tag relation:', tag.name);
+        });
+      });
+    });
 
-    // });
+    // set tags
+    setTagNameList.map((tagName) => {
+      Tag.findOne({name: tagName}, async function(err, tag) {
+        if (tag == null) {
+          tag = await Tag.create({name: tagName});
+        }
+        // make a relation
+        PageTagRelation.create({relatedPage: page._id, relatedTag: tag._id});
+      });
+    });
   };
+
 
   pageSchema.methods.isPortal = function() {
     return isPortalPath(this.path);
