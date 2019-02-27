@@ -42,18 +42,13 @@ export default class PageComments extends React.Component {
   }
 
   componentWillMount() {
-    const pageId = this.props.pageId;
-
-    if (pageId) {
-      this.init();
-    }
-
+    this.init();
     this.retrieveData = this.retrieveData.bind(this);
   }
 
   init() {
     if (!this.props.pageId) {
-      return ;
+      return;
     }
 
     const layoutType = this.props.crowi.getConfig()['layoutType'];

@@ -4,19 +4,7 @@
 
       <h4><i class="icon-fw icon-bubbles"></i> Comments</h4>
 
-      <div class="page-comments-list" id="page-comments-list">
-        {# transplanted to PageComments React component -- 2017.06.02 Yuki Takei
-        <div class="page-comments-list-newer collapse" id="page-comments-list-newer"></div>
-
-        <a class="page-comments-list-toggle-newer text-center" data-toggle="collapse" href="#page-comments-list-newer"><i class="ti-angle-double-up"></i> Comments for Newer Revision <i class="ti-angle-double-up"></i></a>
-
-        <div class="page-comments-list-current" id="page-comments-list-current"></div>
-
-        <a class="page-comments-list-toggle-older text-center" data-toggle="collapse" href="#page-comments-list-older"><i class="ti-angle-double-down"></i> Comments for Older Revision <i class="ti-angle-double-down"></i></a>
-
-        <div class="page-comments-list-older collapse in" id="page-comments-list-older"></div>
-        #}
-      </div>
+      <div class="page-comments-list" id="page-comments-list"></div>
 
       {% if page and not page.isDeleted() %}
       <div id="page-comment-write"></div>

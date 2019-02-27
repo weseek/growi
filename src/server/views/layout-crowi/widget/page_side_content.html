@@ -12,33 +12,12 @@
 
 <h3><i class="icon-bubble"></i> Comments</h3>
 <div class="page-comments">
-  <form class="form page-comment-form" id="page-comment-form" onsubmit="return false;">
-    <div class="comment-form">
-      <div class="comment-form-main">
-        <div class="comment-write" id="comment-write">
-          <textarea class="comment-form-comment form-control" id="comment-form-comment" name="commentForm[comment]" {% if not user %}disabled{% endif %}></textarea>
-        </div>
-        <div class="comment-submit">
-          <input type="hidden" name="_csrf" value="{{ csrf() }}">
-          <input type="hidden" name="commentForm[page_id]" value="{{ page._id.toString() }}">
-          <input type="hidden" name="commentForm[revision_id]" value="{{ revision._id.toString() }}">
-          <span class="text-danger" id="comment-form-message"></span>
-          <input type="submit" id="comment-form-button" value="Comment" class="btn btn-primary btn-sm form-inline" {% if not user %}disabled{% endif %}>
-        </div>
-      </div>
-    </div>
-  </form>
+  {% if page and not page.isDeleted() %}
+  <div id="page-comment-write"></div>
+  <hr>
+  {% endif %}
+
   <div id="page-comment-form-behavior"></div>
 
-  <div class="page-comments-list" id="page-comments-list">
-    <div class="page-comments-list-newer collapse" id="page-comments-list-newer"></div>
-
-    <a class="page-comments-list-toggle-newer text-center" data-toggle="collapse" href="#page-comments-list-newer"><i class="ti-angle-double-up"></i> Comments for Newer Revision <i class="ti-angle-double-up"></i></a>
-
-    <div class="page-comments-list-current" id="page-comments-list-current"></div>
-
-    <a class="page-comments-list-toggle-older text-center" data-toggle="collapse" href="#page-comments-list-older"><i class="ti-angle-double-down"></i> Comments for Older Revision <i class="ti-angle-double-down"></i></a>
-
-    <div class="page-comments-list-older collapse in" id="page-comments-list-older"></div>
-  </div>
+  <div class="page-comments-list" id="page-comments-list"></div>
 </div>
