@@ -266,7 +266,7 @@ export default class CommentForm extends React.Component {
               <div className="comment-form-main">
                 {/* Add Comment Button */}
                 { !this.state.isFormShown &&
-                  <button className="btn btn-lg btn-link center-block" onClick={this.showCommentFormBtnClickHandler}>
+                  <button className={`btn btn-lg ${isLayoutTypeGrowi ? 'btn-link' : 'btn-primary'} center-block`} onClick={this.showCommentFormBtnClickHandler}>
                     <i className="icon-bubble"></i> Add Comment
                   </button>
                 }
@@ -301,7 +301,7 @@ export default class CommentForm extends React.Component {
                   <div className="comment-submit">
                     <div className="d-flex">
                       <label style={{flex: 1}}>
-                      { this.state.key == 1 &&
+                      { isLayoutTypeGrowi && this.state.key == 1 &&
                         <span>
                           <input type="checkbox" id="comment-form-is-markdown" name="isMarkdown" checked={this.state.isMarkdown} value="1" onChange={this.updateStateCheckbox} /> Markdown
                         </span>
