@@ -43,7 +43,7 @@ class PageTagRelation {
    * remove all invalid relations that has reference to unlinked document
    */
   static removeAllInvalidRelations() {
-    return this.findAllRelation()
+    return this.find()
       .then(relations => {
         // filter invalid documents
         return relations.filter(relation => {
@@ -61,37 +61,19 @@ class PageTagRelation {
   }
 
   /**
-   * find all page and tag relation
-   *
-   * @static
-   * @returns {Promise<PageTagRelation[]>}
-   * @memberof PageTagRelation
-   */
-  static findAllRelation() {
-    return this
-      .find()
-      .populate('relatedPage')
-      .populate('relatedTag')
-      .exec();
-  }
-
-  /**
    * find all tag related to the page
    *
    * @static
-   * @param {page} page
+   * @param {ObjectId} pageId
    * @returns {Promise<ObjectId[]>}
    * @memberof PageTagRelation
    */
-  static findAllTagIdForPage(page) {
-    return new Promise((resolve, reject) => {
-      this.find({relatedPage: page._id}, function(err, relations) {
-        if (err) {
-          reject(err);
-        }
-        resolve(relations.map(rel => rel.relatedTag));
-      });
-    });
+  static findAllTagIdForPage(pageId) {
+    return this
+      .find({
+        relatedPage: pageId
+      })
+      .select('-_id relatedTag');
   }
 
   /**
