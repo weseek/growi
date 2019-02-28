@@ -351,10 +351,13 @@ SearchClient.prototype.search = async function(query) {
         query: query.body.query
       },
     });
-    logger.info('ES returns explanations: ', result.explanations);
+    logger.debug('ES returns explanations: ', result.explanations);
   }
 
   const result = await this.client.search(query);
+
+  // for debug
+  logger.debug('ES result: ', result);
 
   return {
     meta: {
@@ -447,6 +450,7 @@ SearchClient.prototype.appendCriteriaForQueryString = function(query, queryStrin
     const q = {
       multi_match: {
         query: parsedKeywords.match.join(' '),
+        type: 'most_fields',
         fields: ['path.ja^2', 'path.en^2', 'body.ja', 'body.en'],
       },
     };
@@ -457,7 +461,7 @@ SearchClient.prototype.appendCriteriaForQueryString = function(query, queryStrin
     const q = {
       multi_match: {
         query: parsedKeywords.not_match.join(' '),
-        fields: ['path.ja^2', 'path.en^2', 'body.ja', 'body.en'],
+        fields: ['path.ja', 'path.en', 'body.ja', 'body.en'],
         operator: 'or'
       },
     };

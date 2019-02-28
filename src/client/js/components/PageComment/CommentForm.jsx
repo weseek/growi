@@ -33,6 +33,7 @@ export default class CommentForm extends React.Component {
     const isUploadableFile = config.upload.file;
 
     this.state = {
+      isLayoutTypeGrowi: false,
       isFormShown: false,
       comment: '',
       isMarkdown: true,
@@ -58,6 +59,19 @@ export default class CommentForm extends React.Component {
     this.onSlackEnabledFlagChange = this.onSlackEnabledFlagChange.bind(this);
     this.onSlackChannelsChange = this.onSlackChannelsChange.bind(this);
     this.showCommentFormBtnClickHandler = this.showCommentFormBtnClickHandler.bind(this);
+  }
+
+  componentWillMount() {
+    this.init();
+  }
+
+  init() {
+    if (!this.props.pageId) {
+      return;
+    }
+
+    const layoutType = this.props.crowi.getConfig()['layoutType'];
+    this.setState({isLayoutTypeGrowi: 'crowi-plus' === layoutType || 'growi' === layoutType});
   }
 
   updateState(value) {
@@ -227,6 +241,8 @@ export default class CommentForm extends React.Component {
     const commentPreview = this.state.isMarkdown ? this.getCommentHtml(): ReactUtils.nl2br(comment);
     const emojiStrategy = this.props.crowi.getEmojiStrategy();
 
+    const isLayoutTypeGrowi = this.state.isLayoutTypeGrowi;
+
     const errorMessage = <span className="text-danger text-right mr-2">{this.state.errorMessage}</span>;
     const submitButton = (
       <Button type="submit" bsStyle="primary" className="fcbtn btn btn-sm btn-primary btn-outline btn-rounded btn-1b">
@@ -240,15 +256,17 @@ export default class CommentForm extends React.Component {
         <form className="form page-comment-form" id="page-comment-form" onSubmit={this.postComment}>
           { username &&
             <div className="comment-form">
-              <div className="comment-form-user">
-                <a href={creatorsPage}>
-                  <UserPicture user={user} />
-                </a>
-              </div>
+              { isLayoutTypeGrowi &&
+                <div className="comment-form-user">
+                  <a href={creatorsPage}>
+                    <UserPicture user={user} />
+                  </a>
+                </div>
+              }
               <div className="comment-form-main">
                 {/* Add Comment Button */}
                 { !this.state.isFormShown &&
-                  <button className="btn btn-lg btn-link center-block" onClick={this.showCommentFormBtnClickHandler}>
+                  <button className={`btn btn-lg ${isLayoutTypeGrowi ? 'btn-link' : 'btn-primary'} center-block`} onClick={this.showCommentFormBtnClickHandler}>
                     <i className="icon-bubble"></i> Add Comment
                   </button>
                 }
@@ -263,7 +281,7 @@ export default class CommentForm extends React.Component {
                           editorOptions={this.props.editorOptions}
                           lineNumbers={false}
                           isMobile={this.props.crowi.isMobile}
-                          isUploadable={this.state.isUploadable}
+                          isUploadable={this.state.isUploadable && this.state.isLayoutTypeGrowi}  // enable only when GROWI layout
                           isUploadableFile={this.state.isUploadableFile}
                           emojiStrategy={emojiStrategy}
                           onChange={this.updateState}
@@ -283,7 +301,7 @@ export default class CommentForm extends React.Component {
                   <div className="comment-submit">
                     <div className="d-flex">
                       <label style={{flex: 1}}>
-                      { this.state.key == 1 &&
+                      { isLayoutTypeGrowi && this.state.key == 1 &&
                         <span>
                           <input type="checkbox" id="comment-form-is-markdown" name="isMarkdown" checked={this.state.isMarkdown} value="1" onChange={this.updateStateCheckbox} /> Markdown
                         </span>
