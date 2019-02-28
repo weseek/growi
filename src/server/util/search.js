@@ -451,7 +451,7 @@ SearchClient.prototype.appendCriteriaForQueryString = function(query, queryStrin
       multi_match: {
         query: parsedKeywords.match.join(' '),
         type: 'most_fields',
-        fields: ['path.ja^2', 'path.en^2', 'body.ja', 'body.en'],
+        fields: ['path.ja^5', 'path.en^5', 'body.ja', 'body.en'],
       },
     };
     query.body.query.bool.must.push(q);
@@ -631,14 +631,16 @@ SearchClient.prototype.filterPagesByType = function(query, type) {
 SearchClient.prototype.appendFunctionScore = function(query, queryString) {
   const User = this.crowi.model('User');
   const count = User.count({}) || 1;
-  const minScore = queryString.length * 0.2 - 1;   // increase with length
 
+  const minScore = queryString.length * 0.1 - 1;    // increase with length
   logger.debug('min_score: ', minScore);
 
   query.body.query = {
     function_score: {
       query: { ...query.body.query },
-      min_score: minScore,
+      //// disable min_score -- 2019.02.28 Yuki Takei
+      //// more precise adjustment is needed...
+      // min_score: minScore,
       field_value_factor: {
         field: 'bookmark_count',
         modifier: 'log1p',
