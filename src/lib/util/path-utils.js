@@ -18,14 +18,30 @@ function encodePagePath(path) {
   return paths.join('/');
 }
 
-function matchTrailingSlash(path) {
-  // https://regex101.com/r/Z21fEd/1
-  return path.match(/(.+?)(\/)?$/);
+function matchSlashes(path) {
+  // https://regex101.com/r/Z21fEd/3
+  return path.match(/^((\/)?(.+?))(\/)?$$/);
+}
+
+function hasHeadingSlash(path) {
+  const match = matchSlashes(path);
+  return (match[2] != null);
 }
 
 function hasTrailingSlash(path) {
-  const match = matchTrailingSlash(path);
-  return (match[2] != null);
+  const match = matchSlashes(path);
+  return (match[4] != null);
+}
+
+function addHeadingSlash(path) {
+  if (path === '/') {
+    return path;
+  }
+
+  if (!hasHeadingSlash(path)) {
+    return `/${path}`;
+  }
+  return path;
 }
 
 function addTrailingSlash(path) {
@@ -44,14 +60,21 @@ function removeTrailingSlash(path) {
     return path;
   }
 
-  const match = matchTrailingSlash(path);
+  const match = matchSlashes(path);
   return match[1];
+}
+
+function normalizePath(path) {
+  return this.addHeadingSlash(this.removeTrailingSlash(path));
 }
 
 module.exports = {
   encodePagePath,
   encodePagesPath,
+  hasHeadingSlash,
   hasTrailingSlash,
+  addHeadingSlash,
   addTrailingSlash,
   removeTrailingSlash,
+  normalizePath,
 };
