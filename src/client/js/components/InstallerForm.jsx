@@ -43,7 +43,7 @@ class InstallerForm extends React.Component {
           <small>{ this.props.t('installer.initial_account_will_be_administrator_automatically') }</small>
         </p>
 
-        <form role="form" action="/installer/createAdmin" method="post" id="register-form">
+        <form role="form" action="/installer" method="post" id="register-form">
           <div className="input-group m-t-20 m-b-20 mx-auto">
             <div className="radio radio-primary radio-inline">
               <input type="radio" id="radioLangEn" name="registerForm[app:globalLang]" value="en-US"
