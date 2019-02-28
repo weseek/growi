@@ -34,9 +34,9 @@ export default class PagePathAutoComplete extends React.Component {
   }
 
   getKeywordOnInit(path) {
-    return this.props.addSlashToTheEnd
-      ? pathUtils.addSlashToTheEnd(path)
-      : pathUtils.removeLastSlash(path);
+    return this.props.addTrailingSlash
+      ? pathUtils.addTrailingSlash(path)
+      : pathUtils.removeTrailingSlash(path);
   }
 
   render() {
@@ -59,7 +59,7 @@ export default class PagePathAutoComplete extends React.Component {
 PagePathAutoComplete.propTypes = {
   crowi:            PropTypes.object.isRequired,
   initializedPath:  PropTypes.string,
-  addSlashToTheEnd: PropTypes.bool,
+  addTrailingSlash: PropTypes.bool,
 };
 
 PagePathAutoComplete.defaultProps = {

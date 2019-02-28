@@ -960,7 +960,7 @@ module.exports = function(crowi, app) {
   api.rename = async function(req, res) {
     const pageId = req.body.page_id;
     const previousRevision = req.body.revision_id || null;
-    const newPagePath = Page.normalizePath(req.body.new_path);
+    const newPagePath = pathUtils.normalizePath(req.body.new_path);
     const options = {
       createRedirectPage: req.body.create_redirect || 0,
       moveUnderTrees: req.body.move_trees || 0,
@@ -1024,7 +1024,7 @@ module.exports = function(crowi, app) {
    */
   api.duplicate = async function(req, res) {
     const pageId = req.body.page_id;
-    const newPagePath = Page.normalizePath(req.body.new_path);
+    const newPagePath = pathUtils.normalizePath(req.body.new_path);
 
     const page = await Page.findByIdAndViewer(pageId, req.user);
 

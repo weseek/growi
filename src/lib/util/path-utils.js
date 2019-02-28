@@ -18,40 +18,63 @@ function encodePagePath(path) {
   return paths.join('/');
 }
 
-function matchEndWithSlash(path) {
-  // https://regex101.com/r/Z21fEd/1
-  return path.match(/(.+?)(\/)?$/);
+function matchSlashes(path) {
+  // https://regex101.com/r/Z21fEd/3
+  return path.match(/^((\/)?(.+?))(\/)?$$/);
 }
 
-function isEndWithSlash(path) {
-  const match = matchEndWithSlash(path);
+function hasHeadingSlash(path) {
+  const match = matchSlashes(path);
   return (match[2] != null);
 }
 
-function addSlashToTheEnd(path) {
+function hasTrailingSlash(path) {
+  const match = matchSlashes(path);
+  return (match[4] != null);
+}
+
+function addHeadingSlash(path) {
   if (path === '/') {
     return path;
   }
 
-  if (!isEndWithSlash(path)) {
+  if (!hasHeadingSlash(path)) {
+    return `/${path}`;
+  }
+  return path;
+}
+
+function addTrailingSlash(path) {
+  if (path === '/') {
+    return path;
+  }
+
+  if (!hasTrailingSlash(path)) {
     return `${path}/`;
   }
   return path;
 }
 
-function removeLastSlash(path) {
+function removeTrailingSlash(path) {
   if (path === '/') {
     return path;
   }
 
-  const match = matchEndWithSlash(path);
+  const match = matchSlashes(path);
   return match[1];
+}
+
+function normalizePath(path) {
+  return this.addHeadingSlash(this.removeTrailingSlash(path));
 }
 
 module.exports = {
   encodePagePath,
   encodePagesPath,
-  isEndWithSlash,
-  addSlashToTheEnd,
-  removeLastSlash,
+  hasHeadingSlash,
+  hasTrailingSlash,
+  addHeadingSlash,
+  addTrailingSlash,
+  removeTrailingSlash,
+  normalizePath,
 };

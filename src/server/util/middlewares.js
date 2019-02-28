@@ -1,7 +1,9 @@
 const debug = require('debug')('growi:lib:middlewares');
 const logger = require('@alias/logger')('growi:lib:middlewares');
+const pathUtils = require('@commons/util/path-utils');
 const md5 = require('md5');
 const entities = require('entities');
+
 
 exports.csrfKeyGenerator = function(crowi, app) {
   return function(req, res, next) {
@@ -145,12 +147,8 @@ exports.swigFilters = function(crowi, app, swig) {
         .replace(/\n/g, '<br>');
     });
 
-    swig.setFilter('removeLastSlash', function(string) {
-      if (string == '/') {
-        return string;
-      }
-
-      return string.substr(0, string.length - 1);
+    swig.setFilter('removeTrailingSlash', function(string) {
+      return pathUtils.removeTrailingSlash(string);
     });
 
     swig.setFilter('presentation', function(string) {
