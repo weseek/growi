@@ -1,5 +1,6 @@
-const ConfigLoader = require('../service/config-loader')
-  , debug = require('debug')('growi:service:ConfigManager');
+const debug = require('debug')('growi:service:ConfigManager');
+const pathUtils = require('@commons/util/path-utils');
+const ConfigLoader = require('../service/config-loader');
 
 const KEYS_FOR_SAML_USE_ONLY_ENV_OPTION = [
   'security:passport-saml:isEnabled',
@@ -80,7 +81,7 @@ class ConfigManager {
   getSiteUrl() {
     const siteUrl = this.getConfig('crowi', 'app:siteUrl');
     if (siteUrl != null) {
-      return siteUrl;
+      return pathUtils.removeLastSlash(siteUrl);
     }
     else {
       return '[The site URL is not set. Please set it!]';
