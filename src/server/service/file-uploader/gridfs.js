@@ -22,7 +22,13 @@ module.exports = function(crowi) {
   AttachmentFile.promisifiedWrite = util.promisify(AttachmentFile.write).bind(AttachmentFile);
 
   lib.deleteFile = async function(attachment) {
-    const attachmentFile = await AttachmentFile.findOne({ filename: attachment.fileName });
+    let filenameValue = attachment.fileName;
+
+    if (attachment.filePath != null) {  // backward compatibility for v3.3.x or below
+      filenameValue = attachment.filePath;
+    }
+
+    const attachmentFile = await AttachmentFile.findOne({ filename: filenameValue });
 
     AttachmentFile.unlinkById(attachmentFile._id, function(error, unlinkedFile) {
       if (error) {
