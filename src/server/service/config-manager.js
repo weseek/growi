@@ -81,7 +81,7 @@ class ConfigManager {
   getSiteUrl() {
     const siteUrl = this.getConfig('crowi', 'app:siteUrl');
     if (siteUrl != null) {
-      return pathUtils.removeLastSlash(siteUrl);
+      return pathUtils.removeTrailingSlash(siteUrl);
     }
     else {
       return '[The site URL is not set. Please set it!]';

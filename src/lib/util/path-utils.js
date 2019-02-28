@@ -18,40 +18,40 @@ function encodePagePath(path) {
   return paths.join('/');
 }
 
-function matchEndWithSlash(path) {
+function matchTrailingSlash(path) {
   // https://regex101.com/r/Z21fEd/1
   return path.match(/(.+?)(\/)?$/);
 }
 
-function isEndWithSlash(path) {
-  const match = matchEndWithSlash(path);
+function hasTrailingSlash(path) {
+  const match = matchTrailingSlash(path);
   return (match[2] != null);
 }
 
-function addSlashToTheEnd(path) {
+function addTrailingSlash(path) {
   if (path === '/') {
     return path;
   }
 
-  if (!isEndWithSlash(path)) {
+  if (!hasTrailingSlash(path)) {
     return `${path}/`;
   }
   return path;
 }
 
-function removeLastSlash(path) {
+function removeTrailingSlash(path) {
   if (path === '/') {
     return path;
   }
 
-  const match = matchEndWithSlash(path);
+  const match = matchTrailingSlash(path);
   return match[1];
 }
 
 module.exports = {
   encodePagePath,
   encodePagesPath,
-  isEndWithSlash,
-  addSlashToTheEnd,
-  removeLastSlash,
+  hasTrailingSlash,
+  addTrailingSlash,
+  removeTrailingSlash,
 };
