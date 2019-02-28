@@ -351,10 +351,13 @@ SearchClient.prototype.search = async function(query) {
         query: query.body.query
       },
     });
-    logger.info('ES returns explanations: ', result.explanations);
+    logger.debug('ES returns explanations: ', result.explanations);
   }
 
   const result = await this.client.search(query);
+
+  // for debug
+  logger.debug('ES result: ', result);
 
   return {
     meta: {
