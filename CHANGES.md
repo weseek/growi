@@ -6,6 +6,7 @@ CHANGES
 * Improvement: Restrict to access attachments when the user is not allowed to see page
 * Improvement: Show fans and visitors of page
 * Improvement: Full text search tokenizing
+* Improvement: Markdown comment on Crowi Classic Layout
 * Fix: Profile image is not displayed when `FILE_UPLOAD=mongodb`
 * Fix: Posting comment doesn't work under Crowi Classic Layout
     * Introduced by 3.1.5
