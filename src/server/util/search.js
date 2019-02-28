@@ -451,7 +451,7 @@ SearchClient.prototype.appendCriteriaForQueryString = function(query, queryStrin
       multi_match: {
         query: parsedKeywords.match.join(' '),
         type: 'most_fields',
-        fields: ['path.ja^5', 'path.en^5', 'body.ja', 'body.en'],
+        fields: ['path.ja^2', 'path.en^2', 'body.ja', 'body.en'],
       },
     };
     query.body.query.bool.must.push(q);
