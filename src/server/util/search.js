@@ -631,7 +631,7 @@ SearchClient.prototype.filterPagesByType = function(query, type) {
 SearchClient.prototype.appendFunctionScore = function(query, queryString) {
   const User = this.crowi.model('User');
   const count = User.count({}) || 1;
-  const minScore = queryString.length * 0.33;   // increase with length
+  const minScore = queryString.length * 0.2 - 1;   // increase with length
 
   logger.debug('min_score: ', minScore);
 
