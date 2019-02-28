@@ -87,7 +87,9 @@ export default class PageAttachment extends React.Component {
     let deleteAttachmentModal = '';
     if (this.isUserLoggedIn()) {
       const attachmentToDelete = this.state.attachmentToDelete;
-      let deleteModalClose = () => this.setState({ attachmentToDelete: null });
+      let deleteModalClose = () => {
+        this.setState({ attachmentToDelete: null, deleteError: '' });
+      };
       let showModal = attachmentToDelete !== null;
 
       let deleteInUse = null;
