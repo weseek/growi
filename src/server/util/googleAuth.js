@@ -1,3 +1,7 @@
+const debug = require('debug')('growi:lib:googleAuth');
+const urljoin = require('url-join');
+const { GoogleApis } = require('googleapis');
+
 /**
  * googleAuth utility
  */
@@ -5,9 +9,7 @@
 module.exports = function(crowi) {
   'use strict';
 
-  const { GoogleApis } = require('googleapis');
-  var google = new GoogleApis()
-    , debug = require('debug')('growi:lib:googleAuth')
+  const google = new GoogleApis()
     , config = crowi.getConfig()
     , lib = {}
     ;
@@ -21,11 +23,11 @@ module.exports = function(crowi) {
   }
 
   lib.createAuthUrl = function(req, callback) {
-    var callbackUrl = crowi.configManager.getSiteUrl() + '/google/callback';
-    var oauth2Client = createOauth2Client(callbackUrl);
+    const callbackUrl = urljoin(crowi.configManager.getSiteUrl(), '/google/callback');
+    const oauth2Client = createOauth2Client(callbackUrl);
     google.options({auth: oauth2Client});
 
-    var redirectUrl = oauth2Client.generateAuthUrl({
+    const redirectUrl = oauth2Client.generateAuthUrl({
       access_type: 'offline',
       scope: ['profile', 'email'],
     });
@@ -34,11 +36,11 @@ module.exports = function(crowi) {
   };
 
   lib.handleCallback = function(req, callback) {
-    var callbackUrl = crowi.configManager.getSiteUrl() + '/google/callback';
-    var oauth2Client = createOauth2Client(callbackUrl);
+    const callbackUrl = urljoin(crowi.configManager.getSiteUrl(), '/google/callback');
+    const oauth2Client = createOauth2Client(callbackUrl);
     google.options({auth: oauth2Client});
 
-    var code = req.session.googleAuthCode || null;
+    const code = req.session.googleAuthCode || null;
 
     if (!code) {
       return callback(new Error('No code exists.'), null);
@@ -53,7 +55,7 @@ module.exports = function(crowi) {
 
       oauth2Client.credentials = tokens;
 
-      var oauth2 = google.oauth2('v2');
+      const oauth2 = google.oauth2('v2');
       oauth2.userinfo.get({}, function(err, response) {
         debug('Response of oauth2.userinfo.get', err, response);
         if (err) {
