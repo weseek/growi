@@ -10,6 +10,7 @@ CHANGES
 * Fix: Posting comment doesn't work under Crowi Classic Layout
     * Introduced by 3.1.5
 * Fix: HackMD doesn't work when `siteUrl` ends with slash
+* Fix: Ensure not to be able to move/duplicate page to the path which has trailing slash
 * Support: Launch with Node.js v10
 * Support: Launch with MongoDB 3.6
 * Support: Launch with Elasticsearch 6.6
