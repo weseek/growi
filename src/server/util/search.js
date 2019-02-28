@@ -628,13 +628,17 @@ SearchClient.prototype.filterPagesByType = function(query, type) {
   }
 };
 
-SearchClient.prototype.appendFunctionScore = function(query) {
+SearchClient.prototype.appendFunctionScore = function(query, queryString) {
   const User = this.crowi.model('User');
   const count = User.count({}) || 1;
-  // newScore = oldScore + log(1 + factor * 'bookmark_count')
+  const minScore = queryString.length * 0.33;   // increase with length
+
+  logger.debug('min_score: ', minScore);
+
   query.body.query = {
     function_score: {
       query: { ...query.body.query },
+      min_score: minScore,
       field_value_factor: {
         field: 'bookmark_count',
         modifier: 'log1p',
@@ -658,7 +662,7 @@ SearchClient.prototype.searchKeyword = async function(queryString, user, userGro
 
   this.appendResultSize(query, from, size);
 
-  this.appendFunctionScore(query);
+  this.appendFunctionScore(query, queryString);
 
   return this.search(query);
 };
