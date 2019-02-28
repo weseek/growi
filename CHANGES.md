@@ -9,6 +9,7 @@ CHANGES
 * Fix: Profile image is not displayed when `FILE_UPLOAD=mongodb`
 * Fix: Posting comment doesn't work under Crowi Classic Layout
     * Introduced by 3.1.5
+* Fix: HackMD doesn't work when `siteUrl` ends with slash
 * Support: Launch with Node.js v10
 * Support: Launch with MongoDB 3.6
 * Support: Launch with Elasticsearch 6.6
