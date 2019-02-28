@@ -7,12 +7,12 @@ import ReactDOM from 'react-dom';
 
 import { debounce } from 'throttle-debounce';
 
-const pathUtils = require('@commons/util/path-utils');
 const entities = require('entities');
 const escapeStringRegexp = require('escape-string-regexp');
 require('jquery.cookie');
 require('bootstrap-select');
 
+import * as pathUtils from '@commons/util/path-utils';
 import GrowiRenderer from '../util/GrowiRenderer';
 import RevisionLoader from '../components/Page/RevisionLoader';
 
@@ -356,7 +356,7 @@ $(function() {
     // create name-value map
     let nameValueMap = {};
     $(this).serializeArray().forEach((obj) => {
-      nameValueMap[obj.name] = obj.value; // nameValueMap['q'] is renamed page path
+      nameValueMap[obj.name] = obj.value; // nameValueMap.new_path is renamed page path
     });
 
     const data = $(this).serialize() + `&socketClientId=${crowi.getSocketClientId()}`;
@@ -370,10 +370,11 @@ $(function() {
     .done(function(res) {
       // error
       if (!res.ok) {
+        const linkPath = pathUtils.normalizePath(nameValueMap.new_path);
         $('#renamePage .msg, #unportalize .msg').hide();
         $(`#renamePage .msg-${res.code}, #unportalize .msg-${res.code}`).show();
         $('#renamePage #linkToNewPage, #unportalize #linkToNewPage').html(`
-          <a href="${nameValueMap.new_path}">${nameValueMap.new_path} <i class="icon-login"></i></a>
+          <a href="${linkPath}">${linkPath} <i class="icon-login"></i></a>
         `);
       }
       else {
@@ -394,7 +395,7 @@ $(function() {
     // create name-value map
     let nameValueMap = {};
     $(this).serializeArray().forEach((obj) => {
-      nameValueMap[obj.name] = obj.value; // nameValueMap['q'] is duplicated page path
+      nameValueMap[obj.name] = obj.value; // nameValueMap.new_path is duplicated page path
     });
 
     $.ajax({
@@ -405,10 +406,11 @@ $(function() {
     }).done(function(res) {
       // error
       if (!res.ok) {
+        const linkPath = pathUtils.normalizePath(nameValueMap.new_path);
         $('#duplicatePage .msg').hide();
         $(`#duplicatePage .msg-${res.code}`).show();
         $('#duplicatePage #linkToNewPage').html(`
-          <a href="${nameValueMap.q}">${nameValueMap.q} <i class="icon-login"></i></a>
+          <a href="${linkPath}">${linkPath} <i class="icon-login"></i></a>
         `);
       }
       else {
