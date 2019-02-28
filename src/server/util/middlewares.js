@@ -284,38 +284,11 @@ exports.accessTokenParser = function(crowi, app) {
 // this is for Installer
 exports.applicationNotInstalled = function() {
   return function(req, res, next) {
-    var config = req.config;
+    const config = req.config;
 
     if (Object.keys(config.crowi).length !== 0) {
       req.flash('errorMessage', 'Application already installed.');
       return res.redirect('admin'); // admin以外はadminRequiredで'/'にリダイレクトされる
-    }
-
-    return next();
-  };
-};
-
-exports.checkSearchIndicesGenerated = function(crowi, app) {
-  return function(req, res, next) {
-    const searcher = crowi.getSearcher();
-
-    // build index
-    if (searcher) {
-      searcher.buildIndex()
-        .then((data) => {
-          if (!data.errors) {
-            debug('Index created.');
-          }
-          return searcher.addAllPages();
-        })
-        .catch((error) => {
-          if (error.message != null && error.message.match(/index_already_exists_exception/)) {
-            debug('Creating index is failed: ', error.message);
-          }
-          else {
-            console.log(`Error while building index of Elasticsearch': ${error.message}`);
-          }
-        });
     }
 
     return next();

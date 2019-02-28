@@ -32,8 +32,8 @@ module.exports = function(crowi, app) {
 
   app.get('/'                        , middleware.applicationInstalled(), loginRequired(crowi, app, false) , page.showTopPage);
 
-  app.get('/installer'               , middleware.applicationNotInstalled() , middleware.checkSearchIndicesGenerated(crowi, app) , installer.index);
-  app.post('/installer/createAdmin'  , middleware.applicationNotInstalled() , form.register , csrf, installer.createAdmin);
+  app.get('/installer'               , middleware.applicationNotInstalled() , installer.index);
+  app.post('/installer'              , middleware.applicationNotInstalled() , form.register , csrf, installer.install);
   //app.post('/installer/user'         , middleware.applicationNotInstalled() , installer.createFirstUser);
 
   app.get('/login/error/:reason'     , login.error);
