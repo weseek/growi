@@ -48,8 +48,7 @@ module.exports = function(crowi, app) {
   }
 
   function getPathFromRequest(req) {
-    const path = '/' + (req.params[0] || '');
-    return path.replace(/\.md$/, '');
+    return pathUtils.normalizePath(req.params[0] || '');
   }
 
   function isUserPage(path) {
@@ -186,7 +185,7 @@ module.exports = function(crowi, app) {
   }
 
   async function showPageListForCrowiBehavior(req, res, next) {
-    const portalPath = Page.addSlashOfEnd(getPathFromRequest(req));
+    const portalPath = pathUtils.addTrailingSlash(getPathFromRequest(req));
     const revisionId = req.query.revision;
 
     // check whether this page has portal page
@@ -329,7 +328,7 @@ module.exports = function(crowi, app) {
 
     // check whether this page has portal page
     if (!behaviorType || 'crowi' === behaviorType) {
-      const portalPagePath = Page.addSlashOfEnd(getPathFromRequest(req));
+      const portalPagePath = pathUtils.addTrailingSlash(getPathFromRequest(req));
       let hasPortalPage = await Page.count({ path: portalPagePath }) > 0;
 
       if (hasPortalPage) {
@@ -391,10 +390,12 @@ module.exports = function(crowi, app) {
   actions.notFound = async function(req, res) {
     const path = getPathFromRequest(req);
 
+    const isCreatable = Page.isCreatableName(path);
+
     let view;
     const renderVars = { path };
 
-    if (req.isForbidden) {
+    if (!isCreatable || req.isForbidden) {
       view = 'customlayout-selector/forbidden';
     }
     else {
