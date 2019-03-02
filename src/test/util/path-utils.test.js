@@ -18,5 +18,10 @@ describe('page-utils', () => {
       expect(pathUtils.normalizePath('/hoge/fuga/')).to.equal('/hoge/fuga');
       done();
     });
+
+    it('should remove unnecessary slashes', done => {
+      expect(pathUtils.normalizePath('//hoge/fuga//')).to.equal('/hoge/fuga');
+      done();
+    });
   });
 });
