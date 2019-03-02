@@ -66,6 +66,9 @@ function removeTrailingSlash(path) {
 
 function normalizePath(path) {
   const match = matchSlashes(path);
+  if (match == null) {
+    return '/';
+  }
   return `/${match[3]}`;
 }
 
