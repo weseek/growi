@@ -19,8 +19,8 @@ function encodePagePath(path) {
 }
 
 function matchSlashes(path) {
-  // https://regex101.com/r/Z21fEd/3
-  return path.match(/^((\/)?(.+?))(\/)?$$/);
+  // https://regex101.com/r/Z21fEd/5
+  return path.match(/^((\/+)?(.+?))(\/+)?$/);
 }
 
 function hasHeadingSlash(path) {
@@ -65,7 +65,11 @@ function removeTrailingSlash(path) {
 }
 
 function normalizePath(path) {
-  return this.addHeadingSlash(this.removeTrailingSlash(path));
+  const match = matchSlashes(path);
+  if (match == null) {
+    return '/';
+  }
+  return `/${match[3]}`;
 }
 
 module.exports = {
