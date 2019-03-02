@@ -15,6 +15,11 @@ CHANGES
 * Support: Launch with Node.js v10
 * Support: Launch with MongoDB 3.6
 * Support: Launch with Elasticsearch 6.6
+* Support: Upgrade libs
+    * browser-sync
+    * react
+    * react-dom
+
 
 ## 3.3.10
 
