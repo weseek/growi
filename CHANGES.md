@@ -3,6 +3,14 @@ CHANGES
 
 ## 3.4.0-RC
 
+### BREAKING CHANGES
+
+None.
+
+Upgrading Guide: https://docs.growi.org/guide/upgrading/34x.html
+
+### Updates
+
 * Improvement: Restrict to access attachments when the user is not allowed to see page
 * Improvement: Show fans and visitors of page
 * Improvement: Full text search tokenizing
@@ -16,6 +24,7 @@ CHANGES
 * Support: Launch with MongoDB 3.6
 * Support: Launch with Elasticsearch 6.6
 * Support: Upgrade libs
+    * bootstrap-sass
     * browser-sync
     * react
     * react-dom
