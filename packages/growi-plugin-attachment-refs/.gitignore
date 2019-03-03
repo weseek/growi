@@ -1,0 +1,21 @@
+# Logs
+logs
+*.log
+npm-debug.log.*
+
+# OS generated files #
+.DS_Store
+.Trash-*
+ehthumbs.db
+Icon?
+Thumbs.db
+
+# Node Files #
+/node_modules/
+/bower_components/
+npm-debug.log
+/npm-debug.log.*
+
+# IDE #
+.idea
+.vscode

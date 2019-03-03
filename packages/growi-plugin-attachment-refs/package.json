@@ -1,0 +1,38 @@
+{
+  "name": "growi-plugin-attachment-refs",
+  "version": "1.0.0",
+  "description": "GROWI Plugin to add ref/refimg/refs/refsimg tags",
+  "keywords": [
+    "growi",
+    "growi-plugin"
+  ],
+  "main": "index.js",
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "test": ""
+  },
+  "repository": "https://github.com/weseek/growi-plugin-attachment-refs",
+  "author": "Yuki Takei <yuki@weseek.co.jp>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/weseek/growi-plugin-attachment-refs/issues"
+  },
+  "dependencies": {
+    "growi-pluginkit": "^1.1.0"
+  },
+  "devDependencies": {
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "eslint": "^5.15.0",
+    "eslint-plugin-react": "^7.12.4",
+    "react": "^16.8.3",
+    "react-dom": "^16.8.3"
+  },
+  "engines": {
+    "node": ">=8.11.1 <11",
+    "npm": ">=5.6.0 <7",
+    "yarn": ">=1.5.1 <2"
+  }
+}
