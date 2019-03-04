@@ -36,6 +36,36 @@ test:
       username: wercker
       notify_on: "failed"
 
+lint:
+  steps:
+    - script:
+      name: set yarn cache-folder
+      code: yarn config set cache-folder $WERCKER_CACHE_DIR/yarn
+
+    - script:
+      name: install dependencies
+      code: |
+        yarn
+
+    - script:
+      name: print dependencies
+      code: |
+        echo -n "node " && node -v
+        echo -n "npm " && npm -v
+        yarn list --depth=0
+
+    - script:
+      name: npm run lint
+      code: |
+        npm run lint
+
+  after-steps:
+    - slack-notifier:
+      url: $SLACK_WEBHOOK_URL
+      channel: ci
+      username: wercker
+      notify_on: "failed"
+
 
 build-prod:
   steps:
