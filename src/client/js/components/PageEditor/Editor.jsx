@@ -276,17 +276,19 @@ export default class Editor extends AbstractEditor {
 
         </Dropzone>
 
-        <button type="button" className="btn btn-default btn-block btn-open-dropzone"
-          onClick={() => {this.refs.dropzone.open()}}>
+        { this.props.isUploadable &&
+          <button type="button" className="btn btn-default btn-block btn-open-dropzone"
+            onClick={() => {this.refs.dropzone.open()}}>
 
-          <i className="icon-paper-clip" aria-hidden="true"></i>&nbsp;
-          Attach files
-          <span className="desc-long">
-            &nbsp;by dragging &amp; dropping,&nbsp;
-            <span className="btn-link">selecting them</span>,&nbsp;
-            or pasting from the clipboard.
-          </span>
-        </button>
+            <i className="icon-paper-clip" aria-hidden="true"></i>&nbsp;
+            Attach files
+            <span className="desc-long">
+              &nbsp;by dragging &amp; dropping,&nbsp;
+              <span className="btn-link">selecting them</span>,&nbsp;
+              or pasting from the clipboard.
+            </span>
+          </button>
+        }
       </div>
     );
   }

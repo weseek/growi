@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import PageAttachmentList from './PageAttachment/PageAttachmentList';
 import DeleteAttachmentModal from './PageAttachment/DeleteAttachmentModal';
@@ -43,7 +44,7 @@ export default class PageAttachment extends React.Component {
   }
 
   checkIfFileInUse(attachment) {
-    if (this.props.pageContent.match(attachment.url)) {
+    if (this.props.markdown.match(attachment.filePathProxied)) {
       return true;
     }
     return false;
@@ -86,7 +87,9 @@ export default class PageAttachment extends React.Component {
     let deleteAttachmentModal = '';
     if (this.isUserLoggedIn()) {
       const attachmentToDelete = this.state.attachmentToDelete;
-      let deleteModalClose = () => this.setState({ attachmentToDelete: null });
+      let deleteModalClose = () => {
+        this.setState({ attachmentToDelete: null, deleteError: '' });
+      };
       let showModal = attachmentToDelete !== null;
 
       let deleteInUse = null;
@@ -124,3 +127,9 @@ export default class PageAttachment extends React.Component {
     );
   }
 }
+
+PageAttachment.propTypes = {
+  crowi: PropTypes.object.isRequired,
+  markdown: PropTypes.string.isRequired,
+  pageId: PropTypes.string.isRequired,
+};

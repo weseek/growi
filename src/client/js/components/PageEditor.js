@@ -141,12 +141,11 @@ export default class PageEditor extends React.Component {
       formData.append('page_id', this.state.pageId || 0);
 
       // post
-      res = await this.props.crowi.apiPost(endpoint, formData)
-      const url = res.url;
+      res = await this.props.crowi.apiPost(endpoint, formData);
       const attachment = res.attachment;
       const fileName = attachment.originalName;
 
-      let insertText = `[${fileName}](${url})`;
+      let insertText = `[${fileName}](${attachment.filePathProxied})`;
       // when image
       if (attachment.fileFormat.startsWith('image/')) {
         // modify to "![fileName](url)" syntax

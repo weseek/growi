@@ -7,12 +7,12 @@ import ReactDOM from 'react-dom';
 
 import { debounce } from 'throttle-debounce';
 
-const pagePathUtils = require('@commons/util/page-path-utils');
 const entities = require('entities');
 const escapeStringRegexp = require('escape-string-regexp');
 require('jquery.cookie');
 require('bootstrap-select');
 
+import * as pathUtils from '@commons/util/path-utils';
 import GrowiRenderer from '../util/GrowiRenderer';
 import RevisionLoader from '../components/Page/RevisionLoader';
 
@@ -343,7 +343,7 @@ $(function() {
     if (name.match(/.+\/$/)) {
       name = name.substr(0, name.length - 1);
     }
-    top.location.href = pagePathUtils.encodePagePath(name) + '#edit';
+    top.location.href = pathUtils.encodePagePath(name) + '#edit';
     return false;
   });
 
@@ -356,7 +356,7 @@ $(function() {
     // create name-value map
     let nameValueMap = {};
     $(this).serializeArray().forEach((obj) => {
-      nameValueMap[obj.name] = obj.value; // nameValueMap['q'] is renamed page path
+      nameValueMap[obj.name] = obj.value; // nameValueMap.new_path is renamed page path
     });
 
     const data = $(this).serialize() + `&socketClientId=${crowi.getSocketClientId()}`;
@@ -370,10 +370,11 @@ $(function() {
     .done(function(res) {
       // error
       if (!res.ok) {
+        const linkPath = pathUtils.normalizePath(nameValueMap.new_path);
         $('#renamePage .msg, #unportalize .msg').hide();
         $(`#renamePage .msg-${res.code}, #unportalize .msg-${res.code}`).show();
         $('#renamePage #linkToNewPage, #unportalize #linkToNewPage').html(`
-          <a href="${nameValueMap.new_path}">${nameValueMap.new_path} <i class="icon-login"></i></a>
+          <a href="${linkPath}">${linkPath} <i class="icon-login"></i></a>
         `);
       }
       else {
@@ -394,7 +395,7 @@ $(function() {
     // create name-value map
     let nameValueMap = {};
     $(this).serializeArray().forEach((obj) => {
-      nameValueMap[obj.name] = obj.value; // nameValueMap['q'] is duplicated page path
+      nameValueMap[obj.name] = obj.value; // nameValueMap.new_path is duplicated page path
     });
 
     $.ajax({
@@ -405,10 +406,11 @@ $(function() {
     }).done(function(res) {
       // error
       if (!res.ok) {
+        const linkPath = pathUtils.normalizePath(nameValueMap.new_path);
         $('#duplicatePage .msg').hide();
         $(`#duplicatePage .msg-${res.code}`).show();
         $('#duplicatePage #linkToNewPage').html(`
-          <a href="${nameValueMap.q}">${nameValueMap.q} <i class="icon-login"></i></a>
+          <a href="${linkPath}">${linkPath} <i class="icon-login"></i></a>
         `);
       }
       else {
@@ -580,72 +582,6 @@ $(function() {
       crowi.saveDraft(path, template);
       top.location.href = `${path}#edit`;
     });
-
-    // Like
-    const $likeButton = $('.like-button');
-    const $likeCount = $('#like-count');
-    $likeButton.click(function() {
-      const liked = $likeButton.data('liked');
-      const token = $likeButton.data('csrftoken');
-      if (!liked) {
-        $.post('/_api/likes.add', {_csrf: token, page_id: pageId}, function(res) {
-          if (res.ok) {
-            MarkLiked();
-          }
-        });
-      }
-      else {
-        $.post('/_api/likes.remove', {_csrf: token, page_id: pageId}, function(res) {
-          if (res.ok) {
-            MarkUnLiked();
-          }
-        });
-      }
-
-      return false;
-    });
-    const $likerList = $('#liker-list');
-    const likers = $likerList.data('likers');
-    if (likers && likers.length > 0) {
-      const users = crowi.findUserByIds(likers.split(','));
-      if (users) {
-        AddToLikers(users);
-      }
-    }
-
-    /* eslint-disable no-inner-declarations */
-    function AddToLikers(users) {
-      $.each(users, function(i, user) {
-        $likerList.append(CreateUserLinkWithPicture(user));
-      });
-    }
-
-    function MarkLiked() {
-      $likeButton.addClass('active');
-      $likeButton.data('liked', 1);
-      $likeCount.text(parseInt($likeCount.text()) + 1);
-    }
-
-    function MarkUnLiked() {
-      $likeButton.removeClass('active');
-      $likeButton.data('liked', 0);
-      $likeCount.text(parseInt($likeCount.text()) - 1);
-    }
-
-    function CreateUserLinkWithPicture(user) {
-      const $userHtml = $('<a>');
-      $userHtml.data('user-id', user._id);
-      $userHtml.attr('href', '/user/' + user.username);
-      $userHtml.attr('title', user.name);
-
-      const $userPicture = $('<img class="picture picture-xs img-circle">');
-      $userPicture.attr('alt', user.name);
-      $userPicture.attr('src',  Crowi.userPicture(user));
-
-      $userHtml.append($userPicture);
-      return $userHtml;
-    }
-    /* eslint-enable */
 
     if (!isSeen) {
       $.post('/_api/pages.seen', {page_id: pageId}, function(res) {

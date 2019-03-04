@@ -1,58 +1,72 @@
-// crowi-fileupload-local
+const logger = require('@alias/logger')('growi:service:fileUploaderLocal');
+
+const fs = require('fs');
+const path = require('path');
+const mkdir = require('mkdirp');
+const streamToPromise = require('stream-to-promise');
 
 module.exports = function(crowi) {
   'use strict';
 
-  var debug = require('debug')('growi:service:fileUploaderLocal')
-    , fs = require('fs')
-    , path = require('path')
-    , mkdir = require('mkdirp')
-    , lib = {}
-    , basePath = path.posix.join(crowi.publicDir, 'uploads'); // TODO: to configurable
+  const lib = {};
+  const basePath = path.posix.join(crowi.publicDir, 'uploads');
 
-  lib.deleteFile = function(fileId, filePath) {
-    debug('File deletion: ' + filePath);
-    return new Promise(function(resolve, reject) {
-      fs.unlink(path.posix.join(basePath, filePath), function(err) {
-        if (err) {
-          return reject(err);
-        }
+  function getFilePathOnStorage(attachment) {
+    let filePath;
+    if (attachment.filePath != null) {  // backward compatibility for v3.3.x or below
+      filePath = path.posix.join(basePath, attachment.filePath);
+    }
+    else {
+      const dirName = (attachment.page != null)
+        ? 'attachment'
+        : 'user';
+      filePath = path.posix.join(basePath, dirName, attachment.fileName);
+    }
 
-        resolve();
-      });
-    });
+    return filePath;
+  }
+
+  lib.deleteFile = async function(attachment) {
+    const filePath = getFilePathOnStorage(attachment);
+    return lib.deleteFileByFilePath(filePath);
   };
 
-  lib.uploadFile = function(filePath, contentType, fileStream, options) {
-    debug('File uploading: ' + filePath);
-    return new Promise(function(resolve, reject) {
-      var localFilePath = path.posix.join(basePath, filePath)
-        , dirpath = path.posix.dirname(localFilePath);
-
-      mkdir(dirpath, function(err) {
-        if (err) {
-          return reject(err);
-        }
-
-        var writer = fs.createWriteStream(localFilePath);
-
-        writer.on('error', function(err) {
-          reject(err);
-        }).on('finish', function() {
-          resolve();
-        });
-
-        fileStream.pipe(writer);
-      });
-    });
+  lib.deleteFileByFilePath = async function(filePath) {
+    return fs.unlinkSync(filePath);
   };
 
-  lib.generateUrl = function(filePath) {
-    return path.posix.join('/uploads', filePath);
+  lib.uploadFile = async function(fileStream, attachment) {
+    logger.debug(`File uploading: fileName=${attachment.fileName}`);
+
+    const filePath = getFilePathOnStorage(attachment);
+    const dirpath = path.posix.dirname(filePath);
+
+    // mkdir -p
+    mkdir.sync(dirpath);
+
+    const stream = fileStream.pipe(fs.createWriteStream(filePath));
+    return streamToPromise(stream);
   };
 
-  lib.findDeliveryFile = function(fileId, filePath) {
-    return Promise.resolve(lib.generateUrl(filePath));
+  /**
+   * Find data substance
+   *
+   * @param {Attachment} attachment
+   * @return {stream.Readable} readable stream
+   */
+  lib.findDeliveryFile = async function(attachment) {
+    const filePath = getFilePathOnStorage(attachment);
+
+    // check file exists
+    try {
+      fs.statSync(filePath);
+    }
+    catch (err) {
+      throw new Error(`Any AttachmentFile that relate to the Attachment (${attachment._id.toString()}) does not exist in local fs`);
+    }
+
+    // return stream.Readable
+    return fs.createReadStream(filePath);
   };
 
   /**

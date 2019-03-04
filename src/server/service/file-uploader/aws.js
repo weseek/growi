@@ -1,22 +1,22 @@
-// crowi-fileupload-aws
+const logger = require('@alias/logger')('growi:service:fileUploaderAws');
+
+const axios = require('axios');
+const urljoin = require('url-join');
+const aws = require('aws-sdk');
 
 module.exports = function(crowi) {
-  'use strict';
 
-  var aws = require('aws-sdk')
-    , fs = require('fs')
-    , path = require('path')
-    , debug = require('debug')('growi:service:fileUploaderAws')
-    , lib = {}
-    , getAwsConfig = function() {
-      var config = crowi.getConfig();
-      return {
-        accessKeyId: config.crowi['aws:accessKeyId'],
-        secretAccessKey: config.crowi['aws:secretAccessKey'],
-        region: config.crowi['aws:region'],
-        bucket: config.crowi['aws:bucket']
-      };
+  const lib = {};
+
+  function getAwsConfig() {
+    const config = crowi.getConfig();
+    return {
+      accessKeyId: config.crowi['aws:accessKeyId'],
+      secretAccessKey: config.crowi['aws:secretAccessKey'],
+      region: config.crowi['aws:region'],
+      bucket: config.crowi['aws:bucket']
     };
+  }
 
   function S3Factory() {
     const awsConfig = getAwsConfig();
@@ -36,7 +36,25 @@ module.exports = function(crowi) {
     return new aws.S3();
   }
 
-  lib.deleteFile = function(fileId, filePath) {
+  function getFilePathOnStorage(attachment) {
+    if (attachment.filePath != null) {  // backward compatibility for v3.3.x or below
+      return attachment.filePath;
+    }
+
+    const dirName = (attachment.page != null)
+      ? 'attachment'
+      : 'user';
+    const filePath = urljoin(dirName, attachment.fileName);
+
+    return filePath;
+  }
+
+  lib.deleteFile = async function(attachment) {
+    const filePath = getFilePathOnStorage(attachment);
+    return lib.deleteFileByFilePath(filePath);
+  };
+
+  lib.deleteFileByFilePath = async function(filePath) {
     const s3 = S3Factory();
     const awsConfig = getAwsConfig();
 
@@ -45,120 +63,50 @@ module.exports = function(crowi) {
       Key: filePath,
     };
 
-    return new Promise((resolve, reject) => {
-      s3.deleteObject(params, (err, data) => {
-        if (err) {
-          debug('Failed to delete object from s3', err);
-          return reject(err);
-        }
-
-        // asynclonousely delete cache
-        lib.clearCache(fileId);
-
-        resolve(data);
-      });
-    });
+    return s3.deleteObject(params).promise();
   };
 
-  lib.uploadFile = function(filePath, contentType, fileStream, options) {
+  lib.uploadFile = function(fileStream, attachment) {
+    logger.debug(`File uploading: fileName=${attachment.fileName}`);
+
     const s3 = S3Factory();
     const awsConfig = getAwsConfig();
 
-    var params = {Bucket: awsConfig.bucket};
-    params.ContentType = contentType;
-    params.Key = filePath;
-    params.Body = fileStream;
-    params.ACL = 'public-read';
+    const filePath = getFilePathOnStorage(attachment);
+    const params = {
+      Bucket: awsConfig.bucket,
+      ContentType: attachment.fileFormat,
+      Key: filePath,
+      Body: fileStream,
+      ACL: 'public-read',
+    };
 
-    return new Promise(function(resolve, reject) {
-      s3.putObject(params, function(err, data) {
-        if (err) {
-          return reject(err);
-        }
-
-        return resolve(data);
-      });
-    });
+    return s3.upload(params).promise();
   };
 
-  lib.generateUrl = function(filePath) {
-    var awsConfig = getAwsConfig()
-      , url = 'https://' + awsConfig.bucket +'.s3.amazonaws.com/' + filePath;
+  /**
+   * Find data substance
+   *
+   * @param {Attachment} attachment
+   * @return {stream.Readable} readable stream
+   */
+  lib.findDeliveryFile = async function(attachment) {
+    // construct url
+    const awsConfig = getAwsConfig();
+    const baseUrl = `https://${awsConfig.bucket}.s3.amazonaws.com`;
+    const url = urljoin(baseUrl, getFilePathOnStorage(attachment));
 
-    return url;
-  };
-
-  lib.findDeliveryFile = function(fileId, filePath) {
-    var cacheFile = lib.createCacheFileName(fileId);
-
-    return new Promise((resolve, reject) => {
-      debug('find delivery file', cacheFile);
-      if (!lib.shouldUpdateCacheFile(cacheFile)) {
-        return resolve(cacheFile);
-      }
-
-      var loader = require('https');
-
-      var fileStream = fs.createWriteStream(cacheFile);
-      var fileUrl = lib.generateUrl(filePath);
-      debug('Load attachement file into local cache file', fileUrl, cacheFile);
-      loader.get(fileUrl, function(response) {
-        response.pipe(fileStream, { end: false });
-        response.on('end', () => {
-          fileStream.end();
-          resolve(cacheFile);
-        });
-      });
-    });
-  };
-
-  lib.clearCache = function(fileId) {
-    const cacheFile = lib.createCacheFileName(fileId);
-
-    (new Promise((resolve, reject) => {
-      fs.unlink(cacheFile, (err) => {
-        if (err) {
-          debug('Failed to delete cache file', err);
-          // through
-        }
-
-        resolve();
-      });
-    })).then(data => {
-      // success
-    }).catch(err => {
-      debug('Failed to delete cache file (file may not exists).', err);
-      // through
-    });
-  };
-
-  // private
-  lib.createCacheFileName = function(fileId) {
-    return path.join(crowi.cacheDir, `attachment-${fileId}`);
-  };
-
-  // private
-  lib.shouldUpdateCacheFile = function(filePath) {
+    let response;
     try {
-      var stats = fs.statSync(filePath);
-
-      if (!stats.isFile()) {
-        debug('Cache file not found or the file is not a regular fil.');
-        return true;
-      }
-
-      if (stats.size <= 0) {
-        debug('Cache file found but the size is 0');
-        return true;
-      }
+      response = await axios.get(url, { responseType: 'stream' });
     }
-    catch (e) {
-      // no such file or directory
-      debug('Stats error', e);
-      return true;
+    catch (err) {
+      logger.error(err);
+      throw new Error(`Coudn't get file from AWS for the Attachment (${attachment._id.toString()})`);
     }
 
-    return false;
+    // return stream.Readable
+    return response.data;
   };
 
   /**

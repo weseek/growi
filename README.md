@@ -79,7 +79,7 @@ On-premise
 
 ### Dependencies
 
-- node 8.x (DON'T USE 9.x)
+- Node.js v10.x (DON'T USE 11.x)
 - npm 6.x
 - yarn
 - MongoDB 3.x
@@ -89,7 +89,7 @@ See [confirmed versions](https://docs.growi.org/dev/startup/dev-env.html#version
 #### Optional Dependencies
 
 - Redis 3.x
-- ElasticSearch 5.x (needed when using Full-text search)
+- ElasticSearch 6.x (needed when using Full-text search)
   - **CAUTION: Following plugins are required**
       - [Japanese (kuromoji) Analysis plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html)
       - [ICU Analysis Plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-icu.html)

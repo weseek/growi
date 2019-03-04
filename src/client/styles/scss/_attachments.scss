@@ -1,6 +1,11 @@
 .page-attachments-row {
   border-top: solid 1px transparent;
 }
+.page-attachments {
+  li.attachment {
+    list-style: none;
+  }
+}
 .page-attachments, .page-meta {
   font-size: 0.95em;
 

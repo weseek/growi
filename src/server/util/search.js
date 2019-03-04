@@ -351,10 +351,13 @@ SearchClient.prototype.search = async function(query) {
         query: query.body.query
       },
     });
-    logger.info('ES returns explanations: ', result.explanations);
+    logger.debug('ES returns explanations: ', result.explanations);
   }
 
   const result = await this.client.search(query);
+
+  // for debug
+  logger.debug('ES result: ', result);
 
   return {
     meta: {
@@ -447,6 +450,7 @@ SearchClient.prototype.appendCriteriaForQueryString = function(query, queryStrin
     const q = {
       multi_match: {
         query: parsedKeywords.match.join(' '),
+        type: 'most_fields',
         fields: ['path.ja^2', 'path.en^2', 'body.ja', 'body.en'],
       },
     };
@@ -457,7 +461,7 @@ SearchClient.prototype.appendCriteriaForQueryString = function(query, queryStrin
     const q = {
       multi_match: {
         query: parsedKeywords.not_match.join(' '),
-        fields: ['path.ja^2', 'path.en^2', 'body.ja', 'body.en'],
+        fields: ['path.ja', 'path.en', 'body.ja', 'body.en'],
         operator: 'or'
       },
     };
@@ -624,13 +628,19 @@ SearchClient.prototype.filterPagesByType = function(query, type) {
   }
 };
 
-SearchClient.prototype.appendFunctionScore = function(query) {
+SearchClient.prototype.appendFunctionScore = function(query, queryString) {
   const User = this.crowi.model('User');
   const count = User.count({}) || 1;
-  // newScore = oldScore + log(1 + factor * 'bookmark_count')
+
+  const minScore = queryString.length * 0.1 - 1;    // increase with length
+  logger.debug('min_score: ', minScore);
+
   query.body.query = {
     function_score: {
       query: { ...query.body.query },
+      //// disable min_score -- 2019.02.28 Yuki Takei
+      //// more precise adjustment is needed...
+      // min_score: minScore,
       field_value_factor: {
         field: 'bookmark_count',
         modifier: 'log1p',
@@ -654,7 +664,7 @@ SearchClient.prototype.searchKeyword = async function(queryString, user, userGro
 
   this.appendResultSize(query, from, size);
 
-  this.appendFunctionScore(query);
+  this.appendFunctionScore(query, queryString);
 
   return this.search(query);
 };

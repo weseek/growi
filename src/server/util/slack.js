@@ -1,3 +1,6 @@
+const debug = require('debug')('growi:util:slack');
+const urljoin = require('url-join');
+
 /**
  * slack
  */
@@ -5,8 +8,7 @@
 module.exports = function(crowi) {
   'use strict';
 
-  const debug = require('debug')('growi:util:slack'),
-    config = crowi.getConfig(),
+  const config = crowi.getConfig(),
     Config = crowi.model('Config'),
     Slack = require('slack-node'),
     slack = {};
@@ -123,10 +125,10 @@ module.exports = function(crowi) {
     const attachment = {
       color: '#263a3c',
       author_name: '@' + user.username,
-      author_link: url + '/user/' + user.username,
+      author_link: urljoin(url, 'user', user.username),
       author_icon: user.image,
       title: page.path,
-      title_link: url + '/' + page._id,
+      title_link: urljoin(url, page._id),
       text: body,
       mrkdwn_in: ['text'],
     };
@@ -151,7 +153,7 @@ module.exports = function(crowi) {
     const attachment = {
       color: '#263a3c',
       author_name: '@' + user.username,
-      author_link: url + '/user/' + user.username,
+      author_link: urljoin(url, 'user', user.username),
       author_icon: user.image,
       text: body,
       mrkdwn_in: ['text'],
@@ -174,7 +176,7 @@ module.exports = function(crowi) {
     let text;
     const url = crowi.configManager.getSiteUrl();
 
-    const pageUrl = `<${url}${path}|${path}>`;
+    const pageUrl = `<${urljoin(url, path)}|${path}>`;
     if (updateType == 'create') {
       text = `:rocket: ${user.username} created a new page! ${pageUrl}`;
     }
@@ -187,7 +189,7 @@ module.exports = function(crowi) {
 
   const getSlackMessageTextForComment = function(path, user) {
     const url = crowi.configManager.getSiteUrl();
-    const pageUrl = `<${url}${path}|${path}>`;
+    const pageUrl = `<${urljoin(url, path)}|${path}>`;
     const text = `:speech_balloon: ${user.username} commented on ${pageUrl}`;
 
     return text;

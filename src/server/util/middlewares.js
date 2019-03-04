@@ -1,6 +1,9 @@
 const debug = require('debug')('growi:lib:middlewares');
+const logger = require('@alias/logger')('growi:lib:middlewares');
+const pathUtils = require('@commons/util/path-utils');
 const md5 = require('md5');
 const entities = require('entities');
+
 
 exports.csrfKeyGenerator = function(crowi, app) {
   return function(req, res, next) {
@@ -15,26 +18,22 @@ exports.csrfKeyGenerator = function(crowi, app) {
 };
 
 exports.loginChecker = function(crowi, app) {
-  return function(req, res, next) {
-    var User = crowi.model('User');
+  const User = crowi.model('User');
+  return async function(req, res, next) {
+    let user = null;
 
-    // session に user object が入ってる
-    if (req.session.user && '_id' in req.session.user) {
-      User.findById(req.session.user._id, function(err, userData) {
-        if (err) {
-          next();
-        }
-        else {
-          req.user = req.session.user = userData;
-          res.locals.user = req.user;
-          next();
-        }
-      });
-    }
-    else {
-      req.user = req.session.user = null;
+    try {
+      // session に user object が入ってる
+      if (req.session.user && '_id' in req.session.user) {
+        user = await User.findById(req.session.user._id).populate(User.IMAGE_POPULATION);
+      }
+
+      req.user = req.session.user = user;
       res.locals.user = req.user;
       next();
+    }
+    catch (err) {
+      next(err);
     }
   };
 };
@@ -62,7 +61,7 @@ exports.csrfVerify = function(crowi, app) {
       return next();
     }
 
-    debug('csrf verification failed. return 403', csrfKey, token);
+    logger.warn('csrf verification failed. return 403', csrfKey, token);
     return res.sendStatus(403);
   };
 };
@@ -87,6 +86,9 @@ exports.swigFilters = function(crowi, app, swig) {
   const getUploadedPictureSrc = function(user) {
     if (user.image) {
       return user.image;
+    }
+    else if (user.imageAttachment != null) {
+      return user.imageAttachment.filePathProxied;
     }
     else {
       return '/images/icons/user.svg';
@@ -145,12 +147,8 @@ exports.swigFilters = function(crowi, app, swig) {
         .replace(/\n/g, '<br>');
     });
 
-    swig.setFilter('removeLastSlash', function(string) {
-      if (string == '/') {
-        return string;
-      }
-
-      return string.substr(0, string.length - 1);
+    swig.setFilter('removeTrailingSlash', function(string) {
+      return pathUtils.removeTrailingSlash(string);
     });
 
     swig.setFilter('presentation', function(string) {
@@ -181,6 +179,10 @@ exports.swigFilters = function(crowi, app, swig) {
 
     swig.setFilter('preventXss', function(string) {
       return crowi.xss.process(string);
+    });
+
+    swig.setFilter('slice', function(list, start, end) {
+      return list.slice(start, end);
     });
 
     next();
@@ -280,38 +282,11 @@ exports.accessTokenParser = function(crowi, app) {
 // this is for Installer
 exports.applicationNotInstalled = function() {
   return function(req, res, next) {
-    var config = req.config;
+    const config = req.config;
 
     if (Object.keys(config.crowi).length !== 0) {
       req.flash('errorMessage', 'Application already installed.');
       return res.redirect('admin'); // admin以外はadminRequiredで'/'にリダイレクトされる
-    }
-
-    return next();
-  };
-};
-
-exports.checkSearchIndicesGenerated = function(crowi, app) {
-  return function(req, res, next) {
-    const searcher = crowi.getSearcher();
-
-    // build index
-    if (searcher) {
-      searcher.buildIndex()
-        .then((data) => {
-          if (!data.errors) {
-            debug('Index created.');
-          }
-          return searcher.addAllPages();
-        })
-        .catch((error) => {
-          if (error.message != null && error.message.match(/index_already_exists_exception/)) {
-            debug('Creating index is failed: ', error.message);
-          }
-          else {
-            console.log(`Error while building index of Elasticsearch': ${error.message}`);
-          }
-        });
     }
 
     return next();

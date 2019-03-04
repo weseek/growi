@@ -56,12 +56,10 @@
       }
     }
 
-    .liker-count, .contributor-count, .seen-user-count {
+    .liker-user-count, .seen-user-count {
       font-size: 1.2em;
       font-weight: bold;
       margin-bottom: 5px;
-    }
-    .contributor-list, .seen-user-list {
     }
   }
 
@@ -90,20 +88,25 @@
       .page-comment-form {
         margin-top: 16px;
 
-        .comment-form {
-        }
-
         .comment-form-main {
-
-          .comment-form-comment {
-            height: 60px;
+          .navbar-editor button {
+            padding: 5px;
+            font-size: 12px;
           }
-
+          .overlay-gfm-cheatsheet {
+            display: none;  // hide cheatsheet
+          }
+          .CodeMirror {
+            height: 150px;
+          }
           .comment-submit {
             margin-top: 8px;
-            text-align: right;
           }
         }
+      }
+
+      hr {
+        border-color: #ccc;
       }
 
       .page-comments-list {

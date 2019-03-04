@@ -267,20 +267,6 @@ describe('Page', () => {
     });
   });
 
-  describe('Normalize path', () => {
-    context('Normalize', () => {
-      it('should start with slash', done => {
-        expect(Page.normalizePath('hoge/fuga')).to.equal('/hoge/fuga');
-        done();
-      });
-
-      it('should trim spaces of slash', done => {
-        expect(Page.normalizePath('/ hoge / fuga')).to.equal('/hoge/fuga');
-        done();
-      });
-    });
-  });
-
   describe('.findPage', () => {
     context('findByIdAndViewer', () => {
       it('should find page (public)', async() => {

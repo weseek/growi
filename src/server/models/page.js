@@ -96,14 +96,16 @@ const addSlashOfEnd = (path) => {
  * @param {any} page Query or Document
  * @param {string} userPublicFields string to set to select
  */
-const populateDataToShowRevision = (page, userPublicFields) => {
+const populateDataToShowRevision = (page, userPublicFields, imagePopulation) => {
   return page
-    .populate({ path: 'lastUpdateUser', model: 'User', select: userPublicFields })
-    .populate({ path: 'creator', model: 'User', select: userPublicFields })
-    .populate({ path: 'grantedGroup', model: 'UserGroup' })
-    .populate({ path: 'revision', model: 'Revision', populate: {
-      path: 'author', model: 'User', select: userPublicFields
-    } });
+    .populate([
+      { path: 'lastUpdateUser', model: 'User', select: userPublicFields, populate: imagePopulation },
+      { path: 'creator', model: 'User', select: userPublicFields, populate: imagePopulation },
+      { path: 'grantedGroup', model: 'UserGroup' },
+      { path: 'revision', model: 'Revision', populate: {
+        path: 'author', model: 'User', select: userPublicFields, populate: imagePopulation
+      }}
+    ]);
 };
 
 
@@ -237,8 +239,18 @@ class PageQueryBuilder {
     return this;
   }
 
-  populateDataToShowRevision(userPublicFields) {
-    this.query = populateDataToShowRevision(this.query, userPublicFields);
+  populateDataToList(userPublicFields, imagePopulation) {
+    this.query = this.query
+      .populate({
+        path: 'lastUpdateUser',
+        select: userPublicFields,
+        populate: imagePopulation
+      });
+    return this;
+  }
+
+  populateDataToShowRevision(userPublicFields, imagePopulation) {
+    this.query = populateDataToShowRevision(this.query, userPublicFields, imagePopulation);
     return this;
   }
 
@@ -419,7 +431,7 @@ module.exports = function(crowi) {
     validateCrowi();
 
     const User = crowi.model('User');
-    return populateDataToShowRevision(this, User.USER_PUBLIC_FIELDS)
+    return populateDataToShowRevision(this, User.USER_PUBLIC_FIELDS, User.IMAGE_POPULATION)
       .execPopulate();
   };
 
@@ -475,16 +487,6 @@ module.exports = function(crowi) {
     grantLabels[GRANT_OWNER]      = 'Just me'; // 自分のみ
 
     return grantLabels;
-  };
-
-  pageSchema.statics.normalizePath = function(path) {
-    if (!path.match(/^\//)) {
-      path = '/' + path;
-    }
-
-    path = path.replace(/\/\s+?/g, '/').replace(/\s+\//g, '/');
-
-    return path;
   };
 
   pageSchema.statics.getUserPagePath = function(user) {
@@ -715,10 +717,12 @@ module.exports = function(crowi) {
     builder.addConditionToExcludeRedirect();
     builder.addConditionToPagenate(opt.offset, opt.limit);
 
+    // count
     const totalCount = await builder.query.exec('count');
-    const q = builder.query
-      .populate({ path: 'lastUpdateUser', model: 'User', select: User.USER_PUBLIC_FIELDS });
-    const pages = await q.exec('find');
+
+    // find
+    builder.populateDataToList(User.USER_PUBLIC_FIELDS, User.IMAGE_POPULATION);
+    const pages = await builder.query.exec('find');
 
     const result = { pages, totalCount, offset: opt.offset, limit: opt.limit };
     return result;
@@ -753,12 +757,13 @@ module.exports = function(crowi) {
     // add grant conditions
     await addConditionToFilteringByViewerForList(builder, user, showAnyoneKnowsLink);
 
-    builder.addConditionToPagenate(opt.offset, opt.limit, sortOpt);
-
+    // count
     const totalCount = await builder.query.exec('count');
-    const q = builder.query
-      .populate({ path: 'lastUpdateUser', model: 'User', select: User.USER_PUBLIC_FIELDS });
-    const pages = await q.exec('find');
+
+    // find
+    builder.addConditionToPagenate(opt.offset, opt.limit, sortOpt);
+    builder.populateDataToList(User.USER_PUBLIC_FIELDS, User.IMAGE_POPULATION);
+    const pages = await builder.query.exec('find');
 
     const result = { pages, totalCount, offset: opt.offset, limit: opt.limit };
     return result;
