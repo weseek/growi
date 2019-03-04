@@ -3,6 +3,9 @@
     "stylelint-config-recess-order",
     "./node_modules/prettier-stylelint/config.js"
   ],
+  "ignoreFiles": [
+    "src/client/styles/scss/_override-bootstrap-variables.scss"
+  ],
   "rules": {
     "indentation": 2,
     "string-quotes": "single",
