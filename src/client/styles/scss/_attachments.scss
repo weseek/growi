@@ -6,34 +6,33 @@
     list-style: none;
   }
 }
-.page-attachments, .page-meta {
+.page-attachments,
+.page-meta {
   font-size: 0.95em;
 
   .attachment-in-use {
-    margin: 0 0 0 4px;
     padding: 1px 5px;
+    margin: 0 0 0 4px;
   }
 
   .attachment-filetype {
-    margin: 0 0 0 4px;
     padding: 1px 5px;
+    margin: 0 0 0 4px;
     font-weight: normal;
   }
 
   .attachment-download {
-    cursor: pointer;
     margin: 0 0 0 4px;
+    cursor: pointer;
   }
 
   .attachment-delete {
-    cursor: pointer;
     margin: 0 0 0 4px;
+    cursor: pointer;
   }
-
 }
 
 .attachment-delete-modal {
-
   .attachment-delete-image {
     text-align: center;
 

@@ -1,0 +1,15 @@
+{
+  "extends": [
+    "stylelint-config-recess-order",
+    "./node_modules/prettier-stylelint/config.js"
+  ],
+  "rules": {
+    "indentation": 2,
+    "string-quotes": "single",
+    "rule-empty-line-before": [ "always-multi-line", {
+      "ignore": ["after-comment", "stylelint-commands"]
+    } ],
+    "selector-combinator-space-before": "always",
+    "selector-combinator-space-after": "always"
+  }
+}

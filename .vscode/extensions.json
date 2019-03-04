@@ -4,13 +4,13 @@
 
 	// List of extensions which should be recommended for users of this workspace.
 	"recommendations": [
-    "hookyqr.beautify",
     "msjsdiag.debugger-for-chrome",
     "hbenl.vscode-firefox-debug",
     "editorconfig.editorconfig",
     "dbaeumer.vscode-eslint",
     "eg2.vscode-npm-script",
     "christian-kohler.npm-intellisense",
+    "esbenp.prettier-vscode",
 	],
 	// List of extensions recommended by VS Code that should not be recommended for users of this workspace.
 	"unwantedRecommendations": [

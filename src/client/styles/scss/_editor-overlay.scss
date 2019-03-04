@@ -2,10 +2,10 @@
   .overlay.#{$additionalSelector} {
     background: rgba(255, 255, 255, 0.5);
     .overlay-content {
-      background: rgba(200, 200, 200, 0.5);
-      color: #444;
-      font-size: $contentFontSize;
       padding: $contentPadding;
+      font-size: $contentFontSize;
+      color: #444;
+      background: rgba(200, 200, 200, 0.5);
     }
   }
 }
@@ -13,16 +13,15 @@
 // overlay in .editor-container
 .editor-container {
   .overlay {
-    // layout
-    display: flex;
-    justify-content: center;
-    align-items: center;
     position: absolute;
-    z-index: 7; // forward than .CodeMirror-vscrollbar
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
+    z-index: 7; // forward than .CodeMirror-vscrollbar
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   // loading keymap
@@ -30,18 +29,18 @@
 
   // cheat sheat
   .overlay.overlay-gfm-cheatsheet {
-    justify-content: flex-end;
     align-items: flex-end;
+    justify-content: flex-end;
 
     pointer-events: none;
 
     .panel.gfm-cheatsheet {
-      opacity: 0.6;
       box-shadow: unset;
+      opacity: 0.6;
       .panel-body {
-        color: $text-muted;
-        font-family: monospace;
         min-width: 30em;
+        font-family: monospace;
+        color: $text-muted;
       }
       ul > li {
         list-style: none;
@@ -49,13 +48,14 @@
     }
 
     a.gfm-cheatsheet-modal-link {
+      color: $text-muted;
       pointer-events: all;
       cursor: pointer;
 
       opacity: 0.6;
-      color: $text-muted;
 
-      &:hover, &:focus {
+      &:hover,
+      &:focus {
         opacity: 1;
       }
     }

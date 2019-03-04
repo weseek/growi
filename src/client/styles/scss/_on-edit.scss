@@ -9,11 +9,10 @@ body:not(.on-edit) {
 }
 
 body.on-edit {
-
   // calculate margin
-  $header-plus-footer: 42px                     // .nav height
-                      + 1px                     // .page-editor-footer border-top
-                      + 40px !default;          // .page-editor-footer min-height
+  $header-plus-footer: 42px //  .nav height
+    + 1px //                    .page-editor-footer border-top
+    + 40px !default; //         .page-editor-footer min-height
 
   @include expand-editor($header-plus-footer);
 
@@ -21,7 +20,8 @@ body.on-edit {
   .main {
     > .row {
       margin: 0;
-      > .col-lg-10, > .col-md-9 {
+      > .col-lg-10,
+      > .col-md-9 {
         width: 100%;
         padding: 0;
       }
@@ -40,7 +40,9 @@ body.on-edit {
   .portal-form-button,
   .alert-info.alert-moved,
   .alert-info.alert-unlinked,
-  .btn-like, .btn-bookmark, .btn-edit,
+  .btn-like,
+  .btn-bookmark,
+  .btn-edit,
   .authors,
   footer {
     display: none !important;
@@ -67,7 +69,8 @@ body.on-edit {
 
   // hide hackmd related alert
   &.hackmd #page-status-alert {
-    .alert-hackmd-someone-editing, .alert-hackmd-draft-exists {
+    .alert-hackmd-someone-editing,
+    .alert-hackmd-draft-exists {
       display: none;
     }
   }
@@ -80,22 +83,22 @@ body.on-edit {
   }
 
   .row.bg-title {
-    $left-margin: $nav-main-left-tab-width * 2 + 25px;  // width of .nav-main-left-tab x 2 + some margin
-    $right-margin: 128px + 94px + 46px;                 // width of all of nav-main-right-tab
+    $left-margin: $nav-main-left-tab-width * 2 + 25px; // width of .nav-main-left-tab x 2 + some margin
+    $right-margin: 128px + 94px + 46px; //                width of all of nav-main-right-tab
 
     position: absolute;
-    z-index: 1;
     left: $left-margin;
+    z-index: 1;
     width: calc(100% - #{$left-margin} - #{$right-margin});
-    pointer-events: none;                               // disable pointer-events because it becomes an obstacle
-
-    > .header-container {
-      pointer-events: initial;                          // enable pointer-events
-      padding: 0;   // for crowi layout
-      width: 100%;  // for crowi layout
-    }
+    pointer-events: none; // disable pointer-events because it becomes an obstacle
 
     background: none;
+
+    > .header-container {
+      width: 100%; //   for crowi layout
+      padding: 0; //    for crowi layout
+      pointer-events: initial; // enable pointer-events
+    }
 
     .header-wrap {
       overflow-x: hidden;
@@ -121,9 +124,9 @@ body.on-edit {
 
   .page-editor-footer {
     width: 100%;
-    margin: 0;
-    padding: 3px;
     min-height: 40px;
+    padding: 3px;
+    margin: 0;
     border-top: solid 1px transparent;
 
     .grant-selector {
@@ -138,11 +141,11 @@ body.on-edit {
 
   #page-status-alert .myadmin-alert {
     position: absolute;
-    opacity: 0.8;
-    bottom: 42px;
     right: 3px;
+    bottom: 42px;
     left: 3px;
     box-shadow: 2px 2px 5px #666;
+    opacity: 0.8;
 
     &:hover {
       opacity: 1;
@@ -150,7 +153,6 @@ body.on-edit {
   }
 
   &.builtin-editor {
-
     /*****************
     * Editor styles
     *****************/
@@ -173,23 +175,21 @@ body.on-edit {
       // add icon on cursor
       .autoformat-markdown-table-activated .CodeMirror-cursor {
         &:after {
-          display: block;
-          content: ' ';
-          background-image: url(/images/icons/editor/table.svg);
-
           position: relative;
-          width: 14px;
-          height: 14px;
           top: -16px;
           left: 5px;
+          display: block;
+          width: 14px;
+          height: 14px;
+          content: ' ';
+          background-image: url(/images/icons/editor/table.svg);
         }
       }
 
       .textarea-editor {
-        border: none;
         font-family: monospace;
+        border: none;
       }
-
     }
     .page-editor-preview-container {
     }
@@ -213,8 +213,8 @@ body.on-edit {
         }
         .dropdown-menu > li > a {
           display: flex;
-          justify-content: space-between;
           align-items: center;
+          justify-content: space-between;
 
           .menuitem-label {
             flex: 1;
@@ -223,7 +223,8 @@ body.on-edit {
         }
       }
 
-      @media (max-width: $screen-xs-max) { // {{{ less than smartphone size
+      // less than smartphone size
+      @media (max-width: $screen-xs-max) {
         display: none;
       }
     }
@@ -241,13 +242,13 @@ body.on-edit {
     }
   } // .builtin-editor .tab-pane#edit
 
-
   &.hackmd {
     #page-editor-options-selector {
       display: none;
     }
 
-    .hackmd-preinit, #iframe-hackmd-container > iframe {
+    .hackmd-preinit,
+    #iframe-hackmd-container > iframe {
       border: none;
     }
 
@@ -256,27 +257,25 @@ body.on-edit {
       color: $muted;
     }
 
-    .hackmd-start-button-container, .hackmd-resume-button-container {
+    .hackmd-start-button-container,
+    .hackmd-resume-button-container {
       .btn-lg .btn-label {
-        padding-top: 6px;     // for SplitButton
-        padding-bottom: 6px;  // for SplitButton
+        padding-top: 6px; // for SplitButton
+        padding-bottom: 6px; // for SplitButton
       }
     }
     .hackmd-resume-button-container {
       .dropdown-menu {
-        left: unset;
         right: 0;
+        left: unset;
       }
     }
     .hackmd-discard-button {
-      vertical-align: unset;
       text-decoration: underline;
+      vertical-align: unset;
     }
-
   }
-
 }
-
 
 /*
  * for creating portal
@@ -309,12 +308,11 @@ body.on-edit {
   // active line
   .CodeMirror-hint-active.crowi-emoji-autocomplete {
     .img-container {
-      font-size: 15px;  // adjust to .wiki
       padding-top: 0.3em;
       padding-bottom: 0.3em;
+      font-size: 15px; // adjust to .wiki
     }
   }
-
 }
 
 // overwrite .CodeMirror-placeholder

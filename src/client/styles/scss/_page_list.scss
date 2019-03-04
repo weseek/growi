@@ -1,13 +1,12 @@
-
 .page-list {
   .page-list-container {
-    line-height: 1.6em;
     font-size: 15px;
+    line-height: 1.6em;
   }
 
   .page-list-ul {
-    margin: 0;
     padding-left: 0;
+    margin: 0;
 
     > li {
       margin: 0;
@@ -25,10 +24,10 @@
       }
 
       > span.page-list-meta {
-        font-size: .9em;
+        font-size: 0.9em;
 
-        >span {
-          margin-right: .3rem;
+        > span {
+          margin-right: 0.3rem;
         }
 
         i {
@@ -47,17 +46,16 @@
       padding-left: 0;
     }
   }
-
 }
 
 .popular-page-high {
-  color: #e80000;
   font-size: 1.1em;
   font-weight: bold;
+  color: #e80000;
 }
 .popular-page-mid {
-  color: #e47800;
   font-weight: bold;
+  color: #e47800;
 }
 .popular-page-low {
   color: #ab7c7c;

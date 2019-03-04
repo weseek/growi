@@ -3,8 +3,8 @@
 .rbt-input.form-control {
   // focus
   &.focus {
-    box-shadow: none;
     border-color: inherit;
+    box-shadow: none;
   }
 }
 // hide loading icon

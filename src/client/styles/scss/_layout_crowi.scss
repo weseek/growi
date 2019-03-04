@@ -9,31 +9,30 @@
 
   .revision-toc {
     float: right;
-    border: solid 1px #aaa;
-    border-radius: 5px;
     max-width: 250px;
     overflow: hidden;
+    border: solid 1px #aaa;
+    border-radius: 5px;
 
     .revision-toc-head {
       display: inline-block;
       float: right;
-      border-left: solid 1px #aaa;
-      border-bottom: solid 1px #aaa;
-      border-radius: 0 5px;
       padding: 3px 11px;
+      margin-bottom: 5px;
+      margin-left: 5px;
       font-weight: bold;
       background: $gray-lighter;
-      margin-left: 5px;
-      margin-bottom: 5px;
+      border-bottom: solid 1px #aaa;
+      border-left: solid 1px #aaa;
+      border-radius: 0 5px;
 
       &.collapsed {
-        border: none;
         margin: 0;
+        border: none;
       }
     }
     .revision-toc-content {
       background: #fcfcfc;
     }
   }
-
 }
