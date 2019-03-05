@@ -293,15 +293,15 @@ module.exports = function(crowi) {
   };
 
   pageSchema.methods.updateTags = async function(newTagsName) {
-    const page = this;
-    const PageTagRelation = mongoose.model('PageTagRelation');
-    const Tag = mongoose.model('Tag');
+    // const page = this;
+    // const PageTagRelation = mongoose.model('PageTagRelation');
+    // const Tag = mongoose.model('Tag');
 
-    const newTagNameList = [newTagsName]; // [TODO] listing requested Tags on client side
+    // const newTagNameList = [newTagsName]; // [TODO] listing requested Tags on client side
 
-    // get tags relate this page
-    const relations = await PageTagRelation.find({relatedPage: page._id}).populate('relatedTag').select('-_id relatedTag');
-    console.log(relations);
+    // // get tags relate this page
+    // const relations = await PageTagRelation.find({relatedPage: page._id}).populate('relatedTag').select('-_id relatedTag');
+    // console.log(relations);
     // // relations.populate(...)
     // // const relatedTagNameList = await Promise.all(relations.map(async function(relation) {
     // //   const relatedTag =  await Tag.findOne({_id: relation.relatedTag});
@@ -342,22 +342,21 @@ module.exports = function(crowi) {
     //     setTagNameList.push(newTagName);
     //   }
     // });
-// const setTagNameList = ['a', 'b', 'c'];
-//     // set tags
-//     setTagNameList.map((tagName) => {
-//       Tag.findOne({name: tagName}, async function(err, tag) {
-//         if (tag == null) {
-//           tag = await Tag.create({name: tagName});
-//         }
-//         // make a relation
-//         PageTagRelation.create({relatedPage: page._id, relatedTag: tag._id}, function(err, relation) {
-//           if (err) {
-//             throw new Error(err);
-//           }
-//           debug('tag linked this page: ', tag.name);
-//         });
-//       });
-//     });
+    // // set tags
+    // setTagNameList.map((tagName) => {
+    //   Tag.findOne({name: tagName}, async function(err, tag) {
+    //     if (tag == null) {
+    //       tag = await Tag.create({name: tagName});
+    //     }
+    //     // make a relation
+    //     PageTagRelation.create({relatedPage: page._id, relatedTag: tag._id}, function(err, relation) {
+    //       if (err) {
+    //         throw new Error(err);
+    //       }
+    //       debug('tag linked this page: ', tag.name);
+    //     });
+    //   });
+    // });
   };
 
 

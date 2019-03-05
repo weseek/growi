@@ -658,8 +658,8 @@ module.exports = function(crowi, app) {
       await notifyToSlackByUser(page, req.user, slackChannels, 'update', previousRevision);
     }
 
-    // update page tag
-    await page.updateTags(pageTags);
+    // // update page tag
+    // await page.updateTags(pageTags); [pagetag]
   };
 
   /**

@@ -307,7 +307,7 @@ if (pageId) {
 if (pagePath) {
   componentMappings['page'] = <Page crowi={crowi} crowiRenderer={crowiRenderer} markdown={markdown} pagePath={pagePath} showHeadEditButton={true} onSaveWithShortcut={saveWithShortcut} />;
   componentMappings['revision-path'] = <RevisionPath pagePath={pagePath} crowi={crowi} />;
-  componentMappings['page-tag'] = <PageTagForm pageTags={currentPageTags} submitTags={getNewPageTags} />;
+  // componentMappings['page-tag'] = <PageTagForm pageTags={currentPageTags} submitTags={getNewPageTags} />; [pagetag]
   componentMappings['revision-url'] = <RevisionUrl pageId={pageId} pagePath={pagePath} />;
 }
 
