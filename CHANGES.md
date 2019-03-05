@@ -1,7 +1,11 @@
 CHANGES
 ========
 
-## 3.4.0-RC
+## 3.4.1-RC
+
+* 
+
+## 3.4.0
 
 ### BREAKING CHANGES
 
