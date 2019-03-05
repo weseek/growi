@@ -26,34 +26,10 @@ schema.plugin(mongoosePaginate);
  * @class PageTagRelation
  */
 class PageTagRelation {
-
-  static init() {
-    this.removeAllInvalidRelations();
-  }
-
-  /**
-   * remove all invalid relations that has reference to unlinked document
-   */
-  static removeAllInvalidRelations() {
-    const self = this;
-    self.find(function(err, relations) {
-      // filter invalid documents
-      const invalidRelations = relations.filter(function(relation) {
-        return relation.relatedTag == null || relation.relatedPage == null;
-      });
-      const ids = invalidRelations.map(relation => relation._id);
-      self.deleteMany({
-        _id: {
-          $in: ids
-        }
-      });
-    });
-  }
 }
 
 module.exports = function() {
   schema.loadClass(PageTagRelation);
   const model = mongoose.model('PageTagRelation', schema);
-  model.init();
   return model;
 };
