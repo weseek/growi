@@ -103,16 +103,26 @@ body.on-edit {
     .header-wrap {
       overflow-x: hidden;
     }
-    h1#revision-path {
-      @include variable-font-size(20px);
-      line-height: 1em;
+    div.title-container {
+      margin-right: 0px;
+      h1#revision-path {
+        @include variable-font-size(20px);
+        line-height: 1em;
 
-      // nowrap even if the path is too long
-      .d-flex {
-        flex-wrap: nowrap;
+        // nowrap even if the path is too long
+        .d-flex {
+          flex-wrap: nowrap;
+        }
+        .path-segment {
+          white-space: nowrap;
+        }
       }
-      .path-segment {
-        white-space: nowrap;
+    }
+    div#page-tag {
+      margin-right: auto;
+      display: inline;
+      .page-tag-form {
+        border-radius: 5px;
       }
     }
 
