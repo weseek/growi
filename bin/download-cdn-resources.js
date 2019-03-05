@@ -27,6 +27,6 @@ service.downloadAndWriteAll(downloader)
   .then(() => {
     logger.info('Download is terminated successfully');
   })
-  .catch(err => {
+  .catch((err) => {
     logger.error(err);
   });

@@ -85,6 +85,7 @@ module.exports = {
       "never"
     ],
     "import/no-extraneous-dependencies": 'off',
-    "import/no-dynamic-require": 'off'
+    "import/no-dynamic-require": 'off',
+    "import/no-unresolved": [2, { ignore: ['^@'] }],  // ignore @alias/..., @commons/..., ...
   },
 };
