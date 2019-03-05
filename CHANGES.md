@@ -1,9 +1,13 @@
 CHANGES
 ========
 
-## 3.4.1-RC
+## 3.4.2-RC
 
 * 
+
+## 3.4.1
+
+* Fix: "Cannot find module 'stream-to-promise'" occured when build client with `FILE_UPLOAD=local`
 
 ## 3.4.0
 
