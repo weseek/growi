@@ -1,6 +1,6 @@
 {
   "name": "growi",
-  "version": "3.4.1-RC",
+  "version": "3.4.2-RC",
   "description": "Team collaboration software using markdown",
   "tags": [
     "wiki",
@@ -118,6 +118,7 @@
     "rimraf": "^2.6.1",
     "slack-node": "^0.1.8",
     "socket.io": "^2.0.3",
+    "stream-to-promise": "^2.2.0",
     "string-width": "^3.0.0",
     "swig-templates": "^2.0.2",
     "uglifycss": "^0.0.29",
@@ -204,7 +205,6 @@
     "sinon": "^7.2.2",
     "sinon-chai": "^3.3.0",
     "socket.io-client": "^2.0.3",
-    "stream-to-promise": "^2.2.0",
     "style-loader": "^0.23.0",
     "stylelint-config-recess-order": "^2.0.1",
     "terser-webpack-plugin": "^1.2.2",
