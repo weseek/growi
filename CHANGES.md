@@ -1,14 +1,42 @@
 CHANGES
 ========
 
-## 3.4.0-RC
+## 3.4.2-RC
+
+* 
+
+## 3.4.1
+
+* Fix: "Cannot find module 'stream-to-promise'" occured when build client with `FILE_UPLOAD=local`
+
+## 3.4.0
+
+### BREAKING CHANGES
+
+None.
+
+Upgrading Guide: https://docs.growi.org/guide/upgrading/34x.html
+
+### Updates
 
 * Improvement: Restrict to access attachments when the user is not allowed to see page
 * Improvement: Show fans and visitors of page
+* Improvement: Full text search tokenizing
+* Improvement: Markdown comment on Crowi Classic Layout
 * Fix: Profile image is not displayed when `FILE_UPLOAD=mongodb`
+* Fix: Posting comment doesn't work under Crowi Classic Layout
+    * Introduced by 3.1.5
+* Fix: HackMD doesn't work when `siteUrl` ends with slash
+* Fix: Ensure not to be able to move/duplicate page to the path which has trailing slash
 * Support: Launch with Node.js v10
 * Support: Launch with MongoDB 3.6
 * Support: Launch with Elasticsearch 6.6
+* Support: Upgrade libs
+    * bootstrap-sass
+    * browser-sync
+    * react
+    * react-dom
+
 
 ## 3.3.10
 

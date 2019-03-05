@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import * as pagePathUtils from '@commons/util/page-path-utils';
+import * as pathUtils from '@commons/util/path-utils';
 import SearchTypeahead from './SearchTypeahead';
 
 export default class PagePathAutoComplete extends React.Component {
@@ -34,9 +34,9 @@ export default class PagePathAutoComplete extends React.Component {
   }
 
   getKeywordOnInit(path) {
-    return this.props.addSlashToTheEnd
-      ? pagePathUtils.addSlashToTheEnd(path)
-      : pagePathUtils.removeLastSlash(path);
+    return this.props.addTrailingSlash
+      ? pathUtils.addTrailingSlash(path)
+      : pathUtils.removeTrailingSlash(path);
   }
 
   render() {
@@ -59,7 +59,7 @@ export default class PagePathAutoComplete extends React.Component {
 PagePathAutoComplete.propTypes = {
   crowi:            PropTypes.object.isRequired,
   initializedPath:  PropTypes.string,
-  addSlashToTheEnd: PropTypes.bool,
+  addTrailingSlash: PropTypes.bool,
 };
 
 PagePathAutoComplete.defaultProps = {

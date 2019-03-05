@@ -549,16 +549,6 @@ module.exports = function(crowi) {
     return grantLabels;
   };
 
-  pageSchema.statics.normalizePath = function(path) {
-    if (!path.match(/^\//)) {
-      path = '/' + path;
-    }
-
-    path = path.replace(/\/\s+?/g, '/').replace(/\s+\//g, '/');
-
-    return path;
-  };
-
   pageSchema.statics.getUserPagePath = function(user) {
     return '/user/' + user.username;
   };

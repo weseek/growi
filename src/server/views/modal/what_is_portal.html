@@ -67,12 +67,12 @@
 
         <strong>Warning!</strong><br>
 
-        <p>既に <strong><a href="{{ path|removeLastSlash }}">{{ path|removeLastSlash }}</a></strong> のページが存在します。</p>
+        <p>既に <strong><a href="{{ path|removeTrailingSlash }}">{{ path|removeTrailingSlash }}</a></strong> のページが存在します。</p>
 
         <p>
-          <a href="{{ path|removeLastSlash }}">{{ path|removeLastSlash }}</a> をポータル化するには、
-          <a href="{{ path|removeLastSlash }}">{{ path|removeLastSlash }}</a> に移動し、「ページを移動」させてください。<br>
-          <a href="{{ path|removeLastSlash }}">{{ path|removeLastSlash }}</a> とは別に、このページ(<code>{{ path }}</code>)にポータルを作成する場合、このまま編集を続けて作成してください。
+          <a href="{{ path|removeTrailingSlash }}">{{ path|removeTrailingSlash }}</a> をポータル化するには、
+          <a href="{{ path|removeTrailingSlash }}">{{ path|removeTrailingSlash }}</a> に移動し、「ページを移動」させてください。<br>
+          <a href="{{ path|removeTrailingSlash }}">{{ path|removeTrailingSlash }}</a> とは別に、このページ(<code>{{ path }}</code>)にポータルを作成する場合、このまま編集を続けて作成してください。
         </p>
 
       </div>

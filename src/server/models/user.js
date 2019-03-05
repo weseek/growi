@@ -270,6 +270,11 @@ module.exports = function(crowi) {
     });
   };
 
+  userSchema.methods.asyncMakeAdmin = async function(callback) {
+    this.admin = 1;
+    return this.save();
+  };
+
   userSchema.methods.statusActivate = function(callback) {
     debug('Activate User', this);
     this.status = STATUS_ACTIVE;
