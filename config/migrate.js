@@ -6,11 +6,11 @@
  */
 
 function getMongoUri(env) {
-  return env.MONGOLAB_URI || // for B.C.
-    env.MONGODB_URI || // MONGOLAB changes their env name
-    env.MONGOHQ_URL ||
-    env.MONGO_URI ||
-    ((env.NODE_ENV === 'test') ? 'mongodb://localhost/growi_test' : 'mongodb://localhost/growi');
+  return env.MONGOLAB_URI // for B.C.
+    || env.MONGODB_URI // MONGOLAB changes their env name
+    || env.MONGOHQ_URL
+    || env.MONGO_URI
+    || ((env.NODE_ENV === 'test') ? 'mongodb://localhost/growi_test' : 'mongodb://localhost/growi');
 }
 
 const mongoUri = getMongoUri(process.env);
@@ -25,5 +25,5 @@ module.exports = {
     },
   },
   migrationsDir: 'src/migrations/',
-  changelogCollectionName: 'migrations'
+  changelogCollectionName: 'migrations',
 };

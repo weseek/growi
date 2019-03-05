@@ -30,7 +30,7 @@ module.exports = {
       'xss',
       // GROWI Libraries
       'growi-pluginkit',
-    ]
+    ],
   },
   output: {
     path: helpers.root('public/dll'),
@@ -44,7 +44,7 @@ module.exports = {
   plugins: [
     new webpack.DllPlugin({
       path: helpers.root('public/dll/manifest.json'),
-      name: 'growi_dlls'
-    })
+      name: 'growi_dlls',
+    }),
   ],
 };

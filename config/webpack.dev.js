@@ -3,18 +3,18 @@
  */
 
 const webpack = require('webpack');
-const helpers = require('../src/lib/util/helpers');
 
 /*
  * Webpack Plugins
  */
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const helpers = require('../src/lib/util/helpers');
 
 /**
  * Webpack Constants
  */
-const ANALYZE = process.env.ANALYZE;
+const { ANALYZE } = process.env;
 
 module.exports = require('./webpack.common')({
   mode: 'development',
@@ -37,19 +37,19 @@ module.exports = require('./webpack.common')({
         exclude: [
           helpers.root('src/client/styles/hackmd'),
           helpers.root('src/client/styles/scss/style-presentation.scss'),
-        ]
+        ],
       },
       { // Dump CSS for HackMD
         test: /\.(css|scss)$/,
         use: [
           MiniCssExtractPlugin.loader,
           'css-loader',
-          'sass-loader'
+          'sass-loader',
         ],
         include: [
           helpers.root('src/client/styles/hackmd'),
           helpers.root('src/client/styles/scss/style-presentation.scss'),
-        ]
+        ],
       },
     ],
   },
@@ -71,7 +71,7 @@ module.exports = require('./webpack.common')({
   ],
   optimization: {},
   performance: {
-    hints: false
-  }
+    hints: false,
+  },
 
 });
