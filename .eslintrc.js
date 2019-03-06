@@ -43,10 +43,6 @@ module.exports = {
         ignoreTrailingComments: true,
       },
     ],
-    'newline-per-chained-call': [
-      'error',
-      { ignoreChainWithDepth: 2 }
-    ],
     'no-continue': 'off',
     'no-param-reassign': [
       'error',
@@ -83,7 +79,6 @@ module.exports = {
         ArrayExpression: 'first',
         FunctionDeclaration: { body: 1, parameters: 2 },
         FunctionExpression: { body: 1, parameters: 2 },
-        MemberExpression: 'off',
       },
     ],
     // "key-spacing": [
