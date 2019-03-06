@@ -43,7 +43,7 @@ module.exports = {
     // retrieve all documents from 'pagegrouprelations'
     const relations = await db.collection('pagegrouprelations').find().toArray();
 
-    /* eslint-disable no-continue, no-await-in-loop */
+    /* eslint-disable no-await-in-loop */
     for (const relation of relations) {
       const page = await Page.findOne({ _id: relation.targetPage });
 
@@ -80,7 +80,7 @@ module.exports = {
     // retrieve all Page documents which granted by UserGroup
     const relatedPages = await Page.find({ grant: Page.GRANT_USER_GROUP });
     const insertDocs = [];
-    /* eslint-disable no-continue, no-await-in-loop */
+    /* eslint-disable no-await-in-loop */
     for (const page of relatedPages) {
       if (page.grantedGroup == null) {
         continue;
@@ -95,8 +95,8 @@ module.exports = {
 
       // create a new document for 'pagegrouprelations' collection that is managed by mongoose
       insertDocs.push({
-        targetPage: page._id, // eslint-disable-line no-underscore-dangle
-        relatedGroup: userGroup._id, // eslint-disable-line no-underscore-dangle
+        targetPage: page._id,
+        relatedGroup: userGroup._id,
         __v: 0,
       });
 

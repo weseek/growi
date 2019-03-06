@@ -29,6 +29,8 @@ module.exports = {
       "stroustrup",
       { "allowSingleLine": true },
     ],
+    'class-methods-use-this': 'off',
+    'consistent-return': 'off',
     "global-require": 'off',
     "key-spacing": [
       'error',
@@ -40,6 +42,7 @@ module.exports = {
         ignoreTrailingComments: true
       }
     ],
+    'no-continue': 'off',
     "no-param-reassign": [
       "error",
       { "props": false }
@@ -66,6 +69,7 @@ module.exports = {
       },
     ],
     'no-shadow': 'off',
+    'no-underscore-dangle': 'off',
     "prefer-destructuring": 'off',
     "indent": [
       "error",
@@ -97,6 +101,11 @@ module.exports = {
       "error",
       { "args": "none" }
     ],
+    'react/destructuring-assignment': 'off',
+    'react/forbid-prop-types': 'off',
+    'react/no-unused-prop-types': 'off',
+    'react/require-default-props': 'off',
+    'react/sort-comp': 'off',
     // "react/jsx-uses-vars": 1,
     // "react/no-string-refs": "off",
     "semi": [
