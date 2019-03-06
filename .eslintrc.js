@@ -107,6 +107,10 @@ module.exports = {
     'radix': 'off',
     'react/destructuring-assignment': 'off',
     'react/forbid-prop-types': 'off',
+    'react/jsx-filename-extension': [
+      'warn',
+      { extensions: ['.jsx']},
+    ],
     'react/no-unused-prop-types': 'off',
     'react/require-default-props': 'off',
     'react/sort-comp': 'off',
