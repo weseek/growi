@@ -24,7 +24,7 @@ module.exports = function(crowi, app) {
   const config = crowi.getConfig();
   const middleware = require('../util/middlewares');
 
-
+  const Config = crowi.model('Config');
   const User = crowi.model('User');
   const lngDetector = new i18nMiddleware.LanguageDetector();
   lngDetector.addDetector(i18nUserSettingDetector);
