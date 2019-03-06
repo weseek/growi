@@ -43,6 +43,10 @@ module.exports = {
         ignoreTrailingComments: true,
       },
     ],
+    'newline-per-chained-call': [
+      'error',
+      { ignoreChainWithDepth: 2 }
+    ],
     'no-continue': 'off',
     'no-param-reassign': [
       'error',
@@ -100,6 +104,7 @@ module.exports = {
       'error',
       { args: 'none' },
     ],
+    'radix': 'off',
     'react/destructuring-assignment': 'off',
     'react/forbid-prop-types': 'off',
     'react/no-unused-prop-types': 'off',

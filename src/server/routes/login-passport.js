@@ -1,13 +1,11 @@
-module.exports = function(crowi, app) {
-  'use strict';
+/* eslint-disable no-use-before-define */
 
-  const debug = require('debug')('growi:routes:login-passport')
-    , logger = require('@alias/logger')('growi:routes:login-passport')
-    , passport = require('passport')
-    , config = crowi.getConfig()
-    , ExternalAccount = crowi.model('ExternalAccount')
-    , passportService = crowi.passportService
-    ;
+module.exports = function(crowi, app) {
+  const debug = require('debug')('growi:routes:login-passport');
+  const logger = require('@alias/logger')('growi:routes:login-passport');
+  const passport = require('passport');
+  const ExternalAccount = crowi.model('ExternalAccount');
+  const passportService = crowi.passportService;
 
   /**
    * success handler
@@ -28,9 +26,8 @@ module.exports = function(crowi, app) {
       req.session.jumpTo = null;
       return res.redirect(jumpTo);
     }
-    else {
-      return res.redirect('/');
-    }
+
+    return res.redirect('/');
   };
 
   /**
@@ -53,7 +50,7 @@ module.exports = function(crowi, app) {
   function isValidLdapUserByGroupFilter(user) {
     let bool = true;
     if (user._groups != null) {
-      if (user._groups.length == 0) {
+      if (user._groups.length === 0) {
         bool = false;
       }
     }
@@ -106,10 +103,10 @@ module.exports = function(crowi, app) {
     const nameToBeRegistered = ldapAccountInfo[attrMapName];
     const mailToBeRegistered = ldapAccountInfo[attrMapMail];
     const userInfo = {
-      'id': ldapAccountId,
-      'username': usernameToBeRegistered,
-      'name': nameToBeRegistered,
-      'email': mailToBeRegistered,
+      id: ldapAccountId,
+      username: usernameToBeRegistered,
+      name: nameToBeRegistered,
+      email: mailToBeRegistered,
     };
 
     const externalAccount = await getOrCreateUser(req, res, userInfo, providerId);
@@ -120,7 +117,7 @@ module.exports = function(crowi, app) {
     const user = await externalAccount.getPopulatedUser();
 
     // login
-    await req.logIn(user, err => {
+    await req.logIn(user, (err) => {
       if (err) { return next(err) }
       return loginSuccess(req, res, user);
     });
@@ -142,16 +139,16 @@ module.exports = function(crowi, app) {
     }
 
     passport.authenticate('ldapauth', (err, user, info) => {
-      if (res.headersSent) {  // dirty hack -- 2017.09.25
-        return;               // cz: somehow passport.authenticate called twice when ECONNREFUSED error occurred
+      if (res.headersSent) { // dirty hack -- 2017.09.25
+        return; //              cz: somehow passport.authenticate called twice when ECONNREFUSED error occurred
       }
 
-      if (err) {  // DB Error
+      if (err) { // DB Error
         logger.error('LDAP Server Error: ', err);
         return res.json({
           status: 'warning',
           message: 'LDAP Server Error occured.',
-          err
+          err,
         });
       }
       if (info && info.message) {
@@ -199,7 +196,7 @@ module.exports = function(crowi, app) {
       debug('user', user);
       debug('info', info);
 
-      if (err) {  // DB Error
+      if (err) { // DB Error
         logger.error('Database Server Error: ', err);
         req.flash('warningMessage', 'Database Server Error occured.');
         return next(); // pass and the flash message is displayed when all of authentications are failed.
@@ -207,9 +204,8 @@ module.exports = function(crowi, app) {
       if (!user) { return next() }
       req.logIn(user, (err) => {
         if (err) { return next() }
-        else {
-          return loginSuccess(req, res, user);
-        }
+
+        return loginSuccess(req, res, user);
       });
     })(req, res, next);
   };
@@ -239,9 +235,9 @@ module.exports = function(crowi, app) {
     }
 
     const userInfo = {
-      'id': response.id,
-      'username': response.displayName,
-      'name': `${response.name.givenName} ${response.name.familyName}`
+      id: response.id,
+      username: response.displayName,
+      name: `${response.name.givenName} ${response.name.familyName}`,
     };
     const externalAccount = await getOrCreateUser(req, res, userInfo, providerId);
     if (!externalAccount) {
@@ -251,7 +247,7 @@ module.exports = function(crowi, app) {
     const user = await externalAccount.getPopulatedUser();
 
     // login
-    req.logIn(user, err => {
+    req.logIn(user, (err) => {
       if (err) { return next(err) }
       return loginSuccess(req, res, user);
     });
@@ -280,9 +276,9 @@ module.exports = function(crowi, app) {
     }
 
     const userInfo = {
-      'id': response.id,
-      'username': response.username,
-      'name': response.displayName
+      id: response.id,
+      username: response.username,
+      name: response.displayName,
     };
 
     const externalAccount = await getOrCreateUser(req, res, userInfo, providerId);
@@ -293,7 +289,7 @@ module.exports = function(crowi, app) {
     const user = await externalAccount.getPopulatedUser();
 
     // login
-    req.logIn(user, err => {
+    req.logIn(user, (err) => {
       if (err) { return next(err) }
       return loginSuccess(req, res, user);
     });
@@ -322,9 +318,9 @@ module.exports = function(crowi, app) {
     }
 
     const userInfo = {
-      'id': response.id,
-      'username': response.username,
-      'name': response.displayName
+      id: response.id,
+      username: response.username,
+      name: response.displayName,
     };
 
     const externalAccount = await getOrCreateUser(req, res, userInfo, providerId);
@@ -335,7 +331,7 @@ module.exports = function(crowi, app) {
     const user = await externalAccount.getPopulatedUser();
 
     // login
-    req.logIn(user, err => {
+    req.logIn(user, (err) => {
       if (err) { return next(err) }
       return loginSuccess(req, res, user);
     });
@@ -369,16 +365,16 @@ module.exports = function(crowi, app) {
     }
 
     const userInfo = {
-      'id': response[attrMapId],
-      'username': response[attrMapUsername],
-      'email': response[attrMapMail]
+      id: response[attrMapId],
+      username: response[attrMapUsername],
+      email: response[attrMapMail],
     };
 
     // determine name
     const firstName = response[attrMapFirstName];
     const lastName = response[attrMapLastName];
     if (firstName != null || lastName != null) {
-      userInfo['name'] = `${response[attrMapFirstName]} ${response[attrMapLastName]}`.trim();
+      userInfo.name = `${response[attrMapFirstName]} ${response[attrMapLastName]}`.trim();
     }
 
     const externalAccount = await getOrCreateUser(req, res, userInfo, providerId);
@@ -389,7 +385,7 @@ module.exports = function(crowi, app) {
     const user = await externalAccount.getPopulatedUser();
 
     // login
-    req.logIn(user, err => {
+    req.logIn(user, (err) => {
       if (err != null) {
         logger.error(err);
         return loginFailure(req, res);
@@ -401,8 +397,8 @@ module.exports = function(crowi, app) {
   const promisifiedPassportAuthentication = (strategyName, req, res) => {
     return new Promise((resolve, reject) => {
       passport.authenticate(strategyName, (err, response, info) => {
-        if (res.headersSent) {  // dirty hack -- 2017.09.25
-          return;               // cz: somehow passport.authenticate called twice when ECONNREFUSED error occurred
+        if (res.headersSent) { // dirty hack -- 2017.09.25
+          return; //              cz: somehow passport.authenticate called twice when ECONNREFUSED error occurred
         }
 
         logger.debug(`--- authenticate with ${strategyName} strategy ---`);
@@ -444,21 +440,22 @@ module.exports = function(crowi, app) {
       return externalAccount;
     }
     catch (err) {
+      /* eslint-disable no-else-return */
       if (err.name === 'DuplicatedUsernameException') {
         if (isSameEmailTreatedAsIdenticalUser || isSameUsernameTreatedAsIdenticalUser) {
           // associate to existing user
           debug(`ExternalAccount '${userInfo.username}' will be created and bound to the exisiting User account`);
           return ExternalAccount.associate(providerId, userInfo.id, err.user);
         }
-        else {
-          req.flash('provider-DuplicatedUsernameException', providerId);
-          return;
-        }
+
+        req.flash('provider-DuplicatedUsernameException', providerId);
+        return;
       }
       else if (err.name === 'UserUpperLimitException') {
         req.flash('warningMessage', 'Can not register more than the maximum number of users.');
         return;
       }
+      /* eslint-enable no-else-return */
     }
   };
 

@@ -1,19 +1,17 @@
 module.exports = function(crowi, app) {
-  'use strict';
+  const debug = require('debug')('growi:routes:me');
+  const logger = require('@alias/logger')('growi:routes:me');
+  const models = crowi.models;
+  const User = models.User;
+  const UserGroupRelation = models.UserGroupRelation;
+  const ExternalAccount = models.ExternalAccount;
+  const ApiResponse = require('../util/apiResponse');
 
-  var debug = require('debug')('growi:routes:me')
-    , fs = require('fs')
-    , models = crowi.models
-    , config = crowi.getConfig()
-    , User = models.User
-    , UserGroupRelation = models.UserGroupRelation
-    , ExternalAccount = models.ExternalAccount
-    , ApiResponse = require('../util/apiResponse')
-    //, pluginService = require('../service/plugin')
-    , actions = {}
-    , api = {}
-    ;
+  // , pluginService = require('../service/plugin')
 
+  const actions = {};
+
+  const api = {};
   actions.api = api;
 
   /**
@@ -23,20 +21,20 @@ module.exports = function(crowi, app) {
    */
   api.userGroupRelations = function(req, res) {
     UserGroupRelation.findAllRelationForUser(req.user)
-      .then(userGroupRelations => {
-        return res.json(ApiResponse.success({userGroupRelations}));
+      .then((userGroupRelations) => {
+        return res.json(ApiResponse.success({ userGroupRelations }));
       });
   };
 
   actions.index = function(req, res) {
-    var userForm = req.body.userForm;
-    var userData = req.user;
+    const userForm = req.body.userForm;
+    const userData = req.user;
 
-    if (req.method == 'POST' && req.form.isValid) {
-      var name = userForm.name;
-      var email = userForm.email;
-      var lang = userForm.lang;
-      var isEmailPublished = userForm.isEmailPublished;
+    if (req.method === 'POST' && req.form.isValid) {
+      const name = userForm.name;
+      const email = userForm.email;
+      const lang = userForm.lang;
+      const isEmailPublished = userForm.isEmailPublished;
 
       /*
        * disabled because the system no longer allows undefined email -- 2017.10.06 Yuki Takei
@@ -48,10 +46,12 @@ module.exports = function(crowi, app) {
       */
 
       User.findOneAndUpdate(
-        { email: userData.email },                  // query
-        { name, email, lang, isEmailPublished },                      // updating data
-        { runValidators: true, context: 'query' },  // for validation
-        //   see https://www.npmjs.com/package/mongoose-unique-validator#find--updates -- 2017.09.24 Yuki Takei
+        /* eslint-disable object-curly-newline */
+        { email: userData.email }, //                   query
+        { name, email, lang, isEmailPublished }, //     updating data
+        { runValidators: true, context: 'query' }, //   for validation
+        // see https://www.npmjs.com/package/mongoose-unique-validator#find--updates -- 2017.09.24 Yuki Takei
+        /* eslint-enable object-curly-newline */
         (err) => {
           if (err) {
             Object.keys(err.errors).forEach((e) => {
@@ -63,8 +63,8 @@ module.exports = function(crowi, app) {
           req.i18n.changeLanguage(lang);
           req.flash('successMessage', req.t('Updated'));
           return res.redirect('/me');
-        });
-
+        },
+      );
     }
     else { // method GET
       /*
@@ -86,23 +86,25 @@ module.exports = function(crowi, app) {
       // do nothing
       return;
     }
-    else if (!req.form.isValid) {
+    if (!req.form.isValid) {
       req.flash('errorMessage', req.form.errors.join('\n'));
       return;
     }
 
-    var imagetypeForm = req.body.imagetypeForm;
-    var userData = req.user;
+    const imagetypeForm = req.body.imagetypeForm;
+    const userData = req.user;
 
-    var isGravatarEnabled = imagetypeForm.isGravatarEnabled;
+    const isGravatarEnabled = imagetypeForm.isGravatarEnabled;
 
-    userData.updateIsGravatarEnabled(isGravatarEnabled, function(err, userData) {
+    userData.updateIsGravatarEnabled(isGravatarEnabled, (err, userData) => {
       if (err) {
-        for (var e in err.errors) {
+        /* eslint-disable no-restricted-syntax, no-prototype-builtins */
+        for (const e in err.errors) {
           if (err.errors.hasOwnProperty(e)) {
             req.form.errors.push(err.errors[e].message);
           }
         }
+        /* eslint-enable no-restricted-syntax, no-prototype-builtins */
         return res.render('me/index', {});
       }
 
@@ -115,20 +117,19 @@ module.exports = function(crowi, app) {
   actions.externalAccounts.list = function(req, res) {
     const userData = req.user;
 
-    let renderVars = {};
-    ExternalAccount.find({user: userData})
+    const renderVars = {};
+    ExternalAccount.find({ user: userData })
       .then((externalAccounts) => {
         renderVars.externalAccounts = externalAccounts;
         return;
       })
       .then(() => {
-        if (req.method == 'POST' && req.form.isValid) {
+        if (req.method === 'POST' && req.form.isValid) {
           // TODO impl
           return res.render('me/external-accounts', renderVars);
         }
-        else { // method GET
-          return res.render('me/external-accounts', renderVars);
-        }
+        // method GET
+        return res.render('me/external-accounts', renderVars);
       });
   };
 
@@ -150,7 +151,7 @@ module.exports = function(crowi, app) {
         resolve(true);
       }
       else {
-        ExternalAccount.count({user: userData})
+        ExternalAccount.count({ user: userData })
           .then((count) => {
             resolve(count > 1);
           });
@@ -158,7 +159,7 @@ module.exports = function(crowi, app) {
     })
     .then((isDisassociatable) => {
       if (!isDisassociatable) {
-        let e = new Error();
+        const e = new Error();
         e.name = 'couldntDisassociateError';
         throw e;
       }
@@ -166,27 +167,24 @@ module.exports = function(crowi, app) {
       const providerType = req.body.providerType;
       const accountId = req.body.accountId;
 
-      return ExternalAccount.findOneAndRemove({providerType, accountId, user: userData});
+      return ExternalAccount.findOneAndRemove({ providerType, accountId, user: userData });
     })
     .then((account) => {
       if (account == null) {
         return redirectWithFlash('errorMessage', 'ExternalAccount not found.');
       }
-      else {
-        return redirectWithFlash('successMessage', 'Successfully disassociated.');
-      }
+
+      return redirectWithFlash('successMessage', 'Successfully disassociated.');
     })
     .catch((err) => {
       if (err) {
-        if (err.name == 'couldntDisassociateError') {
+        if (err.name === 'couldntDisassociateError') {
           return redirectWithFlash('couldntDisassociateError', true);
         }
-        else {
-          return redirectWithFlash('errorMessage', err.message);
-        }
+
+        return redirectWithFlash('errorMessage', err.message);
       }
     });
-
   };
 
   actions.externalAccounts.associateLdap = function(req, res) {
@@ -203,15 +201,13 @@ module.exports = function(crowi, app) {
       return redirectWithFlash('warning', 'LdapStrategy has not been set up');
     }
 
-    const loginForm = req.body.loginForm;
-
     passport.authenticate('ldapauth', (err, user, info) => {
-      if (res.headersSent) {  // dirty hack -- 2017.09.25
-        return;               // cz: somehow passport.authenticate called twice when ECONNREFUSED error occurred
+      if (res.headersSent) { // dirty hack -- 2017.09.25
+        return; //              cz: somehow passport.authenticate called twice when ECONNREFUSED error occurred
       }
 
-      if (err) {  // DB Error
-        console.log('LDAP Server Error: ', err);
+      if (err) { // DB Error
+        logger.error('LDAP Server Error: ', err);
         return redirectWithFlash('warningMessage', 'LDAP Server Error occured.');
       }
       if (info && info.message) {
@@ -229,16 +225,13 @@ module.exports = function(crowi, app) {
           .catch((err) => {
             return redirectWithFlash('errorMessage', err.message);
           });
-
       }
     })(req, res, () => {});
-
-
   };
 
   actions.password = function(req, res) {
-    var passwordForm = req.body.mePassword;
-    var userData = req.user;
+    const passwordForm = req.body.mePassword;
+    const userData = req.user;
 
     /*
       * disabled because the system no longer allows undefined email -- 2017.10.06 Yuki Takei
@@ -250,10 +243,10 @@ module.exports = function(crowi, app) {
     }
     */
 
-    if (req.method == 'POST' && req.form.isValid) {
-      var newPassword = passwordForm.newPassword;
-      var newPasswordConfirm = passwordForm.newPasswordConfirm;
-      var oldPassword = passwordForm.oldPassword;
+    if (req.method === 'POST' && req.form.isValid) {
+      const newPassword = passwordForm.newPassword;
+      const newPasswordConfirm = passwordForm.newPasswordConfirm;
+      const oldPassword = passwordForm.oldPassword;
 
       if (userData.isPasswordSet() && !userData.isPasswordValid(oldPassword)) {
         req.form.errors.push('Wrong current password');
@@ -262,19 +255,21 @@ module.exports = function(crowi, app) {
       }
 
       // check password confirm
-      if (newPassword != newPasswordConfirm) {
+      if (newPassword !== newPasswordConfirm) {
         req.form.errors.push('Failed to verify passwords');
       }
       else {
-        userData.updatePassword(newPassword, function(err, userData) {
+        userData.updatePassword(newPassword, (err, userData) => {
           if (err) {
-            for (var e in err.errors) {
+            /* eslint-disable no-restricted-syntax, no-prototype-builtins */
+            for (const e in err.errors) {
               if (err.errors.hasOwnProperty(e)) {
                 req.form.errors.push(err.errors[e].message);
               }
             }
             return res.render('me/password', {});
           }
+          /* eslint-enable no-restricted-syntax, no-prototype-builtins */
 
           req.flash('successMessage', 'Password updated');
           return res.redirect('/me/password');
@@ -288,17 +283,16 @@ module.exports = function(crowi, app) {
   };
 
   actions.apiToken = function(req, res) {
-    var apiTokenForm = req.body.apiTokenForm;
-    var userData = req.user;
+    const userData = req.user;
 
-    if (req.method == 'POST' && req.form.isValid) {
+    if (req.method === 'POST' && req.form.isValid) {
       userData.updateApiToken()
-      .then(function(userData) {
+      .then((userData) => {
         req.flash('successMessage', 'API Token updated');
         return res.redirect('/me/apiToken');
       })
-      .catch(function(err) {
-        //req.flash('successMessage',);
+      .catch((err) => {
+        // req.flash('successMessage',);
         req.form.errors.push('Failed to update API Token');
         return res.render('me/api_token', {
         });
@@ -316,21 +310,21 @@ module.exports = function(crowi, app) {
   };
 
   actions.authGoogle = function(req, res) {
-    var googleAuth = require('../util/googleAuth')(crowi);
+    const googleAuth = require('../util/googleAuth')(crowi);
 
-    var userData = req.user;
+    const userData = req.user;
 
-    var toDisconnect = req.body.disconnectGoogle ? true : false;
-    var toConnect = req.body.connectGoogle ? true : false;
+    const toDisconnect = !!req.body.disconnectGoogle;
+    const toConnect = !!req.body.connectGoogle;
     if (toDisconnect) {
-      userData.deleteGoogleId(function(err, userData) {
+      userData.deleteGoogleId((err, userData) => {
         req.flash('successMessage', 'Disconnected from Google account');
 
         return res.redirect('/me');
       });
     }
     else if (toConnect) {
-      googleAuth.createAuthUrl(req, function(err, redirectUrl) {
+      googleAuth.createAuthUrl(req, (err, redirectUrl) => {
         if (err) {
           // TODO
         }
@@ -345,40 +339,39 @@ module.exports = function(crowi, app) {
   };
 
   actions.authGoogleCallback = function(req, res) {
-    var googleAuth = require('../util/googleAuth')(crowi);
-    var userData = req.user;
+    const googleAuth = require('../util/googleAuth')(crowi);
+    const userData = req.user;
 
-    googleAuth.handleCallback(req, function(err, tokenInfo) {
+    googleAuth.handleCallback(req, (err, tokenInfo) => {
       if (err) {
         req.flash('warningMessage.auth.google', err.message); // FIXME: show library error message directly
         return res.redirect('/me'); // TODO Handling
       }
 
-      var googleId = tokenInfo.user_id;
-      var googleEmail = tokenInfo.email;
+      const googleId = tokenInfo.user_id;
+      const googleEmail = tokenInfo.email;
       if (!User.isEmailValid(googleEmail)) {
         req.flash('warningMessage.auth.google', 'You can\'t connect with this  Google\'s account');
         return res.redirect('/me');
       }
 
-      User.findUserByGoogleId(googleId, function(err, googleUser) {
+      User.findUserByGoogleId(googleId, (err, googleUser) => {
         if (!err && googleUser) {
           req.flash('warningMessage.auth.google', 'This Google\'s account is connected by another user');
           return res.redirect('/me');
         }
-        else {
-          userData.updateGoogleId(googleId, function(err, userData) {
-            if (err) {
-              debug('Failed to updateGoogleId', err);
-              req.flash('warningMessage.auth.google', 'Failed to connect Google Account');
-              return res.redirect('/me');
-            }
 
-            // TODO if err
-            req.flash('successMessage', 'Connected with Google');
+        userData.updateGoogleId(googleId, (err, userData) => {
+          if (err) {
+            debug('Failed to updateGoogleId', err);
+            req.flash('warningMessage.auth.google', 'Failed to connect Google Account');
             return res.redirect('/me');
-          });
-        }
+          }
+
+          // TODO if err
+          req.flash('successMessage', 'Connected with Google');
+          return res.redirect('/me');
+        });
       });
     });
   };
