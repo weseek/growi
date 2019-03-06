@@ -2,7 +2,7 @@ module.exports = {
   parser: 'babel-eslint',
   extends: [
     'airbnb',
-    'plugin:react/recommended'
+    'plugin:react/recommended',
   ],
   env: {
     browser: true,
@@ -23,34 +23,34 @@ module.exports = {
     'chai-friendly',
   ],
   rules: {
-    "arrow-body-style": ["error", "always"],
-    "brace-style": [
-      "error",
-      "stroustrup",
-      { "allowSingleLine": true },
+    'arrow-body-style': ['error', 'always'],
+    'brace-style': [
+      'error',
+      'stroustrup',
+      { allowSingleLine: true },
     ],
     'class-methods-use-this': 'off',
     'consistent-return': 'off',
     'func-names': 'off',
-    "global-require": 'off',
-    "key-spacing": [
+    'global-require': 'off',
+    'key-spacing': [
       'error',
-      { 'mode': 'minimum' }
+      { mode: 'minimum' },
     ],
-    "max-len": ['error',
+    'max-len': ['error',
       {
         code: 160,
-        ignoreTrailingComments: true
-      }
+        ignoreTrailingComments: true,
+      },
     ],
     'no-continue': 'off',
-    "no-param-reassign": [
-      "error",
-      { "props": false }
+    'no-param-reassign': [
+      'error',
+      { props: false },
     ],
-    "no-plusplus": [
-      "error",
-      { "allowForLoopAfterthoughts": true }
+    'no-plusplus': [
+      'error',
+      { allowForLoopAfterthoughts: true },
     ],
     // Allow only for-of
     // https://qiita.com/the_red/items/0c826e97b57da6d67621
@@ -72,18 +72,18 @@ module.exports = {
     'no-shadow': 'off',
     'no-underscore-dangle': 'off',
     'no-useless-return': 'off',
-    "prefer-destructuring": 'off',
-    "indent": [
-      "error",
+    'prefer-destructuring': 'off',
+    indent: [
+      'error',
       2,
       {
-        "SwitchCase": 1,
-        "ignoredNodes": ['JSXElement *', 'JSXElement', "JSXAttribute", "JSXSpreadAttribute"],
-        "ArrayExpression": "first",
-        "FunctionDeclaration": {"body": 1, "parameters": 2},
-        "FunctionExpression": {"body": 1, "parameters": 2},
-        "MemberExpression": "off"
-      }
+        SwitchCase: 1,
+        ignoredNodes: ['JSXElement *', 'JSXElement', 'JSXAttribute', 'JSXSpreadAttribute'],
+        ArrayExpression: 'first',
+        FunctionDeclaration: { body: 1, parameters: 2 },
+        FunctionExpression: { body: 1, parameters: 2 },
+        MemberExpression: 'off',
+      },
     ],
     // "key-spacing": [
     //   "error", {
@@ -99,9 +99,9 @@ module.exports = {
     //   "error",
     //   "unix"
     // ],
-    "no-unused-vars": [
-      "error",
-      { "args": "none" }
+    'no-unused-vars': [
+      'error',
+      { args: 'none' },
     ],
     'react/destructuring-assignment': 'off',
     'react/forbid-prop-types': 'off',
@@ -110,24 +110,24 @@ module.exports = {
     'react/sort-comp': 'off',
     // "react/jsx-uses-vars": 1,
     // "react/no-string-refs": "off",
-    "semi": [
-      "error",
-      "always",
-      { "omitLastInOneLineBlock": true }
+    semi: [
+      'error',
+      'always',
+      { omitLastInOneLineBlock: true },
     ],
     // "space-before-blocks": [
     //   "error",
     //   "always"
     // ],
-    "space-before-function-paren": [
-      "error",
-      "never"
+    'space-before-function-paren': [
+      'error',
+      'never',
     ],
-    "import/no-extraneous-dependencies": 'off',
-    "import/no-dynamic-require": 'off',
-    "import/no-unresolved": [2, { ignore: ['^@'] }],  // ignore @alias/..., @commons/..., ...
+    'import/no-extraneous-dependencies': 'off',
+    'import/no-dynamic-require': 'off',
+    'import/no-unresolved': [2, { ignore: ['^@'] }], // ignore @alias/..., @commons/..., ...
     // eslint-plugin-chai-friendly rules
-    "no-unused-expressions": 0,
-    "chai-friendly/no-unused-expressions": 2,
+    'no-unused-expressions': 0,
+    'chai-friendly/no-unused-expressions': 2,
   },
 };
