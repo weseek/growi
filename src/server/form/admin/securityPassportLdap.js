@@ -6,7 +6,7 @@ module.exports = form(
   field('settingForm[security:passport-ldap:isEnabled]').trim().toBooleanStrict().required(),
   field('settingForm[security:passport-ldap:serverUrl]').trim()
       // https://regex101.com/r/E0UL6D/1
-      .is(/^ldaps?:\/\/([^\/\s]+)\/([^\/\s]+)$/, 'Server URL is invalid. <small><a href="https://regex101.com/r/E0UL6D/1">&gt;&gt; Regex</a></small>'),
+      .is(/^ldaps?:\/\/([^/\s]+)\/([^/\s]+)$/, 'Server URL is invalid. <small><a href="https://regex101.com/r/E0UL6D/1">&gt;&gt; Regex</a></small>'),
   field('settingForm[security:passport-ldap:isUserBind]').trim().toBooleanStrict(),
   field('settingForm[security:passport-ldap:bindDN]').trim()
       // https://regex101.com/r/jK8lpO/1
