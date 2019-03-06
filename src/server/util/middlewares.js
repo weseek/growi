@@ -265,15 +265,16 @@ exports.accessTokenParser = function(crowi, app) {
 
     debug('accessToken is', accessToken);
     User.findUserByApiToken(accessToken)
-    .then((userData) => {
-      req.user = userData;
-      req.skipCsrfVerify = true;
-      debug('Access token parsed: skipCsrfVerify');
+      .then((userData) => {
+        req.user = userData;
+        req.skipCsrfVerify = true;
+        debug('Access token parsed: skipCsrfVerify');
 
-      next();
-    }).catch((err) => {
-      next();
-    });
+        next();
+      })
+      .catch((err) => {
+        next();
+      });
   };
 };
 

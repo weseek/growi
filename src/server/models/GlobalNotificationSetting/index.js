@@ -91,7 +91,7 @@ class GlobalNotificationSetting {
       triggerEvents: event,
       isEnabled: true,
     })
-    .sort({ triggerPath: 1 });
+      .sort({ triggerPath: 1 });
 
     return settings;
   }

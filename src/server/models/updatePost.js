@@ -69,19 +69,19 @@ module.exports = function(crowi) {
           { patternPrefix: '*', patternPrefix2: prefixes[1] },
         ],
       })
-      .then((settings) => {
-        if (settings.length <= 0) {
+        .then((settings) => {
+          if (settings.length <= 0) {
+            return resolve(settings);
+          }
+
+          // eslint-disable-next-line no-param-reassign
+          settings = settings.filter((setting) => {
+            const patternRegex = UpdatePost.getRegExpByPattern(setting.pathPattern);
+            return patternRegex.test(path);
+          });
+
           return resolve(settings);
-        }
-
-        // eslint-disable-next-line no-param-reassign
-        settings = settings.filter((setting) => {
-          const patternRegex = UpdatePost.getRegExpByPattern(setting.pathPattern);
-          return patternRegex.test(path);
         });
-
-        return resolve(settings);
-      });
     }));
   };
 

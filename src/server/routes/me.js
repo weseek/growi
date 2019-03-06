@@ -157,34 +157,34 @@ module.exports = function(crowi, app) {
           });
       }
     })
-    .then((isDisassociatable) => {
-      if (!isDisassociatable) {
-        const e = new Error();
-        e.name = 'couldntDisassociateError';
-        throw e;
-      }
-
-      const providerType = req.body.providerType;
-      const accountId = req.body.accountId;
-
-      return ExternalAccount.findOneAndRemove({ providerType, accountId, user: userData });
-    })
-    .then((account) => {
-      if (account == null) {
-        return redirectWithFlash('errorMessage', 'ExternalAccount not found.');
-      }
-
-      return redirectWithFlash('successMessage', 'Successfully disassociated.');
-    })
-    .catch((err) => {
-      if (err) {
-        if (err.name === 'couldntDisassociateError') {
-          return redirectWithFlash('couldntDisassociateError', true);
+      .then((isDisassociatable) => {
+        if (!isDisassociatable) {
+          const e = new Error();
+          e.name = 'couldntDisassociateError';
+          throw e;
         }
 
-        return redirectWithFlash('errorMessage', err.message);
-      }
-    });
+        const providerType = req.body.providerType;
+        const accountId = req.body.accountId;
+
+        return ExternalAccount.findOneAndRemove({ providerType, accountId, user: userData });
+      })
+      .then((account) => {
+        if (account == null) {
+          return redirectWithFlash('errorMessage', 'ExternalAccount not found.');
+        }
+
+        return redirectWithFlash('successMessage', 'Successfully disassociated.');
+      })
+      .catch((err) => {
+        if (err) {
+          if (err.name === 'couldntDisassociateError') {
+            return redirectWithFlash('couldntDisassociateError', true);
+          }
+
+          return redirectWithFlash('errorMessage', err.message);
+        }
+      });
   };
 
   actions.externalAccounts.associateLdap = function(req, res) {
@@ -287,16 +287,16 @@ module.exports = function(crowi, app) {
 
     if (req.method === 'POST' && req.form.isValid) {
       userData.updateApiToken()
-      .then((userData) => {
-        req.flash('successMessage', 'API Token updated');
-        return res.redirect('/me/apiToken');
-      })
-      .catch((err) => {
+        .then((userData) => {
+          req.flash('successMessage', 'API Token updated');
+          return res.redirect('/me/apiToken');
+        })
+        .catch((err) => {
         // req.flash('successMessage',);
-        req.form.errors.push('Failed to update API Token');
-        return res.render('me/api_token', {
+          req.form.errors.push('Failed to update API Token');
+          return res.render('me/api_token', {
+          });
         });
-      });
     }
     else {
       return res.render('me/api_token', {

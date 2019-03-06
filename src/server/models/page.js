@@ -537,16 +537,16 @@ module.exports = function(crowi) {
     const self = this;
     const Comment = crowi.model('Comment');
     return Comment.countCommentByPageId(pageId)
-    .then((count) => {
-      self.update({ _id: pageId }, { commentCount: count }, {}, (err, data) => {
-        if (err) {
-          debug('Update commentCount Error', err);
-          throw err;
-        }
+      .then((count) => {
+        self.update({ _id: pageId }, { commentCount: count }, {}, (err, data) => {
+          if (err) {
+            debug('Update commentCount Error', err);
+            throw err;
+          }
 
-        return data;
+          return data;
+        });
       });
-    });
   };
 
   pageSchema.statics.getGrantLabels = function() {

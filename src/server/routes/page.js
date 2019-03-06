@@ -99,9 +99,9 @@ module.exports = function(crowi, app) {
       });
 
       Promise.all(promises)
-      .catch((err) => {
-        logger.error('Error occured in sending slack notification: ', err);
-      });
+        .catch((err) => {
+          logger.error('Error occured in sending slack notification: ', err);
+        });
     }
   }
 

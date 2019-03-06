@@ -551,31 +551,31 @@ module.exports = function(crowi, app) {
         return resolve(userData);
       });
     })
-    .then((userData) => {
-      return new Promise((resolve, reject) => {
-        userData.statusDelete((err, userData) => {
-          if (err) {
-            reject(err);
-          }
-          resolve(userData);
+      .then((userData) => {
+        return new Promise((resolve, reject) => {
+          userData.statusDelete((err, userData) => {
+            if (err) {
+              reject(err);
+            }
+            resolve(userData);
+          });
         });
-      });
-    })
-    .then((userData) => {
+      })
+      .then((userData) => {
       // remove all External Accounts
-      return ExternalAccount.remove({ user: userData }).then(() => { return userData });
-    })
-    .then((userData) => {
-      return Page.removeByPath(`/user/${username}`).then(() => { return userData });
-    })
-    .then((userData) => {
-      req.flash('successMessage', `${username} さんのアカウントを削除しました`);
-      return res.redirect('/admin/users');
-    })
-    .catch((err) => {
-      req.flash('errorMessage', '削除に失敗しました。');
-      return res.redirect('/admin/users');
-    });
+        return ExternalAccount.remove({ user: userData }).then(() => { return userData });
+      })
+      .then((userData) => {
+        return Page.removeByPath(`/user/${username}`).then(() => { return userData });
+      })
+      .then((userData) => {
+        req.flash('successMessage', `${username} さんのアカウントを削除しました`);
+        return res.redirect('/admin/users');
+      })
+      .catch((err) => {
+        req.flash('errorMessage', '削除に失敗しました。');
+        return res.redirect('/admin/users');
+      });
   };
 
   // これやったときの relation の挙動未確認
@@ -601,14 +601,14 @@ module.exports = function(crowi, app) {
     const User = crowi.model('User');
 
     User.resetPasswordByRandomString(id)
-    .then((data) => {
-      data.user = User.filterToPublicFields(data.user);
-      return res.json(ApiResponse.success(data));
-    })
-.catch((err) => {
-  debug('Error on reseting password', err);
-  return res.json(ApiResponse.error('Error'));
-});
+      .then((data) => {
+        data.user = User.filterToPublicFields(data.user);
+        return res.json(ApiResponse.success(data));
+      })
+      .catch((err) => {
+        debug('Error on reseting password', err);
+        return res.json(ApiResponse.error('Error'));
+      });
   };
 
   actions.externalAccount = {};
@@ -666,9 +666,9 @@ module.exports = function(crowi, app) {
         return userGroups.map((userGroup) => {
           return new Promise((resolve, reject) => {
             UserGroupRelation.findAllRelationForUserGroup(userGroup)
-            .then((relations) => {
-              return resolve([userGroup, relations]);
-            });
+              .then((relations) => {
+                return resolve([userGroup, relations]);
+              });
           });
         });
       })
@@ -749,33 +749,33 @@ module.exports = function(crowi, app) {
     const name = crowi.xss.process(req.body.name);
 
     UserGroup.findById(userGroupId)
-    .then((userGroupData) => {
-      if (userGroupData == null) {
-        req.flash('errorMessage', 'グループの検索に失敗しました。');
-        return new Promise();
-      }
+      .then((userGroupData) => {
+        if (userGroupData == null) {
+          req.flash('errorMessage', 'グループの検索に失敗しました。');
+          return new Promise();
+        }
 
-      // 名前存在チェック
-      return UserGroup.isRegisterableName(name)
-        .then((isRegisterableName) => {
+        // 名前存在チェック
+        return UserGroup.isRegisterableName(name)
+          .then((isRegisterableName) => {
           // 既に存在するグループ名に更新しようとした場合はエラー
-          if (!isRegisterableName) {
-            req.flash('errorMessage', 'グループ名が既に存在します。');
-          }
-          else {
-            return userGroupData.updateName(name)
-            .then(() => {
-              req.flash('successMessage', 'グループ名を更新しました。');
-            })
-            .catch((err) => {
-              req.flash('errorMessage', 'グループ名の更新に失敗しました。');
-            });
-          }
-        });
-    })
-    .then(() => {
-      return res.redirect(`/admin/user-group-detail/${userGroupId}`);
-    });
+            if (!isRegisterableName) {
+              req.flash('errorMessage', 'グループ名が既に存在します。');
+            }
+            else {
+              return userGroupData.updateName(name)
+                .then(() => {
+                  req.flash('successMessage', 'グループ名を更新しました。');
+                })
+                .catch((err) => {
+                  req.flash('errorMessage', 'グループ名の更新に失敗しました。');
+                });
+            }
+          });
+      })
+      .then(() => {
+        return res.redirect(`/admin/user-group-detail/${userGroupId}`);
+      });
   };
 
 
@@ -818,20 +818,20 @@ module.exports = function(crowi, app) {
       // ユーザを名前で検索
       User.findUserByUsername(userName),
     ])
-    .then((resolves) => {
-      userGroup = resolves[0];
-      user = resolves[1];
-      // Relation を作成
-      UserGroupRelation.createRelation(userGroup, user);
-    })
-    .then((result) => {
-      return res.redirect(`/admin/user-group-detail/${userGroup.id}`);
-    })
-.catch((err) => {
-  debug('Error on create user-group relation', err);
-  req.flash('errorMessage', 'Error on create user-group relation');
-  return res.redirect(`/admin/user-group-detail/${userGroup.id}`);
-});
+      .then((resolves) => {
+        userGroup = resolves[0];
+        user = resolves[1];
+        // Relation を作成
+        UserGroupRelation.createRelation(userGroup, user);
+      })
+      .then((result) => {
+        return res.redirect(`/admin/user-group-detail/${userGroup.id}`);
+      })
+      .catch((err) => {
+        debug('Error on create user-group relation', err);
+        req.flash('errorMessage', 'Error on create user-group relation');
+        return res.redirect(`/admin/user-group-detail/${userGroup.id}`);
+      });
   };
 
   actions.userGroupRelation.remove = function(req, res) {
@@ -840,13 +840,13 @@ module.exports = function(crowi, app) {
     const relationId = req.params.relationId;
 
     UserGroupRelation.removeById(relationId)
-    .then(() => {
-      return res.redirect(`/admin/user-group-detail/${userGroupId}`);
-    })
-    .catch((err) => {
-      debug('Error on remove user-group-relation', err);
-      req.flash('errorMessage', 'グループのユーザ削除に失敗しました。');
-    });
+      .then(() => {
+        return res.redirect(`/admin/user-group-detail/${userGroupId}`);
+      })
+      .catch((err) => {
+        debug('Error on remove user-group-relation', err);
+        req.flash('errorMessage', 'グループのユーザ削除に失敗しました。');
+      });
   };
 
   // Importer management
