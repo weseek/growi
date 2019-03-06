@@ -18,15 +18,33 @@ module.exports = {
     hljs: true,
     window: true,
   },
-  plugins: ['react'],
+  plugins: [
+    'react',
+    'chai-friendly',
+  ],
   rules: {
     "arrow-body-style": ["error", "always"],
     "brace-style": [
       "error",
-      "stroustrup", { "allowSingleLine": true }
+      "stroustrup",
+      { "allowSingleLine": true },
     ],
     "global-require": 'off',
-    "key-spacing": ['error', { 'mode': 'minimum' }],
+    "key-spacing": [
+      'error',
+      { 'mode': 'minimum' }
+    ],
+    "max-len": ['error',
+      {
+        code: 160,
+        ignoreTrailingComments: true
+      }
+    ],
+    "no-plusplus": [
+      "error",
+      { "allowForLoopAfterthoughts": true }
+    ],
+    "prefer-destructuring": 'off',
     // "comma-spacing": [
     //   "error",
     //   { "before": false, "after": true }
@@ -35,17 +53,18 @@ module.exports = {
     //   "error",
     //   "never"
     // ],
-    // "indent": [
-    //   "error",
-    //   2,
-    //   {
-    //     "SwitchCase": 1,
-    //     "ignoredNodes": ['JSXElement *', 'JSXElement', "JSXAttribute", "JSXSpreadAttribute"],
-    //     "FunctionDeclaration": {"body": 1, "parameters": 2},
-    //     "FunctionExpression": {"body": 1, "parameters": 2},
-    //     "MemberExpression": "off"
-    //   }
-    // ],
+    "indent": [
+      "error",
+      2,
+      {
+        "SwitchCase": 1,
+        "ignoredNodes": ['JSXElement *', 'JSXElement', "JSXAttribute", "JSXSpreadAttribute"],
+        "ArrayExpression": "first",
+        "FunctionDeclaration": {"body": 1, "parameters": 2},
+        "FunctionExpression": {"body": 1, "parameters": 2},
+        "MemberExpression": "off"
+      }
+    ],
     // "key-spacing": [
     //   "error", {
     //     "beforeColon": false,
@@ -87,5 +106,8 @@ module.exports = {
     "import/no-extraneous-dependencies": 'off',
     "import/no-dynamic-require": 'off',
     "import/no-unresolved": [2, { ignore: ['^@'] }],  // ignore @alias/..., @commons/..., ...
+    // eslint-plugin-chai-friendly rules
+    "no-unused-expressions": 0,
+    "chai-friendly/no-unused-expressions": 2,
   },
 };
