@@ -381,12 +381,16 @@ module.exports = function(crowi) {
       return true;
     }
 
-    return (this.latestRevision === this.revision._id.toString());
+    // comparing ObjectId with string
+    // eslint-disable-next-line eqeqeq
+    return (this.latestRevision == this.revision._id.toString());
   };
 
   pageSchema.methods.isUpdatable = function(previousRevision) {
     const revision = this.latestRevision || this.revision;
-    if (revision !== previousRevision) {
+    // comparing ObjectId with string
+    // eslint-disable-next-line eqeqeq
+    if (revision != previousRevision) {
       return false;
     }
     return true;
