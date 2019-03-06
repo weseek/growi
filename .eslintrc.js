@@ -120,6 +120,7 @@ module.exports = {
     'react/sort-comp': 'off',
     // "react/jsx-uses-vars": 1,
     // "react/no-string-refs": "off",
+    'jsx-a11y/img-redundant-alt': 'off',
     semi: [
       'error',
       'always',
