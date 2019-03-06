@@ -1,12 +1,12 @@
 const path = require('path');
 const fs = require('graceful-fs');
+const logger = require('@alias/logger')('growi:plugins:plugin-utils');
 
 const PluginUtilsV2 = require('./plugin-utils-v2');
 
 const pluginUtilsV2 = new PluginUtilsV2();
 
 class PluginUtils {
-
   /**
    * return a definition objects that has following structure:
    *
@@ -29,8 +29,7 @@ class PluginUtils {
     switch (meta.pluginSchemaVersion) {
       // v1 is deprecated
       case 1:
-        console.log('pluginSchemaVersion 1 is deprecated');
-        debug('pluginSchemaVersion 1 is deprecated');
+        logger.debug('pluginSchemaVersion 1 is deprecated');
         break;
       // v2 or above
       case 2:
@@ -56,7 +55,7 @@ class PluginUtils {
    * @memberOf PluginService
    */
   listPlugins(rootDir) {
-    var packagePath = path.join(rootDir, 'package.json');
+    const packagePath = path.join(rootDir, 'package.json');
 
     // Make sure package.json exists
     if (!fs.existsSync(packagePath)) {
@@ -68,7 +67,7 @@ class PluginUtils {
     const json = JSON.parse(content);
     const deps = json.dependencies || {};
 
-    let objs = {};
+    const objs = {};
     Object.keys(deps).forEach((name) => {
       if (/^(crowi|growi)-plugin-/.test(name)) {
         objs[name] = deps[name];

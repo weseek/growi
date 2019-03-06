@@ -1,7 +1,6 @@
 const path = require('path');
 
 class PluginUtilsV2 {
-
   /**
    * return a definition objects that has following structure:
    *
@@ -34,7 +33,6 @@ class PluginUtilsV2 {
       entries,
     };
   }
-
 }
 
 module.exports = PluginUtilsV2;
