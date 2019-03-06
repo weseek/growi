@@ -12,9 +12,9 @@ const SamlStrategy = require('passport-saml').Strategy;
  * the service class of Passport
  */
 class PassportService {
-
   // see '/lib/form/login.js'
   static get USERNAME_FIELD() { return 'loginForm[username]' }
+
   static get PASSWORD_FIELD() { return 'loginForm[password]' }
 
   constructor(crowi) {
@@ -65,7 +65,7 @@ class PassportService {
       'security:passport-saml:cert',
       'security:passport-saml:attrMapId',
       'security:passport-saml:attrMapUsername',
-      'security:passport-saml:attrMapMail'
+      'security:passport-saml:attrMapMail',
     ];
   }
 
@@ -110,7 +110,7 @@ class PassportService {
           }
           return done(null, user);
         });
-      }
+      },
     ));
 
     this.isLocalStrategySetup = true;
@@ -150,7 +150,7 @@ class PassportService {
 
     debug('LdapStrategy: setting up..');
 
-    passport.use(new LdapStrategy(this.getLdapConfigurationFunc(config, {passReqToCallback: true}),
+    passport.use(new LdapStrategy(this.getLdapConfigurationFunc(config, { passReqToCallback: true }),
       (req, ldapAccountInfo, done) => {
         debug('LDAP authentication has succeeded', ldapAccountInfo);
 
@@ -158,8 +158,7 @@ class PassportService {
         req.ldapAccountInfo = ldapAccountInfo;
 
         done(null, ldapAccountInfo);
-      }
-    ));
+      }));
 
     this.isLdapStrategySetup = true;
     debug('LdapStrategy: setup is done');
@@ -175,6 +174,7 @@ class PassportService {
     const config = this.crowi.config;
     return config.crowi['security:passport-ldap:attrMapUsername'] || 'uid';
   }
+
   /**
    * return attribute name for mapping to name of Crowi DB
    *
@@ -185,6 +185,7 @@ class PassportService {
     const config = this.crowi.config;
     return config.crowi['security:passport-ldap:attrMapName'] || '';
   }
+
   /**
    * return attribute name for mapping to name of Crowi DB
    *
@@ -217,6 +218,8 @@ class PassportService {
    * @memberof PassportService
    */
   getLdapConfigurationFunc(config, opts) {
+    /* eslint-disable no-multi-spaces */
+
     // get configurations
     const isUserBind          = config.crowi['security:passport-ldap:isUserBind'];
     const serverUrl           = config.crowi['security:passport-ldap:serverUrl'];
@@ -226,13 +229,14 @@ class PassportService {
     const groupSearchBase     = config.crowi['security:passport-ldap:groupSearchBase'];
     const groupSearchFilter   = config.crowi['security:passport-ldap:groupSearchFilter'];
     const groupDnProperty     = config.crowi['security:passport-ldap:groupDnProperty'] || 'uid';
+    /* eslint-enable no-multi-spaces */
 
     // parse serverUrl
     // see: https://regex101.com/r/0tuYBB/1
     const match = serverUrl.match(/(ldaps?:\/\/[^/]+)\/(.*)?/);
     if (match == null || match.length < 1) {
       debug('LdapStrategy: serverUrl is invalid');
-      return (req, callback) => { callback({ message: 'serverUrl is invalid'}) };
+      return (req, callback) => { callback({ message: 'serverUrl is invalid' }) };
     }
     const url = match[1];
     const searchBase = match[2] || '';
@@ -257,13 +261,16 @@ class PassportService {
       }
 
       // user bind
-      const fixedBindDN = (isUserBind) ?
-        bindDN.replace(/{{username}}/, loginForm.username):
-        bindDN;
+      const fixedBindDN = (isUserBind)
+        ? bindDN.replace(/{{username}}/, loginForm.username)
+        : bindDN;
       const fixedBindCredentials = (isUserBind) ? loginForm.password : bindCredentials;
       let serverOpt = {
-        url, bindDN: fixedBindDN, bindCredentials: fixedBindCredentials,
-        searchBase, searchFilter,
+        url,
+        bindDN: fixedBindDN,
+        bindCredentials: fixedBindCredentials,
+        searchBase,
+        searchFilter,
         attrMapUsername: this.getLdapAttrNameMappedToUsername(),
         attrMapName: this.getLdapAttrNameMappedToName(),
       };
@@ -313,17 +320,16 @@ class PassportService {
       clientId: config.crowi['security:passport-google:clientId'] || process.env.OAUTH_GOOGLE_CLIENT_ID,
       clientSecret: config.crowi['security:passport-google:clientSecret'] || process.env.OAUTH_GOOGLE_CLIENT_SECRET,
       callbackURL: (this.crowi.configManager.getConfig('crowi', 'app:siteUrl') != null)
-        ? urljoin(this.crowi.configManager.getSiteUrl(), '/passport/google/callback')                       // auto-generated with v3.2.4 and above
-        : config.crowi['security:passport-google:callbackUrl'] || process.env.OAUTH_GOOGLE_CALLBACK_URI,    // DEPRECATED: backward compatible with v3.2.3 and below
+        ? urljoin(this.crowi.configManager.getSiteUrl(), '/passport/google/callback') // auto-generated with v3.2.4 and above
+        : config.crowi['security:passport-google:callbackUrl'] || process.env.OAUTH_GOOGLE_CALLBACK_URI, // DEPRECATED: backward compatible with v3.2.3 and below
       skipUserProfile: false,
-    }, function(accessToken, refreshToken, profile, done) {
-      if (profile) {
-        return done(null, profile);
-      }
-      else {
+    }, ((accessToken, refreshToken, profile, done) => {
+        if (profile) {
+          return done(null, profile);
+        }
+
         return done(null, false);
-      }
-    }));
+      })));
 
     this.isGoogleStrategySetup = true;
     debug('GoogleStrategy: setup is done');
@@ -360,17 +366,16 @@ class PassportService {
       clientID: config.crowi['security:passport-github:clientId'] || process.env.OAUTH_GITHUB_CLIENT_ID,
       clientSecret: config.crowi['security:passport-github:clientSecret'] || process.env.OAUTH_GITHUB_CLIENT_SECRET,
       callbackURL: (this.crowi.configManager.getConfig('crowi', 'app:siteUrl') != null)
-        ? urljoin(this.crowi.configManager.getSiteUrl(), '/passport/github/callback')                       // auto-generated with v3.2.4 and above
-        : config.crowi['security:passport-github:callbackUrl'] || process.env.OAUTH_GITHUB_CALLBACK_URI,    // DEPRECATED: backward compatible with v3.2.3 and below
+        ? urljoin(this.crowi.configManager.getSiteUrl(), '/passport/github/callback') // auto-generated with v3.2.4 and above
+        : config.crowi['security:passport-github:callbackUrl'] || process.env.OAUTH_GITHUB_CALLBACK_URI, // DEPRECATED: backward compatible with v3.2.3 and below
       skipUserProfile: false,
-    }, function(accessToken, refreshToken, profile, done) {
-      if (profile) {
-        return done(null, profile);
-      }
-      else {
+    }, ((accessToken, refreshToken, profile, done) => {
+        if (profile) {
+          return done(null, profile);
+        }
+
         return done(null, false);
-      }
-    }));
+      })));
 
     this.isGitHubStrategySetup = true;
     debug('GitHubStrategy: setup is done');
@@ -407,17 +412,16 @@ class PassportService {
       consumerKey: config.crowi['security:passport-twitter:consumerKey'] || process.env.OAUTH_TWITTER_CONSUMER_KEY,
       consumerSecret: config.crowi['security:passport-twitter:consumerSecret'] || process.env.OAUTH_TWITTER_CONSUMER_SECRET,
       callbackURL: (this.crowi.configManager.getConfig('crowi', 'app:siteUrl') != null)
-        ? urljoin(this.crowi.configManager.getSiteUrl(), '/passport/twitter/callback')                       // auto-generated with v3.2.4 and above
-        : config.crowi['security:passport-twitter:callbackUrl'] || process.env.OAUTH_TWITTER_CALLBACK_URI,   // DEPRECATED: backward compatible with v3.2.3 and below
+        ? urljoin(this.crowi.configManager.getSiteUrl(), '/passport/twitter/callback') // auto-generated with v3.2.4 and above
+        : config.crowi['security:passport-twitter:callbackUrl'] || process.env.OAUTH_TWITTER_CALLBACK_URI, // DEPRECATED: backward compatible with v3.2.3 and below
       skipUserProfile: false,
-    }, function(accessToken, refreshToken, profile, done) {
-      if (profile) {
-        return done(null, profile);
-      }
-      else {
+    }, ((accessToken, refreshToken, profile, done) => {
+        if (profile) {
+          return done(null, profile);
+        }
+
         return done(null, false);
-      }
-    }));
+      })));
 
     this.isTwitterStrategySetup = true;
     debug('TwitterStrategy: setup is done');
@@ -440,7 +444,6 @@ class PassportService {
       throw new Error('SamlStrategy has already been set up');
     }
 
-    const config = this.crowi.config;
     const configManager = this.crowi.configManager;
     const isSamlEnabled = configManager.getConfig('crowi', 'security:passport-saml:isEnabled');
 
@@ -453,18 +456,17 @@ class PassportService {
     passport.use(new SamlStrategy({
       entryPoint: configManager.getConfig('crowi', 'security:passport-saml:entryPoint'),
       callbackUrl: (this.crowi.configManager.getConfig('crowi', 'app:siteUrl') != null)
-        ? urljoin(this.crowi.configManager.getSiteUrl(), '/passport/saml/callback')  // auto-generated with v3.2.4 and above
-        : configManager.getConfig('crowi', 'security:passport-saml:callbackUrl'),    // DEPRECATED: backward compatible with v3.2.3 and below
+        ? urljoin(this.crowi.configManager.getSiteUrl(), '/passport/saml/callback') // auto-generated with v3.2.4 and above
+        : configManager.getConfig('crowi', 'security:passport-saml:callbackUrl'), // DEPRECATED: backward compatible with v3.2.3 and below
       issuer: configManager.getConfig('crowi', 'security:passport-saml:issuer'),
       cert: configManager.getConfig('crowi', 'security:passport-saml:cert'),
-    }, function(profile, done) {
-      if (profile) {
-        return done(null, profile);
-      }
-      else {
+    }, ((profile, done) => {
+        if (profile) {
+          return done(null, profile);
+        }
+
         return done(null, false);
-      }
-    }));
+      })));
 
     this.isSamlStrategySetup = true;
     debug('SamlStrategy: setup is done');
@@ -509,10 +511,10 @@ class PassportService {
 
     const User = this.crowi.model('User');
 
-    passport.serializeUser(function(user, done) {
+    passport.serializeUser((user, done) => {
       done(null, user.id);
     });
-    passport.deserializeUser(async function(id, done) {
+    passport.deserializeUser(async(id, done) => {
       try {
         const user = await User.findById(id).populate(User.IMAGE_POPULATION);
         if (user == null) {
