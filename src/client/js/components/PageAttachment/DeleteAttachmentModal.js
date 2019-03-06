@@ -32,10 +32,14 @@ export default class DeleteAttachmentModal extends React.Component {
     return (
       <div className="attachment-delete-image">
         <p>
-          <i className={this.iconNameByFormat(attachment.fileFormat)}></i> {attachment.originalName}
+          <i className={this.iconNameByFormat(attachment.fileFormat)} />
+          {' '}
+          {attachment.originalName}
         </p>
         <p>
-          uploaded by <User user={attachment.creator} username />
+          uploaded by
+          {' '}
+          <User user={attachment.creator} username />
         </p>
         {content}
       </div>
@@ -57,13 +61,13 @@ export default class DeleteAttachmentModal extends React.Component {
 
     let deletingIndicator = '';
     if (this.props.deleting) {
-      deletingIndicator = <div className="speeding-wheel-sm"></div>;
+      deletingIndicator = <div className="speeding-wheel-sm" />;
     }
     if (this.props.deleteError) {
       deletingIndicator = <span>{this.props.deleteError}</span>;
     }
 
-    let renderAttachment = this.renderByFileFormat(attachment);
+    const renderAttachment = this.renderByFileFormat(attachment);
 
     return (
       <Modal {...props} className="attachment-delete-modal" bsSize="large" aria-labelledby="contained-modal-title-lg">
@@ -77,11 +81,15 @@ export default class DeleteAttachmentModal extends React.Component {
           <div className="mr-3 d-inline-block">
             {deletingIndicator}
           </div>
-          <Button onClick={this._onDeleteConfirm} bsStyle="danger"
-            disabled={this.props.deleting}>Delete!</Button>
+          <Button
+            onClick={this._onDeleteConfirm}
+            bsStyle="danger"
+            disabled={this.props.deleting}
+          >
+Delete!
+          </Button>
         </Modal.Footer>
       </Modal>
     );
   }
 }
-

@@ -1,5 +1,4 @@
 export default class TocAndAnchorConfigurer {
-
   constructor(crowi, renderToc) {
     this.crowi = crowi;
     this.renderToc = renderToc;
@@ -23,5 +22,4 @@ export default class TocAndAnchorConfigurer {
       });
     }
   }
-
 }

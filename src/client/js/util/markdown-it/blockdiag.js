@@ -1,5 +1,4 @@
 export default class BlockdiagConfigurer {
-
   constructor(crowi) {
     this.crowi = crowi;
     const config = crowi.getConfig();

@@ -4,10 +4,9 @@ import PropTypes from 'prop-types';
 import UserPicture from './UserPicture';
 
 export default class User extends React.Component {
-
   render() {
     const user = this.props.user;
-    const userLink = '/user/' + user.username;
+    const userLink = `/user/${user.username}`;
 
     const username = this.props.username;
     const name = this.props.name;
@@ -17,11 +16,22 @@ export default class User extends React.Component {
         <a href={userLink}>
           <UserPicture user={user} />
 
-          {username &&
-              <span className="user-component-username">@{user.username}</span>
+          {username
+              && (
+              <span className="user-component-username">
+@
+                {user.username}
+              </span>
+)
           }
-          {name &&
-              <span className="user-component-name">({user.name})</span>
+          {name
+              && (
+              <span className="user-component-name">
+(
+                {user.name}
+)
+              </span>
+)
           }
         </a>
       </span>

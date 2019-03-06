@@ -36,8 +36,8 @@ export default class Crowi {
     this.apiRequest = this.apiRequest.bind(this);
 
     this.interceptorManager = new InterceptorManager();
-    this.interceptorManager.addInterceptor(new DetachCodeBlockInterceptor(this), 10);       // process as soon as possible
-    this.interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(this), 900);     // process as late as possible
+    this.interceptorManager.addInterceptor(new DetachCodeBlockInterceptor(this), 10); // process as soon as possible
+    this.interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(this), 900); // process as late as possible
 
     // FIXME
     this.me = context.me;
@@ -46,7 +46,7 @@ export default class Crowi {
 
     this.users = [];
     this.userByName = {};
-    this.userById   = {};
+    this.userById = {};
     this.draft = {};
     this.editorOptions = {};
 
@@ -100,7 +100,7 @@ export default class Crowi {
       'previewOptions',
     ];
 
-    keys.forEach(key => {
+    keys.forEach((key) => {
       const keyContent = this.localStorage[key];
       if (keyContent) {
         try {
@@ -114,19 +114,19 @@ export default class Crowi {
   }
 
   fetchUsers() {
-    const interval = 1000*60*15; // 15min
+    const interval = 1000 * 60 * 15; // 15min
     const currentTime = new Date();
     if (this.localStorage.lastFetched && interval > currentTime - new Date(this.localStorage.lastFetched)) {
-      return ;
+      return;
     }
 
     this.apiGet('/users.list', {})
-    .then(data => {
+    .then((data) => {
       this.users = data.users;
       this.localStorage.users = JSON.stringify(data.users);
 
-      let userByName = {};
-      let userById = {};
+      const userByName = {};
+      const userById = {};
       for (let i = 0; i < data.users.length; i++) {
         const user = data.users[i];
         userByName[user.username] = user;
@@ -139,7 +139,7 @@ export default class Crowi {
       this.localStorage.userById = JSON.stringify(userById);
 
       this.localStorage.lastFetched = new Date();
-    }).catch(err => {
+    }).catch((err) => {
       this.localStorage.removeItem('lastFetched');
       // ignore errors
     });
@@ -192,9 +192,9 @@ export default class Crowi {
   }
 
   findUserByIds(userIds) {
-    let users = [];
-    for (let userId of userIds) {
-      let user = this.findUserById(userId);
+    const users = [];
+    for (const userId of userIds) {
+      const user = this.findUserById(userId);
       if (user) {
         users.push(user);
       }
@@ -217,7 +217,7 @@ export default class Crowi {
       body: markdown,
     });
     return this.apiPost('/pages.create', params)
-      .then(res => {
+      .then((res) => {
         if (!res.ok) {
           throw new Error(res.error);
         }
@@ -232,7 +232,7 @@ export default class Crowi {
       body: markdown,
     });
     return this.apiPost('/pages.update', params)
-      .then(res => {
+      .then((res) => {
         if (!res.ok) {
           throw new Error(res.error);
         }
@@ -251,7 +251,7 @@ export default class Crowi {
   }
 
   apiGet(path, params) {
-    return this.apiRequest('get', path, {params: params});
+    return this.apiRequest('get', path, { params });
   }
 
   apiPost(path, params) {
@@ -263,10 +263,9 @@ export default class Crowi {
   }
 
   apiRequest(method, path, params) {
-
     return new Promise((resolve, reject) => {
       axios[method](`/_api${path}`, params)
-      .then(res => {
+      .then((res) => {
         if (res.data.ok) {
           resolve(res.data);
         }
@@ -274,11 +273,9 @@ export default class Crowi {
           reject(new Error(res.data.error));
         }
       })
-      .catch(res => {
+      .catch((res) => {
         reject(res);
       });
     });
   }
-
 }
-

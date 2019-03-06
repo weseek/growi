@@ -6,7 +6,6 @@ import Modal from 'react-bootstrap/es/Modal';
 import Checkbox from 'react-bootstrap/es/Checkbox';
 
 export default class DeletePageListModal extends React.Component {
-
   /*
    * the threshold for omitting body
    */
@@ -21,7 +20,7 @@ export default class DeletePageListModal extends React.Component {
 
   render() {
     if (this.props.pages === undefined || this.props.pages.length == 0) {
-      return <div></div>;
+      return <div />;
     }
 
     const listView = this.props.pages.map((page) => {
@@ -44,9 +43,12 @@ export default class DeletePageListModal extends React.Component {
           <div className="d-flex justify-content-between">
             <span className="text-danger">{this.props.errorMessage}</span>
             <span className="d-flex align-items-center">
-              <Checkbox className="text-danger" onClick={this.props.toggleDeleteCompletely} inline={true}>Delete completely</Checkbox>
+              <Checkbox className="text-danger" onClick={this.props.toggleDeleteCompletely} inline>Delete completely</Checkbox>
               <span className="m-l-10">
-                <Button onClick={this.props.confirmedToDelete}><i className="icon-trash"></i>Delete</Button>
+                <Button onClick={this.props.confirmedToDelete}>
+                  <i className="icon-trash" />
+Delete
+                </Button>
               </span>
             </span>
           </div>
@@ -54,14 +56,13 @@ export default class DeletePageListModal extends React.Component {
       </Modal>
     );
   }
-
 }
 
 DeletePageListModal.propTypes = {
   isShown: PropTypes.bool.isRequired,
   pages: PropTypes.array,
   errorMessage: PropTypes.string,
-  cancel: PropTypes.func.isRequired,                 // for cancel evnet handling
-  confirmedToDelete: PropTypes.func.isRequired,      // for confirmed event handling
+  cancel: PropTypes.func.isRequired, // for cancel evnet handling
+  confirmedToDelete: PropTypes.func.isRequired, // for confirmed event handling
   toggleDeleteCompletely: PropTypes.func.isRequired, // for delete completely check event handling
 };

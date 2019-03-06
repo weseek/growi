@@ -10,7 +10,6 @@ import Dropdown from 'react-bootstrap/es/Dropdown';
 import MenuItem from 'react-bootstrap/es/MenuItem';
 
 class OptionsSelector extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -25,7 +24,7 @@ class OptionsSelector extends React.Component {
     };
 
     this.availableThemes = [
-      'eclipse', 'elegant', 'neo', 'mdn-like', 'material', 'dracula', 'monokai', 'twilight'
+      'eclipse', 'elegant', 'neo', 'mdn-like', 'material', 'dracula', 'monokai', 'twilight',
     ];
     this.keymapModes = {
       default: 'Default',
@@ -52,8 +51,8 @@ class OptionsSelector extends React.Component {
 
   onChangeTheme() {
     const newValue = this.themeSelectorInputEl.value;
-    const newOpts = Object.assign(this.state.editorOptions, {theme: newValue});
-    this.setState({editorOptions: newOpts});
+    const newOpts = Object.assign(this.state.editorOptions, { theme: newValue });
+    this.setState({ editorOptions: newOpts });
 
     // dispatch event
     this.dispatchOnChange();
@@ -61,8 +60,8 @@ class OptionsSelector extends React.Component {
 
   onChangeKeymapMode() {
     const newValue = this.keymapModeSelectorInputEl.value;
-    const newOpts = Object.assign(this.state.editorOptions, {keymapMode: newValue});
-    this.setState({editorOptions: newOpts});
+    const newOpts = Object.assign(this.state.editorOptions, { keymapMode: newValue });
+    this.setState({ editorOptions: newOpts });
 
     // dispatch event
     this.dispatchOnChange();
@@ -73,8 +72,8 @@ class OptionsSelector extends React.Component {
     this._cddForceOpen = true;
 
     const newValue = !this.state.editorOptions.styleActiveLine;
-    const newOpts = Object.assign(this.state.editorOptions, {styleActiveLine: newValue});
-    this.setState({editorOptions: newOpts});
+    const newOpts = Object.assign(this.state.editorOptions, { styleActiveLine: newValue });
+    this.setState({ editorOptions: newOpts });
 
     // dispatch event
     this.dispatchOnChange();
@@ -85,8 +84,8 @@ class OptionsSelector extends React.Component {
     this._cddForceOpen = true;
 
     const newValue = !this.state.previewOptions.renderMathJaxInRealtime;
-    const newOpts = Object.assign(this.state.previewOptions, {renderMathJaxInRealtime: newValue});
-    this.setState({previewOptions: newOpts});
+    const newOpts = Object.assign(this.state.previewOptions, { renderMathJaxInRealtime: newValue });
+    this.setState({ previewOptions: newOpts });
 
     // dispatch event
     this.dispatchOnChange();
@@ -122,9 +121,14 @@ class OptionsSelector extends React.Component {
     return (
       <FormGroup controlId="formControlsSelect" className="my-0">
         <ControlLabel>Theme:</ControlLabel>
-        <FormControl componentClass="select" placeholder="select" bsClass={bsClassName} className="btn-group-sm selectpicker"
-            onChange={this.onChangeTheme}
-            inputRef={ el => this.themeSelectorInputEl=el }>
+        <FormControl
+          componentClass="select"
+          placeholder="select"
+          bsClass={bsClassName}
+          className="btn-group-sm selectpicker"
+          onChange={this.onChangeTheme}
+          inputRef={(el) => { return this.themeSelectorInputEl = el }}
+        >
 
           {optionElems}
 
@@ -135,13 +139,13 @@ class OptionsSelector extends React.Component {
 
   renderKeymapModeSelector() {
     const optionElems = [];
-    for (let mode in this.keymapModes) {
+    for (const mode in this.keymapModes) {
       const label = this.keymapModes[mode];
       const dataContent = (mode === 'default')
         ? label
         : `<img src='/images/icons/${mode}.png' width='16px' class='m-r-5'></img> ${label}`;
       optionElems.push(
-        <option key={mode} value={mode} data-content={dataContent}>{label}</option>
+        <option key={mode} value={mode} data-content={dataContent}>{label}</option>,
       );
     }
 
@@ -150,9 +154,14 @@ class OptionsSelector extends React.Component {
     return (
       <FormGroup controlId="formControlsSelect" className="my-0">
         <ControlLabel>Keymap:</ControlLabel>
-        <FormControl componentClass="select" placeholder="select" bsClass={bsClassName} className="btn-group-sm selectpicker"
-            onChange={this.onChangeKeymapMode}
-            inputRef={ el => this.keymapModeSelectorInputEl=el }>
+        <FormControl
+          componentClass="select"
+          placeholder="select"
+          bsClass={bsClassName}
+          className="btn-group-sm selectpicker"
+          onChange={this.onChangeKeymapMode}
+          inputRef={(el) => { return this.keymapModeSelectorInputEl = el }}
+        >
 
           {optionElems}
 
@@ -165,11 +174,16 @@ class OptionsSelector extends React.Component {
     return (
       <FormGroup controlId="formControlsSelect" className="my-0">
 
-        <Dropdown dropup id="configurationDropdown" className="configuration-dropdown"
-            open={this.state.isCddMenuOpened} onToggle={this.onToggleConfigurationDropdown}>
+        <Dropdown
+          dropup
+          id="configurationDropdown"
+          className="configuration-dropdown"
+          open={this.state.isCddMenuOpened}
+          onToggle={this.onToggleConfigurationDropdown}
+        >
 
           <Dropdown.Toggle bsSize="sm">
-            <i className="icon-settings"></i>
+            <i className="icon-settings" />
           </Dropdown.Toggle>
 
           <Dropdown.Menu>
@@ -196,9 +210,9 @@ class OptionsSelector extends React.Component {
 
     return (
       <MenuItem onClick={this.onClickStyleActiveLine}>
-        <span className="icon-container"></span>
+        <span className="icon-container" />
         <span className="menuitem-label">{ t('page_edit.Show active line') }</span>
-        <span className="icon-container"><i className={iconClassName}></i></span>
+        <span className="icon-container"><i className={iconClassName} /></span>
       </MenuItem>
     );
   }
@@ -219,19 +233,21 @@ class OptionsSelector extends React.Component {
 
     return (
       <MenuItem onClick={this.onClickRenderMathJaxInRealtime}>
-        <span className="icon-container"><img src="/images/icons/fx.svg" width="14px"></img></span>
+        <span className="icon-container"><img src="/images/icons/fx.svg" width="14px" /></span>
         <span className="menuitem-label">MathJax Rendering</span>
-        <i className={iconClassName}></i>
+        <i className={iconClassName} />
       </MenuItem>
     );
   }
 
   render() {
-    return <div className="d-flex flex-row">
-      <span className="m-l-5">{this.renderThemeSelector()}</span>
-      <span className="m-l-5">{this.renderKeymapModeSelector()}</span>
-      <span className="m-l-5">{this.renderConfigurationDropdown()}</span>
-    </div>;
+    return (
+      <div className="d-flex flex-row">
+        <span className="m-l-5">{this.renderThemeSelector()}</span>
+        <span className="m-l-5">{this.renderKeymapModeSelector()}</span>
+        <span className="m-l-5">{this.renderConfigurationDropdown()}</span>
+      </div>
+    );
   }
 }
 
@@ -254,7 +270,7 @@ export class PreviewOptions {
 }
 
 OptionsSelector.propTypes = {
-  t: PropTypes.func.isRequired,               // i18next
+  t: PropTypes.func.isRequired, // i18next
   crowi: PropTypes.object.isRequired,
   editorOptions: PropTypes.instanceOf(EditorOptions).isRequired,
   previewOptions: PropTypes.instanceOf(PreviewOptions).isRequired,

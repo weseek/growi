@@ -9,7 +9,6 @@ import SearchForm from '../SearchForm';
 
 // Search.SearchForm
 export default class SearchPageForm extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -24,35 +23,38 @@ export default class SearchPageForm extends React.Component {
 
   search() {
     const keyword = this.state.keyword;
-    this.props.onSearchFormChanged({keyword: keyword});
-    this.setState({searchedKeyword: keyword});
+    this.props.onSearchFormChanged({ keyword });
+    this.setState({ searchedKeyword: keyword });
   }
 
   onInputChange(input) { // for only submitting with button
-    this.setState({keyword: input});
+    this.setState({ keyword: input });
   }
 
   render() {
-    return <FormGroup>
-      <InputGroup>
-        <SearchForm t={this.props.t}
-          crowi={this.props.crowi}
-          onSubmit={this.search}
-          keyword={this.state.searchedKeyword}
-          onInputChange={this.onInputChange}
-        />
-        <InputGroup.Button className="">
-          <Button onClick={this.search}>
-            <i className="icon-magnifier"></i>
-          </Button >
-        </InputGroup.Button>
-      </InputGroup>
-    </FormGroup>;
+    return (
+      <FormGroup>
+        <InputGroup>
+          <SearchForm
+            t={this.props.t}
+            crowi={this.props.crowi}
+            onSubmit={this.search}
+            keyword={this.state.searchedKeyword}
+            onInputChange={this.onInputChange}
+          />
+          <InputGroup.Button className="">
+            <Button onClick={this.search}>
+              <i className="icon-magnifier" />
+            </Button>
+          </InputGroup.Button>
+        </InputGroup>
+      </FormGroup>
+    );
   }
 }
 
 SearchPageForm.propTypes = {
-  t: PropTypes.func.isRequired,               // i18next
+  t: PropTypes.func.isRequired, // i18next
   crowi: PropTypes.object.isRequired,
   keyword: PropTypes.string,
   onSearchFormChanged: PropTypes.func.isRequired,

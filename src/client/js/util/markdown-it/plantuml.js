@@ -2,7 +2,6 @@ import plantumlEncoder from 'plantuml-encoder';
 import urljoin from 'url-join';
 
 export default class PlantUMLConfigurer {
-
   constructor(crowi) {
     this.crowi = crowi;
     const config = crowi.getConfig();

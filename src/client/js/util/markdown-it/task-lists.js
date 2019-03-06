@@ -1,5 +1,4 @@
 export default class TaskListsConfigurer {
-
   constructor(crowi) {
     this.crowi = crowi;
   }
@@ -14,5 +13,4 @@ export default class TaskListsConfigurer {
       liClass: 'task-list-item',
     });
   }
-
 }

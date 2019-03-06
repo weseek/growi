@@ -5,7 +5,6 @@ import { translate } from 'react-i18next';
 import PageRevisionList from './PageHistory/PageRevisionList';
 
 class PageHistory extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -22,14 +21,13 @@ class PageHistory extends React.Component {
     const pageId = this.props.pageId;
 
     if (!pageId) {
-      return ;
+      return;
     }
 
-    this.props.crowi.apiGet('/revisions.ids', {page_id: pageId})
-    .then(res => {
-
+    this.props.crowi.apiGet('/revisions.ids', { page_id: pageId })
+    .then((res) => {
       const rev = res.revisions;
-      let diffOpened = {};
+      const diffOpened = {};
       const lastId = rev.length - 1;
       res.revisions.map((revision, i) => {
         const user = this.props.crowi.findUserById(revision.author);
@@ -47,7 +45,7 @@ class PageHistory extends React.Component {
 
       this.setState({
         revisions: rev,
-        diffOpened: diffOpened,
+        diffOpened,
       });
 
       // load 0, and last default
@@ -60,14 +58,14 @@ class PageHistory extends React.Component {
       if (lastId !== 0 && lastId !== 1 && rev[lastId]) {
         this.fetchPageRevisionBody(rev[lastId]);
       }
-    }).catch(err => {
+    }).catch((err) => {
       // do nothing
     });
   }
 
   getPreviousRevision(currentRevision) {
     let cursor = null;
-    for (let revision of this.state.revisions) {
+    for (const revision of this.state.revisions) {
       if (cursor && cursor._id == currentRevision._id) {
         cursor = revision;
         break;
@@ -80,12 +78,14 @@ class PageHistory extends React.Component {
   }
 
   onDiffOpenClicked(revision) {
-    const diffOpened = this.state.diffOpened,
-      revisionId = revision._id;
+    const diffOpened = this.state.diffOpened;
+
+
+    const revisionId = revision._id;
 
     diffOpened[revisionId] = !(diffOpened[revisionId]);
     this.setState({
-      diffOpened
+      diffOpened,
     });
 
     this.fetchPageRevisionBody(revision);
@@ -94,13 +94,12 @@ class PageHistory extends React.Component {
 
   fetchPageRevisionBody(revision) {
     if (revision.body) {
-      return ;
+      return;
     }
 
     this.props.crowi.apiGet('/revisions.get',
-      { page_id: this.props.pageId, revision_id: revision._id}
-    )
-    .then(res => {
+      { page_id: this.props.pageId, revision_id: revision._id })
+    .then((res) => {
       if (res.ok) {
         this.setState({
           revisions: this.state.revisions.map((rev) => {
@@ -109,11 +108,11 @@ class PageHistory extends React.Component {
             }
 
             return rev;
-          })
+          }),
         });
       }
     })
-    .catch(err => {
+    .catch((err) => {
 
     });
   }
@@ -134,7 +133,7 @@ class PageHistory extends React.Component {
 }
 
 PageHistory.propTypes = {
-  t: PropTypes.func.isRequired,               // i18next
+  t: PropTypes.func.isRequired, // i18next
   pageId: PropTypes.string,
   crowi: PropTypes.object.isRequired,
 };

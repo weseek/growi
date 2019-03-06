@@ -13,7 +13,6 @@ import mlu from './MarkdownListUtil';
 import PreventMarkdownListInterceptor from './PreventMarkdownListInterceptor';
 
 export default class TextAreaEditor extends AbstractEditor {
-
   constructor(props) {
     super(props);
     this.logger = require('@alias/logger')('growi:PageEditor:TextAreaEditor');
@@ -86,11 +85,11 @@ export default class TextAreaEditor extends AbstractEditor {
     // scroll to bottom
     this.textarea.scrollTop = this.textarea.scrollHeight;
 
-    const lines = this.textarea.value.split('\n').slice(0, line+1);
+    const lines = this.textarea.value.split('\n').slice(0, line + 1);
     const pos = lines
-        .map(lineStr => lineStr.length + 1) // correct length+1 of each lines
-        .reduce((a, x) => a += x, 0)        // sum
-        - 1;                                // -1
+        .map((lineStr) => { return lineStr.length + 1 }) // correct length+1 of each lines
+        .reduce((a, x) => { return a += x }, 0) // sum
+        - 1; // -1
 
     this.textarea.setSelectionRange(pos, pos);
   }
@@ -149,13 +148,13 @@ export default class TextAreaEditor extends AbstractEditor {
 
   getBolPos() {
     const currentPos = this.textarea.selectionStart;
-    return this.textarea.value.lastIndexOf('\n', currentPos-1) + 1;
+    return this.textarea.value.lastIndexOf('\n', currentPos - 1) + 1;
   }
 
   getEolPos() {
     const currentPos = this.textarea.selectionStart;
     const pos = this.textarea.value.indexOf('\n', currentPos);
-    if (pos < 0) {  // not found but EOF
+    if (pos < 0) { // not found but EOF
       return this.textarea.value.length;
     }
     return pos;
@@ -197,7 +196,7 @@ export default class TextAreaEditor extends AbstractEditor {
     }
 
     const context = {
-      handlers: [],  // list of handlers which process enter key
+      handlers: [], // list of handlers which process enter key
       editor: this,
     };
 
@@ -240,21 +239,23 @@ export default class TextAreaEditor extends AbstractEditor {
   }
 
   render() {
-    return <React.Fragment>
-      <FormControl
-        componentClass="textarea" className="textarea-editor"
-        inputRef={ref => { this.textarea = ref }}
-        defaultValue={this.state.value}
-        onChange={(e) => {
+    return (
+      <React.Fragment>
+        <FormControl
+          componentClass="textarea"
+          className="textarea-editor"
+          inputRef={(ref) => { this.textarea = ref }}
+          defaultValue={this.state.value}
+          onChange={(e) => {
           if (this.props.onChange != null) {
             this.props.onChange(e.target.value);
           }
-        }} />
-    </React.Fragment>;
+        }}
+        />
+      </React.Fragment>
+    );
   }
-
 }
 
 TextAreaEditor.propTypes = Object.assign({
 }, AbstractEditor.propTypes);
-

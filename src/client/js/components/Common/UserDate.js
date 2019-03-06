@@ -9,7 +9,6 @@ import dateFnsFormat from 'date-fns/format';
  * display date depends on user timezone of user settings
  */
 export default class UserDate extends React.Component {
-
   render() {
     const dt = dateFnsFormat(this.props.dateTime, this.props.format);
 
@@ -32,4 +31,3 @@ UserDate.defaultProps = {
   format: 'YYYY/MM/DD HH:mm:ss',
   className: '',
 };
-

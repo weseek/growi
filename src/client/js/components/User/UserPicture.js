@@ -4,22 +4,20 @@ import PropTypes from 'prop-types';
 
 // TODO UserComponent?
 export default class UserPicture extends React.Component {
-
   getUserPicture(user) {
     // gravatar
     if (user.isGravatarEnabled === true) {
       return this.generateGravatarSrc(user);
     }
     // uploaded image
-    else if (user.image != null) {
+    if (user.image != null) {
       return user.image;
     }
-    else if (user.imageAttachment != null) {
+    if (user.imageAttachment != null) {
       return user.imageAttachment.filePathProxied;
     }
-    else {
-      return '/images/icons/user.svg';
-    }
+
+    return '/images/icons/user.svg';
   }
 
   generateGravatarSrc(user) {
@@ -29,10 +27,10 @@ export default class UserPicture extends React.Component {
   }
 
   getClassName() {
-    let className = ['img-circle', 'picture'];
+    const className = ['img-circle', 'picture'];
     // size
     if (this.props.size) {
-      className.push('picture-' + this.props.size);
+      className.push(`picture-${this.props.size}`);
     }
 
     return className.join(' ');
@@ -46,7 +44,7 @@ export default class UserPicture extends React.Component {
         src={this.getUserPicture(user)}
         alt={user.username}
         className={this.getClassName()}
-        />
+      />
     );
   }
 }

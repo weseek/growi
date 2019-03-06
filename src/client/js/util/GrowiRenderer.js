@@ -1,8 +1,8 @@
 import MarkdownIt from 'markdown-it';
 
-import Linker        from './PreProcessor/Linker';
-import CsvToTable    from './PreProcessor/CsvToTable';
-import XssFilter     from './PreProcessor/XssFilter';
+import Linker from './PreProcessor/Linker';
+import CsvToTable from './PreProcessor/CsvToTable';
+import XssFilter from './PreProcessor/XssFilter';
 import CrowiTemplate from './PostProcessor/CrowiTemplate';
 
 import EmojiConfigurer from './markdown-it/emoji';
@@ -22,7 +22,6 @@ const logger = require('@alias/logger')('growi:util:GrowiRenderer');
 
 
 export default class GrowiRenderer {
-
   /**
    *
    * @param {Crowi} crowi
@@ -33,8 +32,9 @@ export default class GrowiRenderer {
     this.crowi = crowi;
     this.originRenderer = originRenderer || {};
     this.options = Object.assign( // merge options
-      { isAutoSetup: true },      // default options
-      options || {});             // specified options
+      { isAutoSetup: true }, // default options
+      options || {},
+    ); // specified options
 
     // initialize processors
     //  that will be retrieved if originRenderer exists
@@ -89,21 +89,21 @@ export default class GrowiRenderer {
           new TocAndAnchorConfigurer(crowi, options.renderToc),
           new HeaderLineNumberConfigurer(crowi),
           new HeaderWithEditLinkConfigurer(crowi),
-          new TableWithHandsontableButtonConfigurer(crowi)
+          new TableWithHandsontableButtonConfigurer(crowi),
         ]);
         break;
       case 'editor':
         this.markdownItConfigurers = this.markdownItConfigurers.concat([
           new FooternoteConfigurer(crowi),
           new HeaderLineNumberConfigurer(crowi),
-          new TableConfigurer(crowi)
+          new TableConfigurer(crowi),
         ]);
         break;
       // case 'comment':
       //   break;
       default:
         this.markdownItConfigurers = this.markdownItConfigurers.concat([
-          new TableConfigurer(crowi)
+          new TableConfigurer(crowi),
         ]);
         break;
     }
@@ -115,7 +115,7 @@ export default class GrowiRenderer {
   setup() {
     const crowiConfig = this.crowi.config;
 
-    let isEnabledLinebreaks = undefined;
+    let isEnabledLinebreaks;
     switch (this.options.mode) {
       case 'comment':
         isEnabledLinebreaks = crowiConfig.isEnabledLinebreaksInComments;
@@ -204,5 +204,4 @@ export default class GrowiRenderer {
 
   highlightCode(code, lang) {
   }
-
 }

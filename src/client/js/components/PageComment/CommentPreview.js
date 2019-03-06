@@ -7,18 +7,19 @@ import RevisionBody from '../Page/RevisionBody';
  * Wrapper component for Page/RevisionBody
  */
 export default class CommentPreview extends React.Component {
-
   constructor(props) {
     super(props);
   }
 
   render() {
     return (
-      <div className="page-comment-preview-body"
-          ref={(elm) => {
+      <div
+        className="page-comment-preview-body"
+        ref={(elm) => {
             this.previewElement = elm;
             this.props.inputRef(elm);
-          }}>
+          }}
+      >
 
         <RevisionBody
           {...this.props}
@@ -31,5 +32,5 @@ export default class CommentPreview extends React.Component {
 
 CommentPreview.propTypes = {
   html: PropTypes.string,
-  inputRef: PropTypes.func.isRequired,  // for getting div element
+  inputRef: PropTypes.func.isRequired, // for getting div element
 };

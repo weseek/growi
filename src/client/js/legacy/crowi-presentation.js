@@ -15,8 +15,8 @@ Reveal.initialize({
   center: true,
   transition: 'slide',
 
-  //// This specification method can't be used
-  ////   sice deleting symlink prevented `src` from being resolved -- 2017.06.15 Yuki Takei
+  // // This specification method can't be used
+  // //   sice deleting symlink prevented `src` from being resolved -- 2017.06.15 Yuki Takei
   //
   // Optional libraries used to extend on reveal.js
   // dependencies: [
@@ -40,7 +40,7 @@ require.ensure([], () => {
   Reveal.sync();
 });
 
-Reveal.addEventListener('ready', function(event) {
+Reveal.addEventListener('ready', (event) => {
   // event.currentSlide, event.indexh, event.indexv
   $('.reveal section').each(function(e) {
     const $self = $(this);

@@ -2,7 +2,6 @@
  * Utility for markdown list
  */
 class MarkdownListUtil {
-
   constructor() {
     // https://github.com/codemirror/CodeMirror/blob/c7853a989c77bb9f520c9c530cbe1497856e96fc/addon/edit/continuelist.js#L14
     // https://regex101.com/r/7BN2fR/5
@@ -88,7 +87,7 @@ class MarkdownListUtil {
     // not listful data
     else {
       // append `indentAndMark` at the beginning of all lines (except the first line)
-      const replacedText = text.replace(/(\r\n|\r|\n)/g, '$1' + indentAndMark);
+      const replacedText = text.replace(/(\r\n|\r|\n)/g, `$1${indentAndMark}`);
       // append `indentAndMark` to the first line
       adjusted = indentAndMark + replacedText;
     }
@@ -118,13 +117,11 @@ class MarkdownListUtil {
       // ensure to be true if it is 50% or more
       if (count >= lines.length / 2) {
         isListful = true;
-        return;
       }
     });
 
     return isListful;
   }
-
 }
 
 // singleton pattern

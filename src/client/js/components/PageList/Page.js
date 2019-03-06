@@ -6,7 +6,6 @@ import PageListMeta from './PageListMeta';
 import PagePath from './PagePath';
 
 export default class Page extends React.Component {
-
   render() {
     const page = this.props.page;
     let link = this.props.linkTo;
@@ -15,7 +14,7 @@ export default class Page extends React.Component {
     }
 
     const styleFlex = {
-      flex: 1
+      flex: 1,
     };
 
     return (
@@ -25,7 +24,7 @@ export default class Page extends React.Component {
           <PagePath page={page} excludePathString={this.props.excludePathString} />
         </a>
         <PageListMeta page={page} />
-        <div style={styleFlex}></div>
+        <div style={styleFlex} />
         {this.props.children}
       </li>
     );
@@ -42,4 +41,3 @@ Page.defaultProps = {
   linkTo: '',
   excludePathString: '',
 };
-

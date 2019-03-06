@@ -4,7 +4,6 @@ import SearchTypeahead from './SearchTypeahead';
 
 // SearchTypeahead wrapper
 export default class SearchForm extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -29,7 +28,7 @@ export default class SearchForm extends React.Component {
   }
 
   onChange(selected) {
-    const page = selected[0];  // should be single page selected
+    const page = selected[0]; // should be single page selected
 
     // navigate to page
     if (page != null) {
@@ -43,20 +42,35 @@ export default class SearchForm extends React.Component {
     return (
       <table className="table m-1 search-help">
         <caption className="text-left text-primary p-2 mb-2">
-          <h5 className="m-1"><i className="icon-magnifier pr-2 mb-2"/>{ t('search_help.title') }</h5>
+          <h5 className="m-1">
+            <i className="icon-magnifier pr-2 mb-2" />
+            { t('search_help.title') }
+          </h5>
         </caption>
         <tbody>
           <tr>
             <th className="text-right pt-2">
-              <code>word1</code> <code>word2</code><br></br>
-              <small>({ t('search_help.and.syntax help') })</small>
+              <code>word1</code>
+              {' '}
+              <code>word2</code>
+              <br />
+              <small>
+(
+                { t('search_help.and.syntax help') }
+)
+              </small>
             </th>
             <td><h6 className="m-0 pt-1">{ t('search_help.and.desc', { word1: 'word1', word2: 'word2' }) }</h6></td>
           </tr>
           <tr>
             <th className="text-right pt-2">
-              <code>"This is GROWI"</code><br></br>
-              <small>({ t('search_help.phrase.syntax help') })</small>
+              <code>"This is GROWI"</code>
+              <br />
+              <small>
+(
+                { t('search_help.phrase.syntax help') }
+)
+              </small>
             </th>
             <td><h6 className="m-0 pt-1">{ t('search_help.phrase.desc', { phrase: 'This is GROWI' }) }</h6></td>
           </tr>
@@ -100,7 +114,7 @@ export default class SearchForm extends React.Component {
 }
 
 SearchForm.propTypes = {
-  t: PropTypes.func.isRequired,               // i18next
+  t: PropTypes.func.isRequired, // i18next
   crowi: PropTypes.object.isRequired,
   keyword: PropTypes.string,
   onSubmit: PropTypes.func.isRequired,

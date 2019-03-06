@@ -1,10 +1,9 @@
 export default class MathJaxConfigurer {
-
   constructor(crowi) {
     this.crowi = crowi;
 
     const config = crowi.getConfig();
-    this.isEnabled = !!config.env.MATHJAX;  // convert to boolean
+    this.isEnabled = !!config.env.MATHJAX; // convert to boolean
   }
 
   configure(md) {
@@ -12,5 +11,4 @@ export default class MathJaxConfigurer {
       md.use(require('markdown-it-mathjax')());
     }
   }
-
 }

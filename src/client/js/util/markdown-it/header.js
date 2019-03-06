@@ -1,5 +1,4 @@
 export default class HeaderConfigurer {
-
   constructor(crowi) {
     this.crowi = crowi;
 
@@ -18,9 +17,8 @@ export default class HeaderConfigurer {
       if (original) {
         return original(tokens, idx, options, env, self);
       }
-      else {
-        return self.renderToken(tokens, idx, options, env, self);
-      }
+
+      return self.renderToken(tokens, idx, options, env, self);
     };
   }
 

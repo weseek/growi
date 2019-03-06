@@ -1,7 +1,6 @@
 import UpdateDisplayUtil from '../../util/codemirror/update-display-util.ext';
 
 class EmojiAutoCompleteHelper {
-
   constructor(emojiStrategy) {
     this.emojiStrategy = emojiStrategy;
 
@@ -14,7 +13,7 @@ class EmojiAutoCompleteHelper {
   }
 
   initEmojiImageMap() {
-    for (let unicode in this.emojiStrategy) {
+    for (const unicode in this.emojiStrategy) {
       const data = this.emojiStrategy[unicode];
       const shortname = data.shortname;
       // add image tag
@@ -62,7 +61,7 @@ class EmojiAutoCompleteHelper {
       // closeOnUnfocus: false,  // for debug
       hint: () => {
         const matched = editor.getDoc().getRange(sc.from(), sc.to());
-        const term = matched.replace(':', '');  // remove ':' in the head
+        const term = matched.replace(':', ''); // remove ':' in the head
 
         // get a list of shortnames
         const shortnames = this.searchEmojiShortnames(term);
@@ -87,10 +86,9 @@ class EmojiAutoCompleteHelper {
         text: shortname,
         className: 'crowi-emoji-autocomplete',
         render: (element) => {
-          element.innerHTML =
-            `<div class="img-container">${this.emojiShortnameImageMap[shortname]}</div>` +
-            `<span class="shortname-container">${shortname}</span>`;
-        }
+          element.innerHTML = `<div class="img-container">${this.emojiShortnameImageMap[shortname]}</div>`
+            + `<span class="shortname-container">${shortname}</span>`;
+        },
       };
     });
   }
@@ -103,16 +101,15 @@ class EmojiAutoCompleteHelper {
   searchEmojiShortnames(term) {
     const maxLength = 12;
 
-    let results1 = [], results2 = [], results3 = [], results4 = [];
+    const results1 = []; const results2 = []; const results3 = []; const
+      results4 = [];
     const countLen1 = () => { results1.length };
     const countLen2 = () => { countLen1() + results2.length };
     const countLen3 = () => { countLen2() + results3.length };
     const countLen4 = () => { countLen3() + results4.length };
     // TODO performance tune
     // when total length of all results is less than `maxLength`
-    for (let unicode in this.emojiStrategy) {
-      const data = this.emojiStrategy[unicode];
-
+    for (const data of this.emojiStrategy) {
       if (maxLength <= countLen1()) { break }
       // prefix match to shortname
       else if (data.shortname.indexOf(`:${term}`) > -1) {
@@ -127,13 +124,13 @@ class EmojiAutoCompleteHelper {
       }
       else if (maxLength <= countLen3()) { continue }
       // partial match to elements of aliases
-      else if ((data.aliases != null) && data.aliases.find(elem => elem.indexOf(term) > -1)) {
+      else if ((data.aliases != null) && data.aliases.find((elem) => { return elem.indexOf(term) > -1 })) {
         results3.push(data.shortname);
         continue;
       }
       else if (maxLength <= countLen4()) { continue }
       // partial match to elements of keywords
-      else if ((data.keywords != null) && data.keywords.find(elem => elem.indexOf(term) > -1)) {
+      else if ((data.keywords != null) && data.keywords.find((elem) => { return elem.indexOf(term) > -1 })) {
         results4.push(data.shortname);
       }
     }
@@ -143,7 +140,6 @@ class EmojiAutoCompleteHelper {
 
     return results;
   }
-
 }
 
 export default EmojiAutoCompleteHelper;

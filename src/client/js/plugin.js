@@ -1,5 +1,4 @@
 export default class CrowiPlugin {
-
   /**
    * process plugin entry
    *
@@ -34,9 +33,7 @@ export default class CrowiPlugin {
           });
       }
     });
-
   }
-
 }
 
-window.crowiPlugin = new CrowiPlugin();     // FIXME
+window.crowiPlugin = new CrowiPlugin(); // FIXME

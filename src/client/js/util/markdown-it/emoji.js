@@ -1,5 +1,4 @@
 export default class EmojiConfigurer {
-
   constructor(crowi) {
     this.crowi = crowi;
   }
@@ -9,13 +8,13 @@ export default class EmojiConfigurer {
 
     const emojiShortnameUnicodeMap = {};
 
-    for (let unicode in emojiStrategy) {
+    for (const unicode in emojiStrategy) {
       const data = emojiStrategy[unicode];
       const shortname = data.shortname.replace(/:/g, '');
       emojiShortnameUnicodeMap[shortname] = String.fromCharCode(unicode);
     }
 
-    md.use(require('markdown-it-emoji'), {defs: emojiShortnameUnicodeMap});
+    md.use(require('markdown-it-emoji'), { defs: emojiShortnameUnicodeMap });
 
     // integrate markdown-it-emoji and emojione
     md.renderer.rules.emoji = (token, idx) => {
@@ -23,5 +22,4 @@ export default class EmojiConfigurer {
       return emojione.shortnameToImage(shortname);
     };
   }
-
 }

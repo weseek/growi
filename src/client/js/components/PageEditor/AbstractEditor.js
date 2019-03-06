@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 export default class AbstractEditor extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -133,4 +132,3 @@ AbstractEditor.propTypes = {
 AbstractEditor.defaultProps = {
   isGfmMode: true,
 };
-
