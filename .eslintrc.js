@@ -65,15 +65,8 @@ module.exports = {
         message: '`with` is disallowed in strict mode because it makes code impossible to predict and optimize.',
       },
     ],
+    'no-shadow': 'off',
     "prefer-destructuring": 'off',
-    // "comma-spacing": [
-    //   "error",
-    //   { "before": false, "after": true }
-    // ],
-    // "func-call-spacing": [
-    //   "error",
-    //   "never"
-    // ],
     "indent": [
       "error",
       2,
@@ -100,15 +93,10 @@ module.exports = {
     //   "error",
     //   "unix"
     // ],
-    // "no-unused-vars": [
-    //   "error",
-    //   { "args": "none" }
-    // ],
-    // "no-var": [ "error" ],
-    // "quotes": [
-    //   "error",
-    //   "single"
-    // ],
+    "no-unused-vars": [
+      "error",
+      { "args": "none" }
+    ],
     // "react/jsx-uses-vars": 1,
     // "react/no-string-refs": "off",
     "semi": [

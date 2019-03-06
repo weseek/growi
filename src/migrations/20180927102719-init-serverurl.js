@@ -18,7 +18,7 @@ function isAllValuesSame(array) {
 
 module.exports = {
 
-  async up(db) { // eslint-disable-line no-unused-vars
+  async up(db) {
     logger.info('Apply migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
 
@@ -53,7 +53,7 @@ module.exports = {
       logger.info(configs);
 
       // extract domain
-      const siteUrls = configs.map((config) => { // eslint-disable-line no-shadow
+      const siteUrls = configs.map((config) => {
         // see https://regex101.com/r/Q0Isjo/2
         const match = config.value.match(/^"(https?:\/\/[^/]+).*"$/);
         return (match != null) ? match[1] : null;
@@ -71,7 +71,7 @@ module.exports = {
     }
   },
 
-  async down(db) { // eslint-disable-line no-unused-vars
+  async down(db) {
     logger.info('Undo migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
 
