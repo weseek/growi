@@ -300,9 +300,7 @@ module.exports = function(crowi) {
     const newTags = [newTagsName]; // [TODO] listing requested Tags on client side
 
     // get tags relate this page
-    const relatedTags = await PageTagRelation.find({
-      relatedPage: page._id
-    }).populate('relatedTag').select('-_id relatedTag');
+    const relatedTags = await PageTagRelation.find({relatedPage: page._id}).populate('relatedTag').select('-_id relatedTag');
 
     // unlink relations
     const unlinkTags = relatedTags.filter(tag => !newTags.includes(tag.relatedTag.name));
