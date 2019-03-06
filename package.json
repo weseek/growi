@@ -32,7 +32,7 @@
     "clean:report": "rimraf -- report",
     "clean": "npm-run-all -p clean:*",
     "heroku-postbuild": "sh bin/heroku/install-plugins.sh && npm run build:prod",
-    "lint:js:fix": "eslint src/test --fix",
+    "lint:js:fix": "eslint src/migrations --fix",
     "lint:js": "eslint .",
     "lint:styles:fix": "prettier-stylelint --quiet --write src/client/styles/scss/**/*.scss",
     "lint:styles": "stylelint src/client/styles/scss/**/*.scss",

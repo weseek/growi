@@ -40,9 +40,30 @@ module.exports = {
         ignoreTrailingComments: true
       }
     ],
+    "no-param-reassign": [
+      "error",
+      { "props": false }
+    ],
     "no-plusplus": [
       "error",
       { "allowForLoopAfterthoughts": true }
+    ],
+    // Allow only for-of
+    // https://qiita.com/the_red/items/0c826e97b57da6d67621
+    'no-restricted-syntax': [
+      'error',
+      {
+        selector: 'ForInStatement',
+        message: 'for..in loops iterate over the entire prototype chain, which is virtually never what you want. Use Object.{keys,values,entries}, and iterate over the resulting array.',
+      },
+      {
+        selector: 'LabeledStatement',
+        message: 'Labels are a form of GOTO; using them makes code confusing and hard to maintain and understand.',
+      },
+      {
+        selector: 'WithStatement',
+        message: '`with` is disallowed in strict mode because it makes code impossible to predict and optimize.',
+      },
     ],
     "prefer-destructuring": 'off',
     // "comma-spacing": [

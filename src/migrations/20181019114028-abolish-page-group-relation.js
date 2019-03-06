@@ -1,5 +1,3 @@
-'use strict';
-
 require('module-alias/register');
 const logger = require('@alias/logger')('growi:migrate:abolish-page-group-relation');
 
@@ -45,7 +43,8 @@ module.exports = {
     // retrieve all documents from 'pagegrouprelations'
     const relations = await db.collection('pagegrouprelations').find().toArray();
 
-    for (let relation of relations) {
+    /* eslint-disable no-continue, no-await-in-loop */
+    for (const relation of relations) {
       const page = await Page.findOne({ _id: relation.targetPage });
 
       // skip if grant mismatch
@@ -63,6 +62,7 @@ module.exports = {
       page.grantedGroup = userGroup;
       await page.save();
     }
+    /* eslint-enable */
 
     // drop collection
     await db.collection('pagegrouprelations').drop();
@@ -80,7 +80,8 @@ module.exports = {
     // retrieve all Page documents which granted by UserGroup
     const relatedPages = await Page.find({ grant: Page.GRANT_USER_GROUP });
     const insertDocs = [];
-    for (let page of relatedPages) {
+    /* eslint-disable no-continue, no-await-in-loop */
+    for (const page of relatedPages) {
       if (page.grantedGroup == null) {
         continue;
       }
@@ -94,8 +95,8 @@ module.exports = {
 
       // create a new document for 'pagegrouprelations' collection that is managed by mongoose
       insertDocs.push({
-        targetPage: page._id,
-        relatedGroup: userGroup._id,
+        targetPage: page._id, // eslint-disable-line no-underscore-dangle
+        relatedGroup: userGroup._id, // eslint-disable-line no-underscore-dangle
         __v: 0,
       });
 
@@ -103,10 +104,11 @@ module.exports = {
       page.grantedGroup = undefined;
       await page.save();
     }
+    /* eslint-enable */
 
     await db.collection('pagegrouprelations').insertMany(insertDocs);
 
     logger.info('Migration has successfully undoed');
-  }
+  },
 
 };
