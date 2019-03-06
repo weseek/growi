@@ -128,7 +128,6 @@ class CdnResourcesDownloader {
     );
   }
 
-  /* eslint-disable class-methods-use-this */
   async downloadAndWriteToFS(url, outDir, fileName, replacestream) {
     // get
     const response = await axios.get(url, { responseType: 'stream' });
@@ -145,7 +144,6 @@ class CdnResourcesDownloader {
 
     return streamToPromise(stream);
   }
-  /* eslint-enable */
 }
 
 module.exports = CdnResourcesDownloader;

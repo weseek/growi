@@ -1,3 +1,6 @@
+// disable no-return-await for model functions
+/* eslint-disable no-return-await */
+
 const debug = require('debug')('growi:models:attachment');
 const logger = require('@alias/logger')('growi:models:attachment');
 const path = require('path');

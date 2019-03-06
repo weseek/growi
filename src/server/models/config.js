@@ -1,3 +1,6 @@
+// disable no-return-await for model functions
+/* eslint-disable no-return-await */
+
 module.exports = function(crowi) {
   const mongoose = require('mongoose');
   const debug = require('debug')('growi:models:config');
@@ -116,7 +119,7 @@ module.exports = function(crowi) {
       'importer:qiita:team_name': '',
       'importer:qiita:access_token': '',
     };
-    /* eslint-enable */
+    /* eslint-enable key-spacing */
   }
 
   function getDefaultMarkdownConfigs() {

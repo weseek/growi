@@ -62,7 +62,7 @@ module.exports = {
       page.grantedGroup = userGroup;
       await page.save();
     }
-    /* eslint-enable */
+    /* eslint-enable no-await-in-loop */
 
     // drop collection
     await db.collection('pagegrouprelations').drop();
@@ -104,7 +104,7 @@ module.exports = {
       page.grantedGroup = undefined;
       await page.save();
     }
-    /* eslint-enable */
+    /* eslint-enable no-await-in-loop */
 
     await db.collection('pagegrouprelations').insertMany(insertDocs);
 

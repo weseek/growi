@@ -1,3 +1,6 @@
+// disable no-return-await for model functions
+/* eslint-disable no-return-await */
+
 module.exports = function(crowi) {
   const debug = require('debug')('growi:models:bookmark');
   const mongoose = require('mongoose');

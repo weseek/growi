@@ -86,7 +86,6 @@ class InterceptorManager {
     });
   }
 
-  /* eslint-disable class-methods-use-this */
   doProcess(interceptor, contextName, ...args) {
     return interceptor.process(contextName, ...args)
       .then((...results) => {
@@ -99,7 +98,6 @@ class InterceptorManager {
         return Promise.resolve(...args);
       });
   }
-  /* eslint-enable */
 }
 
 module.exports = InterceptorManager;

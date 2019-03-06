@@ -1,3 +1,6 @@
+// disable no-return-await for model functions
+/* eslint-disable no-return-await */
+
 const debug = require('debug')('growi:models:external-account');
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate');

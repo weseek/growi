@@ -35,7 +35,7 @@ export default class CrowiTemplate {
           + `</button>`
           + `<pre><code id="${templateId}" class="lang-${lang}">${code}\n</code></pre>`
         + `</div>`
-        /* eslint-enable */
+        /* eslint-enable quotes */
       );
     });
   }

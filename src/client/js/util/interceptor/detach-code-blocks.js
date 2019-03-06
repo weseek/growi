@@ -43,9 +43,7 @@ export class DetachCodeBlockInterceptor extends BasicInterceptor {
 
     const context = Object.assign(args[0]); // clone
     const targetKey = this.getTargetKey(contextName);
-    /* eslint-disable no-unused-vars */
-    const currentPagePath = context.currentPagePath;
-    /* eslint-enable */
+    const currentPagePath = context.currentPagePath; // eslint-disable-line no-unused-vars
 
     context.dcbContextMap = {};
 

@@ -73,7 +73,6 @@ class CdnResourcesService {
    * @param {Object} manifest
    * @param {boolean} noCdn
    */
-  /* eslint-disable class-methods-use-this */
   generateScriptTag(manifest, noCdn) {
     const attrs = [];
     const args = manifest.args || {};
@@ -92,7 +91,6 @@ class CdnResourcesService {
       : manifest.url;
     return `<script src="${url}" ${attrs.join(' ')}></script>`;
   }
-  /* eslint-enable */
 
   getScriptTagByName(name) {
     const manifest = this.getScriptManifestByName(name);
@@ -115,7 +113,6 @@ class CdnResourcesService {
    * @param {Object} manifest
    * @param {boolean} noCdn
    */
-  /* eslint-disable class-methods-use-this */
   generateStyleTag(manifest, noCdn) {
     const attrs = [];
     const args = manifest.args || {};
@@ -135,7 +132,6 @@ class CdnResourcesService {
 
     return `<link rel="stylesheet" href="${url}" ${attrs.join(' ')}>`;
   }
-  /* eslint-enable */
 
   getStyleTagByName(name) {
     const manifest = this.getStyleManifestByName(name);

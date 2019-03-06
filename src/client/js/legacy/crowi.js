@@ -214,7 +214,7 @@ Crowi.findHashFromUrl = function(url) {
   if (match = url.match(/#(.+)$/)) {
     return `#${match[1]}`;
   }
-  /* eslint-enable */
+  /* eslint-enable no-cond-assign */
 
   return '';
 };
@@ -517,9 +517,8 @@ $(() => {
    */
   $('#view-list .page-list-ul-flat .page-list-link').each(function() {
     const $link = $(this);
-    /* eslint-disable no-unused-vars */
+    /* eslint-disable-next-line no-unused-vars */
     const text = $link.text();
-    /* eslint-enable */
     let path = decodeURIComponent($link.data('path'));
     const shortPath = decodeURIComponent($link.data('short-path')); // convert to string
 
@@ -550,9 +549,7 @@ $(() => {
         const id = $(this).attr('id');
         const revisionBody = `#${id} .revision-body`;
         const revisionBodyElem = document.querySelector(revisionBody);
-        /* eslint-disable no-unused-vars */
-        const revisionPath = `#${id} .revision-path`;
-        /* eslint-enable */
+        const revisionPath = `#${id} .revision-path`; // eslint-disable-line no-unused-vars
         const timelineElm = document.getElementById(id);
         const pageId = timelineElm.getAttribute('data-page-id');
         const pagePath = timelineElm.getAttribute('data-page-path');
