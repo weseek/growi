@@ -31,6 +31,7 @@ module.exports = {
     ],
     'class-methods-use-this': 'off',
     'consistent-return': 'off',
+    'func-names': 'off',
     "global-require": 'off',
     "key-spacing": [
       'error',
@@ -70,6 +71,7 @@ module.exports = {
     ],
     'no-shadow': 'off',
     'no-underscore-dangle': 'off',
+    'no-useless-return': 'off',
     "prefer-destructuring": 'off',
     "indent": [
       "error",
