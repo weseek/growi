@@ -1,14 +1,15 @@
 const loggerFactory = require('@alias/logger');
-const logger = loggerFactory('growi:routes:apiv3:healthcheck');   // eslint-disable-line no-unused-vars
+
+const logger = loggerFactory('growi:routes:apiv3:healthcheck'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
+
 const router = express.Router();
 
 const helmet = require('helmet');
 
 module.exports = (crowi) => {
-
-  router.get('/', helmet.noCache(), async function(req, res) {
+  router.get('/', helmet.noCache(), async(req, res) => {
     const connectToMiddlewares = req.query.connectToMiddlewares;
 
     // return 200 w/o connecting to MongoDB and Elasticsearch
@@ -28,7 +29,7 @@ module.exports = (crowi) => {
       res.status(200).send({ mongo: 'OK', esInfo });
     }
     catch (err) {
-      res.status(503).send({err});
+      res.status(503).send({ err });
     }
   });
 

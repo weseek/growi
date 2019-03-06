@@ -1,6 +1,4 @@
 module.exports = function(crowi, app) {
-  'use strict';
-
   const debug = require('debug')('growi:routes:revision');
   const logger = require('@alias/logger')('growi:routes:revision');
   const Page = crowi.model('Page');
@@ -55,12 +53,14 @@ module.exports = function(crowi, app) {
 
     if (pageId && crowi.isPageId(pageId)) {
       Page.findByIdAndViewer(pageId, req.user)
-      .then(function(pageData) {
+      .then((pageData) => {
         debug('Page found', pageData._id, pageData.path);
         return Revision.findRevisionIdList(pageData.path);
-      }).then(function(revisions) {
-        return res.json(ApiResponse.success({revisions}));
-      }).catch(function(err) {
+      })
+      .then((revisions) => {
+        return res.json(ApiResponse.success({ revisions }));
+      })
+      .catch((err) => {
         return res.json(ApiResponse.error(err));
       });
     }
@@ -83,20 +83,23 @@ module.exports = function(crowi, app) {
 
     if (pageId) {
       Page.findByIdAndViewer(pageId, req.user)
-      .then(function(pageData) {
+      .then((pageData) => {
         debug('Page found', pageData._id, pageData.path);
         return Revision.findRevisionList(pageData.path, {});
-      }).then(function(revisions) {
+      })
+      .then((revisions) => {
         return res.json(ApiResponse.success(revisions));
-      }).catch(function(err) {
+      })
+      .catch((err) => {
         return res.json(ApiResponse.error(err));
       });
     }
     else if (revisionIds.length > 0) {
       Revision.findRevisions(revisionIds)
-      .then(function(revisions) {
+      .then((revisions) => {
         return res.json(ApiResponse.success(revisions));
-      }).catch(function(err) {
+      })
+      .catch((err) => {
         return res.json(ApiResponse.error(err));
       });
     }
