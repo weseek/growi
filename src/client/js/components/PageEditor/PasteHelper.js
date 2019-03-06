@@ -3,6 +3,7 @@ import accepts from 'attr-accept';
 import markdownListUtil from './MarkdownListUtil';
 
 class PasteHelper {
+
   constructor() {
     this.pasteText = this.pasteText.bind(this);
   }
@@ -34,7 +35,6 @@ class PasteHelper {
   fileAccepted(file, accept) {
     return file.type === 'application/x-moz-file' || accepts(file, accept);
   }
-
   /**
    * transplanted from react-dropzone
    * @see https://github.com/react-dropzone/react-dropzone/blob/master/src/utils/index.js

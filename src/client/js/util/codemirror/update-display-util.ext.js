@@ -5,6 +5,7 @@ import { DisplayUpdate } from 'codemirror/src/display/update_display';
 import { adjustView } from 'codemirror/src/display/view_tracking';
 
 class UpdateDisplayUtil {
+
   /**
    * Transplant 'updateDisplayIfNeeded' method to fix weseek/growi#703
    *
@@ -20,7 +21,7 @@ class UpdateDisplayUtil {
     const update = new DisplayUpdate(cm, cm.getViewport());
 
     // Compute a suitable new viewport (from & to)
-    const end = doc.first + doc.size;
+    let end = doc.first + doc.size;
     let from = Math.max(update.visible.from - cm.options.viewportMargin, doc.first);
     let to = Math.min(end, update.visible.to + cm.options.viewportMargin);
     if (display.viewFrom < from && from - display.viewFrom < 20) from = Math.max(doc.first, display.viewFrom);
@@ -33,6 +34,7 @@ class UpdateDisplayUtil {
 
     display.viewOffset = heightAtLine(getLine(doc, display.viewFrom));
   }
+
 }
 
 

@@ -1,6 +1,7 @@
 import React from 'react';
 
 export default class ReactUtils {
+
   /**
    * show '\n' as '<br>'
    *
@@ -13,13 +14,15 @@ export default class ReactUtils {
    * @memberOf ReactUtils
    */
   static nl2br(text) {
-    const regex = /(\n)/g;
-    return text.split(regex).map((line) => {
+    var regex = /(\n)/g;
+    return text.split(regex).map(function(line) {
       if (line.match(regex)) {
-        return React.createElement('br', { key: Math.random().toString(10).substr(2, 10) });
+        return React.createElement('br', {key: Math.random().toString(10).substr(2, 10)});
       }
-
-      return line;
+      else {
+        return line;
+      }
     });
   }
+
 }

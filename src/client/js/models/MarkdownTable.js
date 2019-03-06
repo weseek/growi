@@ -5,7 +5,7 @@ import csvToMarkdown from 'csv-to-markdown-table';
 // https://github.com/markdown-it/markdown-it/blob/d29f421927e93e88daf75f22089a3e732e195bd2/lib/rules_block/table.js#L83
 // https://regex101.com/r/7BN2fR/7
 const tableAlignmentLineRE = /^[-:|][-:|\s]*$/;
-const tableAlignmentLineNegRE = /^[^-:]*$/; // it is need to check to ignore empty row which is matched above RE
+const tableAlignmentLineNegRE = /^[^-:]*$/;  // it is need to check to ignore empty row which is matched above RE
 const linePartOfTableRE = /^\|[^\r\n]*|[^\r\n]*\|$|([^|\r\n]+\|[^|\r\n]*)+/; // own idea
 
 // set up DOMParser
@@ -16,6 +16,7 @@ const domParser = new (window.DOMParser)();
  *   ref. https://github.com/wooorm/markdown-table
  */
 export default class MarkdownTable {
+
   constructor(table, options) {
     this.table = table || [];
     this.options = options || {};
@@ -32,7 +33,7 @@ export default class MarkdownTable {
    * (This method clones only the table field.)
    */
   clone() {
-    const newTable = [];
+    let newTable = [];
     for (let i = 0; i < this.table.length; i++) {
       newTable.push([].concat(this.table[i]));
     }
@@ -74,11 +75,11 @@ export default class MarkdownTable {
     const tableElement = dom.querySelector('table');
     const trElements = tableElement.querySelectorAll('tr');
 
-    const table = [];
+    let table = [];
     let maxRowSize = 0;
     for (let i = 0; i < trElements.length; i++) {
-      const row = [];
-      const cellElements = trElements[i].querySelectorAll('th,td');
+      let row = [];
+      let cellElements = trElements[i].querySelectorAll('th,td');
       for (let j = 0; j < cellElements.length; j++) {
         row.push(cellElements[j].innerHTML);
       }
@@ -87,12 +88,12 @@ export default class MarkdownTable {
       if (maxRowSize < row.length) maxRowSize = row.length;
     }
 
-    const align = [];
+    let align = [];
     for (let i = 0; i < maxRowSize; i++) {
       align.push('');
     }
 
-    return new MarkdownTable(table, { align });
+    return new MarkdownTable(table, {align: align});
   }
 
   /**
@@ -109,7 +110,7 @@ export default class MarkdownTable {
    */
   static fromMarkdownString(str) {
     const arrMDTableLines = str.split(/(\r\n|\r|\n)/);
-    const contents = [];
+    let contents = [];
     let aligns = [];
     for (let n = 0; n < arrMDTableLines.length; n++) {
       const line = arrMDTableLines[n];
@@ -118,14 +119,14 @@ export default class MarkdownTable {
         // parse line which described alignment
         const alignRuleRE = [
           { align: 'c', regex: /^:-+:$/ },
-          { align: 'l', regex: /^:-+$/ },
-          { align: 'r', regex: /^-+:$/ },
+          { align: 'l', regex: /^:-+$/  },
+          { align: 'r', regex: /^-+:$/  },
         ];
         let lineText = '';
         lineText = line.replace(/^\||\|$/g, ''); // strip off pipe charactor which is placed head of line and last of line.
         lineText = lineText.replace(/\s*/g, '');
-        aligns = lineText.split(/\|/).map((col) => {
-          const rule = alignRuleRE.find((rule) => { return col.match(rule.regex) });
+        aligns = lineText.split(/\|/).map(col => {
+          const rule = alignRuleRE.find(rule => col.match(rule.regex));
           return (rule != undefined) ? rule.align : '';
         });
       }

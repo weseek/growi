@@ -24,21 +24,21 @@ export default class PageAttachment extends React.Component {
     const pageId = this.props.pageId;
 
     if (!pageId) {
-      return;
+      return ;
     }
 
-    this.props.crowi.apiGet('/attachments.list', { page_id: pageId })
-      .then((res) => {
+    this.props.crowi.apiGet('/attachments.list', {page_id: pageId })
+      .then(res => {
         const attachments = res.attachments;
-        const inUse = {};
+        let inUse = {};
 
         for (const attachment of attachments) {
           inUse[attachment._id] = this.checkIfFileInUse(attachment);
         }
 
         this.setState({
-          attachments,
-          inUse,
+          attachments: attachments,
+          inUse: inUse,
         });
       });
   }
@@ -62,8 +62,8 @@ export default class PageAttachment extends React.Component {
       deleting: true,
     });
 
-    this.props.crowi.apiPost('/attachments.remove', { attachment_id: attachmentId })
-      .then((res) => {
+    this.props.crowi.apiPost('/attachments.remove', {attachment_id: attachmentId})
+      .then(res => {
         this.setState({
           attachments: this.state.attachments.filter((at) => {
             return at._id != attachmentId;
@@ -71,7 +71,7 @@ export default class PageAttachment extends React.Component {
           attachmentToDelete: null,
           deleting: false,
         });
-      }).catch((err) => {
+      }).catch(err => {
         this.setState({
           deleteError: 'Something went wrong.',
           deleting: false,
@@ -87,10 +87,10 @@ export default class PageAttachment extends React.Component {
     let deleteAttachmentModal = '';
     if (this.isUserLoggedIn()) {
       const attachmentToDelete = this.state.attachmentToDelete;
-      const deleteModalClose = () => {
+      let deleteModalClose = () => {
         this.setState({ attachmentToDelete: null, deleteError: '' });
       };
-      const showModal = attachmentToDelete !== null;
+      let showModal = attachmentToDelete !== null;
 
       let deleteInUse = null;
       if (attachmentToDelete !== null) {

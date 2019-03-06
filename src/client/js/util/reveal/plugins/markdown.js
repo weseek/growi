@@ -5,17 +5,12 @@
  * Referred from The reveal.js markdown plugin.
  * https://github.com/hakimel/reveal.js/blob/master/plugin/markdown/markdown.js
  */
-export default function(marked) {
-  const DEFAULT_SLIDE_SEPARATOR = '^\r?\n---\r?\n$';
+export default function( marked ) {
 
-
-  const DEFAULT_NOTES_SEPARATOR = 'notes?:';
-
-
-  const DEFAULT_ELEMENT_ATTRIBUTES_SEPARATOR = '\\\.element\\\s*?(.+?)$';
-
-
-  const DEFAULT_SLIDE_ATTRIBUTES_SEPARATOR = '\\\.slide:\\\s*?(\\\S.+?)$';
+  const DEFAULT_SLIDE_SEPARATOR = '^\r?\n---\r?\n$',
+    DEFAULT_NOTES_SEPARATOR = 'notes?:',
+    DEFAULT_ELEMENT_ATTRIBUTES_SEPARATOR = '\\\.element\\\s*?(.+?)$',
+    DEFAULT_SLIDE_ATTRIBUTES_SEPARATOR = '\\\.slide:\\\s*?(\\\S.+?)$';
 
   const SCRIPT_END_PLACEHOLDER = '__SCRIPT_END__';
 
@@ -24,29 +19,29 @@ export default function(marked) {
    * Retrieves the markdown contents of a slide section
    * element. Normalizes leading tabs/whitespace.
    */
-  function getMarkdownFromSlide(section) {
+  function getMarkdownFromSlide( section ) {
+
     // look for a <script> or <textarea data-template> wrapper
-    const template = section.querySelector('[data-template]') || section.querySelector('script');
+    let template = section.querySelector( '[data-template]' ) || section.querySelector( 'script' );
 
     // strip leading whitespace so it isn't evaluated as code
-    let text = (template || section).textContent;
+    let text = ( template || section ).textContent;
 
     // restore script end tags
-    text = text.replace(new RegExp(SCRIPT_END_PLACEHOLDER, 'g'), '</script>');
+    text = text.replace( new RegExp( SCRIPT_END_PLACEHOLDER, 'g' ), '</script>' );
 
-    const leadingWs = text.match(/^\n?(\s*)/)[1].length;
+    let leadingWs = text.match( /^\n?(\s*)/ )[1].length,
+      leadingTabs = text.match( /^\n?(\t*)/ )[1].length;
 
-
-    const leadingTabs = text.match(/^\n?(\t*)/)[1].length;
-
-    if (leadingTabs > 0) {
-      text = text.replace(new RegExp(`\\n?\\t{${leadingTabs}}`, 'g'), '\n');
+    if ( leadingTabs > 0 ) {
+      text = text.replace( new RegExp('\\n?\\t{' + leadingTabs + '}', 'g'), '\n' );
     }
-    else if (leadingWs > 1) {
-      text = text.replace(new RegExp(`\\n? {${leadingWs}}`, 'g'), '\n');
+    else if ( leadingWs > 1 ) {
+      text = text.replace( new RegExp('\\n? {' + leadingWs + '}', 'g'), '\n' );
     }
 
     return text;
+
   }
 
   /**
@@ -55,113 +50,106 @@ export default function(marked) {
    * parsing. Used to forward any other user-defined arguments
    * to the output markdown slide.
    */
-  function getForwardedAttributes(section) {
-    const attributes = section.attributes;
-    const result = [];
+  function getForwardedAttributes( section ) {
 
-    for (let i = 0, len = attributes.length; i < len; i++) {
-      const name = attributes[i].name;
+    let attributes = section.attributes;
+    let result = [];
 
-
-      const value = attributes[i].value;
+    for ( let i = 0, len = attributes.length; i < len; i++ ) {
+      let name = attributes[i].name,
+        value = attributes[i].value;
 
       // disregard attributes that are used for markdown loading/parsing
-      if (/data\-(markdown|separator|vertical|notes)/gi.test(name)) continue;
+      if ( /data\-(markdown|separator|vertical|notes)/gi.test( name ) ) continue;
 
-      if (value) {
-        result.push(`${name}="${value}"`);
+      if ( value ) {
+        result.push( name + '="' + value + '"' );
       }
       else {
-        result.push(name);
+        result.push( name );
       }
     }
 
-    return result.join(' ');
+    return result.join( ' ' );
+
   }
 
   /**
    * Inspects the given options and fills out default
    * values for what's not defined.
    */
-  function getSlidifyOptions(options) {
+  function getSlidifyOptions( options ) {
+
     options = options || {};
     options.separator = options.separator || DEFAULT_SLIDE_SEPARATOR;
     options.notesSeparator = options.notesSeparator || DEFAULT_NOTES_SEPARATOR;
     options.attributes = options.attributes || '';
 
     return options;
+
   }
 
   /**
    * Helper function for constructing a markdown slide.
    */
-  function createMarkdownSlide(content, options) {
-    options = getSlidifyOptions(options);
+  function createMarkdownSlide( content, options ) {
 
-    const notesMatch = content.split(new RegExp(options.notesSeparator, 'mgi'));
+    options = getSlidifyOptions( options );
 
-    if (notesMatch.length === 2) {
-      content = `${notesMatch[0]}<aside class="notes">${marked(notesMatch[1].trim())}</aside>`;
+    let notesMatch = content.split( new RegExp( options.notesSeparator, 'mgi' ) );
+
+    if ( notesMatch.length === 2 ) {
+      content = notesMatch[0] + '<aside class="notes">' + marked(notesMatch[1].trim()) + '</aside>';
     }
 
     // prevent script end tags in the content from interfering
     // with parsing
-    content = content.replace(/<\/script>/g, SCRIPT_END_PLACEHOLDER);
+    content = content.replace( /<\/script>/g, SCRIPT_END_PLACEHOLDER );
 
-    return `<script type="text/template">${content}</script>`;
+    return '<script type="text/template">' + content + '</script>';
+
   }
 
   /**
    * Parses a data string into multiple slides based
    * on the passed in separator arguments.
    */
-  function slidify(markdown, options) {
-    options = getSlidifyOptions(options);
+  function slidify( markdown, options ) {
 
-    const separatorRegex = new RegExp(options.separator + (options.verticalSeparator ? `|${options.verticalSeparator}` : ''), 'mg');
+    options = getSlidifyOptions( options );
 
+    let separatorRegex = new RegExp( options.separator + ( options.verticalSeparator ? '|' + options.verticalSeparator : '' ), 'mg' ),
+      horizontalSeparatorRegex = new RegExp( options.separator );
 
-    const horizontalSeparatorRegex = new RegExp(options.separator);
-
-    let matches;
-
-
-    let lastIndex = 0;
-
-
-    let isHorizontal;
-
-
-    let wasHorizontal = true;
-
-
-    let content;
-
-
-    const sectionStack = [];
+    let matches,
+      lastIndex = 0,
+      isHorizontal,
+      wasHorizontal = true,
+      content,
+      sectionStack = [];
 
     // iterate until all blocks between separators are stacked up
-    while ((matches = separatorRegex.exec(markdown)) != null) {
+    while ( (matches = separatorRegex.exec( markdown )) != null ) {
       // notes = null;
 
       // determine direction (horizontal by default)
-      isHorizontal = horizontalSeparatorRegex.test(matches[0]);
+      isHorizontal = horizontalSeparatorRegex.test( matches[0] );
 
-      if (!isHorizontal && wasHorizontal) {
+      if ( !isHorizontal && wasHorizontal ) {
         // create vertical stack
-        sectionStack.push([]);
+        sectionStack.push( [] );
       }
 
       // pluck slide content from markdown input
-      content = markdown.substring(lastIndex, matches.index);
+      content = markdown.substring( lastIndex, matches.index );
 
-      if (isHorizontal && wasHorizontal) {
+      if ( isHorizontal && wasHorizontal ) {
         // add to horizontal stack
-        sectionStack.push(content);
+        sectionStack.push( content );
       }
       else {
         // add to vertical stack
-        sectionStack[sectionStack.length - 1].push(content);
+        sectionStack[sectionStack.length-1].push( content );
       }
 
       lastIndex = separatorRegex.lastIndex;
@@ -169,28 +157,29 @@ export default function(marked) {
     }
 
     // add the remaining slide
-    (wasHorizontal ? sectionStack : sectionStack[sectionStack.length - 1]).push(markdown.substring(lastIndex));
+    ( wasHorizontal ? sectionStack : sectionStack[sectionStack.length-1] ).push( markdown.substring( lastIndex ) );
 
     let markdownSections = '';
 
     // flatten the hierarchical stack, and insert <section data-markdown> tags
-    for (let i = 0, len = sectionStack.length; i < len; i++) {
+    for ( let i = 0, len = sectionStack.length; i < len; i++ ) {
       // vertical
-      if (sectionStack[i] instanceof Array) {
-        markdownSections += `<section ${options.attributes}>`;
+      if ( sectionStack[i] instanceof Array ) {
+        markdownSections += '<section '+ options.attributes +'>';
 
-        sectionStack[i].forEach((child) => {
-          markdownSections += `<section data-markdown>${createMarkdownSlide(child, options)}</section>`;
-        });
+        sectionStack[i].forEach( function( child ) {
+          markdownSections += '<section data-markdown>' + createMarkdownSlide( child, options ) + '</section>';
+        } );
 
         markdownSections += '</section>';
       }
       else {
-        markdownSections += `<section ${options.attributes} data-markdown>${createMarkdownSlide(sectionStack[i], options)}</section>`;
+        markdownSections += '<section '+ options.attributes +' data-markdown>' + createMarkdownSlide( sectionStack[i], options ) + '</section>';
       }
     }
 
     return markdownSections;
+
   }
 
   /**
@@ -199,69 +188,76 @@ export default function(marked) {
    * handles loading of external markdown.
    */
   function processSlides() {
-    const sections = document.querySelectorAll('[data-markdown]');
 
+    let sections = document.querySelectorAll( '[data-markdown]'),
+      section;
 
-    let section;
+    for ( let i = 0, len = sections.length; i < len; i++ ) {
 
-    for (let i = 0, len = sections.length; i < len; i++) {
       section = sections[i];
 
-      if (section.getAttribute('data-markdown').length) {
-        const xhr = new XMLHttpRequest();
+      if ( section.getAttribute( 'data-markdown' ).length ) {
 
+        let xhr = new XMLHttpRequest(),
+          url = section.getAttribute( 'data-markdown' );
 
-        const url = section.getAttribute('data-markdown');
-
-        const datacharset = section.getAttribute('data-charset');
+        let datacharset = section.getAttribute( 'data-charset' );
 
         // see https://developer.mozilla.org/en-US/docs/Web/API/element.getAttribute#Notes
-        if (datacharset != null && datacharset != '') {
-          xhr.overrideMimeType(`text/html; charset=${datacharset}`);
+        if ( datacharset != null && datacharset != '' ) {
+          xhr.overrideMimeType( 'text/html; charset=' + datacharset );
         }
 
         xhr.onreadystatechange = function() {
-          if (xhr.readyState === 4) {
+          if ( xhr.readyState === 4 ) {
             // file protocol yields status code 0 (useful for local debug, mobile applications etc.)
-            if ((xhr.status >= 200 && xhr.status < 300) || xhr.status === 0) {
-              section.outerHTML = slidify(xhr.responseText, {
-                separator: section.getAttribute('data-separator'),
-                verticalSeparator: section.getAttribute('data-separator-vertical'),
-                notesSeparator: section.getAttribute('data-separator-notes'),
-                attributes: getForwardedAttributes(section),
+            if ( ( xhr.status >= 200 && xhr.status < 300 ) || xhr.status === 0 ) {
+
+              section.outerHTML = slidify( xhr.responseText, {
+                separator: section.getAttribute( 'data-separator' ),
+                verticalSeparator: section.getAttribute( 'data-separator-vertical' ),
+                notesSeparator: section.getAttribute( 'data-separator-notes' ),
+                attributes: getForwardedAttributes( section )
               });
+
             }
             else {
-              section.outerHTML = `${'<section data-state="alert">'
-                + 'ERROR: The attempt to fetch '}${url} failed with HTTP status ${xhr.status}.`
-                + 'Check your browser\'s JavaScript console for more details.'
-                + '<p>Remember that you need to serve the presentation HTML from a HTTP server.</p>'
-                + '</section>';
+
+              section.outerHTML = '<section data-state="alert">' +
+                'ERROR: The attempt to fetch ' + url + ' failed with HTTP status ' + xhr.status + '.' +
+                'Check your browser\'s JavaScript console for more details.' +
+                '<p>Remember that you need to serve the presentation HTML from a HTTP server.</p>' +
+                '</section>';
+
             }
           }
         };
 
-        xhr.open('GET', url, false);
+        xhr.open( 'GET', url, false );
 
         try {
           xhr.send();
         }
-        catch (e) {
-          alert(`Failed to get the Markdown file ${url}. Make sure that the presentation and the file are served by a HTTP server and the file can be found there. ${e}`);
+        catch ( e ) {
+          alert( 'Failed to get the Markdown file ' + url + '. Make sure that the presentation and the file are served by a HTTP server and the file can be found there. ' + e );
         }
+
       }
-      else if (section.getAttribute('data-separator') || section.getAttribute('data-separator-vertical') || section.getAttribute('data-separator-notes')) {
-        section.outerHTML = slidify(getMarkdownFromSlide(section), {
-          separator: section.getAttribute('data-separator'),
-          verticalSeparator: section.getAttribute('data-separator-vertical'),
-          notesSeparator: section.getAttribute('data-separator-notes'),
-          attributes: getForwardedAttributes(section),
+      else if ( section.getAttribute( 'data-separator' ) || section.getAttribute( 'data-separator-vertical' ) || section.getAttribute( 'data-separator-notes' ) ) {
+
+        section.outerHTML = slidify( getMarkdownFromSlide( section ), {
+          separator: section.getAttribute( 'data-separator' ),
+          verticalSeparator: section.getAttribute( 'data-separator-vertical' ),
+          notesSeparator: section.getAttribute( 'data-separator-notes' ),
+          attributes: getForwardedAttributes( section )
         });
+
       }
       else {
-        section.innerHTML = createMarkdownSlide(getMarkdownFromSlide(section));
+        section.innerHTML = createMarkdownSlide( getMarkdownFromSlide( section ) );
       }
     }
+
   }
 
   /**
@@ -273,18 +269,20 @@ export default function(marked) {
    * directly on refresh (F5)
    * http://stackoverflow.com/questions/5690269/disabling-chrome-cache-for-website-development/7000899#answer-11786277
    */
-  function addAttributeInElement(node, elementTarget, separator) {
-    const mardownClassesInElementsRegex = new RegExp(separator, 'mg');
-    const mardownClassRegex = new RegExp('([^"= ]+?)="([^"=]+?)"', 'mg');
+  function addAttributeInElement( node, elementTarget, separator ) {
+
+    let mardownClassesInElementsRegex = new RegExp( separator, 'mg' );
+    let mardownClassRegex = new RegExp( "([^\"= ]+?)=\"([^\"=]+?)\"", 'mg' );
     let nodeValue = node.nodeValue;
-    const matches = mardownClassesInElementsRegex.exec(nodeValue);
-    if (matches != null) {
-      const classes = matches[1];
-      nodeValue = nodeValue.substring(0, matches.index) + nodeValue.substring(mardownClassesInElementsRegex.lastIndex);
+    let matches = mardownClassesInElementsRegex.exec( nodeValue );
+    if ( matches != null ) {
+
+      let classes = matches[1];
+      nodeValue = nodeValue.substring( 0, matches.index ) + nodeValue.substring( mardownClassesInElementsRegex.lastIndex );
       node.nodeValue = nodeValue;
       let matchesClass;
-      while ((matchesClass = mardownClassRegex.exec(classes)) != null) {
-        elementTarget.setAttribute(matchesClass[1], matchesClass[2]);
+      while ( (matchesClass = mardownClassRegex.exec( classes )) != null ) {
+        elementTarget.setAttribute( matchesClass[1], matchesClass[2] );
       }
       return true;
     }
@@ -295,36 +293,37 @@ export default function(marked) {
    * Add attributes to the parent element of a text node,
    * or the element of an attribute node.
    */
-  function addAttributes(section, element, previousElement, separatorElementAttributes, separatorSectionAttributes) {
-    if (element != null && element.childNodes != undefined && element.childNodes.length > 0) {
+  function addAttributes( section, element, previousElement, separatorElementAttributes, separatorSectionAttributes ) {
+
+    if ( element != null && element.childNodes != undefined && element.childNodes.length > 0 ) {
       let previousParentElement = element;
-      for (let i = 0; i < element.childNodes.length; i++) {
-        const childElement = element.childNodes[i];
-        if (i > 0) {
+      for ( let i = 0; i < element.childNodes.length; i++ ) {
+        let childElement = element.childNodes[i];
+        if ( i > 0 ) {
           let j = i - 1;
-          while (j >= 0) {
-            const aPreviousChildElement = element.childNodes[j];
-            if (typeof aPreviousChildElement.setAttribute === 'function' && aPreviousChildElement.tagName != 'BR') {
+          while ( j >= 0 ) {
+            let aPreviousChildElement = element.childNodes[j];
+            if ( typeof aPreviousChildElement.setAttribute == 'function' && aPreviousChildElement.tagName != 'BR' ) {
               previousParentElement = aPreviousChildElement;
               break;
             }
-            j -= 1;
+            j = j - 1;
           }
         }
         let parentSection = section;
-        if (childElement.nodeName == 'section') {
-          parentSection = childElement;
-          previousParentElement = childElement;
+        if ( childElement.nodeName ==  'section' ) {
+          parentSection = childElement ;
+          previousParentElement = childElement ;
         }
-        if (typeof childElement.setAttribute === 'function' || childElement.nodeType == Node.COMMENT_NODE) {
-          addAttributes(parentSection, childElement, previousParentElement, separatorElementAttributes, separatorSectionAttributes);
+        if ( typeof childElement.setAttribute == 'function' || childElement.nodeType == Node.COMMENT_NODE ) {
+          addAttributes( parentSection, childElement, previousParentElement, separatorElementAttributes, separatorSectionAttributes );
         }
       }
     }
 
-    if (element.nodeType == Node.COMMENT_NODE) {
-      if (addAttributeInElement(element, previousElement, separatorElementAttributes) == false) {
-        addAttributeInElement(element, section, separatorSectionAttributes);
+    if ( element.nodeType == Node.COMMENT_NODE ) {
+      if ( addAttributeInElement( element, previousElement, separatorElementAttributes ) == false ) {
+        addAttributeInElement( element, section, separatorSectionAttributes );
       }
     }
   }
@@ -334,41 +333,47 @@ export default function(marked) {
    * DOM to HTML.
    */
   function convertSlides() {
-    const sections = document.querySelectorAll('[data-markdown]');
 
-    for (let i = 0, len = sections.length; i < len; i++) {
-      const section = sections[i];
+    let sections = document.querySelectorAll( '[data-markdown]');
+
+    for ( let i = 0, len = sections.length; i < len; i++ ) {
+
+      let section = sections[i];
 
       // Only parse the same slide once
-      if (!section.getAttribute('data-markdown-parsed')) {
-        section.setAttribute('data-markdown-parsed', true);
+      if ( !section.getAttribute( 'data-markdown-parsed' ) ) {
 
-        const notes = section.querySelector('aside.notes');
-        const markdown = getMarkdownFromSlide(section);
+        section.setAttribute( 'data-markdown-parsed', true );
 
-        section.innerHTML = marked(markdown);
-        addAttributes(section, section, null, section.getAttribute('data-element-attributes')
-                || section.parentNode.getAttribute('data-element-attributes')
-                || DEFAULT_ELEMENT_ATTRIBUTES_SEPARATOR,
-        section.getAttribute('data-attributes')
-                || section.parentNode.getAttribute('data-attributes')
-                || DEFAULT_SLIDE_ATTRIBUTES_SEPARATOR);
+        let notes = section.querySelector( 'aside.notes' );
+        let markdown = getMarkdownFromSlide( section );
+
+        section.innerHTML = marked( markdown );
+        addAttributes(   section, section, null, section.getAttribute( 'data-element-attributes' ) ||
+                section.parentNode.getAttribute( 'data-element-attributes' ) ||
+                DEFAULT_ELEMENT_ATTRIBUTES_SEPARATOR,
+        section.getAttribute( 'data-attributes' ) ||
+                section.parentNode.getAttribute( 'data-attributes' ) ||
+                DEFAULT_SLIDE_ATTRIBUTES_SEPARATOR);
 
         // If there were notes, we need to re-add them after
         // having overwritten the section's HTML
-        if (notes) {
-          section.appendChild(notes);
+        if ( notes ) {
+          section.appendChild( notes );
         }
+
       }
+
     }
+
   }
 
   // API
   return {
-    getMarkdownFromSlide,
-    createMarkdownSlide,
-    processSlides,
-    addAttributes,
-    convertSlides,
+    getMarkdownFromSlide: getMarkdownFromSlide,
+    createMarkdownSlide: createMarkdownSlide,
+    processSlides: processSlides,
+    addAttributes: addAttributes,
+    convertSlides: convertSlides
   };
 }

@@ -10,6 +10,7 @@ import ReactUtils from '../ReactUtils';
 import UserPicture from '../User/UserPicture';
 
 export default class DeleteCommentModal extends React.Component {
+
   /*
    * the threshold for omitting body
    */
@@ -24,7 +25,7 @@ export default class DeleteCommentModal extends React.Component {
 
   render() {
     if (this.props.comment === undefined) {
-      return <div />;
+      return <div></div>;
     }
 
     const comment = this.props.comment;
@@ -33,7 +34,7 @@ export default class DeleteCommentModal extends React.Component {
     // generate body
     let commentBody = comment.comment;
     if (commentBody.length > DeleteCommentModal.OMIT_BODY_THRES) { // omit
-      commentBody = `${commentBody.substr(0, DeleteCommentModal.OMIT_BODY_THRES)}...`;
+      commentBody = commentBody.substr(0, DeleteCommentModal.OMIT_BODY_THRES) + '...';
     }
     commentBody = ReactUtils.nl2br(commentBody);
 
@@ -41,39 +42,32 @@ export default class DeleteCommentModal extends React.Component {
       <Modal show={this.props.isShown} onHide={this.props.cancel} className="page-comment-delete-modal">
         <Modal.Header closeButton>
           <Modal.Title>
-            <i className="icon-fw icon-fire text-danger" />
+            <i className="icon-fw icon-fire text-danger"></i>
             Delete comment?
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <UserPicture user={comment.creator} size="xs" />
-          {' '}
-          <strong>{comment.creator.username}</strong>
-          {' '}
-wrote on
-          {' '}
-          {commentDate}
-:
+          <UserPicture user={comment.creator} size="xs" /> <strong>{comment.creator.username}</strong> wrote on {commentDate}:
           <p className="well well-sm comment-body m-t-5">{commentBody}</p>
         </Modal.Body>
         <Modal.Footer>
-          <span className="text-danger">{this.props.errorMessage}</span>
-&nbsp;
+          <span className="text-danger">{this.props.errorMessage}</span>&nbsp;
           <Button onClick={this.props.cancel} bsClass="btn btn-sm">Cancel</Button>
           <Button onClick={this.props.confirmedToDelete} bsClass="btn btn-sm btn-danger">
-            <i className="icon icon-fire" />
+            <i className="icon icon-fire"></i>
             Delete
           </Button>
         </Modal.Footer>
       </Modal>
     );
   }
+
 }
 
 DeleteCommentModal.propTypes = {
   isShown: PropTypes.bool.isRequired,
   comment: PropTypes.object,
   errorMessage: PropTypes.string,
-  cancel: PropTypes.func.isRequired, // for cancel evnet handling
+  cancel: PropTypes.func.isRequired,            // for cancel evnet handling
   confirmedToDelete: PropTypes.func.isRequired, // for confirmed event handling
 };

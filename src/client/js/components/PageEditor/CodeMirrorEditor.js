@@ -7,27 +7,10 @@ import Button from 'react-bootstrap/es/Button';
 import InterceptorManager from '@commons/service/interceptor-manager';
 
 import urljoin from 'url-join';
-
-import * as codemirror from 'codemirror';
-
-
-import { UnControlled as ReactCodeMirror } from 'react-codemirror2';
-
-import AbstractEditor from './AbstractEditor';
-
-import SimpleCheatsheet from './SimpleCheatsheet';
-import Cheatsheet from './Cheatsheet';
-
-import pasteHelper from './PasteHelper';
-import EmojiAutoCompleteHelper from './EmojiAutoCompleteHelper';
-
-import PreventMarkdownListInterceptor from './PreventMarkdownListInterceptor';
-import MarkdownTableInterceptor from './MarkdownTableInterceptor';
-import mtu from './MarkdownTableUtil';
-import HandsontableModal from './HandsontableModal';
-
 const loadScript = require('simple-load-script');
 const loadCssSync = require('load-css-file');
+
+import * as codemirror from 'codemirror';
 // set save handler
 codemirror.commands.save = (instance) => {
   if (instance.codeMirrorEditor != null) {
@@ -36,6 +19,9 @@ codemirror.commands.save = (instance) => {
 };
 // set CodeMirror instance as 'CodeMirror' so that CDN addons can reference
 window.CodeMirror = require('codemirror');
+
+
+import { UnControlled as ReactCodeMirror } from 'react-codemirror2';
 require('codemirror/addon/display/placeholder');
 require('codemirror/addon/edit/matchbrackets');
 require('codemirror/addon/edit/matchtags');
@@ -56,7 +42,21 @@ require('codemirror/addon/display/placeholder');
 require('codemirror/mode/gfm/gfm');
 require('../../util/codemirror/autorefresh.ext');
 
+import AbstractEditor from './AbstractEditor';
+
+import SimpleCheatsheet from './SimpleCheatsheet';
+import Cheatsheet from './Cheatsheet';
+
+import pasteHelper from './PasteHelper';
+import EmojiAutoCompleteHelper from './EmojiAutoCompleteHelper';
+
+import PreventMarkdownListInterceptor from './PreventMarkdownListInterceptor';
+import MarkdownTableInterceptor from './MarkdownTableInterceptor';
+import mtu from './MarkdownTableUtil';
+import HandsontableModal from './HandsontableModal';
+
 export default class CodeMirrorEditor extends AbstractEditor {
+
   constructor(props) {
     super(props);
     this.logger = require('@alias/logger')('growi:PageEditor:CodeMirrorEditor');
@@ -110,14 +110,14 @@ export default class CodeMirrorEditor extends AbstractEditor {
       new MarkdownTableInterceptor(),
     ]);
 
-    this.loadedThemeSet = new Set(['eclipse', 'elegant']); // themes imported in _vendor.scss
+    this.loadedThemeSet = new Set(['eclipse', 'elegant']);   // themes imported in _vendor.scss
     this.loadedKeymapSet = new Set();
   }
 
   componentWillMount() {
     if (this.props.emojiStrategy != null) {
       this.emojiAutoCompleteHelper = new EmojiAutoCompleteHelper(this.props.emojiStrategy);
-      this.setState({ isEnabledEmojiAutoComplete: true });
+      this.setState({isEnabledEmojiAutoComplete: true});
     }
   }
 
@@ -192,7 +192,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     const editor = this.getCodeMirror();
     const linePosition = Math.max(0, line);
 
-    editor.setCursor({ line: linePosition }); // leave 'ch' field as null/undefined to indicate the end of line
+    editor.setCursor({line: linePosition});   // leave 'ch' field as null/undefined to indicate the end of line
     this.setScrollTopByLine(linePosition);
   }
 
@@ -206,7 +206,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
     const editor = this.getCodeMirror();
     // get top position of the line
-    const top = editor.charCoords({ line, ch: 0 }, 'local').top;
+    const top = editor.charCoords({line, ch: 0}, 'local').top;
     editor.scrollTo(null, top);
   }
 
@@ -331,8 +331,8 @@ export default class CodeMirrorEditor extends AbstractEditor {
    */
   loadKeymapMode(keymapMode) {
     const loadCss = this.loadCss;
-    const scriptList = [];
-    const cssList = [];
+    let scriptList = [];
+    let cssList = [];
 
     // add dependencies
     if (this.loadedKeymapSet.size == 0) {
@@ -394,7 +394,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     }
 
     const context = {
-      handlers: [], // list of handlers which process enter key
+      handlers: [],  // list of handlers which process enter key
       editor: this,
     };
 
@@ -432,12 +432,14 @@ export default class CodeMirrorEditor extends AbstractEditor {
     if (mtu.isEndOfLine(editor) && mtu.linePartOfTableRE.test(strFromBol)) {
       if (!hasCustomClass) {
         additionalClassSet.add(autoformatTableClass);
-        this.setState({ additionalClassSet });
+        this.setState({additionalClassSet});
       }
     }
-    else if (hasCustomClass) {
-      additionalClassSet.delete(autoformatTableClass);
-      this.setState({ additionalClassSet });
+    else {
+      if (hasCustomClass) {
+        additionalClassSet.delete(autoformatTableClass);
+        this.setState({additionalClassSet});
+      }
     }
   }
 
@@ -472,6 +474,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     else if (types.includes('text/plain')) {
       pasteHelper.pasteText(this, event);
     }
+
   }
 
   /**
@@ -502,15 +505,11 @@ export default class CodeMirrorEditor extends AbstractEditor {
     };
 
     return this.state.isLoadingKeymap
-      ? (
-        <div className="overlay overlay-loading-keymap">
+      ? <div className="overlay overlay-loading-keymap">
           <span style={style} className="overlay-content">
-            <div className="speeding-wheel d-inline-block" />
-            {' '}
-Loading Keymap ...
+            <div className="speeding-wheel d-inline-block"></div> Loading Keymap ...
           </span>
         </div>
-      )
       : '';
   }
 
@@ -524,21 +523,18 @@ Loading Keymap ...
 
   renderCheatsheetModalButton() {
     const showCheatsheetModal = () => {
-      this.setState({ isCheatsheetModalShown: true });
+      this.setState({isCheatsheetModalShown: true});
     };
 
     const hideCheatsheetModal = () => {
-      this.setState({ isCheatsheetModalShown: false });
+      this.setState({isCheatsheetModalShown: false});
     };
 
     return (
       <React.Fragment>
         <Modal className="modal-gfm-cheatsheet" show={this.state.isCheatsheetModalShown} onHide={() => { hideCheatsheetModal() }}>
           <Modal.Header closeButton>
-            <Modal.Title>
-              <i className="icon-fw icon-question" />
-Markdown Help
-            </Modal.Title>
+            <Modal.Title><i className="icon-fw icon-question"/>Markdown Help</Modal.Title>
           </Modal.Header>
           <Modal.Body className="pt-1">
             { this.renderCheatsheetModalBody() }
@@ -546,9 +542,7 @@ Markdown Help
         </Modal>
 
         <a className="gfm-cheatsheet-modal-link text-muted small" onClick={() => { showCheatsheetModal() }}>
-          <i className="icon-question" />
-          {' '}
-Markdown
+          <i className="icon-question" /> Markdown
         </a>
       </React.Fragment>
     );
@@ -596,8 +590,8 @@ Markdown
       for (let i = startLineNum; i <= endLineNum; i++) {
         lines.push(prefix + cm.getDoc().getLine(i));
       }
-      const replacement = `${lines.join('\n')}\n`;
-      cm.getDoc().replaceRange(replacement, { line: startLineNum, ch: 0 }, { line: endLineNum + 1, ch: 0 });
+      const replacement = lines.join('\n') + '\n';
+      cm.getDoc().replaceRange(replacement, {line: startLineNum, ch: 0}, {line: endLineNum + 1, ch: 0});
 
       cm.setCursor(endLineNum, cm.getDoc().getLine(endLineNum).length);
       cm.focus();
@@ -617,7 +611,7 @@ Markdown
     if (!line.startsWith('#')) {
       prefix += ' ';
     }
-    cm.getDoc().replaceRange(prefix, { line: lineNum, ch: 0 }, { line: lineNum, ch: 0 });
+    cm.getDoc().replaceRange(prefix, {line: lineNum, ch: 0}, {line: lineNum, ch: 0});
     cm.focus();
   }
 
@@ -627,113 +621,59 @@ Markdown
 
   getNavbarItems() {
     // The following styles will be removed after creating icons for the editor navigation bar.
-    const paddingTopBottom54 = { paddingTop: '6px', paddingBottom: '5px' };
-    const paddingBottom6 = { paddingBottom: '7px' };
-    const fontSize18 = { fontSize: '18px' };
+    const paddingTopBottom54 = {'paddingTop': '6px', 'paddingBottom': '5px'};
+    const paddingBottom6 = {'paddingBottom': '7px'};
+    const fontSize18 = {'fontSize': '18px'};
 
     return [
-      <Button
-        key="nav-item-bold"
-        bsSize="small"
-        title="Bold"
-        onClick={this.createReplaceSelectionHandler('**', '**')}
-      >
-        <i className="fa fa-bold" />
+      <Button key='nav-item-bold' bsSize="small" title={'Bold'}
+              onClick={ this.createReplaceSelectionHandler('**', '**') }>
+        <i className={'fa fa-bold'}></i>
       </Button>,
-      <Button
-        key="nav-item-italic"
-        bsSize="small"
-        title="Italic"
-        onClick={this.createReplaceSelectionHandler('*', '*')}
-      >
-        <i className="fa fa-italic" />
+      <Button key='nav-item-italic' bsSize="small" title={'Italic'}
+              onClick={ this.createReplaceSelectionHandler('*', '*') }>
+        <i className={'fa fa-italic'}></i>
       </Button>,
-      <Button
-        key="nav-item-strikethough"
-        bsSize="small"
-        title="Strikethrough"
-        onClick={this.createReplaceSelectionHandler('~~', '~~')}
-      >
-        <i className="fa fa-strikethrough" />
+      <Button key='nav-item-strikethough' bsSize="small" title={'Strikethrough'}
+              onClick={ this.createReplaceSelectionHandler('~~', '~~') }>
+        <i className={'fa fa-strikethrough'}></i>
       </Button>,
-      <Button
-        key="nav-item-header"
-        bsSize="small"
-        title="Heading"
-        onClick={this.makeHeaderHandler}
-      >
-        <i className="fa fa-header" />
+      <Button key='nav-item-header' bsSize="small" title={'Heading'}
+              onClick={ this.makeHeaderHandler }>
+        <i className={'fa fa-header'}></i>
       </Button>,
-      <Button
-        key="nav-item-code"
-        bsSize="small"
-        title="Inline Code"
-        onClick={this.createReplaceSelectionHandler('`', '`')}
-      >
-        <i className="fa fa-code" />
+      <Button key='nav-item-code' bsSize="small" title={'Inline Code'}
+              onClick={ this.createReplaceSelectionHandler('`', '`') }>
+        <i className={'fa fa-code'}></i>
       </Button>,
-      <Button
-        key="nav-item-quote"
-        bsSize="small"
-        title="Quote"
-        onClick={this.createAddPrefixToEachLinesHandler('> ')}
-        style={paddingBottom6}
-      >
-        <i className="ti-quote-right" />
+      <Button key='nav-item-quote' bsSize="small" title={'Quote'}
+              onClick={ this.createAddPrefixToEachLinesHandler('> ') } style={paddingBottom6}>
+        <i className={'ti-quote-right'}></i>
       </Button>,
-      <Button
-        key="nav-item-ul"
-        bsSize="small"
-        title="List"
-        onClick={this.createAddPrefixToEachLinesHandler('- ')}
-        style={paddingTopBottom54}
-      >
-        <i className="ti-list" style={fontSize18} />
+      <Button key='nav-item-ul' bsSize="small" title={'List'}
+              onClick={ this.createAddPrefixToEachLinesHandler('- ') } style={paddingTopBottom54}>
+        <i className={'ti-list'} style={fontSize18}></i>
       </Button>,
-      <Button
-        key="nav-item-ol"
-        bsSize="small"
-        title="Numbered List"
-        onClick={this.createAddPrefixToEachLinesHandler('1. ')}
-        style={paddingTopBottom54}
-      >
-        <i className="ti-list-ol" style={fontSize18} />
+      <Button key='nav-item-ol' bsSize="small" title={'Numbered List'}
+              onClick={ this.createAddPrefixToEachLinesHandler('1. ') } style={paddingTopBottom54}>
+        <i className={'ti-list-ol'} style={fontSize18}></i>
       </Button>,
-      <Button
-        key="nav-item-checkbox"
-        bsSize="small"
-        title="Check List"
-        onClick={this.createAddPrefixToEachLinesHandler('- [ ] ')}
-        style={paddingBottom6}
-      >
-        <i className="ti-check-box" />
+      <Button key='nav-item-checkbox' bsSize="small" title={'Check List'}
+              onClick={ this.createAddPrefixToEachLinesHandler('- [ ] ') } style={paddingBottom6}>
+        <i className={'ti-check-box'}></i>
       </Button>,
-      <Button
-        key="nav-item-link"
-        bsSize="small"
-        title="Link"
-        onClick={this.createReplaceSelectionHandler('[', ']()')}
-        style={paddingBottom6}
-      >
-        <i className="icon-link" />
+      <Button key='nav-item-link' bsSize="small" title={'Link'}
+              onClick={ this.createReplaceSelectionHandler('[', ']()') } style={paddingBottom6}>
+        <i className={'icon-link'}></i>
       </Button>,
-      <Button
-        key="nav-item-image"
-        bsSize="small"
-        title="Image"
-        onClick={this.createReplaceSelectionHandler('![', ']()')}
-        style={paddingBottom6}
-      >
-        <i className="icon-picture" />
+      <Button key='nav-item-image' bsSize="small" title={'Image'}
+              onClick={ this.createReplaceSelectionHandler('![', ']()') } style={paddingBottom6}>
+        <i className={'icon-picture'}></i>
       </Button>,
-      <Button
-        key="nav-item-table"
-        bsSize="small"
-        title="Table"
-        onClick={this.showHandsonTableHandler}
-      >
+      <Button key='nav-item-table' bsSize="small" title={'Table'}
+              onClick={ this.showHandsonTableHandler }>
         <img src="/images/icons/editor/table.svg" width="14" height="14" />
-      </Button>,
+      </Button>
     ];
   }
 
@@ -748,51 +688,50 @@ Markdown
 
     const placeholder = this.state.isGfmMode ? 'Input with Markdown..' : 'Input with Plane Text..';
 
-    return (
-      <React.Fragment>
+    return <React.Fragment>
 
-        <ReactCodeMirror
-          ref="cm"
-          className={additionalClasses}
-          placeholder="search"
-          editorDidMount={(editor) => {
+      <ReactCodeMirror
+        ref="cm"
+        className={additionalClasses}
+        placeholder="search"
+        editorDidMount={(editor) => {
           // add event handlers
           editor.on('paste', this.pasteHandler);
           editor.on('scrollCursorIntoView', this.scrollCursorIntoViewHandler);
         }}
-          value={this.state.value}
-          options={{
-          mode,
+        value={this.state.value}
+        options={{
+          mode: mode,
           theme: editorOptions.theme,
           styleActiveLine: editorOptions.styleActiveLine,
           lineNumbers: this.props.lineNumbers,
           tabSize: 4,
           indentUnit: 4,
           lineWrapping: true,
-          autoRefresh: { force: true }, // force option is enabled by autorefresh.ext.js -- Yuki Takei
+          autoRefresh: {force: true},   // force option is enabled by autorefresh.ext.js -- Yuki Takei
           autoCloseTags: true,
-          placeholder,
+          placeholder: placeholder,
           matchBrackets: true,
-          matchTags: { bothTags: true },
+          matchTags: {bothTags: true},
           // folding
           foldGutter: this.props.lineNumbers,
           gutters: this.props.lineNumbers ? ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'] : [],
           // match-highlighter, matchesonscrollbar, annotatescrollbar options
-          highlightSelectionMatches: { annotateScrollbar: true },
+          highlightSelectionMatches: {annotateScrollbar: true},
           // markdown mode options
           highlightFormatting: true,
           // continuelist, indentlist
           extraKeys: {
-            Enter: this.handleEnterKey,
+            'Enter': this.handleEnterKey,
             'Ctrl-Enter': this.handleCtrlEnterKey,
             'Cmd-Enter': this.handleCtrlEnterKey,
-            Tab: 'indentMore',
+            'Tab': 'indentMore',
             'Shift-Tab': 'indentLess',
             'Ctrl-Q': (cm) => { cm.foldCode(cm.getCursor()) },
-          },
+          }
         }}
-          onCursor={this.cursorHandler}
-          onScroll={(editor, data) => {
+        onCursor={this.cursorHandler}
+        onScroll={(editor, data) => {
           if (this.props.onScroll != null) {
             // add line data
             const line = editor.lineAtHeight(data.top, 'local');
@@ -800,25 +739,25 @@ Markdown
             this.props.onScroll(data);
           }
         }}
-          onChange={this.changeHandler}
-          onDragEnter={(editor, event) => {
+        onChange={this.changeHandler}
+        onDragEnter={(editor, event) => {
           if (this.props.onDragEnter != null) {
             this.props.onDragEnter(event);
           }
         }}
-        />
+      />
 
-        { this.renderLoadingKeymapOverlay() }
+      { this.renderLoadingKeymapOverlay() }
 
-        <div className="overlay overlay-gfm-cheatsheet mt-1 p-3 pt-3">
-          { this.state.isSimpleCheatsheetShown && this.renderSimpleCheatsheet() }
-          { this.state.isCheatsheetModalButtonShown && this.renderCheatsheetModalButton() }
-        </div>
+      <div className="overlay overlay-gfm-cheatsheet mt-1 p-3 pt-3">
+        { this.state.isSimpleCheatsheetShown && this.renderSimpleCheatsheet() }
+        { this.state.isCheatsheetModalButtonShown && this.renderCheatsheetModalButton() }
+      </div>
 
-        <HandsontableModal ref="handsontableModal" onSave={(table) => { return mtu.replaceFocusedMarkdownTableWithEditor(this.getCodeMirror(), table) }} />
-      </React.Fragment>
-    );
+      <HandsontableModal ref='handsontableModal' onSave={ table => mtu.replaceFocusedMarkdownTableWithEditor(this.getCodeMirror(), table) }/>
+    </React.Fragment>;
   }
+
 }
 
 CodeMirrorEditor.propTypes = Object.assign({

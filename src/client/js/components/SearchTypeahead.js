@@ -9,7 +9,9 @@ import PageListMeta from './PageList/PageListMeta';
 import PagePath from './PageList/PagePath';
 
 export default class SearchTypeahead extends React.Component {
+
   constructor(props) {
+
     super(props);
 
     this.state = {
@@ -58,6 +60,7 @@ export default class SearchTypeahead extends React.Component {
   }
 
   search(keyword) {
+
     if (keyword === '') {
       this.setState({
         keyword: '',
@@ -66,11 +69,11 @@ export default class SearchTypeahead extends React.Component {
       return;
     }
 
-    this.setState({ isLoading: true });
+    this.setState({isLoading: true});
 
-    this.crowi.apiGet('/search', { q: keyword })
-      .then((res) => { this.onSearchSuccess(res) })
-      .catch((err) => { this.onSearchError(err) });
+    this.crowi.apiGet('/search', {q: keyword})
+      .then(res => { this.onSearchSuccess(res) })
+      .catch(err => { this.onSearchError(err) });
   }
 
   /**
@@ -99,10 +102,10 @@ export default class SearchTypeahead extends React.Component {
   }
 
   onInputChange(text) {
-    this.setState({ input: text });
+    this.setState({input: text});
     this.props.onInputChange(text);
     if (text === '') {
-      this.setState({ pages: [] });
+      this.setState({pages: []});
     }
   }
 
@@ -138,9 +141,9 @@ export default class SearchTypeahead extends React.Component {
    * Get restore form button to initialize button
    */
   getRestoreFormButton() {
-    const isHidden = (this.state.input === this.props.keywordOnInit);
+    let isHidden = (this.state.input === this.props.keywordOnInit);
 
-    return isHidden ? <span /> : (
+    return isHidden ? <span></span> : (
       <button type="button" className="btn btn-link search-clear" onMouseDown={this.restoreInitialData}>
         <i className="icon-close" />
       </button>
@@ -151,16 +154,16 @@ export default class SearchTypeahead extends React.Component {
     const page = option;
     return (
       <span>
-        <UserPicture user={page.lastUpdateUser} size="sm" />
-        <PagePath page={page} />
-        <PageListMeta page={page} />
+      <UserPicture user={page.lastUpdateUser} size="sm" />
+      <PagePath page={page} />
+      <PageListMeta page={page} />
       </span>
     );
   }
 
   render() {
     const defaultSelected = (this.props.keywordOnInit != '')
-      ? [{ path: this.props.keywordOnInit }]
+      ? [{path: this.props.keywordOnInit}]
       : [];
     const inputProps = { autoComplete: 'off' };
     if (this.props.inputName != null) {
@@ -184,8 +187,8 @@ export default class SearchTypeahead extends React.Component {
               // DIRTY HACK
               //  note: The default searchText string has been shown wrongly even if isLoading is false
               //        since upgrade react-bootstrap-typeahead to v3.3.2 -- 2019.02.05 Yuki Takei
-          align="left"
-          submitFormOnEnter
+          align='left'
+          submitFormOnEnter={true}
           onSearch={this.search}
           onInputChange={this.onInputChange}
           onKeyDown={this.onKeyDown}

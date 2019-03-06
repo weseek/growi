@@ -7,6 +7,7 @@ import MarkdownTable from '../../models/MarkdownTable';
  * Interceptor for markdown table
  */
 export default class MarkdownTableInterceptor extends BasicInterceptor {
+
   constructor() {
     super();
   }
@@ -31,8 +32,8 @@ export default class MarkdownTableInterceptor extends BasicInterceptor {
    * @inheritdoc
    */
   process(contextName, ...args) {
-    const context = Object.assign(args[0]); // clone
-    const editor = context.editor; // AbstractEditor instance
+    const context = Object.assign(args[0]);   // clone
+    const editor = context.editor;            // AbstractEditor instance
 
     // do nothing if editor is not a CodeMirrorEditor
     if (editor == null || editor.getCodeMirror() == null) {

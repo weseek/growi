@@ -1,4 +1,5 @@
 export default class HeaderWithEditLinkConfigurer {
+
   constructor(crowi) {
     this.crowi = crowi;
   }

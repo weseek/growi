@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { debounce } from 'throttle-debounce';
 
 export default class RevisionBody extends React.Component {
+
   constructor(props) {
     super(props);
 
@@ -38,7 +39,7 @@ export default class RevisionBody extends React.Component {
   }
 
   generateInnerHtml(html) {
-    return { __html: html };
+    return {__html: html};
   }
 
   render() {
@@ -51,16 +52,15 @@ export default class RevisionBody extends React.Component {
             this.props.inputRef(elm);
           }
         }}
-        className={`wiki ${additionalClassName}`}
-        dangerouslySetInnerHTML={this.generateInnerHtml(this.props.html)}
-      />
+        className={`wiki ${additionalClassName}`} dangerouslySetInnerHTML={this.generateInnerHtml(this.props.html)}>
+      </div>
     );
   }
 }
 
 RevisionBody.propTypes = {
   html: PropTypes.string,
-  inputRef: PropTypes.func, // for getting div element
+  inputRef: PropTypes.func,  // for getting div element
   isMathJaxEnabled: PropTypes.bool,
   renderMathJaxOnInit: PropTypes.bool,
   renderMathJaxInRealtime: PropTypes.bool,

@@ -3,6 +3,7 @@
  * @see https://github.com/Microsoft/vscode/blob/0532a3429a18688a0c086a4212e7e5b4888b2a48/extensions/markdown/media/main.js
  */
 class ScrollSyncHelper {
+
   /**
 	 * @typedef {{ element: Element, line: number }} CodeLineElement
 	 */
@@ -16,12 +17,11 @@ class ScrollSyncHelper {
     if (!elements) {
       elements = Array.prototype.map.call(
         parentElement.getElementsByClassName('code-line'),
-        (element) => {
+        element => {
           const line = +element.getAttribute('data-line');
           return { element, line };
-        },
-      )
-        .filter((x) => { return !isNaN(x.line) });
+        })
+        .filter(x => !isNaN(x.line));
     }
     return elements;
   }
@@ -44,7 +44,7 @@ class ScrollSyncHelper {
       if (entry.line === targetLine) {
         return { previous: entry, next: null };
       }
-      if (entry.line > targetLine) {
+      else if (entry.line > targetLine) {
         return { previous, next: entry };
       }
       previous = entry;
@@ -82,7 +82,7 @@ class ScrollSyncHelper {
     if (hi >= 1 && hiElement.element.getBoundingClientRect().top > position) {
       const loElement = lines[lo];
       const bounds = loElement.element.getBoundingClientRect();
-      const previous = { element: loElement.element, line: loElement.line };
+      let previous = { element: loElement.element, line: loElement.line };
       if (bounds.height > 0) {
         previous.line += (position - bounds.top) / (bounds.height);
       }
@@ -102,8 +102,9 @@ class ScrollSyncHelper {
         const betweenProgress = (offset - parentElement.scrollTop - previous.element.getBoundingClientRect().top) / (next.element.getBoundingClientRect().top - previous.element.getBoundingClientRect().top);
         return previous.line + betweenProgress * (next.line - previous.line);
       }
-
-      return previous.line;
+      else {
+        return previous.line;
+      }
     }
     return null;
   }

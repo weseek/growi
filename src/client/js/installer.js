@@ -19,6 +19,6 @@ if (installerFormElem) {
     <I18nextProvider i18n={i18n}>
       <InstallerForm userName={userName} name={name} email={email} csrf={csrf} />
     </I18nextProvider>,
-    installerFormElem,
+    installerFormElem
   );
 }

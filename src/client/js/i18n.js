@@ -39,7 +39,7 @@ export default (userlang) => {
         withRef: true,
         bindI18n: 'languageChanged loaded',
         bindStore: 'added removed',
-        nsMode: 'default',
-      },
+        nsMode: 'default'
+      }
     });
 };

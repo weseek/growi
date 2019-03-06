@@ -7,15 +7,13 @@ import { translate } from 'react-i18next';
 import SearchPageForm from './SearchPage/SearchPageForm';
 import SearchResult from './SearchPage/SearchResult';
 
-/* global location */
-/* eslint no-restricted-globals: ['error', 'locaion'] */
-
 class SearchPage extends React.Component {
+
   constructor(props) {
     super(props);
 
     this.state = {
-      location,
+      location: location,
       searchingKeyword: this.props.query.q || '',
       searchedKeyword: '',
       searchedPages: [],
@@ -29,17 +27,17 @@ class SearchPage extends React.Component {
 
   componentDidMount() {
     const keyword = this.state.searchingKeyword;
-    if (keyword !== '') {
-      this.search({ keyword });
+    if (keyword !== '')  {
+      this.search({keyword});
     }
   }
 
   static getQueryByLocation(location) {
-    const search = location.search || '';
-    const query = {};
+    let search = location.search || '';
+    let query = {};
 
-    search.replace(/^\?/, '').split('&').forEach((element) => {
-      const queryParts = element.split('=');
+    search.replace(/^\?/, '').split('&').forEach(function(element) {
+      let queryParts = element.split('=');
       query[queryParts[0]] = decodeURIComponent(queryParts[1]).replace(/\+/g, ' ');
     });
 
@@ -74,8 +72,8 @@ class SearchPage extends React.Component {
       searchingKeyword: keyword,
     });
 
-    this.props.crowi.apiGet('/search', { q: keyword })
-    .then((res) => {
+    this.props.crowi.apiGet('/search', {q: keyword})
+    .then(res => {
       this.changeURL(keyword);
 
       this.setState({
@@ -83,7 +81,7 @@ class SearchPage extends React.Component {
         searchedPages: res.data,
         searchResultMeta: res.meta,
       });
-    }).catch((err) => {
+    }).catch(err => {
       // TODO error
       this.setState({
         searchError: err,
@@ -95,33 +93,31 @@ class SearchPage extends React.Component {
     return (
       <div>
         <div className="search-page-input">
-          <SearchPageForm
-            t={this.props.t}
+          <SearchPageForm t={this.props.t}
             crowi={this.props.crowi}
             onSearchFormChanged={this.search}
             keyword={this.state.searchingKeyword}
-          />
+            />
         </div>
         <SearchResult
-          crowi={this.props.crowi}
-          crowiRenderer={this.props.crowiRenderer}
+          crowi={this.props.crowi} crowiRenderer={this.props.crowiRenderer}
           pages={this.state.searchedPages}
           searchingKeyword={this.state.searchingKeyword}
           searchResultMeta={this.state.searchResultMeta}
-        />
+          />
       </div>
     );
   }
 }
 
 SearchPage.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
+  t: PropTypes.func.isRequired,               // i18next
   crowi: PropTypes.object.isRequired,
   crowiRenderer: PropTypes.object.isRequired,
   query: PropTypes.object,
 };
 SearchPage.defaultProps = {
-  // pollInterval: 1000,
+  //pollInterval: 1000,
   query: SearchPage.getQueryByLocation(location || {}),
   searchError: null,
 };

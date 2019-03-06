@@ -1,4 +1,5 @@
 export default class TableConfigurer {
+
   constructor(crowi) {
     this.crowi = crowi;
   }
@@ -8,4 +9,5 @@ export default class TableConfigurer {
       return '<table class="table table-bordered">';
     };
   }
+
 }

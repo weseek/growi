@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import templateChecker from '@commons/util/template-checker';
 
 export default class PageListMeta extends React.Component {
+
   isPortalPath(path) {
     if (path.match(/.*\/$/)) {
       return true;
@@ -29,22 +30,12 @@ export default class PageListMeta extends React.Component {
 
     let commentCount;
     if (page.commentCount > 0) {
-      commentCount = (
-        <span>
-          <i className="icon-bubble" />
-          {page.commentCount}
-        </span>
-      );
+      commentCount = <span><i className="icon-bubble" />{page.commentCount}</span>;
     }
 
     let likerCount;
     if (page.liker.length > 0) {
-      likerCount = (
-        <span>
-          <i className="icon-like" />
-          {page.liker.length}
-        </span>
-      );
+      likerCount = <span><i className="icon-like" />{page.liker.length}</span>;
     }
 
     let locked;
@@ -71,3 +62,4 @@ PageListMeta.propTypes = {
 PageListMeta.defaultProps = {
   page: {},
 };
+
