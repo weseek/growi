@@ -15,18 +15,18 @@ const markdownItEmojiFull = require('markdown-it-emoji/lib/data/full.json');
 const OUT = helpers.root('tmp/emoji_strategy_shrinked.json');
 
 const shrinkedMap = {};
-for (const unicode in emojiStrategy) {
+Object.keys(emojiStrategy).forEach((unicode) => {
   const data = emojiStrategy[unicode];
   const shortname = data.shortname.replace(/:/g, '');
 
   // ignore if it isn't included in markdownItEmojiFull
   if (markdownItEmojiFull[shortname] == null) {
-    continue;
+    return;
   }
 
   // add
   shrinkedMap[unicode] = data;
-}
+});
 
 // write
 fs.writeFileSync(OUT, JSON.stringify(shrinkedMap));
