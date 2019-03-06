@@ -1,8 +1,6 @@
-'use strict';
+const form = require('express-form');
 
-var form = require('express-form')
-  , field = form.field
-  ;
+const field = form.field;
 
 module.exports = form(
   field('settingForm[security:passport-ldap:isEnabled]').trim().toBooleanStrict().required(),
@@ -21,5 +19,5 @@ module.exports = form(
   field('settingForm[security:passport-ldap:isSameUsernameTreatedAsIdenticalUser]').trim().toBooleanStrict(),
   field('settingForm[security:passport-ldap:groupSearchBase]'),
   field('settingForm[security:passport-ldap:groupSearchFilter]'),
-  field('settingForm[security:passport-ldap:groupDnProperty]')
+  field('settingForm[security:passport-ldap:groupDnProperty]'),
 );

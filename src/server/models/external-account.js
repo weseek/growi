@@ -2,6 +2,7 @@ const debug = require('debug')('growi:models:external-account');
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate');
 const uniqueValidator = require('mongoose-unique-validator');
+
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
 /*
@@ -14,7 +15,7 @@ const schema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now, required: true },
 });
 // compound index
-schema.index({ providerType: 1, accountId: 1}, { unique: true });
+schema.index({ providerType: 1, accountId: 1 }, { unique: true });
 // apply plugins
 schema.plugin(mongoosePaginate);
 schema.plugin(uniqueValidator);
@@ -25,7 +26,6 @@ schema.plugin(uniqueValidator);
  * @class ExternalAccount
  */
 class ExternalAccount {
-
   /**
    * limit items num for pagination
    *
@@ -73,9 +73,8 @@ class ExternalAccount {
    * @memberof ExternalAccount
    */
   static findOrRegister(providerType, accountId, usernameToBeRegistered, nameToBeRegistered, mailToBeRegistered, isSameUsernameTreatedAsIdenticalUser, isSameEmailTreatedAsIdenticalUser) {
-
     return this.findOne({ providerType, accountId })
-      .then(account => {
+      .then((account) => {
         // ExternalAccount is found
         if (account != null) {
           debug(`ExternalAccount '${accountId}' is found `, account);
@@ -84,20 +83,20 @@ class ExternalAccount {
 
         const User = ExternalAccount.crowi.model('User');
 
-        let promise = User.findOne({username: usernameToBeRegistered});
+        let promise = User.findOne({ username: usernameToBeRegistered });
         if (isSameUsernameTreatedAsIdenticalUser && isSameEmailTreatedAsIdenticalUser) {
           promise = promise
-            .then(user => {
-              if (user == null) { return User.findOne({email: mailToBeRegistered}) }
+            .then((user) => {
+              if (user == null) { return User.findOne({ email: mailToBeRegistered }) }
               return user;
             });
         }
         else if (isSameEmailTreatedAsIdenticalUser) {
-          promise = User.findOne({email: mailToBeRegistered});
+          promise = User.findOne({ email: mailToBeRegistered });
         }
 
         return promise
-          .then(user => {
+          .then((user) => {
             // when the User that have the same `username` exists
             if (user != null) {
               throw new DuplicatedUsernameException(`User '${usernameToBeRegistered}' already exists`, user);
@@ -110,10 +109,9 @@ class ExternalAccount {
             debug(`ExternalAccount '${accountId}' is not found, it is going to be registered.`);
             return User.createUser(nameToBeRegistered, usernameToBeRegistered, mailToBeRegistered, undefined, undefined, User.STATUS_ACTIVE);
           })
-          .then(newUser => {
+          .then((newUser) => {
             return this.associate(providerType, accountId, newUser);
           });
-
       });
   }
 
@@ -142,7 +140,7 @@ class ExternalAccount {
     const query = {};
     const options = Object.assign({ populate: 'user' }, opts);
     if (options.sort == null) {
-      options.sort = {accountId: 1, createdAt: 1};
+      options.sort = { accountId: 1, createdAt: 1 };
     }
     if (options.limit == null) {
       options.limit = ExternalAccount.DEFAULT_LIMIT;
@@ -153,7 +151,6 @@ class ExternalAccount {
         debug('Error on pagination:', err);
       });
   }
-
 }
 
 /**

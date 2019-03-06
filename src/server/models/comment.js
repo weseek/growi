@@ -1,28 +1,26 @@
 module.exports = function(crowi) {
-  var debug = require('debug')('growi:models:comment')
-    , mongoose = require('mongoose')
-    , ObjectId = mongoose.Schema.Types.ObjectId
-    , USER_PUBLIC_FIELDS = '_id image isGravatarEnabled googleId name username email status createdAt' // TODO: どこか別の場所へ...
-    , commentSchema
-  ;
+  const debug = require('debug')('growi:models:comment');
+  const mongoose = require('mongoose');
+  const ObjectId = mongoose.Schema.Types.ObjectId;
+  const USER_PUBLIC_FIELDS = '_id image isGravatarEnabled googleId name username email status createdAt';
+  // TODO: どこか別の場所へ...
 
-  commentSchema = new mongoose.Schema({
+  const commentSchema = new mongoose.Schema({
     page: { type: ObjectId, ref: 'Page', index: true },
-    creator: { type: ObjectId, ref: 'User', index: true  },
+    creator: { type: ObjectId, ref: 'User', index: true },
     revision: { type: ObjectId, ref: 'Revision', index: true },
     comment: { type: String, required: true },
     commentPosition: { type: Number, default: -1 },
     createdAt: { type: Date, default: Date.now },
-    isMarkdown: { type: Boolean, default: false}
+    isMarkdown: { type: Boolean, default: false },
   });
 
   commentSchema.statics.create = function(pageId, creatorId, revisionId, comment, position, isMarkdown) {
-    var Comment = this,
-      commentPosition = position || -1;
+    const Comment = this;
+    const commentPosition = position || -1;
 
-
-    return new Promise(function(resolve, reject) {
-      var newComment = new Comment();
+    return new Promise(((resolve, reject) => {
+      const newComment = new Comment();
 
       newComment.page = pageId;
       newComment.creator = creatorId;
@@ -31,7 +29,7 @@ module.exports = function(crowi) {
       newComment.commentPosition = position;
       newComment.isMarkdown = isMarkdown || false;
 
-      newComment.save(function(err, data) {
+      newComment.save((err, data) => {
         if (err) {
           debug('Error on saving comment.', err);
           return reject(err);
@@ -39,57 +37,57 @@ module.exports = function(crowi) {
         debug('Comment saved.', data);
         return resolve(data);
       });
-    });
+    }));
   };
 
   commentSchema.statics.getCommentsByPageId = function(id) {
-    return this.find({page: id}).sort({'createdAt': -1});
+    return this.find({ page: id }).sort({ createdAt: -1 });
   };
 
   commentSchema.statics.getCommentsByRevisionId = function(id) {
-    return this.find({revision: id}).sort({'createdAt': -1});
+    return this.find({ revision: id }).sort({ createdAt: -1 });
   };
 
   commentSchema.statics.countCommentByPageId = function(page) {
-    var self = this;
+    const self = this;
 
-    return new Promise(function(resolve, reject) {
-      self.count({page: page}, function(err, data) {
+    return new Promise(((resolve, reject) => {
+      self.count({ page }, (err, data) => {
         if (err) {
           return reject(err);
         }
 
         return resolve(data);
       });
-    });
+    }));
   };
 
   commentSchema.statics.removeCommentsByPageId = function(pageId) {
-    var Comment = this;
+    const Comment = this;
 
-    return new Promise(function(resolve, reject) {
-      Comment.remove({page: pageId}, function(err, done) {
+    return new Promise(((resolve, reject) => {
+      Comment.remove({ page: pageId }, (err, done) => {
         if (err) {
           return reject(err);
         }
 
         resolve(done);
       });
-    });
+    }));
   };
 
   /**
    * post save hook
    */
-  commentSchema.post('save', function(savedComment) {
-    var Page = crowi.model('Page')
-      , Comment = crowi.model('Comment')
-    ;
+  commentSchema.post('save', (savedComment) => {
+    const Page = crowi.model('Page');
 
+
+    const Comment = crowi.model('Comment');
     Page.updateCommentCount(savedComment.page)
-    .then(function(page) {
+    .then((page) => {
       debug('CommentCount Updated', page);
-    }).catch(function() {
+    }).catch(() => {
     });
   });
 

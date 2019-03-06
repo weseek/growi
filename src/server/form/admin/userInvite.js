@@ -1,9 +1,8 @@
-'use strict';
+const form = require('express-form');
 
-var form = require('express-form')
-  , field = form.field;
+const field = form.field;
 
 module.exports = form(
   field('inviteForm[emailList]', '招待メールアドレス').trim().required(),
-  field('inviteForm[sendEmail]').trim()
+  field('inviteForm[sendEmail]').trim(),
 );

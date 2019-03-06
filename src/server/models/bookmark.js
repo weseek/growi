@@ -10,9 +10,9 @@ module.exports = function(crowi) {
   bookmarkSchema = new mongoose.Schema({
     page: { type: ObjectId, ref: 'Page', index: true },
     user: { type: ObjectId, ref: 'User', index: true },
-    createdAt: { type: Date, default: Date.now() }
+    createdAt: { type: Date, default: Date.now() },
   });
-  bookmarkSchema.index({page: 1, user: 1}, {unique: true});
+  bookmarkSchema.index({ page: 1, user: 1 }, { unique: true });
 
   bookmarkSchema.statics.countByPageId = async function(pageId) {
     return await this.count({ page: pageId });
@@ -23,8 +23,8 @@ module.exports = function(crowi) {
     const User = crowi.model('User');
 
     return Bookmark.populate(bookmarks, [
-      {path: 'page'},
-      {path: 'lastUpdateUser', model: 'User', select: User.USER_PUBLIC_FIELDS},
+      { path: 'page' },
+      { path: 'lastUpdateUser', model: 'User', select: User.USER_PUBLIC_FIELDS },
     ]);
   };
 
@@ -32,15 +32,15 @@ module.exports = function(crowi) {
   bookmarkSchema.statics.findByPageIdAndUserId = function(pageId, userId) {
     const Bookmark = this;
 
-    return new Promise(function(resolve, reject) {
-      return Bookmark.findOne({ page: pageId, user: userId }, function(err, doc) {
+    return new Promise(((resolve, reject) => {
+      return Bookmark.findOne({ page: pageId, user: userId }, (err, doc) => {
         if (err) {
           return reject(err);
         }
 
         return resolve(doc);
       });
-    });
+    }));
   };
 
   /**
@@ -60,13 +60,13 @@ module.exports = function(crowi) {
     const offset = option.offset || 0;
     const populatePage = option.populatePage || false;
 
-    return new Promise(function(resolve, reject) {
+    return new Promise(((resolve, reject) => {
       Bookmark
         .find({ user: user._id })
-        .sort({createdAt: -1})
+        .sort({ createdAt: -1 })
         .skip(offset)
         .limit(limit)
-        .exec(function(err, bookmarks) {
+        .exec((err, bookmarks) => {
           if (err) {
             return reject(err);
           }
@@ -77,7 +77,7 @@ module.exports = function(crowi) {
 
           return Bookmark.populatePage(bookmarks, requestUser).then(resolve);
         });
-    });
+    }));
   };
 
   bookmarkSchema.statics.add = async function(page, user) {

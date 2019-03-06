@@ -1,10 +1,8 @@
-'use strict';
+const form = require('express-form');
 
-var form = require('express-form')
-  , field = form.field;
+const field = form.field;
 
 module.exports = form(
   field('settingForm[google:clientId]').trim().is(/^[\d\.a-z\-\.]+$/),
-  field('settingForm[google:clientSecret]').trim().is(/^[\da-zA-Z\-_]+$/)
+  field('settingForm[google:clientSecret]').trim().is(/^[\da-zA-Z\-_]+$/),
 );
-
