@@ -13,4 +13,5 @@ export default class HeaderWithEditLinkConfigurer {
               </span></${tokens[idx].tag}>`;
     };
   }
+
 }

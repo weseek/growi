@@ -31,6 +31,7 @@ module.exports = {
     ],
     'class-methods-use-this': 'off',
     'consistent-return': 'off',
+    'default-case': 'off',
     'func-names': 'off',
     'global-require': 'off',
     'key-spacing': [
@@ -98,6 +99,10 @@ module.exports = {
     'no-unused-vars': [
       'error',
       { args: 'none' },
+    ],
+    'padded-blocks': [
+      'error',
+      { classes: 'always' },
     ],
     'radix': 'off',
     'react/destructuring-assignment': 'off',

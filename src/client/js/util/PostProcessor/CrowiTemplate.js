@@ -1,6 +1,7 @@
 import dateFnsFormat from 'date-fns/format';
 
 export default class CrowiTemplate {
+
   constructor(crowi) {
     this.templatePattern = {
       year: this.getYear,
@@ -77,4 +78,5 @@ export default class CrowiTemplate {
 
     return parsed;
   }
+
 }

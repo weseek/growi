@@ -21,7 +21,7 @@ class UpdateDisplayUtil {
     const update = new DisplayUpdate(cm, cm.getViewport());
 
     // Compute a suitable new viewport (from & to)
-    let end = doc.first + doc.size;
+    const end = doc.first + doc.size;
     let from = Math.max(update.visible.from - cm.options.viewportMargin, doc.first);
     let to = Math.min(end, update.visible.to + cm.options.viewportMargin);
     if (display.viewFrom < from && from - display.viewFrom < 20) from = Math.max(doc.first, display.viewFrom);

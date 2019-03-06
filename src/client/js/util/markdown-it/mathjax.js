@@ -4,7 +4,7 @@ export default class MathJaxConfigurer {
     this.crowi = crowi;
 
     const config = crowi.getConfig();
-    this.isEnabled = !!config.env.MATHJAX;  // convert to boolean
+    this.isEnabled = !!config.env.MATHJAX; // convert to boolean
   }
 
   configure(md) {
