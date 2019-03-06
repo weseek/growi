@@ -48,10 +48,7 @@ module.exports = {
       'error',
       { props: false },
     ],
-    'no-plusplus': [
-      'error',
-      { allowForLoopAfterthoughts: true },
-    ],
+    'no-plusplus': 'off',
     // Allow only for-of
     // https://qiita.com/the_red/items/0c826e97b57da6d67621
     'no-restricted-syntax': [

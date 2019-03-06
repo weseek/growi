@@ -1,15 +1,17 @@
 /**
  * importer
  */
-module.exports = crowi => {
-  'use strict';
 
+/* eslint-disable no-use-before-define */
+
+module.exports = (crowi) => {
   const logger = require('@alias/logger')('growi:util:importer');
   const esa = require('esa-nodejs');
   const config = crowi.getConfig();
   const createGrowiPages = require('./createGrowiPagesFromImports')(crowi);
   const restQiitaAPIService = crowi.getRestQiitaAPIService();
-  let importer = {};
+
+  const importer = {};
   let esaClient = {};
 
   /**
@@ -34,7 +36,7 @@ module.exports = crowi => {
   /**
    * Import page data from esa to GROWI
    */
-  importer.importDataFromEsa = user => {
+  importer.importDataFromEsa = (user) => {
     return new Promise((resolve, reject) => {
       const firstPage = 1;
       const errors = importPostsFromEsa(firstPage, user, []);
@@ -49,12 +51,12 @@ module.exports = crowi => {
    */
   const importPostsFromEsa = (pageNum, user, errors) => {
     return new Promise((resolve, reject) => {
-      esaClient.api.posts({page: pageNum, per_page: 100}, async(err, res) => {
+      esaClient.api.posts({ page: pageNum, per_page: 100 }, async(err, res) => {
         const nextPage = res.body.next_page;
         const postsReceived = res.body.posts;
 
         if (err) {
-          reject(`error in page ${pageNum}: ${err}`);
+          reject(new Error(`error in page ${pageNum}: ${err}`));
         }
 
         const data = convertEsaDataForGrowi(postsReceived, user);
@@ -83,9 +85,9 @@ module.exports = crowi => {
    * @param {string} pageNum default value is '1'
    */
   const importPostsFromQiita = async(pageNum, user, errors) => {
-    const per_page = '100';
-    const res = await restQiitaAPIService.getQiitaPages(pageNum, per_page);
-    const next = pageNum * per_page;
+    const perPage = '100';
+    const res = await restQiitaAPIService.getQiitaPages(pageNum, perPage);
+    const next = pageNum * perPage;
     const postsReceived = res.pages;
     const pageTotal = res.total;
     const data = convertQiitaDataForGrowi(postsReceived, user);
@@ -103,7 +105,7 @@ module.exports = crowi => {
    */
   const convertEsaDataForGrowi = (pages, user) => {
     const basePage = '';
-    const data = pages.map(post => {
+    const data = pages.map((post) => {
       const category = post.category;
       const name = post.name;
 
@@ -122,7 +124,7 @@ module.exports = crowi => {
       return {
         path: `${basePage}/${path}`,
         body: post.body_md,
-        user: user,
+        user,
       };
     });
 
@@ -134,14 +136,14 @@ module.exports = crowi => {
    */
   const convertQiitaDataForGrowi = (pages, user) => {
     const basePage = '';
-    const data = pages.map(post => {
+    const data = pages.map((post) => {
       const title = post.title;
-      let path = title;
+      const path = title;
 
       return {
         path: `${basePage}/${path}`,
         body: post.body,
-        user: user,
+        user,
       };
     });
 

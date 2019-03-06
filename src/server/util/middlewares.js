@@ -7,7 +7,7 @@ const entities = require('entities');
 
 exports.csrfKeyGenerator = function(crowi, app) {
   return function(req, res, next) {
-    var csrfKey = (req.session && req.session.id) || 'anon';
+    const csrfKey = (req.session && req.session.id) || 'anon';
 
     if (req.csrfToken === null) {
       req.csrfToken = crowi.getTokens().create(csrfKey);
@@ -28,7 +28,8 @@ exports.loginChecker = function(crowi, app) {
         user = await User.findById(req.session.user._id).populate(User.IMAGE_POPULATION);
       }
 
-      req.user = req.session.user = user;
+      req.user = user;
+      req.session.user = user;
       res.locals.user = req.user;
       next();
     }
@@ -47,8 +48,8 @@ exports.loginCheckerForPassport = function(crowi, app) {
 
 exports.csrfVerify = function(crowi, app) {
   return function(req, res, next) {
-    var token = req.body._csrf || req.query._csrf || null;
-    var csrfKey = (req.session && req.session.id) || 'anon';
+    const token = req.body._csrf || req.query._csrf || null;
+    const csrfKey = (req.session && req.session.id) || 'anon';
 
     debug('req.skipCsrfVerify', req.skipCsrfVerify);
     if (req.skipCsrfVerify) {
@@ -74,7 +75,6 @@ exports.swigFunctions = function(crowi, app) {
 };
 
 exports.swigFilters = function(crowi, app, swig) {
-
   // define a function for Gravatar
   const generateGravatarSrc = function(user) {
     const email = user.email || '';
@@ -87,18 +87,17 @@ exports.swigFilters = function(crowi, app, swig) {
     if (user.image) {
       return user.image;
     }
-    else if (user.imageAttachment != null) {
+    if (user.imageAttachment != null) {
       return user.imageAttachment.filePathProxied;
     }
-    else {
-      return '/images/icons/user.svg';
-    }
+
+    return '/images/icons/user.svg';
   };
 
 
   return function(req, res, next) {
-    swig.setFilter('path2name', function(string) {
-      var name = string.replace(/(\/)$/, '');
+    swig.setFilter('path2name', (string) => {
+      const name = string.replace(/(\/)$/, '');
 
       if (name.match(/.+\/([^/]+\/\d{4}\/\d{2}\/\d{2})$/)) { // /.../hoge/YYYY/MM/DD 形式のページ
         return name.replace(/.+\/([^/]+\/\d{4}\/\d{2}\/\d{2})$/, '$1');
@@ -113,8 +112,8 @@ exports.swigFilters = function(crowi, app, swig) {
       return name.replace(/.+\/(.+)?$/, '$1'); // ページの末尾を拾う
     });
 
-    swig.setFilter('normalizeDateInPath', function(path) {
-      var patterns = [
+    swig.setFilter('normalizeDateInPath', (path) => {
+      const patterns = [
         [/20(\d{2})(\d{2})(\d{2})(.+)/g, '20$1/$2/$3/$4'],
         [/20(\d{2})(\d{2})(\d{2})/g, '20$1/$2/$3'],
         [/20(\d{2})(\d{2})(.+)/g, '20$1/$2/$3'],
@@ -125,9 +124,9 @@ exports.swigFilters = function(crowi, app, swig) {
         [/20(\d{2})_(\d{1,2})/g, '20$1/$2'],
       ];
 
-      for (var i = 0; i < patterns.length ; i++) {
-        var mat = patterns[i][0];
-        var rep = patterns[i][1];
+      for (let i = 0; i < patterns.length; i++) {
+        const mat = patterns[i][0];
+        const rep = patterns[i][1];
         if (path.match(mat)) {
           return path.replace(mat, rep);
         }
@@ -136,22 +135,22 @@ exports.swigFilters = function(crowi, app, swig) {
       return path;
     });
 
-    swig.setFilter('datetz', function(input, format) {
+    swig.setFilter('datetz', (input, format) => {
       // timezone
       const swigFilters = require('swig-templates/lib/filters');
       return swigFilters.date(input, format, app.get('tzoffset'));
     });
 
-    swig.setFilter('nl2br', function(string) {
+    swig.setFilter('nl2br', (string) => {
       return string
         .replace(/\n/g, '<br>');
     });
 
-    swig.setFilter('removeTrailingSlash', function(string) {
+    swig.setFilter('removeTrailingSlash', (string) => {
       return pathUtils.removeTrailingSlash(string);
     });
 
-    swig.setFilter('presentation', function(string) {
+    swig.setFilter('presentation', (string) => {
       // 手抜き
       return string
         .replace(/\s(https?.+(jpe?g|png|gif))\s/, '\n\n\n![]($1)\n\n\n');
@@ -160,7 +159,7 @@ exports.swigFilters = function(crowi, app, swig) {
     swig.setFilter('gravatar', generateGravatarSrc);
     swig.setFilter('uploadedpicture', getUploadedPictureSrc);
 
-    swig.setFilter('picture', function(user) {
+    swig.setFilter('picture', (user) => {
       if (!user) {
         return '/images/icons/user.svg';
       }
@@ -168,20 +167,19 @@ exports.swigFilters = function(crowi, app, swig) {
       if (user.isGravatarEnabled === true) {
         return generateGravatarSrc(user);
       }
-      else {
-        return getUploadedPictureSrc(user);
-      }
+
+      return getUploadedPictureSrc(user);
     });
 
-    swig.setFilter('encodeHTML', function(string) {
+    swig.setFilter('encodeHTML', (string) => {
       return entities.encodeHTML(string);
     });
 
-    swig.setFilter('preventXss', function(string) {
+    swig.setFilter('preventXss', (string) => {
       return crowi.xss.process(string);
     });
 
-    swig.setFilter('slice', function(list, start, end) {
+    swig.setFilter('slice', (list, start, end) => {
       return list.slice(start, end);
     });
 
@@ -213,12 +211,12 @@ exports.adminRequired = function() {
  */
 exports.loginRequired = function(crowi, app, isStrictly = true) {
   return function(req, res, next) {
-    var User = crowi.model('User');
+    const User = crowi.model('User');
 
     // when the route is not strictly restricted
     if (!isStrictly) {
-      var config = req.config;
-      var Config = crowi.model('Config');
+      const config = req.config;
+      const Config = crowi.model('Config');
 
       // when allowed to read
       if (Config.isGuestAllowedToRead(config)) {
@@ -233,19 +231,19 @@ exports.loginRequired = function(crowi, app, isStrictly = true) {
         // Active の人だけ先に進める
         return next();
       }
-      else if (req.user.status === User.STATUS_REGISTERED) {
+      if (req.user.status === User.STATUS_REGISTERED) {
         return res.redirect('/login/error/registered');
       }
-      else if (req.user.status === User.STATUS_SUSPENDED) {
+      if (req.user.status === User.STATUS_SUSPENDED) {
         return res.redirect('/login/error/suspended');
       }
-      else if (req.user.status === User.STATUS_INVITED) {
+      if (req.user.status === User.STATUS_INVITED) {
         return res.redirect('/login/invited');
       }
     }
 
     // is api path
-    var path = req.path || '';
+    const path = req.path || '';
     if (path.match(/^\/_api\/.+$/)) {
       return res.sendStatus(403);
     }
@@ -258,22 +256,22 @@ exports.loginRequired = function(crowi, app, isStrictly = true) {
 exports.accessTokenParser = function(crowi, app) {
   return function(req, res, next) {
     // TODO: comply HTTP header of RFC6750 / Authorization: Bearer
-    var accessToken = req.query.access_token || req.body.access_token || null;
+    const accessToken = req.query.access_token || req.body.access_token || null;
     if (!accessToken) {
       return next();
     }
 
-    var User = crowi.model('User');
+    const User = crowi.model('User');
 
     debug('accessToken is', accessToken);
     User.findUserByApiToken(accessToken)
-    .then(function(userData) {
+    .then((userData) => {
       req.user = userData;
       req.skipCsrfVerify = true;
       debug('Access token parsed: skipCsrfVerify');
 
       next();
-    }).catch(function(err) {
+    }).catch((err) => {
       next();
     });
   };
@@ -295,7 +293,7 @@ exports.applicationNotInstalled = function() {
 
 exports.applicationInstalled = function() {
   return function(req, res, next) {
-    var config = req.config;
+    const config = req.config;
 
     if (Object.keys(config.crowi).length === 0) {
       return res.redirect('/installer');
@@ -307,8 +305,11 @@ exports.applicationInstalled = function() {
 
 exports.awsEnabled = function() {
   return function(req, res, next) {
-    var config = req.config;
-    if (config.crowi['aws:region'] !== '' && config.crowi['aws:bucket'] !== '' && config.crowi['aws:accessKeyId'] !== '' && config.crowi['aws:secretAccessKey'] !== '') {
+    const config = req.config;
+    if (config.crowi['aws:region'] !== ''
+        && config.crowi['aws:bucket'] !== ''
+        && config.crowi['aws:accessKeyId'] !== ''
+        && config.crowi['aws:secretAccessKey'] !== '') {
       req.flash('globalError', 'AWS settings required to use this function. Please ask the administrator.');
       return res.redirect('/');
     }
