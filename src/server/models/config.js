@@ -1,6 +1,8 @@
 // disable no-return-await for model functions
 /* eslint-disable no-return-await */
 
+/* eslint-disable no-use-before-define */
+
 module.exports = function(crowi) {
   const mongoose = require('mongoose');
   const debug = require('debug')('growi:models:config');
@@ -13,10 +15,9 @@ module.exports = function(crowi) {
   const SECURITY_REGISTRATION_MODE_RESTRICTED = 'Resricted';
   const SECURITY_REGISTRATION_MODE_CLOSED = 'Closed';
 
-  let configSchema;
   let Config;
 
-  configSchema = new mongoose.Schema({
+  const configSchema = new mongoose.Schema({
     ns: { type: String, required: true, index: true },
     key: { type: String, required: true, index: true },
     value: { type: String, required: true },
@@ -312,7 +313,7 @@ module.exports = function(crowi) {
 
   configSchema.statics.isEnabledPassport = function(config) {
     // always true if growi installed cleanly
-    if (Object.keys(config.crowi).length == 0) {
+    if (Object.keys(config.crowi).length === 0) {
       return true;
     }
 
@@ -343,7 +344,7 @@ module.exports = function(crowi) {
   configSchema.statics.isUploadable = function(config) {
     const method = process.env.FILE_UPLOAD || 'aws';
 
-    if (method == 'aws' && (
+    if (method === 'aws' && (
       !config.crowi['aws:accessKeyId']
         || !config.crowi['aws:secretAccessKey']
         || !config.crowi['aws:region']
@@ -351,7 +352,7 @@ module.exports = function(crowi) {
       return false;
     }
 
-    return method != 'none';
+    return method !== 'none';
   };
 
   configSchema.statics.isGuestAllowedToRead = function(config) {
@@ -394,7 +395,7 @@ module.exports = function(crowi) {
   };
   configSchema.statics.isPublicWikiOnly = function(config) {
     const publicWikiOnly = process.env.PUBLIC_WIKI_ONLY;
-    if (publicWikiOnly === 'true' || publicWikiOnly == 1) {
+    if (publicWikiOnly === 'true' || publicWikiOnly === 1) {
       return true;
     }
     return false;
@@ -507,7 +508,7 @@ module.exports = function(crowi) {
     const key = 'customize:title';
     let customTitle = getValueForCrowiNS(config, key);
 
-    if (customTitle == null || customTitle.trim().length == 0) {
+    if (customTitle == null || customTitle.trim().length === 0) {
       customTitle = '{{page}} - {{sitename}}';
     }
 
@@ -603,7 +604,7 @@ module.exports = function(crowi) {
     const Config = this;
     const env = process.env;
 
-    const local_config = {
+    const localConfig = {
       crowi: {
         title: Config.appTitle(crowi),
         url: crowi.configManager.getSiteUrl(),
@@ -635,7 +636,7 @@ module.exports = function(crowi) {
       globalLang: Config.globalLang(config),
     };
 
-    return local_config;
+    return localConfig;
   };
 
   configSchema.statics.userUpperLimit = function(crowi) {

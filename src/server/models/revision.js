@@ -44,7 +44,7 @@ module.exports = function(crowi) {
     const User = crowi.model('User');
 
     if (!Array.isArray(ids)) {
-      return Promise.reject('The argument was not Array.');
+      return Promise.reject(new Error('The argument was not Array.'));
     }
 
     return new Promise(((resolve, reject) => {
@@ -107,6 +107,7 @@ module.exports = function(crowi) {
     const Revision = this;
 
     if (!options) {
+      // eslint-disable-next-line no-param-reassign
       options = {};
     }
     const format = options.format || 'markdown';

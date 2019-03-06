@@ -9,10 +9,8 @@ module.exports = function(crowi) {
   const mongoose = require('mongoose');
   const ObjectId = mongoose.Schema.Types.ObjectId;
 
-  let updatePostSchema;
-
   // TODO: slack 以外の対応
-  updatePostSchema = new mongoose.Schema({
+  const updatePostSchema = new mongoose.Schema({
     pathPattern: { type: String, required: true },
     patternPrefix:  { type: String, required: true },
     patternPrefix2: { type: String, required: true },
@@ -36,11 +34,11 @@ module.exports = function(crowi) {
 
     const pattern = pathPattern.split('/');
     pattern.shift();
-    if (pattern[0] && pattern[0] != '*') {
+    if (pattern[0] && pattern[0] !== '*') {
       patternPrefix[0] = pattern[0];
     }
 
-    if (pattern[1] && pattern[1] != '*') {
+    if (pattern[1] && pattern[1] !== '*') {
       patternPrefix[1] = pattern[1];
     }
     return patternPrefix;
@@ -70,11 +68,13 @@ module.exports = function(crowi) {
           { patternPrefix: prefixes[0], patternPrefix2: '*' },
           { patternPrefix: '*', patternPrefix2: prefixes[1] },
         ],
-      }).then((settings) => {
+      })
+      .then((settings) => {
         if (settings.length <= 0) {
           return resolve(settings);
         }
 
+        // eslint-disable-next-line no-param-reassign
         settings = settings.filter((setting) => {
           const patternRegex = UpdatePost.getRegExpByPattern(setting.pathPattern);
           return patternRegex.test(path);
@@ -87,7 +87,8 @@ module.exports = function(crowi) {
 
   updatePostSchema.statics.findAll = function(offset) {
     const UpdatePost = this;
-    var offset = offset || 0;
+    // eslint-disable-next-line no-param-reassign
+    offset = offset || 0;
 
     return new Promise(((resolve, reject) => {
       UpdatePost

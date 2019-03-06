@@ -24,6 +24,19 @@ schema.plugin(mongoosePaginate);
 schema.plugin(uniqueValidator);
 
 /**
+ * The Exception class thrown when User.username is duplicated when creating user
+ *
+ * @class DuplicatedUsernameException
+ */
+class DuplicatedUsernameException {
+  constructor(message, user) {
+    this.name = this.constructor.name;
+    this.message = message;
+    this.user = user;
+  }
+}
+
+/**
  * ExternalAccount Class
  *
  * @class ExternalAccount
@@ -75,7 +88,10 @@ class ExternalAccount {
    * @returns {Promise<ExternalAccount>}
    * @memberof ExternalAccount
    */
-  static findOrRegister(providerType, accountId, usernameToBeRegistered, nameToBeRegistered, mailToBeRegistered, isSameUsernameTreatedAsIdenticalUser, isSameEmailTreatedAsIdenticalUser) {
+  static findOrRegister(providerType, accountId,
+      usernameToBeRegistered, nameToBeRegistered, mailToBeRegistered,
+      isSameUsernameTreatedAsIdenticalUser, isSameEmailTreatedAsIdenticalUser) {
+    //
     return this.findOne({ providerType, accountId })
       .then((account) => {
         // ExternalAccount is found
@@ -105,6 +121,7 @@ class ExternalAccount {
               throw new DuplicatedUsernameException(`User '${usernameToBeRegistered}' already exists`, user);
             }
             if (nameToBeRegistered == null) {
+              // eslint-disable-next-line no-param-reassign
               nameToBeRegistered = '';
             }
 
@@ -153,19 +170,6 @@ class ExternalAccount {
       .catch((err) => {
         debug('Error on pagination:', err);
       });
-  }
-}
-
-/**
- * The Exception class thrown when User.username is duplicated when creating user
- *
- * @class DuplicatedUsernameException
- */
-class DuplicatedUsernameException {
-  constructor(message, user) {
-    this.name = this.constructor.name;
-    this.message = message;
-    this.user = user;
   }
 }
 

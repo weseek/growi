@@ -21,9 +21,8 @@ schema.plugin(mongoosePaginate);
  * @class Tag
  */
 class Tag {
-  async findOrCreate(tagName) {
-
-  }
+  // async findOrCreate(tagName) {
+  // }
 }
 
 module.exports = function() {
