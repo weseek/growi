@@ -20,13 +20,9 @@ schema.plugin(mongoosePaginate);
 class Tag {
 
   static async findOrCreate(tagName) {
-    const tag = await this.findOne({
-      name: tagName
-    });
+    const tag = await this.findOne({name: tagName});
     if (!tag) {
-      return await this.create({
-        name: tagName
-      });
+      return await this.create({name: tagName});
     }
     return tag;
   }
