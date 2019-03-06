@@ -1,21 +1,20 @@
-'use strict';
+
+function encodePagePath(path) {
+  const paths = path.split('/');
+  paths.forEach((item, index) => {
+    paths[index] = encodeURIComponent(item);
+  });
+  return paths.join('/');
+}
 
 function encodePagesPath(pages) {
-  pages.forEach(function(page) {
+  pages.forEach((page) => {
     if (!page.path) {
       return;
     }
     page.path = encodePagePath(page.path);
   });
   return pages;
-}
-
-function encodePagePath(path) {
-  const paths = path.split('/');
-  paths.forEach(function(item, index) {
-    paths[index] = encodeURIComponent(item);
-  });
-  return paths.join('/');
 }
 
 function matchSlashes(path) {

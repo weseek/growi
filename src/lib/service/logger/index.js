@@ -1,14 +1,14 @@
-const bunyan = require('bunyan');   // will be replaced to browser-bunyan on browser by webpack
+const bunyan = require('bunyan'); // will be replaced to browser-bunyan on browser by webpack
 const minimatch = require('minimatch');
 
 const isBrowser = typeof window !== 'undefined';
 const isProd = process.env.NODE_ENV === 'production';
 
-let config = require('@root/config').logger;
-let stream = isProd ? require('./stream.prod') : require('./stream.dev');
+const config = require('@root/config').logger;
+const stream = isProd ? require('./stream.prod') : require('./stream.dev');
 
 // logger store
-let loggers = {};
+const loggers = {};
 
 
 // merge configuration from environment variables
@@ -19,11 +19,11 @@ const envLevelMap = {
   TRACE:  'trace',
   ERROR:  'error',
 };
-Object.keys(envLevelMap).forEach(envName => {   // ['INFO', 'DEBUG', ...].forEach
-  const envVars = process.env[envName];         // process.env.DEBUG should have a value like 'growi:routes:page,growi:models.page,...'
+Object.keys(envLevelMap).forEach((envName) => { // ['INFO', 'DEBUG', ...].forEach
+  const envVars = process.env[envName]; // process.env.DEBUG should have a value like 'growi:routes:page,growi:models.page,...'
   if (envVars != null) {
     const level = envLevelMap[envName];
-    envVars.split(',').forEach(ns => {          // ['growi:routes:page', 'growi:models.page', ...].forEach
+    envVars.split(',').forEach((ns) => { // ['growi:routes:page', 'growi:models.page', ...].forEach
       config[ns.trim()] = level;
     });
   }
@@ -36,17 +36,18 @@ Object.keys(envLevelMap).forEach(envName => {   // ['INFO', 'DEBUG', ...].forEac
  */
 function determineLoggerLevel(name) {
   if (isBrowser && isProd) {
-    'error';
+    return 'error';
   }
 
   let level = config.default;
 
+  /* eslint-disable array-callback-return, no-useless-return */
   // retrieve configured level
-  Object.keys(config).some(key => { // breakable forEach
+  Object.keys(config).some((key) => { //  breakable forEach
     // test whether 'name' matches to 'key'(blob)
     if (minimatch(name, key)) {
       level = config[key];
-      return;                       // break if match
+      return; //                          break if match
     }
   });
 

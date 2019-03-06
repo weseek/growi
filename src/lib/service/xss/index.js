@@ -1,25 +1,24 @@
 class Xss {
-
   constructor(xssOption) {
     const xss = require('xss');
 
-    xssOption = xssOption || {};
+    xssOption = xssOption || {}; // eslint-disable-line no-param-reassign
 
     const tagWhiteList = xssOption.tagWhiteList || [];
     const attrWhiteList = xssOption.attrWhiteList || [];
 
-    let whiteListContent = {};
+    const whiteListContent = {};
 
     // default
-    let option = {
+    const option = {
       stripIgnoreTag: true,
-      stripIgnoreTagBody: false,    // see https://github.com/weseek/growi/pull/505
+      stripIgnoreTagBody: false, // see https://github.com/weseek/growi/pull/505
       css: false,
       whiteList: whiteListContent,
-      escapeHtml: (html) => html,   // resolve https://github.com/weseek/growi/issues/221
+      escapeHtml: (html) => { return html }, // resolve https://github.com/weseek/growi/issues/221
     };
 
-    tagWhiteList.forEach(tag => {
+    tagWhiteList.forEach((tag) => {
       whiteListContent[tag] = attrWhiteList;
     });
 
@@ -30,7 +29,6 @@ class Xss {
   process(document) {
     return this.myxss.process(document);
   }
-
 }
 
 module.exports = Xss;

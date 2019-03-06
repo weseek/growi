@@ -24,14 +24,14 @@ class CdnResourcesService {
 
   getScriptManifestByName(name) {
     const manifests = this.cdnManifests.js
-      .filter(manifest => manifest.name === name);
+      .filter((manifest) => { return manifest.name === name });
 
     return (manifests.length > 0) ? manifests[0] : null;
   }
 
   getStyleManifestByName(name) {
     const manifests = this.cdnManifests.style
-      .filter(manifest => manifest.name === name);
+      .filter((manifest) => { return manifest.name === name });
 
     return (manifests.length > 0) ? manifests[0] : null;
   }
@@ -46,11 +46,11 @@ class CdnResourcesService {
   async downloadAndWriteAll(cdnResourceDownloader) {
     const CdnResource = require('@commons/models/cdn-resource');
 
-    const cdnScriptResources = this.cdnManifests.js.map(manifest => {
+    const cdnScriptResources = this.cdnManifests.js.map((manifest) => {
       const outDir = helpers.root(cdnLocalScriptRoot);
       return new CdnResource(manifest.name, manifest.url, outDir);
     });
-    const cdnStyleResources = this.cdnManifests.style.map(manifest => {
+    const cdnStyleResources = this.cdnManifests.style.map((manifest) => {
       const outDir = helpers.root(cdnLocalStyleRoot);
       return new CdnResource(manifest.name, manifest.url, outDir);
     });
@@ -58,7 +58,7 @@ class CdnResourcesService {
     const dlStylesOptions = {
       replaceUrl: {
         webroot: cdnLocalStyleWebRoot,
-      }
+      },
     };
 
     return Promise.all([
@@ -73,6 +73,7 @@ class CdnResourcesService {
    * @param {Object} manifest
    * @param {boolean} noCdn
    */
+  /* eslint-disable class-methods-use-this */
   generateScriptTag(manifest, noCdn) {
     const attrs = [];
     const args = manifest.args || {};
@@ -87,10 +88,11 @@ class CdnResourcesService {
     // TODO process integrity
 
     const url = noCdn
-      ? urljoin(cdnLocalScriptWebRoot, manifest.name) + '.js'
+      ? `${urljoin(cdnLocalScriptWebRoot, manifest.name)}.js`
       : manifest.url;
     return `<script src="${url}" ${attrs.join(' ')}></script>`;
   }
+  /* eslint-enable */
 
   getScriptTagByName(name) {
     const manifest = this.getScriptManifestByName(name);
@@ -99,10 +101,10 @@ class CdnResourcesService {
 
   getScriptTagsByGroup(group) {
     return this.cdnManifests.js
-      .filter(manifest => {
+      .filter((manifest) => {
         return manifest.groups != null && manifest.groups.includes(group);
       })
-      .map(manifest => {
+      .map((manifest) => {
         return this.generateScriptTag(manifest, this.noCdn);
       });
   }
@@ -113,6 +115,7 @@ class CdnResourcesService {
    * @param {Object} manifest
    * @param {boolean} noCdn
    */
+  /* eslint-disable class-methods-use-this */
   generateStyleTag(manifest, noCdn) {
     const attrs = [];
     const args = manifest.args || {};
@@ -127,11 +130,12 @@ class CdnResourcesService {
     // TODO process integrity
 
     const url = noCdn
-      ? urljoin(cdnLocalStyleWebRoot, manifest.name) + '.css'
+      ? `${urljoin(cdnLocalStyleWebRoot, manifest.name)}.css`
       : manifest.url;
 
     return `<link rel="stylesheet" href="${url}" ${attrs.join(' ')}>`;
   }
+  /* eslint-enable */
 
   getStyleTagByName(name) {
     const manifest = this.getStyleManifestByName(name);
@@ -140,10 +144,10 @@ class CdnResourcesService {
 
   getStyleTagsByGroup(group) {
     return this.cdnManifests.style
-      .filter(manifest => {
+      .filter((manifest) => {
         return manifest.groups != null && manifest.groups.includes(group);
       })
-      .map(manifest => {
+      .map((manifest) => {
         return this.generateStyleTag(manifest, this.noCdn);
       });
   }
@@ -153,7 +157,7 @@ class CdnResourcesService {
 
     // replace style
     if (!this.noCdn) {
-      const url = new URL(`${styleName}.css`, manifest.url);  // resolve `${styleName}.css` from manifest.url
+      const url = new URL(`${styleName}.css`, manifest.url); // resolve `${styleName}.css` from manifest.url
 
       // clone manifest
       manifest = Object.assign(manifest, { url: url.toString() });
@@ -161,7 +165,6 @@ class CdnResourcesService {
 
     return this.generateStyleTag(manifest, this.noCdn);
   }
-
 }
 
 module.exports = CdnResourcesService;
