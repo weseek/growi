@@ -1,6 +1,8 @@
 // disable no-return-await for model functions
 /* eslint-disable no-return-await */
 
+/* eslint-disable no-use-before-define */
+
 const debug = require('debug')('growi:models:page');
 const nodePath = require('path');
 const mongoose = require('mongoose');
@@ -141,6 +143,7 @@ class PageQueryBuilder {
    */
   addConditionToListWithDescendants(path, option) {
     // ignore other pages than descendants
+    // eslint-disable-next-line no-param-reassign
     path = addSlashOfEnd(path);
 
     // add option to escape the regex strings
@@ -239,7 +242,7 @@ class PageQueryBuilder {
 
   addConditionToPagenate(offset, limit, sortOpt) {
     this.query = this.query
-      .sort(sortOpt).skip(offset).limit(limit);
+      .sort(sortOpt).skip(offset).limit(limit); // eslint-disable-line newline-per-chained-call
 
     return this;
   }
@@ -289,7 +292,7 @@ module.exports = function(crowi) {
   };
 
   pageSchema.methods.isPublic = function() {
-    if (!this.grant || this.grant == GRANT_PUBLIC) {
+    if (!this.grant || this.grant === GRANT_PUBLIC) {
       return true;
     }
 
@@ -378,12 +381,12 @@ module.exports = function(crowi) {
       return true;
     }
 
-    return (this.latestRevision == this.revision._id.toString());
+    return (this.latestRevision === this.revision._id.toString());
   };
 
   pageSchema.methods.isUpdatable = function(previousRevision) {
     const revision = this.latestRevision || this.revision;
-    if (revision != previousRevision) {
+    if (revision !== previousRevision) {
       return false;
     }
     return true;
@@ -391,13 +394,12 @@ module.exports = function(crowi) {
 
   pageSchema.methods.isLiked = function(userData) {
     return this.liker.some((likedUser) => {
-      return likedUser == userData._id.toString();
+      return likedUser === userData._id.toString();
     });
   };
 
   pageSchema.methods.like = function(userData) {
     const self = this;
-    const Page = self;
 
     return new Promise(((resolve, reject) => {
       const added = self.liker.addToSet(userData._id);
@@ -419,12 +421,11 @@ module.exports = function(crowi) {
 
   pageSchema.methods.unlike = function(userData, callback) {
     const self = this;
-    const Page = self;
 
     return new Promise(((resolve, reject) => {
       const beforeCount = self.liker.length;
       self.liker.pull(userData._id);
-      if (self.liker.length != beforeCount) {
+      if (self.liker.length !== beforeCount) {
         self.save((err, data) => {
           if (err) {
             return reject(err);
@@ -565,6 +566,7 @@ module.exports = function(crowi) {
 
   pageSchema.statics.getDeletedPageName = function(path) {
     if (path.match('/')) {
+      // eslint-disable-next-line no-param-reassign
       path = path.substr(1);
     }
     return `/trash/${path}`;
@@ -988,11 +990,11 @@ module.exports = function(crowi) {
   }
 
   async function validateAppliedScope(user, grant, grantUserGroupId) {
-    if (grant == GRANT_USER_GROUP && grantUserGroupId == null) {
+    if (grant === GRANT_USER_GROUP && grantUserGroupId == null) {
       throw new Error('grant userGroupId is not specified');
     }
 
-    if (grant == GRANT_USER_GROUP) {
+    if (grant === GRANT_USER_GROUP) {
       const UserGroupRelation = crowi.model('UserGroupRelation');
       const count = await UserGroupRelation.countByGroupIdAndUser(grantUserGroupId, user);
 
@@ -1013,7 +1015,7 @@ module.exports = function(crowi) {
     const socketClientId = options.socketClientId || null;
 
     // sanitize path
-    path = crowi.xss.process(path);
+    path = crowi.xss.process(path); // eslint-disable-line no-param-reassign
 
     let grant = options.grant || GRANT_PUBLIC;
     // force public
@@ -1040,7 +1042,9 @@ module.exports = function(crowi) {
     let savedPage = await page.save();
     const newRevision = Revision.prepareRevision(savedPage, body, null, user, { format });
     const revision = await pushRevision(savedPage, newRevision, user, grant, grantUserGroupId);
-    savedPage = await this.findByPath(revision.path).populate('revision').populate('creator');
+    savedPage = await this.findByPath(revision.path)
+      .populate('revision')
+      .populate('creator');
 
     if (socketClientId != null) {
       pageEvent.emit('create', savedPage, user, socketClientId);
@@ -1064,7 +1068,9 @@ module.exports = function(crowi) {
     let savedPage = await pageData.save();
     const newRevision = await Revision.prepareRevision(pageData, body, previousBody, user);
     const revision = await pushRevision(savedPage, newRevision, user, grant, grantUserGroupId);
-    savedPage = await this.findByPath(revision.path).populate('revision').populate('creator');
+    savedPage = await this.findByPath(revision.path)
+      .populate('revision')
+      .populate('creator');
 
     if (isSyncRevisionToHackmd) {
       savedPage = await this.syncRevisionToHackmd(savedPage);
@@ -1118,7 +1124,7 @@ module.exports = function(crowi) {
       return updatedPageData;
     }
 
-    return Promise.reject('Page is not deletable.');
+    return Promise.reject(new Error('Page is not deletable.'));
   };
 
   const checkIfTrashed = (path) => {
@@ -1277,7 +1283,7 @@ module.exports = function(crowi) {
     const socketClientId = options.socketClientId || null;
 
     // sanitize path
-    newPagePath = crowi.xss.process(newPagePath);
+    newPagePath = crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
 
     // update Page
     pageData.path = newPagePath;
@@ -1306,7 +1312,7 @@ module.exports = function(crowi) {
     const pathRegExp = new RegExp(`^${escapeStringRegexp(path)}`, 'i');
 
     // sanitize path
-    newPagePathPrefix = crowi.xss.process(newPagePathPrefix);
+    newPagePathPrefix = crowi.xss.process(newPagePathPrefix); // eslint-disable-line no-param-reassign
 
     const result = await this.findListWithDescendants(path, user, options);
     await Promise.all(result.pages.map((page) => {

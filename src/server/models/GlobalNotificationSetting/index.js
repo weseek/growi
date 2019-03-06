@@ -11,12 +11,34 @@ const globalNotificationSettingSchema = new mongoose.Schema({
 });
 
 
+const generatePathsOnTree = (path, pathList) => {
+  pathList.push(path);
+
+  if (path === '/') {
+    return pathList;
+  }
+
+  const newPath = nodePath.posix.dirname(path);
+
+  return generatePathsOnTree(newPath, pathList);
+};
+
+const generatePathsToMatch = (originalPath) => {
+  const pathList = generatePathsOnTree(originalPath, []);
+  return pathList.map((path) => {
+    if (path !== originalPath) {
+      return `${path}/*`;
+    }
+
+    return path;
+  });
+};
+
 /**
  * GlobalNotificationSetting Class
  * @class GlobalNotificationSetting
  */
 class GlobalNotificationSetting {
-
   constructor(crowi) {
     this.crowi = crowi;
   }
@@ -26,7 +48,7 @@ class GlobalNotificationSetting {
    * @param {string} id
    */
   static async enable(id) {
-    const setting = await this.findOne({_id: id});
+    const setting = await this.findOne({ _id: id });
 
     setting.isEnabled = true;
     setting.save();
@@ -39,7 +61,7 @@ class GlobalNotificationSetting {
    * @param {string} id
    */
   static async disable(id) {
-    const setting = await this.findOne({_id: id});
+    const setting = await this.findOne({ _id: id });
 
     setting.isEnabled = false;
     setting.save();
@@ -65,39 +87,15 @@ class GlobalNotificationSetting {
     const pathsToMatch = generatePathsToMatch(path);
 
     const settings = await this.find({
-      triggerPath: {$in: pathsToMatch},
+      triggerPath: { $in: pathsToMatch },
       triggerEvents: event,
-      isEnabled: true
+      isEnabled: true,
     })
     .sort({ triggerPath: 1 });
 
     return settings;
   }
 }
-
-const generatePathsOnTree = (path, pathList) => {
-  pathList.push(path);
-
-  if (path === '/') {
-    return pathList;
-  }
-
-  const newPath = nodePath.posix.dirname(path);
-
-  return generatePathsOnTree(newPath, pathList);
-};
-
-const generatePathsToMatch = (originalPath) => {
-  const pathList = generatePathsOnTree(originalPath, []);
-  return pathList.map(path => {
-    if (path !== originalPath) {
-      return path + '/*';
-    }
-    else {
-      return path;
-    }
-  });
-};
 
 
 module.exports = {

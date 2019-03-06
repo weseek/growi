@@ -5,8 +5,6 @@ module.exports = function(crowi) {
   const debug = require('debug')('growi:models:comment');
   const mongoose = require('mongoose');
   const ObjectId = mongoose.Schema.Types.ObjectId;
-  const USER_PUBLIC_FIELDS = '_id image isGravatarEnabled googleId name username email status createdAt';
-  // TODO: どこか別の場所へ...
 
   const commentSchema = new mongoose.Schema({
     page: { type: ObjectId, ref: 'Page', index: true },
@@ -20,7 +18,6 @@ module.exports = function(crowi) {
 
   commentSchema.statics.create = function(pageId, creatorId, revisionId, comment, position, isMarkdown) {
     const Comment = this;
-    const commentPosition = position || -1;
 
     return new Promise(((resolve, reject) => {
       const newComment = new Comment();
@@ -85,13 +82,12 @@ module.exports = function(crowi) {
   commentSchema.post('save', (savedComment) => {
     const Page = crowi.model('Page');
 
-
-    const Comment = crowi.model('Comment');
     Page.updateCommentCount(savedComment.page)
-    .then((page) => {
-      debug('CommentCount Updated', page);
-    }).catch(() => {
-    });
+      .then((page) => {
+        debug('CommentCount Updated', page);
+      })
+      .catch(() => {
+      });
   });
 
   return mongoose.model('Comment', commentSchema);

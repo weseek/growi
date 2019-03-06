@@ -1,6 +1,7 @@
 const debug = require('debug')('growi:models:userGroupRelation');
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate');
+
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
 
@@ -20,7 +21,6 @@ schema.plugin(mongoosePaginate);
  * @class UserGroupRelation
  */
 class UserGroupRelation {
-
   /**
    * limit items num for pagination
    *
@@ -49,15 +49,15 @@ class UserGroupRelation {
    */
   static removeAllInvalidRelations() {
     return this.findAllRelation()
-      .then(relations => {
+      .then((relations) => {
         // filter invalid documents
-        return relations.filter(relation => {
+        return relations.filter((relation) => {
           return relation.relatedUser == null || relation.relatedGroup == null;
         });
       })
-      .then(invalidRelations => {
-        const ids = invalidRelations.map(relation => relation._id);
-        return this.deleteMany({ _id: { $in: ids }});
+      .then((invalidRelations) => {
+        const ids = invalidRelations.map((relation) => { return relation._id });
+        return this.deleteMany({ _id: { $in: ids } });
       });
   }
 
@@ -69,7 +69,6 @@ class UserGroupRelation {
    * @memberof UserGroupRelation
    */
   static findAllRelation() {
-
     return this
       .find()
       .populate('relatedUser')
@@ -121,8 +120,8 @@ class UserGroupRelation {
       .find({ relatedUser: user.id })
       .populate('relatedGroup')
       // filter documents only relatedGroup is not null
-      .then(userGroupRelations => {
-        return userGroupRelations.filter(relation => {
+      .then((userGroupRelations) => {
+        return userGroupRelations.filter((relation) => {
           return relation.relatedGroup != null;
         });
       });
@@ -140,7 +139,7 @@ class UserGroupRelation {
       .select('relatedGroup')
       .exec();
 
-    return relations.map(relation => relation.relatedGroup);
+    return relations.map((relation) => { return relation.relatedGroup });
   }
 
   /**
@@ -181,7 +180,7 @@ class UserGroupRelation {
   static async countByGroupIdAndUser(userGroupId, userData) {
     const query = {
       relatedGroup: userGroupId,
-      relatedUser: userData.id
+      relatedUser: userData.id,
     };
 
     return this.count(query);
@@ -222,7 +221,7 @@ class UserGroupRelation {
   static isRelatedUserForGroup(userData, userGroup) {
     const query = {
       relatedGroup: userGroup.id,
-      relatedUser: userData.id
+      relatedUser: userData.id,
     };
 
     return this
@@ -230,7 +229,7 @@ class UserGroupRelation {
       .exec()
       .then((count) => {
         // return true or false of the relation is exists(not count)
-        return (0 < count);
+        return (count > 0);
       });
   }
 
@@ -246,7 +245,7 @@ class UserGroupRelation {
   static createRelation(userGroup, user) {
     return this.create({
       relatedGroup: userGroup.id,
-      relatedUser: user.id
+      relatedUser: user.id,
     });
   }
 
@@ -271,18 +270,16 @@ class UserGroupRelation {
    * @memberof UserGroupRelation
    */
   static removeById(id) {
-
     return this.findById(id)
       .then((relationData) => {
         if (relationData == null) {
-          throw new Exception('UserGroupRelation data is not exists. id:', id);
+          throw new Error('UserGroupRelation data is not exists. id:', id);
         }
         else {
           relationData.remove();
         }
       });
   }
-
 }
 
 module.exports = function(crowi) {

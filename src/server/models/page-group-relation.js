@@ -242,7 +242,7 @@ class PageGroupRelation {
     return this.findById(id)
       .then((relationData) => {
         if (relationData == null) {
-          throw new Exception('PageGroupRelation data is not exists. id:', id);
+          throw new Error('PageGroupRelation data is not exists. id:', id);
         }
         else {
           relationData.remove();
