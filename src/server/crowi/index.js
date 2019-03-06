@@ -123,7 +123,7 @@ Crowi.prototype.model = function(name, model) {
 // getter/setter of event instance
 Crowi.prototype.event = function(name, event) {
   if (event) {
-    return this.events[name] = event;
+    this.events[name] = event;
   }
 
   return this.events[name];
@@ -385,13 +385,13 @@ Crowi.prototype.buildServer = function() {
     const pluginService = new PluginService(this, express);
     pluginService.autoDetectAndLoadPlugins();
 
-    if (env == 'development') {
+    if (env === 'development') {
       this.crowiDev.loadPlugins(express);
     }
   }
 
   // use bunyan
-  if (env == 'production') {
+  if (env === 'production') {
     const expressBunyanLogger = require('express-bunyan-logger');
     const logger = require('@alias/logger')('express');
     express.use(expressBunyanLogger({
