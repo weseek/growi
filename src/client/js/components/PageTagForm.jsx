@@ -57,6 +57,7 @@ export default class PageTagForm extends React.Component {
           }}
           options={this.state.resultTags} // Search result (Some tag names)
           placeholder="tag name"
+          selectHintOnEnter={true}
         />
       </div>
     );
