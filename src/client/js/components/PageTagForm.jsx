@@ -49,7 +49,7 @@ export default class PageTagForm extends React.Component {
           onSearch={async query => {
             this.setState({ isLoading: true });
             const res = await this.crowi.apiGet('/tags.search', { q: query });
-            res.tags.push(query); // selectable query
+            res.tags.unshift(query); // selectable query
             this.setState({
               resultTags: Array.from(new Set(res.tags)), // use Set for de-duplication
               isLoading: false,
