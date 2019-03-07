@@ -292,6 +292,74 @@ module.exports = function(crowi) {
     return false;
   };
 
+  pageSchema.methods.updateTags = async function(newTagsName) {
+    // const page = this;
+    // const PageTagRelation = mongoose.model('PageTagRelation');
+    // const Tag = mongoose.model('Tag');
+
+    // const newTagNameList = [newTagsName]; // [TODO] listing requested Tags on client side
+
+    // // get tags relate this page
+    // const relations = await PageTagRelation.find({relatedPage: page._id}).populate('relatedTag').select('-_id relatedTag');
+    // console.log(relations);
+    // // relations.populate(...)
+    // // const relatedTagNameList = await Promise.all(relations.map(async function(relation) {
+    // //   const relatedTag =  await Tag.findOne({_id: relation.relatedTag});
+    // //   return relatedTag.name;
+    // // }));
+
+    // const relatedTags = ...;
+
+    // // creat unlinked tag list
+    // // TODO use filter and includes
+    // const unlinkedTagNameList = [];
+    // relatedTagNameList.map(function(relatedTagName) {
+    //   if (!newTagNameList.includes(relatedTagName)) {
+    //     return relatedTagName;
+    //   }
+    // });
+
+    // relatedTagTags.forEach(tag => {
+    //   // await つかえないかも
+    //   await tag.remove();
+    // })
+    // // unlinked page-tag-relations
+    // // unlinkedTagNameList.map(function(tagName) {
+    // //   Tag.findOne({name: tagName}, function(err, tag) {
+    // //     PageTagRelation.remove({relatedPage: page._id, relatedTag: tag._id}, function(err, relation) {
+    // //       if (err) {
+    // //         throw new Error(err);
+    // //       }
+    // //       debug('remove tag relation: ', tag.name);
+    // //     });
+    // //   });
+    // // });
+
+    // // creat set tag list
+    // const setTagNameList = [];
+    // newTagNameList.map(function(newTagName) {
+    //   if (!relatedTagNameList.includes(newTagName)) {
+    //     setTagNameList.push(newTagName);
+    //   }
+    // });
+    // // set tags
+    // setTagNameList.map((tagName) => {
+    //   Tag.findOne({name: tagName}, async function(err, tag) {
+    //     if (tag == null) {
+    //       tag = await Tag.create({name: tagName});
+    //     }
+    //     // make a relation
+    //     PageTagRelation.create({relatedPage: page._id, relatedTag: tag._id}, function(err, relation) {
+    //       if (err) {
+    //         throw new Error(err);
+    //       }
+    //       debug('tag linked this page: ', tag.name);
+    //     });
+    //   });
+    // });
+  };
+
+
   pageSchema.methods.isPortal = function() {
     return isPortalPath(this.path);
   };

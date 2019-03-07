@@ -94,6 +94,7 @@ module.exports = function(crowi, app) {
 
     if (crowi.slack) {
       const promises = slackChannels.split(',').map(function(chan) {
+        logger.debug('crowi.slack is exist', crowi.slack);
         return crowi.slack.postPage(page, user, chan, updateOrCreate, previousRevision);
       });
 
@@ -598,6 +599,7 @@ module.exports = function(crowi, app) {
     const overwriteScopesOfDescendants = req.body.overwriteScopesOfDescendants || null;
     const isSlackEnabled = !!req.body.isSlackEnabled;                     // cast to boolean
     const slackChannels = req.body.slackChannels || null;
+    const pageTags = req.body.pageTags || null;
     const isSyncRevisionToHackmd = !!req.body.isSyncRevisionToHackmd;     // cast to boolean
     const socketClientId = req.body.socketClientId || undefined;
 
@@ -656,6 +658,9 @@ module.exports = function(crowi, app) {
     if (isSlackEnabled && slackChannels != null) {
       await notifyToSlackByUser(page, req.user, slackChannels, 'update', previousRevision);
     }
+
+    // // update page tag
+    // await page.updateTags(pageTags); [pagetag]
   };
 
   /**

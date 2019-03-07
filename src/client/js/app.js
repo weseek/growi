@@ -26,6 +26,7 @@ import CommentForm from './components/PageComment/CommentForm';
 import PageAttachment   from './components/PageAttachment';
 import PageStatusAlert  from './components/PageStatusAlert';
 import RevisionPath     from './components/Page/RevisionPath';
+import PageTagForm      from './components/PageTagForm';
 import RevisionUrl      from './components/Page/RevisionUrl';
 import BookmarkButton   from './components/BookmarkButton';
 import LikeButton       from './components/LikeButton';
@@ -64,6 +65,8 @@ let pagePath;
 let pageContent = '';
 let markdown = '';
 let slackChannels;
+let currentPageTags = '';
+let newPageTags = '';
 if (mainContent !== null) {
   pageId = mainContent.getAttribute('data-page-id') || null;
   pageRevisionId = mainContent.getAttribute('data-page-revision-id');
@@ -108,6 +111,14 @@ if (isEnabledPlugins) {
   const crowiPlugin = window.crowiPlugin;
   crowiPlugin.installAll(crowi, crowiRenderer);
 }
+
+/**
+ * get new tags from page tag form
+ * @param {String} tags new tags [TODO] String -> Array
+ */
+const getNewPageTags = function(tags) {
+  newPageTags = tags;
+};
 
 /**
  * component store
@@ -187,6 +198,7 @@ const saveWithShortcut = function(markdown) {
   // get options
   const options = componentInstances.savePageControls.getCurrentOptionsToSave();
   options.socketClientId = socketClientId;
+  options.pageTags = newPageTags;
 
   if (editorMode === 'hackmd') {
     // set option to sync
@@ -224,6 +236,7 @@ const saveWithSubmitButton = function(submitOpts) {
   // get options
   const options = componentInstances.savePageControls.getCurrentOptionsToSave();
   options.socketClientId = socketClientId;
+  options.pageTags = newPageTags;
 
   // set 'submitOpts.overwriteScopesOfDescendants' to options
   options.overwriteScopesOfDescendants = submitOpts ? !!submitOpts.overwriteScopesOfDescendants : false;
@@ -294,6 +307,7 @@ if (pageId) {
 if (pagePath) {
   componentMappings['page'] = <Page crowi={crowi} crowiRenderer={crowiRenderer} markdown={markdown} pagePath={pagePath} showHeadEditButton={true} onSaveWithShortcut={saveWithShortcut} />;
   componentMappings['revision-path'] = <RevisionPath pagePath={pagePath} crowi={crowi} />;
+  // componentMappings['page-tag'] = <PageTagForm pageTags={currentPageTags} submitTags={getNewPageTags} />; [pagetag]
   componentMappings['revision-url'] = <RevisionUrl pageId={pageId} pagePath={pagePath} />;
 }
 
