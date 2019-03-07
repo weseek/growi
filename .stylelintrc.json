@@ -10,7 +10,8 @@
     "indentation": 2,
     "string-quotes": "single",
     "rule-empty-line-before": [ "always-multi-line", {
-      "ignore": ["after-comment", "after-single-line-comment", "first-nested"]
+      "except": ["after-single-line-comment", "first-nested"],
+      "ignore": ["after-comment", "inside-block"]
     } ],
     "selector-combinator-space-before": "always",
     "selector-combinator-space-after": "always"

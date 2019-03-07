@@ -1,5 +1,6 @@
 // import react-bootstrap-typeahead
 @import '~react-bootstrap-typeahead/css/Typeahead';
+
 .search-listpage-icon {
   font-size: 16px;
   color: #999;
@@ -102,6 +103,7 @@
     }
   }
 }
+
 .search-sidebar {
   .search-form,
   .form-group,
@@ -121,6 +123,7 @@
     //                                  since upgrade react-bootstrap-typeahead to v3.3.2 -- 2019.02.05 Yuki Takei
   }
 }
+
 #search-top,
 #renamePage,
 #duplicatePage,
