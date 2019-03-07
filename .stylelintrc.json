@@ -10,7 +10,7 @@
     "indentation": 2,
     "string-quotes": "single",
     "rule-empty-line-before": [ "always-multi-line", {
-      "ignore": ["after-comment", "stylelint-commands"]
+      "ignore": ["after-comment", "after-single-line-comment", "first-nested"]
     } ],
     "selector-combinator-space-before": "always",
     "selector-combinator-space-after": "always"
