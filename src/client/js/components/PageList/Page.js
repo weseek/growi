@@ -15,7 +15,7 @@ export default class Page extends React.Component {
     }
 
     const styleFlex = {
-      flex: 1
+      flex: 1,
     };
 
     return (
@@ -26,20 +26,19 @@ export default class Page extends React.Component {
         </a>
         <PageListMeta page={page} />
         <div style={styleFlex}></div>
-        {this.props.children}
       </li>
     );
   }
+
 }
 
 Page.propTypes = {
   page: PropTypes.object.isRequired,
   linkTo: PropTypes.string,
+  excludePathString: PropTypes.string,
 };
 
 Page.defaultProps = {
-  page: {},
   linkTo: '',
   excludePathString: '',
 };
-

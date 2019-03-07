@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { translate } from 'react-i18next';
 
 class SimpleCheatsheet extends React.Component {
+
   render() {
     const { t } = this.props;
 
@@ -12,8 +13,8 @@ class SimpleCheatsheet extends React.Component {
           <div className="row">
             <div className="col-xs-6">
               <p>
-                # {t('sandbox.header_x', {index: '1'})}<br />
-                ## {t('sandbox.header_x', {index: '2'})}
+                # {t('sandbox.header_x', { index: '1' })}<br />
+                ## {t('sandbox.header_x', { index: '2' })}
               </p>
               <p><i>*{t('sandbox.italics')}*</i>&nbsp;&nbsp;<b>**{t('sandbox.bold')}**</b></p>
               <p>
@@ -28,11 +29,11 @@ class SimpleCheatsheet extends React.Component {
             </div>
             <div className="col-xs-6">
               <p>
-                - {t('sandbox.unordered_list_x', {index: '1'})}<br />
-                &nbsp;&nbsp;&nbsp;- {t('sandbox.unordered_list_x', {index: '1.1'})}<br />
-                - {t('sandbox.unordered_list_x', {index: '2'})}<br />
-                1. {t('sandbox.ordered_list_x', {index: '1'})}<br />
-                1. {t('sandbox.ordered_list_x', {index: '2'})}
+                - {t('sandbox.unordered_list_x', { index: '1' })}<br />
+                &nbsp;&nbsp;&nbsp;- {t('sandbox.unordered_list_x', { index: '1.1' })}<br />
+                - {t('sandbox.unordered_list_x', { index: '2' })}<br />
+                1. {t('sandbox.ordered_list_x', { index: '1' })}<br />
+                1. {t('sandbox.ordered_list_x', { index: '2' })}
               </p>
               <hr />
               <p>[ ][ ] {t('sandbox.block_detail')}</p>
@@ -42,10 +43,11 @@ class SimpleCheatsheet extends React.Component {
       </div>
     );
   }
+
 }
 
 SimpleCheatsheet.propTypes = {
-  t: PropTypes.func.isRequired,               // i18next
+  t: PropTypes.func.isRequired, // i18next
 };
 
 export default translate()(SimpleCheatsheet);

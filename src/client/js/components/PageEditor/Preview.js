@@ -10,24 +10,22 @@ import { PreviewOptions } from './OptionsSelector';
  */
 export default class Preview extends React.Component {
 
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const renderMathJaxInRealtime = this.props.previewOptions.renderMathJaxInRealtime;
 
     return (
-      <div className="page-editor-preview-body"
-          ref={(elm) => {
+      <div
+        className="page-editor-preview-body"
+        ref={(elm) => {
             this.previewElement = elm;
             this.props.inputRef(elm);
           }}
-          onScroll={(event) => {
+        onScroll={(event) => {
             if (this.props.onScroll != null) {
               this.props.onScroll(event.target.scrollTop);
             }
-          }}>
+          }}
+      >
 
         <RevisionBody
           {...this.props}
@@ -36,11 +34,12 @@ export default class Preview extends React.Component {
       </div>
     );
   }
+
 }
 
 Preview.propTypes = {
   html: PropTypes.string,
-  inputRef: PropTypes.func.isRequired,  // for getting div element
+  inputRef: PropTypes.func.isRequired, // for getting div element
   isMathJaxEnabled: PropTypes.bool,
   renderMathJaxOnInit: PropTypes.bool,
   previewOptions: PropTypes.instanceOf(PreviewOptions),
