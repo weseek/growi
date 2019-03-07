@@ -7,13 +7,12 @@
   },
 
   // for vscode-eslint
-  "prettier.eslintIntegration": true,
   "eslint.autoFixOnSave": true,
   "[javascript]": {
     "editor.formatOnSave": false
   },
 
-  // for vecode-prettier + prettier-vscode
+  // for prettier-vecode + prettier-stylelint
   "prettier.stylelintIntegration": true,
   "[scss]": {
     "editor.formatOnSave": true
