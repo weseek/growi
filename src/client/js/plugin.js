@@ -39,4 +39,4 @@ export default class CrowiPlugin {
 
 }
 
-window.crowiPlugin = new CrowiPlugin();     // FIXME
+window.crowiPlugin = new CrowiPlugin(); // FIXME
