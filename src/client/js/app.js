@@ -303,11 +303,11 @@ const componentMappings = {
 if (pageId) {
   componentMappings['page-comments-list'] = <PageComments pageId={pageId} revisionId={pageRevisionId} revisionCreatedAt={pageRevisionCreatedAt} crowi={crowi} crowiOriginRenderer={crowiRenderer} />;
   componentMappings['page-attachment'] = <PageAttachment pageId={pageId} markdown={markdown} crowi={crowi} />;
+  // componentMappings['page-tag'] = <PageTagForm crowi={crowi} defaultPageTags={currentPageTags} handleSubmit={getNewPageTags} />; // [pagetag]
 }
 if (pagePath) {
   componentMappings['page'] = <Page crowi={crowi} crowiRenderer={crowiRenderer} markdown={markdown} pagePath={pagePath} showHeadEditButton={true} onSaveWithShortcut={saveWithShortcut} />;
   componentMappings['revision-path'] = <RevisionPath pagePath={pagePath} crowi={crowi} />;
-  // componentMappings['page-tag'] = <PageTagForm crowi={crowi} pageTags={currentPageTags} handleSubmit={getNewPageTags} />; // [pagetag]
   componentMappings['revision-url'] = <RevisionUrl pageId={pageId} pagePath={pagePath} />;
 }
 
