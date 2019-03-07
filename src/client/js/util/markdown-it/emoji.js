@@ -9,13 +9,15 @@ export default class EmojiConfigurer {
 
     const emojiShortnameUnicodeMap = {};
 
-    for (let unicode in emojiStrategy) {
+    /* eslint-disable guard-for-in, no-restricted-syntax */
+    for (const unicode in emojiStrategy) {
       const data = emojiStrategy[unicode];
       const shortname = data.shortname.replace(/:/g, '');
       emojiShortnameUnicodeMap[shortname] = String.fromCharCode(unicode);
     }
+    /* eslint-enable guard-for-in, no-restricted-syntax */
 
-    md.use(require('markdown-it-emoji'), {defs: emojiShortnameUnicodeMap});
+    md.use(require('markdown-it-emoji'), { defs: emojiShortnameUnicodeMap });
 
     // integrate markdown-it-emoji and emojione
     md.renderer.rules.emoji = (token, idx) => {

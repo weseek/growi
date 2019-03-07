@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 
 import { throttle, debounce } from 'throttle-debounce';
 
+import * as toastr from 'toastr';
 import GrowiRenderer from '../util/GrowiRenderer';
 
 import { EditorOptions, PreviewOptions } from './PageEditor/OptionsSelector';
 import Editor from './PageEditor/Editor';
 import Preview from './PageEditor/Preview';
 import scrollSyncHelper from './PageEditor/ScrollSyncHelper';
-import * as toastr from 'toastr';
 
 
 export default class PageEditor extends React.Component {
@@ -33,7 +33,7 @@ export default class PageEditor extends React.Component {
       previewOptions: this.props.previewOptions,
     };
 
-    this.growiRenderer = new GrowiRenderer(this.props.crowi, this.props.crowiRenderer, {mode: 'editor'});
+    this.growiRenderer = new GrowiRenderer(this.props.crowi, this.props.crowiRenderer, { mode: 'editor' });
 
     this.setCaretLine = this.setCaretLine.bind(this);
     this.focusToEditor = this.focusToEditor.bind(this);
@@ -71,12 +71,12 @@ export default class PageEditor extends React.Component {
   setMarkdown(markdown, updateEditorValue = true) {
     this.setState({ markdown });
     if (updateEditorValue) {
-      this.refs.editor.setValue(markdown);
+      this.editor.setValue(markdown);
     }
   }
 
   focusToEditor() {
-    this.refs.editor.forceToFocus();
+    this.editor.forceToFocus();
   }
 
   /**
@@ -84,7 +84,7 @@ export default class PageEditor extends React.Component {
    * @param {number} line
    */
   setCaretLine(line) {
-    this.refs.editor.setCaretLine(line);
+    this.editor.setCaretLine(line);
     scrollSyncHelper.scrollPreview(this.previewElement, line);
   }
 
@@ -119,7 +119,7 @@ export default class PageEditor extends React.Component {
    */
   async onUpload(file) {
     try {
-      let res  = await this.props.crowi.apiGet('/attachments.limit', {_csrf: this.props.crowi.csrfToken, fileSize: file.size});
+      let res = await this.props.crowi.apiGet('/attachments.limit', { _csrf: this.props.crowi.csrfToken, fileSize: file.size });
       if (!res.isUploadable) {
         toastr.error(undefined, 'MongoDB for uploading files reaches limit', {
           closeButton: true,
@@ -149,9 +149,9 @@ export default class PageEditor extends React.Component {
       // when image
       if (attachment.fileFormat.startsWith('image/')) {
         // modify to "![fileName](url)" syntax
-        insertText = '!' + insertText;
+        insertText = `!${insertText}`;
       }
-      this.refs.editor.insertText(insertText);
+      this.editor.insertText(insertText);
 
       // when if created newly
       if (res.pageCreated) {
@@ -162,13 +162,14 @@ export default class PageEditor extends React.Component {
       this.apiErrorHandler(e);
     }
     finally {
-      this.refs.editor.terminateUploadingState();
+      this.editor.terminateUploadingState();
     }
   }
 
   /**
    * the scroll event handler from codemirror
-   * @param {any} data {left, top, width, height, clientWidth, clientHeight} object that represents the current scroll position, the size of the scrollable area, and the size of the visible area (minus scrollbars).
+   * @param {any} data {left, top, width, height, clientWidth, clientHeight} object that represents the current scroll position,
+   *                    the size of the scrollable area, and the size of the visible area (minus scrollbars).
    *                    And data.line is also available that is added by Editor component
    * @see https://codemirror.net/doc/manual.html#events
    */
@@ -253,13 +254,13 @@ export default class PageEditor extends React.Component {
 
     // prevent circular invocation
     if (this.isOriginOfScrollSyncEditor) {
-      this.isOriginOfScrollSyncEditor = false;  // turn off the flag
+      this.isOriginOfScrollSyncEditor = false; // turn off the flag
       return;
     }
 
     // turn on the flag
     this.isOriginOfScrollSyncPreview = true;
-    scrollSyncHelper.scrollEditor(this.refs.editor, this.previewElement, offset);
+    scrollSyncHelper.scrollEditor(this.editor, this.previewElement, offset);
   }
 
   saveDraft() {
@@ -268,6 +269,7 @@ export default class PageEditor extends React.Component {
       this.props.crowi.saveDraft(this.props.pagePath, this.state.markdown);
     }
   }
+
   clearDraft() {
     this.props.crowi.clearDraft(this.props.pagePath);
   }
@@ -278,32 +280,32 @@ export default class PageEditor extends React.Component {
     // render html
     const context = {
       markdown: this.state.markdown,
-      currentPagePath: decodeURIComponent(location.pathname)
+      currentPagePath: decodeURIComponent(window.location.pathname),
     };
 
     const growiRenderer = this.growiRenderer;
     const interceptorManager = this.props.crowi.interceptorManager;
     interceptorManager.process('preRenderPreview', context)
-      .then(() => interceptorManager.process('prePreProcess', context))
+      .then(() => { return interceptorManager.process('prePreProcess', context) })
       .then(() => {
         context.markdown = growiRenderer.preProcess(context.markdown);
       })
-      .then(() => interceptorManager.process('postPreProcess', context))
+      .then(() => { return interceptorManager.process('postPreProcess', context) })
       .then(() => {
         const parsedHTML = growiRenderer.process(context.markdown);
-        context['parsedHTML'] = parsedHTML;
+        context.parsedHTML = parsedHTML;
       })
-      .then(() => interceptorManager.process('prePostProcess', context))
+      .then(() => { return interceptorManager.process('prePostProcess', context) })
       .then(() => {
         context.parsedHTML = growiRenderer.postProcess(context.parsedHTML);
       })
-      .then(() => interceptorManager.process('postPostProcess', context))
-      .then(() => interceptorManager.process('preRenderPreviewHtml', context))
+      .then(() => { return interceptorManager.process('postPostProcess', context) })
+      .then(() => { return interceptorManager.process('preRenderPreviewHtml', context) })
       .then(() => {
         this.setState({ html: context.parsedHTML });
       })
       // process interceptors for post rendering
-      .then(() => interceptorManager.process('postRenderPreviewHtml', context));
+      .then(() => { return interceptorManager.process('postRenderPreviewHtml', context) });
 
   }
 
@@ -326,7 +328,9 @@ export default class PageEditor extends React.Component {
     return (
       <div className="row">
         <div className="col-md-6 col-sm-12 page-editor-editor-container">
-          <Editor ref="editor" value={this.state.markdown}
+          <Editor
+            ref={(c) => { this.editor = c }}
+            value={this.state.markdown}
             editorOptions={this.state.editorOptions}
             noCdn={noCdn}
             isMobile={this.props.crowi.isMobile}
@@ -343,8 +347,10 @@ export default class PageEditor extends React.Component {
           />
         </div>
         <div className="col-md-6 hidden-sm hidden-xs page-editor-preview-container">
-          <Preview html={this.state.html}
-            inputRef={el => this.previewElement = el}
+          <Preview
+            html={this.state.html}
+            // eslint-disable-next-line no-return-assign
+            inputRef={(el) => { return this.previewElement = el }}
             isMathJaxEnabled={this.state.isMathJaxEnabled}
             renderMathJaxOnInit={false}
             previewOptions={this.state.previewOptions}
@@ -354,6 +360,7 @@ export default class PageEditor extends React.Component {
       </div>
     );
   }
+
 }
 
 PageEditor.propTypes = {

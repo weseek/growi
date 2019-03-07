@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const GlobalNotificationSetting = require('./index');
+
 const GlobalNotificationSettingClass = GlobalNotificationSetting.class;
 const GlobalNotificationSettingSchema = GlobalNotificationSetting.schema;
 
@@ -10,7 +11,7 @@ module.exports = function(crowi) {
   const GlobalNotificationSettingModel = mongoose.model('GlobalNotificationSetting', GlobalNotificationSettingSchema);
   const GlobalNotificationMailSettingModel = GlobalNotificationSettingModel.discriminator('mail', new mongoose.Schema({
     toEmail: String,
-  }, {discriminatorKey: 'type'}));
+  }, { discriminatorKey: 'type' }));
 
   return GlobalNotificationMailSettingModel;
 };

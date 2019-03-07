@@ -14,7 +14,6 @@ const schema = new mongoose.Schema({
 schema.plugin(mongoosePaginate);
 
 class UserGroup {
-
   /**
    * public fields for UserGroup model
    *
@@ -43,14 +42,13 @@ class UserGroup {
 
   // グループ画像パスの生成
   static createUserGroupPictureFilePath(userGroup, name) {
-    var ext = '.' + name.match(/(.*)(?:\.([^.]+$))/)[2];
+    const ext = `.${name.match(/(.*)(?:\.([^.]+$))/)[2]}`;
 
-    return 'userGroup/' + userGroup._id + ext;
+    return `userGroup/${userGroup._id}${ext}`;
   }
 
   // すべてのグループを取得（オプション指定可）
   static findAllGroups(option) {
-
     return this.find().exec();
   }
 
@@ -82,7 +80,7 @@ class UserGroup {
 
   // 登録可能グループ名確認
   static isRegisterableName(name) {
-    const query = { name: name };
+    const query = { name };
 
     return this.findOne(query)
       .then((userGroupData) => {
@@ -95,15 +93,15 @@ class UserGroup {
     const PageGroupRelation = mongoose.model('PageGroupRelation');
     const UserGroupRelation = mongoose.model('UserGroupRelation');
 
-    let removed = undefined;
+    let removed;
     return this.findById(id)
-      .then(userGroupData => {
+      .then((userGroupData) => {
         if (userGroupData == null) {
-          throw new Exception('UserGroup data is not exists. id:', id);
+          throw new Error('UserGroup data is not exists. id:', id);
         }
         return userGroupData.remove();
       })
-      .then(removedUserGroupData => {
+      .then((removedUserGroupData) => {
         removed = removedUserGroupData;
       })
       // remove relations
@@ -120,7 +118,7 @@ class UserGroup {
 
   // グループ生成（名前が要る）
   static createGroupByName(name) {
-    return this.create({name: name});
+    return this.create({ name });
   }
 
   // グループ名の更新
@@ -129,7 +127,6 @@ class UserGroup {
     this.name = name;
     return this.save();
   }
-
 }
 
 
@@ -138,4 +135,3 @@ module.exports = function(crowi) {
   schema.loadClass(UserGroup);
   return mongoose.model('UserGroup', schema);
 };
-

@@ -1,24 +1,26 @@
+// disable no-return-await for model functions
+/* eslint-disable no-return-await */
+
+/* eslint-disable no-use-before-define */
+
 module.exports = function(crowi) {
-  const mongoose = require('mongoose')
-    , debug = require('debug')('growi:models:config')
-    , uglifycss = require('uglifycss')
-    , recommendedXssWhiteList = require('@commons/service/xss/recommendedXssWhiteList')
+  const mongoose = require('mongoose');
+  const debug = require('debug')('growi:models:config');
+  const uglifycss = require('uglifycss');
+  const recommendedXssWhiteList = require('@commons/service/xss/recommendedXssWhiteList');
 
-    , SECURITY_RESTRICT_GUEST_MODE_DENY = 'Deny'
-    , SECURITY_RESTRICT_GUEST_MODE_READONLY = 'Readonly'
+  const SECURITY_RESTRICT_GUEST_MODE_DENY = 'Deny';
+  const SECURITY_RESTRICT_GUEST_MODE_READONLY = 'Readonly';
+  const SECURITY_REGISTRATION_MODE_OPEN = 'Open';
+  const SECURITY_REGISTRATION_MODE_RESTRICTED = 'Resricted';
+  const SECURITY_REGISTRATION_MODE_CLOSED = 'Closed';
 
-    , SECURITY_REGISTRATION_MODE_OPEN = 'Open'
-    , SECURITY_REGISTRATION_MODE_RESTRICTED = 'Resricted'
-    , SECURITY_REGISTRATION_MODE_CLOSED = 'Closed'
-  ;
-
-  let configSchema;
   let Config;
 
-  configSchema = new mongoose.Schema({
+  const configSchema = new mongoose.Schema({
     ns: { type: String, required: true, index: true },
     key: { type: String, required: true, index: true },
-    value: { type: String, required: true }
+    value: { type: String, required: true },
   });
 
   function validateCrowi() {
@@ -31,7 +33,7 @@ module.exports = function(crowi) {
    * default values when GROWI is cleanly installed
    */
   function getArrayForInstalling() {
-    let config = getDefaultCrowiConfigs();
+    const config = getDefaultCrowiConfigs();
 
     // overwrite
     config['app:fileUpload'] = true;
@@ -49,7 +51,7 @@ module.exports = function(crowi) {
   function getDefaultCrowiConfigs() {
     /* eslint-disable key-spacing */
     return {
-      //'app:installed'     : "0.0.0",
+      // 'app:installed'     : "0.0.0",
       'app:confidential'  : '',
 
       'app:fileUpload'    : false,
@@ -118,7 +120,7 @@ module.exports = function(crowi) {
       'importer:qiita:team_name': '',
       'importer:qiita:access_token': '',
     };
-    /* eslint-enable */
+    /* eslint-enable key-spacing */
   }
 
   function getDefaultMarkdownConfigs() {
@@ -167,18 +169,18 @@ module.exports = function(crowi) {
   };
 
   configSchema.statics.getRestrictGuestModeLabels = function() {
-    var labels = {};
-    labels[SECURITY_RESTRICT_GUEST_MODE_DENY]     = 'security_setting.guest_mode.deny';
+    const labels = {};
+    labels[SECURITY_RESTRICT_GUEST_MODE_DENY] = 'security_setting.guest_mode.deny';
     labels[SECURITY_RESTRICT_GUEST_MODE_READONLY] = 'security_setting.guest_mode.readonly';
 
     return labels;
   };
 
   configSchema.statics.getRegistrationModeLabels = function() {
-    var labels = {};
-    labels[SECURITY_REGISTRATION_MODE_OPEN]       = 'security_setting.registration_mode.open';
+    const labels = {};
+    labels[SECURITY_REGISTRATION_MODE_OPEN] = 'security_setting.registration_mode.open';
     labels[SECURITY_REGISTRATION_MODE_RESTRICTED] = 'security_setting.registration_mode.restricted';
-    labels[SECURITY_REGISTRATION_MODE_CLOSED]     = 'security_setting.registration_mode.closed';
+    labels[SECURITY_REGISTRATION_MODE_CLOSED] = 'security_setting.registration_mode.closed';
 
     return labels;
   };
@@ -188,7 +190,7 @@ module.exports = function(crowi) {
 
     const originalConfig = crowi.getConfig();
     const newNSConfig = originalConfig[ns] || {};
-    Object.keys(config).forEach(function(key) {
+    Object.keys(config).forEach((key) => {
       if (config[key] || config[key] === '' || config[key] === false) {
         newNSConfig[key] = config[key];
       }
@@ -204,13 +206,12 @@ module.exports = function(crowi) {
 
   // Execute only once for installing application
   configSchema.statics.applicationInstall = function(callback) {
-    var Config = this;
-    Config.count({ ns: 'crowi' }, function(err, count) {
+    const Config = this;
+    Config.count({ ns: 'crowi' }, (err, count) => {
       if (count > 0) {
         return callback(new Error('Application already installed'), null);
       }
-      Config.updateNamespaceByArray('crowi', getArrayForInstalling(), function(err, configs) {
-
+      Config.updateNamespaceByArray('crowi', getArrayForInstalling(), (err, configs) => {
         Config.updateConfigCache('crowi', configs);
         return callback(err, configs);
       });
@@ -218,7 +219,7 @@ module.exports = function(crowi) {
   };
 
   configSchema.statics.setupConfigFormData = function(ns, config) {
-    var defaultConfig = {};
+    let defaultConfig = {};
 
     // set Default Settings
     if (ns === 'crowi') {
@@ -231,7 +232,7 @@ module.exports = function(crowi) {
     if (!defaultConfig[ns]) {
       defaultConfig[ns] = {};
     }
-    Object.keys(config[ns] || {}).forEach(function(key) {
+    Object.keys(config[ns] || {}).forEach((key) => {
       if (config[ns][key] !== undefined) {
         defaultConfig[key] = config[ns][key];
       }
@@ -241,21 +242,22 @@ module.exports = function(crowi) {
 
 
   configSchema.statics.updateNamespaceByArray = function(ns, configs, callback) {
-    var Config = this;
+    const Config = this;
     if (configs.length < 0) {
       return callback(new Error('Argument #1 is not array.'), null);
     }
 
-    Object.keys(configs).forEach(function(key) {
-      var value = configs[key];
+    Object.keys(configs).forEach((key) => {
+      const value = configs[key];
 
       Config.findOneAndUpdate(
-        { ns: ns, key: key },
-        { ns: ns, key: key, value: JSON.stringify(value) },
-        { upsert: true, },
-        function(err, config) {
+        { ns, key },
+        { ns, key, value: JSON.stringify(value) },
+        { upsert: true },
+        (err, config) => {
           debug('Config.findAndUpdate', err, config);
-        });
+        },
+      );
     });
 
     return callback(null, configs);
@@ -263,24 +265,26 @@ module.exports = function(crowi) {
 
   configSchema.statics.findOneAndUpdateByNsAndKey = async function(ns, key, value) {
     return this.findOneAndUpdate(
-      { ns: ns, key: key },
-      { ns: ns, key: key, value: JSON.stringify(value) },
-      { upsert: true, });
+      { ns, key },
+      { ns, key, value: JSON.stringify(value) },
+      { upsert: true },
+    );
   };
 
   configSchema.statics.getConfig = function(callback) {
   };
 
   configSchema.statics.loadAllConfig = function(callback) {
-    var Config = this
-      , config = {};
+    const Config = this;
+
+
+    const config = {};
     config.crowi = {}; // crowi namespace
 
     Config.find()
-      .sort({ns: 1, key: 1})
-      .exec(function(err, doc) {
-
-        doc.forEach(function(el) {
+      .sort({ ns: 1, key: 1 })
+      .exec((err, doc) => {
+        doc.forEach((el) => {
           if (!config[el.ns]) {
             config[el.ns] = {};
           }
@@ -309,7 +313,7 @@ module.exports = function(crowi) {
 
   configSchema.statics.isEnabledPassport = function(config) {
     // always true if growi installed cleanly
-    if (Object.keys(config.crowi).length == 0) {
+    if (Object.keys(config.crowi).length === 0) {
       return true;
     }
 
@@ -340,15 +344,15 @@ module.exports = function(crowi) {
   configSchema.statics.isUploadable = function(config) {
     const method = process.env.FILE_UPLOAD || 'aws';
 
-    if (method == 'aws' && (
-      !config.crowi['aws:accessKeyId'] ||
-        !config.crowi['aws:secretAccessKey'] ||
-        !config.crowi['aws:region'] ||
-        !config.crowi['aws:bucket'])) {
+    if (method === 'aws' && (
+      !config.crowi['aws:accessKeyId']
+        || !config.crowi['aws:secretAccessKey']
+        || !config.crowi['aws:region']
+        || !config.crowi['aws:bucket'])) {
       return false;
     }
 
-    return method != 'none';
+    return method !== 'none';
   };
 
   configSchema.statics.isGuestAllowedToRead = function(config) {
@@ -391,7 +395,7 @@ module.exports = function(crowi) {
   };
   configSchema.statics.isPublicWikiOnly = function(config) {
     const publicWikiOnly = process.env.PUBLIC_WIKI_ONLY;
-    if ( publicWikiOnly === 'true' || publicWikiOnly == 1) {
+    if (publicWikiOnly === 'true' || publicWikiOnly === 1) {
       return true;
     }
     return false;
@@ -438,7 +442,6 @@ module.exports = function(crowi) {
     else {
       return [];
     }
-
   };
 
   configSchema.statics.attrWhiteList = function(config) {
@@ -505,7 +508,7 @@ module.exports = function(crowi) {
     const key = 'customize:title';
     let customTitle = getValueForCrowiNS(config, key);
 
-    if (customTitle == null || customTitle.trim().length == 0) {
+    if (customTitle == null || customTitle.trim().length === 0) {
       customTitle = '{{page}} - {{sitename}}';
     }
 
@@ -579,14 +582,14 @@ module.exports = function(crowi) {
     if (!config.notification) {
       return false;
     }
-    return (config.notification['slack:incomingWebhookUrl'] ? true : false);
+    return (!!config.notification['slack:incomingWebhookUrl']);
   };
 
   configSchema.statics.isIncomingWebhookPrioritized = function(config) {
     if (!config.notification) {
       return false;
     }
-    return (config.notification['slack:isIncomingWebhookPrioritized'] ? true : false);
+    return (!!config.notification['slack:isIncomingWebhookPrioritized']);
   };
 
   configSchema.statics.hasSlackToken = function(config) {
@@ -594,14 +597,14 @@ module.exports = function(crowi) {
       return false;
     }
 
-    return (config.notification['slack:token'] ? true : false);
+    return (!!config.notification['slack:token']);
   };
 
   configSchema.statics.getLocalconfig = function(config) {
     const Config = this;
     const env = process.env;
 
-    const local_config = {
+    const localConfig = {
       crowi: {
         title: Config.appTitle(crowi),
         url: crowi.configManager.getSiteUrl(),
@@ -633,7 +636,7 @@ module.exports = function(crowi) {
       globalLang: Config.globalLang(config),
     };
 
-    return local_config;
+    return localConfig;
   };
 
   configSchema.statics.userUpperLimit = function(crowi) {
@@ -663,9 +666,9 @@ module.exports = function(crowi) {
   */
 
   Config = mongoose.model('Config', configSchema);
-  Config.SECURITY_REGISTRATION_MODE_OPEN       = SECURITY_REGISTRATION_MODE_OPEN;
+  Config.SECURITY_REGISTRATION_MODE_OPEN = SECURITY_REGISTRATION_MODE_OPEN;
   Config.SECURITY_REGISTRATION_MODE_RESTRICTED = SECURITY_REGISTRATION_MODE_RESTRICTED;
-  Config.SECURITY_REGISTRATION_MODE_CLOSED     = SECURITY_REGISTRATION_MODE_CLOSED;
+  Config.SECURITY_REGISTRATION_MODE_CLOSED = SECURITY_REGISTRATION_MODE_CLOSED;
 
 
   return Config;

@@ -1,10 +1,8 @@
-'use strict';
+const form = require('express-form');
 
-var form = require('express-form')
-  , field = form.field;
+const field = form.field;
 
 module.exports = form(
   field('settingForm[importer:esa:access_token]').required(),
   field('settingForm[importer:esa:team_name]').required(),
 );
-

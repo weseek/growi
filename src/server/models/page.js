@@ -1,28 +1,33 @@
+// disable no-return-await for model functions
+/* eslint-disable no-return-await */
+
+/* eslint-disable no-use-before-define */
+
 const debug = require('debug')('growi:models:page');
 const nodePath = require('path');
 const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
+
 const ObjectId = mongoose.Schema.Types.ObjectId;
-
 const escapeStringRegexp = require('escape-string-regexp');
-
 const templateChecker = require('@commons/util/template-checker');
 
 /*
  * define schema
  */
-const GRANT_PUBLIC = 1
-  , GRANT_RESTRICTED = 2
-  , GRANT_SPECIFIED = 3
-  , GRANT_OWNER = 4
-  , GRANT_USER_GROUP = 5
-  , PAGE_GRANT_ERROR = 1
+const GRANT_PUBLIC = 1;
+const GRANT_RESTRICTED = 2;
+const GRANT_SPECIFIED = 3;
+const GRANT_OWNER = 4;
+const GRANT_USER_GROUP = 5;
+const PAGE_GRANT_ERROR = 1;
+const STATUS_PUBLISHED = 'published';
+const STATUS_DELETED = 'deleted';
 
-  , STATUS_PUBLISHED  = 'published'
-  , STATUS_DELETED    = 'deleted'
-;
 const pageSchema = new mongoose.Schema({
-  path: { type: String, required: true, index: true, unique: true },
+  path: {
+    type: String, required: true, index: true, unique: true,
+  },
   revision: { type: ObjectId, ref: 'Revision' },
   redirectTo: { type: String, index: true },
   status: { type: String, default: STATUS_PUBLISHED, index: true },
@@ -37,7 +42,7 @@ const pageSchema = new mongoose.Schema({
   extended: {
     type: String,
     default: '{}',
-    get: function(data) {
+    get(data) {
       try {
         return JSON.parse(data);
       }
@@ -45,18 +50,18 @@ const pageSchema = new mongoose.Schema({
         return data;
       }
     },
-    set: function(data) {
+    set(data) {
       return JSON.stringify(data);
-    }
+    },
   },
   pageIdOnHackmd: String,
-  revisionHackmdSynced: { type: ObjectId, ref: 'Revision' },  // the revision that is synced to HackMD
-  hasDraftOnHackmd: { type: Boolean },                        // set true if revision and revisionHackmdSynced are same but HackMD document has modified
+  revisionHackmdSynced: { type: ObjectId, ref: 'Revision' }, // the revision that is synced to HackMD
+  hasDraftOnHackmd: { type: Boolean }, // set true if revision and revisionHackmdSynced are same but HackMD document has modified
   createdAt: { type: Date, default: Date.now() },
   updatedAt: { type: Date, default: Date.now() },
 }, {
-  toJSON: {getters: true},
-  toObject: {getters: true}
+  toJSON: { getters: true },
+  toObject: { getters: true },
 });
 // apply plugins
 pageSchema.plugin(uniqueValidator);
@@ -96,6 +101,7 @@ const addSlashOfEnd = (path) => {
  * @param {any} page Query or Document
  * @param {string} userPublicFields string to set to select
  */
+/* eslint-disable object-curly-newline, object-property-newline */
 const populateDataToShowRevision = (page, userPublicFields, imagePopulation) => {
   return page
     .populate([
@@ -103,10 +109,11 @@ const populateDataToShowRevision = (page, userPublicFields, imagePopulation) => 
       { path: 'creator', model: 'User', select: userPublicFields, populate: imagePopulation },
       { path: 'grantedGroup', model: 'UserGroup' },
       { path: 'revision', model: 'Revision', populate: {
-        path: 'author', model: 'User', select: userPublicFields, populate: imagePopulation
-      }}
+        path: 'author', model: 'User', select: userPublicFields, populate: imagePopulation,
+      } },
     ]);
 };
+/* eslint-enable object-curly-newline, object-property-newline */
 
 
 class PageQueryBuilder {
@@ -118,9 +125,9 @@ class PageQueryBuilder {
     this.query = this.query
       .and({
         $or: [
-          {status: null},
-          {status: STATUS_PUBLISHED},
-        ]
+          { status: null },
+          { status: STATUS_PUBLISHED },
+        ],
       });
 
     return this;
@@ -136,10 +143,11 @@ class PageQueryBuilder {
    */
   addConditionToListWithDescendants(path, option) {
     // ignore other pages than descendants
+    // eslint-disable-next-line no-param-reassign
     path = addSlashOfEnd(path);
 
     // add option to escape the regex strings
-    const combinedOption = Object.assign({isRegExpEscapedFromPath: true}, option);
+    const combinedOption = Object.assign({ isRegExpEscapedFromPath: true }, option);
 
     this.addConditionToListByStartWith(path, combinedOption);
 
@@ -168,23 +176,23 @@ class PageQueryBuilder {
      */
     let pathSlashOmitted = path;
     if (path.match(/\/$/)) {
-      pathSlashOmitted = path.substr(0, path.length -1);
-      pathCondition.push({path: pathSlashOmitted});
+      pathSlashOmitted = path.substr(0, path.length - 1);
+      pathCondition.push({ path: pathSlashOmitted });
     }
 
     /*
      * 2. add decendants
      */
     const pattern = (isRegExpEscapedFromPath)
-      ? escapeStringRegexp(path)  // escape
+      ? escapeStringRegexp(path) // escape
       : pathSlashOmitted;
 
-    const queryReg = new RegExp('^' + pattern);
-    pathCondition.push({path: queryReg});
+    const queryReg = new RegExp(`^${pattern}`);
+    pathCondition.push({ path: queryReg });
 
     this.query = this.query
       .and({
-        $or: pathCondition
+        $or: pathCondition,
       });
 
     return this;
@@ -192,41 +200,41 @@ class PageQueryBuilder {
 
   addConditionToFilteringByViewer(user, userGroups, showAnyoneKnowsLink, showPagesRestrictedByOwner, showPagesRestrictedByGroup) {
     const grantConditions = [
-      {grant: null},
-      {grant: GRANT_PUBLIC},
+      { grant: null },
+      { grant: GRANT_PUBLIC },
     ];
 
     if (showAnyoneKnowsLink) {
-      grantConditions.push({grant: GRANT_RESTRICTED});
+      grantConditions.push({ grant: GRANT_RESTRICTED });
     }
 
     if (showPagesRestrictedByOwner) {
       grantConditions.push(
-        {grant: GRANT_SPECIFIED},
-        {grant: GRANT_OWNER},
+        { grant: GRANT_SPECIFIED },
+        { grant: GRANT_OWNER },
       );
     }
     else if (user != null) {
       grantConditions.push(
-        {grant: GRANT_SPECIFIED, grantedUsers: user._id},
-        {grant: GRANT_OWNER, grantedUsers: user._id},
+        { grant: GRANT_SPECIFIED, grantedUsers: user._id },
+        { grant: GRANT_OWNER, grantedUsers: user._id },
       );
     }
 
     if (showPagesRestrictedByGroup) {
       grantConditions.push(
-        {grant: GRANT_USER_GROUP},
+        { grant: GRANT_USER_GROUP },
       );
     }
     else if (userGroups != null && userGroups.length > 0) {
       grantConditions.push(
-        {grant: GRANT_USER_GROUP, grantedGroup: { $in: userGroups }},
+        { grant: GRANT_USER_GROUP, grantedGroup: { $in: userGroups } },
       );
     }
 
     this.query = this.query
       .and({
-        $or: grantConditions
+        $or: grantConditions,
       });
 
     return this;
@@ -234,7 +242,7 @@ class PageQueryBuilder {
 
   addConditionToPagenate(offset, limit, sortOpt) {
     this.query = this.query
-      .sort(sortOpt).skip(offset).limit(limit);
+      .sort(sortOpt).skip(offset).limit(limit); // eslint-disable-line newline-per-chained-call
 
     return this;
   }
@@ -244,7 +252,7 @@ class PageQueryBuilder {
       .populate({
         path: 'lastUpdateUser',
         select: userPublicFields,
-        populate: imagePopulation
+        populate: imagePopulation,
       });
     return this;
   }
@@ -253,7 +261,6 @@ class PageQueryBuilder {
     this.query = populateDataToShowRevision(this.query, userPublicFields, imagePopulation);
     return this;
   }
-
 }
 
 module.exports = function(crowi) {
@@ -285,7 +292,7 @@ module.exports = function(crowi) {
   };
 
   pageSchema.methods.isPublic = function() {
-    if (!this.grant || this.grant == GRANT_PUBLIC) {
+    if (!this.grant || this.grant === GRANT_PUBLIC) {
       return true;
     }
 
@@ -333,11 +340,15 @@ module.exports = function(crowi) {
       return true;
     }
 
+    // comparing ObjectId with string
+    // eslint-disable-next-line eqeqeq
     return (this.latestRevision == this.revision._id.toString());
   };
 
   pageSchema.methods.isUpdatable = function(previousRevision) {
-    var revision = this.latestRevision || this.revision;
+    const revision = this.latestRevision || this.revision;
+    // comparing ObjectId with string
+    // eslint-disable-next-line eqeqeq
     if (revision != previousRevision) {
       return false;
     }
@@ -345,19 +356,18 @@ module.exports = function(crowi) {
   };
 
   pageSchema.methods.isLiked = function(userData) {
-    return this.liker.some(function(likedUser) {
-      return likedUser == userData._id.toString();
+    return this.liker.some((likedUser) => {
+      return likedUser === userData._id.toString();
     });
   };
 
   pageSchema.methods.like = function(userData) {
-    var self = this,
-      Page = self;
+    const self = this;
 
-    return new Promise(function(resolve, reject) {
-      var added = self.liker.addToSet(userData._id);
+    return new Promise(((resolve, reject) => {
+      const added = self.liker.addToSet(userData._id);
       if (added.length > 0) {
-        self.save(function(err, data) {
+        self.save((err, data) => {
           if (err) {
             return reject(err);
           }
@@ -369,19 +379,17 @@ module.exports = function(crowi) {
         debug('liker not updated');
         return reject(self);
       }
-    });
-
+    }));
   };
 
   pageSchema.methods.unlike = function(userData, callback) {
-    var self = this,
-      Page = self;
+    const self = this;
 
-    return new Promise(function(resolve, reject) {
-      var beforeCount = self.liker.length;
+    return new Promise(((resolve, reject) => {
+      const beforeCount = self.liker.length;
       self.liker.pull(userData._id);
-      if (self.liker.length != beforeCount) {
-        self.save(function(err, data) {
+      if (self.liker.length !== beforeCount) {
+        self.save((err, data) => {
           if (err) {
             return reject(err);
           }
@@ -392,8 +400,7 @@ module.exports = function(crowi) {
         debug('liker not updated');
         return reject(self);
       }
-    });
-
+    }));
   };
 
   pageSchema.methods.isSeenUser = function(userData) {
@@ -437,14 +444,14 @@ module.exports = function(crowi) {
   pageSchema.methods.updateExtended = function(extended) {
     const page = this;
     page.extended = extended;
-    return new Promise(function(resolve, reject) {
-      return page.save(function(err, doc) {
+    return new Promise(((resolve, reject) => {
+      return page.save((err, doc) => {
         if (err) {
           return reject(err);
         }
         return resolve(doc);
       });
-    });
+    }));
   };
 
   pageSchema.methods.initLatestRevisionField = async function(revisionId) {
@@ -484,7 +491,7 @@ module.exports = function(crowi) {
     if (grant === GRANT_USER_GROUP) {
       this.grantedGroup = grantUserGroupId;
     }
-  }
+  };
 
 
   pageSchema.statics.updateCommentCount = function(pageId) {
@@ -493,51 +500,52 @@ module.exports = function(crowi) {
     const self = this;
     const Comment = crowi.model('Comment');
     return Comment.countCommentByPageId(pageId)
-    .then(function(count) {
-      self.update({_id: pageId}, {commentCount: count}, {}, function(err, data) {
-        if (err) {
-          debug('Update commentCount Error', err);
-          throw err;
-        }
+      .then((count) => {
+        self.update({ _id: pageId }, { commentCount: count }, {}, (err, data) => {
+          if (err) {
+            debug('Update commentCount Error', err);
+            throw err;
+          }
 
-        return data;
+          return data;
+        });
       });
-    });
   };
 
   pageSchema.statics.getGrantLabels = function() {
-    var grantLabels = {};
-    grantLabels[GRANT_PUBLIC]     = 'Public'; // 公開
+    const grantLabels = {};
+    grantLabels[GRANT_PUBLIC] = 'Public'; // 公開
     grantLabels[GRANT_RESTRICTED] = 'Anyone with the link'; // リンクを知っている人のみ
-    //grantLabels[GRANT_SPECIFIED]  = 'Specified users only'; // 特定ユーザーのみ
+    // grantLabels[GRANT_SPECIFIED]  = 'Specified users only'; // 特定ユーザーのみ
     grantLabels[GRANT_USER_GROUP] = 'Only inside the group'; // 特定グループのみ
-    grantLabels[GRANT_OWNER]      = 'Just me'; // 自分のみ
+    grantLabels[GRANT_OWNER] = 'Just me'; // 自分のみ
 
     return grantLabels;
   };
 
   pageSchema.statics.getUserPagePath = function(user) {
-    return '/user/' + user.username;
+    return `/user/${user.username}`;
   };
 
   pageSchema.statics.getDeletedPageName = function(path) {
-    if (path.match('\/')) {
+    if (path.match('/')) {
+      // eslint-disable-next-line no-param-reassign
       path = path.substr(1);
     }
-    return '/trash/' + path;
+    return `/trash/${path}`;
   };
 
   pageSchema.statics.getRevertDeletedPageName = function(path) {
-    return path.replace('\/trash', '');
+    return path.replace('/trash', '');
   };
 
   pageSchema.statics.isDeletableName = function(path) {
-    var notDeletable = [
-      /^\/user\/[^\/]+$/, // user page
+    const notDeletable = [
+      /^\/user\/[^/]+$/, // user page
     ];
 
-    for (var i = 0; i < notDeletable.length; i++) {
-      var pattern = notDeletable[i];
+    for (let i = 0; i < notDeletable.length; i++) {
+      const pattern = notDeletable[i];
       if (path.match(pattern)) {
         return false;
       }
@@ -547,25 +555,24 @@ module.exports = function(crowi) {
   };
 
   pageSchema.statics.isCreatableName = function(name) {
-    var forbiddenPages = [
+    const forbiddenPages = [
       /\^|\$|\*|\+|#|%/,
       /^\/-\/.*/,
       /^\/_r\/.*/,
       /^\/_apix?(\/.*)?/,
       /^\/?https?:\/\/.+$/, // avoid miss in renaming
-      /\/{2,}/,             // avoid miss in renaming
-      /\s+\/\s+/,           // avoid miss in renaming
+      /\/{2,}/, // avoid miss in renaming
+      /\s+\/\s+/, // avoid miss in renaming
       /.+\/edit$/,
       /.+\.md$/,
       /^\/(installer|register|login|logout|admin|me|files|trash|paste|comments)(\/.*|$)/,
     ];
 
-    var isCreatable = true;
-    forbiddenPages.forEach(function(page) {
-      var pageNameReg = new RegExp(page);
+    let isCreatable = true;
+    forbiddenPages.forEach((page) => {
+      const pageNameReg = new RegExp(page);
       if (name.match(pageNameReg)) {
         isCreatable = false;
-        return ;
       }
     });
 
@@ -574,12 +581,11 @@ module.exports = function(crowi) {
 
   pageSchema.statics.fixToCreatableName = function(path) {
     return path
-      .replace(/\/\//g, '/')
-    ;
+      .replace(/\/\//g, '/');
   };
 
   pageSchema.statics.updateRevision = function(pageId, revisionId, cb) {
-    this.update({_id: pageId}, {revision: revisionId}, {}, function(err, data) {
+    this.update({ _id: pageId }, { revision: revisionId }, {}, (err, data) => {
       cb(err, data);
     });
   };
@@ -590,7 +596,7 @@ module.exports = function(crowi) {
    * @param {User} user
    */
   pageSchema.statics.isAccessiblePageByViewer = async function(id, user) {
-    const baseQuery = this.count({_id: id});
+    const baseQuery = this.count({ _id: id });
 
     let userGroups = [];
     if (user != null) {
@@ -612,7 +618,7 @@ module.exports = function(crowi) {
    * @param {UserGroup[]} userGroups List of UserGroup instances
    */
   pageSchema.statics.findByIdAndViewer = async function(id, user, userGroups) {
-    const baseQuery = this.findOne({_id: id});
+    const baseQuery = this.findOne({ _id: id });
 
     let relatedUserGroups = userGroups;
     if (user != null && relatedUserGroups == null) {
@@ -632,7 +638,7 @@ module.exports = function(crowi) {
     if (path == null) {
       return null;
     }
-    return this.findOne({path});
+    return this.findOne({ path });
   };
 
   /**
@@ -645,7 +651,7 @@ module.exports = function(crowi) {
       throw new Error('path is required.');
     }
 
-    const baseQuery = this.findOne({path});
+    const baseQuery = this.findOne({ path });
 
     let relatedUserGroups = userGroups;
     if (user != null && relatedUserGroups == null) {
@@ -677,7 +683,7 @@ module.exports = function(crowi) {
     const ancestorsPaths = extractToAncestorsPaths(path);
 
     // pick the longest one
-    const baseQuery = this.findOne({path: { $in: ancestorsPaths }}).sort({path: -1});
+    const baseQuery = this.findOne({ path: { $in: ancestorsPaths } }).sort({ path: -1 });
 
     let relatedUserGroups = userGroups;
     if (user != null && relatedUserGroups == null) {
@@ -693,7 +699,7 @@ module.exports = function(crowi) {
   };
 
   pageSchema.statics.findByRedirectTo = function(path) {
-    return this.findOne({redirectTo: path});
+    return this.findOne({ redirectTo: path });
   };
 
   /**
@@ -724,7 +730,7 @@ module.exports = function(crowi) {
    * @param {any} option
    */
   pageSchema.statics.findListByCreator = async function(targetUser, currentUser, option) {
-    const opt = Object.assign({sort: 'createdAt', desc: -1}, option);
+    const opt = Object.assign({ sort: 'createdAt', desc: -1 }, option);
     const builder = new PageQueryBuilder(this.find({ creator: targetUser._id }));
 
     let showAnyoneKnowsLink = null;
@@ -751,7 +757,9 @@ module.exports = function(crowi) {
     builder.populateDataToList(User.USER_PUBLIC_FIELDS, User.IMAGE_POPULATION);
     const pages = await builder.query.exec('find');
 
-    const result = { pages, totalCount, offset: opt.offset, limit: opt.limit };
+    const result = {
+      pages, totalCount, offset: opt.offset, limit: opt.limit,
+    };
     return result;
   };
 
@@ -768,7 +776,7 @@ module.exports = function(crowi) {
 
     const User = crowi.model('User');
 
-    const opt = Object.assign({sort: 'updatedAt', desc: -1}, option);
+    const opt = Object.assign({ sort: 'updatedAt', desc: -1 }, option);
     const sortOpt = {};
     sortOpt[opt.sort] = opt.desc;
 
@@ -792,7 +800,9 @@ module.exports = function(crowi) {
     builder.populateDataToList(User.USER_PUBLIC_FIELDS, User.IMAGE_POPULATION);
     const pages = await builder.query.exec('find');
 
-    const result = { pages, totalCount, offset: opt.offset, limit: opt.limit };
+    const result = {
+      pages, totalCount, offset: opt.offset, limit: opt.limit,
+    };
     return result;
   }
 
@@ -848,12 +858,12 @@ module.exports = function(crowi) {
   pageSchema.statics.findTemplate = function(path) {
     const templatePath = nodePath.posix.dirname(path);
     const pathList = generatePathsOnTree(path, []);
-    const regexpList = pathList.map(path => new RegExp(`^${escapeStringRegexp(path)}/_{1,2}template$`));
+    const regexpList = pathList.map((path) => { return new RegExp(`^${escapeStringRegexp(path)}/_{1,2}template$`) });
 
     return this
-      .find({path: {$in: regexpList}})
-      .populate({path: 'revision', model: 'Revision'})
-      .then(templates => {
+      .find({ path: { $in: regexpList } })
+      .populate({ path: 'revision', model: 'Revision' })
+      .then((templates) => {
         return fetchTemplate(templates, templatePath);
       });
   };
@@ -907,7 +917,7 @@ module.exports = function(crowi) {
     const decendantsTemplate = assignDecendantsTemplate(templates, templatePath);
 
     if (childrenTemplate) {
-      templateBody =  childrenTemplate.revision.body;
+      templateBody = childrenTemplate.revision.body;
     }
     else if (decendantsTemplate) {
       templateBody = decendantsTemplate.revision.body;
@@ -943,11 +953,11 @@ module.exports = function(crowi) {
   }
 
   async function validateAppliedScope(user, grant, grantUserGroupId) {
-    if (grant == GRANT_USER_GROUP && grantUserGroupId == null) {
+    if (grant === GRANT_USER_GROUP && grantUserGroupId == null) {
       throw new Error('grant userGroupId is not specified');
     }
 
-    if (grant == GRANT_USER_GROUP) {
+    if (grant === GRANT_USER_GROUP) {
       const UserGroupRelation = crowi.model('UserGroupRelation');
       const count = await UserGroupRelation.countByGroupIdAndUser(grantUserGroupId, user);
 
@@ -968,7 +978,7 @@ module.exports = function(crowi) {
     const socketClientId = options.socketClientId || null;
 
     // sanitize path
-    path = crowi.xss.process(path);
+    path = crowi.xss.process(path); // eslint-disable-line no-param-reassign
 
     let grant = options.grant || GRANT_PUBLIC;
     // force public
@@ -976,7 +986,7 @@ module.exports = function(crowi) {
       grant = GRANT_PUBLIC;
     }
 
-    const isExist = await this.count({path: path});
+    const isExist = await this.count({ path });
 
     if (isExist) {
       throw new Error('Cannot create new page to existed path');
@@ -993,9 +1003,11 @@ module.exports = function(crowi) {
     page.applyScope(user, grant, grantUserGroupId);
 
     let savedPage = await page.save();
-    const newRevision = Revision.prepareRevision(savedPage, body, null, user, {format: format});
+    const newRevision = Revision.prepareRevision(savedPage, body, null, user, { format });
     const revision = await pushRevision(savedPage, newRevision, user, grant, grantUserGroupId);
-    savedPage = await this.findByPath(revision.path).populate('revision').populate('creator');
+    savedPage = await this.findByPath(revision.path)
+      .populate('revision')
+      .populate('creator');
 
     if (socketClientId != null) {
       pageEvent.emit('create', savedPage, user, socketClientId);
@@ -1019,7 +1031,9 @@ module.exports = function(crowi) {
     let savedPage = await pageData.save();
     const newRevision = await Revision.prepareRevision(pageData, body, previousBody, user);
     const revision = await pushRevision(savedPage, newRevision, user, grant, grantUserGroupId);
-    savedPage = await this.findByPath(revision.path).populate('revision').populate('creator');
+    savedPage = await this.findByPath(revision.path)
+      .populate('revision')
+      .populate('creator');
 
     if (isSyncRevisionToHackmd) {
       savedPage = await this.syncRevisionToHackmd(savedPage);
@@ -1055,27 +1069,25 @@ module.exports = function(crowi) {
   };
 
   pageSchema.statics.deletePage = async function(pageData, user, options = {}) {
-    const newPath = this.getDeletedPageName(pageData.path)
-      , isTrashed = checkIfTrashed(pageData.path)
-      , socketClientId = options.socketClientId || null
-      ;
+    const newPath = this.getDeletedPageName(pageData.path);
+    const isTrashed = checkIfTrashed(pageData.path);
 
+    const socketClientId = options.socketClientId || null;
     if (this.isDeletableName(pageData.path)) {
       if (isTrashed) {
         return this.completelyDeletePage(pageData, user, options);
       }
 
       pageData.status = STATUS_DELETED;
-      const updatedPageData = await this.rename(pageData, newPath, user, {createRedirectPage: true});
+      const updatedPageData = await this.rename(pageData, newPath, user, { createRedirectPage: true });
 
       if (socketClientId != null) {
         pageEvent.emit('delete', updatedPageData, user, socketClientId);
       }
       return updatedPageData;
     }
-    else {
-      return Promise.reject('Page is not deletable.');
-    }
+
+    return Promise.reject(new Error('Page is not deletable.'));
   };
 
   const checkIfTrashed = (path) => {
@@ -1094,7 +1106,7 @@ module.exports = function(crowi) {
     const pages = result.pages;
 
     let updatedPage = null;
-    await Promise.all(pages.map(page => {
+    await Promise.all(pages.map((page) => {
       const isParent = (page.path === targetPage.path);
       const p = this.deletePage(page, user, options);
       if (isParent) {
@@ -1135,7 +1147,7 @@ module.exports = function(crowi) {
     const pages = result.pages;
 
     let updatedPage = null;
-    await Promise.all(pages.map(page => {
+    await Promise.all(pages.map((page) => {
       const isParent = (page.path === targetPage.path);
       const p = this.revertDeletedPage(page, user, options);
       if (isParent) {
@@ -1187,7 +1199,7 @@ module.exports = function(crowi) {
     const result = await this.findListWithDescendants(path, user, findOpts);
     const pages = result.pages;
 
-    await Promise.all(pages.map(page => {
+    await Promise.all(pages.map((page) => {
       return this.completelyDeletePage(page, user, options);
     }));
 
@@ -1227,15 +1239,14 @@ module.exports = function(crowi) {
   pageSchema.statics.rename = async function(pageData, newPagePath, user, options) {
     validateCrowi();
 
-    const Page = this
-      , Revision = crowi.model('Revision')
-      , path = pageData.path
-      , createRedirectPage = options.createRedirectPage || 0
-      , socketClientId = options.socketClientId || null
-      ;
+    const Page = this;
+    const Revision = crowi.model('Revision');
+    const path = pageData.path;
+    const createRedirectPage = options.createRedirectPage || 0;
+    const socketClientId = options.socketClientId || null;
 
     // sanitize path
-    newPagePath = crowi.xss.process(newPagePath);
+    newPagePath = crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
 
     // update Page
     pageData.path = newPagePath;
@@ -1244,11 +1255,11 @@ module.exports = function(crowi) {
     const updatedPageData = await pageData.save();
 
     // update Rivisions
-    await Revision.updateRevisionListByPath(path, {path: newPagePath}, {});
+    await Revision.updateRevisionListByPath(path, { path: newPagePath }, {});
 
     if (createRedirectPage) {
-      const body = 'redirect ' + newPagePath;
-      await Page.create(path, body, user, {redirectTo: newPagePath});
+      const body = `redirect ${newPagePath}`;
+      await Page.create(path, body, user, { redirectTo: newPagePath });
     }
 
     pageEvent.emit('delete', pageData, user, socketClientId);
@@ -1261,13 +1272,13 @@ module.exports = function(crowi) {
     validateCrowi();
 
     const path = pageData.path;
-    const pathRegExp = new RegExp('^' + escapeStringRegexp(path), 'i');
+    const pathRegExp = new RegExp(`^${escapeStringRegexp(path)}`, 'i');
 
     // sanitize path
-    newPagePathPrefix = crowi.xss.process(newPagePathPrefix);
+    newPagePathPrefix = crowi.xss.process(newPagePathPrefix); // eslint-disable-line no-param-reassign
 
     const result = await this.findListWithDescendants(path, user, options);
-    await Promise.all(result.pages.map(page => {
+    await Promise.all(result.pages.map((page) => {
       const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
       return this.rename(page, newPagePath, user, options);
     }));
@@ -1325,7 +1336,7 @@ module.exports = function(crowi) {
 
   pageSchema.statics.getHistories = function() {
     // TODO
-    return;
+
   };
 
   /**

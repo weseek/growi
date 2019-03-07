@@ -1,3 +1,4 @@
+/* eslint-disable react/no-access-state-in-setstate */
 import React from 'react';
 import PropTypes from 'prop-types';
 
@@ -32,7 +33,7 @@ export default class PageComments extends React.Component {
       errorMessageForDeleting: undefined,
     };
 
-    this.growiRenderer = new GrowiRenderer(this.props.crowi, this.props.crowiOriginRenderer, {mode: 'comment'});
+    this.growiRenderer = new GrowiRenderer(this.props.crowi, this.props.crowiOriginRenderer, { mode: 'comment' });
 
     this.init = this.init.bind(this);
     this.confirmToDeleteComment = this.confirmToDeleteComment.bind(this);
@@ -51,8 +52,8 @@ export default class PageComments extends React.Component {
       return;
     }
 
-    const layoutType = this.props.crowi.getConfig()['layoutType'];
-    this.setState({isLayoutTypeGrowi: 'crowi-plus' === layoutType || 'growi' === layoutType});
+    const layoutType = this.props.crowi.getConfig().layoutType;
+    this.setState({ isLayoutTypeGrowi: layoutType === 'crowi-plus' || layoutType === 'growi' });
 
     this.retrieveData();
   }
@@ -62,35 +63,36 @@ export default class PageComments extends React.Component {
    */
   retrieveData() {
     // get data (desc order array)
-    this.props.crowi.apiGet('/comments.get', {page_id: this.props.pageId})
-      .then(res => {
+    this.props.crowi.apiGet('/comments.get', { page_id: this.props.pageId })
+      .then((res) => {
         if (res.ok) {
-          this.setState({comments: res.comments});
+          this.setState({ comments: res.comments });
         }
       });
   }
 
   confirmToDeleteComment(comment) {
-    this.setState({commentToDelete: comment});
+    this.setState({ commentToDelete: comment });
     this.showDeleteConfirmModal();
   }
 
   deleteComment() {
     const comment = this.state.commentToDelete;
 
-    this.props.crowi.apiPost('/comments.remove', {comment_id: comment._id})
-    .then(res => {
-      if (res.ok) {
-        this.findAndSplice(comment);
-      }
-      this.closeDeleteConfirmModal();
-    }).catch(err => {
-      this.setState({errorMessageForDeleting: err.message});
-    });
+    this.props.crowi.apiPost('/comments.remove', { comment_id: comment._id })
+      .then((res) => {
+        if (res.ok) {
+          this.findAndSplice(comment);
+        }
+        this.closeDeleteConfirmModal();
+      })
+      .catch((err) => {
+        this.setState({ errorMessageForDeleting: err.message });
+      });
   }
 
   findAndSplice(comment) {
-    let comments = this.state.comments;
+    const comments = this.state.comments;
 
     const index = comments.indexOf(comment);
     if (index < 0) {
@@ -98,11 +100,11 @@ export default class PageComments extends React.Component {
     }
     comments.splice(index, 1);
 
-    this.setState({comments});
+    this.setState({ comments });
   }
 
   showDeleteConfirmModal() {
-    this.setState({isDeleteConfirmModalShown: true});
+    this.setState({ isDeleteConfirmModalShown: true });
   }
 
   closeDeleteConfirmModal() {
@@ -123,35 +125,40 @@ export default class PageComments extends React.Component {
   generateCommentElements(comments) {
     return comments.map((comment) => {
       return (
-        <Comment key={comment._id} comment={comment}
+        <Comment
+          key={comment._id}
+          comment={comment}
           currentUserId={this.props.crowi.me}
           currentRevisionId={this.props.revisionId}
           deleteBtnClicked={this.confirmToDeleteComment}
           crowi={this.props.crowi}
-          crowiRenderer={this.growiRenderer} />
+          crowiRenderer={this.growiRenderer}
+        />
       );
     });
   }
 
   render() {
-    let currentComments = [];
-    let newerComments = [];
-    let olderComments = [];
+    const currentComments = [];
+    const newerComments = [];
+    const olderComments = [];
 
     let comments = this.state.comments;
     if (this.state.isLayoutTypeGrowi) {
       // replace with asc order array
-      comments = comments.slice().reverse();  // non-destructive reverse
+      comments = comments.slice().reverse(); // non-destructive reverse
     }
 
     // divide by revisionId and createdAt
     const revisionId = this.props.revisionId;
     const revisionCreatedAt = this.props.revisionCreatedAt;
     comments.forEach((comment) => {
+      // comparing ObjectId
+      // eslint-disable-next-line eqeqeq
       if (comment.revision == revisionId) {
         currentComments.push(comment);
       }
-      else if (Date.parse(comment.createdAt)/1000 > revisionCreatedAt) {
+      else if (Date.parse(comment.createdAt) / 1000 > revisionCreatedAt) {
         newerComments.push(comment);
       }
       else {
@@ -237,6 +244,7 @@ export default class PageComments extends React.Component {
       </div>
     );
   }
+
 }
 
 PageComments.propTypes = {

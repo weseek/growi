@@ -19,6 +19,7 @@ export default class UserDate extends React.Component {
       </span>
     );
   }
+
 }
 
 UserDate.propTypes = {
@@ -32,4 +33,3 @@ UserDate.defaultProps = {
   format: 'YYYY/MM/DD HH:mm:ss',
   className: '',
 };
-

@@ -1,5 +1,3 @@
-'use strict';
-
 process.env.NODE_ENV = 'test';
 
 require('module-alias/register');
@@ -8,37 +6,34 @@ const helpers = require('@commons/util/helpers');
 
 const express = require('express');
 
-let testDBUtil;
-
-testDBUtil = {
-  generateFixture: function(conn, model, fixture) {
-    if (conn.readyState == 0) {
+const testDBUtil = {
+  generateFixture(conn, model, fixture) {
+    if (conn.readyState === 0) {
       return Promise.reject();
     }
     const m = conn.model(model);
 
-    return new Promise(function(resolve, reject) {
+    return new Promise(((resolve) => {
       const createdModels = [];
-      fixture.reduce(function(promise, entity) {
-        return promise.then(function() {
-          const newDoc = new m;
+      fixture.reduce((promise, entity) => {
+        return promise.then(() => {
+          const newDoc = new m(); // eslint-disable-line new-cap
 
-          Object.keys(entity).forEach(function(k) {
+          Object.keys(entity).forEach((k) => {
             newDoc[k] = entity[k];
           });
-          return new Promise(function(r, rj) {
-            newDoc.save(function(err, data) {
-
+          return new Promise(((r) => {
+            newDoc.save((err, data) => {
               createdModels.push(data);
               return r();
             });
-          });
+          }));
         });
-      }, Promise.resolve()).then(function() {
+      }, Promise.resolve()).then(() => {
         resolve(createdModels);
       });
-    });
-  }
+    }));
+  },
 };
 
 global.express = express;
