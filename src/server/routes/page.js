@@ -94,6 +94,7 @@ module.exports = function(crowi, app) {
 
     if (crowi.slack) {
       const promises = slackChannels.split(',').map(function(chan) {
+        logger.debug('crowi.slack is exist', crowi.slack);
         return crowi.slack.postPage(page, user, chan, updateOrCreate, previousRevision);
       });
 
