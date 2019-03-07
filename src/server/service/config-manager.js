@@ -15,6 +15,7 @@ const KEYS_FOR_SAML_USE_ONLY_ENV_OPTION = [
 ];
 
 class ConfigManager {
+
   constructor(configModel) {
     this.configModel = configModel;
     this.configLoader = new ConfigLoader(this.configModel);
@@ -219,6 +220,7 @@ class ConfigManager {
   convertInsertValue(value) {
     return JSON.stringify(value === '' ? null : value);
   }
+
 }
 
 module.exports = ConfigManager;

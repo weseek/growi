@@ -1,4 +1,5 @@
 class Xss {
+
   constructor(xssOption) {
     const xss = require('xss');
 
@@ -29,6 +30,7 @@ class Xss {
   process(document) {
     return this.myxss.process(document);
   }
+
 }
 
 module.exports = Xss;

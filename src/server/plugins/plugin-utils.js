@@ -7,6 +7,7 @@ const PluginUtilsV2 = require('./plugin-utils-v2');
 const pluginUtilsV2 = new PluginUtilsV2();
 
 class PluginUtils {
+
   /**
    * return a definition objects that has following structure:
    *
@@ -88,6 +89,7 @@ class PluginUtils {
     const plugins = this.listPlugins(rootDir);
     return Object.keys(plugins);
   }
+
 }
 
 module.exports = PluginUtils;

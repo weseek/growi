@@ -7,6 +7,7 @@ const onHeaders = require('on-headers');
 
 
 class CrowiDev {
+
   /**
    * Creates an instance of CrowiDev.
    * @param {Crowi} crowi
@@ -137,6 +138,7 @@ class CrowiDev {
       }
     }
   }
+
 }
 
 module.exports = CrowiDev;

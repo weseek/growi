@@ -12,6 +12,7 @@ const SamlStrategy = require('passport-saml').Strategy;
  * the service class of Passport
  */
 class PassportService {
+
   // see '/lib/form/login.js'
   static get USERNAME_FIELD() { return 'loginForm[username]' }
 
@@ -539,6 +540,7 @@ class PassportService {
     const key = `security:passport-${providerType}:isSameEmailTreatedAsIdenticalUser`;
     return this.crowi.configManager.getConfig('crowi', key);
   }
+
 }
 
 module.exports = PassportService;

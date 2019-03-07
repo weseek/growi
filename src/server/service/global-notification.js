@@ -4,6 +4,7 @@ const path = require('path');
  * the service class of GlobalNotificationSetting
  */
 class GlobalNotificationService {
+
   constructor(crowi) {
     this.crowi = crowi;
     this.config = crowi.getConfig();
@@ -184,6 +185,7 @@ class GlobalNotificationService {
 
     this.sendNotification(notifications, option);
   }
+
 }
 
 module.exports = GlobalNotificationService;

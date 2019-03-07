@@ -29,11 +29,13 @@ schema.plugin(uniqueValidator);
  * @class DuplicatedUsernameException
  */
 class DuplicatedUsernameException {
+
   constructor(message, user) {
     this.name = this.constructor.name;
     this.message = message;
     this.user = user;
   }
+
 }
 
 /**
@@ -42,6 +44,7 @@ class DuplicatedUsernameException {
  * @class ExternalAccount
  */
 class ExternalAccount {
+
   /**
    * limit items num for pagination
    *
@@ -171,6 +174,7 @@ class ExternalAccount {
         debug('Error on pagination:', err);
       });
   }
+
 }
 
 module.exports = function(crowi) {

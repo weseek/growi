@@ -11,6 +11,7 @@ const CdnResource = require('../models/cdn-resource');
 
 
 class CdnResourcesDownloader {
+
   constructor() {
     this.logger = require('@alias/logger')('growi:service:CdnResourcesDownloader');
   }
@@ -144,6 +145,7 @@ class CdnResourcesDownloader {
 
     return streamToPromise(stream);
   }
+
 }
 
 module.exports = CdnResourcesDownloader;

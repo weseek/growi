@@ -2,6 +2,7 @@ const logger = require('@alias/logger')('growi:plugins:PluginService');
 const PluginUtils = require('./plugin-utils');
 
 class PluginService {
+
   constructor(crowi, app) {
     this.crowi = crowi;
     this.app = app;
@@ -44,6 +45,7 @@ class PluginService {
         });
     }
   }
+
 }
 
 module.exports = PluginService;

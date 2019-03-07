@@ -8,6 +8,7 @@ const envToModuleMappings = {
 };
 
 class FileUploaderFactory {
+
   getUploader(crowi) {
     if (this.uploader == null) {
       const method = envToModuleMappings[process.env.FILE_UPLOAD] || 'aws';
@@ -17,6 +18,7 @@ class FileUploaderFactory {
 
     return this.uploader;
   }
+
 }
 
 const factory = new FileUploaderFactory();

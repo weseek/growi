@@ -117,6 +117,7 @@ const populateDataToShowRevision = (page, userPublicFields, imagePopulation) => 
 
 
 class PageQueryBuilder {
+
   constructor(query) {
     this.query = query;
   }
@@ -261,6 +262,7 @@ class PageQueryBuilder {
     this.query = populateDataToShowRevision(this.query, userPublicFields, imagePopulation);
     return this;
   }
+
 }
 
 module.exports = function(crowi) {

@@ -14,6 +14,7 @@ const schema = new mongoose.Schema({
 schema.plugin(mongoosePaginate);
 
 class UserGroup {
+
   /**
    * public fields for UserGroup model
    *
@@ -127,6 +128,7 @@ class UserGroup {
     this.name = name;
     return this.save();
   }
+
 }
 
 
