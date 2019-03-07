@@ -39,7 +39,6 @@ export default class PageTagForm extends React.Component {
           defaultSelected={this.props.pageTags}
           emptyLabel={''}
           isLoading={this.state.isLoading}
-          labelKey="name"
           minLength={1}
           multiple={true}
           newSelectionPrefix=""
@@ -47,15 +46,14 @@ export default class PageTagForm extends React.Component {
           onChange={(selected) => {
             this.setState({ selected });
           }}
-          onSearch={query => {
+          onSearch={async query => {
             this.setState({ isLoading: true });
-            this.crowi.apiGet('/searchTag', { q: query })
-              .then(res => {
-                this.setState({
-                  resultTags: Array.from(new Set([res.data, query])), // use Set for de-duplication
-                  isLoading: false,
-                });
-              });
+            const res = await this.crowi.apiGet('/tags.search', { q: query });
+            res.tags.push(query); // selectable query
+            this.setState({
+              resultTags: Array.from(new Set(res.tags)), // use Set for de-duplication
+              isLoading: false,
+            });
           }}
           options={this.state.resultTags} // Search result (Some tag names)
           placeholder="tag name"
