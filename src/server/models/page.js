@@ -301,7 +301,7 @@ module.exports = function(crowi) {
     return false;
   };
 
-  pageSchema.methods.updateTags = async function (newTagsName) {
+  pageSchema.methods.updateTags = async function(newTagsName) {
     const page = this;
     const PageTagRelation = mongoose.model('PageTagRelation');
     const Tag = mongoose.model('Tag');
@@ -309,19 +309,19 @@ module.exports = function(crowi) {
     const newTags = [newTagsName]; // [TODO] listing requested Tags on client side
 
     // get tags relate this page
-    const relatedTags = await PageTagRelation.find({relatedPage: page._id}).populate('relatedTag').select('-_id relatedTag');
+    const relatedTags = await PageTagRelation.find({ relatedPage: page._id }).populate('relatedTag').select('-_id relatedTag');
 
     // unlink relations
-    const unlinkTags = relatedTags.filter(tag => !newTags.includes(tag.relatedTag.name));
-    unlinkTags.forEach(tag => {
+    const unlinkTags = relatedTags.filter((tag) => { return !newTags.includes(tag.relatedTag.name) });
+    unlinkTags.forEach((tag) => {
       PageTagRelation.remove({
         relatedPage: page._id,
-        relatedTag: tag.relatedTag._id
+        relatedTag: tag.relatedTag._id,
       });
     });
 
     // create tag and relations
-    newTags.forEach(async tag => {
+    newTags.forEach(async (tag) => {
       const setTag = await Tag.findOrCreate(tag);
       PageTagRelation.createIfNotExist(page._id, setTag._id);
     });
