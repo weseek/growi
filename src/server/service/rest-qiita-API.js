@@ -16,6 +16,7 @@ function getAxios(team, token) {
  */
 
 class RestQiitaAPIService {
+
   constructor(crowi) {
     this.crowi = crowi;
     this.config = crowi.getConfig();
@@ -79,6 +80,7 @@ class RestQiitaAPIService {
       return { pages, total };
     }
   }
+
 }
 
 module.exports = RestQiitaAPIService;

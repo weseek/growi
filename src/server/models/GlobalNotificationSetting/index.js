@@ -39,6 +39,7 @@ const generatePathsToMatch = (originalPath) => {
  * @class GlobalNotificationSetting
  */
 class GlobalNotificationSetting {
+
   constructor(crowi) {
     this.crowi = crowi;
   }
@@ -95,6 +96,7 @@ class GlobalNotificationSetting {
 
     return settings;
   }
+
 }
 
 

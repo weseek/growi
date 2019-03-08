@@ -10,6 +10,7 @@ const cdnLocalStyleWebRoot = '/styles/cdn';
 
 
 class CdnResourcesService {
+
   constructor() {
     this.logger = require('@alias/logger')('growi:service:CdnResourcesService');
 
@@ -161,6 +162,7 @@ class CdnResourcesService {
 
     return this.generateStyleTag(manifest, this.noCdn);
   }
+
 }
 
 module.exports = CdnResourcesService;

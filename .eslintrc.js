@@ -71,7 +71,7 @@ module.exports = {
     'no-underscore-dangle': 'off',
     'no-useless-return': 'off',
     'prefer-destructuring': 'off',
-    indent: [
+    'indent': [
       'error',
       2,
       {
@@ -82,20 +82,6 @@ module.exports = {
         FunctionExpression: { body: 1, parameters: 2 },
       },
     ],
-    // "key-spacing": [
-    //   "error", {
-    //     "beforeColon": false,
-    //     "afterColon": true,
-    //     "mode": "minimum"
-    //   }
-    // ],
-    // "keyword-spacing": [
-    //   "error", {}
-    // ],
-    // "linebreak-style": [
-    //   "error",
-    //   "unix"
-    // ],
     'no-unused-vars': [
       'error',
       { args: 'none' },
@@ -105,6 +91,15 @@ module.exports = {
       { classes: 'always' },
     ],
     'radix': 'off',
+    'semi': [
+      'error',
+      'always',
+      { omitLastInOneLineBlock: true },
+    ],
+    'space-before-function-paren': [
+      'error',
+      'never',
+    ],
     'react/destructuring-assignment': 'off',
     'react/forbid-prop-types': 'off',
     'react/jsx-filename-extension': [
@@ -118,22 +113,8 @@ module.exports = {
     'react/require-default-props': 'off',
     'react/self-closing-comp': 'off',
     'react/sort-comp': 'off',
-    // "react/jsx-uses-vars": 1,
-    // "react/no-string-refs": "off",
     'jsx-a11y/img-redundant-alt': 'off',
-    semi: [
-      'error',
-      'always',
-      { omitLastInOneLineBlock: true },
-    ],
-    // "space-before-blocks": [
-    //   "error",
-    //   "always"
-    // ],
-    'space-before-function-paren': [
-      'error',
-      'never',
-    ],
+    // eslint-plugin-import rules
     'import/no-extraneous-dependencies': 'off',
     'import/no-dynamic-require': 'off',
     'import/no-unresolved': [2, { ignore: ['^@'] }], // ignore @alias/..., @commons/..., ...

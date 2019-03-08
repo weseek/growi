@@ -4,6 +4,7 @@ const logger = require('@alias/logger')('growi:InterceptorManager');
  * the manager class of Interceptor
  */
 class InterceptorManager {
+
   constructor() {
     this.interceptorAndOrders = []; /* [
                                           {interceptor: instanceA, order: 200 },
@@ -76,11 +77,11 @@ class InterceptorManager {
         return this.doProcess(interceptor, contextName, ...args);
       })
       // sequential
-      .concat([
-        sequentials.reduce((prevPromise, nextInterceptor) => {
-          return prevPromise.then((...results) => { return this.doProcess(nextInterceptor, contextName, ...results) });
-        }, Promise.resolve(...args)/* initial Promise */),
-      ]),
+        .concat([
+          sequentials.reduce((prevPromise, nextInterceptor) => {
+            return prevPromise.then((...results) => { return this.doProcess(nextInterceptor, contextName, ...results) });
+          }, Promise.resolve(...args)/* initial Promise */),
+        ]),
     ).then(() => {
       logger.debug(`end processing the context '${contextName}'`);
     });
@@ -98,6 +99,7 @@ class InterceptorManager {
         return Promise.resolve(...args);
       });
   }
+
 }
 
 module.exports = InterceptorManager;

@@ -185,6 +185,7 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
 };
 
 class ConfigLoader {
+
   constructor(configModel) {
     this.configModel = configModel;
   }
@@ -256,6 +257,7 @@ class ConfigLoader {
 
     return config;
   }
+
 }
 
 module.exports = ConfigLoader;

@@ -29,7 +29,6 @@ UserDate.propTypes = {
 };
 
 UserDate.defaultProps = {
-  dateTime: 'now',
   format: 'YYYY/MM/DD HH:mm:ss',
   className: '',
 };

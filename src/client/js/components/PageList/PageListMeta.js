@@ -39,7 +39,7 @@ export default class PageListMeta extends React.Component {
     }
 
     let locked;
-    if (page.grant != 1) {
+    if (page.grant !== 1) {
       locked = <span><i className="icon-lock" /></span>;
     }
 
@@ -53,6 +53,7 @@ export default class PageListMeta extends React.Component {
       </span>
     );
   }
+
 }
 
 PageListMeta.propTypes = {
@@ -60,6 +61,4 @@ PageListMeta.propTypes = {
 };
 
 PageListMeta.defaultProps = {
-  page: {},
 };
-

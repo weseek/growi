@@ -28,6 +28,7 @@ schema.plugin(mongoosePaginate);
  * @class PageGroupRelation
  */
 class PageGroupRelation {
+
   /**
    * limit items num for pagination
    *
@@ -249,6 +250,7 @@ class PageGroupRelation {
         }
       });
   }
+
 }
 
 module.exports = function(crowi) {

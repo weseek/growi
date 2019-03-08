@@ -88,7 +88,7 @@ class MarkdownListUtil {
     // not listful data
     else {
       // append `indentAndMark` at the beginning of all lines (except the first line)
-      const replacedText = text.replace(/(\r\n|\r|\n)/g, '$1' + indentAndMark);
+      const replacedText = text.replace(/(\r\n|\r|\n)/g, `$1${indentAndMark}`);
       // append `indentAndMark` to the first line
       adjusted = indentAndMark + replacedText;
     }

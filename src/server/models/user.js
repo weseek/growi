@@ -822,9 +822,11 @@ module.exports = function(crowi) {
   };
 
   class UserUpperLimitException {
+
     constructor() {
       this.name = this.constructor.name;
     }
+
   }
 
   userSchema.statics.STATUS_REGISTERED = STATUS_REGISTERED;

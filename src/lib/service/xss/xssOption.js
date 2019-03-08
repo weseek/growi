@@ -1,4 +1,5 @@
 class XssOption {
+
   constructor(config) {
     const recommendedXssWhiteList = require('./recommendedXssWhiteList');
     const initializedConfig = (config != null) ? config : {};
@@ -7,5 +8,6 @@ class XssOption {
     this.tagWhiteList = initializedConfig.tagWhiteList || recommendedXssWhiteList.tags;
     this.attrWhiteList = initializedConfig.attrWhiteList || recommendedXssWhiteList.attrs;
   }
+
 }
 module.exports = XssOption;
