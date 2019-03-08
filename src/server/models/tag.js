@@ -21,7 +21,6 @@ schema.plugin(mongoosePaginate);
  * @class Tag
  */
 class Tag {
-
   static async findOrCreate(tagName) {
     const tag = await this.findOne({ name: tagName });
     if (!tag) {
@@ -29,7 +28,6 @@ class Tag {
     }
     return tag;
   }
-
 }
 
 module.exports = function() {
