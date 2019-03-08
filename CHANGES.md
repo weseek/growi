@@ -3,7 +3,8 @@ CHANGES
 
 ## 3.4.2-RC
 
-* 
+* Fix: Nofitication to Slack doesn't work
+    * Introduced by 3.4.0
 
 ## 3.4.1
 
