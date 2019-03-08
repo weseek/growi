@@ -6,14 +6,12 @@ const mkdir = require('mkdirp');
 const streamToPromise = require('stream-to-promise');
 
 module.exports = function(crowi) {
-  'use strict';
-
   const lib = {};
   const basePath = path.posix.join(crowi.publicDir, 'uploads');
 
   function getFilePathOnStorage(attachment) {
     let filePath;
-    if (attachment.filePath != null) {  // backward compatibility for v3.3.x or below
+    if (attachment.filePath != null) { // backward compatibility for v3.3.x or below
       filePath = path.posix.join(basePath, attachment.filePath);
     }
     else {
@@ -78,5 +76,3 @@ module.exports = function(crowi) {
 
   return lib;
 };
-
-

@@ -1,24 +1,23 @@
-/* jshint browser: true, jquery: true */
-/* Author: Sotaro KARASAWA <sotarok@crocos.co.jp>
-*/
+/* global location */
+/* eslint no-restricted-globals: ['error', 'locaion'] */
 
 import React from 'react';
 import ReactDOM from 'react-dom';
 
 import { debounce } from 'throttle-debounce';
 
+import * as pathUtils from '@commons/util/path-utils';
+import GrowiRenderer from '../util/GrowiRenderer';
+import RevisionLoader from '../components/Page/RevisionLoader';
+
 const entities = require('entities');
 const escapeStringRegexp = require('escape-string-regexp');
 require('jquery.cookie');
 require('bootstrap-select');
 
-import * as pathUtils from '@commons/util/path-utils';
-import GrowiRenderer from '../util/GrowiRenderer';
-import RevisionLoader from '../components/Page/RevisionLoader';
-
 require('./thirdparty-js/agile-admin');
 
-let Crowi = {};
+const Crowi = {};
 
 if (!window) {
   window = {};
@@ -97,7 +96,7 @@ Crowi.modifyScrollTop = function() {
   if (window.scrollY === 0) {
     timeout = 200;
   }
-  setTimeout(function() {
+  setTimeout(() => {
     const sectionHeaderRect = sectionHeader.getBoundingClientRect();
     if (sectionHeaderRect.top >= pageHeaderRect.bottom) {
       return;
@@ -140,10 +139,10 @@ Crowi.initAffix = () => {
     const containerHeight = $affixContentContainer.outerHeight(true);
     $affixContent.affix({
       offset: {
-        top: function() {
+        top() {
           return $('.navbar').outerHeight(true) + containerHeight;
-        }
-      }
+        },
+      },
     });
     $('[data-affix-disable]').on('click', function(e) {
       const $elm = $($(this).data('affix-disable'));
@@ -151,7 +150,7 @@ Crowi.initAffix = () => {
       $elm.removeData('affix').removeClass('affix affix-top affix-bottom');
       return false;
     });
-    $affixContentContainer.css({'min-height': containerHeight});
+    $affixContentContainer.css({ 'min-height': containerHeight });
   }
 };
 
@@ -173,7 +172,7 @@ Crowi.initSlimScrollForRevisionToc = () => {
     // window height - revisionTocTop - .system-version height
     let h = window.innerHeight - revisionTocTop - 20;
 
-    const tocContentHeight = tocContentElem.getBoundingClientRect().height + 15;  // add margin
+    const tocContentHeight = tocContentElem.getBoundingClientRect().height + 15; // add margin
 
     h = Math.min(h, tocContentHeight);
 
@@ -198,11 +197,11 @@ Crowi.initSlimScrollForRevisionToc = () => {
     resetScrollbarDebounced(getCurrentRevisionTocTop());
   });
   // affix on
-  $('#revision-toc').on('affixed.bs.affix', function() {
+  $('#revision-toc').on('affixed.bs.affix', () => {
     resetScrollbar(getCurrentRevisionTocTop());
   });
   // affix off
-  $('#revision-toc').on('affixed-top.bs.affix', function() {
+  $('#revision-toc').on('affixed-top.bs.affix', () => {
     // calculate sum of height (.navbar-header + .bg-title) + margin-top of .main
     const sum = 138;
     resetScrollbar(sum);
@@ -215,13 +214,13 @@ Crowi.findHashFromUrl = function(url) {
   if (match = url.match(/#(.+)$/)) {
     return `#${match[1]}`;
   }
-  /* eslint-enable */
+  /* eslint-enable no-cond-assign */
 
   return '';
 };
 
 Crowi.findSectionHeader = function(hash) {
-  if (hash.length == 0) {
+  if (hash.length === 0) {
     return;
   }
 
@@ -230,7 +229,7 @@ Crowi.findSectionHeader = function(hash) {
   // don't use jQuery and document.querySelector
   //  because hash may containe Base64 encoded strings
   const elem = document.getElementById(id);
-  if (elem != null && elem.tagName.match(/h\d+/i)) {  // match h1, h2, h3...
+  if (elem != null && elem.tagName.match(/h\d+/i)) { // match h1, h2, h3...
     return elem;
   }
 
@@ -264,12 +263,11 @@ Crowi.getCurrentEditorMode = function() {
   if ($('body').hasClass('builtin-editor')) {
     return 'builtin';
   }
-  else {
-    return 'hackmd';
-  }
+
+  return 'hackmd';
 };
 
-$(function() {
+$(() => {
   const crowi = window.crowi;
   const config = JSON.parse(document.getElementById('crowi-context-hydrate').textContent || '{}');
 
@@ -278,14 +276,14 @@ $(function() {
   // const revisionCreatedAt = $('#content-main').data('page-revision-created');
   // const currentUser = $('#content-main').data('current-user');
   const isSeen = $('#content-main').data('page-is-seen');
-  const pagePath= $('#content-main').data('path');
-  const isSavedStatesOfTabChanges = config['isSavedStatesOfTabChanges'];
+  const pagePath = $('#content-main').data('path');
+  const isSavedStatesOfTabChanges = config.isSavedStatesOfTabChanges;
 
   $('[data-toggle="popover"]').popover();
   $('[data-toggle="tooltip"]').tooltip();
   $('[data-tooltip-stay]').tooltip('show');
 
-  $('#toggle-sidebar').click(function(e) {
+  $('#toggle-sidebar').click((e) => {
     const $mainContainer = $('.main-container');
     if ($mainContainer.hasClass('aside-hidden')) {
       $('.main-container').removeClass('aside-hidden');
@@ -298,7 +296,7 @@ $(function() {
     return false;
   });
 
-  if ($.cookie('aside-hidden') == 1) {
+  if ($.cookie('aside-hidden') === 1) {
     $('.main-container').addClass('aside-hidden');
   }
 
@@ -307,14 +305,14 @@ $(function() {
   });
 
 
-  $('#create-page').on('shown.bs.modal', function(e) {
+  $('#create-page').on('shown.bs.modal', (e) => {
     // quick hack: replace from server side rendering "date" to client side "date"
     const today = new Date();
-    const month = ('0' + (today.getMonth() + 1)).slice(-2);
-    const day = ('0' + today.getDate()).slice(-2);
-    const dateString = today.getFullYear() + '/' + month + '/' + day;
-    $('#create-page-today .page-today-suffix').text('/' + dateString + '/');
-    $('#create-page-today .page-today-input2').data('prefix', '/' + dateString + '/');
+    const month = (`0${today.getMonth() + 1}`).slice(-2);
+    const day = (`0${today.getDate()}`).slice(-2);
+    const dateString = `${today.getFullYear()}/${month}/${day}`;
+    $('#create-page-today .page-today-suffix').text(`/${dateString}/`);
+    $('#create-page-today .page-today-input2').data('prefix', `/${dateString}/`);
 
     // focus
     $('#create-page-today .page-today-input2').eq(0).focus();
@@ -331,69 +329,69 @@ $(function() {
     if (input2 === '') {
       prefix2 = prefix2.slice(0, -1);
     }
-    top.location.href = prefix1 + input1 + prefix2 + input2 + '#edit';
+    top.location.href = `${prefix1 + input1 + prefix2 + input2}#edit`;
     return false;
   });
 
   $('#create-page-under-tree').submit(function(e) {
     let name = $('input', this).val();
     if (!name.match(/^\//)) {
-      name = '/' + name;
+      name = `/${name}`;
     }
     if (name.match(/.+\/$/)) {
       name = name.substr(0, name.length - 1);
     }
-    top.location.href = pathUtils.encodePagePath(name) + '#edit';
+    top.location.href = `${pathUtils.encodePagePath(name)}#edit`;
     return false;
   });
 
   // rename/unportalize
-  $('#renamePage, #unportalize').on('shown.bs.modal', function(e) {
+  $('#renamePage, #unportalize').on('shown.bs.modal', (e) => {
     $('#renamePage #newPageName').focus();
     $('#renamePage .msg, #unportalize .msg').hide();
   });
   $('#renamePageForm, #unportalize-form').submit(function(e) {
     // create name-value map
-    let nameValueMap = {};
+    const nameValueMap = {};
     $(this).serializeArray().forEach((obj) => {
       nameValueMap[obj.name] = obj.value; // nameValueMap.new_path is renamed page path
     });
 
-    const data = $(this).serialize() + `&socketClientId=${crowi.getSocketClientId()}`;
+    const data = `${$(this).serialize()}&socketClientId=${crowi.getSocketClientId()}`;
 
     $.ajax({
       type: 'POST',
       url: '/_api/pages.rename',
-      data: data,
-      dataType: 'json'
+      data,
+      dataType: 'json',
     })
-    .done(function(res) {
+      .done((res) => {
       // error
-      if (!res.ok) {
-        const linkPath = pathUtils.normalizePath(nameValueMap.new_path);
-        $('#renamePage .msg, #unportalize .msg').hide();
-        $(`#renamePage .msg-${res.code}, #unportalize .msg-${res.code}`).show();
-        $('#renamePage #linkToNewPage, #unportalize #linkToNewPage').html(`
+        if (!res.ok) {
+          const linkPath = pathUtils.normalizePath(nameValueMap.new_path);
+          $('#renamePage .msg, #unportalize .msg').hide();
+          $(`#renamePage .msg-${res.code}, #unportalize .msg-${res.code}`).show();
+          $('#renamePage #linkToNewPage, #unportalize #linkToNewPage').html(`
           <a href="${linkPath}">${linkPath} <i class="icon-login"></i></a>
         `);
-      }
-      else {
-        const page = res.page;
-        top.location.href = page.path + '?renamed=' + pagePath;
-      }
-    });
+        }
+        else {
+          const page = res.page;
+          top.location.href = `${page.path}?renamed=${pagePath}`;
+        }
+      });
 
     return false;
   });
 
   // duplicate
-  $('#duplicatePage').on('shown.bs.modal', function(e) {
+  $('#duplicatePage').on('shown.bs.modal', (e) => {
     $('#duplicatePage #duplicatePageName').focus();
     $('#duplicatePage .msg').hide();
   });
   $('#duplicatePageForm, #unportalize-form').submit(function(e) {
     // create name-value map
-    let nameValueMap = {};
+    const nameValueMap = {};
     $(this).serializeArray().forEach((obj) => {
       nameValueMap[obj.name] = obj.value; // nameValueMap.new_path is duplicated page path
     });
@@ -402,8 +400,8 @@ $(function() {
       type: 'POST',
       url: '/_api/pages.duplicate',
       data: $(this).serialize(),
-      dataType: 'json'
-    }).done(function(res) {
+      dataType: 'json',
+    }).done((res) => {
       // error
       if (!res.ok) {
         const linkPath = pathUtils.normalizePath(nameValueMap.new_path);
@@ -415,7 +413,7 @@ $(function() {
       }
       else {
         const page = res.page;
-        top.location.href = page.path + '?duplicated=' + pagePath;
+        top.location.href = `${page.path}?duplicated=${pagePath}`;
       }
     });
 
@@ -423,16 +421,16 @@ $(function() {
   });
 
   // delete
-  $('#deletePage').on('shown.bs.modal', function(e) {
+  $('#deletePage').on('shown.bs.modal', (e) => {
     $('#deletePage .msg').hide();
   });
-  $('#delete-page-form').submit(function(e) {
+  $('#delete-page-form').submit((e) => {
     $.ajax({
       type: 'POST',
       url: '/_api/pages.remove',
       data: $('#delete-page-form').serialize(),
-      dataType: 'json'
-    }).done(function(res) {
+      dataType: 'json',
+    }).done((res) => {
       // error
       if (!res.ok) {
         $('#deletePage .msg').hide();
@@ -448,16 +446,16 @@ $(function() {
   });
 
   // Put Back
-  $('#putBackPage').on('shown.bs.modal', function(e) {
+  $('#putBackPage').on('shown.bs.modal', (e) => {
     $('#putBackPage .msg').hide();
   });
-  $('#revert-delete-page-form').submit(function(e) {
+  $('#revert-delete-page-form').submit((e) => {
     $.ajax({
       type: 'POST',
       url: '/_api/pages.revertRemove',
       data: $('#revert-delete-page-form').serialize(),
-      dataType: 'json'
-    }).done(function(res) {
+      dataType: 'json',
+    }).done((res) => {
       // error
       if (!res.ok) {
         $('#putBackPage .msg').hide();
@@ -471,43 +469,43 @@ $(function() {
 
     return false;
   });
-  $('#unlink-page-form').submit(function(e) {
+  $('#unlink-page-form').submit((e) => {
     $.ajax({
       type: 'POST',
       url: '/_api/pages.unlink',
       data: $('#unlink-page-form').serialize(),
-      dataType: 'json'
+      dataType: 'json',
     })
-    .done(function(res) {
-      if (!res.ok) {
-        $('#delete-errors').html('<i class="fa fa-times-circle"></i> ' + res.error);
-        $('#delete-errors').addClass('alert-danger');
-      }
-      else {
-        top.location.href = res.path + '?unlinked=true';
-      }
-    });
+      .done((res) => {
+        if (!res.ok) {
+          $('#delete-errors').html(`<i class="fa fa-times-circle"></i> ${res.error}`);
+          $('#delete-errors').addClass('alert-danger');
+        }
+        else {
+          top.location.href = `${res.path}?unlinked=true`;
+        }
+      });
 
     return false;
   });
 
-  $('#create-portal-button').on('click', function(e) {
+  $('#create-portal-button').on('click', (e) => {
     $('a[data-toggle="tab"][href="#edit"]').tab('show');
 
     $('body').addClass('on-edit');
     $('body').addClass('builtin-editor');
 
     const path = $('.content-main').data('path');
-    if (path != '/' && $('.content-main').data('page-id') == '') {
+    if (path !== '/' && $('.content-main').data('page-id') === '') {
       const upperPage = path.substr(0, path.length - 1);
-      $.get('/_api/pages.get', {path: upperPage}, function(res) {
+      $.get('/_api/pages.get', { path: upperPage }, (res) => {
         if (res.ok && res.page) {
           $('#portal-warning-modal').modal('show');
         }
       });
     }
   });
-  $('#portal-form-close').on('click', function(e) {
+  $('#portal-form-close').on('click', (e) => {
     $('#edit').removeClass('active');
     $('body').removeClass('on-edit');
     $('body').removeClass('builtin-editor');
@@ -519,9 +517,8 @@ $(function() {
    */
   $('#view-list .page-list-ul-flat .page-list-link').each(function() {
     const $link = $(this);
-    /* eslint-disable no-unused-vars */
+    /* eslint-disable-next-line no-unused-vars */
     const text = $link.text();
-    /* eslint-enable */
     let path = decodeURIComponent($link.data('path'));
     const shortPath = decodeURIComponent($link.data('short-path')); // convert to string
 
@@ -531,40 +528,44 @@ $(function() {
     }
 
     path = entities.encodeHTML(path);
-    const pattern = escapeStringRegexp(entities.encodeHTML(shortPath)) + '(/)?$';
+    const pattern = `${escapeStringRegexp(entities.encodeHTML(shortPath))}(/)?$`;
 
-    $link.html(path.replace(new RegExp(pattern), '<strong>' + shortPath + '$1</strong>'));
+    $link.html(path.replace(new RegExp(pattern), `<strong>${shortPath}$1</strong>`));
   });
 
   // for list page
   let growiRendererForTimeline = null;
-  $('a[data-toggle="tab"][href="#view-timeline"]').on('shown.bs.tab', function() {
+  $('a[data-toggle="tab"][href="#view-timeline"]').on('shown.bs.tab', () => {
     const isShown = $('#view-timeline').data('shown');
 
     if (growiRendererForTimeline == null) {
       const crowi = window.crowi;
       const crowiRenderer = window.crowiRenderer;
-      growiRendererForTimeline = new GrowiRenderer(crowi, crowiRenderer, {mode: 'timeline'});
+      growiRendererForTimeline = new GrowiRenderer(crowi, crowiRenderer, { mode: 'timeline' });
     }
 
-    if (isShown == 0) {
+    if (isShown === 0) {
       $('#view-timeline .timeline-body').each(function() {
         const id = $(this).attr('id');
-        const revisionBody = '#' + id + ' .revision-body';
+        const revisionBody = `#${id} .revision-body`;
         const revisionBodyElem = document.querySelector(revisionBody);
-        /* eslint-disable no-unused-vars */
-        const revisionPath = '#' + id + ' .revision-path';
-        /* eslint-enable */
+        const revisionPath = `#${id} .revision-path`; // eslint-disable-line no-unused-vars
         const timelineElm = document.getElementById(id);
         const pageId = timelineElm.getAttribute('data-page-id');
         const pagePath = timelineElm.getAttribute('data-page-path');
         const revisionId = timelineElm.getAttribute('data-revision');
 
         ReactDOM.render(
-          <RevisionLoader lazy={true}
-            crowi={crowi} crowiRenderer={growiRendererForTimeline}
-            pageId={pageId} pagePath={pagePath} revisionId={revisionId} />,
-          revisionBodyElem);
+          <RevisionLoader
+            lazy
+            crowi={crowi}
+            crowiRenderer={growiRendererForTimeline}
+            pageId={pageId}
+            pagePath={pagePath}
+            revisionId={revisionId}
+          />,
+          revisionBodyElem,
+        );
       });
 
       $('#view-timeline').data('shown', 1);
@@ -572,19 +573,18 @@ $(function() {
   });
 
   if (pageId) {
-
     // for Crowi Template LangProcessor
     $('.template-create-button', $('#revision-body')).on('click', function() {
       const path = $(this).data('path');
       const templateId = $(this).data('template');
-      const template = $('#' + templateId).html();
+      const template = $(`#${templateId}`).html();
 
       crowi.saveDraft(path, template);
       top.location.href = `${path}#edit`;
     });
 
     if (!isSeen) {
-      $.post('/_api/pages.seen', {page_id: pageId}, function(res) {
+      $.post('/_api/pages.seen', { page_id: pageId }, (res) => {
         // ignore unless response has error
         if (res.ok && res.seenUser) {
           $('#content-main').data('page-is-seen', 1);
@@ -593,8 +593,10 @@ $(function() {
     }
 
     // presentation
-    let presentaionInitialized = false
-      , $b = $('body');
+    let presentaionInitialized = false;
+
+
+    const $b = $('body');
 
     $(document).on('click', '.toggle-presentation', function(e) {
       const $a = $(this);
@@ -606,80 +608,79 @@ $(function() {
         presentaionInitialized = true;
 
         $('<iframe />').attr({
-          src: $a.attr('href')
+          src: $a.attr('href'),
         }).appendTo($('#presentation-container'));
       }
-    }).on('click', '.fullscreen-layer', function() {
+    }).on('click', '.fullscreen-layer', () => {
       $b.toggleClass('overlay-on');
     });
-
   } // end if pageId
 
   // tab changing handling
-  $('a[href="#edit"]').on('show.bs.tab', function() {
+  $('a[href="#edit"]').on('show.bs.tab', () => {
     $('body').addClass('on-edit');
     $('body').addClass('builtin-editor');
   });
-  $('a[href="#edit"]').on('hide.bs.tab', function() {
+  $('a[href="#edit"]').on('hide.bs.tab', () => {
     $('body').removeClass('on-edit');
     $('body').removeClass('builtin-editor');
   });
-  $('a[href="#hackmd"]').on('show.bs.tab', function() {
+  $('a[href="#hackmd"]').on('show.bs.tab', () => {
     $('body').addClass('on-edit');
     $('body').addClass('hackmd');
   });
 
-  $('a[href="#hackmd"]').on('hide.bs.tab', function() {
+  $('a[href="#hackmd"]').on('hide.bs.tab', () => {
     $('body').removeClass('on-edit');
     $('body').removeClass('hackmd');
   });
 
   // hash handling
   if (isSavedStatesOfTabChanges) {
-    $('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', function() {
+    $('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', () => {
       window.location.hash = '#revision-history';
       window.history.replaceState('', 'History', '#revision-history');
     });
-    $('a[data-toggle="tab"][href="#edit"]').on('show.bs.tab', function() {
+    $('a[data-toggle="tab"][href="#edit"]').on('show.bs.tab', () => {
       window.location.hash = '#edit';
       window.history.replaceState('', 'Edit', '#edit');
     });
-    $('a[data-toggle="tab"][href="#hackmd"]').on('show.bs.tab', function() {
+    $('a[data-toggle="tab"][href="#hackmd"]').on('show.bs.tab', () => {
       window.location.hash = '#hackmd';
       window.history.replaceState('', 'HackMD', '#hackmd');
     });
-    $('a[data-toggle="tab"][href="#revision-body"]').on('show.bs.tab', function() {
+    $('a[data-toggle="tab"][href="#revision-body"]').on('show.bs.tab', () => {
       // couln't solve https://github.com/weseek/crowi-plus/issues/119 completely -- 2017.07.03 Yuki Takei
       window.location.hash = '#';
       window.history.replaceState('', '', location.href);
     });
   }
   else {
-    $('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', function() {
+    $('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', () => {
       window.history.replaceState('', 'History', '#revision-history');
     });
-    $('a[data-toggle="tab"][href="#edit"]').on('show.bs.tab', function() {
+    $('a[data-toggle="tab"][href="#edit"]').on('show.bs.tab', () => {
       window.history.replaceState('', 'Edit', '#edit');
     });
-    $('a[data-toggle="tab"][href="#hackmd"]').on('show.bs.tab', function() {
+    $('a[data-toggle="tab"][href="#hackmd"]').on('show.bs.tab', () => {
       window.history.replaceState('', 'HackMD', '#hackmd');
     });
-    $('a[data-toggle="tab"][href="#revision-body"]').on('show.bs.tab', function() {
-      window.history.replaceState('', '',  location.href.replace(location.hash, ''));
+    $('a[data-toggle="tab"][href="#revision-body"]').on('show.bs.tab', () => {
+      window.history.replaceState('', '', location.href.replace(location.hash, ''));
     });
     // replace all href="#edit" link behaviors
-    $(document).on('click', 'a[href="#edit"]', function() {
+    $(document).on('click', 'a[href="#edit"]', () => {
       window.location.replace('#edit');
     });
   }
 
   // focus to editor when 'shown.bs.tab' event fired
-  $('a[href="#edit"]').on('shown.bs.tab', function(e) {
+  $('a[href="#edit"]').on('shown.bs.tab', (e) => {
     Crowi.setCaretLineAndFocusToEditor();
   });
 });
 
-window.addEventListener('load', function(e) {
+window.addEventListener('load', (e) => {
   // hash on page
   if (location.hash) {
     if (location.hash === '#edit' || location.hash === '#edit-form') {
@@ -690,47 +691,47 @@ window.addEventListener('load', function(e) {
       // focus
       Crowi.setCaretLineAndFocusToEditor();
     }
-    else if (location.hash == '#hackmd') {
+    else if (location.hash === '#hackmd') {
       $('a[data-toggle="tab"][href="#hackmd"]').tab('show');
       $('body').addClass('on-edit');
       $('body').addClass('hackmd');
     }
-    else if (location.hash == '#revision-history') {
+    else if (location.hash === '#revision-history') {
       $('a[data-toggle="tab"][href="#revision-history"]').tab('show');
     }
   }
 
   const crowi = window.crowi;
-  if (crowi && crowi.users && crowi.users.length != 0) {
+  if (crowi && crowi.users && crowi.users.length !== 0) {
     const totalUsers = crowi.users.length;
     const $listLiker = $('.page-list-liker');
-    $listLiker.each(function(i, liker) {
+    $listLiker.each((i, liker) => {
       const count = $(liker).data('count') || 0;
-      if (count/totalUsers > 0.05) {
+      if (count / totalUsers > 0.05) {
         $(liker).addClass('popular-page-high');
         // 5%
       }
-      else if (count/totalUsers > 0.02) {
+      else if (count / totalUsers > 0.02) {
         $(liker).addClass('popular-page-mid');
         // 2%
       }
-      else if (count/totalUsers > 0.005) {
+      else if (count / totalUsers > 0.005) {
         $(liker).addClass('popular-page-low');
         // 0.5%
       }
     });
     const $listSeer = $('.page-list-seer');
-    $listSeer.each(function(i, seer) {
+    $listSeer.each((i, seer) => {
       const count = $(seer).data('count') || 0;
-      if (count/totalUsers > 0.10) {
+      if (count / totalUsers > 0.10) {
         // 10%
         $(seer).addClass('popular-page-high');
       }
-      else if (count/totalUsers > 0.05) {
+      else if (count / totalUsers > 0.05) {
         // 5%
         $(seer).addClass('popular-page-mid');
       }
-      else if (count/totalUsers > 0.02) {
+      else if (count / totalUsers > 0.02) {
         // 2%
         $(seer).addClass('popular-page-low');
       }
@@ -743,7 +744,7 @@ window.addEventListener('load', function(e) {
   Crowi.initAffix();
 });
 
-window.addEventListener('hashchange', function(e) {
+window.addEventListener('hashchange', (e) => {
   Crowi.unhighlightSelectedSection(Crowi.findHashFromUrl(e.oldURL));
   Crowi.highlightSelectedSection(Crowi.findHashFromUrl(e.newURL));
   Crowi.modifyScrollTop();
@@ -753,10 +754,10 @@ window.addEventListener('hashchange', function(e) {
     if (location.hash === '#edit') {
       $('a[data-toggle="tab"][href="#edit"]').tab('show');
     }
-    else if (location.hash == '#hackmd') {
+    else if (location.hash === '#hackmd') {
       $('a[data-toggle="tab"][href="#hackmd"]').tab('show');
     }
-    else if (location.hash == '#revision-history') {
+    else if (location.hash === '#revision-history') {
       $('a[data-toggle="tab"][href="#revision-history"]').tab('show');
     }
   }
@@ -790,8 +791,8 @@ window.addEventListener('keydown', (event) => {
         Crowi.handleKeyCtrlSlashHandler(event);
       }
       break;
+    default:
   }
-
 });
 
 // adjust min-height of page for print temporarily

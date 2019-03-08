@@ -1,6 +1,5 @@
-'use strict';
+const form = require('express-form');
 
-const form = require('express-form')
 const field = form.field;
 const stringToArray = require('../../util/formUtil').stringToArrayFilter;
 const normalizeCRLF = require('../../util/formUtil').normalizeCRLFFilter;

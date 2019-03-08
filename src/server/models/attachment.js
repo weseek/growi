@@ -1,14 +1,17 @@
+// disable no-return-await for model functions
+/* eslint-disable no-return-await */
+
 const debug = require('debug')('growi:models:attachment');
+// eslint-disable-next-line no-unused-vars
 const logger = require('@alias/logger')('growi:models:attachment');
 const path = require('path');
 
 const mongoose = require('mongoose');
+
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
 module.exports = function(crowi) {
   const fileUploader = require('../service/file-uploader')(crowi);
-
-  let attachmentSchema;
 
   function generateFileHash(fileName) {
     const hash = require('crypto').createHash('md5');
@@ -17,11 +20,10 @@ module.exports = function(crowi) {
     return hash.digest('hex');
   }
 
-
-  attachmentSchema = new mongoose.Schema({
+  const attachmentSchema = new mongoose.Schema({
     page: { type: ObjectId, ref: 'Page', index: true },
-    creator: { type: ObjectId, ref: 'User', index: true  },
-    filePath: { type: String },   // DEPRECATED: remains for backward compatibility for v3.3.x or below
+    creator: { type: ObjectId, ref: 'User', index: true },
+    filePath: { type: String }, // DEPRECATED: remains for backward compatibility for v3.3.x or below
     fileName: { type: String, required: true },
     originalName: { type: String },
     fileFormat: { type: String, required: true },
@@ -46,7 +48,7 @@ module.exports = function(crowi) {
 
     const extname = path.extname(originalName);
     let fileName = generateFileHash(originalName);
-    if (extname.length > 1) {   // ignore if empty or '.' only
+    if (extname.length > 1) { // ignore if empty or '.' only
       fileName = `${fileName}${extname}`;
     }
 
@@ -68,25 +70,27 @@ module.exports = function(crowi) {
   };
 
   attachmentSchema.statics.removeAttachmentsByPageId = function(pageId) {
-    var Attachment = this;
+    const Attachment = this;
 
     return new Promise((resolve, reject) => {
-      Attachment.find({ page: pageId})
-      .then((attachments) => {
-        for (let attachment of attachments) {
-          Attachment.removeWithSubstanceById(attachment._id).then((res) => {
-            // do nothing
-          }).catch((err) => {
-            debug('Attachment remove error', err);
-          });
-        }
+      Attachment.find({ page: pageId })
+        .then((attachments) => {
+          for (const attachment of attachments) {
+            Attachment.removeWithSubstanceById(attachment._id)
+              .then((res) => {
+                // do nothing
+              })
+              .catch((err) => {
+                debug('Attachment remove error', err);
+              });
+          }
 
-        resolve(attachments);
-      }).catch((err) => {
-        reject(err);
-      });
+          resolve(attachments);
+        })
+        .catch((err) => {
+          reject(err);
+        });
     });
-
   };
 
   attachmentSchema.statics.removeWithSubstanceById = async function(id) {

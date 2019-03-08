@@ -1,11 +1,10 @@
-'use strict';
+const form = require('express-form');
 
-var form = require('express-form')
-  , field = form.field;
+const field = form.field;
 
 module.exports = form(
   field('markdownSetting[markdown:xss:isEnabledPrevention]').trim().toBooleanStrict(),
   field('markdownSetting[markdown:xss:option]').trim().toInt(),
   field('markdownSetting[markdown:xss:tagWhiteList]').trim(),
-  field('markdownSetting[markdown:xss:attrWhiteList]').trim()
+  field('markdownSetting[markdown:xss:attrWhiteList]').trim(),
 );

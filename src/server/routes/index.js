@@ -1,41 +1,38 @@
-const multer = require('multer')
-const autoReap  = require('multer-autoreap');
-autoReap.options.reapOnError = true;  // continue reaping the file even if an error occurs
+const multer = require('multer');
+const autoReap = require('multer-autoreap');
+
+autoReap.options.reapOnError = true; // continue reaping the file even if an error occurs
 
 module.exports = function(crowi, app) {
-  const middleware = require('../util/middlewares')
-    , uploads   = multer({dest: crowi.tmpDir + 'uploads'})
-    , form      = require('../form')
-    , page      = require('./page')(crowi, app)
-    , login     = require('./login')(crowi, app)
-    , loginPassport = require('./login-passport')(crowi, app)
-    , logout    = require('./logout')(crowi, app)
-    , me        = require('./me')(crowi, app)
-    , admin     = require('./admin')(crowi, app)
-    , installer = require('./installer')(crowi, app)
-    , user      = require('./user')(crowi, app)
-    , attachment= require('./attachment')(crowi, app)
-    , tag       = require('./tag')(crowi, app)
-    , comment   = require('./comment')(crowi, app)
-    , bookmark  = require('./bookmark')(crowi, app)
-    , revision  = require('./revision')(crowi, app)
-    , search    = require('./search')(crowi, app)
-    , hackmd    = require('./hackmd')(crowi, app)
-    , loginRequired = middleware.loginRequired
-    , accessTokenParser = middleware.accessTokenParser(crowi, app)
-    , csrf      = middleware.csrfVerify(crowi, app)
+  const middleware = require('../util/middlewares');
+  const uploads = multer({ dest: `${crowi.tmpDir}uploads` });
+  const form = require('../form');
+  const page = require('./page')(crowi, app);
+  const login = require('./login')(crowi, app);
+  const loginPassport = require('./login-passport')(crowi, app);
+  const logout = require('./logout')(crowi, app);
+  const me = require('./me')(crowi, app);
+  const admin = require('./admin')(crowi, app);
+  const installer = require('./installer')(crowi, app);
+  const user = require('./user')(crowi, app);
+  const attachment = require('./attachment')(crowi, app);
+  const comment = require('./comment')(crowi, app);
+  const bookmark = require('./bookmark')(crowi, app);
+  const revision = require('./revision')(crowi, app);
+  const search = require('./search')(crowi, app);
+  const hackmd = require('./hackmd')(crowi, app);
+  const loginRequired = middleware.loginRequired;
+  const accessTokenParser = middleware.accessTokenParser(crowi, app);
+  const csrf = middleware.csrfVerify(crowi, app);
+  const config = crowi.getConfig();
+  const Config = crowi.model('Config');
 
-    , config    = crowi.getConfig()
-    , Config    = crowi.model('Config')
-    ;
-
-  /* eslint-disable comma-spacing */
+  /* eslint-disable max-len, comma-spacing, no-multi-spaces */
 
   app.get('/'                        , middleware.applicationInstalled(), loginRequired(crowi, app, false) , page.showTopPage);
 
   app.get('/installer'               , middleware.applicationNotInstalled() , installer.index);
   app.post('/installer'              , middleware.applicationNotInstalled() , form.register , csrf, installer.install);
-  //app.post('/installer/user'         , middleware.applicationNotInstalled() , installer.createFirstUser);
 
   app.get('/login/error/:reason'     , login.error);
   app.get('/login'                   , middleware.applicationInstalled()    , login.login);
@@ -89,7 +86,7 @@ module.exports = function(crowi, app) {
 
   // markdown admin
   app.get('/admin/markdown'                   , loginRequired(crowi, app) , middleware.adminRequired() , admin.markdown.index);
-  app.post('/admin/markdown/lineBreaksSetting', loginRequired(crowi, app) , middleware.adminRequired() , csrf, form.admin.markdown, admin.markdown.lineBreaksSetting); //change form name
+  app.post('/admin/markdown/lineBreaksSetting', loginRequired(crowi, app) , middleware.adminRequired() , csrf, form.admin.markdown, admin.markdown.lineBreaksSetting); // change form name
   app.post('/admin/markdown/xss-setting'      , loginRequired(crowi, app) , middleware.adminRequired() , csrf, form.admin.markdownXss, admin.markdown.xssSetting);
   app.post('/admin/markdown/presentationSetting', loginRequired(crowi, app) , middleware.adminRequired() , csrf, form.admin.markdownPresentation, admin.markdown.presentationSetting);
 
@@ -173,20 +170,20 @@ module.exports = function(crowi, app) {
   app.post('/me/imagetype'            , form.me.imagetype         , loginRequired(crowi, app) , me.imagetype);
   app.post('/me/apiToken'             , form.me.apiToken          , loginRequired(crowi, app) , me.apiToken);
   app.post('/me/auth/google'          , loginRequired(crowi, app) , me.authGoogle);
-  app.get( '/me/auth/google/callback' , loginRequired(crowi, app) , me.authGoogleCallback);
+  app.get('/me/auth/google/callback' , loginRequired(crowi, app) , me.authGoogleCallback);
 
-  app.get( '/:id([0-9a-z]{24})'       , loginRequired(crowi, app, false) , page.redirector);
-  app.get( '/_r/:id([0-9a-z]{24})'    , loginRequired(crowi, app, false) , page.redirector); // alias
-  app.get( '/attachment/:pageId/:fileName'  , loginRequired(crowi, app, false), attachment.api.obsoletedGetForMongoDB); // DEPRECATED: remains for backward compatibility for v3.3.x or below
-  app.get( '/attachment/:id([0-9a-z]{24})'  , loginRequired(crowi, app, false), attachment.api.get);
-  app.get( '/download/:id([0-9a-z]{24})'    , loginRequired(crowi, app, false), attachment.api.download);
+  app.get('/:id([0-9a-z]{24})'       , loginRequired(crowi, app, false) , page.redirector);
+  app.get('/_r/:id([0-9a-z]{24})'    , loginRequired(crowi, app, false) , page.redirector); // alias
+  app.get('/attachment/:pageId/:fileName'  , loginRequired(crowi, app, false), attachment.api.obsoletedGetForMongoDB); // DEPRECATED: remains for backward compatibility for v3.3.x or below
+  app.get('/attachment/:id([0-9a-z]{24})'  , loginRequired(crowi, app, false), attachment.api.get);
+  app.get('/download/:id([0-9a-z]{24})'    , loginRequired(crowi, app, false), attachment.api.download);
 
-  app.get( '/_search'                 , loginRequired(crowi, app, false) , search.searchPage);
-  app.get( '/_api/search'             , accessTokenParser , loginRequired(crowi, app, false) , search.api.search);
+  app.get('/_search'                 , loginRequired(crowi, app, false) , search.searchPage);
+  app.get('/_api/search'             , accessTokenParser , loginRequired(crowi, app, false) , search.api.search);
 
-  app.get( '/_api/check_username'           , user.api.checkUsername);
-  app.get( '/_api/me/user-group-relations'  , accessTokenParser , loginRequired(crowi, app) , me.api.userGroupRelations);
-  app.get( '/_api/user/bookmarks'           , loginRequired(crowi, app, false) , user.api.bookmarks);
+  app.get('/_api/check_username'           , user.api.checkUsername);
+  app.get('/_api/me/user-group-relations'  , accessTokenParser , loginRequired(crowi, app) , me.api.userGroupRelations);
+  app.get('/_api/user/bookmarks'           , loginRequired(crowi, app, false) , user.api.bookmarks);
 
   // HTTP RPC Styled API (に徐々に移行していいこうと思う)
   app.get('/_api/users.list'          , accessTokenParser , loginRequired(crowi, app, false) , user.api.list);
@@ -207,20 +204,20 @@ module.exports = function(crowi, app) {
   app.get('/_api/comments.get'        , accessTokenParser , loginRequired(crowi, app, false) , comment.api.get);
   app.post('/_api/comments.add'       , form.comment, accessTokenParser , loginRequired(crowi, app) , csrf, comment.api.add);
   app.post('/_api/comments.remove'    , accessTokenParser , loginRequired(crowi, app) , csrf, comment.api.remove);
-  app.get( '/_api/bookmarks.get'      , accessTokenParser , loginRequired(crowi, app, false) , bookmark.api.get);
+  app.get('/_api/bookmarks.get'      , accessTokenParser , loginRequired(crowi, app, false) , bookmark.api.get);
   app.post('/_api/bookmarks.add'      , accessTokenParser , loginRequired(crowi, app) , csrf, bookmark.api.add);
   app.post('/_api/bookmarks.remove'   , accessTokenParser , loginRequired(crowi, app) , csrf, bookmark.api.remove);
   app.post('/_api/likes.add'          , accessTokenParser , loginRequired(crowi, app) , csrf, page.api.like);
   app.post('/_api/likes.remove'       , accessTokenParser , loginRequired(crowi, app) , csrf, page.api.unlike);
-  app.get( '/_api/attachments.list'   , accessTokenParser , loginRequired(crowi, app, false) , attachment.api.list);
+  app.get('/_api/attachments.list'   , accessTokenParser , loginRequired(crowi, app, false) , attachment.api.list);
   app.post('/_api/attachments.add'                  , uploads.single('file'), autoReap, accessTokenParser, loginRequired(crowi, app) ,csrf, attachment.api.add);
   app.post('/_api/attachments.uploadProfileImage'   , uploads.single('file'), autoReap, accessTokenParser, loginRequired(crowi, app) ,csrf, attachment.api.uploadProfileImage);
   app.post('/_api/attachments.remove' , accessTokenParser , loginRequired(crowi, app) , csrf, attachment.api.remove);
-  app.get( '/_api/attachments.limit'  , accessTokenParser , loginRequired(crowi, app) , csrf, attachment.api.limit);
+  app.get('/_api/attachments.limit'  , accessTokenParser , loginRequired(crowi, app) , csrf, attachment.api.limit);
 
-  app.get( '/_api/revisions.get'      , accessTokenParser , loginRequired(crowi, app, false) , revision.api.get);
-  app.get( '/_api/revisions.ids'      , accessTokenParser , loginRequired(crowi, app, false) , revision.api.ids);
-  app.get( '/_api/revisions.list'     , accessTokenParser , loginRequired(crowi, app, false) , revision.api.list);
+  app.get('/_api/revisions.get'      , accessTokenParser , loginRequired(crowi, app, false) , revision.api.get);
+  app.get('/_api/revisions.ids'      , accessTokenParser , loginRequired(crowi, app, false) , revision.api.ids);
+  app.get('/_api/revisions.list'     , accessTokenParser , loginRequired(crowi, app, false) , revision.api.list);
 
   app.get('/trash$'                  , loginRequired(crowi, app, false) , page.trashPageShowWrapper);
   app.get('/trash/$'                 , loginRequired(crowi, app, false) , page.trashPageListShowWrapper);

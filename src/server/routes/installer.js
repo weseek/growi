@@ -1,6 +1,4 @@
 module.exports = function(crowi, app) {
-  'use strict';
-
   const logger = require('@alias/logger')('growi:routes:installer');
   const path = require('path');
   const fs = require('graceful-fs');
@@ -73,28 +71,27 @@ module.exports = function(crowi, app) {
       await adminUser.asyncMakeAdmin();
     }
     catch (err) {
-      req.form.errors.push('管理ユーザーの作成に失敗しました。' + err.message);
+      req.form.errors.push(`管理ユーザーの作成に失敗しました。${err.message}`);
       return res.render('installer');
     }
 
-    Config.applicationInstall(function(err, configs) {
+    Config.applicationInstall((err, configs) => {
       if (err) {
         logger.error(err);
         return;
       }
 
       // save the globalLang config, and update the config cache
-      Config.updateNamespaceByArray('crowi', {'app:globalLang': language}, function(err, config) {
+      Config.updateNamespaceByArray('crowi', { 'app:globalLang': language }, (err, config) => {
         Config.updateConfigCache('crowi', config);
       });
 
       // login with passport
       req.logIn(adminUser, (err) => {
         if (err) { return next() }
-        else {
-          req.flash('successMessage', 'GROWI のインストールが完了しました！はじめに、このページで各種設定を確認してください。');
-          return res.redirect('/admin/app');
-        }
+
+        req.flash('successMessage', 'GROWI のインストールが完了しました！はじめに、このページで各種設定を確認してください。');
+        return res.redirect('/admin/app');
       });
     });
 

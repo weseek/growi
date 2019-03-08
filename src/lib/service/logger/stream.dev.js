@@ -1,6 +1,6 @@
 const isBrowser = typeof window !== 'undefined';
 
-let stream = undefined;
+let stream;
 
 // browser settings
 if (isBrowser) {

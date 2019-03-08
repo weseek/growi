@@ -1,12 +1,10 @@
-'use strict';
+const form = require('express-form');
 
-var form = require('express-form')
-  , field = form.field;
+const field = form.field;
 
 module.exports = form(
   field('settingForm[app:title]').trim(),
   field('settingForm[app:confidential]'),
   field('settingForm[app:globalLang]'),
-  field('settingForm[app:fileUpload]').trim().toBooleanStrict()
+  field('settingForm[app:fileUpload]').trim().toBooleanStrict(),
 );
-

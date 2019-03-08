@@ -2,9 +2,11 @@ import { BasicInterceptor } from 'growi-pluginkit';
 
 
 class DetachCodeBlockUtil {
+
   static createReplaceStr(replaceId) {
     return `<pre class="detached-code-block">${replaceId}</pre>`;
   }
+
 }
 
 /**
@@ -31,7 +33,7 @@ export class DetachCodeBlockInterceptor extends BasicInterceptor {
     if (contextName === 'prePreProcess') {
       return 'markdown';
     }
-    else if (contextName === 'prePostProcess') {
+    if (contextName === 'prePostProcess') {
       return 'parsedHTML';
     }
   }
@@ -42,22 +44,21 @@ export class DetachCodeBlockInterceptor extends BasicInterceptor {
   process(contextName, ...args) {
     this.logger.debug(`processing: 'contextName'=${contextName}`);
 
-    const context = Object.assign(args[0]);   // clone
+    const context = Object.assign(args[0]); // clone
     const targetKey = this.getTargetKey(contextName);
-    /* eslint-disable no-unused-vars */
-    const currentPagePath = context.currentPagePath;
-    /* eslint-enable */
+    const currentPagePath = context.currentPagePath; // eslint-disable-line no-unused-vars
 
     context.dcbContextMap = {};
 
     // see: https://regex101.com/r/8PAEcC/5
+    // eslint-disable-next-line max-len
     context[targetKey] = context[targetKey].replace(/(^(```|~~~)(.|[\r\n])*?(```|~~~)$)|(`[^\r\n]*?`)|(<pre>(.|[\r\n])*?<\/pre>)|(<pre\s[^>]*>(.|[\r\n])*?<\/pre>)/gm, (all) => {
       // create ID
-      const replaceId = 'dcb-' + this.createRandomStr(8);
+      const replaceId = `dcb-${this.createRandomStr(8)}`;
       this.logger.debug(`'replaceId'=${replaceId} : `, all);
 
       // register to context
-      let dcbContext = {};
+      const dcbContext = {};
       dcbContext.content = all;
       dcbContext.substituteContent = DetachCodeBlockUtil.createReplaceStr(replaceId);
       context.dcbContextMap[replaceId] = dcbContext;
@@ -79,11 +80,12 @@ export class DetachCodeBlockInterceptor extends BasicInterceptor {
   createRandomStr(length) {
     const bag = 'abcdefghijklmnopqrstuvwxyz0123456789';
     let generated = '';
-    for (var i = 0; i < length; i++) {
+    for (let i = 0; i < length; i++) {
       generated += bag[Math.floor(Math.random() * bag.length)];
     }
     return generated;
   }
+
 }
 
 
@@ -111,7 +113,7 @@ export class RestoreCodeBlockInterceptor extends BasicInterceptor {
     if (contextName === 'postPreProcess') {
       return 'markdown';
     }
-    else if (contextName === 'preRenderHtml' || contextName === 'preRenderPreviewHtml'
+    if (contextName === 'preRenderHtml' || contextName === 'preRenderPreviewHtml'
         || contextName === 'preRenderCommentHtml' || contextName === 'preRenderCommentPreviewHtml') {
       return 'parsedHTML';
     }
@@ -123,13 +125,13 @@ export class RestoreCodeBlockInterceptor extends BasicInterceptor {
   process(contextName, ...args) {
     this.logger.debug(`processing: 'contextName'=${contextName}`);
 
-    const context = Object.assign(args[0]);   // clone
+    const context = Object.assign(args[0]); // clone
     const targetKey = this.getTargetKey(contextName);
 
     // forEach keys of dcbContextMap
     Object.keys(context.dcbContextMap).forEach((replaceId) => {
       // get context object from context
-      let dcbContext = context.dcbContextMap[replaceId];
+      const dcbContext = context.dcbContextMap[replaceId];
 
       // replace it with content by using getter function so that the doller sign does not work
       // see: https://github.com/weseek/growi/issues/285
@@ -139,4 +141,5 @@ export class RestoreCodeBlockInterceptor extends BasicInterceptor {
     // resolve
     return Promise.resolve(context);
   }
+
 }

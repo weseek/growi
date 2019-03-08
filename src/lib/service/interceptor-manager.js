@@ -31,25 +31,25 @@ class InterceptorManager {
   addInterceptors(interceptors, order) {
     let isDefaultOrder = false;
     if (order == null) {
-      order = 100;
+      order = 100; // eslint-disable-line
       isDefaultOrder = true;
     }
 
-    const interceptorIds = interceptors.map((i) => i.getId());
+    const interceptorIds = interceptors.map((i) => { return i.getId() });
     logger.info(`'addInterceptors' invoked. adding interceptors '${interceptorIds}' at order=${order}${isDefaultOrder ? '(default)' : ''}`);
 
     this.interceptorAndOrders = this.interceptorAndOrders.concat(
-      interceptors.map(interceptor => {
+      interceptors.map((interceptor) => {
         return { interceptor, order };
-      })
+      }),
     );
 
     // sort asc
-    this.interceptorAndOrders.sort((a, b) => a.order - b.order);
+    this.interceptorAndOrders.sort((a, b) => { return a.order - b.order });
     // store sorted list
-    this.interceptors = this.interceptorAndOrders.map(obj => obj.interceptor);
+    this.interceptors = this.interceptorAndOrders.map((obj) => { return obj.interceptor });
 
-    const thisInterceptorIds = this.interceptors.map((i) => i.getId());
+    const thisInterceptorIds = this.interceptors.map((i) => { return i.getId() });
     logger.info(`interceptors list has initialized: ${thisInterceptorIds}`);
   }
 
@@ -63,10 +63,10 @@ class InterceptorManager {
     logger.debug(`processing the context '${contextName}'`);
 
     // filter only contexts matches to specified 'contextName'
-    const matchInterceptors = this.interceptors.filter((i) => i.isInterceptWhen(contextName));
+    const matchInterceptors = this.interceptors.filter((i) => { return i.isInterceptWhen(contextName) });
 
-    const parallels = matchInterceptors.filter((i) => i.isProcessableParallel());
-    const sequentials = matchInterceptors.filter((i) => !i.isProcessableParallel());
+    const parallels = matchInterceptors.filter((i) => { return i.isProcessableParallel() });
+    const sequentials = matchInterceptors.filter((i) => { return !i.isProcessableParallel() });
 
     logger.debug(`${parallels.length} parallel interceptors found.`);
     logger.debug(`${sequentials.length} sequencial interceptors found.`);
@@ -77,14 +77,13 @@ class InterceptorManager {
         return this.doProcess(interceptor, contextName, ...args);
       })
       // sequential
-      .concat([
-        sequentials.reduce((prevPromise, nextInterceptor) => {
-          return prevPromise.then((...results) => this.doProcess(nextInterceptor, contextName, ...results));
-        }, Promise.resolve(...args)/* initial Promise */)
-      ])
+        .concat([
+          sequentials.reduce((prevPromise, nextInterceptor) => {
+            return prevPromise.then((...results) => { return this.doProcess(nextInterceptor, contextName, ...results) });
+          }, Promise.resolve(...args)/* initial Promise */),
+        ]),
     ).then(() => {
       logger.debug(`end processing the context '${contextName}'`);
-      return;
     });
   }
 
@@ -100,6 +99,7 @@ class InterceptorManager {
         return Promise.resolve(...args);
       });
   }
+
 }
 
 module.exports = InterceptorManager;

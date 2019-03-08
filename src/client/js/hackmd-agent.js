@@ -16,7 +16,7 @@ import { debounce } from 'throttle-debounce';
 
 /* eslint-disable no-console  */
 
-const allowedOrigin = '{{origin}}';         // will be replaced by swig
+const allowedOrigin = '{{origin}}'; // will be replaced by swig
 
 
 /**
@@ -47,14 +47,14 @@ function setValueToCodemirrorOnInit(newValue) {
     setValueToCodemirror(newValue);
     return;
   }
-  else {
-    const intervalId = setInterval(() => {
-      if (window.cmClient != null) {
-        clearInterval(intervalId);
-        setValueToCodemirror(newValue);
-      }
-    }, 250);
-  }
+
+  const intervalId = setInterval(() => {
+    if (window.cmClient != null) {
+      clearInterval(intervalId);
+      setValueToCodemirror(newValue);
+    }
+  }, 250);
+
 }
 
 /**
@@ -86,7 +86,7 @@ function addEventListenersToCodemirror() {
     return;
   }
 
-  //// change event
+  // == change event
   editor.on('change', (cm, change) => {
     if (change.origin === 'ignoreHistory') {
       // do nothing because this operation triggered by other user
@@ -95,7 +95,7 @@ function addEventListenersToCodemirror() {
     debouncedPostParentToNotifyBodyChanges(cm.doc.getValue());
   });
 
-  //// save event
+  // == save event
   // Reset save commands and Cmd-S/Ctrl-S shortcuts that initialized by HackMD
   codemirror.commands.save = function(cm) {
     postParentToSaveWithShortcut(cm.doc.getValue());
@@ -117,14 +117,16 @@ function connectToParentWithPenpal() {
       },
       setValueOnInit(newValue) {
         setValueToCodemirrorOnInit(newValue);
-      }
-    }
+      },
+    },
   });
-  connection.promise.then(parent => {
-    window.growi = parent;
-  }).catch(err => {
-    console.log(err);
-  });
+  connection.promise
+    .then((parent) => {
+      window.growi = parent;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 }
 
 /**
@@ -148,4 +150,3 @@ function connectToParentWithPenpal() {
 
   console.log('[HackMD] GROWI agent for HackMD has successfully loaded.');
 }());
-

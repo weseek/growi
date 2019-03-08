@@ -41,9 +41,8 @@ export default class Comment extends React.Component {
     this.renderHtml(nextProps.comment.comment);
   }
 
-  //not used
+  // not used
   setMarkdown(markdown) {
-    this.setState({ markdown });
     this.renderHtml(markdown);
   }
 
@@ -56,13 +55,13 @@ export default class Comment extends React.Component {
   }
 
   getRootClassName() {
-    return 'page-comment '
-        + (this.isCurrentUserEqualsToAuthor() ? 'page-comment-me ' : '');
+    return `page-comment ${
+      this.isCurrentUserEqualsToAuthor() ? 'page-comment-me ' : ''}`;
   }
 
   getRevisionLabelClassName() {
-    return 'page-comment-revision label '
-        + (this.isCurrentRevision() ? 'label-primary' : 'label-default');
+    return `page-comment-revision label ${
+      this.isCurrentRevision() ? 'label-primary' : 'label-default'}`;
   }
 
   deleteBtnClickedHandler() {
@@ -73,10 +72,12 @@ export default class Comment extends React.Component {
     const config = this.props.crowi.getConfig();
     const isMathJaxEnabled = !!config.env.MATHJAX;
     return (
-      <RevisionBody html={this.state.html}
-          isMathJaxEnabled={isMathJaxEnabled}
-          renderMathJaxOnInit={true}
-          additionalClassName="comment" />
+      <RevisionBody
+        html={this.state.html}
+        isMathJaxEnabled={isMathJaxEnabled}
+        renderMathJaxOnInit
+        additionalClassName="comment"
+      />
     );
   }
 
@@ -88,26 +89,26 @@ export default class Comment extends React.Component {
     const crowiRenderer = this.props.crowiRenderer;
     const interceptorManager = this.props.crowi.interceptorManager;
     interceptorManager.process('preRenderComment', context)
-      .then(() => interceptorManager.process('prePreProcess', context))
+      .then(() => { return interceptorManager.process('prePreProcess', context) })
       .then(() => {
         context.markdown = crowiRenderer.preProcess(context.markdown);
       })
-      .then(() => interceptorManager.process('postPreProcess', context))
+      .then(() => { return interceptorManager.process('postPreProcess', context) })
       .then(() => {
-        var parsedHTML = crowiRenderer.process(context.markdown);
-        context['parsedHTML'] = parsedHTML;
+        const parsedHTML = crowiRenderer.process(context.markdown);
+        context.parsedHTML = parsedHTML;
       })
-      .then(() => interceptorManager.process('prePostProcess', context))
+      .then(() => { return interceptorManager.process('prePostProcess', context) })
       .then(() => {
         context.parsedHTML = crowiRenderer.postProcess(context.parsedHTML);
       })
-      .then(() => interceptorManager.process('postPostProcess', context))
-      .then(() => interceptorManager.process('preRenderCommentHtml', context))
+      .then(() => { return interceptorManager.process('postPostProcess', context) })
+      .then(() => { return interceptorManager.process('preRenderCommentHtml', context) })
       .then(() => {
         this.setState({ html: context.parsedHTML });
       })
       // process interceptors for post rendering
-      .then(() => interceptorManager.process('postRenderCommentHtml', context));
+      .then(() => { return interceptorManager.process('postRenderCommentHtml', context) });
 
   }
 
@@ -118,7 +119,7 @@ export default class Comment extends React.Component {
 
     const rootClassName = this.getRootClassName();
     const commentDate = dateFnsFormat(comment.createdAt, 'YYYY/MM/DD HH:mm');
-    const commentBody = isMarkdown ? this.renderRevisionBody(): ReactUtils.nl2br(comment.comment);
+    const commentBody = isMarkdown ? this.renderRevisionBody() : ReactUtils.nl2br(comment.comment);
     const creatorsPage = `/user/${creator.username}`;
     const revHref = `?revision=${comment.revision}`;
     const revFirst8Letters = comment.revision.substr(-8);
@@ -139,7 +140,7 @@ export default class Comment extends React.Component {
             <a className={revisionLavelClassName} href={revHref}>{revFirst8Letters}</a>
           </div>
           <div className="page-comment-control">
-            <button className="btn btn-link" onClick={this.deleteBtnClickedHandler}>
+            <button type="button" className="btn btn-link" onClick={this.deleteBtnClickedHandler}>
               <i className="ti-close"></i>
             </button>
           </div>
@@ -147,6 +148,7 @@ export default class Comment extends React.Component {
       </div>
     );
   }
+
 }
 
 Comment.propTypes = {

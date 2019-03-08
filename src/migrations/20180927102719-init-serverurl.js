@@ -1,4 +1,4 @@
-'use strict';
+
 
 require('module-alias/register');
 const logger = require('@alias/logger')('growi:migrate:init-serverurl');
@@ -43,7 +43,7 @@ module.exports = {
         { key: 'security:passport-google:callbackUrl' },
         { key: 'security:passport-twitter:callbackUrl' },
         { key: 'security:passport-saml:callbackUrl' },
-      ]
+      ],
     });
 
     // determine serverUrl
@@ -53,11 +53,11 @@ module.exports = {
       logger.info(configs);
 
       // extract domain
-      const siteUrls = configs.map(config => {
+      const siteUrls = configs.map((config) => {
         // see https://regex101.com/r/Q0Isjo/2
         const match = config.value.match(/^"(https?:\/\/[^/]+).*"$/);
         return (match != null) ? match[1] : null;
-      }).filter(value => value != null);
+      }).filter((value) => { return value != null });
 
       // determine serverUrl if all values are same
       if (siteUrls.length > 0 && isAllValuesSame(siteUrls)) {
@@ -84,6 +84,6 @@ module.exports = {
     });
 
     logger.info('Migration has successfully undoed');
-  }
+  },
 
 };

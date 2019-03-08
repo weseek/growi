@@ -1,8 +1,11 @@
+// disable no-return-await for model functions
+/* eslint-disable no-return-await */
+
 const debug = require('debug')('growi:models:pageGroupRelation');
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate');
-const ObjectId = mongoose.Schema.Types.ObjectId;
 
+const ObjectId = mongoose.Schema.Types.ObjectId;
 
 /*
  * define schema
@@ -13,7 +16,7 @@ const schema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
 }, {
   toJSON: { getters: true },
-  toObject: { getters: true }
+  toObject: { getters: true },
 });
 // apply plugins
 schema.plugin(mongoosePaginate);
@@ -54,15 +57,15 @@ class PageGroupRelation {
    */
   static removeAllInvalidRelations() {
     return this.findAllRelation()
-      .then(relations => {
+      .then((relations) => {
         // filter invalid documents
-        return relations.filter(relation => {
+        return relations.filter((relation) => {
           return relation.targetPage == null || relation.relatedGroup == null;
         });
       })
-      .then(invalidRelations => {
-        const ids = invalidRelations.map(relation => relation._id);
-        return this.deleteMany({ _id: { $in: ids }});
+      .then((invalidRelations) => {
+        const ids = invalidRelations.map((relation) => { return relation._id });
+        return this.deleteMany({ _id: { $in: ids } });
       });
   }
 
@@ -74,7 +77,6 @@ class PageGroupRelation {
    * @memberof PageGroupRelation
    */
   static findAllRelation() {
-
     return this
       .find()
       .populate('targetPage')
@@ -139,12 +141,11 @@ class PageGroupRelation {
       .count(query)
       .then((count) => {
         // return (0 < count);
-        if (0 < count) {
+        if (count > 0) {
           return this.find(query).exec();
         }
-        else {
-          return this.createRelation(userGroup, page);
-        }
+
+        return this.createRelation(userGroup, page);
       });
   }
 
@@ -157,7 +158,6 @@ class PageGroupRelation {
    * @memberof PageGroupRelation
    */
   static findByPage(page) {
-
     if (page == null) {
       return null;
     }
@@ -223,9 +223,8 @@ class PageGroupRelation {
    * @memberof PageGroupRelation
    */
   static removeAllByPage(page) {
-
     return this.findByPage(page)
-      .then(relation => {
+      .then((relation) => {
         if (relation != null) {
           relation.remove();
         }
@@ -241,11 +240,10 @@ class PageGroupRelation {
    * @memberof PageGroupRelation
    */
   static removeById(id) {
-
     return this.findById(id)
       .then((relationData) => {
         if (relationData == null) {
-          throw new Exception('PageGroupRelation data is not exists. id:', id);
+          throw new Error('PageGroupRelation data is not exists. id:', id);
         }
         else {
           relationData.remove();

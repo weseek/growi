@@ -4,10 +4,10 @@ export default class CrowiTemplate {
 
   constructor(crowi) {
     this.templatePattern = {
-      'year': this.getYear,
-      'month': this.getMonth,
-      'date': this.getDate,
-      'user': this.getUser,
+      year: this.getYear,
+      month: this.getMonth,
+      date: this.getDate,
+      user: this.getUser,
     };
   }
 
@@ -30,13 +30,13 @@ export default class CrowiTemplate {
 
       return (
         /* eslint-disable quotes */
-        `<div class="page-template-builder">` +
-          `<button class="template-create-button btn btn-default" data-template="${templateId}" data-path="${pageName}">` +
-            `<i class="fa fa-pencil"></i> ${pageName}` +
-          `</button>` +
-          `<pre><code id="${templateId}" class="lang-${lang}">${code}\n</code></pre>` +
-        `</div>`
-        /* eslint-enable */
+        `<div class="page-template-builder">`
+          + `<button class="template-create-button btn btn-default" data-template="${templateId}" data-path="${pageName}">`
+            + `<i class="fa fa-pencil"></i> ${pageName}`
+          + `</button>`
+          + `<pre><code id="${templateId}" class="lang-${lang}">${code}\n</code></pre>`
+        + `</div>`
+        /* eslint-enable quotes */
       );
     });
   }
@@ -67,8 +67,8 @@ export default class CrowiTemplate {
   parseTemplateString(templateString) {
     let parsed = templateString;
 
-    Object.keys(this.templatePattern).forEach(key => {
-      const k = key .replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    Object.keys(this.templatePattern).forEach((key) => {
+      const k = key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
       const matcher = new RegExp(`{${k}}`, 'g');
       if (parsed.match(matcher)) {
         const replacer = this.templatePattern[key]();

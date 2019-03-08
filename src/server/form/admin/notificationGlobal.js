@@ -1,6 +1,5 @@
-'use strict';
-
 const form = require('express-form');
+
 const field = form.field;
 
 module.exports = form(
@@ -16,4 +15,3 @@ module.exports = form(
   field('notificationGlobal[triggerEvent:pageLike]').trim(),
   field('notificationGlobal[triggerEvent:comment]').trim(),
 );
-

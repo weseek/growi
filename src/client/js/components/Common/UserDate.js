@@ -19,6 +19,7 @@ export default class UserDate extends React.Component {
       </span>
     );
   }
+
 }
 
 UserDate.propTypes = {
@@ -28,8 +29,6 @@ UserDate.propTypes = {
 };
 
 UserDate.defaultProps = {
-  dateTime: 'now',
   format: 'YYYY/MM/DD HH:mm:ss',
   className: '',
 };
-

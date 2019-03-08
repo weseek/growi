@@ -35,7 +35,7 @@ module.exports = require('./webpack.common')({
             loader: 'postcss-loader',
             options: {
               sourceMap: false,
-              plugins: (loader) => { // eslint-disable-line no-unused-vars
+              plugins: (loader) => {
                 return [
                   require('autoprefixer')(),
                 ];
