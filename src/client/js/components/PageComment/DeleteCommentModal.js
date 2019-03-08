@@ -16,10 +16,6 @@ export default class DeleteCommentModal extends React.Component {
    */
   static get OMIT_BODY_THRES() { return 400 }
 
-  constructor(props) {
-    super(props);
-  }
-
   componentWillMount() {
   }
 
@@ -34,7 +30,7 @@ export default class DeleteCommentModal extends React.Component {
     // generate body
     let commentBody = comment.comment;
     if (commentBody.length > DeleteCommentModal.OMIT_BODY_THRES) { // omit
-      commentBody = commentBody.substr(0, DeleteCommentModal.OMIT_BODY_THRES) + '...';
+      commentBody = `${commentBody.substr(0, DeleteCommentModal.OMIT_BODY_THRES)}...`;
     }
     commentBody = ReactUtils.nl2br(commentBody);
 
@@ -68,6 +64,6 @@ DeleteCommentModal.propTypes = {
   isShown: PropTypes.bool.isRequired,
   comment: PropTypes.object,
   errorMessage: PropTypes.string,
-  cancel: PropTypes.func.isRequired,            // for cancel evnet handling
+  cancel: PropTypes.func.isRequired, // for cancel evnet handling
   confirmedToDelete: PropTypes.func.isRequired, // for confirmed event handling
 };

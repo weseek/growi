@@ -11,6 +11,7 @@ const CdnResource = require('../models/cdn-resource');
 
 
 class CdnResourcesDownloader {
+
   constructor() {
     this.logger = require('@alias/logger')('growi:service:CdnResourcesDownloader');
   }
@@ -26,13 +27,14 @@ class CdnResourcesDownloader {
     const opts = Object.assign({}, options);
     const ext = opts.ext || 'js';
 
-    const promises = cdnResources.map(cdnResource => {
+    const promises = cdnResources.map((cdnResource) => {
       this.logger.info(`Processing CdnResource '${cdnResource.name}'`);
 
       return this.downloadAndWriteToFS(
         cdnResource.url,
         cdnResource.outDir,
-        `${cdnResource.name}.${ext}`);
+        `${cdnResource.name}.${ext}`,
+      );
     });
 
     return Promise.all(promises);
@@ -52,7 +54,7 @@ class CdnResourcesDownloader {
 
     // styles
     const assetsResourcesStore = [];
-    const promisesForStyle = cdnResources.map(cdnResource => {
+    const promisesForStyle = cdnResources.map((cdnResource) => {
       this.logger.info(`Processing CdnResource '${cdnResource.name}'`);
 
       let urlReplacer = null;
@@ -66,7 +68,8 @@ class CdnResourcesDownloader {
         cdnResource.url,
         cdnResource.outDir,
         `${cdnResource.name}.${ext}`,
-        urlReplacer);
+        urlReplacer,
+      );
     });
 
     // wait until all styles are downloaded
@@ -75,13 +78,14 @@ class CdnResourcesDownloader {
     this.logger.debug('Downloading assets', assetsResourcesStore);
 
     // assets in css
-    const promisesForAssets = assetsResourcesStore.map(cdnResource => {
+    const promisesForAssets = assetsResourcesStore.map((cdnResource) => {
       this.logger.info(`Processing assts in css '${cdnResource.name}'`);
 
       return this.downloadAndWriteToFS(
         cdnResource.url,
         cdnResource.outDir,
-        cdnResource.name);
+        cdnResource.name,
+      );
     });
 
     return Promise.all(promisesForAssets);
@@ -100,12 +104,12 @@ class CdnResourcesDownloader {
    */
   generateReplaceUrlInCssStream(cdnResource, assetsResourcesStore, webroot) {
     return replaceStream(
-      /url\((?!['"]?data:)["']?(.+?)["']?\)/g,    // https://regex101.com/r/Sds38A/3
+      /url\((?!['"]?data:)["']?(.+?)["']?\)/g, // https://regex101.com/r/Sds38A/3
       (match, url) => {
         // generate URL Object
         const parsedUrl = url.startsWith('http')
-          ? new URL(url)                    // when url is fqcn
-          : new URL(url, cdnResource.url);  // when url is relative
+          ? new URL(url) // when url is fqcn
+          : new URL(url, cdnResource.url); // when url is relative
         const basename = path.basename(parsedUrl.pathname);
 
         this.logger.debug(`${cdnResource.name} has ${parsedUrl.toString()}`);
@@ -115,13 +119,14 @@ class CdnResourcesDownloader {
           new CdnResource(
             basename,
             parsedUrl.toString(),
-            path.join(cdnResource.outDir, cdnResource.name)
-          )
+            path.join(cdnResource.outDir, cdnResource.name),
+          ),
         );
 
         const replaceUrl = urljoin(webroot, cdnResource.name, basename);
         return `url(${replaceUrl})`;
-      });
+      },
+    );
   }
 
   async downloadAndWriteToFS(url, outDir, fileName, replacestream) {

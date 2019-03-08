@@ -1,13 +1,12 @@
-'use strict';
+
 
 module.exports = {
-  normalizeCRLFFilter: function(value) {
+  normalizeCRLFFilter(value) {
     return value
       .replace(/\r\n/g, '\n')
-      .replace(/\r/g, '\n')
-    ;
+      .replace(/\r/g, '\n');
   },
-  stringToArrayFilter: function(value) {
+  stringToArrayFilter(value) {
     if (!value || value === '') {
       return [];
     }
@@ -15,4 +14,3 @@ module.exports = {
     return value.split('\n');
   },
 };
-

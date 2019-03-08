@@ -1,4 +1,4 @@
-'use strict';
+
 
 function Notification(crowi) {
   this.crowi = crowi;
@@ -6,11 +6,11 @@ function Notification(crowi) {
 }
 
 Notification.prototype.hasSlackConfig = function() {
-  if (!this.config.notification['slack']) {
+  if (!this.config.notification.slack) {
     return false;
   }
 
-  //var config = ;
+  // var config = ;
 };
 
 Notification.prototype.noitfyByEmail = function() {

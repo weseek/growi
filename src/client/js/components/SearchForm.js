@@ -29,7 +29,7 @@ export default class SearchForm extends React.Component {
   }
 
   onChange(selected) {
-    const page = selected[0];  // should be single page selected
+    const page = selected[0]; // should be single page selected
 
     // navigate to page
     if (page != null) {
@@ -43,7 +43,7 @@ export default class SearchForm extends React.Component {
     return (
       <table className="table m-1 search-help">
         <caption className="text-left text-primary p-2 mb-2">
-          <h5 className="m-1"><i className="icon-magnifier pr-2 mb-2"/>{ t('search_help.title') }</h5>
+          <h5 className="m-1"><i className="icon-magnifier pr-2 mb-2" />{ t('search_help.title') }</h5>
         </caption>
         <tbody>
           <tr>
@@ -55,7 +55,7 @@ export default class SearchForm extends React.Component {
           </tr>
           <tr>
             <th className="text-right pt-2">
-              <code>"This is GROWI"</code><br></br>
+              <code>&quot;This is GROWI&quot;</code><br></br>
               <small>({ t('search_help.phrase.syntax help') })</small>
             </th>
             <td><h6 className="m-0 pt-1">{ t('search_help.phrase.desc', { phrase: 'This is GROWI' }) }</h6></td>
@@ -97,10 +97,11 @@ export default class SearchForm extends React.Component {
       />
     );
   }
+
 }
 
 SearchForm.propTypes = {
-  t: PropTypes.func.isRequired,               // i18next
+  t: PropTypes.func.isRequired, // i18next
   crowi: PropTypes.object.isRequired,
   keyword: PropTypes.string,
   onSubmit: PropTypes.func.isRequired,

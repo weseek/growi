@@ -1,17 +1,23 @@
-.main-container { // {{{
-  h1, h2, h3, h4, h5, h6 {
+.main-container {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-weight: 500;
   }
 
-  .navbar-top-links { // {{{
+  .navbar-top-links {
     .confidential {
       a {
-        cursor: default;
         font-weight: bold;
+        cursor: default;
       }
     }
 
-    .nav-item-admin, .nav-item-create-page {
+    .nav-item-admin,
+    .nav-item-create-page {
       span {
         margin-left: 0.5em;
         @media (max-width: $screen-xs-min) {
@@ -19,7 +25,7 @@
         }
       }
     }
-  } // }}}
+  }
 
   /*
    * header
@@ -34,11 +40,11 @@
 
     // affix
     &.affix {
-      width: 100%;
       top: 0;
       left: 0;
-      padding: 2px 20px;
       z-index: 15; // over the .sidebar
+      width: 100%;
+      padding: 2px 20px;
       box-shadow: 0 0px 2px #999;
 
       h1 {
@@ -49,35 +55,35 @@
 
   .main {
     .header-wrap {
-      padding: 15px 15px 0 15px;
       min-height: 70px;
+      padding: 15px 15px 0 15px;
     }
   }
 
-  .layout-control { // {{{
-    transition: .3s ease;
+  .layout-control {
     position: fixed;
-    display: block;
-    text-align: center;
     right: 25%;
     bottom: 25px;
+    z-index: 1039;
+    display: block;
     padding: 5px 8px;
+    font-size: 0.8em;
+    text-align: center;
     border: solid 1px #ccc;
     border-right: none;
     border-radius: 5px 0 0 5px;
-    z-index: 1039;
-    font-size: .8em;
+    transition: 0.3s ease;
 
     &:hover {
       text-decoration: none;
       cursor: pointer;
     }
-  } // }}}
+  }
 
   .revision-toc {
-    font-size: .9em;
     max-width: 250px;
     overflow: hidden;
+    font-size: 0.9em;
 
     .revision-toc-content {
       padding: 10px;
@@ -89,32 +95,33 @@
         }
       }
 
-      > ul > li { // first level of li
-        margin: 4px 4px 4px 15px;
+      // first level of li
+      > ul > li {
         padding: 5px;
+        margin: 4px 4px 4px 15px;
       }
     }
   }
 } // }}}
 
-
 // fix tab width to 95 pixels
 // see also '_on-edit.scss'
 $nav-main-left-tab-width: 95px;
+
 .nav.nav-tabs {
   .nav-main-left-tab {
     width: $nav-main-left-tab-width;
     text-align: center;
     a {
-      padding-left: 0;
       padding-right: 0;
+      padding-left: 0;
     }
   }
 }
 
-
-@media print { // {{{ printable style
-  .main-container { // {{{
+// printable style
+@media print {
+  .main-container {
     padding: 30px;
 
     a:after {
@@ -131,11 +138,11 @@ $nav-main-left-tab-width: 95px;
 
       .revision-toc {
         float: none;
-        font-size: .9em;
-        border: solid 1px #aaa;
-        border-radius: 5px;
         max-width: 100%;
         margin-bottom: 20px;
+        font-size: 0.9em;
+        border: solid 1px #aaa;
+        border-radius: 5px;
 
         .revision-toc-head {
           display: inline-block;
@@ -149,23 +156,21 @@ $nav-main-left-tab-width: 95px;
       }
 
       .meta {
-        border-top: solid 1px #ccc;
         margin-top: 32px;
         color: #666;
+        border-top: solid 1px #ccc;
       }
-
-
     }
   }
-} // }}}
+}
 
 .system-version {
   position: fixed;
   right: 0.5em;
   bottom: 0;
-  opacity: .6;
+  opacity: 0.6;
 
   > span {
-    margin-left: .5em;
+    margin-left: 0.5em;
   }
 }

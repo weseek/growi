@@ -1,0 +1,19 @@
+{
+  "extends": [
+    "stylelint-config-recess-order",
+    "./node_modules/prettier-stylelint/config.js"
+  ],
+  "ignoreFiles": [
+    "src/client/styles/scss/_override-bootstrap-variables.scss"
+  ],
+  "rules": {
+    "indentation": 2,
+    "string-quotes": "single",
+    "rule-empty-line-before": [ "always-multi-line", {
+      "except": ["after-single-line-comment", "first-nested"],
+      "ignore": ["after-comment", "inside-block"]
+    } ],
+    "selector-combinator-space-before": "always",
+    "selector-combinator-space-after": "always"
+  }
+}

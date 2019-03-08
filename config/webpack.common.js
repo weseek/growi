@@ -2,13 +2,13 @@
  * @author: Yuki Takei <yuki@weseek.co.jp>
  */
 const webpack = require('webpack');
-const helpers = require('../src/lib/util/helpers');
 
 /*
  * Webpack Plugins
  */
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
+const helpers = require('../src/lib/util/helpers');
 
 /*
  * Webpack configuration
@@ -45,7 +45,7 @@ module.exports = (options) => {
       'styles/theme-island':      './src/client/styles/scss/theme/island.scss',
       // styles for external services
       'styles/style-hackmd':          './src/client/styles/hackmd/style.scss',
-    }, options.entry || {}),  // Merge with env dependent settings
+    }, options.entry || {}), // Merge with env dependent settings
     output: Object.assign({
       path: helpers.root('public'),
       publicPath: '/',
@@ -54,9 +54,9 @@ module.exports = (options) => {
     externals: {
       // require("jquery") is external and available
       //  on the global var jQuery
-      'jquery': 'jQuery',
-      'emojione': 'emojione',
-      'hljs': 'hljs',
+      jquery: 'jQuery',
+      emojione: 'emojione',
+      hljs: 'hljs',
     },
     resolve: {
       extensions: ['.js', '.jsx', '.json'],
@@ -69,8 +69,8 @@ module.exports = (options) => {
         '@alias/logger': helpers.root('src/lib/service/logger'),
         '@alias/locales': helpers.root('resource/locales'),
         // replace bunyan
-        'bunyan': 'browser-bunyan',
-      }
+        bunyan: 'browser-bunyan',
+      },
     },
     module: {
       rules: options.module.rules.concat([
@@ -78,27 +78,27 @@ module.exports = (options) => {
           test: /.jsx?$/,
           exclude: {
             test:    helpers.root('node_modules'),
-            exclude: [  // include as a result
+            exclude: [ // include as a result
               { test: helpers.root('node_modules', 'growi-plugin-') },
               helpers.root('node_modules/codemirror/src'),
               helpers.root('node_modules/string-width'),
               helpers.root('node_modules/is-fullwidth-code-point'), // depends from string-width
-            ]
+            ],
           },
           use: [{
-            loader: 'babel-loader?cacheDirectory'
-          }]
+            loader: 'babel-loader?cacheDirectory',
+          }],
         },
         {
           test: /locales/,
           loader: '@alienfast/i18next-loader',
           options: {
             basenameAsNamespace: true,
-          }
+          },
         },
         { // see https://github.com/abpetkov/switchery/issues/120
           test: /switchery\.js$/,
-          loader: 'imports-loader?module=>false,exports=>false,define=>false,this=>window'
+          loader: 'imports-loader?module=>false,exports=>false,define=>false,this=>window',
         },
         /*
          * File loader for supporting images, for example, in CSS files.
@@ -112,8 +112,8 @@ module.exports = (options) => {
         {
           test: /\.(eot|woff2?|svg|ttf)([?]?.*)$/,
           use: 'null-loader',
-        }
-      ])
+        },
+      ]),
     },
     plugins: options.plugins.concat([
 
@@ -127,7 +127,7 @@ module.exports = (options) => {
       new webpack.IgnorePlugin(/^\.\/lib\/deflate\.js/, /markdown-it-plantuml/),
 
       new LodashModuleReplacementPlugin({
-        flattening: true
+        flattening: true,
       }),
 
       new webpack.ProvidePlugin({ // refs externals
@@ -152,7 +152,7 @@ module.exports = (options) => {
             name: 'styles/style-commons',
             minSize: 1,
             priority: 30,
-            enforce: true
+            enforce: true,
           },
           commons: {
             test: /src[\\/].*\.jsx?$/,
@@ -160,7 +160,7 @@ module.exports = (options) => {
             name: 'js/commons',
             minChunks: 2,
             minSize: 1,
-            priority: 20
+            priority: 20,
           },
           vendors: {
             test: /node_modules[\\/].*\.jsx?$/,
@@ -171,9 +171,9 @@ module.exports = (options) => {
             name: 'js/vendors',
             minSize: 1,
             priority: 10,
-            enforce: true
+            enforce: true,
           },
-        }
+        },
       },
       minimizer: options.optimization.minimizer || [],
     },

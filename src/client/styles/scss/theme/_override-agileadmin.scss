@@ -18,7 +18,7 @@
   .logo .logo-text {
     display: none;
   }
-  @media(min-width:768px) {
+  @media (min-width: 768px) {
     .sidebar {
       display: none;
     }
@@ -38,12 +38,13 @@
     text-transform: none;
   }
 }
+
 .logo {
   .logo-mark {
     svg {
-      padding: 12px;
       width: 50px;
       height: 50px;
+      padding: 12px;
     }
   }
   .logo-text {
@@ -67,7 +68,8 @@
  * Link
  */
 a {
-  &:hover, &:focus {
+  &:hover,
+  &:focus {
     text-decoration: underline;
   }
 }
@@ -82,28 +84,32 @@ a {
 
   &.alert-info {
     a:not(.btn) {
-      &:hover, &:focus {
+      &:hover,
+      &:focus {
         color: lighten($info, 40%);
       }
     }
   }
   &.alert-success {
     a:not(.btn) {
-      &:hover, &:focus {
+      &:hover,
+      &:focus {
         color: lighten($success, 40%);
       }
     }
   }
   &.alert-warning {
     a:not(.btn) {
-      &:hover, &:focus {
+      &:hover,
+      &:focus {
         color: lighten($warning, 30%);
       }
     }
   }
   &.alert-danger {
     a:not(.btn) {
-      &:hover, &:focus {
+      &:hover,
+      &:focus {
         color: lighten($danger, 30%);
       }
     }
@@ -137,7 +143,6 @@ button.btn.btn-link:hover {
   }
 }
 
-
 /*
  * Modal
  */
@@ -145,27 +150,26 @@ button.btn.btn-link:hover {
   border: none;
   // border-radius: 0;
 
-  .modal-header, .modal-footer {
+  .modal-header,
+  .modal-footer {
     padding: 10px 15px;
   }
 }
-
 
 /*
  * Wells
  */
 .well {
+  padding: 0.7em;
   border-radius: 3px;
-  padding: .7em;
   &.well-sm {
-    padding: .5em;
+    padding: 0.5em;
   }
 
   a {
     text-decoration: underline;
   }
 }
-
 
 /*
  * Panel
@@ -182,10 +186,9 @@ button.btn.btn-link:hover {
     padding: 7px 15px;
   }
 }
-.panel.panel-primary .panel-heading{
 
+.panel.panel-primary .panel-heading {
 }
-
 
 /*
  * Label
@@ -193,7 +196,6 @@ button.btn.btn-link:hover {
 .label {
   padding: 2px 7px;
 }
-
 
 /*
  * Wiki

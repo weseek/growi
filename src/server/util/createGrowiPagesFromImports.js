@@ -1,6 +1,4 @@
-module.exports = crowi => {
-  'use strict';
-
+module.exports = (crowi) => {
   const Page = crowi.model('Page');
 
   /**
@@ -15,7 +13,8 @@ module.exports = crowi => {
     const promises = [];
     const errors = [];
 
-    for (let page of pages) {
+    /* eslint-disable no-await-in-loop */
+    for (const page of pages) {
       const path = page.path;
       const user = page.user;
       const body = page.body;
@@ -40,6 +39,7 @@ module.exports = crowi => {
         }
       }
     }
+    /* eslint-enable no-await-in-loop */
 
     await Promise.all(promises);
 

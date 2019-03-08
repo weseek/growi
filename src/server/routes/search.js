@@ -1,12 +1,11 @@
 module.exports = function(crowi, app) {
-  'use strict';
-
   // var debug = require('debug')('growi:routes:search')
   const Page = crowi.model('Page');
   const ApiResponse = require('../util/apiResponse');
   const ApiPaginate = require('../util/apiPaginate');
+
   const actions = {};
-  const api = (actions.api = {});
+  const api = {};
 
   actions.searchPage = function(req, res) {
     const keyword = req.query.q || null;
@@ -75,7 +74,7 @@ module.exports = function(crowi, app) {
       result.meta = esResult.meta;
       result.totalCount = findResult.totalCount;
       result.data = findResult.pages
-        .map(page => {
+        .map((page) => {
           page.bookmarkCount = (page._source && page._source.bookmark_count) || 0;
           return page;
         })
@@ -91,5 +90,6 @@ module.exports = function(crowi, app) {
     return res.json(ApiResponse.success(result));
   };
 
+  actions.api = api;
   return actions;
 };

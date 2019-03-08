@@ -1,5 +1,5 @@
 // import diff2html styles
-@import "~diff2html/dist/diff2html.css";
+@import '~diff2html/dist/diff2html.css';
 
 .main-container {
   // padding controll of .header-wrap and .content-main are moved to _layout and _form
@@ -18,25 +18,30 @@
       display: none;
     }
 
-    .btn-copy, .btn-copy-link, .btn-edit {
+    .btn-copy,
+    .btn-copy-link,
+    .btn-edit {
       @extend .text-muted;
-      opacity: 0.3;
       border: none;
+      opacity: 0.3;
       &:not(:hover) {
         background-color: transparent;
       }
     }
     // change button opacity
     &:hover {
-      .btn.btn-copy, .btn-copy-link, .btn.btn-edit {
+      .btn.btn-copy,
+      .btn-copy-link,
+      .btn.btn-edit {
         opacity: unset;
       }
     }
 
-    .btn-like, .btn-bookmark {
-      border: none;
+    .btn-like,
+    .btn-bookmark {
       font-size: 1.2em;
       line-height: 0.8em;
+      border: none;
       &:not(:hover):not(.active) {
         background-color: transparent;
       }
@@ -53,15 +58,15 @@
     }
 
     .url-line {
-      color: #999;
       font-size: 1rem;
+      color: #999;
     }
 
     h1#revision-path {
       margin-top: 0;
       margin-bottom: 0;
       .d-flex {
-        flex-wrap: wrap;  // for long page path
+        flex-wrap: wrap; // for long page path
       }
 
       // crowi layout only
@@ -72,12 +77,14 @@
           color: inherit;
         }
       }
-
     }
   }
 
   // alert component settings
-  .alert-trash, .alert-moved, .alert-unlinked, .alert-grant {
+  .alert-trash,
+  .alert-moved,
+  .alert-unlinked,
+  .alert-grant {
     padding: 10px 15px;
   }
 
@@ -87,8 +94,7 @@
   }
 }
 
-.main-container .main .content-main .revision-history { // {{{
-
+.main-container .main .content-main .revision-history {
   .revision-history-list {
     .revision-history-outer {
       // add border-top except of first element
@@ -108,8 +114,8 @@
         }
 
         .caret {
-          transform: rotate(-90deg);
           transition: 0.4s;
+          transform: rotate(-90deg);
 
           &.caret-opened {
             transform: rotate(0deg);
@@ -147,9 +153,7 @@
   .d2h-diff-tbody {
     background-color: white;
   }
-
-} // }}}
-
+}
 
 /**
  * for table with handsontable modal button
@@ -158,16 +162,16 @@
   position: relative;
 
   .handsontable-modal-trigger {
-    opacity: 0;
     position: absolute;
     top: 11px;
     right: 10px;
     padding: 0;
-    border: none;
-    background-color: transparent;
     font-size: 16px;
     line-height: 1;
     vertical-align: bottom;
+    background-color: transparent;
+    border: none;
+    opacity: 0;
   }
 
   .page-mobile & .handsontable-modal-trigger {
@@ -186,25 +190,26 @@
   position: fixed;
   top: 0;
   left: 0;
+  z-index: 9999;
   width: 100%;
   height: 0;
-  background: rgba(0, 0, 0, .5);
-  z-index: 9999;
+  background: rgba(0, 0, 0, 0.5);
   opacity: 0;
-  transition: opacity .3s ease-out;
+  transition: opacity 0.3s ease-out;
 
   & > * {
-    box-shadow: 0 0 20px rgba(0, 0, 0, .8);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
   }
 }
+
 .overlay-on {
   #wrapper {
     filter: blur(5px);
   }
 
   .fullscreen-layer {
-    opacity: 1;
     height: 100%;
+    opacity: 1;
   }
 }
 

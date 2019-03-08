@@ -1,10 +1,12 @@
 #shortcuts-modal {
-  @media (min-width: $screen-sm-min) { // {{{ more than tablet size
+  // more than tablet size
+  @media (min-width: $screen-sm-min) {
     .modal-dialog {
       width: 750px;
     }
   }
-  @media (max-width: $screen-xs-max) { // {{{ less than tablet size
+  // less than tablet size
+  @media (max-width: $screen-xs-max) {
     table {
       table-layout: fixed;
     }
@@ -26,18 +28,18 @@
   // see http://coliss.com/articles/build-websites/operation/css/css-apple-keyboard-style-by-nrjmadan.html
   .key {
     /*Box Properties*/
-    display:inline-block;
-    width:36px;
-    height:36px;
+    display: inline-block;
+    width: 36px;
+    height: 36px;
     margin: 0px 4px;
+    /*Text Properties*/
+    font: 18px/36px Helvetica, serif;
+    color: #666;
+    text-align: center;
+    text-transform: uppercase;
     background: #fff;
     border-radius: 4px;
     box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.5);
-    /*Text Properties*/
-    font: 18px/36px Helvetica, serif ;
-    text-transform: uppercase;
-    text-align: center;
-    color: #666;
     /* SVG Properties*/
     polygon {
       fill: #666;
@@ -53,15 +55,14 @@
 
   .dl-horizontal {
     dt {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
       // width: 180px;
       height: 41px;
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
     }
     // dd {
     //   margin-left: 190px;
     // }
   }
-
 }

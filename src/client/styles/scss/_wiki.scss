@@ -8,12 +8,17 @@ div.body {
 }
 
 .wiki {
-  line-height: 1.8em;
   font-size: 15px;
+  line-height: 1.8em;
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     margin-top: 1.6em;
-    margin-bottom: .8em;
+    margin-bottom: 0.8em;
 
     &:first-child {
       margin-top: 0;
@@ -21,8 +26,8 @@ div.body {
   }
 
   h1 {
-    margin-top: 2em;
     padding-bottom: 0.3em;
+    margin-top: 2em;
     font-size: 1.8em;
     line-height: 1.1em;
     border-bottom: solid 1px transparent;
@@ -30,8 +35,8 @@ div.body {
   h2 {
     padding-bottom: 0.5em;
     font-size: 1.4em;
-    line-height: 1.225;
     font-weight: bold;
+    line-height: 1.225;
     border-bottom: 1px solid transparent;
   }
   h3 {
@@ -48,19 +53,19 @@ div.body {
   }
 
   p {
-    font-weight: normal;
     margin: 15px 0;
+    font-weight: normal;
   }
   blockquote {
-    font-size: .9em;
-    margin: 0 0 30px 0;
     padding: 0 20px;
+    margin: 0 0 30px 0;
+    font-size: 0.9em;
     color: lighten($gray-dark, 35%);
   }
 
   img {
-    margin: 5px 0;
     max-width: 100%;
+    margin: 5px 0;
   }
 
   img.emojione {
@@ -70,7 +75,8 @@ div.body {
     box-shadow: none;
   }
 
-  ul, ol {
+  ul,
+  ol {
     padding-left: 30px;
     margin: 20px 0;
 
@@ -79,23 +85,24 @@ div.body {
       line-height: 1.8em;
     }
 
-    ul, ol {
+    ul,
+    ol {
       margin: 0;
     }
   }
 
   .task-list {
     .task-list-item {
-      list-style-type: none;
       margin: 0 0.2em 0.25em -1.6em;
+      list-style-type: none;
     }
     .task-list-item > .task-list {
       margin-left: 30px;
     }
     // use awesome-bootstrap-checkbox
-    .task-list-item .checkbox input[type="checkbox"] {
+    .task-list-item .checkbox input[type='checkbox'] {
       // layout
-      +label {
+      + label {
         padding-left: 0.3em;
         &:before {
           margin-top: 0.4em;
@@ -103,17 +110,19 @@ div.body {
       }
       // styles
       cursor: default;
-      +label {
+      + label {
         cursor: default;
         opacity: 1;
-        &:before, &:after {
+        &:before,
+        &:after {
           cursor: default;
         }
       }
     }
   }
 
-  p code {  // only inline code blocks
+  // only inline code blocks
+  p code {
     font-family: $font-family-monospace-not-strictly;
   }
 
@@ -150,12 +159,17 @@ div.body {
 
   $ratio: 0.95;
   &.comment {
-    line-height: 1.5em;
     font-size: 14px;
+    line-height: 1.5em;
 
-    h1, h2, h3, h4, h5, h6 {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
       margin-top: 1.6em * $ratio;
-      margin-bottom: .8em * $ratio;
+      margin-bottom: 0.8em * $ratio;
 
       &:first-child {
         margin-top: 15px;
@@ -163,8 +177,8 @@ div.body {
     }
 
     h1 {
-      margin-top: 2em * $ratio;
       padding-bottom: 0.3em * $ratio;
+      margin-top: 2em * $ratio;
       font-size: 1.8em * $ratio;
       line-height: 1.1em * $ratio;
     }
@@ -178,14 +192,15 @@ div.body {
     }
 
     blockquote {
-      font-size: .9em * $ratio;
+      font-size: 0.9em * $ratio;
     }
 
     img.emojione {
       margin-top: -0.3em * $ratio !important;
     }
 
-    ul, ol {
+    ul,
+    ol {
       padding-left: 15px;
       margin: 10px 0;
 
@@ -212,7 +227,8 @@ div.body {
   }
 }
 
-@media (max-width: $screen-sm-max) { // {{{ tablet and iphone size
+// tablet and iphone size
+@media (max-width: $screen-sm-max) {
   .main-container .main .wiki {
     img {
       max-width: 100%;

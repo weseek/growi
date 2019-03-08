@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import User from '../User/User';
 
 export default class Attachment extends React.Component {
+
   constructor(props) {
     super(props);
 
@@ -36,19 +37,22 @@ export default class Attachment extends React.Component {
     const btnDownload = (this.props.isUserLoggedIn)
       ? (
         <a className="attachment-download" href={attachment.downloadPathProxied}>
-          <i className="icon-cloud-download"></i>
-        </a>)
+          <i className="icon-cloud-download" />
+        </a>
+      )
       : '';
 
     const btnTrash = (this.props.isUserLoggedIn)
       ? (
+        /* eslint-disable-next-line */
         <a className="text-danger attachment-delete" onClick={this._onAttachmentDeleteClicked}>
-          <i className="icon-trash"></i>
-        </a>)
+          <i className="icon-trash" />
+        </a>
+      )
       : '';
 
     return (
-      <li className='attachment'>
+      <li className="attachment">
         <User user={attachment.creator} />
 
         <a href={attachment.filePathProxied}><i className={formatIcon}></i> {attachment.originalName}</a>
@@ -62,6 +66,7 @@ export default class Attachment extends React.Component {
       </li>
     );
   }
+
 }
 
 Attachment.propTypes = {

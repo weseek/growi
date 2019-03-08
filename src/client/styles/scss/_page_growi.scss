@@ -1,17 +1,15 @@
 .growi.main-container {
   header {
-
     div.title-logo-container {
-      display: none;  // hide in default
+      display: none; // hide in default
 
       a {
-        width: 32px;
-        height: 32px;
-
         // centering
         display: flex;
         align-items: center;
         justify-content: center;
+        width: 32px;
+        height: 32px;
 
         img {
           width: 16px;
@@ -24,8 +22,8 @@
       margin: 0;
 
       li {
-        list-style: none;
         font-size: 12px;
+        list-style: none;
       }
 
       .picture {
@@ -34,7 +32,6 @@
         border: 1px solid #ccc;
       }
     }
-
   }
 
   /*
@@ -44,8 +41,8 @@
     // show logo link
     div.title-logo-container {
       display: unset;
-      margin-left: -12px;
       margin-right: 6px;
+      margin-left: -12px;
     }
     // hide authors in affix
     .authors {

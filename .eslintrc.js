@@ -1,93 +1,125 @@
 module.exports = {
-  "env": {
-    "browser": true,
-    "commonjs": true,
-    "es6": true,
-    "node": true
-  },
-  "extends": [
-    "eslint:recommended",
-    "plugin:react/recommended"
+  parser: 'babel-eslint',
+  extends: [
+    'airbnb',
+    'plugin:react/recommended',
   ],
-  "globals": {
-    "$": true,
-    "jquery": true,
-    "emojione": true,
-    "hljs": true,
-    "window": true
+  env: {
+    browser: true,
+    node: true,
+    es6: true,
+    mocha: true,
+    jquery: true,
   },
-  "parserOptions": {
-    "ecmaVersion": 8,
-    "ecmaFeatures": {
-      "experimentalObjectRestSpread": true,
-      "jsx": true
-    },
-    "sourceType": "module"
+  globals: {
+    $: true,
+    jquery: true,
+    emojione: true,
+    hljs: true,
+    window: true,
   },
-  "plugins": [
-    "react"
+  plugins: [
+    'react',
+    'chai-friendly',
   ],
-  "rules": {
-    "brace-style": [
-      "error",
-      "stroustrup", { "allowSingleLine": true }
+  rules: {
+    'arrow-body-style': ['error', 'always'],
+    'brace-style': [
+      'error',
+      'stroustrup',
+      { allowSingleLine: true },
     ],
-    "comma-spacing": [
-      "error",
-      { "before": false, "after": true }
+    'class-methods-use-this': 'off',
+    'consistent-return': 'off',
+    'default-case': 'off',
+    'func-names': 'off',
+    'global-require': 'off',
+    'key-spacing': [
+      'error',
+      { mode: 'minimum' },
     ],
-    "func-call-spacing": [
-      "error",
-      "never"
+    'max-len': ['error',
+      {
+        code: 160,
+        ignoreTrailingComments: true,
+      },
     ],
-    "indent": [
-      "error",
+    'no-continue': 'off',
+    'no-param-reassign': [
+      'error',
+      { props: false },
+    ],
+    'no-plusplus': 'off',
+    // Allow only for-of
+    // https://qiita.com/the_red/items/0c826e97b57da6d67621
+    'no-restricted-syntax': [
+      'error',
+      {
+        selector: 'ForInStatement',
+        message: 'for..in loops iterate over the entire prototype chain, which is virtually never what you want. Use Object.{keys,values,entries}, and iterate over the resulting array.',
+      },
+      {
+        selector: 'LabeledStatement',
+        message: 'Labels are a form of GOTO; using them makes code confusing and hard to maintain and understand.',
+      },
+      {
+        selector: 'WithStatement',
+        message: '`with` is disallowed in strict mode because it makes code impossible to predict and optimize.',
+      },
+    ],
+    'no-shadow': 'off',
+    'no-underscore-dangle': 'off',
+    'no-useless-return': 'off',
+    'prefer-destructuring': 'off',
+    'indent': [
+      'error',
       2,
       {
-        "SwitchCase": 1,
-        "ignoredNodes": ['JSXElement *', 'JSXElement', "JSXAttribute", "JSXSpreadAttribute"],
-        "FunctionDeclaration": {"body": 1, "parameters": 2},
-        "FunctionExpression": {"body": 1, "parameters": 2},
-        "MemberExpression": "off"
-      }
+        SwitchCase: 1,
+        ignoredNodes: ['JSXElement *', 'JSXElement', 'JSXAttribute', 'JSXSpreadAttribute'],
+        ArrayExpression: 'first',
+        FunctionDeclaration: { body: 1, parameters: 2 },
+        FunctionExpression: { body: 1, parameters: 2 },
+      },
     ],
-    "key-spacing": [
-      "error", {
-        "beforeColon": false,
-        "afterColon": true,
-        "mode": "minimum"
-      }
+    'no-unused-vars': [
+      'error',
+      { args: 'none' },
     ],
-    "keyword-spacing": [
-      "error", {}
+    'padded-blocks': [
+      'error',
+      { classes: 'always' },
     ],
-    "linebreak-style": [
-      "error",
-      "unix"
+    'radix': 'off',
+    'semi': [
+      'error',
+      'always',
+      { omitLastInOneLineBlock: true },
     ],
-    "no-unused-vars": [
-      "error",
-      { "args": "none" }
+    'space-before-function-paren': [
+      'error',
+      'never',
     ],
-    "no-var": [ "error" ],
-    "quotes": [
-      "error",
-      "single"
+    'react/destructuring-assignment': 'off',
+    'react/forbid-prop-types': 'off',
+    'react/jsx-filename-extension': [
+      'warn',
+      { extensions: ['.jsx']},
     ],
-    "react/jsx-uses-vars": 1,
-    "react/no-string-refs": "off",
-    "semi": [
-      "error",
-      "always",
-      { "omitLastInOneLineBlock": true }
-    ],
-    "space-before-blocks": [
-      "error",
-      "always"
-    ],
-    "space-before-function-paren": [
-      "error",
-      "never"
-    ]
-  }
+    'react/no-unused-prop-types': 'off',
+    'react/jsx-one-expression-per-line': 'off',
+    'react/no-access-state-in-setstate': 'off',
+    'react/prefer-stateless-function': 'off',
+    'react/require-default-props': 'off',
+    'react/self-closing-comp': 'off',
+    'react/sort-comp': 'off',
+    'jsx-a11y/img-redundant-alt': 'off',
+    // eslint-plugin-import rules
+    'import/no-extraneous-dependencies': 'off',
+    'import/no-dynamic-require': 'off',
+    'import/no-unresolved': [2, { ignore: ['^@'] }], // ignore @alias/..., @commons/..., ...
+    // eslint-plugin-chai-friendly rules
+    'no-unused-expressions': 0,
+    'chai-friendly/no-unused-expressions': 2,
+  },
 };

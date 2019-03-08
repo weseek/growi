@@ -1,17 +1,16 @@
 .admin-page {
-
   .admin-user-menu {
     .dropdown-menu {
-      left: auto;
       right: 0;
+      left: auto;
       width: 300px;
     }
-   }
+  }
 
   .admin-group-menu {
     .dropdown-menu {
-      left: auto;
       right: 0;
+      left: auto;
     }
   }
 
@@ -19,7 +18,7 @@
     @import 'hljs';
 
     .ss-container img {
-      padding: .5em;
+      padding: 0.5em;
       background-color: #ddd;
     }
 
@@ -32,9 +31,9 @@
 
   .admin-security {
     .passport-logo {
-      margin-top: -.5em;
-      padding: 3px;
       height: 32px;
+      padding: 3px;
+      margin-top: -0.5em;
       background-color: black;
     }
 
@@ -45,20 +44,20 @@
 
   .admin-notification {
     .td-abs-center {
+      width: 1px; // to keep the cell small
       text-align: center;
       vertical-align: middle;
-      width: 1px; // to keep the cell small
     }
   }
 
   .admin-importer {
     table.table-mapping {
-      th, td {
+      th,
+      td {
         text-align: center;
       }
     }
   }
-
 
   // Toggle Twitter Bootstrap button class when active
   // https://jsfiddle.net/ms040m01/3/
@@ -75,18 +74,18 @@
     .btn {
       min-width: 60px;
     }
-    .btn.active[data-active-class="default"] {
+    .btn.active[data-active-class='default'] {
       @include active-color($btn-default-color, $btn-default-bg, $btn-default-border);
     }
-    .btn.active[data-active-class="primary"] {
+    .btn.active[data-active-class='primary'] {
       @include active-color($btn-primary-color, $btn-primary-bg, $btn-primary-border);
     }
 
     // disabled btn-group styles
     &.btn-group-disabled {
       .btn:hover {
-        background-color: unset;
         cursor: not-allowed;
+        background-color: unset;
       }
     }
   }
@@ -97,9 +96,9 @@
     .theme-option-container {
       min-width: 100px;
       a {
+        padding: 3px;
         margin-right: 10px;
         margin-bottom: 10px;
-        padding: 3px;
 
         svg {
           display: block;
@@ -108,14 +107,14 @@
     }
 
     &.disabled {
-      opacity: 0.5;
       cursor: not-allowed;
+      opacity: 0.5;
     }
 
     // style
     .theme-option-container a {
-      border: 1px solid #ccc;
       background-color: #f5f5f5;
+      border: 1px solid #ccc;
     }
     .theme-option-name {
       opacity: 0.3;

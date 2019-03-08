@@ -3,9 +3,9 @@
     // delete button
     .page-comment-control {
       position: absolute;
-      display: none;    // default hidden
       top: 0;
       right: 0;
+      display: none; // default hidden
     }
   }
 
@@ -13,9 +13,9 @@
   .page-comment-delete-modal .modal-content {
     .modal-body {
       .comment-body {
+        max-height: 13em;
         // scrollable
         overflow-y: auto;
-        max-height: 13em;
       }
     }
   }
@@ -23,14 +23,13 @@
 
 .main-container {
   .page-comments {
-
     .page-comments-list-toggle-newer,
     .page-comments-list-toggle-older {
-      text-align: center;
       display: block;
       margin: 8px;
-      font-size: .9em;
+      font-size: 0.9em;
       color: #999;
+      text-align: center;
     }
 
     // older comments
@@ -38,7 +37,7 @@
     }
     // newer comments
     .page-comments-list-newer .page-comment {
-      opacity: .7;
+      opacity: 0.7;
 
       &:hover {
         opacity: 1;

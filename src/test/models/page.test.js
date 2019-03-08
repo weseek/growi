@@ -1,18 +1,20 @@
-const chai = require('chai')
-  , expect = chai.expect
-  , sinonChai = require('sinon-chai')
-  , utils = require('../utils.js')
-  ;
+const chai = require('chai');
+const sinonChai = require('sinon-chai');
+const utils = require('../utils.js');
+
+const { expect } = chai;
+const testDBUtil = global.testDBUtil;
+
 chai.use(sinonChai);
 
 describe('Page', () => {
-  const Page = utils.models.Page,
-    User   = utils.models.User,
-    conn   = utils.mongoose.connection;
+  const Page = utils.models.Page;
+  const User = utils.models.User;
+  const conn = utils.mongoose.connection;
 
-  let createdPages,
-    createdUsers,
-    createdUserGroups;
+  let createdPages;
+  let createdUsers;
+  let createdUserGroups;
 
   before(async() => {
     await conn.collection('pages').remove();
@@ -49,7 +51,7 @@ describe('Page', () => {
       {
         relatedGroup: testGroup0,
         relatedUser: testUser1,
-      }
+      },
     ];
     await testDBUtil.generateFixture(conn, 'UserGroupRelation', userGroupRelationFixture);
 
@@ -58,19 +60,19 @@ describe('Page', () => {
         path: '/user/anonymous0/memo',
         grant: Page.GRANT_RESTRICTED,
         grantedUsers: [testUser0],
-        creator: testUser0
+        creator: testUser0,
       },
       {
         path: '/grant/public',
         grant: Page.GRANT_PUBLIC,
         grantedUsers: [testUser0],
-        creator: testUser0
+        creator: testUser0,
       },
       {
         path: '/grant/restricted',
         grant: Page.GRANT_RESTRICTED,
         grantedUsers: [testUser0],
-        creator: testUser0
+        creator: testUser0,
       },
       {
         path: '/grant/specified',
@@ -88,7 +90,7 @@ describe('Page', () => {
         path: '/page/for/extended',
         grant: Page.GRANT_PUBLIC,
         creator: testUser0,
-        extended: {hoge: 1}
+        extended: { hoge: 1 },
       },
       {
         path: '/grant/groupacl',
@@ -114,13 +116,12 @@ describe('Page', () => {
       },
     ];
     createdPages = await testDBUtil.generateFixture(conn, 'Page', fixture);
-
   });
 
   describe('.isPublic', () => {
     context('with a public page', () => {
-      it('should return true', done => {
-        Page.findOne({path: '/grant/public'}, (err, page) => {
+      it('should return true', (done) => {
+        Page.findOne({ path: '/grant/public' }, (err, page) => {
           expect(err).to.be.null;
           expect(page.isPublic()).to.be.equal(true);
           done();
@@ -128,10 +129,10 @@ describe('Page', () => {
       });
     });
 
-    ['restricted', 'specified', 'owner'].forEach(grant => {
-      context('with a ' + grant + ' page', () => {
-        it('should return false', done => {
-          Page.findOne({path: '/grant/' + grant}, (err, page) => {
+    ['restricted', 'specified', 'owner'].forEach((grant) => {
+      context(`with a ${grant} page`, () => {
+        it('should return false', (done) => {
+          Page.findOne({ path: `/grant/${grant}` }, (err, page) => {
             expect(err).to.be.null;
             expect(page.isPublic()).to.be.equal(false);
             done();
@@ -198,22 +199,22 @@ describe('Page', () => {
 
       expect(Page.isCreatableName('/ the / path / with / space')).to.be.false;
 
-      var forbidden = ['installer', 'register', 'login', 'logout', 'admin', 'files', 'trash', 'paste', 'comments'];
-      for (var i = 0; i < forbidden.length ; i++) {
-        var pn = forbidden[i];
-        expect(Page.isCreatableName('/' + pn + '')).to.be.false;
-        expect(Page.isCreatableName('/' + pn + '/')).to.be.false;
-        expect(Page.isCreatableName('/' + pn + '/abc')).to.be.false;
+      const forbidden = ['installer', 'register', 'login', 'logout',
+                         'admin', 'files', 'trash', 'paste', 'comments'];
+      for (let i = 0; i < forbidden.length; i++) {
+        const pn = forbidden[i];
+        expect(Page.isCreatableName(`/${pn}`)).to.be.false;
+        expect(Page.isCreatableName(`/${pn}/`)).to.be.false;
+        expect(Page.isCreatableName(`/${pn}/abc`)).to.be.false;
       }
-
     });
   });
 
   describe('.isAccessiblePageByViewer', () => {
     context('with a granted user', () => {
       it('should return true', async() => {
-        const user = await User.findOne({email: 'anonymous0@example.com'});
-        const page = await Page.findOne({path: '/user/anonymous0/memo'});
+        const user = await User.findOne({ email: 'anonymous0@example.com' });
+        const page = await Page.findOne({ path: '/user/anonymous0/memo' });
 
         const bool = await Page.isAccessiblePageByViewer(page.id, user);
         expect(bool).to.be.equal(true);
@@ -222,8 +223,8 @@ describe('Page', () => {
 
     context('with a public page', () => {
       it('should return true', async() => {
-        const user = await User.findOne({email: 'anonymous1@example.com'});
-        const page = await Page.findOne({path: '/grant/public'});
+        const user = await User.findOne({ email: 'anonymous1@example.com' });
+        const page = await Page.findOne({ path: '/grant/public' });
 
         const bool = await Page.isAccessiblePageByViewer(page.id, user);
         expect(bool).to.be.equal(true);
@@ -232,8 +233,8 @@ describe('Page', () => {
 
     context('with a restricted page and an user who has no grant', () => {
       it('should return false', async() => {
-        const user = await User.findOne({email: 'anonymous1@example.com'});
-        const page = await Page.findOne({path: '/grant/owner'});
+        const user = await User.findOne({ email: 'anonymous1@example.com' });
+        const page = await Page.findOne({ path: '/grant/owner' });
 
         const bool = await Page.isAccessiblePageByViewer(page.id, user);
         expect(bool).to.be.equal(false);
@@ -243,27 +244,21 @@ describe('Page', () => {
 
   describe('Extended field', () => {
     context('Slack Channel.', () => {
-      it('should be empty', done => {
-        Page.findOne({path: '/page/for/extended'}, (err, page) => {
+      it('should be empty', (done) => {
+        Page.findOne({ path: '/page/for/extended' }, (err, page) => {
           expect(page.extended.hoge).to.be.equal(1);
           expect(page.getSlackChannel()).to.be.equal('');
           done();
-        })
-      });
-
-      it('set slack channel and should get it and should keep hoge ', done => {
-        Page.findOne({path: '/page/for/extended'}, (err, page) => {
-          page.updateSlackChannel('slack-channel1')
-          .then(data => {
-            Page.findOne({path: '/page/for/extended'}, (err, page) => {
-              expect(page.extended.hoge).to.be.equal(1);
-              expect(page.getSlackChannel()).to.be.equal('slack-channel1');
-              done();
-            });
-          })
         });
       });
 
+      it('set slack channel and should get it and should keep hoge ', async() => {
+        let page = await Page.findOne({ path: '/page/for/extended' });
+        await page.updateSlackChannel('slack-channel1');
+        page = await Page.findOne({ path: '/page/for/extended' });
+        expect(page.extended.hoge).to.be.equal(1);
+        expect(page.getSlackChannel()).to.be.equal('slack-channel1');
+      });
     });
   });
 
@@ -273,7 +268,7 @@ describe('Page', () => {
         const pageToFind = createdPages[1];
         const grantedUser = createdUsers[0];
 
-        const page = await Page.findByIdAndViewer(pageToFind._id, grantedUser);
+        const page = await Page.findByIdAndViewer(pageToFind.id, grantedUser);
         expect(page).to.be.not.null;
         expect(page.path).to.equal(pageToFind.path);
       });
@@ -282,7 +277,7 @@ describe('Page', () => {
         const pageToFind = createdPages[2];
         const grantedUser = createdUsers[1];
 
-        const page = await Page.findByIdAndViewer(pageToFind._id, grantedUser);
+        const page = await Page.findByIdAndViewer(pageToFind.id, grantedUser);
         expect(page).to.be.not.null;
         expect(page.path).to.equal(pageToFind.path);
       });
@@ -291,7 +286,7 @@ describe('Page', () => {
         const pageToFind = createdPages[4];
         const grantedUser = createdUsers[0];
 
-        const page = await Page.findByIdAndViewer(pageToFind._id, grantedUser);
+        const page = await Page.findByIdAndViewer(pageToFind.id, grantedUser);
         expect(page).to.be.not.null;
         expect(page.path).to.equal(pageToFind.path);
       });
@@ -300,7 +295,7 @@ describe('Page', () => {
         const pageToFind = createdPages[4];
         const grantedUser = createdUsers[1];
 
-        const page = await Page.findByIdAndViewer(pageToFind._id, grantedUser);
+        const page = await Page.findByIdAndViewer(pageToFind.id, grantedUser);
         expect(page).to.be.null;
       });
     });
@@ -310,7 +305,7 @@ describe('Page', () => {
         const pageToFind = createdPages[6];
         const grantedUser = createdUsers[0];
 
-        const page = await Page.findByIdAndViewer(pageToFind._id, grantedUser);
+        const page = await Page.findByIdAndViewer(pageToFind.id, grantedUser);
         expect(page).to.be.not.null;
         expect(page.path).to.equal(pageToFind.path);
       });
@@ -319,7 +314,7 @@ describe('Page', () => {
         const pageToFind = createdPages[6];
         const grantedUser = createdUsers[2];
 
-        const page = await Page.findByIdAndViewer(pageToFind._id, grantedUser);
+        const page = await Page.findByIdAndViewer(pageToFind.id, grantedUser);
         expect(page).to.be.null;
       });
     });
@@ -334,7 +329,7 @@ describe('Page', () => {
       // assert totalCount
       expect(result.totalCount).to.equal(1);
       // assert paths
-      const pagePaths = result.pages.map(page => page.path);
+      const pagePaths = result.pages.map((page) => { return page.path });
       expect(pagePaths).to.include.members(['/page/for/extended']);
     });
     it('should return only /page1/', async() => {
@@ -345,7 +340,7 @@ describe('Page', () => {
       // assert totalCount
       expect(result.totalCount).to.equal(2);
       // assert paths
-      const pagePaths = result.pages.map(page => page.path);
+      const pagePaths = result.pages.map((page) => { return page.path });
       expect(pagePaths).to.include.members(['/page1', '/page1/child1']);
     });
   });
@@ -359,7 +354,7 @@ describe('Page', () => {
       // assert totalCount
       expect(result.totalCount).to.equal(4);
       // assert paths
-      const pagePaths = result.pages.map(page => page.path);
+      const pagePaths = result.pages.map((page) => { return page.path });
       expect(pagePaths).to.include.members(['/page/for/extended', '/page1', '/page1/child1', '/page2']);
     });
     it('should process with regexp', async() => {
@@ -370,9 +365,8 @@ describe('Page', () => {
       // assert totalCount
       expect(result.totalCount).to.equal(3);
       // assert paths
-      const pagePaths = result.pages.map(page => page.path);
+      const pagePaths = result.pages.map((page) => { return page.path });
       expect(pagePaths).to.include.members(['/page1', '/page1/child1', '/page2']);
     });
   });
-
 });
