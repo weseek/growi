@@ -321,7 +321,7 @@ module.exports = function(crowi) {
     });
 
     // create tag and relations
-    newTags.forEach(async (tag) => {
+    newTags.forEach(async(tag) => {
       const setTag = await Tag.findOrCreate(tag);
       PageTagRelation.createIfNotExist(page._id, setTag._id);
     });
