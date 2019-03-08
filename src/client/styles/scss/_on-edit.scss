@@ -1,6 +1,7 @@
 @import 'editor-overlay';
 
 body:not(.on-edit) {
+
   // hide .page-editor-footer
   .page-editor-footer {
     display: none !important;
@@ -18,10 +19,11 @@ body.on-edit {
 
   // for growi layout
   .main {
-    > .row {
+    >.row {
       margin: 0;
-      > .col-lg-10,
-      > .col-md-9 {
+
+      >.col-lg-10,
+      >.col-md-9 {
         width: 100%;
         padding: 0;
       }
@@ -63,12 +65,14 @@ body.on-edit {
   &.hackmd .nav-tab-edit {
     display: none;
   }
+
   &:not(.hackmd) .nav-tab-hackmd {
     display: none;
   }
 
   // hide hackmd related alert
   &.hackmd #page-status-alert {
+
     .alert-hackmd-someone-editing,
     .alert-hackmd-draft-exists {
       display: none;
@@ -94,17 +98,16 @@ body.on-edit {
 
     background: none;
 
-    > .header-container {
+    >.header-container {
       width: 100%; //   for crowi layout
       padding: 0; //    for crowi layout
       pointer-events: initial; // enable pointer-events
     }
 
-    .header-wrap {
-      overflow-x: hidden;
-    }
     div.title-container {
       margin-right: 0px;
+      overflow-x: hidden;
+
       h1#revision-path {
         @include variable-font-size(20px);
         line-height: 1em;
@@ -113,17 +116,17 @@ body.on-edit {
         .d-flex {
           flex-wrap: nowrap;
         }
+
         .path-segment {
           white-space: nowrap;
         }
       }
     }
+
     div#page-tag {
       display: inline;
-      margin-right: auto;
-      .page-tag-form {
-        border-radius: 5px;
-      }
+      min-width: 100px;
+      margin-left: 2px;
     }
 
     // hide if screen size is less than tablet
@@ -144,6 +147,7 @@ body.on-edit {
         min-width: 150px;
       }
     }
+
     .btn-submit {
       width: 100px;
     }
@@ -163,16 +167,19 @@ body.on-edit {
   }
 
   &.builtin-editor {
+
     /*****************
     * Editor styles
     *****************/
     .page-editor-editor-container {
       border-right: 1px solid transparent;
+
       // override CodeMirror styles
       .CodeMirror {
         .cm-matchhighlight {
           background-color: cyan;
         }
+
         .CodeMirror-selection-highlight-scrollbar {
           background-color: darkcyan;
         }
@@ -201,8 +208,8 @@ body.on-edit {
         border: none;
       }
     }
-    .page-editor-preview-container {
-    }
+
+    .page-editor-preview-container {}
 
     .page-editor-preview-body {
       padding-top: 18px;
@@ -221,7 +228,8 @@ body.on-edit {
           display: inline-block;
           width: 20px;
         }
-        .dropdown-menu > li > a {
+
+        .dropdown-menu>li>a {
           display: flex;
           align-items: center;
           justify-content: space-between;
@@ -250,7 +258,9 @@ body.on-edit {
         min-width: 150px;
       }
     }
-  } // .builtin-editor .tab-pane#edit
+  }
+
+  // .builtin-editor .tab-pane#edit
 
   &.hackmd {
     #page-editor-options-selector {
@@ -258,7 +268,7 @@ body.on-edit {
     }
 
     .hackmd-preinit,
-    #iframe-hackmd-container > iframe {
+    #iframe-hackmd-container>iframe {
       border: none;
     }
 
@@ -274,12 +284,14 @@ body.on-edit {
         padding-bottom: 6px; // for SplitButton
       }
     }
+
     .hackmd-resume-button-container {
       .dropdown-menu {
         right: 0;
         left: unset;
       }
     }
+
     .hackmd-discard-button {
       text-decoration: underline;
       vertical-align: unset;
@@ -316,6 +328,7 @@ body.on-edit {
       width: 30px;
     }
   }
+
   // active line
   .CodeMirror-hint-active.crowi-emoji-autocomplete {
     .img-container {
