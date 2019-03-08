@@ -18,6 +18,7 @@ module.exports = function(crowi, app) {
   const attachment = require('./attachment')(crowi, app);
   const comment = require('./comment')(crowi, app);
   const bookmark = require('./bookmark')(crowi, app);
+  const tag = require('./tag')(crowi, app);
   const revision = require('./revision')(crowi, app);
   const search = require('./search')(crowi, app);
   const hackmd = require('./hackmd')(crowi, app);
