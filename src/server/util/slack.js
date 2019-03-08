@@ -123,7 +123,7 @@ module.exports = function(crowi) {
       author_link: urljoin(url, 'user', user.username),
       author_icon: user.image,
       title: page.path,
-      title_link: urljoin(url, page._id),
+      title_link: urljoin(url, page.id),
       text: body,
       mrkdwn_in: ['text'],
     };
