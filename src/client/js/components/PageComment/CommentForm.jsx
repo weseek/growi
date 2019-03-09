@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ReactUtils from '../ReactUtils';
 
 import Button from 'react-bootstrap/es/Button';
 import Tab from 'react-bootstrap/es/Tab';
 import Tabs from 'react-bootstrap/es/Tabs';
-import UserPicture from '../User/UserPicture';
 import * as toastr from 'toastr';
+import UserPicture from '../User/UserPicture';
+import ReactUtils from '../ReactUtils';
 
 import GrowiRenderer from '../../util/GrowiRenderer';
 
@@ -47,7 +47,7 @@ export default class CommentForm extends React.Component {
       slackChannels: this.props.slackChannels,
     };
 
-    this.growiRenderer = new GrowiRenderer(this.props.crowi, this.props.crowiOriginRenderer, {mode: 'comment'});
+    this.growiRenderer = new GrowiRenderer(this.props.crowi, this.props.crowiOriginRenderer, { mode: 'comment' });
 
     this.updateState = this.updateState.bind(this);
     this.updateStateCheckbox = this.updateStateCheckbox.bind(this);
@@ -70,17 +70,17 @@ export default class CommentForm extends React.Component {
       return;
     }
 
-    const layoutType = this.props.crowi.getConfig()['layoutType'];
-    this.setState({isLayoutTypeGrowi: 'crowi-plus' === layoutType || 'growi' === layoutType});
+    const layoutType = this.props.crowi.getConfig().layoutType;
+    this.setState({ isLayoutTypeGrowi: layoutType === 'crowi-plus' || layoutType === 'growi' });
   }
 
   updateState(value) {
-    this.setState({comment: value});
+    this.setState({ comment: value });
   }
 
   updateStateCheckbox(event) {
     const value = event.target.checked;
-    this.setState({isMarkdown: value});
+    this.setState({ isMarkdown: value });
     // changeMode
     this.refs.editor.setGfmMode(value);
   }
@@ -91,11 +91,11 @@ export default class CommentForm extends React.Component {
   }
 
   onSlackEnabledFlagChange(value) {
-    this.setState({isSlackEnabled: value});
+    this.setState({ isSlackEnabled: value });
   }
 
   onSlackChannelsChange(value) {
-    this.setState({slackChannels: value});
+    this.setState({ slackChannels: value });
   }
 
   /**
@@ -117,34 +117,35 @@ export default class CommentForm extends React.Component {
       slackNotificationForm: {
         isSlackEnabled: this.state.isSlackEnabled,
         slackChannels: this.state.slackChannels,
-      }
+      },
     })
-    .then((res) => {
-      if (this.props.onPostComplete != null) {
-        this.props.onPostComplete(res.comment);
-      }
-      this.setState({
-        comment: '',
-        isMarkdown: true,
-        html: '',
-        key: 1,
-        errorMessage: undefined,
-        isSlackEnabled: false,
+      .then((res) => {
+        if (this.props.onPostComplete != null) {
+          this.props.onPostComplete(res.comment);
+        }
+        this.setState({
+          comment: '',
+          isMarkdown: true,
+          html: '',
+          key: 1,
+          errorMessage: undefined,
+          isSlackEnabled: false,
+        });
+        // reset value
+        this.refs.editor.setValue('');
+      })
+      .catch((err) => {
+        const errorMessage = err.message || 'An unknown error occured when posting comment';
+        this.setState({ errorMessage });
       });
-      // reset value
-      this.refs.editor.setValue('');
-    })
-    .catch(err => {
-      const errorMessage = err.message || 'An unknown error occured when posting comment';
-      this.setState({ errorMessage });
-    });
   }
 
   getCommentHtml() {
     return (
       <CommentPreview
-        inputRef={el => this.previewElement = el}
-        html={this.state.html} />
+        inputRef={(el) => { return this.previewElement = el }}
+        html={this.state.html}
+      />
     );
   }
 
@@ -156,30 +157,30 @@ export default class CommentForm extends React.Component {
     const growiRenderer = this.growiRenderer;
     const interceptorManager = this.props.crowi.interceptorManager;
     interceptorManager.process('preRenderCommnetPreview', context)
-      .then(() => interceptorManager.process('prePreProcess', context))
+      .then(() => { return interceptorManager.process('prePreProcess', context) })
       .then(() => {
         context.markdown = growiRenderer.preProcess(context.markdown);
       })
-      .then(() => interceptorManager.process('postPreProcess', context))
+      .then(() => { return interceptorManager.process('postPreProcess', context) })
       .then(() => {
         const parsedHTML = growiRenderer.process(context.markdown);
-        context['parsedHTML'] = parsedHTML;
+        context.parsedHTML = parsedHTML;
       })
-      .then(() => interceptorManager.process('prePostProcess', context))
+      .then(() => { return interceptorManager.process('prePostProcess', context) })
       .then(() => {
         context.parsedHTML = growiRenderer.postProcess(context.parsedHTML);
       })
-      .then(() => interceptorManager.process('postPostProcess', context))
-      .then(() => interceptorManager.process('preRenderCommentPreviewHtml', context))
+      .then(() => { return interceptorManager.process('postPostProcess', context) })
+      .then(() => { return interceptorManager.process('preRenderCommentPreviewHtml', context) })
       .then(() => {
         this.setState({ html: context.parsedHTML });
       })
       // process interceptors for post rendering
-      .then(() => interceptorManager.process('postRenderCommentPreviewHtml', context));
+      .then(() => { return interceptorManager.process('postRenderCommentPreviewHtml', context) });
   }
 
   generateInnerHtml(html) {
-    return {__html: html};
+    return { __html: html };
   }
 
   onUpload(file) {
@@ -202,7 +203,7 @@ export default class CommentForm extends React.Component {
         // when image
         if (attachment.fileFormat.startsWith('image/')) {
           // modify to "![fileName](url)" syntax
-          insertText = '!' + insertText;
+          insertText = `!${insertText}`;
         }
         this.refs.editor.insertText(insertText);
       })
@@ -238,7 +239,7 @@ export default class CommentForm extends React.Component {
     const user = crowi.findUser(username);
     const creatorsPage = `/user/${username}`;
     const comment = this.state.comment;
-    const commentPreview = this.state.isMarkdown ? this.getCommentHtml(): ReactUtils.nl2br(comment);
+    const commentPreview = this.state.isMarkdown ? this.getCommentHtml() : ReactUtils.nl2br(comment);
     const emojiStrategy = this.props.crowi.getEmojiStrategy();
 
     const isLayoutTypeGrowi = this.state.isLayoutTypeGrowi;
@@ -254,61 +255,73 @@ export default class CommentForm extends React.Component {
       <div>
 
         <form className="form page-comment-form" id="page-comment-form" onSubmit={this.postComment}>
-          { username &&
+          { username
+            && (
             <div className="comment-form">
-              { isLayoutTypeGrowi &&
+              { isLayoutTypeGrowi
+                && (
                 <div className="comment-form-user">
                   <a href={creatorsPage}>
                     <UserPicture user={user} />
                   </a>
                 </div>
+)
               }
               <div className="comment-form-main">
                 {/* Add Comment Button */}
-                { !this.state.isFormShown &&
+                { !this.state.isFormShown
+                  && (
                   <button className={`btn btn-lg ${isLayoutTypeGrowi ? 'btn-link' : 'btn-primary'} center-block`} onClick={this.showCommentFormBtnClickHandler}>
                     <i className="icon-bubble"></i> Add Comment
                   </button>
+)
                 }
                 {/* Editor */}
-                { this.state.isFormShown && <React.Fragment>
+                { this.state.isFormShown && (
+                <React.Fragment>
                   <div className="comment-write">
                     <Tabs activeKey={this.state.key} id="comment-form-tabs" onSelect={this.handleSelect} animation={false}>
                       <Tab eventKey={1} title="Write">
-                        <Editor ref="editor"
-                          value={this.state.comment}
-                          isGfmMode={this.state.isMarkdown}
-                          editorOptions={this.props.editorOptions}
-                          lineNumbers={false}
-                          isMobile={this.props.crowi.isMobile}
-                          isUploadable={this.state.isUploadable && this.state.isLayoutTypeGrowi}  // enable only when GROWI layout
-                          isUploadableFile={this.state.isUploadableFile}
-                          emojiStrategy={emojiStrategy}
-                          onChange={this.updateState}
-                          onUpload={this.onUpload}
-                          onCtrlEnter={this.postComment}
-                        />
+                        <Editor
+              ref="editor"
+              value={this.state.comment}
+              isGfmMode={this.state.isMarkdown}
+              editorOptions={this.props.editorOptions}
+              lineNumbers={false}
+              isMobile={this.props.crowi.isMobile}
+              isUploadable={this.state.isUploadable && this.state.isLayoutTypeGrowi} // enable only when GROWI layout
+              isUploadableFile={this.state.isUploadableFile}
+              emojiStrategy={emojiStrategy}
+              onChange={this.updateState}
+              onUpload={this.onUpload}
+              onCtrlEnter={this.postComment}
+            />
                       </Tab>
-                      { this.state.isMarkdown == true &&
+                      { this.state.isMarkdown == true
+                      && (
                       <Tab eventKey={2} title="Preview">
                         <div className="comment-form-preview">
-                        {commentPreview}
+                          {commentPreview}
                         </div>
                       </Tab>
+)
                       }
                     </Tabs>
                   </div>
                   <div className="comment-submit">
                     <div className="d-flex">
-                      <label style={{flex: 1}}>
-                      { isLayoutTypeGrowi && this.state.key == 1 &&
+                      <label style={{ flex: 1 }}>
+                        { isLayoutTypeGrowi && this.state.key == 1
+                        && (
                         <span>
                           <input type="checkbox" id="comment-form-is-markdown" name="isMarkdown" checked={this.state.isMarkdown} value="1" onChange={this.updateStateCheckbox} /> Markdown
                         </span>
+)
                       }
                       </label>
                       <span className="hidden-xs">{ this.state.errorMessage && errorMessage }</span>
-                      { this.state.hasSlackConfig &&
+                      { this.state.hasSlackConfig
+                        && (
                         <div className="form-inline align-self-center mr-md-2">
                           <SlackNotification
                             crowi={this.props.crowi}
@@ -320,6 +333,7 @@ export default class CommentForm extends React.Component {
                             onChannelChange={this.onSlackChannelsChange}
                           />
                         </div>
+)
                       }
                       <div className="hidden-xs">{submitButton}</div>
                     </div>
@@ -330,15 +344,18 @@ export default class CommentForm extends React.Component {
                       </div>
                     </div>
                   </div>
-                </React.Fragment>}
+                </React.Fragment>
+)}
               </div>
             </div>
+)
           }
         </form>
 
       </div>
     );
   }
+
 }
 
 CommentForm.propTypes = {

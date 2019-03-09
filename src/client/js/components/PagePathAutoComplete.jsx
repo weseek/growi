@@ -41,12 +41,12 @@ export default class PagePathAutoComplete extends React.Component {
 
   render() {
     return (
-      <div ref='rootDom'>
+      <div ref="rootDom">
         <SearchTypeahead
           ref={this.searchTypeaheadDom}
           crowi={this.crowi}
           onSubmit={this.onSubmit}
-          inputName='new_path'
+          inputName="new_path"
           emptyLabelExceptError={null}
           placeholder="Input page path"
           keywordOnInit={this.getKeywordOnInit(this.props.initializedPath)}
@@ -54,6 +54,7 @@ export default class PagePathAutoComplete extends React.Component {
       </div>
     );
   }
+
 }
 
 PagePathAutoComplete.propTypes = {

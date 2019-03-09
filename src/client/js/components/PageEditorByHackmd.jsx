@@ -45,7 +45,7 @@ export default class PageEditorByHackmd extends React.PureComponent {
     }
 
     return this.refs.hackmdEditor.getValue()
-      .then(document => {
+      .then((document) => {
         this.setState({ markdown: document });
         return document;
       });
@@ -123,7 +123,7 @@ export default class PageEditorByHackmd extends React.PureComponent {
       pageId: this.props.pageId,
     };
     this.props.crowi.apiPost('/hackmd.integrate', params)
-      .then(res => {
+      .then((res) => {
         if (!res.ok) {
           throw new Error(res.error);
         }
@@ -136,7 +136,7 @@ export default class PageEditorByHackmd extends React.PureComponent {
       })
       .catch(this.apiErrorHandler)
       .then(() => {
-        this.setState({isInitializing: false});
+        this.setState({ isInitializing: false });
       });
   }
 
@@ -144,14 +144,14 @@ export default class PageEditorByHackmd extends React.PureComponent {
    * Start to edit w/o any api request
    */
   resumeToEdit() {
-    this.setState({isInitialized: true});
+    this.setState({ isInitialized: true });
   }
 
   /**
    * Reset draft
    */
   discardChanges() {
-    this.setState({hasDraftOnHackmd: false});
+    this.setState({ hasDraftOnHackmd: false });
   }
 
   /**
@@ -174,10 +174,10 @@ export default class PageEditorByHackmd extends React.PureComponent {
       pageId: this.props.pageId,
     };
     this.props.crowi.apiPost('/hackmd.saveOnHackmd', params)
-      .then(res => {
+      .then((res) => {
         // do nothing
       })
-      .catch(err => {
+      .catch((err) => {
         // do nothing
       });
   }
@@ -202,7 +202,7 @@ export default class PageEditorByHackmd extends React.PureComponent {
     if (this.state.isInitialized) {
       return (
         <HackmdEditor
-          ref='hackmdEditor'
+          ref="hackmdEditor"
           hackmdUri={hackmdUri}
           pageIdOnHackmd={this.state.pageIdOnHackmd}
           initializationMarkdown={isResume ? null : this.state.markdown}
@@ -218,7 +218,7 @@ export default class PageEditorByHackmd extends React.PureComponent {
     const isRevisionOutdated = this.state.initialRevisionId !== this.state.revisionId;
     const isHackmdDocumentOutdated = this.state.revisionId !== this.state.revisionIdHackmdSynced;
 
-    let content = undefined;
+    let content;
     /*
      * HackMD is not setup
      */
@@ -238,31 +238,40 @@ export default class PageEditorByHackmd extends React.PureComponent {
         <React.Fragment>
           <span className="btn-label"><i className="icon-control-end"></i></span>
           Resume to edit with HackMD
-        </React.Fragment>);
+        </React.Fragment>
+      );
       content = (
         <div>
           <p className="text-center hackmd-status-label"><i className="fa fa-file-text"></i> HackMD is READY!</p>
           <div className="text-center hackmd-resume-button-container mb-3">
-            <SplitButton id='split-button-resume-hackmd' title={title} bsStyle="success" bsSize="large"
-                className="btn-resume waves-effect waves-light" onClick={() => this.resumeToEdit()}>
-              <MenuItem className="text-center" onClick={() => this.discardChanges()}>
+            <SplitButton
+              id="split-button-resume-hackmd"
+              title={title}
+              bsStyle="success"
+              bsSize="large"
+              className="btn-resume waves-effect waves-light"
+              onClick={() => { return this.resumeToEdit() }}
+            >
+              <MenuItem className="text-center" onClick={() => { return this.discardChanges() }}>
                 <i className="icon-control-rewind"></i> Discard changes
               </MenuItem>
             </SplitButton>
           </div>
           <p className="text-center">
             Click to edit from the previous continuation<br />
-            or <button className="btn btn-link text-danger p-0 hackmd-discard-button" onClick={() => this.discardChanges()}>Discard changes</button>.
+            or <button className="btn btn-link text-danger p-0 hackmd-discard-button" onClick={() => { return this.discardChanges() }}>Discard changes</button>.
           </p>
-          { isHackmdDocumentOutdated &&
+          { isHackmdDocumentOutdated
+            && (
             <div className="panel panel-warning mt-5">
               <div className="panel-heading"><i className="icon-fw icon-info"></i> DRAFT MAY BE OUTDATED</div>
               <div className="panel-body text-center">
                 The current draft on HackMD is based on&nbsp;
                 <a href={`?revision=${revisionIdHackmdSynced}`}><span className="label label-default">{revisionIdHackmdSynced.substr(-8)}</span></a>.<br />
-                <button className="btn btn-link text-danger p-0 hackmd-discard-button" onClick={() => this.discardChanges()}>Discard it</button> to start to edit with current revision.
+                <button className="btn btn-link text-danger p-0 hackmd-discard-button" onClick={() => { return this.discardChanges() }}>Discard it</button> to start to edit with current revision.
               </div>
             </div>
+)
           }
         </div>
       );
@@ -275,8 +284,12 @@ export default class PageEditorByHackmd extends React.PureComponent {
         <div>
           <p className="text-center hackmd-status-label"><i className="fa fa-file-text"></i> HackMD is READY!</p>
           <div className="text-center hackmd-start-button-container mb-3">
-            <button className="btn btn-info btn-lg waves-effect waves-light" type="button" disabled={isRevisionOutdated || this.state.isInitializing}
-                onClick={() => this.startToEdit()}>
+            <button
+              className="btn btn-info btn-lg waves-effect waves-light"
+              type="button"
+              disabled={isRevisionOutdated || this.state.isInitializing}
+              onClick={() => { return this.startToEdit() }}
+            >
               <span className="btn-label"><i className="icon-paper-plane"></i></span>
               Start to edit with HackMD
             </button>
@@ -292,6 +305,7 @@ export default class PageEditorByHackmd extends React.PureComponent {
       </div>
     );
   }
+
 }
 
 PageEditorByHackmd.propTypes = {

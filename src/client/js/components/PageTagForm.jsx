@@ -25,7 +25,7 @@ export default class PageTagForm extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      pageTags: nextProps.pageTags
+      pageTags: nextProps.pageTags,
     });
   }
 
@@ -34,24 +34,29 @@ export default class PageTagForm extends React.Component {
   }
 
   updateState(value) {
-    this.setState({pageTags: value});
+    this.setState({ pageTags: value });
   }
 
   render() {
     return (
       <div className="input-group-sm mx-1">
-        <input className="form-control page-tag-form" type="text" value={this.state.pageTags} placeholder="tag name"
+        <input
+          className="form-control page-tag-form"
+          type="text"
+          value={this.state.pageTags}
+          placeholder="tag name"
           data-toggle="popover"
           title="タグ"
           data-content="タグ付けによりページをカテゴライズすることができます。"
           data-trigger="focus"
           data-placement="right"
-          onChange={e => this.updateState(e.target.value)}
+          onChange={(e) => { return this.updateState(e.target.value) }}
           onBlur={this.handleSubmit}
-          />
+        />
       </div>
     );
   }
+
 }
 
 PageTagForm.propTypes = {

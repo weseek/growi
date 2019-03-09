@@ -26,23 +26,23 @@ export default class HackmdEditor extends React.PureComponent {
   }
 
   initHackmdWithPenpal() {
-    const _this = this;   // for in methods scope
+    const _this = this; // for in methods scope
 
     const url = `${this.props.hackmdUri}/${this.props.pageIdOnHackmd}?both`;
 
     const connection = Penpal.connectToChild({
       url,
       appendTo: this.refs.iframeContainer,
-      methods: {  // expose methods to HackMD
+      methods: { // expose methods to HackMD
         notifyBodyChanges(document) {
           _this.notifyBodyChangesHandler(document);
         },
         saveWithShortcut(document) {
           _this.saveWithShortcutHandler(document);
-        }
+        },
       },
     });
-    connection.promise.then(child => {
+    connection.promise.then((child) => {
       this.hackmd = child;
       if (this.props.initializationMarkdown != null) {
         child.setValueOnInit(this.props.initializationMarkdown);
@@ -78,9 +78,10 @@ export default class HackmdEditor extends React.PureComponent {
   render() {
     return (
       // will be rendered in componentDidMount
-      <div id='iframe-hackmd-container' ref='iframeContainer'></div>
+      <div id="iframe-hackmd-container" ref="iframeContainer"></div>
     );
   }
+
 }
 
 HackmdEditor.propTypes = {
