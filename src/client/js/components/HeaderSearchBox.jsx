@@ -68,13 +68,14 @@ class HeaderSearchBox extends React.Component {
     return (
       <FormGroup>
         <InputGroup>
-        <InputGroup.Button className="btn-group-dropdown-scope">
-          <DropdownButton id="dbScope" title={scopeLabel}>
-            <MenuItem onClick={this.onClickAllPages}>All pages</MenuItem>
-            <MenuItem onClick={this.onClickChildren}>{ t('header_search_box.item_label.This tree') }</MenuItem>
-          </DropdownButton>
-        </InputGroup.Button>
-          <SearchForm t={this.props.t}
+          <InputGroup.Button className="btn-group-dropdown-scope">
+            <DropdownButton id="dbScope" title={scopeLabel}>
+              <MenuItem onClick={this.onClickAllPages}>All pages</MenuItem>
+              <MenuItem onClick={this.onClickChildren}>{ t('header_search_box.item_label.This tree') }</MenuItem>
+            </DropdownButton>
+          </InputGroup.Button>
+          <SearchForm
+            t={this.props.t}
             crowi={this.props.crowi}
             onInputChange={this.onInputChange}
             onSubmit={this.search}
@@ -83,16 +84,17 @@ class HeaderSearchBox extends React.Component {
           <InputGroup.Button className="btn-group-submit-search">
             <Button bsStyle="link" onClick={this.search}>
               <i className="icon-magnifier"></i>
-            </Button >
+            </Button>
           </InputGroup.Button>
         </InputGroup>
       </FormGroup>
     );
   }
+
 }
 
 HeaderSearchBox.propTypes = {
-  t: PropTypes.func.isRequired,               // i18next
+  t: PropTypes.func.isRequired, // i18next
   crowi: PropTypes.object.isRequired,
 };
 
