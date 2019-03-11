@@ -265,7 +265,7 @@ export default class CommentForm extends React.Component {
                     <UserPicture user={user} />
                   </a>
                 </div>
-)
+                )
               }
               <div className="comment-form-main">
                 {/* Add Comment Button */}
@@ -274,81 +274,90 @@ export default class CommentForm extends React.Component {
                   <button className={`btn btn-lg ${isLayoutTypeGrowi ? 'btn-link' : 'btn-primary'} center-block`} onClick={this.showCommentFormBtnClickHandler}>
                     <i className="icon-bubble"></i> Add Comment
                   </button>
-)
+                  )
                 }
                 {/* Editor */}
                 { this.state.isFormShown && (
-                <React.Fragment>
-                  <div className="comment-write">
-                    <Tabs activeKey={this.state.key} id="comment-form-tabs" onSelect={this.handleSelect} animation={false}>
-                      <Tab eventKey={1} title="Write">
-                        <Editor
-              ref="editor"
-              value={this.state.comment}
-              isGfmMode={this.state.isMarkdown}
-              editorOptions={this.props.editorOptions}
-              lineNumbers={false}
-              isMobile={this.props.crowi.isMobile}
-              isUploadable={this.state.isUploadable && this.state.isLayoutTypeGrowi} // enable only when GROWI layout
-              isUploadableFile={this.state.isUploadableFile}
-              emojiStrategy={emojiStrategy}
-              onChange={this.updateState}
-              onUpload={this.onUpload}
-              onCtrlEnter={this.postComment}
-            />
-                      </Tab>
-                      { this.state.isMarkdown == true
-                      && (
-                      <Tab eventKey={2} title="Preview">
-                        <div className="comment-form-preview">
-                          {commentPreview}
-                        </div>
-                      </Tab>
-)
-                      }
-                    </Tabs>
-                  </div>
-                  <div className="comment-submit">
-                    <div className="d-flex">
-                      <label style={{ flex: 1 }}>
-                        { isLayoutTypeGrowi && this.state.key == 1
-                        && (
-                        <span>
-                          <input type="checkbox" id="comment-form-is-markdown" name="isMarkdown" checked={this.state.isMarkdown} value="1" onChange={this.updateStateCheckbox} /> Markdown
-                        </span>
-)
-                      }
-                      </label>
-                      <span className="hidden-xs">{ this.state.errorMessage && errorMessage }</span>
-                      { this.state.hasSlackConfig
-                        && (
-                        <div className="form-inline align-self-center mr-md-2">
-                          <SlackNotification
-                            crowi={this.props.crowi}
-                            pageId={this.props.pageId}
-                            pagePath={this.props.pagePath}
-                            isSlackEnabled={this.state.isSlackEnabled}
-                            slackChannels={this.state.slackChannels}
-                            onEnabledFlagChange={this.onSlackEnabledFlagChange}
-                            onChannelChange={this.onSlackChannelsChange}
+                  <React.Fragment>
+                    <div className="comment-write">
+                      <Tabs activeKey={this.state.key} id="comment-form-tabs" onSelect={this.handleSelect} animation={false}>
+                        <Tab eventKey={1} title="Write">
+                          <Editor
+                            ref="editor"
+                            value={this.state.comment}
+                            isGfmMode={this.state.isMarkdown}
+                            editorOptions={this.props.editorOptions}
+                            lineNumbers={false}
+                            isMobile={this.props.crowi.isMobile}
+                            isUploadable={this.state.isUploadable && this.state.isLayoutTypeGrowi} // enable only when GROWI layout
+                            isUploadableFile={this.state.isUploadableFile}
+                            emojiStrategy={emojiStrategy}
+                            onChange={this.updateState}
+                            onUpload={this.onUpload}
+                            onCtrlEnter={this.postComment}
                           />
-                        </div>
-)
-                      }
-                      <div className="hidden-xs">{submitButton}</div>
+                        </Tab>
+                        { this.state.isMarkdown == true
+                          && (
+                          <Tab eventKey={2} title="Preview">
+                            <div className="comment-form-preview">
+                              {commentPreview}
+                            </div>
+                          </Tab>
+                          )
+                        }
+                      </Tabs>
                     </div>
-                    <div className="visible-xs mt-2">
-                      <div className="d-flex justify-content-end">
-                        { this.state.errorMessage && errorMessage }
-                        <div>{submitButton}</div>
+                    <div className="comment-submit">
+                      <div className="d-flex">
+                        <label style={{ flex: 1 }}>
+                          { isLayoutTypeGrowi && this.state.key == 1
+                            && (
+                            <span>
+                              <input
+                                type="checkbox"
+                                id="comment-form-is-markdown"
+                                name="isMarkdown"
+                                checked={this.state.isMarkdown}
+                                value="1"
+                                onChange={this.updateStateCheckbox}
+                              />
+                              Markdown
+                            </span>
+                            )
+                        }
+                        </label>
+                        <span className="hidden-xs">{ this.state.errorMessage && errorMessage }</span>
+                        { this.state.hasSlackConfig
+                          && (
+                          <div className="form-inline align-self-center mr-md-2">
+                            <SlackNotification
+                              crowi={this.props.crowi}
+                              pageId={this.props.pageId}
+                              pagePath={this.props.pagePath}
+                              isSlackEnabled={this.state.isSlackEnabled}
+                              slackChannels={this.state.slackChannels}
+                              onEnabledFlagChange={this.onSlackEnabledFlagChange}
+                              onChannelChange={this.onSlackChannelsChange}
+                            />
+                          </div>
+                          )
+                        }
+                        <div className="hidden-xs">{submitButton}</div>
+                      </div>
+                      <div className="visible-xs mt-2">
+                        <div className="d-flex justify-content-end">
+                          { this.state.errorMessage && errorMessage }
+                          <div>{submitButton}</div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </React.Fragment>
-)}
+                  </React.Fragment>
+                  )
+                }
               </div>
             </div>
-)
+            )
           }
         </form>
 

@@ -202,7 +202,7 @@ export default class Editor extends AbstractEditor {
             <div className="speeding-wheel d-inline-block"></div>
             <span className="sr-only">Uploading...</span>
           </span>
-)
+          )
         }
         {!this.state.isUploading && <span className="overlay-content"></span>}
       </div>
@@ -257,27 +257,25 @@ export default class Editor extends AbstractEditor {
           { this.state.isComponentDidMount && this.renderNavbar() }
 
           {/* for PC */}
-          { !isMobile
-            && (
+          { !isMobile && (
             <CodeMirrorEditor
               ref="cmEditor"
               onPasteFiles={this.pasteFilesHandler}
               onDragEnter={this.dragEnterHandler}
               {...this.props}
             />
-)
+            )
           }
 
           {/* for mobile */}
-          { isMobile
-            && (
+          { isMobile && (
             <TextAreaEditor
               ref="taEditor"
               onPasteFiles={this.pasteFilesHandler}
               onDragEnter={this.dragEnterHandler}
               {...this.props}
             />
-)
+            )
           }
 
         </Dropzone>
@@ -298,7 +296,7 @@ export default class Editor extends AbstractEditor {
               or pasting from the clipboard.
             </span>
           </button>
-)
+          )
         }
       </div>
     );
