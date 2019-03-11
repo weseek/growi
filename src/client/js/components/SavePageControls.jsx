@@ -84,7 +84,7 @@ class SavePageControls extends React.PureComponent {
               grantGroupName={this.props.grantGroupName}
             />
           </div>
-)
+          )
         }
 
         <ButtonToolbar>
