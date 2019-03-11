@@ -13,10 +13,10 @@ import MarkdownTable from '../../models/MarkdownTable';
 
 const DEFAULT_HOT_HEIGHT = 300;
 const MARKDOWNTABLE_TO_HANDSONTABLE_ALIGNMENT_SYMBOL_MAPPING = {
-  'r': 'htRight',
-  'c': 'htCenter',
-  'l': 'htLeft',
-  '': ''
+  r: 'htRight',
+  c: 'htCenter',
+  l: 'htLeft',
+  '': '',
 };
 
 export default class HandsontableModal extends React.PureComponent {
@@ -81,7 +81,7 @@ export default class HandsontableModal extends React.PureComponent {
       {
         markdownTableOnInit: initMarkdownTable,
         markdownTable: initMarkdownTable.clone(),
-      }
+      },
     );
 
     this.manuallyResizedColumnIndicesSet.clear();
@@ -90,11 +90,15 @@ export default class HandsontableModal extends React.PureComponent {
   createCustomizedContextMenu() {
     return {
       items: {
-        'row_above': {}, 'row_below': {}, 'col_left': {}, 'col_right': {},
-        'separator1': Handsontable.plugins.ContextMenu.SEPARATOR,
-        'remove_row': {}, 'remove_col': {},
-        'separator2': Handsontable.plugins.ContextMenu.SEPARATOR,
-        'custom_alignment': {
+        row_above: {},
+        row_below: {},
+        col_left: {},
+        col_right: {},
+        separator1: Handsontable.plugins.ContextMenu.SEPARATOR,
+        remove_row: {},
+        remove_col: {},
+        separator2: Handsontable.plugins.ContextMenu.SEPARATOR,
+        custom_alignment: {
           name: 'Align columns',
           key: 'align_columns',
           submenu: {
@@ -102,20 +106,20 @@ export default class HandsontableModal extends React.PureComponent {
               {
                 name: 'Left',
                 key: 'align_columns:1',
-                callback: (key, selection) => {this.align('l', selection[0].start.col, selection[0].end.col)}
+                callback: (key, selection) => { this.align('l', selection[0].start.col, selection[0].end.col) },
               }, {
                 name: 'Center',
                 key: 'align_columns:2',
-                callback: (key, selection) => {this.align('c', selection[0].start.col, selection[0].end.col)}
+                callback: (key, selection) => { this.align('c', selection[0].start.col, selection[0].end.col) },
               }, {
                 name: 'Right',
                 key: 'align_columns:3',
-                callback: (key, selection) => {this.align('r', selection[0].start.col, selection[0].end.col)}
-              }
-            ]
-          }
-        }
-      }
+                callback: (key, selection) => { this.align('r', selection[0].start.col, selection[0].end.col) },
+              },
+            ],
+          },
+        },
+      },
     };
   }
 
@@ -150,7 +154,7 @@ export default class HandsontableModal extends React.PureComponent {
   save() {
     const markdownTable = new MarkdownTable(
       this.refs.hotTable.hotInstance.getData(),
-      {align: [].concat(this.state.markdownTable.options.align)}
+      { align: [].concat(this.state.markdownTable.options.align) },
     ).normalizeCells();
 
     if (this.props.onSave != null) {
@@ -284,11 +288,11 @@ export default class HandsontableModal extends React.PureComponent {
     else if (columns[columns.length - 1] < target) {
       insertPosition = target - columns.length;
     }
-    align.splice.apply(align, [insertPosition, 0].concat(removed));
+    align.splice(...[insertPosition, 0].concat(removed));
 
     this.setState((prevState) => {
       // change only align info, so share table data to avoid redundant copy
-      const newMarkdownTable = new MarkdownTable(prevState.markdownTable.table, {align: align});
+      const newMarkdownTable = new MarkdownTable(prevState.markdownTable.table, { align });
       return { markdownTable: newMarkdownTable };
     }, () => {
       this.synchronizeAlignment();
@@ -301,8 +305,8 @@ export default class HandsontableModal extends React.PureComponent {
   align(direction, startCol, endCol) {
     this.setState((prevState) => {
       // change only align info, so share table data to avoid redundant copy
-      const newMarkdownTable = new MarkdownTable(prevState.markdownTable.table, {align: [].concat(prevState.markdownTable.options.align)});
-      for (let i = startCol; i <= endCol ; i++) {
+      const newMarkdownTable = new MarkdownTable(prevState.markdownTable.table, { align: [].concat(prevState.markdownTable.options.align) });
+      for (let i = startCol; i <= endCol; i++) {
         newMarkdownTable.options.align[i] = direction;
       }
       return { markdownTable: newMarkdownTable };
@@ -415,7 +419,7 @@ export default class HandsontableModal extends React.PureComponent {
         <Modal.Body className="p-0 d-flex flex-column">
           <div className="px-4 py-3 modal-navbar">
             <Button className="m-r-20 data-import-button" onClick={this.toggleDataImportArea}>
-              Data Import<i className={this.state.isDataImportAreaExpanded ? 'fa fa-angle-up' : 'fa fa-angle-down' }></i>
+              Data Import<i className={this.state.isDataImportAreaExpanded ? 'fa fa-angle-up' : 'fa fa-angle-down'}></i>
             </Button>
             <ButtonGroup>
               <Button onClick={() => { this.alignButtonHandler('l') }}><i className="ti-align-left"></i></Button>
@@ -424,20 +428,23 @@ export default class HandsontableModal extends React.PureComponent {
             </ButtonGroup>
             <Collapse in={this.state.isDataImportAreaExpanded}>
               <div> {/* This div is necessary for smoothing animations. (https://react-bootstrap.github.io/utilities/transitions/#transitions-collapse) */}
-                <MarkdownTableDataImportForm onCancel={this.toggleDataImportArea} onImport={this.importData}/>
+                <MarkdownTableDataImportForm onCancel={this.toggleDataImportArea} onImport={this.importData} />
               </div>
             </Collapse>
           </div>
           <div ref="hotTableContainer" className="m-4 hot-table-container">
-            <HotTable ref='hotTable' data={this.state.markdownTable.table}
-                settings={this.handsontableSettings} height={this.state.handsontableHeight}
-                afterLoadData={this.afterLoadDataHandler}
-                modifyColWidth={this.modifyColWidthHandler}
-                beforeColumnMove={this.beforeColumnMoveHandler}
-                beforeColumnResize={this.beforeColumnResizeHandler}
-                afterColumnResize={this.afterColumnResizeHandler}
-                afterColumnMove={this.afterColumnMoveHandler}
-              />
+            <HotTable
+              ref="hotTable"
+              data={this.state.markdownTable.table}
+              settings={this.handsontableSettings}
+              height={this.state.handsontableHeight}
+              afterLoadData={this.afterLoadDataHandler}
+              modifyColWidth={this.modifyColWidthHandler}
+              beforeColumnMove={this.beforeColumnMoveHandler}
+              beforeColumnResize={this.beforeColumnResizeHandler}
+              afterColumnResize={this.afterColumnResizeHandler}
+              afterColumnMove={this.afterColumnMoveHandler}
+            />
           </div>
         </Modal.Body>
         <Modal.Footer>
@@ -461,8 +468,8 @@ export default class HandsontableModal extends React.PureComponent {
         ['', '', ''],
       ],
       {
-        align: ['', '', '']
-      }
+        align: ['', '', ''],
+      },
     );
   }
 
@@ -475,11 +482,12 @@ export default class HandsontableModal extends React.PureComponent {
       manualColumnMove: true,
       manualColumnResize: true,
       selectionMode: 'multiple',
-      outsideClickDeselects: false
+      outsideClickDeselects: false,
     };
   }
+
 }
 
 HandsontableModal.propTypes = {
-  onSave: PropTypes.func
+  onSave: PropTypes.func,
 };

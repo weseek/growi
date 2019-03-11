@@ -4,8 +4,8 @@ import FormGroup from 'react-bootstrap/es/FormGroup';
 import ControlLabel from 'react-bootstrap/es/ControlLabel';
 import FormControl from 'react-bootstrap/es/FormControl';
 import Button from 'react-bootstrap/es/Button';
-import MarkdownTable from '../../models/MarkdownTable';
 import Collapse from 'react-bootstrap/es/Collapse';
+import MarkdownTable from '../../models/MarkdownTable';
 
 export default class MarkdownTableDataImportForm extends React.Component {
 
@@ -15,7 +15,7 @@ export default class MarkdownTableDataImportForm extends React.Component {
     this.state = {
       dataFormat: 'csv',
       data: '',
-      parserErrorMessage: null
+      parserErrorMessage: null,
     };
 
     this.importButtonHandler = this.importButtonHandler.bind(this);
@@ -25,10 +25,10 @@ export default class MarkdownTableDataImportForm extends React.Component {
     try {
       const markdownTable = this.convertFormDataToMarkdownTable();
       this.props.onImport(markdownTable);
-      this.setState({parserErrorMessage: null});
+      this.setState({ parserErrorMessage: null });
     }
     catch (e) {
-      this.setState({parserErrorMessage: e.message});
+      this.setState({ parserErrorMessage: e.message });
     }
   }
 
@@ -53,8 +53,12 @@ export default class MarkdownTableDataImportForm extends React.Component {
       <form action="" className="data-import-form pt-5">
         <FormGroup>
           <ControlLabel>Select Data Format</ControlLabel>
-          <FormControl componentClass="select" placeholder="select"
-                       value={this.state.dataFormat} onChange={e => this.setState({dataFormat: e.target.value})}>
+          <FormControl
+            componentClass="select"
+            placeholder="select"
+            value={this.state.dataFormat}
+            onChange={(e) => { return this.setState({ dataFormat: e.target.value }) }}
+          >
             <option value="csv">CSV</option>
             <option value="tsv">TSV</option>
             <option value="html">HTML</option>
@@ -62,13 +66,17 @@ export default class MarkdownTableDataImportForm extends React.Component {
         </FormGroup>
         <FormGroup>
           <ControlLabel>Import Data</ControlLabel>
-          <FormControl componentClass="textarea" placeholder="Paste table data" style={{ height: 200 }}
-                       onChange={e => this.setState({data: e.target.value})}/>
+          <FormControl
+            componentClass="textarea"
+            placeholder="Paste table data"
+            style={{ height: 200 }}
+            onChange={(e) => { return this.setState({ data: e.target.value }) }}
+          />
         </FormGroup>
         <Collapse in={this.state.parserErrorMessage != null}>
           <FormGroup>
             <ControlLabel>Parse Error</ControlLabel>
-            <FormControl componentClass="textarea" style={{ height: 100 }} value={this.state.parserErrorMessage || ''} readOnly/>
+            <FormControl componentClass="textarea" style={{ height: 100 }} value={this.state.parserErrorMessage || ''} readOnly />
           </FormGroup>
         </Collapse>
         <div className="d-flex justify-content-end">
@@ -78,9 +86,10 @@ export default class MarkdownTableDataImportForm extends React.Component {
       </form>
     );
   }
+
 }
 
 MarkdownTableDataImportForm.propTypes = {
   onCancel: PropTypes.func,
-  onImport: PropTypes.func
+  onImport: PropTypes.func,
 };

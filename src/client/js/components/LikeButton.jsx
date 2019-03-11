@@ -19,16 +19,16 @@ export default class LikeButton extends React.Component {
     const pageId = this.props.pageId;
 
     if (!this.state.isLiked) {
-      this.props.crowi.apiPost('/likes.add', {page_id: pageId})
-      .then(res => {
-        this.setState({isLiked: true});
-      });
+      this.props.crowi.apiPost('/likes.add', { page_id: pageId })
+        .then((res) => {
+          this.setState({ isLiked: true });
+        });
     }
     else {
-      this.props.crowi.apiPost('/likes.remove', {page_id: pageId})
-      .then(res => {
-        this.setState({isLiked: false});
-      });
+      this.props.crowi.apiPost('/likes.remove', { page_id: pageId })
+        .then((res) => {
+          this.setState({ isLiked: false });
+        });
     }
   }
 
@@ -50,12 +50,17 @@ export default class LikeButton extends React.Component {
     const addedClassName = addedClassNames.join(' ');
 
     return (
-      <button href="#" title="Like" onClick={this.handleClick}
-          className={`btn-like btn btn-default btn-circle btn-outline ${addedClassName}`}>
+      <button
+        href="#"
+        title="Like"
+        onClick={this.handleClick}
+        className={`btn-like btn btn-default btn-circle btn-outline ${addedClassName}`}
+      >
         <i className="icon-like"></i>
       </button>
     );
   }
+
 }
 
 LikeButton.propTypes = {
