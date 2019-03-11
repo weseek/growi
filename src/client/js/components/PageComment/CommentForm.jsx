@@ -277,7 +277,8 @@ export default class CommentForm extends React.Component {
                   )
                 }
                 {/* Editor */}
-                { this.state.isFormShown && (
+                { this.state.isFormShown
+                  && (
                   <React.Fragment>
                     <div className="comment-write">
                       <Tabs activeKey={this.state.key} id="comment-form-tabs" onSelect={this.handleSelect} animation={false}>

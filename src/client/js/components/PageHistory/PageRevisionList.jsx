@@ -55,7 +55,7 @@ export default class PageRevisionList extends React.Component {
             previousRevision={previousRevision}
             key={`revision-deff-${revisionId}`}
           />
-)
+          )
         }
       </div>
     );

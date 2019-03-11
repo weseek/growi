@@ -79,7 +79,7 @@ export default class Revision extends React.Component {
                   <a className="diff-view" onClick={this._onDiffOpenClicked}>
                     <i className={iconClass}></i> { t('View diff') }
                   </a>
-)
+                  )
                 }
               </span>
               <a href={`?revision=${revision._id}`} className="m-l-10">

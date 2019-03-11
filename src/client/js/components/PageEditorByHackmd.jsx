@@ -271,7 +271,7 @@ export default class PageEditorByHackmd extends React.PureComponent {
                 <button className="btn btn-link text-danger p-0 hackmd-discard-button" onClick={() => { return this.discardChanges() }}>Discard it</button> to start to edit with current revision.
               </div>
             </div>
-)
+            )
           }
         </div>
       );
