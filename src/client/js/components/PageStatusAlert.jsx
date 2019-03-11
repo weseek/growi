@@ -116,21 +116,20 @@ class PageStatusAlert extends React.Component {
     if (isHackmdDocumentOutdated && isRevisionOutdated) {
       content = this.renderUpdatedAlert();
     }
-    else {
-      if (this.state.isDraftUpdatingInRealtime) {
-        content = this.renderSomeoneEditingAlert();
-      }
-      else if (this.state.hasDraftOnHackmd) {
-        content = this.renderDraftExistsAlert();
-      }
+    else if (this.state.isDraftUpdatingInRealtime) {
+      content = this.renderSomeoneEditingAlert();
+    }
+    else if (this.state.hasDraftOnHackmd) {
+      content = this.renderDraftExistsAlert();
     }
 
     return content;
   }
+
 }
 
 PageStatusAlert.propTypes = {
-  t: PropTypes.func.isRequired,               // i18next
+  t: PropTypes.func.isRequired, // i18next
   crowi: PropTypes.object.isRequired,
   hasDraftOnHackmd: PropTypes.bool.isRequired,
   revisionId: PropTypes.string,

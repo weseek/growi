@@ -1,8 +1,9 @@
 import React from 'react';
-import Page from '../PageList/Page';
 
 import PropTypes from 'prop-types';
 import Pagination from 'react-bootstrap/lib/Pagination';
+import Page from '../PageList/Page';
+
 export default class RecentCreated extends React.Component {
 
   constructor(props) {
@@ -28,8 +29,10 @@ export default class RecentCreated extends React.Component {
     const offset = (selectPageNumber - 1) * limit;
 
     // pagesList get and pagination calculate
-    this.props.crowi.apiGet('/pages.recentCreated', { page_id: pageId, user: userId, limit, offset })
-      .then(res => {
+    this.props.crowi.apiGet('/pages.recentCreated', {
+      page_id: pageId, user: userId, limit, offset,
+    })
+      .then((res) => {
         const totalCount = res.totalCount;
         const pages = res.pages;
         const activePage = selectPageNumber;
@@ -45,18 +48,18 @@ export default class RecentCreated extends React.Component {
 
   calculatePagination(limit, totalCount, activePage) {
     // calc totalPageNumber
-    const totalPage = Math.floor(totalCount / limit) + (totalCount % limit === 0 ? 0  : 1);
+    const totalPage = Math.floor(totalCount / limit) + (totalCount % limit === 0 ? 0 : 1);
 
     let paginationStart = activePage - 2;
-    let maxViewPageNum =  activePage + 2;
+    let maxViewPageNum = activePage + 2;
     // pagiNation Number area size = 5 , pageNuber calculate in here
     // activePage Position calculate ex. 4 5 [6] 7 8 (Page8 over is Max), 3 4 5 [6] 7 (Page7 is Max)
-    if ( paginationStart < 1 ) {
+    if (paginationStart < 1) {
       const diff = 1 - paginationStart;
       paginationStart += diff;
       maxViewPageNum = Math.min(totalPage, maxViewPageNum + diff);
     }
-    if ( maxViewPageNum > totalPage ) {
+    if (maxViewPageNum > totalPage) {
       const diff = maxViewPageNum - totalPage;
       maxViewPageNum -= diff;
       paginationStart = Math.max(1, paginationStart - diff);
@@ -68,6 +71,7 @@ export default class RecentCreated extends React.Component {
       maxViewPageNum,
     };
   }
+
   /**
    * generate Elements of Page
    *
@@ -75,8 +79,8 @@ export default class RecentCreated extends React.Component {
    *
    */
   generatePageList(pages) {
-    return pages.map(page => {
-      return <Page page={page} key={'recent-created:list-view:' + page._id} />;
+    return pages.map((page) => {
+      return <Page page={page} key={`recent-created:list-view:${page._id}`} />;
     });
 
   }
@@ -87,21 +91,21 @@ export default class RecentCreated extends React.Component {
    * this function set << & <
    */
   generateFirstPrev(activePage) {
-    let paginationItems = [];
-    if (1 != activePage) {
+    const paginationItems = [];
+    if (activePage != 1) {
       paginationItems.push(
-        <Pagination.First key="first" onClick={() => this.getRecentCreatedList(1)} />
+        <Pagination.First key="first" onClick={() => { return this.getRecentCreatedList(1) }} />,
       );
       paginationItems.push(
-        <Pagination.Prev key="prev" onClick={() => this.getRecentCreatedList(this.state.activePage - 1)} />
+        <Pagination.Prev key="prev" onClick={() => { return this.getRecentCreatedList(this.state.activePage - 1) }} />,
       );
     }
     else {
       paginationItems.push(
-        <Pagination.First key="first" disabled />
+        <Pagination.First key="first" disabled />,
       );
       paginationItems.push(
-        <Pagination.Prev key="prev" disabled />
+        <Pagination.Prev key="prev" disabled />,
       );
 
     }
@@ -114,10 +118,10 @@ export default class RecentCreated extends React.Component {
    * this function set  numbers
    */
   generatePaginations(activePage, paginationStart, maxViewPageNum) {
-    let paginationItems = [];
+    const paginationItems = [];
     for (let number = paginationStart; number <= maxViewPageNum; number++) {
       paginationItems.push(
-        <Pagination.Item key={number} active={number === activePage} onClick={ () => this.getRecentCreatedList(number)}>{number}</Pagination.Item>
+        <Pagination.Item key={number} active={number === activePage} onClick={() => { return this.getRecentCreatedList(number) }}>{number}</Pagination.Item>,
       );
     }
     return paginationItems;
@@ -129,21 +133,21 @@ export default class RecentCreated extends React.Component {
    * this function set > & >>
    */
   generateNextLast(activePage, totalPage) {
-    let paginationItems = [];
+    const paginationItems = [];
     if (totalPage != activePage) {
       paginationItems.push(
-        <Pagination.Next key="next" onClick={() => this.getRecentCreatedList(this.state.activePage + 1)} />
+        <Pagination.Next key="next" onClick={() => { return this.getRecentCreatedList(this.state.activePage + 1) }} />,
       );
       paginationItems.push(
-        <Pagination.Last key="last" onClick={() => this.getRecentCreatedList(totalPage)} />
+        <Pagination.Last key="last" onClick={() => { return this.getRecentCreatedList(totalPage) }} />,
       );
     }
     else {
       paginationItems.push(
-        <Pagination.Next key="next" disabled />
+        <Pagination.Next key="next" disabled />,
       );
       paginationItems.push(
-        <Pagination.Last key="last" disabled />
+        <Pagination.Last key="last" disabled />,
       );
 
     }
@@ -154,12 +158,12 @@ export default class RecentCreated extends React.Component {
   render() {
     const pageList = this.generatePageList(this.state.pages);
 
-    let paginationItems = [];
+    const paginationItems = [];
 
     const activePage = this.state.activePage;
     const totalPage = this.state.paginationNumbers.totalPage;
     const paginationStart = this.state.paginationNumbers.paginationStart;
-    const maxViewPageNum =  this.state.paginationNumbers.maxViewPageNum;
+    const maxViewPageNum = this.state.paginationNumbers.maxViewPageNum;
     const firstPrevItems = this.generateFirstPrev(activePage);
     paginationItems.push(firstPrevItems);
     const paginations = this.generatePaginations(activePage, paginationStart, maxViewPageNum);
@@ -176,8 +180,8 @@ export default class RecentCreated extends React.Component {
       </div>
     );
   }
-}
 
+}
 
 
 RecentCreated.propTypes = {
@@ -188,4 +192,3 @@ RecentCreated.propTypes = {
 
 RecentCreated.defaultProps = {
 };
-

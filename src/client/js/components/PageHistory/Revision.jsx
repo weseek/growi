@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import UserDate     from '../Common/UserDate';
-import UserPicture  from '../User/UserPicture';
+import UserDate from '../Common/UserDate';
+import UserPicture from '../User/UserPicture';
 
 export default class Revision extends React.Component {
 
@@ -26,7 +26,7 @@ export default class Revision extends React.Component {
 
     let pic = '';
     if (typeof author === 'object') {
-      pic = <UserPicture user={author} size='sm' />;
+      pic = <UserPicture user={author} size="sm" />;
     }
 
     return (
@@ -52,7 +52,7 @@ export default class Revision extends React.Component {
 
     let pic = '';
     if (typeof author === 'object') {
-      pic = <UserPicture user={author} size='lg' />;
+      pic = <UserPicture user={author} size="lg" />;
     }
 
     const iconClass = this.props.revisionDiffOpened ? 'caret caret-opened' : 'caret';
@@ -70,17 +70,19 @@ export default class Revision extends React.Component {
               <UserDate dateTime={revision.createdAt} />
             </p>
             <p>
-              <span className='d-inline-block' style={{ minWidth: '90px' }}>
-                { !this.props.hasDiff &&
-                  <span className='text-muted'>{ t('No diff') }</span>
+              <span className="d-inline-block" style={{ minWidth: '90px' }}>
+                { !this.props.hasDiff
+                  && <span className="text-muted">{ t('No diff') }</span>
                 }
-                { this.props.hasDiff &&
+                { this.props.hasDiff
+                  && (
                   <a className="diff-view" onClick={this._onDiffOpenClicked}>
                     <i className={iconClass}></i> { t('View diff') }
                   </a>
+                  )
                 }
               </span>
-              <a href={'?revision=' + revision._id } className="m-l-10">
+              <a href={`?revision=${revision._id}`} className="m-l-10">
                 <i className="icon-login"></i> { t('Go to this version') }
               </a>
             </p>
@@ -96,18 +98,18 @@ export default class Revision extends React.Component {
     if (this.props.isCompactNodiffRevisions && !this.props.hasDiff) {
       return this.renderSimplifiedNodiff(revision);
     }
-    else {
-      return this.renderFull(revision);
-    }
+
+    return this.renderFull(revision);
+
   }
+
 }
 
 Revision.propTypes = {
-  t: PropTypes.func.isRequired,               // i18next
+  t: PropTypes.func.isRequired, // i18next
   revision: PropTypes.object,
   revisionDiffOpened: PropTypes.bool.isRequired,
   hasDiff: PropTypes.bool.isRequired,
   isCompactNodiffRevisions: PropTypes.bool.isRequired,
   onDiffOpenClicked: PropTypes.func.isRequired,
 };
-
