@@ -311,8 +311,8 @@ module.exports = function(crowi) {
 
     // unlink relations
     const unlinkTags = relatedTags.filter((tag) => { return !newTags.includes(tag.relatedTag.name) });
-    unlinkTags.forEach((tag) => {
-      PageTagRelation.remove({
+    unlinkTags.forEach(async(tag) => {
+      await PageTagRelation.deleteMany({
         relatedPage: page._id,
         relatedTag: tag.relatedTag._id,
       });
