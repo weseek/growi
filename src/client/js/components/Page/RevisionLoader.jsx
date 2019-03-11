@@ -43,7 +43,7 @@ export default class RevisionLoader extends React.Component {
 
     // load data with REST API
     this.props.crowi.apiGet('/revisions.get', requestData)
-      .then(res => {
+      .then((res) => {
         if (!res.ok) {
           throw new Error(res.error);
         }
@@ -53,7 +53,7 @@ export default class RevisionLoader extends React.Component {
           error: null,
         });
       })
-      .catch(err => {
+      .catch((err) => {
         this.setState({ error: err });
       })
       .finally(() => {
@@ -70,9 +70,11 @@ export default class RevisionLoader extends React.Component {
   render() {
     // ----- before load -----
     if (this.props.lazy && !this.state.isLoaded) {
-      return <Waypoint onPositionChange={this.onWaypointChange} bottomOffset='-100px'>
-        <div className="wiki"></div>
-      </Waypoint>;
+      return (
+        <Waypoint onPositionChange={this.onWaypointChange} bottomOffset="-100px">
+          <div className="wiki"></div>
+        </Waypoint>
+      );
     }
 
     // ----- loading -----
@@ -94,13 +96,15 @@ export default class RevisionLoader extends React.Component {
 
     return (
       <RevisionRenderer
-          crowi={this.props.crowi} crowiRenderer={this.props.crowiRenderer}
-          pagePath={this.props.pagePath}
-          markdown={markdown}
-          highlightKeywords={this.props.highlightKeywords}
+        crowi={this.props.crowi}
+        crowiRenderer={this.props.crowiRenderer}
+        pagePath={this.props.pagePath}
+        markdown={markdown}
+        highlightKeywords={this.props.highlightKeywords}
       />
     );
   }
+
 }
 
 RevisionLoader.propTypes = {
