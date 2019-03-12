@@ -301,20 +301,18 @@ module.exports = function(crowi) {
     return false;
   };
 
-  pageSchema.methods.updateTags = async function(newTagsName) {
+  pageSchema.methods.updateTags = async function(newTags) {
     const page = this;
     const PageTagRelation = mongoose.model('PageTagRelation');
     const Tag = mongoose.model('Tag');
-
-    const newTags = [newTagsName]; // [TODO] listing requested Tags on client side
 
     // get tags relate this page
     const relatedTags = await PageTagRelation.find({ relatedPage: page._id }).populate('relatedTag').select('-_id relatedTag');
 
     // unlink relations
     const unlinkTags = relatedTags.filter((tag) => { return !newTags.includes(tag.relatedTag.name) });
-    unlinkTags.forEach((tag) => {
-      PageTagRelation.deleteMany({
+    unlinkTags.forEach(async(tag) => {
+      await PageTagRelation.deleteMany({
         relatedPage: page._id,
         relatedTag: tag.relatedTag._id,
       });
