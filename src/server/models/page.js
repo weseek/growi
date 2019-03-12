@@ -313,7 +313,7 @@ module.exports = function(crowi) {
     const unlinkTagRelations = relatedTags.filter((tag) => { return !newTags.includes(tag.relatedTag.name) });
     await PageTagRelation.deleteMany({
       relatedPage: page._id,
-      relatedTag: { $in: unlinkTagRelations.map((relation) => { return relation.relatedTag._id }) }
+      relatedTag: { $in: unlinkTagRelations.map((relation) => { return relation.relatedTag._id }) },
     });
 
     // create tag and relations
