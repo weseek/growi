@@ -30,7 +30,7 @@ module.exports = function(crowi, app) {
    * @apiParam {String} pageId
    */
   api.get = async function(req, res) {
-    let tags = await PageTagRelation.find({ relatedPage: req.query.pageId　}).populate('relatedTag').select('-_id relatedTag');
+    let tags = await PageTagRelation.find({ relatedPage: req.query.pageId }).populate('relatedTag').select('-_id relatedTag');
     tags = tags.map((tag) => { return tag.relatedTag.name });
     return res.json(ApiResponse.success({ tags }));
   };
