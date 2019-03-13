@@ -82,6 +82,12 @@ export default class RevisionPath extends React.Component {
       marginLeft: '0.5em',
       padding: '0 2px',
     };
+    const tagButtonStyle = {
+      height: '19px',
+      width: '14px',
+      marginLeft: '0.5em',
+      padding: '0 2px',
+    };
 
     const pageLength = this.state.pages.length;
 
@@ -119,6 +125,7 @@ export default class RevisionPath extends React.Component {
         <a href="#edit" className="btn btn-default btn-edit" style={editButtonStyle}>
           <i className="icon-note" />
         </a>
+        <a href="#" className="btn btn-default btn-tag" data-target="#editTag" data-toggle="modal" style={tagButtonStyle}>#</a>
       </span>
     );
   }

@@ -8,30 +8,36 @@
    * header
    */
   header {
+
     // the container of h1
     div.title-container {
       margin-right: auto;
     }
 
-    // hide unnecessary element
-    div#page-tag {
-      display: none;
+    .btn-tag {
+      line-height: 20px;
+      display: block;
     }
 
     .btn-copy,
     .btn-copy-link,
+    .btn-tag,
     .btn-edit {
       @extend .text-muted;
       border: none;
       opacity: 0.3;
+
       &:not(:hover) {
         background-color: transparent;
       }
     }
+
     // change button opacity
     &:hover {
+
       .btn.btn-copy,
       .btn-copy-link,
+      .btn-tag,
       .btn.btn-edit {
         opacity: unset;
       }
@@ -42,15 +48,18 @@
       font-size: 1.2em;
       line-height: 0.8em;
       border: none;
+
       &:not(:hover):not(.active) {
         background-color: transparent;
       }
     }
+
     .btn-like {
       &.active {
         @extend .btn-info;
       }
     }
+
     .btn-bookmark {
       &.active {
         @extend .btn-warning;
@@ -65,6 +74,7 @@
     h1#revision-path {
       margin-top: 0;
       margin-bottom: 0;
+
       .d-flex {
         flex-wrap: wrap; // for long page path
       }
@@ -97,6 +107,7 @@
 .main-container .main .content-main .revision-history {
   .revision-history-list {
     .revision-history-outer {
+
       // add border-top except of first element
       &:not(:first-of-type) {
         border-top: 1px solid $border;
@@ -107,6 +118,7 @@
           width: 32px;
           height: 32px;
         }
+
         .revision-history-meta {
           a:hover {
             cursor: pointer;
@@ -122,12 +134,14 @@
           }
         }
       }
+
       .revision-history-main-nodiff {
         .picture-container {
           min-width: 32px;
           text-align: center; // centering .picture
         }
       }
+
       .revision-history-diff {
         padding-left: 40px;
       }
@@ -138,6 +152,7 @@
       list-style: none;
     }
   }
+
   // compacted list
   .revision-history-list-compact {
     .revision-history-outer-contiguous-nodiff {
@@ -150,6 +165,7 @@
   .d2h-file-header {
     display: none;
   }
+
   .d2h-diff-tbody {
     background-color: white;
   }
@@ -197,7 +213,7 @@
   opacity: 0;
   transition: opacity 0.3s ease-out;
 
-  & > * {
+  &>* {
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
   }
 }
