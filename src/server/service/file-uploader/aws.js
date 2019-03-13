@@ -111,8 +111,9 @@ module.exports = function(crowi) {
   /**
    * chech storage for fileUpload reaches MONGO_GRIDFS_TOTAL_LIMIT (for gridfs)
    */
-  lib.checkCapacity = async(uploadFileSize) => {
-    return true;
+  lib.checkLimit = async(uploadFileSize) => {
+    const maxFileSize = crowi.configManager.getConfig('crowi', 'app:maxFileSize');
+    return { isUploadable: uploadFileSize <= maxFileSize, errorMessage: 'File size exceeds the size limit per file' };
   };
 
   return lib;

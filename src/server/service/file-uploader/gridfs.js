@@ -52,14 +52,23 @@ module.exports = function(crowi) {
   /**
    * chech storage for fileUpload reaches MONGO_GRIDFS_TOTAL_LIMIT (for gridfs)
    */
-  lib.checkCapacity = async(uploadFileSize) => {
+  lib.checkLimit = async(uploadFileSize) => {
+    const maxFileSize = crowi.configManager.getConfig('crowi', 'app:maxFileSize');
+    if (uploadFileSize > maxFileSize) {
+      return { isUploadable: false, errorMessage: 'File size exceeds the size limit per file' };
+    }
+
     // skip checking if env var is undefined
     if (process.env.MONGO_GRIDFS_TOTAL_LIMIT == null) {
-      return true;
+      return { isUploadable: true };
     }
 
     const usingFilesSize = await getCollectionSize();
-    return (+process.env.MONGO_GRIDFS_TOTAL_LIMIT > usingFilesSize + +uploadFileSize);
+    if (+process.env.MONGO_GRIDFS_TOTAL_LIMIT > usingFilesSize + +uploadFileSize) {
+      return { isUploadable: false, errorMessage: 'MongoDB for uploading files reaches limit' };
+    }
+
+    return { isUploadable: true };
   };
 
   lib.uploadFile = async function(fileStream, attachment) {
