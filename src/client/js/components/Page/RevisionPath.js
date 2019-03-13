@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Modal from 'react-modal';
 
+import Button from 'react-bootstrap/es/Button';
 import CopyButton from '../CopyButton';
 
 export default class RevisionPath extends React.Component {
@@ -12,10 +14,14 @@ export default class RevisionPath extends React.Component {
       pages: [],
       isListPage: false,
       isLinkToListPage: true,
+      isEditTagModalOpen: false,
     };
 
     // retrieve xss library from window
     this.xss = window.xss;
+    this.openEditTagModal = this.openEditTagModal.bind(this);
+    this.afterOpenModal = this.afterOpenModal.bind(this);
+    this.closeModal = this.closeModal.bind(this);
   }
 
   componentWillMount() {
@@ -46,6 +52,19 @@ export default class RevisionPath extends React.Component {
     });
 
     this.setState({ pages });
+  }
+
+  openEditTagModal() {
+    this.setState({ isEditTagModalOpen: true });
+  }
+
+  afterOpenModal() {
+    // references are now sync'd and can be accessed.
+    this.subtitle.style.color = '#f00';
+  }
+
+  closeModal() {
+    this.setState({isEditTagModalOpen: false});
   }
 
   showToolTip() {
@@ -88,6 +107,18 @@ export default class RevisionPath extends React.Component {
       marginLeft: '0.5em',
       padding: '0 2px',
     };
+    const customStyles = {
+      content: {
+        top: '50%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        marginRight: '-50%',
+        transform: 'translate(-50%, -50%)'
+      }
+    };
+
+    Modal.setAppElement('#deletePage')
 
     const pageLength = this.state.pages.length;
 
@@ -125,7 +156,33 @@ export default class RevisionPath extends React.Component {
         <a href="#edit" className="btn btn-default btn-edit" style={editButtonStyle}>
           <i className="icon-note" />
         </a>
-        <a href="#" className="btn btn-default btn-tag" data-target="#editTag" data-toggle="modal" style={tagButtonStyle}>#</a>
+        <span className="btn-tag-container" >
+          <Button
+            onClick={this.openEditTagModal}
+            className = "btn btn-default btn-tag"
+            style={tagButtonStyle}
+          >#
+          </Button>
+        </span>
+        <Modal
+          isOpen={this.state.isEditTagModalOpen}
+          onAfterOpen={this.afterOpenModal}
+          onRequestClose={this.closeModal}
+          style={customStyles}
+          contentLabel="Example Modal"
+        >
+
+          <h2 ref={subtitle => this.subtitle = subtitle}>Hello</h2>
+          <button onClick={this.closeModal}>close</button>
+          <div>I am a modal</div>
+          <form>
+            <input />
+            <button>tab navigation</button>
+            <button>stays</button>
+            <button>inside</button>
+            <button>the modal</button>
+          </form>
+        </Modal>
       </span>
     );
   }
