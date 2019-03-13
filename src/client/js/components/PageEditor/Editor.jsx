@@ -28,7 +28,7 @@ export default class Editor extends AbstractEditor {
     this.dragLeaveHandler = this.dragLeaveHandler.bind(this);
     this.dropHandler = this.dropHandler.bind(this);
 
-    this.getDropzoneAccept = this.getDropzoneAccept.bind(this);
+    this.getAcceptableType = this.getAcceptableType.bind(this);
     this.getDropzoneClassName = this.getDropzoneClassName.bind(this);
     this.renderDropzoneOverlay = this.renderDropzoneOverlay.bind(this);
   }
@@ -104,8 +104,24 @@ export default class Editor extends AbstractEditor {
     }
   }
 
+  /**
+   * get acceptable(uploadable) file type
+   */
+  getAcceptableType() {
+    let accept = 'null'; // reject all
+    if (this.props.isUploadable) {
+      if (!this.props.isUploadableFile) {
+        accept = 'image/*'; // image only
+      }
+      else {
+        accept = ''; // allow all
+      }
+    }
+
+    return accept;
+  }
+
   pasteFilesHandler(event) {
-    const dropzone = this.refs.dropzone;
     const items = event.clipboardData.items || event.clipboardData.files || [];
 
     // abort if length is not 1
@@ -116,11 +132,8 @@ export default class Editor extends AbstractEditor {
     for (let i = 0; i < items.length; i++) {
       try {
         const file = items[i].getAsFile();
-        // check type and size
-        if (file != null
-            && pasteHelper.fileAccepted(file, dropzone.props.accept)
-            && pasteHelper.fileMatchSize(file, dropzone.props.maxSize, dropzone.props.minSize)) {
-
+        // check file type (the same process as Dropzone)
+        if (file != null && pasteHelper.isAcceptableType(file, this.getAcceptableType())) {
           this.dispatchUpload(file);
           this.setState({ isUploading: true });
         }
@@ -156,20 +169,6 @@ export default class Editor extends AbstractEditor {
     const file = accepted[0];
     this.dispatchUpload(file);
     this.setState({ isUploading: true });
-  }
-
-  getDropzoneAccept() {
-    let accept = 'null'; // reject all
-    if (this.props.isUploadable) {
-      if (!this.props.isUploadableFile) {
-        accept = 'image/*'; // image only
-      }
-      else {
-        accept = ''; // allow all
-      }
-    }
-
-    return accept;
   }
 
   getDropzoneClassName() {
@@ -243,7 +242,7 @@ export default class Editor extends AbstractEditor {
         <Dropzone
           ref="dropzone"
           disableClick
-          accept={this.getDropzoneAccept()}
+          accept={this.getAcceptableType()}
           className={this.getDropzoneClassName()}
           acceptClassName="dropzone-accepted"
           rejectClassName="dropzone-rejected"
