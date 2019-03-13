@@ -116,6 +116,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.STRING,
     default: null,
   },
+  MAX_FILE_SIZE: {
+    ns:      'crowi',
+    key:     'app:maxFileSize',
+    type:    TYPES.NUMBER,
+    default: Infinity,
+  },
   SAML_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS: {
     ns:      'crowi',
     key:     'security:passport-saml:useOnlyEnvVarsForSomeOptions',

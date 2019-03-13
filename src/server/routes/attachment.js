@@ -100,10 +100,10 @@ module.exports = function(crowi, app) {
   }
 
   async function createAttachment(file, user, pageId = null) {
-    // check capacity
-    const isUploadable = await fileUploader.checkCapacity(file.size);
-    if (!isUploadable) {
-      throw new Error('File storage reaches limit');
+    // check limit
+    const res = await fileUploader.checkLimit(file.size);
+    if (!res.isUploadable) {
+      throw new Error(res.errorMessage);
     }
 
     const fileStream = fs.createReadStream(file.path, {
@@ -204,8 +204,7 @@ module.exports = function(crowi, app) {
    * @apiGroup Attachment
    */
   api.limit = async function(req, res) {
-    const isUploadable = await fileUploader.checkCapacity(req.query.fileSize);
-    return res.json(ApiResponse.success({ isUploadable }));
+    return res.json(ApiResponse.success(await fileUploader.checkLimit(req.query.fileSize)));
   };
 
   /**
