@@ -30,6 +30,13 @@ schema.plugin(mongoosePaginate);
  * @class PageTagRelation
  */
 class PageTagRelation {
+
+  static async createIfNotExist(pageId, tagId) {
+    if (!await this.findOne({ relatedPage: pageId, relatedTag: tagId })) {
+      this.create({ relatedPage: pageId, relatedTag: tagId });
+    }
+  }
+
 }
 
 module.exports = function() {
