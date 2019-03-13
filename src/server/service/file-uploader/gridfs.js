@@ -68,7 +68,7 @@ module.exports = function(crowi) {
     }
 
     const usingFilesSize = await getCollectionSize();
-    if (+process.env.MONGO_GRIDFS_TOTAL_LIMIT > usingFilesSize + +uploadFileSize) {
+    if (usingFilesSize + uploadFileSize > +process.env.MONGO_GRIDFS_TOTAL_LIMIT) {
       return { isUploadable: false, errorMessage: 'MongoDB for uploading files reaches limit' };
     }
 
