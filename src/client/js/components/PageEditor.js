@@ -115,33 +115,22 @@ export default class PageEditor extends React.Component {
 
   /**
    * the upload event handler
-   * @param {any} files
+   * @param {any} file
    */
   async onUpload(file) {
     try {
       let res = await this.props.crowi.apiGet('/attachments.limit', { _csrf: this.props.crowi.csrfToken, fileSize: file.size });
       if (!res.isUploadable) {
-        toastr.error(undefined, 'MongoDB for uploading files reaches limit', {
-          closeButton: true,
-          progressBar: true,
-          newestOnTop: false,
-          showDuration: '100',
-          hideDuration: '100',
-          timeOut: '5000',
-        });
-        throw new Error('MongoDB for uploading files reaches limit');
+        throw new Error(res.errorMessage);
       }
-      const endpoint = '/attachments.add';
 
-      // create a FromData instance
       const formData = new FormData();
       formData.append('_csrf', this.props.crowi.csrfToken);
       formData.append('file', file);
       formData.append('path', this.props.pagePath);
       formData.append('page_id', this.state.pageId || 0);
 
-      // post
-      res = await this.props.crowi.apiPost(endpoint, formData);
+      res = await this.props.crowi.apiPost('/attachments.add', formData);
       const attachment = res.attachment;
       const fileName = attachment.originalName;
 
