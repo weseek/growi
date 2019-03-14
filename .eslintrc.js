@@ -6,8 +6,8 @@ module.exports = {
     }
   },
   extends: [
-    'airbnb',
-    'plugin:react/recommended',
+    'airbnb-base',
+    'airbnb/rules/react',
   ],
   env: {
     browser: true,
@@ -118,9 +118,6 @@ module.exports = {
     'react/require-default-props': 'off',
     'react/self-closing-comp': 'off',
     'react/sort-comp': 'off',
-    'jsx-a11y/img-redundant-alt': 'off',
-    'jsx-a11y/label-has-associated-control': 'off',
-    'jsx-a11y/label-has-for': 'off',
     // eslint-plugin-import rules
     'import/no-extraneous-dependencies': 'off',
     'import/no-dynamic-require': 'off',
