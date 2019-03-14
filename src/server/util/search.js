@@ -745,14 +745,14 @@ SearchClient.prototype.parseQueryString = function(queryString) {
       }
     }
 
-    const matchTag = word.match(/^-(tag:)?(.+)$/);
+    const matchTag = word.match(/^(tag:)?(.+)$/);
     if (matchTag != null) {
       const isTagCondition = (matchTag[1] != null);
       if (isTagCondition) {
         tags.push(matchTag[2]);
       }
       else {
-        notMatchWords.push(matchTag[2]);
+        matchWords.push(matchTag[2]);
       }
     }
   });
