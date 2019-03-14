@@ -11,8 +11,8 @@ export default class PagePathAutoComplete extends React.Component {
     super(props);
 
     this.state = {
-      searchError: null,
     };
+
     this.crowi = this.props.crowi;
 
     this.onSubmit = this.onSubmit.bind(this);
@@ -27,7 +27,7 @@ export default class PagePathAutoComplete extends React.Component {
 
   onSubmit(query) {
     // get the closest form element
-    const elem = this.refs.rootDom;
+    const elem = this.rootDom;
     const form = elem.closest('form');
     // submit with jQuery
     $(form).submit();
@@ -41,7 +41,7 @@ export default class PagePathAutoComplete extends React.Component {
 
   render() {
     return (
-      <div ref="rootDom">
+      <div ref={(c) => { this.rootDom = c }}>
         <SearchTypeahead
           ref={this.searchTypeaheadDom}
           crowi={this.crowi}
