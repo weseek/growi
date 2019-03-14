@@ -34,19 +34,20 @@ export default class PageTagForm extends React.Component {
     return (
       <div className="tag-typeahead">
         <AsyncTypeahead
-          allowNew={true}
+          allowNew
           caseSensitive={false}
-          defaultSelected={this.props.defaultPageTags}
-          emptyLabel={''}
+          defaultSelected={['growi', 'wiki']}
+          // defaultSelected={this.props.handleSubmit}
+          emptyLabel=""
           isLoading={this.state.isLoading}
           minLength={1}
-          multiple={true}
+          multiple
           newSelectionPrefix=""
-          onBlur={this.handleSubmit}
+          // onBlur={this.handleSubmit}
           onChange={(selected) => {
             this.setState({ selected });
           }}
-          onSearch={async query => {
+          onSearch={async(query) => {
             this.setState({ isLoading: true });
             const res = await this.crowi.apiGet('/tags.search', { q: query });
             res.tags.unshift(query); // selectable query
@@ -57,11 +58,12 @@ export default class PageTagForm extends React.Component {
           }}
           options={this.state.resultTags} // Search result (Some tag names)
           placeholder="tag name"
-          selectHintOnEnter={true}
+          selectHintOnEnter
         />
       </div>
     );
   }
+
 }
 
 PageTagForm.propTypes = {

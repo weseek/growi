@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'react-modal';
-
 import Button from 'react-bootstrap/es/Button';
+import PageTagForm from '../PageTagForm';
+
 import CopyButton from '../CopyButton';
 
 export default class RevisionPath extends React.Component {
@@ -21,7 +22,7 @@ export default class RevisionPath extends React.Component {
     this.xss = window.xss;
     this.openEditTagModal = this.openEditTagModal.bind(this);
     this.afterOpenModal = this.afterOpenModal.bind(this);
-    this.closeModal = this.closeModal.bind(this);
+    this.closeEditTagModal = this.closeEditTagModal.bind(this);
   }
 
   componentWillMount() {
@@ -58,13 +59,12 @@ export default class RevisionPath extends React.Component {
     this.setState({ isEditTagModalOpen: true });
   }
 
-  afterOpenModal() {
-    // references are now sync'd and can be accessed.
-    this.subtitle.style.color = '#f00';
+  closeEditTagModal() {
+    this.setState({ isEditTagModalOpen: false });
   }
 
-  closeModal() {
-    this.setState({isEditTagModalOpen: false});
+  afterOpenModal() {
+    // references are now sync'd and can be accessed.
   }
 
   showToolTip() {
@@ -103,22 +103,30 @@ export default class RevisionPath extends React.Component {
     };
     const tagButtonStyle = {
       height: '19px',
-      width: '14px',
+      width: '20px',
       marginLeft: '0.5em',
       padding: '0 2px',
     };
-    const customStyles = {
+    const editTagModalStyle = {
       content: {
-        top: '50%',
+        top: '20%',
         left: '50%',
         right: 'auto',
         bottom: 'auto',
         marginRight: '-50%',
-        transform: 'translate(-50%, -50%)'
-      }
+        transform: 'translate(-50%, -50%)',
+        padding: '0px',
+        width: '720px',
+        zIndex: '1060',
+      },
+      overlay: {
+        zIndex: '1050',
+        // backgroundColor: '#333333',
+        // opacity: '0.5',
+      },
     };
 
-    Modal.setAppElement('#deletePage')
+    Modal.setAppElement('.main-container');
 
     const pageLength = this.state.pages.length;
 
@@ -156,32 +164,40 @@ export default class RevisionPath extends React.Component {
         <a href="#edit" className="btn btn-default btn-edit" style={editButtonStyle}>
           <i className="icon-note" />
         </a>
-        <span className="btn-tag-container" >
+        <span className="btn-tag-container">
           <Button
             onClick={this.openEditTagModal}
-            className = "btn btn-default btn-tag"
+            className="btn btn-default btn-tag"
             style={tagButtonStyle}
-          >#
+            data-toggle="tooltip"
+            data-placement="bottom"
+            title="#growi #wiki"
+          >#2
           </Button>
         </span>
         <Modal
           isOpen={this.state.isEditTagModalOpen}
           onAfterOpen={this.afterOpenModal}
-          onRequestClose={this.closeModal}
-          style={customStyles}
-          contentLabel="Example Modal"
+          onRequestClose={this.closeEditTagModal}
+          style={editTagModalStyle}
+          contentLabel="edit tag modal"
         >
-
-          <h2 ref={subtitle => this.subtitle = subtitle}>Hello</h2>
-          <button onClick={this.closeModal}>close</button>
-          <div>I am a modal</div>
-          <form>
-            <input />
-            <button>tab navigation</button>
-            <button>stays</button>
-            <button>inside</button>
-            <button>the modal</button>
-          </form>
+          <div className="modal-content" id="editTagModal">
+            <div className="modal-header bg-primary">
+              <div className="modal-title">ページタグを追加</div>
+              <button type="button" className="close" data-dismiss="modal" aria-hidden="true" onClick={this.closeEditTagModal}>&times;</button>
+            </div>
+            <div className="modal-body">
+              <PageTagForm crowi={this.props.crowi} defaultPageTags="[currentPageTags]" handleSubmit={console.log('###')} />
+            </div>
+            <div className="modal-footer">
+              <div className="d-flex justify-content-between">
+                <div className="float-right">
+                  <button type="button" className="btn btn-primary">追加</button>
+                </div>
+              </div>
+            </div>
+          </div>
         </Modal>
       </span>
     );
