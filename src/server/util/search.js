@@ -522,6 +522,10 @@ SearchClient.prototype.appendCriteriaForQueryString = function(query, queryStrin
     });
     query.body.query.bool.filter.push({ bool: { must_not: queries } });
   }
+
+  if (parsedKeywords.tags.length > 0) {
+    // GC-1428
+  }
 };
 
 SearchClient.prototype.filterPagesByViewer = async function(query, user, userGroups) {
@@ -688,6 +692,7 @@ SearchClient.prototype.parseQueryString = function(queryString) {
   const notPhraseWords = [];
   const prefixPaths = [];
   const notPrefixPaths = [];
+  const tags = [];
 
   queryString.trim();
   queryString = queryString.replace(/\s+/g, ' '); // eslint-disable-line no-param-reassign
@@ -739,6 +744,17 @@ SearchClient.prototype.parseQueryString = function(queryString) {
         matchWords.push(matchPositive[2]);
       }
     }
+
+    const matchTag = word.match(/^-(tag:)?(.+)$/);
+    if (matchTag != null) {
+      const isTagCondition = (matchTag[1] != null);
+      if (isTagCondition) {
+        tags.push(matchTag[2]);
+      }
+      else {
+        notMatchWords.push(matchTag[2]);
+      }
+    }
   });
 
   return {
@@ -748,6 +764,7 @@ SearchClient.prototype.parseQueryString = function(queryString) {
     not_phrase: notPhraseWords,
     prefix: prefixPaths,
     not_prefix: notPrefixPaths,
+    tags,
   };
 };
 
