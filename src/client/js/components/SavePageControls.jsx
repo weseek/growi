@@ -27,8 +27,8 @@ class SavePageControls extends React.PureComponent {
   }
 
   getCurrentOptionsToSave() {
-    const slackNotificationOptions = this.refs.slackNotification.getCurrentOptionsToSave();
-    const grantSelectorOptions = this.refs.grantSelector.getCurrentOptionsToSave();
+    const slackNotificationOptions = this.slackNotification.getCurrentOptionsToSave();
+    const grantSelectorOptions = this.grantSelector.getCurrentOptionsToSave();
     return Object.assign(slackNotificationOptions, grantSelectorOptions);
   }
 
@@ -60,7 +60,7 @@ class SavePageControls extends React.PureComponent {
       <div className="d-flex align-items-center form-inline">
         <div className="mr-2">
           <SlackNotification
-            ref="slackNotification"
+            ref={(c) => { this.slackNotification = c }}
             crowi={this.props.crowi}
             pageId={this.props.pageId}
             pagePath={this.props.pagePath}
@@ -75,8 +75,8 @@ class SavePageControls extends React.PureComponent {
             <GrantSelector
               crowi={this.props.crowi}
               ref={(elem) => {
-                  if (this.refs.grantSelector == null) {
-                    this.refs.grantSelector = elem.getWrappedInstance();
+                  if (this.grantSelector == null) {
+                    this.grantSelector = elem.getWrappedInstance();
                   }
                 }}
               grant={this.props.grant}
