@@ -39,8 +39,8 @@ export default class Editor extends AbstractEditor {
 
   getEditorSubstance() {
     return this.props.isMobile
-      ? this.refs.taEditor
-      : this.refs.cmEditor;
+      ? this.taEditor
+      : this.cmEditor;
   }
 
   /**
@@ -161,7 +161,7 @@ export default class Editor extends AbstractEditor {
 
   dropHandler(accepted, rejected) {
     // rejected
-    if (accepted.length != 1) { // length should be 0 or 1 because `multiple={false}` is set
+    if (accepted.length !== 1) { // length should be 0 or 1 because `multiple={false}` is set
       this.setState({ dropzoneActive: false });
       return;
     }
@@ -213,7 +213,8 @@ export default class Editor extends AbstractEditor {
       <div className="m-0 navbar navbar-default navbar-editor" style={{ minHeight: 'unset' }}>
         <ul className="pl-2 nav nav-navbar">
           { this.getNavbarItems() != null && this.getNavbarItems().map((item, idx) => {
-            return <li key={idx}>{item}</li>;
+            // eslint-disable-next-line react/no-array-index-key
+            return <li key={`navbarItem-${idx}`}>{item}</li>;
           }) }
         </ul>
       </div>
@@ -240,7 +241,7 @@ export default class Editor extends AbstractEditor {
     return (
       <div style={flexContainer} className="editor-container">
         <Dropzone
-          ref="dropzone"
+          ref={(c) => { this.dropzone = c }}
           disableClick
           accept={this.getAcceptableType()}
           className={this.getDropzoneClassName()}
@@ -258,7 +259,7 @@ export default class Editor extends AbstractEditor {
           {/* for PC */}
           { !isMobile && (
             <CodeMirrorEditor
-              ref="cmEditor"
+              ref={(c) => { this.cmEditor = c }}
               onPasteFiles={this.pasteFilesHandler}
               onDragEnter={this.dragEnterHandler}
               {...this.props}
@@ -269,7 +270,7 @@ export default class Editor extends AbstractEditor {
           {/* for mobile */}
           { isMobile && (
             <TextAreaEditor
-              ref="taEditor"
+              ref={(c) => { this.taEditor = c }}
               onPasteFiles={this.pasteFilesHandler}
               onDragEnter={this.dragEnterHandler}
               {...this.props}
@@ -284,7 +285,7 @@ export default class Editor extends AbstractEditor {
           <button
             type="button"
             className="btn btn-default btn-block btn-open-dropzone"
-            onClick={() => { this.refs.dropzone.open() }}
+            onClick={() => { this.dropzone.open() }}
           >
 
             <i className="icon-paper-clip" aria-hidden="true"></i>&nbsp;

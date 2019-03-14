@@ -74,6 +74,7 @@ export default class BookmarkButton extends React.Component {
 
     return (
       <button
+        type="button"
         href="#"
         title="Bookmark"
         onClick={this.handleClick}

@@ -36,7 +36,10 @@ class InstallerForm extends React.Component {
 
   render() {
     const hasErrorClass = this.state.isValidUserName ? '' : ' has-error';
-    const unavailableUserId = this.state.isValidUserName ? '' : <span><i className="icon-fw icon-ban" />{ this.props.t('installer.unavaliable_user_id') }</span>;
+    const unavailableUserId = this.state.isValidUserName
+      ? ''
+      : <span><i className="icon-fw icon-ban" />{ this.props.t('installer.unavaliable_user_id') }</span>;
+
     return (
       <div className={`login-dialog p-t-10 p-b-10 col-sm-offset-4 col-sm-4${hasErrorClass}`}>
         <p className="alert alert-success">

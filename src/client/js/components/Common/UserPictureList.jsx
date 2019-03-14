@@ -20,7 +20,6 @@ export default class UserPictureList extends React.Component {
 
     this.state = {
       users,
-      tooltipUsername: '',
     };
 
   }
