@@ -1,5 +1,10 @@
 module.exports = {
   parser: 'babel-eslint',
+  parserOptions: {
+    ecmaFeatures: {
+      jsx: true
+    }
+  },
   extends: [
     'airbnb',
     'plugin:react/recommended',
@@ -114,6 +119,8 @@ module.exports = {
     'react/self-closing-comp': 'off',
     'react/sort-comp': 'off',
     'jsx-a11y/img-redundant-alt': 'off',
+    'jsx-a11y/label-has-associated-control': 'off',
+    'jsx-a11y/label-has-for': 'off',
     // eslint-plugin-import rules
     'import/no-extraneous-dependencies': 'off',
     'import/no-dynamic-require': 'off',
