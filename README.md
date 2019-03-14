@@ -157,7 +157,6 @@ Environment Variables
 * **Option**
     * NODE_ENV: `production` OR `development`.
     * PORT: Server port. default: `3000`.
-    * APP_SITE_URL: Application site URL
     * NO_CDN: If `true`, system doesn't use CDN, all resources will be downloaded from CDN when build client, and served by the GROWI Express server. default: `false`.
     * ELASTICSEARCH_URI: URI to connect to Elasticearch.
     * REDIS_URI: URI to connect to Redis (use it as a session store instead of MongoDB).
@@ -171,6 +170,7 @@ Environment Variables
       * `none` : Disable file uploading
     * MAX_FILE_SIZE: The maximum file size limit for uploads (bytes). default: `Infinity`
     * MONGO_GRIDFS_TOTAL_LIMIT: Total capacity limit of MongoDB GridFS (bytes). default: `Infinity`
+    * SAML_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS: If `true`, the system uses only the value of the environment variable as the value of the SAML option that can be set via the environment variable.
 * **Option to integrate with external systems**
     * HACKMD_URI: URI to connect to [HackMD(CodiMD)](https://hackmd.io/) server.
         * **This server must load the GROWI agent. [Here's how to prepare it](https://docs.growi.org/guide/admin-cookbook/integrate-with-hackmd.html).**
@@ -185,7 +185,6 @@ Environment Variables
     * OAUTH_GITHUB_CLIENT_SECRET: GitHub API client secret for OAuth login.
     * OAUTH_TWITTER_CONSUMER_KEY: Twitter consumer key(API key) for OAuth login.
     * OAUTH_TWITTER_CONSUMER_SECRET: Twitter consumer secret(API secret) for OAuth login.
-    * SAML_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS: If `true`, the system uses only the value of the environment variable as the value of the SAML option that can be set via the environment variable.
     * SAML_ENABLED: Enable or disable SAML
     * SAML_ENTRY_POINT: IdP entry point
     * SAML_ISSUER: Issuer string to supply to IdP
