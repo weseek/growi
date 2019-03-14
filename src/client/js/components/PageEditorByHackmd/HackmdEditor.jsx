@@ -32,7 +32,7 @@ export default class HackmdEditor extends React.PureComponent {
 
     const connection = Penpal.connectToChild({
       url,
-      appendTo: this.refs.iframeContainer,
+      appendTo: this.iframeContainer,
       methods: { // expose methods to HackMD
         notifyBodyChanges(document) {
           _this.notifyBodyChangesHandler(document);
@@ -78,7 +78,7 @@ export default class HackmdEditor extends React.PureComponent {
   render() {
     return (
       // will be rendered in componentDidMount
-      <div id="iframe-hackmd-container" ref="iframeContainer"></div>
+      <div id="iframe-hackmd-container" ref={(c) => { this.iframeContainer = c }}></div>
     );
   }
 

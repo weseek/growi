@@ -58,6 +58,10 @@ class PageStatusAlert extends React.Component {
     });
   }
 
+  refreshPage() {
+    window.location.reload();
+  }
+
   renderSomeoneEditingAlert() {
     return (
       <div className="alert-hackmd-someone-editing myadmin-alert alert-success myadmin-alert-bottom alertbottom2">
@@ -100,7 +104,7 @@ class PageStatusAlert extends React.Component {
         &nbsp;
         <i className="fa fa-angle-double-right"></i>
         &nbsp;
-        <a href="javascript:location.reload();">
+        <a onClick={this.refreshPage}>
           {label2}
         </a>
       </div>

@@ -31,11 +31,16 @@ export default class Page extends React.Component {
   launchHandsontableModal(beginLineNumber, endLineNumber) {
     const tableLines = this.state.markdown.split(/\r\n|\r|\n/).slice(beginLineNumber - 1, endLineNumber).join('\n');
     this.setState({ currentTargetTableArea: { beginLineNumber, endLineNumber } });
-    this.refs.handsontableModal.show(MarkdownTable.fromMarkdownString(tableLines));
+    this.handsontableModal.show(MarkdownTable.fromMarkdownString(tableLines));
   }
 
   saveHandlerForHandsontableModal(markdownTable) {
-    const newMarkdown = mtu.replaceMarkdownTableInMarkdown(markdownTable, this.state.markdown, this.state.currentTargetTableArea.beginLineNumber, this.state.currentTargetTableArea.endLineNumber);
+    const newMarkdown = mtu.replaceMarkdownTableInMarkdown(
+      markdownTable,
+      this.state.markdown,
+      this.state.currentTargetTableArea.beginLineNumber,
+      this.state.currentTargetTableArea.endLineNumber,
+    );
     this.props.onSaveWithShortcut(newMarkdown);
     this.setState({ currentTargetTableArea: null });
   }
@@ -51,7 +56,7 @@ export default class Page extends React.Component {
           markdown={this.state.markdown}
           pagePath={this.props.pagePath}
         />
-        <HandsontableModal ref="handsontableModal" onSave={this.saveHandlerForHandsontableModal} />
+        <HandsontableModal ref={(c) => { this.handsontableModal = c }} onSave={this.saveHandlerForHandsontableModal} />
       </div>
     );
   }

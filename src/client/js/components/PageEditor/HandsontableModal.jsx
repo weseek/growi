@@ -153,7 +153,7 @@ export default class HandsontableModal extends React.PureComponent {
 
   save() {
     const markdownTable = new MarkdownTable(
-      this.refs.hotTable.hotInstance.getData(),
+      this.hotTable.hotInstance.getData(),
       { align: [].concat(this.state.markdownTable.options.align) },
     ).normalizeCells();
 
@@ -180,7 +180,8 @@ export default class HandsontableModal extends React.PureComponent {
    * In detail, when the setState method is called with those state passed,
    * React will start re-render process for the HotTable of this component because the HotTable receives those state values by props.
    * HotTable#shouldComponentUpdate is called in this re-render process and calls the updateSettings method for the Handsontable instance.
-   * In updateSettings method, the loadData method is called in some case. (refs: https://github.com/handsontable/handsontable/blob/6.2.0/src/core.js#L1652-L1657)
+   * In updateSettings method, the loadData method is called in some case.
+   *  (refs: https://github.com/handsontable/handsontable/blob/6.2.0/src/core.js#L1652-L1657)
    * The updateSettings method calls in the HotTable always lead to call the loadData method because the HotTable passes data source by settings.data.
    * After the loadData method is executed, afterLoadData hooks are called.
    */
@@ -215,7 +216,7 @@ export default class HandsontableModal extends React.PureComponent {
     // store column index
     this.manuallyResizedColumnIndicesSet.add(currentColumn);
     // force re-render
-    const hotInstance = this.refs.hotTable.hotInstance;
+    const hotInstance = this.hotTable.hotInstance;
     hotInstance.render();
   }
 
@@ -319,12 +320,12 @@ export default class HandsontableModal extends React.PureComponent {
    * synchronize the handsontable alignment to the markdowntable alignment
    */
   synchronizeAlignment() {
-    if (this.refs.hotTable == null) {
+    if (this.hotTable == null) {
       return;
     }
 
     const align = this.state.markdownTable.options.align;
-    const hotInstance = this.refs.hotTable.hotInstance;
+    const hotInstance = this.hotTable.hotInstance;
 
     for (let i = 0; i < align.length; i++) {
       for (let j = 0; j < hotInstance.countRows(); j++) {
@@ -335,7 +336,7 @@ export default class HandsontableModal extends React.PureComponent {
   }
 
   alignButtonHandler(direction) {
-    const selectedRange = this.refs.hotTable.hotInstance.getSelectedRange();
+    const selectedRange = this.hotTable.hotInstance.getSelectedRange();
     if (selectedRange == null) return;
 
     let startCol;
@@ -387,8 +388,8 @@ export default class HandsontableModal extends React.PureComponent {
    *  according to the height of this.refs.hotTableContainer
    */
   expandHotTableHeight() {
-    if (this.state.isWindowExpanded && this.refs.hotTableContainer != null) {
-      const height = this.refs.hotTableContainer.getBoundingClientRect().height;
+    if (this.state.isWindowExpanded && this.hotTableContainer != null) {
+      const height = this.hotTableContainer.getBoundingClientRect().height;
       this.setState({ handsontableHeight: height });
     }
   }
@@ -396,7 +397,7 @@ export default class HandsontableModal extends React.PureComponent {
   renderExpandOrContractButton() {
     const iconClassName = this.state.isWindowExpanded ? 'icon-size-actual' : 'icon-size-fullscreen';
     return (
-      <button className="close mr-3" onClick={this.state.isWindowExpanded ? this.contractWindow : this.expandWindow}>
+      <button type="button" className="close mr-3" onClick={this.state.isWindowExpanded ? this.contractWindow : this.expandWindow}>
         <i className={iconClassName} style={{ fontSize: '0.8em' }} aria-hidden="true"></i>
       </button>
     );
@@ -432,9 +433,9 @@ export default class HandsontableModal extends React.PureComponent {
               </div>
             </Collapse>
           </div>
-          <div ref="hotTableContainer" className="m-4 hot-table-container">
+          <div ref={(c) => { this.hotTableContainer = c }} className="m-4 hot-table-container">
             <HotTable
-              ref="hotTable"
+              ref={(c) => { this.hotTable = c }}
               data={this.state.markdownTable.table}
               settings={this.handsontableSettings}
               height={this.state.handsontableHeight}

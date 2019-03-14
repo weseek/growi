@@ -56,8 +56,8 @@ export default class SlackNotification extends React.Component {
     return (
       <div className="input-group input-group-sm input-group-slack extended-setting">
         <label className="input-group-addon">
-          <img id="slack-mark-white" src="/images/icons/slack/mark-monochrome_white.svg" width="18" height="18" />
-          <img id="slack-mark-black" src="/images/icons/slack/mark-monochrome_black.svg" width="18" height="18" />
+          <img id="slack-mark-white" alt="slack-mark" src="/images/icons/slack/mark-monochrome_white.svg" width="18" height="18" />
+          <img id="slack-mark-black" alt="slack-mark" src="/images/icons/slack/mark-monochrome_black.svg" width="18" height="18" />
           <input type="checkbox" value="1" checked={this.state.isSlackEnabled} onChange={this.updateStateCheckbox} />
         </label>
         <input
