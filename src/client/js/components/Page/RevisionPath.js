@@ -172,7 +172,7 @@ export default class RevisionPath extends React.Component {
             data-toggle="tooltip"
             data-placement="bottom"
             title="#growi #wiki"
-          >#2
+          ><i className="fa fa-tags"></i>
           </Button>
         </span>
         <Modal
