@@ -189,7 +189,6 @@ class GrantSelector extends React.Component {
     // add specified group option
     grantElems.push(
       <option
-        ref="specifiedGroupOption"
         key="specifiedGroupKey"
         value={SPECIFIED_GROUP_VALUE}
         style={{ display: grantGroup ? 'inherit' : 'none' }}
@@ -209,7 +208,7 @@ class GrantSelector extends React.Component {
           bsClass={bsClassName}
           className="btn-group-sm selectpicker"
           onChange={this.changeGrantHandler}
-          inputRef={(el) => { return this.grantSelectorInputEl = el }}
+          inputRef={(el) => { this.grantSelectorInputEl = el }}
         >
 
           {grantElems}

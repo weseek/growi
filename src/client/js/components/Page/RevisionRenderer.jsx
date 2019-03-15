@@ -77,7 +77,7 @@ export default class RevisionRenderer extends React.Component {
       .then(() => { return interceptorManager.process('postPostProcess', context) })
       .then(() => { return interceptorManager.process('preRenderHtml', context) })
       .then(() => {
-        this.setState({ html: context.parsedHTML, markdown });
+        this.setState({ html: context.parsedHTML });
       })
       // process interceptors for post rendering
       .then(() => { return interceptorManager.process('postRenderHtml', context) });

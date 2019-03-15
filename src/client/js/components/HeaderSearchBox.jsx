@@ -46,17 +46,17 @@ class HeaderSearchBox extends React.Component {
   }
 
   search() {
-    const url = new URL(location.href);
+    const url = new URL(window.location.href);
     url.pathname = '/_search';
 
     // construct search query
     let q = this.state.text;
     if (this.state.isScopeChildren) {
-      q += ` prefix:${location.pathname}`;
+      q += ` prefix:${window.location.pathname}`;
     }
     url.searchParams.append('q', q);
 
-    location.href = url.href;
+    window.location.href = url.href;
   }
 
   render() {

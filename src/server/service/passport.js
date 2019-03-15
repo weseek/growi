@@ -317,20 +317,25 @@ class PassportService {
     }
 
     debug('GoogleStrategy: setting up..');
-    passport.use(new GoogleStrategy({
-      clientId: config.crowi['security:passport-google:clientId'] || process.env.OAUTH_GOOGLE_CLIENT_ID,
-      clientSecret: config.crowi['security:passport-google:clientSecret'] || process.env.OAUTH_GOOGLE_CLIENT_SECRET,
-      callbackURL: (this.crowi.configManager.getConfig('crowi', 'app:siteUrl') != null)
-        ? urljoin(this.crowi.configManager.getSiteUrl(), '/passport/google/callback') // auto-generated with v3.2.4 and above
-        : config.crowi['security:passport-google:callbackUrl'] || process.env.OAUTH_GOOGLE_CALLBACK_URI, // DEPRECATED: backward compatible with v3.2.3 and below
-      skipUserProfile: false,
-    }, ((accessToken, refreshToken, profile, done) => {
-        if (profile) {
-          return done(null, profile);
-        }
+    passport.use(
+      new GoogleStrategy(
+        {
+          clientId: config.crowi['security:passport-google:clientId'] || process.env.OAUTH_GOOGLE_CLIENT_ID,
+          clientSecret: config.crowi['security:passport-google:clientSecret'] || process.env.OAUTH_GOOGLE_CLIENT_SECRET,
+          callbackURL: (this.crowi.configManager.getConfig('crowi', 'app:siteUrl') != null)
+            ? urljoin(this.crowi.configManager.getSiteUrl(), '/passport/google/callback') // auto-generated with v3.2.4 and above
+            : config.crowi['security:passport-google:callbackUrl'] || process.env.OAUTH_GOOGLE_CALLBACK_URI, // DEPRECATED: backward compatible with v3.2.3 and below
+          skipUserProfile: false,
+        },
+        (accessToken, refreshToken, profile, done) => {
+          if (profile) {
+            return done(null, profile);
+          }
 
-        return done(null, false);
-      })));
+          return done(null, false);
+        },
+      ),
+    );
 
     this.isGoogleStrategySetup = true;
     debug('GoogleStrategy: setup is done');
@@ -363,20 +368,25 @@ class PassportService {
     }
 
     debug('GitHubStrategy: setting up..');
-    passport.use(new GitHubStrategy({
-      clientID: config.crowi['security:passport-github:clientId'] || process.env.OAUTH_GITHUB_CLIENT_ID,
-      clientSecret: config.crowi['security:passport-github:clientSecret'] || process.env.OAUTH_GITHUB_CLIENT_SECRET,
-      callbackURL: (this.crowi.configManager.getConfig('crowi', 'app:siteUrl') != null)
-        ? urljoin(this.crowi.configManager.getSiteUrl(), '/passport/github/callback') // auto-generated with v3.2.4 and above
-        : config.crowi['security:passport-github:callbackUrl'] || process.env.OAUTH_GITHUB_CALLBACK_URI, // DEPRECATED: backward compatible with v3.2.3 and below
-      skipUserProfile: false,
-    }, ((accessToken, refreshToken, profile, done) => {
-        if (profile) {
-          return done(null, profile);
-        }
+    passport.use(
+      new GitHubStrategy(
+        {
+          clientID: config.crowi['security:passport-github:clientId'] || process.env.OAUTH_GITHUB_CLIENT_ID,
+          clientSecret: config.crowi['security:passport-github:clientSecret'] || process.env.OAUTH_GITHUB_CLIENT_SECRET,
+          callbackURL: (this.crowi.configManager.getConfig('crowi', 'app:siteUrl') != null)
+            ? urljoin(this.crowi.configManager.getSiteUrl(), '/passport/github/callback') // auto-generated with v3.2.4 and above
+            : config.crowi['security:passport-github:callbackUrl'] || process.env.OAUTH_GITHUB_CALLBACK_URI, // DEPRECATED: backward compatible with v3.2.3 and below
+          skipUserProfile: false,
+        },
+        (accessToken, refreshToken, profile, done) => {
+          if (profile) {
+            return done(null, profile);
+          }
 
-        return done(null, false);
-      })));
+          return done(null, false);
+        },
+      ),
+    );
 
     this.isGitHubStrategySetup = true;
     debug('GitHubStrategy: setup is done');
@@ -409,20 +419,25 @@ class PassportService {
     }
 
     debug('TwitterStrategy: setting up..');
-    passport.use(new TwitterStrategy({
-      consumerKey: config.crowi['security:passport-twitter:consumerKey'] || process.env.OAUTH_TWITTER_CONSUMER_KEY,
-      consumerSecret: config.crowi['security:passport-twitter:consumerSecret'] || process.env.OAUTH_TWITTER_CONSUMER_SECRET,
-      callbackURL: (this.crowi.configManager.getConfig('crowi', 'app:siteUrl') != null)
-        ? urljoin(this.crowi.configManager.getSiteUrl(), '/passport/twitter/callback') // auto-generated with v3.2.4 and above
-        : config.crowi['security:passport-twitter:callbackUrl'] || process.env.OAUTH_TWITTER_CALLBACK_URI, // DEPRECATED: backward compatible with v3.2.3 and below
-      skipUserProfile: false,
-    }, ((accessToken, refreshToken, profile, done) => {
-        if (profile) {
-          return done(null, profile);
-        }
+    passport.use(
+      new TwitterStrategy(
+        {
+          consumerKey: config.crowi['security:passport-twitter:consumerKey'] || process.env.OAUTH_TWITTER_CONSUMER_KEY,
+          consumerSecret: config.crowi['security:passport-twitter:consumerSecret'] || process.env.OAUTH_TWITTER_CONSUMER_SECRET,
+          callbackURL: (this.crowi.configManager.getConfig('crowi', 'app:siteUrl') != null)
+            ? urljoin(this.crowi.configManager.getSiteUrl(), '/passport/twitter/callback') // auto-generated with v3.2.4 and above
+            : config.crowi['security:passport-twitter:callbackUrl'] || process.env.OAUTH_TWITTER_CALLBACK_URI, // DEPRECATED: backward compatible with v3.2.3 and below
+          skipUserProfile: false,
+        },
+        (accessToken, refreshToken, profile, done) => {
+          if (profile) {
+            return done(null, profile);
+          }
 
-        return done(null, false);
-      })));
+          return done(null, false);
+        },
+      ),
+    );
 
     this.isTwitterStrategySetup = true;
     debug('TwitterStrategy: setup is done');
@@ -454,20 +469,25 @@ class PassportService {
     }
 
     debug('SamlStrategy: setting up..');
-    passport.use(new SamlStrategy({
-      entryPoint: configManager.getConfig('crowi', 'security:passport-saml:entryPoint'),
-      callbackUrl: (this.crowi.configManager.getConfig('crowi', 'app:siteUrl') != null)
-        ? urljoin(this.crowi.configManager.getSiteUrl(), '/passport/saml/callback') // auto-generated with v3.2.4 and above
-        : configManager.getConfig('crowi', 'security:passport-saml:callbackUrl'), // DEPRECATED: backward compatible with v3.2.3 and below
-      issuer: configManager.getConfig('crowi', 'security:passport-saml:issuer'),
-      cert: configManager.getConfig('crowi', 'security:passport-saml:cert'),
-    }, ((profile, done) => {
-        if (profile) {
-          return done(null, profile);
-        }
+    passport.use(
+      new SamlStrategy(
+        {
+          entryPoint: configManager.getConfig('crowi', 'security:passport-saml:entryPoint'),
+          callbackUrl: (this.crowi.configManager.getConfig('crowi', 'app:siteUrl') != null)
+            ? urljoin(this.crowi.configManager.getSiteUrl(), '/passport/saml/callback') // auto-generated with v3.2.4 and above
+            : configManager.getConfig('crowi', 'security:passport-saml:callbackUrl'), // DEPRECATED: backward compatible with v3.2.3 and below
+          issuer: configManager.getConfig('crowi', 'security:passport-saml:issuer'),
+          cert: configManager.getConfig('crowi', 'security:passport-saml:cert'),
+        },
+        (profile, done) => {
+          if (profile) {
+            return done(null, profile);
+          }
 
-        return done(null, false);
-      })));
+          return done(null, false);
+        },
+      ),
+    );
 
     this.isSamlStrategySetup = true;
     debug('SamlStrategy: setup is done');

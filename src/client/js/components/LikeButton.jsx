@@ -51,6 +51,7 @@ export default class LikeButton extends React.Component {
 
     return (
       <button
+        type="button"
         href="#"
         title="Like"
         onClick={this.handleClick}
