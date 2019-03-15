@@ -115,7 +115,6 @@
     "passport-local": "^1.0.0",
     "passport-saml": "^1.0.0",
     "passport-twitter": "^1.0.4",
-    "react-modal": "^3.8.1",
     "rimraf": "^2.6.1",
     "slack-node": "^0.1.8",
     "socket.io": "^2.0.3",
