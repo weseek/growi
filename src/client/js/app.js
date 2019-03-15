@@ -31,8 +31,6 @@ import CommentForm from './components/PageComment/CommentForm';
 import PageAttachment from './components/PageAttachment';
 import PageStatusAlert from './components/PageStatusAlert';
 import RevisionPath from './components/Page/RevisionPath';
-// TODO GC-1430 activate
-// import PageTagForm from './components/PageTagForm';
 import RevisionUrl from './components/Page/RevisionUrl';
 import BookmarkButton from './components/BookmarkButton';
 import LikeButton from './components/LikeButton';
@@ -70,9 +68,6 @@ let pagePath;
 let pageContent = '';
 let markdown = '';
 let slackChannels;
-// TODO GC-1430 activate
-// const currentPageTags = [];
-// let newPageTags = [];
 if (mainContent !== null) {
   pageId = mainContent.getAttribute('data-page-id') || null;
   pageRevisionId = mainContent.getAttribute('data-page-revision-id');
@@ -117,15 +112,6 @@ if (isEnabledPlugins) {
   const crowiPlugin = window.crowiPlugin;
   crowiPlugin.installAll(crowi, crowiRenderer);
 }
-
-/**
- * get new tags from page tag form
- * @param {String} tags new tags [TODO] String -> Array
- */
-// TODO GC-1430 activate
-// const getNewPageTags = function(tags) {
-//   newPageTags = tags;
-// };
 
 /**
  * component store
@@ -205,8 +191,6 @@ const saveWithShortcut = function(markdown) {
   // get options
   const options = componentInstances.savePageControls.getCurrentOptionsToSave();
   options.socketClientId = socketClientId;
-  // TODO GC-1430 activate
-  // options.pageTags = newPageTags;
 
   if (editorMode === 'hackmd') {
     // set option to sync
@@ -244,8 +228,6 @@ const saveWithSubmitButton = function(submitOpts) {
   // get options
   const options = componentInstances.savePageControls.getCurrentOptionsToSave();
   options.socketClientId = socketClientId;
-  // TODO GC-1430 activate
-  // options.pageTags = newPageTags;
 
   // set 'submitOpts.overwriteScopesOfDescendants' to options
   options.overwriteScopesOfDescendants = submitOpts ? !!submitOpts.overwriteScopesOfDescendants : false;
@@ -312,7 +294,6 @@ const componentMappings = {
 if (pageId) {
   componentMappings['page-comments-list'] = <PageComments pageId={pageId} revisionId={pageRevisionId} revisionCreatedAt={pageRevisionCreatedAt} crowi={crowi} crowiOriginRenderer={crowiRenderer} />;
   componentMappings['page-attachment'] = <PageAttachment pageId={pageId} markdown={markdown} crowi={crowi} />;
-  // componentMappings['page-tag'] = <PageTagForm crowi={crowi} defaultPageTags={currentPageTags} handleSubmit={getNewPageTags} />; // [pagetag]
 }
 if (pagePath) {
   componentMappings.page = <Page crowi={crowi} crowiRenderer={crowiRenderer} markdown={markdown} pagePath={pagePath} showHeadEditButton onSaveWithShortcut={saveWithShortcut} />;
