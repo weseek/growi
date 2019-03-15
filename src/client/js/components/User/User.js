@@ -32,8 +32,8 @@ export default class User extends React.Component {
 
 User.propTypes = {
   user: PropTypes.object.isRequired,
-  name: PropTypes.bool.isRequired,
-  username: PropTypes.bool.isRequired,
+  name: PropTypes.bool,
+  username: PropTypes.bool,
 };
 
 User.defaultProps = {

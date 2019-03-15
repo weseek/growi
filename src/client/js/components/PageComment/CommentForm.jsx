@@ -82,7 +82,7 @@ export default class CommentForm extends React.Component {
     const value = event.target.checked;
     this.setState({ isMarkdown: value });
     // changeMode
-    this.refs.editor.setGfmMode(value);
+    this.editor.setGfmMode(value);
   }
 
   handleSelect(key) {
@@ -132,7 +132,7 @@ export default class CommentForm extends React.Component {
           isSlackEnabled: false,
         });
         // reset value
-        this.refs.editor.setValue('');
+        this.editor.setValue('');
       })
       .catch((err) => {
         const errorMessage = err.message || 'An unknown error occured when posting comment';
@@ -143,7 +143,7 @@ export default class CommentForm extends React.Component {
   getCommentHtml() {
     return (
       <CommentPreview
-        inputRef={(el) => { return this.previewElement = el }}
+        inputRef={(el) => { this.previewElement = el }}
         html={this.state.html}
       />
     );
@@ -205,12 +205,12 @@ export default class CommentForm extends React.Component {
           // modify to "![fileName](url)" syntax
           insertText = `!${insertText}`;
         }
-        this.refs.editor.insertText(insertText);
+        this.editor.insertText(insertText);
       })
       .catch(this.apiErrorHandler)
       // finally
       .then(() => {
-        this.refs.editor.terminateUploadingState();
+        this.editor.terminateUploadingState();
       });
   }
 
@@ -271,7 +271,11 @@ export default class CommentForm extends React.Component {
                 {/* Add Comment Button */}
                 { !this.state.isFormShown
                   && (
-                  <button className={`btn btn-lg ${isLayoutTypeGrowi ? 'btn-link' : 'btn-primary'} center-block`} onClick={this.showCommentFormBtnClickHandler}>
+                  <button
+                    type="button"
+                    className={`btn btn-lg ${isLayoutTypeGrowi ? 'btn-link' : 'btn-primary'} center-block`}
+                    onClick={this.showCommentFormBtnClickHandler}
+                  >
                     <i className="icon-bubble"></i> Add Comment
                   </button>
                   )
@@ -284,7 +288,7 @@ export default class CommentForm extends React.Component {
                       <Tabs activeKey={this.state.key} id="comment-form-tabs" onSelect={this.handleSelect} animation={false}>
                         <Tab eventKey={1} title="Write">
                           <Editor
-                            ref="editor"
+                            ref={(c) => { this.editor = c }}
                             value={this.state.comment}
                             isGfmMode={this.state.isMarkdown}
                             editorOptions={this.props.editorOptions}
@@ -298,7 +302,7 @@ export default class CommentForm extends React.Component {
                             onCtrlEnter={this.postComment}
                           />
                         </Tab>
-                        { this.state.isMarkdown == true
+                        { this.state.isMarkdown
                           && (
                           <Tab eventKey={2} title="Preview">
                             <div className="comment-form-preview">
@@ -312,7 +316,7 @@ export default class CommentForm extends React.Component {
                     <div className="comment-submit">
                       <div className="d-flex">
                         <label style={{ flex: 1 }}>
-                          { isLayoutTypeGrowi && this.state.key == 1
+                          { isLayoutTypeGrowi && this.state.key === 1
                             && (
                             <span>
                               <input
@@ -323,7 +327,7 @@ export default class CommentForm extends React.Component {
                                 value="1"
                                 onChange={this.updateStateCheckbox}
                               />
-                              Markdown
+                              <span className="ml-2">Markdown</span>
                             </span>
                             )
                         }

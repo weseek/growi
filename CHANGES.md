@@ -1,9 +1,11 @@
-CHANGES
-========
+# CHANGES
 
 ## 3.4.3-RC
 
-* 
+* Support Apply eslint-config-airbnb based rules
+* Support Apply prettier and stylelint
+* Support: Upgrade libs
+    * eslint
 
 ## 3.4.2
 

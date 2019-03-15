@@ -44,7 +44,7 @@ export default class PageEditorByHackmd extends React.PureComponent {
       return Promise.reject(new Error('HackmdEditor component has not initialized'));
     }
 
-    return this.refs.hackmdEditor.getValue()
+    return this.hackmdEditor.getValue()
       .then((document) => {
         this.setState({ markdown: document });
         return document;
@@ -54,7 +54,7 @@ export default class PageEditorByHackmd extends React.PureComponent {
   setMarkdown(markdown, updateEditorValue = true) {
     this.setState({ markdown });
     if (this.state.isInitialized && updateEditorValue) {
-      this.refs.hackmdEditor.setValue(markdown);
+      this.hackmdEditor.setValue(markdown);
     }
   }
 
@@ -73,7 +73,6 @@ export default class PageEditorByHackmd extends React.PureComponent {
       initialRevisionId: updatedRevisionId,
       revisionId: updatedRevisionId,
       revisionIdHackmdSynced: updatedRevisionIdHackmdSynced,
-      isDraftUpdatingInRealtime: false,
     });
   }
 
@@ -202,7 +201,7 @@ export default class PageEditorByHackmd extends React.PureComponent {
     if (this.state.isInitialized) {
       return (
         <HackmdEditor
-          ref="hackmdEditor"
+          ref={(c) => { this.hackmdEditor = c }}
           hackmdUri={hackmdUri}
           pageIdOnHackmd={this.state.pageIdOnHackmd}
           initializationMarkdown={isResume ? null : this.state.markdown}
@@ -259,7 +258,14 @@ export default class PageEditorByHackmd extends React.PureComponent {
           </div>
           <p className="text-center">
             Click to edit from the previous continuation<br />
-            or <button className="btn btn-link text-danger p-0 hackmd-discard-button" onClick={() => { return this.discardChanges() }}>Discard changes</button>.
+            or
+            <button
+              type="button"
+              className="btn btn-link text-danger p-0 hackmd-discard-button"
+              onClick={() => { return this.discardChanges() }}
+            >
+              Discard changes
+            </button>.
           </p>
           { isHackmdDocumentOutdated
             && (
@@ -268,7 +274,13 @@ export default class PageEditorByHackmd extends React.PureComponent {
               <div className="panel-body text-center">
                 The current draft on HackMD is based on&nbsp;
                 <a href={`?revision=${revisionIdHackmdSynced}`}><span className="label label-default">{revisionIdHackmdSynced.substr(-8)}</span></a>.<br />
-                <button className="btn btn-link text-danger p-0 hackmd-discard-button" onClick={() => { return this.discardChanges() }}>Discard it</button> to start to edit with current revision.
+                <button
+                  type="button"
+                  className="btn btn-link text-danger p-0 hackmd-discard-button"
+                  onClick={() => { return this.discardChanges() }}
+                >
+                  Discard it
+                </button> to start to edit with current revision.
               </div>
             </div>
             )

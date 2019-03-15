@@ -1,4 +1,5 @@
 body.kibela {
+
   .icon-link,
   .CodeMirror-hint-active,
   .nav-main-left-tab,
@@ -6,59 +7,73 @@ body.kibela {
   .active {
     color: #5882fa;
   }
+
   .bg-white {
     background: #fefffe !important;
   }
+
   .logo {
     background: transparent;
+
     .logo-mark {
       height: 50px;
       background-color: white;
       box-shadow: none;
+
       svg {
         width: 60px;
       }
     }
   }
+
   /* header */
   .background-t {
     background-color: transparent;
   }
+
   .authors {
     padding-top: 10px;
+
     li {
       list-style: none !important;
     }
   }
+
   .search-input-group,
   .search-typeahead {
     .btn {
       background-color: transparent;
     }
   }
+
   .panel-heading {
     border-radius: 0 !important;
   }
+
   .btn-open-dropzone {
     background: rgb(243, 245, 247);
-    border-bottom: 0px !important;
   }
+
   /* page list */
   .page-list {
     background: white;
   }
+
   .page-attachments-row {
     background-color: #e5ecf1 !important;
     border: 0px;
   }
+
   .round-corner {
     border-radius: 0.35em;
   }
+
   .round-corner-top {
     z-index: absolute;
     border-top: solid 0.4em #5584e1;
     border-radius: 0.35em;
   }
+
   .kibela-block {
     position: absolute;
     top: 0px;
@@ -71,17 +86,21 @@ body.kibela {
     border-top: solid 0.4em #5584e1;
     border-radius: 0.35em;
   }
+
   .bg-title {
     position: relative;
     background: transparent;
     border: none;
+
     svg {
       display: none;
     }
+
     @media screen and (max-width: 765px) {
       padding-top: 30px;
     }
   }
+
   .revision-toc {
     &.affix {
       top: calc(60px + 5px);
@@ -89,9 +108,11 @@ body.kibela {
       min-width: calc(#{100 / 12 * 2%} - #{$grid-gutter-width}); // width of 2column - padding
       margin-top: 40px;
     }
+
     .revision-toc-content {
       padding: 0;
     }
+
     @media screen and (max-width: 1400px) {
       &.affix {
         right: 0rem !important;
@@ -99,15 +120,19 @@ body.kibela {
       }
     }
   }
+
   /* search page */
   .search-result-list,
   .page-list-li {
     background: #f4f5f6;
   }
+
   /* Tabs */
   .nav.nav-tabs {
     border-bottom-color: #f4f5f6;
-    > li > a {
+
+    >li>a {
+
       &,
       &:hover,
       &:focus {
@@ -117,33 +142,39 @@ body.kibela {
         border-left: none;
       }
     }
-    > li.active > a {
+
+    >li.active>a {
       background: transparent !important;
       border-top: none;
       border-right: none;
       border-bottom: solid 2.7px #5584e1;
       border-left: none;
     }
+
     .wiki {
       h1 {
         border-bottom: solid 2px #5584e1 !important;
       }
+
       h2 {
         border-color: solid 1px #5584e1;
       }
     }
   }
+
   /* user page */
   .header-wrap {
     padding: 0px;
     margin-left: 2em;
   }
+
   /* edit */
   .CodeMirror {
     border: solid 1.2px #d8d8d8;
     border-top: solid 0.3em #5584e1 !important;
     border-radius: 0.35em;
   }
+
   &.on-edit {
     $header-plus-footer: 42px //  .nav height
       + 5.5px //                  .kibela-block border-top
@@ -154,8 +185,8 @@ body.kibela {
     @include expand-editor($header-plus-footer);
 
     .main {
-      > .row.page-content {
-        > .col-xs-12 {
+      >.row.page-content {
+        >.col-xs-12 {
           width: 100%;
           padding: 0;
         }
@@ -164,22 +195,26 @@ body.kibela {
 
     .tab-content {
       padding-top: 15px;
+
       #edit {
         margin-right: 1em;
         margin-left: 1em;
       }
     }
+
     .tab-pane {
       .page-editor-editor-container {
         margin: 0px;
         border: none !important;
       }
     }
+
     .page-editor-preview-container {
       padding-right: 0px !important;
       padding-left: 2em;
       background: white !important;
     }
+
     .page-editor-footer {
       min-height: 60px;
       padding: 13px;

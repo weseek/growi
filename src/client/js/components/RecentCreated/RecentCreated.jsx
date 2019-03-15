@@ -92,7 +92,7 @@ export default class RecentCreated extends React.Component {
    */
   generateFirstPrev(activePage) {
     const paginationItems = [];
-    if (activePage != 1) {
+    if (activePage !== 1) {
       paginationItems.push(
         <Pagination.First key="first" onClick={() => { return this.getRecentCreatedList(1) }} />,
       );
@@ -134,7 +134,7 @@ export default class RecentCreated extends React.Component {
    */
   generateNextLast(activePage, totalPage) {
     const paginationItems = [];
-    if (totalPage != activePage) {
+    if (totalPage !== activePage) {
       paginationItems.push(
         <Pagination.Next key="next" onClick={() => { return this.getRecentCreatedList(this.state.activePage + 1) }} />,
       );

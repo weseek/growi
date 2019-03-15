@@ -32,8 +32,8 @@
     "clean:report": "rimraf -- report",
     "clean": "npm-run-all -p clean:*",
     "heroku-postbuild": "sh bin/heroku/install-plugins.sh && npm run build:prod",
-    "lint:js:fix": "eslint . --fix",
-    "lint:js": "eslint .",
+    "lint:js:fix": "eslint **/*.{js,jsx} --fix",
+    "lint:js": "eslint **/*.{js,jsx}",
     "lint:styles:fix": "prettier-stylelint --quiet --write src/client/styles/scss/**/*.scss",
     "lint:styles": "stylelint src/client/styles/scss/**/*.scss",
     "lint": "npm-run-all -p lint:js lint:styles",
@@ -154,11 +154,10 @@
     "date-fns": "^1.29.0",
     "diff2html": "^2.3.3",
     "eazy-logger": "^3.0.2",
-    "eslint": "^5.0.0",
+    "eslint": "^5.15.1",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-plugin-chai-friendly": "^0.4.1",
     "eslint-plugin-import": "^2.16.0",
-    "eslint-plugin-jsx-a11y": "^6.2.1",
     "eslint-plugin-react": "^7.12.4",
     "file-loader": "^3.0.1",
     "handsontable": "^6.0.1",
@@ -233,10 +232,5 @@
     "node": ">=8.11.1 <11",
     "npm": ">=5.6.0 <7",
     "yarn": ">=1.5.1 <2"
-  },
-  "config": {
-    "blanket": {
-      "pattern": "./src/lib/**/*.js"
-    }
   }
 }
