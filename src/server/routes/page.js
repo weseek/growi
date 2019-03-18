@@ -682,9 +682,14 @@ module.exports = function(crowi, app) {
   api.updateTags = async function(req, res) {
     const pageId = req.body.pageId;
     const newTags = req.body.newTags;
-    const page = await Page.findOne({ _id: pageId });
-    // update page tag
-    await page.updateTags(newTags);
+    try {
+      const page = await Page.findOne({ _id: pageId });
+      // update page tag
+      await page.updateTags(newTags);
+    }
+    catch (err) {
+      throw new Error('Error occured on updating tags');
+    }
   };
 
   /**

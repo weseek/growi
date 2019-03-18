@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Button from 'react-bootstrap/es/Button';
 import Modal from 'react-bootstrap/es/Modal';
+import * as toastr from 'toastr';
 import PageTagForm from '../PageTagForm';
 
 import CopyButton from '../CopyButton';
@@ -82,9 +83,31 @@ export default class RevisionPath extends React.Component {
     this.setState({ isOpenEditTagModal: true });
   }
 
-  async handleSubmitEditTagModal() {
-    this.props.crowi.apiPost('/pages.updateTags', { pageId: this.props.pageId, newTags: this.state.newPageTags });
-    this.setState({ pageTags: this.state.newPageTags, isOpenEditTagModal: false });
+  handleSubmitEditTagModal() {
+    try {
+      this.props.crowi.apiPost('/pages.updateTags', { pageId: this.props.pageId, newTags: this.state.newPageTags });
+      this.setState({ pageTags: this.state.newPageTags, isOpenEditTagModal: false });
+      toastr.success(undefined, 'Updated tags successfully', {
+        closeButton: true,
+        progressBar: true,
+        newestOnTop: false,
+        showDuration: '100',
+        hideDuration: '100',
+        timeOut: '1200',
+        extendedTimeOut: '150',
+      });
+    }
+    catch (err) {
+      toastr.error(err, 'Error occured on updating tags', {
+        closeButton: true,
+        progressBar: true,
+        newestOnTop: false,
+        showDuration: '100',
+        hideDuration: '100',
+        timeOut: '3000',
+      });
+    }
+
   }
 
   showToolTip() {
