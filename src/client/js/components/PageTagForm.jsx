@@ -36,8 +36,7 @@ export default class PageTagForm extends React.Component {
         <AsyncTypeahead
           allowNew
           caseSensitive={false}
-          defaultSelected={['growi', 'wiki']}
-          // defaultSelected={this.props.handleSubmit}
+          defaultSelected={this.props.defaultPageTags}
           emptyLabel=""
           isLoading={this.state.isLoading}
           minLength={1}
@@ -68,7 +67,7 @@ export default class PageTagForm extends React.Component {
 
 PageTagForm.propTypes = {
   crowi: PropTypes.object.isRequired,
-  defaultpageTags: PropTypes.array,
+  defaultPageTags: PropTypes.array,
   handleSubmit: PropTypes.func,
 };
 

@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Button from 'react-bootstrap/es/Button';
+import Modal from 'react-bootstrap/es/Modal';
 import PageTagForm from '../PageTagForm';
-import Modal from 'react-bootstrap/es/Modal'
 
 import CopyButton from '../CopyButton';
 
@@ -13,6 +13,7 @@ export default class RevisionPath extends React.Component {
 
     this.state = {
       pages: [],
+      pageTags: [],
       isListPage: false,
       isLinkToListPage: true,
       isOpenEditTagModal: false,
@@ -20,11 +21,13 @@ export default class RevisionPath extends React.Component {
 
     // retrieve xss library from window
     this.xss = window.xss;
+    this.getPageTags = this.getPageTags.bind(this);
     this.handleShowEditTagModal = this.handleShowEditTagModal.bind(this);
     this.handleCloseEditTagModal = this.handleCloseEditTagModal.bind(this);
+    this.handleSubmitEditTagModal = this.handleSubmitEditTagModal.bind(this);
   }
 
-  componentWillMount() {
+  async componentWillMount() {
     // whether list page or not
     const isListPage = this.props.pagePath.match(/\/$/);
     this.setState({ isListPage });
@@ -52,6 +55,18 @@ export default class RevisionPath extends React.Component {
     });
 
     this.setState({ pages });
+
+    // set pageTag on button
+    if (this.props.pageId) {
+      const pageId = this.props.pageId;
+      const pageTags = await this.getPageTags(pageId);
+      this.setState({ pageTags });
+    }
+  }
+
+  async getPageTags(pageId) {
+    const res = await this.props.crowi.apiGet('/tags.get', { pageId });
+    return res.tags;
   }
 
   handleCloseEditTagModal() {
@@ -60,6 +75,11 @@ export default class RevisionPath extends React.Component {
 
   handleShowEditTagModal() {
     this.setState({ isOpenEditTagModal: true });
+  }
+
+  handleSubmitEditTagModal() {
+    this.props.crowi.apiPost('/pages.updateTags', { pageId: this.props.pageId, newTags: this.state.pageTags });
+    this.setState({ isOpenEditTagModal: false });
   }
 
   showToolTip() {
@@ -140,41 +160,27 @@ export default class RevisionPath extends React.Component {
           <i className="icon-note" />
         </a>
         <span className="btn-tag-container">
-        <Button
-          variant="primary"
-          onClick={this.handleShowEditTagModal}
-          className="btn btn-default btn-tag"
-          style={tagButtonStyle}
-          data-toggle="tooltip"
-          data-placement="bottom"
-          title="#growi #wiki">
-          <i className="fa fa-tags"></i>
-        </Button>
+          <Button
+            variant="primary"
+            onClick={this.handleShowEditTagModal}
+            className="btn btn-default btn-tag"
+            style={tagButtonStyle}
+            data-toggle="tooltip"
+            data-placement="bottom"
+            title={this.state.pageTags}
+          >
+            <i className="fa fa-tags"></i>
+          </Button>
         </span>
-          {/* <div className="modal-content" >
-            <div className="modal-header bg-primary">
-              <div className="modal-title">ページタグを追加</div>
-              <button type="button" className="close" data-dismiss="modal" aria-hidden="true" onClick={this.closeEditTagModal}>&times;</button>
-            </div>
-            <div className="modal-body">
-            </div>
-            <div className="modal-footer">
-              <div className="d-flex justify-content-between">
-                <div className="float-right">
-                  <button type="button" className="btn btn-primary">追加</button>
-                </div>
-              </div>
-            </div>
-          </div> */}
         <Modal show={this.state.isOpenEditTagModal} onHide={this.handleCloseEditTagModal} id="editTagModal">
           <Modal.Header closeButton className="bg-primary">
-            <Modal.Title className="white" >ページタグを追加</Modal.Title>
+            <Modal.Title className="text-white">ページタグ</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <PageTagForm crowi={this.props.crowi} defaultPageTags="[currentPageTags]" handleSubmit={console.log('###')} />
+            <PageTagForm crowi={this.props.crowi} defaultPageTags={this.state.pageTags} />
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="primary" onClick={this.handleCloseEditTagModal}>
+            <Button variant="primary" onClick={this.handleSubmitEditTagModal}>
               更新
             </Button>
           </Modal.Footer>
@@ -186,6 +192,7 @@ export default class RevisionPath extends React.Component {
 }
 
 RevisionPath.propTypes = {
+  pageId: PropTypes.string,
   pagePath: PropTypes.string.isRequired,
   crowi: PropTypes.object.isRequired,
 };

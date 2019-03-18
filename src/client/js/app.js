@@ -297,7 +297,7 @@ if (pageId) {
 }
 if (pagePath) {
   componentMappings.page = <Page crowi={crowi} crowiRenderer={crowiRenderer} markdown={markdown} pagePath={pagePath} showHeadEditButton onSaveWithShortcut={saveWithShortcut} />;
-  componentMappings['revision-path'] = <RevisionPath pagePath={pagePath} crowi={crowi} />;
+  componentMappings['revision-path'] = <RevisionPath pageId={pageId} pagePath={pagePath} crowi={crowi} />;
   componentMappings['revision-url'] = <RevisionUrl pageId={pageId} pagePath={pagePath} />;
 }
 

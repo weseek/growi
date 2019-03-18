@@ -611,7 +611,6 @@ module.exports = function(crowi, app) {
     const overwriteScopesOfDescendants = req.body.overwriteScopesOfDescendants || null;
     const isSlackEnabled = !!req.body.isSlackEnabled; // cast to boolean
     const slackChannels = req.body.slackChannels || null;
-    // const pageTags = req.body.pageTags || null;
     const isSyncRevisionToHackmd = !!req.body.isSyncRevisionToHackmd; // cast to boolean
     const socketClientId = req.body.socketClientId || undefined;
 
@@ -670,9 +669,22 @@ module.exports = function(crowi, app) {
     if (isSlackEnabled && slackChannels != null) {
       await notifyToSlackByUser(page, req.user, slackChannels, 'update', previousRevision);
     }
+  };
 
-    // // update page tag
-    // await page.updateTags(pageTags); [pagetag]
+  /**
+   * @api {post} /pages.updateTags update page tags
+   * @apiName UpdateTags
+   * @apiGroup Page
+   *
+   * @apiParam {ObjectId} pageId
+   * @apiParam {Array} pageTags
+   */
+  api.updateTags = async function(req, res) {
+    const pageId = req.body.pageId;
+    const newTags = req.body.newTags;
+    const page = await Page.findOne({ _id: pageId });
+    // update page tag
+    await page.updateTags(newTags);
   };
 
   /**
