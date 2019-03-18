@@ -30,14 +30,14 @@ class Tag {
     return tag;
   }
 
-  // return all page id related  at least one tag (tagNames param is list)
-  static async getRelatedPageIds(tagNames) {
+  // return all page id related  at least one tag
+  static async getRelatedPageIds(tagName) {
     const PageTagRelation = mongoose.model('PageTagRelation');
 
-    const tag = await this.findOne({ name: { $in: tagNames } });
+    const tag = await this.findOne({ name: tagName });
     if (tag) {
-      const pages = await PageTagRelation.find({ relatedTag: tag._id }).populate('relatedPage').select('-_id relatedPage');
-      return pages.map((relation) => { return relation.relatedPage.id });
+      const pageRelations = await PageTagRelation.find({ relatedTag: tag._id }).populate('relatedPage').select('-_id relatedPage');
+      return pageRelations.map((relation) => { return relation.relatedPage.id });
     }
     return;
   }

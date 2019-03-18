@@ -363,10 +363,17 @@ SearchClient.prototype.search = async function(query, tagFilters) {
   if (tagFilters.length > 0) {
     const Tag = this.crowi.model('Tag');
 
-    const filters = tagFilters[0];
-    const pageIds = await Tag.getRelatedPageIds(filters.tags);
-    result.hits.hits = result.hits.hits.filter((page) => {
-      return pageIds.includes(page._id);
+    const filters = tagFilters[0].tags;
+    filters.forEach(async(tag) => {
+      const pageIds = await Tag.getRelatedPageIds(tag);
+      if (pageIds) {
+        result.hits.hits = result.hits.hits.filter((elm) => {
+          return pageIds.includes(elm._id);
+        });
+      }
+      else {
+        result.hits.hits = [];
+      }
     });
   }
 
