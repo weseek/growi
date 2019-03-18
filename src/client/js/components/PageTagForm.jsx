@@ -22,12 +22,10 @@ export default class PageTagForm extends React.Component {
       selected: [],
     };
     this.crowi = this.props.crowi;
-
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleSubmit() {
-    this.props.handleSubmit(this.state.selected);
+  componentWillMount() {
+    this.setState({ selected: this.props.defaultPageTags });
   }
 
   render() {
@@ -42,9 +40,10 @@ export default class PageTagForm extends React.Component {
           minLength={1}
           multiple
           newSelectionPrefix=""
-          // onBlur={this.handleSubmit}
           onChange={(selected) => {
-            this.setState({ selected });
+            this.setState({ selected }, () => {
+              this.props.updateTags(this.state.selected);
+            });
           }}
           onSearch={async(query) => {
             this.setState({ isLoading: true });
@@ -68,7 +67,7 @@ export default class PageTagForm extends React.Component {
 PageTagForm.propTypes = {
   crowi: PropTypes.object.isRequired,
   defaultPageTags: PropTypes.array,
-  handleSubmit: PropTypes.func,
+  updateTags: PropTypes.func,
 };
 
 PageTagForm.defaultProps = {

@@ -14,6 +14,7 @@ export default class RevisionPath extends React.Component {
     this.state = {
       pages: [],
       pageTags: [],
+      newPageTags: [],
       isListPage: false,
       isLinkToListPage: true,
       isOpenEditTagModal: false,
@@ -22,6 +23,7 @@ export default class RevisionPath extends React.Component {
     // retrieve xss library from window
     this.xss = window.xss;
     this.getPageTags = this.getPageTags.bind(this);
+    this.updateTags = this.updateTags.bind(this);
     this.handleShowEditTagModal = this.handleShowEditTagModal.bind(this);
     this.handleCloseEditTagModal = this.handleCloseEditTagModal.bind(this);
     this.handleSubmitEditTagModal = this.handleSubmitEditTagModal.bind(this);
@@ -58,8 +60,7 @@ export default class RevisionPath extends React.Component {
 
     // set pageTag on button
     if (this.props.pageId) {
-      const pageId = this.props.pageId;
-      const pageTags = await this.getPageTags(pageId);
+      const pageTags = await this.getPageTags(this.props.pageId);
       this.setState({ pageTags });
     }
   }
@@ -67,6 +68,10 @@ export default class RevisionPath extends React.Component {
   async getPageTags(pageId) {
     const res = await this.props.crowi.apiGet('/tags.get', { pageId });
     return res.tags;
+  }
+
+  updateTags(newPageTags) {
+    this.setState({ newPageTags });
   }
 
   handleCloseEditTagModal() {
@@ -77,9 +82,10 @@ export default class RevisionPath extends React.Component {
     this.setState({ isOpenEditTagModal: true });
   }
 
-  handleSubmitEditTagModal() {
-    this.props.crowi.apiPost('/pages.updateTags', { pageId: this.props.pageId, newTags: this.state.pageTags });
-    this.setState({ isOpenEditTagModal: false });
+  async handleSubmitEditTagModal() {
+    this.props.crowi.apiPost('/pages.updateTags', { pageId: this.props.pageId, newTags: this.state.newPageTags });
+    const pageTags = await this.getPageTags(this.props.pageId);
+    this.setState({ pageTags, isOpenEditTagModal: false });
   }
 
   showToolTip() {
@@ -177,7 +183,7 @@ export default class RevisionPath extends React.Component {
             <Modal.Title className="text-white">ページタグ</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <PageTagForm crowi={this.props.crowi} defaultPageTags={this.state.pageTags} />
+            <PageTagForm crowi={this.props.crowi} defaultPageTags={this.state.pageTags} updateTags={this.updateTags} />
           </Modal.Body>
           <Modal.Footer>
             <Button variant="primary" onClick={this.handleSubmitEditTagModal}>
