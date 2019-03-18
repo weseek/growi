@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Modal from 'react-modal';
 import Button from 'react-bootstrap/es/Button';
 import PageTagForm from '../PageTagForm';
+import Modal from 'react-bootstrap/es/Modal'
 
 import CopyButton from '../CopyButton';
 
@@ -15,14 +15,13 @@ export default class RevisionPath extends React.Component {
       pages: [],
       isListPage: false,
       isLinkToListPage: true,
-      isEditTagModalOpen: false,
+      isOpenEditTagModal: false,
     };
 
     // retrieve xss library from window
     this.xss = window.xss;
-    this.openEditTagModal = this.openEditTagModal.bind(this);
-    this.afterOpenModal = this.afterOpenModal.bind(this);
-    this.closeEditTagModal = this.closeEditTagModal.bind(this);
+    this.handleShowEditTagModal = this.handleShowEditTagModal.bind(this);
+    this.handleCloseEditTagModal = this.handleCloseEditTagModal.bind(this);
   }
 
   componentWillMount() {
@@ -55,16 +54,12 @@ export default class RevisionPath extends React.Component {
     this.setState({ pages });
   }
 
-  openEditTagModal() {
-    this.setState({ isEditTagModalOpen: true });
+  handleCloseEditTagModal() {
+    this.setState({ isOpenEditTagModal: false });
   }
 
-  closeEditTagModal() {
-    this.setState({ isEditTagModalOpen: false });
-  }
-
-  afterOpenModal() {
-    // references are now sync'd and can be accessed.
+  handleShowEditTagModal() {
+    this.setState({ isOpenEditTagModal: true });
   }
 
   showToolTip() {
@@ -107,26 +102,6 @@ export default class RevisionPath extends React.Component {
       marginLeft: '0.5em',
       padding: '0 2px',
     };
-    const editTagModalStyle = {
-      content: {
-        top: '20%',
-        left: '50%',
-        right: 'auto',
-        bottom: 'auto',
-        marginRight: '-50%',
-        transform: 'translate(-50%, -50%)',
-        padding: '0px',
-        width: '720px',
-        zIndex: '1060',
-      },
-      overlay: {
-        zIndex: '1050',
-        // backgroundColor: '#333333',
-        // opacity: '0.5',
-      },
-    };
-
-    Modal.setAppElement('.main-container');
 
     const pageLength = this.state.pages.length;
 
@@ -165,30 +140,23 @@ export default class RevisionPath extends React.Component {
           <i className="icon-note" />
         </a>
         <span className="btn-tag-container">
-          <Button
-            onClick={this.openEditTagModal}
-            className="btn btn-default btn-tag"
-            style={tagButtonStyle}
-            data-toggle="tooltip"
-            data-placement="bottom"
-            title="#growi #wiki"
-          ><i className="fa fa-tags"></i>
-          </Button>
+        <Button
+          variant="primary"
+          onClick={this.handleShowEditTagModal}
+          className="btn btn-default btn-tag"
+          style={tagButtonStyle}
+          data-toggle="tooltip"
+          data-placement="bottom"
+          title="#growi #wiki">
+          <i className="fa fa-tags"></i>
+        </Button>
         </span>
-        <Modal
-          isOpen={this.state.isEditTagModalOpen}
-          onAfterOpen={this.afterOpenModal}
-          onRequestClose={this.closeEditTagModal}
-          style={editTagModalStyle}
-          contentLabel="edit tag modal"
-        >
-          <div className="modal-content" id="editTagModal">
+          {/* <div className="modal-content" >
             <div className="modal-header bg-primary">
               <div className="modal-title">ページタグを追加</div>
               <button type="button" className="close" data-dismiss="modal" aria-hidden="true" onClick={this.closeEditTagModal}>&times;</button>
             </div>
             <div className="modal-body">
-              <PageTagForm crowi={this.props.crowi} defaultPageTags="[currentPageTags]" handleSubmit={console.log('###')} />
             </div>
             <div className="modal-footer">
               <div className="d-flex justify-content-between">
@@ -197,7 +165,19 @@ export default class RevisionPath extends React.Component {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
+        <Modal show={this.state.isOpenEditTagModal} onHide={this.handleCloseEditTagModal} id="editTagModal">
+          <Modal.Header closeButton className="bg-primary">
+            <Modal.Title className="white" >ページタグを追加</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <PageTagForm crowi={this.props.crowi} defaultPageTags="[currentPageTags]" handleSubmit={console.log('###')} />
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="primary" onClick={this.handleCloseEditTagModal}>
+              更新
+            </Button>
+          </Modal.Footer>
         </Modal>
       </span>
     );
