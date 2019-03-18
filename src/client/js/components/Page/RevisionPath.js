@@ -84,8 +84,7 @@ export default class RevisionPath extends React.Component {
 
   async handleSubmitEditTagModal() {
     this.props.crowi.apiPost('/pages.updateTags', { pageId: this.props.pageId, newTags: this.state.newPageTags });
-    const pageTags = await this.getPageTags(this.props.pageId);
-    this.setState({ pageTags, isOpenEditTagModal: false });
+    this.setState({ pageTags: this.state.newPageTags, isOpenEditTagModal: false });
   }
 
   showToolTip() {
@@ -124,7 +123,7 @@ export default class RevisionPath extends React.Component {
     };
     const tagButtonStyle = {
       height: '19px',
-      width: '20px',
+      width: '30px',
       marginLeft: '0.5em',
       padding: '0 2px',
     };
@@ -171,11 +170,8 @@ export default class RevisionPath extends React.Component {
             onClick={this.handleShowEditTagModal}
             className="btn btn-default btn-tag"
             style={tagButtonStyle}
-            data-toggle="tooltip"
-            data-placement="bottom"
-            title={this.state.pageTags}
           >
-            <i className="fa fa-tags"></i>
+            <i className="fa fa-tags"></i>{this.state.pageTags.length}
           </Button>
         </span>
         <Modal show={this.state.isOpenEditTagModal} onHide={this.handleCloseEditTagModal} id="editTagModal">
