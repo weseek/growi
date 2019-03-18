@@ -365,7 +365,9 @@ SearchClient.prototype.search = async function(query, tagFilters) {
 
     const filters = tagFilters[0];
     const pageIds = await Tag.getRelatedPageIds(filters.tags);
-    console.log('##########', pageIds);
+    result.hits.hits = result.hits.hits.filter((page) => {
+      return pageIds.includes(page._id);
+    });
   }
 
   // for debug
