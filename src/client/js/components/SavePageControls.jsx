@@ -64,9 +64,6 @@ class SavePageControls extends React.PureComponent {
           <div className="mr-2">
             <SlackNotification
               ref={(c) => { this.slackNotification = c }}
-              crowi={this.props.crowi}
-              pageId={this.props.pageId}
-              pagePath={this.props.pagePath}
               isSlackEnabled={false}
               slackChannels={this.props.slackChannels}
             />
@@ -118,7 +115,6 @@ SavePageControls.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   pageId: PropTypes.string,
   // for SlackNotification
-  pagePath: PropTypes.string,
   slackChannels: PropTypes.string,
   // for GrantSelector
   grant: PropTypes.number,

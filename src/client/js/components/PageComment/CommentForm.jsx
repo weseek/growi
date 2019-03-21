@@ -337,9 +337,6 @@ export default class CommentForm extends React.Component {
                           && (
                           <div className="form-inline align-self-center mr-md-2">
                             <SlackNotification
-                              crowi={this.props.crowi}
-                              pageId={this.props.pageId}
-                              pagePath={this.props.pagePath}
                               isSlackEnabled={this.state.isSlackEnabled}
                               slackChannels={this.state.slackChannels}
                               onEnabledFlagChange={this.onSlackEnabledFlagChange}

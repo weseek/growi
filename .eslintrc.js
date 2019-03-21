@@ -111,7 +111,6 @@ module.exports = {
       'warn',
       { extensions: ['.jsx']},
     ],
-    'react/no-unused-prop-types': 'off',
     'react/jsx-one-expression-per-line': 'off',
     'react/no-access-state-in-setstate': 'off',
     'react/prefer-stateless-function': 'off',
