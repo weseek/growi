@@ -69,5 +69,4 @@ Page.propTypes = {
   onSaveWithShortcut: PropTypes.func.isRequired,
   markdown: PropTypes.string.isRequired,
   pagePath: PropTypes.string.isRequired,
-  showHeadEditButton: PropTypes.bool,
 };
