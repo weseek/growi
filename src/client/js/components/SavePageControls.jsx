@@ -52,22 +52,24 @@ class SavePageControls extends React.PureComponent {
     const { t } = this.props;
 
     const config = this.props.crowi.getConfig();
+    const hasSlackConfig = config.hasSlackConfig;
     const isAclEnabled = config.isAclEnabled;
     const labelSubmitButton = this.state.pageId == null ? t('Create') : t('Update');
     const labelOverwriteScopes = t('page_edit.overwrite_scopes', { operation: labelSubmitButton });
 
     return (
       <div className="d-flex align-items-center form-inline">
-        <div className="mr-2">
-          <SlackNotification
-            ref={(c) => { this.slackNotification = c }}
-            crowi={this.props.crowi}
-            pageId={this.props.pageId}
-            pagePath={this.props.pagePath}
-            isSlackEnabled={false}
-            slackChannels={this.props.slackChannels}
-          />
-        </div>
+        {hasSlackConfig
+          && (
+          <div className="mr-2">
+            <SlackNotification
+              ref={(c) => { this.slackNotification = c }}
+              isSlackEnabled={false}
+              slackChannels={this.props.slackChannels}
+            />
+          </div>
+          )
+        }
 
         {isAclEnabled
           && (
@@ -113,7 +115,6 @@ SavePageControls.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   pageId: PropTypes.string,
   // for SlackNotification
-  pagePath: PropTypes.string,
   slackChannels: PropTypes.string,
   // for GrantSelector
   grant: PropTypes.number,

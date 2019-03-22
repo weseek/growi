@@ -93,9 +93,8 @@ module.exports = function(crowi, app) {
         logger.error('Error occured in updating slack channels: ', err);
       });
 
-    if (crowi.slack) {
+    if (Config.hasSlackConfig(config)) {
       const promises = slackChannels.split(',').map((chan) => {
-        logger.debug('crowi.slack is exist', crowi.slack);
         return crowi.slack.postPage(page, user, chan, updateOrCreate, previousRevision);
       });
 
