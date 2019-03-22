@@ -143,7 +143,7 @@ export default class GrowiRenderer {
       if (!this.preProcessors[i].process) {
         continue;
       }
-      processed = this.preProcessors[i].process(markdown);
+      processed = this.preProcessors[i].process(processed);
     }
 
     return processed;
@@ -159,7 +159,7 @@ export default class GrowiRenderer {
       if (!this.postProcessors[i].process) {
         continue;
       }
-      processed = this.postProcessors[i].process(html);
+      processed = this.postProcessors[i].process(processed);
     }
 
     return processed;
