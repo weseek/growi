@@ -49,7 +49,7 @@ export default class EditTagModal extends React.Component {
 
   handleSubmit() {
     try {
-      this.props.crowi.apiPost('/pages.updateTags', { pageId: this.props.pageId, newTags: this.state.newPageTags });
+      this.props.crowi.apiPost('/pages.updateTags', { pageId: this.props.pageId, newPageTags: this.state.newPageTags });
       this.setState({ currentPageTags: this.state.newPageTags, isOpenModal: false });
       toastr.success(undefined, 'Updated tags successfully', {
         closeButton: true,

@@ -676,15 +676,15 @@ module.exports = function(crowi, app) {
    * @apiGroup Page
    *
    * @apiParam {ObjectId} pageId
-   * @apiParam {Array} pageTags
+   * @apiParam {Array} newPageTags
    */
   api.updateTags = async function(req, res) {
     const pageId = req.body.pageId;
-    const newTags = req.body.newTags;
+    const newPageTags = req.body.newPageTags;
     try {
       const page = await Page.findOne({ _id: pageId });
       // update page tag
-      await page.updateTags(newTags);
+      await page.updateTags(newPageTags);
     }
     catch (err) {
       throw new Error('Error occured on updating tags');
