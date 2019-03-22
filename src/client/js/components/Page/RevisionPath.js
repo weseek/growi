@@ -19,7 +19,7 @@ export default class RevisionPath extends React.Component {
     this.xss = window.xss;
   }
 
-  async componentWillMount() {
+  componentWillMount() {
     // whether list page or not
     const isListPage = this.props.pagePath.match(/\/$/);
     this.setState({ isListPage });

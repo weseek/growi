@@ -16,7 +16,6 @@ export default class EditTagModal extends React.Component {
       isOpenEditTagModal: false,
     };
 
-    this.getPageTags = this.getPageTags.bind(this);
     this.updateTags = this.updateTags.bind(this);
     this.handleShowEditTagModal = this.handleShowEditTagModal.bind(this);
     this.handleCloseEditTagModal = this.handleCloseEditTagModal.bind(this);
@@ -26,14 +25,10 @@ export default class EditTagModal extends React.Component {
   async componentWillMount() {
     // set pageTag on button
     if (this.props.pageId) {
-      const pageTags = await this.getPageTags(this.props.pageId);
-      this.setState({ pageTags });
+      const pageId = this.props.pageId;
+      const res = await this.props.crowi.apiGet('/tags.get', { pageId });
+      this.setState({ pageTags: res.tags });
     }
-  }
-
-  async getPageTags(pageId) {
-    const res = await this.props.crowi.apiGet('/tags.get', { pageId });
-    return res.tags;
   }
 
   updateTags(newPageTags) {
