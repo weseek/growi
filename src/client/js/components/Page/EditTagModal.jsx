@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Button from 'react-bootstrap/es/Button';
+import OverlayTrigger from 'react-bootstrap/es/OverlayTrigger';
+import Tooltip from 'react-bootstrap/es/Tooltip';
 import Modal from 'react-bootstrap/es/Modal';
 import * as toastr from 'toastr';
 import PageTagForm from '../PageTagForm';
@@ -11,27 +13,29 @@ export default class EditTagModal extends React.Component {
     super(props);
 
     this.state = {
-      pageTags: [],
+      currentPageTags: [],
       newPageTags: [],
       isOpenModal: false,
     };
 
-    this.updateTags = this.updateTags.bind(this);
+    this.addTag = this.addTag.bind(this);
     this.handleShowModal = this.handleShowModal.bind(this);
     this.handleCloseModal = this.handleCloseModal.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.getCurrentTags = this.getCurrentTags.bind(this);
+
+    this.getCurrentTags(this.props.pageId);
   }
 
-  async componentWillMount() {
+  async getCurrentTags(pageId) {
     // set pageTag on button
-    if (this.props.pageId) {
-      const pageId = this.props.pageId;
+    if (pageId) {
       const res = await this.props.crowi.apiGet('/tags.get', { pageId });
-      this.setState({ pageTags: res.tags });
+      this.setState({ currentPageTags: res.tags });
     }
   }
 
-  updateTags(newPageTags) {
+  addTag(newPageTags) {
     this.setState({ newPageTags });
   }
 
@@ -46,7 +50,7 @@ export default class EditTagModal extends React.Component {
   handleSubmit() {
     try {
       this.props.crowi.apiPost('/pages.updateTags', { pageId: this.props.pageId, newTags: this.state.newPageTags });
-      this.setState({ pageTags: this.state.newPageTags, isOpenModal: false });
+      this.setState({ currentPageTags: this.state.newPageTags, isOpenModal: false });
       toastr.success(undefined, 'Updated tags successfully', {
         closeButton: true,
         progressBar: true,
@@ -73,28 +77,33 @@ export default class EditTagModal extends React.Component {
   render() {
     return (
       <span className="btn-tag-container">
-        <Button
-          variant="primary"
-          onClick={this.handleShowModal}
-          className="btn btn-default btn-tag"
-          style={this.props.style}
-          data-toggle="tooltip"
-          data-placement="bottom"
-          title={this.state.pageTags.map((tag) => {
-            return `#${tag}`;
-          })}
+        <OverlayTrigger
+          key="tooltip"
+          placement="bottom"
+          overlay={(
+            <Tooltip id="tooltip-bottom">
+              {this.state.currentPageTags.map((tag) => { return `${tag}\t` })}
+            </Tooltip>
+          )}
         >
-          <i className="fa fa-tags"></i>{this.state.pageTags.length}
-        </Button>
+          <Button
+            variant="primary"
+            onClick={this.handleShowModal}
+            className="btn btn-default btn-tag"
+            style={this.props.style}
+          >
+            <i className="fa fa-tags"></i>{this.state.currentPageTags.length}
+          </Button>
+        </OverlayTrigger>
         <Modal show={this.state.isOpenModal} onHide={this.handleCloseModal} id="editTagModal">
           <Modal.Header closeButton className="bg-primary">
             <Modal.Title className="text-white">ページタグ</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <PageTagForm crowi={this.props.crowi} defaultPageTags={this.state.pageTags} updateTags={this.updateTags} />
+            <PageTagForm crowi={this.props.crowi} currentPageTags={this.state.currentPageTags} addTag={this.addTag} />
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="primary" onClick={this.handleSubmit} onSubmit={this.handleSubmit}>
+            <Button variant="primary" onClick={this.handleSubmit}>
               更新
             </Button>
           </Modal.Footer>

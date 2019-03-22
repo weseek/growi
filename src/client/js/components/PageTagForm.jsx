@@ -25,7 +25,7 @@ export default class PageTagForm extends React.Component {
   }
 
   componentWillMount() {
-    this.setState({ selected: this.props.defaultPageTags });
+    this.setState({ selected: this.props.currentPageTags });
   }
 
   render() {
@@ -34,7 +34,7 @@ export default class PageTagForm extends React.Component {
         <AsyncTypeahead
           allowNew
           caseSensitive={false}
-          defaultSelected={this.props.defaultPageTags}
+          defaultSelected={this.props.currentPageTags}
           emptyLabel=""
           isLoading={this.state.isLoading}
           minLength={1}
@@ -42,7 +42,7 @@ export default class PageTagForm extends React.Component {
           newSelectionPrefix=""
           onChange={(selected) => {
             this.setState({ selected }, () => {
-              this.props.updateTags(this.state.selected);
+              this.props.addTag(this.state.selected);
             });
           }}
           onSearch={async(query) => {
@@ -66,8 +66,8 @@ export default class PageTagForm extends React.Component {
 
 PageTagForm.propTypes = {
   crowi: PropTypes.object.isRequired,
-  defaultPageTags: PropTypes.array,
-  updateTags: PropTypes.func,
+  currentPageTags: PropTypes.array,
+  addTag: PropTypes.func,
 };
 
 PageTagForm.defaultProps = {
