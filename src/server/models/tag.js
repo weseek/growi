@@ -30,18 +30,6 @@ class Tag {
     return tag;
   }
 
-  // return all page id related  at least one tag
-  static async getRelatedPageIds(tagName) {
-    const PageTagRelation = mongoose.model('PageTagRelation');
-
-    const tag = await this.findOne({ name: tagName });
-    if (tag) {
-      const pageRelations = await PageTagRelation.find({ relatedTag: tag._id }).populate('relatedPage').select('-_id relatedPage');
-      return pageRelations.map((relation) => { return relation.relatedPage.id });
-    }
-    return;
-  }
-
 }
 
 module.exports = function() {

@@ -134,6 +134,7 @@ class PageStatusAlert extends React.Component {
 
 PageStatusAlert.propTypes = {
   t: PropTypes.func.isRequired, // i18next
+  crowi: PropTypes.object.isRequired,
   hasDraftOnHackmd: PropTypes.bool.isRequired,
   revisionId: PropTypes.string,
   revisionIdHackmdSynced: PropTypes.string,
