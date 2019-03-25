@@ -343,3 +343,14 @@ body.on-edit {
 .CodeMirror pre.CodeMirror-placeholder {
   color: $text-muted;
 }
+
+#tooltip-bottom>.tooltip-inner {
+  font-size: 1.2em;
+  background-color: #fff;
+  color: #000;
+  border: 1px solid #ccc;
+}
+
+#tooltip-bottom>.tooltip-arrow {
+  border-bottom: 5px solid #ccc;
+}
