@@ -42,7 +42,7 @@ export default class PageTagForm extends React.Component {
           newSelectionPrefix=""
           onChange={(selected) => {
             this.setState({ selected }, () => {
-              this.props.addTag(this.state.selected);
+              this.props.addNewTag(this.state.selected);
             });
           }}
           onSearch={async(query) => {
@@ -67,7 +67,7 @@ export default class PageTagForm extends React.Component {
 PageTagForm.propTypes = {
   crowi: PropTypes.object.isRequired,
   currentPageTags: PropTypes.array,
-  addTag: PropTypes.func,
+  addNewTag: PropTypes.func,
 };
 
 PageTagForm.defaultProps = {
