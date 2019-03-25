@@ -82,7 +82,7 @@ export default class EditTagModal extends React.Component {
           placement="bottom"
           overlay={(
             <Tooltip id="tooltip-bottom">
-              {this.state.currentPageTags.map((tag) => { return `${tag}\t` })}
+              {this.state.currentPageTags.join()}
             </Tooltip>
           )}
         >
