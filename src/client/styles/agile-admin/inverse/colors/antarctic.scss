@@ -11,7 +11,7 @@ $headingtext: $subthemecolor;
 $bodytext: $subthemecolor;
 $linktext: lighten(blue, 5%);
 $primary: $themecolor;
-$active-nav-tabs-bgcolor: $themecolor;
+$active-nav-tabs-bgcolor: $themelight;
 $logo-mark-fill: $themelight;
 $wikilinktext: lighten($themecolor, 5%);
 $wikilinktext-hover: lighten($wikilinktext, 15%);
@@ -42,12 +42,17 @@ $navbar-border: $themecolor;
   background: $themecolor;
 }
 
-.bg-title {
+.bg-title,
+.nav-navbar {
   background-color: $themelight;
 }
 
-.nav-navbar {
-  background: #ffffff;
+.edit-button {
+  color: $themelight;
+}
+
+.editor-container .btn-open-dropzone {
+  border-top: none;
 }
 
 #wrapper>.navbar>.navbar-header {
