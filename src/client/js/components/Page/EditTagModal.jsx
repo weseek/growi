@@ -18,7 +18,7 @@ export default class EditTagModal extends React.Component {
       isOpenModal: false,
     };
 
-    this.addTag = this.addTag.bind(this);
+    this.addNewTag = this.addNewTag.bind(this);
     this.handleShowModal = this.handleShowModal.bind(this);
     this.handleCloseModal = this.handleCloseModal.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -35,7 +35,8 @@ export default class EditTagModal extends React.Component {
     }
   }
 
-  addTag(newPageTags) {
+  // receive new tag from PageTagForm component
+  addNewTag(newPageTags) {
     this.setState({ newPageTags });
   }
 
@@ -47,10 +48,10 @@ export default class EditTagModal extends React.Component {
     this.setState({ isOpenModal: true });
   }
 
-  handleSubmit() {
+  async handleSubmit() {
     try {
-      this.props.crowi.apiPost('/pages.updateTags', { pageId: this.props.pageId, newPageTags: this.state.newPageTags });
-      this.setState({ currentPageTags: this.state.newPageTags, isOpenModal: false });
+      const res = await this.props.crowi.apiPost('/pages.updateTags', { pageId: this.props.pageId, newPageTags: this.state.newPageTags });
+      this.setState({ currentPageTags: res.nextTags, isOpenModal: false });
       toastr.success(undefined, 'Updated tags successfully', {
         closeButton: true,
         progressBar: true,
@@ -71,7 +72,6 @@ export default class EditTagModal extends React.Component {
         timeOut: '3000',
       });
     }
-
   }
 
   render() {
@@ -100,7 +100,7 @@ export default class EditTagModal extends React.Component {
             <Modal.Title className="text-white">ページタグ</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <PageTagForm crowi={this.props.crowi} currentPageTags={this.state.currentPageTags} addTag={this.addTag} />
+            <PageTagForm crowi={this.props.crowi} currentPageTags={this.state.currentPageTags} addNewTag={this.addNewTag} />
           </Modal.Body>
           <Modal.Footer>
             <Button variant="primary" onClick={this.handleSubmit}>

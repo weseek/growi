@@ -321,6 +321,8 @@ module.exports = function(crowi) {
       const setTag = await Tag.findOrCreate(tag);
       PageTagRelation.createIfNotExist(page._id, setTag._id);
     });
+
+    return newTags;
   };
 
 
