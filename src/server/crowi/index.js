@@ -315,10 +315,7 @@ Crowi.prototype.setupSlack = function() {
   const Config = this.model('Config');
 
   return new Promise(((resolve, reject) => {
-    if (!Config.hasSlackConfig(config)) {
-      self.slack = {};
-    }
-    else {
+    if (Config.hasSlackConfig(config)) {
       self.slack = require('../util/slack')(self);
     }
 

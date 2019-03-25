@@ -315,7 +315,7 @@ if (pageId) {
   // componentMappings['page-tag'] = <PageTagForm crowi={crowi} defaultPageTags={currentPageTags} handleSubmit={getNewPageTags} />; // [pagetag]
 }
 if (pagePath) {
-  componentMappings.page = <Page crowi={crowi} crowiRenderer={crowiRenderer} markdown={markdown} pagePath={pagePath} showHeadEditButton onSaveWithShortcut={saveWithShortcut} />;
+  componentMappings.page = <Page crowi={crowi} crowiRenderer={crowiRenderer} markdown={markdown} pagePath={pagePath} onSaveWithShortcut={saveWithShortcut} />;
   componentMappings['revision-path'] = <RevisionPath pagePath={pagePath} crowi={crowi} />;
   componentMappings['revision-url'] = <RevisionUrl pageId={pageId} pagePath={pagePath} />;
 }
@@ -381,7 +381,6 @@ if (savePageControlsElem) {
             }
           }}
         pageId={pageId}
-        pagePath={pagePath}
         slackChannels={slackChannels}
         grant={grant}
         grantGroupId={grantGroupId}
@@ -512,7 +511,6 @@ if (pageStatusAlertElem) {
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
       <PageStatusAlert
-        crowi={crowi}
         ref={(elem) => {
             if (pageStatusAlert == null) {
               pageStatusAlert = elem.getWrappedInstance();

@@ -346,7 +346,7 @@ SearchClient.prototype.addAllPages = async function() {
  *   data: [ pages ...],
  * }
  */
-SearchClient.prototype.search = async function(query) {
+SearchClient.prototype.search = async function(query, tagFilters) {
   // for debug
   if (process.env.NODE_ENV === 'development') {
     const result = await this.client.indices.validateQuery({
@@ -359,6 +359,23 @@ SearchClient.prototype.search = async function(query) {
   }
 
   const result = await this.client.search(query);
+
+  if (tagFilters.length > 0) {
+    const Tag = this.crowi.model('Tag');
+
+    const filters = tagFilters[0].tags;
+    filters.forEach(async(tag) => {
+      const pageIds = await Tag.getRelatedPageIds(tag);
+      if (pageIds) {
+        result.hits.hits = result.hits.hits.filter((elm) => {
+          return pageIds.includes(elm._id);
+        });
+      }
+      else {
+        result.hits.hits = [];
+      }
+    });
+  }
 
   // for debug
   logger.debug('ES result: ', result);
@@ -443,7 +460,7 @@ SearchClient.prototype.initializeBoolQuery = function(query) {
   return query;
 };
 
-SearchClient.prototype.appendCriteriaForQueryString = function(query, queryString) {
+SearchClient.prototype.appendCriteriaForQueryString = function(query, queryString, tagFilters) {
   query = this.initializeBoolQuery(query); // eslint-disable-line no-param-reassign
 
   // parse
@@ -521,6 +538,10 @@ SearchClient.prototype.appendCriteriaForQueryString = function(query, queryStrin
       return { prefix: { 'path.raw': path } };
     });
     query.body.query.bool.filter.push({ bool: { must_not: queries } });
+  }
+
+  if (parsedKeywords.tags.length > 0) {
+    tagFilters.push({ tags: parsedKeywords.tags });
   }
 };
 
@@ -669,7 +690,8 @@ SearchClient.prototype.searchKeyword = async function(queryString, user, userGro
   const size = option.limit || null;
   const type = option.type || null;
   const query = this.createSearchQuerySortedByScore();
-  this.appendCriteriaForQueryString(query, queryString);
+  const tagFilters = [];
+  this.appendCriteriaForQueryString(query, queryString, tagFilters);
 
   this.filterPagesByType(query, type);
   await this.filterPagesByViewer(query, user, userGroups);
@@ -678,7 +700,7 @@ SearchClient.prototype.searchKeyword = async function(queryString, user, userGro
 
   this.appendFunctionScore(query, queryString);
 
-  return this.search(query);
+  return this.search(query, tagFilters);
 };
 
 SearchClient.prototype.parseQueryString = function(queryString) {
@@ -688,6 +710,7 @@ SearchClient.prototype.parseQueryString = function(queryString) {
   const notPhraseWords = [];
   const prefixPaths = [];
   const notPrefixPaths = [];
+  const tags = [];
 
   queryString.trim();
   queryString = queryString.replace(/\s+/g, ' '); // eslint-disable-line no-param-reassign
@@ -739,6 +762,17 @@ SearchClient.prototype.parseQueryString = function(queryString) {
         matchWords.push(matchPositive[2]);
       }
     }
+
+    const matchTag = word.match(/^(tag:)?(.+)$/);
+    if (matchTag != null) {
+      const isTagCondition = (matchTag[1] != null);
+      if (isTagCondition) {
+        tags.push(matchTag[2]);
+      }
+      else {
+        matchWords.push(matchTag[2]);
+      }
+    }
   });
 
   return {
@@ -748,6 +782,7 @@ SearchClient.prototype.parseQueryString = function(queryString) {
     not_phrase: notPhraseWords,
     prefix: prefixPaths,
     not_prefix: notPrefixPaths,
+    tags,
   };
 };
 
