@@ -101,14 +101,14 @@ export default class EditTagModal extends React.Component {
         </OverlayTrigger>
         <Modal show={this.state.isOpenModal} onHide={this.handleCloseModal} id="editTagModal">
           <Modal.Header closeButton className="bg-primary">
-            <Modal.Title className="text-white">ページタグ</Modal.Title>
+            <Modal.Title className="text-white">Page Tag</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <PageTagForm crowi={this.props.crowi} currentPageTags={this.state.currentPageTags} addNewTag={this.addNewTag} />
           </Modal.Body>
           <Modal.Footer>
             <Button variant="primary" onClick={this.handleSubmit}>
-              更新
+              Update
             </Button>
           </Modal.Footer>
         </Modal>
