@@ -114,6 +114,10 @@ if (isEnabledPlugins) {
   crowiPlugin.installAll(crowi, crowiRenderer);
 }
 
+/**
+ * receive tags for new page from EditTagModal
+ * @param {Array} tagData new tags
+ */
 const setTagsForNewPage = function(tagData) {
   tagsForNewPage = tagData;
 };
