@@ -116,5 +116,4 @@ EditTagModal.propTypes = {
   crowi: PropTypes.object.isRequired,
   pageId: PropTypes.string,
   style: PropTypes.object,
-  t: PropTypes.func.isRequired, // i18next
 };
