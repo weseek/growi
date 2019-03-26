@@ -80,7 +80,7 @@ export default class EditTagModal extends React.Component {
           placement="bottom"
           overlay={(
             <Tooltip id="tooltip-bottom">
-              {this.state.currentPageTags.length !== 0 ? this.state.currentPageTags : 'ページタグ未設定'}
+              {this.state.currentPageTags.length !== 0 ? this.state.currentPageTags.join() : 'ページタグ未設定'}
             </Tooltip>
           )}
         >
