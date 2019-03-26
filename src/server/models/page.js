@@ -1002,7 +1002,10 @@ module.exports = function(crowi) {
 
     await validateAppliedScope(user, grant, grantUserGroupId);
     page.applyScope(user, grant, grantUserGroupId);
-    page.updateTags(tags);
+
+    if (tags != null) {
+      page.updateTags(tags);
+    }
 
     let savedPage = await page.save();
     const newRevision = Revision.prepareRevision(savedPage, body, null, user, { format });
