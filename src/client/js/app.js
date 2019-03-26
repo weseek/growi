@@ -114,6 +114,10 @@ if (isEnabledPlugins) {
   crowiPlugin.installAll(crowi, crowiRenderer);
 }
 
+const setTagsForNewPage = function(tagData) {
+  tagsForNewPage = tagData;
+};
+
 /**
  * component store
  */
@@ -274,10 +278,6 @@ if (!pageRevisionId && draft != null) {
   markdown = draft;
 }
 
-const setTagData = function(tagData) {
-  tagsForNewPage = tagData;
-};
-
 /**
  * define components
  *  key: id of element
@@ -304,7 +304,7 @@ if (pageId) {
 }
 if (pagePath) {
   componentMappings.page = <Page crowi={crowi} crowiRenderer={crowiRenderer} markdown={markdown} pagePath={pagePath} onSaveWithShortcut={saveWithShortcut} />;
-  componentMappings['revision-path'] = <RevisionPath pageId={pageId} pagePath={pagePath} crowi={crowi} sendTagData={setTagData} />;
+  componentMappings['revision-path'] = <RevisionPath pageId={pageId} pagePath={pagePath} crowi={crowi} sendTagData={setTagsForNewPage} />;
   componentMappings['revision-url'] = <RevisionUrl pageId={pageId} pagePath={pagePath} />;
 }
 
