@@ -742,7 +742,7 @@ SearchClient.prototype.parseQueryString = function(queryString) {
     // https://regex101.com/r/lN4LIV/1
     const matchNegative = word.match(/^-(prefix:)?(.+)$/);
     // https://regex101.com/r/gVssZe/1
-    const matchPositive = word.match(/^(prefix:)?(.+)$/);
+    const matchPositive = word.match(/^(prefix:|tag:)?(.+)$/);
 
     if (matchNegative != null) {
       const isPrefixCondition = (matchNegative[1] != null);
@@ -754,23 +754,14 @@ SearchClient.prototype.parseQueryString = function(queryString) {
       }
     }
     else if (matchPositive != null) {
-      const isPrefixCondition = (matchPositive[1] != null);
-      if (isPrefixCondition) {
+      if (matchPositive[1] === 'prefix:') {
         prefixPaths.push(matchPositive[2]);
+      }
+      else if (matchPositive[1] === 'tag:') {
+        tags.push(matchPositive[2]);
       }
       else {
         matchWords.push(matchPositive[2]);
-      }
-    }
-
-    const matchTag = word.match(/^(tag:)?(.+)$/);
-    if (matchTag != null) {
-      const isTagCondition = (matchTag[1] != null);
-      if (isTagCondition) {
-        tags.push(matchTag[2]);
-      }
-      else {
-        matchWords.push(matchTag[2]);
       }
     }
   });
