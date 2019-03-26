@@ -104,6 +104,7 @@ body.on-edit {
       pointer-events: initial; // enable pointer-events
     }
 
+
     div.title-container {
       margin-right: 0px;
       overflow-x: hidden;
@@ -125,8 +126,11 @@ body.on-edit {
 
     div#page-tag {
       display: inline;
-      min-width: 100px;
-      margin-left: 2px;
+      margin-right: auto;
+
+      .page-tag-form {
+        border-radius: 5px;
+      }
     }
 
     // hide if screen size is less than tablet
