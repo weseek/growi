@@ -22,13 +22,11 @@ export default class EditTagModal extends React.Component {
     this.handleShowModal = this.handleShowModal.bind(this);
     this.handleCloseModal = this.handleCloseModal.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.getCurrentTags = this.getCurrentTags.bind(this);
-
-    this.getCurrentTags(this.props.pageId);
   }
 
-  async getCurrentTags(pageId) {
+  async componentWillMount() {
     // set pageTag on button
+    const pageId = this.props.pageId;
     if (pageId) {
       const res = await this.props.crowi.apiGet('/tags.get', { pageId });
       this.setState({ currentPageTags: res.tags });
@@ -82,7 +80,7 @@ export default class EditTagModal extends React.Component {
           placement="bottom"
           overlay={(
             <Tooltip id="tooltip-bottom">
-              {this.state.currentPageTags.join()}
+              {this.state.currentPageTags.length !== 0 ? this.state.currentPageTags : 'ページタグ未設定'}
             </Tooltip>
           )}
         >

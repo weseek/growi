@@ -19,13 +19,9 @@ export default class PageTagForm extends React.Component {
     this.state = {
       resultTags: [],
       isLoading: false,
-      selected: [],
+      selected: this.props.currentPageTags,
     };
     this.crowi = this.props.crowi;
-  }
-
-  componentWillMount() {
-    this.setState({ selected: this.props.currentPageTags });
   }
 
   render() {
