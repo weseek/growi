@@ -547,6 +547,7 @@ module.exports = function(crowi, app) {
     const isSlackEnabled = !!req.body.isSlackEnabled; // cast to boolean
     const slackChannels = req.body.slackChannels || null;
     const socketClientId = req.body.socketClientId || undefined;
+    const tags = req.body.tagsForNewPage || undefined;
 
     if (body === null || pagePath === null) {
       return res.json(ApiResponse.error('Parameters body and path are required.'));
@@ -559,7 +560,7 @@ module.exports = function(crowi, app) {
     }
 
     const options = {
-      grant, grantUserGroupId, overwriteScopesOfDescendants, socketClientId,
+      grant, grantUserGroupId, overwriteScopesOfDescendants, socketClientId, tags,
     };
     const createdPage = await Page.create(pagePath, body, req.user, options);
 

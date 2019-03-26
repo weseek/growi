@@ -976,6 +976,7 @@ module.exports = function(crowi) {
     const redirectTo = options.redirectTo || null;
     const grantUserGroupId = options.grantUserGroupId || null;
     const socketClientId = options.socketClientId || null;
+    const tags = options.tags || null;
 
     // sanitize path
     path = crowi.xss.process(path); // eslint-disable-line no-param-reassign
@@ -1001,6 +1002,7 @@ module.exports = function(crowi) {
 
     await validateAppliedScope(user, grant, grantUserGroupId);
     page.applyScope(user, grant, grantUserGroupId);
+    page.updateTags(tags);
 
     let savedPage = await page.save();
     const newRevision = Revision.prepareRevision(savedPage, body, null, user, { format });

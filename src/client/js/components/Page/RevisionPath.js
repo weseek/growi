@@ -126,7 +126,7 @@ export default class RevisionPath extends React.Component {
         <a href="#edit" className="btn btn-default btn-edit" style={editButtonStyle}>
           <i className="icon-note" />
         </a>
-        <EditTagModal crowi={this.props.crowi} pageId={this.props.pageId} style={tagButtonStyle} />
+        <EditTagModal crowi={this.props.crowi} pageId={this.props.pageId} style={tagButtonStyle} sendTagData={this.props.sendTagData} />
       </span>
     );
   }
@@ -137,4 +137,5 @@ RevisionPath.propTypes = {
   pageId: PropTypes.string,
   pagePath: PropTypes.string.isRequired,
   crowi: PropTypes.object.isRequired,
+  sendTagData: PropTypes.func,
 };

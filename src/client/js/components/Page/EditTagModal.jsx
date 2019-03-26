@@ -47,28 +47,34 @@ export default class EditTagModal extends React.Component {
   }
 
   async handleSubmit() {
-    try {
-      const res = await this.props.crowi.apiPost('/pages.updateTags', { pageId: this.props.pageId, newPageTags: this.state.newPageTags });
-      this.setState({ currentPageTags: res.nextTags, isOpenModal: false });
-      toastr.success(undefined, 'Updated tags successfully', {
-        closeButton: true,
-        progressBar: true,
-        newestOnTop: false,
-        showDuration: '100',
-        hideDuration: '100',
-        timeOut: '1200',
-        extendedTimeOut: '150',
-      });
+    if (this.props.pageId) {
+      try {
+        const res = await this.props.crowi.apiPost('/pages.updateTags', { pageId: this.props.pageId, newPageTags: this.state.newPageTags });
+        this.setState({ currentPageTags: res.nextTags, isOpenModal: false });
+        toastr.success(undefined, 'Updated tags successfully', {
+          closeButton: true,
+          progressBar: true,
+          newestOnTop: false,
+          showDuration: '100',
+          hideDuration: '100',
+          timeOut: '1200',
+          extendedTimeOut: '150',
+        });
+      }
+      catch (err) {
+        toastr.error(err, 'Error occured on updating tags', {
+          closeButton: true,
+          progressBar: true,
+          newestOnTop: false,
+          showDuration: '100',
+          hideDuration: '100',
+          timeOut: '3000',
+        });
+      }
     }
-    catch (err) {
-      toastr.error(err, 'Error occured on updating tags', {
-        closeButton: true,
-        progressBar: true,
-        newestOnTop: false,
-        showDuration: '100',
-        hideDuration: '100',
-        timeOut: '3000',
-      });
+    else {
+      this.props.sendTagData(this.state.newPageTags); // for setting tag when create new page
+      this.setState({ currentPageTags: this.state.newPageTags, isOpenModal: false });
     }
   }
 
@@ -116,4 +122,5 @@ EditTagModal.propTypes = {
   crowi: PropTypes.object.isRequired,
   pageId: PropTypes.string,
   style: PropTypes.object,
+  sendTagData: PropTypes.func,
 };
