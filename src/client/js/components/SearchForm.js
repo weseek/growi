@@ -74,7 +74,7 @@ export default class SearchForm extends React.Component {
           </tr>
           <tr>
             <th className="text-right pt-2">
-              <code>tag:&quot;wiki&quot;</code>
+              <code>tag:wiki</code>
             </th>
             <td><h6 className="m-0 pt-1">{ t('search_help.tag.desc', { path: 'wiki' }) }</h6></td>
           </tr>
