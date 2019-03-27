@@ -46,7 +46,7 @@ export default class EditTagModal extends React.Component {
   }
 
   handleSubmit() {
-    this.props.sendTagData(this.state.newPageTags); // send tag data for app
+    this.props.sendTagData(this.state.newPageTags);
     this.setState({ currentPageTags: this.state.newPageTags, isOpenModal: false });
   }
 
