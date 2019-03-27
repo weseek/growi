@@ -537,6 +537,7 @@ module.exports = function(crowi, app) {
    * @apiParam {String} body
    * @apiParam {String} path
    * @apiParam {String} grant
+   * @apiParam {Array} pageTags
    */
   api.create = async function(req, res) {
     const body = req.body.body || null;
@@ -547,7 +548,7 @@ module.exports = function(crowi, app) {
     const isSlackEnabled = !!req.body.isSlackEnabled; // cast to boolean
     const slackChannels = req.body.slackChannels || null;
     const socketClientId = req.body.socketClientId || undefined;
-    const tags = req.body.tagsForNewPage || undefined;
+    const pageTags = req.body.pageTags || undefined;
 
     if (body === null || pagePath === null) {
       return res.json(ApiResponse.error('Parameters body and path are required.'));
@@ -560,7 +561,7 @@ module.exports = function(crowi, app) {
     }
 
     const options = {
-      grant, grantUserGroupId, overwriteScopesOfDescendants, socketClientId, tags,
+      grant, grantUserGroupId, overwriteScopesOfDescendants, socketClientId, pageTags,
     };
     const createdPage = await Page.create(pagePath, body, req.user, options);
 
@@ -613,6 +614,7 @@ module.exports = function(crowi, app) {
     const slackChannels = req.body.slackChannels || null;
     const isSyncRevisionToHackmd = !!req.body.isSyncRevisionToHackmd; // cast to boolean
     const socketClientId = req.body.socketClientId || undefined;
+    const pageTags = req.body.pageTags || undefined;
 
     if (pageId === null || pageBody === null) {
       return res.json(ApiResponse.error('page_id and body are required.'));
@@ -630,7 +632,7 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Posted param "revisionId" is outdated.', 'outdated'));
     }
 
-    const options = { isSyncRevisionToHackmd, socketClientId };
+    const options = { isSyncRevisionToHackmd, socketClientId, pageTags };
     if (grant != null) {
       options.grant = grant;
     }
@@ -669,30 +671,6 @@ module.exports = function(crowi, app) {
     if (isSlackEnabled && slackChannels != null) {
       await notifyToSlackByUser(page, req.user, slackChannels, 'update', previousRevision);
     }
-  };
-
-  /**
-   * @api {post} /pages.updateTags update page tags
-   * @apiName UpdateTags
-   * @apiGroup Page
-   *
-   * @apiParam {ObjectId} pageId
-   * @apiParam {Array} newPageTags
-   */
-  api.updateTags = async function(req, res) {
-    const pageId = req.body.pageId;
-    const newPageTags = req.body.newPageTags;
-    const result = {};
-    try {
-      const page = await Page.findOne({ _id: pageId });
-      // update page tag
-      result.nextTags = await page.updateTags(newPageTags);
-    }
-    catch (err) {
-      return res.json(ApiResponse.error(err));
-    }
-
-    return res.json(ApiResponse.success(result));
   };
 
   /**

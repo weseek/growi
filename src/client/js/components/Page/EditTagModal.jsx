@@ -4,7 +4,6 @@ import Button from 'react-bootstrap/es/Button';
 import OverlayTrigger from 'react-bootstrap/es/OverlayTrigger';
 import Tooltip from 'react-bootstrap/es/Tooltip';
 import Modal from 'react-bootstrap/es/Modal';
-import * as toastr from 'toastr';
 import PageTagForm from '../PageTagForm';
 
 export default class EditTagModal extends React.Component {
@@ -46,36 +45,9 @@ export default class EditTagModal extends React.Component {
     this.setState({ isOpenModal: true });
   }
 
-  async handleSubmit() {
-    if (this.props.pageId) {
-      try {
-        const res = await this.props.crowi.apiPost('/pages.updateTags', { pageId: this.props.pageId, newPageTags: this.state.newPageTags });
-        this.setState({ currentPageTags: res.nextTags, isOpenModal: false });
-        toastr.success(undefined, 'Updated tags successfully', {
-          closeButton: true,
-          progressBar: true,
-          newestOnTop: false,
-          showDuration: '100',
-          hideDuration: '100',
-          timeOut: '1200',
-          extendedTimeOut: '150',
-        });
-      }
-      catch (err) {
-        toastr.error(err, 'Error occured on updating tags', {
-          closeButton: true,
-          progressBar: true,
-          newestOnTop: false,
-          showDuration: '100',
-          hideDuration: '100',
-          timeOut: '3000',
-        });
-      }
-    }
-    else {
-      this.props.sendTagData(this.state.newPageTags); // for setting tag when create new page
-      this.setState({ currentPageTags: this.state.newPageTags, isOpenModal: false });
-    }
+  handleSubmit() {
+    this.props.sendTagData(this.state.newPageTags); // for setting tag data
+    this.setState({ currentPageTags: this.state.newPageTags, isOpenModal: false });
   }
 
   render() {

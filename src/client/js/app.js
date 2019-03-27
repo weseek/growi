@@ -68,7 +68,7 @@ let pagePath;
 let pageContent = '';
 let markdown = '';
 let slackChannels;
-let tagsForNewPage = [];
+let pageTags = [];
 if (mainContent !== null) {
   pageId = mainContent.getAttribute('data-page-id') || null;
   pageRevisionId = mainContent.getAttribute('data-page-revision-id');
@@ -115,11 +115,11 @@ if (isEnabledPlugins) {
 }
 
 /**
- * receive tags for new page from EditTagModal
+ * receive tags from EditTagModal
  * @param {Array} tagData new tags
  */
-const setTagsForNewPage = function(tagData) {
-  tagsForNewPage = tagData;
+const setTagData = function(tagData) {
+  pageTags = tagData;
 };
 
 /**
@@ -200,7 +200,7 @@ const saveWithShortcut = function(markdown) {
   // get options
   const options = componentInstances.savePageControls.getCurrentOptionsToSave();
   options.socketClientId = socketClientId;
-  options.tagsForNewPage = tagsForNewPage;
+  options.pageTags = pageTags;
 
   if (editorMode === 'hackmd') {
     // set option to sync
@@ -238,7 +238,7 @@ const saveWithSubmitButton = function(submitOpts) {
   // get options
   const options = componentInstances.savePageControls.getCurrentOptionsToSave();
   options.socketClientId = socketClientId;
-  options.tagsForNewPage = tagsForNewPage;
+  options.pageTags = pageTags;
 
   // set 'submitOpts.overwriteScopesOfDescendants' to options
   options.overwriteScopesOfDescendants = submitOpts ? !!submitOpts.overwriteScopesOfDescendants : false;
@@ -308,7 +308,7 @@ if (pageId) {
 }
 if (pagePath) {
   componentMappings.page = <Page crowi={crowi} crowiRenderer={crowiRenderer} markdown={markdown} pagePath={pagePath} onSaveWithShortcut={saveWithShortcut} />;
-  componentMappings['revision-path'] = <RevisionPath pageId={pageId} pagePath={pagePath} crowi={crowi} sendTagData={setTagsForNewPage} />;
+  componentMappings['revision-path'] = <RevisionPath pageId={pageId} pagePath={pagePath} crowi={crowi} sendTagData={setTagData} />;
   componentMappings['revision-url'] = <RevisionUrl pageId={pageId} pagePath={pagePath} />;
 }
 
