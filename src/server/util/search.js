@@ -360,23 +360,6 @@ SearchClient.prototype.search = async function(query, tagFilters) {
 
   const result = await this.client.search(query);
 
-  if (tagFilters.length > 0) {
-    const Tag = this.crowi.model('Tag');
-
-    const filters = tagFilters[0].tags;
-    filters.forEach(async(tag) => {
-      const pageIds = await Tag.getRelatedPageIds(tag);
-      if (pageIds) {
-        result.hits.hits = result.hits.hits.filter((elm) => {
-          return pageIds.includes(elm._id);
-        });
-      }
-      else {
-        result.hits.hits = [];
-      }
-    });
-  }
-
   // for debug
   logger.debug('ES result: ', result);
 
@@ -389,6 +372,7 @@ SearchClient.prototype.search = async function(query, tagFilters) {
     data: result.hits.hits.map((elm) => {
       return { _id: elm._id, _score: elm._score, _source: elm._source };
     }),
+    tagFilters,
   };
 };
 
