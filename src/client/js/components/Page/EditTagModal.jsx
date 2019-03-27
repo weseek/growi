@@ -46,7 +46,7 @@ export default class EditTagModal extends React.Component {
   }
 
   handleSubmit() {
-    this.props.sendTagData(this.state.newPageTags); // for setting tag data
+    this.props.sendTagData(this.state.newPageTags); // send tag data for app
     this.setState({ currentPageTags: this.state.newPageTags, isOpenModal: false });
   }
 
@@ -80,7 +80,7 @@ export default class EditTagModal extends React.Component {
           </Modal.Body>
           <Modal.Footer>
             <Button variant="primary" onClick={this.handleSubmit}>
-              Update
+              Done
             </Button>
           </Modal.Footer>
         </Modal>
