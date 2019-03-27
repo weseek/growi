@@ -8,6 +8,7 @@ module.exports = function(crowi, app) {
   const Config = crowi.model('Config');
   const config = crowi.getConfig();
   const Bookmark = crowi.model('Bookmark');
+  const PageTagRelation = crowi.model('PageTagRelation');
   const UpdatePost = crowi.model('UpdatePost');
   const ApiResponse = require('../util/apiResponse');
   const interceptorManager = crowi.getInterceptorManager();
@@ -715,6 +716,25 @@ module.exports = function(crowi, app) {
     const result = {};
     result.page = page; // TODO consider to use serializeToObj method -- 2018.08.06 Yuki Takei
 
+    return res.json(ApiResponse.success(result));
+  };
+
+  /**
+   * @api {get} /pages.getPageTag get page tags
+   * @apiName GetPageTag
+   * @apiGroup Page
+   *
+   * @apiParam {String} pageId
+   */
+  api.getPageTag = async function(req, res) {
+    const result = {};
+    try {
+      const tags = await PageTagRelation.find({ relatedPage: req.query.pageId }).populate('relatedTag').select('-_id relatedTag');
+      result.tags = tags.map((tag) => { return tag.relatedTag.name });
+    }
+    catch (err) {
+      return res.json(ApiResponse.error(err));
+    }
     return res.json(ApiResponse.success(result));
   };
 
