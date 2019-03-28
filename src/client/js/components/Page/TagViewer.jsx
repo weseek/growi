@@ -51,11 +51,8 @@ export default class TagViewer extends React.Component {
   }
 
   render() {
-    // TODO GC-1391 activate
-    const tagButtonStyle = {
-      height: '19px',
-      width: '30px',
-      marginLeft: '0.5em',
+    const tagEditorButtonStyle = {
+      marginLeft: '0.2em',
       padding: '0 2px',
     };
 
@@ -74,7 +71,7 @@ export default class TagViewer extends React.Component {
             variant="primary"
             onClick={this.handleShowModal}
             className="btn btn-default btn-tag"
-            style={tagButtonStyle}
+            style={tagEditorButtonStyle}
           >
             <i className="fa fa-tags"></i>{this.state.currentPageTags.length}
           </Button>

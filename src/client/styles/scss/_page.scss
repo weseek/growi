@@ -71,9 +71,10 @@
       color: #999;
     }
 
-    h1#revision-path {
+    h1.title {
       margin-top: 0;
       margin-bottom: 0;
+      float: left;
 
       .d-flex {
         flex-wrap: wrap; // for long page path
@@ -87,10 +88,6 @@
           color: inherit;
         }
       }
-    }
-
-    h1.title {
-      float: left;
     }
   }
 
