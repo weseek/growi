@@ -25,6 +25,8 @@ import { EditorOptions, PreviewOptions } from './components/PageEditor/OptionsSe
 import SavePageControls from './components/SavePageControls';
 import PageEditorByHackmd from './components/PageEditorByHackmd';
 import Page from './components/Page';
+// TODO GC-1391 activate
+import TagViewer from './components/Page/TagViewer';
 import PageHistory from './components/PageHistory';
 import PageComments from './components/PageComments';
 import CommentForm from './components/PageComment/CommentForm';
@@ -308,7 +310,8 @@ if (pageId) {
 }
 if (pagePath) {
   componentMappings.page = <Page crowi={crowi} crowiRenderer={crowiRenderer} markdown={markdown} pagePath={pagePath} onSaveWithShortcut={saveWithShortcut} />;
-  componentMappings['revision-path'] = <RevisionPath pageId={pageId} pagePath={pagePath} crowi={crowi} sendTagData={setTagData} />;
+  componentMappings['revision-path'] = <RevisionPath pagePath={pagePath} crowi={crowi} />;
+  componentMappings['tag-viewer'] = <TagViewer crowi={crowi} pageId={pageId} sendTagData={setTagData} />; // [TODO] GC-1391 activate
   componentMappings['revision-url'] = <RevisionUrl pageId={pageId} pagePath={pagePath} />;
 }
 

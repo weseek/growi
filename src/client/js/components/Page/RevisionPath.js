@@ -1,7 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-// TODO GC-1391 activate
-// import EditTagModal from './EditTagModal';
 
 import CopyButton from '../CopyButton';
 
@@ -84,13 +82,6 @@ export default class RevisionPath extends React.Component {
       marginLeft: '0.5em',
       padding: '0 2px',
     };
-    // TODO GC-1391 activate
-    // const tagButtonStyle = {
-    //   height: '19px',
-    //   width: '30px',
-    //   marginLeft: '0.5em',
-    //   padding: '0 2px',
-    // };
 
     const pageLength = this.state.pages.length;
 
@@ -128,12 +119,6 @@ export default class RevisionPath extends React.Component {
         <a href="#edit" className="btn btn-default btn-edit" style={editButtonStyle}>
           <i className="icon-note" />
         </a>
-        {/* <EditTagModal
-          crowi={this.props.crowi}
-          pageId={this.props.pageId}
-          style={tagButtonStyle}
-          sendTagData={this.props.sendTagData}
-        /> [TODO] GC-1391 activate */}
       </span>
     );
   }
@@ -141,7 +126,6 @@ export default class RevisionPath extends React.Component {
 }
 
 RevisionPath.propTypes = {
-  pageId: PropTypes.string,
   pagePath: PropTypes.string.isRequired,
   crowi: PropTypes.object.isRequired,
   sendTagData: PropTypes.func,

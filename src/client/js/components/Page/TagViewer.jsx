@@ -6,7 +6,7 @@ import Tooltip from 'react-bootstrap/es/Tooltip';
 import Modal from 'react-bootstrap/es/Modal';
 import PageTagForm from '../PageTagForm';
 
-export default class EditTagModal extends React.Component {
+export default class TagViewer extends React.Component {
 
   constructor(props) {
     super(props);
@@ -98,7 +98,7 @@ export default class EditTagModal extends React.Component {
 
 }
 
-EditTagModal.propTypes = {
+TagViewer.propTypes = {
   crowi: PropTypes.object.isRequired,
   pageId: PropTypes.string,
   sendTagData: PropTypes.func,
