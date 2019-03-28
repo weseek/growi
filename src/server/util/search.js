@@ -346,7 +346,7 @@ SearchClient.prototype.addAllPages = async function() {
  *   data: [ pages ...],
  * }
  */
-SearchClient.prototype.search = async function(query, tagFilters) {
+SearchClient.prototype.search = async function(query, tagFilter) {
   // for debug
   if (process.env.NODE_ENV === 'development') {
     const result = await this.client.indices.validateQuery({
@@ -372,7 +372,7 @@ SearchClient.prototype.search = async function(query, tagFilters) {
     data: result.hits.hits.map((elm) => {
       return { _id: elm._id, _score: elm._score, _source: elm._source };
     }),
-    tagFilters,
+    tagFilter,
   };
 };
 
@@ -444,7 +444,7 @@ SearchClient.prototype.initializeBoolQuery = function(query) {
   return query;
 };
 
-SearchClient.prototype.appendCriteriaForQueryString = function(query, queryString, tagFilters) {
+SearchClient.prototype.appendCriteriaForQueryString = function(query, queryString, tagFilter) {
   query = this.initializeBoolQuery(query); // eslint-disable-line no-param-reassign
 
   // parse
@@ -524,8 +524,8 @@ SearchClient.prototype.appendCriteriaForQueryString = function(query, queryStrin
     query.body.query.bool.filter.push({ bool: { must_not: queries } });
   }
 
-  if (parsedKeywords.tags.length > 0) {
-    tagFilters.push({ tags: parsedKeywords.tags });
+  if (parsedKeywords.tagFilter.length > 0) {
+    tagFilter.push({ tagFilter: parsedKeywords.tagFilter });
   }
 };
 
@@ -674,8 +674,8 @@ SearchClient.prototype.searchKeyword = async function(queryString, user, userGro
   const size = option.limit || null;
   const type = option.type || null;
   const query = this.createSearchQuerySortedByScore();
-  const tagFilters = [];
-  this.appendCriteriaForQueryString(query, queryString, tagFilters);
+  const tagFilter = [];
+  this.appendCriteriaForQueryString(query, queryString, tagFilter);
 
   this.filterPagesByType(query, type);
   await this.filterPagesByViewer(query, user, userGroups);
@@ -684,7 +684,7 @@ SearchClient.prototype.searchKeyword = async function(queryString, user, userGro
 
   this.appendFunctionScore(query, queryString);
 
-  return this.search(query, tagFilters);
+  return this.search(query, tagFilter);
 };
 
 SearchClient.prototype.parseQueryString = function(queryString) {
@@ -694,7 +694,7 @@ SearchClient.prototype.parseQueryString = function(queryString) {
   const notPhraseWords = [];
   const prefixPaths = [];
   const notPrefixPaths = [];
-  const tags = [];
+  const tagFilter = [];
 
   queryString.trim();
   queryString = queryString.replace(/\s+/g, ' '); // eslint-disable-line no-param-reassign
@@ -742,7 +742,7 @@ SearchClient.prototype.parseQueryString = function(queryString) {
         prefixPaths.push(matchPositive[2]);
       }
       else if (matchPositive[1] === 'tag:') {
-        tags.push(matchPositive[2]);
+        tagFilter.push(matchPositive[2]);
       }
       else {
         matchWords.push(matchPositive[2]);
@@ -757,7 +757,7 @@ SearchClient.prototype.parseQueryString = function(queryString) {
     not_phrase: notPhraseWords,
     prefix: prefixPaths,
     not_prefix: notPrefixPaths,
-    tags,
+    tagFilter,
   };
 };
 

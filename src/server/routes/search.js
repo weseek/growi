@@ -70,10 +70,10 @@ module.exports = function(crowi, app) {
       }
 
       // filter by tag
-      if (esResult.tagFilters.length > 0) {
+      if (esResult.tagFilter.length > 0) {
         const Tag = crowi.model('Tag');
 
-        const filters = esResult.tagFilters[0].tags;
+        const filters = esResult.tagFilter[0].tags;
         const pageIds = await Tag.getRelatedPageIds(filters[0]);
         if (pageIds) {
           esResult.data = esResult.data.filter((elm) => {
