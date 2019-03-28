@@ -25,14 +25,13 @@ import { EditorOptions, PreviewOptions } from './components/PageEditor/OptionsSe
 import SavePageControls from './components/SavePageControls';
 import PageEditorByHackmd from './components/PageEditorByHackmd';
 import Page from './components/Page';
-// TODO GC-1391 activate
-import TagViewer from './components/Page/TagViewer';
 import PageHistory from './components/PageHistory';
 import PageComments from './components/PageComments';
 import CommentForm from './components/PageComment/CommentForm';
 import PageAttachment from './components/PageAttachment';
 import PageStatusAlert from './components/PageStatusAlert';
 import RevisionPath from './components/Page/RevisionPath';
+import TagViewer from './components/Page/TagViewer';
 import RevisionUrl from './components/Page/RevisionUrl';
 import BookmarkButton from './components/BookmarkButton';
 import LikeButton from './components/LikeButton';
