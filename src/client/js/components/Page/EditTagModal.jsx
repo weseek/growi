@@ -51,13 +51,21 @@ export default class EditTagModal extends React.Component {
   }
 
   render() {
+    // TODO GC-1391 activate
+    const tagButtonStyle = {
+      height: '19px',
+      width: '30px',
+      marginLeft: '0.5em',
+      padding: '0 2px',
+    };
+
     return (
       <span className="btn-tag-container">
         <OverlayTrigger
           key="tooltip"
           placement="bottom"
           overlay={(
-            <Tooltip id="tooltip-bottom">
+            <Tooltip id="tag-tooltip" className="tooltip">
               {this.state.currentPageTags.length !== 0 ? this.state.currentPageTags.join() : 'tag is not set' }
             </Tooltip>
           )}
@@ -66,7 +74,7 @@ export default class EditTagModal extends React.Component {
             variant="primary"
             onClick={this.handleShowModal}
             className="btn btn-default btn-tag"
-            style={this.props.style}
+            style={tagButtonStyle}
           >
             <i className="fa fa-tags"></i>{this.state.currentPageTags.length}
           </Button>
@@ -93,6 +101,5 @@ export default class EditTagModal extends React.Component {
 EditTagModal.propTypes = {
   crowi: PropTypes.object.isRequired,
   pageId: PropTypes.string,
-  style: PropTypes.object,
   sendTagData: PropTypes.func,
 };
