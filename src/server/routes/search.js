@@ -74,17 +74,15 @@ module.exports = function(crowi, app) {
         const Tag = crowi.model('Tag');
 
         const filters = esResult.tagFilters[0].tags;
-        filters.forEach(async(tag) => {
-          const pageIds = await Tag.getRelatedPageIds(tag);
-          if (pageIds) {
-            esResult.data = esResult.data.filter((elm) => {
-              return pageIds.includes(elm._id);
-            });
-          }
-          else {
-            esResult.data = [];
-          }
-        });
+        const pageIds = await Tag.getRelatedPageIds(filters[0]);
+        if (pageIds) {
+          esResult.data = esResult.data.filter((elm) => {
+            return pageIds.includes(elm._id);
+          });
+        }
+        else {
+          esResult.data = [];
+        }
       }
 
       const findResult = await Page.findListByPageIds(esResult.data);
