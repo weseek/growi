@@ -6,6 +6,10 @@ import Tooltip from 'react-bootstrap/es/Tooltip';
 import Modal from 'react-bootstrap/es/Modal';
 import PageTagForm from '../PageTagForm';
 
+/**
+ * show tag labels on view and edit tag button on edit
+ * tag labels on view is not implemented yet(GC-1391)
+ */
 export default class TagViewer extends React.Component {
 
   constructor(props) {
