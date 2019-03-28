@@ -117,7 +117,7 @@ if (isEnabledPlugins) {
 }
 
 /**
- * receive tags from EditTagModal
+ * receive tags from PageTagForm
  * @param {Array} tagData new tags
  */
 const setTagData = function(tagData) {
@@ -311,7 +311,7 @@ if (pageId) {
 if (pagePath) {
   componentMappings.page = <Page crowi={crowi} crowiRenderer={crowiRenderer} markdown={markdown} pagePath={pagePath} onSaveWithShortcut={saveWithShortcut} />;
   componentMappings['revision-path'] = <RevisionPath pagePath={pagePath} crowi={crowi} />;
-  componentMappings['tag-viewer'] = <TagViewer crowi={crowi} pageId={pageId} sendTagData={setTagData} />; // [TODO] GC-1391 activate
+  componentMappings['tag-viewer'] = <TagViewer crowi={crowi} pageId={pageId} sendTagData={setTagData} />;
   componentMappings['revision-url'] = <RevisionUrl pageId={pageId} pagePath={pagePath} />;
 }
 

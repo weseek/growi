@@ -128,5 +128,4 @@ export default class RevisionPath extends React.Component {
 RevisionPath.propTypes = {
   pagePath: PropTypes.string.isRequired,
   crowi: PropTypes.object.isRequired,
-  sendTagData: PropTypes.func,
 };
