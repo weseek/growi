@@ -18,6 +18,10 @@ class SavePageControls extends React.PureComponent {
       pageId: this.props.pageId,
     };
 
+    const config = this.props.crowi.getConfig();
+    this.hasSlackConfig = config.hasSlackConfig;
+    this.isAclEnabled = config.isAclEnabled;
+
     this.getCurrentOptionsToSave = this.getCurrentOptionsToSave.bind(this);
     this.submit = this.submit.bind(this);
     this.submitAndOverwriteScopesOfDescendants = this.submitAndOverwriteScopesOfDescendants.bind(this);
@@ -27,9 +31,11 @@ class SavePageControls extends React.PureComponent {
   }
 
   getCurrentOptionsToSave() {
-    const slackNotificationOptions = this.slackNotification.getCurrentOptionsToSave();
-    const grantSelectorOptions = this.grantSelector.getCurrentOptionsToSave();
-    return Object.assign(slackNotificationOptions, grantSelectorOptions);
+    let currentOptions = this.grantSelector.getCurrentOptionsToSave();
+    if (this.hasSlackConfig) {
+      currentOptions = Object.assign(currentOptions, this.slackNotification.getCurrentOptionsToSave());
+    }
+    return currentOptions;
   }
 
   /**
@@ -50,16 +56,12 @@ class SavePageControls extends React.PureComponent {
 
   render() {
     const { t } = this.props;
-
-    const config = this.props.crowi.getConfig();
-    const hasSlackConfig = config.hasSlackConfig;
-    const isAclEnabled = config.isAclEnabled;
     const labelSubmitButton = this.state.pageId == null ? t('Create') : t('Update');
     const labelOverwriteScopes = t('page_edit.overwrite_scopes', { operation: labelSubmitButton });
 
     return (
       <div className="d-flex align-items-center form-inline">
-        {hasSlackConfig
+        {this.hasSlackConfig
           && (
           <div className="mr-2">
             <SlackNotification
@@ -71,7 +73,7 @@ class SavePageControls extends React.PureComponent {
           )
         }
 
-        {isAclEnabled
+        {this.isAclEnabled
           && (
           <div className="mr-2">
             <GrantSelector
