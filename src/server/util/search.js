@@ -524,8 +524,8 @@ SearchClient.prototype.appendCriteriaForQueryString = function(query, queryStrin
     query.body.query.bool.filter.push({ bool: { must_not: queries } });
   }
 
-  if (parsedKeywords.tagFilter.length > 0) {
-    tagFilter.push({ tagFilter: parsedKeywords.tagFilter });
+  if (parsedKeywords.tags.length > 0) {
+    tagFilter.push({ tags: parsedKeywords.tags });
   }
 };
 
@@ -694,7 +694,7 @@ SearchClient.prototype.parseQueryString = function(queryString) {
   const notPhraseWords = [];
   const prefixPaths = [];
   const notPrefixPaths = [];
-  const tagFilter = [];
+  const tags = [];
 
   queryString.trim();
   queryString = queryString.replace(/\s+/g, ' '); // eslint-disable-line no-param-reassign
@@ -742,7 +742,7 @@ SearchClient.prototype.parseQueryString = function(queryString) {
         prefixPaths.push(matchPositive[2]);
       }
       else if (matchPositive[1] === 'tag:') {
-        tagFilter.push(matchPositive[2]);
+        tags.push(matchPositive[2]);
       }
       else {
         matchWords.push(matchPositive[2]);
@@ -757,7 +757,7 @@ SearchClient.prototype.parseQueryString = function(queryString) {
     not_phrase: notPhraseWords,
     prefix: prefixPaths,
     not_prefix: notPrefixPaths,
-    tagFilter,
+    tags,
   };
 };
 
