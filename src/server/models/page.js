@@ -640,6 +640,22 @@ module.exports = function(crowi) {
   };
 
   /**
+   * find page id related all tag of tagList
+   * @param {String[]} tagList
+   */
+  pageSchema.statics.findByTagList = async function(tagList) {
+    const Tag = mongoose.model('Tag');
+    const PageTagRelation = mongoose.model('PageTagRelation');
+
+    const tags = await Tag.find({ name: { $in: tagList } });
+    if (tags) {
+      const pageRelations = await PageTagRelation.find({ relatedTag: tags[0]._id }).populate('relatedPage').select('-_id relatedPage');
+      return pageRelations.map((relation) => { return relation.relatedPage.id });
+    }
+    return;
+  };
+
+  /**
    * @param {string} path Page path
    * @param {User} user User instance
    * @param {UserGroup[]} userGroups List of UserGroup instances
