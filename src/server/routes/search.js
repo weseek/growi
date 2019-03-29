@@ -73,8 +73,7 @@ module.exports = function(crowi, app) {
       if (esResult.tagFilter.length > 0) {
         const Tag = crowi.model('Tag');
 
-        const tags = esResult.tagFilter[0].tags;
-        const pageIdsLinkedTags = await Tag.getRelatedPageIds(tags[0]);
+        const pageIdsLinkedTags = await Tag.getRelatedPageIds(esResult.tagFilter[0].tags);
         if (pageIdsLinkedTags) {
           esResult.data = esResult.data.filter((resultPage) => {
             return pageIdsLinkedTags.includes(resultPage._id);
