@@ -643,14 +643,19 @@ module.exports = function(crowi) {
    * find page id related all tag of tagList
    * @param {String[]} tagList
    */
-  pageSchema.statics.findByTagList = async function(tagList) {
+  pageSchema.statics.findByTagLists = async function(tagList) {
     const Tag = mongoose.model('Tag');
     const PageTagRelation = mongoose.model('PageTagRelation');
 
     const tags = await Tag.find({ name: { $in: tagList } });
-    if (tags) {
-      const pageRelations = await PageTagRelation.find({ relatedTag: tags[0]._id }).populate('relatedPage').select('-_id relatedPage');
-      return pageRelations.map((relation) => { return relation.relatedPage.id });
+
+    if (tags.length > 0) {
+      const pageIdList = [];
+      tags.forEach(async(tag) => {
+        const pageRelations = await PageTagRelation.find({ relatedTag: tag._id }).populate('relatedPage').select('-_id relatedPage');
+        pageIdList.push(pageRelations.map((relation) => { return relation.relatedPage.id }));
+      });
+      return pageIdList;
     }
     return;
   };

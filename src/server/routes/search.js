@@ -71,10 +71,13 @@ module.exports = function(crowi, app) {
 
       // filter by tag
       if (esResult.tagFilter.length > 0) {
-        const pageIdsLinkedTags = await Page.findByTagList(esResult.tagFilter[0].tags);
-        if (pageIdsLinkedTags) {
+        // get related page ids to each tag
+        const pageIdLists = await Page.findByTagLists(esResult.tagFilter[0].tags);
+        if (pageIdLists[0].length > 0) {
           esResult.data = esResult.data.filter((resultPage) => {
-            return pageIdsLinkedTags.includes(resultPage._id);
+            return pageIdLists.every((pageIdList) => { // return true if this page related to all tags
+              return pageIdList.includes(resultPage._id);
+            });
           });
         }
         else {
