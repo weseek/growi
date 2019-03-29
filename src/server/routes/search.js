@@ -73,10 +73,15 @@ module.exports = function(crowi, app) {
       if (esResult.tagFilter.length > 0) {
         // get related page ids to each tag
         const pageIdLists = await Page.findByTagLists(esResult.tagFilter[0].tags);
-        if (pageIdLists[0].length > 0) {
+
+        if (pageIdLists.length > 0) {
+          // console.log(pageIdLists);
           esResult.data = esResult.data.filter((resultPage) => {
             return pageIdLists.every((pageIdList) => { // return true if this page related to all tags
-              return pageIdList.includes(resultPage._id);
+              if (pageIdList.length > 0) {
+                return pageIdList.includes(resultPage._id);
+              }
+              return false;
             });
           });
         }
@@ -84,7 +89,6 @@ module.exports = function(crowi, app) {
           esResult.data = [];
         }
       }
-
       const findResult = await Page.findListByPageIds(esResult.data);
 
       result.meta = esResult.meta;

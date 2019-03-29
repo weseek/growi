@@ -647,18 +647,20 @@ module.exports = function(crowi) {
     const Tag = mongoose.model('Tag');
     const PageTagRelation = mongoose.model('PageTagRelation');
 
-    const tags = await Tag.find({ name: { $in: tagList } });
+    const pageIdLists = [];
 
-    if (tags.length > 0) {
-      const pageIdLists = [];
-      // use Promise.all for eslint-rule no-await-in-loop
-      await Promise.all(tags.map(async(tag) => {
-        const pageRelations = await PageTagRelation.find({ relatedTag: tag._id }).populate('relatedPage').select('-_id relatedPage');
-        pageIdLists.push(pageRelations.map((relation) => { return relation.relatedPage.id }));
-      }));
-      return pageIdLists;
-    }
-    return;
+    // use Promise.all for eslint-rule no-await-in-loop
+    await Promise.all(tagList.map(async(tagName) => {
+      const tag = await Tag.findOne({ name: tagName });
+      let pageRelations = [];
+      if (tag) {
+        pageRelations = await PageTagRelation.find({ relatedTag: tag._id }).populate('relatedPage').select('-_id relatedPage');
+      }
+      const pageIdList = pageRelations.map((relation) => { return relation.relatedPage.id });
+      pageIdLists.push(pageIdList);
+    }));
+
+    return pageIdLists;
   };
 
   /**
