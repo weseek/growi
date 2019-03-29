@@ -650,12 +650,13 @@ module.exports = function(crowi) {
     const tags = await Tag.find({ name: { $in: tagList } });
 
     if (tags.length > 0) {
-      const pageIdList = [];
-      tags.forEach(async(tag) => {
+      const pageIdLists = [];
+      // use Promise.all for eslint-rule no-await-in-loop
+      await Promise.all(tags.map(async(tag) => {
         const pageRelations = await PageTagRelation.find({ relatedTag: tag._id }).populate('relatedPage').select('-_id relatedPage');
-        pageIdList.push(pageRelations.map((relation) => { return relation.relatedPage.id }));
-      });
-      return pageIdList;
+        pageIdLists.push(pageRelations.map((relation) => { return relation.relatedPage.id }));
+      }));
+      return pageIdLists;
     }
     return;
   };
