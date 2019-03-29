@@ -17,6 +17,7 @@ class SearchPage extends React.Component {
       searchedKeyword: '',
       searchedPages: [],
       searchResultMeta: {},
+      searchResultTotalCount: 0,
     };
 
     this.search = this.search.bind(this);
@@ -60,6 +61,7 @@ class SearchPage extends React.Component {
         searchingKeyword: '',
         searchedPages: [],
         searchResultMeta: {},
+        searchResultTotalCount: 0,
       });
 
       return true;
@@ -77,6 +79,7 @@ class SearchPage extends React.Component {
           searchedKeyword: keyword,
           searchedPages: res.data,
           searchResultMeta: res.meta,
+          searchResultTotalCount: res.totalCount,
         });
       })
       .catch((err) => {
@@ -103,6 +106,7 @@ class SearchPage extends React.Component {
           pages={this.state.searchedPages}
           searchingKeyword={this.state.searchingKeyword}
           searchResultMeta={this.state.searchResultMeta}
+          searchResultTotalCount={this.state.searchResultTotalCount}
         />
       </div>
     );

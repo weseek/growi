@@ -288,7 +288,7 @@ export default class SearchResult extends React.Component {
                 {allSelectCheck}
               </div>
               <div className="search-result-meta">
-                <i className="icon-magnifier" /> Found {this.props.searchResultMeta.total} pages with &quot;{this.props.searchingKeyword}&quot;
+                <i className="icon-magnifier" /> Found {this.props.searchResultTotalCount} pages with &quot;{this.props.searchingKeyword}&quot;
               </div>
               <div className="clearfix"></div>
               <div className="page-list">
@@ -329,6 +329,7 @@ SearchResult.propTypes = {
   pages: PropTypes.array.isRequired,
   searchingKeyword: PropTypes.string.isRequired,
   searchResultMeta: PropTypes.object.isRequired,
+  searchResultTotalCount: PropTypes.number.isRequired,
   searchError: PropTypes.object,
 };
 SearchResult.defaultProps = {
