@@ -7,6 +7,8 @@ module.exports = function(crowi, app) {
 
   actions.api = api;
 
+  actions.showPage = function(req, res) {
+  };
 
   /**
    * @api {get} /tags.search search tags

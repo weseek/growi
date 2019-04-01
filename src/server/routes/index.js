@@ -202,6 +202,7 @@ module.exports = function(crowi, app) {
   app.post('/_api/pages.revertRemove' , loginRequired(crowi, app) , csrf, page.api.revertRemove); // (Avoid from API Token)
   app.post('/_api/pages.unlink'       , loginRequired(crowi, app) , csrf, page.api.unlink); // (Avoid from API Token)
   app.post('/_api/pages.duplicate', accessTokenParser, loginRequired(crowi, app), csrf, page.api.duplicate);
+  app.get('/tags', loginRequired(crowi, app, false), tag.showPage);
   app.get('/_api/tags.search'         , accessTokenParser, loginRequired(crowi, app, false), tag.api.search);
   app.get('/_api/comments.get'        , accessTokenParser , loginRequired(crowi, app, false) , comment.api.get);
   app.post('/_api/comments.add'       , form.comment, accessTokenParser , loginRequired(crowi, app) , csrf, comment.api.add);
