@@ -72,6 +72,12 @@ export default class SearchForm extends React.Component {
             <th className="text-right pt-2"><code>-prefix:/user/</code></th>
             <td><h6 className="m-0 pt-1">{ t('search_help.exclude_prefix.desc', { path: '/user/' }) }</h6></td>
           </tr>
+          <tr>
+            <th className="text-right pt-2">
+              <code>tag:wiki</code>
+            </th>
+            <td><h6 className="m-0 pt-1">{ t('search_help.tag.desc', { path: 'wiki' }) }</h6></td>
+          </tr>
         </tbody>
       </table>
     );
