@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
+// import TagLabel from '../tagLabel';
 import GrowiRenderer from '../../util/GrowiRenderer';
 
 import RevisionLoader from '../Page/RevisionLoader';
@@ -18,6 +18,7 @@ export default class SearchResultList extends React.Component {
       return (
         <div id={page._id} key={page._id} className="search-result-page">
           <h2><a href={page.path}>{page.path}</a></h2>
+          {/* <TagLabel crowi={this.props.crowi} pageId={page._id/> */}
           <RevisionLoader
             crowi={this.props.crowi}
             crowiRenderer={this.growiRenderer}
