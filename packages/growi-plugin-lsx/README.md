@@ -38,6 +38,6 @@ TODO
 - [x] impl `sort` option
 - [x] impl `reverse` option
 - [ ] impl `except` option
-- [ ] impl `filter` option
+- [x] impl `filter` option
 
 [GROWI]: https://github.com/weseek/growi
