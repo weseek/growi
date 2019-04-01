@@ -75,7 +75,6 @@ module.exports = function(crowi, app) {
         const pageIdLists = await Page.findByTagLists(esResult.tagFilter[0].tags);
 
         if (pageIdLists.length > 0) {
-          // console.log(pageIdLists);
           esResult.data = esResult.data.filter((resultPage) => {
             return pageIdLists.every((pageIdList) => { // return true if this page related to all tags
               if (pageIdList.length > 0) {

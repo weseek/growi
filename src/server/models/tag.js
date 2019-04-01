@@ -23,7 +23,7 @@ schema.plugin(mongoosePaginate);
 class Tag {
 
   /**
-   * create tag if the tag is not exist
+   * find tag or create tag if the tag is not exist
    * @param {String} tagName
    */
   static async findOrCreate(tagName) {
