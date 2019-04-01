@@ -8,6 +8,7 @@ module.exports = function(crowi, app) {
   actions.api = api;
 
   actions.showPage = function(req, res) {
+    return res.render('tags');
   };
 
   /**

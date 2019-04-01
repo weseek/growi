@@ -17,6 +17,7 @@ import GrowiRenderer from './util/GrowiRenderer';
 
 import HeaderSearchBox from './components/HeaderSearchBox';
 import SearchPage from './components/SearchPage';
+import TagsListPage from './components/TagsListPage';
 import PageEditor from './components/PageEditor';
 // eslint-disable-next-line import/no-duplicates
 import OptionsSelector from './components/PageEditor/OptionsSelector';
@@ -296,6 +297,8 @@ const componentMappings = {
   // 'revision-history': <PageHistory pageId={pageId} />,
   'bookmark-button': <BookmarkButton pageId={pageId} crowi={crowi} />,
   'bookmark-button-lg': <BookmarkButton pageId={pageId} crowi={crowi} size="lg" />,
+
+  'tags-page': <TagsListPage crowi={crowi} />,
 
   'create-page-name-input': <PagePathAutoComplete crowi={crowi} initializedPath={pagePath} addTrailingSlash />,
   'rename-page-name-input': <PagePathAutoComplete crowi={crowi} initializedPath={pagePath} />,
