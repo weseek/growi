@@ -405,7 +405,10 @@ module.exports = function(crowi, app) {
     let view;
     const renderVars = { path };
 
-    if (!isCreatable || req.isForbidden) {
+    if (!isCreatable) {
+      view = 'customlayout-selector/not_creatable';
+    }
+    else if (req.isForbidden) {
       view = 'customlayout-selector/forbidden';
     }
     else {
