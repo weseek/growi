@@ -252,7 +252,7 @@ module.exports = function(crowi, app) {
     addRendarVarsForScope(renderVars, page);
 
     await addRenderVarsForSlack(renderVars, page);
-    await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit);
+    await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit, true);
 
     if (isUserPage(page.path)) {
       // change template
