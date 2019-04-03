@@ -8,6 +8,7 @@ module.exports = function(crowi, app) {
   const Config = crowi.model('Config');
   const config = crowi.getConfig();
   const Bookmark = crowi.model('Bookmark');
+  const PageTagRelation = crowi.model('PageTagRelation');
   const UpdatePost = crowi.model('UpdatePost');
   const ApiResponse = require('../util/apiResponse');
   const interceptorManager = crowi.getInterceptorManager();
@@ -537,6 +538,7 @@ module.exports = function(crowi, app) {
    * @apiParam {String} body
    * @apiParam {String} path
    * @apiParam {String} grant
+   * @apiParam {Array} pageTags
    */
   api.create = async function(req, res) {
     const body = req.body.body || null;
@@ -547,6 +549,7 @@ module.exports = function(crowi, app) {
     const isSlackEnabled = !!req.body.isSlackEnabled; // cast to boolean
     const slackChannels = req.body.slackChannels || null;
     const socketClientId = req.body.socketClientId || undefined;
+    const pageTags = req.body.pageTags || undefined;
 
     if (body === null || pagePath === null) {
       return res.json(ApiResponse.error('Parameters body and path are required.'));
@@ -559,7 +562,7 @@ module.exports = function(crowi, app) {
     }
 
     const options = {
-      grant, grantUserGroupId, overwriteScopesOfDescendants, socketClientId,
+      grant, grantUserGroupId, overwriteScopesOfDescendants, socketClientId, pageTags,
     };
     const createdPage = await Page.create(pagePath, body, req.user, options);
 
@@ -610,9 +613,9 @@ module.exports = function(crowi, app) {
     const overwriteScopesOfDescendants = req.body.overwriteScopesOfDescendants || null;
     const isSlackEnabled = !!req.body.isSlackEnabled; // cast to boolean
     const slackChannels = req.body.slackChannels || null;
-    // const pageTags = req.body.pageTags || null;
     const isSyncRevisionToHackmd = !!req.body.isSyncRevisionToHackmd; // cast to boolean
     const socketClientId = req.body.socketClientId || undefined;
+    const pageTags = req.body.pageTags || undefined;
 
     if (pageId === null || pageBody === null) {
       return res.json(ApiResponse.error('page_id and body are required.'));
@@ -630,7 +633,7 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Posted param "revisionId" is outdated.', 'outdated'));
     }
 
-    const options = { isSyncRevisionToHackmd, socketClientId };
+    const options = { isSyncRevisionToHackmd, socketClientId, pageTags };
     if (grant != null) {
       options.grant = grant;
     }
@@ -669,9 +672,6 @@ module.exports = function(crowi, app) {
     if (isSlackEnabled && slackChannels != null) {
       await notifyToSlackByUser(page, req.user, slackChannels, 'update', previousRevision);
     }
-
-    // // update page tag
-    // await page.updateTags(pageTags); [pagetag]
   };
 
   /**
@@ -716,6 +716,25 @@ module.exports = function(crowi, app) {
     const result = {};
     result.page = page; // TODO consider to use serializeToObj method -- 2018.08.06 Yuki Takei
 
+    return res.json(ApiResponse.success(result));
+  };
+
+  /**
+   * @api {get} /pages.getPageTag get page tags
+   * @apiName GetPageTag
+   * @apiGroup Page
+   *
+   * @apiParam {String} pageId
+   */
+  api.getPageTag = async function(req, res) {
+    const result = {};
+    try {
+      const tags = await PageTagRelation.find({ relatedPage: req.query.pageId }).populate('relatedTag').select('-_id relatedTag');
+      result.tags = tags.map((tag) => { return tag.relatedTag.name });
+    }
+    catch (err) {
+      return res.json(ApiResponse.error(err));
+    }
     return res.json(ApiResponse.success(result));
   };
 

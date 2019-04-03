@@ -108,21 +108,17 @@ body.on-edit {
       overflow-x: hidden;
     }
 
-    div.title-container {
-      margin-right: 0px;
+    h1#revision-path {
+      @include variable-font-size(20px);
+      line-height: 1em;
 
-      h1#revision-path {
-        @include variable-font-size(20px);
-        line-height: 1em;
+      // nowrap even if the path is too long
+      .d-flex {
+        flex-wrap: nowrap;
+      }
 
-        // nowrap even if the path is too long
-        .d-flex {
-          flex-wrap: nowrap;
-        }
-
-        .path-segment {
-          white-space: nowrap;
-        }
+      .path-segment {
+        white-space: nowrap;
       }
     }
 
@@ -348,4 +344,16 @@ body.on-edit {
 // overwrite .CodeMirror-placeholder
 .CodeMirror pre.CodeMirror-placeholder {
   color: $text-muted;
+}
+
+#tag-edit-button-tooltip {
+  .tooltip-inner {
+    background-color: #fff;
+    color: #000;
+    border: 1px solid #ccc;
+  }
+
+  .tooltip-arrow {
+    border-bottom: 5px solid #ccc;
+  }
 }
