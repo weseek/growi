@@ -62,8 +62,8 @@ export default class PageTagForm extends React.Component {
 
 PageTagForm.propTypes = {
   crowi: PropTypes.object.isRequired,
-  currentPageTags: PropTypes.array,
-  addNewTag: PropTypes.func,
+  currentPageTags: PropTypes.array.isRequired,
+  addNewTag: PropTypes.func.isRequired,
 };
 
 PageTagForm.defaultProps = {

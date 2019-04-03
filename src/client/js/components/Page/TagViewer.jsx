@@ -53,5 +53,5 @@ export default class TagViewer extends React.Component {
 TagViewer.propTypes = {
   crowi: PropTypes.object.isRequired,
   pageId: PropTypes.string,
-  sendTagData: PropTypes.func,
+  sendTagData: PropTypes.func.isRequired,
 };
