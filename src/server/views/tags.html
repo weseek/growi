@@ -2,10 +2,19 @@
 
 {% block layout_main %}
 <div class="container-fluid">
-
+  <div class="row bg-title hidden-print">
+    <div class="col-xs-12 header-container">
+      {% block content_header %}
+      <div class="header-wrap">
+        <header id="page-header">
+          <h1 id="admin-title" class="title">Tags</h1>
+        </header>
+      </div>
+      {% endblock %}
+    </div>
   <div class="row">
     <div id="main" class="main m-t-15 col-md-12 tags-page">
-      <div class="" id="tags-page"></div>
+      <!-- <div class="" id="tags-page"></div> -->
     </div>
   </div>
 
