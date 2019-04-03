@@ -3,6 +3,7 @@
 $themecolor: #000080;
 $themelight: #f0f8ff;
 $subthemecolor: black;
+$accentcolor: #ffd700;
 $sidebar-text: $themelight;
 $topbar: $themecolor;
 $sidebar: $themelight;
@@ -11,15 +12,16 @@ $headingtext: $subthemecolor;
 $bodytext: $subthemecolor;
 $linktext: lighten(blue, 5%);
 $primary: $themecolor;
-$active-nav-tabs-bgcolor: $themelight;
+$active-nav-tabs-bgcolor: $themecolor;
 $logo-mark-fill: $themelight;
 $wikilinktext: lighten($themecolor, 5%);
 $wikilinktext-hover: lighten($wikilinktext, 15%);
 $inline-code-color: darken($subthemecolor, 5%);
 $inline-code-bg: lighten($subthemecolor, 70%);
-$border: $subthemecolor;
+$border: $accentcolor;
 $border-original: $subthemecolor;
 $navbar-border: $themecolor;
+$background-color: rgba($color: $themelight, $alpha: 0.8);
 
 
 @import 'apply-colors';
@@ -27,6 +29,10 @@ $navbar-border: $themecolor;
 
 // change color of highlighted header in wiki (default: orange)
 .wiki {
+  h1 {
+    border-color: $subthemecolor;
+  }
+
   .code-line.revision-head.highlighted {
     background-color: lighten($themecolor, 50%);
     color: $themelight;
@@ -36,6 +42,17 @@ $navbar-border: $themecolor;
       color: $themelight;
     }
   }
+}
+
+// add background-image
+
+.main-container>#wrapper>#page-wrapper,
+.page-editor-preview-container {
+  background-image: url("/images/themes/antarctic/test6.jpg");
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center center;
+
 }
 
 .sidebar {
@@ -55,8 +72,9 @@ $navbar-border: $themecolor;
   border-top: none;
 }
 
-#wrapper>.navbar>.navbar-header {
-  border-bottom: 4px solid $subthemecolor;
+#wrapper>.navbar>.navbar-header,
+.modal-header {
+  border-bottom: 4px solid $accentcolor;
 }
 
 /*
@@ -75,14 +93,25 @@ $navbar-border: $themecolor;
 
 
 
-/*
- * Tabs
- */
+
+// /*
+//  * Tabs
+//  */
+.nav.nav-tabs>li.active>a {
+  color: $themelight;
+}
+
 body:not(.on-edit) .nav.nav-tabs {
+  >li>a {
+    color: $subthemecolor;
+  }
+
   >li.active>a {
-    background: linear-gradient(rgba($active-nav-tabs-bgcolor, 0) 0%,
+    background: linear-gradient(rgba($active-nav-tabs-bgcolor, 0) 50%,
       rgba($active-nav-tabs-bgcolor, 0) 90%,
       $active-nav-tabs-bgcolor 100%); // overwrite only the bottom pixel
+    color: #f0f8ff;
+    background-color: $themecolor;
   }
 }
 
@@ -90,15 +119,35 @@ body:not(.on-edit) .nav.nav-tabs {
  * Panel
  */
 .panel {
+  width: 80%;
+  margin: 0px auto;
 
   &.panel-white,
   &.panel-default {
     border-color: $border-original;
+    border: 1px solid $subthemecolor;
 
     .panel-heading {
       color: $subthemecolor;
-      background-color: white;
-      border-bottom: 1px solid $border-original;
+      background-color: $background-color;
     }
   }
+
+}
+
+table {
+  background-color: $background-color;
+}
+
+.revision-toc-content a {
+
+  color: $themelight;
+  text-shadow: 0.9px 0.9px 0 #000,
+    -0.9px 0.9px 0 #000,
+    0.9px -0.9px 0 #000,
+    -0.9px -0.9px 0 #000;
+}
+
+.hljs {
+  background-color: $background-color;
 }
