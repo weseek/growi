@@ -18,6 +18,7 @@ module.exports = function(crowi, app) {
   const attachment = require('./attachment')(crowi, app);
   const comment = require('./comment')(crowi, app);
   const bookmark = require('./bookmark')(crowi, app);
+  const tag = require('./tag')(crowi, app);
   const revision = require('./revision')(crowi, app);
   const search = require('./search')(crowi, app);
   const hackmd = require('./hackmd')(crowi, app);
@@ -192,14 +193,16 @@ module.exports = function(crowi, app) {
   app.post('/_api/pages.create'       , accessTokenParser , loginRequired(crowi, app) , csrf, page.api.create);
   app.post('/_api/pages.update'       , accessTokenParser , loginRequired(crowi, app) , csrf, page.api.update);
   app.get('/_api/pages.get'           , accessTokenParser , loginRequired(crowi, app, false) , page.api.get);
-  app.get('/_api/pages.updatePost'    , accessTokenParser , loginRequired(crowi, app, false) , page.api.getUpdatePost);
+  app.get('/_api/pages.updatePost', accessTokenParser, loginRequired(crowi, app, false), page.api.getUpdatePost);
+  app.get('/_api/pages.getPageTag'    , accessTokenParser , loginRequired(crowi, app, false) , page.api.getPageTag);
   // allow posting to guests because the client doesn't know whether the user logged in
   app.post('/_api/pages.seen'         , accessTokenParser , loginRequired(crowi, app, false) , page.api.seen);
   app.post('/_api/pages.rename'       , accessTokenParser , loginRequired(crowi, app) , csrf, page.api.rename);
   app.post('/_api/pages.remove'       , loginRequired(crowi, app) , csrf, page.api.remove); // (Avoid from API Token)
   app.post('/_api/pages.revertRemove' , loginRequired(crowi, app) , csrf, page.api.revertRemove); // (Avoid from API Token)
   app.post('/_api/pages.unlink'       , loginRequired(crowi, app) , csrf, page.api.unlink); // (Avoid from API Token)
-  app.post('/_api/pages.duplicate'    , accessTokenParser, loginRequired(crowi, app), csrf, page.api.duplicate);
+  app.post('/_api/pages.duplicate', accessTokenParser, loginRequired(crowi, app), csrf, page.api.duplicate);
+  app.get('/_api/tags.search'         , accessTokenParser, loginRequired(crowi, app, false), tag.api.search);
   app.get('/_api/comments.get'        , accessTokenParser , loginRequired(crowi, app, false) , comment.api.get);
   app.post('/_api/comments.add'       , form.comment, accessTokenParser , loginRequired(crowi, app) , csrf, comment.api.add);
   app.post('/_api/comments.remove'    , accessTokenParser , loginRequired(crowi, app) , csrf, comment.api.remove);

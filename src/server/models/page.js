@@ -999,6 +999,7 @@ module.exports = function(crowi) {
     const redirectTo = options.redirectTo || null;
     const grantUserGroupId = options.grantUserGroupId || null;
     const socketClientId = options.socketClientId || null;
+    const pageTags = options.pageTags || null;
 
     // sanitize path
     path = crowi.xss.process(path); // eslint-disable-line no-param-reassign
@@ -1025,6 +1026,10 @@ module.exports = function(crowi) {
     await validateAppliedScope(user, grant, grantUserGroupId);
     page.applyScope(user, grant, grantUserGroupId);
 
+    if (pageTags != null) {
+      page.updateTags(pageTags);
+    }
+
     let savedPage = await page.save();
     const newRevision = Revision.prepareRevision(savedPage, body, null, user, { format });
     const revision = await pushRevision(savedPage, newRevision, user, grant, grantUserGroupId);
@@ -1046,6 +1051,7 @@ module.exports = function(crowi) {
     const grantUserGroupId = options.grantUserGroupId || null;
     const isSyncRevisionToHackmd = options.isSyncRevisionToHackmd;
     const socketClientId = options.socketClientId || null;
+    const pageTags = options.pageTags || null;
 
     await validateAppliedScope(user, grant, grantUserGroupId);
     pageData.applyScope(user, grant, grantUserGroupId);
@@ -1065,6 +1071,11 @@ module.exports = function(crowi) {
     if (socketClientId != null) {
       pageEvent.emit('update', savedPage, user, socketClientId);
     }
+
+    if (pageTags != null) {
+      savedPage.updateTags(pageTags);
+    }
+
     return savedPage;
   };
 
