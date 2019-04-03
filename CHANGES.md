@@ -2,10 +2,14 @@
 
 ## 3.4.3-RC
 
+* Improvement: Add 'antarctic' theme
 * Support Apply eslint-config-airbnb based rules
 * Support Apply prettier and stylelint
 * Support: Upgrade libs
     * eslint
+    * googleapis
+    * nodemailer
+    * string-width
 
 ## 3.4.2
 
