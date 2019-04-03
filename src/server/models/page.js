@@ -491,6 +491,11 @@ module.exports = function(crowi) {
     }
   };
 
+  pageSchema.methods.getTagsById = async function(id) {
+    const PageTagRelation = crowi.model('PageTagRelation');
+    const relations = await PageTagRelation.find({ relatedPage: id }).populate('relatedTag');
+    return relations.map((relation) => { return relation.relatedTag });
+  };
 
   pageSchema.statics.updateCommentCount = function(pageId) {
     validateCrowi();

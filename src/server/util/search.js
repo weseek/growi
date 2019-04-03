@@ -150,7 +150,8 @@ function generateDocContentsRelatedToRestriction(page) {
   };
 }
 
-SearchClient.prototype.prepareBodyForUpdate = function(body, page) {
+SearchClient.prototype.prepareBodyForUpdate = async function(body, page) {
+  const tags = await page.getTagsById(page._id);
   if (!Array.isArray(body)) {
     throw new Error('Body must be an array.');
   }
@@ -170,6 +171,7 @@ SearchClient.prototype.prepareBodyForUpdate = function(body, page) {
     bookmark_count: page.bookmarkCount || 0,
     like_count: page.liker.length || 0,
     updated_at: page.updatedAt,
+    tags,
   };
 
   document = Object.assign(document, generateDocContentsRelatedToRestriction(page));
@@ -181,7 +183,8 @@ SearchClient.prototype.prepareBodyForUpdate = function(body, page) {
   });
 };
 
-SearchClient.prototype.prepareBodyForCreate = function(body, page) {
+SearchClient.prototype.prepareBodyForCreate = async function(body, page) {
+  const tags = await page.getTagsById(page._id);
   if (!Array.isArray(body)) {
     throw new Error('Body must be an array.');
   }
@@ -204,6 +207,7 @@ SearchClient.prototype.prepareBodyForCreate = function(body, page) {
     like_count: page.liker.length || 0,
     created_at: page.createdAt,
     updated_at: page.updatedAt,
+    tags,
   };
 
   document = Object.assign(document, generateDocContentsRelatedToRestriction(page));
