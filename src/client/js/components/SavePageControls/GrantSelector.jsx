@@ -288,4 +288,4 @@ GrantSelector.propTypes = {
   grantGroupName: PropTypes.string,
 };
 
-export default withTranslation()(GrantSelector);
+export default withTranslation(null, { withRef: true })(GrantSelector);

@@ -80,7 +80,7 @@ class SavePageControls extends React.PureComponent {
               crowi={this.props.crowi}
               ref={(elem) => {
                   if (this.grantSelector == null) {
-                    this.grantSelector = elem.getWrappedInstance();
+                    this.grantSelector = elem;
                   }
                 }}
               grant={this.props.grant}
@@ -124,4 +124,4 @@ SavePageControls.propTypes = {
   grantGroupName: PropTypes.string,
 };
 
-export default withTranslation()(SavePageControls);
+export default withTranslation(null, { withRef: true })(SavePageControls);

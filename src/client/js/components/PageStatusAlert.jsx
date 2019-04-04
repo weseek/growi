@@ -142,4 +142,4 @@ PageStatusAlert.propTypes = {
 PageStatusAlert.defaultProps = {
 };
 
-export default withTranslation()(PageStatusAlert);
+export default withTranslation(null, { withRef: true })(PageStatusAlert);
