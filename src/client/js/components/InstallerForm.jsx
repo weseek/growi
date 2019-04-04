@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import i18next from 'i18next';
-import { translate } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 
 class InstallerForm extends React.Component {
 
@@ -153,4 +153,4 @@ InstallerForm.propTypes = {
   csrf: PropTypes.string,
 };
 
-export default translate()(InstallerForm);
+export default withTranslation()(InstallerForm);

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { translate } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 
 /**
  *
@@ -142,4 +142,4 @@ PageStatusAlert.propTypes = {
 PageStatusAlert.defaultProps = {
 };
 
-export default translate()(PageStatusAlert);
+export default withTranslation(null, { withRef: true })(PageStatusAlert);

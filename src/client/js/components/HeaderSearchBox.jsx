@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { translate } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 
 import FormGroup from 'react-bootstrap/es/FormGroup';
 import Button from 'react-bootstrap/es/Button';
@@ -98,4 +98,4 @@ HeaderSearchBox.propTypes = {
   crowi: PropTypes.object.isRequired,
 };
 
-export default translate()(HeaderSearchBox);
+export default withTranslation()(HeaderSearchBox);
