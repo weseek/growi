@@ -43,5 +43,5 @@ export default (userlang) => {
       },
     });
 
-    return i18n;
+  return i18n;
 };
