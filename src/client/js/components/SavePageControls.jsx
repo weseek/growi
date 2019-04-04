@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { translate } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 
 import ButtonToolbar from 'react-bootstrap/es/ButtonToolbar';
 import SplitButton from 'react-bootstrap/es/SplitButton';
@@ -124,4 +124,4 @@ SavePageControls.propTypes = {
   grantGroupName: PropTypes.string,
 };
 
-export default translate()(SavePageControls);
+export default withTranslation()(SavePageControls);

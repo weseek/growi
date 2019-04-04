@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { translate } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 
 import FormGroup from 'react-bootstrap/es/FormGroup';
 import FormControl from 'react-bootstrap/es/FormControl';
@@ -288,4 +288,4 @@ GrantSelector.propTypes = {
   grantGroupName: PropTypes.string,
 };
 
-export default translate()(GrantSelector);
+export default withTranslation()(GrantSelector);

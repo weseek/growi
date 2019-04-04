@@ -2,7 +2,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { translate } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 
 import SearchPageForm from './SearchPage/SearchPageForm';
 import SearchResult from './SearchPage/SearchResult';
@@ -121,4 +121,4 @@ SearchPage.defaultProps = {
   query: SearchPage.getQueryByLocation(window.location || {}),
 };
 
-export default translate()(SearchPage);
+export default withTranslation()(SearchPage);
