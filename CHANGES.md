@@ -8,7 +8,9 @@
 * Support: Upgrade libs
     * eslint
     * googleapis
+    * i18next
     * nodemailer
+    * react-i18next
     * string-width
 
 ## 3.4.2
