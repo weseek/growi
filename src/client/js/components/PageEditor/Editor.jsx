@@ -251,33 +251,35 @@ export default class Editor extends AbstractEditor {
           onDragLeave={this.dragLeaveHandler}
           onDrop={this.dropHandler}
         >
+          {({getRootProps, getInputProps}) => (
+            <React.Fragment>
+              { this.state.dropzoneActive && this.renderDropzoneOverlay() }
 
-          { this.state.dropzoneActive && this.renderDropzoneOverlay() }
+              { this.state.isComponentDidMount && this.renderNavbar() }
 
-          { this.state.isComponentDidMount && this.renderNavbar() }
+              {/* for PC */}
+              { !isMobile && (
+                <CodeMirrorEditor
+                  ref={(c) => { this.cmEditor = c }}
+                  onPasteFiles={this.pasteFilesHandler}
+                  onDragEnter={this.dragEnterHandler}
+                  {...this.props}
+                />
+                )
+              }
 
-          {/* for PC */}
-          { !isMobile && (
-            <CodeMirrorEditor
-              ref={(c) => { this.cmEditor = c }}
-              onPasteFiles={this.pasteFilesHandler}
-              onDragEnter={this.dragEnterHandler}
-              {...this.props}
-            />
-            )
-          }
-
-          {/* for mobile */}
-          { isMobile && (
-            <TextAreaEditor
-              ref={(c) => { this.taEditor = c }}
-              onPasteFiles={this.pasteFilesHandler}
-              onDragEnter={this.dragEnterHandler}
-              {...this.props}
-            />
-            )
-          }
-
+              {/* for mobile */}
+              { isMobile && (
+                <TextAreaEditor
+                  ref={(c) => { this.taEditor = c }}
+                  onPasteFiles={this.pasteFilesHandler}
+                  onDragEnter={this.dragEnterHandler}
+                  {...this.props}
+                />
+                )
+              }
+            </React.Fragment>
+          )}
         </Dropzone>
 
         { this.props.isUploadable
