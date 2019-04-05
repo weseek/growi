@@ -287,6 +287,7 @@ export default class Editor extends AbstractEditor {
                     onPasteFiles={this.pasteFilesHandler}
                     onDragEnter={this.dragEnterHandler}
                     {...this.props}
+                    {...getInputProps()}
                   />
                   )
                 }
