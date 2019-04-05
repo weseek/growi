@@ -326,10 +326,11 @@ module.exports = function(crowi) {
     });
 
     // create tag and relations
-    newTags.forEach(async(tag) => {
+    /* eslint-disable no-await-in-loop */
+    for (const tag of newTags) {
       const setTag = await Tag.findOrCreate(tag);
       PageTagRelation.createIfNotExist(page._id, setTag._id);
-    });
+    }
   };
 
 
@@ -1010,16 +1011,16 @@ module.exports = function(crowi) {
     await validateAppliedScope(user, grant, grantUserGroupId);
     page.applyScope(user, grant, grantUserGroupId);
 
-    if (pageTags != null) {
-      page.updateTags(pageTags);
-    }
-
     let savedPage = await page.save();
     const newRevision = Revision.prepareRevision(savedPage, body, null, user, { format });
     const revision = await pushRevision(savedPage, newRevision, user, grant, grantUserGroupId);
     savedPage = await this.findByPath(revision.path)
       .populate('revision')
       .populate('creator');
+
+    if (pageTags != null) {
+      await page.updateTags(pageTags);
+    }
 
     if (socketClientId != null) {
       pageEvent.emit('create', savedPage, user, socketClientId);
@@ -1052,12 +1053,12 @@ module.exports = function(crowi) {
       savedPage = await this.syncRevisionToHackmd(savedPage);
     }
 
-    if (socketClientId != null) {
-      pageEvent.emit('update', savedPage, user, socketClientId);
+    if (pageTags != null) {
+      await savedPage.updateTags(pageTags);
     }
 
-    if (pageTags != null) {
-      savedPage.updateTags(pageTags);
+    if (socketClientId != null) {
+      pageEvent.emit('update', savedPage, user, socketClientId);
     }
 
     return savedPage;
