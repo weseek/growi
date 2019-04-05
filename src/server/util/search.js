@@ -743,7 +743,7 @@ SearchClient.prototype.parseQueryString = function(queryString) {
       }
     }
   });
-  console.log(prefixPaths, tags);
+
   return {
     match: matchWords,
     not_match: notMatchWords,
