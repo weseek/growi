@@ -256,11 +256,17 @@ export default class Editor extends AbstractEditor {
           onDragLeave={this.dragLeaveHandler}
           onDrop={this.dropHandler}
         >
-          {({getRootProps, getInputProps, isDragAccept, isDragReject}) => {
+          {({
+            getRootProps,
+            getInputProps,
+            isDragAccept,
+            isDragReject,
+          }) => {
             const { ref } = getInputProps();
             if (isMobile) {
               this.taEditor = ref.current;
-            } else {
+            }
+ else {
               this.cmEditor = ref.current;
             }
 
@@ -292,7 +298,7 @@ export default class Editor extends AbstractEditor {
                   )
                 }
               </div>
-            )
+            );
           }}
         </Dropzone>
 
