@@ -188,7 +188,16 @@ class PageQueryBuilder {
       ? escapeStringRegexp(path) // escape
       : pathSlashOmitted;
 
-    const queryReg = new RegExp(`^${pattern}`);
+    let queryReg;
+    try {
+      queryReg = new RegExp(`^${pattern}`);
+    }
+    // if regular expression is invalid
+    catch (e) {
+      // force to escape
+      queryReg = new RegExp(`^${escapeStringRegexp(pattern)}`);
+    }
+
     pathCondition.push({ path: queryReg });
 
     this.query = this.query

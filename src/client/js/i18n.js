@@ -1,6 +1,6 @@
 import i18n from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
-import { reactI18nextModule } from 'react-i18next';
+import { initReactI18next } from 'react-i18next';
 
 import resources from '@alias/locales';
 
@@ -16,9 +16,9 @@ export default (userlang) => {
     },
   });
 
-  return i18n
+  i18n
     .use(langDetector)
-    .use(reactI18nextModule) // if not using I18nextProvider
+    .use(initReactI18next) // if not using I18nextProvider
     .init({
       debug: (process.env.NODE_ENV !== 'production'),
       resources,
@@ -42,4 +42,6 @@ export default (userlang) => {
         nsMode: 'default',
       },
     });
+
+  return i18n;
 };

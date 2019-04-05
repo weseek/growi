@@ -73,6 +73,13 @@
   dependencies:
     regenerator-runtime "^0.12.0"
 
+"@babel/runtime@^7.3.1":
+  version "7.4.3"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.4.3.tgz#79888e452034223ad9609187a0ad1fe0d2ad4bdc"
+  integrity sha512-9lsJwJLxDh/T3Q3SZszfWOTkk3pHbkmH+3KY+zwIDmsNlxsumuhS2TH3NIpktU4kNvfzy+k3eLT7aTJSPTo0OA==
+  dependencies:
+    regenerator-runtime "^0.13.2"
+
 "@babel/template@^7.1.0":
   version "7.4.0"
   resolved "https://registry.yarnpkg.com/@babel/template/-/template-7.4.0.tgz#12474e9c077bae585c5d835a95c0b0b790c25c8b"
@@ -534,6 +541,11 @@ ansi-regex@^3.0.0:
 ansi-regex@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/ansi-regex/-/ansi-regex-4.0.0.tgz#70de791edf021404c3fd615aa89118ae0432e5a9"
+
+ansi-regex@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/ansi-regex/-/ansi-regex-4.1.0.tgz#8b9f8f08cf1acb843756a839ca8c7e3168c51997"
+  integrity sha512-1apePfXM1UOSqw0o9IiFAovVz9M5S1Dg+4TrDwfMewQ6p/rmMueb7tWZjQ1rx4Loy1ArBggoqGpfqqdI4rondg==
 
 ansi-styles@^2.2.1:
   version "2.2.1"
@@ -3355,6 +3367,11 @@ emoji-regex@^7.0.1:
   version "7.0.1"
   resolved "https://registry.yarnpkg.com/emoji-regex/-/emoji-regex-7.0.1.tgz#5a132b28ebf84a289ba692862f7d4206ebcd32d0"
 
+emoji-regex@^8.0.0:
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/emoji-regex/-/emoji-regex-8.0.0.tgz#e818fd69ce5ccfcb404594f842963bf53164cc37"
+  integrity sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==
+
 emojis-list@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/emojis-list/-/emojis-list-2.1.0.tgz#4daa4d9db00f9819880c79fa457ae5b09a1fd389"
@@ -4763,10 +4780,10 @@ googleapis@^16.0.0:
     google-auth-library "~0.10.0"
     string-template "~1.0.0"
 
-googleapis@^37.0.0:
-  version "37.2.0"
-  resolved "https://registry.yarnpkg.com/googleapis/-/googleapis-37.2.0.tgz#63bfcadaccc7cb8c1d8dff90573c48ca18132409"
-  integrity sha512-UenlZ0c4eaVAylIPvvsIlL/q5/3Xg8DuKug5aqdmRMk+tTVfJUmEKgp3s4ZSUOI5oKqO/+arIW5UnY2S62B13w==
+googleapis@^39.1.0:
+  version "39.1.0"
+  resolved "https://registry.yarnpkg.com/googleapis/-/googleapis-39.1.0.tgz#7a89092e9cc64b25dde4503db606032e3514444d"
+  integrity sha512-MRO9rW7izUIBZ4NJ67FNhBUw/Q3ki7hk149E9MhphJnLw1CStUAnm9nFD/IpNnx97qx2WBa7dLPjeXrJky6xlw==
   dependencies:
     google-auth-library "^3.0.0"
     googleapis-common "^0.7.0"
@@ -5036,10 +5053,6 @@ hogan.js@^3.0.2:
     mkdirp "0.3.0"
     nopt "1.0.10"
 
-hoist-non-react-statics@^2.3.1:
-  version "2.5.5"
-  resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-2.5.5.tgz#c5903cf409c0dfd908f388e619d86b9c1174cb47"
-
 home-or-tmp@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/home-or-tmp/-/home-or-tmp-2.0.0.tgz#e36c3f2d2cae7d746a857e38d18d5f32a7882db8"
@@ -5085,6 +5098,7 @@ html-comment-regex@^1.1.0:
 html-parse-stringify2@2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/html-parse-stringify2/-/html-parse-stringify2-2.0.1.tgz#dc5670b7292ca158b7bc916c9a6735ac8872834a"
+  integrity sha1-3FZwtyksoVi3vJFsmmc1rIhyg0o=
   dependencies:
     void-elements "^2.0.1"
 
@@ -5178,9 +5192,12 @@ i18next-sprintf-postprocessor@^0.2.2:
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/i18next-sprintf-postprocessor/-/i18next-sprintf-postprocessor-0.2.2.tgz#2e409f1043579382698b6a2da70cdaa551d67ea4"
 
-i18next@=12.1.0:
-  version "12.1.0"
-  resolved "https://registry.yarnpkg.com/i18next/-/i18next-12.1.0.tgz#387bf4b94d05b0160b6a41d001a6b360e384bdb1"
+i18next@^15.0.9:
+  version "15.0.9"
+  resolved "https://registry.yarnpkg.com/i18next/-/i18next-15.0.9.tgz#42536407a921bb5a8535a4c090a26f16827a1884"
+  integrity sha512-IdVj7DqErUuMbGuj2dFT431T7zKlmDci63eae6pNA/bMwgBZKT74/KnwHXE0WH7ivo2EV/LNme4pP4Yw6vB79w==
+  dependencies:
+    "@babel/runtime" "^7.3.1"
 
 iconv-lite@0.4.19, iconv-lite@~0.4.13:
   version "0.4.19"
@@ -5560,6 +5577,11 @@ is-fullwidth-code-point@^1.0.0:
 is-fullwidth-code-point@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/is-fullwidth-code-point/-/is-fullwidth-code-point-2.0.0.tgz#a3b30a5c4f199183167aaab93beefae3ddfb654f"
+
+is-fullwidth-code-point@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/is-fullwidth-code-point/-/is-fullwidth-code-point-3.0.0.tgz#f116f8064fe90b3f7844a38997c0b75051269f1d"
+  integrity sha512-zymm5+u+sCsSWyD9qNaejV3DFvhCKclKdizYaJUuHA83RLjb7nSuGnddCHGv0hk+KY7BMAlsWeK4Ueg6EV6XQg==
 
 is-glob@^2.0.0, is-glob@^2.0.1:
   version "2.0.1"
@@ -7271,10 +7293,10 @@ nodemailer-ses-transport@~1.5.0:
   dependencies:
     aws-sdk "^2.2.36"
 
-nodemailer@^5.1.1:
-  version "5.1.1"
-  resolved "https://registry.yarnpkg.com/nodemailer/-/nodemailer-5.1.1.tgz#0c48d1ecab02e86d9ff6c620ee75ed944b763505"
-  integrity sha512-hKGCoeNdFL2W7S76J/Oucbw0/qRlfG815tENdhzcqTpSjKgAN91mFOqU2lQUflRRxFM7iZvCyaFcAR9noc/CqQ==
+nodemailer@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/nodemailer/-/nodemailer-6.0.0.tgz#d9761128771739dc87c1fdd747f569b7f135cb02"
+  integrity sha512-PMQJyLhoNAMoBU1hEh5aaUkpa/tcDNwzS7s7zow/myKfoEoZewMxUuWZqQ5yjYsAnvE484KSkYH5s6iPvcjhCg==
 
 nopt@1.0.10:
   version "1.0.10"
@@ -8508,7 +8530,7 @@ prop-types@^15.0.0, prop-types@^15.6.2:
     loose-envify "^1.3.1"
     object-assign "^4.1.1"
 
-prop-types@^15.5.0, prop-types@^15.5.10, prop-types@^15.5.8, prop-types@^15.6.0:
+prop-types@^15.5.0, prop-types@^15.5.10, prop-types@^15.5.8:
   version "15.6.0"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.6.0.tgz#ceaf083022fc46b4a35f69e13ef75aed0d639856"
   dependencies:
@@ -8766,13 +8788,13 @@ react-frame-component@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/react-frame-component/-/react-frame-component-4.0.0.tgz#57d51cdb2da3b204cc34577349f9f5bb84a76aac"
 
-react-i18next@=7.13.0:
-  version "7.13.0"
-  resolved "https://registry.yarnpkg.com/react-i18next/-/react-i18next-7.13.0.tgz#a6f64fd749215ec70400f90da6cbde2a9c5b1588"
+react-i18next@^10.6.1:
+  version "10.6.1"
+  resolved "https://registry.yarnpkg.com/react-i18next/-/react-i18next-10.6.1.tgz#044c39fb463a8d96cc548509187a1bb316e660fa"
+  integrity sha512-uuLksWCYR0i9tRZyKsQpcbJ0kiXYVDcaFXPVapZe8mYXReXvKsBgaOb6EwtqdXqiidO+HJAbyLOq9g3yzuZDEQ==
   dependencies:
-    hoist-non-react-statics "^2.3.1"
+    "@babel/runtime" "^7.3.1"
     html-parse-stringify2 "2.0.1"
-    prop-types "^15.6.0"
 
 react-is@^16.6.3:
   version "16.6.3"
@@ -9034,6 +9056,11 @@ regenerator-runtime@^0.12.0:
   version "0.12.1"
   resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.12.1.tgz#fa1a71544764c036f8c49b13a08b2594c9f8a0de"
   integrity sha512-odxIc1/vDlo4iZcfXqRYFj0vpXFNoGdKMAUieAlFYO6m/nl5e9KR/beGf41z4a1FI+aQgtjhuaSlDxQ0hmkrHg==
+
+regenerator-runtime@^0.13.2:
+  version "0.13.2"
+  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.13.2.tgz#32e59c9a6fb9b1a4aff09b4930ca2d4477343447"
+  integrity sha512-S/TQAZJO+D3m9xeN1WTI8dLKBBiRgXBlTJvbWjCThHWZj9EvHK70Ff50/tYj2J/fvBY6JtFVwRuazHN2E7M9BA==
 
 regenerator-transform@^0.10.0:
   version "0.10.1"
@@ -10158,6 +10185,15 @@ string-width@^3.0.0:
     is-fullwidth-code-point "^2.0.0"
     strip-ansi "^5.0.0"
 
+string-width@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.1.0.tgz#ba846d1daa97c3c596155308063e075ed1c99aff"
+  integrity sha512-NrX+1dVVh+6Y9dnQ19pR0pP4FiEIlUvdTGn8pw6CKTNq5sgib2nIhmUNT5TAmhWmvKr3WcxBcP3E8nWezuipuQ==
+  dependencies:
+    emoji-regex "^8.0.0"
+    is-fullwidth-code-point "^3.0.0"
+    strip-ansi "^5.2.0"
+
 string.prototype.padend@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/string.prototype.padend/-/string.prototype.padend-3.0.0.tgz#f3aaef7c1719f170c5eab1c32bf780d96e21f2f0"
@@ -10224,6 +10260,13 @@ strip-ansi@^5.0.0:
   resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-5.0.0.tgz#f78f68b5d0866c20b2c9b8c61b5298508dc8756f"
   dependencies:
     ansi-regex "^4.0.0"
+
+strip-ansi@^5.2.0:
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-5.2.0.tgz#8c9a536feb6afc962bdfa5b104a5091c1ad9c0ae"
+  integrity sha512-DuRs1gKbBqsMKIZlrffwlug8MHkcnpjs5VPmL1PAh+mA30U0DTotfDZ0d2UUsXpPmPmMMJ6W773MaA3J+lbiWA==
+  dependencies:
+    ansi-regex "^4.1.0"
 
 strip-bom@^2.0.0:
   version "2.0.0"
@@ -11147,6 +11190,7 @@ vm-browserify@0.0.4:
 void-elements@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/void-elements/-/void-elements-2.0.1.tgz#c066afb582bb1cb4128d60ea92392e94d5e9dbec"
+  integrity sha1-wGavtYK7HLQSjWDqkjkulNXp2+w=
 
 warning@^3.0.0:
   version "3.0.0"

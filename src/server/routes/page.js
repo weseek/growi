@@ -253,7 +253,7 @@ module.exports = function(crowi, app) {
     addRendarVarsForScope(renderVars, page);
 
     await addRenderVarsForSlack(renderVars, page);
-    await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit);
+    await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit, true);
 
     if (isUserPage(page.path)) {
       // change template
@@ -406,7 +406,10 @@ module.exports = function(crowi, app) {
     let view;
     const renderVars = { path };
 
-    if (!isCreatable || req.isForbidden) {
+    if (!isCreatable) {
+      view = 'customlayout-selector/not_creatable';
+    }
+    else if (req.isForbidden) {
       view = 'customlayout-selector/forbidden';
     }
     else {
@@ -429,7 +432,7 @@ module.exports = function(crowi, app) {
 
     const limit = 50;
     const offset = parseInt(req.query.offset) || 0;
-    await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit);
+    await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit, true);
 
     return res.render(view, renderVars);
   };
