@@ -280,6 +280,7 @@ SearchClient.prototype.addAllPages = async function() {
   const Page = this.crowi.model('Page');
   const allPageCount = await Page.allPageCount();
   const Bookmark = this.crowi.model('Bookmark');
+  const PageTagRelation = this.crowi.model('PageTagRelation');
   const cursor = Page.getStreamOfFindAll();
   let body = [];
   let sent = 0;
@@ -311,7 +312,8 @@ SearchClient.prototype.addAllPages = async function() {
         total++;
 
         const bookmarkCount = await Bookmark.countByPageId(doc._id);
-        const page = { ...doc, bookmarkCount };
+        const tagRelations = await PageTagRelation.find({ relatedPage: doc._id });
+        const page = { ...doc, bookmarkCount, tagIds: tagRelations.map((relation) => { return relation.relatedTag }) };
         self.prepareBodyForCreate(body, page);
 
         if (body.length >= 4000) {

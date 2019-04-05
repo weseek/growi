@@ -93,6 +93,9 @@
         "updated_at": {
           "type": "date",
           "format": "dateOptionalTime"
+        },
+        "tagIds": {
+          "type": "object"
         }
       }
     }
