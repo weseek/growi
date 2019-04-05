@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { translate } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 
 import FormGroup from 'react-bootstrap/es/FormGroup';
 import FormControl from 'react-bootstrap/es/FormControl';
@@ -287,4 +287,4 @@ OptionsSelector.propTypes = {
   onChange: PropTypes.func.isRequired,
 };
 
-export default translate()(OptionsSelector);
+export default withTranslation()(OptionsSelector);

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { translate } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 
 import PageRevisionList from './PageHistory/PageRevisionList';
 
@@ -144,4 +144,4 @@ PageHistory.propTypes = {
   crowi: PropTypes.object.isRequired,
 };
 
-export default translate()(PageHistory);
+export default withTranslation()(PageHistory);

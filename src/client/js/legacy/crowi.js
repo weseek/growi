@@ -683,7 +683,7 @@ $(() => {
 window.addEventListener('load', (e) => {
   // hash on page
   if (location.hash) {
-    if (location.hash === '#edit' || location.hash === '#edit-form') {
+    if ((location.hash === '#edit' || location.hash === '#edit-form') && $('.tab-pane#edit').length > 0) {
       $('a[data-toggle="tab"][href="#edit"]').tab('show');
       $('body').addClass('on-edit');
       $('body').addClass('builtin-editor');
@@ -691,12 +691,12 @@ window.addEventListener('load', (e) => {
       // focus
       Crowi.setCaretLineAndFocusToEditor();
     }
-    else if (location.hash === '#hackmd') {
+    else if (location.hash === '#hackmd' && $('.tab-pane#hackmd').length > 0) {
       $('a[data-toggle="tab"][href="#hackmd"]').tab('show');
       $('body').addClass('on-edit');
       $('body').addClass('hackmd');
     }
-    else if (location.hash === '#revision-history') {
+    else if (location.hash === '#revision-history' && $('.tab-pane#revision-history').length > 0) {
       $('a[data-toggle="tab"][href="#revision-history"]').tab('show');
     }
   }
