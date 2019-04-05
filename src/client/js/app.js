@@ -433,19 +433,17 @@ const previewOptions = new PreviewOptions(crowi.previewOptions);
 const pageEditorElem = document.getElementById('page-editor');
 if (pageEditorElem) {
   pageEditor = ReactDOM.render(
-    <I18nextProvider>
-      <PageEditor
-        crowi={crowi}
-        crowiRenderer={crowiRenderer}
-        pageId={pageId}
-        revisionId={pageRevisionId}
-        pagePath={pagePath}
-        markdown={markdown}
-        editorOptions={editorOptions}
-        previewOptions={previewOptions}
-        onSaveWithShortcut={saveWithShortcut}
-      />
-    </I18nextProvider>,
+    <PageEditor
+      crowi={crowi}
+      crowiRenderer={crowiRenderer}
+      pageId={pageId}
+      revisionId={pageRevisionId}
+      pagePath={pagePath}
+      markdown={markdown}
+      editorOptions={editorOptions}
+      previewOptions={previewOptions}
+      onSaveWithShortcut={saveWithShortcut}
+    />,
     pageEditorElem,
   );
   componentInstances.pageEditor = pageEditor;
