@@ -170,6 +170,7 @@ SearchClient.prototype.prepareBodyForUpdate = function(body, page) {
     bookmark_count: page.bookmarkCount || 0,
     like_count: page.liker.length || 0,
     updated_at: page.updatedAt,
+    tagIds: page.tagIds,
   };
 
   document = Object.assign(document, generateDocContentsRelatedToRestriction(page));
@@ -204,6 +205,7 @@ SearchClient.prototype.prepareBodyForCreate = function(body, page) {
     like_count: page.liker.length || 0,
     created_at: page.createdAt,
     updated_at: page.updatedAt,
+    tagIds: page.tagIds,
   };
 
   document = Object.assign(document, generateDocContentsRelatedToRestriction(page));
@@ -230,11 +232,14 @@ SearchClient.prototype.prepareBodyForDelete = function(body, page) {
 
 SearchClient.prototype.addPages = async function(pages) {
   const Bookmark = this.crowi.model('Bookmark');
+  const PageTagRelation = this.crowi.model('PageTagRelation');
   const body = [];
 
   /* eslint-disable no-await-in-loop */
   for (const page of pages) {
     page.bookmarkCount = await Bookmark.countByPageId(page._id);
+    const tagRelations = await PageTagRelation.find({ relatedPage: page._id });
+    page.tagIds = tagRelations.map((relation) => { return relation.relatedTag });
     this.prepareBodyForCreate(body, page);
   }
   /* eslint-enable no-await-in-loop */
@@ -245,14 +250,17 @@ SearchClient.prototype.addPages = async function(pages) {
   });
 };
 
-SearchClient.prototype.updatePages = function(pages) {
+SearchClient.prototype.updatePages = async function(pages) {
   const self = this;
+  const PageTagRelation = this.crowi.model('PageTagRelation');
   const body = [];
 
-  pages.map((page) => {
+  /* eslint-disable no-await-in-loop */
+  for (const page of pages) {
+    const tagRelations = await PageTagRelation.find({ relatedPage: page._id });
+    page.tagIds = tagRelations.map((relation) => { return relation.relatedTag });
     self.prepareBodyForUpdate(body, page);
-    return;
-  });
+  }
 
   logger.debug('updatePages(): Sending Request to ES', body);
   return this.client.bulk({
