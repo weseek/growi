@@ -171,7 +171,7 @@ export default class Editor extends AbstractEditor {
     this.setState({ isUploading: true });
   }
 
-  getDropzoneClassName() {
+  getDropzoneClassName(isDragAccept, isDragReject) {
     let className = 'dropzone';
     if (!this.props.isUploadable) {
       className += ' dropzone-unuploadable';
@@ -187,6 +187,14 @@ export default class Editor extends AbstractEditor {
     // uploading
     if (this.state.isUploading) {
       className += ' dropzone-uploading';
+    }
+
+    if (isDragAccept) {
+      className += ' dropzone-accepted';
+    }
+
+    if (isDragReject) {
+      className += ' dropzone-rejected';
     }
 
     return className;
@@ -242,42 +250,71 @@ export default class Editor extends AbstractEditor {
       <div style={flexContainer} className="editor-container">
         <Dropzone
           ref={(c) => { this.dropzone = c }}
-          disableClick
           accept={this.getAcceptableType()}
-          className={this.getDropzoneClassName()}
-          acceptClassName="dropzone-accepted"
-          rejectClassName="dropzone-rejected"
+          noClick={true}
+          noKeyboard={true}
           multiple={false}
           onDragLeave={this.dragLeaveHandler}
           onDrop={this.dropHandler}
         >
+          {({
+            getRootProps,
+            getInputProps,
+            isDragAccept,
+            isDragReject,
+          }) => {
 
-          { this.state.dropzoneActive && this.renderDropzoneOverlay() }
+            const inputAttributes = {
+              accept: this.getAcceptableType(),
+              type: 'file',
+              style: {
+                position: 'absolute',
+                top: 0,
+                right: 0,
+                bottom: 0,
+                left: 0,
+                opacity: 0.00001,
+                pointerEvents: 'none'
+              },
+              multiple: false,
+              //ref,
+              onChange: this.dropHandler,
+              autoComplete: 'off'
+            }
 
-          { this.state.isComponentDidMount && this.renderNavbar() }
+            return (
+              <div className={this.getDropzoneClassName(isDragAccept, isDragReject)} {...getRootProps()}>
+                { this.state.dropzoneActive && this.renderDropzoneOverlay() }
 
-          {/* for PC */}
-          { !isMobile && (
-            <CodeMirrorEditor
-              ref={(c) => { this.cmEditor = c }}
-              onPasteFiles={this.pasteFilesHandler}
-              onDragEnter={this.dragEnterHandler}
-              {...this.props}
-            />
-            )
-          }
+                { this.state.isComponentDidMount && this.renderNavbar() }
 
-          {/* for mobile */}
-          { isMobile && (
-            <TextAreaEditor
-              ref={(c) => { this.taEditor = c }}
-              onPasteFiles={this.pasteFilesHandler}
-              onDragEnter={this.dragEnterHandler}
-              {...this.props}
-            />
-            )
-          }
+                {/* for PC */}
+                { !isMobile && (
+                  <CodeMirrorEditor
+                    ref={elem => this.taEditor = }
+                    onPasteFiles={this.pasteFilesHandler}
+                    onDragEnter={this.dragEnterHandler}
+                    {...this.props}
+                    {...getInputProps({refKey: 'innerRef'})}
+                  />
+                  )
+                }
 
+                {/* for mobile */}
+                { isMobile && (
+                  <TextAreaEditor
+                    onPasteFiles={this.pasteFilesHandler}
+                    onDragEnter={this.dragEnterHandler}
+                    {...this.props}
+                    {...getInputProps()}
+                  />
+                  )
+                }
+
+                <input  {...inputAttributes} />
+              </div>
+            );
+          }}
         </Dropzone>
 
         { this.props.isUploadable
