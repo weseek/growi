@@ -171,7 +171,7 @@ export default class Editor extends AbstractEditor {
     this.setState({ isUploading: true });
   }
 
-  getDropzoneClassName(isDragAccept, isDragReject) {
+  getDropzoneClassName() {
     let className = 'dropzone';
     if (!this.props.isUploadable) {
       className += ' dropzone-unuploadable';
@@ -187,14 +187,6 @@ export default class Editor extends AbstractEditor {
     // uploading
     if (this.state.isUploading) {
       className += ' dropzone-uploading';
-    }
-
-    if (isDragAccept) {
-      className += ' dropzone-accepted';
-    }
-
-    if (isDragReject) {
-      className += ' dropzone-rejected';
     }
 
     return className;
@@ -252,54 +244,40 @@ export default class Editor extends AbstractEditor {
           ref={(c) => { this.dropzone = c }}
           disableClick
           accept={this.getAcceptableType()}
+          className={this.getDropzoneClassName()}
+          acceptClassName="dropzone-accepted"
+          rejectClassName="dropzone-rejected"
           multiple={false}
           onDragLeave={this.dragLeaveHandler}
           onDrop={this.dropHandler}
         >
-          {({
-            getRootProps,
-            getInputProps,
-            isDragAccept,
-            isDragReject,
-          }) => {
-            const { ref } = getInputProps();
-            if (isMobile) {
-              this.taEditor = ref.current;
-            }
- else {
-              this.cmEditor = ref.current;
-            }
 
-            return (
-              <div className={this.getDropzoneClassName(isDragAccept, isDragReject)} {...getRootProps()}>
-                { this.state.dropzoneActive && this.renderDropzoneOverlay() }
+          { this.state.dropzoneActive && this.renderDropzoneOverlay() }
 
-                { this.state.isComponentDidMount && this.renderNavbar() }
+          { this.state.isComponentDidMount && this.renderNavbar() }
 
-                {/* for PC */}
-                { !isMobile && (
-                  <CodeMirrorEditor
-                    onPasteFiles={this.pasteFilesHandler}
-                    onDragEnter={this.dragEnterHandler}
-                    {...this.props}
-                    {...getInputProps()}
-                  />
-                  )
-                }
+          {/* for PC */}
+          { !isMobile && (
+            <CodeMirrorEditor
+              ref={(c) => { this.cmEditor = c }}
+              onPasteFiles={this.pasteFilesHandler}
+              onDragEnter={this.dragEnterHandler}
+              {...this.props}
+            />
+            )
+          }
 
-                {/* for mobile */}
-                { isMobile && (
-                  <TextAreaEditor
-                    onPasteFiles={this.pasteFilesHandler}
-                    onDragEnter={this.dragEnterHandler}
-                    {...this.props}
-                    {...getInputProps()}
-                  />
-                  )
-                }
-              </div>
-            );
-          }}
+          {/* for mobile */}
+          { isMobile && (
+            <TextAreaEditor
+              ref={(c) => { this.taEditor = c }}
+              onPasteFiles={this.pasteFilesHandler}
+              onDragEnter={this.dragEnterHandler}
+              {...this.props}
+            />
+            )
+          }
+
         </Dropzone>
 
         { this.props.isUploadable
