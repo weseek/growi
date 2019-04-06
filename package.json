@@ -198,7 +198,7 @@
     "react-clipboard.js": "^2.0.0",
     "react-codemirror2": "^5.1.0",
     "react-dom": "^16.8.3",
-    "react-dropzone": "=7.0.1",
+    "react-dropzone": "^10.1.0",
     "react-frame-component": "^4.0.0",
     "react-i18next": "^10.6.1",
     "react-waypoint": "^9.0.0",
