@@ -251,8 +251,8 @@ export default class Editor extends AbstractEditor {
         <Dropzone
           ref={(c) => { this.dropzone = c }}
           accept={this.getAcceptableType()}
-          noClick={true}
-          noKeyboard={true}
+          noClick
+          noKeyboard
           multiple={false}
           onDragLeave={this.dragLeaveHandler}
           onDrop={this.dropHandler}
@@ -263,25 +263,6 @@ export default class Editor extends AbstractEditor {
             isDragAccept,
             isDragReject,
           }) => {
-
-            const inputAttributes = {
-              accept: this.getAcceptableType(),
-              type: 'file',
-              style: {
-                position: 'absolute',
-                top: 0,
-                right: 0,
-                bottom: 0,
-                left: 0,
-                opacity: 0.00001,
-                pointerEvents: 'none'
-              },
-              multiple: false,
-              //ref,
-              onChange: this.dropHandler,
-              autoComplete: 'off'
-            }
-
             return (
               <div className={this.getDropzoneClassName(isDragAccept, isDragReject)} {...getRootProps()}>
                 { this.state.dropzoneActive && this.renderDropzoneOverlay() }
@@ -291,11 +272,10 @@ export default class Editor extends AbstractEditor {
                 {/* for PC */}
                 { !isMobile && (
                   <CodeMirrorEditor
-                    ref={elem => this.taEditor = }
+                    ref={(c) => { this.cmEditor = c }}
                     onPasteFiles={this.pasteFilesHandler}
                     onDragEnter={this.dragEnterHandler}
                     {...this.props}
-                    {...getInputProps({refKey: 'innerRef'})}
                   />
                   )
                 }
@@ -303,15 +283,15 @@ export default class Editor extends AbstractEditor {
                 {/* for mobile */}
                 { isMobile && (
                   <TextAreaEditor
+                    ref={(c) => { this.taEditor = c }}
                     onPasteFiles={this.pasteFilesHandler}
                     onDragEnter={this.dragEnterHandler}
                     {...this.props}
-                    {...getInputProps()}
                   />
                   )
                 }
 
-                <input  {...inputAttributes} />
+                <input {...getInputProps()} />
               </div>
             );
           }}
