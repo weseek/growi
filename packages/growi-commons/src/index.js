@@ -1,1 +1,3 @@
-export * from './util/BasicInterceptor';
+module.exports = {
+  BasicInterceptor: require('./util/basic-interceptor'),
+};
