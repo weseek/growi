@@ -1,14 +1,13 @@
 import React from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 
-// SearchTypeahead wrapper
-export default class TagsListPage extends React.Component {
+export default class TagsList extends React.Component {
 
   constructor(props) {
     super(props);
 
     this.state = {
-      tags: ['growi', 'wiki', 'tag'],
+      tags: [],
     };
   }
 
@@ -30,8 +29,9 @@ export default class TagsListPage extends React.Component {
 
 }
 
-TagsListPage.propTypes = {
+TagsList.propTypes = {
+  crowi: PropTypes.object.isRequired,
 };
 
-TagsListPage.defaultProps = {
+TagsList.defaultProps = {
 };
