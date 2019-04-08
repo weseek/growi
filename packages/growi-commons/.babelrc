@@ -1,20 +1,13 @@
 {
   "presets": [
-    ["env", {
+    ["@babel/preset-env", {
       "targets": {
         "browsers": ["last 2 versions"]
       }
     }]
   ],
   "plugins": [
-    "add-module-exports",
-    "transform-class-properties"
   ],
   "env": {
-    "development": {
-      "presets": [
-        "power-assert"
-      ]
-    }
   }
 }

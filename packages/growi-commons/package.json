@@ -15,7 +15,7 @@
     "lint:styles:fix": "prettier-stylelint --quiet --write src/styles/scss/**/*.scss",
     "lint:styles": "stylelint src/styles/scss/**/*.scss",
     "lint": "npm-run-all -p lint:js lint:styles",
-    "test": ""
+    "test": "jest"
   },
   "repository": "https://github.com/weseek/growi-commons.git",
   "author": "Yuki Takei <yuki@weseek.co.jp>",
@@ -26,15 +26,26 @@
   "dependencies": {},
   "homepage": "https://github.com/weseek/growi-commons#readme",
   "devDependencies": {
+    "@babel/preset-env": "^7.4.3",
     "babel-eslint": "^10.0.1",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-react": "^6.24.1",
     "eslint": "^5.15.1",
     "eslint-config-weseek": "^1.0.1",
-    "eslint-plugin-chai-friendly": "^0.4.1",
     "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-jest": "^22.4.1",
     "eslint-plugin-react": "^7.12.4",
+    "jest": "^24.7.1",
+    "module-alias": "^2.2.0",
     "prettier-stylelint": "^0.4.2"
+  },
+  "_moduleAliases": {
+    "@root": ".",
+    "@src": "src"
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "@root/(.+)": "<rootDir>/$1",
+      "@src/(.+)": "<rootDir>/src/$1"
+    }
   },
   "engines": {
     "node": ">=8.11.1 <11",

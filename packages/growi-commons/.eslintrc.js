@@ -4,7 +4,7 @@ module.exports = {
     'weseek/react',
   ],
   env: {
-    mocha: true,
+    'jest/globals': true,
     jquery: true,
   },
   globals: {
@@ -15,7 +15,7 @@ module.exports = {
     window: true,
   },
   plugins: [
-    'chai-friendly',
+    'jest',
   ],
   rules: {
     'indent': [
@@ -35,8 +35,5 @@ module.exports = {
     ],
     // eslint-plugin-import rules
     'import/no-unresolved': [2, { ignore: ['^@'] }], // ignore @alias/..., @commons/..., ...
-    // eslint-plugin-chai-friendly rules
-    'no-unused-expressions': 0,
-    'chai-friendly/no-unused-expressions': 2,
   },
 };
