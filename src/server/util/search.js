@@ -525,9 +525,16 @@ SearchClient.prototype.appendCriteriaForQueryString = function(query, queryStrin
 
   if (parsedKeywords.tag.length > 0) {
     const queries = parsedKeywords.tag.map((tag) => {
-      return { term: { tag_names: tag } };
+      return { tag: { tag_names: tag } };
     });
     query.body.query.bool.filter.push({ bool: { should: queries } });
+  }
+
+  if (parsedKeywords.not_tag.length > 0) {
+    const queries = parsedKeywords.not_tag.map((tag) => {
+      return { tag: { tag_names: tag } };
+    });
+    query.body.query.bool.filter.push({ bool: { must_not: queries } });
   }
 };
 
