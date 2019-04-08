@@ -730,7 +730,7 @@ SearchClient.prototype.parseQueryString = function(queryString) {
 
     // https://regex101.com/r/pN9XfK/1
     const matchNegative = word.match(/^-(prefix:|tag:)?(.+)$/);
-    // https://regex101.com/r/fP9ohQ/1
+    // https://regex101.com/r/3qw9FQ/1
     const matchPositive = word.match(/^(prefix:|tag:)?(.+)$/);
 
     if (matchNegative != null) {
