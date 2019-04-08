@@ -33,6 +33,7 @@ export default class TagViewer extends React.Component {
     if (pageId) {
       const res = await this.props.crowi.apiGet('/pages.getPageTag', { pageId });
       this.setState({ currentPageTags: res.tags });
+      this.props.sendTagData(res.tags);
     }
   }
 

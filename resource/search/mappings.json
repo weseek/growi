@@ -93,6 +93,9 @@
         "updated_at": {
           "type": "date",
           "format": "dateOptionalTime"
+        },
+        "tag_names": {
+          "type": "text"
         }
       }
     }
