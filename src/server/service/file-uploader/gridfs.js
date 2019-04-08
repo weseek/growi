@@ -4,17 +4,19 @@ const util = require('util');
 
 module.exports = function(crowi) {
   const lib = {};
+  const COLLECTION_NAME = 'attachmentFiles';
+  const CHUNK_COLLECTION_NAME = 'attachmentFiles.chunks';
 
   // instantiate mongoose-gridfs
   const gridfs = require('mongoose-gridfs')({
-    collection: 'attachmentFiles',
+    collection: COLLECTION_NAME,
     model: 'AttachmentFile',
     mongooseConnection: mongoose.connection,
   });
 
   // obtain a model
   const AttachmentFile = gridfs.model;
-  const Chunks = mongoose.model('Chunks', gridfs.schema, 'attachmentFiles.chunks');
+  const Chunks = mongoose.model('Chunks', gridfs.schema, CHUNK_COLLECTION_NAME);
 
   // create promisified method
   AttachmentFile.promisifiedWrite = util.promisify(AttachmentFile.write).bind(AttachmentFile);
@@ -42,9 +44,13 @@ module.exports = function(crowi) {
     return new Promise((resolve, reject) => {
       Chunks.collection.stats((err, data) => {
         if (err) {
-          reject(err);
+          // return 0 if not exist
+          if (err.errmsg.includes('not found')) {
+            return resolve(0);
+          }
+          return reject(err);
         }
-        resolve(data.size);
+        return resolve(data.size);
       });
     });
   };
@@ -62,7 +68,15 @@ module.exports = function(crowi) {
       return { isUploadable: false, errorMessage: 'File size exceeds the size limit per file' };
     }
 
-    const usingFilesSize = await getCollectionSize();
+    let usingFilesSize;
+    try {
+      usingFilesSize = await getCollectionSize();
+    }
+    catch (err) {
+      logger.error(err);
+      return { isUploadable: false, errorMessage: err.errmsg };
+    }
+
     const gridfsTotalLimit = crowi.configManager.getConfig('crowi', 'gridfs:totalLimit');
     if (usingFilesSize + uploadFileSize > gridfsTotalLimit) {
       return { isUploadable: false, errorMessage: 'MongoDB for uploading files reaches limit' };

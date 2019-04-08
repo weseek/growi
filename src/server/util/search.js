@@ -170,6 +170,7 @@ SearchClient.prototype.prepareBodyForUpdate = function(body, page) {
     bookmark_count: page.bookmarkCount || 0,
     like_count: page.liker.length || 0,
     updated_at: page.updatedAt,
+    tag_names: page.tagNames,
   };
 
   document = Object.assign(document, generateDocContentsRelatedToRestriction(page));
@@ -204,6 +205,7 @@ SearchClient.prototype.prepareBodyForCreate = function(body, page) {
     like_count: page.liker.length || 0,
     created_at: page.createdAt,
     updated_at: page.updatedAt,
+    tag_names: page.tagNames,
   };
 
   document = Object.assign(document, generateDocContentsRelatedToRestriction(page));
@@ -230,11 +232,14 @@ SearchClient.prototype.prepareBodyForDelete = function(body, page) {
 
 SearchClient.prototype.addPages = async function(pages) {
   const Bookmark = this.crowi.model('Bookmark');
+  const PageTagRelation = this.crowi.model('PageTagRelation');
   const body = [];
 
   /* eslint-disable no-await-in-loop */
   for (const page of pages) {
     page.bookmarkCount = await Bookmark.countByPageId(page._id);
+    const tagRelations = await PageTagRelation.find({ relatedPage: page._id }).populate('relatedTag');
+    page.tagNames = tagRelations.map((relation) => { return relation.relatedTag.name });
     this.prepareBodyForCreate(body, page);
   }
   /* eslint-enable no-await-in-loop */
@@ -245,14 +250,17 @@ SearchClient.prototype.addPages = async function(pages) {
   });
 };
 
-SearchClient.prototype.updatePages = function(pages) {
+SearchClient.prototype.updatePages = async function(pages) {
   const self = this;
+  const PageTagRelation = this.crowi.model('PageTagRelation');
   const body = [];
 
-  pages.map((page) => {
+  /* eslint-disable no-await-in-loop */
+  for (const page of pages) {
+    const tagRelations = await PageTagRelation.find({ relatedPage: page._id }).populate('relatedTag');
+    page.tagNames = tagRelations.map((relation) => { return relation.relatedTag.name });
     self.prepareBodyForUpdate(body, page);
-    return;
-  });
+  }
 
   logger.debug('updatePages(): Sending Request to ES', body);
   return this.client.bulk({
@@ -280,6 +288,7 @@ SearchClient.prototype.addAllPages = async function() {
   const Page = this.crowi.model('Page');
   const allPageCount = await Page.allPageCount();
   const Bookmark = this.crowi.model('Bookmark');
+  const PageTagRelation = this.crowi.model('PageTagRelation');
   const cursor = Page.getStreamOfFindAll();
   let body = [];
   let sent = 0;
@@ -311,7 +320,8 @@ SearchClient.prototype.addAllPages = async function() {
         total++;
 
         const bookmarkCount = await Bookmark.countByPageId(doc._id);
-        const page = { ...doc, bookmarkCount };
+        const tagRelations = await PageTagRelation.find({ relatedPage: doc._id }).populate('relatedTag');
+        const page = { ...doc, bookmarkCount, tagNames: tagRelations.map((relation) => { return relation.relatedTag.name }) };
         self.prepareBodyForCreate(body, page);
 
         if (body.length >= 4000) {
@@ -702,6 +712,8 @@ SearchClient.prototype.parseQueryString = function(queryString) {
   const notPhraseWords = [];
   const prefixPaths = [];
   const notPrefixPaths = [];
+  const tags = [];
+  const notTags = [];
 
   queryString.trim();
   queryString = queryString.replace(/\s+/g, ' '); // eslint-disable-line no-param-reassign
@@ -730,24 +742,28 @@ SearchClient.prototype.parseQueryString = function(queryString) {
       return;
     }
 
-    // https://regex101.com/r/lN4LIV/1
-    const matchNegative = word.match(/^-(prefix:)?(.+)$/);
-    // https://regex101.com/r/gVssZe/1
-    const matchPositive = word.match(/^(prefix:)?(.+)$/);
+    // https://regex101.com/r/pN9XfK/1
+    const matchNegative = word.match(/^-(prefix:|tag:)?(.+)$/);
+    // https://regex101.com/r/3qw9FQ/1
+    const matchPositive = word.match(/^(prefix:|tag:)?(.+)$/);
 
     if (matchNegative != null) {
-      const isPrefixCondition = (matchNegative[1] != null);
-      if (isPrefixCondition) {
+      if (matchNegative[1] === 'prefix:') {
         notPrefixPaths.push(matchNegative[2]);
+      }
+      else if (matchNegative[1] === 'tag:') {
+        notTags.push(matchNegative[2]);
       }
       else {
         notMatchWords.push(matchNegative[2]);
       }
     }
     else if (matchPositive != null) {
-      const isPrefixCondition = (matchPositive[1] != null);
-      if (isPrefixCondition) {
+      if (matchPositive[1] === 'prefix:') {
         prefixPaths.push(matchPositive[2]);
+      }
+      else if (matchPositive[1] === 'tag:') {
+        tags.push(matchPositive[2]);
       }
       else {
         matchWords.push(matchPositive[2]);
@@ -762,6 +778,8 @@ SearchClient.prototype.parseQueryString = function(queryString) {
     not_phrase: notPhraseWords,
     prefix: prefixPaths,
     not_prefix: notPrefixPaths,
+    tag: tags,
+    not_tag: notTags,
   };
 };
 
