@@ -30,6 +30,7 @@ export default class TagViewer extends React.Component {
         // currentPageTags: res.tags, // [TODO] GC-1391
         revisionPageTags: res.tags,
       });
+      this.props.sendTagData(res.tags);
     }
   }
 
