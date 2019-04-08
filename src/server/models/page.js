@@ -329,7 +329,7 @@ module.exports = function(crowi) {
     /* eslint-disable no-await-in-loop */
     for (const tag of newTags) {
       const setTag = await Tag.findOrCreate(tag);
-      PageTagRelation.createIfNotExist(page._id, setTag._id);
+      await PageTagRelation.createIfNotExist(page._id, setTag._id);
     }
   };
 
