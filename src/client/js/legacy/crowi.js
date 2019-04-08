@@ -6,7 +6,8 @@ import ReactDOM from 'react-dom';
 
 import { debounce } from 'throttle-debounce';
 
-import * as pathUtils from '@commons/util/path-utils';
+import { pathUtils } from 'growi-commons';
+
 import GrowiRenderer from '../util/GrowiRenderer';
 import RevisionLoader from '../components/Page/RevisionLoader';
 

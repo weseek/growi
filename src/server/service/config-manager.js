@@ -1,5 +1,5 @@
 const debug = require('debug')('growi:service:ConfigManager');
-const pathUtils = require('@commons/util/path-utils');
+const pathUtils = require('growi-commons').pathUtils;
 const ConfigLoader = require('../service/config-loader');
 
 const KEYS_FOR_SAML_USE_ONLY_ENV_OPTION = [
