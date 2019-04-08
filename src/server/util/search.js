@@ -170,7 +170,7 @@ SearchClient.prototype.prepareBodyForUpdate = function(body, page) {
     bookmark_count: page.bookmarkCount || 0,
     like_count: page.liker.length || 0,
     updated_at: page.updatedAt,
-    tagIds: page.tagIds,
+    tag_names: page.tagNames,
   };
 
   document = Object.assign(document, generateDocContentsRelatedToRestriction(page));
@@ -205,7 +205,7 @@ SearchClient.prototype.prepareBodyForCreate = function(body, page) {
     like_count: page.liker.length || 0,
     created_at: page.createdAt,
     updated_at: page.updatedAt,
-    tagIds: page.tagIds,
+    tag_names: page.tagNames,
   };
 
   document = Object.assign(document, generateDocContentsRelatedToRestriction(page));
@@ -238,8 +238,8 @@ SearchClient.prototype.addPages = async function(pages) {
   /* eslint-disable no-await-in-loop */
   for (const page of pages) {
     page.bookmarkCount = await Bookmark.countByPageId(page._id);
-    const tagRelations = await PageTagRelation.find({ relatedPage: page._id });
-    page.tagIds = tagRelations.map((relation) => { return relation.relatedTag });
+    const tagRelations = await PageTagRelation.find({ relatedPage: page._id }).populate('relatedTag');
+    page.tagNames = tagRelations.map((relation) => { return relation.relatedTag.name });
     this.prepareBodyForCreate(body, page);
   }
   /* eslint-enable no-await-in-loop */
@@ -257,8 +257,8 @@ SearchClient.prototype.updatePages = async function(pages) {
 
   /* eslint-disable no-await-in-loop */
   for (const page of pages) {
-    const tagRelations = await PageTagRelation.find({ relatedPage: page._id });
-    page.tagIds = tagRelations.map((relation) => { return relation.relatedTag });
+    const tagRelations = await PageTagRelation.find({ relatedPage: page._id }).populate('relatedTag');
+    page.tagNames = tagRelations.map((relation) => { return relation.relatedTag.name });
     self.prepareBodyForUpdate(body, page);
   }
 
@@ -320,8 +320,8 @@ SearchClient.prototype.addAllPages = async function() {
         total++;
 
         const bookmarkCount = await Bookmark.countByPageId(doc._id);
-        const tagRelations = await PageTagRelation.find({ relatedPage: doc._id });
-        const page = { ...doc, bookmarkCount, tagIds: tagRelations.map((relation) => { return relation.relatedTag }) };
+        const tagRelations = await PageTagRelation.find({ relatedPage: doc._id }).populate('relatedTag');
+        const page = { ...doc, bookmarkCount, tagNames: tagRelations.map((relation) => { return relation.relatedTag.name }) };
         self.prepareBodyForCreate(body, page);
 
         if (body.length >= 4000) {
@@ -367,7 +367,7 @@ SearchClient.prototype.search = async function(query) {
     });
     logger.debug('ES returns explanations: ', result.explanations);
   }
-
+  console.log(query.body.query.function_score.query.bool.filter);
   const result = await this.client.search(query);
 
   // for debug

@@ -94,7 +94,7 @@
           "type": "date",
           "format": "dateOptionalTime"
         },
-        "tagIds": {
+        "tag_names": {
           "type": "text"
         }
       }
