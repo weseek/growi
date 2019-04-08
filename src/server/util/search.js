@@ -367,7 +367,7 @@ SearchClient.prototype.search = async function(query) {
     });
     logger.debug('ES returns explanations: ', result.explanations);
   }
-  console.log(query.body.query.function_score.query.bool.filter);
+
   const result = await this.client.search(query);
 
   // for debug
