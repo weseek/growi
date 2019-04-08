@@ -698,6 +698,8 @@ SearchClient.prototype.parseQueryString = function(queryString) {
   const notPhraseWords = [];
   const prefixPaths = [];
   const notPrefixPaths = [];
+  const tags = [];
+  const notTags = [];
 
   queryString.trim();
   queryString = queryString.replace(/\s+/g, ' '); // eslint-disable-line no-param-reassign
@@ -726,24 +728,28 @@ SearchClient.prototype.parseQueryString = function(queryString) {
       return;
     }
 
-    // https://regex101.com/r/lN4LIV/1
-    const matchNegative = word.match(/^-(prefix:)?(.+)$/);
-    // https://regex101.com/r/gVssZe/1
-    const matchPositive = word.match(/^(prefix:)?(.+)$/);
+    // https://regex101.com/r/pN9XfK/1
+    const matchNegative = word.match(/^-(prefix:|tag:)?(.+)$/);
+    // https://regex101.com/r/3qw9FQ/1
+    const matchPositive = word.match(/^(prefix:|tag:)?(.+)$/);
 
     if (matchNegative != null) {
-      const isPrefixCondition = (matchNegative[1] != null);
-      if (isPrefixCondition) {
+      if (matchNegative[1] === 'prefix:') {
         notPrefixPaths.push(matchNegative[2]);
+      }
+      else if (matchNegative[1] === 'tag:') {
+        notTags.push(matchNegative[2]);
       }
       else {
         notMatchWords.push(matchNegative[2]);
       }
     }
     else if (matchPositive != null) {
-      const isPrefixCondition = (matchPositive[1] != null);
-      if (isPrefixCondition) {
+      if (matchPositive[1] === 'prefix:') {
         prefixPaths.push(matchPositive[2]);
+      }
+      else if (matchPositive[1] === 'tag:') {
+        tags.push(matchPositive[2]);
       }
       else {
         matchWords.push(matchPositive[2]);
@@ -758,6 +764,8 @@ SearchClient.prototype.parseQueryString = function(queryString) {
     not_phrase: notPhraseWords,
     prefix: prefixPaths,
     not_prefix: notPrefixPaths,
+    tag: tags,
+    not_tag: notTags,
   };
 };
 
