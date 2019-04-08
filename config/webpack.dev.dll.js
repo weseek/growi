@@ -28,8 +28,6 @@ module.exports = {
       'socket.io-client',
       'toastr',
       'xss',
-      // GROWI Libraries
-      'growi-pluginkit',
     ],
   },
   output: {

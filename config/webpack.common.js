@@ -81,6 +81,7 @@ module.exports = (options) => {
             test:    helpers.root('node_modules'),
             exclude: [ // include as a result
               { test: helpers.root('node_modules', 'growi-plugin-') },
+              helpers.root('node_modules/growi-commons'),
               helpers.root('node_modules/codemirror/src'),
             ],
           },
