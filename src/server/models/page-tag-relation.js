@@ -33,7 +33,7 @@ class PageTagRelation {
 
   static async createIfNotExist(pageId, tagId) {
     if (!await this.findOne({ relatedPage: pageId, relatedTag: tagId })) {
-      this.create({ relatedPage: pageId, relatedTag: tagId });
+      await this.create({ relatedPage: pageId, relatedTag: tagId });
     }
   }
 
