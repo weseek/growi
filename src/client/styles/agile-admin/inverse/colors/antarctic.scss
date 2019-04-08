@@ -18,24 +18,28 @@ $wikilinktext: lighten($themecolor, 5%);
 $wikilinktext-hover: lighten($wikilinktext, 15%);
 $inline-code-color: darken($subthemecolor, 5%);
 $inline-code-bg: lighten($subthemecolor, 70%);
-$border: $accentcolor;
+$border: $subthemecolor;
 $border-original: $subthemecolor;
 $navbar-border: $themecolor;
 $background-color: rgba($color: $themelight, $alpha: 0.8);
-
+$info:$subthemecolor;
 
 @import 'apply-colors';
 @import 'apply-colors-light';
 
 // change color of highlighted header in wiki (default: orange)
+.code-line {
+  color: $subthemecolor;
+}
+
 .wiki {
   h1 {
     border-color: $subthemecolor;
   }
 
   .code-line.revision-head.highlighted {
-    background-color: lighten($themecolor, 50%);
     color: $themelight;
+    background-color: lighten($themecolor, 50%);
 
     .icon-note,
     .icon-link {
@@ -48,15 +52,19 @@ $background-color: rgba($color: $themelight, $alpha: 0.8);
 
 .main-container>#wrapper>#page-wrapper,
 .page-editor-preview-container {
-  background-image: url("/images/themes/antarctic/test6.jpg");
-  background-size: cover;
+  background-image: url('/images/themes/antarctic/test11.jpg');
   background-attachment: fixed;
   background-position: center center;
-
+  background-size: cover;
 }
 
 .sidebar {
   background: $themecolor;
+}
+
+table,
+.hljs {
+  background-color: $background-color;
 }
 
 .bg-title,
@@ -72,18 +80,31 @@ $background-color: rgba($color: $themelight, $alpha: 0.8);
   border-top: none;
 }
 
-#wrapper>.navbar>.navbar-header,
-.modal-header {
+/*
+ * Accentcolor (yellow)
+ */
+
+header.affix {
+  border-bottom: 4px solid $accentcolor;
+}
+
+.modal {
+  .modal-header {
+    border-bottom: 4px solid $accentcolor;
+  }
+}
+
+#wrapper>.navbar>.navbar-header {
   border-bottom: 4px solid $accentcolor;
 }
 
 /*
- * comments
+ * Comments
  */
 
 .page-comment {
   .page-comment-main {
-    box-shadow: 4px 4px 4px gray;
+    box-shadow: 0px 3px 15px rgba(0, 0, 0, 0.2);
 
     .page-comment-creator>a {
       border-bottom: 1px double $subthemecolor;
@@ -91,26 +112,48 @@ $background-color: rgba($color: $themelight, $alpha: 0.8);
   }
 }
 
+.growi .main {
+  .page-comments-row {
+    border-top-color: transparent;
+  }
 
+  .page-comment .page-comment-main,
+  .page-comment-form .comment-form-main {
+    background-color: $background-color;
 
+    &::before {
+      border-right-color: $background-color;
+    }
 
-// /*
-//  * Tabs
-//  */
+    .nav.nav-tabs {
+      >li.active>a {
+        background: $themecolor;
+        border-bottom: solid 1px $themecolor;
+        border-bottom-color: $themecolor;
+      }
+    }
+  }
+}
+
+/*
+ * Tabs
+ */
+
 .nav.nav-tabs>li.active>a {
   color: $themelight;
 }
 
+.text-info,
 body:not(.on-edit) .nav.nav-tabs {
   >li>a {
     color: $subthemecolor;
   }
 
   >li.active>a {
+    color: $themelight;
     background: linear-gradient(rgba($active-nav-tabs-bgcolor, 0) 50%,
       rgba($active-nav-tabs-bgcolor, 0) 90%,
       $active-nav-tabs-bgcolor 100%); // overwrite only the bottom pixel
-    color: #f0f8ff;
     background-color: $themecolor;
   }
 }
@@ -118,36 +161,40 @@ body:not(.on-edit) .nav.nav-tabs {
 /*
  * Panel
  */
+
 .panel {
   width: 80%;
   margin: 0px auto;
 
   &.panel-white,
   &.panel-default {
-    border-color: $border-original;
     border: 1px solid $subthemecolor;
+    border-color: $border-original;
 
     .panel-heading {
       color: $subthemecolor;
       background-color: $background-color;
     }
   }
-
 }
 
-table {
-  background-color: $background-color;
-}
+/*
+ *  Right space for readable
+ */
 
-.revision-toc-content a {
+.growi.main-container {
+  .revision-toc {
+    max-width: 360px;
+    background-color: $background-color;
+    border-radius: 5px;
 
-  color: $themelight;
-  text-shadow: 0.9px 0.9px 0 #000,
-    -0.9px 0.9px 0 #000,
-    0.9px -0.9px 0 #000,
-    -0.9px -0.9px 0 #000;
-}
+    .revision-toc-content {
+      padding: 10px;
 
-.hljs {
-  background-color: $background-color;
+      ul {
+        padding-left: 5px;
+      }
+
+    }
+  }
 }
