@@ -1,5 +1,7 @@
 import * as url from 'url';
 
+import { pathUtils } from 'growi-commons';
+
 export class LsxContext {
 
   constructor() {
@@ -62,26 +64,10 @@ export class LsxContext {
     //   when `fromPagePath`=/hoge and `specifiedPath`=undefined,
     //        `pagePath` to be /hoge
     this.pagePath = (specifiedPath !== undefined) ?
-      decodeURIComponent(url.resolve(this.addSlashOfEnd(this.fromPagePath), specifiedPath)):
+      decodeURIComponent(url.resolve(pathUtils.addTrailingSlash(this.fromPagePath), specifiedPath)):
       this.fromPagePath;
 
     this.isParsed = true;
-  }
-
-  /**
-   * return path that added slash to the end for specified path
-   *
-   * @param {string} path
-   * @returns
-   *
-   * @memberOf LsxContext
-   */
-  addSlashOfEnd(path) {
-    let returnPath = path;
-    if (!path.match(/\/$/)) {
-      returnPath += '/';
-    }
-    return returnPath;
   }
 
   getOptDepth() {

@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 
 import * as url from 'url';
 
+import { pathUtils } from 'growi-commons';
+
 // eslint-disable-next-line no-unused-vars
 import styles from '../../css/index.css';
 
@@ -43,7 +45,7 @@ export class Lsx extends React.Component {
 
     // add slash ensure not to forward match to another page
     // ex: '/Java/' not to match to '/JavaScript'
-    let pagePath = this.addSlashOfEnd(lsxContext.pagePath);
+    let pagePath = pathUtils.addTrailingSlash(lsxContext.pagePath);
 
     this.props.crowi.apiGet('/plugins/lsx', {pagePath, options: lsxContext.options})
       .then((res) => {
@@ -82,7 +84,7 @@ export class Lsx extends React.Component {
     pages.forEach((page) => {
       // add slash ensure not to forward match to another page
       // e.g. '/Java/' not to match to '/JavaScript'
-      const pagePath = this.addSlashOfEnd(page.path);
+      const pagePath = pathUtils.addTrailingSlash(page.path);
 
       // exclude rootPagePath itself
       if (this.isEquals(pagePath, rootPagePath)) {
@@ -151,23 +153,7 @@ export class Lsx extends React.Component {
   }
 
   /**
-   * return path that added slash to the end for specified path
-   *
-   * @param {string} path
-   * @returns
-   *
-   * @memberOf LsxContext
-   */
-  addSlashOfEnd(path) {
-    let returnPath = path;
-    if (!path.match(/\/$/)) {
-      returnPath += '/';
-    }
-    return returnPath;
-  }
-
-  /**
-   * addSlashOfEnd and compare whether path1 and path2 is the same
+   * compare whether path1 and path2 is the same
    *
    * @param {string} path1
    * @param {string} path2
@@ -176,11 +162,11 @@ export class Lsx extends React.Component {
    * @memberOf Lsx
    */
   isEquals(path1, path2) {
-    return this.addSlashOfEnd(path1) === this.addSlashOfEnd(path2);
+    return pathUtils.removeTrailingSlash(path1) === pathUtils.removeTrailingSlash(path2);
   }
 
   getParentPath(path) {
-    return this.addSlashOfEnd(decodeURIComponent(url.resolve(path, '../')));
+    return pathUtils.addTrailingSlash(decodeURIComponent(url.resolve(path, '../')));
   }
 
   renderContents() {

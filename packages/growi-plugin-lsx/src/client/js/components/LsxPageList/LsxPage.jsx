@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { pathUtils } from 'growi-commons';
+
 import PageListMeta from '@client/js/components/PageList/PageListMeta';
 
 import { LsxContext } from '../../util/LsxContext';
@@ -75,25 +77,13 @@ export class LsxPage extends React.Component {
       : <i className="ti-file lsx-page-not-exist" aria-hidden="true"></i>;
   }
 
-  /**
-   * return path that omitted slash of the end for specified path
-   *
-   * @param {string} path
-   * @returns
-   *
-   * @memberOf LsxContext
-   */
-  omitSlashOfEnd(path) {
-    return path.replace((/\/$/), '');
-  }
-
   render() {
     const pageNode = this.props.pageNode;
 
     // create PagePath element
     let pagePathNode = <PagePathWrapper pagePath={pageNode.pagePath} isExists={this.state.isExists} />;
     if (this.state.isLinkable) {
-      pagePathNode = <a className="page-list-link" href={this.omitSlashOfEnd(pageNode.pagePath)}>{pagePathNode}</a>;
+      pagePathNode = <a className="page-list-link" href={pathUtils.removeTrailingSlash(pageNode.pagePath)}>{pagePathNode}</a>;
     }
 
     // create PageListMeta element

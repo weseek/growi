@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import { BasicInterceptor } from 'growi-pluginkit';
+import { BasicInterceptor } from 'growi-commons';
 
 import { Lsx } from '../../components/Lsx';
 import { LsxCacheHelper } from '../LsxCacheHelper';
