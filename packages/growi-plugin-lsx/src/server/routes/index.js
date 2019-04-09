@@ -1,5 +1,5 @@
 module.exports = (crowi, app) => {
-  var debug = require('debug')('growi-plugin:lsx:routes')
+  let debug = require('debug')('growi-plugin:lsx:routes')
     , middleware = crowi.require('../util/middlewares')
     , lsx = require('./lsx')(crowi, app)
     , loginRequired = middleware.loginRequired
@@ -9,4 +9,4 @@ module.exports = (crowi, app) => {
 
   // app.get('/_api/plugins/lsx', accessTokenParser , loginRequired(crowi, app) , lsx.renderHtml);
   app.get('/_api/plugins/lsx', lsx.listPages);
-}
+};

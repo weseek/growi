@@ -1,5 +1,5 @@
-import { LsxPreRenderInterceptor } from './resource/js/util/Interceptor/LsxPreRenderInterceptor';
-import { LsxPostRenderInterceptor } from './resource/js/util/Interceptor/LsxPostRenderInterceptor';
+import { LsxPreRenderInterceptor } from './client/js/util/Interceptor/LsxPreRenderInterceptor';
+import { LsxPostRenderInterceptor } from './client/js/util/Interceptor/LsxPostRenderInterceptor';
 
 module.exports = (crowi, crowiRenderer) => {
   // add interceptors

@@ -174,7 +174,7 @@ export class Lsx extends React.Component {
    * @memberOf Lsx
    */
   isEquals(path1, path2) {
-    return this.addSlashOfEnd(path1) === this.addSlashOfEnd(path2)
+    return this.addSlashOfEnd(path1) === this.addSlashOfEnd(path2);
   }
 
   getParentPath(path) {

@@ -38,8 +38,8 @@ export class PageNode {
     // instanciate recursively
     pageNode.children = obj.children.map((childObj) => {
       return PageNode.instanciateFrom(childObj);
-    })
+    });
 
-    return pageNode
+    return pageNode;
   }
 }

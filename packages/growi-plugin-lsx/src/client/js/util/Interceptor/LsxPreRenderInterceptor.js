@@ -97,9 +97,9 @@ export class LsxPreRenderInterceptor extends BasicInterceptor {
    * @return random strings
    */
   createRandomStr(length) {
-    const bag = "abcdefghijklmnopqrstuvwxyz0123456789";
-    let generated = "";
-    for (var i = 0; i < length; i++) {
+    const bag = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    let generated = '';
+    for (let i = 0; i < length; i++) {
       generated += bag[Math.floor(Math.random() * bag.length)];
     }
     return generated;

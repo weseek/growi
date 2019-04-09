@@ -8,4 +8,4 @@ module.exports = {
   clientEntries: [
     path.join(__dirname, 'client-entry.js')
   ]
-}
+};
