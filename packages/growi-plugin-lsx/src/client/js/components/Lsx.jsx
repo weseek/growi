@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import * as url from 'url';
 
+// eslint-disable-next-line no-unused-vars
 import styles from '../../css/index.css';
 
 import { LsxContext } from '../util/LsxContext';
@@ -24,6 +25,7 @@ export class Lsx extends React.Component {
     };
   }
 
+  // eslint-disable-next-line react/no-deprecated
   componentWillMount() {
     const lsxContext = this.props.lsxContext;
     lsxContext.parse();
@@ -196,7 +198,7 @@ export class Lsx extends React.Component {
       return (
         <div className="text-warning">
           <i className="fa fa-exclamation-triangle fa-fw"></i>
-          {lsxContext.tagExpression} (-> <small>{this.state.errorMessage}</small>)
+          {lsxContext.tagExpression} (-&gt; <small>{this.state.errorMessage}</small>)
         </div>
       );
     }

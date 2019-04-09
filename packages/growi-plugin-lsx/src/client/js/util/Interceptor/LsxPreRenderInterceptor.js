@@ -1,9 +1,5 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-
 import { BasicInterceptor } from 'growi-pluginkit';
 
-import { Lsx } from '../../components/Lsx';
 import { LsxContext } from '../LsxContext';
 import { LsxCacheHelper } from '../LsxCacheHelper';
 
@@ -35,7 +31,6 @@ export class LsxPreRenderInterceptor extends BasicInterceptor {
    */
   process(contextName, ...args) {
     const context = Object.assign(args[0]);   // clone
-    const markdown = context.markdown;
     const parsedHTML = context.parsedHTML;
     const currentPagePath = context.currentPagePath;
     this.initializeCache(contextName);

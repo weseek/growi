@@ -1,4 +1,3 @@
-const debug = require('debug')('growi-plugin:lsx:routes:lsx');
 const OptionParser = require('../util/option-parser');
 
 class Lsx {
