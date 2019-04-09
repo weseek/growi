@@ -49,10 +49,9 @@ $info:$subthemecolor;
 }
 
 // add background-image
-
 .main-container>#wrapper>#page-wrapper,
 .page-editor-preview-container {
-  background-image: url('/images/themes/antarctic/test11.jpg');
+  background-image: url('/images/themes/antarctic/bg.svg');
   background-attachment: fixed;
   background-position: center center;
   background-size: cover;
@@ -195,6 +194,25 @@ body:not(.on-edit) .nav.nav-tabs {
         padding-left: 5px;
       }
 
+    }
+  }
+}
+
+/*
+ *  Login page
+ */
+
+.login-page>#wrapper>#page-wrapper {
+  background-image: url('/images/themes/antarctic/topimage.svg');
+  background-attachment: fixed;
+  background-position: center center;
+  background-size: cover;
+
+  .link-switch {
+    color: dimgray;
+
+    &:hover {
+      color: #000080;
     }
   }
 }
