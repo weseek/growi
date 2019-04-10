@@ -537,7 +537,7 @@ SearchClient.prototype.appendCriteriaForQueryString = function(query, queryStrin
     const queries = parsedKeywords.tag.map((tag) => {
       return { term: { tag_names: tag } };
     });
-    query.body.query.bool.filter.push({ bool: { should: queries } });
+    query.body.query.bool.filter.push({ bool: { must: queries } });
   }
 
   if (parsedKeywords.not_tag.length > 0) {
