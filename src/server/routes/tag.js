@@ -24,5 +24,28 @@ module.exports = function(crowi, app) {
     return res.json(ApiResponse.success({ tags }));
   };
 
+  /**
+   * @api {get} /tags.list get tagnames and count pages relate each tag
+   * @apiName tagList
+   * @apiGroup Tag
+   */
+  api.list = async function(req, res) {
+    const PageTagRelation = crowi.model('PageTagRelation');
+
+    const tags = await Tag.find();
+    const result = [];
+
+    /* eslint-disable no-await-in-loop */
+    for (const tag of tags) {
+      const data = {};
+      data.tagName = tag.name;
+      data.countPage = await PageTagRelation.count({ relatedTag: tag.id });
+      result.push(data);
+    }
+
+    return res.json(ApiResponse.success(result));
+  };
+
+
   return actions;
 };
