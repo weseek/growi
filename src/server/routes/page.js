@@ -2,7 +2,7 @@
 module.exports = function(crowi, app) {
   const debug = require('debug')('growi:routes:page');
   const logger = require('@alias/logger')('growi:routes:page');
-  const pathUtils = require('@commons/util/path-utils');
+  const pathUtils = require('growi-commons').pathUtils;
   const Page = crowi.model('Page');
   const User = crowi.model('User');
   const Config = crowi.model('Config');

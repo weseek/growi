@@ -1,6 +1,6 @@
 const debug = require('debug')('growi:lib:middlewares');
 const logger = require('@alias/logger')('growi:lib:middlewares');
-const pathUtils = require('@commons/util/path-utils');
+const pathUtils = require('growi-commons').pathUtils;
 const md5 = require('md5');
 const entities = require('entities');
 
