@@ -94,8 +94,8 @@
           "type": "date",
           "format": "dateOptionalTime"
         },
-        "tags": {
-          "type": "keyword"
+        "tag_names": {
+          "type": "text"
         }
       }
     }

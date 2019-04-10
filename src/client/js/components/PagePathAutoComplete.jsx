@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import * as pathUtils from '@commons/util/path-utils';
+import { pathUtils } from 'growi-commons';
+
 import SearchTypeahead from './SearchTypeahead';
 
 export default class PagePathAutoComplete extends React.Component {

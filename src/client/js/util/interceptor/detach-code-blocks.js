@@ -1,5 +1,4 @@
-import { BasicInterceptor } from 'growi-pluginkit';
-
+import { BasicInterceptor } from 'growi-commons';
 
 class DetachCodeBlockUtil {
 

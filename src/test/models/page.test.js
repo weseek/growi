@@ -14,7 +14,6 @@ describe('Page', () => {
 
   let createdPages;
   let createdUsers;
-  let createdUserGroups;
 
   before(async() => {
     await conn.collection('pages').remove();
@@ -30,19 +29,14 @@ describe('Page', () => {
     const testUser0 = createdUsers[0];
     const testUser1 = createdUsers[1];
 
-    const groupFixture = [
-      {
-        image: '',
-        name: 'TestGroup0',
-      },
-      {
-        image: '',
-        name: 'TestGroup1',
-      },
-    ];
-    createdUserGroups = await testDBUtil.generateFixture(conn, 'UserGroup', groupFixture);
+    const UserGroup = conn.model('UserGroup');
+    let testGroup0 = new UserGroup();
+    testGroup0.name = 'TestGroup0';
+    let testGroup1 = new UserGroup();
+    testGroup1.name = 'TestGroup1';
+    testGroup0 = await testGroup0.save();
+    testGroup1 = await testGroup1.save();
 
-    const testGroup0 = createdUserGroups[0];
     const userGroupRelationFixture = [
       {
         relatedGroup: testGroup0,

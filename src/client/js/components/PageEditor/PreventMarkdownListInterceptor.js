@@ -1,4 +1,5 @@
-import { BasicInterceptor } from 'growi-pluginkit';
+import { BasicInterceptor } from 'growi-commons';
+
 import mlu from './MarkdownListUtil';
 
 export default class PreventMarkdownListInterceptor extends BasicInterceptor {
