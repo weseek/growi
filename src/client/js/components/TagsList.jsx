@@ -25,7 +25,7 @@ export default class TagsList extends React.Component {
           {this.state.tagData.map((data) => {
             return (
               <a key={data.tagName} href={`/_search?q=tag:${data.tagName}`} className="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                <p className="float-left my-0">{data.tagNeme}</p>
+                <p className="float-left my-0">{data.tagName}</p>
               </a>
             );
           })}
