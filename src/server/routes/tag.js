@@ -35,15 +35,20 @@ module.exports = function(crowi, app) {
     const tags = await Tag.find();
     const result = [];
 
-    /* eslint-disable no-await-in-loop */
-    for (const tag of tags) {
-      const data = {};
-      data.tagName = tag.name;
-      data.countPage = await PageTagRelation.count({ relatedTag: tag.id });
-      result.push(data);
+    try {
+      /* eslint-disable no-await-in-loop */
+      for (const tag of tags) {
+        const data = {};
+        data.tagName = tag.name;
+        data.countPage = await PageTagRelation.count({ relatedTag: tag.id });
+        result.push(data);
+      }
+    }
+    catch (err) {
+      return res.json(ApiResponse.error(err));
     }
 
-    return res.json(ApiResponse.success(result));
+    return res.json(ApiResponse.success({ result }));
   };
 
 
