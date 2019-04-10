@@ -11,6 +11,13 @@ export default class TagsList extends React.Component {
     };
   }
 
+  async componentWillMount() {
+    const res = await this.props.crowi.apiGet('/tags.list');
+    this.setState({
+      tags: res.tags,
+    });
+  }
+
   render() {
     return (
       <div>
