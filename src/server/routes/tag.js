@@ -28,12 +28,18 @@ module.exports = function(crowi, app) {
    * @api {get} /tags.list get tagnames and count pages relate each tag
    * @apiName tagList
    * @apiGroup Tag
+   *
+   * @apiParam {Number} limit
+   * @apiParam {Number} offset
    */
   api.list = async function(req, res) {
     const PageTagRelation = crowi.model('PageTagRelation');
+    const limit = +req.query.limit || 50;
+    const offset = +req.query.offset || 0;
+    const queryOptions = { offset, limit };
+    const result = [];
 
     const tags = await Tag.find();
-    const result = [];
 
     try {
       /* eslint-disable no-await-in-loop */
