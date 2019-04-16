@@ -28,7 +28,8 @@ $info:$subthemecolor;
 @import 'apply-colors-light';
 
 // change color of highlighted header in wiki (default: orange)
-.code-line {
+.code-line,
+ul>.text-muted {
   color: $subthemecolor;
 }
 
@@ -83,10 +84,6 @@ table,
 .help-block {
   padding: 5px;
 }
-
-// .help-block {
-//   color: $subthemecolor;
-// }
 
 /*
  * Accentcolor (yellow)
