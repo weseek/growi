@@ -62,7 +62,8 @@ $info:$subthemecolor;
 }
 
 table,
-.hljs {
+.hljs,
+.help-block {
   background-color: $background-color;
 }
 
@@ -78,6 +79,14 @@ table,
 .editor-container .btn-open-dropzone {
   border-top: none;
 }
+
+.help-block {
+  padding: 5px;
+}
+
+// .help-block {
+//   color: $subthemecolor;
+// }
 
 /*
  * Accentcolor (yellow)
