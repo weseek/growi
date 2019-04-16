@@ -1,6 +1,6 @@
 {
   "name": "growi-commons",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "description": "GROWI Commons Libraries",
   "keywords": [
     "growi"
@@ -15,7 +15,7 @@
     "lint:styles:fix": "prettier-stylelint --quiet --write src/styles/scss/**/*.scss",
     "lint:styles": "stylelint src/styles/scss/**/*.scss",
     "lint": "npm-run-all -p lint:js lint:styles",
-    "test": "jest"
+    "test": "jest --verbose"
   },
   "repository": "https://github.com/weseek/growi-commons.git",
   "author": "Yuki Takei <yuki@weseek.co.jp>",
