@@ -31,4 +31,14 @@ describe('args-parser', () => {
     expect(result.options.opt2).toBe('2');
   });
 
+  test('.parse(\'key, \') returns a valid results', () => {
+    const result = ArgsParser.parse('key, ');
+
+    expect(result.firstArgsKey).toBe('key');
+    expect(result.firstArgsValue).toBeTruthy();
+
+    expect(Object.keys(result.options).length).toBe(1);
+    expect(result.options.key).toBeTruthy();
+  });
+
 });

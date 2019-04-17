@@ -21,6 +21,11 @@ class ArgsParser {
         // parse string like 'key1=value1, key2=value2, ...'
         // see https://regex101.com/r/pYHcOM/1
         const match = arg.match(/([^=]+)=?(.+)?/);
+
+        if (match == null) {
+          return;
+        }
+
         const key = match[1];
         const value = match[2] || true;
         options[key] = value;
