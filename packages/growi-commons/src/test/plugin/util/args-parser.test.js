@@ -1,5 +1,3 @@
-import each from 'jest-each';
-
 require('module-alias/register');
 
 const ArgsParser = require('@src/plugin/util/args-parser');
@@ -14,25 +12,23 @@ describe('args-parser', () => {
     expect(result.options).toEqual({});
   });
 
-  // each`
-  //   arg
-  //   ${'aaa'}
-  //   ${'5++2'}
-  //   ${'5:+2'}
-  // `.test('.parseRange(\'$arg\') returns null', ({ arg }) => {
-  //   expect(OptionParser.parseRange(arg)).toBeNull();
-  // });
+  test('.parse(\'prefix=/Level1\') returns a valid results', () => {
+    const result = ArgsParser.parse('prefix=/Level1');
 
-  // each`
-  //   arg       | start | end
-  //   ${'1'}    | ${1} | ${1}
-  //   ${'2:1'}  | ${2} | ${1}
-  //   ${'2:'}   | ${2} | ${-1}
-  //   ${'10:-3'}   | ${10} | ${-3}
-  //   ${'5+2'}   | ${5} | ${7}
-  //   ${'5+'}   | ${5} | ${5}
-  // `.test('.parseRange(\'$arg\') returns { start: $start, end : $end }', ({ arg, start, end }) => {
-  //   expect(OptionParser.parseRange(arg)).toEqual({ start, end });
-  // });
+    expect(result.firstArgsKey).toBe('prefix');
+    expect(result.firstArgsValue).toBe('/Level1');
+  });
+
+  test('.parse(\'key, opt1=1, opt2=2\') returns a valid results', () => {
+    const result = ArgsParser.parse('key, opt1=1, opt2=2');
+
+    expect(result.firstArgsKey).toBe('key');
+    expect(result.firstArgsValue).toBeTruthy();
+
+    expect(Object.keys(result.options).length).toBe(3);
+    expect(result.options.key).toBeTruthy();
+    expect(result.options.opt1).toBe('1');
+    expect(result.options.opt2).toBe('2');
+  });
 
 });
