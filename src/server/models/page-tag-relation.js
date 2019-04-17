@@ -1,5 +1,9 @@
+// disable no-return-await for model functions
+/* eslint-disable no-return-await */
+
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate');
+
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
 
@@ -10,12 +14,12 @@ const schema = new mongoose.Schema({
   relatedPage: {
     type: ObjectId,
     ref: 'Page',
-    required: true
+    required: true,
   },
   relatedTag: {
     type: ObjectId,
     ref: 'Tag',
-    required: true
+    required: true,
   },
 });
 schema.plugin(mongoosePaginate);
@@ -26,6 +30,13 @@ schema.plugin(mongoosePaginate);
  * @class PageTagRelation
  */
 class PageTagRelation {
+
+  static async createIfNotExist(pageId, tagId) {
+    if (!await this.findOne({ relatedPage: pageId, relatedTag: tagId })) {
+      await this.create({ relatedPage: pageId, relatedTag: tagId });
+    }
+  }
+
 }
 
 module.exports = function() {

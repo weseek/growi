@@ -13,4 +13,5 @@ export default class BlockdiagConfigurer {
       marker: ':::',
     });
   }
+
 }

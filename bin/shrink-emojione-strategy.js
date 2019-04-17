@@ -11,21 +11,22 @@ const helpers = require('@commons/util/helpers');
 
 const emojiStrategy = require('emojione/emoji_strategy.json');
 const markdownItEmojiFull = require('markdown-it-emoji/lib/data/full.json');
+
 const OUT = helpers.root('tmp/emoji_strategy_shrinked.json');
 
-let shrinkedMap = {};
-for (let unicode in emojiStrategy) {
+const shrinkedMap = {};
+Object.keys(emojiStrategy).forEach((unicode) => {
   const data = emojiStrategy[unicode];
   const shortname = data.shortname.replace(/:/g, '');
 
   // ignore if it isn't included in markdownItEmojiFull
   if (markdownItEmojiFull[shortname] == null) {
-    continue;
+    return;
   }
 
   // add
   shrinkedMap[unicode] = data;
-}
+});
 
 // write
 fs.writeFileSync(OUT, JSON.stringify(shrinkedMap));

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Revision     from './Revision';
+import Revision from './Revision';
 import RevisionDiff from './RevisionDiff';
 
 export default class PageRevisionList extends React.Component {
@@ -46,14 +46,16 @@ export default class PageRevisionList extends React.Component {
           isCompactNodiffRevisions={this.state.isCompactNodiffRevisions}
           onDiffOpenClicked={this.props.onDiffOpenClicked}
           key={`revision-history-rev-${revisionId}`}
-          />
-        { hasDiff &&
+        />
+        { hasDiff
+          && (
           <RevisionDiff
             revisionDiffOpened={revisionDiffOpened}
             currentRevision={revision}
             previousRevision={previousRevision}
             key={`revision-deff-${revisionId}`}
           />
+          )
         }
       </div>
     );
@@ -62,14 +64,16 @@ export default class PageRevisionList extends React.Component {
   render() {
     const { t } = this.props;
 
-    const revisions = this.props.revisions,
-      revisionCount = this.props.revisions.length;
+    const revisions = this.props.revisions;
+
+
+    const revisionCount = this.props.revisions.length;
 
     let hasDiffPrev;
 
     const revisionList = this.props.revisions.map((revision, idx) => {
       let previousRevision;
-      if (idx+1 < revisionCount) {
+      if (idx + 1 < revisionCount) {
         previousRevision = revisions[idx + 1];
       }
       else {
@@ -89,23 +93,25 @@ export default class PageRevisionList extends React.Component {
       classNames.push('revision-history-list-compact');
     }
 
-    return <React.Fragment>
-      <div className='checkbox checkbox-info pull-right'>
-        <input id='cbCompactize' type='checkbox' value={true} checked={this.state.isCompactNodiffRevisions} onChange={this.cbCompactizeChangeHandler}></input>
-        <label htmlFor='cbCompactize'>{ t('Shrink versions that have no diffs') }</label>
-      </div>
-      <div className="clearfix"></div>
-      <div className={classNames.join(' ')}>
-        {revisionList}
-      </div>
-    </React.Fragment>;
+    return (
+      <React.Fragment>
+        <div className="checkbox checkbox-info pull-right">
+          <input id="cbCompactize" type="checkbox" value checked={this.state.isCompactNodiffRevisions} onChange={this.cbCompactizeChangeHandler}></input>
+          <label htmlFor="cbCompactize">{ t('Shrink versions that have no diffs') }</label>
+        </div>
+        <div className="clearfix"></div>
+        <div className={classNames.join(' ')}>
+          {revisionList}
+        </div>
+      </React.Fragment>
+    );
   }
+
 }
 
 PageRevisionList.propTypes = {
-  t: PropTypes.func.isRequired,               // i18next
+  t: PropTypes.func.isRequired, // i18next
   revisions: PropTypes.array,
   diffOpened: PropTypes.object,
   onDiffOpenClicked: PropTypes.func.isRequired,
 };
-

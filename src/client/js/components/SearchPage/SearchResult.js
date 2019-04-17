@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
+/* eslint-disable jsx-a11y/label-has-for */
 import React from 'react';
 import PropTypes from 'prop-types';
 import * as toastr from 'toastr';
@@ -8,6 +10,7 @@ import DeletePageListModal from './DeletePageListModal';
 
 // Search.SearchResult
 export default class SearchResult extends React.Component {
+
   constructor(props) {
     super(props);
     this.state = {
@@ -50,8 +53,8 @@ export default class SearchResult extends React.Component {
     else {
       this.state.selectedPages.add(page);
     }
-    this.setState({isDeleteConfirmModalShown: false});
-    this.setState({selectedPages: this.state.selectedPages});
+    this.setState({ isDeleteConfirmModalShown: false });
+    this.setState({ selectedPages: this.state.selectedPages });
   }
 
   /**
@@ -61,7 +64,7 @@ export default class SearchResult extends React.Component {
    * @memberof SearchResult
    */
   isAllSelected() {
-    return this.state.selectedPages.size == this.props.pages.length;
+    return this.state.selectedPages.size === this.props.pages.length;
   }
 
   /**
@@ -77,10 +80,12 @@ export default class SearchResult extends React.Component {
       this.state.selectedPages.clear();
       this.props.pages.map((page) => {
         this.state.selectedPages.add(page);
+        return;
       });
     }
-    this.setState({selectedPages: this.state.selectedPages});
+    this.setState({ selectedPages: this.state.selectedPages });
   }
+
   /**
    * change deletion mode
    *
@@ -88,7 +93,7 @@ export default class SearchResult extends React.Component {
    */
   handleDeletionModeChange() {
     this.state.selectedPages.clear();
-    this.setState({deletionMode: !this.state.deletionMode});
+    this.setState({ deletionMode: !this.state.deletionMode });
   }
 
   /**
@@ -98,7 +103,7 @@ export default class SearchResult extends React.Component {
    */
   toggleDeleteCompletely() {
     // request で completely が undefined でないと指定アリと見なされるため
-    this.setState({isDeleteCompletely: this.state.isDeleteCompletely? undefined : true});
+    this.setState({ isDeleteCompletely: this.state.isDeleteCompletely ? undefined : true });
   }
 
   /**
@@ -107,41 +112,41 @@ export default class SearchResult extends React.Component {
    * @memberof SearchResult
    */
   deleteSelectedPages() {
-    let deleteCompletely = this.state.isDeleteCompletely;
+    const deleteCompletely = this.state.isDeleteCompletely;
     Promise.all(Array.from(this.state.selectedPages).map((page) => {
       return new Promise((resolve, reject) => {
         const pageId = page._id;
         const revisionId = page.revision._id;
-        this.props.crowi.apiPost('/pages.remove', {page_id: pageId, revision_id: revisionId, completely: deleteCompletely})
-          .then(res => {
+        this.props.crowi.apiPost('/pages.remove', { page_id: pageId, revision_id: revisionId, completely: deleteCompletely })
+          .then((res) => {
             if (res.ok) {
               this.state.selectedPages.delete(page);
               return resolve();
             }
-            else {
-              return reject();
-            }
+
+            return reject();
+
           })
-          .catch(err => {
-            console.log(err.message);   // eslint-disable-line no-console
-            this.setState({errorMessageForDeleting: err.message});
+          .catch((err) => {
+            console.log(err.message); // eslint-disable-line no-console
+            this.setState({ errorMessageForDeleting: err.message });
             return reject();
           });
       });
     }))
-    .then(() => {
-      window.location.reload();
-    })
-    .catch(err => {
-      toastr.error(err, 'Error occured', {
-        closeButton: true,
-        progressBar: true,
-        newestOnTop: false,
-        showDuration: '100',
-        hideDuration: '100',
-        timeOut: '3000',
+      .then(() => {
+        window.location.reload();
+      })
+      .catch((err) => {
+        toastr.error(err, 'Error occured', {
+          closeButton: true,
+          progressBar: true,
+          newestOnTop: false,
+          showDuration: '100',
+          hideDuration: '100',
+          timeOut: '3000',
+        });
       });
-    });
   }
 
   /**
@@ -150,7 +155,7 @@ export default class SearchResult extends React.Component {
    * @memberof SearchResult
    */
   showDeleteConfirmModal() {
-    this.setState({isDeleteConfirmModalShown: true});
+    this.setState({ isDeleteConfirmModalShown: true });
   }
 
   /**
@@ -168,8 +173,8 @@ export default class SearchResult extends React.Component {
   render() {
     const excludePathString = this.props.tree;
 
-    //console.log(this.props.searchError);
-    //console.log(this.isError());
+    // console.log(this.props.searchError);
+    // console.log(this.isError());
     if (this.isError()) {
       return (
         <div className="content-main">
@@ -189,7 +194,7 @@ export default class SearchResult extends React.Component {
       }
       return (
         <div className="content-main">
-            <i className="icon-fw icon-info" /> No page found with &quot;{this.props.searchingKeyword}&quot;{under}
+          <i className="icon-fw icon-info" /> No page found with &quot;{this.props.searchingKeyword}&quot;{under}
         </div>
       );
 
@@ -199,48 +204,63 @@ export default class SearchResult extends React.Component {
     let allSelectCheck = '';
 
     if (this.state.deletionMode) {
-      deletionModeButtons =
-      <div className="btn-group">
-        <button type="button" className="btn btn-rounded btn-default btn-xs" onClick={() => this.handleDeletionModeChange()}>
-          <i className="icon-ban"/> Cancel
-        </button>
-        <button type="button" className="btn btn-rounded btn-danger btn-xs" onClick={() => this.showDeleteConfirmModal()} disabled={this.state.selectedPages.size == 0}>
-          <i className="icon-trash"/> Delete
-        </button>
-      </div>;
-      allSelectCheck =
-      <div>
-        <label>
-          <input
-            type="checkbox"
-            onClick={() => this.handleAllSelect()}
-            checked={this.isAllSelected()} />
+      deletionModeButtons = (
+        <div className="btn-group">
+          <button type="button" className="btn btn-rounded btn-default btn-xs" onClick={() => { return this.handleDeletionModeChange() }}>
+            <i className="icon-ban" /> Cancel
+          </button>
+          <button
+            type="button"
+            className="btn btn-rounded btn-danger btn-xs"
+            onClick={() => { return this.showDeleteConfirmModal() }}
+            disabled={this.state.selectedPages.size === 0}
+          >
+            <i className="icon-trash" /> Delete
+          </button>
+        </div>
+      );
+      allSelectCheck = (
+        <div>
+          <label>
+            <input
+              type="checkbox"
+              onClick={() => { return this.handleAllSelect() }}
+              checked={this.isAllSelected()}
+            />
             &nbsp;Check All
-        </label>
-      </div>;
+          </label>
+        </div>
+      );
     }
     else {
-      deletionModeButtons =
-      <div className="btn-group">
-        <button type="button" className="btn btn-default btn-rounded btn-xs" onClick={() => this.handleDeletionModeChange()}>
-          <i className="ti-check-box"/> DeletionMode
-        </button>
-      </div>;
+      deletionModeButtons = (
+        <div className="btn-group">
+          <button type="button" className="btn btn-default btn-rounded btn-xs" onClick={() => { return this.handleDeletionModeChange() }}>
+            <i className="ti-check-box" /> DeletionMode
+          </button>
+        </div>
+      );
     }
 
     const listView = this.props.pages.map((page) => {
-      const pageId = '#' + page._id;
+      const pageId = `#${page._id}`;
       return (
-        <Page page={page}
+        <Page
+          page={page}
           linkTo={pageId}
           key={page._id}
           excludePathString={excludePathString}
-          >
-          { this.state.deletionMode &&
-            <input type="checkbox" className="search-result-list-delete-checkbox"
+        >
+          { this.state.deletionMode
+            && (
+            <input
+              type="checkbox"
+              className="search-result-list-delete-checkbox"
               value={pageId}
               checked={this.state.selectedPages.has(page)}
-              onClick={() => this.toggleCheckbox(page)} />
+              onClick={() => { return this.toggleCheckbox(page) }}
+            />
+)
             }
           <div className="page-list-option">
             <a href={page.path}><i className="icon-login" /></a>
@@ -251,7 +271,7 @@ export default class SearchResult extends React.Component {
 
     // TODO あとでなんとかする
     setTimeout(() => {
-      $('#search-result-list > nav').affix({ offset: { top: 50 }});
+      $('#search-result-list > nav').affix({ offset: { top: 50 } });
     }, 1200);
 
     /*
@@ -280,10 +300,11 @@ export default class SearchResult extends React.Component {
           </div>
           <div className="col-md-8 search-result-content" id="search-result-content">
             <SearchResultList
-              crowi={this.props.crowi} crowiRenderer={this.props.crowiRenderer}
+              crowi={this.props.crowi}
+              crowiRenderer={this.props.crowiRenderer}
               pages={this.props.pages}
               searchingKeyword={this.props.searchingKeyword}
-              />
+            />
           </div>
         </div>
         <DeletePageListModal
@@ -295,9 +316,10 @@ export default class SearchResult extends React.Component {
           toggleDeleteCompletely={this.toggleDeleteCompletely}
         />
 
-      </div>//content-main
+      </div>// content-main
     );
   }
+
 }
 
 SearchResult.propTypes = {
@@ -307,12 +329,8 @@ SearchResult.propTypes = {
   pages: PropTypes.array.isRequired,
   searchingKeyword: PropTypes.string.isRequired,
   searchResultMeta: PropTypes.object.isRequired,
-  searchError: PropTypes.object
+  searchError: PropTypes.object,
 };
 SearchResult.defaultProps = {
-  tree: '',
-  pages: [],
-  searchingKeyword: '',
-  searchResultMeta: {},
   searchError: null,
 };

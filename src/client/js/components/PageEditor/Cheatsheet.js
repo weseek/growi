@@ -1,8 +1,11 @@
+/* eslint-disable max-len */
+
 import React from 'react';
 import PropTypes from 'prop-types';
-import { translate } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 
 class Cheatsheet extends React.Component {
+
   render() {
     const { t } = this.props;
 
@@ -11,9 +14,9 @@ class Cheatsheet extends React.Component {
         <div className="col-sm-6">
           <h4>{t('sandbox.header')}</h4>
           <ul className="hljs">
-            <li><code># </code>{t('sandbox.header_x', {index: '1'})}</li>
-            <li><code>## </code>{t('sandbox.header_x', {index: '2'})}</li>
-            <li><code>### </code>{t('sandbox.header_x', {index: '3'})}</li>
+            <li><code># </code>{t('sandbox.header_x', { index: '1' })}</li>
+            <li><code>## </code>{t('sandbox.header_x', { index: '2' })}</li>
+            <li><code>### </code>{t('sandbox.header_x', { index: '3' })}</li>
           </ul>
           <h4>{t('sandbox.block')}</h4>
           <p className="mb-1"><code>[{t('sandbox.empty_line')}]</code>{t('sandbox.block_detail')}</p>
@@ -33,7 +36,7 @@ class Cheatsheet extends React.Component {
             <li><i>*{t('sandbox.italics')}*</i></li>
             <li><b>**{t('sandbox.bold')}**</b></li>
             <li><i><b>***{t('sandbox.italic_bold')}***</b></i></li>
-            <li>~~{t('sandbox.strikethrough')}~~ => <s>{t('sandbox.strikethrough')}</s></li>
+            <li>~~{t('sandbox.strikethrough')}~~ =&lt; <s>{t('sandbox.strikethrough')}</s></li>
           </ul>
           <h4>{t('sandbox.link')}</h4>
           <ul className="hljs">
@@ -50,13 +53,13 @@ class Cheatsheet extends React.Component {
         <div className="col-sm-6">
           <h4>{t('sandbox.list')}</h4>
           <ul className="hljs">
-            <li>- {t('sandbox.unordered_list_x', {index: '1'})}</li>
-            <li>&nbsp;&nbsp;- {t('sandbox.unordered_list_x', {index: '1.1'})}</li>
-            <li>- {t('sandbox.unordered_list_x', {index: '2'})}</li>
+            <li>- {t('sandbox.unordered_list_x', { index: '1' })}</li>
+            <li>&nbsp;&nbsp;- {t('sandbox.unordered_list_x', { index: '1.1' })}</li>
+            <li>- {t('sandbox.unordered_list_x', { index: '2' })}</li>
           </ul>
           <ul className="hljs">
-            <li>1. {t('sandbox.ordered_list_x', {index: '1'})}</li>
-            <li>1. {t('sandbox.ordered_list_x', {index: '2'})}</li>
+            <li>1. {t('sandbox.ordered_list_x', { index: '1' })}</li>
+            <li>1. {t('sandbox.ordered_list_x', { index: '2' })}</li>
           </ul>
           <ul className="hljs">
             <li>- [ ] {t('sandbox.task')}({t('sandbox.task_unchecked')})</li>
@@ -64,13 +67,13 @@ class Cheatsheet extends React.Component {
           </ul>
           <h4>{t('sandbox.quote')}</h4>
           <ul className="hljs">
-            <li>> {t('sandbox.quote1')}</li>
-            <li>> {t('sandbox.quote2')}</li>
+            <li>&gt; {t('sandbox.quote1')}</li>
+            <li>&gt; {t('sandbox.quote2')}</li>
           </ul>
           <ul className="hljs">
-            <li>>> {t('sandbox.quote_nested')}</li>
-            <li>>>> {t('sandbox.quote_nested')}</li>
-            <li>>>>> {t('sandbox.quote_nested')}</li>
+            <li>&gt;&gt; {t('sandbox.quote_nested')}</li>
+            <li>&gt;&gt;&gt; {t('sandbox.quote_nested')}</li>
+            <li>&gt;&gt;&gt;&gt; {t('sandbox.quote_nested')}</li>
           </ul>
           <h4>{t('sandbox.table')}</h4>
           <ul className="hljs text-center">
@@ -87,16 +90,17 @@ class Cheatsheet extends React.Component {
 
           <hr />
           <a href="/Sandbox" className="btn btn-info btn-block" target="_blank">
-            <i className="icon-share-alt"/> {t('sandbox.open_sandbox')}
+            <i className="icon-share-alt" /> {t('sandbox.open_sandbox')}
           </a>
         </div>
       </div>
     );
   }
+
 }
 
 Cheatsheet.propTypes = {
-  t: PropTypes.func.isRequired,               // i18next
+  t: PropTypes.func.isRequired, // i18next
 };
 
-export default translate()(Cheatsheet);
+export default withTranslation()(Cheatsheet);

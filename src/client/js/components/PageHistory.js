@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { translate } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 
 import PageRevisionList from './PageHistory/PageRevisionList';
 
@@ -22,52 +22,55 @@ class PageHistory extends React.Component {
     const pageId = this.props.pageId;
 
     if (!pageId) {
-      return ;
+      return;
     }
 
-    this.props.crowi.apiGet('/revisions.ids', {page_id: pageId})
-    .then(res => {
+    this.props.crowi.apiGet('/revisions.ids', { page_id: pageId })
+      .then((res) => {
 
-      const rev = res.revisions;
-      let diffOpened = {};
-      const lastId = rev.length - 1;
-      res.revisions.map((revision, i) => {
-        const user = this.props.crowi.findUserById(revision.author);
-        if (user) {
-          rev[i].author = user;
+        const rev = res.revisions;
+        const diffOpened = {};
+        const lastId = rev.length - 1;
+        res.revisions.forEach((revision, i) => {
+          const user = this.props.crowi.findUserById(revision.author);
+          if (user) {
+            rev[i].author = user;
+          }
+
+          if (i === 0 || i === lastId) {
+            diffOpened[revision._id] = true;
+          }
+          else {
+            diffOpened[revision._id] = false;
+          }
+        });
+
+        this.setState({
+          revisions: rev,
+          diffOpened,
+        });
+
+        // load 0, and last default
+        if (rev[0]) {
+          this.fetchPageRevisionBody(rev[0]);
         }
-
-        if (i === 0 || i === lastId) {
-          diffOpened[revision._id] = true;
+        if (rev[1]) {
+          this.fetchPageRevisionBody(rev[1]);
         }
-        else {
-          diffOpened[revision._id] = false;
+        if (lastId !== 0 && lastId !== 1 && rev[lastId]) {
+          this.fetchPageRevisionBody(rev[lastId]);
         }
-      });
-
-      this.setState({
-        revisions: rev,
-        diffOpened: diffOpened,
-      });
-
-      // load 0, and last default
-      if (rev[0]) {
-        this.fetchPageRevisionBody(rev[0]);
-      }
-      if (rev[1]) {
-        this.fetchPageRevisionBody(rev[1]);
-      }
-      if (lastId !== 0 && lastId !== 1 && rev[lastId]) {
-        this.fetchPageRevisionBody(rev[lastId]);
-      }
-    }).catch(err => {
+      })
+      .catch((err) => {
       // do nothing
-    });
+      });
   }
 
   getPreviousRevision(currentRevision) {
     let cursor = null;
-    for (let revision of this.state.revisions) {
+    for (const revision of this.state.revisions) {
+      // comparing ObjectId
+      // eslint-disable-next-line eqeqeq
       if (cursor && cursor._id == currentRevision._id) {
         cursor = revision;
         break;
@@ -80,12 +83,12 @@ class PageHistory extends React.Component {
   }
 
   onDiffOpenClicked(revision) {
-    const diffOpened = this.state.diffOpened,
-      revisionId = revision._id;
+    const diffOpened = this.state.diffOpened;
+    const revisionId = revision._id;
 
     diffOpened[revisionId] = !(diffOpened[revisionId]);
     this.setState({
-      diffOpened
+      diffOpened,
     });
 
     this.fetchPageRevisionBody(revision);
@@ -94,28 +97,29 @@ class PageHistory extends React.Component {
 
   fetchPageRevisionBody(revision) {
     if (revision.body) {
-      return ;
+      return;
     }
 
     this.props.crowi.apiGet('/revisions.get',
-      { page_id: this.props.pageId, revision_id: revision._id}
-    )
-    .then(res => {
-      if (res.ok) {
-        this.setState({
-          revisions: this.state.revisions.map((rev) => {
-            if (rev._id == res.revision._id) {
-              return res.revision;
-            }
+      { page_id: this.props.pageId, revision_id: revision._id })
+      .then((res) => {
+        if (res.ok) {
+          this.setState({
+            revisions: this.state.revisions.map((rev) => {
+              // comparing ObjectId
+              // eslint-disable-next-line eqeqeq
+              if (rev._id == res.revision._id) {
+                return res.revision;
+              }
 
-            return rev;
-          })
-        });
-      }
-    })
-    .catch(err => {
+              return rev;
+            }),
+          });
+        }
+      })
+      .catch((err) => {
 
-    });
+      });
   }
 
   render() {
@@ -131,12 +135,13 @@ class PageHistory extends React.Component {
       </div>
     );
   }
+
 }
 
 PageHistory.propTypes = {
-  t: PropTypes.func.isRequired,               // i18next
+  t: PropTypes.func.isRequired, // i18next
   pageId: PropTypes.string,
   crowi: PropTypes.object.isRequired,
 };
 
-export default translate()(PageHistory);
+export default withTranslation()(PageHistory);

@@ -1,3 +1,5 @@
+/* eslint-disable no-use-before-define */
+
 const logger = require('@alias/logger')('growi:routes:hackmd');
 const path = require('path');
 const fs = require('graceful-fs');
@@ -15,12 +17,12 @@ module.exports = function(crowi, app) {
   const agentScriptPath = path.join(crowi.publicDir, manifest['js/hackmd-agent.js']);
   const stylesScriptPath = path.join(crowi.publicDir, manifest['js/hackmd-styles.js']);
   // generate swig template
-  let agentScriptContentTpl = undefined;
-  let stylesScriptContentTpl = undefined;
+  let agentScriptContentTpl;
+  let stylesScriptContentTpl;
 
   // init 'saveOnHackmd' event
-  pageEvent.on('saveOnHackmd', function(page) {
-    crowi.getIo().sockets.emit('page:editingWithHackmd', {page});
+  pageEvent.on('saveOnHackmd', (page) => {
+    crowi.getIo().sockets.emit('page:editingWithHackmd', { page });
   });
 
   /**
@@ -67,7 +69,9 @@ module.exports = function(crowi, app) {
     }
 
     const styleFilePath = path.join(crowi.publicDir, manifest['styles/style-hackmd.css']);
-    const styles = fs.readFileSync(styleFilePath).toString().replace(/\s+/g, ' ');
+    const styles = fs
+      .readFileSync(styleFilePath).toString()
+      .replace(/\s+/g, ' ');
 
     // generate definitions to replace
     const definitions = {
@@ -150,8 +154,8 @@ module.exports = function(crowi, app) {
     logger.debug('HackMD responds', response);
 
     // extract page id on HackMD
-    const pagePathOnHackmd = response.request.path;     // e.g. '/NC7bSRraT1CQO1TO7wjCPw'
-    const pageIdOnHackmd = pagePathOnHackmd.substr(1);  // strip the head '/'
+    const pagePathOnHackmd = response.request.path; // e.g. '/NC7bSRraT1CQO1TO7wjCPw'
+    const pageIdOnHackmd = pagePathOnHackmd.substr(1); // strip the head '/'
 
     return Page.registerHackmdPage(page, pageIdOnHackmd);
   }

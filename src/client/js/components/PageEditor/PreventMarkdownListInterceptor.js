@@ -1,11 +1,8 @@
-import { BasicInterceptor } from 'growi-pluginkit';
+import { BasicInterceptor } from 'growi-commons';
+
 import mlu from './MarkdownListUtil';
 
 export default class PreventMarkdownListInterceptor extends BasicInterceptor {
-
-  constructor() {
-    super();
-  }
 
   /**
    * @inheritdoc
@@ -27,8 +24,8 @@ export default class PreventMarkdownListInterceptor extends BasicInterceptor {
    * @inheritdoc
    */
   process(contextName, ...args) {
-    const context = Object.assign(args[0]);   // clone
-    const editor = context.editor;            // AbstractEditor instance
+    const context = Object.assign(args[0]); // clone
+    const editor = context.editor; // AbstractEditor instance
 
     // get strings from current position to EOL(end of line) before break the line
     const strToEol = editor.getStrToEol();
@@ -43,4 +40,5 @@ export default class PreventMarkdownListInterceptor extends BasicInterceptor {
     // resolve
     return Promise.resolve(context);
   }
+
 }

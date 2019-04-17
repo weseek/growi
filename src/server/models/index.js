@@ -1,5 +1,3 @@
-'use strict';
-
 module.exports = {
   Page: require('./page'),
   PageGroupRelation: require('./page-group-relation'),

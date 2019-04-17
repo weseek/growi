@@ -5,11 +5,8 @@
 class ScrollSyncHelper {
 
   /**
-	 * @typedef {{ element: Element, line: number }} CodeLineElement
-	 */
-
-  constructor() {
-  }
+   * @typedef {{ element: Element, line: number }} CodeLineElement
+   */
 
   getCodeLineElements(parentElement) {
     /** @type {CodeLineElement[]} */
@@ -17,26 +14,27 @@ class ScrollSyncHelper {
     if (!elements) {
       elements = Array.prototype.map.call(
         parentElement.getElementsByClassName('code-line'),
-        element => {
+        (element) => {
           const line = +element.getAttribute('data-line');
           return { element, line };
-        })
-        .filter(x => !isNaN(x.line));
+        },
+      )
+        .filter((x) => { return !Number.isNaN(x.line) });
     }
     return elements;
   }
 
   /**
-	 * Find the html elements that map to a specific target line in the editor.
-	 *
-	 * If an exact match, returns a single element. If the line is between elements,
-	 * returns the element prior to and the element after the given line.
-	 *
+   * Find the html elements that map to a specific target line in the editor.
+   *
+   * If an exact match, returns a single element. If the line is between elements,
+   * returns the element prior to and the element after the given line.
+   *
    * @param {Element} element
-	 * @param {number} targetLine
-	 *
-	 * @returns {{ previous: CodeLineElement, next?: CodeLineElement }}
-	 */
+   * @param {number} targetLine
+   *
+   * @returns {{ previous: CodeLineElement, next?: CodeLineElement }}
+   */
   getElementsForSourceLine(element, targetLine) {
     const lines = this.getCodeLineElements(element);
     let previous = lines[0] || null;
@@ -44,7 +42,7 @@ class ScrollSyncHelper {
       if (entry.line === targetLine) {
         return { previous: entry, next: null };
       }
-      else if (entry.line > targetLine) {
+      if (entry.line > targetLine) {
         return { previous, next: entry };
       }
       previous = entry;
@@ -53,13 +51,13 @@ class ScrollSyncHelper {
   }
 
   /**
-	 * Find the html elements that are at a specific pixel offset on the page.
-	 *
-   * @param {Element} parentElement
-	 * @param {number} offset
+   * Find the html elements that are at a specific pixel offset on the page.
    *
-	 * @returns {{ previous: CodeLineElement, next?: CodeLineElement }}
-	 */
+   * @param {Element} parentElement
+   * @param {number} offset
+   *
+   * @returns {{ previous: CodeLineElement, next?: CodeLineElement }}
+   */
   getLineElementsAtPageOffset(parentElement, offset) {
     const lines = this.getCodeLineElements(parentElement);
 
@@ -82,7 +80,7 @@ class ScrollSyncHelper {
     if (hi >= 1 && hiElement.element.getBoundingClientRect().top > position) {
       const loElement = lines[lo];
       const bounds = loElement.element.getBoundingClientRect();
-      let previous = { element: loElement.element, line: loElement.line };
+      const previous = { element: loElement.element, line: loElement.line };
       if (bounds.height > 0) {
         previous.line += (position - bounds.top) / (bounds.height);
       }
@@ -99,12 +97,14 @@ class ScrollSyncHelper {
     const { previous, next } = this.getLineElementsAtPageOffset(parentElement, offset);
     if (previous) {
       if (next) {
-        const betweenProgress = (offset - parentElement.scrollTop - previous.element.getBoundingClientRect().top) / (next.element.getBoundingClientRect().top - previous.element.getBoundingClientRect().top);
+        const betweenProgress = (
+          offset - parentElement.scrollTop - previous.element.getBoundingClientRect().top)
+          / (next.element.getBoundingClientRect().top - previous.element.getBoundingClientRect().top);
         return previous.line + betweenProgress * (next.line - previous.line);
       }
-      else {
-        return previous.line;
-      }
+
+      return previous.line;
+
     }
     return null;
   }
@@ -123,11 +123,11 @@ class ScrollSyncHelper {
   }
 
   /**
-	 * Attempt to scroll preview element for a source line in the editor.
-	 *
+   * Attempt to scroll preview element for a source line in the editor.
+   *
    * @param {Element} previewElement
-	 * @param {number} line
-	 */
+   * @param {number} line
+   */
   scrollPreview(previewElement, line) {
     const { previous, next } = this.getElementsForSourceLine(previewElement, line);
     if (previous) {
@@ -149,12 +149,13 @@ class ScrollSyncHelper {
   }
 
   /**
-	 * Attempt to reveal the element that is overflowing from previewElement.
-	 *
+   * Attempt to reveal the element that is overflowing from previewElement.
+   *
    * @param {Element} previewElement
-	 * @param {number} line
-	 */
+   * @param {number} line
+   */
   scrollPreviewToRevealOverflowing(previewElement, line) {
+    // eslint-disable-next-line no-unused-vars
     const { previous, next } = this.getElementsForSourceLine(previewElement, line);
     if (previous) {
       const parentElementOffset = this.getParentElementOffset(previewElement);
@@ -191,6 +192,7 @@ class ScrollSyncHelper {
     line = Math.floor(line);
     editor.setScrollTopByLine(line);
   }
+
 }
 
 // singleton pattern

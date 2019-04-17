@@ -1,9 +1,9 @@
 // import bootstrap
 $bootstrap-sass-asset-helper: true;
-@import "~bootstrap-sass/assets/stylesheets/bootstrap";
+@import '~bootstrap-sass/assets/stylesheets/bootstrap';
 
 // import bootstrap4 utility classes
-@import "../bootstrap4/bootstrap";
+@import '../bootstrap4/bootstrap';
 
 // import toastr styles
 @import '~toastr/build/toastr';

@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 
 /**
  *
@@ -16,47 +17,53 @@ export default class PageTagForm extends React.Component {
     super(props);
 
     this.state = {
-      pageTags: this.props.pageTags,
+      resultTags: [],
+      isLoading: false,
+      selected: this.props.currentPageTags,
     };
-
-    this.updateState = this.updateState.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      pageTags: nextProps.pageTags
-    });
-  }
-
-  handleSubmit() {
-    this.props.submitTags(this.state.pageTags);
-  }
-
-  updateState(value) {
-    this.setState({pageTags: value});
+    this.crowi = this.props.crowi;
   }
 
   render() {
     return (
-      <div className="input-group-sm mx-1">
-        <input className="form-control page-tag-form" type="text" value={this.state.pageTags} placeholder="tag name"
-          data-toggle="popover"
-          title="タグ"
-          data-content="タグ付けによりページをカテゴライズすることができます。"
-          data-trigger="focus"
-          data-placement="right"
-          onChange={e => this.updateState(e.target.value)}
-          onBlur={this.handleSubmit}
-          />
+      <div className="tag-typeahead">
+        <AsyncTypeahead
+          allowNew
+          caseSensitive={false}
+          defaultSelected={this.props.currentPageTags}
+          emptyLabel=""
+          isLoading={this.state.isLoading}
+          minLength={1}
+          multiple
+          newSelectionPrefix=""
+          onChange={(selected) => {
+            this.setState({ selected }, () => {
+              this.props.addNewTag(this.state.selected);
+            });
+          }}
+          onSearch={async(query) => {
+            this.setState({ isLoading: true });
+            const res = await this.crowi.apiGet('/tags.search', { q: query });
+            res.tags.unshift(query); // selectable new tag whose name equals query
+            this.setState({
+              resultTags: Array.from(new Set(res.tags)), // use Set for de-duplication
+              isLoading: false,
+            });
+          }}
+          options={this.state.resultTags} // Search result (Some tag names)
+          placeholder="tag name"
+          selectHintOnEnter
+        />
       </div>
     );
   }
+
 }
 
 PageTagForm.propTypes = {
-  pageTags: PropTypes.string,
-  submitTags: PropTypes.func,
+  crowi: PropTypes.object.isRequired,
+  currentPageTags: PropTypes.array.isRequired,
+  addNewTag: PropTypes.func.isRequired,
 };
 
 PageTagForm.defaultProps = {

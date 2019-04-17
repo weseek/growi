@@ -27,7 +27,7 @@ class CrowiDev {
 
   initPromiseRejectionWarningHandler() {
     // https://qiita.com/syuilo/items/0800d7e44e93203c7285
-    process.on('unhandledRejection', console.dir);  // eslint-disable-line no-console
+    process.on('unhandledRejection', console.dir); // eslint-disable-line no-console
   }
 
   initSwig() {
@@ -40,10 +40,10 @@ class CrowiDev {
   requireForAutoReloadServer() {
     // load all json files for live reloading
     fs.readdirSync(this.crowi.localeDir)
-      .filter(filename => {
+      .filter((filename) => {
         return fs.statSync(path.join(this.crowi.localeDir, filename)).isDirectory();
       })
-      .map((dirname) => {
+      .forEach((dirname) => {
         require(path.join(this.crowi.localeDir, dirname, 'translation.json'));
       });
   }
@@ -119,7 +119,7 @@ class CrowiDev {
         `${this.crowi.viewsDir}/**/*.html`,
         `${this.crowi.publicDir}/**/*.js`,
         `${this.crowi.publicDir}/**/*.css`,
-      ]
+      ],
     });
     app.use(require('connect-browser-sync')(bs));
   }
@@ -127,7 +127,6 @@ class CrowiDev {
   loadPlugins(app) {
     if (process.env.PLUGIN_NAMES_TOBE_LOADED !== undefined
         && process.env.PLUGIN_NAMES_TOBE_LOADED.length > 0) {
-
       const pluginNames = process.env.PLUGIN_NAMES_TOBE_LOADED.split(',');
       logger.debug('[development] loading Plugins', pluginNames);
 
@@ -139,6 +138,7 @@ class CrowiDev {
       }
     }
   }
+
 }
 
 module.exports = CrowiDev;

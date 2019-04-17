@@ -13,7 +13,7 @@ export default class Page extends React.Component {
 
     this.state = {
       markdown: this.props.markdown,
-      currentTargetTableArea: null
+      currentTargetTableArea: null,
     };
 
     this.saveHandlerForHandsontableModal = this.saveHandlerForHandsontableModal.bind(this);
@@ -30,28 +30,37 @@ export default class Page extends React.Component {
    */
   launchHandsontableModal(beginLineNumber, endLineNumber) {
     const tableLines = this.state.markdown.split(/\r\n|\r|\n/).slice(beginLineNumber - 1, endLineNumber).join('\n');
-    this.setState({currentTargetTableArea: {beginLineNumber, endLineNumber}});
-    this.refs.handsontableModal.show(MarkdownTable.fromMarkdownString(tableLines));
+    this.setState({ currentTargetTableArea: { beginLineNumber, endLineNumber } });
+    this.handsontableModal.show(MarkdownTable.fromMarkdownString(tableLines));
   }
 
   saveHandlerForHandsontableModal(markdownTable) {
-    const newMarkdown = mtu.replaceMarkdownTableInMarkdown(markdownTable, this.state.markdown, this.state.currentTargetTableArea.beginLineNumber, this.state.currentTargetTableArea.endLineNumber);
+    const newMarkdown = mtu.replaceMarkdownTableInMarkdown(
+      markdownTable,
+      this.state.markdown,
+      this.state.currentTargetTableArea.beginLineNumber,
+      this.state.currentTargetTableArea.endLineNumber,
+    );
     this.props.onSaveWithShortcut(newMarkdown);
-    this.setState({currentTargetTableArea: null});
+    this.setState({ currentTargetTableArea: null });
   }
 
   render() {
     const isMobile = this.props.crowi.isMobile;
 
-    return <div className={isMobile ? 'page-mobile' : ''}>
-      <RevisionRenderer
-          crowi={this.props.crowi} crowiRenderer={this.props.crowiRenderer}
+    return (
+      <div className={isMobile ? 'page-mobile' : ''}>
+        <RevisionRenderer
+          crowi={this.props.crowi}
+          crowiRenderer={this.props.crowiRenderer}
           markdown={this.state.markdown}
           pagePath={this.props.pagePath}
-      />
-      <HandsontableModal ref='handsontableModal' onSave={this.saveHandlerForHandsontableModal} />
-    </div>;
+        />
+        <HandsontableModal ref={(c) => { this.handsontableModal = c }} onSave={this.saveHandlerForHandsontableModal} />
+      </div>
+    );
   }
+
 }
 
 Page.propTypes = {
@@ -60,5 +69,4 @@ Page.propTypes = {
   onSaveWithShortcut: PropTypes.func.isRequired,
   markdown: PropTypes.string.isRequired,
   pagePath: PropTypes.string.isRequired,
-  showHeadEditButton: PropTypes.bool,
 };

@@ -52,7 +52,7 @@ function SearchClient(crowi, esUri) {
 
   this.registerUpdateEvent();
 
-  this.mappingFile = crowi.resourceDir + 'search/mappings.json';
+  this.mappingFile = `${crowi.resourceDir}search/mappings.json`;
 }
 
 SearchClient.prototype.getInfo = function() {
@@ -100,10 +100,10 @@ SearchClient.prototype.shouldIndexed = function(page) {
 SearchClient.prototype.parseUri = function(uri) {
   let indexName = 'crowi';
   let host = uri;
-  let m;
-  if ((m = uri.match(/^(https?:\/\/[^/]+)\/(.+)$/))) {
-    host = m[1];
-    indexName = m[2];
+  const match = uri.match(/^(https?:\/\/[^/]+)\/(.+)$/);
+  if (match) {
+    host = match[1];
+    indexName = match[2];
   }
 
   return {
@@ -131,7 +131,7 @@ SearchClient.prototype.deleteIndex = function(uri) {
 function generateDocContentsRelatedToRestriction(page) {
   let grantedUserIds = null;
   if (page.grantedUsers != null && page.grantedUsers.length > 0) {
-    grantedUserIds = page.grantedUsers.map(user => {
+    grantedUserIds = page.grantedUsers.map((user) => {
       const userId = (user._id == null) ? user : user._id;
       return userId.toString();
     });
@@ -155,7 +155,7 @@ SearchClient.prototype.prepareBodyForUpdate = function(body, page) {
     throw new Error('Body must be an array.');
   }
 
-  let command = {
+  const command = {
     update: {
       _index: this.indexName,
       _type: 'pages',
@@ -170,6 +170,7 @@ SearchClient.prototype.prepareBodyForUpdate = function(body, page) {
     bookmark_count: page.bookmarkCount || 0,
     like_count: page.liker.length || 0,
     updated_at: page.updatedAt,
+    tag_names: page.tagNames,
   };
 
   document = Object.assign(document, generateDocContentsRelatedToRestriction(page));
@@ -186,7 +187,7 @@ SearchClient.prototype.prepareBodyForCreate = function(body, page) {
     throw new Error('Body must be an array.');
   }
 
-  let command = {
+  const command = {
     index: {
       _index: this.indexName,
       _type: 'pages',
@@ -204,6 +205,7 @@ SearchClient.prototype.prepareBodyForCreate = function(body, page) {
     like_count: page.liker.length || 0,
     created_at: page.createdAt,
     updated_at: page.updatedAt,
+    tag_names: page.tagNames,
   };
 
   document = Object.assign(document, generateDocContentsRelatedToRestriction(page));
@@ -217,7 +219,7 @@ SearchClient.prototype.prepareBodyForDelete = function(body, page) {
     throw new Error('Body must be an array.');
   }
 
-  let command = {
+  const command = {
     delete: {
       _index: this.indexName,
       _type: 'pages',
@@ -230,44 +232,54 @@ SearchClient.prototype.prepareBodyForDelete = function(body, page) {
 
 SearchClient.prototype.addPages = async function(pages) {
   const Bookmark = this.crowi.model('Bookmark');
+  const PageTagRelation = this.crowi.model('PageTagRelation');
   const body = [];
 
+  /* eslint-disable no-await-in-loop */
   for (const page of pages) {
     page.bookmarkCount = await Bookmark.countByPageId(page._id);
+    const tagRelations = await PageTagRelation.find({ relatedPage: page._id }).populate('relatedTag');
+    page.tagNames = tagRelations.map((relation) => { return relation.relatedTag.name });
     this.prepareBodyForCreate(body, page);
   }
+  /* eslint-enable no-await-in-loop */
 
   logger.debug('addPages(): Sending Request to ES', body);
   return this.client.bulk({
-    body: body,
+    body,
   });
 };
 
-SearchClient.prototype.updatePages = function(pages) {
-  let self = this;
-  let body = [];
+SearchClient.prototype.updatePages = async function(pages) {
+  const self = this;
+  const PageTagRelation = this.crowi.model('PageTagRelation');
+  const body = [];
 
-  pages.map(function(page) {
+  /* eslint-disable no-await-in-loop */
+  for (const page of pages) {
+    const tagRelations = await PageTagRelation.find({ relatedPage: page._id }).populate('relatedTag');
+    page.tagNames = tagRelations.map((relation) => { return relation.relatedTag.name });
     self.prepareBodyForUpdate(body, page);
-  });
+  }
 
   logger.debug('updatePages(): Sending Request to ES', body);
   return this.client.bulk({
-    body: body,
+    body,
   });
 };
 
 SearchClient.prototype.deletePages = function(pages) {
-  let self = this;
-  let body = [];
+  const self = this;
+  const body = [];
 
-  pages.map(function(page) {
+  pages.map((page) => {
     self.prepareBodyForDelete(body, page);
+    return;
   });
 
   logger.debug('deletePages(): Sending Request to ES', body);
   return this.client.bulk({
-    body: body,
+    body,
   });
 };
 
@@ -276,6 +288,7 @@ SearchClient.prototype.addAllPages = async function() {
   const Page = this.crowi.model('Page');
   const allPageCount = await Page.allPageCount();
   const Bookmark = this.crowi.model('Bookmark');
+  const PageTagRelation = this.crowi.model('PageTagRelation');
   const cursor = Page.getStreamOfFindAll();
   let body = [];
   let sent = 0;
@@ -283,22 +296,22 @@ SearchClient.prototype.addAllPages = async function() {
   let total = 0;
 
   return new Promise((resolve, reject) => {
-    const bulkSend = body => {
+    const bulkSend = (body) => {
       self.client
         .bulk({
-          body: body,
+          body,
           requestTimeout: Infinity,
         })
-        .then(res => {
+        .then((res) => {
           logger.info('addAllPages add anyway (items, errors, took): ', (res.items || []).length, res.errors, res.took, 'ms');
         })
-        .catch(err => {
+        .catch((err) => {
           logger.error('addAllPages error on add anyway: ', err);
         });
     };
 
     cursor
-      .eachAsync(async doc => {
+      .eachAsync(async(doc) => {
         if (!doc.creator || !doc.revision || !self.shouldIndexed(doc)) {
           // debug('Skipped', doc.path);
           skipped++;
@@ -307,7 +320,8 @@ SearchClient.prototype.addAllPages = async function() {
         total++;
 
         const bookmarkCount = await Bookmark.countByPageId(doc._id);
-        const page = { ...doc, bookmarkCount };
+        const tagRelations = await PageTagRelation.find({ relatedPage: doc._id }).populate('relatedTag');
+        const page = { ...doc, bookmarkCount, tagNames: tagRelations.map((relation) => { return relation.relatedTag.name }) };
         self.prepareBodyForCreate(body, page);
 
         if (body.length >= 4000) {
@@ -328,7 +342,7 @@ SearchClient.prototype.addAllPages = async function() {
 
         resolve();
       })
-      .catch(e => {
+      .catch((e) => {
         logger.error('Error wile iterating cursor.eachAsync()', e);
         reject(e);
       });
@@ -348,7 +362,7 @@ SearchClient.prototype.search = async function(query) {
     const result = await this.client.indices.validateQuery({
       explain: true,
       body: {
-        query: query.body.query
+        query: query.body.query,
       },
     });
     logger.debug('ES returns explanations: ', result.explanations);
@@ -365,11 +379,10 @@ SearchClient.prototype.search = async function(query) {
       total: result.hits.total,
       results: result.hits.hits.length,
     },
-    data: result.hits.hits.map(function(elm) {
+    data: result.hits.hits.map((elm) => {
       return { _id: elm._id, _score: elm._score, _source: elm._source };
     }),
   };
-
 };
 
 SearchClient.prototype.createSearchQuerySortedByUpdatedAt = function(option) {
@@ -380,7 +393,7 @@ SearchClient.prototype.createSearchQuerySortedByUpdatedAt = function(option) {
   }
 
   // default is only id field, sorted by updated_at
-  let query = {
+  const query = {
     index: this.indexName,
     type: 'pages',
     body: {
@@ -401,7 +414,7 @@ SearchClient.prototype.createSearchQuerySortedByScore = function(option) {
   }
 
   // sort by score
-  let query = {
+  const query = {
     index: this.indexName,
     type: 'pages',
     body: {
@@ -426,7 +439,7 @@ SearchClient.prototype.initializeBoolQuery = function(query) {
     query.body.query.bool = {};
   }
 
-  const isInitialized = query => !!query && Array.isArray(query);
+  const isInitialized = (query) => { return !!query && Array.isArray(query) };
 
   if (!isInitialized(query.body.query.bool.filter)) {
     query.body.query.bool.filter = [];
@@ -441,10 +454,10 @@ SearchClient.prototype.initializeBoolQuery = function(query) {
 };
 
 SearchClient.prototype.appendCriteriaForQueryString = function(query, queryString) {
-  query = this.initializeBoolQuery(query);
+  query = this.initializeBoolQuery(query); // eslint-disable-line no-param-reassign
 
   // parse
-  let parsedKeywords = this.parseQueryString(queryString);
+  const parsedKeywords = this.parseQueryString(queryString);
 
   if (parsedKeywords.match.length > 0) {
     const q = {
@@ -462,15 +475,15 @@ SearchClient.prototype.appendCriteriaForQueryString = function(query, queryStrin
       multi_match: {
         query: parsedKeywords.not_match.join(' '),
         fields: ['path.ja', 'path.en', 'body.ja', 'body.en'],
-        operator: 'or'
+        operator: 'or',
       },
     };
     query.body.query.bool.must_not.push(q);
   }
 
   if (parsedKeywords.phrase.length > 0) {
-    let phraseQueries = [];
-    parsedKeywords.phrase.forEach(function(phrase) {
+    const phraseQueries = [];
+    parsedKeywords.phrase.forEach((phrase) => {
       phraseQueries.push({
         multi_match: {
           query: phrase, // each phrase is quoteted words
@@ -488,8 +501,8 @@ SearchClient.prototype.appendCriteriaForQueryString = function(query, queryStrin
   }
 
   if (parsedKeywords.not_phrase.length > 0) {
-    let notPhraseQueries = [];
-    parsedKeywords.not_phrase.forEach(function(phrase) {
+    const notPhraseQueries = [];
+    parsedKeywords.not_phrase.forEach((phrase) => {
       notPhraseQueries.push({
         multi_match: {
           query: phrase, // each phrase is quoteted words
@@ -507,19 +520,32 @@ SearchClient.prototype.appendCriteriaForQueryString = function(query, queryStrin
   }
 
   if (parsedKeywords.prefix.length > 0) {
-    const queries = parsedKeywords.prefix.map(path => {
+    const queries = parsedKeywords.prefix.map((path) => {
       return { prefix: { 'path.raw': path } };
     });
     query.body.query.bool.filter.push({ bool: { should: queries } });
   }
 
   if (parsedKeywords.not_prefix.length > 0) {
-    const queries = parsedKeywords.not_prefix.map(path => {
+    const queries = parsedKeywords.not_prefix.map((path) => {
       return { prefix: { 'path.raw': path } };
     });
     query.body.query.bool.filter.push({ bool: { must_not: queries } });
   }
 
+  if (parsedKeywords.tag.length > 0) {
+    const queries = parsedKeywords.tag.map((tag) => {
+      return { term: { tag_names: tag } };
+    });
+    query.body.query.bool.filter.push({ bool: { must: queries } });
+  }
+
+  if (parsedKeywords.not_tag.length > 0) {
+    const queries = parsedKeywords.not_tag.map((tag) => {
+      return { term: { tag_names: tag } };
+    });
+    query.body.query.bool.filter.push({ bool: { must_not: queries } });
+  }
 };
 
 SearchClient.prototype.filterPagesByViewer = async function(query, user, userGroups) {
@@ -529,10 +555,12 @@ SearchClient.prototype.filterPagesByViewer = async function(query, user, userGro
   const showPagesRestrictedByOwner = !Config.hidePagesRestrictedByOwnerInList(config);
   const showPagesRestrictedByGroup = !Config.hidePagesRestrictedByGroupInList(config);
 
-  query = this.initializeBoolQuery(query);
+  query = this.initializeBoolQuery(query); // eslint-disable-line no-param-reassign
 
   const Page = this.crowi.model('Page');
-  const { GRANT_PUBLIC, GRANT_RESTRICTED, GRANT_SPECIFIED, GRANT_OWNER, GRANT_USER_GROUP } = Page;
+  const {
+    GRANT_PUBLIC, GRANT_RESTRICTED, GRANT_SPECIFIED, GRANT_OWNER, GRANT_USER_GROUP,
+  } = Page;
 
   const grantConditions = [
     { term: { grant: GRANT_PUBLIC } },
@@ -541,12 +569,14 @@ SearchClient.prototype.filterPagesByViewer = async function(query, user, userGro
   // ensure to hit to GRANT_RESTRICTED pages that the user specified at own
   if (user != null) {
     grantConditions.push(
-      { bool: {
-        must: [
-          { term: { grant: GRANT_RESTRICTED } },
-          { term: { granted_users: user._id.toString() } }
-        ]
-      } }
+      {
+        bool: {
+          must: [
+            { term: { grant: GRANT_RESTRICTED } },
+            { term: { granted_users: user._id.toString() } },
+          ],
+        },
+      },
     );
   }
 
@@ -558,18 +588,22 @@ SearchClient.prototype.filterPagesByViewer = async function(query, user, userGro
   }
   else if (user != null) {
     grantConditions.push(
-      { bool: {
-        must: [
-          { term: { grant: GRANT_SPECIFIED } },
-          { term: { granted_users: user._id.toString() } }
-        ]
-      } },
-      { bool: {
-        must: [
-          { term: { grant: GRANT_OWNER } },
-          { term: { granted_users: user._id.toString() } }
-        ]
-      } },
+      {
+        bool: {
+          must: [
+            { term: { grant: GRANT_SPECIFIED } },
+            { term: { granted_users: user._id.toString() } },
+          ],
+        },
+      },
+      {
+        bool: {
+          must: [
+            { term: { grant: GRANT_OWNER } },
+            { term: { granted_users: user._id.toString() } },
+          ],
+        },
+      },
     );
   }
 
@@ -579,14 +613,16 @@ SearchClient.prototype.filterPagesByViewer = async function(query, user, userGro
     );
   }
   else if (userGroups != null && userGroups.length > 0) {
-    const userGroupIds = userGroups.map(group => group._id.toString() );
+    const userGroupIds = userGroups.map((group) => { return group._id.toString() });
     grantConditions.push(
-      { bool: {
-        must: [
-          { term: { grant: GRANT_USER_GROUP } },
-          { terms: { granted_group: userGroupIds } }
-        ]
-      } },
+      {
+        bool: {
+          must: [
+            { term: { grant: GRANT_USER_GROUP } },
+            { terms: { granted_group: userGroupIds } },
+          ],
+        },
+      },
     );
   }
 
@@ -594,21 +630,21 @@ SearchClient.prototype.filterPagesByViewer = async function(query, user, userGro
 };
 
 SearchClient.prototype.filterPortalPages = function(query) {
-  query = this.initializeBoolQuery(query);
+  query = this.initializeBoolQuery(query); // eslint-disable-line no-param-reassign
 
   query.body.query.bool.must_not.push(this.queries.USER);
   query.body.query.bool.filter.push(this.queries.PORTAL);
 };
 
 SearchClient.prototype.filterPublicPages = function(query) {
-  query = this.initializeBoolQuery(query);
+  query = this.initializeBoolQuery(query); // eslint-disable-line no-param-reassign
 
   query.body.query.bool.must_not.push(this.queries.USER);
   query.body.query.bool.filter.push(this.queries.PUBLIC);
 };
 
 SearchClient.prototype.filterUserPages = function(query) {
-  query = this.initializeBoolQuery(query);
+  query = this.initializeBoolQuery(query); // eslint-disable-line no-param-reassign
 
   query.body.query.bool.filter.push(this.queries.USER);
 };
@@ -632,14 +668,14 @@ SearchClient.prototype.appendFunctionScore = function(query, queryString) {
   const User = this.crowi.model('User');
   const count = User.count({}) || 1;
 
-  const minScore = queryString.length * 0.1 - 1;    // increase with length
+  const minScore = queryString.length * 0.1 - 1; // increase with length
   logger.debug('min_score: ', minScore);
 
   query.body.query = {
     function_score: {
       query: { ...query.body.query },
-      //// disable min_score -- 2019.02.28 Yuki Takei
-      //// more precise adjustment is needed...
+      // // disable min_score -- 2019.02.28 Yuki Takei
+      // // more precise adjustment is needed...
       // min_score: minScore,
       field_value_factor: {
         field: 'bookmark_count',
@@ -670,24 +706,26 @@ SearchClient.prototype.searchKeyword = async function(queryString, user, userGro
 };
 
 SearchClient.prototype.parseQueryString = function(queryString) {
-  let matchWords = [];
-  let notMatchWords = [];
-  let phraseWords = [];
-  let notPhraseWords = [];
-  let prefixPaths = [];
-  let notPrefixPaths = [];
+  const matchWords = [];
+  const notMatchWords = [];
+  const phraseWords = [];
+  const notPhraseWords = [];
+  const prefixPaths = [];
+  const notPrefixPaths = [];
+  const tags = [];
+  const notTags = [];
 
   queryString.trim();
-  queryString = queryString.replace(/\s+/g, ' ');
+  queryString = queryString.replace(/\s+/g, ' '); // eslint-disable-line no-param-reassign
 
   // First: Parse phrase keywords
-  let phraseRegExp = new RegExp(/(-?"[^"]+")/g);
-  let phrases = queryString.match(phraseRegExp);
+  const phraseRegExp = new RegExp(/(-?"[^"]+")/g);
+  const phrases = queryString.match(phraseRegExp);
 
   if (phrases !== null) {
-    queryString = queryString.replace(phraseRegExp, '');
+    queryString = queryString.replace(phraseRegExp, ''); // eslint-disable-line no-param-reassign
 
-    phrases.forEach(function(phrase) {
+    phrases.forEach((phrase) => {
       phrase.trim();
       if (phrase.match(/^-/)) {
         notPhraseWords.push(phrase.replace(/^-/, ''));
@@ -699,29 +737,33 @@ SearchClient.prototype.parseQueryString = function(queryString) {
   }
 
   // Second: Parse other keywords (include minus keywords)
-  queryString.split(' ').forEach(function(word) {
+  queryString.split(' ').forEach((word) => {
     if (word === '') {
       return;
     }
 
-    // https://regex101.com/r/lN4LIV/1
-    const matchNegative = word.match(/^-(prefix:)?(.+)$/);
-    // https://regex101.com/r/gVssZe/1
-    const matchPositive = word.match(/^(prefix:)?(.+)$/);
+    // https://regex101.com/r/pN9XfK/1
+    const matchNegative = word.match(/^-(prefix:|tag:)?(.+)$/);
+    // https://regex101.com/r/3qw9FQ/1
+    const matchPositive = word.match(/^(prefix:|tag:)?(.+)$/);
 
     if (matchNegative != null) {
-      const isPrefixCondition = (matchNegative[1] != null);
-      if (isPrefixCondition) {
+      if (matchNegative[1] === 'prefix:') {
         notPrefixPaths.push(matchNegative[2]);
+      }
+      else if (matchNegative[1] === 'tag:') {
+        notTags.push(matchNegative[2]);
       }
       else {
         notMatchWords.push(matchNegative[2]);
       }
     }
     else if (matchPositive != null) {
-      const isPrefixCondition = (matchPositive[1] != null);
-      if (isPrefixCondition) {
+      if (matchPositive[1] === 'prefix:') {
         prefixPaths.push(matchPositive[2]);
+      }
+      else if (matchPositive[1] === 'tag:') {
+        tags.push(matchPositive[2]);
       }
       else {
         matchWords.push(matchPositive[2]);
@@ -736,6 +778,8 @@ SearchClient.prototype.parseQueryString = function(queryString) {
     not_phrase: notPhraseWords,
     prefix: prefixPaths,
     not_prefix: notPrefixPaths,
+    tag: tags,
+    not_tag: notTags,
   };
 };
 
@@ -748,10 +792,10 @@ SearchClient.prototype.syncPageCreated = function(page, user, bookmarkCount = 0)
 
   page.bookmarkCount = bookmarkCount;
   this.addPages([page])
-    .then(function(res) {
+    .then((res) => {
       debug('ES Response', res);
     })
-    .catch(function(err) {
+    .catch((err) => {
       logger.error('ES Error', err);
     });
 };
@@ -761,10 +805,10 @@ SearchClient.prototype.syncPageUpdated = function(page, user, bookmarkCount = 0)
   // TODO delete
   if (!this.shouldIndexed(page)) {
     this.deletePages([page])
-      .then(function(res) {
+      .then((res) => {
         debug('deletePages: ES Response', res);
       })
-      .catch(function(err) {
+      .catch((err) => {
         logger.error('deletePages:ES Error', err);
       });
 
@@ -773,10 +817,10 @@ SearchClient.prototype.syncPageUpdated = function(page, user, bookmarkCount = 0)
 
   page.bookmarkCount = bookmarkCount;
   this.updatePages([page])
-    .then(function(res) {
+    .then((res) => {
       debug('ES Response', res);
     })
-    .catch(function(err) {
+    .catch((err) => {
       logger.error('ES Error', err);
     });
 };
@@ -785,10 +829,10 @@ SearchClient.prototype.syncPageDeleted = function(page, user) {
   debug('SearchClient.syncPageDeleted', page.path);
 
   this.deletePages([page])
-    .then(function(res) {
+    .then((res) => {
       debug('deletePages: ES Response', res);
     })
-    .catch(function(err) {
+    .catch((err) => {
       logger.error('deletePages:ES Error', err);
     });
 };
@@ -801,8 +845,8 @@ SearchClient.prototype.syncBookmarkChanged = async function(pageId) {
 
   page.bookmarkCount = bookmarkCount;
   this.updatePages([page])
-    .then(res => debug('ES Response', res))
-    .catch(err => logger.error('ES Error', err));
+    .then((res) => { return debug('ES Response', res) })
+    .catch((err) => { return logger.error('ES Error', err) });
 };
 
 module.exports = SearchClient;

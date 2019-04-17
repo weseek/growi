@@ -10,7 +10,7 @@ export default class SearchResultList extends React.Component {
   constructor(props) {
     super(props);
 
-    this.growiRenderer = new GrowiRenderer(this.props.crowi, this.props.crowiRenderer, {mode: 'searchresult'});
+    this.growiRenderer = new GrowiRenderer(this.props.crowi, this.props.crowiRenderer, { mode: 'searchresult' });
   }
 
   render() {
@@ -32,10 +32,11 @@ export default class SearchResultList extends React.Component {
 
     return (
       <div>
-      {resultList}
+        {resultList}
       </div>
     );
   }
+
 }
 
 SearchResultList.propTypes = {
@@ -46,6 +47,4 @@ SearchResultList.propTypes = {
 };
 
 SearchResultList.defaultProps = {
-  pages: [],
-  searchingKeyword: '',
 };

@@ -9,7 +9,7 @@ class MarkdownTableUtil {
     // https://github.com/markdown-it/markdown-it/blob/d29f421927e93e88daf75f22089a3e732e195bd2/lib/rules_block/table.js#L83
     // https://regex101.com/r/7BN2fR/7
     this.tableAlignmentLineRE = /^[-:|][-:|\s]*$/;
-    this.tableAlignmentLineNegRE = /^[^-:]*$/;  // it is need to check to ignore empty row which is matched above RE
+    this.tableAlignmentLineNegRE = /^[^-:]*$/; // it is need to check to ignore empty row which is matched above RE
     this.linePartOfTableRE = /^\|[^\r\n]*|[^\r\n]*\|$|([^|\r\n]+\|[^|\r\n]*)+/; // own idea
 
     this.getBot = this.getBot.bind(this);
@@ -29,7 +29,7 @@ class MarkdownTableUtil {
   getBot(editor) {
     const curPos = editor.getCursor();
     if (!this.isInTable(editor)) {
-      return { line: curPos.line, ch: curPos.ch};
+      return { line: curPos.line, ch: curPos.ch };
     }
 
     const firstLine = editor.getDoc().firstLine();
@@ -51,7 +51,7 @@ class MarkdownTableUtil {
   getEot(editor) {
     const curPos = editor.getCursor();
     if (!this.isInTable(editor)) {
-      return { line: curPos.line, ch: curPos.ch};
+      return { line: curPos.line, ch: curPos.ch };
     }
 
     const lastLine = editor.getDoc().lastLine();
@@ -109,7 +109,7 @@ class MarkdownTableUtil {
    */
   isEndOfLine(editor) {
     const curPos = editor.getCursor();
-    return (curPos.ch == editor.getDoc().getLine(curPos.line).length);
+    return (curPos.ch === editor.getDoc().getLine(curPos.line).length);
   }
 
   /**
@@ -127,8 +127,8 @@ class MarkdownTableUtil {
    */
   addRowToMarkdownTable(mdtable) {
     const numCol = mdtable.table.length > 0 ? mdtable.table[0].length : 1;
-    let newRow = [];
-    (new Array(numCol)).forEach(() => newRow.push('')); // create cols
+    const newRow = [];
+    (new Array(numCol)).forEach(() => { return newRow.push('') }); // create cols
     mdtable.table.push(newRow);
   }
 
@@ -137,15 +137,14 @@ class MarkdownTableUtil {
    * (The merged markdown table options are used for the first markdown table.)
    * @param {Array} array of markdown table
    */
-  mergeMarkdownTable(mdtable_list) {
-    if (mdtable_list == undefined
-        || !(mdtable_list instanceof Array)) {
+  mergeMarkdownTable(mdtableList) {
+    if (mdtableList == null || !(mdtableList instanceof Array)) {
       return undefined;
     }
 
     let newTable = [];
-    const options = mdtable_list[0].options; // use option of first markdown-table
-    mdtable_list.forEach((mdtable) => {
+    const options = mdtableList[0].options; // use option of first markdown-table
+    mdtableList.forEach((mdtable) => {
       newTable = newTable.concat(mdtable.table);
     });
     return (new MarkdownTable(newTable, options));
@@ -176,15 +175,16 @@ class MarkdownTableUtil {
 
     let newMarkdown = '';
     if (markdownBeforeTable.length > 0) {
-      newMarkdown += markdownBeforeTable.join('\n') + '\n';
+      newMarkdown += `${markdownBeforeTable.join('\n')}\n`;
     }
     newMarkdown += table;
     if (markdownAfterTable.length > 0) {
-      newMarkdown += '\n' + markdownAfterTable.join('\n');
+      newMarkdown += `\n${markdownAfterTable.join('\n')}`;
     }
 
     return newMarkdown;
   }
+
 }
 
 // singleton pattern

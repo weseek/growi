@@ -44,8 +44,8 @@ class PluginService {
           entry(this.crowi, this.app);
         });
     }
-
   }
+
 }
 
 module.exports = PluginService;

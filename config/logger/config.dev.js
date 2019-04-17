@@ -1,7 +1,9 @@
 module.exports = {
   default: 'info',
 
-  //// configure level for server
+  /*
+   * configure level for server
+   */
   // 'express:*': 'debug',
   // 'growi:*': 'debug',
   'growi:crowi': 'debug',
@@ -21,6 +23,8 @@ module.exports = {
   // email
   // 'growi:lib:mailer': 'debug',
 
-  //// configure level for client
+  /*
+   * configure level for client
+   */
   'growi:app': 'debug',
 };

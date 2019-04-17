@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { translate } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 
 import FormGroup from 'react-bootstrap/es/FormGroup';
 import Button from 'react-bootstrap/es/Button';
@@ -46,17 +46,17 @@ class HeaderSearchBox extends React.Component {
   }
 
   search() {
-    const url = new URL(location.href);
+    const url = new URL(window.location.href);
     url.pathname = '/_search';
 
     // construct search query
     let q = this.state.text;
     if (this.state.isScopeChildren) {
-      q += ` prefix:${location.pathname}`;
+      q += ` prefix:${window.location.pathname}`;
     }
     url.searchParams.append('q', q);
 
-    location.href = url.href;
+    window.location.href = url.href;
   }
 
   render() {
@@ -68,13 +68,14 @@ class HeaderSearchBox extends React.Component {
     return (
       <FormGroup>
         <InputGroup>
-        <InputGroup.Button className="btn-group-dropdown-scope">
-          <DropdownButton id="dbScope" title={scopeLabel}>
-            <MenuItem onClick={this.onClickAllPages}>All pages</MenuItem>
-            <MenuItem onClick={this.onClickChildren}>{ t('header_search_box.item_label.This tree') }</MenuItem>
-          </DropdownButton>
-        </InputGroup.Button>
-          <SearchForm t={this.props.t}
+          <InputGroup.Button className="btn-group-dropdown-scope">
+            <DropdownButton id="dbScope" title={scopeLabel}>
+              <MenuItem onClick={this.onClickAllPages}>All pages</MenuItem>
+              <MenuItem onClick={this.onClickChildren}>{ t('header_search_box.item_label.This tree') }</MenuItem>
+            </DropdownButton>
+          </InputGroup.Button>
+          <SearchForm
+            t={this.props.t}
             crowi={this.props.crowi}
             onInputChange={this.onInputChange}
             onSubmit={this.search}
@@ -83,17 +84,18 @@ class HeaderSearchBox extends React.Component {
           <InputGroup.Button className="btn-group-submit-search">
             <Button bsStyle="link" onClick={this.search}>
               <i className="icon-magnifier"></i>
-            </Button >
+            </Button>
           </InputGroup.Button>
         </InputGroup>
       </FormGroup>
     );
   }
+
 }
 
 HeaderSearchBox.propTypes = {
-  t: PropTypes.func.isRequired,               // i18next
+  t: PropTypes.func.isRequired, // i18next
   crowi: PropTypes.object.isRequired,
 };
 
-export default translate()(HeaderSearchBox);
+export default withTranslation()(HeaderSearchBox);

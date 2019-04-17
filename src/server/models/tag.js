@@ -1,3 +1,6 @@
+// disable no-return-await for model functions
+/* eslint-disable no-return-await */
+
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate');
 
@@ -7,7 +10,7 @@ const mongoosePaginate = require('mongoose-paginate');
 const schema = new mongoose.Schema({
   name: {
     type: String,
-    required: true
+    required: true,
   },
 });
 schema.plugin(mongoosePaginate);
@@ -19,8 +22,12 @@ schema.plugin(mongoosePaginate);
  */
 class Tag {
 
-  async findOrCreate(tagName) {
-
+  static async findOrCreate(tagName) {
+    const tag = await this.findOne({ name: tagName });
+    if (!tag) {
+      return await this.create({ name: tagName });
+    }
+    return tag;
   }
 
 }

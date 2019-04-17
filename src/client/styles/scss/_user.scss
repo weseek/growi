@@ -1,6 +1,5 @@
 .main-container {
   .user-page-header {
-
     #revision-path {
       margin-bottom: 0;
     }
@@ -16,8 +15,8 @@
     }
 
     .picture {
-      height: 64px;
       width: 64px;
+      height: 64px;
     }
 
     .user-page-meta {
@@ -38,17 +37,17 @@
       }
     }
 
-    .btn-like, .btn-bookmark {
+    .btn-like,
+    .btn-bookmark {
       &.btn-lg {
-        font-size: 1.5em;
         padding: 8px;
+        font-size: 1.5em;
       }
     }
   }
 
   // affix
   .user-page-header.affix {
-
     .users-meta {
       margin-left: 15px;
     }
@@ -59,14 +58,13 @@
     }
 
     .picture {
-      height: 48px;
       width: 48px;
+      height: 48px;
     }
   }
 }
 
 .user-component {
-
   img.picture {
     margin-right: 4px;
   }

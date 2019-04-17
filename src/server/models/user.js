@@ -1,30 +1,32 @@
+/* eslint-disable no-use-before-define */
+
 const debug = require('debug')('growi:models:user');
 const logger = require('@alias/logger')('growi:models:user');
 const path = require('path');
 const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
 const mongoosePaginate = require('mongoose-paginate');
+
 const ObjectId = mongoose.Schema.Types.ObjectId;
 const crypto = require('crypto');
 const async = require('async');
 
 module.exports = function(crowi) {
   const STATUS_REGISTERED = 1;
-  const STATUS_ACTIVE     = 2;
-  const STATUS_SUSPENDED  = 3;
-  const STATUS_DELETED    = 4;
-  const STATUS_INVITED    = 5;
+  const STATUS_ACTIVE = 2;
+  const STATUS_SUSPENDED = 3;
+  const STATUS_DELETED = 4;
+  const STATUS_INVITED = 5;
   const USER_PUBLIC_FIELDS = '_id image isEmailPublished isGravatarEnabled googleId name username email introduction status lang createdAt admin';
   const IMAGE_POPULATION = { path: 'imageAttachment', select: 'filePathProxied' };
 
-  const LANG_EN    = 'en';
+  const LANG_EN = 'en';
   const LANG_EN_US = 'en-US';
   const LANG_EN_GB = 'en-GB';
-  const LANG_JA    = 'ja';
+  const LANG_JA = 'ja';
 
   const PAGE_ITEMS = 50;
 
-  let userSchema;
   let userEvent;
 
   // init event
@@ -33,7 +35,7 @@ module.exports = function(crowi) {
     userEvent.on('activated', userEvent.onActivated);
   }
 
-  userSchema = new mongoose.Schema({
+  const userSchema = new mongoose.Schema({
     userId: String,
     image: String,
     imageAttachment: { type: ObjectId, ref: 'Attachment' },
@@ -43,23 +45,26 @@ module.exports = function(crowi) {
     name: { type: String },
     username: { type: String, required: true, unique: true },
     email: { type: String, unique: true, sparse: true },
-    //// The official settings
+    // === The official settings
     // username: { type: String, index: true },
     // email: { type: String, required: true, index: true },
-    //// crowi-plus (>= 2.1.0, <2.3.0) settings
+    // === crowi-plus (>= 2.1.0, <2.3.0) settings
     // email: { type: String, required: true, unique: true },
     introduction: { type: String },
     password: String,
     apiToken: String,
     lang: {
       type: String,
-      enum: Object.keys(getLanguageLabels()).map((k) => eval(k)),
-      default: LANG_EN_US
+      // eslint-disable-next-line no-eval
+      enum: Object.keys(getLanguageLabels()).map((k) => { return eval(k) }),
+      default: LANG_EN_US,
     },
-    status: { type: Number, required: true, default: STATUS_ACTIVE, index: true  },
+    status: {
+      type: Number, required: true, default: STATUS_ACTIVE, index: true,
+    },
     createdAt: { type: Date, default: Date.now },
     lastLoginAt: { type: Date },
-    admin: { type: Boolean, default: 0, index: true  }
+    admin: { type: Boolean, default: 0, index: true },
   });
   userSchema.plugin(mongoosePaginate);
   userSchema.plugin(uniqueValidator);
@@ -73,8 +78,10 @@ module.exports = function(crowi) {
   function decideUserStatusOnRegistration() {
     validateCrowi();
 
-    var Config = crowi.model('Config'),
-      config = crowi.getConfig();
+    const Config = crowi.model('Config');
+
+
+    const config = crowi.getConfig();
 
     if (!config.crowi) {
       return STATUS_ACTIVE; // is this ok?
@@ -98,13 +105,13 @@ module.exports = function(crowi) {
   }
 
   function generateRandomTempPassword() {
-    var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!=-_';
-    var password = '';
-    var len = 12;
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!=-_';
+    let password = '';
+    const len = 12;
 
-    for (var i = 0; i < len; i++) {
-      var randomPoz = Math.floor(Math.random() * chars.length);
-      password += chars.substring(randomPoz, randomPoz+1);
+    for (let i = 0; i < len; i++) {
+      const randomPoz = Math.floor(Math.random() * chars.length);
+      password += chars.substring(randomPoz, randomPoz + 1);
     }
 
     return password;
@@ -113,30 +120,31 @@ module.exports = function(crowi) {
   function generatePassword(password) {
     validateCrowi();
 
-    var hasher = crypto.createHash('sha256');
+    const hasher = crypto.createHash('sha256');
     hasher.update(crowi.env.PASSWORD_SEED + password);
 
     return hasher.digest('hex');
   }
 
   function generateApiToken(user) {
-    var hasher = crypto.createHash('sha256');
-    hasher.update((new Date).getTime() + user._id);
+    const hasher = crypto.createHash('sha256');
+    hasher.update((new Date()).getTime() + user._id);
 
     return hasher.digest('base64');
   }
 
   function getLanguageLabels() {
-    var lang = {};
-    lang.LANG_EN    = LANG_EN;
+    const lang = {};
+    lang.LANG_EN = LANG_EN;
     lang.LANG_EN_US = LANG_EN_US;
     lang.LANG_EN_GB = LANG_EN_GB;
-    lang.LANG_JA    = LANG_JA;
+    lang.LANG_JA = LANG_JA;
 
     return lang;
   }
 
   userSchema.methods.populateImage = async function() {
+    // eslint-disable-next-line no-return-await
     return await this.populate(IMAGE_POPULATION);
   };
 
@@ -148,7 +156,7 @@ module.exports = function(crowi) {
   };
 
   userSchema.methods.isPasswordValid = function(password) {
-    return this.password == generatePassword(password);
+    return this.password === generatePassword(password);
   };
 
   userSchema.methods.setPassword = function(password) {
@@ -165,47 +173,45 @@ module.exports = function(crowi) {
 
   userSchema.methods.updateLastLoginAt = function(lastLoginAt, callback) {
     this.lastLoginAt = lastLoginAt;
-    this.save(function(err, userData) {
+    this.save((err, userData) => {
       return callback(err, userData);
     });
   };
 
   userSchema.methods.updateIsGravatarEnabled = function(isGravatarEnabled, callback) {
     this.isGravatarEnabled = isGravatarEnabled;
-    this.save(function(err, userData) {
+    this.save((err, userData) => {
       return callback(err, userData);
     });
   };
 
   userSchema.methods.updateIsEmailPublished = function(isEmailPublished, callback) {
     this.isEmailPublished = isEmailPublished;
-    this.save(function(err, userData) {
+    this.save((err, userData) => {
       return callback(err, userData);
     });
   };
 
   userSchema.methods.updatePassword = function(password, callback) {
     this.setPassword(password);
-    this.save(function(err, userData) {
+    this.save((err, userData) => {
       return callback(err, userData);
     });
   };
 
   userSchema.methods.updateApiToken = function(callback) {
-    var self = this;
+    const self = this;
 
     self.apiToken = generateApiToken(this);
-    return new Promise(function(resolve, reject) {
-      self.save(function(err, userData) {
+    return new Promise(((resolve, reject) => {
+      self.save((err, userData) => {
         if (err) {
           return reject(err);
         }
-        else {
-          return resolve(userData);
-        }
-      });
 
-    });
+        return resolve(userData);
+      });
+    }));
   };
 
   userSchema.methods.updateImage = async function(attachment) {
@@ -230,7 +236,7 @@ module.exports = function(crowi) {
 
   userSchema.methods.updateGoogleId = function(googleId, callback) {
     this.googleId = googleId;
-    this.save(function(err, userData) {
+    this.save((err, userData) => {
       return callback(err, userData);
     });
   };
@@ -245,7 +251,7 @@ module.exports = function(crowi) {
     this.username = username;
     this.status = STATUS_ACTIVE;
 
-    this.save(function(err, userData) {
+    this.save((err, userData) => {
       userEvent.emit('activated', userData);
       if (err) {
         throw new Error(err);
@@ -257,7 +263,7 @@ module.exports = function(crowi) {
   userSchema.methods.removeFromAdmin = function(callback) {
     debug('Remove from admin', this);
     this.admin = 0;
-    this.save(function(err, userData) {
+    this.save((err, userData) => {
       return callback(err, userData);
     });
   };
@@ -265,7 +271,7 @@ module.exports = function(crowi) {
   userSchema.methods.makeAdmin = function(callback) {
     debug('Admin', this);
     this.admin = 1;
-    this.save(function(err, userData) {
+    this.save((err, userData) => {
       return callback(err, userData);
     });
   };
@@ -278,7 +284,7 @@ module.exports = function(crowi) {
   userSchema.methods.statusActivate = function(callback) {
     debug('Activate User', this);
     this.status = STATUS_ACTIVE;
-    this.save(function(err, userData) {
+    this.save((err, userData) => {
       userEvent.emit('activated', userData);
       return callback(err, userData);
     });
@@ -291,12 +297,12 @@ module.exports = function(crowi) {
       this.email = '-';
     }
     if (this.name === undefined || this.name === null) { // migrate old data
-      this.name = '-' + Date.now();
+      this.name = `-${Date.now()}`;
     }
     if (this.username === undefined || this.usename === null) { // migrate old data
       this.username = '-';
     }
-    this.save(function(err, userData) {
+    this.save((err, userData) => {
       return callback(err, userData);
     });
   };
@@ -315,21 +321,21 @@ module.exports = function(crowi) {
     this.googleId = null;
     this.isGravatarEnabled = false;
     this.image = null;
-    this.save(function(err, userData) {
+    this.save((err, userData) => {
       return callback(err, userData);
     });
   };
 
   userSchema.methods.updateGoogleId = function(googleId, callback) {
     this.googleId = googleId;
-    this.save(function(err, userData) {
+    this.save((err, userData) => {
       return callback(err, userData);
     });
   };
 
   userSchema.statics.getLanguageLabels = getLanguageLabels;
   userSchema.statics.getUserStatusLabels = function() {
-    var userStatus = {};
+    const userStatus = {};
     userStatus[STATUS_REGISTERED] = '承認待ち';
     userStatus[STATUS_ACTIVE] = 'Active';
     userStatus[STATUS_SUSPENDED] = 'Suspended';
@@ -342,12 +348,12 @@ module.exports = function(crowi) {
   userSchema.statics.isEmailValid = function(email, callback) {
     validateCrowi();
 
-    var config = crowi.getConfig()
-      , whitelist = config.crowi['security:registrationWhiteList'];
+    const config = crowi.getConfig();
+    const whitelist = config.crowi['security:registrationWhiteList'];
 
     if (Array.isArray(whitelist) && whitelist.length > 0) {
-      return config.crowi['security:registrationWhiteList'].some(function(allowedEmail) {
-        var re = new RegExp(allowedEmail + '$');
+      return config.crowi['security:registrationWhiteList'].some((allowedEmail) => {
+        const re = new RegExp(`${allowedEmail}$`);
         return re.test(email);
       });
     }
@@ -361,10 +367,10 @@ module.exports = function(crowi) {
       return user;
     }
 
-    var filteredUser = {};
-    var fields = USER_PUBLIC_FIELDS.split(' ');
-    for (var i = 0; i < fields.length; i++) {
-      var key = fields[i];
+    const filteredUser = {};
+    const fields = USER_PUBLIC_FIELDS.split(' ');
+    for (let i = 0; i < fields.length; i++) {
+      const key = fields[i];
       if (user[key]) {
         filteredUser[key] = user[key];
       }
@@ -374,22 +380,22 @@ module.exports = function(crowi) {
   };
 
   userSchema.statics.findUsers = function(options, callback) {
-    var sort = options.sort || {status: 1, createdAt: 1};
+    const sort = options.sort || { status: 1, createdAt: 1 };
 
     this.find()
       .sort(sort)
       .skip(options.skip || 0)
       .limit(options.limit || 21)
-      .exec(function(err, userData) {
+      .exec((err, userData) => {
         callback(err, userData);
       });
-
   };
 
   userSchema.statics.findAllUsers = function(option) {
+    // eslint-disable-next-line no-param-reassign
     option = option || {};
 
-    const sort = option.sort || {createdAt: -1};
+    const sort = option.sort || { createdAt: -1 };
     const fields = option.fields || USER_PUBLIC_FIELDS;
 
     let status = option.status || [STATUS_ACTIVE, STATUS_SUSPENDED];
@@ -398,37 +404,37 @@ module.exports = function(crowi) {
     }
 
     return this.find()
-      .or(status.map(s => { return {status: s} }))
+      .or(status.map((s) => { return { status: s } }))
       .select(fields)
       .sort(sort);
   };
 
   userSchema.statics.findUsersByIds = function(ids, option) {
+    // eslint-disable-next-line no-param-reassign
     option = option || {};
 
-    const sort = option.sort || {createdAt: -1}
-      , status = option.status || STATUS_ACTIVE
-      , fields = option.fields || USER_PUBLIC_FIELDS
-      ;
+    const sort = option.sort || { createdAt: -1 };
+    const status = option.status || STATUS_ACTIVE;
+    const fields = option.fields || USER_PUBLIC_FIELDS;
 
-    return this.find({ _id: { $in: ids }, status: status })
+    return this.find({ _id: { $in: ids }, status })
       .select(fields)
       .sort(sort);
   };
 
   userSchema.statics.findAdmins = function(callback) {
-    var User = this;
-    this.find({admin: true})
-      .exec(function(err, admins) {
+    this.find({ admin: true })
+      .exec((err, admins) => {
         debug('Admins: ', admins);
         callback(err, admins);
       });
   };
 
   userSchema.statics.findUsersWithPagination = async function(options) {
-    var sort = options.sort || {status: 1, username: 1, createdAt: 1};
+    const sort = options.sort || { status: 1, username: 1, createdAt: 1 };
 
-    return await this.paginate({status: { $ne: STATUS_DELETED }}, { page: options.page || 1, limit: options.limit || PAGE_ITEMS }, function(err, result) {
+    // eslint-disable-next-line no-return-await
+    return await this.paginate({ status: { $ne: STATUS_DELETED } }, { page: options.page || 1, limit: options.limit || PAGE_ITEMS }, (err, result) => {
       if (err) {
         debug('Error on pagination:', err);
         throw new Error(err);
@@ -440,14 +446,14 @@ module.exports = function(crowi) {
 
   userSchema.statics.findUsersByPartOfEmail = function(emailPart, options) {
     const status = options.status || null;
-    const emailPartRegExp = new RegExp(emailPart.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'));
+    const emailPartRegExp = new RegExp(emailPart.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&'));
     const User = this;
 
     return new Promise((resolve, reject) => {
       const query = User.find({ email: emailPartRegExp }, USER_PUBLIC_FIELDS);
 
       if (status) {
-        query.and({status});
+        query.and({ status });
       }
 
       query
@@ -467,21 +473,21 @@ module.exports = function(crowi) {
     if (username == null) {
       return Promise.resolve(null);
     }
-    return this.findOne({username});
+    return this.findOne({ username });
   };
 
   userSchema.statics.findUserByApiToken = function(apiToken) {
     if (apiToken == null) {
       return Promise.resolve(null);
     }
-    return this.findOne({apiToken});
+    return this.findOne({ apiToken });
   };
 
   userSchema.statics.findUserByGoogleId = function(googleId, callback) {
     if (googleId == null) {
       callback(null, null);
     }
-    this.findOne({googleId}, function(err, userData) {
+    this.findOne({ googleId }, (err, userData) => {
       callback(err, userData);
     });
   };
@@ -489,8 +495,8 @@ module.exports = function(crowi) {
   userSchema.statics.findUserByUsernameOrEmail = function(usernameOrEmail, password, callback) {
     this.findOne()
       .or([
-        {username: usernameOrEmail},
-        {email: usernameOrEmail},
+        { username: usernameOrEmail },
+        { email: usernameOrEmail },
       ])
       .exec((err, userData) => {
         callback(err, userData);
@@ -498,8 +504,8 @@ module.exports = function(crowi) {
   };
 
   userSchema.statics.findUserByEmailAndPassword = function(email, password, callback) {
-    var hashedPassword = generatePassword(password);
-    this.findOne({email: email, password: hashedPassword}, function(err, userData) {
+    const hashedPassword = generatePassword(password);
+    this.findOne({ email, password: hashedPassword }, (err, userData) => {
       callback(err, userData);
     });
   };
@@ -521,17 +527,16 @@ module.exports = function(crowi) {
 
   userSchema.statics.countListByStatus = async function(status) {
     const User = this;
-    const conditions = {status: status};
+    const conditions = { status };
 
     // TODO count は非推奨。mongoose のバージョンアップ後に countDocuments に変更する。
     return User.count(conditions);
   };
 
   userSchema.statics.isRegisterableUsername = async function(username) {
-    var User = this;
-    var usernameUsable = true;
+    let usernameUsable = true;
 
-    const userData = await this.findOne({username: username});
+    const userData = await this.findOne({ username });
     if (userData) {
       usernameUsable = false;
     }
@@ -539,24 +544,24 @@ module.exports = function(crowi) {
   };
 
   userSchema.statics.isRegisterable = function(email, username, callback) {
-    var User = this;
-    var emailUsable = true;
-    var usernameUsable = true;
+    const User = this;
+    let emailUsable = true;
+    let usernameUsable = true;
 
     // username check
-    this.findOne({username: username}, function(err, userData) {
+    this.findOne({ username }, (err, userData) => {
       if (userData) {
         usernameUsable = false;
       }
 
       // email check
-      User.findOne({email: email}, function(err, userData) {
+      User.findOne({ email }, (err, userData) => {
         if (userData) {
           emailUsable = false;
         }
 
         if (!emailUsable || !usernameUsable) {
-          return callback(false, {email: emailUsable, username: usernameUsable});
+          return callback(false, { email: emailUsable, username: usernameUsable });
         }
 
         return callback(true, {});
@@ -565,8 +570,8 @@ module.exports = function(crowi) {
   };
 
   userSchema.statics.removeCompletelyById = function(id, callback) {
-    var User = this;
-    User.findById(id, function(err, userData) {
+    const User = this;
+    User.findById(id, (err, userData) => {
       if (!userData) {
         return callback(err, null);
       }
@@ -578,7 +583,7 @@ module.exports = function(crowi) {
         return callback(new Error('Cannot remove completely the user whoes status is not INVITED'), null);
       }
 
-      userData.remove(function(err) {
+      userData.remove((err) => {
         if (err) {
           return callback(err, null);
         }
@@ -589,58 +594,59 @@ module.exports = function(crowi) {
   };
 
   userSchema.statics.resetPasswordByRandomString = function(id) {
-    var User = this;
+    const User = this;
 
-    return new Promise(function(resolve, reject) {
-      User.findById(id, function(err, userData) {
+    return new Promise(((resolve, reject) => {
+      User.findById(id, (err, userData) => {
         if (!userData) {
           return reject(new Error('User not found'));
         }
 
         // is updatable check
         // if (userData.isUp
-        var newPassword = generateRandomTempPassword();
+        const newPassword = generateRandomTempPassword();
         userData.setPassword(newPassword);
-        userData.save(function(err, userData) {
+        userData.save((err, userData) => {
           if (err) {
             return reject(err);
           }
 
-          resolve({user: userData, newPassword: newPassword});
+          resolve({ user: userData, newPassword });
         });
       });
-    });
+    }));
   };
 
   userSchema.statics.createUsersByInvitation = function(emailList, toSendEmail, callback) {
     validateCrowi();
 
-    var User = this
-      , createdUserList = []
-      , Config = crowi.model('Config')
-      , config = crowi.getConfig()
-      , mailer = crowi.getMailer()
-      ;
+    const User = this;
+    const createdUserList = [];
+    const Config = crowi.model('Config');
+    const config = crowi.getConfig();
 
+    const mailer = crowi.getMailer();
     if (!Array.isArray(emailList)) {
       debug('emailList is not array');
     }
 
     async.each(
       emailList,
-      function(email, next) {
-        var newUser = new User()
-          , tmpUsername, password;
+      (email, next) => {
+        const newUser = new User();
+        let tmpUsername;
+        let password;
 
+        // eslint-disable-next-line no-param-reassign
         email = email.trim();
 
         // email check
         // TODO: 削除済みはチェック対象から外そう〜
-        User.findOne({email: email}, function(err, userData) {
+        User.findOne({ email }, (err, userData) => {
           // The user is exists
           if (userData) {
             createdUserList.push({
-              email: email,
+              email,
               password: null,
               user: null,
             });
@@ -648,8 +654,10 @@ module.exports = function(crowi) {
             return next();
           }
 
-          tmpUsername = 'temp_' + Math.random().toString(36).slice(-16);
+          /* eslint-disable newline-per-chained-call */
+          tmpUsername = `temp_${Math.random().toString(36).slice(-16)}`;
           password = Math.random().toString(36).slice(-16);
+          /* eslint-enable newline-per-chained-call */
 
           newUser.username = tmpUsername;
           newUser.email = email;
@@ -662,10 +670,10 @@ module.exports = function(crowi) {
             newUser.lang = globalLang;
           }
 
-          newUser.save(function(err, userData) {
+          newUser.save((err, userData) => {
             if (err) {
               createdUserList.push({
-                email: email,
+                email,
                 password: null,
                 user: null,
               });
@@ -673,8 +681,8 @@ module.exports = function(crowi) {
             }
             else {
               createdUserList.push({
-                email: email,
-                password: password,
+                email,
+                password,
                 user: userData,
               });
               debug('saved!', email);
@@ -684,7 +692,7 @@ module.exports = function(crowi) {
           });
         });
       },
-      function(err) {
+      (err) => {
         if (err) {
           debug('error occured while iterate email list');
         }
@@ -693,43 +701,42 @@ module.exports = function(crowi) {
           // TODO: メール送信部分のロジックをサービス化する
           async.each(
             createdUserList,
-            function(user, next) {
+            (user, next) => {
               if (user.password === null) {
                 return next();
               }
 
               mailer.send({
                 to: user.email,
-                subject: 'Invitation to ' + Config.appTitle(config),
+                subject: `Invitation to ${Config.appTitle(config)}`,
                 template: path.join(crowi.localeDir, 'en-US/admin/userInvitation.txt'),
                 vars: {
                   email: user.email,
                   password: user.password,
                   url: crowi.configManager.getSiteUrl(),
                   appTitle: Config.appTitle(config),
-                }
+                },
               },
-              function(err, s) {
+              (err, s) => {
                 debug('completed to send email: ', err, s);
                 next();
-              }
-              );
+              });
             },
-            function(err) {
+            (err) => {
               debug('Sending invitation email completed.', err);
-            }
+            },
           );
         }
 
         debug('createdUserList!!! ', createdUserList);
         return callback(null, createdUserList);
-      }
+      },
     );
   };
 
   userSchema.statics.createUserByEmailAndPasswordAndStatus = async function(name, username, email, password, lang, status, callback) {
-    const User = this
-      , newUser = new User();
+    const User = this;
+    const newUser = new User();
 
     // check user upper limit
     const isUserCountExceedsUpperLimit = await User.isUserCountExceedsUpperLimit();
@@ -741,6 +748,7 @@ module.exports = function(crowi) {
     // check email duplication because email must be unique
     const count = await this.count({ email });
     if (count > 0) {
+      // eslint-disable-next-line no-param-reassign
       email = generateRandomEmail();
     }
 
@@ -764,13 +772,13 @@ module.exports = function(crowi) {
     newUser.createdAt = Date.now();
     newUser.status = status || decideUserStatusOnRegistration();
 
-    newUser.save(function(err, userData) {
+    newUser.save((err, userData) => {
       if (err) {
         logger.error('createUserByEmailAndPasswordAndStatus failed: ', err);
         return callback(err);
       }
 
-      if (userData.status == STATUS_ACTIVE) {
+      if (userData.status === STATUS_ACTIVE) {
         userEvent.emit('activated', userData);
       }
       return callback(err, userData);
@@ -804,33 +812,36 @@ module.exports = function(crowi) {
   };
 
   userSchema.statics.getUsernameByPath = function(path) {
-    var username = null;
-    if (m = path.match(/^\/user\/([^\/]+)\/?/)) {
-      username = m[1];
+    let username = null;
+    const match = path.match(/^\/user\/([^/]+)\/?/);
+    if (match) {
+      username = match[1];
     }
 
     return username;
   };
 
   class UserUpperLimitException {
+
     constructor() {
       this.name = this.constructor.name;
     }
+
   }
 
-  userSchema.statics.STATUS_REGISTERED  = STATUS_REGISTERED;
-  userSchema.statics.STATUS_ACTIVE      = STATUS_ACTIVE;
-  userSchema.statics.STATUS_SUSPENDED   = STATUS_SUSPENDED;
-  userSchema.statics.STATUS_DELETED     = STATUS_DELETED;
-  userSchema.statics.STATUS_INVITED     = STATUS_INVITED;
+  userSchema.statics.STATUS_REGISTERED = STATUS_REGISTERED;
+  userSchema.statics.STATUS_ACTIVE = STATUS_ACTIVE;
+  userSchema.statics.STATUS_SUSPENDED = STATUS_SUSPENDED;
+  userSchema.statics.STATUS_DELETED = STATUS_DELETED;
+  userSchema.statics.STATUS_INVITED = STATUS_INVITED;
   userSchema.statics.USER_PUBLIC_FIELDS = USER_PUBLIC_FIELDS;
-  userSchema.statics.IMAGE_POPULATION   = IMAGE_POPULATION;
-  userSchema.statics.PAGE_ITEMS         = PAGE_ITEMS;
+  userSchema.statics.IMAGE_POPULATION = IMAGE_POPULATION;
+  userSchema.statics.PAGE_ITEMS = PAGE_ITEMS;
 
-  userSchema.statics.LANG_EN            = LANG_EN;
-  userSchema.statics.LANG_EN_US         = LANG_EN_US;
-  userSchema.statics.LANG_EN_GB         = LANG_EN_US;
-  userSchema.statics.LANG_JA            = LANG_JA;
+  userSchema.statics.LANG_EN = LANG_EN;
+  userSchema.statics.LANG_EN_US = LANG_EN_US;
+  userSchema.statics.LANG_EN_GB = LANG_EN_US;
+  userSchema.statics.LANG_JA = LANG_JA;
 
   return mongoose.model('User', userSchema);
 };

@@ -51,7 +51,6 @@
   cursor: not-allowed;
 }
 
-
 /*
  * Helper Classes
  */
@@ -81,8 +80,8 @@
 
 // transplant from FontAwesome
 .icon-fw {
-  width: 1.4em;
   display: inline-block;
+  width: 1.4em;
   text-align: left;
 }
 
@@ -91,6 +90,7 @@
     content: '⌘';
   }
 }
+
 .cmd-key.win {
   &:after {
     content: 'Ctrl';

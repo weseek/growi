@@ -14,6 +14,6 @@ const tags = [
 const attrs = ['src', 'href', 'class', 'id', 'width', 'height', 'alt', 'title', 'style'];
 
 module.exports = {
-  'tags': tags,
-  'attrs': attrs,
+  tags,
+  attrs,
 };

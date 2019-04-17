@@ -39,8 +39,8 @@ export default class RevisionRenderer extends React.Component {
         return;
       }
       const k = keyword
-            .replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-            .replace(/(^"|"$)/g, ''); // for phrase (quoted) keyword
+        .replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+        .replace(/(^"|"$)/g, ''); // for phrase (quoted) keyword
       const keywordExp = new RegExp(`(${k}(?!(.*?")))`, 'ig');
       returnBody = returnBody.replace(keywordExp, '<em class="highlighted">$&</em>');
     });
@@ -49,7 +49,7 @@ export default class RevisionRenderer extends React.Component {
   }
 
   renderHtml(markdown, highlightKeywords) {
-    let context = {
+    const context = {
       markdown,
       currentPagePath: this.props.pagePath,
     };
@@ -57,15 +57,15 @@ export default class RevisionRenderer extends React.Component {
     const crowiRenderer = this.props.crowiRenderer;
     const interceptorManager = this.props.crowi.interceptorManager;
     interceptorManager.process('preRender', context)
-      .then(() => interceptorManager.process('prePreProcess', context))
+      .then(() => { return interceptorManager.process('prePreProcess', context) })
       .then(() => {
         context.markdown = crowiRenderer.preProcess(context.markdown);
       })
-      .then(() => interceptorManager.process('postPreProcess', context))
+      .then(() => { return interceptorManager.process('postPreProcess', context) })
       .then(() => {
-        context['parsedHTML'] = crowiRenderer.process(context.markdown);
+        context.parsedHTML = crowiRenderer.process(context.markdown);
       })
-      .then(() => interceptorManager.process('prePostProcess', context))
+      .then(() => { return interceptorManager.process('prePostProcess', context) })
       .then(() => {
         context.parsedHTML = crowiRenderer.postProcess(context.parsedHTML);
 
@@ -74,13 +74,13 @@ export default class RevisionRenderer extends React.Component {
           context.parsedHTML = this.getHighlightedBody(context.parsedHTML, highlightKeywords);
         }
       })
-      .then(() => interceptorManager.process('postPostProcess', context))
-      .then(() => interceptorManager.process('preRenderHtml', context))
+      .then(() => { return interceptorManager.process('postPostProcess', context) })
+      .then(() => { return interceptorManager.process('preRenderHtml', context) })
       .then(() => {
-        this.setState({ html: context.parsedHTML, markdown });
+        this.setState({ html: context.parsedHTML });
       })
       // process interceptors for post rendering
-      .then(() => interceptorManager.process('postRenderHtml', context));
+      .then(() => { return interceptorManager.process('postRenderHtml', context) });
 
   }
 
@@ -90,12 +90,13 @@ export default class RevisionRenderer extends React.Component {
 
     return (
       <RevisionBody
-          html={this.state.html}
-          isMathJaxEnabled={isMathJaxEnabled}
-          renderMathJaxOnInit={true}
+        html={this.state.html}
+        isMathJaxEnabled={isMathJaxEnabled}
+        renderMathJaxOnInit
       />
     );
   }
+
 }
 
 RevisionRenderer.propTypes = {

@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import * as pathUtils from '@commons/util/path-utils';
+import { pathUtils } from 'growi-commons';
+
 import SearchTypeahead from './SearchTypeahead';
 
 export default class PagePathAutoComplete extends React.Component {
@@ -11,8 +12,8 @@ export default class PagePathAutoComplete extends React.Component {
     super(props);
 
     this.state = {
-      searchError: null,
     };
+
     this.crowi = this.props.crowi;
 
     this.onSubmit = this.onSubmit.bind(this);
@@ -27,7 +28,7 @@ export default class PagePathAutoComplete extends React.Component {
 
   onSubmit(query) {
     // get the closest form element
-    const elem = this.refs.rootDom;
+    const elem = this.rootDom;
     const form = elem.closest('form');
     // submit with jQuery
     $(form).submit();
@@ -41,12 +42,12 @@ export default class PagePathAutoComplete extends React.Component {
 
   render() {
     return (
-      <div ref='rootDom'>
+      <div ref={(c) => { this.rootDom = c }}>
         <SearchTypeahead
           ref={this.searchTypeaheadDom}
           crowi={this.crowi}
           onSubmit={this.onSubmit}
-          inputName='new_path'
+          inputName="new_path"
           emptyLabelExceptError={null}
           placeholder="Input page path"
           keywordOnInit={this.getKeywordOnInit(this.props.initializedPath)}
@@ -54,6 +55,7 @@ export default class PagePathAutoComplete extends React.Component {
       </div>
     );
   }
+
 }
 
 PagePathAutoComplete.propTypes = {

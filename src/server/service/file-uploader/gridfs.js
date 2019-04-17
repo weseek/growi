@@ -3,20 +3,20 @@ const mongoose = require('mongoose');
 const util = require('util');
 
 module.exports = function(crowi) {
-  'use strict';
-
   const lib = {};
+  const COLLECTION_NAME = 'attachmentFiles';
+  const CHUNK_COLLECTION_NAME = 'attachmentFiles.chunks';
 
   // instantiate mongoose-gridfs
   const gridfs = require('mongoose-gridfs')({
-    collection: 'attachmentFiles',
+    collection: COLLECTION_NAME,
     model: 'AttachmentFile',
-    mongooseConnection: mongoose.connection
+    mongooseConnection: mongoose.connection,
   });
 
   // obtain a model
   const AttachmentFile = gridfs.model;
-  const Chunks = mongoose.model('Chunks', gridfs.schema, 'attachmentFiles.chunks');
+  const Chunks = mongoose.model('Chunks', gridfs.schema, CHUNK_COLLECTION_NAME);
 
   // create promisified method
   AttachmentFile.promisifiedWrite = util.promisify(AttachmentFile.write).bind(AttachmentFile);
@@ -24,13 +24,13 @@ module.exports = function(crowi) {
   lib.deleteFile = async function(attachment) {
     let filenameValue = attachment.fileName;
 
-    if (attachment.filePath != null) {  // backward compatibility for v3.3.x or below
+    if (attachment.filePath != null) { // backward compatibility for v3.3.x or below
       filenameValue = attachment.filePath;
     }
 
     const attachmentFile = await AttachmentFile.findOne({ filename: filenameValue });
 
-    AttachmentFile.unlinkById(attachmentFile._id, function(error, unlinkedFile) {
+    AttachmentFile.unlinkById(attachmentFile._id, (error, unlinkedFile) => {
       if (error) {
         throw new Error(error);
       }
@@ -44,24 +44,45 @@ module.exports = function(crowi) {
     return new Promise((resolve, reject) => {
       Chunks.collection.stats((err, data) => {
         if (err) {
-          reject(err);
+          // return 0 if not exist
+          if (err.errmsg.includes('not found')) {
+            return resolve(0);
+          }
+          return reject(err);
         }
-        resolve(data.size);
+        return resolve(data.size);
       });
     });
   };
 
   /**
-   * chech storage for fileUpload reaches MONGO_GRIDFS_TOTAL_LIMIT (for gridfs)
+   * check the file size limit
+   *
+   * In detail, the followings are checked.
+   * - per-file size limit (specified by MAX_FILE_SIZE)
+   * - mongodb(gridfs) size limit (specified by MONGO_GRIDFS_TOTAL_LIMIT)
    */
-  lib.checkCapacity = async(uploadFileSize) => {
-    // skip checking if env var is undefined
-    if (process.env.MONGO_GRIDFS_TOTAL_LIMIT == null) {
-      return true;
+  lib.checkLimit = async(uploadFileSize) => {
+    const maxFileSize = crowi.configManager.getConfig('crowi', 'app:maxFileSize');
+    if (uploadFileSize > maxFileSize) {
+      return { isUploadable: false, errorMessage: 'File size exceeds the size limit per file' };
     }
 
-    const usingFilesSize = await getCollectionSize();
-    return (+process.env.MONGO_GRIDFS_TOTAL_LIMIT > usingFilesSize + +uploadFileSize);
+    let usingFilesSize;
+    try {
+      usingFilesSize = await getCollectionSize();
+    }
+    catch (err) {
+      logger.error(err);
+      return { isUploadable: false, errorMessage: err.errmsg };
+    }
+
+    const gridfsTotalLimit = crowi.configManager.getConfig('crowi', 'gridfs:totalLimit');
+    if (usingFilesSize + uploadFileSize > gridfsTotalLimit) {
+      return { isUploadable: false, errorMessage: 'MongoDB for uploading files reaches limit' };
+    }
+
+    return { isUploadable: true };
   };
 
   lib.uploadFile = async function(fileStream, attachment) {
@@ -70,9 +91,10 @@ module.exports = function(crowi) {
     return AttachmentFile.promisifiedWrite(
       {
         filename: attachment.fileName,
-        contentType: attachment.fileFormat
+        contentType: attachment.fileFormat,
       },
-      fileStream);
+      fileStream,
+    );
   };
 
   /**
@@ -84,7 +106,7 @@ module.exports = function(crowi) {
   lib.findDeliveryFile = async function(attachment) {
     let filenameValue = attachment.fileName;
 
-    if (attachment.filePath != null) {  // backward compatibility for v3.3.x or below
+    if (attachment.filePath != null) { // backward compatibility for v3.3.x or below
       filenameValue = attachment.filePath;
     }
 

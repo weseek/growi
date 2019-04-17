@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { translate } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 
 import ButtonToolbar from 'react-bootstrap/es/ButtonToolbar';
-import SplitButton  from 'react-bootstrap/es/SplitButton';
+import SplitButton from 'react-bootstrap/es/SplitButton';
 import MenuItem from 'react-bootstrap/es/MenuItem';
 
 import SlackNotification from './SlackNotification';
@@ -18,6 +18,10 @@ class SavePageControls extends React.PureComponent {
       pageId: this.props.pageId,
     };
 
+    const config = this.props.crowi.getConfig();
+    this.hasSlackConfig = config.hasSlackConfig;
+    this.isAclEnabled = config.isAclEnabled;
+
     this.getCurrentOptionsToSave = this.getCurrentOptionsToSave.bind(this);
     this.submit = this.submit.bind(this);
     this.submitAndOverwriteScopesOfDescendants = this.submitAndOverwriteScopesOfDescendants.bind(this);
@@ -27,9 +31,11 @@ class SavePageControls extends React.PureComponent {
   }
 
   getCurrentOptionsToSave() {
-    const slackNotificationOptions = this.refs.slackNotification.getCurrentOptionsToSave();
-    const grantSelectorOptions = this.refs.grantSelector.getCurrentOptionsToSave();
-    return Object.assign(slackNotificationOptions, grantSelectorOptions);
+    let currentOptions = this.grantSelector.getCurrentOptionsToSave();
+    if (this.hasSlackConfig) {
+      currentOptions = Object.assign(currentOptions, this.slackNotification.getCurrentOptionsToSave());
+    }
+    return currentOptions;
   }
 
   /**
@@ -37,7 +43,7 @@ class SavePageControls extends React.PureComponent {
    * @param {string} pageId
    */
   setPageId(pageId) {
-    this.setState({pageId});
+    this.setState({ pageId });
   }
 
   submit() {
@@ -50,41 +56,51 @@ class SavePageControls extends React.PureComponent {
 
   render() {
     const { t } = this.props;
-
-    const config = this.props.crowi.getConfig();
-    const isAclEnabled = config.isAclEnabled;
     const labelSubmitButton = this.state.pageId == null ? t('Create') : t('Update');
     const labelOverwriteScopes = t('page_edit.overwrite_scopes', { operation: labelSubmitButton });
 
     return (
       <div className="d-flex align-items-center form-inline">
-        <div className="mr-2">
-          <SlackNotification
-              ref='slackNotification'
-              crowi={this.props.crowi}
-              pageId={this.props.pageId}
-              pagePath={this.props.pagePath}
-              isSlackEnabled={false}
-              slackChannels={this.props.slackChannels} />
-        </div>
-
-        {isAclEnabled &&
+        {this.hasSlackConfig
+          && (
           <div className="mr-2">
-            <GrantSelector crowi={this.props.crowi}
-                ref={(elem) => {
-                  if (this.refs.grantSelector == null) {
-                    this.refs.grantSelector = elem.getWrappedInstance();
+            <SlackNotification
+              ref={(c) => { this.slackNotification = c }}
+              isSlackEnabled={false}
+              slackChannels={this.props.slackChannels}
+            />
+          </div>
+          )
+        }
+
+        {this.isAclEnabled
+          && (
+          <div className="mr-2">
+            <GrantSelector
+              crowi={this.props.crowi}
+              ref={(elem) => {
+                  if (this.grantSelector == null) {
+                    this.grantSelector = elem;
                   }
                 }}
-                grant={this.props.grant}
-                grantGroupId={this.props.grantGroupId}
-                grantGroupName={this.props.grantGroupName} />
+              grant={this.props.grant}
+              grantGroupId={this.props.grantGroupId}
+              grantGroupName={this.props.grantGroupName}
+            />
           </div>
+          )
         }
 
         <ButtonToolbar>
-          <SplitButton id="spl-btn-submit" bsStyle="primary" className="btn-submit" dropup pullRight onClick={this.submit}
-              title={labelSubmitButton}>
+          <SplitButton
+            id="spl-btn-submit"
+            bsStyle="primary"
+            className="btn-submit"
+            dropup
+            pullRight
+            onClick={this.submit}
+            title={labelSubmitButton}
+          >
             <MenuItem eventKey="1" onClick={this.submitAndOverwriteScopesOfDescendants}>{labelOverwriteScopes}</MenuItem>
             {/* <MenuItem divider /> */}
           </SplitButton>
@@ -92,15 +108,15 @@ class SavePageControls extends React.PureComponent {
       </div>
     );
   }
+
 }
 
 SavePageControls.propTypes = {
-  t: PropTypes.func.isRequired,               // i18next
+  t: PropTypes.func.isRequired, // i18next
   crowi: PropTypes.object.isRequired,
   onSubmit: PropTypes.func.isRequired,
   pageId: PropTypes.string,
   // for SlackNotification
-  pagePath: PropTypes.string,
   slackChannels: PropTypes.string,
   // for GrantSelector
   grant: PropTypes.number,
@@ -108,4 +124,4 @@ SavePageControls.propTypes = {
   grantGroupName: PropTypes.string,
 };
 
-export default translate()(SavePageControls);
+export default withTranslation(null, { withRef: true })(SavePageControls);

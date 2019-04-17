@@ -1,9 +1,9 @@
 const debug = require('debug')('growi:service:ConfigLoader');
 
 const TYPES = {
-  NUMBER:  { parse: (v) => parseInt(v) },
-  STRING:  { parse: (v) => v },
-  BOOLEAN: { parse: (v) => /^(true|1)$/i.test(v) }
+  NUMBER:  { parse: (v) => { return parseInt(v, 10) } },
+  STRING:  { parse: (v) => { return v } },
+  BOOLEAN: { parse: (v) => { return /^(true|1)$/i.test(v) } },
 };
 
 /**
@@ -114,74 +114,86 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     ns:      'crowi',
     key:     'app:siteUrl',
     type:    TYPES.STRING,
-    default: null
+    default: null,
+  },
+  MAX_FILE_SIZE: {
+    ns:      'crowi',
+    key:     'app:maxFileSize',
+    type:    TYPES.NUMBER,
+    default: Infinity,
+  },
+  MONGO_GRIDFS_TOTAL_LIMIT: {
+    ns:      'crowi',
+    key:     'gridfs:totalLimit',
+    type:    TYPES.NUMBER,
+    default: Infinity,
   },
   SAML_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS: {
     ns:      'crowi',
     key:     'security:passport-saml:useOnlyEnvVarsForSomeOptions',
     type:    TYPES.BOOLEAN,
-    default: false
+    default: false,
   },
   SAML_ENABLED: {
     ns:      'crowi',
     key:     'security:passport-saml:isEnabled',
     type:    TYPES.BOOLEAN,
-    default: null
+    default: null,
   },
   SAML_ENTRY_POINT: {
     ns:      'crowi',
     key:     'security:passport-saml:entryPoint',
     type:    TYPES.STRING,
-    default: null
+    default: null,
   },
   SAML_CALLBACK_URI: {
     ns:      'crowi',
     key:     'security:passport-saml:callbackUrl',
     type:    TYPES.STRING,
-    default: null
+    default: null,
   },
   SAML_ISSUER: {
     ns:      'crowi',
     key:     'security:passport-saml:issuer',
     type:    TYPES.STRING,
-    default: null
+    default: null,
   },
   SAML_ATTR_MAPPING_ID: {
     ns:      'crowi',
     key:     'security:passport-saml:attrMapId',
     type:    TYPES.STRING,
-    default: null
+    default: null,
   },
   SAML_ATTR_MAPPING_USERNAME: {
     ns:      'crowi',
     key:     'security:passport-saml:attrMapUsername',
     type:    TYPES.STRING,
-    default: null
+    default: null,
   },
   SAML_ATTR_MAPPING_MAIL: {
     ns:      'crowi',
     key:     'security:passport-saml:attrMapMail',
     type:    TYPES.STRING,
-    default: null
+    default: null,
   },
   SAML_ATTR_MAPPING_FIRST_NAME: {
     ns:      'crowi',
     key:     'security:passport-saml:attrMapFirstName',
     type:    TYPES.STRING,
-    default: null
+    default: null,
   },
   SAML_ATTR_MAPPING_LAST_NAME: {
     ns:      'crowi',
     key:     'security:passport-saml:attrMapLastName',
     type:    TYPES.STRING,
-    default: null
+    default: null,
   },
   SAML_CERT: {
     ns:      'crowi',
     key:     'security:passport-saml:cert',
     type:    TYPES.STRING,
-    default: null
-  }
+    default: null,
+  },
 };
 
 class ConfigLoader {
@@ -198,8 +210,8 @@ class ConfigLoader {
     const configFromEnvVars = this.loadFromEnvVars();
 
     // merge defaults
-    let mergedConfigFromDB = Object.assign({'crowi': this.configModel.getDefaultCrowiConfigsObject()}, configFromDB);
-    mergedConfigFromDB = Object.assign({'markdown': this.configModel.getDefaultMarkdownConfigsObject()}, mergedConfigFromDB);
+    let mergedConfigFromDB = Object.assign({ crowi: this.configModel.getDefaultCrowiConfigsObject() }, configFromDB);
+    mergedConfigFromDB = Object.assign({ markdown: this.configModel.getDefaultMarkdownConfigsObject() }, mergedConfigFromDB);
 
 
     // In getConfig API, only null is used as a value to indicate that a config is not set.
@@ -217,7 +229,7 @@ class ConfigLoader {
 
     return {
       fromDB: mergedConfigFromDB,
-      fromEnvVars: configFromEnvVars
+      fromEnvVars: configFromEnvVars,
     };
   }
 
@@ -257,6 +269,7 @@ class ConfigLoader {
 
     return config;
   }
+
 }
 
 module.exports = ConfigLoader;

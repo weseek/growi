@@ -1,3 +1,5 @@
+/* eslint-disable react/no-unused-prop-types */
+
 import React from 'react';
 import PropTypes from 'prop-types';
 
@@ -116,11 +118,12 @@ export default class AbstractEditor extends React.Component {
   getNavbarItems() {
     return null;
   }
+
 }
 
 AbstractEditor.propTypes = {
   value: PropTypes.string,
-  ifGfmMode: PropTypes.bool,
+  isGfmMode: PropTypes.bool,
   editorOptions: PropTypes.object,
   onChange: PropTypes.func,
   onScroll: PropTypes.func,
@@ -133,4 +136,3 @@ AbstractEditor.propTypes = {
 AbstractEditor.defaultProps = {
   isGfmMode: true,
 };
-

@@ -1,5 +1,5 @@
 const debug = require('debug')('growi:service:ConfigManager');
-const pathUtils = require('@commons/util/path-utils');
+const pathUtils = require('growi-commons').pathUtils;
 const ConfigLoader = require('../service/config-loader');
 
 const KEYS_FOR_SAML_USE_ONLY_ENV_OPTION = [
@@ -11,7 +11,7 @@ const KEYS_FOR_SAML_USE_ONLY_ENV_OPTION = [
   'security:passport-saml:attrMapMail',
   'security:passport-saml:attrMapFirstName',
   'security:passport-saml:attrMapLastName',
-  'security:passport-saml:cert'
+  'security:passport-saml:cert',
 ];
 
 class ConfigManager {
@@ -78,6 +78,7 @@ class ConfigManager {
    * With version 3.2.4 to 3.3.4, the system uses the auto-generated site URL only if the config is not set.
    * With version 3.3.5 and above, the system use only a value from the config.
    */
+  /* eslint-disable no-else-return */
   getSiteUrl() {
     const siteUrl = this.getConfig('crowi', 'app:siteUrl');
     if (siteUrl != null) {
@@ -87,6 +88,7 @@ class ConfigManager {
       return '[The site URL is not set. Please set it!]';
     }
   }
+  /* eslint-enable no-else-return */
 
   /**
    * update configs in the same namespace
@@ -107,14 +109,14 @@ class ConfigManager {
    * ```
    */
   async updateConfigsInTheSameNamespace(namespace, configs) {
-    let queries = [];
+    const queries = [];
     for (const key of Object.keys(configs)) {
       queries.push({
         updateOne: {
-          filter: { ns: namespace, key: key },
-          update: { ns: namespace, key: key, value: this.convertInsertValue(configs[key]) },
-          upsert: true
-        }
+          filter: { ns: namespace, key },
+          update: { ns: namespace, key, value: this.convertInsertValue(configs[key]) },
+          upsert: true,
+        },
       });
     }
     await this.configModel.bulkWrite(queries);
@@ -135,21 +137,23 @@ class ConfigManager {
       return undefined;
     }
 
-    if (this.configExistsInDB(namespace, key) && !this.configExistsInEnvVars(namespace, key) ) {
+    if (this.configExistsInDB(namespace, key) && !this.configExistsInEnvVars(namespace, key)) {
       return this.configObject.fromDB[namespace][key];
     }
 
-    if (!this.configExistsInDB(namespace, key) && this.configExistsInEnvVars(namespace, key) ) {
+    if (!this.configExistsInDB(namespace, key) && this.configExistsInEnvVars(namespace, key)) {
       return this.configObject.fromEnvVars[namespace][key];
     }
 
-    if (this.configExistsInDB(namespace, key) && this.configExistsInEnvVars(namespace, key) ) {
+    if (this.configExistsInDB(namespace, key) && this.configExistsInEnvVars(namespace, key)) {
+      /* eslint-disable no-else-return */
       if (this.configObject.fromDB[namespace][key] !== null) {
         return this.configObject.fromDB[namespace][key];
       }
       else {
         return this.configObject.fromEnvVars[namespace][key];
       }
+      /* eslint-enable no-else-return */
     }
   }
 
@@ -158,6 +162,7 @@ class ConfigManager {
    * this searches only from configs loaded from the environment variables.
    * For the other configs, this searches as the same way to defaultSearch.
    */
+  /* eslint-disable no-else-return */
   searchInSAMLUseOnlyEnvMode(namespace, key) {
     if (namespace === 'crowi' && KEYS_FOR_SAML_USE_ONLY_ENV_OPTION.includes(key)) {
       return this.searchOnlyFromEnvVarConfigs(namespace, key);
@@ -166,6 +171,7 @@ class ConfigManager {
       return this.defaultSearch(namespace, key);
     }
   }
+  /* eslint-enable no-else-return */
 
   /**
    * search a specified config from configs loaded from the database
@@ -214,6 +220,7 @@ class ConfigManager {
   convertInsertValue(value) {
     return JSON.stringify(value === '' ? null : value);
   }
+
 }
 
 module.exports = ConfigManager;

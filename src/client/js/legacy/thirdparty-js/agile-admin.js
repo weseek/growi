@@ -21,7 +21,7 @@ loadSettings();
 //collapses the sidebar on window resize.
 // Sets the min-height of #page-wrapper to window size
 $(window).on("load resize", function () {
-    let topOffset = 60;
+    let topOffset = $('.navbar-header').outerHeight();
     const width = (this.window.innerWidth > 0) ? this.window.innerWidth : this.screen.width;
     if (width < 768) {
         $('div.navbar-collapse').addClass('collapse');

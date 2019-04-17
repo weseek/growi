@@ -1,10 +1,9 @@
-.growi.main-container  {
-
+.growi.main-container {
   %comment-section {
     position: relative;
     padding: 1em;
-    margin-left: 4.5em;
     margin-bottom: 1em;
+    margin-left: 4.5em;
     // screen-xs
     @media (max-width: $screen-xs) {
       margin-left: 3.5em;
@@ -12,14 +11,14 @@
 
     // speech balloon
     &:before {
+      position: absolute;
+      top: 1.5em;
+      left: -1em;
+      display: block;
+      width: 0;
+      content: '';
       border: 1em solid transparent;
       border-left-width: 0;
-      left: -1em;
-      content: "";
-      display: block;
-      top: 1.5em;
-      position: absolute;
-      width: 0;
 
       // screen-xs
       @media (max-width: $screen-xs) {
@@ -30,9 +29,9 @@
 
   %picture {
     float: left;
-    margin-top: 0.8em;
     width: 3em;
     height: 3em;
+    margin-top: 0.8em;
     // screen-xs
     @media (max-width: $screen-xs) {
       width: 2em;
@@ -41,8 +40,8 @@
   }
 
   .page-comments-row {
-    border-top: 5px solid;
     margin: 30px 0px;
+    border-top: 5px solid;
   }
 
   .page-comments {
@@ -78,8 +77,8 @@
     }
 
     .page-comment-meta {
+      font-size: 0.9em;
       color: #999;
-      font-size: .9em;
       text-align: right;
 
       * {
@@ -96,9 +95,8 @@
   // display cheatsheet for comment form only
   .comment-form {
     .editor-cheatsheet {
-        display: none;
+      display: none;
     }
-
 
     position: relative;
     margin-top: 2em;
@@ -118,9 +116,10 @@
     }
     .comment-form-comment {
       height: 80px;
-      &:focus, &:not(:invalid) {
-        transition: height 0.2s ease-out;
+      &:focus,
+      &:not(:invalid) {
         height: 180px;
+        transition: height 0.2s ease-out;
       }
     }
     .comment-form-preview {

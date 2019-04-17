@@ -1,17 +1,17 @@
-'use strict';
 
-const mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || process.env.MONGO_URI || 'mongodb://localhost/growi_test'
-  , mongoose= require('mongoose')
-  , fs = require('fs')
-  , helpers = require('@commons/util/helpers')
-  , Crowi = require('@server/crowi')
-  , crowi = new Crowi(helpers.root(), process.env)
-  , models = {}
-  ;
+const mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || process.env.MONGO_URI || 'mongodb://localhost/growi_test';
+const mongoose = require('mongoose');
+const fs = require('fs');
+const helpers = require('@commons/util/helpers');
+const Crowi = require('@server/crowi');
+
+const crowi = new Crowi(helpers.root(), process.env);
+
+const models = {};
 
 mongoose.Promise = global.Promise;
 
-before('Create database connection and clean up', function (done) {
+before('Create database connection and clean up', (done) => {
   if (!mongoUri) {
     return done();
   }
@@ -19,25 +19,25 @@ before('Create database connection and clean up', function (done) {
   mongoose.connect(mongoUri, { useNewUrlParser: true });
 
   function clearDB() {
-    for (var i in mongoose.connection.collections) {
-      mongoose.connection.collections[i].remove(function() {});
-    }
+    Object.values(mongoose.connection.collections).forEach((collection) => {
+      collection.remove(() => {});
+    });
     return done();
   }
 
   if (mongoose.connection.readyState === 0) {
-    mongoose.connect(mongoUri, { useNewUrlParser: true }, function (err) {
+    mongoose.connect(mongoUri, { useNewUrlParser: true }, (err) => {
       if (err) {
         throw err;
       }
       return clearDB();
     });
-  } else {
-    return clearDB();
   }
+
+  return clearDB();
 });
 
-after('Close database connection', function (done) {
+after('Close database connection', (done) => {
   if (!mongoUri) {
     return done();
   }
@@ -47,14 +47,14 @@ after('Close database connection', function (done) {
 });
 
 // Setup Models
-fs.readdirSync(helpers.root('src/server/models')).forEach(function(file) {
+fs.readdirSync(helpers.root('src/server/models')).forEach((file) => {
   if (file.match(/^([\w-]+)\.js$/)) {
-    let name = RegExp.$1;
+    const name = RegExp.$1;
     if (name === 'index') {
       return;
     }
     let modelName = '';
-    name.split('-').map(splitted => {
+    name.split('-').forEach((splitted) => {
       modelName += (splitted.charAt(0).toUpperCase() + splitted.slice(1));
     });
     models[modelName] = require(`@server/models/${file}`)(crowi);
@@ -64,6 +64,6 @@ fs.readdirSync(helpers.root('src/server/models')).forEach(function(file) {
 crowi.models = models;
 
 module.exports = {
-  models: models,
-  mongoose: mongoose,
+  models,
+  mongoose,
 };

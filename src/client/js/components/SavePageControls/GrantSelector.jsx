@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { translate } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 
 import FormGroup from 'react-bootstrap/es/FormGroup';
 import FormControl from 'react-bootstrap/es/FormControl';
@@ -23,23 +23,33 @@ class GrantSelector extends React.Component {
     super(props);
 
     this.availableGrants = [
-      { grant: 1, iconClass: 'icon-people', styleClass: '', label: 'Public' },
-      { grant: 2, iconClass: 'icon-link', styleClass: 'text-info', label: 'Anyone with the link' },
+      {
+        grant: 1, iconClass: 'icon-people', styleClass: '', label: 'Public',
+      },
+      {
+        grant: 2, iconClass: 'icon-link', styleClass: 'text-info', label: 'Anyone with the link',
+      },
       // { grant: 3, iconClass: '', label: 'Specified users only' },
-      { grant: 4, iconClass: 'icon-lock', styleClass: 'text-danger', label: 'Just me' },
-      { grant: 5, iconClass: 'icon-options', styleClass: '', label: 'Only inside the group' },  // appeared only one of these 'grant: 5'
-      { grant: 5, iconClass: 'icon-options', styleClass: '', label: 'Reselect the group' },     // appeared only one of these 'grant: 5'
+      {
+        grant: 4, iconClass: 'icon-lock', styleClass: 'text-danger', label: 'Just me',
+      },
+      {
+        grant: 5, iconClass: 'icon-options', styleClass: '', label: 'Only inside the group',
+      }, // appeared only one of these 'grant: 5'
+      {
+        grant: 5, iconClass: 'icon-options', styleClass: '', label: 'Reselect the group',
+      }, // appeared only one of these 'grant: 5'
     ];
 
     this.state = {
-      grant: this.props.grant || 1,  // default: 1
+      grant: this.props.grant || 1, // default: 1
       userRelatedGroups: [],
       isSelectGroupModalShown: false,
     };
     if (this.props.grantGroupId !== '') {
       this.state.grantGroup = {
         _id: this.props.grantGroupId,
-        name: this.props.grantGroupName
+        name: this.props.grantGroupName,
       };
     }
 
@@ -68,7 +78,7 @@ class GrantSelector extends React.Component {
     // refresh bootstrap-select
     // see https://silviomoreto.github.io/bootstrap-select/methods/#selectpickerrefresh
     $('.grant-selector .selectpicker').selectpicker('refresh');
-    //// DIRTY HACK -- 2018.05.25 Yuki Takei
+    // // DIRTY HACK -- 2018.05.25 Yuki Takei
     // set group name to the bootstrap-select options
     //  cz: .selectpicker('refresh') doesn't replace data-content
     $('.grant-selector .group-name').text(this.getGroupName());
@@ -77,7 +87,7 @@ class GrantSelector extends React.Component {
 
   getCurrentOptionsToSave() {
     const options = {
-      grant: this.state.grant
+      grant: this.state.grant,
     };
     if (this.state.grantGroup != null) {
       options.grantUserGroupId = this.state.grantGroup._id;
@@ -89,6 +99,7 @@ class GrantSelector extends React.Component {
     this.retrieveUserGroupRelations();
     this.setState({ isSelectGroupModalShown: true });
   }
+
   hideSelectGroupModal() {
     this.setState({ isSelectGroupModalShown: false });
   }
@@ -103,14 +114,14 @@ class GrantSelector extends React.Component {
    */
   retrieveUserGroupRelations() {
     this.props.crowi.apiGet('/me/user-group-relations')
-      .then(res => {
+      .then((res) => {
         return res.userGroupRelations;
       })
-      .then(userGroupRelations => {
-        const userRelatedGroups = userGroupRelations.map(relation => {
+      .then((userGroupRelations) => {
+        const userRelatedGroups = userGroupRelations.map((relation) => {
           return relation.relatedGroup;
         });
-        this.setState({userRelatedGroups});
+        this.setState({ userRelatedGroups });
       });
   }
 
@@ -177,18 +188,28 @@ class GrantSelector extends React.Component {
 
     // add specified group option
     grantElems.push(
-      <option ref="specifiedGroupOption" key="specifiedGroupKey" value={SPECIFIED_GROUP_VALUE} style={{ display: grantGroup ? 'inherit' : 'none' }}
-          data-content={`<i class="icon icon-fw icon-organization text-success"></i> <span class="group-name text-success">${this.getGroupName()}</span>`}>
+      <option
+        key="specifiedGroupKey"
+        value={SPECIFIED_GROUP_VALUE}
+        style={{ display: grantGroup ? 'inherit' : 'none' }}
+        data-content={`<i class="icon icon-fw icon-organization text-success"></i> <span class="group-name text-success">${this.getGroupName()}</span>`}
+      >
         {this.getGroupName()}
-      </option>
+      </option>,
     );
 
     const bsClassName = 'form-control-dummy'; // set form-control* to shrink width
     return (
       <FormGroup className="grant-selector m-b-0">
-        <FormControl componentClass="select" placeholder="select" defaultValue={selectedValue} bsClass={bsClassName} className="btn-group-sm selectpicker"
+        <FormControl
+          componentClass="select"
+          placeholder="select"
+          defaultValue={selectedValue}
+          bsClass={bsClassName}
+          className="btn-group-sm selectpicker"
           onChange={this.changeGrantHandler}
-          inputRef={ el => this.grantSelectorInputEl=el }>
+          inputRef={(el) => { this.grantSelectorInputEl = el }}
+        >
 
           {grantElems}
 
@@ -206,53 +227,65 @@ class GrantSelector extends React.Component {
   renderSelectGroupModal() {
     const generateGroupListItems = () => {
       return this.state.userRelatedGroups.map((group) => {
-        return <ListGroupItem key={group._id} header={group.name} onClick={() => { this.groupListItemClickHandler(group) }}>
+        return (
+          <ListGroupItem key={group._id} header={group.name} onClick={() => { this.groupListItemClickHandler(group) }}>
             (TBD) List group members
-          </ListGroupItem>;
+          </ListGroupItem>
+        );
       });
     };
 
-    let content = this.state.userRelatedGroups.length === 0
-      ? <div>
+    const content = this.state.userRelatedGroups.length === 0
+      ? (
+        <div>
           <h4>There is no group to which you belong.</h4>
-          { this.props.crowi.isAdmin &&
-            <p><a href="/admin/user-groups"><i className="icon icon-fw icon-login"></i> Manage Groups</a></p>
+          { this.props.crowi.isAdmin
+            && <p><a href="/admin/user-groups"><i className="icon icon-fw icon-login"></i> Manage Groups</a></p>
           }
         </div>
-      : <ListGroup>
-        {generateGroupListItems()}
-      </ListGroup>;
+      )
+      : (
+        <ListGroup>
+          {generateGroupListItems()}
+        </ListGroup>
+      );
 
     return (
-        <Modal className="select-grant-group"
-          container={this} show={this.state.isSelectGroupModalShown} onHide={this.hideSelectGroupModal}
-        >
-          <Modal.Header closeButton>
-            <Modal.Title>
+      <Modal
+        className="select-grant-group"
+        container={this}
+        show={this.state.isSelectGroupModalShown}
+        onHide={this.hideSelectGroupModal}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>
               Select a Group
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            {content}
-          </Modal.Body>
-        </Modal>
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {content}
+        </Modal.Body>
+      </Modal>
     );
   }
 
   render() {
-    return <React.Fragment>
-      {this.renderGrantSelector()}
-      {this.renderSelectGroupModal()}
-    </React.Fragment>;
+    return (
+      <React.Fragment>
+        {this.renderGrantSelector()}
+        {this.renderSelectGroupModal()}
+      </React.Fragment>
+    );
   }
+
 }
 
 GrantSelector.propTypes = {
-  t: PropTypes.func.isRequired,               // i18next
+  t: PropTypes.func.isRequired, // i18next
   crowi: PropTypes.object.isRequired,
   grant: PropTypes.number,
   grantGroupId: PropTypes.string,
   grantGroupName: PropTypes.string,
 };
 
-export default translate()(GrantSelector);
+export default withTranslation(null, { withRef: true })(GrantSelector);

@@ -1,3 +1,6 @@
+/* global Switchery */
+/* eslint-disable no-restricted-globals */
+
 require('./thirdparty-js/jQuery.style.switcher');
 
 // see https://github.com/abpetkov/switchery/issues/120
@@ -5,9 +8,9 @@ require('./thirdparty-js/jQuery.style.switcher');
 require('./thirdparty-js/switchery/switchery');
 require('./thirdparty-js/switchery/switchery.css');
 
-$(function() {
+$(() => {
   $('#slackNotificationForm').on('submit', function(e) {
-    $.post('/_api/admin/notification.add', $(this).serialize(), function(res) {
+    $.post('/_api/admin/notification.add', $(this).serialize(), (res) => {
       if (res.ok) {
         // TODO Fix
         location.reload();
@@ -18,7 +21,7 @@ $(function() {
   });
 
   $('form.admin-remove-updatepost').on('submit', function(e) {
-    $.post('/_api/admin/notification.remove', $(this).serialize(), function(res) {
+    $.post('/_api/admin/notification.remove', $(this).serialize(), (res) => {
       if (res.ok) {
         // TODO Fix
         location.reload();
@@ -29,7 +32,7 @@ $(function() {
 
   $('#createdUserModal').modal('show');
 
-  $('#admin-password-reset-modal').on('show.bs.modal', function(button) {
+  $('#admin-password-reset-modal').on('show.bs.modal', (button) => {
     const data = $(button.relatedTarget);
     const userId = data.data('user-id');
     const email = data.data('user-email');
@@ -39,16 +42,16 @@ $(function() {
   });
 
   $('form#admin-users-reset-password').on('submit', function(e) {
-    $.post('/_api/admin/users.resetPassword', $(this).serialize(), function(res) {
+    $.post('/_api/admin/users.resetPassword', $(this).serialize(), (res) => {
       if (res.ok) {
         // TODO Fix
-        //location.reload();
+        // location.reload();
         $('#admin-password-reset-modal').modal('hide');
         $('#admin-password-reset-modal-done').modal('show');
 
         $('#admin-password-reset-done-user').text(res.user.email);
         $('#admin-password-reset-done-password').text(res.newPassword);
-        return ;
+        return;
       }
 
       // fixme
@@ -58,7 +61,7 @@ $(function() {
     return false;
   });
 
-  $('#admin-delete-user-group-modal').on('show.bs.modal', function(button) {
+  $('#admin-delete-user-group-modal').on('show.bs.modal', (button) => {
     const data = $(button.relatedTarget);
     const userGroupId = data.data('user-group-id');
     const userGroupName = data.data('user-group-name');
@@ -68,7 +71,7 @@ $(function() {
   });
 
   $('form#user-group-relation-create').on('submit', function(e) {
-    $.post('/admin/user-group-relation/create', $(this).serialize(), function(res) {
+    $.post('/admin/user-group-relation/create', $(this).serialize(), (res) => {
       $('#admin-add-user-group-relation-modal').modal('hide');
       return;
     });
@@ -78,7 +81,7 @@ $(function() {
   $('#pictureUploadForm input[name=userGroupPicture]').on('change', function() {
     const $form = $('#pictureUploadForm');
     const fd = new FormData($form[0]);
-    if ($(this).val() == '') {
+    if ($(this).val() !== '') {
       return false;
     }
 
@@ -89,9 +92,9 @@ $(function() {
       contentType: false,
       data: fd,
       dataType: 'json',
-      success: function(data) {
+      success(data) {
         if (data.status) {
-          $('#settingUserPicture').attr('src', data.url + '?time=' + (new Date()));
+          $('#settingUserPicture').attr('src', `${data.url}?time=${new Date()}`);
           $('#pictureUploadFormMessage')
             .addClass('alert alert-success')
             .html('変更しました');
@@ -102,7 +105,7 @@ $(function() {
             .html('変更中にエラーが発生しました。');
         }
         $('#pictureUploadFormProgress').html('');
-      }
+      },
     });
     return false;
   });
@@ -112,11 +115,10 @@ $(function() {
 
   // switchery
   const elems = Array.prototype.slice.call(document.querySelectorAll('.js-switch'));
-  elems.forEach(function(elem) {
+  elems.forEach((elem) => {
     const color = elem.dataset.color;
     const size = elem.dataset.size;
-    new Switchery(elem, { color, size });   // eslint-disable-line no-undef
+    // eslint-disable-next-line no-new
+    new Switchery(elem, { color, size });
   });
 });
-
-

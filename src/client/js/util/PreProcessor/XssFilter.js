@@ -1,5 +1,5 @@
 import Xss from '@commons/service/xss';
-import xssOption from '@commons/service/xss/xssOption';
+import XssOption from '@commons/service/xss/xssOption';
 
 export default class XssFilter {
 
@@ -7,7 +7,7 @@ export default class XssFilter {
     this.crowi = crowi;
 
     if (crowi.config.isEnabledXssPrevention) {
-      this.xssOption = new xssOption(crowi.config);
+      this.xssOption = new XssOption(crowi.config);
       this.xss = new Xss(this.xssOption);
     }
   }
@@ -16,9 +16,8 @@ export default class XssFilter {
     if (this.crowi.config.isEnabledXssPrevention) {
       return this.xss.process(markdown);
     }
-    else {
-      return markdown;
-    }
+
+    return markdown;
   }
 
 }

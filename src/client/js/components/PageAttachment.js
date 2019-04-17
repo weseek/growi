@@ -1,3 +1,4 @@
+/* eslint-disable react/no-access-state-in-setstate */
 import React from 'react';
 import PropTypes from 'prop-types';
 
@@ -5,6 +6,7 @@ import PageAttachmentList from './PageAttachment/PageAttachmentList';
 import DeleteAttachmentModal from './PageAttachment/DeleteAttachmentModal';
 
 export default class PageAttachment extends React.Component {
+
   constructor(props) {
     super(props);
 
@@ -24,21 +26,21 @@ export default class PageAttachment extends React.Component {
     const pageId = this.props.pageId;
 
     if (!pageId) {
-      return ;
+      return;
     }
 
-    this.props.crowi.apiGet('/attachments.list', {page_id: pageId })
-      .then(res => {
+    this.props.crowi.apiGet('/attachments.list', { page_id: pageId })
+      .then((res) => {
         const attachments = res.attachments;
-        let inUse = {};
+        const inUse = {};
 
         for (const attachment of attachments) {
           inUse[attachment._id] = this.checkIfFileInUse(attachment);
         }
 
         this.setState({
-          attachments: attachments,
-          inUse: inUse,
+          attachments,
+          inUse,
         });
       });
   }
@@ -62,16 +64,18 @@ export default class PageAttachment extends React.Component {
       deleting: true,
     });
 
-    this.props.crowi.apiPost('/attachments.remove', {attachment_id: attachmentId})
-      .then(res => {
+    this.props.crowi.apiPost('/attachments.remove', { attachment_id: attachmentId })
+      .then((res) => {
         this.setState({
           attachments: this.state.attachments.filter((at) => {
+            // comparing ObjectId
+            // eslint-disable-next-line eqeqeq
             return at._id != attachmentId;
           }),
           attachmentToDelete: null,
           deleting: false,
         });
-      }).catch(err => {
+      }).catch((err) => {
         this.setState({
           deleteError: 'Something went wrong.',
           deleting: false,
@@ -87,10 +91,10 @@ export default class PageAttachment extends React.Component {
     let deleteAttachmentModal = '';
     if (this.isUserLoggedIn()) {
       const attachmentToDelete = this.state.attachmentToDelete;
-      let deleteModalClose = () => {
+      const deleteModalClose = () => {
         this.setState({ attachmentToDelete: null, deleteError: '' });
       };
-      let showModal = attachmentToDelete !== null;
+      const showModal = attachmentToDelete !== null;
 
       let deleteInUse = null;
       if (attachmentToDelete !== null) {
@@ -126,6 +130,7 @@ export default class PageAttachment extends React.Component {
       </div>
     );
   }
+
 }
 
 PageAttachment.propTypes = {

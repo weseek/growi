@@ -1,3 +1,7 @@
+import loggerFactory from '@alias/logger';
+
+const logger = loggerFactory('growi:plugin');
+
 export default class CrowiPlugin {
 
   /**
@@ -15,8 +19,8 @@ export default class CrowiPlugin {
       definitions = require('@tmp/plugins/plugin-definitions');
     }
     catch (e) {
-      // TODO show warning
-      // do nothing
+      logger.error('failed to load definitions');
+      logger.error(e);
       return;
     }
 
@@ -39,4 +43,4 @@ export default class CrowiPlugin {
 
 }
 
-window.crowiPlugin = new CrowiPlugin();     // FIXME
+window.crowiPlugin = new CrowiPlugin(); // FIXME

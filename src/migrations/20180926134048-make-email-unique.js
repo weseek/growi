@@ -1,5 +1,3 @@
-'use strict';
-
 require('module-alias/register');
 const logger = require('@alias/logger')('growi:migrate:make-email-unique');
 
@@ -15,13 +13,13 @@ module.exports = {
     const User = require('@server/models/user')();
 
     // get all users who has 'deleted@deleted' email
-    const users = await User.find({email: 'deleted@deleted'});
+    const users = await User.find({ email: 'deleted@deleted' });
     if (users.length > 0) {
       logger.info(`${users.length} users found. Replace email...`, users);
     }
 
     // make email unique
-    const promises = users.map(user => {
+    const promises = users.map((user) => {
       const now = new Date();
       const deletedLabel = `deleted_at_${now.getTime()}`;
       user.email = `${deletedLabel}@deleted`;
@@ -42,6 +40,6 @@ module.exports = {
   down(db, next) {
     // do not rollback
     next();
-  }
+  },
 
 };

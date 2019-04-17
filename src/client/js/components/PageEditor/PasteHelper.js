@@ -17,7 +17,7 @@ class PasteHelper {
     // get data in clipboard
     const text = event.clipboardData.getData('text/plain');
 
-    if (text.length == 0) {
+    if (text.length === 0) {
       return;
     }
 
@@ -32,20 +32,10 @@ class PasteHelper {
    * @param {*} file
    * @param {*} accept
    */
-  fileAccepted(file, accept) {
+  isAcceptableType(file, accept) {
     return file.type === 'application/x-moz-file' || accepts(file, accept);
   }
-  /**
-   * transplanted from react-dropzone
-   * @see https://github.com/react-dropzone/react-dropzone/blob/master/src/utils/index.js
-   *
-   * @param {*} file
-   * @param {number} maxSize
-   * @param {number} minSize
-   */
-  fileMatchSize(file, maxSize, minSize) {
-    return file.size <= maxSize && file.size >= minSize;
-  }
+
 }
 
 // singleton pattern

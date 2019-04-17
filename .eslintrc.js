@@ -1,93 +1,42 @@
 module.exports = {
-  "env": {
-    "browser": true,
-    "commonjs": true,
-    "es6": true,
-    "node": true
-  },
-  "extends": [
-    "eslint:recommended",
-    "plugin:react/recommended"
+  extends: [
+    'weseek',
+    'weseek/react',
   ],
-  "globals": {
-    "$": true,
-    "jquery": true,
-    "emojione": true,
-    "hljs": true,
-    "window": true
+  env: {
+    mocha: true,
+    jquery: true,
   },
-  "parserOptions": {
-    "ecmaVersion": 8,
-    "ecmaFeatures": {
-      "experimentalObjectRestSpread": true,
-      "jsx": true
-    },
-    "sourceType": "module"
+  globals: {
+    $: true,
+    jquery: true,
+    emojione: true,
+    hljs: true,
+    window: true,
   },
-  "plugins": [
-    "react"
+  plugins: [
+    'chai-friendly',
   ],
-  "rules": {
-    "brace-style": [
-      "error",
-      "stroustrup", { "allowSingleLine": true }
-    ],
-    "comma-spacing": [
-      "error",
-      { "before": false, "after": true }
-    ],
-    "func-call-spacing": [
-      "error",
-      "never"
-    ],
-    "indent": [
-      "error",
+  rules: {
+    'indent': [
+      'error',
       2,
       {
-        "SwitchCase": 1,
-        "ignoredNodes": ['JSXElement *', 'JSXElement', "JSXAttribute", "JSXSpreadAttribute"],
-        "FunctionDeclaration": {"body": 1, "parameters": 2},
-        "FunctionExpression": {"body": 1, "parameters": 2},
-        "MemberExpression": "off"
-      }
+        SwitchCase: 1,
+        ignoredNodes: ['JSXElement *', 'JSXElement', 'JSXAttribute', 'JSXSpreadAttribute'],
+        ArrayExpression: 'first',
+        FunctionDeclaration: { body: 1, parameters: 2 },
+        FunctionExpression: { body: 1, parameters: 2 },
+      },
     ],
-    "key-spacing": [
-      "error", {
-        "beforeColon": false,
-        "afterColon": true,
-        "mode": "minimum"
-      }
+    'react/jsx-filename-extension': [
+      'warn',
+      { extensions: ['.jsx']},
     ],
-    "keyword-spacing": [
-      "error", {}
-    ],
-    "linebreak-style": [
-      "error",
-      "unix"
-    ],
-    "no-unused-vars": [
-      "error",
-      { "args": "none" }
-    ],
-    "no-var": [ "error" ],
-    "quotes": [
-      "error",
-      "single"
-    ],
-    "react/jsx-uses-vars": 1,
-    "react/no-string-refs": "off",
-    "semi": [
-      "error",
-      "always",
-      { "omitLastInOneLineBlock": true }
-    ],
-    "space-before-blocks": [
-      "error",
-      "always"
-    ],
-    "space-before-function-paren": [
-      "error",
-      "never"
-    ]
-  }
+    // eslint-plugin-import rules
+    'import/no-unresolved': [2, { ignore: ['^@'] }], // ignore @alias/..., @commons/..., ...
+    // eslint-plugin-chai-friendly rules
+    'no-unused-expressions': 0,
+    'chai-friendly/no-unused-expressions': 2,
+  },
 };

@@ -6,14 +6,12 @@ const mkdir = require('mkdirp');
 const streamToPromise = require('stream-to-promise');
 
 module.exports = function(crowi) {
-  'use strict';
-
   const lib = {};
   const basePath = path.posix.join(crowi.publicDir, 'uploads');
 
   function getFilePathOnStorage(attachment) {
     let filePath;
-    if (attachment.filePath != null) {  // backward compatibility for v3.3.x or below
+    if (attachment.filePath != null) { // backward compatibility for v3.3.x or below
       filePath = path.posix.join(basePath, attachment.filePath);
     }
     else {
@@ -70,13 +68,15 @@ module.exports = function(crowi) {
   };
 
   /**
-   * chech storage for fileUpload reaches MONGO_GRIDFS_TOTAL_LIMIT (for gridfs)
+   * check the file size limit
+   *
+   * In detail, the followings are checked.
+   * - per-file size limit (specified by MAX_FILE_SIZE)
    */
-  lib.checkCapacity = async(uploadFileSize) => {
-    return true;
+  lib.checkLimit = async(uploadFileSize) => {
+    const maxFileSize = crowi.configManager.getConfig('crowi', 'app:maxFileSize');
+    return { isUploadable: uploadFileSize <= maxFileSize, errorMessage: 'File size exceeds the size limit per file' };
   };
 
   return lib;
 };
-
-

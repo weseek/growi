@@ -20,12 +20,12 @@ export default class BookmarkButton extends React.Component {
       return;
     }
 
-    this.props.crowi.apiGet('/bookmarks.get', {page_id: this.props.pageId})
-    .then(res => {
-      if (res.bookmark) {
-        this.markBookmarked();
-      }
-    });
+    this.props.crowi.apiGet('/bookmarks.get', { page_id: this.props.pageId })
+      .then((res) => {
+        if (res.bookmark) {
+          this.markBookmarked();
+        }
+      });
   }
 
   handleClick(event) {
@@ -34,25 +34,25 @@ export default class BookmarkButton extends React.Component {
     const pageId = this.props.pageId;
 
     if (!this.state.bookmarked) {
-      this.props.crowi.apiPost('/bookmarks.add', {page_id: pageId})
-      .then(res => {
-        this.markBookmarked();
-      });
+      this.props.crowi.apiPost('/bookmarks.add', { page_id: pageId })
+        .then((res) => {
+          this.markBookmarked();
+        });
     }
     else {
-      this.props.crowi.apiPost('/bookmarks.remove', {page_id: pageId})
-      .then(res => {
-        this.markUnBookmarked();
-      });
+      this.props.crowi.apiPost('/bookmarks.remove', { page_id: pageId })
+        .then((res) => {
+          this.markUnBookmarked();
+        });
     }
   }
 
   markBookmarked() {
-    this.setState({bookmarked: true});
+    this.setState({ bookmarked: true });
   }
 
   markUnBookmarked() {
-    this.setState({bookmarked: false});
+    this.setState({ bookmarked: false });
   }
 
   isUserLoggedIn() {
@@ -73,12 +73,18 @@ export default class BookmarkButton extends React.Component {
     const addedClassName = addedClassNames.join(' ');
 
     return (
-      <button href="#" title="Bookmark" onClick={this.handleClick}
-          className={`btn-bookmark btn btn-default btn-circle btn-outline ${addedClassName}`}>
+      <button
+        type="button"
+        href="#"
+        title="Bookmark"
+        onClick={this.handleClick}
+        className={`btn-bookmark btn btn-default btn-circle btn-outline ${addedClassName}`}
+      >
         <i className="icon-star"></i>
       </button>
     );
   }
+
 }
 
 BookmarkButton.propTypes = {

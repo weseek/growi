@@ -1,4 +1,6 @@
-const debug = require('debug')('growi:routss:attachment');
+/* eslint-disable no-use-before-define */
+
+
 const logger = require('@alias/logger')('growi:routes:attachment');
 
 const path = require('path');
@@ -21,6 +23,7 @@ module.exports = function(crowi, app) {
    */
   async function isAccessibleByViewer(user, attachment) {
     if (attachment.page != null) {
+      // eslint-disable-next-line no-return-await
       return await Page.isAccessiblePageByViewer(attachment.page, user);
     }
     return true;
@@ -34,12 +37,12 @@ module.exports = function(crowi, app) {
    */
   async function isDeletableByUser(user, attachment) {
     const ownerId = attachment.creator._id || attachment.creator;
-    if (attachment.page == null) {  // when profile image
+    if (attachment.page == null) { // when profile image
       return user.id === ownerId.toString();
     }
-    else {
-      return await Page.isAccessiblePageByViewer(attachment.page, user);
-    }
+
+    // eslint-disable-next-line no-return-await
+    return await Page.isAccessiblePageByViewer(attachment.page, user);
   }
 
   /**
@@ -97,13 +100,15 @@ module.exports = function(crowi, app) {
   }
 
   async function createAttachment(file, user, pageId = null) {
-    // check capacity
-    const isUploadable = await fileUploader.checkCapacity(file.size);
-    if (!isUploadable) {
-      throw new Error('File storage reaches limit');
+    // check limit
+    const res = await fileUploader.checkLimit(file.size);
+    if (!res.isUploadable) {
+      throw new Error(res.errorMessage);
     }
 
-    const fileStream = fs.createReadStream(file.path, {flags: 'r', encoding: null, fd: null, mode: '0666', autoClose: true });
+    const fileStream = fs.createReadStream(file.path, {
+      flags: 'r', encoding: null, fd: null, mode: '0666', autoClose: true,
+    });
 
     // create an Attachment document and upload file
     let attachment;
@@ -112,7 +117,7 @@ module.exports = function(crowi, app) {
     }
     catch (err) {
       // delete temporary file
-      fs.unlink(file.path, function(err) { if (err) { logger.error('Error while deleting tmp file.') } });
+      fs.unlink(file.path, (err) => { if (err) { logger.error('Error while deleting tmp file.') } });
       throw err;
     }
 
@@ -182,11 +187,13 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Parameters page_id is required.'));
     }
 
-    let attachments = await Attachment.find({page: id})
-      .sort({'updatedAt': 1})
+    let attachments = await Attachment.find({ page: id })
+      .sort({ updatedAt: 1 })
       .populate({ path: 'creator', select: User.USER_PUBLIC_FIELDS, populate: User.IMAGE_POPULATION });
 
-    attachments = attachments.map(attachment => attachment.toObject({ virtuals: true }));
+    attachments = attachments.map((attachment) => {
+      return attachment.toObject({ virtuals: true });
+    });
 
     return res.json(ApiResponse.success({ attachments }));
   };
@@ -197,8 +204,7 @@ module.exports = function(crowi, app) {
    * @apiGroup Attachment
    */
   api.limit = async function(req, res) {
-    const isUploadable = await fileUploader.checkCapacity(req.query.fileSize);
-    return res.json(ApiResponse.success({isUploadable: isUploadable}));
+    return res.json(ApiResponse.success(await fileUploader.checkLimit(req.query.fileSize)));
   };
 
   /**
@@ -228,7 +234,7 @@ module.exports = function(crowi, app) {
     if (pageId == null) {
       logger.debug('Create page before file upload');
 
-      page = await Page.create(path, '# '  + path, req.user, {grant: Page.GRANT_OWNER});
+      page = await Page.create(path, `# ${path}`, req.user, { grant: Page.GRANT_OWNER });
       pageCreated = true;
       pageId = page._id;
     }
@@ -254,7 +260,7 @@ module.exports = function(crowi, app) {
     const result = {
       page: page.toObject(),
       attachment: attachment.toObject({ virtuals: true }),
-      pageCreated: pageCreated,
+      pageCreated,
     };
 
     return res.json(ApiResponse.success(result));

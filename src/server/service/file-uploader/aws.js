@@ -5,7 +5,6 @@ const urljoin = require('url-join');
 const aws = require('aws-sdk');
 
 module.exports = function(crowi) {
-
   const lib = {};
 
   function getAwsConfig() {
@@ -14,7 +13,7 @@ module.exports = function(crowi) {
       accessKeyId: config.crowi['aws:accessKeyId'],
       secretAccessKey: config.crowi['aws:secretAccessKey'],
       region: config.crowi['aws:region'],
-      bucket: config.crowi['aws:bucket']
+      bucket: config.crowi['aws:bucket'],
     };
   }
 
@@ -30,14 +29,14 @@ module.exports = function(crowi) {
     aws.config.update({
       accessKeyId: awsConfig.accessKeyId,
       secretAccessKey: awsConfig.secretAccessKey,
-      region: awsConfig.region
+      region: awsConfig.region,
     });
 
     return new aws.S3();
   }
 
   function getFilePathOnStorage(attachment) {
-    if (attachment.filePath != null) {  // backward compatibility for v3.3.x or below
+    if (attachment.filePath != null) { // backward compatibility for v3.3.x or below
       return attachment.filePath;
     }
 
@@ -110,12 +109,15 @@ module.exports = function(crowi) {
   };
 
   /**
-   * chech storage for fileUpload reaches MONGO_GRIDFS_TOTAL_LIMIT (for gridfs)
+   * check the file size limit
+   *
+   * In detail, the followings are checked.
+   * - per-file size limit (specified by MAX_FILE_SIZE)
    */
-  lib.checkCapacity = async(uploadFileSize) => {
-    return true;
+  lib.checkLimit = async(uploadFileSize) => {
+    const maxFileSize = crowi.configManager.getConfig('crowi', 'app:maxFileSize');
+    return { isUploadable: uploadFileSize <= maxFileSize, errorMessage: 'File size exceeds the size limit per file' };
   };
 
   return lib;
 };
-

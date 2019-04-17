@@ -11,6 +11,7 @@ const swig = require('swig-templates');
 
 const helpers = require('@commons/util/helpers');
 const PluginUtils = require('../src/server/plugins/plugin-utils');
+
 const pluginUtils = new PluginUtils();
 
 const TEMPLATE = helpers.root('bin/templates/plugin-definitions.js.swig');
@@ -23,7 +24,6 @@ let pluginNames = pluginUtils.listPluginNames(helpers.root());
 if (process.env.NODE_ENV === 'development'
     && process.env.PLUGIN_NAMES_TOBE_LOADED !== undefined
     && process.env.PLUGIN_NAMES_TOBE_LOADED.length > 0) {
-
   const pluginNamesDev = process.env.PLUGIN_NAMES_TOBE_LOADED.split(',');
 
   // merge and remove duplicates
@@ -48,7 +48,7 @@ const definitions = pluginNames
   });
 
 const compiledTemplate = swig.compileFile(TEMPLATE);
-const code = compiledTemplate({definitions});
+const code = compiledTemplate({ definitions });
 
 // write
 fs.writeFileSync(OUT, code);

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { translate } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 
 /**
  *
@@ -58,6 +58,10 @@ class PageStatusAlert extends React.Component {
     });
   }
 
+  refreshPage() {
+    window.location.reload();
+  }
+
   renderSomeoneEditingAlert() {
     return (
       <div className="alert-hackmd-someone-editing myadmin-alert alert-success myadmin-alert-bottom alertbottom2">
@@ -100,7 +104,7 @@ class PageStatusAlert extends React.Component {
         &nbsp;
         <i className="fa fa-angle-double-right"></i>
         &nbsp;
-        <a href="javascript:location.reload();">
+        <a onClick={this.refreshPage}>
           {label2}
         </a>
       </div>
@@ -116,22 +120,20 @@ class PageStatusAlert extends React.Component {
     if (isHackmdDocumentOutdated && isRevisionOutdated) {
       content = this.renderUpdatedAlert();
     }
-    else {
-      if (this.state.isDraftUpdatingInRealtime) {
-        content = this.renderSomeoneEditingAlert();
-      }
-      else if (this.state.hasDraftOnHackmd) {
-        content = this.renderDraftExistsAlert();
-      }
+    else if (this.state.isDraftUpdatingInRealtime) {
+      content = this.renderSomeoneEditingAlert();
+    }
+    else if (this.state.hasDraftOnHackmd) {
+      content = this.renderDraftExistsAlert();
     }
 
     return content;
   }
+
 }
 
 PageStatusAlert.propTypes = {
-  t: PropTypes.func.isRequired,               // i18next
-  crowi: PropTypes.object.isRequired,
+  t: PropTypes.func.isRequired, // i18next
   hasDraftOnHackmd: PropTypes.bool.isRequired,
   revisionId: PropTypes.string,
   revisionIdHackmdSynced: PropTypes.string,
@@ -140,4 +142,4 @@ PageStatusAlert.propTypes = {
 PageStatusAlert.defaultProps = {
 };
 
-export default translate()(PageStatusAlert);
+export default withTranslation(null, { withRef: true })(PageStatusAlert);

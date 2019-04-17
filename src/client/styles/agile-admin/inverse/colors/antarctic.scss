@@ -1,0 +1,224 @@
+@import '../variables';
+
+$themecolor: #000080;
+$themelight: #f0f8ff;
+$subthemecolor: black;
+$accentcolor: #ffd700;
+$sidebar-text: $themelight;
+$topbar: $themecolor;
+$sidebar: $themelight;
+$bodycolor: $themelight;
+$headingtext: $subthemecolor;
+$bodytext: $subthemecolor;
+$linktext: lighten(blue, 5%);
+$primary: $themecolor;
+$active-nav-tabs-bgcolor: $themecolor;
+$logo-mark-fill: $themelight;
+$wikilinktext: lighten($themecolor, 5%);
+$wikilinktext-hover: lighten($wikilinktext, 15%);
+$inline-code-color: darken($subthemecolor, 5%);
+$inline-code-bg: lighten($subthemecolor, 70%);
+$border: $subthemecolor;
+$border-original: $subthemecolor;
+$navbar-border: $themecolor;
+$background-color: rgba($color: $themelight, $alpha: 0.8);
+$info:$subthemecolor;
+
+@import 'apply-colors';
+@import 'apply-colors-light';
+
+// change color of highlighted header in wiki (default: orange)
+.code-line,
+ul>.text-muted {
+  color: $subthemecolor;
+}
+
+.wiki {
+  h1 {
+    border-color: $subthemecolor;
+  }
+
+  .code-line.revision-head.highlighted {
+    color: $themelight;
+    background-color: lighten($themecolor, 50%);
+
+    .icon-note,
+    .icon-link {
+      color: $themelight;
+    }
+  }
+}
+
+// add background-image
+.main-container>#wrapper>#page-wrapper,
+.page-editor-preview-container {
+  background-image: url('/images/themes/antarctic/bg.svg');
+  background-attachment: fixed;
+  background-position: center center;
+  background-size: cover;
+}
+
+.sidebar {
+  background: $themecolor;
+}
+
+table,
+.hljs,
+.help-block {
+  background-color: $background-color;
+}
+
+.bg-title,
+.nav-navbar {
+  background-color: $themelight;
+}
+
+.edit-button {
+  color: $themelight;
+}
+
+.editor-container .btn-open-dropzone {
+  border-top: none;
+}
+
+.help-block {
+  padding: 5px;
+}
+
+/*
+ * Accentcolor (yellow)
+ */
+
+header.affix {
+  border-bottom: 4px solid $accentcolor;
+}
+
+.modal {
+  .modal-header {
+    border-bottom: 4px solid $accentcolor;
+  }
+}
+
+#wrapper>.navbar>.navbar-header {
+  border-bottom: 4px solid $accentcolor;
+}
+
+/*
+ * Comments
+ */
+
+.page-comment {
+  .page-comment-main {
+    box-shadow: 0px 3px 15px rgba(0, 0, 0, 0.2);
+
+    .page-comment-creator>a {
+      border-bottom: 1px double $subthemecolor;
+    }
+  }
+}
+
+.growi .main {
+  .page-comments-row {
+    border-top-color: transparent;
+  }
+
+  .page-comment .page-comment-main,
+  .page-comment-form .comment-form-main {
+    background-color: $background-color;
+
+    &::before {
+      border-right-color: $background-color;
+    }
+
+    .nav.nav-tabs {
+      >li.active>a {
+        background: $themecolor;
+        border-bottom: solid 1px $themecolor;
+        border-bottom-color: $themecolor;
+      }
+    }
+  }
+}
+
+/*
+ * Tabs
+ */
+
+.nav.nav-tabs>li.active>a {
+  color: $themelight;
+}
+
+.text-info,
+body:not(.on-edit) .nav.nav-tabs {
+  >li>a {
+    color: $subthemecolor;
+  }
+
+  >li.active>a {
+    color: $themelight;
+    background: linear-gradient(rgba($active-nav-tabs-bgcolor, 0) 50%,
+      rgba($active-nav-tabs-bgcolor, 0) 90%,
+      $active-nav-tabs-bgcolor 100%); // overwrite only the bottom pixel
+    background-color: $themecolor;
+  }
+}
+
+/*
+ * Panel
+ */
+
+.panel {
+  width: 80%;
+  margin: 0px auto;
+
+  &.panel-white,
+  &.panel-default {
+    border: 1px solid $subthemecolor;
+    border-color: $border-original;
+
+    .panel-heading {
+      color: $subthemecolor;
+      background-color: $background-color;
+    }
+  }
+}
+
+/*
+ *  Right space for readable
+ */
+
+.growi.main-container {
+  .revision-toc {
+    max-width: 360px;
+    background-color: $background-color;
+    border-radius: 5px;
+
+    .revision-toc-content {
+      padding: 10px;
+
+      ul {
+        padding-left: 5px;
+      }
+
+    }
+  }
+}
+
+/*
+ *  Login page
+ */
+
+.login-page>#wrapper>#page-wrapper {
+  background-image: url('/images/themes/antarctic/topimage.svg');
+  background-attachment: fixed;
+  background-position: center center;
+  background-size: cover;
+
+  .link-switch {
+    color: dimgray;
+
+    &:hover {
+      color: #000080;
+    }
+  }
+}

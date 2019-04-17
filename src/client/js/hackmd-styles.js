@@ -12,7 +12,7 @@
 
 /* eslint-disable no-console  */
 
-const styles = '{{styles}}';         // will be replaced by swig
+const styles = '{{styles}}'; // will be replaced by swig
 
 /**
  * Insert link tag to load style file

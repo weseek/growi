@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import Dropzone from 'react-dropzone';
 import AbstractEditor from './AbstractEditor';
 import CodeMirrorEditor from './CodeMirrorEditor';
 import TextAreaEditor from './TextAreaEditor';
 
-import Dropzone from 'react-dropzone';
 
 import pasteHelper from './PasteHelper';
 
@@ -28,7 +28,7 @@ export default class Editor extends AbstractEditor {
     this.dragLeaveHandler = this.dragLeaveHandler.bind(this);
     this.dropHandler = this.dropHandler.bind(this);
 
-    this.getDropzoneAccept = this.getDropzoneAccept.bind(this);
+    this.getAcceptableType = this.getAcceptableType.bind(this);
     this.getDropzoneClassName = this.getDropzoneClassName.bind(this);
     this.renderDropzoneOverlay = this.renderDropzoneOverlay.bind(this);
   }
@@ -39,8 +39,8 @@ export default class Editor extends AbstractEditor {
 
   getEditorSubstance() {
     return this.props.isMobile
-      ? this.refs.taEditor
-      : this.refs.cmEditor;
+      ? this.taEditor
+      : this.cmEditor;
   }
 
   /**
@@ -104,8 +104,24 @@ export default class Editor extends AbstractEditor {
     }
   }
 
+  /**
+   * get acceptable(uploadable) file type
+   */
+  getAcceptableType() {
+    let accept = 'null'; // reject all
+    if (this.props.isUploadable) {
+      if (!this.props.isUploadableFile) {
+        accept = 'image/*'; // image only
+      }
+      else {
+        accept = ''; // allow all
+      }
+    }
+
+    return accept;
+  }
+
   pasteFilesHandler(event) {
-    const dropzone = this.refs.dropzone;
     const items = event.clipboardData.items || event.clipboardData.files || [];
 
     // abort if length is not 1
@@ -116,11 +132,8 @@ export default class Editor extends AbstractEditor {
     for (let i = 0; i < items.length; i++) {
       try {
         const file = items[i].getAsFile();
-        // check type and size
-        if (file != null &&
-            pasteHelper.fileAccepted(file, dropzone.props.accept) &&
-            pasteHelper.fileMatchSize(file, dropzone.props.maxSize, dropzone.props.minSize)) {
-
+        // check file type (the same process as Dropzone)
+        if (file != null && pasteHelper.isAcceptableType(file, this.getAcceptableType())) {
           this.dispatchUpload(file);
           this.setState({ isUploading: true });
         }
@@ -148,7 +161,7 @@ export default class Editor extends AbstractEditor {
 
   dropHandler(accepted, rejected) {
     // rejected
-    if (accepted.length != 1) { // length should be 0 or 1 because `multiple={false}` is set
+    if (accepted.length !== 1) { // length should be 0 or 1 because `multiple={false}` is set
       this.setState({ dropzoneActive: false });
       return;
     }
@@ -158,21 +171,7 @@ export default class Editor extends AbstractEditor {
     this.setState({ isUploading: true });
   }
 
-  getDropzoneAccept() {
-    let accept = 'null';    // reject all
-    if (this.props.isUploadable) {
-      if (!this.props.isUploadableFile) {
-        accept = 'image/*'; // image only
-      }
-      else {
-        accept = '';        // allow all
-      }
-    }
-
-    return accept;
-  }
-
-  getDropzoneClassName() {
+  getDropzoneClassName(isDragAccept, isDragReject) {
     let className = 'dropzone';
     if (!this.props.isUploadable) {
       className += ' dropzone-unuploadable';
@@ -190,17 +189,27 @@ export default class Editor extends AbstractEditor {
       className += ' dropzone-uploading';
     }
 
+    if (isDragAccept) {
+      className += ' dropzone-accepted';
+    }
+
+    if (isDragReject) {
+      className += ' dropzone-rejected';
+    }
+
     return className;
   }
 
   renderDropzoneOverlay() {
     return (
       <div className="overlay overlay-dropzone-active">
-        {this.state.isUploading &&
+        {this.state.isUploading
+          && (
           <span className="overlay-content">
             <div className="speeding-wheel d-inline-block"></div>
             <span className="sr-only">Uploading...</span>
           </span>
+          )
         }
         {!this.state.isUploading && <span className="overlay-content"></span>}
       </div>
@@ -212,7 +221,8 @@ export default class Editor extends AbstractEditor {
       <div className="m-0 navbar navbar-default navbar-editor" style={{ minHeight: 'unset' }}>
         <ul className="pl-2 nav nav-navbar">
           { this.getNavbarItems() != null && this.getNavbarItems().map((item, idx) => {
-            return <li key={idx}>{item}</li>;
+            // eslint-disable-next-line react/no-array-index-key
+            return <li key={`navbarItem-${idx}`}>{item}</li>;
           }) }
         </ul>
       </div>
@@ -239,46 +249,61 @@ export default class Editor extends AbstractEditor {
     return (
       <div style={flexContainer} className="editor-container">
         <Dropzone
-            ref="dropzone"
-            disableClick
-            accept={this.getDropzoneAccept()}
-            className={this.getDropzoneClassName()}
-            acceptClassName="dropzone-accepted"
-            rejectClassName="dropzone-rejected"
-            multiple={false}
-            onDragLeave={this.dragLeaveHandler}
-            onDrop={this.dropHandler}
-          >
+          ref={(c) => { this.dropzone = c }}
+          accept={this.getAcceptableType()}
+          noClick
+          noKeyboard
+          multiple={false}
+          onDragLeave={this.dragLeaveHandler}
+          onDrop={this.dropHandler}
+        >
+          {({
+            getRootProps,
+            getInputProps,
+            isDragAccept,
+            isDragReject,
+          }) => {
+            return (
+              <div className={this.getDropzoneClassName(isDragAccept, isDragReject)} {...getRootProps()}>
+                { this.state.dropzoneActive && this.renderDropzoneOverlay() }
 
-          { this.state.dropzoneActive && this.renderDropzoneOverlay() }
+                { this.state.isComponentDidMount && this.renderNavbar() }
 
-          { this.state.isComponentDidMount && this.renderNavbar() }
+                {/* for PC */}
+                { !isMobile && (
+                  <CodeMirrorEditor
+                    ref={(c) => { this.cmEditor = c }}
+                    onPasteFiles={this.pasteFilesHandler}
+                    onDragEnter={this.dragEnterHandler}
+                    {...this.props}
+                  />
+                  )
+                }
 
-          {/* for PC */}
-          { !isMobile &&
-            <CodeMirrorEditor
-              ref="cmEditor"
-              onPasteFiles={this.pasteFilesHandler}
-              onDragEnter={this.dragEnterHandler}
-              {...this.props}
-            />
-          }
+                {/* for mobile */}
+                { isMobile && (
+                  <TextAreaEditor
+                    ref={(c) => { this.taEditor = c }}
+                    onPasteFiles={this.pasteFilesHandler}
+                    onDragEnter={this.dragEnterHandler}
+                    {...this.props}
+                  />
+                  )
+                }
 
-          {/* for mobile */}
-          { isMobile &&
-            <TextAreaEditor
-              ref="taEditor"
-              onPasteFiles={this.pasteFilesHandler}
-              onDragEnter={this.dragEnterHandler}
-              {...this.props}
-            />
-          }
-
+                <input {...getInputProps()} />
+              </div>
+            );
+          }}
         </Dropzone>
 
-        { this.props.isUploadable &&
-          <button type="button" className="btn btn-default btn-block btn-open-dropzone"
-            onClick={() => {this.refs.dropzone.open()}}>
+        { this.props.isUploadable
+          && (
+          <button
+            type="button"
+            className="btn btn-default btn-block btn-open-dropzone"
+            onClick={() => { this.dropzone.open() }}
+          >
 
             <i className="icon-paper-clip" aria-hidden="true"></i>&nbsp;
             Attach files
@@ -288,6 +313,7 @@ export default class Editor extends AbstractEditor {
               or pasting from the clipboard.
             </span>
           </button>
+          )
         }
       </div>
     );
@@ -304,4 +330,3 @@ Editor.propTypes = Object.assign({
   onChange: PropTypes.func,
   onUpload: PropTypes.func,
 }, AbstractEditor.propTypes);
-

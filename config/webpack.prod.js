@@ -1,7 +1,6 @@
 /**
  * @author: Yuki Takei <yuki@weseek.co.jp>
  */
-const helpers = require('../src/lib/util/helpers');
 
 /**
  * Webpack Plugins
@@ -9,19 +8,21 @@ const helpers = require('../src/lib/util/helpers');
 const TerserPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+
+const helpers = require('../src/lib/util/helpers');
 
 /**
  * Webpack Constants
  */
-const ANALYZE = process.env.ANALYZE;
+const { ANALYZE } = process.env;
 
 module.exports = require('./webpack.common')({
   mode: 'production',
   devtool: undefined,
   output: {
     filename: '[name].[chunkhash].bundle.js',
-    chunkFilename: '[name].[chunkhash].chunk.js'
+    chunkFilename: '[name].[chunkhash].chunk.js',
   },
   module: {
     rules: [
@@ -30,22 +31,27 @@ module.exports = require('./webpack.common')({
         use: [
           MiniCssExtractPlugin.loader,
           'css-loader',
-          { loader: 'postcss-loader', options: {
-            sourceMap: false,
-            plugins: (loader) => [
-              require('autoprefixer')()
-            ]
-          } },
-          'sass-loader'
+          {
+            loader: 'postcss-loader',
+            options: {
+              sourceMap: false,
+              plugins: (loader) => {
+                return [
+                  require('autoprefixer')(),
+                ];
+              },
+            },
+          },
+          'sass-loader',
         ],
-        exclude: [helpers.root('src/client/js/legacy')]
+        exclude: [helpers.root('src/client/js/legacy')],
       },
       {
         test: /\.(css|scss)$/,
         use: ['style-loader', 'css-loader', 'sass-loader'],
-        include: [helpers.root('src/client/js/legacy')]
+        include: [helpers.root('src/client/js/legacy')],
       },
-    ]
+    ],
   },
   plugins: [
 
@@ -63,7 +69,7 @@ module.exports = require('./webpack.common')({
   optimization: {
     minimizer: [
       new TerserPlugin({}),
-      new OptimizeCSSAssetsPlugin({})
+      new OptimizeCSSAssetsPlugin({}),
     ],
   },
 });

@@ -1,6 +1,6 @@
-var debug = require('debug')('growi:events:page');
-var util = require('util');
-var events = require('events');
+const debug = require('debug')('growi:events:page');
+const util = require('util');
+const events = require('events');
 
 function PageEvent(crowi) {
   this.crowi = crowi;

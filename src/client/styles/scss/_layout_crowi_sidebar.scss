@@ -1,21 +1,20 @@
-.crowi-sidebar { // {{{
+.crowi-sidebar {
   position: fixed;
-  padding: 65px 0 0 0;
-  height: 100%;
-  right: 0;
   top: 0;
+  right: 0;
+  height: 100%;
+  padding: 65px 0 0 0;
   overflow: auto;
   border-left: solid 1px transparent;
 
-  transition: .3s ease;
-
+  transition: 0.3s ease;
 
   .page-meta {
     padding: 15px 15px 5px 15px;
-    font-size: .9em;
-    border-bottom: solid 1px #ccc;
+    font-size: 0.9em;
 
     line-height: 1.4em;
+    border-bottom: solid 1px #ccc;
     p {
       line-height: 1.4em;
     }
@@ -41,10 +40,11 @@
       .dl-horizontal {
         margin-bottom: 0;
 
-        dt, dd {
-          border-top: solid 1px #ccc;
+        dt,
+        dd {
           padding-top: 5px;
           padding-bottom: 5px;
+          border-top: solid 1px #ccc;
         }
         dt {
           width: 80px;
@@ -56,16 +56,17 @@
       }
     }
 
-    .liker-user-count, .seen-user-count {
+    .liker-user-count,
+    .seen-user-count {
+      margin-bottom: 5px;
       font-size: 1.2em;
       font-weight: bold;
-      margin-bottom: 5px;
     }
   }
 
   .side-content {
-    margin-bottom: 100px;
     padding: 15px;
+    margin-bottom: 100px;
 
     h3 {
       font-size: 1.1em;
@@ -94,7 +95,7 @@
             font-size: 12px;
           }
           .overlay-gfm-cheatsheet {
-            display: none;  // hide cheatsheet
+            display: none; // hide cheatsheet
           }
           .CodeMirror {
             height: 150px;
@@ -111,8 +112,8 @@
 
       .page-comments-list {
         .page-comment {
-          margin-top: 8px;
           padding-top: 8px;
+          margin-top: 8px;
 
           .picture {
             float: left;
@@ -129,8 +130,8 @@
             margin-left: 40px;
 
             .page-comment-meta {
+              font-size: 0.9em;
               color: #aaa;
-              font-size: .9em;
             }
             .page-comment-body {
               padding: 8px 0;
@@ -138,9 +139,9 @@
             }
             .page-comment-control {
               position: absolute;
-              display: none;    // default hidden
               top: 0;
               right: 0;
+              display: none; // default hidden
             }
           }
 
@@ -151,7 +152,6 @@
         }
       }
     }
-
   }
 
   .portal-form-button {
@@ -160,20 +160,19 @@
 
   .system-version {
     position: fixed;
-    z-index: 1;
     right: 1.4em;
-    width: calc(25% - 1.5em);
     bottom: 0.1em;
-    padding-right: 1em;
-    opacity: 1;
+    z-index: 1;
 
     display: flex;
     justify-content: space-between;
+    width: calc(25% - 1.5em);
+    padding-right: 1em;
+    opacity: 1;
 
-    transition: .3s ease;
+    transition: 0.3s ease;
   }
-
-} // }}}
+}
 
 body:not(.aside-hidden) #toggle-sidebar {
   i.ti-angle-left {
@@ -183,7 +182,8 @@ body:not(.aside-hidden) #toggle-sidebar {
     display: block;
   }
 }
-.aside-hidden { // {{{
+
+.aside-hidden {
   #toggle-sidebar {
     right: 0;
     i.ti-angle-right {
@@ -194,12 +194,13 @@ body:not(.aside-hidden) #toggle-sidebar {
     }
   }
 
-  .crowi-sidebar, .system-version { // {{{
+  .crowi-sidebar,
+  .system-version {
     right: -25%;
-  } // }}}
+  }
 
   .bg-title .col-md-9,
   .main {
     width: 100%;
   }
-} // }}}
+}

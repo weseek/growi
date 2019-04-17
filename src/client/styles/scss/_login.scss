@@ -2,10 +2,8 @@
   $gray-dark-for-login: darken(white, 30%);
 
   // background color
-  background:
-    linear-gradient(45deg, darken($inverse, 30%)  0%, hsla(340, 100%, 55%, 0) 70%),
-    linear-gradient(135deg, $growi-green 10%, hsla(225, 95%, 50%, 0) 70%),
-    linear-gradient(225deg, $growi-blue  10%, hsla(140, 90%, 50%, 0) 80%),
+  background: linear-gradient(45deg, darken($inverse, 30%) 0%, hsla(340, 100%, 55%, 0) 70%),
+    linear-gradient(135deg, $growi-green 10%, hsla(225, 95%, 50%, 0) 70%), linear-gradient(225deg, $growi-blue 10%, hsla(140, 90%, 50%, 0) 80%),
     linear-gradient(315deg, darken($inverse, 25%) 100%, hsla(35, 95%, 55%, 0) 70%);
   #page-wrapper {
     background: none;
@@ -16,9 +14,9 @@
     height: 100vh;
 
     #page-wrapper {
-      height: 100vh;
       display: flex;
       align-items: center;
+      height: 100vh;
 
       .main {
         width: 100vw;
@@ -29,45 +27,43 @@
         }
 
         .login-header {
-          padding-top: 30px;
-          padding-bottom: 10px;
-
           display: flex;
           flex-direction: column;
           align-items: center;
+          padding-top: 30px;
+          padding-bottom: 10px;
         }
 
         .login-form-errors {
           width: 100%;
 
           .alert {
+            padding: 5px;
             margin-top: 10px;
             margin-bottom: 0;
-            padding: 5px;
 
             ul {
               padding-left: 1.5em;
             }
           }
         }
-
-      }  // .main
-    }  // #page-wrapper
+      } // .main
+    } // #page-wrapper
   } // #wrapper
 
   // styles
   .login-header {
     background-color: rgba(white, 0.5);
     .logo {
-      .group1, .group2 {
+      .group1,
+      .group2 {
         fill: rgba(black, 0.5);
       }
-
     }
     h1 {
-      color: rgba(black, 0.5);
       font-size: 22px;
       line-height: 1em;
+      color: rgba(black, 0.5);
     }
   }
   .login-dialog {
@@ -78,11 +74,11 @@
     margin-bottom: 10px;
 
     .input-group-addon {
+      color: $gray-dark-for-login;
       text-align: center;
+      background-color: rgba(black, 0.4);
       border: none;
       border-radius: 0;
-      color: $gray-dark-for-login;
-      background-color: rgba(black, 0.4);
     }
     .form-control {
       color: white;
@@ -107,7 +103,7 @@
 
     form {
       flex: 1;
-      @media(min-width: 350px) {
+      @media (min-width: 350px) {
         flex: 0.49;
       }
     }
@@ -117,14 +113,17 @@
   }
 
   // button style
-  .btn-login.fcbtn, .btn-register.fcbtn, .btn-login-oauth.fcbtn, .btn-collapse-oauth {
-    border: none;
+  .btn-login.fcbtn,
+  .btn-register.fcbtn,
+  .btn-login-oauth.fcbtn,
+  .btn-collapse-oauth {
     color: white;
     background-color: rgba(lighten(black, 20%), 0.4);
+    border: none;
 
     .btn-label {
-      margin: -8px 20px -8px -20px;
       padding: 9px 15px;
+      margin: -8px 20px -8px -20px;
     }
     &:focus {
       border: none;
@@ -200,15 +199,18 @@
 
   // footer link text
   .link-growi-org {
-    color: rgba(black, 0.4);
-    font-weight: bold;
     font-size: smaller;
+    font-weight: bold;
+    color: rgba(black, 0.4);
 
-    &, .growi, .org {
+    &,
+    .growi,
+    .org {
       transition: color 0.8s;
     }
 
-    &:hover, &.focus {
+    &:hover,
+    &.focus {
       color: black;
       .growi {
         color: darken($growi-green, 20%);
@@ -226,11 +228,10 @@
   }
 }
 
-
 .login-page {
   // layout
   .main .row {
-    @media(min-width: 350px) {
+    @media (min-width: 350px) {
       .col-sm-offset-4 {
         margin-left: calc(50% - 160px);
       }
@@ -241,8 +242,8 @@
   }
   .link-growi-org {
     position: absolute;
-    z-index: 2;
     bottom: 9px;
+    z-index: 2;
   }
 
   // flip animation
@@ -257,7 +258,8 @@
       }
     }
 
-    .front, .back {
+    .front,
+    .back {
       transition: 0.4s;
       backface-visibility: hidden;
       transform-style: preserve-3d;
@@ -271,8 +273,8 @@
     .back {
       position: absolute;
       top: 0;
-      left: 15px;
       right: 15px;
+      left: 15px;
     }
     .back,
     &.to-flip .front {
@@ -289,14 +291,13 @@
       transform: rotateY(0deg);
     }
   }
-
 }
 
-
-.installer, .invited, .nologin.error {
-  // layout
+.installer,
+.invited,
+.nologin.error {
   .main .row {
-    @media(min-width: 510px) {
+    @media (min-width: 510px) {
       .col-sm-offset-4 {
         margin-left: calc(50% - 240px);
       }

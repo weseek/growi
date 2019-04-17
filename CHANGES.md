@@ -1,9 +1,26 @@
-CHANGES
-========
+# CHANGES
 
-## 3.4.2-RC
+## 3.4.3-RC
 
-* 
+* Improvement: Add 'antarctic' theme
+* Support Apply eslint-config-airbnb based rules
+* Support Apply prettier and stylelint
+* Support: Upgrade libs
+    * csrf
+    * escape-string-regexp
+    * eslint
+    * express-session
+    * googleapis
+    * growi-commons
+    * i18next
+    * nodemailer
+    * react-i18next
+    * string-width
+
+## 3.4.2
+
+* Fix: Nofitication to Slack doesn't work
+    * Introduced by 3.4.0
 
 ## 3.4.1
 

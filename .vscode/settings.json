@@ -4,5 +4,17 @@
   // 指定した構文に対してプロファイルを定義するか、特定の規則がある独自のプロファイルをご使用ください。
   "emmet.syntaxProfiles": {
     "javascript": "jsx"
+  },
+
+  // for vscode-eslint
+  "eslint.autoFixOnSave": true,
+  "[javascript]": {
+    "editor.formatOnSave": false
+  },
+
+  // for prettier-vecode + prettier-stylelint
+  "prettier.stylelintIntegration": true,
+  "[scss]": {
+    "editor.formatOnSave": true
   }
 }

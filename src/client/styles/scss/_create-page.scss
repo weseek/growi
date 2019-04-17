@@ -1,6 +1,6 @@
 .modal.create-page {
-
-  @media (min-width: $screen-sm-min) { // {{{ more than tablet size
+  // more than tablet size
+  @media (min-width: $screen-sm-min) {
     .modal-dialog {
       width: 750px;
     }
@@ -11,8 +11,8 @@
       margin-bottom: 10px;
     }
 
-    form, #template-form {
-
+    form,
+    #template-form {
       // layout
       .create-page-input-container {
         .create-page-input-row {
@@ -39,10 +39,10 @@
       }
       .page-today-input1 {
         width: 60px;
-        margin-left: 5px;
-        margin-right: 5px;
-        padding-left: 2px;
         padding-right: 2px;
+        padding-left: 2px;
+        margin-right: 5px;
+        margin-left: 5px;
       }
       .page-today-suffix {
       }
@@ -55,7 +55,7 @@
         flex: 1;
         input {
           min-width: 300px; // Workaround to display placeholder.
-                            //   cf https://github.com/ericgio/react-bootstrap-typeahead/issues/256
+          //   cf https://github.com/ericgio/react-bootstrap-typeahead/issues/256
         }
       }
 

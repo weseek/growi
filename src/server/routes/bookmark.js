@@ -1,12 +1,10 @@
 module.exports = function(crowi, app) {
-  'use strict';
-
   const debug = require('debug')('growi:routes:bookmark');
   const Bookmark = crowi.model('Bookmark');
   const Page = crowi.model('Page');
   const ApiResponse = require('../util/apiResponse');
   const ApiPaginate = require('../util/apiPaginate');
-  let actions = {};
+  const actions = {};
   actions.api = {};
 
   /**
@@ -17,17 +15,17 @@ module.exports = function(crowi, app) {
    * @apiParam {String} page_id Page Id.
    */
   actions.api.get = function(req, res) {
-    let pageId = req.query.page_id;
+    const pageId = req.query.page_id;
 
     Bookmark.findByPageIdAndUserId(pageId, req.user)
-      .then(function(data) {
+      .then((data) => {
         debug('bookmark found', pageId, data);
-        let result = {};
+        const result = {};
 
         result.bookmark = data;
         return res.json(ApiResponse.success(result));
       })
-      .catch(function(err) {
+      .catch((err) => {
         return res.json(ApiResponse.error(err));
       });
   };
@@ -36,14 +34,14 @@ module.exports = function(crowi, app) {
    *
    */
   actions.api.list = function(req, res) {
-    let paginateOptions = ApiPaginate.parseOptions(req.query);
+    const paginateOptions = ApiPaginate.parseOptions(req.query);
 
-    let options = Object.assign(paginateOptions, { populatePage: true });
+    const options = Object.assign(paginateOptions, { populatePage: true });
     Bookmark.findByUserId(req.user._id, options)
-      .then(function(result) {
+      .then((result) => {
         return res.json(ApiResponse.success(result));
       })
-      .catch(function(err) {
+      .catch((err) => {
         return res.json(ApiResponse.error(err));
       });
   };
@@ -80,14 +78,14 @@ module.exports = function(crowi, app) {
    * @apiParam {String} page_id Page Id.
    */
   actions.api.remove = function(req, res) {
-    let pageId = req.body.page_id;
+    const pageId = req.body.page_id;
 
     Bookmark.removeBookmark(pageId, req.user)
-      .then(function(data) {
+      .then((data) => {
         debug('Bookmark removed.', data); // if the bookmark is not exists, this 'data' is null
         return res.json(ApiResponse.success());
       })
-      .catch(function(err) {
+      .catch((err) => {
         return res.json(ApiResponse.error(err));
       });
   };
