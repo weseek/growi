@@ -6,8 +6,12 @@
 * Support Apply eslint-config-airbnb based rules
 * Support Apply prettier and stylelint
 * Support: Upgrade libs
+    * csrf
+    * escape-string-regexp
     * eslint
+    * express-session
     * googleapis
+    * growi-commons
     * i18next
     * nodemailer
     * react-i18next
