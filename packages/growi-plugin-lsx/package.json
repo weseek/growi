@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/weseek/growi-plugin-lsx#readme",
   "dependencies": {
-    "growi-commons": "^3.1.0",
+    "growi-commons": "^3.2.2",
     "url": "^0.11.0"
   },
   "devDependencies": {

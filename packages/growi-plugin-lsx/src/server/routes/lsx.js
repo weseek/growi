@@ -1,4 +1,4 @@
-const OptionParser = require('../util/option-parser');
+const { OptionParser } = require('growi-commons');
 
 class Lsx {
 
