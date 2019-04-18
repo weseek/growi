@@ -1,4 +1,5 @@
-const { OptionParser } = require('growi-commons');
+const { customTagUtils } = require('growi-commons');
+const { OptionParser } = customTagUtils;
 
 class Lsx {
 
