@@ -1,15 +1,25 @@
 # CHANGES
 
-## 3.4.3-RC
+## 3.4.4-RC
+
+* 
+
+## 3.4.3
 
 * Improvement: Add 'antarctic' theme
 * Support Apply eslint-config-airbnb based rules
 * Support Apply prettier and stylelint
 * Support: Upgrade libs
+    * csrf
+    * escape-string-regexp
     * eslint
+    * express-session
     * googleapis
+    * growi-commons
     * i18next
+    * mini-css-extract-plugin
     * nodemailer
+    * penpal
     * react-i18next
     * string-width
 
