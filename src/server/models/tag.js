@@ -30,22 +30,10 @@ class Tag {
     return tag;
   }
 
-  static async findList(option) {
+  static async findList(opt) {
     const PageTagRelation = Tag.crowi.model('PageTagRelation');
-    const result = {};
-    result.tags = await this.aggregate([
-      {
-        $addFields: {
-          pageCount: await PageTagRelation.find({
-            _id: '$_id',
-          }),
-        },
-      },
-    ])
-      .sort({ pageCount: 1 }).skip(option.offset).limit(option.limit);
-
-    result.totalCount = await this.count();
-    return result;
+    const list = await PageTagRelation.createTagListWithCount(opt);
+    return list;
   }
 
 }

@@ -35,7 +35,8 @@ module.exports = function(crowi, app) {
   api.list = async function(req, res) {
     const limit = +req.query.limit || 50;
     const offset = +req.query.offset || 0;
-    const queryOptions = { offset, limit };
+    const sortOpt = { count: -1 };
+    const queryOptions = { offset, limit, sortOpt };
 
     try {
       const result = await Tag.findList(queryOptions);
