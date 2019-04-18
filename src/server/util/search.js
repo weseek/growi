@@ -532,6 +532,20 @@ SearchClient.prototype.appendCriteriaForQueryString = function(query, queryStrin
     });
     query.body.query.bool.filter.push({ bool: { must_not: queries } });
   }
+
+  if (parsedKeywords.tag.length > 0) {
+    const queries = parsedKeywords.tag.map((tag) => {
+      return { term: { tag_names: tag } };
+    });
+    query.body.query.bool.filter.push({ bool: { must: queries } });
+  }
+
+  if (parsedKeywords.not_tag.length > 0) {
+    const queries = parsedKeywords.not_tag.map((tag) => {
+      return { term: { tag_names: tag } };
+    });
+    query.body.query.bool.filter.push({ bool: { must_not: queries } });
+  }
 };
 
 SearchClient.prototype.filterPagesByViewer = async function(query, user, userGroups) {

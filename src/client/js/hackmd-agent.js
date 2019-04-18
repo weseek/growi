@@ -9,10 +9,10 @@
  *
  * @author Yuki Takei <yuki@weseek.co.jp>
  */
-import Penpal from 'penpal';
-// Penpal.debug = true;
-
+import connectToParent from 'penpal/lib/connectToParent';
 import { debounce } from 'throttle-debounce';
+
+const DEBUG_PENPAL = false;
 
 /* eslint-disable no-console  */
 
@@ -105,7 +105,7 @@ function addEventListenersToCodemirror() {
 }
 
 function connectToParentWithPenpal() {
-  const connection = Penpal.connectToParent({
+  const connection = connectToParent({
     parentOrigin: allowedOrigin,
     // Methods child is exposing to parent
     methods: {
@@ -119,6 +119,7 @@ function connectToParentWithPenpal() {
         setValueToCodemirrorOnInit(newValue);
       },
     },
+    debug: DEBUG_PENPAL,
   });
   connection.promise
     .then((parent) => {
