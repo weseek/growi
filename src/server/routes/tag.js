@@ -33,28 +33,17 @@ module.exports = function(crowi, app) {
    * @apiParam {Number} offset
    */
   api.list = async function(req, res) {
-    const PageTagRelation = crowi.model('PageTagRelation');
     const limit = +req.query.limit || 50;
     const offset = +req.query.offset || 0;
     const queryOptions = { offset, limit };
-    const result = [];
-
-    const tags = await Tag.find();
 
     try {
-      /* eslint-disable no-await-in-loop */
-      for (const tag of tags) {
-        const data = {};
-        data.tagName = tag.name;
-        data.countPage = await PageTagRelation.count({ relatedTag: tag.id });
-        result.push(data);
-      }
+      const result = await Tag.findList(queryOptions);
+      return res.json(ApiResponse.success({ result }));
     }
     catch (err) {
       return res.json(ApiResponse.error(err));
     }
-
-    return res.json(ApiResponse.success({ result }));
   };
 
 
