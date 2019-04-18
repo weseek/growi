@@ -5,5 +5,5 @@ module.exports = {
   ArgsParser: require('./plugin/util/args-parser'),
   OptionParser: require('./plugin/util/option-parser'),
   // service
-  LocalStorageService: require('./service/localstorage-manager'),
+  LocalStorageManager: require('./service/localstorage-manager'),
 };
