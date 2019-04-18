@@ -15,21 +15,6 @@ const schema = new mongoose.Schema({
 });
 schema.plugin(mongoosePaginate);
 
-class TagQueryBuilder {
-
-  constructor(query) {
-    this.query = query;
-  }
-
-  addConditionToPagenate(offset, limit, sortOpt) {
-    this.query = this.query
-      .sort(sortOpt).skip(offset).limit(limit); // eslint-disable-line newline-per-chained-call
-
-    return this;
-  }
-
-}
-
 /**
  * Tag Class
  *
