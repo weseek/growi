@@ -46,26 +46,27 @@ class Tag {
   }
 
   static async findList(option) {
-    const opt = Object.assign({ sort: 'count', desc: -1 }, option);
-    const builder = new TagQueryBuilder(this.find({}));
-    const sortOpt = {};
-    sortOpt[opt.sort] = opt.desc;
+    const PageTagRelation = Tag.crowi.model('PageTagRelation');
+    const result = {};
+    result.tags = await this.aggregate([
+      {
+        $addFields: {
+          pageCount: await PageTagRelation.find({
+            _id: '$_id',
+          }),
+        },
+      },
+    ])
+      .sort({ pageCount: 1 }).skip(option.offset).limit(option.limit);
 
-    // count
-    const totalCount = await builder.query.exec('count');
-
-    // find
-    builder.addConditionToPagenate(opt.offset, opt.limit, sortOpt);
-    const tags = await builder.query.exec('find');
-    const result = {
-      tags, totalCount, offset: opt.offset, limit: opt.limit,
-    };
+    result.totalCount = await this.count();
     return result;
   }
 
 }
 
-module.exports = function() {
+module.exports = function(crowi) {
+  Tag.crowi = crowi;
   schema.loadClass(Tag);
   const model = mongoose.model('Tag', schema);
   return model;
