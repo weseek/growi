@@ -1,6 +1,6 @@
 {
   "name": "growi-commons",
-  "version": "3.2.7",
+  "version": "3.2.8",
   "description": "GROWI Commons Libraries",
   "keywords": [
     "growi"
@@ -47,7 +47,9 @@
       "@root/(.+)": "<rootDir>/$1",
       "@src/(.+)": "<rootDir>/src/$1"
     },
-    "setupFiles": ["jest-localstorage-mock"]
+    "setupFiles": [
+      "jest-localstorage-mock"
+    ]
   },
   "engines": {
     "node": ">=8.11.1 <11",
