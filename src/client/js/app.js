@@ -468,16 +468,18 @@ if (writeCommentElem) {
     }
   };
   ReactDOM.render(
-    <CommentForm
-      crowi={crowi}
-      crowiOriginRenderer={crowiRenderer}
-      pageId={pageId}
-      pagePath={pagePath}
-      revisionId={pageRevisionId}
-      onPostComplete={postCompleteHandler}
-      editorOptions={editorOptions}
-      slackChannels={slackChannels}
-    />,
+    <I18nextProvider i18n={i18n}>
+      <CommentForm
+        crowi={crowi}
+        crowiOriginRenderer={crowiRenderer}
+        pageId={pageId}
+        pagePath={pagePath}
+        revisionId={pageRevisionId}
+        onPostComplete={postCompleteHandler}
+        editorOptions={editorOptions}
+        slackChannels={slackChannels}
+      />
+    </I18nextProvider>,
     writeCommentElem,
   );
 }
