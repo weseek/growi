@@ -35,7 +35,7 @@ class Tag {
     const list = await PageTagRelation.createTagListWithCount(opt);
 
     // get tag document for add name data to the list
-    const tags = await this.find({ _id: { $in: list.map((elm) => { return elm._id }) } });
+    const tags = await this.find({ _id: { $in: list } });
 
     // add name data
     const result = list.map((elm) => {
