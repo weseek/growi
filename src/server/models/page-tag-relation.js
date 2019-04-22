@@ -39,21 +39,25 @@ class PageTagRelation {
 
   static async createTagListWithCount(opt) {
     const Tag = PageTagRelation.crowi.model('Tag');
+
+    // get objects contain id and count
     const list = await this.aggregate()
       .group({ _id: '$relatedTag', count: { $sum: 1 } })
       .sort(opt.sortOpt)
       .skip(opt.offset)
       .limit(opt.limit);
 
+    // get tag document for add name data to the list
     const tags = await Tag.find({ _id: { $in: list.map((elm) => { return elm._id }) } });
-    const res = list.map((elm) => {
-      const tag = tags.filter((tag) => {
-        return (tag.id === String(elm._id));
-      });
-      const name = tag[0].name;
-      return { name, count: elm.count };
+
+    // add name data
+    const result = list.map((elm) => {
+      const tag = tags.find((tag) => { return (tag.id === String(elm._id)) });
+      elm.name = tag.name;
+      return elm;
     });
-    return res;
+
+    return result;
   }
 
 }
