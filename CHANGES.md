@@ -1,8 +1,12 @@
 # CHANGES
 
-## 3.4.4-RC
+## 3.4.5-RC
 
 * 
+
+## 3.4.4
+
+* Fix: Comment component doesn't work
 
 ## 3.4.3
 
