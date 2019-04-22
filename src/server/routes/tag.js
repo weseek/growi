@@ -37,9 +37,10 @@ module.exports = function(crowi, app) {
     const offset = +req.query.offset || 0;
     const sortOpt = { count: -1 };
     const queryOptions = { offset, limit, sortOpt };
-
+    const result = {};
     try {
-      const result = await Tag.findList(queryOptions);
+      result.tags = await Tag.findList(queryOptions);
+      result.totalCount = await Tag.count({});
       return res.json(ApiResponse.success({ result }));
     }
     catch (err) {
