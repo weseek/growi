@@ -46,7 +46,14 @@ class PageTagRelation {
       .limit(opt.limit);
 
     const tags = await Tag.find({ _id: { $in: list.map((elm) => { return elm._id }) } });
-    return list;
+    const res = list.map((elm) => {
+      const tag = tags.filter((tag) => {
+        return (tag.id === String(elm._id));
+      });
+      const name = tag[0].name;
+      return { name, count: elm.count };
+    });
+    return res;
   }
 
 }
