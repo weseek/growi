@@ -38,17 +38,21 @@ class PageTagRelation {
   }
 
   static async createTagListWithCount(opt) {
-    const count = await this.aggregate()
+    const Tag = PageTagRelation.crowi.model('Tag');
+    const list = await this.aggregate()
       .group({ _id: '$relatedTag', count: { $sum: 1 } })
       .sort(opt.sortOpt)
       .skip(opt.offset)
       .limit(opt.limit);
-    return count;
+
+    const tags = await Tag.find({ _id: { $in: list.map((elm) => { return elm._id }) } });
+    return list;
   }
 
 }
 
-module.exports = function() {
+module.exports = function(crowi) {
+  PageTagRelation.crowi = crowi;
   schema.loadClass(PageTagRelation);
   const model = mongoose.model('PageTagRelation', schema);
   return model;
