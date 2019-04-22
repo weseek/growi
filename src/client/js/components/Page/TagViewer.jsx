@@ -68,7 +68,7 @@ export default class TagViewer extends React.Component {
           placement="bottom"
           overlay={(
             <Tooltip id="tag-edit-button-tooltip" className="tag-tooltip">
-              {this.state.currentPageTags.length !== 0 ? this.state.currentPageTags.join() : 'tag is not set'}
+              {this.state.currentPageTags.length !== 0 ? this.state.currentPageTags.join() : 'tag is not set' }
             </Tooltip>
           )}
         >
