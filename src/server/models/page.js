@@ -765,8 +765,8 @@ module.exports = function(crowi) {
     builder.populateDataToList(User.USER_PUBLIC_FIELDS, User.IMAGE_POPULATION);
     const pages = await builder.query.exec('find');
     pages.map((page) => {
-      const result = ids.find((data) => { return page.id === data._id });
-      page.tags = result._source.tag_names;
+      const elm = ids.find((data) => { return page.id === data._id });
+      page._doc.tags = elm._source.tag_names;
       return page;
     });
 
