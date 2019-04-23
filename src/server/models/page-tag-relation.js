@@ -37,12 +37,17 @@ class PageTagRelation {
     }
   }
 
-  static async createTagListWithCount(opt) {
+  static async createTagListWithCount(option) {
+    const opt = option || {};
+    const sortOpt = opt.sortOpt || {};
+    const offset = opt.offset || 0;
+    const limit = opt.limit || 50;
+
     const list = await this.aggregate()
       .group({ _id: '$relatedTag', count: { $sum: 1 } })
-      .sort(opt.sortOpt)
-      .skip(opt.offset)
-      .limit(opt.limit);
+      .sort(sortOpt)
+      .skip(offset)
+      .limit(limit);
 
     return list;
   }
