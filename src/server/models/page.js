@@ -1091,7 +1091,6 @@ module.exports = function(crowi) {
     const newPath = this.getDeletedPageName(pageData.path);
     const isTrashed = checkIfTrashed(pageData.path);
 
-    const socketClientId = options.socketClientId || null;
     if (this.isDeletableName(pageData.path)) {
       if (isTrashed) {
         return this.completelyDeletePage(pageData, user, options);
@@ -1100,9 +1099,6 @@ module.exports = function(crowi) {
       pageData.status = STATUS_DELETED;
       const updatedPageData = await this.rename(pageData, newPath, user, { createRedirectPage: true });
 
-      if (socketClientId != null) {
-        pageEvent.emit('delete', updatedPageData, user, socketClientId);
-      }
       return updatedPageData;
     }
 
