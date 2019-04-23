@@ -33,6 +33,7 @@ import PageStatusAlert from './components/PageStatusAlert';
 import RevisionPath from './components/Page/RevisionPath';
 import TagViewer from './components/Page/TagViewer';
 import RevisionUrl from './components/Page/RevisionUrl';
+import TagLabel from './components/Page/TagLabel';
 import BookmarkButton from './components/BookmarkButton';
 import LikeButton from './components/LikeButton';
 import PagePathAutoComplete from './components/PagePathAutoComplete';
@@ -310,8 +311,9 @@ if (pageId) {
 if (pagePath) {
   componentMappings.page = <Page crowi={crowi} crowiRenderer={crowiRenderer} markdown={markdown} pagePath={pagePath} onSaveWithShortcut={saveWithShortcut} />;
   componentMappings['revision-path'] = <RevisionPath pagePath={pagePath} crowi={crowi} />;
-  componentMappings['tag-viewer'] = <TagViewer crowi={crowi} pageId={pageId} sendTagData={setTagData} />;
-  componentMappings['revision-url'] = <RevisionUrl pageId={pageId} pagePath={pagePath} />;
+  // <!-- [TODO] once commentout -->
+  // componentMappings['revision-url'] = <RevisionUrl crowi={crowi} pageId={pageId} pagePath={pagePath} sendTagData={setTagData} />;
+  componentMappings['tag-label'] = <TagLabel crowi={crowi} pageId={pageId} sendTagData={setTagData} />;
 }
 
 Object.keys(componentMappings).forEach((key) => {
