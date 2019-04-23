@@ -1,6 +1,7 @@
 module.exports = function(crowi, app) {
 
   const Tag = crowi.model('Tag');
+  const PageTagRelation = crowi.model('PageTagRelation');
   const ApiResponse = require('../util/apiResponse');
   const actions = {};
   const api = {};
@@ -38,9 +39,23 @@ module.exports = function(crowi, app) {
     const sortOpt = { count: -1 };
     const queryOptions = { offset, limit, sortOpt };
     const result = {};
+
     try {
-      result.tags = await Tag.findList(queryOptions);
-      result.totalCount = await Tag.count({});
+      // get tag list contains id and count properties
+      const list = await PageTagRelation.createTagListWithCount(queryOptions);
+
+      // get tag documents for add name data to the list
+      const tags = await Tag.find({ _id: { $in: list } });
+
+      // add name data
+      result.tags = list.map((elm) => {
+        const tag = tags.find((tag) => { return (tag.id === String(elm._id)) });
+        elm.name = tag.name;
+        return elm;
+      });
+
+      result.totalCount = await Tag.count();
+
       return res.json(ApiResponse.success({ result }));
     }
     catch (err) {
