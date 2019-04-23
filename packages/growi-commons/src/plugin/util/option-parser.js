@@ -1,18 +1,31 @@
+/**
+ * Options parser for custom tag
+ */
 class OptionParser {
 
   /**
-   * parse range expression
+   * @typedef ParseRangeResult
+   * @property {number} start - start index
+   * @property {number} end - end index
+   */
+
+  /**
+   * Parse range expression
    *
-   * ex:
-   *  1:2 -> { start: 1, end: 2 }
-   *  1:  -> { start: 1, end: -1 }
-   *  2+3 -> { start: 1, end: 5 }
+   * <ul>
+   *  <li>ex:</li>
+   *  <ul>
+   *    <li>1:2 -> { start: 1, end: 2 }</li>
+   *    <li>1:  -> { start: 1, end: -1 }</li>
+   *    <li>2+3 -> { start: 1, end: 5 }</li>
+   *  </ul>
+   * </ul>
+   *
+   * @see https://regex101.com/r/w4KCwC/4
    *
    * @static
-   * @param {any} str
-   * @returns
-   *
-   * @memberOf OptionParser
+   * @param {string} str
+   * @returns {ParseRangeResult}
    */
   static parseRange(str) {
     if (str == null) {

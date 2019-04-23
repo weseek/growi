@@ -1,11 +1,21 @@
+/**
+ * Arguments parser for custom tag
+ */
 class ArgsParser {
+
+  /**
+   * @typedef ParseArgsResult
+   * @property {string} firstArgsKey - key of the first argument
+   * @property {string} firstArgsValue - value of the first argument
+   * @property {object} options - key of the first argument
+   */
 
   /**
    * parse plugin argument strings
    *
    * @static
    * @param {string} str
-   * @returns {object} { fistArgsKey: 'key', firstArgsValue: 'val', options: {..} }
+   * @returns {ParseArgsResult}
    */
   static parse(str) {
     let firstArgsKey = null;

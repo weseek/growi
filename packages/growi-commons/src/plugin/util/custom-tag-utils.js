@@ -1,6 +1,9 @@
 const TagContext = require('../model/tag-context');
 
 /**
+ * @private
+ *
+ * create random strings
  * @see http://qiita.com/ryounagaoka/items/4736c225bdd86a74d59c
  *
  * @param {number} length
@@ -16,10 +19,19 @@ function createRandomStr(length) {
 }
 
 /**
+ * @typedef FindTagAndReplaceResult
+ * @property {string} html - HTML string
+ * @property {Object} tagContextMap - Object.<string, [TagContext]{@link ../model/tag-context.html#TagContext}>
+ *
+ * @memberof customTagUtils
+ */
+/**
  * @param {RegExp} tagPattern
  * @param {string} html
  * @param {function} replace replace function
- * @return {{html: string, tagContextMap: Object.<string, TagContext>}}
+ * @return {FindTagAndReplaceResult}
+ *
+ * @memberof customTagUtils
  */
 function findTagAndReplace(tagPattern, html, replace) {
   let replacedHtml = html;
@@ -53,9 +65,24 @@ function findTagAndReplace(tagPattern, html, replace) {
   return { html: replacedHtml, tagContextMap };
 }
 
+/**
+ * @namespace customTagUtils
+ */
 module.exports = {
   findTagAndReplace,
+  /**
+   * Context class used by findTagAndReplace
+   * @memberof customTagUtils
+   */
   TagContext,
+  /**
+   * [ArgsParser]{@link ./args-parser#ArgsParser}
+   * @memberof customTagUtils
+   */
   ArgsParser: require('./args-parser'),
+  /**
+   * [OptionParser]{@link ./option-parser#OptionParser}
+   * @memberof customTagUtils
+   */
   OptionParser: require('./option-parser'),
 };

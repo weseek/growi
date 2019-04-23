@@ -1,3 +1,6 @@
+/**
+ * Context class for custom-tag-utils#findTagAndReplace
+ */
 class TagContext {
 
   constructor(initArgs = {}) {
