@@ -50,47 +50,20 @@ export default class TagLabel extends React.Component {
 
   render() {
     const tags = [];
-    const tagStyle = {
-      float: 'left',
-      color: 'gray',
-    };
-
-    const tagListStyle = {
-      border: 'none',
-      fontSize: '10px',
-      marginLeft: '5px',
-    };
-
-    const tagButtonStyle = {
-      cursor: 'pointer',
-      fontSize: '15px',
-      marginLeft: '15px',
-      marginRight: '10px',
-      paddingTop: '1px',
-      float: 'left',
-    };
-
-
-    const tagLinkStyle = {
-      marginLeft: '2px',
-      color: 'gray',
-      fontSize: '10px',
-    };
 
     for (let i = 0; i < this.state.currentPageTags.length; i++) {
       tags.push(
-        <i style={tagListStyle} className="icon-tag"></i>,
-        <a key={i.toString()} style={tagLinkStyle}>{this.state.currentPageTags[i]}</a>,
+        <i className="tag-icon icon-tag"></i>,
+        <a key={i.toString()}>{this.state.currentPageTags[i]}</a>,
       );
 
     }
 
     return (
-      <div style={tagStyle}>
+      <div className="tag-viewer">
         {tags}
         <i
-          className="icon-wrench"
-          style={tagButtonStyle}
+          className="manage-tags icon-wrench"
           onClick={this.handleShowModal}
 
         >
