@@ -31,8 +31,6 @@ import CommentForm from './components/PageComment/CommentForm';
 import PageAttachment from './components/PageAttachment';
 import PageStatusAlert from './components/PageStatusAlert';
 import RevisionPath from './components/Page/RevisionPath';
-import TagViewer from './components/Page/TagViewer';
-import RevisionUrl from './components/Page/RevisionUrl';
 import TagLabel from './components/Page/TagLabel';
 import BookmarkButton from './components/BookmarkButton';
 import LikeButton from './components/LikeButton';
