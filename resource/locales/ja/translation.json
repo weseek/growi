@@ -208,6 +208,12 @@
     },
     "exclude_prefix": {
       "desc": "ページ名が {{path}} から始まるページを除外"
+    },
+    "tag": {
+      "desc": "{{tag}} というタグを含むページを検索"
+    },
+    "exclude_tag": {
+      "desc": "{{tag}} というタグを含むページを除外"
     }
   },
   "search": {
