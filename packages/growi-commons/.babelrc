@@ -7,6 +7,8 @@
     }]
   ],
   "plugins": [
+    // for using rewire(__get__ method) to test private function
+    "babel-plugin-rewire",
   ],
   "env": {
   }
