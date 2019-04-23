@@ -397,10 +397,12 @@ $(() => {
       nameValueMap[obj.name] = obj.value; // nameValueMap.new_path is duplicated page path
     });
 
+    const data = `${$(this).serialize()}&socketClientId=${crowi.getSocketClientId()}`;
+
     $.ajax({
       type: 'POST',
       url: '/_api/pages.duplicate',
-      data: $(this).serialize(),
+      data,
       dataType: 'json',
     }).done((res) => {
       // error
@@ -426,10 +428,12 @@ $(() => {
     $('#deletePage .msg').hide();
   });
   $('#delete-page-form').submit((e) => {
+    const data = `${$('#delete-page-form').serialize()}&socketClientId=${crowi.getSocketClientId()}`;
+
     $.ajax({
       type: 'POST',
       url: '/_api/pages.remove',
-      data: $('#delete-page-form').serialize(),
+      data,
       dataType: 'json',
     }).done((res) => {
       // error
