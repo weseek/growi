@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Modal from 'react-bootstrap/es/Modal';
 import Button from 'react-bootstrap/es/Button';
+import Modal from 'react-bootstrap/es/Modal';
 import PageTagForm from '../PageTagForm';
 
 export default class TagLabel extends React.Component {
@@ -15,12 +15,10 @@ export default class TagLabel extends React.Component {
       isOpenModal: false,
     };
 
-
     this.addNewTag = this.addNewTag.bind(this);
     this.handleShowModal = this.handleShowModal.bind(this);
     this.handleCloseModal = this.handleCloseModal.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-
   }
 
   async componentWillMount() {
@@ -89,13 +87,14 @@ export default class TagLabel extends React.Component {
 
     return (
       <div style={tagStyle}>
+        {tags}
         <i
           className="icon-wrench"
           style={tagButtonStyle}
           onClick={this.handleShowModal}
+
         >
         </i>
-        {tags}
         <Modal show={this.state.isOpenModal} onHide={this.handleCloseModal} id="editTagModal">
           <Modal.Header closeButton className="bg-primary">
             <Modal.Title className="text-white">Page Tag</Modal.Title>
