@@ -32,6 +32,7 @@ import PageAttachment from './components/PageAttachment';
 import PageStatusAlert from './components/PageStatusAlert';
 import RevisionPath from './components/Page/RevisionPath';
 import TagLabel from './components/Page/TagLabel';
+import RevisionUrl from './components/Page/RevisionUrl';
 import BookmarkButton from './components/BookmarkButton';
 import LikeButton from './components/LikeButton';
 import PagePathAutoComplete from './components/PagePathAutoComplete';
@@ -309,8 +310,8 @@ if (pageId) {
 if (pagePath) {
   componentMappings.page = <Page crowi={crowi} crowiRenderer={crowiRenderer} markdown={markdown} pagePath={pagePath} onSaveWithShortcut={saveWithShortcut} />;
   componentMappings['revision-path'] = <RevisionPath pagePath={pagePath} crowi={crowi} />;
-  // <!-- [TODO] once commentout -->
-  // componentMappings['revision-url'] = <RevisionUrl crowi={crowi} pageId={pageId} pagePath={pagePath} sendTagData={setTagData} />;
+  // [TODO] there is a need to decide the destination of RevisionUrl
+  componentMappings['revision-url'] = <RevisionUrl crowi={crowi} pageId={pageId} pagePath={pagePath} sendTagData={setTagData} />;
   componentMappings['tag-label'] = <TagLabel crowi={crowi} pageId={pageId} sendTagData={setTagData} />;
 }
 
