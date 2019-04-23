@@ -1,9 +1,9 @@
 class TagContext {
 
-  constructor() {
-    this.tagExpression = null;
-    this.method = null;
-    this.args = null;
+  constructor(initArgs) {
+    this.tagExpression = initArgs.tagExpression || null;
+    this.method = initArgs.method || null;
+    this.args = initArgs.args || null;
   }
 
 }
