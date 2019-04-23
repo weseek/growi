@@ -32,10 +32,7 @@ function findTagAndReplace(tagPattern, html, replace) {
     const args = (group2 || group4 || '').trim();
 
     // create contexts
-    const tagContext = new TagContext();
-    tagContext.tagExpression = tagExpression;
-    tagContext.method = method;
-    tagContext.args = args;
+    const tagContext = new TagContext({ tagExpression, method, args });
 
     if (replace != null) {
       return replace(tagContext);
