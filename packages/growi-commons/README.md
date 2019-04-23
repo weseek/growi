@@ -4,7 +4,7 @@
 [![devDependencies Status](https://david-dm.org/weseek/growi-commons/dev-status.svg)](https://david-dm.org/weseek/growi-commons?type=dev)
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
 
-[GROWI][growi] Commons Libraries to develop GROWI and plugins
+[GROWI](https://growi.org) Commons Libraries to develop GROWI and plugins
 
 
 Overview
