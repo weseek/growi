@@ -22,11 +22,17 @@ function createRandomStr(length) {
  * @return {{html: string, tagContextMap: Object.<string, TagContext>}}
  */
 function findTagAndReplace(tagPattern, html, replace) {
+  let replacedHtml = html;
+  const tagContextMap = {};
+
+  if (tagPattern == null || html == null) {
+    return { html: replacedHtml, tagContextMap };
+  }
+
   // see: https://regex101.com/r/NQq3s9/9
   const pattern = new RegExp(`\\$(${tagPattern.source})\\((.*?)\\)(?=[<\\[\\s\\$])|\\$(${tagPattern.source})\\((.*)\\)(?![<\\[\\s\\$])`, 'g');
 
-  const tagContextMap = {};
-  const replacedHtml = html.replace(pattern, (all, group1, group2, group3, group4) => {
+  replacedHtml = html.replace(pattern, (all, group1, group2, group3, group4) => {
     const tagExpression = all;
     const method = (group1 || group3).trim();
     const args = (group2 || group4 || '').trim();
