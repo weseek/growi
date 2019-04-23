@@ -51,7 +51,6 @@ module.exports = function(crowi, app) {
       // add name property
       result.data = list.map((elm) => {
         const data = {};
-
         const tag = tags.find((tag) => { return (tag.id === elm._id.toString()) });
 
         data._id = elm._id;
