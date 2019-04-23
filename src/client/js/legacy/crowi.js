@@ -396,11 +396,11 @@ $(() => {
     $(this).serializeArray().forEach((obj) => {
       nameValueMap[obj.name] = obj.value; // nameValueMap.new_path is duplicated page path
     });
-
+    const data = `${$(this).serialize()}&socketClientId=${crowi.getSocketClientId()}`;
     $.ajax({
       type: 'POST',
       url: '/_api/pages.duplicate',
-      data: $(this).serialize(),
+      data,
       dataType: 'json',
     }).done((res) => {
       // error
