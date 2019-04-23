@@ -4,7 +4,7 @@ const TagContext = require('../model/tag-context');
  * @see http://qiita.com/ryounagaoka/items/4736c225bdd86a74d59c
  *
  * @param {number} length
- * @return random strings
+ * @return {string} random strings
  */
 function createRandomStr(length) {
   const bag = 'abcdefghijklmnopqrstuvwxyz0123456789';
@@ -15,6 +15,12 @@ function createRandomStr(length) {
   return generated;
 }
 
+/**
+ * @param {RegExp} tagPattern
+ * @param {string} html
+ * @param {function} replace replace function
+ * @return {{html: string, tagContextMap: Object.<string, TagContext>}}
+ */
 function findTagAndReplace(tagPattern, html, replace) {
   // see: https://regex101.com/r/NQq3s9/9
   const pattern = new RegExp(`\\$(${tagPattern.source})\\((.*?)\\)(?=[<\\[\\s\\$])|\\$(${tagPattern.source})\\((.*)\\)(?![<\\[\\s\\$])`, 'g');
