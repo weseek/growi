@@ -1098,11 +1098,8 @@ module.exports = function(crowi) {
       }
 
       pageData.status = STATUS_DELETED;
-      const updatedPageData = await this.rename(pageData, newPath, user, { createRedirectPage: true });
+      const updatedPageData = await this.rename(pageData, newPath, user, { socketClientId, createRedirectPage: true });
 
-      if (socketClientId != null) {
-        pageEvent.emit('delete', updatedPageData, user, socketClientId);
-      }
       return updatedPageData;
     }
 
