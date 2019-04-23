@@ -35,7 +35,7 @@ class BasicInterceptor {
    *
    * @param {string} contextName
    * @param {any} args
-   * @return {Promise}
+   * @return {Promise<any>}
    */
   process(contextName, ...args) {
     // override this
