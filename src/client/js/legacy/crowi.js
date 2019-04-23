@@ -429,7 +429,7 @@ $(() => {
     // create name-value map
     const nameValueMap = {};
     $('#delete-page-form').serializeArray().forEach((obj) => {
-      nameValueMap[obj.name] = obj.value; // nameValueMap.new_path is duplicated page path
+      nameValueMap[obj.name] = obj.value;
     });
     nameValueMap.socketClientId = crowi.getSocketClientId();
 
