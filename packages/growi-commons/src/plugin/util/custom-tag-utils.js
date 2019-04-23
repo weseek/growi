@@ -46,6 +46,7 @@ function findTagAndReplace(tagPattern, html, replace) {
 
 module.exports = {
   findTagAndReplace,
+  TagContext,
   ArgsParser: require('./args-parser'),
   OptionParser: require('./option-parser'),
 };
