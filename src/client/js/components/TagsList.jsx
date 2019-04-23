@@ -26,8 +26,8 @@ export default class TagsList extends React.Component {
     const offset = (selectPageNumber - 1) * limit;
     const res = await this.props.crowi.apiGet('/tags.list', { limit, offset });
 
-    const totalCount = res.result.totalCount;
-    const tagData = res.result.tags;
+    const totalCount = res.totalCount;
+    const tagData = res.data;
     const activePage = selectPageNumber;
     const paginationNumbers = this.calculatePagination(limit, totalCount, activePage);
 
