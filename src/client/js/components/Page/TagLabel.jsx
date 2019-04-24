@@ -51,6 +51,14 @@ export default class TagLabel extends React.Component {
   render() {
     const tags = [];
 
+    if (this.state.currentPageTags.length === 0) {
+      tags.push(
+        <a onClick={this.handleShowModal}>
+        Add tags for this page
+        </a>,
+      );
+    }
+
     for (let i = 0; i < this.state.currentPageTags.length; i++) {
       tags.push(
         <i className="tag-icon icon-tag"></i>,
