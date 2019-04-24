@@ -32,7 +32,8 @@ class Tag {
 
 }
 
-module.exports = function() {
+module.exports = function(crowi) {
+  Tag.crowi = crowi;
   schema.loadClass(Tag);
   const model = mongoose.model('Tag', schema);
   return model;

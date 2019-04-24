@@ -4826,10 +4826,10 @@ graceful-fs@^4.1.15:
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.1.15.tgz#ffb703e1066e8a0eeaa4c8b80ba9253eeefbfb00"
   integrity sha512-6uHUhOPEBgQ24HM+r6b/QwWfZq+yiFcipKFrOFiBEnWdy5sdzYoi+pJeQaPI5qOLRFqWmAXUPQNsielzdLoecA==
 
-growi-commons@^3.2.2:
-  version "3.2.2"
-  resolved "https://registry.yarnpkg.com/growi-commons/-/growi-commons-3.2.2.tgz#36aaca18e23aaa13ecd9b26e72fed527b3d4c070"
-  integrity sha512-7tX7+rpduaJthVAuc6EIKGoIQ/bW6RpPLVLjpddW4tgU05Sw3KnGdXCGzEHAMYulrKRRo++DcPWdIoPuw7r0Zw==
+growi-commons@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/growi-commons/-/growi-commons-4.0.0.tgz#f0c0b0f2bac218111555869d7d405e235fb053c6"
+  integrity sha512-5y0pX8efYW8Abov+9MnLypFWIXPSNb4C81VsRbDWAEIUOiFjEn8Tp7PBzxtT51pk9WMenljFMo7rGOxuDgkDzw==
 
 growl@1.10.5:
   version "1.10.5"
