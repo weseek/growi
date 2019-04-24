@@ -2,6 +2,7 @@
 
 ## 3.4.5-RC
 
+* Fix: Xss filter breaks PlantUML arrows
 * Support: Support growi-plugin-lsx@2.2.0
 * Support: Upgrade libs
     * growi-commons
