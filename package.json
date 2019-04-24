@@ -88,7 +88,7 @@
     "express-webpack-assets": "^0.1.0",
     "googleapis": "^39.1.0",
     "graceful-fs": "^4.1.11",
-    "growi-commons": "^4.0.0",
+    "growi-commons": "^4.0.1",
     "helmet": "^3.13.0",
     "i18next": "^15.0.9",
     "i18next-express-middleware": "^1.4.1",

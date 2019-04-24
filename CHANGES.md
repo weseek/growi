@@ -2,6 +2,7 @@
 
 ## 3.4.5-RC
 
+* Support: Support growi-plugin-lsx@2.2.0
 * Support: Upgrade libs
     * growi-commons
 
