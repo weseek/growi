@@ -19,6 +19,7 @@
 
 .search-typeahead {
   position: relative;
+
   .search-clear {
     position: absolute;
     top: 4px;
@@ -29,6 +30,7 @@
     padding: 0;
     color: #999;
   }
+
   .rbt-menu {
     margin-top: 3px;
 
@@ -38,10 +40,12 @@
         padding: 0 4px;
         color: inherit;
       }
+
       .page-list-meta {
         font-size: 0.9em;
         color: #999;
-        > span {
+
+        >span {
           margin-right: 0.3rem;
         }
       }
@@ -66,6 +70,7 @@
     border-top-left-radius: 40px;
     border-bottom-left-radius: 40px;
   }
+
   // using react-bootstrap-typeahead
   // see: https://github.com/ericgio/react-bootstrap-typeahead
   .rbt-input.form-control {
@@ -78,13 +83,16 @@
       margin-left: 8px;
     }
   }
+
   .btn-group-submit-search {
     position: absolute;
     top: 0;
     right: 0;
+
     .btn {
       padding: 4px 10px;
     }
+
     z-index: 3;
   }
 }
@@ -97,6 +105,7 @@
   .rbt-input.form-control {
     width: 200px;
     transition: 0.3s ease-out;
+
     // focus
     &.focus {
       width: 300px;
@@ -105,12 +114,14 @@
 }
 
 .search-sidebar {
+
   .search-form,
   .form-group,
   .rbt-input.form-control,
   .input-group {
     width: 100%;
   }
+
   .btn-group-submit-search {
     right: 30px;
   }
@@ -135,6 +146,7 @@
   .search-result-list {
     nav {
       padding-right: 0;
+
       &.affix {
         top: 58px;
         width: 33%;
@@ -143,9 +155,11 @@
         padding-bottom: 50px;
         overflow-y: scroll;
       }
+
       .nav {
-        > li {
+        >li {
           padding: 2px 8px;
+
           &.active {
             padding-right: 5px;
             border-right: solid 3px transparent;
@@ -173,11 +187,14 @@
       // adjust for anchor links by the height of fixed .search-page-input
       margin-top: -48px;
 
-      > h2 {
+      >h2 {
         font-size: 20px;
         line-height: 1em;
+        margin-right: 10px;
+        display: inline;
       }
-      &:first-child > h2 {
+
+      &:first-child>h2 {
         margin-top: 0;
       }
 
@@ -196,6 +213,7 @@
   top: 0;
   z-index: 99;
   padding: 10px 0;
+
   .input-group-btn .btn {
     height: 34px;
     padding: 0px 10px;
