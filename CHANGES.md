@@ -2,9 +2,11 @@
 
 ## 3.4.5-RC
 
+* Fix: Update ElasticSearch index when deleting/duplicating pages
 * Support: Support growi-plugin-lsx@2.2.0
 * Support: Upgrade libs
     * growi-commons
+    * xss
 
 ## 3.4.4
 
