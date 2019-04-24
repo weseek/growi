@@ -2,6 +2,7 @@
 
 ## 3.4.5-RC
 
+* Improvement: Pass autolink through the XSS filter according to CommonMark Spec
 * Fix: Update ElasticSearch index when deleting/duplicating pages
 * Support: Support growi-plugin-lsx@2.2.0
 * Support: Upgrade libs
