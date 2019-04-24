@@ -1,12 +1,12 @@
 class XssOption {
 
   constructor(config) {
-    const recommendedXssWhiteList = require('./recommendedXssWhiteList');
+    const recommendedWhitelist = require('./recommended-whiteList');
     const initializedConfig = (config != null) ? config : {};
 
     this.isEnabledXssPrevention = initializedConfig.isEnabledXssPrevention || true;
-    this.tagWhiteList = initializedConfig.tagWhiteList || recommendedXssWhiteList.tags;
-    this.attrWhiteList = initializedConfig.attrWhiteList || recommendedXssWhiteList.attrs;
+    this.tagWhiteList = initializedConfig.tagWhiteList || recommendedWhitelist.tags;
+    this.attrWhiteList = initializedConfig.attrWhiteList || recommendedWhitelist.attrs;
   }
 
 }
