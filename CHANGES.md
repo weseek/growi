@@ -2,7 +2,8 @@
 
 ## 3.4.5-RC
 
-* 
+* Support: Upgrade libs
+    * growi-commons
 
 ## 3.4.4
 
