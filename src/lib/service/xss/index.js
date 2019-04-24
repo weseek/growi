@@ -1,7 +1,9 @@
+const xss = require('xss');
+const commonmarkSpec = require('./commonmark-spec');
+
 class Xss {
 
   constructor(xssOption) {
-    const xss = require('xss');
 
     xssOption = xssOption || {}; // eslint-disable-line no-param-reassign
 
@@ -17,6 +19,12 @@ class Xss {
       css: false,
       whiteList: whiteListContent,
       escapeHtml: (html) => { return html }, // resolve https://github.com/weseek/growi/issues/221
+      onTag: (tag, html, options) => {
+        // pass autolink
+        if (tag.match(commonmarkSpec.uriAutolinkRegexp) || tag.match(commonmarkSpec.emailAutolinkRegexp)) {
+          return html;
+        }
+      },
     };
 
     tagWhiteList.forEach((tag) => {
