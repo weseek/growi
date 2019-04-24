@@ -357,13 +357,12 @@ $(() => {
     $(this).serializeArray().forEach((obj) => {
       nameValueMap[obj.name] = obj.value; // nameValueMap.new_path is renamed page path
     });
-
-    const data = `${$(this).serialize()}&socketClientId=${crowi.getSocketClientId()}`;
+    nameValueMap.socketClientId = crowi.getSocketClientId();
 
     $.ajax({
       type: 'POST',
       url: '/_api/pages.rename',
-      data,
+      data: nameValueMap,
       dataType: 'json',
     })
       .done((res) => {
@@ -396,11 +395,12 @@ $(() => {
     $(this).serializeArray().forEach((obj) => {
       nameValueMap[obj.name] = obj.value; // nameValueMap.new_path is duplicated page path
     });
+    nameValueMap.socketClientId = crowi.getSocketClientId();
 
     $.ajax({
       type: 'POST',
       url: '/_api/pages.duplicate',
-      data: $(this).serialize(),
+      data: nameValueMap,
       dataType: 'json',
     }).done((res) => {
       // error
@@ -426,10 +426,17 @@ $(() => {
     $('#deletePage .msg').hide();
   });
   $('#delete-page-form').submit((e) => {
+    // create name-value map
+    const nameValueMap = {};
+    $('#delete-page-form').serializeArray().forEach((obj) => {
+      nameValueMap[obj.name] = obj.value;
+    });
+    nameValueMap.socketClientId = crowi.getSocketClientId();
+
     $.ajax({
       type: 'POST',
       url: '/_api/pages.remove',
-      data: $('#delete-page-form').serialize(),
+      data: nameValueMap,
       dataType: 'json',
     }).done((res) => {
       // error

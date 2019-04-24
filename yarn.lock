@@ -4826,10 +4826,10 @@ graceful-fs@^4.1.15:
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.1.15.tgz#ffb703e1066e8a0eeaa4c8b80ba9253eeefbfb00"
   integrity sha512-6uHUhOPEBgQ24HM+r6b/QwWfZq+yiFcipKFrOFiBEnWdy5sdzYoi+pJeQaPI5qOLRFqWmAXUPQNsielzdLoecA==
 
-growi-commons@^3.2.2:
-  version "3.2.2"
-  resolved "https://registry.yarnpkg.com/growi-commons/-/growi-commons-3.2.2.tgz#36aaca18e23aaa13ecd9b26e72fed527b3d4c070"
-  integrity sha512-7tX7+rpduaJthVAuc6EIKGoIQ/bW6RpPLVLjpddW4tgU05Sw3KnGdXCGzEHAMYulrKRRo++DcPWdIoPuw7r0Zw==
+growi-commons@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/growi-commons/-/growi-commons-4.0.1.tgz#e0e71c9c286f493e11c0703c809385bcdc6a97a9"
+  integrity sha512-haH4Av1WuQIHic4Jv2RRwDprbKecRKF/3C0wVk9ssBzWtB3V6Oghj5gksajDpYOd7tOKdvkVEqqkFfIV4JQUyQ==
 
 growl@1.10.5:
   version "1.10.5"
@@ -11601,9 +11601,10 @@ xpath@0.0.27:
   version "0.0.27"
   resolved "https://registry.yarnpkg.com/xpath/-/xpath-0.0.27.tgz#dd3421fbdcc5646ac32c48531b4d7e9d0c2cfa92"
 
-xss@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/xss/-/xss-1.0.3.tgz#d04bd2558fd6c29c46113824d5e8b2a910054e23"
+xss@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/xss/-/xss-1.0.6.tgz#eaf11e9fc476e3ae289944a1009efddd8a124b51"
+  integrity sha512-6Q9TPBeNyoTRxgZFk5Ggaepk/4vUOYdOsIUYvLehcsIZTFjaavbVnsuAkLA5lIFuug5hw8zxcB9tm01gsjph2A==
   dependencies:
     commander "^2.9.0"
     cssfilter "0.0.10"

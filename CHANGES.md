@@ -1,8 +1,18 @@
 # CHANGES
 
-## 3.4.4-RC
+## 3.4.5-RC
 
-* 
+* Improvement: Pass autolink through the XSS filter according to CommonMark Spec
+* Fix: Update ElasticSearch index when deleting/duplicating pages
+* Fix: Xss filter breaks PlantUML arrows
+* Support: Support growi-plugin-lsx@2.2.0
+* Support: Upgrade libs
+    * growi-commons
+    * xss
+
+## 3.4.4
+
+* Fix: Comment component doesn't work
 
 ## 3.4.3
 
