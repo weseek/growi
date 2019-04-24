@@ -173,6 +173,7 @@ export default class SearchTypeahead extends React.Component {
       <div className="search-typeahead">
         <AsyncTypeahead
           {...this.props}
+          id="async-typeahead"
           ref={(c) => { this.typeahead = c }}
           inputProps={inputProps}
           isLoading={this.state.isLoading}
