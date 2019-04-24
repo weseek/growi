@@ -12,11 +12,13 @@
     .tag-icon {
       border: none;
       font-size: 10px;
+    }
+
+    .tag-icon:not(:first-child) {
       margin-left: 5px;
     }
 
     a {
-      margin-left: 2px;
       color: gray;
       font-size: 10px;
     }
