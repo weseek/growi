@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { withTranslation } from 'react-i18next';
 import Button from 'react-bootstrap/es/Button';
 import Modal from 'react-bootstrap/es/Modal';
 import PageTagForm from '../PageTagForm';
 
-export default class TagLabel extends React.Component {
+class TagLabel extends React.Component {
 
   constructor(props) {
     super(props);
@@ -50,11 +51,12 @@ export default class TagLabel extends React.Component {
 
   render() {
     const tags = [];
+    const { t } = this.props;
 
     if (this.state.currentPageTags.length === 0) {
       tags.push(
         <a onClick={this.handleShowModal}>
-        Add tags for this page
+          <span>{ t('Add tags for this page') }</span>
         </a>,
       );
     }
@@ -96,7 +98,10 @@ export default class TagLabel extends React.Component {
 }
 
 TagLabel.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
   crowi: PropTypes.object.isRequired,
   pageId: PropTypes.string,
   sendTagData: PropTypes.func.isRequired,
 };
+
+export default withTranslation()(TagLabel);
