@@ -63,7 +63,7 @@ export default class TagLabel extends React.Component {
       <div className="tag-viewer">
         {tags}
         <i
-          className="manage-tags icon-wrench"
+          className="manage-tags icon-plus"
           onClick={this.handleShowModal}
 
         >
