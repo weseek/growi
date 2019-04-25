@@ -916,7 +916,7 @@ module.exports = function(crowi) {
     return assignDecendantsTemplate(decendantsTemplates, newPath);
   };
 
-  const fetchTemplate = (templates, templatePath) => {
+  const fetchTemplate = async(templates, templatePath) => {
     let templateBody;
     /**
      * get children template
@@ -937,7 +937,9 @@ module.exports = function(crowi) {
       templateBody = decendantsTemplate.revision.body;
     }
 
-    return templateBody;
+    const templateTags = await templates[0].getRelatedTagsById();
+
+    return { templateBody, templateTags };
   };
 
   /**

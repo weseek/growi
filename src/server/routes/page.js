@@ -416,10 +416,13 @@ module.exports = function(crowi, app) {
       view = 'customlayout-selector/not_found';
 
       // retrieve templates
-      let template = await Page.findTemplate(path);
+      const template = await Page.findTemplate(path);
+
       if (template != null) {
-        template = replacePlaceholdersOfTemplate(template, req);
-        renderVars.template = template;
+        const body = replacePlaceholdersOfTemplate(template.templateBody, req);
+        const tags = template.templateTags;
+        renderVars.template = body;
+        renderVars.templateTags = tags;
       }
 
       // add scope variables by ancestor page
@@ -433,7 +436,7 @@ module.exports = function(crowi, app) {
     const limit = 50;
     const offset = parseInt(req.query.offset) || 0;
     await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit, true);
-
+console.log(renderVars);
     return res.render(view, renderVars);
   };
 
