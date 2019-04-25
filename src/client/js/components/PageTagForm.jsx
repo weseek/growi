@@ -63,8 +63,7 @@ export default class PageTagForm extends React.Component {
       <div className="tag-typeahead">
         <AsyncTypeahead
           id="async-typeahead"
-          // eslint-disable-next-line no-return-assign
-          ref={(typeahead) => { return this.typeahead = typeahead }}
+          ref={(typeahead) => { this.typeahead = typeahead }}
           caseSensitive={false}
           defaultSelected={this.state.defaultPageTags}
           isLoading={this.state.isLoading}
