@@ -69,7 +69,7 @@ module.exports = function(crowi, app) {
         scoreMap[esPage._id] = esPage._score;
       }
 
-      const findResult = await Page.findListByPageIds(esResult.data);
+      const findResult = await Page.getPageListByEsResult(esResult.data);
 
       result.meta = esResult.meta;
       result.totalCount = findResult.totalCount;
