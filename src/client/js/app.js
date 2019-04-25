@@ -17,6 +17,7 @@ import GrowiRenderer from './util/GrowiRenderer';
 
 import HeaderSearchBox from './components/HeaderSearchBox';
 import SearchPage from './components/SearchPage';
+import TagsList from './components/TagsList';
 import PageEditor from './components/PageEditor';
 // eslint-disable-next-line import/no-duplicates
 import OptionsSelector from './components/PageEditor/OptionsSelector';
@@ -297,6 +298,8 @@ const componentMappings = {
   'bookmark-button': <BookmarkButton pageId={pageId} crowi={crowi} />,
   'bookmark-button-lg': <BookmarkButton pageId={pageId} crowi={crowi} size="lg" />,
 
+  'tags-page': <TagsList crowi={crowi} />,
+
   'create-page-name-input': <PagePathAutoComplete crowi={crowi} initializedPath={pagePath} addTrailingSlash />,
   'rename-page-name-input': <PagePathAutoComplete crowi={crowi} initializedPath={pagePath} />,
   'duplicate-page-name-input': <PagePathAutoComplete crowi={crowi} initializedPath={pagePath} />,
@@ -469,16 +472,18 @@ if (writeCommentElem) {
     }
   };
   ReactDOM.render(
-    <CommentForm
-      crowi={crowi}
-      crowiOriginRenderer={crowiRenderer}
-      pageId={pageId}
-      pagePath={pagePath}
-      revisionId={pageRevisionId}
-      onPostComplete={postCompleteHandler}
-      editorOptions={editorOptions}
-      slackChannels={slackChannels}
-    />,
+    <I18nextProvider i18n={i18n}>
+      <CommentForm
+        crowi={crowi}
+        crowiOriginRenderer={crowiRenderer}
+        pageId={pageId}
+        pagePath={pagePath}
+        revisionId={pageRevisionId}
+        onPostComplete={postCompleteHandler}
+        editorOptions={editorOptions}
+        slackChannels={slackChannels}
+      />
+    </I18nextProvider>,
     writeCommentElem,
   );
 }

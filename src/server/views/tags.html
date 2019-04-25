@@ -1,0 +1,26 @@
+{% extends 'layout/layout.html' %}
+
+{% block layout_main %}
+<div class="container-fluid">
+  <div class="row bg-title hidden-print">
+    <div class="col-xs-12 header-container">
+      {% block content_header %}
+      <div class="header-wrap">
+        <header id="page-header">
+          <h1 id="admin-title" class="title">Tags</h1>
+        </header>
+      </div>
+      {% endblock %}
+    </div>
+  </div>
+  <div class="row">
+    <div id="main" class="main m-t-15 col-md-12 tags-page">
+      <div class="" id="tags-page"></div>
+    </div>
+  </div>
+</div><!-- /.container-fluid -->
+
+<footer class="footer">
+  {% include 'widget/system-version.html' %}
+</footer>
+{% endblock %} {# layout_main #}

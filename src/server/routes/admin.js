@@ -14,7 +14,7 @@ module.exports = function(crowi, app) {
   const GlobalNotificationMailSetting = models.GlobalNotificationMailSetting;
   const GlobalNotificationSlackSetting = models.GlobalNotificationSlackSetting; // eslint-disable-line no-unused-vars
 
-  const recommendedXssWhiteList = require('@commons/service/xss/recommendedXssWhiteList');
+  const recommendedWhitelist = require('@commons/service/xss/recommended-whitelist');
   const PluginUtils = require('../plugins/plugin-utils');
   const ApiResponse = require('../util/apiResponse');
   const importer = require('../util/importer')(crowi);
@@ -117,7 +117,7 @@ module.exports = function(crowi, app) {
 
     return res.render('admin/markdown', {
       markdownSetting,
-      recommendedXssWhiteList,
+      recommendedWhitelist,
     });
   };
 
