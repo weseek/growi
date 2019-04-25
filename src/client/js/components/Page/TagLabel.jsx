@@ -53,24 +53,19 @@ class TagLabel extends React.Component {
     const tags = [];
     const { t } = this.props;
 
-    if (this.state.currentPageTags.length === 0) {
-      tags.push(
-        <a onClick={this.handleShowModal}>
-          <span>{ t('Add tags for this page') }</span>
-        </a>,
-      );
-    }
-
     for (let i = 0; i < this.state.currentPageTags.length; i++) {
       tags.push(
         <i className="tag-icon icon-tag"></i>,
-        <a key={i.toString()}>{this.state.currentPageTags[i]}</a>,
+        <a className="tag-name text-muted" key={i.toString()}>{this.state.currentPageTags[i]}</a>,
       );
 
     }
 
     return (
-      <div className="tag-viewer">
+      <div className="tag-viewer text-muted">
+        {this.state.currentPageTags.length === 0 && (
+          <a className="display-of-notag text-muted" onClick={this.handleShowModal}>{ t('Add tags for this page') }</a>
+        )}
         {tags}
         <i
           className="manage-tags icon-plus"

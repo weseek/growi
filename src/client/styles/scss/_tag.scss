@@ -1,29 +1,21 @@
-.title-container {
-  .tag-viewer {
-    float: left;
-    color: gray;
+.manage-tags {
+  margin-left: 5px;
+  font-size: 12px;
+  cursor: pointer;
+}
 
-    .manage-tags {
-      cursor: pointer;
-      font-size: 12px;
-      margin-left: 5px;
-    }
+.tag-icon:not(:first-child) {
+  margin-left: 5px;
+}
 
-    .tag-icon {
-      border: none;
-      font-size: 10px;
-    }
+.display-of-notag,
+.tag-icon {
+  font-size: 10px;
+}
 
-    .tag-icon:not(:first-child) {
-      margin-left: 5px;
-    }
-
-    a {
-      color: gray;
-      font-size: 10px;
-    }
-  }
-
+.tag-name {
+  margin-left: 1px;
+  font-size: 10px;
 }
 
 #editTagModal {
