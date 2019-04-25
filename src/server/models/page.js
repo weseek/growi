@@ -749,7 +749,7 @@ module.exports = function(crowi) {
     return await findListFromBuilderAndViewer(builder, currentUser, showAnyoneKnowsLink, opt);
   };
 
-  pageSchema.statics.findPageByPageId = async function(ids, option) {
+  pageSchema.statics.findListByPageIds = async function(ids, option) {
     const User = crowi.model('User');
 
     const opt = Object.assign({}, option);
