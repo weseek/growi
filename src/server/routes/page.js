@@ -1074,10 +1074,12 @@ module.exports = function(crowi, app) {
     }
 
     await page.populateDataToShowRevision();
+    const originTags = await page.getRelatedTagsById();
 
     req.body.path = newPagePath;
     req.body.body = page.revision.body;
     req.body.grant = page.grant;
+    req.body.pageTags = originTags;
 
     return api.create(req, res);
   };

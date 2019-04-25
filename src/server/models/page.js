@@ -353,6 +353,12 @@ module.exports = function(crowi) {
     return (this.latestRevision == this.revision._id.toString());
   };
 
+  pageSchema.methods.getRelatedTagsById = async function() {
+    const PageTagRelation = mongoose.model('PageTagRelation');
+    const relations = await PageTagRelation.find({ relatedPage: this._id }).populate('relatedTag');
+    return relations.map((relation) => { return relation.relatedTag.name });
+  };
+
   pageSchema.methods.isUpdatable = function(previousRevision) {
     const revision = this.latestRevision || this.revision;
     // comparing ObjectId with string
