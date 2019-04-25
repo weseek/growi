@@ -7,7 +7,7 @@ module.exports = function(crowi) {
   const mongoose = require('mongoose');
   const debug = require('debug')('growi:models:config');
   const uglifycss = require('uglifycss');
-  const recommendedXssWhiteList = require('@commons/service/xss/recommendedXssWhiteList');
+  const recommendedWhitelist = require('@commons/service/xss/recommended-whitelist');
 
   const SECURITY_RESTRICT_GUEST_MODE_DENY = 'Deny';
   const SECURITY_RESTRICT_GUEST_MODE_READONLY = 'Readonly';
@@ -430,7 +430,7 @@ module.exports = function(crowi) {
           return [];
 
         case 2: // recommended
-          return recommendedXssWhiteList.tags;
+          return recommendedWhitelist.tags;
 
         case 3: // custom white list
           return config.markdown[key];
@@ -453,7 +453,7 @@ module.exports = function(crowi) {
           return [];
 
         case 2: // recommended
-          return recommendedXssWhiteList.attrs;
+          return recommendedWhitelist.attrs;
 
         case 3: // custom white list
           return config.markdown[key];
