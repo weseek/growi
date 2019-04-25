@@ -5,7 +5,7 @@
  */
 
 const tags = [
-  'a', 'b', 'blockquote', 'blockquote', 'code', 'del', 'dd', 'dl', 'dt', 'em',
+  '-', 'a', 'b', 'blockquote', 'blockquote', 'code', 'del', 'dd', 'dl', 'dt', 'em',
   'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'i', 'img', 'kbd', 'li', 'ol', 'p', 'pre',
   's', 'sup', 'sub', 'strong', 'strike', 'ul', 'br', 'hr', 'span', 'div', 'iframe',
   'table', 'thead', 'tbody', 'tfoot', 'th', 'td', 'tr', 'colgroup', 'col',
