@@ -72,6 +72,7 @@ module.exports = function(crowi, app) {
       const ids = esResult.data.map((page) => { return page._id });
       const findResult = await Page.findListByPageIds(ids);
 
+      // add tag data to result pages
       findResult.pages.map((page) => {
         const data = esResult.data.find((data) => { return page.id === data._id });
         page._doc.tags = data._source.tag_names;
