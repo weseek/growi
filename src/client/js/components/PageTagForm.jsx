@@ -28,16 +28,15 @@ export default class PageTagForm extends React.Component {
     return (
       <div className="tag-typeahead">
         <AsyncTypeahead
-          allowNew
+          id="async-typeahead"
           caseSensitive={false}
           defaultSelected={this.props.currentPageTags}
-          emptyLabel=""
           isLoading={this.state.isLoading}
           minLength={1}
           multiple
           newSelectionPrefix=""
-          onChange={(selected) => {
-            this.setState({ selected }, () => {
+          onChange={(list) => { // list is a list of object about value. an element have customOption, id and label properties
+            this.setState({ selected: list.map((obj) => { return obj.label }) }, () => {
               this.props.addNewTag(this.state.selected);
             });
           }}

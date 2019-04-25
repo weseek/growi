@@ -153,9 +153,11 @@
           </a>
         </li>
         <li>
-          <a href="/tags">
-            <i class="fa fa-tags"></i>Tags
-          </a>
+          <li class="nav-item-admin">
+            <a href="/tags">
+              <i class="tag-icon icon-tag"></i><span>{{ t('Tags') }}</span>
+            </a>
+          </li>
         </li>
         <li>
           {% if searchConfigured() %}
