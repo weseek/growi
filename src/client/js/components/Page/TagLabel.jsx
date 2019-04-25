@@ -56,7 +56,7 @@ class TagLabel extends React.Component {
     for (let i = 0; i < this.state.currentPageTags.length; i++) {
       tags.push(
         <i className="tag-icon icon-tag"></i>,
-        <a className="tag-name text-muted" key={i.toString()}>{this.state.currentPageTags[i]}</a>,
+        <a className="tag-name text-muted" href={`/_search?q=tag:${this.state.currentPageTags[i]}`} key={i.toString()}>{this.state.currentPageTags[i]}</a>,
       );
 
     }
