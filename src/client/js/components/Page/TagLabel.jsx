@@ -1,16 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { withTranslation } from 'react-i18next';
 import Button from 'react-bootstrap/es/Button';
-import OverlayTrigger from 'react-bootstrap/es/OverlayTrigger';
-import Tooltip from 'react-bootstrap/es/Tooltip';
 import Modal from 'react-bootstrap/es/Modal';
 import PageTagForm from '../PageTagForm';
 
-/**
- * show tag labels on view and edit tag button on edit
- * tag labels on view is not implemented yet(GC-1391)
- */
-export default class TagViewer extends React.Component {
+class TagLabel extends React.Component {
 
   constructor(props) {
     super(props);
@@ -37,7 +32,6 @@ export default class TagViewer extends React.Component {
     }
   }
 
-  // receive new tag from PageTagForm component
   addNewTag(newPageTags) {
     this.setState({ newPageTags });
   }
@@ -56,31 +50,29 @@ export default class TagViewer extends React.Component {
   }
 
   render() {
-    const tagEditorButtonStyle = {
-      marginLeft: '0.2em',
-      padding: '0 2px',
-    };
+    const tags = [];
+    const { t } = this.props;
+
+    for (let i = 0; i < this.state.currentPageTags.length; i++) {
+      tags.push(
+        <i className="tag-icon icon-tag"></i>,
+        <a className="tag-name text-muted" href={`/_search?q=tag:${this.state.currentPageTags[i]}`} key={i.toString()}>{this.state.currentPageTags[i]}</a>,
+      );
+
+    }
 
     return (
-      <span className="btn-tag-container">
-        <OverlayTrigger
-          key="tooltip"
-          placement="bottom"
-          overlay={(
-            <Tooltip id="tag-edit-button-tooltip" className="tag-tooltip">
-              {this.state.currentPageTags.length !== 0 ? this.state.currentPageTags.join() : 'tag is not set' }
-            </Tooltip>
-          )}
+      <div className="tag-viewer text-muted">
+        {this.state.currentPageTags.length === 0 && (
+          <a className="display-of-notag text-muted" onClick={this.handleShowModal}>{ t('Add tags for this page') }</a>
+        )}
+        {tags}
+        <i
+          className="manage-tags icon-plus"
+          onClick={this.handleShowModal}
+
         >
-          <Button
-            variant="primary"
-            onClick={this.handleShowModal}
-            className="btn btn-default btn-tag"
-            style={tagEditorButtonStyle}
-          >
-            <i className="fa fa-tags"></i>{this.state.currentPageTags.length}
-          </Button>
-        </OverlayTrigger>
+        </i>
         <Modal show={this.state.isOpenModal} onHide={this.handleCloseModal} id="editTagModal">
           <Modal.Header closeButton className="bg-primary">
             <Modal.Title className="text-white">Page Tag</Modal.Title>
@@ -94,14 +86,17 @@ export default class TagViewer extends React.Component {
             </Button>
           </Modal.Footer>
         </Modal>
-      </span>
+      </div>
     );
   }
 
 }
 
-TagViewer.propTypes = {
+TagLabel.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
   crowi: PropTypes.object.isRequired,
   pageId: PropTypes.string,
   sendTagData: PropTypes.func.isRequired,
 };
+
+export default withTranslation()(TagLabel);

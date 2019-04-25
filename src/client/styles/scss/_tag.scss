@@ -1,0 +1,25 @@
+.manage-tags {
+  margin-left: 5px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.tag-icon:not(:first-child) {
+  margin-left: 5px;
+}
+
+.display-of-notag,
+.tag-icon {
+  font-size: 10px;
+}
+
+.tag-name {
+  margin-left: 1px;
+  font-size: 10px;
+}
+
+#editTagModal {
+  .form-control {
+    height: auto;
+  }
+}
