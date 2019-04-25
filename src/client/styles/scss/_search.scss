@@ -45,7 +45,7 @@
         font-size: 0.9em;
         color: #999;
 
-        >span {
+        > span {
           margin-right: 0.3rem;
         }
       }
@@ -114,7 +114,6 @@
 }
 
 .search-sidebar {
-
   .search-form,
   .form-group,
   .rbt-input.form-control,
@@ -157,7 +156,7 @@
       }
 
       .nav {
-        >li {
+        > li {
           padding: 2px 8px;
 
           &.active {
@@ -187,14 +186,14 @@
       // adjust for anchor links by the height of fixed .search-page-input
       margin-top: -48px;
 
-      >h2 {
+      > h2 {
+        display: inline;
+        margin-right: 10px;
         font-size: 20px;
         line-height: 1em;
-        margin-right: 10px;
-        display: inline;
       }
 
-      &:first-child>h2 {
+      &:first-child > h2 {
         margin-top: 0;
       }
 
