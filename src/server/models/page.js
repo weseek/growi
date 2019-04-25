@@ -749,10 +749,9 @@ module.exports = function(crowi) {
     return await findListFromBuilderAndViewer(builder, currentUser, showAnyoneKnowsLink, opt);
   };
 
-  pageSchema.statics.getPageListByEsResult = async function(resultPages, option) {
+  pageSchema.statics.findPageByPageId = async function(ids, option) {
     const User = crowi.model('User');
 
-    const ids = resultPages.map((page) => { return page._id });
     const opt = Object.assign({}, option);
     const builder = new PageQueryBuilder(this.find({ _id: { $in: ids } }));
 
@@ -765,11 +764,7 @@ module.exports = function(crowi) {
     // find
     builder.populateDataToList(User.USER_PUBLIC_FIELDS, User.IMAGE_POPULATION);
     const pages = await builder.query.exec('find');
-    pages.map((page) => {
-      const data = resultPages.find((data) => { return page.id === data._id });
-      page._doc.tags = data._source.tag_names;
-      return page;
-    });
+
     const result = {
       pages, totalCount, offset: opt.offset, limit: opt.limit,
     };
