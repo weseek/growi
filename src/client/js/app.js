@@ -38,6 +38,7 @@ import LikeButton from './components/LikeButton';
 import PagePathAutoComplete from './components/PagePathAutoComplete';
 import RecentCreated from './components/RecentCreated/RecentCreated';
 import UserPictureList from './components/Common/UserPictureList';
+import StaffCredit from './components/StaffCredit/StaffCredit';
 
 import CustomCssEditor from './components/Admin/CustomCssEditor';
 import CustomScriptEditor from './components/Admin/CustomScriptEditor';
@@ -645,6 +646,14 @@ socket.on('page:editingWithHackmd', (data) => {
     }
   }
 });
+
+// render for stuff credit
+const pageStuffCredit = document.getElementById('staff-credit');
+if (pageStuffCredit) {
+  ReactDOM.render(
+      <StaffCredit/>
+  );
+}
 
 // うわーもうー (commented by Crowi team -- 2018.03.23 Yuki Takei)
 $('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', () => {

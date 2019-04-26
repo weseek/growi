@@ -25,7 +25,7 @@ class StaffCredit extends React.Component {
 
     render() {
         return (
-            <h1>ここに</h1>
+            <h1>スタッフロール</h1>
         );
     }
 }
