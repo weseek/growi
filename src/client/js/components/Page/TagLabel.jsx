@@ -50,19 +50,20 @@ class TagLabel extends React.Component {
   async handleSubmit() {
     // eslint-disable-next-line no-restricted-globals
     const isPageEditor = location.href.slice(-5) === '#edit';
-    if (isPageEditor) {
+
+    if (isPageEditor) { // set tag on draft on efit
       this.props.sendTagData(this.state.newPageTags);
       this.setState({ currentPageTags: this.state.newPageTags, isOpenModal: false });
     }
-    else {
+    else { // update tags without saving the page on view
       try {
         await this.props.crowi.apiPost('/tags.update', { pageId: this.props.pageId, tags: this.state.newPageTags });
         this.setState({ currentPageTags: this.state.newPageTags, isOpenModal: false });
-        this.apiSuccessHandler();
       }
       catch (err) {
         this.apiErrorHandler(err);
       }
+      this.apiSuccessHandler();
     }
   }
 
