@@ -39,6 +39,7 @@
 @import 'user_growi';
 @import 'handsontable';
 @import 'wiki';
+@import 'tag';
 
 /*
  * for Guest User Mode
@@ -64,14 +65,17 @@
     width: 48px;
     height: 48px;
   }
+
   &.picture-md {
     width: 24px;
     height: 24px;
   }
+
   &.picture-sm {
     width: 18px;
     height: 18px;
   }
+
   &.picture-xs {
     width: 14px;
     height: 14px;

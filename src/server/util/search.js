@@ -387,7 +387,7 @@ SearchClient.prototype.search = async function(query) {
 
 SearchClient.prototype.createSearchQuerySortedByUpdatedAt = function(option) {
   // getting path by default is almost for debug
-  let fields = ['path', 'bookmark_count'];
+  let fields = ['path', 'bookmark_count', 'tag_names'];
   if (option) {
     fields = option.fields || fields;
   }
@@ -408,7 +408,7 @@ SearchClient.prototype.createSearchQuerySortedByUpdatedAt = function(option) {
 };
 
 SearchClient.prototype.createSearchQuerySortedByScore = function(option) {
-  let fields = ['path', 'bookmark_count'];
+  let fields = ['path', 'bookmark_count', 'tag_names'];
   if (option) {
     fields = option.fields || fields;
   }
