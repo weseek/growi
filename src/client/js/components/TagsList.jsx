@@ -164,13 +164,12 @@ export default class TagsList extends React.Component {
     paginationItems.push(paginations);
     const nextLastItems = this.generateNextLast(activePage, totalPage);
     paginationItems.push(nextLastItems);
-    const pagenation = this.state.tagData.length ? <Pagination>{paginationItems}</Pagination> : <h3>You have no tag. You can set tags on pages.</h3>;
 
     return (
       <div>
         <ul className="list-group　mx-4">{tagList}</ul>
         <div className="text-center">
-          {pagenation}
+          <Pagination>{paginationItems}</Pagination>
         </div>
       </div>
     );
