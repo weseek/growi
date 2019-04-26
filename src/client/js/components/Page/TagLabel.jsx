@@ -23,7 +23,7 @@ class TagLabel extends React.Component {
   }
 
   async componentWillMount() {
-    // set pageTag on button
+    // set  pageTag on button
     const pageId = this.props.pageId;
     if (pageId) {
       const res = await this.props.crowi.apiGet('/pages.getPageTag', { pageId });
@@ -45,7 +45,8 @@ class TagLabel extends React.Component {
   }
 
   async handleSubmit() {
-    const isPageEditor = true;
+    // eslint-disable-next-line no-restricted-globals
+    const isPageEditor = location.href.slice(-5) === '#edit';
     if (isPageEditor) {
       this.props.sendTagData(this.state.newPageTags);
       this.setState({ currentPageTags: this.state.newPageTags, isOpenModal: false });
