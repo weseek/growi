@@ -43,6 +43,7 @@ import CustomCssEditor from './components/Admin/CustomCssEditor';
 import CustomScriptEditor from './components/Admin/CustomScriptEditor';
 import CustomHeaderEditor from './components/Admin/CustomHeaderEditor';
 import AdminRebuildSearch from './components/Admin/AdminRebuildSearch';
+import CommandTrigger from './components/CommandTrigger';
 
 
 const logger = loggerFactory('growi:app');
@@ -300,7 +301,7 @@ const componentMappings = {
   'create-page-name-input': <PagePathAutoComplete crowi={crowi} initializedPath={pagePath} addTrailingSlash />,
   'rename-page-name-input': <PagePathAutoComplete crowi={crowi} initializedPath={pagePath} />,
   'duplicate-page-name-input': <PagePathAutoComplete crowi={crowi} initializedPath={pagePath} />,
-
+  'command-watcher': <CommandTrigger />,
 };
 // additional definitions if data exists
 if (pageId) {
