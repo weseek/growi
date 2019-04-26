@@ -26,7 +26,7 @@ class TagLabel extends React.Component {
   }
 
   async componentWillMount() {
-    // set  pageTag on button
+    // set pageTag on button
     const pageId = this.props.pageId;
     if (pageId) {
       const res = await this.props.crowi.apiGet('/pages.getPageTag', { pageId });
