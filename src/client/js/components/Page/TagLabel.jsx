@@ -45,7 +45,8 @@ class TagLabel extends React.Component {
   }
 
   async handleSubmit() {
-    if (this.props.isPageEditor) {
+    const isPageEditor = true;
+    if (isPageEditor) {
       this.props.sendTagData(this.state.newPageTags);
       this.setState({ currentPageTags: this.state.newPageTags, isOpenModal: false });
     }
@@ -103,7 +104,6 @@ TagLabel.propTypes = {
   crowi: PropTypes.object.isRequired,
   pageId: PropTypes.string,
   sendTagData: PropTypes.func.isRequired,
-  isPageEditor: PropTypes.bool,
 };
 
 export default withTranslation()(TagLabel);
