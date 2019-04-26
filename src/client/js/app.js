@@ -651,7 +651,7 @@ socket.on('page:editingWithHackmd', (data) => {
 const pageStuffCredit = document.getElementById('staff-credit');
 if (pageStuffCredit) {
   ReactDOM.render(
-      <StaffCredit/>
+    <StaffCredit />,
   );
 }
 
