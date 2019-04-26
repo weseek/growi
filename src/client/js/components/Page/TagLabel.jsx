@@ -44,9 +44,15 @@ class TagLabel extends React.Component {
     this.setState({ isOpenModal: true });
   }
 
-  handleSubmit() {
-    this.props.sendTagData(this.state.newPageTags);
-    this.setState({ currentPageTags: this.state.newPageTags, isOpenModal: false });
+  async handleSubmit() {
+    if (this.props.isPageEditor) {
+      this.props.sendTagData(this.state.newPageTags);
+      this.setState({ currentPageTags: this.state.newPageTags, isOpenModal: false });
+    }
+    else {
+      await this.props.crowi.apiPost('/tags.update', { pageId: this.props.pageId, tags: this.state.newPageTags });
+      this.setState({ currentPageTags: this.state.newPageTags, isOpenModal: false });
+    }
   }
 
   render() {
@@ -97,6 +103,7 @@ TagLabel.propTypes = {
   crowi: PropTypes.object.isRequired,
   pageId: PropTypes.string,
   sendTagData: PropTypes.func.isRequired,
+  isPageEditor: PropTypes.bool,
 };
 
 export default withTranslation()(TagLabel);

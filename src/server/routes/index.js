@@ -205,6 +205,7 @@ module.exports = function(crowi, app) {
   app.get('/tags'                     , loginRequired(crowi, app, false), tag.showPage);
   app.get('/_api/tags.list'           , accessTokenParser, loginRequired(crowi, app, false), tag.api.list);
   app.get('/_api/tags.search'         , accessTokenParser, loginRequired(crowi, app, false), tag.api.search);
+  app.post('/_api/tags.update'         , accessTokenParser, loginRequired(crowi, app, false), tag.api.update);
   app.get('/_api/comments.get'        , accessTokenParser , loginRequired(crowi, app, false) , comment.api.get);
   app.post('/_api/comments.add'       , form.comment, accessTokenParser , loginRequired(crowi, app) , csrf, comment.api.add);
   app.post('/_api/comments.remove'    , accessTokenParser , loginRequired(crowi, app) , csrf, comment.api.remove);

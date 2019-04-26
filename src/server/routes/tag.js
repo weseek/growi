@@ -26,6 +26,26 @@ module.exports = function(crowi, app) {
   };
 
   /**
+   * @api {post} /tags.update update tags
+   * @apiName UpdateTag
+   * @apiGroup Tag
+   *
+   * @apiParam {String} PageId
+   * @apiParam {array} tags
+   */
+  api.update = async function(req, res) {
+    const Page = crowi.model('Page');
+    try {
+      const page = await Page.findById(req.body.pageId);
+      await page.updateTags(req.body.tags);
+    }
+    catch (err) {
+      return res.json(ApiResponse.error(err));
+    }
+    return res.json(ApiResponse.success());
+  };
+
+  /**
    * @api {get} /tags.list get tagnames and count pages relate each tag
    * @apiName tagList
    * @apiGroup Tag
