@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import * as toastr from 'toastr';
 import Button from 'react-bootstrap/es/Button';
 import Modal from 'react-bootstrap/es/Modal';
 import PageTagForm from '../PageTagForm';
@@ -20,6 +21,8 @@ class TagLabel extends React.Component {
     this.handleShowModal = this.handleShowModal.bind(this);
     this.handleCloseModal = this.handleCloseModal.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.apiSuccessHandler = this.apiSuccessHandler.bind(this);
+    this.apiErrorHandler = this.apiErrorHandler.bind(this);
   }
 
   async componentWillMount() {
@@ -52,9 +55,38 @@ class TagLabel extends React.Component {
       this.setState({ currentPageTags: this.state.newPageTags, isOpenModal: false });
     }
     else {
-      await this.props.crowi.apiPost('/tags.update', { pageId: this.props.pageId, tags: this.state.newPageTags });
-      this.setState({ currentPageTags: this.state.newPageTags, isOpenModal: false });
+      try {
+        await this.props.crowi.apiPost('/tags.update', { pageId: this.props.pageId, tags: this.state.newPageTags });
+        this.setState({ currentPageTags: this.state.newPageTags, isOpenModal: false });
+        this.apiSuccessHandler();
+      }
+      catch (err) {
+        this.apiErrorHandler(err);
+      }
     }
+  }
+
+  apiSuccessHandler() {
+    toastr.success(undefined, 'updated tags successfully', {
+      closeButton: true,
+      progressBar: true,
+      newestOnTop: false,
+      showDuration: '100',
+      hideDuration: '100',
+      timeOut: '1200',
+      extendedTimeOut: '150',
+    });
+  }
+
+  apiErrorHandler(err) {
+    toastr.error(err.message, 'Error occured', {
+      closeButton: true,
+      progressBar: true,
+      newestOnTop: false,
+      showDuration: '100',
+      hideDuration: '100',
+      timeOut: '3000',
+    });
   }
 
   render() {
