@@ -134,7 +134,7 @@ module.exports = function(crowi) {
     const message = {
       channel: `#${channel}`,
       username: Config.appTitle(config),
-      text: getSlackMessageTextForPage(page.path, user, updateType),
+      text: getSlackMessageTextForPage(page.path, page.id, user, updateType),
       attachments: [attachment],
     };
 
@@ -160,18 +160,18 @@ module.exports = function(crowi) {
     const message = {
       channel: `#${channel}`,
       username: Config.appTitle(config),
-      text: getSlackMessageTextForComment(path, user),
+      text: getSlackMessageTextForComment(path, comment.page.id, user),
       attachments: [attachment],
     };
 
     return message;
   };
 
-  const getSlackMessageTextForPage = function(path, user, updateType) {
+  const getSlackMessageTextForPage = function(path, pageId, user, updateType) {
     let text;
     const url = crowi.configManager.getSiteUrl();
 
-    const pageUrl = `<${urljoin(url, path)}|${path}>`;
+    const pageUrl = `<${urljoin(url, pageId)}|${path}>`;
     if (updateType === 'create') {
       text = `:rocket: ${user.username} created a new page! ${pageUrl}`;
     }
@@ -182,9 +182,9 @@ module.exports = function(crowi) {
     return text;
   };
 
-  const getSlackMessageTextForComment = function(path, user) {
+  const getSlackMessageTextForComment = function(path, pageId, user) {
     const url = crowi.configManager.getSiteUrl();
-    const pageUrl = `<${urljoin(url, path)}|${path}>`;
+    const pageUrl = `<${urljoin(url, pageId)}|${path}>`;
     const text = `:speech_balloon: ${user.username} commented on ${pageUrl}`;
 
     return text;
