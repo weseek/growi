@@ -918,6 +918,7 @@ module.exports = function(crowi) {
 
   const fetchTemplate = async(templates, templatePath) => {
     let templateBody;
+    let templateTags;
     /**
      * get children template
      * __tempate: applicable only to immediate decendants
@@ -937,7 +938,9 @@ module.exports = function(crowi) {
       templateBody = decendantsTemplate.revision.body;
     }
 
-    const templateTags = await templates[0].getRelatedTagsById();
+    if (templates > 0) {
+      templateTags = await templates[0].getRelatedTagsById();
+    }
 
     return { templateBody, templateTags };
   };

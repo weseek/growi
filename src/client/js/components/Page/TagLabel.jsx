@@ -23,13 +23,18 @@ class TagLabel extends React.Component {
   }
 
   async componentWillMount() {
-    // set pageTag on button
+    // set default pageTag on button
+    let tags = this.props.templateTags.split(',') || [];
+
+    // tags of existed page override template tags
     const pageId = this.props.pageId;
     if (pageId) {
       const res = await this.props.crowi.apiGet('/pages.getPageTag', { pageId });
-      this.setState({ currentPageTags: res.tags });
-      this.props.sendTagData(res.tags);
+      tags = res.tags;
     }
+
+    this.setState({ currentPageTags: tags });
+    this.props.sendTagData(tags);
   }
 
   addNewTag(newPageTags) {
@@ -97,6 +102,7 @@ TagLabel.propTypes = {
   crowi: PropTypes.object.isRequired,
   pageId: PropTypes.string,
   sendTagData: PropTypes.func.isRequired,
+  templateTags: PropTypes.string,
 };
 
 export default withTranslation()(TagLabel);

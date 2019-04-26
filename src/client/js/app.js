@@ -71,6 +71,7 @@ let pageContent = '';
 let markdown = '';
 let slackChannels;
 let pageTags = [];
+let templateTags = '';
 if (mainContent !== null) {
   pageId = mainContent.getAttribute('data-page-id') || null;
   pageRevisionId = mainContent.getAttribute('data-page-revision-id');
@@ -80,6 +81,7 @@ if (mainContent !== null) {
   hasDraftOnHackmd = !!mainContent.getAttribute('data-page-has-draft-on-hackmd');
   pagePath = mainContent.attributes['data-path'].value;
   slackChannels = mainContent.getAttribute('data-slack-channels') || '';
+  templateTags = mainContent.getAttribute('data-template-tags') || '';
   const rawText = document.getElementById('raw-text-original');
   if (rawText) {
     pageContent = rawText.innerHTML;
@@ -315,7 +317,7 @@ if (pagePath) {
   componentMappings['revision-path'] = <RevisionPath pagePath={pagePath} crowi={crowi} />;
   // [TODO] there is a need to decide the destination of RevisionUrl
   componentMappings['revision-url'] = <RevisionUrl crowi={crowi} pageId={pageId} pagePath={pagePath} sendTagData={setTagData} />;
-  componentMappings['tag-label'] = <I18nextProvider i18n={i18n}><TagLabel crowi={crowi} pageId={pageId} sendTagData={setTagData} /></I18nextProvider>;
+  componentMappings['tag-label'] = <I18nextProvider i18n={i18n}><TagLabel crowi={crowi} pageId={pageId} sendTagData={setTagData} templateTags={templateTags} /></I18nextProvider>;
 }
 
 Object.keys(componentMappings).forEach((key) => {
