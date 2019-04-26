@@ -648,11 +648,13 @@ socket.on('page:editingWithHackmd', (data) => {
 });
 
 // render for stuff credit
-const pageStuffCredit = document.getElementById('staff-credit');
-if (pageStuffCredit) {
+const pageStuffCreditElem = document.getElementById('staff-credit');
+if (pageStuffCreditElem) {
   ReactDOM.render(
-    <StaffCredit />,
+    <StaffCredit></StaffCredit>,
+    pageStuffCreditElem,
   );
+
 }
 
 // うわーもうー (commented by Crowi team -- 2018.03.23 Yuki Takei)

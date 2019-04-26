@@ -7,11 +7,11 @@ import React from 'react';
  * @class StaffCredit
  * @extends {React.Component}
  */
-class StaffCredit extends React.Component {
+export default class StaffCredit extends React.Component {
 
   render() {
     return (
-      <p>スタッフロール</p>
+      <div>スタッフロール</div>
     );
   }
 
