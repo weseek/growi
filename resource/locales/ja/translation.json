@@ -11,6 +11,7 @@
   "Cancel": "キャンセル",
   "Create": "作成",
   "Admin": "管理",
+  "Tags": "タグ",
   "New": "作成",
   "Shortcuts": "ショートカット",
   "eg": "例:",
@@ -111,6 +112,7 @@
   "Shareable link": "このページの共有用URL",
   "The whitelist of registration permission E-mail address": "登録許可メールアドレスの<br>ホワイトリスト",
   "Selecting authentication mechanism": "認証機構選択",
+  "Add tags for this page": "タグを付ける",
 
 
 
@@ -208,6 +210,12 @@
     },
     "exclude_prefix": {
       "desc": "ページ名が {{path}} から始まるページを除外"
+    },
+    "tag": {
+      "desc": "{{tag}} というタグを含むページを検索"
+    },
+    "exclude_tag": {
+      "desc": "{{tag}} というタグを含むページを除外"
     }
   },
   "search": {
