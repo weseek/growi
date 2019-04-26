@@ -184,7 +184,6 @@ module.exports = function(crowi) {
 
   const getSlackMessageTextForComment = function(path, pageId, user) {
     const url = crowi.configManager.getSiteUrl();
-    console.log('pageId: ', pageId);
     const pageUrl = `<${urljoin(url, pageId)}|${path}>`;
     const text = `:speech_balloon: ${user.username} commented on ${pageUrl}`;
 
