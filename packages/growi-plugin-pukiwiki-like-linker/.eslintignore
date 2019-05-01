@@ -1,0 +1,4 @@
+/.github/**
+/.vscode/**
+/node_modules/**
+/lib/**
