@@ -121,16 +121,13 @@ export default class Comment extends React.Component {
     const rootClassName = this.getRootClassName();
     const commentDate = dateFnsFormat(comment.createdAt, 'YYYY/MM/DD HH:mm');
     const commentBody = isMarkdown ? this.renderRevisionBody() : ReactUtils.nl2br(comment.comment);
-    const creatorsPage = `/user/${creator.username}`;
     const revHref = `?revision=${comment.revision}`;
     const revFirst8Letters = comment.revision.substr(-8);
     const revisionLavelClassName = this.getRevisionLabelClassName();
 
     return (
       <div className={rootClassName}>
-        <a href={creatorsPage}>
-          <UserPicture user={creator} />
-        </a>
+        <UserPicture user={creator} />
         <div className="page-comment-main">
           <div className="page-comment-creator">
             <Username user={creator} />

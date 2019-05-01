@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import User from '../User/User';
-
 export default class Attachment extends React.Component {
 
   constructor(props) {

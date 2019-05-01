@@ -30,13 +30,11 @@ export default class UserPictureList extends React.Component {
       const tooltip = <Tooltip id={`tooltip-${user._id}`}>@{user.username}<br />{user.name}</Tooltip>;
 
       return (
-        <a key={user._id} data-user-id={user._id} href={`/user/${user.username}`}>
-          <OverlayTrigger overlay={tooltip} placement="bottom">
-            <span key={`span-${user._id}`}>{/* workaround from https://github.com/react-bootstrap/react-bootstrap/issues/2208#issuecomment-301737531 */}
-              <UserPicture user={user} size="xs" ref={`userPicture-${user._id}`} />
-            </span>
-          </OverlayTrigger>
-        </a>
+        <OverlayTrigger key={user._id} overlay={tooltip} placement="bottom">
+          <span key={`span-${user._id}`}>{/* workaround from https://github.com/react-bootstrap/react-bootstrap/issues/2208#issuecomment-301737531 */}
+            <UserPicture user={user} size="xs" ref={`userPicture-${user._id}`} />
+          </span>
+        </OverlayTrigger>
       );
     });
 

@@ -261,9 +261,7 @@ export default class CommentForm extends React.Component {
               { isLayoutTypeGrowi
                 && (
                 <div className="comment-form-user">
-                  <a href={creatorsPage}>
-                    <UserPicture user={user} />
-                  </a>
+                  <UserPicture user={user} />
                 </div>
                 )
               }

@@ -3,8 +3,6 @@ import React from 'react';
 import Button from 'react-bootstrap/es/Button';
 import Modal from 'react-bootstrap/es/Modal';
 
-import User from '../User/User';
-
 export default class DeleteAttachmentModal extends React.Component {
 
   constructor(props) {
