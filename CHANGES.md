@@ -2,7 +2,8 @@
 
 ## 3.4.6-RC
 
-* 
+* Improvement: Show display name when mouse hover to user image
+* Fix: URL in slack message is broken on Safari
 
 ## 3.4.5
 
