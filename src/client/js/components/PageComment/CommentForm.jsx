@@ -237,7 +237,6 @@ export default class CommentForm extends React.Component {
     const crowi = this.props.crowi;
     const username = crowi.me;
     const user = crowi.findUser(username);
-    const creatorsPage = `/user/${username}`;
     const comment = this.state.comment;
     const commentPreview = this.state.isMarkdown ? this.getCommentHtml() : ReactUtils.nl2br(comment);
     const emojiStrategy = this.props.crowi.getEmojiStrategy();
