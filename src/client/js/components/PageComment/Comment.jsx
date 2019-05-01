@@ -7,6 +7,7 @@ import RevisionBody from '../Page/RevisionBody';
 
 import ReactUtils from '../ReactUtils';
 import UserPicture from '../User/UserPicture';
+import UserPageLink from '../Common/UserPageLink';
 
 /**
  *
@@ -125,8 +126,6 @@ export default class Comment extends React.Component {
     const revFirst8Letters = comment.revision.substr(-8);
     const revisionLavelClassName = this.getRevisionLabelClassName();
 
-    const name = creator.name || '(no name)';
-
     return (
       <div className={rootClassName}>
         <a href={creatorsPage}>
@@ -134,7 +133,7 @@ export default class Comment extends React.Component {
         </a>
         <div className="page-comment-main">
           <div className="page-comment-creator">
-            <a href={creatorsPage}>{name} (@{creator.username})</a>
+            <UserPageLink user={creator} />
           </div>
           <div className="page-comment-body">{commentBody}</div>
           <div className="page-comment-meta">
