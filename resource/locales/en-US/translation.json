@@ -114,6 +114,11 @@
     "unavaliable_user_id": "This 'User ID' is unavailable."
   },
 
+  "breaking_changes": {
+    "v346_passport_is_not_enabled": "Crowi Classic Authentication mechanism currently in use will <strong>no longer be supported</strong> in the near future. Switch to Passport from %s",
+    "v346_using_basic_auth": "Basic Authentication currently in use will <strong>no longer be available</strong> in the near future. Remove settings from %s"
+  },
+
   "page_register": {
     "notice": {
       "restricted": "Admin approval required.",

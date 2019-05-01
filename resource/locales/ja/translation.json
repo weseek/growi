@@ -132,6 +132,11 @@
     "unavaliable_user_id": "このユーザーIDは利用できません。"
   },
 
+  "breaking_changes": {
+    "v346_passport_is_not_enabled": "現在利用中の Crowi Classic Authentication mechanism は、近い将来<strong>サポートされなくなります</strong>。%s から Passport に切り替えてください。",
+    "v346_using_basic_auth": "現在利用中の Basic 認証機能は、近い将来<strong>廃止されます</strong>。%s から設定を削除してください。"
+  },
+
   "page_register": {
     "notice": {
        "restricted": "この Wiki への新規登録は制限されています。",
