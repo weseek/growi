@@ -3,6 +3,9 @@ import React from 'react';
 import Button from 'react-bootstrap/es/Button';
 import Modal from 'react-bootstrap/es/Modal';
 
+import UserPicture from '../User/UserPicture';
+import Username from '../User/Username';
+
 export default class DeleteAttachmentModal extends React.Component {
 
   constructor(props) {
@@ -35,7 +38,7 @@ export default class DeleteAttachmentModal extends React.Component {
           <i className={this.iconNameByFormat(attachment.fileFormat)}></i> {attachment.originalName}
         </p>
         <p>
-          uploaded by <User user={attachment.creator} username />
+          uploaded by <UserPicture user={attachment.creator} size="sm"></UserPicture> <Username user={attachment.creator}></Username>
         </p>
         {content}
       </div>

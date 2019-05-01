@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import UserPicture from '../User/UserPicture';
+
 export default class Attachment extends React.Component {
 
   constructor(props) {
@@ -51,7 +53,9 @@ export default class Attachment extends React.Component {
 
     return (
       <li className="attachment">
-        <User user={attachment.creator} />
+        <span className="mr-1 attachment-userpicture">
+          <UserPicture user={attachment.creator} size="sm"></UserPicture>
+        </span>
 
         <a href={attachment.filePathProxied}><i className={formatIcon}></i> {attachment.originalName}</a>
 
