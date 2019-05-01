@@ -27,7 +27,7 @@ export default class UserPictureList extends React.Component {
   render() {
     const users = this.state.users.map((user) => {
       // create Tooltip
-      const tooltip = <Tooltip id={`tooltip-${user._id}`}>{user.username}</Tooltip>;
+      const tooltip = <Tooltip id={`tooltip-${user._id}`}>@{user.username}<br />{user.name}</Tooltip>;
 
       return (
         <a key={user._id} data-user-id={user._id} href={`/user/${user.username}`}>
