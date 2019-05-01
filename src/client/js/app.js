@@ -37,7 +37,7 @@ import BookmarkButton from './components/BookmarkButton';
 import LikeButton from './components/LikeButton';
 import PagePathAutoComplete from './components/PagePathAutoComplete';
 import RecentCreated from './components/RecentCreated/RecentCreated';
-import UserPictureList from './components/Common/UserPictureList';
+import UserPictureList from './components/User/UserPictureList';
 
 import CustomCssEditor from './components/Admin/CustomCssEditor';
 import CustomScriptEditor from './components/Admin/CustomScriptEditor';

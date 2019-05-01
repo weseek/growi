@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import UserDate from '../Common/UserDate';
-import UserPageLink from '../Common/UserPageLink';
+import UserDate from '../User/UserDate';
+import Username from '../User/Username';
 import UserPicture from '../User/UserPicture';
 
 export default class Revision extends React.Component {
@@ -64,7 +64,7 @@ export default class Revision extends React.Component {
         </div>
         <div className="m-l-10">
           <div className="revision-history-author">
-            <strong><UserPageLink user={author}></UserPageLink></strong>
+            <strong><Username user={author}></Username></strong>
           </div>
           <div className="revision-history-meta">
             <p>

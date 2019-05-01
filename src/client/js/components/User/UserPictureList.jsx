@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import OverlayTrigger from 'react-bootstrap/es/OverlayTrigger';
 import Tooltip from 'react-bootstrap/es/Tooltip';
 
-import UserPicture from '../User/UserPicture';
+import UserPicture from './UserPicture';
 
 export default class UserPictureList extends React.Component {
 

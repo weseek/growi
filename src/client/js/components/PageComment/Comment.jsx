@@ -7,7 +7,7 @@ import RevisionBody from '../Page/RevisionBody';
 
 import ReactUtils from '../ReactUtils';
 import UserPicture from '../User/UserPicture';
-import UserPageLink from '../Common/UserPageLink';
+import Username from '../User/Username';
 
 /**
  *
@@ -133,7 +133,7 @@ export default class Comment extends React.Component {
         </a>
         <div className="page-comment-main">
           <div className="page-comment-creator">
-            <UserPageLink user={creator} />
+            <Username user={creator} />
           </div>
           <div className="page-comment-body">{commentBody}</div>
           <div className="page-comment-meta">

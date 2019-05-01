@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-export default class UserPageLink extends React.Component {
+export default class Username extends React.Component {
 
   render() {
     const { user } = this.props;
@@ -17,6 +17,6 @@ export default class UserPageLink extends React.Component {
 
 }
 
-UserPageLink.propTypes = {
+Username.propTypes = {
   user: PropTypes.object.isRequired,
 };
