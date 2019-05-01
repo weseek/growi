@@ -31,6 +31,8 @@ $inline-code-bg: darken($bodycolor, 5%);
 @import 'apply-colors';
 @import 'apply-colors-dark';
 
-.bg-title{
+.main-container:not(.on-edit) {
+  .bg-title {
   border-bottom: 1px solid rgb(131, 228, 215);
+}
 }
