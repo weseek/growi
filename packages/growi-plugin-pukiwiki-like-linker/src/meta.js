@@ -5,6 +5,6 @@ module.exports = {
   serverEntries: [
   ],
   clientEntries: [
-    path.join(__dirname, 'client-entry.js')
-  ]
-}
+    path.join(__dirname, 'client-entry.js'),
+  ],
+};
