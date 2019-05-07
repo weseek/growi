@@ -15,6 +15,7 @@ class TagLabel extends React.Component {
       currentPageTags: [],
       newPageTags: [],
       isOpenModal: false,
+      isEditorMode: null,
     };
 
     this.addNewTag = this.addNewTag.bind(this);
@@ -44,27 +45,26 @@ class TagLabel extends React.Component {
   }
 
   handleShowModal() {
-    this.setState({ isOpenModal: true });
+    const isEditorMode = this.props.crowi.getCrowiForJquery().getCurrentEditorMode();
+    this.setState({ isOpenModal: true, isEditorMode });
   }
 
   async handleSubmit() {
-    // eslint-disable-next-line no-restricted-globals
-    const isPageEditor = location.href.slice(-5) === '#edit';
 
-    if (isPageEditor) { // set tag on draft on edit
+    if (this.state.isEditorMode) { // set tag on draft on edit
       this.props.sendTagData(this.state.newPageTags);
-      this.setState({ currentPageTags: this.state.newPageTags, isOpenModal: false });
     }
     else { // update tags without saving the page on view
       try {
         await this.props.crowi.apiPost('/tags.update', { pageId: this.props.pageId, tags: this.state.newPageTags });
-        this.setState({ currentPageTags: this.state.newPageTags, isOpenModal: false });
+        this.apiSuccessHandler();
       }
       catch (err) {
         this.apiErrorHandler(err);
+        return;
       }
-      this.apiSuccessHandler();
     }
+    this.setState({ currentPageTags: this.state.newPageTags, isOpenModal: false });
   }
 
   apiSuccessHandler() {
@@ -109,7 +109,7 @@ class TagLabel extends React.Component {
         )}
         {tags}
         <i
-          className="manage-tags icon-plus"
+          className="manage-tags ml-2 icon-plus"
           onClick={this.handleShowModal}
 
         >

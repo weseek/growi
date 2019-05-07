@@ -75,7 +75,8 @@ class TagsList extends React.Component {
     return tagData.map((data) => {
       return (
         <a key={data.name} href={`/_search?q=tag:${data.name}`} className="list-group-item">
-          <p className="float-left my-0">{data.name}</p>
+          <i className="icon-tag mr-2"></i>{data.name}
+          <span className="ml-4 list-tag-count label label-default text-muted">{data.count}</span>
         </a>
       );
     });
