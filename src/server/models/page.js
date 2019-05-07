@@ -353,7 +353,7 @@ module.exports = function(crowi) {
     return (this.latestRevision == this.revision._id.toString());
   };
 
-  pageSchema.methods.getRelatedTagsById = async function() {
+  pageSchema.methods.findRelatedTagsById = async function() {
     const PageTagRelation = mongoose.model('PageTagRelation');
     const relations = await PageTagRelation.find({ relatedPage: this._id }).populate('relatedTag');
     return relations.map((relation) => { return relation.relatedTag.name });
