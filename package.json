@@ -100,7 +100,7 @@
     "mkdirp": "~0.5.1",
     "module-alias": "^2.0.6",
     "mongoose": "^5.4.4",
-    "mongoose-gridfs": "^0.6.2",
+    "mongoose-gridfs": "^1.0.1",
     "mongoose-paginate": "^5.0.3",
     "mongoose-unique-validator": "^2.0.2",
     "multer": "~1.4.0",
