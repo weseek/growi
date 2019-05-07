@@ -74,11 +74,8 @@ export default class TagsList extends React.Component {
     return tagData.map((data) => {
       return (
         <a key={data.name} href={`/_search?q=tag:${data.name}`} className="list-group-item">
-          <div className="d-flex">
-            <i className="my-auto icon-tag"></i>
-            <p className="my-auto list-tag-name"> {data.name}</p>
-            <span className="my-auto ml-4 list-tag-count label text-muted">{data.count}</span>
-          </div>
+          <i className="icon-tag mr-2"></i>{data.name}
+          <span className="ml-4 list-tag-count label label-default text-muted">{data.count}</span>
         </a>
       );
     });
@@ -171,7 +168,7 @@ export default class TagsList extends React.Component {
 
     return (
       <div>
-        <ul className="list-group　mx-4">{tagList}</ul>
+        <ul className="list-group tags-list">{tagList}</ul>
         <div className="text-center">
           <Pagination>{paginationItems}</Pagination>
         </div>

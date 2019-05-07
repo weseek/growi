@@ -109,7 +109,7 @@ class TagLabel extends React.Component {
         )}
         {tags}
         <i
-          className="manage-tags icon-plus"
+          className="manage-tags ml-2 icon-plus"
           onClick={this.handleShowModal}
 
         >
