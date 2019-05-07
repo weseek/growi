@@ -8,6 +8,7 @@
 * Support: Upgrade libs
     * cmd-env
     * elasticsearch
+    * mongoose-gridfs
     * node-dev
     * null-loader
     * react-codemirror
