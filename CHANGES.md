@@ -1,6 +1,11 @@
 # CHANGES
 
-## 3.4.5-RC
+## 3.4.6-RC
+
+* Improvement: Show display name when mouse hover to user image
+* Fix: URL in slack message is broken on Safari
+
+## 3.4.5
 
 * Improvement: Pass autolink through the XSS filter according to CommonMark Spec
 * Fix: Update ElasticSearch index when deleting/duplicating pages
