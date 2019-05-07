@@ -153,7 +153,7 @@ class TagsList extends React.Component {
   render() {
     const { t } = this.props;
     const tagList = this.state.tagData.length ? (
-      <ul className="list-group">{this.generateTagList(this.state.tagData)}</ul>
+      <ul className="list-group text-left">{this.generateTagList(this.state.tagData)}</ul>
     ) : (
       <h3>{ t('You have no tag, You can set tags on pages') }</h3>
     );
