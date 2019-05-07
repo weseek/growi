@@ -151,7 +151,7 @@ export default class SearchTypeahead extends React.Component {
     const page = option;
     return (
       <span>
-        <UserPicture user={page.lastUpdateUser} size="sm" />
+        <UserPicture user={page.lastUpdateUser} size="sm" withoutLink />
         <PagePath page={page} />
         <PageListMeta page={page} />
       </span>

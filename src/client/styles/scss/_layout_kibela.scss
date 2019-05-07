@@ -1,5 +1,4 @@
 body.kibela {
-
   .icon-link,
   .CodeMirror-hint-active,
   .nav-main-left-tab,
@@ -131,8 +130,7 @@ body.kibela {
   .nav.nav-tabs {
     border-bottom-color: #f4f5f6;
 
-    >li>a {
-
+    > li > a {
       &,
       &:hover,
       &:focus {
@@ -143,7 +141,7 @@ body.kibela {
       }
     }
 
-    >li.active>a {
+    > li.active > a {
       background: transparent !important;
       border-top: none;
       border-right: none;
@@ -185,8 +183,8 @@ body.kibela {
     @include expand-editor($header-plus-footer);
 
     .main {
-      >.row.page-content {
-        >.col-xs-12 {
+      > .row.page-content {
+        > .col-xs-12 {
           width: 100%;
           padding: 0;
         }
