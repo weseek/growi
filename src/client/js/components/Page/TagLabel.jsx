@@ -48,10 +48,9 @@ class TagLabel extends React.Component {
   }
 
   async handleSubmit() {
-    // eslint-disable-next-line no-restricted-globals
-    const isPageEditor = location.href.slice(-5) === '#edit';
+    const editorMode = this.props.crowi.getCrowiForJquery().getCurrentEditorMode();
 
-    if (isPageEditor) { // set tag on draft on edit
+    if (editorMode) { // set tag on draft on edit
       this.props.sendTagData(this.state.newPageTags);
     }
     else { // update tags without saving the page on view
