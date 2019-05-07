@@ -27,15 +27,14 @@
 }
 
 .list-tag-count {
+  height: 14px;
+  padding: 0px 15px;
+  margin: auto 20px;
+  font-size: 70%;
   color: rgba(60, 74, 96, 0.5);
   background: rgba(0, 0, 0, 0.08);
-  padding: 0px 15px;
   border-radius: 40px;
-  font-size: 70%;
-  height: 14px;
-  margin: auto 20px;
 }
-
 
 #editTagModal {
   .form-control {
