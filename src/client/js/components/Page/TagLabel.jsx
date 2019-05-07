@@ -51,7 +51,7 @@ class TagLabel extends React.Component {
     // eslint-disable-next-line no-restricted-globals
     const isPageEditor = location.href.slice(-5) === '#edit';
 
-    if (isPageEditor) { // set tag on draft on efit
+    if (isPageEditor) { // set tag on draft on edit
       this.props.sendTagData(this.state.newPageTags);
       this.setState({ currentPageTags: this.state.newPageTags, isOpenModal: false });
     }
