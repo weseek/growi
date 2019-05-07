@@ -10,6 +10,7 @@
     * elasticsearch
     * node-dev
     * null-loader
+    * react-codemirror
 
 ## 3.4.5
 
