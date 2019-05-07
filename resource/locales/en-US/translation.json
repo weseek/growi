@@ -115,6 +115,11 @@
     "unavaliable_user_id": "This 'User ID' is unavailable."
   },
 
+  "breaking_changes": {
+    "v346_passport_is_not_enabled": "Crowi Classic Authentication mechanism currently in use will <strong>no longer be supported</strong> in the near future. Switch to Passport from %s",
+    "v346_using_basic_auth": "Basic Authentication currently in use will <strong>no longer be available</strong> in the near future. Remove settings from %s"
+  },
+
   "page_register": {
     "notice": {
       "restricted": "Admin approval required.",
@@ -402,10 +407,10 @@
 		"for_instance": " For instance, if you use growi within a company, you can write ",
 		"only_those": " Only those whose e-mail address including the company address can register.",
     "insert_single": "Please insert single e-mail address per line.",
-    "page_listing_1": "Page listing<br>restricted by 'Just Me'",
-    "page_listing_1_desc": "Show pages that are restricted by 'Just Me' option when listing",
-    "page_listing_2": "Page listing<br>restricted by User Group",
-    "page_listing_2_desc": "Show pages that are restricted by User Group when listing",
+    "page_listing_1": "Page listing/searching<br>restricted by 'Just Me'",
+    "page_listing_1_desc": "Show pages that are restricted by 'Just Me' option when listing/searching",
+    "page_listing_2": "Page listing/searching<br>restricted by User Group",
+    "page_listing_2_desc": "Show pages that are restricted by User Group when listing/searching",
 
 		"Authentication mechanism settings": "Authentication mechanism settings",
     "note": "Note",
