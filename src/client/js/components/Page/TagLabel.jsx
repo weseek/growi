@@ -53,18 +53,18 @@ class TagLabel extends React.Component {
 
     if (isPageEditor) { // set tag on draft on edit
       this.props.sendTagData(this.state.newPageTags);
-      this.setState({ currentPageTags: this.state.newPageTags, isOpenModal: false });
     }
     else { // update tags without saving the page on view
       try {
         await this.props.crowi.apiPost('/tags.update', { pageId: this.props.pageId, tags: this.state.newPageTags });
-        this.setState({ currentPageTags: this.state.newPageTags, isOpenModal: false });
+        this.apiSuccessHandler();
       }
       catch (err) {
         this.apiErrorHandler(err);
+        return;
       }
-      this.apiSuccessHandler();
     }
+    this.setState({ currentPageTags: this.state.newPageTags, isOpenModal: false });
   }
 
   apiSuccessHandler() {
