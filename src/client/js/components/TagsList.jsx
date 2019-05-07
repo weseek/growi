@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { withTranslation } from 'react-i18next';
 import Pagination from 'react-bootstrap/lib/Pagination';
 
-export default class TagsList extends React.Component {
+class TagsList extends React.Component {
 
   constructor(props) {
     super(props);
@@ -150,7 +151,12 @@ export default class TagsList extends React.Component {
   }
 
   render() {
-    const tagList = this.generateTagList(this.state.tagData);
+    const { t } = this.props;
+    const tagList = this.state.tagData.length ? (
+      <ul className="list-group">{this.generateTagList(this.state.tagData)}</ul>
+    ) : (
+      <h3>{ t('You have no tag, You can set tags on pages') }</h3>
+    );
 
     const paginationItems = [];
 
@@ -164,12 +170,15 @@ export default class TagsList extends React.Component {
     paginationItems.push(paginations);
     const nextLastItems = this.generateNextLast(activePage, totalPage);
     paginationItems.push(nextLastItems);
+    const pagination = this.state.tagData.length ? <Pagination>{paginationItems}</Pagination> : null;
 
     return (
-      <div>
-        <ul className="list-group　mx-4">{tagList}</ul>
-        <div className="text-center">
-          <Pagination>{paginationItems}</Pagination>
+      <div className="text-center">
+        <div className="tag-list">
+          {tagList}
+        </div>
+        <div className="tag-list-pagination">
+          {pagination}
         </div>
       </div>
     );
@@ -179,7 +188,10 @@ export default class TagsList extends React.Component {
 
 TagsList.propTypes = {
   crowi: PropTypes.object.isRequired,
+  t: PropTypes.func.isRequired, // i18next
 };
 
 TagsList.defaultProps = {
 };
+
+export default withTranslation()(TagsList);
