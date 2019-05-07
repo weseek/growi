@@ -8,6 +8,8 @@
 * Support: Upgrade libs
     * cmd-env
     * elasticsearch
+    * node-dev
+    * null-loader
 
 ## 3.4.5
 
