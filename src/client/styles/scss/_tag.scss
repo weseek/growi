@@ -18,6 +18,15 @@
   font-size: 10px;
 }
 
+.list-tag-name {
+  margin-left: 5px;
+}
+
+.list-tag-count {
+  width: 30px;
+  background: rgba(0, 0, 0, 0.08);
+}
+
 #editTagModal {
   .form-control {
     height: auto;
