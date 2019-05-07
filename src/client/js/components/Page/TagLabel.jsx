@@ -15,6 +15,7 @@ class TagLabel extends React.Component {
       currentPageTags: [],
       newPageTags: [],
       isOpenModal: false,
+      isEditorMode: null,
     };
 
     this.addNewTag = this.addNewTag.bind(this);
@@ -44,13 +45,14 @@ class TagLabel extends React.Component {
   }
 
   handleShowModal() {
+    const isEditorMode = this.props.crowi.getCrowiForJquery().getCurrentEditorMode();
+    this.setState({ isEditorMode });
     this.setState({ isOpenModal: true });
   }
 
   async handleSubmit() {
-    const editorMode = this.props.crowi.getCrowiForJquery().getCurrentEditorMode();
 
-    if (editorMode) { // set tag on draft on edit
+    if (this.state.isEditorMode) { // set tag on draft on edit
       this.props.sendTagData(this.state.newPageTags);
     }
     else { // update tags without saving the page on view
