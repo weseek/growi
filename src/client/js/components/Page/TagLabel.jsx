@@ -46,8 +46,7 @@ class TagLabel extends React.Component {
 
   handleShowModal() {
     const isEditorMode = this.props.crowi.getCrowiForJquery().getCurrentEditorMode();
-    this.setState({ isEditorMode });
-    this.setState({ isOpenModal: true });
+    this.setState({ isOpenModal: true, isEditorMode });
   }
 
   async handleSubmit() {
