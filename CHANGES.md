@@ -5,6 +5,8 @@
 * Improvement: Show display name when mouse hover to user image
 * Fix: URL in slack message is broken on Safari
 * Fix: Registration does not work when basic auth is enabled
+* Support: Upgrade libs
+    * elasticsearch
 
 ## 3.4.5
 
