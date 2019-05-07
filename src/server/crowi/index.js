@@ -217,12 +217,11 @@ Crowi.prototype.getIo = function() {
 Crowi.prototype.scanRuntimeVersions = function() {
   const self = this;
 
-
   const check = require('check-node-version');
   return new Promise((resolve, reject) => {
     check((err, result) => {
       if (err) {
-        reject();
+        reject(err);
       }
       self.runtimeVersions = result;
       resolve();
