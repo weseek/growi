@@ -1,7 +1,6 @@
 @import 'editor-overlay';
 
 .editor-container {
-
   // for Dropzone
   .dropzone {
     @mixin insertSimpleLineIcons($code) {
@@ -49,7 +48,6 @@
 
     // uploadable
     &.dropzone-uploadable {
-
       // accepted
       &.dropzone-accepted:not(.dropzone-rejected) {
         .overlay.overlay-dropzone-active {

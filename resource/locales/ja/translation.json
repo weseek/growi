@@ -134,6 +134,11 @@
     "unavaliable_user_id": "このユーザーIDは利用できません。"
   },
 
+  "breaking_changes": {
+    "v346_passport_is_not_enabled": "現在利用中の Crowi Classic Authentication mechanism は、近い将来<strong>サポートされなくなります</strong>。%s から Passport に切り替えてください。",
+    "v346_using_basic_auth": "現在利用中の Basic 認証機能は、近い将来<strong>廃止されます</strong>。%s から設定を削除してください。"
+  },
+
   "page_register": {
     "notice": {
        "restricted": "この Wiki への新規登録は制限されています。",
@@ -425,10 +430,10 @@
     "for_instance":"例えば、",
     "only_those":"と記載することで、そのドメインのメールアドレスを持っている人のみ登録可能になります。",
     "insert_single":"1行に1メールアドレス入力してください。",
-    "page_listing_1": "ページのリスト表示<br>'自分のみ'に閲覧制限しているページ",
-    "page_listing_1_desc": "ページのリスト表示時、'自分のみ'に閲覧制限をしているページをアクセス権のないユーザーにも表示します。",
-    "page_listing_2": "ページのリスト表示<br>特定グループに閲覧制限しているページ",
-    "page_listing_2_desc": "ページのリスト表示時、特定グループにのみ閲覧制限をしているページをアクセス権のないユーザーにも表示します。",
+    "page_listing_1": "ページのリスト表示と検索<br>'自分のみ'に閲覧制限しているページ",
+    "page_listing_1_desc": "ページのリスト表示や検索結果において、'自分のみ'に閲覧制限をしているページをアクセス権のないユーザーにも表示します。",
+    "page_listing_2": "ページのリスト表示と検索<br>特定グループに閲覧制限しているページ",
+    "page_listing_2_desc": "ページのリスト表示や検索結果において、特定グループにのみ閲覧制限をしているページをアクセス権のないユーザーにも表示します。",
 
     "Authentication mechanism settings":"認証機構設定",
     "note": "メモ",

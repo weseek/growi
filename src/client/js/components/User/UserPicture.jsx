@@ -40,13 +40,20 @@ export default class UserPicture extends React.Component {
 
   render() {
     const user = this.props.user;
+    const href = `/user/${user.username}`;
 
-    return (
+    const imgElem = (
       <img
         src={this.getUserPicture(user)}
         alt={user.username}
         className={this.getClassName()}
       />
+    );
+
+    return (
+      (this.props.withoutLink)
+        ? <span>{imgElem}</span>
+        : <a href={href}>{imgElem}</a>
     );
   }
 
@@ -55,6 +62,7 @@ export default class UserPicture extends React.Component {
 UserPicture.propTypes = {
   user: PropTypes.object.isRequired,
   size: PropTypes.string,
+  withoutLink: PropTypes.bool,
 };
 
 UserPicture.defaultProps = {
