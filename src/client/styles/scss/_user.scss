@@ -24,17 +24,19 @@
 
       ul {
         padding-left: 0;
+
         li {
           list-style: none;
         }
       }
+
       .user-page-username {
         font-weight: bold;
       }
-      .user-page-email {
-      }
-      .user-page-introduction {
-      }
+
+      .user-page-email {}
+
+      .user-page-introduction {}
     }
 
     .btn-like,
@@ -60,6 +62,18 @@
     .picture {
       width: 48px;
       height: 48px;
+    }
+  }
+
+  .user-page-content {
+    #user-draft-list {
+      button {
+        $size: 1.5em;
+
+        width: $size;
+        height: $size;
+        border-radius: 50%;
+      }
     }
   }
 }
