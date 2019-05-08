@@ -5,6 +5,9 @@ const path = require('path');
 const swig = require('swig-templates');
 const onHeaders = require('on-headers');
 
+const swaggerJSDoc = require('swagger-jsdoc');
+const swaggerDefinition = require('@root/config/swagger-definition');
+
 
 class CrowiDev {
 
@@ -85,8 +88,24 @@ class CrowiDev {
     eazyLogger.unprefixed('info', `         APP: {magenta:${serverUrl}}`);
     eazyLogger.unprefixed('info', '{grey:=======================================}');
 
+    this.setupSwaggerJSdoc(app);
+
     return server;
   }
+
+  setupSwaggerJSdoc(app) {
+    const options = {
+      swaggerDefinition,
+      apis: swaggerDefinition.apis,
+    };
+    const swaggerSpec = swaggerJSDoc(options);
+
+    app.get('/api-docs.json', (req, res) => {
+      res.setHeader('Content-Type', 'application/json');
+      res.send(swaggerSpec);
+    });
+  }
+
 
   /**
    *
