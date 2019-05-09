@@ -19,8 +19,10 @@
   }
 }
 
-.label.list-tag-count {
-  background: rgba(0, 0, 0, 0.08);
+#tags-page {
+  .list-tag-count {
+    background: rgba(0, 0, 0, 0.08);
+  }
 }
 
 #editTagModal {
