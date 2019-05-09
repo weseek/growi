@@ -173,6 +173,10 @@ export default class Crowi {
     this.localStorage.setItem('draft', JSON.stringify(this.draft));
   }
 
+  clearAllDrafts() {
+    this.localStorage.removeItem('draft');
+  }
+
   saveDraft(path, body) {
     this.draft[path] = body;
     this.localStorage.setItem('draft', JSON.stringify(this.draft));

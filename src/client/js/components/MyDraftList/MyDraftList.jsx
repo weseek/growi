@@ -19,6 +19,7 @@ export default class MyDraftList extends React.Component {
     this.getDraftsFromLocalStorage = this.getDraftsFromLocalStorage.bind(this);
     this.getCurrentDrafts = this.getCurrentDrafts.bind(this);
     this.clearDraft = this.clearDraft.bind(this);
+    this.clearAllDrafts = this.clearAllDrafts.bind(this);
     this.calculatePagination = this.calculatePagination.bind(this);
   }
 
@@ -62,32 +63,6 @@ export default class MyDraftList extends React.Component {
     });
   }
 
-  calculatePagination(limit, totalCount, activePage) {
-    // calc totalPageNumber
-    const totalPage = Math.floor(totalCount / limit) + (totalCount % limit === 0 ? 0 : 1);
-
-    let paginationStart = activePage - 2;
-    let maxViewPageNum = activePage + 2;
-    // pagiNation Number area size = 5 , pageNuber calculate in here
-    // activePage Position calculate ex. 4 5 [6] 7 8 (Page8 over is Max), 3 4 5 [6] 7 (Page7 is Max)
-    if (paginationStart < 1) {
-      const diff = 1 - paginationStart;
-      paginationStart += diff;
-      maxViewPageNum = Math.min(totalPage, maxViewPageNum + diff);
-    }
-    if (maxViewPageNum > totalPage) {
-      const diff = maxViewPageNum - totalPage;
-      maxViewPageNum -= diff;
-      paginationStart = Math.max(1, paginationStart - diff);
-    }
-
-    return {
-      totalPage,
-      paginationStart,
-      maxViewPageNum,
-    };
-  }
-
   /**
    * generate Elements of Draft
    *
@@ -117,6 +92,43 @@ export default class MyDraftList extends React.Component {
         drafts: prevState.drafts.filter((draft) => { return draft.path !== path }),
       };
     });
+  }
+
+  clearAllDrafts() {
+    this.props.crowi.clearAllDrafts();
+
+    this.setState({
+      drafts: [],
+      currentDrafts: [],
+      activePage: 1,
+      paginationNumbers: {},
+    });
+  }
+
+  calculatePagination(limit, totalCount, activePage) {
+    // calc totalPageNumber
+    const totalPage = Math.floor(totalCount / limit) + (totalCount % limit === 0 ? 0 : 1);
+
+    let paginationStart = activePage - 2;
+    let maxViewPageNum = activePage + 2;
+    // pagiNation Number area size = 5 , pageNuber calculate in here
+    // activePage Position calculate ex. 4 5 [6] 7 8 (Page8 over is Max), 3 4 5 [6] 7 (Page7 is Max)
+    if (paginationStart < 1) {
+      const diff = 1 - paginationStart;
+      paginationStart += diff;
+      maxViewPageNum = Math.min(totalPage, maxViewPageNum + diff);
+    }
+    if (maxViewPageNum > totalPage) {
+      const diff = maxViewPageNum - totalPage;
+      maxViewPageNum -= diff;
+      paginationStart = Math.max(1, paginationStart - diff);
+    }
+
+    return {
+      totalPage,
+      paginationStart,
+      maxViewPageNum,
+    };
   }
 
   /**
@@ -207,6 +219,7 @@ export default class MyDraftList extends React.Component {
 
     return (
       <div className="page-list-container-create">
+        <button type="button" className="btn-danger" onClick={this.clearAllDrafts}>Clear</button>
         <ul className="page-list-ul page-list-ul-flat">
           {draftList}
         </ul>
