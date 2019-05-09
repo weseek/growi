@@ -10,6 +10,7 @@ module.exports = {
     // 'growi-plugin-lsx',
     // 'growi-plugin-pukiwiki-like-linker',
   ],
+  // PUBLISH_OPEN_API: true,
   // USER_UPPER_LIMIT: 0,
   // DEV_HTTPS: true,
   // PUBLIC_WIKI_ONLY: true,

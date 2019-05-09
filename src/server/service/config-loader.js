@@ -116,6 +116,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.STRING,
     default: null,
   },
+  PUBLISH_OPEN_API: {
+    ns:      'crowi',
+    key:     'app:publishOpenAPI',
+    type:    TYPES.BOOLEAN,
+    default: false,
+  },
   MAX_FILE_SIZE: {
     ns:      'crowi',
     key:     'app:maxFileSize',
