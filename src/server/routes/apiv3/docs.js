@@ -6,6 +6,11 @@ const express = require('express');
 
 const router = express.Router();
 
+// paths to scan
+const APIS = [
+  'src/server/routes/apiv3/**/*.js',
+];
+
 module.exports = (crowi) => {
 
   // skip if disabled
@@ -19,7 +24,7 @@ module.exports = (crowi) => {
   // generate swagger spec
   const options = {
     swaggerDefinition,
-    apis: swaggerDefinition.apis,
+    apis: APIS,
   };
   const swaggerSpec = swaggerJSDoc(options);
 

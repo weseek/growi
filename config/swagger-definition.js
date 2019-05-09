@@ -9,7 +9,4 @@ module.exports = {
     url: 'https://docs.growi.org',
   },
   basePath: '/api/v3/',
-  apis: [
-    'src/server/routes/apiv3/**/*.js',
-  ],
 };
