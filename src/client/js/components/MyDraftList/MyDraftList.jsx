@@ -22,7 +22,7 @@ export default class MyDraftList extends React.Component {
   }
 
   getDraftsFromLocalStorage() {
-    const draftsAsObj = JSON.parse(this.props.crowi.localStorage.getItem('draft') || {});
+    const draftsAsObj = JSON.parse(this.props.crowi.localStorage.getItem('draft') || '{}');
 
     // {'/a': '#a', '/b': '#b'} => [{path: '/a', markdown: '#a'}, {path: '/b', markdown: '#b'}]
     const drafts = Object.entries(draftsAsObj).map((d) => {
