@@ -5,18 +5,17 @@ const util = require('util');
 module.exports = function(crowi) {
   const lib = {};
   const COLLECTION_NAME = 'attachmentFiles';
-  const CHUNK_COLLECTION_NAME = 'attachmentFiles.chunks';
+  const CHUNK_COLLECTION_NAME = `${COLLECTION_NAME}.chunks`;
 
   // instantiate mongoose-gridfs
-  const gridfs = require('mongoose-gridfs')({
-    collection: COLLECTION_NAME,
-    model: 'AttachmentFile',
-    mongooseConnection: mongoose.connection,
+  const { createModel } = require('mongoose-gridfs');
+  const AttachmentFile = createModel({
+    modelName: COLLECTION_NAME,
+    bucketName: COLLECTION_NAME,
+    connection: mongoose.connection,
   });
-
-  // obtain a model
-  const AttachmentFile = gridfs.model;
-  const Chunks = mongoose.model('Chunks', gridfs.schema, CHUNK_COLLECTION_NAME);
+  // get Collection instance of chunk
+  const chunkCollection = mongoose.connection.collection(CHUNK_COLLECTION_NAME);
 
   // create promisified method
   AttachmentFile.promisifiedWrite = util.promisify(AttachmentFile.write).bind(AttachmentFile);
@@ -30,7 +29,7 @@ module.exports = function(crowi) {
 
     const attachmentFile = await AttachmentFile.findOne({ filename: filenameValue });
 
-    AttachmentFile.unlinkById(attachmentFile._id, (error, unlinkedFile) => {
+    AttachmentFile.unlink({ _id: attachmentFile._id }, (error, unlinkedFile) => {
       if (error) {
         throw new Error(error);
       }
@@ -42,7 +41,7 @@ module.exports = function(crowi) {
    */
   const getCollectionSize = () => {
     return new Promise((resolve, reject) => {
-      Chunks.collection.stats((err, data) => {
+      chunkCollection.stats((err, data) => {
         if (err) {
           // return 0 if not exist
           if (err.errmsg.includes('not found')) {
@@ -117,7 +116,7 @@ module.exports = function(crowi) {
     }
 
     // return stream.Readable
-    return AttachmentFile.readById(attachmentFile._id);
+    return AttachmentFile.read({ _id: attachmentFile._id });
   };
 
   return lib;
