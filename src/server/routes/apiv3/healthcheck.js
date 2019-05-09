@@ -8,12 +8,19 @@ const router = express.Router();
 
 const helmet = require('helmet');
 
+/**
+ * @swagger
+ *  tags:
+ *    name: Healthcheck
+ */
+
 module.exports = (crowi) => {
   /**
    * @swagger
    *
    *  /healthcheck:
    *    get:
+   *      tags: [Healthcheck]
    *      description: Check whether the server is healthy or not
    *      produces:
    *        - application/json
