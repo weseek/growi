@@ -43,13 +43,14 @@ class PageTagRelation {
     const offset = opt.offset || 0;
     const limit = opt.limit || 50;
 
-    const list = await this.aggregate()
+    const tags = await this.aggregate()
       .group({ _id: '$relatedTag', count: { $sum: 1 } })
-      .sort(sortOpt)
-      .skip(offset)
-      .limit(limit);
+      .sort(sortOpt);
 
-    return list;
+    const list = tags.slice(offset, offset + limit);
+    const totalCount = tags.length;
+
+    return { list, totalCount };
   }
 
 }

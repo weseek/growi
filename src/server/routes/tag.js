@@ -62,14 +62,14 @@ module.exports = function(crowi, app) {
 
     try {
       // get tag list contains id and count properties
-      const list = await PageTagRelation.createTagListWithCount(queryOptions);
-      const ids = list.map((obj) => { return obj._id });
+      const listData = await PageTagRelation.createTagListWithCount(queryOptions);
+      const ids = listData.list.map((obj) => { return obj._id });
 
       // get tag documents for add name data to the list
       const tags = await Tag.find({ _id: { $in: ids } });
 
       // add name property
-      result.data = list.map((elm) => {
+      result.data = listData.list.map((elm) => {
         const data = {};
         const tag = tags.find((tag) => { return (tag.id === elm._id.toString()) });
 
@@ -79,7 +79,7 @@ module.exports = function(crowi, app) {
         return data;
       });
 
-      result.totalCount = await Tag.count();
+      result.totalCount = listData.totalCount;
 
       return res.json(ApiResponse.success(result));
     }
