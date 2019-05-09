@@ -153,11 +153,7 @@ class TagsList extends React.Component {
 
   render() {
     const { t } = this.props;
-    const tagList = this.state.tagData.length ? (
-      <ul className="list-group text-left">{this.generateTagList(this.state.tagData)}</ul>
-    ) : (
-      <h3>{ t('You have no tag, You can set tags on pages') }</h3>
-    );
+    const messageForNoTag = this.state.tagData.length ? null : <h3>{ t('You have no tag, You can set tags on pages') }</h3>;
 
     const paginationItems = [];
 
@@ -176,7 +172,10 @@ class TagsList extends React.Component {
     return (
       <div className="text-center">
         <div className="tag-list">
-          {tagList}
+          <ul className="list-group text-left">
+            {this.generateTagList(this.state.tagData)}
+          </ul>
+          {messageForNoTag}
         </div>
         <div className="tag-list-pagination">
           {pagination}
