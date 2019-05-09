@@ -84,11 +84,15 @@ SearchClient.prototype.registerUpdateEvent = function() {
   const pageEvent = this.crowi.event('page');
   pageEvent.on('create', this.syncPageCreated.bind(this));
   pageEvent.on('update', this.syncPageUpdated.bind(this));
+  pageEvent.on('updateTag', this.syncPageUpdated.bind(this));
   pageEvent.on('delete', this.syncPageDeleted.bind(this));
 
   const bookmarkEvent = this.crowi.event('bookmark');
   bookmarkEvent.on('create', this.syncBookmarkChanged.bind(this));
   bookmarkEvent.on('delete', this.syncBookmarkChanged.bind(this));
+
+  const tagEvent = this.crowi.event('tag');
+  tagEvent.on('update', this.syncTagChanged.bind(this));
 };
 
 SearchClient.prototype.shouldIndexed = function(page) {
@@ -848,5 +852,12 @@ SearchClient.prototype.syncBookmarkChanged = async function(pageId) {
     .then((res) => { return debug('ES Response', res) })
     .catch((err) => { return logger.error('ES Error', err) });
 };
+
+SearchClient.prototype.syncTagChanged = async function(page) {
+  this.updatePages([page])
+    .then((res) => { return debug('ES Response', res) })
+    .catch((err) => { return logger.error('ES Error', err) });
+};
+
 
 module.exports = SearchClient;
