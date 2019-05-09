@@ -402,8 +402,14 @@ if (recentCreatedControlsElem) {
 
 const myDraftControlsElem = document.getElementById('user-draft-list');
 if (myDraftControlsElem) {
+  let limit = crowi.getConfig().recentCreatedLimit;
+  if (limit == null) {
+    limit = 10;
+  }
+
+  limit = 3;
   ReactDOM.render(
-    <MyDraftList crowi={crowi} />,
+    <MyDraftList crowi={crowi} limit={limit} />,
     myDraftControlsElem,
   );
 }
