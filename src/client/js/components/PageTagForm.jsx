@@ -30,7 +30,7 @@ export default class PageTagForm extends React.Component {
   }
 
   handleChange(selected) {
-    // list is a list of object about value. an element have customOption, id and label properties
+    // send tags to TagLabel Component when user add tag to form everytime
     this.setState({ selected }, () => {
       this.props.addNewTag(this.state.selected);
     });

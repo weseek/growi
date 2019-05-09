@@ -31,7 +31,7 @@ class TagLabel extends React.Component {
     const pageId = this.props.pageId;
     if (pageId) {
       const res = await this.props.crowi.apiGet('/pages.getPageTag', { pageId });
-      this.setState({ currentPageTags: res.tags });
+      this.setState({ currentPageTags: res.tags, newPageTags: res.tags });
       this.props.sendTagData(res.tags);
     }
   }
@@ -41,7 +41,8 @@ class TagLabel extends React.Component {
   }
 
   handleCloseModal() {
-    this.setState({ isOpenModal: false });
+    // reset state newPageTags when user close modal without push Done button
+    this.setState({ isOpenModal: false, newPageTags: this.state.currentPageTags });
   }
 
   handleShowModal() {

@@ -56,6 +56,7 @@ function Crowi(rootdir) {
     page: new (require(`${self.eventsDir}page`))(this),
     search: new (require(`${self.eventsDir}search`))(this),
     bookmark: new (require(`${self.eventsDir}bookmark`))(this),
+    tag: new (require(`${self.eventsDir}tag`))(this),
   };
 }
 
