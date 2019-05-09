@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { withTranslation } from 'react-i18next';
 import Pagination from 'react-bootstrap/lib/Pagination';
 
-export default class TagsList extends React.Component {
+class TagsList extends React.Component {
 
   constructor(props) {
     super(props);
@@ -74,7 +75,8 @@ export default class TagsList extends React.Component {
     return tagData.map((data) => {
       return (
         <a key={data.name} href={`/_search?q=tag:${data.name}`} className="list-group-item">
-          <p className="float-left my-0">{data.name}</p>
+          <i className="icon-tag mr-2"></i>{data.name}
+          <span className="ml-4 list-tag-count label label-default text-muted">{data.count}</span>
         </a>
       );
     });
@@ -150,7 +152,8 @@ export default class TagsList extends React.Component {
   }
 
   render() {
-    const tagList = this.generateTagList(this.state.tagData);
+    const { t } = this.props;
+    const messageForNoTag = this.state.tagData.length ? null : <h3>{ t('You have no tag, You can set tags on pages') }</h3>;
 
     const paginationItems = [];
 
@@ -164,12 +167,18 @@ export default class TagsList extends React.Component {
     paginationItems.push(paginations);
     const nextLastItems = this.generateNextLast(activePage, totalPage);
     paginationItems.push(nextLastItems);
+    const pagination = this.state.tagData.length ? <Pagination>{paginationItems}</Pagination> : null;
 
     return (
-      <div>
-        <ul className="list-group　mx-4">{tagList}</ul>
-        <div className="text-center">
-          <Pagination>{paginationItems}</Pagination>
+      <div className="text-center">
+        <div className="tag-list">
+          <ul className="list-group text-left">
+            {this.generateTagList(this.state.tagData)}
+          </ul>
+          {messageForNoTag}
+        </div>
+        <div className="tag-list-pagination">
+          {pagination}
         </div>
       </div>
     );
@@ -179,7 +188,10 @@ export default class TagsList extends React.Component {
 
 TagsList.propTypes = {
   crowi: PropTypes.object.isRequired,
+  t: PropTypes.func.isRequired, // i18next
 };
 
 TagsList.defaultProps = {
 };
+
+export default withTranslation()(TagsList);

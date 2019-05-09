@@ -47,7 +47,7 @@ export default class PageTagForm extends React.Component {
   }
 
   handleSelect(e) {
-    if (e.keyCode === 32) {
+    if (e.keyCode === 32) { // '32' means ASCII code of 'space'
       e.preventDefault();
       const instance = this.typeahead.getInstance();
       const { initialItem } = instance.state;

@@ -26,6 +26,26 @@ module.exports = function(crowi, app) {
   };
 
   /**
+   * @api {post} /tags.update update tags
+   * @apiName UpdateTag
+   * @apiGroup Tag
+   *
+   * @apiParam {String} PageId
+   * @apiParam {array} tags
+   */
+  api.update = async function(req, res) {
+    const Page = crowi.model('Page');
+    try {
+      const page = await Page.findById(req.body.pageId);
+      await page.updateTags(req.body.tags);
+    }
+    catch (err) {
+      return res.json(ApiResponse.error(err));
+    }
+    return res.json(ApiResponse.success());
+  };
+
+  /**
    * @api {get} /tags.list get tagnames and count pages relate each tag
    * @apiName tagList
    * @apiGroup Tag
@@ -42,14 +62,14 @@ module.exports = function(crowi, app) {
 
     try {
       // get tag list contains id and count properties
-      const list = await PageTagRelation.createTagListWithCount(queryOptions);
-      const ids = list.map((obj) => { return obj._id });
+      const listData = await PageTagRelation.createTagListWithCount(queryOptions);
+      const ids = listData.list.map((obj) => { return obj._id });
 
       // get tag documents for add name data to the list
       const tags = await Tag.find({ _id: { $in: ids } });
 
       // add name property
-      result.data = list.map((elm) => {
+      result.data = listData.list.map((elm) => {
         const data = {};
         const tag = tags.find((tag) => { return (tag.id === elm._id.toString()) });
 
@@ -59,7 +79,7 @@ module.exports = function(crowi, app) {
         return data;
       });
 
-      result.totalCount = await Tag.count();
+      result.totalCount = listData.totalCount;
 
       return res.json(ApiResponse.success(result));
     }

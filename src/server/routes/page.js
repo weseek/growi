@@ -1077,7 +1077,7 @@ module.exports = function(crowi, app) {
     }
 
     await page.populateDataToShowRevision();
-    const originTags = await page.getRelatedTagsById();
+    const originTags = await page.findRelatedTagsById();
 
     req.body.path = newPagePath;
     req.body.body = page.revision.body;

@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import * as toastr from 'toastr';
 import Button from 'react-bootstrap/es/Button';
 import Modal from 'react-bootstrap/es/Modal';
 import PageTagForm from '../PageTagForm';
@@ -14,12 +15,15 @@ class TagLabel extends React.Component {
       currentPageTags: [],
       newPageTags: [],
       isOpenModal: false,
+      isEditorMode: null,
     };
 
     this.addNewTag = this.addNewTag.bind(this);
     this.handleShowModal = this.handleShowModal.bind(this);
     this.handleCloseModal = this.handleCloseModal.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.apiSuccessHandler = this.apiSuccessHandler.bind(this);
+    this.apiErrorHandler = this.apiErrorHandler.bind(this);
   }
 
   async componentWillMount() {
@@ -46,12 +50,49 @@ class TagLabel extends React.Component {
   }
 
   handleShowModal() {
-    this.setState({ isOpenModal: true });
+    const isEditorMode = this.props.crowi.getCrowiForJquery().getCurrentEditorMode();
+    this.setState({ isOpenModal: true, isEditorMode });
   }
 
-  handleSubmit() {
-    this.props.sendTagData(this.state.newPageTags);
+  async handleSubmit() {
+
+    if (this.state.isEditorMode) { // set tag on draft on edit
+      this.props.sendTagData(this.state.newPageTags);
+    }
+    else { // update tags without saving the page on view
+      try {
+        await this.props.crowi.apiPost('/tags.update', { pageId: this.props.pageId, tags: this.state.newPageTags });
+        this.apiSuccessHandler();
+      }
+      catch (err) {
+        this.apiErrorHandler(err);
+        return;
+      }
+    }
     this.setState({ currentPageTags: this.state.newPageTags, isOpenModal: false });
+  }
+
+  apiSuccessHandler() {
+    toastr.success(undefined, 'updated tags successfully', {
+      closeButton: true,
+      progressBar: true,
+      newestOnTop: false,
+      showDuration: '100',
+      hideDuration: '100',
+      timeOut: '1200',
+      extendedTimeOut: '150',
+    });
+  }
+
+  apiErrorHandler(err) {
+    toastr.error(err.message, 'Error occured', {
+      closeButton: true,
+      progressBar: true,
+      newestOnTop: false,
+      showDuration: '100',
+      hideDuration: '100',
+      timeOut: '3000',
+    });
   }
 
   render() {
@@ -73,7 +114,7 @@ class TagLabel extends React.Component {
         )}
         {tags}
         <i
-          className="manage-tags icon-plus"
+          className="manage-tags ml-2 icon-plus"
           onClick={this.handleShowModal}
 
         >
