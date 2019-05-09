@@ -29,17 +29,22 @@ export default class MyDraftList extends React.Component {
 
   async getDraftsFromLocalStorage() {
     const draftsAsObj = JSON.parse(this.props.crowi.localStorage.getItem('draft') || '{}');
+
+    const res = await this.props.crowi.apiGet('/pages.exist', {
+      pages: draftsAsObj,
+    });
+
     // {'/a': '#a', '/b': '#b'} => [{path: '/a', markdown: '#a'}, {path: '/b', markdown: '#b'}]
     const drafts = Object.entries(draftsAsObj).map((d) => {
+      const path = d[0];
       return {
-        path: d[0],
+        path,
         markdown: d[1],
+        isExist: res.pages[path],
       };
     });
 
-    this.setState({
-      drafts,
-    });
+    this.setState({ drafts });
   }
 
   getCurrentDrafts(selectPageNumber) {
@@ -91,7 +96,16 @@ export default class MyDraftList extends React.Component {
    */
   generateDraftList(drafts) {
     return drafts.map((draft) => {
-      return <Draft key={draft.path} crowi={this.props.crowi} draft={draft} clearDraft={this.clearDraft} />;
+      return (
+        <Draft
+          key={draft.path}
+          crowi={this.props.crowi}
+          path={draft.path}
+          markdown={draft.markdown}
+          isExist={draft.isExist}
+          clearDraft={this.clearDraft}
+        />
+      );
     });
   }
 

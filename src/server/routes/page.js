@@ -723,6 +723,29 @@ module.exports = function(crowi, app) {
   };
 
   /**
+   * @api {get} /pages.exist Get if page exists
+   * @apiName GetPage
+   * @apiGroup Page
+   *
+   * @apiParam {String} pages (stringified JSON)
+   */
+  api.exist = async function(req, res) {
+    const pagesAsObj = JSON.parse(req.query.pages || '{}');
+    const pagePaths = Object.keys(pagesAsObj);
+
+    await Promise.all(pagePaths.map(async(path) => {
+      // check page existence
+      const isExist = await Page.count({ path }) > 0;
+      pagesAsObj[path] = isExist;
+      return;
+    }));
+
+    const result = { pages: pagesAsObj };
+
+    return res.json(ApiResponse.success(result));
+  };
+
+  /**
    * @api {get} /pages.getPageTag get page tags
    * @apiName GetPageTag
    * @apiGroup Page

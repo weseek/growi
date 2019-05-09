@@ -193,6 +193,7 @@ module.exports = function(crowi, app) {
   app.post('/_api/pages.create'       , accessTokenParser , loginRequired(crowi, app) , csrf, page.api.create);
   app.post('/_api/pages.update'       , accessTokenParser , loginRequired(crowi, app) , csrf, page.api.update);
   app.get('/_api/pages.get'           , accessTokenParser , loginRequired(crowi, app, false) , page.api.get);
+  app.get('/_api/pages.exist'         , accessTokenParser , loginRequired(crowi, app, false) , page.api.exist);
   app.get('/_api/pages.updatePost', accessTokenParser, loginRequired(crowi, app, false), page.api.getUpdatePost);
   app.get('/_api/pages.getPageTag'    , accessTokenParser , loginRequired(crowi, app, false) , page.api.getPageTag);
   // allow posting to guests because the client doesn't know whether the user logged in
