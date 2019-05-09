@@ -409,7 +409,9 @@ if (myDraftControlsElem) {
 
   limit = 3;
   ReactDOM.render(
-    <MyDraftList crowi={crowi} limit={limit} />,
+    <I18nextProvider i18n={i18n}>
+      <MyDraftList crowi={crowi} limit={limit} />
+    </I18nextProvider>,
     myDraftControlsElem,
   );
 }
