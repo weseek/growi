@@ -6,9 +6,5 @@ module.exports = {
     title: 'GROWI REST API v3',
     version: pkg.version,
   },
-  externalDocs: {
-    description: 'GROWI Docs',
-    url: 'https://docs.growi.org',
-  },
   basePath: '/api/v3/',
 };
