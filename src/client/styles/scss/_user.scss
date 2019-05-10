@@ -68,11 +68,22 @@
   .user-page-content {
     #user-draft-list {
       li {
-        button {
-          min-width: 55px;
-          padding: 0 5px;
-          font-size: x-small;
-          border-radius: 10px;
+        .label-draft {
+          padding: 1px 5px;
+          margin: 0 0 0 4px;
+          font-weight: normal;
+        }
+
+        a {
+          &.draft-copy {
+            margin: 0 0 0 4px;
+            cursor: pointer;
+          }
+
+          &.draft-delete {
+            margin: 0 0 0 4px;
+            cursor: pointer;
+          }
         }
       }
     }

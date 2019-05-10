@@ -221,7 +221,7 @@ export default class MyDraftList extends React.Component {
     return (
       <div className="page-list-container-create">
         <button type="button" className="btn-danger mb-3" onClick={this.clearAllDrafts}>Delete All</button>
-        <ul className="page-list-ul page-list-ul-flat">
+        <ul className="p-0 m-0">
           {draftList}
         </ul>
         <Pagination bsSize="small">{paginationItems}</Pagination>

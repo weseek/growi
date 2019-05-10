@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 
 import Popover from 'react-bootstrap/lib/Popover';
@@ -33,18 +33,34 @@ class Draft extends React.Component {
   renderButton(isExist, markdown) {
     if (isExist) {
       return (
-        <button type="button" className="btn-primary mx-1" onClick={this.copyMarkdownToClipboard}>
-          <span className="icon-doc"></span> {this.props.t('Copy')}
-        </button>
+        <a
+          className="draft-copy"
+          data-toggle="tooltip"
+          data-placement="bottom"
+          title={this.props.t('Copy')}
+          onClick={this.copyMarkdownToClipboard}
+        >
+          <i className="icon-doc" />
+        </a>
       );
     }
 
     return (
-      <a href={`${this.props.path}#edit`} target="_blank" rel="noopener noreferrer" className="p-0">
-        <button type="button" className="btn-primary mx-1">
-          <span className="icon-note"></span> {this.props.t('Edit')}
-        </button>
-      </a>
+      <Fragment>
+        <span className="label-draft label label-default">draft</span>
+        <a
+          href={`${this.props.path}#edit`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="draft-delete"
+          data-toggle="tooltip"
+          data-placement="bottom"
+          title={this.props.t('Edit')}
+          onClick={() => { return this.props.clearDraft(this.props.path) }}
+        >
+          <i className="icon-note" />
+        </a>
+      </Fragment>
     );
   }
 
@@ -90,17 +106,28 @@ class Draft extends React.Component {
     const { t } = this.props;
 
     return (
-      <li className="page-list-li d-flex align-items-center">
-        <OverlayTrigger placement="right" overlay={this.renderPopover(this.props.path, this.props.markdown)}>
-          <span onClick={this.copyMarkdownToClipboard}>
-            <span className="icon-doc"></span>
+      <li className="d-flex align-items-center">
+        <OverlayTrigger placement="bottom" overlay={this.renderPopover(this.props.path, this.props.markdown)}>
+          <span
+            data-toggle="tooltip"
+            data-placement="bottom"
+            title={t('Click to copy')}
+            onClick={this.copyMarkdownToClipboard}
+          >
+            <i className="icon-doc"></i>
             {this.props.path} {this.props.isExist ? `(${t('page exists')})` : ''}
           </span>
         </OverlayTrigger>
         {this.renderButton(this.props.isExist, this.props.markdown)}
-        <button type="button" className="btn-danger mx-1" onClick={() => { return this.props.clearDraft(this.props.path) }}>
-          <span className="icon-trash"></span> {t('Delete')}
-        </button>
+        <a
+          className="text-danger draft-delete"
+          data-toggle="tooltip"
+          data-placement="top"
+          title={t('Delete')}
+          onClick={() => { return this.props.clearDraft(this.props.path) }}
+        >
+          <i className="icon-trash" />
+        </a>
       </li>
     );
   }
