@@ -75,6 +75,7 @@ export default class MyDraftList extends React.Component {
         <Draft
           key={draft.path}
           crowi={this.props.crowi}
+          crowiOriginRenderer={this.props.crowiOriginRenderer}
           path={draft.path}
           markdown={draft.markdown}
           isExist={draft.isExist}
@@ -219,7 +220,7 @@ export default class MyDraftList extends React.Component {
 
     return (
       <div className="page-list-container-create">
-        <button type="button" className="btn-danger" onClick={this.clearAllDrafts}>Clear</button>
+        <button type="button" className="btn-danger mb-3" onClick={this.clearAllDrafts}>Delete All</button>
         <ul className="page-list-ul page-list-ul-flat">
           {draftList}
         </ul>
@@ -232,9 +233,7 @@ export default class MyDraftList extends React.Component {
 
 
 MyDraftList.propTypes = {
-  crowi: PropTypes.object.isRequired,
   limit: PropTypes.number,
-};
-
-MyDraftList.defaultProps = {
+  crowi: PropTypes.object.isRequired,
+  crowiOriginRenderer: PropTypes.object.isRequired,
 };

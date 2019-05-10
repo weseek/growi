@@ -67,12 +67,13 @@
 
   .user-page-content {
     #user-draft-list {
-      button {
-        $size: 1.5em;
-
-        width: $size;
-        height: $size;
-        border-radius: 50%;
+      li {
+        button {
+          min-width: 55px;
+          padding: 0 5px;
+          font-size: x-small;
+          border-radius: 10px;
+        }
       }
     }
   }
