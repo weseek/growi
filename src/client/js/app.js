@@ -17,6 +17,7 @@ import GrowiRenderer from './util/GrowiRenderer';
 
 import HeaderSearchBox from './components/HeaderSearchBox';
 import SearchPage from './components/SearchPage';
+import TagsList from './components/TagsList';
 import PageEditor from './components/PageEditor';
 // eslint-disable-next-line import/no-duplicates
 import OptionsSelector from './components/PageEditor/OptionsSelector';
@@ -31,7 +32,7 @@ import CommentForm from './components/PageComment/CommentForm';
 import PageAttachment from './components/PageAttachment';
 import PageStatusAlert from './components/PageStatusAlert';
 import RevisionPath from './components/Page/RevisionPath';
-import TagViewer from './components/Page/TagViewer';
+import TagLabel from './components/Page/TagLabel';
 import RevisionUrl from './components/Page/RevisionUrl';
 import BookmarkButton from './components/BookmarkButton';
 import LikeButton from './components/LikeButton';
@@ -297,6 +298,8 @@ const componentMappings = {
   'bookmark-button': <BookmarkButton pageId={pageId} crowi={crowi} />,
   'bookmark-button-lg': <BookmarkButton pageId={pageId} crowi={crowi} size="lg" />,
 
+  'tags-page': <I18nextProvider i18n={i18n}><TagsList crowi={crowi} /></I18nextProvider>,
+
   'create-page-name-input': <PagePathAutoComplete crowi={crowi} initializedPath={pagePath} addTrailingSlash />,
   'rename-page-name-input': <PagePathAutoComplete crowi={crowi} initializedPath={pagePath} />,
   'duplicate-page-name-input': <PagePathAutoComplete crowi={crowi} initializedPath={pagePath} />,
@@ -310,8 +313,9 @@ if (pageId) {
 if (pagePath) {
   componentMappings.page = <Page crowi={crowi} crowiRenderer={crowiRenderer} markdown={markdown} pagePath={pagePath} onSaveWithShortcut={saveWithShortcut} />;
   componentMappings['revision-path'] = <RevisionPath pagePath={pagePath} crowi={crowi} />;
-  componentMappings['tag-viewer'] = <TagViewer crowi={crowi} pageId={pageId} sendTagData={setTagData} />;
-  componentMappings['revision-url'] = <RevisionUrl pageId={pageId} pagePath={pagePath} />;
+  // [TODO] there is a need to decide the destination of RevisionUrl
+  componentMappings['revision-url'] = <RevisionUrl crowi={crowi} pageId={pageId} pagePath={pagePath} sendTagData={setTagData} />;
+  componentMappings['tag-label'] = <I18nextProvider i18n={i18n}><TagLabel crowi={crowi} pageId={pageId} sendTagData={setTagData} /></I18nextProvider>;
 }
 
 Object.keys(componentMappings).forEach((key) => {
