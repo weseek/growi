@@ -70,6 +70,13 @@ module.exports = {
         integrity: '',
       },
     },
+    {
+      name: 'redoc-standalone',
+      url: 'https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js',
+      args: {
+        integrity: '',
+      },
+    },
   ],
   style: [
     {

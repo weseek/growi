@@ -6,6 +6,7 @@ const pkg = require('@root/package.json');
 const InterceptorManager = require('@commons/service/interceptor-manager');
 const CdnResourcesService = require('@commons/service/cdn-resources-service');
 const Xss = require('@commons/service/xss');
+
 const path = require('path');
 
 const sep = path.sep;

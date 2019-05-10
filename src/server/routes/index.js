@@ -234,6 +234,7 @@ module.exports = function(crowi, app) {
   app.post('/_api/hackmd.saveOnHackmd' , accessTokenParser , loginRequired(crowi, app) , csrf, hackmd.validateForApi, hackmd.saveOnHackmd);
 
   // API v3
+  app.use('/api-docs', require('./apiv3/docs')(crowi));
   app.use('/_api/v3', require('./apiv3')(crowi));
 
   app.get('/*/$'                   , loginRequired(crowi, app, false) , page.showPageWithEndOfSlash, page.notFound);

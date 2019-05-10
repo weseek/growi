@@ -5,6 +5,7 @@
 * Improvement: Show display name when mouse hover to user image
 * Fix: URL in slack message is broken on Safari
 * Fix: Registration does not work when basic auth is enabled
+* Support: Publish API docs with swagger-jsdoc and ReDoc
 * Support: Upgrade libs
     * cmd-env
     * elasticsearch
