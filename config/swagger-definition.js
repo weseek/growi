@@ -1,8 +1,10 @@
+const pkg = require('../package.json');
+
 module.exports = {
   openapi: '3.0.1',
   info: {
     title: 'GROWI REST API v3',
-    version: '3.0.0',
+    version: pkg.version,
   },
   externalDocs: {
     description: 'GROWI Docs',
