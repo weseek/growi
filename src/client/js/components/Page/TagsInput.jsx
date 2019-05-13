@@ -7,11 +7,11 @@ import { AsyncTypeahead } from 'react-bootstrap-typeahead';
  * @author Yuki Takei <yuki@weseek.co.jp>
  *
  * @export
- * @class PageTagForm
+ * @class TagsInput
  * @extends {React.Component}
  */
 
-export default class PageTagForm extends React.Component {
+export default class TagsInput extends React.Component {
 
   constructor(props) {
     super(props);
@@ -83,11 +83,11 @@ export default class PageTagForm extends React.Component {
 
 }
 
-PageTagForm.propTypes = {
+TagsInput.propTypes = {
   crowi: PropTypes.object.isRequired,
   tags: PropTypes.array.isRequired,
   onTagsUpdated: PropTypes.func.isRequired,
 };
 
-PageTagForm.defaultProps = {
+TagsInput.defaultProps = {
 };

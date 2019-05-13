@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import * as toastr from 'toastr';
 import Button from 'react-bootstrap/es/Button';
 import Modal from 'react-bootstrap/es/Modal';
-import PageTagForm from '../PageTagForm';
+import TagsInput from './TagsInput';
 
 class TagEditor extends React.Component {
 
@@ -89,7 +89,7 @@ class TagEditor extends React.Component {
           <Modal.Title className="text-white">Edit Tags</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <PageTagForm crowi={this.props.crowi} tags={this.state.tags} onTagsUpdated={this.onTagsUpdatedByFormHandler} />
+          <TagsInput crowi={this.props.crowi} tags={this.state.tags} onTagsUpdated={this.onTagsUpdatedByFormHandler} />
         </Modal.Body>
         <Modal.Footer>
           <Button variant="primary" onClick={this.handleSubmit}>
