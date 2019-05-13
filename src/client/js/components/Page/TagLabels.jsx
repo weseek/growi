@@ -42,25 +42,27 @@ class TagLabels extends React.Component {
 
     for (let i = 0; i < this.state.tags.length; i++) {
       tagElements.push(
-        <span key={`${pageId}_${i}`}>
+        <span key={`${pageId}_${i}`} className="text-muted">
           <i className="tag-icon icon-tag mr-1"></i>
-          <a className="tag-name text-muted mr-2" href={`/_search?q=tag:${this.state.tags[i]}`} key={i.toString()}>{this.state.tags[i]}</a>
+          <a className="tag-name mr-2" href={`/_search?q=tag:${this.state.tags[i]}`} key={i.toString()}>{this.state.tags[i]}</a>
         </span>,
       );
 
     }
 
     return (
-      <div className="tag-viewer text-muted">
+      <div className="tag-viewer">
         {this.state.tags.length === 0 && (
-          <a className="display-of-notag text-muted" onClick={this.showEditor}>{ t('Add tags for this page') }</a>
+          <a className="btn btn-link btn-edit-tags no-tags p-0" onClick={this.showEditor}>
+            { t('Add tags for this page') } <i className="manage-tags ml-2 icon-plus"></i>
+          </a>
         )}
         {tagElements}
-        <i
-          className="manage-tags ml-2 icon-plus"
-          onClick={this.showEditor}
-        >
-        </i>
+        {this.state.tags.length > 0 && (
+          <a className="btn btn-link btn-edit-tags p-0" onClick={this.showEditor}>
+            <i className="manage-tags ml-2 icon-plus"></i> { t('Edit tags for this page') }
+          </a>
+        )}
 
         <TagEditor
           ref={(c) => { this.tagEditor = c }}
