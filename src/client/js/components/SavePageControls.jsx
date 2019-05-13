@@ -47,6 +47,7 @@ class SavePageControls extends React.PureComponent {
   }
 
   submit() {
+    this.props.crowi.setIsDocSaved(true);
     this.props.onSubmit();
   }
 

@@ -38,6 +38,7 @@ export default class PageEditor extends React.Component {
     this.setCaretLine = this.setCaretLine.bind(this);
     this.focusToEditor = this.focusToEditor.bind(this);
     this.onMarkdownChanged = this.onMarkdownChanged.bind(this);
+    this.onSave = this.onSave.bind(this);
     this.onUpload = this.onUpload.bind(this);
     this.onEditorScroll = this.onEditorScroll.bind(this);
     this.onEditorScrollCursorIntoView = this.onEditorScrollCursorIntoView.bind(this);
@@ -45,6 +46,7 @@ export default class PageEditor extends React.Component {
     this.saveDraft = this.saveDraft.bind(this);
     this.clearDraft = this.clearDraft.bind(this);
     this.apiErrorHandler = this.apiErrorHandler.bind(this);
+    this.showUnsavedWarning = this.showUnsavedWarning.bind(this);
 
     // for scrolling
     this.lastScrolledDateWithCursor = null;
@@ -62,6 +64,20 @@ export default class PageEditor extends React.Component {
   componentWillMount() {
     // initial rendering
     this.renderPreview(this.state.markdown);
+
+    this.props.crowi.window.addEventListener('beforeunload', this.showUnsavedWarning);
+  }
+
+  componentWillUnmount() {
+    this.props.crowi.window.removeEventListener('beforeunload', this.showUnsavedWarning);
+  }
+
+  showUnsavedWarning(e) {
+    if (!this.props.crowi.getIsDocSaved()) {
+      // display browser default message
+      e.returnValue = '';
+      return '';
+    }
   }
 
   getMarkdown() {
@@ -111,6 +127,12 @@ export default class PageEditor extends React.Component {
   onMarkdownChanged(value) {
     this.renderPreviewWithDebounce(value);
     this.saveDraftWithDebounce();
+    this.props.crowi.setIsDocSaved(false);
+  }
+
+  onSave() {
+    this.props.onSaveWithShortcut(this.state.markdown);
+    this.props.crowi.setIsDocSaved(true);
   }
 
   /**
@@ -330,9 +352,7 @@ export default class PageEditor extends React.Component {
             onScrollCursorIntoView={this.onEditorScrollCursorIntoView}
             onChange={this.onMarkdownChanged}
             onUpload={this.onUpload}
-            onSave={() => {
-              this.props.onSaveWithShortcut(this.state.markdown);
-            }}
+            onSave={this.onSave}
           />
         </div>
         <div className="col-md-6 hidden-sm hidden-xs page-editor-preview-container">
