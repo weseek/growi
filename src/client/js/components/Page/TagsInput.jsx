@@ -29,6 +29,10 @@ export default class TagsInput extends React.Component {
     this.handleSelect = this.handleSelect.bind(this);
   }
 
+  componentDidMount() {
+    this.typeahead.getInstance().focus();
+  }
+
   handleChange(selected) {
     // send tags to TagLabel Component when user add tag to form everytime
     this.setState({ selected }, () => {
@@ -62,7 +66,7 @@ export default class TagsInput extends React.Component {
     return (
       <div className="tag-typeahead">
         <AsyncTypeahead
-          id="async-typeahead"
+          id="tag-typeahead-asynctypeahead"
           ref={(typeahead) => { this.typeahead = typeahead }}
           caseSensitive={false}
           defaultSelected={this.state.defaultPageTags}

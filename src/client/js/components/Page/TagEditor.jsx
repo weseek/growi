@@ -24,9 +24,6 @@ class TagEditor extends React.Component {
     this.apiErrorHandler = this.apiErrorHandler.bind(this);
   }
 
-  async componentWillMount() {
-  }
-
   show(tags) {
     const isEditorMode = this.props.crowi.getCrowiForJquery().getCurrentEditorMode();
     this.setState({ isOpenModal: true, isEditorMode, tags });
