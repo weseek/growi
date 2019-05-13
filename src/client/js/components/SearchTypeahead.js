@@ -43,7 +43,7 @@ export default class SearchTypeahead extends React.Component {
   componentDidMount() {
     // **MEMO** This doesn't work at this time -- 2019.05.13 Yuki Takei
     // It is needed to use Modal component of react-bootstrap when showing Move/Duplicate/CreateNewPage modals
-    this.typeahead.getInstance().focus();
+    // this.typeahead.getInstance().focus();
   }
 
   componentWillUnmount() {
