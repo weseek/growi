@@ -43,8 +43,8 @@ class TagLabels extends React.Component {
     for (let i = 0; i < this.state.tags.length; i++) {
       tagElements.push(
         <span key={`${pageId}_${i}`}>
-          <i className="tag-icon icon-tag"></i>
-          <a className="tag-name text-muted ml-1" href={`/_search?q=tag:${this.state.tags[i]}`} key={i.toString()}>{this.state.tags[i]}</a>
+          <i className="tag-icon icon-tag mr-1"></i>
+          <a className="tag-name text-muted mr-2" href={`/_search?q=tag:${this.state.tags[i]}`} key={i.toString()}>{this.state.tags[i]}</a>
         </span>,
       );
 
