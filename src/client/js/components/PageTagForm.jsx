@@ -19,8 +19,8 @@ export default class PageTagForm extends React.Component {
     this.state = {
       resultTags: [],
       isLoading: false,
-      selected: this.props.currentPageTags,
-      defaultPageTags: this.props.currentPageTags,
+      selected: this.props.tags,
+      defaultPageTags: this.props.tags,
     };
     this.crowi = this.props.crowi;
 
@@ -32,7 +32,7 @@ export default class PageTagForm extends React.Component {
   handleChange(selected) {
     // send tags to TagLabel Component when user add tag to form everytime
     this.setState({ selected }, () => {
-      this.props.addNewTag(this.state.selected);
+      this.props.onTagsUpdated(this.state.selected);
     });
   }
 
@@ -85,8 +85,8 @@ export default class PageTagForm extends React.Component {
 
 PageTagForm.propTypes = {
   crowi: PropTypes.object.isRequired,
-  currentPageTags: PropTypes.array.isRequired,
-  addNewTag: PropTypes.func.isRequired,
+  tags: PropTypes.array.isRequired,
+  onTagsUpdated: PropTypes.func.isRequired,
 };
 
 PageTagForm.defaultProps = {
