@@ -1,7 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import CopyButton from '../CopyButton';
+import Dropdown from 'react-bootstrap/es/Dropdown';
+import MenuItem from 'react-bootstrap/es/MenuItem';
+
+import Clipboard from 'react-clipboard.js';
 
 export default class RevisionPath extends React.Component {
 
@@ -49,9 +52,10 @@ export default class RevisionPath extends React.Component {
   }
 
   showToolTip() {
-    $('#btnCopy').tooltip('show');
+    const buttonId = '#copyPagePathDropdown';
+    $(buttonId).tooltip('show');
     setTimeout(() => {
-      $('#btnCopy').tooltip('hide');
+      $(buttonId).tooltip('hide');
     }, 1000);
   }
 
@@ -110,12 +114,20 @@ export default class RevisionPath extends React.Component {
           <a href="/">/</a>
         </span>
         {afterElements}
-        <CopyButton
-          buttonId="btnCopyRevisionPath"
-          text={this.props.pagePath}
-          buttonClassName="btn btn-default btn-copy"
-          iconClassName="ti-clipboard"
-        />
+
+        <Dropdown id="copyPagePathDropdown">
+
+          <Dropdown.Toggle bsSize="sm">
+            <i className="ti-clipboard"></i>
+          </Dropdown.Toggle>
+
+          <Dropdown.Menu>
+            <MenuItem>hoge</MenuItem>
+            <MenuItem>fuga</MenuItem>
+          </Dropdown.Menu>
+
+        </Dropdown>
+
         <a href="#edit" className="btn btn-default btn-edit" style={editButtonStyle}>
           <i className="icon-note" />
         </a>
