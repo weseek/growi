@@ -91,6 +91,7 @@ export default class MyDraftList extends React.Component {
     this.setState((prevState) => {
       return {
         drafts: prevState.drafts.filter((draft) => { return draft.path !== path }),
+        currentDrafts: prevState.drafts.filter((draft) => { return draft.path !== path }),
       };
     });
   }
