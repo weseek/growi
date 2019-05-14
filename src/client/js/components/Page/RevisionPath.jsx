@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Dropdown from 'react-bootstrap/es/Dropdown';
 import MenuItem from 'react-bootstrap/es/MenuItem';
 
-import Clipboard from 'react-clipboard.js';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 export default class RevisionPath extends React.Component {
 
@@ -117,13 +117,15 @@ export default class RevisionPath extends React.Component {
 
         <Dropdown id="copyPagePathDropdown">
 
-          <Dropdown.Toggle bsSize="sm">
+          <Dropdown.Toggle bsSize="sm" data-toggle="tooltip" data-placement="bottom" data-trigger="manual" title="copied!">
             <i className="ti-clipboard"></i>
           </Dropdown.Toggle>
 
           <Dropdown.Menu>
             <MenuItem>hoge</MenuItem>
-            <MenuItem>fuga</MenuItem>
+            <CopyToClipboard text="fuga" onCopy={this.showToolTip}>
+              <MenuItem>fuga</MenuItem>
+            </CopyToClipboard>
           </Dropdown.Menu>
 
         </Dropdown>
