@@ -71,7 +71,7 @@ let pageContent = '';
 let markdown = '';
 let slackChannels;
 let pageTags = [];
-let templateTags = '';
+let templateTagData = '';
 if (mainContent !== null) {
   pageId = mainContent.getAttribute('data-page-id') || null;
   pageRevisionId = mainContent.getAttribute('data-page-revision-id');
@@ -81,7 +81,7 @@ if (mainContent !== null) {
   hasDraftOnHackmd = !!mainContent.getAttribute('data-page-has-draft-on-hackmd');
   pagePath = mainContent.attributes['data-path'].value;
   slackChannels = mainContent.getAttribute('data-slack-channels') || '';
-  templateTags = mainContent.getAttribute('data-template-tags') || '';
+  templateTagData = mainContent.getAttribute('data-template-tags') || '';
   const rawText = document.getElementById('raw-text-original');
   if (rawText) {
     pageContent = rawText.innerHTML;
@@ -315,7 +315,7 @@ if (pageId) {
 if (pagePath) {
   componentMappings.page = <Page crowi={crowi} crowiRenderer={crowiRenderer} markdown={markdown} pagePath={pagePath} onSaveWithShortcut={saveWithShortcut} />;
   componentMappings['revision-path'] = <RevisionPath pagePath={pagePath} crowi={crowi} />;
-  componentMappings['tag-label'] = <I18nextProvider i18n={i18n}><TagLabels crowi={crowi} pageId={pageId} sendTagData={setTagData} templateTags={templateTags} /></I18nextProvider>;
+  componentMappings['tag-label'] = <I18nextProvider i18n={i18n}><TagLabels crowi={crowi} pageId={pageId} sendTagData={setTagData} templateTagData={templateTagData} /></I18nextProvider>;
 }
 
 Object.keys(componentMappings).forEach((key) => {
