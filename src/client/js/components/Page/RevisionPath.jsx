@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { withTranslation } from 'react-i18next';
+
 import CopyDropdown from './CopyDropdown';
 
-export default class RevisionPath extends React.Component {
+class RevisionPath extends React.Component {
 
   constructor(props) {
     super(props);
@@ -112,7 +114,7 @@ export default class RevisionPath extends React.Component {
         </span>
         {afterElements}
 
-        <CopyDropdown pagePath={this.props.pagePath} pageId={this.props.pageId} buttonStyle={buttonStyle}></CopyDropdown>
+        <CopyDropdown t={this.props.t} pagePath={this.props.pagePath} pageId={this.props.pageId} buttonStyle={buttonStyle}></CopyDropdown>
 
         <a href="#edit" className="btn btn-default btn-edit" style={buttonStyle}>
           <i className="icon-note" />
@@ -124,7 +126,10 @@ export default class RevisionPath extends React.Component {
 }
 
 RevisionPath.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
   crowi: PropTypes.object.isRequired,
   pagePath: PropTypes.string.isRequired,
   pageId: PropTypes.string,
 };
+
+export default withTranslation()(RevisionPath);
