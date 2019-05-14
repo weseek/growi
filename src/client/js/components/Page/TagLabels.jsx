@@ -56,7 +56,7 @@ class TagLabels extends React.Component {
     }
 
     return (
-      <div className="tag-viewer">
+      <div className={`tag-viewer ${this.props.pageId ? 'existed-page' : 'new-page'}`}>
         {this.state.tags.length === 0 && (
           <a className="btn btn-link btn-edit-tags no-tags p-0" onClick={this.showEditor}>
             { t('Add tags for this page') } <i className="manage-tags ml-2 icon-plus"></i>
