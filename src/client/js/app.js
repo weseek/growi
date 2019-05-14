@@ -315,9 +315,7 @@ if (pageId) {
 if (pagePath) {
   componentMappings.page = <Page crowi={crowi} crowiRenderer={crowiRenderer} markdown={markdown} pagePath={pagePath} onSaveWithShortcut={saveWithShortcut} />;
   componentMappings['revision-path'] = <RevisionPath pagePath={pagePath} crowi={crowi} />;
-  // [TODO] there is a need to decide the destination of RevisionUrl
-  componentMappings['revision-url'] = <RevisionUrl crowi={crowi} pageId={pageId} pagePath={pagePath} sendTagData={setTagData} />;
-  componentMappings['tag-label'] = <I18nextProvider i18n={i18n}><TagLabel crowi={crowi} pageId={pageId} sendTagData={setTagData} templateTags={templateTags} /></I18nextProvider>;
+  componentMappings['tag-label'] = <I18nextProvider i18n={i18n}><TagLabels crowi={crowi} pageId={pageId} sendTagData={setTagData} /></I18nextProvider>;
 }
 
 Object.keys(componentMappings).forEach((key) => {
