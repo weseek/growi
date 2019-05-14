@@ -54,13 +54,13 @@ class TagLabels extends React.Component {
       <div className="tag-viewer">
         {this.state.tags.length === 0 && (
           <a className="btn btn-link btn-edit-tags no-tags p-0" onClick={this.showEditor}>
-            {t('Add tags for this page')} <i className="manage-tags ml-2 icon-plus"></i>
+            { t('Add tags for this page') } <i className="manage-tags ml-2 icon-plus"></i>
           </a>
         )}
         {tagElements}
         {this.state.tags.length > 0 && (
           <a className="btn btn-link btn-edit-tags p-0" onClick={this.showEditor}>
-            <i className="manage-tags ml-2 icon-plus"></i> {t('Edit tags for this page')}
+            <i className="manage-tags ml-2 icon-plus"></i> { t('Edit tags for this page') }
           </a>
         )}
 
