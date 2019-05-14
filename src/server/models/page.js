@@ -933,12 +933,11 @@ module.exports = function(crowi) {
 
     if (childrenTemplate) {
       templateBody = childrenTemplate.revision.body;
+      templateTags = await childrenTemplate.findRelatedTagsById();
     }
     else if (decendantsTemplate) {
       templateBody = decendantsTemplate.revision.body;
-    }
-    if (templates.length > 0) {
-      templateTags = await templates[0].findRelatedTagsById();
+      templateTags = await decendantsTemplate.findRelatedTagsById();
     }
 
     return { templateBody, templateTags };
