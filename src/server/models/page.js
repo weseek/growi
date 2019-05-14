@@ -937,9 +937,8 @@ module.exports = function(crowi) {
     else if (decendantsTemplate) {
       templateBody = decendantsTemplate.revision.body;
     }
-
-    if (templates > 0) {
-      templateTags = await templates[0].getRelatedTagsById();
+    if (templates.length > 0) {
+      templateTags = await templates[0].findRelatedTagsById();
     }
 
     return { templateBody, templateTags };
