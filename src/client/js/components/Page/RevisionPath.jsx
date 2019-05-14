@@ -1,10 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Dropdown from 'react-bootstrap/es/Dropdown';
-import MenuItem from 'react-bootstrap/es/MenuItem';
-
-import { CopyToClipboard } from 'react-copy-to-clipboard';
+import CopyDropdown from './CopyDropdown';
 
 export default class RevisionPath extends React.Component {
 
@@ -115,20 +112,7 @@ export default class RevisionPath extends React.Component {
         </span>
         {afterElements}
 
-        <Dropdown id="copyPagePathDropdown">
-
-          <Dropdown.Toggle bsSize="sm" data-toggle="tooltip" data-placement="bottom" data-trigger="manual" title="copied!">
-            <i className="ti-clipboard"></i>
-          </Dropdown.Toggle>
-
-          <Dropdown.Menu>
-            <MenuItem>hoge</MenuItem>
-            <CopyToClipboard text="fuga" onCopy={this.showToolTip}>
-              <MenuItem>fuga</MenuItem>
-            </CopyToClipboard>
-          </Dropdown.Menu>
-
-        </Dropdown>
+        <CopyDropdown pagePath={this.props.pagePath} pageId={this.props.pageId}></CopyDropdown>
 
         <a href="#edit" className="btn btn-default btn-edit" style={editButtonStyle}>
           <i className="icon-note" />
@@ -140,6 +124,7 @@ export default class RevisionPath extends React.Component {
 }
 
 RevisionPath.propTypes = {
-  pagePath: PropTypes.string.isRequired,
   crowi: PropTypes.object.isRequired,
+  pagePath: PropTypes.string.isRequired,
+  pageId: PropTypes.string,
 };
