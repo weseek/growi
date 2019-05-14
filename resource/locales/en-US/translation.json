@@ -3,6 +3,8 @@
   "Edit": "Edit",
   "Delete": "Delete",
   "Duplicate": "Duplicate",
+  "Copy": "Copy",
+  "Click to copy": "Click to copy",
   "Move": "Move",
   "Moved": "Moved",
   "Unlinked": "Unlinked",
@@ -78,7 +80,7 @@
   "Hide": "Hide",
   "Disclose E-mail": "Disclose E-mail",
 
-
+  "page exists": "this page already exists",
 
   "Create today's": "Create today's ...",
   "Memo": "memo",
@@ -101,6 +103,7 @@
   "Load latest": "Load latest",
   "edited this page": "edited this page.",
 
+  "Resume Drafts": "Your Drafts",
   "Deleted Pages": "Deleted Pages",
   "Sign out": "Logout",
 
@@ -623,8 +626,8 @@
     "write_java": "You can write Javascript that is applied to whole system.",
     "attach_title_header": "Add h1 section when create new page automatically",
     "attach_title_header_desc": "Add page path to the first line as h1 section when create new page",
-    "recent_created_page_num": "Recent Created Paging num",
-    "recent_created_page_num_desc": "The number of pages to show in Recent Created Page List on the user's home"
+    "recent_created__n_draft_num_desc": "Number of Recently Created Pages & Drafts Displayed",
+    "recently_created_n_draft_num_desc": "Number of recently created pages and drafts displayed on user page"
   },
 
   "user_management": {

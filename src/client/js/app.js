@@ -32,12 +32,12 @@ import CommentForm from './components/PageComment/CommentForm';
 import PageAttachment from './components/PageAttachment';
 import PageStatusAlert from './components/PageStatusAlert';
 import RevisionPath from './components/Page/RevisionPath';
-import TagLabel from './components/Page/TagLabel';
-import RevisionUrl from './components/Page/RevisionUrl';
+import TagLabels from './components/Page/TagLabels';
 import BookmarkButton from './components/BookmarkButton';
 import LikeButton from './components/LikeButton';
 import PagePathAutoComplete from './components/PagePathAutoComplete';
 import RecentCreated from './components/RecentCreated/RecentCreated';
+import MyDraftList from './components/MyDraftList/MyDraftList';
 import UserPictureList from './components/User/UserPictureList';
 
 import CustomCssEditor from './components/Admin/CustomCssEditor';
@@ -402,6 +402,25 @@ if (recentCreatedControlsElem) {
     <RecentCreated crowi={crowi} pageId={pageId} limit={limit}>
 
     </RecentCreated>, document.getElementById('user-created-list'),
+  );
+}
+
+const myDraftControlsElem = document.getElementById('user-draft-list');
+if (myDraftControlsElem) {
+  let limit = crowi.getConfig().recentCreatedLimit;
+  if (limit == null) {
+    limit = 10;
+  }
+
+  ReactDOM.render(
+    <I18nextProvider i18n={i18n}>
+      <MyDraftList
+        limit={limit}
+        crowi={crowi}
+        crowiOriginRenderer={crowiRenderer}
+      />
+    </I18nextProvider>,
+    myDraftControlsElem,
   );
 }
 

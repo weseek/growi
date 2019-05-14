@@ -30,6 +30,7 @@ export default class Crowi {
     this.socketClientId = Math.floor(Math.random() * 100000);
     this.page = undefined;
     this.pageEditor = undefined;
+    this.isDocSaved = true;
 
     this.fetchUsers = this.fetchUsers.bind(this);
     this.apiGet = this.apiGet.bind(this);
@@ -77,6 +78,14 @@ export default class Crowi {
 
   setPageEditor(pageEditor) {
     this.pageEditor = pageEditor;
+  }
+
+  setIsDocSaved(isSaved) {
+    this.isDocSaved = isSaved;
+  }
+
+  getIsDocSaved() {
+    return this.isDocSaved;
   }
 
   getWebSocket() {
@@ -162,6 +171,10 @@ export default class Crowi {
   clearDraft(path) {
     delete this.draft[path];
     this.localStorage.setItem('draft', JSON.stringify(this.draft));
+  }
+
+  clearAllDrafts() {
+    this.localStorage.removeItem('draft');
   }
 
   saveDraft(path, body) {

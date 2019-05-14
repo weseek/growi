@@ -8,13 +8,9 @@
       </div>
       <div class="title-container">
         <h1 class="title" id="revision-path"></h1>
-
-        <!-- [TODO] commentout Until the destination is decided -->
-        <!-- <div id="revision-url" class="url-line"></div> -->
-        {% if not forbidden %}
-          <div class="title" id="tag-label"></div>
+        {% if page and not forbidden and not isTrashPage() %}
+          <div id="tag-label"></div>
         {% endif %}
-
       </div>
       {% if page %}
       {% include '../../widget/header-buttons.html' %}

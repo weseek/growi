@@ -3,6 +3,8 @@
   "Edit": "編集",
   "Delete": "削除",
   "Duplicate": "複製",
+  "Copy": "コピー",
+  "Click to copy": "クリックでコピー",
   "Move": "移動",
   "Moved": "移動しました",
   "Unlinked": "リダイレクト削除",
@@ -76,8 +78,7 @@
   "Hide": "非公開",
   "Disclose E-mail": "メールアドレスの公開",
 
-
-
+  "page exists": "このページはすでに存在しています",
 
   "Create today's": "今日の◯◯を作成",
   "Memo": "メモ",
@@ -113,6 +114,7 @@
   "The whitelist of registration permission E-mail address": "登録許可メールアドレスの<br>ホワイトリスト",
   "Selecting authentication mechanism": "認証機構選択",
   "Add tags for this page": "タグを付ける",
+  "Edit tags for this page": "タグを編集する",
   "You have no tag, You can set tags on pages": "使用中のタグがありません",
 
 
@@ -120,6 +122,7 @@
   "Load latest": "最新版を読み込む",
   "edited this page": "さんがこのページを編集しました。",
 
+  "Resume Drafts": "下書きを続ける",
   "Deleted Pages": "削除済みページ",
   "Sign out": "ログアウト",
 
@@ -644,8 +647,8 @@
     "write_java": "システム全体に適用されるJavaScriptを記述できます。",
     "attach_title_header": "新規ページ作成時の h1 セクション自動挿入",
     "attach_title_header_desc": "新規作成したページの1行目に、ページのパスを h1 セクションとして挿入します。",
-    "recent_created_page_num": "Recent Created ページングサイズ",
-    "recent_created_page_num_desc": "ホーム画面の Recent Created で、1ページに表示する件数を設定します。"
+    "recent_created__n_draft_num_desc": "最近作成したページと下書きの表示数",
+    "recently_created_n_draft_num_desc": "ホーム画面の Recently Created での、1ページの表示数を設定します。"
   },
 
   "user_management": {

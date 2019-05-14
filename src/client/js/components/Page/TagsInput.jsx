@@ -7,11 +7,11 @@ import { AsyncTypeahead } from 'react-bootstrap-typeahead';
  * @author Yuki Takei <yuki@weseek.co.jp>
  *
  * @export
- * @class PageTagForm
+ * @class TagsInput
  * @extends {React.Component}
  */
 
-export default class PageTagForm extends React.Component {
+export default class TagsInput extends React.Component {
 
   constructor(props) {
     super(props);
@@ -19,8 +19,8 @@ export default class PageTagForm extends React.Component {
     this.state = {
       resultTags: [],
       isLoading: false,
-      selected: this.props.currentPageTags,
-      defaultPageTags: this.props.currentPageTags,
+      selected: this.props.tags,
+      defaultPageTags: this.props.tags,
     };
     this.crowi = this.props.crowi;
 
@@ -29,10 +29,14 @@ export default class PageTagForm extends React.Component {
     this.handleSelect = this.handleSelect.bind(this);
   }
 
+  componentDidMount() {
+    this.typeahead.getInstance().focus();
+  }
+
   handleChange(selected) {
-    // list is a list of object about value. an element have customOption, id and label properties
+    // send tags to TagLabel Component when user add tag to form everytime
     this.setState({ selected }, () => {
-      this.props.addNewTag(this.state.selected);
+      this.props.onTagsUpdated(this.state.selected);
     });
   }
 
@@ -62,7 +66,7 @@ export default class PageTagForm extends React.Component {
     return (
       <div className="tag-typeahead">
         <AsyncTypeahead
-          id="async-typeahead"
+          id="tag-typeahead-asynctypeahead"
           ref={(typeahead) => { this.typeahead = typeahead }}
           caseSensitive={false}
           defaultSelected={this.state.defaultPageTags}
@@ -83,11 +87,11 @@ export default class PageTagForm extends React.Component {
 
 }
 
-PageTagForm.propTypes = {
+TagsInput.propTypes = {
   crowi: PropTypes.object.isRequired,
-  currentPageTags: PropTypes.array.isRequired,
-  addNewTag: PropTypes.func.isRequired,
+  tags: PropTypes.array.isRequired,
+  onTagsUpdated: PropTypes.func.isRequired,
 };
 
-PageTagForm.defaultProps = {
+TagsInput.defaultProps = {
 };

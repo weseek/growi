@@ -26,7 +26,7 @@ module.exports = function(crowi, app) {
   };
 
   /**
-   * @api {post} /tags.update update tags
+   * @api {post} /tags.update update tags on view-mode (not edit-mode)
    * @apiName UpdateTag
    * @apiGroup Tag
    *
@@ -35,9 +35,15 @@ module.exports = function(crowi, app) {
    */
   api.update = async function(req, res) {
     const Page = crowi.model('Page');
+    const tagEvent = crowi.event('tag');
+    const pageId = req.body.pageId;
+    const tags = req.body.tags;
+
     try {
-      const page = await Page.findById(req.body.pageId);
-      await page.updateTags(req.body.tags);
+      const page = await Page.findById(pageId);
+      await page.updateTags(tags);
+
+      tagEvent.emit('update', page, tags);
     }
     catch (err) {
       return res.json(ApiResponse.error(err));

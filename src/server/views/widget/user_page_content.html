@@ -4,7 +4,10 @@
       <a href="#user-bookmark-list" data-toggle="tab"><i class="icon-star"></i> Bookmarks</a>
     </li>
     <li>
-      <a href="#user-created-list" data-toggle="tab"><i class="icon-clock"></i> Recent Created</a>
+      <a href="#user-created-list" data-toggle="tab"><i class="icon-clock"></i> Recently Created</a>
+    </li>
+    <li>
+      <a href="#user-draft-list" data-toggle="tab"><i class="icon-docs"></i> My Drafts</a>
     </li>
     {% if user._id.toString() == pageUser._id.toString() %}
     <li>
@@ -29,5 +32,25 @@
       <div class="page-list-container">
       </div>
     </div>
+
+    <div class="tab-pane user-draft-list page-list" id="user-draft-list">
+      <div class="page-list-container">
+      </div>
+    </div>
   </div>
 </div>
+
+<script>
+  function activateTab(tab){
+    $('.nav-tabs a[href="#' + tab + '"]').tab('show');
+  };
+
+  window.addEventListener('load', function(e) {
+    // hash on page
+    if (location.hash) {
+      if (location.hash == '#user-draft-list') {
+        activateTab('user-draft-list');
+      }
+    }
+  });
+</script>
