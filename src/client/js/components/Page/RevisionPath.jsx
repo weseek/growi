@@ -79,7 +79,7 @@ export default class RevisionPath extends React.Component {
       marginLeft: '0.2em',
       marginRight: '0.2em',
     };
-    const editButtonStyle = {
+    const buttonStyle = {
       marginLeft: '0.5em',
       padding: '0 2px',
     };
@@ -112,9 +112,9 @@ export default class RevisionPath extends React.Component {
         </span>
         {afterElements}
 
-        <CopyDropdown pagePath={this.props.pagePath} pageId={this.props.pageId}></CopyDropdown>
+        <CopyDropdown pagePath={this.props.pagePath} pageId={this.props.pageId} buttonStyle={buttonStyle}></CopyDropdown>
 
-        <a href="#edit" className="btn btn-default btn-edit" style={editButtonStyle}>
+        <a href="#edit" className="btn btn-default btn-edit" style={buttonStyle}>
           <i className="icon-note" />
         </a>
       </span>

@@ -42,11 +42,20 @@ export default class CopyDropdown extends React.Component {
     return (
       <Dropdown id="copyPagePathDropdown">
 
-        <Dropdown.Toggle bsSize="sm" data-toggle="tooltip" data-placement="bottom" data-trigger="manual" title="copied!">
+        <Dropdown.Toggle
+          className="btn-copy"
+          style={this.props.buttonStyle}
+          data-toggle="tooltip"
+          data-placement="bottom"
+          data-trigger="manual"
+          title="copied!"
+        >
           <i className="ti-clipboard"></i>
         </Dropdown.Toggle>
 
         <Dropdown.Menu>
+          <li>aaa</li>
+
           {/* Page path */}
           <CopyToClipboard text={this.props.pagePath} onCopy={this.showToolTip}>
             <MenuItem>
@@ -101,4 +110,5 @@ export default class CopyDropdown extends React.Component {
 CopyDropdown.propTypes = {
   pagePath: PropTypes.string.isRequired,
   pageId: PropTypes.string,
+  buttonStyle: PropTypes.object,
 };
