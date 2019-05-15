@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <a href="https://demo.growi.org">Demo Site</a>
+  <a href="https://docs.growi.org">Documentation</a> / <a href="https://demo.growi.org">Demo</a>
 </p>
 <p align="center">
   <a href="https://heroku.com/deploy"><img src="https://www.herokucdn.com/deploy/button.png"></a>
