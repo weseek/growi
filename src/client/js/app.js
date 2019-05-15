@@ -44,6 +44,7 @@ import CustomCssEditor from './components/Admin/CustomCssEditor';
 import CustomScriptEditor from './components/Admin/CustomScriptEditor';
 import CustomHeaderEditor from './components/Admin/CustomHeaderEditor';
 import AdminRebuildSearch from './components/Admin/AdminRebuildSearch';
+import GroupDeleteControl from './components/GroupDeleteControl/GroupDeleteControl';
 
 
 const logger = loggerFactory('growi:app');
@@ -569,6 +570,17 @@ if (adminRebuildSearchElem != null) {
   ReactDOM.render(
     <AdminRebuildSearch crowi={crowi} />,
     adminRebuildSearchElem,
+  );
+}
+const adminGrantSelectorElem = document.getElementById('admin-delete-user-group-modal');
+if (adminGrantSelectorElem != null) {
+  ReactDOM.render(
+    <I18nextProvider i18n={i18n}>
+      <GroupDeleteControl
+        crowi={crowi}
+      />
+    </I18nextProvider>,
+    adminGrantSelectorElem,
   );
 }
 
