@@ -1,8 +1,12 @@
 # CHANGES
 
-## 3.4.6-RC
+## 3.4.7-RC
 
-* Feature: Append tags to pages
+* 
+
+## 3.4.6
+
+* Feature: Tags
 * Feature: Dropdown to copy page path/URL/MarkdownLink
 * Feature: List of drafts
 * Improvement: Replace icons of Editor Tool Bar
