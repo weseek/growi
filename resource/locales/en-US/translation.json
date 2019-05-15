@@ -3,6 +3,8 @@
   "Edit": "Edit",
   "Delete": "Delete",
   "Duplicate": "Duplicate",
+  "Copy": "Copy",
+  "Click to copy": "Click to copy",
   "Move": "Move",
   "Moved": "Moved",
   "Unlinked": "Unlinked",
@@ -11,6 +13,7 @@
   "Cancel": "Cancel",
   "Create": "Create",
   "Admin": "Admin",
+  "Tags": "Tags",
   "New": "New",
   "Shortcuts": "Shortcuts",
   "eg": "e.g.",
@@ -77,7 +80,7 @@
   "Hide": "Hide",
   "Disclose E-mail": "Disclose E-mail",
 
-
+  "page exists": "this page already exists",
 
   "Create today's": "Create today's ...",
   "Memo": "memo",
@@ -100,6 +103,7 @@
   "Load latest": "Load latest",
   "edited this page": "edited this page.",
 
+  "Resume Drafts": "Your Drafts",
   "Deleted Pages": "Deleted Pages",
   "Sign out": "Logout",
 
@@ -112,6 +116,11 @@
     "create_initial_account": "Create an initial account",
     "initial_account_will_be_administrator_automatically": "The initial account will be administrator automatically.",
     "unavaliable_user_id": "This 'User ID' is unavailable."
+  },
+
+  "breaking_changes": {
+    "v346_passport_is_not_enabled": "Crowi Classic Authentication mechanism currently in use will <strong>no longer be supported</strong> in the near future. Switch to Passport from %s",
+    "v346_using_basic_auth": "Basic Authentication currently in use will <strong>no longer be available</strong> in the near future. Remove settings from %s"
   },
 
   "page_register": {
@@ -401,10 +410,10 @@
 		"for_instance": " For instance, if you use growi within a company, you can write ",
 		"only_those": " Only those whose e-mail address including the company address can register.",
     "insert_single": "Please insert single e-mail address per line.",
-    "page_listing_1": "Page listing<br>restricted by 'Just Me'",
-    "page_listing_1_desc": "Show pages that are restricted by 'Just Me' option when listing",
-    "page_listing_2": "Page listing<br>restricted by User Group",
-    "page_listing_2_desc": "Show pages that are restricted by User Group when listing",
+    "page_listing_1": "Page listing/searching<br>restricted by 'Just Me'",
+    "page_listing_1_desc": "Show pages that are restricted by 'Just Me' option when listing/searching",
+    "page_listing_2": "Page listing/searching<br>restricted by User Group",
+    "page_listing_2_desc": "Show pages that are restricted by User Group when listing/searching",
 
 		"Authentication mechanism settings": "Authentication mechanism settings",
     "note": "Note",
@@ -617,8 +626,8 @@
     "write_java": "You can write Javascript that is applied to whole system.",
     "attach_title_header": "Add h1 section when create new page automatically",
     "attach_title_header_desc": "Add page path to the first line as h1 section when create new page",
-    "recent_created_page_num": "Recent Created Paging num",
-    "recent_created_page_num_desc": "The number of pages to show in Recent Created Page List on the user's home"
+    "recent_created__n_draft_num_desc": "Number of Recently Created Pages & Drafts Displayed",
+    "recently_created_n_draft_num_desc": "Number of recently created pages and drafts displayed on user page"
   },
 
   "user_management": {

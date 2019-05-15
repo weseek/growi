@@ -353,6 +353,12 @@ module.exports = function(crowi) {
     return (this.latestRevision == this.revision._id.toString());
   };
 
+  pageSchema.methods.findRelatedTagsById = async function() {
+    const PageTagRelation = mongoose.model('PageTagRelation');
+    const relations = await PageTagRelation.find({ relatedPage: this._id }).populate('relatedTag');
+    return relations.map((relation) => { return relation.relatedTag.name });
+  };
+
   pageSchema.methods.isUpdatable = function(previousRevision) {
     const revision = this.latestRevision || this.revision;
     // comparing ObjectId with string
@@ -573,7 +579,7 @@ module.exports = function(crowi) {
       /\s+\/\s+/, // avoid miss in renaming
       /.+\/edit$/,
       /.+\.md$/,
-      /^\/(installer|register|login|logout|admin|me|files|trash|paste|comments)(\/.*|$)/,
+      /^\/(installer|register|login|logout|admin|me|files|trash|paste|comments|tags)(\/.*|$)/,
     ];
 
     let isCreatable = true;
@@ -910,8 +916,9 @@ module.exports = function(crowi) {
     return assignDecendantsTemplate(decendantsTemplates, newPath);
   };
 
-  const fetchTemplate = (templates, templatePath) => {
+  const fetchTemplate = async(templates, templatePath) => {
     let templateBody;
+    let templateTags;
     /**
      * get children template
      * __tempate: applicable only to immediate decendants
@@ -926,12 +933,14 @@ module.exports = function(crowi) {
 
     if (childrenTemplate) {
       templateBody = childrenTemplate.revision.body;
+      templateTags = await childrenTemplate.findRelatedTagsById();
     }
     else if (decendantsTemplate) {
       templateBody = decendantsTemplate.revision.body;
+      templateTags = await decendantsTemplate.findRelatedTagsById();
     }
 
-    return templateBody;
+    return { templateBody, templateTags };
   };
 
   /**

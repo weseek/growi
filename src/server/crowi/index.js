@@ -6,6 +6,7 @@ const pkg = require('@root/package.json');
 const InterceptorManager = require('@commons/service/interceptor-manager');
 const CdnResourcesService = require('@commons/service/cdn-resources-service');
 const Xss = require('@commons/service/xss');
+
 const path = require('path');
 
 const sep = path.sep;
@@ -56,6 +57,7 @@ function Crowi(rootdir) {
     page: new (require(`${self.eventsDir}page`))(this),
     search: new (require(`${self.eventsDir}search`))(this),
     bookmark: new (require(`${self.eventsDir}bookmark`))(this),
+    tag: new (require(`${self.eventsDir}tag`))(this),
   };
 }
 
@@ -217,12 +219,11 @@ Crowi.prototype.getIo = function() {
 Crowi.prototype.scanRuntimeVersions = function() {
   const self = this;
 
-
   const check = require('check-node-version');
   return new Promise((resolve, reject) => {
     check((err, result) => {
       if (err) {
-        reject();
+        reject(err);
       }
       self.runtimeVersions = result;
       resolve();

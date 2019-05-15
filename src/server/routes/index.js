@@ -193,6 +193,7 @@ module.exports = function(crowi, app) {
   app.post('/_api/pages.create'       , accessTokenParser , loginRequired(crowi, app) , csrf, page.api.create);
   app.post('/_api/pages.update'       , accessTokenParser , loginRequired(crowi, app) , csrf, page.api.update);
   app.get('/_api/pages.get'           , accessTokenParser , loginRequired(crowi, app, false) , page.api.get);
+  app.get('/_api/pages.exist'         , accessTokenParser , loginRequired(crowi, app, false) , page.api.exist);
   app.get('/_api/pages.updatePost', accessTokenParser, loginRequired(crowi, app, false), page.api.getUpdatePost);
   app.get('/_api/pages.getPageTag'    , accessTokenParser , loginRequired(crowi, app, false) , page.api.getPageTag);
   // allow posting to guests because the client doesn't know whether the user logged in
@@ -202,7 +203,10 @@ module.exports = function(crowi, app) {
   app.post('/_api/pages.revertRemove' , loginRequired(crowi, app) , csrf, page.api.revertRemove); // (Avoid from API Token)
   app.post('/_api/pages.unlink'       , loginRequired(crowi, app) , csrf, page.api.unlink); // (Avoid from API Token)
   app.post('/_api/pages.duplicate', accessTokenParser, loginRequired(crowi, app), csrf, page.api.duplicate);
+  app.get('/tags'                     , loginRequired(crowi, app, false), tag.showPage);
+  app.get('/_api/tags.list'           , accessTokenParser, loginRequired(crowi, app, false), tag.api.list);
   app.get('/_api/tags.search'         , accessTokenParser, loginRequired(crowi, app, false), tag.api.search);
+  app.post('/_api/tags.update'         , accessTokenParser, loginRequired(crowi, app, false), tag.api.update);
   app.get('/_api/comments.get'        , accessTokenParser , loginRequired(crowi, app, false) , comment.api.get);
   app.post('/_api/comments.add'       , form.comment, accessTokenParser , loginRequired(crowi, app) , csrf, comment.api.add);
   app.post('/_api/comments.remove'    , accessTokenParser , loginRequired(crowi, app) , csrf, comment.api.remove);
@@ -231,6 +235,7 @@ module.exports = function(crowi, app) {
   app.post('/_api/hackmd.saveOnHackmd' , accessTokenParser , loginRequired(crowi, app) , csrf, hackmd.validateForApi, hackmd.saveOnHackmd);
 
   // API v3
+  app.use('/api-docs', require('./apiv3/docs')(crowi));
   app.use('/_api/v3', require('./apiv3')(crowi));
 
   app.get('/*/$'                   , loginRequired(crowi, app, false) , page.showPageWithEndOfSlash, page.notFound);

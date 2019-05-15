@@ -906,7 +906,11 @@ module.exports = function(crowi, app) {
     }
   };
 
-  actions.api.securitySetting = function(req, res) {
+  actions.api.securitySetting = async function(req, res) {
+    if (!req.form.isValid) {
+      return res.json({ status: false, message: req.form.errors.join('\n') });
+    }
+
     const form = req.form.settingForm;
     const config = crowi.getConfig();
     const isPublicWikiOnly = Config.isPublicWikiOnly(config);
@@ -924,12 +928,14 @@ module.exports = function(crowi, app) {
       }
     }
 
-    if (req.form.isValid) {
-      debug('form content', form);
-      return saveSetting(req, res, form);
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', form);
+      return res.json({ status: true });
     }
-
-    return res.json({ status: false, message: req.form.errors.join('\n') });
+    catch (err) {
+      logger.error(err);
+      return res.json({ status: false });
+    }
   };
 
   actions.api.securityPassportLdapSetting = function(req, res) {

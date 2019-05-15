@@ -8,6 +8,7 @@ import dateFnsFormat from 'date-fns/format';
 
 import ReactUtils from '../ReactUtils';
 import UserPicture from '../User/UserPicture';
+import Username from '../User/Username';
 
 export default class DeleteCommentModal extends React.Component {
 
@@ -43,7 +44,7 @@ export default class DeleteCommentModal extends React.Component {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <UserPicture user={comment.creator} size="xs" /> <strong>{comment.creator.username}</strong> wrote on {commentDate}:
+          <UserPicture user={comment.creator} size="xs" /> <strong><Username user={comment.creator}></Username></strong> wrote on {commentDate}:
           <p className="well well-sm comment-body m-t-5">{commentBody}</p>
         </Modal.Body>
         <Modal.Footer>

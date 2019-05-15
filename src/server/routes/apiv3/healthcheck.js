@@ -8,7 +8,42 @@ const router = express.Router();
 
 const helmet = require('helmet');
 
+/**
+ * @swagger
+ *  tags:
+ *    name: Healthcheck
+ */
+
 module.exports = (crowi) => {
+  /**
+   * @swagger
+   *
+   *  /healthcheck:
+   *    get:
+   *      tags: [Healthcheck]
+   *      description: Check whether the server is healthy or not
+   *      produces:
+   *        - application/json
+   *      parameters:
+   *        - name: connectToMiddlewares
+   *          in: query
+   *          description: Check also MongoDB and Elasticsearch
+   *          schema:
+   *            type: boolean
+   *      responses:
+   *        200:
+   *          description: Resources are available
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  mongo:
+   *                    type: string
+   *                    description: 'OK'
+   *                  esInfo:
+   *                    type: object
+   *                    description: A result of `client.info()` of Elasticsearch Info API
+   */
   router.get('/', helmet.noCache(), async(req, res) => {
     const connectToMiddlewares = req.query.connectToMiddlewares;
 
