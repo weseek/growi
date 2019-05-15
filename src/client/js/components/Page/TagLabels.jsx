@@ -20,10 +20,16 @@ class TagLabels extends React.Component {
   async componentWillMount() {
     // set pageTag on button
     const pageId = this.props.pageId;
+
     if (pageId) {
       const res = await this.props.crowi.apiGet('/pages.getPageTag', { pageId });
       this.setState({ tags: res.tags });
       this.props.sendTagData(res.tags);
+    }
+    else if (this.props.templateTagData) {
+      const templateTags = this.props.templateTagData.split(',');
+      this.setState({ tags: templateTags });
+      this.props.sendTagData(templateTags);
     }
   }
 
@@ -51,7 +57,7 @@ class TagLabels extends React.Component {
     }
 
     return (
-      <div className="tag-viewer">
+      <div className={`tag-viewer ${this.props.pageId ? 'existed-page' : 'new-page'}`}>
         {this.state.tags.length === 0 && (
           <a className="btn btn-link btn-edit-tags no-tags p-0" onClick={this.showEditor}>
             { t('Add tags for this page') } <i className="manage-tags ml-2 icon-plus"></i>
@@ -82,6 +88,7 @@ TagLabels.propTypes = {
   crowi: PropTypes.object.isRequired,
   pageId: PropTypes.string,
   sendTagData: PropTypes.func.isRequired,
+  templateTagData: PropTypes.string,
 };
 
 export default withTranslation()(TagLabels);

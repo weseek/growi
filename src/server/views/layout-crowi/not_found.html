@@ -10,7 +10,7 @@
       <div>
         <div>
           <h1 class="title" id="revision-path"></h1>
-          {% if page and not forbidden and not isTrashPage() %}
+          {% if not forbidden and not isTrashPage() %}
             <div id="tag-label"></div>
           {% endif %}
         </div>

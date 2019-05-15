@@ -117,13 +117,8 @@ body.on-edit {
       }
     }
 
-    div#page-tag {
-      display: inline;
-      margin-right: auto;
-
-      .page-tag-form {
-        border-radius: 5px;
-      }
+    .tag-viewer.new-page {
+      display: block;
     }
 
     // hide if screen size is less than tablet

@@ -416,10 +416,13 @@ module.exports = function(crowi, app) {
       view = 'customlayout-selector/not_found';
 
       // retrieve templates
-      let template = await Page.findTemplate(path);
-      if (template != null) {
-        template = replacePlaceholdersOfTemplate(template, req);
-        renderVars.template = template;
+      const template = await Page.findTemplate(path);
+
+      if (template.templateBody) {
+        const body = replacePlaceholdersOfTemplate(template.templateBody, req);
+        const tags = template.templateTags;
+        renderVars.template = body;
+        renderVars.templateTags = tags;
       }
 
       // add scope variables by ancestor page
