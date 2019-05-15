@@ -200,6 +200,14 @@
     }
   },
 
+  "copy_to_clipboard": {
+    "Copy to clipboard": "クリップボードにコピー",
+    "Page path": "ページ名",
+    "Parmanent link": "パーマリンク",
+    "Page path and parmanent link": "ページ名とパーマリンク",
+    "Markdown link": "マークダウン形式のリンク"
+  },
+
   "search_help": {
     "title": "検索のヘルプ",
     "and": {

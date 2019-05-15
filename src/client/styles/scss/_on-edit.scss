@@ -92,6 +92,7 @@ body.on-edit {
     left: $left-margin;
     z-index: 1;
     width: calc(100% - #{$left-margin} - #{$right-margin});
+    padding-top: 3px;
     pointer-events: none; // disable pointer-events because it becomes an obstacle
 
     background: none;
@@ -100,10 +101,6 @@ body.on-edit {
       width: 100%; //   for crowi layout
       padding: 0; //    for crowi layout
       pointer-events: initial; // enable pointer-events
-    }
-
-    .header-wrap {
-      overflow-x: hidden;
     }
 
     h1#revision-path {

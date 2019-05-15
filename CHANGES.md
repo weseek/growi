@@ -2,6 +2,10 @@
 
 ## 3.4.6-RC
 
+* Feature: Append tags to pages
+* Feature: Dropdown to copy page path/URL/MarkdownLink
+* Feature: List of drafts
+* Improvement: Replace icons of Editor Tool Bar
 * Improvement: Show display name when mouse hover to user image
 * Fix: URL in slack message is broken on Safari
 * Fix: Registration does not work when basic auth is enabled
