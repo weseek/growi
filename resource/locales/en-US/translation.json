@@ -13,11 +13,17 @@
   "Cancel": "Cancel",
   "Create": "Create",
   "Admin": "Admin",
+  "Tag": "Tag",
   "Tags": "Tags",
   "New": "New",
   "Shortcuts": "Shortcuts",
   "eg": "e.g.",
   "Undo": "Undo",
+  "Article": "Article",
+  "Page": "Page",
+  "Pagepass": "Pagepass",
+  "Category": "Category",
+  "User": "User",
 
   "Update": "Update",
   "Update Page": "Update Page",
@@ -81,6 +87,7 @@
   "Disclose E-mail": "Disclose E-mail",
 
   "page exists": "this page already exists",
+  "Error occurred": "Error occurred",
 
   "Create today's": "Create today's ...",
   "Memo": "memo",
@@ -675,6 +682,8 @@
       "access_token": "Access token",
       "test_connection": "Test connection to qiita:team"
     },
-    "import": "Import"
+    "import": "Import",
+    "page_skip": "If a page with the same name already exists on the GROWI side, that page is skipped",
+    "Directory_hierarchy_tag": "Directory hierarchy tag"
   }
 }
