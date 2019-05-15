@@ -221,11 +221,23 @@ export default class MyDraftList extends React.Component {
 
     return (
       <div className="page-list-container-create">
-        <button type="button" className="btn-danger mb-3" onClick={this.clearAllDrafts}>Delete All</button>
-        <div className="tab-pane m-t-30 accordion" id="draft-list">
-          {draftList}
-        </div>
-        <Pagination bsSize="small">{paginationItems}</Pagination>
+
+        { draftList.length === 0
+          && <span>No drafts yet.</span>
+        }
+
+        { draftList.length > 0
+          && (
+            <React.Fragment>
+              <button type="button" className="btn-danger mb-3" onClick={this.clearAllDrafts}>Delete All</button>
+              <div className="tab-pane m-t-30 accordion" id="draft-list">
+                {draftList}
+              </div>
+              <Pagination bsSize="small">{paginationItems}</Pagination>
+            </React.Fragment>
+          )
+        }
+
       </div>
     );
   }
