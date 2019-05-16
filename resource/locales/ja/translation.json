@@ -13,11 +13,17 @@
   "Cancel": "キャンセル",
   "Create": "作成",
   "Admin": "管理",
+  "Tag": "タグ",
   "Tags": "タグ",
   "New": "作成",
   "Shortcuts": "ショートカット",
   "eg": "例:",
   "Undo": "元に戻す",
+  "Article": "記事",
+  "Page": "ページ",
+  "Page Path": "ページパス",
+  "Category": "カテゴリー",
+  "User": "ユーザー",
 
   "Update": "更新",
   "Update Page": "ページを更新",
@@ -79,6 +85,7 @@
   "Disclose E-mail": "メールアドレスの公開",
 
   "page exists": "このページはすでに存在しています",
+  "Error occurred":"エラーが発生しました",
 
   "Create today's": "今日の◯◯を作成",
   "Memo": "メモ",
@@ -704,6 +711,8 @@
       "access_token": "アクセストークン",
       "test_connection": "接続テスト"
     },
-    "import": "インポート"
+    "import": "インポート",
+    "page_skip": "既に GROWI 側に同名のページが存在する場合、そのページはスキップされます",
+    "Directory_hierarchy_tag": "ディレクトリ階層タグ"
   }
 }
