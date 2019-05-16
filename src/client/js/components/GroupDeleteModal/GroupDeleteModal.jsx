@@ -115,8 +115,12 @@ class GroupDeleteModal extends React.Component {
 
   renderGroupSelector() {
     const options = this.state.groups.map((group) => {
-      const dataContent = `<i class="icon icon-fw icon-organization"></i> ${this.getGroupName(group)}`;
-      return <option key={group._id} value={group._id} data-content={dataContent}>{this.getGroupName(group)}</option>;
+      if (group._id !== this.state.deleteGroupId) {
+        const dataContent = `<i class="icon icon-fw icon-organization"></i> ${this.getGroupName(group)}`;
+        return <option key={group._id} value={group._id} data-content={dataContent}>{this.getGroupName(group)}</option>;
+      }
+
+      return;
     });
 
     return (
