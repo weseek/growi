@@ -160,7 +160,7 @@ module.exports = function(crowi, app) {
   app.get('/me'                       , loginRequired(crowi, app) , me.index);
   app.get('/me/password'              , loginRequired(crowi, app) , me.password);
   app.get('/me/apiToken'              , loginRequired(crowi, app) , me.apiToken);
-  app.post('/me'                      , form.me.user              , loginRequired(crowi, app) , me.index);
+  app.post('/me'                      , loginRequired(crowi, app) , csrf , form.me.user , me.index);
   // external-accounts
   if (Config.isEnabledPassport(config)) {
     app.get('/me/external-accounts'                         , loginRequired(crowi, app) , me.externalAccounts.list);
