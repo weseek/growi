@@ -21,7 +21,7 @@
   "Undo": "Undo",
   "Article": "Article",
   "Page": "Page",
-  "Pagepass": "Pagepass",
+  "Page Path": "Page Path",
   "Category": "Category",
   "User": "User",
 
@@ -683,7 +683,7 @@
       "test_connection": "Test connection to qiita:team"
     },
     "import": "Import",
-    "page_skip": "If a page with the same name already exists on the GROWI side, that page is skipped",
-    "Directory_hierarchy_tag": "Directory hierarchy tag"
+    "page_skip": "Pages with a name that already exists on GROWI are not imported",
+    "Directory_hierarchy_tag": "Directory Hierarchy Tag"
   }
 }
