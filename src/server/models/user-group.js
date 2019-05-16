@@ -90,30 +90,32 @@ class UserGroup {
   }
 
   // グループの完全削除
-  static removeCompletelyById(id) {
+  static removeCompletelyById(deleteGroupId, action, selectedGroupId) {
     const PageGroupRelation = mongoose.model('PageGroupRelation');
     const UserGroupRelation = mongoose.model('UserGroupRelation');
+    const Page = mongoose.model('Page');
 
-    let removed;
-    return this.findById(id)
+    let deletedGroup;
+    return this.findById(deleteGroupId)
       .then((userGroupData) => {
         if (userGroupData == null) {
-          throw new Error('UserGroup data is not exists. id:', id);
+          throw new Error('UserGroup data is not exists. id:', deleteGroupId);
         }
         return userGroupData.remove();
       })
       .then((removedUserGroupData) => {
-        removed = removedUserGroupData;
+        deletedGroup = removedUserGroupData;
       })
       // remove relations
       .then(() => {
         return Promise.all([
-          UserGroupRelation.removeAllByUserGroup(removed),
-          PageGroupRelation.removeAllByUserGroup(removed),
+          UserGroupRelation.removeAllByUserGroup(deletedGroup),
+          PageGroupRelation.removeAllByUserGroup(deletedGroup),
+          Page.handlePrivatePagesForDeletedGroup(deletedGroup, action, selectedGroupId),
         ]);
       })
       .then(() => {
-        return removed;
+        return deletedGroup;
       });
   }
 
