@@ -41,7 +41,7 @@ class GroupDeleteModal extends React.Component {
       deleteGroupId: '',
       deleteGroupName: '',
       groups: [],
-      actionForPages: this.actionForPages.public,
+      actionForPages: '',
       selectedGroupId: '',
     };
 
@@ -104,11 +104,12 @@ class GroupDeleteModal extends React.Component {
           name="actionForPages"
           componentClass="select"
           placeholder="select"
-          defaultValue={this.actionForPages.public}
           bsClass={bsClassName}
           className="btn-group-sm selectpicker"
+          value={this.state.actionForPages}
           onChange={this.changeActionHandler}
         >
+          <option value="" disabled>{t('user_group_management.choose_action')}</option>
           {optoins}
         </FormControl>
       </FormGroup>
@@ -141,11 +142,16 @@ class GroupDeleteModal extends React.Component {
   }
 
   disableSubmit() {
-    if (this.state.actionForPages === this.actionForPages.transfer) {
-      return this.state.selectedGroupId === '';
+    let isDisabled = false;
+
+    if (this.state.actionForPages === '') {
+      isDisabled = true;
+    }
+    else if (this.state.actionForPages === this.actionForPages.transfer) {
+      isDisabled = this.state.selectedGroupId === '';
     }
 
-    return false;
+    return isDisabled;
   }
 
   render() {
@@ -160,15 +166,13 @@ class GroupDeleteModal extends React.Component {
               <i className="icon icon-fire"></i> {t('user_group_management.delete_group')}
             </div>
           </div>
-
           <div className="modal-body">
-            <dl>
-              <dt>{t('user_group_management.group_name')}</dt>
-              <dd>{this.state.deleteGroupName}</dd>
-            </dl>
-            <span className="text-danger">
+            <div>
+              <span className="font-weight-bold">{t('user_group_management.group_name')}</span> : &quot;{this.state.deleteGroupName}&quot;
+            </div>
+            <div className="text-danger mt-5">
               {t('user_group_management.group_and_pages_not_retrievable')}
-            </span>
+            </div>
           </div>
           <div className="modal-footer">
             <form action="/admin/user-group.remove" method="post" id="admin-user-groups-delete" className="d-flex justify-content-between">

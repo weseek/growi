@@ -682,6 +682,7 @@
   },
 
   "user_group_management": {
+    "choose_action": "削除するグループの限定公開ページの処理を選択してください",
     "delete_group": "グループの削除",
     "group_name": "グループ名",
     "group_and_pages_not_retrievable": "グループ及び限定公開のページの削除を行うと元に戻すことはできませんのでご注意ください。",

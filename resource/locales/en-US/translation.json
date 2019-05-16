@@ -661,6 +661,7 @@
   },
 
   "user_group_management": {
+    "choose_action": "Choose an action for private pages",
     "delete_group": "Delete Group",
     "group_name": "Group Name",
     "group_and_pages_not_retrievable": "Once deleted, the deleted group and its private pages cannot be retrieved",
