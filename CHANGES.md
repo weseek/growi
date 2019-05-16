@@ -2,7 +2,8 @@
 
 ## 3.4.7-RC
 
-* 
+* Fix: Searching with `tag:xxx` syntax doesn't work
+* I18n: Import data page
 
 ## 3.4.6
 
