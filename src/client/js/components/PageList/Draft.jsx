@@ -76,6 +76,7 @@ class Draft extends React.Component {
     if (isExist) {
       return (
         <Fragment>
+          {this.state.isOpen ? <i className="icon-arrow-up mr-3"></i> : <i className="icon-arrow-down mr-3"></i>}
           <span>{this.props.path}</span>
           <span className="mx-2">({this.props.t('page exists')})</span>
         </Fragment>
@@ -84,6 +85,7 @@ class Draft extends React.Component {
 
     return (
       <Fragment>
+        {this.state.isOpen ? <i className="icon-arrow-up mr-3"></i> : <i className="icon-arrow-down mr-3"></i>}
         <a href={`${this.props.path}#edit`} target="_blank" rel="noopener noreferrer">{this.props.path}</a>
         <span className="mx-2">
           <span className="label-draft label label-default">draft</span>
