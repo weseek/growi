@@ -1,0 +1,12 @@
+// Staff Credit
+
+#staff-credit {
+  div {
+    @font-face {
+      font-family: 'PressStart2P';
+      src: url(../../../../public/fonts/press-start-2p/PressStart2P.ttf) format('truetype');
+    }
+    z-index: 100;
+    font-family: 'PressStart2P', $basefont1;
+  }
+}

@@ -11,7 +11,7 @@ export default class StaffCredit extends React.Component {
 
   render() {
     return (
-      <div>スタッフロール</div>
+      <div className="text-center">staff credit</div>
     );
   }
 
