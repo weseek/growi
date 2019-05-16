@@ -12,7 +12,7 @@ import FormControl from 'react-bootstrap/es/FormControl';
  * @class GrantSelector
  * @extends {React.Component}
  */
-class GroupDeleteControl extends React.Component {
+class GroupDeleteModal extends React.Component {
 
   constructor(props) {
     super(props);
@@ -71,12 +71,10 @@ class GroupDeleteControl extends React.Component {
   }
 
   async retrieveUserGroupRelations() {
-    const res = await this.props.crowi.apiGet('/me/user-group-relations'); // FIXME
-    this.setState({
-      groups: res.userGroupRelations.map((relation) => {
-        return relation.relatedGroup;
-      }),
-    });
+    const res = await this.props.crowi.apiGet('/admin/user-groups');
+    if (res.ok) {
+      this.setState({ groups: res.userGroups });
+    }
   }
 
   changeActionHandler(e) {
@@ -182,9 +180,9 @@ class GroupDeleteControl extends React.Component {
 
 }
 
-GroupDeleteControl.propTypes = {
+GroupDeleteModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   crowi: PropTypes.object.isRequired,
 };
 
-export default withTranslation()(GroupDeleteControl);
+export default withTranslation()(GroupDeleteModal);

@@ -1327,6 +1327,17 @@ module.exports = function(crowi, app) {
     return res.json(ApiResponse.success());
   };
 
+  actions.api.userGroups = async(req, res) => {
+    try {
+      const userGroups = await UserGroup.find();
+      return res.json(ApiResponse.success({ userGroups }));
+    }
+    catch (err) {
+      logger.error('Error', err);
+      return res.json(ApiResponse.error('Error'));
+    }
+  };
+
   /**
    * save settings, update config cache, and response json
    *
