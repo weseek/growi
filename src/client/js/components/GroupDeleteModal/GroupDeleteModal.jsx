@@ -23,15 +23,17 @@ class GroupDeleteModal extends React.Component {
       transfer: 'transfer',
     };
 
+    const { t } = this.props;
+
     this.availableOptions = [
       {
-        id: 1, actionForPages: this.actionForPages.public, iconClass: 'icon-people', styleClass: '', label: 'Publish all private pages',
+        id: 1, actionForPages: this.actionForPages.public, iconClass: 'icon-people', styleClass: '', label: t('user_group_management.publish_pages'),
       },
       {
-        id: 2, actionForPages: this.actionForPages.delete, iconClass: 'icon-trash', styleClass: 'text-danger', label: 'Delete all private pages',
+        id: 2, actionForPages: this.actionForPages.delete, iconClass: 'icon-trash', styleClass: 'text-danger', label: t('user_group_management.delete_pages'),
       },
       {
-        id: 3, actionForPages: this.actionForPages.transfer, iconClass: 'icon-options', styleClass: '', label: 'Transfer ownership to another group',
+        id: 3, actionForPages: this.actionForPages.transfer, iconClass: 'icon-options', styleClass: '', label: t('user_group_management.transfer_pages'),
       },
     ];
 
@@ -114,6 +116,8 @@ class GroupDeleteModal extends React.Component {
   }
 
   renderGroupSelector() {
+    const { t } = this.props;
+
     const options = this.state.groups.map((group) => {
       if (group._id !== this.state.deleteGroupId) {
         const dataContent = `<i class="icon icon-fw icon-organization"></i> ${this.getGroupName(group)}`;
@@ -130,7 +134,7 @@ class GroupDeleteModal extends React.Component {
         value={this.state.selectedGroupId}
         onChange={this.changeGroupHandler}
       >
-        <option value="" disabled>{this.state.groups.length === 0 ? 'No groups to select' : 'Choose a group'}</option>
+        <option value="" disabled>{this.state.groups.length === 0 ? t('user_group_management.no_groups') : t('user_group_management.select_group')}</option>
         {options}
       </select>
     );
@@ -145,23 +149,25 @@ class GroupDeleteModal extends React.Component {
   }
 
   render() {
+    const { t } = this.props;
+
     return (
       <div className="modal-dialog">
         <div className="modal-content">
           <div className="modal-header bg-danger">
             <button type="button" className="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             <div className="modal-title">
-              <i className="icon icon-fire"></i> グループの削除
+              <i className="icon icon-fire"></i> {t('user_group_management.delete_group')}
             </div>
           </div>
 
           <div className="modal-body">
             <dl>
-              <dt>グループ名</dt>
+              <dt>{t('user_group_management.group_name')}</dt>
               <dd>{this.state.deleteGroupName}</dd>
             </dl>
             <span className="text-danger">
-              グループ及び限定公開のページの削除を行うと元に戻すことはできませんのでご注意ください。
+              {t('user_group_management.group_and_pages_not_retrievable')}
             </span>
           </div>
           <div className="modal-footer">
@@ -173,7 +179,7 @@ class GroupDeleteModal extends React.Component {
               <input type="hidden" id="deleteGroupId" name="deleteGroupId" value={this.state.deleteGroupId} onChange={() => {}} />
               <input type="hidden" name="_csrf" defaultValue={this.props.crowi.csrfToken} />
               <button type="submit" value="" className="btn btn-sm btn-danger" disabled={this.disableSubmit()}>
-                <i className="icon icon-fire"></i> 削除
+                <i className="icon icon-fire"></i> {t('Delete')}
               </button>
             </form>
           </div>

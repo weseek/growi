@@ -681,6 +681,17 @@
     "current users": "現在のユーザー数："
   },
 
+  "user_group_management": {
+    "delete_group": "グループの削除",
+    "group_name": "グループ名",
+    "group_and_pages_not_retrievable": "グループ及び限定公開のページの削除を行うと元に戻すことはできませんのでご注意ください。",
+    "publish_pages": "全て公開する",
+    "delete_pages": "全て削除する",
+    "transfer_pages": "全て他のグループに移譲する",
+    "select_group": "グループを選択してください",
+    "no_groups": "グループがありません"
+  },
+
   "importer_management": {
     "import_from": "%s からインポート",
     "esa_settings": {
