@@ -671,10 +671,11 @@ socket.on('page:editingWithHackmd', (data) => {
 });
 
 // render for stuff credit
+const konamiCommand = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', '5', '7', '3'];
 const pageStuffCreditElem = document.getElementById('staff-credit');
 if (pageStuffCreditElem) {
   ReactDOM.render(
-    <StaffCredit></StaffCredit>,
+    <StaffCredit konamiCommand={konamiCommand}></StaffCredit>,
     pageStuffCreditElem,
   );
 
