@@ -282,7 +282,7 @@
           </div>
 
           <div class="form-group">
-            <label for="settingForm[customize:showRecentCreatedNumber]" class="col-xs-3 control-label">{{ t("customize_page.recent_created_page_num") }}</label>
+            <label for="settingForm[customize:showRecentCreatedNumber]" class="col-xs-3 control-label">{{ t("customize_page.recent_created__n_draft_num_desc") }}</label>
             <div class="col-xs-5">
               <select class="form-control selectpicker" name="settingForm[customize:showRecentCreatedNumber]" value="{{ settingForm['customize:showRecentCreatedNumber'] }}">
                 <option value="10" {% if 10 == settingForm['customize:showRecentCreatedNumber'] %}selected{% endif %}>10</option>
@@ -291,7 +291,7 @@
               </select>
 
               <p class="help-block">
-                {{ t("customize_page.recent_created_page_num_desc") }}
+                {{ t("customize_page.recently_created_n_draft_num_desc") }}
               </p>
             </div>
           </div>

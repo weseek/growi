@@ -615,11 +615,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   getNavbarItems() {
-    // The following styles will be removed after creating icons for the editor navigation bar.
-    const paddingTopBottom54 = { paddingTop: '6px', paddingBottom: '5px' };
-    const paddingBottom6 = { paddingBottom: '7px' };
-    const fontSize18 = { fontSize: '18px' };
-
     return [
       <Button
         key="nav-item-bold"
@@ -627,7 +622,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
         title="Bold"
         onClick={this.createReplaceSelectionHandler('**', '**')}
       >
-        <i className="fa fa-bold"></i>
+        <img src="/images/icons/editor/bold.svg" alt="icon-bold" height="13" />
       </Button>,
       <Button
         key="nav-item-italic"
@@ -635,15 +630,15 @@ export default class CodeMirrorEditor extends AbstractEditor {
         title="Italic"
         onClick={this.createReplaceSelectionHandler('*', '*')}
       >
-        <i className="fa fa-italic"></i>
+        <img src="/images/icons/editor/italic.svg" alt="icon-italic" height="13" />
       </Button>,
       <Button
-        key="nav-item-strikethough"
+        key="nav-item-strikethrough"
         bsSize="small"
         title="Strikethrough"
         onClick={this.createReplaceSelectionHandler('~~', '~~')}
       >
-        <i className="fa fa-strikethrough"></i>
+        <img src="/images/icons/editor/strikethrough.svg" alt="icon-strikethrough" height="13" />
       </Button>,
       <Button
         key="nav-item-header"
@@ -651,7 +646,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
         title="Heading"
         onClick={this.makeHeaderHandler}
       >
-        <i className="fa fa-header"></i>
+        <img src="/images/icons/editor/header.svg" alt="icon-header" height="13" />
       </Button>,
       <Button
         key="nav-item-code"
@@ -659,61 +654,55 @@ export default class CodeMirrorEditor extends AbstractEditor {
         title="Inline Code"
         onClick={this.createReplaceSelectionHandler('`', '`')}
       >
-        <i className="fa fa-code"></i>
+        <img src="/images/icons/editor/code.svg" alt="icon-code" height="13" />
       </Button>,
       <Button
         key="nav-item-quote"
         bsSize="small"
         title="Quote"
         onClick={this.createAddPrefixToEachLinesHandler('> ')}
-        style={paddingBottom6}
       >
-        <i className="ti-quote-right"></i>
+        <img src="/images/icons/editor/quote.svg" alt="icon-quote" height="13" />
       </Button>,
       <Button
         key="nav-item-ul"
         bsSize="small"
         title="List"
         onClick={this.createAddPrefixToEachLinesHandler('- ')}
-        style={paddingTopBottom54}
       >
-        <i className="ti-list" style={fontSize18}></i>
+        <img src="/images/icons/editor/list-ul.svg" alt="icon-list-ul" height="13" />
       </Button>,
       <Button
         key="nav-item-ol"
         bsSize="small"
         title="Numbered List"
         onClick={this.createAddPrefixToEachLinesHandler('1. ')}
-        style={paddingTopBottom54}
       >
-        <i className="ti-list-ol" style={fontSize18}></i>
+        <img src="/images/icons/editor/list-ol.svg" alt="icon-list-ol" height="13" />
       </Button>,
       <Button
         key="nav-item-checkbox"
         bsSize="small"
         title="Check List"
         onClick={this.createAddPrefixToEachLinesHandler('- [ ] ')}
-        style={paddingBottom6}
       >
-        <i className="ti-check-box"></i>
+        <img src="/images/icons/editor/check.svg" alt="icon-check" height="13" />
       </Button>,
       <Button
         key="nav-item-link"
         bsSize="small"
         title="Link"
         onClick={this.createReplaceSelectionHandler('[', ']()')}
-        style={paddingBottom6}
       >
-        <i className="icon-link"></i>
+        <img src="/images/icons/editor/link.svg" alt="icon-link" height="13" />
       </Button>,
       <Button
         key="nav-item-image"
         bsSize="small"
         title="Image"
         onClick={this.createReplaceSelectionHandler('![', ']()')}
-        style={paddingBottom6}
       >
-        <i className="icon-picture"></i>
+        <img src="/images/icons/editor/picture.svg" alt="icon-picture" height="13" />
       </Button>,
       <Button
         key="nav-item-table"
@@ -721,7 +710,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
         title="Table"
         onClick={this.showHandsonTableHandler}
       >
-        <img src="/images/icons/editor/table.svg" alt="icon-table" width="14" height="14" />
+        <img src="/images/icons/editor/table.svg" alt="icon-table" height="13" />
       </Button>,
     ];
   }

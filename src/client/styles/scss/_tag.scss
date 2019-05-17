@@ -1,0 +1,32 @@
+.tag-viewer {
+  .manage-tags {
+    font-size: 10px;
+    cursor: pointer;
+  }
+
+  .tag-icon:not(:first-child) {
+    margin-left: 5px;
+  }
+
+  .btn-edit-tags,
+  .tag-icon {
+    font-size: 10px;
+  }
+
+  .tag-name {
+    margin-left: 1px;
+    font-size: 10px;
+  }
+}
+
+#tags-page {
+  .list-tag-count {
+    background: rgba(0, 0, 0, 0.08);
+  }
+}
+
+#editTagModal {
+  .form-control {
+    height: auto;
+  }
+}

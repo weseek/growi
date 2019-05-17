@@ -416,10 +416,13 @@ module.exports = function(crowi, app) {
       view = 'customlayout-selector/not_found';
 
       // retrieve templates
-      let template = await Page.findTemplate(path);
-      if (template != null) {
-        template = replacePlaceholdersOfTemplate(template, req);
-        renderVars.template = template;
+      const template = await Page.findTemplate(path);
+
+      if (template.templateBody) {
+        const body = replacePlaceholdersOfTemplate(template.templateBody, req);
+        const tags = template.templateTags;
+        renderVars.template = body;
+        renderVars.templateTags = tags;
       }
 
       // add scope variables by ancestor page
@@ -718,6 +721,29 @@ module.exports = function(crowi, app) {
 
     const result = {};
     result.page = page; // TODO consider to use serializeToObj method -- 2018.08.06 Yuki Takei
+
+    return res.json(ApiResponse.success(result));
+  };
+
+  /**
+   * @api {get} /pages.exist Get if page exists
+   * @apiName GetPage
+   * @apiGroup Page
+   *
+   * @apiParam {String} pages (stringified JSON)
+   */
+  api.exist = async function(req, res) {
+    const pagesAsObj = JSON.parse(req.query.pages || '{}');
+    const pagePaths = Object.keys(pagesAsObj);
+
+    await Promise.all(pagePaths.map(async(path) => {
+      // check page existence
+      const isExist = await Page.count({ path }) > 0;
+      pagesAsObj[path] = isExist;
+      return;
+    }));
+
+    const result = { pages: pagesAsObj };
 
     return res.json(ApiResponse.success(result));
   };
@@ -1074,10 +1100,12 @@ module.exports = function(crowi, app) {
     }
 
     await page.populateDataToShowRevision();
+    const originTags = await page.findRelatedTagsById();
 
     req.body.path = newPagePath;
     req.body.body = page.revision.body;
     req.body.grant = page.grant;
+    req.body.pageTags = originTags;
 
     return api.create(req, res);
   };

@@ -8,20 +8,13 @@
    * header
    */
   header {
-
     // the container of h1
     div.title-container {
       margin-right: auto;
     }
 
-    .btn-tag {
-      line-height: 20px;
-      display: block;
-    }
-
     .btn-copy,
     .btn-copy-link,
-    .btn-tag,
     .btn-edit {
       @extend .text-muted;
       border: none;
@@ -32,13 +25,21 @@
       }
     }
 
+    .btn-edit-tags {
+      @extend .text-muted;
+      opacity: 0.5;
+
+      &.no-tags {
+        opacity: 0.7;
+      }
+    }
+
     // change button opacity
     &:hover {
-
       .btn.btn-copy,
       .btn-copy-link,
-      .btn-tag,
-      .btn.btn-edit {
+      .btn.btn-edit,
+      .btn.btn-edit-tags {
         opacity: unset;
       }
     }
@@ -88,6 +89,10 @@
         }
       }
     }
+
+    .tag-viewer.new-page {
+      display: none;
+    }
   }
 
   // alert component settings
@@ -107,7 +112,6 @@
 .main-container .main .content-main .revision-history {
   .revision-history-list {
     .revision-history-outer {
-
       // add border-top except of first element
       &:not(:first-of-type) {
         border-top: 1px solid $border;
@@ -213,7 +217,7 @@
   opacity: 0;
   transition: opacity 0.3s ease-out;
 
-  &>* {
+  & > * {
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
   }
 }

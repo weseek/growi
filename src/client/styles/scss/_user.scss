@@ -24,17 +24,19 @@
 
       ul {
         padding-left: 0;
+
         li {
           list-style: none;
         }
       }
+
       .user-page-username {
         font-weight: bold;
       }
-      .user-page-email {
-      }
-      .user-page-introduction {
-      }
+
+      .user-page-email {}
+
+      .user-page-introduction {}
     }
 
     .btn-like,
@@ -62,13 +64,30 @@
       height: 48px;
     }
   }
-}
 
-.user-component {
-  img.picture {
-    margin-right: 4px;
-  }
-  span {
-    margin-right: 4px;
+  .user-page-content {
+    #user-draft-list {
+      #draft-list {
+        .panel-title {
+          width: 100%;
+
+          .label-draft {
+            padding: 1px 5px;
+            margin: 0 0 0 4px;
+            font-weight: normal;
+          }
+        }
+
+        a {
+
+          .icon-copy,
+          .draft-delete,
+          .icon-edit {
+            margin: 0 0 0 4px;
+            cursor: pointer;
+          }
+        }
+      }
+    }
   }
 }
