@@ -21,10 +21,14 @@ module.exports = function(crowi, app) {
   const i18nMiddleware = require('i18next-express-middleware');
   const i18nUserSettingDetector = require('../util/i18nUserSettingDetector');
   const env = crowi.node_env;
-  const config = crowi.getConfig();
   const middleware = require('../util/middlewares');
 
+  // Old type config API
+  const config = crowi.getConfig();
   const Config = crowi.model('Config');
+  // New type config API
+  const configManager = crowi.configManager;
+
   const User = crowi.model('User');
   const lngDetector = new i18nMiddleware.LanguageDetector();
   lngDetector.addDetector(i18nUserSettingDetector);
@@ -65,7 +69,7 @@ module.exports = function(crowi, app) {
     req.csrfToken = null;
 
     res.locals.req = req;
-    res.locals.baseUrl = crowi.configManager.getSiteUrl();
+    res.locals.baseUrl = configManager.getSiteUrl();
     res.locals.config = config;
     res.locals.env = env;
     res.locals.now = now;
@@ -114,11 +118,10 @@ module.exports = function(crowi, app) {
       return next();
     }
 
-    if (config.crowi['security:basicName'] && config.crowi['security:basicSecret']) {
-      return basicAuth(
-        config.crowi['security:basicName'],
-        config.crowi['security:basicSecret'],
-      )(req, res, next);
+    const basicName = configManager.getConfig('crowi', 'security:basicName');
+    const basicSecret = configManager.getConfig('crowi', 'security:basicSecret');
+    if (basicName && basicSecret) {
+      return basicAuth(basicName, basicSecret)(req, res, next);
     }
 
     next();

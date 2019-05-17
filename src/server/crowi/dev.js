@@ -5,7 +5,6 @@ const path = require('path');
 const swig = require('swig-templates');
 const onHeaders = require('on-headers');
 
-
 class CrowiDev {
 
   /**

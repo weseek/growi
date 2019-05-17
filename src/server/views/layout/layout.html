@@ -152,6 +152,15 @@
             <i class="ti-menu"></i>
           </a>
         </li>
+        {#  disabled temporary -- 2019.05.13 Yuki Takei
+        <li>
+          <li class="nav-item-admin">
+            <a href="/tags">
+              <i class="tag-icon icon-tag"></i><span>{{ t('Tags') }}</span>
+            </a>
+          </li>
+        </li>
+        #}
         <li>
           {% if searchConfigured() %}
           <div class="navbar-form navbar-left search-top" role="search" id="search-top"></div>
@@ -182,7 +191,8 @@
             <li><a href="/user/{{ user.username }}"><i class="icon-fw icon-home"></i>{{ t('Home') }}</a></li>
             <li><a href="/me"><i class="icon-fw icon-wrench"></i>{{ t('User Settings') }}</a></li>
             <li role="separator" class="divider"></li>
-            <li><a href="/trash"><i class="icon-fw icon-trash"></i>{{ t('Deleted Pages') }}</a></li>
+            <li><a href="/user/{{ user.username }}#user-draft-list"><i class="icon-fw icon-docs"></i>{{ t('List Drafts') }}</a></li>
+            <li><a href="/user"><i class="icon-fw icon-trash"></i>{{ t('Deleted Pages') }}</a></li>
             <li role="separator" class="divider"></li>
             <li><a href="/logout"><i class="icon-fw icon-power"></i>{{ t('Sign out') }}</a></li>
           </ul>
@@ -200,7 +210,8 @@
   {% include '../modal/create_page.html' %}
   {% endblock  %} {# layout_head_nav #}
 
-  {% block head_warn %}{% endblock %}
+  {% block head_warn_alert_siteurl_undefined %}{% include '../widget/alert_siteurl_undefined.html' %}{% endblock %}
+  {% block head_warn_breaking_changes %}{% include '../widget/alert_breaking_changes.html' %}{% endblock %}
 
   {% block sidebar %}
   <!-- Left navbar-header -->
@@ -227,6 +238,9 @@
   </div><!-- /#page-wrapper -->
 
 </div><!-- /#wrapper -->
+
+<!-- /#staff-credit -->
+<div id="staff-credit"></div>
 
 {% include '../modal/shortcuts.html' %}
 

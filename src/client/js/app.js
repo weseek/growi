@@ -17,6 +17,7 @@ import GrowiRenderer from './util/GrowiRenderer';
 
 import HeaderSearchBox from './components/HeaderSearchBox';
 import SearchPage from './components/SearchPage';
+import TagsList from './components/TagsList';
 import PageEditor from './components/PageEditor';
 // eslint-disable-next-line import/no-duplicates
 import OptionsSelector from './components/PageEditor/OptionsSelector';
@@ -31,13 +32,14 @@ import CommentForm from './components/PageComment/CommentForm';
 import PageAttachment from './components/PageAttachment';
 import PageStatusAlert from './components/PageStatusAlert';
 import RevisionPath from './components/Page/RevisionPath';
-import TagViewer from './components/Page/TagViewer';
-import RevisionUrl from './components/Page/RevisionUrl';
+import TagLabels from './components/Page/TagLabels';
 import BookmarkButton from './components/BookmarkButton';
 import LikeButton from './components/LikeButton';
 import PagePathAutoComplete from './components/PagePathAutoComplete';
 import RecentCreated from './components/RecentCreated/RecentCreated';
-import UserPictureList from './components/Common/UserPictureList';
+import StaffCredit from './components/StaffCredit/StaffCredit';
+import MyDraftList from './components/MyDraftList/MyDraftList';
+import UserPictureList from './components/User/UserPictureList';
 
 import CustomCssEditor from './components/Admin/CustomCssEditor';
 import CustomScriptEditor from './components/Admin/CustomScriptEditor';
@@ -70,6 +72,7 @@ let pageContent = '';
 let markdown = '';
 let slackChannels;
 let pageTags = [];
+let templateTagData = '';
 if (mainContent !== null) {
   pageId = mainContent.getAttribute('data-page-id') || null;
   pageRevisionId = mainContent.getAttribute('data-page-revision-id');
@@ -79,6 +82,7 @@ if (mainContent !== null) {
   hasDraftOnHackmd = !!mainContent.getAttribute('data-page-has-draft-on-hackmd');
   pagePath = mainContent.attributes['data-path'].value;
   slackChannels = mainContent.getAttribute('data-slack-channels') || '';
+  templateTagData = mainContent.getAttribute('data-template-tags') || '';
   const rawText = document.getElementById('raw-text-original');
   if (rawText) {
     pageContent = rawText.innerHTML;
@@ -297,6 +301,8 @@ const componentMappings = {
   'bookmark-button': <BookmarkButton pageId={pageId} crowi={crowi} />,
   'bookmark-button-lg': <BookmarkButton pageId={pageId} crowi={crowi} size="lg" />,
 
+  'tags-page': <I18nextProvider i18n={i18n}><TagsList crowi={crowi} /></I18nextProvider>,
+
   'create-page-name-input': <PagePathAutoComplete crowi={crowi} initializedPath={pagePath} addTrailingSlash />,
   'rename-page-name-input': <PagePathAutoComplete crowi={crowi} initializedPath={pagePath} />,
   'duplicate-page-name-input': <PagePathAutoComplete crowi={crowi} initializedPath={pagePath} />,
@@ -308,9 +314,8 @@ if (pageId) {
 }
 if (pagePath) {
   componentMappings.page = <Page crowi={crowi} crowiRenderer={crowiRenderer} markdown={markdown} pagePath={pagePath} onSaveWithShortcut={saveWithShortcut} />;
-  componentMappings['revision-path'] = <RevisionPath pagePath={pagePath} crowi={crowi} />;
-  componentMappings['tag-viewer'] = <TagViewer crowi={crowi} pageId={pageId} sendTagData={setTagData} />;
-  componentMappings['revision-url'] = <RevisionUrl pageId={pageId} pagePath={pagePath} />;
+  componentMappings['revision-path'] = <I18nextProvider i18n={i18n}><RevisionPath pageId={pageId} pagePath={pagePath} crowi={crowi} /></I18nextProvider>;
+  componentMappings['tag-label'] = <I18nextProvider i18n={i18n}><TagLabels crowi={crowi} pageId={pageId} sendTagData={setTagData} templateTagData={templateTagData} /></I18nextProvider>;
 }
 
 Object.keys(componentMappings).forEach((key) => {
@@ -395,6 +400,25 @@ if (recentCreatedControlsElem) {
     <RecentCreated crowi={crowi} pageId={pageId} limit={limit}>
 
     </RecentCreated>, document.getElementById('user-created-list'),
+  );
+}
+
+const myDraftControlsElem = document.getElementById('user-draft-list');
+if (myDraftControlsElem) {
+  let limit = crowi.getConfig().recentCreatedLimit;
+  if (limit == null) {
+    limit = 10;
+  }
+
+  ReactDOM.render(
+    <I18nextProvider i18n={i18n}>
+      <MyDraftList
+        limit={limit}
+        crowi={crowi}
+        crowiOriginRenderer={crowiRenderer}
+      />
+    </I18nextProvider>,
+    myDraftControlsElem,
   );
 }
 
@@ -644,6 +668,16 @@ socket.on('page:editingWithHackmd', (data) => {
     }
   }
 });
+
+// render for stuff credit
+const pageStuffCreditElem = document.getElementById('staff-credit');
+if (pageStuffCreditElem) {
+  ReactDOM.render(
+    <StaffCredit></StaffCredit>,
+    pageStuffCreditElem,
+  );
+
+}
 
 // うわーもうー (commented by Crowi team -- 2018.03.23 Yuki Takei)
 $('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', () => {

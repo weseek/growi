@@ -1,21 +1,20 @@
 @import '../variables';
 
-$basecolor: #16282D;
-$themecolor:rgba(11, 79, 104, 0.616);
+$basecolor: #16282d;
+$themecolor: rgba(11, 79, 104, 0.616);
 
-$topbar:#011414;
-$sidebar:#fff;
-$bodycolor:$basecolor;
-$headingtext: #D9A364;
+$topbar: #011414;
+$sidebar: #fff;
+$bodycolor: $basecolor;
+$headingtext: #d9a364;
 $bodytext: lighten($basecolor, 35%);
 $linktext: lighten($basecolor, 45%);
 $linktext-hover: lighten($linktext, 80%);
-$sidebar-text:rgb(65, 133, 124);
-$dark-themecolor:#4F5467;
-
+$sidebar-text: rgb(65, 133, 124);
+$dark-themecolor: #4f5467;
 
 $primary: $themecolor;
-$info: lighten($themecolor,20%);
+$info: lighten($themecolor, 20%);
 
 $logo-mark-fill: rgb(170, 245, 237);
 $wikilinktext: saturate($bodytext, 20%);
@@ -31,6 +30,8 @@ $inline-code-bg: darken($bodycolor, 5%);
 @import 'apply-colors';
 @import 'apply-colors-dark';
 
-.bg-title{
-  border-bottom: 1px solid rgb(131, 228, 215);
+.main-container:not(.on-edit) {
+  .bg-title {
+    border-bottom: 1px solid rgb(131, 228, 215);
+  }
 }

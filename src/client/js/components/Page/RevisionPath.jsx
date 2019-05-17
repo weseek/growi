@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import CopyButton from '../CopyButton';
+import { withTranslation } from 'react-i18next';
 
-export default class RevisionPath extends React.Component {
+import CopyDropdown from './CopyDropdown';
+
+class RevisionPath extends React.Component {
 
   constructor(props) {
     super(props);
@@ -49,9 +51,10 @@ export default class RevisionPath extends React.Component {
   }
 
   showToolTip() {
-    $('#btnCopy').tooltip('show');
+    const buttonId = '#copyPagePathDropdown';
+    $(buttonId).tooltip('show');
     setTimeout(() => {
-      $('#btnCopy').tooltip('hide');
+      $(buttonId).tooltip('hide');
     }, 1000);
   }
 
@@ -78,7 +81,7 @@ export default class RevisionPath extends React.Component {
       marginLeft: '0.2em',
       marginRight: '0.2em',
     };
-    const editButtonStyle = {
+    const buttonStyle = {
       marginLeft: '0.5em',
       padding: '0 2px',
     };
@@ -110,13 +113,10 @@ export default class RevisionPath extends React.Component {
           <a href="/">/</a>
         </span>
         {afterElements}
-        <CopyButton
-          buttonId="btnCopyRevisionPath"
-          text={this.props.pagePath}
-          buttonClassName="btn btn-default btn-copy"
-          iconClassName="ti-clipboard"
-        />
-        <a href="#edit" className="btn btn-default btn-edit" style={editButtonStyle}>
+
+        <CopyDropdown t={this.props.t} pagePath={this.props.pagePath} pageId={this.props.pageId} buttonStyle={buttonStyle}></CopyDropdown>
+
+        <a href="#edit" className="btn btn-default btn-edit" style={buttonStyle}>
           <i className="icon-note" />
         </a>
       </span>
@@ -126,6 +126,10 @@ export default class RevisionPath extends React.Component {
 }
 
 RevisionPath.propTypes = {
-  pagePath: PropTypes.string.isRequired,
+  t: PropTypes.func.isRequired, // i18next
   crowi: PropTypes.object.isRequired,
+  pagePath: PropTypes.string.isRequired,
+  pageId: PropTypes.string,
 };
+
+export default withTranslation()(RevisionPath);
