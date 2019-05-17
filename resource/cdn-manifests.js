@@ -18,7 +18,8 @@ module.exports = {
     },
     {
       name: 'highlight-addons',
-      url: 'https://cdn.jsdelivr.net/combine/'
+      url:
+        'https://cdn.jsdelivr.net/combine/'
         + 'gh/highlightjs/cdn-release@9.13.0/build/languages/dockerfile.min.js,'
         + 'gh/highlightjs/cdn-release@9.13.0/build/languages/go.min.js,'
         + 'gh/highlightjs/cdn-release@9.13.0/build/languages/gradle.min.js,'
@@ -82,6 +83,14 @@ module.exports = {
     {
       name: 'lato',
       url: 'https://fonts.googleapis.com/css?family=Lato:400,700',
+      groups: ['basis'],
+      args: {
+        integrity: '',
+      },
+    },
+    {
+      name: 'Press Start 2P',
+      url: 'https://fonts.googleapis.com/css?family=Press+Start+2P',
       groups: ['basis'],
       args: {
         integrity: '',
