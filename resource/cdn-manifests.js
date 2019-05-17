@@ -18,8 +18,7 @@ module.exports = {
     },
     {
       name: 'highlight-addons',
-      url:
-        'https://cdn.jsdelivr.net/combine/'
+      url: 'https://cdn.jsdelivr.net/combine/'
         + 'gh/highlightjs/cdn-release@9.13.0/build/languages/dockerfile.min.js,'
         + 'gh/highlightjs/cdn-release@9.13.0/build/languages/go.min.js,'
         + 'gh/highlightjs/cdn-release@9.13.0/build/languages/gradle.min.js,'
