@@ -74,40 +74,7 @@
       </div><!-- /.modal -->
       {% endif %}
 
-      <div class="modal fade" id="admin-delete-user-group-modal">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header bg-danger">
-              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-              <div class="modal-title">
-                <i class="icon icon-fire"></i> グループの削除
-              </div>
-            </div>
-
-            <div class="modal-body">
-              <dl>
-                <dt>グループ名</dt>
-                <dd><span id="admin-delete-user-group-name"></span></dd>
-              </dl>
-              <span class="text-danger">
-                グループの削除を行うと元に戻すことはできませんのでご注意ください。
-              </span>
-            </div>
-            <div class="modal-footer">
-              <form action="/admin/user-group.remove" method="post" id="admin-user-groups-delete" class="text-right">
-                <input type="hidden" name="user_group_id" value="">
-                <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                <button type="submit" value="" class="btn btn-sm btn-danger">
-                  <i class="icon icon-fire"></i> 削除
-                </button>
-              </form>
-            </div>
-
-          </div>
-          <!-- /.modal-content -->
-        </div>
-        <!-- /.modal-dialog -->
-      </div>
+      <div class="modal fade" id="admin-delete-user-group-modal"></div>
 
       <h2>グループ一覧</h2>
 

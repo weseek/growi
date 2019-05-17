@@ -61,15 +61,6 @@ $(() => {
     return false;
   });
 
-  $('#admin-delete-user-group-modal').on('show.bs.modal', (button) => {
-    const data = $(button.relatedTarget);
-    const userGroupId = data.data('user-group-id');
-    const userGroupName = data.data('user-group-name');
-
-    $('#admin-delete-user-group-name').text(userGroupName);
-    $('#admin-user-groups-delete input[name=user_group_id]').val(userGroupId);
-  });
-
   $('form#user-group-relation-create').on('submit', function(e) {
     $.post('/admin/user-group-relation/create', $(this).serialize(), (res) => {
       $('#admin-add-user-group-relation-modal').modal('hide');
