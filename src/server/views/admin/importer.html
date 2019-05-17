@@ -41,7 +41,7 @@
 
       <!-- esa Importer management forms -->
       <form action="/_api/admin/settings/importerEsa" method="post" class="form-horizontal" id="importerSettingFormEsa" role="form"
-          data-success-messaage="更新しました">
+          data-success-messaage="{{ ('Updated') }}">
         <fieldset>
           <legend>{{ t('importer_management.import_from', 'esa.io') }}</legend>
           <table class="table table-bordered table-mapping">
@@ -54,17 +54,17 @@
             </thead>
             <tbody>
               <tr>
-                <th>記事</th>
+                <th>{{ t('Article') }}</th>
                 <th><i class="icon-arrow-right-circle text-success"></i></th>
-                <th>ページ</th>
+                <th>{{ t('Page') }}</th>
               </tr>
               <tr>
-                <th>カテゴリー</th>
+                <th>{{ t('Category') }}</th>
                 <th><i class="icon-arrow-right-circle text-success"></i></th>
-                <th>ページパス</th>
+                <th>{{ t('Page Path') }}</th>
               </tr>
               <tr>
-                <th>ユーザー</th>
+                <th>{{ t('User') }}</th>
                 <th></th>
                 <th>(TBD)</th>
               </tr>
@@ -72,7 +72,7 @@
           </table>
           <div class="well well-sm mb-0 small">
             <ul>
-              <li>既に GROWI 側に同名のページが存在する場合、そのページはスキップされます</li>
+              <li>{{ t("importer_management.page_skip") }}</li>
             </ul>
           </div>
           <div class="form-group">
@@ -114,7 +114,7 @@
 
       <!-- qiita:team Importer management forms -->
       <form action="/_api/admin/settings/importerQiita" method="post" class="form-horizontal mt-5" id="importerSettingFormQiita" role="form"
-          data-success-messaage="更新しました">
+          data-success-messaage="Updated">
         <fieldset>
           <legend>{{ t('importer_management.import_from', 'Qiita:Team') }}</legend>
           <table class="table table-bordered table-mapping">
@@ -127,22 +127,22 @@
             </thead>
             <tbody>
               <tr>
-                <th>記事</th>
+                <th>{{ t('Article') }}</th>
                 <th><i class="icon-arrow-right-circle text-success"></i></th>
-                <th>ページ</th>
+                <th>{{ t('Page') }}</th>
               </tr>
               <tr>
-                <th>タグ</th>
+                <th>{{ t('Tag')}}</th>
                 <th></th>
                 <th>-</th>
               </tr>
               <tr>
-                <th>ディレクトリ階層タグ</th>
+                <th>{{ t("importer_management.Directory_hierarchy_tag") }}</th>
                 <th></th>
                 <th>(TBD)</th>
               </tr>
               <tr>
-                <th>ユーザー</th>
+                <th>{{ t('User') }}</th>
                 <th></th>
                 <th>(TBD)</th>
               </tr>
@@ -150,7 +150,7 @@
           </table>
           <div class="well well-sm mb-0 small">
             <ul>
-              <li>既に GROWI 側に同名のページが存在する場合、そのページはスキップされます</li>
+              <li>{{ t("importer_management.page_skip") }}</li>
             </ul>
           </div>
           <div class="form-group">
@@ -223,7 +223,7 @@
   /**
    * Post form data and process UI
    */
-  function postData(form, button, action, success_msg = "成功しました", error_msg = "エラーが発生しました") {
+  function postData(form, button, action, success_msg = "Success", error_msg = " {{ t('Error occurred') }} " ) {
     var id = form.attr('id');
     button.attr('disabled', 'disabled');
     var jqxhr = $.post(action, form.serialize(), function(data)
@@ -236,7 +236,7 @@
         }
       })
       .fail(function() {
-        showMessage(id, "エラーが発生しました", 'danger');
+        showMessage(id, "{{ t('Error occurred') }}", 'danger');
       })
       .always(function() {
         button.prop('disabled', false);

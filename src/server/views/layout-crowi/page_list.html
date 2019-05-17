@@ -16,10 +16,10 @@
 
     <div class="d-flex align-items-center">
       <div class="title-container">
-        <div class="d-flex">
-          <h1 class="title" id="revision-path"></h1>
-        </div>
-        <div id="revision-url" class="url-line"></div>
+        <h1 class="title" id="revision-path"></h1>
+        {% if page and not forbidden and not isTrashPage() %}
+          <div id="tag-label"></div>
+        {% endif %}
       </div>
       {% include '../widget/header-buttons.html' %}
     </div>

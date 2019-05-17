@@ -17,7 +17,10 @@ export default class SearchResultList extends React.Component {
     const resultList = this.props.pages.map((page) => {
       return (
         <div id={page._id} key={page._id} className="search-result-page">
-          <h2><a href={page.path}>{page.path}</a></h2>
+          <h2 className="inline"><a href={page.path}>{page.path}</a></h2>
+          { page.tags.length > 0 && (
+            <span><i className="tag-icon icon-tag"></i> {page.tags.join(', ')}</span>
+          )}
           <RevisionLoader
             crowi={this.props.crowi}
             crowiRenderer={this.growiRenderer}

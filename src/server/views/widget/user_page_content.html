@@ -4,7 +4,10 @@
       <a href="#user-bookmark-list" data-toggle="tab"><i class="icon-star"></i> Bookmarks</a>
     </li>
     <li>
-      <a href="#user-created-list" data-toggle="tab"><i class="icon-clock"></i> Recent Created</a>
+      <a href="#user-created-list" data-toggle="tab"><i class="icon-clock"></i> Recently Created</a>
+    </li>
+    <li>
+      <a href="#user-draft-list" data-toggle="tab"><i class="icon-docs"></i> My Drafts</a>
     </li>
     {% if user._id.toString() == pageUser._id.toString() %}
     <li>
@@ -16,18 +19,38 @@
   <div class="m-t-10 user-page-content-tab tab-content">
 
     <div class="tab-pane user-bookmark-list page-list active" id="user-bookmark-list">
-      <div class="page-list-container">
-        {% if bookmarkList.length == 0 %}
+      {% if bookmarkList.length == 0 %}
         No bookmarks yet.
-        {% else %}
+      {% else %}
+        <div class="page-list-container">
           {% include 'page_list.html' with { pages: bookmarkList, pagePropertyName: 'page' } %}
-        {% endif %}
-      </div>
+        </div>
+      {% endif %}
     </div>
 
     <div class="tab-pane user-created-list page-list" id="user-created-list">
       <div class="page-list-container">
       </div>
     </div>
+
+    <div class="tab-pane user-draft-list page-list" id="user-draft-list">
+      <div class="page-list-container">
+      </div>
+    </div>
   </div>
 </div>
+
+<script>
+  function activateTab(tab){
+    $('.nav-tabs a[href="#' + tab + '"]').tab('show');
+  };
+
+  window.addEventListener('load', function(e) {
+    // hash on page
+    if (location.hash) {
+      if (location.hash == '#user-draft-list') {
+        activateTab('user-draft-list');
+      }
+    }
+  });
+</script>

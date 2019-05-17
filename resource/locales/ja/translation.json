@@ -3,6 +3,8 @@
   "Edit": "編集",
   "Delete": "削除",
   "Duplicate": "複製",
+  "Copy": "コピー",
+  "Click to copy": "クリックでコピー",
   "Move": "移動",
   "Moved": "移動しました",
   "Unlinked": "リダイレクト削除",
@@ -11,10 +13,17 @@
   "Cancel": "キャンセル",
   "Create": "作成",
   "Admin": "管理",
+  "Tag": "タグ",
+  "Tags": "タグ",
   "New": "作成",
   "Shortcuts": "ショートカット",
   "eg": "例:",
   "Undo": "元に戻す",
+  "Article": "記事",
+  "Page": "ページ",
+  "Page Path": "ページパス",
+  "Category": "カテゴリー",
+  "User": "ユーザー",
 
   "Update": "更新",
   "Update Page": "ページを更新",
@@ -75,8 +84,8 @@
   "Hide": "非公開",
   "Disclose E-mail": "メールアドレスの公開",
 
-
-
+  "page exists": "このページはすでに存在しています",
+  "Error occurred":"エラーが発生しました",
 
   "Create today's": "今日の◯◯を作成",
   "Memo": "メモ",
@@ -111,13 +120,16 @@
   "Shareable link": "このページの共有用URL",
   "The whitelist of registration permission E-mail address": "登録許可メールアドレスの<br>ホワイトリスト",
   "Selecting authentication mechanism": "認証機構選択",
-
+  "Add tags for this page": "タグを付ける",
+  "Edit tags for this page": "タグを編集する",
+  "You have no tag, You can set tags on pages": "使用中のタグがありません",
 
 
   "Show latest": "最新のページを表示",
   "Load latest": "最新版を読み込む",
   "edited this page": "さんがこのページを編集しました。",
 
+  "List Drafts": "下書き一覧",
   "Deleted Pages": "削除済みページ",
   "Sign out": "ログアウト",
 
@@ -130,6 +142,11 @@
     "create_initial_account": "最初のアカウントの作成",
     "initial_account_will_be_administrator_automatically": "初めに作成するアカウントは、自動的に管理者権限が付与されます",
     "unavaliable_user_id": "このユーザーIDは利用できません。"
+  },
+
+  "breaking_changes": {
+    "v346_passport_is_not_enabled": "現在利用中の Crowi Classic Authentication mechanism は、近い将来<strong>サポートされなくなります</strong>。%s から Passport に切り替えてください。",
+    "v346_using_basic_auth": "現在利用中の Basic 認証機能は、近い将来<strong>廃止されます</strong>。%s から設定を削除してください。"
   },
 
   "page_register": {
@@ -190,6 +207,14 @@
     }
   },
 
+  "copy_to_clipboard": {
+    "Copy to clipboard": "クリップボードにコピー",
+    "Page path": "ページ名",
+    "Parmanent link": "パーマリンク",
+    "Page path and parmanent link": "ページ名とパーマリンク",
+    "Markdown link": "マークダウン形式のリンク"
+  },
+
   "search_help": {
     "title": "検索のヘルプ",
     "and": {
@@ -208,6 +233,12 @@
     },
     "exclude_prefix": {
       "desc": "ページ名が {{path}} から始まるページを除外"
+    },
+    "tag": {
+      "desc": "{{tag}} というタグを含むページを検索"
+    },
+    "exclude_tag": {
+      "desc": "{{tag}} というタグを含むページを除外"
     }
   },
   "search": {
@@ -417,10 +448,10 @@
     "for_instance":"例えば、",
     "only_those":"と記載することで、そのドメインのメールアドレスを持っている人のみ登録可能になります。",
     "insert_single":"1行に1メールアドレス入力してください。",
-    "page_listing_1": "ページのリスト表示<br>'自分のみ'に閲覧制限しているページ",
-    "page_listing_1_desc": "ページのリスト表示時、'自分のみ'に閲覧制限をしているページをアクセス権のないユーザーにも表示します。",
-    "page_listing_2": "ページのリスト表示<br>特定グループに閲覧制限しているページ",
-    "page_listing_2_desc": "ページのリスト表示時、特定グループにのみ閲覧制限をしているページをアクセス権のないユーザーにも表示します。",
+    "page_listing_1": "ページのリスト表示と検索<br>'自分のみ'に閲覧制限しているページ",
+    "page_listing_1_desc": "ページのリスト表示や検索結果において、'自分のみ'に閲覧制限をしているページをアクセス権のないユーザーにも表示します。",
+    "page_listing_2": "ページのリスト表示と検索<br>特定グループに閲覧制限しているページ",
+    "page_listing_2_desc": "ページのリスト表示や検索結果において、特定グループにのみ閲覧制限をしているページをアクセス権のないユーザーにも表示します。",
 
     "Authentication mechanism settings":"認証機構設定",
     "note": "メモ",
@@ -631,8 +662,8 @@
     "write_java": "システム全体に適用されるJavaScriptを記述できます。",
     "attach_title_header": "新規ページ作成時の h1 セクション自動挿入",
     "attach_title_header_desc": "新規作成したページの1行目に、ページのパスを h1 セクションとして挿入します。",
-    "recent_created_page_num": "Recent Created ページングサイズ",
-    "recent_created_page_num_desc": "ホーム画面の Recent Created で、1ページに表示する件数を設定します。"
+    "recent_created__n_draft_num_desc": "最近作成したページと下書きの表示数",
+    "recently_created_n_draft_num_desc": "ホーム画面の Recently Created での、1ページの表示数を設定します。"
   },
 
   "user_management": {
@@ -680,6 +711,8 @@
       "access_token": "アクセストークン",
       "test_connection": "接続テスト"
     },
-    "import": "インポート"
+    "import": "インポート",
+    "page_skip": "既に GROWI 側に同名のページが存在する場合、そのページはスキップされます",
+    "Directory_hierarchy_tag": "ディレクトリ階層タグ"
   }
 }
