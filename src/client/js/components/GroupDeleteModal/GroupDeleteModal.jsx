@@ -17,6 +17,7 @@ class GroupDeleteModal extends React.Component {
   constructor(props) {
     super(props);
 
+    // actionName master constants
     this.actionForPages = {
       public: 'public',
       delete: 'delete',
@@ -41,7 +42,7 @@ class GroupDeleteModal extends React.Component {
       deleteGroupId: '',
       deleteGroupName: '',
       groups: [],
-      actionForPages: '',
+      actionName: '',
       selectedGroupId: '',
     };
 
@@ -59,6 +60,8 @@ class GroupDeleteModal extends React.Component {
   componentDidMount() {
     this.retrieveUserGroupRelations();
 
+    // bootstrap and this jQuery opens/hides modal.
+    // let React handle it in the future.
     $('#admin-delete-user-group-modal').on('show.bs.modal', (button) => {
       const data = $(button.relatedTarget);
       const deleteGroupId = data.data('user-group-id');
@@ -80,8 +83,8 @@ class GroupDeleteModal extends React.Component {
   }
 
   changeActionHandler(e) {
-    const actionForPages = e.target.value;
-    this.setState({ actionForPages });
+    const actionName = e.target.value;
+    this.setState({ actionName });
   }
 
   changeGroupHandler(e) {
@@ -101,12 +104,12 @@ class GroupDeleteModal extends React.Component {
     return (
       <FormGroup className="grant-selector m-b-0">
         <FormControl
-          name="actionForPages"
+          name="actionName"
           componentClass="select"
           placeholder="select"
           bsClass={bsClassName}
           className="btn-group-sm selectpicker"
-          value={this.state.actionForPages}
+          value={this.state.actionName}
           onChange={this.changeActionHandler}
         >
           <option value="" disabled>{t('user_group_management.choose_action')}</option>
@@ -119,23 +122,25 @@ class GroupDeleteModal extends React.Component {
   renderGroupSelector() {
     const { t } = this.props;
 
-    const options = this.state.groups.map((group) => {
-      if (group._id !== this.state.deleteGroupId) {
-        const dataContent = `<i class="icon icon-fw icon-organization"></i> ${this.getGroupName(group)}`;
-        return <option key={group._id} value={group._id} data-content={dataContent}>{this.getGroupName(group)}</option>;
-      }
-
-      return;
+    const groups = this.state.groups.filter((group) => {
+      return group._id !== this.state.deleteGroupId;
     });
+
+    const options = groups.map((group) => {
+      const dataContent = `<i class="icon icon-fw icon-organization"></i> ${this.getGroupName(group)}`;
+      return <option key={group._id} value={group._id} data-content={dataContent}>{this.getGroupName(group)}</option>;
+    });
+
+    const defaultOptionText = groups.length === 0 ? t('user_group_management.no_groups') : t('user_group_management.select_group');
 
     return (
       <select
         name="selectedGroupId"
-        className={this.state.actionForPages === this.actionForPages.transfer ? '' : 'd-none'}
+        className={this.state.actionName === this.actionForPages.transfer ? '' : 'd-none'}
         value={this.state.selectedGroupId}
         onChange={this.changeGroupHandler}
       >
-        <option value="" disabled>{this.state.groups.length === 0 ? t('user_group_management.no_groups') : t('user_group_management.select_group')}</option>
+        <option value="" disabled>{defaultOptionText}</option>
         {options}
       </select>
     );
@@ -144,10 +149,10 @@ class GroupDeleteModal extends React.Component {
   disableSubmit() {
     let isDisabled = false;
 
-    if (this.state.actionForPages === '') {
+    if (this.state.actionName === '') {
       isDisabled = true;
     }
-    else if (this.state.actionForPages === this.actionForPages.transfer) {
+    else if (this.state.actionName === this.actionForPages.transfer) {
       isDisabled = this.state.selectedGroupId === '';
     }
 

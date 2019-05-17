@@ -1349,6 +1349,9 @@ module.exports = function(crowi) {
       page.grantedGroup = selectedGroupId;
       await page.save();
     }
+    else {
+      throw new Error('Cannot find the group to which private pages belong to. _id: ', selectedGroupId);
+    }
   };
 
   /**

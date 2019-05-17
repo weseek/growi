@@ -90,33 +90,24 @@ class UserGroup {
   }
 
   // グループの完全削除
-  static removeCompletelyById(deleteGroupId, action, selectedGroupId) {
+  static async removeCompletelyById(deleteGroupId, action, selectedGroupId) {
     const PageGroupRelation = mongoose.model('PageGroupRelation');
     const UserGroupRelation = mongoose.model('UserGroupRelation');
     const Page = mongoose.model('Page');
 
-    let deletedGroup;
-    return this.findById(deleteGroupId)
-      .then((userGroupData) => {
-        if (userGroupData == null) {
-          throw new Error('UserGroup data is not exists. id:', deleteGroupId);
-        }
-        return userGroupData.remove();
-      })
-      .then((removedUserGroupData) => {
-        deletedGroup = removedUserGroupData;
-      })
-      // remove relations
-      .then(() => {
-        return Promise.all([
-          UserGroupRelation.removeAllByUserGroup(deletedGroup),
-          PageGroupRelation.removeAllByUserGroup(deletedGroup),
-          Page.handlePrivatePagesForDeletedGroup(deletedGroup, action, selectedGroupId),
-        ]);
-      })
-      .then(() => {
-        return deletedGroup;
-      });
+    const groupToDelete = await this.findById(deleteGroupId);
+    if (groupToDelete == null) {
+      throw new Error('UserGroup data is not exists. id:', deleteGroupId);
+    }
+    const deletedGroup = await groupToDelete.remove();
+
+    await Promise.all([
+      UserGroupRelation.removeAllByUserGroup(deletedGroup),
+      PageGroupRelation.removeAllByUserGroup(deletedGroup),
+      Page.handlePrivatePagesForDeletedGroup(deletedGroup, action, selectedGroupId),
+    ]);
+
+    return deletedGroup;
   }
 
   // グループ生成（名前が要る）

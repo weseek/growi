@@ -781,10 +781,10 @@ module.exports = function(crowi, app) {
 
   // app.post('/_api/admin/user-group/delete' , admin.userGroup.removeCompletely);
   actions.userGroup.removeCompletely = async(req, res) => {
-    const { deleteGroupId, actionForPages, selectedGroupId } = req.body;
+    const { deleteGroupId, actionName, selectedGroupId } = req.body;
 
     try {
-      await UserGroup.removeCompletelyById(deleteGroupId, actionForPages, selectedGroupId);
+      await UserGroup.removeCompletelyById(deleteGroupId, actionName, selectedGroupId);
       req.flash('successMessage', '削除しました');
     }
     catch (err) {
