@@ -1,12 +1,37 @@
 // Staff Credit
 
 #staff-credit {
-  div {
-    @font-face {
-      font-family: 'PressStart2P';
-      src: url(../../../../public/fonts/press-start-2p/PressStart2P.ttf) format('truetype');
-    }
-    z-index: 100;
-    font-family: 'PressStart2P', $basefont1;
+  @font-face {
+    font-family: 'PressStart2P';
+    src: url(../../../../public/fonts/press-start-2p/PressStart2P.ttf) format('truetype');
+  }
+
+  font-family: 'PressStart2P', $basefont1;
+  color: white;
+
+  .credit-curtain {
+    position: absolute;
+    // TODO:削除: navbarによって一番上が隠れてしまうので上から少しズラす、スクロールできるようになったら0%にする
+    top: 5%;
+    left: 25%;
+    width: 50%;
+    height: 100%;
+    background-color: black;
+  }
+
+  .credit-body {
+    // TODO: 上下にアニメーションする仕組み
+  }
+
+  .title {
+    font-size: 1.8em;
+  }
+
+  .dev-position {
+    font-size: 1.3em;
+  }
+
+  .dev-name {
+    font-size: 2.5em;
   }
 }
