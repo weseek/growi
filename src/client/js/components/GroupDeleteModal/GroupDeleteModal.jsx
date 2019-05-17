@@ -2,9 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import FormGroup from 'react-bootstrap/es/FormGroup';
-import FormControl from 'react-bootstrap/es/FormControl';
-
 /**
  * Delete User Group Select component
  *
@@ -17,14 +14,14 @@ class GroupDeleteModal extends React.Component {
   constructor(props) {
     super(props);
 
+    const { t } = this.props;
+
     // actionName master constants
     this.actionForPages = {
       public: 'public',
       delete: 'delete',
       transfer: 'transfer',
     };
-
-    const { t } = this.props;
 
     this.availableOptions = [
       {
@@ -38,13 +35,16 @@ class GroupDeleteModal extends React.Component {
       },
     ];
 
-    this.state = {
+    this.initialState = {
       deleteGroupId: '',
       deleteGroupName: '',
       groups: [],
       actionName: '',
       selectedGroupId: '',
+      isFetching: false,
     };
+
+    this.state = this.initialState;
 
     // retrieve xss library from window
     this.xss = window.xss;
@@ -54,20 +54,31 @@ class GroupDeleteModal extends React.Component {
     this.changeGroupHandler = this.changeGroupHandler.bind(this);
     this.renderPageActionSelector = this.renderPageActionSelector.bind(this);
     this.renderGroupSelector = this.renderGroupSelector.bind(this);
-    this.disableSubmit = this.disableSubmit.bind(this);
+    this.validateForm = this.validateForm.bind(this);
   }
 
   componentDidMount() {
-    this.retrieveUserGroupRelations();
-
-    // bootstrap and this jQuery opens/hides modal.
+    // bootstrap and this jQuery opens/hides the modal.
     // let React handle it in the future.
-    $('#admin-delete-user-group-modal').on('show.bs.modal', (button) => {
+    $('#admin-delete-user-group-modal').on('show.bs.modal', async(button) => {
+      this.setState({ isFetching: true });
+
+      const groups = await this.fetchAllGroups();
+
       const data = $(button.relatedTarget);
       const deleteGroupId = data.data('user-group-id');
       const deleteGroupName = data.data('user-group-name');
 
-      this.setState({ deleteGroupId, deleteGroupName });
+      this.setState({
+        groups,
+        deleteGroupId,
+        deleteGroupName,
+        isFetching: false,
+      });
+    });
+
+    $('#admin-delete-user-group-modal').on('hide.bs.modal', (button) => {
+      this.setState(this.initialState);
     });
   }
 
@@ -75,10 +86,10 @@ class GroupDeleteModal extends React.Component {
     return this.xss.process(group.name);
   }
 
-  async retrieveUserGroupRelations() {
+  async fetchAllGroups() {
     const res = await this.props.crowi.apiGet('/admin/user-groups');
     if (res.ok) {
-      this.setState({ groups: res.userGroups });
+      return res.userGroups;
     }
   }
 
@@ -96,26 +107,21 @@ class GroupDeleteModal extends React.Component {
     const { t } = this.props;
 
     const optoins = this.availableOptions.map((opt) => {
-      const dataContent = `<i class="icon icon-fw ${opt.iconClass} ${opt.styleClass}"></i> <span class="${opt.styleClass}">${t(opt.label)}</span>`;
+      const dataContent = `<i class="icon icon-fw ${opt.iconClass} ${opt.styleClass}"></i> <span class="action-name ${opt.styleClass}">${t(opt.label)}</span>`;
       return <option key={opt.id} value={opt.actionForPages} data-content={dataContent}>{t(opt.label)}</option>;
     });
 
-    const bsClassName = 'form-control-dummy'; // set form-control* to shrink width
     return (
-      <FormGroup className="grant-selector m-b-0">
-        <FormControl
-          name="actionName"
-          componentClass="select"
-          placeholder="select"
-          bsClass={bsClassName}
-          className="btn-group-sm selectpicker"
-          value={this.state.actionName}
-          onChange={this.changeActionHandler}
-        >
-          <option value="" disabled>{t('user_group_management.choose_action')}</option>
-          {optoins}
-        </FormControl>
-      </FormGroup>
+      <select
+        name="actionName"
+        className="form-control"
+        placeholder="select"
+        value={this.state.actionName}
+        onChange={this.changeActionHandler}
+      >
+        <option value="" disabled>{t('user_group_management.choose_action')}</option>
+        {optoins}
+      </select>
     );
   }
 
@@ -136,7 +142,7 @@ class GroupDeleteModal extends React.Component {
     return (
       <select
         name="selectedGroupId"
-        className={this.state.actionName === this.actionForPages.transfer ? '' : 'd-none'}
+        className={`form-control ${this.state.actionName === this.actionForPages.transfer ? '' : 'd-none'}`}
         value={this.state.selectedGroupId}
         onChange={this.changeGroupHandler}
       >
@@ -146,17 +152,17 @@ class GroupDeleteModal extends React.Component {
     );
   }
 
-  disableSubmit() {
-    let isDisabled = false;
+  validateForm() {
+    let isValid = true;
 
     if (this.state.actionName === '') {
-      isDisabled = true;
+      isValid = false;
     }
     else if (this.state.actionName === this.actionForPages.transfer) {
-      isDisabled = this.state.selectedGroupId === '';
+      isValid = this.state.selectedGroupId !== '';
     }
 
-    return isDisabled;
+    return isValid;
   }
 
   render() {
@@ -171,27 +177,45 @@ class GroupDeleteModal extends React.Component {
               <i className="icon icon-fire"></i> {t('user_group_management.delete_group')}
             </div>
           </div>
+
           <div className="modal-body">
             <div>
               <span className="font-weight-bold">{t('user_group_management.group_name')}</span> : &quot;{this.state.deleteGroupName}&quot;
             </div>
-            <div className="text-danger mt-5">
-              {t('user_group_management.group_and_pages_not_retrievable')}
-            </div>
+            {this.state.isFetching
+              ? (
+                <div className="mt-5">
+                  {t('user_group_management.is_loading_data')}
+                </div>
+              )
+              : (
+                <div className="text-danger mt-5">
+                  {t('user_group_management.group_and_pages_not_retrievable')}
+                </div>
+              )
+            }
           </div>
-          <div className="modal-footer">
-            <form action="/admin/user-group.remove" method="post" id="admin-user-groups-delete" className="d-flex justify-content-between">
-              <div className="d-flex">
-                {this.renderPageActionSelector()}
-                {this.renderGroupSelector()}
+
+          {this.state.isFetching
+            ? (
+              null
+            )
+            : (
+              <div className="modal-footer">
+                <form action="/admin/user-group.remove" method="post" id="admin-user-groups-delete" className="d-flex justify-content-between">
+                  <div className="d-flex">
+                    {this.renderPageActionSelector()}
+                    {this.renderGroupSelector()}
+                  </div>
+                  <input type="hidden" id="deleteGroupId" name="deleteGroupId" value={this.state.deleteGroupId} onChange={() => {}} />
+                  <input type="hidden" name="_csrf" defaultValue={this.props.crowi.csrfToken} />
+                  <button type="submit" value="" className="btn btn-sm btn-danger" disabled={!this.validateForm()}>
+                    <i className="icon icon-fire"></i> {t('Delete')}
+                  </button>
+                </form>
               </div>
-              <input type="hidden" id="deleteGroupId" name="deleteGroupId" value={this.state.deleteGroupId} onChange={() => {}} />
-              <input type="hidden" name="_csrf" defaultValue={this.props.crowi.csrfToken} />
-              <button type="submit" value="" className="btn btn-sm btn-danger" disabled={this.disableSubmit()}>
-                <i className="icon icon-fire"></i> {t('Delete')}
-              </button>
-            </form>
-          </div>
+            )
+          }
         </div>
       </div>
     );

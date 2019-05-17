@@ -682,6 +682,7 @@
   },
 
   "user_group_management": {
+    "is_loading_data": "データを取得中です...",
     "choose_action": "削除するグループの限定公開ページの処理を選択してください",
     "delete_group": "グループの削除",
     "group_name": "グループ名",
