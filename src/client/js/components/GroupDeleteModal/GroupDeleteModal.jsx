@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import * as toastr from 'toastr';
+
 /**
  * Delete User Group Select component
  *
@@ -46,6 +48,9 @@ class GroupDeleteModal extends React.Component {
 
     this.state = this.initialState;
 
+    // logger
+    this.logger = require('@alias/logger')('growi:GroupDeleteModal:GroupDeleteModal');
+
     // retrieve xss library from window
     this.xss = window.xss;
 
@@ -87,10 +92,34 @@ class GroupDeleteModal extends React.Component {
   }
 
   async fetchAllGroups() {
-    const res = await this.props.crowi.apiGet('/admin/user-groups');
-    if (res.ok) {
-      return res.userGroups;
+    let groups = [];
+
+    try {
+      const res = await this.props.crowi.apiGet('/admin/user-groups');
+      if (res.ok) {
+        groups = res.userGroups;
+      }
+      else {
+        throw new Error('Unable to fetch groups from server');
+      }
     }
+    catch (err) {
+      this.handleError(err);
+    }
+
+    return groups;
+  }
+
+  handleError(err) {
+    this.logger.error(err);
+    toastr.error(err, 'Error occured', {
+      closeButton: true,
+      progressBar: true,
+      newestOnTop: false,
+      showDuration: '100',
+      hideDuration: '100',
+      timeOut: '3000',
+    });
   }
 
   changeActionHandler(e) {
