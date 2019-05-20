@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import Button from 'react-bootstrap/es/Button';
 import dateFnsFormat from 'date-fns/format';
+// import CommentForm from './CommentForm';
 
 import RevisionBody from '../Page/RevisionBody';
 
@@ -24,6 +26,7 @@ export default class Comment extends React.Component {
 
     this.state = {
       html: '',
+      showCommentForm: false,
     };
 
     this.isCurrentUserIsAuthor = this.isCurrentUserEqualsToAuthor.bind(this);
@@ -117,6 +120,7 @@ export default class Comment extends React.Component {
     const comment = this.props.comment;
     const creator = comment.creator;
     const isMarkdown = comment.isMarkdown;
+    // const indentPixels = typeof (this.props.replyTo) !== 'undefined' ? '50px' : '0px';
 
     const rootClassName = this.getRootClassName();
     const commentDate = dateFnsFormat(comment.createdAt, 'YYYY/MM/DD HH:mm');
@@ -124,6 +128,18 @@ export default class Comment extends React.Component {
     const revHref = `?revision=${comment.revision}`;
     const revFirst8Letters = comment.revision.substr(-8);
     const revisionLavelClassName = this.getRevisionLabelClassName();
+    const commentId = comment._id;
+    const replyButton = (
+      <Button
+        type="button"
+        name="replyTo"
+        value={commentId}
+        className="fcbtn btn btn-primary btn-sm btn-success btn-rounded btn-1b"
+        onClick={this.state.showCommentForm = true}
+      >
+              Reply
+      </Button>
+    );
 
     return (
       <div className={rootClassName}>
@@ -133,6 +149,9 @@ export default class Comment extends React.Component {
             <Username user={creator} />
           </div>
           <div className="page-comment-body">{commentBody}</div>
+          <div className="page-comment-reply">
+            {replyButton}
+          </div>
           <div className="page-comment-meta">
             {commentDate}&nbsp;
             <a className={revisionLavelClassName} href={revHref}>{revFirst8Letters}</a>
@@ -156,4 +175,5 @@ Comment.propTypes = {
   deleteBtnClicked: PropTypes.func.isRequired,
   crowi: PropTypes.object.isRequired,
   crowiRenderer: PropTypes.object.isRequired,
+  replyTo: PropTypes.string,
 };

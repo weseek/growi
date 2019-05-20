@@ -133,6 +133,7 @@ export default class PageComments extends React.Component {
           deleteBtnClicked={this.confirmToDeleteComment}
           crowi={this.props.crowi}
           crowiRenderer={this.growiRenderer}
+          replyTo={comment.replyTo}
         />
       );
     });
