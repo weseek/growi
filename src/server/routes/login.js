@@ -37,7 +37,11 @@ module.exports = function(crowi, app) {
     const jumpTo = req.session.jumpTo;
     if (jumpTo) {
       req.session.jumpTo = null;
-      return res.redirect(jumpTo);
+
+      // prevention from open redirect
+      if (!jumpTo.match(/^\/\/.+$/)) {
+        return res.redirect(jumpTo);
+      }
     }
 
     return res.redirect('/');
