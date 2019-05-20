@@ -1,0 +1,44 @@
+// Staff Credit
+#staff-credit {
+  font-family: 'Press Start 2P', $basefont1;
+  color: white;
+
+  .credit-curtain {
+    position: absolute;
+    top: 0%;
+    left: 20vh;
+    width: 80vw;
+    height: 100vh;
+    overflow-y: hidden;
+    background-color: black;
+  }
+
+  .credit-body {
+    position: relative;
+    top: -30em;
+    animation-name: Credit;
+    animation-duration: 15s;
+    animation-timing-function: linear;
+  }
+
+  @keyframes Credit {
+    from {
+      top: 100%;
+    }
+    to {
+      top: -30rem;
+    }
+  }
+
+  .title {
+    font-size: 1.8em;
+  }
+
+  .dev-position {
+    font-size: 1.2em;
+  }
+
+  .dev-name {
+    font-size: 2.4em;
+  }
+}
