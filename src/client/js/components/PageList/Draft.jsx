@@ -73,23 +73,23 @@ class Draft extends React.Component {
   }
 
   renderAccordionTitle(isExist) {
+    const iconClass = this.state.isOpen ? 'caret-opened' : '';
+
     if (isExist) {
       return (
         <Fragment>
-          {this.state.isOpen ? <i className="icon-arrow-up mr-3"></i> : <i className="icon-arrow-down mr-3"></i>}
-          <span>{this.props.path}</span>
-          <span className="mx-2">({this.props.t('page exists')})</span>
+          <i className={`caret ${iconClass}`}></i>
+          <span className="mx-2">{this.props.path}</span>
+          <span>({this.props.t('page exists')})</span>
         </Fragment>
       );
     }
 
     return (
       <Fragment>
-        {this.state.isOpen ? <i className="icon-arrow-up mr-3"></i> : <i className="icon-arrow-down mr-3"></i>}
-        <a href={`${this.props.path}#edit`} target="_blank" rel="noopener noreferrer">{this.props.path}</a>
-        <span className="mx-2">
-          <span className="label-draft label label-default">draft</span>
-        </span>
+        <i className={`caret ${iconClass}`}></i>
+        <a className="mx-2" href={`${this.props.path}#edit`} target="_blank" rel="noopener noreferrer">{this.props.path}</a>
+        <span className="label-draft label label-default">draft</span>
       </Fragment>
     );
   }
@@ -99,13 +99,13 @@ class Draft extends React.Component {
     const id = this.props.path.replace('/', '-');
 
     return (
-      <div className="timeline-body">
-        <div className="panel panel-timeline">
+      <div className="draft-list-item">
+        <div className="panel">
           <div className="panel-heading d-flex justify-content-between">
             <div className="panel-title" onClick={this.toggleContent} data-target={`#${id}`}>
               {this.renderAccordionTitle(this.props.isExist)}
             </div>
-            <div>
+            <div className="icon-container">
               {this.props.isExist
                 ? null
                 : (
