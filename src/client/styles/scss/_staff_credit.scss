@@ -1,21 +1,33 @@
 // Staff Credit
-
 #staff-credit {
   font-family: 'Press Start 2P', $basefont1;
   color: white;
 
   .credit-curtain {
     position: absolute;
-    // TODO:削除: navbarによって一番上が隠れてしまうので上から少しズラす、スクロールできるようになったら0%にする
-    top: 5%;
-    left: 25%;
-    width: 50%;
-    height: 100%;
+    top: 0%;
+    left: 20vh;
+    width: 80vw;
+    height: 100vh;
+    overflow-y: hidden;
     background-color: black;
   }
 
   .credit-body {
-    // TODO: 上下にアニメーションする仕組み
+    position: relative;
+    top: -30em;
+    animation-name: Credit;
+    animation-duration: 15s;
+    animation-timing-function: linear;
+  }
+
+  @keyframes Credit {
+    from {
+      top: 100%;
+    }
+    to {
+      top: -30rem;
+    }
   }
 
   .title {
