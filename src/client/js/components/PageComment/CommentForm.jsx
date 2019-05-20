@@ -113,6 +113,7 @@ export default class CommentForm extends React.Component {
         page_id: this.props.pageId,
         revision_id: this.props.revisionId,
         is_markdown: this.state.isMarkdown,
+        replyTo: this.props.replyTo,
       },
       slackNotificationForm: {
         isSlackEnabled: this.state.isSlackEnabled,
@@ -375,6 +376,7 @@ CommentForm.propTypes = {
   pagePath: PropTypes.string,
   editorOptions: PropTypes.object,
   slackChannels: PropTypes.string,
+  replyTo: PropTypes.string,
 };
 CommentForm.defaultProps = {
   editorOptions: {},
