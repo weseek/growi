@@ -29,7 +29,6 @@ module.exports = function(crowi) {
       newComment.comment = comment;
       newComment.commentPosition = position;
       newComment.isMarkdown = isMarkdown || false;
-      newComment.replyTo = ObjectId(replyTo);
 
       newComment.save((err, data) => {
         if (err) {
