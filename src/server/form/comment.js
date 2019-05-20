@@ -8,7 +8,7 @@ module.exports = form(
   field('commentForm.comment').trim().required(),
   field('commentForm.comment_position').trim().toInt(),
   field('commentForm.is_markdown').trim().toBooleanStrict(),
-  field('commentForm.replyTo').trim().toStringStrict(),
+  field('commentForm.replyTo').trim(),
 
   field('slackNotificationForm.isSlackEnabled').trim().toBooleanStrict().required(),
   field('slackNotificationForm.slackChannels').trim(),
