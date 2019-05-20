@@ -3,7 +3,8 @@
     "lodash",
     ["transform-runtime", {
       "regenerator": true
-    }]
+    }],
+    ["transform-decorators-legacy"]
   ],
   "presets": [
     ["env", {
