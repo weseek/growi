@@ -12,6 +12,12 @@
       </p>
     {% endif %}
 
+    {% if page && page.grant == null %}
+      <p class="alert alert-inverse alert-grant">
+        The grant of this page is null, updated this page.
+      </p>
+    {% endif %}
+
     {% if isTrashPage() %}
     <div class="alert alert-warning alert-trash d-flex align-items-center justify-content-between">
       <div>
