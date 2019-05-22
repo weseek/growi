@@ -154,7 +154,6 @@ export default class Comment extends React.Component {
               <Username user={creator} />
             </div>
             <div className="page-comment-body">{commentBody}</div>
-            {comment._id} {this.props.replyTo}
             <div className="page-comment-reply">
               {replyButton}
             </div>
