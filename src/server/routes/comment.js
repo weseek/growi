@@ -74,6 +74,7 @@ module.exports = function(crowi, app) {
     const comment = commentForm.comment;
     const position = commentForm.comment_position || -1;
     const isMarkdown = commentForm.is_markdown;
+    const replyTo = commentForm.replyTo === '' ? undefined : commentForm.replyTo;
 
     // check whether accessible
     const isAccessible = await Page.isAccessiblePageByViewer(pageId, req.user);
@@ -81,7 +82,7 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Current user is not accessible to this page.'));
     }
 
-    const createdComment = await Comment.create(pageId, req.user._id, revisionId, comment, position, isMarkdown)
+    const createdComment = await Comment.create(pageId, req.user._id, revisionId, comment, position, isMarkdown, replyTo)
       .catch((err) => {
         return res.json(ApiResponse.error(err));
       });
