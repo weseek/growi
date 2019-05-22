@@ -286,6 +286,8 @@ if (!pageRevisionId && draft != null) {
   markdown = draft;
 }
 
+const pageEditorOptions = new EditorOptions(crowi.editorOptions);
+
 /**
  * define components
  *  key: id of element
@@ -309,7 +311,26 @@ const componentMappings = {
 };
 // additional definitions if data exists
 if (pageId) {
-  componentMappings['page-comments-list'] = <PageComments pageId={pageId} revisionId={pageRevisionId} revisionCreatedAt={pageRevisionCreatedAt} crowi={crowi} crowiOriginRenderer={crowiRenderer} />;
+  const pagePostCompleteHandler = (comment) => {
+    if (componentMappings['page-comments-list'] != null) {
+      componentMappings['page-comments-list'].retrieveData();
+    }
+  };
+  const temp = (
+    <I18nextProvider i18n={i18n}><PageComments
+      pageId={pageId}
+      pagePath={pagePath}
+      revisionId={pageRevisionId}
+      revisionCreatedAt={pageRevisionCreatedAt}
+      onPostComplete={pagePostCompleteHandler}
+      crowi={crowi}
+      crowiOriginRenderer={crowiRenderer}
+      editorOptions={pageEditorOptions}
+      slackChannels={slackChannels}
+    />
+    </I18nextProvider>
+  );
+  componentMappings['page-comments-list'] = temp;
   componentMappings['page-attachment'] = <PageAttachment pageId={pageId} markdown={markdown} crowi={crowi} />;
 }
 if (pagePath) {

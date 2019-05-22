@@ -128,10 +128,17 @@ export default class PageComments extends React.Component {
         <Comment
           key={comment._id}
           comment={comment}
+          crowi={this.props.crowi}
+          crowiOriginRenderer={this.props.crowiOriginRenderer}
+          pageId={this.props.pageId}
+          pagePath={this.props.pagePath}
+          revisionId={this.props.revisionId}
+          onPostComplete={this.props.onPostComplete}
+          editorOptions={this.props.editorOptions}
+          slackChannels={this.props.slackChannels}
           currentUserId={this.props.crowi.me}
           currentRevisionId={this.props.revisionId}
           deleteBtnClicked={this.confirmToDeleteComment}
-          crowi={this.props.crowi}
           crowiRenderer={this.growiRenderer}
           replyTo={comment.replyTo}
         />
@@ -250,6 +257,10 @@ export default class PageComments extends React.Component {
 
 PageComments.propTypes = {
   pageId: PropTypes.string,
+  pagePath: PropTypes.string,
+  onPostComplete: PropTypes.func,
+  editorOptions: PropTypes.object,
+  slackChannels: PropTypes.string,
   revisionId: PropTypes.string,
   revisionCreatedAt: PropTypes.number,
   crowi: PropTypes.object.isRequired,

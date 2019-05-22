@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import Button from 'react-bootstrap/es/Button';
 import dateFnsFormat from 'date-fns/format';
-// import CommentForm from './CommentForm';
+import CommentForm from './CommentForm';
 
 import RevisionBody from '../Page/RevisionBody';
 
@@ -35,6 +35,13 @@ export default class Comment extends React.Component {
     this.getRevisionLabelClassName = this.getRevisionLabelClassName.bind(this);
     this.deleteBtnClickedHandler = this.deleteBtnClickedHandler.bind(this);
     this.renderHtml = this.renderHtml.bind(this);
+    this.showForm = this.showForm.bind(this);
+  }
+
+  showForm() {
+    this.setState({
+      showCommentForm: true,
+    });
   }
 
   componentWillMount() {
@@ -128,40 +135,56 @@ export default class Comment extends React.Component {
     const revHref = `?revision=${comment.revision}`;
     const revFirst8Letters = comment.revision.substr(-8);
     const revisionLavelClassName = this.getRevisionLabelClassName();
-    const commentId = comment._id;
     const replyButton = (
       <Button
         type="button"
-        name="replyTo"
-        value={commentId}
         className="fcbtn btn btn-primary btn-sm btn-success btn-rounded btn-1b"
-        onClick={this.state.showCommentForm = true}
+        onClick={this.showForm}
       >
               Reply
       </Button>
     );
 
     return (
-      <div className={rootClassName}>
-        <UserPicture user={creator} />
-        <div className="page-comment-main">
-          <div className="page-comment-creator">
-            <Username user={creator} />
-          </div>
-          <div className="page-comment-body">{commentBody}</div>
-          <div className="page-comment-reply">
-            {replyButton}
-          </div>
-          <div className="page-comment-meta">
-            {commentDate}&nbsp;
-            <a className={revisionLavelClassName} href={revHref}>{revFirst8Letters}</a>
-          </div>
-          <div className="page-comment-control">
-            <button type="button" className="btn btn-link" onClick={this.deleteBtnClickedHandler}>
-              <i className="ti-close"></i>
-            </button>
+      <div>
+        <div className={rootClassName}>
+          <UserPicture user={creator} />
+          <div className="page-comment-main">
+            <div className="page-comment-creator">
+              <Username user={creator} />
+            </div>
+            <div className="page-comment-body">{commentBody}</div>
+            {comment._id} {this.props.replyTo}
+            <div className="page-comment-reply">
+              {replyButton}
+            </div>
+            <div className="page-comment-meta">
+              {commentDate}&nbsp;
+              <a className={revisionLavelClassName} href={revHref}>{revFirst8Letters}</a>
+            </div>
+            <div className="page-comment-control">
+              <button type="button" className="btn btn-link" onClick={this.deleteBtnClickedHandler}>
+                <i className="ti-close"></i>
+              </button>
+            </div>
           </div>
         </div>
+        {
+          this.state.showCommentForm
+          && (
+          <CommentForm
+            crowi={this.props.crowi}
+            crowiOriginRenderer={this.props.crowiRenderer}
+            pageId={this.props.pageId}
+            pagePath={this.props.pagePath}
+            revisionId={this.props.revisionId}
+            onPostComplete={this.props.onPostComplete}
+            editorOptions={this.props.editorOptions}
+            slackChannels={this.props.slackChannels}
+            replyTo={comment._id.toString()}
+          />
+        )
+        }
       </div>
     );
   }
@@ -170,10 +193,17 @@ export default class Comment extends React.Component {
 
 Comment.propTypes = {
   comment: PropTypes.object.isRequired,
+  crowi: PropTypes.object.isRequired,
+  crowiOriginRenderer: PropTypes.object.isRequired,
+  crowiRenderer: PropTypes.object.isRequired,
+  pageId: PropTypes.string,
+  pagePath: PropTypes.string,
+  revisionId: PropTypes.string,
+  onPostComplete: PropTypes.func,
+  editorOptions: PropTypes.object,
+  slackChannels: PropTypes.string,
   currentRevisionId: PropTypes.string.isRequired,
   currentUserId: PropTypes.string.isRequired,
   deleteBtnClicked: PropTypes.func.isRequired,
-  crowi: PropTypes.object.isRequired,
-  crowiRenderer: PropTypes.object.isRequired,
   replyTo: PropTypes.string,
 };
