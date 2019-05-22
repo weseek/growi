@@ -311,13 +311,11 @@ const componentMappings = {
 };
 // additional definitions if data exists
 if (pageId) {
-  const pagePostCompleteHandler = (comment) => {
-    if (componentMappings['page-comments-list'] != null) {
-      componentMappings['page-comments-list'].retrieveData();
-    }
+  const pagePostCompleteHandler = () => {
+    // TODO
   };
   const temp = (
-    <I18nextProvider i18n={i18n}><PageComments
+    <PageComments
       pageId={pageId}
       pagePath={pagePath}
       revisionId={pageRevisionId}
@@ -328,9 +326,9 @@ if (pageId) {
       editorOptions={pageEditorOptions}
       slackChannels={slackChannels}
     />
-    </I18nextProvider>
   );
-  componentMappings['page-comments-list'] = temp;
+  componentMappings['page-comments-form'] = temp;
+  componentMappings['page-comments-list'] = <I18nextProvider i18n={i18n}>{temp}</I18nextProvider>;
   componentMappings['page-attachment'] = <PageAttachment pageId={pageId} markdown={markdown} crowi={crowi} />;
 }
 if (pagePath) {
@@ -505,10 +503,10 @@ if (pageEditorElem) {
 // render comment form
 const writeCommentElem = document.getElementById('page-comment-write');
 if (writeCommentElem) {
-  const pageCommentsElem = componentInstances['page-comments-list'];
+  const pageCommentsElem = componentInstances['page-comments-form'];
   const postCompleteHandler = (comment) => {
     if (pageCommentsElem != null) {
-      pageCommentsElem.retrieveData();
+      pageCommentsElem.retrieveData(); // this needs to be configured
     }
   };
   ReactDOM.render(
