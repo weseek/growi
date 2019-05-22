@@ -671,6 +671,12 @@
   },
 
   "user_group_management": {
+    "group_list": "List of Group",
+    "create_group": "Create New Group",
+    "group_example": "e.g. : Group1",
+    "created_group": "Group was created",
+    "add_user": "Add a user to the created group",
+    "deny_create_group": "You can't create a new group with the current settings",
     "is_loading_data": "Loading data...",
     "choose_action": "Choose an action for private pages",
     "delete_group": "Delete Group",
