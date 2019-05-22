@@ -2,8 +2,11 @@
 
 ## 3.4.7-RC
 
+* Improvement: Handle private pages on group deletion
 * Fix: Searching with `tag:xxx` syntax doesn't work
+* Fix: Check CSRF when updating user data
 * I18n: Import data page
+* I18n: Group Management page
 
 ## 3.4.6
 
