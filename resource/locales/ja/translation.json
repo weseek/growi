@@ -96,15 +96,15 @@
 
   "Table of Contents": "目次",
   "Management Wiki Home": "Wiki管理トップ",
-  "App settings": "アプリ設定",
+  "App Settings": "アプリ設定",
   "Site URL settings": "サイトURL設定",
-  "Markdown settings": "マークダウン設定",
+  "Markdown Settings": "マークダウン設定",
   "Customize": "カスタマイズ",
-  "Notification settings": "通知設定",
-  "User management": "ユーザー管理",
+  "Notification Settings": "通知設定",
+  "User Management": "ユーザー管理",
   "External Account management": "外部アカウント管理",
-  "UserGroup management": "グループ管理",
-  "Full Text Search management": "全文検索管理",
+  "UserGroup Management": "グループ管理",
+  "Full Text Search Management": "全文検索管理",
   "Import Data": "データインポート",
   "Basic settings": "基本設定",
   "Basic authentication": "Basic認証",
@@ -191,7 +191,7 @@
   "Re-enter new password": "(確認用)",
   "Password is not set": "パスワードが設定されていません",
 
-  "Security settings": "セキュリティ設定",
+  "Security Settings": "セキュリティ設定",
 
   "API Settings": "API設定",
   "API Token Settings": "API Token設定",
@@ -667,7 +667,7 @@
   },
 
   "user_management": {
-    "User management": "ユーザー管理",
+    "User Management": "ユーザー管理",
     "invite_users": "新規ユーザーの招待",
     "emails": "メールアドレス (複数行入力で複数人招待可能)",
     "invite_thru_email": "招待をメールで送信",
@@ -700,6 +700,12 @@
   },
 
   "user_group_management": {
+    "group_list": "グループ一覧",
+    "create_group": "新規グループの作成",
+    "group_example": "例: Group1",
+    "created_group": "グループを作成しました",
+    "add_user": "グループへのユーザー追加",
+    "deny_create_group": "現在の設定では新規グループの作成はできません。",
     "is_loading_data": "データを取得中です...",
     "choose_action": "削除するグループの限定公開ページの処理を選択してください",
     "delete_group": "グループの削除",
