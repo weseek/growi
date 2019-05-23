@@ -54,7 +54,6 @@ if (!window) {
 
 const userlang = $('body').data('userlang');
 const i18n = i18nFactory(userlang);
-i18n.init({ react: { withRef: true } });
 
 // setup xss library
 const xss = new Xss();
@@ -506,10 +505,10 @@ if (pageEditorElem) {
 // render comment form
 const writeCommentElem = document.getElementById('page-comment-write');
 if (writeCommentElem) {
-  const pageCommentsElem = componentMappings['page-comments-list'];
+  const pageCommentsElem = componentInstances['page-comments-list'];
   const postCompleteHandler = (comment) => {
     if (pageCommentsElem != null) {
-      pageComments.retrieveData(); // this needs to be configured
+      pageComments.retrieveData();
     }
   };
   ReactDOM.render(
