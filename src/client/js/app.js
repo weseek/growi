@@ -54,6 +54,7 @@ if (!window) {
 
 const userlang = $('body').data('userlang');
 const i18n = i18nFactory(userlang);
+i18n.init({ react: { withRef: true } });
 
 // setup xss library
 const xss = new Xss();
@@ -310,25 +311,27 @@ const componentMappings = {
 
 };
 // additional definitions if data exists
+let pageComments = null;
 if (pageId) {
-  const pagePostCompleteHandler = () => {
-    // TODO
-  };
-  const temp = (
-    <PageComments
-      pageId={pageId}
-      pagePath={pagePath}
-      revisionId={pageRevisionId}
-      revisionCreatedAt={pageRevisionCreatedAt}
-      onPostComplete={pagePostCompleteHandler}
-      crowi={crowi}
-      crowiOriginRenderer={crowiRenderer}
-      editorOptions={pageEditorOptions}
-      slackChannels={slackChannels}
-    />
+  componentMappings['page-comments-list'] = (
+    <I18nextProvider i18n={i18n}>
+      <PageComments
+        ref={(elem) => {
+            if (pageComments == null) {
+              pageComments = elem;
+            }
+          }}
+        pageId={pageId}
+        pagePath={pagePath}
+        revisionId={pageRevisionId}
+        revisionCreatedAt={pageRevisionCreatedAt}
+        crowi={crowi}
+        crowiOriginRenderer={crowiRenderer}
+        editorOptions={pageEditorOptions}
+        slackChannels={slackChannels}
+      />
+    </I18nextProvider>
   );
-  componentMappings['page-comments-form'] = temp;
-  componentMappings['page-comments-list'] = <I18nextProvider i18n={i18n}>{temp}</I18nextProvider>;
   componentMappings['page-attachment'] = <PageAttachment pageId={pageId} markdown={markdown} crowi={crowi} />;
 }
 if (pagePath) {
@@ -503,10 +506,10 @@ if (pageEditorElem) {
 // render comment form
 const writeCommentElem = document.getElementById('page-comment-write');
 if (writeCommentElem) {
-  const pageCommentsElem = componentInstances['page-comments-form'];
+  const pageCommentsElem = componentMappings['page-comments-list'];
   const postCompleteHandler = (comment) => {
     if (pageCommentsElem != null) {
-      pageCommentsElem.retrieveData(); // this needs to be configured
+      pageComments.retrieveData(); // this needs to be configured
     }
   };
   ReactDOM.render(

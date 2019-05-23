@@ -2,7 +2,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { withTranslation } from 'react-i18next';
 import GrowiRenderer from '../util/GrowiRenderer';
+
 
 import Comment from './PageComment/Comment';
 import DeleteCommentModal from './PageComment/DeleteCommentModal';
@@ -16,10 +18,12 @@ import DeleteCommentModal from './PageComment/DeleteCommentModal';
  * @class PageComments
  * @extends {React.Component}
  */
-export default class PageComments extends React.Component {
+class PageComments extends React.Component {
 
   constructor(props) {
     super(props);
+
+    this.elem = React.createRef();
 
     this.state = {
       // desc order array
@@ -133,7 +137,7 @@ export default class PageComments extends React.Component {
           pageId={this.props.pageId}
           pagePath={this.props.pagePath}
           revisionId={this.props.revisionId}
-          onPostComplete={this.props.onPostComplete}
+          onPostComplete={this.retrieveData}
           editorOptions={this.props.editorOptions}
           slackChannels={this.props.slackChannels}
           currentUserId={this.props.crowi.me}
@@ -256,6 +260,7 @@ export default class PageComments extends React.Component {
 }
 
 PageComments.propTypes = {
+  t: PropTypes.func.isRequired,
   pageId: PropTypes.string,
   pagePath: PropTypes.string,
   onPostComplete: PropTypes.func,
@@ -266,3 +271,5 @@ PageComments.propTypes = {
   crowi: PropTypes.object.isRequired,
   crowiOriginRenderer: PropTypes.object.isRequired,
 };
+
+export default withTranslation(null, { withRef: true })(PageComments);
