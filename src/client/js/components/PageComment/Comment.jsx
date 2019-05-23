@@ -39,8 +39,10 @@ export default class Comment extends React.Component {
   }
 
   showForm() {
-    this.setState({
-      showCommentForm: true,
+    this.setState((prevState) => {
+      return {
+        showCommentForm: !prevState.showCommentForm,
+      };
     });
   }
 
@@ -127,7 +129,6 @@ export default class Comment extends React.Component {
     const comment = this.props.comment;
     const creator = comment.creator;
     const isMarkdown = comment.isMarkdown;
-    // const indentPixels = typeof (this.props.replyTo) !== 'undefined' ? '50px' : '0px';
 
     const rootClassName = this.getRootClassName();
     const commentDate = dateFnsFormat(comment.createdAt, 'YYYY/MM/DD HH:mm');
