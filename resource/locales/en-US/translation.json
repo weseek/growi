@@ -235,11 +235,10 @@
       "desc": "Exclude the pages that the title start with {{path}}"
     },
     "tag": {
-      "desc": "Search pages that include {{tag}} in the tag"
+      "desc": "Search for pages with {{tag}} tag"
     },
     "exclude_tag": {
-      "desc": "Exclude pages that include {{tag}} in the tag"
-    }
+      "desc": "Exclude pages with {{tag}} tag"
   },
   "search": {
     "search page bodies": "Hit [Enter] key to full-text search"
