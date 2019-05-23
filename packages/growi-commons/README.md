@@ -24,4 +24,4 @@ Install
 Documentation
 ------------
 
-See https://docs.growi.org/api/commons.html
+See https://docs.growi.org/api/commons/
