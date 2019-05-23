@@ -505,7 +505,7 @@ if (pageEditorElem) {
 // render comment form
 const writeCommentElem = document.getElementById('page-comment-write');
 if (writeCommentElem) {
-  const pageCommentsElem = componentInstances['page-comments-list'];
+  const pageCommentsElem = componentMappings['page-comments-list'];
   const postCompleteHandler = (comment) => {
     if (pageCommentsElem != null) {
       pageComments.retrieveData();
