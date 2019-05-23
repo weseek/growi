@@ -239,6 +239,7 @@
     },
     "exclude_tag": {
       "desc": "Exclude pages with {{tag}} tag"
+    }
   },
   "search": {
     "search page bodies": "Hit [Enter] key to full-text search"
