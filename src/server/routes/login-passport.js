@@ -4,6 +4,7 @@ module.exports = function(crowi, app) {
   const debug = require('debug')('growi:routes:login-passport');
   const logger = require('@alias/logger')('growi:routes:login-passport');
   const passport = require('passport');
+  const { URL } = require('url');
   const ExternalAccount = crowi.model('ExternalAccount');
   const passportService = crowi.passportService;
 
@@ -26,8 +27,17 @@ module.exports = function(crowi, app) {
       req.session.jumpTo = null;
 
       // prevention from open redirect
-      if (!jumpTo.match(/^\/\/.+$/)) {
+      if (jumpTo.match(/^\/[^/].+$/)) { // only one '/' in the front of jumpTo
         return res.redirect(jumpTo);
+      }
+      try {
+        const redirectUrl = new URL(jumpTo.replace(/^\/+/, ''));
+        if (redirectUrl.hostname === req.hostname) {
+          return res.redirect(redirectUrl);
+        }
+      }
+      catch (err) {
+        return res.redirect('/');
       }
     }
 
