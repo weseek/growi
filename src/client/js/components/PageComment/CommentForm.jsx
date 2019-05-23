@@ -123,7 +123,6 @@ export default class CommentForm extends React.Component {
       .then((res) => {
         if (this.props.onPostComplete != null) {
           this.props.onPostComplete(res.comment);
-          this.forceUpdate();
         }
         this.setState({
           comment: '',

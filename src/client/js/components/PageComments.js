@@ -22,8 +22,6 @@ class PageComments extends React.Component {
   constructor(props) {
     super(props);
 
-    this.elem = React.createRef();
-
     this.state = {
       // desc order array
       comments: [],
@@ -259,7 +257,6 @@ class PageComments extends React.Component {
 }
 
 PageComments.propTypes = {
-  t: PropTypes.func.isRequired,
   pageId: PropTypes.string,
   pagePath: PropTypes.string,
   onPostComplete: PropTypes.func,
