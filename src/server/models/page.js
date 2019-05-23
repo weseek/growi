@@ -1016,6 +1016,7 @@ module.exports = function(crowi) {
     page.lastUpdateUser = user;
     page.redirectTo = redirectTo;
     page.status = STATUS_PUBLISHED;
+    page.createdAt = Date.now();
 
     await validateAppliedScope(user, grant, grantUserGroupId);
     page.applyScope(user, grant, grantUserGroupId);
