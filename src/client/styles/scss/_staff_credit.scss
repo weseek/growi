@@ -4,11 +4,11 @@
   color: white;
 
   .credit-curtain {
-    position: absolute;
-    top: 0%;
+    position: fixed;
+    top: 10vh;
     left: 20vh;
     width: 80vw;
-    height: 100vh;
+    height: 80vh;
     overflow-y: hidden;
     background-color: black;
   }

@@ -15,6 +15,7 @@ export default class StaffCredit extends React.Component {
     super(props);
 
     this.state = {
+      isShow: false,
       userCommand: [],
     };
     this.konamiCommand = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', '5', '7', '3'];
@@ -23,16 +24,38 @@ export default class StaffCredit extends React.Component {
   @keydown('enter', 'up', 'down', 'right', 'left', '5', '7', '3')
   check(event) {
     if (this.konamiCommand[this.state.userCommand.length] === event.key) {
-      this.setState({ userCommand: this.state.userCommand.concat(event.key) });
+      const nextValue = this.state.userCommand.concat(event.key);
+      // 最後のコナミコマンドならuserCommandをカラにしてコンポーネントを表示
+      if (nextValue.length === this.konamiCommand.length) {
+        this.setState({
+          isShow: true,
+          userCommand: [],
+        });
+        // クレジットが流れ終わるタイミングでコンポーネントを削除
+        (async() => {
+          const delay = (time) => { return new Promise((res) => { return setTimeout(() => { return res() }, time) }) };
+          await delay(15 * 1000);
+          this.deleteCredit();
+        })();
+      }
+      // 入力されたコマンドがコナミコマンドの次のコマンドならuserCommandに追加
+      else {
+        this.setState({ userCommand: nextValue });
+      }
     }
     else {
       this.state.userCommand = [];
     }
   }
 
+  deleteCredit() {
+    if (this.state.isShow) {
+      this.setState({ isShow: false });
+    }
+  }
+
   render() {
-    const isRender = this.state.userCommand.length === this.konamiCommand.length;
-    if (isRender) {
+    if (this.state.isShow) {
       return (
         <div className="text-center credit-curtain">
           <div className="credit-body">
