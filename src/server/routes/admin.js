@@ -899,6 +899,7 @@ module.exports = function(crowi, app) {
     debug('form content', form);
 
     try {
+      form['app:siteUrl'] = escapeHtml(form['app:siteUrl']);
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', form);
       return res.json({ status: true });
     }

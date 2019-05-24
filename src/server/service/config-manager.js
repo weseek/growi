@@ -1,6 +1,7 @@
 const debug = require('debug')('growi:service:ConfigManager');
 const pathUtils = require('growi-commons').pathUtils;
 const ConfigLoader = require('../service/config-loader');
+const escapeHtml = require('../util/escapeHtml');
 
 const KEYS_FOR_SAML_USE_ONLY_ENV_OPTION = [
   'security:passport-saml:isEnabled',
@@ -80,8 +81,9 @@ class ConfigManager {
    */
   /* eslint-disable no-else-return */
   getSiteUrl() {
-    const siteUrl = this.getConfig('crowi', 'app:siteUrl');
+    let siteUrl = this.getConfig('crowi', 'app:siteUrl');
     if (siteUrl != null) {
+      siteUrl = escapeHtml(siteUrl);
       return pathUtils.removeTrailingSlash(siteUrl);
     }
     else {
