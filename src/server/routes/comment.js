@@ -74,7 +74,7 @@ module.exports = function(crowi, app) {
     const comment = commentForm.comment;
     const position = commentForm.comment_position || -1;
     const isMarkdown = commentForm.is_markdown;
-    const replyTo = commentForm.replyTo === '' ? undefined : commentForm.replyTo;
+    const replyTo = commentForm.replyTo;
 
     // check whether accessible
     const isAccessible = await Page.isAccessiblePageByViewer(pageId, req.user);

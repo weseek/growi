@@ -116,6 +116,21 @@ class PageComments extends React.Component {
     });
   }
 
+  // inserts reply after each corresponding comment
+  reorderBasedOnReplies(comments, replies) {
+    // const connections = this.findConnections(comments, replies);
+    // const replyConnections = this.findConnectionsWithinReplies(replies);
+    const repliesReversed = replies.slice().reverse();
+    for (let i = 0; i < comments.length; i++) {
+      for (let j = 0; j < repliesReversed.length; j++) {
+        if (repliesReversed[j].replyTo === comments[i]._id) {
+          comments.splice(i + 1, 0, repliesReversed[j]);
+        }
+      }
+    }
+    return comments;
+  }
+
   /**
    * generate Elements of Comment
    *
@@ -123,8 +138,9 @@ class PageComments extends React.Component {
    *
    * @memberOf PageComments
    */
-  generateCommentElements(comments) {
-    return comments.map((comment) => {
+  generateCommentElements(comments, replies) {
+    const commentsWithReplies = this.reorderBasedOnReplies(comments, replies);
+    return commentsWithReplies.map((comment) => {
       return (
         <Comment
           key={comment._id}
@@ -151,6 +167,9 @@ class PageComments extends React.Component {
     const currentComments = [];
     const newerComments = [];
     const olderComments = [];
+    const currentReplies = [];
+    const newerReplies = [];
+    const olderReplies = [];
 
     let comments = this.state.comments;
     if (this.state.isLayoutTypeGrowi) {
@@ -164,21 +183,35 @@ class PageComments extends React.Component {
     comments.forEach((comment) => {
       // comparing ObjectId
       // eslint-disable-next-line eqeqeq
-      if (comment.revision == revisionId) {
-        currentComments.push(comment);
+      if (comment.replyTo === undefined) {
+        // comment is not a reply
+        if (comment.revision === revisionId) {
+          currentComments.push(comment);
+        }
+        else if (Date.parse(comment.createdAt) / 1000 > revisionCreatedAt) {
+          newerComments.push(comment);
+        }
+        else {
+          olderComments.push(comment);
+        }
+      }
+      else
+      // comment is a reply
+      if (comment.revision === revisionId) {
+        currentReplies.push(comment);
       }
       else if (Date.parse(comment.createdAt) / 1000 > revisionCreatedAt) {
-        newerComments.push(comment);
+        newerReplies.push(comment);
       }
       else {
-        olderComments.push(comment);
+        olderReplies.push(comment);
       }
     });
 
     // generate elements
-    const currentElements = this.generateCommentElements(currentComments);
-    const newerElements = this.generateCommentElements(newerComments);
-    const olderElements = this.generateCommentElements(olderComments);
+    const currentElements = this.generateCommentElements(currentComments, currentReplies);
+    const newerElements = this.generateCommentElements(newerComments, newerReplies);
+    const olderElements = this.generateCommentElements(olderComments, olderReplies);
     // generate blocks
     const currentBlock = (
       <div className="page-comments-list-current" id="page-comments-list-current">

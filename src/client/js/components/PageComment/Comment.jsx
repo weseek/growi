@@ -136,15 +136,6 @@ export default class Comment extends React.Component {
     const revHref = `?revision=${comment.revision}`;
     const revFirst8Letters = comment.revision.substr(-8);
     const revisionLavelClassName = this.getRevisionLabelClassName();
-    const replyButton = (
-      <Button
-        type="button"
-        className="fcbtn btn btn-primary btn-sm btn-success btn-rounded btn-1b"
-        onClick={this.showForm}
-      >
-              Reply
-      </Button>
-    );
 
     return (
       <div>
@@ -155,8 +146,19 @@ export default class Comment extends React.Component {
               <Username user={creator} />
             </div>
             <div className="page-comment-body">{commentBody}</div>
-            <div className="page-comment-reply">
-              {replyButton}
+            <div className="page-comment-reply text-right">
+              {
+                comment.replyTo === undefined
+                && (
+                  <Button
+                    type="button"
+                    className="fcbtn btn btn-primary btn-sm btn-success btn-rounded btn-1b"
+                    onClick={this.showForm}
+                  >
+                    Reply
+                  </Button>
+                )
+              }
             </div>
             <div className="page-comment-meta">
               {commentDate}&nbsp;
