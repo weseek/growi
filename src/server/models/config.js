@@ -308,13 +308,15 @@ module.exports = function(crowi) {
   configSchema.statics.preventXss = function(config) {
     const Config = this.model('Config');
 
-    config.markdown['markdown:xss:tagWhiteList'] = Config.tagWhiteList(config).map((tag) => {
-      return escapeHtml(tag);
-    });
+    if (config.markdown) { // to pass config.test.js
+      config.markdown['markdown:xss:tagWhiteList'] = Config.tagWhiteList(config).map((tag) => {
+        return escapeHtml(tag);
+      });
 
-    config.markdown['markdown:xss:attrWhiteList'] = Config.attrWhiteList(config).map((attr) => {
-      return escapeHtml(attr);
-    });
+      config.markdown['markdown:xss:attrWhiteList'] = Config.attrWhiteList(config).map((attr) => {
+        return escapeHtml(attr);
+      });
+    }
 
     return config;
   };
