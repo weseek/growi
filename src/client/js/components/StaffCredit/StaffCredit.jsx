@@ -24,6 +24,7 @@ export default class StaffCredit extends React.Component {
 
   @keydown('enter', 'up', 'down', 'right', 'left', '5', '7', '3')
   check(event) {
+    // compare keydown and next konamiCommand
     if (this.konamiCommand[this.state.userCommand.length] === event.key) {
       const nextValue = this.state.userCommand.concat(event.key);
       if (nextValue.length === this.konamiCommand.length) {
@@ -33,10 +34,12 @@ export default class StaffCredit extends React.Component {
         });
       }
       else {
+        // add UserCommand
         this.setState({ userCommand: nextValue });
       }
     }
     else {
+      // clear UserCommand
       this.state.userCommand = [];
     }
   }
