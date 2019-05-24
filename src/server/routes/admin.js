@@ -17,6 +17,7 @@ module.exports = function(crowi, app) {
   const recommendedWhitelist = require('@commons/service/xss/recommended-whitelist');
   const PluginUtils = require('../plugins/plugin-utils');
   const ApiResponse = require('../util/apiResponse');
+  const escapeHtml = require('../util/escapeHtml');
   const importer = require('../util/importer')(crowi);
 
   const searchEvent = crowi.event('search');
@@ -163,8 +164,9 @@ module.exports = function(crowi, app) {
   actions.markdown.xssSetting = function(req, res) {
     const xssSetting = req.form.markdownSetting;
 
-    xssSetting['markdown:xss:tagWhiteList'] = stringToArray(xssSetting['markdown:xss:tagWhiteList']);
-    xssSetting['markdown:xss:attrWhiteList'] = stringToArray(xssSetting['markdown:xss:attrWhiteList']);
+    // to prevent xss for values for incoming values
+    xssSetting['markdown:xss:tagWhiteList'] = stringToArray(escapeHtml(xssSetting['markdown:xss:tagWhiteList']));
+    xssSetting['markdown:xss:attrWhiteList'] = stringToArray(escapeHtml(xssSetting['markdown:xss:attrWhiteList']));
 
     req.session.markdownSetting = xssSetting;
     if (req.form.isValid) {

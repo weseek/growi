@@ -8,6 +8,7 @@ module.exports = function(crowi) {
   const debug = require('debug')('growi:models:config');
   const uglifycss = require('uglifycss');
   const recommendedWhitelist = require('@commons/service/xss/recommended-whitelist');
+  const escapeHtml = require('../util/escapeHtml');
 
   const SECURITY_RESTRICT_GUEST_MODE_DENY = 'Deny';
   const SECURITY_RESTRICT_GUEST_MODE_READONLY = 'Readonly';
@@ -278,7 +279,7 @@ module.exports = function(crowi) {
     const Config = this;
 
 
-    const config = {};
+    let config = {};
     config.crowi = {}; // crowi namespace
 
     Config.find()
@@ -297,8 +298,25 @@ module.exports = function(crowi) {
         Config.initCustomCss(config);
         Config.initCustomScript(config);
 
+        // to prevent xss for values already stored in db when xss prevention was not in place
+        config = Config.preventXss(config);
+
         return callback(null, config);
       });
+  };
+
+  configSchema.statics.preventXss = function(config) {
+    const Config = this.model('Config');
+
+    config.markdown['markdown:xss:tagWhiteList'] = Config.tagWhiteList(config).map((tag) => {
+      return escapeHtml(tag);
+    });
+
+    config.markdown['markdown:xss:attrWhiteList'] = Config.attrWhiteList(config).map((attr) => {
+      return escapeHtml(attr);
+    });
+
+    return config;
   };
 
   configSchema.statics.appTitle = function(config) {
