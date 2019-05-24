@@ -46,6 +46,7 @@ import CustomHeaderEditor from './components/Admin/CustomHeaderEditor';
 import AdminRebuildSearch from './components/Admin/AdminRebuildSearch';
 import GroupDeleteModal from './components/GroupDeleteModal/GroupDeleteModal';
 
+import UserGroupPage from './components/Admin/UserGroup/UserGroupPage';
 
 const logger = loggerFactory('growi:app');
 
@@ -600,6 +601,20 @@ if (adminGrantSelectorElem != null) {
       />
     </I18nextProvider>,
     adminGrantSelectorElem,
+  );
+}
+
+const adminUserGroupPageElem = document.getElementById('admin-user-group-page');
+if (adminUserGroupPageElem != null) {
+  // get props
+
+  ReactDOM.render(
+    <I18nextProvider i18n={i18n}>
+      <UserGroupPage
+        crowi={crowi}
+      />
+    </I18nextProvider>,
+    adminUserGroupPageElem,
   );
 }
 

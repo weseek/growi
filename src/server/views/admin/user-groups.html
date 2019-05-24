@@ -12,6 +12,9 @@
 
 {% block content_main %}
 <div class="content-main">
+
+  <!-- user toastr start -->
+
   {% set smessage = req.flash('successMessage') %}
   {% if smessage.length %}
   <div class="alert alert-success">
@@ -26,12 +29,19 @@
   </div>
   {% endif %}
 
+  <!-- user toastr end -->
+
   <div class="row">
     <div class="col-md-3">
       {% include './widget/menu.html' with {current: 'user-group'} %}
     </div>
 
-    <div class="col-md-9">
+    <div id ="admin-user-group-page" class="col-md-9">
+
+      <!-- to react start -->
+
+      <!-- to UserGruopCreateForm start -->
+
       <p>
         {% if isAclEnabled %}
           <button  data-toggle="collapse" class="btn btn-default" href="#createGroupForm">{{ t('user_group_management.create_group') }}</button>
@@ -49,6 +59,8 @@
         </div>
         <input type="hidden" name="_csrf" value="{{ csrf() }}">
       </form>
+
+      <!-- to UserGruopCreateForm end -->
 
       {% set createdUserGroup = req.flash('createdUserGroup') %}
       {% if createdUserGroup.length %}
@@ -74,7 +86,13 @@
       </div><!-- /.modal -->
       {% endif %}
 
+      <!-- import in react start -->
+
       <div class="modal fade" id="admin-delete-user-group-modal"></div>
+
+      <!-- import in react end -->
+
+      <!-- to UserGroupTable start -->
 
       <h2>{{ t('user_group_management.group_list') }}</h2>
 
@@ -136,7 +154,15 @@
         </tbody>
       </table>
 
+      <!-- to UserGroupTable end -->
+
+      <!-- to Paginator start -->
+
       {% include '../widget/pager.html' with {path: "/admin/user-groups", pager: pager} %}
+
+      <!-- to Paginator end -->
+
+      <!-- to react end -->
 
     </div>
   </div>
