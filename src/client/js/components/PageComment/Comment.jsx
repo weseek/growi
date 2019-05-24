@@ -10,6 +10,7 @@ import RevisionBody from '../Page/RevisionBody';
 import ReactUtils from '../ReactUtils';
 import UserPicture from '../User/UserPicture';
 import Username from '../User/Username';
+import CommentFormBase from './CommentFormBase';
 
 /**
  *
@@ -60,11 +61,11 @@ export default class Comment extends React.Component {
   }
 
   isCurrentUserEqualsToAuthor() {
-    return this.props.comment.creator.username === this.props.currentUserId;
+    return this.props.comment.creator.username === this.props.crowi.me;
   }
 
   isCurrentRevision() {
-    return this.props.comment.revision === this.props.currentRevisionId;
+    return this.props.comment.revision === this.props.data.revisionId;
   }
 
   getRootClassName() {
@@ -174,17 +175,15 @@ export default class Comment extends React.Component {
         {
           this.state.showCommentForm
           && (
-          <CommentForm
-            crowi={this.props.crowi}
-            crowiOriginRenderer={this.props.crowiRenderer}
-            pageId={this.props.pageId}
-            pagePath={this.props.pagePath}
-            revisionId={this.props.revisionId}
-            onPostComplete={this.props.onPostComplete}
-            editorOptions={this.props.editorOptions}
-            slackChannels={this.props.slackChannels}
-            replyTo={comment._id.toString()}
-          />
+          <CommentFormBase
+            data={this.props.data}
+          >
+            <CommentForm
+              crowi={this.props.crowi}
+              crowiOriginRenderer={this.props.crowiRenderer}
+              replyTo={comment._id.toString()}
+            />
+          </CommentFormBase>
         )
         }
       </div>
@@ -198,14 +197,8 @@ Comment.propTypes = {
   crowi: PropTypes.object.isRequired,
   crowiOriginRenderer: PropTypes.object.isRequired,
   crowiRenderer: PropTypes.object.isRequired,
-  pageId: PropTypes.string,
-  pagePath: PropTypes.string,
-  revisionId: PropTypes.string,
   onPostComplete: PropTypes.func,
-  editorOptions: PropTypes.object,
-  slackChannels: PropTypes.string,
-  currentRevisionId: PropTypes.string.isRequired,
-  currentUserId: PropTypes.string.isRequired,
   deleteBtnClicked: PropTypes.func.isRequired,
   replyTo: PropTypes.string,
+  data: PropTypes.object,
 };

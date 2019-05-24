@@ -140,6 +140,15 @@ class PageComments extends React.Component {
    */
   generateCommentElements(comments, replies) {
     const commentsWithReplies = this.reorderBasedOnReplies(comments, replies);
+    const tempData = {
+      pageId: this.props.pageId,
+      pagePath: this.props.pagePath,
+      onPostComplete: this.props.onPostComplete,
+      revisionId: this.props.revisionId,
+      revisionCreatedAt: this.props.revisionCreatedAt,
+      editorOptions: this.props.editorOptions,
+      slackChannels: this.props.slackChannels,
+    };
     return commentsWithReplies.map((comment) => {
       return (
         <Comment
@@ -147,17 +156,11 @@ class PageComments extends React.Component {
           comment={comment}
           crowi={this.props.crowi}
           crowiOriginRenderer={this.props.crowiOriginRenderer}
-          pageId={this.props.pageId}
-          pagePath={this.props.pagePath}
-          revisionId={this.props.revisionId}
           onPostComplete={this.retrieveData}
-          editorOptions={this.props.editorOptions}
-          slackChannels={this.props.slackChannels}
-          currentUserId={this.props.crowi.me}
-          currentRevisionId={this.props.revisionId}
           deleteBtnClicked={this.confirmToDeleteComment}
           crowiRenderer={this.growiRenderer}
           replyTo={comment.replyTo}
+          data={tempData}
         />
       );
     });

@@ -29,6 +29,7 @@ import Page from './components/Page';
 import PageHistory from './components/PageHistory';
 import PageComments from './components/PageComments';
 import CommentForm from './components/PageComment/CommentForm';
+import CommentFormBase from './components/PageComment/CommentFormBase';
 import PageAttachment from './components/PageAttachment';
 import PageStatusAlert from './components/PageStatusAlert';
 import RevisionPath from './components/Page/RevisionPath';
@@ -314,21 +315,25 @@ let pageComments = null;
 if (pageId) {
   componentMappings['page-comments-list'] = (
     <I18nextProvider i18n={i18n}>
-      <PageComments
-        ref={(elem) => {
+      <CommentFormBase
+        pageId={pageId}
+        pagePath={pagePath}
+        onPostComplete={null}
+        revisionId={pageRevisionId}
+        revisionCreatedAt={pageRevisionCreatedAt}
+        editorOptions={pageEditorOptions}
+        slackChannels={slackChannels}
+      >
+        <PageComments
+          ref={(elem) => {
             if (pageComments == null) {
               pageComments = elem;
             }
           }}
-        pageId={pageId}
-        pagePath={pagePath}
-        revisionId={pageRevisionId}
-        revisionCreatedAt={pageRevisionCreatedAt}
-        crowi={crowi}
-        crowiOriginRenderer={crowiRenderer}
-        editorOptions={pageEditorOptions}
-        slackChannels={slackChannels}
-      />
+          crowi={crowi}
+          crowiOriginRenderer={crowiRenderer}
+        />
+      </CommentFormBase>
     </I18nextProvider>
   );
   componentMappings['page-attachment'] = <PageAttachment pageId={pageId} markdown={markdown} crowi={crowi} />;
@@ -513,16 +518,21 @@ if (writeCommentElem) {
   };
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
-      <CommentForm
-        crowi={crowi}
-        crowiOriginRenderer={crowiRenderer}
+      <CommentFormBase
         pageId={pageId}
         pagePath={pagePath}
-        revisionId={pageRevisionId}
         onPostComplete={postCompleteHandler}
-        editorOptions={editorOptions}
+        revisionId={pageRevisionId}
+        revisionCreatedAt={pageRevisionCreatedAt}
+        editorOptions={pageEditorOptions}
         slackChannels={slackChannels}
-      />
+        replyTo={undefined}
+      >
+        <CommentForm
+          crowi={crowi}
+          crowiOriginRenderer={crowiRenderer}
+        />
+      </CommentFormBase>
     </I18nextProvider>,
     writeCommentElem,
   );

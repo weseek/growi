@@ -370,12 +370,13 @@ export default class CommentForm extends React.Component {
 CommentForm.propTypes = {
   crowi: PropTypes.object.isRequired,
   crowiOriginRenderer: PropTypes.object.isRequired,
-  onPostComplete: PropTypes.func,
   pageId: PropTypes.string,
-  revisionId: PropTypes.string,
   pagePath: PropTypes.string,
+  onPostComplete: PropTypes.func,
   editorOptions: PropTypes.object,
   slackChannels: PropTypes.string,
+  revisionId: PropTypes.string,
+  revisionCreatedAt: PropTypes.number,
   replyTo: PropTypes.string,
 };
 CommentForm.defaultProps = {
