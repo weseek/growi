@@ -13,7 +13,7 @@ module.exports = function(crowi) {
   bookmarkSchema = new mongoose.Schema({
     page: { type: ObjectId, ref: 'Page', index: true },
     user: { type: ObjectId, ref: 'User', index: true },
-    createdAt: { type: Date, default: Date.now() },
+    createdAt: { type: Date, default: Date.now },
   });
   bookmarkSchema.index({ page: 1, user: 1 }, { unique: true });
 
