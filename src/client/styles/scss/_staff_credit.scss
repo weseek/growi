@@ -2,7 +2,7 @@
 #staff-credit {
   font-family: 'Press Start 2P', $basefont1;
   color: white;
-  $credit-length: -50em;
+  $credit-length: -200em;
 
   .credit-curtain {
     position: fixed;
@@ -19,7 +19,7 @@
     top: $credit-length;
     animation-name: Credit;
     // credit duration
-    animation-duration: 15s;
+    animation-duration: 20s;
     animation-timing-function: linear;
   }
 
@@ -46,6 +46,6 @@
   }
 
   .dev-name {
-    font-size: 2em;
+    font-size: 1.8em;
   }
 }
