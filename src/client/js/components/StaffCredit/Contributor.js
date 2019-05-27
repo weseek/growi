@@ -32,12 +32,6 @@ const contributors = [
     members: [
       { name: 'Crowi Team' },
       { position: 'Ambassador', name: 'Tsuyoshi Suzuki' },
-      { name: 'suzuki' },
-      { name: 'riaf' },
-      { name: 'hiroppy' },
-      { name: 'b4b4r07' },
-      { name: 'fivestar' },
-      { name: 'yudoufu' },
     ],
   },
 ];
