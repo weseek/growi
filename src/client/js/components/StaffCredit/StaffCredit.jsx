@@ -51,9 +51,9 @@ export default class StaffCredit extends React.Component {
   }
 
   render() {
-    if (this.state.isShown) {
+    if (!this.state.isShown) {
       const credit = contributors.map((contributor) => {
-        const section = <p key={contributor.sectionName} className="dev-team mt-5">{contributor.sectionName}</p>;
+        const section = <p key={contributor.sectionName} className="dev-team my-5">{contributor.sectionName}</p>;
         const members = contributor.members.map((member) => {
           const name = <p className="dev-name mb-5">{member.name}</p>;
           if (member.position) {
