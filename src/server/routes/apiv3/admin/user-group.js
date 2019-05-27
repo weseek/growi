@@ -15,7 +15,7 @@ module.exports = (crowi) => {
     }
     catch (err) {
       logger.error('Error', err);
-      return res.json(ApiResponse.error('Error occurred in fetching user-groups'));
+      return res.json(ApiResponse.error('Error occurred in fetching user groups'));
     }
   };
 
@@ -23,6 +23,17 @@ module.exports = (crowi) => {
   // };
 
   api.create = async(req, res) => {
+    const { name } = req.body;
+    try {
+      const userGroupName = crowi.xss.process(name);
+      const newUserGroup = await UserGroup.createGroupByName(userGroupName);
+
+      return res.json(ApiResponse.success({ userGroup: newUserGroup }));
+    }
+    catch (err) {
+      logger.error('Error', err);
+      return res.json(ApiResponse.error('Error occurred in creating a user group'));
+    }
   };
 
   // api.update = async(req, res) => {

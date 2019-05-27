@@ -15,6 +15,10 @@ module.exports = (crowi) => {
   router.use('/healthcheck', require('./healthcheck')(crowi));
 
   router.get('/user-groups', loginRequired(crowi), adminRequired(), adminUserGroup.find);
+  // router.get('/user-groups/:id', loginRequired(crowi), adminRequired(), adminUserGroup.findOne);
+  router.post('/user-groups/create', loginRequired(crowi), adminRequired(), adminUserGroup.create);
+  // router.post('/user-groups/update/:id', loginRequired(crowi), adminRequired(), adminUserGroup.update);
+  router.post('/user-groups/delete/:id', loginRequired(crowi), adminRequired(), adminUserGroup.delete);
 
   return router;
 };

@@ -1,11 +1,11 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 
-import * as toastr from 'toastr';
-
 import UserGroupTable from './UserGroupTable';
 import UserGroupCreateForm from './UserGroupCreateForm';
 import UserGroupDeleteModal from './UserGroupDeleteModal';
+
+import apiErrorHandler from '../../../util/apiErrorHandler';
 
 class UserGroupPage extends React.Component {
 
@@ -20,7 +20,8 @@ class UserGroupPage extends React.Component {
 
     this.showDeleteModal = this.showDeleteModal.bind(this);
     this.hideDeleteModal = this.hideDeleteModal.bind(this);
-    this.addGroup = this.addGroup.bind(this);
+    this.addUserGroup = this.addUserGroup.bind(this);
+    this.removeUserGroupAt = this.removeUserGroupAt.bind(this);
   }
 
   async showDeleteModal(group) {
@@ -39,20 +40,28 @@ class UserGroupPage extends React.Component {
     });
   }
 
-  addGroup(newUserGroup) {
+  addUserGroup(newUserGroup) {
     this.setState((prevState) => {
       return {
         userGroups: [...prevState.userGroups, newUserGroup],
-        isDeleteModalShow: false,
       };
     });
+  }
+
+  removeUserGroupAt(index) {
+    // this.setState((prevState) => {
+    //   return {
+    //     userGroups: [...prevState.userGroups, newUserGroup],
+    //     isDeleteModalShow: false,
+    //   };
+    // });
   }
 
   async syncUserGroupState() {
     let userGroups = [];
 
     try {
-      const res = await this.props.crowi.apiGet('/admin/user-groups');
+      const res = await this.props.crowi.apiGet('/v3/user-groups');
       if (res.ok) {
         userGroups = res.userGroups;
       }
@@ -61,22 +70,10 @@ class UserGroupPage extends React.Component {
       }
     }
     catch (err) {
-      this.handleError(err);
+      apiErrorHandler(err);
     }
 
     this.setState({ userGroups });
-  }
-
-  handleError(err) {
-    this.logger.error(err);
-    toastr.error(err, 'Error occured', {
-      closeButton: true,
-      progressBar: true,
-      newestOnTop: false,
-      showDuration: '100',
-      hideDuration: '100',
-      timeOut: '3000',
-    });
   }
 
   render() {
@@ -85,7 +82,7 @@ class UserGroupPage extends React.Component {
         <UserGroupCreateForm
           crowi={this.props.crowi}
           isAclEnabled={this.props.isAclEnabled}
-          addGroup={this.addGroup}
+          onCreate={this.addUserGroup}
         />
         <UserGroupTable
           crowi={this.props.crowi}

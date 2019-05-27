@@ -44,9 +44,6 @@ class UserGroupDeleteModal extends React.Component {
 
     this.state = this.initialState;
 
-    // logger
-    this.logger = require('@alias/logger')('growi:GroupDeleteModal:GroupDeleteModal');
-
     // retrieve xss library from window
     this.xss = window.xss;
 

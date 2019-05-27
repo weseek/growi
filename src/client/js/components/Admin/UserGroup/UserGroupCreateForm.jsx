@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import apiErrorHandler from '../../../util/apiErrorHandler';
+
 class UserGroupCreateForm extends React.Component {
 
   constructor(props) {
@@ -11,11 +13,12 @@ class UserGroupCreateForm extends React.Component {
       name: '',
     };
 
-    this.handleInputChange = this.handleInputChange.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
     this.validateForm = this.validateForm.bind(this);
   }
 
-  handleInputChange(event) {
+  handleChange(event) {
     const target = event.target;
     const value = target.type === 'checkbox' ? target.checked : target.value;
     const name = target.name;
@@ -26,23 +29,24 @@ class UserGroupCreateForm extends React.Component {
   }
 
   async handleSubmit(e) {
-    // e.preventDefault();
+    e.preventDefault();
 
-    // try {
-    //   const res = await this.props.crowi.apiGet('/bookmarks.get', { page_id: this.props.pageId });
+    try {
+      const res = await this.props.crowi.apiPost('/v3/user-groups/create', {
+        name: this.state.name,
+      });
 
-    //   if (res.ok) {
-    //     groups = res.userGroups;
-
-    //     this.props.addGroup();
-    //   }
-    //   else {
-    //     throw new Error('Unable to create a group');
-    //   }
-    // }
-    // catch (err) {
-    //   this.handleError(err);
-    // }
+      if (res.ok) {
+        const { userGroup } = res;
+        this.props.onCreate(userGroup);
+      }
+      else {
+        throw new Error('Unable to create a group');
+      }
+    }
+    catch (err) {
+      apiErrorHandler(err);
+    }
   }
 
   validateForm() {
@@ -76,7 +80,7 @@ class UserGroupCreateForm extends React.Component {
                 className="form-control"
                 placeholder={t('user_group_management.group_example')}
                 value={this.state.name}
-                onChange={this.handleInputChange}
+                onChange={this.handleChange}
               >
               </textarea>
             </div>
@@ -94,7 +98,7 @@ UserGroupCreateForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   crowi: PropTypes.object.isRequired,
   isAclEnabled: PropTypes.bool,
-  addGroup: PropTypes.func.isRequired,
+  onCreate: PropTypes.func.isRequired,
 };
 
 export default withTranslation()(UserGroupCreateForm);
