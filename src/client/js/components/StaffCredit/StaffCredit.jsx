@@ -1,5 +1,6 @@
 import React from 'react';
 import keydown from 'react-keydown';
+import contributors from './Contributor';
 
 /**
  * Page staff credit component
@@ -39,8 +40,7 @@ export default class StaffCredit extends React.Component {
       }
     }
     else {
-      // clear UserCommand
-      this.state.userCommand = [];
+      this.setState({ userCommand: [] });
     }
   }
 
@@ -52,14 +52,34 @@ export default class StaffCredit extends React.Component {
 
   render() {
     if (this.state.isShown) {
+      const credit = contributors.map((contributor) => {
+        const section = <p key={contributor.sectionName} className="dev-team mt-5">{contributor.sectionName}</p>;
+        const members = contributor.members.map((member) => {
+          const name = <p className="dev-name mb-5">{member.name}</p>;
+          if (member.position) {
+            return (
+              <React.Fragment>
+                <span className="dev-position">{member.position}</span>
+                {name}
+              </React.Fragment>
+            );
+          }
+          return name;
+        });
+        return (
+          <React.Fragment key={contributor.sectionName}>
+            <div className={contributor.additionalClass}>
+              {section}
+              {members}
+            </div>
+          </React.Fragment>
+        );
+      });
       return (
         <div className="text-center credit-curtain" onClick={this.deleteCredit}>
           <div className="credit-body">
-            <p className="title my-5">Growi Soncho</p>
-            <span className="dev-position">1st</span>
-            <p className="dev-name mb-5">Sou Mizobuchi</p>
-            <span className="dev-position">2nd</span>
-            <p className="dev-name mb-5">Yusuke Takizawa</p>
+            <p className="title my-5">Growi Contributor</p>
+            {credit}
           </div>
         </div>
       );
