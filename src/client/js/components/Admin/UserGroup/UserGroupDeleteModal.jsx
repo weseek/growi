@@ -1,0 +1,195 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+import { withTranslation } from 'react-i18next';
+
+import Modal from 'react-bootstrap/es/Modal';
+
+/**
+ * Delete User Group Select component
+ *
+ * @export
+ * @class GrantSelector
+ * @extends {React.Component}
+ */
+class UserGroupDeleteModal extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    const { t } = this.props;
+
+    // actionName master constants
+    this.actionForPages = {
+      public: 'public',
+      delete: 'delete',
+      transfer: 'transfer',
+    };
+
+    this.availableOptions = [
+      {
+        id: 1, actionForPages: this.actionForPages.public, iconClass: 'icon-people', styleClass: '', label: t('user_group_management.publish_pages'),
+      },
+      {
+        id: 2, actionForPages: this.actionForPages.delete, iconClass: 'icon-trash', styleClass: 'text-danger', label: t('user_group_management.delete_pages'),
+      },
+      {
+        id: 3, actionForPages: this.actionForPages.transfer, iconClass: 'icon-options', styleClass: '', label: t('user_group_management.transfer_pages'),
+      },
+    ];
+
+    this.initialState = {
+      actionName: '',
+      transferToUserGroupId: '',
+    };
+
+    this.state = this.initialState;
+
+    // logger
+    this.logger = require('@alias/logger')('growi:GroupDeleteModal:GroupDeleteModal');
+
+    // retrieve xss library from window
+    this.xss = window.xss;
+
+    this.onHide = this.onHide.bind(this);
+    this.getGroupName = this.getGroupName.bind(this);
+    this.changeActionHandler = this.changeActionHandler.bind(this);
+    this.changeGroupHandler = this.changeGroupHandler.bind(this);
+    this.renderPageActionSelector = this.renderPageActionSelector.bind(this);
+    this.renderGroupSelector = this.renderGroupSelector.bind(this);
+    this.validateForm = this.validateForm.bind(this);
+  }
+
+  onHide() {
+    this.setState(this.initialState);
+    this.props.onHide();
+  }
+
+  getGroupName(group) {
+    return this.xss.process(group.name);
+  }
+
+  changeActionHandler(e) {
+    const actionName = e.target.value;
+    this.setState({ actionName });
+  }
+
+  changeGroupHandler(e) {
+    const transferToUserGroupId = e.target.value;
+    this.setState({ transferToUserGroupId });
+  }
+
+  renderPageActionSelector() {
+    const { t } = this.props;
+
+    const optoins = this.availableOptions.map((opt) => {
+      const dataContent = `<i class="icon icon-fw ${opt.iconClass} ${opt.styleClass}"></i> <span class="action-name ${opt.styleClass}">${t(opt.label)}</span>`;
+      return <option key={opt.id} value={opt.actionForPages} data-content={dataContent}>{t(opt.label)}</option>;
+    });
+
+    return (
+      <select
+        name="actionName"
+        className="form-control"
+        placeholder="select"
+        value={this.state.actionName}
+        onChange={this.changeActionHandler}
+      >
+        <option value="" disabled>{t('user_group_management.choose_action')}</option>
+        {optoins}
+      </select>
+    );
+  }
+
+  renderGroupSelector() {
+    const { t } = this.props;
+
+    const groups = this.props.userGroups.filter((group) => {
+      return group._id !== this.props.deleteUserGroup._id;
+    });
+
+    const options = groups.map((group) => {
+      const dataContent = `<i class="icon icon-fw icon-organization"></i> ${this.getGroupName(group)}`;
+      return <option key={group._id} value={group._id} data-content={dataContent}>{this.getGroupName(group)}</option>;
+    });
+
+    const defaultOptionText = groups.length === 0 ? t('user_group_management.no_groups') : t('user_group_management.select_group');
+
+    return (
+      <select
+        name="transferToUserGroupId"
+        className={`form-control ${this.state.actionName === this.actionForPages.transfer ? '' : 'd-none'}`}
+        value={this.state.transferToUserGroupId}
+        onChange={this.changeGroupHandler}
+      >
+        <option value="" disabled>{defaultOptionText}</option>
+        {options}
+      </select>
+    );
+  }
+
+  validateForm() {
+    let isValid = true;
+
+    if (this.state.actionName === '') {
+      isValid = false;
+    }
+    else if (this.state.actionName === this.actionForPages.transfer) {
+      isValid = this.state.transferToUserGroupId !== '';
+    }
+
+    return isValid;
+  }
+
+  render() {
+    const { t } = this.props;
+
+    return (
+      <Modal show={this.props.isShow} onHide={this.onHide}>
+        <Modal.Header className="modal-header bg-danger" closeButton>
+          <Modal.Title>
+            <i className="icon icon-fire"></i> {t('user_group_management.delete_group')}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div>
+            <span className="font-weight-bold">{t('user_group_management.group_name')}</span> : &quot;{this.props.deleteUserGroup.name}&quot;
+          </div>
+          <div className="text-danger mt-5">
+            {t('user_group_management.group_and_pages_not_retrievable')}
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <form action="/admin/user-group.remove" method="post" id="admin-user-groups-delete" className="d-flex justify-content-between">
+            <div className="d-flex">
+              {this.renderPageActionSelector()}
+              {this.renderGroupSelector()}
+            </div>
+            {/* keep these two hidden inputs controlled */}
+            <input type="hidden" id="deleteGroupId" name="deleteGroupId" value={this.props.deleteUserGroup._id || ''} onChange={() => {}} />
+            <input type="hidden" name="_csrf" value={this.props.crowi.csrfToken} onChange={() => {}} />
+            <button type="submit" value="" className="btn btn-sm btn-danger" disabled={!this.validateForm()}>
+              <i className="icon icon-fire"></i> {t('Delete')}
+            </button>
+          </form>
+        </Modal.Footer>
+      </Modal>
+    );
+  }
+
+}
+
+UserGroupDeleteModal.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
+  crowi: PropTypes.object.isRequired,
+  userGroups: PropTypes.arrayOf(PropTypes.object).isRequired,
+  deleteUserGroup: PropTypes.object,
+  isShow: PropTypes.bool.isRequired,
+  onShow: PropTypes.func.isRequired,
+  onHide: PropTypes.func.isRequired,
+};
+
+UserGroupDeleteModal.defaultProps = {
+  deleteUserGroup: {},
+};
+
+export default withTranslation()(UserGroupDeleteModal);

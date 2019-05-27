@@ -44,7 +44,6 @@ import CustomCssEditor from './components/Admin/CustomCssEditor';
 import CustomScriptEditor from './components/Admin/CustomScriptEditor';
 import CustomHeaderEditor from './components/Admin/CustomHeaderEditor';
 import AdminRebuildSearch from './components/Admin/AdminRebuildSearch';
-import GroupDeleteModal from './components/GroupDeleteModal/GroupDeleteModal';
 
 import UserGroupPage from './components/Admin/UserGroup/UserGroupPage';
 
@@ -592,26 +591,20 @@ if (adminRebuildSearchElem != null) {
     adminRebuildSearchElem,
   );
 }
-const adminGrantSelectorElem = document.getElementById('admin-delete-user-group-modal');
-if (adminGrantSelectorElem != null) {
-  ReactDOM.render(
-    <I18nextProvider i18n={i18n}>
-      <GroupDeleteModal
-        crowi={crowi}
-      />
-    </I18nextProvider>,
-    adminGrantSelectorElem,
-  );
-}
 
 const adminUserGroupPageElem = document.getElementById('admin-user-group-page');
 if (adminUserGroupPageElem != null) {
-  // get props
+  const userGroups = JSON.parse(adminUserGroupPageElem.getAttribute('data-user-groups'));
+  const userGroupRelations = JSON.parse(adminUserGroupPageElem.getAttribute('data-user-group-relations'));
+  const isAclEnabled = adminUserGroupPageElem.getAttribute('data-isAclEnabled') === 'true';
 
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
       <UserGroupPage
         crowi={crowi}
+        userGroups={userGroups}
+        userGroupRelations={userGroupRelations}
+        isAclEnabled={isAclEnabled}
       />
     </I18nextProvider>,
     adminUserGroupPageElem,

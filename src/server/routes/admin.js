@@ -667,7 +667,12 @@ module.exports = function(crowi, app) {
           return new Promise((resolve, reject) => {
             UserGroupRelation.findAllRelationForUserGroup(userGroup)
               .then((relations) => {
-                return resolve([userGroup, relations]);
+                return resolve({
+                  id: userGroup._id,
+                  relatedUsers: relations.map((relation) => {
+                    return relation.relatedUser;
+                  }),
+                });
               });
           });
         });
@@ -676,7 +681,9 @@ module.exports = function(crowi, app) {
         return Promise.all(allRelationsPromise);
       })
       .then((relations) => {
-        renderVar.userGroupRelations = new Map(relations);
+        for (const relation of relations) {
+          renderVar.userGroupRelations[relation.id] = relation.relatedUsers;
+        }
         debug('in findUserGroupsWithPagination findAllRelationForUserGroupResult', renderVar.userGroupRelations);
         return res.render('admin/user-groups', renderVar);
       })

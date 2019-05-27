@@ -12,158 +12,20 @@
 
 {% block content_main %}
 <div class="content-main">
-
-  <!-- user toastr start -->
-
-  {% set smessage = req.flash('successMessage') %}
-  {% if smessage.length %}
-  <div class="alert alert-success">
-    {{ smessage }}
-  </div>
-  {% endif %}
-
-  {% set emessage = req.flash('errorMessage') %}
-  {% if emessage.length %}
-  <div class="alert alert-danger">
-    {{ emessage }}
-  </div>
-  {% endif %}
-
-  <!-- user toastr end -->
-
   <div class="row">
     <div class="col-md-3">
       {% include './widget/menu.html' with {current: 'user-group'} %}
     </div>
-
-    <div id ="admin-user-group-page" class="col-md-9">
-
-      <!-- to react start -->
-
-      <!-- to UserGruopCreateForm start -->
-
-      <p>
-        {% if isAclEnabled %}
-          <button  data-toggle="collapse" class="btn btn-default" href="#createGroupForm">{{ t('user_group_management.create_group') }}</button>
-        {% else %}
-          {{ t('user_group_management.deny_create_group')}}
-        {% endif %}
-      </p>
-      <form role="form" action="/admin/user-group/create" method="post">
-        <div id="createGroupForm" class="collapse">
-          <div class="form-group">
-            <label for="createGroupForm[userGroupName]">{{ t('user_group_management.group_name') }}</label>
-            <textarea class="form-control" name="createGroupForm[userGroupName]" placeholder="{{t('user_group_management.group_example')}}"></textarea>
-          </div>
-          <button type="submit" class="btn btn-primary">{{ t('Create') }}</button>
-        </div>
-        <input type="hidden" name="_csrf" value="{{ csrf() }}">
-      </form>
-
-      <!-- to UserGruopCreateForm end -->
-
-      {% set createdUserGroup = req.flash('createdUserGroup') %}
-      {% if createdUserGroup.length %}
-      <div class="modal fade in" id="createdGroupModal">
-        <div class="modal-dialog">
-          <div class="modal-content">
-
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-              <h4 class="modal-title">{{ t('user_group_management.created_group') }}</h4>
-            </div>
-
-            <div class="modal-body">
-              <p>
-                {{ t('user_group_management.add_user') }}
-              </p>
-
-              <pre>{{ createdUserGroup.name }}</pre>
-            </div>
-
-          </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-      </div><!-- /.modal -->
-      {% endif %}
-
-      <!-- import in react start -->
-
-      <div class="modal fade" id="admin-delete-user-group-modal"></div>
-
-      <!-- import in react end -->
-
-      <!-- to UserGroupTable start -->
-
-      <h2>{{ t('user_group_management.group_list') }}</h2>
-
-      <table class="table table-bordered table-user-list">
-        <thead>
-          <tr>
-            <th>{{ t('Name') }}</th>
-            <th>{{ t('User') }}</th>
-            <th width="100px">{{ t('Created') }}</th>
-            <th width="70px"></th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for sGroup in userGroups %}
-          {% set sGroupDetailPageUrl = '/admin/user-group-detail/' + sGroup._id.toString() %}
-          <tr>
-            {% if isAclEnabled %}
-              <td><a href="{{ sGroupDetailPageUrl }}">{{ sGroup.name | preventXss }}</a></td>
-            {% else %}
-              <td>{{ sGroup.name | preventXss }}</td>
-            {% endif %}
-            <td><ul class="list-inline">
-              {% for relation in userGroupRelations.get(sGroup) %}
-              <li class="list-inline-item badge badge-primary">{{relation.relatedUser.username}}</li>
-              {% endfor %}
-            </ul></td>
-            <td>{{ sGroup.createdAt|date('Y-m-d', sGroup.createdAt.getTimezoneOffset()) }}</td>
-            {% if isAclEnabled %}
-            <td>
-              <div class="btn-group admin-group-menu">
-                <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-                  <i class="icon-settings"></i> <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu" role="menu">
-                  <li>
-                    <a href="{{ sGroupDetailPageUrl }}">
-                      <i class="icon-fw icon-note"></i> {{ t('Edit') }}
-                    </a>
-                  </li>
-
-                  <li>
-                    <a href="#"
-                        data-user-group-id="{{ sGroup._id.toString() }}"
-                        data-user-group-name="{{ sGroup.name.toString() | encodeHTML }}"
-                        data-target="#admin-delete-user-group-modal"
-                        data-toggle="modal">
-                      <i class="icon-fw icon-fire text-danger"></i> {{ t('Delete') }}
-                    </a>
-                  </li>
-
-                </ul>
-              </div>
-            </td>
-            {% else %}
-              <td></td>
-            {% endif %}
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-
-      <!-- to UserGroupTable end -->
-
-      <!-- to Paginator start -->
-
-      {% include '../widget/pager.html' with {path: "/admin/user-groups", pager: pager} %}
-
-      <!-- to Paginator end -->
-
-      <!-- to react end -->
-
+    <div
+      id ="admin-user-group-page"
+      class="col-md-9"
+      data-user-groups="{{ userGroups|json }}"
+      data-user-group-relations="{{ userGroupRelations|json }}"
+      data-isAclEnabled="{{ isAclEnabled }}"
+    >
+      <!-- Reactify Paginator start -->
+      <!-- {% include '../widget/pager.html' with {path: "/admin/user-groups", pager: pager} %} -->
+      <!-- Reactify Paginator end -->
     </div>
   </div>
 </div>
