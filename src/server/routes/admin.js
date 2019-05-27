@@ -788,10 +788,10 @@ module.exports = function(crowi, app) {
 
   // app.post('/_api/admin/user-group/delete' , admin.userGroup.removeCompletely);
   actions.userGroup.removeCompletely = async(req, res) => {
-    const { deleteGroupId, actionName, selectedGroupId } = req.body;
+    const { deleteGroupId, actionName, transferToUserGroupId } = req.body;
 
     try {
-      await UserGroup.removeCompletelyById(deleteGroupId, actionName, selectedGroupId);
+      await UserGroup.removeCompletelyById(deleteGroupId, actionName, transferToUserGroupId);
       req.flash('successMessage', '削除しました');
     }
     catch (err) {
@@ -1332,17 +1332,6 @@ module.exports = function(crowi, app) {
       });
 
     return res.json(ApiResponse.success());
-  };
-
-  actions.api.userGroups = async(req, res) => {
-    try {
-      const userGroups = await UserGroup.find();
-      return res.json(ApiResponse.success({ userGroups }));
-    }
-    catch (err) {
-      logger.error('Error', err);
-      return res.json(ApiResponse.error('Error'));
-    }
   };
 
   /**
