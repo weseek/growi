@@ -28,7 +28,7 @@ module.exports = function(crowi) {
     originalName: { type: String },
     fileFormat: { type: String, required: true },
     fileSize: { type: Number, default: 0 },
-    createdAt: { type: Date, default: Date.now() },
+    createdAt: { type: Date, default: Date.now },
   });
 
   attachmentSchema.virtual('filePathProxied').get(function() {
