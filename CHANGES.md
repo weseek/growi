@@ -5,6 +5,7 @@
 * Improvement: Handle private pages on group deletion
 * Fix: Searching with `tag:xxx` syntax doesn't work
 * Fix: Check CSRF when updating user data
+* Fix: `createdAt` field initialization
 * I18n: Import data page
 * I18n: Group Management page
 
