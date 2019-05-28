@@ -248,7 +248,7 @@ const saveWithSubmitButton = function(submitOpts) {
 
   let revisionId = pageRevisionId;
   // get options
-  const options = componentInstances.savePageControls.getCurrentOptionsToSave();
+  const options = pageContainer.getCurrentOptionsToSave();
   options.socketClientId = socketClientId;
   options.pageTags = pageTags;
 
@@ -397,25 +397,19 @@ if (likerListElem) {
 let savePageControls = null;
 const savePageControlsElem = document.getElementById('save-page-controls');
 if (savePageControlsElem) {
-  const grant = +savePageControlsElem.dataset.grant;
-  const grantGroupId = savePageControlsElem.dataset.grantGroup;
-  const grantGroupName = savePageControlsElem.dataset.grantGroupName;
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
-      <SavePageControls
-        crowi={crowi}
-        onSubmit={saveWithSubmitButton}
-        ref={(elem) => {
-            if (savePageControls == null) {
-              savePageControls = elem;
-            }
-          }}
-        pageId={pageId}
-        slackChannels={slackChannels}
-        grant={grant}
-        grantGroupId={grantGroupId}
-        grantGroupName={grantGroupName}
-      />
+      <Provider inject={[pageContainer]}>
+        <SavePageControls
+          crowi={crowi}
+          onSubmit={saveWithSubmitButton}
+          ref={(elem) => {
+              if (savePageControls == null) {
+                savePageControls = elem;
+              }
+            }}
+        />
+      </Provider>
     </I18nextProvider>,
     savePageControlsElem,
   );

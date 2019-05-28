@@ -1,5 +1,7 @@
+/* eslint-disable react/no-multi-comp */
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Subscribe } from 'unstated';
 import { withTranslation } from 'react-i18next';
 
 import FormGroup from 'react-bootstrap/es/FormGroup';
@@ -7,6 +9,8 @@ import FormControl from 'react-bootstrap/es/FormControl';
 import ListGroup from 'react-bootstrap/es/ListGroup';
 import ListGroupItem from 'react-bootstrap/es/ListGroupItem';
 import Modal from 'react-bootstrap/es/Modal';
+
+import PageContainer from '../../services/PageContainer';
 
 const SPECIFIED_GROUP_VALUE = 'specifiedGroup';
 
@@ -41,22 +45,23 @@ class GrantSelector extends React.Component {
       }, // appeared only one of these 'grant: 5'
     ];
 
+    const { pageContainer } = this.props;
+
     this.state = {
-      grant: this.props.grant || 1, // default: 1
       userRelatedGroups: [],
       isSelectGroupModalShown: false,
+      grantGroup: null,
     };
-    if (this.props.grantGroupId !== '') {
+    if (pageContainer.state.grantGroupId != null) {
       this.state.grantGroup = {
-        _id: this.props.grantGroupId,
-        name: this.props.grantGroupName,
+        _id: pageContainer.state.grantGroupId,
+        name: pageContainer.state.grantGroupName,
       };
     }
 
     // retrieve xss library from window
     this.xss = window.xss;
 
-    this.getCurrentOptionsToSave = this.getCurrentOptionsToSave.bind(this);
     this.showSelectGroupModal = this.showSelectGroupModal.bind(this);
     this.hideSelectGroupModal = this.hideSelectGroupModal.bind(this);
 
@@ -83,16 +88,6 @@ class GrantSelector extends React.Component {
     //  cz: .selectpicker('refresh') doesn't replace data-content
     $('.grant-selector .group-name').text(this.getGroupName());
 
-  }
-
-  getCurrentOptionsToSave() {
-    const options = {
-      grant: this.state.grant,
-    };
-    if (this.state.grantGroup != null) {
-      options.grantUserGroupId = this.state.grantGroup._id;
-    }
-    return options;
   }
 
   showSelectGroupModal() {
@@ -129,6 +124,8 @@ class GrantSelector extends React.Component {
    * change event handler for grant selector
    */
   changeGrantHandler() {
+    const { pageContainer } = this.props;
+
     const grant = +this.grantSelectorInputEl.value;
 
     // select group
@@ -141,11 +138,15 @@ class GrantSelector extends React.Component {
       return;
     }
 
-    this.setState({ grant, grantGroup: null });
+    this.setState({ grantGroup: null });
+    pageContainer.setState({ grant, grantGroupId: null, grantGroupName: null });
   }
 
   groupListItemClickHandler(grantGroup) {
-    this.setState({ grant: 5, grantGroup });
+    const { pageContainer } = this.props;
+
+    this.setState({ grantGroup });
+    pageContainer.setState({ grant: 5, grantGroupId: grantGroup._id, grantGroupName: grantGroup.name });
 
     // hide modal
     this.hideSelectGroupModal();
@@ -157,10 +158,10 @@ class GrantSelector extends React.Component {
    * @memberof GrantSelector
    */
   renderGrantSelector() {
-    const { t } = this.props;
+    const { t, pageContainer } = this.props;
 
     let index = 0;
-    let selectedValue = this.state.grant;
+    let selectedValue = pageContainer.state.grant;
     const grantElems = this.availableGrants.map((opt) => {
       const dataContent = `<i class="icon icon-fw ${opt.iconClass} ${opt.styleClass}"></i> <span class="${opt.styleClass}">${t(opt.label)}</span>`;
       return <option key={index++} value={opt.grant} data-content={dataContent}>{t(opt.label)}</option>;
@@ -280,12 +281,34 @@ class GrantSelector extends React.Component {
 
 }
 
+
+/**
+ * Wrapper component for using unstated
+ */
+class GrantSelectorWrapper extends React.PureComponent {
+
+  render() {
+    return (
+      <Subscribe to={[PageContainer]}>
+        { pageContainer => (
+          // eslint-disable-next-line arrow-body-style
+          <GrantSelector pageContainer={pageContainer} {...this.props} />
+        )}
+      </Subscribe>
+    );
+  }
+
+}
+
+
 GrantSelector.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   crowi: PropTypes.object.isRequired,
-  grant: PropTypes.number,
-  grantGroupId: PropTypes.string,
-  grantGroupName: PropTypes.string,
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+};
+GrantSelectorWrapper.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
+  crowi: PropTypes.object.isRequired,
 };
 
-export default withTranslation(null, { withRef: true })(GrantSelector);
+export default withTranslation(null, { withRef: true })(GrantSelectorWrapper);

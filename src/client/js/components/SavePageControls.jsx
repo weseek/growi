@@ -1,10 +1,14 @@
+/* eslint-disable react/no-multi-comp */
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Subscribe } from 'unstated';
 import { withTranslation } from 'react-i18next';
 
 import ButtonToolbar from 'react-bootstrap/es/ButtonToolbar';
 import SplitButton from 'react-bootstrap/es/SplitButton';
 import MenuItem from 'react-bootstrap/es/MenuItem';
+
+import PageContainer from '../services/PageContainer';
 
 import SlackNotification from './SlackNotification';
 import GrantSelector from './SavePageControls/GrantSelector';
@@ -14,36 +18,15 @@ class SavePageControls extends React.PureComponent {
   constructor(props) {
     super(props);
 
-    this.state = {
-      pageId: this.props.pageId,
-    };
-
     const config = this.props.crowi.getConfig();
     this.hasSlackConfig = config.hasSlackConfig;
     this.isAclEnabled = config.isAclEnabled;
 
-    this.getCurrentOptionsToSave = this.getCurrentOptionsToSave.bind(this);
     this.submit = this.submit.bind(this);
     this.submitAndOverwriteScopesOfDescendants = this.submitAndOverwriteScopesOfDescendants.bind(this);
   }
 
   componentWillMount() {
-  }
-
-  getCurrentOptionsToSave() {
-    let currentOptions = this.grantSelector.getCurrentOptionsToSave();
-    if (this.hasSlackConfig) {
-      currentOptions = Object.assign(currentOptions, this.slackNotification.getCurrentOptionsToSave());
-    }
-    return currentOptions;
-  }
-
-  /**
-   * update pageId of state
-   * @param {string} pageId
-   */
-  setPageId(pageId) {
-    this.setState({ pageId });
   }
 
   submit() {
@@ -57,7 +40,7 @@ class SavePageControls extends React.PureComponent {
 
   render() {
     const { t } = this.props;
-    const labelSubmitButton = this.state.pageId == null ? t('Create') : t('Update');
+    const labelSubmitButton = this.props.pageContainer.state.pageId == null ? t('Create') : t('Update');
     const labelOverwriteScopes = t('page_edit.overwrite_scopes', { operation: labelSubmitButton });
 
     return (
@@ -68,7 +51,6 @@ class SavePageControls extends React.PureComponent {
             <SlackNotification
               ref={(c) => { this.slackNotification = c }}
               isSlackEnabled={false}
-              slackChannels={this.props.slackChannels}
             />
           </div>
           )
@@ -84,9 +66,6 @@ class SavePageControls extends React.PureComponent {
                     this.grantSelector = elem;
                   }
                 }}
-              grant={this.props.grant}
-              grantGroupId={this.props.grantGroupId}
-              grantGroupName={this.props.grantGroupName}
             />
           </div>
           )
@@ -112,17 +91,36 @@ class SavePageControls extends React.PureComponent {
 
 }
 
+
+/**
+ * Wrapper component for using unstated
+ */
+class SavePageControlsWrapper extends React.PureComponent {
+
+  render() {
+    return (
+      <Subscribe to={[PageContainer]}>
+        { pageContainer => (
+          // eslint-disable-next-line arrow-body-style
+          <SavePageControls pageContainer={pageContainer} {...this.props} />
+        )}
+      </Subscribe>
+    );
+  }
+
+}
+
 SavePageControls.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   crowi: PropTypes.object.isRequired,
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   onSubmit: PropTypes.func.isRequired,
-  pageId: PropTypes.string,
-  // for SlackNotification
-  slackChannels: PropTypes.string,
-  // for GrantSelector
-  grant: PropTypes.number,
-  grantGroupId: PropTypes.string,
-  grantGroupName: PropTypes.string,
 };
 
-export default withTranslation(null, { withRef: true })(SavePageControls);
+SavePageControlsWrapper.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
+  crowi: PropTypes.object.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+};
+
+export default withTranslation(null, { withRef: true })(SavePageControlsWrapper);
