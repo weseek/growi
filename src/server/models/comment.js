@@ -14,7 +14,7 @@ module.exports = function(crowi) {
     commentPosition: { type: Number, default: -1 },
     createdAt: { type: Date, default: Date.now },
     isMarkdown: { type: Boolean, default: false },
-    replyTo: { type: ObjectId, default: undefined },
+    replyTo: { type: ObjectId },
   });
 
   commentSchema.statics.create = function(pageId, creatorId, revisionId, comment, position, isMarkdown, replyTo) {

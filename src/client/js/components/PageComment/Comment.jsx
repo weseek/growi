@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import Button from 'react-bootstrap/es/Button';
 import dateFnsFormat from 'date-fns/format';
 
 import RevisionBody from '../Page/RevisionBody';
@@ -32,6 +33,7 @@ export default class Comment extends React.Component {
     this.getRevisionLabelClassName = this.getRevisionLabelClassName.bind(this);
     this.deleteBtnClickedHandler = this.deleteBtnClickedHandler.bind(this);
     this.renderHtml = this.renderHtml.bind(this);
+    this.replyBtnClickedHandler = this.replyBtnClickedHandler.bind(this);
   }
 
   componentWillMount() {
@@ -48,11 +50,11 @@ export default class Comment extends React.Component {
   }
 
   isCurrentUserEqualsToAuthor() {
-    return this.props.comment.creator.username === this.props.currentUserId;
+    return this.props.comment.creator.username === this.props.crowi.me;
   }
 
   isCurrentRevision() {
-    return this.props.comment.revision === this.props.currentRevisionId;
+    return this.props.comment.revision === this.props.revisionId;
   }
 
   getRootClassName() {
@@ -67,6 +69,10 @@ export default class Comment extends React.Component {
 
   deleteBtnClickedHandler() {
     this.props.deleteBtnClicked(this.props.comment);
+  }
+
+  replyBtnClickedHandler() {
+    this.props.onReplyButtonClicked(this.props.comment);
   }
 
   renderRevisionBody() {
@@ -133,6 +139,20 @@ export default class Comment extends React.Component {
             <Username user={creator} />
           </div>
           <div className="page-comment-body">{commentBody}</div>
+          <div className="page-comment-reply text-right">
+            {
+              comment.replyTo === undefined
+              && (
+                <Button
+                  type="button"
+                  className="fcbtn btn btn-primary btn-sm btn-success btn-rounded btn-1b"
+                  onClick={this.replyBtnClickedHandler}
+                >
+                  Reply
+                </Button>
+              )
+            }
+          </div>
           <div className="page-comment-meta">
             {commentDate}&nbsp;
             <a className={revisionLavelClassName} href={revHref}>{revFirst8Letters}</a>
@@ -151,9 +171,9 @@ export default class Comment extends React.Component {
 
 Comment.propTypes = {
   comment: PropTypes.object.isRequired,
-  currentRevisionId: PropTypes.string.isRequired,
-  currentUserId: PropTypes.string.isRequired,
-  deleteBtnClicked: PropTypes.func.isRequired,
-  crowi: PropTypes.object.isRequired,
   crowiRenderer: PropTypes.object.isRequired,
+  deleteBtnClicked: PropTypes.func.isRequired,
+  onReplyButtonClicked: PropTypes.func.isRequired,
+  crowi: PropTypes.object.isRequired,
+  revisionId: PropTypes.string,
 };
