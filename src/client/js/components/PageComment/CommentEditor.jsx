@@ -112,9 +112,6 @@ export default class CommentEditor extends React.Component {
       this.state.slackChannels,
     )
       .then((res) => {
-        if (this.props.onPostComplete != null) {
-          this.props.onPostComplete(res.comment);
-        }
         this.setState({
           comment: '',
           isMarkdown: true,

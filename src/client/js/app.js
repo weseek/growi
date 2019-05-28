@@ -113,6 +113,9 @@ const crowiRenderer = new GrowiRenderer(crowi, null, {
 });
 window.crowiRenderer = crowiRenderer;
 
+// create unstated container instance
+const commentContainer = new CommentContainer(crowi, pageId, pageRevisionId);
+
 // FIXME
 const isEnabledPlugins = $('body').data('plugin-enabled');
 if (isEnabledPlugins) {
@@ -315,9 +318,6 @@ const componentMappings = {
 // additional definitions if data exists
 let pageComments = null;
 if (pageId) {
-  // create unstated container instance
-  const commentContainer = new CommentContainer(crowi, pageId, pageRevisionId);
-
   componentMappings['page-comments-list'] = (
     <I18nextProvider i18n={i18n}>
       <Provider inject={[commentContainer]}>
@@ -510,19 +510,9 @@ if (pageEditorElem) {
   crowi.setPageEditor(pageEditor);
 }
 
-const pageCommentsElem = componentMappings['page-comments-list'];
-const postCompleteHandler = (comment) => {
-  if (pageCommentsElem != null) {
-    pageComments.retrieveData();
-  }
-};
-
 // render comment form
 const writeCommentElem = document.getElementById('page-comment-write');
 if (writeCommentElem) {
-  // create unstated container instance
-  const commentContainer = new CommentContainer(crowi, pageId, pageRevisionId);
-
   ReactDOM.render(
     <Provider inject={[commentContainer]}>
       <I18nextProvider i18n={i18n}>

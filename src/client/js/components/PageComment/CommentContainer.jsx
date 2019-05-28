@@ -18,12 +18,33 @@ export default class CommentContainer extends Container {
     this.state = {
       comments: [],
     };
+
+    this.add = this.add.bind(this);
   }
 
   init() {
     if (!this.props.pageId) {
       return;
     }
+  }
+
+  add(comment) {
+    const comments = this.state.comments;
+
+    comments.push(comment);
+    this.setState({ comments });
+  }
+
+  findAndSplice(comment) {
+    const comments = this.state.comments;
+
+    const index = comments.indexOf(comment);
+    if (index < 0) {
+      return;
+    }
+    comments.splice(index, 1);
+
+    this.setState({ comments });
   }
 
   /**
@@ -37,18 +58,6 @@ export default class CommentContainer extends Container {
           this.setState({ comments: res.comments });
         }
       });
-  }
-
-  findAndSplice(comment) {
-    const comments = this.state.comments;
-
-    const index = comments.indexOf(comment);
-    if (index < 0) {
-      return;
-    }
-    comments.splice(index, 1);
-
-    this.setState({ comments });
   }
 
   /**
@@ -68,7 +77,12 @@ export default class CommentContainer extends Container {
         isSlackEnabled,
         slackChannels,
       },
-    });
+    })
+      .then((res) => {
+        if (res.ok) {
+          this.add(res.comment);
+        }
+      });
   }
 
   deleteComment(comment) {
