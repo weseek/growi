@@ -315,23 +315,28 @@ const componentMappings = {
 // additional definitions if data exists
 let pageComments = null;
 if (pageId) {
+  // create unstated container instance
+  const commentContainer = new CommentContainer(crowi, pageId, pageRevisionId);
+
   componentMappings['page-comments-list'] = (
     <I18nextProvider i18n={i18n}>
-      <PageComments
-        ref={(elem) => {
-          if (pageComments == null) {
-            pageComments = elem;
-          }
-        }}
-        revisionCreatedAt={pageRevisionCreatedAt}
-        pageId={pageId}
-        pagePath={pagePath}
-        editorOptions={pageEditorOptions}
-        slackChannels={slackChannels}
-        crowi={crowi}
-        crowiOriginRenderer={crowiRenderer}
-        revisionId={pageRevisionId}
-      />
+      <Provider inject={[commentContainer]}>
+        <PageComments
+          ref={(elem) => {
+            if (pageComments == null) {
+              pageComments = elem;
+            }
+          }}
+          revisionCreatedAt={pageRevisionCreatedAt}
+          pageId={pageId}
+          pagePath={pagePath}
+          editorOptions={pageEditorOptions}
+          slackChannels={slackChannels}
+          crowi={crowi}
+          crowiOriginRenderer={crowiRenderer}
+          revisionId={pageRevisionId}
+        />
+      </Provider>
     </I18nextProvider>
   );
   componentMappings['page-attachment'] = <PageAttachment pageId={pageId} markdown={markdown} crowi={crowi} />;

@@ -1,8 +1,9 @@
+/* eslint-disable react/no-multi-comp */
 /* eslint-disable react/no-access-state-in-setstate */
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Provider } from 'unstated';
+import { Subscribe } from 'unstated';
 
 import { withTranslation } from 'react-i18next';
 import GrowiRenderer from '../util/GrowiRenderer';
@@ -28,17 +29,14 @@ class PageComments extends React.Component {
     super(props);
 
     this.state = {
-      // desc order array
-      comments: [],
-
-      children: {},
-
       isLayoutTypeGrowi: false,
 
       // for deleting comment
       commentToDelete: undefined,
       isDeleteConfirmModalShown: false,
       errorMessageForDeleting: undefined,
+
+      showEditorIds: new Set(),
     };
 
     this.growiRenderer = new GrowiRenderer(this.props.crowi, this.props.crowiOriginRenderer, { mode: 'comment' });
@@ -48,12 +46,11 @@ class PageComments extends React.Component {
     this.deleteComment = this.deleteComment.bind(this);
     this.showDeleteConfirmModal = this.showDeleteConfirmModal.bind(this);
     this.closeDeleteConfirmModal = this.closeDeleteConfirmModal.bind(this);
-    this.replyToComment = this.replyToComment.bind(this);
+    this.replyButtonClickedHandler = this.replyButtonClickedHandler.bind(this);
   }
 
   componentWillMount() {
     this.init();
-    this.retrieveData = this.retrieveData.bind(this);
   }
 
   init() {
@@ -64,25 +61,7 @@ class PageComments extends React.Component {
     const layoutType = this.props.crowi.getConfig().layoutType;
     this.setState({ isLayoutTypeGrowi: layoutType === 'crowi-plus' || layoutType === 'growi' });
 
-    this.retrieveData();
-  }
-
-  /**
-   * Load data of comments and store them in state
-   */
-  retrieveData() {
-    // get data (desc order array)
-    this.props.crowi.apiGet('/comments.get', { page_id: this.props.pageId })
-      .then((res) => {
-        if (res.ok) {
-          this.setState({ comments: res.comments });
-          const tempChildren = {};
-          res.comments.forEach((comment) => {
-            tempChildren[comment._id] = React.createRef();
-          });
-          this.setState({ children: tempChildren });
-        }
-      });
+    this.props.commentContainer.retrieveComments();
   }
 
   confirmToDeleteComment(comment) {
@@ -90,35 +69,16 @@ class PageComments extends React.Component {
     this.showDeleteConfirmModal();
   }
 
-  replyToComment(comment) {
-    this.state.children[comment._id].toggleEditor();
-  }
-
   deleteComment() {
     const comment = this.state.commentToDelete;
 
-    this.props.crowi.apiPost('/comments.remove', { comment_id: comment._id })
-      .then((res) => {
-        if (res.ok) {
-          this.findAndSplice(comment);
-        }
+    this.props.commentContainer.deleteComment(comment)
+      .then(() => {
         this.closeDeleteConfirmModal();
       })
       .catch((err) => {
         this.setState({ errorMessageForDeleting: err.message });
       });
-  }
-
-  findAndSplice(comment) {
-    const comments = this.state.comments;
-
-    const index = comments.indexOf(comment);
-    if (index < 0) {
-      return;
-    }
-    comments.splice(index, 1);
-
-    this.setState({ comments });
   }
 
   showDeleteConfirmModal() {
@@ -131,6 +91,11 @@ class PageComments extends React.Component {
       isDeleteConfirmModalShown: false,
       errorMessageForDeleting: undefined,
     });
+  }
+
+  replyButtonClickedHandler(commentId) {
+    const ids = this.state.showEditorIds.add(commentId);
+    this.setState({ showEditorIds: ids });
   }
 
   // inserts reply after each corresponding comment
@@ -156,28 +121,27 @@ class PageComments extends React.Component {
    * @memberOf PageComments
    */
   generateCommentElements(comments, replies) {
-    // create unstated container instance
-    const commentContainer = new CommentContainer(this.props.crowi, this.props.pageId, this.props.revisionId);
-
     const commentsWithReplies = this.reorderBasedOnReplies(comments, replies);
     return commentsWithReplies.map((comment) => {
+
+      const commentId = comment._id;
+      const showEditor = this.state.showEditorIds.has(commentId);
+
       return (
-        <div key={comment._id}>
+        <div key={commentId}>
           <Comment
             comment={comment}
             deleteBtnClicked={this.confirmToDeleteComment}
             crowiRenderer={this.growiRenderer}
-            onReplyButtonClicked={this.replyToComment}
+            onReplyButtonClicked={() => { this.replyButtonClickedHandler(commentId) }}
             crowi={this.props.crowi}
           />
-          { true && (
-            <Provider key={comment._id} inject={[commentContainer]}>
-              <CommentEditor
-                crowi={this.props.crowi}
-                crowiOriginRenderer={this.props.crowiOriginRenderer}
-                editorOptions={this.props.editorOptions}
-              />
-            </Provider>
+          { showEditor && (
+            <CommentEditor
+              crowi={this.props.crowi}
+              crowiOriginRenderer={this.props.crowiOriginRenderer}
+              editorOptions={this.props.editorOptions}
+            />
           )}
         </div>
       );
@@ -192,7 +156,7 @@ class PageComments extends React.Component {
     const newerReplies = [];
     const olderReplies = [];
 
-    let comments = this.state.comments;
+    let comments = this.props.commentContainer.state.comments;
     if (this.state.isLayoutTypeGrowi) {
       // replace with asc order array
       comments = comments.slice().reverse(); // non-destructive reverse
@@ -310,7 +274,37 @@ class PageComments extends React.Component {
 
 }
 
+/**
+ * Wrapper component for using unstated
+ */
+class PageCommentsWrapper extends React.Component {
+
+  render() {
+    return (
+      <Subscribe to={[CommentContainer]}>
+        { commentContainer => (
+          // eslint-disable-next-line arrow-body-style
+          <PageComments commentContainer={commentContainer} {...this.props} />
+        )}
+      </Subscribe>
+    );
+  }
+
+}
+
+PageCommentsWrapper.propTypes = {
+  crowi: PropTypes.object.isRequired,
+  crowiOriginRenderer: PropTypes.object.isRequired,
+  pageId: PropTypes.string.isRequired,
+  revisionId: PropTypes.string.isRequired,
+  revisionCreatedAt: PropTypes.number,
+  pagePath: PropTypes.string,
+  editorOptions: PropTypes.object,
+  slackChannels: PropTypes.string,
+};
 PageComments.propTypes = {
+  commentContainer: PropTypes.object.isRequired,
+
   crowi: PropTypes.object.isRequired,
   crowiOriginRenderer: PropTypes.object.isRequired,
   pageId: PropTypes.string.isRequired,
@@ -321,4 +315,4 @@ PageComments.propTypes = {
   slackChannels: PropTypes.string,
 };
 
-export default withTranslation(null, { withRef: true })(PageComments);
+export default withTranslation(null, { withRef: true })(PageCommentsWrapper);

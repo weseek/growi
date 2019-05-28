@@ -14,12 +14,41 @@ export default class CommentContainer extends Container {
     this.crowi = crowi;
     this.pageId = pageId;
     this.revisionId = revisionId;
+
+    this.state = {
+      comments: [],
+    };
   }
 
   init() {
     if (!this.props.pageId) {
       return;
     }
+  }
+
+  /**
+   * Load data of comments and store them in state
+   */
+  retrieveComments() {
+    // get data (desc order array)
+    this.crowi.apiGet('/comments.get', { page_id: this.pageId })
+      .then((res) => {
+        if (res.ok) {
+          this.setState({ comments: res.comments });
+        }
+      });
+  }
+
+  findAndSplice(comment) {
+    const comments = this.state.comments;
+
+    const index = comments.indexOf(comment);
+    if (index < 0) {
+      return;
+    }
+    comments.splice(index, 1);
+
+    this.setState({ comments });
   }
 
   /**
@@ -40,6 +69,15 @@ export default class CommentContainer extends Container {
         slackChannels,
       },
     });
+  }
+
+  deleteComment(comment) {
+    return this.crowi.apiPost('/comments.remove', { comment_id: comment._id })
+      .then((res) => {
+        if (res.ok) {
+          this.findAndSplice(comment);
+        }
+      });
   }
 
   onUpload(file) {
