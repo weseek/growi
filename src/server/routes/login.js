@@ -44,8 +44,10 @@ module.exports = function(crowi, app) {
         if (redirectUrl.hostname === req.hostname) {
           return res.redirect(redirectUrl);
         }
+        logger.warn('Requested redirect URL is invalid, redirect to root page');
       }
-      catch (e) {
+      catch (err) {
+        logger.warn('Requested redirect URL is invalid, redirect to root page', err);
         return res.redirect('/');
       }
     }
