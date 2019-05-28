@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import Button from 'react-bootstrap/es/Button';
 import dateFnsFormat from 'date-fns/format';
 import CommentForm from './CommentForm';
+import CommentEditor from './CommentEditor';
 
 import RevisionBody from '../Page/RevisionBody';
 
@@ -174,7 +175,7 @@ export default class Comment extends React.Component {
         {
           this.state.showCommentForm
           && (
-          <CommentForm
+          <CommentEditor
             onPostComplete={this.props.onPostComplete}
             data={this.props.data}
             replyTo={comment._id.toString()}

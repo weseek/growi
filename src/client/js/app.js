@@ -29,6 +29,7 @@ import Page from './components/Page';
 import PageHistory from './components/PageHistory';
 import PageComments from './components/PageComments';
 import CommentForm from './components/PageComment/CommentForm';
+import CommentEditor from './components/PageComment/CommentEditor';
 import PageAttachment from './components/PageAttachment';
 import PageStatusAlert from './components/PageStatusAlert';
 import RevisionPath from './components/Page/RevisionPath';
@@ -523,7 +524,13 @@ if (writeCommentElem) {
         onPostComplete={postCompleteHandler}
         replyTo={undefined}
         data={data}
-      />
+      >
+        <CommentEditor
+          replyTo={undefined}
+          data={data}
+        >
+        </CommentEditor>
+      </CommentForm>
     </I18nextProvider>,
     writeCommentElem,
   );
