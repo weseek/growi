@@ -42,7 +42,7 @@ export default class CommentForm extends React.Component {
   }
 
   init() {
-    if (!this.props.data.pageId) {
+    if (!this.props.pageId) {
       return;
     }
   }
@@ -133,9 +133,19 @@ export default class CommentForm extends React.Component {
   }
 
   render() {
+    const children = React.Children.map(this.props.children, (child) => {
+      return React.cloneElement(child, {
+        onPostComplete: this.props.onPostComplete,
+        replyTo: this.props.replyTo,
+        pageId: this.props.pageId,
+        pagePath: this.props.pagePath,
+        slackChannels: this.props.slackChannels,
+        revisionId: this.props.revisionId,
+      });
+    });
     return (
       <div>
-        {this.props.children}
+        {children}
       </div>
     );
   }
@@ -146,5 +156,9 @@ CommentForm.propTypes = {
   children: PropTypes.node.isRequired,
   onPostComplete: PropTypes.func,
   replyTo: PropTypes.string,
-  data: PropTypes.object.isRequired,
+  pageId: PropTypes.string,
+  pagePath: PropTypes.string,
+  slackChannels: PropTypes.string,
+  revisionId: PropTypes.string,
+  crowi: PropTypes.object.isRequired,
 };

@@ -5,6 +5,9 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import GrowiRenderer from '../util/GrowiRenderer';
 
+import CommentForm from './PageComment/CommentForm';
+import CommentEditor from './PageComment/CommentEditor';
+
 import Comment from './PageComment/Comment';
 import DeleteCommentModal from './PageComment/DeleteCommentModal';
 
@@ -26,6 +29,8 @@ class PageComments extends React.Component {
       // desc order array
       comments: [],
 
+      children: {},
+
       isLayoutTypeGrowi: false,
 
       // for deleting comment
@@ -34,13 +39,14 @@ class PageComments extends React.Component {
       errorMessageForDeleting: undefined,
     };
 
-    this.growiRenderer = new GrowiRenderer(this.props.data.crowi, this.props.data.crowiOriginRenderer, { mode: 'comment' });
+    this.growiRenderer = new GrowiRenderer(this.props.crowi, this.props.crowiOriginRenderer, { mode: 'comment' });
 
     this.init = this.init.bind(this);
     this.confirmToDeleteComment = this.confirmToDeleteComment.bind(this);
     this.deleteComment = this.deleteComment.bind(this);
     this.showDeleteConfirmModal = this.showDeleteConfirmModal.bind(this);
     this.closeDeleteConfirmModal = this.closeDeleteConfirmModal.bind(this);
+    this.replyToComment = this.replyToComment.bind(this);
   }
 
   componentWillMount() {
@@ -49,11 +55,11 @@ class PageComments extends React.Component {
   }
 
   init() {
-    if (!this.props.data.pageId) {
+    if (!this.props.pageId) {
       return;
     }
 
-    const layoutType = this.props.data.crowi.getConfig().layoutType;
+    const layoutType = this.props.crowi.getConfig().layoutType;
     this.setState({ isLayoutTypeGrowi: layoutType === 'crowi-plus' || layoutType === 'growi' });
 
     this.retrieveData();
@@ -64,10 +70,15 @@ class PageComments extends React.Component {
    */
   retrieveData() {
     // get data (desc order array)
-    this.props.data.crowi.apiGet('/comments.get', { page_id: this.props.data.pageId })
+    this.props.crowi.apiGet('/comments.get', { page_id: this.props.pageId })
       .then((res) => {
         if (res.ok) {
           this.setState({ comments: res.comments });
+          const tempChildren = {};
+          res.comments.forEach((comment) => {
+            tempChildren[comment._id] = React.createRef();
+          });
+          this.setState({ children: tempChildren });
         }
       });
   }
@@ -77,10 +88,14 @@ class PageComments extends React.Component {
     this.showDeleteConfirmModal();
   }
 
+  replyToComment(comment) {
+    this.state.children[comment._id].toggleEditor();
+  }
+
   deleteComment() {
     const comment = this.state.commentToDelete;
 
-    this.props.data.crowi.apiPost('/comments.remove', { comment_id: comment._id })
+    this.props.crowi.apiPost('/comments.remove', { comment_id: comment._id })
       .then((res) => {
         if (res.ok) {
           this.findAndSplice(comment);
@@ -142,15 +157,31 @@ class PageComments extends React.Component {
     const commentsWithReplies = this.reorderBasedOnReplies(comments, replies);
     return commentsWithReplies.map((comment) => {
       return (
-        <Comment
+        <CommentForm
           key={comment._id}
-          comment={comment}
-          deleteBtnClicked={this.confirmToDeleteComment}
-          crowiRenderer={this.growiRenderer}
           onPostComplete={this.retrieveData}
-          data={this.props.data}
           replyTo={comment.replyTo}
-        />
+          pageId={this.props.pageId}
+          pagePath={this.props.pagePath}
+          slackChannels={this.props.slackChannels}
+          crowi={this.props.crowi}
+          revisionId={this.props.revisionId}
+        >
+          <Comment
+            comment={comment}
+            deleteBtnClicked={this.confirmToDeleteComment}
+            crowiRenderer={this.growiRenderer}
+            onReplyButtonClicked={this.replyToComment}
+            crowi={this.props.crowi}
+          />
+          <CommentEditor
+            ref={(instance) => { this.state.children[comment._id] = instance }}
+            editorOptions={this.props.editorOptions}
+            crowiOriginRenderer={this.props.crowiOriginRenderer}
+            showCommentEditor={false}
+            crowi={this.props.crowi}
+          />
+        </CommentForm>
       );
     });
   }
@@ -170,7 +201,7 @@ class PageComments extends React.Component {
     }
 
     // divide by revisionId and createdAt
-    const revisionId = this.props.data.revisionId;
+    const revisionId = this.props.revisionId;
     const revisionCreatedAt = this.props.revisionCreatedAt;
     comments.forEach((comment) => {
       // comparing ObjectId
@@ -282,8 +313,14 @@ class PageComments extends React.Component {
 }
 
 PageComments.propTypes = {
-  data: PropTypes.object.isRequired,
   revisionCreatedAt: PropTypes.number,
+  pageId: PropTypes.string,
+  pagePath: PropTypes.string,
+  editorOptions: PropTypes.object,
+  slackChannels: PropTypes.string,
+  crowi: PropTypes.object.isRequired,
+  crowiOriginRenderer: PropTypes.object.isRequired,
+  revisionId: PropTypes.string,
 };
 
 export default withTranslation(null, { withRef: true })(PageComments);

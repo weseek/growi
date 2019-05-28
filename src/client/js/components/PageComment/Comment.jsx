@@ -3,8 +3,6 @@ import PropTypes from 'prop-types';
 
 import Button from 'react-bootstrap/es/Button';
 import dateFnsFormat from 'date-fns/format';
-import CommentForm from './CommentForm';
-import CommentEditor from './CommentEditor';
 
 import RevisionBody from '../Page/RevisionBody';
 
@@ -27,7 +25,6 @@ export default class Comment extends React.Component {
 
     this.state = {
       html: '',
-      showCommentForm: false,
     };
 
     this.isCurrentUserIsAuthor = this.isCurrentUserEqualsToAuthor.bind(this);
@@ -36,15 +33,7 @@ export default class Comment extends React.Component {
     this.getRevisionLabelClassName = this.getRevisionLabelClassName.bind(this);
     this.deleteBtnClickedHandler = this.deleteBtnClickedHandler.bind(this);
     this.renderHtml = this.renderHtml.bind(this);
-    this.showForm = this.showForm.bind(this);
-  }
-
-  showForm() {
-    this.setState((prevState) => {
-      return {
-        showCommentForm: !prevState.showCommentForm,
-      };
-    });
+    this.replyBtnClickedHandler = this.replyBtnClickedHandler.bind(this);
   }
 
   componentWillMount() {
@@ -61,11 +50,11 @@ export default class Comment extends React.Component {
   }
 
   isCurrentUserEqualsToAuthor() {
-    return this.props.comment.creator.username === this.props.data.crowi.me;
+    return this.props.comment.creator.username === this.props.crowi.me;
   }
 
   isCurrentRevision() {
-    return this.props.comment.revision === this.props.data.revisionId;
+    return this.props.comment.revision === this.props.revisionId;
   }
 
   getRootClassName() {
@@ -82,8 +71,12 @@ export default class Comment extends React.Component {
     this.props.deleteBtnClicked(this.props.comment);
   }
 
+  replyBtnClickedHandler() {
+    this.props.onReplyButtonClicked(this.props.comment);
+  }
+
   renderRevisionBody() {
-    const config = this.props.data.crowi.getConfig();
+    const config = this.props.crowi.getConfig();
     const isMathJaxEnabled = !!config.env.MATHJAX;
     return (
       <RevisionBody
@@ -101,7 +94,7 @@ export default class Comment extends React.Component {
     };
 
     const crowiRenderer = this.props.crowiRenderer;
-    const interceptorManager = this.props.data.crowi.interceptorManager;
+    const interceptorManager = this.props.crowi.interceptorManager;
     interceptorManager.process('preRenderComment', context)
       .then(() => { return interceptorManager.process('prePreProcess', context) })
       .then(() => {
@@ -139,49 +132,37 @@ export default class Comment extends React.Component {
     const revisionLavelClassName = this.getRevisionLabelClassName();
 
     return (
-      <div>
-        <div className={rootClassName}>
-          <UserPicture user={creator} />
-          <div className="page-comment-main">
-            <div className="page-comment-creator">
-              <Username user={creator} />
-            </div>
-            <div className="page-comment-body">{commentBody}</div>
-            <div className="page-comment-reply text-right">
-              {
-                comment.replyTo === undefined
-                && (
-                  <Button
-                    type="button"
-                    className="fcbtn btn btn-primary btn-sm btn-success btn-rounded btn-1b"
-                    onClick={this.showForm}
-                  >
-                    Reply
-                  </Button>
-                )
-              }
-            </div>
-            <div className="page-comment-meta">
-              {commentDate}&nbsp;
-              <a className={revisionLavelClassName} href={revHref}>{revFirst8Letters}</a>
-            </div>
-            <div className="page-comment-control">
-              <button type="button" className="btn btn-link" onClick={this.deleteBtnClickedHandler}>
-                <i className="ti-close"></i>
-              </button>
-            </div>
+      <div className={rootClassName}>
+        <UserPicture user={creator} />
+        <div className="page-comment-main">
+          <div className="page-comment-creator">
+            <Username user={creator} />
+          </div>
+          <div className="page-comment-body">{commentBody}</div>
+          <div className="page-comment-reply text-right">
+            {
+              comment.replyTo === undefined
+              && (
+                <Button
+                  type="button"
+                  className="fcbtn btn btn-primary btn-sm btn-success btn-rounded btn-1b"
+                  onClick={this.replyBtnClickedHandler}
+                >
+                  Reply
+                </Button>
+              )
+            }
+          </div>
+          <div className="page-comment-meta">
+            {commentDate}&nbsp;
+            <a className={revisionLavelClassName} href={revHref}>{revFirst8Letters}</a>
+          </div>
+          <div className="page-comment-control">
+            <button type="button" className="btn btn-link" onClick={this.deleteBtnClickedHandler}>
+              <i className="ti-close"></i>
+            </button>
           </div>
         </div>
-        {
-          this.state.showCommentForm
-          && (
-          <CommentEditor
-            onPostComplete={this.props.onPostComplete}
-            data={this.props.data}
-            replyTo={comment._id.toString()}
-          />
-        )
-        }
       </div>
     );
   }
@@ -192,7 +173,7 @@ Comment.propTypes = {
   comment: PropTypes.object.isRequired,
   crowiRenderer: PropTypes.object.isRequired,
   deleteBtnClicked: PropTypes.func.isRequired,
-  data: PropTypes.object.isRequired,
-  replyTo: PropTypes.string,
-  onPostComplete: PropTypes.func.isRequired,
+  onReplyButtonClicked: PropTypes.func.isRequired,
+  crowi: PropTypes.object.isRequired,
+  revisionId: PropTypes.string,
 };

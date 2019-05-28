@@ -311,16 +311,6 @@ const componentMappings = {
 
 };
 
-const data = {
-  pageId,
-  pagePath,
-  editorOptions: pageEditorOptions,
-  slackChannels,
-  crowi,
-  crowiOriginRenderer: crowiRenderer,
-  revisionId: pageRevisionId,
-};
-
 // additional definitions if data exists
 let pageComments = null;
 if (pageId) {
@@ -333,7 +323,13 @@ if (pageId) {
           }
         }}
         revisionCreatedAt={pageRevisionCreatedAt}
-        data={data}
+        pageId={pageId}
+        pagePath={pagePath}
+        editorOptions={pageEditorOptions}
+        slackChannels={slackChannels}
+        crowi={crowi}
+        crowiOriginRenderer={crowiRenderer}
+        revisionId={pageRevisionId}
       />
     </I18nextProvider>
   );
@@ -523,11 +519,17 @@ if (writeCommentElem) {
       <CommentForm
         onPostComplete={postCompleteHandler}
         replyTo={undefined}
-        data={data}
+        pageId={pageId}
+        pagePath={pagePath}
+        slackChannels={slackChannels}
+        crowi={crowi}
+        revisionId={pageRevisionId}
       >
         <CommentEditor
-          replyTo={undefined}
-          data={data}
+          editorOptions={pageEditorOptions}
+          crowi={crowi}
+          crowiOriginRenderer={crowiRenderer}
+          showCommentEditor
         >
         </CommentEditor>
       </CommentForm>
