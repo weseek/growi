@@ -30,7 +30,7 @@ import Page from './components/Page';
 import PageHistory from './components/PageHistory';
 import PageComments from './components/PageComments';
 import CommentContainer from './components/PageComment/CommentContainer';
-import CommentEditor from './components/PageComment/CommentEditor';
+import CommentEditorLazyRenderer from './components/PageComment/CommentEditorLazyRenderer';
 import PageAttachment from './components/PageAttachment';
 import PageStatusAlert from './components/PageStatusAlert';
 import RevisionPath from './components/Page/RevisionPath';
@@ -521,13 +521,13 @@ if (writeCommentElem) {
   ReactDOM.render(
     <Provider inject={[commentContainer]}>
       <I18nextProvider i18n={i18n}>
-        <CommentEditor
-          editorOptions={pageEditorOptions}
+        <CommentEditorLazyRenderer
           crowi={crowi}
           crowiOriginRenderer={crowiRenderer}
-          showCommentEditor
+          editorOptions={pageEditorOptions}
+          slackChannels={slackChannels}
         >
-        </CommentEditor>
+        </CommentEditorLazyRenderer>
       </I18nextProvider>
     </Provider>,
     writeCommentElem,
