@@ -8,12 +8,12 @@ import { Container } from 'unstated';
  */
 export default class CommentContainer extends Container {
 
-  constructor(crowi, pageId, revisionId) {
+  constructor(crowi, pageContainer) {
     super();
 
     this.crowi = crowi;
-    this.pageId = pageId;
-    this.revisionId = revisionId;
+    this.pageId = pageContainer.state.pageId;
+    this.revisionId = pageContainer.state.revisionId;
 
     this.state = {
       comments: [],

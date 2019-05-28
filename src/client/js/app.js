@@ -29,7 +29,6 @@ import PageEditorByHackmd from './components/PageEditorByHackmd';
 import Page from './components/Page';
 import PageHistory from './components/PageHistory';
 import PageComments from './components/PageComments';
-import CommentContainer from './components/PageComment/CommentContainer';
 import CommentEditorLazyRenderer from './components/PageComment/CommentEditorLazyRenderer';
 import PageAttachment from './components/PageAttachment';
 import PageStatusAlert from './components/PageStatusAlert';
@@ -46,6 +45,9 @@ import CustomCssEditor from './components/Admin/CustomCssEditor';
 import CustomScriptEditor from './components/Admin/CustomScriptEditor';
 import CustomHeaderEditor from './components/Admin/CustomHeaderEditor';
 import AdminRebuildSearch from './components/Admin/AdminRebuildSearch';
+
+import PageContainer from './services/PageContainer';
+import CommentContainer from './components/PageComment/CommentContainer';
 
 
 const logger = loggerFactory('growi:app');
@@ -114,7 +116,8 @@ const crowiRenderer = new GrowiRenderer(crowi, null, {
 window.crowiRenderer = crowiRenderer;
 
 // create unstated container instance
-const commentContainer = new CommentContainer(crowi, pageId, pageRevisionId);
+const pageContainer = new PageContainer();
+const commentContainer = new CommentContainer(crowi, pageContainer);
 
 // FIXME
 const isEnabledPlugins = $('body').data('plugin-enabled');
