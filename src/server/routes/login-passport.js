@@ -28,7 +28,7 @@ module.exports = function(crowi, app) {
 
       // prevention from open redirect
       try {
-        const redirectUrl = new URL(jumpTo, `${req.protocol}://${req.host}`);
+        const redirectUrl = new URL(jumpTo, `${req.protocol}://${req.get('host')}`);
         if (redirectUrl.hostname === req.hostname) {
           return res.redirect(redirectUrl);
         }
