@@ -32,12 +32,12 @@ module.exports = function(crowi, app) {
         if (redirectUrl.hostname === req.hostname) {
           return res.redirect(redirectUrl);
         }
-        return res.redirect('/');
       }
       catch (e) {
         return res.redirect('/');
       }
     }
+
     return res.redirect('/');
   };
 
