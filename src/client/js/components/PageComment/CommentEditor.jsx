@@ -1,3 +1,4 @@
+/* eslint-disable react/no-multi-comp */
 import React from 'react';
 import PropTypes from 'prop-types';
 
@@ -20,12 +21,10 @@ import SlackNotification from '../SlackNotification';
  *
  * @author Yuki Takei <yuki@weseek.co.jp>
  *
- * @export
- * @class Comment
  * @extends {React.Component}
  */
 
-export default class CommentEditor extends React.Component {
+class CommentEditor extends React.Component {
 
   constructor(props) {
     super(props);
@@ -53,8 +52,8 @@ export default class CommentEditor extends React.Component {
     this.updateState = this.updateState.bind(this);
     this.updateStateCheckbox = this.updateStateCheckbox.bind(this);
 
-    this.onSubmit = this.onSubmit.bind(this);
-    this.onUpload = this.onUpload.bind(this);
+    this.postHandler = this.postHandler.bind(this);
+    this.uploadHandler = this.uploadHandler.bind(this);
 
     this.toggleEditor = this.toggleEditor.bind(this);
     this.renderHtml = this.renderHtml.bind(this);
@@ -97,14 +96,14 @@ export default class CommentEditor extends React.Component {
   }
 
   /**
-   * Load data of comments and rerender <PageComments />
+   * Post comment with CommentContainer and update state
    */
-  onSubmit(event, commentContainer) {
+  postHandler(event) {
     if (event != null) {
       event.preventDefault();
     }
 
-    commentContainer.postComment(
+    this.props.commentContainer.postComment(
       this.state.comment,
       this.state.isMarkdown,
       null, // TODO set replyTo
@@ -128,6 +127,50 @@ export default class CommentEditor extends React.Component {
         this.setState({ errorMessage });
       });
   }
+
+  uploadHandler(file) {
+    // const endpoint = '/attachments.add';
+
+    /*
+    // create a FromData instance
+    const formData = new FormData();
+    formData.append('_csrf', this.props.data.crowi.csrfToken);
+    formData.append('file', file);
+    formData.append('path', this.props.data.pagePath);
+    formData.append('page_id', this.props.data.pageId || 0);
+
+    // post
+    this.props.data.crowi.apiPost(endpoint, formData)
+      .then((res) => {
+        const attachment = res.attachment;
+        const fileName = attachment.originalName;
+
+        let insertText = `[${fileName}](${attachment.filePathProxied})`;
+        // when image
+        if (attachment.fileFormat.startsWith('image/')) {
+          // modify to "![fileName](url)" syntax
+          insertText = `!${insertText}`;
+        }
+        this.editor.insertText(insertText);
+      })
+      .catch(this.apiErrorHandler)
+      // finally
+      .then(() => {
+        this.editor.terminateUploadingState();
+      });
+    */
+  }
+
+  // apiErrorHandler(error) {
+  //   toastr.error(error.message, 'Error occured', {
+  //     closeButton: true,
+  //     progressBar: true,
+  //     newestOnTop: false,
+  //     showDuration: '100',
+  //     hideDuration: '100',
+  //     timeOut: '3000',
+  //   });
+  // }
 
   getCommentHtml() {
     return (
@@ -180,50 +223,6 @@ export default class CommentEditor extends React.Component {
     return { __html: html };
   }
 
-  onUpload(file) {
-    const endpoint = '/attachments.add';
-
-    /*
-    // create a FromData instance
-    const formData = new FormData();
-    formData.append('_csrf', this.props.data.crowi.csrfToken);
-    formData.append('file', file);
-    formData.append('path', this.props.data.pagePath);
-    formData.append('page_id', this.props.data.pageId || 0);
-
-    // post
-    this.props.data.crowi.apiPost(endpoint, formData)
-      .then((res) => {
-        const attachment = res.attachment;
-        const fileName = attachment.originalName;
-
-        let insertText = `[${fileName}](${attachment.filePathProxied})`;
-        // when image
-        if (attachment.fileFormat.startsWith('image/')) {
-          // modify to "![fileName](url)" syntax
-          insertText = `!${insertText}`;
-        }
-        this.editor.insertText(insertText);
-      })
-      .catch(this.apiErrorHandler)
-      // finally
-      .then(() => {
-        this.editor.terminateUploadingState();
-      });
-    */
-  }
-
-  // apiErrorHandler(error) {
-  //   toastr.error(error.message, 'Error occured', {
-  //     closeButton: true,
-  //     progressBar: true,
-  //     newestOnTop: false,
-  //     showDuration: '100',
-  //     hideDuration: '100',
-  //     timeOut: '3000',
-  //   });
-  // }
-
   render() {
     const crowi = this.props.crowi;
     const username = crowi.me;
@@ -236,18 +235,13 @@ export default class CommentEditor extends React.Component {
 
     const errorMessage = <span className="text-danger text-right mr-2">{this.state.errorMessage}</span>;
     const submitButton = (
-      <Subscribe to={[CommentContainer]}>
-        { commentContainer => (
-          // eslint-disable-next-line arrow-body-style
-          <Button
-            bsStyle="primary"
-            className="fcbtn btn btn-sm btn-primary btn-outline btn-rounded btn-1b"
-            onClick={(e) => { this.onSubmit(e, commentContainer) }}
-          >
-            Comment
-          </Button>
-        )}
-      </Subscribe>
+      <Button
+        bsStyle="primary"
+        className="fcbtn btn btn-sm btn-primary btn-outline btn-rounded btn-1b"
+        onClick={this.postHandler}
+      >
+        Comment
+      </Button>
     );
 
     return (
@@ -267,26 +261,20 @@ export default class CommentEditor extends React.Component {
               <div className="comment-write">
                 <Tabs activeKey={this.state.key} id="comment-form-tabs" onSelect={this.handleSelect} animation={false}>
                   <Tab eventKey={1} title="Write">
-                    <Subscribe to={[CommentContainer]}>
-                      { commentContainer => (
-                        // eslint-disable-next-line arrow-body-style
-                        <Editor
-                          ref={(c) => { this.editor = c }}
-                          value={this.state.comment}
-                          isGfmMode={this.state.isMarkdown}
-                          editorOptions={this.props.editorOptions}
-                          lineNumbers={false}
-                          isMobile={this.props.crowi.isMobile}
-                          isUploadable={this.state.isUploadable && this.state.isLayoutTypeGrowi} // enable only when GROWI layout
-                          isUploadableFile={this.state.isUploadableFile}
-                          emojiStrategy={emojiStrategy}
-                          onChange={this.updateState}
-                          onUpload={this.onUpload}
-                          // onCtrlEnter={(e) => { this.onSubmit(e, commentContainer) }}
-                          onCtrlEnter={(e) => { this.onSubmit(e, commentContainer) }}
-                        />
-                      )}
-                    </Subscribe>
+                    <Editor
+                      ref={(c) => { this.editor = c }}
+                      value={this.state.comment}
+                      isGfmMode={this.state.isMarkdown}
+                      editorOptions={this.props.editorOptions}
+                      lineNumbers={false}
+                      isMobile={this.props.crowi.isMobile}
+                      isUploadable={this.state.isUploadable && this.state.isLayoutTypeGrowi} // enable only when GROWI layout
+                      isUploadableFile={this.state.isUploadableFile}
+                      emojiStrategy={emojiStrategy}
+                      onChange={this.updateState}
+                      onUpload={this.uploadHandler}
+                      onCtrlEnter={this.postHandler}
+                    />
                   </Tab>
                   { this.state.isMarkdown
                     && (
@@ -351,9 +339,36 @@ export default class CommentEditor extends React.Component {
 
 }
 
+/**
+ * Wrapper component for using unstated
+ */
+class CommentEditorWrapper extends React.Component {
+
+  render() {
+    return (
+      <Subscribe to={[CommentContainer]}>
+        { commentContainer => (
+          // eslint-disable-next-line arrow-body-style
+          <CommentEditor commentContainer={commentContainer} {...this.props} />
+        )}
+      </Subscribe>
+    );
+  }
+
+}
+
 CommentEditor.propTypes = {
+  crowi: PropTypes.object.isRequired,
+  crowiOriginRenderer: PropTypes.object.isRequired,
+  commentContainer: PropTypes.instanceOf(CommentContainer).isRequired,
+  editorOptions: PropTypes.object,
+  slackChannels: PropTypes.string,
+};
+CommentEditorWrapper.propTypes = {
   crowi: PropTypes.object.isRequired,
   crowiOriginRenderer: PropTypes.object.isRequired,
   editorOptions: PropTypes.object,
   slackChannels: PropTypes.string,
 };
+
+export default CommentEditorWrapper;

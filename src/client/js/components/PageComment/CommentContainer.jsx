@@ -94,8 +94,8 @@ export default class CommentContainer extends Container {
       });
   }
 
-  onUpload(file) {
-    const endpoint = '/attachments.add';
+  uploadAttachment(file) {
+    // const endpoint = '/attachments.add';
 
     // // create a FromData instance
     // const formData = new FormData();
