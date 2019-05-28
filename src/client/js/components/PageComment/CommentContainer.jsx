@@ -19,20 +19,13 @@ export default class CommentContainer extends Container {
       comments: [],
     };
 
-    this.add = this.add.bind(this);
+    this.retrieveComments = this.retrieveComments.bind(this);
   }
 
   init() {
     if (!this.props.pageId) {
       return;
     }
-  }
-
-  add(comment) {
-    const comments = this.state.comments;
-
-    comments.push(comment);
-    this.setState({ comments });
   }
 
   findAndSplice(comment) {
@@ -52,7 +45,7 @@ export default class CommentContainer extends Container {
    */
   retrieveComments() {
     // get data (desc order array)
-    this.crowi.apiGet('/comments.get', { page_id: this.pageId })
+    return this.crowi.apiGet('/comments.get', { page_id: this.pageId })
       .then((res) => {
         if (res.ok) {
           this.setState({ comments: res.comments });
@@ -80,7 +73,7 @@ export default class CommentContainer extends Container {
     })
       .then((res) => {
         if (res.ok) {
-          this.add(res.comment);
+          return this.retrieveComments();
         }
       });
   }
