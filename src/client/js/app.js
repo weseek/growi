@@ -29,7 +29,6 @@ import Page from './components/Page';
 import PageHistory from './components/PageHistory';
 import PageComments from './components/PageComments';
 import CommentForm from './components/PageComment/CommentForm';
-import CommentFormBase from './components/PageComment/CommentFormBase';
 import PageAttachment from './components/PageAttachment';
 import PageStatusAlert from './components/PageStatusAlert';
 import RevisionPath from './components/Page/RevisionPath';
@@ -310,30 +309,31 @@ const componentMappings = {
   'duplicate-page-name-input': <PagePathAutoComplete crowi={crowi} initializedPath={pagePath} />,
 
 };
+
+const data = {
+  pageId,
+  pagePath,
+  editorOptions: pageEditorOptions,
+  slackChannels,
+  crowi,
+  crowiOriginRenderer: crowiRenderer,
+  revisionId: pageRevisionId,
+};
+
 // additional definitions if data exists
 let pageComments = null;
 if (pageId) {
   componentMappings['page-comments-list'] = (
     <I18nextProvider i18n={i18n}>
-      <CommentFormBase
-        pageId={pageId}
-        pagePath={pagePath}
-        onPostComplete={null}
-        revisionId={pageRevisionId}
+      <PageComments
+        ref={(elem) => {
+          if (pageComments == null) {
+            pageComments = elem;
+          }
+        }}
         revisionCreatedAt={pageRevisionCreatedAt}
-        editorOptions={pageEditorOptions}
-        slackChannels={slackChannels}
-      >
-        <PageComments
-          ref={(elem) => {
-            if (pageComments == null) {
-              pageComments = elem;
-            }
-          }}
-          crowi={crowi}
-          crowiOriginRenderer={crowiRenderer}
-        />
-      </CommentFormBase>
+        data={data}
+      />
     </I18nextProvider>
   );
   componentMappings['page-attachment'] = <PageAttachment pageId={pageId} markdown={markdown} crowi={crowi} />;
@@ -507,32 +507,23 @@ if (pageEditorElem) {
   crowi.setPageEditor(pageEditor);
 }
 
+const pageCommentsElem = componentMappings['page-comments-list'];
+const postCompleteHandler = (comment) => {
+  if (pageCommentsElem != null) {
+    pageComments.retrieveData();
+  }
+};
+
 // render comment form
 const writeCommentElem = document.getElementById('page-comment-write');
 if (writeCommentElem) {
-  const pageCommentsElem = componentMappings['page-comments-list'];
-  const postCompleteHandler = (comment) => {
-    if (pageCommentsElem != null) {
-      pageComments.retrieveData();
-    }
-  };
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
-      <CommentFormBase
-        pageId={pageId}
-        pagePath={pagePath}
+      <CommentForm
         onPostComplete={postCompleteHandler}
-        revisionId={pageRevisionId}
-        revisionCreatedAt={pageRevisionCreatedAt}
-        editorOptions={pageEditorOptions}
-        slackChannels={slackChannels}
         replyTo={undefined}
-      >
-        <CommentForm
-          crowi={crowi}
-          crowiOriginRenderer={crowiRenderer}
-        />
-      </CommentFormBase>
+        data={data}
+      />
     </I18nextProvider>,
     writeCommentElem,
   );

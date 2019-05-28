@@ -28,7 +28,7 @@ export default class CommentForm extends React.Component {
   constructor(props) {
     super(props);
 
-    const config = this.props.crowi.getConfig();
+    const config = this.props.data.crowi.getConfig();
     const isUploadable = config.upload.image || config.upload.file;
     const isUploadableFile = config.upload.file;
 
@@ -44,10 +44,10 @@ export default class CommentForm extends React.Component {
       errorMessage: undefined,
       hasSlackConfig: config.hasSlackConfig,
       isSlackEnabled: false,
-      slackChannels: this.props.slackChannels,
+      slackChannels: this.props.data.slackChannels,
     };
 
-    this.growiRenderer = new GrowiRenderer(this.props.crowi, this.props.crowiOriginRenderer, { mode: 'comment' });
+    this.growiRenderer = new GrowiRenderer(this.props.data.crowi, this.props.data.crowiOriginRenderer, { mode: 'comment' });
 
     this.updateState = this.updateState.bind(this);
     this.updateStateCheckbox = this.updateStateCheckbox.bind(this);
@@ -66,11 +66,11 @@ export default class CommentForm extends React.Component {
   }
 
   init() {
-    if (!this.props.pageId) {
+    if (!this.props.data.pageId) {
       return;
     }
 
-    const layoutType = this.props.crowi.getConfig().layoutType;
+    const layoutType = this.props.data.crowi.getConfig().layoutType;
     this.setState({ isLayoutTypeGrowi: layoutType === 'crowi-plus' || layoutType === 'growi' });
   }
 
@@ -106,12 +106,12 @@ export default class CommentForm extends React.Component {
       event.preventDefault();
     }
 
-    this.props.crowi.apiPost('/comments.add', {
+    this.props.data.crowi.apiPost('/comments.add', {
       commentForm: {
         comment: this.state.comment,
-        _csrf: this.props.crowi.csrfToken,
-        page_id: this.props.pageId,
-        revision_id: this.props.revisionId,
+        _csrf: this.props.data.crowi.csrfToken,
+        page_id: this.props.data.pageId,
+        revision_id: this.props.data.revisionId,
         is_markdown: this.state.isMarkdown,
         replyTo: this.props.replyTo,
       },
@@ -156,7 +156,7 @@ export default class CommentForm extends React.Component {
     };
 
     const growiRenderer = this.growiRenderer;
-    const interceptorManager = this.props.crowi.interceptorManager;
+    const interceptorManager = this.props.data.crowi.interceptorManager;
     interceptorManager.process('preRenderCommnetPreview', context)
       .then(() => { return interceptorManager.process('prePreProcess', context) })
       .then(() => {
@@ -189,13 +189,13 @@ export default class CommentForm extends React.Component {
 
     // create a FromData instance
     const formData = new FormData();
-    formData.append('_csrf', this.props.crowi.csrfToken);
+    formData.append('_csrf', this.props.data.crowi.csrfToken);
     formData.append('file', file);
-    formData.append('path', this.props.pagePath);
-    formData.append('page_id', this.props.pageId || 0);
+    formData.append('path', this.props.data.pagePath);
+    formData.append('page_id', this.props.data.pageId || 0);
 
     // post
-    this.props.crowi.apiPost(endpoint, formData)
+    this.props.data.crowi.apiPost(endpoint, formData)
       .then((res) => {
         const attachment = res.attachment;
         const fileName = attachment.originalName;
@@ -235,12 +235,12 @@ export default class CommentForm extends React.Component {
   }
 
   render() {
-    const crowi = this.props.crowi;
+    const crowi = this.props.data.crowi;
     const username = crowi.me;
     const user = crowi.findUser(username);
     const comment = this.state.comment;
     const commentPreview = this.state.isMarkdown ? this.getCommentHtml() : ReactUtils.nl2br(comment);
-    const emojiStrategy = this.props.crowi.getEmojiStrategy();
+    const emojiStrategy = this.props.data.crowi.getEmojiStrategy();
 
     const isLayoutTypeGrowi = this.state.isLayoutTypeGrowi;
 
@@ -289,9 +289,9 @@ export default class CommentForm extends React.Component {
                             ref={(c) => { this.editor = c }}
                             value={this.state.comment}
                             isGfmMode={this.state.isMarkdown}
-                            editorOptions={this.props.editorOptions}
+                            editorOptions={this.props.data.editorOptions}
                             lineNumbers={false}
-                            isMobile={this.props.crowi.isMobile}
+                            isMobile={this.props.data.crowi.isMobile}
                             isUploadable={this.state.isUploadable && this.state.isLayoutTypeGrowi} // enable only when GROWI layout
                             isUploadableFile={this.state.isUploadableFile}
                             emojiStrategy={emojiStrategy}
@@ -368,17 +368,7 @@ export default class CommentForm extends React.Component {
 }
 
 CommentForm.propTypes = {
-  crowi: PropTypes.object.isRequired,
-  crowiOriginRenderer: PropTypes.object.isRequired,
-  pageId: PropTypes.string,
-  pagePath: PropTypes.string,
   onPostComplete: PropTypes.func,
-  editorOptions: PropTypes.object,
-  slackChannels: PropTypes.string,
-  revisionId: PropTypes.string,
-  revisionCreatedAt: PropTypes.number,
   replyTo: PropTypes.string,
-};
-CommentForm.defaultProps = {
-  editorOptions: {},
+  data: PropTypes.object.isRequired,
 };

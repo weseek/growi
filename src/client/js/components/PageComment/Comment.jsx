@@ -10,7 +10,6 @@ import RevisionBody from '../Page/RevisionBody';
 import ReactUtils from '../ReactUtils';
 import UserPicture from '../User/UserPicture';
 import Username from '../User/Username';
-import CommentFormBase from './CommentFormBase';
 
 /**
  *
@@ -61,7 +60,7 @@ export default class Comment extends React.Component {
   }
 
   isCurrentUserEqualsToAuthor() {
-    return this.props.comment.creator.username === this.props.crowi.me;
+    return this.props.comment.creator.username === this.props.data.crowi.me;
   }
 
   isCurrentRevision() {
@@ -83,7 +82,7 @@ export default class Comment extends React.Component {
   }
 
   renderRevisionBody() {
-    const config = this.props.crowi.getConfig();
+    const config = this.props.data.crowi.getConfig();
     const isMathJaxEnabled = !!config.env.MATHJAX;
     return (
       <RevisionBody
@@ -101,7 +100,7 @@ export default class Comment extends React.Component {
     };
 
     const crowiRenderer = this.props.crowiRenderer;
-    const interceptorManager = this.props.crowi.interceptorManager;
+    const interceptorManager = this.props.data.crowi.interceptorManager;
     interceptorManager.process('preRenderComment', context)
       .then(() => { return interceptorManager.process('prePreProcess', context) })
       .then(() => {
@@ -175,15 +174,11 @@ export default class Comment extends React.Component {
         {
           this.state.showCommentForm
           && (
-          <CommentFormBase
+          <CommentForm
+            onPostComplete={this.props.onPostComplete}
             data={this.props.data}
-          >
-            <CommentForm
-              crowi={this.props.crowi}
-              crowiOriginRenderer={this.props.crowiRenderer}
-              replyTo={comment._id.toString()}
-            />
-          </CommentFormBase>
+            replyTo={comment._id.toString()}
+          />
         )
         }
       </div>
@@ -194,11 +189,9 @@ export default class Comment extends React.Component {
 
 Comment.propTypes = {
   comment: PropTypes.object.isRequired,
-  crowi: PropTypes.object.isRequired,
-  crowiOriginRenderer: PropTypes.object.isRequired,
   crowiRenderer: PropTypes.object.isRequired,
-  onPostComplete: PropTypes.func,
   deleteBtnClicked: PropTypes.func.isRequired,
+  data: PropTypes.object.isRequired,
   replyTo: PropTypes.string,
-  data: PropTypes.object,
+  onPostComplete: PropTypes.func.isRequired,
 };
