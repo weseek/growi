@@ -2,6 +2,7 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'unstated';
 import { I18nextProvider } from 'react-i18next';
 import * as toastr from 'toastr';
 
@@ -28,7 +29,7 @@ import PageEditorByHackmd from './components/PageEditorByHackmd';
 import Page from './components/Page';
 import PageHistory from './components/PageHistory';
 import PageComments from './components/PageComments';
-import CommentForm from './components/PageComment/CommentForm';
+import CommentContainer from './components/PageComment/CommentContainer';
 import CommentEditor from './components/PageComment/CommentEditor';
 import PageAttachment from './components/PageAttachment';
 import PageStatusAlert from './components/PageStatusAlert';
@@ -514,17 +515,12 @@ const postCompleteHandler = (comment) => {
 // render comment form
 const writeCommentElem = document.getElementById('page-comment-write');
 if (writeCommentElem) {
+  // create unstated container instance
+  const commentContainer = new CommentContainer(crowi, pageId, pageRevisionId);
+
   ReactDOM.render(
-    <I18nextProvider i18n={i18n}>
-      <CommentForm
-        onPostComplete={postCompleteHandler}
-        replyTo={undefined}
-        pageId={pageId}
-        pagePath={pagePath}
-        slackChannels={slackChannels}
-        crowi={crowi}
-        revisionId={pageRevisionId}
-      >
+    <Provider inject={[commentContainer]}>
+      <I18nextProvider i18n={i18n}>
         <CommentEditor
           editorOptions={pageEditorOptions}
           crowi={crowi}
@@ -532,8 +528,8 @@ if (writeCommentElem) {
           showCommentEditor
         >
         </CommentEditor>
-      </CommentForm>
-    </I18nextProvider>,
+      </I18nextProvider>
+    </Provider>,
     writeCommentElem,
   );
 }

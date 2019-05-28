@@ -2,10 +2,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { Provider } from 'unstated';
+
 import { withTranslation } from 'react-i18next';
 import GrowiRenderer from '../util/GrowiRenderer';
 
-import CommentForm from './PageComment/CommentForm';
+import CommentContainer from './PageComment/CommentContainer';
 import CommentEditor from './PageComment/CommentEditor';
 
 import Comment from './PageComment/Comment';
@@ -154,19 +156,13 @@ class PageComments extends React.Component {
    * @memberOf PageComments
    */
   generateCommentElements(comments, replies) {
+    // create unstated container instance
+    const commentContainer = new CommentContainer(this.props.crowi, this.props.pageId, this.props.revisionId);
+
     const commentsWithReplies = this.reorderBasedOnReplies(comments, replies);
     return commentsWithReplies.map((comment) => {
       return (
-        <CommentForm
-          key={comment._id}
-          onPostComplete={this.retrieveData}
-          replyTo={comment.replyTo}
-          pageId={this.props.pageId}
-          pagePath={this.props.pagePath}
-          slackChannels={this.props.slackChannels}
-          crowi={this.props.crowi}
-          revisionId={this.props.revisionId}
-        >
+        <div key={comment._id}>
           <Comment
             comment={comment}
             deleteBtnClicked={this.confirmToDeleteComment}
@@ -174,14 +170,16 @@ class PageComments extends React.Component {
             onReplyButtonClicked={this.replyToComment}
             crowi={this.props.crowi}
           />
-          <CommentEditor
-            ref={(instance) => { this.state.children[comment._id] = instance }}
-            editorOptions={this.props.editorOptions}
-            crowiOriginRenderer={this.props.crowiOriginRenderer}
-            showCommentEditor={false}
-            crowi={this.props.crowi}
-          />
-        </CommentForm>
+          { true && (
+            <Provider key={comment._id} inject={[commentContainer]}>
+              <CommentEditor
+                crowi={this.props.crowi}
+                crowiOriginRenderer={this.props.crowiOriginRenderer}
+                editorOptions={this.props.editorOptions}
+              />
+            </Provider>
+          )}
+        </div>
       );
     });
   }
@@ -313,14 +311,14 @@ class PageComments extends React.Component {
 }
 
 PageComments.propTypes = {
+  crowi: PropTypes.object.isRequired,
+  crowiOriginRenderer: PropTypes.object.isRequired,
+  pageId: PropTypes.string.isRequired,
+  revisionId: PropTypes.string.isRequired,
   revisionCreatedAt: PropTypes.number,
-  pageId: PropTypes.string,
   pagePath: PropTypes.string,
   editorOptions: PropTypes.object,
   slackChannels: PropTypes.string,
-  crowi: PropTypes.object.isRequired,
-  crowiOriginRenderer: PropTypes.object.isRequired,
-  revisionId: PropTypes.string,
 };
 
 export default withTranslation(null, { withRef: true })(PageComments);

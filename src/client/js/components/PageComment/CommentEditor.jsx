@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { Subscribe } from 'unstated';
+
 import Button from 'react-bootstrap/es/Button';
 import Tab from 'react-bootstrap/es/Tab';
 import Tabs from 'react-bootstrap/es/Tabs';
@@ -10,6 +12,7 @@ import ReactUtils from '../ReactUtils';
 import GrowiRenderer from '../../util/GrowiRenderer';
 
 import Editor from '../PageEditor/Editor';
+import CommentContainer from './CommentContainer';
 import CommentPreview from './CommentPreview';
 import SlackNotification from '../SlackNotification';
 
@@ -103,10 +106,37 @@ export default class CommentEditor extends React.Component {
   /**
    * Load data of comments and rerender <PageComments />
    */
-  onSubmit(event) {
+  onSubmit(event, commentContainer) {
     if (event != null) {
       event.preventDefault();
     }
+
+    commentContainer.postComment(
+      this.state.comment,
+      this.state.isMarkdown,
+      null, // TODO set replyTo
+      this.state.isSlackEnabled,
+      this.state.slackChannels,
+    );
+    // .then((res) => {
+    //   if (this.props.onPostComplete != null) {
+    //     this.props.onPostComplete(res.comment);
+    //   }
+    //   this.setState({
+    //     comment: '',
+    //     isMarkdown: true,
+    //     html: '',
+    //     key: 1,
+    //     errorMessage: undefined,
+    //     isSlackEnabled: false,
+    //   });
+    //   // reset value
+    //   this.editor.setValue('');
+    // })
+    // .catch((err) => {
+    //   const errorMessage = err.message || 'An unknown error occured when posting comment';
+    //   this.setState({ errorMessage });
+    // });
   }
 
   getCommentHtml() {
@@ -224,49 +254,52 @@ export default class CommentEditor extends React.Component {
 
     const errorMessage = <span className="text-danger text-right mr-2">{this.state.errorMessage}</span>;
     const submitButton = (
-      <Button bsStyle="primary" className="fcbtn btn btn-sm btn-primary btn-outline btn-rounded btn-1b" onClick={this.onSubmit}>
-        Comment
-      </Button>
+      <Subscribe to={[CommentContainer]}>
+        { commentContainer => (
+          // eslint-disable-next-line arrow-body-style
+          <Button bsStyle="primary" className="fcbtn btn btn-sm btn-primary btn-outline btn-rounded btn-1b" onClick={(e) => { this.onSubmit(e, commentContainer) }}>
+            Comment
+          </Button>
+        )}
+      </Subscribe>
     );
 
     return (
       <div>
-        {
-          this.state.showCommentEditor
+
+        { username
           && (
-
-          <div>
-
-            { username
+          <div className="comment-form">
+            { isLayoutTypeGrowi
               && (
-              <div className="comment-form">
-                { isLayoutTypeGrowi
-                  && (
-                  <div className="comment-form-user">
-                    <UserPicture user={user} />
-                  </div>
-                  )
-                }
-                <div className="comment-form-main">
-                  {/* Add Comment Button */}
-                  { !this.state.isFormShown
-                    && (
-                    <button
-                      type="button"
-                      className={`btn btn-lg ${isLayoutTypeGrowi ? 'btn-link' : 'btn-primary'} center-block`}
-                      onClick={this.showCommentFormBtnClickHandler}
-                    >
-                      <i className="icon-bubble"></i> Add Comment
-                    </button>
-                    )
-                  }
-                  {/* Editor */}
-                  { this.state.isFormShown
-                    && (
-                    <React.Fragment>
-                      <div className="comment-write">
-                        <Tabs activeKey={this.state.key} id="comment-form-tabs" onSelect={this.handleSelect} animation={false}>
-                          <Tab eventKey={1} title="Write">
+              <div className="comment-form-user">
+                <UserPicture user={user} />
+              </div>
+              )
+            }
+            <div className="comment-form-main">
+              {/* Add Comment Button */}
+              { !this.state.isFormShown
+                && (
+                <button
+                  type="button"
+                  className={`btn btn-lg ${isLayoutTypeGrowi ? 'btn-link' : 'btn-primary'} center-block`}
+                  onClick={this.showCommentFormBtnClickHandler}
+                >
+                  <i className="icon-bubble"></i> Add Comment
+                </button>
+                )
+              }
+              {/* Editor */}
+              { this.state.isFormShown
+                && (
+                <React.Fragment>
+                  <div className="comment-write">
+                    <Tabs activeKey={this.state.key} id="comment-form-tabs" onSelect={this.handleSelect} animation={false}>
+                      <Tab eventKey={1} title="Write">
+                        <Subscribe to={[CommentContainer]}>
+                          { commentContainer => (
+                            // eslint-disable-next-line arrow-body-style
                             <Editor
                               ref={(c) => { this.editor = c }}
                               value={this.state.comment}
@@ -279,72 +312,72 @@ export default class CommentEditor extends React.Component {
                               emojiStrategy={emojiStrategy}
                               onChange={this.updateState}
                               onUpload={this.onUpload}
-                              onCtrlEnter={this.onSubmit}
+                              // onCtrlEnter={(e) => { this.onSubmit(e, commentContainer) }}
+                              onCtrlEnter={(e) => { this.onSubmit(e, commentContainer) }}
                             />
-                          </Tab>
-                          { this.state.isMarkdown
-                            && (
-                            <Tab eventKey={2} title="Preview">
-                              <div className="comment-form-preview">
-                                {commentPreview}
-                              </div>
-                            </Tab>
-                            )
-                          }
-                        </Tabs>
-                      </div>
-                      <div className="comment-submit">
-                        <div className="d-flex">
-                          <label style={{ flex: 1 }}>
-                            { isLayoutTypeGrowi && this.state.key === 1
-                              && (
-                              <span>
-                                <input
-                                  type="checkbox"
-                                  id="comment-form-is-markdown"
-                                  name="isMarkdown"
-                                  checked={this.state.isMarkdown}
-                                  value="1"
-                                  onChange={this.updateStateCheckbox}
-                                />
-                                <span className="ml-2">Markdown</span>
-                              </span>
-                              )
-                          }
-                          </label>
-                          <span className="hidden-xs">{ this.state.errorMessage && errorMessage }</span>
-                          { this.state.hasSlackConfig
-                            && (
-                            <div className="form-inline align-self-center mr-md-2">
-                              <SlackNotification
-                                isSlackEnabled={this.state.isSlackEnabled}
-                                slackChannels={this.state.slackChannels}
-                                onEnabledFlagChange={this.onSlackEnabledFlagChange}
-                                onChannelChange={this.onSlackChannelsChange}
-                              />
-                            </div>
-                            )
-                          }
-                          <div className="hidden-xs">{submitButton}</div>
-                        </div>
-                        <div className="visible-xs mt-2">
-                          <div className="d-flex justify-content-end">
-                            { this.state.errorMessage && errorMessage }
-                            <div>{submitButton}</div>
+                          )}
+                        </Subscribe>
+                      </Tab>
+                      { this.state.isMarkdown
+                        && (
+                        <Tab eventKey={2} title="Preview">
+                          <div className="comment-form-preview">
+                            {commentPreview}
                           </div>
+                        </Tab>
+                        )
+                      }
+                    </Tabs>
+                  </div>
+                  <div className="comment-submit">
+                    <div className="d-flex">
+                      <label style={{ flex: 1 }}>
+                        { isLayoutTypeGrowi && this.state.key === 1
+                          && (
+                          <span>
+                            <input
+                              type="checkbox"
+                              id="comment-form-is-markdown"
+                              name="isMarkdown"
+                              checked={this.state.isMarkdown}
+                              value="1"
+                              onChange={this.updateStateCheckbox}
+                            />
+                            <span className="ml-2">Markdown</span>
+                          </span>
+                          )
+                      }
+                      </label>
+                      <span className="hidden-xs">{ this.state.errorMessage && errorMessage }</span>
+                      { this.state.hasSlackConfig
+                        && (
+                        <div className="form-inline align-self-center mr-md-2">
+                          <SlackNotification
+                            isSlackEnabled={this.state.isSlackEnabled}
+                            slackChannels={this.state.slackChannels}
+                            onEnabledFlagChange={this.onSlackEnabledFlagChange}
+                            onChannelChange={this.onSlackChannelsChange}
+                          />
                         </div>
+                        )
+                      }
+                      <div className="hidden-xs">{submitButton}</div>
+                    </div>
+                    <div className="visible-xs mt-2">
+                      <div className="d-flex justify-content-end">
+                        { this.state.errorMessage && errorMessage }
+                        <div>{submitButton}</div>
                       </div>
-                    </React.Fragment>
-                    )
-                  }
-                </div>
-              </div>
-              )
-            }
-
+                    </div>
+                  </div>
+                </React.Fragment>
+                )
+              }
+            </div>
           </div>
           )
         }
+
       </div>
     );
   }
@@ -357,5 +390,4 @@ CommentEditor.propTypes = {
   slackChannels: PropTypes.string,
   crowi: PropTypes.object.isRequired,
   crowiOriginRenderer: PropTypes.object.isRequired,
-  showCommentEditor: PropTypes.bool,
 };
