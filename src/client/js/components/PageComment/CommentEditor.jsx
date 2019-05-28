@@ -55,7 +55,6 @@ class CommentEditor extends React.Component {
     this.postHandler = this.postHandler.bind(this);
     this.uploadHandler = this.uploadHandler.bind(this);
 
-    this.toggleEditor = this.toggleEditor.bind(this);
     this.renderHtml = this.renderHtml.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
     this.onSlackEnabledFlagChange = this.onSlackEnabledFlagChange.bind(this);
@@ -179,14 +178,6 @@ class CommentEditor extends React.Component {
         html={this.state.html}
       />
     );
-  }
-
-  toggleEditor() {
-    this.setState((prevState) => {
-      return {
-        showCommentEditor: !prevState.showCommentEditor,
-      };
-    });
   }
 
   renderHtml(markdown) {
