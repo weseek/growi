@@ -383,7 +383,24 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
     this.loadKeymapMode(keymapMode)
       .then(() => {
-        this.getCodeMirror().setOption('keyMap', keymapMode);
+        let errorCount = 0;
+        const timer = setInterval(() => {
+          if (errorCount > 10) { // cancel over 3000ms
+            this.logger.error(`Timeout to load keyMap '${keymapMode}'`);
+            clearInterval(timer);
+          }
+
+          try {
+            this.getCodeMirror().setOption('keyMap', keymapMode);
+            clearInterval(timer);
+          }
+          catch (e) {
+            this.logger.info(`keyMap '${keymapMode}' has not been initialized. retry..`);
+
+            // continue if error occured
+            errorCount++;
+          }
+        }, 300);
       });
   }
 
