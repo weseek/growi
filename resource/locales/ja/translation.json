@@ -24,6 +24,8 @@
   "Page Path": "ページパス",
   "Category": "カテゴリー",
   "User": "ユーザー",
+  "Add": "追加",
+  "Method": "方法",
 
   "Update": "更新",
   "Update Page": "ページを更新",
@@ -46,6 +48,7 @@
 
   "Created": "作成日",
   "Last updated": "最終更新",
+  "Last login": "最終ログイン",
 
   "Share": "共有",
   "Share Link": "共有用リンク",
@@ -107,7 +110,7 @@
   "UserGroup Management": "グループ管理",
   "Full Text Search Management": "全文検索管理",
   "Import Data": "データインポート",
-  "Basic settings": "基本設定",
+  "Basic_Settings": "基本設定",
   "Basic authentication": "Basic認証",
   "Guest users access": "ゲストユーザーのアクセス",
   "Register limitation": "登録の制限",
@@ -684,8 +687,6 @@
     "external_account_list": "外部アカウント一覧",
     "back_to_user_management": "ユーザー管理に戻る",
     "authentication_provider": "認証情報プロバイダ",
-    "Date created": "作成日",
-    "Last login": "最終ログイン",
     "Manage": "操作",
     "Edit menu": "編集メニュー",
     "password_setting": "パスワード設定",
@@ -706,6 +707,7 @@
 
   "user_group_management": {
     "group_list": "グループ一覧",
+    "back_to_list": "グループ一覧に戻る",
     "create_group": "新規グループの作成",
     "group_example": "例: Group1",
     "created_group": "グループを作成しました",
@@ -720,7 +722,11 @@
     "delete_pages": "全て削除する",
     "transfer_pages": "全て他のグループに移譲する",
     "select_group": "グループを選択してください",
-    "no_groups": "グループがありません"
+    "no_groups": "グループがありません",
+    "no_pages": "グループが閲覧権限を保有するページはありません",
+    "how_to_add1": "ユーザー名を入力して追加",
+    "how_to_add2": "ユーザーを下のリストから選択",
+    "remove_from_group": "グループから外す"
   },
 
   "importer_management": {
