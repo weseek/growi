@@ -49,8 +49,9 @@ class UserGroupDeleteModal extends React.Component {
 
     this.onHide = this.onHide.bind(this);
     this.getGroupName = this.getGroupName.bind(this);
-    this.changeActionHandler = this.changeActionHandler.bind(this);
-    this.changeGroupHandler = this.changeGroupHandler.bind(this);
+    this.handleActionChange = this.handleActionChange.bind(this);
+    this.handleGroupChange = this.handleGroupChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
     this.renderPageActionSelector = this.renderPageActionSelector.bind(this);
     this.renderGroupSelector = this.renderGroupSelector.bind(this);
     this.validateForm = this.validateForm.bind(this);
@@ -65,14 +66,24 @@ class UserGroupDeleteModal extends React.Component {
     return this.xss.process(group.name);
   }
 
-  changeActionHandler(e) {
+  handleActionChange(e) {
     const actionName = e.target.value;
     this.setState({ actionName });
   }
 
-  changeGroupHandler(e) {
+  handleGroupChange(e) {
     const transferToUserGroupId = e.target.value;
     this.setState({ transferToUserGroupId });
+  }
+
+  handleSubmit(e) {
+    e.preventDefault();
+
+    this.props.onDelete({
+      deleteGroupId: this.props.deleteUserGroup._id,
+      actionName: this.state.actionName,
+      transferToUserGroupId: this.state.transferToUserGroupId,
+    });
   }
 
   renderPageActionSelector() {
@@ -89,7 +100,7 @@ class UserGroupDeleteModal extends React.Component {
         className="form-control"
         placeholder="select"
         value={this.state.actionName}
-        onChange={this.changeActionHandler}
+        onChange={this.handleActionChange}
       >
         <option value="" disabled>{t('user_group_management.choose_action')}</option>
         {optoins}
@@ -116,7 +127,7 @@ class UserGroupDeleteModal extends React.Component {
         name="transferToUserGroupId"
         className={`form-control ${this.state.actionName === this.actionForPages.transfer ? '' : 'd-none'}`}
         value={this.state.transferToUserGroupId}
-        onChange={this.changeGroupHandler}
+        onChange={this.handleGroupChange}
       >
         <option value="" disabled>{defaultOptionText}</option>
         {options}
@@ -156,14 +167,11 @@ class UserGroupDeleteModal extends React.Component {
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <form action="/admin/user-group.remove" method="post" id="admin-user-groups-delete" className="d-flex justify-content-between">
+          <form className="d-flex justify-content-between" onSubmit={this.handleSubmit}>
             <div className="d-flex">
               {this.renderPageActionSelector()}
               {this.renderGroupSelector()}
             </div>
-            {/* keep these two hidden inputs controlled */}
-            <input type="hidden" id="deleteGroupId" name="deleteGroupId" value={this.props.deleteUserGroup._id || ''} onChange={() => {}} />
-            <input type="hidden" name="_csrf" value={this.props.crowi.csrfToken} onChange={() => {}} />
             <button type="submit" value="" className="btn btn-sm btn-danger" disabled={!this.validateForm()}>
               <i className="icon icon-fire"></i> {t('Delete')}
             </button>
@@ -180,6 +188,7 @@ UserGroupDeleteModal.propTypes = {
   crowi: PropTypes.object.isRequired,
   userGroups: PropTypes.arrayOf(PropTypes.object).isRequired,
   deleteUserGroup: PropTypes.object,
+  onDelete: PropTypes.func.isRequired,
   isShow: PropTypes.bool.isRequired,
   onShow: PropTypes.func.isRequired,
   onHide: PropTypes.func.isRequired,

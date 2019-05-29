@@ -37,8 +37,9 @@ module.exports = (crowi) => {
       return res.json(ApiResponse.success(data));
     }
     catch (err) {
-      logger.error('Error', err);
-      return res.json(ApiResponse.error('Error occurred in creating a user group'));
+      const msg = 'Error occurred in creating a user group';
+      logger.error(msg, err);
+      return res.json(ApiResponse.error(msg));
     }
   };
 
@@ -46,6 +47,18 @@ module.exports = (crowi) => {
   // };
 
   api.delete = async(req, res) => {
+    const { id: deleteGroupId } = req.params;
+    const { actionName, transferToUserGroupId } = req.body;
+    try {
+      await UserGroup.removeCompletelyById(deleteGroupId, actionName, transferToUserGroupId);
+
+      return res.json(ApiResponse.success());
+    }
+    catch (err) {
+      const msg = 'Error occurred in deleting a user group';
+      logger.error(msg, err);
+      return res.json(ApiResponse.error(msg));
+    }
   };
 
   return api;

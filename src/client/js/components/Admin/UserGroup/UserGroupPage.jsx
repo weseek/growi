@@ -22,7 +22,7 @@ class UserGroupPage extends React.Component {
     this.showDeleteModal = this.showDeleteModal.bind(this);
     this.hideDeleteModal = this.hideDeleteModal.bind(this);
     this.addUserGroup = this.addUserGroup.bind(this);
-    this.removeUserGroupAt = this.removeUserGroupAt.bind(this);
+    this.deleteUserGroupById = this.deleteUserGroupById.bind(this);
   }
 
   async showDeleteModal(group) {
@@ -54,13 +54,36 @@ class UserGroupPage extends React.Component {
     });
   }
 
-  removeUserGroupAt(index) {
-    // this.setState((prevState) => {
-    //   return {
-    //     userGroups: [...prevState.userGroups, newUserGroup],
-    //     isDeleteModalShow: false,
-    //   };
-    // });
+  async deleteUserGroupById({ deleteGroupId, actionName, transferToUserGroupId }) {
+    try {
+      const res = await this.props.crowi.apiPost(`/v3/user-groups/delete/${deleteGroupId}`, {
+        actionName,
+        transferToUserGroupId,
+      });
+
+      if (res.ok) {
+        this.setState((prevState) => {
+          const userGroups = prevState.userGroups.filter((userGroup) => {
+            return userGroup._id !== deleteGroupId;
+          });
+
+          delete prevState.userGroupRelations[deleteGroupId];
+
+          return {
+            userGroups,
+            userGroupRelations: prevState.userGroupRelations,
+            selectedUserGroup: undefined,
+            isDeleteModalShow: false,
+          };
+        });
+      }
+      else {
+        throw new Error('Unable to create a group');
+      }
+    }
+    catch (err) {
+      apiErrorHandler(err);
+    }
   }
 
   async syncUserGroupAndRelations() {
@@ -111,6 +134,7 @@ class UserGroupPage extends React.Component {
           crowi={this.props.crowi}
           userGroups={this.state.userGroups}
           deleteUserGroup={this.state.selectedUserGroup}
+          onDelete={this.deleteUserGroupById}
           isShow={this.state.isDeleteModalShow}
           onShow={this.showDeleteModal}
           onHide={this.hideDeleteModal}

@@ -762,23 +762,6 @@ module.exports = function(crowi, app) {
       });
   };
 
-
-  // app.post('/_api/admin/user-group/delete' , admin.userGroup.removeCompletely);
-  actions.userGroup.removeCompletely = async(req, res) => {
-    const { deleteGroupId, actionName, transferToUserGroupId } = req.body;
-
-    try {
-      await UserGroup.removeCompletelyById(deleteGroupId, actionName, transferToUserGroupId);
-      req.flash('successMessage', '削除しました');
-    }
-    catch (err) {
-      debug('Error while removing userGroup.', err, deleteGroupId);
-      req.flash('errorMessage', '完全な削除に失敗しました。');
-    }
-
-    return res.redirect('/admin/user-groups');
-  };
-
   actions.userGroupRelation = {};
   actions.userGroupRelation.index = function(req, res) {
 
