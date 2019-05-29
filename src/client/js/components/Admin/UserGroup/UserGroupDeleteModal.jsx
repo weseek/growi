@@ -44,11 +44,9 @@ class UserGroupDeleteModal extends React.Component {
 
     this.state = this.initialState;
 
-    // retrieve xss library from window
     this.xss = window.xss;
 
     this.onHide = this.onHide.bind(this);
-    this.getGroupName = this.getGroupName.bind(this);
     this.handleActionChange = this.handleActionChange.bind(this);
     this.handleGroupChange = this.handleGroupChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -60,10 +58,6 @@ class UserGroupDeleteModal extends React.Component {
   onHide() {
     this.setState(this.initialState);
     this.props.onHide();
-  }
-
-  getGroupName(group) {
-    return this.xss.process(group.name);
   }
 
   handleActionChange(e) {
@@ -116,8 +110,8 @@ class UserGroupDeleteModal extends React.Component {
     });
 
     const options = groups.map((group) => {
-      const dataContent = `<i class="icon icon-fw icon-organization"></i> ${this.getGroupName(group)}`;
-      return <option key={group._id} value={group._id} data-content={dataContent}>{this.getGroupName(group)}</option>;
+      const dataContent = `<i class="icon icon-fw icon-organization"></i> ${this.xss.process(group.name)}`;
+      return <option key={group._id} value={group._id} data-content={dataContent}>{this.xss.process(group.name)}</option>;
     });
 
     const defaultOptionText = groups.length === 0 ? t('user_group_management.no_groups') : t('user_group_management.select_group');

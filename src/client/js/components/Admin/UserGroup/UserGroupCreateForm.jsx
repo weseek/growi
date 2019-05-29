@@ -13,6 +13,8 @@ class UserGroupCreateForm extends React.Component {
       name: '',
     };
 
+    this.xss = window.xss;
+
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.validateForm = this.validateForm.bind(this);
@@ -40,7 +42,7 @@ class UserGroupCreateForm extends React.Component {
         const { userGroup, userGroupRelation } = res;
         this.props.onCreate(userGroup, userGroupRelation);
         this.setState({ name: '' });
-        apiSuccessHandler({ body: `Created ${userGroup.name}` });
+        apiSuccessHandler({ body: `Created ${this.xss.process(userGroup.name)}` });
       }
       else {
         throw new Error('Unable to create a group');

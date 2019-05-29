@@ -7,6 +7,8 @@ class UserGroupTable extends React.Component {
   constructor(props) {
     super(props);
 
+    this.xss = window.xss;
+
     this.onDelete = this.onDelete.bind(this);
   }
 
@@ -42,16 +44,16 @@ class UserGroupTable extends React.Component {
                 <tr key={group._id}>
                   {this.props.isAclEnabled
                     ? (
-                      <td><a href={`/admin/user-group-detail/${group._id}`}>{group.name}</a></td>/* preventXSS */
+                      <td><a href={`/admin/user-group-detail/${group._id}`}>{this.xss.process(group.name)}</a></td>
                     )
                     : (
-                      <td>{group.name}</td>/* preventXSS */
+                      <td>{this.xss.process(group.name)}</td>
                     )
                   }
                   <td>
                     <ul className="list-inline">
                       {this.props.userGroupRelations[group._id].map((user) => {
-                        return <li key={user._id} className="list-inline-item badge badge-primary">{user.username}</li>;/* preventXSS ?? */
+                        return <li key={user._id} className="list-inline-item badge badge-primary">{this.xss.process(user.username)}</li>;
                       })}
                     </ul>
                   </td>
@@ -71,12 +73,7 @@ class UserGroupTable extends React.Component {
                             </li>
 
                             <li>
-                              <a
-                                href="#"
-                                data-user-group-id={group._id}
-                                data-user-group-name={group.name}/* encodeHTML */
-                                onClick={this.onDelete}
-                              >
+                              <a href="#" onClick={this.onDelete} data-user-group-id={group._id}>
                                 <i className="icon-fw icon-fire text-danger"></i> { t('Delete') }
                               </a>
                             </li>

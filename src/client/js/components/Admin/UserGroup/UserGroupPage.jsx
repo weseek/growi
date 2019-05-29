@@ -19,6 +19,8 @@ class UserGroupPage extends React.Component {
       isDeleteModalShow: false,
     };
 
+    this.xss = window.xss;
+
     this.showDeleteModal = this.showDeleteModal.bind(this);
     this.hideDeleteModal = this.hideDeleteModal.bind(this);
     this.addUserGroup = this.addUserGroup.bind(this);
@@ -77,7 +79,7 @@ class UserGroupPage extends React.Component {
           };
         });
 
-        apiSuccessHandler({ body: `Deleted ${res.userGroup.name}` });
+        apiSuccessHandler({ body: `Deleted ${this.xss.process(res.userGroup.name)}` });
       }
       else {
         throw new Error('Unable to create a group');
