@@ -7,6 +7,7 @@ import { Subscribe } from 'unstated';
 import Button from 'react-bootstrap/es/Button';
 import Tab from 'react-bootstrap/es/Tab';
 import Tabs from 'react-bootstrap/es/Tabs';
+import * as toastr from 'toastr';
 import UserPicture from '../User/UserPicture';
 import ReactUtils from '../ReactUtils';
 
@@ -128,18 +129,7 @@ class CommentEditor extends React.Component {
   }
 
   uploadHandler(file) {
-    // const endpoint = '/attachments.add';
-
-    /*
-    // create a FromData instance
-    const formData = new FormData();
-    formData.append('_csrf', this.props.data.crowi.csrfToken);
-    formData.append('file', file);
-    formData.append('path', this.props.data.pagePath);
-    formData.append('page_id', this.props.data.pageId || 0);
-
-    // post
-    this.props.data.crowi.apiPost(endpoint, formData)
+    this.props.commentContainer.uploadAttachment(file)
       .then((res) => {
         const attachment = res.attachment;
         const fileName = attachment.originalName;
@@ -157,19 +147,18 @@ class CommentEditor extends React.Component {
       .then(() => {
         this.editor.terminateUploadingState();
       });
-    */
   }
 
-  // apiErrorHandler(error) {
-  //   toastr.error(error.message, 'Error occured', {
-  //     closeButton: true,
-  //     progressBar: true,
-  //     newestOnTop: false,
-  //     showDuration: '100',
-  //     hideDuration: '100',
-  //     timeOut: '3000',
-  //   });
-  // }
+  apiErrorHandler(error) {
+    toastr.error(error.message, 'Error occured', {
+      closeButton: true,
+      progressBar: true,
+      newestOnTop: false,
+      showDuration: '100',
+      hideDuration: '100',
+      timeOut: '3000',
+    });
+  }
 
   getCommentHtml() {
     return (
