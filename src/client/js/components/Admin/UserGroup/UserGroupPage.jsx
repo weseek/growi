@@ -14,7 +14,8 @@ class UserGroupPage extends React.Component {
 
     this.state = {
       userGroups: props.userGroups,
-      selectedUserGroup: undefined,
+      userGroupRelations: props.userGroupRelations,
+      selectedUserGroup: undefined, // not null but undefined (to use defaultProps in UserGroupDeleteModal)
       isDeleteModalShow: false,
     };
 
@@ -25,7 +26,7 @@ class UserGroupPage extends React.Component {
   }
 
   async showDeleteModal(group) {
-    await this.syncUserGroupState();
+    await this.syncUserGroupAndRelations();
 
     this.setState({
       selectedUserGroup: group,
@@ -40,10 +41,15 @@ class UserGroupPage extends React.Component {
     });
   }
 
-  addUserGroup(newUserGroup) {
+  addUserGroup(newUserGroup, newUserGroupRelation) {
     this.setState((prevState) => {
+      const userGroupRelations = Object.assign(prevState.userGroupRelations, {
+        [newUserGroup._id]: newUserGroupRelation,
+      });
+
       return {
         userGroups: [...prevState.userGroups, newUserGroup],
+        userGroupRelations,
       };
     });
   }
@@ -57,13 +63,20 @@ class UserGroupPage extends React.Component {
     // });
   }
 
-  async syncUserGroupState() {
+  async syncUserGroupAndRelations() {
     let userGroups = [];
+    let userGroupRelations = [];
 
     try {
-      const res = await this.props.crowi.apiGet('/v3/user-groups');
-      if (res.ok) {
-        userGroups = res.userGroups;
+      const responses = await Promise.all([
+        this.props.crowi.apiGet('/v3/user-groups'),
+        this.props.crowi.apiGet('/v3/user-group-relations'),
+      ]);
+
+      if (responses.reduce((isAllOk, res) => { return isAllOk && res.ok }, true)) {
+        const [userGroupsRes, userGroupRelationsRes] = responses;
+        userGroups = userGroupsRes.userGroups;
+        userGroupRelations = userGroupRelationsRes.userGroupRelations;
       }
       else {
         throw new Error('Unable to fetch groups from server');
@@ -73,7 +86,10 @@ class UserGroupPage extends React.Component {
       apiErrorHandler(err);
     }
 
-    this.setState({ userGroups });
+    this.setState({
+      userGroups,
+      userGroupRelations,
+    });
   }
 
   render() {
@@ -87,7 +103,7 @@ class UserGroupPage extends React.Component {
         <UserGroupTable
           crowi={this.props.crowi}
           userGroups={this.state.userGroups}
-          userGroupRelations={this.props.userGroupRelations}
+          userGroupRelations={this.state.userGroupRelations}
           isAclEnabled={this.props.isAclEnabled}
           onDelete={this.showDeleteModal}
         />

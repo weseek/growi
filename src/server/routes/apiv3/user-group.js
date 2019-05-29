@@ -1,9 +1,9 @@
 /* eslint-disable no-use-before-define */
 module.exports = (crowi) => {
-  const logger = require('@alias/logger')('growi:routes:apiv3:admin:user-group');
-  const ApiResponse = require('../../../util/apiResponse');
+  const logger = require('@alias/logger')('growi:routes:apiv3:user-group');
+  const ApiResponse = require('../../util/apiResponse');
 
-  const { UserGroup } = crowi.models;
+  const { UserGroup, UserGroupRelation } = crowi.models;
 
   const api = {};
 
@@ -27,8 +27,14 @@ module.exports = (crowi) => {
     try {
       const userGroupName = crowi.xss.process(name);
       const newUserGroup = await UserGroup.createGroupByName(userGroupName);
+      const userGroupRelations = await UserGroupRelation.findAllRelationForUserGroup(newUserGroup);
 
-      return res.json(ApiResponse.success({ userGroup: newUserGroup }));
+      const data = {
+        userGroup: newUserGroup,
+        userGroupRelation: userGroupRelations,
+      };
+
+      return res.json(ApiResponse.success(data));
     }
     catch (err) {
       logger.error('Error', err);

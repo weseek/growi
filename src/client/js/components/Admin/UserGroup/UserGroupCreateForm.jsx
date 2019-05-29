@@ -37,8 +37,8 @@ class UserGroupCreateForm extends React.Component {
       });
 
       if (res.ok) {
-        const { userGroup } = res;
-        this.props.onCreate(userGroup);
+        const { userGroup, userGroupRelation } = res;
+        this.props.onCreate(userGroup, userGroupRelation);
       }
       else {
         throw new Error('Unable to create a group');
@@ -70,7 +70,7 @@ class UserGroupCreateForm extends React.Component {
             )
           }
         </p>
-        <form role="form" action="/admin/user-group/create" method="post" onSubmit={this.handleSubmit}>
+        <form onSubmit={this.handleSubmit}>
           <div id="createGroupForm" className="collapse">
             <div className="form-group">
               <label htmlFor="name">{ t('user_group_management.group_name') }</label>

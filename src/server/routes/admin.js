@@ -727,29 +727,6 @@ module.exports = function(crowi, app) {
     return res.render('admin/user-group-detail', renderVar);
   };
 
-  // グループの生成
-  actions.userGroup.create = function(req, res) {
-    const form = req.form.createGroupForm;
-    if (req.form.isValid) {
-      const userGroupName = crowi.xss.process(form.userGroupName);
-
-      UserGroup.createGroupByName(userGroupName)
-        .then((newUserGroup) => {
-          req.flash('successMessage', newUserGroup.name);
-          req.flash('createdUserGroup', newUserGroup);
-          return res.redirect('/admin/user-groups');
-        })
-        .catch((err) => {
-          debug('create userGroup error:', err);
-          req.flash('errorMessage', '同じグループ名が既に存在します。');
-        });
-    }
-    else {
-      req.flash('errorMessage', req.form.errors.join('\n'));
-      return res.redirect('/admin/user-groups');
-    }
-  };
-
   //
   actions.userGroup.update = function(req, res) {
     const userGroupId = req.params.userGroupId;
