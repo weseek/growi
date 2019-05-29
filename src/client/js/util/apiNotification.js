@@ -2,10 +2,10 @@ import * as toastr from 'toastr';
 
 const logger = require('@alias/logger')('growi');
 
-export const apiErrorHandler = (err) => {
+export const apiErrorHandler = (err, header = 'Error') => {
   logger.error(err);
 
-  toastr.error(err, 'Error', {
+  toastr.error(err, header, {
     closeButton: true,
     progressBar: true,
     newestOnTop: false,
@@ -15,7 +15,7 @@ export const apiErrorHandler = (err) => {
   });
 };
 
-export const apiSuccessHandler = ({ header, body }) => {
+export const apiSuccessHandler = (body, header = '') => {
   toastr.success(body, header, {
     closeButton: true,
     progressBar: true,

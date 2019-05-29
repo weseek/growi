@@ -42,10 +42,10 @@ class UserGroupCreateForm extends React.Component {
         const { userGroup, userGroupRelation } = res;
         this.props.onCreate(userGroup, userGroupRelation);
         this.setState({ name: '' });
-        apiSuccessHandler({ body: `Created ${this.xss.process(userGroup.name)}` });
+        apiSuccessHandler(`Created a user group "${this.xss.process(userGroup.name)}"`);
       }
       else {
-        throw new Error('Unable to create a group');
+        throw new Error(`Unable to create a group "${this.xss.process(this.state.name)}"`);
       }
     }
     catch (err) {

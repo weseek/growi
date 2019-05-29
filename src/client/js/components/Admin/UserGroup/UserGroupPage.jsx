@@ -79,10 +79,10 @@ class UserGroupPage extends React.Component {
           };
         });
 
-        apiSuccessHandler({ body: `Deleted ${this.xss.process(res.userGroup.name)}` });
+        apiSuccessHandler(`Deleted a group "${this.xss.process(res.userGroup.name)}"`);
       }
       else {
-        throw new Error('Unable to create a group');
+        throw new Error(`Unable to delete a group "${this.xss.process(res.userGroup.name)}"`);
       }
     }
     catch (err) {

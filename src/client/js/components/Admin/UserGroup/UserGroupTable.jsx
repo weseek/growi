@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import dateFnsFormat from 'date-fns/format';
 
 class UserGroupTable extends React.Component {
 
@@ -57,7 +58,7 @@ class UserGroupTable extends React.Component {
                       })}
                     </ul>
                   </td>
-                  <td>{group.createdAt}</td>{/* formatdate */}
+                  <td>{dateFnsFormat(new Date(group.createdAt), 'YYYY-MM-DD')}</td>
                   {this.props.isAclEnabled
                     ? (
                       <td>
