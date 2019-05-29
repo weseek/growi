@@ -114,7 +114,7 @@ const crowiRenderer = new GrowiRenderer(crowi, null, {
 window.crowiRenderer = crowiRenderer;
 
 // create unstated container instance
-const commentContainer = new CommentContainer(crowi, pageId, pagePath, pageRevisionId);
+const commentContainer = new CommentContainer(crowi, pageId, pageRevisionId);
 
 // FIXME
 const isEnabledPlugins = $('body').data('plugin-enabled');

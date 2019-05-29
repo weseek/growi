@@ -8,12 +8,11 @@ import { Container } from 'unstated';
  */
 export default class CommentContainer extends Container {
 
-  constructor(crowi, pageId, pagePath, revisionId) {
+  constructor(crowi, pageId, revisionId) {
     super();
 
     this.crowi = crowi;
     this.pageId = pageId;
-    this.pagePath = pagePath;
     this.revisionId = revisionId;
 
     this.state = {
@@ -89,14 +88,34 @@ export default class CommentContainer extends Container {
   }
 
   uploadAttachment(file) {
-    const endpoint = '/attachments.add';
-    const formData = new FormData();
-    formData.append('_csrf', this.crowi.csrfToken);
-    formData.append('file', file);
-    formData.append('path', this.pagePath);
-    formData.append('page_id', this.pageId);
+    // const endpoint = '/attachments.add';
 
-    return this.crowi.apiPost(endpoint, formData);
+    // // create a FromData instance
+    // const formData = new FormData();
+    // formData.append('_csrf', this.props.data.crowi.csrfToken);
+    // formData.append('file', file);
+    // formData.append('path', this.props.data.pagePath);
+    // formData.append('page_id', this.props.data.pageId || 0);
+
+    // // post
+    // this.props.data.crowi.apiPost(endpoint, formData)
+    //   .then((res) => {
+    //     const attachment = res.attachment;
+    //     const fileName = attachment.originalName;
+
+    //     let insertText = `[${fileName}](${attachment.filePathProxied})`;
+    //     // when image
+    //     if (attachment.fileFormat.startsWith('image/')) {
+    //       // modify to "![fileName](url)" syntax
+    //       insertText = `!${insertText}`;
+    //     }
+    //     this.editor.insertText(insertText);
+    //   })
+    //   .catch(this.apiErrorHandler)
+    //   // finally
+    //   .then(() => {
+    //     this.editor.terminateUploadingState();
+    //   });
   }
 
 }
