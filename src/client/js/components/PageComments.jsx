@@ -141,6 +141,8 @@ class PageComments extends React.Component {
               crowi={this.props.crowi}
               crowiOriginRenderer={this.props.crowiOriginRenderer}
               editorOptions={this.props.editorOptions}
+              slackChannels={this.props.slackChannels}
+              replyTo={commentId}
             />
           )}
         </div>

@@ -106,7 +106,7 @@ class CommentEditor extends React.Component {
     this.props.commentContainer.postComment(
       this.state.comment,
       this.state.isMarkdown,
-      null, // TODO set replyTo
+      this.props.replyTo, // TODO set replyTo
       this.state.isSlackEnabled,
       this.state.slackChannels,
     )
@@ -343,12 +343,14 @@ CommentEditor.propTypes = {
   commentContainer: PropTypes.instanceOf(CommentContainer).isRequired,
   editorOptions: PropTypes.object,
   slackChannels: PropTypes.string,
+  replyTo: PropTypes.string,
 };
 CommentEditorWrapper.propTypes = {
   crowi: PropTypes.object.isRequired,
   crowiOriginRenderer: PropTypes.object.isRequired,
   editorOptions: PropTypes.object,
   slackChannels: PropTypes.string,
+  replyTo: PropTypes.string,
 };
 
 export default CommentEditorWrapper;

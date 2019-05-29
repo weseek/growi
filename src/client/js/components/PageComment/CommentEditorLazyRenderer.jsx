@@ -43,7 +43,13 @@ export default class CommentEditorLazyRenderer extends React.Component {
           )
         }
         { this.state.isEditorShown
-          && <CommentEditor {...this.props}></CommentEditor>
+          && (
+          <CommentEditor
+            {...this.props}
+            replyTo={undefined}
+          >
+          </CommentEditor>
+)
         }
       </React.Fragment>
     );
