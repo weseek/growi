@@ -3,7 +3,9 @@ const logger = require('@alias/logger')('growi:lib:middlewares');
 const pathUtils = require('growi-commons').pathUtils;
 const md5 = require('md5');
 const entities = require('entities');
+const { validationResult } = require('express-validator/check');
 
+const ApiResponse = require('./apiResponse');
 
 exports.csrfKeyGenerator = function(crowi, app) {
   return function(req, res, next) {
@@ -316,5 +318,19 @@ exports.awsEnabled = function() {
     }
 
     return next();
+  };
+};
+
+exports.formValid = function() {
+  return function(req, res, next) {
+    const errObjArray = validationResult(req);
+    if (errObjArray.isEmpty()) {
+      return next();
+    }
+
+    const errs = errObjArray.array().map((err) => { return err.msg }).join('\n');
+    logger.error(errs);
+
+    return res.json(ApiResponse.error(errs));
   };
 };

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import apiErrorHandler from '../../../util/apiErrorHandler';
+import { apiErrorHandler, apiSuccessHandler } from '../../../util/apiNotification';
 
 class UserGroupCreateForm extends React.Component {
 
@@ -39,6 +39,8 @@ class UserGroupCreateForm extends React.Component {
       if (res.ok) {
         const { userGroup, userGroupRelation } = res;
         this.props.onCreate(userGroup, userGroupRelation);
+        this.setState({ name: '' });
+        apiSuccessHandler({ body: `Created ${userGroup.name}` });
       }
       else {
         throw new Error('Unable to create a group');

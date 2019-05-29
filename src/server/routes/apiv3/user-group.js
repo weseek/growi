@@ -50,9 +50,9 @@ module.exports = (crowi) => {
     const { id: deleteGroupId } = req.params;
     const { actionName, transferToUserGroupId } = req.body;
     try {
-      await UserGroup.removeCompletelyById(deleteGroupId, actionName, transferToUserGroupId);
+      const userGroup = await UserGroup.removeCompletelyById(deleteGroupId, actionName, transferToUserGroupId);
 
-      return res.json(ApiResponse.success());
+      return res.json(ApiResponse.success({ userGroup }));
     }
     catch (err) {
       const msg = 'Error occurred in deleting a user group';

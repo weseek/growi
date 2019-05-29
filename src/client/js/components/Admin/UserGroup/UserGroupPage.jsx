@@ -5,7 +5,7 @@ import UserGroupTable from './UserGroupTable';
 import UserGroupCreateForm from './UserGroupCreateForm';
 import UserGroupDeleteModal from './UserGroupDeleteModal';
 
-import apiErrorHandler from '../../../util/apiErrorHandler';
+import { apiErrorHandler, apiSuccessHandler } from '../../../util/apiNotification';
 
 class UserGroupPage extends React.Component {
 
@@ -76,6 +76,8 @@ class UserGroupPage extends React.Component {
             isDeleteModalShow: false,
           };
         });
+
+        apiSuccessHandler({ body: `Deleted ${res.userGroup.name}` });
       }
       else {
         throw new Error('Unable to create a group');
