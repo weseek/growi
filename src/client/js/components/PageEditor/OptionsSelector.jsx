@@ -1,5 +1,7 @@
+/* eslint-disable react/no-multi-comp */
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Subscribe } from 'unstated';
 import { withTranslation } from 'react-i18next';
 
 import FormGroup from 'react-bootstrap/es/FormGroup';
@@ -9,27 +11,18 @@ import ControlLabel from 'react-bootstrap/es/ControlLabel';
 import Dropdown from 'react-bootstrap/es/Dropdown';
 import MenuItem from 'react-bootstrap/es/MenuItem';
 
-export class EditorOptions {
+import EditorOptionsContainer from '../../services/EditorOptionsContainer';
 
-  constructor(props) {
-    this.theme = 'elegant';
-    this.keymapMode = 'default';
-    this.styleActiveLine = false;
 
-    Object.assign(this, props);
-  }
+export const defaultEditorOptions = {
+  theme: 'elegant',
+  keymapMode: 'default',
+  styleActiveLine: false,
+};
 
-}
-
-export class PreviewOptions {
-
-  constructor(props) {
-    this.renderMathJaxInRealtime = false;
-
-    Object.assign(this, props);
-  }
-
-}
+export const defaultPreviewOptions = {
+  renderMathJaxInRealtime: false,
+};
 
 class OptionsSelector extends React.Component {
 
@@ -40,8 +33,6 @@ class OptionsSelector extends React.Component {
     const isMathJaxEnabled = !!config.env.MATHJAX;
 
     this.state = {
-      editorOptions: this.props.editorOptions || new EditorOptions(),
-      previewOptions: this.props.previewOptions || new PreviewOptions(),
       isCddMenuOpened: false,
       isMathJaxEnabled,
     };
@@ -68,50 +59,60 @@ class OptionsSelector extends React.Component {
   }
 
   init() {
-    this.themeSelectorInputEl.value = this.state.editorOptions.theme;
-    this.keymapModeSelectorInputEl.value = this.state.editorOptions.keymapMode;
+    const { editorOptionsContainer } = this.props;
+
+    this.themeSelectorInputEl.value = editorOptionsContainer.state.editorOptions.theme;
+    this.keymapModeSelectorInputEl.value = editorOptionsContainer.state.editorOptions.keymapMode;
   }
 
   onChangeTheme() {
-    const newValue = this.themeSelectorInputEl.value;
-    const newOpts = Object.assign(this.state.editorOptions, { theme: newValue });
-    this.setState({ editorOptions: newOpts });
+    const { editorOptionsContainer } = this.props;
 
-    // dispatch event
-    this.dispatchOnChange();
+    const newValue = this.themeSelectorInputEl.value;
+    const newOpts = Object.assign(editorOptionsContainer.state.editorOptions, { theme: newValue });
+    editorOptionsContainer.setState({ editorOptions: newOpts });
+
+    // save to localStorage
+    editorOptionsContainer.saveToLocalStorage();
   }
 
   onChangeKeymapMode() {
-    const newValue = this.keymapModeSelectorInputEl.value;
-    const newOpts = Object.assign(this.state.editorOptions, { keymapMode: newValue });
-    this.setState({ editorOptions: newOpts });
+    const { editorOptionsContainer } = this.props;
 
-    // dispatch event
-    this.dispatchOnChange();
+    const newValue = this.keymapModeSelectorInputEl.value;
+    const newOpts = Object.assign(editorOptionsContainer.state.editorOptions, { keymapMode: newValue });
+    editorOptionsContainer.setState({ editorOptions: newOpts });
+
+    // save to localStorage
+    editorOptionsContainer.saveToLocalStorage();
   }
 
   onClickStyleActiveLine(event) {
+    const { editorOptionsContainer } = this.props;
+
     // keep dropdown opened
     this._cddForceOpen = true;
 
-    const newValue = !this.state.editorOptions.styleActiveLine;
-    const newOpts = Object.assign(this.state.editorOptions, { styleActiveLine: newValue });
-    this.setState({ editorOptions: newOpts });
+    const newValue = !editorOptionsContainer.state.editorOptions.styleActiveLine;
+    const newOpts = Object.assign(editorOptionsContainer.state.editorOptions, { styleActiveLine: newValue });
+    editorOptionsContainer.setState({ editorOptions: newOpts });
 
-    // dispatch event
-    this.dispatchOnChange();
+    // save to localStorage
+    editorOptionsContainer.saveToLocalStorage();
   }
 
   onClickRenderMathJaxInRealtime(event) {
+    const { editorOptionsContainer } = this.props;
+
     // keep dropdown opened
     this._cddForceOpen = true;
 
-    const newValue = !this.state.previewOptions.renderMathJaxInRealtime;
-    const newOpts = Object.assign(this.state.previewOptions, { renderMathJaxInRealtime: newValue });
-    this.setState({ previewOptions: newOpts });
+    const newValue = !editorOptionsContainer.state.previewOptions.renderMathJaxInRealtime;
+    const newOpts = Object.assign(editorOptionsContainer.state.previewOptions, { renderMathJaxInRealtime: newValue });
+    editorOptionsContainer.setState({ previewOptions: newOpts });
 
-    // dispatch event
-    this.dispatchOnChange();
+    // save to localStorage
+    editorOptionsContainer.saveToLocalStorage();
   }
 
   /*
@@ -125,13 +126,6 @@ class OptionsSelector extends React.Component {
     else {
       this.setState({ isCddMenuOpened: newValue });
     }
-  }
-
-  /**
-   * dispatch onChange event
-   */
-  dispatchOnChange() {
-    this.props.onChange(this.state.editorOptions, this.state.previewOptions);
   }
 
   renderThemeSelector() {
@@ -225,8 +219,8 @@ class OptionsSelector extends React.Component {
   }
 
   renderActiveLineMenuItem() {
-    const { t } = this.props;
-    const isActive = this.state.editorOptions.styleActiveLine;
+    const { t, editorOptionsContainer } = this.props;
+    const isActive = editorOptionsContainer.state.editorOptions.styleActiveLine;
 
     const iconClasses = ['text-info'];
     if (isActive) {
@@ -248,8 +242,10 @@ class OptionsSelector extends React.Component {
       return;
     }
 
+    const { editorOptionsContainer } = this.props;
+
     const isEnabled = this.state.isMathJaxEnabled;
-    const isActive = isEnabled && this.state.previewOptions.renderMathJaxInRealtime;
+    const isActive = isEnabled && editorOptionsContainer.state.previewOptions.renderMathJaxInRealtime;
 
     const iconClasses = ['text-info'];
     if (isActive) {
@@ -278,13 +274,33 @@ class OptionsSelector extends React.Component {
 
 }
 
+/**
+ * Wrapper component for using unstated
+ */
+class OptionsSelectorWrapper extends React.Component {
+
+  render() {
+    return (
+      <Subscribe to={[EditorOptionsContainer]}>
+        { editorOptionsContainer => (
+          // eslint-disable-next-line arrow-body-style
+          <OptionsSelector editorOptionsContainer={editorOptionsContainer} {...this.props} />
+        )}
+      </Subscribe>
+    );
+  }
+
+}
+
 
 OptionsSelector.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   crowi: PropTypes.object.isRequired,
-  editorOptions: PropTypes.instanceOf(EditorOptions).isRequired,
-  previewOptions: PropTypes.instanceOf(PreviewOptions).isRequired,
-  onChange: PropTypes.func.isRequired,
+  editorOptionsContainer: PropTypes.instanceOf(EditorOptionsContainer).isRequired,
+};
+OptionsSelectorWrapper.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
+  crowi: PropTypes.object.isRequired,
 };
 
-export default withTranslation()(OptionsSelector);
+export default withTranslation()(OptionsSelectorWrapper);

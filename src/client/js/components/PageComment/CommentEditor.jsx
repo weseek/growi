@@ -256,7 +256,6 @@ class CommentEditor extends React.Component {
                       ref={(c) => { this.editor = c }}
                       value={this.state.comment}
                       isGfmMode={this.state.isMarkdown}
-                      editorOptions={this.props.editorOptions}
                       lineNumbers={false}
                       isMobile={this.props.crowi.isMobile}
                       isUploadable={this.state.isUploadable && this.state.isLayoutTypeGrowi} // enable only when GROWI layout
@@ -352,13 +351,11 @@ CommentEditor.propTypes = {
   crowi: PropTypes.object.isRequired,
   crowiOriginRenderer: PropTypes.object.isRequired,
   commentContainer: PropTypes.instanceOf(CommentContainer).isRequired,
-  editorOptions: PropTypes.object,
   slackChannels: PropTypes.string,
 };
 CommentEditorWrapper.propTypes = {
   crowi: PropTypes.object.isRequired,
   crowiOriginRenderer: PropTypes.object.isRequired,
-  editorOptions: PropTypes.object,
   slackChannels: PropTypes.string,
 };
 

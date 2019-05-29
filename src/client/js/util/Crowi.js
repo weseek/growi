@@ -106,8 +106,6 @@ export default class Crowi {
       'userById',
       'users',
       'draft',
-      'editorOptions',
-      'previewOptions',
     ];
 
     keys.forEach((key) => {
@@ -188,14 +186,6 @@ export default class Crowi {
     }
 
     return null;
-  }
-
-  saveEditorOptions(options) {
-    this.localStorage.setItem('editorOptions', JSON.stringify(options));
-  }
-
-  savePreviewOptions(options) {
-    this.localStorage.setItem('previewOptions', JSON.stringify(options));
   }
 
   findUserById(userId) {

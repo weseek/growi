@@ -6,7 +6,6 @@ import { throttle, debounce } from 'throttle-debounce';
 import * as toastr from 'toastr';
 import GrowiRenderer from '../util/GrowiRenderer';
 
-import { EditorOptions, PreviewOptions } from './PageEditor/OptionsSelector';
 import Editor from './PageEditor/Editor';
 import Preview from './PageEditor/Preview';
 import scrollSyncHelper from './PageEditor/ScrollSyncHelper';
@@ -29,8 +28,6 @@ export default class PageEditor extends React.Component {
       isUploadable,
       isUploadableFile,
       isMathJaxEnabled,
-      editorOptions: this.props.editorOptions,
-      previewOptions: this.props.previewOptions,
     };
 
     this.growiRenderer = new GrowiRenderer(this.props.crowi, this.props.crowiRenderer, { mode: 'editor' });
@@ -102,22 +99,6 @@ export default class PageEditor extends React.Component {
   setCaretLine(line) {
     this.editor.setCaretLine(line);
     scrollSyncHelper.scrollPreview(this.previewElement, line);
-  }
-
-  /**
-   * set options (used from the outside)
-   * @param {object} editorOptions
-   */
-  setEditorOptions(editorOptions) {
-    this.setState({ editorOptions });
-  }
-
-  /**
-   * set options (used from the outside)
-   * @param {object} previewOptions
-   */
-  setPreviewOptions(previewOptions) {
-    this.setState({ previewOptions });
   }
 
   /**
@@ -342,7 +323,6 @@ export default class PageEditor extends React.Component {
           <Editor
             ref={(c) => { this.editor = c }}
             value={this.state.markdown}
-            editorOptions={this.state.editorOptions}
             noCdn={noCdn}
             isMobile={this.props.crowi.isMobile}
             isUploadable={this.state.isUploadable}
@@ -362,7 +342,6 @@ export default class PageEditor extends React.Component {
             inputRef={(el) => { return this.previewElement = el }}
             isMathJaxEnabled={this.state.isMathJaxEnabled}
             renderMathJaxOnInit={false}
-            previewOptions={this.state.previewOptions}
             onScroll={this.onPreviewScroll}
           />
         </div>
@@ -380,6 +359,4 @@ PageEditor.propTypes = {
   pageId: PropTypes.string,
   revisionId: PropTypes.string,
   pagePath: PropTypes.string,
-  editorOptions: PropTypes.instanceOf(EditorOptions),
-  previewOptions: PropTypes.instanceOf(PreviewOptions),
 };

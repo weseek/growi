@@ -23,7 +23,7 @@ import PageEditor from './components/PageEditor';
 // eslint-disable-next-line import/no-duplicates
 import OptionsSelector from './components/PageEditor/OptionsSelector';
 // eslint-disable-next-line import/no-duplicates
-import { EditorOptions, PreviewOptions } from './components/PageEditor/OptionsSelector';
+import { defaultEditorOptions, defaultPreviewOptions } from './components/PageEditor/OptionsSelector';
 import SavePageControls from './components/SavePageControls';
 import PageEditorByHackmd from './components/PageEditorByHackmd';
 import Page from './components/Page';
@@ -48,6 +48,7 @@ import AdminRebuildSearch from './components/Admin/AdminRebuildSearch';
 
 import PageContainer from './services/PageContainer';
 import CommentContainer from './components/PageComment/CommentContainer';
+import EditorOptionsContainer from './services/EditorOptionsContainer';
 
 
 const logger = loggerFactory('growi:app');
@@ -118,6 +119,7 @@ window.crowiRenderer = crowiRenderer;
 // create unstated container instance
 const pageContainer = new PageContainer();
 const commentContainer = new CommentContainer(crowi, pageContainer);
+const editorOptionsContainer = new EditorOptionsContainer(defaultEditorOptions, defaultPreviewOptions);
 
 // FIXME
 const isEnabledPlugins = $('body').data('plugin-enabled');
@@ -294,8 +296,6 @@ if (!pageRevisionId && draft != null) {
   markdown = draft;
 }
 
-const pageEditorOptions = new EditorOptions(crowi.editorOptions);
-
 /**
  * define components
  *  key: id of element
@@ -323,7 +323,7 @@ let pageComments = null;
 if (pageId) {
   componentMappings['page-comments-list'] = (
     <I18nextProvider i18n={i18n}>
-      <Provider inject={[commentContainer]}>
+      <Provider inject={[commentContainer, editorOptionsContainer]}>
         <PageComments
           ref={(elem) => {
             if (pageComments == null) {
@@ -333,7 +333,6 @@ if (pageId) {
           revisionCreatedAt={pageRevisionCreatedAt}
           pageId={pageId}
           pagePath={pagePath}
-          editorOptions={pageEditorOptions}
           slackChannels={slackChannels}
           crowi={crowi}
           crowiOriginRenderer={crowiRenderer}
@@ -476,29 +475,27 @@ if (pageEditorWithHackmdElem) {
  * PageEditor
  */
 let pageEditor = null;
-const editorOptions = new EditorOptions(crowi.editorOptions);
-const previewOptions = new PreviewOptions(crowi.previewOptions);
 // render PageEditor
 const pageEditorElem = document.getElementById('page-editor');
 if (pageEditorElem) {
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
-      <PageEditor
-        ref={(elem) => {
-          if (pageEditor == null) {
-            pageEditor = elem;
-          }
-        }}
-        crowi={crowi}
-        crowiRenderer={crowiRenderer}
-        pageId={pageId}
-        revisionId={pageRevisionId}
-        pagePath={pagePath}
-        markdown={markdown}
-        editorOptions={editorOptions}
-        previewOptions={previewOptions}
-        onSaveWithShortcut={saveWithShortcut}
-      />
+      <Provider inject={[editorOptionsContainer]}>
+        <PageEditor
+          ref={(elem) => {
+            if (pageEditor == null) {
+              pageEditor = elem;
+            }
+          }}
+          crowi={crowi}
+          crowiRenderer={crowiRenderer}
+          pageId={pageId}
+          revisionId={pageRevisionId}
+          pagePath={pagePath}
+          markdown={markdown}
+          onSaveWithShortcut={saveWithShortcut}
+        />
+      </Provider>
     </I18nextProvider>,
     pageEditorElem,
   );
@@ -511,12 +508,11 @@ if (pageEditorElem) {
 const writeCommentElem = document.getElementById('page-comment-write');
 if (writeCommentElem) {
   ReactDOM.render(
-    <Provider inject={[commentContainer]}>
+    <Provider inject={[commentContainer, editorOptionsContainer]}>
       <I18nextProvider i18n={i18n}>
         <CommentEditorLazyRenderer
           crowi={crowi}
           crowiOriginRenderer={crowiRenderer}
-          editorOptions={pageEditorOptions}
           slackChannels={slackChannels}
         >
         </CommentEditorLazyRenderer>
@@ -531,19 +527,9 @@ const pageEditorOptionsSelectorElem = document.getElementById('page-editor-optio
 if (pageEditorOptionsSelectorElem) {
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
-      <OptionsSelector
-        crowi={crowi}
-        editorOptions={editorOptions}
-        previewOptions={previewOptions}
-        onChange={(newEditorOptions, newPreviewOptions) => { // set onChange event handler
-          // set options
-          pageEditor.setEditorOptions(newEditorOptions);
-          pageEditor.setPreviewOptions(newPreviewOptions);
-          // save
-          crowi.saveEditorOptions(newEditorOptions);
-          crowi.savePreviewOptions(newPreviewOptions);
-        }}
-      />
+      <Provider inject={[editorOptionsContainer]}>
+        <OptionsSelector crowi={crowi} />
+      </Provider>
     </I18nextProvider>,
     pageEditorOptionsSelectorElem,
   );

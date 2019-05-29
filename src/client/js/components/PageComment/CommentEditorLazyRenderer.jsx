@@ -54,6 +54,5 @@ export default class CommentEditorLazyRenderer extends React.Component {
 CommentEditorLazyRenderer.propTypes = {
   crowi: PropTypes.object.isRequired,
   crowiOriginRenderer: PropTypes.object.isRequired,
-  editorOptions: PropTypes.object,
   slackChannels: PropTypes.string,
 };

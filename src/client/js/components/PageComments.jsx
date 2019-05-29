@@ -140,7 +140,6 @@ class PageComments extends React.Component {
             <CommentEditor
               crowi={this.props.crowi}
               crowiOriginRenderer={this.props.crowiOriginRenderer}
-              editorOptions={this.props.editorOptions}
             />
           )}
         </div>
@@ -299,7 +298,6 @@ PageCommentsWrapper.propTypes = {
   revisionId: PropTypes.string.isRequired,
   revisionCreatedAt: PropTypes.number,
   pagePath: PropTypes.string,
-  editorOptions: PropTypes.object,
   slackChannels: PropTypes.string,
 };
 PageComments.propTypes = {
@@ -311,7 +309,6 @@ PageComments.propTypes = {
   revisionId: PropTypes.string.isRequired,
   revisionCreatedAt: PropTypes.number,
   pagePath: PropTypes.string,
-  editorOptions: PropTypes.object,
   slackChannels: PropTypes.string,
 };
 

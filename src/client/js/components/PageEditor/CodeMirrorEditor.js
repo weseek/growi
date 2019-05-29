@@ -114,6 +114,14 @@ export default class CodeMirrorEditor extends AbstractEditor {
       this.emojiAutoCompleteHelper = new EmojiAutoCompleteHelper(this.props.emojiStrategy);
       this.setState({ isEnabledEmojiAutoComplete: true });
     }
+
+    // load theme
+    const theme = this.props.editorOptions.theme;
+    this.loadTheme(theme);
+
+    // set keymap
+    const keymapMode = this.props.editorOptions.keymapMode;
+    this.setKeymapMode(keymapMode);
   }
 
   componentDidMount() {
@@ -717,12 +725,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
   render() {
     const mode = this.state.isGfmMode ? 'gfm' : undefined;
-    const defaultEditorOptions = {
-      theme: 'elegant',
-      lineNumbers: true,
-    };
     const additionalClasses = Array.from(this.state.additionalClassSet).join(' ');
-    const editorOptions = Object.assign(defaultEditorOptions, this.props.editorOptions || {});
 
     const placeholder = this.state.isGfmMode ? 'Input with Markdown..' : 'Input with Plane Text..';
 
@@ -740,35 +743,35 @@ export default class CodeMirrorEditor extends AbstractEditor {
         }}
           value={this.state.value}
           options={{
-          mode,
-          theme: editorOptions.theme,
-          styleActiveLine: editorOptions.styleActiveLine,
-          lineNumbers: this.props.lineNumbers,
-          tabSize: 4,
-          indentUnit: 4,
-          lineWrapping: true,
-          autoRefresh: { force: true }, // force option is enabled by autorefresh.ext.js -- Yuki Takei
-          autoCloseTags: true,
-          placeholder,
-          matchBrackets: true,
-          matchTags: { bothTags: true },
-          // folding
-          foldGutter: this.props.lineNumbers,
-          gutters: this.props.lineNumbers ? ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'] : [],
-          // match-highlighter, matchesonscrollbar, annotatescrollbar options
-          highlightSelectionMatches: { annotateScrollbar: true },
-          // markdown mode options
-          highlightFormatting: true,
-          // continuelist, indentlist
-          extraKeys: {
-            Enter: this.handleEnterKey,
-            'Ctrl-Enter': this.handleCtrlEnterKey,
-            'Cmd-Enter': this.handleCtrlEnterKey,
-            Tab: 'indentMore',
-            'Shift-Tab': 'indentLess',
-            'Ctrl-Q': (cm) => { cm.foldCode(cm.getCursor()) },
-          },
-        }}
+            mode,
+            theme: this.props.editorOptions.theme,
+            styleActiveLine: this.props.editorOptions.styleActiveLine,
+            lineNumbers: this.props.lineNumbers,
+            tabSize: 4,
+            indentUnit: 4,
+            lineWrapping: true,
+            autoRefresh: { force: true }, // force option is enabled by autorefresh.ext.js -- Yuki Takei
+            autoCloseTags: true,
+            placeholder,
+            matchBrackets: true,
+            matchTags: { bothTags: true },
+            // folding
+            foldGutter: this.props.lineNumbers,
+            gutters: this.props.lineNumbers ? ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'] : [],
+            // match-highlighter, matchesonscrollbar, annotatescrollbar options
+            highlightSelectionMatches: { annotateScrollbar: true },
+            // markdown mode options
+            highlightFormatting: true,
+            // continuelist, indentlist
+            extraKeys: {
+              Enter: this.handleEnterKey,
+              'Ctrl-Enter': this.handleCtrlEnterKey,
+              'Cmd-Enter': this.handleCtrlEnterKey,
+              Tab: 'indentMore',
+              'Shift-Tab': 'indentLess',
+              'Ctrl-Q': (cm) => { cm.foldCode(cm.getCursor()) },
+            },
+          }}
           onCursor={this.cursorHandler}
           onScroll={(editor, data) => {
           if (this.props.onScroll != null) {
@@ -804,6 +807,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 }
 
 CodeMirrorEditor.propTypes = Object.assign({
+  editorOptions: PropTypes.object.isRequired,
   emojiStrategy: PropTypes.object,
   lineNumbers: PropTypes.bool,
 }, AbstractEditor.propTypes);
