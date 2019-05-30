@@ -5,7 +5,16 @@ autoReap.options.reapOnError = true; // continue reaping the file even if an err
 
 module.exports = function(crowi, app) {
   const middleware = require('../util/middlewares');
-  const uploads = multer({ dest: `${crowi.tmpDir}uploads` });
+  const uploads = multer({
+    dest: `${crowi.tmpDir}uploads`,
+    fileFilter: (req, file, cb) => {
+      if (file.mimetype === 'image/svg+xml') {
+        return cb(new Error('svg files are not allowed'));
+      }
+
+      return cb(null, true);
+    },
+  });
   const form = require('../form');
   const page = require('./page')(crowi, app);
   const login = require('./login')(crowi, app);
