@@ -1,11 +1,11 @@
 {% extends '../layout/admin.html' %}
 
-{% block html_title %}{{ customTitle(t('UserGroup management')) }}{% endblock %}
+{% block html_title %}{{ customTitle(t('UserGroup Management')) }}{% endblock %}
 
 {% block content_header %}
 <div class="header-wrap">
   <header id="page-header">
-    <h1 id="admin-title" class="title">{{ t('UserGroup management') }}</h1>
+    <h1 id="admin-title" class="title">{{ t('UserGroup Management') }}</h1>
   </header>
 </div>
 {% endblock %}
@@ -34,18 +34,18 @@
     <div class="col-md-9">
       <p>
         {% if isAclEnabled %}
-          <button  data-toggle="collapse" class="btn btn-default" href="#createGroupForm">新規グループの作成</button>
+          <button  data-toggle="collapse" class="btn btn-default" href="#createGroupForm">{{ t('user_group_management.create_group') }}</button>
         {% else %}
-          現在の設定では新規グループの作成はできません。
+          {{ t('user_group_management.deny_create_group')}}
         {% endif %}
       </p>
       <form role="form" action="/admin/user-group/create" method="post">
         <div id="createGroupForm" class="collapse">
           <div class="form-group">
-            <label for="createGroupForm[userGroupName]">グループ名</label>
-            <textarea class="form-control" name="createGroupForm[userGroupName]" placeholder="例: Group1"></textarea>
+            <label for="createGroupForm[userGroupName]">{{ t('user_group_management.group_name') }}</label>
+            <textarea class="form-control" name="createGroupForm[userGroupName]" placeholder="{{t('user_group_management.group_example')}}"></textarea>
           </div>
-          <button type="submit" class="btn btn-primary">作成する</button>
+          <button type="submit" class="btn btn-primary">{{ t('Create') }}</button>
         </div>
         <input type="hidden" name="_csrf" value="{{ csrf() }}">
       </form>
@@ -58,12 +58,12 @@
 
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-              <h4 class="modal-title">グループを作成しました</h4>
+              <h4 class="modal-title">{{ t('user_group_management.created_group') }}</h4>
             </div>
 
             <div class="modal-body">
               <p>
-                作成したグループにユーザを追加してください
+                {{ t('user_group_management.add_user') }}
               </p>
 
               <pre>{{ createdUserGroup.name }}</pre>
@@ -74,49 +74,16 @@
       </div><!-- /.modal -->
       {% endif %}
 
-      <div class="modal fade" id="admin-delete-user-group-modal">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header bg-danger">
-              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-              <div class="modal-title">
-                <i class="icon icon-fire"></i> グループの削除
-              </div>
-            </div>
+      <div class="modal fade" id="admin-delete-user-group-modal"></div>
 
-            <div class="modal-body">
-              <dl>
-                <dt>グループ名</dt>
-                <dd><span id="admin-delete-user-group-name"></span></dd>
-              </dl>
-              <span class="text-danger">
-                グループの削除を行うと元に戻すことはできませんのでご注意ください。
-              </span>
-            </div>
-            <div class="modal-footer">
-              <form action="/admin/user-group.remove" method="post" id="admin-user-groups-delete" class="text-right">
-                <input type="hidden" name="user_group_id" value="">
-                <input type="hidden" name="_csrf" value="{{ csrf() }}">
-                <button type="submit" value="" class="btn btn-sm btn-danger">
-                  <i class="icon icon-fire"></i> 削除
-                </button>
-              </form>
-            </div>
-
-          </div>
-          <!-- /.modal-content -->
-        </div>
-        <!-- /.modal-dialog -->
-      </div>
-
-      <h2>グループ一覧</h2>
+      <h2>{{ t('user_group_management.group_list') }}</h2>
 
       <table class="table table-bordered table-user-list">
         <thead>
           <tr>
             <th>{{ t('Name') }}</th>
-            <th>ユーザ一覧</th>
-            <th width="100px">作成日</th>
+            <th>{{ t('User') }}</th>
+            <th width="100px">{{ t('Created') }}</th>
             <th width="70px"></th>
           </tr>
         </thead>
@@ -144,7 +111,7 @@
                 <ul class="dropdown-menu" role="menu">
                   <li>
                     <a href="{{ sGroupDetailPageUrl }}">
-                      <i class="icon-fw icon-note"></i> 編集
+                      <i class="icon-fw icon-note"></i> {{ t('Edit') }}
                     </a>
                   </li>
 
@@ -154,7 +121,7 @@
                         data-user-group-name="{{ sGroup.name.toString() | encodeHTML }}"
                         data-target="#admin-delete-user-group-modal"
                         data-toggle="modal">
-                      <i class="icon-fw icon-fire text-danger"></i> 削除する
+                      <i class="icon-fw icon-fire text-danger"></i> {{ t('Delete') }}
                     </a>
                   </li>
 

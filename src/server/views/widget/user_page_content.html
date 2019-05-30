@@ -19,13 +19,13 @@
   <div class="m-t-10 user-page-content-tab tab-content">
 
     <div class="tab-pane user-bookmark-list page-list active" id="user-bookmark-list">
-      <div class="page-list-container">
-        {% if bookmarkList.length == 0 %}
+      {% if bookmarkList.length == 0 %}
         No bookmarks yet.
-        {% else %}
+      {% else %}
+        <div class="page-list-container">
           {% include 'page_list.html' with { pages: bookmarkList, pagePropertyName: 'page' } %}
-        {% endif %}
-      </div>
+        </div>
+      {% endif %}
     </div>
 
     <div class="tab-pane user-created-list page-list" id="user-created-list">

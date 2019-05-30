@@ -143,6 +143,7 @@ module.exports = function(crowi, app) {
   app.post('/admin/user-group/create'      , form.admin.userGroupCreate, loginRequired(crowi, app), middleware.adminRequired(), csrf, admin.userGroup.create);
   app.post('/admin/user-group/:userGroupId/update', loginRequired(crowi, app), middleware.adminRequired(), csrf, admin.userGroup.update);
   app.post('/admin/user-group.remove' , loginRequired(crowi, app), middleware.adminRequired(), csrf, admin.userGroup.removeCompletely);
+  app.get('/_api/admin/user-groups', loginRequired(crowi, app), middleware.adminRequired(), admin.api.userGroups);
 
   // user-group-relations admin
   app.post('/admin/user-group-relation/create', loginRequired(crowi, app), middleware.adminRequired(), csrf, admin.userGroupRelation.create);
@@ -160,7 +161,7 @@ module.exports = function(crowi, app) {
   app.get('/me'                       , loginRequired(crowi, app) , me.index);
   app.get('/me/password'              , loginRequired(crowi, app) , me.password);
   app.get('/me/apiToken'              , loginRequired(crowi, app) , me.apiToken);
-  app.post('/me'                      , form.me.user              , loginRequired(crowi, app) , me.index);
+  app.post('/me'                      , loginRequired(crowi, app) , csrf , form.me.user , me.index);
   // external-accounts
   if (Config.isEnabledPassport(config)) {
     app.get('/me/external-accounts'                         , loginRequired(crowi, app) , me.externalAccounts.list);

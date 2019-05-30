@@ -780,19 +780,19 @@ module.exports = function(crowi, app) {
 
 
   // app.post('/_api/admin/user-group/delete' , admin.userGroup.removeCompletely);
-  actions.userGroup.removeCompletely = function(req, res) {
-    const id = req.body.user_group_id;
+  actions.userGroup.removeCompletely = async(req, res) => {
+    const { deleteGroupId, actionName, selectedGroupId } = req.body;
 
-    UserGroup.removeCompletelyById(id)
-      .then(() => {
-        req.flash('successMessage', '削除しました');
-        return res.redirect('/admin/user-groups');
-      })
-      .catch((err) => {
-        debug('Error while removing userGroup.', err, id);
-        req.flash('errorMessage', '完全な削除に失敗しました。');
-        return res.redirect('/admin/user-groups');
-      });
+    try {
+      await UserGroup.removeCompletelyById(deleteGroupId, actionName, selectedGroupId);
+      req.flash('successMessage', '削除しました');
+    }
+    catch (err) {
+      debug('Error while removing userGroup.', err, deleteGroupId);
+      req.flash('errorMessage', '完全な削除に失敗しました。');
+    }
+
+    return res.redirect('/admin/user-groups');
   };
 
   actions.userGroupRelation = {};
@@ -1325,6 +1325,17 @@ module.exports = function(crowi, app) {
       });
 
     return res.json(ApiResponse.success());
+  };
+
+  actions.api.userGroups = async(req, res) => {
+    try {
+      const userGroups = await UserGroup.find();
+      return res.json(ApiResponse.success({ userGroups }));
+    }
+    catch (err) {
+      logger.error('Error', err);
+      return res.json(ApiResponse.error('Error'));
+    }
   };
 
   /**

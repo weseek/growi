@@ -1,8 +1,17 @@
 # CHANGES
 
-## 3.4.6-RC
+## 3.4.7-RC
 
-* Feature: Append tags to pages
+* Improvement: Handle private pages on group deletion
+* Fix: Searching with `tag:xxx` syntax doesn't work
+* Fix: Check CSRF when updating user data
+* Fix: `createdAt` field initialization
+* I18n: Import data page
+* I18n: Group Management page
+
+## 3.4.6
+
+* Feature: Tags
 * Feature: Dropdown to copy page path/URL/MarkdownLink
 * Feature: List of drafts
 * Improvement: Replace icons of Editor Tool Bar
