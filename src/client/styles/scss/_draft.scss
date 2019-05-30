@@ -1,0 +1,32 @@
+.draft-list-item {
+  .panel {
+    border: 1px solid #ccc;
+
+    .panel-heading {
+      background-color: #ccc;
+
+      .caret {
+        transition: 0.4s;
+        transform: rotate(-90deg);
+
+        &.caret-opened {
+          transform: rotate(0deg);
+        }
+      }
+
+      .icon-container {
+        i {
+          opacity: 0;
+        }
+      }
+
+      &:hover {
+        .icon-container {
+          i {
+            opacity: 1;
+          }
+        }
+      }
+    }
+  }
+}

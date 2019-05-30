@@ -51,8 +51,6 @@
   "Share Link": "Share Link",
   "Markdown Link": "Markdown Link",
 
-  "Management Wiki": "Management Wiki",
-
   "Create/Edit Template": "Create/Edit Template Page",
 
   "Unportalize": "Unportalize",
@@ -98,6 +96,22 @@
 
   "Table of Contents": "Table of Contents",
 
+  "Management Wiki Home": "Management Wiki Home",
+  "App Settings": "App Settings",
+  "Site URL settings": "Site URL settings",
+  "Markdown Settings": "Markdown Settings",
+  "Customize": "Customize",
+  "Notification Settings": "Notification Settings",
+  "User Management": "User Management",
+  "External Account management": "External Account management",
+  "UserGroup Management": "UserGroup Management",
+  "Full Text Search Management": "Full Text Search Management",
+  "Import Data": "Import Data",
+  "Basic settings": "Basic settings",
+  "Basic authentication": "Basic authentication",
+  "Guest users access": "Guest users access",
+  "Register limitation": "Register limitation",
+  "The contents entered here will be shown in the header etc": "The contents entered here will be shown in the header etc",
   "Public": "Public",
   "Anyone with the link": "Anyone with the link",
   "Specified users only": "Specified users only",
@@ -105,6 +119,11 @@
   "Only inside the group": "Only inside the group",
   "Reselect the group": "Reselect the group",
   "Shareable link": "Shareable link",
+  "The whitelist of registration permission E-mail address": "The whitelist of registration permission E-mail address",
+  "Selecting authentication mechanism": "Selecting authentication mechanism",
+  "Add tags for this page": "Add tags for this page",
+  "Edit tags for this page": "Edit tags for this page",
+  "You have no tag, You can set tags on pages": "You have no tag, You can set tags on pages",
 
   "Show latest": "Show latest",
   "Load latest": "Load latest",
@@ -172,12 +191,12 @@
   "Re-enter new password": "Re-enter new password",
   "Password is not set": "Password is not set",
 
+  "Security Settings": "Security Settings",
+
   "API Settings": "API Settings",
   "API Token Settings": "API Token Settings",
   "Current API Token": "Current API Token",
   "Update API Token": "Update API Token",
-
-  "Security settings": "Security settings",
 
   "header_search_box": {
     "label": {
@@ -186,6 +205,14 @@
     "item_label": {
       "This tree": "Only children of this tree"
     }
+  },
+
+  "copy_to_clipboard": {
+    "Copy to clipboard": "Copy to clipboard",
+    "Page path": "Page path",
+    "Parmanent link": "Parmanent link",
+    "Page path and parmanent link": "Page path and parmanent link",
+    "Markdown link": "Markdown link"
   },
 
   "search_help": {
@@ -206,6 +233,12 @@
     },
     "exclude_prefix": {
       "desc": "Exclude the pages that the title start with {{path}}"
+    },
+    "tag": {
+      "desc": "Search for pages with {{tag}} tag"
+    },
+    "exclude_tag": {
+      "desc": "Exclude pages with {{tag}} tag"
     }
   },
   "search": {
@@ -401,6 +434,7 @@
     "Disable": "Disable",
     "Use env var if empty": "If the value in the database is empty, the value of the environment variable <code>%s</code> is used."
   },
+
   "security_setting": {
 		"Basic authentication": "Basic authentication",
 		"Security settings": "Security settings",
@@ -668,6 +702,25 @@
     "cannot_remove":"You cannot remove yourself from administrator",
     "cannot_invite_maximum_users": "Can not invite more than the maximum number of users.",
     "current users": "Current users:"
+  },
+
+  "user_group_management": {
+    "group_list": "List of Group",
+    "create_group": "Create New Group",
+    "group_example": "e.g. : Group1",
+    "created_group": "Group was created",
+    "add_user": "Add a user to the created group",
+    "deny_create_group": "You can't create a new group with the current settings",
+    "is_loading_data": "Loading data...",
+    "choose_action": "Choose an action for private pages",
+    "delete_group": "Delete Group",
+    "group_name": "Group Name",
+    "group_and_pages_not_retrievable": "Once deleted, the deleted group and its private pages cannot be retrieved",
+    "publish_pages": "Publish All",
+    "delete_pages": "Delete All",
+    "transfer_pages": "Transfer to another group",
+    "select_group": "Select a group",
+    "no_groups": "No groups to select"
   },
 
   "importer_management": {
