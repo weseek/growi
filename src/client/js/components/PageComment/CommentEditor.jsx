@@ -121,6 +121,7 @@ class CommentEditor extends React.Component {
         });
         // reset value
         this.editor.setValue('');
+        this.props.commentButtonClickedHandler(this.props.replyTo);
       })
       .catch((err) => {
         const errorMessage = err.message || 'An unknown error occured when posting comment';
@@ -344,6 +345,7 @@ CommentEditor.propTypes = {
   editorOptions: PropTypes.object,
   slackChannels: PropTypes.string,
   replyTo: PropTypes.string,
+  commentButtonClickedHandler: PropTypes.func.isRequired,
 };
 CommentEditorWrapper.propTypes = {
   crowi: PropTypes.object.isRequired,
@@ -351,6 +353,7 @@ CommentEditorWrapper.propTypes = {
   editorOptions: PropTypes.object,
   slackChannels: PropTypes.string,
   replyTo: PropTypes.string,
+  commentButtonClickedHandler: PropTypes.func.isRequired,
 };
 
 export default CommentEditorWrapper;

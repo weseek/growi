@@ -122,7 +122,6 @@ export default class Comment extends React.Component {
             deleteBtnClicked={this.props.deleteBtnClicked}
             crowiRenderer={this.props.crowiRenderer}
             crowi={this.props.crowi}
-            replyTo={this.props.comment._id}
             replyList={[]}
             revisionCreatedAt={this.props.revisionCreatedAt}
             revisionId={this.props.revisionId}
@@ -196,8 +195,7 @@ Comment.propTypes = {
   crowiRenderer: PropTypes.object.isRequired,
   deleteBtnClicked: PropTypes.func.isRequired,
   crowi: PropTypes.object.isRequired,
-  revisionId: PropTypes.string.isRequired,
-  replyTo: PropTypes.string,
-  replyList: PropTypes.array.isRequired,
+  revisionId: PropTypes.string,
+  replyList: PropTypes.array,
   revisionCreatedAt: PropTypes.number,
 };
