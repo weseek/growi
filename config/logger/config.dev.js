@@ -27,4 +27,5 @@ module.exports = {
    * configure level for client
    */
   'growi:app': 'debug',
+  'growi:StaffCredit': 'debug',
 };

@@ -24,14 +24,13 @@ export default class StaffCredit extends React.Component {
       isShown: false,
       userCommand: [],
     };
-    this.konamiCommand = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', '5', '7', '3'];
+    this.konamiCommand = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
     this.deleteCredit = this.deleteCredit.bind(this);
   }
 
-  @keydown('enter', 'up', 'down', 'right', 'left', '5', '7', '3')
+  @keydown('up', 'down', 'right', 'left', 'b', 'a')
   check(event) {
-    // this.logger.debug(`'${event.key}' pressed`);
-    this.logger.info(`'${event.key}' pressed`);
+    this.logger.debug(`'${event.key}' pressed`);
 
     // compare keydown and next konamiCommand
     if (this.konamiCommand[this.state.userCommand.length] === event.key) {
@@ -46,8 +45,7 @@ export default class StaffCredit extends React.Component {
         // add UserCommand
         this.setState({ userCommand: nextValue });
 
-        // this.logger.debug('userCommand', this.state.userCommand);
-        this.logger.info('userCommand', this.state.userCommand);
+        this.logger.debug('userCommand', this.state.userCommand);
       }
     }
     else {
