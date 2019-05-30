@@ -98,19 +98,38 @@ class PageComments extends React.Component {
     this.setState({ showEditorIds: ids });
   }
 
-  // inserts reply after each corresponding comment
-  reorderBasedOnReplies(comments, replies) {
-    // const connections = this.findConnections(comments, replies);
-    // const replyConnections = this.findConnectionsWithinReplies(replies);
-    const repliesReversed = replies.slice().reverse();
-    for (let i = 0; i < comments.length; i++) {
-      for (let j = 0; j < repliesReversed.length; j++) {
-        if (repliesReversed[j].replyTo === comments[i]._id) {
-          comments.splice(i + 1, 0, repliesReversed[j]);
+  // adds replies to specific comment object
+  addRepliesToComments(comments, replies) {
+    const commentsWithReplies = [];
+    const commentsCopy = comments.slice();
+    commentsCopy.forEach((comment) => {
+      comment.replyList = [];
+      replies.forEach((reply) => {
+        if (reply.replyTo === comment._id) {
+          comment.replyList.push(reply);
         }
-      }
-    }
-    return comments;
+      });
+      commentsWithReplies.push(comment);
+    });
+    return commentsWithReplies;
+  }
+
+  // returns replies
+  renderReplies(comment) {
+    return comment.replyList.map((reply) => {
+      return (
+        <div key={reply._id} className="col-xs-offset-1 col-xs-11 col-sm-offset-1 col-sm-11 col-md-offset-1 col-md-11 col-lg-offset-1 col-lg-11">
+          <Comment
+            comment={reply}
+            deleteBtnClicked={this.confirmToDeleteComment}
+            crowiRenderer={this.growiRenderer}
+            onReplyButtonClicked={() => { this.replyButtonClickedHandler(reply._id) }}
+            crowi={this.props.crowi}
+            replyTo={comment._id}
+          />
+        </div>
+      );
+    });
   }
 
   /**
@@ -121,7 +140,7 @@ class PageComments extends React.Component {
    * @memberOf PageComments
    */
   generateCommentElements(comments, replies) {
-    const commentsWithReplies = this.reorderBasedOnReplies(comments, replies);
+    const commentsWithReplies = this.addRepliesToComments(comments, replies);
     return commentsWithReplies.map((comment) => {
 
       const commentId = comment._id;
@@ -135,16 +154,24 @@ class PageComments extends React.Component {
             crowiRenderer={this.growiRenderer}
             onReplyButtonClicked={() => { this.replyButtonClickedHandler(commentId) }}
             crowi={this.props.crowi}
+            replyTo={undefined}
           />
-          { showEditor && (
-            <CommentEditor
-              crowi={this.props.crowi}
-              crowiOriginRenderer={this.props.crowiOriginRenderer}
-              editorOptions={this.props.editorOptions}
-              slackChannels={this.props.slackChannels}
-              replyTo={commentId}
-            />
-          )}
+          <div className="container-fluid">
+            <div className="row">
+              {this.renderReplies(comment)}
+              <div className="col-xs-offset-1 col-xs-11 col-sm-offset-1 col-sm-11 col-md-offset-1 col-md-11 col-lg-offset-1 col-lg-11">
+                { showEditor && (
+                <CommentEditor
+                  crowi={this.props.crowi}
+                  crowiOriginRenderer={this.props.crowiOriginRenderer}
+                  editorOptions={this.props.editorOptions}
+                  slackChannels={this.props.slackChannels}
+                  replyTo={commentId}
+                />
+                )}
+              </div>
+            </div>
+          </div>
         </div>
       );
     });

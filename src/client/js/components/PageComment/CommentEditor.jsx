@@ -106,7 +106,7 @@ class CommentEditor extends React.Component {
     this.props.commentContainer.postComment(
       this.state.comment,
       this.state.isMarkdown,
-      this.props.replyTo, // TODO set replyTo
+      this.props.replyTo,
       this.state.isSlackEnabled,
       this.state.slackChannels,
     )

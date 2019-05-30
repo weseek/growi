@@ -139,7 +139,7 @@ export default class Comment extends React.Component {
             <Username user={creator} />
           </div>
           <div className="page-comment-body">{commentBody}</div>
-          <div className="page-comment-reply text-right">
+          <div className="text-right">
             {
               comment.replyTo === undefined
               && (
@@ -176,4 +176,5 @@ Comment.propTypes = {
   onReplyButtonClicked: PropTypes.func.isRequired,
   crowi: PropTypes.object.isRequired,
   revisionId: PropTypes.string,
+  replyTo: PropTypes.string,
 };
