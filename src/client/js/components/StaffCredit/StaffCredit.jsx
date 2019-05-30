@@ -1,5 +1,8 @@
 import React from 'react';
 import keydown from 'react-keydown';
+
+import loggerFactory from '@alias/logger';
+
 import contributors from './Contributor';
 
 /**
@@ -15,6 +18,8 @@ export default class StaffCredit extends React.Component {
   constructor(props) {
     super(props);
 
+    this.logger = loggerFactory('growi:StaffCredit');
+
     this.state = {
       isShown: false,
       userCommand: [],
@@ -25,6 +30,9 @@ export default class StaffCredit extends React.Component {
 
   @keydown('enter', 'up', 'down', 'right', 'left', '5', '7', '3')
   check(event) {
+    // this.logger.debug(`'${event.key}' pressed`);
+    this.logger.info(`'${event.key}' pressed`);
+
     // compare keydown and next konamiCommand
     if (this.konamiCommand[this.state.userCommand.length] === event.key) {
       const nextValue = this.state.userCommand.concat(event.key);
@@ -37,6 +45,9 @@ export default class StaffCredit extends React.Component {
       else {
         // add UserCommand
         this.setState({ userCommand: nextValue });
+
+        // this.logger.debug('userCommand', this.state.userCommand);
+        this.logger.info('userCommand', this.state.userCommand);
       }
     }
     else {
