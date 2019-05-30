@@ -225,7 +225,7 @@ class CommentEditor extends React.Component {
     );
 
     return (
-      <div>
+      <div form className="form page-comment-form">
 
         { username
           && (

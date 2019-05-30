@@ -49,7 +49,7 @@ export default class CommentEditorLazyRenderer extends React.Component {
             replyTo={undefined}
           >
           </CommentEditor>
-)
+          )
         }
       </React.Fragment>
     );
