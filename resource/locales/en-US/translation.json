@@ -24,6 +24,7 @@
   "Page Path": "Page Path",
   "Category": "Category",
   "User": "User",
+  "User Name": "User Name",
   "Add": "Add",
   "Method": "Method",
 
@@ -48,7 +49,7 @@
 
   "Created": "Created",
   "Last updated": "Updated",
-  "Last login": "Last login",
+  "Last Login": "Last login",
 
   "Share": "Share",
   "Share Link": "Share Link",
@@ -683,7 +684,7 @@
     "give_admin_access": "Give admin access",
     "remove_admin_access": "Remove admin access",
     "external_account": "External account management",
-    "user_list": "List of users",
+    "user_list": "List of Users",
     "external_account_list": "External Account List",
     "back_to_user_management": "Back to User Management",
     "authentication_provider": "Authentication Provider",
@@ -707,11 +708,11 @@
 
   "user_group_management": {
     "group_list": "List of Group",
-    "back_to_list": "Go back to group list",
+    "back_to_list": "Go Back to Group List",
     "create_group": "Create New Group",
     "group_example": "e.g. : Group1",
     "created_group": "Group was created",
-    "add_user": "Add a user to the created group",
+    "add_user": "Add a User to the Created Group",
     "deny_create_group": "You can't create a new group with the current settings",
     "is_loading_data": "Loading data...",
     "choose_action": "Choose an action for private pages",

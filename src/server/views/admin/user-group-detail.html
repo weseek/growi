@@ -53,7 +53,7 @@
               </p>
               <form class="form-inline" role="form" action="/admin/user-group-relation/create" method="post">
                 <div class="form-group">
-                  <input type="text" name="user_name" class="form-control input-sm" id="inputRelatedUserName" placeholder="username">
+                  <input type="text" name="user_name" class="form-control input-sm" id="inputRelatedUserName" placeholder="{{ t('User Name')}}">
                 </div>
                 <input type="hidden" name="user_group_id" value="{{userGroup.id}}">
                 <input type="hidden" name="_csrf" value="{{ csrf() }}">
@@ -91,7 +91,7 @@
       <div class="m-t-20 form-box">
         <form action="/admin/user-group/{{userGroup.id}}/update" method="post" class="form-horizontal" role="form">
           <fieldset>
-            <legend>{{ t('Basic_Settings') }}</legend>
+            <legend>{{ t('Basic Settings') }}</legend>
             <div class="form-group">
               <label for="name" class="col-sm-2 control-label">{{ t('Name') }}</label>
               <div class="col-sm-4">
@@ -125,7 +125,7 @@
             </th>
             <th>{{ t('Name') }}</th>
             <th width="100px">{{ t('Created') }}</th>
-            <th width="150px">{{ t('Last login')}}</th>
+            <th width="150px">{{ t('Last Login')}}</th>
             <th width="70px"></th>
           </tr>
         </thead>

@@ -24,6 +24,7 @@
   "Page Path": "ページパス",
   "Category": "カテゴリー",
   "User": "ユーザー",
+  "User Name": "ユーザーネーム",
   "Add": "追加",
   "Method": "方法",
 
@@ -48,7 +49,7 @@
 
   "Created": "作成日",
   "Last updated": "最終更新",
-  "Last login": "最終ログイン",
+  "Last Login": "最終ログイン",
 
   "Share": "共有",
   "Share Link": "共有用リンク",
@@ -110,7 +111,7 @@
   "UserGroup Management": "グループ管理",
   "Full Text Search Management": "全文検索管理",
   "Import Data": "データインポート",
-  "Basic_Settings": "基本設定",
+  "Basic Settings": "基本設定",
   "Basic authentication": "Basic認証",
   "Guest users access": "ゲストユーザーのアクセス",
   "Register limitation": "登録の制限",
