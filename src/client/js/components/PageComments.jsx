@@ -2,6 +2,7 @@
 /* eslint-disable react/no-access-state-in-setstate */
 import React from 'react';
 import PropTypes from 'prop-types';
+import Button from 'react-bootstrap/es/Button';
 
 import { Subscribe } from 'unstated';
 
@@ -9,7 +10,6 @@ import { withTranslation } from 'react-i18next';
 import GrowiRenderer from '../util/GrowiRenderer';
 
 import CommentContainer from './PageComment/CommentContainer';
-import UserPicture from './User/UserPicture';
 import CommentEditor from './PageComment/CommentEditor';
 
 import Comment from './PageComment/Comment';
@@ -48,6 +48,7 @@ class PageComments extends React.Component {
     this.showDeleteConfirmModal = this.showDeleteConfirmModal.bind(this);
     this.closeDeleteConfirmModal = this.closeDeleteConfirmModal.bind(this);
     this.replyButtonClickedHandler = this.replyButtonClickedHandler.bind(this);
+    this.commentButtonClickedHandler = this.commentButtonClickedHandler.bind(this);
   }
 
   componentWillMount() {
@@ -99,6 +100,15 @@ class PageComments extends React.Component {
     this.setState({ showEditorIds: ids });
   }
 
+  commentButtonClickedHandler(commentId) {
+    this.setState((prevState) => {
+      prevState.showEditorIds.delete(commentId);
+      return {
+        showEditorIds: prevState.showEditorIds,
+      };
+    });
+  }
+
   // adds replies to specific comment object
   addRepliesToComments(comment, replies) {
     const replyList = [];
@@ -124,8 +134,6 @@ class PageComments extends React.Component {
       const showEditor = this.state.showEditorIds.has(commentId);
       const crowi = this.props.crowi;
       const username = crowi.me;
-      const user = crowi.findUser(username);
-      const isLayoutTypeGrowi = this.state.isLayoutTypeGrowi;
 
       const replyList = this.addRepliesToComments(comment, replies);
 
@@ -136,7 +144,6 @@ class PageComments extends React.Component {
             deleteBtnClicked={this.confirmToDeleteComment}
             crowiRenderer={this.growiRenderer}
             crowi={this.props.crowi}
-            replyTo={undefined}
             replyList={replyList}
             revisionCreatedAt={this.props.revisionCreatedAt}
             revisionId={this.props.revisionId}
@@ -145,26 +152,17 @@ class PageComments extends React.Component {
             <div className="row">
               <div className="col-xs-offset-1 col-xs-11 col-sm-offset-1 col-sm-11 col-md-offset-1 col-md-11 col-lg-offset-1 col-lg-11">
                 { !showEditor && (
-                  <div className="form page-comment-form">
+                  <div>
                     { username
                     && (
-                      <div className="comment-form">
-                        { isLayoutTypeGrowi
-                        && (
-                          <div className="comment-form-user">
-                            <UserPicture user={user} />
-                          </div>
-                        )
-                        }
-                        <div className="comment-form-main">
-                          <button
-                            type="button"
-                            className={`btn btn-lg ${this.state.isLayoutTypeGrowi ? 'btn-link' : 'btn-primary'} center-block`}
-                            onClick={() => { return this.replyButtonClickedHandler(commentId) }}
-                          >
-                            <i className="icon-bubble"></i> Reply
-                          </button>
-                        </div>
+                      <div className="col-xs-offset-6 col-sm-offset-6 col-md-offset-6 col-lg-offset-6">
+                        <Button
+                          bsStyle="primary"
+                          className="fcbtn btn btn-sm btn-primary btn-outline btn-rounded btn-1b"
+                          onClick={() => { return this.replyButtonClickedHandler(commentId) }}
+                        >
+                          <i className="icon-bubble"></i> Reply
+                        </Button>
                       </div>
                     )
                   }
@@ -177,11 +175,13 @@ class PageComments extends React.Component {
                     editorOptions={this.props.editorOptions}
                     slackChannels={this.props.slackChannels}
                     replyTo={commentId}
+                    commentButtonClickedHandler={this.commentButtonClickedHandler}
                   />
                 )}
               </div>
             </div>
           </div>
+          <br />
         </div>
       );
     });
