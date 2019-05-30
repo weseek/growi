@@ -9,6 +9,7 @@ import { withTranslation } from 'react-i18next';
 import GrowiRenderer from '../util/GrowiRenderer';
 
 import CommentContainer from './PageComment/CommentContainer';
+import UserPicture from './User/UserPicture';
 import CommentEditor from './PageComment/CommentEditor';
 
 import Comment from './PageComment/Comment';
@@ -99,37 +100,14 @@ class PageComments extends React.Component {
   }
 
   // adds replies to specific comment object
-  addRepliesToComments(comments, replies) {
-    const commentsWithReplies = [];
-    const commentsCopy = comments.slice();
-    commentsCopy.forEach((comment) => {
-      comment.replyList = [];
-      replies.forEach((reply) => {
-        if (reply.replyTo === comment._id) {
-          comment.replyList.push(reply);
-        }
-      });
-      commentsWithReplies.push(comment);
+  addRepliesToComments(comment, replies) {
+    const replyList = [];
+    replies.forEach((reply) => {
+      if (reply.replyTo === comment._id) {
+        replyList.push(reply);
+      }
     });
-    return commentsWithReplies;
-  }
-
-  // returns replies
-  renderReplies(comment) {
-    return comment.replyList.map((reply) => {
-      return (
-        <div key={reply._id} className="col-xs-offset-1 col-xs-11 col-sm-offset-1 col-sm-11 col-md-offset-1 col-md-11 col-lg-offset-1 col-lg-11">
-          <Comment
-            comment={reply}
-            deleteBtnClicked={this.confirmToDeleteComment}
-            crowiRenderer={this.growiRenderer}
-            onReplyButtonClicked={() => { this.replyButtonClickedHandler(reply._id) }}
-            crowi={this.props.crowi}
-            replyTo={comment._id}
-          />
-        </div>
-      );
-    });
+    return replyList;
   }
 
   /**
@@ -140,11 +118,16 @@ class PageComments extends React.Component {
    * @memberOf PageComments
    */
   generateCommentElements(comments, replies) {
-    const commentsWithReplies = this.addRepliesToComments(comments, replies);
-    return commentsWithReplies.map((comment) => {
+    return comments.map((comment) => {
 
       const commentId = comment._id;
       const showEditor = this.state.showEditorIds.has(commentId);
+      const crowi = this.props.crowi;
+      const username = crowi.me;
+      const user = crowi.findUser(username);
+      const isLayoutTypeGrowi = this.state.isLayoutTypeGrowi;
+
+      const replyList = this.addRepliesToComments(comment, replies);
 
       return (
         <div key={commentId}>
@@ -152,22 +135,49 @@ class PageComments extends React.Component {
             comment={comment}
             deleteBtnClicked={this.confirmToDeleteComment}
             crowiRenderer={this.growiRenderer}
-            onReplyButtonClicked={() => { this.replyButtonClickedHandler(commentId) }}
             crowi={this.props.crowi}
             replyTo={undefined}
+            replyList={replyList}
+            revisionCreatedAt={this.props.revisionCreatedAt}
+            revisionId={this.props.revisionId}
           />
           <div className="container-fluid">
             <div className="row">
-              {this.renderReplies(comment)}
               <div className="col-xs-offset-1 col-xs-11 col-sm-offset-1 col-sm-11 col-md-offset-1 col-md-11 col-lg-offset-1 col-lg-11">
+                { !showEditor && (
+                  <div className="form page-comment-form">
+                    { username
+                    && (
+                      <div className="comment-form">
+                        { isLayoutTypeGrowi
+                        && (
+                          <div className="comment-form-user">
+                            <UserPicture user={user} />
+                          </div>
+                        )
+                        }
+                        <div className="comment-form-main">
+                          <button
+                            type="button"
+                            className={`btn btn-lg ${this.state.isLayoutTypeGrowi ? 'btn-link' : 'btn-primary'} center-block`}
+                            onClick={() => { return this.replyButtonClickedHandler(commentId) }}
+                          >
+                            <i className="icon-bubble"></i> Reply
+                          </button>
+                        </div>
+                      </div>
+                    )
+                  }
+                  </div>
+                )}
                 { showEditor && (
-                <CommentEditor
-                  crowi={this.props.crowi}
-                  crowiOriginRenderer={this.props.crowiOriginRenderer}
-                  editorOptions={this.props.editorOptions}
-                  slackChannels={this.props.slackChannels}
-                  replyTo={commentId}
-                />
+                  <CommentEditor
+                    crowi={this.props.crowi}
+                    crowiOriginRenderer={this.props.crowiOriginRenderer}
+                    editorOptions={this.props.editorOptions}
+                    slackChannels={this.props.slackChannels}
+                    replyTo={commentId}
+                  />
                 )}
               </div>
             </div>
@@ -179,11 +189,7 @@ class PageComments extends React.Component {
 
   render() {
     const currentComments = [];
-    const newerComments = [];
-    const olderComments = [];
     const currentReplies = [];
-    const newerReplies = [];
-    const olderReplies = [];
 
     let comments = this.props.commentContainer.state.comments;
     if (this.state.isLayoutTypeGrowi) {
@@ -191,100 +197,29 @@ class PageComments extends React.Component {
       comments = comments.slice().reverse(); // non-destructive reverse
     }
 
-    // divide by revisionId and createdAt
-    const revisionId = this.props.revisionId;
-    const revisionCreatedAt = this.props.revisionCreatedAt;
     comments.forEach((comment) => {
-      // comparing ObjectId
-      // eslint-disable-next-line eqeqeq
       if (comment.replyTo === undefined) {
-        // comment is not a reply
-        if (comment.revision === revisionId) {
-          currentComments.push(comment);
-        }
-        else if (Date.parse(comment.createdAt) / 1000 > revisionCreatedAt) {
-          newerComments.push(comment);
-        }
-        else {
-          olderComments.push(comment);
-        }
-      }
-      else
-      // comment is a reply
-      if (comment.revision === revisionId) {
-        currentReplies.push(comment);
-      }
-      else if (Date.parse(comment.createdAt) / 1000 > revisionCreatedAt) {
-        newerReplies.push(comment);
+      // comment is not a reply
+        currentComments.push(comment);
       }
       else {
-        olderReplies.push(comment);
+      // comment is a reply
+        currentReplies.push(comment);
       }
     });
 
     // generate elements
     const currentElements = this.generateCommentElements(currentComments, currentReplies);
-    const newerElements = this.generateCommentElements(newerComments, newerReplies);
-    const olderElements = this.generateCommentElements(olderComments, olderReplies);
+
     // generate blocks
     const currentBlock = (
       <div className="page-comments-list-current" id="page-comments-list-current">
         {currentElements}
       </div>
     );
-    const newerBlock = (
-      <div className="page-comments-list-newer collapse in" id="page-comments-list-newer">
-        {newerElements}
-      </div>
-    );
-    const olderBlock = (
-      <div className="page-comments-list-older collapse in" id="page-comments-list-older">
-        {olderElements}
-      </div>
-    );
-
-    // generate toggle elements
-    const iconForNewer = (this.state.isLayoutTypeGrowi)
-      ? <i className="fa fa-angle-double-down"></i>
-      : <i className="fa fa-angle-double-up"></i>;
-    const toggleNewer = (newerElements.length === 0)
-      ? <div></div>
-      : (
-        <a className="page-comments-list-toggle-newer text-center" data-toggle="collapse" href="#page-comments-list-newer">
-          {iconForNewer} Comments for Newer Revision {iconForNewer}
-        </a>
-      );
-    const iconForOlder = (this.state.isLayoutTypeGrowi)
-      ? <i className="fa fa-angle-double-up"></i>
-      : <i className="fa fa-angle-double-down"></i>;
-    const toggleOlder = (olderElements.length === 0)
-      ? <div></div>
-      : (
-        <a className="page-comments-list-toggle-older text-center" data-toggle="collapse" href="#page-comments-list-older">
-          {iconForOlder} Comments for Older Revision {iconForOlder}
-        </a>
-      );
 
     // layout blocks
-    const commentsElements = (this.state.isLayoutTypeGrowi)
-      ? (
-        <div>
-          {olderBlock}
-          {toggleOlder}
-          {currentBlock}
-          {toggleNewer}
-          {newerBlock}
-        </div>
-      )
-      : (
-        <div>
-          {newerBlock}
-          {toggleNewer}
-          {currentBlock}
-          {toggleOlder}
-          {olderBlock}
-        </div>
-      );
+    const commentsElements = (<div>{currentBlock}</div>);
 
     return (
       <div>
