@@ -1,6 +1,10 @@
 # CHANGES
 
-## 3.4.7-RC
+## 3.4.8-RC
+
+* 
+
+## 3.4.7
 
 * Improvement: Handle private pages on group deletion
 * Fix: Searching with `tag:xxx` syntax doesn't work
