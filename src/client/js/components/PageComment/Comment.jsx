@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-
 import dateFnsFormat from 'date-fns/format';
 
 import RevisionBody from '../Page/RevisionBody';
