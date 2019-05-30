@@ -1,9 +1,14 @@
+/* eslint-disable react/no-multi-comp */
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Subscribe } from 'unstated';
+
+import AppContainer from '../../services/AppContainer';
+import PageContainer from '../../services/PageContainer';
 
 import RevisionBody from './RevisionBody';
 
-export default class RevisionRenderer extends React.Component {
+class RevisionRenderer extends React.Component {
 
   constructor(props) {
     super(props);
@@ -14,16 +19,16 @@ export default class RevisionRenderer extends React.Component {
 
     this.renderHtml = this.renderHtml.bind(this);
     this.getHighlightedBody = this.getHighlightedBody.bind(this);
+  }
 
-    this.setMarkdown(this.props.markdown);
+  componentWillMount() {
+    const { pageContainer } = this.props;
+    this.renderHtml(pageContainer.state.markdown, this.props.highlightKeywords);
   }
 
   componentWillReceiveProps(nextProps) {
-    this.renderHtml(nextProps.markdown, this.props.highlightKeywords);
-  }
-
-  setMarkdown(markdown) {
-    this.renderHtml(markdown, this.props.highlightKeywords);
+    const { pageContainer } = nextProps;
+    this.renderHtml(pageContainer.state.markdown, this.props.highlightKeywords);
   }
 
   /**
@@ -48,14 +53,16 @@ export default class RevisionRenderer extends React.Component {
     return returnBody;
   }
 
-  renderHtml(markdown, highlightKeywords) {
+  renderHtml(markdown) {
+    const { pageContainer } = this.props;
+
     const context = {
       markdown,
-      currentPagePath: this.props.pagePath,
+      currentPagePath: pageContainer.state.path,
     };
 
     const crowiRenderer = this.props.crowiRenderer;
-    const interceptorManager = this.props.crowi.interceptorManager;
+    const interceptorManager = this.props.appContainer.interceptorManager;
     interceptorManager.process('preRender', context)
       .then(() => { return interceptorManager.process('prePreProcess', context) })
       .then(() => {
@@ -70,8 +77,8 @@ export default class RevisionRenderer extends React.Component {
         context.parsedHTML = crowiRenderer.postProcess(context.parsedHTML);
 
         // highlight
-        if (highlightKeywords != null) {
-          context.parsedHTML = this.getHighlightedBody(context.parsedHTML, highlightKeywords);
+        if (this.props.highlightKeywords != null) {
+          context.parsedHTML = this.getHighlightedBody(context.parsedHTML, this.props.highlightKeywords);
         }
       })
       .then(() => { return interceptorManager.process('postPostProcess', context) })
@@ -85,7 +92,7 @@ export default class RevisionRenderer extends React.Component {
   }
 
   render() {
-    const config = this.props.crowi.getConfig();
+    const config = this.props.appContainer.getConfig();
     const isMathJaxEnabled = !!config.env.MATHJAX;
 
     return (
@@ -99,10 +106,34 @@ export default class RevisionRenderer extends React.Component {
 
 }
 
+/**
+ * Wrapper component for using unstated
+ */
+class RevisionRendererWrapper extends React.PureComponent {
+
+  render() {
+    return (
+      <Subscribe to={[AppContainer, PageContainer]}>
+        { (appContainer, pageContainer) => (
+          // eslint-disable-next-line arrow-body-style
+          <RevisionRenderer appContainer={appContainer} pageContainer={pageContainer} {...this.props} />
+        )}
+      </Subscribe>
+    );
+  }
+
+}
+
 RevisionRenderer.propTypes = {
-  crowi: PropTypes.object.isRequired,
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   crowiRenderer: PropTypes.object.isRequired,
-  markdown: PropTypes.string.isRequired,
-  pagePath: PropTypes.string.isRequired,
   highlightKeywords: PropTypes.string,
 };
+
+RevisionRendererWrapper.propTypes = {
+  crowiRenderer: PropTypes.object.isRequired,
+  highlightKeywords: PropTypes.string,
+};
+
+export default RevisionRendererWrapper;

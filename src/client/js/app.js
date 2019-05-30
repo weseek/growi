@@ -158,29 +158,27 @@ const saveWithShortcutSuccessHandler = function(page) {
     extendedTimeOut: '150',
   });
 
-  pageId = page._id;
-  pageRevisionId = page.revision._id;
-  pageRevisionIdHackmdSynced = page.revisionHackmdSynced;
+  // update state of PageContainer
+  const newState = {
+    pageId: page._id,
+    revisionHackmdSynced: page.revisionHackmdSynced,
+    revisionId: page.revision._id,
+    markdown: page.revision.body,
+  };
+  pageContainer.setState(newState);
 
-  // set page id to SavePageControls
-  pageContainer.setState({ pageId });
-
-  // Page component
-  if (componentInstances.page != null) {
-    componentInstances.page.setMarkdown(page.revision.body);
-  }
   // PageEditor component
   if (componentInstances.pageEditor != null) {
-    const updateEditorValue = (editorMode !== 'builtin');
-    componentInstances.pageEditor.setMarkdown(page.revision.body, updateEditorValue);
+    if (editorMode !== 'builtin') {
+      componentInstances.pageEditor.updateEditorValue(newState.markdown);
+    }
   }
   // PageEditorByHackmd component
   if (componentInstances.pageEditorByHackmd != null) {
     // clear state of PageEditorByHackmd
-    componentInstances.pageEditorByHackmd.clearRevisionStatus(pageRevisionId, pageRevisionIdHackmdSynced);
+    componentInstances.pageEditorByHackmd.clearRevisionStatus(newState.revisionId);
     // reset
     if (editorMode !== 'hackmd') {
-      componentInstances.pageEditorByHackmd.setMarkdown(page.revision.body, false);
       componentInstances.pageEditorByHackmd.reset();
     }
   }
@@ -343,7 +341,7 @@ if (pageId) {
   componentMappings['page-attachment'] = <PageAttachment pageId={pageId} markdown={markdown} crowi={crowi} />;
 }
 if (pagePath) {
-  componentMappings.page = <Page crowi={crowi} crowiRenderer={crowiRenderer} markdown={markdown} pagePath={pagePath} onSaveWithShortcut={saveWithShortcut} />;
+  componentMappings.page = <Page crowiRenderer={crowiRenderer} onSaveWithShortcut={saveWithShortcut} />;
   componentMappings['revision-path'] = <I18nextProvider i18n={i18n}><RevisionPath pageId={pageId} pagePath={pagePath} crowi={crowi} /></I18nextProvider>;
   componentMappings['tag-label'] = <I18nextProvider i18n={i18n}><TagLabels crowi={crowi} pageId={pageId} sendTagData={setTagData} templateTagData={templateTagData} /></I18nextProvider>;
 }
@@ -351,7 +349,12 @@ if (pagePath) {
 Object.keys(componentMappings).forEach((key) => {
   const elem = document.getElementById(key);
   if (elem) {
-    componentInstances[key] = ReactDOM.render(componentMappings[key], elem);
+    componentInstances[key] = ReactDOM.render(
+      <Provider inject={[appContainer, pageContainer]}>
+        {componentMappings[key]}
+      </Provider>,
+      elem,
+    );
   }
 });
 
@@ -478,19 +481,14 @@ const pageEditorElem = document.getElementById('page-editor');
 if (pageEditorElem) {
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
-      <Provider inject={[editorContainer]}>
+      <Provider inject={[appContainer, pageContainer, editorContainer]}>
         <PageEditor
           ref={(elem) => {
             if (pageEditor == null) {
               pageEditor = elem;
             }
           }}
-          crowi={crowi}
           crowiRenderer={crowiRenderer}
-          pageId={pageId}
-          revisionId={pageRevisionId}
-          pagePath={pagePath}
-          markdown={markdown}
           onSaveWithShortcut={saveWithShortcut}
         />
       </Provider>

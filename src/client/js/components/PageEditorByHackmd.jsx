@@ -51,13 +51,6 @@ export default class PageEditorByHackmd extends React.PureComponent {
       });
   }
 
-  setMarkdown(markdown, updateEditorValue = true) {
-    this.setState({ markdown });
-    if (this.state.isInitialized && updateEditorValue) {
-      this.hackmdEditor.setValue(markdown);
-    }
-  }
-
   /**
    * reset initialized status
    */
@@ -68,11 +61,9 @@ export default class PageEditorByHackmd extends React.PureComponent {
   /**
    * clear revision status (invoked when page is updated by myself)
    */
-  clearRevisionStatus(updatedRevisionId, updatedRevisionIdHackmdSynced) {
+  clearRevisionStatus(updatedRevisionId) {
     this.setState({
       initialRevisionId: updatedRevisionId,
-      revisionId: updatedRevisionId,
-      revisionIdHackmdSynced: updatedRevisionIdHackmdSynced,
     });
   }
 
