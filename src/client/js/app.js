@@ -299,15 +299,15 @@ if (!pageRevisionId && draft != null) {
  *  value: React Element
  */
 const componentMappings = {
-  'search-top': <I18nextProvider i18n={i18n}><HeaderSearchBox crowi={crowi} /></I18nextProvider>,
-  'search-sidebar': <I18nextProvider i18n={i18n}><HeaderSearchBox crowi={crowi} /></I18nextProvider>,
-  'search-page': <I18nextProvider i18n={i18n}><SearchPage crowi={crowi} crowiRenderer={crowiRenderer} /></I18nextProvider>,
+  'search-top': <HeaderSearchBox crowi={crowi} />,
+  'search-sidebar': <HeaderSearchBox crowi={crowi} />,
+  'search-page': <SearchPage crowi={crowi} crowiRenderer={crowiRenderer} />,
 
   // 'revision-history': <PageHistory pageId={pageId} />,
   'bookmark-button': <BookmarkButton pageId={pageId} crowi={crowi} />,
   'bookmark-button-lg': <BookmarkButton pageId={pageId} crowi={crowi} size="lg" />,
 
-  'tags-page': <I18nextProvider i18n={i18n}><TagsList crowi={crowi} /></I18nextProvider>,
+  'tags-page': <TagsList crowi={crowi} />,
 
   'create-page-name-input': <PagePathAutoComplete crowi={crowi} initializedPath={pagePath} addTrailingSlash />,
   'rename-page-name-input': <PagePathAutoComplete crowi={crowi} initializedPath={pagePath} />,
@@ -342,17 +342,19 @@ if (pageId) {
 }
 if (pagePath) {
   componentMappings.page = <Page crowiRenderer={crowiRenderer} onSaveWithShortcut={saveWithShortcut} />;
-  componentMappings['revision-path'] = <I18nextProvider i18n={i18n}><RevisionPath pageId={pageId} pagePath={pagePath} crowi={crowi} /></I18nextProvider>;
-  componentMappings['tag-label'] = <I18nextProvider i18n={i18n}><TagLabels crowi={crowi} pageId={pageId} sendTagData={setTagData} templateTagData={templateTagData} /></I18nextProvider>;
+  componentMappings['revision-path'] = <RevisionPath pageId={pageId} pagePath={pagePath} crowi={crowi} />;
+  componentMappings['tag-label'] = <TagLabels crowi={crowi} pageId={pageId} sendTagData={setTagData} templateTagData={templateTagData} />;
 }
 
 Object.keys(componentMappings).forEach((key) => {
   const elem = document.getElementById(key);
   if (elem) {
     componentInstances[key] = ReactDOM.render(
-      <Provider inject={[appContainer, pageContainer]}>
-        {componentMappings[key]}
-      </Provider>,
+      <I18nextProvider i18n={i18n}>
+        <Provider inject={[appContainer, pageContainer]}>
+          {componentMappings[key]}
+        </Provider>
+      </I18nextProvider>,
       elem,
     );
   }
