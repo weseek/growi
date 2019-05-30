@@ -2,7 +2,9 @@
 
 ## 3.4.8-RC
 
-* 
+* Support: Upgrade libs
+    * mini-css-extract-plugin
+    * null-loader
 
 ## 3.4.7
 
