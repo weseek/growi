@@ -40,6 +40,7 @@ import RecentCreated from './components/RecentCreated/RecentCreated';
 import MyDraftList from './components/MyDraftList/MyDraftList';
 import UserPictureList from './components/User/UserPictureList';
 
+import UserGroupDetailPage from './components/Admin/UserGroupDetail/UserGroupDetailPage';
 import CustomCssEditor from './components/Admin/CustomCssEditor';
 import CustomScriptEditor from './components/Admin/CustomScriptEditor';
 import CustomHeaderEditor from './components/Admin/CustomHeaderEditor';
@@ -554,6 +555,19 @@ if (pageStatusAlertElem) {
 }
 
 // render for admin
+const adminUserGroupDetailElem = document.getElementById('admin-user-group-detail');
+if (adminUserGroupDetailElem != null) {
+  const userGroup = JSON.parse(adminUserGroupDetailElem.getAttribute('data-user-group'));
+  ReactDOM.render(
+    <I18nextProvider i18n={i18n}>
+      <UserGroupDetailPage
+        crowi={crowi}
+        userGroup={userGroup}
+      />
+    </I18nextProvider>,
+    adminUserGroupDetailElem,
+  );
+}
 const customCssEditorElem = document.getElementById('custom-css-editor');
 if (customCssEditorElem != null) {
   // get input[type=hidden] element
