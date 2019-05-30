@@ -114,6 +114,11 @@ export default class CodeMirrorEditor extends AbstractEditor {
       this.emojiAutoCompleteHelper = new EmojiAutoCompleteHelper(this.props.emojiStrategy);
       this.setState({ isEnabledEmojiAutoComplete: true });
     }
+  }
+
+  componentDidMount() {
+    // ensure to be able to resolve 'this' to use 'codemirror.commands.save'
+    this.getCodeMirror().codeMirrorEditor = this;
 
     // load theme
     const theme = this.props.editorOptions.theme;
@@ -122,11 +127,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
     // set keymap
     const keymapMode = this.props.editorOptions.keymapMode;
     this.setKeymapMode(keymapMode);
-  }
-
-  componentDidMount() {
-    // ensure to be able to resolve 'this' to use 'codemirror.commands.save'
-    this.getCodeMirror().codeMirrorEditor = this;
   }
 
   componentWillReceiveProps(nextProps) {
