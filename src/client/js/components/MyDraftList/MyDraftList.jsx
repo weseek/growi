@@ -29,7 +29,7 @@ export default class MyDraftList extends React.Component {
   }
 
   async getDraftsFromLocalStorage() {
-    const draftsAsObj = JSON.parse(this.props.crowi.localStorage.getItem('draft') || '{}');
+    const draftsAsObj = JSON.parse(window.localStorage.getItem('draft') || '{}');
 
     const res = await this.props.crowi.apiGet('/pages.exist', {
       pages: draftsAsObj,

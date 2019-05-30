@@ -3,6 +3,10 @@ import dateFnsFormat from 'date-fns/format';
 export default class CrowiTemplate {
 
   constructor(crowi) {
+    this.crowi = crowi;
+
+    this.getUser = this.getUser.bind(this);
+
     this.templatePattern = {
       year: this.getYear,
       month: this.getMonth,
@@ -54,8 +58,7 @@ export default class CrowiTemplate {
   }
 
   getUser() {
-    // FIXME
-    const username = window.crowi.me || null;
+    const username = this.crowi.me || null;
 
     if (!username) {
       return '';

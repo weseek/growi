@@ -62,11 +62,11 @@ export default class PageEditor extends React.Component {
     // initial rendering
     this.renderPreview(this.state.markdown);
 
-    this.props.crowi.window.addEventListener('beforeunload', this.showUnsavedWarning);
+    window.addEventListener('beforeunload', this.showUnsavedWarning);
   }
 
   componentWillUnmount() {
-    this.props.crowi.window.removeEventListener('beforeunload', this.showUnsavedWarning);
+    window.removeEventListener('beforeunload', this.showUnsavedWarning);
   }
 
   showUnsavedWarning(e) {

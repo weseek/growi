@@ -12,8 +12,6 @@ import * as entities from 'entities';
 import i18nFactory from './i18n';
 
 
-import Crowi from './util/Crowi';
-// import CrowiRenderer from './util/CrowiRenderer';
 import GrowiRenderer from './util/GrowiRenderer';
 
 import HeaderSearchBox from './components/HeaderSearchBox';
@@ -47,6 +45,7 @@ import CustomHeaderEditor from './components/Admin/CustomHeaderEditor';
 import AdminRebuildSearch from './components/Admin/AdminRebuildSearch';
 import GroupDeleteModal from './components/GroupDeleteModal/GroupDeleteModal';
 
+import AppContextContainer from './services/AppContextContainer';
 import PageContainer from './services/PageContainer';
 import CommentContainer from './components/PageComment/CommentContainer';
 import EditorContainer from './services/EditorContainer';
@@ -96,17 +95,16 @@ if (mainContent !== null) {
 }
 const isLoggedin = document.querySelector('.main-container.nologin') == null;
 
-// FIXME
-const crowi = new Crowi({
-  me: $('body').data('current-username'),
-  isAdmin: $('body').data('is-admin'),
-  csrfToken: $('body').data('csrftoken'),
-}, window);
-window.crowi = crowi;
-crowi.setConfig(JSON.parse(document.getElementById('crowi-context-hydrate').textContent || '{}'));
+const appContextContainer = new AppContextContainer();
+
+// backward compatibility
+const crowi = appContextContainer;
+window.crowi = appContextContainer;
+
 if (isLoggedin) {
-  crowi.fetchUsers();
+  appContextContainer.fetchUsers();
 }
+
 const socket = crowi.getWebSocket();
 const socketClientId = crowi.getSocketClientId();
 

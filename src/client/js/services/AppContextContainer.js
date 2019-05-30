@@ -1,32 +1,37 @@
-/**
- * Crowi context class for client
- */
+import { Container } from 'unstated';
 
 import axios from 'axios';
 import io from 'socket.io-client';
 
 import InterceptorManager from '@commons/service/interceptor-manager';
 
-import emojiStrategy from './emojione/emoji_strategy_shrinked.json';
+import emojiStrategy from '../util/emojione/emoji_strategy_shrinked.json';
 
 import {
   DetachCodeBlockInterceptor,
   RestoreCodeBlockInterceptor,
-} from './interceptor/detach-code-blocks';
+} from '../util/interceptor/detach-code-blocks';
 
-export default class Crowi {
+/**
+ * Service container related to options for Application
+ * @extends {Container} unstated Container
+ */
+export default class AppContextContainer extends Container {
 
-  constructor(context, window) {
-    this.context = context;
-    this.config = {};
+  constructor() {
+    super();
+
+    const body = document.querySelector('body');
+
+    this.me = body.dataset.currentUsername;
+    this.isAdmin = body.dataset.isAdmin;
+    this.csrfToken = body.dataset.csrftoken;
+
+    this.config = JSON.parse(document.getElementById('crowi-context-hydrate').textContent || '{}');
 
     const userAgent = window.navigator.userAgent.toLowerCase();
     this.isMobile = /iphone|ipad|android/.test(userAgent);
 
-    this.window = window;
-    this.location = window.location || {};
-    this.document = window.document || {};
-    this.localStorage = window.localStorage || {};
     this.socketClientId = Math.floor(Math.random() * 100000);
     this.page = undefined;
     this.pageEditor = undefined;
@@ -40,11 +45,6 @@ export default class Crowi {
     this.interceptorManager = new InterceptorManager();
     this.interceptorManager.addInterceptor(new DetachCodeBlockInterceptor(this), 10); // process as soon as possible
     this.interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(this), 900); // process as late as possible
-
-    // FIXME
-    this.me = context.me;
-    this.isAdmin = context.isAdmin;
-    this.csrfToken = context.csrfToken;
 
     this.users = [];
     this.userByName = {};
@@ -62,10 +62,6 @@ export default class Crowi {
    */
   getCrowiForJquery() {
     return window.Crowi;
-  }
-
-  setConfig(config) {
-    this.config = config;
   }
 
   getConfig() {
@@ -109,13 +105,13 @@ export default class Crowi {
     ];
 
     keys.forEach((key) => {
-      const keyContent = this.localStorage[key];
+      const keyContent = window.localStorage[key];
       if (keyContent) {
         try {
           this[key] = JSON.parse(keyContent);
         }
         catch (e) {
-          this.localStorage.removeItem(key);
+          window.localStorage.removeItem(key);
         }
       }
     });
@@ -124,14 +120,14 @@ export default class Crowi {
   fetchUsers() {
     const interval = 1000 * 60 * 15; // 15min
     const currentTime = new Date();
-    if (this.localStorage.lastFetched && interval > currentTime - new Date(this.localStorage.lastFetched)) {
+    if (window.localStorage.lastFetched && interval > currentTime - new Date(window.localStorage.lastFetched)) {
       return;
     }
 
     this.apiGet('/users.list', {})
       .then((data) => {
         this.users = data.users;
-        this.localStorage.users = JSON.stringify(data.users);
+        window.localStorage.users = JSON.stringify(data.users);
 
         const userByName = {};
         const userById = {};
@@ -141,15 +137,15 @@ export default class Crowi {
           userById[user._id] = user;
         }
         this.userByName = userByName;
-        this.localStorage.userByName = JSON.stringify(userByName);
+        window.localStorage.userByName = JSON.stringify(userByName);
 
         this.userById = userById;
-        this.localStorage.userById = JSON.stringify(userById);
+        window.localStorage.userById = JSON.stringify(userById);
 
-        this.localStorage.lastFetched = new Date();
+        window.localStorage.lastFetched = new Date();
       })
       .catch((err) => {
-        this.localStorage.removeItem('lastFetched');
+        window.localStorage.removeItem('lastFetched');
       // ignore errors
       });
   }
@@ -168,16 +164,16 @@ export default class Crowi {
 
   clearDraft(path) {
     delete this.draft[path];
-    this.localStorage.setItem('draft', JSON.stringify(this.draft));
+    window.localStorage.setItem('draft', JSON.stringify(this.draft));
   }
 
   clearAllDrafts() {
-    this.localStorage.removeItem('draft');
+    window.localStorage.removeItem('draft');
   }
 
   saveDraft(path, body) {
     this.draft[path] = body;
-    this.localStorage.setItem('draft', JSON.stringify(this.draft));
+    window.localStorage.setItem('draft', JSON.stringify(this.draft));
   }
 
   findDraft(path) {
