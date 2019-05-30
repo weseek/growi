@@ -25,6 +25,7 @@
   "Category": "Category",
   "User": "User",
   "User Name": "User Name",
+  "User List": "User List",
   "Add": "Add",
   "Method": "Method",
 
@@ -684,7 +685,6 @@
     "give_admin_access": "Give admin access",
     "remove_admin_access": "Remove admin access",
     "external_account": "External account management",
-    "user_list": "List of Users",
     "external_account_list": "External Account List",
     "back_to_user_management": "Back to User Management",
     "authentication_provider": "Authentication Provider",
@@ -707,7 +707,7 @@
   },
 
   "user_group_management": {
-    "group_list": "List of Group",
+    "group_list": "Group List",
     "back_to_list": "Go Back to Group List",
     "create_group": "Create New Group",
     "group_example": "e.g. : Group1",
@@ -725,9 +725,9 @@
     "select_group": "Select a group",
     "no_groups": "No groups to select",
     "no_pages": "There are no pages the group has view permission",
-    "how_to_add1": "Enter username and add",
+    "how_to_add1": "Enter a username to add",
     "how_to_add2": "Select a user from user list",
-    "remove_from_group": "Remove from group"
+    "remove_from_group": "Remove this group"
   },
 
   "importer_management": {
