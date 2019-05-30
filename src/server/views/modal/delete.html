@@ -28,7 +28,7 @@
             <p class="help-block"> {{ t('modal_delete.help.recursively', page.path) }}
             </p>
           </div>
-          {% if not page.isDeleted() and user.admin %}
+          {% if not page.isDeleted() and  user.canDeleteCompletely(user) %}
           <div class="checkbox checkbox-danger">
             <input name="completely" id="cbDeleteCompletely" value="1"  type="checkbox">
               <label for="cbDeleteCompletely" class="text-danger">{{ t('modal_delete.label.Delete completely') }}</label>
