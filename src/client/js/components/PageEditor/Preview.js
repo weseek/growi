@@ -5,7 +5,7 @@ import { Subscribe } from 'unstated';
 
 import RevisionBody from '../Page/RevisionBody';
 
-import EditorOptionsContainer from '../../services/EditorOptionsContainer';
+import EditorContainer from '../../services/EditorContainer';
 
 /**
  * Wrapper component for Page/RevisionBody
@@ -14,8 +14,8 @@ export default class Preview extends React.Component {
 
   render() {
     return (
-      <Subscribe to={[EditorOptionsContainer]}>
-        { editorOptionsContainer => (
+      <Subscribe to={[EditorContainer]}>
+        { editorContainer => (
           // eslint-disable-next-line arrow-body-style
           <div
             className="page-editor-preview-body"
@@ -31,7 +31,7 @@ export default class Preview extends React.Component {
           >
             <RevisionBody
               {...this.props}
-              renderMathJaxInRealtime={editorOptionsContainer.state.previewOptions.renderMathJaxInRealtime}
+              renderMathJaxInRealtime={editorContainer.state.previewOptions.renderMathJaxInRealtime}
             />
           </div>
         )}

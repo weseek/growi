@@ -49,7 +49,7 @@ import GroupDeleteModal from './components/GroupDeleteModal/GroupDeleteModal';
 
 import PageContainer from './services/PageContainer';
 import CommentContainer from './components/PageComment/CommentContainer';
-import EditorOptionsContainer from './services/EditorOptionsContainer';
+import EditorContainer from './services/EditorContainer';
 
 
 const logger = loggerFactory('growi:app');
@@ -120,7 +120,7 @@ window.crowiRenderer = crowiRenderer;
 // create unstated container instance
 const pageContainer = new PageContainer();
 const commentContainer = new CommentContainer(crowi, pageContainer);
-const editorOptionsContainer = new EditorOptionsContainer(defaultEditorOptions, defaultPreviewOptions);
+const editorContainer = new EditorContainer(defaultEditorOptions, defaultPreviewOptions);
 
 // FIXME
 const isEnabledPlugins = $('body').data('plugin-enabled');
@@ -324,7 +324,7 @@ let pageComments = null;
 if (pageId) {
   componentMappings['page-comments-list'] = (
     <I18nextProvider i18n={i18n}>
-      <Provider inject={[commentContainer, editorOptionsContainer]}>
+      <Provider inject={[commentContainer, editorContainer]}>
         <PageComments
           ref={(elem) => {
             if (pageComments == null) {
@@ -481,7 +481,7 @@ const pageEditorElem = document.getElementById('page-editor');
 if (pageEditorElem) {
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
-      <Provider inject={[editorOptionsContainer]}>
+      <Provider inject={[editorContainer]}>
         <PageEditor
           ref={(elem) => {
             if (pageEditor == null) {
@@ -509,7 +509,7 @@ if (pageEditorElem) {
 const writeCommentElem = document.getElementById('page-comment-write');
 if (writeCommentElem) {
   ReactDOM.render(
-    <Provider inject={[commentContainer, editorOptionsContainer]}>
+    <Provider inject={[commentContainer, editorContainer]}>
       <I18nextProvider i18n={i18n}>
         <CommentEditorLazyRenderer
           crowi={crowi}
@@ -528,7 +528,7 @@ const pageEditorOptionsSelectorElem = document.getElementById('page-editor-optio
 if (pageEditorOptionsSelectorElem) {
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
-      <Provider inject={[editorOptionsContainer]}>
+      <Provider inject={[editorContainer]}>
         <OptionsSelector crowi={crowi} />
       </Provider>
     </I18nextProvider>,

@@ -10,7 +10,7 @@ import TextAreaEditor from './TextAreaEditor';
 
 
 import pasteHelper from './PasteHelper';
-import EditorOptionsContainer from '../../services/EditorOptionsContainer';
+import EditorContainer from '../../services/EditorContainer';
 
 export default class Editor extends AbstractEditor {
 
@@ -274,12 +274,12 @@ export default class Editor extends AbstractEditor {
 
                 {/* for PC */}
                 { !isMobile && (
-                  <Subscribe to={[EditorOptionsContainer]}>
-                    { editorOptionsContainer => (
+                  <Subscribe to={[EditorContainer]}>
+                    { editorContainer => (
                       // eslint-disable-next-line arrow-body-style
                       <CodeMirrorEditor
                         ref={(c) => { this.cmEditor = c }}
-                        editorOptions={editorOptionsContainer.state.editorOptions}
+                        editorOptions={editorContainer.state.editorOptions}
                         onPasteFiles={this.pasteFilesHandler}
                         onDragEnter={this.dragEnterHandler}
                         {...this.props}

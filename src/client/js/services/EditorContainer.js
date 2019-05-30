@@ -4,7 +4,7 @@ import { Container } from 'unstated';
  * Service container related to options for Editor/Preview
  * @extends {Container} unstated Container
  */
-export default class EditorOptionsContainer extends Container {
+export default class EditorContainer extends Container {
 
   constructor(defaultEditorOptions, defaultPreviewOptions) {
     super();
