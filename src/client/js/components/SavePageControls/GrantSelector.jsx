@@ -11,6 +11,7 @@ import ListGroupItem from 'react-bootstrap/es/ListGroupItem';
 import Modal from 'react-bootstrap/es/Modal';
 
 import PageContainer from '../../services/PageContainer';
+import AppContainer from '../../services/AppContainer';
 
 const SPECIFIED_GROUP_VALUE = 'specifiedGroup';
 
@@ -108,7 +109,7 @@ class GrantSelector extends React.Component {
    * Retrieve user-group-relations data from backend
    */
   retrieveUserGroupRelations() {
-    this.props.crowi.apiGet('/me/user-group-relations')
+    this.props.appContainer.apiGet('/me/user-group-relations')
       .then((res) => {
         return res.userGroupRelations;
       })
@@ -240,7 +241,7 @@ class GrantSelector extends React.Component {
       ? (
         <div>
           <h4>There is no group to which you belong.</h4>
-          { this.props.crowi.isAdmin
+          { this.props.appContainer.isAdmin
             && <p><a href="/admin/user-groups"><i className="icon icon-fw icon-login"></i> Manage Groups</a></p>
           }
         </div>
@@ -289,10 +290,10 @@ class GrantSelectorWrapper extends React.PureComponent {
 
   render() {
     return (
-      <Subscribe to={[PageContainer]}>
-        { pageContainer => (
+      <Subscribe to={[AppContainer, PageContainer]}>
+        { (appContainer, pageContainer) => (
           // eslint-disable-next-line arrow-body-style
-          <GrantSelector pageContainer={pageContainer} {...this.props} />
+          <GrantSelector appContainer={appContainer} pageContainer={pageContainer} {...this.props} />
         )}
       </Subscribe>
     );
@@ -303,12 +304,11 @@ class GrantSelectorWrapper extends React.PureComponent {
 
 GrantSelector.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  crowi: PropTypes.object.isRequired,
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 };
 GrantSelectorWrapper.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  crowi: PropTypes.object.isRequired,
 };
 
 export default withTranslation(null, { withRef: true })(GrantSelectorWrapper);

@@ -16,7 +16,7 @@ import {
  * Service container related to options for Application
  * @extends {Container} unstated Container
  */
-export default class AppContextContainer extends Container {
+export default class AppContainer extends Container {
 
   constructor() {
     super();

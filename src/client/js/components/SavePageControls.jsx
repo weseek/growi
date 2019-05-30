@@ -9,16 +9,18 @@ import SplitButton from 'react-bootstrap/es/SplitButton';
 import MenuItem from 'react-bootstrap/es/MenuItem';
 
 import PageContainer from '../services/PageContainer';
+import AppContainer from '../services/AppContainer';
 
 import SlackNotification from './SlackNotification';
 import GrantSelector from './SavePageControls/GrantSelector';
+
 
 class SavePageControls extends React.PureComponent {
 
   constructor(props) {
     super(props);
 
-    const config = this.props.crowi.getConfig();
+    const config = this.props.appContainer.getConfig();
     this.hasSlackConfig = config.hasSlackConfig;
     this.isAclEnabled = config.isAclEnabled;
 
@@ -30,7 +32,7 @@ class SavePageControls extends React.PureComponent {
   }
 
   submit() {
-    this.props.crowi.setIsDocSaved(true);
+    this.props.appContainer.setIsDocSaved(true);
     this.props.onSubmit();
   }
 
@@ -60,7 +62,6 @@ class SavePageControls extends React.PureComponent {
           && (
           <div className="mr-2">
             <GrantSelector
-              crowi={this.props.crowi}
               ref={(elem) => {
                   if (this.grantSelector == null) {
                     this.grantSelector = elem;
@@ -99,10 +100,10 @@ class SavePageControlsWrapper extends React.PureComponent {
 
   render() {
     return (
-      <Subscribe to={[PageContainer]}>
-        { pageContainer => (
+      <Subscribe to={[AppContainer, PageContainer]}>
+        { (appContainer, pageContainer) => (
           // eslint-disable-next-line arrow-body-style
-          <SavePageControls pageContainer={pageContainer} {...this.props} />
+          <SavePageControls appContainer={appContainer} pageContainer={pageContainer} {...this.props} />
         )}
       </Subscribe>
     );
@@ -112,14 +113,13 @@ class SavePageControlsWrapper extends React.PureComponent {
 
 SavePageControls.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  crowi: PropTypes.object.isRequired,
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   onSubmit: PropTypes.func.isRequired,
 };
 
 SavePageControlsWrapper.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  crowi: PropTypes.object.isRequired,
   onSubmit: PropTypes.func.isRequired,
 };
 

@@ -45,7 +45,7 @@ import CustomHeaderEditor from './components/Admin/CustomHeaderEditor';
 import AdminRebuildSearch from './components/Admin/AdminRebuildSearch';
 import GroupDeleteModal from './components/GroupDeleteModal/GroupDeleteModal';
 
-import AppContextContainer from './services/AppContextContainer';
+import AppContainer from './services/AppContainer';
 import PageContainer from './services/PageContainer';
 import CommentContainer from './components/PageComment/CommentContainer';
 import EditorContainer from './services/EditorContainer';
@@ -95,23 +95,23 @@ if (mainContent !== null) {
 }
 const isLoggedin = document.querySelector('.main-container.nologin') == null;
 
-const appContextContainer = new AppContextContainer();
+const appContainer = new AppContainer();
 
 // backward compatibility
-const crowi = appContextContainer;
-window.crowi = appContextContainer;
+const crowi = appContainer;
+window.crowi = appContainer;
 
 if (isLoggedin) {
-  appContextContainer.fetchUsers();
+  appContainer.fetchUsers();
 }
 
-const socket = crowi.getWebSocket();
-const socketClientId = crowi.getSocketClientId();
+const socket = appContainer.getWebSocket();
+const socketClientId = appContainer.getSocketClientId();
 
 const crowiRenderer = new GrowiRenderer(crowi, null, {
   mode: 'page',
   isAutoSetup: false, // manually setup because plugins may configure it
-  renderToc: crowi.getCrowiForJquery().renderTocContent, // function for rendering Table Of Contents
+  renderToc: appContainer.getCrowiForJquery().renderTocContent, // function for rendering Table Of Contents
 });
 window.crowiRenderer = crowiRenderer;
 
@@ -145,7 +145,7 @@ const componentInstances = {};
  * @param {object} page Page instance
  */
 const saveWithShortcutSuccessHandler = function(page) {
-  const editorMode = crowi.getCrowiForJquery().getCurrentEditorMode();
+  const editorMode = appContainer.getCrowiForJquery().getCurrentEditorMode();
 
   // show toastr
   toastr.success(undefined, 'Saved successfully', {
@@ -163,7 +163,7 @@ const saveWithShortcutSuccessHandler = function(page) {
   pageRevisionIdHackmdSynced = page.revisionHackmdSynced;
 
   // set page id to SavePageControls
-  componentInstances.savePageControls.setPageId(pageId);
+  pageContainer.setState({ pageId });
 
   // Page component
   if (componentInstances.page != null) {
@@ -207,11 +207,11 @@ const errorHandler = function(error) {
 };
 
 const saveWithShortcut = function(markdown) {
-  const editorMode = crowi.getCrowiForJquery().getCurrentEditorMode();
+  const editorMode = appContainer.getCrowiForJquery().getCurrentEditorMode();
 
   let revisionId = pageRevisionId;
   // get options
-  const options = componentInstances.savePageControls.getCurrentOptionsToSave();
+  const options = pageContainer.getCurrentOptionsToSave();
   options.socketClientId = socketClientId;
   options.pageTags = pageTags;
 
@@ -224,10 +224,10 @@ const saveWithShortcut = function(markdown) {
 
   let promise;
   if (pageId == null) {
-    promise = crowi.createPage(pagePath, markdown, options);
+    promise = appContainer.createPage(pagePath, markdown, options);
   }
   else {
-    promise = crowi.updatePage(pageId, revisionId, markdown, options);
+    promise = appContainer.updatePage(pageId, revisionId, markdown, options);
   }
 
   promise
@@ -236,12 +236,12 @@ const saveWithShortcut = function(markdown) {
 };
 
 const saveWithSubmitButtonSuccessHandler = function() {
-  crowi.clearDraft(pagePath);
+  appContainer.clearDraft(pagePath);
   window.location.href = pagePath;
 };
 
 const saveWithSubmitButton = function(submitOpts) {
-  const editorMode = crowi.getCrowiForJquery().getCurrentEditorMode();
+  const editorMode = appContainer.getCrowiForJquery().getCurrentEditorMode();
   if (editorMode == null) {
     // do nothing
     return;
@@ -272,12 +272,12 @@ const saveWithSubmitButton = function(submitOpts) {
   // create or update
   if (pageId == null) {
     promise = promise.then((markdown) => {
-      return crowi.createPage(pagePath, markdown, options);
+      return appContainer.createPage(pagePath, markdown, options);
     });
   }
   else {
     promise = promise.then((markdown) => {
-      return crowi.updatePage(pageId, revisionId, markdown, options);
+      return appContainer.updatePage(pageId, revisionId, markdown, options);
     });
   }
 
@@ -290,7 +290,7 @@ const saveWithSubmitButton = function(submitOpts) {
 crowiRenderer.setup();
 
 // restore draft when the first time to edit
-const draft = crowi.findDraft(pagePath);
+const draft = appContainer.findDraft(pagePath);
 if (!pageRevisionId && draft != null) {
   markdown = draft;
 }
@@ -357,7 +357,7 @@ Object.keys(componentMappings).forEach((key) => {
 
 // set page if exists
 if (componentInstances.page != null) {
-  crowi.setPage(componentInstances.page);
+  appContainer.setPage(componentInstances.page);
 }
 
 // render LikeButton
@@ -397,9 +397,8 @@ const savePageControlsElem = document.getElementById('save-page-controls');
 if (savePageControlsElem) {
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
-      <Provider inject={[pageContainer]}>
+      <Provider inject={[appContainer, pageContainer]}>
         <SavePageControls
-          crowi={crowi}
           onSubmit={saveWithSubmitButton}
           ref={(elem) => {
               if (savePageControls == null) {
@@ -416,7 +415,7 @@ if (savePageControlsElem) {
 
 const recentCreatedControlsElem = document.getElementById('user-created-list');
 if (recentCreatedControlsElem) {
-  let limit = crowi.getConfig().recentCreatedLimit;
+  let limit = appContainer.getConfig().recentCreatedLimit;
   if (limit == null) {
     limit = 10;
   }
@@ -429,7 +428,7 @@ if (recentCreatedControlsElem) {
 
 const myDraftControlsElem = document.getElementById('user-draft-list');
 if (myDraftControlsElem) {
-  let limit = crowi.getConfig().recentCreatedLimit;
+  let limit = appContainer.getConfig().recentCreatedLimit;
   if (limit == null) {
     limit = 10;
   }
@@ -500,7 +499,7 @@ if (pageEditorElem) {
   );
   componentInstances.pageEditor = pageEditor;
   // set refs for setCaretLine/forceToFocus when tab is changed
-  crowi.setPageEditor(pageEditor);
+  appContainer.setPageEditor(pageEditor);
 }
 
 // render comment form
