@@ -199,6 +199,14 @@ module.exports = function(crowi) {
     });
   };
 
+  userSchema.methods.canDeleteCompletely = function(user) {
+    if (user.admin) {
+      return true;
+    }
+
+    return false;
+  };
+
   userSchema.methods.updateApiToken = function(callback) {
     const self = this;
 

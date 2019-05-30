@@ -26,9 +26,11 @@
         <li>
           <a href="#" class="btn btn-default btn-rounded btn-sm" data-target="#putBackPage" data-toggle="modal"><i class="icon-action-undo" aria-hidden="true"></i> {{ t('Put Back') }}</a>
         </li>
+        {% if user.canDeleteCompletely(user) %}
         <li>
           <a href="#" class="btn btn-danger btn-rounded btn-sm" data-target="#deletePage" data-toggle="modal"><i class="icon-fire" aria-hidden="true"></i> {{ t('Delete Completely') }}</a>
         </li>
+        {% endif %}
       </ul>{# /.pull-right #}
       {% endif %}
     </div>
