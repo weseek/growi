@@ -44,6 +44,7 @@ import CustomCssEditor from './components/Admin/CustomCssEditor';
 import CustomScriptEditor from './components/Admin/CustomScriptEditor';
 import CustomHeaderEditor from './components/Admin/CustomHeaderEditor';
 import AdminRebuildSearch from './components/Admin/AdminRebuildSearch';
+import ImportDataPage from './components/Admin/ImportData/ImportDataPage';
 import GroupDeleteModal from './components/GroupDeleteModal/GroupDeleteModal';
 
 
@@ -602,6 +603,17 @@ if (adminGrantSelectorElem != null) {
     adminGrantSelectorElem,
   );
 }
+const importDataPageElem = document.getElementById('import-data-page');
+console.log(importDataPageElem);
+if (importDataPageElem != null) {
+  ReactDOM.render(
+    <ImportDataPageElem
+      crowi={crowi}
+    />,
+    importDataPageElem,
+  );
+}
+console.log(importDataPageElem);
 
 // notification from websocket
 function updatePageStatusAlert(page, user) {
