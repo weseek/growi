@@ -2,6 +2,7 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'unstated';
 import { I18nextProvider } from 'react-i18next';
 import * as toastr from 'toastr';
 
@@ -600,12 +601,14 @@ if (adminUserGroupPageElem != null) {
 
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
-      <UserGroupPage
-        crowi={crowi}
-        userGroups={userGroups}
-        userGroupRelations={userGroupRelations}
-        isAclEnabled={isAclEnabled}
-      />
+      <Provider inject={[]}>
+        <UserGroupPage
+          crowi={crowi}
+          userGroups={userGroups}
+          userGroupRelations={userGroupRelations}
+          isAclEnabled={isAclEnabled}
+        />
+      </Provider>
     </I18nextProvider>,
     adminUserGroupPageElem,
   );

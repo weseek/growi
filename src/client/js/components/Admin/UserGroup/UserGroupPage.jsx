@@ -1,5 +1,7 @@
+/* eslint-disable react/no-multi-comp */
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
+import { Subscribe } from 'unstated';
 
 import UserGroupTable from './UserGroupTable';
 import UserGroupCreateForm from './UserGroupCreateForm';
@@ -149,6 +151,24 @@ class UserGroupPage extends React.Component {
 
 }
 
+/**
+ * Wrapper component for using unstated
+ */
+class UserGroupPageWrapper extends React.PureComponent {
+
+  render() {
+    return (
+      <Subscribe to={[]}>
+        {() => (
+          // eslint-disable-next-line arrow-body-style
+          <UserGroupPage {...this.props} />
+        )}
+      </Subscribe>
+    );
+  }
+
+}
+
 UserGroupPage.propTypes = {
   crowi: PropTypes.object.isRequired,
   userGroups: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -156,4 +176,11 @@ UserGroupPage.propTypes = {
   isAclEnabled: PropTypes.bool,
 };
 
-export default UserGroupPage;
+UserGroupPageWrapper.propTypes = {
+  crowi: PropTypes.object.isRequired,
+  userGroups: PropTypes.arrayOf(PropTypes.object).isRequired,
+  userGroupRelations: PropTypes.object.isRequired,
+  isAclEnabled: PropTypes.bool,
+};
+
+export default UserGroupPageWrapper;

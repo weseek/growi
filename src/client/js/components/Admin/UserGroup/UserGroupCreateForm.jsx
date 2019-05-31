@@ -1,5 +1,7 @@
+/* eslint-disable react/no-multi-comp */
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Subscribe } from 'unstated';
 import { withTranslation } from 'react-i18next';
 
 import { apiErrorHandler, apiSuccessHandler } from '../../../util/apiNotification';
@@ -109,6 +111,24 @@ class UserGroupCreateForm extends React.Component {
 
 }
 
+/**
+ * Wrapper component for using unstated
+ */
+class UserGroupCreateFormWrapper extends React.PureComponent {
+
+  render() {
+    return (
+      <Subscribe to={[]}>
+        {() => (
+          // eslint-disable-next-line arrow-body-style
+          <UserGroupCreateForm {...this.props} />
+        )}
+      </Subscribe>
+    );
+  }
+
+}
+
 UserGroupCreateForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   crowi: PropTypes.object.isRequired,
@@ -116,4 +136,11 @@ UserGroupCreateForm.propTypes = {
   onCreate: PropTypes.func.isRequired,
 };
 
-export default withTranslation()(UserGroupCreateForm);
+UserGroupCreateFormWrapper.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
+  crowi: PropTypes.object.isRequired,
+  isAclEnabled: PropTypes.bool,
+  onCreate: PropTypes.func.isRequired,
+};
+
+export default withTranslation()(UserGroupCreateFormWrapper);

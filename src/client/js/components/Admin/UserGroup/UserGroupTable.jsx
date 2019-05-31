@@ -1,5 +1,7 @@
+/* eslint-disable react/no-multi-comp */
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
+import { Subscribe } from 'unstated';
 import { withTranslation } from 'react-i18next';
 import dateFnsFormat from 'date-fns/format';
 
@@ -98,6 +100,24 @@ class UserGroupTable extends React.Component {
 
 }
 
+/**
+ * Wrapper component for using unstated
+ */
+class UserGroupTableWrapper extends React.PureComponent {
+
+  render() {
+    return (
+      <Subscribe to={[]}>
+        {() => (
+          // eslint-disable-next-line arrow-body-style
+          <UserGroupTable {...this.props} />
+        )}
+      </Subscribe>
+    );
+  }
+
+}
+
 UserGroupTable.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   crowi: PropTypes.object.isRequired,
@@ -107,4 +127,13 @@ UserGroupTable.propTypes = {
   onDelete: PropTypes.func.isRequired,
 };
 
-export default withTranslation()(UserGroupTable);
+UserGroupTableWrapper.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
+  crowi: PropTypes.object.isRequired,
+  userGroups: PropTypes.arrayOf(PropTypes.object).isRequired,
+  userGroupRelations: PropTypes.object.isRequired,
+  isAclEnabled: PropTypes.bool,
+  onDelete: PropTypes.func.isRequired,
+};
+
+export default withTranslation()(UserGroupTableWrapper);
