@@ -5,11 +5,15 @@ module.exports = function(crowi, app) {
   const Page = crowi.model('Page');
   const ApiResponse = require('../util/apiResponse');
   const globalNotificationService = crowi.getGlobalNotificationService();
+  const { body } = require('express-validator/check');
+  const mongoose = require('mongoose');
+  const ObjectId = mongoose.Types.ObjectId;
 
   const actions = {};
   const api = {};
 
   actions.api = api;
+  api.validators = {};
 
   /**
    * @api {get} /comments.get Get comments of the page of the revision
@@ -50,11 +54,7 @@ module.exports = function(crowi, app) {
     res.json(ApiResponse.success({ comments }));
   };
 
-  api.addValidator = function() {
-    const { body } = require('express-validator/check');
-    const mongoose = require('mongoose');
-
-    const ObjectId = mongoose.Schema.Types.ObjectId;
+  api.validators.add = function() {
     const validator = [
       body('commentForm.page_id').exists(),
       body('commentForm.revision_id').exists(),
