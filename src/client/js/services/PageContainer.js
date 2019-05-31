@@ -22,6 +22,7 @@ export default class PageContainer extends Container {
 
 
     this.state = {
+      markdown: null, // will be initialized after initStateMarkdown()
       pageId: mainContent.getAttribute('data-page-id'),
       revisionId: mainContent.getAttribute('data-page-revision-id'),
       revisionCreatedAt: +mainContent.getAttribute('data-page-revision-created'),
