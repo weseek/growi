@@ -1,7 +1,6 @@
 import { Container } from 'unstated';
 
 import axios from 'axios';
-import io from 'socket.io-client';
 
 import InterceptorManager from '@commons/service/interceptor-manager';
 
@@ -51,8 +50,6 @@ export default class AppContainer extends Container {
     this.draft = {};
 
     this.recoverData();
-
-    this.socket = io();
 
     this.containerInstances = {};
     this.componentInstances = {};
@@ -134,10 +131,6 @@ export default class AppContainer extends Container {
 
   getIsDocSaved() {
     return this.isDocSaved;
-  }
-
-  getWebSocket() {
-    return this.socket;
   }
 
   getEmojiStrategy() {

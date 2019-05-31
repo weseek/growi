@@ -51,7 +51,6 @@ import CommentContainer from './services/CommentContainer';
 import EditorContainer from './services/EditorContainer';
 import WebsocketContainer from './services/WebsocketContainer';
 
-
 const logger = loggerFactory('growi:app');
 
 if (!window) {
@@ -107,6 +106,8 @@ const injectableContainers = [
 ];
 window.appContainer = appContainer;
 
+logger.info('unstated containers have been initialized');
+
 // backward compatibility
 const crowi = appContainer;
 window.crowi = appContainer;
@@ -114,8 +115,6 @@ window.crowi = appContainer;
 if (isLoggedin) {
   appContainer.fetchUsers();
 }
-
-const socket = appContainer.getWebSocket();
 
 const crowiRenderer = new GrowiRenderer(crowi, null, {
   mode: 'page',
@@ -483,65 +482,6 @@ if (adminGrantSelectorElem != null) {
     adminGrantSelectorElem,
   );
 }
-
-socket.on('page:create', (data) => {
-  // skip if triggered myself
-  if (data.socketClientId != null && data.socketClientId === websocketContainer.getCocketClientId()) {
-    return;
-  }
-
-  logger.debug({ obj: data }, `websocket on 'page:create'`); // eslint-disable-line quotes
-
-  // update PageStatusAlert
-  if (data.page.path === pagePath) {
-    pageContainer.setLatestRemotePageData(data.page, data.user);
-  }
-});
-socket.on('page:update', (data) => {
-  // skip if triggered myself
-  if (data.socketClientId != null && data.socketClientId === websocketContainer.getCocketClientId()) {
-    return;
-  }
-
-  logger.debug({ obj: data }, `websocket on 'page:update'`); // eslint-disable-line quotes
-
-  if (data.page.path === pagePath) {
-    // update PageStatusAlert
-    pageContainer.setLatestRemotePageData(data.page, data.user);
-    // update PageEditorByHackmd
-    const pageEditorByHackmd = appContainer.getComponentInstance('PageEditorByHackmd');
-    if (pageEditorByHackmd != null) {
-      const page = data.page;
-      pageEditorByHackmd.setRevisionId(page.revision._id, page.revisionHackmdSynced);
-      pageEditorByHackmd.setHasDraftOnHackmd(data.page.hasDraftOnHackmd);
-    }
-  }
-});
-socket.on('page:delete', (data) => {
-  // skip if triggered myself
-  if (data.socketClientId != null && data.socketClientId === websocketContainer.getCocketClientId()) {
-    return;
-  }
-
-  logger.debug({ obj: data }, `websocket on 'page:delete'`); // eslint-disable-line quotes
-
-  // update PageStatusAlert
-  if (data.page.path === pagePath) {
-    pageContainer.setLatestRemotePageData(data.page, data.user);
-  }
-});
-socket.on('page:editingWithHackmd', (data) => {
-  // skip if triggered myself
-  if (data.socketClientId != null && data.socketClientId === websocketContainer.getCocketClientId()) {
-    return;
-  }
-
-  logger.debug({ obj: data }, `websocket on 'page:editingWithHackmd'`); // eslint-disable-line quotes
-
-  if (data.page.path === pagePath) {
-    pageContainer.setState({ isHackmdDraftUpdatingInRealtime: true });
-  }
-});
 
 // うわーもうー (commented by Crowi team -- 2018.03.23 Yuki Takei)
 $('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', () => {

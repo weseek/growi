@@ -1,6 +1,10 @@
 import { Container } from 'unstated';
 
+import loggerFactory from '@alias/logger';
+
 import * as entities from 'entities';
+
+const logger = loggerFactory('growi:services:PageContainer');
 
 /**
  * Service container related to Page
@@ -17,6 +21,7 @@ export default class PageContainer extends Container {
     const mainContent = document.querySelector('#content-main');
 
     if (mainContent == null) {
+      logger.debug('#content-main element is not exists');
       return;
     }
 
@@ -29,7 +34,7 @@ export default class PageContainer extends Container {
       revisionId,
       revisionCreatedAt: +mainContent.getAttribute('data-page-revision-created'),
       revisionIdHackmdSynced: mainContent.getAttribute('data-page-revision-id-hackmd-synced'),
-      path: mainContent.getAttribute['data-path'],
+      path: mainContent.getAttribute('data-path'),
 
       templateTagData: mainContent.getAttribute('data-template-tags') || '',
 
@@ -50,6 +55,9 @@ export default class PageContainer extends Container {
 
     this.initStateMarkdown();
     this.initStateGrant();
+
+    this.addWebSocketEventHandlers = this.addWebSocketEventHandlers.bind(this);
+    this.addWebSocketEventHandlers();
   }
 
   initStateMarkdown() {
@@ -98,6 +106,76 @@ export default class PageContainer extends Container {
       revisionIdHackmdSynced: page.revisionHackmdSynced,
       lastUpdateUsername: user.name,
     });
+  }
+
+  addWebSocketEventHandlers() {
+    const appContainer = this.appContainer;
+    const pageContainer = this;
+    const websocketContainer = this.appContainer.getContainer('WebsocketContainer');
+    const socket = websocketContainer.getWebSocket();
+
+    socket.on('page:create', (data) => {
+      // skip if triggered myself
+      if (data.socketClientId != null && data.socketClientId === websocketContainer.getCocketClientId()) {
+        return;
+      }
+
+      logger.debug({ obj: data }, `websocket on 'page:create'`); // eslint-disable-line quotes
+
+      // update PageStatusAlert
+      if (data.page.path === pageContainer.state.path) {
+        this.setLatestRemotePageData(data.page, data.user);
+      }
+    });
+
+    socket.on('page:update', (data) => {
+      // skip if triggered myself
+      if (data.socketClientId != null && data.socketClientId === websocketContainer.getCocketClientId()) {
+        return;
+      }
+
+      logger.debug({ obj: data }, `websocket on 'page:update'`); // eslint-disable-line quotes
+
+      if (data.page.path === pageContainer.state.path) {
+        // update PageStatusAlert
+        pageContainer.setLatestRemotePageData(data.page, data.user);
+        // update PageEditorByHackmd
+        const pageEditorByHackmd = appContainer.getComponentInstance('PageEditorByHackmd');
+        if (pageEditorByHackmd != null) {
+          const page = data.page;
+          pageEditorByHackmd.setRevisionId(page.revision._id, page.revisionHackmdSynced);
+          pageEditorByHackmd.setHasDraftOnHackmd(data.page.hasDraftOnHackmd);
+        }
+      }
+    });
+
+    socket.on('page:delete', (data) => {
+      // skip if triggered myself
+      if (data.socketClientId != null && data.socketClientId === websocketContainer.getCocketClientId()) {
+        return;
+      }
+
+      logger.debug({ obj: data }, `websocket on 'page:delete'`); // eslint-disable-line quotes
+
+      // update PageStatusAlert
+      if (data.page.path === pageContainer.state.path) {
+        pageContainer.setLatestRemotePageData(data.page, data.user);
+      }
+    });
+
+    socket.on('page:editingWithHackmd', (data) => {
+      // skip if triggered myself
+      if (data.socketClientId != null && data.socketClientId === websocketContainer.getCocketClientId()) {
+        return;
+      }
+
+      logger.debug({ obj: data }, `websocket on 'page:editingWithHackmd'`); // eslint-disable-line quotes
+
+      if (data.page.path === pageContainer.state.path) {
+        pageContainer.setState({ isHackmdDraftUpdatingInRealtime: true });
+      }
+    });
+
   }
 
 }
