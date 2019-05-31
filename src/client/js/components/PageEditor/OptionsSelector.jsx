@@ -73,7 +73,7 @@ class OptionsSelector extends React.Component {
     editorContainer.setState({ editorOptions: newOpts });
 
     // save to localStorage
-    editorContainer.saveToLocalStorage();
+    editorContainer.saveOptsToLocalStorage();
   }
 
   onChangeKeymapMode() {
@@ -84,7 +84,7 @@ class OptionsSelector extends React.Component {
     editorContainer.setState({ editorOptions: newOpts });
 
     // save to localStorage
-    editorContainer.saveToLocalStorage();
+    editorContainer.saveOptsToLocalStorage();
   }
 
   onClickStyleActiveLine(event) {
@@ -98,7 +98,7 @@ class OptionsSelector extends React.Component {
     editorContainer.setState({ editorOptions: newOpts });
 
     // save to localStorage
-    editorContainer.saveToLocalStorage();
+    editorContainer.saveOptsToLocalStorage();
   }
 
   onClickRenderMathJaxInRealtime(event) {
@@ -112,7 +112,7 @@ class OptionsSelector extends React.Component {
     editorContainer.setState({ previewOptions: newOpts });
 
     // save to localStorage
-    editorContainer.saveToLocalStorage();
+    editorContainer.saveOptsToLocalStorage();
   }
 
   /*

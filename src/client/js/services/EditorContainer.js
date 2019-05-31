@@ -37,7 +37,7 @@ export default class EditorContainer extends Container {
     this.state[stateKey] = Object.assign(defaultOptions, loadedOpts);
   }
 
-  saveToLocalStorage() {
+  saveOptsToLocalStorage() {
     window.localStorage.setItem('editorOptions', JSON.stringify(this.state.editorOptions));
     window.localStorage.setItem('previewOptions', JSON.stringify(this.state.previewOptions));
   }
