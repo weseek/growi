@@ -13,7 +13,6 @@ import AppContainer from '../../services/AppContainer';
 import CommentContainer from '../../services/CommentContainer';
 import GrowiRenderer from '../../util/GrowiRenderer';
 
-import ReactUtils from '../ReactUtils';
 import UserPicture from '../User/UserPicture';
 import Editor from '../PageEditor/Editor';
 import SlackNotification from '../SlackNotification';
@@ -210,8 +209,7 @@ class CommentEditor extends React.Component {
     const { appContainer } = this.props;
     const username = appContainer.me;
     const user = appContainer.findUser(username);
-    const comment = this.state.comment;
-    const commentPreview = this.state.isMarkdown ? this.getCommentHtml() : ReactUtils.nl2br(comment);
+    const commentPreview = this.state.isMarkdown ? this.getCommentHtml() : null;
     const emojiStrategy = appContainer.getEmojiStrategy();
 
     const isLayoutTypeGrowi = this.state.isLayoutTypeGrowi;
