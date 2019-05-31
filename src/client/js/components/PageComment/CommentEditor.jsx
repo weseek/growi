@@ -8,16 +8,17 @@ import Button from 'react-bootstrap/es/Button';
 import Tab from 'react-bootstrap/es/Tab';
 import Tabs from 'react-bootstrap/es/Tabs';
 import * as toastr from 'toastr';
-import UserPicture from '../User/UserPicture';
-import ReactUtils from '../ReactUtils';
 
 import AppContainer from '../../services/AppContainer';
+import CommentContainer from '../../services/CommentContainer';
 import GrowiRenderer from '../../util/GrowiRenderer';
 
+import ReactUtils from '../ReactUtils';
+import UserPicture from '../User/UserPicture';
 import Editor from '../PageEditor/Editor';
-import CommentContainer from './CommentContainer';
-import CommentPreview from './CommentPreview';
 import SlackNotification from '../SlackNotification';
+
+import CommentPreview from './CommentPreview';
 
 /**
  *

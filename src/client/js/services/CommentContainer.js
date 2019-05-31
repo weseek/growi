@@ -69,7 +69,6 @@ export default class CommentContainer extends Container {
     return this.appContainer.apiPost('/comments.add', {
       commentForm: {
         comment,
-        _csrf: this.appContainer.csrfToken,
         page_id: pageId,
         revision_id: revisionId,
         is_markdown: isMarkdown,
@@ -101,7 +100,6 @@ export default class CommentContainer extends Container {
 
     const endpoint = '/attachments.add';
     const formData = new FormData();
-    formData.append('_csrf', this.appContainer.csrfToken);
     formData.append('file', file);
     formData.append('path', pagePath);
     formData.append('page_id', pageId);

@@ -47,7 +47,7 @@ import GroupDeleteModal from './components/GroupDeleteModal/GroupDeleteModal';
 
 import AppContainer from './services/AppContainer';
 import PageContainer from './services/PageContainer';
-import CommentContainer from './components/PageComment/CommentContainer';
+import CommentContainer from './services/CommentContainer';
 import EditorContainer from './services/EditorContainer';
 import WebsocketContainer from './services/WebsocketContainer';
 

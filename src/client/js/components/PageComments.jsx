@@ -10,7 +10,7 @@ import { withTranslation } from 'react-i18next';
 import GrowiRenderer from '../util/GrowiRenderer';
 
 import AppContainer from '../services/AppContainer';
-import CommentContainer from './PageComment/CommentContainer';
+import CommentContainer from '../services/CommentContainer';
 
 import CommentEditor from './PageComment/CommentEditor';
 
