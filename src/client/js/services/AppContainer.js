@@ -55,6 +55,7 @@ export default class AppContainer extends Container {
 
     this.socket = io();
 
+    this.containerInstances = {};
     this.componentInstances = {};
   }
 
@@ -67,6 +68,28 @@ export default class AppContainer extends Container {
 
   getConfig() {
     return this.config;
+  }
+
+  /**
+   * Register instance
+   * @param {object} instance unstated container instance
+   */
+  registerContainer(instance) {
+    if (instance == null) {
+      throw new Error('The specified instance must not be null');
+    }
+
+    const className = instance.constructor.name;
+
+    if (this.containerInstances[className] != null) {
+      throw new Error('The specified instance couldn\'t register because the same type object has already been registered');
+    }
+
+    this.containerInstances[className] = instance;
+  }
+
+  getContainer(className) {
+    return this.containerInstances[className];
   }
 
   /**
@@ -171,20 +194,6 @@ export default class AppContainer extends Container {
         window.localStorage.removeItem('lastFetched');
       // ignore errors
       });
-  }
-
-  setCaretLine(line) {
-    const pageEditor = this.getComponentInstance('PageEditor');
-    if (pageEditor != null) {
-      pageEditor.setCaretLine(line);
-    }
-  }
-
-  focusToEditor() {
-    const pageEditor = this.getComponentInstance('PageEditor');
-    if (pageEditor != null) {
-      pageEditor.focusToEditor();
-    }
   }
 
   clearDraft(path) {

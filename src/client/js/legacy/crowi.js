@@ -55,14 +55,15 @@ Crowi.setCaretLineAndFocusToEditor = function() {
     return;
   }
 
-  const crowi = window.crowi;
+  const { appContainer } = window;
+  const editorContainer = appContainer.getContainer('EditorContainer');
   const line = pageEditorDom.getAttribute('data-caret-line') || 0;
-  crowi.setCaretLine(+line);
+  editorContainer.setCaretLine(+line);
   // reset data-caret-line attribute
   pageEditorDom.removeAttribute('data-caret-line');
 
   // focus
-  crowi.focusToEditor();
+  editorContainer.focusToEditor();
 };
 
 // original: middleware.swigFilter

@@ -6,8 +6,11 @@ import { Container } from 'unstated';
  */
 export default class EditorContainer extends Container {
 
-  constructor(defaultEditorOptions, defaultPreviewOptions) {
+  constructor(appContainer, defaultEditorOptions, defaultPreviewOptions) {
     super();
+
+    this.appContainer = appContainer;
+    this.appContainer.registerContainer(this);
 
     this.state = {
       editorOptions: {},
@@ -40,6 +43,20 @@ export default class EditorContainer extends Container {
   saveOptsToLocalStorage() {
     window.localStorage.setItem('editorOptions', JSON.stringify(this.state.editorOptions));
     window.localStorage.setItem('previewOptions', JSON.stringify(this.state.previewOptions));
+  }
+
+  setCaretLine(line) {
+    const pageEditor = this.appContainer.getComponentInstance('PageEditor');
+    if (pageEditor != null) {
+      pageEditor.setCaretLine(line);
+    }
+  }
+
+  focusToEditor() {
+    const pageEditor = this.appContainer.getComponentInstance('PageEditor');
+    if (pageEditor != null) {
+      pageEditor.focusToEditor();
+    }
   }
 
 }

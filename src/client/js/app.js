@@ -96,6 +96,7 @@ if (mainContent !== null) {
 const isLoggedin = document.querySelector('.main-container.nologin') == null;
 
 const appContainer = new AppContainer();
+window.appContainer = appContainer;
 
 // backward compatibility
 const crowi = appContainer;
@@ -118,7 +119,7 @@ window.crowiRenderer = crowiRenderer;
 // create unstated container instance
 const pageContainer = new PageContainer();
 const commentContainer = new CommentContainer(crowi, pageContainer);
-const editorContainer = new EditorContainer(defaultEditorOptions, defaultPreviewOptions);
+const editorContainer = new EditorContainer(appContainer, defaultEditorOptions, defaultPreviewOptions);
 
 // FIXME
 const isEnabledPlugins = $('body').data('plugin-enabled');
