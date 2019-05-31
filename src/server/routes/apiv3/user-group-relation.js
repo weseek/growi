@@ -6,14 +6,18 @@ const express = require('express');
 
 const router = express.Router();
 
-const middleware = require('../../util/middlewares');
-
-const { loginRequired, adminRequired, formValid } = middleware;
+const {
+  accessTokenParser,
+  loginRequired,
+  adminRequired,
+} = require('../../util/middlewares');
 
 const ApiResponse = require('../../util/apiResponse');
 
 module.exports = (crowi) => {
   const { UserGroup, UserGroupRelation } = crowi.models;
+
+  router.use('/', accessTokenParser(crowi));
 
   router.get('/', loginRequired(crowi), adminRequired(), async(req, res) => {
     // TODO: filter with querystring? or body

@@ -10,12 +10,20 @@ const { body, param } = require('express-validator/check');
 
 const validator = {};
 
-const { loginRequired, adminRequired, formValid } = require('../../util/middlewares');
+const {
+  accessTokenParser,
+  csrfVerify,
+  loginRequired,
+  adminRequired,
+  formValid,
+} = require('../../util/middlewares');
 
 const ApiResponse = require('../../util/apiResponse');
 
 module.exports = (crowi) => {
   const { UserGroup, UserGroupRelation } = crowi.models;
+
+  router.use('/', accessTokenParser(crowi));
 
   router.get('/', loginRequired(crowi), adminRequired(), async(req, res) => {
     // TODO: filter with querystring
@@ -33,7 +41,7 @@ module.exports = (crowi) => {
     body('name').trim().exists(),
   ];
 
-  router.post('/create', loginRequired(crowi), adminRequired(), validator.create, formValid(), async(req, res) => {
+  router.post('/create', loginRequired(crowi), adminRequired(), csrfVerify(crowi), validator.create, formValid(), async(req, res) => {
     const { name } = req.body;
 
     try {
@@ -55,7 +63,7 @@ module.exports = (crowi) => {
     body('transferToUserGroupId').trim(),
   ];
 
-  router.post('/:id/delete', loginRequired(crowi), adminRequired(), validator.delete, formValid(), async(req, res) => {
+  router.post('/:id/delete', loginRequired(crowi), adminRequired(), csrfVerify(crowi), validator.delete, formValid(), async(req, res) => {
     const { id: deleteGroupId } = req.params;
     const { actionName, transferToUserGroupId } = req.body;
 
@@ -72,11 +80,11 @@ module.exports = (crowi) => {
   });
 
   // return one group with the id
-  // router.get('/:id', loginRequired(crowi), adminRequired(), async(req, res) => {
+  // router.get('/:id', async(req, res) => {
   // });
 
   // update one group with the id
-  // router.post('/:id/update', loginRequired(crowi), adminRequired(), async(req, res) => {
+  // router.post('/:id/update', async(req, res) => {
   // });
 
   router.get('/:id/users', loginRequired(crowi), adminRequired(), async(req, res) => {
