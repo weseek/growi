@@ -3887,6 +3887,14 @@ express-session@^1.16.1:
     safe-buffer "5.1.2"
     uid-safe "~2.1.5"
 
+express-validator@^5.3.1:
+  version "5.3.1"
+  resolved "https://registry.yarnpkg.com/express-validator/-/express-validator-5.3.1.tgz#6f42c6d52554441b0360c40ccfb555b1770affe2"
+  integrity sha512-g8xkipBF6VxHbO1+ksC7nxUU7+pWif0+OZXjZTybKJ/V0aTVhuCoHbyhIPgSYVldwQLocGExPtB2pE0DqK4jsw==
+  dependencies:
+    lodash "^4.17.10"
+    validator "^10.4.0"
+
 express-webpack-assets@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/express-webpack-assets/-/express-webpack-assets-0.1.0.tgz#000fb3413eb0d512cbd6cd3f6a10b5e70dbe0079"
@@ -10939,7 +10947,7 @@ validate-npm-package-license@^3.0.1:
     spdx-correct "~1.0.0"
     spdx-expression-parse "~1.0.0"
 
-validator@>=10.11.0, validator@^10.0.0:
+validator@>=10.11.0, validator@^10.0.0, validator@^10.4.0:
   version "10.11.0"
   resolved "https://registry.yarnpkg.com/validator/-/validator-10.11.0.tgz#003108ea6e9a9874d31ccc9e5006856ccd76b228"
   integrity sha512-X/p3UZerAIsbBfN/IwahhYaBbY68EN/UQBWHtsbXGT5bfrH/p4NQzUCG1kF/rtKaNpnJ7jAu6NGTdSNtyNIXMw==

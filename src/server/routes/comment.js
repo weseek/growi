@@ -61,11 +61,13 @@ module.exports = function(crowi, app) {
    * @apiParam {Number} comment_position=-1 Line number of the comment
    */
   api.add = async function(req, res) {
-    const commentForm = req.form.commentForm;
-    const slackNotificationForm = req.form.slackNotificationForm;
+    const { commentForm, slackNotificationForm } = req.body;
+    const { validationResult } = require('express-validator/check');
 
-    if (!req.form.isValid) {
+    const errors = validationResult(req.body);
+    if (!errors.isEmpty()) {
       // return res.json(ApiResponse.error('Invalid comment.'));
+      // return res.status(422).json({ errors: errors.array() });
       return res.json(ApiResponse.error('コメントを入力してください。'));
     }
 
@@ -74,7 +76,7 @@ module.exports = function(crowi, app) {
     const comment = commentForm.comment;
     const position = commentForm.comment_position || -1;
     const isMarkdown = commentForm.is_markdown;
-    const replyTo = commentForm.replyTo === '' ? undefined : commentForm.replyTo;
+    const replyTo = commentForm.replyTo;
 
     // check whether accessible
     const isAccessible = await Page.isAccessiblePageByViewer(pageId, req.user);

@@ -1,15 +1,19 @@
-const form = require('express-form');
+const { body } = require('express-validator/check');
+const mongoose = require('mongoose');
 
-const field = form.field;
+const ObjectId = mongoose.Schema.Types.ObjectId;
+module.exports = [
+  body('commentForm.page_id').exists(),
+  body('commentForm.revision_id').exists(),
+  body('commentForm.comment').exists(),
+  body('commentForm.comment_position').isInt(),
+  body('commentForm.is_markdown').isBoolean(),
+  body('commentForm.replyTo').exists().custom((value) => {
+    if (value === '') {
+      return undefined;
+    }
+    return ObjectId(value);
+  }),
 
-module.exports = form(
-  field('commentForm.page_id').trim().required(),
-  field('commentForm.revision_id').trim().required(),
-  field('commentForm.comment').trim().required(),
-  field('commentForm.comment_position').trim().toInt(),
-  field('commentForm.is_markdown').trim().toBooleanStrict(),
-  field('commentForm.replyTo').trim(),
-
-  field('slackNotificationForm.isSlackEnabled').trim().toBooleanStrict().required(),
-  field('slackNotificationForm.slackChannels').trim(),
-);
+  body('slackNotificationForm.isSlackEnabled').isBoolean().exists(),
+];
