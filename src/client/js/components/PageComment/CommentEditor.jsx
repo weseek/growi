@@ -9,7 +9,6 @@ import Tab from 'react-bootstrap/es/Tab';
 import Tabs from 'react-bootstrap/es/Tabs';
 import * as toastr from 'toastr';
 import UserPicture from '../User/UserPicture';
-import ReactUtils from '../ReactUtils';
 
 import GrowiRenderer from '../../util/GrowiRenderer';
 
@@ -208,8 +207,7 @@ class CommentEditor extends React.Component {
     const crowi = this.props.crowi;
     const username = crowi.me;
     const user = crowi.findUser(username);
-    const comment = this.state.comment;
-    const commentPreview = this.state.isMarkdown ? this.getCommentHtml() : ReactUtils.nl2br(comment);
+    const commentPreview = this.state.isMarkdown ? this.getCommentHtml() : null;
     const emojiStrategy = this.props.crowi.getEmojiStrategy();
 
     const isLayoutTypeGrowi = this.state.isLayoutTypeGrowi;

@@ -5,7 +5,6 @@ import dateFnsFormat from 'date-fns/format';
 
 import RevisionBody from '../Page/RevisionBody';
 
-import ReactUtils from '../ReactUtils';
 import UserPicture from '../User/UserPicture';
 import Username from '../User/Username';
 
@@ -32,6 +31,7 @@ export default class Comment extends React.Component {
     this.getRootClassName = this.getRootClassName.bind(this);
     this.getRevisionLabelClassName = this.getRevisionLabelClassName.bind(this);
     this.deleteBtnClickedHandler = this.deleteBtnClickedHandler.bind(this);
+    this.renderText = this.renderText.bind(this);
     this.renderHtml = this.renderHtml.bind(this);
   }
 
@@ -74,6 +74,10 @@ export default class Comment extends React.Component {
 
   deleteBtnClickedHandler() {
     this.props.deleteBtnClicked(this.props.comment);
+  }
+
+  renderText(comment) {
+    return <span style={{ whiteSpace: 'pre-wrap' }}>{comment}</span>;
   }
 
   renderRevisionBody() {
@@ -150,7 +154,7 @@ export default class Comment extends React.Component {
 
     const rootClassName = this.getRootClassName();
     const commentDate = dateFnsFormat(comment.createdAt, 'YYYY/MM/DD HH:mm');
-    const commentBody = isMarkdown ? this.renderRevisionBody() : ReactUtils.nl2br(comment.comment);
+    const commentBody = isMarkdown ? this.renderRevisionBody() : this.renderText(comment.comment);
     const revHref = `?revision=${comment.revision}`;
     const revFirst8Letters = comment.revision.substr(-8);
     const revisionLavelClassName = this.getRevisionLabelClassName();
