@@ -10,7 +10,6 @@ import GrowiRenderer from '../util/GrowiRenderer';
 
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
-import EditorContainer from '../services/EditorContainer';
 
 import Editor from './PageEditor/Editor';
 import Preview from './PageEditor/Preview';
