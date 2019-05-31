@@ -51,7 +51,6 @@ class SavePageControls extends React.PureComponent {
           && (
           <div className="mr-2">
             <SlackNotification
-              ref={(c) => { this.slackNotification = c }}
               isSlackEnabled={false}
             />
           </div>
@@ -61,13 +60,7 @@ class SavePageControls extends React.PureComponent {
         {this.isAclEnabled
           && (
           <div className="mr-2">
-            <GrantSelector
-              ref={(elem) => {
-                  if (this.grantSelector == null) {
-                    this.grantSelector = elem;
-                  }
-                }}
-            />
+            <GrantSelector />
           </div>
           )
         }
