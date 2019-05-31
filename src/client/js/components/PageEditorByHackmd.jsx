@@ -12,7 +12,7 @@ import PageContainer from '../services/PageContainer';
 import { createSubscribedElement } from './UnstatedUtils';
 import HackmdEditor from './PageEditorByHackmd/HackmdEditor';
 
-class PageEditorByHackmd extends React.PureComponent {
+class PageEditorByHackmd extends React.Component {
 
   constructor(props) {
     super(props);
