@@ -209,7 +209,7 @@ module.exports = function(crowi, app) {
   app.get('/_api/tags.search'         , accessTokenParser, loginRequired(crowi, app, false), tag.api.search);
   app.post('/_api/tags.update'         , accessTokenParser, loginRequired(crowi, app, false), tag.api.update);
   app.get('/_api/comments.get'        , accessTokenParser , loginRequired(crowi, app, false) , comment.api.get);
-  app.post('/_api/comments.add'       , form.comment, accessTokenParser , loginRequired(crowi, app) , csrf, comment.api.add);
+  app.post('/_api/comments.add'       , comment.api.validators.add(), accessTokenParser , loginRequired(crowi, app) , csrf, comment.api.add);
   app.post('/_api/comments.remove'    , accessTokenParser , loginRequired(crowi, app) , csrf, comment.api.remove);
   app.get('/_api/bookmarks.get'      , accessTokenParser , loginRequired(crowi, app, false) , bookmark.api.get);
   app.post('/_api/bookmarks.add'      , accessTokenParser , loginRequired(crowi, app) , csrf, bookmark.api.add);

@@ -2,6 +2,7 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'unstated';
 import { I18nextProvider } from 'react-i18next';
 import * as toastr from 'toastr';
 
@@ -28,7 +29,8 @@ import PageEditorByHackmd from './components/PageEditorByHackmd';
 import Page from './components/Page';
 import PageHistory from './components/PageHistory';
 import PageComments from './components/PageComments';
-import CommentForm from './components/PageComment/CommentForm';
+import CommentContainer from './components/PageComment/CommentContainer';
+import CommentEditorLazyRenderer from './components/PageComment/CommentEditorLazyRenderer';
 import PageAttachment from './components/PageAttachment';
 import PageStatusAlert from './components/PageStatusAlert';
 import RevisionPath from './components/Page/RevisionPath';
@@ -111,6 +113,9 @@ const crowiRenderer = new GrowiRenderer(crowi, null, {
   renderToc: crowi.getCrowiForJquery().renderTocContent, // function for rendering Table Of Contents
 });
 window.crowiRenderer = crowiRenderer;
+
+// create unstated container instance
+const commentContainer = new CommentContainer(crowi, pageId, pagePath, pageRevisionId);
 
 // FIXME
 const isEnabledPlugins = $('body').data('plugin-enabled');
@@ -287,6 +292,8 @@ if (!pageRevisionId && draft != null) {
   markdown = draft;
 }
 
+const pageEditorOptions = new EditorOptions(crowi.editorOptions);
+
 /**
  * define components
  *  key: id of element
@@ -308,9 +315,31 @@ const componentMappings = {
   'duplicate-page-name-input': <PagePathAutoComplete crowi={crowi} initializedPath={pagePath} />,
 
 };
+
 // additional definitions if data exists
+let pageComments = null;
 if (pageId) {
-  componentMappings['page-comments-list'] = <PageComments pageId={pageId} revisionId={pageRevisionId} revisionCreatedAt={pageRevisionCreatedAt} crowi={crowi} crowiOriginRenderer={crowiRenderer} />;
+  componentMappings['page-comments-list'] = (
+    <I18nextProvider i18n={i18n}>
+      <Provider inject={[commentContainer]}>
+        <PageComments
+          ref={(elem) => {
+            if (pageComments == null) {
+              pageComments = elem;
+            }
+          }}
+          revisionCreatedAt={pageRevisionCreatedAt}
+          pageId={pageId}
+          pagePath={pagePath}
+          editorOptions={pageEditorOptions}
+          slackChannels={slackChannels}
+          crowi={crowi}
+          crowiOriginRenderer={crowiRenderer}
+          revisionId={pageRevisionId}
+        />
+      </Provider>
+    </I18nextProvider>
+  );
   componentMappings['page-attachment'] = <PageAttachment pageId={pageId} markdown={markdown} crowi={crowi} />;
 }
 if (pagePath) {
@@ -485,25 +514,18 @@ if (pageEditorElem) {
 // render comment form
 const writeCommentElem = document.getElementById('page-comment-write');
 if (writeCommentElem) {
-  const pageCommentsElem = componentInstances['page-comments-list'];
-  const postCompleteHandler = (comment) => {
-    if (pageCommentsElem != null) {
-      pageCommentsElem.retrieveData();
-    }
-  };
   ReactDOM.render(
-    <I18nextProvider i18n={i18n}>
-      <CommentForm
-        crowi={crowi}
-        crowiOriginRenderer={crowiRenderer}
-        pageId={pageId}
-        pagePath={pagePath}
-        revisionId={pageRevisionId}
-        onPostComplete={postCompleteHandler}
-        editorOptions={editorOptions}
-        slackChannels={slackChannels}
-      />
-    </I18nextProvider>,
+    <Provider inject={[commentContainer]}>
+      <I18nextProvider i18n={i18n}>
+        <CommentEditorLazyRenderer
+          crowi={crowi}
+          crowiOriginRenderer={crowiRenderer}
+          editorOptions={pageEditorOptions}
+          slackChannels={slackChannels}
+        >
+        </CommentEditorLazyRenderer>
+      </I18nextProvider>
+    </Provider>,
     writeCommentElem,
   );
 }
