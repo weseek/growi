@@ -140,11 +140,6 @@ const setTagData = function(tagData) {
 };
 
 /**
- * component store
- */
-const componentInstances = {};
-
-/**
  * save success handler when reloading is not needed
  * @param {object} page Page instance
  */
@@ -301,20 +296,15 @@ if (!pageRevisionId && draft != null) {
  *  key: id of element
  *  value: React Element
  */
-const componentMappings = {
+let componentMappings = {
   'search-top': <HeaderSearchBox crowi={crowi} />,
   'search-sidebar': <HeaderSearchBox crowi={crowi} />,
   'search-page': <SearchPage crowi={crowi} crowiRenderer={crowiRenderer} />,
 
   // 'revision-history': <PageHistory pageId={pageId} />,
-  'bookmark-button': <BookmarkButton pageId={pageId} crowi={crowi} />,
-  'bookmark-button-lg': <BookmarkButton pageId={pageId} crowi={crowi} size="lg" />,
-
   'tags-page': <TagsList crowi={crowi} />,
 
   'create-page-name-input': <PagePathAutoComplete crowi={crowi} initializedPath={pagePath} addTrailingSlash />,
-  'rename-page-name-input': <PagePathAutoComplete crowi={crowi} initializedPath={pagePath} />,
-  'duplicate-page-name-input': <PagePathAutoComplete crowi={crowi} initializedPath={pagePath} />,
 
   'page-editor': <PageEditor crowiRenderer={crowiRenderer} onSaveWithShortcut={saveWithShortcut} />,
   'page-editor-options-selector': <OptionsSelector crowi={crowi} />,
@@ -324,20 +314,30 @@ const componentMappings = {
 
 // additional definitions if data exists
 if (pageId) {
-  componentMappings['page-comments-list'] = <PageComments revisionCreatedAt={pageRevisionCreatedAt} slackChannels={slackChannels} crowiOriginRenderer={crowiRenderer} />;
-  componentMappings['page-attachment'] = <PageAttachment pageId={pageId} markdown={markdown} crowi={crowi} />;
-  componentMappings['page-comment-write'] = <CommentEditorLazyRenderer crowi={crowi} crowiOriginRenderer={crowiRenderer} slackChannels={slackChannels} />;
+  componentMappings = Object.assign({
+    'page-comments-list': <PageComments revisionCreatedAt={pageRevisionCreatedAt} slackChannels={slackChannels} crowiOriginRenderer={crowiRenderer} />,
+    'page-attachment':  <PageAttachment pageId={pageId} markdown={markdown} crowi={crowi} />,
+    'page-comment-write':  <CommentEditorLazyRenderer crowi={crowi} crowiOriginRenderer={crowiRenderer} slackChannels={slackChannels} />,
+    'bookmark-button':  <BookmarkButton pageId={pageId} crowi={crowi} />,
+    'bookmark-button-lg':  <BookmarkButton pageId={pageId} crowi={crowi} size="lg" />,
+    'rename-page-name-input':  <PagePathAutoComplete crowi={crowi} initializedPath={pagePath} />,
+    'duplicate-page-name-input':  <PagePathAutoComplete crowi={crowi} initializedPath={pagePath} />,
+  }, componentMappings);
 }
 if (pagePath) {
-  componentMappings.page = <Page crowiRenderer={crowiRenderer} onSaveWithShortcut={saveWithShortcut} />;
-  componentMappings['revision-path'] = <RevisionPath pageId={pageId} pagePath={pagePath} crowi={crowi} />;
-  componentMappings['tag-label'] = <TagLabels crowi={crowi} pageId={pageId} sendTagData={setTagData} templateTagData={templateTagData} />;
+  componentMappings = Object.assign({
+    // eslint-disable-next-line quote-props
+    'page': <Page crowiRenderer={crowiRenderer} onSaveWithShortcut={saveWithShortcut} />,
+    'revision-path':  <RevisionPath pageId={pageId} pagePath={pagePath} crowi={crowi} />,
+    'tag-label':  <TagLabels crowi={crowi} pageId={pageId} sendTagData={setTagData} templateTagData={templateTagData} />,
+  }, componentMappings);
+
 }
 
 Object.keys(componentMappings).forEach((key) => {
   const elem = document.getElementById(key);
   if (elem) {
-    componentInstances[key] = ReactDOM.render(
+    ReactDOM.render(
       <I18nextProvider i18n={i18n}>
         <Provider inject={injectableContainers}>
           {componentMappings[key]}
@@ -347,11 +347,6 @@ Object.keys(componentMappings).forEach((key) => {
     );
   }
 });
-
-// set page if exists
-if (componentInstances.page != null) {
-  appContainer.setPage(componentInstances.page);
-}
 
 // render LikeButton
 const likeButtonElem = document.getElementById('like-button');
@@ -514,7 +509,7 @@ socket.on('page:update', (data) => {
     // update PageStatusAlert
     pageContainer.setLatestRemotePageData(data.page, data.user);
     // update PageEditorByHackmd
-    const pageEditorByHackmd = componentInstances.pageEditorByHackmd;
+    const pageEditorByHackmd = appContainer.getComponentInstance('PageEditorByHackmd');
     if (pageEditorByHackmd != null) {
       const page = data.page;
       pageEditorByHackmd.setRevisionId(page.revision._id, page.revisionHackmdSynced);
