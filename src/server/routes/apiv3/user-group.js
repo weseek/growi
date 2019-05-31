@@ -31,15 +31,9 @@ module.exports = (crowi) => {
     const { name } = req.body;
     try {
       const userGroupName = crowi.xss.process(name);
-      const newUserGroup = await UserGroup.createGroupByName(userGroupName);
-      const userGroupRelations = await UserGroupRelation.findAllRelationForUserGroup(newUserGroup);
+      const userGroup = await UserGroup.createGroupByName(userGroupName);
 
-      const data = {
-        userGroup: newUserGroup,
-        userGroupRelation: userGroupRelations,
-      };
-
-      return res.json(ApiResponse.success(data));
+      return res.json(ApiResponse.success({ userGroup }));
     }
     catch (err) {
       const msg = 'Error occurred in creating a user group';
@@ -85,7 +79,7 @@ module.exports = (crowi) => {
       return res.json(ApiResponse.success({ users }));
     }
     catch (err) {
-      const msg = `Error occurred in fetching user group relations for group: ${id}`;
+      const msg = `Error occurred in fetching users for group: ${id}`;
       logger.error(msg, err);
       return res.json(ApiResponse.error(msg));
     }

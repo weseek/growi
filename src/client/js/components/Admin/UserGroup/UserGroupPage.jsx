@@ -43,14 +43,14 @@ class UserGroupPage extends React.Component {
     });
   }
 
-  addUserGroup(newUserGroup, newUserGroupRelation) {
+  addUserGroup(userGroup, users) {
     this.setState((prevState) => {
       const userGroupRelations = Object.assign(prevState.userGroupRelations, {
-        [newUserGroup._id]: newUserGroupRelation,
+        [userGroup._id]: users,
       });
 
       return {
-        userGroups: [...prevState.userGroups, newUserGroup],
+        userGroups: [...prevState.userGroups, userGroup],
         userGroupRelations,
       };
     });

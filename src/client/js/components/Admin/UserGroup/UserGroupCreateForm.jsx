@@ -38,15 +38,26 @@ class UserGroupCreateForm extends React.Component {
         name: this.state.name,
       });
 
-      if (res.ok) {
-        const { userGroup, userGroupRelation } = res;
-        this.props.onCreate(userGroup, userGroupRelation);
-        this.setState({ name: '' });
-        apiSuccessHandler(`Created a user group "${this.xss.process(userGroup.name)}"`);
-      }
-      else {
+      if (!res.ok) {
         throw new Error(`Unable to create a group "${this.xss.process(this.state.name)}"`);
       }
+
+      const userGroup = res.userGroup;
+      const userGroupId = userGroup._id;
+
+      const res2 = await this.props.crowi.apiGet(`/v3/user-groups/${userGroupId}/users`);
+
+      if (!res2.ok) {
+        throw new Error(`Unable to fetch users for the new group "${this.xss.process(userGroup.name)}"`);
+      }
+
+      const users = res2.users;
+
+      this.props.onCreate(userGroup, users);
+
+      this.setState({ name: '' });
+
+      apiSuccessHandler(`Created a user group "${this.xss.process(userGroup.name)}"`);
     }
     catch (err) {
       apiErrorHandler(err);
