@@ -1,5 +1,6 @@
 import React from 'react';
 import keydown from 'react-keydown';
+import { HotKeys } from 'react-hotkeys';
 import contributors from './Contributor';
 
 /**
@@ -9,6 +10,11 @@ import contributors from './Contributor';
  * @class StaffCredit
  * @extends {React.Component}
  */
+
+const keyMap = {
+  SNAP_LEFT: 'command',
+  DELETE_NODE: ['del', 'backspace'],
+};
 
 export default class StaffCredit extends React.Component {
 
@@ -76,12 +82,17 @@ export default class StaffCredit extends React.Component {
         );
       });
       return (
-        <div className="text-center credit-curtain" onClick={this.deleteCredit}>
-          <div className="credit-body">
-            <p className="title my-5">Growi Contributor</p>
-            {credit}
+        <HotKeys keyMap={keyMap}>
+          <div>
+            hugahuga
           </div>
-        </div>
+        </HotKeys>
+        // <div className="text-center credit-curtain" onClick={this.deleteCredit}>
+        //   <div className="credit-body">
+        //     <p className="title my-5">Growi Contributor</p>
+        //     {credit}
+        //   </div>
+        // </div>
       );
     }
     return null;
