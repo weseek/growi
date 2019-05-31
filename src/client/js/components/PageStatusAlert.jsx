@@ -1,6 +1,10 @@
+/* eslint-disable react/no-multi-comp */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import { Subscribe } from 'unstated';
+import AppContainer from '../services/AppContainer';
+import PageContainer from '../services/PageContainer';
 
 /**
  *
@@ -28,6 +32,10 @@ class PageStatusAlert extends React.Component {
     this.renderSomeoneEditingAlert = this.renderSomeoneEditingAlert.bind(this);
     this.renderDraftExistsAlert = this.renderDraftExistsAlert.bind(this);
     this.renderUpdatedAlert = this.renderUpdatedAlert.bind(this);
+  }
+
+  componentWillMount() {
+    this.props.appContainer.registerComponentInstance(this);
   }
 
   /**
@@ -130,14 +138,41 @@ class PageStatusAlert extends React.Component {
 
 }
 
+/**
+ * Wrapper component for using unstated
+ */
+class PageStatusAlertWrapper extends React.Component {
+
+  render() {
+    return (
+      <Subscribe to={[AppContainer, PageContainer]}>
+        { (appContainer, pageContainer) => (
+          // eslint-disable-next-line arrow-body-style
+          <PageStatusAlert appContainer={appContainer} pageContainer={pageContainer} {...this.props} />
+        )}
+      </Subscribe>
+    );
+  }
+
+}
+
 PageStatusAlert.propTypes = {
   t: PropTypes.func.isRequired, // i18next
+
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+
   hasDraftOnHackmd: PropTypes.bool.isRequired,
   revisionId: PropTypes.string,
   revisionIdHackmdSynced: PropTypes.string,
 };
 
-PageStatusAlert.defaultProps = {
+PageStatusAlertWrapper.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
+
+  hasDraftOnHackmd: PropTypes.bool.isRequired,
+  revisionId: PropTypes.string,
+  revisionIdHackmdSynced: PropTypes.string,
 };
 
-export default withTranslation(null, { withRef: true })(PageStatusAlert);
+export default withTranslation(null, { withRef: true })(PageStatusAlertWrapper);

@@ -95,7 +95,11 @@ if (mainContent !== null) {
 }
 const isLoggedin = document.querySelector('.main-container.nologin') == null;
 
+// create unstated container instance
 const appContainer = new AppContainer();
+const pageContainer = new PageContainer(appContainer);
+const commentContainer = new CommentContainer(appContainer);
+const editorContainer = new EditorContainer(appContainer, defaultEditorOptions, defaultPreviewOptions);
 window.appContainer = appContainer;
 
 // backward compatibility
@@ -115,11 +119,6 @@ const crowiRenderer = new GrowiRenderer(crowi, null, {
   renderToc: appContainer.getCrowiForJquery().renderTocContent, // function for rendering Table Of Contents
 });
 window.crowiRenderer = crowiRenderer;
-
-// create unstated container instance
-const pageContainer = new PageContainer(appContainer);
-const commentContainer = new CommentContainer(appContainer);
-const editorContainer = new EditorContainer(appContainer, defaultEditorOptions, defaultPreviewOptions);
 
 // FIXME
 const isEnabledPlugins = $('body').data('plugin-enabled');
@@ -169,24 +168,26 @@ const saveWithShortcutSuccessHandler = function(page) {
   pageContainer.setState(newState);
 
   // PageEditor component
-  if (componentInstances.pageEditor != null) {
+  const pageEditor = appContainer.getComponentInstance('PageEditor');
+  if (pageEditor != null) {
     if (editorMode !== 'builtin') {
-      componentInstances.pageEditor.updateEditorValue(newState.markdown);
+      pageEditor.updateEditorValue(newState.markdown);
     }
   }
   // PageEditorByHackmd component
-  if (componentInstances.pageEditorByHackmd != null) {
+  const pageEditorByHackmd = appContainer.getComponentInstance('PageEditorByHackmd');
+  if (pageEditorByHackmd != null) {
     // clear state of PageEditorByHackmd
-    componentInstances.pageEditorByHackmd.clearRevisionStatus(newState.revisionId);
+    pageEditorByHackmd.clearRevisionStatus(newState.revisionId);
     // reset
     if (editorMode !== 'hackmd') {
-      componentInstances.pageEditorByHackmd.reset();
+      pageEditorByHackmd.reset();
     }
   }
   // PageStatusAlert component
-  const pageStatusAlert = componentInstances.pageStatusAlert;
+  const pageStatusAlert = appContainer.getComponentInstance('PageStatusAlert');
   // clear state of PageStatusAlert
-  if (componentInstances.pageStatusAlert != null) {
+  if (pageStatusAlert != null) {
     pageStatusAlert.clearRevisionStatus(pageRevisionId, pageRevisionIdHackmdSynced);
   }
 
@@ -257,16 +258,18 @@ const saveWithSubmitButton = function(submitOpts) {
 
   let promise;
   if (editorMode === 'hackmd') {
+    const pageEditorByHackmd = appContainer.getComponentInstance('PageEditorByHackmd');
     // get markdown
-    promise = componentInstances.pageEditorByHackmd.getMarkdown();
+    promise = pageEditorByHackmd.getMarkdown();
     // use revisionId of PageEditorByHackmd
     revisionId = componentInstances.pageEditorByHackmd.getRevisionIdHackmdSynced();
     // set option to sync
     options.isSyncRevisionToHackmd = true;
   }
   else {
+    const pageEditor = appContainer.getComponentInstance('PageEditor');
     // get markdown
-    promise = Promise.resolve(componentInstances.pageEditor.getMarkdown());
+    promise = Promise.resolve(pageEditor.getMarkdown());
   }
   // create or update
   if (pageId == null) {
@@ -449,16 +452,18 @@ let pageEditorByHackmd = null;
 const pageEditorWithHackmdElem = document.getElementById('page-editor-with-hackmd');
 if (pageEditorWithHackmdElem) {
   pageEditorByHackmd = ReactDOM.render(
-    <PageEditorByHackmd
-      crowi={crowi}
-      pageId={pageId}
-      revisionId={pageRevisionId}
-      pageIdOnHackmd={pageIdOnHackmd}
-      revisionIdHackmdSynced={pageRevisionIdHackmdSynced}
-      hasDraftOnHackmd={hasDraftOnHackmd}
-      markdown={markdown}
-      onSaveWithShortcut={saveWithShortcut}
-    />,
+    <Provider inject={[appContainer]}>
+      <PageEditorByHackmd
+        crowi={crowi}
+        pageId={pageId}
+        revisionId={pageRevisionId}
+        pageIdOnHackmd={pageIdOnHackmd}
+        revisionIdHackmdSynced={pageRevisionIdHackmdSynced}
+        hasDraftOnHackmd={hasDraftOnHackmd}
+        markdown={markdown}
+        onSaveWithShortcut={saveWithShortcut}
+      />,
+    </Provider>,
     pageEditorWithHackmdElem,
   );
   componentInstances.pageEditorByHackmd = pageEditorByHackmd;
@@ -521,16 +526,18 @@ const pageStatusAlertElem = document.getElementById('page-status-alert');
 if (pageStatusAlertElem) {
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
-      <PageStatusAlert
-        ref={(elem) => {
-            if (pageStatusAlert == null) {
-              pageStatusAlert = elem;
-            }
-          }}
-        revisionId={pageRevisionId}
-        revisionIdHackmdSynced={pageRevisionIdHackmdSynced}
-        hasDraftOnHackmd={hasDraftOnHackmd}
-      />
+      <Provider inject={[appContainer, pageContainer]}>
+        <PageStatusAlert
+          ref={(elem) => {
+              if (pageStatusAlert == null) {
+                pageStatusAlert = elem;
+              }
+            }}
+          revisionId={pageRevisionId}
+          revisionIdHackmdSynced={pageRevisionIdHackmdSynced}
+          hasDraftOnHackmd={hasDraftOnHackmd}
+        />
+      </Provider>
     </I18nextProvider>,
     pageStatusAlertElem,
   );
