@@ -108,4 +108,4 @@ SavePageControls.propTypes = {
   onSubmit: PropTypes.func.isRequired,
 };
 
-export default withTranslation(null, { withRef: true })(SavePageControlsWrapper);
+export default withTranslation()(SavePageControlsWrapper);

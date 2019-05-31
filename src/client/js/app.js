@@ -314,6 +314,7 @@ let componentMappings = {
 // additional definitions if data exists
 if (pageId) {
   componentMappings = Object.assign({
+    'page-editor-with-hackmd': <PageEditorByHackmd onSaveWithShortcut={saveWithShortcut} />,
     'page-comments-list': <PageComments revisionCreatedAt={pageRevisionCreatedAt} slackChannels={slackChannels} crowiOriginRenderer={crowiRenderer} />,
     'page-attachment':  <PageAttachment pageId={pageId} markdown={markdown} crowi={crowi} />,
     'page-comment-write':  <CommentEditorLazyRenderer crowi={crowi} crowiOriginRenderer={crowiRenderer} slackChannels={slackChannels} />,
@@ -407,29 +408,6 @@ if (myDraftControlsElem) {
       />
     </I18nextProvider>,
     myDraftControlsElem,
-  );
-}
-
-/*
- * HackMD Editor
- */
-// render PageEditorWithHackmd
-const pageEditorWithHackmdElem = document.getElementById('page-editor-with-hackmd');
-if (pageEditorWithHackmdElem) {
-  ReactDOM.render(
-    <Provider inject={[appContainer]}>
-      <PageEditorByHackmd
-        crowi={crowi}
-        pageId={pageId}
-        revisionId={pageRevisionId}
-        pageIdOnHackmd={pageIdOnHackmd}
-        revisionIdHackmdSynced={pageRevisionIdHackmdSynced}
-        hasDraftOnHackmd={hasDraftOnHackmd}
-        markdown={markdown}
-        onSaveWithShortcut={saveWithShortcut}
-      />,
-    </Provider>,
-    pageEditorWithHackmdElem,
   );
 }
 

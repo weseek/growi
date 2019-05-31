@@ -129,4 +129,4 @@ PageStatusAlert.propTypes = {
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 };
 
-export default withTranslation(null, { withRef: true })(PageStatusAlertWrapper);
+export default withTranslation()(PageStatusAlertWrapper);

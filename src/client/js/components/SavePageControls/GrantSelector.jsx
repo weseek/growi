@@ -9,9 +9,10 @@ import ListGroup from 'react-bootstrap/es/ListGroup';
 import ListGroupItem from 'react-bootstrap/es/ListGroupItem';
 import Modal from 'react-bootstrap/es/Modal';
 
-import { createSubscribedElement } from '../UnstatedUtils';
-import PageContainer from '../../services/PageContainer';
 import AppContainer from '../../services/AppContainer';
+import PageContainer from '../../services/PageContainer';
+
+import { createSubscribedElement } from '../UnstatedUtils';
 
 const SPECIFIED_GROUP_VALUE = 'specifiedGroup';
 
@@ -295,4 +296,4 @@ GrantSelector.propTypes = {
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 };
 
-export default withTranslation(null, { withRef: true })(GrantSelectorWrapper);
+export default withTranslation()(GrantSelectorWrapper);

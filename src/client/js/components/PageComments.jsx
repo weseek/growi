@@ -252,4 +252,4 @@ PageComments.propTypes = {
   slackChannels: PropTypes.string,
 };
 
-export default withTranslation(null, { withRef: true })(PageCommentsWrapper);
+export default withTranslation()(PageCommentsWrapper);
