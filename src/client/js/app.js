@@ -201,7 +201,9 @@ const errorHandler = function(error) {
 const saveWithShortcut = function(markdown) {
   const editorMode = appContainer.getCrowiForJquery().getCurrentEditorMode();
 
-  let revisionId = pageRevisionId;
+  const { pageId, path } = pageContainer.state;
+  let { revisionId } = pageContainer.state;
+
   // get options
   const options = pageContainer.getCurrentOptionsToSave();
   options.socketClientId = websocketContainer.getCocketClientId();
@@ -210,14 +212,12 @@ const saveWithShortcut = function(markdown) {
   if (editorMode === 'hackmd') {
     // set option to sync
     options.isSyncRevisionToHackmd = true;
-    // use revisionId of PageEditorByHackmd
-    const pageEditorByHackmd = appContainer.getComponentInstance('PageEditorByHackmd');
-    revisionId = pageEditorByHackmd.getRevisionIdHackmdSynced();
+    revisionId = pageContainer.state.revisionIdHackmdSynced;
   }
 
   let promise;
   if (pageId == null) {
-    promise = appContainer.createPage(pagePath, markdown, options);
+    promise = appContainer.createPage(path, markdown, options);
   }
   else {
     promise = appContainer.updatePage(pageId, revisionId, markdown, options);
@@ -240,7 +240,8 @@ const saveWithSubmitButton = function(submitOpts) {
     return;
   }
 
-  let revisionId = pageRevisionId;
+  const { pageId, path } = pageContainer.state;
+  let { revisionId } = pageContainer.state;
   // get options
   const options = pageContainer.getCurrentOptionsToSave();
   options.socketClientId = websocketContainer.getCocketClientId();
@@ -255,7 +256,7 @@ const saveWithSubmitButton = function(submitOpts) {
     // get markdown
     promise = pageEditorByHackmd.getMarkdown();
     // use revisionId of PageEditorByHackmd
-    revisionId = pageEditorByHackmd.getRevisionIdHackmdSynced();
+    revisionId = pageContainer.state.revisionIdHackmdSynced;
     // set option to sync
     options.isSyncRevisionToHackmd = true;
   }
@@ -267,7 +268,7 @@ const saveWithSubmitButton = function(submitOpts) {
   // create or update
   if (pageId == null) {
     promise = promise.then((markdown) => {
-      return appContainer.createPage(pagePath, markdown, options);
+      return appContainer.createPage(path, markdown, options);
     });
   }
   else {

@@ -33,7 +33,6 @@ export default class PageContainer extends Container {
       pageId: mainContent.getAttribute('data-page-id'),
       revisionId,
       revisionCreatedAt: +mainContent.getAttribute('data-page-revision-created'),
-      revisionIdHackmdSynced: mainContent.getAttribute('data-page-revision-id-hackmd-synced'),
       path: mainContent.getAttribute('data-path'),
 
       templateTagData: mainContent.getAttribute('data-template-tags') || '',
@@ -47,6 +46,7 @@ export default class PageContainer extends Container {
 
       // latest(on remote) information
       remoteRevisionId: revisionId,
+      revisionIdHackmdSynced: mainContent.getAttribute('data-page-revision-id-hackmd-synced'),
       lastUpdateUsername: undefined,
       pageIdOnHackmd: mainContent.getAttribute('data-page-id-on-hackmd'),
       hasDraftOnHackmd: !!mainContent.getAttribute('data-page-has-draft-on-hackmd'),
@@ -139,13 +139,13 @@ export default class PageContainer extends Container {
       if (data.page.path === pageContainer.state.path) {
         // update PageStatusAlert
         pageContainer.setLatestRemotePageData(data.page, data.user);
-        // update PageEditorByHackmd
-        const pageEditorByHackmd = appContainer.getComponentInstance('PageEditorByHackmd');
-        if (pageEditorByHackmd != null) {
-          const page = data.page;
-          pageEditorByHackmd.setRevisionId(page.revision._id, page.revisionHackmdSynced);
-          pageEditorByHackmd.setHasDraftOnHackmd(data.page.hasDraftOnHackmd);
-        }
+        // update remote data
+        const page = data.page;
+        pageContainer.setState({
+          remoteRevisionId: page.revision._id,
+          revisionIdHackmdSynced: page.revisionHackmdSynced,
+          hasDraftOnHackmd: page.hasDraftOnHackmd,
+        });
       }
     });
 
