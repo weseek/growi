@@ -477,7 +477,6 @@ if (pageEditorWithHackmdElem) {
 /*
  * PageEditor
  */
-let pageEditor = null;
 // render PageEditor
 const pageEditorElem = document.getElementById('page-editor');
 if (pageEditorElem) {
@@ -485,11 +484,6 @@ if (pageEditorElem) {
     <I18nextProvider i18n={i18n}>
       <Provider inject={[appContainer, pageContainer, editorContainer]}>
         <PageEditor
-          ref={(elem) => {
-            if (pageEditor == null) {
-              pageEditor = elem;
-            }
-          }}
           crowiRenderer={crowiRenderer}
           onSaveWithShortcut={saveWithShortcut}
         />
@@ -497,9 +491,6 @@ if (pageEditorElem) {
     </I18nextProvider>,
     pageEditorElem,
   );
-  componentInstances.pageEditor = pageEditor;
-  // set refs for setCaretLine/forceToFocus when tab is changed
-  appContainer.setPageEditor(pageEditor);
 }
 
 // render comment form

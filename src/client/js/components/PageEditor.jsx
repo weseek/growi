@@ -60,9 +60,12 @@ class PageEditor extends React.Component {
     this.scrollEditorByPreviewScrollWithThrottle = throttle(20, this.scrollEditorByPreviewScroll);
     this.renderPreviewWithDebounce = debounce(50, throttle(100, this.renderPreview));
     this.saveDraftWithDebounce = debounce(800, this.saveDraft);
+
   }
 
   componentWillMount() {
+    this.props.appContainer.registerComponentInstance(this);
+
     // initial rendering
     this.renderPreview(this.state.markdown);
 
@@ -319,8 +322,6 @@ class PageEditor extends React.Component {
   }
 
   render() {
-    const { pageContainer } = this.props;
-
     const config = this.props.appContainer.getConfig();
     const noCdn = !!config.env.NO_CDN;
     const emojiStrategy = this.props.appContainer.getEmojiStrategy();

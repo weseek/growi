@@ -50,11 +50,12 @@ export default class AppContainer extends Container {
     this.userByName = {};
     this.userById = {};
     this.draft = {};
-    this.editorOptions = {};
 
     this.recoverData();
 
     this.socket = io();
+
+    this.componentInstances = {};
   }
 
   /**
@@ -68,12 +69,34 @@ export default class AppContainer extends Container {
     return this.config;
   }
 
-  setPage(page) {
-    this.page = page;
+  /**
+   * Register instance
+   * @param {object} instance React component instance
+   */
+  registerComponentInstance(instance) {
+    if (instance == null) {
+      throw new Error('The specified instance must not be null');
+    }
+
+    const className = instance.constructor.name;
+
+    if (this.componentInstances[className] != null) {
+      throw new Error('The specified instance couldn\'t register because the same type object has already been registered');
+    }
+
+    this.componentInstances[className] = instance;
   }
 
-  setPageEditor(pageEditor) {
-    this.pageEditor = pageEditor;
+  /**
+   * Get registered instance
+   * @param {string} className
+   */
+  getComponentInstance(className) {
+    return this.componentInstances[className];
+  }
+
+  setPage(page) {
+    this.page = page;
   }
 
   setIsDocSaved(isSaved) {
@@ -151,14 +174,16 @@ export default class AppContainer extends Container {
   }
 
   setCaretLine(line) {
-    if (this.pageEditor != null) {
-      this.pageEditor.setCaretLine(line);
+    const pageEditor = this.getComponentInstance('PageEditor');
+    if (pageEditor != null) {
+      pageEditor.setCaretLine(line);
     }
   }
 
   focusToEditor() {
-    if (this.pageEditor != null) {
-      this.pageEditor.focusToEditor();
+    const pageEditor = this.getComponentInstance('PageEditor');
+    if (pageEditor != null) {
+      pageEditor.focusToEditor();
     }
   }
 
