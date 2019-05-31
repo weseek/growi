@@ -2,9 +2,8 @@
 /* eslint-disable react/no-access-state-in-setstate */
 import React from 'react';
 import PropTypes from 'prop-types';
-import Button from 'react-bootstrap/es/Button';
 
-import { Subscribe } from 'unstated';
+import Button from 'react-bootstrap/es/Button';
 
 import { withTranslation } from 'react-i18next';
 import GrowiRenderer from '../util/GrowiRenderer';
@@ -12,6 +11,7 @@ import GrowiRenderer from '../util/GrowiRenderer';
 import AppContainer from '../services/AppContainer';
 import CommentContainer from '../services/CommentContainer';
 
+import { createSubscribedElement } from './UnstatedUtils';
 import CommentEditor from './PageComment/CommentEditor';
 
 import Comment from './PageComment/Comment';
@@ -237,34 +237,15 @@ class PageComments extends React.Component {
 
 }
 
-/**
- * Wrapper component for using unstated
- */
-class PageCommentsWrapper extends React.Component {
-
-  render() {
-    return (
-      <Subscribe to={[AppContainer, PageContainer, CommentContainer]}>
-        { (appContainer, pageContainer, commentContainer) => (
-          // eslint-disable-next-line arrow-body-style
-          <PageComments appContainer={appContainer} pageContainer={pageContainer} commentContainer={commentContainer} {...this.props} />
-        )}
-      </Subscribe>
-    );
-  }
-
-}
+const PageCommentsWrapper = (props) => {
+  return createSubscribedElement(PageComments, props, [AppContainer, PageContainer, CommentContainer]);
+};
 
 PageComments.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   commentContainer: PropTypes.instanceOf(CommentContainer).isRequired,
 
-  crowiOriginRenderer: PropTypes.object.isRequired,
-  revisionCreatedAt: PropTypes.number,
-  slackChannels: PropTypes.string,
-};
-PageCommentsWrapper.propTypes = {
   crowiOriginRenderer: PropTypes.object.isRequired,
   revisionCreatedAt: PropTypes.number,
   slackChannels: PropTypes.string,
