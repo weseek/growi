@@ -367,10 +367,10 @@ class PageEditorWrapper extends React.Component {
 
   render() {
     return (
-      <Subscribe to={[AppContainer, PageContainer, EditorContainer]}>
-        { (appContainer, pageContainer, editorContainer) => (
+      <Subscribe to={[AppContainer, PageContainer]}>
+        { (appContainer, pageContainer) => (
           // eslint-disable-next-line arrow-body-style
-          <PageEditor appContainer={appContainer} pageContainer={pageContainer} editorContainer={editorContainer} {...this.props} />
+          <PageEditor appContainer={appContainer} pageContainer={pageContainer} {...this.props} />
         )}
       </Subscribe>
     );
@@ -381,7 +381,6 @@ class PageEditorWrapper extends React.Component {
 PageEditor.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-  editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
 
   crowiRenderer: PropTypes.object.isRequired,
   onSaveWithShortcut: PropTypes.func.isRequired,

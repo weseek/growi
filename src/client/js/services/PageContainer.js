@@ -20,16 +20,17 @@ export default class PageContainer extends Container {
       return;
     }
 
+    const revisionId = mainContent.getAttribute('data-page-revision-id');
 
     this.state = {
+      // local page data
       markdown: null, // will be initialized after initStateMarkdown()
       pageId: mainContent.getAttribute('data-page-id'),
-      revisionId: mainContent.getAttribute('data-page-revision-id'),
+      revisionId,
       revisionCreatedAt: +mainContent.getAttribute('data-page-revision-created'),
       revisionIdHackmdSynced: mainContent.getAttribute('data-page-revision-id-hackmd-synced'),
-      pageIdOnHackmd: mainContent.getAttribute('data-page-id-on-hackmd'),
-      hasDraftOnHackmd: !!mainContent.getAttribute('data-page-has-draft-on-hackmd'),
       path: mainContent.getAttribute['data-path'],
+
       templateTagData: mainContent.getAttribute('data-template-tags') || '',
 
       isSlackEnabled: false,
@@ -38,6 +39,13 @@ export default class PageContainer extends Container {
       grant: 1, // default: public
       grantGroupId: null,
       grantGroupName: null,
+
+      // latest(on remote) information
+      remoteRevisionId: revisionId,
+      lastUpdateUsername: undefined,
+      pageIdOnHackmd: mainContent.getAttribute('data-page-id-on-hackmd'),
+      hasDraftOnHackmd: !!mainContent.getAttribute('data-page-has-draft-on-hackmd'),
+      isHackmdDraftUpdatingInRealtime: false,
     };
 
     this.initStateMarkdown();
@@ -82,6 +90,14 @@ export default class PageContainer extends Container {
     }
 
     return opt;
+  }
+
+  setLatestRemotePageData(page, user) {
+    this.setState({
+      remoteRevisionId: page.revision._id,
+      revisionIdHackmdSynced: page.revisionHackmdSynced,
+      lastUpdateUsername: user.name,
+    });
   }
 
 }

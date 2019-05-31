@@ -21,12 +21,6 @@ class PageStatusAlert extends React.Component {
     super(props);
 
     this.state = {
-      initialRevisionId: this.props.revisionId,
-      revisionId: this.props.revisionId,
-      revisionIdHackmdSynced: this.props.revisionIdHackmdSynced,
-      lastUpdateUsername: undefined,
-      hasDraftOnHackmd: this.props.hasDraftOnHackmd,
-      isDraftUpdatingInRealtime: false,
     };
 
     this.renderSomeoneEditingAlert = this.renderSomeoneEditingAlert.bind(this);
@@ -36,32 +30,6 @@ class PageStatusAlert extends React.Component {
 
   componentWillMount() {
     this.props.appContainer.registerComponentInstance(this);
-  }
-
-  /**
-   * clear status (invoked when page is updated by myself)
-   */
-  clearRevisionStatus(updatedRevisionId) {
-    this.setState({
-      initialRevisionId: updatedRevisionId,
-      hasDraftOnHackmd: false,
-      isDraftUpdatingInRealtime: false,
-    });
-  }
-
-  setRevisionId(revisionId, revisionIdHackmdSynced) {
-    this.setState({ revisionId, revisionIdHackmdSynced });
-  }
-
-  setLastUpdateUsername(lastUpdateUsername) {
-    this.setState({ lastUpdateUsername });
-  }
-
-  setHasDraftOnHackmd(hasDraftOnHackmd) {
-    this.setState({
-      hasDraftOnHackmd,
-      isDraftUpdatingInRealtime: true,
-    });
   }
 
   refreshPage() {
@@ -106,7 +74,7 @@ class PageStatusAlert extends React.Component {
     return (
       <div className="alert-revision-outdated myadmin-alert alert-warning myadmin-alert-bottom alertbottom2">
         <i className="icon-fw icon-bulb"></i>
-        {this.state.lastUpdateUsername} {label1}
+        {this.props.pageContainer.state.lastUpdateUsername} {label1}
         &nbsp;
         <i className="fa fa-angle-double-right"></i>
         &nbsp;
@@ -120,16 +88,23 @@ class PageStatusAlert extends React.Component {
   render() {
     let content = <React.Fragment></React.Fragment>;
 
-    const isRevisionOutdated = this.state.initialRevisionId !== this.state.revisionId;
-    const isHackmdDocumentOutdated = this.state.revisionId !== this.state.revisionIdHackmdSynced;
+    const {
+      revisionId, revisionIdHackmdSynced, remoteRevisionId, hasDraftOnHackmd, isHackmdDraftUpdatingInRealtime,
+    } = this.props.pageContainer.state;
 
+    const isRevisionOutdated = revisionId !== remoteRevisionId;
+    const isHackmdDocumentOutdated = revisionIdHackmdSynced !== remoteRevisionId;
+
+    // when remote revision is newer than both
     if (isHackmdDocumentOutdated && isRevisionOutdated) {
       content = this.renderUpdatedAlert();
     }
-    else if (this.state.isDraftUpdatingInRealtime) {
+    // when someone editing with HackMD
+    else if (isHackmdDraftUpdatingInRealtime) {
       content = this.renderSomeoneEditingAlert();
     }
-    else if (this.state.hasDraftOnHackmd) {
+    // when the draft of HackMD is newest
+    else if (hasDraftOnHackmd) {
       content = this.renderDraftExistsAlert();
     }
 
@@ -161,18 +136,10 @@ PageStatusAlert.propTypes = {
 
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-
-  hasDraftOnHackmd: PropTypes.bool.isRequired,
-  revisionId: PropTypes.string,
-  revisionIdHackmdSynced: PropTypes.string,
 };
 
 PageStatusAlertWrapper.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-
-  hasDraftOnHackmd: PropTypes.bool.isRequired,
-  revisionId: PropTypes.string,
-  revisionIdHackmdSynced: PropTypes.string,
 };
 
 export default withTranslation(null, { withRef: true })(PageStatusAlertWrapper);

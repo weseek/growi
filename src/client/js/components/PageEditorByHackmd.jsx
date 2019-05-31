@@ -21,8 +21,6 @@ class PageEditorByHackmd extends React.PureComponent {
       markdown: this.props.markdown,
       isInitialized: false,
       isInitializing: false,
-      initialRevisionId: this.props.revisionId,
-      revisionId: this.props.revisionId,
       revisionIdHackmdSynced: this.props.revisionIdHackmdSynced,
       pageIdOnHackmd: this.props.pageIdOnHackmd,
       hasDraftOnHackmd: this.props.hasDraftOnHackmd,
@@ -61,15 +59,6 @@ class PageEditorByHackmd extends React.PureComponent {
    */
   reset() {
     this.setState({ isInitialized: false });
-  }
-
-  /**
-   * clear revision status (invoked when page is updated by myself)
-   */
-  clearRevisionStatus(updatedRevisionId) {
-    this.setState({
-      initialRevisionId: updatedRevisionId,
-    });
   }
 
   /**

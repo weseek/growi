@@ -102,6 +102,9 @@ const websocketContainer = new WebsocketContainer(appContainer);
 const pageContainer = new PageContainer(appContainer);
 const commentContainer = new CommentContainer(appContainer);
 const editorContainer = new EditorContainer(appContainer, defaultEditorOptions, defaultPreviewOptions);
+const injectableContainers = [
+  appContainer, websocketContainer, pageContainer, commentContainer, editorContainer,
+];
 window.appContainer = appContainer;
 
 // backward compatibility
@@ -162,8 +165,10 @@ const saveWithShortcutSuccessHandler = function(page) {
   // update state of PageContainer
   const newState = {
     pageId: page._id,
-    revisionHackmdSynced: page.revisionHackmdSynced,
     revisionId: page.revision._id,
+    remoteRevisionId: page.revision._id,
+    revisionIdHackmdSynced: page.revisionHackmdSynced,
+    hasDraftOnHackmd: page.hasDraftOnHackmd,
     markdown: page.revision.body,
   };
   pageContainer.setState(newState);
@@ -178,18 +183,10 @@ const saveWithShortcutSuccessHandler = function(page) {
   // PageEditorByHackmd component
   const pageEditorByHackmd = appContainer.getComponentInstance('PageEditorByHackmd');
   if (pageEditorByHackmd != null) {
-    // clear state of PageEditorByHackmd
-    pageEditorByHackmd.clearRevisionStatus(newState.revisionId);
     // reset
     if (editorMode !== 'hackmd') {
       pageEditorByHackmd.reset();
     }
-  }
-  // PageStatusAlert component
-  const pageStatusAlert = appContainer.getComponentInstance('PageStatusAlert');
-  // clear state of PageStatusAlert
-  if (pageStatusAlert != null) {
-    pageStatusAlert.clearRevisionStatus(pageRevisionId, pageRevisionIdHackmdSynced);
   }
 
   // hidden input
@@ -220,7 +217,8 @@ const saveWithShortcut = function(markdown) {
     // set option to sync
     options.isSyncRevisionToHackmd = true;
     // use revisionId of PageEditorByHackmd
-    revisionId = componentInstances.pageEditorByHackmd.getRevisionIdHackmdSynced();
+    const pageEditorByHackmd = appContainer.getComponentInstance('PageEditorByHackmd');
+    revisionId = pageEditorByHackmd.getRevisionIdHackmdSynced();
   }
 
   let promise;
@@ -263,7 +261,7 @@ const saveWithSubmitButton = function(submitOpts) {
     // get markdown
     promise = pageEditorByHackmd.getMarkdown();
     // use revisionId of PageEditorByHackmd
-    revisionId = componentInstances.pageEditorByHackmd.getRevisionIdHackmdSynced();
+    revisionId = pageEditorByHackmd.getRevisionIdHackmdSynced();
     // set option to sync
     options.isSyncRevisionToHackmd = true;
   }
@@ -318,22 +316,17 @@ const componentMappings = {
   'rename-page-name-input': <PagePathAutoComplete crowi={crowi} initializedPath={pagePath} />,
   'duplicate-page-name-input': <PagePathAutoComplete crowi={crowi} initializedPath={pagePath} />,
 
+  'page-editor': <PageEditor crowiRenderer={crowiRenderer} onSaveWithShortcut={saveWithShortcut} />,
+  'page-editor-options-selector': <OptionsSelector crowi={crowi} />,
+  'page-status-alert': <PageStatusAlert />,
+  'save-page-controls': <SavePageControls onSubmit={saveWithSubmitButton} />,
 };
 
 // additional definitions if data exists
 if (pageId) {
-  componentMappings['page-comments-list'] = (
-    <I18nextProvider i18n={i18n}>
-      <Provider inject={[appContainer, commentContainer, editorContainer]}>
-        <PageComments
-          revisionCreatedAt={pageRevisionCreatedAt}
-          slackChannels={slackChannels}
-          crowiOriginRenderer={crowiRenderer}
-        />
-      </Provider>
-    </I18nextProvider>
-  );
+  componentMappings['page-comments-list'] = <PageComments revisionCreatedAt={pageRevisionCreatedAt} slackChannels={slackChannels} crowiOriginRenderer={crowiRenderer} />;
   componentMappings['page-attachment'] = <PageAttachment pageId={pageId} markdown={markdown} crowi={crowi} />;
+  componentMappings['page-comment-write'] = <CommentEditorLazyRenderer crowi={crowi} crowiOriginRenderer={crowiRenderer} slackChannels={slackChannels} />;
 }
 if (pagePath) {
   componentMappings.page = <Page crowiRenderer={crowiRenderer} onSaveWithShortcut={saveWithShortcut} />;
@@ -346,7 +339,7 @@ Object.keys(componentMappings).forEach((key) => {
   if (elem) {
     componentInstances[key] = ReactDOM.render(
       <I18nextProvider i18n={i18n}>
-        <Provider inject={[appContainer, pageContainer]}>
+        <Provider inject={injectableContainers}>
           {componentMappings[key]}
         </Provider>
       </I18nextProvider>,
@@ -391,28 +384,6 @@ if (likerListElem) {
   );
 }
 
-// render SavePageControls
-let savePageControls = null;
-const savePageControlsElem = document.getElementById('save-page-controls');
-if (savePageControlsElem) {
-  ReactDOM.render(
-    <I18nextProvider i18n={i18n}>
-      <Provider inject={[appContainer, pageContainer]}>
-        <SavePageControls
-          onSubmit={saveWithSubmitButton}
-          ref={(elem) => {
-              if (savePageControls == null) {
-                savePageControls = elem;
-              }
-            }}
-        />
-      </Provider>
-    </I18nextProvider>,
-    savePageControlsElem,
-  );
-  componentInstances.savePageControls = savePageControls;
-}
-
 const recentCreatedControlsElem = document.getElementById('user-created-list');
 if (recentCreatedControlsElem) {
   let limit = appContainer.getConfig().recentCreatedLimit;
@@ -449,10 +420,9 @@ if (myDraftControlsElem) {
  * HackMD Editor
  */
 // render PageEditorWithHackmd
-let pageEditorByHackmd = null;
 const pageEditorWithHackmdElem = document.getElementById('page-editor-with-hackmd');
 if (pageEditorWithHackmdElem) {
-  pageEditorByHackmd = ReactDOM.render(
+  ReactDOM.render(
     <Provider inject={[appContainer]}>
       <PageEditorByHackmd
         crowi={crowi}
@@ -467,82 +437,6 @@ if (pageEditorWithHackmdElem) {
     </Provider>,
     pageEditorWithHackmdElem,
   );
-  componentInstances.pageEditorByHackmd = pageEditorByHackmd;
-}
-
-
-/*
- * PageEditor
- */
-// render PageEditor
-const pageEditorElem = document.getElementById('page-editor');
-if (pageEditorElem) {
-  ReactDOM.render(
-    <I18nextProvider i18n={i18n}>
-      <Provider inject={[appContainer, pageContainer, editorContainer]}>
-        <PageEditor
-          crowiRenderer={crowiRenderer}
-          onSaveWithShortcut={saveWithShortcut}
-        />
-      </Provider>
-    </I18nextProvider>,
-    pageEditorElem,
-  );
-}
-
-// render comment form
-const writeCommentElem = document.getElementById('page-comment-write');
-if (writeCommentElem) {
-  ReactDOM.render(
-    <Provider inject={[commentContainer, editorContainer]}>
-      <I18nextProvider i18n={i18n}>
-        <CommentEditorLazyRenderer
-          crowi={crowi}
-          crowiOriginRenderer={crowiRenderer}
-          slackChannels={slackChannels}
-        >
-        </CommentEditorLazyRenderer>
-      </I18nextProvider>
-    </Provider>,
-    writeCommentElem,
-  );
-}
-
-// render OptionsSelector
-const pageEditorOptionsSelectorElem = document.getElementById('page-editor-options-selector');
-if (pageEditorOptionsSelectorElem) {
-  ReactDOM.render(
-    <I18nextProvider i18n={i18n}>
-      <Provider inject={[editorContainer]}>
-        <OptionsSelector crowi={crowi} />
-      </Provider>
-    </I18nextProvider>,
-    pageEditorOptionsSelectorElem,
-  );
-}
-
-// render PageStatusAlert
-let pageStatusAlert = null;
-const pageStatusAlertElem = document.getElementById('page-status-alert');
-if (pageStatusAlertElem) {
-  ReactDOM.render(
-    <I18nextProvider i18n={i18n}>
-      <Provider inject={[appContainer, pageContainer]}>
-        <PageStatusAlert
-          ref={(elem) => {
-              if (pageStatusAlert == null) {
-                pageStatusAlert = elem;
-              }
-            }}
-          revisionId={pageRevisionId}
-          revisionIdHackmdSynced={pageRevisionIdHackmdSynced}
-          hasDraftOnHackmd={hasDraftOnHackmd}
-        />
-      </Provider>
-    </I18nextProvider>,
-    pageStatusAlertElem,
-  );
-  componentInstances.pageStatusAlert = pageStatusAlert;
 }
 
 // render for admin
@@ -595,16 +489,6 @@ if (adminGrantSelectorElem != null) {
   );
 }
 
-// notification from websocket
-function updatePageStatusAlert(page, user) {
-  const pageStatusAlert = componentInstances.pageStatusAlert;
-  if (pageStatusAlert != null) {
-    const revisionId = page.revision._id;
-    const revisionIdHackmdSynced = page.revisionHackmdSynced;
-    pageStatusAlert.setRevisionId(revisionId, revisionIdHackmdSynced);
-    pageStatusAlert.setLastUpdateUsername(user.name);
-  }
-}
 socket.on('page:create', (data) => {
   // skip if triggered myself
   if (data.socketClientId != null && data.socketClientId === websocketContainer.getCocketClientId()) {
@@ -615,7 +499,7 @@ socket.on('page:create', (data) => {
 
   // update PageStatusAlert
   if (data.page.path === pagePath) {
-    updatePageStatusAlert(data.page, data.user);
+    pageContainer.setLatestRemotePageData(data.page, data.user);
   }
 });
 socket.on('page:update', (data) => {
@@ -628,7 +512,7 @@ socket.on('page:update', (data) => {
 
   if (data.page.path === pagePath) {
     // update PageStatusAlert
-    updatePageStatusAlert(data.page, data.user);
+    pageContainer.setLatestRemotePageData(data.page, data.user);
     // update PageEditorByHackmd
     const pageEditorByHackmd = componentInstances.pageEditorByHackmd;
     if (pageEditorByHackmd != null) {
@@ -648,7 +532,7 @@ socket.on('page:delete', (data) => {
 
   // update PageStatusAlert
   if (data.page.path === pagePath) {
-    updatePageStatusAlert(data.page, data.user);
+    pageContainer.setLatestRemotePageData(data.page, data.user);
   }
 });
 socket.on('page:editingWithHackmd', (data) => {
@@ -660,16 +544,7 @@ socket.on('page:editingWithHackmd', (data) => {
   logger.debug({ obj: data }, `websocket on 'page:editingWithHackmd'`); // eslint-disable-line quotes
 
   if (data.page.path === pagePath) {
-    // update PageStatusAlert
-    const pageStatusAlert = componentInstances.pageStatusAlert;
-    if (pageStatusAlert != null) {
-      pageStatusAlert.setHasDraftOnHackmd(data.page.hasDraftOnHackmd);
-    }
-    // update PageEditorByHackmd
-    const pageEditorByHackmd = componentInstances.pageEditorByHackmd;
-    if (pageEditorByHackmd != null) {
-      pageEditorByHackmd.setHasDraftOnHackmd(data.page.hasDraftOnHackmd);
-    }
+    pageContainer.setState({ isHackmdDraftUpdatingInRealtime: true });
   }
 });
 
