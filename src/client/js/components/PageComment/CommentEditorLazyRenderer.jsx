@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import CommentEditor from './CommentEditor';
 
+import UserPicture from '../User/UserPicture';
+
 export default class CommentEditorLazyRenderer extends React.Component {
 
   constructor(props) {
@@ -25,25 +27,53 @@ export default class CommentEditorLazyRenderer extends React.Component {
   }
 
   showCommentFormBtnClickHandler() {
-    this.setState({ isEditorShown: true });
+    this.setState({ isEditorShown: !this.state.isEditorShown });
   }
 
   render() {
+    const crowi = this.props.crowi;
+    const username = crowi.me;
+    const user = crowi.findUser(username);
+    const isLayoutTypeGrowi = this.state.isLayoutTypeGrowi;
     return (
       <React.Fragment>
         { !this.state.isEditorShown
           && (
-          <button
-            type="button"
-            className={`btn btn-lg ${this.state.isLayoutTypeGrowi ? 'btn-link' : 'btn-primary'} center-block`}
-            onClick={this.showCommentFormBtnClickHandler}
-          >
-            <i className="icon-bubble"></i> Add Comment
-          </button>
+          <div className="form page-comment-form">
+            { username
+              && (
+                <div className="comment-form">
+                  { isLayoutTypeGrowi
+                  && (
+                    <div className="comment-form-user">
+                      <UserPicture user={user} />
+                    </div>
+                  )
+                  }
+                  <div className="comment-form-main">
+                    <button
+                      type="button"
+                      className={`btn btn-lg ${this.state.isLayoutTypeGrowi ? 'btn-link' : 'btn-primary'} center-block`}
+                      onClick={this.showCommentFormBtnClickHandler}
+                    >
+                      <i className="icon-bubble"></i> Add Comment
+                    </button>
+                  </div>
+                </div>
+              )
+            }
+          </div>
           )
         }
         { this.state.isEditorShown
-          && <CommentEditor {...this.props}></CommentEditor>
+          && (
+          <CommentEditor
+            {...this.props}
+            replyTo={undefined}
+            commentButtonClickedHandler={this.showCommentFormBtnClickHandler}
+          >
+          </CommentEditor>
+)
         }
       </React.Fragment>
     );

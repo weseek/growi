@@ -117,8 +117,8 @@ const crowiRenderer = new GrowiRenderer(crowi, null, {
 window.crowiRenderer = crowiRenderer;
 
 // create unstated container instance
-const pageContainer = new PageContainer();
-const commentContainer = new CommentContainer(crowi, pageContainer);
+const pageContainer = new PageContainer(appContainer);
+const commentContainer = new CommentContainer(appContainer);
 const editorContainer = new EditorContainer(appContainer, defaultEditorOptions, defaultPreviewOptions);
 
 // FIXME
@@ -317,24 +317,14 @@ const componentMappings = {
 };
 
 // additional definitions if data exists
-let pageComments = null;
 if (pageId) {
   componentMappings['page-comments-list'] = (
     <I18nextProvider i18n={i18n}>
-      <Provider inject={[commentContainer, editorContainer]}>
+      <Provider inject={[appContainer, commentContainer, editorContainer]}>
         <PageComments
-          ref={(elem) => {
-            if (pageComments == null) {
-              pageComments = elem;
-            }
-          }}
           revisionCreatedAt={pageRevisionCreatedAt}
-          pageId={pageId}
-          pagePath={pagePath}
           slackChannels={slackChannels}
-          crowi={crowi}
           crowiOriginRenderer={crowiRenderer}
-          revisionId={pageRevisionId}
         />
       </Provider>
     </I18nextProvider>

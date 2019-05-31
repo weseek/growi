@@ -8,12 +8,11 @@ import { Container } from 'unstated';
  */
 export default class CommentContainer extends Container {
 
-  constructor(crowi, pageContainer) {
+  constructor(appContainer) {
     super();
 
-    this.crowi = crowi;
-    this.pageId = pageContainer.state.pageId;
-    this.revisionId = pageContainer.state.revisionId;
+    this.appContainer = appContainer;
+    this.appContainer.registerContainer(this);
 
     this.state = {
       comments: [],
@@ -22,8 +21,14 @@ export default class CommentContainer extends Container {
     this.retrieveComments = this.retrieveComments.bind(this);
   }
 
+  getPageContainer() {
+    return this.appContainer.getContainer('PageContainer');
+  }
+
   init() {
-    if (!this.props.pageId) {
+    const { pageId } = this.getPageContainer().state;
+
+    if (!pageId) {
       return;
     }
   }
@@ -44,8 +49,10 @@ export default class CommentContainer extends Container {
    * Load data of comments and store them in state
    */
   retrieveComments() {
+    const { pageId } = this.getPageContainer().state;
+
     // get data (desc order array)
-    return this.crowi.apiGet('/comments.get', { page_id: this.pageId })
+    return this.appContainer.apiGet('/comments.get', { page_id: pageId })
       .then((res) => {
         if (res.ok) {
           this.setState({ comments: res.comments });
@@ -57,12 +64,14 @@ export default class CommentContainer extends Container {
    * Load data of comments and rerender <PageComments />
    */
   postComment(comment, isMarkdown, replyTo, isSlackEnabled, slackChannels) {
-    return this.crowi.apiPost('/comments.add', {
+    const { pageId, revisionId } = this.getPageContainer().state;
+
+    return this.appContainer.apiPost('/comments.add', {
       commentForm: {
         comment,
-        _csrf: this.crowi.csrfToken,
-        page_id: this.pageId,
-        revision_id: this.revisionId,
+        _csrf: this.appContainer.csrfToken,
+        page_id: pageId,
+        revision_id: revisionId,
         is_markdown: isMarkdown,
         replyTo,
       },
@@ -79,7 +88,7 @@ export default class CommentContainer extends Container {
   }
 
   deleteComment(comment) {
-    return this.crowi.apiPost('/comments.remove', { comment_id: comment._id })
+    return this.appContainer.apiPost('/comments.remove', { comment_id: comment._id })
       .then((res) => {
         if (res.ok) {
           this.findAndSplice(comment);
@@ -88,34 +97,16 @@ export default class CommentContainer extends Container {
   }
 
   uploadAttachment(file) {
-    // const endpoint = '/attachments.add';
+    const { pageId, pagePath } = this.getPageContainer().state;
 
-    // // create a FromData instance
-    // const formData = new FormData();
-    // formData.append('_csrf', this.props.data.crowi.csrfToken);
-    // formData.append('file', file);
-    // formData.append('path', this.props.data.pagePath);
-    // formData.append('page_id', this.props.data.pageId || 0);
+    const endpoint = '/attachments.add';
+    const formData = new FormData();
+    formData.append('_csrf', this.appContainer.csrfToken);
+    formData.append('file', file);
+    formData.append('path', pagePath);
+    formData.append('page_id', pageId);
 
-    // // post
-    // this.props.data.crowi.apiPost(endpoint, formData)
-    //   .then((res) => {
-    //     const attachment = res.attachment;
-    //     const fileName = attachment.originalName;
-
-    //     let insertText = `[${fileName}](${attachment.filePathProxied})`;
-    //     // when image
-    //     if (attachment.fileFormat.startsWith('image/')) {
-    //       // modify to "![fileName](url)" syntax
-    //       insertText = `!${insertText}`;
-    //     }
-    //     this.editor.insertText(insertText);
-    //   })
-    //   .catch(this.apiErrorHandler)
-    //   // finally
-    //   .then(() => {
-    //     this.editor.terminateUploadingState();
-    //   });
+    return this.appContainer.apiPost(endpoint, formData);
   }
 
 }

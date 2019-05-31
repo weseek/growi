@@ -8,8 +8,11 @@ import * as entities from 'entities';
  */
 export default class PageContainer extends Container {
 
-  constructor() {
+  constructor(appContainer) {
     super();
+
+    this.appContainer = appContainer;
+    this.appContainer.registerContainer(this);
 
     const mainContent = document.querySelector('#content-main');
 

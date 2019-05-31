@@ -71,7 +71,7 @@ export default class AppContainer extends Container {
   }
 
   /**
-   * Register instance
+   * Register unstated container instance
    * @param {object} instance unstated container instance
    */
   registerContainer(instance) {
@@ -88,12 +88,19 @@ export default class AppContainer extends Container {
     this.containerInstances[className] = instance;
   }
 
+  /**
+   * Get registered unstated container instance
+   * !! THIS METHOD SHOULD ONLY BE USED FROM unstated CONTAINERS !!
+   * !! From component instances, inject containers with `import { Subscribe } from 'unstated'` !!
+   *
+   * @param {string} className
+   */
   getContainer(className) {
     return this.containerInstances[className];
   }
 
   /**
-   * Register instance
+   * Register React component instance
    * @param {object} instance React component instance
    */
   registerComponentInstance(instance) {
@@ -111,7 +118,7 @@ export default class AppContainer extends Container {
   }
 
   /**
-   * Get registered instance
+   * Get registered React component instance
    * @param {string} className
    */
   getComponentInstance(className) {

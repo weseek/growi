@@ -2,17 +2,22 @@
 /* eslint-disable react/no-access-state-in-setstate */
 import React from 'react';
 import PropTypes from 'prop-types';
+import Button from 'react-bootstrap/es/Button';
 
 import { Subscribe } from 'unstated';
 
 import { withTranslation } from 'react-i18next';
 import GrowiRenderer from '../util/GrowiRenderer';
 
+import AppContainer from '../services/AppContainer';
 import CommentContainer from './PageComment/CommentContainer';
+
 import CommentEditor from './PageComment/CommentEditor';
 
 import Comment from './PageComment/Comment';
 import DeleteCommentModal from './PageComment/DeleteCommentModal';
+import PageContainer from '../services/PageContainer';
+
 
 /**
  * Load data of comments and render the list of <Comment />
@@ -39,7 +44,7 @@ class PageComments extends React.Component {
       showEditorIds: new Set(),
     };
 
-    this.growiRenderer = new GrowiRenderer(this.props.crowi, this.props.crowiOriginRenderer, { mode: 'comment' });
+    this.growiRenderer = new GrowiRenderer(window.crowi, this.props.crowiOriginRenderer, { mode: 'comment' });
 
     this.init = this.init.bind(this);
     this.confirmToDeleteComment = this.confirmToDeleteComment.bind(this);
@@ -47,6 +52,7 @@ class PageComments extends React.Component {
     this.showDeleteConfirmModal = this.showDeleteConfirmModal.bind(this);
     this.closeDeleteConfirmModal = this.closeDeleteConfirmModal.bind(this);
     this.replyButtonClickedHandler = this.replyButtonClickedHandler.bind(this);
+    this.commentButtonClickedHandler = this.commentButtonClickedHandler.bind(this);
   }
 
   componentWillMount() {
@@ -54,11 +60,11 @@ class PageComments extends React.Component {
   }
 
   init() {
-    if (!this.props.pageId) {
+    if (!this.props.pageContainer.state.pageId) {
       return;
     }
 
-    const layoutType = this.props.crowi.getConfig().layoutType;
+    const layoutType = this.props.appContainer.getConfig().layoutType;
     this.setState({ isLayoutTypeGrowi: layoutType === 'crowi-plus' || layoutType === 'growi' });
 
     this.props.commentContainer.retrieveComments();
@@ -98,19 +104,24 @@ class PageComments extends React.Component {
     this.setState({ showEditorIds: ids });
   }
 
-  // inserts reply after each corresponding comment
-  reorderBasedOnReplies(comments, replies) {
-    // const connections = this.findConnections(comments, replies);
-    // const replyConnections = this.findConnectionsWithinReplies(replies);
-    const repliesReversed = replies.slice().reverse();
-    for (let i = 0; i < comments.length; i++) {
-      for (let j = 0; j < repliesReversed.length; j++) {
-        if (repliesReversed[j].replyTo === comments[i]._id) {
-          comments.splice(i + 1, 0, repliesReversed[j]);
-        }
+  commentButtonClickedHandler(commentId) {
+    this.setState((prevState) => {
+      prevState.showEditorIds.delete(commentId);
+      return {
+        showEditorIds: prevState.showEditorIds,
+      };
+    });
+  }
+
+  // adds replies to specific comment object
+  addRepliesToComments(comment, replies) {
+    const replyList = [];
+    replies.forEach((reply) => {
+      if (reply.replyTo === comment._id) {
+        replyList.push(reply);
       }
-    }
-    return comments;
+    });
+    return replyList;
   }
 
   /**
@@ -121,11 +132,13 @@ class PageComments extends React.Component {
    * @memberOf PageComments
    */
   generateCommentElements(comments, replies) {
-    const commentsWithReplies = this.reorderBasedOnReplies(comments, replies);
-    return commentsWithReplies.map((comment) => {
+    return comments.map((comment) => {
 
       const commentId = comment._id;
       const showEditor = this.state.showEditorIds.has(commentId);
+      const username = this.props.appContainer.me;
+
+      const replyList = this.addRepliesToComments(comment, replies);
 
       return (
         <div key={commentId}>
@@ -133,15 +146,41 @@ class PageComments extends React.Component {
             comment={comment}
             deleteBtnClicked={this.confirmToDeleteComment}
             crowiRenderer={this.growiRenderer}
-            onReplyButtonClicked={() => { this.replyButtonClickedHandler(commentId) }}
-            crowi={this.props.crowi}
+            replyList={replyList}
+            revisionCreatedAt={this.props.revisionCreatedAt}
           />
-          { showEditor && (
-            <CommentEditor
-              crowi={this.props.crowi}
-              crowiOriginRenderer={this.props.crowiOriginRenderer}
-            />
-          )}
+          <div className="container-fluid">
+            <div className="row">
+              <div className="col-xs-offset-1 col-xs-11 col-sm-offset-1 col-sm-11 col-md-offset-1 col-md-11 col-lg-offset-1 col-lg-11">
+                { !showEditor && (
+                  <div>
+                    { username
+                    && (
+                      <div className="col-xs-offset-6 col-sm-offset-6 col-md-offset-6 col-lg-offset-6">
+                        <Button
+                          bsStyle="primary"
+                          className="fcbtn btn btn-sm btn-primary btn-outline btn-rounded btn-1b"
+                          onClick={() => { return this.replyButtonClickedHandler(commentId) }}
+                        >
+                          <i className="icon-bubble"></i> Reply
+                        </Button>
+                      </div>
+                    )
+                  }
+                  </div>
+                )}
+                { showEditor && (
+                  <CommentEditor
+                    crowiOriginRenderer={this.props.crowiOriginRenderer}
+                    slackChannels={this.props.slackChannels}
+                    replyTo={commentId}
+                    commentButtonClickedHandler={this.commentButtonClickedHandler}
+                  />
+                )}
+              </div>
+            </div>
+          </div>
+          <br />
         </div>
       );
     });
@@ -149,11 +188,7 @@ class PageComments extends React.Component {
 
   render() {
     const currentComments = [];
-    const newerComments = [];
-    const olderComments = [];
     const currentReplies = [];
-    const newerReplies = [];
-    const olderReplies = [];
 
     let comments = this.props.commentContainer.state.comments;
     if (this.state.isLayoutTypeGrowi) {
@@ -161,100 +196,29 @@ class PageComments extends React.Component {
       comments = comments.slice().reverse(); // non-destructive reverse
     }
 
-    // divide by revisionId and createdAt
-    const revisionId = this.props.revisionId;
-    const revisionCreatedAt = this.props.revisionCreatedAt;
     comments.forEach((comment) => {
-      // comparing ObjectId
-      // eslint-disable-next-line eqeqeq
       if (comment.replyTo === undefined) {
-        // comment is not a reply
-        if (comment.revision === revisionId) {
-          currentComments.push(comment);
-        }
-        else if (Date.parse(comment.createdAt) / 1000 > revisionCreatedAt) {
-          newerComments.push(comment);
-        }
-        else {
-          olderComments.push(comment);
-        }
-      }
-      else
-      // comment is a reply
-      if (comment.revision === revisionId) {
-        currentReplies.push(comment);
-      }
-      else if (Date.parse(comment.createdAt) / 1000 > revisionCreatedAt) {
-        newerReplies.push(comment);
+      // comment is not a reply
+        currentComments.push(comment);
       }
       else {
-        olderReplies.push(comment);
+      // comment is a reply
+        currentReplies.push(comment);
       }
     });
 
     // generate elements
     const currentElements = this.generateCommentElements(currentComments, currentReplies);
-    const newerElements = this.generateCommentElements(newerComments, newerReplies);
-    const olderElements = this.generateCommentElements(olderComments, olderReplies);
+
     // generate blocks
     const currentBlock = (
       <div className="page-comments-list-current" id="page-comments-list-current">
         {currentElements}
       </div>
     );
-    const newerBlock = (
-      <div className="page-comments-list-newer collapse in" id="page-comments-list-newer">
-        {newerElements}
-      </div>
-    );
-    const olderBlock = (
-      <div className="page-comments-list-older collapse in" id="page-comments-list-older">
-        {olderElements}
-      </div>
-    );
-
-    // generate toggle elements
-    const iconForNewer = (this.state.isLayoutTypeGrowi)
-      ? <i className="fa fa-angle-double-down"></i>
-      : <i className="fa fa-angle-double-up"></i>;
-    const toggleNewer = (newerElements.length === 0)
-      ? <div></div>
-      : (
-        <a className="page-comments-list-toggle-newer text-center" data-toggle="collapse" href="#page-comments-list-newer">
-          {iconForNewer} Comments for Newer Revision {iconForNewer}
-        </a>
-      );
-    const iconForOlder = (this.state.isLayoutTypeGrowi)
-      ? <i className="fa fa-angle-double-up"></i>
-      : <i className="fa fa-angle-double-down"></i>;
-    const toggleOlder = (olderElements.length === 0)
-      ? <div></div>
-      : (
-        <a className="page-comments-list-toggle-older text-center" data-toggle="collapse" href="#page-comments-list-older">
-          {iconForOlder} Comments for Older Revision {iconForOlder}
-        </a>
-      );
 
     // layout blocks
-    const commentsElements = (this.state.isLayoutTypeGrowi)
-      ? (
-        <div>
-          {olderBlock}
-          {toggleOlder}
-          {currentBlock}
-          {toggleNewer}
-          {newerBlock}
-        </div>
-      )
-      : (
-        <div>
-          {newerBlock}
-          {toggleNewer}
-          {currentBlock}
-          {toggleOlder}
-          {olderBlock}
-        </div>
-      );
+    const commentsElements = (<div>{currentBlock}</div>);
 
     return (
       <div>
@@ -280,10 +244,10 @@ class PageCommentsWrapper extends React.Component {
 
   render() {
     return (
-      <Subscribe to={[CommentContainer]}>
-        { commentContainer => (
+      <Subscribe to={[AppContainer, PageContainer, CommentContainer]}>
+        { (appContainer, pageContainer, commentContainer) => (
           // eslint-disable-next-line arrow-body-style
-          <PageComments commentContainer={commentContainer} {...this.props} />
+          <PageComments appContainer={appContainer} pageContainer={pageContainer} commentContainer={commentContainer} {...this.props} />
         )}
       </Subscribe>
     );
@@ -291,24 +255,18 @@ class PageCommentsWrapper extends React.Component {
 
 }
 
-PageCommentsWrapper.propTypes = {
-  crowi: PropTypes.object.isRequired,
+PageComments.propTypes = {
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+  commentContainer: PropTypes.instanceOf(CommentContainer).isRequired,
+
   crowiOriginRenderer: PropTypes.object.isRequired,
-  pageId: PropTypes.string.isRequired,
-  revisionId: PropTypes.string.isRequired,
   revisionCreatedAt: PropTypes.number,
-  pagePath: PropTypes.string,
   slackChannels: PropTypes.string,
 };
-PageComments.propTypes = {
-  commentContainer: PropTypes.object.isRequired,
-
-  crowi: PropTypes.object.isRequired,
+PageCommentsWrapper.propTypes = {
   crowiOriginRenderer: PropTypes.object.isRequired,
-  pageId: PropTypes.string.isRequired,
-  revisionId: PropTypes.string.isRequired,
   revisionCreatedAt: PropTypes.number,
-  pagePath: PropTypes.string,
   slackChannels: PropTypes.string,
 };
 
