@@ -328,8 +328,10 @@ exports.formValid = function() {
       return next();
     }
 
-    const errs = errObjArray.array().map((err) => { return err.msg }).join('\n');
-    logger.error(errs);
+    const errs = errObjArray.array().map((err) => {
+      logger.error(`${err.param} in ${err.location}: ${err.msg}`);
+      return `${err.param}: ${err.msg}`;
+    }).join('\n');
 
     return res.json(ApiResponse.error(errs));
   };
