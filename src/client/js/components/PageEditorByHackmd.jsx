@@ -1,7 +1,5 @@
-/* eslint-disable react/no-multi-comp */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Subscribe } from 'unstated';
 
 import SplitButton from 'react-bootstrap/es/SplitButton';
 import MenuItem from 'react-bootstrap/es/MenuItem';
@@ -10,6 +8,7 @@ import * as toastr from 'toastr';
 
 import AppContainer from '../services/AppContainer';
 
+import { createSubscribedElement } from './UnstatedUtils';
 import HackmdEditor from './PageEditorByHackmd/HackmdEditor';
 
 class PageEditorByHackmd extends React.PureComponent {
@@ -308,35 +307,13 @@ class PageEditorByHackmd extends React.PureComponent {
 /**
  * Wrapper component for using unstated
  */
-class PageEditorByHackmdWrapper extends React.Component {
-
-  render() {
-    return (
-      <Subscribe to={[AppContainer]}>
-        { appContainer => (
-          // eslint-disable-next-line arrow-body-style
-          <PageEditorByHackmd appContainer={appContainer} {...this.props} />
-        )}
-      </Subscribe>
-    );
-  }
-
-}
+const PageEditorByHackmdWrapper = (props) => {
+  return createSubscribedElement(PageEditorByHackmd, props, [AppContainer]);
+};
 
 PageEditorByHackmd.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
-  crowi: PropTypes.object.isRequired,
-  markdown: PropTypes.string.isRequired,
-  onSaveWithShortcut: PropTypes.func.isRequired,
-  pageId: PropTypes.string,
-  revisionId: PropTypes.string,
-  pageIdOnHackmd: PropTypes.string,
-  revisionIdHackmdSynced: PropTypes.string,
-  hasDraftOnHackmd: PropTypes.bool,
-};
-
-PageEditorByHackmdWrapper.propTypes = {
   crowi: PropTypes.object.isRequired,
   markdown: PropTypes.string.isRequired,
   onSaveWithShortcut: PropTypes.func.isRequired,

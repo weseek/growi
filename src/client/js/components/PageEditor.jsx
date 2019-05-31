@@ -1,7 +1,5 @@
-/* eslint-disable react/no-multi-comp */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Subscribe } from 'unstated';
 
 import { throttle, debounce } from 'throttle-debounce';
 
@@ -11,6 +9,7 @@ import GrowiRenderer from '../util/GrowiRenderer';
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
 
+import { createSubscribedElement } from './UnstatedUtils';
 import Editor from './PageEditor/Editor';
 import Preview from './PageEditor/Preview';
 import scrollSyncHelper from './PageEditor/ScrollSyncHelper';
@@ -362,30 +361,14 @@ class PageEditor extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-class PageEditorWrapper extends React.Component {
-
-  render() {
-    return (
-      <Subscribe to={[AppContainer, PageContainer]}>
-        { (appContainer, pageContainer) => (
-          // eslint-disable-next-line arrow-body-style
-          <PageEditor appContainer={appContainer} pageContainer={pageContainer} {...this.props} />
-        )}
-      </Subscribe>
-    );
-  }
-
-}
+const PageEditorWrapper = (props) => {
+  return createSubscribedElement(PageEditor, props, [AppContainer, PageContainer]);
+};
 
 PageEditor.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
-  crowiRenderer: PropTypes.object.isRequired,
-  onSaveWithShortcut: PropTypes.func.isRequired,
-};
-
-PageEditorWrapper.propTypes = {
   crowiRenderer: PropTypes.object.isRequired,
   onSaveWithShortcut: PropTypes.func.isRequired,
 };

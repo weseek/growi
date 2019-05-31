@@ -1,15 +1,13 @@
-/* eslint-disable react/no-multi-comp */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Subscribe } from 'unstated';
 
 import dateFnsFormat from 'date-fns/format';
 
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
 
+import { createSubscribedElement } from '../UnstatedUtils';
 import RevisionBody from '../Page/RevisionBody';
-
 import UserPicture from '../User/UserPicture';
 import Username from '../User/Username';
 
@@ -212,33 +210,14 @@ class Comment extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-class CommentWrapper extends React.Component {
-
-  render() {
-    return (
-      <Subscribe to={[AppContainer, PageContainer]}>
-        { (appContainer, pageContainer) => (
-          // eslint-disable-next-line arrow-body-style
-          <Comment appContainer={appContainer} pageContainer={pageContainer} {...this.props} />
-        )}
-      </Subscribe>
-    );
-  }
-
-}
+const CommentWrapper = (props) => {
+  return createSubscribedElement(Comment, props, [AppContainer, PageContainer]);
+};
 
 Comment.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
-  comment: PropTypes.object.isRequired,
-  crowiRenderer: PropTypes.object.isRequired,
-  deleteBtnClicked: PropTypes.func.isRequired,
-  replyList: PropTypes.array,
-  revisionCreatedAt: PropTypes.number,
-};
-
-CommentWrapper.propTypes = {
   comment: PropTypes.object.isRequired,
   crowiRenderer: PropTypes.object.isRequired,
   deleteBtnClicked: PropTypes.func.isRequired,

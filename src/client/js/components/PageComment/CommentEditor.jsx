@@ -1,8 +1,5 @@
-/* eslint-disable react/no-multi-comp */
 import React from 'react';
 import PropTypes from 'prop-types';
-
-import { Subscribe } from 'unstated';
 
 import Button from 'react-bootstrap/es/Button';
 import Tab from 'react-bootstrap/es/Tab';
@@ -13,6 +10,7 @@ import AppContainer from '../../services/AppContainer';
 import CommentContainer from '../../services/CommentContainer';
 import GrowiRenderer from '../../util/GrowiRenderer';
 
+import { createSubscribedElement } from '../UnstatedUtils';
 import UserPicture from '../User/UserPicture';
 import Editor from '../PageEditor/Editor';
 import SlackNotification from '../SlackNotification';
@@ -322,31 +320,14 @@ class CommentEditor extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-class CommentEditorWrapper extends React.Component {
-
-  render() {
-    return (
-      <Subscribe to={[AppContainer, CommentContainer]}>
-        { (appContainer, commentContainer) => (
-          // eslint-disable-next-line arrow-body-style
-          <CommentEditor appContainer={appContainer} commentContainer={commentContainer} {...this.props} />
-        )}
-      </Subscribe>
-    );
-  }
-
-}
+const CommentEditorWrapper = (props) => {
+  return createSubscribedElement(CommentEditor, props, [AppContainer, CommentContainer]);
+};
 
 CommentEditor.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   commentContainer: PropTypes.instanceOf(CommentContainer).isRequired,
 
-  crowiOriginRenderer: PropTypes.object.isRequired,
-  slackChannels: PropTypes.string,
-  replyTo: PropTypes.string,
-  commentButtonClickedHandler: PropTypes.func.isRequired,
-};
-CommentEditorWrapper.propTypes = {
   crowiOriginRenderer: PropTypes.object.isRequired,
   slackChannels: PropTypes.string,
   replyTo: PropTypes.string,

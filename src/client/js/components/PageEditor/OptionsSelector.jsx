@@ -1,7 +1,6 @@
-/* eslint-disable react/no-multi-comp */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Subscribe } from 'unstated';
+
 import { withTranslation } from 'react-i18next';
 
 import FormGroup from 'react-bootstrap/es/FormGroup';
@@ -11,6 +10,7 @@ import ControlLabel from 'react-bootstrap/es/ControlLabel';
 import Dropdown from 'react-bootstrap/es/Dropdown';
 import MenuItem from 'react-bootstrap/es/MenuItem';
 
+import { createSubscribedElement } from '../UnstatedUtils';
 import EditorContainer from '../../services/EditorContainer';
 
 
@@ -277,29 +277,15 @@ class OptionsSelector extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-class OptionsSelectorWrapper extends React.Component {
-
-  render() {
-    return (
-      <Subscribe to={[EditorContainer]}>
-        { editorContainer => (
-          // eslint-disable-next-line arrow-body-style
-          <OptionsSelector editorContainer={editorContainer} {...this.props} />
-        )}
-      </Subscribe>
-    );
-  }
-
-}
-
+const OptionsSelectorWrapper = (props) => {
+  return createSubscribedElement(OptionsSelector, props, [EditorContainer]);
+};
 
 OptionsSelector.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  crowi: PropTypes.object.isRequired,
+
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
-};
-OptionsSelectorWrapper.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
+
   crowi: PropTypes.object.isRequired,
 };
 

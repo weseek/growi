@@ -1,7 +1,6 @@
-/* eslint-disable react/no-multi-comp */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Subscribe } from 'unstated';
+
 import { withTranslation } from 'react-i18next';
 
 import FormGroup from 'react-bootstrap/es/FormGroup';
@@ -10,6 +9,7 @@ import ListGroup from 'react-bootstrap/es/ListGroup';
 import ListGroupItem from 'react-bootstrap/es/ListGroupItem';
 import Modal from 'react-bootstrap/es/Modal';
 
+import { createSubscribedElement } from '../UnstatedUtils';
 import PageContainer from '../../services/PageContainer';
 import AppContainer from '../../services/AppContainer';
 
@@ -282,33 +282,17 @@ class GrantSelector extends React.Component {
 
 }
 
-
 /**
  * Wrapper component for using unstated
  */
-class GrantSelectorWrapper extends React.PureComponent {
-
-  render() {
-    return (
-      <Subscribe to={[AppContainer, PageContainer]}>
-        { (appContainer, pageContainer) => (
-          // eslint-disable-next-line arrow-body-style
-          <GrantSelector appContainer={appContainer} pageContainer={pageContainer} {...this.props} />
-        )}
-      </Subscribe>
-    );
-  }
-
-}
-
+const GrantSelectorWrapper = (props) => {
+  return createSubscribedElement(GrantSelector, props, [AppContainer, PageContainer]);
+};
 
 GrantSelector.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-};
-GrantSelectorWrapper.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
 };
 
 export default withTranslation(null, { withRef: true })(GrantSelectorWrapper);

@@ -1,7 +1,6 @@
-/* eslint-disable react/no-multi-comp */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Subscribe } from 'unstated';
+
 import { withTranslation } from 'react-i18next';
 
 import ButtonToolbar from 'react-bootstrap/es/ButtonToolbar';
@@ -11,6 +10,7 @@ import MenuItem from 'react-bootstrap/es/MenuItem';
 import PageContainer from '../services/PageContainer';
 import AppContainer from '../services/AppContainer';
 
+import { createSubscribedElement } from './UnstatedUtils';
 import SlackNotification from './SlackNotification';
 import GrantSelector from './SavePageControls/GrantSelector';
 
@@ -92,34 +92,19 @@ class SavePageControls extends React.PureComponent {
 
 }
 
-
 /**
  * Wrapper component for using unstated
  */
-class SavePageControlsWrapper extends React.PureComponent {
-
-  render() {
-    return (
-      <Subscribe to={[AppContainer, PageContainer]}>
-        { (appContainer, pageContainer) => (
-          // eslint-disable-next-line arrow-body-style
-          <SavePageControls appContainer={appContainer} pageContainer={pageContainer} {...this.props} />
-        )}
-      </Subscribe>
-    );
-  }
-
-}
+const SavePageControlsWrapper = (props) => {
+  return createSubscribedElement(SavePageControls, props, [AppContainer, PageContainer]);
+};
 
 SavePageControls.propTypes = {
   t: PropTypes.func.isRequired, // i18next
+
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-  onSubmit: PropTypes.func.isRequired,
-};
 
-SavePageControlsWrapper.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
   onSubmit: PropTypes.func.isRequired,
 };
 

@@ -1,11 +1,10 @@
-/* eslint-disable react/no-multi-comp */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Subscribe } from 'unstated';
 
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
 
+import { createSubscribedElement } from './UnstatedUtils';
 import RevisionRenderer from './Page/RevisionRenderer';
 import HandsontableModal from './PageEditor/HandsontableModal';
 import MarkdownTable from '../models/MarkdownTable';
@@ -64,29 +63,15 @@ class Page extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-class PageWrapper extends React.PureComponent {
+const PageWrapper = (props) => {
+  return createSubscribedElement(Page, props, [AppContainer, PageContainer]);
+};
 
-  render() {
-    return (
-      <Subscribe to={[AppContainer, PageContainer]}>
-        { (appContainer, pageContainer) => (
-          // eslint-disable-next-line arrow-body-style
-          <Page appContainer={appContainer} pageContainer={pageContainer} {...this.props} />
-        )}
-      </Subscribe>
-    );
-  }
-
-}
 
 Page.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-  crowiRenderer: PropTypes.object.isRequired,
-  onSaveWithShortcut: PropTypes.func.isRequired,
-};
 
-PageWrapper.propTypes = {
   crowiRenderer: PropTypes.object.isRequired,
   onSaveWithShortcut: PropTypes.func.isRequired,
 };

@@ -1,11 +1,10 @@
-/* eslint-disable react/no-multi-comp */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Subscribe } from 'unstated';
 
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
 
+import { createSubscribedElement } from '../UnstatedUtils';
 import RevisionBody from './RevisionBody';
 
 class RevisionRenderer extends React.Component {
@@ -109,29 +108,13 @@ class RevisionRenderer extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-class RevisionRendererWrapper extends React.PureComponent {
-
-  render() {
-    return (
-      <Subscribe to={[AppContainer, PageContainer]}>
-        { (appContainer, pageContainer) => (
-          // eslint-disable-next-line arrow-body-style
-          <RevisionRenderer appContainer={appContainer} pageContainer={pageContainer} {...this.props} />
-        )}
-      </Subscribe>
-    );
-  }
-
-}
+const RevisionRendererWrapper = (props) => {
+  return createSubscribedElement(RevisionRenderer, props, [AppContainer, PageContainer]);
+};
 
 RevisionRenderer.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-  crowiRenderer: PropTypes.object.isRequired,
-  highlightKeywords: PropTypes.string,
-};
-
-RevisionRendererWrapper.propTypes = {
   crowiRenderer: PropTypes.object.isRequired,
   highlightKeywords: PropTypes.string,
 };

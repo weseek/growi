@@ -1,5 +1,3 @@
-/* eslint-disable react/no-multi-comp */
-/* eslint-disable react/no-access-state-in-setstate */
 import React from 'react';
 import PropTypes from 'prop-types';
 
@@ -237,6 +235,9 @@ class PageComments extends React.Component {
 
 }
 
+/**
+ * Wrapper component for using unstated
+ */
 const PageCommentsWrapper = (props) => {
   return createSubscribedElement(PageComments, props, [AppContainer, PageContainer, CommentContainer]);
 };

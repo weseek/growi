@@ -10,7 +10,7 @@ import EditorContainer from '../../services/EditorContainer';
 /**
  * Wrapper component for Page/RevisionBody
  */
-export default class Preview extends React.Component {
+export default class Preview extends React.PureComponent {
 
   render() {
     return (
