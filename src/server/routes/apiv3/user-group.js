@@ -1,13 +1,21 @@
-/* eslint-disable no-use-before-define */
-module.exports = (crowi) => {
-  const logger = require('@alias/logger')('growi:routes:apiv3:user-group');
-  const ApiResponse = require('../../util/apiResponse');
+const loggerFactory = require('@alias/logger');
 
+const logger = loggerFactory('growi:routes:apiv3:user-group'); // eslint-disable-line no-unused-vars
+
+const express = require('express');
+
+const router = express.Router();
+
+const middleware = require('../../util/middlewares');
+
+const { loginRequired, adminRequired, formValid } = middleware;
+
+const ApiResponse = require('../../util/apiResponse');
+
+module.exports = (crowi) => {
   const { UserGroup, UserGroupRelation } = crowi.models;
 
-  const api = {};
-
-  api.find = async(req, res) => {
+  router.get('/', loginRequired(crowi), adminRequired(), async(req, res) => {
     // TODO: filter with querystring
     try {
       const userGroups = await UserGroup.find();
@@ -17,12 +25,9 @@ module.exports = (crowi) => {
       logger.error('Error', err);
       return res.json(ApiResponse.error('Error occurred in fetching user groups'));
     }
-  };
+  });
 
-  // api.findOne = async(req, res) => {
-  // };
-
-  api.create = async(req, res) => {
+  router.post('/create', loginRequired(crowi), adminRequired(), async(req, res) => {
     const { name } = req.body;
     try {
       const userGroupName = crowi.xss.process(name);
@@ -41,12 +46,9 @@ module.exports = (crowi) => {
       logger.error(msg, err);
       return res.json(ApiResponse.error(msg));
     }
-  };
+  });
 
-  // api.update = async(req, res) => {
-  // };
-
-  api.delete = async(req, res) => {
+  router.post('/:id/delete', loginRequired(crowi), adminRequired(), async(req, res) => {
     const { id: deleteGroupId } = req.params;
     const { actionName, transferToUserGroupId } = req.body;
     try {
@@ -59,7 +61,35 @@ module.exports = (crowi) => {
       logger.error(msg, err);
       return res.json(ApiResponse.error(msg));
     }
-  };
+  });
 
-  return api;
+  // return one group with the id
+  // router.get('/:id', loginRequired(crowi), adminRequired(), async(req, res) => {
+  // });
+
+  // update one group with the id
+  // router.post('/:id/update', loginRequired(crowi), adminRequired(), async(req, res) => {
+  // });
+
+  router.get('/:id/users', loginRequired(crowi), adminRequired(), async(req, res) => {
+    const { id } = req.params;
+
+    try {
+      const userGroup = await UserGroup.findById(id);
+      const userGroupRelations = await UserGroupRelation.findAllRelationForUserGroup(userGroup);
+
+      const users = userGroupRelations.map((userGroupRelation) => {
+        return userGroupRelation.relatedUser;
+      });
+
+      return res.json(ApiResponse.success({ users }));
+    }
+    catch (err) {
+      const msg = `Error occurred in fetching user group relations for group: ${id}`;
+      logger.error(msg, err);
+      return res.json(ApiResponse.error(msg));
+    }
+  });
+
+  return router;
 };
