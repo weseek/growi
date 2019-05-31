@@ -27,7 +27,7 @@ export default class CommentEditorLazyRenderer extends React.Component {
   }
 
   showCommentFormBtnClickHandler() {
-    this.setState({ isEditorShown: true });
+    this.setState({ isEditorShown: !this.state.isEditorShown });
   }
 
   render() {
@@ -70,6 +70,7 @@ export default class CommentEditorLazyRenderer extends React.Component {
           <CommentEditor
             {...this.props}
             replyTo={undefined}
+            commentButtonClickedHandler={this.showCommentFormBtnClickHandler}
           >
           </CommentEditor>
 )

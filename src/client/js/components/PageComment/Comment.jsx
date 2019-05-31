@@ -24,6 +24,7 @@ export default class Comment extends React.Component {
 
     this.state = {
       html: '',
+      isLayoutTypeGrowi: false,
     };
 
     this.isCurrentUserIsAuthor = this.isCurrentUserEqualsToAuthor.bind(this);
@@ -36,6 +37,12 @@ export default class Comment extends React.Component {
 
   componentWillMount() {
     this.renderHtml(this.props.comment.comment);
+    this.init();
+  }
+
+  init() {
+    const layoutType = this.props.crowi.getConfig().layoutType;
+    this.setState({ isLayoutTypeGrowi: layoutType === 'crowi-plus' || layoutType === 'growi' });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -114,7 +121,12 @@ export default class Comment extends React.Component {
   }
 
   renderReplies() {
-    return this.props.replyList.map((reply) => {
+    const isLayoutTypeGrowi = this.state.isLayoutTypeGrowi;
+    let replyList = this.props.replyList;
+    if (!isLayoutTypeGrowi) {
+      replyList = replyList.slice().reverse();
+    }
+    return replyList.map((reply) => {
       return (
         <div key={reply._id} className="col-xs-offset-1 col-xs-11 col-sm-offset-1 col-sm-11 col-md-offset-1 col-md-11 col-lg-offset-1 col-lg-11">
           <Comment
