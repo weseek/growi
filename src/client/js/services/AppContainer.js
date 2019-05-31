@@ -32,7 +32,6 @@ export default class AppContainer extends Container {
     const userAgent = window.navigator.userAgent.toLowerCase();
     this.isMobile = /iphone|ipad|android/.test(userAgent);
 
-    this.socketClientId = Math.floor(Math.random() * 100000);
     this.page = undefined;
     this.pageEditor = undefined;
     this.isDocSaved = true;
@@ -139,10 +138,6 @@ export default class AppContainer extends Container {
 
   getWebSocket() {
     return this.socket;
-  }
-
-  getSocketClientId() {
-    return this.socketClientId;
   }
 
   getEmojiStrategy() {

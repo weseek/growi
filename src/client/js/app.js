@@ -49,6 +49,7 @@ import AppContainer from './services/AppContainer';
 import PageContainer from './services/PageContainer';
 import CommentContainer from './components/PageComment/CommentContainer';
 import EditorContainer from './services/EditorContainer';
+import WebsocketContainer from './services/WebsocketContainer';
 
 
 const logger = loggerFactory('growi:app');
@@ -97,6 +98,7 @@ const isLoggedin = document.querySelector('.main-container.nologin') == null;
 
 // create unstated container instance
 const appContainer = new AppContainer();
+const websocketContainer = new WebsocketContainer(appContainer);
 const pageContainer = new PageContainer(appContainer);
 const commentContainer = new CommentContainer(appContainer);
 const editorContainer = new EditorContainer(appContainer, defaultEditorOptions, defaultPreviewOptions);
@@ -111,7 +113,6 @@ if (isLoggedin) {
 }
 
 const socket = appContainer.getWebSocket();
-const socketClientId = appContainer.getSocketClientId();
 
 const crowiRenderer = new GrowiRenderer(crowi, null, {
   mode: 'page',
@@ -212,7 +213,7 @@ const saveWithShortcut = function(markdown) {
   let revisionId = pageRevisionId;
   // get options
   const options = pageContainer.getCurrentOptionsToSave();
-  options.socketClientId = socketClientId;
+  options.socketClientId = websocketContainer.getCocketClientId();
   options.pageTags = pageTags;
 
   if (editorMode === 'hackmd') {
@@ -250,7 +251,7 @@ const saveWithSubmitButton = function(submitOpts) {
   let revisionId = pageRevisionId;
   // get options
   const options = pageContainer.getCurrentOptionsToSave();
-  options.socketClientId = socketClientId;
+  options.socketClientId = websocketContainer.getCocketClientId();
   options.pageTags = pageTags;
 
   // set 'submitOpts.overwriteScopesOfDescendants' to options
@@ -606,7 +607,7 @@ function updatePageStatusAlert(page, user) {
 }
 socket.on('page:create', (data) => {
   // skip if triggered myself
-  if (data.socketClientId != null && data.socketClientId === socketClientId) {
+  if (data.socketClientId != null && data.socketClientId === websocketContainer.getCocketClientId()) {
     return;
   }
 
@@ -619,7 +620,7 @@ socket.on('page:create', (data) => {
 });
 socket.on('page:update', (data) => {
   // skip if triggered myself
-  if (data.socketClientId != null && data.socketClientId === socketClientId) {
+  if (data.socketClientId != null && data.socketClientId === websocketContainer.getCocketClientId()) {
     return;
   }
 
@@ -639,7 +640,7 @@ socket.on('page:update', (data) => {
 });
 socket.on('page:delete', (data) => {
   // skip if triggered myself
-  if (data.socketClientId != null && data.socketClientId === socketClientId) {
+  if (data.socketClientId != null && data.socketClientId === websocketContainer.getCocketClientId()) {
     return;
   }
 
@@ -652,7 +653,7 @@ socket.on('page:delete', (data) => {
 });
 socket.on('page:editingWithHackmd', (data) => {
   // skip if triggered myself
-  if (data.socketClientId != null && data.socketClientId === socketClientId) {
+  if (data.socketClientId != null && data.socketClientId === websocketContainer.getCocketClientId()) {
     return;
   }
 
