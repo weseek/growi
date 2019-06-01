@@ -25,14 +25,6 @@ export default class CommentContainer extends Container {
     return this.appContainer.getContainer('PageContainer');
   }
 
-  init() {
-    const { pageId } = this.getPageContainer().state;
-
-    if (!pageId) {
-      return;
-    }
-  }
-
   findAndSplice(comment) {
     const comments = this.state.comments;
 
