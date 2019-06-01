@@ -8,7 +8,6 @@ import * as toastr from 'toastr';
 
 import loggerFactory from '@alias/logger';
 import Xss from '@commons/service/xss';
-import * as entities from 'entities';
 import i18nFactory from './i18n';
 
 
@@ -64,35 +63,7 @@ const i18n = i18nFactory(userlang);
 const xss = new Xss();
 window.xss = xss;
 
-const mainContent = document.querySelector('#content-main');
-let pageId = null;
-let pageRevisionId = null;
-let pageRevisionCreatedAt = null;
-let pageRevisionIdHackmdSynced = null;
-let hasDraftOnHackmd = false;
-let pageIdOnHackmd = null;
-let pagePath;
-let pageContent = '';
-let markdown = '';
-let slackChannels;
 let pageTags = [];
-let templateTagData = '';
-if (mainContent !== null) {
-  pageId = mainContent.getAttribute('data-page-id') || null;
-  pageRevisionId = mainContent.getAttribute('data-page-revision-id');
-  pageRevisionCreatedAt = +mainContent.getAttribute('data-page-revision-created');
-  pageRevisionIdHackmdSynced = mainContent.getAttribute('data-page-revision-id-hackmd-synced') || null;
-  pageIdOnHackmd = mainContent.getAttribute('data-page-id-on-hackmd') || null;
-  hasDraftOnHackmd = !!mainContent.getAttribute('data-page-has-draft-on-hackmd');
-  pagePath = mainContent.attributes['data-path'].value;
-  slackChannels = mainContent.getAttribute('data-slack-channels') || '';
-  templateTagData = mainContent.getAttribute('data-template-tags') || '';
-  const rawText = document.getElementById('raw-text-original');
-  if (rawText) {
-    pageContent = rawText.innerHTML;
-  }
-  markdown = entities.decodeHTML(pageContent);
-}
 const isLoggedin = document.querySelector('.main-container.nologin') == null;
 
 // create unstated container instance
@@ -185,7 +156,7 @@ const saveWithShortcutSuccessHandler = function(page) {
   }
 
   // hidden input
-  $('input[name="revision_id"]').val(pageRevisionId);
+  $('input[name="revision_id"]').val(newState.revisionId);
 };
 
 const errorHandler = function(error) {
@@ -230,8 +201,9 @@ const saveWithShortcut = function(markdown) {
 };
 
 const saveWithSubmitButtonSuccessHandler = function() {
-  appContainer.clearDraft(pagePath);
-  window.location.href = pagePath;
+  const { path } = pageContainer.state;
+  appContainer.clearDraft(path);
+  window.location.href = path;
 };
 
 const saveWithSubmitButton = function(submitOpts) {
@@ -286,12 +258,6 @@ const saveWithSubmitButton = function(submitOpts) {
 // setup renderer after plugins are installed
 crowiRenderer.setup();
 
-// restore draft when the first time to edit
-const draft = appContainer.findDraft(pagePath);
-if (!pageRevisionId && draft != null) {
-  markdown = draft;
-}
-
 /**
  * define components
  *  key: id of element
@@ -305,30 +271,37 @@ let componentMappings = {
   // 'revision-history': <PageHistory pageId={pageId} />,
   'tags-page': <TagsList crowi={crowi} />,
 
-  'create-page-name-input': <PagePathAutoComplete crowi={crowi} initializedPath={pagePath} addTrailingSlash />,
+  'create-page-name-input': <PagePathAutoComplete crowi={crowi} initializedPath={pageContainer.state.path} addTrailingSlash />,
 
   'page-editor': <PageEditor crowiRenderer={crowiRenderer} onSaveWithShortcut={saveWithShortcut} />,
   'page-editor-options-selector': <OptionsSelector crowi={crowi} />,
   'page-status-alert': <PageStatusAlert />,
   'save-page-controls': <SavePageControls onSubmit={saveWithSubmitButton} />,
+
+  'user-created-list': <RecentCreated />,
+  'user-draft-list': <MyDraftList crowiOriginRenderer={crowiRenderer} />,
 };
 
 // additional definitions if data exists
-if (pageId) {
+if (pageContainer.state.pageId != null) {
   componentMappings = Object.assign({
     'page-editor-with-hackmd': <PageEditorByHackmd onSaveWithShortcut={saveWithShortcut} />,
     'page-comments-list': <PageComments crowiOriginRenderer={crowiRenderer} />,
+    'page-attachment':  <PageAttachment />,
     'page-comment-write':  <CommentEditorLazyRenderer crowiOriginRenderer={crowiRenderer} />,
+    'bookmark-button':  <BookmarkButton pageId={pageContainer.state.pageId} crowi={crowi} />,
+    'bookmark-button-lg':  <BookmarkButton pageId={pageContainer.state.pageId} crowi={crowi} size="lg" />,
+    'rename-page-name-input':  <PagePathAutoComplete crowi={crowi} initializedPath={pageContainer.state.path} />,
+    'duplicate-page-name-input':  <PagePathAutoComplete crowi={crowi} initializedPath={pageContainer.state.path} />,
   }, componentMappings);
 }
-if (pagePath) {
+if (pageContainer.state.path != null) {
   componentMappings = Object.assign({
     // eslint-disable-next-line quote-props
     'page': <Page crowiRenderer={crowiRenderer} onSaveWithShortcut={saveWithShortcut} />,
-    'revision-path':  <RevisionPath pageId={pageId} pagePath={pagePath} crowi={crowi} />,
-    'tag-label':  <TagLabels crowi={crowi} pageId={pageId} sendTagData={setTagData} templateTagData={templateTagData} />,
+    'revision-path':  <RevisionPath pageId={pageContainer.state.pageId} pagePath={pageContainer.state.path} crowi={crowi} />,
+    'tag-label':  <TagLabels crowi={crowi} pageId={pageContainer.state.pageId} sendTagData={setTagData} templateTagData={pageContainer.state.templateTagData} />,
   }, componentMappings);
-
 }
 
 Object.keys(componentMappings).forEach((key) => {
@@ -350,7 +323,7 @@ const likeButtonElem = document.getElementById('like-button');
 if (likeButtonElem) {
   const isLiked = likeButtonElem.dataset.liked === 'true';
   ReactDOM.render(
-    <LikeButton crowi={crowi} pageId={pageId} isLiked={isLiked} />,
+    <LikeButton crowi={crowi} pageId={pageContainer.state.pageId} isLiked={isLiked} />,
     likeButtonElem,
   );
 }
@@ -373,38 +346,6 @@ if (likerListElem) {
   ReactDOM.render(
     <UserPictureList crowi={crowi} userIds={userIds} />,
     likerListElem,
-  );
-}
-
-const recentCreatedControlsElem = document.getElementById('user-created-list');
-if (recentCreatedControlsElem) {
-  let limit = appContainer.getConfig().recentCreatedLimit;
-  if (limit == null) {
-    limit = 10;
-  }
-  ReactDOM.render(
-    <RecentCreated crowi={crowi} pageId={pageId} limit={limit}>
-
-    </RecentCreated>, document.getElementById('user-created-list'),
-  );
-}
-
-const myDraftControlsElem = document.getElementById('user-draft-list');
-if (myDraftControlsElem) {
-  let limit = appContainer.getConfig().recentCreatedLimit;
-  if (limit == null) {
-    limit = 10;
-  }
-
-  ReactDOM.render(
-    <I18nextProvider i18n={i18n}>
-      <MyDraftList
-        limit={limit}
-        crowi={crowi}
-        crowiOriginRenderer={crowiRenderer}
-      />
-    </I18nextProvider>,
-    myDraftControlsElem,
   );
 }
 
@@ -462,7 +403,7 @@ if (adminGrantSelectorElem != null) {
 $('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', () => {
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
-      <PageHistory pageId={pageId} crowi={crowi} />
+      <PageHistory pageId={pageContainer.state.pageId} crowi={crowi} />
     </I18nextProvider>, document.getElementById('revision-history'),
   );
 });

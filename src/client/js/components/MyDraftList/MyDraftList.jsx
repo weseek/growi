@@ -1,10 +1,15 @@
 import React from 'react';
-
 import PropTypes from 'prop-types';
+
 import Pagination from 'react-bootstrap/lib/Pagination';
+
+import { createSubscribedElement } from '../UnstatedUtils';
+import AppContainer from '../../services/AppContainer';
+import PageContainer from '../../services/PageContainer';
+
 import Draft from '../PageList/Draft';
 
-export default class MyDraftList extends React.Component {
+class MyDraftList extends React.Component {
 
   constructor(props) {
     super(props);
@@ -31,7 +36,7 @@ export default class MyDraftList extends React.Component {
   async getDraftsFromLocalStorage() {
     const draftsAsObj = JSON.parse(window.localStorage.getItem('draft') || '{}');
 
-    const res = await this.props.crowi.apiGet('/pages.exist', {
+    const res = await this.props.appContainer.apiGet('/pages.exist', {
       pages: draftsAsObj,
     });
 
@@ -49,7 +54,10 @@ export default class MyDraftList extends React.Component {
   }
 
   getCurrentDrafts(selectPageNumber) {
-    const limit = this.props.limit;
+    const { appContainer } = this.props;
+
+    const limit = appContainer.getConfig().recentCreatedLimit;
+
     const totalCount = this.state.drafts.length;
     const activePage = selectPageNumber;
     const paginationNumbers = this.calculatePagination(limit, totalCount, activePage);
@@ -74,7 +82,6 @@ export default class MyDraftList extends React.Component {
       return (
         <Draft
           key={draft.path}
-          crowi={this.props.crowi}
           crowiOriginRenderer={this.props.crowiOriginRenderer}
           path={draft.path}
           markdown={draft.markdown}
@@ -86,7 +93,7 @@ export default class MyDraftList extends React.Component {
   }
 
   clearDraft(path) {
-    this.props.crowi.clearDraft(path);
+    this.props.appContainer.clearDraft(path);
 
     this.setState((prevState) => {
       return {
@@ -97,7 +104,7 @@ export default class MyDraftList extends React.Component {
   }
 
   clearAllDrafts() {
-    this.props.crowi.clearAllDrafts();
+    this.props.appContainer.clearAllDrafts();
 
     this.setState({
       drafts: [],
@@ -244,9 +251,19 @@ export default class MyDraftList extends React.Component {
 
 }
 
+/**
+ * Wrapper component for using unstated
+ */
+const MyDraftListWrapper = (props) => {
+  return createSubscribedElement(MyDraftList, props, [AppContainer, PageContainer]);
+};
+
 
 MyDraftList.propTypes = {
-  limit: PropTypes.number,
-  crowi: PropTypes.object.isRequired,
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+
   crowiOriginRenderer: PropTypes.object.isRequired,
 };
+
+export default MyDraftListWrapper;

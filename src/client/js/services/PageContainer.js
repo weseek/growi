@@ -55,6 +55,7 @@ export default class PageContainer extends Container {
 
     this.initStateMarkdown();
     this.initStateGrant();
+    this.initDraft();
 
     this.addWebSocketEventHandlers = this.addWebSocketEventHandlers.bind(this);
     this.addWebSocketEventHandlers();
@@ -86,6 +87,15 @@ export default class PageContainer extends Container {
     }
   }
 
+  initDraft() {
+    if (this.state.pageId == null) {
+      const draft = this.appContainer.findDraft(this.state.path);
+      if (draft != null) {
+        this.state.markdown = draft;
+      }
+    }
+  }
+
   getCurrentOptionsToSave() {
     const opt = {
       isSlackEnabled: this.state.isSlackEnabled,
@@ -109,7 +119,6 @@ export default class PageContainer extends Container {
   }
 
   addWebSocketEventHandlers() {
-    const appContainer = this.appContainer;
     const pageContainer = this;
     const websocketContainer = this.appContainer.getContainer('WebsocketContainer');
     const socket = websocketContainer.getWebSocket();

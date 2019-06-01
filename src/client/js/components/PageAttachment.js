@@ -4,8 +4,11 @@ import PropTypes from 'prop-types';
 
 import PageAttachmentList from './PageAttachment/PageAttachmentList';
 import DeleteAttachmentModal from './PageAttachment/DeleteAttachmentModal';
+import { createSubscribedElement } from './UnstatedUtils';
+import AppContainer from '../services/AppContainer';
+import PageContainer from '../services/PageContainer';
 
-export default class PageAttachment extends React.Component {
+class PageAttachment extends React.Component {
 
   constructor(props) {
     super(props);
@@ -23,13 +26,13 @@ export default class PageAttachment extends React.Component {
   }
 
   componentDidMount() {
-    const pageId = this.props.pageId;
+    const { pageId } = this.props.pageContainer.state;
 
     if (!pageId) {
       return;
     }
 
-    this.props.crowi.apiGet('/attachments.list', { page_id: pageId })
+    this.props.appContainer.apiGet('/attachments.list', { page_id: pageId })
       .then((res) => {
         const attachments = res.attachments;
         const inUse = {};
@@ -46,7 +49,9 @@ export default class PageAttachment extends React.Component {
   }
 
   checkIfFileInUse(attachment) {
-    if (this.props.markdown.match(attachment.filePathProxied)) {
+    const { markdown } = this.pageContainer.state;
+
+    if (markdown.match(attachment.filePathProxied)) {
       return true;
     }
     return false;
@@ -64,7 +69,7 @@ export default class PageAttachment extends React.Component {
       deleting: true,
     });
 
-    this.props.crowi.apiPost('/attachments.remove', { attachment_id: attachmentId })
+    this.props.appContainer.apiPost('/attachments.remove', { attachment_id: attachmentId })
       .then((res) => {
         this.setState({
           attachments: this.state.attachments.filter((at) => {
@@ -84,7 +89,7 @@ export default class PageAttachment extends React.Component {
   }
 
   isUserLoggedIn() {
-    return this.props.crowi.me !== '';
+    return this.props.appContainer.me !== '';
   }
 
   render() {
@@ -133,8 +138,17 @@ export default class PageAttachment extends React.Component {
 
 }
 
-PageAttachment.propTypes = {
-  crowi: PropTypes.object.isRequired,
-  markdown: PropTypes.string.isRequired,
-  pageId: PropTypes.string.isRequired,
+/**
+ * Wrapper component for using unstated
+ */
+const PageAttachmentWrapper = (props) => {
+  return createSubscribedElement(PageAttachment, props, [AppContainer, PageContainer]);
 };
+
+
+PageAttachment.propTypes = {
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+};
+
+export default PageAttachmentWrapper;
