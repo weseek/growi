@@ -145,7 +145,6 @@ class PageComments extends React.Component {
             deleteBtnClicked={this.confirmToDeleteComment}
             crowiRenderer={this.growiRenderer}
             replyList={replyList}
-            revisionCreatedAt={this.props.revisionCreatedAt}
           />
           <div className="container-fluid">
             <div className="row">
@@ -170,7 +169,6 @@ class PageComments extends React.Component {
                 { showEditor && (
                   <CommentEditor
                     crowiOriginRenderer={this.props.crowiOriginRenderer}
-                    slackChannels={this.props.slackChannels}
                     replyTo={commentId}
                     commentButtonClickedHandler={this.commentButtonClickedHandler}
                   />
@@ -248,8 +246,6 @@ PageComments.propTypes = {
   commentContainer: PropTypes.instanceOf(CommentContainer).isRequired,
 
   crowiOriginRenderer: PropTypes.object.isRequired,
-  revisionCreatedAt: PropTypes.number,
-  slackChannels: PropTypes.string,
 };
 
 export default withTranslation()(PageCommentsWrapper);

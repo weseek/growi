@@ -7,6 +7,7 @@ import Tabs from 'react-bootstrap/es/Tabs';
 import * as toastr from 'toastr';
 
 import AppContainer from '../../services/AppContainer';
+import PageContainer from '../../services/PageContainer';
 import CommentContainer from '../../services/CommentContainer';
 import GrowiRenderer from '../../util/GrowiRenderer';
 
@@ -44,7 +45,7 @@ class CommentEditor extends React.Component {
       errorMessage: undefined,
       hasSlackConfig: config.hasSlackConfig,
       isSlackEnabled: false,
-      slackChannels: this.props.slackChannels,
+      slackChannels: this.props.pageContainer.state.slackChannels,
     };
 
     this.growiRenderer = new GrowiRenderer(window.crowi, this.props.crowiOriginRenderer, { mode: 'comment' });
@@ -289,8 +290,6 @@ class CommentEditor extends React.Component {
                     && (
                     <div className="form-inline align-self-center mr-md-2">
                       <SlackNotification
-                        isSlackEnabled={this.state.isSlackEnabled}
-                        slackChannels={this.state.slackChannels}
                         onEnabledFlagChange={this.onSlackEnabledFlagChange}
                         onChannelChange={this.onSlackChannelsChange}
                       />
@@ -321,15 +320,15 @@ class CommentEditor extends React.Component {
  * Wrapper component for using unstated
  */
 const CommentEditorWrapper = (props) => {
-  return createSubscribedElement(CommentEditor, props, [AppContainer, CommentContainer]);
+  return createSubscribedElement(CommentEditor, props, [AppContainer, PageContainer, CommentContainer]);
 };
 
 CommentEditor.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   commentContainer: PropTypes.instanceOf(CommentContainer).isRequired,
 
   crowiOriginRenderer: PropTypes.object.isRequired,
-  slackChannels: PropTypes.string,
   replyTo: PropTypes.string,
   commentButtonClickedHandler: PropTypes.func.isRequired,
 };

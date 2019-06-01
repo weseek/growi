@@ -160,6 +160,7 @@ const saveWithShortcutSuccessHandler = function(page) {
   const newState = {
     pageId: page._id,
     revisionId: page.revision._id,
+    revisionCreatedAt: new Date(page.revision.createdAt).getTime() / 1000,
     remoteRevisionId: page.revision._id,
     revisionIdHackmdSynced: page.revisionHackmdSynced,
     hasDraftOnHackmd: page.hasDraftOnHackmd,
@@ -316,13 +317,8 @@ let componentMappings = {
 if (pageId) {
   componentMappings = Object.assign({
     'page-editor-with-hackmd': <PageEditorByHackmd onSaveWithShortcut={saveWithShortcut} />,
-    'page-comments-list': <PageComments revisionCreatedAt={pageRevisionCreatedAt} slackChannels={slackChannels} crowiOriginRenderer={crowiRenderer} />,
-    'page-attachment':  <PageAttachment pageId={pageId} markdown={markdown} crowi={crowi} />,
-    'page-comment-write':  <CommentEditorLazyRenderer crowi={crowi} crowiOriginRenderer={crowiRenderer} slackChannels={slackChannels} />,
-    'bookmark-button':  <BookmarkButton pageId={pageId} crowi={crowi} />,
-    'bookmark-button-lg':  <BookmarkButton pageId={pageId} crowi={crowi} size="lg" />,
-    'rename-page-name-input':  <PagePathAutoComplete crowi={crowi} initializedPath={pagePath} />,
-    'duplicate-page-name-input':  <PagePathAutoComplete crowi={crowi} initializedPath={pagePath} />,
+    'page-comments-list': <PageComments crowiOriginRenderer={crowiRenderer} />,
+    'page-comment-write':  <CommentEditorLazyRenderer crowiOriginRenderer={crowiRenderer} />,
   }, componentMappings);
 }
 if (pagePath) {

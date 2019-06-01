@@ -1,10 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import CommentEditor from './CommentEditor';
 
+import { createSubscribedElement } from '../UnstatedUtils';
+import AppContainer from '../../services/AppContainer';
 import UserPicture from '../User/UserPicture';
 
-export default class CommentEditorLazyRenderer extends React.Component {
+import CommentEditor from './CommentEditor';
+
+class CommentEditorLazyRenderer extends React.Component {
 
   constructor(props) {
     super(props);
@@ -22,7 +25,7 @@ export default class CommentEditorLazyRenderer extends React.Component {
   }
 
   init() {
-    const layoutType = this.props.crowi.getConfig().layoutType;
+    const layoutType = this.props.appContainer.getConfig().layoutType;
     this.setState({ isLayoutTypeGrowi: layoutType === 'crowi-plus' || layoutType === 'growi' });
   }
 
@@ -31,9 +34,9 @@ export default class CommentEditorLazyRenderer extends React.Component {
   }
 
   render() {
-    const crowi = this.props.crowi;
-    const username = crowi.me;
-    const user = crowi.findUser(username);
+    const { appContainer } = this.props;
+    const username = appContainer.me;
+    const user = appContainer.findUser(username);
     const isLayoutTypeGrowi = this.state.isLayoutTypeGrowi;
     return (
       <React.Fragment>
@@ -81,8 +84,17 @@ export default class CommentEditorLazyRenderer extends React.Component {
 
 }
 
-CommentEditorLazyRenderer.propTypes = {
-  crowi: PropTypes.object.isRequired,
-  crowiOriginRenderer: PropTypes.object.isRequired,
-  slackChannels: PropTypes.string,
+/**
+ * Wrapper component for using unstated
+ */
+const CommentEditorLazyRendererWrapper = (props) => {
+  return createSubscribedElement(CommentEditorLazyRenderer, props, [AppContainer]);
 };
+
+CommentEditorLazyRenderer.propTypes = {
+  crowiOriginRenderer: PropTypes.object.isRequired,
+
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+};
+
+export default CommentEditorLazyRendererWrapper;

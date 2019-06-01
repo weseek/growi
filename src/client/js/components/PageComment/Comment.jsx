@@ -141,7 +141,6 @@ class Comment extends React.Component {
             deleteBtnClicked={this.props.deleteBtnClicked}
             crowiRenderer={this.props.crowiRenderer}
             replyList={[]}
-            revisionCreatedAt={this.props.revisionCreatedAt}
           />
         </div>
       );
@@ -160,8 +159,8 @@ class Comment extends React.Component {
     const revFirst8Letters = comment.revision.substr(-8);
     const revisionLavelClassName = this.getRevisionLabelClassName();
 
-    const revisionId = this.props.pageContainer.state.revisionId;
-    const revisionCreatedAt = this.props.revisionCreatedAt;
+    const { revisionId, revisionCreatedAt } = this.props.pageContainer.state;
+
     let isNewer;
     if (comment.revision === revisionId) {
       isNewer = 'page-comments-list-current';
@@ -222,7 +221,6 @@ Comment.propTypes = {
   crowiRenderer: PropTypes.object.isRequired,
   deleteBtnClicked: PropTypes.func.isRequired,
   replyList: PropTypes.array,
-  revisionCreatedAt: PropTypes.number,
 };
 
 export default CommentWrapper;
