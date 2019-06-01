@@ -136,7 +136,7 @@ class PageEditor extends React.Component {
       const formData = new FormData();
       formData.append('_csrf', this.props.appContainer.csrfToken);
       formData.append('file', file);
-      formData.append('path', this.props.pageContainer.state.pagePath);
+      formData.append('path', this.props.pageContainer.state.path);
       formData.append('page_id', this.state.pageId || 0);
 
       res = await this.props.appContainer.apiPost('/attachments.add', formData);
@@ -264,13 +264,13 @@ class PageEditor extends React.Component {
   saveDraft() {
     const { pageContainer } = this.props;
     // only when the first time to edit
-    if (!this.state.revisionId) {
-      this.props.appContainer.saveDraft(pageContainer.state.pagePath, this.state.markdown);
+    if (!pageContainer.state.revisionId) {
+      pageContainer.saveDraft(pageContainer.state.path, this.state.markdown);
     }
   }
 
   clearDraft() {
-    this.props.appContainer.clearDraft(this.props.pageContainer.state.pagePath);
+    this.props.pageContainer.clearDraft(this.props.pageContainer.state.path);
   }
 
   renderPreview(value) {
