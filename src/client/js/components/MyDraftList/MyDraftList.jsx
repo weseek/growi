@@ -34,7 +34,7 @@ class MyDraftList extends React.Component {
   }
 
   async getDraftsFromLocalStorage() {
-    const draftsAsObj = JSON.parse(window.localStorage.getItem('draft') || '{}');
+    const draftsAsObj = this.props.pageContainer.drafts;
 
     const res = await this.props.appContainer.apiGet('/pages.exist', {
       pages: draftsAsObj,
@@ -93,7 +93,7 @@ class MyDraftList extends React.Component {
   }
 
   clearDraft(path) {
-    this.props.appContainer.clearDraft(path);
+    this.props.pageContainer.clearDraft(path);
 
     this.setState((prevState) => {
       return {
@@ -104,7 +104,7 @@ class MyDraftList extends React.Component {
   }
 
   clearAllDrafts() {
-    this.props.appContainer.clearAllDrafts();
+    this.props.pageContainer.clearAllDrafts();
 
     this.setState({
       drafts: [],

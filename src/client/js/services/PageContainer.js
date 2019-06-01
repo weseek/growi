@@ -55,12 +55,15 @@ export default class PageContainer extends Container {
 
     this.initStateMarkdown();
     this.initStateGrant();
-    this.initDraft();
+    this.initDrafts();
 
     this.addWebSocketEventHandlers = this.addWebSocketEventHandlers.bind(this);
     this.addWebSocketEventHandlers();
   }
 
+  /**
+   * initialize state for markdown data
+   */
   initStateMarkdown() {
     let pageContent = '';
 
@@ -73,6 +76,9 @@ export default class PageContainer extends Container {
     this.state.markdown = markdown;
   }
 
+  /**
+   * initialize state for page permission
+   */
   initStateGrant() {
     const elem = document.getElementById('save-page-controls');
 
@@ -87,9 +93,25 @@ export default class PageContainer extends Container {
     }
   }
 
-  initDraft() {
+  /**
+   * initialize state for drafts
+   */
+  initDrafts() {
+    this.drafts = {};
+
+    // restore data from localStorage
+    const contents = window.localStorage.drafts;
+    if (contents != null) {
+      try {
+        this.drafts = JSON.parse(contents);
+      }
+      catch (e) {
+        window.localStorage.removeItem('drafts');
+      }
+    }
+
     if (this.state.pageId == null) {
-      const draft = this.appContainer.findDraft(this.state.path);
+      const draft = this.findDraft(this.state.path);
       if (draft != null) {
         this.state.markdown = draft;
       }
@@ -116,6 +138,28 @@ export default class PageContainer extends Container {
       revisionIdHackmdSynced: page.revisionHackmdSynced,
       lastUpdateUsername: user.name,
     });
+  }
+
+  clearDraft(path) {
+    delete this.drafts[path];
+    window.localStorage.setItem('drafts', JSON.stringify(this.drafts));
+  }
+
+  clearAllDrafts() {
+    window.localStorage.removeItem('drafts');
+  }
+
+  saveDraft(path, body) {
+    this.drafts[path] = body;
+    window.localStorage.setItem('drafts', JSON.stringify(this.drafts));
+  }
+
+  findDraft(path) {
+    if (this.drafts != null && this.drafts[path]) {
+      return this.drafts[path];
+    }
+
+    return null;
   }
 
   addWebSocketEventHandlers() {

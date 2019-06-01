@@ -592,7 +592,8 @@ $(() => {
       const templateId = $(this).data('template');
       const template = $(`#${templateId}`).html();
 
-      crowi.saveDraft(path, template);
+      const pageContainer = appContainer.getContainer('PageContainer');
+      pageContainer.saveDraft(path, template);
       top.location.href = `${path}#edit`;
     });
 

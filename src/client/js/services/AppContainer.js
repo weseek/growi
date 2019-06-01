@@ -191,28 +191,6 @@ export default class AppContainer extends Container {
       });
   }
 
-  clearDraft(path) {
-    delete this.draft[path];
-    window.localStorage.setItem('draft', JSON.stringify(this.draft));
-  }
-
-  clearAllDrafts() {
-    window.localStorage.removeItem('draft');
-  }
-
-  saveDraft(path, body) {
-    this.draft[path] = body;
-    window.localStorage.setItem('draft', JSON.stringify(this.draft));
-  }
-
-  findDraft(path) {
-    if (this.draft && this.draft[path]) {
-      return this.draft[path];
-    }
-
-    return null;
-  }
-
   findUserById(userId) {
     if (this.userById && this.userById[userId]) {
       return this.userById[userId];
