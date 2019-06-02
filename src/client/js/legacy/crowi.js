@@ -753,8 +753,6 @@ window.addEventListener('load', (e) => {
 });
 
 window.addEventListener('hashchange', (e) => {
-  const { appContainer } = window;
-
   Crowi.unhighlightSelectedSection(Crowi.findHashFromUrl(e.oldURL));
   Crowi.highlightSelectedSection(Crowi.findHashFromUrl(e.newURL));
   Crowi.modifyScrollTop();
