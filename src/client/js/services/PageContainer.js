@@ -57,7 +57,6 @@ export default class PageContainer extends Container {
     this.initStateMarkdown();
     this.initStateGrant();
     this.initDrafts();
-    this.retrieveTags();
 
     this.addWebSocketEventHandlers = this.addWebSocketEventHandlers.bind(this);
     this.addWebSocketEventHandlers();
@@ -92,23 +91,6 @@ export default class PageContainer extends Container {
         this.state.grantGroupId = grantGroupId;
         this.state.grantGroupName = elem.dataset.grantGroupName;
       }
-    }
-  }
-
-  /**
-   * retrieve tags data
-   */
-  async retrieveTags() {
-    const { pageId, templateTagData } = this.state;
-
-    // when the page exists
-    if (pageId != null) {
-      const res = await this.appContainer.apiGet('/pages.getPageTag', { pageId });
-      this.setState({ tags: res.tags });
-    }
-    // when the page not exist
-    else if (templateTagData != null) {
-      this.setState({ tags: templateTagData.split(',') });
     }
   }
 

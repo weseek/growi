@@ -13,6 +13,7 @@ export default class EditorContainer extends Container {
     this.appContainer.registerContainer(this);
 
     this.state = {
+      tags: [],
       editorOptions: {},
       previewOptions: {},
     };

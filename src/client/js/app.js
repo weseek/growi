@@ -48,6 +48,7 @@ import AppContainer from './services/AppContainer';
 import PageContainer from './services/PageContainer';
 import CommentContainer from './services/CommentContainer';
 import EditorContainer from './services/EditorContainer';
+import TagContainer from './services/TagContainer';
 import WebsocketContainer from './services/WebsocketContainer';
 
 const logger = loggerFactory('growi:app');
@@ -71,8 +72,9 @@ const websocketContainer = new WebsocketContainer(appContainer);
 const pageContainer = new PageContainer(appContainer);
 const commentContainer = new CommentContainer(appContainer);
 const editorContainer = new EditorContainer(appContainer, defaultEditorOptions, defaultPreviewOptions);
+const tagContainer = new TagContainer(appContainer);
 const injectableContainers = [
-  appContainer, websocketContainer, pageContainer, commentContainer, editorContainer,
+  appContainer, websocketContainer, pageContainer, commentContainer, editorContainer, tagContainer,
 ];
 window.appContainer = appContainer;
 
@@ -170,7 +172,7 @@ const saveWithShortcut = function(markdown) {
   // get options
   const options = pageContainer.getCurrentOptionsToSave();
   options.socketClientId = websocketContainer.getCocketClientId();
-  // options.pageTags = pageTags;
+  options.pageTags = editorContainer.state.tags;
 
   if (editorMode === 'hackmd') {
     // set option to sync
@@ -209,7 +211,7 @@ const saveWithSubmitButton = function(submitOpts) {
   // get options
   const options = pageContainer.getCurrentOptionsToSave();
   options.socketClientId = websocketContainer.getCocketClientId();
-  // options.pageTags = pageTags;
+  options.pageTags = editorContainer.state.tags;
 
   // set 'submitOpts.overwriteScopesOfDescendants' to options
   options.overwriteScopesOfDescendants = submitOpts ? !!submitOpts.overwriteScopesOfDescendants : false;
