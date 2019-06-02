@@ -45,8 +45,6 @@ export default class AppContainer extends Container {
     this.users = [];
     this.userByName = {};
     this.userById = {};
-    this.draft = {};
-
     this.recoverData();
 
     this.containerInstances = {};
