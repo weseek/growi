@@ -63,7 +63,6 @@ const i18n = i18nFactory(userlang);
 const xss = new Xss();
 window.xss = xss;
 
-let pageTags = [];
 const isLoggedin = document.querySelector('.main-container.nologin') == null;
 
 // create unstated container instance
@@ -100,14 +99,6 @@ if (isEnabledPlugins) {
   const crowiPlugin = window.crowiPlugin;
   crowiPlugin.installAll(crowi, crowiRenderer);
 }
-
-/**
- * receive tags from PageTagForm
- * @param {Array} tagData new tags
- */
-const setTagData = function(tagData) {
-  pageTags = tagData;
-};
 
 /**
  * save success handler when reloading is not needed
@@ -179,7 +170,7 @@ const saveWithShortcut = function(markdown) {
   // get options
   const options = pageContainer.getCurrentOptionsToSave();
   options.socketClientId = websocketContainer.getCocketClientId();
-  options.pageTags = pageTags;
+  // options.pageTags = pageTags;
 
   if (editorMode === 'hackmd') {
     // set option to sync
@@ -218,7 +209,7 @@ const saveWithSubmitButton = function(submitOpts) {
   // get options
   const options = pageContainer.getCurrentOptionsToSave();
   options.socketClientId = websocketContainer.getCocketClientId();
-  options.pageTags = pageTags;
+  // options.pageTags = pageTags;
 
   // set 'submitOpts.overwriteScopesOfDescendants' to options
   options.overwriteScopesOfDescendants = submitOpts ? !!submitOpts.overwriteScopesOfDescendants : false;
@@ -300,7 +291,7 @@ if (pageContainer.state.path != null) {
     // eslint-disable-next-line quote-props
     'page': <Page crowiRenderer={crowiRenderer} onSaveWithShortcut={saveWithShortcut} />,
     'revision-path':  <RevisionPath pageId={pageContainer.state.pageId} pagePath={pageContainer.state.path} crowi={crowi} />,
-    'tag-label':  <TagLabels crowi={crowi} pageId={pageContainer.state.pageId} sendTagData={setTagData} templateTagData={pageContainer.state.templateTagData} />,
+    'tag-label':  <TagLabels />,
   }, componentMappings);
 }
 
