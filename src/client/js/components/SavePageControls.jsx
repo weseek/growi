@@ -9,13 +9,14 @@ import MenuItem from 'react-bootstrap/es/MenuItem';
 
 import PageContainer from '../services/PageContainer';
 import AppContainer from '../services/AppContainer';
+import EditorContainer from '../services/EditorContainer';
 
 import { createSubscribedElement } from './UnstatedUtils';
 import SlackNotification from './SlackNotification';
 import GrantSelector from './SavePageControls/GrantSelector';
 
 
-class SavePageControls extends React.PureComponent {
+class SavePageControls extends React.Component {
 
   constructor(props) {
     super(props);
@@ -24,11 +25,24 @@ class SavePageControls extends React.PureComponent {
     this.hasSlackConfig = config.hasSlackConfig;
     this.isAclEnabled = config.isAclEnabled;
 
+    this.slackEnabledFlagChangedHandler = this.slackEnabledFlagChangedHandler.bind(this);
+    this.slackChannelsChangedHandler = this.slackChannelsChangedHandler.bind(this);
+    this.updateGrantHandler = this.updateGrantHandler.bind(this);
+
     this.submit = this.submit.bind(this);
     this.submitAndOverwriteScopesOfDescendants = this.submitAndOverwriteScopesOfDescendants.bind(this);
   }
 
-  componentWillMount() {
+  slackEnabledFlagChangedHandler(isSlackEnabled) {
+    this.props.editorContainer.setState({ isSlackEnabled });
+  }
+
+  slackChannelsChangedHandler(slackChannels) {
+    this.props.editorContainer.setState({ slackChannels });
+  }
+
+  updateGrantHandler(data) {
+    this.props.editorContainer.setState(data);
   }
 
   submit() {
@@ -41,7 +55,7 @@ class SavePageControls extends React.PureComponent {
   }
 
   render() {
-    const { t } = this.props;
+    const { t, editorContainer } = this.props;
     const labelSubmitButton = this.props.pageContainer.state.pageId == null ? t('Create') : t('Update');
     const labelOverwriteScopes = t('page_edit.overwrite_scopes', { operation: labelSubmitButton });
 
@@ -51,7 +65,10 @@ class SavePageControls extends React.PureComponent {
           && (
           <div className="mr-2">
             <SlackNotification
-              isSlackEnabled={false}
+              isSlackEnabled={editorContainer.state.isSlackEnabled}
+              slackChannels={editorContainer.state.slackChannels}
+              onEnabledFlagChange={this.slackEnabledFlagChangedHandler}
+              onChannelChange={this.slackChannelsChangedHandler}
             />
           </div>
           )
@@ -60,7 +77,12 @@ class SavePageControls extends React.PureComponent {
         {this.isAclEnabled
           && (
           <div className="mr-2">
-            <GrantSelector />
+            <GrantSelector
+              grant={editorContainer.state.grant}
+              grantGroupId={editorContainer.state.grantGroupId}
+              grantGroupName={editorContainer.state.grantGroupName}
+              onUpdateGrant={this.updateGrantHandler}
+            />
           </div>
           )
         }
@@ -89,7 +111,7 @@ class SavePageControls extends React.PureComponent {
  * Wrapper component for using unstated
  */
 const SavePageControlsWrapper = (props) => {
-  return createSubscribedElement(SavePageControls, props, [AppContainer, PageContainer]);
+  return createSubscribedElement(SavePageControls, props, [AppContainer, PageContainer, EditorContainer]);
 };
 
 SavePageControls.propTypes = {
@@ -97,6 +119,7 @@ SavePageControls.propTypes = {
 
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+  editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
 
   onSubmit: PropTypes.func.isRequired,
 };

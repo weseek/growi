@@ -38,13 +38,6 @@ export default class PageContainer extends Container {
       tags: [],
       templateTagData: mainContent.getAttribute('data-template-tags') || '',
 
-      isSlackEnabled: false,
-      slackChannels: mainContent.getAttribute('data-slack-channels') || '',
-
-      grant: 1, // default: public
-      grantGroupId: null,
-      grantGroupName: null,
-
       // latest(on remote) information
       remoteRevisionId: revisionId,
       revisionIdHackmdSynced: mainContent.getAttribute('data-page-revision-id-hackmd-synced'),
@@ -55,7 +48,6 @@ export default class PageContainer extends Container {
     };
 
     this.initStateMarkdown();
-    this.initStateGrant();
     this.initDrafts();
 
     this.addWebSocketEventHandlers = this.addWebSocketEventHandlers.bind(this);
@@ -75,23 +67,6 @@ export default class PageContainer extends Container {
     const markdown = entities.decodeHTML(pageContent);
 
     this.state.markdown = markdown;
-  }
-
-  /**
-   * initialize state for page permission
-   */
-  initStateGrant() {
-    const elem = document.getElementById('save-page-controls');
-
-    if (elem) {
-      this.state.grant = +elem.dataset.grant;
-
-      const grantGroupId = elem.dataset.grantGroup;
-      if (grantGroupId != null && grantGroupId.length > 0) {
-        this.state.grantGroupId = grantGroupId;
-        this.state.grantGroupName = elem.dataset.grantGroupName;
-      }
-    }
   }
 
   /**
@@ -117,20 +92,6 @@ export default class PageContainer extends Container {
         this.state.markdown = draft;
       }
     }
-  }
-
-  getCurrentOptionsToSave() {
-    const opt = {
-      isSlackEnabled: this.state.isSlackEnabled,
-      slackChannels: this.state.slackChannels,
-      grant: this.state.grant,
-    };
-
-    if (this.state.grantGroupId != null) {
-      opt.grantUserGroupId = this.state.grantGroupId;
-    }
-
-    return opt;
   }
 
   setLatestRemotePageData(page, user) {

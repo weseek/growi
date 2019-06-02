@@ -9,6 +9,7 @@ import * as toastr from 'toastr';
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
 import CommentContainer from '../../services/CommentContainer';
+import EditorContainer from '../../services/EditorContainer';
 import GrowiRenderer from '../../util/GrowiRenderer';
 
 import { createSubscribedElement } from '../UnstatedUtils';
@@ -44,8 +45,6 @@ class CommentEditor extends React.Component {
       isUploadableFile,
       errorMessage: undefined,
       hasSlackConfig: config.hasSlackConfig,
-      isSlackEnabled: false,
-      slackChannels: this.props.pageContainer.state.slackChannels,
     };
 
     this.growiRenderer = new GrowiRenderer(window.crowi, this.props.crowiOriginRenderer, { mode: 'comment' });
@@ -87,12 +86,12 @@ class CommentEditor extends React.Component {
     this.renderHtml(this.state.comment);
   }
 
-  onSlackEnabledFlagChange(value) {
-    this.setState({ isSlackEnabled: value });
+  onSlackEnabledFlagChange(isSlackEnabled) {
+    this.props.commentContainer.setState({ isSlackEnabled });
   }
 
-  onSlackChannelsChange(value) {
-    this.setState({ slackChannels: value });
+  onSlackChannelsChange(slackChannels) {
+    this.props.commentContainer.setState({ slackChannels });
   }
 
   /**
@@ -103,12 +102,14 @@ class CommentEditor extends React.Component {
       event.preventDefault();
     }
 
+    const { commentContainer } = this.props;
+
     this.props.commentContainer.postComment(
       this.state.comment,
       this.state.isMarkdown,
       this.props.replyTo,
-      this.state.isSlackEnabled,
-      this.state.slackChannels,
+      commentContainer.state.isSlackEnabled,
+      commentContainer.state.slackChannels,
     )
       .then((res) => {
         this.setState({
@@ -117,7 +118,6 @@ class CommentEditor extends React.Component {
           html: '',
           key: 1,
           errorMessage: undefined,
-          isSlackEnabled: false,
         });
         // reset value
         this.editor.setValue('');
@@ -205,7 +205,7 @@ class CommentEditor extends React.Component {
   }
 
   render() {
-    const { appContainer } = this.props;
+    const { appContainer, commentContainer } = this.props;
     const username = appContainer.me;
     const user = appContainer.findUser(username);
     const commentPreview = this.state.isMarkdown ? this.getCommentHtml() : null;
@@ -290,6 +290,8 @@ class CommentEditor extends React.Component {
                     && (
                     <div className="form-inline align-self-center mr-md-2">
                       <SlackNotification
+                        isSlackEnabled={commentContainer.state.isSlackEnabled}
+                        slackChannels={commentContainer.state.slackChannels}
                         onEnabledFlagChange={this.onSlackEnabledFlagChange}
                         onChannelChange={this.onSlackChannelsChange}
                       />
@@ -320,12 +322,13 @@ class CommentEditor extends React.Component {
  * Wrapper component for using unstated
  */
 const CommentEditorWrapper = (props) => {
-  return createSubscribedElement(CommentEditor, props, [AppContainer, PageContainer, CommentContainer]);
+  return createSubscribedElement(CommentEditor, props, [AppContainer, PageContainer, EditorContainer, CommentContainer]);
 };
 
 CommentEditor.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+  editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
   commentContainer: PropTypes.instanceOf(CommentContainer).isRequired,
 
   crowiOriginRenderer: PropTypes.object.isRequired,

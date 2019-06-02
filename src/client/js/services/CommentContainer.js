@@ -1,5 +1,9 @@
 import { Container } from 'unstated';
 
+import loggerFactory from '@alias/logger';
+
+const logger = loggerFactory('growi:services:CommentContainer');
+
 /**
  *
  * @author Yuki Takei <yuki@weseek.co.jp>
@@ -14,8 +18,19 @@ export default class CommentContainer extends Container {
     this.appContainer = appContainer;
     this.appContainer.registerContainer(this);
 
+    const mainContent = document.querySelector('#content-main');
+
+    if (mainContent == null) {
+      logger.debug('#content-main element is not exists');
+      return;
+    }
+
     this.state = {
       comments: [],
+
+      // settings shared among all of CommentEditor
+      isSlackEnabled: false,
+      slackChannels: mainContent.getAttribute('data-slack-channels') || '',
     };
 
     this.retrieveComments = this.retrieveComments.bind(this);

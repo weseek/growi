@@ -1,8 +1,5 @@
 import React from 'react';
-
-import { Subscribe } from 'unstated';
-
-import PageContainer from '../services/PageContainer';
+import PropTypes from 'prop-types';
 
 /**
  *
@@ -18,55 +15,60 @@ export default class SlackNotification extends React.Component {
   constructor(props) {
     super(props);
 
-    this.updateStateCheckbox = this.updateStateCheckbox.bind(this);
+    this.updateCheckboxHandler = this.updateCheckboxHandler.bind(this);
+    this.updateSlackChannelsHandler = this.updateSlackChannelsHandler.bind(this);
   }
 
-  updateStateCheckbox(event, pageContainer) {
+  updateCheckboxHandler(event) {
     const value = event.target.checked;
-    pageContainer.setState({ isSlackEnabled: value });
+    if (this.props.onEnabledFlagChange != null) {
+      this.props.onEnabledFlagChange(value);
+    }
   }
 
-  updateStateChannels(slackChannels, pageContainer) {
-    pageContainer.setState({ slackChannels });
+  updateSlackChannelsHandler(event) {
+    const value = event.target.value;
+    if (this.props.onChannelChange != null) {
+      this.props.onChannelChange(value);
+    }
   }
 
   render() {
     return (
-      <Subscribe to={[PageContainer]}>
-        { pageContainer => (
-          // eslint-disable-next-line arrow-body-style
-          <div className="input-group input-group-sm input-group-slack extended-setting">
-            <label className="input-group-addon">
-              <img id="slack-mark-white" alt="slack-mark" src="/images/icons/slack/mark-monochrome_white.svg" width="18" height="18" />
-              <img id="slack-mark-black" alt="slack-mark" src="/images/icons/slack/mark-monochrome_black.svg" width="18" height="18" />
+      <div className="input-group input-group-sm input-group-slack extended-setting">
+        <label className="input-group-addon">
+          <img id="slack-mark-white" alt="slack-mark" src="/images/icons/slack/mark-monochrome_white.svg" width="18" height="18" />
+          <img id="slack-mark-black" alt="slack-mark" src="/images/icons/slack/mark-monochrome_black.svg" width="18" height="18" />
 
-              <input
-                type="checkbox"
-                value="1"
-                checked={pageContainer.state.isSlackEnabled}
-                onChange={(e) => { this.updateStateCheckbox(e, pageContainer) }}
-              />
+          <input
+            type="checkbox"
+            value="1"
+            checked={this.props.isSlackEnabled}
+            onChange={this.updateCheckboxHandler}
+          />
 
-            </label>
-            <input
-              className="form-control"
-              type="text"
-              value={pageContainer.state.slackChannels}
-              placeholder="slack channel name"
-              data-toggle="popover"
-              title="Slack通知"
-              data-content="通知するにはチェックを入れてください。カンマ区切りで複数チャンネルに通知することができます。"
-              data-trigger="focus"
-              data-placement="top"
-              onChange={(e) => { this.updateStateChannels(e.target.value, pageContainer) }}
-            />
-          </div>
-        )}
-      </Subscribe>
+        </label>
+        <input
+          className="form-control"
+          type="text"
+          value={this.props.slackChannels}
+          placeholder="slack channel name"
+          data-toggle="popover"
+          title="Slack通知"
+          data-content="通知するにはチェックを入れてください。カンマ区切りで複数チャンネルに通知することができます。"
+          data-trigger="focus"
+          data-placement="top"
+          onChange={this.updateSlackChannelsHandler}
+        />
+      </div>
     );
   }
 
 }
 
 SlackNotification.propTypes = {
+  isSlackEnabled: PropTypes.bool.isRequired,
+  slackChannels: PropTypes.string.isRequired,
+  onEnabledFlagChange: PropTypes.func,
+  onChannelChange: PropTypes.func,
 };

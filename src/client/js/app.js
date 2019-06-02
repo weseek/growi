@@ -175,7 +175,7 @@ const saveWithShortcut = function(markdown) {
   let { revisionId } = pageContainer.state;
 
   // get options
-  const options = pageContainer.getCurrentOptionsToSave();
+  const options = editorContainer.getCurrentOptionsToSave();
   options.socketClientId = websocketContainer.getCocketClientId();
   options.pageTags = editorContainer.state.tags;
 
@@ -214,7 +214,7 @@ const saveWithSubmitButton = function(submitOpts) {
   const { pageId, path } = pageContainer.state;
   let { revisionId } = pageContainer.state;
   // get options
-  const options = pageContainer.getCurrentOptionsToSave();
+  const options = editorContainer.getCurrentOptionsToSave();
   options.socketClientId = websocketContainer.getCocketClientId();
   options.pageTags = editorContainer.state.tags;
 
