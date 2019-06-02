@@ -224,7 +224,7 @@ export default class AppContainer extends Container {
         if (!res.ok) {
           throw new Error(res.error);
         }
-        return res.page;
+        return { page: res.page, tags: res.tags };
       });
   }
 
@@ -239,7 +239,7 @@ export default class AppContainer extends Container {
         if (!res.ok) {
           throw new Error(res.error);
         }
-        return res.page;
+        return { page: res.page, tags: res.tags };
       });
   }
 

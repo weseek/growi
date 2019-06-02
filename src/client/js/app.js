@@ -106,7 +106,8 @@ if (isEnabledPlugins) {
  * save success handler when reloading is not needed
  * @param {object} page Page instance
  */
-const saveWithShortcutSuccessHandler = function(page) {
+const saveWithShortcutSuccessHandler = function(result) {
+  const { page, tags } = result;
   const { editorMode } = appContainer.state;
 
   // show toastr
@@ -129,8 +130,12 @@ const saveWithShortcutSuccessHandler = function(page) {
     revisionIdHackmdSynced: page.revisionHackmdSynced,
     hasDraftOnHackmd: page.hasDraftOnHackmd,
     markdown: page.revision.body,
+    tags,
   };
   pageContainer.setState(newState);
+
+  // update state of EditorContainer
+  editorContainer.setState({ tags });
 
   // PageEditor component
   const pageEditor = appContainer.getComponentInstance('PageEditor');
@@ -147,9 +152,6 @@ const saveWithShortcutSuccessHandler = function(page) {
       pageEditorByHackmd.reset();
     }
   }
-
-  // update tags
-  tagContainer.init();
 
   // hidden input
   $('input[name="revision_id"]').val(newState.revisionId);
