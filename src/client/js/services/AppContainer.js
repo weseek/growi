@@ -31,8 +31,6 @@ export default class AppContainer extends Container {
     const userAgent = window.navigator.userAgent.toLowerCase();
     this.isMobile = /iphone|ipad|android/.test(userAgent);
 
-    this.page = undefined;
-    this.pageEditor = undefined;
     this.isDocSaved = true;
 
     this.fetchUsers = this.fetchUsers.bind(this);
@@ -119,10 +117,6 @@ export default class AppContainer extends Container {
    */
   getComponentInstance(className) {
     return this.componentInstances[className];
-  }
-
-  setPage(page) {
-    this.page = page;
   }
 
   setIsDocSaved(isSaved) {
@@ -252,7 +246,7 @@ export default class AppContainer extends Container {
     let targetComponent;
     switch (componentKind) {
       case 'page':
-        targetComponent = this.page;
+        targetComponent = this.getComponentInstance('Page');
         break;
     }
     targetComponent.launchHandsontableModal(beginLineNumber, endLineNumber);
