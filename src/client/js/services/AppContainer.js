@@ -134,7 +134,6 @@ export default class AppContainer extends Container {
       'userByName',
       'userById',
       'users',
-      'draft',
     ];
 
     keys.forEach((key) => {
