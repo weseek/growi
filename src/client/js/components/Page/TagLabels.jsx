@@ -7,6 +7,7 @@ import * as toastr from 'toastr';
 import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
+import EditorContainer from '../../services/EditorContainer';
 
 import TagEditor from './TagEditor';
 
@@ -23,31 +24,49 @@ class TagLabels extends React.Component {
     this.tagsUpdatedHandler = this.tagsUpdatedHandler.bind(this);
   }
 
+  /**
+   * @return tags data
+   *   1. pageContainer.state.tags if editorMode is null
+   *   2. editorContainer.state.tags if editorMode is not null
+   */
+  getEditTargetData() {
+    const { editorMode } = this.props.appContainer.state;
+    return (editorMode == null)
+      ? this.props.pageContainer.state.tags
+      : this.props.editorContainer.state.tags;
+  }
+
   showEditor() {
-    const { tags } = this.props.pageContainer.state;
-    this.tagEditor.show(tags);
+    this.tagEditor.show(this.getEditTargetData());
   }
 
   async tagsUpdatedHandler(tags) {
-    // TODO
-    // if (currentEditorMode == null) {
-    try {
+    const { appContainer, editorContainer } = this.props;
+    const { editorMode } = appContainer.state;
+
+    // post api request and update tags
+    if (editorMode == null) {
       const { pageContainer } = this.props;
-      const { pageId } = this.props.pageContainer.state;
-      await this.props.appContainer.apiPost('/tags.update', { pageId, tags });
 
-      // update pageContainer.state
-      pageContainer.setState({ tags });
+      try {
+        const { pageId } = pageContainer.state;
+        await appContainer.apiPost('/tags.update', { pageId, tags });
 
-      this.apiSuccessHandler();
+        // update pageContainer.state
+        pageContainer.setState({ tags });
+        editorContainer.setState({ tags });
+
+        this.apiSuccessHandler();
+      }
+      catch (err) {
+        this.apiErrorHandler(err);
+        return;
+      }
     }
-    catch (err) {
-      this.apiErrorHandler(err);
-      return;
+    // only update tags in editorContainer
+    else {
+      editorContainer.setState({ tags });
     }
-    // else {
-    // update editorContainer.tags
-    // }
   }
 
   apiSuccessHandler() {
@@ -76,7 +95,8 @@ class TagLabels extends React.Component {
   render() {
     const { t } = this.props;
     const { pageId } = this.props.pageContainer.state;
-    const { tags } = this.props.pageContainer.state;
+
+    const tags = this.getEditTargetData();
 
     const tagElements = tags.map((tag) => {
       return (
@@ -118,7 +138,7 @@ class TagLabels extends React.Component {
  * Wrapper component for using unstated
  */
 const TagLabelsWrapper = (props) => {
-  return createSubscribedElement(TagLabels, props, [AppContainer, PageContainer]);
+  return createSubscribedElement(TagLabels, props, [AppContainer, PageContainer, EditorContainer]);
 };
 
 
@@ -126,6 +146,7 @@ TagLabels.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+  editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
 };
 
 export default withTranslation()(TagLabelsWrapper);

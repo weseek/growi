@@ -252,23 +252,6 @@ Crowi.highlightSelectedSection = function(hash) {
   }
 };
 
-/**
- * Return editor mode string
- * @return 'builtin' or 'hackmd' or null (not editing)
- */
-Crowi.getCurrentEditorMode = function() {
-  const isEditing = $('body').hasClass('on-edit');
-  if (!isEditing) {
-    return null;
-  }
-
-  if ($('body').hasClass('builtin-editor')) {
-    return 'builtin';
-  }
-
-  return 'hackmd';
-};
-
 $(() => {
   const appContainer = window.appContainer;
   const websocketContainer = appContainer.getContainer('WebsocketContainer');
@@ -631,7 +614,11 @@ $(() => {
   } // end if pageId
 
   // tab changing handling
+  $('a[href="#revision-body"]').on('show.bs.tab', () => {
+    appContainer.setState({ editorMode: null });
+  });
   $('a[href="#edit"]').on('show.bs.tab', () => {
+    appContainer.setState({ editorMode: 'builtin' });
     $('body').addClass('on-edit');
     $('body').addClass('builtin-editor');
   });
@@ -640,6 +627,7 @@ $(() => {
     $('body').removeClass('builtin-editor');
   });
   $('a[href="#hackmd"]').on('show.bs.tab', () => {
+    appContainer.setState({ editorMode: 'hackmd' });
     $('body').addClass('on-edit');
     $('body').addClass('hackmd');
   });
@@ -695,9 +683,13 @@ $(() => {
 });
 
 window.addEventListener('load', (e) => {
+  const { appContainer } = window;
+
   // hash on page
   if (location.hash) {
     if ((location.hash === '#edit' || location.hash === '#edit-form') && $('.tab-pane#edit').length > 0) {
+      appContainer.setState({ editorMode: 'builtin' });
+
       $('a[data-toggle="tab"][href="#edit"]').tab('show');
       $('body').addClass('on-edit');
       $('body').addClass('builtin-editor');
@@ -706,6 +698,8 @@ window.addEventListener('load', (e) => {
       Crowi.setCaretLineAndFocusToEditor();
     }
     else if (location.hash === '#hackmd' && $('.tab-pane#hackmd').length > 0) {
+      appContainer.setState({ editorMode: 'hackmd' });
+
       $('a[data-toggle="tab"][href="#hackmd"]').tab('show');
       $('body').addClass('on-edit');
       $('body').addClass('hackmd');
@@ -759,6 +753,8 @@ window.addEventListener('load', (e) => {
 });
 
 window.addEventListener('hashchange', (e) => {
+  const { appContainer } = window;
+
   Crowi.unhighlightSelectedSection(Crowi.findHashFromUrl(e.oldURL));
   Crowi.highlightSelectedSection(Crowi.findHashFromUrl(e.newURL));
   Crowi.modifyScrollTop();

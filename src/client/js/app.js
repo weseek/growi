@@ -107,7 +107,7 @@ if (isEnabledPlugins) {
  * @param {object} page Page instance
  */
 const saveWithShortcutSuccessHandler = function(page) {
-  const editorMode = appContainer.getCrowiForJquery().getCurrentEditorMode();
+  const { editorMode } = appContainer.state;
 
   // show toastr
   toastr.success(undefined, 'Saved successfully', {
@@ -148,6 +148,9 @@ const saveWithShortcutSuccessHandler = function(page) {
     }
   }
 
+  // update tags
+  tagContainer.init();
+
   // hidden input
   $('input[name="revision_id"]').val(newState.revisionId);
 };
@@ -164,7 +167,7 @@ const errorHandler = function(error) {
 };
 
 const saveWithShortcut = function(markdown) {
-  const editorMode = appContainer.getCrowiForJquery().getCurrentEditorMode();
+  const { editorMode } = appContainer.state;
 
   const { pageId, path } = pageContainer.state;
   let { revisionId } = pageContainer.state;
@@ -200,7 +203,7 @@ const saveWithSubmitButtonSuccessHandler = function() {
 };
 
 const saveWithSubmitButton = function(submitOpts) {
-  const editorMode = appContainer.getCrowiForJquery().getCurrentEditorMode();
+  const { editorMode } = appContainer.state;
   if (editorMode == null) {
     // do nothing
     return;

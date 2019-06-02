@@ -20,6 +20,10 @@ export default class AppContainer extends Container {
   constructor() {
     super();
 
+    this.state = {
+      editorMode: null,
+    };
+
     const body = document.querySelector('body');
 
     this.me = body.dataset.currentUsername;

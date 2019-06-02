@@ -24,7 +24,6 @@ export default class TagEditor extends React.Component {
   }
 
   show(tags) {
-    // const isEditorMode = this.props.crowi.getCrowiForJquery().getCurrentEditorMode();
     this.setState({ tags, isOpenModal: true });
   }
 
