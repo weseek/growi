@@ -1,23 +1,20 @@
-import GrowiRenderer from '../../GrowiRenderer';
-
 /**
  * reveal.js growi-renderer plugin.
  */
 (function(root, factory) {
-  // parent window DOM (crowi.js) of presentation window.
-  const parentWindow = window.parent;
+  // get AppContainer instance from parent window
+  const appContainer = window.parent.appContainer;
 
-  // create GrowiRenderer instance and setup.
-  const growiRenderer = new GrowiRenderer(parentWindow.crowi, parentWindow.crowiRenderer, { mode: 'editor' });
-
-  const growiRendererPlugin = factory(growiRenderer);
+  const growiRendererPlugin = factory(appContainer);
   growiRendererPlugin.initialize();
-}(this, (growiRenderer) => {
+}(this, (appContainer) => {
   /* eslint-disable no-useless-escape */
   const DEFAULT_SLIDE_SEPARATOR = '^\r?\n---\r?\n$';
   const DEFAULT_ELEMENT_ATTRIBUTES_SEPARATOR = '\\\.element\\\s*?(.+?)$';
   const DEFAULT_SLIDE_ATTRIBUTES_SEPARATOR = '\\\.slide:\\\s*?(\\\S.+?)$';
   /* eslint-enable no-useless-escape */
+
+  const growiRenderer = appContainer.getRenderer('editor');
 
   let marked;
 
@@ -31,7 +28,7 @@ import GrowiRenderer from '../../GrowiRenderer';
       const section = sections[i];
       const markdown = marked.getMarkdownFromSlide(section);
       const context = { markdown };
-      const interceptorManager = growiRenderer.crowi.interceptorManager;
+      const interceptorManager = appContainer.interceptorManager;
       let dataSeparator = section.getAttribute('data-separator') || DEFAULT_SLIDE_SEPARATOR;
       // replace string '\n' to LF code.
       dataSeparator = dataSeparator.replace(/\\n/g, '\n');
@@ -54,7 +51,7 @@ import GrowiRenderer from '../../GrowiRenderer';
   function convertSlides() {
     const sections = document.querySelectorAll('[data-markdown]');
     let markdown;
-    const interceptorManager = growiRenderer.crowi.interceptorManager;
+    const interceptorManager = appContainer.interceptorManager;
 
     for (let i = 0, len = sections.length; i < len; i++) {
       const section = sections[i];
@@ -104,7 +101,6 @@ import GrowiRenderer from '../../GrowiRenderer';
   // API
   return {
     async initialize() {
-      growiRenderer.setup();
       marked = require('./markdown').default(growiRenderer.process);
       divideSlides();
       marked.processSlides();

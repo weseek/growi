@@ -32,8 +32,6 @@ class PageEditor extends React.Component {
       isMathJaxEnabled,
     };
 
-    this.growiRenderer = new GrowiRenderer(window.crowi, this.props.crowiRenderer, { mode: 'editor' });
-
     this.setCaretLine = this.setCaretLine.bind(this);
     this.focusToEditor = this.focusToEditor.bind(this);
     this.onMarkdownChanged = this.onMarkdownChanged.bind(this);
@@ -46,6 +44,9 @@ class PageEditor extends React.Component {
     this.clearDraft = this.clearDraft.bind(this);
     this.apiErrorHandler = this.apiErrorHandler.bind(this);
     this.showUnsavedWarning = this.showUnsavedWarning.bind(this);
+
+    // get renderer
+    this.growiRenderer = this.props.appContainer.getRenderer('editor');
 
     // for scrolling
     this.lastScrolledDateWithCursor = null;
@@ -369,7 +370,6 @@ PageEditor.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
-  crowiRenderer: PropTypes.object.isRequired,
   onSaveWithShortcut: PropTypes.func.isRequired,
 };
 

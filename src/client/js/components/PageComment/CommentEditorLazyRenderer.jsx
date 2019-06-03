@@ -17,6 +17,8 @@ class CommentEditorLazyRenderer extends React.Component {
       isLayoutTypeGrowi: false,
     };
 
+    this.growiRenderer = this.props.appContainer.getRenderer('comment');
+
     this.showCommentFormBtnClickHandler = this.showCommentFormBtnClickHandler.bind(this);
   }
 
@@ -71,7 +73,7 @@ class CommentEditorLazyRenderer extends React.Component {
         { this.state.isEditorShown
           && (
           <CommentEditor
-            {...this.props}
+            growiRenderer={this.growiRenderer}
             replyTo={undefined}
             commentButtonClickedHandler={this.showCommentFormBtnClickHandler}
           >
@@ -92,8 +94,6 @@ const CommentEditorLazyRendererWrapper = (props) => {
 };
 
 CommentEditorLazyRenderer.propTypes = {
-  crowiOriginRenderer: PropTypes.object.isRequired,
-
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };
 

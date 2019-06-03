@@ -7,12 +7,12 @@ export default class CrowiPlugin {
   /**
    * process plugin entry
    *
-   * @param {Crowi} crowi Crowi context class
-   * @param {CrowiRenderer} crowiRenderer CrowiRenderer
+   * @param {AppContainer} appContainer
+   * @param {GrowiRenderer} originRenderer The origin instance of GrowiRenderer
    *
    * @memberof CrowiPlugin
    */
-  installAll(crowi, crowiRenderer) {
+  installAll(appContainer, originRenderer) {
     // import plugin definitions
     let definitions = [];
     try {
@@ -34,7 +34,7 @@ export default class CrowiPlugin {
         // v2 or above
         default:
           definition.entries.forEach((entry) => {
-            entry(crowi, crowiRenderer);
+            entry(appContainer, originRenderer);
           });
       }
     });

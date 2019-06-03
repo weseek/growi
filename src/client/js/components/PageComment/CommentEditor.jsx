@@ -47,8 +47,6 @@ class CommentEditor extends React.Component {
       hasSlackConfig: config.hasSlackConfig,
     };
 
-    this.growiRenderer = new GrowiRenderer(window.crowi, this.props.crowiOriginRenderer, { mode: 'comment' });
-
     this.updateState = this.updateState.bind(this);
     this.updateStateCheckbox = this.updateStateCheckbox.bind(this);
 
@@ -175,7 +173,7 @@ class CommentEditor extends React.Component {
       markdown,
     };
 
-    const growiRenderer = this.growiRenderer;
+    const { growiRenderer } = this.props;
     const interceptorManager = this.props.appContainer.interceptorManager;
     interceptorManager.process('preRenderCommnetPreview', context)
       .then(() => { return interceptorManager.process('prePreProcess', context) })
@@ -331,7 +329,7 @@ CommentEditor.propTypes = {
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
   commentContainer: PropTypes.instanceOf(CommentContainer).isRequired,
 
-  crowiOriginRenderer: PropTypes.object.isRequired,
+  growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
   replyTo: PropTypes.string,
   commentButtonClickedHandler: PropTypes.func.isRequired,
 };

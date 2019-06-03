@@ -4,6 +4,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import { Provider } from 'unstated';
+
 import { debounce } from 'throttle-debounce';
 
 import { pathUtils } from 'growi-commons';
@@ -256,9 +258,6 @@ $(() => {
   const appContainer = window.appContainer;
   const websocketContainer = appContainer.getContainer('WebsocketContainer');
   const config = appContainer.getConfig();
-
-  // backward compatibility
-  const crowi = appContainer;
 
   const pageId = $('#content-main').data('page-id');
   // const revisionId = $('#content-main').data('page-revision-id');
@@ -535,9 +534,7 @@ $(() => {
     const isShown = $('#view-timeline').data('shown');
 
     if (growiRendererForTimeline == null) {
-      const crowi = window.crowi;
-      const crowiRenderer = window.crowiRenderer;
-      growiRendererForTimeline = new GrowiRenderer(crowi, crowiRenderer, { mode: 'timeline' });
+      growiRendererForTimeline = GrowiRenderer.generate('timeline');
     }
 
     if (isShown === 0) {
@@ -552,14 +549,15 @@ $(() => {
         const revisionId = timelineElm.getAttribute('data-revision');
 
         ReactDOM.render(
-          <RevisionLoader
-            lazy
-            crowi={crowi}
-            crowiRenderer={growiRendererForTimeline}
-            pageId={pageId}
-            pagePath={pagePath}
-            revisionId={revisionId}
-          />,
+          <Provider inject={[appContainer]}>
+            <RevisionLoader
+              lazy
+              growiRenderer={growiRendererForTimeline}
+              pageId={pageId}
+              pagePath={pagePath}
+              revisionId={revisionId}
+            />
+          </Provider>,
           revisionBodyElem,
         );
       });

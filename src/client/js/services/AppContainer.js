@@ -10,6 +10,7 @@ import {
   DetachCodeBlockInterceptor,
   RestoreCodeBlockInterceptor,
 } from '../util/interceptor/detach-code-blocks';
+import GrowiRenderer from '../util/GrowiRenderer.js';
 
 /**
  * Service container related to options for Application
@@ -37,10 +38,7 @@ export default class AppContainer extends Container {
 
     this.isDocSaved = true;
 
-    this.fetchUsers = this.fetchUsers.bind(this);
-    this.apiGet = this.apiGet.bind(this);
-    this.apiPost = this.apiPost.bind(this);
-    this.apiRequest = this.apiRequest.bind(this);
+    this.originRenderer = new GrowiRenderer(this);
 
     this.interceptorManager = new InterceptorManager();
     this.interceptorManager.addInterceptor(new DetachCodeBlockInterceptor(this), 10); // process as soon as possible
@@ -53,6 +51,12 @@ export default class AppContainer extends Container {
 
     this.containerInstances = {};
     this.componentInstances = {};
+    this.rendererInstances = {};
+
+    this.fetchUsers = this.fetchUsers.bind(this);
+    this.apiGet = this.apiGet.bind(this);
+    this.apiPost = this.apiPost.bind(this);
+    this.apiRequest = this.apiRequest.bind(this);
   }
 
   /**
@@ -119,6 +123,28 @@ export default class AppContainer extends Container {
    */
   getComponentInstance(className) {
     return this.componentInstances[className];
+  }
+
+  getOriginRenderer() {
+    return this.originRenderer;
+  }
+
+  /**
+   * factory method
+   */
+  getRenderer(mode) {
+    if (this.rendererInstances[mode] != null) {
+      return this.rendererInstances[mode];
+    }
+
+    const renderer = new GrowiRenderer(this, this.originRenderer);
+    // setup
+    renderer.initMarkdownItConfigurers(mode);
+    renderer.setup(mode);
+    // register
+    this.rendererInstances[mode] = renderer;
+
+    return renderer;
   }
 
   setIsDocSaved(isSaved) {

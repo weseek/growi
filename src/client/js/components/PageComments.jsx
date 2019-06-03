@@ -42,7 +42,7 @@ class PageComments extends React.Component {
       showEditorIds: new Set(),
     };
 
-    this.growiRenderer = new GrowiRenderer(window.crowi, this.props.crowiOriginRenderer, { mode: 'comment' });
+    this.growiRenderer = this.props.appContainer.getRenderer('comment');
 
     this.init = this.init.bind(this);
     this.confirmToDeleteComment = this.confirmToDeleteComment.bind(this);
@@ -143,7 +143,7 @@ class PageComments extends React.Component {
           <Comment
             comment={comment}
             deleteBtnClicked={this.confirmToDeleteComment}
-            crowiRenderer={this.growiRenderer}
+            growiRenderer={this.growiRenderer}
             replyList={replyList}
           />
           <div className="container-fluid">
@@ -168,7 +168,7 @@ class PageComments extends React.Component {
                 )}
                 { showEditor && (
                   <CommentEditor
-                    crowiOriginRenderer={this.props.crowiOriginRenderer}
+                    growiRenderer={this.growiRenderer}
                     replyTo={commentId}
                     commentButtonClickedHandler={this.commentButtonClickedHandler}
                   />
@@ -244,8 +244,6 @@ PageComments.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   commentContainer: PropTypes.instanceOf(CommentContainer).isRequired,
-
-  crowiOriginRenderer: PropTypes.object.isRequired,
 };
 
 export default withTranslation()(PageCommentsWrapper);

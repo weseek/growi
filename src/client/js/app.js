@@ -10,9 +10,6 @@ import loggerFactory from '@alias/logger';
 import Xss from '@commons/service/xss';
 import i18nFactory from './i18n';
 
-
-import GrowiRenderer from './util/GrowiRenderer';
-
 import HeaderSearchBox from './components/HeaderSearchBox';
 import SearchPage from './components/SearchPage';
 import TagsList from './components/TagsList';
@@ -80,26 +77,23 @@ window.appContainer = appContainer;
 
 logger.info('unstated containers have been initialized');
 
-// backward compatibility
-const crowi = appContainer;
-window.crowi = appContainer;
-
 if (isLoggedin) {
   appContainer.fetchUsers();
 }
 
-const crowiRenderer = new GrowiRenderer(crowi, null, {
-  mode: 'page',
-  isAutoSetup: false, // manually setup because plugins may configure it
-  renderToc: appContainer.getCrowiForJquery().renderTocContent, // function for rendering Table Of Contents
-});
-window.crowiRenderer = crowiRenderer;
+const originRenderer = appContainer.getOriginRenderer();
+window.growiRenderer = originRenderer;
+
+// backward compatibility
+const crowi = appContainer;
+window.crowi = appContainer;
+window.crowiRenderer = originRenderer;
 
 // FIXME
 const isEnabledPlugins = $('body').data('plugin-enabled');
 if (isEnabledPlugins) {
   const crowiPlugin = window.crowiPlugin;
-  crowiPlugin.installAll(crowi, crowiRenderer);
+  crowiPlugin.installAll(appContainer, originRenderer);
 }
 
 /**
@@ -253,9 +247,6 @@ const saveWithSubmitButton = function(submitOpts) {
     .catch(errorHandler);
 };
 
-// setup renderer after plugins are installed
-crowiRenderer.setup();
-
 /**
  * define components
  *  key: id of element
@@ -264,29 +255,29 @@ crowiRenderer.setup();
 let componentMappings = {
   'search-top': <HeaderSearchBox crowi={crowi} />,
   'search-sidebar': <HeaderSearchBox crowi={crowi} />,
-  'search-page': <SearchPage crowi={crowi} crowiRenderer={crowiRenderer} />,
+  'search-page': <SearchPage crowi={crowi} />,
 
   // 'revision-history': <PageHistory pageId={pageId} />,
   'tags-page': <TagsList crowi={crowi} />,
 
   'create-page-name-input': <PagePathAutoComplete crowi={crowi} initializedPath={pageContainer.state.path} addTrailingSlash />,
 
-  'page-editor': <PageEditor crowiRenderer={crowiRenderer} onSaveWithShortcut={saveWithShortcut} />,
+  'page-editor': <PageEditor onSaveWithShortcut={saveWithShortcut} />,
   'page-editor-options-selector': <OptionsSelector crowi={crowi} />,
   'page-status-alert': <PageStatusAlert />,
   'save-page-controls': <SavePageControls onSubmit={saveWithSubmitButton} />,
 
   'user-created-list': <RecentCreated />,
-  'user-draft-list': <MyDraftList crowiOriginRenderer={crowiRenderer} />,
+  'user-draft-list': <MyDraftList />,
 };
 
 // additional definitions if data exists
 if (pageContainer.state.pageId != null) {
   componentMappings = Object.assign({
     'page-editor-with-hackmd': <PageEditorByHackmd onSaveWithShortcut={saveWithShortcut} />,
-    'page-comments-list': <PageComments crowiOriginRenderer={crowiRenderer} />,
+    'page-comments-list': <PageComments />,
     'page-attachment':  <PageAttachment />,
-    'page-comment-write':  <CommentEditorLazyRenderer crowiOriginRenderer={crowiRenderer} />,
+    'page-comment-write':  <CommentEditorLazyRenderer />,
     'bookmark-button':  <BookmarkButton pageId={pageContainer.state.pageId} crowi={crowi} />,
     'bookmark-button-lg':  <BookmarkButton pageId={pageContainer.state.pageId} crowi={crowi} size="lg" />,
     'rename-page-name-input':  <PagePathAutoComplete crowi={crowi} initializedPath={pageContainer.state.path} />,
@@ -296,7 +287,7 @@ if (pageContainer.state.pageId != null) {
 if (pageContainer.state.path != null) {
   componentMappings = Object.assign({
     // eslint-disable-next-line quote-props
-    'page': <Page crowiRenderer={crowiRenderer} onSaveWithShortcut={saveWithShortcut} />,
+    'page': <Page onSaveWithShortcut={saveWithShortcut} />,
     'revision-path':  <RevisionPath pageId={pageContainer.state.pageId} pagePath={pageContainer.state.path} crowi={crowi} />,
     'tag-label':  <TagLabels />,
   }, componentMappings);

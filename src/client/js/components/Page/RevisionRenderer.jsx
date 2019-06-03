@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
+import GrowiRenderer from '../../util/GrowiRenderer';
 
-import { createSubscribedElement } from '../UnstatedUtils';
 import RevisionBody from './RevisionBody';
 
 class RevisionRenderer extends React.Component {
@@ -21,13 +22,11 @@ class RevisionRenderer extends React.Component {
   }
 
   componentWillMount() {
-    const { pageContainer } = this.props;
-    this.renderHtml(pageContainer.state.markdown, this.props.highlightKeywords);
+    this.renderHtml(this.props.markdown, this.props.highlightKeywords);
   }
 
   componentWillReceiveProps(nextProps) {
-    const { pageContainer } = nextProps;
-    this.renderHtml(pageContainer.state.markdown, this.props.highlightKeywords);
+    this.renderHtml(nextProps.markdown, this.props.highlightKeywords);
   }
 
   /**
@@ -60,20 +59,20 @@ class RevisionRenderer extends React.Component {
       currentPagePath: pageContainer.state.path,
     };
 
-    const crowiRenderer = this.props.crowiRenderer;
+    const growiRenderer = this.props.growiRenderer;
     const interceptorManager = this.props.appContainer.interceptorManager;
     interceptorManager.process('preRender', context)
       .then(() => { return interceptorManager.process('prePreProcess', context) })
       .then(() => {
-        context.markdown = crowiRenderer.preProcess(context.markdown);
+        context.markdown = growiRenderer.preProcess(context.markdown);
       })
       .then(() => { return interceptorManager.process('postPreProcess', context) })
       .then(() => {
-        context.parsedHTML = crowiRenderer.process(context.markdown);
+        context.parsedHTML = growiRenderer.process(context.markdown);
       })
       .then(() => { return interceptorManager.process('prePostProcess', context) })
       .then(() => {
-        context.parsedHTML = crowiRenderer.postProcess(context.parsedHTML);
+        context.parsedHTML = growiRenderer.postProcess(context.parsedHTML);
 
         // highlight
         if (this.props.highlightKeywords != null) {
@@ -115,7 +114,9 @@ const RevisionRendererWrapper = (props) => {
 RevisionRenderer.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-  crowiRenderer: PropTypes.object.isRequired,
+
+  growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
+  markdown: PropTypes.string.isRequired,
   highlightKeywords: PropTypes.string,
 };
 

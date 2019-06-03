@@ -5,10 +5,13 @@ import FormGroup from 'react-bootstrap/es/FormGroup';
 import Button from 'react-bootstrap/es/Button';
 import InputGroup from 'react-bootstrap/es/InputGroup';
 
+import { createSubscribedElement } from '../UnstatedUtils';
+import AppContainer from '../../services/AppContainer';
+
 import SearchForm from '../SearchForm';
 
 // Search.SearchForm
-export default class SearchPageForm extends React.Component {
+class SearchPageForm extends React.Component {
 
   constructor(props) {
     super(props);
@@ -38,7 +41,6 @@ export default class SearchPageForm extends React.Component {
         <InputGroup>
           <SearchForm
             t={this.props.t}
-            crowi={this.props.crowi}
             onSubmit={this.search}
             keyword={this.state.searchedKeyword}
             onInputChange={this.onInputChange}
@@ -55,11 +57,21 @@ export default class SearchPageForm extends React.Component {
 
 }
 
+/**
+ * Wrapper component for using unstated
+ */
+const SearchPageFormWrapper = (props) => {
+  return createSubscribedElement(SearchPageForm, props, [AppContainer]);
+};
+
 SearchPageForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  crowi: PropTypes.object.isRequired,
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+
   keyword: PropTypes.string,
   onSearchFormChanged: PropTypes.func.isRequired,
 };
 SearchPageForm.defaultProps = {
 };
+
+export default SearchPageFormWrapper;

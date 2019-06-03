@@ -101,21 +101,21 @@ class Comment extends React.Component {
       markdown,
     };
 
-    const crowiRenderer = this.props.crowiRenderer;
+    const growiRenderer = this.props.growiRenderer;
     const interceptorManager = this.props.appContainer.interceptorManager;
     interceptorManager.process('preRenderComment', context)
       .then(() => { return interceptorManager.process('prePreProcess', context) })
       .then(() => {
-        context.markdown = crowiRenderer.preProcess(context.markdown);
+        context.markdown = growiRenderer.preProcess(context.markdown);
       })
       .then(() => { return interceptorManager.process('postPreProcess', context) })
       .then(() => {
-        const parsedHTML = crowiRenderer.process(context.markdown);
+        const parsedHTML = growiRenderer.process(context.markdown);
         context.parsedHTML = parsedHTML;
       })
       .then(() => { return interceptorManager.process('prePostProcess', context) })
       .then(() => {
-        context.parsedHTML = crowiRenderer.postProcess(context.parsedHTML);
+        context.parsedHTML = growiRenderer.postProcess(context.parsedHTML);
       })
       .then(() => { return interceptorManager.process('postPostProcess', context) })
       .then(() => { return interceptorManager.process('preRenderCommentHtml', context) })
@@ -139,7 +139,7 @@ class Comment extends React.Component {
           <CommentWrapper
             comment={reply}
             deleteBtnClicked={this.props.deleteBtnClicked}
-            crowiRenderer={this.props.crowiRenderer}
+            growiRenderer={this.props.growiRenderer}
             replyList={[]}
           />
         </div>
@@ -218,7 +218,7 @@ Comment.propTypes = {
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
   comment: PropTypes.object.isRequired,
-  crowiRenderer: PropTypes.object.isRequired,
+  growiRenderer: PropTypes.object.isRequired,
   deleteBtnClicked: PropTypes.func.isRequired,
   replyList: PropTypes.array,
 };

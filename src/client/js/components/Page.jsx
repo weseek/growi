@@ -1,13 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { createSubscribedElement } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
 
-import { createSubscribedElement } from './UnstatedUtils';
+import MarkdownTable from '../models/MarkdownTable';
+
 import RevisionRenderer from './Page/RevisionRenderer';
 import HandsontableModal from './PageEditor/HandsontableModal';
-import MarkdownTable from '../models/MarkdownTable';
 import mtu from './PageEditor/MarkdownTableUtil';
 
 class Page extends React.Component {
@@ -18,6 +19,8 @@ class Page extends React.Component {
     this.state = {
       currentTargetTableArea: null,
     };
+
+    this.growiRenderer = this.props.appContainer.getRenderer('page');
 
     this.saveHandlerForHandsontableModal = this.saveHandlerForHandsontableModal.bind(this);
   }
@@ -47,12 +50,11 @@ class Page extends React.Component {
 
   render() {
     const isMobile = this.props.appContainer.isMobile;
+    const { markdown } = this.props.pageContainer.state;
 
     return (
       <div className={isMobile ? 'page-mobile' : ''}>
-        <RevisionRenderer
-          crowiRenderer={this.props.crowiRenderer}
-        />
+        <RevisionRenderer growiRenderer={this.growiRenderer} markdown={markdown} />
         <HandsontableModal ref={(c) => { this.handsontableModal = c }} onSave={this.saveHandlerForHandsontableModal} />
       </div>
     );
@@ -72,7 +74,6 @@ Page.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
-  crowiRenderer: PropTypes.object.isRequired,
   onSaveWithShortcut: PropTypes.func.isRequired,
 };
 

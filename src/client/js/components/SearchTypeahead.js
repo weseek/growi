@@ -7,8 +7,10 @@ import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 import UserPicture from './User/UserPicture';
 import PageListMeta from './PageList/PageListMeta';
 import PagePath from './PageList/PagePath';
+import AppContainer from '../services/AppContainer';
+import { createSubscribedElement } from './UnstatedUtils';
 
-export default class SearchTypeahead extends React.Component {
+class SearchTypeahead extends React.Component {
 
   constructor(props) {
 
@@ -20,7 +22,6 @@ export default class SearchTypeahead extends React.Component {
       isLoading: false,
       searchError: null,
     };
-    this.crowi = this.props.crowi;
 
     this.restoreInitialData = this.restoreInitialData.bind(this);
     this.search = this.search.bind(this);
@@ -68,7 +69,7 @@ export default class SearchTypeahead extends React.Component {
 
     this.setState({ isLoading: true });
 
-    this.crowi.apiGet('/search', { q: keyword })
+    this.props.appContainer.apiGet('/search', { q: keyword })
       .then((res) => { this.onSearchSuccess(res) })
       .catch((err) => { this.onSearchError(err) });
   }
@@ -206,10 +207,18 @@ export default class SearchTypeahead extends React.Component {
 }
 
 /**
+ * Wrapper component for using unstated
+ */
+const SearchTypeaheadWrapper = (props) => {
+  return createSubscribedElement(SearchTypeahead, props, [AppContainer]);
+};
+
+/**
  * Properties
  */
 SearchTypeahead.propTypes = {
-  crowi:           PropTypes.object.isRequired,
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+
   onSearchSuccess: PropTypes.func,
   onSearchError:   PropTypes.func,
   onChange:        PropTypes.func,
@@ -234,3 +243,5 @@ SearchTypeahead.defaultProps = {
   keywordOnInit:   '',
   onInputChange: () => {},
 };
+
+export default SearchTypeaheadWrapper;

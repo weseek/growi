@@ -27,10 +27,14 @@ export default class TagContainer extends Container {
     const pageContainer = this.appContainer.getContainer('PageContainer');
     const editorContainer = this.appContainer.getContainer('EditorContainer');
 
+    if (Object.keys(pageContainer.state).length === 0) {
+      logger.debug('There is no need to initialize TagContainer because this is not a Page');
+      return;
+    }
+
     const { pageId, templateTagData } = pageContainer.state;
 
     let tags;
-
     // when the page exists
     if (pageId != null) {
       const res = await this.appContainer.apiGet('/pages.getPageTag', { pageId });
