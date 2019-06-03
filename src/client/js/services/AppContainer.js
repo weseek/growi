@@ -5,12 +5,12 @@ import axios from 'axios';
 import InterceptorManager from '@commons/service/interceptor-manager';
 
 import emojiStrategy from '../util/emojione/emoji_strategy_shrinked.json';
+import GrowiRenderer from '../util/GrowiRenderer';
 
 import {
   DetachCodeBlockInterceptor,
   RestoreCodeBlockInterceptor,
 } from '../util/interceptor/detach-code-blocks';
-import GrowiRenderer from '../util/GrowiRenderer.js';
 
 /**
  * Service container related to options for Application

@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { throttle, debounce } from 'throttle-debounce';
 
 import * as toastr from 'toastr';
-import GrowiRenderer from '../util/GrowiRenderer';
 
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';

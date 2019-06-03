@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import Button from 'react-bootstrap/es/Button';
 
 import { withTranslation } from 'react-i18next';
-import GrowiRenderer from '../util/GrowiRenderer';
 
 import AppContainer from '../services/AppContainer';
 import CommentContainer from '../services/CommentContainer';
