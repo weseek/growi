@@ -159,10 +159,7 @@ module.exports = function(crowi, app) {
       throw new Error('invalid value supplied to res.apiv3');
     }
 
-    this.json({
-      oK: true,
-      data: obj,
-    });
+    this.json({ data: obj });
   };
 
   express.response.apiv3Err = function(errs, status = 400) { // not arrow function
@@ -195,8 +192,6 @@ module.exports = function(crowi, app) {
     });
 
     this.status(status).json({
-      oK: false,
-      status,
       errors: toArrayIfNot(errors),
     });
   };
