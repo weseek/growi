@@ -18,8 +18,9 @@ export default class PageContainer extends Container {
     this.appContainer = appContainer;
     this.appContainer.registerContainer(this);
 
-    const mainContent = document.querySelector('#content-main');
+    this.state = {};
 
+    const mainContent = document.querySelector('#content-main');
     if (mainContent == null) {
       logger.debug('#content-main element is not exists');
       return;
