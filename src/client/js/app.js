@@ -8,7 +8,6 @@ import * as toastr from 'toastr';
 
 import loggerFactory from '@alias/logger';
 import Xss from '@commons/service/xss';
-import i18nFactory from './i18n';
 
 import HeaderSearchBox from './components/HeaderSearchBox';
 import SearchPage from './components/SearchPage';
@@ -54,14 +53,9 @@ if (!window) {
   window = {};
 }
 
-const userlang = $('body').data('userlang');
-const i18n = i18nFactory(userlang);
-
 // setup xss library
 const xss = new Xss();
 window.xss = xss;
-
-const isLoggedin = document.querySelector('.main-container.nologin') == null;
 
 // create unstated container instance
 const appContainer = new AppContainer();
@@ -73,28 +67,13 @@ const tagContainer = new TagContainer(appContainer);
 const injectableContainers = [
   appContainer, websocketContainer, pageContainer, commentContainer, editorContainer, tagContainer,
 ];
-window.appContainer = appContainer;
 
 logger.info('unstated containers have been initialized');
 
-if (isLoggedin) {
-  appContainer.fetchUsers();
-}
+appContainer.initPlugins();
+appContainer.injectToWindow();
 
-const originRenderer = appContainer.getOriginRenderer();
-window.growiRenderer = originRenderer;
-
-// backward compatibility
-const crowi = appContainer;
-window.crowi = appContainer;
-window.crowiRenderer = originRenderer;
-
-// FIXME
-const isEnabledPlugins = $('body').data('plugin-enabled');
-if (isEnabledPlugins) {
-  const crowiPlugin = window.crowiPlugin;
-  crowiPlugin.installAll(appContainer, originRenderer);
-}
+const i18n = appContainer.i18n;
 
 /**
  * save success handler when reloading is not needed
@@ -253,17 +232,17 @@ const saveWithSubmitButton = function(submitOpts) {
  *  value: React Element
  */
 let componentMappings = {
-  'search-top': <HeaderSearchBox crowi={crowi} />,
-  'search-sidebar': <HeaderSearchBox crowi={crowi} />,
-  'search-page': <SearchPage crowi={crowi} />,
+  'search-top': <HeaderSearchBox crowi={appContainer} />,
+  'search-sidebar': <HeaderSearchBox crowi={appContainer} />,
+  'search-page': <SearchPage crowi={appContainer} />,
 
   // 'revision-history': <PageHistory pageId={pageId} />,
-  'tags-page': <TagsList crowi={crowi} />,
+  'tags-page': <TagsList crowi={appContainer} />,
 
-  'create-page-name-input': <PagePathAutoComplete crowi={crowi} initializedPath={pageContainer.state.path} addTrailingSlash />,
+  'create-page-name-input': <PagePathAutoComplete crowi={appContainer} initializedPath={pageContainer.state.path} addTrailingSlash />,
 
   'page-editor': <PageEditor onSaveWithShortcut={saveWithShortcut} />,
-  'page-editor-options-selector': <OptionsSelector crowi={crowi} />,
+  'page-editor-options-selector': <OptionsSelector crowi={appContainer} />,
   'page-status-alert': <PageStatusAlert />,
   'save-page-controls': <SavePageControls onSubmit={saveWithSubmitButton} />,
 
@@ -281,17 +260,17 @@ if (pageContainer.state.pageId != null) {
     'like-button': <LikeButton pageId={pageContainer.state.pageId} isLiked={pageContainer.state.isLiked} />,
     'seen-user-list': <UserPictureList userIds={pageContainer.state.seenUserIds} />,
     'liker-list': <UserPictureList userIds={pageContainer.state.likerUserIds} />,
-    'bookmark-button':  <BookmarkButton pageId={pageContainer.state.pageId} crowi={crowi} />,
-    'bookmark-button-lg':  <BookmarkButton pageId={pageContainer.state.pageId} crowi={crowi} size="lg" />,
-    'rename-page-name-input':  <PagePathAutoComplete crowi={crowi} initializedPath={pageContainer.state.path} />,
-    'duplicate-page-name-input':  <PagePathAutoComplete crowi={crowi} initializedPath={pageContainer.state.path} />,
+    'bookmark-button':  <BookmarkButton pageId={pageContainer.state.pageId} crowi={appContainer} />,
+    'bookmark-button-lg':  <BookmarkButton pageId={pageContainer.state.pageId} crowi={appContainer} size="lg" />,
+    'rename-page-name-input':  <PagePathAutoComplete crowi={appContainer} initializedPath={pageContainer.state.path} />,
+    'duplicate-page-name-input':  <PagePathAutoComplete crowi={appContainer} initializedPath={pageContainer.state.path} />,
   }, componentMappings);
 }
 if (pageContainer.state.path != null) {
   componentMappings = Object.assign({
     // eslint-disable-next-line quote-props
     'page': <Page onSaveWithShortcut={saveWithShortcut} />,
-    'revision-path':  <RevisionPath pageId={pageContainer.state.pageId} pagePath={pageContainer.state.path} crowi={crowi} />,
+    'revision-path':  <RevisionPath pageId={pageContainer.state.pageId} pagePath={pageContainer.state.path} crowi={appContainer} />,
     'tag-label':  <TagLabels />,
   }, componentMappings);
 }
@@ -344,7 +323,7 @@ if (customHeaderEditorElem != null) {
 const adminRebuildSearchElem = document.getElementById('admin-rebuild-search');
 if (adminRebuildSearchElem != null) {
   ReactDOM.render(
-    <AdminRebuildSearch crowi={crowi} />,
+    <AdminRebuildSearch crowi={appContainer} />,
     adminRebuildSearchElem,
   );
 }
@@ -353,7 +332,7 @@ if (adminGrantSelectorElem != null) {
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
       <GroupDeleteModal
-        crowi={crowi}
+        crowi={appContainer}
       />
     </I18nextProvider>,
     adminGrantSelectorElem,
@@ -364,7 +343,7 @@ if (adminGrantSelectorElem != null) {
 $('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', () => {
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
-      <PageHistory pageId={pageContainer.state.pageId} crowi={crowi} />
+      <PageHistory pageId={pageContainer.state.pageId} crowi={appContainer} />
     </I18nextProvider>, document.getElementById('revision-history'),
   );
 });

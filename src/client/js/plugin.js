@@ -2,7 +2,7 @@ import loggerFactory from '@alias/logger';
 
 const logger = loggerFactory('growi:plugin');
 
-export default class CrowiPlugin {
+export default class GrowiPlugin {
 
   /**
    * process plugin entry
@@ -43,4 +43,4 @@ export default class CrowiPlugin {
 
 }
 
-window.crowiPlugin = new CrowiPlugin(); // FIXME
+window.growiPlugin = new GrowiPlugin();

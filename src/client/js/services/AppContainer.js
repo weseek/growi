@@ -12,6 +12,8 @@ import {
   RestoreCodeBlockInterceptor,
 } from '../util/interceptor/detach-code-blocks';
 
+import i18nFactory from '../util/i18n';
+
 /**
  * Service container related to options for Application
  * @extends {Container} unstated Container
@@ -28,8 +30,10 @@ export default class AppContainer extends Container {
     const body = document.querySelector('body');
 
     this.me = body.dataset.currentUsername;
-    this.isAdmin = body.dataset.isAdmin;
+    this.isAdmin = body.dataset.isAdmin === 'true';
     this.csrfToken = body.dataset.csrftoken;
+    this.isPluginEnabled = body.dataset.pluginEnabled === 'true';
+    this.isLoggedin = document.querySelector('.main-container.nologin') == null;
 
     this.config = JSON.parse(document.getElementById('crowi-context-hydrate').textContent || '{}');
 
@@ -44,10 +48,17 @@ export default class AppContainer extends Container {
     this.interceptorManager.addInterceptor(new DetachCodeBlockInterceptor(this), 10); // process as soon as possible
     this.interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(this), 900); // process as late as possible
 
+    const userlang = body.dataset.userlang;
+    this.i18n = i18nFactory(userlang);
+
     this.users = [];
     this.userByName = {};
     this.userById = {};
     this.recoverData();
+
+    if (this.isLoggedin) {
+      this.fetchUsers();
+    }
 
     this.containerInstances = {};
     this.componentInstances = {};
@@ -57,6 +68,25 @@ export default class AppContainer extends Container {
     this.apiGet = this.apiGet.bind(this);
     this.apiPost = this.apiPost.bind(this);
     this.apiRequest = this.apiRequest.bind(this);
+  }
+
+  initPlugins() {
+    if (this.isPluginEnabled) {
+      const growiPlugin = window.growiPlugin;
+      growiPlugin.installAll(this, this.originRenderer);
+    }
+  }
+
+  injectToWindow() {
+    window.appContainer = this;
+
+    const originRenderer = this.getOriginRenderer();
+    window.growiRenderer = originRenderer;
+
+    // backward compatibility
+    window.crowi = this;
+    window.crowiRenderer = originRenderer;
+    window.crowiPlugin = window.growiPlugin;
   }
 
   /**
