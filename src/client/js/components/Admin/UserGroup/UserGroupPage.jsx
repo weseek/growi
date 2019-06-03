@@ -60,35 +60,34 @@ class UserGroupPage extends React.Component {
 
   async deleteUserGroupById({ deleteGroupId, actionName, transferToUserGroupId }) {
     try {
-      const res = await this.props.crowi.apiPost(`/v3/user-groups/${deleteGroupId}/delete`, {
+      const res = await this.props.crowi.apiv3.post(`/user-groups/${deleteGroupId}/delete`, {
         actionName,
         transferToUserGroupId,
       });
 
-      if (res.ok) {
-        this.setState((prevState) => {
-          const userGroups = prevState.userGroups.filter((userGroup) => {
-            return userGroup._id !== deleteGroupId;
-          });
+      if (res.errors) {
+        return apiErrorHandler(res.errors);
+      }
 
-          delete prevState.userGroupRelations[deleteGroupId];
-
-          return {
-            userGroups,
-            userGroupRelations: prevState.userGroupRelations,
-            selectedUserGroup: undefined,
-            isDeleteModalShow: false,
-          };
+      this.setState((prevState) => {
+        const userGroups = prevState.userGroups.filter((userGroup) => {
+          return userGroup._id !== deleteGroupId;
         });
 
-        apiSuccessHandler(`Deleted a group "${this.xss.process(res.userGroup.name)}"`);
-      }
-      else {
-        throw new Error(`Unable to delete a group "${this.xss.process(res.userGroup.name)}"`);
-      }
+        delete prevState.userGroupRelations[deleteGroupId];
+
+        return {
+          userGroups,
+          userGroupRelations: prevState.userGroupRelations,
+          selectedUserGroup: undefined,
+          isDeleteModalShow: false,
+        };
+      });
+
+      apiSuccessHandler(`Deleted a group "${this.xss.process(res.data.userGroup.name)}"`);
     }
     catch (err) {
-      apiErrorHandler(err);
+      apiErrorHandler(new Error('Unable to delete the group'));
     }
   }
 
@@ -98,14 +97,18 @@ class UserGroupPage extends React.Component {
 
     try {
       const responses = await Promise.all([
-        this.props.crowi.apiGet('/v3/user-groups'),
-        this.props.crowi.apiGet('/v3/user-group-relations'),
+        this.props.crowi.apiv3.get('/user-groups'),
+        this.props.crowi.apiv3.get('/user-group-relations'),
       ]);
 
-      if (responses.reduce((isAllOk, res) => { return isAllOk && res.ok }, true)) {
+      const isAllOk = responses.reduce((isAllOk, res) => {
+        return isAllOk && !res.errors;
+      }, true);
+
+      if (isAllOk) {
         const [userGroupsRes, userGroupRelationsRes] = responses;
-        userGroups = userGroupsRes.userGroups;
-        userGroupRelations = userGroupRelationsRes.userGroupRelations;
+        userGroups = userGroupsRes.data.userGroups;
+        userGroupRelations = userGroupRelationsRes.data.userGroupRelations;
       }
       else {
         throw new Error('Unable to fetch groups from server');

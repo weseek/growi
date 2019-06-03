@@ -12,7 +12,6 @@ const {
   adminRequired,
 } = require('../../util/middlewares');
 
-const ApiResponse = require('../../util/apiResponse');
 
 module.exports = (crowi) => {
   const { UserGroup, UserGroupRelation } = crowi.models;
@@ -39,11 +38,11 @@ module.exports = (crowi) => {
         userGroupRelations: userGroupRelationsObj,
       };
 
-      return res.json(ApiResponse.success(data));
+      return res.apiv3(data);
     }
     catch (err) {
       logger.error('Error', err);
-      return res.json(ApiResponse.error('Error occurred in fetching user group relations'));
+      return res.apiv3Err('Error occurred in fetching user group relations');
     }
   });
 

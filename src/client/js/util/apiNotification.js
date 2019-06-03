@@ -1,16 +1,11 @@
 import * as toastr from 'toastr';
+import toArrayIfNot from '../../../lib/util/toArrayIfNot';
 
 const logger = require('@alias/logger')('growi');
 
-const errorFormatter = {};
-
-errorFormatter.logger = (err) => {
-  return err.toString().replace(/\n/g, ', ');
-};
-
-errorFormatter.toastr = (err) => {
+const errorFormatter = (err) => {
   const prefixRegexp = /^Error: /;
-  let message = err.toString().replace(/\n/g, '<br>');
+  let message = err.toString();
 
   if (prefixRegexp.test(message)) {
     message = message.replace(prefixRegexp, '');
@@ -20,16 +15,20 @@ errorFormatter.toastr = (err) => {
 };
 
 export const apiErrorHandler = (err, header = 'Error') => {
-  logger.error(errorFormatter.logger(err));
+  const errs = toArrayIfNot(err);
 
-  toastr.error(errorFormatter.toastr(err), header, {
-    closeButton: true,
-    progressBar: true,
-    newestOnTop: false,
-    showDuration: '100',
-    hideDuration: '100',
-    timeOut: '3000',
-  });
+  for (const err of errs) {
+    logger.error(err);
+
+    toastr.error(errorFormatter(err), header, {
+      closeButton: true,
+      progressBar: true,
+      newestOnTop: false,
+      showDuration: '100',
+      hideDuration: '100',
+      timeOut: '3000',
+    });
+  }
 };
 
 export const apiSuccessHandler = (body, header = 'Success') => {

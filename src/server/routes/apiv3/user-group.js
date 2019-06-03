@@ -18,8 +18,6 @@ const {
   formValid,
 } = require('../../util/middlewares');
 
-const ApiResponse = require('../../util/apiResponse');
-
 module.exports = (crowi) => {
   const { UserGroup, UserGroupRelation } = crowi.models;
 
@@ -29,11 +27,11 @@ module.exports = (crowi) => {
     // TODO: filter with querystring
     try {
       const userGroups = await UserGroup.find();
-      return res.json(ApiResponse.success({ userGroups }));
+      return res.apiv3({ userGroups });
     }
     catch (err) {
       logger.error('Error', err);
-      return res.json(ApiResponse.error('Error occurred in fetching user groups'));
+      return res.apiv3Err('Error occurred in fetching user groups');
     }
   });
 
@@ -48,12 +46,12 @@ module.exports = (crowi) => {
       const userGroupName = crowi.xss.process(name);
       const userGroup = await UserGroup.createGroupByName(userGroupName);
 
-      return res.json(ApiResponse.success({ userGroup }));
+      return res.apiv3({ userGroup });
     }
     catch (err) {
       const msg = 'Error occurred in creating a user group';
       logger.error(msg, err);
-      return res.json(ApiResponse.error(msg));
+      return res.apiv3Err(msg);
     }
   });
 
@@ -70,12 +68,12 @@ module.exports = (crowi) => {
     try {
       const userGroup = await UserGroup.removeCompletelyById(deleteGroupId, actionName, transferToUserGroupId);
 
-      return res.json(ApiResponse.success({ userGroup }));
+      return res.apiv3({ userGroup });
     }
     catch (err) {
       const msg = 'Error occurred in deleting a user group';
       logger.error(msg, err);
-      return res.json(ApiResponse.error(msg));
+      return res.apiv3Err(msg);
     }
   });
 
@@ -98,12 +96,12 @@ module.exports = (crowi) => {
         return userGroupRelation.relatedUser;
       });
 
-      return res.json(ApiResponse.success({ users }));
+      return res.apiv3({ users });
     }
     catch (err) {
       const msg = `Error occurred in fetching users for group: ${id}`;
       logger.error(msg, err);
-      return res.json(ApiResponse.error(msg));
+      return res.apiv3Err(msg);
     }
   });
 

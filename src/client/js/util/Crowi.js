@@ -36,6 +36,12 @@ export default class Crowi {
     this.apiGet = this.apiGet.bind(this);
     this.apiPost = this.apiPost.bind(this);
     this.apiRequest = this.apiRequest.bind(this);
+    this.apiv3 = {
+      get: this.apiv3Get.bind(this),
+      post: this.apiv3Post.bind(this),
+      put: this.apiv3Put.bind(this),
+      delete: this.apiv3Delete.bind(this),
+    };
 
     this.interceptorManager = new InterceptorManager();
     this.interceptorManager.addInterceptor(new DetachCodeBlockInterceptor(this), 10); // process as soon as possible
@@ -292,6 +298,40 @@ export default class Crowi {
           reject(res);
         });
     });
+  }
+
+  async apiv3Request(method, path, params) {
+    const res = await axios[method](`/_api/v3${path}`, params);
+
+    return res.data;
+  }
+
+  apiv3Get(path, params) {
+    return this.apiv3Request('get', path, { params });
+  }
+
+  apiv3Post(path, params) {
+    if (!params._csrf) {
+      params._csrf = this.csrfToken;
+    }
+
+    return this.apiv3Request('post', path, params);
+  }
+
+  apiv3Put(path, params) {
+    if (!params._csrf) {
+      params._csrf = this.csrfToken;
+    }
+
+    return this.apiv3Request('put', path, { params });
+  }
+
+  apiv3Delete(path, params) {
+    if (!params._csrf) {
+      params._csrf = this.csrfToken;
+    }
+
+    return this.apiv3Request('delete', path, { params });
   }
 
 }
