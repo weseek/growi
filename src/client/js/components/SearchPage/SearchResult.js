@@ -173,8 +173,6 @@ class SearchResult extends React.Component {
   }
 
   render() {
-    // console.log(this.props.searchError);
-    // console.log(this.isError());
     if (this.isError()) {
       return (
         <div className="content-main">
@@ -189,7 +187,7 @@ class SearchResult extends React.Component {
 
     if (this.isNotFound()) {
       let under = '';
-      if (this.props.tree !== null) {
+      if (this.props.tree != null) {
         under = ` under "${this.props.tree}"`;
       }
       return (
