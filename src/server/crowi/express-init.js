@@ -22,6 +22,7 @@ module.exports = function(crowi, app) {
   const i18nUserSettingDetector = require('../util/i18nUserSettingDetector');
   const env = crowi.node_env;
   const middleware = require('../util/middlewares');
+  const toArrayIfNot = require('../../lib/util/toArrayIfNot');
 
   // Old type config API
   const config = crowi.getConfig();
@@ -150,4 +151,53 @@ module.exports = function(crowi, app) {
   }
 
   app.use(i18nMiddleware.handle(i18next));
+
+  // add custom functions to express res
+  express.response.apiv3 = function(obj) { // not arrow function
+    // obj must be object
+    if (typeof obj !== 'object' || obj instanceof Array) {
+      throw new Error('invalid value supplied to res.apiv3');
+    }
+
+    this.json({
+      oK: true,
+      data: obj,
+    });
+  };
+
+  express.response.apiv3Err = function(errs, status = 400) { // not arrow function
+    if (!Number.isInteger(status)) {
+      throw new Error('invalid status supplied to res.apiv3Err');
+    }
+
+    let errors = toArrayIfNot(errs);
+    errors = errors.map((_err) => {
+      const err = {};
+
+      if (_err instanceof Error) {
+        let message = _err.toString();
+
+        const prefixRegexp = /^Error: /;
+        if (prefixRegexp.test(message)) {
+          message = message.replace(prefixRegexp, '');
+        }
+
+        err.message = message;
+
+        return err;
+      }
+      if (typeof _err === 'string') {
+        err.message = _err;
+        return err;
+      }
+
+      throw new Error('invalid error supplied to res.apiv3Err');
+    });
+
+    this.status(status).json({
+      oK: false,
+      status,
+      errors: toArrayIfNot(errors),
+    });
+  };
 };
