@@ -346,8 +346,8 @@ module.exports = function(crowi) {
   };
 
   pageSchema.methods.isLiked = function(userData) {
-    return this.liker.some((likedUser) => {
-      return likedUser === userData._id.toString();
+    return this.liker.some((likedUserId) => {
+      return likedUserId.toString() === userData._id.toString();
     });
   };
 
@@ -366,7 +366,7 @@ module.exports = function(crowi) {
         });
       }
       else {
-        debug('liker not updated');
+        this.logger.warn('liker not updated');
         return reject(self);
       }
     }));

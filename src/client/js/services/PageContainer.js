@@ -35,6 +35,9 @@ export default class PageContainer extends Container {
       revisionId,
       revisionCreatedAt: +mainContent.getAttribute('data-page-revision-created'),
       path: mainContent.getAttribute('data-path'),
+      isLiked: false,
+      seenUserIds: [],
+      likerUserIds: [],
 
       tags: [],
       templateTagData: mainContent.getAttribute('data-template-tags') || '',
@@ -49,6 +52,7 @@ export default class PageContainer extends Container {
     };
 
     this.initStateMarkdown();
+    this.initStateOthers();
     this.initDrafts();
 
     this.addWebSocketEventHandlers = this.addWebSocketEventHandlers.bind(this);
@@ -68,6 +72,26 @@ export default class PageContainer extends Container {
     const markdown = entities.decodeHTML(pageContent);
 
     this.state.markdown = markdown;
+  }
+
+  initStateOthers() {
+    const likeButtonElem = document.getElementById('like-button');
+    if (likeButtonElem != null) {
+      this.state.isLiked = likeButtonElem.dataset.liked === 'true';
+    }
+
+    const seenUserListElem = document.getElementById('seen-user-list');
+    if (seenUserListElem != null) {
+      const userIdsStr = seenUserListElem.dataset.userIds;
+      this.state.seenUserIds = userIdsStr.split(',');
+    }
+
+
+    const likerListElem = document.getElementById('liker-list');
+    if (likerListElem != null) {
+      const userIdsStr = likerListElem.dataset.userIds;
+      this.state.likerUserIds = userIdsStr.split(',');
+    }
   }
 
   /**

@@ -278,6 +278,9 @@ if (pageContainer.state.pageId != null) {
     'page-comments-list': <PageComments />,
     'page-attachment':  <PageAttachment />,
     'page-comment-write':  <CommentEditorLazyRenderer />,
+    'like-button': <LikeButton pageId={pageContainer.state.pageId} isLiked={pageContainer.state.isLiked} />,
+    'seen-user-list': <UserPictureList userIds={pageContainer.state.seenUserIds} />,
+    'liker-list': <UserPictureList userIds={pageContainer.state.likerUserIds} />,
     'bookmark-button':  <BookmarkButton pageId={pageContainer.state.pageId} crowi={crowi} />,
     'bookmark-button-lg':  <BookmarkButton pageId={pageContainer.state.pageId} crowi={crowi} size="lg" />,
     'rename-page-name-input':  <PagePathAutoComplete crowi={crowi} initializedPath={pageContainer.state.path} />,
@@ -306,37 +309,6 @@ Object.keys(componentMappings).forEach((key) => {
     );
   }
 });
-
-// render LikeButton
-const likeButtonElem = document.getElementById('like-button');
-if (likeButtonElem) {
-  const isLiked = likeButtonElem.dataset.liked === 'true';
-  ReactDOM.render(
-    <LikeButton crowi={crowi} pageId={pageContainer.state.pageId} isLiked={isLiked} />,
-    likeButtonElem,
-  );
-}
-
-// render UserPictureList for seen-user-list
-const seenUserListElem = document.getElementById('seen-user-list');
-if (seenUserListElem) {
-  const userIdsStr = seenUserListElem.dataset.userIds;
-  const userIds = userIdsStr.split(',');
-  ReactDOM.render(
-    <UserPictureList crowi={crowi} userIds={userIds} />,
-    seenUserListElem,
-  );
-}
-// render UserPictureList for liker-list
-const likerListElem = document.getElementById('liker-list');
-if (likerListElem) {
-  const userIdsStr = likerListElem.dataset.userIds;
-  const userIds = userIdsStr.split(',');
-  ReactDOM.render(
-    <UserPictureList crowi={crowi} userIds={userIds} />,
-    likerListElem,
-  );
-}
 
 // render for admin
 const customCssEditorElem = document.getElementById('custom-css-editor');
