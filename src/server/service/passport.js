@@ -6,7 +6,9 @@ const LdapStrategy = require('passport-ldapauth');
 const GoogleStrategy = require('passport-google-auth').Strategy;
 const GitHubStrategy = require('passport-github').Strategy;
 const TwitterStrategy = require('passport-twitter').Strategy;
+const OidcStrategy = require('openid-client').Strategy;
 const SamlStrategy = require('passport-saml').Strategy;
+const OIDCIssuer = require('openid-client').Issuer;
 
 /**
  * the service class of Passport
@@ -45,6 +47,11 @@ class PassportService {
      * the flag whether TwitterStrategy is set up successfully
      */
     this.isTwitterStrategySetup = false;
+
+    /**
+     * the flag whether OidcStrategy is set up successfully
+     */
+    this.isOidcStrategySetup = false;
 
     /**
      * the flag whether SamlStrategy is set up successfully
@@ -452,6 +459,68 @@ class PassportService {
     debug('TwitterStrategy: reset');
     passport.unuse('twitter');
     this.isTwitterStrategySetup = false;
+  }
+
+  async setupOidcStrategy() {
+    // check whether the strategy has already been set up
+    if (this.isOidcStrategySetup) {
+      throw new Error('OidcStrategy has already been set up');
+    }
+
+    const config = this.crowi.config;
+    const configManager = this.crowi.configManager;
+    const isOidcEnabled = configManager.getConfig('crowi', 'security:passport-oidc:isEnabled');
+
+    // when disabled
+    if (!isOidcEnabled) {
+      return;
+    }
+
+    debug('OidcStrategy: setting up..');
+
+    // setup client
+    // extend oidc request timeouts
+    OIDCIssuer.defaultHttpOptions = { timeout: 5000 };
+    const issuerHost = configManager.getConfig('crowi', 'security:passport-oidc:issuerHost') || process.env.OAUTH_OIDC_ISSUER_HOST;
+    const clientId = configManager.getConfig('crowi', 'security:passport-oidc:clientId') || process.env.OAUTH_OIDC_CLIENT_ID;
+    const clientSecret = configManager.getConfig('crowi', 'security:passport-oidc:clientSecret') || process.env.OAUTH_OIDC_CLIENT_SECRET;
+    const redirectUri = (configManager.getConfig('crowi', 'app:siteUrl') != null)
+      ? urljoin(this.crowi.configManager.getSiteUrl(), '/passport/oidc/callback')
+      : config.crowi['security:passport-oidc:callbackUrl'] || process.env.OAUTH_OIDC_CALLBACK_URI; // DEPRECATED: backward compatible with v3.2.3 and below
+    const oidcIssuer = await OIDCIssuer.discover(issuerHost);
+    debug('Discovered issuer %s %O', oidcIssuer.issuer, oidcIssuer.metadata);
+
+    const client = new oidcIssuer.Client({
+      client_id: clientId,
+      client_secret: clientSecret,
+      redirect_uris: [redirectUri],
+      scope: 'openid email profile',
+      response: 'code',
+    });
+
+    passport.use('oidc', new OidcStrategy({ client },
+      ((tokenset, userinfo, done) => {
+        if (userinfo) {
+          return done(null, userinfo);
+        }
+
+        return done(null, false);
+
+      })));
+
+    this.isOidcStrategySetup = true;
+    debug('OidcStrategy: setup is done');
+  }
+
+  /**
+   * reset OidcStrategy
+   *
+   * @memberof PassportService
+   */
+  resetOidcStrategy() {
+    debug('OidcStrategy: reset');
+    passport.unuse('oidc');
+    this.isOidcStrategySetup = false;
   }
 
   setupSamlStrategy() {
