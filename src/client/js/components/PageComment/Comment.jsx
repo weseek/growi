@@ -137,13 +137,11 @@ export default class Comment extends React.Component {
 
     const areThereHiddenReplies = replyList.length > 2;
 
-    const iconForOlder = (this.state.isLayoutTypeGrowi)
-      ? <i className="fa fa-angle-double-up"></i>
-      : <i className="fa fa-angle-double-down"></i>;
-    const toggleOlder = (areThereHiddenReplies)
+    const iconForOlder = <i className="icon-options-vertical"></i>;
+    const toggleOlder = areThereHiddenReplies
       ? (
         <a className="page-comments-list-toggle-older text-center" data-toggle="collapse" href="#page-comments-list-older">
-          {iconForOlder} Show Older Replies {iconForOlder}
+          {iconForOlder} Read More
         </a>
       )
       : <div></div>;
