@@ -8,7 +8,7 @@ import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
 import EditorContainer from '../../services/EditorContainer';
 
-import Draft from '../PageList/Draft';
+import Draft from './Draft';
 
 class MyDraftList extends React.Component {
 
