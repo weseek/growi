@@ -2,6 +2,9 @@
 
 ## 3.4.8-RC
 
+* Feature: Comment Thread
+* Improvement Draft list
+* Support: Apply unstated
 * Support: Upgrade libs
     * mini-css-extract-plugin
     * null-loader
