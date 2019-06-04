@@ -15,40 +15,21 @@ export default class SlackNotification extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      isSlackEnabled: this.props.isSlackEnabled,
-      slackChannels: this.props.slackChannels,
-    };
-
-    this.updateState = this.updateState.bind(this);
-    this.updateStateCheckbox = this.updateStateCheckbox.bind(this);
+    this.updateCheckboxHandler = this.updateCheckboxHandler.bind(this);
+    this.updateSlackChannelsHandler = this.updateSlackChannelsHandler.bind(this);
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      isSlackEnabled: nextProps.isSlackEnabled,
-      slackChannels: nextProps.slackChannels,
-    });
-  }
-
-  getCurrentOptionsToSave() {
-    return Object.assign({}, this.state);
-  }
-
-  updateState(value) {
-    this.setState({ slackChannels: value });
-    // dispatch event
-    if (this.props.onChannelChange != null) {
-      this.props.onChannelChange(value);
+  updateCheckboxHandler(event) {
+    const value = event.target.checked;
+    if (this.props.onEnabledFlagChange != null) {
+      this.props.onEnabledFlagChange(value);
     }
   }
 
-  updateStateCheckbox(event) {
-    const value = event.target.checked;
-    this.setState({ isSlackEnabled: value });
-    // dispatch event
-    if (this.props.onEnabledFlagChange != null) {
-      this.props.onEnabledFlagChange(value);
+  updateSlackChannelsHandler(event) {
+    const value = event.target.value;
+    if (this.props.onChannelChange != null) {
+      this.props.onChannelChange(value);
     }
   }
 
@@ -58,19 +39,26 @@ export default class SlackNotification extends React.Component {
         <label className="input-group-addon">
           <img id="slack-mark-white" alt="slack-mark" src="/images/icons/slack/mark-monochrome_white.svg" width="18" height="18" />
           <img id="slack-mark-black" alt="slack-mark" src="/images/icons/slack/mark-monochrome_black.svg" width="18" height="18" />
-          <input type="checkbox" value="1" checked={this.state.isSlackEnabled} onChange={this.updateStateCheckbox} />
+
+          <input
+            type="checkbox"
+            value="1"
+            checked={this.props.isSlackEnabled}
+            onChange={this.updateCheckboxHandler}
+          />
+
         </label>
         <input
           className="form-control"
           type="text"
-          value={this.state.slackChannels}
+          value={this.props.slackChannels}
           placeholder="slack channel name"
           data-toggle="popover"
           title="Slack通知"
           data-content="通知するにはチェックを入れてください。カンマ区切りで複数チャンネルに通知することができます。"
           data-trigger="focus"
           data-placement="top"
-          onChange={(e) => { return this.updateState(e.target.value) }}
+          onChange={this.updateSlackChannelsHandler}
         />
       </div>
     );
@@ -79,12 +67,8 @@ export default class SlackNotification extends React.Component {
 }
 
 SlackNotification.propTypes = {
-  isSlackEnabled: PropTypes.bool,
-  slackChannels: PropTypes.string,
-  onChannelChange: PropTypes.func,
+  isSlackEnabled: PropTypes.bool.isRequired,
+  slackChannels: PropTypes.string.isRequired,
   onEnabledFlagChange: PropTypes.func,
-};
-
-SlackNotification.defaultProps = {
-  slackChannels: '',
+  onChannelChange: PropTypes.func,
 };

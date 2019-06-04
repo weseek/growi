@@ -3,8 +3,11 @@ import PropTypes from 'prop-types';
 
 import dateFnsFormat from 'date-fns/format';
 
-import RevisionBody from '../Page/RevisionBody';
+import AppContainer from '../../services/AppContainer';
+import PageContainer from '../../services/PageContainer';
 
+import { createSubscribedElement } from '../UnstatedUtils';
+import RevisionBody from '../Page/RevisionBody';
 import UserPicture from '../User/UserPicture';
 import Username from '../User/Username';
 
@@ -16,7 +19,7 @@ import Username from '../User/Username';
  * @class Comment
  * @extends {React.Component}
  */
-export default class Comment extends React.Component {
+class Comment extends React.Component {
 
   constructor(props) {
     super(props);
@@ -41,7 +44,7 @@ export default class Comment extends React.Component {
   }
 
   init() {
-    const layoutType = this.props.crowi.getConfig().layoutType;
+    const layoutType = this.props.appContainer.getConfig().layoutType;
     this.setState({ isLayoutTypeGrowi: layoutType === 'crowi-plus' || layoutType === 'growi' });
   }
 
@@ -55,11 +58,11 @@ export default class Comment extends React.Component {
   }
 
   isCurrentUserEqualsToAuthor() {
-    return this.props.comment.creator.username === this.props.crowi.me;
+    return this.props.comment.creator.username === this.props.appContainer.me;
   }
 
   isCurrentRevision() {
-    return this.props.comment.revision === this.props.revisionId;
+    return this.props.comment.revision === this.props.pageContainer.state.revisionId;
   }
 
   getRootClassName() {
@@ -81,7 +84,7 @@ export default class Comment extends React.Component {
   }
 
   renderRevisionBody() {
-    const config = this.props.crowi.getConfig();
+    const config = this.props.appContainer.getConfig();
     const isMathJaxEnabled = !!config.env.MATHJAX;
     return (
       <RevisionBody
@@ -106,21 +109,21 @@ export default class Comment extends React.Component {
       markdown,
     };
 
-    const crowiRenderer = this.props.crowiRenderer;
-    const interceptorManager = this.props.crowi.interceptorManager;
+    const growiRenderer = this.props.growiRenderer;
+    const interceptorManager = this.props.appContainer.interceptorManager;
     interceptorManager.process('preRenderComment', context)
       .then(() => { return interceptorManager.process('prePreProcess', context) })
       .then(() => {
-        context.markdown = crowiRenderer.preProcess(context.markdown);
+        context.markdown = growiRenderer.preProcess(context.markdown);
       })
       .then(() => { return interceptorManager.process('postPreProcess', context) })
       .then(() => {
-        const parsedHTML = crowiRenderer.process(context.markdown);
+        const parsedHTML = growiRenderer.process(context.markdown);
         context.parsedHTML = parsedHTML;
       })
       .then(() => { return interceptorManager.process('prePostProcess', context) })
       .then(() => {
-        context.parsedHTML = crowiRenderer.postProcess(context.parsedHTML);
+        context.parsedHTML = growiRenderer.postProcess(context.parsedHTML);
       })
       .then(() => { return interceptorManager.process('postPostProcess', context) })
       .then(() => { return interceptorManager.process('preRenderCommentHtml', context) })
@@ -156,14 +159,11 @@ export default class Comment extends React.Component {
     const toggleElements = hiddenReplies.map((reply) => {
       return (
         <div key={reply._id} className="col-xs-offset-1 col-xs-11 col-sm-offset-1 col-sm-11 col-md-offset-1 col-md-11 col-lg-offset-1 col-lg-11">
-          <Comment
+          <CommentWrapper
             comment={reply}
             deleteBtnClicked={this.props.deleteBtnClicked}
-            crowiRenderer={this.props.crowiRenderer}
-            crowi={this.props.crowi}
+            growiRenderer={this.props.growiRenderer}
             replyList={[]}
-            revisionCreatedAt={this.props.revisionCreatedAt}
-            revisionId={this.props.revisionId}
           />
         </div>
       );
@@ -178,14 +178,11 @@ export default class Comment extends React.Component {
     const shownBlock = shownReplies.map((reply) => {
       return (
         <div key={reply._id} className="col-xs-offset-1 col-xs-11 col-sm-offset-1 col-sm-11 col-md-offset-1 col-md-11 col-lg-offset-1 col-lg-11">
-          <Comment
+          <CommentWrapper
             comment={reply}
             deleteBtnClicked={this.props.deleteBtnClicked}
-            crowiRenderer={this.props.crowiRenderer}
-            crowi={this.props.crowi}
+            growiRenderer={this.props.growiRenderer}
             replyList={[]}
-            revisionCreatedAt={this.props.revisionCreatedAt}
-            revisionId={this.props.revisionId}
           />
         </div>
       );
@@ -212,8 +209,8 @@ export default class Comment extends React.Component {
     const revFirst8Letters = comment.revision.substr(-8);
     const revisionLavelClassName = this.getRevisionLabelClassName();
 
-    const revisionId = this.props.revisionId;
-    const revisionCreatedAt = this.props.revisionCreatedAt;
+    const { revisionId, revisionCreatedAt } = this.props.pageContainer.state;
+
     let isNewer;
     if (comment.revision === revisionId) {
       isNewer = 'page-comments-list-current';
@@ -259,12 +256,21 @@ export default class Comment extends React.Component {
 
 }
 
-Comment.propTypes = {
-  comment: PropTypes.object.isRequired,
-  crowiRenderer: PropTypes.object.isRequired,
-  deleteBtnClicked: PropTypes.func.isRequired,
-  crowi: PropTypes.object.isRequired,
-  revisionId: PropTypes.string,
-  replyList: PropTypes.array,
-  revisionCreatedAt: PropTypes.number,
+/**
+ * Wrapper component for using unstated
+ */
+const CommentWrapper = (props) => {
+  return createSubscribedElement(Comment, props, [AppContainer, PageContainer]);
 };
+
+Comment.propTypes = {
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+
+  comment: PropTypes.object.isRequired,
+  growiRenderer: PropTypes.object.isRequired,
+  deleteBtnClicked: PropTypes.func.isRequired,
+  replyList: PropTypes.array,
+};
+
+export default CommentWrapper;

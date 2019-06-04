@@ -4,9 +4,12 @@ import PropTypes from 'prop-types';
 import OverlayTrigger from 'react-bootstrap/es/OverlayTrigger';
 import Tooltip from 'react-bootstrap/es/Tooltip';
 
+import { createSubscribedElement } from '../UnstatedUtils';
+import AppContainer from '../../services/AppContainer';
+
 import UserPicture from './UserPicture';
 
-export default class UserPictureList extends React.Component {
+class UserPictureList extends React.Component {
 
   constructor(props) {
     super(props);
@@ -15,7 +18,7 @@ export default class UserPictureList extends React.Component {
 
     const users = this.props.users.concat(
       // FIXME: user data cache
-      this.props.crowi.findUserByIds(userIds),
+      this.props.appContainer.findUserByIds(userIds),
     );
 
     this.state = {
@@ -47,8 +50,16 @@ export default class UserPictureList extends React.Component {
 
 }
 
+/**
+ * Wrapper component for using unstated
+ */
+const UserPictureListWrapper = (props) => {
+  return createSubscribedElement(UserPictureList, props, [AppContainer]);
+};
+
 UserPictureList.propTypes = {
-  crowi: PropTypes.object.isRequired,
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+
   userIds: PropTypes.arrayOf(PropTypes.string),
   users: PropTypes.arrayOf(PropTypes.object),
 };
@@ -57,3 +68,5 @@ UserPictureList.defaultProps = {
   userIds: [],
   users: [],
 };
+
+export default UserPictureListWrapper;

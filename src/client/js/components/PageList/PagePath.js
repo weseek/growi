@@ -30,7 +30,7 @@ export default class PagePath extends React.Component {
   render() {
     const page = this.props.page;
     const isShortPathOnly = this.props.isShortPathOnly;
-    const pagePath = decodeURIComponent(page.path.replace(this.props.excludePathString.replace(/^\//, ''), ''));
+    const pagePath = decodeURIComponent(page.path);
     const shortPath = this.getShortPath(pagePath);
 
     const shortPathEscaped = escapeStringRegexp(shortPath);
@@ -51,11 +51,9 @@ export default class PagePath extends React.Component {
 PagePath.propTypes = {
   page: PropTypes.object.isRequired,
   isShortPathOnly: PropTypes.bool,
-  excludePathString: PropTypes.string,
   additionalClassNames: PropTypes.array,
 };
 
 PagePath.defaultProps = {
   additionalClassNames: [],
-  excludePathString: '',
 };

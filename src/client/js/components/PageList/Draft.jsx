@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
+import { createSubscribedElement } from '../UnstatedUtils';
 import GrowiRenderer from '../../util/GrowiRenderer';
+import AppContainer from '../../services/AppContainer';
 
 import RevisionBody from '../Page/RevisionBody';
 
@@ -17,7 +19,7 @@ class Draft extends React.Component {
       isOpen: false,
     };
 
-    this.growiRenderer = new GrowiRenderer(this.props.crowi, this.props.crowiOriginRenderer, { mode: 'draft' });
+    this.growiRenderer = new GrowiRenderer(window.crowi, this.props.crowiOriginRenderer, { mode: 'draft' });
 
     this.renderHtml = this.renderHtml.bind(this);
     this.toggleContent = this.toggleContent.bind(this);
@@ -52,7 +54,7 @@ class Draft extends React.Component {
     };
 
     const growiRenderer = this.growiRenderer;
-    const interceptorManager = this.props.crowi.interceptorManager;
+    const interceptorManager = this.props.appContainer.interceptorManager;
     await interceptorManager.process('prePreProcess', context)
       .then(() => {
         context.markdown = growiRenderer.preProcess(context.markdown);
@@ -154,9 +156,18 @@ class Draft extends React.Component {
 
 }
 
+/**
+ * Wrapper component for using unstated
+ */
+const DraftWrapper = (props) => {
+  return createSubscribedElement(Draft, props, [AppContainer]);
+};
+
+
 Draft.propTypes = {
   t: PropTypes.func.isRequired,
-  crowi: PropTypes.object.isRequired,
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+
   crowiOriginRenderer: PropTypes.object.isRequired,
   path: PropTypes.string.isRequired,
   markdown: PropTypes.string.isRequired,
@@ -164,4 +175,4 @@ Draft.propTypes = {
   clearDraft: PropTypes.func.isRequired,
 };
 
-export default withTranslation()(Draft);
+export default withTranslation()(DraftWrapper);

@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { I18nextProvider } from 'react-i18next';
 
-import i18nFactory from './i18n';
+import i18nFactory from './util/i18n';
 
 import InstallerForm from './components/InstallerForm';
 

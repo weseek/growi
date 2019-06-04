@@ -572,7 +572,13 @@ module.exports = function(crowi, app) {
     };
     const createdPage = await Page.create(pagePath, body, req.user, options);
 
-    const result = { page: serializeToObj(createdPage) };
+    let savedTags;
+    if (pageTags != null) {
+      await PageTagRelation.updatePageTags(createdPage.id, pageTags);
+      savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
+    }
+
+    const result = { page: serializeToObj(createdPage), tags: savedTags };
     result.page.lastUpdateUser = User.filterToPublicFields(createdPage.lastUpdateUser);
     result.page.creator = User.filterToPublicFields(createdPage.creator);
     res.json(ApiResponse.success(result));
@@ -639,7 +645,7 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Posted param "revisionId" is outdated.', 'outdated'));
     }
 
-    const options = { isSyncRevisionToHackmd, socketClientId, pageTags };
+    const options = { isSyncRevisionToHackmd, socketClientId };
     if (grant != null) {
       options.grant = grant;
     }
@@ -657,7 +663,13 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error(err));
     }
 
-    const result = { page: serializeToObj(page) };
+    let savedTags;
+    if (pageTags != null) {
+      await PageTagRelation.updatePageTags(pageId, pageTags);
+      savedTags = await PageTagRelation.listTagNamesByPage(pageId);
+    }
+
+    const result = { page: serializeToObj(page), tags: savedTags };
     result.page.lastUpdateUser = User.filterToPublicFields(page.lastUpdateUser);
     res.json(ApiResponse.success(result));
 
@@ -758,8 +770,7 @@ module.exports = function(crowi, app) {
   api.getPageTag = async function(req, res) {
     const result = {};
     try {
-      const tags = await PageTagRelation.find({ relatedPage: req.query.pageId }).populate('relatedTag').select('-_id relatedTag');
-      result.tags = tags.map((tag) => { return tag.relatedTag.name });
+      result.tags = await PageTagRelation.listTagNamesByPage(req.query.pageId);
     }
     catch (err) {
       return res.json(ApiResponse.error(err));

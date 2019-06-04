@@ -1,16 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import GrowiRenderer from '../../util/GrowiRenderer';
-
 import RevisionLoader from '../Page/RevisionLoader';
+import AppContainer from '../../services/AppContainer';
+import { createSubscribedElement } from '../UnstatedUtils';
 
-export default class SearchResultList extends React.Component {
+class SearchResultList extends React.Component {
 
   constructor(props) {
     super(props);
 
-    this.growiRenderer = new GrowiRenderer(this.props.crowi, this.props.crowiRenderer, { mode: 'searchresult' });
+    this.growiRenderer = this.props.appContainer.getRenderer('searchresult');
   }
 
   render() {
@@ -22,8 +22,7 @@ export default class SearchResultList extends React.Component {
             <span><i className="tag-icon icon-tag"></i> {page.tags.join(', ')}</span>
           )}
           <RevisionLoader
-            crowi={this.props.crowi}
-            crowiRenderer={this.growiRenderer}
+            growiRenderer={this.growiRenderer}
             pageId={page._id}
             pagePath={page.path}
             revisionId={page.revision}
@@ -42,12 +41,21 @@ export default class SearchResultList extends React.Component {
 
 }
 
+/**
+ * Wrapper component for using unstated
+ */
+const SearchResultListWrapper = (props) => {
+  return createSubscribedElement(SearchResultList, props, [AppContainer]);
+};
+
 SearchResultList.propTypes = {
-  crowi: PropTypes.object.isRequired,
-  crowiRenderer: PropTypes.object.isRequired,
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+
   pages: PropTypes.array.isRequired,
   searchingKeyword: PropTypes.string.isRequired,
 };
 
 SearchResultList.defaultProps = {
 };
+
+export default SearchResultListWrapper;
