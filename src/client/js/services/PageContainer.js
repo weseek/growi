@@ -108,7 +108,7 @@ export default class PageContainer extends Container {
 
     socket.on('page:create', (data) => {
       // skip if triggered myself
-      if (data.socketClientId != null && data.socketClientId === websocketContainer.getCocketClientId()) {
+      if (data.socketClientId != null && data.socketClientId === websocketContainer.getSocketClientId()) {
         return;
       }
 
@@ -122,7 +122,7 @@ export default class PageContainer extends Container {
 
     socket.on('page:update', (data) => {
       // skip if triggered myself
-      if (data.socketClientId != null && data.socketClientId === websocketContainer.getCocketClientId()) {
+      if (data.socketClientId != null && data.socketClientId === websocketContainer.getSocketClientId()) {
         return;
       }
 
@@ -143,7 +143,7 @@ export default class PageContainer extends Container {
 
     socket.on('page:delete', (data) => {
       // skip if triggered myself
-      if (data.socketClientId != null && data.socketClientId === websocketContainer.getCocketClientId()) {
+      if (data.socketClientId != null && data.socketClientId === websocketContainer.getSocketClientId()) {
         return;
       }
 
@@ -157,7 +157,7 @@ export default class PageContainer extends Container {
 
     socket.on('page:editingWithHackmd', (data) => {
       // skip if triggered myself
-      if (data.socketClientId != null && data.socketClientId === websocketContainer.getCocketClientId()) {
+      if (data.socketClientId != null && data.socketClientId === websocketContainer.getSocketClientId()) {
         return;
       }
 

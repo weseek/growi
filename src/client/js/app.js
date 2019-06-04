@@ -188,7 +188,7 @@ const saveWithSubmitButton = function(submitOpts) {
   let { revisionId } = pageContainer.state;
   // get options
   const options = editorContainer.getCurrentOptionsToSave();
-  options.socketClientId = websocketContainer.getCocketClientId();
+  options.socketClientId = websocketContainer.getSocketClientId();
   options.pageTags = editorContainer.state.tags;
 
   // set 'submitOpts.overwriteScopesOfDescendants' to options

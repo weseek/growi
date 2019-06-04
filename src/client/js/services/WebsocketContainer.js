@@ -26,7 +26,7 @@ export default class WebsocketContainer extends Container {
     return this.socket;
   }
 
-  getCocketClientId() {
+  getSocketClientId() {
     return this.socketClientId;
   }
 
