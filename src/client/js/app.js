@@ -4,7 +4,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'unstated';
 import { I18nextProvider } from 'react-i18next';
-import * as toastr from 'toastr';
 
 import loggerFactory from '@alias/logger';
 import Xss from '@commons/service/xss';
