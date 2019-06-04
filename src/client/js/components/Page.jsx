@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import loggerFactory from '@alias/logger';
 
 import { createSubscribedElement } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
@@ -10,6 +11,8 @@ import MarkdownTable from '../models/MarkdownTable';
 import RevisionRenderer from './Page/RevisionRenderer';
 import HandsontableModal from './PageEditor/HandsontableModal';
 import mtu from './PageEditor/MarkdownTableUtil';
+
+const logger = loggerFactory('growi:Page');
 
 class Page extends React.Component {
 
@@ -25,6 +28,10 @@ class Page extends React.Component {
     this.saveHandlerForHandsontableModal = this.saveHandlerForHandsontableModal.bind(this);
   }
 
+  componentWillMount() {
+    this.props.appContainer.registerComponentInstance(this);
+  }
+
   /**
    * launch HandsontableModal with data specified by arguments
    * @param beginLineNumber
@@ -37,7 +44,9 @@ class Page extends React.Component {
     this.handsontableModal.show(MarkdownTable.fromMarkdownString(tableLines));
   }
 
-  saveHandlerForHandsontableModal(markdownTable) {
+  async saveHandlerForHandsontableModal(markdownTable) {
+    const { pageContainer } = this.props;
+
     const newMarkdown = mtu.replaceMarkdownTableInMarkdown(
       markdownTable,
       this.props.pageContainer.state.markdown,
@@ -45,10 +54,20 @@ class Page extends React.Component {
       this.state.currentTargetTableArea.endLineNumber,
     );
 
-    // TODO save with pageContainer.save(newMarkdown)
-    // this.props.onSaveWithShortcut(newMarkdown);
+    try {
+      // eslint-disable-next-line no-unused-vars
+      const { page, tags } = await pageContainer.save(newMarkdown);
+      logger.debug('success to save');
 
-    this.setState({ currentTargetTableArea: null });
+      pageContainer.showSuccessToastr();
+    }
+    catch (error) {
+      logger.error('failed to save', error);
+      pageContainer.showErrorToastr(error);
+    }
+    finally {
+      this.setState({ currentTargetTableArea: null });
+    }
   }
 
   render() {
