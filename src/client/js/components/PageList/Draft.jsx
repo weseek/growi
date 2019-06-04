@@ -17,11 +17,14 @@ class Draft extends React.Component {
 
     this.state = {
       html: '',
+      isRendered: false,
       isPanelExpanded: false,
     };
 
     this.growiRenderer = this.props.appContainer.getRenderer('draft');
 
+    this.expandPanelHandler = this.expandPanelHandler.bind(this);
+    this.collapsePanelHandler = this.collapsePanelHandler.bind(this);
     this.renderHtml = this.renderHtml.bind(this);
     this.copyMarkdownToClipboard = this.copyMarkdownToClipboard.bind(this);
     this.renderAccordionTitle = this.renderAccordionTitle.bind(this);
@@ -29,6 +32,18 @@ class Draft extends React.Component {
 
   copyMarkdownToClipboard() {
     navigator.clipboard.writeText(this.props.markdown);
+  }
+
+  expandPanelHandler() {
+    this.setState({ isPanelExpanded: true });
+
+    if (!this.state.isRendered) {
+      this.renderHtml();
+    }
+  }
+
+  collapsePanelHandler() {
+    this.setState({ isPanelExpanded: false });
   }
 
   async renderHtml() {
@@ -53,7 +68,7 @@ class Draft extends React.Component {
       })
       .then(() => { return interceptorManager.process('postPostProcess', context) })
       .then(() => {
-        this.setState({ html: context.parsedHTML });
+        this.setState({ html: context.parsedHTML, isRendered: true });
       });
   }
 
@@ -128,9 +143,18 @@ class Draft extends React.Component {
               </a>
             </div>
           </Panel.Heading>
-          <Panel.Collapse onEnter={() => { this.setState({ isPanelExpanded: true }) }} onExit={() => { this.setState({ isPanelExpanded: false }) }}>
+          <Panel.Collapse onEnter={this.expandPanelHandler} onExit={this.collapsePanelHandler}>
             <Panel.Body>
-              <RevisionBody html={this.state.html} />
+              {/* loading spinner */}
+              { this.state.isPanelExpanded && !this.state.isRendered && (
+                <div className="text-center">
+                  <i className="fa fa-lg fa-spinner fa-pulse mx-auto text-muted"></i>
+                </div>
+              ) }
+              {/* contents */}
+              { this.state.isPanelExpanded && this.state.isRendered && (
+                <RevisionBody html={this.state.html} />
+              ) }
             </Panel.Body>
           </Panel.Collapse>
         </Panel>
