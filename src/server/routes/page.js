@@ -926,6 +926,8 @@ module.exports = function(crowi, app) {
     const isCompletely = (req.body.completely != null);
     // get recursively flag
     const isRecursively = (req.body.recursively != null);
+    // get useradmin flag
+    const isDeniedDelete = !req.user.admin;
 
     const options = { socketClientId };
 
@@ -939,6 +941,9 @@ module.exports = function(crowi, app) {
 
     try {
       if (isCompletely) {
+        if (isDeniedDelete) {
+          return res.json(ApiResponse.error(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'));
+        }
         if (isRecursively) {
           page = await Page.completelyDeletePageRecursively(page, req.user, options);
         }
