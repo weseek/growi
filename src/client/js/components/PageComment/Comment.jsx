@@ -161,14 +161,11 @@ class Comment extends React.Component {
     const toggleElements = hiddenReplies.map((reply) => {
       return (
         <div key={reply._id} className="col-xs-offset-1 col-xs-11 col-sm-offset-1 col-sm-11 col-md-offset-1 col-md-11 col-lg-offset-1 col-lg-11">
-          <Comment
+          <CommentWrapper
             comment={reply}
             deleteBtnClicked={this.props.deleteBtnClicked}
-            crowiRenderer={this.props.crowiRenderer}
-            crowi={this.props.crowi}
+            growiRenderer={this.props.growiRenderer}
             replyList={[]}
-            revisionCreatedAt={this.props.revisionCreatedAt}
-            revisionId={this.props.revisionId}
           />
         </div>
       );
