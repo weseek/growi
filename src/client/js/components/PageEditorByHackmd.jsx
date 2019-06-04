@@ -129,13 +129,12 @@ class PageEditorByHackmd extends React.Component {
     const optionsToSave = editorContainer.getCurrentOptionsToSave();
 
     try {
+      // eslint-disable-next-line no-unused-vars
       const { page, tags } = await pageContainer.save(markdown, optionsToSave);
       logger.debug('success to save');
 
       pageContainer.showSuccessToastr();
 
-      // update state of PageContainer
-      pageContainer.updateStateAfterSave(page);
       // update state of EditorContainer
       editorContainer.setState({ tags });
 
@@ -143,7 +142,6 @@ class PageEditorByHackmd extends React.Component {
     }
     catch (error) {
       logger.error('failed to save', error);
-      console.log(error);
       pageContainer.showErrorToastr(error);
     }
   }

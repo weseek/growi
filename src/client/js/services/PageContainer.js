@@ -165,15 +165,16 @@ export default class PageContainer extends Container {
       revisionId = this.state.revisionIdHackmdSynced;
     }
 
-    let promise;
+    let res;
     if (pageId == null) {
-      promise = this.createPage(path, markdown, options);
+      res = await this.createPage(path, markdown, options);
     }
     else {
-      promise = this.updatePage(pageId, revisionId, markdown, options);
+      res = await this.updatePage(pageId, revisionId, markdown, options);
     }
 
-    return promise;
+    this.updateStateAfterSave(res.page, res.tags);
+    return res;
   }
 
   async createPage(pagePath, markdown, tmpParams) {
