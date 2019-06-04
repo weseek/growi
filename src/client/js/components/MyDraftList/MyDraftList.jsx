@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { withTranslation } from 'react-i18next';
+
 import Pagination from 'react-bootstrap/lib/Pagination';
 
 import { createSubscribedElement } from '../UnstatedUtils';
@@ -211,9 +213,13 @@ class MyDraftList extends React.Component {
   }
 
   render() {
+    const { t } = this.props;
+
     const draftList = this.generateDraftList(this.state.currentDrafts);
 
     const paginationItems = [];
+
+    const totalCount = this.state.drafts.length;
 
     const activePage = this.state.activePage;
     const totalPage = this.state.paginationNumbers.totalPage;
@@ -229,21 +235,28 @@ class MyDraftList extends React.Component {
     return (
       <div className="page-list-container-create">
 
-        { draftList.length === 0
+        { totalCount === 0
           && <span>No drafts yet.</span>
         }
 
-        { draftList.length > 0
-          && (
-            <React.Fragment>
-              <button type="button" className="btn-danger mb-3" onClick={this.clearAllDrafts}>Delete All</button>
-              <div className="tab-pane m-t-30 accordion" id="draft-list">
-                {draftList}
+        { totalCount > 0 && (
+          <React.Fragment>
+            <div className="d-flex justify-content-between">
+              <h4>Total: {totalCount} drafts</h4>
+              <div className="align-self-center">
+                <button type="button" className="btn btn-sm btn-default" onClick={this.clearAllDrafts}>
+                  <i className="icon-fw icon-fire text-danger"></i>
+                  {t('Delete All')}
+                </button>
               </div>
-              <Pagination bsSize="small">{paginationItems}</Pagination>
-            </React.Fragment>
-          )
-        }
+            </div>
+
+            <div className="tab-pane m-t-30 accordion" id="draft-list">
+              {draftList}
+            </div>
+            <Pagination bsSize="small">{paginationItems}</Pagination>
+          </React.Fragment>
+        ) }
 
       </div>
     );
@@ -260,9 +273,11 @@ const MyDraftListWrapper = (props) => {
 
 
 MyDraftList.propTypes = {
+  t: PropTypes.func.isRequired, // react-i18next
+
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
 };
 
-export default MyDraftListWrapper;
+export default withTranslation()(MyDraftListWrapper);
