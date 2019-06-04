@@ -148,12 +148,14 @@ export default class Comment extends React.Component {
         </a>
       );
 
-    const toggleElements = [];
-    for (let i = 0; i < hiddenRepliesCount; i++) {
-      toggleElements.push(
-        <div key={replyList[i]._id} className="col-xs-offset-1 col-xs-11 col-sm-offset-1 col-sm-11 col-md-offset-1 col-md-11 col-lg-offset-1 col-lg-11">
+    const shownReplies = replyList.slice(replyList.length - 2, replyList.length);
+    const hiddenReplies = replyList.slice(0, replyList.length - 2);
+
+    const toggleElements = hiddenReplies.map((reply) => {
+      return (
+        <div key={reply._id} className="col-xs-offset-1 col-xs-11 col-sm-offset-1 col-sm-11 col-md-offset-1 col-md-11 col-lg-offset-1 col-lg-11">
           <Comment
-            comment={replyList[i]}
+            comment={reply}
             deleteBtnClicked={this.props.deleteBtnClicked}
             crowiRenderer={this.props.crowiRenderer}
             crowi={this.props.crowi}
@@ -161,9 +163,9 @@ export default class Comment extends React.Component {
             revisionCreatedAt={this.props.revisionCreatedAt}
             revisionId={this.props.revisionId}
           />
-        </div>,
+        </div>
       );
-    }
+    });
 
     const toggleBlock = (
       <div className="page-comments-list-older collapse out" id="page-comments-list-older">
@@ -171,12 +173,11 @@ export default class Comment extends React.Component {
       </div>
     );
 
-    const shownBlock = [];
-    for (let i = hiddenRepliesCount; i < replyList.length; i++) {
-      shownBlock.push(
-        <div key={replyList[i]._id} className="col-xs-offset-1 col-xs-11 col-sm-offset-1 col-sm-11 col-md-offset-1 col-md-11 col-lg-offset-1 col-lg-11">
+    const shownBlock = shownReplies.map((reply) => {
+      return (
+        <div key={reply._id} className="col-xs-offset-1 col-xs-11 col-sm-offset-1 col-sm-11 col-md-offset-1 col-md-11 col-lg-offset-1 col-lg-11">
           <Comment
-            comment={replyList[i]}
+            comment={reply}
             deleteBtnClicked={this.props.deleteBtnClicked}
             crowiRenderer={this.props.crowiRenderer}
             crowi={this.props.crowi}
@@ -184,9 +185,9 @@ export default class Comment extends React.Component {
             revisionCreatedAt={this.props.revisionCreatedAt}
             revisionId={this.props.revisionId}
           />
-        </div>,
+        </div>
       );
-    }
+    });
 
     return (
       <div>
