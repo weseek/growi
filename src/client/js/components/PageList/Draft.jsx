@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
+import Panel from 'react-bootstrap/es/Panel';
+
 import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 
@@ -15,36 +17,18 @@ class Draft extends React.Component {
 
     this.state = {
       html: '',
-      isOpen: false,
+      isPanelExpanded: false,
     };
 
     this.growiRenderer = this.props.appContainer.getRenderer('draft');
 
     this.renderHtml = this.renderHtml.bind(this);
-    this.toggleContent = this.toggleContent.bind(this);
     this.copyMarkdownToClipboard = this.copyMarkdownToClipboard.bind(this);
     this.renderAccordionTitle = this.renderAccordionTitle.bind(this);
   }
 
   copyMarkdownToClipboard() {
     navigator.clipboard.writeText(this.props.markdown);
-  }
-
-  async toggleContent(e) {
-    const target = e.currentTarget.getAttribute('data-target');
-
-    if (!this.state.html) {
-      await this.renderHtml();
-    }
-
-    if (this.state.isOpen) {
-      $(target).collapse('hide');
-      this.setState({ isOpen: false });
-    }
-    else {
-      $(target).collapse('show');
-      this.setState({ isOpen: true });
-    }
   }
 
   async renderHtml() {
@@ -74,7 +58,7 @@ class Draft extends React.Component {
   }
 
   renderAccordionTitle(isExist) {
-    const iconClass = this.state.isOpen ? 'caret-opened' : '';
+    const iconClass = this.state.isPanelExpanded ? 'caret-opened' : '';
 
     if (isExist) {
       return (
@@ -89,7 +73,7 @@ class Draft extends React.Component {
     return (
       <Fragment>
         <i className={`caret ${iconClass}`}></i>
-        <a className="mx-2" href={`${this.props.path}#edit`} target="_blank" rel="noopener noreferrer">{this.props.path}</a>
+        <span className="mx-2">{this.props.path}</span>
         <span className="label-draft label label-default">draft</span>
       </Fragment>
     );
@@ -97,15 +81,16 @@ class Draft extends React.Component {
 
   render() {
     const { t } = this.props;
-    const id = this.props.path.replace('/', '-');
 
     return (
       <div className="draft-list-item">
-        <div className="panel">
-          <div className="panel-heading d-flex justify-content-between">
-            <div className="panel-title" onClick={this.toggleContent} data-target={`#${id}`}>
+        <Panel>
+          <Panel.Heading className="d-flex">
+            <Panel.Toggle>
               {this.renderAccordionTitle(this.props.isExist)}
-            </div>
+            </Panel.Toggle>
+            <a href="#"><i className="icon icon-login"></i></a>
+            <div className="flex-grow-1"></div>
             <div className="icon-container">
               {this.props.isExist
                 ? null
@@ -142,13 +127,13 @@ class Draft extends React.Component {
                 <i className="icon-trash" />
               </a>
             </div>
-          </div>
-          <div className="panel-body collapse" id={id} aria-labelledby={id} data-parent="#draft-list">
-            <div className="revision-body wiki">
+          </Panel.Heading>
+          <Panel.Collapse onEnter={() => { this.setState({ isPanelExpanded: true }) }} onExit={() => { this.setState({ isPanelExpanded: false }) }}>
+            <Panel.Body>
               <RevisionBody html={this.state.html} />
-            </div>
-          </div>
-        </div>
+            </Panel.Body>
+          </Panel.Collapse>
+        </Panel>
       </div>
     );
   }
