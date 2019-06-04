@@ -117,7 +117,7 @@ class PageEditor extends React.Component {
    * save and update state of containers
    */
   async onSaveWithShortcut() {
-    const { appContainer, pageContainer, editorContainer } = this.props;
+    const { pageContainer, editorContainer } = this.props;
     const optionsToSave = editorContainer.getCurrentOptionsToSave();
 
     try {
@@ -129,8 +129,6 @@ class PageEditor extends React.Component {
 
       // update state of EditorContainer
       editorContainer.setState({ tags });
-
-      appContainer.setIsDocSaved(true);
     }
     catch (error) {
       logger.error('failed to save', error);

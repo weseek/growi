@@ -110,6 +110,9 @@ export default class PageContainer extends Container {
    * @param {Array[Tag]} tags Array of Tag
    */
   updateStateAfterSave(page, tags) {
+    // mark that the document is not editing
+    this.appContainer.setIsDocSaved(true);
+
     const { editorMode } = this.appContainer.state;
 
     // update state of PageContainer
@@ -121,8 +124,10 @@ export default class PageContainer extends Container {
       revisionIdHackmdSynced: page.revisionHackmdSynced,
       hasDraftOnHackmd: page.hasDraftOnHackmd,
       markdown: page.revision.body,
-      tags,
     };
+    if (tags != null) {
+      newState.tags = tags;
+    }
     this.setState(newState);
 
     // PageEditor component
@@ -151,7 +156,7 @@ export default class PageContainer extends Container {
    * @param {object} optionsToSave
    * @return {object} { page: Page, tags: Tag[] }
    */
-  async save(markdown, optionsToSave) {
+  async save(markdown, optionsToSave = {}) {
     const { editorMode } = this.appContainer.state;
 
     const { pageId, path } = this.state;

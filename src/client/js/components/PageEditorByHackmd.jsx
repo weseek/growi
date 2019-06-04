@@ -125,7 +125,7 @@ class PageEditorByHackmd extends React.Component {
    * @param {string} markdown
    */
   async onSaveWithShortcut(markdown) {
-    const { appContainer, pageContainer, editorContainer } = this.props;
+    const { pageContainer, editorContainer } = this.props;
     const optionsToSave = editorContainer.getCurrentOptionsToSave();
 
     try {
@@ -137,8 +137,6 @@ class PageEditorByHackmd extends React.Component {
 
       // update state of EditorContainer
       editorContainer.setState({ tags });
-
-      appContainer.setIsDocSaved(true);
     }
     catch (error) {
       logger.error('failed to save', error);
