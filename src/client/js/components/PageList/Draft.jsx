@@ -2,8 +2,11 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 import Panel from 'react-bootstrap/es/Panel';
+import Tooltip from 'react-bootstrap/es/Tooltip';
+import OverlayTrigger from 'react-bootstrap/es/OverlayTrigger';
 
 import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
@@ -19,19 +22,26 @@ class Draft extends React.Component {
       html: '',
       isRendered: false,
       isPanelExpanded: false,
+      copyButtonLabel: this.props.t('Copy'),
     };
 
     this.growiRenderer = this.props.appContainer.getRenderer('draft');
 
+    this.changeToolTipLabel = this.changeToolTipLabel.bind(this);
     this.expandPanelHandler = this.expandPanelHandler.bind(this);
     this.collapsePanelHandler = this.collapsePanelHandler.bind(this);
     this.renderHtml = this.renderHtml.bind(this);
-    this.copyMarkdownToClipboard = this.copyMarkdownToClipboard.bind(this);
     this.renderAccordionTitle = this.renderAccordionTitle.bind(this);
   }
 
-  copyMarkdownToClipboard() {
-    navigator.clipboard.writeText(this.props.markdown);
+  changeToolTipLabel() {
+    // store original label
+    const originLabel = this.state.copyButtonLabel;
+
+    this.setState({ copyButtonLabel: 'copied!' });
+    setTimeout(() => {
+      this.setState({ copyButtonLabel: originLabel });
+    }, 1000);
   }
 
   expandPanelHandler() {
@@ -97,6 +107,12 @@ class Draft extends React.Component {
   render() {
     const { t } = this.props;
 
+    const tooltip = (
+      <Tooltip id="draft-copied-tooltip">
+        <strong>{this.state.copyButtonLabel}</strong>
+      </Tooltip>
+    );
+
     return (
       <div className="draft-list-item">
         <Panel>
@@ -116,30 +132,29 @@ class Draft extends React.Component {
                     rel="noopener noreferrer"
                     className="draft-edit"
                     data-toggle="tooltip"
-                    data-placement="bottom"
                     title={this.props.t('Edit')}
                   >
-                    <i className="icon-note" />
+                    <i className="mx-2 icon-note" />
                   </a>
                 )
               }
+              <OverlayTrigger overlay={tooltip} placement="top">
+                <CopyToClipboard text={this.props.markdown} onCopy={this.changeToolTipLabel}>
+                  <a
+                    className="text-center draft-copy"
+                  >
+                    <i className="mx-2 ti-clipboard" />
+                  </a>
+                </CopyToClipboard>
+              </OverlayTrigger>
               <a
-                className="draft-copy"
-                data-toggle="tooltip"
-                data-placement="bottom"
-                title={this.props.t('Copy')}
-                onClick={this.copyMarkdownToClipboard}
-              >
-                <i className="icon-doc" />
-              </a>
-              <a
-                className="text-danger draft-delete"
+                className="text-danger text-center"
                 data-toggle="tooltip"
                 data-placement="top"
                 title={t('Delete')}
                 onClick={() => { return this.props.clearDraft(this.props.path) }}
               >
-                <i className="icon-trash" />
+                <i className="mx-2 icon-trash" />
               </a>
             </div>
           </Panel.Heading>
