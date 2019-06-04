@@ -22,7 +22,7 @@ class Draft extends React.Component {
       html: '',
       isRendered: false,
       isPanelExpanded: false,
-      copyButtonLabel: this.props.t('Copy'),
+      showCopiedMessage: false,
     };
 
     this.growiRenderer = this.props.appContainer.getRenderer('draft');
@@ -35,12 +35,9 @@ class Draft extends React.Component {
   }
 
   changeToolTipLabel() {
-    // store original label
-    const originLabel = this.state.copyButtonLabel;
-
-    this.setState({ copyButtonLabel: 'copied!' });
+    this.setState({ showCopiedMessage: true });
     setTimeout(() => {
-      this.setState({ copyButtonLabel: originLabel });
+      this.setState({ showCopiedMessage: false });
     }, 1000);
   }
 
@@ -85,21 +82,16 @@ class Draft extends React.Component {
   renderAccordionTitle(isExist) {
     const iconClass = this.state.isPanelExpanded ? 'caret-opened' : '';
 
-    if (isExist) {
-      return (
-        <Fragment>
-          <i className={`caret ${iconClass}`}></i>
-          <span className="mx-2">{this.props.path}</span>
-          <span>({this.props.t('page exists')})</span>
-        </Fragment>
-      );
-    }
-
     return (
       <Fragment>
         <i className={`caret ${iconClass}`}></i>
         <span className="mx-2">{this.props.path}</span>
-        <span className="label-draft label label-default">draft</span>
+        { isExist && (
+          <span>({this.props.t('page exists')})</span>
+        ) }
+        { !isExist && (
+          <span className="label-draft label label-default">draft</span>
+        ) }
       </Fragment>
     );
   }
@@ -107,9 +99,14 @@ class Draft extends React.Component {
   render() {
     const { t } = this.props;
 
-    const tooltip = (
+    const copyButtonTooltip = (
       <Tooltip id="draft-copied-tooltip">
-        <strong>{this.state.copyButtonLabel}</strong>
+        { this.state.showCopiedMessage && (
+          <strong>copied!</strong>
+        ) }
+        { !this.state.showCopiedMessage && (
+          <span>{this.props.t('Copy')}</span>
+        ) }
       </Tooltip>
     );
 
@@ -130,7 +127,6 @@ class Draft extends React.Component {
                     href={`${this.props.path}#edit`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="draft-edit"
                     data-toggle="tooltip"
                     title={this.props.t('Edit')}
                   >
@@ -138,7 +134,7 @@ class Draft extends React.Component {
                   </a>
                 )
               }
-              <OverlayTrigger overlay={tooltip} placement="top">
+              <OverlayTrigger overlay={copyButtonTooltip} placement="top">
                 <CopyToClipboard text={this.props.markdown} onCopy={this.changeToolTipLabel}>
                   <a
                     className="text-center draft-copy"

@@ -10,8 +10,11 @@
     }
 
     .icon-container {
+      a:hover {
+        text-decoration: unset;
+      }
       i {
-        opacity: 0;
+        opacity: 0.5;
       }
     }
 
