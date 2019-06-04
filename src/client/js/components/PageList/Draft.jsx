@@ -104,7 +104,7 @@ class Draft extends React.Component {
             <Panel.Toggle>
               {this.renderAccordionTitle(this.props.isExist)}
             </Panel.Toggle>
-            <a href="#"><i className="icon icon-login"></i></a>
+            <a href={this.props.path}><i className="icon icon-login"></i></a>
             <div className="flex-grow-1"></div>
             <div className="icon-container">
               {this.props.isExist
