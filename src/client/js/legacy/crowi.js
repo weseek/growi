@@ -573,8 +573,8 @@ $(() => {
       const templateId = $(this).data('template');
       const template = $(`#${templateId}`).html();
 
-      const pageContainer = appContainer.getContainer('PageContainer');
-      pageContainer.saveDraft(path, template);
+      const editorContainer = appContainer.getContainer('EditorContainer');
+      editorContainer.saveDraft(path, template);
       top.location.href = `${path}#edit`;
     });
 

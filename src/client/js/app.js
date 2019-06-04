@@ -173,7 +173,7 @@ const saveWithShortcut = function(markdown) {
 
 const saveWithSubmitButtonSuccessHandler = function() {
   const { path } = pageContainer.state;
-  pageContainer.clearDraft(path);
+  editorContainer.clearDraft(path);
   window.location.href = path;
 };
 

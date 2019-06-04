@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { createSubscribedElement } from '../UnstatedUtils';
-import GrowiRenderer from '../../util/GrowiRenderer';
 import AppContainer from '../../services/AppContainer';
 
 import RevisionBody from '../Page/RevisionBody';
@@ -19,7 +18,7 @@ class Draft extends React.Component {
       isOpen: false,
     };
 
-    this.growiRenderer = new GrowiRenderer(window.crowi, this.props.crowiOriginRenderer, { mode: 'draft' });
+    this.growiRenderer = this.props.appContainer.getRenderer('draft');
 
     this.renderHtml = this.renderHtml.bind(this);
     this.toggleContent = this.toggleContent.bind(this);
@@ -168,7 +167,6 @@ Draft.propTypes = {
   t: PropTypes.func.isRequired,
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
-  crowiOriginRenderer: PropTypes.object.isRequired,
   path: PropTypes.string.isRequired,
   markdown: PropTypes.string.isRequired,
   isExist: PropTypes.bool.isRequired,

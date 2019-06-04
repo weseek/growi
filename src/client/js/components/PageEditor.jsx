@@ -12,6 +12,7 @@ import { createSubscribedElement } from './UnstatedUtils';
 import Editor from './PageEditor/Editor';
 import Preview from './PageEditor/Preview';
 import scrollSyncHelper from './PageEditor/ScrollSyncHelper';
+import EditorContainer from '../services/EditorContainer';
 
 
 class PageEditor extends React.Component {
@@ -262,15 +263,15 @@ class PageEditor extends React.Component {
   }
 
   saveDraft() {
-    const { pageContainer } = this.props;
+    const { pageContainer, editorContainer } = this.props;
     // only when the first time to edit
     if (!pageContainer.state.revisionId) {
-      pageContainer.saveDraft(pageContainer.state.path, this.state.markdown);
+      editorContainer.saveDraft(pageContainer.state.path, this.state.markdown);
     }
   }
 
   clearDraft() {
-    this.props.pageContainer.clearDraft(this.props.pageContainer.state.path);
+    this.props.editorContainer.clearDraft(this.props.pageContainer.state.path);
   }
 
   renderPreview(value) {
@@ -362,12 +363,13 @@ class PageEditor extends React.Component {
  * Wrapper component for using unstated
  */
 const PageEditorWrapper = (props) => {
-  return createSubscribedElement(PageEditor, props, [AppContainer, PageContainer]);
+  return createSubscribedElement(PageEditor, props, [AppContainer, PageContainer, EditorContainer]);
 };
 
 PageEditor.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+  editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
 
   onSaveWithShortcut: PropTypes.func.isRequired,
 };

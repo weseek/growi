@@ -38,6 +38,7 @@ export default class EditorContainer extends Container {
     };
 
     this.initStateGrant();
+    this.initDrafts();
 
     this.initEditorOptions('editorOptions', 'editorOptions', defaultEditorOptions);
     this.initEditorOptions('previewOptions', 'previewOptions', defaultPreviewOptions);
@@ -56,6 +57,31 @@ export default class EditorContainer extends Container {
       if (grantGroupId != null && grantGroupId.length > 0) {
         this.state.grantGroupId = grantGroupId;
         this.state.grantGroupName = elem.dataset.grantGroupName;
+      }
+    }
+  }
+
+  /**
+   * initialize state for drafts
+   */
+  initDrafts() {
+    this.drafts = {};
+
+    // restore data from localStorage
+    const contents = window.localStorage.drafts;
+    if (contents != null) {
+      try {
+        this.drafts = JSON.parse(contents);
+      }
+      catch (e) {
+        window.localStorage.removeItem('drafts');
+      }
+    }
+
+    if (this.state.pageId == null) {
+      const draft = this.findDraft(this.state.path);
+      if (draft != null) {
+        this.state.markdown = draft;
       }
     }
   }
@@ -110,6 +136,28 @@ export default class EditorContainer extends Container {
     }
 
     return opt;
+  }
+
+  clearDraft(path) {
+    delete this.drafts[path];
+    window.localStorage.setItem('drafts', JSON.stringify(this.drafts));
+  }
+
+  clearAllDrafts() {
+    window.localStorage.removeItem('drafts');
+  }
+
+  saveDraft(path, body) {
+    this.drafts[path] = body;
+    window.localStorage.setItem('drafts', JSON.stringify(this.drafts));
+  }
+
+  findDraft(path) {
+    if (this.drafts != null && this.drafts[path]) {
+      return this.drafts[path];
+    }
+
+    return null;
   }
 
 }

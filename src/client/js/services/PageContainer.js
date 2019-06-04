@@ -53,7 +53,6 @@ export default class PageContainer extends Container {
 
     this.initStateMarkdown();
     this.initStateOthers();
-    this.initDrafts();
 
     this.addWebSocketEventHandlers = this.addWebSocketEventHandlers.bind(this);
     this.addWebSocketEventHandlers();
@@ -94,59 +93,12 @@ export default class PageContainer extends Container {
     }
   }
 
-  /**
-   * initialize state for drafts
-   */
-  initDrafts() {
-    this.drafts = {};
-
-    // restore data from localStorage
-    const contents = window.localStorage.drafts;
-    if (contents != null) {
-      try {
-        this.drafts = JSON.parse(contents);
-      }
-      catch (e) {
-        window.localStorage.removeItem('drafts');
-      }
-    }
-
-    if (this.state.pageId == null) {
-      const draft = this.findDraft(this.state.path);
-      if (draft != null) {
-        this.state.markdown = draft;
-      }
-    }
-  }
-
   setLatestRemotePageData(page, user) {
     this.setState({
       remoteRevisionId: page.revision._id,
       revisionIdHackmdSynced: page.revisionHackmdSynced,
       lastUpdateUsername: user.name,
     });
-  }
-
-  clearDraft(path) {
-    delete this.drafts[path];
-    window.localStorage.setItem('drafts', JSON.stringify(this.drafts));
-  }
-
-  clearAllDrafts() {
-    window.localStorage.removeItem('drafts');
-  }
-
-  saveDraft(path, body) {
-    this.drafts[path] = body;
-    window.localStorage.setItem('drafts', JSON.stringify(this.drafts));
-  }
-
-  findDraft(path) {
-    if (this.drafts != null && this.drafts[path]) {
-      return this.drafts[path];
-    }
-
-    return null;
   }
 
   addWebSocketEventHandlers() {

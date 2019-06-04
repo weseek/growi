@@ -6,6 +6,7 @@ import Pagination from 'react-bootstrap/lib/Pagination';
 import { createSubscribedElement } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
+import EditorContainer from '../../services/EditorContainer';
 
 import Draft from '../PageList/Draft';
 
@@ -34,7 +35,7 @@ class MyDraftList extends React.Component {
   }
 
   async getDraftsFromLocalStorage() {
-    const draftsAsObj = this.props.pageContainer.drafts;
+    const draftsAsObj = this.props.editorContainer.drafts;
 
     const res = await this.props.appContainer.apiGet('/pages.exist', {
       pages: draftsAsObj,
@@ -82,7 +83,6 @@ class MyDraftList extends React.Component {
       return (
         <Draft
           key={draft.path}
-          crowiOriginRenderer={this.props.crowiOriginRenderer}
           path={draft.path}
           markdown={draft.markdown}
           isExist={draft.isExist}
@@ -93,7 +93,7 @@ class MyDraftList extends React.Component {
   }
 
   clearDraft(path) {
-    this.props.pageContainer.clearDraft(path);
+    this.props.editorContainer.clearDraft(path);
 
     this.setState((prevState) => {
       return {
@@ -104,7 +104,7 @@ class MyDraftList extends React.Component {
   }
 
   clearAllDrafts() {
-    this.props.pageContainer.clearAllDrafts();
+    this.props.editorContainer.clearAllDrafts();
 
     this.setState({
       drafts: [],
@@ -255,15 +255,14 @@ class MyDraftList extends React.Component {
  * Wrapper component for using unstated
  */
 const MyDraftListWrapper = (props) => {
-  return createSubscribedElement(MyDraftList, props, [AppContainer, PageContainer]);
+  return createSubscribedElement(MyDraftList, props, [AppContainer, PageContainer, EditorContainer]);
 };
 
 
 MyDraftList.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-
-  crowiOriginRenderer: PropTypes.object.isRequired,
+  editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
 };
 
 export default MyDraftListWrapper;
