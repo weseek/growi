@@ -942,6 +942,7 @@ module.exports = function(crowi, app) {
     try {
       if (isCompletely) {
         if (isDeniedDelete) {
+          // GC-1756 Change error message
           return res.json(ApiResponse.error(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'));
         }
         if (isRecursively) {
