@@ -1,16 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import loggerFactory from '@alias/logger';
 
 import SplitButton from 'react-bootstrap/es/SplitButton';
 import MenuItem from 'react-bootstrap/es/MenuItem';
 
-import * as toastr from 'toastr';
-
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
+import EditorContainer from '../services/EditorContainer';
 
 import { createSubscribedElement } from './UnstatedUtils';
 import HackmdEditor from './PageEditorByHackmd/HackmdEditor';
+
+const logger = loggerFactory('growi:PageEditorByHackmd');
 
 class PageEditorByHackmd extends React.Component {
 
@@ -26,6 +28,7 @@ class PageEditorByHackmd extends React.Component {
     this.getHackmdUri = this.getHackmdUri.bind(this);
     this.startToEdit = this.startToEdit.bind(this);
     this.resumeToEdit = this.resumeToEdit.bind(this);
+    this.onSaveWithShortcut = this.onSaveWithShortcut.bind(this);
     this.hackmdEditorChangeHandler = this.hackmdEditorChangeHandler.bind(this);
   }
 
@@ -115,6 +118,34 @@ class PageEditorByHackmd extends React.Component {
    */
   discardChanges() {
     this.props.pageContainer.setState({ hasDraftOnHackmd: false });
+  }
+
+  /**
+   * save and update state of containers
+   * @param {string} markdown
+   */
+  async onSaveWithShortcut(markdown) {
+    const { appContainer, pageContainer, editorContainer } = this.props;
+    const optionsToSave = editorContainer.getCurrentOptionsToSave();
+
+    try {
+      const { page, tags } = await pageContainer.save(markdown, optionsToSave);
+      logger.debug('success to save');
+
+      pageContainer.showSuccessToastr();
+
+      // update state of PageContainer
+      pageContainer.updateStateAfterSave(page);
+      // update state of EditorContainer
+      editorContainer.setState({ tags });
+
+      appContainer.setIsDocSaved(true);
+    }
+    catch (error) {
+      logger.error('failed to save', error);
+      console.log(error);
+      pageContainer.showErrorToastr(error);
+    }
   }
 
   /**
@@ -281,12 +312,13 @@ class PageEditorByHackmd extends React.Component {
  * Wrapper component for using unstated
  */
 const PageEditorByHackmdWrapper = (props) => {
-  return createSubscribedElement(PageEditorByHackmd, props, [AppContainer, PageContainer]);
+  return createSubscribedElement(PageEditorByHackmd, props, [AppContainer, PageContainer, EditorContainer]);
 };
 
 PageEditorByHackmd.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+  editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
 };
 
 export default PageEditorByHackmdWrapper;

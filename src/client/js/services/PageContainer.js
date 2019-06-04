@@ -162,7 +162,7 @@ export default class PageContainer extends Container {
     if (editorMode === 'hackmd') {
       // set option to sync
       options.isSyncRevisionToHackmd = true;
-      revisionId = this.pageContainer.state.revisionIdHackmdSynced;
+      revisionId = this.state.revisionIdHackmdSynced;
     }
 
     let promise;

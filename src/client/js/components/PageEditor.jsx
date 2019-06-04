@@ -113,6 +113,9 @@ class PageEditor extends React.Component {
     this.props.appContainer.setIsDocSaved(false);
   }
 
+  /**
+   * save and update state of containers
+   */
   async onSaveWithShortcut() {
     const { appContainer, pageContainer, editorContainer } = this.props;
     const optionsToSave = editorContainer.getCurrentOptionsToSave();
