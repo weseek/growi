@@ -44,7 +44,10 @@ class Page extends React.Component {
       this.state.currentTargetTableArea.beginLineNumber,
       this.state.currentTargetTableArea.endLineNumber,
     );
-    this.props.onSaveWithShortcut(newMarkdown);
+
+    // TODO save with pageContainer.save(newMarkdown)
+    // this.props.onSaveWithShortcut(newMarkdown);
+
     this.setState({ currentTargetTableArea: null });
   }
 
@@ -73,8 +76,6 @@ const PageWrapper = (props) => {
 Page.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-
-  onSaveWithShortcut: PropTypes.func.isRequired,
 };
 
 export default PageWrapper;

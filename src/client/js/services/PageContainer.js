@@ -3,6 +3,7 @@ import { Container } from 'unstated';
 import loggerFactory from '@alias/logger';
 
 import * as entities from 'entities';
+import * as toastr from 'toastr';
 
 const logger = loggerFactory('growi:services:PageContainer');
 
@@ -54,6 +55,7 @@ export default class PageContainer extends Container {
     this.initStateMarkdown();
     this.initStateOthers();
 
+    this.save = this.save.bind(this);
     this.addWebSocketEventHandlers = this.addWebSocketEventHandlers.bind(this);
     this.addWebSocketEventHandlers();
   }
@@ -98,6 +100,137 @@ export default class PageContainer extends Container {
       remoteRevisionId: page.revision._id,
       revisionIdHackmdSynced: page.revisionHackmdSynced,
       lastUpdateUsername: user.name,
+    });
+  }
+
+
+  /**
+   * save success handler
+   * @param {object} page Page instance
+   * @param {Array[Tag]} tags Array of Tag
+   */
+  updateStateAfterSave(page, tags) {
+    const { editorMode } = this.appContainer.state;
+
+    // update state of PageContainer
+    const newState = {
+      pageId: page._id,
+      revisionId: page.revision._id,
+      revisionCreatedAt: new Date(page.revision.createdAt).getTime() / 1000,
+      remoteRevisionId: page.revision._id,
+      revisionIdHackmdSynced: page.revisionHackmdSynced,
+      hasDraftOnHackmd: page.hasDraftOnHackmd,
+      markdown: page.revision.body,
+      tags,
+    };
+    this.setState(newState);
+
+    // PageEditor component
+    const pageEditor = this.appContainer.getComponentInstance('PageEditor');
+    if (pageEditor != null) {
+      if (editorMode !== 'builtin') {
+        pageEditor.updateEditorValue(newState.markdown);
+      }
+    }
+    // PageEditorByHackmd component
+    const pageEditorByHackmd = this.appContainer.getComponentInstance('PageEditorByHackmd');
+    if (pageEditorByHackmd != null) {
+      // reset
+      if (editorMode !== 'hackmd') {
+        pageEditorByHackmd.reset();
+      }
+    }
+
+    // hidden input
+    $('input[name="revision_id"]').val(newState.revisionId);
+  }
+
+  /**
+   * Save page
+   * @param {string} markdown
+   * @param {object} optionsToSave
+   * @return {object} { page: Page, tags: Tag[] }
+   */
+  async save(markdown, optionsToSave) {
+    const { editorMode } = this.appContainer.state;
+
+    const { pageId, path } = this.state;
+    let { revisionId } = this.state;
+
+    const options = Object.assign({}, optionsToSave);
+
+    if (editorMode === 'hackmd') {
+      // set option to sync
+      options.isSyncRevisionToHackmd = true;
+      revisionId = this.pageContainer.state.revisionIdHackmdSynced;
+    }
+
+    let promise;
+    if (pageId == null) {
+      promise = this.createPage(path, markdown, options);
+    }
+    else {
+      promise = this.updatePage(pageId, revisionId, markdown, options);
+    }
+
+    return promise;
+  }
+
+  async createPage(pagePath, markdown, tmpParams) {
+    const websocketContainer = this.appContainer.getContainer('WebsocketContainer');
+
+    // clone
+    const params = Object.assign(tmpParams, {
+      socketClientId: websocketContainer.getSocketClientId(),
+      path: pagePath,
+      body: markdown,
+    });
+
+    const res = await this.appContainer.apiPost('/pages.create', params);
+    if (!res.ok) {
+      throw new Error(res.error);
+    }
+    return { page: res.page, tags: res.tags };
+  }
+
+  async updatePage(pageId, revisionId, markdown, tmpParams) {
+    const websocketContainer = this.appContainer.getContainer('WebsocketContainer');
+
+    // clone
+    const params = Object.assign(tmpParams, {
+      socketClientId: websocketContainer.getSocketClientId(),
+      page_id: pageId,
+      revision_id: revisionId,
+      body: markdown,
+    });
+
+    const res = await this.appContainer.apiPost('/pages.update', params);
+    if (!res.ok) {
+      throw new Error(res.error);
+    }
+    return { page: res.page, tags: res.tags };
+  }
+
+  showSuccessToastr() {
+    toastr.success(undefined, 'Saved successfully', {
+      closeButton: true,
+      progressBar: true,
+      newestOnTop: false,
+      showDuration: '100',
+      hideDuration: '100',
+      timeOut: '1200',
+      extendedTimeOut: '150',
+    });
+  }
+
+  showErrorToastr(error) {
+    toastr.error(error.message, 'Error occured', {
+      closeButton: true,
+      progressBar: true,
+      newestOnTop: false,
+      showDuration: '100',
+      hideDuration: '100',
+      timeOut: '3000',
     });
   }
 

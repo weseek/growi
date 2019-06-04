@@ -27,8 +27,6 @@ class PageEditorByHackmd extends React.Component {
     this.startToEdit = this.startToEdit.bind(this);
     this.resumeToEdit = this.resumeToEdit.bind(this);
     this.hackmdEditorChangeHandler = this.hackmdEditorChangeHandler.bind(this);
-
-    this.apiErrorHandler = this.apiErrorHandler.bind(this);
   }
 
   componentWillMount() {
@@ -97,7 +95,9 @@ class PageEditorByHackmd extends React.Component {
           revisionIdHackmdSynced: res.revisionIdHackmdSynced,
         });
       })
-      .catch(this.apiErrorHandler)
+      .catch((err) => {
+        pageContainer.showErrorToastr(err);
+      })
       .then(() => {
         this.setState({ isInitializing: false });
       });
@@ -146,17 +146,6 @@ class PageEditorByHackmd extends React.Component {
       });
   }
 
-  apiErrorHandler(error) {
-    toastr.error(error.message, 'Error occured', {
-      closeButton: true,
-      progressBar: true,
-      newestOnTop: false,
-      showDuration: '100',
-      hideDuration: '100',
-      timeOut: '3000',
-    });
-  }
-
   render() {
     const hackmdUri = this.getHackmdUri();
     const { pageContainer } = this.props;
@@ -176,7 +165,7 @@ class PageEditorByHackmd extends React.Component {
           initializationMarkdown={isResume ? null : this.state.markdown}
           onChange={this.hackmdEditorChangeHandler}
           onSaveWithShortcut={(document) => {
-            this.props.onSaveWithShortcut(document);
+            this.onSaveWithShortcut(document);
           }}
         >
         </HackmdEditor>
@@ -298,8 +287,6 @@ const PageEditorByHackmdWrapper = (props) => {
 PageEditorByHackmd.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-
-  onSaveWithShortcut: PropTypes.func.isRequired,
 };
 
 export default PageEditorByHackmdWrapper;

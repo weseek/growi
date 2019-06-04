@@ -129,6 +129,7 @@ export default class EditorContainer extends Container {
       isSlackEnabled: this.state.isSlackEnabled,
       slackChannels: this.state.slackChannels,
       grant: this.state.grant,
+      pageTags: this.state.tags,
     };
 
     if (this.state.grantGroupId != null) {

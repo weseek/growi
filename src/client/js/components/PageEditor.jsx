@@ -1,9 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import loggerFactory from '@alias/logger';
 
 import { throttle, debounce } from 'throttle-debounce';
-
-import * as toastr from 'toastr';
 
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
@@ -14,6 +13,7 @@ import Preview from './PageEditor/Preview';
 import scrollSyncHelper from './PageEditor/ScrollSyncHelper';
 import EditorContainer from '../services/EditorContainer';
 
+const logger = loggerFactory('growi:PageEditor');
 
 class PageEditor extends React.Component {
 
@@ -35,14 +35,13 @@ class PageEditor extends React.Component {
     this.setCaretLine = this.setCaretLine.bind(this);
     this.focusToEditor = this.focusToEditor.bind(this);
     this.onMarkdownChanged = this.onMarkdownChanged.bind(this);
-    this.onSave = this.onSave.bind(this);
+    this.onSaveWithShortcut = this.onSaveWithShortcut.bind(this);
     this.onUpload = this.onUpload.bind(this);
     this.onEditorScroll = this.onEditorScroll.bind(this);
     this.onEditorScrollCursorIntoView = this.onEditorScrollCursorIntoView.bind(this);
     this.onPreviewScroll = this.onPreviewScroll.bind(this);
     this.saveDraft = this.saveDraft.bind(this);
     this.clearDraft = this.clearDraft.bind(this);
-    this.apiErrorHandler = this.apiErrorHandler.bind(this);
     this.showUnsavedWarning = this.showUnsavedWarning.bind(this);
 
     // get renderer
@@ -114,9 +113,27 @@ class PageEditor extends React.Component {
     this.props.appContainer.setIsDocSaved(false);
   }
 
-  onSave() {
-    this.props.onSaveWithShortcut(this.state.markdown);
-    this.props.appContainer.setIsDocSaved(true);
+  async onSaveWithShortcut() {
+    const { appContainer, pageContainer, editorContainer } = this.props;
+    const optionsToSave = editorContainer.getCurrentOptionsToSave();
+
+    try {
+      const { page, tags } = await pageContainer.save(this.state.markdown, optionsToSave);
+      logger.debug('success to save');
+
+      pageContainer.showSuccessToastr();
+
+      // update state of PageContainer
+      pageContainer.updateStateAfterSave(page);
+      // update state of EditorContainer
+      editorContainer.setState({ tags });
+
+      appContainer.setIsDocSaved(true);
+    }
+    catch (error) {
+      logger.error('failed to save', error);
+      pageContainer.showErrorToastr(error);
+    }
   }
 
   /**
@@ -124,9 +141,10 @@ class PageEditor extends React.Component {
    * @param {any} file
    */
   async onUpload(file) {
+    const { appContainer, pageContainer } = this.props;
+
     try {
-      let res = await this.props.appContainer.apiGet('/attachments.limit', {
-        _csrf: this.props.appContainer.csrfToken,
+      let res = await appContainer.apiGet('/attachments.limit', {
         fileSize: file.size,
       });
 
@@ -135,12 +153,12 @@ class PageEditor extends React.Component {
       }
 
       const formData = new FormData();
-      formData.append('_csrf', this.props.appContainer.csrfToken);
+      formData.append('_csrf', appContainer.csrfToken);
       formData.append('file', file);
-      formData.append('path', this.props.pageContainer.state.path);
+      formData.append('path', pageContainer.state.path);
       formData.append('page_id', this.state.pageId || 0);
 
-      res = await this.props.appContainer.apiPost('/attachments.add', formData);
+      res = await appContainer.apiPost('/attachments.add', formData);
       const attachment = res.attachment;
       const fileName = attachment.originalName;
 
@@ -158,7 +176,8 @@ class PageEditor extends React.Component {
       }
     }
     catch (e) {
-      this.apiErrorHandler(e);
+      logger.error('failed to upload', e);
+      pageContainer.showErrorToastr(e);
     }
     finally {
       this.editor.terminateUploadingState();
@@ -309,17 +328,6 @@ class PageEditor extends React.Component {
 
   }
 
-  apiErrorHandler(error) {
-    toastr.error(error.message, 'Error occured', {
-      closeButton: true,
-      progressBar: true,
-      newestOnTop: false,
-      showDuration: '100',
-      hideDuration: '100',
-      timeOut: '3000',
-    });
-  }
-
   render() {
     const config = this.props.appContainer.getConfig();
     const noCdn = !!config.env.NO_CDN;
@@ -340,7 +348,7 @@ class PageEditor extends React.Component {
             onScrollCursorIntoView={this.onEditorScrollCursorIntoView}
             onChange={this.onMarkdownChanged}
             onUpload={this.onUpload}
-            onSave={this.onSave}
+            onSave={this.onSaveWithShortcut}
           />
         </div>
         <div className="col-md-6 hidden-sm hidden-xs page-editor-preview-container">
@@ -370,8 +378,6 @@ PageEditor.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
-
-  onSaveWithShortcut: PropTypes.func.isRequired,
 };
 
 export default PageEditorWrapper;

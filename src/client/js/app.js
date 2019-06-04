@@ -75,102 +75,6 @@ appContainer.injectToWindow();
 
 const i18n = appContainer.i18n;
 
-/**
- * save success handler when reloading is not needed
- * @param {object} page Page instance
- */
-const saveWithShortcutSuccessHandler = function(result) {
-  const { page, tags } = result;
-  const { editorMode } = appContainer.state;
-
-  // show toastr
-  toastr.success(undefined, 'Saved successfully', {
-    closeButton: true,
-    progressBar: true,
-    newestOnTop: false,
-    showDuration: '100',
-    hideDuration: '100',
-    timeOut: '1200',
-    extendedTimeOut: '150',
-  });
-
-  // update state of PageContainer
-  const newState = {
-    pageId: page._id,
-    revisionId: page.revision._id,
-    revisionCreatedAt: new Date(page.revision.createdAt).getTime() / 1000,
-    remoteRevisionId: page.revision._id,
-    revisionIdHackmdSynced: page.revisionHackmdSynced,
-    hasDraftOnHackmd: page.hasDraftOnHackmd,
-    markdown: page.revision.body,
-    tags,
-  };
-  pageContainer.setState(newState);
-
-  // update state of EditorContainer
-  editorContainer.setState({ tags });
-
-  // PageEditor component
-  const pageEditor = appContainer.getComponentInstance('PageEditor');
-  if (pageEditor != null) {
-    if (editorMode !== 'builtin') {
-      pageEditor.updateEditorValue(newState.markdown);
-    }
-  }
-  // PageEditorByHackmd component
-  const pageEditorByHackmd = appContainer.getComponentInstance('PageEditorByHackmd');
-  if (pageEditorByHackmd != null) {
-    // reset
-    if (editorMode !== 'hackmd') {
-      pageEditorByHackmd.reset();
-    }
-  }
-
-  // hidden input
-  $('input[name="revision_id"]').val(newState.revisionId);
-};
-
-const errorHandler = function(error) {
-  toastr.error(error.message, 'Error occured', {
-    closeButton: true,
-    progressBar: true,
-    newestOnTop: false,
-    showDuration: '100',
-    hideDuration: '100',
-    timeOut: '3000',
-  });
-};
-
-const saveWithShortcut = function(markdown) {
-  const { editorMode } = appContainer.state;
-
-  const { pageId, path } = pageContainer.state;
-  let { revisionId } = pageContainer.state;
-
-  // get options
-  const options = editorContainer.getCurrentOptionsToSave();
-  options.socketClientId = websocketContainer.getCocketClientId();
-  options.pageTags = editorContainer.state.tags;
-
-  if (editorMode === 'hackmd') {
-    // set option to sync
-    options.isSyncRevisionToHackmd = true;
-    revisionId = pageContainer.state.revisionIdHackmdSynced;
-  }
-
-  let promise;
-  if (pageId == null) {
-    promise = appContainer.createPage(path, markdown, options);
-  }
-  else {
-    promise = appContainer.updatePage(pageId, revisionId, markdown, options);
-  }
-
-  promise
-    .then(saveWithShortcutSuccessHandler)
-    .catch(errorHandler);
-};
-
 const saveWithSubmitButtonSuccessHandler = function() {
   const { path } = pageContainer.state;
   editorContainer.clearDraft(path);
@@ -241,7 +145,7 @@ let componentMappings = {
 
   'create-page-name-input': <PagePathAutoComplete crowi={appContainer} initializedPath={pageContainer.state.path} addTrailingSlash />,
 
-  'page-editor': <PageEditor onSaveWithShortcut={saveWithShortcut} />,
+  'page-editor': <PageEditor />,
   'page-editor-options-selector': <OptionsSelector crowi={appContainer} />,
   'page-status-alert': <PageStatusAlert />,
   'save-page-controls': <SavePageControls onSubmit={saveWithSubmitButton} />,
@@ -253,7 +157,7 @@ let componentMappings = {
 // additional definitions if data exists
 if (pageContainer.state.pageId != null) {
   componentMappings = Object.assign({
-    'page-editor-with-hackmd': <PageEditorByHackmd onSaveWithShortcut={saveWithShortcut} />,
+    'page-editor-with-hackmd': <PageEditorByHackmd />,
     'page-comments-list': <PageComments />,
     'page-attachment':  <PageAttachment />,
     'page-comment-write':  <CommentEditorLazyRenderer />,
@@ -269,7 +173,7 @@ if (pageContainer.state.pageId != null) {
 if (pageContainer.state.path != null) {
   componentMappings = Object.assign({
     // eslint-disable-next-line quote-props
-    'page': <Page onSaveWithShortcut={saveWithShortcut} />,
+    'page': <Page />,
     'revision-path':  <RevisionPath pageId={pageContainer.state.pageId} pagePath={pageContainer.state.path} crowi={appContainer} />,
     'tag-label':  <TagLabels />,
   }, componentMappings);
