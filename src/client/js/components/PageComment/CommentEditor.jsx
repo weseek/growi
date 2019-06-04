@@ -57,6 +57,7 @@ class CommentEditor extends React.Component {
     this.handleSelect = this.handleSelect.bind(this);
     this.onSlackEnabledFlagChange = this.onSlackEnabledFlagChange.bind(this);
     this.onSlackChannelsChange = this.onSlackChannelsChange.bind(this);
+    this.toggleEditor = this.toggleEditor.bind(this);
   }
 
   componentWillMount() {
@@ -92,6 +93,10 @@ class CommentEditor extends React.Component {
     this.props.commentContainer.setState({ slackChannels });
   }
 
+  toggleEditor() {
+    this.props.commentButtonClickedHandler(this.props.replyTo);
+  }
+
   /**
    * Post comment with CommentContainer and update state
    */
@@ -119,7 +124,7 @@ class CommentEditor extends React.Component {
         });
         // reset value
         this.editor.setValue('');
-        this.props.commentButtonClickedHandler(this.props.replyTo);
+        this.toggleEditor();
       })
       .catch((err) => {
         const errorMessage = err.message || 'An unknown error occured when posting comment';
@@ -215,7 +220,7 @@ class CommentEditor extends React.Component {
     const submitButton = (
       <Button
         bsStyle="primary"
-        className="fcbtn btn btn-sm btn-primary btn-outline btn-rounded btn-1b"
+        className="fcbtn btn btn-primary btn-outline btn-rounded btn-1b"
         onClick={this.postHandler}
       >
         Comment
@@ -296,6 +301,12 @@ class CommentEditor extends React.Component {
                     </div>
                     )
                   }
+                  <div>
+                    <Button bsStyle="danger" className="fcbtn btn btn-xs btn-danger btn-outline btn-rounded" onClick={this.toggleEditor}>
+                      Cancel
+                    </Button>
+                  </div>
+                  &nbsp;&nbsp;&nbsp;&nbsp;
                   <div className="hidden-xs">{submitButton}</div>
                 </div>
                 <div className="visible-xs mt-2">

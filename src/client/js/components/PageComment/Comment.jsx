@@ -96,6 +96,14 @@ class Comment extends React.Component {
     );
   }
 
+  toggleOlderReplies() {
+    this.setState((prevState) => {
+      return {
+        showOlderReplies: !prevState.showOlderReplies,
+      };
+    });
+  }
+
   renderHtml(markdown) {
     const context = {
       markdown,
@@ -133,7 +141,46 @@ class Comment extends React.Component {
     if (!isLayoutTypeGrowi) {
       replyList = replyList.slice().reverse();
     }
-    return replyList.map((reply) => {
+
+    const areThereHiddenReplies = replyList.length > 2;
+
+    const iconForOlder = (this.state.isLayoutTypeGrowi)
+      ? <i className="fa fa-angle-double-up"></i>
+      : <i className="fa fa-angle-double-down"></i>;
+    const toggleOlder = (areThereHiddenReplies)
+      ? (
+        <a className="page-comments-list-toggle-older text-center" data-toggle="collapse" href="#page-comments-list-older">
+          {iconForOlder} Show Older Replies {iconForOlder}
+        </a>
+      )
+      : <div></div>;
+
+    const shownReplies = replyList.slice(replyList.length - 2, replyList.length);
+    const hiddenReplies = replyList.slice(0, replyList.length - 2);
+
+    const toggleElements = hiddenReplies.map((reply) => {
+      return (
+        <div key={reply._id} className="col-xs-offset-1 col-xs-11 col-sm-offset-1 col-sm-11 col-md-offset-1 col-md-11 col-lg-offset-1 col-lg-11">
+          <Comment
+            comment={reply}
+            deleteBtnClicked={this.props.deleteBtnClicked}
+            crowiRenderer={this.props.crowiRenderer}
+            crowi={this.props.crowi}
+            replyList={[]}
+            revisionCreatedAt={this.props.revisionCreatedAt}
+            revisionId={this.props.revisionId}
+          />
+        </div>
+      );
+    });
+
+    const toggleBlock = (
+      <div className="page-comments-list-older collapse out" id="page-comments-list-older">
+        {toggleElements}
+      </div>
+    );
+
+    const shownBlock = shownReplies.map((reply) => {
       return (
         <div key={reply._id} className="col-xs-offset-1 col-xs-11 col-sm-offset-1 col-sm-11 col-md-offset-1 col-md-11 col-lg-offset-1 col-lg-11">
           <CommentWrapper
@@ -145,6 +192,14 @@ class Comment extends React.Component {
         </div>
       );
     });
+
+    return (
+      <div>
+        {toggleBlock}
+        {toggleOlder}
+        {shownBlock}
+      </div>
+    );
   }
 
   render() {
