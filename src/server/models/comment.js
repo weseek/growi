@@ -78,9 +78,11 @@ module.exports = function(crowi) {
     }));
   };
 
-  commentSchema.statics.removeRepliesByCommentId = function(commentId) {
+  commentSchema.methods.removeWithReplies = function(commentId) {
+    const Comment = crowi.model('Comment');
+
     return new Promise(((resolve, reject) => {
-      this.remove({ replyTo: commentId }, (err, done) => {
+      Comment.remove({ $or: [{ replyTo: commentId }, { _id: commentId }] }, (err, done) => {
         if (err) {
           return reject(err);
         }
