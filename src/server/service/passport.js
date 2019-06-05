@@ -32,7 +32,7 @@ class PassportService {
     this.isLdapStrategySetup = false;
 
     /**
-     * the flag whether LdapStrategy is set up successfully
+     * the flag whether GoogleStrategy is set up successfully
      */
     this.isGoogleStrategySetup = false;
 
