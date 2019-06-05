@@ -174,6 +174,7 @@ module.exports = function(crowi, app) {
         throw new Error('Current user is not accessible to this page.');
       }
 
+      await Comment.removeRepliesByCommentId(commentId);
       await comment.remove();
       await Page.updateCommentCount(comment.page);
     }

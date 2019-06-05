@@ -78,6 +78,17 @@ module.exports = function(crowi) {
     }));
   };
 
+  commentSchema.statics.removeRepliesByCommentId = function(commentId) {
+    return new Promise(((resolve, reject) => {
+      this.remove({ replyTo: commentId }, (err, done) => {
+        if (err) {
+          return reject(err);
+        }
+        resolve(done);
+      });
+    }));
+  };
+
   /**
    * post save hook
    */
