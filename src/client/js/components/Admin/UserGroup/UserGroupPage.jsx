@@ -30,12 +30,17 @@ class UserGroupPage extends React.Component {
   }
 
   async showDeleteModal(group) {
-    await this.syncUserGroupAndRelations();
+    try {
+      await this.syncUserGroupAndRelations();
 
-    this.setState({
-      selectedUserGroup: group,
-      isDeleteModalShow: true,
-    });
+      this.setState({
+        selectedUserGroup: group,
+        isDeleteModalShow: true,
+      });
+    }
+    catch (err) {
+      apiErrorHandler(new Error('Unable to fetch groups from server'));
+    }
   }
 
   hideDeleteModal() {
@@ -89,30 +94,16 @@ class UserGroupPage extends React.Component {
 
   async syncUserGroupAndRelations() {
     let userGroups = [];
-    let userGroupRelations = [];
+    let userGroupRelations = {};
 
-    try {
-      const responses = await Promise.all([
-        this.props.crowi.apiv3.get('/user-groups'),
-        this.props.crowi.apiv3.get('/user-group-relations'),
-      ]);
+    const responses = await Promise.all([
+      this.props.crowi.apiv3.get('/user-groups'),
+      this.props.crowi.apiv3.get('/user-group-relations'),
+    ]);
 
-      const isAllOk = responses.reduce((isAllOk, res) => {
-        return isAllOk && !res.errors;
-      }, true);
-
-      if (isAllOk) {
-        const [userGroupsRes, userGroupRelationsRes] = responses;
-        userGroups = userGroupsRes.data.userGroups;
-        userGroupRelations = userGroupRelationsRes.data.userGroupRelations;
-      }
-      else {
-        throw new Error('Unable to fetch groups from server');
-      }
-    }
-    catch (err) {
-      apiErrorHandler(err);
-    }
+    const [userGroupsRes, userGroupRelationsRes] = responses;
+    userGroups = userGroupsRes.data.userGroups;
+    userGroupRelations = userGroupRelationsRes.data.userGroupRelations;
 
     this.setState({
       userGroups,
