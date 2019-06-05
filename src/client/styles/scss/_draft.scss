@@ -1,32 +1,33 @@
 .draft-list-item {
-  .panel {
-    border: 1px solid #ccc;
+  .panel-heading {
+    .caret {
+      transition: 0.4s;
+      transform: rotate(-90deg);
 
-    .panel-heading {
-      background-color: #ccc;
-
-      .caret {
-        transition: 0.4s;
-        transform: rotate(-90deg);
-
-        &.caret-opened {
-          transform: rotate(0deg);
-        }
+      &.caret-opened {
+        transform: rotate(0deg);
       }
+    }
 
+    .icon-container {
+      a:hover {
+        text-decoration: unset;
+      }
+      i {
+        opacity: 0.5;
+      }
+    }
+
+    &:hover {
       .icon-container {
         i {
-          opacity: 0;
-        }
-      }
-
-      &:hover {
-        .icon-container {
-          i {
-            opacity: 1;
-          }
+          opacity: 1;
         }
       }
     }
+  }
+
+  .draft-copy {
+    cursor: pointer;
   }
 }

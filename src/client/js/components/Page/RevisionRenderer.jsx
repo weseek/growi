@@ -1,9 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { createSubscribedElement } from '../UnstatedUtils';
+import AppContainer from '../../services/AppContainer';
+import PageContainer from '../../services/PageContainer';
+import GrowiRenderer from '../../util/GrowiRenderer';
+
 import RevisionBody from './RevisionBody';
 
-export default class RevisionRenderer extends React.Component {
+class RevisionRenderer extends React.Component {
 
   constructor(props) {
     super(props);
@@ -14,16 +19,14 @@ export default class RevisionRenderer extends React.Component {
 
     this.renderHtml = this.renderHtml.bind(this);
     this.getHighlightedBody = this.getHighlightedBody.bind(this);
+  }
 
-    this.setMarkdown(this.props.markdown);
+  componentWillMount() {
+    this.renderHtml(this.props.markdown, this.props.highlightKeywords);
   }
 
   componentWillReceiveProps(nextProps) {
     this.renderHtml(nextProps.markdown, this.props.highlightKeywords);
-  }
-
-  setMarkdown(markdown) {
-    this.renderHtml(markdown, this.props.highlightKeywords);
   }
 
   /**
@@ -48,30 +51,32 @@ export default class RevisionRenderer extends React.Component {
     return returnBody;
   }
 
-  renderHtml(markdown, highlightKeywords) {
+  renderHtml(markdown) {
+    const { pageContainer } = this.props;
+
     const context = {
       markdown,
-      currentPagePath: this.props.pagePath,
+      currentPagePath: pageContainer.state.path,
     };
 
-    const crowiRenderer = this.props.crowiRenderer;
-    const interceptorManager = this.props.crowi.interceptorManager;
+    const growiRenderer = this.props.growiRenderer;
+    const interceptorManager = this.props.appContainer.interceptorManager;
     interceptorManager.process('preRender', context)
       .then(() => { return interceptorManager.process('prePreProcess', context) })
       .then(() => {
-        context.markdown = crowiRenderer.preProcess(context.markdown);
+        context.markdown = growiRenderer.preProcess(context.markdown);
       })
       .then(() => { return interceptorManager.process('postPreProcess', context) })
       .then(() => {
-        context.parsedHTML = crowiRenderer.process(context.markdown);
+        context.parsedHTML = growiRenderer.process(context.markdown);
       })
       .then(() => { return interceptorManager.process('prePostProcess', context) })
       .then(() => {
-        context.parsedHTML = crowiRenderer.postProcess(context.parsedHTML);
+        context.parsedHTML = growiRenderer.postProcess(context.parsedHTML);
 
         // highlight
-        if (highlightKeywords != null) {
-          context.parsedHTML = this.getHighlightedBody(context.parsedHTML, highlightKeywords);
+        if (this.props.highlightKeywords != null) {
+          context.parsedHTML = this.getHighlightedBody(context.parsedHTML, this.props.highlightKeywords);
         }
       })
       .then(() => { return interceptorManager.process('postPostProcess', context) })
@@ -85,7 +90,7 @@ export default class RevisionRenderer extends React.Component {
   }
 
   render() {
-    const config = this.props.crowi.getConfig();
+    const config = this.props.appContainer.getConfig();
     const isMathJaxEnabled = !!config.env.MATHJAX;
 
     return (
@@ -99,10 +104,20 @@ export default class RevisionRenderer extends React.Component {
 
 }
 
+/**
+ * Wrapper component for using unstated
+ */
+const RevisionRendererWrapper = (props) => {
+  return createSubscribedElement(RevisionRenderer, props, [AppContainer, PageContainer]);
+};
+
 RevisionRenderer.propTypes = {
-  crowi: PropTypes.object.isRequired,
-  crowiRenderer: PropTypes.object.isRequired,
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+
+  growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
   markdown: PropTypes.string.isRequired,
-  pagePath: PropTypes.string.isRequired,
   highlightKeywords: PropTypes.string,
 };
+
+export default RevisionRendererWrapper;

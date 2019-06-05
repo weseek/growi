@@ -35,20 +35,24 @@ module.exports = function(crowi, app) {
    */
   api.update = async function(req, res) {
     const Page = crowi.model('Page');
+    const PageTagRelation = crowi.model('PageTagRelation');
     const tagEvent = crowi.event('tag');
     const pageId = req.body.pageId;
     const tags = req.body.tags;
 
+    const result = {};
     try {
+      // TODO GC-1921 consider permission
       const page = await Page.findById(pageId);
-      await page.updateTags(tags);
+      await PageTagRelation.updatePageTags(pageId, tags);
+      result.tags = await PageTagRelation.listTagNamesByPage(pageId);
 
       tagEvent.emit('update', page, tags);
     }
     catch (err) {
       return res.json(ApiResponse.error(err));
     }
-    return res.json(ApiResponse.success());
+    return res.json(ApiResponse.success(result));
   };
 
   /**

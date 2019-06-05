@@ -2,6 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 
+import { createSubscribedElement } from '../UnstatedUtils';
+import AppContainer from '../../services/AppContainer';
+
 /**
  *
  * @author Yuki Takei <yuki@weseek.co.jp>
@@ -11,7 +14,7 @@ import { AsyncTypeahead } from 'react-bootstrap-typeahead';
  * @extends {React.Component}
  */
 
-export default class TagsInput extends React.Component {
+class TagsInput extends React.Component {
 
   constructor(props) {
     super(props);
@@ -22,7 +25,6 @@ export default class TagsInput extends React.Component {
       selected: this.props.tags,
       defaultPageTags: this.props.tags,
     };
-    this.crowi = this.props.crowi;
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
@@ -42,7 +44,7 @@ export default class TagsInput extends React.Component {
 
   async handleSearch(query) {
     this.setState({ isLoading: true });
-    const res = await this.crowi.apiGet('/tags.search', { q: query });
+    const res = await this.props.appContainer.apiGet('/tags.search', { q: query });
     res.tags.unshift(query); // selectable new tag whose name equals query
     this.setState({
       resultTags: Array.from(new Set(res.tags)), // use Set for de-duplication
@@ -87,11 +89,21 @@ export default class TagsInput extends React.Component {
 
 }
 
+/**
+ * Wrapper component for using unstated
+ */
+const TagsInputWrapper = (props) => {
+  return createSubscribedElement(TagsInput, props, [AppContainer]);
+};
+
 TagsInput.propTypes = {
-  crowi: PropTypes.object.isRequired,
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+
   tags: PropTypes.array.isRequired,
   onTagsUpdated: PropTypes.func.isRequired,
 };
 
 TagsInput.defaultProps = {
 };
+
+export default TagsInputWrapper;

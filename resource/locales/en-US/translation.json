@@ -2,6 +2,7 @@
   "Help": "Help",
   "Edit": "Edit",
   "Delete": "Delete",
+  "Delete All": "Delete All",
   "Duplicate": "Duplicate",
   "Copy": "Copy",
   "Click to copy": "Click to copy",
@@ -111,7 +112,7 @@
   "UserGroup Management": "UserGroup Management",
   "Full Text Search Management": "Full Text Search Management",
   "Import Data": "Import Data",
-  "Basic settings": "Basic settings",
+  "Basic Settings": "Basic Settings",
   "Basic authentication": "Basic authentication",
   "Guest users access": "Guest users access",
   "Register limitation": "Register limitation",
@@ -710,11 +711,12 @@
   },
 
   "user_group_management": {
-    "group_list": "List of Group",
+    "group_list": "Group List",
+    "back_to_list": "Go Back to Group List",
     "create_group": "Create New Group",
     "group_example": "e.g. : Group1",
     "created_group": "Group was created",
-    "add_user": "Add a user to the created group",
+    "add_user": "Add a User to the Created Group",
     "deny_create_group": "You can't create a new group with the current settings",
     "is_loading_data": "Loading data...",
     "choose_action": "Choose an action for private pages",
@@ -725,7 +727,11 @@
     "delete_pages": "Delete All",
     "transfer_pages": "Transfer to another group",
     "select_group": "Select a group",
-    "no_groups": "No groups to select"
+    "no_groups": "No groups to select",
+    "no_pages": "There are no pages the group has view permission",
+    "how_to_add1": "Enter a username to add",
+    "how_to_add2": "Select a user from user list",
+    "remove_from_group": "Remove this group"
   },
 
   "importer_management": {

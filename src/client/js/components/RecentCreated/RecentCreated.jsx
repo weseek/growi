@@ -1,10 +1,15 @@
 import React from 'react';
-
 import PropTypes from 'prop-types';
+
 import Pagination from 'react-bootstrap/lib/Pagination';
+
+import { createSubscribedElement } from '../UnstatedUtils';
+import AppContainer from '../../services/AppContainer';
+import PageContainer from '../../services/PageContainer';
+
 import Page from '../PageList/Page';
 
-export default class RecentCreated extends React.Component {
+class RecentCreated extends React.Component {
 
   constructor(props) {
     super(props);
@@ -23,13 +28,15 @@ export default class RecentCreated extends React.Component {
   }
 
   getRecentCreatedList(selectPageNumber) {
-    const pageId = this.props.pageId;
-    const userId = this.props.crowi.me;
-    const limit = this.props.limit;
+    const { appContainer, pageContainer } = this.props;
+    const { pageId } = pageContainer.state;
+
+    const userId = appContainer.me;
+    const limit = appContainer.getConfig().recentCreatedLimit;
     const offset = (selectPageNumber - 1) * limit;
 
     // pagesList get and pagination calculate
-    this.props.crowi.apiGet('/pages.recentCreated', {
+    this.props.appContainer.apiGet('/pages.recentCreated', {
       page_id: pageId, user: userId, limit, offset,
     })
       .then((res) => {
@@ -183,12 +190,16 @@ export default class RecentCreated extends React.Component {
 
 }
 
+/**
+ * Wrapper component for using unstated
+ */
+const RecentCreatedWrapper = (props) => {
+  return createSubscribedElement(RecentCreated, props, [AppContainer, PageContainer]);
+};
 
 RecentCreated.propTypes = {
-  pageId: PropTypes.string.isRequired,
-  crowi: PropTypes.object.isRequired,
-  limit: PropTypes.number,
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 };
 
-RecentCreated.defaultProps = {
-};
+export default RecentCreatedWrapper;

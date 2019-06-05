@@ -7,9 +7,10 @@ import * as toastr from 'toastr';
 import Page from '../PageList/Page';
 import SearchResultList from './SearchResultList';
 import DeletePageListModal from './DeletePageListModal';
+import AppContainer from '../../services/AppContainer';
+import { createSubscribedElement } from '../UnstatedUtils';
 
-// Search.SearchResult
-export default class SearchResult extends React.Component {
+class SearchResult extends React.Component {
 
   constructor(props) {
     super(props);
@@ -117,7 +118,8 @@ export default class SearchResult extends React.Component {
       return new Promise((resolve, reject) => {
         const pageId = page._id;
         const revisionId = page.revision._id;
-        this.props.crowi.apiPost('/pages.remove', { page_id: pageId, revision_id: revisionId, completely: deleteCompletely })
+
+        this.props.appContainer.apiPost('/pages.remove', { page_id: pageId, revision_id: revisionId, completely: deleteCompletely })
           .then((res) => {
             if (res.ok) {
               this.state.selectedPages.delete(page);
@@ -171,10 +173,6 @@ export default class SearchResult extends React.Component {
   }
 
   render() {
-    const excludePathString = this.props.tree;
-
-    // console.log(this.props.searchError);
-    // console.log(this.isError());
     if (this.isError()) {
       return (
         <div className="content-main">
@@ -189,7 +187,7 @@ export default class SearchResult extends React.Component {
 
     if (this.isNotFound()) {
       let under = '';
-      if (this.props.tree !== '') {
+      if (this.props.tree != null) {
         under = ` under "${this.props.tree}"`;
       }
       return (
@@ -249,18 +247,17 @@ export default class SearchResult extends React.Component {
           page={page}
           linkTo={pageId}
           key={page._id}
-          excludePathString={excludePathString}
         >
           { this.state.deletionMode
             && (
-            <input
-              type="checkbox"
-              className="search-result-list-delete-checkbox"
-              value={pageId}
-              checked={this.state.selectedPages.has(page)}
-              onClick={() => { return this.toggleCheckbox(page) }}
-            />
-)
+              <input
+                type="checkbox"
+                className="search-result-list-delete-checkbox"
+                value={pageId}
+                checked={this.state.selectedPages.has(page)}
+                onClick={() => { return this.toggleCheckbox(page) }}
+              />
+            )
             }
           <div className="page-list-option">
             <a href={page.path}><i className="icon-login" /></a>
@@ -300,8 +297,6 @@ export default class SearchResult extends React.Component {
           </div>
           <div className="col-md-8 search-result-content" id="search-result-content">
             <SearchResultList
-              crowi={this.props.crowi}
-              crowiRenderer={this.props.crowiRenderer}
               pages={this.props.pages}
               searchingKeyword={this.props.searchingKeyword}
             />
@@ -322,15 +317,24 @@ export default class SearchResult extends React.Component {
 
 }
 
+/**
+ * Wrapper component for using unstated
+ */
+const SearchResultWrapper = (props) => {
+  return createSubscribedElement(SearchResult, props, [AppContainer]);
+};
+
 SearchResult.propTypes = {
-  crowi: PropTypes.object.isRequired,
-  crowiRenderer: PropTypes.object,
-  tree: PropTypes.string.isRequired,
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+
   pages: PropTypes.array.isRequired,
   searchingKeyword: PropTypes.string.isRequired,
   searchResultMeta: PropTypes.object.isRequired,
   searchError: PropTypes.object,
+  tree: PropTypes.string,
 };
 SearchResult.defaultProps = {
   searchError: null,
 };
+
+export default SearchResultWrapper;

@@ -124,7 +124,6 @@ export default class AbstractEditor extends React.Component {
 AbstractEditor.propTypes = {
   value: PropTypes.string,
   isGfmMode: PropTypes.bool,
-  editorOptions: PropTypes.object,
   onChange: PropTypes.func,
   onScroll: PropTypes.func,
   onScrollCursorIntoView: PropTypes.func,

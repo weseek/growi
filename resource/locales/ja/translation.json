@@ -2,6 +2,7 @@
   "Help": "ヘルプ",
   "Edit": "編集",
   "Delete": "削除",
+  "Delete All": "全て削除",
   "Duplicate": "複製",
   "Copy": "コピー",
   "Click to copy": "クリックでコピー",
@@ -111,7 +112,7 @@
   "UserGroup Management": "グループ管理",
   "Full Text Search Management": "全文検索管理",
   "Import Data": "データインポート",
-  "Basic settings": "基本設定",
+  "Basic Settings": "基本設定",
   "Basic authentication": "Basic認証",
   "Guest users access": "ゲストユーザーのアクセス",
   "Register limitation": "登録の制限",
@@ -711,6 +712,7 @@
 
   "user_group_management": {
     "group_list": "グループ一覧",
+    "back_to_list": "グループ一覧に戻る",
     "create_group": "新規グループの作成",
     "group_example": "例: Group1",
     "created_group": "グループを作成しました",
@@ -725,7 +727,11 @@
     "delete_pages": "全て削除する",
     "transfer_pages": "全て他のグループに移譲する",
     "select_group": "グループを選択してください",
-    "no_groups": "グループがありません"
+    "no_groups": "グループがありません",
+    "no_pages": "グループが閲覧権限を保有するページはありません",
+    "how_to_add1": "ユーザー名を入力して追加",
+    "how_to_add2": "ユーザーを下のリストから選択",
+    "remove_from_group": "グループから外す"
   },
 
   "importer_management": {
