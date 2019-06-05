@@ -2,6 +2,7 @@
   "Help": "ヘルプ",
   "Edit": "編集",
   "Delete": "削除",
+  "Delete All": "全て削除",
   "Duplicate": "複製",
   "Copy": "コピー",
   "Click to copy": "クリックでコピー",
@@ -13,11 +14,21 @@
   "Cancel": "キャンセル",
   "Create": "作成",
   "Admin": "管理",
+  "Tag": "タグ",
   "Tags": "タグ",
   "New": "作成",
   "Shortcuts": "ショートカット",
   "eg": "例:",
   "Undo": "元に戻す",
+  "Article": "記事",
+  "Page": "ページ",
+  "Page Path": "ページパス",
+  "Category": "カテゴリー",
+  "User": "ユーザー",
+  "User Name": "ユーザーネーム",
+  "User List": "ユーザーリスト",
+  "Add": "追加",
+  "Method": "方法",
 
   "Update": "更新",
   "Update Page": "ページを更新",
@@ -40,6 +51,7 @@
 
   "Created": "作成日",
   "Last updated": "最終更新",
+  "Last Login": "最終ログイン",
 
   "Share": "共有",
   "Share Link": "共有用リンク",
@@ -79,6 +91,7 @@
   "Disclose E-mail": "メールアドレスの公開",
 
   "page exists": "このページはすでに存在しています",
+  "Error occurred":"エラーが発生しました",
 
   "Create today's": "今日の◯◯を作成",
   "Memo": "メモ",
@@ -88,18 +101,19 @@
   "Create under": "ページを以下に作成",
 
   "Table of Contents": "目次",
+
   "Management Wiki Home": "Wiki管理トップ",
-  "App settings": "アプリ設定",
+  "App Settings": "アプリ設定",
   "Site URL settings": "サイトURL設定",
-  "Markdown settings": "マークダウン設定",
+  "Markdown Settings": "マークダウン設定",
   "Customize": "カスタマイズ",
-  "Notification settings": "通知設定",
-  "User management": "ユーザー管理",
+  "Notification Settings": "通知設定",
+  "User Management": "ユーザー管理",
   "External Account management": "外部アカウント管理",
-  "UserGroup management": "グループ管理",
-  "Full Text Search management": "全文検索管理",
+  "UserGroup Management": "グループ管理",
+  "Full Text Search Management": "全文検索管理",
   "Import Data": "データインポート",
-  "Basic settings": "基本設定",
+  "Basic Settings": "基本設定",
   "Basic authentication": "Basic認証",
   "Guest users access": "ゲストユーザーのアクセス",
   "Register limitation": "登録の制限",
@@ -116,7 +130,6 @@
   "Add tags for this page": "タグを付ける",
   "Edit tags for this page": "タグを編集する",
   "You have no tag, You can set tags on pages": "使用中のタグがありません",
-
 
   "Show latest": "最新のページを表示",
   "Load latest": "最新版を読み込む",
@@ -184,7 +197,7 @@
   "Re-enter new password": "(確認用)",
   "Password is not set": "パスワードが設定されていません",
 
-  "Security settings": "セキュリティ設定",
+  "Security Settings": "セキュリティ設定",
 
   "API Settings": "API設定",
   "API Token Settings": "API Token設定",
@@ -311,17 +324,20 @@
 
   "modal_shortcuts": {
     "global": {
-        "Open/Close shortcut help": "ショートカットヘルプの表示/非表示",
-        "Edit Page": "ページ編集",
-        "Create Page": "ページ作成"
+      "title": "グローバルショートカット",
+      "Open/Close shortcut help": "ショートカットヘルプの表示/非表示",
+      "Edit Page": "ページ編集",
+      "Create Page": "ページ作成"
     },
     "editor": {
-        "Indent": "インデント",
-        "Outdent": "左インデント",
-        "Save Page": "保存",
-        "Delete Line": "行削除"
+      "titile": "エディターショートカット",
+      "Indent": "インデント",
+      "Outdent": "左インデント",
+      "Save Page": "保存",
+      "Delete Line": "行削除"
     },
     "commentform": {
+      "title": "コメントフォームショートカット",
       "Post": "投稿"
     }
   },
@@ -460,6 +476,7 @@
     "facebook_auth2": "Facebook OAuth 認証",
     "twitter_auth2": "Twitter OAuth 認証",
     "github_auth2": "GitHub OAuth 認証",
+    "crowi_auth": "Crowi Classic OAuth 認証",
     "require_server_restart": "サーバーを再起動してください。",
     "server_on_passport_auth": "Passport 認証機構でサーバーが稼働しています。",
     "server_on_crowi_auth": "Crowi Classic 認証機構でサーバーが稼働しています。",
@@ -578,6 +595,7 @@
       "security:passport-saml:attrMapLastName": "名"
     }
   },
+
   "markdown_setting": {
     "line_break_setting": "Line Break設定",
     "line_break_setting_desc": "Line Breakの設定を変更できます。",
@@ -660,7 +678,7 @@
   },
 
   "user_management": {
-    "User management": "ユーザー管理",
+    "User Management": "ユーザー管理",
     "invite_users": "新規ユーザーの招待",
     "emails": "メールアドレス (複数行入力で複数人招待可能)",
     "invite_thru_email": "招待をメールで送信",
@@ -672,8 +690,6 @@
     "external_account_list": "外部アカウント一覧",
     "back_to_user_management": "ユーザー管理に戻る",
     "authentication_provider": "認証情報プロバイダ",
-    "Date created": "作成日",
-    "Last login": "最終ログイン",
     "Manage": "操作",
     "Edit menu": "編集メニュー",
     "password_setting": "パスワード設定",
@@ -692,6 +708,30 @@
     "current users": "現在のユーザー数："
   },
 
+  "user_group_management": {
+    "group_list": "グループ一覧",
+    "back_to_list": "グループ一覧に戻る",
+    "create_group": "新規グループの作成",
+    "group_example": "例: Group1",
+    "created_group": "グループを作成しました",
+    "add_user": "グループへのユーザー追加",
+    "deny_create_group": "現在の設定では新規グループの作成はできません。",
+    "is_loading_data": "データを取得中です...",
+    "choose_action": "削除するグループの限定公開ページの処理を選択してください",
+    "delete_group": "グループの削除",
+    "group_name": "グループ名",
+    "group_and_pages_not_retrievable": "グループ及び限定公開のページの削除を行うと元に戻すことはできませんのでご注意ください。",
+    "publish_pages": "全て公開する",
+    "delete_pages": "全て削除する",
+    "transfer_pages": "全て他のグループに移譲する",
+    "select_group": "グループを選択してください",
+    "no_groups": "グループがありません",
+    "no_pages": "グループが閲覧権限を保有するページはありません",
+    "how_to_add1": "ユーザー名を入力して追加",
+    "how_to_add2": "ユーザーを下のリストから選択",
+    "remove_from_group": "グループから外す"
+  },
+
   "importer_management": {
     "import_from": "%s からインポート",
     "esa_settings": {
@@ -704,6 +744,8 @@
       "access_token": "アクセストークン",
       "test_connection": "接続テスト"
     },
-    "import": "インポート"
+    "import": "インポート",
+    "page_skip": "既に GROWI 側に同名のページが存在する場合、そのページはスキップされます",
+    "Directory_hierarchy_tag": "ディレクトリ階層タグ"
   }
 }

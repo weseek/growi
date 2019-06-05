@@ -1,9 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { createSubscribedElement } from './UnstatedUtils';
+import AppContainer from '../services/AppContainer';
+
 import SearchTypeahead from './SearchTypeahead';
 
 // SearchTypeahead wrapper
-export default class SearchForm extends React.Component {
+class SearchForm extends React.Component {
 
   constructor(props) {
     super(props);
@@ -93,7 +96,6 @@ export default class SearchForm extends React.Component {
 
     return (
       <SearchTypeahead
-        crowi={this.props.crowi}
         onChange={this.onChange}
         onSubmit={this.props.onSubmit}
         onInputChange={this.props.onInputChange}
@@ -108,9 +110,17 @@ export default class SearchForm extends React.Component {
 
 }
 
+/**
+ * Wrapper component for using unstated
+ */
+const SearchFormWrapper = (props) => {
+  return createSubscribedElement(SearchForm, props, [AppContainer]);
+};
+
 SearchForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  crowi: PropTypes.object.isRequired,
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+
   keyword: PropTypes.string,
   onSubmit: PropTypes.func.isRequired,
   onInputChange: PropTypes.func,
@@ -119,3 +129,5 @@ SearchForm.propTypes = {
 SearchForm.defaultProps = {
   onInputChange: () => {},
 };
+
+export default SearchFormWrapper;

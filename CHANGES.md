@@ -1,8 +1,22 @@
 # CHANGES
 
-## 3.4.7-RC
+## 3.4.8-RC
 
-* 
+* Feature: Comment Thread
+* Improvement Draft list
+* Support: Apply unstated
+* Support: Upgrade libs
+    * mini-css-extract-plugin
+    * null-loader
+
+## 3.4.7
+
+* Improvement: Handle private pages on group deletion
+* Fix: Searching with `tag:xxx` syntax doesn't work
+* Fix: Check CSRF when updating user data
+* Fix: `createdAt` field initialization
+* I18n: Import data page
+* I18n: Group Management page
 
 ## 3.4.6
 
