@@ -323,7 +323,7 @@ export default class Crowi {
       params._csrf = this.csrfToken;
     }
 
-    return this.apiv3Request('put', path, { params });
+    return this.apiv3Request('put', path, params);
   }
 
   apiv3Delete(path, params) {

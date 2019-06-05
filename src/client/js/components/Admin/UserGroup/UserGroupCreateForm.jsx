@@ -36,22 +36,14 @@ class UserGroupCreateForm extends React.Component {
     e.preventDefault();
 
     try {
-      const res = await this.props.crowi.apiv3.post('/user-groups/create', {
+      const res = await this.props.crowi.apiv3.post('/user-groups', {
         name: this.state.name,
       });
-
-      if (res.errors) {
-        return apiErrorHandler(res.errors);
-      }
 
       const userGroup = res.data.userGroup;
       const userGroupId = userGroup._id;
 
       const res2 = await this.props.crowi.apiv3.get(`/user-groups/${userGroupId}/users`);
-
-      if (res2.errors) {
-        return apiErrorHandler(res.errors);
-      }
 
       const { users } = res2.data;
 

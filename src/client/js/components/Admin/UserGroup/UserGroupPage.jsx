@@ -60,14 +60,10 @@ class UserGroupPage extends React.Component {
 
   async deleteUserGroupById({ deleteGroupId, actionName, transferToUserGroupId }) {
     try {
-      const res = await this.props.crowi.apiv3.post(`/user-groups/${deleteGroupId}/delete`, {
+      const res = await this.props.crowi.apiv3.delete(`/user-groups/${deleteGroupId}`, {
         actionName,
         transferToUserGroupId,
       });
-
-      if (res.errors) {
-        return apiErrorHandler(res.errors);
-      }
 
       this.setState((prevState) => {
         const userGroups = prevState.userGroups.filter((userGroup) => {

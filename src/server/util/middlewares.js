@@ -5,8 +5,6 @@ const md5 = require('md5');
 const entities = require('entities');
 const { validationResult } = require('express-validator/check');
 
-const ApiResponse = require('./apiResponse');
-
 exports.csrfKeyGenerator = function(crowi, app) {
   return function(req, res, next) {
     const csrfKey = (req.session && req.session.id) || 'anon';
@@ -330,9 +328,9 @@ exports.formValid = function() {
 
     const errs = errObjArray.array().map((err) => {
       logger.error(`${err.param} in ${err.location}: ${err.msg}`);
-      return `${err.param}: ${err.msg}`;
-    }).join('\n');
+      return new Error(`${err.param}: ${err.msg}`);
+    });
 
-    return res.json(ApiResponse.error(errs));
+    return res.apiv3Err(errs);
   };
 };

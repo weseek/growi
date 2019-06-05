@@ -6,7 +6,7 @@ const express = require('express');
 
 const router = express.Router();
 
-const { body, param } = require('express-validator/check');
+const { body, param, query } = require('express-validator/check');
 
 const validator = {};
 
@@ -36,10 +36,10 @@ module.exports = (crowi) => {
   });
 
   validator.create = [
-    body('name').trim().exists(),
+    body('name', 'Group name is required').trim().exists(),
   ];
 
-  router.post('/create', loginRequired(crowi), adminRequired(), csrfVerify(crowi), validator.create, formValid(), async(req, res) => {
+  router.post('/', loginRequired(crowi), adminRequired(), csrfVerify(crowi), validator.create, formValid(), async(req, res) => {
     const { name } = req.body;
 
     try {
@@ -57,13 +57,13 @@ module.exports = (crowi) => {
 
   validator.delete = [
     param('id').trim().exists(),
-    body('actionName').trim().exists(),
-    body('transferToUserGroupId').trim(),
+    query('actionName').trim().exists(),
+    query('transferToUserGroupId').trim(),
   ];
 
-  router.post('/:id/delete', loginRequired(crowi), adminRequired(), csrfVerify(crowi), validator.delete, formValid(), async(req, res) => {
+  router.delete('/:id', loginRequired(crowi), adminRequired(), csrfVerify(crowi), validator.delete, formValid(), async(req, res) => {
     const { id: deleteGroupId } = req.params;
-    const { actionName, transferToUserGroupId } = req.body;
+    const { actionName, transferToUserGroupId } = req.query;
 
     try {
       const userGroup = await UserGroup.removeCompletelyById(deleteGroupId, actionName, transferToUserGroupId);
@@ -82,7 +82,7 @@ module.exports = (crowi) => {
   // });
 
   // update one group with the id
-  // router.post('/:id/update', async(req, res) => {
+  // router.put('/:id/update', async(req, res) => {
   // });
 
   router.get('/:id/users', loginRequired(crowi), adminRequired(), async(req, res) => {

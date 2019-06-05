@@ -14,13 +14,15 @@ const errorFormatter = (err) => {
   return message;
 };
 
-export const apiErrorHandler = (err, header = 'Error') => {
+export const apiErrorHandler = (_err, header = 'Error') => {
+  // extract api errors from general 400 err
+  const err = _err.response ? _err.response.data.errors : _err;
   const errs = toArrayIfNot(err);
 
   for (const err of errs) {
-    logger.error(err);
+    logger.error(err.message);
 
-    toastr.error(errorFormatter(err), header, {
+    toastr.error(errorFormatter(err.message), header, {
       closeButton: true,
       progressBar: true,
       newestOnTop: false,
