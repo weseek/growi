@@ -158,10 +158,9 @@ class PageComments extends React.Component {
                   <div>
                     { username
                     && (
-                      <div className="col-xs-offset-6 col-sm-offset-6 col-md-offset-6 col-lg-offset-6">
+                      <div className="col-xs-offset-1 col-sm-offset-1 col-md-offset-1 col-lg-offset-1 page-comment-main">
                         <Button
-                          bsStyle="primary"
-                          className="fcbtn btn btn-sm btn-primary btn-outline btn-rounded btn-1b"
+                          className="fcbtn btn btn-xs btn-block btn-rounded"
                           onClick={() => { return this.replyButtonClickedHandler(commentId) }}
                         >
                           <i className="icon-bubble"></i> Reply
