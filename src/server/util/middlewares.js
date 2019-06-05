@@ -4,6 +4,7 @@ const pathUtils = require('growi-commons').pathUtils;
 const md5 = require('md5');
 const entities = require('entities');
 const { validationResult } = require('express-validator/check');
+const ErrorV3 = require('./ErrorV3');
 
 exports.csrfKeyGenerator = function(crowi, app) {
   return function(req, res, next) {
@@ -328,7 +329,8 @@ exports.formValid = function() {
 
     const errs = errObjArray.array().map((err) => {
       logger.error(`${err.param} in ${err.location}: ${err.msg}`);
-      return new Error(`${err.param}: ${err.msg}`);
+      const errrr = new ErrorV3(`${err.param}: ${err.msg}`, 'validation_failed');
+      return errrr;
     });
 
     return res.apiv3Err(errs);

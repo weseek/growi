@@ -7,9 +7,7 @@ const express = require('express');
 const router = express.Router();
 
 const { body, param, query } = require('express-validator/check');
-
-const validator = {};
-
+const ErrorV3 = require('../../util/ErrorV3');
 const {
   accessTokenParser,
   csrfVerify,
@@ -17,6 +15,8 @@ const {
   adminRequired,
   formValid,
 } = require('../../util/middlewares');
+
+const validator = {};
 
 module.exports = (crowi) => {
   const { UserGroup, UserGroupRelation } = crowi.models;
@@ -30,8 +30,9 @@ module.exports = (crowi) => {
       return res.apiv3({ userGroups });
     }
     catch (err) {
+      const msg = 'Error occurred in fetching user group list';
       logger.error('Error', err);
-      return res.apiv3Err('Error occurred in fetching user groups');
+      return res.apiv3Err(new ErrorV3(msg, 'user-group-list-fetch-failed'));
     }
   });
 
@@ -51,7 +52,7 @@ module.exports = (crowi) => {
     catch (err) {
       const msg = 'Error occurred in creating a user group';
       logger.error(msg, err);
-      return res.apiv3Err(msg);
+      return res.apiv3Err(new ErrorV3(msg, 'user-group-create-failed'));
     }
   });
 
@@ -73,7 +74,7 @@ module.exports = (crowi) => {
     catch (err) {
       const msg = 'Error occurred in deleting a user group';
       logger.error(msg, err);
-      return res.apiv3Err(msg);
+      return res.apiv3Err(new ErrorV3(msg, 'user-group-delete-failed'));
     }
   });
 
@@ -101,7 +102,7 @@ module.exports = (crowi) => {
     catch (err) {
       const msg = `Error occurred in fetching users for group: ${id}`;
       logger.error(msg, err);
-      return res.apiv3Err(msg);
+      return res.apiv3Err(new ErrorV3(msg, 'user-group-fetch-failed'));
     }
   });
 

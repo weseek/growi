@@ -6,6 +6,7 @@ const express = require('express');
 
 const router = express.Router();
 
+const ErrorV3 = require('../../util/ErrorV3');
 const {
   accessTokenParser,
   loginRequired,
@@ -41,8 +42,9 @@ module.exports = (crowi) => {
       return res.apiv3(data);
     }
     catch (err) {
+      const msg = 'Error occurred in fetching user group relations';
       logger.error('Error', err);
-      return res.apiv3Err('Error occurred in fetching user group relations');
+      return res.apiv3Err(new ErrorV3(msg, 'user-group-relation-list-fetch-failed'));
     }
   });
 

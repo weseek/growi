@@ -23,6 +23,7 @@ module.exports = function(crowi, app) {
   const env = crowi.node_env;
   const middleware = require('../util/middlewares');
   const toArrayIfNot = require('../../lib/util/toArrayIfNot');
+  const ErrorV3 = require('../util/ErrorV3');
 
   // Old type config API
   const config = crowi.getConfig();
@@ -162,37 +163,23 @@ module.exports = function(crowi, app) {
     this.json({ data: obj });
   };
 
-  express.response.apiv3Err = function(errs, status = 400) { // not arrow function
+  express.response.apiv3Err = function(_err, status = 400) { // not arrow function
     if (!Number.isInteger(status)) {
       throw new Error('invalid status supplied to res.apiv3Err');
     }
 
-    let errors = toArrayIfNot(errs);
-    errors = errors.map((_err) => {
-      const err = {};
-
-      if (_err instanceof Error) {
-        let message = _err.toString();
-
-        const prefixRegexp = /^Error: /;
-        if (prefixRegexp.test(message)) {
-          message = message.replace(prefixRegexp, '');
-        }
-
-        err.message = message;
-
-        return err;
+    let errors = toArrayIfNot(_err);
+    errors = errors.map((e) => {
+      if (e instanceof ErrorV3) {
+        return e;
       }
-      if (typeof _err === 'string') {
-        err.message = _err;
-        return err;
+      if (typeof e === 'string') {
+        return { message: e };
       }
 
       throw new Error('invalid error supplied to res.apiv3Err');
     });
 
-    this.status(status).json({
-      errors: toArrayIfNot(errors),
-    });
+    this.status(status).json({ errors });
   };
 };
