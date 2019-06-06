@@ -22,12 +22,15 @@
 
           <hr>
 
+          {% if page.grant != 2 %}
+          {{ page.grant }}
           <div class="checkbox checkbox-warning">
             <input name="recursively" id="cbDeleteRecursively" value="1" type="checkbox" checked>
             <label for="cbDeleteRecursively">{{ t('modal_delete.label.Delete recursively') }}</label>
             <p class="help-block"> {{ t('modal_delete.help.recursively', page.path) }}
             </p>
           </div>
+          {% endif %}
           {% if not page.isDeleted() %}
           <div class="checkbox checkbox-danger">
             <input name="completely" id="cbDeleteCompletely" value="1"  type="checkbox">
