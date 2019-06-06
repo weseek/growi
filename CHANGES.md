@@ -1,6 +1,12 @@
 # CHANGES
 
-## 3.4.8-RC
+## 3.5.0-RC
+
+### BREAKING CHANGES
+
+* GROWI no longer supports [Crowi Template syntax](https://medium.com/crowi-book/crowi-v1-5-0-5a62e7c6be90)
+
+### Updates
 
 * Feature: Comment Thread
 * Improvement Draft list
