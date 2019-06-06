@@ -6,24 +6,25 @@ module.exports = function(crowi) {
   const debug = require('debug')('growi:lib:mailer');
   const nodemailer = require('nodemailer');
   const swig = require('swig-templates');
-  const Config = crowi.model('Config');
-  const config = crowi.getConfig();
-  const mailConfig = {};
 
+  const Config = crowi.model('Config');
+  const configManager = crowi.configManager;
+
+  const mailConfig = {};
   let mailer = {};
 
   function createSMTPClient(option) {
     debug('createSMTPClient option', option);
     if (!option) {
       option = { // eslint-disable-line no-param-reassign
-        host: config.crowi['mail:smtpHost'],
-        port: config.crowi['mail:smtpPort'],
+        host: configManager.getConfig('crowi', 'mail:smtpHost'),
+        port: configManager.getConfig('crowi', 'mail:smtpPort'),
       };
 
-      if (config.crowi['mail:smtpUser'] && config.crowi['mail:smtpPassword']) {
+      if (configManager.getConfig('crowi', 'mail:smtpUser') && configManager.getConfig('crowi', 'mail:smtpPassword')) {
         option.auth = {
-          user: config.crowi['mail:smtpUser'],
-          pass: config.crowi['mail:smtpPassword'],
+          user: configManager.getConfig('crowi', 'mail:smtpUser'),
+          pass: configManager.getConfig('crowi', 'mail:smtpPassword'),
         };
       }
       if (option.port === 465) {
@@ -41,8 +42,8 @@ module.exports = function(crowi) {
   function createSESClient(option) {
     if (!option) {
       option = { // eslint-disable-line no-param-reassign
-        accessKeyId: config.crowi['aws:accessKeyId'],
-        secretAccessKey: config.crowi['aws:secretAccessKey'],
+        accessKeyId: configManager.getConfig('crowi', 'aws:accessKeyId'),
+        secretAccessKey: configManager.getConfig('crowi', 'aws:secretAccessKey'),
       };
     }
 
@@ -54,17 +55,17 @@ module.exports = function(crowi) {
   }
 
   function initialize() {
-    if (!config.crowi['mail:from']) {
+    if (!configManager.getConfig('crowi', 'mail:from')) {
       mailer = undefined;
       return;
     }
 
-    if (config.crowi['mail:smtpHost'] && config.crowi['mail:smtpPort']
+    if (configManager.getConfig('crowi', 'mail:smtpHost') && configManager.getConfig('crowi', 'mail:smtpPort')
     ) {
       // SMTP 設定がある場合はそれを優先
       mailer = createSMTPClient();
     }
-    else if (config.crowi['aws:accessKeyId'] && config.crowi['aws:secretAccessKey']) {
+    else if (configManager.getConfig('crowi', 'aws:accessKeyId') && configManager.getConfig('crowi', 'aws:secretAccessKey')) {
       // AWS 設定がある場合はSESを設定
       mailer = createSESClient();
     }
@@ -72,8 +73,8 @@ module.exports = function(crowi) {
       mailer = undefined;
     }
 
-    mailConfig.from = config.crowi['mail:from'];
-    mailConfig.subject = `${Config.appTitle(config)}からのメール`;
+    mailConfig.from = configManager.getConfig('crowi', 'mail:from');
+    mailConfig.subject = `${Config.appTitle()}からのメール`;
 
     debug('mailer initialized');
   }

@@ -23,10 +23,10 @@ module.exports = function(crowi, app) {
   const env = crowi.node_env;
 
   // Old type config API
-  const config = crowi.getConfig();
   const Config = crowi.model('Config');
   // New type config API
   const configManager = crowi.configManager;
+  const getConfig = configManager.getConfig;
 
   const User = crowi.model('User');
   const lngDetector = new i18nMiddleware.LanguageDetector();
@@ -56,7 +56,7 @@ module.exports = function(crowi, app) {
 
   app.use((req, res, next) => {
     const now = new Date();
-    const tzoffset = -(config.crowi['app:timezone'] || 9) * 60;
+    const tzoffset = -(getConfig('crowi', 'app:timezone') || 9) * 60;
     // for datez
 
     const Page = crowi.model('Page');
@@ -127,7 +127,7 @@ module.exports = function(crowi, app) {
   });
 
   // passport
-  if (Config.isEnabledPassport(config)) {
+  if (Config.isEnabledPassport()) {
     debug('initialize Passport');
     app.use(passport.initialize());
     app.use(passport.session());
@@ -143,7 +143,7 @@ module.exports = function(crowi, app) {
   app.use(middlewares.csrfKeyGenerator());
 
   // switch loginChecker
-  if (Config.isEnabledPassport(config)) {
+  if (Config.isEnabledPassport()) {
     app.use(middlewares.loginCheckerForPassport);
   }
   else {

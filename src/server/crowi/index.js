@@ -73,7 +73,6 @@ Crowi.prototype.init = async function() {
   await this.setupDatabase();
   await this.setupModels();
   await this.setupSessionConfig();
-  await this.setupAppConfig();
   await this.setupConfigManager();
 
   await Promise.all([
@@ -180,23 +179,25 @@ Crowi.prototype.setupSessionConfig = function() {
   }));
 };
 
-Crowi.prototype.setupAppConfig = function() {
-  return new Promise((resolve, reject) => {
-    this.model('Config', require('../models/config')(this));
-    const Config = this.model('Config');
-    Config.loadAllConfig((err, doc) => {
-      if (err) {
-        return reject();
-      }
+// Crowi.prototype.setupAppConfig = function() {
+//   return new Promise((resolve, reject) => {
+//     this.model('Config', require('../models/config')(this));
+//     const Config = this.model('Config');
+//     Config.loadAllConfig((err, doc) => {
+//       if (err) {
+//         return reject();
+//       }
 
-      this.setConfig(doc);
+//       this.setConfig(doc);
 
-      return resolve();
-    });
-  });
-};
+//       return resolve();
+//     });
+//   });
+// };
 
 Crowi.prototype.setupConfigManager = async function() {
+  this.model('Config', require('../models/config')(this));
+
   const ConfigManager = require('../service/config-manager');
   this.configManager = new ConfigManager(this.model('Config'));
   return this.configManager.loadConfigs();

@@ -20,6 +20,8 @@ class ConfigManager {
     this.configModel = configModel;
     this.configLoader = new ConfigLoader(this.configModel);
     this.configObject = null;
+
+    this.getConfig = this.getConfig.bind(this);
   }
 
   /**

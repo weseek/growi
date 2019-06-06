@@ -139,21 +139,23 @@ module.exports = function(crowi) {
   }
 
   function getValueForCrowiNS(config, key) {
-    // return the default value if undefined
-    if (undefined === config.crowi || undefined === config.crowi[key]) {
-      return getDefaultCrowiConfigs()[key];
-    }
+    crowi.configManager.getConfig('crowi', key);
+    // // return the default value if undefined
+    // if (undefined === config.crowi || undefined === config.crowi[key]) {
+    //   return getDefaultCrowiConfigs()[key];
+    // }
 
-    return config.crowi[key];
+    // return config.crowi[key];
   }
 
   function getValueForMarkdownNS(config, key) {
-    // return the default value if undefined
-    if (undefined === config.markdown || undefined === config.markdown[key]) {
-      return getDefaultMarkdownConfigs()[key];
-    }
+    crowi.configManager.getConfig('markdown', key);
+    // // return the default value if undefined
+    // if (undefined === config.markdown || undefined === config.markdown[key]) {
+    //   return getDefaultMarkdownConfigs()[key];
+    // }
 
-    return config.markdown[key];
+    // return config.markdown[key];
   }
 
   /**
@@ -197,20 +199,20 @@ module.exports = function(crowi) {
   configSchema.statics.updateConfigCache = function(ns, config) {
     validateCrowi();
 
-    const originalConfig = crowi.getConfig();
-    const newNSConfig = originalConfig[ns] || {};
-    Object.keys(config).forEach((key) => {
-      if (config[key] || config[key] === '' || config[key] === false) {
-        newNSConfig[key] = config[key];
-      }
-    });
+    // const originalConfig = crowi.getConfig();
+    // const newNSConfig = originalConfig[ns] || {};
+    // Object.keys(config).forEach((key) => {
+    //   if (config[key] || config[key] === '' || config[key] === false) {
+    //     newNSConfig[key] = config[key];
+    //   }
+    // });
 
-    originalConfig[ns] = newNSConfig;
-    crowi.setConfig(originalConfig);
+    // originalConfig[ns] = newNSConfig;
+    // crowi.setConfig(originalConfig);
 
-    // initialize custom css/script
-    Config.initCustomCss(originalConfig);
-    Config.initCustomScript(originalConfig);
+    // // initialize custom css/script
+    // Config.initCustomCss(originalConfig);
+    // Config.initCustomScript(originalConfig);
   };
 
   // Execute only once for installing application
@@ -283,36 +285,36 @@ module.exports = function(crowi) {
   configSchema.statics.getConfig = function(callback) {
   };
 
-  configSchema.statics.loadAllConfig = function(callback) {
-    const Config = this;
+  // configSchema.statics.loadAllConfig = function(callback) {
+  //   const Config = this;
 
 
-    const config = {};
-    config.crowi = {}; // crowi namespace
+  //   const config = {};
+  //   config.crowi = {}; // crowi namespace
 
-    Config.find()
-      .sort({ ns: 1, key: 1 })
-      .exec((err, doc) => {
-        doc.forEach((el) => {
-          if (!config[el.ns]) {
-            config[el.ns] = {};
-          }
-          config[el.ns][el.key] = JSON.parse(el.value);
-        });
+  //   Config.find()
+  //     .sort({ ns: 1, key: 1 })
+  //     .exec((err, doc) => {
+  //       doc.forEach((el) => {
+  //         if (!config[el.ns]) {
+  //           config[el.ns] = {};
+  //         }
+  //         config[el.ns][el.key] = JSON.parse(el.value);
+  //       });
 
-        debug('Config loaded', config);
+  //       debug('Config loaded', config);
 
-        // initialize custom css/script
-        Config.initCustomCss(config);
-        Config.initCustomScript(config);
+  //       // initialize custom css/script
+  //       Config.initCustomCss(config);
+  //       Config.initCustomScript(config);
 
-        return callback(null, config);
-      });
-  };
+  //       return callback(null, config);
+  //     });
+  // };
 
-  configSchema.statics.appTitle = function(config) {
+  configSchema.statics.appTitle = function() {
     const key = 'app:title';
-    return getValueForCrowiNS(config, key) || 'GROWI';
+    return getValueForCrowiNS(null, key) || 'GROWI';
   };
 
   configSchema.statics.globalLang = function(config) {
@@ -320,14 +322,9 @@ module.exports = function(crowi) {
     return getValueForCrowiNS(config, key);
   };
 
-  configSchema.statics.isEnabledPassport = function(config) {
-    // always true if growi installed cleanly
-    if (Object.keys(config.crowi).length === 0) {
-      return true;
-    }
-
+  configSchema.statics.isEnabledPassport = function() {
     const key = 'security:isEnabledPassport';
-    return getValueForCrowiNS(config, key);
+    return getValueForCrowiNS(null, key);
   };
 
   configSchema.statics.isEnabledPassportLdap = function(config) {
