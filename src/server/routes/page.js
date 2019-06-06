@@ -926,8 +926,6 @@ module.exports = function(crowi, app) {
     const isCompletely = (req.body.completely != null);
     // get recursively flag
     const isRecursively = (req.body.recursively != null);
-    // get useradmin flag
-    const isDeniedDelete = !req.user.admin;
 
     const options = { socketClientId };
 
@@ -941,7 +939,9 @@ module.exports = function(crowi, app) {
 
     try {
       if (isCompletely) {
-        if (isDeniedDelete) {
+        // get useradmin flag
+        const isDeniedCompletelyDelete = !req.user.admin;
+        if (isDeniedCompletelyDelete) {
           return res.json(ApiResponse.error('You can not delete completely', 'user_not_admin'));
         }
         if (isRecursively) {
