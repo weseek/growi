@@ -336,11 +336,11 @@ module.exports = function(crowi) {
   userSchema.statics.getLanguageLabels = getLanguageLabels;
   userSchema.statics.getUserStatusLabels = function() {
     const userStatus = {};
-    userStatus[STATUS_REGISTERED] = '承認待ち';
+    userStatus[STATUS_REGISTERED] = 'Approval Pending';
     userStatus[STATUS_ACTIVE] = 'Active';
     userStatus[STATUS_SUSPENDED] = 'Suspended';
     userStatus[STATUS_DELETED] = 'Deleted';
-    userStatus[STATUS_INVITED] = '招待済み';
+    userStatus[STATUS_INVITED] = 'Invited';
 
     return userStatus;
   };
