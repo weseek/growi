@@ -266,7 +266,8 @@
   "page_api_error": {
     "notfound_or_forbidden": "元のページが見つからないか、アクセス権がありません。",
     "already_exists": "新しいページが既に存在しています。",
-    "outdated": "ページが他のユーザーによって更新されました。"
+    "outdated": "ページが他のユーザーによって更新されました。",
+    "user_not_admin": "権限のあるユーザーのみが完全削除できます"
   },
 
   "modal_rename": {
