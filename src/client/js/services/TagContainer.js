@@ -34,7 +34,7 @@ export default class TagContainer extends Container {
 
     const { pageId, templateTagData } = pageContainer.state;
 
-    let tags;
+    let tags = [];
     // when the page exists
     if (pageId != null) {
       const res = await this.appContainer.apiGet('/pages.getPageTag', { pageId });

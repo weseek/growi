@@ -10,7 +10,9 @@
 <div id="content-main" class="content-main content-main-not-found page-list"
   data-path="{{ path | preventXss }}"
   data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
-  data-template-tags="{{ templateTags | '' }}"
+  {% if templateTags %}
+    data-template-tags="{{ templateTags }}"
+  {% endif %}
   >
 
   {% include 'not_found_tabs.html' %}

@@ -41,7 +41,7 @@ export default class PageContainer extends Container {
       likerUserIds: [],
 
       tags: [],
-      templateTagData: mainContent.getAttribute('data-template-tags') || '',
+      templateTagData: mainContent.getAttribute('data-template-tags'),
 
       // latest(on remote) information
       remoteRevisionId: revisionId,
