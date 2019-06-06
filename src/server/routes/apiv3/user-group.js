@@ -13,13 +13,13 @@ const {
   csrfVerify,
   loginRequired,
   adminRequired,
-  formValid,
 } = require('../../util/middlewares');
 
 const validator = {};
 
 module.exports = (crowi) => {
   const { ErrorV3, UserGroup, UserGroupRelation } = crowi.models;
+  const { formValid } = require('../../middlewares');
 
   router.use('/', accessTokenParser(crowi));
 

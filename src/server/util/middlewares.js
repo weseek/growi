@@ -3,7 +3,6 @@ const logger = require('@alias/logger')('growi:lib:middlewares');
 const pathUtils = require('growi-commons').pathUtils;
 const md5 = require('md5');
 const entities = require('entities');
-const { validationResult } = require('express-validator/check');
 
 exports.csrfKeyGenerator = function(crowi, app) {
   return function(req, res, next) {
@@ -319,21 +318,5 @@ exports.awsEnabled = function() {
   };
 };
 
-exports.formValid = function(crowi) {
-  const { ErrorV3 } = crowi.models;
-
-  return function(req, res, next) {
-    const errObjArray = validationResult(req);
-    if (errObjArray.isEmpty()) {
-      return next();
-    }
-
-    const errs = errObjArray.array().map((err) => {
-      logger.error(`${err.param} in ${err.location}: ${err.msg}`);
-      const errrr = new ErrorV3(`${err.param}: ${err.msg}`, 'validation_failed');
-      return errrr;
-    });
-
-    return res.apiv3Err(errs);
-  };
-};
+// don't add any more middlewares to this file.
+// all new middlewares should be an independent file under /server/routes/middlewares
