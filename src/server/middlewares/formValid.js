@@ -12,8 +12,7 @@ const formValid = (crowi) => {
 
     const errs = errObjArray.array().map((err) => {
       logger.error(`${err.param} in ${err.location}: ${err.msg}`);
-      const errrr = new ErrorV3(`${err.param}: ${err.msg}`, 'validation_failed');
-      return errrr;
+      return new ErrorV3(`${err.param}: ${err.msg}`, 'validation_failed');
     });
 
     return res.apiv3Err(errs);

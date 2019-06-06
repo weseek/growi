@@ -9,7 +9,6 @@ const router = express.Router();
 const { body, param, query } = require('express-validator/check');
 
 const {
-  accessTokenParser,
   csrfVerify,
   loginRequired,
   adminRequired,
@@ -20,8 +19,6 @@ const validator = {};
 module.exports = (crowi) => {
   const { ErrorV3, UserGroup, UserGroupRelation } = crowi.models;
   const { formValid } = require('../../middlewares');
-
-  router.use('/', accessTokenParser(crowi));
 
   router.get('/', loginRequired(crowi), adminRequired(), async(req, res) => {
     // TODO: filter with querystring

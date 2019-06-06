@@ -7,7 +7,6 @@ const express = require('express');
 const router = express.Router();
 
 const {
-  accessTokenParser,
   loginRequired,
   adminRequired,
 } = require('../../util/middlewares');
@@ -15,8 +14,6 @@ const {
 
 module.exports = (crowi) => {
   const { ErrorV3, UserGroup, UserGroupRelation } = crowi.models;
-
-  router.use('/', accessTokenParser(crowi));
 
   router.get('/', loginRequired(crowi), adminRequired(), async(req, res) => {
     // TODO: filter with querystring? or body
