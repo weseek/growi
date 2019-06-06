@@ -6,11 +6,10 @@ const express = require('express');
 
 const router = express.Router();
 
-const addCustomFunctionToResponse = require('./response');
-
-addCustomFunctionToResponse(express);
-
 module.exports = (crowi) => {
+
+  // add custom functions to express response
+  require('./response')(express, crowi);
 
   router.use('/healthcheck', require('./healthcheck')(crowi));
 

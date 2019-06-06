@@ -4,7 +4,6 @@ const pathUtils = require('growi-commons').pathUtils;
 const md5 = require('md5');
 const entities = require('entities');
 const { validationResult } = require('express-validator/check');
-const ErrorV3 = require('./ErrorV3');
 
 exports.csrfKeyGenerator = function(crowi, app) {
   return function(req, res, next) {
@@ -320,7 +319,9 @@ exports.awsEnabled = function() {
   };
 };
 
-exports.formValid = function() {
+exports.formValid = function(crowi) {
+  const { ErrorV3 } = crowi.models;
+
   return function(req, res, next) {
     const errObjArray = validationResult(req);
     if (errObjArray.isEmpty()) {

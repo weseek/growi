@@ -6,7 +6,6 @@ const express = require('express');
 
 const router = express.Router();
 
-const ErrorV3 = require('../../util/ErrorV3');
 const {
   accessTokenParser,
   loginRequired,
@@ -15,7 +14,7 @@ const {
 
 
 module.exports = (crowi) => {
-  const { UserGroup, UserGroupRelation } = crowi.models;
+  const { ErrorV3, UserGroup, UserGroupRelation } = crowi.models;
 
   router.use('/', accessTokenParser(crowi));
 

@@ -1,8 +1,8 @@
 const toArrayIfNot = require('../../../lib/util/toArrayIfNot');
-const ErrorV3 = require('../../util/ErrorV3');
 
-// add custom functions to express res
-const addCustomFunctionToResponse = (express) => {
+const addCustomFunctionToResponse = (express, crowi) => {
+  const { ErrorV3 } = crowi.models;
+
   express.response.apiv3 = function(obj) { // not arrow function
     // obj must be object
     if (typeof obj !== 'object' || obj instanceof Array) {

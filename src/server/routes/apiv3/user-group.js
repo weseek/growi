@@ -7,7 +7,7 @@ const express = require('express');
 const router = express.Router();
 
 const { body, param, query } = require('express-validator/check');
-const ErrorV3 = require('../../util/ErrorV3');
+
 const {
   accessTokenParser,
   csrfVerify,
@@ -19,7 +19,7 @@ const {
 const validator = {};
 
 module.exports = (crowi) => {
-  const { UserGroup, UserGroupRelation } = crowi.models;
+  const { ErrorV3, UserGroup, UserGroupRelation } = crowi.models;
 
   router.use('/', accessTokenParser(crowi));
 
@@ -40,7 +40,7 @@ module.exports = (crowi) => {
     body('name', 'Group name is required').trim().exists(),
   ];
 
-  router.post('/', loginRequired(crowi), adminRequired(), csrfVerify(crowi), validator.create, formValid(), async(req, res) => {
+  router.post('/', loginRequired(crowi), adminRequired(), csrfVerify(crowi), validator.create, formValid(crowi), async(req, res) => {
     const { name } = req.body;
 
     try {
@@ -62,7 +62,7 @@ module.exports = (crowi) => {
     query('transferToUserGroupId').trim(),
   ];
 
-  router.delete('/:id', loginRequired(crowi), adminRequired(), csrfVerify(crowi), validator.delete, formValid(), async(req, res) => {
+  router.delete('/:id', loginRequired(crowi), adminRequired(), csrfVerify(crowi), validator.delete, formValid(crowi), async(req, res) => {
     const { id: deleteGroupId } = req.params;
     const { actionName, transferToUserGroupId } = req.query;
 
