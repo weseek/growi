@@ -183,9 +183,14 @@ export default class PageContainer extends Container {
   }
 
   async saveAndReload(optionsToSave) {
+    if (optionsToSave == null) {
+      const msg = '\'saveAndReload\' requires the \'optionsToSave\' param';
+      throw new Error(msg);
+    }
+
     const { editorMode } = this.appContainer.state;
     if (editorMode == null) {
-      logger.warn('do nothing because \'errorMode\' is null');
+      logger.warn('\'saveAndReload\' requires the \'errorMode\' param');
       return;
     }
 

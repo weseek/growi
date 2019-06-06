@@ -46,11 +46,16 @@ class SavePageControls extends React.Component {
   }
 
   save() {
-    this.props.pageContainer.saveAndReload();
+    const { pageContainer, editorContainer } = this.props;
+    pageContainer.saveAndReload(editorContainer.getCurrentOptionsToSave());
   }
 
   saveAndOverwriteScopesOfDescendants() {
-    this.props.pageContainer.saveAndReload({ overwriteScopesOfDescendants: true });
+    const { pageContainer, editorContainer } = this.props;
+    const optionsToSave = Object.assign(editorContainer.getCurrentOptionsToSave(), {
+      overwriteScopesOfDescendants: true,
+    });
+    pageContainer.saveAndReload(optionsToSave);
   }
 
   render() {
