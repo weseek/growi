@@ -124,6 +124,20 @@ class ConfigManager {
     await this.loadConfigs();
   }
 
+  /**
+   * Execute only once for installing application
+   */
+  async initDB(globalLang) {
+    const initialConfig = this.configModel.getConfigsObjectForInstalling();
+    initialConfig['app:globalLang'] = globalLang;
+    await this.updateConfigsInTheSameNamespace('crowi', initialConfig);
+  }
+
+  async isDBInitialized() {
+    const appInstalled = await this.getConfigFromDB('crowi', 'app:installed');
+    return appInstalled;
+  }
+
   /*
    * All of the methods below are private APIs.
    */

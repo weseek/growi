@@ -21,7 +21,6 @@ module.exports = function(crowi, app) {
   const i18nMiddleware = require('i18next-express-middleware');
   const i18nUserSettingDetector = require('../util/i18nUserSettingDetector');
   const env = crowi.node_env;
-  const middleware = require('../util/middlewares');
 
   // Old type config API
   const config = crowi.getConfig();
@@ -136,17 +135,19 @@ module.exports = function(crowi, app) {
 
   app.use(flash());
 
-  app.use(middleware.swigFilters(crowi, app, swig));
-  app.use(middleware.swigFunctions(crowi, app));
+  const middlewares = require('../util/middlewares')(crowi, app);
 
-  app.use(middleware.csrfKeyGenerator(crowi, app));
+  app.use(middlewares.swigFilters(swig));
+  app.use(middlewares.swigFunctions());
+
+  app.use(middlewares.csrfKeyGenerator());
 
   // switch loginChecker
   if (Config.isEnabledPassport(config)) {
-    app.use(middleware.loginCheckerForPassport(crowi, app));
+    app.use(middlewares.loginCheckerForPassport);
   }
   else {
-    app.use(middleware.loginChecker(crowi, app));
+    app.use(middlewares.loginChecker);
   }
 
   app.use(i18nMiddleware.handle(i18next));

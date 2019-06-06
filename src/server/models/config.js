@@ -32,10 +32,11 @@ module.exports = function(crowi) {
   /**
    * default values when GROWI is cleanly installed
    */
-  function getArrayForInstalling() {
+  function getConfigsForInstalling() {
     const config = getDefaultCrowiConfigs();
 
     // overwrite
+    config['app:installed'] = true;
     config['app:fileUpload'] = true;
     config['security:isEnabledPassport'] = true;
     config['customize:behavior'] = 'growi';
@@ -51,7 +52,7 @@ module.exports = function(crowi) {
   function getDefaultCrowiConfigs() {
     /* eslint-disable key-spacing */
     return {
-      // 'app:installed'     : "0.0.0",
+      'app:installed'     : false,
       'app:confidential'  : '',
 
       'app:fileUpload'    : false,
@@ -156,6 +157,13 @@ module.exports = function(crowi) {
   }
 
   /**
+   * It is deprecated to use this for anything other than ConfigManager#isDBInitialized.
+   */
+  configSchema.statics.getConfigsObjectForInstalling = function() {
+    return getConfigsForInstalling();
+  };
+
+  /**
    * It is deprecated to use this for anything other than ConfigLoader#load.
    */
   configSchema.statics.getDefaultCrowiConfigsObject = function() {
@@ -206,18 +214,18 @@ module.exports = function(crowi) {
   };
 
   // Execute only once for installing application
-  configSchema.statics.applicationInstall = function(callback) {
-    const Config = this;
-    Config.count({ ns: 'crowi' }, (err, count) => {
-      if (count > 0) {
-        return callback(new Error('Application already installed'), null);
-      }
-      Config.updateNamespaceByArray('crowi', getArrayForInstalling(), (err, configs) => {
-        Config.updateConfigCache('crowi', configs);
-        return callback(err, configs);
-      });
-    });
-  };
+  // configSchema.statics.applicationInstall = function(callback) {
+  //   const Config = this;
+  //   Config.count({ ns: 'crowi' }, (err, count) => {
+  //     if (count > 0) {
+  //       return callback(new Error('Application already installed'), null);
+  //     }
+  //     Config.updateNamespaceByArray('crowi', getArrayForInstalling(), (err, configs) => {
+  //       Config.updateConfigCache('crowi', configs);
+  //       return callback(err, configs);
+  //     });
+  //   });
+  // };
 
   configSchema.statics.setupConfigFormData = function(ns, config) {
     let defaultConfig = {};

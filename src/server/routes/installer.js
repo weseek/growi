@@ -2,8 +2,10 @@ module.exports = function(crowi, app) {
   const logger = require('@alias/logger')('growi:routes:installer');
   const path = require('path');
   const fs = require('graceful-fs');
+
   const models = crowi.models;
-  const Config = models.Config;
+  const configManager = crowi.configManager;
+
   const User = models.User;
   const Page = models.Page;
 
@@ -65,6 +67,9 @@ module.exports = function(crowi, app) {
     const password = registerForm.password;
     const language = registerForm['app:globalLang'] || 'en-US';
 
+    await configManager.initDB(language);
+
+    // create first admin user
     let adminUser;
     try {
       adminUser = await User.createUser(name, username, email, password, language);
@@ -74,29 +79,36 @@ module.exports = function(crowi, app) {
       req.form.errors.push(`管理ユーザーの作成に失敗しました。${err.message}`);
       return res.render('installer');
     }
-
-    Config.applicationInstall((err, configs) => {
-      if (err) {
-        logger.error(err);
-        return;
-      }
-
-      // save the globalLang config, and update the config cache
-      Config.updateNamespaceByArray('crowi', { 'app:globalLang': language }, (err, config) => {
-        Config.updateConfigCache('crowi', config);
-      });
-
-      // login with passport
-      req.logIn(adminUser, (err) => {
-        if (err) { return next() }
-
-        req.flash('successMessage', 'GROWI のインストールが完了しました！はじめに、このページで各種設定を確認してください。');
-        return res.redirect('/admin/app');
-      });
-    });
-
     // create initial pages
     await createInitialPages(adminUser, language);
+
+    // login with passport
+    req.logIn(adminUser, (err) => {
+      if (err) { return next() }
+
+      req.flash('successMessage', 'GROWI のインストールが完了しました！はじめに、このページで各種設定を確認してください。');
+      return res.redirect('/admin/app');
+    });
+
+    // Config.applicationInstall((err, configs) => {
+    //   if (err) {
+    //     logger.error(err);
+    //     return;
+    //   }
+
+    //   // save the globalLang config, and update the config cache
+    //   Config.updateNamespaceByArray('crowi', { 'app:globalLang': language }, (err, config) => {
+    //     Config.updateConfigCache('crowi', config);
+    //   });
+
+    //   // login with passport
+    //   req.logIn(adminUser, (err) => {
+    //     if (err) { return next() }
+
+    //     req.flash('successMessage', 'GROWI のインストールが完了しました！はじめに、このページで各種設定を確認してください。');
+    //     return res.redirect('/admin/app');
+    //   });
+    // });
   };
 
   return actions;
