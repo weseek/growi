@@ -77,7 +77,7 @@
             <div class="modal-body">
               <p>
                 {{ t('user_management.temporary_password') }}<br>
-                {{ t('user_management.password.never.seen') }}<span class="text-danger">{{ t('user_management.tell_temporary_password') }}</span>
+                {{ t('user_management.password.never.seen') }}<span class="text-danger">{{ t('user_management.send_temporary_password') }}</span>
               </p>
 
               <pre>{% for cUser in createdUser %}{% if cUser.user %}{{ cUser.email }} {{ cUser.password }}<br>{% else %}{{ cUser.email }} 作成失敗<br>{% endif %}{% endfor %}</pre>
@@ -94,13 +94,13 @@
           <div class="modal-content">
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-              <div class="modal-title">{{ t('user_management.Reissue_password')}}</div>
+              <div class="modal-title">{{ t('user_management.reset_password')}}</div>
             </div>
 
             <div class="modal-body">
               <p>
                 {{ t('user_management.password_never_seen') }}<br>
-              <span class="text-danger">{{ t('user_management.tell_new_password') }}</span>
+              <span class="text-danger">{{ t('user_management.send_new_password') }}</span>
               </p>
               <p>
               {{ t('user_management.target_user') }}: <code id="admin-password-reset-user"></code>
@@ -110,7 +110,7 @@
                 <input type="hidden" name="user_id" value="">
                 <input type="hidden" name="_csrf" value="{{ csrf() }}">
                 <button type="submit" value="" class="btn btn-primary">
-                  {{ t('Execution')}}
+                  {{ t('user_management.reset_password')}}
                 </button>
               </form>
 
@@ -125,7 +125,7 @@
 
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-              <div class="modal-title">Password reset!</div>
+              <div class="modal-title">{{ t('user_management.reset_password') }}</div>
             </div>
 
             <div class="modal-body">
@@ -150,7 +150,7 @@
         <thead>
           <tr>
             <th width="100px">#</th>
-            <th>{{ t('Status') }}</th>
+            <th>{{ t('status') }}</th>
             <th><code>{{ t('User') }}</code></th>
             <th>{{ t('Name') }}</th>
             <th>{{ t('Email') }}</th>
@@ -167,7 +167,7 @@
               <img src="{{ sUser|picture }}" class="picture img-circle" />
               {% if sUser.admin %}
               <span class="label label-inverse label-admin">
-              {{ t('Administrator') }}
+              {{ t('administrator') }}
               </span>
               {% endif %}
             </td>
@@ -193,7 +193,7 @@
                   <i class="icon-settings"></i> <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu" role="menu">
-                  <li class="dropdown-header">{{ t('user_management.Edit_Menu') }}</li>
+                  <li class="dropdown-header">{{ t('user_management.edit_menu') }}</li>
                   <li>
                     <a href="#"
                         data-user-id="{{ sUserId }}"
@@ -201,11 +201,11 @@
                         data-target="#admin-password-reset-modal"
                         data-toggle="modal">
                       <i class="icon-fw icon-key"></i>
-                      {{ t('user_management.Reissue_password') }}
+                      {{ t('user_management.reset_password') }}
                     </a>
                   </li>
                   <li class="divider"></li>
-                  <li class="dropdown-header">{{ t('Status') }}</li>
+                  <li class="dropdown-header">{{ t('status') }}</li>
 
                   {% if sUser.status == 1 %}
                   <form id="form_activate_{{ sUserId }}" action="/admin/user/{{ sUserId }}/activate" method="post">
@@ -226,12 +226,12 @@
                     {% if sUser.username != user.username %}
                     <a href="javascript:form_suspend_{{ sUserId }}.submit()">
                       <i class="icon-fw icon-ban"></i>
-                      {{ t('user_management.Deactivate_account') }}
+                      {{ t('user_management.deactivate_account') }}
                     </a>
                     {% else %}
                     <a disabled>
                       <i class="icon-fw icon-ban"></i>
-                      {{ t('user_management.Deactivate_account') }}
+                      {{ t('user_management.deactivate_account') }}
                     </a>
                     <p class="alert alert-danger m-l-10 m-r-10 p-10">{{ t("user_management.your_own") }}</p>
                     {% endif %}
@@ -272,7 +272,7 @@
 
                   {% if sUser.status == 2 %} {# activated な人だけこのメニューを表示 #}
                   <li class="divider"></li>
-                  <li class="dropdown-header">{{ t('user_management.Administrator_menu') }}</li>
+                  <li class="dropdown-header">{{ t('user_management.administrator_menu') }}</li>
 
                   {% if sUser.admin %}
                   <form id="form_removeFromAdmin_{{ sUserId }}" action="/admin/user/{{ sUser._id.toString() }}/removeFromAdmin" method="post">
