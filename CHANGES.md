@@ -11,6 +11,8 @@
 * Feature: Comment Thread
 * Improvement Draft list
 * Fix: Deleting page completely
+* I18n: User Management Details
+* I18n: Group Management Details
 * Support: Apply unstated
 * Support: Upgrade libs
     * mini-css-extract-plugin
