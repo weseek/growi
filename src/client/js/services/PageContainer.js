@@ -182,6 +182,46 @@ export default class PageContainer extends Container {
     return res;
   }
 
+  async saveAndReload(optionsToSave) {
+    const { editorMode } = this.appContainer.state;
+    if (editorMode == null) {
+      logger.warn('do nothing because \'errorMode\' is null');
+      return;
+    }
+
+    const { pageId, path } = this.state;
+    let { revisionId } = this.state;
+
+    const options = Object.assign({}, optionsToSave);
+
+    let markdown;
+    if (editorMode === 'hackmd') {
+      const pageEditorByHackmd = this.appContainer.getComponentInstance('PageEditorByHackmd');
+      markdown = await pageEditorByHackmd.getMarkdown();
+      // set option to sync
+      options.isSyncRevisionToHackmd = true;
+      revisionId = this.state.revisionIdHackmdSynced;
+    }
+    else {
+      const pageEditor = this.appContainer.getComponentInstance('PageEditor');
+      markdown = pageEditor.getMarkdown();
+    }
+
+    let res;
+    if (pageId == null) {
+      res = await this.createPage(path, markdown, options);
+    }
+    else {
+      res = await this.updatePage(pageId, revisionId, markdown, options);
+    }
+
+    const editorContainer = this.appContainer.getContainer('EditorContainer');
+    editorContainer.clearDraft(path);
+    window.location.href = path;
+
+    return res;
+  }
+
   async createPage(pagePath, markdown, tmpParams) {
     const websocketContainer = this.appContainer.getContainer('WebsocketContainer');
 

@@ -74,61 +74,6 @@ appContainer.injectToWindow();
 
 const i18n = appContainer.i18n;
 
-const saveWithSubmitButtonSuccessHandler = function() {
-  const { path } = pageContainer.state;
-  editorContainer.clearDraft(path);
-  window.location.href = path;
-};
-
-const saveWithSubmitButton = function(submitOpts) {
-  const { editorMode } = appContainer.state;
-  if (editorMode == null) {
-    // do nothing
-    return;
-  }
-
-  const { pageId, path } = pageContainer.state;
-  let { revisionId } = pageContainer.state;
-  // get options
-  const options = editorContainer.getCurrentOptionsToSave();
-  options.socketClientId = websocketContainer.getSocketClientId();
-  options.pageTags = editorContainer.state.tags;
-
-  // set 'submitOpts.overwriteScopesOfDescendants' to options
-  options.overwriteScopesOfDescendants = submitOpts ? !!submitOpts.overwriteScopesOfDescendants : false;
-
-  let promise;
-  if (editorMode === 'hackmd') {
-    const pageEditorByHackmd = appContainer.getComponentInstance('PageEditorByHackmd');
-    // get markdown
-    promise = pageEditorByHackmd.getMarkdown();
-    // use revisionId of PageEditorByHackmd
-    revisionId = pageContainer.state.revisionIdHackmdSynced;
-    // set option to sync
-    options.isSyncRevisionToHackmd = true;
-  }
-  else {
-    const pageEditor = appContainer.getComponentInstance('PageEditor');
-    // get markdown
-    promise = Promise.resolve(pageEditor.getMarkdown());
-  }
-  // create or update
-  if (pageId == null) {
-    promise = promise.then((markdown) => {
-      return appContainer.createPage(path, markdown, options);
-    });
-  }
-  else {
-    promise = promise.then((markdown) => {
-      return appContainer.updatePage(pageId, revisionId, markdown, options);
-    });
-  }
-
-  promise
-    .then(saveWithSubmitButtonSuccessHandler)
-    .catch(errorHandler);
-};
-
 /**
  * define components
  *  key: id of element
@@ -147,7 +92,7 @@ let componentMappings = {
   'page-editor': <PageEditor />,
   'page-editor-options-selector': <OptionsSelector crowi={appContainer} />,
   'page-status-alert': <PageStatusAlert />,
-  'save-page-controls': <SavePageControls onSubmit={saveWithSubmitButton} />,
+  'save-page-controls': <SavePageControls />,
 
   'user-created-list': <RecentCreated />,
   'user-draft-list': <MyDraftList />,

@@ -29,8 +29,8 @@ class SavePageControls extends React.Component {
     this.slackChannelsChangedHandler = this.slackChannelsChangedHandler.bind(this);
     this.updateGrantHandler = this.updateGrantHandler.bind(this);
 
-    this.submit = this.submit.bind(this);
-    this.submitAndOverwriteScopesOfDescendants = this.submitAndOverwriteScopesOfDescendants.bind(this);
+    this.save = this.save.bind(this);
+    this.saveAndOverwriteScopesOfDescendants = this.saveAndOverwriteScopesOfDescendants.bind(this);
   }
 
   slackEnabledFlagChangedHandler(isSlackEnabled) {
@@ -45,13 +45,12 @@ class SavePageControls extends React.Component {
     this.props.editorContainer.setState(data);
   }
 
-  submit() {
-    this.props.appContainer.setIsDocSaved(true);
-    this.props.onSubmit();
+  save() {
+    this.props.pageContainer.saveAndReload();
   }
 
-  submitAndOverwriteScopesOfDescendants() {
-    this.props.onSubmit({ overwriteScopesOfDescendants: true });
+  saveAndOverwriteScopesOfDescendants() {
+    this.props.pageContainer.saveAndReload({ overwriteScopesOfDescendants: true });
   }
 
   render() {
@@ -94,10 +93,10 @@ class SavePageControls extends React.Component {
             className="btn-submit"
             dropup
             pullRight
-            onClick={this.submit}
+            onClick={this.save}
             title={labelSubmitButton}
           >
-            <MenuItem eventKey="1" onClick={this.submitAndOverwriteScopesOfDescendants}>{labelOverwriteScopes}</MenuItem>
+            <MenuItem eventKey="1" onClick={this.saveAndOverwriteScopesOfDescendants}>{labelOverwriteScopes}</MenuItem>
             {/* <MenuItem divider /> */}
           </SplitButton>
         </ButtonToolbar>
@@ -120,8 +119,6 @@ SavePageControls.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
-
-  onSubmit: PropTypes.func.isRequired,
 };
 
 export default withTranslation()(SavePageControlsWrapper);
