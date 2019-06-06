@@ -1,0 +1,36 @@
+const toArrayIfNot = require('../../../lib/util/toArrayIfNot');
+const ErrorV3 = require('../../util/ErrorV3');
+
+// add custom functions to express res
+const addCustomFunctionToResponse = (express) => {
+  express.response.apiv3 = function(obj) { // not arrow function
+    // obj must be object
+    if (typeof obj !== 'object' || obj instanceof Array) {
+      throw new Error('invalid value supplied to res.apiv3');
+    }
+
+    this.json({ data: obj });
+  };
+
+  express.response.apiv3Err = function(_err, status = 400) { // not arrow function
+    if (!Number.isInteger(status)) {
+      throw new Error('invalid status supplied to res.apiv3Err');
+    }
+
+    let errors = toArrayIfNot(_err);
+    errors = errors.map((e) => {
+      if (e instanceof ErrorV3) {
+        return e;
+      }
+      if (typeof e === 'string') {
+        return { message: e };
+      }
+
+      throw new Error('invalid error supplied to res.apiv3Err');
+    });
+
+    this.status(status).json({ errors });
+  };
+};
+
+module.exports = addCustomFunctionToResponse;

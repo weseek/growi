@@ -6,6 +6,9 @@ const express = require('express');
 
 const router = express.Router();
 
+const addCustomFunctionToResponse = require('./response');
+
+addCustomFunctionToResponse(express);
 
 module.exports = (crowi) => {
 
