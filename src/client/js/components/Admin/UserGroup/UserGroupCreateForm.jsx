@@ -1,9 +1,10 @@
 /* eslint-disable react/no-multi-comp */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Subscribe } from 'unstated';
 import { withTranslation } from 'react-i18next';
 
+import { createSubscribedElement } from '../../UnstatedUtils';
+import AppContainer from '../../../services/AppContainer';
 import { apiErrorHandler, apiSuccessHandler } from '../../../util/apiNotification';
 
 class UserGroupCreateForm extends React.Component {
@@ -36,14 +37,14 @@ class UserGroupCreateForm extends React.Component {
     e.preventDefault();
 
     try {
-      const res = await this.props.crowi.apiv3.post('/user-groups', {
+      const res = await this.props.appContainer.apiv3.post('/user-groups', {
         name: this.state.name,
       });
 
       const userGroup = res.data.userGroup;
       const userGroupId = userGroup._id;
 
-      const res2 = await this.props.crowi.apiv3.get(`/user-groups/${userGroupId}/users`);
+      const res2 = await this.props.appContainer.apiv3.get(`/user-groups/${userGroupId}/users`);
 
       const { users } = res2.data;
 
@@ -95,7 +96,6 @@ class UserGroupCreateForm extends React.Component {
             </div>
             <button type="submit" className="btn btn-primary" disabled={!this.validateForm()}>{ t('Create') }</button>
           </div>
-          <input type="hidden" name="_csrf" defaultValue={this.props.crowi.csrfToken} />
         </form>
       </div>
     );
@@ -106,31 +106,14 @@ class UserGroupCreateForm extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-class UserGroupCreateFormWrapper extends React.PureComponent {
-
-  render() {
-    return (
-      <Subscribe to={[]}>
-        {() => (
-          // eslint-disable-next-line arrow-body-style
-          <UserGroupCreateForm {...this.props} />
-        )}
-      </Subscribe>
-    );
-  }
-
-}
+const UserGroupCreateFormWrapper = (props) => {
+  return createSubscribedElement(UserGroupCreateForm, props, [AppContainer]);
+};
 
 UserGroupCreateForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  crowi: PropTypes.object.isRequired,
-  isAclEnabled: PropTypes.bool,
-  onCreate: PropTypes.func.isRequired,
-};
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
-UserGroupCreateFormWrapper.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-  crowi: PropTypes.object.isRequired,
   isAclEnabled: PropTypes.bool,
   onCreate: PropTypes.func.isRequired,
 };

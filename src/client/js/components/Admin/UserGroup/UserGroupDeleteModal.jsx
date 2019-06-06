@@ -1,10 +1,12 @@
 /* eslint-disable react/no-multi-comp */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Subscribe } from 'unstated';
 import { withTranslation } from 'react-i18next';
 
 import Modal from 'react-bootstrap/es/Modal';
+
+import { createSubscribedElement } from '../../UnstatedUtils';
+import AppContainer from '../../../services/AppContainer';
 
 /**
  * Delete User Group Select component
@@ -182,24 +184,14 @@ class UserGroupDeleteModal extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-class UserGroupDeleteModalWrapper extends React.PureComponent {
-
-  render() {
-    return (
-      <Subscribe to={[]}>
-        {() => (
-          // eslint-disable-next-line arrow-body-style
-          <UserGroupDeleteModal {...this.props} />
-        )}
-      </Subscribe>
-    );
-  }
-
-}
+const UserGroupDeleteModalWrapper = (props) => {
+  return createSubscribedElement(UserGroupDeleteModal, props, [AppContainer]);
+};
 
 UserGroupDeleteModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  crowi: PropTypes.object.isRequired,
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+
   userGroups: PropTypes.arrayOf(PropTypes.object).isRequired,
   deleteUserGroup: PropTypes.object,
   onDelete: PropTypes.func.isRequired,
@@ -210,17 +202,6 @@ UserGroupDeleteModal.propTypes = {
 
 UserGroupDeleteModal.defaultProps = {
   deleteUserGroup: {},
-};
-
-UserGroupDeleteModalWrapper.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-  crowi: PropTypes.object.isRequired,
-  userGroups: PropTypes.arrayOf(PropTypes.object).isRequired,
-  deleteUserGroup: PropTypes.object,
-  onDelete: PropTypes.func.isRequired,
-  isShow: PropTypes.bool.isRequired,
-  onShow: PropTypes.func.isRequired,
-  onHide: PropTypes.func.isRequired,
 };
 
 export default withTranslation()(UserGroupDeleteModalWrapper);

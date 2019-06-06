@@ -1,12 +1,13 @@
 /* eslint-disable react/no-multi-comp */
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { Subscribe } from 'unstated';
 
 import UserGroupTable from './UserGroupTable';
 import UserGroupCreateForm from './UserGroupCreateForm';
 import UserGroupDeleteModal from './UserGroupDeleteModal';
 
+import { createSubscribedElement } from '../../UnstatedUtils';
+import AppContainer from '../../../services/AppContainer';
 import { apiErrorHandler, apiSuccessHandler } from '../../../util/apiNotification';
 
 class UserGroupPage extends React.Component {
@@ -65,7 +66,7 @@ class UserGroupPage extends React.Component {
 
   async deleteUserGroupById({ deleteGroupId, actionName, transferToUserGroupId }) {
     try {
-      const res = await this.props.crowi.apiv3.delete(`/user-groups/${deleteGroupId}`, {
+      const res = await this.props.appContainer.apiv3.delete(`/user-groups/${deleteGroupId}`, {
         actionName,
         transferToUserGroupId,
       });
@@ -97,8 +98,8 @@ class UserGroupPage extends React.Component {
     let userGroupRelations = {};
 
     const responses = await Promise.all([
-      this.props.crowi.apiv3.get('/user-groups'),
-      this.props.crowi.apiv3.get('/user-group-relations'),
+      this.props.appContainer.apiv3.get('/user-groups'),
+      this.props.appContainer.apiv3.get('/user-group-relations'),
     ]);
 
     const [userGroupsRes, userGroupRelationsRes] = responses;
@@ -115,19 +116,16 @@ class UserGroupPage extends React.Component {
     return (
       <Fragment>
         <UserGroupCreateForm
-          crowi={this.props.crowi}
           isAclEnabled={this.props.isAclEnabled}
           onCreate={this.addUserGroup}
         />
         <UserGroupTable
-          crowi={this.props.crowi}
           userGroups={this.state.userGroups}
           userGroupRelations={this.state.userGroupRelations}
           isAclEnabled={this.props.isAclEnabled}
           onDelete={this.showDeleteModal}
         />
         <UserGroupDeleteModal
-          crowi={this.props.crowi}
           userGroups={this.state.userGroups}
           deleteUserGroup={this.state.selectedUserGroup}
           onDelete={this.deleteUserGroupById}
@@ -144,30 +142,13 @@ class UserGroupPage extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-class UserGroupPageWrapper extends React.PureComponent {
-
-  render() {
-    return (
-      <Subscribe to={[]}>
-        {() => (
-          // eslint-disable-next-line arrow-body-style
-          <UserGroupPage {...this.props} />
-        )}
-      </Subscribe>
-    );
-  }
-
-}
-
-UserGroupPage.propTypes = {
-  crowi: PropTypes.object.isRequired,
-  userGroups: PropTypes.arrayOf(PropTypes.object).isRequired,
-  userGroupRelations: PropTypes.object.isRequired,
-  isAclEnabled: PropTypes.bool,
+const UserGroupPageWrapper = (props) => {
+  return createSubscribedElement(UserGroupPage, props, [AppContainer]);
 };
 
-UserGroupPageWrapper.propTypes = {
-  crowi: PropTypes.object.isRequired,
+UserGroupPage.propTypes = {
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+
   userGroups: PropTypes.arrayOf(PropTypes.object).isRequired,
   userGroupRelations: PropTypes.object.isRequired,
   isAclEnabled: PropTypes.bool,

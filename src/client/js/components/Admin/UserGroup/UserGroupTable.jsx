@@ -1,9 +1,11 @@
 /* eslint-disable react/no-multi-comp */
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { Subscribe } from 'unstated';
 import { withTranslation } from 'react-i18next';
 import dateFnsFormat from 'date-fns/format';
+
+import { createSubscribedElement } from '../../UnstatedUtils';
+import AppContainer from '../../../services/AppContainer';
 
 class UserGroupTable extends React.Component {
 
@@ -103,33 +105,15 @@ class UserGroupTable extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-class UserGroupTableWrapper extends React.PureComponent {
+const UserGroupTableWrapper = (props) => {
+  return createSubscribedElement(UserGroupTable, props, [AppContainer]);
+};
 
-  render() {
-    return (
-      <Subscribe to={[]}>
-        {() => (
-          // eslint-disable-next-line arrow-body-style
-          <UserGroupTable {...this.props} />
-        )}
-      </Subscribe>
-    );
-  }
-
-}
 
 UserGroupTable.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  crowi: PropTypes.object.isRequired,
-  userGroups: PropTypes.arrayOf(PropTypes.object).isRequired,
-  userGroupRelations: PropTypes.object.isRequired,
-  isAclEnabled: PropTypes.bool,
-  onDelete: PropTypes.func.isRequired,
-};
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
-UserGroupTableWrapper.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-  crowi: PropTypes.object.isRequired,
   userGroups: PropTypes.arrayOf(PropTypes.object).isRequired,
   userGroupRelations: PropTypes.object.isRequired,
   isAclEnabled: PropTypes.bool,
