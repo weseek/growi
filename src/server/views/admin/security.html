@@ -304,6 +304,9 @@
             <li>
               <a href="#passport-twitter" data-toggle="tab" role="tab"><i class="fa fa-twitter"></i> Twitter</a>
             </li>
+            <li>
+              <a href="#passport-oidc" data-toggle="tab" role="tab"><i class="fa fa-openid"></i> OIDC</a>
+            </li>
             <li class="tbd">
               <a href="#passport-facebook" data-toggle="tab" role="tab"><i class="fa fa-facebook"></i> (TBD) Facebook</a>
             </li>
@@ -330,6 +333,10 @@
               {% include './widget/passport/twitter.html' %}
             </div>
 
+            <div id="passport-oidc" class="tab-pane" role="tabpanel">
+              {% include './widget/passport/oidc.html' %}
+            </div>
+
             <div id="passport-github" class="tab-pane" role="tabpanel">
               {% include './widget/passport/github.html' %}
             </div>
@@ -342,7 +349,7 @@
   </div>
 
   <script>
-    $('#generalSetting, #samlSetting, #googleSetting, #mechanismSetting, #githubSetting, #twitterSetting').each(function() {
+    $('#generalSetting, #samlSetting, #googleSetting, #mechanismSetting, #githubSetting, #twitterSetting, #oidcSetting').each(function() {
       $(this).submit(function()
       {
         function showMessage(formId, msg, status) {

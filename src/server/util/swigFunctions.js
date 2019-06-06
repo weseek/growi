@@ -173,6 +173,11 @@ module.exports = function(crowi, app, req, locals) {
     return locals.isEnabledPassport() && config.crowi['security:passport-twitter:isEnabled'];
   };
 
+  locals.passportOidcLoginEnabled = function() {
+    const config = crowi.getConfig();
+    return locals.isEnabledPassport() && config.crowi['security:passport-oidc:isEnabled'];
+  };
+
   locals.searchConfigured = function() {
     if (crowi.getSearcher()) {
       return true;
