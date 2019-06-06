@@ -111,6 +111,7 @@ module.exports = function(crowi) {
       'customize:behavior' : 'crowi',
       'customize:layout' : 'crowi',
       'customize:isEnabledTimeline' : true,
+      'customize:isEnabledDeleteCompletely' : false,
       'customize:isSavedStatesOfTabChanges' : true,
       'customize:isEnabledAttachTitleHeader' : false,
       'customize:showRecentCreatedNumber' : 10,
@@ -542,6 +543,11 @@ module.exports = function(crowi) {
 
   configSchema.statics.isEnabledTimeline = function(config) {
     const key = 'customize:isEnabledTimeline';
+    return getValueForCrowiNS(config, key);
+  };
+
+  configSchema.statics.isEnabledDeleteCompletely = function(config) {
+    const key = 'isEnabledDeleteCompletely';
     return getValueForCrowiNS(config, key);
   };
 
